@@ -50,7 +50,7 @@
     <message>
         <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="1067"/>
         <source>This circuit needs %1 I/O pins, but the largest supported board (%2) provides only %3. Reduce the number of inputs and outputs, or split the circuit.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ce circuit nécessite %1 broches d&apos;E/S, mais la carte la plus grande prise en charge (%2) n&apos;en fournit que %3. Réduisez le nombre d&apos;entrées et de sorties, ou divisez le circuit.</translation>
     </message>
     <message>
         <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="1265"/>
@@ -190,12 +190,12 @@
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="274"/>
         <source>Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>Annuler</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="276"/>
         <source>Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>Rétablir</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="289"/>
@@ -276,21 +276,21 @@
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="839"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="912"/>
         <source>CSV files</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers CSV</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="838"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="839"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="912"/>
         <source>Dolphin files</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers Dolphin</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="838"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="839"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="912"/>
         <source>All supported files</source>
-        <translation type="unfinished"></translation>
+        <translation>Tous les fichiers pris en charge</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="880"/>
@@ -300,12 +300,12 @@
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="975"/>
         <source>PNG files</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers PNG</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="993"/>
         <source>PDF files</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers PDF</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1012"/>
@@ -326,7 +326,7 @@
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="480"/>
         <source>Cannot export: the circuit this waveform was built from has changed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Export impossible&#xa0;: le circuit à partir duquel ce diagramme de forme d&apos;onde a été construit a changé.</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="601"/>
@@ -391,7 +391,7 @@
     <message>
         <location filename="../../Scene/ClipboardManager.cpp" line="160"/>
         <source>Paste</source>
-        <translation type="unfinished">Coller</translation>
+        <translation>Coller</translation>
     </message>
 </context>
 <context>
@@ -422,7 +422,7 @@
     <message>
         <location filename="../../UI/ClockDialogUI.cpp" line="75"/>
         <source>Clock</source>
-        <translation type="unfinished">Horloge</translation>
+        <translation>Horloge</translation>
     </message>
     <message>
         <location filename="../../UI/ClockDialogUI.cpp" line="76"/>
@@ -440,27 +440,27 @@
     <message>
         <location filename="../../Scene/ConnectionManager.cpp" line="252"/>
         <source>This connection is not allowed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Cette connexion n&apos;est pas autorisée.</translation>
     </message>
     <message>
         <location filename="../../Scene/ConnectionManager.cpp" line="255"/>
         <source>Can&apos;t connect an element to itself.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de connecter un élément à lui-même.</translation>
     </message>
     <message>
         <location filename="../../Scene/ConnectionManager.cpp" line="258"/>
         <source>These ports are already connected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ces ports sont déjà connectés.</translation>
     </message>
     <message>
         <location filename="../../Scene/ConnectionManager.cpp" line="263"/>
         <source>This element receives wirelessly — no input wire needed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Cet élément reçoit sans fil — aucun fil d&apos;entrée n&apos;est nécessaire.</translation>
     </message>
     <message>
         <location filename="../../Scene/ConnectionManager.cpp" line="268"/>
         <source>This element transmits wirelessly — no output wire needed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Cet élément transmet sans fil — aucun fil de sortie n&apos;est nécessaire.</translation>
     </message>
 </context>
 <context>
@@ -806,12 +806,12 @@
         <location filename="../../UI/ElementEditorUI.cpp" line="330"/>
         <location filename="../../UI/ElementEditorUI.cpp" line="331"/>
         <source>Choose audio file</source>
-        <translation type="unfinished"></translation>
+        <translation>Choisir un fichier audio</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="334"/>
         <source>Sound file:</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichier audio&#xa0;:</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="335"/>
@@ -826,12 +826,12 @@
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="310"/>
         <source>A6</source>
-        <translation type="unfinished"></translation>
+        <translation>A6</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="311"/>
         <source>B6</source>
-        <translation type="unfinished"></translation>
+        <translation>B6</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="315"/>
@@ -841,7 +841,7 @@
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="318"/>
         <source>Appearance for:</source>
-        <translation type="unfinished"></translation>
+        <translation>Apparence pour&#xa0;:</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="326"/>
@@ -856,37 +856,37 @@
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="295"/>
         <source>Element Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Éditeur d&apos;élément</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="299"/>
         <source>Identity</source>
-        <translation type="unfinished"></translation>
+        <translation>Identité</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="300"/>
         <source>Ports</source>
-        <translation type="unfinished"></translation>
+        <translation>Ports</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="301"/>
         <source>Timing</source>
-        <translation type="unfinished"></translation>
+        <translation>Synchronisation</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="302"/>
         <source>Sound</source>
-        <translation type="unfinished"></translation>
+        <translation>Son</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="303"/>
         <source>Interaction</source>
-        <translation type="unfinished"></translation>
+        <translation>Interaction</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="304"/>
         <source>Appearance</source>
-        <translation type="unfinished"></translation>
+        <translation>Apparence</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="306"/>
@@ -911,27 +911,27 @@
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="347"/>
         <source>Prevent this element from being toggled by clicking it during simulation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Empêche cet élément d&apos;être basculé en cliquant dessus pendant la simulation.</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="352"/>
         <source>Nodes with the same label connect wirelessly — Transmit sends its input, Receive outputs it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Les nœuds portant la même étiquette se connectent sans fil — Transmit envoie son entrée, Receive la restitue en sortie.</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="357"/>
         <source>The value this input element outputs.</source>
-        <translation type="unfinished"></translation>
+        <translation>La valeur que cet élément d&apos;entrée produit en sortie.</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="361"/>
         <source>Keyboard key that toggles this element during simulation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Touche du clavier qui bascule cet élément pendant la simulation.</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="366"/>
         <source>Phase offset from the driving clock, as a fraction of its period.</source>
-        <translation type="unfinished"></translation>
+        <translation>Décalage de phase par rapport à l&apos;horloge pilote, exprimé comme une fraction de sa période.</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="312"/>
@@ -951,7 +951,7 @@
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="337"/>
         <source>Tone:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tonalité&#xa0;:</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditorUI.cpp" line="344"/>
@@ -1012,7 +1012,7 @@
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="227"/>
         <source>Change appearance</source>
-        <translation type="unfinished"></translation>
+        <translation>Changer l&apos;apparence</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="291"/>
@@ -1049,13 +1049,14 @@ Chaque canal sans fil doit avoir un label unique.</translation>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="746"/>
         <source>Duplicate IC Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom de CI en double</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="747"/>
         <source>An embedded IC named &quot;%1&quot; already exists.
 Choose a different name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Un CI intégré nommé &quot;%1&quot; existe déjà.
+Choisissez un autre nom.</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="955"/>
@@ -1065,7 +1066,7 @@ Choose a different name.</source>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="956"/>
         <source>Audio</source>
-        <translation type="unfinished"></translation>
+        <translation>Audio</translation>
     </message>
     <message>
         <location filename="../../UI/ElementEditor.cpp" line="290"/>
@@ -1137,152 +1138,152 @@ Choose a different name.</source>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="61"/>
         <source>Constant logic HIGH (1) source.</source>
-        <translation type="unfinished"></translation>
+        <translation>Source logique constante HAUTE (1).</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="62"/>
         <source>Constant logic LOW (0) source.</source>
-        <translation type="unfinished"></translation>
+        <translation>Source logique constante BASSE (0).</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="63"/>
         <source>Push button: outputs HIGH only while pressed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bouton poussoir&#xa0;: la sortie est HAUTE uniquement pendant l&apos;appui.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="64"/>
         <source>Toggle switch: click to flip between 0 and 1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Interrupteur d&apos;entrée&#xa0;: cliquez pour basculer entre 0 et 1.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="65"/>
         <source>Rotary switch with several selectable positions.</source>
-        <translation type="unfinished"></translation>
+        <translation>Interrupteur rotatif à plusieurs positions sélectionnables.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="66"/>
         <source>Clock: a square wave at a configurable frequency.</source>
-        <translation type="unfinished"></translation>
+        <translation>Horloge&#xa0;: une onde carrée à fréquence configurable.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="67"/>
         <source>LED: lights up while its input is HIGH.</source>
-        <translation type="unfinished"></translation>
+        <translation>DEL&#xa0;: s&apos;allume tant que son entrée est HAUTE.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="68"/>
         <source>7-segment display for a single digit.</source>
-        <translation type="unfinished"></translation>
+        <translation>Affichage 7 segments pour un seul chiffre.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="69"/>
         <source>14-segment alphanumeric display.</source>
-        <translation type="unfinished"></translation>
+        <translation>Affichage alphanumérique 14 segments.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="70"/>
         <source>16-segment alphanumeric display.</source>
-        <translation type="unfinished"></translation>
+        <translation>Affichage alphanumérique 16 segments.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="71"/>
         <source>Buzzer: plays a tone while its input is HIGH.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ronfleur&#xa0;: joue une tonalité tant que son entrée est HAUTE.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="72"/>
         <source>Audio box: plays an audio file while its input is HIGH.</source>
-        <translation type="unfinished"></translation>
+        <translation>Boîte audio&#xa0;: joue un fichier audio tant que son entrée est HAUTE.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="73"/>
         <source>AND gate: output is HIGH only when every input is HIGH.</source>
-        <translation type="unfinished"></translation>
+        <translation>Porte ET&#xa0;: la sortie est HAUTE uniquement lorsque toutes les entrées sont HAUTES.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="74"/>
         <source>OR gate: output is HIGH when any input is HIGH.</source>
-        <translation type="unfinished"></translation>
+        <translation>Porte OU&#xa0;: la sortie est HAUTE lorsqu&apos;au moins une entrée est HAUTE.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="75"/>
         <source>NOT gate: inverts its input.</source>
-        <translation type="unfinished"></translation>
+        <translation>Porte NON&#xa0;: inverse son entrée.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="76"/>
         <source>NAND gate: LOW only when every input is HIGH.</source>
-        <translation type="unfinished"></translation>
+        <translation>Porte NON-ET&#xa0;: BASSE uniquement lorsque toutes les entrées sont HAUTES.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="77"/>
         <source>NOR gate: HIGH only when every input is LOW.</source>
-        <translation type="unfinished"></translation>
+        <translation>Porte NON-OU&#xa0;: HAUTE uniquement lorsque toutes les entrées sont BASSES.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="78"/>
         <source>XOR gate: HIGH when an odd number of inputs are HIGH.</source>
-        <translation type="unfinished"></translation>
+        <translation>Porte OU-EXCLUSIF&#xa0;: HAUTE lorsqu&apos;un nombre impair d&apos;entrées sont HAUTES.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="79"/>
         <source>XNOR gate: HIGH when the inputs match.</source>
-        <translation type="unfinished"></translation>
+        <translation>Porte OU-EXCLUSIF-NON&#xa0;: HAUTE lorsque les entrées correspondent.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="80"/>
         <source>Node: a wire junction / branch point.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nœud&#xa0;: une jonction de fils / un point de branchement.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="81"/>
         <source>Truth table: custom logic you define, output by output.</source>
-        <translation type="unfinished"></translation>
+        <translation>Table de vérité&#xa0;: logique personnalisée que vous définissez, sortie par sortie.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="82"/>
         <source>Multiplexer: routes the selected input to the output.</source>
-        <translation type="unfinished"></translation>
+        <translation>Multiplexeur&#xa0;: dirige l&apos;entrée sélectionnée vers la sortie.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="83"/>
         <source>Demultiplexer: routes the input to the selected output.</source>
-        <translation type="unfinished"></translation>
+        <translation>Démultiplexeur&#xa0;: dirige l&apos;entrée vers la sortie sélectionnée.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="84"/>
         <source>D latch: stores the D input while Enable is HIGH.</source>
-        <translation type="unfinished"></translation>
+        <translation>Verrou D&#xa0;: mémorise l&apos;entrée D tant qu&apos;Enable est HAUTE.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="85"/>
         <source>SR latch: a Set/Reset storage element.</source>
-        <translation type="unfinished"></translation>
+        <translation>Verrou SR&#xa0;: un élément de mémorisation Set/Reset.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="86"/>
         <source>D flip-flop: stores D on the active clock edge.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bascule D&#xa0;: mémorise D sur le front d&apos;horloge actif.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="87"/>
         <source>JK flip-flop: set, reset or toggle on the active clock edge.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bascule JK&#xa0;: met à 1, remet à 0 ou bascule sur le front d&apos;horloge actif.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="88"/>
         <source>T flip-flop: toggles on the active clock edge when T is HIGH.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bascule T&#xa0;: bascule sur le front d&apos;horloge actif lorsque T est HAUTE.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="89"/>
         <source>Text: a free-text annotation on the canvas.</source>
-        <translation type="unfinished"></translation>
+        <translation>Texte&#xa0;: une annotation en texte libre sur la zone de dessin.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="90"/>
         <source>Line: a decorative annotation on the canvas.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ligne&#xa0;: une annotation décorative sur la zone de dessin.</translation>
     </message>
     <message>
         <location filename="../../Element/ElementFactory.cpp" line="109"/>
@@ -1300,17 +1301,17 @@ Choose a different name.</source>
     <message>
         <location filename="../../Element/ElementLabel.cpp" line="40"/>
         <source>Embedded IC: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>CI intégré&#xa0;: %1</translation>
     </message>
     <message>
         <location filename="../../Element/ElementLabel.cpp" line="42"/>
         <source>IC from file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>CI depuis un fichier&#xa0;: %1</translation>
     </message>
     <message>
         <location filename="../../Element/ElementLabel.cpp" line="46"/>
         <source>Drag or double-click to add.</source>
-        <translation type="unfinished"></translation>
+        <translation>Glissez ou double-cliquez pour ajouter.</translation>
     </message>
 </context>
 <context>
@@ -1318,22 +1319,22 @@ Choose a different name.</source>
     <message>
         <location filename="../../UI/ElementPalette.cpp" line="25"/>
         <source>Search elements</source>
-        <translation type="unfinished"></translation>
+        <translation>Rechercher des éléments</translation>
     </message>
     <message>
         <location filename="../../UI/ElementPalette.cpp" line="26"/>
         <source>Type to filter the palette by element name. Press Enter to add the first match to the circuit.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tapez pour filtrer la palette par nom d&apos;élément. Appuyez sur Entrée pour ajouter la première correspondance au circuit.</translation>
     </message>
     <message>
         <location filename="../../UI/ElementPalette.cpp" line="28"/>
         <source>Element palette</source>
-        <translation type="unfinished"></translation>
+        <translation>Palette d&apos;éléments</translation>
     </message>
     <message>
         <location filename="../../UI/ElementPalette.cpp" line="29"/>
         <source>Elements grouped by category. Drag one onto the canvas, or double-click to add it to the active circuit.</source>
-        <translation type="unfinished"></translation>
+        <translation>Éléments regroupés par catégorie. Faites glisser l&apos;un d&apos;eux sur la zone de dessin, ou double-cliquez dessus pour l&apos;ajouter au circuit actif.</translation>
     </message>
 </context>
 <context>
@@ -1431,22 +1432,22 @@ Choose a different name.</source>
     <message>
         <location filename="../../UI/ExportController.cpp" line="126"/>
         <source>Arduino file</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichier Arduino</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="148"/>
         <source>SystemVerilog file</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichier SystemVerilog</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="169"/>
         <source>PDF files</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers PDF</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="198"/>
         <source>PNG files</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers PNG</translation>
     </message>
     <message>
         <location filename="../../UI/ExportController.cpp" line="148"/>
@@ -1554,12 +1555,12 @@ Choose a different name.</source>
     <message>
         <location filename="../../Scene/GraphicsView.cpp" line="26"/>
         <source>Circuit canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Zone de dessin du circuit</translation>
     </message>
     <message>
         <location filename="../../Scene/GraphicsView.cpp" line="27"/>
         <source>The circuit canvas. Drag elements here from the palette to build a circuit, drag between ports to wire them together, and drag a selection to move it.</source>
-        <translation type="unfinished"></translation>
+        <translation>La zone de dessin du circuit. Faites glisser des éléments depuis la palette pour construire un circuit, faites glisser entre les ports pour les relier, et faites glisser une sélection pour la déplacer.</translation>
     </message>
 </context>
 <context>
@@ -1590,7 +1591,7 @@ Choose a different name.</source>
     <message>
         <location filename="../../UI/ICController.cpp" line="71"/>
         <source>Panda</source>
-        <translation type="unfinished"></translation>
+        <translation>Panda</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="79"/>
@@ -1606,22 +1607,22 @@ Choose a different name.</source>
     <message>
         <location filename="../../UI/ICController.cpp" line="91"/>
         <source>File name conflict</source>
-        <translation type="unfinished"></translation>
+        <translation>Conflit de nom de fichier</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="92"/>
         <source>A different file named &quot;%1&quot; already exists in the project folder.</source>
-        <translation type="unfinished"></translation>
+        <translation>Un autre fichier nommé &quot;%1&quot; existe déjà dans le dossier du projet.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="94"/>
         <source>Replace</source>
-        <translation type="unfinished"></translation>
+        <translation>Remplacer</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="95"/>
         <source>Keep Existing</source>
-        <translation type="unfinished"></translation>
+        <translation>Conserver l&apos;existant</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="119"/>
@@ -1631,7 +1632,7 @@ Choose a different name.</source>
     <message>
         <location filename="../../UI/ICController.cpp" line="146"/>
         <source>Error moving file to trash: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur lors du déplacement du fichier vers la corbeille&#xa0;: %1</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="168"/>
@@ -1648,14 +1649,16 @@ Nom suggéré&#xa0;:</translation>
     <message>
         <location filename="../../UI/ICController.cpp" line="189"/>
         <source>Save required</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrement requis</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="190"/>
         <source>This action needs the project saved to a file first, so IC paths can be resolved.
 
 Save it now?</source>
-        <translation type="unfinished"></translation>
+        <translation>Cette action nécessite que le projet soit d&apos;abord enregistré dans un fichier, afin que les chemins des CI puissent être résolus.
+
+L&apos;enregistrer maintenant&#xa0;?</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="222"/>
@@ -1689,7 +1692,7 @@ Save it now?</source>
         <location filename="../../UI/ICController.cpp" line="322"/>
         <location filename="../../UI/ICController.cpp" line="410"/>
         <source>Panda files</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers Panda</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="262"/>
@@ -1710,7 +1713,7 @@ Save it now?</source>
     <message>
         <location filename="../../UI/ICController.cpp" line="400"/>
         <source>Embedded %1 IC(s); some file-based ICs remain.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 CI(s) intégré(s)&#xa0;; il reste des CI basés sur des fichiers.</translation>
     </message>
     <message>
         <location filename="../../UI/ICController.cpp" line="410"/>
@@ -1728,32 +1731,32 @@ Save it now?</source>
     <message>
         <location filename="../../UI/ICDropZone.cpp" line="46"/>
         <source>Embedded IC drop zone</source>
-        <translation type="unfinished"></translation>
+        <translation>Zone de dépôt des CI intégrés</translation>
     </message>
     <message>
         <location filename="../../UI/ICDropZone.cpp" line="46"/>
         <source>File-based IC drop zone</source>
-        <translation type="unfinished"></translation>
+        <translation>Zone de dépôt des CI basés sur des fichiers</translation>
     </message>
     <message>
         <location filename="../../UI/ICDropZone.cpp" line="48"/>
         <source>Drop a file-based IC here to embed it directly in the circuit.</source>
-        <translation type="unfinished"></translation>
+        <translation>Déposez ici un CI basé sur un fichier pour l&apos;intégrer directement dans le circuit.</translation>
     </message>
     <message>
         <location filename="../../UI/ICDropZone.cpp" line="49"/>
         <source>Drop an embedded IC here to extract it to its own file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Déposez ici un CI intégré pour l&apos;extraire dans son propre fichier.</translation>
     </message>
     <message>
         <location filename="../../UI/ICDropZone.cpp" line="58"/>
         <source>Drop here to embed this IC in the circuit</source>
-        <translation type="unfinished"></translation>
+        <translation>Déposez ici pour intégrer ce CI dans le circuit</translation>
     </message>
     <message>
         <location filename="../../UI/ICDropZone.cpp" line="59"/>
         <source>Drop here to extract this IC to a file</source>
-        <translation type="unfinished"></translation>
+        <translation>Déposez ici pour extraire ce CI vers un fichier</translation>
     </message>
 </context>
 <context>
@@ -1766,7 +1769,7 @@ Save it now?</source>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="143"/>
         <source>IC nesting depth limit (%1) exceeded while loading %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Limite de profondeur d&apos;imbrication des CI (%1) dépassée lors du chargement de %2</translation>
     </message>
     <message>
         <location filename="../../Element/ICLoader.cpp" line="154"/>
@@ -1809,7 +1812,7 @@ Save it now?</source>
     <message>
         <location filename="../../Scene/ICRegistry.cpp" line="341"/>
         <source>Embedded IC dependency chain exceeds the maximum nesting depth (%1) while resolving &apos;%2&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>La chaîne de dépendances des CI intégrés dépasse la profondeur d&apos;imbrication maximale (%1) lors de la résolution de &apos;%2&apos;</translation>
     </message>
 </context>
 <context>
@@ -1917,7 +1920,7 @@ Save it now?</source>
     <message>
         <location filename="../../Element/GraphicElements/Led.cpp" line="245"/>
         <source>Port %1=%2</source>
-        <translation type="unfinished"></translation>
+        <translation>Port %1=%2</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElements/Led.cpp" line="252"/>
@@ -2159,7 +2162,7 @@ Save it now?</source>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="788"/>
         <source>Dupli&amp;cate</source>
-        <translation type="unfinished"></translation>
+        <translation>Dupli&amp;quer</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="790"/>
@@ -2244,12 +2247,12 @@ Save it now?</source>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="822"/>
         <source>Zoom to &amp;Fit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ajuster à la fenêtre</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="823"/>
         <source>Zoom to fit the whole circuit (or the selection)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajuste le zoom pour afficher tout le circuit (ou la sélection)</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="827"/>
@@ -2319,42 +2322,42 @@ Save it now?</source>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="850"/>
         <source>Align &amp;Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Aligner à &amp;gauche</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="851"/>
         <source>Align &amp;Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Aligner à &amp;droite</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="852"/>
         <source>Align &amp;Top</source>
-        <translation type="unfinished"></translation>
+        <translation>Aligner en &amp;haut</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="853"/>
         <source>Align &amp;Bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>Aligner en &amp;bas</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="854"/>
         <source>Align Horizontal &amp;Centers</source>
-        <translation type="unfinished"></translation>
+        <translation>Aligner les centres &amp;horizontaux</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="855"/>
         <source>Align &amp;Vertical Centers</source>
-        <translation type="unfinished"></translation>
+        <translation>Aligner les centres &amp;verticaux</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="856"/>
         <source>Distribute &amp;Horizontally</source>
-        <translation type="unfinished"></translation>
+        <translation>Distribuer &amp;horizontalement</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="857"/>
         <source>Distribute Verti&amp;cally</source>
-        <translation type="unfinished"></translation>
+        <translation>Distribuer verti&amp;calement</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="858"/>
@@ -2364,12 +2367,12 @@ Save it now?</source>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="871"/>
         <source>Check for updates automatically</source>
-        <translation type="unfinished"></translation>
+        <translation>Rechercher les mises à jour automatiquement</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="909"/>
         <source>&amp;Learn</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Apprendre</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindowUI.cpp" line="910"/>
@@ -2450,27 +2453,27 @@ Vous devez enregistrer les nouveaux projets avant d’accéder aux CI et aux app
     <message>
         <location filename="../../UI/MainWindow.cpp" line="292"/>
         <source>Error</source>
-        <translation type="unfinished">Erreur</translation>
+        <translation>Erreur</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="321"/>
         <source>Open My Exercises Folder</source>
-        <translation type="unfinished">Ouvrir mon dossier d&apos;exercices</translation>
+        <translation>Ouvrir mon dossier d&apos;exercices</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="322"/>
         <source>Could not create or access a folder for custom exercises.</source>
-        <translation type="unfinished">Impossible de créer ou d&apos;accéder à un dossier pour les exercices personnalisés.</translation>
+        <translation>Impossible de créer ou d&apos;accéder à un dossier pour les exercices personnalisés.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="332"/>
         <source>Open My Tours Folder</source>
-        <translation type="unfinished">Ouvrir mon dossier de visites</translation>
+        <translation>Ouvrir mon dossier de visites guidées</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="333"/>
         <source>Could not create or access a folder for custom tours.</source>
-        <translation type="unfinished">Impossible de créer ou d&apos;accéder à un dossier pour les visites personnalisées.</translation>
+        <translation>Impossible de créer ou d&apos;accéder à un dossier pour les visites guidées personnalisées.</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="586"/>
@@ -2480,17 +2483,17 @@ Vous devez enregistrer les nouveaux projets avant d’accéder aux CI et aux app
     <message>
         <location filename="../../UI/MainWindow.cpp" line="610"/>
         <source>Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>Rétablir</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="611"/>
         <source>Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>Annuler</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="636"/>
         <source>&lt;h1&gt;Keyboard Shortcuts&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;Element Property Navigation&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : Previous / next primary property &lt;/li&gt;&lt;li&gt; { / } : Previous / next secondary property &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : Morph to previous / next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Double-click a wire to create a node &lt;/li&gt;&lt;li&gt; Drag an element from the left panel onto the canvas to add it &lt;/li&gt;&lt;li&gt; Nudge the selection with the arrow keys (hold Shift for larger steps) &lt;/li&gt;&lt;li&gt; Drop a .panda file onto the canvas to open it &lt;/li&gt;&lt;/ul&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h1&gt;Raccourcis clavier&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;Navigation des propriétés d&apos;élément&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : Propriété principale précédente / suivante &lt;/li&gt;&lt;li&gt; { / } : Propriété secondaire précédente / suivante &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : Transformer en élément précédent / suivant &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Astuces générales&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Double-cliquez sur un fil pour créer un nœud &lt;/li&gt;&lt;li&gt; Faites glisser un élément du panneau de gauche sur la zone de dessin pour l&apos;ajouter &lt;/li&gt;&lt;li&gt; Déplacez la sélection avec les touches fléchées (maintenez Maj pour des pas plus grands) &lt;/li&gt;&lt;li&gt; Déposez un fichier .panda sur la zone de dessin pour l&apos;ouvrir &lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="687"/>
@@ -2505,7 +2508,7 @@ Vous devez enregistrer les nouveaux projets avant d’accéder aux CI et aux app
     <message>
         <location filename="../../UI/MainWindow.cpp" line="860"/>
         <source>%1[*] — wiRedPanda %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1[*] — wiRedPanda %2</translation>
     </message>
     <message>
         <location filename="../../UI/MainWindow.cpp" line="1325"/>
@@ -2528,12 +2531,12 @@ Vous devez enregistrer les nouveaux projets avant d’accéder aux CI et aux app
     <message>
         <location filename="../../UI/MinimapWidget.cpp" line="27"/>
         <source>Circuit minimap</source>
-        <translation type="unfinished"></translation>
+        <translation>Mini-carte du circuit</translation>
     </message>
     <message>
         <location filename="../../UI/MinimapWidget.cpp" line="28"/>
         <source>A miniature overview of the whole circuit. Click or drag inside it to jump the main canvas to that location.</source>
-        <translation type="unfinished"></translation>
+        <translation>Un aperçu miniature de tout le circuit. Cliquez ou faites glisser à l&apos;intérieur pour faire sauter la zone de dessin principale à cet endroit.</translation>
     </message>
 </context>
 <context>
@@ -2636,13 +2639,13 @@ Vous devez enregistrer les nouveaux projets avant d’accéder aux CI et aux app
         <location filename="../../Scene/PropertyShortcutHandler.cpp" line="44"/>
         <location filename="../../Scene/PropertyShortcutHandler.cpp" line="145"/>
         <source>Cycle element properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Parcourir les propriétés de l&apos;élément</translation>
     </message>
     <message>
         <location filename="../../Scene/PropertyShortcutHandler.cpp" line="221"/>
         <location filename="../../Scene/PropertyShortcutHandler.cpp" line="252"/>
         <source>Morph elements</source>
-        <translation type="unfinished"></translation>
+        <translation>Transformer les éléments</translation>
     </message>
 </context>
 <context>
@@ -2688,12 +2691,12 @@ Vous devez enregistrer les nouveaux projets avant d’accéder aux CI et aux app
     <message>
         <location filename="../../UI/ElementContextMenu.cpp" line="49"/>
         <source>Flip horizontally</source>
-        <translation type="unfinished"></translation>
+        <translation>Retourner horizontalement</translation>
     </message>
     <message>
         <location filename="../../UI/ElementContextMenu.cpp" line="50"/>
         <source>Flip vertically</source>
-        <translation type="unfinished"></translation>
+        <translation>Retourner verticalement</translation>
     </message>
     <message>
         <location filename="../../UI/ElementContextMenu.cpp" line="54"/>
@@ -2751,7 +2754,7 @@ Vous devez enregistrer les nouveaux projets avant d’accéder aux CI et aux app
     <message>
         <location filename="../../BeWavedDolphin/DolphinCommands.cpp" line="17"/>
         <source>Edit waveform</source>
-        <translation type="unfinished"></translation>
+        <translation>Modifier la forme d&apos;onde</translation>
     </message>
 </context>
 <context>
@@ -2775,7 +2778,7 @@ Vous devez enregistrer les nouveaux projets avant d’accéder aux CI et aux app
     <message>
         <location filename="../../Scene/Commands.cpp" line="1170"/>
         <source>Rename IC &quot;%1&quot; to &quot;%2&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Renommer le CI &quot;%1&quot; en &quot;%2&quot;</translation>
     </message>
 </context>
 <context>
@@ -2834,7 +2837,7 @@ Vous devez enregistrer les nouveaux projets avant d’accéder aux CI et aux app
     <message>
         <location filename="../../Scene/Scene.cpp" line="620"/>
         <source>Select all</source>
-        <translation type="unfinished"></translation>
+        <translation>Tout sélectionner</translation>
     </message>
 </context>
 <context>
@@ -2842,7 +2845,7 @@ Vous devez enregistrer les nouveaux projets avant d’accéder aux CI et aux app
     <message>
         <location filename="../../UI/SceneUiBinder.cpp" line="60"/>
         <source>Zoom: %1%    Selected: %2 / %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoom&#xa0;: %1&#xa0;%    Sélectionné&#xa0;: %2 / %3</translation>
     </message>
     <message>
         <location filename="../../UI/SceneUiBinder.cpp" line="214"/>
@@ -2931,7 +2934,7 @@ Vous devez enregistrer les nouveaux projets avant d’accéder aux CI et aux app
     <message>
         <location filename="../../IO/Serialization.cpp" line="739"/>
         <source>Panda file dependency chain exceeds the maximum nesting depth (%1) while copying &apos;%2&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>La chaîne de dépendances du fichier Panda dépasse la profondeur d&apos;imbrication maximale (%1) lors de la copie de &apos;%2&apos;</translation>
     </message>
     <message>
         <location filename="../../IO/Serialization.cpp" line="758"/>
@@ -3021,7 +3024,7 @@ Vous devez enregistrer les nouveaux projets avant d’accéder aux CI et aux app
     <message>
         <location filename="../../Element/GraphicElements/Text.cpp" line="58"/>
         <source>Double-click to add text</source>
-        <translation type="unfinished"></translation>
+        <translation>Double-cliquez pour ajouter du texte</translation>
     </message>
     <message>
         <location filename="../../Element/GraphicElements/Text.cpp" line="25"/>
@@ -3097,7 +3100,7 @@ Vous devez enregistrer les nouveaux projets avant d’accéder aux CI et aux app
     <message>
         <location filename="../../UI/TrashButton.cpp" line="61"/>
         <source>Remove this IC? Its file will be moved to the system trash and its instances deleted from the circuit.</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer ce CI&#xa0;? Son fichier sera déplacé vers la corbeille système et ses instances seront supprimées du circuit.</translation>
     </message>
 </context>
 <context>
@@ -3233,7 +3236,7 @@ Veuillez mettre à jour wiRedPanda pour enregistrer les modifications de ce fich
     <message>
         <location filename="../../Scene/Workspace.cpp" line="252"/>
         <source>Cannot save: sub-circuit &quot;%1&quot; could not be read to embed it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrement impossible&#xa0;: le sous-circuit &quot;%1&quot; n&apos;a pas pu être lu pour l&apos;intégrer.</translation>
     </message>
     <message>
         <location filename="../../Scene/Workspace.cpp" line="329"/>
@@ -3346,12 +3349,12 @@ Voulez-vous enregistrer vos modifications&#x202f;?</translation>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="75"/>
         <source> (recovered)</source>
-        <translation type="unfinished"></translation>
+        <translation> (récupéré)</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="138"/>
         <source>New Project %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouveau projet %1</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="175"/>
@@ -3360,7 +3363,7 @@ Voulez-vous enregistrer vos modifications&#x202f;?</translation>
         <location filename="../../UI/WorkspaceManager.cpp" line="414"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="459"/>
         <source>Panda files</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers Panda</translation>
     </message>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="226"/>
