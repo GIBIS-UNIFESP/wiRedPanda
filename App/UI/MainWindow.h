@@ -249,6 +249,14 @@ private:
     void on_actionFastMode_triggered(const bool checked);
     void on_actionFlipHorizontally_triggered();
     void on_actionFlipVertically_triggered();
+    void on_actionAlignLeft_triggered();
+    void on_actionAlignRight_triggered();
+    void on_actionAlignTop_triggered();
+    void on_actionAlignBottom_triggered();
+    void on_actionAlignHorizontalCenter_triggered();
+    void on_actionAlignVerticalCenter_triggered();
+    void on_actionDistributeHorizontally_triggered();
+    void on_actionDistributeVertically_triggered();
     void on_actionFullscreen_triggered();
     void on_actionGates_triggered(const bool checked);
     void on_actionLabelsUnderIcons_triggered(const bool checked);

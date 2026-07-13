@@ -78,6 +78,16 @@ public:
     QAction *actionFlipHorizontally = nullptr;
     QAction *actionFlipVertically = nullptr;
 
+    // Align / Distribute actions
+    QAction *actionAlignLeft = nullptr;
+    QAction *actionAlignRight = nullptr;
+    QAction *actionAlignTop = nullptr;
+    QAction *actionAlignBottom = nullptr;
+    QAction *actionAlignHorizontalCenter = nullptr;
+    QAction *actionAlignVerticalCenter = nullptr;
+    QAction *actionDistributeHorizontally = nullptr;
+    QAction *actionDistributeVertically = nullptr;
+
     // View actions
     QAction *actionZoomIn = nullptr;
     QAction *actionZoomOut = nullptr;

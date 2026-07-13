@@ -3,6 +3,8 @@
 
 #include "Tests/Unit/Scene/TestSceneUndoredo.h"
 
+#include <algorithm>
+#include <cmath>
 #include <utility>
 
 #include <QDataStream>
@@ -433,6 +435,284 @@ void TestSceneUndoredo::testFlipVerticalUndoRedo()
     scene.undoStack()->undo();
     QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(id1))->pos().y(), y1);
     QCOMPARE(dynamic_cast<GraphicElement *>(scene.itemById(id2))->pos().y(), y2);
+}
+
+// ─── Align / Distribute (#16 -- reuse MoveCommand) ───────────────────────
+
+namespace {
+
+/// Gives \a elm a custom \a width x \a height appearance via a temp PNG, so its
+/// sceneBoundingRect() genuinely differs in size from a same-position default element --
+/// needed to distinguish an edge-aware alignment implementation from a bare pos()-based one
+/// (same-size elements can't tell the two apart: pos() and the left/top edge coincide).
+void giveCustomSize(QTemporaryDir &dir, GraphicElement *elm, const QString &name, int width, int height)
+{
+    const QString path = dir.filePath(name);
+    QImage image(width, height, QImage::Format_RGB32);
+    image.fill(Qt::blue);
+    image.save(path);
+    elm->setAppearance(false, path);
+}
+
+} // namespace
+
+void TestSceneUndoredo::testAlignLeftAndTopMatchEdges()
+{
+    Scene scene;
+    auto *elm1 = ElementFactory::buildElement(ElementType::And);
+    auto *elm2 = ElementFactory::buildElement(ElementType::And);
+    auto *elm3 = ElementFactory::buildElement(ElementType::And);
+    elm1->setPos(0, 0);
+    elm2->setPos(96, 32);
+    elm3->setPos(160, 64);
+    scene.addItem(elm1);
+    scene.addItem(elm2);
+    scene.addItem(elm3);
+    elm1->setSelected(true);
+    elm2->setSelected(true);
+    elm3->setSelected(true);
+
+    // elm1 sits at the leftmost/topmost position already, so it's the alignment anchor -- its
+    // own (unmoved) edge is the target, whatever that edge's exact value is (ports extend a
+    // few pixels past the nominal 0/64 pixmap edges, so it isn't exactly 0.0).
+    const qreal expectedLeft = elm1->sceneBoundingRect().left();
+    const qreal expectedTop = elm1->sceneBoundingRect().top();
+
+    scene.alignLeft();
+    QCOMPARE(elm1->sceneBoundingRect().left(), expectedLeft);
+    QCOMPARE(elm2->sceneBoundingRect().left(), expectedLeft);
+    QCOMPARE(elm3->sceneBoundingRect().left(), expectedLeft);
+
+    scene.undoStack()->undo(); // back to the pre-alignLeft layout before testing alignTop
+    scene.alignTop();
+    QCOMPARE(elm1->sceneBoundingRect().top(), expectedTop);
+    QCOMPARE(elm2->sceneBoundingRect().top(), expectedTop);
+    QCOMPARE(elm3->sceneBoundingRect().top(), expectedTop);
+}
+
+void TestSceneUndoredo::testAlignRightUsesSceneEdgeNotBarePos()
+{
+    Scene scene;
+    auto *elm1 = ElementFactory::buildElement(ElementType::And); // default 64-wide
+    auto *elm2 = ElementFactory::buildElement(ElementType::And);
+    giveCustomSize(m_tempDir, elm2, "align_right_wide.png", 128, 64); // double width
+    elm1->setPos(0, 0);
+    elm2->setPos(200, 0);
+    scene.addItem(elm1);
+    scene.addItem(elm2);
+    elm1->setSelected(true);
+    elm2->setSelected(true);
+
+    const qreal expectedRight = std::max(elm1->sceneBoundingRect().right(), elm2->sceneBoundingRect().right());
+
+    scene.alignRight();
+
+    // GraphicElement::setPos() always snaps to the scene's 8px grid (itemChange()'s
+    // ItemPositionChange case), and the two elements' right-edge-to-pos() offsets differ here
+    // (ports sit exactly on the nominal left/right pixmap edges and overhang them by their
+    // radius, so a differently-sized custom pixmap shifts that offset) -- the computed delta
+    // isn't always an exact multiple of 8, so the moved element's edge lands within one grid
+    // step of the target rather than exactly on it. Same tolerance every other
+    // position-changing feature (drag, nudge, flip) already lives with.
+    constexpr qreal snapTolerance = 8.0;
+    QVERIFY(std::abs(elm1->sceneBoundingRect().right() - expectedRight) <= snapTolerance);
+    QCOMPARE(elm2->sceneBoundingRect().right(), expectedRight); // elm2 was already the anchor; it never moved
+
+    // The correct, edge-aware answer accounts for elm1's own width; a bare pos()-based (buggy)
+    // implementation would instead leave elm1->pos().x() == expectedRight verbatim -- off by a
+    // whole element width, far outside the grid-snap tolerance above.
+    QVERIFY(std::abs(elm1->pos().x() - expectedRight) > snapTolerance);
+}
+
+void TestSceneUndoredo::testAlignBottomUsesSceneEdgeNotBarePos()
+{
+    Scene scene;
+    auto *elm1 = ElementFactory::buildElement(ElementType::And); // default 64-tall
+    auto *elm2 = ElementFactory::buildElement(ElementType::And);
+    giveCustomSize(m_tempDir, elm2, "align_bottom_tall.png", 64, 128); // double height
+    elm1->setPos(0, 0);
+    elm2->setPos(0, 200);
+    scene.addItem(elm1);
+    scene.addItem(elm2);
+    elm1->setSelected(true);
+    elm2->setSelected(true);
+
+    const qreal elm1HeightBefore = elm1->sceneBoundingRect().height();
+    const qreal expectedBottom = std::max(elm1->sceneBoundingRect().bottom(), elm2->sceneBoundingRect().bottom());
+
+    scene.alignBottom();
+
+    QCOMPARE(elm1->sceneBoundingRect().bottom(), expectedBottom);
+    QCOMPARE(elm2->sceneBoundingRect().bottom(), expectedBottom);
+    QCOMPARE(elm1->pos().y(), expectedBottom - elm1HeightBefore);
+    QVERIFY(elm1->pos().y() != expectedBottom);
+}
+
+void TestSceneUndoredo::testAlignHorizontalCenterUsesSceneEdge()
+{
+    Scene scene;
+    auto *elm1 = ElementFactory::buildElement(ElementType::And); // default 64-wide
+    auto *elm2 = ElementFactory::buildElement(ElementType::And);
+    giveCustomSize(m_tempDir, elm2, "align_center_wide.png", 128, 64); // double width
+    elm1->setPos(0, 0);
+    elm2->setPos(200, 0);
+    scene.addItem(elm1);
+    scene.addItem(elm2);
+    elm1->setSelected(true);
+    elm2->setSelected(true);
+
+    const qreal elm1PosXBefore = elm1->pos().x();
+    const qreal expectedCenter = (elm1->sceneBoundingRect().center().x() + elm2->sceneBoundingRect().center().x()) / 2.0;
+
+    scene.alignHorizontalCenter();
+
+    // Both elements move here (the target is the average of their original centers), so both
+    // are independently subject to grid-snap rounding -- see the tolerance note in
+    // testAlignRightUsesSceneEdgeNotBarePos().
+    constexpr qreal snapTolerance = 8.0;
+    QVERIFY(std::abs(elm1->sceneBoundingRect().center().x() - expectedCenter) <= snapTolerance);
+    QVERIFY(std::abs(elm2->sceneBoundingRect().center().x() - expectedCenter) <= snapTolerance);
+
+    // A pos()-only (buggy) implementation would instead equalize raw pos().x() values,
+    // leaving elm1 near its ORIGINAL position rather than moved toward the shared center --
+    // a difference far outside the grid-snap tolerance above.
+    QVERIFY(std::abs(elm1->pos().x() - elm1PosXBefore) > snapTolerance);
+}
+
+void TestSceneUndoredo::testAlignNoopBelowTwoElements()
+{
+    Scene scene;
+    auto *elm = ElementFactory::buildElement(ElementType::And);
+    elm->setPos(40, 40);
+    scene.addItem(elm);
+    elm->setSelected(true);
+
+    const QPointF before = elm->pos();
+    const int stackCountBefore = scene.undoStack()->count();
+
+    scene.alignLeft();
+    scene.alignRight();
+    scene.alignTop();
+    scene.alignBottom();
+    scene.alignHorizontalCenter();
+    scene.alignVerticalCenter();
+
+    QCOMPARE(elm->pos(), before);
+    QCOMPARE(scene.undoStack()->count(), stackCountBefore);
+}
+
+void TestSceneUndoredo::testDistributeHorizontallyEqualizesGaps()
+{
+    Scene scene;
+    auto *elm1 = ElementFactory::buildElement(ElementType::And);
+    auto *elm2 = ElementFactory::buildElement(ElementType::And);
+    auto *elm3 = ElementFactory::buildElement(ElementType::And);
+    // Deliberately uneven spacing before distributing -- elm2 sits far closer to elm1 than to elm3.
+    elm1->setPos(0, 0);
+    elm2->setPos(96, 0);
+    elm3->setPos(400, 0);
+    scene.addItem(elm1);
+    scene.addItem(elm2);
+    scene.addItem(elm3);
+    elm1->setSelected(true);
+    elm2->setSelected(true);
+    elm3->setSelected(true);
+
+    const QPointF elm1PosBefore = elm1->pos();
+    const QPointF elm3PosBefore = elm3->pos();
+
+    scene.distributeHorizontally();
+
+    // Anchors (leftmost/rightmost) never move.
+    QCOMPARE(elm1->pos(), elm1PosBefore);
+    QCOMPARE(elm3->pos(), elm3PosBefore);
+
+    const qreal gapBefore = elm2->sceneBoundingRect().left() - elm1->sceneBoundingRect().right();
+    const qreal gapAfter = elm3->sceneBoundingRect().left() - elm2->sceneBoundingRect().right();
+    QCOMPARE(gapBefore, gapAfter);
+}
+
+void TestSceneUndoredo::testDistributeVerticallyEqualizesGaps()
+{
+    Scene scene;
+    auto *elm1 = ElementFactory::buildElement(ElementType::And);
+    auto *elm2 = ElementFactory::buildElement(ElementType::And);
+    auto *elm3 = ElementFactory::buildElement(ElementType::And);
+    elm1->setPos(0, 0);
+    elm2->setPos(0, 96);
+    elm3->setPos(0, 400);
+    scene.addItem(elm1);
+    scene.addItem(elm2);
+    scene.addItem(elm3);
+    elm1->setSelected(true);
+    elm2->setSelected(true);
+    elm3->setSelected(true);
+
+    const QPointF elm1PosBefore = elm1->pos();
+    const QPointF elm3PosBefore = elm3->pos();
+
+    scene.distributeVertically();
+
+    QCOMPARE(elm1->pos(), elm1PosBefore);
+    QCOMPARE(elm3->pos(), elm3PosBefore);
+
+    const qreal gapBefore = elm2->sceneBoundingRect().top() - elm1->sceneBoundingRect().bottom();
+    const qreal gapAfter = elm3->sceneBoundingRect().top() - elm2->sceneBoundingRect().bottom();
+    QCOMPARE(gapBefore, gapAfter);
+}
+
+void TestSceneUndoredo::testDistributeNoopBelowThreeElements()
+{
+    Scene scene;
+    auto *elm1 = ElementFactory::buildElement(ElementType::And);
+    auto *elm2 = ElementFactory::buildElement(ElementType::And);
+    elm1->setPos(0, 0);
+    elm2->setPos(96, 0);
+    scene.addItem(elm1);
+    scene.addItem(elm2);
+    elm1->setSelected(true);
+    elm2->setSelected(true);
+
+    const QPointF elm1Before = elm1->pos();
+    const QPointF elm2Before = elm2->pos();
+    const int stackCountBefore = scene.undoStack()->count();
+
+    scene.distributeHorizontally();
+    scene.distributeVertically();
+
+    QCOMPARE(elm1->pos(), elm1Before);
+    QCOMPARE(elm2->pos(), elm2Before);
+    QCOMPARE(scene.undoStack()->count(), stackCountBefore);
+}
+
+void TestSceneUndoredo::testAlignDistributeUndoRestoresPositions()
+{
+    Scene scene;
+    auto *elm1 = ElementFactory::buildElement(ElementType::And);
+    auto *elm2 = ElementFactory::buildElement(ElementType::And);
+    auto *elm3 = ElementFactory::buildElement(ElementType::And);
+    elm1->setPos(0, 0);
+    elm2->setPos(96, 32);
+    elm3->setPos(200, 64);
+    scene.addItem(elm1);
+    scene.addItem(elm2);
+    scene.addItem(elm3);
+    elm1->setSelected(true);
+    elm2->setSelected(true);
+    elm3->setSelected(true);
+
+    const QPointF pos1 = elm1->pos();
+    const QPointF pos2 = elm2->pos();
+    const QPointF pos3 = elm3->pos();
+
+    scene.alignLeft();
+    QVERIFY(elm2->pos() != pos2); // sanity: something actually moved
+
+    scene.undoStack()->undo();
+
+    QCOMPARE(elm1->pos(), pos1);
+    QCOMPARE(elm2->pos(), pos2);
+    QCOMPARE(elm3->pos(), pos3);
 }
 
 // ─── MorphCommand ─────────────────────────────────────────────────────────

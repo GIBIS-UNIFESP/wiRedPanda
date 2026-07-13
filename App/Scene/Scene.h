@@ -215,6 +215,30 @@ public:
     void flipHorizontally();
     /// Flips selected elements vertically.
     void flipVertically();
+
+    // --- Element Operations (Align / Distribute) ---
+
+    /// Aligns selected elements' left edges to the leftmost selected edge. No-op below 2 elements.
+    void alignLeft();
+    /// Aligns selected elements' right edges to the rightmost selected edge. No-op below 2 elements.
+    void alignRight();
+    /// Aligns selected elements' top edges to the topmost selected edge. No-op below 2 elements.
+    void alignTop();
+    /// Aligns selected elements' bottom edges to the bottommost selected edge. No-op below 2 elements.
+    void alignBottom();
+    /// Aligns selected elements' horizontal (X) centers so they share one vertical line.
+    /// No-op below 2 elements.
+    void alignHorizontalCenter();
+    /// Aligns selected elements' vertical (Y) centers so they share one horizontal line.
+    /// No-op below 2 elements.
+    void alignVerticalCenter();
+    /// Redistributes selected elements with equal horizontal gaps between edges, keeping the
+    /// leftmost and rightmost elements fixed as anchors. No-op below 3 elements.
+    void distributeHorizontally();
+    /// Redistributes selected elements with equal vertical gaps between edges, keeping the
+    /// topmost and bottommost elements fixed as anchors. No-op below 3 elements.
+    void distributeVertically();
+
     /// Mutes or unmutes selected elements according to \a mute.
     void mute(const bool mute = true);
     /// Selects all items in the scene.
