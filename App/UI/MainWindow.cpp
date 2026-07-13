@@ -364,6 +364,14 @@ void MainWindow::setupConnections()
     connect(m_ui->actionFastMode,              &QAction::triggered,       this,                &MainWindow::on_actionFastMode_triggered);
     connect(m_ui->actionFlipHorizontally,      &QAction::triggered,       this,                &MainWindow::on_actionFlipHorizontally_triggered);
     connect(m_ui->actionFlipVertically,        &QAction::triggered,       this,                &MainWindow::on_actionFlipVertically_triggered);
+    connect(m_ui->actionAlignLeft, &QAction::triggered, this, &MainWindow::on_actionAlignLeft_triggered);
+    connect(m_ui->actionAlignRight, &QAction::triggered, this, &MainWindow::on_actionAlignRight_triggered);
+    connect(m_ui->actionAlignTop, &QAction::triggered, this, &MainWindow::on_actionAlignTop_triggered);
+    connect(m_ui->actionAlignBottom, &QAction::triggered, this, &MainWindow::on_actionAlignBottom_triggered);
+    connect(m_ui->actionAlignHorizontalCenter, &QAction::triggered, this, &MainWindow::on_actionAlignHorizontalCenter_triggered);
+    connect(m_ui->actionAlignVerticalCenter, &QAction::triggered, this, &MainWindow::on_actionAlignVerticalCenter_triggered);
+    connect(m_ui->actionDistributeHorizontally, &QAction::triggered, this, &MainWindow::on_actionDistributeHorizontally_triggered);
+    connect(m_ui->actionDistributeVertically, &QAction::triggered, this, &MainWindow::on_actionDistributeVertically_triggered);
     connect(m_ui->actionFullscreen,            &QAction::triggered,       this,                &MainWindow::on_actionFullscreen_triggered);
     connect(m_ui->actionGates,                 &QAction::triggered,       this,                &MainWindow::on_actionGates_triggered);
     connect(m_ui->actionLabelsUnderIcons,      &QAction::triggered,       this,                &MainWindow::on_actionLabelsUnderIcons_triggered);
@@ -1196,6 +1204,94 @@ void MainWindow::on_actionFlipVertically_triggered()
         }
 
         currentTab()->scene()->flipVertically();
+    });
+}
+
+void MainWindow::on_actionAlignLeft_triggered()
+{
+    Application::guardedSlot(this, [this] {
+        if (!currentTab()) {
+            return;
+        }
+
+        currentTab()->scene()->alignLeft();
+    });
+}
+
+void MainWindow::on_actionAlignRight_triggered()
+{
+    Application::guardedSlot(this, [this] {
+        if (!currentTab()) {
+            return;
+        }
+
+        currentTab()->scene()->alignRight();
+    });
+}
+
+void MainWindow::on_actionAlignTop_triggered()
+{
+    Application::guardedSlot(this, [this] {
+        if (!currentTab()) {
+            return;
+        }
+
+        currentTab()->scene()->alignTop();
+    });
+}
+
+void MainWindow::on_actionAlignBottom_triggered()
+{
+    Application::guardedSlot(this, [this] {
+        if (!currentTab()) {
+            return;
+        }
+
+        currentTab()->scene()->alignBottom();
+    });
+}
+
+void MainWindow::on_actionAlignHorizontalCenter_triggered()
+{
+    Application::guardedSlot(this, [this] {
+        if (!currentTab()) {
+            return;
+        }
+
+        currentTab()->scene()->alignHorizontalCenter();
+    });
+}
+
+void MainWindow::on_actionAlignVerticalCenter_triggered()
+{
+    Application::guardedSlot(this, [this] {
+        if (!currentTab()) {
+            return;
+        }
+
+        currentTab()->scene()->alignVerticalCenter();
+    });
+}
+
+void MainWindow::on_actionDistributeHorizontally_triggered()
+{
+    Application::guardedSlot(this, [this] {
+        if (!currentTab()) {
+            return;
+        }
+
+        currentTab()->scene()->distributeHorizontally();
+    });
+}
+
+void MainWindow::on_actionDistributeVertically_triggered()
+{
+    Application::guardedSlot(this, [this] {
+        if (!currentTab()) {
+            return;
+        }
+
+        currentTab()->scene()->distributeVertically();
     });
 }
 

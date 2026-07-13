@@ -37,6 +37,17 @@ private slots:
     void testFlipHorizontalUndoRedo();
     void testFlipVerticalUndoRedo();
 
+    // Align / Distribute (#16 -- reuse MoveCommand, no new command class)
+    void testAlignRightUsesSceneEdgeNotBarePos();     // differently-sized elements distinguish edge- vs pos()-based alignment
+    void testAlignBottomUsesSceneEdgeNotBarePos();
+    void testAlignHorizontalCenterUsesSceneEdge();
+    void testAlignLeftAndTopMatchEdges();             // simpler case: all elements land on the same left/top edge
+    void testAlignNoopBelowTwoElements();
+    void testDistributeHorizontallyEqualizesGaps();
+    void testDistributeVerticallyEqualizesGaps();
+    void testDistributeNoopBelowThreeElements();
+    void testAlignDistributeUndoRestoresPositions();
+
     // MorphCommand
     void testMorphTypeChange();
     void testMorphPreservesLabel();

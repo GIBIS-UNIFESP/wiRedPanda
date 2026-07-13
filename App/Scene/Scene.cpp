@@ -727,6 +727,236 @@ void Scene::flipVertically()
     }
 }
 
+namespace {
+
+/// Snapshots each element's current position, applies \a newPositions (already computed by the
+/// caller), then pushes one MoveCommand for the whole batch -- the same pattern arrow-key
+/// nudging already uses (see Scene::keyPressEvent()).
+void moveElementsTo(Scene *scene, const QList<GraphicElement *> &elements, const QList<QPointF> &newPositions)
+{
+    QList<QPointF> oldPositions;
+    oldPositions.reserve(elements.size());
+    for (auto *elm : elements) {
+        oldPositions.append(elm->pos());
+    }
+
+    for (int i = 0; i < elements.size(); ++i) {
+        elements.at(i)->setPos(newPositions.at(i));
+    }
+
+    scene->receiveCommand(new MoveCommand(elements, oldPositions, scene));
+}
+
+} // namespace
+
+void Scene::alignLeft()
+{
+    const auto elements_ = selectedElements();
+    if (elements_.size() < 2) {
+        return;
+    }
+
+    qreal target = elements_.constFirst()->sceneBoundingRect().left();
+    for (auto *elm : elements_) {
+        target = std::min(target, elm->sceneBoundingRect().left());
+    }
+
+    QList<QPointF> newPositions;
+    newPositions.reserve(elements_.size());
+    for (auto *elm : elements_) {
+        const qreal delta = target - elm->sceneBoundingRect().left();
+        newPositions.append(elm->pos() + QPointF(delta, 0));
+    }
+
+    moveElementsTo(this, elements_, newPositions);
+}
+
+void Scene::alignRight()
+{
+    const auto elements_ = selectedElements();
+    if (elements_.size() < 2) {
+        return;
+    }
+
+    qreal target = elements_.constFirst()->sceneBoundingRect().right();
+    for (auto *elm : elements_) {
+        target = std::max(target, elm->sceneBoundingRect().right());
+    }
+
+    QList<QPointF> newPositions;
+    newPositions.reserve(elements_.size());
+    for (auto *elm : elements_) {
+        const qreal delta = target - elm->sceneBoundingRect().right();
+        newPositions.append(elm->pos() + QPointF(delta, 0));
+    }
+
+    moveElementsTo(this, elements_, newPositions);
+}
+
+void Scene::alignTop()
+{
+    const auto elements_ = selectedElements();
+    if (elements_.size() < 2) {
+        return;
+    }
+
+    qreal target = elements_.constFirst()->sceneBoundingRect().top();
+    for (auto *elm : elements_) {
+        target = std::min(target, elm->sceneBoundingRect().top());
+    }
+
+    QList<QPointF> newPositions;
+    newPositions.reserve(elements_.size());
+    for (auto *elm : elements_) {
+        const qreal delta = target - elm->sceneBoundingRect().top();
+        newPositions.append(elm->pos() + QPointF(0, delta));
+    }
+
+    moveElementsTo(this, elements_, newPositions);
+}
+
+void Scene::alignBottom()
+{
+    const auto elements_ = selectedElements();
+    if (elements_.size() < 2) {
+        return;
+    }
+
+    qreal target = elements_.constFirst()->sceneBoundingRect().bottom();
+    for (auto *elm : elements_) {
+        target = std::max(target, elm->sceneBoundingRect().bottom());
+    }
+
+    QList<QPointF> newPositions;
+    newPositions.reserve(elements_.size());
+    for (auto *elm : elements_) {
+        const qreal delta = target - elm->sceneBoundingRect().bottom();
+        newPositions.append(elm->pos() + QPointF(0, delta));
+    }
+
+    moveElementsTo(this, elements_, newPositions);
+}
+
+void Scene::alignHorizontalCenter()
+{
+    const auto elements_ = selectedElements();
+    if (elements_.size() < 2) {
+        return;
+    }
+
+    qreal sum = 0;
+    for (auto *elm : elements_) {
+        sum += elm->sceneBoundingRect().center().x();
+    }
+    const qreal target = sum / static_cast<qreal>(elements_.size());
+
+    QList<QPointF> newPositions;
+    newPositions.reserve(elements_.size());
+    for (auto *elm : elements_) {
+        const qreal delta = target - elm->sceneBoundingRect().center().x();
+        newPositions.append(elm->pos() + QPointF(delta, 0));
+    }
+
+    moveElementsTo(this, elements_, newPositions);
+}
+
+void Scene::alignVerticalCenter()
+{
+    const auto elements_ = selectedElements();
+    if (elements_.size() < 2) {
+        return;
+    }
+
+    qreal sum = 0;
+    for (auto *elm : elements_) {
+        sum += elm->sceneBoundingRect().center().y();
+    }
+    const qreal target = sum / static_cast<qreal>(elements_.size());
+
+    QList<QPointF> newPositions;
+    newPositions.reserve(elements_.size());
+    for (auto *elm : elements_) {
+        const qreal delta = target - elm->sceneBoundingRect().center().y();
+        newPositions.append(elm->pos() + QPointF(0, delta));
+    }
+
+    moveElementsTo(this, elements_, newPositions);
+}
+
+void Scene::distributeHorizontally()
+{
+    auto elements_ = selectedElements();
+    if (elements_.size() < 3) {
+        return;
+    }
+
+    std::sort(elements_.begin(), elements_.end(), [](GraphicElement *a, GraphicElement *b) {
+        return a->sceneBoundingRect().left() < b->sceneBoundingRect().left();
+    });
+
+    const qreal spanStart = elements_.constFirst()->sceneBoundingRect().left();
+    const qreal spanEnd = elements_.constLast()->sceneBoundingRect().right();
+
+    qreal totalWidth = 0;
+    for (auto *elm : elements_) {
+        totalWidth += elm->sceneBoundingRect().width();
+    }
+    const qreal gap = (spanEnd - spanStart - totalWidth) / static_cast<qreal>(elements_.size() - 1);
+
+    QList<QPointF> newPositions;
+    newPositions.reserve(elements_.size());
+    newPositions.append(elements_.constFirst()->pos()); // leftmost stays fixed as an anchor
+
+    qreal cursor = elements_.constFirst()->sceneBoundingRect().right() + gap;
+    for (int i = 1; i < elements_.size() - 1; ++i) {
+        auto *elm = elements_.at(i);
+        const qreal delta = cursor - elm->sceneBoundingRect().left();
+        newPositions.append(elm->pos() + QPointF(delta, 0));
+        cursor += elm->sceneBoundingRect().width() + gap;
+    }
+
+    newPositions.append(elements_.constLast()->pos()); // rightmost stays fixed as an anchor
+
+    moveElementsTo(this, elements_, newPositions);
+}
+
+void Scene::distributeVertically()
+{
+    auto elements_ = selectedElements();
+    if (elements_.size() < 3) {
+        return;
+    }
+
+    std::sort(elements_.begin(), elements_.end(), [](GraphicElement *a, GraphicElement *b) {
+        return a->sceneBoundingRect().top() < b->sceneBoundingRect().top();
+    });
+
+    const qreal spanStart = elements_.constFirst()->sceneBoundingRect().top();
+    const qreal spanEnd = elements_.constLast()->sceneBoundingRect().bottom();
+
+    qreal totalHeight = 0;
+    for (auto *elm : elements_) {
+        totalHeight += elm->sceneBoundingRect().height();
+    }
+    const qreal gap = (spanEnd - spanStart - totalHeight) / static_cast<qreal>(elements_.size() - 1);
+
+    QList<QPointF> newPositions;
+    newPositions.reserve(elements_.size());
+    newPositions.append(elements_.constFirst()->pos()); // topmost stays fixed as an anchor
+
+    qreal cursor = elements_.constFirst()->sceneBoundingRect().bottom() + gap;
+    for (int i = 1; i < elements_.size() - 1; ++i) {
+        auto *elm = elements_.at(i);
+        const qreal delta = cursor - elm->sceneBoundingRect().top();
+        newPositions.append(elm->pos() + QPointF(0, delta));
+        cursor += elm->sceneBoundingRect().height() + gap;
+    }
+
+    newPositions.append(elements_.constLast()->pos()); // bottommost stays fixed as an anchor
+
+    moveElementsTo(this, elements_, newPositions);
+}
+
 QString Scene::droppedPandaFile(const QMimeData *mimeData)
 {
     if (!mimeData->hasUrls()) {
