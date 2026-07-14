@@ -1,15 +1,15 @@
 {
     "basic-and-gate": {
         "add-inputs": {
-            "hint": "Kliknite karticu U/I u lijevom oknu, zatim povucite dva elementa InputSwitch na radnu površinu i postavite ih lijevo od I logičkog sklopa.",
-            "instruction": "Dodajte dva elementa InputSwitch na radnu površinu"
+            "hint": "Kliknite karticu U/I u lijevom oknu, zatim povucite dva elementa Ulazni prekač na radnu površinu i postavite ih lijevo od I logičkog sklopa.",
+            "instruction": "Dodajte dva elementa Ulazni prekač na radnu površinu"
         },
         "add-output": {
             "hint": "Povucite LED s kartice U/I i postavite ga desno od I logičkog sklopa. Zatim povežite izlazni port I logičkog sklopa (desna strana) s ulaznim portom LED-a (lijeva strana).",
             "instruction": "Dodajte LED i povežite ga s izlazom I logičkog sklopa"
         },
         "connect-inputs": {
-            "hint": "Kliknite i povucite od izlaznog porta elementa InputSwitch (desna strana) do jednog od ulaznih portova I logičkog sklopa (lijeva strana). Ponovite za drugi prekidač.",
+            "hint": "Kliknite i povucite od izlaznog porta elementa Ulazni prekač (desna strana) do jednog od ulaznih portova I logičkog sklopa (lijeva strana). Ponovite za drugi prekidač.",
             "instruction": "Povežite oba ulazna prekidača s I logičkim sklopom"
         },
         "description": "Naučite postavljati logičke sklopove, dodavati ulaze i izlaze te ih povezivati.",
@@ -19,14 +19,14 @@
         },
         "title": "Izrada kruga s I logičkim sklopom",
         "toggle-observe": {
-            "hint": "Kliknite na InputSwitch da biste ga prebacili. LED se pali samo kada su OBA prekidača uključena. To je zato što I daje 1 na izlazu samo kada su svi ulazi 1.",
+            "hint": "Kliknite na Ulazni prekač da biste ga prebacili. LED se pali samo kada su OBA prekidača uključena. To je zato što I daje 1 na izlazu samo kada su svi ulazi 1.",
             "instruction": "Prebacujte prekidače i promatrajte LED — to je I logika!"
         }
     },
     "basic-or-not-gates": {
         "add-inputs": {
-            "hint": "Kliknite karticu U/I u lijevom oknu, zatim povucite dva elementa InputSwitch na radnu površinu i postavite ih lijevo od Ili logičkog sklopa.",
-            "instruction": "Dodajte dva elementa InputSwitch na radnu površinu"
+            "hint": "Kliknite karticu U/I u lijevom oknu, zatim povucite dva elementa Ulazni prekač na radnu površinu i postavite ih lijevo od Ili logičkog sklopa.",
+            "instruction": "Dodajte dva elementa Ulazni prekač na radnu površinu"
         },
         "add-not-gate": {
             "hint": "Povucite žicu između Ili logičkog sklopa i LED-a da biste je uklonili.",
@@ -37,7 +37,7 @@
             "instruction": "Dodajte LED i povežite ga s izlazom Ili logičkog sklopa"
         },
         "connect-inputs": {
-            "hint": "Kliknite i povucite od izlaznog porta elementa InputSwitch (desna strana) do jednog od ulaznih portova Ili logičkog sklopa (lijeva strana). Ponovite za drugi prekidač.",
+            "hint": "Kliknite i povucite od izlaznog porta elementa Ulazni prekač (desna strana) do jednog od ulaznih portova Ili logičkog sklopa (lijeva strana). Ponovite za drugi prekidač.",
             "instruction": "Povežite oba ulazna prekidača s Ili logičkim sklopom"
         },
         "description": "Naučite koristiti sklopove Ili i Ne.",
@@ -66,7 +66,7 @@
         },
         "description": "Izradite minimalni krug Takt-LED i istražite prikaz valnih oblika: kombinacijski način rada i ručno uređivanje ćelija.",
         "open-waveform": {
-            "hint": "BeWavedDolphin prikazuje signale vašeg kruga kao retke. Redak Takt je ulaz, a redak Led je izlaz. Svaki stupac je jedan vremenski korak simulacije.",
+            "hint": "BeWavedDolphin prikazuje signale vašeg kruga kao retke. Redak Takt je ulaz, a redak LED je izlaz. Svaki stupac je jedan vremenski korak simulacije.",
             "instruction": "Prikaz valnih oblika sada je otvoren — pogledajte!"
         },
         "place-clock": {
@@ -74,30 +74,30 @@
             "instruction": "Postavite element Takt na radnu površinu"
         },
         "place-led": {
-            "hint": "Ostajući na kartici U/I, povucite element Led na radnu površinu desno od Takta.",
+            "hint": "Ostajući na kartici U/I, povucite element LED na radnu površinu desno od Takta.",
             "instruction": "Postavite LED na radnu površinu"
         },
         "title": "Takt i LED: osnove valnih oblika",
         "toggle-cell": {
-            "hint": "Dvokliknite bilo koju ćeliju u retku Takt da biste je prebacili između 0 i 1. Promatrajte kako se redak Led trenutačno ažurira odražavajući novi izlaz.",
+            "hint": "Dvokliknite bilo koju ćeliju u retku Takt da biste je prebacili između 0 i 1. Promatrajte kako se redak LED trenutačno ažurira odražavajući novi izlaz.",
             "instruction": "Ručno prebacite ćeliju Takta"
         }
     },
     "combinational-circuits-one": {
         "add-demux": {
-            "hint": "Vaš krug bi sada trebao imati dva InputSwitch, dva LED-a i jedan krug DEMUX",
-            "instruction": "Dodajte krug DEMUX i povežite InputSwitch s njegovim portovima In i S0. Zatim povežite svaki od izlaza DEMUX-a s drugim LED-om"
+            "hint": "Vaš krug bi sada trebao imati dva Ulazni prekač, dva LED-a i jedan krug DEMUX",
+            "instruction": "Dodajte krug DEMUX i povežite Ulazni prekač s njegovim portovima In i S0. Zatim povežite svaki od izlaza DEMUX-a s drugim LED-om"
         },
         "add-inputs": {
-            "hint": "Kliknite karticu U/I u lijevom oknu, zatim povucite dva elementa InputSwitch na radnu površinu i postavite ih lijevo od kruga MUX.",
-            "instruction": "Dodajte tri elementa InputSwitch na radnu površinu"
+            "hint": "Kliknite karticu U/I u lijevom oknu, zatim povucite dva elementa Ulazni prekač na radnu površinu i postavite ih lijevo od kruga MUX.",
+            "instruction": "Dodajte tri elementa Ulazni prekač na radnu površinu"
         },
         "add-output": {
             "hint": "Povucite LED s kartice U/I i postavite ga desno od kruga MUX. Zatim povežite izlazni port kruga MUX (desna strana) s ulaznim portom LED-a (lijeva strana).",
             "instruction": "Dodajte LED i povežite ga s izlazom kruga MUX"
         },
         "connect-inputs": {
-            "hint": "Kliknite i povucite od izlaznog porta elementa InputSwitch (desna strana) do jednog od ulaznih portova sklopa MUX (lijeva strana). Ponovite za drugi prekidač. Zatim povežite treći ulazni prekidač s portom za odabir MUX-a (dolje)",
+            "hint": "Kliknite i povucite od izlaznog porta elementa Ulazni prekač (desna strana) do jednog od ulaznih portova sklopa MUX (lijeva strana). Ponovite za drugi prekidač. Zatim povežite treći ulazni prekidač s portom za odabir MUX-a (dolje)",
             "instruction": "Povežite sve ulazne prekidače s krugom MUX"
         },
         "description": "Naučite o krugovima MUX i DEMUX.",
@@ -114,23 +114,23 @@
             "instruction": "Postavite krug MUX na radnu površinu"
         },
         "prepare-demux": {
-            "hint": "Vaš krug bi sada trebao imati dva InputSwitch i dva LED-a",
-            "instruction": "Izbrišite krug MUX i jedan od InputSwitch. Zatim dodajte još jedan LED"
+            "hint": "Vaš krug bi sada trebao imati dva Ulazni prekač i dva LED-a",
+            "instruction": "Izbrišite krug MUX i jedan od Ulazni prekač. Zatim dodajte još jedan LED"
         },
         "title": "Kombinacijski krugovi I: MUX i DEMUX"
     },
     "combinational-circuits-three": {
         "add-cin-and-gates": {
-            "hint": "Povežite izlaze InputSwitch s ulazima sklopova.",
-            "instruction": "Dodajte još jedan InputSwitch na radnu površinu i dajte mu oznaku Cin. Zatim dodajte Xor logički sklop, I logički sklop i Ili logički sklop"
+            "hint": "Povežite izlaze Ulazni prekač s ulazima sklopova.",
+            "instruction": "Dodajte još jedan Ulazni prekač na radnu površinu i dajte mu oznaku Cin. Zatim dodajte Xor logički sklop, I logički sklop i Ili logički sklop"
         },
         "add-half-adder-gates": {
             "hint": "Koristite karticu Sklopovi za dodavanje Xor i I logičkih sklopova, a zatim koristite karticu U/I za dodavanje dva LED-a.",
             "instruction": "Dodajte Xor logički sklop, I logički sklop i dva LED-a na radnu površinu. Zatim povežite svaki sklop s drugim LED-om"
         },
         "add-inputs": {
-            "hint": "Kliknite karticu U/I u lijevom oknu, zatim povucite tri elementa InputSwitch na radnu površinu. Treći InputSwitch kasnije će se koristiti kao ulazni prijenos (Cin).",
-            "instruction": "Dodajte dva elementa InputSwitch na radnu površinu"
+            "hint": "Kliknite karticu U/I u lijevom oknu, zatim povucite tri elementa Ulazni prekač na radnu površinu. Treći Ulazni prekač kasnije će se koristiti kao ulazni prijenos (Cin).",
+            "instruction": "Dodajte dva elementa Ulazni prekač na radnu površinu"
         },
         "description": "Naučite izraditi krug zbrajala.",
         "explain-full-adder": {
@@ -147,8 +147,8 @@
             "instruction": "Povežite stari Xor logički sklop i prekidač Cin s novim Xor logičkim sklopom, a zatim povežite novi Xor logički sklop s izlazom Sum. Također povežite stari Xor logički sklop i prekidač Cin s novim I logičkim sklopom. Završite povezivanjem oba I logička sklopa s Ili logičkim sklopom, a Ili logički sklop s Cout"
         },
         "wire-half-adder": {
-            "hint": "Povežite izlaze InputSwitch s ulazima sklopova.",
-            "instruction": "Povežite oba InputSwitch s Xor logičkim sklopom i I logičkim sklopom. Svaki InputSwitch trebao bi biti povezan s oba sklopa. Xor logički sklop proizvodi izlaz Sum, dok I logički sklop proizvodi izlaz Carry"
+            "hint": "Povežite izlaze Ulazni prekač s ulazima sklopova.",
+            "instruction": "Povežite oba Ulazni prekač s Xor logičkim sklopom i I logičkim sklopom. Svaki Ulazni prekač trebao bi biti povezan s oba sklopa. Xor logički sklop proizvodi izlaz Sum, dok I logički sklop proizvodi izlaz Carry"
         }
     },
     "combinational-circuits-two": {
@@ -157,12 +157,12 @@
             "instruction": "Dodajte četiri I logička sklopa i četiri LED-a na radnu površinu, a zatim povežite svaki I logički sklop s jednim od LED-ova"
         },
         "add-inputs": {
-            "hint": "Kliknite karticu U/I u lijevom oknu i povucite dva elementa InputSwitch na radnu površinu.",
-            "instruction": "Dodajte dva elementa InputSwitch na radnu površinu"
+            "hint": "Kliknite karticu U/I u lijevom oknu i povucite dva elementa Ulazni prekač na radnu površinu.",
+            "instruction": "Dodajte dva elementa Ulazni prekač na radnu površinu"
         },
         "add-not-gates": {
-            "hint": "Kliknite karticu Sklopovi u lijevom oknu, zatim povucite dva elementa Ne logičkog sklopa na radnu površinu i povežite InputSwitch s njima.",
-            "instruction": "Dodajte dva Ne logička sklopa na radnu površinu i povežite svaki InputSwitch s zasebnim Ne logičkim sklopom"
+            "hint": "Kliknite karticu Sklopovi u lijevom oknu, zatim povucite dva elementa Ne logičkog sklopa na radnu površinu i povežite Ulazni prekač s njima.",
+            "instruction": "Dodajte dva Ne logička sklopa na radnu površinu i povežite svaki Ulazni prekač s zasebnim Ne logičkim sklopom"
         },
         "description": "Naučite izraditi dekoder 2 u 4.",
         "explain-decoder": {
@@ -171,47 +171,47 @@
         },
         "title": "Kombinacijski krugovi II: Dekoder",
         "wire-decoder": {
-            "hint": "Svaki I logički sklop trebao bi primati jedan signal od svakog ulaza. Koristite izvorni signal InputSwitch za 1, a odgovarajući izlaz Ne logičkog sklopa za 0.",
-            "instruction": "Povežite izlaze Ne logičkih sklopova i InputSwitch s I logičkim sklopovima tako da svaki I logički sklop predstavlja jednu ulaznu kombinaciju"
+            "hint": "Svaki I logički sklop trebao bi primati jedan signal od svakog ulaza. Koristite izvorni signal Ulazni prekač za 1, a odgovarajući izlaz Ne logičkog sklopa za 0.",
+            "instruction": "Povežite izlaze Ne logičkih sklopova i Ulazni prekač s I logičkim sklopovima tako da svaki I logički sklop predstavlja jednu ulaznu kombinaciju"
         }
     },
     "sequential-circuits-one": {
         "add-d-latch": {
             "hint": "D bravica pohranjuje jednu ulaznu vrijednost i izbjegava nevažeću ulaznu kombinaciju SR bravice.",
-            "instruction": "Uklonite SR bravicu zadržavajući InputSwitch i LED-ove. Zatim dodajte D bravicu"
+            "instruction": "Uklonite SR bravicu zadržavajući Ulazni prekač i LED-ove. Zatim dodajte D bravicu"
         },
         "add-sr-latch": {
-            "hint": "Koristite karticu Memorija za dodavanje SR bravice. Zatim koristite karticu U/I za dodavanje dva InputSwitch i dva LED-a.",
-            "instruction": "Dodajte SR bravicu, dva InputSwitch i dva LED-a na radnu površinu"
+            "hint": "Koristite karticu Memorija za dodavanje SR bravice. Zatim koristite karticu U/I za dodavanje dva Ulazni prekač i dva LED-a.",
+            "instruction": "Dodajte SR bravicu, dva Ulazni prekač i dva LED-a na radnu površinu"
         },
         "description": "Naučite koristiti bravice (latch).",
         "explain-d-latch": {
             "hint": "",
-            "instruction": "Prebacujte InputSwitch i promatrajte D bravicu. Kada je Enable 1, izlaz prati ulaz D. Kada je Enable 0, bravica pamti svoju prethodnu vrijednost"
+            "instruction": "Prebacujte Ulazni prekač i promatrajte D bravicu. Kada je Enable 1, izlaz prati ulaz D. Kada je Enable 0, bravica pamti svoju prethodnu vrijednost"
         },
         "explain-sr-latch": {
             "hint": "",
-            "instruction": "Prebacujte InputSwitch i promatrajte kako SR bravica pohranjuje svoje stanje. Postavljanje ulaza S na 1 uzrokuje da izlaz Q postane 1, dok postavljanje ulaza R na 1 vraća Q na 0. Kada se oba ulaza vrate na 0, bravica pamti svoje posljednje stanje dok se ponovno ne postavi ili resetira"
+            "instruction": "Prebacujte Ulazni prekač i promatrajte kako SR bravica pohranjuje svoje stanje. Postavljanje ulaza S na 1 uzrokuje da izlaz Q postane 1, dok postavljanje ulaza R na 1 vraća Q na 0. Kada se oba ulaza vrate na 0, bravica pamti svoje posljednje stanje dok se ponovno ne postavi ili resetira"
         },
         "title": "Sekvencijski krugovi I: Bravice",
         "wire-d-latch": {
             "hint": "Ulaz D je vrijednost koju treba pohraniti. Ulaz Enable određuje kada bravica ažurira svoju pohranjenu vrijednost.",
-            "instruction": "Povežite jedan InputSwitch s ulazom D, a drugi s ulazom Enable (E). Povežite izlaze Q i Q̅ s LED-ovima"
+            "instruction": "Povežite jedan Ulazni prekač s ulazom D, a drugi s ulazom Enable (E). Povežite izlaze Q i Q̅ s LED-ovima"
         },
         "wire-sr-latch": {
-            "hint": "Povežite jedan InputSwitch s ulazom Set (S), a drugi s ulazom Reset (R). Povežite svaki izlaz bravice s drugim LED-om.",
-            "instruction": "Povežite InputSwitch s ulazima S i R SR bravice. Zatim povežite izlaze Q i Q̅ s LED-ovima"
+            "hint": "Povežite jedan Ulazni prekač s ulazom Set (S), a drugi s ulazom Reset (R). Povežite svaki izlaz bravice s drugim LED-om.",
+            "instruction": "Povežite Ulazni prekač s ulazima S i R SR bravice. Zatim povežite izlaze Q i Q̅ s LED-ovima"
         }
     },
     "sequential-circuits-three": {
         "add-flipflops": {
-            "hint": "Koristite karticu Memorija za dodavanje T bistabila i Takta. Zatim koristite karticu U/I za dodavanje tri InputSwitch i tri LED-a.",
-            "instruction": "Dodajte tri T bistabila, tri InputSwitch, Takt i tri LED-a na radnu površinu"
+            "hint": "Koristite karticu Memorija za dodavanje T bistabila i Takta. Zatim koristite karticu U/I za dodavanje tri Ulazni prekač i tri LED-a.",
+            "instruction": "Dodajte tri T bistabila, tri Ulazni prekač, Takt i tri LED-a na radnu površinu"
         },
         "description": "Naučite izraditi krug brojača.",
         "explain-counter": {
             "hint": "",
-            "instruction": "Uključite sva tri InputSwitch i pokrenite Takt. Promatrajte LED-ove dok brojač radi. Prvi LED mijenja stanje pri svakom taktnom impulsu, drugi se mijenja svaka dva impulsa, a treći svaka četiri impulsa, prikazujući ponavljajuće 3-bitno binarno brojanje od 000 do 111"
+            "instruction": "Uključite sva tri Ulazni prekač i pokrenite Takt. Promatrajte LED-ove dok brojač radi. Prvi LED mijenja stanje pri svakom taktnom impulsu, drugi se mijenja svaka dva impulsa, a treći svaka četiri impulsa, prikazujući ponavljajuće 3-bitno binarno brojanje od 000 do 111"
         },
         "title": "Sekvencijski krugovi III: Brojač",
         "wire-clock": {
@@ -227,52 +227,52 @@
             "instruction": "Povežite izlaz Q prvog bistabila s ulazom Clk drugog bistabila, a zatim povežite izlaz Q drugog bistabila s ulazom Clk trećeg bistabila. Svaki bistabil se takta izlazom prethodnog, stvarajući valni brojač"
         },
         "wire-t-inputs": {
-            "hint": "Uključite sva tri InputSwitch. T bistabil se prebacuje samo kada je njegov ulaz T jednak 1.",
-            "instruction": "Povežite svaki InputSwitch s ulazom T drugog bistabila"
+            "hint": "Uključite sva tri Ulazni prekač. T bistabil se prebacuje samo kada je njegov ulaz T jednak 1.",
+            "instruction": "Povežite svaki Ulazni prekač s ulazom T drugog bistabila"
         }
     },
     "sequential-circuits-two": {
         "add-d-flipflop": {
-            "hint": "Koristite karticu Memorija za dodavanje D bistabila i Takta. Zatim koristite karticu U/I za dodavanje dva InputSwitch i dva LED-a.",
-            "instruction": "Dodajte D bistabil, dva InputSwitch, Takt i dva LED-a na radnu površinu"
+            "hint": "Koristite karticu Memorija za dodavanje D bistabila i Takta. Zatim koristite karticu U/I za dodavanje dva Ulazni prekač i dva LED-a.",
+            "instruction": "Dodajte D bistabil, dva Ulazni prekač, Takt i dva LED-a na radnu površinu"
         },
         "add-jk-flipflop": {
             "hint": "JK bistabil ima ulaze J i K umjesto ulaza D. Ostavite ulaze Clear i Preset nepovezanima.",
-            "instruction": "Zamijenite D bistabil s JK bistabilom zadržavajući Takt, InputSwitch i LED-ove"
+            "instruction": "Zamijenite D bistabil s JK bistabilom zadržavajući Takt, Ulazni prekač i LED-ove"
         },
         "add-t-flipflop": {
             "hint": "T bistabilu je potreban samo jedan ulaz uz takt.",
-            "instruction": "Zamijenite JK bistabil s T bistabilom i uklonite jedan od InputSwitch"
+            "instruction": "Zamijenite JK bistabil s T bistabilom i uklonite jedan od Ulazni prekač"
         },
         "description": "Naučite o bistabilima.",
         "explain-clear-preset": {
             "hint": "",
-            "instruction": "Povežite drugi InputSwitch s ulazom Clear ili Preset i promatrajte učinak. Za razliku od ulaza D, ulazi Clear i Preset djeluju odmah bez čekanja brida takta. Clear prisilno postavlja Q na 0, dok Preset prisilno postavlja Q na 1"
+            "instruction": "Povežite drugi Ulazni prekač s ulazom Clear ili Preset i promatrajte učinak. Za razliku od ulaza D, ulazi Clear i Preset djeluju odmah bez čekanja brida takta. Clear prisilno postavlja Q na 0, dok Preset prisilno postavlja Q na 1"
         },
         "explain-d-flipflop": {
             "hint": "",
-            "instruction": "Prebacite InputSwitch D i promatrajte D bistabil. Vrijednost na ulazu D kopira se na izlaz Q samo na aktivnom bridu takta. Između bridova takta izlaz ostaje nepromijenjen"
+            "instruction": "Prebacite Ulazni prekač D i promatrajte D bistabil. Vrijednost na ulazu D kopira se na izlaz Q samo na aktivnom bridu takta. Između bridova takta izlaz ostaje nepromijenjen"
         },
         "explain-jk-flipflop": {
             "hint": "",
-            "instruction": "Prebacujte InputSwitch i promatrajte JK bistabil. Kada je J = K = 0, izlaz zadržava svoje trenutno stanje. Kada je J = 1, a K = 0, izlaz se postavlja. Kada je J = 0, a K = 1, izlaz se resetira. Kada je J = K = 1, izlaz se prebacuje na svakom aktivnom bridu takta"
+            "instruction": "Prebacujte Ulazni prekač i promatrajte JK bistabil. Kada je J = K = 0, izlaz zadržava svoje trenutno stanje. Kada je J = 1, a K = 0, izlaz se postavlja. Kada je J = 0, a K = 1, izlaz se resetira. Kada je J = K = 1, izlaz se prebacuje na svakom aktivnom bridu takta"
         },
         "explain-t-flipflop": {
             "hint": "",
-            "instruction": "Prebacite InputSwitch i promatrajte T bistabil. Kada je T = 0, izlaz zadržava svoje trenutno stanje. Kada je T = 1, izlaz se prebacuje na svakom aktivnom bridu takta. T bistabili se obično koriste za izradu binarnih brojača i frekvencijskih djelitelja"
+            "instruction": "Prebacite Ulazni prekač i promatrajte T bistabil. Kada je T = 0, izlaz zadržava svoje trenutno stanje. Kada je T = 1, izlaz se prebacuje na svakom aktivnom bridu takta. T bistabili se obično koriste za izradu binarnih brojača i frekvencijskih djelitelja"
         },
         "title": "Sekvencijski krugovi II: Bistabili",
         "wire-d-flipflop": {
             "hint": "Za sada ostavite ulaze Clear i Preset nepovezanima.",
-            "instruction": "Povežite jedan InputSwitch s ulazom D, Takt s ulazom Clk, a izlaze Q i Q̅ s LED-ovima. Ulaz D pruža vrijednost koju treba pohraniti, dok Takt određuje kada se vrijednost pohranjuje"
+            "instruction": "Povežite jedan Ulazni prekač s ulazom D, Takt s ulazom Clk, a izlaze Q i Q̅ s LED-ovima. Ulaz D pruža vrijednost koju treba pohraniti, dok Takt određuje kada se vrijednost pohranjuje"
         },
         "wire-jk-flipflop": {
             "hint": "JK bistabil mijenja svoj izlaz samo na aktivnom bridu takta.",
-            "instruction": "Povežite InputSwitch s ulazima J i K, Takt s ulazom Clk, a izlaze Q i Q̅ s LED-ovima"
+            "instruction": "Povežite Ulazni prekač s ulazima J i K, Takt s ulazom Clk, a izlaze Q i Q̅ s LED-ovima"
         },
         "wire-t-flipflop": {
             "hint": "Ostavite ulaze Clear i Preset nepovezanima.",
-            "instruction": "Povežite preostali InputSwitch s ulazom T, Takt s ulazom Clk, a izlaze Q i Q̅ s LED-ovima"
+            "instruction": "Povežite preostali Ulazni prekač s ulazom T, Takt s ulazom Clk, a izlaze Q i Q̅ s LED-ovima"
         }
     },
     "ui-overview": {
@@ -290,7 +290,7 @@
         },
         "description": "Vođeni obilazak glavnog sučelja — paleta, radna površina, alatna traka i okno svojstava.",
         "editing-cells": {
-            "body": "Valni oblik možete uređivati i ručno. Dvokliknite bilo koju ćeliju u retku Takt da biste je prebacili između 0 i 1 — redak Led se odmah ažurira odražavajući novi izlaz.",
+            "body": "Valni oblik možete uređivati i ručno. Dvokliknite bilo koju ćeliju u retku Takt da biste je prebacili između 0 i 1 — redak LED se odmah ažurira odražavajući novi izlaz.",
             "title": "Ručno uređivanje ćelija"
         },
         "element-properties": {
@@ -307,7 +307,7 @@
         },
         "title": "Obilazak sučelja wiRedPanda",
         "waveform-table": {
-            "body": "Tablica valnih oblika prikazuje svaki signal u vašem krugu. Redak Takt je ulaz; redak Led je izračunati izlaz. Svaki stupac je jedan vremenski korak simulacije — možete točno vidjeti kako izlaz prati ulaz.",
+            "body": "Tablica valnih oblika prikazuje svaki signal u vašem krugu. Redak Takt je ulaz; redak LED je izračunati izlaz. Svaki stupac je jedan vremenski korak simulacije — možete točno vidjeti kako izlaz prati ulaz.",
             "title": "Čitanje tablice valnih oblika"
         },
         "waveform-viewer": {

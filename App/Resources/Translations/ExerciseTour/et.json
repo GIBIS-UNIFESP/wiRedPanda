@@ -1,15 +1,15 @@
 {
     "basic-and-gate": {
         "add-inputs": {
-            "hint": "Klõpsake vasakul paneelil vahekaarti I/O, lohistage seejärel kaks InputSwitch-elementi tööalale ja paigutage need JA-loogikaväravast vasakule.",
-            "instruction": "Lisage tööalale kaks InputSwitch-elementi"
+            "hint": "Klõpsake vasakul paneelil vahekaarti I/O, lohistage seejärel kaks Sisendlüliti-elementi tööalale ja paigutage need JA-loogikaväravast vasakule.",
+            "instruction": "Lisage tööalale kaks Sisendlüliti-elementi"
         },
         "add-output": {
             "hint": "Lohistage LED I/O vahekaardilt ja paigutage see JA-loogikaväravast paremale. Seejärel ühendage JA-loogikavärava väljundport (parem pool) LED-i sisendpordiga (vasak pool).",
             "instruction": "Lisage LED ja ühendage see JA-loogikavärava väljundiga"
         },
         "connect-inputs": {
-            "hint": "Klõpsake ja lohistage InputSwitchi väljundpordist (parem pool) ühte JA-loogikavärava sisendportidest (vasak pool). Korrake teise lülitiga.",
+            "hint": "Klõpsake ja lohistage Sisendlülitii väljundpordist (parem pool) ühte JA-loogikavärava sisendportidest (vasak pool). Korrake teise lülitiga.",
             "instruction": "Ühendage mõlemad sisendlülitid JA-loogikaväravaga"
         },
         "description": "Õppige paigutama loogikaväravaid, lisama sisendeid ja väljundeid ning neid ühendama.",
@@ -19,14 +19,14 @@
         },
         "title": "JA-loogikaväravaga skeemi ehitamine",
         "toggle-observe": {
-            "hint": "Klõpsake InputSwitchil selle lülitamiseks. LED süttib ainult siis, kui MÕLEMAD lülitid on SEES. See on nii, sest JA annab väljundiks 1 ainult siis, kui kõik sisendid on 1.",
+            "hint": "Klõpsake Sisendlülitiil selle lülitamiseks. LED süttib ainult siis, kui MÕLEMAD lülitid on SEES. See on nii, sest JA annab väljundiks 1 ainult siis, kui kõik sisendid on 1.",
             "instruction": "Lülitage lüliteid ja jälgige LED-i — see on JA-loogika!"
         }
     },
     "basic-or-not-gates": {
         "add-inputs": {
-            "hint": "Klõpsake vasakul paneelil vahekaarti I/O, lohistage seejärel kaks InputSwitch-elementi tööalale ja paigutage need Or-loogikaväravast vasakule.",
-            "instruction": "Lisage tööalale kaks InputSwitch-elementi"
+            "hint": "Klõpsake vasakul paneelil vahekaarti I/O, lohistage seejärel kaks Sisendlüliti-elementi tööalale ja paigutage need Or-loogikaväravast vasakule.",
+            "instruction": "Lisage tööalale kaks Sisendlüliti-elementi"
         },
         "add-not-gate": {
             "hint": "Lohistage juhe Or-loogikavärava ja LED-i vahelt selle eemaldamiseks.",
@@ -37,7 +37,7 @@
             "instruction": "Lisage LED ja ühendage see Or-loogikavärava väljundiga"
         },
         "connect-inputs": {
-            "hint": "Klõpsake ja lohistage InputSwitchi väljundpordist (parem pool) ühte Or-loogikavärava sisendportidest (vasak pool). Korrake teise lülitiga.",
+            "hint": "Klõpsake ja lohistage Sisendlülitii väljundpordist (parem pool) ühte Or-loogikavärava sisendportidest (vasak pool). Korrake teise lülitiga.",
             "instruction": "Ühendage mõlemad sisendlülitid Or-loogikaväravaga"
         },
         "description": "Õppige kasutama Or- ja EI-loogikaväravaid.",
@@ -66,7 +66,7 @@
         },
         "description": "Ehitage minimaalne Kell-LED skeem ja uurige signaalikuju vaaturit: kombinatoorne režiim ja käsitsi lahtrite muutmine.",
         "open-waveform": {
-            "hint": "BeWavedDolphin kuvab teie skeemi signaale ridadena. Kell-rida on sisend ja Led-rida on väljund. Iga veerg on üks simulatsiooni ajasamm.",
+            "hint": "BeWavedDolphin kuvab teie skeemi signaale ridadena. Kell-rida on sisend ja LED-rida on väljund. Iga veerg on üks simulatsiooni ajasamm.",
             "instruction": "Signaalikuju vaatur on nüüd avatud — vaadake!"
         },
         "place-clock": {
@@ -74,30 +74,30 @@
             "instruction": "Paigutage Kell-element tööalale"
         },
         "place-led": {
-            "hint": "Jäädes I/O vahekaardile, lohistage Led-element tööalale Kellust paremale.",
+            "hint": "Jäädes I/O vahekaardile, lohistage LED-element tööalale Kellust paremale.",
             "instruction": "Paigutage LED tööalale"
         },
         "title": "Kell ja LED: signaalikuju põhitõed",
         "toggle-cell": {
-            "hint": "Topeltklõpsake mis tahes lahtrit Kell-real, et lülitada see 0 ja 1 vahel. Jälgige, kuidas Led-rida uueneb koheselt, kajastades uut väljundit.",
+            "hint": "Topeltklõpsake mis tahes lahtrit Kell-real, et lülitada see 0 ja 1 vahel. Jälgige, kuidas LED-rida uueneb koheselt, kajastades uut väljundit.",
             "instruction": "Lülitage Kell-lahtrit käsitsi"
         }
     },
     "combinational-circuits-one": {
         "add-demux": {
-            "hint": "Teie skeemis peaks nüüd olema kaks InputSwitchi, kaks LED-i ja üks DEMUX-skeem",
-            "instruction": "Lisage DEMUX-skeem ja ühendage InputSwitchid selle In- ja S0-portidega. Seejärel ühendage iga DEMUX-i väljund erineva LED-iga"
+            "hint": "Teie skeemis peaks nüüd olema kaks Sisendlülitii, kaks LED-i ja üks DEMUX-skeem",
+            "instruction": "Lisage DEMUX-skeem ja ühendage Sisendlülitiid selle In- ja S0-portidega. Seejärel ühendage iga DEMUX-i väljund erineva LED-iga"
         },
         "add-inputs": {
-            "hint": "Klõpsake vasakul paneelil vahekaarti I/O, lohistage seejärel kaks InputSwitch-elementi tööalale ja paigutage need MUX-skeemist vasakule.",
-            "instruction": "Lisage tööalale kolm InputSwitch-elementi"
+            "hint": "Klõpsake vasakul paneelil vahekaarti I/O, lohistage seejärel kaks Sisendlüliti-elementi tööalale ja paigutage need MUX-skeemist vasakule.",
+            "instruction": "Lisage tööalale kolm Sisendlüliti-elementi"
         },
         "add-output": {
             "hint": "Lohistage LED I/O vahekaardilt ja paigutage see MUX-skeemist paremale. Seejärel ühendage MUX-skeemi väljundport (parem pool) LED-i sisendpordiga (vasak pool).",
             "instruction": "Lisage LED ja ühendage see MUX-skeemi väljundiga"
         },
         "connect-inputs": {
-            "hint": "Klõpsake ja lohistage InputSwitchi väljundpordist (parem pool) ühte MUX-loogikavärava sisendportidest (vasak pool). Korrake teise lülitiga. Seejärel ühendage kolmas sisendlüliti MUX-i valikupordiga (all)",
+            "hint": "Klõpsake ja lohistage Sisendlülitii väljundpordist (parem pool) ühte MUX-loogikavärava sisendportidest (vasak pool). Korrake teise lülitiga. Seejärel ühendage kolmas sisendlüliti MUX-i valikupordiga (all)",
             "instruction": "Ühendage kõik sisendlülitid MUX-skeemiga"
         },
         "description": "Õppige tundma MUX- ja DEMUX-skeeme.",
@@ -114,23 +114,23 @@
             "instruction": "Paigutage MUX-skeem tööalale"
         },
         "prepare-demux": {
-            "hint": "Teie skeemis peaks nüüd olema kaks InputSwitchi ja kaks LED-i",
-            "instruction": "Kustutage MUX-skeem ja üks InputSwitchidest. Seejärel lisage veel üks LED"
+            "hint": "Teie skeemis peaks nüüd olema kaks Sisendlülitii ja kaks LED-i",
+            "instruction": "Kustutage MUX-skeem ja üks Sisendlülitiidest. Seejärel lisage veel üks LED"
         },
         "title": "Kombinatoorsed skeemid I: MUX ja DEMUX"
     },
     "combinational-circuits-three": {
         "add-cin-and-gates": {
-            "hint": "Ühendage InputSwitchide väljundid väravate sisenditega.",
-            "instruction": "Lisage tööalale veel üks InputSwitch ja andke sellele silt Cin. Seejärel lisage Xor-loogikavärav, JA-loogikavärav ja Or-loogikavärav"
+            "hint": "Ühendage Sisendlülitiide väljundid väravate sisenditega.",
+            "instruction": "Lisage tööalale veel üks Sisendlüliti ja andke sellele silt Cin. Seejärel lisage Xor-loogikavärav, JA-loogikavärav ja Or-loogikavärav"
         },
         "add-half-adder-gates": {
             "hint": "Kasutage vahekaarti Väravad Xor- ja JA-loogikaväravate lisamiseks, seejärel kasutage vahekaarti I/O kahe LED-i lisamiseks.",
             "instruction": "Lisage Xor-loogikavärav, JA-loogikavärav ja kaks LED-i tööalale. Seejärel ühendage iga värav erineva LED-iga"
         },
         "add-inputs": {
-            "hint": "Klõpsake vasakul paneelil vahekaarti I/O, lohistage seejärel kolm InputSwitch-elementi tööalale. Kolmandat InputSwitchi kasutatakse hiljem ülekandesisendina (Cin).",
-            "instruction": "Lisage tööalale kaks InputSwitch-elementi"
+            "hint": "Klõpsake vasakul paneelil vahekaarti I/O, lohistage seejärel kolm Sisendlüliti-elementi tööalale. Kolmandat Sisendlülitii kasutatakse hiljem ülekandesisendina (Cin).",
+            "instruction": "Lisage tööalale kaks Sisendlüliti-elementi"
         },
         "description": "Õppige ehitama liitjaskeemi.",
         "explain-full-adder": {
@@ -147,8 +147,8 @@
             "instruction": "Ühendage vana Xor-loogikavärav ja Cin-lüliti uue Xor-loogikaväravaga, seejärel ühendage uus Xor-loogikavärav Sum-väljundiga. Ühendage ka vana Xor-loogikavärav ja Cin-lüliti uue JA-loogikaväravaga. Lõpetage, ühendades mõlemad JA-loogikaväravad Or-loogikaväravaga ja Or-loogikavärava Cout-iga"
         },
         "wire-half-adder": {
-            "hint": "Ühendage InputSwitchide väljundid väravate sisenditega.",
-            "instruction": "Ühendage mõlemad InputSwitchid Xor-loogikaväravaga ja JA-loogikaväravaga. Iga InputSwitch peaks ühenduma mõlema väravaga. Xor-loogikavärav toodab Sum-väljundi, JA-loogikavärav aga Carry-väljundi"
+            "hint": "Ühendage Sisendlülitiide väljundid väravate sisenditega.",
+            "instruction": "Ühendage mõlemad Sisendlülitiid Xor-loogikaväravaga ja JA-loogikaväravaga. Iga Sisendlüliti peaks ühenduma mõlema väravaga. Xor-loogikavärav toodab Sum-väljundi, JA-loogikavärav aga Carry-väljundi"
         }
     },
     "combinational-circuits-two": {
@@ -157,12 +157,12 @@
             "instruction": "Lisage tööalale neli JA-loogikaväravat ja neli LED-i, seejärel ühendage iga JA-loogikavärav ühega LED-idest"
         },
         "add-inputs": {
-            "hint": "Klõpsake vasakul paneelil vahekaarti I/O ja lohistage kaks InputSwitch-elementi tööalale.",
-            "instruction": "Lisage tööalale kaks InputSwitch-elementi"
+            "hint": "Klõpsake vasakul paneelil vahekaarti I/O ja lohistage kaks Sisendlüliti-elementi tööalale.",
+            "instruction": "Lisage tööalale kaks Sisendlüliti-elementi"
         },
         "add-not-gates": {
-            "hint": "Klõpsake vasakul paneelil vahekaarti Väravad, lohistage seejärel kaks EI-loogikavärava elementi tööalale ja ühendage InputSwitchid nendega.",
-            "instruction": "Lisage tööalale kaks EI-loogikaväravat ja ühendage iga InputSwitch eraldi EI-loogikaväravaga"
+            "hint": "Klõpsake vasakul paneelil vahekaarti Väravad, lohistage seejärel kaks EI-loogikavärava elementi tööalale ja ühendage Sisendlülitiid nendega.",
+            "instruction": "Lisage tööalale kaks EI-loogikaväravat ja ühendage iga Sisendlüliti eraldi EI-loogikaväravaga"
         },
         "description": "Õppige ehitama 2-4 dekoodrit.",
         "explain-decoder": {
@@ -171,47 +171,47 @@
         },
         "title": "Kombinatoorsed skeemid II: Dekooder",
         "wire-decoder": {
-            "hint": "Iga JA-loogikavärav peaks saama ühe signaali igast sisendist. Kasutage algset InputSwitchi signaali 1 jaoks ja vastavat EI-loogikavärava väljundit 0 jaoks.",
-            "instruction": "Ühendage EI-loogikaväravate ja InputSwitchide väljundid JA-loogikaväravatega nii, et iga JA-loogikavärav esindaks üht sisendkombinatsiooni"
+            "hint": "Iga JA-loogikavärav peaks saama ühe signaali igast sisendist. Kasutage algset Sisendlülitii signaali 1 jaoks ja vastavat EI-loogikavärava väljundit 0 jaoks.",
+            "instruction": "Ühendage EI-loogikaväravate ja Sisendlülitiide väljundid JA-loogikaväravatega nii, et iga JA-loogikavärav esindaks üht sisendkombinatsiooni"
         }
     },
     "sequential-circuits-one": {
         "add-d-latch": {
             "hint": "D-riiv salvestab ühe sisendväärtuse ja väldib SR-riivi kehtetut sisendkombinatsiooni.",
-            "instruction": "Eemaldage SR-riiv, säilitades InputSwitchid ja LED-id. Seejärel lisage D-riiv"
+            "instruction": "Eemaldage SR-riiv, säilitades Sisendlülitiid ja LED-id. Seejärel lisage D-riiv"
         },
         "add-sr-latch": {
-            "hint": "Kasutage vahekaarti Mälu SR-riivi lisamiseks. Seejärel kasutage vahekaarti I/O kahe InputSwitchi ja kahe LED-i lisamiseks.",
-            "instruction": "Lisage SR-riiv, kaks InputSwitchi ja kaks LED-i tööalale"
+            "hint": "Kasutage vahekaarti Mälu SR-riivi lisamiseks. Seejärel kasutage vahekaarti I/O kahe Sisendlülitii ja kahe LED-i lisamiseks.",
+            "instruction": "Lisage SR-riiv, kaks Sisendlülitii ja kaks LED-i tööalale"
         },
         "description": "Õppige kasutama riive (latch).",
         "explain-d-latch": {
             "hint": "",
-            "instruction": "Lülitage InputSwitche ja jälgige D-riivi. Kui Enable on 1, järgib väljund D-sisendit. Kui Enable on 0, mäletab riiv oma eelmist väärtust"
+            "instruction": "Lülitage Sisendlülitie ja jälgige D-riivi. Kui Enable on 1, järgib väljund D-sisendit. Kui Enable on 0, mäletab riiv oma eelmist väärtust"
         },
         "explain-sr-latch": {
             "hint": "",
-            "instruction": "Lülitage InputSwitche ja jälgige, kuidas SR-riiv salvestab oma oleku. S-sisendi seadmine väärtusele 1 põhjustab Q-väljundi muutumise väärtuseks 1, samal ajal kui R-sisendi seadmine väärtusele 1 lähtestab Q väärtusele 0. Kui mõlemad sisendid naasevad väärtusele 0, mäletab riiv oma viimast olekut, kuni see uuesti seatakse või lähtestatakse"
+            "instruction": "Lülitage Sisendlülitie ja jälgige, kuidas SR-riiv salvestab oma oleku. S-sisendi seadmine väärtusele 1 põhjustab Q-väljundi muutumise väärtuseks 1, samal ajal kui R-sisendi seadmine väärtusele 1 lähtestab Q väärtusele 0. Kui mõlemad sisendid naasevad väärtusele 0, mäletab riiv oma viimast olekut, kuni see uuesti seatakse või lähtestatakse"
         },
         "title": "Järjestikskeemid I: Riivid",
         "wire-d-latch": {
             "hint": "D-sisend on salvestatav väärtus. Enable-sisend määrab, millal riiv uuendab oma salvestatud väärtust.",
-            "instruction": "Ühendage üks InputSwitch D-sisendiga ja teine Enable (E) sisendiga. Ühendage Q- ja Q̅-väljundid LED-idega"
+            "instruction": "Ühendage üks Sisendlüliti D-sisendiga ja teine Enable (E) sisendiga. Ühendage Q- ja Q̅-väljundid LED-idega"
         },
         "wire-sr-latch": {
-            "hint": "Ühendage üks InputSwitch Set (S) sisendiga ja teine Reset (R) sisendiga. Ühendage iga riivi väljund erineva LED-iga.",
-            "instruction": "Ühendage InputSwitchid SR-riivi S- ja R-sisenditega. Seejärel ühendage Q- ja Q̅-väljundid LED-idega"
+            "hint": "Ühendage üks Sisendlüliti Set (S) sisendiga ja teine Reset (R) sisendiga. Ühendage iga riivi väljund erineva LED-iga.",
+            "instruction": "Ühendage Sisendlülitiid SR-riivi S- ja R-sisenditega. Seejärel ühendage Q- ja Q̅-väljundid LED-idega"
         }
     },
     "sequential-circuits-three": {
         "add-flipflops": {
-            "hint": "Kasutage vahekaarti Mälu T-trigerite ja Kelli lisamiseks. Seejärel kasutage vahekaarti I/O kolme InputSwitchi ja kolme LED-i lisamiseks.",
-            "instruction": "Lisage kolm T-trigerit, kolm InputSwitchi, Kell ja kolm LED-i tööalale"
+            "hint": "Kasutage vahekaarti Mälu T-trigerite ja Kelli lisamiseks. Seejärel kasutage vahekaarti I/O kolme Sisendlülitii ja kolme LED-i lisamiseks.",
+            "instruction": "Lisage kolm T-trigerit, kolm Sisendlülitii, Kell ja kolm LED-i tööalale"
         },
         "description": "Õppige ehitama loenduriskeemi.",
         "explain-counter": {
             "hint": "",
-            "instruction": "Lülitage kõik kolm InputSwitchi sisse ja käivitage Kell. Jälgige LED-e loenduri töötamise ajal. Esimene LED muudab olekut iga kellopulsiga, teine muutub iga kahe pulsi järel ja kolmas iga nelja pulsi järel, näidates korduvat 3-bitist binaarloendust 000-st 111-ni"
+            "instruction": "Lülitage kõik kolm Sisendlülitii sisse ja käivitage Kell. Jälgige LED-e loenduri töötamise ajal. Esimene LED muudab olekut iga kellopulsiga, teine muutub iga kahe pulsi järel ja kolmas iga nelja pulsi järel, näidates korduvat 3-bitist binaarloendust 000-st 111-ni"
         },
         "title": "Järjestikskeemid III: Loendur",
         "wire-clock": {
@@ -227,52 +227,52 @@
             "instruction": "Ühendage esimese trigeri Q-väljund teise trigeri Clk-sisendiga, seejärel ühendage teise trigeri Q-väljund kolmanda trigeri Clk-sisendiga. Iga trigerit kellastab eelmise väljund, luues astmelise loenduri (ripple counter)"
         },
         "wire-t-inputs": {
-            "hint": "Lülitage kõik kolm InputSwitchi sisse. T-triger lülitub ainult siis, kui selle T-sisend on 1.",
-            "instruction": "Ühendage iga InputSwitch teise trigeri T-sisendiga"
+            "hint": "Lülitage kõik kolm Sisendlülitii sisse. T-triger lülitub ainult siis, kui selle T-sisend on 1.",
+            "instruction": "Ühendage iga Sisendlüliti teise trigeri T-sisendiga"
         }
     },
     "sequential-circuits-two": {
         "add-d-flipflop": {
-            "hint": "Kasutage vahekaarti Mälu D-trigeri ja Kelli lisamiseks. Seejärel kasutage vahekaarti I/O kahe InputSwitchi ja kahe LED-i lisamiseks.",
-            "instruction": "Lisage D-triger, kaks InputSwitchi, Kell ja kaks LED-i tööalale"
+            "hint": "Kasutage vahekaarti Mälu D-trigeri ja Kelli lisamiseks. Seejärel kasutage vahekaarti I/O kahe Sisendlülitii ja kahe LED-i lisamiseks.",
+            "instruction": "Lisage D-triger, kaks Sisendlülitii, Kell ja kaks LED-i tööalale"
         },
         "add-jk-flipflop": {
             "hint": "JK-trigeril on J- ja K-sisendid D-sisendi asemel. Jätke Clear- ja Preset-sisendid ühendamata.",
-            "instruction": "Asendage D-triger JK-trigeriga, säilitades Kelli, InputSwitchid ja LED-id"
+            "instruction": "Asendage D-triger JK-trigeriga, säilitades Kelli, Sisendlülitiid ja LED-id"
         },
         "add-t-flipflop": {
             "hint": "T-triger vajab kella kõrval ainult ühte sisendit.",
-            "instruction": "Asendage JK-triger T-trigeriga ja eemaldage üks InputSwitchidest"
+            "instruction": "Asendage JK-triger T-trigeriga ja eemaldage üks Sisendlülitiidest"
         },
         "description": "Õppige tundma trigereid.",
         "explain-clear-preset": {
             "hint": "",
-            "instruction": "Ühendage teine InputSwitch kas Clear- või Preset-sisendiga ja jälgige selle mõju. Erinevalt D-sisendist toimivad Clear- ja Preset-sisendid koheselt, ootamata kella fronti. Clear sunnib Q väärtusele 0, Preset aga väärtusele 1"
+            "instruction": "Ühendage teine Sisendlüliti kas Clear- või Preset-sisendiga ja jälgige selle mõju. Erinevalt D-sisendist toimivad Clear- ja Preset-sisendid koheselt, ootamata kella fronti. Clear sunnib Q väärtusele 0, Preset aga väärtusele 1"
         },
         "explain-d-flipflop": {
             "hint": "",
-            "instruction": "Lülitage D-InputSwitchi ja jälgige D-trigerit. D-sisendi väärtus kopeeritakse Q-väljundile ainult aktiivsel kella tõusufrondil. Kella frontide vahel jääb väljund muutumatuks"
+            "instruction": "Lülitage D-Sisendlülitii ja jälgige D-trigerit. D-sisendi väärtus kopeeritakse Q-väljundile ainult aktiivsel kella tõusufrondil. Kella frontide vahel jääb väljund muutumatuks"
         },
         "explain-jk-flipflop": {
             "hint": "",
-            "instruction": "Lülitage InputSwitche ja jälgige JK-trigerit. Kui J = K = 0, säilitab väljund oma praeguse oleku. Kui J = 1 ja K = 0, seatakse väljund. Kui J = 0 ja K = 1, lähtestatakse väljund. Kui J = K = 1, lülitub väljund igal aktiivsel kella frondil"
+            "instruction": "Lülitage Sisendlülitie ja jälgige JK-trigerit. Kui J = K = 0, säilitab väljund oma praeguse oleku. Kui J = 1 ja K = 0, seatakse väljund. Kui J = 0 ja K = 1, lähtestatakse väljund. Kui J = K = 1, lülitub väljund igal aktiivsel kella frondil"
         },
         "explain-t-flipflop": {
             "hint": "",
-            "instruction": "Lülitage InputSwitchi ja jälgige T-trigerit. Kui T = 0, säilitab väljund oma praeguse oleku. Kui T = 1, lülitub väljund igal aktiivsel kella frondil. T-trigereid kasutatakse tavaliselt binaarloendurite ja sagedusjagajate ehitamiseks"
+            "instruction": "Lülitage Sisendlülitii ja jälgige T-trigerit. Kui T = 0, säilitab väljund oma praeguse oleku. Kui T = 1, lülitub väljund igal aktiivsel kella frondil. T-trigereid kasutatakse tavaliselt binaarloendurite ja sagedusjagajate ehitamiseks"
         },
         "title": "Järjestikskeemid II: Trigerid",
         "wire-d-flipflop": {
             "hint": "Jätke Clear- ja Preset-sisendid praegu ühendamata.",
-            "instruction": "Ühendage üks InputSwitch D-sisendiga, Kell Clk-sisendiga ning Q- ja Q̅-väljundid LED-idega. D-sisend annab salvestatava väärtuse, Kell määrab, millal väärtus salvestatakse"
+            "instruction": "Ühendage üks Sisendlüliti D-sisendiga, Kell Clk-sisendiga ning Q- ja Q̅-väljundid LED-idega. D-sisend annab salvestatava väärtuse, Kell määrab, millal väärtus salvestatakse"
         },
         "wire-jk-flipflop": {
             "hint": "JK-triger muudab oma väljundit ainult aktiivsel kella frondil.",
-            "instruction": "Ühendage InputSwitchid J- ja K-sisenditega, Kell Clk-sisendiga ning Q- ja Q̅-väljundid LED-idega"
+            "instruction": "Ühendage Sisendlülitiid J- ja K-sisenditega, Kell Clk-sisendiga ning Q- ja Q̅-väljundid LED-idega"
         },
         "wire-t-flipflop": {
             "hint": "Jätke Clear- ja Preset-sisendid ühendamata.",
-            "instruction": "Ühendage ülejäänud InputSwitch T-sisendiga, Kell Clk-sisendiga ning Q- ja Q̅-väljundid LED-idega"
+            "instruction": "Ühendage ülejäänud Sisendlüliti T-sisendiga, Kell Clk-sisendiga ning Q- ja Q̅-väljundid LED-idega"
         }
     },
     "ui-overview": {
@@ -290,7 +290,7 @@
         },
         "description": "Juhitud tiir peamises kasutajaliideses — palett, tööala, tööriistariba ja omaduste paneel.",
         "editing-cells": {
-            "body": "Signaalikuju saate muuta ka käsitsi. Topeltklõpsake mis tahes lahtrit Kell-real, et lülitada see 0 ja 1 vahel — Led-rida uueneb koheselt, kajastades uut väljundit.",
+            "body": "Signaalikuju saate muuta ka käsitsi. Topeltklõpsake mis tahes lahtrit Kell-real, et lülitada see 0 ja 1 vahel — LED-rida uueneb koheselt, kajastades uut väljundit.",
             "title": "Lahtrite käsitsi muutmine"
         },
         "element-properties": {
@@ -307,7 +307,7 @@
         },
         "title": "wiRedPanda kasutajaliidese tutvustus",
         "waveform-table": {
-            "body": "Signaalikuju tabel näitab iga signaali teie skeemis. Kell-rida on sisend; Led-rida on arvutatud väljund. Iga veerg on üks simulatsiooni ajasamm — näete täpselt, kuidas väljund sisendit järgib.",
+            "body": "Signaalikuju tabel näitab iga signaali teie skeemis. Kell-rida on sisend; LED-rida on arvutatud väljund. Iga veerg on üks simulatsiooni ajasamm — näete täpselt, kuidas väljund sisendit järgib.",
             "title": "Signaalikuju tabeli lugemine"
         },
         "waveform-viewer": {

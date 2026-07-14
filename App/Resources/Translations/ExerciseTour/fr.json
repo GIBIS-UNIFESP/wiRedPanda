@@ -1,15 +1,15 @@
 {
     "basic-and-gate": {
         "add-inputs": {
-            "hint": "Clique sur l'onglet E/S dans le panneau de gauche, puis fais glisser deux éléments InputSwitch sur le plan de travail et place-les à gauche de la porte ET.",
-            "instruction": "Ajoute deux éléments InputSwitch sur le plan de travail"
+            "hint": "Clique sur l'onglet E/S dans le panneau de gauche, puis fais glisser deux éléments Interrupteur d'entrée sur le plan de travail et place-les à gauche de la porte ET.",
+            "instruction": "Ajoute deux éléments Interrupteur d'entrée sur le plan de travail"
         },
         "add-output": {
             "hint": "Fais glisser une LED depuis l'onglet E/S et place-la à droite de la porte ET. Connecte ensuite le port de sortie de la porte ET (côté droit) au port d'entrée de la LED (côté gauche).",
             "instruction": "Ajoute une LED et connecte-la à la sortie de la porte ET"
         },
         "connect-inputs": {
-            "hint": "Clique et fais glisser depuis un port de sortie d'un InputSwitch (côté droit) vers l'un des ports d'entrée de la porte ET (côté gauche). Répète l'opération pour le second interrupteur.",
+            "hint": "Clique et fais glisser depuis un port de sortie d'un Interrupteur d'entrée (côté droit) vers l'un des ports d'entrée de la porte ET (côté gauche). Répète l'opération pour le second interrupteur.",
             "instruction": "Connecte les deux interrupteurs d'entrée à la porte ET"
         },
         "description": "Apprends à placer des portes logiques, ajouter des entrées et des sorties, et les relier entre elles.",
@@ -19,14 +19,14 @@
         },
         "title": "Construire un circuit avec une porte ET",
         "toggle-observe": {
-            "hint": "Clique sur un InputSwitch pour le basculer. La LED ne s'allume que lorsque LES DEUX interrupteurs sont activés. C'est parce que ET ne produit 1 en sortie que lorsque toutes les entrées valent 1.",
+            "hint": "Clique sur un Interrupteur d'entrée pour le basculer. La LED ne s'allume que lorsque LES DEUX interrupteurs sont activés. C'est parce que ET ne produit 1 en sortie que lorsque toutes les entrées valent 1.",
             "instruction": "Bascule les interrupteurs et observe la LED — c'est la logique ET !"
         }
     },
     "basic-or-not-gates": {
         "add-inputs": {
-            "hint": "Clique sur l'onglet E/S dans le panneau de gauche, puis fais glisser deux éléments InputSwitch sur le plan de travail et place-les à gauche de la porte OU.",
-            "instruction": "Ajoute deux éléments InputSwitch sur le plan de travail"
+            "hint": "Clique sur l'onglet E/S dans le panneau de gauche, puis fais glisser deux éléments Interrupteur d'entrée sur le plan de travail et place-les à gauche de la porte OU.",
+            "instruction": "Ajoute deux éléments Interrupteur d'entrée sur le plan de travail"
         },
         "add-not-gate": {
             "hint": "Fais glisser le fil entre la porte OU et la LED pour le supprimer.",
@@ -37,7 +37,7 @@
             "instruction": "Ajoute une LED et connecte-la à la sortie de la porte OU"
         },
         "connect-inputs": {
-            "hint": "Clique et fais glisser depuis un port de sortie d'un InputSwitch (côté droit) vers l'un des ports d'entrée de la porte OU (côté gauche). Répète l'opération pour le second interrupteur.",
+            "hint": "Clique et fais glisser depuis un port de sortie d'un Interrupteur d'entrée (côté droit) vers l'un des ports d'entrée de la porte OU (côté gauche). Répète l'opération pour le second interrupteur.",
             "instruction": "Connecte les deux interrupteurs d'entrée à la porte OU"
         },
         "description": "Apprends à utiliser les portes OU et NON.",
@@ -66,7 +66,7 @@
         },
         "description": "Construis un circuit Horloge-LED minimal et explore le visualiseur de chronogrammes : mode combinatoire et édition manuelle des cellules.",
         "open-waveform": {
-            "hint": "BeWavedDolphin affiche les signaux de ton circuit sous forme de lignes. La ligne Horloge est l'entrée, et la ligne Led est la sortie. Chaque colonne correspond à un pas de temps de simulation.",
+            "hint": "BeWavedDolphin affiche les signaux de ton circuit sous forme de lignes. La ligne Horloge est l'entrée, et la ligne DEL est la sortie. Chaque colonne correspond à un pas de temps de simulation.",
             "instruction": "Le visualiseur de chronogrammes est maintenant ouvert — jette un œil !"
         },
         "place-clock": {
@@ -74,30 +74,30 @@
             "instruction": "Place un élément Horloge sur le plan de travail"
         },
         "place-led": {
-            "hint": "Toujours dans l'onglet E/S, fais glisser un élément Led sur le plan de travail à droite de l'Horloge.",
+            "hint": "Toujours dans l'onglet E/S, fais glisser un élément DEL sur le plan de travail à droite de l'Horloge.",
             "instruction": "Place une LED sur le plan de travail"
         },
         "title": "Horloge et LED : notions de base des chronogrammes",
         "toggle-cell": {
-            "hint": "Double-clique sur une cellule quelconque de la ligne Horloge pour la faire basculer entre 0 et 1. Observe la ligne Led se mettre à jour instantanément pour refléter la nouvelle sortie.",
+            "hint": "Double-clique sur une cellule quelconque de la ligne Horloge pour la faire basculer entre 0 et 1. Observe la ligne DEL se mettre à jour instantanément pour refléter la nouvelle sortie.",
             "instruction": "Bascule manuellement une cellule d'Horloge"
         }
     },
     "combinational-circuits-one": {
         "add-demux": {
-            "hint": "Ton circuit devrait maintenant comporter deux InputSwitch, deux LED et un circuit DEMUX",
-            "instruction": "Ajoute un circuit DEMUX et connecte les InputSwitch à ses ports In et S0. Connecte ensuite chacune des sorties du DEMUX à une LED différente"
+            "hint": "Ton circuit devrait maintenant comporter deux Interrupteur d'entrée, deux LED et un circuit DEMUX",
+            "instruction": "Ajoute un circuit DEMUX et connecte les Interrupteur d'entrée à ses ports In et S0. Connecte ensuite chacune des sorties du DEMUX à une LED différente"
         },
         "add-inputs": {
-            "hint": "Clique sur l'onglet E/S dans le panneau de gauche, puis fais glisser deux éléments InputSwitch sur le plan de travail et place-les à gauche du circuit MUX.",
-            "instruction": "Ajoute trois éléments InputSwitch sur le plan de travail"
+            "hint": "Clique sur l'onglet E/S dans le panneau de gauche, puis fais glisser deux éléments Interrupteur d'entrée sur le plan de travail et place-les à gauche du circuit MUX.",
+            "instruction": "Ajoute trois éléments Interrupteur d'entrée sur le plan de travail"
         },
         "add-output": {
             "hint": "Fais glisser une LED depuis l'onglet E/S et place-la à droite du circuit MUX. Connecte ensuite le port de sortie du circuit MUX (côté droit) au port d'entrée de la LED (côté gauche).",
             "instruction": "Ajoute une LED et connecte-la à la sortie du circuit MUX"
         },
         "connect-inputs": {
-            "hint": "Clique et fais glisser depuis un port de sortie d'un InputSwitch (côté droit) vers l'un des ports d'entrée de la porte MUX (côté gauche). Répète l'opération pour le second interrupteur. Connecte ensuite le troisième interrupteur d'entrée au port de sélection du MUX (en bas)",
+            "hint": "Clique et fais glisser depuis un port de sortie d'un Interrupteur d'entrée (côté droit) vers l'un des ports d'entrée de la porte MUX (côté gauche). Répète l'opération pour le second interrupteur. Connecte ensuite le troisième interrupteur d'entrée au port de sélection du MUX (en bas)",
             "instruction": "Connecte tous les interrupteurs d'entrée au circuit MUX"
         },
         "description": "Apprends les circuits MUX et DEMUX.",
@@ -114,23 +114,23 @@
             "instruction": "Place un circuit MUX sur le plan de travail"
         },
         "prepare-demux": {
-            "hint": "Ton circuit devrait maintenant comporter deux InputSwitch et deux LED",
-            "instruction": "Supprime le circuit MUX et l'un des InputSwitch. Ajoute ensuite une autre LED"
+            "hint": "Ton circuit devrait maintenant comporter deux Interrupteur d'entrée et deux LED",
+            "instruction": "Supprime le circuit MUX et l'un des Interrupteur d'entrée. Ajoute ensuite une autre LED"
         },
         "title": "Circuits combinatoires I : MUX et DEMUX"
     },
     "combinational-circuits-three": {
         "add-cin-and-gates": {
-            "hint": "Connecte les sorties des InputSwitch aux entrées des portes.",
-            "instruction": "Ajoute un autre InputSwitch sur le plan de travail et donne-lui l'étiquette Cin. Ajoute ensuite une porte XOR, une porte ET et une porte OU"
+            "hint": "Connecte les sorties des Interrupteur d'entrée aux entrées des portes.",
+            "instruction": "Ajoute un autre Interrupteur d'entrée sur le plan de travail et donne-lui l'étiquette Cin. Ajoute ensuite une porte XOR, une porte ET et une porte OU"
         },
         "add-half-adder-gates": {
             "hint": "Utilise l'onglet Portes pour ajouter les portes XOR et ET, puis utilise l'onglet E/S pour ajouter deux LED.",
             "instruction": "Ajoute une porte XOR, une porte ET et deux LED sur le plan de travail. Connecte ensuite chaque porte à une LED différente"
         },
         "add-inputs": {
-            "hint": "Clique sur l'onglet E/S dans le panneau de gauche, puis fais glisser trois éléments InputSwitch sur le plan de travail. Le troisième InputSwitch sera utilisé plus tard comme retenue entrante (Cin).",
-            "instruction": "Ajoute deux éléments InputSwitch sur le plan de travail"
+            "hint": "Clique sur l'onglet E/S dans le panneau de gauche, puis fais glisser trois éléments Interrupteur d'entrée sur le plan de travail. Le troisième Interrupteur d'entrée sera utilisé plus tard comme retenue entrante (Cin).",
+            "instruction": "Ajoute deux éléments Interrupteur d'entrée sur le plan de travail"
         },
         "description": "Apprends à construire un circuit additionneur.",
         "explain-full-adder": {
@@ -147,8 +147,8 @@
             "instruction": "Connecte l'ancienne porte XOR et l'interrupteur Cin à la nouvelle porte XOR, puis connecte la nouvelle porte XOR à la sortie Sum. Connecte également l'ancienne porte XOR et l'interrupteur Cin à la nouvelle porte ET. Termine en connectant les deux portes ET à la porte OU, et la porte OU à Cout"
         },
         "wire-half-adder": {
-            "hint": "Connecte les sorties des InputSwitch aux entrées des portes.",
-            "instruction": "Connecte les deux InputSwitch à la porte XOR et à la porte ET. Chaque InputSwitch doit être connecté aux deux portes. La porte XOR produit la sortie Sum, tandis que la porte ET produit la sortie Carry"
+            "hint": "Connecte les sorties des Interrupteur d'entrée aux entrées des portes.",
+            "instruction": "Connecte les deux Interrupteur d'entrée à la porte XOR et à la porte ET. Chaque Interrupteur d'entrée doit être connecté aux deux portes. La porte XOR produit la sortie Sum, tandis que la porte ET produit la sortie Carry"
         }
     },
     "combinational-circuits-two": {
@@ -157,12 +157,12 @@
             "instruction": "Ajoute quatre portes ET et quatre LED sur le plan de travail, puis connecte chaque porte ET à l'une des LED"
         },
         "add-inputs": {
-            "hint": "Clique sur l'onglet E/S dans le panneau de gauche, puis fais glisser deux éléments InputSwitch sur le plan de travail.",
-            "instruction": "Ajoute deux éléments InputSwitch sur le plan de travail"
+            "hint": "Clique sur l'onglet E/S dans le panneau de gauche, puis fais glisser deux éléments Interrupteur d'entrée sur le plan de travail.",
+            "instruction": "Ajoute deux éléments Interrupteur d'entrée sur le plan de travail"
         },
         "add-not-gates": {
-            "hint": "Clique sur l'onglet Portes dans le panneau de gauche, puis fais glisser deux éléments porte NON sur le plan de travail et connecte-y les InputSwitch.",
-            "instruction": "Ajoute deux portes NON sur le plan de travail et connecte chaque InputSwitch à une porte NON distincte"
+            "hint": "Clique sur l'onglet Portes dans le panneau de gauche, puis fais glisser deux éléments porte NON sur le plan de travail et connecte-y les Interrupteur d'entrée.",
+            "instruction": "Ajoute deux portes NON sur le plan de travail et connecte chaque Interrupteur d'entrée à une porte NON distincte"
         },
         "description": "Apprends à construire un décodeur 2 vers 4.",
         "explain-decoder": {
@@ -171,47 +171,47 @@
         },
         "title": "Circuits combinatoires II : Décodeur",
         "wire-decoder": {
-            "hint": "Chaque porte ET doit recevoir un signal de chaque entrée. Utilise le signal InputSwitch d'origine pour un 1 et la sortie correspondante de la porte NON pour un 0.",
-            "instruction": "Connecte les sorties des portes NON et des InputSwitch aux portes ET afin que chaque porte ET représente une combinaison d'entrée"
+            "hint": "Chaque porte ET doit recevoir un signal de chaque entrée. Utilise le signal Interrupteur d'entrée d'origine pour un 1 et la sortie correspondante de la porte NON pour un 0.",
+            "instruction": "Connecte les sorties des portes NON et des Interrupteur d'entrée aux portes ET afin que chaque porte ET représente une combinaison d'entrée"
         }
     },
     "sequential-circuits-one": {
         "add-d-latch": {
             "hint": "Le verrou D mémorise une seule valeur d'entrée et évite la combinaison d'entrée invalide d'un verrou SR.",
-            "instruction": "Supprime le verrou SR tout en conservant les InputSwitch et les LED. Ajoute ensuite un verrou D"
+            "instruction": "Supprime le verrou SR tout en conservant les Interrupteur d'entrée et les LED. Ajoute ensuite un verrou D"
         },
         "add-sr-latch": {
-            "hint": "Utilise l'onglet Mémoire pour ajouter un verrou SR. Utilise ensuite l'onglet E/S pour ajouter deux InputSwitch et deux LED.",
-            "instruction": "Ajoute un verrou SR, deux InputSwitch et deux LED sur le plan de travail"
+            "hint": "Utilise l'onglet Mémoire pour ajouter un verrou SR. Utilise ensuite l'onglet E/S pour ajouter deux Interrupteur d'entrée et deux LED.",
+            "instruction": "Ajoute un verrou SR, deux Interrupteur d'entrée et deux LED sur le plan de travail"
         },
         "description": "Apprends à utiliser les verrous (latches).",
         "explain-d-latch": {
             "hint": "",
-            "instruction": "Bascule les InputSwitch et observe le verrou D. Quand Enable vaut 1, la sortie suit l'entrée D. Quand Enable vaut 0, le verrou mémorise sa valeur précédente"
+            "instruction": "Bascule les Interrupteur d'entrée et observe le verrou D. Quand Enable vaut 1, la sortie suit l'entrée D. Quand Enable vaut 0, le verrou mémorise sa valeur précédente"
         },
         "explain-sr-latch": {
             "hint": "",
-            "instruction": "Bascule les InputSwitch et observe comment le verrou SR mémorise son état. Mettre l'entrée S à 1 fait passer la sortie Q à 1, tandis que mettre l'entrée R à 1 réinitialise Q à 0. Lorsque les deux entrées reviennent à 0, le verrou conserve son dernier état jusqu'à ce qu'il soit à nouveau positionné ou réinitialisé"
+            "instruction": "Bascule les Interrupteur d'entrée et observe comment le verrou SR mémorise son état. Mettre l'entrée S à 1 fait passer la sortie Q à 1, tandis que mettre l'entrée R à 1 réinitialise Q à 0. Lorsque les deux entrées reviennent à 0, le verrou conserve son dernier état jusqu'à ce qu'il soit à nouveau positionné ou réinitialisé"
         },
         "title": "Circuits séquentiels I : Verrous",
         "wire-d-latch": {
             "hint": "L'entrée D est la valeur à mémoriser. L'entrée Enable détermine quand le verrou met à jour sa valeur mémorisée.",
-            "instruction": "Connecte un InputSwitch à l'entrée D et l'autre à l'entrée Enable (E). Connecte les sorties Q et Q̅ aux LED"
+            "instruction": "Connecte un Interrupteur d'entrée à l'entrée D et l'autre à l'entrée Enable (E). Connecte les sorties Q et Q̅ aux LED"
         },
         "wire-sr-latch": {
-            "hint": "Connecte un InputSwitch à l'entrée Set (S) et l'autre à l'entrée Reset (R). Connecte chaque sortie du verrou à une LED différente.",
-            "instruction": "Connecte les InputSwitch aux entrées S et R du verrou SR. Connecte ensuite les sorties Q et Q̅ aux LED"
+            "hint": "Connecte un Interrupteur d'entrée à l'entrée Set (S) et l'autre à l'entrée Reset (R). Connecte chaque sortie du verrou à une LED différente.",
+            "instruction": "Connecte les Interrupteur d'entrée aux entrées S et R du verrou SR. Connecte ensuite les sorties Q et Q̅ aux LED"
         }
     },
     "sequential-circuits-three": {
         "add-flipflops": {
-            "hint": "Utilise l'onglet Mémoire pour ajouter les bascules T et une Horloge. Utilise ensuite l'onglet E/S pour ajouter trois InputSwitch et trois LED.",
-            "instruction": "Ajoute trois bascules T, trois InputSwitch, une Horloge et trois LED sur le plan de travail"
+            "hint": "Utilise l'onglet Mémoire pour ajouter les bascules T et une Horloge. Utilise ensuite l'onglet E/S pour ajouter trois Interrupteur d'entrée et trois LED.",
+            "instruction": "Ajoute trois bascules T, trois Interrupteur d'entrée, une Horloge et trois LED sur le plan de travail"
         },
         "description": "Apprends à construire un circuit compteur.",
         "explain-counter": {
             "hint": "",
-            "instruction": "Active les trois InputSwitch et démarre l'Horloge. Observe les LED pendant que le compteur fonctionne. La première LED change d'état à chaque impulsion d'horloge, la deuxième change toutes les deux impulsions, et la troisième change toutes les quatre impulsions, affichant un comptage binaire de 3 bits qui se répète de 000 à 111"
+            "instruction": "Active les trois Interrupteur d'entrée et démarre l'Horloge. Observe les LED pendant que le compteur fonctionne. La première LED change d'état à chaque impulsion d'horloge, la deuxième change toutes les deux impulsions, et la troisième change toutes les quatre impulsions, affichant un comptage binaire de 3 bits qui se répète de 000 à 111"
         },
         "title": "Circuits séquentiels III : Compteur",
         "wire-clock": {
@@ -227,52 +227,52 @@
             "instruction": "Connecte la sortie Q de la première bascule à l'entrée Clk de la deuxième bascule, puis connecte la sortie Q de la deuxième bascule à l'entrée Clk de la troisième bascule. Chaque bascule est cadencée par la sortie de la précédente, créant un compteur asynchrone (ripple counter)"
         },
         "wire-t-inputs": {
-            "hint": "Active les trois InputSwitch. Une bascule T ne bascule que lorsque son entrée T vaut 1.",
-            "instruction": "Connecte chaque InputSwitch à l'entrée T d'une bascule différente"
+            "hint": "Active les trois Interrupteur d'entrée. Une bascule T ne bascule que lorsque son entrée T vaut 1.",
+            "instruction": "Connecte chaque Interrupteur d'entrée à l'entrée T d'une bascule différente"
         }
     },
     "sequential-circuits-two": {
         "add-d-flipflop": {
-            "hint": "Utilise l'onglet Mémoire pour ajouter une bascule D et une Horloge. Utilise ensuite l'onglet E/S pour ajouter deux InputSwitch et deux LED.",
-            "instruction": "Ajoute une bascule D, deux InputSwitch, une Horloge et deux LED sur le plan de travail"
+            "hint": "Utilise l'onglet Mémoire pour ajouter une bascule D et une Horloge. Utilise ensuite l'onglet E/S pour ajouter deux Interrupteur d'entrée et deux LED.",
+            "instruction": "Ajoute une bascule D, deux Interrupteur d'entrée, une Horloge et deux LED sur le plan de travail"
         },
         "add-jk-flipflop": {
             "hint": "La bascule JK possède des entrées J et K au lieu d'une entrée D. Laisse les entrées Clear et Preset non connectées.",
-            "instruction": "Remplace la bascule D par une bascule JK en conservant l'Horloge, les InputSwitch et les LED"
+            "instruction": "Remplace la bascule D par une bascule JK en conservant l'Horloge, les Interrupteur d'entrée et les LED"
         },
         "add-t-flipflop": {
             "hint": "Une bascule T ne nécessite qu'une seule entrée en plus de l'horloge.",
-            "instruction": "Remplace la bascule JK par une bascule T et retire l'un des InputSwitch"
+            "instruction": "Remplace la bascule JK par une bascule T et retire l'un des Interrupteur d'entrée"
         },
         "description": "Apprends les bascules (flip-flops).",
         "explain-clear-preset": {
             "hint": "",
-            "instruction": "Connecte le second InputSwitch à l'entrée Clear ou Preset et observe son effet. Contrairement à l'entrée D, les entrées Clear et Preset agissent immédiatement sans attendre de front d'horloge. Clear force Q à 0, tandis que Preset force Q à 1"
+            "instruction": "Connecte le second Interrupteur d'entrée à l'entrée Clear ou Preset et observe son effet. Contrairement à l'entrée D, les entrées Clear et Preset agissent immédiatement sans attendre de front d'horloge. Clear force Q à 0, tandis que Preset force Q à 1"
         },
         "explain-d-flipflop": {
             "hint": "",
-            "instruction": "Bascule l'InputSwitch D et observe la bascule D. La valeur présente sur l'entrée D n'est recopiée sur la sortie Q qu'au front d'horloge actif. Entre les fronts d'horloge, la sortie reste inchangée"
+            "instruction": "Bascule l'Interrupteur d'entrée D et observe la bascule D. La valeur présente sur l'entrée D n'est recopiée sur la sortie Q qu'au front d'horloge actif. Entre les fronts d'horloge, la sortie reste inchangée"
         },
         "explain-jk-flipflop": {
             "hint": "",
-            "instruction": "Bascule les InputSwitch et observe la bascule JK. Quand J = K = 0, la sortie conserve son état actuel. Quand J = 1 et K = 0, la sortie est positionnée. Quand J = 0 et K = 1, la sortie est réinitialisée. Quand J = K = 1, la sortie bascule à chaque front d'horloge actif"
+            "instruction": "Bascule les Interrupteur d'entrée et observe la bascule JK. Quand J = K = 0, la sortie conserve son état actuel. Quand J = 1 et K = 0, la sortie est positionnée. Quand J = 0 et K = 1, la sortie est réinitialisée. Quand J = K = 1, la sortie bascule à chaque front d'horloge actif"
         },
         "explain-t-flipflop": {
             "hint": "",
-            "instruction": "Bascule l'InputSwitch et observe la bascule T. Quand T = 0, la sortie conserve son état actuel. Quand T = 1, la sortie bascule à chaque front d'horloge actif. Les bascules T sont couramment utilisées pour construire des compteurs binaires et des diviseurs de fréquence"
+            "instruction": "Bascule l'Interrupteur d'entrée et observe la bascule T. Quand T = 0, la sortie conserve son état actuel. Quand T = 1, la sortie bascule à chaque front d'horloge actif. Les bascules T sont couramment utilisées pour construire des compteurs binaires et des diviseurs de fréquence"
         },
         "title": "Circuits séquentiels II : Bascules",
         "wire-d-flipflop": {
             "hint": "Laisse les entrées Clear et Preset non connectées pour le moment.",
-            "instruction": "Connecte un InputSwitch à l'entrée D, l'Horloge à l'entrée Clk, et les sorties Q et Q̅ aux LED. L'entrée D fournit la valeur à mémoriser, tandis que l'Horloge détermine quand la valeur est mémorisée"
+            "instruction": "Connecte un Interrupteur d'entrée à l'entrée D, l'Horloge à l'entrée Clk, et les sorties Q et Q̅ aux LED. L'entrée D fournit la valeur à mémoriser, tandis que l'Horloge détermine quand la valeur est mémorisée"
         },
         "wire-jk-flipflop": {
             "hint": "La bascule JK ne change de sortie qu'au front d'horloge actif.",
-            "instruction": "Connecte les InputSwitch aux entrées J et K, l'Horloge à l'entrée Clk, et les sorties Q et Q̅ aux LED"
+            "instruction": "Connecte les Interrupteur d'entrée aux entrées J et K, l'Horloge à l'entrée Clk, et les sorties Q et Q̅ aux LED"
         },
         "wire-t-flipflop": {
             "hint": "Laisse les entrées Clear et Preset non connectées.",
-            "instruction": "Connecte l'InputSwitch restant à l'entrée T, l'Horloge à l'entrée Clk, et les sorties Q et Q̅ aux LED"
+            "instruction": "Connecte l'Interrupteur d'entrée restant à l'entrée T, l'Horloge à l'entrée Clk, et les sorties Q et Q̅ aux LED"
         }
     },
     "ui-overview": {
@@ -290,7 +290,7 @@
         },
         "description": "Une visite guidée de l'interface principale — palette, plan de travail, barre d'outils et panneau de propriétés.",
         "editing-cells": {
-            "body": "Tu peux aussi modifier le chronogramme à la main. Double-clique sur une cellule quelconque de la ligne Horloge pour la faire basculer entre 0 et 1 — la ligne Led se met à jour instantanément pour refléter la nouvelle sortie.",
+            "body": "Tu peux aussi modifier le chronogramme à la main. Double-clique sur une cellule quelconque de la ligne Horloge pour la faire basculer entre 0 et 1 — la ligne DEL se met à jour instantanément pour refléter la nouvelle sortie.",
             "title": "Modification manuelle des cellules"
         },
         "element-properties": {
@@ -307,7 +307,7 @@
         },
         "title": "Visite guidée de l'interface de wiRedPanda",
         "waveform-table": {
-            "body": "La table des chronogrammes affiche chaque signal de ton circuit. La ligne Horloge est l'entrée ; la ligne Led est la sortie calculée. Chaque colonne est un pas de temps de simulation — tu peux voir exactement comment la sortie suit l'entrée.",
+            "body": "La table des chronogrammes affiche chaque signal de ton circuit. La ligne Horloge est l'entrée ; la ligne DEL est la sortie calculée. Chaque colonne est un pas de temps de simulation — tu peux voir exactement comment la sortie suit l'entrée.",
             "title": "Lire la table des chronogrammes"
         },
         "waveform-viewer": {

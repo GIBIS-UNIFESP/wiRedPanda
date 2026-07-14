@@ -1,15 +1,15 @@
 {
     "basic-and-gate": {
         "add-inputs": {
-            "hint": "Kliknij kartę We/Wy w lewym panelu, a następnie przeciągnij dwa elementy InputSwitch na obszar roboczy i umieść je po lewej stronie bramki AND.",
-            "instruction": "Dodaj dwa elementy InputSwitch do obszaru roboczego"
+            "hint": "Kliknij kartę We/Wy w lewym panelu, a następnie przeciągnij dwa elementy Przełącznik wejściowy na obszar roboczy i umieść je po lewej stronie bramki AND.",
+            "instruction": "Dodaj dwa elementy Przełącznik wejściowy do obszaru roboczego"
         },
         "add-output": {
             "hint": "Przeciągnij diodę LED z karty We/Wy i umieść ją po prawej stronie bramki AND. Następnie połącz port wyjściowy bramki AND (prawa strona) z portem wejściowym diody LED (lewa strona).",
             "instruction": "Dodaj diodę LED i podłącz ją do wyjścia bramki AND"
         },
         "connect-inputs": {
-            "hint": "Kliknij i przeciągnij od portu wyjściowego InputSwitch (prawa strona) do jednego z portów wejściowych bramki AND (lewa strona). Powtórz dla drugiego przełącznika.",
+            "hint": "Kliknij i przeciągnij od portu wyjściowego Przełącznik wejściowy (prawa strona) do jednego z portów wejściowych bramki AND (lewa strona). Powtórz dla drugiego przełącznika.",
             "instruction": "Połącz oba przełączniki wejściowe z bramką AND"
         },
         "description": "Naucz się umieszczać bramki logiczne, dodawać wejścia i wyjścia oraz łączyć je ze sobą.",
@@ -19,14 +19,14 @@
         },
         "title": "Budowa obwodu z bramką AND",
         "toggle-observe": {
-            "hint": "Kliknij InputSwitch, aby go przełączyć. Dioda LED zapala się tylko wtedy, gdy OBA przełączniki są włączone. Dzieje się tak, ponieważ AND daje na wyjściu 1 tylko wtedy, gdy wszystkie wejścia mają wartość 1.",
+            "hint": "Kliknij Przełącznik wejściowy, aby go przełączyć. Dioda LED zapala się tylko wtedy, gdy OBA przełączniki są włączone. Dzieje się tak, ponieważ AND daje na wyjściu 1 tylko wtedy, gdy wszystkie wejścia mają wartość 1.",
             "instruction": "Przełączaj przełączniki i obserwuj diodę LED — to jest logika AND!"
         }
     },
     "basic-or-not-gates": {
         "add-inputs": {
-            "hint": "Kliknij kartę We/Wy w lewym panelu, a następnie przeciągnij dwa elementy InputSwitch na obszar roboczy i umieść je po lewej stronie bramki OR.",
-            "instruction": "Dodaj dwa elementy InputSwitch do obszaru roboczego"
+            "hint": "Kliknij kartę We/Wy w lewym panelu, a następnie przeciągnij dwa elementy Przełącznik wejściowy na obszar roboczy i umieść je po lewej stronie bramki OR.",
+            "instruction": "Dodaj dwa elementy Przełącznik wejściowy do obszaru roboczego"
         },
         "add-not-gate": {
             "hint": "Przeciągnij przewód między bramką OR a diodą LED, aby go usunąć.",
@@ -37,7 +37,7 @@
             "instruction": "Dodaj diodę LED i podłącz ją do wyjścia bramki OR"
         },
         "connect-inputs": {
-            "hint": "Kliknij i przeciągnij od portu wyjściowego InputSwitch (prawa strona) do jednego z portów wejściowych bramki OR (lewa strona). Powtórz dla drugiego przełącznika.",
+            "hint": "Kliknij i przeciągnij od portu wyjściowego Przełącznik wejściowy (prawa strona) do jednego z portów wejściowych bramki OR (lewa strona). Powtórz dla drugiego przełącznika.",
             "instruction": "Połącz oba przełączniki wejściowe z bramką OR"
         },
         "description": "Naucz się używać bramek OR i NOT.",
@@ -66,7 +66,7 @@
         },
         "description": "Zbuduj minimalny obwód Zegar-LED i poznaj podgląd przebiegów: tryb kombinacyjny i ręczną edycję komórek.",
         "open-waveform": {
-            "hint": "BeWavedDolphin pokazuje sygnały twojego obwodu jako wiersze. Wiersz Zegar to wejście, a wiersz Led to wyjście. Każda kolumna to jeden krok czasowy symulacji.",
+            "hint": "BeWavedDolphin pokazuje sygnały twojego obwodu jako wiersze. Wiersz Zegar to wejście, a wiersz LED to wyjście. Każda kolumna to jeden krok czasowy symulacji.",
             "instruction": "Podgląd przebiegów jest teraz otwarty — zobacz!"
         },
         "place-clock": {
@@ -74,30 +74,30 @@
             "instruction": "Umieść element Zegar na obszarze roboczym"
         },
         "place-led": {
-            "hint": "Nadal na karcie We/Wy przeciągnij element Led na obszar roboczy na prawo od Zegara.",
+            "hint": "Nadal na karcie We/Wy przeciągnij element LED na obszar roboczy na prawo od Zegara.",
             "instruction": "Umieść diodę LED na obszarze roboczym"
         },
         "title": "Zegar i LED: podstawy przebiegów czasowych",
         "toggle-cell": {
-            "hint": "Kliknij dwukrotnie dowolną komórkę w wierszu Zegar, aby przełączyć ją między 0 a 1. Obserwuj, jak wiersz Led natychmiast aktualizuje się, odzwierciedlając nowe wyjście.",
+            "hint": "Kliknij dwukrotnie dowolną komórkę w wierszu Zegar, aby przełączyć ją między 0 a 1. Obserwuj, jak wiersz LED natychmiast aktualizuje się, odzwierciedlając nowe wyjście.",
             "instruction": "Przełącz komórkę Zegara ręcznie"
         }
     },
     "combinational-circuits-one": {
         "add-demux": {
-            "hint": "Twój obwód powinien teraz mieć dwa InputSwitch, dwie diody LED i jeden obwód DEMUX",
-            "instruction": "Dodaj obwód DEMUX i połącz InputSwitch z jego portami In i S0. Następnie połącz każde z wyjść DEMUX z inną diodą LED"
+            "hint": "Twój obwód powinien teraz mieć dwa Przełącznik wejściowy, dwie diody LED i jeden obwód DEMUX",
+            "instruction": "Dodaj obwód DEMUX i połącz Przełącznik wejściowy z jego portami In i S0. Następnie połącz każde z wyjść DEMUX z inną diodą LED"
         },
         "add-inputs": {
-            "hint": "Kliknij kartę We/Wy w lewym panelu, a następnie przeciągnij dwa elementy InputSwitch na obszar roboczy i umieść je po lewej stronie obwodu MUX.",
-            "instruction": "Dodaj trzy elementy InputSwitch do obszaru roboczego"
+            "hint": "Kliknij kartę We/Wy w lewym panelu, a następnie przeciągnij dwa elementy Przełącznik wejściowy na obszar roboczy i umieść je po lewej stronie obwodu MUX.",
+            "instruction": "Dodaj trzy elementy Przełącznik wejściowy do obszaru roboczego"
         },
         "add-output": {
             "hint": "Przeciągnij diodę LED z karty We/Wy i umieść ją po prawej stronie obwodu MUX. Następnie połącz port wyjściowy obwodu MUX (prawa strona) z portem wejściowym diody LED (lewa strona).",
             "instruction": "Dodaj diodę LED i podłącz ją do wyjścia obwodu MUX"
         },
         "connect-inputs": {
-            "hint": "Kliknij i przeciągnij od portu wyjściowego InputSwitch (prawa strona) do jednego z portów wejściowych bramki MUX (lewa strona). Powtórz dla drugiego przełącznika. Następnie połącz trzeci przełącznik wejściowy z portem wyboru MUX (na dole)",
+            "hint": "Kliknij i przeciągnij od portu wyjściowego Przełącznik wejściowy (prawa strona) do jednego z portów wejściowych bramki MUX (lewa strona). Powtórz dla drugiego przełącznika. Następnie połącz trzeci przełącznik wejściowy z portem wyboru MUX (na dole)",
             "instruction": "Połącz wszystkie przełączniki wejściowe z obwodem MUX"
         },
         "description": "Poznaj obwody MUX i DEMUX.",
@@ -114,23 +114,23 @@
             "instruction": "Umieść obwód MUX na obszarze roboczym"
         },
         "prepare-demux": {
-            "hint": "Twój obwód powinien teraz mieć dwa InputSwitch i dwie diody LED",
-            "instruction": "Usuń obwód MUX i jeden z InputSwitch. Następnie dodaj kolejną diodę LED"
+            "hint": "Twój obwód powinien teraz mieć dwa Przełącznik wejściowy i dwie diody LED",
+            "instruction": "Usuń obwód MUX i jeden z Przełącznik wejściowy. Następnie dodaj kolejną diodę LED"
         },
         "title": "Obwody kombinacyjne I: MUX i DEMUX"
     },
     "combinational-circuits-three": {
         "add-cin-and-gates": {
-            "hint": "Połącz wyjścia InputSwitch z wejściami bramek.",
-            "instruction": "Dodaj kolejny InputSwitch do obszaru roboczego i nadaj mu etykietę Cin. Następnie dodaj bramkę XOR, bramkę AND i bramkę OR"
+            "hint": "Połącz wyjścia Przełącznik wejściowy z wejściami bramek.",
+            "instruction": "Dodaj kolejny Przełącznik wejściowy do obszaru roboczego i nadaj mu etykietę Cin. Następnie dodaj bramkę XOR, bramkę AND i bramkę OR"
         },
         "add-half-adder-gates": {
             "hint": "Użyj karty Bramki, aby dodać bramki XOR i AND, a następnie użyj karty We/Wy, aby dodać dwie diody LED.",
             "instruction": "Dodaj bramkę XOR, bramkę AND i dwie diody LED do obszaru roboczego. Następnie połącz każdą bramkę z inną diodą LED"
         },
         "add-inputs": {
-            "hint": "Kliknij kartę We/Wy w lewym panelu, a następnie przeciągnij trzy elementy InputSwitch na obszar roboczy. Trzeci InputSwitch zostanie później użyty jako przeniesienie wejściowe (Cin).",
-            "instruction": "Dodaj dwa elementy InputSwitch do obszaru roboczego"
+            "hint": "Kliknij kartę We/Wy w lewym panelu, a następnie przeciągnij trzy elementy Przełącznik wejściowy na obszar roboczy. Trzeci Przełącznik wejściowy zostanie później użyty jako przeniesienie wejściowe (Cin).",
+            "instruction": "Dodaj dwa elementy Przełącznik wejściowy do obszaru roboczego"
         },
         "description": "Naucz się budować obwód sumatora.",
         "explain-full-adder": {
@@ -147,8 +147,8 @@
             "instruction": "Połącz starą bramkę XOR i przełącznik Cin z nową bramką XOR, a następnie połącz nową bramkę XOR z wyjściem Sum. Połącz też starą bramkę XOR i przełącznik Cin z nową bramką AND. Na koniec połącz obie bramki AND z bramką OR, a bramkę OR z Cout"
         },
         "wire-half-adder": {
-            "hint": "Połącz wyjścia InputSwitch z wejściami bramek.",
-            "instruction": "Połącz dwa InputSwitch z bramką XOR i bramką AND. Każdy InputSwitch powinien być połączony z obiema bramkami. Bramka XOR generuje wyjście Sum, a bramka AND generuje wyjście Carry"
+            "hint": "Połącz wyjścia Przełącznik wejściowy z wejściami bramek.",
+            "instruction": "Połącz dwa Przełącznik wejściowy z bramką XOR i bramką AND. Każdy Przełącznik wejściowy powinien być połączony z obiema bramkami. Bramka XOR generuje wyjście Sum, a bramka AND generuje wyjście Carry"
         }
     },
     "combinational-circuits-two": {
@@ -157,12 +157,12 @@
             "instruction": "Dodaj cztery bramki AND i cztery diody LED do obszaru roboczego, a następnie połącz każdą bramkę AND z jedną z diod LED"
         },
         "add-inputs": {
-            "hint": "Kliknij kartę We/Wy w lewym panelu i przeciągnij dwa elementy InputSwitch na obszar roboczy.",
-            "instruction": "Dodaj dwa elementy InputSwitch do obszaru roboczego"
+            "hint": "Kliknij kartę We/Wy w lewym panelu i przeciągnij dwa elementy Przełącznik wejściowy na obszar roboczy.",
+            "instruction": "Dodaj dwa elementy Przełącznik wejściowy do obszaru roboczego"
         },
         "add-not-gates": {
-            "hint": "Kliknij kartę Bramki w lewym panelu, a następnie przeciągnij dwa elementy bramki NOT na obszar roboczy i podłącz do nich InputSwitch.",
-            "instruction": "Dodaj dwie bramki NOT do obszaru roboczego i połącz każdy InputSwitch z osobną bramką NOT"
+            "hint": "Kliknij kartę Bramki w lewym panelu, a następnie przeciągnij dwa elementy bramki NOT na obszar roboczy i podłącz do nich Przełącznik wejściowy.",
+            "instruction": "Dodaj dwie bramki NOT do obszaru roboczego i połącz każdy Przełącznik wejściowy z osobną bramką NOT"
         },
         "description": "Naucz się budować dekoder 2-na-4.",
         "explain-decoder": {
@@ -171,47 +171,47 @@
         },
         "title": "Obwody kombinacyjne II: Dekoder",
         "wire-decoder": {
-            "hint": "Każda bramka AND powinna otrzymywać jeden sygnał z każdego wejścia. Użyj oryginalnego sygnału InputSwitch dla 1 i odpowiedniego wyjścia bramki NOT dla 0.",
-            "instruction": "Połącz wyjścia bramek NOT i przełączników InputSwitch z bramkami AND, tak aby każda bramka AND reprezentowała jedną kombinację wejściową"
+            "hint": "Każda bramka AND powinna otrzymywać jeden sygnał z każdego wejścia. Użyj oryginalnego sygnału Przełącznik wejściowy dla 1 i odpowiedniego wyjścia bramki NOT dla 0.",
+            "instruction": "Połącz wyjścia bramek NOT i przełączników Przełącznik wejściowy z bramkami AND, tak aby każda bramka AND reprezentowała jedną kombinację wejściową"
         }
     },
     "sequential-circuits-one": {
         "add-d-latch": {
             "hint": "Zatrzask D przechowuje jedną wartość wejściową i unika nieprawidłowej kombinacji wejściowej zatrzasku SR.",
-            "instruction": "Usuń zatrzask SR, zachowując InputSwitch i diody LED. Następnie dodaj zatrzask D"
+            "instruction": "Usuń zatrzask SR, zachowując Przełącznik wejściowy i diody LED. Następnie dodaj zatrzask D"
         },
         "add-sr-latch": {
-            "hint": "Użyj karty Pamięć, aby dodać zatrzask SR. Następnie użyj karty We/Wy, aby dodać dwa InputSwitch i dwie diody LED.",
-            "instruction": "Dodaj zatrzask SR, dwa InputSwitch i dwie diody LED do obszaru roboczego"
+            "hint": "Użyj karty Pamięć, aby dodać zatrzask SR. Następnie użyj karty We/Wy, aby dodać dwa Przełącznik wejściowy i dwie diody LED.",
+            "instruction": "Dodaj zatrzask SR, dwa Przełącznik wejściowy i dwie diody LED do obszaru roboczego"
         },
         "description": "Naucz się używać zatrzasków.",
         "explain-d-latch": {
             "hint": "",
-            "instruction": "Przełączaj InputSwitch i obserwuj zatrzask D. Gdy Enable ma wartość 1, wyjście podąża za wejściem D. Gdy Enable ma wartość 0, zatrzask pamięta swoją poprzednią wartość"
+            "instruction": "Przełączaj Przełącznik wejściowy i obserwuj zatrzask D. Gdy Enable ma wartość 1, wyjście podąża za wejściem D. Gdy Enable ma wartość 0, zatrzask pamięta swoją poprzednią wartość"
         },
         "explain-sr-latch": {
             "hint": "",
-            "instruction": "Przełączaj InputSwitch i obserwuj, jak zatrzask SR przechowuje swój stan. Ustawienie wejścia S na 1 powoduje, że wyjście Q staje się 1, natomiast ustawienie wejścia R na 1 resetuje Q do 0. Gdy oba wejścia wracają do 0, zatrzask pamięta swój ostatni stan, dopóki nie zostanie ponownie ustawiony lub zresetowany"
+            "instruction": "Przełączaj Przełącznik wejściowy i obserwuj, jak zatrzask SR przechowuje swój stan. Ustawienie wejścia S na 1 powoduje, że wyjście Q staje się 1, natomiast ustawienie wejścia R na 1 resetuje Q do 0. Gdy oba wejścia wracają do 0, zatrzask pamięta swój ostatni stan, dopóki nie zostanie ponownie ustawiony lub zresetowany"
         },
         "title": "Obwody sekwencyjne I: Zatrzaski",
         "wire-d-latch": {
             "hint": "Wejście D to wartość, która ma zostać zapisana. Wejście Enable określa, kiedy zatrzask aktualizuje swoją zapisaną wartość.",
-            "instruction": "Połącz jeden InputSwitch z wejściem D, a drugi z wejściem Enable (E). Połącz wyjścia Q i Q̅ z diodami LED"
+            "instruction": "Połącz jeden Przełącznik wejściowy z wejściem D, a drugi z wejściem Enable (E). Połącz wyjścia Q i Q̅ z diodami LED"
         },
         "wire-sr-latch": {
-            "hint": "Połącz jeden InputSwitch z wejściem Set (S), a drugi z wejściem Reset (R). Połącz każde wyjście zatrzasku z inną diodą LED.",
-            "instruction": "Połącz InputSwitch z wejściami S i R zatrzasku SR. Następnie połącz wyjścia Q i Q̅ z diodami LED"
+            "hint": "Połącz jeden Przełącznik wejściowy z wejściem Set (S), a drugi z wejściem Reset (R). Połącz każde wyjście zatrzasku z inną diodą LED.",
+            "instruction": "Połącz Przełącznik wejściowy z wejściami S i R zatrzasku SR. Następnie połącz wyjścia Q i Q̅ z diodami LED"
         }
     },
     "sequential-circuits-three": {
         "add-flipflops": {
-            "hint": "Użyj karty Pamięć, aby dodać przerzutniki T i Zegar. Następnie użyj karty We/Wy, aby dodać trzy InputSwitch i trzy diody LED.",
-            "instruction": "Dodaj trzy przerzutniki T, trzy InputSwitch, Zegar i trzy diody LED do obszaru roboczego"
+            "hint": "Użyj karty Pamięć, aby dodać przerzutniki T i Zegar. Następnie użyj karty We/Wy, aby dodać trzy Przełącznik wejściowy i trzy diody LED.",
+            "instruction": "Dodaj trzy przerzutniki T, trzy Przełącznik wejściowy, Zegar i trzy diody LED do obszaru roboczego"
         },
         "description": "Naucz się budować obwód licznika.",
         "explain-counter": {
             "hint": "",
-            "instruction": "Włącz wszystkie trzy InputSwitch i uruchom Zegar. Obserwuj diody LED podczas pracy licznika. Pierwsza dioda LED zmienia stan przy każdym impulsie zegara, druga zmienia się co dwa impulsy, a trzecia co cztery impulsy, wyświetlając powtarzające się 3-bitowe zliczanie binarne od 000 do 111"
+            "instruction": "Włącz wszystkie trzy Przełącznik wejściowy i uruchom Zegar. Obserwuj diody LED podczas pracy licznika. Pierwsza dioda LED zmienia stan przy każdym impulsie zegara, druga zmienia się co dwa impulsy, a trzecia co cztery impulsy, wyświetlając powtarzające się 3-bitowe zliczanie binarne od 000 do 111"
         },
         "title": "Obwody sekwencyjne III: Licznik",
         "wire-clock": {
@@ -227,52 +227,52 @@
             "instruction": "Połącz wyjście Q pierwszego przerzutnika z wejściem Clk drugiego przerzutnika, a następnie połącz wyjście Q drugiego przerzutnika z wejściem Clk trzeciego przerzutnika. Każdy przerzutnik jest taktowany wyjściem poprzedniego, tworząc licznik szeregowy (ripple counter)"
         },
         "wire-t-inputs": {
-            "hint": "Włącz wszystkie trzy InputSwitch. Przerzutnik T przełącza się tylko wtedy, gdy jego wejście T ma wartość 1.",
-            "instruction": "Połącz każdy InputSwitch z wejściem T innego przerzutnika"
+            "hint": "Włącz wszystkie trzy Przełącznik wejściowy. Przerzutnik T przełącza się tylko wtedy, gdy jego wejście T ma wartość 1.",
+            "instruction": "Połącz każdy Przełącznik wejściowy z wejściem T innego przerzutnika"
         }
     },
     "sequential-circuits-two": {
         "add-d-flipflop": {
-            "hint": "Użyj karty Pamięć, aby dodać przerzutnik D i Zegar. Następnie użyj karty We/Wy, aby dodać dwa InputSwitch i dwie diody LED.",
-            "instruction": "Dodaj przerzutnik D, dwa InputSwitch, Zegar i dwie diody LED do obszaru roboczego"
+            "hint": "Użyj karty Pamięć, aby dodać przerzutnik D i Zegar. Następnie użyj karty We/Wy, aby dodać dwa Przełącznik wejściowy i dwie diody LED.",
+            "instruction": "Dodaj przerzutnik D, dwa Przełącznik wejściowy, Zegar i dwie diody LED do obszaru roboczego"
         },
         "add-jk-flipflop": {
             "hint": "Przerzutnik JK ma wejścia J i K zamiast wejścia D. Pozostaw wejścia Clear i Preset niepodłączone.",
-            "instruction": "Zastąp przerzutnik D przerzutnikiem JK, zachowując Zegar, InputSwitch i diody LED"
+            "instruction": "Zastąp przerzutnik D przerzutnikiem JK, zachowując Zegar, Przełącznik wejściowy i diody LED"
         },
         "add-t-flipflop": {
             "hint": "Przerzutnik T wymaga tylko jednego wejścia oprócz zegara.",
-            "instruction": "Zastąp przerzutnik JK przerzutnikiem T i usuń jeden z InputSwitch"
+            "instruction": "Zastąp przerzutnik JK przerzutnikiem T i usuń jeden z Przełącznik wejściowy"
         },
         "description": "Poznaj przerzutniki.",
         "explain-clear-preset": {
             "hint": "",
-            "instruction": "Połącz drugi InputSwitch z wejściem Clear lub Preset i obserwuj efekt. W przeciwieństwie do wejścia D, wejścia Clear i Preset działają natychmiast, bez oczekiwania na zbocze zegara. Clear wymusza Q na 0, a Preset wymusza Q na 1"
+            "instruction": "Połącz drugi Przełącznik wejściowy z wejściem Clear lub Preset i obserwuj efekt. W przeciwieństwie do wejścia D, wejścia Clear i Preset działają natychmiast, bez oczekiwania na zbocze zegara. Clear wymusza Q na 0, a Preset wymusza Q na 1"
         },
         "explain-d-flipflop": {
             "hint": "",
-            "instruction": "Przełącz InputSwitch D i obserwuj przerzutnik D. Wartość na wejściu D jest kopiowana na wyjście Q tylko przy aktywnym zboczu zegara. Między zboczami zegara wyjście pozostaje niezmienione"
+            "instruction": "Przełącz Przełącznik wejściowy D i obserwuj przerzutnik D. Wartość na wejściu D jest kopiowana na wyjście Q tylko przy aktywnym zboczu zegara. Między zboczami zegara wyjście pozostaje niezmienione"
         },
         "explain-jk-flipflop": {
             "hint": "",
-            "instruction": "Przełączaj InputSwitch i obserwuj przerzutnik JK. Gdy J = K = 0, wyjście zachowuje swój aktualny stan. Gdy J = 1, a K = 0, wyjście jest ustawiane. Gdy J = 0, a K = 1, wyjście jest resetowane. Gdy J = K = 1, wyjście przełącza się przy każdym aktywnym zboczu zegara"
+            "instruction": "Przełączaj Przełącznik wejściowy i obserwuj przerzutnik JK. Gdy J = K = 0, wyjście zachowuje swój aktualny stan. Gdy J = 1, a K = 0, wyjście jest ustawiane. Gdy J = 0, a K = 1, wyjście jest resetowane. Gdy J = K = 1, wyjście przełącza się przy każdym aktywnym zboczu zegara"
         },
         "explain-t-flipflop": {
             "hint": "",
-            "instruction": "Przełącz InputSwitch i obserwuj przerzutnik T. Gdy T = 0, wyjście zachowuje swój aktualny stan. Gdy T = 1, wyjście przełącza się przy każdym aktywnym zboczu zegara. Przerzutniki T są powszechnie używane do budowy liczników binarnych i dzielników częstotliwości"
+            "instruction": "Przełącz Przełącznik wejściowy i obserwuj przerzutnik T. Gdy T = 0, wyjście zachowuje swój aktualny stan. Gdy T = 1, wyjście przełącza się przy każdym aktywnym zboczu zegara. Przerzutniki T są powszechnie używane do budowy liczników binarnych i dzielników częstotliwości"
         },
         "title": "Obwody sekwencyjne II: Przerzutniki",
         "wire-d-flipflop": {
             "hint": "Na razie pozostaw wejścia Clear i Preset niepodłączone.",
-            "instruction": "Połącz jeden InputSwitch z wejściem D, Zegar z wejściem Clk oraz wyjścia Q i Q̅ z diodami LED. Wejście D dostarcza wartość do zapisania, a Zegar określa, kiedy wartość jest zapisywana"
+            "instruction": "Połącz jeden Przełącznik wejściowy z wejściem D, Zegar z wejściem Clk oraz wyjścia Q i Q̅ z diodami LED. Wejście D dostarcza wartość do zapisania, a Zegar określa, kiedy wartość jest zapisywana"
         },
         "wire-jk-flipflop": {
             "hint": "Przerzutnik JK zmienia swoje wyjście tylko przy aktywnym zboczu zegara.",
-            "instruction": "Połącz InputSwitch z wejściami J i K, Zegar z wejściem Clk oraz wyjścia Q i Q̅ z diodami LED"
+            "instruction": "Połącz Przełącznik wejściowy z wejściami J i K, Zegar z wejściem Clk oraz wyjścia Q i Q̅ z diodami LED"
         },
         "wire-t-flipflop": {
             "hint": "Pozostaw wejścia Clear i Preset niepodłączone.",
-            "instruction": "Połącz pozostały InputSwitch z wejściem T, Zegar z wejściem Clk oraz wyjścia Q i Q̅ z diodami LED"
+            "instruction": "Połącz pozostały Przełącznik wejściowy z wejściem T, Zegar z wejściem Clk oraz wyjścia Q i Q̅ z diodami LED"
         }
     },
     "ui-overview": {
@@ -290,7 +290,7 @@
         },
         "description": "Przewodnik po głównym interfejsie — paleta, obszar roboczy, pasek narzędzi i panel właściwości.",
         "editing-cells": {
-            "body": "Możesz też edytować przebieg ręcznie. Kliknij dwukrotnie dowolną komórkę w wierszu Zegar, aby przełączyć ją między 0 a 1 — wiersz Led natychmiast się aktualizuje, odzwierciedlając nowe wyjście.",
+            "body": "Możesz też edytować przebieg ręcznie. Kliknij dwukrotnie dowolną komórkę w wierszu Zegar, aby przełączyć ją między 0 a 1 — wiersz LED natychmiast się aktualizuje, odzwierciedlając nowe wyjście.",
             "title": "Ręczna edycja komórek"
         },
         "element-properties": {
@@ -307,7 +307,7 @@
         },
         "title": "Wycieczka po interfejsie wiRedPanda",
         "waveform-table": {
-            "body": "Tabela przebiegów pokazuje każdy sygnał w twoim obwodzie. Wiersz Zegar to wejście; wiersz Led to obliczone wyjście. Każda kolumna to jeden krok czasowy symulacji — możesz dokładnie zobaczyć, jak wyjście podąża za wejściem.",
+            "body": "Tabela przebiegów pokazuje każdy sygnał w twoim obwodzie. Wiersz Zegar to wejście; wiersz LED to obliczone wyjście. Każda kolumna to jeden krok czasowy symulacji — możesz dokładnie zobaczyć, jak wyjście podąża za wejściem.",
             "title": "Odczytywanie tabeli przebiegów"
         },
         "waveform-viewer": {

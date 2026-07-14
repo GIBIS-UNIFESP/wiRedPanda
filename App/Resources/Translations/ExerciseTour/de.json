@@ -1,15 +1,15 @@
 {
     "basic-and-gate": {
         "add-inputs": {
-            "hint": "Klicke im linken Bereich auf den Tab E/A und ziehe dann zwei InputSwitch-Elemente auf die Zeichenfläche links vom UND-Gatter.",
-            "instruction": "Füge zwei InputSwitch-Elemente zur Zeichenfläche hinzu"
+            "hint": "Klicke im linken Bereich auf den Tab E/A und ziehe dann zwei Eingangsschalter-Elemente auf die Zeichenfläche links vom UND-Gatter.",
+            "instruction": "Füge zwei Eingangsschalter-Elemente zur Zeichenfläche hinzu"
         },
         "add-output": {
             "hint": "Ziehe eine LED aus dem Tab E/A und platziere sie rechts vom UND-Gatter. Verbinde dann den Ausgangsport des UND-Gatters (rechte Seite) mit dem Eingangsport der LED (linke Seite).",
             "instruction": "Füge eine LED hinzu und verbinde sie mit dem Ausgang des UND-Gatters"
         },
         "connect-inputs": {
-            "hint": "Klicke und ziehe von einem InputSwitch-Ausgangsport (rechte Seite) zu einem der Eingangsports des UND-Gatters (linke Seite). Wiederhole dies für den zweiten Schalter.",
+            "hint": "Klicke und ziehe von einem Eingangsschalter-Ausgangsport (rechte Seite) zu einem der Eingangsports des UND-Gatters (linke Seite). Wiederhole dies für den zweiten Schalter.",
             "instruction": "Verbinde beide Eingangsschalter mit dem UND-Gatter"
         },
         "description": "Lerne, logische Gatter zu platzieren, Ein- und Ausgänge hinzuzufügen und sie zu verdrahten.",
@@ -19,14 +19,14 @@
         },
         "title": "Ein UND-Gatter-Schaltung bauen",
         "toggle-observe": {
-            "hint": "Klicke auf einen InputSwitch, um ihn umzuschalten. Die LED leuchtet nur, wenn BEIDE Schalter EIN sind. Das liegt daran, dass UND nur dann 1 ausgibt, wenn alle Eingänge 1 sind.",
+            "hint": "Klicke auf einen Eingangsschalter, um ihn umzuschalten. Die LED leuchtet nur, wenn BEIDE Schalter EIN sind. Das liegt daran, dass UND nur dann 1 ausgibt, wenn alle Eingänge 1 sind.",
             "instruction": "Schalte die Schalter um und beobachte die LED — das ist UND-Logik!"
         }
     },
     "basic-or-not-gates": {
         "add-inputs": {
-            "hint": "Klicke im linken Bereich auf den Tab E/A und ziehe dann zwei InputSwitch-Elemente auf die Zeichenfläche links vom ODER-Gatter.",
-            "instruction": "Füge zwei InputSwitch-Elemente zur Zeichenfläche hinzu"
+            "hint": "Klicke im linken Bereich auf den Tab E/A und ziehe dann zwei Eingangsschalter-Elemente auf die Zeichenfläche links vom ODER-Gatter.",
+            "instruction": "Füge zwei Eingangsschalter-Elemente zur Zeichenfläche hinzu"
         },
         "add-not-gate": {
             "hint": "Ziehe an der Verbindung zwischen dem ODER-Gatter und der LED, um sie zu entfernen.",
@@ -37,7 +37,7 @@
             "instruction": "Füge eine LED hinzu und verbinde sie mit dem Ausgang des ODER-Gatters"
         },
         "connect-inputs": {
-            "hint": "Klicke und ziehe von einem InputSwitch-Ausgangsport (rechte Seite) zu einem der Eingangsports des ODER-Gatters (linke Seite). Wiederhole dies für den zweiten Schalter.",
+            "hint": "Klicke und ziehe von einem Eingangsschalter-Ausgangsport (rechte Seite) zu einem der Eingangsports des ODER-Gatters (linke Seite). Wiederhole dies für den zweiten Schalter.",
             "instruction": "Verbinde beide Eingangsschalter mit dem ODER-Gatter"
         },
         "description": "Lerne, das ODER- und das NICHT-Gatter zu verwenden.",
@@ -66,7 +66,7 @@
         },
         "description": "Baue eine minimale Takt-LED-Schaltung und erkunde den Signalverlaufsbetrachter: kombinatorischer Modus und manuelle Zellenbearbeitung.",
         "open-waveform": {
-            "hint": "BeWavedDolphin zeigt die Signale deiner Schaltung als Zeilen an. Die Takt-Zeile ist der Eingang, die Led-Zeile ist der Ausgang. Jede Spalte entspricht einem Simulationszeitschritt.",
+            "hint": "BeWavedDolphin zeigt die Signale deiner Schaltung als Zeilen an. Die Takt-Zeile ist der Eingang, die LED-Zeile ist der Ausgang. Jede Spalte entspricht einem Simulationszeitschritt.",
             "instruction": "Der Signalverlaufsbetrachter ist jetzt geöffnet — wirf einen Blick hinein!"
         },
         "place-clock": {
@@ -74,30 +74,30 @@
             "instruction": "Platziere ein Takt-Element auf der Zeichenfläche"
         },
         "place-led": {
-            "hint": "Bleibe im Tab E/A und ziehe ein Led-Element rechts vom Takt-Element auf die Zeichenfläche.",
+            "hint": "Bleibe im Tab E/A und ziehe ein LED-Element rechts vom Takt-Element auf die Zeichenfläche.",
             "instruction": "Platziere eine LED auf der Zeichenfläche"
         },
         "title": "Takt und LED: Grundlagen des Signalverlaufs",
         "toggle-cell": {
-            "hint": "Doppelklicke auf eine beliebige Zelle in der Takt-Zeile, um sie zwischen 0 und 1 umzuschalten. Beobachte, wie sich die Led-Zeile sofort aktualisiert, um den neuen Ausgang widerzuspiegeln.",
+            "hint": "Doppelklicke auf eine beliebige Zelle in der Takt-Zeile, um sie zwischen 0 und 1 umzuschalten. Beobachte, wie sich die LED-Zeile sofort aktualisiert, um den neuen Ausgang widerzuspiegeln.",
             "instruction": "Eine Takt-Zelle manuell umschalten"
         }
     },
     "combinational-circuits-one": {
         "add-demux": {
-            "hint": "Deine Schaltung sollte an diesem Punkt zwei InputSwitches, zwei LEDs und eine DEMUX-Schaltung enthalten",
-            "instruction": "Füge eine DEMUX-Schaltung hinzu und verbinde die InputSwitches mit ihren In- und S0-Ports. Verbinde dann jeden Ausgang des DEMUX mit einer anderen LED"
+            "hint": "Deine Schaltung sollte an diesem Punkt zwei Eingangsschalter, zwei LEDs und eine DEMUX-Schaltung enthalten",
+            "instruction": "Füge eine DEMUX-Schaltung hinzu und verbinde die Eingangsschalter mit ihren In- und S0-Ports. Verbinde dann jeden Ausgang des DEMUX mit einer anderen LED"
         },
         "add-inputs": {
-            "hint": "Klicke im linken Bereich auf den Tab E/A und ziehe dann zwei InputSwitch-Elemente auf die Zeichenfläche links von der MUX-Schaltung.",
-            "instruction": "Füge drei InputSwitch-Elemente zur Zeichenfläche hinzu"
+            "hint": "Klicke im linken Bereich auf den Tab E/A und ziehe dann zwei Eingangsschalter-Elemente auf die Zeichenfläche links von der MUX-Schaltung.",
+            "instruction": "Füge drei Eingangsschalter-Elemente zur Zeichenfläche hinzu"
         },
         "add-output": {
             "hint": "Ziehe eine LED aus dem Tab E/A und platziere sie rechts von der MUX-Schaltung. Verbinde dann den Ausgangsport der MUX-Schaltung (rechte Seite) mit dem Eingangsport der LED (linke Seite).",
             "instruction": "Füge eine LED hinzu und verbinde sie mit dem Ausgang der MUX-Schaltung"
         },
         "connect-inputs": {
-            "hint": "Klicke und ziehe von einem InputSwitch-Ausgangsport (rechte Seite) zu einem der Eingangsports des MUX-Gatters (linke Seite). Wiederhole dies für den zweiten Schalter. Verbinde dann den dritten Eingangsschalter mit dem Auswahlport des MUX (unten)",
+            "hint": "Klicke und ziehe von einem Eingangsschalter-Ausgangsport (rechte Seite) zu einem der Eingangsports des MUX-Gatters (linke Seite). Wiederhole dies für den zweiten Schalter. Verbinde dann den dritten Eingangsschalter mit dem Auswahlport des MUX (unten)",
             "instruction": "Verbinde alle Eingangsschalter mit der MUX-Schaltung"
         },
         "description": "Lerne die MUX- und DEMUX-Schaltungen kennen.",
@@ -114,23 +114,23 @@
             "instruction": "Platziere eine MUX-Schaltung auf der Zeichenfläche"
         },
         "prepare-demux": {
-            "hint": "Deine Schaltung sollte an diesem Punkt zwei InputSwitches und zwei LEDs enthalten",
-            "instruction": "Lösche die MUX-Schaltung und einen der InputSwitches. Füge dann eine weitere LED hinzu"
+            "hint": "Deine Schaltung sollte an diesem Punkt zwei Eingangsschalter und zwei LEDs enthalten",
+            "instruction": "Lösche die MUX-Schaltung und einen der Eingangsschalter. Füge dann eine weitere LED hinzu"
         },
         "title": "Kombinatorische Schaltungen I: MUX und DEMUX"
     },
     "combinational-circuits-three": {
         "add-cin-and-gates": {
-            "hint": "Verbinde die Ausgänge der InputSwitches mit den Eingängen der Gatter.",
-            "instruction": "Füge einen weiteren InputSwitch zur Zeichenfläche hinzu und gib ihm die Bezeichnung Cin. Füge dann ein XOR-Gatter, ein UND-Gatter und ein ODER-Gatter hinzu"
+            "hint": "Verbinde die Ausgänge der Eingangsschalter mit den Eingängen der Gatter.",
+            "instruction": "Füge einen weiteren Eingangsschalter zur Zeichenfläche hinzu und gib ihm die Bezeichnung Cin. Füge dann ein XOR-Gatter, ein UND-Gatter und ein ODER-Gatter hinzu"
         },
         "add-half-adder-gates": {
             "hint": "Verwende den Tab Gatter, um das XOR- und das UND-Gatter hinzuzufügen, und dann den Tab E/A, um zwei LEDs hinzuzufügen.",
             "instruction": "Füge ein XOR-Gatter, ein UND-Gatter und zwei LEDs zur Zeichenfläche hinzu. Verbinde dann jedes Gatter mit einer eigenen LED"
         },
         "add-inputs": {
-            "hint": "Klicke im linken Bereich auf den Tab E/A und ziehe dann drei InputSwitch-Elemente auf die Zeichenfläche. Der dritte InputSwitch wird später als Übertrag-Eingang (Cin) verwendet.",
-            "instruction": "Füge zwei InputSwitch-Elemente zur Zeichenfläche hinzu"
+            "hint": "Klicke im linken Bereich auf den Tab E/A und ziehe dann drei Eingangsschalter-Elemente auf die Zeichenfläche. Der dritte Eingangsschalter wird später als Übertrag-Eingang (Cin) verwendet.",
+            "instruction": "Füge zwei Eingangsschalter-Elemente zur Zeichenfläche hinzu"
         },
         "description": "Lerne, eine Addiererschaltung zu bauen.",
         "explain-full-adder": {
@@ -147,8 +147,8 @@
             "instruction": "Verbinde das alte XOR-Gatter und den Cin-Schalter mit dem neuen XOR-Gatter, und verbinde dann das neue XOR-Gatter mit dem Sum-Ausgang. Verbinde außerdem das alte XOR-Gatter und den Cin-Schalter mit dem neuen UND-Gatter. Schließe ab, indem du beide UND-Gatter mit dem ODER-Gatter verbindest und das ODER-Gatter mit Cout"
         },
         "wire-half-adder": {
-            "hint": "Verbinde die Ausgänge der InputSwitches mit den Eingängen der Gatter.",
-            "instruction": "Verbinde die beiden InputSwitches mit dem XOR-Gatter und dem UND-Gatter. Jeder InputSwitch sollte mit beiden Gattern verbunden sein. Das XOR-Gatter erzeugt den Summen-Ausgang, während das UND-Gatter den Übertrags-Ausgang erzeugt"
+            "hint": "Verbinde die Ausgänge der Eingangsschalter mit den Eingängen der Gatter.",
+            "instruction": "Verbinde die beiden Eingangsschalter mit dem XOR-Gatter und dem UND-Gatter. Jeder Eingangsschalter sollte mit beiden Gattern verbunden sein. Das XOR-Gatter erzeugt den Summen-Ausgang, während das UND-Gatter den Übertrags-Ausgang erzeugt"
         }
     },
     "combinational-circuits-two": {
@@ -157,12 +157,12 @@
             "instruction": "Füge vier UND-Gatter und vier LEDs zur Zeichenfläche hinzu und verbinde dann jedes UND-Gatter mit einer der LEDs"
         },
         "add-inputs": {
-            "hint": "Klicke im linken Bereich auf den Tab E/A und ziehe dann zwei InputSwitch-Elemente auf die Zeichenfläche.",
-            "instruction": "Füge zwei InputSwitch-Elemente zur Zeichenfläche hinzu"
+            "hint": "Klicke im linken Bereich auf den Tab E/A und ziehe dann zwei Eingangsschalter-Elemente auf die Zeichenfläche.",
+            "instruction": "Füge zwei Eingangsschalter-Elemente zur Zeichenfläche hinzu"
         },
         "add-not-gates": {
-            "hint": "Klicke im linken Bereich auf den Tab Gatter, ziehe dann zwei NICHT-Gatter-Elemente auf die Zeichenfläche und verbinde die InputSwitches mit ihnen.",
-            "instruction": "Füge zwei NICHT-Gatter zur Zeichenfläche hinzu und verbinde jeden InputSwitch mit einem eigenen NICHT-Gatter"
+            "hint": "Klicke im linken Bereich auf den Tab Gatter, ziehe dann zwei NICHT-Gatter-Elemente auf die Zeichenfläche und verbinde die Eingangsschalter mit ihnen.",
+            "instruction": "Füge zwei NICHT-Gatter zur Zeichenfläche hinzu und verbinde jeden Eingangsschalter mit einem eigenen NICHT-Gatter"
         },
         "description": "Lerne, einen 2-zu-4-Decoder zu bauen.",
         "explain-decoder": {
@@ -171,47 +171,47 @@
         },
         "title": "Kombinatorische Schaltungen II: Decoder",
         "wire-decoder": {
-            "hint": "Jedes UND-Gatter sollte ein Signal von jedem Eingang erhalten. Verwende das ursprüngliche InputSwitch-Signal für eine 1 und den entsprechenden Ausgang des NICHT-Gatters für eine 0.",
-            "instruction": "Verbinde die Ausgänge der NICHT-Gatter und der InputSwitches mit den UND-Gattern, sodass jedes UND-Gatter eine Eingangskombination repräsentiert"
+            "hint": "Jedes UND-Gatter sollte ein Signal von jedem Eingang erhalten. Verwende das ursprüngliche Eingangsschalter-Signal für eine 1 und den entsprechenden Ausgang des NICHT-Gatters für eine 0.",
+            "instruction": "Verbinde die Ausgänge der NICHT-Gatter und der Eingangsschalter mit den UND-Gattern, sodass jedes UND-Gatter eine Eingangskombination repräsentiert"
         }
     },
     "sequential-circuits-one": {
         "add-d-latch": {
             "hint": "Das D-Latch speichert einen einzelnen Eingangswert und vermeidet die ungültige Eingangskombination eines SR-Latches.",
-            "instruction": "Entferne das SR-Latch, während die InputSwitches und LEDs erhalten bleiben. Füge dann ein D-Latch hinzu"
+            "instruction": "Entferne das SR-Latch, während die Eingangsschalter und LEDs erhalten bleiben. Füge dann ein D-Latch hinzu"
         },
         "add-sr-latch": {
-            "hint": "Verwende den Tab Speicher, um ein SR-Latch hinzuzufügen. Verwende dann den Tab E/A, um zwei InputSwitches und zwei LEDs hinzuzufügen.",
-            "instruction": "Füge ein SR-Latch, zwei InputSwitches und zwei LEDs zur Zeichenfläche hinzu"
+            "hint": "Verwende den Tab Speicher, um ein SR-Latch hinzuzufügen. Verwende dann den Tab E/A, um zwei Eingangsschalter und zwei LEDs hinzuzufügen.",
+            "instruction": "Füge ein SR-Latch, zwei Eingangsschalter und zwei LEDs zur Zeichenfläche hinzu"
         },
         "description": "Lerne, Latches zu verwenden.",
         "explain-d-latch": {
             "hint": "",
-            "instruction": "Schalte die InputSwitches um und beobachte das D-Latch. Wenn Enable 1 ist, folgt der Ausgang dem D-Eingang. Wenn Enable 0 ist, behält das Latch seinen vorherigen Wert"
+            "instruction": "Schalte die Eingangsschalter um und beobachte das D-Latch. Wenn Enable 1 ist, folgt der Ausgang dem D-Eingang. Wenn Enable 0 ist, behält das Latch seinen vorherigen Wert"
         },
         "explain-sr-latch": {
             "hint": "",
-            "instruction": "Schalte die InputSwitches um und beobachte, wie das SR-Latch seinen Zustand speichert. Wird der S-Eingang auf 1 gesetzt, wird der Q-Ausgang 1; wird der R-Eingang auf 1 gesetzt, wird Q auf 0 zurückgesetzt. Kehren beide Eingänge auf 0 zurück, behält das Latch seinen letzten Zustand, bis es erneut gesetzt oder zurückgesetzt wird"
+            "instruction": "Schalte die Eingangsschalter um und beobachte, wie das SR-Latch seinen Zustand speichert. Wird der S-Eingang auf 1 gesetzt, wird der Q-Ausgang 1; wird der R-Eingang auf 1 gesetzt, wird Q auf 0 zurückgesetzt. Kehren beide Eingänge auf 0 zurück, behält das Latch seinen letzten Zustand, bis es erneut gesetzt oder zurückgesetzt wird"
         },
         "title": "Sequenzielle Schaltungen I: Latches",
         "wire-d-latch": {
             "hint": "Der D-Eingang ist der zu speichernde Wert. Der Enable-Eingang bestimmt, wann das Latch seinen gespeicherten Wert aktualisiert.",
-            "instruction": "Verbinde einen InputSwitch mit dem D-Eingang und den anderen mit dem Enable-Eingang (E). Verbinde die Ausgänge Q und Q̅ mit den LEDs"
+            "instruction": "Verbinde einen Eingangsschalter mit dem D-Eingang und den anderen mit dem Enable-Eingang (E). Verbinde die Ausgänge Q und Q̅ mit den LEDs"
         },
         "wire-sr-latch": {
-            "hint": "Verbinde einen InputSwitch mit dem Set-Eingang (S) und den anderen mit dem Reset-Eingang (R). Verbinde jeden Ausgang des Latches mit einer anderen LED.",
-            "instruction": "Verbinde die InputSwitches mit den S- und R-Eingängen des SR-Latches. Verbinde dann die Ausgänge Q und Q̅ mit den LEDs"
+            "hint": "Verbinde einen Eingangsschalter mit dem Set-Eingang (S) und den anderen mit dem Reset-Eingang (R). Verbinde jeden Ausgang des Latches mit einer anderen LED.",
+            "instruction": "Verbinde die Eingangsschalter mit den S- und R-Eingängen des SR-Latches. Verbinde dann die Ausgänge Q und Q̅ mit den LEDs"
         }
     },
     "sequential-circuits-three": {
         "add-flipflops": {
-            "hint": "Verwende den Tab Speicher, um die T-Flipflops und einen Takt hinzuzufügen. Verwende dann den Tab E/A, um drei InputSwitches und drei LEDs hinzuzufügen.",
-            "instruction": "Füge drei T-Flipflops, drei InputSwitches, einen Takt und drei LEDs zur Zeichenfläche hinzu"
+            "hint": "Verwende den Tab Speicher, um die T-Flipflops und einen Takt hinzuzufügen. Verwende dann den Tab E/A, um drei Eingangsschalter und drei LEDs hinzuzufügen.",
+            "instruction": "Füge drei T-Flipflops, drei Eingangsschalter, einen Takt und drei LEDs zur Zeichenfläche hinzu"
         },
         "description": "Lerne, eine Zählerschaltung zu bauen.",
         "explain-counter": {
             "hint": "",
-            "instruction": "Schalte alle drei InputSwitches ein und starte den Takt. Beobachte die LEDs, während der Zähler läuft. Die erste LED ändert bei jedem Taktimpuls ihren Zustand, die zweite alle zwei Impulse und die dritte alle vier Impulse, wodurch eine sich wiederholende 3-Bit-Binärzählung von 000 bis 111 angezeigt wird"
+            "instruction": "Schalte alle drei Eingangsschalter ein und starte den Takt. Beobachte die LEDs, während der Zähler läuft. Die erste LED ändert bei jedem Taktimpuls ihren Zustand, die zweite alle zwei Impulse und die dritte alle vier Impulse, wodurch eine sich wiederholende 3-Bit-Binärzählung von 000 bis 111 angezeigt wird"
         },
         "title": "Sequenzielle Schaltungen III: Zähler",
         "wire-clock": {
@@ -227,52 +227,52 @@
             "instruction": "Verbinde den Q-Ausgang des ersten Flipflops mit dem Clk-Eingang des zweiten Flipflops, und verbinde dann den Q-Ausgang des zweiten Flipflops mit dem Clk-Eingang des dritten Flipflops. Jedes Flipflop wird vom Ausgang des vorherigen getaktet, wodurch ein Ripple-Zähler entsteht"
         },
         "wire-t-inputs": {
-            "hint": "Schalte alle drei InputSwitches ein. Ein T-Flipflop schaltet nur um, wenn sein T-Eingang 1 ist.",
-            "instruction": "Verbinde jeden InputSwitch mit dem T-Eingang eines anderen Flipflops"
+            "hint": "Schalte alle drei Eingangsschalter ein. Ein T-Flipflop schaltet nur um, wenn sein T-Eingang 1 ist.",
+            "instruction": "Verbinde jeden Eingangsschalter mit dem T-Eingang eines anderen Flipflops"
         }
     },
     "sequential-circuits-two": {
         "add-d-flipflop": {
-            "hint": "Verwende den Tab Speicher, um ein D-Flipflop und einen Takt hinzuzufügen. Verwende dann den Tab E/A, um zwei InputSwitches und zwei LEDs hinzuzufügen.",
-            "instruction": "Füge ein D-Flipflop, zwei InputSwitches, einen Takt und zwei LEDs zur Zeichenfläche hinzu"
+            "hint": "Verwende den Tab Speicher, um ein D-Flipflop und einen Takt hinzuzufügen. Verwende dann den Tab E/A, um zwei Eingangsschalter und zwei LEDs hinzuzufügen.",
+            "instruction": "Füge ein D-Flipflop, zwei Eingangsschalter, einen Takt und zwei LEDs zur Zeichenfläche hinzu"
         },
         "add-jk-flipflop": {
             "hint": "Das JK-Flipflop hat J- und K-Eingänge anstelle eines D-Eingangs. Lasse die Eingänge Clear und Preset unverbunden.",
-            "instruction": "Ersetze das D-Flipflop durch ein JK-Flipflop, während Takt, InputSwitches und LEDs erhalten bleiben"
+            "instruction": "Ersetze das D-Flipflop durch ein JK-Flipflop, während Takt, Eingangsschalter und LEDs erhalten bleiben"
         },
         "add-t-flipflop": {
             "hint": "Ein T-Flipflop benötigt zusätzlich zum Takt nur einen einzigen Eingang.",
-            "instruction": "Ersetze das JK-Flipflop durch ein T-Flipflop und entferne einen der InputSwitches"
+            "instruction": "Ersetze das JK-Flipflop durch ein T-Flipflop und entferne einen der Eingangsschalter"
         },
         "description": "Lerne etwas über Flipflops.",
         "explain-clear-preset": {
             "hint": "",
-            "instruction": "Verbinde den zweiten InputSwitch entweder mit dem Clear- oder dem Preset-Eingang und beobachte die Wirkung. Anders als der D-Eingang wirken die Eingänge Clear und Preset sofort, ohne auf eine Taktflanke zu warten. Clear erzwingt Q = 0, während Preset Q = 1 erzwingt"
+            "instruction": "Verbinde den zweiten Eingangsschalter entweder mit dem Clear- oder dem Preset-Eingang und beobachte die Wirkung. Anders als der D-Eingang wirken die Eingänge Clear und Preset sofort, ohne auf eine Taktflanke zu warten. Clear erzwingt Q = 0, während Preset Q = 1 erzwingt"
         },
         "explain-d-flipflop": {
             "hint": "",
-            "instruction": "Schalte den D-InputSwitch um und beobachte das D-Flipflop. Der Wert am D-Eingang wird nur bei der aktiven Taktflanke auf den Q-Ausgang übertragen. Zwischen den Taktflanken bleibt der Ausgang unverändert"
+            "instruction": "Schalte den D-Eingangsschalter um und beobachte das D-Flipflop. Der Wert am D-Eingang wird nur bei der aktiven Taktflanke auf den Q-Ausgang übertragen. Zwischen den Taktflanken bleibt der Ausgang unverändert"
         },
         "explain-jk-flipflop": {
             "hint": "",
-            "instruction": "Schalte die InputSwitches um und beobachte das JK-Flipflop. Wenn J = K = 0, hält der Ausgang seinen aktuellen Zustand. Wenn J = 1 und K = 0, wird der Ausgang gesetzt. Wenn J = 0 und K = 1, wird der Ausgang zurückgesetzt. Wenn J = K = 1, schaltet der Ausgang bei jeder aktiven Taktflanke um"
+            "instruction": "Schalte die Eingangsschalter um und beobachte das JK-Flipflop. Wenn J = K = 0, hält der Ausgang seinen aktuellen Zustand. Wenn J = 1 und K = 0, wird der Ausgang gesetzt. Wenn J = 0 und K = 1, wird der Ausgang zurückgesetzt. Wenn J = K = 1, schaltet der Ausgang bei jeder aktiven Taktflanke um"
         },
         "explain-t-flipflop": {
             "hint": "",
-            "instruction": "Schalte den InputSwitch um und beobachte das T-Flipflop. Wenn T = 0, behält der Ausgang seinen aktuellen Zustand. Wenn T = 1, schaltet der Ausgang bei jeder aktiven Taktflanke um. T-Flipflops werden häufig zum Bau von Binärzählern und Frequenzteilern verwendet"
+            "instruction": "Schalte den Eingangsschalter um und beobachte das T-Flipflop. Wenn T = 0, behält der Ausgang seinen aktuellen Zustand. Wenn T = 1, schaltet der Ausgang bei jeder aktiven Taktflanke um. T-Flipflops werden häufig zum Bau von Binärzählern und Frequenzteilern verwendet"
         },
         "title": "Sequenzielle Schaltungen II: Flipflops",
         "wire-d-flipflop": {
             "hint": "Lasse die Eingänge Clear und Preset vorerst unverbunden.",
-            "instruction": "Verbinde einen InputSwitch mit dem D-Eingang, den Takt mit dem Clk-Eingang und die Ausgänge Q und Q̅ mit den LEDs. Der D-Eingang liefert den zu speichernden Wert, während der Takt bestimmt, wann der Wert gespeichert wird"
+            "instruction": "Verbinde einen Eingangsschalter mit dem D-Eingang, den Takt mit dem Clk-Eingang und die Ausgänge Q und Q̅ mit den LEDs. Der D-Eingang liefert den zu speichernden Wert, während der Takt bestimmt, wann der Wert gespeichert wird"
         },
         "wire-jk-flipflop": {
             "hint": "Das JK-Flipflop ändert seinen Ausgang nur bei der aktiven Taktflanke.",
-            "instruction": "Verbinde die InputSwitches mit den J- und K-Eingängen, den Takt mit dem Clk-Eingang und die Ausgänge Q und Q̅ mit den LEDs"
+            "instruction": "Verbinde die Eingangsschalter mit den J- und K-Eingängen, den Takt mit dem Clk-Eingang und die Ausgänge Q und Q̅ mit den LEDs"
         },
         "wire-t-flipflop": {
             "hint": "Lasse die Eingänge Clear und Preset unverbunden.",
-            "instruction": "Verbinde den verbleibenden InputSwitch mit dem T-Eingang, den Takt mit dem Clk-Eingang und die Ausgänge Q und Q̅ mit den LEDs"
+            "instruction": "Verbinde den verbleibenden Eingangsschalter mit dem T-Eingang, den Takt mit dem Clk-Eingang und die Ausgänge Q und Q̅ mit den LEDs"
         }
     },
     "ui-overview": {
@@ -290,7 +290,7 @@
         },
         "description": "Ein geführter Rundgang durch die Hauptoberfläche — Palette, Zeichenfläche, Werkzeugleiste und Eigenschaftenfeld.",
         "editing-cells": {
-            "body": "Du kannst den Signalverlauf auch von Hand bearbeiten. Doppelklicke auf eine beliebige Zelle in der Takt-Zeile, um sie zwischen 0 und 1 umzuschalten — die Led-Zeile aktualisiert sich sofort, um den neuen Ausgang widerzuspiegeln.",
+            "body": "Du kannst den Signalverlauf auch von Hand bearbeiten. Doppelklicke auf eine beliebige Zelle in der Takt-Zeile, um sie zwischen 0 und 1 umzuschalten — die LED-Zeile aktualisiert sich sofort, um den neuen Ausgang widerzuspiegeln.",
             "title": "Zellen manuell bearbeiten"
         },
         "element-properties": {
@@ -307,7 +307,7 @@
         },
         "title": "wiRedPanda-Oberflächentour",
         "waveform-table": {
-            "body": "Die Signalverlaufstabelle zeigt jedes Signal deiner Schaltung. Die Takt-Zeile ist der Eingang, die Led-Zeile ist der berechnete Ausgang. Jede Spalte entspricht einem Simulationszeitschritt — so siehst du genau, wie der Ausgang dem Eingang folgt.",
+            "body": "Die Signalverlaufstabelle zeigt jedes Signal deiner Schaltung. Die Takt-Zeile ist der Eingang, die LED-Zeile ist der berechnete Ausgang. Jede Spalte entspricht einem Simulationszeitschritt — so siehst du genau, wie der Ausgang dem Eingang folgt.",
             "title": "Die Signalverlaufstabelle lesen"
         },
         "waveform-viewer": {
