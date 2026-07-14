@@ -1,15 +1,15 @@
 {
     "basic-and-gate": {
         "add-inputs": {
-            "hint": "點擊左側面板中的「I/O」分頁，然後將兩個 InputSwitch 元件拖曳到畫布上，並放置在及閘的左側。",
-            "instruction": "將兩個 InputSwitch 元件加入畫布"
+            "hint": "點擊左側面板中的「I/O」分頁，然後將兩個 輸入開關 元件拖曳到畫布上，並放置在及閘的左側。",
+            "instruction": "將兩個 輸入開關 元件加入畫布"
         },
         "add-output": {
             "hint": "從「I/O」分頁拖曳一個 LED，並放置在及閘的右側。然後將及閘的輸出埠（右側）連接到 LED 的輸入埠（左側）。",
             "instruction": "新增一個 LED 並將其連接到及閘的輸出"
         },
         "connect-inputs": {
-            "hint": "從 InputSwitch 的輸出埠（右側）點擊並拖曳到及閘的其中一個輸入埠（左側）。對第二個開關重複此操作。",
+            "hint": "從 輸入開關 的輸出埠（右側）點擊並拖曳到及閘的其中一個輸入埠（左側）。對第二個開關重複此操作。",
             "instruction": "將兩個輸入開關都連接到及閘"
         },
         "description": "學習放置邏輯閘、新增輸入與輸出，並將它們連接起來。",
@@ -19,14 +19,14 @@
         },
         "title": "建立一個及閘電路",
         "toggle-observe": {
-            "hint": "點擊 InputSwitch 以切換它。只有當兩個開關都開啟時，LED 才會亮起。這是因為及閘只有在所有輸入都是 1 時才會輸出 1。",
+            "hint": "點擊 輸入開關 以切換它。只有當兩個開關都開啟時，LED 才會亮起。這是因為及閘只有在所有輸入都是 1 時才會輸出 1。",
             "instruction": "切換開關並觀察 LED — 這就是及邏輯！"
         }
     },
     "basic-or-not-gates": {
         "add-inputs": {
-            "hint": "點擊左側面板中的「I/O」分頁，然後將兩個 InputSwitch 元件拖曳到畫布上，並放置在或閘的左側。",
-            "instruction": "將兩個 InputSwitch 元件加入畫布"
+            "hint": "點擊左側面板中的「I/O」分頁，然後將兩個 輸入開關 元件拖曳到畫布上，並放置在或閘的左側。",
+            "instruction": "將兩個 輸入開關 元件加入畫布"
         },
         "add-not-gate": {
             "hint": "拖曳或閘與 LED 之間的導線以將其移除。",
@@ -37,7 +37,7 @@
             "instruction": "新增一個 LED 並將其連接到或閘的輸出"
         },
         "connect-inputs": {
-            "hint": "從 InputSwitch 的輸出埠（右側）點擊並拖曳到或閘的其中一個輸入埠（左側）。對第二個開關重複此操作。",
+            "hint": "從 輸入開關 的輸出埠（右側）點擊並拖曳到或閘的其中一個輸入埠（左側）。對第二個開關重複此操作。",
             "instruction": "將兩個輸入開關都連接到或閘"
         },
         "description": "學習使用或閘與反相閘。",
@@ -66,7 +66,7 @@
         },
         "description": "建立一個最簡單的時脈-LED 電路，並探索波形檢視器：組合模式與手動儲存格編輯。",
         "open-waveform": {
-            "hint": "BeWavedDolphin 會將電路訊號顯示為列。時脈列是輸入，Led 列是輸出。每一欄都是一個模擬時間步。",
+            "hint": "BeWavedDolphin 會將電路訊號顯示為列。時脈列是輸入，LED 列是輸出。每一欄都是一個模擬時間步。",
             "instruction": "波形檢視器現已開啟 — 看一看吧！"
         },
         "place-clock": {
@@ -74,30 +74,30 @@
             "instruction": "在畫布上放置一個時脈元件"
         },
         "place-led": {
-            "hint": "仍在「I/O」分頁中，將一個 Led 元件拖曳到時脈右側的畫布上。",
+            "hint": "仍在「I/O」分頁中，將一個 LED 元件拖曳到時脈右側的畫布上。",
             "instruction": "在畫布上放置一個 LED"
         },
         "title": "時脈與 LED：波形基礎",
         "toggle-cell": {
-            "hint": "在時脈列中雙擊任一儲存格，使其在 0 與 1 之間切換。觀察 Led 列如何立即更新以反映新的輸出。",
+            "hint": "在時脈列中雙擊任一儲存格，使其在 0 與 1 之間切換。觀察 LED 列如何立即更新以反映新的輸出。",
             "instruction": "手動切換一個時脈儲存格"
         }
     },
     "combinational-circuits-one": {
         "add-demux": {
-            "hint": "此時你的電路應該有兩個 InputSwitch、兩個 LED 和一個 DEMUX 電路",
-            "instruction": "新增一個 DEMUX 電路，並將 InputSwitch 連接到它的 In 和 S0 埠。然後將 DEMUX 的每個輸出連接到不同的 LED"
+            "hint": "此時你的電路應該有兩個 輸入開關、兩個 LED 和一個 DEMUX 電路",
+            "instruction": "新增一個 DEMUX 電路，並將 輸入開關 連接到它的 In 和 S0 埠。然後將 DEMUX 的每個輸出連接到不同的 LED"
         },
         "add-inputs": {
-            "hint": "點擊左側面板中的「I/O」分頁，然後將兩個 InputSwitch 元件拖曳到畫布上，並放置在 MUX 電路的左側。",
-            "instruction": "將三個 InputSwitch 元件加入畫布"
+            "hint": "點擊左側面板中的「I/O」分頁，然後將兩個 輸入開關 元件拖曳到畫布上，並放置在 MUX 電路的左側。",
+            "instruction": "將三個 輸入開關 元件加入畫布"
         },
         "add-output": {
             "hint": "從「I/O」分頁拖曳一個 LED，並放置在 MUX 電路的右側。然後將 MUX 電路的輸出埠（右側）連接到 LED 的輸入埠（左側）。",
             "instruction": "新增一個 LED 並將其連接到 MUX 電路的輸出"
         },
         "connect-inputs": {
-            "hint": "從 InputSwitch 的輸出埠（右側）點擊並拖曳到 MUX 閘的其中一個輸入埠（左側）。對第二個開關重複此操作。然後將第三個輸入開關連接到 MUX 的選擇埠（底部）",
+            "hint": "從 輸入開關 的輸出埠（右側）點擊並拖曳到 MUX 閘的其中一個輸入埠（左側）。對第二個開關重複此操作。然後將第三個輸入開關連接到 MUX 的選擇埠（底部）",
             "instruction": "將所有輸入開關連接到 MUX 電路"
         },
         "description": "了解 MUX 與 DEMUX 電路。",
@@ -114,23 +114,23 @@
             "instruction": "在畫布上放置一個 MUX 電路"
         },
         "prepare-demux": {
-            "hint": "此時你的電路應該有兩個 InputSwitch 和兩個 LED",
-            "instruction": "刪除 MUX 電路和其中一個 InputSwitch。然後再新增一個 LED"
+            "hint": "此時你的電路應該有兩個 輸入開關 和兩個 LED",
+            "instruction": "刪除 MUX 電路和其中一個 輸入開關。然後再新增一個 LED"
         },
         "title": "組合電路 I：MUX 與 DEMUX"
     },
     "combinational-circuits-three": {
         "add-cin-and-gates": {
-            "hint": "將 InputSwitch 的輸出連接到閘的輸入。",
-            "instruction": "將另一個 InputSwitch 加入畫布，並將其標記為 Cin。然後新增一個互排或閘、一個及閘和一個或閘"
+            "hint": "將 輸入開關 的輸出連接到閘的輸入。",
+            "instruction": "將另一個 輸入開關 加入畫布，並將其標記為 Cin。然後新增一個互排或閘、一個及閘和一個或閘"
         },
         "add-half-adder-gates": {
             "hint": "使用「閘」分頁新增互排或閘和及閘，然後使用「I/O」分頁新增兩個 LED。",
             "instruction": "將一個互排或閘、一個及閘和兩個 LED 加入畫布。然後將每個閘連接到不同的 LED"
         },
         "add-inputs": {
-            "hint": "點擊左側面板中的「I/O」分頁，然後將三個 InputSwitch 元件拖曳到畫布上。第三個 InputSwitch 稍後將用作進位輸入（Cin）。",
-            "instruction": "將兩個 InputSwitch 元件加入畫布"
+            "hint": "點擊左側面板中的「I/O」分頁，然後將三個 輸入開關 元件拖曳到畫布上。第三個 輸入開關 稍後將用作進位輸入（Cin）。",
+            "instruction": "將兩個 輸入開關 元件加入畫布"
         },
         "description": "學習建立一個加法器電路。",
         "explain-full-adder": {
@@ -147,8 +147,8 @@
             "instruction": "將舊的互排或閘和 Cin 開關連接到新的互排或閘，然後將新的互排或閘連接到 Sum 輸出。同時將舊的互排或閘和 Cin 開關連接到新的及閘。最後將兩個及閘都連接到或閘，並將或閘連接到 Cout，完成整個電路"
         },
         "wire-half-adder": {
-            "hint": "將 InputSwitch 的輸出連接到閘的輸入。",
-            "instruction": "將兩個 InputSwitch 連接到互排或閘和及閘。每個 InputSwitch 都應連接到這兩個閘。互排或閘產生 Sum 輸出，而及閘產生 Carry 輸出"
+            "hint": "將 輸入開關 的輸出連接到閘的輸入。",
+            "instruction": "將兩個 輸入開關 連接到互排或閘和及閘。每個 輸入開關 都應連接到這兩個閘。互排或閘產生 Sum 輸出，而及閘產生 Carry 輸出"
         }
     },
     "combinational-circuits-two": {
@@ -157,12 +157,12 @@
             "instruction": "將四個及閘和四個 LED 加入畫布，然後將每個及閘連接到其中一個 LED"
         },
         "add-inputs": {
-            "hint": "點擊左側面板中的「I/O」分頁，並將兩個 InputSwitch 元件拖曳到畫布上。",
-            "instruction": "將兩個 InputSwitch 元件加入畫布"
+            "hint": "點擊左側面板中的「I/O」分頁，並將兩個 輸入開關 元件拖曳到畫布上。",
+            "instruction": "將兩個 輸入開關 元件加入畫布"
         },
         "add-not-gates": {
-            "hint": "點擊左側面板中的「閘」分頁，然後將兩個反相閘元件拖曳到畫布上，並將 InputSwitch 連接到它們。",
-            "instruction": "將兩個反相閘加入畫布，並將每個 InputSwitch 連接到一個獨立的反相閘"
+            "hint": "點擊左側面板中的「閘」分頁，然後將兩個反相閘元件拖曳到畫布上，並將 輸入開關 連接到它們。",
+            "instruction": "將兩個反相閘加入畫布，並將每個 輸入開關 連接到一個獨立的反相閘"
         },
         "description": "學習建立一個 2 對 4 解碼器。",
         "explain-decoder": {
@@ -171,47 +171,47 @@
         },
         "title": "組合電路 II：解碼器",
         "wire-decoder": {
-            "hint": "每個及閘都應從每個輸入接收一個訊號。對於 1，使用原始的 InputSwitch 訊號；對於 0，使用對應的反相閘輸出。",
-            "instruction": "將反相閘和 InputSwitch 的輸出連接到及閘，使每個及閘代表一種輸入組合"
+            "hint": "每個及閘都應從每個輸入接收一個訊號。對於 1，使用原始的 輸入開關 訊號；對於 0，使用對應的反相閘輸出。",
+            "instruction": "將反相閘和 輸入開關 的輸出連接到及閘，使每個及閘代表一種輸入組合"
         }
     },
     "sequential-circuits-one": {
         "add-d-latch": {
             "hint": "D 閂鎖儲存單一輸入值，並避免了 SR 閂鎖的無效輸入組合。",
-            "instruction": "在保留 InputSwitch 和 LED 的同時移除 SR 閂鎖。然後新增一個 D 閂鎖"
+            "instruction": "在保留 輸入開關 和 LED 的同時移除 SR 閂鎖。然後新增一個 D 閂鎖"
         },
         "add-sr-latch": {
-            "hint": "使用「記憶體」分頁新增一個 SR 閂鎖。然後使用「I/O」分頁新增兩個 InputSwitch 和兩個 LED。",
-            "instruction": "將一個 SR 閂鎖、兩個 InputSwitch 和兩個 LED 加入畫布"
+            "hint": "使用「記憶體」分頁新增一個 SR 閂鎖。然後使用「I/O」分頁新增兩個 輸入開關 和兩個 LED。",
+            "instruction": "將一個 SR 閂鎖、兩個 輸入開關 和兩個 LED 加入畫布"
         },
         "description": "學習使用閂鎖（latch）。",
         "explain-d-latch": {
             "hint": "",
-            "instruction": "切換 InputSwitch 並觀察 D 閂鎖。當 Enable 為 1 時，輸出跟隨 D 輸入。當 Enable 為 0 時，閂鎖會記住其先前的值"
+            "instruction": "切換 輸入開關 並觀察 D 閂鎖。當 Enable 為 1 時，輸出跟隨 D 輸入。當 Enable 為 0 時，閂鎖會記住其先前的值"
         },
         "explain-sr-latch": {
             "hint": "",
-            "instruction": "切換 InputSwitch，觀察 SR 閂鎖如何儲存其狀態。將 S 輸入設為 1 會使 Q 輸出變為 1，而將 R 輸入設為 1 會將 Q 重設為 0。當兩個輸入都恢復為 0 時，閂鎖會記住其最後的狀態，直到再次被設定或重設"
+            "instruction": "切換 輸入開關，觀察 SR 閂鎖如何儲存其狀態。將 S 輸入設為 1 會使 Q 輸出變為 1，而將 R 輸入設為 1 會將 Q 重設為 0。當兩個輸入都恢復為 0 時，閂鎖會記住其最後的狀態，直到再次被設定或重設"
         },
         "title": "循序電路 I：閂鎖",
         "wire-d-latch": {
             "hint": "D 輸入是要儲存的值。Enable 輸入決定閂鎖何時更新其儲存的值。",
-            "instruction": "將一個 InputSwitch 連接到 D 輸入，另一個連接到 Enable（E）輸入。將 Q 和 Q̅ 輸出連接到 LED"
+            "instruction": "將一個 輸入開關 連接到 D 輸入，另一個連接到 Enable（E）輸入。將 Q 和 Q̅ 輸出連接到 LED"
         },
         "wire-sr-latch": {
-            "hint": "將一個 InputSwitch 連接到 Set（S）輸入，另一個連接到 Reset（R）輸入。將閂鎖的每個輸出連接到不同的 LED。",
-            "instruction": "將 InputSwitch 連接到 SR 閂鎖的 S 和 R 輸入。然後將 Q 和 Q̅ 輸出連接到 LED"
+            "hint": "將一個 輸入開關 連接到 Set（S）輸入，另一個連接到 Reset（R）輸入。將閂鎖的每個輸出連接到不同的 LED。",
+            "instruction": "將 輸入開關 連接到 SR 閂鎖的 S 和 R 輸入。然後將 Q 和 Q̅ 輸出連接到 LED"
         }
     },
     "sequential-circuits-three": {
         "add-flipflops": {
-            "hint": "使用「記憶體」分頁新增 T 正反器和一個時脈。然後使用「I/O」分頁新增三個 InputSwitch 和三個 LED。",
-            "instruction": "將三個 T 正反器、三個 InputSwitch、一個時脈和三個 LED 加入畫布"
+            "hint": "使用「記憶體」分頁新增 T 正反器和一個時脈。然後使用「I/O」分頁新增三個 輸入開關 和三個 LED。",
+            "instruction": "將三個 T 正反器、三個 輸入開關、一個時脈和三個 LED 加入畫布"
         },
         "description": "學習建立一個計數器電路。",
         "explain-counter": {
             "hint": "",
-            "instruction": "開啟全部三個 InputSwitch 並啟動時脈。觀察計數器運作時的 LED。第一個 LED 每個時脈脈衝改變一次狀態，第二個每兩個脈衝改變一次，第三個每四個脈衝改變一次，展示從 000 到 111 反覆循環的 3 位元二進位計數"
+            "instruction": "開啟全部三個 輸入開關 並啟動時脈。觀察計數器運作時的 LED。第一個 LED 每個時脈脈衝改變一次狀態，第二個每兩個脈衝改變一次，第三個每四個脈衝改變一次，展示從 000 到 111 反覆循環的 3 位元二進位計數"
         },
         "title": "循序電路 III：計數器",
         "wire-clock": {
@@ -227,52 +227,52 @@
             "instruction": "將第一個正反器的 Q 輸出連接到第二個正反器的 Clk 輸入，然後將第二個正反器的 Q 輸出連接到第三個正反器的 Clk 輸入。每個正反器都由前一個的輸出提供時脈，從而形成一個漣波計數器（ripple counter）"
         },
         "wire-t-inputs": {
-            "hint": "開啟全部三個 InputSwitch。只有當其 T 輸入為 1 時，T 正反器才會翻轉。",
-            "instruction": "將每個 InputSwitch 連接到不同正反器的 T 輸入"
+            "hint": "開啟全部三個 輸入開關。只有當其 T 輸入為 1 時，T 正反器才會翻轉。",
+            "instruction": "將每個 輸入開關 連接到不同正反器的 T 輸入"
         }
     },
     "sequential-circuits-two": {
         "add-d-flipflop": {
-            "hint": "使用「記憶體」分頁新增一個 D 正反器和一個時脈。然後使用「I/O」分頁新增兩個 InputSwitch 和兩個 LED。",
-            "instruction": "將一個 D 正反器、兩個 InputSwitch、一個時脈和兩個 LED 加入畫布"
+            "hint": "使用「記憶體」分頁新增一個 D 正反器和一個時脈。然後使用「I/O」分頁新增兩個 輸入開關 和兩個 LED。",
+            "instruction": "將一個 D 正反器、兩個 輸入開關、一個時脈和兩個 LED 加入畫布"
         },
         "add-jk-flipflop": {
             "hint": "JK 正反器具有 J 和 K 輸入，而不是 D 輸入。讓 Clear 和 Preset 輸入保持未連接狀態。",
-            "instruction": "在保留時脈、InputSwitch 和 LED 的同時，將 D 正反器替換為 JK 正反器"
+            "instruction": "在保留時脈、輸入開關 和 LED 的同時，將 D 正反器替換為 JK 正反器"
         },
         "add-t-flipflop": {
             "hint": "T 正反器除時脈外只需要一個輸入。",
-            "instruction": "將 JK 正反器替換為 T 正反器，並移除其中一個 InputSwitch"
+            "instruction": "將 JK 正反器替換為 T 正反器，並移除其中一個 輸入開關"
         },
         "description": "了解正反器。",
         "explain-clear-preset": {
             "hint": "",
-            "instruction": "將第二個 InputSwitch 連接到 Clear 或 Preset 輸入，觀察其效果。與 D 輸入不同，Clear 和 Preset 輸入會立即生效，無需等待時脈邊緣。Clear 強制 Q 為 0，而 Preset 強制 Q 為 1"
+            "instruction": "將第二個 輸入開關 連接到 Clear 或 Preset 輸入，觀察其效果。與 D 輸入不同，Clear 和 Preset 輸入會立即生效，無需等待時脈邊緣。Clear 強制 Q 為 0，而 Preset 強制 Q 為 1"
         },
         "explain-d-flipflop": {
             "hint": "",
-            "instruction": "切換 D InputSwitch 並觀察 D 正反器。D 輸入上的值只在有效時脈邊緣被複製到 Q 輸出。在時脈邊緣之間，輸出保持不變"
+            "instruction": "切換 D 輸入開關 並觀察 D 正反器。D 輸入上的值只在有效時脈邊緣被複製到 Q 輸出。在時脈邊緣之間，輸出保持不變"
         },
         "explain-jk-flipflop": {
             "hint": "",
-            "instruction": "切換 InputSwitch 並觀察 JK 正反器。當 J = K = 0 時，輸出保持目前狀態。當 J = 1 且 K = 0 時，輸出被設定。當 J = 0 且 K = 1 時，輸出被重設。當 J = K = 1 時，輸出在每個有效時脈邊緣翻轉"
+            "instruction": "切換 輸入開關 並觀察 JK 正反器。當 J = K = 0 時，輸出保持目前狀態。當 J = 1 且 K = 0 時，輸出被設定。當 J = 0 且 K = 1 時，輸出被重設。當 J = K = 1 時，輸出在每個有效時脈邊緣翻轉"
         },
         "explain-t-flipflop": {
             "hint": "",
-            "instruction": "切換 InputSwitch 並觀察 T 正反器。當 T = 0 時，輸出保持目前狀態。當 T = 1 時，輸出在每個有效時脈邊緣翻轉。T 正反器常用於建立二進位計數器和分頻器"
+            "instruction": "切換 輸入開關 並觀察 T 正反器。當 T = 0 時，輸出保持目前狀態。當 T = 1 時，輸出在每個有效時脈邊緣翻轉。T 正反器常用於建立二進位計數器和分頻器"
         },
         "title": "循序電路 II：正反器",
         "wire-d-flipflop": {
             "hint": "暫時讓 Clear 和 Preset 輸入保持未連接狀態。",
-            "instruction": "將一個 InputSwitch 連接到 D 輸入，將時脈連接到 Clk 輸入，並將 Q 和 Q̅ 輸出連接到 LED。D 輸入提供要儲存的值，而時脈決定何時儲存該值"
+            "instruction": "將一個 輸入開關 連接到 D 輸入，將時脈連接到 Clk 輸入，並將 Q 和 Q̅ 輸出連接到 LED。D 輸入提供要儲存的值，而時脈決定何時儲存該值"
         },
         "wire-jk-flipflop": {
             "hint": "JK 正反器只在有效時脈邊緣改變其輸出。",
-            "instruction": "將 InputSwitch 連接到 J 和 K 輸入，將時脈連接到 Clk 輸入，並將 Q 和 Q̅ 輸出連接到 LED"
+            "instruction": "將 輸入開關 連接到 J 和 K 輸入，將時脈連接到 Clk 輸入，並將 Q 和 Q̅ 輸出連接到 LED"
         },
         "wire-t-flipflop": {
             "hint": "讓 Clear 和 Preset 輸入保持未連接狀態。",
-            "instruction": "將剩餘的 InputSwitch 連接到 T 輸入，將時脈連接到 Clk 輸入，並將 Q 和 Q̅ 輸出連接到 LED"
+            "instruction": "將剩餘的 輸入開關 連接到 T 輸入，將時脈連接到 Clk 輸入，並將 Q 和 Q̅ 輸出連接到 LED"
         }
     },
     "ui-overview": {
@@ -290,7 +290,7 @@
         },
         "description": "主介面的引導式導覽 — 面板、畫布、工具列和屬性面板。",
         "editing-cells": {
-            "body": "你也可以手動編輯波形。在時脈列中雙擊任一儲存格，使其在 0 與 1 之間切換 — Led 列會立即更新以反映新的輸出。",
+            "body": "你也可以手動編輯波形。在時脈列中雙擊任一儲存格，使其在 0 與 1 之間切換 — LED 列會立即更新以反映新的輸出。",
             "title": "手動編輯儲存格"
         },
         "element-properties": {
@@ -307,7 +307,7 @@
         },
         "title": "wiRedPanda 介面導覽",
         "waveform-table": {
-            "body": "波形表顯示電路中的每個訊號。時脈列是輸入；Led 列是計算出的輸出。每一欄都是一個模擬時間步 — 你可以清楚地看到輸出如何跟隨輸入變化。",
+            "body": "波形表顯示電路中的每個訊號。時脈列是輸入；LED 列是計算出的輸出。每一欄都是一個模擬時間步 — 你可以清楚地看到輸出如何跟隨輸入變化。",
             "title": "讀取波形表"
         },
         "waveform-viewer": {

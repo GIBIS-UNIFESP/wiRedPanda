@@ -1,15 +1,15 @@
 {
     "basic-and-gate": {
         "add-inputs": {
-            "hint": "Klikk på fanen I/O i det venstre panelet, dra deretter to InputSwitch-elementer til arbeidsflaten og plasser dem til venstre for Og-porten.",
-            "instruction": "Legg til to InputSwitch-elementer på arbeidsflaten"
+            "hint": "Klikk på fanen I/O i det venstre panelet, dra deretter to Inngangsbryter-elementer til arbeidsflaten og plasser dem til venstre for Og-porten.",
+            "instruction": "Legg til to Inngangsbryter-elementer på arbeidsflaten"
         },
         "add-output": {
             "hint": "Dra en LED fra fanen I/O og plasser den til høyre for Og-porten. Koble deretter Og-portens utgangsport (høyre side) til LED-ens inngangsport (venstre side).",
             "instruction": "Legg til en LED og koble den til Og-portens utgang"
         },
         "connect-inputs": {
-            "hint": "Klikk og dra fra en utgangsport på en InputSwitch (høyre side) til en av Og-portens inngangsporter (venstre side). Gjenta for den andre bryteren.",
+            "hint": "Klikk og dra fra en utgangsport på en Inngangsbryter (høyre side) til en av Og-portens inngangsporter (venstre side). Gjenta for den andre bryteren.",
             "instruction": "Koble begge inngangsbryterne til Og-porten"
         },
         "description": "Lær å plassere logiske porter, legge til innganger og utganger, og koble dem sammen.",
@@ -19,14 +19,14 @@
         },
         "title": "Bygge en Og-port-krets",
         "toggle-observe": {
-            "hint": "Klikk på en InputSwitch for å slå den om. LED-en lyser bare når BEGGE bryterne er PÅ. Det er fordi Og bare gir 1 i utgang når alle innganger er 1.",
+            "hint": "Klikk på en Inngangsbryter for å slå den om. LED-en lyser bare når BEGGE bryterne er PÅ. Det er fordi Og bare gir 1 i utgang når alle innganger er 1.",
             "instruction": "Slå om bryterne og observer LED-en — dette er Og-logikk!"
         }
     },
     "basic-or-not-gates": {
         "add-inputs": {
-            "hint": "Klikk på fanen I/O i det venstre panelet, dra deretter to InputSwitch-elementer til arbeidsflaten og plasser dem til venstre for Eller-porten.",
-            "instruction": "Legg til to InputSwitch-elementer på arbeidsflaten"
+            "hint": "Klikk på fanen I/O i det venstre panelet, dra deretter to Inngangsbryter-elementer til arbeidsflaten og plasser dem til venstre for Eller-porten.",
+            "instruction": "Legg til to Inngangsbryter-elementer på arbeidsflaten"
         },
         "add-not-gate": {
             "hint": "Dra i ledningen mellom Eller-porten og LED-en for å fjerne den.",
@@ -37,7 +37,7 @@
             "instruction": "Legg til en LED og koble den til Eller-portens utgang"
         },
         "connect-inputs": {
-            "hint": "Klikk og dra fra en utgangsport på en InputSwitch (høyre side) til en av Eller-portens inngangsporter (venstre side). Gjenta for den andre bryteren.",
+            "hint": "Klikk og dra fra en utgangsport på en Inngangsbryter (høyre side) til en av Eller-portens inngangsporter (venstre side). Gjenta for den andre bryteren.",
             "instruction": "Koble begge inngangsbryterne til Eller-porten"
         },
         "description": "Lær å bruke Eller- og Ikke-portene.",
@@ -66,7 +66,7 @@
         },
         "description": "Bygg en minimal Klokke-LED-krets og utforsk bølgeformviseren: kombinatorisk modus og manuell celleredigering.",
         "open-waveform": {
-            "hint": "BeWavedDolphin viser kretsens signaler som rader. Klokke-raden er inngangen, og Led-raden er utgangen. Hver kolonne er ett simuleringstidssteg.",
+            "hint": "BeWavedDolphin viser kretsens signaler som rader. Klokke-raden er inngangen, og LED-raden er utgangen. Hver kolonne er ett simuleringstidssteg.",
             "instruction": "Bølgeformviseren er nå åpen — ta en titt!"
         },
         "place-clock": {
@@ -74,30 +74,30 @@
             "instruction": "Plasser et Klokke-element på arbeidsflaten"
         },
         "place-led": {
-            "hint": "Fortsatt på fanen I/O, dra et Led-element til arbeidsflaten til høyre for Klokken.",
+            "hint": "Fortsatt på fanen I/O, dra et LED-element til arbeidsflaten til høyre for Klokken.",
             "instruction": "Plasser en LED på arbeidsflaten"
         },
         "title": "Klokke og LED: grunnleggende om bølgeformer",
         "toggle-cell": {
-            "hint": "Dobbeltklikk på en hvilken som helst celle i Klokke-raden for å veksle den mellom 0 og 1. Se hvordan Led-raden oppdateres umiddelbart for å gjenspeile den nye utgangen.",
+            "hint": "Dobbeltklikk på en hvilken som helst celle i Klokke-raden for å veksle den mellom 0 og 1. Se hvordan LED-raden oppdateres umiddelbart for å gjenspeile den nye utgangen.",
             "instruction": "Slå om en Klokke-celle manuelt"
         }
     },
     "combinational-circuits-one": {
         "add-demux": {
-            "hint": "Kretsen din bør nå ha to InputSwitch-er, to LED-er og en DEMUX-krets",
-            "instruction": "Legg til en DEMUX-krets og koble InputSwitch-ene til dens In- og S0-porter. Koble deretter hver av DEMUX-ens utganger til en annen LED"
+            "hint": "Kretsen din bør nå ha to Inngangsbryter-er, to LED-er og en DEMUX-krets",
+            "instruction": "Legg til en DEMUX-krets og koble Inngangsbryter-ene til dens In- og S0-porter. Koble deretter hver av DEMUX-ens utganger til en annen LED"
         },
         "add-inputs": {
-            "hint": "Klikk på fanen I/O i det venstre panelet, dra deretter to InputSwitch-elementer til arbeidsflaten og plasser dem til venstre for MUX-kretsen.",
-            "instruction": "Legg til tre InputSwitch-elementer på arbeidsflaten"
+            "hint": "Klikk på fanen I/O i det venstre panelet, dra deretter to Inngangsbryter-elementer til arbeidsflaten og plasser dem til venstre for MUX-kretsen.",
+            "instruction": "Legg til tre Inngangsbryter-elementer på arbeidsflaten"
         },
         "add-output": {
             "hint": "Dra en LED fra fanen I/O og plasser den til høyre for MUX-kretsen. Koble deretter MUX-kretsens utgangsport (høyre side) til LED-ens inngangsport (venstre side).",
             "instruction": "Legg til en LED og koble den til MUX-kretsens utgang"
         },
         "connect-inputs": {
-            "hint": "Klikk og dra fra en utgangsport på en InputSwitch (høyre side) til en av MUX-portens inngangsporter (venstre side). Gjenta for den andre bryteren. Koble deretter den tredje inngangsbryteren til MUX-ens valgport (nederst)",
+            "hint": "Klikk og dra fra en utgangsport på en Inngangsbryter (høyre side) til en av MUX-portens inngangsporter (venstre side). Gjenta for den andre bryteren. Koble deretter den tredje inngangsbryteren til MUX-ens valgport (nederst)",
             "instruction": "Koble alle inngangsbrytere til MUX-kretsen"
         },
         "description": "Lær om MUX- og DEMUX-kretsene.",
@@ -114,23 +114,23 @@
             "instruction": "Plasser en MUX-krets på arbeidsflaten"
         },
         "prepare-demux": {
-            "hint": "Kretsen din bør nå ha to InputSwitch-er og to LED-er",
-            "instruction": "Slett MUX-kretsen og en av InputSwitch-ene. Legg deretter til en LED til"
+            "hint": "Kretsen din bør nå ha to Inngangsbryter-er og to LED-er",
+            "instruction": "Slett MUX-kretsen og en av Inngangsbryter-ene. Legg deretter til en LED til"
         },
         "title": "Kombinatoriske kretser I: MUX og DEMUX"
     },
     "combinational-circuits-three": {
         "add-cin-and-gates": {
-            "hint": "Koble utgangene fra InputSwitch-ene til portenes innganger.",
-            "instruction": "Legg til enda en InputSwitch på arbeidsflaten og gi den etiketten Cin. Legg deretter til en Eksklusiv-eller-port, en Og-port og en Eller-port"
+            "hint": "Koble utgangene fra Inngangsbryter-ene til portenes innganger.",
+            "instruction": "Legg til enda en Inngangsbryter på arbeidsflaten og gi den etiketten Cin. Legg deretter til en Eksklusiv-eller-port, en Og-port og en Eller-port"
         },
         "add-half-adder-gates": {
             "hint": "Bruk fanen Porter til å legge til Eksklusiv-eller- og Og-portene, og bruk deretter fanen I/O til å legge til to LED-er.",
             "instruction": "Legg til en Eksklusiv-eller-port, en Og-port og to LED-er på arbeidsflaten. Koble deretter hver port til en annen LED"
         },
         "add-inputs": {
-            "hint": "Klikk på fanen I/O i det venstre panelet, dra deretter tre InputSwitch-elementer til arbeidsflaten. Den tredje InputSwitch-en brukes senere som inngående mente (Cin).",
-            "instruction": "Legg til to InputSwitch-elementer på arbeidsflaten"
+            "hint": "Klikk på fanen I/O i det venstre panelet, dra deretter tre Inngangsbryter-elementer til arbeidsflaten. Den tredje Inngangsbryter-en brukes senere som inngående mente (Cin).",
+            "instruction": "Legg til to Inngangsbryter-elementer på arbeidsflaten"
         },
         "description": "Lær å bygge en adderkrets.",
         "explain-full-adder": {
@@ -147,8 +147,8 @@
             "instruction": "Koble den gamle Eksklusiv-eller-porten og Cin-bryteren til den nye Eksklusiv-eller-porten, og koble deretter den nye Eksklusiv-eller-porten til Sum-utgangen. Koble også den gamle Eksklusiv-eller-porten og Cin-bryteren til den nye Og-porten. Avslutt med å koble begge Og-portene til Eller-porten, og Eller-porten til Cout"
         },
         "wire-half-adder": {
-            "hint": "Koble utgangene fra InputSwitch-ene til portenes innganger.",
-            "instruction": "Koble de to InputSwitch-ene til Eksklusiv-eller-porten og Og-porten. Hver InputSwitch bør kobles til begge portene. Eksklusiv-eller-porten produserer Sum-utgangen, mens Og-porten produserer Carry-utgangen"
+            "hint": "Koble utgangene fra Inngangsbryter-ene til portenes innganger.",
+            "instruction": "Koble de to Inngangsbryter-ene til Eksklusiv-eller-porten og Og-porten. Hver Inngangsbryter bør kobles til begge portene. Eksklusiv-eller-porten produserer Sum-utgangen, mens Og-porten produserer Carry-utgangen"
         }
     },
     "combinational-circuits-two": {
@@ -157,12 +157,12 @@
             "instruction": "Legg til fire Og-porter og fire LED-er på arbeidsflaten, og koble deretter hver Og-port til en av LED-ene"
         },
         "add-inputs": {
-            "hint": "Klikk på fanen I/O i det venstre panelet, og dra to InputSwitch-elementer til arbeidsflaten.",
-            "instruction": "Legg til to InputSwitch-elementer på arbeidsflaten"
+            "hint": "Klikk på fanen I/O i det venstre panelet, og dra to Inngangsbryter-elementer til arbeidsflaten.",
+            "instruction": "Legg til to Inngangsbryter-elementer på arbeidsflaten"
         },
         "add-not-gates": {
-            "hint": "Klikk på fanen Porter i det venstre panelet, dra deretter to Ikke-port-elementer til arbeidsflaten og koble InputSwitch-ene til dem.",
-            "instruction": "Legg til to Ikke-porter på arbeidsflaten og koble hver InputSwitch til en egen Ikke-port"
+            "hint": "Klikk på fanen Porter i det venstre panelet, dra deretter to Ikke-port-elementer til arbeidsflaten og koble Inngangsbryter-ene til dem.",
+            "instruction": "Legg til to Ikke-porter på arbeidsflaten og koble hver Inngangsbryter til en egen Ikke-port"
         },
         "description": "Lær å bygge en 2-til-4-dekoder.",
         "explain-decoder": {
@@ -171,47 +171,47 @@
         },
         "title": "Kombinatoriske kretser II: Dekoder",
         "wire-decoder": {
-            "hint": "Hver Og-port bør motta ett signal fra hver inngang. Bruk det opprinnelige InputSwitch-signalet for en 1-er og den tilsvarende Ikke-port-utgangen for en 0-er.",
-            "instruction": "Koble utgangene fra Ikke-portene og InputSwitch-ene til Og-portene, slik at hver Og-port representerer én inngangskombinasjon"
+            "hint": "Hver Og-port bør motta ett signal fra hver inngang. Bruk det opprinnelige Inngangsbryter-signalet for en 1-er og den tilsvarende Ikke-port-utgangen for en 0-er.",
+            "instruction": "Koble utgangene fra Ikke-portene og Inngangsbryter-ene til Og-portene, slik at hver Og-port representerer én inngangskombinasjon"
         }
     },
     "sequential-circuits-one": {
         "add-d-latch": {
             "hint": "D-latchen lagrer én enkelt inngangsverdi og unngår SR-latchens ugyldige inngangskombinasjon.",
-            "instruction": "Fjern SR-latchen mens InputSwitch-ene og LED-ene beholdes. Legg deretter til en D-latch"
+            "instruction": "Fjern SR-latchen mens Inngangsbryter-ene og LED-ene beholdes. Legg deretter til en D-latch"
         },
         "add-sr-latch": {
-            "hint": "Bruk fanen Minne til å legge til en SR-latch. Bruk deretter fanen I/O til å legge til to InputSwitch-er og to LED-er.",
-            "instruction": "Legg til en SR-latch, to InputSwitch-er og to LED-er på arbeidsflaten"
+            "hint": "Bruk fanen Minne til å legge til en SR-latch. Bruk deretter fanen I/O til å legge til to Inngangsbryter-er og to LED-er.",
+            "instruction": "Legg til en SR-latch, to Inngangsbryter-er og to LED-er på arbeidsflaten"
         },
         "description": "Lær å bruke latcher.",
         "explain-d-latch": {
             "hint": "",
-            "instruction": "Slå om InputSwitch-ene og observer D-latchen. Når Enable er 1, følger utgangen D-inngangen. Når Enable er 0, husker latchen sin forrige verdi"
+            "instruction": "Slå om Inngangsbryter-ene og observer D-latchen. Når Enable er 1, følger utgangen D-inngangen. Når Enable er 0, husker latchen sin forrige verdi"
         },
         "explain-sr-latch": {
             "hint": "",
-            "instruction": "Slå om InputSwitch-ene og observer hvordan SR-latchen lagrer tilstanden sin. Å sette S-inngangen til 1 gjør at Q-utgangen blir 1, mens å sette R-inngangen til 1 tilbakestiller Q til 0. Når begge inngangene går tilbake til 0, husker latchen sin siste tilstand til den settes eller tilbakestilles igjen"
+            "instruction": "Slå om Inngangsbryter-ene og observer hvordan SR-latchen lagrer tilstanden sin. Å sette S-inngangen til 1 gjør at Q-utgangen blir 1, mens å sette R-inngangen til 1 tilbakestiller Q til 0. Når begge inngangene går tilbake til 0, husker latchen sin siste tilstand til den settes eller tilbakestilles igjen"
         },
         "title": "Sekvensielle kretser I: Latcher",
         "wire-d-latch": {
             "hint": "D-inngangen er verdien som skal lagres. Enable-inngangen avgjør når latchen oppdaterer den lagrede verdien.",
-            "instruction": "Koble én InputSwitch til D-inngangen og den andre til Enable-inngangen (E). Koble Q- og Q̅-utgangene til LED-ene"
+            "instruction": "Koble én Inngangsbryter til D-inngangen og den andre til Enable-inngangen (E). Koble Q- og Q̅-utgangene til LED-ene"
         },
         "wire-sr-latch": {
-            "hint": "Koble én InputSwitch til Set-inngangen (S) og den andre til Reset-inngangen (R). Koble hver utgang fra latchen til en annen LED.",
-            "instruction": "Koble InputSwitch-ene til S- og R-inngangene på SR-latchen. Koble deretter Q- og Q̅-utgangene til LED-ene"
+            "hint": "Koble én Inngangsbryter til Set-inngangen (S) og den andre til Reset-inngangen (R). Koble hver utgang fra latchen til en annen LED.",
+            "instruction": "Koble Inngangsbryter-ene til S- og R-inngangene på SR-latchen. Koble deretter Q- og Q̅-utgangene til LED-ene"
         }
     },
     "sequential-circuits-three": {
         "add-flipflops": {
-            "hint": "Bruk fanen Minne til å legge til T-vippekretsene og en Klokke. Bruk deretter fanen I/O til å legge til tre InputSwitch-er og tre LED-er.",
-            "instruction": "Legg til tre T-vippekretser, tre InputSwitch-er, en Klokke og tre LED-er på arbeidsflaten"
+            "hint": "Bruk fanen Minne til å legge til T-vippekretsene og en Klokke. Bruk deretter fanen I/O til å legge til tre Inngangsbryter-er og tre LED-er.",
+            "instruction": "Legg til tre T-vippekretser, tre Inngangsbryter-er, en Klokke og tre LED-er på arbeidsflaten"
         },
         "description": "Lær å bygge en tellerkrets.",
         "explain-counter": {
             "hint": "",
-            "instruction": "Slå på alle tre InputSwitch-ene og start Klokken. Observer LED-ene mens telleren kjører. Den første LED-en endrer tilstand ved hver klokkepuls, den andre endres hver andre puls, og den tredje endres hver fjerde puls, og viser en gjentakende 3-bits binær telling fra 000 til 111"
+            "instruction": "Slå på alle tre Inngangsbryter-ene og start Klokken. Observer LED-ene mens telleren kjører. Den første LED-en endrer tilstand ved hver klokkepuls, den andre endres hver andre puls, og den tredje endres hver fjerde puls, og viser en gjentakende 3-bits binær telling fra 000 til 111"
         },
         "title": "Sekvensielle kretser III: Teller",
         "wire-clock": {
@@ -227,52 +227,52 @@
             "instruction": "Koble Q-utgangen på den første vippekretsen til Clk-inngangen på den andre vippekretsen, og koble deretter Q-utgangen på den andre vippekretsen til Clk-inngangen på den tredje vippekretsen. Hver vippekrets klokkes av utgangen til den forrige, noe som skaper en asynkron teller (ripple counter)"
         },
         "wire-t-inputs": {
-            "hint": "Slå på alle tre InputSwitch-ene. En T-vippekrets veksler bare når T-inngangen er 1.",
-            "instruction": "Koble hver InputSwitch til T-inngangen på en annen vippekrets"
+            "hint": "Slå på alle tre Inngangsbryter-ene. En T-vippekrets veksler bare når T-inngangen er 1.",
+            "instruction": "Koble hver Inngangsbryter til T-inngangen på en annen vippekrets"
         }
     },
     "sequential-circuits-two": {
         "add-d-flipflop": {
-            "hint": "Bruk fanen Minne til å legge til en D-vippekrets og en Klokke. Bruk deretter fanen I/O til å legge til to InputSwitch-er og to LED-er.",
-            "instruction": "Legg til en D-vippekrets, to InputSwitch-er, en Klokke og to LED-er på arbeidsflaten"
+            "hint": "Bruk fanen Minne til å legge til en D-vippekrets og en Klokke. Bruk deretter fanen I/O til å legge til to Inngangsbryter-er og to LED-er.",
+            "instruction": "Legg til en D-vippekrets, to Inngangsbryter-er, en Klokke og to LED-er på arbeidsflaten"
         },
         "add-jk-flipflop": {
             "hint": "JK-vippekretsen har J- og K-innganger i stedet for en D-inngang. La Clear- og Preset-inngangene være uten kobling.",
-            "instruction": "Erstatt D-vippekretsen med en JK-vippekrets mens Klokken, InputSwitch-ene og LED-ene beholdes"
+            "instruction": "Erstatt D-vippekretsen med en JK-vippekrets mens Klokken, Inngangsbryter-ene og LED-ene beholdes"
         },
         "add-t-flipflop": {
             "hint": "En T-vippekrets krever bare én enkelt inngang i tillegg til klokken.",
-            "instruction": "Erstatt JK-vippekretsen med en T-vippekrets og fjern en av InputSwitch-ene"
+            "instruction": "Erstatt JK-vippekretsen med en T-vippekrets og fjern en av Inngangsbryter-ene"
         },
         "description": "Lær om vippekretser (flip-flops).",
         "explain-clear-preset": {
             "hint": "",
-            "instruction": "Koble den andre InputSwitch-en til enten Clear- eller Preset-inngangen, og observer effekten. I motsetning til D-inngangen virker Clear- og Preset-inngangene umiddelbart uten å vente på en klokkeflanke. Clear tvinger Q til 0, mens Preset tvinger Q til 1"
+            "instruction": "Koble den andre Inngangsbryter-en til enten Clear- eller Preset-inngangen, og observer effekten. I motsetning til D-inngangen virker Clear- og Preset-inngangene umiddelbart uten å vente på en klokkeflanke. Clear tvinger Q til 0, mens Preset tvinger Q til 1"
         },
         "explain-d-flipflop": {
             "hint": "",
-            "instruction": "Slå om D-InputSwitch-en og observer D-vippekretsen. Verdien på D-inngangen kopieres til Q-utgangen bare ved den aktive klokkeflanken. Mellom klokkeflankene forblir utgangen uendret"
+            "instruction": "Slå om D-Inngangsbryter-en og observer D-vippekretsen. Verdien på D-inngangen kopieres til Q-utgangen bare ved den aktive klokkeflanken. Mellom klokkeflankene forblir utgangen uendret"
         },
         "explain-jk-flipflop": {
             "hint": "",
-            "instruction": "Slå om InputSwitch-ene og observer JK-vippekretsen. Når J = K = 0, holder utgangen sin nåværende tilstand. Når J = 1 og K = 0, settes utgangen. Når J = 0 og K = 1, tilbakestilles utgangen. Når J = K = 1, veksler utgangen ved hver aktive klokkeflanke"
+            "instruction": "Slå om Inngangsbryter-ene og observer JK-vippekretsen. Når J = K = 0, holder utgangen sin nåværende tilstand. Når J = 1 og K = 0, settes utgangen. Når J = 0 og K = 1, tilbakestilles utgangen. Når J = K = 1, veksler utgangen ved hver aktive klokkeflanke"
         },
         "explain-t-flipflop": {
             "hint": "",
-            "instruction": "Slå om InputSwitch-en og observer T-vippekretsen. Når T = 0, holder utgangen sin nåværende tilstand. Når T = 1, veksler utgangen ved hver aktive klokkeflanke. T-vippekretser brukes ofte til å bygge binære tellere og frekvensdelere"
+            "instruction": "Slå om Inngangsbryter-en og observer T-vippekretsen. Når T = 0, holder utgangen sin nåværende tilstand. Når T = 1, veksler utgangen ved hver aktive klokkeflanke. T-vippekretser brukes ofte til å bygge binære tellere og frekvensdelere"
         },
         "title": "Sekvensielle kretser II: Vippekretser",
         "wire-d-flipflop": {
             "hint": "La Clear- og Preset-inngangene være uten kobling foreløpig.",
-            "instruction": "Koble én InputSwitch til D-inngangen, Klokken til Clk-inngangen, og Q- og Q̅-utgangene til LED-ene. D-inngangen gir verdien som skal lagres, mens Klokken avgjør når verdien lagres"
+            "instruction": "Koble én Inngangsbryter til D-inngangen, Klokken til Clk-inngangen, og Q- og Q̅-utgangene til LED-ene. D-inngangen gir verdien som skal lagres, mens Klokken avgjør når verdien lagres"
         },
         "wire-jk-flipflop": {
             "hint": "JK-vippekretsen endrer bare utgangen sin ved den aktive klokkeflanken.",
-            "instruction": "Koble InputSwitch-ene til J- og K-inngangene, Klokken til Clk-inngangen, og Q- og Q̅-utgangene til LED-ene"
+            "instruction": "Koble Inngangsbryter-ene til J- og K-inngangene, Klokken til Clk-inngangen, og Q- og Q̅-utgangene til LED-ene"
         },
         "wire-t-flipflop": {
             "hint": "La Clear- og Preset-inngangene være uten kobling.",
-            "instruction": "Koble den gjenværende InputSwitch-en til T-inngangen, Klokken til Clk-inngangen, og Q- og Q̅-utgangene til LED-ene"
+            "instruction": "Koble den gjenværende Inngangsbryter-en til T-inngangen, Klokken til Clk-inngangen, og Q- og Q̅-utgangene til LED-ene"
         }
     },
     "ui-overview": {
@@ -290,7 +290,7 @@
         },
         "description": "En guidet gjennomgang av hovedgrensesnittet — palett, arbeidsflate, verktøylinje og egenskapspanel.",
         "editing-cells": {
-            "body": "Du kan også redigere bølgeformen for hånd. Dobbeltklikk på en hvilken som helst celle i Klokke-raden for å veksle den mellom 0 og 1 — Led-raden oppdateres umiddelbart for å gjenspeile den nye utgangen.",
+            "body": "Du kan også redigere bølgeformen for hånd. Dobbeltklikk på en hvilken som helst celle i Klokke-raden for å veksle den mellom 0 og 1 — LED-raden oppdateres umiddelbart for å gjenspeile den nye utgangen.",
             "title": "Redigere celler manuelt"
         },
         "element-properties": {
@@ -307,7 +307,7 @@
         },
         "title": "Omvisning i wiRedPandas grensesnitt",
         "waveform-table": {
-            "body": "Bølgeformtabellen viser hvert signal i kretsen din. Klokke-raden er inngangen; Led-raden er den beregnede utgangen. Hver kolonne er ett simuleringstidssteg — du kan se nøyaktig hvordan utgangen følger inngangen.",
+            "body": "Bølgeformtabellen viser hvert signal i kretsen din. Klokke-raden er inngangen; LED-raden er den beregnede utgangen. Hver kolonne er ett simuleringstidssteg — du kan se nøyaktig hvordan utgangen følger inngangen.",
             "title": "Lese bølgeformtabellen"
         },
         "waveform-viewer": {

@@ -1,15 +1,15 @@
 {
     "basic-and-gate": {
         "add-inputs": {
-            "hint": "Klicka på fliken I/O i den vänstra panelen, dra sedan två InputSwitch-element till arbetsytan och placera dem till vänster om Och-grinden.",
-            "instruction": "Lägg till två InputSwitch-element på arbetsytan"
+            "hint": "Klicka på fliken I/O i den vänstra panelen, dra sedan två Ingångsomkopplare-element till arbetsytan och placera dem till vänster om Och-grinden.",
+            "instruction": "Lägg till två Ingångsomkopplare-element på arbetsytan"
         },
         "add-output": {
             "hint": "Dra en LED från fliken I/O och placera den till höger om Och-grinden. Anslut sedan Och-grindens utgångsport (höger sida) till LED:ns ingångsport (vänster sida).",
             "instruction": "Lägg till en LED och anslut den till Och-grindens utgång"
         },
         "connect-inputs": {
-            "hint": "Klicka och dra från en utgångsport på en InputSwitch (höger sida) till en av Och-grindens ingångsportar (vänster sida). Upprepa för den andra omkopplaren.",
+            "hint": "Klicka och dra från en utgångsport på en Ingångsomkopplare (höger sida) till en av Och-grindens ingångsportar (vänster sida). Upprepa för den andra omkopplaren.",
             "instruction": "Anslut båda ingångsomkopplarna till Och-grinden"
         },
         "description": "Lär dig att placera logiska grindar, lägga till in- och utgångar och koppla ihop dem.",
@@ -19,14 +19,14 @@
         },
         "title": "Bygga en Och-grind-krets",
         "toggle-observe": {
-            "hint": "Klicka på en InputSwitch för att växla den. LED:n tänds bara när BÅDA omkopplarna är PÅ. Det beror på att Och bara ger 1 som utdata när alla ingångar är 1.",
+            "hint": "Klicka på en Ingångsomkopplare för att växla den. LED:n tänds bara när BÅDA omkopplarna är PÅ. Det beror på att Och bara ger 1 som utdata när alla ingångar är 1.",
             "instruction": "Växla omkopplarna och observera LED:n — det här är Och-logik!"
         }
     },
     "basic-or-not-gates": {
         "add-inputs": {
-            "hint": "Klicka på fliken I/O i den vänstra panelen, dra sedan två InputSwitch-element till arbetsytan och placera dem till vänster om Eller-grinden.",
-            "instruction": "Lägg till två InputSwitch-element på arbetsytan"
+            "hint": "Klicka på fliken I/O i den vänstra panelen, dra sedan två Ingångsomkopplare-element till arbetsytan och placera dem till vänster om Eller-grinden.",
+            "instruction": "Lägg till två Ingångsomkopplare-element på arbetsytan"
         },
         "add-not-gate": {
             "hint": "Dra i tråden mellan Eller-grinden och LED:n för att ta bort den.",
@@ -37,7 +37,7 @@
             "instruction": "Lägg till en LED och anslut den till Eller-grindens utgång"
         },
         "connect-inputs": {
-            "hint": "Klicka och dra från en utgångsport på en InputSwitch (höger sida) till en av Eller-grindens ingångsportar (vänster sida). Upprepa för den andra omkopplaren.",
+            "hint": "Klicka och dra från en utgångsport på en Ingångsomkopplare (höger sida) till en av Eller-grindens ingångsportar (vänster sida). Upprepa för den andra omkopplaren.",
             "instruction": "Anslut båda ingångsomkopplarna till Eller-grinden"
         },
         "description": "Lär dig att använda Eller- och Not-grindarna.",
@@ -66,7 +66,7 @@
         },
         "description": "Bygg en minimal Klocka-LED-krets och utforska vågformsvisaren: kombinatoriskt läge och manuell cellredigering.",
         "open-waveform": {
-            "hint": "BeWavedDolphin visar din krets signaler som rader. Klocka-raden är ingången, och Led-raden är utgången. Varje kolumn är ett simuleringstidssteg.",
+            "hint": "BeWavedDolphin visar din krets signaler som rader. Klocka-raden är ingången, och LED-raden är utgången. Varje kolumn är ett simuleringstidssteg.",
             "instruction": "Vågformsvisaren är nu öppen — ta en titt!"
         },
         "place-clock": {
@@ -74,30 +74,30 @@
             "instruction": "Placera ett Klocka-element på arbetsytan"
         },
         "place-led": {
-            "hint": "Fortfarande på fliken I/O, dra ett Led-element till arbetsytan till höger om Klockan.",
+            "hint": "Fortfarande på fliken I/O, dra ett LED-element till arbetsytan till höger om Klockan.",
             "instruction": "Placera en LED på arbetsytan"
         },
         "title": "Klocka och LED: grunderna i vågformer",
         "toggle-cell": {
-            "hint": "Dubbelklicka på valfri cell i Klocka-raden för att växla den mellan 0 och 1. Se hur Led-raden uppdateras direkt för att återspegla den nya utgången.",
+            "hint": "Dubbelklicka på valfri cell i Klocka-raden för att växla den mellan 0 och 1. Se hur LED-raden uppdateras direkt för att återspegla den nya utgången.",
             "instruction": "Växla en Klocka-cell manuellt"
         }
     },
     "combinational-circuits-one": {
         "add-demux": {
-            "hint": "Din krets bör nu ha två InputSwitch, två LED:er och en DEMUX-krets",
-            "instruction": "Lägg till en DEMUX-krets och anslut InputSwitch till dess In- och S0-portar. Anslut sedan var och en av DEMUX:ens utgångar till en annan LED"
+            "hint": "Din krets bör nu ha två Ingångsomkopplare, två LED:er och en DEMUX-krets",
+            "instruction": "Lägg till en DEMUX-krets och anslut Ingångsomkopplare till dess In- och S0-portar. Anslut sedan var och en av DEMUX:ens utgångar till en annan LED"
         },
         "add-inputs": {
-            "hint": "Klicka på fliken I/O i den vänstra panelen, dra sedan två InputSwitch-element till arbetsytan och placera dem till vänster om MUX-kretsen.",
-            "instruction": "Lägg till tre InputSwitch-element på arbetsytan"
+            "hint": "Klicka på fliken I/O i den vänstra panelen, dra sedan två Ingångsomkopplare-element till arbetsytan och placera dem till vänster om MUX-kretsen.",
+            "instruction": "Lägg till tre Ingångsomkopplare-element på arbetsytan"
         },
         "add-output": {
             "hint": "Dra en LED från fliken I/O och placera den till höger om MUX-kretsen. Anslut sedan MUX-kretsens utgångsport (höger sida) till LED:ns ingångsport (vänster sida).",
             "instruction": "Lägg till en LED och anslut den till MUX-kretsens utgång"
         },
         "connect-inputs": {
-            "hint": "Klicka och dra från en utgångsport på en InputSwitch (höger sida) till en av MUX-grindens ingångsportar (vänster sida). Upprepa för den andra omkopplaren. Anslut sedan den tredje ingångsomkopplaren till MUX:ens valport (nederst)",
+            "hint": "Klicka och dra från en utgångsport på en Ingångsomkopplare (höger sida) till en av MUX-grindens ingångsportar (vänster sida). Upprepa för den andra omkopplaren. Anslut sedan den tredje ingångsomkopplaren till MUX:ens valport (nederst)",
             "instruction": "Anslut alla ingångsomkopplare till MUX-kretsen"
         },
         "description": "Lär dig om MUX- och DEMUX-kretsarna.",
@@ -114,23 +114,23 @@
             "instruction": "Placera en MUX-krets på arbetsytan"
         },
         "prepare-demux": {
-            "hint": "Din krets bör nu ha två InputSwitch och två LED:er",
-            "instruction": "Ta bort MUX-kretsen och en av InputSwitch. Lägg sedan till en till LED"
+            "hint": "Din krets bör nu ha två Ingångsomkopplare och två LED:er",
+            "instruction": "Ta bort MUX-kretsen och en av Ingångsomkopplare. Lägg sedan till en till LED"
         },
         "title": "Kombinatoriska kretsar I: MUX och DEMUX"
     },
     "combinational-circuits-three": {
         "add-cin-and-gates": {
-            "hint": "Anslut utgångarna från InputSwitch till grindarnas ingångar.",
-            "instruction": "Lägg till ytterligare en InputSwitch på arbetsytan och ge den etiketten Cin. Lägg sedan till en Xor-grind, en Och-grind och en Eller-grind"
+            "hint": "Anslut utgångarna från Ingångsomkopplare till grindarnas ingångar.",
+            "instruction": "Lägg till ytterligare en Ingångsomkopplare på arbetsytan och ge den etiketten Cin. Lägg sedan till en Xor-grind, en Och-grind och en Eller-grind"
         },
         "add-half-adder-gates": {
             "hint": "Använd fliken Grindar för att lägga till Xor- och Och-grindarna, och använd sedan fliken I/O för att lägga till två LED:er.",
             "instruction": "Lägg till en Xor-grind, en Och-grind och två LED:er på arbetsytan. Anslut sedan varje grind till en annan LED"
         },
         "add-inputs": {
-            "hint": "Klicka på fliken I/O i den vänstra panelen, dra sedan tre InputSwitch-element till arbetsytan. Den tredje InputSwitch kommer senare att användas som minnesingång (Cin).",
-            "instruction": "Lägg till två InputSwitch-element på arbetsytan"
+            "hint": "Klicka på fliken I/O i den vänstra panelen, dra sedan tre Ingångsomkopplare-element till arbetsytan. Den tredje Ingångsomkopplare kommer senare att användas som minnesingång (Cin).",
+            "instruction": "Lägg till två Ingångsomkopplare-element på arbetsytan"
         },
         "description": "Lär dig att bygga en adderarkrets.",
         "explain-full-adder": {
@@ -147,8 +147,8 @@
             "instruction": "Anslut den gamla Xor-grinden och Cin-omkopplaren till den nya Xor-grinden, anslut sedan den nya Xor-grinden till Sum-utgången. Anslut även den gamla Xor-grinden och Cin-omkopplaren till den nya Och-grinden. Avsluta med att ansluta båda Och-grindarna till Eller-grinden, och Eller-grinden till Cout"
         },
         "wire-half-adder": {
-            "hint": "Anslut utgångarna från InputSwitch till grindarnas ingångar.",
-            "instruction": "Anslut de två InputSwitch till Xor-grinden och Och-grinden. Varje InputSwitch ska anslutas till båda grindarna. Xor-grinden producerar Sum-utgången, medan Och-grinden producerar Carry-utgången"
+            "hint": "Anslut utgångarna från Ingångsomkopplare till grindarnas ingångar.",
+            "instruction": "Anslut de två Ingångsomkopplare till Xor-grinden och Och-grinden. Varje Ingångsomkopplare ska anslutas till båda grindarna. Xor-grinden producerar Sum-utgången, medan Och-grinden producerar Carry-utgången"
         }
     },
     "combinational-circuits-two": {
@@ -157,12 +157,12 @@
             "instruction": "Lägg till fyra Och-grindar och fyra LED:er på arbetsytan, anslut sedan varje Och-grind till en av LED:erna"
         },
         "add-inputs": {
-            "hint": "Klicka på fliken I/O i den vänstra panelen och dra två InputSwitch-element till arbetsytan.",
-            "instruction": "Lägg till två InputSwitch-element på arbetsytan"
+            "hint": "Klicka på fliken I/O i den vänstra panelen och dra två Ingångsomkopplare-element till arbetsytan.",
+            "instruction": "Lägg till två Ingångsomkopplare-element på arbetsytan"
         },
         "add-not-gates": {
-            "hint": "Klicka på fliken Grindar i den vänstra panelen, dra sedan två Not-grindelement till arbetsytan och anslut InputSwitch till dem.",
-            "instruction": "Lägg till två Not-grindar på arbetsytan och anslut varje InputSwitch till en separat Not-grind"
+            "hint": "Klicka på fliken Grindar i den vänstra panelen, dra sedan två Not-grindelement till arbetsytan och anslut Ingångsomkopplare till dem.",
+            "instruction": "Lägg till två Not-grindar på arbetsytan och anslut varje Ingångsomkopplare till en separat Not-grind"
         },
         "description": "Lär dig att bygga en 2-till-4-avkodare.",
         "explain-decoder": {
@@ -171,47 +171,47 @@
         },
         "title": "Kombinatoriska kretsar II: Avkodare",
         "wire-decoder": {
-            "hint": "Varje Och-grind bör få en signal från varje ingång. Använd den ursprungliga InputSwitch-signalen för en 1:a och motsvarande Not-grindsutgång för en 0:a.",
-            "instruction": "Anslut utgångarna från Not-grindarna och InputSwitch till Och-grindarna så att varje Och-grind representerar en ingångskombination"
+            "hint": "Varje Och-grind bör få en signal från varje ingång. Använd den ursprungliga Ingångsomkopplare-signalen för en 1:a och motsvarande Not-grindsutgång för en 0:a.",
+            "instruction": "Anslut utgångarna från Not-grindarna och Ingångsomkopplare till Och-grindarna så att varje Och-grind representerar en ingångskombination"
         }
     },
     "sequential-circuits-one": {
         "add-d-latch": {
             "hint": "D-latchen lagrar ett enda ingångsvärde och undviker SR-latchens ogiltiga ingångskombination.",
-            "instruction": "Ta bort SR-latchen samtidigt som InputSwitch och LED:erna behålls. Lägg sedan till en D-latch"
+            "instruction": "Ta bort SR-latchen samtidigt som Ingångsomkopplare och LED:erna behålls. Lägg sedan till en D-latch"
         },
         "add-sr-latch": {
-            "hint": "Använd fliken Minne för att lägga till en SR-latch. Använd sedan fliken I/O för att lägga till två InputSwitch och två LED:er.",
-            "instruction": "Lägg till en SR-latch, två InputSwitch och två LED:er på arbetsytan"
+            "hint": "Använd fliken Minne för att lägga till en SR-latch. Använd sedan fliken I/O för att lägga till två Ingångsomkopplare och två LED:er.",
+            "instruction": "Lägg till en SR-latch, två Ingångsomkopplare och två LED:er på arbetsytan"
         },
         "description": "Lär dig att använda latchar.",
         "explain-d-latch": {
             "hint": "",
-            "instruction": "Växla InputSwitch och observera D-latchen. När Enable är 1 följer utgången D-ingången. När Enable är 0 minns latchen sitt tidigare värde"
+            "instruction": "Växla Ingångsomkopplare och observera D-latchen. När Enable är 1 följer utgången D-ingången. När Enable är 0 minns latchen sitt tidigare värde"
         },
         "explain-sr-latch": {
             "hint": "",
-            "instruction": "Växla InputSwitch och observera hur SR-latchen lagrar sitt tillstånd. Att sätta S-ingången till 1 gör att Q-utgången blir 1, medan att sätta R-ingången till 1 återställer Q till 0. När båda ingångarna återgår till 0 minns latchen sitt senaste tillstånd tills den sätts eller återställs igen"
+            "instruction": "Växla Ingångsomkopplare och observera hur SR-latchen lagrar sitt tillstånd. Att sätta S-ingången till 1 gör att Q-utgången blir 1, medan att sätta R-ingången till 1 återställer Q till 0. När båda ingångarna återgår till 0 minns latchen sitt senaste tillstånd tills den sätts eller återställs igen"
         },
         "title": "Sekventiella kretsar I: Latchar",
         "wire-d-latch": {
             "hint": "D-ingången är värdet som ska lagras. Enable-ingången avgör när latchen uppdaterar sitt lagrade värde.",
-            "instruction": "Anslut en InputSwitch till D-ingången och den andra till Enable-ingången (E). Anslut Q- och Q̅-utgångarna till LED:erna"
+            "instruction": "Anslut en Ingångsomkopplare till D-ingången och den andra till Enable-ingången (E). Anslut Q- och Q̅-utgångarna till LED:erna"
         },
         "wire-sr-latch": {
-            "hint": "Anslut en InputSwitch till Set-ingången (S) och den andra till Reset-ingången (R). Anslut varje utgång från latchen till en annan LED.",
-            "instruction": "Anslut InputSwitch till S- och R-ingångarna på SR-latchen. Anslut sedan Q- och Q̅-utgångarna till LED:erna"
+            "hint": "Anslut en Ingångsomkopplare till Set-ingången (S) och den andra till Reset-ingången (R). Anslut varje utgång från latchen till en annan LED.",
+            "instruction": "Anslut Ingångsomkopplare till S- och R-ingångarna på SR-latchen. Anslut sedan Q- och Q̅-utgångarna till LED:erna"
         }
     },
     "sequential-circuits-three": {
         "add-flipflops": {
-            "hint": "Använd fliken Minne för att lägga till T-vipporna och en Klocka. Använd sedan fliken I/O för att lägga till tre InputSwitch och tre LED:er.",
-            "instruction": "Lägg till tre T-vippor, tre InputSwitch, en Klocka och tre LED:er på arbetsytan"
+            "hint": "Använd fliken Minne för att lägga till T-vipporna och en Klocka. Använd sedan fliken I/O för att lägga till tre Ingångsomkopplare och tre LED:er.",
+            "instruction": "Lägg till tre T-vippor, tre Ingångsomkopplare, en Klocka och tre LED:er på arbetsytan"
         },
         "description": "Lär dig att bygga en räknarkrets.",
         "explain-counter": {
             "hint": "",
-            "instruction": "Slå på alla tre InputSwitch och starta Klockan. Observera LED:erna medan räknaren kör. Den första LED:n ändrar tillstånd vid varje klockpuls, den andra ändras var annan puls, och den tredje ändras var fjärde puls, vilket visar en upprepande 3-bitars binär räkning från 000 till 111"
+            "instruction": "Slå på alla tre Ingångsomkopplare och starta Klockan. Observera LED:erna medan räknaren kör. Den första LED:n ändrar tillstånd vid varje klockpuls, den andra ändras var annan puls, och den tredje ändras var fjärde puls, vilket visar en upprepande 3-bitars binär räkning från 000 till 111"
         },
         "title": "Sekventiella kretsar III: Räknare",
         "wire-clock": {
@@ -227,52 +227,52 @@
             "instruction": "Anslut Q-utgången på den första vippan till Clk-ingången på den andra vippan, anslut sedan Q-utgången på den andra vippan till Clk-ingången på den tredje vippan. Varje vippa klockas av utgången från den föregående, vilket skapar en asynkron räknare (ripple counter)"
         },
         "wire-t-inputs": {
-            "hint": "Slå på alla tre InputSwitch. En T-vippa växlar bara när dess T-ingång är 1.",
-            "instruction": "Anslut varje InputSwitch till T-ingången på en annan vippa"
+            "hint": "Slå på alla tre Ingångsomkopplare. En T-vippa växlar bara när dess T-ingång är 1.",
+            "instruction": "Anslut varje Ingångsomkopplare till T-ingången på en annan vippa"
         }
     },
     "sequential-circuits-two": {
         "add-d-flipflop": {
-            "hint": "Använd fliken Minne för att lägga till en D-vippa och en Klocka. Använd sedan fliken I/O för att lägga till två InputSwitch och två LED:er.",
-            "instruction": "Lägg till en D-vippa, två InputSwitch, en Klocka och två LED:er på arbetsytan"
+            "hint": "Använd fliken Minne för att lägga till en D-vippa och en Klocka. Använd sedan fliken I/O för att lägga till två Ingångsomkopplare och två LED:er.",
+            "instruction": "Lägg till en D-vippa, två Ingångsomkopplare, en Klocka och två LED:er på arbetsytan"
         },
         "add-jk-flipflop": {
             "hint": "JK-vippan har J- och K-ingångar istället för en D-ingång. Lämna Clear- och Preset-ingångarna oanslutna.",
-            "instruction": "Ersätt D-vippan med en JK-vippa samtidigt som Klockan, InputSwitch och LED:erna behålls"
+            "instruction": "Ersätt D-vippan med en JK-vippa samtidigt som Klockan, Ingångsomkopplare och LED:erna behålls"
         },
         "add-t-flipflop": {
             "hint": "En T-vippa kräver bara en enda ingång utöver klockan.",
-            "instruction": "Ersätt JK-vippan med en T-vippa och ta bort en av InputSwitch"
+            "instruction": "Ersätt JK-vippan med en T-vippa och ta bort en av Ingångsomkopplare"
         },
         "description": "Lär dig om vippor (flip-flops).",
         "explain-clear-preset": {
             "hint": "",
-            "instruction": "Anslut den andra InputSwitch till antingen Clear- eller Preset-ingången och observera effekten. Till skillnad från D-ingången agerar Clear- och Preset-ingångarna omedelbart utan att vänta på en klockflank. Clear tvingar Q till 0, medan Preset tvingar Q till 1"
+            "instruction": "Anslut den andra Ingångsomkopplare till antingen Clear- eller Preset-ingången och observera effekten. Till skillnad från D-ingången agerar Clear- och Preset-ingångarna omedelbart utan att vänta på en klockflank. Clear tvingar Q till 0, medan Preset tvingar Q till 1"
         },
         "explain-d-flipflop": {
             "hint": "",
-            "instruction": "Växla D-InputSwitch och observera D-vippan. Värdet på D-ingången kopieras till Q-utgången endast vid den aktiva klockflanken. Mellan klockflankerna förblir utgången oförändrad"
+            "instruction": "Växla D-Ingångsomkopplare och observera D-vippan. Värdet på D-ingången kopieras till Q-utgången endast vid den aktiva klockflanken. Mellan klockflankerna förblir utgången oförändrad"
         },
         "explain-jk-flipflop": {
             "hint": "",
-            "instruction": "Växla InputSwitch och observera JK-vippan. När J = K = 0 behåller utgången sitt aktuella tillstånd. När J = 1 och K = 0 sätts utgången. När J = 0 och K = 1 återställs utgången. När J = K = 1 växlar utgången vid varje aktiv klockflank"
+            "instruction": "Växla Ingångsomkopplare och observera JK-vippan. När J = K = 0 behåller utgången sitt aktuella tillstånd. När J = 1 och K = 0 sätts utgången. När J = 0 och K = 1 återställs utgången. När J = K = 1 växlar utgången vid varje aktiv klockflank"
         },
         "explain-t-flipflop": {
             "hint": "",
-            "instruction": "Växla InputSwitch och observera T-vippan. När T = 0 behåller utgången sitt aktuella tillstånd. När T = 1 växlar utgången vid varje aktiv klockflank. T-vippor används ofta för att bygga binära räknare och frekvensdelare"
+            "instruction": "Växla Ingångsomkopplare och observera T-vippan. När T = 0 behåller utgången sitt aktuella tillstånd. När T = 1 växlar utgången vid varje aktiv klockflank. T-vippor används ofta för att bygga binära räknare och frekvensdelare"
         },
         "title": "Sekventiella kretsar II: Vippor",
         "wire-d-flipflop": {
             "hint": "Lämna Clear- och Preset-ingångarna oanslutna för tillfället.",
-            "instruction": "Anslut en InputSwitch till D-ingången, Klockan till Clk-ingången, och Q- och Q̅-utgångarna till LED:erna. D-ingången ger värdet som ska lagras, medan Klockan avgör när värdet lagras"
+            "instruction": "Anslut en Ingångsomkopplare till D-ingången, Klockan till Clk-ingången, och Q- och Q̅-utgångarna till LED:erna. D-ingången ger värdet som ska lagras, medan Klockan avgör när värdet lagras"
         },
         "wire-jk-flipflop": {
             "hint": "JK-vippan ändrar bara sin utgång vid den aktiva klockflanken.",
-            "instruction": "Anslut InputSwitch till J- och K-ingångarna, Klockan till Clk-ingången, och Q- och Q̅-utgångarna till LED:erna"
+            "instruction": "Anslut Ingångsomkopplare till J- och K-ingångarna, Klockan till Clk-ingången, och Q- och Q̅-utgångarna till LED:erna"
         },
         "wire-t-flipflop": {
             "hint": "Lämna Clear- och Preset-ingångarna oanslutna.",
-            "instruction": "Anslut den återstående InputSwitch till T-ingången, Klockan till Clk-ingången, och Q- och Q̅-utgångarna till LED:erna"
+            "instruction": "Anslut den återstående Ingångsomkopplare till T-ingången, Klockan till Clk-ingången, och Q- och Q̅-utgångarna till LED:erna"
         }
     },
     "ui-overview": {
@@ -290,7 +290,7 @@
         },
         "description": "En guidad genomgång av huvudgränssnittet — palett, arbetsyta, verktygsfält och egenskapspanel.",
         "editing-cells": {
-            "body": "Du kan också redigera vågformen för hand. Dubbelklicka på valfri cell i Klocka-raden för att växla den mellan 0 och 1 — Led-raden uppdateras direkt för att återspegla den nya utgången.",
+            "body": "Du kan också redigera vågformen för hand. Dubbelklicka på valfri cell i Klocka-raden för att växla den mellan 0 och 1 — LED-raden uppdateras direkt för att återspegla den nya utgången.",
             "title": "Redigera celler manuellt"
         },
         "element-properties": {
@@ -307,7 +307,7 @@
         },
         "title": "Rundtur i wiRedPandas gränssnitt",
         "waveform-table": {
-            "body": "Vågformstabellen visar varje signal i din krets. Klocka-raden är ingången; Led-raden är den beräknade utgången. Varje kolumn är ett simuleringstidssteg — du kan se exakt hur utgången följer ingången.",
+            "body": "Vågformstabellen visar varje signal i din krets. Klocka-raden är ingången; LED-raden är den beräknade utgången. Varje kolumn är ett simuleringstidssteg — du kan se exakt hur utgången följer ingången.",
             "title": "Läsa vågformstabellen"
         },
         "waveform-viewer": {

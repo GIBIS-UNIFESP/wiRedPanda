@@ -290,7 +290,7 @@
     },
     "description": "A guided walkthrough of the main interface — palette, canvas, toolbar, and properties panel.",
     "editing-cells": {
-      "body": "You can also edit the waveform by hand. Double-click any cell in the Clock row to flip it between 0 and 1 — the Led row updates instantly to reflect the new output.",
+      "body": "You can also edit the waveform by hand. Double-click any cell in the Clock row to flip it between 0 and 1 — the LED row updates instantly to reflect the new output.",
       "title": "Editing Cells Manually"
     },
     "element-properties": {
@@ -307,7 +307,7 @@
     },
     "title": "wiRedPanda Interface Tour",
     "waveform-table": {
-      "body": "The waveform table shows every signal in your circuit. The Clock row is the input; the Led row is the computed output. Each column is one simulation time step — you can see exactly how the output follows the input.",
+      "body": "The waveform table shows every signal in your circuit. The Clock row is the input; the LED row is the computed output. Each column is one simulation time step — you can see exactly how the output follows the input.",
       "title": "Reading the Waveform Table"
     },
     "waveform-viewer": {

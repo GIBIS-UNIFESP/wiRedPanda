@@ -1,15 +1,15 @@
 {
     "basic-and-gate": {
         "add-inputs": {
-            "hint": "Klik tab I/O pada panel kiri, kemudian seret dua elemen InputSwitch ke kanvas dan letakkan di sebelah kiri get Dan.",
-            "instruction": "Tambah dua elemen InputSwitch ke kanvas"
+            "hint": "Klik tab I/O pada panel kiri, kemudian seret dua elemen Suis Input ke kanvas dan letakkan di sebelah kiri get Dan.",
+            "instruction": "Tambah dua elemen Suis Input ke kanvas"
         },
         "add-output": {
             "hint": "Seret LED daripada tab I/O dan letakkan di sebelah kanan get Dan. Kemudian sambungkan port output get Dan (sebelah kanan) ke port input LED (sebelah kiri).",
             "instruction": "Tambah LED dan sambungkan ke output get Dan"
         },
         "connect-inputs": {
-            "hint": "Klik dan seret dari port output InputSwitch (sebelah kanan) ke salah satu port input get Dan (sebelah kiri). Ulang untuk suis kedua.",
+            "hint": "Klik dan seret dari port output Suis Input (sebelah kanan) ke salah satu port input get Dan (sebelah kiri). Ulang untuk suis kedua.",
             "instruction": "Sambungkan kedua-dua suis input ke get Dan"
         },
         "description": "Belajar meletakkan get logik, menambah input dan output, dan menyambungkannya.",
@@ -19,14 +19,14 @@
         },
         "title": "Membina Litar dengan Get Dan",
         "toggle-observe": {
-            "hint": "Klik InputSwitch untuk menogolnya. LED hanya menyala apabila KEDUA-DUA suis dihidupkan. Ini kerana Dan hanya menghasilkan output 1 apabila semua input adalah 1.",
+            "hint": "Klik Suis Input untuk menogolnya. LED hanya menyala apabila KEDUA-DUA suis dihidupkan. Ini kerana Dan hanya menghasilkan output 1 apabila semua input adalah 1.",
             "instruction": "Togol suis dan perhatikan LED — ini adalah logik Dan!"
         }
     },
     "basic-or-not-gates": {
         "add-inputs": {
-            "hint": "Klik tab I/O pada panel kiri, kemudian seret dua elemen InputSwitch ke kanvas dan letakkan di sebelah kiri get Atau.",
-            "instruction": "Tambah dua elemen InputSwitch ke kanvas"
+            "hint": "Klik tab I/O pada panel kiri, kemudian seret dua elemen Suis Input ke kanvas dan letakkan di sebelah kiri get Atau.",
+            "instruction": "Tambah dua elemen Suis Input ke kanvas"
         },
         "add-not-gate": {
             "hint": "Seret wayar di antara get Atau dan LED untuk mengalihkannya.",
@@ -37,7 +37,7 @@
             "instruction": "Tambah LED dan sambungkan ke output get Atau"
         },
         "connect-inputs": {
-            "hint": "Klik dan seret dari port output InputSwitch (sebelah kanan) ke salah satu port input get Atau (sebelah kiri). Ulang untuk suis kedua.",
+            "hint": "Klik dan seret dari port output Suis Input (sebelah kanan) ke salah satu port input get Atau (sebelah kiri). Ulang untuk suis kedua.",
             "instruction": "Sambungkan kedua-dua suis input ke get Atau"
         },
         "description": "Belajar menggunakan get Atau dan Bukan.",
@@ -66,7 +66,7 @@
         },
         "description": "Bina litar Jam-LED minimum dan terokai pemapar bentuk gelombang: mod gabungan dan penyuntingan sel secara manual.",
         "open-waveform": {
-            "hint": "BeWavedDolphin memaparkan isyarat litar anda sebagai baris. Baris Jam ialah input, dan baris Led ialah output. Setiap lajur ialah satu langkah masa simulasi.",
+            "hint": "BeWavedDolphin memaparkan isyarat litar anda sebagai baris. Baris Jam ialah input, dan baris LED ialah output. Setiap lajur ialah satu langkah masa simulasi.",
             "instruction": "Pemapar bentuk gelombang kini terbuka — lihatlah!"
         },
         "place-clock": {
@@ -74,30 +74,30 @@
             "instruction": "Letakkan elemen Jam pada kanvas"
         },
         "place-led": {
-            "hint": "Masih di tab I/O, seret elemen Led ke kanvas di sebelah kanan Jam.",
+            "hint": "Masih di tab I/O, seret elemen LED ke kanvas di sebelah kanan Jam.",
             "instruction": "Letakkan LED pada kanvas"
         },
         "title": "Jam dan LED: Asas Bentuk Gelombang",
         "toggle-cell": {
-            "hint": "Klik dua kali mana-mana sel dalam baris Jam untuk menogolnya antara 0 dan 1. Perhatikan bagaimana baris Led dikemas kini serta-merta untuk mencerminkan output baharu.",
+            "hint": "Klik dua kali mana-mana sel dalam baris Jam untuk menogolnya antara 0 dan 1. Perhatikan bagaimana baris LED dikemas kini serta-merta untuk mencerminkan output baharu.",
             "instruction": "Togol sel Jam secara manual"
         }
     },
     "combinational-circuits-one": {
         "add-demux": {
-            "hint": "Pada tahap ini litar anda sepatutnya mempunyai dua InputSwitch, dua LED dan satu litar DEMUX",
-            "instruction": "Tambah litar DEMUX dan sambungkan InputSwitch ke port In dan S0-nya. Kemudian sambungkan setiap output DEMUX ke LED yang berbeza"
+            "hint": "Pada tahap ini litar anda sepatutnya mempunyai dua Suis Input, dua LED dan satu litar DEMUX",
+            "instruction": "Tambah litar DEMUX dan sambungkan Suis Input ke port In dan S0-nya. Kemudian sambungkan setiap output DEMUX ke LED yang berbeza"
         },
         "add-inputs": {
-            "hint": "Klik tab I/O pada panel kiri, kemudian seret dua elemen InputSwitch ke kanvas dan letakkan di sebelah kiri litar MUX.",
-            "instruction": "Tambah tiga elemen InputSwitch ke kanvas"
+            "hint": "Klik tab I/O pada panel kiri, kemudian seret dua elemen Suis Input ke kanvas dan letakkan di sebelah kiri litar MUX.",
+            "instruction": "Tambah tiga elemen Suis Input ke kanvas"
         },
         "add-output": {
             "hint": "Seret LED daripada tab I/O dan letakkan di sebelah kanan litar MUX. Kemudian sambungkan port output litar MUX (sebelah kanan) ke port input LED (sebelah kiri).",
             "instruction": "Tambah LED dan sambungkan ke output litar MUX"
         },
         "connect-inputs": {
-            "hint": "Klik dan seret dari port output InputSwitch (sebelah kanan) ke salah satu port input get MUX (sebelah kiri). Ulang untuk suis kedua. Kemudian, sambungkan suis input ketiga ke port pemilihan MUX (bawah)",
+            "hint": "Klik dan seret dari port output Suis Input (sebelah kanan) ke salah satu port input get MUX (sebelah kiri). Ulang untuk suis kedua. Kemudian, sambungkan suis input ketiga ke port pemilihan MUX (bawah)",
             "instruction": "Sambungkan semua suis input ke litar MUX"
         },
         "description": "Belajar tentang litar MUX dan DEMUX.",
@@ -114,23 +114,23 @@
             "instruction": "Letakkan litar MUX pada kanvas"
         },
         "prepare-demux": {
-            "hint": "Pada tahap ini litar anda sepatutnya mempunyai dua InputSwitch dan dua LED",
-            "instruction": "Padamkan litar MUX dan salah satu InputSwitch. Kemudian tambah satu lagi LED"
+            "hint": "Pada tahap ini litar anda sepatutnya mempunyai dua Suis Input dan dua LED",
+            "instruction": "Padamkan litar MUX dan salah satu Suis Input. Kemudian tambah satu lagi LED"
         },
         "title": "Litar Gabungan I: MUX dan DEMUX"
     },
     "combinational-circuits-three": {
         "add-cin-and-gates": {
-            "hint": "Sambungkan output InputSwitch ke input get.",
-            "instruction": "Tambah satu lagi InputSwitch ke kanvas dan berikan label Cin. Kemudian tambah get Xor, get Dan dan get Atau"
+            "hint": "Sambungkan output Suis Input ke input get.",
+            "instruction": "Tambah satu lagi Suis Input ke kanvas dan berikan label Cin. Kemudian tambah get Xor, get Dan dan get Atau"
         },
         "add-half-adder-gates": {
             "hint": "Gunakan tab Get untuk menambah get Xor dan Dan, kemudian gunakan tab I/O untuk menambah dua LED.",
             "instruction": "Tambah get Xor, get Dan dan dua LED ke kanvas. Kemudian sambungkan setiap get ke LED yang berbeza"
         },
         "add-inputs": {
-            "hint": "Klik tab I/O pada panel kiri, kemudian seret tiga elemen InputSwitch ke kanvas. InputSwitch ketiga akan digunakan kemudian sebagai bawaan masuk (Cin).",
-            "instruction": "Tambah dua elemen InputSwitch ke kanvas"
+            "hint": "Klik tab I/O pada panel kiri, kemudian seret tiga elemen Suis Input ke kanvas. Suis Input ketiga akan digunakan kemudian sebagai bawaan masuk (Cin).",
+            "instruction": "Tambah dua elemen Suis Input ke kanvas"
         },
         "description": "Belajar membina litar penambah.",
         "explain-full-adder": {
@@ -147,8 +147,8 @@
             "instruction": "Sambungkan get Xor lama dan suis Cin ke get Xor baharu, kemudian sambungkan get Xor baharu ke output Sum. Sambungkan juga get Xor lama dan suis Cin ke get Dan baharu. Selesaikan dengan menyambungkan kedua-dua get Dan ke get Atau, dan get Atau ke Cout"
         },
         "wire-half-adder": {
-            "hint": "Sambungkan output InputSwitch ke input get.",
-            "instruction": "Sambungkan kedua-dua InputSwitch ke get Xor dan get Dan. Setiap InputSwitch sepatutnya bersambung ke kedua-dua get. Get Xor menghasilkan output Sum, manakala get Dan menghasilkan output Carry"
+            "hint": "Sambungkan output Suis Input ke input get.",
+            "instruction": "Sambungkan kedua-dua Suis Input ke get Xor dan get Dan. Setiap Suis Input sepatutnya bersambung ke kedua-dua get. Get Xor menghasilkan output Sum, manakala get Dan menghasilkan output Carry"
         }
     },
     "combinational-circuits-two": {
@@ -157,12 +157,12 @@
             "instruction": "Tambah empat get Dan dan empat LED ke kanvas, kemudian sambungkan setiap get Dan ke salah satu LED"
         },
         "add-inputs": {
-            "hint": "Klik tab I/O pada panel kiri dan seret dua elemen InputSwitch ke kanvas.",
-            "instruction": "Tambah dua elemen InputSwitch ke kanvas"
+            "hint": "Klik tab I/O pada panel kiri dan seret dua elemen Suis Input ke kanvas.",
+            "instruction": "Tambah dua elemen Suis Input ke kanvas"
         },
         "add-not-gates": {
-            "hint": "Klik tab Get pada panel kiri, kemudian seret dua elemen get Bukan ke kanvas dan sambungkan InputSwitch kepadanya.",
-            "instruction": "Tambah dua get Bukan ke kanvas dan sambungkan setiap InputSwitch ke get Bukan yang berasingan"
+            "hint": "Klik tab Get pada panel kiri, kemudian seret dua elemen get Bukan ke kanvas dan sambungkan Suis Input kepadanya.",
+            "instruction": "Tambah dua get Bukan ke kanvas dan sambungkan setiap Suis Input ke get Bukan yang berasingan"
         },
         "description": "Belajar membina penyahkod 2-kepada-4.",
         "explain-decoder": {
@@ -171,47 +171,47 @@
         },
         "title": "Litar Gabungan II: Penyahkod",
         "wire-decoder": {
-            "hint": "Setiap get Dan sepatutnya menerima satu isyarat daripada setiap input. Gunakan isyarat InputSwitch asal untuk 1 dan output get Bukan yang sepadan untuk 0.",
-            "instruction": "Sambungkan output get Bukan dan InputSwitch ke get Dan supaya setiap get Dan mewakili satu kombinasi input"
+            "hint": "Setiap get Dan sepatutnya menerima satu isyarat daripada setiap input. Gunakan isyarat Suis Input asal untuk 1 dan output get Bukan yang sepadan untuk 0.",
+            "instruction": "Sambungkan output get Bukan dan Suis Input ke get Dan supaya setiap get Dan mewakili satu kombinasi input"
         }
     },
     "sequential-circuits-one": {
         "add-d-latch": {
             "hint": "Kancing D menyimpan satu nilai input tunggal dan mengelakkan kombinasi input tidak sah kancing SR.",
-            "instruction": "Alihkan kancing SR sambil mengekalkan InputSwitch dan LED. Kemudian tambah kancing D"
+            "instruction": "Alihkan kancing SR sambil mengekalkan Suis Input dan LED. Kemudian tambah kancing D"
         },
         "add-sr-latch": {
-            "hint": "Gunakan tab Memori untuk menambah kancing SR. Kemudian gunakan tab I/O untuk menambah dua InputSwitch dan dua LED.",
-            "instruction": "Tambah kancing SR, dua InputSwitch dan dua LED ke kanvas"
+            "hint": "Gunakan tab Memori untuk menambah kancing SR. Kemudian gunakan tab I/O untuk menambah dua Suis Input dan dua LED.",
+            "instruction": "Tambah kancing SR, dua Suis Input dan dua LED ke kanvas"
         },
         "description": "Belajar menggunakan kancing (latch).",
         "explain-d-latch": {
             "hint": "",
-            "instruction": "Togol InputSwitch dan perhatikan kancing D. Apabila Enable adalah 1, output mengikut input D. Apabila Enable adalah 0, kancing mengingati nilai sebelumnya"
+            "instruction": "Togol Suis Input dan perhatikan kancing D. Apabila Enable adalah 1, output mengikut input D. Apabila Enable adalah 0, kancing mengingati nilai sebelumnya"
         },
         "explain-sr-latch": {
             "hint": "",
-            "instruction": "Togol InputSwitch dan perhatikan bagaimana kancing SR menyimpan keadaannya. Menetapkan input S kepada 1 menyebabkan output Q menjadi 1, manakala menetapkan input R kepada 1 menetapkan semula Q kepada 0. Apabila kedua-dua input kembali kepada 0, kancing itu mengingati keadaan terakhirnya sehingga ia ditetapkan atau ditetapkan semula lagi"
+            "instruction": "Togol Suis Input dan perhatikan bagaimana kancing SR menyimpan keadaannya. Menetapkan input S kepada 1 menyebabkan output Q menjadi 1, manakala menetapkan input R kepada 1 menetapkan semula Q kepada 0. Apabila kedua-dua input kembali kepada 0, kancing itu mengingati keadaan terakhirnya sehingga ia ditetapkan atau ditetapkan semula lagi"
         },
         "title": "Litar Berjujukan I: Kancing",
         "wire-d-latch": {
             "hint": "Input D ialah nilai yang akan disimpan. Input Enable menentukan bila kancing mengemas kini nilai yang disimpannya.",
-            "instruction": "Sambungkan satu InputSwitch ke input D dan satu lagi ke input Enable (E). Sambungkan output Q dan Q̅ ke LED"
+            "instruction": "Sambungkan satu Suis Input ke input D dan satu lagi ke input Enable (E). Sambungkan output Q dan Q̅ ke LED"
         },
         "wire-sr-latch": {
-            "hint": "Sambungkan satu InputSwitch ke input Set (S) dan satu lagi ke input Reset (R). Sambungkan setiap output kancing ke LED yang berbeza.",
-            "instruction": "Sambungkan InputSwitch ke input S dan R kancing SR. Kemudian sambungkan output Q dan Q̅ ke LED"
+            "hint": "Sambungkan satu Suis Input ke input Set (S) dan satu lagi ke input Reset (R). Sambungkan setiap output kancing ke LED yang berbeza.",
+            "instruction": "Sambungkan Suis Input ke input S dan R kancing SR. Kemudian sambungkan output Q dan Q̅ ke LED"
         }
     },
     "sequential-circuits-three": {
         "add-flipflops": {
-            "hint": "Gunakan tab Memori untuk menambah flip-flop T dan Jam. Kemudian gunakan tab I/O untuk menambah tiga InputSwitch dan tiga LED.",
-            "instruction": "Tambah tiga flip-flop T, tiga InputSwitch, Jam dan tiga LED ke kanvas"
+            "hint": "Gunakan tab Memori untuk menambah flip-flop T dan Jam. Kemudian gunakan tab I/O untuk menambah tiga Suis Input dan tiga LED.",
+            "instruction": "Tambah tiga flip-flop T, tiga Suis Input, Jam dan tiga LED ke kanvas"
         },
         "description": "Belajar membina litar pembilang.",
         "explain-counter": {
             "hint": "",
-            "instruction": "Hidupkan ketiga-tiga InputSwitch dan mulakan Jam. Perhatikan LED semasa pembilang berjalan. LED pertama menukar keadaan pada setiap denyutan jam, yang kedua berubah setiap dua denyutan, dan yang ketiga setiap empat denyutan, memaparkan pengiraan perduaan 3-bit berulang dari 000 hingga 111"
+            "instruction": "Hidupkan ketiga-tiga Suis Input dan mulakan Jam. Perhatikan LED semasa pembilang berjalan. LED pertama menukar keadaan pada setiap denyutan jam, yang kedua berubah setiap dua denyutan, dan yang ketiga setiap empat denyutan, memaparkan pengiraan perduaan 3-bit berulang dari 000 hingga 111"
         },
         "title": "Litar Berjujukan III: Pembilang",
         "wire-clock": {
@@ -227,52 +227,52 @@
             "instruction": "Sambungkan output Q flip-flop pertama ke input Clk flip-flop kedua, kemudian sambungkan output Q flip-flop kedua ke input Clk flip-flop ketiga. Setiap flip-flop dijam oleh output yang sebelumnya, mewujudkan pembilang riak (ripple counter)"
         },
         "wire-t-inputs": {
-            "hint": "Hidupkan ketiga-tiga InputSwitch. Flip-flop T hanya menogol apabila input T-nya adalah 1.",
-            "instruction": "Sambungkan setiap InputSwitch ke input T flip-flop yang berbeza"
+            "hint": "Hidupkan ketiga-tiga Suis Input. Flip-flop T hanya menogol apabila input T-nya adalah 1.",
+            "instruction": "Sambungkan setiap Suis Input ke input T flip-flop yang berbeza"
         }
     },
     "sequential-circuits-two": {
         "add-d-flipflop": {
-            "hint": "Gunakan tab Memori untuk menambah flip-flop D dan Jam. Kemudian gunakan tab I/O untuk menambah dua InputSwitch dan dua LED.",
-            "instruction": "Tambah flip-flop D, dua InputSwitch, Jam dan dua LED ke kanvas"
+            "hint": "Gunakan tab Memori untuk menambah flip-flop D dan Jam. Kemudian gunakan tab I/O untuk menambah dua Suis Input dan dua LED.",
+            "instruction": "Tambah flip-flop D, dua Suis Input, Jam dan dua LED ke kanvas"
         },
         "add-jk-flipflop": {
             "hint": "Flip-flop JK mempunyai input J dan K sebagai ganti input D. Biarkan input Clear dan Preset tidak bersambung.",
-            "instruction": "Gantikan flip-flop D dengan flip-flop JK sambil mengekalkan Jam, InputSwitch dan LED"
+            "instruction": "Gantikan flip-flop D dengan flip-flop JK sambil mengekalkan Jam, Suis Input dan LED"
         },
         "add-t-flipflop": {
             "hint": "Flip-flop T hanya memerlukan satu input tunggal selain jam.",
-            "instruction": "Gantikan flip-flop JK dengan flip-flop T dan alihkan salah satu InputSwitch"
+            "instruction": "Gantikan flip-flop JK dengan flip-flop T dan alihkan salah satu Suis Input"
         },
         "description": "Belajar tentang flip-flop.",
         "explain-clear-preset": {
             "hint": "",
-            "instruction": "Sambungkan InputSwitch kedua ke input Clear atau Preset dan perhatikan kesannya. Berbeza daripada input D, input Clear dan Preset bertindak serta-merta tanpa menunggu tepi jam. Clear memaksa Q kepada 0, manakala Preset memaksa Q kepada 1"
+            "instruction": "Sambungkan Suis Input kedua ke input Clear atau Preset dan perhatikan kesannya. Berbeza daripada input D, input Clear dan Preset bertindak serta-merta tanpa menunggu tepi jam. Clear memaksa Q kepada 0, manakala Preset memaksa Q kepada 1"
         },
         "explain-d-flipflop": {
             "hint": "",
-            "instruction": "Togol InputSwitch D dan perhatikan flip-flop D. Nilai pada input D hanya disalin ke output Q pada tepi jam aktif. Antara tepi jam, output kekal tidak berubah"
+            "instruction": "Togol Suis Input D dan perhatikan flip-flop D. Nilai pada input D hanya disalin ke output Q pada tepi jam aktif. Antara tepi jam, output kekal tidak berubah"
         },
         "explain-jk-flipflop": {
             "hint": "",
-            "instruction": "Togol InputSwitch dan perhatikan flip-flop JK. Apabila J = K = 0, output mengekalkan keadaan semasanya. Apabila J = 1 dan K = 0, output ditetapkan. Apabila J = 0 dan K = 1, output ditetapkan semula. Apabila J = K = 1, output menogol pada setiap tepi jam aktif"
+            "instruction": "Togol Suis Input dan perhatikan flip-flop JK. Apabila J = K = 0, output mengekalkan keadaan semasanya. Apabila J = 1 dan K = 0, output ditetapkan. Apabila J = 0 dan K = 1, output ditetapkan semula. Apabila J = K = 1, output menogol pada setiap tepi jam aktif"
         },
         "explain-t-flipflop": {
             "hint": "",
-            "instruction": "Togol InputSwitch dan perhatikan flip-flop T. Apabila T = 0, output mengekalkan keadaan semasanya. Apabila T = 1, output menogol pada setiap tepi jam aktif. Flip-flop T lazimnya digunakan untuk membina pembilang perduaan dan pembahagi frekuensi"
+            "instruction": "Togol Suis Input dan perhatikan flip-flop T. Apabila T = 0, output mengekalkan keadaan semasanya. Apabila T = 1, output menogol pada setiap tepi jam aktif. Flip-flop T lazimnya digunakan untuk membina pembilang perduaan dan pembahagi frekuensi"
         },
         "title": "Litar Berjujukan II: Flip-Flop",
         "wire-d-flipflop": {
             "hint": "Biarkan input Clear dan Preset tidak bersambung buat masa ini.",
-            "instruction": "Sambungkan satu InputSwitch ke input D, Jam ke input Clk, dan output Q serta Q̅ ke LED. Input D menyediakan nilai yang akan disimpan, manakala Jam menentukan bila nilai itu disimpan"
+            "instruction": "Sambungkan satu Suis Input ke input D, Jam ke input Clk, dan output Q serta Q̅ ke LED. Input D menyediakan nilai yang akan disimpan, manakala Jam menentukan bila nilai itu disimpan"
         },
         "wire-jk-flipflop": {
             "hint": "Flip-flop JK hanya menukar outputnya pada tepi jam aktif.",
-            "instruction": "Sambungkan InputSwitch ke input J dan K, Jam ke input Clk, dan output Q serta Q̅ ke LED"
+            "instruction": "Sambungkan Suis Input ke input J dan K, Jam ke input Clk, dan output Q serta Q̅ ke LED"
         },
         "wire-t-flipflop": {
             "hint": "Biarkan input Clear dan Preset tidak bersambung.",
-            "instruction": "Sambungkan InputSwitch yang tinggal ke input T, Jam ke input Clk, dan output Q serta Q̅ ke LED"
+            "instruction": "Sambungkan Suis Input yang tinggal ke input T, Jam ke input Clk, dan output Q serta Q̅ ke LED"
         }
     },
     "ui-overview": {
@@ -290,7 +290,7 @@
         },
         "description": "Lawatan berpandu melalui antara muka utama — palet, kanvas, bar alat dan panel sifat.",
         "editing-cells": {
-            "body": "Anda juga boleh menyunting bentuk gelombang secara manual. Klik dua kali mana-mana sel dalam baris Jam untuk menogolnya antara 0 dan 1 — baris Led dikemas kini serta-merta untuk mencerminkan output baharu.",
+            "body": "Anda juga boleh menyunting bentuk gelombang secara manual. Klik dua kali mana-mana sel dalam baris Jam untuk menogolnya antara 0 dan 1 — baris LED dikemas kini serta-merta untuk mencerminkan output baharu.",
             "title": "Menyunting Sel Secara Manual"
         },
         "element-properties": {
@@ -307,7 +307,7 @@
         },
         "title": "Lawatan Antara Muka wiRedPanda",
         "waveform-table": {
-            "body": "Jadual bentuk gelombang menunjukkan setiap isyarat dalam litar anda. Baris Jam ialah input; baris Led ialah output yang dikira. Setiap lajur ialah satu langkah masa simulasi — anda boleh melihat dengan tepat bagaimana output mengikut input.",
+            "body": "Jadual bentuk gelombang menunjukkan setiap isyarat dalam litar anda. Baris Jam ialah input; baris LED ialah output yang dikira. Setiap lajur ialah satu langkah masa simulasi — anda boleh melihat dengan tepat bagaimana output mengikut input.",
             "title": "Membaca Jadual Bentuk Gelombang"
         },
         "waveform-viewer": {
