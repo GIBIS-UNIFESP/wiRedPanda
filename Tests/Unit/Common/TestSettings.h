@@ -23,6 +23,7 @@ private slots:
     void testTypedSplitterGeometry();
     void testTypedSplitterState();
     void testTypedDolphinGeometry();
+    void testTypedMinimapGeometry();
     void testTypedFastMode();
     void testTypedLabelsUnderIcons();
     void testTypedUpdateChecksDisabled();

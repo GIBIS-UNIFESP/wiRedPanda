@@ -92,6 +92,16 @@ void TestSettings::testTypedDolphinGeometry()
     QCOMPARE(Settings::dolphinGeometry(), geometry);
 }
 
+void TestSettings::testTypedMinimapGeometry()
+{
+    // Unset: invalid, so callers know to fall back to a default position/size.
+    QVERIFY(!Settings::minimapGeometry().isValid());
+
+    const QRect geometry(30, 40, 200, 150);
+    Settings::setMinimapGeometry(geometry);
+    QCOMPARE(Settings::minimapGeometry(), geometry);
+}
+
 void TestSettings::testTypedFastMode()
 {
     Settings::setFastMode(true);
