@@ -64,6 +64,7 @@ WorkSpace::WorkSpace(QWidget *parent)
     m_minimap = new MinimapWidget(&m_scene, &m_view, this);
     m_minimap->setObjectName("minimap");
     m_minimap->raise();
+    connect(m_minimap, &MinimapWidget::geometryChangeFinished, this, &WorkSpace::onMinimapGeometryChangeFinished);
 
     // Adjust the scene rect after every zoom so that all items remain reachable
     // via panning, even when zoomed in very close
@@ -128,7 +129,7 @@ void WorkSpace::resizeEvent(QResizeEvent *event)
     QWidget::resizeEvent(event);
 
     if (m_minimap)
-        positionMinimap(Settings::minimapCorner());
+        applyMinimapGeometry();
 
     if (m_exerciseOverlay && m_exerciseOverlay->isVisible())
         m_exerciseOverlay->repositionToParent();
@@ -140,39 +141,56 @@ void WorkSpace::setMinimapVisible(bool visible)
     m_minimap->setVisible(visible);
 }
 
-void WorkSpace::setMinimapCorner(Settings::MinimapCorner corner)
-{
-    positionMinimap(corner);
-}
-
-void WorkSpace::positionMinimap(Settings::MinimapCorner corner)
+void WorkSpace::applyMinimapGeometry()
 {
     if (!m_minimap)
         return;
 
     const int margin = 12;
     const QRect viewGeom = m_view.geometry();
-    int x = viewGeom.right() - m_minimap->width() - margin;
-    int y = viewGeom.bottom() - m_minimap->height() - margin;
 
-    switch (corner) {
-    case Settings::MinimapCorner::BottomLeft:
-        x = viewGeom.left() + margin;
-        y = viewGeom.bottom() - m_minimap->height() - margin;
-        break;
-    case Settings::MinimapCorner::TopLeft:
-        x = viewGeom.left() + margin;
-        y = viewGeom.top() + margin;
-        break;
-    case Settings::MinimapCorner::TopRight:
-        x = viewGeom.right() - m_minimap->width() - margin;
-        y = viewGeom.top() + margin;
-        break;
-    case Settings::MinimapCorner::BottomRight:
-        break; // x/y already default to this
+    if (!m_minimapPositioned) {
+        m_minimapPositioned = true;
+
+        const QRect restored = Settings::minimapGeometry();
+        if (restored.isValid()) {
+            // Clamp size before position: a geometry persisted from a larger window/monitor
+            // could otherwise still overflow, or push the position clamp negative.
+            const int maxWidth = qMax(m_minimap->minimumWidth(), viewGeom.width() - 2 * margin);
+            const int maxHeight = qMax(m_minimap->minimumHeight(), viewGeom.height() - 2 * margin);
+            const int width = qBound(m_minimap->minimumWidth(), restored.width(), maxWidth);
+            const int height = qBound(m_minimap->minimumHeight(), restored.height(), maxHeight);
+            const int x = qBound(margin, restored.x(), viewGeom.width() - width - margin);
+            const int y = qBound(margin, restored.y(), viewGeom.height() - height - margin);
+            m_minimap->setGeometry(x, y, width, height);
+            return;
+        }
+
+        // No persisted geometry (first launch, or never moved/resized): default to the
+        // widget's own default size, anchored bottom-right.
+        const int x = viewGeom.right() - m_minimap->width() - margin;
+        const int y = viewGeom.bottom() - m_minimap->height() - margin;
+        m_minimap->move(qMax(x, margin), qMax(y, margin));
+        return;
     }
 
-    m_minimap->move(qMax(x, margin), qMax(y, margin));
+    // Subsequent resizes: re-clamp the minimap's own current geometry into the new bounds.
+    // Deliberately does not re-read Settings -- that's only the persisted copy, refreshed on
+    // user-driven moves/resizes (onMinimapGeometryChangeFinished()); re-reading it here on
+    // every window resize would stomp legitimate in-session geometry with a stale value.
+    const QRect current = m_minimap->geometry();
+    const int maxWidth = qMax(m_minimap->minimumWidth(), viewGeom.width() - 2 * margin);
+    const int maxHeight = qMax(m_minimap->minimumHeight(), viewGeom.height() - 2 * margin);
+    const int width = qBound(m_minimap->minimumWidth(), current.width(), maxWidth);
+    const int height = qBound(m_minimap->minimumHeight(), current.height(), maxHeight);
+    const int x = qBound(margin, current.x(), viewGeom.width() - width - margin);
+    const int y = qBound(margin, current.y(), viewGeom.height() - height - margin);
+    m_minimap->setGeometry(x, y, width, height);
+}
+
+void WorkSpace::onMinimapGeometryChangeFinished(const QRect &geometry)
+{
+    Settings::setMinimapGeometry(geometry);
 }
 
 Scene *WorkSpace::scene()

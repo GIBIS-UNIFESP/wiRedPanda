@@ -297,19 +297,12 @@ void Settings::setMinimapVisible(bool visible)
     setValue("minimap/visible", visible);
 }
 
-Settings::MinimapCorner Settings::minimapCorner()
+QRect Settings::minimapGeometry()
 {
-    const QVariant v = value("minimap/corner");
-    if (!v.isValid())
-        return MinimapCorner::BottomRight;
-    const int saved = v.toInt();
-    if (saved >= 0 && saved <= static_cast<int>(MinimapCorner::BottomRight)) {
-        return static_cast<MinimapCorner>(saved);
-    }
-    return MinimapCorner::BottomRight;
+    return value("minimap/geometry").toRect();
 }
 
-void Settings::setMinimapCorner(MinimapCorner corner)
+void Settings::setMinimapGeometry(const QRect &geometry)
 {
-    setValue("minimap/corner", static_cast<int>(corner));
+    setValue("minimap/geometry", geometry);
 }
