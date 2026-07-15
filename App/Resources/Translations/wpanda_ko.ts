@@ -1800,17 +1800,17 @@ Save it now?</source>
 <context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="274"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="276"/>
         <source>Could not open file: %1</source>
         <translation>파일을 열 수 없습니다: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="278"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="280"/>
         <source>Could not save file: %1</source>
         <translation>파일을 저장할 수 없습니다: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="341"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="343"/>
         <source>Embedded IC dependency chain exceeds the maximum nesting depth (%1) while resolving &apos;%2&apos;</source>
         <translation>&apos;%2&apos;을(를) 확인하는 동안 내장 IC 종속성 체인이 최대 중첩 깊이(%1)를 초과했습니다</translation>
     </message>
@@ -2626,7 +2626,7 @@ IC와 외관에 접근하거나 beWavedDolphin 시뮬레이션을 실행하기 �
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="227"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="229"/>
         <source>Add embedded IC</source>
         <translation>임베디드 IC 추가</translation>
     </message>
@@ -3282,97 +3282,97 @@ A backup of the original file has been created with name: %3</source>
 <context>
     <name>WorkspaceManager</name>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="73"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="133"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="269"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="74"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="134"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="271"/>
         <source>New Project</source>
         <translation>새 프로젝트</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="199"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="242"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="201"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="244"/>
         <source>File saved successfully.</source>
         <translation>파일이 성공적으로 저장되었습니다.</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="250"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="252"/>
         <source>File not saved. Close tab anyway?</source>
         <translation>파일이 저장되지 않았습니다. 그래도 탭을 닫으시겠습니까?</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="271"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="273"/>
         <source> has been modified.
 Do you want to save your changes?</source>
         <translation> 이 수정되었습니다.
 변경사항을 저장하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="315"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="317"/>
         <source>File loaded successfully.</source>
         <translation>파일이 성공적으로 로드되었습니다.</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="380"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="393"/>
         <source>Open File</source>
         <translation>파일 열기</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="175"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="177"/>
         <source>Save File</source>
         <translation>파일 저장</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="75"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="76"/>
         <source> (recovered)</source>
         <translation> (복구됨)</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="138"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="139"/>
         <source>New Project %1</source>
         <translation>새 프로젝트 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="175"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="228"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="380"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="414"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="459"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="177"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="230"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="393"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="427"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="472"/>
         <source>Panda files</source>
         <translation>Panda 파일</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="226"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="228"/>
         <source>Save File (original location is read-only)</source>
         <translation>파일 저장(원래 위치는 읽기 전용입니다)</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="414"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="459"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="427"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="472"/>
         <source>Save File as ...</source>
         <translation>다른 이름으로 저장...</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="514"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="527"/>
         <source>File Conflict</source>
         <translation>파일 충돌</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="515"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="528"/>
         <source>The file &quot;%1&quot; is already open in another tab.</source>
         <translation>&quot;%1&quot; 파일이 이미 다른 탭에서 열려 있습니다.</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="518"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="531"/>
         <source>Switch to Tab</source>
         <translation>탭으로 전환</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="592"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="605"/>
         <source>Error!</source>
         <translation>오류!</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="689"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="702"/>
         <source>Error</source>
         <translation>오류</translation>
     </message>

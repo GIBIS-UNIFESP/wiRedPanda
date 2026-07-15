@@ -1800,17 +1800,17 @@ Save it now?</source>
 <context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="274"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="276"/>
         <source>Could not open file: %1</source>
         <translation>Неможливо відкрити файл: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="278"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="280"/>
         <source>Could not save file: %1</source>
         <translation>Неможливо зберегти файл: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="341"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="343"/>
         <source>Embedded IC dependency chain exceeds the maximum nesting depth (%1) while resolving &apos;%2&apos;</source>
         <translation>Ланцюг залежностей вбудованих ІС перевищує максимальну глибину вкладеності (%1) під час визначення &apos;%2&apos;</translation>
     </message>
@@ -2626,7 +2626,7 @@ wiRedPanda %1 автоматично відобразить усі інші фа
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="227"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="229"/>
         <source>Add embedded IC</source>
         <translation>Додати вбудований IC</translation>
     </message>
@@ -3282,97 +3282,97 @@ A backup of the original file has been created with name: %3</source>
 <context>
     <name>WorkspaceManager</name>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="73"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="133"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="269"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="74"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="134"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="271"/>
         <source>New Project</source>
         <translation>Новий проєкт</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="199"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="242"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="201"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="244"/>
         <source>File saved successfully.</source>
         <translation>Файл успішно збережено.</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="250"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="252"/>
         <source>File not saved. Close tab anyway?</source>
         <translation>Файл не збережено. Закрити вкладку все одно?</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="271"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="273"/>
         <source> has been modified.
 Do you want to save your changes?</source>
         <translation> було змінено.
 Чи хочете зберегти зміни?</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="315"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="317"/>
         <source>File loaded successfully.</source>
         <translation>Файл успішно завантажено.</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="380"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="393"/>
         <source>Open File</source>
         <translation>Відкрити файл</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="175"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="177"/>
         <source>Save File</source>
         <translation>Зберегти файл</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="75"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="76"/>
         <source> (recovered)</source>
         <translation> (відновлено)</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="138"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="139"/>
         <source>New Project %1</source>
         <translation>Новий проєкт %1</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="175"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="228"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="380"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="414"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="459"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="177"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="230"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="393"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="427"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="472"/>
         <source>Panda files</source>
         <translation>Файли Panda</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="226"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="228"/>
         <source>Save File (original location is read-only)</source>
         <translation>Зберегти файл (початкове розташування доступне лише для читання)</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="414"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="459"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="427"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="472"/>
         <source>Save File as ...</source>
         <translation>Зберегти файл як ...</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="514"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="527"/>
         <source>File Conflict</source>
         <translation>Конфлікт файлів</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="515"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="528"/>
         <source>The file &quot;%1&quot; is already open in another tab.</source>
         <translation>Файл «%1» уже відкрито в іншій вкладці.</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="518"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="531"/>
         <source>Switch to Tab</source>
         <translation>Перейти до вкладки</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="592"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="605"/>
         <source>Error!</source>
         <translation>Помилка!</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="689"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="702"/>
         <source>Error</source>
         <translation>Помилка</translation>
     </message>
