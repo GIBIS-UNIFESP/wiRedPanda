@@ -1800,17 +1800,17 @@ Jetzt speichern?</translation>
 <context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="274"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="276"/>
         <source>Could not open file: %1</source>
         <translation>Datei konnte nicht geöffnet werden: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="278"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="280"/>
         <source>Could not save file: %1</source>
         <translation>Datei konnte nicht gespeichert werden: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="341"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="343"/>
         <source>Embedded IC dependency chain exceeds the maximum nesting depth (%1) while resolving &apos;%2&apos;</source>
         <translation>Die Abhängigkeitskette eingebetteter ICs überschreitet die maximale Verschachtelungstiefe (%1) beim Auflösen von &apos;%2&apos;</translation>
     </message>
@@ -2626,7 +2626,7 @@ Sie müssen neue Projekte speichern, bevor Sie auf ICs und Erscheinungsbilder zu
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="227"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="229"/>
         <source>Add embedded IC</source>
         <translation>Eingebettetes IC hinzufügen</translation>
     </message>
@@ -3282,97 +3282,97 @@ Eine Sicherungskopie der Originaldatei wurde erstellt unter dem Namen: %3</trans
 <context>
     <name>WorkspaceManager</name>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="73"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="133"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="269"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="74"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="134"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="271"/>
         <source>New Project</source>
         <translation>Neues Projekt</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="199"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="242"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="201"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="244"/>
         <source>File saved successfully.</source>
         <translation>Datei erfolgreich gespeichert.</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="250"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="252"/>
         <source>File not saved. Close tab anyway?</source>
         <translation>Datei nicht gespeichert. Tab trotzdem schließen?</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="271"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="273"/>
         <source> has been modified.
 Do you want to save your changes?</source>
         <translation> wurde geändert.
 Möchten Sie Ihre Änderungen speichern?</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="315"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="317"/>
         <source>File loaded successfully.</source>
         <translation>Datei erfolgreich geladen.</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="380"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="393"/>
         <source>Open File</source>
         <translation>Datei öffnen</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="175"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="177"/>
         <source>Save File</source>
         <translation>Datei speichern</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="75"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="76"/>
         <source> (recovered)</source>
         <translation> (wiederhergestellt)</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="138"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="139"/>
         <source>New Project %1</source>
         <translation>Neues Projekt %1</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="175"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="228"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="380"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="414"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="459"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="177"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="230"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="393"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="427"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="472"/>
         <source>Panda files</source>
         <translation>Panda-Dateien</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="226"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="228"/>
         <source>Save File (original location is read-only)</source>
         <translation>Datei speichern (ursprünglicher Speicherort ist schreibgeschützt)</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="414"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="459"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="427"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="472"/>
         <source>Save File as ...</source>
         <translation>Datei speichern als ...</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="514"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="527"/>
         <source>File Conflict</source>
         <translation>Dateikonflikt</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="515"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="528"/>
         <source>The file &quot;%1&quot; is already open in another tab.</source>
         <translation>Die Datei „%1“ ist bereits in einem anderen Tab geöffnet.</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="518"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="531"/>
         <source>Switch to Tab</source>
         <translation>Zum Tab wechseln</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="592"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="605"/>
         <source>Error!</source>
         <translation>Fehler!</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="689"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="702"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>

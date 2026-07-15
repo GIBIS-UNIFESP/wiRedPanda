@@ -1800,17 +1800,17 @@ Save it now?</source>
 <context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="274"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="276"/>
         <source>Could not open file: %1</source>
         <translation>無法開啟檔案：%1</translation>
     </message>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="278"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="280"/>
         <source>Could not save file: %1</source>
         <translation>無法儲存檔案：%1</translation>
     </message>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="341"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="343"/>
         <source>Embedded IC dependency chain exceeds the maximum nesting depth (%1) while resolving &apos;%2&apos;</source>
         <translation>解析 &apos;%2&apos; 時,內嵌 IC 相依鏈超出了最大巢狀深度(%1)</translation>
     </message>
@@ -2626,7 +2626,7 @@ wiRedPanda %1 將自動列出與目前專案位於同一目錄中的所有其他
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="227"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="229"/>
         <source>Add embedded IC</source>
         <translation>新增嵌入式 IC</translation>
     </message>
@@ -3282,97 +3282,97 @@ A backup of the original file has been created with name: %3</source>
 <context>
     <name>WorkspaceManager</name>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="73"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="133"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="269"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="74"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="134"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="271"/>
         <source>New Project</source>
         <translation>新專案</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="199"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="242"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="201"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="244"/>
         <source>File saved successfully.</source>
         <translation>檔案儲存成功。</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="250"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="252"/>
         <source>File not saved. Close tab anyway?</source>
         <translation>檔案未儲存。仍要關閉分頁嗎？</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="271"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="273"/>
         <source> has been modified.
 Do you want to save your changes?</source>
         <translation> 已被修改。
 您要儲存變更嗎？</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="315"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="317"/>
         <source>File loaded successfully.</source>
         <translation>檔案載入成功。</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="380"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="393"/>
         <source>Open File</source>
         <translation>開啟檔案</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="175"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="177"/>
         <source>Save File</source>
         <translation>儲存檔案</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="75"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="76"/>
         <source> (recovered)</source>
         <translation>(已復原)</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="138"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="139"/>
         <source>New Project %1</source>
         <translation>新增專案 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="175"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="228"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="380"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="414"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="459"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="177"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="230"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="393"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="427"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="472"/>
         <source>Panda files</source>
         <translation>Panda 檔案</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="226"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="228"/>
         <source>Save File (original location is read-only)</source>
         <translation>儲存檔案（原始位置為唯讀）</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="414"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="459"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="427"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="472"/>
         <source>Save File as ...</source>
         <translation>另存為...</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="514"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="527"/>
         <source>File Conflict</source>
         <translation>檔案衝突</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="515"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="528"/>
         <source>The file &quot;%1&quot; is already open in another tab.</source>
         <translation>檔案「%1」已在另一個分頁中開啟。</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="518"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="531"/>
         <source>Switch to Tab</source>
         <translation>切換到分頁</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="592"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="605"/>
         <source>Error!</source>
         <translation>錯誤！</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="689"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="702"/>
         <source>Error</source>
         <translation>錯誤</translation>
     </message>
