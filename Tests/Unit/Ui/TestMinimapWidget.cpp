@@ -250,3 +250,40 @@ void TestMinimapWidget::testMoveByClampsToParentBounds()
     QCOMPARE(minimap.x(), margin);
     QCOMPARE(minimap.y(), margin);
 }
+
+void TestMinimapWidget::testHoverStateOverCornerSetsResizeCursorAndHighlight()
+{
+    WorkSpace workspace;
+    MinimapWidget minimap(workspace.scene(), workspace.view());
+
+    minimap.updateHoverState(QPoint(0, 0)); // top-left corner
+
+    QCOMPARE(minimap.m_hoverResizeMode, MinimapWidget::ResizeMode::TopLeft);
+    QVERIFY(!minimap.m_hoverMoveHandle);
+    QCOMPARE(minimap.cursor().shape(), Qt::SizeFDiagCursor);
+}
+
+void TestMinimapWidget::testHoverStateOverMoveStripSetsOpenHandCursorAndHighlight()
+{
+    WorkSpace workspace;
+    MinimapWidget minimap(workspace.scene(), workspace.view());
+
+    minimap.updateHoverState(QPoint(minimap.width() / 2, 15)); // top strip, below the top resize zone (y<=8)
+
+    QCOMPARE(minimap.m_hoverResizeMode, MinimapWidget::ResizeMode::None);
+    QVERIFY(minimap.m_hoverMoveHandle);
+    QCOMPARE(minimap.cursor().shape(), Qt::OpenHandCursor);
+}
+
+void TestMinimapWidget::testHoverStateOverInteriorClearsHighlightAndCursor()
+{
+    WorkSpace workspace;
+    MinimapWidget minimap(workspace.scene(), workspace.view());
+
+    minimap.updateHoverState(QPoint(0, 0)); // corner first, so state actually changes back below
+    minimap.updateHoverState(QPoint(minimap.width() / 2, minimap.height() / 2)); // interior
+
+    QCOMPARE(minimap.m_hoverResizeMode, MinimapWidget::ResizeMode::None);
+    QVERIFY(!minimap.m_hoverMoveHandle);
+    QCOMPARE(minimap.cursor().shape(), Qt::ArrowCursor);
+}

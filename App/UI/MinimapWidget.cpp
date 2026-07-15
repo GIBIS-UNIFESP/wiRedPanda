@@ -104,6 +104,10 @@ void MinimapWidget::paintEvent(QPaintEvent * /*event*/)
     painter.setPen(pen);
     painter.setBrush(Qt::NoBrush);
     painter.drawRect(vr);
+
+    painter.setRenderHint(QPainter::Antialiasing, true);
+    drawMoveHandle(painter);
+    drawResizeGrips(painter);
 }
 
 void MinimapWidget::mousePressEvent(QMouseEvent *event)
@@ -395,6 +399,64 @@ void MinimapWidget::moveBy(const QPoint &delta)
     move(x, y);
 }
 
+void MinimapWidget::drawMoveHandle(QPainter &painter) const
+{
+    const QRect handle = moveHandleRect();
+    const bool highlighted = m_moving || m_hoverMoveHandle;
+
+    QColor bg = highlighted ? palette().highlight().color() : palette().windowText().color();
+    bg.setAlpha(highlighted ? 90 : 35);
+    painter.fillRect(handle, bg);
+
+    // Grip dots (2 rows x 3 columns), the same affordance used for draggable strips/handles
+    // elsewhere (e.g. splitter/dock handles) -- signals "grab here" at a glance.
+    QColor dotColor = palette().windowText().color();
+    dotColor.setAlpha(highlighted ? 230 : 140);
+    painter.setPen(Qt::NoPen);
+    painter.setBrush(dotColor);
+
+    const QPointF center = handle.center();
+    constexpr double dotRadius = 1.2;
+    constexpr double spacingX = 6.0;
+    constexpr double spacingY = 5.0;
+    for (const double rowOffset : {-spacingY / 2.0, spacingY / 2.0}) {
+        for (const double colOffset : {-spacingX, 0.0, spacingX}) {
+            painter.drawEllipse(center + QPointF(colOffset, rowOffset), dotRadius, dotRadius);
+        }
+    }
+}
+
+void MinimapWidget::drawResizeGrips(QPainter &painter) const
+{
+    struct Corner {
+        ResizeMode mode;
+        QPoint origin;
+        int armX; // arm direction along x: +1 rightwards, -1 leftwards
+        int armY; // arm direction along y: +1 downwards, -1 upwards
+    };
+
+    constexpr int inset = 3;
+    constexpr int armLength = 9;
+    const QRect r = rect();
+    const Corner corners[] = {
+        {ResizeMode::TopLeft, QPoint(inset, inset), 1, 1},
+        {ResizeMode::TopRight, QPoint(r.width() - 1 - inset, inset), -1, 1},
+        {ResizeMode::BottomLeft, QPoint(inset, r.height() - 1 - inset), 1, -1},
+        {ResizeMode::BottomRight, QPoint(r.width() - 1 - inset, r.height() - 1 - inset), -1, -1},
+    };
+
+    for (const Corner &corner : corners) {
+        const bool highlighted = m_resizing ? m_resizeMode == corner.mode : m_hoverResizeMode == corner.mode;
+        QColor color = highlighted ? palette().highlight().color() : palette().windowText().color();
+        color.setAlpha(highlighted ? 230 : 130);
+        QPen pen(color);
+        pen.setWidthF(highlighted ? 2.0 : 1.4);
+        painter.setPen(pen);
+        painter.drawLine(corner.origin, corner.origin + QPoint(corner.armX * armLength, 0));
+        painter.drawLine(corner.origin, corner.origin + QPoint(0, corner.armY * armLength));
+    }
+}
+
 void MinimapWidget::mouseMoveEvent(QMouseEvent *event)
 {
     if (m_resizing) {
@@ -412,14 +474,7 @@ void MinimapWidget::mouseMoveEvent(QMouseEvent *event)
     }
 
     if (!m_dragging) {
-        const ResizeMode mode = resizeModeAt(event->pos());
-        if (mode != ResizeMode::None) {
-            setCursor(cursorForResizeMode(mode));
-        } else if (isMoveHandle(event->pos())) {
-            setCursor(Qt::OpenHandCursor);
-        } else {
-            unsetCursor();
-        }
+        updateHoverState(event->pos());
     }
 
     if (!m_dragging || !m_scene || !m_view) {
@@ -460,16 +515,36 @@ void MinimapWidget::mouseReleaseEvent(QMouseEvent *event)
 void MinimapWidget::enterEvent(QEnterEvent *event)
 {
     QWidget::enterEvent(event);
-    const ResizeMode mode = resizeModeAt(mapFromGlobal(QCursor::pos()));
-    if (mode != ResizeMode::None) {
-        setCursor(cursorForResizeMode(mode));
-    } else if (isMoveHandle(mapFromGlobal(QCursor::pos()))) {
-        setCursor(Qt::OpenHandCursor);
-    }
+    updateHoverState(mapFromGlobal(QCursor::pos()));
 }
 
 void MinimapWidget::leaveEvent(QEvent *event)
 {
     QWidget::leaveEvent(event);
     unsetCursor();
+    if (m_hoverResizeMode != ResizeMode::None || m_hoverMoveHandle) {
+        m_hoverResizeMode = ResizeMode::None;
+        m_hoverMoveHandle = false;
+        update();
+    }
+}
+
+void MinimapWidget::updateHoverState(const QPoint &pos)
+{
+    const ResizeMode mode = resizeModeAt(pos);
+    const bool onMoveHandle = mode == ResizeMode::None && isMoveHandle(pos);
+
+    if (mode != ResizeMode::None) {
+        setCursor(cursorForResizeMode(mode));
+    } else if (onMoveHandle) {
+        setCursor(Qt::OpenHandCursor);
+    } else {
+        unsetCursor();
+    }
+
+    if (mode != m_hoverResizeMode || onMoveHandle != m_hoverMoveHandle) {
+        m_hoverResizeMode = mode;
+        m_hoverMoveHandle = onMoveHandle;
+        update(); // repaint so the corner/move-strip highlight tracks the hover state
+    }
 }
