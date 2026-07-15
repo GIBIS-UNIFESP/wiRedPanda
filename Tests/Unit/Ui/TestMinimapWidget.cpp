@@ -149,3 +149,104 @@ void TestMinimapWidget::testAccessibleNameSet()
     QVERIFY(!minimap.accessibleName().isEmpty());
     QVERIFY(!minimap.whatsThis().isEmpty());
 }
+
+void TestMinimapWidget::testResizeModeAtEdgesAndCorners()
+{
+    WorkSpace workspace;
+    MinimapWidget minimap(workspace.scene(), workspace.view()); // default size 220x160
+
+    using Mode = MinimapWidget::ResizeMode;
+    const int w = minimap.width();
+    const int h = minimap.height();
+
+    QCOMPARE(minimap.resizeModeAt(QPoint(0, h / 2)), Mode::Left);
+    QCOMPARE(minimap.resizeModeAt(QPoint(w - 1, h / 2)), Mode::Right);
+    QCOMPARE(minimap.resizeModeAt(QPoint(w / 2, 0)), Mode::Top);
+    QCOMPARE(minimap.resizeModeAt(QPoint(w / 2, h - 1)), Mode::Bottom);
+    QCOMPARE(minimap.resizeModeAt(QPoint(0, 0)), Mode::TopLeft);
+    QCOMPARE(minimap.resizeModeAt(QPoint(w - 1, 0)), Mode::TopRight);
+    QCOMPARE(minimap.resizeModeAt(QPoint(0, h - 1)), Mode::BottomLeft);
+    QCOMPARE(minimap.resizeModeAt(QPoint(w - 1, h - 1)), Mode::BottomRight);
+}
+
+void TestMinimapWidget::testResizeModeAtInteriorIsNone()
+{
+    WorkSpace workspace;
+    MinimapWidget minimap(workspace.scene(), workspace.view());
+
+    QCOMPARE(minimap.resizeModeAt(QPoint(minimap.width() / 2, minimap.height() / 2)), MinimapWidget::ResizeMode::None);
+}
+
+void TestMinimapWidget::testApplyResizePreservesAspectRatio()
+{
+    WorkSpace workspace;
+    // A 2:1 items bounding rect drives applyResize()'s locked aspect ratio.
+    auto *rectItem = new QGraphicsRectItem(QRectF(0, 0, 400, 200));
+    rectItem->setPen(Qt::NoPen);
+    workspace.scene()->addItem(rectItem);
+
+    MinimapWidget minimap(workspace.scene(), workspace.view()); // starts at 220x160
+    minimap.m_resizeMode = MinimapWidget::ResizeMode::Right;
+    minimap.m_lastGlobalPos = QPoint(0, 0);
+    minimap.applyResize(QPoint(40, 0)); // drag the right edge out by 40px
+
+    QCOMPARE(minimap.width(), 260);
+    QVERIFY2(qAbs(static_cast<double>(minimap.width()) / minimap.height() - 2.0) < 0.05,
+             "resize must preserve the scene's 2:1 aspect ratio");
+}
+
+void TestMinimapWidget::testApplyResizeClampsToMinimumSize()
+{
+    WorkSpace workspace;
+    auto *rectItem = new QGraphicsRectItem(QRectF(0, 0, 400, 200));
+    rectItem->setPen(Qt::NoPen);
+    workspace.scene()->addItem(rectItem);
+
+    MinimapWidget minimap(workspace.scene(), workspace.view());
+    minimap.m_resizeMode = MinimapWidget::ResizeMode::Right;
+    minimap.m_lastGlobalPos = QPoint(0, 0);
+    minimap.applyResize(QPoint(-1000, 0)); // drag drastically inward, past the minimum
+
+    QCOMPARE(minimap.width(), minimap.minimumWidth());
+    QCOMPARE(minimap.height(), minimap.minimumHeight());
+}
+
+void TestMinimapWidget::testMoveHandleRectCoversTopStrip()
+{
+    WorkSpace workspace;
+    MinimapWidget minimap(workspace.scene(), workspace.view());
+
+    QCOMPARE(minimap.moveHandleRect(), QRect(0, 0, minimap.width(), 24));
+}
+
+void TestMinimapWidget::testIsMoveHandleDetectsTopStripOnly()
+{
+    WorkSpace workspace;
+    MinimapWidget minimap(workspace.scene(), workspace.view());
+
+    QVERIFY(minimap.isMoveHandle(QPoint(minimap.width() / 2, 5)));
+    QVERIFY(!minimap.isMoveHandle(QPoint(minimap.width() / 2, 50)));
+}
+
+void TestMinimapWidget::testMoveByClampsToParentBounds()
+{
+    WorkSpace workspace;
+    QWidget parentWidget;
+    parentWidget.resize(300, 200);
+
+    MinimapWidget minimap(workspace.scene(), workspace.view(), &parentWidget);
+    minimap.move(50, 50);
+
+    // A huge move-right/down delta must clamp to the 12px margin, not push the widget
+    // (partially or fully) outside the parent.
+    minimap.moveBy(QPoint(10000, 10000));
+
+    const int margin = 12;
+    QCOMPARE(minimap.x(), parentWidget.width() - minimap.width() - margin);
+    QCOMPARE(minimap.y(), parentWidget.height() - minimap.height() - margin);
+
+    // Same for the opposite direction.
+    minimap.moveBy(QPoint(-10000, -10000));
+    QCOMPARE(minimap.x(), margin);
+    QCOMPARE(minimap.y(), margin);
+}

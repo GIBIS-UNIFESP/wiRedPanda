@@ -17,5 +17,8 @@ private slots:
     void testModificationTracking();
     void testICEditing();
     void testFullScreenHandling();
-    void testMinimapCornerPositioning();
+    void testMinimapDefaultPositionWithoutPersistedGeometry();
+    void testMinimapRestoresPersistedGeometry();
+    void testMinimapReclampsOnSubsequentResize();
+    void testMinimapRestoreClampsOversizedGeometry();
 };

@@ -20,4 +20,13 @@ private slots:
     void testWidgetToSceneClampsOutOfBoundsX();
     void testWidgetToSceneNullSceneDegradesToOrigin();
     void testAccessibleNameSet(); // #14 accessibility sweep
+
+    // Drag-to-resize / drag-to-move
+    void testResizeModeAtEdgesAndCorners();
+    void testResizeModeAtInteriorIsNone();
+    void testApplyResizePreservesAspectRatio();
+    void testApplyResizeClampsToMinimumSize();
+    void testMoveHandleRectCoversTopStrip();
+    void testIsMoveHandleDetectsTopStripOnly();
+    void testMoveByClampsToParentBounds();
 };
