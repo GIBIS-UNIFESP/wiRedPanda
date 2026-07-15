@@ -133,3 +133,28 @@ void TestWorkspaceUnit::testMinimapRestoreClampsOversizedGeometry()
     QVERIFY(workspace.m_minimap->x() >= margin);
     QVERIFY(workspace.m_minimap->y() >= margin);
 }
+
+void TestWorkspaceUnit::testMinimapIgnoresPreShowResizeThenRestoresOnShow()
+{
+    const QRect persisted(30, 40, 200, 150);
+    Settings::setMinimapGeometry(persisted);
+
+    WorkSpace workspace;
+    // Resize while still hidden, exactly like MainWindow does via restoreGeometry() before
+    // it's ever shown (which, for a window that was maximized at quit, applies the smaller
+    // pre-maximize "normal" size first). Whatever resizeEvent(s) this produces must not
+    // consume the one-time restore -- otherwise it locks in geometry clamped against a size
+    // the window never actually settles at.
+    workspace.resize(160, 120);
+    QVERIFY(!workspace.m_minimapPositioned);
+
+    // Resize to the real final size and show it. Since nothing resizes again after becoming
+    // visible (unlike a maximize, which would trigger a further visible resizeEvent), the
+    // showEvent() backstop timer is what performs the restore here.
+    workspace.resize(400, 300);
+    workspace.show();
+    QTest::qWait(300);
+
+    QVERIFY(workspace.m_minimapPositioned);
+    QCOMPARE(workspace.m_minimap->geometry(), persisted);
+}

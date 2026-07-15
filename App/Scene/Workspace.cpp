@@ -128,11 +128,33 @@ void WorkSpace::resizeEvent(QResizeEvent *event)
 {
     QWidget::resizeEvent(event);
 
-    if (m_minimap)
+    // Guard with isVisible(): MainWindow restores its geometry (including queuing a maximized
+    // state) before this tab is ever created, so this widget's very first resize fires while
+    // it's still not genuinely on screen -- carrying the pre-maximize "normal" size, not the
+    // final one. Consuming applyMinimapGeometry()'s one-time restore against that stale size
+    // would lose the persisted position for the rest of the session (subsequent resizes only
+    // re-clamp, they don't re-read Settings). Skipping it here lets the real, later resize --
+    // once the window manager actually applies the maximized geometry -- do the restore
+    // instead. showEvent() below covers windows that never resize again after becoming visible.
+    if (m_minimap && isVisible())
         applyMinimapGeometry();
 
     if (m_exerciseOverlay && m_exerciseOverlay->isVisible())
         m_exerciseOverlay->repositionToParent();
+}
+
+void WorkSpace::showEvent(QShowEvent *event)
+{
+    QWidget::showEvent(event);
+
+    // Backstop for windows that never resize again after becoming visible (e.g. a
+    // non-maximized launch, where restoreGeometry() already applied the final size before
+    // show()) -- resizeEvent() above would otherwise never get a chance to restore at all.
+    // Deferred briefly so a genuine maximize resize (handled above) wins the race when it's
+    // fast enough; applyMinimapGeometry() only restores once (m_minimapPositioned), so a
+    // redundant call here just re-clamps the already-correct geometry.
+    if (m_minimap)
+        QTimer::singleShot(100, this, [this] { applyMinimapGeometry(); });
 }
 
 void WorkSpace::setMinimapVisible(bool visible)
