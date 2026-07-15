@@ -184,18 +184,6 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     actionShowMinimap = new QAction(MainWindow);
     actionShowMinimap->setObjectName("actionShowMinimap");
     actionShowMinimap->setCheckable(true);
-    actionMinimapTopLeft = new QAction(MainWindow);
-    actionMinimapTopLeft->setObjectName("actionMinimapTopLeft");
-    actionMinimapTopLeft->setCheckable(true);
-    actionMinimapTopRight = new QAction(MainWindow);
-    actionMinimapTopRight->setObjectName("actionMinimapTopRight");
-    actionMinimapTopRight->setCheckable(true);
-    actionMinimapBottomLeft = new QAction(MainWindow);
-    actionMinimapBottomLeft->setObjectName("actionMinimapBottomLeft");
-    actionMinimapBottomLeft->setCheckable(true);
-    actionMinimapBottomRight = new QAction(MainWindow);
-    actionMinimapBottomRight->setObjectName("actionMinimapBottomRight");
-    actionMinimapBottomRight->setCheckable(true);
     actionAboutThisVersion = new QAction(MainWindow);
     actionAboutThisVersion->setObjectName("actionAboutThisVersion");
     actionRestart = new QAction(MainWindow);
@@ -627,8 +615,6 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     menuView->setObjectName("menuView");
     menuTheme = new QMenu(menuView);
     menuTheme->setObjectName("menuTheme");
-    menuMinimapPosition = new QMenu(menuView);
-    menuMinimapPosition->setObjectName("menuMinimapPosition");
     menuLanguage = new QMenu(menuBar);
     menuLanguage->setObjectName("menuLanguage");
     menuSimulation = new QMenu(menuBar);
@@ -741,11 +727,6 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     menuView->addAction(actionFastMode);
     menuView->addAction(actionShowMinimap);
     menuView->addSeparator();
-    menuView->addAction(menuMinimapPosition->menuAction());
-    menuMinimapPosition->addAction(actionMinimapTopLeft);
-    menuMinimapPosition->addAction(actionMinimapTopRight);
-    menuMinimapPosition->addAction(actionMinimapBottomLeft);
-    menuMinimapPosition->addAction(actionMinimapBottomRight);
     menuView->addAction(menuTheme->menuAction());
     menuView->addAction(actionFullscreen);
     menuView->addAction(actionLabelsUnderIcons);
@@ -863,10 +844,6 @@ void MainWindowUi::retranslateUi()
     actionLabelsUnderIcons->setText(QCoreApplication::translate("MainWindow", "Labels under icons"));
     actionICPreview->setText(QCoreApplication::translate("MainWindow", "Show IC Preview"));
     actionShowMinimap->setText(QCoreApplication::translate("MainWindow", "Show Minimap"));
-    actionMinimapTopLeft->setText(QCoreApplication::translate("MainWindow", "Top-left"));
-    actionMinimapTopRight->setText(QCoreApplication::translate("MainWindow", "Top-right"));
-    actionMinimapBottomLeft->setText(QCoreApplication::translate("MainWindow", "Bottom-left"));
-    actionMinimapBottomRight->setText(QCoreApplication::translate("MainWindow", "Bottom-right"));
     actionAboutThisVersion->setText(QCoreApplication::translate("MainWindow", "About this version"));
     actionCheckForUpdates->setText(QCoreApplication::translate("MainWindow", "Check for updates automatically"));
     actionRestart->setText(QCoreApplication::translate("MainWindow", "&Restart"));
@@ -902,7 +879,6 @@ void MainWindowUi::retranslateUi()
     menuHelp->setTitle(QCoreApplication::translate("MainWindow", "&Help"));
     menuView->setTitle(QCoreApplication::translate("MainWindow", "&View"));
     menuTheme->setTitle(QCoreApplication::translate("MainWindow", "&Theme"));
-    menuMinimapPosition->setTitle(QCoreApplication::translate("MainWindow", "Minimap &Position"));
     menuLanguage->setTitle(QCoreApplication::translate("MainWindow", "&Language"));
     menuSimulation->setTitle(QCoreApplication::translate("MainWindow", "Sim&ulation"));
     menuExamples->setTitle(QCoreApplication::translate("MainWindow", "Examples"));

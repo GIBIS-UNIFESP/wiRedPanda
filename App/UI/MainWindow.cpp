@@ -145,19 +145,11 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     qCDebug(zero) << "Building a new tab.";
     createNewTab();
 
-    // Restore minimap visibility preference and apply to current tab if any.
+    // Restore minimap visibility preference and apply to current tab if any. Position/size
+    // are restored by WorkSpace itself (from Settings::minimapGeometry(), applied in its
+    // first resizeEvent()) -- no push needed from here.
     m_ui->actionShowMinimap->setChecked(Settings::minimapVisible());
     if (currentTab()) currentTab()->setMinimapVisible(Settings::minimapVisible());
-    m_ui->menuMinimapPosition->setEnabled(Settings::minimapVisible());
-    // Restore minimap corner preference
-    const Settings::MinimapCorner corner = Settings::minimapCorner();
-    switch (corner) {
-    case Settings::MinimapCorner::TopLeft: m_ui->actionMinimapTopLeft->setChecked(true); break;
-    case Settings::MinimapCorner::TopRight: m_ui->actionMinimapTopRight->setChecked(true); break;
-    case Settings::MinimapCorner::BottomLeft: m_ui->actionMinimapBottomLeft->setChecked(true); break;
-    case Settings::MinimapCorner::BottomRight: m_ui->actionMinimapBottomRight->setChecked(true); break;
-    }
-    if (currentTab()) currentTab()->setMinimapCorner(corner);
 
     qCDebug(zero) << "Opening file if not empty.";
     if (!fileName.isEmpty()) {
@@ -378,17 +370,6 @@ void MainWindow::setupConnections()
     connect(m_ui->actionICPreview,             &QAction::triggered,       this,                &MainWindow::on_actionICPreview_triggered);
     connect(m_ui->actionCheckForUpdates,       &QAction::triggered,       this,                &MainWindow::on_actionCheckForUpdates_triggered);
     connect(m_ui->actionShowMinimap,           &QAction::triggered,       this,                &MainWindow::on_actionShowMinimap_triggered);
-    connect(m_ui->actionMinimapTopLeft,        &QAction::triggered,       this,                &MainWindow::on_actionMinimapTopLeft_triggered);
-    connect(m_ui->actionMinimapTopRight,       &QAction::triggered,       this,                &MainWindow::on_actionMinimapTopRight_triggered);
-    connect(m_ui->actionMinimapBottomLeft,     &QAction::triggered,       this,                &MainWindow::on_actionMinimapBottomLeft_triggered);
-    connect(m_ui->actionMinimapBottomRight,    &QAction::triggered,       this,                &MainWindow::on_actionMinimapBottomRight_triggered);
-    // Minimap position actions are mutually exclusive (radio-style), same as the theme group below.
-    auto *minimapCornerGroup = new QActionGroup(this);
-    minimapCornerGroup->setExclusive(true);
-    minimapCornerGroup->addAction(m_ui->actionMinimapTopLeft);
-    minimapCornerGroup->addAction(m_ui->actionMinimapTopRight);
-    minimapCornerGroup->addAction(m_ui->actionMinimapBottomLeft);
-    minimapCornerGroup->addAction(m_ui->actionMinimapBottomRight);
     connect(m_ui->actionLightTheme,            &QAction::triggered,       this,                &MainWindow::on_actionLightTheme_triggered);
     connect(m_ui->actionMute,                  &QAction::triggered,       this,                &MainWindow::on_actionMute_triggered);
     connect(m_ui->actionNew,                   &QAction::triggered,       m_workspaceManager,  &WorkspaceManager::newTab);
@@ -825,9 +806,10 @@ void MainWindow::onCurrentTabChanged(WorkSpace *newTab)
     m_binder->bind(newTab);
     m_palette->updateICList(icListFile());
 
-    // Apply minimap visibility and corner preferences to the newly activated tab.
+    // Apply the minimap visibility preference to the newly activated tab. Position/size are
+    // per-tab (each WorkSpace restores its own from Settings::minimapGeometry() on first
+    // layout), so there's nothing to push here for those.
     newTab->setMinimapVisible(Settings::minimapVisible());
-    newTab->setMinimapCorner(Settings::minimapCorner());
 
     // Hide management buttons for inline IC tabs (they use currentFile/currentDir which are empty)
     setICButtonsVisible(!newTab->isInlineIC());
@@ -1357,43 +1339,6 @@ void MainWindow::on_actionShowMinimap_triggered(const bool checked)
         sentryBreadcrumb("ui", QStringLiteral("Show minimap: %1").arg(checked));
         Settings::setMinimapVisible(checked);
         if (currentTab()) currentTab()->setMinimapVisible(checked);
-        m_ui->menuMinimapPosition->setEnabled(checked);
-    });
-}
-
-void MainWindow::on_actionMinimapTopLeft_triggered()
-{
-    Application::guardedSlot(this, [this] {
-        sentryBreadcrumb("ui", QStringLiteral("Minimap corner: top-left"));
-        Settings::setMinimapCorner(Settings::MinimapCorner::TopLeft);
-        if (currentTab()) currentTab()->setMinimapCorner(Settings::MinimapCorner::TopLeft);
-    });
-}
-
-void MainWindow::on_actionMinimapTopRight_triggered()
-{
-    Application::guardedSlot(this, [this] {
-        sentryBreadcrumb("ui", QStringLiteral("Minimap corner: top-right"));
-        Settings::setMinimapCorner(Settings::MinimapCorner::TopRight);
-        if (currentTab()) currentTab()->setMinimapCorner(Settings::MinimapCorner::TopRight);
-    });
-}
-
-void MainWindow::on_actionMinimapBottomLeft_triggered()
-{
-    Application::guardedSlot(this, [this] {
-        sentryBreadcrumb("ui", QStringLiteral("Minimap corner: bottom-left"));
-        Settings::setMinimapCorner(Settings::MinimapCorner::BottomLeft);
-        if (currentTab()) currentTab()->setMinimapCorner(Settings::MinimapCorner::BottomLeft);
-    });
-}
-
-void MainWindow::on_actionMinimapBottomRight_triggered()
-{
-    Application::guardedSlot(this, [this] {
-        sentryBreadcrumb("ui", QStringLiteral("Minimap corner: bottom-right"));
-        Settings::setMinimapCorner(Settings::MinimapCorner::BottomRight);
-        if (currentTab()) currentTab()->setMinimapCorner(Settings::MinimapCorner::BottomRight);
     });
 }
 

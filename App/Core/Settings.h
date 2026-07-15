@@ -8,6 +8,7 @@
 #pragma once
 
 #include <QByteArray>
+#include <QRect>
 #include <QSettings>
 #include <QStringList>
 
@@ -98,19 +99,13 @@ public:
     static bool welcomeTourShown();
     static void setWelcomeTourShown(bool shown);
 
-    /// Corner of the workspace where the minimap overview is anchored.
-    enum class MinimapCorner {
-        TopLeft,
-        TopRight,
-        BottomLeft,
-        BottomRight,
-    };
-
     // Minimap preferences
     static bool minimapVisible();
     static void setMinimapVisible(bool visible);
-    static MinimapCorner minimapCorner();
-    static void setMinimapCorner(MinimapCorner corner);
+    /// Position/size of the minimap overview, relative to its parent WorkSpace. Invalid
+    /// (QRect().isValid() == false) if never set -- callers fall back to a default corner.
+    static QRect minimapGeometry();
+    static void setMinimapGeometry(const QRect &geometry);
 
 private:
     static QVariant value(const QString &key);

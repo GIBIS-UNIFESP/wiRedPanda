@@ -124,7 +124,6 @@ public:
 
     // Minimap control
     void setMinimapVisible(bool visible);
-    void setMinimapCorner(Settings::MinimapCorner corner);
 
     // --- Waveform Integration ---
 
@@ -178,8 +177,14 @@ private:
     /// Atomically sets m_fileInfo and the scene's contextDir from \a filePath.
     void setCurrentFile(const QString &filePath);
 
-    /// Repositions m_minimap in its configured \a corner relative to m_view's geometry.
-    void positionMinimap(Settings::MinimapCorner corner);
+    /// Restores/reclamps m_minimap's geometry against the current view bounds. On the
+    /// first call, applies the persisted Settings::minimapGeometry() (size-then-position
+    /// clamped) or a hardcoded default corner if none is set; later calls just re-clamp
+    /// the minimap's current geometry into the (possibly shrunk) new bounds.
+    void applyMinimapGeometry();
+
+    /// Persists \a geometry as the user's minimap placement/size.
+    void onMinimapGeometryChangeFinished(const QRect &geometry);
 
     // --- Members ---
 
@@ -194,6 +199,10 @@ private:
 
     // Minimap overview widget (small, shows full scene and viewport)
     class MinimapWidget *m_minimap = nullptr;
+    /// True once applyMinimapGeometry() has applied its first (restored-or-default)
+    /// geometry; gates whether later resizeEvent()s re-read Settings (first time) or
+    /// just re-clamp the minimap's own current geometry (every time after).
+    bool m_minimapPositioned = false;
 
     // Inline IC tab state
     bool m_isInlineIC = false;

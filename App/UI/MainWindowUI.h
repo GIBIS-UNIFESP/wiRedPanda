@@ -101,10 +101,6 @@ public:
     QAction *actionICPreview = nullptr;
     QAction *actionCheckForUpdates = nullptr;
     QAction *actionShowMinimap = nullptr;
-    QAction *actionMinimapTopLeft = nullptr;
-    QAction *actionMinimapTopRight = nullptr;
-    QAction *actionMinimapBottomLeft = nullptr;
-    QAction *actionMinimapBottomRight = nullptr;
     QAction *actionLightTheme = nullptr;
     QAction *actionDarkTheme = nullptr;
     QAction *actionSystemTheme = nullptr;
@@ -240,7 +236,6 @@ public:
     QMenu *menuEdit = nullptr;
     QMenu *menuView = nullptr;
     QMenu *menuTheme = nullptr;
-    QMenu *menuMinimapPosition = nullptr;
     QMenu *menuLanguage = nullptr;
     QMenu *menuSimulation = nullptr;
     QMenu *menuExamples = nullptr;

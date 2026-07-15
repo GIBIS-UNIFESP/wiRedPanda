@@ -262,10 +262,6 @@ private:
     void on_actionLabelsUnderIcons_triggered(const bool checked);
     void on_actionICPreview_triggered(const bool checked);
     void on_actionCheckForUpdates_triggered(const bool checked);
-    void on_actionMinimapBottomLeft_triggered();
-    void on_actionMinimapBottomRight_triggered();
-    void on_actionMinimapTopLeft_triggered();
-    void on_actionMinimapTopRight_triggered();
     void on_actionMute_triggered(const bool checked);
     void on_actionPlay_toggled(const bool checked);
     void on_actionReportTranslationError_triggered();
