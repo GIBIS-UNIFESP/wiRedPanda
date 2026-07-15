@@ -21,4 +21,5 @@ private slots:
     void testMinimapRestoresPersistedGeometry();
     void testMinimapReclampsOnSubsequentResize();
     void testMinimapRestoreClampsOversizedGeometry();
+    void testMinimapIgnoresPreShowResizeThenRestoresOnShow();
 };
