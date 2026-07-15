@@ -103,6 +103,10 @@ signals:
     /// Emitted when an IC definition file changes on disk and its cached definition is invalidated.
     void definitionChanged(const QString &filePath);
 
+    /// Emitted when renameBlob() actually renames a blob (not on its no-op guard cases), so
+    /// listeners tracking a blob by name (e.g. an open sub-circuit tab's title) can follow the rename.
+    void blobRenamed(const QString &oldName, const QString &newName);
+
 private slots:
     /// Handles QFileSystemWatcher notifications; invalidates the definition and reloads IC instances.
     void onFileChanged(const QString &filePath);

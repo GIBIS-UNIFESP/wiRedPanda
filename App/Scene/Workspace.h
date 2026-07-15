@@ -108,6 +108,11 @@ public:
     /// Returns the blob name being edited (for tab title).
     const QString &inlineBlobName() const { return m_inlineBlobName; }
 
+    /// Updates the tracked blob name after the underlying blob is renamed elsewhere in the
+    /// registry, so a later lookup/second rename still matches this tab. Does not itself touch
+    /// the tab title -- the caller (WorkspaceManager) also owns retitling the QTabWidget entry.
+    void setInlineBlobName(const QString &blobName) { m_inlineBlobName = blobName; }
+
     /// Stable placeholder title for an unsaved tab, e.g. "New Project" or "New Project 2".
     /// Assigned once at creation so the tab keeps the same number across edits; unused once
     /// the workspace is saved to a real file.

@@ -17,6 +17,7 @@
 #include "App/Core/Common.h"
 #include "App/Core/SentryHelpers.h"
 #include "App/Core/Settings.h"
+#include "App/Scene/ICRegistry.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/UI/ElementPalette.h"
@@ -148,6 +149,7 @@ void WorkspaceManager::createNewTab()
     auto *workspace = new WorkSpace(m_host.widget());
 
     connect(workspace, &WorkSpace::fileChanged, this, &WorkspaceManager::setCurrentFile);
+    connect(workspace->scene()->icRegistry(), &ICRegistry::blobRenamed, this, &WorkspaceManager::onBlobRenamed);
 
     workspace->scene()->updateTheme();
 
@@ -352,6 +354,17 @@ void WorkspaceManager::openICInTab(const QString &blobName, int icElementId, con
 
     // Connect child tab's save signal to parent
     connect(m_currentTab, &WorkSpace::icBlobSaved, parentWorkspace, &WorkSpace::onChildICBlobSaved);
+}
+
+void WorkspaceManager::onBlobRenamed(const QString &oldName, const QString &newName)
+{
+    for (int i = 0; i < m_tab->count(); ++i) {
+        auto *ws = qobject_cast<WorkSpace *>(m_tab->widget(i));
+        if (ws && ws->isInlineIC() && ws->inlineBlobName() == oldName) {
+            ws->setInlineBlobName(newName);
+            m_tab->setTabText(i, "[" + newName + "]");
+        }
+    }
 }
 
 void WorkspaceManager::openFile()

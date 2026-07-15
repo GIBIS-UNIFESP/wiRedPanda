@@ -128,6 +128,10 @@ private slots:
     void testDeleteLastEmbeddedInstanceUndo();
     void testReEmbedAfterExtract();
     void testInlineTabDeduplication();
+    // Regression: renaming an IC's blob while its sub-circuit tab is open used to leave the
+    // tab title showing the pre-rename name indefinitely (it was only ever set once, at
+    // openICInTab() time).
+    void testInlineTabTitleUpdatesAfterBlobRename();
     void testEmbeddedICSaveReloadRoundTrip();
     void testEmbeddedICCopyPastePreservesState();
 

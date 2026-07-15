@@ -175,6 +175,8 @@ void ICRegistry::renameBlob(const QString &oldName, const QString &newName)
     for (auto it = m_blobs.begin(); it != m_blobs.end(); ++it) {
         renameBlobReference(it.value(), oldName, newName);
     }
+
+    emit blobRenamed(oldName, newName);
 }
 
 void ICRegistry::clearBlobs()

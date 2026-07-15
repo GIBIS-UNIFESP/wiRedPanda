@@ -2049,6 +2049,27 @@ void TestMainWindowGui::testInlineTabDeduplication()
     QCOMPARE(tabs->count(), afterFirst);
 }
 
+void TestMainWindowGui::testInlineTabTitleUpdatesAfterBlobRename()
+{
+    std::unique_ptr<MainWindow> window(createMW());
+    auto *tabs = findTabs(window.get());
+    auto *scene = window->currentTab()->scene();
+    scene->setContextDir(m_fixtureDir);
+
+    auto *ic = placeEmbeddedIC(scene, m_fixtureDir, "rename_tab_test");
+    QByteArray blob = scene->icRegistry()->blob("rename_tab_test");
+
+    window->openICInTab("rename_tab_test", ic->id(), blob);
+    const int inlineTabIndex = tabs->currentIndex();
+    QCOMPARE(tabs->tabText(inlineTabIndex), QString("[rename_tab_test]"));
+
+    // Rename the blob from the parent scene (the tab stays open throughout).
+    scene->icRegistry()->renameBlob("rename_tab_test", "renamed_tab_test");
+
+    QCOMPARE(tabs->tabText(inlineTabIndex), QString("[renamed_tab_test]"));
+    QCOMPARE(window->currentTab()->inlineBlobName(), QString("renamed_tab_test"));
+}
+
 void TestMainWindowGui::testEmbeddedICSaveReloadRoundTrip()
 {
     const QString savePath = m_fixtureDir + "/save_reload_test.panda";
