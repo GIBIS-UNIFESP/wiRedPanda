@@ -1968,481 +1968,456 @@ Save it now?</source>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="879"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="856"/>
         <source>Inputs/Outputs</source>
         <translation>Входи/Виходи</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="881"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="858"/>
         <source>Gates</source>
         <translation>Логічні вентилі</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="883"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="860"/>
         <source>Combinational</source>
         <translation>Комбінаційний</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="885"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="862"/>
         <source>Memory</source>
         <translation>Пам&apos;ять</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="894"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="871"/>
         <source>Integrated Circuits</source>
         <translation>Інтегровані схеми</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="887"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="864"/>
         <source>Add IC files</source>
         <translation>Додати файли ІС</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="840"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="821"/>
         <source>&amp;Light</source>
         <translation>&amp;Світла</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="841"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="822"/>
         <source>&amp;Dark</source>
         <translation>&amp;Темна</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="886"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="863"/>
         <source>File-based ICs</source>
         <translation>IC на основі файлів</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="888"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="892"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="865"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="869"/>
         <source>Remove IC</source>
         <translation>Видалити ІС</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="890"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="867"/>
         <source>Embedded ICs</source>
         <translation>Вбудовані IC</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="891"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="868"/>
         <source>Embed IC</source>
         <translation>Вбудувати IC</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="896"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="873"/>
         <source>Miscellaneous</source>
         <translation>Різне</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="898"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="875"/>
         <source>Search:</source>
         <translation>Пошук:</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="899"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="876"/>
         <source>&amp;File</source>
         <translation>&amp;Файл</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="900"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="877"/>
         <source>&amp;Recent files:</source>
         <translation>&amp;Недавні файли:</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="901"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="878"/>
         <source>&amp;Edit</source>
         <translation>&amp;Редагування</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="902"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="879"/>
         <source>&amp;Help</source>
         <translation>&amp;Допомога</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="903"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="880"/>
         <source>&amp;View</source>
         <translation>&amp;Перегляд</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="904"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="881"/>
         <source>&amp;Theme</source>
         <translation>&amp;Тема</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="905"/>
-        <source>Minimap &amp;Position</source>
-        <translation>&amp;Позиція мінікарти</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="906"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="882"/>
         <source>&amp;Language</source>
         <translation>&amp;Мова</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="907"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="883"/>
         <source>Sim&amp;ulation</source>
         <translation>Сим&amp;уляція</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="908"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="884"/>
         <source>Examples</source>
         <translation>Приклади</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="775"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="756"/>
         <source>&amp;Open...</source>
         <translation>&amp;Відкрити...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="776"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="757"/>
         <source>Open</source>
         <translation>Відкрити</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="778"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="759"/>
         <source>&amp;Save</source>
         <translation>&amp;Зберегти</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="780"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="761"/>
         <source>Save &amp;As...</source>
         <translation>Зберегти &amp;як...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="782"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="763"/>
         <source>Cu&amp;t</source>
         <translation>Вя&amp;різати</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="784"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="765"/>
         <source>&amp;Copy</source>
         <translation>&amp;Копіювати</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="786"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="767"/>
         <source>&amp;Paste</source>
         <translation>&amp;Вставити</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="788"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="769"/>
         <source>Dupli&amp;cate</source>
         <translation>&amp;Дублювати</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="790"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="771"/>
         <source>&amp;Delete</source>
         <translation>&amp;Видалити</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="792"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="773"/>
         <source>&amp;New</source>
         <translation>&amp;Новий</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="794"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="775"/>
         <source>Zoom &amp;in</source>
         <translation>При&amp;близити</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="797"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="778"/>
         <source>Zoom &amp;out</source>
         <translation>Ві&amp;ддалити</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="799"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="780"/>
         <source>&amp;Wires</source>
         <translation>&amp;Проводи</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="801"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="782"/>
         <source>&amp;Gates</source>
         <translation>&amp;Логічні вентилі</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="803"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="784"/>
         <source>&amp;About</source>
         <translation>&amp;Про програму</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="805"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="786"/>
         <source>&amp;Exit</source>
         <translation>&amp;Вихід</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="807"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="788"/>
         <source>R&amp;otate right</source>
         <translation>Пове&amp;рнути праворуч</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="809"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="790"/>
         <source>Rotate &amp;left</source>
         <translation>Повернути &amp;ліворуч</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="811"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="792"/>
         <source>About &amp;Qt</source>
         <translation>Про &amp;Qt</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="812"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="793"/>
         <source>&amp;Select all</source>
         <translation>&amp;Вибрати все</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="814"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="795"/>
         <source>Re&amp;load File</source>
         <translation>Пере&amp;завантажити файл</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="816"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="797"/>
         <source>E&amp;xport to Arduino</source>
         <translation>Е&amp;кспорт в Arduino</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="818"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="799"/>
         <source>Export to &amp;SystemVerilog</source>
         <translation>Експортувати в &amp;SystemVerilog</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="820"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="801"/>
         <source>&amp;Reset Zoom</source>
         <translation>&amp;Обнулити масштаб</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="822"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="803"/>
         <source>Zoom to &amp;Fit</source>
         <translation>&amp;Вмістити у вікно</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="823"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="804"/>
         <source>Zoom to fit the whole circuit (or the selection)</source>
         <translation>Масштабує, щоб вмістити всю схему (або виділення)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="827"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="808"/>
         <source>Export to &amp;PDF</source>
         <translation>Експорт в &amp;PDF</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="839"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="820"/>
         <source>&amp;System</source>
         <translation>&amp;Система</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="846"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="889"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="827"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="866"/>
         <source>Make file self-contained</source>
         <translation>Зробити файл автономним</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="850"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="831"/>
         <source>Align &amp;Left</source>
         <translation>Вирівняти за &amp;лівим краєм</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="851"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="832"/>
         <source>Align &amp;Right</source>
         <translation>Вирівняти за &amp;правим краєм</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="852"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="833"/>
         <source>Align &amp;Top</source>
         <translation>Вирівняти за &amp;верхнім краєм</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="853"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="834"/>
         <source>Align &amp;Bottom</source>
         <translation>Вирівняти за &amp;нижнім краєм</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="854"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="835"/>
         <source>Align Horizontal &amp;Centers</source>
         <translation>Вирівняти горизонтальні &amp;центри</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="855"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="836"/>
         <source>Align &amp;Vertical Centers</source>
         <translation>Вирівняти &amp;вертикальні центри</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="856"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="837"/>
         <source>Distribute &amp;Horizontally</source>
         <translation>Розподілити &amp;горизонтально</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="857"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="838"/>
         <source>Distribute Verti&amp;cally</source>
         <translation>Розподілити &amp;вертикально</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="861"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="842"/>
         <source>Mute/unmute circuit buzzers</source>
         <translation>Вимкнути/увімкнути звук зумерів</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="864"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="845"/>
         <source>Show IC Preview</source>
         <translation>Показати попередній перегляд ІС</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="865"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="846"/>
         <source>Show Minimap</source>
         <translation>Показати мінікарту</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="866"/>
-        <source>Top-left</source>
-        <translation>Зліва зверху</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="867"/>
-        <source>Top-right</source>
-        <translation>Справа зверху</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="868"/>
-        <source>Bottom-left</source>
-        <translation>Зліва знизу</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="869"/>
-        <source>Bottom-right</source>
-        <translation>Справа знизу</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="871"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="848"/>
         <source>Check for updates automatically</source>
         <translation>Автоматично перевіряти оновлення</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="874"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="851"/>
         <source>Background Simulation</source>
         <translation>Фонова симуляція</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="876"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="853"/>
         <source>Report Translation Error</source>
         <translation>Повідомити про помилку перекладу</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="877"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="854"/>
         <source>Report translation errors or help improve translations on Weblate</source>
         <translation>Повідомте про помилки перекладу або допоможіть покращити переклади на Weblate</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="909"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="885"/>
         <source>&amp;Learn</source>
         <translation>&amp;Навчання</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="910"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="886"/>
         <source>&amp;Exercises</source>
         <translation>&amp;Вправи</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="911"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="887"/>
         <source>&amp;Tours</source>
         <translation>&amp;Тури</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="829"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="810"/>
         <source>&amp;Play/Pause</source>
         <translation>&amp;Пуск/Пауза</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="830"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="811"/>
         <source>Play or Pause simulation.</source>
         <translation>Запустити або призупинити симуляцію.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="832"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="813"/>
         <source>&amp;Rename</source>
         <translation>&amp;Перейменувати</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="834"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="815"/>
         <source>Cha&amp;nge Trigger</source>
         <translation>Змі&amp;нити тригер</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="836"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="817"/>
         <source>Cl&amp;ear selection</source>
         <translation>Очи&amp;стити вибір</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="838"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="819"/>
         <source>&amp;Fast Mode</source>
         <translation>&amp;Швидкий режим</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="842"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="823"/>
         <source>&amp;Waveform</source>
         <translation>&amp;Хвильова діаграма</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="844"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="825"/>
         <source>Export to &amp;Image</source>
         <translation>Експорт в &amp;зображення</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="847"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="828"/>
         <source>&amp;Flip horizontally</source>
         <translation>&amp;Відобразити горизонтально</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="849"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="830"/>
         <source>Flip &amp;vertically</source>
         <translation>Відобразити &amp;вертикально</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="858"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="839"/>
         <source>F&amp;ullscreen</source>
         <translation>П&amp;овноекранний режим</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1325"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="860"/>
+        <location filename="../../UI/MainWindow.cpp" line="1307"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="841"/>
         <source>Mute</source>
         <translation>Вимкнути звук</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="863"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="844"/>
         <source>Labels under icons</source>
         <translation>Мітки під піктограмами</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="870"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="847"/>
         <source>About this version</source>
         <translation>Про цю версію</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="872"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="849"/>
         <source>&amp;Restart</source>
         <translation>&amp;Перезапуск</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="873"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="850"/>
         <source>Restart simulation.</source>
         <translation>Перезапустити симуляцію.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="657"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="875"/>
+        <location filename="../../UI/MainWindow.cpp" line="638"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="852"/>
         <source>Shortcuts and Tips</source>
         <translation>Клавіатурні скорочення та поради</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="860"/>
+        <location filename="../../UI/MainWindow.cpp" line="842"/>
         <source>%1[*] — wiRedPanda %2</source>
         <translation>%1[*] — wiRedPanda %2</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1018"/>
+        <location filename="../../UI/MainWindow.cpp" line="1000"/>
         <source>New Project</source>
         <translation>Новий проєкт</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="526"/>
+        <location filename="../../UI/MainWindow.cpp" line="507"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2461,62 +2436,62 @@ wiRedPanda %1 автоматично відобразить усі інші фа
 Ви маєте зберегти нові проєкти перед доступом до ІС та зовнішніх виглядів або запуском симуляцій beWavedDolphin.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="292"/>
+        <location filename="../../UI/MainWindow.cpp" line="284"/>
         <source>Error</source>
         <translation>Помилка</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="321"/>
+        <location filename="../../UI/MainWindow.cpp" line="313"/>
         <source>Open My Exercises Folder</source>
         <translation>Відкрити мою папку вправ</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="322"/>
+        <location filename="../../UI/MainWindow.cpp" line="314"/>
         <source>Could not create or access a folder for custom exercises.</source>
         <translation>Не вдалося створити або відкрити папку для власних вправ.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="332"/>
+        <location filename="../../UI/MainWindow.cpp" line="324"/>
         <source>Open My Tours Folder</source>
         <translation>Відкрити мою папку турів</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="333"/>
+        <location filename="../../UI/MainWindow.cpp" line="325"/>
         <source>Could not create or access a folder for custom tours.</source>
         <translation>Не вдалося створити або відкрити папку для власних турів.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="586"/>
+        <location filename="../../UI/MainWindow.cpp" line="567"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda — це програмне забезпечення, розроблене студентами Федерального університету Сан-Паулу, щоб допомогти студентам вивчати логічні схеми.&lt;/p&gt;&lt;p&gt;Версія програми: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Творці:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; Наразі wiRedPanda підтримують проф. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves і Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Будь ласка, повідомте на нашій сторінці GitHub, якщо ви знайшли помилку або хочете запропонувати нову функцію.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Відвідайте наш сайт!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="610"/>
+        <location filename="../../UI/MainWindow.cpp" line="591"/>
         <source>Redo</source>
         <translation>Повторити</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="611"/>
+        <location filename="../../UI/MainWindow.cpp" line="592"/>
         <source>Undo</source>
         <translation>Скасувати</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="636"/>
+        <location filename="../../UI/MainWindow.cpp" line="617"/>
         <source>&lt;h1&gt;Keyboard Shortcuts&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;Element Property Navigation&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : Previous / next primary property &lt;/li&gt;&lt;li&gt; { / } : Previous / next secondary property &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : Morph to previous / next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Double-click a wire to create a node &lt;/li&gt;&lt;li&gt; Drag an element from the left panel onto the canvas to add it &lt;/li&gt;&lt;li&gt; Nudge the selection with the arrow keys (hold Shift for larger steps) &lt;/li&gt;&lt;li&gt; Drop a .panda file onto the canvas to open it &lt;/li&gt;&lt;/ul&gt;</source>
         <translation>&lt;h1&gt;Гарячі клавіші&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;Навігація властивостями елемента&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : Попередня / наступна основна властивість &lt;/li&gt;&lt;li&gt; { / } : Попередня / наступна додаткова властивість &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : Перетворити на попередній / наступний елемент &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Загальні поради&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Двічі клацніть на проводі, щоб створити вузол &lt;/li&gt;&lt;li&gt; Перетягніть елемент з лівої панелі на полотно, щоб додати його &lt;/li&gt;&lt;li&gt; Пересувайте виділення клавішами зі стрілками (утримуйте Shift для більших кроків) &lt;/li&gt;&lt;li&gt; Перетягніть файл .panda на полотно, щоб відкрити його &lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="687"/>
+        <location filename="../../UI/MainWindow.cpp" line="668"/>
         <source>Are you sure?</source>
         <translation>Ви впевнені?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="686"/>
+        <location filename="../../UI/MainWindow.cpp" line="667"/>
         <source>Exit</source>
         <translation>Вихід</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1325"/>
+        <location filename="../../UI/MainWindow.cpp" line="1307"/>
         <source>Unmute</source>
         <translation>Вмикнути звук</translation>
     </message>
@@ -2524,17 +2499,17 @@ wiRedPanda %1 автоматично відобразить усі інші фа
 <context>
     <name>MinimapWidget</name>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="26"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="30"/>
         <source>Mini-map: click or drag to navigate</source>
         <translation>Мінікарта: клацніть або перетягніть для навігації</translation>
     </message>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="27"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="31"/>
         <source>Circuit minimap</source>
         <translation>Міні-карта схеми</translation>
     </message>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="28"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="32"/>
         <source>A miniature overview of the whole circuit. Click or drag inside it to jump the main canvas to that location.</source>
         <translation>Мініатюрний огляд усієї схеми. Клацніть або перетягніть усередині неї, щоб перемістити основне полотно до цього місця.</translation>
     </message>
@@ -3218,7 +3193,7 @@ wiRedPanda %1 автоматично відобразить усі інші фа
 <context>
     <name>WorkSpace</name>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="218"/>
+        <location filename="../../Scene/Workspace.cpp" line="236"/>
         <source>This file was saved with a newer file format (version %1).
 Your wiRedPanda version (%2) supports file format %3.
 
@@ -3229,37 +3204,37 @@ Please update wiRedPanda to save changes to this file.</source>
 Будь ласка, оновіть wiRedPanda для збереження змін у цьому файлі.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="222"/>
+        <location filename="../../Scene/Workspace.cpp" line="240"/>
         <source>Cannot save.</source>
         <translation>Неможливо зберегти.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="252"/>
+        <location filename="../../Scene/Workspace.cpp" line="270"/>
         <source>Cannot save: sub-circuit &quot;%1&quot; could not be read to embed it.</source>
         <translation>Неможливо зберегти: не вдалося прочитати підсхему &quot;%1&quot;, щоб вбудувати її.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="329"/>
+        <location filename="../../Scene/Workspace.cpp" line="347"/>
         <source>Error opening file: %1</source>
         <translation>Помилка відкриття файлу: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="361"/>
+        <location filename="../../Scene/Workspace.cpp" line="379"/>
         <source>Could not save file: %1</source>
         <translation>Неможливо зберегти файл: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="436"/>
+        <location filename="../../Scene/Workspace.cpp" line="454"/>
         <source>This file does not exist: %1</source>
         <translation>Цей файл не існує: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="445"/>
+        <location filename="../../Scene/Workspace.cpp" line="463"/>
         <source>Could not open file: %1</source>
         <translation>Неможливо відкрити файл: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="493"/>
+        <location filename="../../Scene/Workspace.cpp" line="511"/>
         <source>This file was saved with a newer file format (version %1).
 Your version supports file format %2.
 
@@ -3272,34 +3247,34 @@ Please update wiRedPanda to edit and save this file.</source>
 Будь ласка, оновіть wiRedPanda для редагування та збереження цього файлу.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="498"/>
+        <location filename="../../Scene/Workspace.cpp" line="516"/>
         <source>Newer version file.</source>
         <translation>Файл новішої версії.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="501"/>
+        <location filename="../../Scene/Workspace.cpp" line="519"/>
         <source>This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).
 A backup of the original file has been created with name: %3</source>
         <translation>Цей файл у старому форматі (версія %1) і буде автоматично оновлено до поточного формату (версія %2).
 Резервну копію оригінального файлу створено з назвою: %3</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="504"/>
+        <location filename="../../Scene/Workspace.cpp" line="522"/>
         <source>File upgraded.</source>
         <translation>Файл оновлено.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="666"/>
+        <location filename="../../Scene/Workspace.cpp" line="684"/>
         <source>Error opening autosave file: %1</source>
         <translation>Помилка відкриття файлу автозбереження: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="674"/>
+        <location filename="../../Scene/Workspace.cpp" line="692"/>
         <source>Could not commit autosave file: %1</source>
         <translation>Не вдалося завершити файл автозбереження: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="840"/>
+        <location filename="../../Scene/Workspace.cpp" line="858"/>
         <source>Remove embedded IC &quot;%1&quot;</source>
         <translation>Видалити вбудовану ІС «%1»</translation>
     </message>

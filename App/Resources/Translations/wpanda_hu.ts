@@ -1968,476 +1968,451 @@ Menti most?</translation>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="879"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="856"/>
         <source>Inputs/Outputs</source>
         <translation>Bemenetek/Kimenetek</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="881"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="858"/>
         <source>Gates</source>
         <translation>Kapuk</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="883"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="860"/>
         <source>Combinational</source>
         <translation>Kombinációs</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="885"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="862"/>
         <source>Memory</source>
         <translation>Memória</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="894"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="871"/>
         <source>Integrated Circuits</source>
         <translation>Integrált áramkörök</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="887"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="864"/>
         <source>Add IC files</source>
         <translation>IC fájlok hozzáadása</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="839"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="820"/>
         <source>&amp;System</source>
         <translation>&amp;Rendszer</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="846"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="889"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="827"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="866"/>
         <source>Make file self-contained</source>
         <translation>Fájl önálló legyen</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="861"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="842"/>
         <source>Mute/unmute circuit buzzers</source>
         <translation>Áramkör zümmögők némítása/visszakapcsolása</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="864"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="845"/>
         <source>Show IC Preview</source>
         <translation>IC előnézet megjelenítése</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="865"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="846"/>
         <source>Show Minimap</source>
         <translation>Minitérkép megjelenítése</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="866"/>
-        <source>Top-left</source>
-        <translation>Bal felül</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="867"/>
-        <source>Top-right</source>
-        <translation>Jobb felül</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="868"/>
-        <source>Bottom-left</source>
-        <translation>Bal alul</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="869"/>
-        <source>Bottom-right</source>
-        <translation>Jobb alul</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="886"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="863"/>
         <source>File-based ICs</source>
         <translation>Fájlalapú IC-k</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="888"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="892"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="865"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="869"/>
         <source>Remove IC</source>
         <translation>IC eltávolítása</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="890"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="867"/>
         <source>Embedded ICs</source>
         <translation>Beágyazott IC-k</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="891"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="868"/>
         <source>Embed IC</source>
         <translation>IC beágyazása</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="896"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="873"/>
         <source>Miscellaneous</source>
         <translation>Egyéb</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="898"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="875"/>
         <source>Search:</source>
         <translation>Keresés:</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="899"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="876"/>
         <source>&amp;File</source>
         <translation>&amp;Fájl</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="900"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="877"/>
         <source>&amp;Recent files:</source>
         <translation>&amp;Legújabb fájlok:</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="901"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="878"/>
         <source>&amp;Edit</source>
         <translation>&amp;Szerkesztés</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="902"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="879"/>
         <source>&amp;Help</source>
         <translation>&amp;Súgó</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="903"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="880"/>
         <source>&amp;View</source>
         <translation>&amp;Nézet</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="904"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="881"/>
         <source>&amp;Theme</source>
         <translation>&amp;Téma</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="905"/>
-        <source>Minimap &amp;Position</source>
-        <translation>Minitérkép &amp;pozíciója</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="906"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="882"/>
         <source>&amp;Language</source>
         <translation>&amp;Nyelv</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="907"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="883"/>
         <source>Sim&amp;ulation</source>
         <translation>Szi&amp;muláció</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="908"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="884"/>
         <source>Examples</source>
         <translation>Példák</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="775"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="756"/>
         <source>&amp;Open...</source>
         <translation>&amp;Megnyitás...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="776"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="757"/>
         <source>Open</source>
         <translation>Megnyitás</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="778"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="759"/>
         <source>&amp;Save</source>
         <translation>&amp;Mentés</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="780"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="761"/>
         <source>Save &amp;As...</source>
         <translation>Mentés &amp;másként...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="782"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="763"/>
         <source>Cu&amp;t</source>
         <translation>Ki&amp;vágás</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="784"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="765"/>
         <source>&amp;Copy</source>
         <translation>&amp;Másolás</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="786"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="767"/>
         <source>&amp;Paste</source>
         <translation>&amp;Beillesztés</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="788"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="769"/>
         <source>Dupli&amp;cate</source>
         <translation>&amp;Duplikálás</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="790"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="771"/>
         <source>&amp;Delete</source>
         <translation>&amp;Törlés</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="792"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="773"/>
         <source>&amp;New</source>
         <translation>&amp;Új</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="794"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="775"/>
         <source>Zoom &amp;in</source>
         <translation>&amp;Nagyítás</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="797"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="778"/>
         <source>Zoom &amp;out</source>
         <translation>&amp;Kicsinyítés</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="799"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="780"/>
         <source>&amp;Wires</source>
         <translation>&amp;Vezetékek</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="801"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="782"/>
         <source>&amp;Gates</source>
         <translation>&amp;Kapuk</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="803"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="784"/>
         <source>&amp;About</source>
         <translation>&amp;Névjegy</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="805"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="786"/>
         <source>&amp;Exit</source>
         <translation>&amp;Kilépés</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="807"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="788"/>
         <source>R&amp;otate right</source>
         <translation>&amp;Jobbra forgatás</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="809"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="790"/>
         <source>Rotate &amp;left</source>
         <translation>&amp;Balra forgatás</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="811"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="792"/>
         <source>About &amp;Qt</source>
         <translation>&amp;Qt névjegy</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="812"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="793"/>
         <source>&amp;Select all</source>
         <translation>&amp;Mindent kijelöl</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="814"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="795"/>
         <source>Re&amp;load File</source>
         <translation>&amp;Újratöltés</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="816"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="797"/>
         <source>E&amp;xport to Arduino</source>
         <translation>&amp;Exportálás Arduino-ba</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="818"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="799"/>
         <source>Export to &amp;SystemVerilog</source>
         <translation>Exportálás &amp;SystemVerilog-ba</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="820"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="801"/>
         <source>&amp;Reset Zoom</source>
         <translation>&amp;Nagyítás visszaállítása</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="822"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="803"/>
         <source>Zoom to &amp;Fit</source>
         <translation>&amp;Igazítás ablakhoz</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="823"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="804"/>
         <source>Zoom to fit the whole circuit (or the selection)</source>
         <translation>Nagyítás/kicsinyítés a teljes áramkör (vagy a kijelölés) megjelenítéséhez</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="827"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="808"/>
         <source>Export to &amp;PDF</source>
         <translation>&amp;PDF exportálás</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="829"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="810"/>
         <source>&amp;Play/Pause</source>
         <translation>&amp;Lejátszás/Szünet</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="830"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="811"/>
         <source>Play or Pause simulation.</source>
         <translation>Szimuláció lejátszása vagy szüneteltetése.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="832"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="813"/>
         <source>&amp;Rename</source>
         <translation>&amp;Átnevezés</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="834"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="815"/>
         <source>Cha&amp;nge Trigger</source>
         <translation>&amp;Trigger váltása</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="836"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="817"/>
         <source>Cl&amp;ear selection</source>
         <translation>&amp;Kijelölés törlése</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="838"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="819"/>
         <source>&amp;Fast Mode</source>
         <translation>&amp;Gyors mód</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="840"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="821"/>
         <source>&amp;Light</source>
         <translation>&amp;Világos</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="841"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="822"/>
         <source>&amp;Dark</source>
         <translation>&amp;Sötét</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="842"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="823"/>
         <source>&amp;Waveform</source>
         <translation>&amp;Hullámforma</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="844"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="825"/>
         <source>Export to &amp;Image</source>
         <translation>&amp;Kép exportálás</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="847"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="828"/>
         <source>&amp;Flip horizontally</source>
         <translation>&amp;Vízszintes tükrözés</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="849"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="830"/>
         <source>Flip &amp;vertically</source>
         <translation>&amp;Függőleges tükrözés</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="850"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="831"/>
         <source>Align &amp;Left</source>
         <translation>Igazítás &amp;balra</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="851"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="832"/>
         <source>Align &amp;Right</source>
         <translation>Igazítás &amp;jobbra</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="852"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="833"/>
         <source>Align &amp;Top</source>
         <translation>Igazítás &amp;felülre</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="853"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="834"/>
         <source>Align &amp;Bottom</source>
         <translation>Igazítás &amp;alulra</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="854"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="835"/>
         <source>Align Horizontal &amp;Centers</source>
         <translation>Vízszintes közepek &amp;igazítása</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="855"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="836"/>
         <source>Align &amp;Vertical Centers</source>
         <translation>&amp;Függőleges közepek igazítása</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="856"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="837"/>
         <source>Distribute &amp;Horizontally</source>
         <translation>Elosztás &amp;vízszintesen</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="857"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="838"/>
         <source>Distribute Verti&amp;cally</source>
         <translation>Elosztás &amp;függőlegesen</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="858"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="839"/>
         <source>F&amp;ullscreen</source>
         <translation>&amp;Teljes képernyő</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="871"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="848"/>
         <source>Check for updates automatically</source>
         <translation>Frissítések automatikus keresése</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="909"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="885"/>
         <source>&amp;Learn</source>
         <translation>&amp;Tanulás</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="910"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="886"/>
         <source>&amp;Exercises</source>
         <translation>&amp;Gyakorlatok</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="911"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="887"/>
         <source>&amp;Tours</source>
         <translation>&amp;Túrák</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1325"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="860"/>
+        <location filename="../../UI/MainWindow.cpp" line="1307"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="841"/>
         <source>Mute</source>
         <translation>Némítás</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="863"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="844"/>
         <source>Labels under icons</source>
         <translation>Címkék az ikonok alatt</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="870"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="847"/>
         <source>About this version</source>
         <translation>Erről a verzióról</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="872"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="849"/>
         <source>&amp;Restart</source>
         <translation>&amp;Újraindítás</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="873"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="850"/>
         <source>Restart simulation.</source>
         <translation>Szimuláció újraindítása.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="874"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="851"/>
         <source>Background Simulation</source>
         <translation>Háttér szimuláció</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="657"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="875"/>
+        <location filename="../../UI/MainWindow.cpp" line="638"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="852"/>
         <source>Shortcuts and Tips</source>
         <translation>Gyorsbillentyűk és tippek</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="876"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="853"/>
         <source>Report Translation Error</source>
         <translation>Fordítási hiba jelentése</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="877"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="854"/>
         <source>Report translation errors or help improve translations on Weblate</source>
         <translation>Fordítási hibák jelentése vagy segítség a fordítások javításában a Weblate-en</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1018"/>
+        <location filename="../../UI/MainWindow.cpp" line="1000"/>
         <source>New Project</source>
         <translation>Új projekt</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="526"/>
+        <location filename="../../UI/MainWindow.cpp" line="507"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2456,67 +2431,67 @@ wiRedPanda %1 automatikusan felsorolja az összes többi .panda fájlt az aktuá
 Az új projekteket mentenie kell, mielőtt hozzáférne az IC-khez és megjelenésekhez, vagy futtatná a beWavedDolphin szimulációkat.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="687"/>
+        <location filename="../../UI/MainWindow.cpp" line="668"/>
         <source>Are you sure?</source>
         <translation>Biztos benne?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="292"/>
+        <location filename="../../UI/MainWindow.cpp" line="284"/>
         <source>Error</source>
         <translation>Hiba</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="321"/>
+        <location filename="../../UI/MainWindow.cpp" line="313"/>
         <source>Open My Exercises Folder</source>
         <translation>Saját gyakorlatok mappájának megnyitása</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="322"/>
+        <location filename="../../UI/MainWindow.cpp" line="314"/>
         <source>Could not create or access a folder for custom exercises.</source>
         <translation>Nem sikerült létrehozni vagy elérni a mappát az egyéni gyakorlatokhoz.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="332"/>
+        <location filename="../../UI/MainWindow.cpp" line="324"/>
         <source>Open My Tours Folder</source>
         <translation>Saját túrák mappájának megnyitása</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="333"/>
+        <location filename="../../UI/MainWindow.cpp" line="325"/>
         <source>Could not create or access a folder for custom tours.</source>
         <translation>Nem sikerült létrehozni vagy elérni a mappát az egyéni túrákhoz.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="586"/>
+        <location filename="../../UI/MainWindow.cpp" line="567"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;A wiRedPanda a São Pauló-i Szövetségi Egyetem hallgatói által fejlesztett szoftver, amely segít a diákoknak megismerni a logikai áramköröket.&lt;/p&gt;&lt;p&gt;Szoftververzió: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Készítők:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; A wiRedPanda-t jelenleg Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves és Maycon A. Santana tartja karban.&lt;/p&gt;&lt;p&gt; Kérjük, jelentsen hibát GitHub oldalunkon, ha hibát talál, vagy új funkciót szeretne kérni.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Látogasson el weboldalunkra!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="610"/>
+        <location filename="../../UI/MainWindow.cpp" line="591"/>
         <source>Redo</source>
         <translation>Ismétlés</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="611"/>
+        <location filename="../../UI/MainWindow.cpp" line="592"/>
         <source>Undo</source>
         <translation>Visszavonás</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="636"/>
+        <location filename="../../UI/MainWindow.cpp" line="617"/>
         <source>&lt;h1&gt;Keyboard Shortcuts&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;Element Property Navigation&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : Previous / next primary property &lt;/li&gt;&lt;li&gt; { / } : Previous / next secondary property &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : Morph to previous / next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Double-click a wire to create a node &lt;/li&gt;&lt;li&gt; Drag an element from the left panel onto the canvas to add it &lt;/li&gt;&lt;li&gt; Nudge the selection with the arrow keys (hold Shift for larger steps) &lt;/li&gt;&lt;li&gt; Drop a .panda file onto the canvas to open it &lt;/li&gt;&lt;/ul&gt;</source>
         <translation>&lt;h1&gt;Billentyűparancsok&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;Elemtulajdonságok Navigálása&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : Előző / következő elsődleges tulajdonság &lt;/li&gt;&lt;li&gt; { / } : Előző / következő másodlagos tulajdonság &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : Átalakítás előző / következő elemre &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Általános Tippek&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Kattintson duplán egy vezetékre csomópont létrehozásához &lt;/li&gt;&lt;li&gt; Húzzon egy elemet a bal oldali panelből a vászonra a hozzáadásához &lt;/li&gt;&lt;li&gt; Mozgassa a kijelölést a nyílbillentyűkkel (tartsa lenyomva a Shiftet nagyobb lépésekhez) &lt;/li&gt;&lt;li&gt; Ejtsen egy .panda fájlt a vászonra a megnyitásához &lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="686"/>
+        <location filename="../../UI/MainWindow.cpp" line="667"/>
         <source>Exit</source>
         <translation>Kilépés</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="860"/>
+        <location filename="../../UI/MainWindow.cpp" line="842"/>
         <source>%1[*] — wiRedPanda %2</source>
         <translation>%1[*] — wiRedPanda %2</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1325"/>
+        <location filename="../../UI/MainWindow.cpp" line="1307"/>
         <source>Unmute</source>
         <translation>Hang feloldása</translation>
     </message>
@@ -2524,17 +2499,17 @@ Az új projekteket mentenie kell, mielőtt hozzáférne az IC-khez és megjelen�
 <context>
     <name>MinimapWidget</name>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="26"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="30"/>
         <source>Mini-map: click or drag to navigate</source>
         <translation>Minitérkép: kattintson vagy húzza a navigáláshoz</translation>
     </message>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="27"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="31"/>
         <source>Circuit minimap</source>
         <translation>Áramkör minitérkép</translation>
     </message>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="28"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="32"/>
         <source>A miniature overview of the whole circuit. Click or drag inside it to jump the main canvas to that location.</source>
         <translation>A teljes áramkör miniatűr áttekintése. Kattintson vagy húzza a belsejében, hogy a fő vászon arra a helyre ugorjon.</translation>
     </message>
@@ -3218,7 +3193,7 @@ Az új projekteket mentenie kell, mielőtt hozzáférne az IC-khez és megjelen�
 <context>
     <name>WorkSpace</name>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="218"/>
+        <location filename="../../Scene/Workspace.cpp" line="236"/>
         <source>This file was saved with a newer file format (version %1).
 Your wiRedPanda version (%2) supports file format %3.
 
@@ -3229,37 +3204,37 @@ Az Ön wiRedPanda verziója (%2) a(z) %3 fájlformátumot támogatja.
 Kérjük, frissítse a wiRedPanda alkalmazást a fájl módosításainak mentéséhez.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="222"/>
+        <location filename="../../Scene/Workspace.cpp" line="240"/>
         <source>Cannot save.</source>
         <translation>Nem lehet menteni.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="252"/>
+        <location filename="../../Scene/Workspace.cpp" line="270"/>
         <source>Cannot save: sub-circuit &quot;%1&quot; could not be read to embed it.</source>
         <translation>Nem menthető: a(z) &quot;%1&quot; al-áramkör nem volt olvasható a beágyazáshoz.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="329"/>
+        <location filename="../../Scene/Workspace.cpp" line="347"/>
         <source>Error opening file: %1</source>
         <translation>Hiba a fájl megnyitásakor: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="361"/>
+        <location filename="../../Scene/Workspace.cpp" line="379"/>
         <source>Could not save file: %1</source>
         <translation>Nem sikerült menteni a fájlt: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="436"/>
+        <location filename="../../Scene/Workspace.cpp" line="454"/>
         <source>This file does not exist: %1</source>
         <translation>Ez a fájl nem létezik: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="445"/>
+        <location filename="../../Scene/Workspace.cpp" line="463"/>
         <source>Could not open file: %1</source>
         <translation>Nem sikerült megnyitni a fájlt: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="493"/>
+        <location filename="../../Scene/Workspace.cpp" line="511"/>
         <source>This file was saved with a newer file format (version %1).
 Your version supports file format %2.
 
@@ -3272,34 +3247,34 @@ A fájl megnyílik, de a mentés le van tiltva.
 Kérjük, frissítse a wiRedPanda alkalmazást a fájl szerkesztéséhez és mentéséhez.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="498"/>
+        <location filename="../../Scene/Workspace.cpp" line="516"/>
         <source>Newer version file.</source>
         <translation>Újabb verziójú fájl.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="501"/>
+        <location filename="../../Scene/Workspace.cpp" line="519"/>
         <source>This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).
 A backup of the original file has been created with name: %3</source>
         <translation>Ez a fájl régebbi formátumban van (verzió %1), és automatikusan frissítésre kerül az aktuális formátumra (verzió %2).
 Az eredeti fájlról biztonsági másolat készült a következő néven: %3</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="504"/>
+        <location filename="../../Scene/Workspace.cpp" line="522"/>
         <source>File upgraded.</source>
         <translation>Fájl frissítve.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="666"/>
+        <location filename="../../Scene/Workspace.cpp" line="684"/>
         <source>Error opening autosave file: %1</source>
         <translation>Hiba az automatikus mentés fájl megnyitásakor: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="674"/>
+        <location filename="../../Scene/Workspace.cpp" line="692"/>
         <source>Could not commit autosave file: %1</source>
         <translation>Nem sikerült véglegesíteni az automatikus mentés fájlját: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="840"/>
+        <location filename="../../Scene/Workspace.cpp" line="858"/>
         <source>Remove embedded IC &quot;%1&quot;</source>
         <translation>Beágyazott „%1” IC eltávolítása</translation>
     </message>

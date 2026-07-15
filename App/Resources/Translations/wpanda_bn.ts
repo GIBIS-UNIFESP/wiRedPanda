@@ -1968,476 +1968,451 @@ Save it now?</source>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="879"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="856"/>
         <source>Inputs/Outputs</source>
         <translation>ইনপুট/আউটপুট</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="881"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="858"/>
         <source>Gates</source>
         <translation>গেট</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="883"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="860"/>
         <source>Combinational</source>
         <translation>সমন্বিত</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="885"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="862"/>
         <source>Memory</source>
         <translation>মেমরি</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="894"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="871"/>
         <source>Integrated Circuits</source>
         <translation>একীভূত সার্কিট</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="887"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="864"/>
         <source>Add IC files</source>
         <translation>IC ফাইল যোগ করুন</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="839"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="820"/>
         <source>&amp;System</source>
         <translation>&amp;সিস্টেম</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="846"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="889"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="827"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="866"/>
         <source>Make file self-contained</source>
         <translation>ফাইল স্বয়ংসম্পূর্ণ করুন</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="861"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="842"/>
         <source>Mute/unmute circuit buzzers</source>
         <translation>সার্কিট বাজার মিউট/আনমিউট করুন</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="864"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="845"/>
         <source>Show IC Preview</source>
         <translation>আইসি প্রিভিউ দেখান</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="865"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="846"/>
         <source>Show Minimap</source>
         <translation>মিনি-ম্যাপ দেখান</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="866"/>
-        <source>Top-left</source>
-        <translation>উপরে-বামে</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="867"/>
-        <source>Top-right</source>
-        <translation>উপরে-ডানে</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="868"/>
-        <source>Bottom-left</source>
-        <translation>নিচে-বামে</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="869"/>
-        <source>Bottom-right</source>
-        <translation>নিচে-ডানে</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="886"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="863"/>
         <source>File-based ICs</source>
         <translation>ফাইল-ভিত্তিক IC</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="888"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="892"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="865"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="869"/>
         <source>Remove IC</source>
         <translation>IC সরান</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="890"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="867"/>
         <source>Embedded ICs</source>
         <translation>এম্বেডেড IC</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="891"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="868"/>
         <source>Embed IC</source>
         <translation>IC এম্বেড করুন</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="896"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="873"/>
         <source>Miscellaneous</source>
         <translation>বিবিধ</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="898"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="875"/>
         <source>Search:</source>
         <translation>অনুসন্ধান:</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="899"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="876"/>
         <source>&amp;File</source>
         <translation>&amp;ফাইল</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="900"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="877"/>
         <source>&amp;Recent files:</source>
         <translation>&amp;সাম্প্রতিক ফাইল:</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="901"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="878"/>
         <source>&amp;Edit</source>
         <translation>&amp;সম্পাদনা</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="902"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="879"/>
         <source>&amp;Help</source>
         <translation>&amp;সাহায্য</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="903"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="880"/>
         <source>&amp;View</source>
         <translation>&amp;দেখুন</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="904"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="881"/>
         <source>&amp;Theme</source>
         <translation>&amp;থিম</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="905"/>
-        <source>Minimap &amp;Position</source>
-        <translation>মিনি-ম্যাপ &amp;অবস্থান</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="906"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="882"/>
         <source>&amp;Language</source>
         <translation>&amp;ভাষা</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="907"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="883"/>
         <source>Sim&amp;ulation</source>
         <translation>সিমু&amp;লেশন</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="908"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="884"/>
         <source>Examples</source>
         <translation>উদাহরণ</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="775"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="756"/>
         <source>&amp;Open...</source>
         <translation>&amp;খুলুন...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="776"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="757"/>
         <source>Open</source>
         <translation>খুলুন</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="778"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="759"/>
         <source>&amp;Save</source>
         <translation>&amp;সংরক্ষণ</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="780"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="761"/>
         <source>Save &amp;As...</source>
         <translation>&amp;এ নামে সংরক্ষণ...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="782"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="763"/>
         <source>Cu&amp;t</source>
         <translation>&amp;কাটুন</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="784"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="765"/>
         <source>&amp;Copy</source>
         <translation>&amp;কপি</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="786"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="767"/>
         <source>&amp;Paste</source>
         <translation>&amp;পেস্ট</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="788"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="769"/>
         <source>Dupli&amp;cate</source>
         <translation>&amp;ডুপ্লিকেট করুন</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="790"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="771"/>
         <source>&amp;Delete</source>
         <translation>&amp;মুছুন</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="792"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="773"/>
         <source>&amp;New</source>
         <translation>&amp;নতুন</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="794"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="775"/>
         <source>Zoom &amp;in</source>
         <translation>বড় &amp;করুন</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="797"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="778"/>
         <source>Zoom &amp;out</source>
         <translation>ছোট &amp;করুন</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="799"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="780"/>
         <source>&amp;Wires</source>
         <translation>&amp;তার</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="801"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="782"/>
         <source>&amp;Gates</source>
         <translation>&amp;গেট</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="803"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="784"/>
         <source>&amp;About</source>
         <translation>&amp;সম্পর্কে</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="805"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="786"/>
         <source>&amp;Exit</source>
         <translation>&amp;প্রস্থান</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="807"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="788"/>
         <source>R&amp;otate right</source>
         <translation>ডা&amp;নে ঘুরান</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="809"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="790"/>
         <source>Rotate &amp;left</source>
         <translation>&amp;বামে ঘুরান</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="811"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="792"/>
         <source>About &amp;Qt</source>
         <translation>&amp;Qt সম্পর্কে</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="812"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="793"/>
         <source>&amp;Select all</source>
         <translation>&amp;সব নির্বাচন করুন</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="814"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="795"/>
         <source>Re&amp;load File</source>
         <translation>ফাইল পু&amp;নরায় লোড</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="816"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="797"/>
         <source>E&amp;xport to Arduino</source>
         <translation>Arduino এ &amp;রপ্তানি</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="818"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="799"/>
         <source>Export to &amp;SystemVerilog</source>
         <translation>&amp;SystemVerilog-এ রপ্তানি করুন</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="820"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="801"/>
         <source>&amp;Reset Zoom</source>
         <translation>&amp;জুম রিসেট</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="822"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="803"/>
         <source>Zoom to &amp;Fit</source>
         <translation>&amp;উইন্ডোতে ফিট করুন</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="823"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="804"/>
         <source>Zoom to fit the whole circuit (or the selection)</source>
         <translation>সম্পূর্ণ সার্কিট (বা নির্বাচন) ফিট করতে জুম করে</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="827"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="808"/>
         <source>Export to &amp;PDF</source>
         <translation>&amp;PDF এ রপ্তানি</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="829"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="810"/>
         <source>&amp;Play/Pause</source>
         <translation>&amp;চালু/বিরতি</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="830"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="811"/>
         <source>Play or Pause simulation.</source>
         <translation>সিমুলেশন চালু অথবা বিরতি করুন।</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="832"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="813"/>
         <source>&amp;Rename</source>
         <translation>&amp;নাম পরিবর্তন</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="834"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="815"/>
         <source>Cha&amp;nge Trigger</source>
         <translation>ট্রিগার &amp;পরিবর্তন</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="836"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="817"/>
         <source>Cl&amp;ear selection</source>
         <translation>নির্ব&amp;াচন মুছুন</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="838"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="819"/>
         <source>&amp;Fast Mode</source>
         <translation>&amp;দ্রুত মোড</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="840"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="821"/>
         <source>&amp;Light</source>
         <translation>&amp;হালকা</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="841"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="822"/>
         <source>&amp;Dark</source>
         <translation>&amp;গাঢ়</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="842"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="823"/>
         <source>&amp;Waveform</source>
         <translation>&amp;তরঙ্গরূপ</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="844"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="825"/>
         <source>Export to &amp;Image</source>
         <translation>&amp;ছবিতে রপ্তানি</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="847"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="828"/>
         <source>&amp;Flip horizontally</source>
         <translation>&amp;অনুভূমিকভাবে ফ্লিপ</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="849"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="830"/>
         <source>Flip &amp;vertically</source>
         <translation>&amp;উল্লম্বভাবে ফ্লিপ</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="850"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="831"/>
         <source>Align &amp;Left</source>
         <translation>&amp;বামে সারিবদ্ধ করুন</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="851"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="832"/>
         <source>Align &amp;Right</source>
         <translation>&amp;ডানে সারিবদ্ধ করুন</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="852"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="833"/>
         <source>Align &amp;Top</source>
         <translation>&amp;উপরে সারিবদ্ধ করুন</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="853"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="834"/>
         <source>Align &amp;Bottom</source>
         <translation>&amp;নিচে সারিবদ্ধ করুন</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="854"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="835"/>
         <source>Align Horizontal &amp;Centers</source>
         <translation>অনুভূমিক &amp;কেন্দ্র সারিবদ্ধ করুন</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="855"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="836"/>
         <source>Align &amp;Vertical Centers</source>
         <translation>&amp;উল্লম্ব কেন্দ্র সারিবদ্ধ করুন</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="856"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="837"/>
         <source>Distribute &amp;Horizontally</source>
         <translation>&amp;অনুভূমিকভাবে বিতরণ করুন</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="857"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="838"/>
         <source>Distribute Verti&amp;cally</source>
         <translation>&amp;উল্লম্বভাবে বিতরণ করুন</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="858"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="839"/>
         <source>F&amp;ullscreen</source>
         <translation>&amp;পূর্ণ পর্দা</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="871"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="848"/>
         <source>Check for updates automatically</source>
         <translation>স্বয়ংক্রিয়ভাবে আপডেট পরীক্ষা করুন</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="909"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="885"/>
         <source>&amp;Learn</source>
         <translation>&amp;শিখুন</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="910"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="886"/>
         <source>&amp;Exercises</source>
         <translation>&amp;অনুশীলন</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="911"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="887"/>
         <source>&amp;Tours</source>
         <translation>&amp;ভ্রমণ</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1325"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="860"/>
+        <location filename="../../UI/MainWindow.cpp" line="1307"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="841"/>
         <source>Mute</source>
         <translation>নিরব</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="863"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="844"/>
         <source>Labels under icons</source>
         <translation>আইকনের নিচে লেবেল</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="870"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="847"/>
         <source>About this version</source>
         <translation>এই সংস্করণ সম্পর্কে</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="872"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="849"/>
         <source>&amp;Restart</source>
         <translation>&amp;পুনরারম্ভ</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="873"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="850"/>
         <source>Restart simulation.</source>
         <translation>সিমুলেশন পুনরারম্ভ করুন।</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="874"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="851"/>
         <source>Background Simulation</source>
         <translation>পটভূমি সিমুলেশন</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="657"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="875"/>
+        <location filename="../../UI/MainWindow.cpp" line="638"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="852"/>
         <source>Shortcuts and Tips</source>
         <translation>শর্টকাট এবং টিপস</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="876"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="853"/>
         <source>Report Translation Error</source>
         <translation>অনুবাদ ত্রুটি রিপোর্ট করুন</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="877"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="854"/>
         <source>Report translation errors or help improve translations on Weblate</source>
         <translation>অনুবাদ ত্রুটি রিপোর্ট করুন বা Weblate-এ অনুবাদ উন্নত করতে সাহায্য করুন</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1018"/>
+        <location filename="../../UI/MainWindow.cpp" line="1000"/>
         <source>New Project</source>
         <translation>নতুন প্রকল্প</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="526"/>
+        <location filename="../../UI/MainWindow.cpp" line="507"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2456,67 +2431,67 @@ wiRedPanda %1 বর্তমান প্রকল্পের একই ডি
 IC এবং চেহারা অ্যাক্সেস করতে বা beWavedDolphin সিমুলেশন চালাতে আপনাকে নতুন প্রকল্প সংরক্ষণ করতে হবে।</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="687"/>
+        <location filename="../../UI/MainWindow.cpp" line="668"/>
         <source>Are you sure?</source>
         <translation>আপনি কি নিশ্চিত?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="292"/>
+        <location filename="../../UI/MainWindow.cpp" line="284"/>
         <source>Error</source>
         <translation>ত্রুটি</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="321"/>
+        <location filename="../../UI/MainWindow.cpp" line="313"/>
         <source>Open My Exercises Folder</source>
         <translation>আমার অনুশীলন ফোল্ডার খুলুন</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="322"/>
+        <location filename="../../UI/MainWindow.cpp" line="314"/>
         <source>Could not create or access a folder for custom exercises.</source>
         <translation>কাস্টম অনুশীলনের জন্য একটি ফোল্ডার তৈরি বা অ্যাক্সেস করা যায়নি।</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="332"/>
+        <location filename="../../UI/MainWindow.cpp" line="324"/>
         <source>Open My Tours Folder</source>
         <translation>আমার ট্যুর ফোল্ডার খুলুন</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="333"/>
+        <location filename="../../UI/MainWindow.cpp" line="325"/>
         <source>Could not create or access a folder for custom tours.</source>
         <translation>কাস্টম ট্যুরের জন্য একটি ফোল্ডার তৈরি বা অ্যাক্সেস করা যায়নি।</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="586"/>
+        <location filename="../../UI/MainWindow.cpp" line="567"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda হল সাও পাওলোর ফেডারেল বিশ্ববিদ্যালয়ের শিক্ষার্থীদের দ্বারা তৈরি একটি সফটওয়্যার, যা শিক্ষার্থীদের লজিক সার্কিট সম্পর্কে শিখতে সাহায্য করে।&lt;/p&gt;&lt;p&gt;সফটওয়্যার সংস্করণ: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;নির্মাতা:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda বর্তমানে Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves এবং Maycon A. Santana দ্বারা রক্ষণাবেক্ষণ করা হয়।&lt;/p&gt;&lt;p&gt; আপনি যদি কোনো বাগ খুঁজে পান বা নতুন কোনো ফিচারের অনুরোধ করতে চান, তাহলে দয়া করে আমাদের GitHub পেজে একটি রিপোর্ট দিন।&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;আমাদের ওয়েবসাইট দেখুন!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="610"/>
+        <location filename="../../UI/MainWindow.cpp" line="591"/>
         <source>Redo</source>
         <translation>পুনরায়</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="611"/>
+        <location filename="../../UI/MainWindow.cpp" line="592"/>
         <source>Undo</source>
         <translation>বাতিল</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="636"/>
+        <location filename="../../UI/MainWindow.cpp" line="617"/>
         <source>&lt;h1&gt;Keyboard Shortcuts&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;Element Property Navigation&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : Previous / next primary property &lt;/li&gt;&lt;li&gt; { / } : Previous / next secondary property &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : Morph to previous / next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Double-click a wire to create a node &lt;/li&gt;&lt;li&gt; Drag an element from the left panel onto the canvas to add it &lt;/li&gt;&lt;li&gt; Nudge the selection with the arrow keys (hold Shift for larger steps) &lt;/li&gt;&lt;li&gt; Drop a .panda file onto the canvas to open it &lt;/li&gt;&lt;/ul&gt;</source>
         <translation>&lt;h1&gt;কীবোর্ড শর্টকাট&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;এলিমেন্ট বৈশিষ্ট্য নেভিগেশন&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : পূর্ববর্তী / পরবর্তী প্রাথমিক বৈশিষ্ট্য &lt;/li&gt;&lt;li&gt; { / } : পূর্ববর্তী / পরবর্তী মাধ্যমিক বৈশিষ্ট্য &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : পূর্ববর্তী / পরবর্তী এলিমেন্টে রূপান্তর করুন &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;সাধারণ টিপস&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; একটি নোড তৈরি করতে একটি তারে ডাবল-ক্লিক করুন &lt;/li&gt;&lt;li&gt; এটি যোগ করতে বাম প্যানেল থেকে একটি এলিমেন্ট ক্যানভাসে টেনে আনুন &lt;/li&gt;&lt;li&gt; তীর কী দিয়ে নির্বাচন সরান (বড় পদক্ষেপের জন্য Shift চেপে ধরুন) &lt;/li&gt;&lt;li&gt; এটি খুলতে ক্যানভাসে একটি .panda ফাইল ড্রপ করুন &lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="686"/>
+        <location filename="../../UI/MainWindow.cpp" line="667"/>
         <source>Exit</source>
         <translation>প্রস্থান</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="860"/>
+        <location filename="../../UI/MainWindow.cpp" line="842"/>
         <source>%1[*] — wiRedPanda %2</source>
         <translation>%1[*] — wiRedPanda %2</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1325"/>
+        <location filename="../../UI/MainWindow.cpp" line="1307"/>
         <source>Unmute</source>
         <translation>শব্দ চালু</translation>
     </message>
@@ -2524,17 +2499,17 @@ IC এবং চেহারা অ্যাক্সেস করতে বা 
 <context>
     <name>MinimapWidget</name>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="26"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="30"/>
         <source>Mini-map: click or drag to navigate</source>
         <translation>মিনি-ম্যাপ: নেভিগেট করতে ক্লিক করুন বা টেনে আনুন</translation>
     </message>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="27"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="31"/>
         <source>Circuit minimap</source>
         <translation>সার্কিট মিনিম্যাপ</translation>
     </message>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="28"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="32"/>
         <source>A miniature overview of the whole circuit. Click or drag inside it to jump the main canvas to that location.</source>
         <translation>সম্পূর্ণ সার্কিটের একটি ক্ষুদ্র সংক্ষিপ্ত বিবরণ। প্রধান ক্যানভাসটিকে সেই অবস্থানে নিয়ে যেতে এর ভিতরে ক্লিক করুন বা টেনে আনুন।</translation>
     </message>
@@ -3218,7 +3193,7 @@ IC এবং চেহারা অ্যাক্সেস করতে বা 
 <context>
     <name>WorkSpace</name>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="218"/>
+        <location filename="../../Scene/Workspace.cpp" line="236"/>
         <source>This file was saved with a newer file format (version %1).
 Your wiRedPanda version (%2) supports file format %3.
 
@@ -3229,37 +3204,37 @@ Please update wiRedPanda to save changes to this file.</source>
 এই ফাইলে পরিবর্তন সংরক্ষণ করতে দয়া করে wiRedPanda আপডেট করুন।</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="222"/>
+        <location filename="../../Scene/Workspace.cpp" line="240"/>
         <source>Cannot save.</source>
         <translation>সংরক্ষণ করা যাচ্ছে না।</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="252"/>
+        <location filename="../../Scene/Workspace.cpp" line="270"/>
         <source>Cannot save: sub-circuit &quot;%1&quot; could not be read to embed it.</source>
         <translation>সংরক্ষণ করা যায়নি: সাব-সার্কিট &quot;%1&quot; এমবেড করার জন্য পড়া যায়নি।</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="329"/>
+        <location filename="../../Scene/Workspace.cpp" line="347"/>
         <source>Error opening file: %1</source>
         <translation>ফাইল খোলতে ত্রুটি: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="361"/>
+        <location filename="../../Scene/Workspace.cpp" line="379"/>
         <source>Could not save file: %1</source>
         <translation>ফাইল সংরক্ষণ করা যায়নি: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="436"/>
+        <location filename="../../Scene/Workspace.cpp" line="454"/>
         <source>This file does not exist: %1</source>
         <translation>এই ফাইলটি বিদ্যমান নেই: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="445"/>
+        <location filename="../../Scene/Workspace.cpp" line="463"/>
         <source>Could not open file: %1</source>
         <translation>ফাইল খোলা যায়নি: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="493"/>
+        <location filename="../../Scene/Workspace.cpp" line="511"/>
         <source>This file was saved with a newer file format (version %1).
 Your version supports file format %2.
 
@@ -3272,34 +3247,34 @@ Please update wiRedPanda to edit and save this file.</source>
 এই ফাইলটি সম্পাদনা ও সংরক্ষণ করতে দয়া করে wiRedPanda আপডেট করুন।</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="498"/>
+        <location filename="../../Scene/Workspace.cpp" line="516"/>
         <source>Newer version file.</source>
         <translation>নতুন সংস্করণের ফাইল।</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="501"/>
+        <location filename="../../Scene/Workspace.cpp" line="519"/>
         <source>This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).
 A backup of the original file has been created with name: %3</source>
         <translation>এই ফাইলটি একটি পুরানো ফরম্যাটে (সংস্করণ %1) আছে এবং স্বয়ংক্রিয়ভাবে বর্তমান ফরম্যাটে (সংস্করণ %2) আপগ্রেড হবে।
 মূল ফাইলের একটি ব্যাকআপ তৈরি করা হয়েছে: %3</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="504"/>
+        <location filename="../../Scene/Workspace.cpp" line="522"/>
         <source>File upgraded.</source>
         <translation>ফাইল আপগ্রেড হয়েছে।</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="666"/>
+        <location filename="../../Scene/Workspace.cpp" line="684"/>
         <source>Error opening autosave file: %1</source>
         <translation>অটোসেভ ফাইল খোলতে ত্রুটি: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="674"/>
+        <location filename="../../Scene/Workspace.cpp" line="692"/>
         <source>Could not commit autosave file: %1</source>
         <translation>স্বয়ংক্রিয় সংরক্ষণ ফাইল চূড়ান্ত করা যায়নি: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="840"/>
+        <location filename="../../Scene/Workspace.cpp" line="858"/>
         <source>Remove embedded IC &quot;%1&quot;</source>
         <translation>অন্তর্ভুক্ত IC &quot;%1&quot; সরান</translation>
     </message>

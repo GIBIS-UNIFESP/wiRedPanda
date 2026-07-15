@@ -1968,476 +1968,451 @@ Save it now?</source>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="879"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="856"/>
         <source>Inputs/Outputs</source>
         <translation>Είσοδοι/Έξοδοι</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="881"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="858"/>
         <source>Gates</source>
         <translation>Πύλες</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="883"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="860"/>
         <source>Combinational</source>
         <translation>Συνδυαστικός</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="885"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="862"/>
         <source>Memory</source>
         <translation>Μνήμη</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="894"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="871"/>
         <source>Integrated Circuits</source>
         <translation>Ολοκληρωμένα Κυκλώματα</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="887"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="864"/>
         <source>Add IC files</source>
         <translation>Προσθήκη αρχείων IC</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="839"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="820"/>
         <source>&amp;System</source>
         <translation>&amp;Σύστημα</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="846"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="889"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="827"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="866"/>
         <source>Make file self-contained</source>
         <translation>Δημιουργία αυτόνομου αρχείου</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="861"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="842"/>
         <source>Mute/unmute circuit buzzers</source>
         <translation>Σίγαση/κατάργηση σίγασης βομβητών κυκλώματος</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="864"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="845"/>
         <source>Show IC Preview</source>
         <translation>Εμφάνιση προεπισκόπησης IC</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="865"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="846"/>
         <source>Show Minimap</source>
         <translation>Εμφάνιση μικρού χάρτη</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="866"/>
-        <source>Top-left</source>
-        <translation>Πάνω αριστερά</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="867"/>
-        <source>Top-right</source>
-        <translation>Πάνω δεξιά</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="868"/>
-        <source>Bottom-left</source>
-        <translation>Κάτω αριστερά</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="869"/>
-        <source>Bottom-right</source>
-        <translation>Κάτω δεξιά</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="886"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="863"/>
         <source>File-based ICs</source>
         <translation>IC βασισμένα σε αρχεία</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="888"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="892"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="865"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="869"/>
         <source>Remove IC</source>
         <translation>Αφαίρεση IC</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="890"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="867"/>
         <source>Embedded ICs</source>
         <translation>Ενσωματωμένα IC</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="891"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="868"/>
         <source>Embed IC</source>
         <translation>Ενσωμάτωση IC</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="896"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="873"/>
         <source>Miscellaneous</source>
         <translation>Διάφορα</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="898"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="875"/>
         <source>Search:</source>
         <translation>Αναζήτηση:</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="899"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="876"/>
         <source>&amp;File</source>
         <translation>&amp;Αρχείο</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="900"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="877"/>
         <source>&amp;Recent files:</source>
         <translation>&amp;Πρόσφατα αρχεία:</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="901"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="878"/>
         <source>&amp;Edit</source>
         <translation>&amp;Επεξεργασία</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="902"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="879"/>
         <source>&amp;Help</source>
         <translation>&amp;Βοήθεια</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="903"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="880"/>
         <source>&amp;View</source>
         <translation>&amp;Προβολή</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="904"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="881"/>
         <source>&amp;Theme</source>
         <translation>&amp;Θέμα</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="905"/>
-        <source>Minimap &amp;Position</source>
-        <translation>&amp;Θέση μικρού χάρτη</translation>
-    </message>
-    <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="906"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="882"/>
         <source>&amp;Language</source>
         <translation>&amp;Γλώσσα</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="907"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="883"/>
         <source>Sim&amp;ulation</source>
         <translation>Προσομοί&amp;ωση</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="908"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="884"/>
         <source>Examples</source>
         <translation>Παραδείγματα</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="775"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="756"/>
         <source>&amp;Open...</source>
         <translation>&amp;Άνοιγμα...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="776"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="757"/>
         <source>Open</source>
         <translation>Άνοιγμα</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="778"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="759"/>
         <source>&amp;Save</source>
         <translation>&amp;Αποθήκευση</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="780"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="761"/>
         <source>Save &amp;As...</source>
         <translation>Αποθήκευση &amp;ως...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="782"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="763"/>
         <source>Cu&amp;t</source>
         <translation>Αποκο&amp;πή</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="784"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="765"/>
         <source>&amp;Copy</source>
         <translation>&amp;Αντιγραφή</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="786"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="767"/>
         <source>&amp;Paste</source>
         <translation>&amp;Επικόλληση</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="788"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="769"/>
         <source>Dupli&amp;cate</source>
         <translation>&amp;Διπλασιασμός</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="790"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="771"/>
         <source>&amp;Delete</source>
         <translation>&amp;Διαγραφή</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="792"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="773"/>
         <source>&amp;New</source>
         <translation>&amp;Νέο</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="794"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="775"/>
         <source>Zoom &amp;in</source>
         <translation>Μεγέθυνση &amp;προς τα μέσα</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="797"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="778"/>
         <source>Zoom &amp;out</source>
         <translation>Σμίκρυνση &amp;προς τα έξω</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="799"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="780"/>
         <source>&amp;Wires</source>
         <translation>&amp;Σύρματα</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="801"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="782"/>
         <source>&amp;Gates</source>
         <translation>&amp;Πύλες</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="803"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="784"/>
         <source>&amp;About</source>
         <translation>&amp;Σχετικά</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="805"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="786"/>
         <source>&amp;Exit</source>
         <translation>&amp;Έξοδος</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="807"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="788"/>
         <source>R&amp;otate right</source>
         <translation>Περιστροφή &amp;δεξιά</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="809"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="790"/>
         <source>Rotate &amp;left</source>
         <translation>Περιστροφή &amp;αριστερά</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="811"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="792"/>
         <source>About &amp;Qt</source>
         <translation>Σχετικά με το &amp;Qt</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="812"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="793"/>
         <source>&amp;Select all</source>
         <translation>&amp;Επιλογή όλων</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="814"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="795"/>
         <source>Re&amp;load File</source>
         <translation>Επανα&amp;φόρτωση Αρχείου</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="816"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="797"/>
         <source>E&amp;xport to Arduino</source>
         <translation>Εξα&amp;γωγή σε Arduino</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="818"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="799"/>
         <source>Export to &amp;SystemVerilog</source>
         <translation>Εξαγωγή σε &amp;SystemVerilog</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="820"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="801"/>
         <source>&amp;Reset Zoom</source>
         <translation>&amp;Επαναφορά Μεγέθυνσης</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="822"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="803"/>
         <source>Zoom to &amp;Fit</source>
         <translation>&amp;Προσαρμογή στο παράθυρο</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="823"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="804"/>
         <source>Zoom to fit the whole circuit (or the selection)</source>
         <translation>Κάνει ζουμ ώστε να χωρέσει ολόκληρο το κύκλωμα (ή η επιλογή)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="827"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="808"/>
         <source>Export to &amp;PDF</source>
         <translation>Εξαγωγή σε &amp;PDF</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="829"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="810"/>
         <source>&amp;Play/Pause</source>
         <translation>&amp;Αναπαραγωγή/Παύση</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="830"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="811"/>
         <source>Play or Pause simulation.</source>
         <translation>Αναπαραγωγή ή παύση προσομοίωσης.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="832"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="813"/>
         <source>&amp;Rename</source>
         <translation>&amp;Μετονομασία</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="834"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="815"/>
         <source>Cha&amp;nge Trigger</source>
         <translation>Αλλα&amp;γή Σκανδαλισμού</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="836"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="817"/>
         <source>Cl&amp;ear selection</source>
         <translation>Καθα&amp;ρισμός επιλογής</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="838"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="819"/>
         <source>&amp;Fast Mode</source>
         <translation>&amp;Γρήγορη Λειτουργία</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="840"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="821"/>
         <source>&amp;Light</source>
         <translation>&amp;Φωτεινό</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="841"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="822"/>
         <source>&amp;Dark</source>
         <translation>&amp;Σκοτεινό</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="842"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="823"/>
         <source>&amp;Waveform</source>
         <translation>&amp;Κυματομορφή</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="844"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="825"/>
         <source>Export to &amp;Image</source>
         <translation>Εξαγωγή σε &amp;Εικόνα</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="847"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="828"/>
         <source>&amp;Flip horizontally</source>
         <translation>&amp;Αναστροφή οριζοντίως</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="849"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="830"/>
         <source>Flip &amp;vertically</source>
         <translation>Αναστροφή &amp;καθέτως</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="850"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="831"/>
         <source>Align &amp;Left</source>
         <translation>Στοίχιση &amp;αριστερά</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="851"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="832"/>
         <source>Align &amp;Right</source>
         <translation>Στοίχιση &amp;δεξιά</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="852"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="833"/>
         <source>Align &amp;Top</source>
         <translation>Στοίχιση &amp;επάνω</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="853"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="834"/>
         <source>Align &amp;Bottom</source>
         <translation>Στοίχιση &amp;κάτω</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="854"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="835"/>
         <source>Align Horizontal &amp;Centers</source>
         <translation>Στοίχιση οριζόντιων &amp;κέντρων</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="855"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="836"/>
         <source>Align &amp;Vertical Centers</source>
         <translation>Στοίχιση &amp;κάθετων κέντρων</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="856"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="837"/>
         <source>Distribute &amp;Horizontally</source>
         <translation>Κατανομή &amp;οριζόντια</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="857"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="838"/>
         <source>Distribute Verti&amp;cally</source>
         <translation>Κατανομή &amp;κάθετα</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="858"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="839"/>
         <source>F&amp;ullscreen</source>
         <translation>Πλή&amp;ρης οθόνη</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="871"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="848"/>
         <source>Check for updates automatically</source>
         <translation>Αυτόματος έλεγχος για ενημερώσεις</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="909"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="885"/>
         <source>&amp;Learn</source>
         <translation>&amp;Μάθηση</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="910"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="886"/>
         <source>&amp;Exercises</source>
         <translation>Α&amp;σκήσεις</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="911"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="887"/>
         <source>&amp;Tours</source>
         <translation>&amp;Περιηγήσεις</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1325"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="860"/>
+        <location filename="../../UI/MainWindow.cpp" line="1307"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="841"/>
         <source>Mute</source>
         <translation>Σίγαση</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="863"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="844"/>
         <source>Labels under icons</source>
         <translation>Ετικέτες κάτω από εικονίδια</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="870"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="847"/>
         <source>About this version</source>
         <translation>Σχετικά με αυτή την έκδοση</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="872"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="849"/>
         <source>&amp;Restart</source>
         <translation>&amp;Επανεκκίνηση</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="873"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="850"/>
         <source>Restart simulation.</source>
         <translation>Επανεκκίνηση προσομοίωσης.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="874"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="851"/>
         <source>Background Simulation</source>
         <translation>Προσομοίωση Υποβάθρου</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="657"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="875"/>
+        <location filename="../../UI/MainWindow.cpp" line="638"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="852"/>
         <source>Shortcuts and Tips</source>
         <translation>Συντομεύσεις και Συμβουλές</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="876"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="853"/>
         <source>Report Translation Error</source>
         <translation>Αναφορά σφάλματος μετάφρασης</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="877"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="854"/>
         <source>Report translation errors or help improve translations on Weblate</source>
         <translation>Αναφέρετε σφάλματα μετάφρασης ή βοηθήστε στη βελτίωση των μεταφράσεων στο Weblate</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1018"/>
+        <location filename="../../UI/MainWindow.cpp" line="1000"/>
         <source>New Project</source>
         <translation>Νέο Έργο</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="526"/>
+        <location filename="../../UI/MainWindow.cpp" line="507"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2456,67 +2431,67 @@ wiRedPanda %1 θα εμφανίσει αυτόματα όλα τα άλλα αρ
 Πρέπει να αποθηκεύσετε νέα έργα πριν αποκτήσετε πρόσβαση σε IC και εμφανίσεις ή εκτελέσετε προσομοιώσεις beWavedDolphin.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="687"/>
+        <location filename="../../UI/MainWindow.cpp" line="668"/>
         <source>Are you sure?</source>
         <translation>Είστε σίγουροι;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="292"/>
+        <location filename="../../UI/MainWindow.cpp" line="284"/>
         <source>Error</source>
         <translation>Σφάλμα</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="321"/>
+        <location filename="../../UI/MainWindow.cpp" line="313"/>
         <source>Open My Exercises Folder</source>
         <translation>Άνοιγμα Φακέλου Ασκήσεών μου</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="322"/>
+        <location filename="../../UI/MainWindow.cpp" line="314"/>
         <source>Could not create or access a folder for custom exercises.</source>
         <translation>Δεν ήταν δυνατή η δημιουργία ή η πρόσβαση σε φάκελο για προσαρμοσμένες ασκήσεις.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="332"/>
+        <location filename="../../UI/MainWindow.cpp" line="324"/>
         <source>Open My Tours Folder</source>
         <translation>Άνοιγμα Φακέλου Ξεναγήσεών μου</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="333"/>
+        <location filename="../../UI/MainWindow.cpp" line="325"/>
         <source>Could not create or access a folder for custom tours.</source>
         <translation>Δεν ήταν δυνατή η δημιουργία ή η πρόσβαση σε φάκελο για προσαρμοσμένες ξεναγήσεις.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="586"/>
+        <location filename="../../UI/MainWindow.cpp" line="567"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;Το wiRedPanda είναι λογισμικό που αναπτύχθηκε από φοιτητές του Ομοσπονδιακού Πανεπιστημίου του Σάο Πάολο για να βοηθήσει τους μαθητές να μάθουν για τα λογικά κυκλώματα.&lt;/p&gt;&lt;p&gt;Έκδοση λογισμικού: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Δημιουργοί:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; Το wiRedPanda συντηρείται επί του παρόντος από τους Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves και Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Παρακαλούμε υποβάλετε αναφορά στη σελίδα μας στο GitHub αν βρείτε κάποιο σφάλμα ή θέλετε να ζητήσετε μια νέα λειτουργία.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Επισκεφθείτε τον ιστότοπό μας!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="610"/>
+        <location filename="../../UI/MainWindow.cpp" line="591"/>
         <source>Redo</source>
         <translation>Επανάληψη</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="611"/>
+        <location filename="../../UI/MainWindow.cpp" line="592"/>
         <source>Undo</source>
         <translation>Αναίρεση</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="636"/>
+        <location filename="../../UI/MainWindow.cpp" line="617"/>
         <source>&lt;h1&gt;Keyboard Shortcuts&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;Element Property Navigation&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : Previous / next primary property &lt;/li&gt;&lt;li&gt; { / } : Previous / next secondary property &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : Morph to previous / next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Double-click a wire to create a node &lt;/li&gt;&lt;li&gt; Drag an element from the left panel onto the canvas to add it &lt;/li&gt;&lt;li&gt; Nudge the selection with the arrow keys (hold Shift for larger steps) &lt;/li&gt;&lt;li&gt; Drop a .panda file onto the canvas to open it &lt;/li&gt;&lt;/ul&gt;</source>
         <translation>&lt;h1&gt;Συντομεύσεις Πληκτρολογίου&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;Πλοήγηση Ιδιοτήτων Στοιχείου&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : Προηγούμενη / επόμενη κύρια ιδιότητα &lt;/li&gt;&lt;li&gt; { / } : Προηγούμενη / επόμενη δευτερεύουσα ιδιότητα &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : Μετασχηματισμός σε προηγούμενο / επόμενο στοιχείο &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Γενικές Συμβουλές&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Κάντε διπλό κλικ σε ένα σύρμα για να δημιουργήσετε έναν κόμβο &lt;/li&gt;&lt;li&gt; Σύρετε ένα στοιχείο από το αριστερό πλαίσιο στον καμβά για να το προσθέσετε &lt;/li&gt;&lt;li&gt; Μετακινήστε την επιλογή με τα πλήκτρα βέλους (κρατήστε πατημένο το Shift για μεγαλύτερα βήματα) &lt;/li&gt;&lt;li&gt; Αποθέστε ένα αρχείο .panda στον καμβά για να το ανοίξετε &lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="686"/>
+        <location filename="../../UI/MainWindow.cpp" line="667"/>
         <source>Exit</source>
         <translation>Έξοδος</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="860"/>
+        <location filename="../../UI/MainWindow.cpp" line="842"/>
         <source>%1[*] — wiRedPanda %2</source>
         <translation>%1[*] — wiRedPanda %2</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1325"/>
+        <location filename="../../UI/MainWindow.cpp" line="1307"/>
         <source>Unmute</source>
         <translation>Αποσίγαση</translation>
     </message>
@@ -2524,17 +2499,17 @@ wiRedPanda %1 θα εμφανίσει αυτόματα όλα τα άλλα αρ
 <context>
     <name>MinimapWidget</name>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="26"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="30"/>
         <source>Mini-map: click or drag to navigate</source>
         <translation>Μικρός χάρτης: κάντε κλικ ή σύρετε για πλοήγηση</translation>
     </message>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="27"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="31"/>
         <source>Circuit minimap</source>
         <translation>Μικρός χάρτης κυκλώματος</translation>
     </message>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="28"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="32"/>
         <source>A miniature overview of the whole circuit. Click or drag inside it to jump the main canvas to that location.</source>
         <translation>Μια μικρογραφική επισκόπηση ολόκληρου του κυκλώματος. Κάντε κλικ ή σύρετε μέσα σε αυτόν για να μεταφέρετε τον κύριο καμβά σε αυτήν τη θέση.</translation>
     </message>
@@ -3218,7 +3193,7 @@ wiRedPanda %1 θα εμφανίσει αυτόματα όλα τα άλλα αρ
 <context>
     <name>WorkSpace</name>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="218"/>
+        <location filename="../../Scene/Workspace.cpp" line="236"/>
         <source>This file was saved with a newer file format (version %1).
 Your wiRedPanda version (%2) supports file format %3.
 
@@ -3229,37 +3204,37 @@ Please update wiRedPanda to save changes to this file.</source>
 Παρακαλώ ενημερώστε το wiRedPanda για να αποθηκεύσετε αλλαγές σε αυτό το αρχείο.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="222"/>
+        <location filename="../../Scene/Workspace.cpp" line="240"/>
         <source>Cannot save.</source>
         <translation>Αδύνατη η αποθήκευση.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="252"/>
+        <location filename="../../Scene/Workspace.cpp" line="270"/>
         <source>Cannot save: sub-circuit &quot;%1&quot; could not be read to embed it.</source>
         <translation>Δεν είναι δυνατή η αποθήκευση: το υποκύκλωμα &quot;%1&quot; δεν ήταν δυνατό να διαβαστεί για ενσωμάτωση.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="329"/>
+        <location filename="../../Scene/Workspace.cpp" line="347"/>
         <source>Error opening file: %1</source>
         <translation>Σφάλμα ανοίγματος αρχείου: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="361"/>
+        <location filename="../../Scene/Workspace.cpp" line="379"/>
         <source>Could not save file: %1</source>
         <translation>Δεν ήταν δυνατό να αποθηκευτεί το αρχείο: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="436"/>
+        <location filename="../../Scene/Workspace.cpp" line="454"/>
         <source>This file does not exist: %1</source>
         <translation>Αυτό το αρχείο δεν υπάρχει: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="445"/>
+        <location filename="../../Scene/Workspace.cpp" line="463"/>
         <source>Could not open file: %1</source>
         <translation>Δεν ήταν δυνατό να ανοιχθεί το αρχείο: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="493"/>
+        <location filename="../../Scene/Workspace.cpp" line="511"/>
         <source>This file was saved with a newer file format (version %1).
 Your version supports file format %2.
 
@@ -3272,34 +3247,34 @@ Please update wiRedPanda to edit and save this file.</source>
 Παρακαλώ ενημερώστε το wiRedPanda για να επεξεργαστείτε και να αποθηκεύσετε αυτό το αρχείο.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="498"/>
+        <location filename="../../Scene/Workspace.cpp" line="516"/>
         <source>Newer version file.</source>
         <translation>Αρχείο νεότερης έκδοσης.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="501"/>
+        <location filename="../../Scene/Workspace.cpp" line="519"/>
         <source>This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).
 A backup of the original file has been created with name: %3</source>
         <translation>Αυτό το αρχείο είναι σε παλαιότερη μορφή (έκδοση %1) και θα αναβαθμιστεί αυτόματα στην τρέχουσα μορφή (έκδοση %2).
 Δημιουργήθηκε αντίγραφο ασφαλείας του αρχικού αρχείου με όνομα: %3</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="504"/>
+        <location filename="../../Scene/Workspace.cpp" line="522"/>
         <source>File upgraded.</source>
         <translation>Το αρχείο αναβαθμίστηκε.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="666"/>
+        <location filename="../../Scene/Workspace.cpp" line="684"/>
         <source>Error opening autosave file: %1</source>
         <translation>Σφάλμα ανοίγματος αρχείου αυτόματης αποθήκευσης: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="674"/>
+        <location filename="../../Scene/Workspace.cpp" line="692"/>
         <source>Could not commit autosave file: %1</source>
         <translation>Δεν ήταν δυνατή η οριστικοποίηση του αρχείου αυτόματης αποθήκευσης: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="840"/>
+        <location filename="../../Scene/Workspace.cpp" line="858"/>
         <source>Remove embedded IC &quot;%1&quot;</source>
         <translation>Αφαίρεση ενσωματωμένου IC &quot;%1&quot;</translation>
     </message>
