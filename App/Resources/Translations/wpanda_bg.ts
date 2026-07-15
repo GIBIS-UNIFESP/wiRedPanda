@@ -3193,7 +3193,7 @@ wiRedPanda %1 ще изведе автоматично всички други .
 <context>
     <name>WorkSpace</name>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="236"/>
+        <location filename="../../Scene/Workspace.cpp" line="258"/>
         <source>This file was saved with a newer file format (version %1).
 Your wiRedPanda version (%2) supports file format %3.
 
@@ -3204,37 +3204,37 @@ Please update wiRedPanda to save changes to this file.</source>
 Моля, актуализирайте wiRedPanda, за да запазите промените в този файл.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="240"/>
+        <location filename="../../Scene/Workspace.cpp" line="262"/>
         <source>Cannot save.</source>
         <translation>Запазването е невъзможно.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="270"/>
+        <location filename="../../Scene/Workspace.cpp" line="292"/>
         <source>Cannot save: sub-circuit &quot;%1&quot; could not be read to embed it.</source>
         <translation>Не може да се запази: подсхемата &quot;%1&quot; не можа да бъде прочетена, за да бъде вградена.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="347"/>
+        <location filename="../../Scene/Workspace.cpp" line="369"/>
         <source>Error opening file: %1</source>
         <translation>Грешка при отваряне на файл: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="379"/>
+        <location filename="../../Scene/Workspace.cpp" line="401"/>
         <source>Could not save file: %1</source>
         <translation>Не може да се запише файл: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="454"/>
+        <location filename="../../Scene/Workspace.cpp" line="476"/>
         <source>This file does not exist: %1</source>
         <translation>Този файл не съществува: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="463"/>
+        <location filename="../../Scene/Workspace.cpp" line="485"/>
         <source>Could not open file: %1</source>
         <translation>Не може да се отвори файл: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="511"/>
+        <location filename="../../Scene/Workspace.cpp" line="533"/>
         <source>This file was saved with a newer file format (version %1).
 Your version supports file format %2.
 
@@ -3247,34 +3247,34 @@ Please update wiRedPanda to edit and save this file.</source>
 Моля, актуализирайте wiRedPanda, за да редактирате и запазите този файл.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="516"/>
+        <location filename="../../Scene/Workspace.cpp" line="538"/>
         <source>Newer version file.</source>
         <translation>Файл от по-нова версия.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="519"/>
+        <location filename="../../Scene/Workspace.cpp" line="541"/>
         <source>This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).
 A backup of the original file has been created with name: %3</source>
         <translation>Този файл е в по-стар формат (версия %1) и ще бъде автоматично обновен до текущия формат (версия %2).
 Създадено е резервно копие на оригиналния файл с име: %3</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="522"/>
+        <location filename="../../Scene/Workspace.cpp" line="544"/>
         <source>File upgraded.</source>
         <translation>Файлът е обновен.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="684"/>
+        <location filename="../../Scene/Workspace.cpp" line="706"/>
         <source>Error opening autosave file: %1</source>
         <translation>Грешка при отваряне на автоматично запазен файл: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="692"/>
+        <location filename="../../Scene/Workspace.cpp" line="714"/>
         <source>Could not commit autosave file: %1</source>
         <translation>Файлът за автоматично запазване не може да бъде потвърден: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="858"/>
+        <location filename="../../Scene/Workspace.cpp" line="880"/>
         <source>Remove embedded IC &quot;%1&quot;</source>
         <translation>Премахни вградена ИС „%1“</translation>
     </message>

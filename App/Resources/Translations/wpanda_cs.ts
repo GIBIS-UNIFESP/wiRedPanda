@@ -3193,7 +3193,7 @@ Nové projekty musíte uložit před přístupem k IC a vzhledům nebo spuštěn
 <context>
     <name>WorkSpace</name>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="236"/>
+        <location filename="../../Scene/Workspace.cpp" line="258"/>
         <source>This file was saved with a newer file format (version %1).
 Your wiRedPanda version (%2) supports file format %3.
 
@@ -3204,37 +3204,37 @@ Vaše verze wiRedPanda (%2) podporuje formát souboru %3.
 Pro uložení změn v tomto souboru prosím aktualizujte wiRedPanda.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="240"/>
+        <location filename="../../Scene/Workspace.cpp" line="262"/>
         <source>Cannot save.</source>
         <translation>Nelze uložit.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="270"/>
+        <location filename="../../Scene/Workspace.cpp" line="292"/>
         <source>Cannot save: sub-circuit &quot;%1&quot; could not be read to embed it.</source>
         <translation>Nelze uložit: podobvod &quot;%1&quot; se nepodařilo přečíst pro jeho vložení.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="347"/>
+        <location filename="../../Scene/Workspace.cpp" line="369"/>
         <source>Error opening file: %1</source>
         <translation>Chyba při otevírání souboru: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="379"/>
+        <location filename="../../Scene/Workspace.cpp" line="401"/>
         <source>Could not save file: %1</source>
         <translation>Nelze uložit soubor: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="454"/>
+        <location filename="../../Scene/Workspace.cpp" line="476"/>
         <source>This file does not exist: %1</source>
         <translation>Tento soubor neexistuje: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="463"/>
+        <location filename="../../Scene/Workspace.cpp" line="485"/>
         <source>Could not open file: %1</source>
         <translation>Nelze otevřít soubor: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="511"/>
+        <location filename="../../Scene/Workspace.cpp" line="533"/>
         <source>This file was saved with a newer file format (version %1).
 Your version supports file format %2.
 
@@ -3247,34 +3247,34 @@ Soubor bude otevřen, ale ukládání je zablokováno.
 Pro úpravu a uložení tohoto souboru prosím aktualizujte wiRedPanda.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="516"/>
+        <location filename="../../Scene/Workspace.cpp" line="538"/>
         <source>Newer version file.</source>
         <translation>Soubor novější verze.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="519"/>
+        <location filename="../../Scene/Workspace.cpp" line="541"/>
         <source>This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).
 A backup of the original file has been created with name: %3</source>
         <translation>Tento soubor je ve starším formátu (verze %1) a bude automaticky aktualizován na současný formát (verze %2).
 Záloha původního souboru byla vytvořena s názvem: %3</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="522"/>
+        <location filename="../../Scene/Workspace.cpp" line="544"/>
         <source>File upgraded.</source>
         <translation>Soubor byl aktualizován.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="684"/>
+        <location filename="../../Scene/Workspace.cpp" line="706"/>
         <source>Error opening autosave file: %1</source>
         <translation>Chyba při otevírání souboru automatického uložení: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="692"/>
+        <location filename="../../Scene/Workspace.cpp" line="714"/>
         <source>Could not commit autosave file: %1</source>
         <translation>Nelze potvrdit soubor automatického uložení: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="858"/>
+        <location filename="../../Scene/Workspace.cpp" line="880"/>
         <source>Remove embedded IC &quot;%1&quot;</source>
         <translation>Odebrat vložený IC „%1“</translation>
     </message>

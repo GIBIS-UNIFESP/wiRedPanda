@@ -3193,7 +3193,7 @@ Debe guardar los nuevos proyectos antes de acceder a CIs y apariencias o ejecuta
 <context>
     <name>WorkSpace</name>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="236"/>
+        <location filename="../../Scene/Workspace.cpp" line="258"/>
         <source>This file was saved with a newer file format (version %1).
 Your wiRedPanda version (%2) supports file format %3.
 
@@ -3204,37 +3204,37 @@ Su versión de wiRedPanda (%2) admite el formato de archivo %3.
 Por favor, actualice wiRedPanda para guardar cambios en este archivo.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="240"/>
+        <location filename="../../Scene/Workspace.cpp" line="262"/>
         <source>Cannot save.</source>
         <translation>No se puede guardar.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="270"/>
+        <location filename="../../Scene/Workspace.cpp" line="292"/>
         <source>Cannot save: sub-circuit &quot;%1&quot; could not be read to embed it.</source>
         <translation>No se puede guardar: no se pudo leer el subcircuito &quot;%1&quot; para integrarlo.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="347"/>
+        <location filename="../../Scene/Workspace.cpp" line="369"/>
         <source>Error opening file: %1</source>
         <translation>Error al abrir archivo: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="379"/>
+        <location filename="../../Scene/Workspace.cpp" line="401"/>
         <source>Could not save file: %1</source>
         <translation>No se pudo guardar archivo: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="454"/>
+        <location filename="../../Scene/Workspace.cpp" line="476"/>
         <source>This file does not exist: %1</source>
         <translation>Este archivo no existe: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="463"/>
+        <location filename="../../Scene/Workspace.cpp" line="485"/>
         <source>Could not open file: %1</source>
         <translation>No se pudo abrir archivo: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="511"/>
+        <location filename="../../Scene/Workspace.cpp" line="533"/>
         <source>This file was saved with a newer file format (version %1).
 Your version supports file format %2.
 
@@ -3247,34 +3247,34 @@ El archivo se abrirá pero el guardado está bloqueado.
 Por favor, actualice wiRedPanda para editar y guardar este archivo.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="516"/>
+        <location filename="../../Scene/Workspace.cpp" line="538"/>
         <source>Newer version file.</source>
         <translation>Archivo de versión más reciente.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="519"/>
+        <location filename="../../Scene/Workspace.cpp" line="541"/>
         <source>This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).
 A backup of the original file has been created with name: %3</source>
         <translation>Este archivo está en un formato anterior (versión %1) y se actualizará automáticamente al formato actual (versión %2).
 Se ha creado una copia de seguridad del archivo original con el nombre: %3</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="522"/>
+        <location filename="../../Scene/Workspace.cpp" line="544"/>
         <source>File upgraded.</source>
         <translation>Archivo actualizado.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="684"/>
+        <location filename="../../Scene/Workspace.cpp" line="706"/>
         <source>Error opening autosave file: %1</source>
         <translation>Error al abrir archivo de guardado automático: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="692"/>
+        <location filename="../../Scene/Workspace.cpp" line="714"/>
         <source>Could not commit autosave file: %1</source>
         <translation>No se pudo confirmar el archivo de guardado automático: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="858"/>
+        <location filename="../../Scene/Workspace.cpp" line="880"/>
         <source>Remove embedded IC &quot;%1&quot;</source>
         <translation>Eliminar CI incrustado &quot;%1&quot;</translation>
     </message>

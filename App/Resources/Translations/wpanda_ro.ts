@@ -3193,7 +3193,7 @@ Trebuie să salvați proiectele noi înainte de a accesa IC-uri și aspecte sau 
 <context>
     <name>WorkSpace</name>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="236"/>
+        <location filename="../../Scene/Workspace.cpp" line="258"/>
         <source>This file was saved with a newer file format (version %1).
 Your wiRedPanda version (%2) supports file format %3.
 
@@ -3204,37 +3204,37 @@ Versiunea dvs. de wiRedPanda (%2) acceptă formatul de fișier %3.
 Vă rugăm să actualizați wiRedPanda pentru a salva modificările în acest fișier.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="240"/>
+        <location filename="../../Scene/Workspace.cpp" line="262"/>
         <source>Cannot save.</source>
         <translation>Nu se poate salva.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="270"/>
+        <location filename="../../Scene/Workspace.cpp" line="292"/>
         <source>Cannot save: sub-circuit &quot;%1&quot; could not be read to embed it.</source>
         <translation>Nu se poate salva: subcircuitul &quot;%1&quot; nu a putut fi citit pentru a-l încorpora.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="347"/>
+        <location filename="../../Scene/Workspace.cpp" line="369"/>
         <source>Error opening file: %1</source>
         <translation>Eroare la deschiderea fișierului: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="379"/>
+        <location filename="../../Scene/Workspace.cpp" line="401"/>
         <source>Could not save file: %1</source>
         <translation>Nu s-a putut salva fișierul: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="454"/>
+        <location filename="../../Scene/Workspace.cpp" line="476"/>
         <source>This file does not exist: %1</source>
         <translation>Acest fișier nu există: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="463"/>
+        <location filename="../../Scene/Workspace.cpp" line="485"/>
         <source>Could not open file: %1</source>
         <translation>Nu s-a putut deschide fișierul: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="511"/>
+        <location filename="../../Scene/Workspace.cpp" line="533"/>
         <source>This file was saved with a newer file format (version %1).
 Your version supports file format %2.
 
@@ -3247,34 +3247,34 @@ Fișierul va fi deschis, dar salvarea este blocată.
 Vă rugăm să actualizați wiRedPanda pentru a edita și salva acest fișier.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="516"/>
+        <location filename="../../Scene/Workspace.cpp" line="538"/>
         <source>Newer version file.</source>
         <translation>Fișier de versiune mai nouă.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="519"/>
+        <location filename="../../Scene/Workspace.cpp" line="541"/>
         <source>This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).
 A backup of the original file has been created with name: %3</source>
         <translation>Acest fișier este într-un format mai vechi (versiunea %1) și va fi actualizat automat la formatul curent (versiunea %2).
 O copie de siguranță a fișierului original a fost creată cu numele: %3</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="522"/>
+        <location filename="../../Scene/Workspace.cpp" line="544"/>
         <source>File upgraded.</source>
         <translation>Fișierul a fost actualizat.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="684"/>
+        <location filename="../../Scene/Workspace.cpp" line="706"/>
         <source>Error opening autosave file: %1</source>
         <translation>Eroare la deschiderea fișierului de salvare automată: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="692"/>
+        <location filename="../../Scene/Workspace.cpp" line="714"/>
         <source>Could not commit autosave file: %1</source>
         <translation>Nu s-a putut finaliza fișierul de salvare automată: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="858"/>
+        <location filename="../../Scene/Workspace.cpp" line="880"/>
         <source>Remove embedded IC &quot;%1&quot;</source>
         <translation>Elimină CI-ul încorporat „%1”</translation>
     </message>
