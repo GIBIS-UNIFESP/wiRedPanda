@@ -11,6 +11,7 @@
 
 class Scene;
 class GraphicsView;
+class QPainter;
 
 class MinimapWidget : public QWidget
 {
@@ -67,6 +68,8 @@ private:
     bool m_moving = false;
     QPoint m_lastGlobalPos;
     ResizeMode m_resizeMode = ResizeMode::None;
+    ResizeMode m_hoverResizeMode = ResizeMode::None; ///< handle under the cursor, when not dragging
+    bool m_hoverMoveHandle = false;                  ///< move strip under the cursor, when not dragging
     QTimer m_throttle;        ///< throttle timer to limit redraws
 
     // Compute mapping parameters used by both paint and mouse handling.
@@ -82,4 +85,12 @@ private:
     QRect moveHandleRect() const;
     bool isMoveHandle(const QPoint &pos) const;
     void moveBy(const QPoint &delta);
+
+    // Cursor + hover-highlight state for the handles at pos, shared by mouseMoveEvent()
+    // and enterEvent() (and called directly by tests, since it takes a plain QPoint).
+    void updateHoverState(const QPoint &pos);
+
+    // Visual affordances painted so the handles are discoverable without hovering first.
+    void drawMoveHandle(QPainter &painter) const;
+    void drawResizeGrips(QPainter &painter) const;
 };

@@ -29,4 +29,9 @@ private slots:
     void testMoveHandleRectCoversTopStrip();
     void testIsMoveHandleDetectsTopStripOnly();
     void testMoveByClampsToParentBounds();
+
+    // Visual affordances: hover state driving the handle highlight/cursor.
+    void testHoverStateOverCornerSetsResizeCursorAndHighlight();
+    void testHoverStateOverMoveStripSetsOpenHandCursorAndHighlight();
+    void testHoverStateOverInteriorClearsHighlightAndCursor();
 };
