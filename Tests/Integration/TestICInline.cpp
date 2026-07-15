@@ -5041,6 +5041,79 @@ void TestICInline::testUpdateBlobCommandUndoRestoresOldBlob()
     QCOMPARE(reg->blob("undo_blob"), blobB);
 }
 
+void TestICInline::testLabelUpdateSkipsRedundantSubcircuitReload()
+{
+    // Regression: ElementEditor::apply() calls setLabel() live on every keystroke and then
+    // pushes an UpdateCommand, whose redo()/undo() round-trips the element through
+    // save()/load(). For an IC, load() used to unconditionally tear down and rebuild the
+    // entire internal sub-circuit even though only the label (a base GraphicElement property)
+    // changed -- on a large embedded IC this made typing in the label field visibly laggy.
+    QByteArray blob = readFile(m_fixtureDir + "/simple_and.panda");
+
+    WorkSpace ws;
+    ws.scene()->setContextDir(m_fixtureDir);
+    auto *reg = ws.scene()->icRegistry();
+
+    auto *ic = new IC();
+    embedIC(ic, blob, "label_perf_test", m_fixtureDir, reg);
+    ic->setPos(100, 100);
+    ws.scene()->addItem(ic);
+
+    QVERIFY(!ic->internalElements().isEmpty());
+    const auto originalInternalElements = ic->internalElements();
+
+    const QList<GraphicElement *> targets{ic};
+    const QByteArray oldData = ICRegistry::captureSnapshot(targets);
+    ic->setLabel("a new label");
+
+    ws.scene()->undoStack()->push(new UpdateCommand(targets, oldData, ws.scene()));
+
+    QCOMPARE(ic->label(), QString("a new label"));
+    QCOMPARE(ic->blobName(), QString("label_perf_test"));
+    QVERIFY2(ic->internalElements() == originalInternalElements,
+             "a label-only edit must not tear down and rebuild the IC's internal sub-circuit");
+}
+
+void TestICInline::testBlobContentChangeUnderSameNameStillReloads()
+{
+    // Companion to the above: the skip must be gated on the blob's actual bytes, not just its
+    // name staying the same. UpdateBlobCommand::undo()/redo() replace the registry's bytes
+    // under an unchanged name to restore/reapply an edit to the sub-circuit itself, and that
+    // must still reload the IC's internal elements.
+    QByteArray blobA = readFile(m_fixtureDir + "/simple_and.panda");
+    QByteArray blobB = readFile(m_fixtureDir + "/chain_c.panda");
+
+    WorkSpace ws;
+    ws.scene()->setContextDir(m_fixtureDir);
+    auto *reg = ws.scene()->icRegistry();
+
+    auto *ic = new IC();
+    embedIC(ic, blobA, "content_swap_test", m_fixtureDir, reg);
+    ic->setPos(100, 100);
+    ws.scene()->addItem(ic);
+
+    const auto targets = QList<GraphicElement *>{ic};
+    const auto connections = UpdateBlobCommand::captureConnections(targets);
+    const QByteArray oldData = ICRegistry::captureSnapshot(targets);
+    const QByteArray oldBlob = reg->blob("content_swap_test");
+    const auto originalInternalElements = ic->internalElements();
+
+    reg->setBlob("content_swap_test", blobB);
+    ic->loadFromBlob(blobB, m_fixtureDir);
+
+    auto *cmd = new UpdateBlobCommand(targets, oldData, connections, ws.scene());
+    cmd->setOldBlob(oldBlob);
+    cmd->setBlobName("content_swap_test");
+    ws.scene()->undoStack()->push(cmd);
+
+    // Undo must reload the original sub-circuit content -- not skip it based on the name
+    // (unchanged throughout) while the bytes underneath actually moved.
+    ws.scene()->undoStack()->undo();
+    QCOMPARE(reg->blob("content_swap_test"), blobA);
+    QVERIFY2(ic->internalElements() != originalInternalElements,
+             "content restored by undo must be freshly loaded, not left as stale post-swap objects");
+}
+
 void TestICInline::testRenameBlobCommandUndoRedo()
 {
     // RenameBlobCommand undo reverses the rename, redo re-applies it — mirroring

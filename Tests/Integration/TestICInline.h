@@ -198,6 +198,13 @@ private slots:
     void testSaveLoadOrphanBlobPreserved();
     void testReconnectConnectionsSkipsDeletedElement();
     void testUpdateBlobCommandUndoRestoresOldBlob();
+    // Regression: a cosmetic property edit (label) re-serializes/reloads an embedded IC via
+    // UpdateCommand even when the blob reference is unchanged -- IC::load() must skip the
+    // redundant resetInternalState()+loadFromBlob() in that case (large-IC label-edit lag).
+    void testLabelUpdateSkipsRedundantSubcircuitReload();
+    // Companion: if the blob's bytes DO change under an unchanged name (UpdateBlobCommand's
+    // undo/redo), IC::load() must still reload -- the skip must key on content, not just name.
+    void testBlobContentChangeUnderSameNameStillReloads();
     void testIsEmbeddedICWithStaleBlobName();
     void testRegisterBlobCommandUndoRedo();
     void testRegisterBlobCommandRedoAfterExternalRemove();

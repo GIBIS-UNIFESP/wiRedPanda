@@ -156,8 +156,24 @@ void IC::load(QDataStream &stream, SerializationContext &context)
         const bool baseMatch = !exactMatch && context.blobRegistry && context.blobRegistry->contains(baseName);
 
         if (exactMatch) {
+            const QByteArray blobBytes = context.blobRegistry->value(name);
+
+            // A cosmetic property edit (e.g. the label field, live on every keystroke —
+            // see ElementEditor::apply()) re-serializes and reloads this IC via UpdateCommand
+            // even though neither the blob reference nor its content actually changed. For a
+            // large embedded sub-circuit, resetInternalState()+loadFromBlob() below is a full
+            // teardown/rebuild of every internal element and connection -- skip it when
+            // nothing this IC depends on has moved. Comparing blob bytes (not just the name)
+            // is required for correctness: UpdateBlobCommand's undo/redo replaces the
+            // registry's bytes under this same name to restore/reapply a sub-circuit edit, and
+            // that must still reload.
+            const bool blobUnchanged = (m_blobName == name) && !m_internalElements.isEmpty()
+                                     && (m_loadedBlobSnapshot == blobBytes);
+
             m_blobName = name;
-            loadFromBlob(context.blobRegistry->value(name), context.contextDir);
+            if (!blobUnchanged) {
+                loadFromBlob(blobBytes, context.contextDir);
+            }
         } else if (baseMatch) {
             m_blobName = baseName;
             loadFromBlob(context.blobRegistry->value(baseName), context.contextDir);
@@ -232,6 +248,7 @@ void IC::loadFile(const QString &fileName, const QString &contextDir)
 void IC::loadFromBlob(const QByteArray &blob, const QString &contextDir)
 {
     ICLoader::loadFromBlob(*this, blob, contextDir);
+    m_loadedBlobSnapshot = blob;
 }
 
 void IC::loadFromDrop(const QString &fileName, const QString &contextDir)

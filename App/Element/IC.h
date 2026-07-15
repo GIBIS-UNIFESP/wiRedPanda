@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <QByteArray>
 #include <QPixmap>
 #include <QPoint>
 #include <QSet>
@@ -167,6 +168,10 @@ private:
 
     QString m_file;
     QString m_blobName;
+    /// Bytes last successfully loaded via loadFromBlob(), so IC::load() can skip re-loading
+    /// an embedded sub-circuit whose blob reference and content are both unchanged (a
+    /// label-only property edit) instead of always tearing down and rebuilding it.
+    QByteArray m_loadedBlobSnapshot;
     QVector<GraphicElement *> m_internalElements;
     QVector<Connection *> m_internalConnections;
     QVector<Port *> m_internalInputs;
