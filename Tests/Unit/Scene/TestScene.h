@@ -105,4 +105,8 @@ private slots:
 
     // #12: a .panda file dropped from the file manager is recognised for opening.
     void testDroppedPandaFileDetection();
+
+    // Scene::mute() must silence every AudioOutputElement subclass (Buzzer and AudioBox),
+    // not just Buzzer -- otherwise an AudioBox keeps playing audibly through a simulation pause.
+    void testMuteSilencesAllAudioOutputElements();
 };

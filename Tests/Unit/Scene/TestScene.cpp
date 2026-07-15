@@ -22,6 +22,7 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/And.h"
+#include "App/Element/GraphicElements/AudioOutputElement.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Not.h"
@@ -1710,4 +1711,32 @@ void TestScene::testDroppedPandaFileDetection()
     QMimeData mixed;
     mixed.setUrls({QUrl::fromLocalFile("/a/readme.md"), QUrl::fromLocalFile("/a/Design.PANDA")});
     QCOMPARE(Scene::droppedPandaFile(&mixed), QStringLiteral("/a/Design.PANDA"));
+}
+
+void TestScene::testMuteSilencesAllAudioOutputElements()
+{
+    // Regression: Scene::mute() used to special-case Buzzer only, so an AudioBox kept
+    // playing audibly through a simulation pause (Simulation::stop() -> setMuted(true)).
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+
+    auto *buzzer = ElementFactory::buildElement(ElementType::Buzzer);
+    auto *audioBox = ElementFactory::buildElement(ElementType::AudioBox);
+    scene->addItem(buzzer);
+    scene->addItem(audioBox);
+
+    auto *buzzerAudio = qobject_cast<AudioOutputElement *>(buzzer);
+    auto *audioBoxAudio = qobject_cast<AudioOutputElement *>(audioBox);
+    QVERIFY(buzzerAudio);
+    QVERIFY(audioBoxAudio);
+    QVERIFY(!buzzerAudio->isMuted());
+    QVERIFY(!audioBoxAudio->isMuted());
+
+    scene->mute(true);
+    QVERIFY(buzzerAudio->isMuted());
+    QVERIFY2(audioBoxAudio->isMuted(), "Scene::mute() must silence AudioBox too, not just Buzzer");
+
+    scene->mute(false);
+    QVERIFY(!buzzerAudio->isMuted());
+    QVERIFY(!audioBoxAudio->isMuted());
 }

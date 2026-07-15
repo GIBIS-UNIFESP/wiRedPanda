@@ -27,7 +27,7 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElementInput.h"
-#include "App/Element/GraphicElements/Buzzer.h"
+#include "App/Element/GraphicElements/AudioOutputElement.h"
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
@@ -698,11 +698,8 @@ void Scene::rotate(const int angle)
 void Scene::mute(const bool mute)
 {
     for (auto *element : unsortedElements()) {
-        if (element->elementType() == ElementType::Buzzer) {
-            auto *buzzer = qobject_cast<Buzzer *>(element);
-            if (buzzer) {
-                buzzer->mute(mute);
-            }
+        if (auto *audioElement = qobject_cast<AudioOutputElement *>(element)) {
+            audioElement->mute(mute);
         }
     }
 }
