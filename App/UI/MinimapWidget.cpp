@@ -3,6 +3,7 @@
 
 #include "App/UI/MinimapWidget.h"
 
+#include <QCursor>
 #include <QEvent>
 #include <QMouseEvent>
 #include <QPaintDevice>
@@ -21,8 +22,11 @@ MinimapWidget::MinimapWidget(Scene *scene, GraphicsView *view, QWidget *parent)
     setAttribute(Qt::WA_OpaquePaintEvent);
     setAttribute(Qt::WA_NoSystemBackground, false);
     setFocusPolicy(Qt::NoFocus);
-    // Default minimap size; can be tuned later or made a setting.
-    setFixedSize(220, 160);
+    // Resizable via drag handles on the edges/corners (see resizeModeAt()); the minimum
+    // keeps the viewport-outline overlay and mascot content legible.
+    setMinimumSize(160, 120);
+    resize(220, 160);
+    setMouseTracking(true); // hover cursor feedback over resize/move handles without a button held
     setToolTip(tr("Mini-map: click or drag to navigate"));
     setAccessibleName(tr("Circuit minimap"));
     setWhatsThis(tr("A miniature overview of the whole circuit. Click or drag inside it to "
@@ -106,6 +110,26 @@ void MinimapWidget::mousePressEvent(QMouseEvent *event)
 {
     if (!m_scene || !m_view) {
         return;
+    }
+
+    if (event->button() == Qt::LeftButton) {
+        const ResizeMode mode = resizeModeAt(event->pos());
+        if (mode != ResizeMode::None) {
+            m_resizing = true;
+            m_resizeMode = mode;
+            m_lastGlobalPos = event->globalPosition().toPoint();
+            grabMouse();
+            event->accept();
+            return;
+        }
+
+        if (isMoveHandle(event->pos())) {
+            m_moving = true;
+            m_lastGlobalPos = event->globalPosition().toPoint();
+            grabMouse();
+            event->accept();
+            return;
+        }
     }
 
     m_view->centerOn(widgetToScene(event->pos()));
@@ -221,8 +245,183 @@ QPointF MinimapWidget::widgetToScene(const QPointF &p) const
     return QPointF(x, y);
 }
 
+MinimapWidget::ResizeMode MinimapWidget::resizeModeAt(const QPoint &pos) const
+{
+    const int handleSize = 8;
+    const QRect r = rect();
+    const bool nearLeft = pos.x() <= handleSize;
+    const bool nearRight = pos.x() >= r.width() - handleSize;
+    const bool nearTop = pos.y() <= handleSize;
+    const bool nearBottom = pos.y() >= r.height() - handleSize;
+
+    if (nearTop && nearLeft) {
+        return ResizeMode::TopLeft;
+    }
+    if (nearTop && nearRight) {
+        return ResizeMode::TopRight;
+    }
+    if (nearBottom && nearLeft) {
+        return ResizeMode::BottomLeft;
+    }
+    if (nearBottom && nearRight) {
+        return ResizeMode::BottomRight;
+    }
+    if (nearLeft) {
+        return ResizeMode::Left;
+    }
+    if (nearRight) {
+        return ResizeMode::Right;
+    }
+    if (nearTop) {
+        return ResizeMode::Top;
+    }
+    if (nearBottom) {
+        return ResizeMode::Bottom;
+    }
+    return ResizeMode::None;
+}
+
+Qt::CursorShape MinimapWidget::cursorForResizeMode(ResizeMode mode) const
+{
+    switch (mode) {
+    case ResizeMode::Top:
+    case ResizeMode::Bottom:
+        return Qt::SizeVerCursor;
+    case ResizeMode::Left:
+    case ResizeMode::Right:
+        return Qt::SizeHorCursor;
+    case ResizeMode::TopLeft:
+    case ResizeMode::BottomRight:
+        return Qt::SizeFDiagCursor;
+    case ResizeMode::TopRight:
+    case ResizeMode::BottomLeft:
+        return Qt::SizeBDiagCursor;
+    default:
+        return Qt::ArrowCursor;
+    }
+}
+
+void MinimapWidget::applyResize(const QPoint &globalPos)
+{
+    const QPoint delta = globalPos - m_lastGlobalPos;
+    const QRect oldGeom = geometry();
+    QRect geom = oldGeom;
+
+    // Keep the widget's own aspect ratio stable while resizing -- based on the scene's
+    // content, same fallback chain as computeTransform() (itemsBoundingRect, then
+    // sceneRect), so a resize while empty/degenerate still has a sane 1:1 ratio.
+    const auto sceneAspectRatio = [this]() -> double {
+        QRectF src = m_scene ? m_scene->itemsBoundingRect() : QRectF();
+        if (!src.isValid() || src.isEmpty())
+            src = m_scene ? m_scene->sceneRect() : QRectF();
+        if (!src.isValid() || src.width() <= 0.0 || src.height() <= 0.0)
+            return 1.0;
+        return src.width() / src.height();
+    };
+
+    const double aspect = sceneAspectRatio();
+    int newWidth = geom.width();
+    int newHeight = geom.height();
+
+    const bool top = m_resizeMode == ResizeMode::Top || m_resizeMode == ResizeMode::TopLeft || m_resizeMode == ResizeMode::TopRight;
+    const bool bottom = m_resizeMode == ResizeMode::Bottom || m_resizeMode == ResizeMode::BottomLeft || m_resizeMode == ResizeMode::BottomRight;
+    const bool left = m_resizeMode == ResizeMode::Left || m_resizeMode == ResizeMode::TopLeft || m_resizeMode == ResizeMode::BottomLeft;
+    const bool right = m_resizeMode == ResizeMode::Right || m_resizeMode == ResizeMode::TopRight || m_resizeMode == ResizeMode::BottomRight;
+
+    if ((top && right) || (top && left) || (bottom && right) || (bottom && left)) {
+        // Diagonal handle: follow whichever axis the cursor is moving faster along, derive
+        // the other from the locked aspect ratio.
+        const bool horizontalDominant = qAbs(delta.x()) >= qAbs(delta.y());
+        if (horizontalDominant) {
+            newWidth = left ? geom.width() - delta.x() : geom.width() + delta.x();
+            newHeight = qRound(newWidth / aspect);
+        } else {
+            newHeight = top ? geom.height() - delta.y() : geom.height() + delta.y();
+            newWidth = qRound(newHeight * aspect);
+        }
+    } else if (top || bottom) {
+        newHeight = top ? geom.height() - delta.y() : geom.height() + delta.y();
+        newWidth = qRound(newHeight * aspect);
+    } else if (left || right) {
+        newWidth = left ? geom.width() - delta.x() : geom.width() + delta.x();
+        newHeight = qRound(newWidth / aspect);
+    }
+
+    newWidth = qMax(minimumWidth(), newWidth);
+    newHeight = qMax(minimumHeight(), newHeight);
+    if (newWidth < minimumWidth()) {
+        newWidth = minimumWidth();
+        newHeight = qMax(minimumHeight(), qRound(newWidth / aspect));
+    }
+    if (newHeight < minimumHeight()) {
+        newHeight = minimumHeight();
+        newWidth = qMax(minimumWidth(), qRound(newHeight * aspect));
+    }
+
+    geom.setSize(QSize(newWidth, newHeight));
+    if (top) {
+        geom.setTop(oldGeom.top() + (oldGeom.height() - newHeight));
+    }
+    if (left) {
+        geom.setLeft(oldGeom.left() + (oldGeom.width() - newWidth));
+    }
+
+    if (geom != oldGeom) {
+        setGeometry(geom);
+    }
+    m_lastGlobalPos = globalPos;
+}
+
+QRect MinimapWidget::moveHandleRect() const
+{
+    return QRect(0, 0, width(), 24);
+}
+
+bool MinimapWidget::isMoveHandle(const QPoint &pos) const
+{
+    return moveHandleRect().contains(pos);
+}
+
+void MinimapWidget::moveBy(const QPoint &delta)
+{
+    if (!parentWidget())
+        return;
+
+    const QPoint newPos = pos() + delta;
+    const QRect parentRect = parentWidget()->rect();
+    const int margin = 12;
+    const int x = qBound(margin, newPos.x(), parentRect.width() - width() - margin);
+    const int y = qBound(margin, newPos.y(), parentRect.height() - height() - margin);
+    move(x, y);
+}
+
 void MinimapWidget::mouseMoveEvent(QMouseEvent *event)
 {
+    if (m_resizing) {
+        applyResize(event->globalPosition().toPoint());
+        invalidateCache();
+        event->accept();
+        return;
+    }
+
+    if (m_moving) {
+        moveBy(event->globalPosition().toPoint() - m_lastGlobalPos);
+        m_lastGlobalPos = event->globalPosition().toPoint();
+        event->accept();
+        return;
+    }
+
+    if (!m_dragging) {
+        const ResizeMode mode = resizeModeAt(event->pos());
+        if (mode != ResizeMode::None) {
+            setCursor(cursorForResizeMode(mode));
+        } else if (isMoveHandle(event->pos())) {
+            setCursor(Qt::OpenHandCursor);
+        } else {
+            unsetCursor();
+        }
+    }
+
     if (!m_dragging || !m_scene || !m_view) {
         QWidget::mouseMoveEvent(event);
         return;
@@ -235,10 +434,42 @@ void MinimapWidget::mouseMoveEvent(QMouseEvent *event)
 
 void MinimapWidget::mouseReleaseEvent(QMouseEvent *event)
 {
+    if (m_resizing) {
+        m_resizing = false;
+        m_resizeMode = ResizeMode::None;
+        releaseMouse();
+        event->accept();
+        emit geometryChangeFinished(geometry());
+        return;
+    }
+    if (m_moving) {
+        m_moving = false;
+        releaseMouse();
+        event->accept();
+        emit geometryChangeFinished(geometry());
+        return;
+    }
     if (m_dragging) {
         m_dragging = false;
         event->accept();
         return;
     }
     QWidget::mouseReleaseEvent(event);
+}
+
+void MinimapWidget::enterEvent(QEnterEvent *event)
+{
+    QWidget::enterEvent(event);
+    const ResizeMode mode = resizeModeAt(mapFromGlobal(QCursor::pos()));
+    if (mode != ResizeMode::None) {
+        setCursor(cursorForResizeMode(mode));
+    } else if (isMoveHandle(mapFromGlobal(QCursor::pos()))) {
+        setCursor(Qt::OpenHandCursor);
+    }
+}
+
+void MinimapWidget::leaveEvent(QEvent *event)
+{
+    QWidget::leaveEvent(event);
+    unsetCursor();
 }
