@@ -6,6 +6,7 @@
 
 #include "App/Wiring/Port.h"
 
+#include <QPainter>
 #include <QPen>
 
 #include "App/Core/ThemeManager.h"
@@ -38,6 +39,19 @@ QRectF Port::boundingRect() const
     // zoom the pen's edge gets a hard clip instead of a soft fade. 1 local unit of margin (the
     // port glyph is only ~10 units across) fixes that without perceptibly growing the glyph.
     return QGraphicsPathItem::boundingRect().adjusted(-1, -1, 1, 1);
+}
+
+void Port::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
+    Q_UNUSED(option)
+    Q_UNUSED(widget)
+
+    // Mirrors QGraphicsPathItem's default paint exactly, except the pen comes from
+    // m_currentPen (see updateTheme()) instead of the item's own, real pen() -- the brush
+    // is unaffected, still the item's real (and cheap to update) brush().
+    painter->setPen(m_currentPen);
+    painter->setBrush(brush());
+    painter->drawPath(path());
 }
 
 const QList<Connection *> &Port::connections() const
@@ -210,28 +224,37 @@ void Port::updateTheme()
 {
     const auto &theme = ThemeManager::attributes();
 
+    // m_currentPen (drawn by paint()) is set directly instead of going through the item's
+    // own setPen() -- boundingRect() pads a pen-exact bound (see its own comment) but all
+    // four status pens below share the same implicit default width (theme.m_port*Pen are
+    // bare QColor, converted to QPen here), so the value never actually changes and the
+    // real setPen() would only pay for an unneeded BSP-tree re-index (prepareGeometryChange()).
+    // shape() already uses a fixed hit-area independent of pen width, so unlike Connection
+    // there's no hit-testing reason to ever fall back to the item's real pen either.
     switch (m_status) {
     case Status::Unknown: {
-        setPen(theme.m_portUnknownPen);
+        m_currentPen = theme.m_portUnknownPen;
         setCurrentBrush(theme.m_portUnknownBrush);
         break;
     }
     case Status::Inactive: {
-        setPen(theme.m_portInactivePen);
+        m_currentPen = theme.m_portInactivePen;
         setCurrentBrush(theme.m_portInactiveBrush);
         break;
     }
     case Status::Active: {
-        setPen(theme.m_portActivePen);
+        m_currentPen = theme.m_portActivePen;
         setCurrentBrush(theme.m_portActiveBrush);
         break;
     }
     case Status::Error: {
-        setPen(theme.m_portErrorPen);
+        m_currentPen = theme.m_portErrorPen;
         setCurrentBrush(theme.m_portErrorBrush);
         break;
     }
     }
+
+    update();
 }
 
 void Port::drainConnections(bool isInput)

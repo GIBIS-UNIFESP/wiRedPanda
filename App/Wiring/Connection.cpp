@@ -210,10 +210,23 @@ void Connection::applyStatusPen()
     // other wires are thinner (3 px) to reduce visual clutter during simulation.
     // Unknown (undriven) wires use a distinct gray from Error (red).
     switch (m_status) {
-    case Status::Unknown:  setPen(QPen(m_unknownColor,  3)); break;
-    case Status::Inactive: setPen(QPen(m_inactiveColor, 3)); break;
-    case Status::Active:   setPen(QPen(m_activeColor,   3)); break;
-    case Status::Error:    setPen(QPen(m_errorColor,    5)); break;
+    case Status::Unknown:  m_statusPen = QPen(m_unknownColor,  3); break;
+    case Status::Inactive: m_statusPen = QPen(m_inactiveColor, 3); break;
+    case Status::Active:   m_statusPen = QPen(m_activeColor,   3); break;
+    case Status::Error:    m_statusPen = QPen(m_errorColor,    5); break;
+    }
+
+    // paint() draws with m_statusPen, not the item's own pen() -- boundingRect() is a fixed
+    // margin independent of pen width (see its own comment), so calling the real setPen()
+    // here would pay for a BSP-tree re-index (prepareGeometryChange()) on every status colour
+    // change for no actual geometry benefit. The one exception is width: shape()'s default
+    // hit-testing *does* stroke the path using the item's real pen width, so the real setPen()
+    // still runs whenever the width actually changes (Error <-> non-Error) to keep an
+    // Error-status wire's (wider) click target accurate.
+    if (!qFuzzyCompare(m_statusPen.widthF(), pen().widthF())) {
+        setPen(m_statusPen);
+    } else {
+        update();
     }
 }
 
@@ -248,8 +261,8 @@ void Connection::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
     }
 
     // When the wire itself is selected (clicked), switch to the selection colour;
-    // otherwise use the status-driven pen set by setStatus()
-    painter->setPen(isSelected() ? QPen(m_selectedColor, 5) : pen());
+    // otherwise use the status-driven pen set by setStatus() via applyStatusPen()
+    painter->setPen(isSelected() ? QPen(m_selectedColor, 5) : m_statusPen);
     painter->drawPath(path());
 }
 
