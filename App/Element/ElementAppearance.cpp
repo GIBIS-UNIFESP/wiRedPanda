@@ -7,8 +7,10 @@
 #include <cmath>
 #include <memory>
 
+#include <QDateTime>
 #include <QFile>
 #include <QFileInfo>
+#include <QHash>
 #include <QPainter>
 #include <QPen>
 #include <QPixmapCache>
@@ -155,6 +157,54 @@ QPixmap orientedSvgPixmap(const QString &resolvedPath, const qreal angle, const 
 
     QPixmapCache::insert(key, pixmap);
     return pixmap;
+}
+
+/// Returns the vector QSvgRenderer for the SVG at \a resolvedPath, with baked <text> labels
+/// counter-oriented for the current rotation \a angle and flip when applicable — shared across
+/// every ElementAppearance that resolves to the same (path, mtime, angle, flip), since parsing an
+/// SVG's XML (and any inline CSS) is the dominant cost of populating a scene with many
+/// identically-appearanced elements (thousands of AND/OR/... gates all point at the same handful
+/// of bundled icon files). Never evicted: the key space is bounded by the app's finite set of
+/// distinct icon paths x orientation variants, not by circuit size — same reasoning as the
+/// existing icLogoRenderer()/truthTableLogoRenderer() function-local statics (see ICRenderer.cpp,
+/// TruthTable.cpp). Returns nullptr on any read/parse failure so callers fall back to the raster
+/// pixmap, exactly as an invalid renderer did before this was cached.
+std::shared_ptr<QSvgRenderer> sharedSvgRenderer(const QString &resolvedPath, const qreal angle, const bool flipX, const bool flipY)
+{
+    static QHash<QString, std::shared_ptr<QSvgRenderer>> cache;
+
+    const qreal canonAngle = std::fmod(std::fmod(angle, 360.0) + 360.0, 360.0);
+    // mtime keeps this in step with QPixmap::load()'s own QPixmapCache keying (see setPixmap()
+    // below) so a user-edited custom SVG appearance still picks up on next load.
+    const QDateTime mtime = QFileInfo(resolvedPath).lastModified();
+    const QString key = resolvedPath + QLatin1Char('|')
+        + QString::number(mtime.toMSecsSinceEpoch()) + QLatin1Char('|')
+        + QString::number(canonAngle) + QLatin1Char('|')
+        + (flipX ? QLatin1Char('1') : QLatin1Char('0'))
+        + (flipY ? QLatin1Char('1') : QLatin1Char('0'));
+
+    if (const auto it = cache.constFind(key); it != cache.constEnd()) {
+        return it.value();
+    }
+
+    QFile file(resolvedPath);
+    if (!file.open(QIODevice::ReadOnly)) {
+        cache.insert(key, nullptr);
+        return nullptr;
+    }
+    QByteArray svg = file.readAll();
+
+    const bool oriented = angle != 0.0 || flipX || flipY;
+    if (oriented && svg.contains("<text")) {
+        svg = orientSvgTextNodes(svg, canonAngle, flipX, flipY);
+    }
+
+    auto renderer = std::make_shared<QSvgRenderer>(svg);
+    if (!renderer->isValid()) {
+        renderer.reset();
+    }
+    cache.insert(key, renderer);
+    return renderer;
 }
 
 } // namespace
@@ -340,24 +390,18 @@ void ElementAppearance::rebuildSvgRenderer()
         return;
     }
 
-    QFile file(m_resolvedPixmapPath);
-    if (!file.open(QIODevice::ReadOnly)) {
-        m_svgRenderer.reset();
-        return;
-    }
-    QByteArray svg = file.readAll();
-
     // Counter-orient each <text> while rotated/flipped so pin labels stay upright — the same
     // correction orientedSvgPixmap() bakes into the rasterised variant. Gated on rotatesGraphic()
     // because a non-rotatable element never transforms its graphic, so its text stays as authored.
+    // Zeroing angle/flip when not oriented also means every unoriented element (the vast majority)
+    // shares one sharedSvgRenderer() cache entry regardless of its nominal rotation/flip state.
     const bool oriented = m_owner->rotatesGraphic()
         && (m_owner->isFlippedX() || m_owner->isFlippedY() || (m_owner->rotation() != 0.0));
-    if (oriented && svg.contains("<text")) {
-        svg = orientSvgTextNodes(svg, m_owner->rotation(), m_owner->isFlippedX(), m_owner->isFlippedY());
-    }
 
-    auto renderer = std::make_unique<QSvgRenderer>(svg);
-    m_svgRenderer = renderer->isValid() ? std::move(renderer) : nullptr;
+    m_svgRenderer = sharedSvgRenderer(m_resolvedPixmapPath,
+                                       oriented ? m_owner->rotation() : 0.0,
+                                       oriented && m_owner->isFlippedX(),
+                                       oriented && m_owner->isFlippedY());
 }
 
 void ElementAppearance::setAppearance(const bool defaultAppearance, const QString &fileName)

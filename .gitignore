@@ -9,6 +9,9 @@
 /.ninja_deps
 /.ninja_log
 
+# Profiling output (perf.data, callgrind.out.*, reports)
+/Scripts/profiling-out/
+
 # AppImage build artifacts
 /AppDir/
 /appimage-build/
