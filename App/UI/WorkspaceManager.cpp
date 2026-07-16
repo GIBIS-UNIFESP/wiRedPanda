@@ -389,8 +389,7 @@ void WorkspaceManager::openFile()
         };
         QFileDialog::getOpenFileContent("Panda files (*.panda)", fileContentReady);
     #else
-        const QString path = currentFile().exists() ? "" : "./Examples";
-        const QString fileName = FileDialogs::provider()->getOpenFileName(m_host.widget(), tr("Open File"), path, tr("Panda files") + " (*.panda)");
+        const QString fileName = FileDialogs::provider()->getOpenFileName(m_host.widget(), tr("Open File"), QString(), tr("Panda files") + " (*.panda)");
 
         if (fileName.isEmpty()) {
             return;
