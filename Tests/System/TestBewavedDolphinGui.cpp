@@ -797,13 +797,12 @@ void TestBewavedDolphinGui::testAboutDialog()
     auto ws = createAndCircuit();
     std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
 
-    QTimer::singleShot(0, [] {
-        if (auto *w = QApplication::activeModalWidget()) w->close();
-    });
+    auto dismisser = TestUtils::AutoDismisser::closeAnyModal();
 
     auto *action = dolphin->findChild<QAction *>("actionAbout");
     QVERIFY(action);
     action->trigger();
+    QVERIFY2(TestUtils::waitFor([&] { return dismisser.dismissCount() >= 1; }),"The About dialog must have appeared");
 }
 
 void TestBewavedDolphinGui::testAboutQtDialog()
@@ -811,13 +810,12 @@ void TestBewavedDolphinGui::testAboutQtDialog()
     auto ws = createAndCircuit();
     std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
 
-    QTimer::singleShot(0, [] {
-        if (auto *w = QApplication::activeModalWidget()) w->close();
-    });
+    auto dismisser = TestUtils::AutoDismisser::closeAnyModal();
 
     auto *action = dolphin->findChild<QAction *>("actionAboutQt");
     QVERIFY(action);
     action->trigger();
+    QVERIFY2(TestUtils::waitFor([&] { return dismisser.dismissCount() >= 1; }),"The About Qt dialog must have appeared");
 }
 
 // ===========================================================================

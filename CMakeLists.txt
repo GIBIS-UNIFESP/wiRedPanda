@@ -1090,10 +1090,13 @@ foreach(TEST ${ALL_TESTS})
     set_tests_properties(${TEST} PROPERTIES FIXTURES_SETUP "non_gui_complete")
 endforeach()
 foreach(TEST ${GUI_TESTS})
+    # QTEST_FUNCTION_TIMEOUT: a hung dialog exec() costs 60s instead of Qt
+    # Test's default 5-minute watchdog — the historical GUI-flake failure mode.
     set_tests_properties(${TEST} PROPERTIES
         LABELS "gui"
         FIXTURES_REQUIRED "non_gui_complete"
-        RESOURCE_LOCK "gui_display")
+        RESOURCE_LOCK "gui_display"
+        ENVIRONMENT "QTEST_FUNCTION_TIMEOUT=60000")
 endforeach()
 
 # ========= DOCUMENTATION ===================================

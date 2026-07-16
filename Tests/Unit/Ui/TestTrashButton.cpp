@@ -48,17 +48,6 @@ QByteArray makeIcDragPayload()
     return itemData;
 }
 
-// Schedules a click on the next modal QMessageBox's Yes/No button once TrashButton::dropEvent()
-// enters its confirmation dialog's nested event loop.
-void answerNextConfirmationDialog(QMessageBox::StandardButton answer)
-{
-    QTimer::singleShot(0, [answer] {
-        if (auto *msgBox = qobject_cast<QMessageBox *>(QApplication::activeModalWidget())) {
-            msgBox->button(answer)->click();
-        }
-    });
-}
-
 } // namespace
 
 void TestTrashButton::testDragEnterEvent()
@@ -87,11 +76,12 @@ void TestTrashButton::testDropEvent()
     QMimeData mimeData;
     mimeData.setData(MimeType::DragDrop, makeIcDragPayload());
 
-    answerNextConfirmationDialog(QMessageBox::Yes);
+    auto dismisser = TestUtils::AutoDismisser::answerMessageBox(QMessageBox::Yes);
 
     QDropEvent dropEvent(QPointF(5, 5), Qt::CopyAction, &mimeData, Qt::LeftButton, Qt::NoModifier);
     button.dropEvent(&dropEvent);
 
+    QVERIFY2(TestUtils::waitFor([&] { return dismisser.dismissCount() >= 1; }),"The delete-confirmation dialog must have appeared");
     QCOMPARE(removeFileSpy.count(), 1);
     QCOMPARE(removeFileSpy.constFirst().at(0).toString(), QStringLiteral("some_ic"));
     QCOMPARE(removeEmbeddedSpy.count(), 0);

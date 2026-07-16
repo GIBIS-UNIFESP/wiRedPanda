@@ -155,33 +155,11 @@ static void wheelZoom(GraphicsView *view, int delta)
     QApplication::sendEvent(view->viewport(), &wheel);
 }
 
-/// Schedules auto-close of the next visible QMessageBox that appears.
-static void autoCloseNextMessageBox()
-{
-    QTimer::singleShot(0, [] {
-        if (auto *w = QApplication::activeModalWidget()) {
-            if (auto *msgBox = qobject_cast<QMessageBox *>(w)) {
-                msgBox->accept();
-            }
-        }
-    });
-}
-
-static void clickNextMessageBoxButton(const QString &text)
-{
-    QTimer::singleShot(0, [text] {
-        if (auto *w = QApplication::activeModalWidget()) {
-            if (auto *msgBox = qobject_cast<QMessageBox *>(w)) {
-                for (auto *btn : msgBox->buttons()) {
-                    if (btn->text() == text) {
-                        btn->click();
-                        return;
-                    }
-                }
-            }
-        }
-    });
-}
+// Modal dialogs are auto-dismissed via TestUtils::AutoDismisser — a polling
+// RAII helper each test owns for the duration of the dialog-raising action.
+// (The former one-shot singleShot(0)/activeModalWidget helpers silently
+// no-op'd when the dialog wasn't active yet, leaving exec() blocked until
+// Qt Test's function watchdog killed the binary.)
 
 } // namespace MainWindowGuiHelpers
 
@@ -410,10 +388,11 @@ void TestMainWindowGui::testSaveAsConflictBlocksSave()
     ScopedFileDialogStub guard;
     guard.stub.saveResult = {path1, "Panda files (*.panda)"};
 
-    autoCloseNextMessageBox(); // dismiss conflict dialog with OK
+    auto dismisser = TestUtils::AutoDismisser::acceptMessageBox(); // dismiss conflict dialog with OK
     QTest::keyClick(window.get(), Qt::Key_S, Qt::ControlModifier | Qt::ShiftModifier);
 
     // Save was blocked: active tab is still path2.
+    QVERIFY2(TestUtils::waitFor([&] { return dismisser.dismissCount() >= 1; }),"The Save As conflict dialog must have appeared");
     QCOMPARE(window->currentFile().absoluteFilePath(), QFileInfo(path2).absoluteFilePath());
 }
 
@@ -434,10 +413,11 @@ void TestMainWindowGui::testSaveAsConflictSwitchToTab()
     ScopedFileDialogStub guard;
     guard.stub.saveResult = {path1, "Panda files (*.panda)"};
 
-    clickNextMessageBoxButton("Switch to Tab");
+    auto dismisser = TestUtils::AutoDismisser::clickMessageBoxButton("Switch to Tab");
     QTest::keyClick(window.get(), Qt::Key_S, Qt::ControlModifier | Qt::ShiftModifier);
 
     // "Switch to Tab" was clicked: the tab for path1 is now active.
+    QVERIFY2(TestUtils::waitFor([&] { return dismisser.dismissCount() >= 1; }),"The Save As conflict dialog must have appeared");
     QCOMPARE(window->currentFile().absoluteFilePath(), QFileInfo(path1).absoluteFilePath());
 }
 
@@ -1110,22 +1090,21 @@ void TestMainWindowGui::testExitViaKeyboard()
     window->setAttribute(Qt::WA_DeleteOnClose, false);
     QVERIFY(window->isVisible());
 
-    // closeEvent shows "Are you sure?" even with no unsaved changes.
-    // Accept any QMessageBox that appears during the close sequence.
-    auto dismissDialogs = [] {
-        if (auto *w = QApplication::activeModalWidget()) {
-            if (auto *msgBox = qobject_cast<QMessageBox *>(w)) {
-                if (auto *btn = msgBox->button(QMessageBox::Yes)) { btn->click(); return; }
-                if (auto *btn = msgBox->button(QMessageBox::No)) { btn->click(); return; }
-                if (auto *btn = msgBox->button(QMessageBox::NoToAll)) { btn->click(); return; }
-                msgBox->accept();
-            }
+    // closeEvent shows "Are you sure?" even with no unsaved changes; the close
+    // sequence can chain several confirmation boxes. The polling dismisser
+    // answers each one for as long as it's alive (defensive — how many appear
+    // depends on the close path taken).
+    TestUtils::AutoDismisser dismisser([](QWidget *w) {
+        auto *msgBox = qobject_cast<QMessageBox *>(w);
+        if (!msgBox) {
+            return false;
         }
-    };
-    // Schedule multiple dismiss attempts to handle chained dialogs
-    QTimer::singleShot(0, dismissDialogs);
-    QTimer::singleShot(100, dismissDialogs);
-    QTimer::singleShot(200, dismissDialogs);
+        if (auto *btn = msgBox->button(QMessageBox::Yes)) { btn->click(); return true; }
+        if (auto *btn = msgBox->button(QMessageBox::No)) { btn->click(); return true; }
+        if (auto *btn = msgBox->button(QMessageBox::NoToAll)) { btn->click(); return true; }
+        msgBox->accept();
+        return true;
+    });
 
     QTest::keyClick(window.get(), Qt::Key_Q, Qt::ControlModifier);
 
@@ -1222,21 +1201,23 @@ void TestMainWindowGui::testLanguageChange()
 void TestMainWindowGui::testAboutDialog()
 {
     std::unique_ptr<MainWindow> window(createMW());
-    autoCloseNextMessageBox();
+    auto dismisser = TestUtils::AutoDismisser::acceptMessageBox();
 
     auto *action = window->findChild<QAction *>("actionAbout");
     QVERIFY(action);
     action->trigger();
+    QVERIFY2(TestUtils::waitFor([&] { return dismisser.dismissCount() >= 1; }),"The About dialog must have appeared");
 }
 
 void TestMainWindowGui::testAboutQtDialog()
 {
     std::unique_ptr<MainWindow> window(createMW());
-    autoCloseNextMessageBox();
+    auto dismisser = TestUtils::AutoDismisser::acceptMessageBox();
 
     auto *action = window->findChild<QAction *>("actionAboutQt");
     QVERIFY(action);
     action->trigger();
+    QVERIFY2(TestUtils::waitFor([&] { return dismisser.dismissCount() >= 1; }),"The About Qt dialog must have appeared");
 }
 
 void TestMainWindowGui::testShortcutsDialog()
@@ -1258,10 +1239,11 @@ void TestMainWindowGui::testShortcutsDialog()
     QVERIFY(!html.contains("beWaveDolphin"));
 
     // Triggering the action still opens (and closes) the dialog without crashing.
-    autoCloseNextMessageBox();
+    auto dismisser = TestUtils::AutoDismisser::acceptMessageBox();
     auto *action = window->findChild<QAction *>("actionShortcutsAndTips");
     QVERIFY2(action, "actionShortcutsAndTips not found");
     action->trigger();
+    QVERIFY2(TestUtils::waitFor([&] { return dismisser.dismissCount() >= 1; }),"The shortcuts dialog must have appeared");
 }
 
 void TestMainWindowGui::testPaletteDoubleClickAddsElement()
@@ -1703,8 +1685,9 @@ void TestMainWindowGui::testMakeSelfContainedWithFileICs()
     guard.stub.saveResult = {savePath, "Panda files (*.panda)"};
     QTest::keyClick(window.get(), Qt::Key_S, Qt::ControlModifier);
 
-    // Trigger makeSelfContained
-    autoCloseNextMessageBox();
+    // Trigger makeSelfContained (defensive dismisser: the assertions below are
+    // about the embedding outcome, not the success dialog)
+    auto dismisser = TestUtils::AutoDismisser::acceptMessageBox();
     auto *action = window->findChild<QAction *>("actionMakeSelfContained");
     QVERIFY(action);
     action->trigger();
@@ -1757,7 +1740,7 @@ void TestMainWindowGui::testMakeSelfContainedMixedScene()
     QTest::keyClick(window.get(), Qt::Key_S, Qt::ControlModifier);
 
     // makeSelfContained should only convert the file-backed IC
-    autoCloseNextMessageBox();
+    auto dismisser = TestUtils::AutoDismisser::acceptMessageBox();
     auto *action = window->findChild<QAction *>("actionMakeSelfContained");
     action->trigger();
 
@@ -1795,7 +1778,7 @@ void TestMainWindowGui::testMakeSelfContainedLabelsPreserved()
     guard.stub.saveResult = {savePath, "Panda files (*.panda)"};
     QTest::keyClick(window.get(), Qt::Key_S, Qt::ControlModifier);
 
-    autoCloseNextMessageBox();
+    auto dismisser = TestUtils::AutoDismisser::acceptMessageBox();
     auto *action = window->findChild<QAction *>("actionMakeSelfContained");
     action->trigger();
 
@@ -1837,13 +1820,14 @@ void TestMainWindowGui::testMakeSelfContainedPartialDoesNotClaimSuccess()
     // ...whose source file then disappears, so the embed loop hits a read error and breaks.
     QVERIFY(QFile::remove(icPath));
 
-    autoCloseNextMessageBox(); // the "Could not read IC file" warning
+    auto dismisser = TestUtils::AutoDismisser::acceptMessageBox(); // the "Could not read IC file" warning
     auto *action = window->findChild<QAction *>("actionMakeSelfContained");
     QVERIFY(action);
     action->trigger();
     QCoreApplication::processEvents();
 
     // The IC stayed file-based, and no "self-contained" success claim was shown.
+    QVERIFY2(TestUtils::waitFor([&] { return dismisser.dismissCount() >= 1; }),"The read-error warning must have appeared");
     QVERIFY2(!ic->isEmbedded(), "IC should not be embedded after a read error");
     auto *statusBar = window->findChild<QStatusBar *>();
     QVERIFY(statusBar);
@@ -1869,7 +1853,7 @@ void TestMainWindowGui::testMakeSelfContainedPromptsToSaveWhenUnsaved()
     // lets the operation proceed rather than aborting.
     ScopedFileDialogStub guard;
     guard.stub.saveResult = {m_fixtureDir + "/save_prompt_test.panda", "Panda files (*.panda)"};
-    clickNextMessageBoxButton(QStringLiteral("Save"));
+    auto dismisser = TestUtils::AutoDismisser::clickMessageBoxButton(QStringLiteral("Save"));
 
     auto *action = window->findChild<QAction *>("actionMakeSelfContained");
     QVERIFY(action);
@@ -1877,6 +1861,7 @@ void TestMainWindowGui::testMakeSelfContainedPromptsToSaveWhenUnsaved()
     QCoreApplication::processEvents();
 
     // The save happened and the operation went through (IC embedded).
+    QVERIFY2(TestUtils::waitFor([&] { return dismisser.dismissCount() >= 1; }),"The Save-now prompt must have appeared");
     QVERIFY2(!scene->contextDir().isEmpty(), "the Save-now prompt should have saved the project");
     QVERIFY2(ic->isEmbedded(), "make-self-contained should proceed after saving");
 
@@ -3153,11 +3138,10 @@ void TestMainWindowGui::testAboutThisVersionDialog()
     auto *action = window->findChild<QAction *>("actionAboutThisVersion");
     QVERIFY2(action, "actionAboutThisVersion not found");
 
-    autoCloseNextMessageBox();
+    auto dismisser = TestUtils::AutoDismisser::acceptMessageBox();
     action->trigger();
 
-    // If we reached here without blocking, the dialog was auto-closed successfully
-    QVERIFY(true);
+    QVERIFY2(TestUtils::waitFor([&] { return dismisser.dismissCount() >= 1; }),"The About This Version dialog must have appeared");
 }
 
 void TestMainWindowGui::testOpenExample()
@@ -3220,8 +3204,9 @@ void TestMainWindowGui::testMakeSelfContained()
     QVERIFY2(action, "actionMakeSelfContained not found");
 
     // On an empty unsaved project, makeSelfContained should show a warning
-    // or do nothing (no file-backed ICs). Auto-close any message box.
-    autoCloseNextMessageBox();
+    // or do nothing (no file-backed ICs) — the dismisser is defensive, no
+    // dismissCount assertion.
+    auto dismisser = TestUtils::AutoDismisser::acceptMessageBox();
     action->trigger();
 
     // Should not crash; scene still functional
@@ -3678,35 +3663,21 @@ void TestMainWindowGui::testWaveformOnEmptySceneShowsWarningHQ()
     QVERIFY2(window->currentTab()->scene()->elements().isEmpty(),
              "Fresh tab must have an empty scene to reproduce WIREDPANDA-HQ");
 
-    // Poll-and-dismiss any QMessageBox that appears — guardedSlot's
-    // handleException shows a warning/critical dialog once it catches the
-    // PANDACEPTION. A singleShot(0) won't work — it fires before the queued
-    // action trigger runs, so it sees no dialog and we hang on QDialog::exec.
-    QTimer dismissTimer;
-    dismissTimer.setInterval(50);
-    QObject::connect(&dismissTimer, &QTimer::timeout, []() {
-        const auto widgets = QApplication::topLevelWidgets();
-        for (QWidget *w : widgets) {
-            if (auto *box = qobject_cast<QMessageBox *>(w)) {
-                if (box->isVisible()) {
-                    box->done(QMessageBox::Ok);
-                }
-            }
-        }
-    });
-    dismissTimer.start();
+    // Poll-and-dismiss the QMessageBox guardedSlot's handleException shows
+    // once it catches the PANDACEPTION. A one-shot singleShot(0) can't work
+    // here — it fires before the queued action trigger runs, so it would see
+    // no dialog and hang on QDialog::exec.
+    auto dismisser = TestUtils::AutoDismisser::acceptMessageBox();
 
     auto *action = window->findChild<QAction *>("actionWaveform");
     QVERIFY(action);
     QMetaObject::invokeMethod(action, "trigger", Qt::QueuedConnection);
-    QTest::qWait(500);
 
-    dismissTimer.stop();
-
-    // Reaching this line means: no abort — guardedSlot caught the
-    // PANDACEPTION and handleException showed (and this test dismissed) a
+    // The dialog appearing (and being dismissed) IS the pass condition: no
+    // abort — guardedSlot caught the PANDACEPTION and handleException showed a
     // dialog instead of letting it escape to std::terminate. On macOS, a
     // SIGABRT here is the WIREDPANDA-HQ signature.
+    QVERIFY2(TestUtils::waitFor([&] { return dismisser.dismissCount() >= 1; }),"handleException's dialog must have appeared");
     QVERIFY(window->isVisible());
 
     Application::interactiveMode = prevInteractive;
