@@ -1385,6 +1385,11 @@ void MainWindow::startExercise(const QString &resourcePath)
     delete m_exerciseOverlay;
     m_exerciseOverlay = new ExerciseOverlay(m_exerciseEngine, currentTab());
 
+    // m_exerciseEngine outlives any single exercise run, so a prior startExercise() call's
+    // click-handling connection (below) must be dropped before reconnecting, or replaying an
+    // exercise fires accumulated handlers once per past run.
+    disconnect(m_exerciseEngine, &ExerciseEngine::stepChanged, this, nullptr);
+
     // Must precede stepChanged→onStepChanged so actions run before the overlay updates.
     connect(m_exerciseEngine, &ExerciseEngine::stepChanged, this,
             [this](int, int, const ExerciseStep &step) {
@@ -1458,6 +1463,11 @@ void MainWindow::startTour(const QString &resourcePath)
     m_tourOverlay->setTargetResolver([this](const QString &id) {
         return resolveTourTarget(id);
     });
+
+    // m_tourEngine outlives any single tour run, so a prior startTour() call's click-handling
+    // connection (below) must be dropped before reconnecting, or replaying a tour fires
+    // accumulated handlers once per past run.
+    disconnect(m_tourEngine, &TourEngine::stepChanged, this, nullptr);
 
     // Must be connected before stepChanged→onStepChanged so click executes before
     // resolveTourTarget computes widget rects.
