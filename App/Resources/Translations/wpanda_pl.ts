@@ -526,87 +526,87 @@
 <context>
     <name>Display14</name>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="34"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="35"/>
         <source>14-SEGMENT DISPLAY</source>
         <translation>WYŚWIETLACZ 14-SEGMENTOWY</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="35"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="36"/>
         <source>14-Segment Display</source>
         <translation>Wyświetlacz 14-segmentowy</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="97"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="98"/>
         <source>middle left horizontal</source>
         <translation>środek lewy poziomy</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="98"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="99"/>
         <source>upper left vertical</source>
         <translation>górny lewy pionowy</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="99"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="100"/>
         <source>lower left vertical</source>
         <translation>dolny lewy pionowy</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="102"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="103"/>
         <source>upper right vertical</source>
         <translation>górny prawy pionowy</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="104"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="105"/>
         <source>lower right vertical</source>
         <translation>dolny prawy pionowy</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="105"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="106"/>
         <source>middle right horizontal</source>
         <translation>środek prawy poziomy</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="106"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="107"/>
         <source>upper left diagonal</source>
         <translation>górny lewy ukośny</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="107"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="108"/>
         <source>upper center vertical</source>
         <translation>górny środek pionowy</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="108"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="109"/>
         <source>upper right diagonal</source>
         <translation>górny prawy ukośny</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="109"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="110"/>
         <source>lower right diagonal</source>
         <translation>dolny prawy ukośny</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="110"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="111"/>
         <source>lower center vertical</source>
         <translation>dolny środek pionowy</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="111"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="112"/>
         <source>lower left diagonal</source>
         <translation>dolny lewy ukośny</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="100"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="101"/>
         <source>bottom</source>
         <translation>dół</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="101"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="102"/>
         <source>top</source>
         <translation>góra</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="103"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="104"/>
         <source>dot</source>
         <translation>kropka</translation>
     </message>
@@ -614,97 +614,97 @@
 <context>
     <name>Display16</name>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="34"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="35"/>
         <source>16-SEGMENT DISPLAY</source>
         <translation>WYŚWIETLACZ 16-SEGMENTOWY</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="35"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="36"/>
         <source>16-Segment Display</source>
         <translation>Wyświetlacz 16-segmentowy</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="103"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="104"/>
         <source>middle left horizontal</source>
         <translation>środek lewy poziomy</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="104"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="105"/>
         <source>upper left vertical</source>
         <translation>górny lewy pionowy</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="105"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="106"/>
         <source>lower left vertical</source>
         <translation>dolny lewy pionowy</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="106"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="107"/>
         <source>bottom left horizontal</source>
         <translation>dół lewy poziomy</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="107"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="108"/>
         <source>bottom right horizontal</source>
         <translation>dół prawy poziomy</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="108"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="109"/>
         <source>top left horizontal</source>
         <translation>góra lewy poziomy</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="109"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="110"/>
         <source>top right horizontal</source>
         <translation>góra prawy poziomy</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="110"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="111"/>
         <source>upper right vertical</source>
         <translation>górny prawy pionowy</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="111"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="112"/>
         <source>dot</source>
         <translation>kropka</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="112"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="113"/>
         <source>lower right vertical</source>
         <translation>dolny prawy pionowy</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="113"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="114"/>
         <source>middle right horizontal</source>
         <translation>środek prawy poziomy</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="114"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="115"/>
         <source>upper left diagonal</source>
         <translation>górny lewy ukośny</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="115"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="116"/>
         <source>upper center vertical</source>
         <translation>górny środek pionowy</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="116"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="117"/>
         <source>upper right diagonal</source>
         <translation>górny prawy ukośny</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="117"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="118"/>
         <source>lower right diagonal</source>
         <translation>dolny prawy ukośny</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="118"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="119"/>
         <source>lower center vertical</source>
         <translation>dolny środek pionowy</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="119"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="120"/>
         <source>lower left diagonal</source>
         <translation>dolny lewy ukośny</translation>
     </message>
@@ -712,52 +712,52 @@
 <context>
     <name>Display7</name>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="38"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="55"/>
         <source>7-SEGMENT DISPLAY</source>
         <translation>WYŚWIETLACZ 7-SEGMENTOWY</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="39"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="56"/>
         <source>7-Segment Display</source>
         <translation>Wyświetlacz 7-segmentowy</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="143"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="133"/>
         <source>middle</source>
         <translation>środkowy</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="144"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="134"/>
         <source>upper left</source>
         <translation>górny lewy</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="145"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="135"/>
         <source>lower left</source>
         <translation>dolny lewy</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="146"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="136"/>
         <source>bottom</source>
         <translation>dół</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="147"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="137"/>
         <source>top</source>
         <translation>góra</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="148"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="138"/>
         <source>upper right</source>
         <translation>górny prawy</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="149"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="139"/>
         <source>dot</source>
         <translation>kropka</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="150"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="140"/>
         <source>lower right</source>
         <translation>dolny prawy</translation>
     </message>
@@ -1854,12 +1854,12 @@ Zapisać teraz?</translation>
 <context>
     <name>InputRotary</name>
     <message>
-        <location filename="../../Element/GraphicElements/InputRotary.cpp" line="34"/>
+        <location filename="../../Element/GraphicElements/InputRotary.cpp" line="35"/>
         <source>Rotary Switch</source>
         <translation>Przełącznik obrotowy</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputRotary.cpp" line="33"/>
+        <location filename="../../Element/GraphicElements/InputRotary.cpp" line="34"/>
         <source>ROTARY SWITCH</source>
         <translation>PRZEŁĄCZNIK OBROTOWY</translation>
     </message>
@@ -2375,7 +2375,7 @@ Zapisać teraz?</translation>
         <translation>Pe&amp;łny ekran</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1307"/>
+        <location filename="../../UI/MainWindow.cpp" line="1308"/>
         <location filename="../../UI/MainWindowUI.cpp" line="841"/>
         <source>Mute</source>
         <translation>Wycisz</translation>
@@ -2401,23 +2401,23 @@ Zapisać teraz?</translation>
         <translation>Uruchom ponownie symulację.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="638"/>
+        <location filename="../../UI/MainWindow.cpp" line="639"/>
         <location filename="../../UI/MainWindowUI.cpp" line="852"/>
         <source>Shortcuts and Tips</source>
         <translation>Skróty i porady</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="842"/>
+        <location filename="../../UI/MainWindow.cpp" line="843"/>
         <source>%1[*] — wiRedPanda %2</source>
         <translation>%1[*] — wiRedPanda %2</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1000"/>
+        <location filename="../../UI/MainWindow.cpp" line="1001"/>
         <source>New Project</source>
         <translation>Nowy projekt</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="507"/>
+        <location filename="../../UI/MainWindow.cpp" line="508"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2436,62 +2436,62 @@ wiRedPanda %1 automatycznie wyświetli wszystkie inne pliki .panda znajdujące s
 Musisz zapisać nowe projekty przed uzyskaniem dostępu do IC i wyglądów lub uruchomieniem symulacji beWavedDolphin.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="284"/>
+        <location filename="../../UI/MainWindow.cpp" line="285"/>
         <source>Error</source>
         <translation>Błąd</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="313"/>
+        <location filename="../../UI/MainWindow.cpp" line="314"/>
         <source>Open My Exercises Folder</source>
         <translation>Otwórz folder Moje ćwiczenia</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="314"/>
+        <location filename="../../UI/MainWindow.cpp" line="315"/>
         <source>Could not create or access a folder for custom exercises.</source>
         <translation>Nie można utworzyć ani otworzyć folderu dla niestandardowych ćwiczeń.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="324"/>
+        <location filename="../../UI/MainWindow.cpp" line="325"/>
         <source>Open My Tours Folder</source>
         <translation>Otwórz folder Moje wycieczki</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="325"/>
+        <location filename="../../UI/MainWindow.cpp" line="326"/>
         <source>Could not create or access a folder for custom tours.</source>
         <translation>Nie można utworzyć ani otworzyć folderu dla niestandardowych wycieczek.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="567"/>
+        <location filename="../../UI/MainWindow.cpp" line="568"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda to oprogramowanie stworzone przez studentów Federalnego Uniwersytetu w São Paulo, aby pomóc uczniom poznać obwody logiczne.&lt;/p&gt;&lt;p&gt;Wersja oprogramowania: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Twórcy:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda jest obecnie utrzymywana przez prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveirę, Matheusa R. Estevesa i Maycona A. Santanę.&lt;/p&gt;&lt;p&gt; Zgłoś błąd lub propozycję nowej funkcji na naszej stronie GitHub.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Odwiedź naszą stronę!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="591"/>
+        <location filename="../../UI/MainWindow.cpp" line="592"/>
         <source>Redo</source>
         <translation>Ponów</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="592"/>
+        <location filename="../../UI/MainWindow.cpp" line="593"/>
         <source>Undo</source>
         <translation>Cofnij</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="617"/>
+        <location filename="../../UI/MainWindow.cpp" line="618"/>
         <source>&lt;h1&gt;Keyboard Shortcuts&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;Element Property Navigation&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : Previous / next primary property &lt;/li&gt;&lt;li&gt; { / } : Previous / next secondary property &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : Morph to previous / next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Double-click a wire to create a node &lt;/li&gt;&lt;li&gt; Drag an element from the left panel onto the canvas to add it &lt;/li&gt;&lt;li&gt; Nudge the selection with the arrow keys (hold Shift for larger steps) &lt;/li&gt;&lt;li&gt; Drop a .panda file onto the canvas to open it &lt;/li&gt;&lt;/ul&gt;</source>
         <translation>&lt;h1&gt;Skróty klawiszowe&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;Nawigacja po właściwościach elementu&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : Poprzednia / następna właściwość podstawowa &lt;/li&gt;&lt;li&gt; { / } : Poprzednia / następna właściwość dodatkowa &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : Przekształć w poprzedni / następny element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Ogólne wskazówki&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Kliknij dwukrotnie na przewodzie, aby utworzyć węzeł &lt;/li&gt;&lt;li&gt; Przeciągnij element z lewego panelu na płótno, aby go dodać &lt;/li&gt;&lt;li&gt; Przesuwaj zaznaczenie klawiszami strzałek (przytrzymaj Shift, aby zwiększyć krok) &lt;/li&gt;&lt;li&gt; Upuść plik .panda na płótnie, aby go otworzyć &lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="668"/>
+        <location filename="../../UI/MainWindow.cpp" line="669"/>
         <source>Are you sure?</source>
         <translation>Czy jesteś pewny?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="667"/>
+        <location filename="../../UI/MainWindow.cpp" line="668"/>
         <source>Exit</source>
         <translation>Wyjdź</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1307"/>
+        <location filename="../../UI/MainWindow.cpp" line="1308"/>
         <source>Unmute</source>
         <translation>Włącz dźwięk</translation>
     </message>

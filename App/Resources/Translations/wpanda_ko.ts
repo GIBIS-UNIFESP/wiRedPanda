@@ -526,87 +526,87 @@
 <context>
     <name>Display14</name>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="34"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="35"/>
         <source>14-SEGMENT DISPLAY</source>
         <translation>14-세그먼트 디스플레이</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="35"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="36"/>
         <source>14-Segment Display</source>
         <translation>14-세그먼트 디스플레이</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="97"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="98"/>
         <source>middle left horizontal</source>
         <translation>중앙 좌측 수평</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="98"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="99"/>
         <source>upper left vertical</source>
         <translation>상단 좌측 수직</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="99"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="100"/>
         <source>lower left vertical</source>
         <translation>하단 좌측 수직</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="102"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="103"/>
         <source>upper right vertical</source>
         <translation>상단 우측 수직</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="104"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="105"/>
         <source>lower right vertical</source>
         <translation>하단 우측 수직</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="105"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="106"/>
         <source>middle right horizontal</source>
         <translation>중앙 우측 수평</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="106"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="107"/>
         <source>upper left diagonal</source>
         <translation>상단 좌측 대각선</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="107"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="108"/>
         <source>upper center vertical</source>
         <translation>상단 중앙 수직</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="108"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="109"/>
         <source>upper right diagonal</source>
         <translation>상단 우측 대각선</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="109"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="110"/>
         <source>lower right diagonal</source>
         <translation>하단 우측 대각선</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="110"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="111"/>
         <source>lower center vertical</source>
         <translation>하단 중앙 수직</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="111"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="112"/>
         <source>lower left diagonal</source>
         <translation>하단 좌측 대각선</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="100"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="101"/>
         <source>bottom</source>
         <translation>하단</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="101"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="102"/>
         <source>top</source>
         <translation>상단</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display14.cpp" line="103"/>
+        <location filename="../../Element/GraphicElements/Display14.cpp" line="104"/>
         <source>dot</source>
         <translation>점</translation>
     </message>
@@ -614,97 +614,97 @@
 <context>
     <name>Display16</name>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="34"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="35"/>
         <source>16-SEGMENT DISPLAY</source>
         <translation>16-세그먼트 디스플레이</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="35"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="36"/>
         <source>16-Segment Display</source>
         <translation>16-세그먼트 디스플레이</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="103"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="104"/>
         <source>middle left horizontal</source>
         <translation>중앙 좌측 수평</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="104"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="105"/>
         <source>upper left vertical</source>
         <translation>상단 좌측 수직</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="105"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="106"/>
         <source>lower left vertical</source>
         <translation>하단 좌측 수직</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="106"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="107"/>
         <source>bottom left horizontal</source>
         <translation>하단 좌측 수평</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="107"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="108"/>
         <source>bottom right horizontal</source>
         <translation>하단 우측 수평</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="108"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="109"/>
         <source>top left horizontal</source>
         <translation>상단 좌측 수평</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="109"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="110"/>
         <source>top right horizontal</source>
         <translation>상단 우측 수평</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="110"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="111"/>
         <source>upper right vertical</source>
         <translation>상단 우측 수직</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="111"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="112"/>
         <source>dot</source>
         <translation>점</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="112"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="113"/>
         <source>lower right vertical</source>
         <translation>하단 우측 수직</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="113"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="114"/>
         <source>middle right horizontal</source>
         <translation>중앙 우측 수평</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="114"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="115"/>
         <source>upper left diagonal</source>
         <translation>상단 좌측 대각선</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="115"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="116"/>
         <source>upper center vertical</source>
         <translation>상단 중앙 수직</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="116"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="117"/>
         <source>upper right diagonal</source>
         <translation>상단 우측 대각선</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="117"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="118"/>
         <source>lower right diagonal</source>
         <translation>하단 우측 대각선</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="118"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="119"/>
         <source>lower center vertical</source>
         <translation>하단 중앙 수직</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display16.cpp" line="119"/>
+        <location filename="../../Element/GraphicElements/Display16.cpp" line="120"/>
         <source>lower left diagonal</source>
         <translation>하단 좌측 대각선</translation>
     </message>
@@ -712,52 +712,52 @@
 <context>
     <name>Display7</name>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="38"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="55"/>
         <source>7-SEGMENT DISPLAY</source>
         <translation>7-세그먼트 디스플레이</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="39"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="56"/>
         <source>7-Segment Display</source>
         <translation>7-세그먼트 디스플레이</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="143"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="133"/>
         <source>middle</source>
         <translation>중앙</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="144"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="134"/>
         <source>upper left</source>
         <translation>상단 왼쪽</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="145"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="135"/>
         <source>lower left</source>
         <translation>하단 왼쪽</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="146"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="136"/>
         <source>bottom</source>
         <translation>하단</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="147"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="137"/>
         <source>top</source>
         <translation>상단</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="148"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="138"/>
         <source>upper right</source>
         <translation>상단 오른쪽</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="149"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="139"/>
         <source>dot</source>
         <translation>점</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Display7.cpp" line="150"/>
+        <location filename="../../Element/GraphicElements/Display7.cpp" line="140"/>
         <source>lower right</source>
         <translation>하단 오른쪽</translation>
     </message>
@@ -1854,12 +1854,12 @@ Save it now?</source>
 <context>
     <name>InputRotary</name>
     <message>
-        <location filename="../../Element/GraphicElements/InputRotary.cpp" line="34"/>
+        <location filename="../../Element/GraphicElements/InputRotary.cpp" line="35"/>
         <source>Rotary Switch</source>
         <translation>로터리 스위치</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputRotary.cpp" line="33"/>
+        <location filename="../../Element/GraphicElements/InputRotary.cpp" line="34"/>
         <source>ROTARY SWITCH</source>
         <translation>로터리 스위치</translation>
     </message>
@@ -2375,7 +2375,7 @@ Save it now?</source>
         <translation>전체 화면(&amp;U)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1307"/>
+        <location filename="../../UI/MainWindow.cpp" line="1308"/>
         <location filename="../../UI/MainWindowUI.cpp" line="841"/>
         <source>Mute</source>
         <translation>음소거</translation>
@@ -2401,23 +2401,23 @@ Save it now?</source>
         <translation>시뮤레이션을 재시작합니다.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="638"/>
+        <location filename="../../UI/MainWindow.cpp" line="639"/>
         <location filename="../../UI/MainWindowUI.cpp" line="852"/>
         <source>Shortcuts and Tips</source>
         <translation>단축키와 팁</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="842"/>
+        <location filename="../../UI/MainWindow.cpp" line="843"/>
         <source>%1[*] — wiRedPanda %2</source>
         <translation>%1[*] — wiRedPanda %2</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1000"/>
+        <location filename="../../UI/MainWindow.cpp" line="1001"/>
         <source>New Project</source>
         <translation>새 프로젝트</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="507"/>
+        <location filename="../../UI/MainWindow.cpp" line="508"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2436,62 +2436,62 @@ wiRedPanda %1 는 현재 프로젝트와 같은 디렉터리에 있는 다른 �
 IC와 외관에 접근하거나 beWavedDolphin 시뮬레이션을 실행하기 전에 새 프로젝트를 저장해야 합니다.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="284"/>
+        <location filename="../../UI/MainWindow.cpp" line="285"/>
         <source>Error</source>
         <translation>오류</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="313"/>
+        <location filename="../../UI/MainWindow.cpp" line="314"/>
         <source>Open My Exercises Folder</source>
         <translation>내 연습 폴더 열기</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="314"/>
+        <location filename="../../UI/MainWindow.cpp" line="315"/>
         <source>Could not create or access a folder for custom exercises.</source>
         <translation>사용자 지정 연습을 위한 폴더를 만들거나 액세스할 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="324"/>
+        <location filename="../../UI/MainWindow.cpp" line="325"/>
         <source>Open My Tours Folder</source>
         <translation>내 투어 폴더 열기</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="325"/>
+        <location filename="../../UI/MainWindow.cpp" line="326"/>
         <source>Could not create or access a folder for custom tours.</source>
         <translation>사용자 지정 투어를 위한 폴더를 만들거나 액세스할 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="567"/>
+        <location filename="../../UI/MainWindow.cpp" line="568"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda는 학생들이 논리 회로에 대해 배우도록 돕기 위해 상파울루 연방 대학교 학생들이 개발한 소프트웨어입니다.&lt;/p&gt;&lt;p&gt;소프트웨어 버전: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;제작자:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda는 현재 Fábio Cappabianco 교수(Ph.D.), João Pedro M. Oliveira, Matheus R. Esteves, Maycon A. Santana가 유지 관리하고 있습니다.&lt;/p&gt;&lt;p&gt; 버그를 발견했거나 새로운 기능을 요청하고 싶다면 저희 GitHub 페이지에 신고해 주세요.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;저희 웹사이트를 방문해 보세요!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="591"/>
+        <location filename="../../UI/MainWindow.cpp" line="592"/>
         <source>Redo</source>
         <translation>다시 실행</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="592"/>
+        <location filename="../../UI/MainWindow.cpp" line="593"/>
         <source>Undo</source>
         <translation>실행 취소</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="617"/>
+        <location filename="../../UI/MainWindow.cpp" line="618"/>
         <source>&lt;h1&gt;Keyboard Shortcuts&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;Element Property Navigation&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : Previous / next primary property &lt;/li&gt;&lt;li&gt; { / } : Previous / next secondary property &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : Morph to previous / next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Double-click a wire to create a node &lt;/li&gt;&lt;li&gt; Drag an element from the left panel onto the canvas to add it &lt;/li&gt;&lt;li&gt; Nudge the selection with the arrow keys (hold Shift for larger steps) &lt;/li&gt;&lt;li&gt; Drop a .panda file onto the canvas to open it &lt;/li&gt;&lt;/ul&gt;</source>
         <translation>&lt;h1&gt;키보드 단축키&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;요소 속성 탐색&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : 이전 / 다음 주요 속성 &lt;/li&gt;&lt;li&gt; { / } : 이전 / 다음 보조 속성 &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : 이전 / 다음 요소로 변형 &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;일반 팁&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; 배선을 더블클릭하여 노드를 생성 &lt;/li&gt;&lt;li&gt; 왼쪽 패널에서 요소를 캔버스로 드래그하여 추가 &lt;/li&gt;&lt;li&gt; 화살표 키로 선택 영역을 이동(더 큰 단계는 Shift를 누른 상태로 유지) &lt;/li&gt;&lt;li&gt; .panda 파일을 캔버스에 드롭하여 열기 &lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="668"/>
+        <location filename="../../UI/MainWindow.cpp" line="669"/>
         <source>Are you sure?</source>
         <translation>확실하십니까?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="667"/>
+        <location filename="../../UI/MainWindow.cpp" line="668"/>
         <source>Exit</source>
         <translation>종료</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1307"/>
+        <location filename="../../UI/MainWindow.cpp" line="1308"/>
         <source>Unmute</source>
         <translation>음소거 해제</translation>
     </message>
