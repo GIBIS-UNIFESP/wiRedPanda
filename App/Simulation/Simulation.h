@@ -145,8 +145,12 @@ private:
 
     static void updatePort(InputPort *port);
     static void updatePort(OutputPort *port);
-    void updateWithIterativeSettling(const QVector<GraphicElement *> &elements);
+    /// Returns \c true when the feedback circuit converged within the iteration budget.
+    bool updateWithIterativeSettling(const QVector<GraphicElement *> &elements);
     void sortSimElements(const QVector<GraphicElement *> &elements);
+
+    /// Phases 3-4: pushes computed logic values onto port/output-element visuals.
+    void pushVisualStatuses(const QVector<GraphicElement *> &elements, const QVector<GraphicElement *> &outputs);
 
     /// Recursively appends every ElementGroup::Memory element in \a elements
     /// (descending into ICs) to m_sequentialElements. These get non-blocking
@@ -169,6 +173,17 @@ private:
     bool m_initialized = false;
     bool m_convergenceWarned = false;
     bool m_userMuted = false;
+
+    /// \c true after a completed sweep whose settle passes converged: outputs are a fixed
+    /// point of the (deterministic) element functions, so a tick where no clock and no
+    /// input element changed is a provable no-op and update() skips the sweep entirely.
+    /// Cleared by restart() (structural edits) and by any non-converging settle
+    /// (oscillating feedback must keep sweeping).
+    bool m_atFixedPoint = false;
+
+    /// Set by every sweep; lets a skipped tick know the throttled visual phases still
+    /// owe a flush (the display-rate boundary may land on a skipped tick).
+    bool m_visualsDirty = true;
 
     // --- Members: Visual refresh throttle ---
 
