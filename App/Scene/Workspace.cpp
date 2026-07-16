@@ -369,26 +369,13 @@ WorkSpace::SaveOutcome WorkSpace::save(const QString &fileName)
         throw PANDACEPTION("Error opening file: %1", saveFile.errorString());
     }
 
-    // Set scene rect with same logic as resizeScene() to avoid viewport jump on element selection.
-    // Tighten to item bounds with margins and visible viewport to ensure consistent scrollbar behavior.
-    auto bounds = m_scene.itemsBoundingRect();
-    auto tightRect = bounds;
-    const auto viewList = m_scene.views();
-    if (!viewList.isEmpty()) {
-        auto *view = viewList.first();
-        constexpr qreal margin = 100.0;
-        const auto visibleScene = view->mapToScene(view->viewport()->rect()).boundingRect()
-                                     .adjusted(-margin, -margin, margin, margin);
-        tightRect = tightRect.united(visibleScene);
-
-        const int hVal = view->horizontalScrollBar()->value();
-        const int vVal = view->verticalScrollBar()->value();
-        m_scene.setSceneRect(tightRect);
-        view->horizontalScrollBar()->setValue(hVal);
-        view->verticalScrollBar()->setValue(vVal);
-    } else {
-        m_scene.setSceneRect(tightRect);
-    }
+    // Re-tighten the scene rect (avoids a viewport jump on element selection). Must go
+    // through resizeScene() rather than a local computation: producing even a slightly
+    // different rect than resizeScene()'s (quantized) one would ping-pong the scene rect
+    // between two values across edit/autosave cycles, and every change makes Qt's BSP
+    // index re-insert all items. No drag can be in progress during a save, so this takes
+    // the same tighten branch the interactive callers use.
+    m_scene.resizeScene();
 
     QDataStream stream(&saveFile);
     Serialization::writePandaHeader(stream);

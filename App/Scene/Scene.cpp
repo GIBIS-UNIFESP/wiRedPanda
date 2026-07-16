@@ -612,6 +612,26 @@ void Scene::restoreWireAntialiasing()
     update();
 }
 
+namespace {
+/// Any *changed* scene rect makes Qt's BSP index unindex and re-insert every item in the
+/// scene (QGraphicsSceneBspTreeIndex::updateSceneRect() -> resetIndex()) -- tens of
+/// milliseconds on large circuits; only a bit-identical rect is a no-op. Snapping the rect
+/// outward to this grid makes consecutive interaction steps (mouse moves of an edge drag,
+/// zoom wheel notches) produce identical rects, turning per-event full re-indexes into at
+/// most one per 256 scene units of actual growth or shrink. The scene rect's only
+/// observable effect is scrollbar range, which already carries a 100-unit margin.
+constexpr qreal kSceneRectQuantum = 256.0;
+
+QRectF quantizeOutward(const QRectF &rect)
+{
+    const qreal left = std::floor(rect.left() / kSceneRectQuantum) * kSceneRectQuantum;
+    const qreal top = std::floor(rect.top() / kSceneRectQuantum) * kSceneRectQuantum;
+    const qreal right = std::ceil(rect.right() / kSceneRectQuantum) * kSceneRectQuantum;
+    const qreal bottom = std::ceil(rect.bottom() / kSceneRectQuantum) * kSceneRectQuantum;
+    return QRectF(QPointF(left, top), QPointF(right, bottom));
+}
+} // namespace
+
 void Scene::resizeScene()
 {
     const auto bounds = cachedItemsBoundingRect();
@@ -620,7 +640,7 @@ void Scene::resizeScene()
         // While dragging, only expand the scene rect (union with current rect).
         // Never shrink during drag — shrinking shifts the viewport origin and
         // causes jarring visual jumps as the scene rect chases the items.
-        setSceneRect(sceneRect().united(bounds));
+        setSceneRect(quantizeOutward(sceneRect().united(bounds)));
     } else {
         // Tighten to item bounds, but ensure the scene rect stays larger than the
         // viewport. When the scene rect is smaller than (or barely larger than) the
@@ -640,11 +660,11 @@ void Scene::resizeScene()
             // drift — saving/restoring scrollbar values avoids the rounding.
             const int hVal = view->horizontalScrollBar()->value();
             const int vVal = view->verticalScrollBar()->value();
-            setSceneRect(tightRect);
+            setSceneRect(quantizeOutward(tightRect));
             view->horizontalScrollBar()->setValue(hVal);
             view->verticalScrollBar()->setValue(vVal);
         } else {
-            setSceneRect(tightRect);
+            setSceneRect(quantizeOutward(tightRect));
         }
     }
 }
