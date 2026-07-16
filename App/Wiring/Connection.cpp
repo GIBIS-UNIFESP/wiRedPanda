@@ -89,13 +89,20 @@ void Connection::setEndPort(InputPort *port)
 
 void Connection::updatePosFromPorts()
 {
-    if (m_startPort) {
-        m_startPos = m_startPort->scenePos();
+    const QPointF newStartPos = m_startPort ? m_startPort->scenePos() : m_startPos;
+    const QPointF newEndPos = m_endPort ? m_endPort->scenePos() : m_endPos;
+
+    // Skip the Bézier rebuild -- and the QPainterPath comparison setPath() does internally
+    // to decide whether a repaint is even needed -- when neither endpoint actually moved.
+    // Some callers (bulk commands, deserialization) refresh connections without knowing in
+    // advance which ones were actually affected; QPointF equality is exact and cheap, so
+    // this turns those into a no-op instead of a full path rebuild + Qt's own comparison.
+    if (newStartPos == m_startPos && newEndPos == m_endPos) {
+        return;
     }
 
-    if (m_endPort) {
-        m_endPos = m_endPort->scenePos();
-    }
+    m_startPos = newStartPos;
+    m_endPos = newEndPos;
 
     updatePath();
 }
