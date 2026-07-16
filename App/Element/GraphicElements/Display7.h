@@ -7,9 +7,12 @@
 
 #pragma once
 
+#include <memory>
+
 #include "App/Element/GraphicElement.h"
 
 class Port;
+class QSvgRenderer;
 
 /**
  * \class Display7
@@ -30,17 +33,10 @@ public:
 
     // --- Color utilities ---
 
-    /// Returns a recolored copy of \a source using the given channel flags.
-    static QPixmap convertColor(const QImage &source, const bool red, const bool green, const bool blue);
-
-    /**
-     * \brief Fills \a pixmaps with red, green, and blue variants derived from the first entry.
-     * \param pixmaps Vector of source pixmaps; expanded in-place with color variants.
-     */
-    static void convertAllColors(QVector<QPixmap> &pixmaps);
-
-    /// Returns cached 5-color variants for the segment at \a resourcePath.
-    static QVector<QPixmap> cachedSegmentColors(const QString &resourcePath);
+    /// Returns cached White/Red/Green/Blue/Purple vector renderers for the segment SVG at
+    /// \a resourcePath (index order matches colorNameToIndex()), so lit segments stay crisp
+    /// at any zoom instead of blitting a fixed-resolution pixmap.
+    static QVector<std::shared_ptr<QSvgRenderer>> cachedSegmentRenderers(const QString &resourcePath);
 
     // --- Color State ---
 
@@ -76,6 +72,6 @@ private:
     // --- Members ---
 
     QString m_color = "Red";
-    QVector<QPixmap> a, b, c, d, e, f, g, dp;
+    QVector<std::shared_ptr<QSvgRenderer>> a, b, c, d, e, f, g, dp;
     int m_colorNumber = 1;
 };

@@ -5,6 +5,7 @@
 
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
+#include <QSvgRenderer>
 
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
@@ -51,7 +52,6 @@ InputRotary::InputRotary(QGraphicsItem *parent)
     : GraphicElementInput(ElementType::InputRotary, parent)
 {
     m_rotary = m_appearance.defaultAppearances().at(0);
-    m_arrow  = m_appearance.defaultAppearances().at(1);
 
     setLocked(false);
 
@@ -180,6 +180,16 @@ void InputRotary::updatePortsProperties()
     InputRotary::refresh();
 }
 
+/// Shared, lazily-constructed vector renderer for the active-position arrow -- drawn directly in
+/// paint() so it stays crisp at any zoom instead of blitting a fixed-resolution pixmap. The arrow
+/// asset is a fixed built-in (never user-customizable, unlike the dial face), so one renderer
+/// suffices for every InputRotary instance. GUI-thread only, like pixmapCache().
+static QSvgRenderer &rotaryArrowRenderer()
+{
+    static QSvgRenderer renderer(QStringLiteral(":/Components/Input/rotary_arrow.svg"));
+    return renderer;
+}
+
 void InputRotary::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     GraphicElement::paint(painter, option, widget);
@@ -212,13 +222,13 @@ void InputRotary::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
             continue;
         }
 
-        // Overlay the arrow pixmap at the same rotation as the active mark
+        // Overlay the arrow at the same rotation as the active mark
         painter->save();
 
         painter->translate(center.x(), center.y());
         painter->rotate(angle);
         painter->translate(-center.x(), -center.y());
-        painter->drawPixmap(0, 0, m_arrow);
+        rotaryArrowRenderer().render(painter, QRectF(0, 0, 64, 64));
 
         painter->restore();
     }

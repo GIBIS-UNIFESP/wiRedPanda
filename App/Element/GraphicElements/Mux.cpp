@@ -93,13 +93,25 @@ QRectF Mux::boundingRect() const
 
 void Mux::generatePixmap()
 {
+    // The body is drawn as vectors in drawBody()/paint(); m_pixmap is kept only so the base
+    // pixmapCenter()/boundingRect() have the right size (its image content is never displayed).
     const int height = static_cast<int>(renderBodyBounds().height());
 
-    QPixmap tempPixmap(64, height);
-    tempPixmap.fill(Qt::transparent);
+    QPixmap sizingPixmap(64, height);
+    sizingPixmap.fill(Qt::transparent);
+    m_appearance.setRenderPixmap(sizingPixmap);
+    update();
+}
 
-    QPainter painter(&tempPixmap);
-    painter.setRenderHint(QPainter::Antialiasing);
+void Mux::drawBody(QPainter *painter)
+{
+    painter->save();
+    painter->setRenderHint(QPainter::Antialiasing);
+    // boundingRect()'s top-left may be negative when ports extend past the 64×64 body; align the
+    // local origin with it so the body lands exactly where the old rasterised pixmap was blitted.
+    painter->translate(boundingRect().topLeft());
+
+    const int height = pixmap().rect().height();
 
     // Trapezoid body: wider on left (input side), narrower on right (output side)
     const int bodyTop = 8;
@@ -107,19 +119,19 @@ void Mux::generatePixmap()
     const int rightInset = 8; // fixed inset for the narrower right side
 
     // Outer dark shape
-    painter.setBrush(QColor(38, 38, 38));
-    painter.setPen(QPen(QColor(38, 38, 38), 3, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+    painter->setBrush(QColor(38, 38, 38));
+    painter->setPen(QPen(QColor(38, 38, 38), 3, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
 
     QPolygonF outer;
     outer << QPointF(22, bodyTop)
           << QPointF(22, bodyBottom)
           << QPointF(42, bodyBottom - rightInset)
           << QPointF(42, bodyTop + rightInset);
-    painter.drawPolygon(outer);
+    painter->drawPolygon(outer);
 
     // Inner white fill
-    painter.setBrush(QColor(252, 252, 252));
-    painter.setPen(QPen(QColor(252, 252, 252), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+    painter->setBrush(QColor(252, 252, 252));
+    painter->setPen(QPen(QColor(252, 252, 252), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
 
     const int fillInset = 4;
     QPolygonF inner;
@@ -127,9 +139,9 @@ void Mux::generatePixmap()
           << QPointF(22 + fillInset, bodyBottom - fillInset)
           << QPointF(42 - fillInset, bodyBottom - rightInset - fillInset + 2)
           << QPointF(42 - fillInset, bodyTop + rightInset + fillInset - 2);
-    painter.drawPolygon(inner);
+    painter->drawPolygon(inner);
 
-    m_appearance.setRenderPixmap(tempPixmap);
+    painter->restore();
 }
 
 void Mux::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -145,7 +157,8 @@ void Mux::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidg
         painter->restore();
     }
 
-    painter->drawPixmap(boundingRect().topLeft(), pixmap());
+    // Draw the body as vectors (crisp at any zoom) rather than blitting a fixed-resolution pixmap.
+    drawBody(painter);
 }
 
 void Mux::updateLogic()

@@ -46,6 +46,10 @@ public:
 private:
     void generatePixmap();
 
+    /// Draws the trapezoid body straight onto \a painter as vectors, so it stays crisp at any
+    /// zoom instead of blitting a fixed-resolution pixmap.
+    void drawBody(QPainter *painter);
+
     // Prevent direct input size setting - inputs are derived from output size
     void setInputSize(const int size) override;
 
