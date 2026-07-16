@@ -32,6 +32,9 @@ private slots:
 
     // File format
     void testFileFormatHeader();
+    void testCompressedPayloadRoundTrip();
+    void testLegacyUncompressedPayloadLoads();
+    void testImplausibleCompressedSizeRejected();
     void testDolphinFilenamePreserved();
     void testSceneRectPreserved();
 

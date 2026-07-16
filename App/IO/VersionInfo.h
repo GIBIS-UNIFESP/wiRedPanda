@@ -82,4 +82,8 @@ inline bool hasConnectionQMap(const QVersionNumber &v) { return v >= Versions::V
 /// Qt default at build time (changed from UTF-16 to UTF-8 in Qt 6.6).
 inline bool hasVersionedBlobRegistry(const QVersionNumber &v) { return v >= Versions::V_5_1; }
 
+/// Rev100: the circuit payload (metadata + elements + connections, everything
+/// after the header) is zlib-compressed via Serialization::writePayload()/readPayload().
+inline bool hasCompressedPayload(const QVersionNumber &v) { return v >= Versions::Rev100; }
+
 } // namespace VersionInfo

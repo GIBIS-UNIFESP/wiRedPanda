@@ -303,16 +303,20 @@ WorkSpace::SaveOutcome WorkSpace::save(const QString &fileName)
             }
         }
 
-        // Serialize as a full .panda file (header + metadata + elements)
+        // Serialize as a full .panda file (header + compressed metadata + elements)
+        QMap<QString, QVariant> metadata;
+        Serialization::serializeBlobRegistry(m_scene.icRegistry()->blobMap(), metadata);
+
+        QByteArray payload;
+        QDataStream payloadStream(&payload, QIODevice::WriteOnly);
+        payloadStream.setVersion(QDataStream::Qt_5_12);
+        payloadStream << metadata;
+        Serialization::serialize(m_scene.items(), payloadStream, {.purpose = SerializationPurpose::PortableFile});
+
         QByteArray blob;
         QDataStream stream(&blob, QIODevice::WriteOnly);
         Serialization::writePandaHeader(stream);
-
-        QMap<QString, QVariant> metadata;
-        Serialization::serializeBlobRegistry(m_scene.icRegistry()->blobMap(), metadata);
-        stream << metadata;
-
-        Serialization::serialize(m_scene.items(), stream, {.purpose = SerializationPurpose::PortableFile});
+        Serialization::writePayload(stream, payload);
 
         m_scene.undoStack()->setClean();
         emit icBlobSaved(m_parentICElementId, blob);
@@ -447,9 +451,17 @@ void WorkSpace::save(QDataStream &stream)
         metadata["fileBackedICs"] = fileBackedICs;
     }
 
-    stream << metadata;
+    // Metadata + elements + connections are serialized into an in-memory buffer
+    // first, then compressed as one unit into the real stream -- see
+    // Serialization::writePayload().
+    QByteArray payload;
+    QDataStream payloadStream(&payload, QIODevice::WriteOnly);
+    payloadStream.setVersion(QDataStream::Qt_5_12);
 
-    Serialization::serialize(m_scene.items(), stream, {.purpose = SerializationPurpose::PortableFile});
+    payloadStream << metadata;
+    Serialization::serialize(m_scene.items(), payloadStream, {.purpose = SerializationPurpose::PortableFile});
+
+    Serialization::writePayload(stream, payload);
 }
 
 void WorkSpace::load(const QString &fileName)
@@ -532,17 +544,25 @@ void WorkSpace::load(QDataStream &stream, const QVersionNumber &version, const Q
         }
     }
 
+    // Everything past the header may be zlib-compressed (Rev100+); buffer and
+    // decompress it once, then read the rest of the file from that in-memory
+    // stream instead of the live device (which readPayload() has already fully
+    // consumed to do the decompression).
+    QByteArray payload = Serialization::readPayload(stream, version);
+    QDataStream payloadStream(&payload, QIODevice::ReadOnly);
+    payloadStream.setVersion(QDataStream::Qt_5_12);
+
     // V4.6+ stores all file-level fields in the metadata map.
     // Older versions wrote dolphinFileName and sceneRect positionally before the map.
     QMap<QString, QVariant> metadata;
     if (VersionInfo::hasUnifiedMetadata(version)) {
-        metadata = Serialization::readBoundedMetadata(stream);
+        metadata = Serialization::readBoundedMetadata(payloadStream);
         m_dolphinFileName = metadata.value("dolphinFileName").toString();
     } else {
-        m_dolphinFileName = Serialization::loadDolphinFileName(stream, version);
-        Serialization::loadRect(stream, version);
+        m_dolphinFileName = Serialization::loadDolphinFileName(payloadStream, version);
+        Serialization::loadRect(payloadStream, version);
         if (VersionInfo::hasMetadata(version)) {
-            metadata = Serialization::readBoundedMetadata(stream);
+            metadata = Serialization::readBoundedMetadata(payloadStream);
         }
     }
     qCDebug(zero) << "Dolphin name: " << m_dolphinFileName;
@@ -560,7 +580,7 @@ void WorkSpace::load(QDataStream &stream, const QVersionNumber &version, const Q
     }
     auto context = m_scene.deserializationContext(portMap, version, SerializationPurpose::PortableFile);
     context.contextDir = contextDir;
-    const auto items = Serialization::deserialize(stream, context);
+    const auto items = Serialization::deserialize(payloadStream, context);
     qCDebug(zero) << "Finished loading items.";
 
     for (auto *item : items) {
@@ -742,7 +762,7 @@ void WorkSpace::loadFromBlob(const QByteArray &blob, WorkSpace *parent, int icEl
     // Blob is a full .panda file
     QByteArray blobData(blob);
     QDataStream stream(&blobData, QIODevice::ReadOnly);
-    const auto preamble = Serialization::readPreamble(stream);
+    auto preamble = Serialization::readPreamble(stream);
 
     const auto blobRegistry = Serialization::deserializeBlobRegistry(preamble.metadata, preamble.version);
     for (auto it = blobRegistry.cbegin(); it != blobRegistry.cend(); ++it) {
@@ -752,7 +772,9 @@ void WorkSpace::loadFromBlob(const QByteArray &blob, WorkSpace *parent, int icEl
     QHash<quint64, Port *> portMap;
     auto context = m_scene.deserializationContext(portMap, preamble.version, SerializationPurpose::PortableFile);
     context.contextDir = parentContextDir;
-    const auto items = Serialization::deserialize(stream, context);
+    QDataStream elementsStream(&preamble.remainingPayload, QIODevice::ReadOnly);
+    elementsStream.setVersion(QDataStream::Qt_5_12);
+    const auto items = Serialization::deserialize(elementsStream, context);
 
     for (auto *item : items) {
         m_scene.addItem(item);

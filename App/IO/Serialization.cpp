@@ -321,6 +321,51 @@ void Serialization::writePandaHeader(QDataStream &stream)
     stream << FormatRev::current;
 }
 
+void Serialization::writePayload(QDataStream &stream, const QByteArray &payload)
+{
+    const QByteArray compressed = qCompress(payload);
+    stream.writeRawData(compressed.constData(), static_cast<int>(compressed.size()));
+}
+
+QByteArray Serialization::readPayload(QDataStream &stream, const QVersionNumber &version)
+{
+    const QByteArray raw = stream.device()->readAll();
+
+    if (!VersionInfo::hasCompressedPayload(version)) {
+        return raw;
+    }
+
+    // qCompress()'s wire format is a 4-byte big-endian "uncompressed size" header
+    // followed by the deflate stream; qUncompress() allocates that many bytes
+    // unconditionally, so a crafted file can claim an implausible size and OOM the
+    // process before any real decompression happens. Peek and bound it first,
+    // mirroring this file's peekU32()-then-validate idiom (see readBoundedString()
+    // and friends above) rather than trusting qUncompress() to fail cheaply.
+    if (raw.size() < 4) {
+        throw PANDACEPTION_WITH_CONTEXT("Serialization",
+                                        "Compressed payload too short (%1 bytes) to contain a size header",
+                                        QString::number(raw.size()));
+    }
+
+    const quint32 expectedSize = qFromBigEndian<quint32>(reinterpret_cast<const uchar *>(raw.constData()));
+    constexpr quint32 kMaxUncompressedPayload = 1u << 30; // 1 GiB -- far above any real circuit
+    constexpr quint32 kMaxExpansionRatio = 1032; // zlib's documented worst-case deflate expansion
+    const quint32 compressedBytes = static_cast<quint32>(raw.size() - 4);
+    if (expectedSize > kMaxUncompressedPayload ||
+        (compressedBytes > 0 && expectedSize / compressedBytes > kMaxExpansionRatio)) {
+        throw PANDACEPTION_WITH_CONTEXT("Serialization",
+                                        "Implausible decompressed payload size %1 -- stream may be corrupt",
+                                        QString::number(expectedSize));
+    }
+
+    const QByteArray decompressed = qUncompress(raw);
+    if (decompressed.isNull() && expectedSize != 0) {
+        throw PANDACEPTION_WITH_CONTEXT("Serialization",
+                                        "Failed to decompress circuit payload -- stream may be corrupt");
+    }
+    return decompressed;
+}
+
 QVersionNumber Serialization::readPandaHeader(QDataStream &stream)
 {
     stream.setVersion(QDataStream::Qt_5_12);
@@ -671,19 +716,32 @@ Serialization::Preamble Serialization::readPreamble(QDataStream &stream)
     Preamble result;
     result.version = readPandaHeader(stream);
 
+    // Everything after the header (dolphin/rect/metadata, and whatever the caller
+    // reads afterward) may be zlib-compressed (Rev100+); buffer and decompress it
+    // once here rather than reading further from the live device, which readPayload()
+    // has already fully consumed to do that decompression.
+    QByteArray payload = readPayload(stream, result.version);
+    QDataStream payloadStream(&payload, QIODevice::ReadOnly);
+    payloadStream.setVersion(QDataStream::Qt_5_12);
+
     if (VersionInfo::hasUnifiedMetadata(result.version)) {
-        result.metadata = readBoundedMetadata(stream);
+        result.metadata = readBoundedMetadata(payloadStream);
     } else {
-        loadDolphinFileName(stream, result.version);
-        loadRect(stream, result.version);
+        loadDolphinFileName(payloadStream, result.version);
+        loadRect(payloadStream, result.version);
         if (VersionInfo::hasMetadata(result.version)) {
-            result.metadata = readBoundedMetadata(stream);
+            result.metadata = readBoundedMetadata(payloadStream);
         }
     }
 
-    if (stream.status() != QDataStream::Ok) {
-        throw PANDACEPTION("Stream error reading preamble: status %1", static_cast<int>(stream.status()));
+    if (payloadStream.status() != QDataStream::Ok) {
+        throw PANDACEPTION("Stream error reading preamble: status %1", static_cast<int>(payloadStream.status()));
     }
+
+    // Leftover bytes (elements + connections) for the caller to continue parsing
+    // from a fresh stream of its own -- the live device passed to this function
+    // has nothing left to offer past this point.
+    result.remainingPayload = payload.mid(static_cast<int>(payloadStream.device()->pos()));
 
     return result;
 }

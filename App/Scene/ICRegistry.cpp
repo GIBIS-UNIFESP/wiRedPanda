@@ -411,16 +411,29 @@ void ICRegistry::makeBlobSelfContained(const QString &name, QSet<QString> &visit
         return;
     }
 
-    // Re-serialize the blob with updated metadata
-    const QByteArray elements = readStream.device()->readAll();
+    // Re-serialize the blob with updated metadata, preserving the elements/connections
+    // tail byte-for-byte. Read that tail from the already-decompressed
+    // preamble.remainingPayload, not readStream's device -- readPreamble() fully
+    // consumed the live device to do that decompression, so the device has
+    // nothing left to offer here.
+    const QByteArray elements = preamble.remainingPayload;
 
     Serialization::serializeBlobRegistry(embeddedICs, metadata);
+
+    // Metadata and the elements tail must be compressed together as one payload
+    // (see Serialization::writePayload()), not written as two independent raw
+    // writes -- readPreamble() on the other end decompresses the whole thing in
+    // one shot.
+    QByteArray payload;
+    QDataStream payloadStream(&payload, QIODevice::WriteOnly);
+    payloadStream.setVersion(QDataStream::Qt_5_12);
+    payloadStream << metadata;
+    payloadStream.writeRawData(elements.constData(), static_cast<int>(elements.size()));
 
     QByteArray newBlob;
     QDataStream writeStream(&newBlob, QIODevice::WriteOnly);
     Serialization::writePandaHeader(writeStream);
-    writeStream << metadata;
-    writeStream.writeRawData(elements.constData(), static_cast<int>(elements.size()));
+    Serialization::writePayload(writeStream, payload);
 
     blobs[name] = newBlob;
 }
@@ -442,16 +455,29 @@ void ICRegistry::renameBlobReference(QByteArray &blobData, const QString &oldNam
     // Rename the key in the embedded IC map
     embeddedICs[newName] = embeddedICs.take(oldName);
 
-    // Re-serialize the blob with updated metadata
-    const QByteArray elements = readStream.device()->readAll();
+    // Re-serialize the blob with updated metadata, preserving the elements/connections
+    // tail byte-for-byte. Read that tail from the already-decompressed
+    // preamble.remainingPayload, not readStream's device -- readPreamble() fully
+    // consumed the live device to do that decompression, so the device has
+    // nothing left to offer here.
+    const QByteArray elements = preamble.remainingPayload;
     auto metadata = preamble.metadata;
     Serialization::serializeBlobRegistry(embeddedICs, metadata);
+
+    // Metadata and the elements tail must be compressed together as one payload
+    // (see Serialization::writePayload()), not written as two independent raw
+    // writes -- readPreamble() on the other end decompresses the whole thing in
+    // one shot.
+    QByteArray payload;
+    QDataStream payloadStream(&payload, QIODevice::WriteOnly);
+    payloadStream.setVersion(QDataStream::Qt_5_12);
+    payloadStream << metadata;
+    payloadStream.writeRawData(elements.constData(), static_cast<int>(elements.size()));
 
     QByteArray newBlob;
     QDataStream writeStream(&newBlob, QIODevice::WriteOnly);
     Serialization::writePandaHeader(writeStream);
-    writeStream << metadata;
-    writeStream.writeRawData(elements.constData(), static_cast<int>(elements.size()));
+    Serialization::writePayload(writeStream, payload);
 
     blobData = newBlob;
 }
