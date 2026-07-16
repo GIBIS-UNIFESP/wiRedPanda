@@ -172,7 +172,11 @@ void Led::save(QDataStream &stream, SerializationOptions options) const
     GraphicElement::save(stream, options);
 
     QMap<QString, QVariant> map;
-    map.insert("color", color());
+    // PortableFile streams omit the default; fresh-loaded elements start there
+    // anyway. Snapshots write unconditionally (reloaded into live elements).
+    if (options.purpose != SerializationPurpose::PortableFile || color() != kDefaultColor) {
+        map.insert("color", color());
+    }
 
     stream << map;
 }

@@ -144,9 +144,17 @@ void Buzzer::save(QDataStream &stream, SerializationOptions options) const
 {
     GraphicElement::save(stream, options);
 
+    const bool slim = (options.purpose == SerializationPurpose::PortableFile);
+
     QMap<QString, QVariant> map;
-    map.insert("frequency", m_frequency);
-    map.insert("volume", static_cast<double>(m_volume));
+    // PortableFile streams omit defaults; fresh-loaded elements start there
+    // anyway. Snapshots write unconditionally (reloaded into live elements).
+    if (!slim || m_frequency != kDefaultFrequency) {
+        map.insert("frequency", m_frequency);
+    }
+    if (!slim || m_volume != kDefaultVolume) {
+        map.insert("volume", static_cast<double>(m_volume));
+    }
 
     stream << map;
 }

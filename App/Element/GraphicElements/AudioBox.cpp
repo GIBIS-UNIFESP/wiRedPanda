@@ -146,11 +146,20 @@ void AudioBox::save(QDataStream &stream, SerializationOptions options) const
 {
     GraphicElement::save(stream, options);
 
+    const bool slim = (options.purpose == SerializationPurpose::PortableFile);
     const QString audioPath = ExternalFilePath::forWriting(m_audio.filePath(), options.purpose);
 
     QMap<QString, QVariant> map;
-    map.insert("audiobox", audioPath);
-    map.insert("volume", static_cast<double>(m_volume));
+    // PortableFile streams omit resource paths outright — forReading() discards
+    // them on load anyway (the default source is the bundled kDefaultAudioPath
+    // resource, which a fresh element already has), matching the appearance
+    // rule in GraphicElementSerializer::save(). Snapshots write unconditionally.
+    if (!slim || !audioPath.startsWith(":/")) {
+        map.insert("audiobox", audioPath);
+    }
+    if (!slim || m_volume != kDefaultVolume) {
+        map.insert("volume", static_cast<double>(m_volume));
+    }
 
     stream << map;
 }

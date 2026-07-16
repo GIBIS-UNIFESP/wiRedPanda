@@ -534,9 +534,12 @@ void TestWorkspace::testAutosaveFileExtensionCorrect()
             QVERIFY2(QFile::exists(autosaveFile),
                     qPrintable(QString("Autosave file must exist: %1").arg(autosaveFile)));
 
-            // Verify file has content
+            // Verify file has content beyond the bare header (magic + version =
+            // 16 bytes). The exact size is format-dependent — a one-element
+            // circuit in the slim compressed format is only ~66 bytes — and the
+            // loadability round-trip below is the real content check.
             QFileInfo info(autosaveFile);
-            QVERIFY2(info.size() > 100,
+            QVERIFY2(info.size() > 16,
                     qPrintable(QString("Autosave file must have content (%1 bytes): %2")
                               .arg(info.size()).arg(autosaveFile)));
 

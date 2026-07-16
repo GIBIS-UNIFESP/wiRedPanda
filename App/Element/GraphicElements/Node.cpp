@@ -178,7 +178,12 @@ void Node::save(QDataStream &stream, SerializationOptions options) const
     GraphicElement::save(stream, options);
 
     QMap<QString, QVariant> map;
-    map.insert("wirelessMode", static_cast<int>(m_wirelessMode));
+    // PortableFile streams omit the default; the loader's
+    // map.value("wirelessMode", 0) already resolves a missing key to None.
+    // Snapshots write unconditionally (reloaded into live elements).
+    if (options.purpose != SerializationPurpose::PortableFile || m_wirelessMode != WirelessMode::None) {
+        map.insert("wirelessMode", static_cast<int>(m_wirelessMode));
+    }
     stream << map;
 }
 
