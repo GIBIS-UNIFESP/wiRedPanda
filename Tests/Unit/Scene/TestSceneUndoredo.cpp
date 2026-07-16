@@ -373,6 +373,62 @@ void TestSceneUndoredo::testMidDragDeleteDoesNotCrash()
     QCOMPARE(scene.undoStack()->count(), 1);
 }
 
+void TestSceneUndoredo::testResizeSceneFollowsLiveDragBeyondCachedBounds()
+{
+    // Scene::cachedItemsBoundingRect() must bypass its cache during an active drag:
+    // resizeScene()'s expand-only branch needs the dragged element's live position to
+    // grow the scene rect and follow it, not a stale value from before the drag started.
+    Scene scene;
+
+    auto *elm = ElementFactory::buildElement(ElementType::And);
+    elm->setPos(0, 0);
+    scene.addItem(elm);
+    elm->setSelected(true);
+
+    // Warm the cache at the element's initial (small) position.
+    scene.resizeScene();
+    QVERIFY(!scene.sceneRect().contains(QPointF(5000, 5000)));
+
+    // Begin the drag.
+    const QPointF pressPos = elm->scenePos();
+    QGraphicsSceneMouseEvent pressEvent(QEvent::GraphicsSceneMousePress);
+    pressEvent.setScenePos(pressPos);
+    pressEvent.setButton(Qt::LeftButton);
+    pressEvent.setButtons(Qt::LeftButton);
+    QCoreApplication::sendEvent(&scene, &pressEvent);
+
+    // Drag it far beyond the cached bounds. resizeScene() runs before the base-class
+    // QGraphicsScene::mouseMoveEvent() actually moves the item for that same event (see
+    // SceneInteraction::mouseMove(), which calls resizeScene() and only then returns false
+    // so Scene::mouseMoveEvent() falls through to the base class) — so it's always one event
+    // behind, imperceptible during a real drag's stream of move events but requiring a second,
+    // zero-delta move here to let resizeScene() observe the position the first move landed on.
+    const QPointF farPos(5000, 5000);
+    QGraphicsSceneMouseEvent moveEvent(QEvent::GraphicsSceneMouseMove);
+    moveEvent.setScenePos(farPos);
+    moveEvent.setLastScenePos(pressPos);
+    moveEvent.setButton(Qt::LeftButton);
+    moveEvent.setButtons(Qt::LeftButton);
+    QCoreApplication::sendEvent(&scene, &moveEvent);
+
+    QGraphicsSceneMouseEvent settleMoveEvent(QEvent::GraphicsSceneMouseMove);
+    settleMoveEvent.setScenePos(farPos);
+    settleMoveEvent.setLastScenePos(farPos);
+    settleMoveEvent.setButton(Qt::LeftButton);
+    settleMoveEvent.setButtons(Qt::LeftButton);
+    QCoreApplication::sendEvent(&scene, &settleMoveEvent);
+
+    // resizeScene() must have grown to follow the live drag — with a stale cached
+    // bounds instead, the scene rect would still reflect the pre-drag position.
+    QVERIFY(scene.sceneRect().contains(elm->sceneBoundingRect()));
+
+    QGraphicsSceneMouseEvent releaseEvent(QEvent::GraphicsSceneMouseRelease);
+    releaseEvent.setScenePos(farPos);
+    releaseEvent.setButton(Qt::LeftButton);
+    releaseEvent.setButtons(Qt::NoButton);
+    QCoreApplication::sendEvent(&scene, &releaseEvent);
+}
+
 // ─── FlipCommand ──────────────────────────────────────────────────────────
 
 void TestSceneUndoredo::testFlipHorizontalUndoRedo()

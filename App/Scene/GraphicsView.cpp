@@ -12,6 +12,7 @@
 #include <QScrollBar>
 
 #include "App/Core/SentryHelpers.h"
+#include "App/Scene/Scene.h"
 
 namespace {
 // Zoom step ladder (factor 1.25 per step). The range is deliberately asymmetric: elements
@@ -216,6 +217,8 @@ void GraphicsView::zoomToFit()
         for (auto *item : selected) {
             target |= item->sceneBoundingRect();
         }
+    } else if (auto *scene_ = qobject_cast<Scene *>(scene())) {
+        target = scene_->cachedItemsBoundingRect();
     } else {
         target = scene()->itemsBoundingRect();
     }
