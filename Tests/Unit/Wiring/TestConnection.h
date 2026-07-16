@@ -16,4 +16,5 @@ private slots:
     void testConnectionHoverEffect();
     void testConnectionSelection();
     void testConnectionDestruction();
+    void testConnectionStatusPenTracksColorAndWidth();
 };

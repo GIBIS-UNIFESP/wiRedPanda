@@ -6,6 +6,7 @@
 #include <memory>
 
 #include "App/Core/Application.h"
+#include "App/Core/ThemeManager.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Wiring/Connection.h"
@@ -82,4 +83,32 @@ void TestConnection::testConnectionDestruction()
 
     QVERIFY(outPort->connections().isEmpty());
     QVERIFY(inPort->connections().isEmpty());
+}
+
+void TestConnection::testConnectionStatusPenTracksColorAndWidth()
+{
+    // applyStatusPen() bypasses the item's own setPen() (and the BSP-tree re-index it
+    // triggers) whenever the pen width doesn't change, tracking colour via statusPen()
+    // instead -- this must still reflect the correct colour and width for every status,
+    // including the Error <-> non-Error transitions that exercise the real-setPen() branch.
+    const auto &theme = ThemeManager::attributes();
+    Connection connection;
+
+    connection.setStatus(Status::Active);
+    QCOMPARE(connection.statusPen().color(), theme.m_connectionActive);
+    QCOMPARE(connection.statusPen().widthF(), 3.0);
+
+    connection.setStatus(Status::Inactive);
+    QCOMPARE(connection.statusPen().color(), theme.m_connectionInactive);
+    QCOMPARE(connection.statusPen().widthF(), 3.0);
+
+    // Inactive -> Error: width grows 3 -> 5, the real setPen() must still run.
+    connection.setStatus(Status::Error);
+    QCOMPARE(connection.statusPen().color(), theme.m_connectionError);
+    QCOMPARE(connection.statusPen().widthF(), 5.0);
+
+    // Error -> Unknown: width shrinks back 5 -> 3, exercising the same branch in reverse.
+    connection.setStatus(Status::Unknown);
+    QCOMPARE(connection.statusPen().color(), theme.m_connectionUnknown);
+    QCOMPARE(connection.statusPen().widthF(), 3.0);
 }

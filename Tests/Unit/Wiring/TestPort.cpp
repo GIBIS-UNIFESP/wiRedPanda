@@ -5,6 +5,7 @@
 
 #include <algorithm>
 
+#include "App/Core/ThemeManager.h"
 #include "App/Element/GraphicElements/Display7.h"
 #include "App/Wiring/Port.h"
 #include "Tests/Common/TestUtils.h"
@@ -41,4 +42,26 @@ void TestPort::testSetInputsReindexesPorts()
     for (int i = 0; i < display.inputSize(); ++i) {
         QCOMPARE(display.inputPort(i)->index(), i);
     }
+}
+
+void TestPort::testPortCurrentPenTracksStatusColor()
+{
+    // updateTheme() bypasses the item's own setPen() (and the BSP-tree re-index it
+    // triggers) for every status, tracking colour via currentPen() instead -- this must
+    // still reflect the correct colour for every status. OutputPort is always valid
+    // regardless of connection state, so its status can be driven directly.
+    const auto &theme = ThemeManager::attributes();
+    OutputPort port;
+
+    port.setStatus(Status::Active);
+    QCOMPARE(port.currentPen().color(), theme.m_portActivePen);
+
+    port.setStatus(Status::Inactive);
+    QCOMPARE(port.currentPen().color(), theme.m_portInactivePen);
+
+    port.setStatus(Status::Error);
+    QCOMPARE(port.currentPen().color(), theme.m_portErrorPen);
+
+    port.setStatus(Status::Unknown);
+    QCOMPARE(port.currentPen().color(), theme.m_portUnknownPen);
 }

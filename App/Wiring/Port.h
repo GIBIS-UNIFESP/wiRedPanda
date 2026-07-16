@@ -16,6 +16,7 @@
 
 #include <QBrush>
 #include <QGraphicsPathItem>
+#include <QPen>
 
 #include "App/Core/Enums.h"
 
@@ -48,6 +49,10 @@ public:
     /// \reimp Pads the default pen-exact bound by a small margin so DeviceCoordinateCache
     /// has room to antialias the stroke edge instead of clipping it (visible at high zoom).
     QRectF boundingRect() const override;
+
+    /// \reimp Draws with m_currentPen instead of the item's own pen() -- see updateTheme()
+    /// for why -- otherwise identical to the default QGraphicsPathItem paint.
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
     // --- Lifecycle ---
 
@@ -138,6 +143,9 @@ public:
      */
     void setCurrentBrush(const QBrush &currentBrush);
 
+    /// Returns the pen paint() draws the port outline with for its current status.
+    QPen currentPen() const { return m_currentPen; }
+
     /**
      * \brief Sets the status applied when the port has no connection.
      * \param defaultStatus Default status value.
@@ -194,6 +202,11 @@ protected:
 
     GraphicElement *m_graphicElement = nullptr;
     QBrush m_currentBrush;
+    /// Pen paint() actually draws the outline with, kept separate from the item's own
+    /// QGraphicsPathItem pen -- see updateTheme() for why (avoids an unneeded BSP-tree
+    /// re-index on every status colour change; all four status pens share the same width,
+    /// so unlike Connection this never needs to fall back to the item's real pen).
+    QPen m_currentPen;
     QList<Connection *> m_connections;
     QString m_name;
     Status m_defaultStatus = Status::Unknown;

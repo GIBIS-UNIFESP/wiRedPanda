@@ -15,6 +15,7 @@
 #pragma once
 
 #include <QGraphicsPathItem>
+#include <QPen>
 
 #include "App/Core/Enums.h"
 #include "App/Core/ItemWithId.h"
@@ -73,6 +74,8 @@ public:
     bool highLight();
     /// Enables or disables connection highlighting.
     void setHighLight(const bool highLight);
+    /// Returns the pen paint() draws the wire with for its current status.
+    QPen statusPen() const { return m_statusPen; }
 
     // --- Geometric properties ---
 
@@ -137,4 +140,9 @@ private:
 
     Status m_status = Status::Unknown;
     bool m_highLight = false;
+
+    /// Pen paint() actually draws with, kept separate from the item's own QGraphicsPathItem
+    /// pen -- see applyStatusPen() for why (avoids an unneeded BSP-tree re-index on every
+    /// status colour change).
+    QPen m_statusPen;
 };
