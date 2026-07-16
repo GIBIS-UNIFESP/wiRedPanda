@@ -51,6 +51,7 @@
 #include "App/Exercise/ExerciseEngine.h"
 #include "App/Exercise/ExerciseOverlay.h"
 #include "App/IO/RecentFiles.h"
+#include "App/Scene/Commands.h"
 #include "App/Scene/GraphicsView.h"
 #include "App/Scene/ICRegistry.h"
 #include "App/Scene/Workspace.h"
@@ -1572,8 +1573,9 @@ void MainWindow::clickTarget(const QString &id)
         scene->clearSelection();
         auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
         sw->setPos(0, 0);
-        scene->addItem(sw);
-        sw->setSelected(true);
+        // AddItemsCommand registers the element with the scene's Simulation
+        // (setCircuitUpdateRequired() in redo()) and selects it for us.
+        scene->receiveCommand(new AddItemsCommand({sw}, scene));
     }
     else if (id == "setupWaveformDemo") {
         if (!currentTab()) {
@@ -1589,24 +1591,24 @@ void MainWindow::clickTarget(const QString &id)
         clock2->setPos(-160,  60);
         gate->setPos(0, 0);
         led->setPos(160, 0);
-        scene->addItem(clock1);
-        scene->addItem(clock2);
-        scene->addItem(gate);
-        scene->addItem(led);
+
         auto *conn1 = new Connection();
         conn1->setStartPort(clock1->outputPort(0));
         conn1->setEndPort(gate->inputPort(0));
-        scene->addItem(conn1);
-        conn1->updatePath();
         auto *conn2 = new Connection();
         conn2->setStartPort(clock2->outputPort(0));
         conn2->setEndPort(gate->inputPort(1));
-        scene->addItem(conn2);
-        conn2->updatePath();
         auto *conn3 = new Connection();
         conn3->setStartPort(gate->outputPort(0));
         conn3->setEndPort(led->inputPort(0));
-        scene->addItem(conn3);
+
+        // AddItemsCommand auto-discovers conn1..conn3 via port traversal (loadList())
+        // and registers all 7 items with the scene's Simulation, fixing the
+        // frozen-clock bug that raw scene->addItem() caused.
+        scene->receiveCommand(new AddItemsCommand({clock1, clock2, gate, led}, scene));
+
+        conn1->updatePath();
+        conn2->updatePath();
         conn3->updatePath();
     }
 }
