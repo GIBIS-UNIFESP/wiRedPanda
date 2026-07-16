@@ -94,29 +94,59 @@ void GraphicElementSerializer::save(const GraphicElement &element, QDataStream &
 {
     qCDebug(four) << "Saving element. Type: " << element.objectName();
 
+    // PortableFile streams elide everything the loader either derives or
+    // reconstructs from constructor defaults (fresh elements only — see
+    // loadNewFormat's contains() guards). InMemorySnapshot streams write every
+    // field unconditionally: they are loaded back into EXISTING live elements
+    // (undo, rollback), where a missing key would silently keep the current
+    // value instead of restoring the snapshotted one.
+    const bool slim = (options.purpose == SerializationPurpose::PortableFile);
+
     QMap<QString, QVariant> map;
     map.insert("pos", element.pos());
-    map.insert("rotation", element.rotation());
-    map.insert("label", element.label());
+    if (slim) {
+        // Ports carry no serialId in slim streams; the loader re-derives them
+        // from this id + each port's list position (see Port::makeSerialId()).
+        map.insert("id", element.id());
+    }
+    if (!slim || element.rotation() != 0.0) {
+        map.insert("rotation", element.rotation());
+    }
+    if (!slim || !element.label().isEmpty()) {
+        map.insert("label", element.label());
+    }
     // min/max port sizes are class metadata, not per-instance state.
     // No longer written; old files that contain these keys are harmlessly
     // ignored on load (the QMap is read as a whole, unused keys are skipped).
-    map.insert("trigger", element.trigger());
+    if (!slim || !element.trigger().isEmpty()) {
+        map.insert("trigger", element.trigger());
+    }
     if (element.isFlippedX()) { map.insert("flippedX", true); }
     if (element.isFlippedY()) { map.insert("flippedY", true); }
     stream << map;
 
     // -------------------------------------------
 
+    // Port entries. Slim streams write empty maps for non-IC ports: the
+    // serialId is derived from the element id above, and the loader ignores
+    // non-IC port names anyway (updatePortsProperties() recomputes them at the
+    // end of every load; no UI path renames ports). The list itself still
+    // carries the port COUNT, which the loader needs to restore port sizes.
+    const bool keepNames = !slim || (element.elementType() == ElementType::IC);
+
     QList<QMap<QString, QVariant>> inputMap;
 
     for (int i = 0; i < element.m_ports.inputs().size(); ++i) {
         auto *port = element.m_ports.inputs().at(i);
         QMap<QString, QVariant> tempMap;
-        // Note: We calculate but don't modify port state (no side effects in save())
-        quint64 serialId = Port::makeSerialId(static_cast<quint64>(element.id()), port->globalIndex());
-        tempMap.insert("serialId", serialId);
-        tempMap.insert("name", port->name());
+        if (!slim) {
+            // Note: We calculate but don't modify port state (no side effects in save())
+            quint64 serialId = Port::makeSerialId(static_cast<quint64>(element.id()), port->globalIndex());
+            tempMap.insert("serialId", serialId);
+        }
+        if (keepNames) {
+            tempMap.insert("name", port->name());
+        }
 
         inputMap << tempMap;
     }
@@ -130,10 +160,14 @@ void GraphicElementSerializer::save(const GraphicElement &element, QDataStream &
     for (int i = 0; i < element.m_ports.outputs().size(); ++i) {
         auto *port = element.m_ports.outputs().at(i);
         QMap<QString, QVariant> tempMap;
-        // Note: We calculate but don't modify port state (no side effects in save())
-        quint64 serialId = Port::makeSerialId(static_cast<quint64>(element.id()), port->globalIndex());
-        tempMap.insert("serialId", serialId);
-        tempMap.insert("name", port->name());
+        if (!slim) {
+            // Note: We calculate but don't modify port state (no side effects in save())
+            quint64 serialId = Port::makeSerialId(static_cast<quint64>(element.id()), port->globalIndex());
+            tempMap.insert("serialId", serialId);
+        }
+        if (keepNames) {
+            tempMap.insert("name", port->name());
+        }
 
         outputMap << tempMap;
     }
@@ -142,12 +176,30 @@ void GraphicElementSerializer::save(const GraphicElement &element, QDataStream &
 
     // -------------------------------------------
 
+    // Appearance entries. Slim streams write resource paths (":/...") as empty
+    // maps: forReading() discards them on every PortableFile load anyway (a
+    // stale saved resource identifier must not clobber the element's current
+    // compiled-in default). Kept per-slot — NOT gated on the element-level
+    // usingDefaultAppearance() flag, which is maintained manually by scattered
+    // callers and a stale-true value would silently drop a live custom skin;
+    // the resource-vs-not test matches forReading()'s semantics by construction.
+    // Empty maps (rather than omitted entries) preserve positional slot
+    // alignment when custom and default slots are mixed; the all-default case
+    // collapses to a list of empty maps, or the loop below to an empty list.
     QList<QMap<QString, QVariant>> appearancesMap;
+    bool anyCustom = false;
 
     for (const auto &appearance : element.m_appearance.alternativeAppearances()) {
         QMap<QString, QVariant> tempMap;
-        tempMap.insert("skinName", ExternalFilePath::forWriting(appearance, options.purpose));
+        if (!slim || !appearance.startsWith(":/")) {
+            tempMap.insert("skinName", ExternalFilePath::forWriting(appearance, options.purpose));
+            anyCustom = true;
+        }
         appearancesMap << tempMap;
+    }
+
+    if (slim && !anyCustom) {
+        appearancesMap.clear();
     }
 
     stream << appearancesMap;
@@ -239,6 +291,14 @@ void GraphicElementSerializer::loadNewFormat(GraphicElement &element, QDataStrea
     element.m_orientation.setFlippedXRaw(map.value("flippedX", false).toBool());
     element.m_orientation.setFlippedYRaw(map.value("flippedY", false).toBool());
 
+    // Slim PortableFile streams store one "id" per element instead of a
+    // serialId per port; the loops below re-derive each port's serialId from
+    // it, mirroring what Port::makeSerialId() produced at save time. Converted
+    // via toLongLong-then-cast so a negative id round-trips to the exact same
+    // quint64 the save side computed with static_cast<quint64>(element.id()).
+    const bool hasSavedId = map.contains("id");
+    const quint64 savedId = static_cast<quint64>(map.value("id").toLongLong());
+
     // -------------------------------------------
 
     QList<QMap<QString, QVariant>> inputMap = readPortList(stream, "input ports");
@@ -248,11 +308,15 @@ void GraphicElementSerializer::loadNewFormat(GraphicElement &element, QDataStrea
     for (const auto &input : std::as_const(inputMap)) {
         const QString name = input.value("name").toString();
 
-        // Support both new format (serialId) and old format (ptr)
+        // Three shapes, newest first: explicit serialId (V4.4 through fat
+        // Rev100, and every InMemorySnapshot), derivable element id (slim
+        // Rev100), legacy neither (V4.1.9-V4.3, which carry "ptr" keys).
         quint64 serialId;
         if (input.contains("serialId")) {
-            // New format: direct serial ID
             serialId = input.value("serialId").toULongLong();
+        } else if (hasSavedId) {
+            // Inputs' globalIndex() is their list position.
+            serialId = Port::makeSerialId(savedId, port);
         } else {
             // Old format fallback: use context.nextLocalId as element basis so that
             // serialIds remain unique even when element IDs are -1 (unassigned).
@@ -294,11 +358,14 @@ void GraphicElementSerializer::loadNewFormat(GraphicElement &element, QDataStrea
     for (const auto &output : std::as_const(outputMap)) {
         const QString name = output.value("name").toString();
 
-        // Support both new format (serialId) and old format (ptr)
+        // Same three shapes as the input loop above.
         quint64 serialId;
         if (output.contains("serialId")) {
-            // New format: direct serial ID
             serialId = output.value("serialId").toULongLong();
+        } else if (hasSavedId) {
+            // Outputs' globalIndex() is inputCount + list position; use the
+            // file's own input count so derivation matches what save computed.
+            serialId = Port::makeSerialId(savedId, static_cast<int>(inputMap.size()) + port);
         } else {
             // Old format fallback: use context.nextLocalId as element basis so that
             // serialIds remain unique even when element IDs are -1 (unassigned).
@@ -350,6 +417,15 @@ void GraphicElementSerializer::loadNewFormat(GraphicElement &element, QDataStrea
         }
 
         const QString name = entry.value("skinName").toString();
+
+        // Slim streams write default (resource) slots as empty maps to keep
+        // positional alignment; skip them — the slot keeps its compiled-in
+        // default. Must be checked BEFORE forReading(): for PortableFile it
+        // resolves "" to "" (not nullopt) and would clobber the slot.
+        if (name.isEmpty()) {
+            ++index;
+            continue;
+        }
 
         if (const auto resolved = ExternalFilePath::forReading(name, context.contextDir, context.purpose)) {
             element.m_appearance.setAlternativeAppearanceAt(index, *resolved);

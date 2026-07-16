@@ -78,7 +78,11 @@ void InputButton::save(QDataStream &stream, SerializationOptions options) const
     GraphicElement::save(stream, options);
 
     QMap<QString, QVariant> map;
-    map.insert("locked", m_locked);
+    // PortableFile streams omit the default; fresh-loaded elements start there
+    // anyway. Snapshots write unconditionally (reloaded into live elements).
+    if (options.purpose != SerializationPurpose::PortableFile || m_locked) {
+        map.insert("locked", m_locked);
+    }
 
     stream << map;
 }

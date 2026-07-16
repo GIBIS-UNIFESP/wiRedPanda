@@ -21,6 +21,10 @@ class Led : public GraphicElement
     Q_OBJECT
 
 public:
+    /// Default color name. Single source of truth: used by the member
+    /// initializer and serialization's default-elision check.
+    static constexpr const char *kDefaultColor = "White";
+
     // --- Lifecycle ---
 
     /// Constructs the element with optional \a parent.
@@ -65,6 +69,6 @@ private:
 
     // --- Members ---
 
-    QString m_color = "White";
+    QString m_color = kDefaultColor;
     int m_colorIndex = 0; /* white = 0, red = 2, green = 4, blue = 6, purple = 8 */
 };

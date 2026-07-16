@@ -40,6 +40,11 @@ inline const QVersionNumber V_5_1 = QVersionNumber(5, 1);
 /// after the header. See VersionInfo::hasCompressedPayload().
 inline const QVersionNumber Rev100 = QVersionNumber(100);
 
+/// Rev101: portable payloads elide defaults, derive port serialIds from element id
+/// + position, and omit non-IC port names and resource-path appearance slots. See
+/// VersionInfo::hasSlimPortablePayload().
+inline const QVersionNumber Rev101 = QVersionNumber(101);
+
 } // namespace Versions
 
 /// File-format revision, independent of the application release version.
@@ -55,7 +60,7 @@ inline const QVersionNumber Rev100 = QVersionNumber(100);
 /// readers and version comparisons keep working unmodified.
 namespace FormatRev {
 
-inline const QVersionNumber current = Versions::Rev100;
+inline const QVersionNumber current = Versions::Rev101;
 
 } // namespace FormatRev
 

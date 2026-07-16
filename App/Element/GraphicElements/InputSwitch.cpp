@@ -106,9 +106,17 @@ void InputSwitch::save(QDataStream &stream, SerializationOptions options) const
 {
     GraphicElement::save(stream, options);
 
+    const bool slim = (options.purpose == SerializationPurpose::PortableFile);
+
     QMap<QString, QVariant> map;
-    map.insert("isOn", m_isOn);
-    map.insert("locked", m_locked);
+    // PortableFile streams omit defaults; fresh-loaded elements start there
+    // anyway. Snapshots write unconditionally (reloaded into live elements).
+    if (!slim || m_isOn) {
+        map.insert("isOn", m_isOn);
+    }
+    if (!slim || m_locked) {
+        map.insert("locked", m_locked);
+    }
 
     stream << map;
 }

@@ -25,6 +25,10 @@ class Display16 : public GraphicElement
     Q_OBJECT
 
 public:
+    /// Default segment color name. Single source of truth: used by the member
+    /// initializer and serialization's default-elision check.
+    static constexpr const char *kDefaultColor = "Red";
+
     // --- Lifecycle ---
 
     /// Constructs the element with optional \a parent.
@@ -63,7 +67,7 @@ public:
 private:
     // --- Members ---
 
-    QString m_color = "Red";
+    QString m_color = kDefaultColor;
     QVector<QPixmap> bkg;
     QVector<std::shared_ptr<QSvgRenderer>> a1, a2, b, c, d1, d2, e, f, g1, g2, h, j, k, l, m, n, dp;
     int m_colorNumber = 1;

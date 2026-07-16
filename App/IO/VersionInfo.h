@@ -86,4 +86,11 @@ inline bool hasVersionedBlobRegistry(const QVersionNumber &v) { return v >= Vers
 /// after the header) is zlib-compressed via Serialization::writePayload()/readPayload().
 inline bool hasCompressedPayload(const QVersionNumber &v) { return v >= Versions::Rev100; }
 
+/// Rev101: portable payloads elide defaults, derive port serialIds, and omit non-IC
+/// port names and resource-path appearance slots. No load site branches on this today:
+/// the loader is deliberately content-tolerant (explicit serialIds take precedence and
+/// elided keys are contains()-guarded), so fat Rev100 and slim Rev101 files both load
+/// through the same code. The predicate names the format boundary for future gates.
+inline bool hasSlimPortablePayload(const QVersionNumber &v) { return v >= Versions::Rev101; }
+
 } // namespace VersionInfo

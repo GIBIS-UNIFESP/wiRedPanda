@@ -113,10 +113,20 @@ void Clock::save(QDataStream &stream, SerializationOptions options) const
 {
     GraphicElement::save(stream, options);
 
+    const bool slim = (options.purpose == SerializationPurpose::PortableFile);
+
     QMap<QString, QVariant> map;
-    map.insert("frequency", frequency());
-    map.insert("delay", delay());
-    map.insert("locked", m_locked);
+    // PortableFile streams omit defaults; fresh-loaded elements start there
+    // anyway. Snapshots write unconditionally (reloaded into live elements).
+    if (!slim || frequency() != kDefaultFrequency) {
+        map.insert("frequency", frequency());
+    }
+    if (!slim || delay() != 0.0) {
+        map.insert("delay", delay());
+    }
+    if (!slim || m_locked) {
+        map.insert("locked", m_locked);
+    }
 
     stream << map;
 }

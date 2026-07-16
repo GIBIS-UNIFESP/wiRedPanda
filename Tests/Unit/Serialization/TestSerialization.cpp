@@ -430,6 +430,117 @@ void TestSerialization::testImplausibleCompressedSizeRejected()
     QVERIFY2(threw, "Implausible decompressed payload size should be rejected");
 }
 
+void TestSerialization::testSlimFormatElidesDefaults()
+{
+    // A default-state element saved as a PortableFile must not carry its
+    // default rotation/label/trigger keys, nor per-port serialId/name entries
+    // -- the loader derives serialIds from the element-level "id" and
+    // reconstructs everything else from constructor defaults.
+    WorkSpace workspace;
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
+    QVERIFY2(andGate != nullptr, "Failed to create And element");
+    workspace.scene()->addItem(andGate);
+
+    QByteArray data = saveToMemory(workspace);
+
+    QDataStream stream(data);
+    const QVersionNumber version = Serialization::readPandaHeader(stream);
+    QByteArray payload = Serialization::readPayload(stream, version);
+    QDataStream payloadStream(&payload, QIODevice::ReadOnly);
+    payloadStream.setVersion(QDataStream::Qt_5_12);
+
+    Serialization::readBoundedMetadata(payloadStream); // file-level metadata
+
+    int typeTag = 0;
+    payloadStream >> typeTag;
+    QCOMPARE(typeTag, static_cast<int>(GraphicElement::Type));
+    ElementType elmType;
+    payloadStream >> elmType;
+    QCOMPARE(elmType, ElementType::And);
+
+    const auto baseMap = Serialization::readBoundedMetadata(payloadStream);
+    QVERIFY2(baseMap.contains("id"), "Slim format must write the element id");
+    QVERIFY2(baseMap.contains("pos"), "pos is always written");
+    QVERIFY2(!baseMap.contains("rotation"), "Default rotation must be elided");
+    QVERIFY2(!baseMap.contains("label"), "Empty label must be elided");
+    QVERIFY2(!baseMap.contains("trigger"), "Empty trigger must be elided");
+
+    // Port lists: count preserved, entries empty (no serialId, no name).
+    quint32 inputCount = 0;
+    payloadStream >> inputCount;
+    QCOMPARE(inputCount, 2u);
+    for (quint32 i = 0; i < inputCount; ++i) {
+        const auto entry = Serialization::readBoundedMetadata(payloadStream);
+        QVERIFY2(!entry.contains("serialId"), "Slim port entries must not carry serialIds");
+        QVERIFY2(!entry.contains("name"), "Slim non-IC port entries must not carry names");
+    }
+    quint32 outputCount = 0;
+    payloadStream >> outputCount;
+    QCOMPARE(outputCount, 1u);
+    for (quint32 i = 0; i < outputCount; ++i) {
+        const auto entry = Serialization::readBoundedMetadata(payloadStream);
+        QVERIFY2(!entry.contains("serialId"), "Slim port entries must not carry serialIds");
+        QVERIFY2(!entry.contains("name"), "Slim non-IC port entries must not carry names");
+    }
+
+    // All-default appearances collapse to an empty list.
+    quint32 appearanceCount = 0;
+    payloadStream >> appearanceCount;
+    QCOMPARE(appearanceCount, 0u);
+}
+
+void TestSerialization::testNonDefaultValuesRoundTrip()
+{
+    // Every elidable property set to a NON-default value must survive a
+    // PortableFile round-trip -- proving elision only ever drops defaults.
+    WorkSpace workspace1;
+    Scene *scene1 = workspace1.scene();
+
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
+    QVERIFY2(andGate != nullptr, "Failed to create And element");
+    andGate->setRotation(45.0);
+    andGate->setLabel("NonDefault");
+    scene1->addItem(andGate);
+
+    auto *led = ElementFactory::buildElement(ElementType::Led);
+    QVERIFY2(led != nullptr, "Failed to create Led element");
+    led->setColor("Green");
+    scene1->addItem(led);
+
+    auto *sw = qobject_cast<InputSwitch *>(ElementFactory::buildElement(ElementType::InputSwitch));
+    QVERIFY2(sw != nullptr, "Failed to create InputSwitch");
+    sw->setOn(true);
+    scene1->addItem(sw);
+
+    auto *clock = ElementFactory::buildElement(ElementType::Clock);
+    QVERIFY2(clock != nullptr, "Failed to create Clock");
+    clock->setFrequency(2.0);
+    scene1->addItem(clock);
+
+    QByteArray data = saveToMemory(workspace1);
+    WorkSpace workspace2;
+    loadFromMemory(workspace2, data);
+
+    GraphicElement *loadedAnd = nullptr, *loadedLed = nullptr, *loadedClock = nullptr;
+    InputSwitch *loadedSw = nullptr;
+    for (auto *elem : workspace2.scene()->elements()) {
+        switch (elem->elementType()) {
+        case ElementType::And:         loadedAnd = elem; break;
+        case ElementType::Led:         loadedLed = elem; break;
+        case ElementType::InputSwitch: loadedSw = qobject_cast<InputSwitch *>(elem); break;
+        case ElementType::Clock:       loadedClock = elem; break;
+        default: break;
+        }
+    }
+
+    QVERIFY(loadedAnd && loadedLed && loadedSw && loadedClock);
+    QCOMPARE(loadedAnd->rotation(), 45.0);
+    QCOMPARE(loadedAnd->label(), QString("NonDefault"));
+    QCOMPARE(loadedLed->color(), QString("Green"));
+    QVERIFY2(loadedSw->isOn(), "Non-default switch state must round-trip");
+    QCOMPARE(loadedClock->frequency(), 2.0);
+}
+
 void TestSerialization::testDolphinFilenamePreserved()
 {
     // Create workspace and set dolphin filename

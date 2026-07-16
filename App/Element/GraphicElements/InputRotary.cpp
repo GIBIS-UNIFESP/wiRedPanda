@@ -291,9 +291,17 @@ void InputRotary::save(QDataStream &stream, SerializationOptions options) const
 {
     GraphicElement::save(stream, options);
 
+    const bool slim = (options.purpose == SerializationPurpose::PortableFile);
+
     QMap<QString, QVariant> map;
-    map.insert("currentPort", m_currentPort);
-    map.insert("locked", m_locked);
+    // PortableFile streams omit defaults; fresh-loaded elements start there
+    // anyway. Snapshots write unconditionally (reloaded into live elements).
+    if (!slim || m_currentPort != 0) {
+        map.insert("currentPort", m_currentPort);
+    }
+    if (!slim || m_locked) {
+        map.insert("locked", m_locked);
+    }
 
     stream << map;
 }

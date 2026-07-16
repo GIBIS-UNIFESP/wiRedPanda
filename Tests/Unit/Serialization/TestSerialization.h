@@ -35,6 +35,8 @@ private slots:
     void testCompressedPayloadRoundTrip();
     void testLegacyUncompressedPayloadLoads();
     void testImplausibleCompressedSizeRejected();
+    void testSlimFormatElidesDefaults();
+    void testNonDefaultValuesRoundTrip();
     void testDolphinFilenamePreserved();
     void testSceneRectPreserved();
 
