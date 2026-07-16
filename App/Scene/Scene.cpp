@@ -36,6 +36,36 @@
 #include "App/Scene/GraphicsView.h"
 #include "App/Wiring/Connection.h"
 
+namespace {
+// Adaptive wire antialiasing constants (see the Scene.h accessor block for the design).
+// All are time-based or dimensionless, so their meaning is machine-independent.
+
+/// A paint pass slower than this hurts interactivity (~3 dropped frames at 60 Hz).
+constexpr qint64 kWireAaBudgetNs = 50'000'000;
+
+/// Consecutive over-budget passes required to degrade -- a one-off compositor stall or
+/// background-load spike never flips quality.
+constexpr int kWireAaDebouncePasses = 2;
+
+/// No paint pass for this long means the current gesture / repaint burst is over.
+constexpr qint64 kWireAaPassIdleMs = 300;
+
+/// No wire status flip for this long means the simulation-driven storm is over. Must span
+/// the quiet gap between clock edges (flips arrive in per-edge bursts): 3 s covers clocks
+/// down to ~0.17 Hz, far below typical educational frequencies.
+constexpr qint64 kWireAaFlipIdleMs = 3000;
+
+/// Conservative upper bound on how much more an antialiased pass costs than a plain one
+/// (measured ~5.5x on a wire-dominated scene). Deep headroom is budget / this, so a pass
+/// restored from deep headroom fits the budget by construction and can't re-trip the
+/// degrade -- the property that keeps a binary quality knob from oscillating.
+constexpr qint64 kWireAaWorstCaseRatio = 10;
+
+/// Consecutive deep-headroom passes required for the sustained-headroom restore
+/// (~170 ms of simulation-driven passes at 60 Hz).
+constexpr int kWireAaHeadroomRestorePasses = 10;
+} // namespace
+
 Scene::Scene(QObject *parent)
     : QGraphicsScene(parent)
     , m_simulation(this, this)
@@ -67,6 +97,13 @@ Scene::Scene(QObject *parent)
     connect(&ThemeManager::instance(), &ThemeManager::themeChanged, this, &Scene::updateTheme);
     // Emit autosave signal only after each undo-stack index change (not on every internal state update)
     connect(&m_undoStack,              &QUndoStack::indexChanged,   this, &Scene::checkUpdateRequest);
+
+    // Primary restore path for adaptive wire antialiasing: the timeout re-checks both
+    // activity timestamps and restores only once their windows have truly elapsed.
+    m_wireAaIdleTimer.setSingleShot(true);
+    connect(&m_wireAaIdleTimer, &QTimer::timeout, this, [this] { checkWireIdleRestore(); });
+    m_wireFlipTimer.start();
+    m_wirePassTimer.start();
 }
 
 void Scene::checkUpdateRequest()
@@ -462,6 +499,77 @@ QRectF Scene::cachedItemsBoundingRect() const
     }
 
     return m_cachedItemsBoundingRect;
+}
+
+bool Scene::wireAntialiasingEnabled() const
+{
+    return m_wireAntialiasing;
+}
+
+void Scene::recordWirePaintPass(const qint64 elapsedNs)
+{
+    m_wirePassTimer.restart();
+
+    if (m_wireAntialiasing) {
+        if (elapsedNs > kWireAaBudgetNs) {
+            if (++m_wireAaSlowPasses >= kWireAaDebouncePasses) {
+                m_wireAntialiasing = false;
+                m_wireAaSlowPasses = 0;
+                m_wireAaHeadroomPasses = 0;
+                m_wireAaIdleTimer.start(static_cast<int>(kWireAaPassIdleMs));
+            }
+        } else {
+            m_wireAaSlowPasses = 0;
+        }
+        return;
+    }
+
+    // Degraded: sustained deep headroom is the only in-storm way back to full quality;
+    // the idle path is handled by checkWireIdleRestore() re-arming itself.
+    if (elapsedNs < kWireAaBudgetNs / kWireAaWorstCaseRatio) {
+        if (++m_wireAaHeadroomPasses >= kWireAaHeadroomRestorePasses) {
+            restoreWireAntialiasing();
+        }
+    } else {
+        m_wireAaHeadroomPasses = 0;
+    }
+}
+
+void Scene::noteWireActivity()
+{
+    m_wireFlipTimer.restart();
+}
+
+void Scene::checkWireIdleRestore()
+{
+    const qint64 passRemainingMs = kWireAaPassIdleMs - m_wirePassTimer.elapsed();
+    const qint64 flipRemainingMs = kWireAaFlipIdleMs - m_wireFlipTimer.elapsed();
+    const qint64 remainingMs = qMax(passRemainingMs, flipRemainingMs);
+
+    if (remainingMs <= 0) {
+        restoreWireAntialiasing();
+        return;
+    }
+
+    // Still active: re-arm for the remainder of the longer window (deadline pattern --
+    // avoids restarting a timer on every one of the thousands of flips per second).
+    m_wireAaIdleTimer.start(static_cast<int>(remainingMs));
+}
+
+void Scene::restoreWireAntialiasing()
+{
+    m_wireAaIdleTimer.stop();
+    m_wireAaSlowPasses = 0;
+    m_wireAaHeadroomPasses = 0;
+
+    if (m_wireAntialiasing) {
+        return;
+    }
+
+    m_wireAntialiasing = true;
+    // Refinement repaint: without it the wires would stay visually jagged until the next
+    // naturally-occurring repaint, which on an idle view may never come.
+    update();
 }
 
 void Scene::resizeScene()

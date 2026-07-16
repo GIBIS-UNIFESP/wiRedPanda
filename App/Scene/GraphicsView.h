@@ -66,6 +66,10 @@ protected:
     // --- Event handlers ---
 
     /// \reimp
+    /// \reimp Times each pass and feeds Scene::recordWirePaintPass() so wire
+    /// antialiasing can adapt to the measured paint workload (see Scene).
+    void paintEvent(QPaintEvent *event) override;
+
     void keyPressEvent(QKeyEvent *event) override;
     /// \reimp
     void keyReleaseEvent(QKeyEvent *event) override;

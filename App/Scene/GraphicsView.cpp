@@ -7,6 +7,7 @@
 
 #include <QApplication>
 #include <QDebug>
+#include <QElapsedTimer>
 #include <QGraphicsItem>
 #include <QKeyEvent>
 #include <QScrollBar>
@@ -45,6 +46,20 @@ GraphicsView::GraphicsView(QWidget *parent)
     setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
 
     setCacheMode(QGraphicsView::CacheBackground);
+}
+
+void GraphicsView::paintEvent(QPaintEvent *event)
+{
+    // Time the pass so Scene can adapt wire antialiasing to the measured paint workload
+    // (see Scene's wire-antialiasing accessors).
+    QElapsedTimer timer;
+    timer.start();
+
+    QGraphicsView::paintEvent(event);
+
+    if (auto *scene_ = qobject_cast<Scene *>(scene())) {
+        scene_->recordWirePaintPass(timer.nsecsElapsed());
+    }
 }
 
 bool GraphicsView::canZoomIn() const
