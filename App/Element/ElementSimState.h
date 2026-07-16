@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <algorithm>
+
 #include <QVector>
 
 #include "App/Core/Enums.h"
@@ -98,7 +100,15 @@ public:
     /// from current outputs and routes subsequent setOutputValue() calls to it.
     void beginDeferredCommit()
     {
-        m_staged = m_outputs;
+        // Element-wise copy into persistent storage, deliberately NOT `m_staged =
+        // m_outputs`: assignment CoW-shares the two buffers, so every staged write and
+        // every commit write into m_outputs pays a detach (malloc + deep copy) -- per
+        // sequential element, per simulation tick, even when nothing changed. The copy
+        // keeps both buffers owned and the whole tick allocation-free. The resize is a
+        // no-op in steady state (initVectors() sizes m_staged); it only guards a
+        // mid-run port-count change.
+        m_staged.resize(m_outputs.size());
+        std::copy(m_outputs.cbegin(), m_outputs.cend(), m_staged.begin());
         m_deferCommit = true;
     }
 
