@@ -286,6 +286,7 @@ void Scene::setPropertyUpdateRequired()
     update();
 
     m_autosaveRequired = true;
+    m_itemsBoundingRectDirty = true;
 }
 
 const QVector<GraphicElement *> Scene::visibleElements() const
@@ -446,9 +447,26 @@ void Scene::receiveCommand(QUndoCommand *cmd)
     update();
 }
 
+QRectF Scene::cachedItemsBoundingRect() const
+{
+    // A live drag needs the item bounds to track the dragged element's currently-changing
+    // position (see resizeScene()'s isDraggingElement() branch) -- a cached value would
+    // stop the scene rect from expanding to follow it mid-drag.
+    if (m_interaction.isDraggingElement()) {
+        return itemsBoundingRect();
+    }
+
+    if (m_itemsBoundingRectDirty) {
+        m_cachedItemsBoundingRect = itemsBoundingRect();
+        m_itemsBoundingRectDirty = false;
+    }
+
+    return m_cachedItemsBoundingRect;
+}
+
 void Scene::resizeScene()
 {
-    const auto bounds = itemsBoundingRect();
+    const auto bounds = cachedItemsBoundingRect();
 
     if (m_interaction.isDraggingElement()) {
         // While dragging, only expand the scene rect (union with current rect).

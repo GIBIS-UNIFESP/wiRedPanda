@@ -192,7 +192,7 @@ bool MinimapWidget::computeTransform(QRectF &srcOut, double &scaleOut, double &d
     // Scene always contains a permanent (near-zero) rubber-band selection-rect item, so
     // itemsBoundingRect() never reports invalid/empty here in practice -- the final early return
     // exists only as a defensive guard for a Scene that isn't fully constructed the usual way.
-    QRectF src = m_scene->sceneRect().united(m_scene->itemsBoundingRect());
+    QRectF src = m_scene->sceneRect().united(m_scene->cachedItemsBoundingRect());
     if (m_view && m_view->viewport())
         src = src.united(m_view->mapToScene(m_view->viewport()->rect()).boundingRect());
     if (!src.isValid() || src.isEmpty())
@@ -315,7 +315,7 @@ void MinimapWidget::applyResize(const QPoint &globalPos)
     // content, same fallback chain as computeTransform() (itemsBoundingRect, then
     // sceneRect), so a resize while empty/degenerate still has a sane 1:1 ratio.
     const auto sceneAspectRatio = [this]() -> double {
-        QRectF src = m_scene ? m_scene->itemsBoundingRect() : QRectF();
+        QRectF src = m_scene ? m_scene->cachedItemsBoundingRect() : QRectF();
         if (!src.isValid() || src.isEmpty())
             src = m_scene ? m_scene->sceneRect() : QRectF();
         if (!src.isValid() || src.width() <= 0.0 || src.height() <= 0.0)

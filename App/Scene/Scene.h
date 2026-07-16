@@ -64,6 +64,14 @@ public:
     /// Tightens the scene rect to item bounds while preserving the viewport position.
     void resizeScene();
 
+    /// Returns itemsBoundingRect(), cached and invalidated on structural/positional edits
+    /// (see setPropertyUpdateRequired()) — an O(total items) call this project's zoom/pan/
+    /// scroll paths (resizeScene(), MinimapWidget) would otherwise redo on every step even
+    /// though panning/zooming never changes which items exist or where they are. Bypasses
+    /// the cache during an active element drag, where the live (uncached) value is required:
+    /// see resizeScene()'s isDraggingElement() branch.
+    [[nodiscard]] QRectF cachedItemsBoundingRect() const;
+
     // --- Per-Scene Element Registry ---
 
     /// Returns the item registered under \a id, or nullptr if not found.
@@ -454,6 +462,12 @@ private:
     // item's visibility out of sync with the current show-wires/show-gates toggles;
     // reapplied lazily in drawBackground() (see its comment) rather than eagerly.
     bool m_visibilityDirty = false;
+
+    // Backing cache for cachedItemsBoundingRect(); mutable since the accessor is const.
+    // Set dirty by setPropertyUpdateRequired(), the same chokepoint every structural/
+    // positional edit already funnels through.
+    mutable QRectF m_cachedItemsBoundingRect;
+    mutable bool m_itemsBoundingRectDirty = true;
 
     // Drag-and-drop payload decoding (delegated to SceneDropHandler)
     SceneDropHandler m_dropHandler = SceneDropHandler(this);
