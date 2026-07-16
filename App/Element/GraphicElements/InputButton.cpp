@@ -49,8 +49,6 @@ struct ElementInfo<InputButton> {
 InputButton::InputButton(QGraphicsItem *parent)
     : GraphicElementInput(ElementType::InputButton, parent)
 {
-    m_locked = false;
-
     InputButton::setOff();
 }
 

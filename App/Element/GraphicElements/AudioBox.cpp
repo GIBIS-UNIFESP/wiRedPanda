@@ -56,7 +56,7 @@ AudioBox::AudioBox(QGraphicsItem *parent)
         m_audioOutput = new QAudioOutput(this);
     }
 
-    setAudio(":/Components/Output/Audio/wiredpanda.wav");
+    setAudio(QString::fromLatin1(kDefaultAudioPath));
 }
 
 void AudioBox::setAudio(const QString &audioPath)
@@ -112,7 +112,7 @@ QString AudioBox::audio() const
 void AudioBox::startAudio()
 {
     if (m_player->source().isEmpty()) {
-        setAudio(":/Components/Output/Audio/wiredpanda.wav");
+        setAudio(QString::fromLatin1(kDefaultAudioPath));
     }
     m_player->play();
 }

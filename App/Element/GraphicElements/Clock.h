@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <chrono>
+
 #include "App/Element/GraphicElementInput.h"
 
 /**
@@ -22,6 +24,22 @@ class Clock : public GraphicElementInput
     Q_OBJECT
 
 public:
+    /// Default output frequency in Hz. Single source of truth: used by the
+    /// m_frequency/m_interval member initializers and serialization's
+    /// default-elision check.
+    static constexpr double kDefaultFrequency = 1.0;
+
+    /// Half-period (the duration of one HIGH or LOW phase) for \a freq Hz: the full
+    /// period is 1/freq seconds, so each phase lasts 1/(2·freq). Shared by the
+    /// m_interval member initializer and setFrequency() so the two derivations can
+    /// never diverge. Callers guard the input (see setFrequency()); this assumes a
+    /// positive, finite \a freq.
+    static constexpr std::chrono::microseconds halfPeriod(const double freq)
+    {
+        using namespace std::chrono_literals;
+        return std::chrono::duration_cast<std::chrono::microseconds>(1s / (2 * freq));
+    }
+
     // --- Lifecycle ---
 
     /// Constructs the element with optional \a parent.
@@ -76,7 +94,10 @@ private:
     // --- Members ---
 
     double m_delay = 0;
-    double m_frequency = 0;
-    std::chrono::microseconds m_interval;
+    double m_frequency = kDefaultFrequency;
+    /// Must carry an initializer: chrono::duration's default constructor leaves the
+    /// tick count uninitialized (unlike m_startTime below, whose time_point default
+    /// is the clock epoch).
+    std::chrono::microseconds m_interval = halfPeriod(kDefaultFrequency);
     std::chrono::steady_clock::time_point m_startTime;
 };
