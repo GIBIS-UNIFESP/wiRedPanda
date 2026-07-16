@@ -25,6 +25,11 @@ class AudioBox : public AudioOutputElement
     Q_OBJECT
 
 public:
+    /// Default audio source: the bundled sample resource, NOT an empty path.
+    /// Single source of truth: used by the constructor's setAudio() call and
+    /// serialization's default-elision check.
+    static constexpr const char *kDefaultAudioPath = ":/Components/Output/Audio/wiredpanda.wav";
+
     /// Constructs an AudioBox element.
     explicit AudioBox(QGraphicsItem *parent = nullptr);
 

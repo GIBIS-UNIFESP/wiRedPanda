@@ -20,6 +20,15 @@ class Buzzer : public AudioOutputElement
     Q_OBJECT
 
 public:
+    /// Default tone frequency in Hz (C6). Single source of truth: used by the
+    /// member initializer and serialization's default-elision check.
+    static constexpr double kDefaultFrequency = 1047.0;
+
+    /// Default volume; deliberately lower than AudioOutputElement's 0.5 base
+    /// default to avoid harsh tones. Single source of truth: used by the
+    /// constructor and serialization's default-elision check.
+    static constexpr float kDefaultVolume = 0.35f;
+
     /// Constructs a Buzzer element (default: 1047 Hz / C6).
     explicit Buzzer(QGraphicsItem *parent = nullptr);
 
@@ -59,5 +68,5 @@ protected:
 private:
     QAudioSink *m_sink = nullptr;
     ToneGenerator *m_generator = nullptr;
-    double m_frequency = 1047.0;
+    double m_frequency = kDefaultFrequency;
 };

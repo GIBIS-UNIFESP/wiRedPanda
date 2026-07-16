@@ -51,11 +51,8 @@ struct ElementInfo<Buzzer> {
 };
 
 Buzzer::Buzzer(QGraphicsItem *parent)
-    : AudioOutputElement(ElementType::Buzzer, parent)
+    : AudioOutputElement(ElementType::Buzzer, parent, kDefaultVolume)
 {
-    // Buzzer default volume is lower than AudioBox to avoid harsh tones
-    m_volume = 0.35f;
-
     if (m_hasOutputDevice) {
         m_generator = new ToneGenerator(this);
         m_generator->setFrequency(m_frequency);

@@ -26,7 +26,16 @@ class AudioOutputElement : public GraphicElement
     Q_OBJECT
 
 public:
-    explicit AudioOutputElement(ElementType type, QGraphicsItem *parent = nullptr);
+    /// Default playback volume. Single source of truth: used by the constructor's
+    /// initialVolume default and serialization's default-elision checks. Buzzer
+    /// passes its own lower kDefaultVolume instead.
+    static constexpr float kDefaultVolume = 0.5f;
+
+    /// \param initialVolume lets a subclass set its own volume default in one write --
+    /// a derived class cannot member-initialize a base's field, and a ctor-body
+    /// assignment would write m_volume twice per construction.
+    explicit AudioOutputElement(ElementType type, QGraphicsItem *parent = nullptr,
+                                float initialVolume = kDefaultVolume);
 
     // --- State Queries ---
 
@@ -61,7 +70,7 @@ protected:
 
     // --- Shared state (accessible to derived classes) ---
 
-    float m_volume = 0.5f;
+    float m_volume; // set from the ctor's initialVolume (one source, one write)
     bool m_hasOutputDevice = false;
     bool m_isPlaying = false;
     bool m_muted = false;

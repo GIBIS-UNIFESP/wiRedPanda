@@ -54,11 +54,9 @@ struct ElementInfo<Clock> {
 Clock::Clock(QGraphicsItem *parent)
     : GraphicElementInput(ElementType::Clock, parent)
 {
-    m_locked = false;
-
-    Clock::setFrequency(1.0);  // 1 Hz default → 500 ms half-period
-    Clock::setDelay(0.0);       // no phase offset by default
-    Clock::setOff();             // start LOW; resetClock() will start HIGH when simulation begins
+    // Frequency, interval, delay, and locked state are all covered by member
+    // initializers; only the output state needs behavior, not initialization:
+    Clock::setOff(); // start LOW; resetClock() will start HIGH when simulation begins
 }
 
 void Clock::updateClock(std::chrono::steady_clock::time_point globalTime)
@@ -182,9 +180,7 @@ void Clock::setFrequency(const double freq)
         return;
     }
 
-    // m_interval is the half-period: at frequency f, the full period is 1/f seconds,
-    // so each HIGH/LOW phase lasts 1/(2f) seconds = half-period in microseconds.
-    std::chrono::microseconds auxInterval = std::chrono::duration_cast<std::chrono::microseconds>(1s / (2 * freq));
+    const std::chrono::microseconds auxInterval = halfPeriod(freq);
 
     // Guard against frequencies so high that the half-period rounds to zero
     if (auxInterval.count() <= 0) {

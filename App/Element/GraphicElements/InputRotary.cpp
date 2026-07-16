@@ -53,8 +53,6 @@ InputRotary::InputRotary(QGraphicsItem *parent)
 {
     m_rotary = m_appearance.defaultAppearances().at(0);
 
-    setLocked(false);
-
     InputRotary::updatePortsProperties();
 
     // The dial starts at position 0, which drives HIGH while every other
