@@ -31,6 +31,15 @@ QPainterPath Port::shape() const
     return path;
 }
 
+QRectF Port::boundingRect() const
+{
+    // The default QGraphicsPathItem bound is pen-exact (zero slack beyond the stroke), which
+    // gives DeviceCoordinateCache's device-pixel tile no room to antialias the edge -- at high
+    // zoom the pen's edge gets a hard clip instead of a soft fade. 1 local unit of margin (the
+    // port glyph is only ~10 units across) fixes that without perceptibly growing the glyph.
+    return QGraphicsPathItem::boundingRect().adjusted(-1, -1, 1, 1);
+}
+
 const QList<Connection *> &Port::connections() const
 {
     return m_connections;

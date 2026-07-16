@@ -45,6 +45,10 @@ public:
     /// \reimp Hit-testing uses the full ±kRadius square regardless of the painted glyph.
     QPainterPath shape() const override;
 
+    /// \reimp Pads the default pen-exact bound by a small margin so DeviceCoordinateCache
+    /// has room to antialias the stroke edge instead of clipping it (visible at high zoom).
+    QRectF boundingRect() const override;
+
     // --- Lifecycle ---
 
     /// Constructs the port with optional \a parent item.
