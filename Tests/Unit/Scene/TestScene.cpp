@@ -1827,3 +1827,49 @@ void TestScene::testPortAtFindsPortsOnly()
     // Empty canvas.
     QVERIFY(!scene->portAt(QPointF(-500, -500)));
 }
+
+void TestScene::testResizeSceneQuantizesSceneRect()
+{
+    constexpr qreal quantum = 256.0;
+    const auto isQuantized = [](qreal edge) {
+        return qFuzzyIsNull(std::fmod(edge, quantum));
+    };
+
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
+    andGate->setPos(100, 100);
+    scene->addItem(andGate);
+
+    scene->resizeScene();
+    const QRectF rect = scene->sceneRect();
+    QVERIFY(rect.contains(scene->itemsBoundingRect()));
+    QVERIFY(isQuantized(rect.left()));
+    QVERIFY(isQuantized(rect.top()));
+    QVERIFY(isQuantized(rect.right()));
+    QVERIFY(isQuantized(rect.bottom()));
+
+    // A small move well inside the current chunk must leave the rect bit-identical --
+    // the exact-equality no-op in QGraphicsScene::setSceneRect() is what spares the
+    // full BSP re-index. Invalidate the bounds cache as a real MoveCommand would, so
+    // this exercises the quantization, not cache staleness.
+    andGate->setPos(110, 110);
+    scene->setPropertyUpdateRequired();
+    scene->resizeScene();
+    QCOMPARE(scene->sceneRect(), rect);
+
+    // Growth past the current rect expands it, still on quantized edges. A real move
+    // funnels through MoveCommand -> setPropertyUpdateRequired(), which dirties the
+    // cached items bounding rect resizeScene() reads -- mirror that here, since a bare
+    // setPos() bypasses the app's edit chokepoint.
+    andGate->setPos(rect.right() + 300, rect.bottom() + 300);
+    scene->setPropertyUpdateRequired();
+    scene->resizeScene();
+    const QRectF grown = scene->sceneRect();
+    QVERIFY(grown.contains(scene->itemsBoundingRect()));
+    QVERIFY(grown.right() > rect.right());
+    QVERIFY(grown.bottom() > rect.bottom());
+    QVERIFY(isQuantized(grown.right()));
+    QVERIFY(isQuantized(grown.bottom()));
+}

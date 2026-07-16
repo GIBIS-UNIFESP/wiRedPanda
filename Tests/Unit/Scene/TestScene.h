@@ -118,4 +118,8 @@ private slots:
     // portAt(): the bounding-box fast path used by hover/tooltip/wire-completion must
     // find ports (exactly and within the 4 px slop) and nothing else.
     void testPortAtFindsPortsOnly();
+
+    // resizeScene() quantizes the scene rect so small interaction steps yield
+    // bit-identical rects -- any changed rect makes Qt's BSP index re-insert every item.
+    void testResizeSceneQuantizesSceneRect();
 };
