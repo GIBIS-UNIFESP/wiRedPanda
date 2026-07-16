@@ -13,6 +13,7 @@
 
 #include "App/Core/Application.h"
 #include "App/Core/ThemeManager.h"
+#include "App/Scene/Scene.h"
 #include "App/Wiring/ConnectionSerializer.h"
 #include "App/Wiring/Port.h"
 
@@ -199,6 +200,13 @@ void Connection::setStatus(const Status status)
     }
 
     m_status = status;
+
+    // Feed idle detection for adaptive wire antialiasing: a stream of status changes IS
+    // the simulation repaint storm, and it stops exactly when the simulation does.
+    if (auto *scene_ = qobject_cast<Scene *>(scene())) {
+        scene_->noteWireActivity();
+    }
+
     applyStatusPen();
 
     // Propagate to the destination port so its fill colour also reflects the signal state
@@ -253,6 +261,15 @@ void Connection::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
 {
     Q_UNUSED(widget)
     Q_UNUSED(option)
+
+    // Adaptive quality (see Scene's wire-antialiasing accessors): while measured paint
+    // passes are too slow for interactivity, drop this wire's antialiasing -- never force
+    // it on, so a global choice like Fast Mode still wins. The painter state is
+    // saved/restored around each item's paint by QGraphicsView (the DontSavePainterState
+    // optimization flag is not set), so the hint can't leak into other items.
+    if (auto *scene_ = qobject_cast<Scene *>(scene()); scene_ && !scene_->wireAntialiasingEnabled()) {
+        painter->setRenderHint(QPainter::Antialiasing, false);
+    }
 
     // Highlight is drawn as a wider blue halo beneath the normal wire, so users can
     // easily see which wires belong to a selected element

@@ -9,11 +9,13 @@
 
 #include <optional>
 
+#include <QElapsedTimer>
 #include <QGraphicsScene>
 #include <QHash>
 #include <QMap>
 #include <QMimeData>
 #include <QPoint>
+#include <QTimer>
 #include <QUndoCommand>
 #include <QVersionNumber>
 
@@ -71,6 +73,51 @@ public:
     /// the cache during an active element drag, where the live (uncached) value is required:
     /// see resizeScene()'s isDraggingElement() branch.
     [[nodiscard]] QRectF cachedItemsBoundingRect() const;
+
+    // --- Adaptive wire antialiasing ---
+    //
+    // Antialiased wire strokes cost ~5x the raster time of plain ones, and on a large clocked
+    // circuit the simulation recolours wires across the whole viewport continuously -- each
+    // repaint pass re-strokes every visible wire, pinning the GUI thread. Quality adapts with
+    // the standard split used for binary quality knobs elsewhere (game-engine dynamic
+    // resolution scaling degrades on the measured frame-time budget; browsers, GIS canvases
+    // and EDA tools restore full quality when the activity causing the load stops):
+    //
+    //  1. Degrade: wire antialiasing turns off when the measured pass time stays over budget
+    //     (debounced, so a one-off compositor stall or load spike never triggers).
+    //  2. Restore on idle: antialiasing returns (plus one refinement repaint, free by
+    //     definition on an idle view) once BOTH activity streams have gone quiet -- paint
+    //     passes for a short window (an interaction gesture ended), and wire status flips
+    //     for a longer window (clock-driven flips arrive in bursts at each clock edge, so
+    //     the window must span inter-edge gaps -- seconds for slow educational clocks --
+    //     or the restore fires inside a gap and quality oscillates with the clock).
+    //     Neither stream alone suffices: pass cadence is bursty mid-storm, and flips stop
+    //     entirely on combinational circuits whose simulation still runs.
+    //  3. Restore on sustained deep headroom: a light workload that never goes idle (small
+    //     region in view while the simulation runs) restores once passes stay under
+    //     budget / worst-case-AA-ratio, which bounds the restored antialiased pass to within
+    //     budget by construction.
+    //
+    // Restoration deliberately never keys on the degraded renderer merely being "fast enough":
+    // with a binary knob that measured speed is a consequence of the decision itself and
+    // oscillates quality at the pass rate. Only wires change quality -- elements, ports and
+    // text keep the view's render hints.
+
+    /// \c true while wires should stroke with antialiasing; Connection::paint() consults this.
+    [[nodiscard]] bool wireAntialiasingEnabled() const;
+
+    /// Feeds one measured view paint pass (GraphicsView::paintEvent times its base call).
+    /// MinimapWidget's off-view scene renders never reach this, so they can't skew decisions.
+    void recordWirePaintPass(qint64 elapsedNs);
+
+    /// Marks wire activity for idle detection; Connection::setStatus() calls this on every
+    /// real status change. Cheap (timestamp restart), safe at simulation flip rates.
+    void noteWireActivity();
+
+    /// Restores wire antialiasing and schedules the refinement repaint. Invoked by the idle
+    /// timer and the sustained-headroom path; public so a pass-free quality reset is possible
+    /// (and directly drivable from tests).
+    void restoreWireAntialiasing();
 
     // --- Per-Scene Element Registry ---
 
@@ -468,6 +515,21 @@ private:
     // positional edit already funnels through.
     mutable QRectF m_cachedItemsBoundingRect;
     mutable bool m_itemsBoundingRectDirty = true;
+
+    // Adaptive wire antialiasing (see the public accessors' comment): consecutive-pass
+    // counters for the debounced degrade and the sustained-headroom restore; the idle
+    // timer's timeout re-checks m_wireActivityTimer (deadline pattern) and either
+    // restores or re-arms for the remaining window, so per-flip timer restarts are
+    // never needed.
+    bool m_wireAntialiasing = true;
+    int m_wireAaSlowPasses = 0;
+    int m_wireAaHeadroomPasses = 0;
+    QTimer m_wireAaIdleTimer;
+    QElapsedTimer m_wireFlipTimer;
+    QElapsedTimer m_wirePassTimer;
+
+    /// Idle-timer target: restores if the activity window truly elapsed, else re-arms.
+    void checkWireIdleRestore();
 
     // Drag-and-drop payload decoding (delegated to SceneDropHandler)
     SceneDropHandler m_dropHandler = SceneDropHandler(this);

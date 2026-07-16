@@ -109,4 +109,9 @@ private slots:
     // Scene::mute() must silence every AudioOutputElement subclass (Buzzer and AudioBox),
     // not just Buzzer -- otherwise an AudioBox keeps playing audibly through a simulation pause.
     void testMuteSilencesAllAudioOutputElements();
+
+    // Adaptive wire antialiasing: measured over-budget passes degrade (debounced), and
+    // quality returns only via idle or sustained deep headroom -- never because the
+    // degraded renderer merely measures "fast enough" (binary-knob oscillation).
+    void testWireAntialiasingDegradesOnSlowPassesAndRestores();
 };

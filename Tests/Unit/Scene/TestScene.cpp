@@ -1740,3 +1740,62 @@ void TestScene::testMuteSilencesAllAudioOutputElements()
     QVERIFY(!buzzerAudio->isMuted());
     QVERIFY(!audioBoxAudio->isMuted());
 }
+
+void TestScene::testWireAntialiasingDegradesOnSlowPassesAndRestores()
+{
+    constexpr qint64 kMs = 1'000'000; // recordWirePaintPass takes nanoseconds
+
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+
+    // Full quality by default.
+    QVERIFY(scene->wireAntialiasingEnabled());
+
+    // One over-budget pass is not enough (debounce: a lone stall must not degrade)...
+    scene->recordWirePaintPass(60 * kMs);
+    QVERIFY(scene->wireAntialiasingEnabled());
+
+    // ...and an in-budget pass in between resets the streak.
+    scene->recordWirePaintPass(5 * kMs);
+    scene->recordWirePaintPass(60 * kMs);
+    QVERIFY(scene->wireAntialiasingEnabled());
+
+    // Two consecutive over-budget passes degrade.
+    scene->recordWirePaintPass(60 * kMs);
+    QVERIFY(!scene->wireAntialiasingEnabled());
+
+    // Anti-oscillation: degraded passes measuring well under budget -- but without deep
+    // headroom -- must never restore, no matter how many. (The degraded renderer being
+    // "fast enough" is a consequence of the degrade itself.)
+    for (int i = 0; i < 50; ++i) {
+        scene->recordWirePaintPass(20 * kMs);
+    }
+    QVERIFY(!scene->wireAntialiasingEnabled());
+
+    // A non-headroom pass resets a deep-headroom streak.
+    for (int i = 0; i < 9; ++i) {
+        scene->recordWirePaintPass(2 * kMs);
+    }
+    scene->recordWirePaintPass(20 * kMs);
+    for (int i = 0; i < 9; ++i) {
+        scene->recordWirePaintPass(2 * kMs);
+    }
+    QVERIFY(!scene->wireAntialiasingEnabled());
+
+    // Sustained deep headroom (10 consecutive passes under budget/worst-case-ratio)
+    // restores: the next antialiased pass fits the budget by construction.
+    scene->recordWirePaintPass(2 * kMs);
+    QVERIFY(scene->wireAntialiasingEnabled());
+
+    // Idle restore path: degrade again, then invoke the restore method as the idle
+    // timer's timeout would.
+    scene->recordWirePaintPass(60 * kMs);
+    scene->recordWirePaintPass(60 * kMs);
+    QVERIFY(!scene->wireAntialiasingEnabled());
+    scene->restoreWireAntialiasing();
+    QVERIFY(scene->wireAntialiasingEnabled());
+
+    // Restoring resets the debounce: a single slow pass afterwards does not re-degrade.
+    scene->recordWirePaintPass(60 * kMs);
+    QVERIFY(scene->wireAntialiasingEnabled());
+}
