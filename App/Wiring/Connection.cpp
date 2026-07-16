@@ -20,7 +20,10 @@ Connection::Connection(QGraphicsItem *parent)
     : QGraphicsPathItem(parent)
 {
     setFlag(QGraphicsItem::ItemIsSelectable);
-    setCacheMode(QGraphicsItem::DeviceCoordinateCache);
+    // Deliberately NOT DeviceCoordinateCache (the default NoCache stays): a wire is a thin
+    // stroke crossing a huge, mostly-empty bounding box, so a device-cache tile costs a
+    // bbox-sized pixmap clear + blend on every status colour change -- vastly more than just
+    // re-stroking the path -- and multi-MB tiles for long wires thrash the global QPixmapCache.
     // Draw wires behind elements so port dots and element bodies always render on top
     setZValue(-1);
 
