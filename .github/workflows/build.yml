@@ -144,6 +144,33 @@ jobs:
       run: |
         ctest --preset release -V -L gui -FS non_gui_complete
 
+    # Trial runs of the gui suite off-Linux, non-blocking while they build a
+    # track record (promote to blocking once proven stable; see the polling
+    # AutoDismisser test hardening that unblocked this). macOS pins the
+    # offscreen platform: the historical hang class was native-cocoa modal
+    # activation timing. Windows tries the native platform first — its
+    # runners already run the widget-creating non-gui suite natively and
+    # green. Separate steps on purpose: a ternary env expression could set
+    # QT_QPA_PLATFORM to "" (set-but-empty), which makes Qt load no platform.
+    - name: Test (GUI, offscreen, trial)
+      if: runner.os == 'macOS'
+      timeout-minutes: 10
+      continue-on-error: true
+      env:
+        QT_FORCE_STDERR_LOGGING: 1
+        QT_QPA_PLATFORM: offscreen
+      run: |
+        ctest --preset release -V -L gui -FS non_gui_complete
+
+    - name: Test (GUI, native, trial)
+      if: runner.os == 'Windows'
+      timeout-minutes: 10
+      continue-on-error: true
+      env:
+        QT_FORCE_STDERR_LOGGING: 1
+      run: |
+        ctest --preset release -V -L gui -FS non_gui_complete
+
     - name: Smoke-test cmake --install
       shell: bash
       run: |

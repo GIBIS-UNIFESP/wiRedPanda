@@ -50,6 +50,14 @@ jobs:
       run: |
         ctest --preset coverage -V -LE gui
 
+    # Same headless environment that runs green in build.yml; also lifts
+    # coverage of the MainWindow/dialog/BeWavedDolphin UI paths that only
+    # these four classes exercise.
+    - name: Test (GUI, headless)
+      timeout-minutes: 10
+      run: |
+        ctest --preset coverage -V -L gui -FS non_gui_complete
+
     - name: Set up Python
       uses: actions/setup-python@v6
       with:

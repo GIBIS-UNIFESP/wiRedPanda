@@ -106,6 +106,21 @@ jobs:
       run: |
         ctest --preset ${{ matrix.sanitizer }} -V -LE gui
 
+    # The gui suite under sanitizers is where teardown-order UAFs (the
+    # WIREDPANDA-HC / MainWindow-destruction class of intermittent segfault)
+    # become deterministic instead of once-a-month. Non-blocking while it
+    # accumulates a track record; promote to blocking once proven stable.
+    - name: Test (GUI, headless)
+      timeout-minutes: 15
+      continue-on-error: true
+      env:
+        QT_FORCE_STDERR_LOGGING: 1
+        ASAN_OPTIONS: abort_on_error=1:halt_on_error=1
+        LSAN_OPTIONS: suppressions=${{ github.workspace }}/Tests/lsan_suppressions.txt
+        UBSAN_OPTIONS: print_stacktrace=1:halt_on_error=1
+      run: |
+        ctest --preset ${{ matrix.sanitizer }} -V -L gui -FS non_gui_complete
+
     - name: Upload build artifacts on failure
       if: failure()
       uses: actions/upload-artifact@v7
