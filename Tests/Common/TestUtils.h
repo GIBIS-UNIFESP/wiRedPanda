@@ -3,13 +3,16 @@
 
 #pragma once
 
+#include <functional>
 #include <memory>
 
 #include <QApplication>
 #include <QImage>
+#include <QMessageBox>
 #include <QPixmap>
 #include <QPoint>
 #include <QTest>
+#include <QTimer>
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 7, 0)
 #  define QVERIFY_THROWS(exType, ...) QVERIFY_THROWS_EXCEPTION(exType, __VA_ARGS__)
@@ -199,6 +202,57 @@ void initElm(GraphicElement &elm);
  * @brief True if any pixel of @a pixmap has non-zero alpha (i.e. paint() drew something)
  */
 bool pixmapHasInk(const QPixmap &pixmap);
+
+/**
+ * @brief Waits (pumping the event loop) until @a pred returns true or @a timeoutMs elapses.
+ *
+ * Thin wrapper over QTest::qWaitFor. Preferred over the QTRY_* macros, whose
+ * Qt 6.9 chrono-default internals trip this project's -Werror=conversion.
+ */
+bool waitFor(const std::function<bool()> &pred, int timeoutMs = 5000);
+
+/**
+ * @brief RAII poller that dismisses modal dialogs/message boxes for as long as it lives.
+ *
+ * Replaces the one-shot `QTimer::singleShot(0, ...)` + `activeModalWidget()`
+ * dismissal pattern, which silently no-ops when the dialog isn't active yet —
+ * leaving the dialog's exec() loop blocked until Qt Test's function watchdog
+ * kills the binary (the TestDialogs hang on the Intel macOS runner). A
+ * repeating timer polls every 10 ms and scans QApplication::topLevelWidgets()
+ * for visible modal widgets, so it neither depends on window-activation timing
+ * (asynchronous on native macOS) nor on being scheduled after the dialog opens.
+ *
+ * dismissCount() lets tests assert the dialog actually appeared:
+ *
+ *     TestUtils::AutoDismisser dismisser = TestUtils::AutoDismisser::closeAnyModal();
+ *     triggerActionThatShowsDialog();
+ *     QTRY_VERIFY(dismisser.dismissCount() >= 1);   // when the dialog is mandatory
+ */
+class AutoDismisser
+{
+public:
+    /// @param handler Called for each visible modal widget found; return true if handled
+    ///                (counts toward dismissCount()).
+    explicit AutoDismisser(std::function<bool(QWidget *)> handler);
+
+    /// Number of widgets the handler reported as handled so far.
+    int dismissCount() const { return m_dismissCount; }
+
+    // --- Convenience factories ---
+
+    /// Dismisses any visible modal widget via close().
+    static AutoDismisser closeAnyModal();
+    /// Accepts any visible modal QMessageBox.
+    static AutoDismisser acceptMessageBox();
+    /// Clicks the button with the given text on any visible modal QMessageBox.
+    static AutoDismisser clickMessageBoxButton(const QString &text);
+    /// Clicks the given standard button on any visible modal QMessageBox.
+    static AutoDismisser answerMessageBox(QMessageBox::StandardButton answer);
+
+private:
+    QTimer m_timer;
+    int m_dismissCount = 0;
+};
 
 /**
  * @brief Renders @a elm's scene footprint into an image; @a centerOut receives the centre of

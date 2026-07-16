@@ -219,8 +219,8 @@ struct EditorFixture {
     }
 
     // Set the label field without triggering apply(), then emit textChanged
-    // to fire apply() exactly once.  Place dismissNextDialog() before this
-    // call when a rejection dialog is expected.
+    // to fire apply() exactly once.  Construct a TestUtils::AutoDismisser
+    // before this call when a rejection dialog is expected.
     void changeLabel(const QString &text)
     {
         { QSignalBlocker b(labelEdit); labelEdit->setText(text); }
@@ -234,15 +234,6 @@ struct EditorFixture {
         modeCombo->setCurrentIndex(static_cast<int>(mode));
     }
 
-    // Schedule auto-close of the next modal dialog so tests don't block.
-    static void dismissNextDialog()
-    {
-        QTimer::singleShot(0, [] {
-            if (auto *w = QApplication::activeModalWidget()) {
-                w->close();
-            }
-        });
-    }
 };
 
 void TestDialogs::testElementEditorRejectsDuplicateTxLabel()
@@ -254,9 +245,10 @@ void TestDialogs::testElementEditorRejectsDuplicateTxLabel()
     Q_UNUSED(nodeA)
 
     f.select(nodeB);
-    EditorFixture::dismissNextDialog();
+    auto dismisser = TestUtils::AutoDismisser::closeAnyModal();
     f.changeLabel("CLOCK"); // collision — dialog shown and dismissed
 
+    QVERIFY2(TestUtils::waitFor([&] { return dismisser.dismissCount() >= 1; }),"The duplicate-label rejection dialog must have appeared");
     QCOMPARE(nodeB->label(), QStringLiteral("DATA")); // must be unchanged
 }
 
@@ -286,9 +278,10 @@ void TestDialogs::testElementEditorRejectsModeChangeToDuplicateTx()
     f.workspace.scene()->addItem(nodeB);
 
     f.select(nodeB);
-    EditorFixture::dismissNextDialog();
+    auto dismisser = TestUtils::AutoDismisser::closeAnyModal();
     f.changeMode(WirelessMode::Tx); // would collide — rejected
 
+    QVERIFY2(TestUtils::waitFor([&] { return dismisser.dismissCount() >= 1; }),"The duplicate-Tx rejection dialog must have appeared");
     QCOMPARE(nodeB->wirelessMode(), WirelessMode::None);
 }
 

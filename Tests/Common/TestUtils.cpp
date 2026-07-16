@@ -5,6 +5,7 @@
 
 #include <limits>
 
+#include <QAbstractButton>
 #include <QGraphicsScene>
 #include <QPainter>
 #include <QRandomGenerator>
@@ -27,10 +28,17 @@ namespace TestUtils {
 void setupTestEnvironment()
 {
 #ifdef Q_OS_LINUX
-    qputenv("QT_QPA_PLATFORM", "offscreen");
+    // Default to headless, but never clobber an explicit choice — CI workflows
+    // and developers set QT_QPA_PLATFORM to pick the platform per-OS (e.g.
+    // xcb to exercise native window-activation timing locally).
+    if (!qEnvironmentVariableIsSet("QT_QPA_PLATFORM")) {
+        qputenv("QT_QPA_PLATFORM", "offscreen");
+    }
     // Disable input method plugins — ibus daemon is single-threaded and serializes
     // parallel test startup, causing 8 processes to take 4s instead of 0.06s.
-    qputenv("QT_IM_MODULES", "none");
+    if (!qEnvironmentVariableIsSet("QT_IM_MODULES")) {
+        qputenv("QT_IM_MODULES", "none");
+    }
 #endif
     // Redirect QSettings to a per-process temporary directory. Settings uses
     // IniFormat/UserScope, so without this every test that touches Settings::
@@ -198,6 +206,88 @@ bool pixmapHasInk(const QPixmap &pixmap)
         }
     }
     return false;
+}
+
+bool waitFor(const std::function<bool()> &pred, int timeoutMs)
+{
+    return QTest::qWaitFor(pred, timeoutMs);
+}
+
+AutoDismisser::AutoDismisser(std::function<bool(QWidget *)> handler)
+{
+    // Scan all top-level widgets rather than only activeModalWidget():
+    // window activation is asynchronous on native platforms (macOS), so a
+    // dialog can be visible and modal-blocking before it becomes "active".
+    // Each handler applies its own widget filter — QMessageBox::about(), for
+    // example, is shown NON-modal on native macOS, so a blanket modality
+    // check here would skip it.
+    m_timer.setInterval(10);
+    QObject::connect(&m_timer, &QTimer::timeout, &m_timer, [this, handler = std::move(handler)] {
+        const auto widgets = QApplication::topLevelWidgets();
+        for (QWidget *w : widgets) {
+            if (w->isVisible() && handler(w)) {
+                ++m_dismissCount;
+            }
+        }
+    });
+    m_timer.start();
+}
+
+AutoDismisser AutoDismisser::closeAnyModal()
+{
+    return AutoDismisser([](QWidget *w) {
+        // Message boxes included regardless of modality (macOS About boxes);
+        // anything else only when it's actually modal-blocking.
+        if (w->isModal() || qobject_cast<QMessageBox *>(w)) {
+            w->close();
+            return true;
+        }
+        return false;
+    });
+}
+
+AutoDismisser AutoDismisser::acceptMessageBox()
+{
+    return AutoDismisser([](QWidget *w) {
+        if (auto *msgBox = qobject_cast<QMessageBox *>(w)) {
+            msgBox->accept();
+            return true;
+        }
+        return false;
+    });
+}
+
+AutoDismisser AutoDismisser::clickMessageBoxButton(const QString &text)
+{
+    return AutoDismisser([text](QWidget *w) {
+        auto *msgBox = qobject_cast<QMessageBox *>(w);
+        if (!msgBox) {
+            return false;
+        }
+        const auto buttons = msgBox->buttons();
+        for (auto *btn : buttons) {
+            if (btn->text() == text) {
+                btn->click();
+                return true;
+            }
+        }
+        return false;
+    });
+}
+
+AutoDismisser AutoDismisser::answerMessageBox(QMessageBox::StandardButton answer)
+{
+    return AutoDismisser([answer](QWidget *w) {
+        auto *msgBox = qobject_cast<QMessageBox *>(w);
+        if (!msgBox) {
+            return false;
+        }
+        if (auto *btn = msgBox->button(answer)) {
+            btn->click();
+            return true;
+        }
+        return false;
+    });
 }
 
 QImage renderElementForComparison(QGraphicsScene *scene, GraphicElement *elm, QPoint &centerOut)

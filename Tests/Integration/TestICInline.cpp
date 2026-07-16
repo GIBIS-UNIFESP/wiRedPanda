@@ -52,24 +52,6 @@
 using ICTestHelpers::readFile;
 using ICTestHelpers::embedIC;
 
-// Named (not plain "static") to avoid colliding with same-named helpers from other test
-// files under the project's Unity build, which merges multiple .cpp files per translation unit.
-namespace TestICInlineHelpers {
-
-/// Schedules auto-close of the next visible QMessageBox that appears.
-void autoCloseNextMessageBox()
-{
-    QTimer::singleShot(0, [] {
-        if (auto *w = QApplication::activeModalWidget()) {
-            if (auto *msgBox = qobject_cast<QMessageBox *>(w)) {
-                msgBox->accept();
-            }
-        }
-    });
-}
-
-} // namespace TestICInlineHelpers
-
 // ---------------------------------------------------------------------------
 // Test Harness
 // ---------------------------------------------------------------------------
@@ -1223,10 +1205,15 @@ void TestICInline::testBlobNameCollisionDuringRename()
 
     const int countBefore = ws.scene()->undoStack()->count();
 
-    // Try to rename "type_alpha" to the already-taken "type_beta"
+    // Try to rename "type_alpha" to the already-taken "type_beta". The
+    // dismisser is scoped to this rename only: the follow-up rename below must
+    // NOT show a dialog, and a still-alive dismisser would silently eat one.
     lineEdit->setText("type_beta");
-    TestICInlineHelpers::autoCloseNextMessageBox();
-    emit lineEdit->editingFinished();
+    {
+        auto dismisser = TestUtils::AutoDismisser::acceptMessageBox();
+        emit lineEdit->editingFinished();
+        QVERIFY2(TestUtils::waitFor([&] { return dismisser.dismissCount() >= 1; }),"The name-collision rejection dialog must have appeared");
+    }
 
     // Rejected: no command pushed, both ICs and both blobs unchanged
     QCOMPARE(ws.scene()->undoStack()->count(), countBefore);
