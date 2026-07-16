@@ -3312,7 +3312,7 @@ Wilt u uw wijzigingen opslaan?</translation>
         <translation>Bestand succesvol geladen.</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="393"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="392"/>
         <source>Open File</source>
         <translation>Bestand openen</translation>
     </message>
@@ -3334,9 +3334,9 @@ Wilt u uw wijzigingen opslaan?</translation>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="177"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="230"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="393"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="427"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="472"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="392"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="426"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="471"/>
         <source>Panda files</source>
         <translation>Panda-bestanden</translation>
     </message>
@@ -3346,33 +3346,33 @@ Wilt u uw wijzigingen opslaan?</translation>
         <translation>Bestand opslaan (oorspronkelijke locatie is alleen-lezen)</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="427"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="472"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="426"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="471"/>
         <source>Save File as ...</source>
         <translation>Bestand opslaan als ...</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="527"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="526"/>
         <source>File Conflict</source>
         <translation>Bestandsconflict</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="528"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="527"/>
         <source>The file &quot;%1&quot; is already open in another tab.</source>
         <translation>Het bestand &quot;%1&quot; is al geopend in een ander tabblad.</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="531"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="530"/>
         <source>Switch to Tab</source>
         <translation>Naar tabblad gaan</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="605"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="604"/>
         <source>Error!</source>
         <translation>Fout!</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="702"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="701"/>
         <source>Error</source>
         <translation>Fout</translation>
     </message>

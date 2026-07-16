@@ -3312,7 +3312,7 @@ Chcete uložiť zmeny?</translation>
         <translation>Súbor bol úspešne načítaný.</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="393"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="392"/>
         <source>Open File</source>
         <translation>Otvoriť súbor</translation>
     </message>
@@ -3334,9 +3334,9 @@ Chcete uložiť zmeny?</translation>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="177"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="230"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="393"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="427"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="472"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="392"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="426"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="471"/>
         <source>Panda files</source>
         <translation>Súbory Panda</translation>
     </message>
@@ -3346,33 +3346,33 @@ Chcete uložiť zmeny?</translation>
         <translation>Uložiť súbor (pôvodné umiestnenie je len na čítanie)</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="427"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="472"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="426"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="471"/>
         <source>Save File as ...</source>
         <translation>Uložiť súbor ako ...</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="527"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="526"/>
         <source>File Conflict</source>
         <translation>Konflikt súboru</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="528"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="527"/>
         <source>The file &quot;%1&quot; is already open in another tab.</source>
         <translation>Súbor „%1“ je už otvorený na inej karte.</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="531"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="530"/>
         <source>Switch to Tab</source>
         <translation>Prepnúť na kartu</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="605"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="604"/>
         <source>Error!</source>
         <translation>Chyba!</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="702"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="701"/>
         <source>Error</source>
         <translation>Chyba</translation>
     </message>

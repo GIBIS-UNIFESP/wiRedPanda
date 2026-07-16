@@ -3312,7 +3312,7 @@ Czy chcesz zapisać zmiany?</translation>
         <translation>Plik wczytany pomyślnie.</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="393"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="392"/>
         <source>Open File</source>
         <translation>Otwórz plik</translation>
     </message>
@@ -3334,9 +3334,9 @@ Czy chcesz zapisać zmiany?</translation>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="177"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="230"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="393"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="427"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="472"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="392"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="426"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="471"/>
         <source>Panda files</source>
         <translation>Pliki Panda</translation>
     </message>
@@ -3346,33 +3346,33 @@ Czy chcesz zapisać zmiany?</translation>
         <translation>Zapisz plik (pierwotna lokalizacja jest tylko do odczytu)</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="427"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="472"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="426"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="471"/>
         <source>Save File as ...</source>
         <translation>Zapisz plik jako ...</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="527"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="526"/>
         <source>File Conflict</source>
         <translation>Konflikt plików</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="528"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="527"/>
         <source>The file &quot;%1&quot; is already open in another tab.</source>
         <translation>Plik „%1” jest już otwarty w innej karcie.</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="531"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="530"/>
         <source>Switch to Tab</source>
         <translation>Przełącz na kartę</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="605"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="604"/>
         <source>Error!</source>
         <translation>Błąd!</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="702"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="701"/>
         <source>Error</source>
         <translation>Błąd</translation>
     </message>

@@ -3312,7 +3312,7 @@ Do you want to save your changes?</source>
         <translation>קובץ נטען בהצלחה.</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="393"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="392"/>
         <source>Open File</source>
         <translation>פתח קובץ</translation>
     </message>
@@ -3334,9 +3334,9 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="177"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="230"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="393"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="427"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="472"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="392"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="426"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="471"/>
         <source>Panda files</source>
         <translation>קבצי Panda</translation>
     </message>
@@ -3346,33 +3346,33 @@ Do you want to save your changes?</source>
         <translation>שמור קובץ (המיקום המקורי הוא לקריאה בלבד)</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="427"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="472"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="426"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="471"/>
         <source>Save File as ...</source>
         <translation>שמור קובץ בשם...</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="527"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="526"/>
         <source>File Conflict</source>
         <translation>התנגשות קובץ</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="528"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="527"/>
         <source>The file &quot;%1&quot; is already open in another tab.</source>
         <translation>הקובץ &quot;%1&quot; כבר פתוח בכרטיסייה אחרת.</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="531"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="530"/>
         <source>Switch to Tab</source>
         <translation>עבור לכרטיסייה</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="605"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="604"/>
         <source>Error!</source>
         <translation>שגיאה!</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="702"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="701"/>
         <source>Error</source>
         <translation>שגיאה</translation>
     </message>

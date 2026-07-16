@@ -3312,7 +3312,7 @@ Do you want to save your changes?</source>
         <translation>文件加载成功。</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="393"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="392"/>
         <source>Open File</source>
         <translation>打开文件</translation>
     </message>
@@ -3334,9 +3334,9 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="177"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="230"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="393"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="427"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="472"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="392"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="426"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="471"/>
         <source>Panda files</source>
         <translation>Panda 文件</translation>
     </message>
@@ -3346,33 +3346,33 @@ Do you want to save your changes?</source>
         <translation>保存文件（原始位置为只读）</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="427"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="472"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="426"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="471"/>
         <source>Save File as ...</source>
         <translation>另存为...</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="527"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="526"/>
         <source>File Conflict</source>
         <translation>文件冲突</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="528"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="527"/>
         <source>The file &quot;%1&quot; is already open in another tab.</source>
         <translation>文件 &quot;%1&quot; 已在另一个标签页中打开。</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="531"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="530"/>
         <source>Switch to Tab</source>
         <translation>切换到标签页</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="605"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="604"/>
         <source>Error!</source>
         <translation>错误！</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="702"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="701"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
