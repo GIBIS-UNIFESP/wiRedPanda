@@ -347,6 +347,89 @@ void TestSerialization::testFileFormatHeader()
     QCOMPARE(magic, static_cast<quint32>(0x57504346)); // "WPCF"
 }
 
+void TestSerialization::testCompressedPayloadRoundTrip()
+{
+    // Circuit large enough that its serialized (repetitive) form compresses well.
+    WorkSpace workspace1;
+    Scene *scene1 = workspace1.scene();
+    for (int i = 0; i < 100; ++i) {
+        auto *gate = ElementFactory::buildElement(ElementType::And);
+        QVERIFY2(gate != nullptr, QString("Failed to create And element %1").arg(i).toLatin1());
+        gate->setPos(i * 20, 0);
+        gate->setLabel(QString("AND_%1").arg(i));
+        scene1->addItem(gate);
+    }
+
+    QByteArray data = saveToMemory(workspace1);
+    QVERIFY(!data.isEmpty());
+
+    QDataStream headerStream(data);
+    const QVersionNumber version = Serialization::readPandaHeader(headerStream);
+    QVERIFY2(version >= Versions::Rev100, "New saves should use the compressed-payload format");
+
+    WorkSpace workspace2;
+    loadFromMemory(workspace2, data);
+    QCOMPARE(workspace2.scene()->elements().size(), 100);
+    for (auto *elem : workspace2.scene()->elements()) {
+        QCOMPARE(elem->elementType(), ElementType::And);
+    }
+}
+
+void TestSerialization::testLegacyUncompressedPayloadLoads()
+{
+    // Build a stream matching the pre-Rev100 on-disk format: header + a plain,
+    // uncompressed metadata map + elements -- exactly what WorkSpace::save()
+    // produced before payload compression was introduced. Confirms old files
+    // still load correctly once readPayload() only decompresses Rev100+ streams.
+    WorkSpace workspace1;
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
+    QVERIFY2(andGate != nullptr, "Failed to create And element");
+    andGate->setLabel("LegacyAnd");
+    workspace1.scene()->addItem(andGate);
+
+    QByteArray data;
+    QDataStream writeStream(&data, QIODevice::WriteOnly);
+    writeStream.setVersion(QDataStream::Qt_5_12);
+    writeStream << static_cast<quint32>(0x57504346); // "WPCF"
+    writeStream << Versions::V_5_1;
+
+    QMap<QString, QVariant> metadata;
+    writeStream << metadata;
+    Serialization::serialize(workspace1.scene()->items(), writeStream, {.purpose = SerializationPurpose::PortableFile});
+
+    QDataStream headerStream(data);
+    const QVersionNumber version = Serialization::readPandaHeader(headerStream);
+    QCOMPARE(version, Versions::V_5_1);
+
+    WorkSpace workspace2;
+    headerStream.setVersion(QDataStream::Qt_5_12);
+    workspace2.load(headerStream, version, {});
+
+    QCOMPARE(workspace2.scene()->elements().size(), 1);
+    verifyElementEquality(andGate, workspace2.scene()->elements().first());
+}
+
+void TestSerialization::testImplausibleCompressedSizeRejected()
+{
+    // A crafted "compressed" payload whose 4-byte declared uncompressed size is
+    // implausible must be rejected before qUncompress() would allocate that many
+    // bytes -- the decompression-bomb guard in Serialization::readPayload().
+    QByteArray bogus;
+    QDataStream writeStream(&bogus, QIODevice::WriteOnly);
+    writeStream.setVersion(QDataStream::Qt_5_12);
+    writeStream << quint32{0xFFFFFFFF}; // declares ~4 GiB uncompressed
+
+    QDataStream readStream(bogus);
+    bool threw = false;
+    try {
+        Serialization::readPayload(readStream, Versions::Rev100);
+    } catch (const Pandaception &e) {
+        threw = true;
+        QVERIFY2(!QString(e.what()).isEmpty(), "Exception should provide a meaningful error message");
+    }
+    QVERIFY2(threw, "Implausible decompressed payload size should be rejected");
+}
+
 void TestSerialization::testDolphinFilenamePreserved()
 {
     // Create workspace and set dolphin filename
@@ -1485,7 +1568,12 @@ void writePandaWithFileBackedIC(const QString &path, const QString &referencedIC
     metadata["dolphinFileName"] = QString();
     metadata["sceneRect"] = QRectF();
     metadata["fileBackedICs"] = QStringList{referencedIC};
-    stream << metadata;
+
+    QByteArray payload;
+    QDataStream payloadStream(&payload, QIODevice::WriteOnly);
+    payloadStream.setVersion(QDataStream::Qt_5_12);
+    payloadStream << metadata;
+    Serialization::writePayload(stream, payload);
 }
 } // namespace
 

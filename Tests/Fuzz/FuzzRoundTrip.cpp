@@ -105,8 +105,12 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
     // --- Phase 2: serialize the loaded scene ---
     QByteArray saved;
     {
-        QDataStream out(&saved, QIODevice::WriteOnly);
-        Serialization::writePandaHeader(out);
+        // Metadata + elements are buffered and compressed as one payload, exactly
+        // like WorkSpace::save() -- writePandaHeader() now stamps FormatRev::current
+        // (Rev100+), so the reload in Phase 3 expects a compressed payload behind it.
+        QByteArray payload;
+        QDataStream payloadStream(&payload, QIODevice::WriteOnly);
+        payloadStream.setVersion(QDataStream::Qt_5_12);
 
         // Include the blob registry from the loaded workspace so that
         // Serialization::serializeBlobRegistry is exercised on circuits
@@ -116,11 +120,15 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
         const QMap<QString, QByteArray> &blobs =
             ws1.scene()->icRegistry()->blobMap();
         Serialization::serializeBlobRegistry(blobs, meta);
-        out << meta;
+        payloadStream << meta;
 
         // Collect all items from the scene
         const auto items = ws1.scene()->items();
-        Serialization::serialize(items, out, {.purpose = SerializationPurpose::PortableFile});
+        Serialization::serialize(items, payloadStream, {.purpose = SerializationPurpose::PortableFile});
+
+        QDataStream out(&saved, QIODevice::WriteOnly);
+        Serialization::writePandaHeader(out);
+        Serialization::writePayload(out, payload);
     }
 
     // --- Phase 3: reload the serialised output ---

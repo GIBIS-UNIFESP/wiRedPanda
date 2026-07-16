@@ -127,6 +127,31 @@ public:
     static void writePandaHeader(QDataStream &stream);
 
     /**
+     * \brief Compresses \a payload (qCompress) and writes it to \a stream.
+     *
+     * \details Used by every \c SerializationPurpose::PortableFile writer, right
+     * after the metadata + elements + connections for a .panda file (or an
+     * embedded-IC blob) have been serialized into an in-memory buffer. Paired
+     * with \c readPayload(). Never used for \c SerializationPurpose::InMemorySnapshot
+     * writers (undo stack, clipboard, drag-and-drop) — those keep writing their
+     * payload directly, uncompressed, exactly as before.
+     */
+    static void writePayload(QDataStream &stream, const QByteArray &payload);
+
+    /**
+     * \brief Reads the remainder of \a stream's device, decompressing it first
+     *        if \a version indicates the compressed-payload format (Rev100+).
+     *
+     * \details Bounds-checks \c qCompress()'s 4-byte big-endian uncompressed-size
+     * header before calling \c qUncompress(), which otherwise allocates that many
+     * bytes unconditionally -- a classic decompression-bomb vector for a crafted
+     * file claiming an implausible size. Throws \c PANDACEPTION on an implausible
+     * size or on decompression failure (\c qUncompress() returning a null
+     * \c QByteArray). Returns the raw bytes unchanged for pre-Rev100 files.
+     */
+    static QByteArray readPayload(QDataStream &stream, const QVersionNumber &version);
+
+    /**
      * \brief Copies \a fileName to a versioned sidecar before overwriting it during migration.
      * \param fileName Absolute path of the file to back up.
      * \param version  The old file-format version (used to build the sidecar name).
@@ -143,6 +168,14 @@ public:
     struct Preamble {
         QVersionNumber version;
         QMap<QString, QVariant> metadata;
+        /// Bytes remaining after metadata was parsed (elements + connections),
+        /// already decompressed if the file uses the compressed-payload format.
+        /// Callers that continue parsing elements construct their own QDataStream
+        /// over this instead of continuing to read from the stream passed to
+        /// readPreamble() -- that stream's device is fully consumed by the time
+        /// readPreamble() returns, since decompression required buffering the
+        /// whole payload up front.
+        QByteArray remainingPayload;
     };
 
     /// Reads the full .panda preamble: header, dolphin filename, rect, and metadata (V_4_5+).

@@ -31,7 +31,12 @@ void writeChainedPandaFile(const QString &path, const QString &nextDep)
     if (!nextDep.isEmpty()) {
         metadata["fileBackedICs"] = QStringList{nextDep};
     }
-    stream << metadata;
+
+    QByteArray payload;
+    QDataStream payloadStream(&payload, QIODevice::WriteOnly);
+    payloadStream.setVersion(QDataStream::Qt_5_12);
+    payloadStream << metadata;
+    Serialization::writePayload(stream, payload);
 }
 } // namespace
 

@@ -162,13 +162,15 @@ void ICLoader::loadFileDirectly(IC &ic, const QFileInfo &fileInfo)
     }
 
     QDataStream stream(&file);
-    const auto preamble = Serialization::readPreamble(stream);
+    auto preamble = Serialization::readPreamble(stream);
     auto fileRegistry = Serialization::deserializeBlobRegistry(preamble.metadata, preamble.version);
 
     QHash<quint64, Port *> portMap;
     SerializationContext subCtx = {.portMap = portMap, .version = preamble.version, .purpose = SerializationPurpose::PortableFile, .contextDir = fileInfo.absolutePath()};
     subCtx.blobRegistry = fileRegistry.isEmpty() ? nullptr : &fileRegistry;
-    QList<QGraphicsItem *> items = Serialization::deserialize(stream, subCtx);
+    QDataStream elementsStream(&preamble.remainingPayload, QIODevice::ReadOnly);
+    elementsStream.setVersion(QDataStream::Qt_5_12);
+    QList<QGraphicsItem *> items = Serialization::deserialize(elementsStream, subCtx);
     file.close(); // must be closed before QSaveFile can write on Windows (mandatory file locking)
 
     // Cleans up whatever is still in `items` if an exception unwinds through
@@ -228,14 +230,19 @@ void ICLoader::migrateFile(const QFileInfo &fileInfo, const QList<QGraphicsItem 
     migrationMeta["outputLabels"] = portMeta.outputLabels;
     Serialization::serializeBlobRegistry(fileRegistry, migrationMeta);
 
+    QByteArray payload;
+    QDataStream payloadStream(&payload, QIODevice::WriteOnly);
+    payloadStream.setVersion(QDataStream::Qt_5_12);
+    payloadStream << migrationMeta;
+    Serialization::serialize(items, payloadStream, {.purpose = SerializationPurpose::PortableFile});
+
     QSaveFile saveFile(fileInfo.absoluteFilePath());
     if (!saveFile.open(QIODevice::WriteOnly)) {
         throw PANDACEPTION("IC migration: cannot open file for writing: %1", fileInfo.absoluteFilePath());
     }
     QDataStream outStream(&saveFile);
     Serialization::writePandaHeader(outStream);
-    outStream << migrationMeta;
-    Serialization::serialize(items, outStream, {.purpose = SerializationPurpose::PortableFile});
+    Serialization::writePayload(outStream, payload);
     if (!saveFile.commit()) {
         throw PANDACEPTION("IC migration: failed to commit re-saved file: %1", fileInfo.absoluteFilePath());
     }
@@ -311,13 +318,15 @@ void ICLoader::deserializeAndLoad(IC &ic, const QByteArray &bytes, const QString
     QByteArray data(bytes);
     QDataStream stream(&data, QIODevice::ReadOnly);
 
-    const auto preamble = Serialization::readPreamble(stream);
+    auto preamble = Serialization::readPreamble(stream);
     auto blobRegistry = Serialization::deserializeBlobRegistry(preamble.metadata, preamble.version);
 
     QHash<quint64, Port *> portMap;
     SerializationContext subCtx = {.portMap = portMap, .version = preamble.version, .purpose = SerializationPurpose::PortableFile, .contextDir = contextDir};
     subCtx.blobRegistry = blobRegistry.isEmpty() ? nullptr : &blobRegistry;
-    QList<QGraphicsItem *> items = Serialization::deserialize(stream, subCtx);
+    QDataStream elementsStream(&preamble.remainingPayload, QIODevice::ReadOnly);
+    elementsStream.setVersion(QDataStream::Qt_5_12);
+    QList<QGraphicsItem *> items = Serialization::deserialize(elementsStream, subCtx);
 
     // See loadFileDirectly()'s itemsGuard for why this nulls connections
     // before qDeleteAll() and why it's a no-op on the success path.

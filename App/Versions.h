@@ -36,6 +36,10 @@ inline const QVersionNumber V_4_7 = QVersionNumber(4, 7);
 inline const QVersionNumber V_5_0 = QVersionNumber(5, 0);
 inline const QVersionNumber V_5_1 = QVersionNumber(5, 1);
 
+/// Rev100: circuit payload (metadata + elements + connections) is zlib-compressed
+/// after the header. See VersionInfo::hasCompressedPayload().
+inline const QVersionNumber Rev100 = QVersionNumber(100);
+
 } // namespace Versions
 
 /// File-format revision, independent of the application release version.
@@ -48,11 +52,10 @@ inline const QVersionNumber V_5_1 = QVersionNumber(5, 1);
 /// (`Rev100`, `Rev101`, ...).  Picking 100 as the boundary keeps the on-disk
 /// encoding (`QVersionNumber`) unchanged — `QVersionNumber(100)` compares
 /// greater than every legacy `Versions::V_X_Y` segment-by-segment, so existing
-/// readers and version comparisons keep working unmodified.  The next real
-/// format change should be `Rev100`.
+/// readers and version comparisons keep working unmodified.
 namespace FormatRev {
 
-inline const QVersionNumber current = Versions::V_5_1;
+inline const QVersionNumber current = Versions::Rev100;
 
 } // namespace FormatRev
 
