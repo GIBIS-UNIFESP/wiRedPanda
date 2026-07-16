@@ -133,7 +133,7 @@ private:
     QPixmap m_pixmap;     ///< Currently displayed pixmap.
     QPixmap m_basePixmap; ///< Upright, unflipped pixmap; m_pixmap is derived from this.
     bool m_hasCustomRenderPixmap = false; ///< True while m_pixmap is a procedural render pixmap, not derived from m_basePixmap.
-    std::unique_ptr<QSvgRenderer> m_svgRenderer; ///< Vector renderer for the current SVG appearance (null for raster).
+    std::shared_ptr<QSvgRenderer> m_svgRenderer; ///< Vector renderer for the current SVG appearance (null for raster); shared with every other element resolving to the same path/orientation, see sharedSvgRenderer() in the .cpp.
 
     QString m_pixmapPath;         ///< Resource/file path of the default pixmap (from metadata).
     QString m_currentPixmapPath;  ///< Path last requested via setPixmap() (change guard).
