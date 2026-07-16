@@ -94,6 +94,44 @@ void Simulation::update()
         }
     }
 
+    // Advance the visual throttle on every tick (skipped or not) so the phase 3-4
+    // cadence stays time-based. Non-interactive callers (tests, BeWavedDolphin's
+    // throttle disabler) flush on every tick, as before.
+    const bool visualsDue = !(m_visualThrottleEnabled && Application::interactiveMode)
+                            || (++m_visualTickCount >= m_visualTickInterval);
+    if (visualsDue) {
+        m_visualTickCount = 0;
+    }
+
+    // Skip provably-idle ticks. A completed sweep whose settle passes converged is a
+    // fixed point of the deterministic element functions; it can only be left by a
+    // clock flip, an input-element change (both flagged through setOutputValue()'s
+    // change detection -- user toggles included, they write the same way), or a
+    // structural edit (restart() clears m_atFixedPoint). Everything else recomputes
+    // bit-identical outputs 1000x/s, which on large clocked circuits is almost every
+    // tick. The flags are cleared as they are read so one flip triggers one sweep.
+    bool sourceChanged = false;
+    for (auto *clock : clocks) {
+        if (clock && clock->outputChanged()) {
+            sourceChanged = true;
+            clock->clearOutputChanged();
+        }
+    }
+    for (auto *inputElm : inputs) {
+        if (inputElm && inputElm->outputChanged()) {
+            sourceChanged = true;
+            inputElm->clearOutputChanged();
+        }
+    }
+
+    if (!sourceChanged && m_atFixedPoint) {
+        if (visualsDue && m_visualsDirty) {
+            pushVisualStatuses(elements, outputs);
+            m_visualsDirty = false;
+        }
+        return;
+    }
+
     // Phase 2: update all GraphicElements in topological order.
     //
     // Synchronous sequential elements (flip-flops, latches — ElementGroup::Memory,
@@ -110,9 +148,13 @@ void Simulation::update()
         }
     }
 
+    // A plain topological sweep reaches its fixed point in one pass by construction;
+    // only feedback settling can fail to converge (oscillating circuits).
+    bool sweepConverged = true;
+
     if (m_simHasFeedbackElements) {
         // Use iterative settling for circuits with feedback loops.
-        updateWithIterativeSettling(elements);
+        sweepConverged = updateWithIterativeSettling(elements);
     } else {
         // Phase 2: update all logic elements in topologically sorted order so
         // every gate sees its inputs before computing its output.
@@ -158,19 +200,30 @@ void Simulation::update()
             if (!changed) {
                 break;
             }
+            if (pass == maxPasses - 1) {
+                // Exhausted the budget while still changing: not a fixed point.
+                sweepConverged = false;
+            }
         }
     }
 
-    // Visual updates only need to run at display-refresh rate (~5 fps),
-    // not at simulation rate (1000 Hz).  Skip phases 3-4 on most ticks
-    // to avoid dirtying QGraphicsItems that will be overwritten before
-    // the next repaint.  In non-interactive (test) mode, always update
-    // so that tests see immediate visual state after each step.
-    if (m_visualThrottleEnabled && Application::interactiveMode && ++m_visualTickCount < m_visualTickInterval) {
-        return;
-    }
-    m_visualTickCount = 0;
+    // This sweep's result is a fixed point unless a settle pass ran out of budget while
+    // still changing (an oscillating feedback circuit, which must keep sweeping).
+    m_atFixedPoint = sweepConverged;
+    m_visualsDirty = true;
 
+    // Visual updates only need to run at display-refresh rate, not at simulation
+    // rate (1000 Hz) — skipping most ticks avoids dirtying QGraphicsItems that would
+    // be overwritten before the next repaint. In non-interactive (test) mode every
+    // tick flushes so tests see immediate visual state after each step.
+    if (visualsDue) {
+        pushVisualStatuses(elements, outputs);
+        m_visualsDirty = false;
+    }
+}
+
+void Simulation::pushVisualStatuses(const QVector<GraphicElement *> &elements, const QVector<GraphicElement *> &outputs)
+{
     // Phase 3: push computed logic values onto all output port visuals.
     // Iterating elements (not connections) ensures unconnected output ports
     // (e.g. -Q of a flip-flop with no wire attached) are also updated.
@@ -238,6 +291,10 @@ void Simulation::restart()
     // element we've already freed faults on its vtable read. Drop every
     // reference so the next tick's initialize() can rebuild them cleanly.
     m_initialized = false;
+    // A structural edit invalidates the fixed point: the next tick must sweep, and its
+    // visuals must flush even if the throttle boundary lands on a later skipped tick.
+    m_atFixedPoint = false;
+    m_visualsDirty = true;
     m_sortedElements.clear();
     m_sequentialElements.clear();
     m_clocks.clear();
@@ -306,13 +363,15 @@ bool Simulation::isUserMuted() const
     return m_userMuted;
 }
 
-void Simulation::updateWithIterativeSettling(const QVector<GraphicElement *> &elements)
+bool Simulation::updateWithIterativeSettling(const QVector<GraphicElement *> &elements)
 {
-    if (!iterativeSettle(elements) && !m_convergenceWarned) {
+    const bool converged = iterativeSettle(elements);
+    if (!converged && !m_convergenceWarned) {
         m_convergenceWarned = true;
         qDebug() << "Feedback circuit did not converge after 10 iterations";
         emit simulationWarning(tr("Warning: feedback circuit did not converge — the circuit may be oscillating."));
     }
+    return converged;
 }
 
 bool Simulation::initialize()
