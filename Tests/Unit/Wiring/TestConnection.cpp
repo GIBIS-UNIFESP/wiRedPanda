@@ -112,3 +112,35 @@ void TestConnection::testConnectionStatusPenTracksColorAndWidth()
     QCOMPARE(connection.statusPen().color(), theme.m_connectionUnknown);
     QCOMPARE(connection.statusPen().widthF(), 3.0);
 }
+
+void TestConnection::testShapeFollowsPathAndPenWidth()
+{
+    // shape() is cached (the QGraphicsPathItem default re-strokes the Bézier on every
+    // call) -- the cache must follow path geometry changes and real pen-width changes.
+    const bool prevRendering = Application::renderingEnabled;
+    Application::renderingEnabled = true; // updatePath() builds geometry only when rendering
+
+    Connection connection;
+    connection.setStartPos({0, 0});
+    connection.setEndPos({100, 0});
+    connection.updatePath();
+
+    // A point on the wire's midline is inside the stroke; a far-away point is not.
+    QVERIFY(connection.shape().contains(QPointF(50, 0)));
+    QVERIFY(!connection.shape().contains(QPointF(50, 30)));
+
+    // Moving an endpoint must invalidate the cache: the old midline no longer hits.
+    connection.setEndPos({100, 100});
+    connection.updatePath();
+    QVERIFY(!connection.shape().contains(QPointF(50, 0)));
+
+    // The default 3-wide stroke (~1.5 half-width) misses a point 2 px off-axis at the
+    // horizontal wire's start; the Error pen (width 5, half-width 2.5) must reach it.
+    connection.setEndPos({100, 0});
+    connection.updatePath();
+    QVERIFY(!connection.shape().contains(QPointF(2, 2)));
+    connection.setStatus(Status::Error);
+    QVERIFY(connection.shape().contains(QPointF(2, 2)));
+
+    Application::renderingEnabled = prevRendering;
+}

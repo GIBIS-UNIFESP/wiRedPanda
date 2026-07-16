@@ -1799,3 +1799,31 @@ void TestScene::testWireAntialiasingDegradesOnSlowPassesAndRestores()
     scene->recordWirePaintPass(60 * kMs);
     QVERIFY(scene->wireAntialiasingEnabled());
 }
+
+void TestScene::testPortAtFindsPortsOnly()
+{
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
+    andGate->setPos(100, 100);
+    scene->addItem(andGate);
+
+    auto *inputPort = static_cast<Port *>(andGate->inputPort(0));
+    const QPointF portPos = inputPort->scenePos();
+
+    // Exact hit on the port's origin.
+    QCOMPARE(scene->portAt(portPos), inputPort);
+
+    // Within the port's own ±5 hit square.
+    QCOMPARE(scene->portAt(portPos + QPointF(3, 3)), inputPort);
+
+    // Just outside the square but within the 4 px slop: the nearby phase finds it.
+    QCOMPARE(scene->portAt(portPos + QPointF(8, 0)), inputPort);
+
+    // The element body's centre is far from any port: elements are never returned.
+    QVERIFY(!scene->portAt(andGate->sceneBoundingRect().center()));
+
+    // Empty canvas.
+    QVERIFY(!scene->portAt(QPointF(-500, -500)));
+}
