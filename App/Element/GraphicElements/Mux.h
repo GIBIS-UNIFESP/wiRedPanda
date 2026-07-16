@@ -43,6 +43,10 @@ public:
 private:
     void generatePixmap();
 
+    /// Draws the trapezoid body straight onto \a painter as vectors, so it stays crisp at any
+    /// zoom instead of blitting a fixed-resolution pixmap.
+    void drawBody(QPainter *painter);
+
     /**
      * \brief Returns the minimum select-line count for a Mux with \a totalInputs ports.
      * \details Finds the smallest k such that 2^k >= totalInputs - k, so that

@@ -4,9 +4,11 @@
 #include "App/Element/GraphicElements/Display7.h"
 
 #include <QCoreApplication>
+#include <QFile>
 #include <QHash>
 #include <QPainter>
-#include <QPixmap>
+#include <QRegularExpression>
+#include <QSvgRenderer>
 #include <QThread>
 
 #include "App/Core/Common.h"
@@ -16,6 +18,21 @@
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
 #include "App/Wiring/Port.h"
+
+namespace {
+
+/// Substitutes every solid fill color in \a svgBytes with \a color, leaving each shape's own
+/// fill-opacity untouched -- the segment SVGs are solid-filled single shapes, so this reproduces
+/// the White/Red/Green/Blue/Purple variants the old per-pixel channel remap produced.
+QByteArray recoloredSegmentSvg(const QByteArray &svgBytes, const QColor &color)
+{
+    static const QRegularExpression fillHex(QStringLiteral("fill:#[0-9a-fA-F]{6}"));
+    QString svg = QString::fromUtf8(svgBytes);
+    svg.replace(fillHex, QStringLiteral("fill:%1").arg(color.name()));
+    return svg.toUtf8();
+}
+
+} // namespace
 
 template<>
 struct ElementInfo<Display7> {
@@ -62,72 +79,45 @@ struct ElementInfo<Display7> {
 Display7::Display7(QGraphicsItem *parent)
     : GraphicElement(ElementType::Display7, parent)
 {
-    a  = cachedSegmentColors(m_appearance.defaultAppearances().at(1));
-    b  = cachedSegmentColors(m_appearance.defaultAppearances().at(2));
-    c  = cachedSegmentColors(m_appearance.defaultAppearances().at(3));
-    d  = cachedSegmentColors(m_appearance.defaultAppearances().at(4));
-    e  = cachedSegmentColors(m_appearance.defaultAppearances().at(5));
-    f  = cachedSegmentColors(m_appearance.defaultAppearances().at(6));
-    g  = cachedSegmentColors(m_appearance.defaultAppearances().at(7));
-    dp = cachedSegmentColors(m_appearance.defaultAppearances().at(8));
+    a  = cachedSegmentRenderers(m_appearance.defaultAppearances().at(1));
+    b  = cachedSegmentRenderers(m_appearance.defaultAppearances().at(2));
+    c  = cachedSegmentRenderers(m_appearance.defaultAppearances().at(3));
+    d  = cachedSegmentRenderers(m_appearance.defaultAppearances().at(4));
+    e  = cachedSegmentRenderers(m_appearance.defaultAppearances().at(5));
+    f  = cachedSegmentRenderers(m_appearance.defaultAppearances().at(6));
+    g  = cachedSegmentRenderers(m_appearance.defaultAppearances().at(7));
+    dp = cachedSegmentRenderers(m_appearance.defaultAppearances().at(8));
 
     Display7::updatePortsProperties();
 }
 
-QVector<QPixmap> Display7::cachedSegmentColors(const QString &resourcePath)
+QVector<std::shared_ptr<QSvgRenderer>> Display7::cachedSegmentRenderers(const QString &resourcePath)
 {
     Q_ASSERT(QCoreApplication::instance()->thread() == QThread::currentThread());
 
-    static QHash<QString, QVector<QPixmap>> cache;
+    static QHash<QString, QVector<std::shared_ptr<QSvgRenderer>>> cache;
 
     auto it = cache.find(resourcePath);
     if (it != cache.end()) {
         return *it;
     }
 
-    QVector<QPixmap> colors(5, QPixmap(resourcePath));
-    convertAllColors(colors);
-    cache.insert(resourcePath, colors);
-    return colors;
-}
+    QFile file(resourcePath);
+    const QByteArray svgBytes = file.open(QIODevice::ReadOnly) ? file.readAll() : QByteArray();
 
-void Display7::convertAllColors(QVector<QPixmap> &pixmaps)
-{
-    // All five slots start with the same source image; recolor each one by
-    // selectively passing or zeroing the R/G/B channels:
-    //   0 = White  (R+G+B), 1 = Red (R only), 2 = Green (G only),
-    //   3 = Blue   (B only), 4 = Purple (R+B)
-    QImage tmp(pixmaps.at(0).toImage());
-    pixmaps[0] = convertColor(tmp, true, true, true);
-    pixmaps[1] = convertColor(tmp, true, false, false);
-    pixmaps[2] = convertColor(tmp, false, true, false);
-    pixmaps[3] = convertColor(tmp, false, false, true);
-    pixmaps[4] = convertColor(tmp, true, false, true);
-}
+    // Index order matches colorNameToIndex(): 0=White, 1=Red, 2=Green, 3=Blue, 4=Purple
+    static const QColor colors[] = {
+        QColor(255, 255, 255), QColor(255, 0, 0), QColor(0, 255, 0), QColor(0, 0, 255), QColor(255, 0, 255)
+    };
 
-QPixmap Display7::convertColor(const QImage &source, const bool red, const bool green, const bool blue)
-{
-    QImage target(source);
-
-    for (int y = 0; y < target.height(); ++y) {
-        for (int x = 0; x < target.width(); ++x) {
-            // The source SVG uses grayscale: red channel encodes pixel brightness.
-            // Reuse that brightness value for the enabled channels and set alpha
-            // equal to brightness so transparent backgrounds remain transparent.
-            // Uses the pixel()/setPixel() accessors instead of a raw scanLine()
-            // cast to QRgb* — scanLine() returns uchar*, and reinterpret_cast to
-            // the 4-byte-aligned QRgb is a -Wcast-align violation on armhf/riscv64
-            // (issue #453). Called only a handful of times total (cached), so the
-            // per-pixel accessor cost is irrelevant here.
-            const int value = qRed(target.pixel(x, y));
-            target.setPixel(x, y, qRgba(red   ? value : 0,
-                                         green ? value : 0,
-                                         blue  ? value : 0,
-                                         value));
-        }
+    QVector<std::shared_ptr<QSvgRenderer>> renderers;
+    renderers.reserve(5);
+    for (const QColor &color : colors) {
+        renderers.append(std::make_shared<QSvgRenderer>(recoloredSegmentSvg(svgBytes, color)));
     }
 
-    return QPixmap::fromImage(target);
+    cache.insert(resourcePath, renderers);
+    return renderers;
 }
 
 void Display7::refresh()
@@ -163,18 +153,19 @@ void Display7::updatePortsProperties()
 void Display7::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     // The base class draws the background (off-state SVG).
-    // Active segments are painted on top by overlaying the pre-rendered colored pixmaps.
-    // All segment pixmaps are the same dimensions as the background, so they composite correctly.
+    // Active segments are painted on top as vector renders, crisp at any zoom.
+    // All segment renderers share the background's 64x64 box, so they composite correctly.
     GraphicElement::paint(painter, option, widget);
 
-    if (auto *port = inputPort(0); port && port->status() == Status::Active) { painter->drawPixmap(0, 0, g.at(m_colorNumber));  }
-    if (auto *port = inputPort(1); port && port->status() == Status::Active) { painter->drawPixmap(0, 0, f.at(m_colorNumber));  }
-    if (auto *port = inputPort(2); port && port->status() == Status::Active) { painter->drawPixmap(0, 0, e.at(m_colorNumber));  }
-    if (auto *port = inputPort(3); port && port->status() == Status::Active) { painter->drawPixmap(0, 0, d.at(m_colorNumber));  }
-    if (auto *port = inputPort(4); port && port->status() == Status::Active) { painter->drawPixmap(0, 0, a.at(m_colorNumber));  }
-    if (auto *port = inputPort(5); port && port->status() == Status::Active) { painter->drawPixmap(0, 0, b.at(m_colorNumber));  }
-    if (auto *port = inputPort(6); port && port->status() == Status::Active) { painter->drawPixmap(0, 0, dp.at(m_colorNumber)); }
-    if (auto *port = inputPort(7); port && port->status() == Status::Active) { painter->drawPixmap(0, 0, c.at(m_colorNumber));  }
+    const QRectF body(0, 0, 64, 64);
+    if (auto *port = inputPort(0); port && port->status() == Status::Active) { g.at(m_colorNumber)->render(painter, body);  }
+    if (auto *port = inputPort(1); port && port->status() == Status::Active) { f.at(m_colorNumber)->render(painter, body);  }
+    if (auto *port = inputPort(2); port && port->status() == Status::Active) { e.at(m_colorNumber)->render(painter, body);  }
+    if (auto *port = inputPort(3); port && port->status() == Status::Active) { d.at(m_colorNumber)->render(painter, body);  }
+    if (auto *port = inputPort(4); port && port->status() == Status::Active) { a.at(m_colorNumber)->render(painter, body);  }
+    if (auto *port = inputPort(5); port && port->status() == Status::Active) { b.at(m_colorNumber)->render(painter, body);  }
+    if (auto *port = inputPort(6); port && port->status() == Status::Active) { dp.at(m_colorNumber)->render(painter, body); }
+    if (auto *port = inputPort(7); port && port->status() == Status::Active) { c.at(m_colorNumber)->render(painter, body);  }
 }
 
 void Display7::setColor(const QString &color)

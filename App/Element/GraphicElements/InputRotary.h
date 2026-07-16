@@ -87,7 +87,6 @@ protected:
 private:
     // --- Members ---
 
-    QPixmap m_arrow;
     QPixmap m_rotary;
     int m_currentPort = 0;
 };

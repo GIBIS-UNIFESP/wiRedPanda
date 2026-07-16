@@ -7,7 +7,11 @@
 
 #pragma once
 
+#include <memory>
+
 #include "App/Element/GraphicElement.h"
+
+class QSvgRenderer;
 
 /**
  * \class Display16
@@ -60,6 +64,7 @@ private:
     // --- Members ---
 
     QString m_color = "Red";
-    QVector<QPixmap> bkg, a1, a2, b, c, d1, d2, e, f, g1, g2, h, j, k, l, m, n, dp;
+    QVector<QPixmap> bkg;
+    QVector<std::shared_ptr<QSvgRenderer>> a1, a2, b, c, d1, d2, e, f, g1, g2, h, j, k, l, m, n, dp;
     int m_colorNumber = 1;
 };
