@@ -114,4 +114,8 @@ private slots:
     // quality returns only via idle or sustained deep headroom -- never because the
     // degraded renderer merely measures "fast enough" (binary-knob oscillation).
     void testWireAntialiasingDegradesOnSlowPassesAndRestores();
+
+    // portAt(): the bounding-box fast path used by hover/tooltip/wire-completion must
+    // find ports (exactly and within the 4 px slop) and nothing else.
+    void testPortAtFindsPortsOnly();
 };

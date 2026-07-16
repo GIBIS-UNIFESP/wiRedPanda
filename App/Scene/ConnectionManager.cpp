@@ -103,7 +103,9 @@ void ConnectionManager::startFromInput(InputPort *endPort)
 void ConnectionManager::tryComplete(const QPointF &scenePos)
 {
     auto *connection = editedConnection();
-    auto *port = qgraphicsitem_cast<Port *>(m_scene->itemAt(scenePos));
+    // Same lookup as updateHover(), so the wire lands on the port whose hover
+    // highlight the user is currently seeing.
+    auto *port = m_scene->portAt(scenePos);
 
     if (!port || !connection) {
         return;
@@ -210,7 +212,10 @@ void ConnectionManager::updateEditedEnd(const QPointF &scenePos)
 
 void ConnectionManager::updateHover(const QPointF &scenePos)
 {
-    auto *port = qgraphicsitem_cast<Port *>(m_scene->itemAt(scenePos));
+    // Runs on every mouse move: portAt() is the cheap bounding-box lookup -- itemAt()'s
+    // shape-exact queries would re-stroke and clip every wire near the cursor just to
+    // discard them here.
+    auto *port = m_scene->portAt(scenePos);
     auto *hoverPort_ = hoverPort();
 
     // Only tear down and rebuild the hover state when the port under the cursor

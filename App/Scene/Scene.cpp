@@ -477,6 +477,46 @@ QList<QGraphicsItem *> Scene::itemsAt(const QPointF pos) const
     return items(rect.normalized());
 }
 
+Port *Scene::portAt(const QPointF pos) const
+{
+    // Port-only fast path for per-mouse-move consumers (hover feedback, wire completion,
+    // port tooltips). itemAt()'s generic queries use Qt::IntersectsItemShape, which
+    // exact-shape-tests every element and wire whose bounding box overlaps -- for wires
+    // that means re-stroking and clipping Bézier curves, and their fat bounding boxes
+    // collect dozens of candidates near a wire bundle. A bounding-box query skips all of
+    // that, and ports themselves are cheap to test exactly (shape() is a fixed square).
+    //
+    // Same 9x9 hit area as itemsAt(). An exactly-hit port wins over a merely-nearby one,
+    // like itemAt()'s two-phase lookup; among nearby-only ports acceptance is by bounding
+    // box rather than shape-vs-rect -- a difference of at most the ~1 unit of bounding-box
+    // padding, well inside the deliberate 4 px slop.
+    const QRectF rect(pos - QPointF(4, 4), QSize(9, 9));
+    const auto candidates = items(rect.normalized(), Qt::IntersectsItemBoundingRect);
+
+    Port *nearby = nullptr;
+
+    for (auto *item : candidates) { // default order: topmost first
+        if (item->type() != Port::Type) {
+            continue;
+        }
+
+        // static_cast, not qgraphicsitem_cast: the type() check above already proves the
+        // downcast, and the maybe-null result of qgraphicsitem_cast trips
+        // -Wnull-dereference at -O3 on the immediate dereference below.
+        auto *port = static_cast<Port *>(item);
+
+        if (port->shape().contains(port->mapFromScene(pos))) {
+            return port;
+        }
+
+        if (!nearby) {
+            nearby = port;
+        }
+    }
+
+    return nearby;
+}
+
 void Scene::receiveCommand(QUndoCommand *cmd)
 {
     sentryBreadcrumb("command", QStringLiteral("Command: %1").arg(cmd->text()));
@@ -1312,7 +1352,7 @@ void Scene::helpEvent(QGraphicsSceneHelpEvent *event)
     // delay). If the cursor is over a port, show its own label plus its connected peers'
     // labels in situ instead of the native tooltip, so they all appear together at the
     // same wake-up delay a tooltip would use. Other items keep their native tooltip.
-    if (auto *port = qgraphicsitem_cast<Port *>(itemAt(event->scenePos()))) {
+    if (auto *port = portAt(event->scenePos())) {
         m_connectionManager.showHoverLabels(port);
         return;
     }

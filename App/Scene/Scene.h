@@ -234,6 +234,11 @@ public:
     /// Returns the topmost item at \a pos, prioritising ports over elements.
     QGraphicsItem *itemAt(QPointF pos) const;
 
+    /// Returns the topmost port within itemsAt()'s hit area of \a pos, or nullptr.
+    /// Bounding-box-based fast path for per-mouse-move consumers -- unlike itemAt(), never
+    /// exact-shape-tests wires or elements (see the implementation comment).
+    [[nodiscard]] Port *portAt(QPointF pos) const;
+
     /// Returns the last known mouse position in scene coordinates.
     [[nodiscard]] QPointF mousePos() const { return m_interaction.lastMousePos(); }
 

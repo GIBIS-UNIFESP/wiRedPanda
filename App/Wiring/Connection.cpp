@@ -8,7 +8,9 @@
 
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
+#include <QPainterPath>
 #include <QPen>
+#include <QPolygonF>
 #include <QStyleOptionGraphicsItem>
 
 #include "App/Core/Application.h"
@@ -138,6 +140,7 @@ void Connection::updatePath()
     path.cubicTo(ctr1, ctr2, m_endPos);
 
     setPath(path);
+    m_shapeDirty = true;
 }
 
 OutputPort *Connection::startPort() const
@@ -236,6 +239,8 @@ void Connection::applyStatusPen()
     // Error-status wire's (wider) click target accurate.
     if (!qFuzzyCompare(m_statusPen.widthF(), pen().widthF())) {
         setPen(m_statusPen);
+        // The real pen's width sets shape()'s stroke tolerance -- rebuild the cached shape.
+        m_shapeDirty = true;
     } else {
         update();
     }
@@ -319,6 +324,35 @@ QRectF Connection::boundingRect() const
     // Expand beyond the path's tight bounding box by 10 px on all sides to ensure
     // the thick selection outline and highlight halo are fully covered during repaints
     return path().boundingRect().adjusted(-10, -10, 10, 10);
+}
+
+QPainterPath Connection::shape() const
+{
+    if (m_shapeDirty) {
+        // Same stroke semantics as Qt's default (qt_graphicsItem_shapeFromPath): the real
+        // pen's width sets the click tolerance along the wire -- which is why the real
+        // setPen() still runs on Error<->normal width transitions (see applyStatusPen()).
+        // Stroking a flattened (polygonal) copy instead of the raw Bézier keeps later
+        // intersects()/contains() tests on line segments; the flattening error is
+        // sub-pixel, far inside the stroke tolerance.
+        QPainterPathStroker stroker;
+        stroker.setWidth(qMax(pen().widthF(), 0.00000001));
+        stroker.setCapStyle(pen().capStyle());
+        stroker.setJoinStyle(pen().joinStyle());
+        stroker.setMiterLimit(pen().miterLimit());
+
+        // toSubpathPolygons() keeps open subpaths open -- toFillPolygon() would close the
+        // polyline back to its start, adding a phantom straight segment to the hit area.
+        QPainterPath flattened;
+        for (const QPolygonF &polygon : path().toSubpathPolygons()) {
+            flattened.addPolygon(polygon);
+        }
+
+        m_cachedShape = stroker.createStroke(flattened);
+        m_shapeDirty = false;
+    }
+
+    return m_cachedShape;
 }
 
 bool Connection::sceneEvent(QEvent *event)

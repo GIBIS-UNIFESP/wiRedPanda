@@ -81,6 +81,11 @@ public:
 
     /// \reimp
     QRectF boundingRect() const override;
+    /// \reimp Cached, flattened stroke of the wire path -- the QGraphicsPathItem default
+    /// re-strokes the Bézier on every call and keeps its cubics, making every shape-exact
+    /// hit test (clicks, rubber-band selection) pay for stroking plus recursive curve
+    /// subdivision. Invalidated when the path or the real pen width changes.
+    QPainterPath shape() const override;
     /// Returns the current angle of the bezier midpoint in radians.
     double angle();
     /// Recomputes the bezier control points from the current start/end positions.
@@ -145,4 +150,8 @@ private:
     /// pen -- see applyStatusPen() for why (avoids an unneeded BSP-tree re-index on every
     /// status colour change).
     QPen m_statusPen;
+
+    /// Backing cache for shape(); mutable since the override is const.
+    mutable QPainterPath m_cachedShape;
+    mutable bool m_shapeDirty = true;
 };
