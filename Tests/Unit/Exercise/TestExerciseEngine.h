@@ -17,6 +17,11 @@ private slots:
     void testRetranslateEmitsRetranslatedOnly();
     void testNegativeMinCountClampsToZero();
 
+    // Regression: an unknown element type in requiredElements silently made a step
+    // permanently unsolvable with no diagnostic, unlike every other malformed-content path
+    // in this feature.
+    void testUnknownElementTypeWarnsAndNeverAdvances();
+
     // ExerciseOverlay::scaledFontPx() (#14 accessibility: font-scale-hostile hardcoded px sizes)
     void testOverlayFontScalesWithApplicationFont();
 };
