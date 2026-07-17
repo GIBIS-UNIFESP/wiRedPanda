@@ -49,6 +49,13 @@ add_compile_definitions(
     QT_MESSAGELOGCONTEXT
 )
 
+if(WIN32)
+    # windows.h defines min/max function-like macros that break std::min/std::max and
+    # std::numeric_limits<>::min/max in any TU it reaches (Main.cpp includes it directly;
+    # the Sentry SDK headers pull it into unity batches on release builds).
+    add_compile_definitions(NOMINMAX)
+endif()
+
 # MCP Server - disabled on tagged release CI builds, enabled on development branches.
 # Coverage builds are CI-only instrumentation artifacts that specifically exist to
 # measure MCP/Server coverage (see MCP/Client/run_tests.py in coverage.yml), so always
