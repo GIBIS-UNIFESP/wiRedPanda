@@ -143,8 +143,40 @@ void Simulation::update()
     // exits. Genuine oscillation cannot loop this: an oscillating feedback region is caught by
     // processEvents()'s own per-timestamp evaluation cap and canonicalized to Unknown, which
     // is idempotent from that point on.
-    m_evaluatedSequentialThisTick.clear();
+    // Advance the visual throttle on every tick (settled or not) so the refresh cadence
+    // stays time-based. Non-interactive callers (tests, BeWavedDolphin's throttle
+    // disabler) flush on every tick, as before.
+    const bool visualsDue = !(m_visualThrottleEnabled && Application::interactiveMode)
+                            || (++m_visualTickCount >= m_visualTickInterval);
+    if (visualsDue) {
+        m_visualTickCount = 0;
+    }
+
+    // Seed before opening any wave bracket: seeding only schedules events (nothing
+    // evaluates), which is what lets a settled tick bail out below without paying
+    // beginWave()/finishWave()'s full sequential-element sweeps — on a large idle
+    // circuit those two sweeps 1000x/s were the engine's entire idle cost. Later
+    // waves used to re-seed via processEvents(), but that was always a no-op: the
+    // wave-0 seed clears the source-change flags it keys on.
+    seedTickEvents();
+
     const SimTime tickTargetTime = m_currentTime + m_timePerTick;
+
+    if (m_eventQueue.empty() || m_eventQueue.nextTime() > tickTargetTime) {
+        // Settled for this tick's window: nothing pending (or, in temporal mode, the
+        // earliest event lies beyond the boundary — pure time advancement either way).
+        // Advance the boundary exactly as finishDrain() would have, and still honour a
+        // pending throttled visual flush: the last wave-running tick may have returned
+        // before its refresh was due, and settling must not swallow it.
+        m_currentTime = tickTargetTime;
+        if (visualsDue && m_visualsDirty) {
+            refreshVisuals();
+            m_visualsDirty = false;
+        }
+        return;
+    }
+
+    m_evaluatedSequentialThisTick.clear();
     const int maxWaves = static_cast<int>(sequentialElements.size()) + 1;
 
     for (int wave = 0; wave < maxWaves; ++wave) {
@@ -166,17 +198,19 @@ void Simulation::update()
         }
     }
 
-    // Visual updates only need to run at display-refresh rate (~5 fps),
-    // not at simulation rate (1000 Hz).  Skip phases 3-4 on most ticks
-    // to avoid dirtying QGraphicsItems that will be overwritten before
-    // the next repaint.  In non-interactive (test) mode, always update
-    // so that tests see immediate visual state after each step.
-    if (m_visualThrottleEnabled && Application::interactiveMode && ++m_visualTickCount < m_visualTickInterval) {
+    // Visual updates only need to run at display-refresh rate, not at simulation rate
+    // (1000 Hz) — skipping most ticks avoids dirtying QGraphicsItems that would be
+    // overwritten before the next repaint. In non-interactive (test) mode every tick
+    // flushes so tests see immediate visual state after each step. The dirty flag lets
+    // a later settled tick deliver a flush this tick's throttle deferred.
+    m_visualsDirty = true;
+
+    if (!visualsDue) {
         return;
     }
-    m_visualTickCount = 0;
 
     refreshVisuals();
+    m_visualsDirty = false;
 }
 
 void Simulation::beginWave()
@@ -366,6 +400,10 @@ void Simulation::restart()
     m_eventQueue.clear();
     m_delays.clear();         // keyed by element pointers; must not outlive a rebuild
     m_evaluatedSequentialThisTick.clear(); // holds element pointers; must not outlive a rebuild
+    // A structural edit invalidates whatever the last flush showed; the first tick after
+    // the rebuild is a seed-all settle, and its visuals must flush even if the throttle
+    // boundary lands on a following settled tick.
+    m_visualsDirty = true;
     // Keyed by element pointers too. sortSimElements() re-clears them on the next successful
     // initialize(), but if that never runs (e.g. the whole circuit was deleted, so initialize()
     // bails early), a freed element's reused address could inherit a stale priority or
@@ -801,13 +839,13 @@ void Simulation::processEvents(const SimTime targetTime)
     // with every delay forced to 0: all events then land at the current instant (m_timePerTick
     // == 0 ⇒ targetTime == m_currentTime, no future timestamps), so the drain degenerates to a
     // single zero-delay wave settle — the classic combinational/feedback behaviour.
-    // The network is seeded whole once (first tick), then incrementally — only the sources that
-    // changed (schedule-on-change). Within a timestamp, events are evaluated in topological-
-    // priority order with immediate (blocking) commit so feedback symmetry is broken
-    // deterministically; delta cycles repeat until the timestamp settles. \a targetTime is
-    // supplied by the caller (update()'s wave loop) rather than derived here, since a single
-    // tick may drain this more than once (each wave passes the SAME tick-wide target).
-    seedTickEvents();
+    // Seeding happens in update(), once per tick BEFORE any wave bracket opens (seeding only
+    // schedules, nothing evaluates) — that is what lets a settled tick bail out without paying
+    // the wave sweeps. Within a timestamp, events are evaluated in topological-priority order
+    // with immediate (blocking) commit so feedback symmetry is broken deterministically; delta
+    // cycles repeat until the timestamp settles. \a targetTime is supplied by the caller
+    // (update()'s wave loop) rather than derived here, since a single tick may drain this more
+    // than once (each wave passes the SAME tick-wide target).
     resetDrainCursor();
     while (drainOneEvent(targetTime).status == DrainResult::Status::Evaluated) {
         // Drain to exhaustion (or the oscillation cap) — the blocking settle.

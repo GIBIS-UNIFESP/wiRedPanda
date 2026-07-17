@@ -442,6 +442,9 @@ private:
     int m_visualTickCount = 0;
     int m_visualTickInterval = 16;    ///< Visual update every N simulation ticks (derived from monitor refresh rate, default ~60 fps).
     bool m_visualThrottleEnabled = true; ///< When false, phases 3–4 always run (used by SimulationThrottleDisabler).
+    /// Set by every wave-running tick; lets a settled tick (which skips the wave brackets
+    /// entirely) still deliver a visual flush the throttle deferred on an earlier tick.
+    bool m_visualsDirty = true;
 
     // --- Members: Direct simulation graph ---
 
