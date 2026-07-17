@@ -1151,10 +1151,14 @@ class ComparatorBuilder(ICBuilderBase):
         eq_in = await self.create_element("InputSwitch", final_x, 100.0 + 9 * VERTICAL_STAGE_SPACING, "EqualIn")
         if eq_in is None:
             return False
+        set_eq = await self.mcp.send_command("set_input_value", {"element_id": eq_in, "value": True})
+        if not set_eq.success:
+            self.log_error("Failed to default EqualIn high")
+            return False
         lt_in = await self.create_element("InputSwitch", final_x, 100.0 + 10 * VERTICAL_STAGE_SPACING, "LessIn")
         if lt_in is None:
             return False
-        await self.log("  ✓ Created cascade inputs (GreaterIn, EqualIn, LessIn)")
+        await self.log("  ✓ Created cascade inputs (GreaterIn, EqualIn default high, LessIn)")
 
         not_a = []
         not_b = []

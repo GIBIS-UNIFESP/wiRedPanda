@@ -88,7 +88,11 @@ class PriorityEncoder8to3Builder(ICBuilderBase):
         ei_input = await self.create_element("InputSwitch", input_x, 100.0 + 8 * VERTICAL_STAGE_SPACING, "EI")
         if ei_input is None:
             return False
-        await self.log("  Created enable input EI")
+        set_ei = await self.mcp.send_command("set_input_value", {"element_id": ei_input, "value": True})
+        if not set_ei.success:
+            self.log_error("Failed to default EI high")
+            return False
+        await self.log("  Created enable input EI (default high)")
 
         # Build inhibit cascade signals
         # inhibit[i] = NOT(OR of all inputs with priority > i)
