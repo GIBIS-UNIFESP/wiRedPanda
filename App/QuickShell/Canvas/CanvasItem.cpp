@@ -106,6 +106,43 @@ void appendQuad(QSGGeometry::ColoredPoint2D *vertices, int &cursor, const QRectF
     vertices[cursor++].set(left, bottom, r, g, b, a);
 }
 
+/// Local undo command for the drag gesture -- see CanvasItem's doc comment for why this
+/// isn't the real MoveCommand (ElementsCommand::elements() resolves through a concrete
+/// Scene*'s itemById(), which doesn't exist here; that's Phase 3 scope). Mirrors
+/// MoveCommand::redo()/undo()'s exact shape otherwise: elements are already at their new
+/// positions when this is pushed (this canvas moves them live during the drag, same as
+/// QGraphicsView's built-in ItemIsMovable handling does for the real MoveCommand), so
+/// redo() re-applying m_newPositions on push is idempotent, not a second move.
+class CanvasMoveCommand : public QUndoCommand
+{
+public:
+    CanvasMoveCommand(QVector<GraphicElement *> elements, QVector<QPointF> oldPositions, QVector<QPointF> newPositions)
+        : m_elements(std::move(elements))
+        , m_oldPositions(std::move(oldPositions))
+        , m_newPositions(std::move(newPositions))
+    {
+    }
+
+    void redo() override
+    {
+        for (int i = 0; i < m_elements.size(); ++i) {
+            m_elements.at(i)->setPos(m_newPositions.at(i));
+        }
+    }
+
+    void undo() override
+    {
+        for (int i = 0; i < m_elements.size(); ++i) {
+            m_elements.at(i)->setPos(m_oldPositions.at(i));
+        }
+    }
+
+private:
+    QVector<GraphicElement *> m_elements;
+    QVector<QPointF> m_oldPositions;
+    QVector<QPointF> m_newPositions;
+};
+
 } // namespace
 
 CanvasItem::CanvasItem(QQuickItem *parent)
@@ -122,6 +159,14 @@ CanvasItem::CanvasItem(QQuickItem *parent)
     // render loop -- this periodic update() is what actually gets those changes on screen.
     connect(&m_refreshTimer, &QTimer::timeout, this, [this] { update(); });
     m_refreshTimer.start(16); // matches Simulation's own ~60fps visual-throttle cadence
+
+    // Undo/redo (via m_undoStack.undo()/redo(), not yet wired to a keyboard shortcut) moves
+    // elements directly through CanvasMoveCommand::undo()/redo() -- resync the index and
+    // repaint after every push/undo/redo rather than duplicating that call at each call site.
+    connect(&m_undoStack, &QUndoStack::indexChanged, this, [this](int) {
+        rebuildSpatialIndex();
+        update();
+    });
 }
 
 CanvasItem::~CanvasItem()
@@ -203,15 +248,147 @@ void CanvasItem::toggleIfInput(GraphicElement *element)
 
 void CanvasItem::mousePressEvent(QMouseEvent *event)
 {
-    const auto hits = m_index.queryPoint(event->position());
-    if (hits.isEmpty()) {
+    if (event->button() != Qt::LeftButton) {
         return;
     }
+
+    const auto hits = m_index.queryPoint(event->position());
+    if (hits.isEmpty()) {
+        // Empty space: mirrors SceneInteraction::mousePress's "if (!item && LeftButton)
+        // startSelectionRect()".
+        startSelectionRect(event->position());
+        return;
+    }
+
     const quint64 topHit = hits.last(); // insertion-order priority, see SpatialIndex's doc comment
-    if (auto *element = m_elementsById.value(topHit, nullptr)) {
-        toggleIfInput(element);
+    auto *element = m_elementsById.value(topHit, nullptr);
+    if (!element) {
+        // A wire, not an element (odd ids, not in m_elementsById) -- wire interaction
+        // (splitting, drag-to-detach) isn't ported yet, see this class's doc comment, so a
+        // wire click is deliberately a no-op rather than starting a rubber-band underneath it.
+        return;
+    }
+
+    if (event->modifiers().testFlag(Qt::ControlModifier)) {
+        // Ctrl+click toggles individual membership in the selection, mirroring
+        // SceneInteraction::mousePress's "item->setSelected(!item->isSelected())".
+        if (m_selectedIds.contains(topHit)) {
+            m_selectedIds.remove(topHit);
+        } else {
+            m_selectedIds.insert(topHit);
+        }
+    }
+
+    toggleIfInput(element);
+
+    // Drag snapshot: the clicked element plus the rest of the current selection, mirroring
+    // SceneInteraction::mousePress's "include the clicked element even if not yet selected,
+    // so a single-click drag of an unselected element works immediately".
+    QSet<quint64> dragIds = m_selectedIds;
+    dragIds.insert(topHit);
+
+    m_dragElements.clear();
+    m_dragStartPositions.clear();
+    for (const quint64 id : std::as_const(dragIds)) {
+        if (auto *dragElement = m_elementsById.value(id, nullptr)) {
+            m_dragElements.append(dragElement);
+            m_dragStartPositions.append(dragElement->pos());
+        }
+    }
+    m_dragAnchor = event->position();
+    m_draggingElement = true;
+
+    update();
+}
+
+void CanvasItem::mouseMoveEvent(QMouseEvent *event)
+{
+    if (m_draggingElement) {
+        const QPointF delta = event->position() - m_dragAnchor;
+        for (int i = 0; i < m_dragElements.size(); ++i) {
+            m_dragElements.at(i)->setPos(m_dragStartPositions.at(i) + delta);
+        }
+        // Positions changed -- the index must reflect them for hit-testing/wire endpoints
+        // (and for the wire batch node, which reads live scenePos() every paint anyway, but
+        // the *index* itself is only ever rebuilt explicitly, not derived lazily).
+        rebuildSpatialIndex();
+        update();
+        return;
+    }
+
+    if (m_markingSelectionBox) {
+        updateSelectionRect(event->position());
         update();
     }
+}
+
+void CanvasItem::mouseReleaseEvent(QMouseEvent *event)
+{
+    if (event->button() != Qt::LeftButton) {
+        return;
+    }
+
+    if (m_draggingElement) {
+        bool moved = false;
+        QVector<QPointF> newPositions;
+        newPositions.reserve(m_dragElements.size());
+        for (int i = 0; i < m_dragElements.size(); ++i) {
+            const QPointF newPos = m_dragElements.at(i)->pos();
+            newPositions.append(newPos);
+            if (newPos != m_dragStartPositions.at(i)) {
+                moved = true;
+            }
+        }
+
+        // Only push an undo entry if something actually moved -- mirrors
+        // SceneInteraction::mouseRelease's "avoids polluting the undo stack with no-op moves
+        // (click without drag)". indexChanged() (connected in the constructor) resyncs the
+        // spatial index and repaints; this branch doesn't need to do either itself.
+        if (moved) {
+            m_undoStack.push(new CanvasMoveCommand(m_dragElements, m_dragStartPositions, newPositions));
+        }
+
+        m_draggingElement = false;
+        m_dragElements.clear();
+        m_dragStartPositions.clear();
+    }
+
+    if (m_markingSelectionBox) {
+        finishSelectionRect();
+    }
+
+    update();
+}
+
+void CanvasItem::startSelectionRect(const QPointF &anchor)
+{
+    m_selectionAnchor = anchor;
+    m_markingSelectionBox = true;
+    m_selectionRect = QRectF(anchor, anchor);
+    // A fresh rubber-band replaces the previous selection, matching the baseline (no
+    // modifier-driven add/subtract) rubber-band behavior -- SceneInteraction's own
+    // setSelectionArea() call has the same replace semantics by default.
+    m_selectedIds.clear();
+}
+
+void CanvasItem::updateSelectionRect(const QPointF &current)
+{
+    m_selectionRect = QRectF(m_selectionAnchor, current).normalized();
+    // Mirrors SceneInteraction::mouseMove's "m_scene->setSelectionArea(selectionBox)":
+    // SpatialIndex::queryRect() is this canvas's equivalent intersects-shape query.
+    const auto hits = m_index.queryRect(m_selectionRect);
+    m_selectedIds.clear();
+    for (const quint64 id : hits) {
+        if (m_elementsById.contains(id)) { // exclude wire ids -- only elements are selectable
+            m_selectedIds.insert(id);
+        }
+    }
+}
+
+void CanvasItem::finishSelectionRect()
+{
+    m_markingSelectionBox = false;
+    m_selectionRect = QRectF();
 }
 
 void CanvasItem::hoverMoveEvent(QHoverEvent *event)
@@ -234,20 +411,22 @@ void CanvasItem::hoverLeaveEvent(QHoverEvent *)
 
 QSGNode *CanvasItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
 {
-    // Gate/wire positions never change after buildDemoCircuit() in this prototype (no
-    // drag-to-move yet -- that's SceneInteraction's job, Task 18's remaining scope), so the
-    // index only needs rebuilding once; only per-vertex color depends on live simulation state
-    // and hover, both refreshed here on every repaint.
+    // Element/wire positions can change now (drag-to-move rebuilds m_index on every move, see
+    // mouseMoveEvent()); this method itself only ever reads current live state on each repaint,
+    // it never assumes positions are static.
     auto *root = oldNode ? oldNode : new QSGNode();
     if (!oldNode) {
         auto *wireNode = new QSGGeometryNode();
         auto *gateNode = new QSGGeometryNode();
+        auto *overlayNode = new QSGGeometryNode(); // live rubber-band rect, paints on top of everything
         root->appendChildNode(wireNode); // wires paint first, gates on top
         root->appendChildNode(gateNode);
+        root->appendChildNode(overlayNode);
     }
 
     QSGNode *wireNode = root->firstChild();
     QSGNode *gateNode = wireNode->nextSibling();
+    QSGNode *overlayNode = gateNode->nextSibling();
 
     // --- Wires: one QSGGeometryNode, GL_LINES, colored by the driving port's live status ---
     {
@@ -274,20 +453,31 @@ QSGNode *CanvasItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
         }
     }
 
-    // --- Gates: one QSGGeometryNode, GL_TRIANGLES, colored by state + hover highlight ---
+    // --- Gates: one QSGGeometryNode, GL_TRIANGLES. Each selected element gets an extra
+    // padded underlay quad drawn just before its own (mirrors ElementAppearance::render()'s
+    // real selection treatment: a rounded selection-brush rect drawn behind the body before
+    // the body itself). Plain fill color reflects live simulation state; hover brightens it. ---
     {
-        const int vertexCount = int(m_elements.size()) * 6;
+        const int vertexCount = int(m_elements.size() + m_selectedIds.size()) * 6;
         auto *geometry = new QSGGeometry(QSGGeometry::defaultAttributes_ColoredPoint2D(), vertexCount);
         geometry->setDrawingMode(QSGGeometry::DrawTriangles);
         QSGGeometry::ColoredPoint2D *vertices = geometry->vertexDataAsColoredPoint2D();
         int cursor = 0;
         for (int i = 0; i < m_elements.size(); ++i) {
             GraphicElement *element = m_elements.at(i);
+            const quint64 id = elementId(i);
+            const QRectF worldRect = element->boundingRect().translated(element->pos());
+
+            if (m_selectedIds.contains(id)) {
+                static const QColor kSelectionColor(33, 150, 243, 140); // translucent blue underlay
+                const QRectF padded = worldRect.adjusted(-4, -4, 4, 4);
+                appendQuad(vertices, cursor, padded, kSelectionColor);
+            }
+
             QColor color = colorForStatus(representativeStatus(element));
-            if (elementId(i) == m_hoveredId) {
+            if (id == m_hoveredId) {
                 color = color.lighter(150); // hover highlight: brighten the batched fill in place
             }
-            const QRectF worldRect = element->boundingRect().translated(element->pos());
             appendQuad(vertices, cursor, worldRect, color);
         }
         static_cast<QSGGeometryNode *>(gateNode)->setGeometry(geometry);
@@ -296,6 +486,28 @@ QSGNode *CanvasItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
             auto *material = new QSGVertexColorMaterial();
             static_cast<QSGGeometryNode *>(gateNode)->setMaterial(material);
             static_cast<QSGGeometryNode *>(gateNode)->setFlag(QSGNode::OwnsMaterial);
+        }
+    }
+
+    // --- Rubber-band overlay: translucent quad over the live selection rect, only while
+    // marking. Zero-vertex geometry when idle -- draws nothing, cheaper than removing/
+    // re-adding the node every press/release. ---
+    {
+        const int vertexCount = m_markingSelectionBox ? 6 : 0;
+        auto *geometry = new QSGGeometry(QSGGeometry::defaultAttributes_ColoredPoint2D(), vertexCount);
+        geometry->setDrawingMode(QSGGeometry::DrawTriangles);
+        if (m_markingSelectionBox) {
+            QSGGeometry::ColoredPoint2D *vertices = geometry->vertexDataAsColoredPoint2D();
+            int cursor = 0;
+            static const QColor kMarqueeColor(33, 150, 243, 70);
+            appendQuad(vertices, cursor, m_selectionRect, kMarqueeColor);
+        }
+        static_cast<QSGGeometryNode *>(overlayNode)->setGeometry(geometry);
+        static_cast<QSGGeometryNode *>(overlayNode)->setFlag(QSGNode::OwnsGeometry);
+        if (!static_cast<QSGGeometryNode *>(overlayNode)->material()) {
+            auto *material = new QSGVertexColorMaterial();
+            static_cast<QSGGeometryNode *>(overlayNode)->setMaterial(material);
+            static_cast<QSGGeometryNode *>(overlayNode)->setFlag(QSGNode::OwnsMaterial);
         }
     }
 
