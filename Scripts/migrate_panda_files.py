@@ -70,11 +70,15 @@ def snapshot_examples():
     version = read_panda_version(examples[0])
     dest = COMPAT_DIR / f"v{version}.0"
 
-    if dest.exists():
+    # Skip only when the snapshot actually holds files: a bare directory can linger
+    # (git tracks files, not directories -- e.g. after a snapshot commit is dropped),
+    # and treating it as a completed snapshot would silently lose the pins while the
+    # migration below overwrites their only other source.
+    if any(dest.glob("*.panda")):
         print(f"Backward compatibility snapshot {dest.name}/ already exists, skipping.")
         return
 
-    dest.mkdir(parents=True)
+    dest.mkdir(parents=True, exist_ok=True)
     for f in examples:
         shutil.copy2(f, dest / f.name)
     print(f"Snapshot {len(examples)} example files to {dest.name}/")
