@@ -3150,40 +3150,40 @@ Nové projekty musíte uložit před přístupem k IC a vzhledům nebo spuštěn
         <translation>Stahování aktualizace</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="139"/>
-        <location filename="../../UI/UpdateController.cpp" line="147"/>
-        <location filename="../../UI/UpdateController.cpp" line="153"/>
+        <location filename="../../UI/UpdateController.cpp" line="137"/>
+        <location filename="../../UI/UpdateController.cpp" line="145"/>
+        <location filename="../../UI/UpdateController.cpp" line="151"/>
         <source>Download Failed</source>
         <translation>Stahování selhalo</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="139"/>
+        <location filename="../../UI/UpdateController.cpp" line="137"/>
         <source>Could not download the update:
 %1</source>
         <translation>Nepodařilo se stáhnout aktualizaci:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="147"/>
+        <location filename="../../UI/UpdateController.cpp" line="145"/>
         <source>Could not save the file:
 %1</source>
         <translation>Nepodařilo se uložit soubor:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="153"/>
+        <location filename="../../UI/UpdateController.cpp" line="151"/>
         <source>Could not write the file:
 %1</source>
         <translation>Nepodařilo se zapsat soubor:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="160"/>
+        <location filename="../../UI/UpdateController.cpp" line="158"/>
         <source>Download Complete</source>
         <translation>Stahování dokončeno</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="161"/>
+        <location filename="../../UI/UpdateController.cpp" line="159"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
         <translation>wiRedPanda bylo staženo do:

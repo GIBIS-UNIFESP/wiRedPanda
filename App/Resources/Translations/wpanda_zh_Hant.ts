@@ -3150,40 +3150,40 @@ wiRedPanda %1 將自動列出與目前專案位於同一目錄中的所有其他
         <translation>正在下載更新</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="139"/>
-        <location filename="../../UI/UpdateController.cpp" line="147"/>
-        <location filename="../../UI/UpdateController.cpp" line="153"/>
+        <location filename="../../UI/UpdateController.cpp" line="137"/>
+        <location filename="../../UI/UpdateController.cpp" line="145"/>
+        <location filename="../../UI/UpdateController.cpp" line="151"/>
         <source>Download Failed</source>
         <translation>下載失敗</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="139"/>
+        <location filename="../../UI/UpdateController.cpp" line="137"/>
         <source>Could not download the update:
 %1</source>
         <translation>無法下載更新:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="147"/>
+        <location filename="../../UI/UpdateController.cpp" line="145"/>
         <source>Could not save the file:
 %1</source>
         <translation>無法儲存檔案:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="153"/>
+        <location filename="../../UI/UpdateController.cpp" line="151"/>
         <source>Could not write the file:
 %1</source>
         <translation>無法寫入檔案：
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="160"/>
+        <location filename="../../UI/UpdateController.cpp" line="158"/>
         <source>Download Complete</source>
         <translation>下載完成</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="161"/>
+        <location filename="../../UI/UpdateController.cpp" line="159"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
         <translation>wiRedPanda 已下載至:

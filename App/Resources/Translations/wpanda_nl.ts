@@ -3150,40 +3150,40 @@ U moet nieuwe projecten opslaan voordat u IC&apos;s en weergaven kunt openen of 
         <translation>Update downloaden</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="139"/>
-        <location filename="../../UI/UpdateController.cpp" line="147"/>
-        <location filename="../../UI/UpdateController.cpp" line="153"/>
+        <location filename="../../UI/UpdateController.cpp" line="137"/>
+        <location filename="../../UI/UpdateController.cpp" line="145"/>
+        <location filename="../../UI/UpdateController.cpp" line="151"/>
         <source>Download Failed</source>
         <translation>Download mislukt</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="139"/>
+        <location filename="../../UI/UpdateController.cpp" line="137"/>
         <source>Could not download the update:
 %1</source>
         <translation>Kon de update niet downloaden:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="147"/>
+        <location filename="../../UI/UpdateController.cpp" line="145"/>
         <source>Could not save the file:
 %1</source>
         <translation>Kon het bestand niet opslaan:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="153"/>
+        <location filename="../../UI/UpdateController.cpp" line="151"/>
         <source>Could not write the file:
 %1</source>
         <translation>Kon het bestand niet schrijven:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="160"/>
+        <location filename="../../UI/UpdateController.cpp" line="158"/>
         <source>Download Complete</source>
         <translation>Download voltooid</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="161"/>
+        <location filename="../../UI/UpdateController.cpp" line="159"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
         <translation>wiRedPanda is gedownload naar:

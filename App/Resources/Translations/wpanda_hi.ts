@@ -3150,40 +3150,40 @@ IC और दिखावट तक पहुँचने या beWavedDolphin 
         <translation>अपडेट डाउनलोड हो रहा है</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="139"/>
-        <location filename="../../UI/UpdateController.cpp" line="147"/>
-        <location filename="../../UI/UpdateController.cpp" line="153"/>
+        <location filename="../../UI/UpdateController.cpp" line="137"/>
+        <location filename="../../UI/UpdateController.cpp" line="145"/>
+        <location filename="../../UI/UpdateController.cpp" line="151"/>
         <source>Download Failed</source>
         <translation>डाउनलोड विफल</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="139"/>
+        <location filename="../../UI/UpdateController.cpp" line="137"/>
         <source>Could not download the update:
 %1</source>
         <translation>अपडेट डाउनलोड नहीं हो सका:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="147"/>
+        <location filename="../../UI/UpdateController.cpp" line="145"/>
         <source>Could not save the file:
 %1</source>
         <translation>फ़ाइल सहेजी नहीं जा सकी:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="153"/>
+        <location filename="../../UI/UpdateController.cpp" line="151"/>
         <source>Could not write the file:
 %1</source>
         <translation>फ़ाइल नहीं लिखी जा सकी:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="160"/>
+        <location filename="../../UI/UpdateController.cpp" line="158"/>
         <source>Download Complete</source>
         <translation>डाउनलोड पूर्ण</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="161"/>
+        <location filename="../../UI/UpdateController.cpp" line="159"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
         <translation>wiRedPanda यहाँ डाउनलोड हो गया:

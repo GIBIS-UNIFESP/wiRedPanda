@@ -3150,40 +3150,40 @@ Você precisa salvar novos projetos antes de acessar CIs e aparências ou execut
         <translation>Baixando atualização</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="139"/>
-        <location filename="../../UI/UpdateController.cpp" line="147"/>
-        <location filename="../../UI/UpdateController.cpp" line="153"/>
+        <location filename="../../UI/UpdateController.cpp" line="137"/>
+        <location filename="../../UI/UpdateController.cpp" line="145"/>
+        <location filename="../../UI/UpdateController.cpp" line="151"/>
         <source>Download Failed</source>
         <translation>Falha no download</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="139"/>
+        <location filename="../../UI/UpdateController.cpp" line="137"/>
         <source>Could not download the update:
 %1</source>
         <translation>Não foi possível baixar a atualização:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="147"/>
+        <location filename="../../UI/UpdateController.cpp" line="145"/>
         <source>Could not save the file:
 %1</source>
         <translation>Não foi possível salvar o arquivo:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="153"/>
+        <location filename="../../UI/UpdateController.cpp" line="151"/>
         <source>Could not write the file:
 %1</source>
         <translation>Não foi possível gravar o arquivo:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="160"/>
+        <location filename="../../UI/UpdateController.cpp" line="158"/>
         <source>Download Complete</source>
         <translation>Download concluído</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="161"/>
+        <location filename="../../UI/UpdateController.cpp" line="159"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
         <translation>wiRedPanda foi baixado para:
