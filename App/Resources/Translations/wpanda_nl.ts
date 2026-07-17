@@ -438,27 +438,27 @@
 <context>
     <name>ConnectionManager</name>
     <message>
-        <location filename="../../Scene/ConnectionManager.cpp" line="252"/>
+        <location filename="../../Scene/ConnectionManager.cpp" line="257"/>
         <source>This connection is not allowed.</source>
         <translation>Deze verbinding is niet toegestaan.</translation>
     </message>
     <message>
-        <location filename="../../Scene/ConnectionManager.cpp" line="255"/>
+        <location filename="../../Scene/ConnectionManager.cpp" line="260"/>
         <source>Can&apos;t connect an element to itself.</source>
         <translation>Een element kan niet met zichzelf worden verbonden.</translation>
     </message>
     <message>
-        <location filename="../../Scene/ConnectionManager.cpp" line="258"/>
+        <location filename="../../Scene/ConnectionManager.cpp" line="263"/>
         <source>These ports are already connected.</source>
         <translation>Deze pinnen zijn al verbonden.</translation>
     </message>
     <message>
-        <location filename="../../Scene/ConnectionManager.cpp" line="263"/>
+        <location filename="../../Scene/ConnectionManager.cpp" line="268"/>
         <source>This element receives wirelessly — no input wire needed.</source>
         <translation>Dit element ontvangt draadloos — geen ingangsdraad nodig.</translation>
     </message>
     <message>
-        <location filename="../../Scene/ConnectionManager.cpp" line="268"/>
+        <location filename="../../Scene/ConnectionManager.cpp" line="273"/>
         <source>This element transmits wirelessly — no output wire needed.</source>
         <translation>Dit element zendt draadloos — geen uitgangsdraad nodig.</translation>
     </message>
@@ -765,22 +765,22 @@
 <context>
     <name>ElementAppearance</name>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="234"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="284"/>
         <source>File does not exist</source>
         <translation>Bestand bestaat niet</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="236"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="286"/>
         <source>File is not readable</source>
         <translation>Bestand is niet leesbaar</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="237"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="287"/>
         <source>Unknown reason</source>
         <translation>Onbekende reden</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="247"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="297"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
         <translation>Kon pixmap niet laden: %1 (%2)</translation>
     </message>
@@ -1553,12 +1553,12 @@ Kies een andere naam.</translation>
 <context>
     <name>GraphicsView</name>
     <message>
-        <location filename="../../Scene/GraphicsView.cpp" line="26"/>
+        <location filename="../../Scene/GraphicsView.cpp" line="28"/>
         <source>Circuit canvas</source>
         <translation>Circuitcanvas</translation>
     </message>
     <message>
-        <location filename="../../Scene/GraphicsView.cpp" line="27"/>
+        <location filename="../../Scene/GraphicsView.cpp" line="29"/>
         <source>The circuit canvas. Drag elements here from the palette to build a circuit, drag between ports to wire them together, and drag a selection to move it.</source>
         <translation>Het circuitcanvas. Sleep hier elementen vanuit het palet naartoe om een circuit op te bouwen, sleep tussen pinnen om ze te bedraden, en sleep een selectie om deze te verplaatsen.</translation>
     </message>
@@ -2793,24 +2793,24 @@ U moet nieuwe projecten opslaan voordat u IC&apos;s en weergaven kunt openen of 
 <context>
     <name>Scene</name>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="51"/>
-        <location filename="../../Scene/Scene.cpp" line="585"/>
+        <location filename="../../Scene/Scene.cpp" line="81"/>
+        <location filename="../../Scene/Scene.cpp" line="771"/>
         <source>&amp;Undo</source>
         <translation>&amp;Ongedaan maken</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="59"/>
-        <location filename="../../Scene/Scene.cpp" line="591"/>
+        <location filename="../../Scene/Scene.cpp" line="89"/>
+        <location filename="../../Scene/Scene.cpp" line="777"/>
         <source>&amp;Redo</source>
         <translation>&amp;Opnieuw doen</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="611"/>
+        <location filename="../../Scene/Scene.cpp" line="797"/>
         <source>Paste</source>
         <translation>Plakken</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="620"/>
+        <location filename="../../Scene/Scene.cpp" line="806"/>
         <source>Select all</source>
         <translation>Alles selecteren</translation>
     </message>
@@ -2920,7 +2920,7 @@ U moet nieuwe projecten opslaan voordat u IC&apos;s en weergaven kunt openen of 
 <context>
     <name>Simulation</name>
     <message>
-        <location filename="../../Simulation/Simulation.cpp" line="314"/>
+        <location filename="../../Simulation/Simulation.cpp" line="372"/>
         <source>Warning: feedback circuit did not converge — the circuit may be oscillating.</source>
         <translation>Waarschuwing: terugkoppelingscircuit convergeerde niet — het circuit oscilleert mogelijk.</translation>
     </message>
@@ -3219,22 +3219,22 @@ Werk wiRedPanda bij om wijzigingen in dit bestand op te slaan.</translation>
         <translation>Fout bij openen van bestand: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="401"/>
+        <location filename="../../Scene/Workspace.cpp" line="388"/>
         <source>Could not save file: %1</source>
         <translation>Kon bestand niet opslaan: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="476"/>
+        <location filename="../../Scene/Workspace.cpp" line="463"/>
         <source>This file does not exist: %1</source>
         <translation>Dit bestand bestaat niet: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="485"/>
+        <location filename="../../Scene/Workspace.cpp" line="472"/>
         <source>Could not open file: %1</source>
         <translation>Kon bestand niet openen: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="533"/>
+        <location filename="../../Scene/Workspace.cpp" line="520"/>
         <source>This file was saved with a newer file format (version %1).
 Your version supports file format %2.
 
@@ -3247,34 +3247,34 @@ Het bestand wordt geopend, maar opslaan is geblokkeerd.
 Werk wiRedPanda bij om dit bestand te bewerken en op te slaan.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="538"/>
+        <location filename="../../Scene/Workspace.cpp" line="525"/>
         <source>Newer version file.</source>
         <translation>Bestand van nieuwere versie.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="541"/>
+        <location filename="../../Scene/Workspace.cpp" line="528"/>
         <source>This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).
 A backup of the original file has been created with name: %3</source>
         <translation>Dit bestand is in een ouder formaat (versie %1) en wordt automatisch bijgewerkt naar het huidige formaat (versie %2).
 Een back-up van het oorspronkelijke bestand is aangemaakt met de naam: %3</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="544"/>
+        <location filename="../../Scene/Workspace.cpp" line="531"/>
         <source>File upgraded.</source>
         <translation>Bestand bijgewerkt.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="706"/>
+        <location filename="../../Scene/Workspace.cpp" line="693"/>
         <source>Error opening autosave file: %1</source>
         <translation>Fout bij openen van automatisch opgeslagen bestand: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="714"/>
+        <location filename="../../Scene/Workspace.cpp" line="701"/>
         <source>Could not commit autosave file: %1</source>
         <translation>Kan automatische opslag-bestand niet vastleggen: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="880"/>
+        <location filename="../../Scene/Workspace.cpp" line="867"/>
         <source>Remove embedded IC &quot;%1&quot;</source>
         <translation>Ingebedde IC &quot;%1&quot; verwijderen</translation>
     </message>
@@ -3312,7 +3312,7 @@ Wilt u uw wijzigingen opslaan?</translation>
         <translation>Bestand succesvol geladen.</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="393"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="392"/>
         <source>Open File</source>
         <translation>Bestand openen</translation>
     </message>
@@ -3334,9 +3334,9 @@ Wilt u uw wijzigingen opslaan?</translation>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="177"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="230"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="393"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="427"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="472"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="392"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="426"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="471"/>
         <source>Panda files</source>
         <translation>Panda-bestanden</translation>
     </message>
@@ -3346,33 +3346,33 @@ Wilt u uw wijzigingen opslaan?</translation>
         <translation>Bestand opslaan (oorspronkelijke locatie is alleen-lezen)</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="427"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="472"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="426"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="471"/>
         <source>Save File as ...</source>
         <translation>Bestand opslaan als ...</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="527"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="526"/>
         <source>File Conflict</source>
         <translation>Bestandsconflict</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="528"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="527"/>
         <source>The file &quot;%1&quot; is already open in another tab.</source>
         <translation>Het bestand &quot;%1&quot; is al geopend in een ander tabblad.</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="531"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="530"/>
         <source>Switch to Tab</source>
         <translation>Naar tabblad gaan</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="605"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="604"/>
         <source>Error!</source>
         <translation>Fout!</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="702"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="701"/>
         <source>Error</source>
         <translation>Fout</translation>
     </message>

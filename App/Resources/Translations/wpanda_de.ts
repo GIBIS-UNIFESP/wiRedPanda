@@ -438,27 +438,27 @@
 <context>
     <name>ConnectionManager</name>
     <message>
-        <location filename="../../Scene/ConnectionManager.cpp" line="252"/>
+        <location filename="../../Scene/ConnectionManager.cpp" line="257"/>
         <source>This connection is not allowed.</source>
         <translation>Diese Verbindung ist nicht zulässig.</translation>
     </message>
     <message>
-        <location filename="../../Scene/ConnectionManager.cpp" line="255"/>
+        <location filename="../../Scene/ConnectionManager.cpp" line="260"/>
         <source>Can&apos;t connect an element to itself.</source>
         <translation>Ein Element kann nicht mit sich selbst verbunden werden.</translation>
     </message>
     <message>
-        <location filename="../../Scene/ConnectionManager.cpp" line="258"/>
+        <location filename="../../Scene/ConnectionManager.cpp" line="263"/>
         <source>These ports are already connected.</source>
         <translation>Diese Anschlüsse sind bereits verbunden.</translation>
     </message>
     <message>
-        <location filename="../../Scene/ConnectionManager.cpp" line="263"/>
+        <location filename="../../Scene/ConnectionManager.cpp" line="268"/>
         <source>This element receives wirelessly — no input wire needed.</source>
         <translation>Dieses Element empfängt drahtlos — kein Eingangsdraht erforderlich.</translation>
     </message>
     <message>
-        <location filename="../../Scene/ConnectionManager.cpp" line="268"/>
+        <location filename="../../Scene/ConnectionManager.cpp" line="273"/>
         <source>This element transmits wirelessly — no output wire needed.</source>
         <translation>Dieses Element sendet drahtlos — kein Ausgangsdraht erforderlich.</translation>
     </message>
@@ -765,22 +765,22 @@
 <context>
     <name>ElementAppearance</name>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="234"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="284"/>
         <source>File does not exist</source>
         <translation>Datei existiert nicht</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="236"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="286"/>
         <source>File is not readable</source>
         <translation>Datei ist nicht lesbar</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="237"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="287"/>
         <source>Unknown reason</source>
         <translation>Unbekannter Grund</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="247"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="297"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
         <translation>Pixmap konnte nicht geladen werden: %1 (%2)</translation>
     </message>
@@ -1553,12 +1553,12 @@ Wählen Sie einen anderen Namen.</translation>
 <context>
     <name>GraphicsView</name>
     <message>
-        <location filename="../../Scene/GraphicsView.cpp" line="26"/>
+        <location filename="../../Scene/GraphicsView.cpp" line="28"/>
         <source>Circuit canvas</source>
         <translation>Schaltungsfläche</translation>
     </message>
     <message>
-        <location filename="../../Scene/GraphicsView.cpp" line="27"/>
+        <location filename="../../Scene/GraphicsView.cpp" line="29"/>
         <source>The circuit canvas. Drag elements here from the palette to build a circuit, drag between ports to wire them together, and drag a selection to move it.</source>
         <translation>Die Schaltungsfläche. Ziehen Sie Elemente von der Palette hierher, um eine Schaltung aufzubauen, ziehen Sie zwischen Anschlüssen, um sie zu verdrahten, und ziehen Sie eine Auswahl, um sie zu verschieben.</translation>
     </message>
@@ -2793,24 +2793,24 @@ Sie müssen neue Projekte speichern, bevor Sie auf ICs und Erscheinungsbilder zu
 <context>
     <name>Scene</name>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="51"/>
-        <location filename="../../Scene/Scene.cpp" line="585"/>
+        <location filename="../../Scene/Scene.cpp" line="81"/>
+        <location filename="../../Scene/Scene.cpp" line="771"/>
         <source>&amp;Undo</source>
         <translation>&amp;Rückgängig</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="59"/>
-        <location filename="../../Scene/Scene.cpp" line="591"/>
+        <location filename="../../Scene/Scene.cpp" line="89"/>
+        <location filename="../../Scene/Scene.cpp" line="777"/>
         <source>&amp;Redo</source>
         <translation>&amp;Wiederholen</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="611"/>
+        <location filename="../../Scene/Scene.cpp" line="797"/>
         <source>Paste</source>
         <translation>Einfügen</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="620"/>
+        <location filename="../../Scene/Scene.cpp" line="806"/>
         <source>Select all</source>
         <translation>Alles auswählen</translation>
     </message>
@@ -2920,7 +2920,7 @@ Sie müssen neue Projekte speichern, bevor Sie auf ICs und Erscheinungsbilder zu
 <context>
     <name>Simulation</name>
     <message>
-        <location filename="../../Simulation/Simulation.cpp" line="314"/>
+        <location filename="../../Simulation/Simulation.cpp" line="372"/>
         <source>Warning: feedback circuit did not converge — the circuit may be oscillating.</source>
         <translation>Warnung: Rückkopplungsschaltung hat nicht konvergiert — die Schaltung schwingt möglicherweise.</translation>
     </message>
@@ -3219,22 +3219,22 @@ Bitte aktualisieren Sie wiRedPanda, um Änderungen an dieser Datei zu speichern.
         <translation>Fehler beim Öffnen der Datei: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="401"/>
+        <location filename="../../Scene/Workspace.cpp" line="388"/>
         <source>Could not save file: %1</source>
         <translation>Datei konnte nicht gespeichert werden: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="476"/>
+        <location filename="../../Scene/Workspace.cpp" line="463"/>
         <source>This file does not exist: %1</source>
         <translation>Diese Datei existiert nicht: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="485"/>
+        <location filename="../../Scene/Workspace.cpp" line="472"/>
         <source>Could not open file: %1</source>
         <translation>Datei konnte nicht geöffnet werden: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="533"/>
+        <location filename="../../Scene/Workspace.cpp" line="520"/>
         <source>This file was saved with a newer file format (version %1).
 Your version supports file format %2.
 
@@ -3247,34 +3247,34 @@ Die Datei wird geöffnet, aber das Speichern ist blockiert.
 Bitte aktualisieren Sie wiRedPanda, um diese Datei zu bearbeiten und zu speichern.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="538"/>
+        <location filename="../../Scene/Workspace.cpp" line="525"/>
         <source>Newer version file.</source>
         <translation>Datei neuerer Version.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="541"/>
+        <location filename="../../Scene/Workspace.cpp" line="528"/>
         <source>This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).
 A backup of the original file has been created with name: %3</source>
         <translation>Diese Datei liegt in einem älteren Format (Version %1) vor und wird automatisch auf das aktuelle Format (Version %2) aktualisiert.
 Eine Sicherungskopie der Originaldatei wurde erstellt unter dem Namen: %3</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="544"/>
+        <location filename="../../Scene/Workspace.cpp" line="531"/>
         <source>File upgraded.</source>
         <translation>Datei wurde aktualisiert.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="706"/>
+        <location filename="../../Scene/Workspace.cpp" line="693"/>
         <source>Error opening autosave file: %1</source>
         <translation>Fehler beim Öffnen der automatisch gespeicherten Datei: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="714"/>
+        <location filename="../../Scene/Workspace.cpp" line="701"/>
         <source>Could not commit autosave file: %1</source>
         <translation>Automatische Sicherungsdatei konnte nicht übernommen werden: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="880"/>
+        <location filename="../../Scene/Workspace.cpp" line="867"/>
         <source>Remove embedded IC &quot;%1&quot;</source>
         <translation>Eingebetteten IC „%1“ entfernen</translation>
     </message>
@@ -3312,7 +3312,7 @@ Möchten Sie Ihre Änderungen speichern?</translation>
         <translation>Datei erfolgreich geladen.</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="393"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="392"/>
         <source>Open File</source>
         <translation>Datei öffnen</translation>
     </message>
@@ -3334,9 +3334,9 @@ Möchten Sie Ihre Änderungen speichern?</translation>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="177"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="230"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="393"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="427"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="472"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="392"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="426"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="471"/>
         <source>Panda files</source>
         <translation>Panda-Dateien</translation>
     </message>
@@ -3346,33 +3346,33 @@ Möchten Sie Ihre Änderungen speichern?</translation>
         <translation>Datei speichern (ursprünglicher Speicherort ist schreibgeschützt)</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="427"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="472"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="426"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="471"/>
         <source>Save File as ...</source>
         <translation>Datei speichern als ...</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="527"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="526"/>
         <source>File Conflict</source>
         <translation>Dateikonflikt</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="528"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="527"/>
         <source>The file &quot;%1&quot; is already open in another tab.</source>
         <translation>Die Datei „%1“ ist bereits in einem anderen Tab geöffnet.</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="531"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="530"/>
         <source>Switch to Tab</source>
         <translation>Zum Tab wechseln</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="605"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="604"/>
         <source>Error!</source>
         <translation>Fehler!</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="702"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="701"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>

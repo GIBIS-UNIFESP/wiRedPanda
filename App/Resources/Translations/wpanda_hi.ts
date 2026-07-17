@@ -438,27 +438,27 @@
 <context>
     <name>ConnectionManager</name>
     <message>
-        <location filename="../../Scene/ConnectionManager.cpp" line="252"/>
+        <location filename="../../Scene/ConnectionManager.cpp" line="257"/>
         <source>This connection is not allowed.</source>
         <translation>इस कनेक्शन की अनुमति नहीं है।</translation>
     </message>
     <message>
-        <location filename="../../Scene/ConnectionManager.cpp" line="255"/>
+        <location filename="../../Scene/ConnectionManager.cpp" line="260"/>
         <source>Can&apos;t connect an element to itself.</source>
         <translation>किसी एलिमेंट को खुद से नहीं जोड़ा जा सकता।</translation>
     </message>
     <message>
-        <location filename="../../Scene/ConnectionManager.cpp" line="258"/>
+        <location filename="../../Scene/ConnectionManager.cpp" line="263"/>
         <source>These ports are already connected.</source>
         <translation>ये पोर्ट पहले से ही जुड़े हुए हैं।</translation>
     </message>
     <message>
-        <location filename="../../Scene/ConnectionManager.cpp" line="263"/>
+        <location filename="../../Scene/ConnectionManager.cpp" line="268"/>
         <source>This element receives wirelessly — no input wire needed.</source>
         <translation>यह एलिमेंट वायरलेस तरीके से प्राप्त करता है — इनपुट वायर की आवश्यकता नहीं है।</translation>
     </message>
     <message>
-        <location filename="../../Scene/ConnectionManager.cpp" line="268"/>
+        <location filename="../../Scene/ConnectionManager.cpp" line="273"/>
         <source>This element transmits wirelessly — no output wire needed.</source>
         <translation>यह एलिमेंट वायरलेस तरीके से भेजता है — आउटपुट वायर की आवश्यकता नहीं है।</translation>
     </message>
@@ -765,22 +765,22 @@
 <context>
     <name>ElementAppearance</name>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="234"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="284"/>
         <source>File does not exist</source>
         <translation>फाइल मौजूद नहीं है</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="236"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="286"/>
         <source>File is not readable</source>
         <translation>फाइल पढ़ने योग्य नहीं है</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="237"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="287"/>
         <source>Unknown reason</source>
         <translation>अज्ञात कारण</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="247"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="297"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
         <translation>पिक्समैप लोड नहीं हो सका: %1 (%2)</translation>
     </message>
@@ -1553,12 +1553,12 @@ Choose a different name.</source>
 <context>
     <name>GraphicsView</name>
     <message>
-        <location filename="../../Scene/GraphicsView.cpp" line="26"/>
+        <location filename="../../Scene/GraphicsView.cpp" line="28"/>
         <source>Circuit canvas</source>
         <translation>सर्किट कैनवास</translation>
     </message>
     <message>
-        <location filename="../../Scene/GraphicsView.cpp" line="27"/>
+        <location filename="../../Scene/GraphicsView.cpp" line="29"/>
         <source>The circuit canvas. Drag elements here from the palette to build a circuit, drag between ports to wire them together, and drag a selection to move it.</source>
         <translation>सर्किट कैनवास। एक सर्किट बनाने के लिए पैलेट से एलिमेंट यहां खींचें, उन्हें वायर करने के लिए पोर्ट के बीच खींचें, और चयन को स्थानांतरित करने के लिए उसे खींचें।</translation>
     </message>
@@ -2793,24 +2793,24 @@ IC और दिखावट तक पहुँचने या beWavedDolphin 
 <context>
     <name>Scene</name>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="51"/>
-        <location filename="../../Scene/Scene.cpp" line="585"/>
+        <location filename="../../Scene/Scene.cpp" line="81"/>
+        <location filename="../../Scene/Scene.cpp" line="771"/>
         <source>&amp;Undo</source>
         <translation>&amp;अनडू</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="59"/>
-        <location filename="../../Scene/Scene.cpp" line="591"/>
+        <location filename="../../Scene/Scene.cpp" line="89"/>
+        <location filename="../../Scene/Scene.cpp" line="777"/>
         <source>&amp;Redo</source>
         <translation>&amp;रीडू</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="611"/>
+        <location filename="../../Scene/Scene.cpp" line="797"/>
         <source>Paste</source>
         <translation>पेस्ट करें</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="620"/>
+        <location filename="../../Scene/Scene.cpp" line="806"/>
         <source>Select all</source>
         <translation>सभी चुनें</translation>
     </message>
@@ -2920,7 +2920,7 @@ IC और दिखावट तक पहुँचने या beWavedDolphin 
 <context>
     <name>Simulation</name>
     <message>
-        <location filename="../../Simulation/Simulation.cpp" line="314"/>
+        <location filename="../../Simulation/Simulation.cpp" line="372"/>
         <source>Warning: feedback circuit did not converge — the circuit may be oscillating.</source>
         <translation>चेतावनी: फ़ीडबैक सर्किट अभिसरित नहीं हुआ — सर्किट दोलन कर सकता है।</translation>
     </message>
@@ -3219,22 +3219,22 @@ Please update wiRedPanda to save changes to this file.</source>
         <translation>फ़ाइल खोलने में त्रुटि: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="401"/>
+        <location filename="../../Scene/Workspace.cpp" line="388"/>
         <source>Could not save file: %1</source>
         <translation>फ़ाइल सेव नहीं हो सकी: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="476"/>
+        <location filename="../../Scene/Workspace.cpp" line="463"/>
         <source>This file does not exist: %1</source>
         <translation>यह फ़ाइल मौजूद नहीं है: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="485"/>
+        <location filename="../../Scene/Workspace.cpp" line="472"/>
         <source>Could not open file: %1</source>
         <translation>फ़ाइल नहीं खोल सके: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="533"/>
+        <location filename="../../Scene/Workspace.cpp" line="520"/>
         <source>This file was saved with a newer file format (version %1).
 Your version supports file format %2.
 
@@ -3247,34 +3247,34 @@ Please update wiRedPanda to edit and save this file.</source>
 इस फ़ाइल को संपादित और सहेजने के लिए कृपया wiRedPanda अपडेट करें।</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="538"/>
+        <location filename="../../Scene/Workspace.cpp" line="525"/>
         <source>Newer version file.</source>
         <translation>नए संस्करण की फाइल।</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="541"/>
+        <location filename="../../Scene/Workspace.cpp" line="528"/>
         <source>This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).
 A backup of the original file has been created with name: %3</source>
         <translation>यह फ़ाइल एक पुराने प्रारूप (संस्करण %1) में है और स्वचालित रूप से वर्तमान प्रारूप (संस्करण %2) में अपग्रेड की जाएगी।
 मूल फ़ाइल का बैकअप इस नाम से बनाया गया है: %3</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="544"/>
+        <location filename="../../Scene/Workspace.cpp" line="531"/>
         <source>File upgraded.</source>
         <translation>फ़ाइल अपग्रेड हो गई।</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="706"/>
+        <location filename="../../Scene/Workspace.cpp" line="693"/>
         <source>Error opening autosave file: %1</source>
         <translation>ऑटोसेव फ़ाइल खोलने में त्रुटि: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="714"/>
+        <location filename="../../Scene/Workspace.cpp" line="701"/>
         <source>Could not commit autosave file: %1</source>
         <translation>स्वतः सहेजी गई फ़ाइल को अंतिम रूप नहीं दिया जा सका: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="880"/>
+        <location filename="../../Scene/Workspace.cpp" line="867"/>
         <source>Remove embedded IC &quot;%1&quot;</source>
         <translation>अंतर्निहित IC &quot;%1&quot; हटाएँ</translation>
     </message>
@@ -3312,7 +3312,7 @@ Do you want to save your changes?</source>
         <translation>फ़ाइल सफलतापूर्वक लोड हुई।</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="393"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="392"/>
         <source>Open File</source>
         <translation>फ़ाइल खोलें</translation>
     </message>
@@ -3334,9 +3334,9 @@ Do you want to save your changes?</source>
     <message>
         <location filename="../../UI/WorkspaceManager.cpp" line="177"/>
         <location filename="../../UI/WorkspaceManager.cpp" line="230"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="393"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="427"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="472"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="392"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="426"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="471"/>
         <source>Panda files</source>
         <translation>Panda फ़ाइलें</translation>
     </message>
@@ -3346,33 +3346,33 @@ Do you want to save your changes?</source>
         <translation>फ़ाइल सहेजें (मूल स्थान केवल-पठन है)</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="427"/>
-        <location filename="../../UI/WorkspaceManager.cpp" line="472"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="426"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="471"/>
         <source>Save File as ...</source>
         <translation>फ़ाइल इस रूप में सेव करें...</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="527"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="526"/>
         <source>File Conflict</source>
         <translation>फ़ाइल टकराव</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="528"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="527"/>
         <source>The file &quot;%1&quot; is already open in another tab.</source>
         <translation>फ़ाइल &quot;%1&quot; पहले से ही दूसरे टैब में खुली है।</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="531"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="530"/>
         <source>Switch to Tab</source>
         <translation>टैब पर जाएँ</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="605"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="604"/>
         <source>Error!</source>
         <translation>त्रुटि!</translation>
     </message>
     <message>
-        <location filename="../../UI/WorkspaceManager.cpp" line="702"/>
+        <location filename="../../UI/WorkspaceManager.cpp" line="701"/>
         <source>Error</source>
         <translation>त्रुटि</translation>
     </message>
