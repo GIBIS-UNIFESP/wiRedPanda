@@ -4,6 +4,8 @@
 import QtQuick
 import QtQuick.Controls
 
+import QuickShell
+
 ApplicationWindow {
     id: window
 
@@ -31,8 +33,10 @@ ApplicationWindow {
         }
     }
 
-    Label {
-        anchors.centerIn: parent
-        text: qsTr("wiRedPanda — Qt Quick rewrite (Phase 0 shell)")
+    // Phase 1 canvas prototype: real GraphicElement/Simulation classes, batched QSGNode
+    // rendering, spatial-index hit-testing. Click a switch (the left two boxes) to toggle it —
+    // the AND gate and LED update live, driven by the real Simulation engine.
+    CanvasItem {
+        anchors.fill: parent
     }
 }
