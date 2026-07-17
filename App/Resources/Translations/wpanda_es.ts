@@ -3150,40 +3150,40 @@ Debe guardar los nuevos proyectos antes de acceder a CIs y apariencias o ejecuta
         <translation>Descargando actualización</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="131"/>
         <location filename="../../UI/UpdateController.cpp" line="139"/>
-        <location filename="../../UI/UpdateController.cpp" line="145"/>
+        <location filename="../../UI/UpdateController.cpp" line="147"/>
+        <location filename="../../UI/UpdateController.cpp" line="153"/>
         <source>Download Failed</source>
         <translation>Error de descarga</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="131"/>
+        <location filename="../../UI/UpdateController.cpp" line="139"/>
         <source>Could not download the update:
 %1</source>
         <translation>No se pudo descargar la actualización:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="139"/>
+        <location filename="../../UI/UpdateController.cpp" line="147"/>
         <source>Could not save the file:
 %1</source>
         <translation>No se pudo guardar el archivo:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="145"/>
+        <location filename="../../UI/UpdateController.cpp" line="153"/>
         <source>Could not write the file:
 %1</source>
         <translation>No se pudo escribir el archivo:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="152"/>
+        <location filename="../../UI/UpdateController.cpp" line="160"/>
         <source>Download Complete</source>
         <translation>Descarga completa</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="153"/>
+        <location filename="../../UI/UpdateController.cpp" line="161"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
         <translation>wiRedPanda se ha descargado en:

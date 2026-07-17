@@ -3150,40 +3150,40 @@ Nové projekty musíte uložiť pred prístupom k IO a vzhľadom alebo spustení
         <translation>Sťahovanie aktualizácie</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="131"/>
         <location filename="../../UI/UpdateController.cpp" line="139"/>
-        <location filename="../../UI/UpdateController.cpp" line="145"/>
+        <location filename="../../UI/UpdateController.cpp" line="147"/>
+        <location filename="../../UI/UpdateController.cpp" line="153"/>
         <source>Download Failed</source>
         <translation>Sťahovanie zlyhalo</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="131"/>
+        <location filename="../../UI/UpdateController.cpp" line="139"/>
         <source>Could not download the update:
 %1</source>
         <translation>Nepodarilo sa stiahnuť aktualizáciu:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="139"/>
+        <location filename="../../UI/UpdateController.cpp" line="147"/>
         <source>Could not save the file:
 %1</source>
         <translation>Nepodarilo sa uložiť súbor:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="145"/>
+        <location filename="../../UI/UpdateController.cpp" line="153"/>
         <source>Could not write the file:
 %1</source>
         <translation>Nepodarilo sa zapísať súbor:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="152"/>
+        <location filename="../../UI/UpdateController.cpp" line="160"/>
         <source>Download Complete</source>
         <translation>Sťahovanie dokončené</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="153"/>
+        <location filename="../../UI/UpdateController.cpp" line="161"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
         <translation>wiRedPanda bolo stiahnuté do:

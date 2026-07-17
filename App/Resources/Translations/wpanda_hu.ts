@@ -3150,40 +3150,40 @@ Az új projekteket mentenie kell, mielőtt hozzáférne az IC-khez és megjelen�
         <translation>Frissítés letöltése</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="131"/>
         <location filename="../../UI/UpdateController.cpp" line="139"/>
-        <location filename="../../UI/UpdateController.cpp" line="145"/>
+        <location filename="../../UI/UpdateController.cpp" line="147"/>
+        <location filename="../../UI/UpdateController.cpp" line="153"/>
         <source>Download Failed</source>
         <translation>Letöltés sikertelen</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="131"/>
+        <location filename="../../UI/UpdateController.cpp" line="139"/>
         <source>Could not download the update:
 %1</source>
         <translation>Nem sikerült letölteni a frissítést:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="139"/>
+        <location filename="../../UI/UpdateController.cpp" line="147"/>
         <source>Could not save the file:
 %1</source>
         <translation>Nem sikerült menteni a fájlt:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="145"/>
+        <location filename="../../UI/UpdateController.cpp" line="153"/>
         <source>Could not write the file:
 %1</source>
         <translation>A fájl nem írható:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="152"/>
+        <location filename="../../UI/UpdateController.cpp" line="160"/>
         <source>Download Complete</source>
         <translation>Letöltés befejezve</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="153"/>
+        <location filename="../../UI/UpdateController.cpp" line="161"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
         <translation>A wiRedPanda ide lett letöltve:
