@@ -3,6 +3,8 @@
 
 #include "App/Exercise/ExerciseEngine.h"
 
+#include <QDebug>
+
 #include "App/Core/Settings.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
@@ -168,6 +170,8 @@ bool ExerciseEngine::validateElements(const QVector<ExerciseElementRequirement> 
     for (const ExerciseElementRequirement &req : reqs) {
         const ElementType required = ElementFactory::textToType(req.typeName);
         if (required == ElementType::Unknown) {
+            qWarning() << "ExerciseEngine::validateElements: unknown element type" << req.typeName
+                       << "in exercise" << m_core.id() << "-- this step can never be satisfied";
             return false;
         }
         int count = 0;
@@ -195,6 +199,9 @@ bool ExerciseEngine::validateConnections(const QVector<ExerciseConnectionRequire
         const ElementType toType   = ElementFactory::textToType(req.toTypeName);
         const ElementType fromType = ElementFactory::textToType(req.fromTypeName);
         if (toType == ElementType::Unknown || fromType == ElementType::Unknown) {
+            qWarning() << "ExerciseEngine::validateConnections: unknown element type in"
+                       << (toType == ElementType::Unknown ? req.toTypeName : req.fromTypeName)
+                       << "in exercise" << m_core.id() << "-- this step can never be satisfied";
             return false;
         }
 

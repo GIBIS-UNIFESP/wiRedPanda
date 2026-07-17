@@ -6,12 +6,18 @@
 #include <QApplication>
 #include <QFile>
 #include <QFont>
+#include <QRegularExpression>
 #include <QSignalSpy>
 #include <QTemporaryDir>
+#include <QTest>
 
 #include "App/Core/Settings.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Exercise/ExerciseEngine.h"
 #include "App/Exercise/ExerciseOverlay.h"
+#include "App/Scene/Commands.h"
+#include "App/Scene/Scene.h"
+#include "App/Scene/Workspace.h"
 
 namespace {
 
@@ -158,6 +164,51 @@ void TestExerciseEngine::testNegativeMinCountClampsToZero()
     QCOMPARE(step.requiredElements[0].minCount, 0);
     QCOMPARE(step.requiredConnections.size(), 1);
     QCOMPARE(step.requiredConnections[0].minCount, 0);
+}
+
+void TestExerciseEngine::testUnknownElementTypeWarnsAndNeverAdvances()
+{
+    // Regression: a typo'd/unknown "type" in a step's requiredElements (Exercise content is
+    // end-user-writable) made validateElements() return false unconditionally, permanently
+    // stuck-ing the step with no diagnostic anywhere — unlike every other malformed-content
+    // path in this feature (e.g. ExerciseTourResources::scan()), which logs a qWarning().
+    const char *const json = R"({
+        "id": "test-unknown-type",
+        "title": "Test",
+        "steps": [
+            {
+                "key": "step0",
+                "instruction": "Instruction",
+                "requiredElements": [ { "type": "NotARealElementType", "minCount": 1 } ]
+            }
+        ]
+    })";
+
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("unknown_type.json");
+    {
+        QFile file(path);
+        QVERIFY(file.open(QIODevice::WriteOnly));
+        file.write(json);
+    }
+
+    WorkSpace workspace;
+    ExerciseEngine engine;
+    QVERIFY(engine.loadFromResource(path));
+    engine.setScene(workspace.scene());
+    engine.start();
+
+    QTest::ignoreMessage(QtWarningMsg,
+        QRegularExpression(".*ExerciseEngine::validateElements.*NotARealElementType.*"));
+
+    auto *elm = ElementFactory::buildElement(ElementType::And);
+    workspace.scene()->receiveCommand(new AddItemsCommand({elm}, workspace.scene()));
+
+    // The step's only requirement references an unknown type, so it can never be satisfied —
+    // the engine must stay on step 0 no matter what the user builds.
+    QCOMPARE(engine.currentStep(), 0);
+    QVERIFY(engine.isActive());
 }
 
 void TestExerciseEngine::testOverlayFontScalesWithApplicationFont()
