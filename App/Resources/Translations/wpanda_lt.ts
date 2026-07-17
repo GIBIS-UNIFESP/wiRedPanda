@@ -3150,40 +3150,40 @@ Prieš pasiekiant IC ir išvaizdas arba paleidžiant beWavedDolphin simuliacijas
         <translation>Atsisiunčiamas atnaujinimas</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="131"/>
         <location filename="../../UI/UpdateController.cpp" line="139"/>
-        <location filename="../../UI/UpdateController.cpp" line="145"/>
+        <location filename="../../UI/UpdateController.cpp" line="147"/>
+        <location filename="../../UI/UpdateController.cpp" line="153"/>
         <source>Download Failed</source>
         <translation>Atsisiuntimas nepavyko</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="131"/>
+        <location filename="../../UI/UpdateController.cpp" line="139"/>
         <source>Could not download the update:
 %1</source>
         <translation>Nepavyko atsisiųsti atnaujinimo:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="139"/>
+        <location filename="../../UI/UpdateController.cpp" line="147"/>
         <source>Could not save the file:
 %1</source>
         <translation>Nepavyko išsaugoti failo:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="145"/>
+        <location filename="../../UI/UpdateController.cpp" line="153"/>
         <source>Could not write the file:
 %1</source>
         <translation>Nepavyko įrašyti failo:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="152"/>
+        <location filename="../../UI/UpdateController.cpp" line="160"/>
         <source>Download Complete</source>
         <translation>Atsisiuntimas baigtas</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="153"/>
+        <location filename="../../UI/UpdateController.cpp" line="161"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
         <translation>wiRedPanda atsisiųstas į:

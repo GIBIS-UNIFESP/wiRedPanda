@@ -3150,40 +3150,40 @@ Bạn phải lưu các dự án mới trước khi truy cập IC và giao diện
         <translation>Đang tải xuống bản cập nhật</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="131"/>
         <location filename="../../UI/UpdateController.cpp" line="139"/>
-        <location filename="../../UI/UpdateController.cpp" line="145"/>
+        <location filename="../../UI/UpdateController.cpp" line="147"/>
+        <location filename="../../UI/UpdateController.cpp" line="153"/>
         <source>Download Failed</source>
         <translation>Tải xuống thất bại</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="131"/>
+        <location filename="../../UI/UpdateController.cpp" line="139"/>
         <source>Could not download the update:
 %1</source>
         <translation>Không thể tải xuống bản cập nhật:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="139"/>
+        <location filename="../../UI/UpdateController.cpp" line="147"/>
         <source>Could not save the file:
 %1</source>
         <translation>Không thể lưu tệp:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="145"/>
+        <location filename="../../UI/UpdateController.cpp" line="153"/>
         <source>Could not write the file:
 %1</source>
         <translation>Không thể ghi tệp:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="152"/>
+        <location filename="../../UI/UpdateController.cpp" line="160"/>
         <source>Download Complete</source>
         <translation>Tải xuống hoàn tất</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="153"/>
+        <location filename="../../UI/UpdateController.cpp" line="161"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
         <translation>wiRedPanda đã được tải xuống tại:
