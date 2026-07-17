@@ -365,8 +365,9 @@ QJsonObject ElementHandler::handleSetElementProperties(const QJsonObject &params
         }
         double oldDelay = element->delay();
         double newDelay = params.value("delay").toDouble();
-        if (newDelay < 0) {
-            return createErrorResponse("Parameter 'delay' must be non-negative", requestId, JsonRpcError::ValidationError);
+        if (newDelay < -1.0 || newDelay > 1.0) {
+            return createErrorResponse("Parameter 'delay' must be in [-1, 1] (fraction of period; negative advances the clock)",
+                                       requestId, JsonRpcError::ValidationError);
         }
 
         oldProperties["delay"] = oldDelay;
