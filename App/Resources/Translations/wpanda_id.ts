@@ -402,12 +402,12 @@
         <translation>Jam</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Clock.cpp" line="235"/>
+        <location filename="../../Element/GraphicElements/Clock.cpp" line="241"/>
         <source>Low</source>
         <translation>Rendah</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Clock.cpp" line="235"/>
+        <location filename="../../Element/GraphicElements/Clock.cpp" line="241"/>
         <source>High</source>
         <translation>Tinggi</translation>
     </message>
@@ -1505,47 +1505,47 @@ Pilih nama lain.</translation>
         <translation>Kesalahan aliran saat membaca entri %2 dari %1 pada posisi %3</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="210"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="262"/>
         <source>Stream error reading element properties at position %1</source>
         <translation>Kesalahan aliran saat membaca properti elemen pada posisi %1</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="339"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="406"/>
         <source>Stream error reading appearances at position %1</source>
         <translation>Kesalahan aliran saat membaca tampilan pada posisi %1</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="347"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="414"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
         <translation>Indeks tampilan %1 di luar jangkauan (ukuran=%2) — aliran mungkin rusak</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="384"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="460"/>
         <source>Non-finite element position — stream may be corrupt</source>
         <translation>Posisi elemen tidak terhingga — aliran mungkin rusak</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="402"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="478"/>
         <source>Non-finite element rotation — stream may be corrupt</source>
         <translation>Rotasi elemen tidak terhingga — aliran mungkin rusak</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="462"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="538"/>
         <source>Refusing old-format input port list with implausible count %1 (max %2)</source>
         <translation>Menolak daftar port input format lama dengan jumlah tidak masuk akal %1 (maks %2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="496"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="572"/>
         <source>Refusing old-format output port list with implausible count %1 (max %2)</source>
         <translation>Menolak daftar port output format lama dengan jumlah tidak masuk akal %1 (maks %2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="561"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="637"/>
         <source>Refusing old-format appearance list with implausible count %1 (max %2)</source>
         <translation>Menolak daftar tampilan format lama dengan jumlah tidak masuk akal %1 (maks %2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="590"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="666"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
         <translation>Indeks tampilan %1 di luar jangkauan (ukuran=%2) untuk nama tampilan &quot;%3&quot; — aliran mungkin rusak</translation>
     </message>
@@ -1782,17 +1782,17 @@ Simpan sekarang?</translation>
         <translation>Kesalahan saat membuka berkas: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICLoader.cpp" line="233"/>
+        <location filename="../../Element/ICLoader.cpp" line="241"/>
         <source>IC migration: cannot open file for writing: %1</source>
         <translation>Migrasi IC: tidak dapat membuka berkas untuk penulisan: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICLoader.cpp" line="240"/>
+        <location filename="../../Element/ICLoader.cpp" line="247"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
         <translation>Migrasi IC: gagal mengonfirmasi berkas yang disimpan ulang: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICLoader.cpp" line="303"/>
+        <location filename="../../Element/ICLoader.cpp" line="310"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
         <translation>Batas kedalaman penyarangan IC (%1) terlampaui — blob mungkin dibuat secara berbahaya</translation>
     </message>
@@ -1828,12 +1828,12 @@ Simpan sekarang?</translation>
         <translation>Tombol Tekan</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputButton.cpp" line="125"/>
+        <location filename="../../Element/GraphicElements/InputButton.cpp" line="127"/>
         <source>Released</source>
         <translation>Dilepas</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputButton.cpp" line="125"/>
+        <location filename="../../Element/GraphicElements/InputButton.cpp" line="127"/>
         <source>Pressed</source>
         <translation>Ditekan</translation>
     </message>
@@ -1872,12 +1872,12 @@ Simpan sekarang?</translation>
         <translation>Saklar Input</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="150"/>
+        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="156"/>
         <source>Off</source>
         <translation>Mati</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="150"/>
+        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="156"/>
         <source>On</source>
         <translation>Nyala</translation>
     </message>
@@ -1918,22 +1918,22 @@ Simpan sekarang?</translation>
         <translation>LED</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="245"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="249"/>
         <source>Port %1=%2</source>
         <translation>Port %1=%2</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="252"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="256"/>
         <source>Off</source>
         <translation>Mati</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="253"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="257"/>
         <source>On</source>
         <translation>Nyala</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="276"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="280"/>
         <source>Default</source>
         <translation>Bawaan</translation>
     </message>
@@ -2856,63 +2856,63 @@ Anda harus menyimpan proyek baru sebelum mengakses IC dan tampilan, atau menjala
         <translation>Jumlah blob %1 tidak masuk akal dibanding sisa byte aliran</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="330"/>
-        <location filename="../../IO/Serialization.cpp" line="377"/>
-        <location filename="../../IO/Serialization.cpp" line="384"/>
-        <location filename="../../IO/Serialization.cpp" line="405"/>
-        <location filename="../../IO/Serialization.cpp" line="425"/>
-        <location filename="../../IO/Serialization.cpp" line="430"/>
-        <location filename="../../IO/Serialization.cpp" line="448"/>
+        <location filename="../../IO/Serialization.cpp" line="375"/>
+        <location filename="../../IO/Serialization.cpp" line="422"/>
+        <location filename="../../IO/Serialization.cpp" line="429"/>
+        <location filename="../../IO/Serialization.cpp" line="450"/>
+        <location filename="../../IO/Serialization.cpp" line="470"/>
+        <location filename="../../IO/Serialization.cpp" line="475"/>
+        <location filename="../../IO/Serialization.cpp" line="493"/>
         <source>Invalid file format.</source>
         <translation>Format berkas tidak valid.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="366"/>
+        <location filename="../../IO/Serialization.cpp" line="411"/>
         <source>Invalid legacy file header: %1</source>
         <translation>Header berkas lama tidak valid: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="561"/>
+        <location filename="../../IO/Serialization.cpp" line="606"/>
         <source>Stream error reading type tag at position %1: status %2</source>
         <translation>Kesalahan stream saat membaca tag tipe pada posisi %1: status %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="573"/>
+        <location filename="../../IO/Serialization.cpp" line="618"/>
         <source>Stream error reading element type at position %1: status %2</source>
         <translation>Kesalahan stream saat membaca tipe elemen pada posisi %1: status %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="585"/>
+        <location filename="../../IO/Serialization.cpp" line="630"/>
         <source>Stream error loading element at position %1: status %2</source>
         <translation>Kesalahan stream saat memuat elemen pada posisi %1: status %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="604"/>
+        <location filename="../../IO/Serialization.cpp" line="649"/>
         <source>Stream error loading connection at position %1: status %2</source>
         <translation>Kesalahan stream saat memuat koneksi pada posisi %1: status %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="611"/>
+        <location filename="../../IO/Serialization.cpp" line="656"/>
         <source>Invalid type. Data is possibly corrupted.</source>
         <translation>Jenis tidak valid. Data kemungkinan rusak.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="664"/>
+        <location filename="../../IO/Serialization.cpp" line="709"/>
         <source>Failed to create versioned backup: %1</source>
         <translation>Gagal membuat cadangan berversi: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="685"/>
+        <location filename="../../IO/Serialization.cpp" line="738"/>
         <source>Stream error reading preamble: status %1</source>
         <translation>Kesalahan aliran saat membaca pembukaan: status %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="739"/>
+        <location filename="../../IO/Serialization.cpp" line="797"/>
         <source>Panda file dependency chain exceeds the maximum nesting depth (%1) while copying &apos;%2&apos;</source>
         <translation>Rantai ketergantungan file Panda melebihi kedalaman bertingkat maksimum (%1) saat menyalin &apos;%2&apos;</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="758"/>
+        <location filename="../../IO/Serialization.cpp" line="816"/>
         <source>Error copying file: %1</source>
         <translation>Gagal menyalin berkas: %1</translation>
     </message>
@@ -3214,27 +3214,27 @@ Silakan perbarui wiRedPanda untuk menyimpan perubahan pada file ini.</translatio
         <translation>Tidak dapat menyimpan: subsirkuit &quot;%1&quot; tidak dapat dibaca untuk menanamkannya.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="369"/>
+        <location filename="../../Scene/Workspace.cpp" line="373"/>
         <source>Error opening file: %1</source>
         <translation>Kesalahan membuka berkas: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="388"/>
+        <location filename="../../Scene/Workspace.cpp" line="392"/>
         <source>Could not save file: %1</source>
         <translation>Tidak dapat menyimpan berkas: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="463"/>
+        <location filename="../../Scene/Workspace.cpp" line="475"/>
         <source>This file does not exist: %1</source>
         <translation>Berkas ini tidak ada: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="472"/>
+        <location filename="../../Scene/Workspace.cpp" line="484"/>
         <source>Could not open file: %1</source>
         <translation>Tidak dapat membuka berkas: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="520"/>
+        <location filename="../../Scene/Workspace.cpp" line="532"/>
         <source>This file was saved with a newer file format (version %1).
 Your version supports file format %2.
 
@@ -3247,34 +3247,34 @@ File akan dibuka tetapi penyimpanan diblokir.
 Silakan perbarui wiRedPanda untuk mengedit dan menyimpan file ini.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="525"/>
+        <location filename="../../Scene/Workspace.cpp" line="537"/>
         <source>Newer version file.</source>
         <translation>Berkas versi lebih baru.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="528"/>
+        <location filename="../../Scene/Workspace.cpp" line="540"/>
         <source>This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).
 A backup of the original file has been created with name: %3</source>
         <translation>Berkas ini dalam format lama (versi %1) dan akan ditingkatkan secara otomatis ke format saat ini (versi %2).
 Cadangan berkas asli telah dibuat dengan nama: %3</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="531"/>
+        <location filename="../../Scene/Workspace.cpp" line="543"/>
         <source>File upgraded.</source>
         <translation>Berkas telah ditingkatkan.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="693"/>
+        <location filename="../../Scene/Workspace.cpp" line="713"/>
         <source>Error opening autosave file: %1</source>
         <translation>Kesalahan membuka berkas simpan otomatis: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="701"/>
+        <location filename="../../Scene/Workspace.cpp" line="721"/>
         <source>Could not commit autosave file: %1</source>
         <translation>Tidak dapat menetapkan berkas simpan otomatis: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="867"/>
+        <location filename="../../Scene/Workspace.cpp" line="889"/>
         <source>Remove embedded IC &quot;%1&quot;</source>
         <translation>Hapus IC tertanam &quot;%1&quot;</translation>
     </message>

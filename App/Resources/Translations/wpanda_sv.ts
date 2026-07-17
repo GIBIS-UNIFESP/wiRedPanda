@@ -402,12 +402,12 @@
         <translation>Klocka</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Clock.cpp" line="235"/>
+        <location filename="../../Element/GraphicElements/Clock.cpp" line="241"/>
         <source>Low</source>
         <translation>Låg</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Clock.cpp" line="235"/>
+        <location filename="../../Element/GraphicElements/Clock.cpp" line="241"/>
         <source>High</source>
         <translation>Hög</translation>
     </message>
@@ -1505,47 +1505,47 @@ Välj ett annat namn.</translation>
         <translation>Strömfel vid läsning av %1-post %2 vid position %3</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="210"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="262"/>
         <source>Stream error reading element properties at position %1</source>
         <translation>Strömfel vid läsning av elementegenskaper vid position %1</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="339"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="406"/>
         <source>Stream error reading appearances at position %1</source>
         <translation>Strömfel vid läsning av utseenden vid position %1</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="347"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="414"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
         <translation>Utseendeindex %1 utanför intervallet (storlek=%2) — strömmen kan vara skadad</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="384"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="460"/>
         <source>Non-finite element position — stream may be corrupt</source>
         <translation>Icke-ändlig elementposition — strömmen kan vara skadad</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="402"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="478"/>
         <source>Non-finite element rotation — stream may be corrupt</source>
         <translation>Icke-ändlig elementrotation — strömmen kan vara skadad</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="462"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="538"/>
         <source>Refusing old-format input port list with implausible count %1 (max %2)</source>
         <translation>Vägrar ingångsportlista i gammalt format med orimligt antal %1 (max %2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="496"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="572"/>
         <source>Refusing old-format output port list with implausible count %1 (max %2)</source>
         <translation>Vägrar utgångsportlista i gammalt format med orimligt antal %1 (max %2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="561"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="637"/>
         <source>Refusing old-format appearance list with implausible count %1 (max %2)</source>
         <translation>Vägrar utseendelista i gammalt format med orimligt antal %1 (max %2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="590"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="666"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
         <translation>Utseendeindex %1 utanför intervallet (storlek=%2) för utseendenamn &quot;%3&quot; — strömmen kan vara skadad</translation>
     </message>
@@ -1782,17 +1782,17 @@ Spara nu?</translation>
         <translation>Fel vid öppning av filen: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICLoader.cpp" line="233"/>
+        <location filename="../../Element/ICLoader.cpp" line="241"/>
         <source>IC migration: cannot open file for writing: %1</source>
         <translation>IC-migrering: det går inte att öppna filen för skrivning: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICLoader.cpp" line="240"/>
+        <location filename="../../Element/ICLoader.cpp" line="247"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
         <translation>IC-migrering: det gick inte att bekräfta den återsparade filen: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICLoader.cpp" line="303"/>
+        <location filename="../../Element/ICLoader.cpp" line="310"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
         <translation>Gränsen för IC-nästlingsdjup (%1) överskriden — blobben kan vara skadligt utformad</translation>
     </message>
@@ -1828,12 +1828,12 @@ Spara nu?</translation>
         <translation>Tryckknapp</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputButton.cpp" line="125"/>
+        <location filename="../../Element/GraphicElements/InputButton.cpp" line="127"/>
         <source>Released</source>
         <translation>Släppt</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputButton.cpp" line="125"/>
+        <location filename="../../Element/GraphicElements/InputButton.cpp" line="127"/>
         <source>Pressed</source>
         <translation>Nedtryckt</translation>
     </message>
@@ -1872,12 +1872,12 @@ Spara nu?</translation>
         <translation>Ingångsomkopplare</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="150"/>
+        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="156"/>
         <source>Off</source>
         <translation>Av</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="150"/>
+        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="156"/>
         <source>On</source>
         <translation>På</translation>
     </message>
@@ -1918,22 +1918,22 @@ Spara nu?</translation>
         <translation>LED</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="245"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="249"/>
         <source>Port %1=%2</source>
         <translation>Port %1=%2</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="252"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="256"/>
         <source>Off</source>
         <translation>Av</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="253"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="257"/>
         <source>On</source>
         <translation>På</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="276"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="280"/>
         <source>Default</source>
         <translation>Standard</translation>
     </message>
@@ -2856,63 +2856,63 @@ Du måste spara nya projekt innan du kan komma åt IC:ar och utseenden eller kö
         <translation>Blobantalet %1 är orimligt jämfört med återstående byte i strömmen</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="330"/>
-        <location filename="../../IO/Serialization.cpp" line="377"/>
-        <location filename="../../IO/Serialization.cpp" line="384"/>
-        <location filename="../../IO/Serialization.cpp" line="405"/>
-        <location filename="../../IO/Serialization.cpp" line="425"/>
-        <location filename="../../IO/Serialization.cpp" line="430"/>
-        <location filename="../../IO/Serialization.cpp" line="448"/>
+        <location filename="../../IO/Serialization.cpp" line="375"/>
+        <location filename="../../IO/Serialization.cpp" line="422"/>
+        <location filename="../../IO/Serialization.cpp" line="429"/>
+        <location filename="../../IO/Serialization.cpp" line="450"/>
+        <location filename="../../IO/Serialization.cpp" line="470"/>
+        <location filename="../../IO/Serialization.cpp" line="475"/>
+        <location filename="../../IO/Serialization.cpp" line="493"/>
         <source>Invalid file format.</source>
         <translation>Ogiltigt filformat.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="366"/>
+        <location filename="../../IO/Serialization.cpp" line="411"/>
         <source>Invalid legacy file header: %1</source>
         <translation>Ogiltigt äldre filhuvud: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="561"/>
+        <location filename="../../IO/Serialization.cpp" line="606"/>
         <source>Stream error reading type tag at position %1: status %2</source>
         <translation>Strömfel vid läsning av typtagg vid position %1: status %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="573"/>
+        <location filename="../../IO/Serialization.cpp" line="618"/>
         <source>Stream error reading element type at position %1: status %2</source>
         <translation>Strömfel vid läsning av elementtyp vid position %1: status %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="585"/>
+        <location filename="../../IO/Serialization.cpp" line="630"/>
         <source>Stream error loading element at position %1: status %2</source>
         <translation>Strömfel vid laddning av element vid position %1: status %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="604"/>
+        <location filename="../../IO/Serialization.cpp" line="649"/>
         <source>Stream error loading connection at position %1: status %2</source>
         <translation>Strömfel vid laddning av anslutning vid position %1: status %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="611"/>
+        <location filename="../../IO/Serialization.cpp" line="656"/>
         <source>Invalid type. Data is possibly corrupted.</source>
         <translation>Ogiltig typ. Data är möjligen korrupt.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="664"/>
+        <location filename="../../IO/Serialization.cpp" line="709"/>
         <source>Failed to create versioned backup: %1</source>
         <translation>Kunde inte skapa versionssäkerhetskopia: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="685"/>
+        <location filename="../../IO/Serialization.cpp" line="738"/>
         <source>Stream error reading preamble: status %1</source>
         <translation>Strömfel vid läsning av preambel: status %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="739"/>
+        <location filename="../../IO/Serialization.cpp" line="797"/>
         <source>Panda file dependency chain exceeds the maximum nesting depth (%1) while copying &apos;%2&apos;</source>
         <translation>Beroendekedjan för Panda-filen överskrider det maximala nästlingsdjupet (%1) vid kopiering av &apos;%2&apos;</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="758"/>
+        <location filename="../../IO/Serialization.cpp" line="816"/>
         <source>Error copying file: %1</source>
         <translation>Fel vid kopiering av fil: %1</translation>
     </message>
@@ -3214,27 +3214,27 @@ Uppdatera wiRedPanda för att spara ändringar i denna fil.</translation>
         <translation>Det går inte att spara: underkretsen &quot;%1&quot; kunde inte läsas för att bäddas in.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="369"/>
+        <location filename="../../Scene/Workspace.cpp" line="373"/>
         <source>Error opening file: %1</source>
         <translation>Fel vid öppning av fil: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="388"/>
+        <location filename="../../Scene/Workspace.cpp" line="392"/>
         <source>Could not save file: %1</source>
         <translation>Kunde inte spara fil: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="463"/>
+        <location filename="../../Scene/Workspace.cpp" line="475"/>
         <source>This file does not exist: %1</source>
         <translation>Denna fil finns inte: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="472"/>
+        <location filename="../../Scene/Workspace.cpp" line="484"/>
         <source>Could not open file: %1</source>
         <translation>Kunde inte öppna fil: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="520"/>
+        <location filename="../../Scene/Workspace.cpp" line="532"/>
         <source>This file was saved with a newer file format (version %1).
 Your version supports file format %2.
 
@@ -3247,34 +3247,34 @@ Filen kommer att öppnas men sparande är blockerat.
 Uppdatera wiRedPanda för att redigera och spara denna fil.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="525"/>
+        <location filename="../../Scene/Workspace.cpp" line="537"/>
         <source>Newer version file.</source>
         <translation>Nyare version av fil.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="528"/>
+        <location filename="../../Scene/Workspace.cpp" line="540"/>
         <source>This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).
 A backup of the original file has been created with name: %3</source>
         <translation>Denna fil är i ett äldre format (version %1) och kommer att uppgraderas automatiskt till det aktuella formatet (version %2).
 En säkerhetskopia av originalfilen har skapats med namnet: %3</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="531"/>
+        <location filename="../../Scene/Workspace.cpp" line="543"/>
         <source>File upgraded.</source>
         <translation>Filen uppgraderades.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="693"/>
+        <location filename="../../Scene/Workspace.cpp" line="713"/>
         <source>Error opening autosave file: %1</source>
         <translation>Fel vid öppning av autospar-fil: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="701"/>
+        <location filename="../../Scene/Workspace.cpp" line="721"/>
         <source>Could not commit autosave file: %1</source>
         <translation>Kunde inte slutföra autosparfilen: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="867"/>
+        <location filename="../../Scene/Workspace.cpp" line="889"/>
         <source>Remove embedded IC &quot;%1&quot;</source>
         <translation>Ta bort inbäddad IC &quot;%1&quot;</translation>
     </message>

@@ -402,12 +402,12 @@
         <translation>Takt</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Clock.cpp" line="235"/>
+        <location filename="../../Element/GraphicElements/Clock.cpp" line="241"/>
         <source>Low</source>
         <translation>Niedrig</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Clock.cpp" line="235"/>
+        <location filename="../../Element/GraphicElements/Clock.cpp" line="241"/>
         <source>High</source>
         <translation>Hoch</translation>
     </message>
@@ -1505,47 +1505,47 @@ Wählen Sie einen anderen Namen.</translation>
         <translation>Datenstromfehler beim Lesen von %1-Eintrag %2 an Position %3</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="210"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="262"/>
         <source>Stream error reading element properties at position %1</source>
         <translation>Datenstromfehler beim Lesen der Elementeigenschaften an Position %1</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="339"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="406"/>
         <source>Stream error reading appearances at position %1</source>
         <translation>Datenstromfehler beim Lesen der Erscheinungsbilder an Position %1</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="347"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="414"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
         <translation>Erscheinungsbild-Index %1 außerhalb des gültigen Bereichs (Größe=%2) — Datenstrom möglicherweise beschädigt</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="384"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="460"/>
         <source>Non-finite element position — stream may be corrupt</source>
         <translation>Nicht endliche Elementposition — Datenstrom möglicherweise beschädigt</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="402"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="478"/>
         <source>Non-finite element rotation — stream may be corrupt</source>
         <translation>Nicht endliche Elementrotation — Datenstrom möglicherweise beschädigt</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="462"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="538"/>
         <source>Refusing old-format input port list with implausible count %1 (max %2)</source>
         <translation>Eingangsport-Liste im alten Format mit unplausibler Anzahl %1 abgelehnt (max. %2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="496"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="572"/>
         <source>Refusing old-format output port list with implausible count %1 (max %2)</source>
         <translation>Ausgangsport-Liste im alten Format mit unplausibler Anzahl %1 abgelehnt (max. %2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="561"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="637"/>
         <source>Refusing old-format appearance list with implausible count %1 (max %2)</source>
         <translation>Erscheinungsbildliste im alten Format mit unplausibler Anzahl %1 abgelehnt (max. %2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="590"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="666"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
         <translation>Erscheinungsbild-Index %1 außerhalb des gültigen Bereichs (Größe=%2) für Erscheinungsbildname „%3“ — Datenstrom möglicherweise beschädigt</translation>
     </message>
@@ -1782,17 +1782,17 @@ Jetzt speichern?</translation>
         <translation>Fehler beim Öffnen der Datei: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICLoader.cpp" line="233"/>
+        <location filename="../../Element/ICLoader.cpp" line="241"/>
         <source>IC migration: cannot open file for writing: %1</source>
         <translation>IC-Migration: Datei kann nicht zum Schreiben geöffnet werden: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICLoader.cpp" line="240"/>
+        <location filename="../../Element/ICLoader.cpp" line="247"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
         <translation>IC-Migration: Erneut gespeicherte Datei konnte nicht übernommen werden: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICLoader.cpp" line="303"/>
+        <location filename="../../Element/ICLoader.cpp" line="310"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
         <translation>Grenze für IC-Verschachtelungstiefe (%1) überschritten — Blob könnte böswillig erstellt worden sein</translation>
     </message>
@@ -1828,12 +1828,12 @@ Jetzt speichern?</translation>
         <translation>Drucktaste</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputButton.cpp" line="125"/>
+        <location filename="../../Element/GraphicElements/InputButton.cpp" line="127"/>
         <source>Released</source>
         <translation>Losgelassen</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputButton.cpp" line="125"/>
+        <location filename="../../Element/GraphicElements/InputButton.cpp" line="127"/>
         <source>Pressed</source>
         <translation>Gedrückt</translation>
     </message>
@@ -1872,12 +1872,12 @@ Jetzt speichern?</translation>
         <translation>Eingangsschalter</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="150"/>
+        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="156"/>
         <source>Off</source>
         <translation>Aus</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="150"/>
+        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="156"/>
         <source>On</source>
         <translation>Ein</translation>
     </message>
@@ -1918,22 +1918,22 @@ Jetzt speichern?</translation>
         <translation>LED</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="245"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="249"/>
         <source>Port %1=%2</source>
         <translation>Anschluss %1=%2</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="252"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="256"/>
         <source>Off</source>
         <translation>Aus</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="253"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="257"/>
         <source>On</source>
         <translation>Ein</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="276"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="280"/>
         <source>Default</source>
         <translation>Standard</translation>
     </message>
@@ -2856,63 +2856,63 @@ Sie müssen neue Projekte speichern, bevor Sie auf ICs und Erscheinungsbilder zu
         <translation>Blob-Anzahl %1 unplausibel für die verbleibenden Stream-Bytes</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="330"/>
-        <location filename="../../IO/Serialization.cpp" line="377"/>
-        <location filename="../../IO/Serialization.cpp" line="384"/>
-        <location filename="../../IO/Serialization.cpp" line="405"/>
-        <location filename="../../IO/Serialization.cpp" line="425"/>
-        <location filename="../../IO/Serialization.cpp" line="430"/>
-        <location filename="../../IO/Serialization.cpp" line="448"/>
+        <location filename="../../IO/Serialization.cpp" line="375"/>
+        <location filename="../../IO/Serialization.cpp" line="422"/>
+        <location filename="../../IO/Serialization.cpp" line="429"/>
+        <location filename="../../IO/Serialization.cpp" line="450"/>
+        <location filename="../../IO/Serialization.cpp" line="470"/>
+        <location filename="../../IO/Serialization.cpp" line="475"/>
+        <location filename="../../IO/Serialization.cpp" line="493"/>
         <source>Invalid file format.</source>
         <translation>Ungültiges Dateiformat.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="366"/>
+        <location filename="../../IO/Serialization.cpp" line="411"/>
         <source>Invalid legacy file header: %1</source>
         <translation>Ungültiger alter Dateikopf: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="561"/>
+        <location filename="../../IO/Serialization.cpp" line="606"/>
         <source>Stream error reading type tag at position %1: status %2</source>
         <translation>Stream-Fehler beim Lesen des Typ-Tags an Position %1: Status %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="573"/>
+        <location filename="../../IO/Serialization.cpp" line="618"/>
         <source>Stream error reading element type at position %1: status %2</source>
         <translation>Stream-Fehler beim Lesen des Elementtyps an Position %1: Status %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="585"/>
+        <location filename="../../IO/Serialization.cpp" line="630"/>
         <source>Stream error loading element at position %1: status %2</source>
         <translation>Stream-Fehler beim Laden des Elements an Position %1: Status %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="604"/>
+        <location filename="../../IO/Serialization.cpp" line="649"/>
         <source>Stream error loading connection at position %1: status %2</source>
         <translation>Stream-Fehler beim Laden der Verbindung an Position %1: Status %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="611"/>
+        <location filename="../../IO/Serialization.cpp" line="656"/>
         <source>Invalid type. Data is possibly corrupted.</source>
         <translation>Ungültiger Typ. Daten sind möglicherweise beschädigt.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="664"/>
+        <location filename="../../IO/Serialization.cpp" line="709"/>
         <source>Failed to create versioned backup: %1</source>
         <translation>Versionierte Sicherungskopie konnte nicht erstellt werden: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="685"/>
+        <location filename="../../IO/Serialization.cpp" line="738"/>
         <source>Stream error reading preamble: status %1</source>
         <translation>Datenstromfehler beim Lesen der Präambel: Status %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="739"/>
+        <location filename="../../IO/Serialization.cpp" line="797"/>
         <source>Panda file dependency chain exceeds the maximum nesting depth (%1) while copying &apos;%2&apos;</source>
         <translation>Die Abhängigkeitskette der Panda-Datei überschreitet die maximale Verschachtelungstiefe (%1) beim Kopieren von &apos;%2&apos;</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="758"/>
+        <location filename="../../IO/Serialization.cpp" line="816"/>
         <source>Error copying file: %1</source>
         <translation>Fehler beim Kopieren der Datei: %1</translation>
     </message>
@@ -3214,27 +3214,27 @@ Bitte aktualisieren Sie wiRedPanda, um Änderungen an dieser Datei zu speichern.
         <translation>Speichern nicht möglich: Unterschaltung &quot;%1&quot; konnte zum Einbetten nicht gelesen werden.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="369"/>
+        <location filename="../../Scene/Workspace.cpp" line="373"/>
         <source>Error opening file: %1</source>
         <translation>Fehler beim Öffnen der Datei: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="388"/>
+        <location filename="../../Scene/Workspace.cpp" line="392"/>
         <source>Could not save file: %1</source>
         <translation>Datei konnte nicht gespeichert werden: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="463"/>
+        <location filename="../../Scene/Workspace.cpp" line="475"/>
         <source>This file does not exist: %1</source>
         <translation>Diese Datei existiert nicht: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="472"/>
+        <location filename="../../Scene/Workspace.cpp" line="484"/>
         <source>Could not open file: %1</source>
         <translation>Datei konnte nicht geöffnet werden: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="520"/>
+        <location filename="../../Scene/Workspace.cpp" line="532"/>
         <source>This file was saved with a newer file format (version %1).
 Your version supports file format %2.
 
@@ -3247,34 +3247,34 @@ Die Datei wird geöffnet, aber das Speichern ist blockiert.
 Bitte aktualisieren Sie wiRedPanda, um diese Datei zu bearbeiten und zu speichern.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="525"/>
+        <location filename="../../Scene/Workspace.cpp" line="537"/>
         <source>Newer version file.</source>
         <translation>Datei neuerer Version.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="528"/>
+        <location filename="../../Scene/Workspace.cpp" line="540"/>
         <source>This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).
 A backup of the original file has been created with name: %3</source>
         <translation>Diese Datei liegt in einem älteren Format (Version %1) vor und wird automatisch auf das aktuelle Format (Version %2) aktualisiert.
 Eine Sicherungskopie der Originaldatei wurde erstellt unter dem Namen: %3</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="531"/>
+        <location filename="../../Scene/Workspace.cpp" line="543"/>
         <source>File upgraded.</source>
         <translation>Datei wurde aktualisiert.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="693"/>
+        <location filename="../../Scene/Workspace.cpp" line="713"/>
         <source>Error opening autosave file: %1</source>
         <translation>Fehler beim Öffnen der automatisch gespeicherten Datei: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="701"/>
+        <location filename="../../Scene/Workspace.cpp" line="721"/>
         <source>Could not commit autosave file: %1</source>
         <translation>Automatische Sicherungsdatei konnte nicht übernommen werden: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="867"/>
+        <location filename="../../Scene/Workspace.cpp" line="889"/>
         <source>Remove embedded IC &quot;%1&quot;</source>
         <translation>Eingebetteten IC „%1“ entfernen</translation>
     </message>

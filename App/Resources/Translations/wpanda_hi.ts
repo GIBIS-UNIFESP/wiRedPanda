@@ -402,12 +402,12 @@
         <translation>क्लॉक</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Clock.cpp" line="235"/>
+        <location filename="../../Element/GraphicElements/Clock.cpp" line="241"/>
         <source>Low</source>
         <translation>निम्न</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Clock.cpp" line="235"/>
+        <location filename="../../Element/GraphicElements/Clock.cpp" line="241"/>
         <source>High</source>
         <translation>उच्च</translation>
     </message>
@@ -1505,47 +1505,47 @@ Choose a different name.</source>
         <translation>स्थिति %3 पर %1 की प्रविष्टि %2 पढ़ते समय स्ट्रीम त्रुटि</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="210"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="262"/>
         <source>Stream error reading element properties at position %1</source>
         <translation>स्थिति %1 पर तत्व गुण पढ़ते समय स्ट्रीम त्रुटि</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="339"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="406"/>
         <source>Stream error reading appearances at position %1</source>
         <translation>स्थिति %1 पर रूप पढ़ते समय स्ट्रीम त्रुटि</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="347"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="414"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
         <translation>रूप सूचकांक %1 सीमा से बाहर है (आकार=%2) — स्ट्रीम दूषित हो सकती है</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="384"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="460"/>
         <source>Non-finite element position — stream may be corrupt</source>
         <translation>गैर-परिमित तत्व स्थिति — स्ट्रीम दूषित हो सकती है</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="402"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="478"/>
         <source>Non-finite element rotation — stream may be corrupt</source>
         <translation>गैर-परिमित तत्व घुमाव — स्ट्रीम दूषित हो सकती है</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="462"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="538"/>
         <source>Refusing old-format input port list with implausible count %1 (max %2)</source>
         <translation>अविश्वसनीय गिनती %1 के साथ पुराने प्रारूप की इनपुट पोर्ट सूची से इनकार (अधिकतम %2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="496"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="572"/>
         <source>Refusing old-format output port list with implausible count %1 (max %2)</source>
         <translation>अविश्वसनीय गिनती %1 के साथ पुराने प्रारूप की आउटपुट पोर्ट सूची से इनकार (अधिकतम %2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="561"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="637"/>
         <source>Refusing old-format appearance list with implausible count %1 (max %2)</source>
         <translation>अविश्वसनीय गिनती %1 के साथ पुराने प्रारूप की रूप सूची से इनकार (अधिकतम %2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="590"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="666"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
         <translation>रूप नाम &quot;%3&quot; के लिए रूप सूचकांक %1 सीमा से बाहर है (आकार=%2) — स्ट्रीम दूषित हो सकती है</translation>
     </message>
@@ -1782,17 +1782,17 @@ Save it now?</source>
         <translation>फ़ाइल खोलने में त्रुटि: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICLoader.cpp" line="233"/>
+        <location filename="../../Element/ICLoader.cpp" line="241"/>
         <source>IC migration: cannot open file for writing: %1</source>
         <translation>आईसी माइग्रेशन: लिखने के लिए फ़ाइल नहीं खोली जा सकती: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICLoader.cpp" line="240"/>
+        <location filename="../../Element/ICLoader.cpp" line="247"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
         <translation>आईसी माइग्रेशन: पुनः सहेजी गई फ़ाइल की पुष्टि विफल: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICLoader.cpp" line="303"/>
+        <location filename="../../Element/ICLoader.cpp" line="310"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
         <translation>आईसी नेस्टिंग गहराई सीमा (%1) पार हो गई — ब्लॉब दुर्भावनापूर्ण रूप से तैयार किया गया हो सकता है</translation>
     </message>
@@ -1828,12 +1828,12 @@ Save it now?</source>
         <translation>पुश बटन</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputButton.cpp" line="125"/>
+        <location filename="../../Element/GraphicElements/InputButton.cpp" line="127"/>
         <source>Released</source>
         <translation>छोड़ा गया</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputButton.cpp" line="125"/>
+        <location filename="../../Element/GraphicElements/InputButton.cpp" line="127"/>
         <source>Pressed</source>
         <translation>दबाया गया</translation>
     </message>
@@ -1872,12 +1872,12 @@ Save it now?</source>
         <translation>इनपुट स्विच</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="150"/>
+        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="156"/>
         <source>Off</source>
         <translation>बंद</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="150"/>
+        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="156"/>
         <source>On</source>
         <translation>चालू</translation>
     </message>
@@ -1918,22 +1918,22 @@ Save it now?</source>
         <translation>एलईडी</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="245"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="249"/>
         <source>Port %1=%2</source>
         <translation>पोर्ट %1=%2</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="252"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="256"/>
         <source>Off</source>
         <translation>बंद</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="253"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="257"/>
         <source>On</source>
         <translation>चालू</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="276"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="280"/>
         <source>Default</source>
         <translation>डिफ़ॉल्ट</translation>
     </message>
@@ -2856,63 +2856,63 @@ IC और दिखावट तक पहुँचने या beWavedDolphin 
         <translation>शेष स्ट्रीम बाइट्स के अनुसार blob गणना %1 असंभाव्य है</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="330"/>
-        <location filename="../../IO/Serialization.cpp" line="377"/>
-        <location filename="../../IO/Serialization.cpp" line="384"/>
-        <location filename="../../IO/Serialization.cpp" line="405"/>
-        <location filename="../../IO/Serialization.cpp" line="425"/>
-        <location filename="../../IO/Serialization.cpp" line="430"/>
-        <location filename="../../IO/Serialization.cpp" line="448"/>
+        <location filename="../../IO/Serialization.cpp" line="375"/>
+        <location filename="../../IO/Serialization.cpp" line="422"/>
+        <location filename="../../IO/Serialization.cpp" line="429"/>
+        <location filename="../../IO/Serialization.cpp" line="450"/>
+        <location filename="../../IO/Serialization.cpp" line="470"/>
+        <location filename="../../IO/Serialization.cpp" line="475"/>
+        <location filename="../../IO/Serialization.cpp" line="493"/>
         <source>Invalid file format.</source>
         <translation>अमान्य फ़ाइल प्रारूप।</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="366"/>
+        <location filename="../../IO/Serialization.cpp" line="411"/>
         <source>Invalid legacy file header: %1</source>
         <translation>अमान्य पुरानी फ़ाइल हेडर: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="561"/>
+        <location filename="../../IO/Serialization.cpp" line="606"/>
         <source>Stream error reading type tag at position %1: status %2</source>
         <translation>स्थिति %1 पर टाइप टैग पढ़ने में स्ट्रीम त्रुटि: स्टेटस %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="573"/>
+        <location filename="../../IO/Serialization.cpp" line="618"/>
         <source>Stream error reading element type at position %1: status %2</source>
         <translation>स्थिति %1 पर तत्व प्रकार पढ़ने में स्ट्रीम त्रुटि: स्टेटस %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="585"/>
+        <location filename="../../IO/Serialization.cpp" line="630"/>
         <source>Stream error loading element at position %1: status %2</source>
         <translation>स्थिति %1 पर तत्व लोड करने में स्ट्रीम त्रुटि: स्टेटस %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="604"/>
+        <location filename="../../IO/Serialization.cpp" line="649"/>
         <source>Stream error loading connection at position %1: status %2</source>
         <translation>स्थिति %1 पर कनेक्शन लोड करने में स्ट्रीम त्रुटि: स्टेटस %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="611"/>
+        <location filename="../../IO/Serialization.cpp" line="656"/>
         <source>Invalid type. Data is possibly corrupted.</source>
         <translation>अमान्य प्रकार। डेटा संभवतः दूषित है।</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="664"/>
+        <location filename="../../IO/Serialization.cpp" line="709"/>
         <source>Failed to create versioned backup: %1</source>
         <translation>संस्करणित बैकअप बनाने में विफल: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="685"/>
+        <location filename="../../IO/Serialization.cpp" line="738"/>
         <source>Stream error reading preamble: status %1</source>
         <translation>प्रस्तावना पढ़ते समय स्ट्रीम त्रुटि: स्थिति %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="739"/>
+        <location filename="../../IO/Serialization.cpp" line="797"/>
         <source>Panda file dependency chain exceeds the maximum nesting depth (%1) while copying &apos;%2&apos;</source>
         <translation>&apos;%2&apos; की प्रतिलिपि बनाते समय Panda फ़ाइल निर्भरता श्रृंखला अधिकतम नेस्टिंग गहराई (%1) से अधिक हो जाती है</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="758"/>
+        <location filename="../../IO/Serialization.cpp" line="816"/>
         <source>Error copying file: %1</source>
         <translation>फ़ाइल कॉपी करने में त्रुटि: %1</translation>
     </message>
@@ -3214,27 +3214,27 @@ Please update wiRedPanda to save changes to this file.</source>
         <translation>सहेजा नहीं जा सका: उप-सर्किट &quot;%1&quot; को एम्बेड करने के लिए पढ़ा नहीं जा सका।</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="369"/>
+        <location filename="../../Scene/Workspace.cpp" line="373"/>
         <source>Error opening file: %1</source>
         <translation>फ़ाइल खोलने में त्रुटि: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="388"/>
+        <location filename="../../Scene/Workspace.cpp" line="392"/>
         <source>Could not save file: %1</source>
         <translation>फ़ाइल सेव नहीं हो सकी: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="463"/>
+        <location filename="../../Scene/Workspace.cpp" line="475"/>
         <source>This file does not exist: %1</source>
         <translation>यह फ़ाइल मौजूद नहीं है: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="472"/>
+        <location filename="../../Scene/Workspace.cpp" line="484"/>
         <source>Could not open file: %1</source>
         <translation>फ़ाइल नहीं खोल सके: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="520"/>
+        <location filename="../../Scene/Workspace.cpp" line="532"/>
         <source>This file was saved with a newer file format (version %1).
 Your version supports file format %2.
 
@@ -3247,34 +3247,34 @@ Please update wiRedPanda to edit and save this file.</source>
 इस फ़ाइल को संपादित और सहेजने के लिए कृपया wiRedPanda अपडेट करें।</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="525"/>
+        <location filename="../../Scene/Workspace.cpp" line="537"/>
         <source>Newer version file.</source>
         <translation>नए संस्करण की फाइल।</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="528"/>
+        <location filename="../../Scene/Workspace.cpp" line="540"/>
         <source>This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).
 A backup of the original file has been created with name: %3</source>
         <translation>यह फ़ाइल एक पुराने प्रारूप (संस्करण %1) में है और स्वचालित रूप से वर्तमान प्रारूप (संस्करण %2) में अपग्रेड की जाएगी।
 मूल फ़ाइल का बैकअप इस नाम से बनाया गया है: %3</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="531"/>
+        <location filename="../../Scene/Workspace.cpp" line="543"/>
         <source>File upgraded.</source>
         <translation>फ़ाइल अपग्रेड हो गई।</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="693"/>
+        <location filename="../../Scene/Workspace.cpp" line="713"/>
         <source>Error opening autosave file: %1</source>
         <translation>ऑटोसेव फ़ाइल खोलने में त्रुटि: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="701"/>
+        <location filename="../../Scene/Workspace.cpp" line="721"/>
         <source>Could not commit autosave file: %1</source>
         <translation>स्वतः सहेजी गई फ़ाइल को अंतिम रूप नहीं दिया जा सका: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="867"/>
+        <location filename="../../Scene/Workspace.cpp" line="889"/>
         <source>Remove embedded IC &quot;%1&quot;</source>
         <translation>अंतर्निहित IC &quot;%1&quot; हटाएँ</translation>
     </message>

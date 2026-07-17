@@ -402,12 +402,12 @@
         <translation>Hodiny</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Clock.cpp" line="235"/>
+        <location filename="../../Element/GraphicElements/Clock.cpp" line="241"/>
         <source>Low</source>
         <translation>Nízká</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Clock.cpp" line="235"/>
+        <location filename="../../Element/GraphicElements/Clock.cpp" line="241"/>
         <source>High</source>
         <translation>Vysoká</translation>
     </message>
@@ -1505,47 +1505,47 @@ Zvolte jiný název.</translation>
         <translation>Chyba datového proudu při čtení položky %2 z %1 na pozici %3</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="210"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="262"/>
         <source>Stream error reading element properties at position %1</source>
         <translation>Chyba datového proudu při čtení vlastností prvku na pozici %1</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="339"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="406"/>
         <source>Stream error reading appearances at position %1</source>
         <translation>Chyba datového proudu při čtení vzhledů na pozici %1</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="347"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="414"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
         <translation>Index vzhledu %1 mimo rozsah (velikost=%2) — datový proud může být poškozen</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="384"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="460"/>
         <source>Non-finite element position — stream may be corrupt</source>
         <translation>Nekonečná pozice prvku — datový proud může být poškozen</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="402"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="478"/>
         <source>Non-finite element rotation — stream may be corrupt</source>
         <translation>Nekonečná rotace prvku — datový proud může být poškozen</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="462"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="538"/>
         <source>Refusing old-format input port list with implausible count %1 (max %2)</source>
         <translation>Odmítnut seznam vstupních portů ve starém formátu s nevěrohodným počtem %1 (max. %2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="496"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="572"/>
         <source>Refusing old-format output port list with implausible count %1 (max %2)</source>
         <translation>Odmítnut seznam výstupních portů ve starém formátu s nevěrohodným počtem %1 (max. %2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="561"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="637"/>
         <source>Refusing old-format appearance list with implausible count %1 (max %2)</source>
         <translation>Odmítnut seznam vzhledů ve starém formátu s nevěrohodným počtem %1 (max. %2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="590"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="666"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
         <translation>Index vzhledu %1 mimo rozsah (velikost=%2) pro název vzhledu „%3“ — datový proud může být poškozen</translation>
     </message>
@@ -1782,17 +1782,17 @@ Uložit nyní?</translation>
         <translation>Chyba při otevírání souboru: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICLoader.cpp" line="233"/>
+        <location filename="../../Element/ICLoader.cpp" line="241"/>
         <source>IC migration: cannot open file for writing: %1</source>
         <translation>Migrace IO: nelze otevřít soubor pro zápis: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICLoader.cpp" line="240"/>
+        <location filename="../../Element/ICLoader.cpp" line="247"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
         <translation>Migrace IO: nepodařilo se potvrdit znovu uložený soubor: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICLoader.cpp" line="303"/>
+        <location filename="../../Element/ICLoader.cpp" line="310"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
         <translation>Překročen limit hloubky vnoření IO (%1) — blob může být záměrně poškozený</translation>
     </message>
@@ -1828,12 +1828,12 @@ Uložit nyní?</translation>
         <translation>Tlačítko</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputButton.cpp" line="125"/>
+        <location filename="../../Element/GraphicElements/InputButton.cpp" line="127"/>
         <source>Released</source>
         <translation>Uvolněno</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputButton.cpp" line="125"/>
+        <location filename="../../Element/GraphicElements/InputButton.cpp" line="127"/>
         <source>Pressed</source>
         <translation>Stisknuto</translation>
     </message>
@@ -1872,12 +1872,12 @@ Uložit nyní?</translation>
         <translation>Vstupní spínač</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="150"/>
+        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="156"/>
         <source>Off</source>
         <translation>Vyp.</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="150"/>
+        <location filename="../../Element/GraphicElements/InputSwitch.cpp" line="156"/>
         <source>On</source>
         <translation>Zap.</translation>
     </message>
@@ -1918,22 +1918,22 @@ Uložit nyní?</translation>
         <translation>LED</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="245"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="249"/>
         <source>Port %1=%2</source>
         <translation>Port %1=%2</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="252"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="256"/>
         <source>Off</source>
         <translation>Vyp.</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="253"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="257"/>
         <source>On</source>
         <translation>Zap.</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="276"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="280"/>
         <source>Default</source>
         <translation>Výchozí</translation>
     </message>
@@ -2856,63 +2856,63 @@ Nové projekty musíte uložit před přístupem k IC a vzhledům nebo spuštěn
         <translation>Počet blobů %1 nepravděpodobný vzhledem ke zbývajícím bajtům proudu</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="330"/>
-        <location filename="../../IO/Serialization.cpp" line="377"/>
-        <location filename="../../IO/Serialization.cpp" line="384"/>
-        <location filename="../../IO/Serialization.cpp" line="405"/>
-        <location filename="../../IO/Serialization.cpp" line="425"/>
-        <location filename="../../IO/Serialization.cpp" line="430"/>
-        <location filename="../../IO/Serialization.cpp" line="448"/>
+        <location filename="../../IO/Serialization.cpp" line="375"/>
+        <location filename="../../IO/Serialization.cpp" line="422"/>
+        <location filename="../../IO/Serialization.cpp" line="429"/>
+        <location filename="../../IO/Serialization.cpp" line="450"/>
+        <location filename="../../IO/Serialization.cpp" line="470"/>
+        <location filename="../../IO/Serialization.cpp" line="475"/>
+        <location filename="../../IO/Serialization.cpp" line="493"/>
         <source>Invalid file format.</source>
         <translation>Neplatný formát souboru.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="366"/>
+        <location filename="../../IO/Serialization.cpp" line="411"/>
         <source>Invalid legacy file header: %1</source>
         <translation>Neplatná hlavička starého souboru: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="561"/>
+        <location filename="../../IO/Serialization.cpp" line="606"/>
         <source>Stream error reading type tag at position %1: status %2</source>
         <translation>Chyba proudu při čtení značky typu na pozici %1: stav %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="573"/>
+        <location filename="../../IO/Serialization.cpp" line="618"/>
         <source>Stream error reading element type at position %1: status %2</source>
         <translation>Chyba proudu při čtení typu prvku na pozici %1: stav %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="585"/>
+        <location filename="../../IO/Serialization.cpp" line="630"/>
         <source>Stream error loading element at position %1: status %2</source>
         <translation>Chyba proudu při načítání prvku na pozici %1: stav %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="604"/>
+        <location filename="../../IO/Serialization.cpp" line="649"/>
         <source>Stream error loading connection at position %1: status %2</source>
         <translation>Chyba proudu při načítání spojení na pozici %1: stav %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="611"/>
+        <location filename="../../IO/Serialization.cpp" line="656"/>
         <source>Invalid type. Data is possibly corrupted.</source>
         <translation>Neplatný typ. Data jsou možná poškozená.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="664"/>
+        <location filename="../../IO/Serialization.cpp" line="709"/>
         <source>Failed to create versioned backup: %1</source>
         <translation>Nepodařilo se vytvořit verzovanou zálohu: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="685"/>
+        <location filename="../../IO/Serialization.cpp" line="738"/>
         <source>Stream error reading preamble: status %1</source>
         <translation>Chyba datového proudu při čtení preambule: stav %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="739"/>
+        <location filename="../../IO/Serialization.cpp" line="797"/>
         <source>Panda file dependency chain exceeds the maximum nesting depth (%1) while copying &apos;%2&apos;</source>
         <translation>Řetězec závislostí souboru Panda překračuje maximální hloubku vnoření (%1) při kopírování &apos;%2&apos;</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="758"/>
+        <location filename="../../IO/Serialization.cpp" line="816"/>
         <source>Error copying file: %1</source>
         <translation>Chyba při kopírování souboru: %1</translation>
     </message>
@@ -3214,27 +3214,27 @@ Pro uložení změn v tomto souboru prosím aktualizujte wiRedPanda.</translatio
         <translation>Nelze uložit: podobvod &quot;%1&quot; se nepodařilo přečíst pro jeho vložení.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="369"/>
+        <location filename="../../Scene/Workspace.cpp" line="373"/>
         <source>Error opening file: %1</source>
         <translation>Chyba při otevírání souboru: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="388"/>
+        <location filename="../../Scene/Workspace.cpp" line="392"/>
         <source>Could not save file: %1</source>
         <translation>Nelze uložit soubor: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="463"/>
+        <location filename="../../Scene/Workspace.cpp" line="475"/>
         <source>This file does not exist: %1</source>
         <translation>Tento soubor neexistuje: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="472"/>
+        <location filename="../../Scene/Workspace.cpp" line="484"/>
         <source>Could not open file: %1</source>
         <translation>Nelze otevřít soubor: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="520"/>
+        <location filename="../../Scene/Workspace.cpp" line="532"/>
         <source>This file was saved with a newer file format (version %1).
 Your version supports file format %2.
 
@@ -3247,34 +3247,34 @@ Soubor bude otevřen, ale ukládání je zablokováno.
 Pro úpravu a uložení tohoto souboru prosím aktualizujte wiRedPanda.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="525"/>
+        <location filename="../../Scene/Workspace.cpp" line="537"/>
         <source>Newer version file.</source>
         <translation>Soubor novější verze.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="528"/>
+        <location filename="../../Scene/Workspace.cpp" line="540"/>
         <source>This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).
 A backup of the original file has been created with name: %3</source>
         <translation>Tento soubor je ve starším formátu (verze %1) a bude automaticky aktualizován na současný formát (verze %2).
 Záloha původního souboru byla vytvořena s názvem: %3</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="531"/>
+        <location filename="../../Scene/Workspace.cpp" line="543"/>
         <source>File upgraded.</source>
         <translation>Soubor byl aktualizován.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="693"/>
+        <location filename="../../Scene/Workspace.cpp" line="713"/>
         <source>Error opening autosave file: %1</source>
         <translation>Chyba při otevírání souboru automatického uložení: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="701"/>
+        <location filename="../../Scene/Workspace.cpp" line="721"/>
         <source>Could not commit autosave file: %1</source>
         <translation>Nelze potvrdit soubor automatického uložení: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="867"/>
+        <location filename="../../Scene/Workspace.cpp" line="889"/>
         <source>Remove embedded IC &quot;%1&quot;</source>
         <translation>Odebrat vložený IC „%1“</translation>
     </message>
