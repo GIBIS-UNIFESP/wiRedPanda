@@ -34,13 +34,33 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
 if(EMSCRIPTEN)
-    find_package(Qt6 6.9 REQUIRED COMPONENTS Core Gui Network PrintSupport Multimedia Widgets Svg Test)
+    find_package(Qt6 6.9 REQUIRED COMPONENTS Core Gui Network PrintSupport Multimedia Widgets Svg Test Quick QuickControls2 Qml)
 else()
-    find_package(Qt6 6.2 REQUIRED COMPONENTS Core Gui Network PrintSupport Multimedia Widgets Svg Test)
+    find_package(Qt6 6.2 REQUIRED COMPONENTS Core Gui Network PrintSupport Multimedia Widgets Svg Test Quick QuickControls2 Qml)
 endif()
 
 set(QT_VERSION_MAJOR 6)
 set(QT_LIBS Qt6::Core Qt6::Gui Qt6::Network Qt6::PrintSupport Qt6::Multimedia Qt6::Widgets Qt6::Svg Qt6::Test)
+
+# Qt Quick/QML/QuickControls2: kept separate from QT_LIBS deliberately. QT_LIBS is what
+# wiredpanda_lib and test_wiredpanda link against, and neither needs the Quick stack yet —
+# only the new wiredpanda_quick target (see the "QUICK SHELL" section below) does. Required
+# unconditionally now (not gated behind a Qt6Quick_FOUND check like the discarded
+# qtquick-gpu-prototype spike used) because this is a real, permanent dependency of the
+# ongoing Widgets-to-Quick rewrite (qtquick-rewrite branch), not an optional spike.
+set(QUICK_LIBS Qt6::Quick Qt6::QuickControls2 Qt6::Qml)
+
+# QML modules default to the ":/qt/qml/" resource prefix as of this policy (introduced in
+# Qt 6.5) — set it explicitly to silence qt_add_qml_module's dev warning. Guarded per this
+# project's usual version-gated-feature pattern (see the CMP0156/CMP0155 discussion at the
+# top of this file and the MERGE_QT_TRANSLATIONS/LUPDATE_OPTIONS guards further down) since
+# the project's own floor is Qt 6.2.
+if(Qt6_VERSION VERSION_GREATER_EQUAL "6.5.0")
+    qt_policy(SET QTP0001 NEW)
+endif()
+if(Qt6_VERSION VERSION_GREATER_EQUAL "6.8.0")
+    qt_policy(SET QTP0004 NEW)
+endif()
 
 add_compile_definitions(
     APP_VERSION="${PROJECT_VERSION}"
@@ -581,6 +601,18 @@ if(APPLE)
         MACOSX_BUNDLE_INFO_PLIST "${CMAKE_CURRENT_BINARY_DIR}/Info.plist"
     )
 endif()
+
+# ========= QUICK SHELL ===================================
+
+# New Qt Quick-based UI, built up on the long-lived qtquick-rewrite branch alongside the
+# existing Widgets app above (see the plan at
+# .claude/plans/we-were-profiling-in-hidden-emerson.md). wiredpanda keeps building and
+# passing its full test suite throughout the migration; wiredpanda_quick only becomes the
+# real `wiredpanda` executable — and the Widgets code only gets deleted — at the plan's
+# Phase 8 cutover. Own CMakeLists.txt (mirroring how the discarded qtquick-gpu-prototype
+# spike organized Prototypes/QtQuickGpuRender/CMakeLists.txt) so qt_add_qml_module's QML
+# file aliasing is relative to App/QuickShell/ itself, not the repo root.
+add_subdirectory(App/QuickShell)
 
 # ========= INSTALLATION =============================
 

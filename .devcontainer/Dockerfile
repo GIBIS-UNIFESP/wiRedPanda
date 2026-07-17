@@ -14,7 +14,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         -m qtmultimedia \
     && rm -rf /opt/Qt/6.9.3/gcc_64/doc \
     && rm -rf /opt/Qt/6.9.3/gcc_64/examples \
-    && rm -rf /opt/Qt/6.9.3/gcc_64/qml \
     && find /opt/Qt -name "*.debug" -delete \
     && find /opt/Qt -name "*.pdb" -delete \
     && find /opt/Qt -name "*_debug*" -delete
