@@ -26,6 +26,8 @@ private slots:
     void testResizeModeAtInteriorIsNone();
     void testApplyResizePreservesAspectRatio();
     void testApplyResizeClampsToMinimumSize();
+    void testApplyResizeFromLeftKeepsRightEdgeFixed();
+    void testApplyResizeFromTopKeepsBottomEdgeFixed();
     void testMoveHandleRectCoversTopStrip();
     void testIsMoveHandleDetectsTopStripOnly();
     void testMoveByClampsToParentBounds();

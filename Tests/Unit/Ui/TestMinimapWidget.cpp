@@ -211,6 +211,47 @@ void TestMinimapWidget::testApplyResizeClampsToMinimumSize()
     QCOMPARE(minimap.height(), minimap.minimumHeight());
 }
 
+void TestMinimapWidget::testApplyResizeFromLeftKeepsRightEdgeFixed()
+{
+    WorkSpace workspace;
+    auto *rectItem = new QGraphicsRectItem(QRectF(0, 0, 400, 200));
+    rectItem->setPen(Qt::NoPen);
+    workspace.scene()->addItem(rectItem);
+
+    MinimapWidget minimap(workspace.scene(), workspace.view());
+    const QRect oldGeom = minimap.geometry();
+
+    minimap.m_resizeMode = MinimapWidget::ResizeMode::Left;
+    minimap.m_lastGlobalPos = QPoint(0, 0);
+    minimap.applyResize(QPoint(-40, 0)); // drag the left edge outward by 40px
+
+    // Regression: applyResize() used to combine setSize() (which keeps the top-left corner
+    // fixed while recomputing bottom-right) with a subsequent setTop()/setLeft() anchored on
+    // that already-shifted rect -- doubling the resize delta and drifting the anchor (right)
+    // edge instead of holding it fixed.
+    QCOMPARE(minimap.geometry().right(), oldGeom.right());
+    QVERIFY2(minimap.width() > oldGeom.width(), "dragging the left edge outward must grow the widget");
+}
+
+void TestMinimapWidget::testApplyResizeFromTopKeepsBottomEdgeFixed()
+{
+    WorkSpace workspace;
+    auto *rectItem = new QGraphicsRectItem(QRectF(0, 0, 400, 200));
+    rectItem->setPen(Qt::NoPen);
+    workspace.scene()->addItem(rectItem);
+
+    MinimapWidget minimap(workspace.scene(), workspace.view());
+    const QRect oldGeom = minimap.geometry();
+
+    minimap.m_resizeMode = MinimapWidget::ResizeMode::Top;
+    minimap.m_lastGlobalPos = QPoint(0, 0);
+    minimap.applyResize(QPoint(0, -40)); // drag the top edge outward by 40px
+
+    // Same regression as testApplyResizeFromLeftKeepsRightEdgeFixed(), on the vertical axis.
+    QCOMPARE(minimap.geometry().bottom(), oldGeom.bottom());
+    QVERIFY2(minimap.height() > oldGeom.height(), "dragging the top edge outward must grow the widget");
+}
+
 void TestMinimapWidget::testMoveHandleRectCoversTopStrip()
 {
     WorkSpace workspace;

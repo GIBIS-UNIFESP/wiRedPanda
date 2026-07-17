@@ -362,13 +362,14 @@ void MinimapWidget::applyResize(const QPoint &globalPos)
         newWidth = qMax(minimumWidth(), qRound(newHeight * aspect));
     }
 
-    geom.setSize(QSize(newWidth, newHeight));
-    if (top) {
-        geom.setTop(oldGeom.top() + (oldGeom.height() - newHeight));
-    }
-    if (left) {
-        geom.setLeft(oldGeom.left() + (oldGeom.width() - newWidth));
-    }
+    // Build the new rect directly from its intended edges rather than setSize() + setTop()/
+    // setLeft(): setSize() keeps the top-left corner fixed and recomputes bottom-right, so a
+    // subsequent setTop()/setLeft() call anchors on that already-shifted bottom-right instead
+    // of the original oldGeom -- doubling the resize delta and drifting the anchor edge on
+    // every top/left drag.
+    const int newX = left ? oldGeom.right() - newWidth + 1 : oldGeom.left();
+    const int newY = top  ? oldGeom.bottom() - newHeight + 1 : oldGeom.top();
+    geom = QRect(newX, newY, newWidth, newHeight);
 
     if (geom != oldGeom) {
         setGeometry(geom);
