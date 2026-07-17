@@ -105,7 +105,15 @@ void UpdateController::downloadUpdate(const QString &latestVersion, const QUrl &
 
     auto *network = new QNetworkAccessManager(this);
     connect(network, &QNetworkAccessManager::sslErrors, this, [](QNetworkReply *reply, const QList<QSslError> &errors) {
+        // QSslError collapses to an empty dummy class (no errorString(), no QDebug streaming)
+        // when Qt is built with QT_NO_SSL -- the case for every Qt-for-WebAssembly build, since
+        // WASM has no native TLS backend and routes network access through the browser instead.
+#ifndef QT_NO_SSL
         qWarning() << "MainWindow::downloadUpdate: SSL errors, aborting reply:" << errors;
+#else
+        Q_UNUSED(errors);
+        qWarning() << "MainWindow::downloadUpdate: SSL errors, aborting reply";
+#endif
         reply->abort();
     });
 
