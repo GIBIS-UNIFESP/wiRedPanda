@@ -134,7 +134,8 @@
         },
         "delay": {
           "type": "number",
-          "minimum": 0
+          "minimum": -1,
+          "maximum": 1
         },
         "trigger": {
           "type": "string"
@@ -1639,7 +1640,8 @@
                 },
                 "delay": {
                   "type": "number",
-                  "minimum": 0
+                  "minimum": -1,
+                  "maximum": 1
                 },
                 "trigger": {
                   "type": "string",
@@ -1835,7 +1837,9 @@
                 },
                 "delay": {
                   "type": "number",
-                  "description": "Phase delay as fraction of period (Clock elements)"
+                  "description": "Phase delay as fraction of period (Clock elements)",
+                  "minimum": -1,
+                  "maximum": 1
                 },
                 "trigger": {
                   "type": "string",

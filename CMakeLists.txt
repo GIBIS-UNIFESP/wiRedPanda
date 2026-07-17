@@ -775,6 +775,7 @@ add_test(NAME TestDecoder8To256 COMMAND test_wiredpanda TestDecoder8To256 WORKIN
 add_test(NAME TestDialogs COMMAND test_wiredpanda TestDialogs WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestDisplays COMMAND test_wiredpanda TestDisplays WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestElementFactory COMMAND test_wiredpanda TestElementFactory WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestElementHandler COMMAND test_wiredpanda TestElementHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestElementLabel COMMAND test_wiredpanda TestElementLabel WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestElementLogic COMMAND test_wiredpanda TestElementLogic WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestElementLogicErrors COMMAND test_wiredpanda TestElementLogicErrors WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -1089,7 +1090,7 @@ set(ALL_TESTS
     TestConnection TestConnectionManager TestGraphicsView TestPropertyShortcutHandler TestPort
     TestDemux TestDisplay TestDisplay7 TestGraphicElement TestICRegistry TestICUnit TestMux
     TestDolphinClipboard TestDolphinSerializer TestFileUtils TestRecentFilesUnit
-    TestFileHandlerSecurity TestICHandlerSecurity TestMCPProcessor
+    TestFileHandlerSecurity TestICHandlerSecurity TestMCPProcessor TestElementHandler
     TestExerciseEngine TestTourEngine
     TestSimulationUnit TestWorkspaceUnit
     TestICFixtureLayout)

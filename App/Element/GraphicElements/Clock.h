@@ -51,7 +51,8 @@ public:
     bool isOn(const int port = 0) const override;
     /// Returns the clock frequency in Hz.
     double frequency() const override;
-    /// Returns the clock phase delay as a fraction of the period [0, 1).
+    /// Returns the clock phase delay as a fraction of the period, in [-1, 1]. Negative
+    /// delays advance the clock; positive delays retard it (see setDelay()).
     double delay() const override;
     /// Returns a summary string of the clock's current frequency and delay settings.
     QString genericProperties() override;
@@ -68,7 +69,8 @@ public:
 
     /// Sets the clock output frequency to \a freq Hz.
     void setFrequency(const double freq) override;
-    /// Sets the clock phase delay to \a delay (fraction of period).
+    /// Sets the clock phase delay to \a delay (fraction of period), clamped to [-1, 1].
+    /// Negative delays advance the clock (trigger earlier); positive delays delay it.
     void setDelay(const double delay) override;
 
     // --- Simulation ---
