@@ -68,18 +68,16 @@ bool isSafeGitHubUrl(const QUrl &url)
 UpdateChecker::UpdateChecker(QObject *parent)
     : QObject(parent)
 {
-    connect(&m_network, &QNetworkAccessManager::sslErrors, this, [](QNetworkReply *reply, const QList<QSslError> &errors) {
-        // QSslError collapses to an empty dummy class (no errorString(), no QDebug streaming)
-        // when Qt is built with QT_NO_SSL -- the case for every Qt-for-WebAssembly build, since
-        // WASM has no native TLS backend and routes network access through the browser instead.
+    // QNetworkAccessManager::sslErrors doesn't exist at all when Qt is built with QT_NO_SSL --
+    // the case for every Qt-for-WebAssembly build, since WASM has no native TLS backend and
+    // routes network access through the browser instead (any TLS failure there surfaces as a
+    // generic QNetworkReply error, not through this signal).
 #ifndef QT_NO_SSL
+    connect(&m_network, &QNetworkAccessManager::sslErrors, this, [](QNetworkReply *reply, const QList<QSslError> &errors) {
         qWarning() << "UpdateChecker: SSL errors, aborting reply:" << errors;
-#else
-        Q_UNUSED(errors);
-        qWarning() << "UpdateChecker: SSL errors, aborting reply";
-#endif
         reply->abort();
     });
+#endif
 }
 
 void UpdateChecker::checkForUpdates()
