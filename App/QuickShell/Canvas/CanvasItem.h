@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <functional>
 #include <memory>
 #include <optional>
 
@@ -237,6 +238,30 @@ public:
     /// bottommost elements fixed as anchors. No-op below 3 elements.
     void distributeVertically();
 
+    // --- Type/property cycling (ports PropertyShortcutHandler's equivalents via Scene.h) ---
+    //
+    // Keyboard shortcuts match SceneUiBinder.cpp's real QShortcut bindings exactly: "[" / "]"
+    // for main property, "{" / "}" for secondary property, "<" / ">" for type-cycling -- wired
+    // in keyPressEvent() since no chrome QShortcut layer exists yet.
+
+    /// Morphs each selected element to the next type in Enums::nextElmType()'s cycle, via
+    /// CanvasMorphCommand. Re-selects the morphed element by id (MorphCommand replaces it
+    /// in-place under the same id -- simpler and more robust than Scene::nextElm()'s
+    /// position-based itemAt() re-lookup, which this canvas has no equivalent of anyway).
+    void nextElm();
+    /// Morphs each selected element to the previous type in Enums::prevElmType()'s cycle.
+    void prevElm();
+    /// Decrements the primary property (input/output count, frequency, or color, depending on
+    /// element type) of each selected element, via CanvasUpdateCommand/CanvasChangePortSizeCommand.
+    void prevMainPropShortcut();
+    /// Increments the primary property of each selected element.
+    void nextMainPropShortcut();
+    /// Decrements the secondary property (currently: Led color, TruthTable output count) of
+    /// each selected element.
+    void prevSecndPropShortcut();
+    /// Increments the secondary property of each selected element.
+    void nextSecndPropShortcut();
+
     // --- Clipboard / mute / select-all (ports ClipboardManager's/Scene's equivalents) ---
     //
     // Ports copy/cut/paste/duplicate only -- ClipboardManager::cloneDrag() (Ctrl+drag) needs
@@ -283,6 +308,10 @@ protected:
     /// \reimp Commits the drag as a local undo entry if anything actually moved; completes
     /// an in-progress wire if released over a compatible port.
     void mouseReleaseEvent(QMouseEvent *event) override;
+    /// \reimp Double-click on a fully-connected wire inserts a routing node, splitting it into
+    /// two segments (CanvasSplitCommand). Mirrors SceneInteraction::mouseDoubleClick(); picks
+    /// Phase 1's deferred wire-splitting gesture back up.
+    void mouseDoubleClickEvent(QMouseEvent *event) override;
     /// \reimp Updates the hovered element for the next paint's highlight.
     void hoverMoveEvent(QHoverEvent *event) override;
     /// \reimp Clears hover highlight when the pointer leaves the canvas entirely.
@@ -304,6 +333,15 @@ private:
     /// one grid step (Shift = a larger step) as a single undoable command and returns true.
     /// Mirrors Scene::nudgeSelection().
     bool nudgeSelection(QKeyEvent *event);
+    /// Shared by nextMainPropShortcut()/prevMainPropShortcut(); \a dir is -1 (prev) or +1
+    /// (next). Mirrors PropertyShortcutHandler::adjustMainProperty().
+    void adjustMainProperty(int dir);
+    /// Shared by nextSecndPropShortcut()/prevSecndPropShortcut(); \a dir is -1 or +1. Mirrors
+    /// PropertyShortcutHandler::adjustSecondaryProperty().
+    void adjustSecondaryProperty(int dir);
+    /// Snapshots \a element, applies \a mutate, then pushes a CanvasUpdateCommand. Mirrors
+    /// PropertyShortcutHandler::applyWithUndo().
+    void applyPropertyWithUndo(GraphicElement *element, const std::function<void()> &mutate);
     /// Dispatches a press on \a element to whichever interactive-input behavior applies:
     /// InputSwitch toggles, InputRotary advances to its next port. InputButton is momentary
     /// (press = on, release = off, tracked separately via m_pressedInputButton) so it isn't

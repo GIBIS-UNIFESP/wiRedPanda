@@ -4,13 +4,17 @@
 #include "App/QuickShell/Canvas/CanvasCommands.h"
 
 #include <algorithm>
+#include <cmath>
 
 #include <QDataStream>
 #include <QIODevice>
 #include <QTransform>
 
+#include "App/Core/Constants.h"
 #include "App/Core/ItemWithId.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
+#include "App/Element/GraphicElements/TruthTable.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/QuickShell/Canvas/CanvasICRegistry.h"
@@ -845,4 +849,322 @@ void CanvasUpdateBlobCommand::reconnectConnections()
         m_canvas->updateItemId(conn, ci.connectionId);
         m_canvas->addItem(conn);
     }
+}
+
+// --- CanvasSplitCommand ---
+
+CanvasSplitCommand::CanvasSplitCommand(Connection *conn, QPointF mousePos, CanvasItem *canvas, QUndoCommand *parent)
+    : QUndoCommand(parent)
+    , m_canvas(canvas)
+{
+    auto *node = ElementFactory::buildElement(ElementType::Node);
+
+    // Align node to grid: subtract pixmapCenter so the node's visual center lands on the
+    // mouse click, then snap to the nearest grid intersection.
+    m_nodePos = mousePos - node->pixmapCenter();
+    const int gridSize = Constants::gridSize;
+    const qreal xV = qRound(m_nodePos.x() / gridSize) * gridSize;
+    const qreal yV = qRound(m_nodePos.y() / gridSize) * gridSize;
+    m_nodePos = QPointF(xV, yV);
+
+    // Quantize the wire's angle to the nearest cardinal direction so the node's arrow graphic
+    // points along the wire.
+    const int angle = static_cast<int>(conn->angle());
+    m_nodeAngle = static_cast<int>(360 - 90 * (std::round(angle / 90.0)));
+
+    auto *startPort = conn->startPort();
+    auto *endPort = conn->endPort();
+    auto *startElement = startPort ? startPort->graphicElement() : nullptr;
+    auto *endElement = endPort ? endPort->graphicElement() : nullptr;
+    Q_ASSERT(startElement && endElement); // caller (mouseDoubleClickEvent) already checked both ports exist
+
+    m_elm1Id = startElement->id();
+    m_elm2Id = endElement->id();
+    m_c1Id = conn->id();
+
+    // Reserve a stable id for the second wire segment by briefly registering it, then
+    // removing it -- redo() recreates it under this same id via updateItemId().
+    auto *conn2 = new Connection();
+    m_canvas->addItem(conn2);
+    m_c2Id = conn2->id();
+    m_canvas->removeItem(conn2);
+    delete conn2;
+
+    m_canvas->addItem(node);
+    m_nodeId = node->id();
+    m_canvas->removeItem(node);
+    delete node;
+}
+
+void CanvasSplitCommand::redo()
+{
+    SimulationBlocker blocker(m_canvas->simulation());
+    auto *conn1 = CanvasCommandUtils::findConn(m_canvas, m_c1Id);
+    auto *elm1 = CanvasCommandUtils::findElm(m_canvas, m_elm1Id);
+    auto *elm2 = CanvasCommandUtils::findElm(m_canvas, m_elm2Id);
+    if (!conn1 || !elm1 || !elm2) {
+        return;
+    }
+
+    auto *conn2 = CanvasCommandUtils::findConn(m_canvas, m_c2Id);
+    auto *node = CanvasCommandUtils::findElm(m_canvas, m_nodeId);
+
+    if (!conn2) {
+        conn2 = new Connection();
+        m_canvas->updateItemId(conn2, m_c2Id);
+    }
+    if (!node) {
+        node = ElementFactory::buildElement(ElementType::Node);
+        m_canvas->updateItemId(node, m_nodeId);
+    }
+
+    node->setPos(m_nodePos);
+    node->setRotation(m_nodeAngle);
+
+    auto *endPort = conn1->endPort();
+    if (!endPort) {
+        return;
+    }
+
+    // Wire topology after split: elm1 -> conn1 -> node -> conn2 -> elm2.
+    conn2->setStartPort(node->outputPort());
+    conn2->setEndPort(endPort);
+    conn1->setEndPort(node->inputPort());
+
+    m_canvas->addItem(node);
+    m_canvas->addItem(conn2);
+
+    conn1->updatePosFromPorts();
+    conn2->updatePosFromPorts();
+
+    m_canvas->restartSimulation();
+}
+
+void CanvasSplitCommand::undo()
+{
+    SimulationBlocker blocker(m_canvas->simulation());
+    auto *conn1 = CanvasCommandUtils::findConn(m_canvas, m_c1Id);
+    auto *conn2 = CanvasCommandUtils::findConn(m_canvas, m_c2Id);
+    auto *node = CanvasCommandUtils::findElm(m_canvas, m_nodeId);
+    if (!conn1 || !conn2 || !node) {
+        return;
+    }
+
+    // Restore the original direct wire: conn1 skips the node and connects straight to elm2.
+    conn1->setEndPort(conn2->endPort());
+    conn1->updatePosFromPorts();
+
+    m_canvas->removeItem(conn2);
+    m_canvas->removeItem(node);
+    delete conn2;
+    delete node;
+
+    m_canvas->restartSimulation();
+}
+
+// --- CanvasMorphCommand ---
+
+CanvasMorphCommand::CanvasMorphCommand(const QList<GraphicElement *> &elements, ElementType type, CanvasItem *canvas, QUndoCommand *parent)
+    : CanvasElementsCommand(elements, canvas, parent)
+    , m_newType(type)
+{
+    m_types.reserve(elements.size());
+    for (auto *oldElm : elements) {
+        m_types.append(oldElm->elementType());
+    }
+}
+
+void CanvasMorphCommand::restoreDeletedConnections(const QList<DeletedConnectionInfo> &deleted)
+{
+    for (const auto &info : deleted) {
+        auto *morphedElm = dynamic_cast<GraphicElement *>(m_canvas->itemById(info.morphedElementId));
+        auto *otherElm = dynamic_cast<GraphicElement *>(m_canvas->itemById(info.otherElementId));
+        if (!morphedElm || !otherElm) {
+            continue;
+        }
+
+        auto *conn = new Connection();
+        if (info.isInput) {
+            conn->setStartPort(otherElm->outputPort(info.otherPortIndex));
+            conn->setEndPort(morphedElm->inputPort(info.portIndex));
+        } else {
+            conn->setStartPort(morphedElm->outputPort(info.portIndex));
+            conn->setEndPort(otherElm->inputPort(info.otherPortIndex));
+        }
+        m_canvas->updateItemId(conn, info.connectionId);
+        m_canvas->addItem(conn);
+    }
+}
+
+void CanvasMorphCommand::undo()
+{
+    SimulationBlocker blocker(m_canvas->simulation());
+
+    auto newElms = elements();
+    decltype(newElms) oldElms;
+    oldElms.reserve(m_ids.size());
+    for (int i = 0; i < m_ids.size(); ++i) {
+        oldElms << ElementFactory::buildElement(m_types.at(i));
+    }
+
+    m_deletedConnectionsOnUndo.clear();
+    transferConnections(newElms, oldElms, &m_deletedConnectionsOnUndo);
+    restoreDeletedConnections(m_deletedConnections);
+
+    m_canvas->restartSimulation();
+}
+
+void CanvasMorphCommand::redo()
+{
+    SimulationBlocker blocker(m_canvas->simulation());
+
+    auto oldElms = elements();
+    decltype(oldElms) newElms;
+    newElms.reserve(m_ids.size());
+    for (int i = 0; i < m_ids.size(); ++i) {
+        newElms << ElementFactory::buildElement(m_newType);
+    }
+
+    m_deletedConnections.clear();
+    transferConnections(oldElms, newElms, &m_deletedConnections);
+    restoreDeletedConnections(m_deletedConnectionsOnUndo);
+
+    m_canvas->restartSimulation();
+}
+
+void CanvasMorphCommand::transferConnections(const QList<GraphicElement *> &from, const QList<GraphicElement *> &to,
+                                             QList<DeletedConnectionInfo> *deleted)
+{
+    for (int elm = 0; elm < from.size(); ++elm) {
+        auto *oldElm = from.at(elm);
+        auto *newElm = to.at(elm);
+
+        newElm->setInputSize(oldElm->inputSize());
+        newElm->setPos(oldElm->pos());
+
+        // Not<->Node morphs need a 16px position adjustment: the two element types have
+        // different pixmap sizes and their visual centers differ by that amount.
+        if ((oldElm->elementType() == ElementType::Not) && (newElm->elementType() == ElementType::Node)) {
+            newElm->moveBy(16, 16);
+        }
+        if ((oldElm->elementType() == ElementType::Node) && (newElm->elementType() == ElementType::Not)) {
+            newElm->moveBy(-16, -16);
+        }
+
+        if (newElm->rotatesGraphic() && oldElm->rotatesGraphic()) {
+            newElm->setRotation(oldElm->rotation());
+        }
+        if (newElm->hasLabel() && oldElm->hasLabel()) {
+            newElm->setLabel(oldElm->label());
+        }
+        if (newElm->hasColors() && oldElm->hasColors()) {
+            newElm->setColor(oldElm->color());
+        }
+        if (newElm->hasFrequency() && oldElm->hasFrequency()) {
+            newElm->setFrequency(oldElm->frequency());
+        }
+        if (newElm->hasTrigger() && oldElm->hasTrigger()) {
+            newElm->setTrigger(oldElm->trigger());
+        }
+
+        // Mirror state is a base property of every element, always carried over.
+        newElm->setFlippedX(oldElm->isFlippedX());
+        newElm->setFlippedY(oldElm->isFlippedY());
+
+        if (newElm->hasAudio() && oldElm->hasAudio()) {
+            newElm->setAudio(oldElm->audio());
+        }
+        if (newElm->hasVolume() && oldElm->hasVolume()) {
+            newElm->setVolume(oldElm->volume());
+        }
+        if (newElm->hasDelay() && oldElm->hasDelay()) {
+            newElm->setDelay(oldElm->delay());
+        }
+
+        // Migrate existing wires to the new element's ports; connections on ports the new
+        // element doesn't have are deleted (recorded in *deleted for undo/redo restoration).
+        transferPortConnections(oldElm, newElm, true, deleted);
+        transferPortConnections(oldElm, newElm, false, deleted);
+
+        // Reuse the old element's id on the new element so external references stay valid.
+        const int oldId = oldElm->id();
+        m_canvas->removeItem(oldElm);
+        delete oldElm;
+
+        m_canvas->updateItemId(newElm, oldId);
+        m_canvas->addItem(newElm);
+        newElm->updatePortsProperties();
+    }
+}
+
+void CanvasMorphCommand::transferPortConnections(GraphicElement *oldElm, GraphicElement *newElm,
+                                                 bool isInput, QList<DeletedConnectionInfo> *deleted)
+{
+    const int portCount = isInput ? oldElm->inputSize() : oldElm->outputSize();
+    for (int port = 0; port < portCount; ++port) {
+        Port *oldPort = isInput ? static_cast<Port *>(oldElm->inputPort(port))
+                                   : static_cast<Port *>(oldElm->outputPort(port));
+        while (!oldPort->connections().isEmpty()) {
+            auto *conn = oldPort->connections().constFirst();
+            if (!conn) {
+                break;
+            }
+            const bool ownsSide = isInput ? (conn->endPort() == oldElm->inputPort(port))
+                                          : (conn->startPort() == oldElm->outputPort(port));
+            if (!ownsSide) {
+                break;
+            }
+            Port *newPort = isInput ? static_cast<Port *>(newElm->inputPort(port))
+                                       : static_cast<Port *>(newElm->outputPort(port));
+            if (newPort) {
+                if (isInput) {
+                    conn->setEndPort(static_cast<InputPort *>(newPort));
+                } else {
+                    conn->setStartPort(static_cast<OutputPort *>(newPort));
+                }
+                conn->setHighLight(false);
+            } else {
+                Port *otherPort = isInput ? static_cast<Port *>(conn->startPort())
+                                             : static_cast<Port *>(conn->endPort());
+                if (deleted && otherPort && otherPort->graphicElement()) {
+                    deleted->append({conn->id(), oldElm->id(), port, isInput, otherPort->graphicElement()->id(), otherPort->index()});
+                }
+                conn->setStartPort(nullptr);
+                conn->setEndPort(nullptr);
+                m_canvas->removeItem(conn);
+                delete conn;
+            }
+        }
+    }
+}
+
+// --- CanvasToggleTruthTableOutputCommand ---
+
+CanvasToggleTruthTableOutputCommand::CanvasToggleTruthTableOutputCommand(GraphicElement *element, int pos, CanvasItem *canvas, QUndoCommand *parent)
+    : QUndoCommand(parent)
+    , m_canvas(canvas)
+    , m_id(element->id())
+    , m_pos(pos)
+{
+}
+
+void CanvasToggleTruthTableOutputCommand::redo()
+{
+    auto *truthtable = qobject_cast<TruthTable *>(CanvasCommandUtils::findElm(m_canvas, m_id));
+    if (!truthtable) {
+        return;
+    }
+    // The key holds exactly 2048 bits (256 rows x 8 outputs); toggleBit on any other position
+    // is an out-of-bounds write.
+    if (m_pos < 0 || m_pos >= truthtable->key().size()) {
+        return;
+    }
+    truthtable->key().toggleBit(m_pos);
+    m_canvas->restartSimulation();
+}
+
+void CanvasToggleTruthTableOutputCommand::undo()
+{
+    // toggleBit is self-inverse: undo == redo.
+    redo();
 }

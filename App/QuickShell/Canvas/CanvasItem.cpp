@@ -102,6 +102,10 @@ constexpr quint64 kPortTag = 2ULL << 62;
 quint64 elementId(int id) { return kElementTag | quint64(id); }
 quint64 wireId(int id) { return kWireTag | quint64(id); }
 quint64 portId(int index) { return kPortTag | quint64(index); }
+/// Strips a tagged id's top-2-bit kind tag, recovering the plain id/index passed to
+/// elementId()/wireId()/portId(). Used by mouseDoubleClickEvent() to recover a wire's real
+/// Connection::id() from a SpatialIndex hit.
+int unwrapId(quint64 tagged) { return int(tagged & ~(kWireTag | kPortTag)); }
 
 /// Maps a Status to a display color for the flat-quad/line rendering this prototype uses in
 /// place of real per-element SVG appearance (that porting work is Phase 2's job -- see the
@@ -593,6 +597,233 @@ void CanvasItem::distributeVertically()
 
     moveElementsTo(this, elements_, newPositions);
 }
+
+void CanvasItem::nextElm()
+{
+    const auto selected = selectedElements();
+    const bool needsMacro = selected.size() > 1;
+    if (needsMacro) {
+        m_undoStack.beginMacro(QStringLiteral("Morph elements"));
+    }
+
+    for (auto *element : selected) {
+        const auto nextType = Enums::nextElmType(element->elementType());
+        if (nextType == ElementType::Unknown) {
+            continue; // no "next" in the cycle for this type
+        }
+        const int id = element->id();
+        receiveCommand(new CanvasMorphCommand(QList<GraphicElement *>{element}, nextType, this));
+        // CanvasMorphCommand replaces the element in-place under the same id -- the old
+        // pointer is invalid after the command's redo(), re-resolve by id.
+        if (auto *morphed = dynamic_cast<GraphicElement *>(itemById(id))) {
+            morphed->setSelected(true);
+        }
+    }
+
+    if (needsMacro) {
+        m_undoStack.endMacro();
+    }
+}
+
+void CanvasItem::prevElm()
+{
+    const auto selected = selectedElements();
+    const bool needsMacro = selected.size() > 1;
+    if (needsMacro) {
+        m_undoStack.beginMacro(QStringLiteral("Morph elements"));
+    }
+
+    for (auto *element : selected) {
+        const auto prevType = Enums::prevElmType(element->elementType());
+        if (prevType == ElementType::Unknown) {
+            continue;
+        }
+        const int id = element->id();
+        receiveCommand(new CanvasMorphCommand(QList<GraphicElement *>{element}, prevType, this));
+        if (auto *morphed = dynamic_cast<GraphicElement *>(itemById(id))) {
+            morphed->setSelected(true);
+        }
+    }
+
+    if (needsMacro) {
+        m_undoStack.endMacro();
+    }
+}
+
+void CanvasItem::applyPropertyWithUndo(GraphicElement *element, const std::function<void()> &mutate)
+{
+    QByteArray oldData;
+    {
+        QDataStream stream(&oldData, QIODevice::WriteOnly);
+        Serialization::writePandaHeader(stream);
+        element->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
+    }
+    mutate();
+    receiveCommand(new CanvasUpdateCommand({element}, oldData, this));
+}
+
+void CanvasItem::adjustMainProperty(int dir)
+{
+    const auto selected = selectedElements();
+    const bool needsMacro = selected.size() > 1;
+    if (needsMacro) {
+        m_undoStack.beginMacro(QStringLiteral("Cycle element properties"));
+    }
+
+    for (auto *element : selected) {
+        switch (element->elementType()) {
+        case ElementType::And:
+        case ElementType::Or:
+        case ElementType::Nand:
+        case ElementType::Nor:
+        case ElementType::Xor:
+        case ElementType::Xnor:
+        case ElementType::Led:
+        case ElementType::TruthTable: {
+            const int newSize = element->inputSize() + dir;
+            if (newSize >= element->minInputSize() && newSize <= element->maxInputSize()) {
+                receiveCommand(new CanvasChangePortSizeCommand({element}, newSize, this, true));
+            }
+            break;
+        }
+        case ElementType::InputRotary: {
+            const int newSize = element->outputSize() + dir;
+            if (newSize >= element->minOutputSize() && newSize <= element->maxOutputSize()) {
+                receiveCommand(new CanvasChangePortSizeCommand({element}, newSize, this, false));
+            }
+            break;
+        }
+        case ElementType::Clock:
+            if (element->hasFrequency()) {
+                applyPropertyWithUndo(element, [element, dir] { element->setFrequency(element->frequency() + dir * 0.5); });
+            }
+            break;
+        case ElementType::Buzzer:
+            if (element->hasFrequency()) {
+                applyPropertyWithUndo(element, [element, dir] {
+                    element->setFrequency(std::clamp(element->frequency() + dir * 100.0, 20.0, 20000.0));
+                });
+            }
+            break;
+        case ElementType::Display16:
+            if (dir < 0 && element->hasColors()) {
+                applyPropertyWithUndo(element, [element] { element->setColor(element->previousColor()); });
+            }
+            break;
+        case ElementType::Display14:
+        case ElementType::Display7:
+            if (element->hasColors()) {
+                applyPropertyWithUndo(element, [element, dir] {
+                    element->setColor(dir < 0 ? element->previousColor() : element->nextColor());
+                });
+            }
+            break;
+        case ElementType::AudioBox:
+        case ElementType::DFlipFlop:
+        case ElementType::DLatch:
+        case ElementType::Demux:
+        case ElementType::IC:
+        case ElementType::InputButton:
+        case ElementType::InputGnd:
+        case ElementType::InputSwitch:
+        case ElementType::InputVcc:
+        case ElementType::JKFlipFlop:
+        case ElementType::JKLatch:
+        case ElementType::Line:
+        case ElementType::Mux:
+        case ElementType::Node:
+        case ElementType::Not:
+        case ElementType::SRFlipFlop:
+        case ElementType::SRLatch:
+        case ElementType::TFlipFlop:
+        case ElementType::Text:
+        case ElementType::Unknown:
+            break;
+        }
+
+        // Toggling selection off and on forces a future property inspector to refresh.
+        element->setSelected(false);
+        element->setSelected(true);
+    }
+
+    if (needsMacro) {
+        m_undoStack.endMacro();
+    }
+}
+
+void CanvasItem::prevMainPropShortcut() { adjustMainProperty(-1); }
+void CanvasItem::nextMainPropShortcut() { adjustMainProperty(1); }
+
+void CanvasItem::adjustSecondaryProperty(int dir)
+{
+    const auto selected = selectedElements();
+    const bool needsMacro = selected.size() > 1;
+    if (needsMacro) {
+        m_undoStack.beginMacro(QStringLiteral("Cycle element properties"));
+    }
+
+    for (auto *element : selected) {
+        switch (element->elementType()) {
+        case ElementType::TruthTable: {
+            const int newSize = element->outputSize() + dir;
+            if (newSize >= element->minOutputSize() && newSize <= element->maxOutputSize()) {
+                receiveCommand(new CanvasChangePortSizeCommand({element}, newSize, this, false));
+            }
+            break;
+        }
+        case ElementType::Led:
+            if (element->hasColors()) {
+                applyPropertyWithUndo(element, [element, dir] {
+                    element->setColor(dir < 0 ? element->previousColor() : element->nextColor());
+                });
+            }
+            break;
+        case ElementType::And:
+        case ElementType::AudioBox:
+        case ElementType::Buzzer:
+        case ElementType::Clock:
+        case ElementType::DFlipFlop:
+        case ElementType::DLatch:
+        case ElementType::Demux:
+        case ElementType::Display14:
+        case ElementType::Display16:
+        case ElementType::Display7:
+        case ElementType::IC:
+        case ElementType::InputButton:
+        case ElementType::InputGnd:
+        case ElementType::InputRotary:
+        case ElementType::InputSwitch:
+        case ElementType::InputVcc:
+        case ElementType::JKFlipFlop:
+        case ElementType::JKLatch:
+        case ElementType::Line:
+        case ElementType::Mux:
+        case ElementType::Nand:
+        case ElementType::Node:
+        case ElementType::Nor:
+        case ElementType::Not:
+        case ElementType::Or:
+        case ElementType::SRFlipFlop:
+        case ElementType::SRLatch:
+        case ElementType::TFlipFlop:
+        case ElementType::Text:
+        case ElementType::Unknown:
+        case ElementType::Xnor:
+        case ElementType::Xor:
+            break;
+        }
+
+        element->setSelected(false);
+        element->setSelected(true);
+    }
+
+    if (needsMacro) {
+        m_undoStack.endMacro();
+    }
+}
+
+void CanvasItem::prevSecndPropShortcut() { adjustSecondaryProperty(-1); }
+void CanvasItem::nextSecndPropShortcut() { adjustSecondaryProperty(1); }
 
 void CanvasItem::copyAction()
 {
@@ -1233,6 +1464,39 @@ void CanvasItem::mouseReleaseEvent(QMouseEvent *event)
     update();
 }
 
+void CanvasItem::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    if (event->modifiers().testFlag(Qt::ControlModifier)) {
+        return;
+    }
+
+    const auto hits = m_index.queryPoint(event->position());
+
+    // Same port-priority scan as mousePressEvent(): a port at this point means there's no
+    // wire-split to do here (mirrors Scene::itemAt()'s port-over-everything priority, which
+    // SceneInteraction::mouseDoubleClick() relies on via its single itemAt() call).
+    for (auto it = hits.crbegin(); it != hits.crend(); ++it) {
+        if (m_portsById.contains(*it)) {
+            return;
+        }
+    }
+
+    if (hits.isEmpty()) {
+        return;
+    }
+
+    const quint64 topHit = hits.last();
+    if (m_elementsById.contains(topHit)) {
+        return; // an element is here, not a wire -- mirrors mousePressEvent()'s identical check
+    }
+
+    // Must be a wire id (SpatialIndex only ever holds element/port/wire ids here).
+    const int connId = unwrapId(topHit);
+    if (auto *connection = CanvasCommandUtils::findConn(this, connId); connection && connection->startPort() && connection->endPort()) {
+        receiveCommand(new CanvasSplitCommand(connection, event->position(), this));
+    }
+}
+
 void CanvasItem::startSelectionRect(const QPointF &anchor)
 {
     m_selectionAnchor = anchor;
@@ -1451,6 +1715,18 @@ void CanvasItem::keyPressEvent(QKeyEvent *event)
         deleteSelected();
         event->accept();
         return;
+    }
+
+    // Type/property cycling: matches SceneUiBinder.cpp's real unmodified QShortcut bindings
+    // ("[" / "]" main property, "{" / "}" secondary property, "<" / ">" type-cycling).
+    switch (event->key()) {
+    case Qt::Key_BracketLeft:  prevMainPropShortcut(); event->accept(); return;
+    case Qt::Key_BracketRight: nextMainPropShortcut(); event->accept(); return;
+    case Qt::Key_BraceLeft:    prevSecndPropShortcut(); event->accept(); return;
+    case Qt::Key_BraceRight:   nextSecndPropShortcut(); event->accept(); return;
+    case Qt::Key_Less:         prevElm(); event->accept(); return;
+    case Qt::Key_Greater:      nextElm(); event->accept(); return;
+    default: break;
     }
 
     // Skip keyboard triggers while Ctrl is held, so the Ctrl+R/Ctrl+H shortcuts above (and

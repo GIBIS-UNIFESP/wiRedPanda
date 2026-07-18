@@ -338,3 +338,84 @@ private:
     QString m_blobName;
     QList<ConnectionInfo> m_connections;
 };
+
+/**
+ * \class CanvasSplitCommand
+ * \brief Port of Commands.h's SplitCommand: inserts a Node junction into an existing
+ * connection, splitting it into two wire segments. Picks Phase 1's deferred wire-splitting
+ * gesture back up (see CanvasItem::mouseDoubleClickEvent()).
+ */
+class CanvasSplitCommand : public QUndoCommand
+{
+public:
+    explicit CanvasSplitCommand(Connection *conn, QPointF mousePos, CanvasItem *canvas, QUndoCommand *parent = nullptr);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    QPointF m_nodePos;
+    CanvasItem *m_canvas;
+    int m_c1Id;
+    int m_c2Id;
+    int m_elm1Id;
+    int m_elm2Id;
+    int m_nodeAngle;
+    int m_nodeId;
+};
+
+/**
+ * \class CanvasMorphCommand
+ * \brief Port of Commands.h's MorphCommand: changes the type of selected elements in place
+ * while preserving connections (used by nextElement()/prevElement()'s type-cycling shortcuts).
+ */
+class CanvasMorphCommand : public CanvasElementsCommand
+{
+public:
+    explicit CanvasMorphCommand(const QList<GraphicElement *> &elements, ElementType type, CanvasItem *canvas, QUndoCommand *parent = nullptr);
+
+    void redo() override;
+    void undo() override;
+
+private:
+    /// Describes a connection deleted because its port was removed during a morph.
+    struct DeletedConnectionInfo {
+        int connectionId;
+        int morphedElementId;
+        int portIndex;
+        bool isInput;
+        int otherElementId;
+        int otherPortIndex;
+    };
+
+    void transferConnections(const QList<GraphicElement *> &from, const QList<GraphicElement *> &to,
+                             QList<DeletedConnectionInfo> *deleted = nullptr);
+    void transferPortConnections(GraphicElement *oldElm, GraphicElement *newElm,
+                                 bool isInput, QList<DeletedConnectionInfo> *deleted);
+    void restoreDeletedConnections(const QList<DeletedConnectionInfo> &deleted);
+
+    ElementType m_newType;
+    QList<ElementType> m_types;
+    QList<DeletedConnectionInfo> m_deletedConnections;
+    QList<DeletedConnectionInfo> m_deletedConnectionsOnUndo;
+};
+
+/**
+ * \class CanvasToggleTruthTableOutputCommand
+ * \brief Port of Commands.h's ToggleTruthTableOutputCommand: toggles one output bit in a
+ * TruthTable element. Command logic only -- its real UI trigger (a cell click in the
+ * TruthTable editor dialog) is Phase 4 chrome, not exercised here.
+ */
+class CanvasToggleTruthTableOutputCommand : public QUndoCommand
+{
+public:
+    explicit CanvasToggleTruthTableOutputCommand(GraphicElement *element, int pos, CanvasItem *canvas, QUndoCommand *parent = nullptr);
+
+    void redo() override;
+    void undo() override;
+
+private:
+    CanvasItem *m_canvas;
+    int m_id;
+    int m_pos;
+};
