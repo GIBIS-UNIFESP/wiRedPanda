@@ -7,8 +7,11 @@
 
 #include "App/Element/GraphicElement.h"
 #include "App/Element/IC.h"
+#include "App/IO/Serialization.h"
+#include "App/IO/SerializationContext.h"
 #include "App/QuickShell/Canvas/CanvasCommands.h"
 #include "App/QuickShell/Canvas/CanvasItem.h"
+#include "App/Wiring/Port.h"
 
 CanvasICRegistry::CanvasICRegistry(CanvasItem *canvas)
     : m_canvas(canvas)
@@ -72,12 +75,7 @@ bool CanvasICRegistry::initEmbeddedIC(IC *ic, const QString &blobName)
         return false;
     }
     ic->setBlobName(blobName);
-    // contextDir empty: this canvas has no notion of "the directory of the loaded .panda
-    // file" yet -- see CanvasItem::deserializationContext()'s identical note. Fine for
-    // self-contained blobs; a blob with an inlined file-backed dependency (see this class's
-    // doc comment on registerBlob()) would need a real contextDir to resolve it, same
-    // narrower-than-production gap noted there.
-    ic->loadFromBlob(blob(blobName), QString());
+    ic->loadFromBlob(blob(blobName), m_canvas->contextDir());
     if (ic->label().isEmpty()) {
         ic->setLabel(blobName.toUpper());
     }
@@ -109,4 +107,27 @@ IC *CanvasICRegistry::createEmbeddedIC(const QString &blobName, const QByteArray
     m_canvas->undoStack()->endMacro();
 
     return ic;
+}
+
+QByteArray CanvasICRegistry::captureSnapshot(const QList<GraphicElement *> &targets)
+{
+    QByteArray data;
+    QDataStream stream(&data, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(stream);
+    for (auto *elm : targets) {
+        elm->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
+    }
+    return data;
+}
+
+void CanvasICRegistry::rollbackElements(const QList<GraphicElement *> &elements, const QByteArray &snapshot, CanvasItem *canvas)
+{
+    QByteArray data(snapshot);
+    QDataStream stream(&data, QIODevice::ReadOnly);
+    const auto version = Serialization::readPandaHeader(stream);
+    QHash<quint64, Port *> portMap;
+    auto context = canvas->deserializationContext(portMap, version, SerializationPurpose::InMemorySnapshot);
+    for (auto *elm : elements) {
+        elm->load(stream, context);
+    }
 }

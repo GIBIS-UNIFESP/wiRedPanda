@@ -21,7 +21,8 @@ class IC;
  * \brief CanvasItem-side port of ICRegistry, scoped to the blob-storage core.
  *
  * \details Ports hasBlob()/blob()/setBlob()/registerBlob()/removeBlob()/renameBlob()/
- * findICsByBlobName()/initEmbeddedIC()/uniqueBlobName()/createEmbeddedIC() -- the half
+ * findICsByBlobName()/initEmbeddedIC()/uniqueBlobName()/createEmbeddedIC()/captureSnapshot()/
+ * rollbackElements() -- the half
  * MCP's embed_ic/instantiate_ic handlers actually exercise (confirmed by reading
  * MCP/Server/Handlers/ICHandler.cpp directly, not assumed). Deliberately NOT ported, named
  * here and in the plan's "Phase 3 in depth" section rather than silently dropped:
@@ -74,6 +75,14 @@ public:
     /// macro (CanvasRegisterBlobCommand + CanvasAddItemsCommand). Mirrors
     /// ICRegistry::createEmbeddedIC().
     IC *createEmbeddedIC(const QString &blobName, const QByteArray &fileBytes, const QString &contextDir);
+
+    /// Serializes \a targets' current state for atomic-rollback purposes. Mirrors
+    /// ICRegistry::captureSnapshot(); used by QuickWorkSpace::onChildICBlobSaved() so a
+    /// mid-reload failure across multiple IC instances can restore the ones already updated.
+    static QByteArray captureSnapshot(const QList<GraphicElement *> &targets);
+    /// Restores \a elements from a previously captured \a snapshot. Mirrors
+    /// ICRegistry::rollbackElements().
+    static void rollbackElements(const QList<GraphicElement *> &elements, const QByteArray &snapshot, CanvasItem *canvas);
 
 private:
     CanvasItem *m_canvas;

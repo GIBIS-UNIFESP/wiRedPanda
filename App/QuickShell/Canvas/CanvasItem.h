@@ -111,7 +111,16 @@ class CanvasItem : public QQuickItem
     QML_ELEMENT
 
 public:
-    explicit CanvasItem(QQuickItem *parent = nullptr);
+    /// \param buildDemo When true (the default -- and the only value QML's own construction
+    /// of this QML_ELEMENT type ever uses), seeds the canvas with Phase 1/2's demo circuit
+    /// (a handful of gates plus an IC loaded from the bundled Examples/ directory) so a
+    /// bare `CanvasItem {}` in QML has something to show. QuickWorkSpace (Phase 4) passes
+    /// false: a real document's canvas must start genuinely empty, exactly like production
+    /// Scene's constructor never seeding demo content -- a QuickWorkSpace about to load a
+    /// real .panda file (or represent a brand-new blank tab) that inherited the demo circuit
+    /// found its elements mixed in with the real ones, an easy mistake to reintroduce, so
+    /// this is a real constructor parameter, not a debug-only flag to delete later.
+    explicit CanvasItem(QQuickItem *parent = nullptr, bool buildDemo = true);
     ~CanvasItem() override;
 
     // --- Real id/registry layer (Phase 3 foundational sub-step) ---
@@ -134,6 +143,10 @@ public:
     [[nodiscard]] ItemWithId *itemById(int id) const;
     /// Returns a fresh, previously unused id. Mirrors Scene::nextId().
     int nextId();
+    /// Raises the id registry's last-assigned id to \a newLastId (never lowers it). Mirrors
+    /// Scene::setLastId(); used by QuickWorkSpace::load()/loadFromBlob() so ids allocated
+    /// after a load don't collide with the highest id just loaded.
+    void setLastId(int newLastId);
     /// Reassigns \a item's id to \a newId without registering it -- mirrors Scene::updateItemId(),
     /// used by undo/redo restore paths to preserve an item's original id across a
     /// serialize/deserialize round-trip.
@@ -153,21 +166,22 @@ public:
     void removeItem(Connection *connection);
     /// Builds a deserialization context for this canvas -- thin wrapper around the already-
     /// portable SerializationContext, mirroring Scene::deserializationContext(). \a purpose has
-    /// no default, matching Scene's own signature. blobRegistry now points at this canvas's
-    /// real CanvasICRegistry blob map. contextDir stays empty, a real, confirmed gap (not just
-    /// "nothing loads a top-level file through this yet"): any element whose state includes a
-    /// nested relative-path file reference (e.g. an IC embedding another file-backed IC by
-    /// relative path) fails to re-resolve that path once it round-trips through this context --
-    /// which every Add/Delete/Update/paste/duplicate/undo/redo does. Confirmed via a crash
-    /// (Pandaception: file not found) when a diagnostic exercised exactly this case; worked
-    /// around there by using a self-contained fixture instead of fixing the root cause here --
-    /// this canvas has no notion of "the directory of the loaded top-level .panda file" yet
-    /// because nothing loads one through Workspace/Serialization onto this canvas (see the
-    /// plan's Verification section on that still-open gap). Needs a real contextDir concept
-    /// (mirroring Scene::contextDir()/setContextDir()) once that lands.
+    /// no default, matching Scene's own signature. blobRegistry points at this canvas's real
+    /// CanvasICRegistry blob map; contextDir is this canvas's own contextDir()/setContextDir()
+    /// (see those below) -- the gap this doc comment used to describe (contextDir always empty,
+    /// breaking re-resolution of any nested relative-path file reference) is closed now that
+    /// QuickWorkSpace::load() actually sets it, the same way Scene::setContextDir() does from
+    /// WorkSpace::load().
     [[nodiscard]] SerializationContext deserializationContext(QHash<quint64, Port *> &portMap,
                                                                const QVersionNumber &version,
                                                                SerializationPurpose purpose);
+
+    /// Directory of the .panda file this canvas's content was loaded from (or saved to), used
+    /// to resolve relative-path file references (nested file-backed ICs, appearances, audio).
+    /// Mirrors Scene::contextDir()/setContextDir(). Empty until a real top-level load/save
+    /// sets it (QuickWorkSpace does, mirroring WorkSpace::setCurrentFile()).
+    [[nodiscard]] QString contextDir() const { return m_contextDir; }
+    void setContextDir(const QString &dir) { m_contextDir = dir; }
 
     /// Returns the currently selected elements. Mirrors Scene::selectedElements(); used by
     /// this class's local command classes and by keyPressEvent()'s shortcut dispatch.
@@ -175,6 +189,11 @@ public:
     /// Returns all elements on the canvas, unsorted. Mirrors Scene::unsortedElements(); used
     /// by CanvasICRegistry's findICsByBlobName()/renameBlob() element scans.
     [[nodiscard]] const QVector<GraphicElement *> &elements() const { return m_elements; }
+    /// Returns all wires on the canvas, unsorted. Used by QuickWorkSpace::save() to build the
+    /// full elements+connections item list Serialization::serialize() needs -- CanvasItem has
+    /// no single QGraphicsScene::items()-equivalent since elements/connections are tracked in
+    /// two separately-typed vectors (see this class's doc comment).
+    [[nodiscard]] const QVector<Connection *> &connections() const { return m_connections; }
     /// Pushes \a cmd onto this canvas's undo stack (immediately executes its redo()) and
     /// resyncs the spatial index/repaints via the indexChanged connection set up in the
     /// constructor. Mirrors Scene::receiveCommand().
@@ -436,6 +455,9 @@ private:
 
     /// Last known cursor position, updated on every mouse press/move -- backs mousePos().
     QPointF m_lastMousePos;
+
+    /// Backs contextDir()/setContextDir() -- see their doc comment.
+    QString m_contextDir;
 
     /// Offscreen-render cache backing real per-element appearance (Phase 2) -- see this
     /// class's doc comment and TextureAtlas's own for the design.

@@ -182,14 +182,25 @@ void moveElementsTo(CanvasItem *canvas, const QList<GraphicElement *> &elements,
 
 } // namespace
 
-CanvasItem::CanvasItem(QQuickItem *parent)
+CanvasItem::CanvasItem(QQuickItem *parent, bool buildDemo)
     : QQuickItem(parent)
 {
     setFlag(QQuickItem::ItemHasContents, true);
     setAcceptedMouseButtons(Qt::LeftButton);
     setAcceptHoverEvents(true);
 
-    buildDemoCircuit();
+    if (buildDemo) {
+        buildDemoCircuit();
+    }
+
+    // Host/simulation setup is real, always-needed infrastructure, not demo-only content --
+    // unconditional regardless of buildDemo, using whatever m_elements buildDemoCircuit() (or
+    // nothing, for a real document's initially-empty canvas) left behind.
+    m_host = std::make_unique<ListSimulationHost>(m_elements);
+    m_simulation = std::make_unique<Simulation>(m_host.get());
+    m_simulation->initialize();
+    m_simulation->start();
+
     rebuildSpatialIndex();
 
     // Simulation drives real state changes on its own 1ms timer, independent of this item's
@@ -230,6 +241,11 @@ ItemWithId *CanvasItem::itemById(int id) const
 int CanvasItem::nextId()
 {
     return m_itemRegistry.nextId();
+}
+
+void CanvasItem::setLastId(int newLastId)
+{
+    m_itemRegistry.setLastId(newLastId);
 }
 
 void CanvasItem::updateItemId(ItemWithId *item, int newId)
@@ -296,8 +312,7 @@ SerializationContext CanvasItem::deserializationContext(QHash<quint64, Port *> &
                                                          const QVersionNumber &version,
                                                          SerializationPurpose purpose)
 {
-    // contextDir stays empty -- a real, confirmed gap, see this method's header doc comment.
-    SerializationContext context{.portMap = portMap, .version = version, .purpose = purpose};
+    SerializationContext context{.portMap = portMap, .version = version, .purpose = purpose, .contextDir = m_contextDir};
     context.blobRegistry = &m_icRegistry.blobMapRef();
     return context;
 }
@@ -1072,11 +1087,8 @@ void CanvasItem::buildDemoCircuit()
     for (auto *connection : std::as_const(m_connections)) {
         addItem(connection);
     }
-
-    m_host = std::make_unique<ListSimulationHost>(m_elements);
-    m_simulation = std::make_unique<Simulation>(m_host.get());
-    m_simulation->initialize();
-    m_simulation->start();
+    // Host/simulation setup is not here -- see the constructor, which owns it unconditionally
+    // now (not just for the buildDemo=true path).
 }
 
 void CanvasItem::rebuildSpatialIndex()
