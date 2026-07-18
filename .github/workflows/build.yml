@@ -123,6 +123,33 @@ jobs:
         cmake --preset release ${{ matrix.cmake_args }}
         cmake --build --preset release
 
+    # qt_add_qml_module (App/QuickShell/CMakeLists.txt) generates
+    # wiredpanda_quick_qmllint(/_json/_module) targets that nothing invoked before this
+    # step. Runs on a single matrix leg only: qmllint's findings don't depend on
+    # OS/Qt-version/cmake_args, and the Build step above already produced everything
+    # this target needs (type registration is a dependency of building wiredpanda_quick
+    # itself), so this is a cheap incremental step, not a second build. qmllint exits 0
+    # on warning-severity findings -- only `error` severity, configured per-rule in
+    # .qmllint.ini, fails it -- so this reports without gating the build; promoting
+    # specific rules to error there is how this becomes a hard gate once the current
+    # warning backlog is cleared.
+    - name: QML lint (qmllint)
+      if: matrix.os == 'ubuntu-24.04' && matrix.qt == '6.9.3' && matrix.cmake_args == ''
+      run: |
+        cmake --build --preset release --target all_qmllint_json
+        python3 - <<'PY'
+        import json
+        data = json.load(open("build-release/wiredpanda_quick_qmllint.json"))
+        total = sum(len(f["warnings"]) for f in data["files"])
+        by_id = {}
+        for f in data["files"]:
+            for w in f["warnings"]:
+                by_id[w["id"]] = by_id.get(w["id"], 0) + 1
+        print(f"qmllint: {total} warning(s) across {len(data['files'])} file(s)")
+        for wid, count in sorted(by_id.items(), key=lambda kv: -kv[1]):
+            print(f"  {wid}: {count}")
+        PY
+
     - name: Test
       timeout-minutes: 10
       env:
