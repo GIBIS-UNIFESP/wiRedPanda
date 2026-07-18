@@ -162,6 +162,20 @@ public:
     /// constructor. Mirrors Scene::receiveCommand().
     void receiveCommand(QUndoCommand *cmd);
 
+    /// Returns the simulation engine driving this canvas. Mirrors Scene::simulation(); used by
+    /// this class's local command classes to wrap topology-mutating redo()/undo() bodies in a
+    /// SimulationBlocker, exactly as Commands.cpp does through Scene::simulation().
+    [[nodiscard]] Simulation *simulation() const { return m_simulation.get(); }
+    /// Marks the simulation topology stale (restart()) and resyncs the spatial index/repaints.
+    /// Mirrors Scene::setCircuitUpdateRequired() -- this canvas has no autosave/visibility-
+    /// dirty machinery to also flag, so it's just the simulation-rebuild half.
+    void restartSimulation();
+
+    /// Deletes the currently selected elements (and their attached wires, via
+    /// CanvasDeleteItemsCommand's CanvasCommandUtils::loadList() expansion) as one undoable
+    /// command. Mirrors Scene::deleteAction(). No-op if nothing is selected.
+    void deleteSelected();
+
     // --- Rotate / flip / align / distribute (ports Scene.h's equivalents) ---
     //
     // No chrome menu exists yet (Phase 4) to trigger these, so keyPressEvent() wires the same

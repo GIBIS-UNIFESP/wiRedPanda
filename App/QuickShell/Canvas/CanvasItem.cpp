@@ -45,8 +45,16 @@
 
 namespace {
 
-/// Serves a fixed, in-memory element list to Simulation -- the same narrow seam Scene itself
-/// binds through (see App/Core/SimulationHost.h), just with no QGraphicsScene behind it.
+/// Serves CanvasItem's live, in-memory element list to Simulation -- the same narrow seam
+/// Scene itself binds through (see App/Core/SimulationHost.h), just with no QGraphicsScene
+/// behind it. Binds to CanvasItem::m_elements BY REFERENCE, not a snapshot copy: Phase 3's
+/// Add/Delete commands grow and shrink that vector after construction (CanvasItem::addItem()/
+/// removeItem() append/remove elements directly), and Simulation::restart() re-reads
+/// simulationItems() on every call -- a copied snapshot would silently go stale the first
+/// time an element was added or removed after startup. Safe for the reference to outlive
+/// this host: m_elements is a CanvasItem member that outlives m_host in ~CanvasItem() (the
+/// destructor stops the simulation timer before any member teardown begins, so nothing calls
+/// back into this host after m_elements itself is torn down).
 class ListSimulationHost : public SimulationHost
 {
 public:
@@ -71,7 +79,7 @@ public:
     }
 
 private:
-    QVector<GraphicElement *> m_elements;
+    const QVector<GraphicElement *> &m_elements;
 };
 
 /// Packs an id into the quint64 id space SpatialIndex uses, tagged by kind in the top bits so
@@ -223,8 +231,16 @@ void CanvasItem::addItem(GraphicElement *element)
     if (!element) {
         return;
     }
-    // Unassigned (-1): give it the next id. Pre-assigned (updateItemId() restore path):
-    // preserve it and advance the counter past it -- mirrors Scene::addItem() exactly.
+    // Membership half (mirrors QGraphicsScene::addItem() being the other half of Scene::
+    // addItem()'s job): idempotent, so callers that already appended element to m_elements
+    // directly (buildDemoCircuit()) and callers relying on addItem() to do it
+    // (CanvasCommandUtils::addItems(), Phase 3's Add/Delete command family) both work.
+    if (!m_elements.contains(element)) {
+        m_elements.append(element);
+    }
+    // Id-registration half. Unassigned (-1): give it the next id. Pre-assigned
+    // (updateItemId() restore path): preserve it and advance the counter past it -- mirrors
+    // Scene::addItem() exactly.
     if (element->id() < 0) {
         element->setId(nextId());
     } else {
@@ -238,6 +254,9 @@ void CanvasItem::addItem(Connection *connection)
     if (!connection) {
         return;
     }
+    if (!m_connections.contains(connection)) {
+        m_connections.append(connection);
+    }
     if (connection->id() < 0) {
         connection->setId(nextId());
     } else {
@@ -249,6 +268,7 @@ void CanvasItem::addItem(Connection *connection)
 void CanvasItem::removeItem(GraphicElement *element)
 {
     if (element) {
+        m_elements.removeAll(element);
         m_itemRegistry.unregisterItem(element);
     }
 }
@@ -256,6 +276,7 @@ void CanvasItem::removeItem(GraphicElement *element)
 void CanvasItem::removeItem(Connection *connection)
 {
     if (connection) {
+        m_connections.removeAll(connection);
         m_itemRegistry.unregisterItem(connection);
     }
 }
@@ -287,6 +308,43 @@ void CanvasItem::receiveCommand(QUndoCommand *cmd)
 {
     m_undoStack.push(cmd);
     update();
+}
+
+void CanvasItem::restartSimulation()
+{
+    m_simulation->restart();
+    rebuildSpatialIndex();
+    update();
+}
+
+void CanvasItem::deleteSelected()
+{
+    QList<QGraphicsItem *> items;
+    for (auto *elm : selectedElements()) {
+        items.append(elm);
+    }
+    if (items.isEmpty()) {
+        return;
+    }
+
+    // Clear selection before the command, mirroring Scene::deleteAction() -- and cancel an
+    // in-progress drag if it targeted one of the elements being deleted (the WIREDPANDA-H9
+    // mid-drag-delete race Scene's own m_dragSnapshot QPointers guard against; this canvas
+    // doesn't use QPointers here, so guard explicitly instead).
+    for (auto *elm : std::as_const(m_elements)) {
+        elm->setSelected(false);
+    }
+    m_selectedIds.clear();
+    for (auto *item : std::as_const(items)) {
+        if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item); elm && m_dragElements.contains(elm)) {
+            m_draggingElement = false;
+            m_dragElements.clear();
+            m_dragStartPositions.clear();
+            break;
+        }
+    }
+
+    receiveCommand(new CanvasDeleteItemsCommand(items, this));
 }
 
 void CanvasItem::rotate(int angle)
@@ -606,6 +664,10 @@ void CanvasItem::buildDemoCircuit()
         }
     }
 
+    // addItem() itself appends to m_elements now (see its doc comment) -- the bulk assignment
+    // here just fixes the demo circuit's iteration order (id assignment order matches this
+    // list, not construction order, which happens to already match); addItem()'s own
+    // "already contains" check makes the subsequent per-element addItem() calls idempotent.
     m_elements = { switchA, switchB, andGate, led, switchC, led2,
                     mux, demux, truthTable, display7, display14, display16,
                     inputButton, inputRotary, text, ic };
@@ -800,8 +862,7 @@ void CanvasItem::tryCompleteWire(const QPointF &pos)
 
     m_editedConnection->setStartPort(startPort);
     m_editedConnection->setEndPort(endPort);
-    m_connections.append(m_editedConnection);
-    addItem(m_editedConnection);
+    addItem(m_editedConnection); // appends to m_connections and assigns a real id
     m_editedConnection = nullptr;
     // The new wire changes both the simulation graph and the spatial index.
     m_simulation->restart();
@@ -826,8 +887,7 @@ void CanvasItem::detachWire(InputPort *endPort)
         return;
     }
 
-    m_connections.removeAll(connection);
-    removeItem(connection);
+    removeItem(connection); // removes from m_connections and unregisters its id
     delete connection;
     m_simulation->restart();
 
@@ -1203,6 +1263,13 @@ void CanvasItem::keyPressEvent(QKeyEvent *event)
             event->accept();
             return;
         }
+    }
+
+    // Delete: matches the real app's unmodified "Del" shortcut.
+    if (event->key() == Qt::Key_Delete) {
+        deleteSelected();
+        event->accept();
+        return;
     }
 
     // Skip keyboard triggers while Ctrl is held, so the Ctrl+R/Ctrl+H shortcuts above (and
