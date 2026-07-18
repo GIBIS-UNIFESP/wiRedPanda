@@ -14,6 +14,7 @@
 #include <QSGVertexColorMaterial>
 
 #include "App/Core/Enums.h"
+#include "App/Core/InstallRelativePaths.h"
 #include "App/Core/SimulationHost.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/And.h"
@@ -28,6 +29,7 @@
 #include "App/Element/GraphicElements/Mux.h"
 #include "App/Element/GraphicElements/Text.h"
 #include "App/Element/GraphicElements/TruthTable.h"
+#include "App/Element/IC.h"
 #include "App/Scene/ConnectionManager.h"
 #include "App/Simulation/Simulation.h"
 #include "App/Wiring/Connection.h"
@@ -262,9 +264,31 @@ void CanvasItem::buildDemoCircuit()
     auto *text = new Text();
     text->setPos(400, 720);
 
+    // IC: the hardest ported family (body paint + hover-preview signal chain + internal
+    // simulation graph, see this class's doc comment). Loads a real example sub-circuit via
+    // the already-portable InstallRelativePaths. This used to crash unconditionally in this
+    // process (ICRenderer::generatePreviewPixmap() constructed a QGraphicsScene, which
+    // depends on Widgets-private QApplication state a bare QGuiApplication never
+    // initializes -- confirmed via GDB, not guessed) until ICRenderer.cpp gained a defensive
+    // QApplication-existence guard; see project memory
+    // project_ic_preview_pixmap_needs_qapplication.md for the full finding and fix, and the
+    // plan's "Phase 2 in depth" section, corrected there. A missing Examples/ directory in
+    // some other run environment still degrades to an unloaded (still paints fine, just
+    // empty) IC rather than crashing.
+    auto *ic = new IC();
+    ic->setPos(640, 40);
+    const QString examplesDir = InstallRelativePaths::resolve(QStringLiteral("Examples"));
+    if (!examplesDir.isEmpty()) {
+        try {
+            ic->loadFile(QStringLiteral("jkflipflop.panda"), examplesDir);
+        } catch (const std::exception &e) {
+            qWarning("CanvasItem demo circuit: IC example failed to load (%s) -- rendering unloaded", e.what());
+        }
+    }
+
     m_elements = { switchA, switchB, andGate, led, switchC, led2,
                     mux, demux, truthTable, display7, display14, display16,
-                    inputButton, inputRotary, text };
+                    inputButton, inputRotary, text, ic };
 
     auto *connA = new Connection();
     connA->setStartPort(switchA->outputPort(0));
@@ -725,19 +749,53 @@ void CanvasItem::finishSelectionRect()
     m_selectionRect = QRectF();
 }
 
+bool CanvasItem::isOverOwnPort(GraphicElement *owner, const QPointF &pos) const
+{
+    for (const quint64 id : m_index.queryPoint(pos)) {
+        if (auto *port = m_portsById.value(id, nullptr); port && port->graphicElement() == owner) {
+            return true;
+        }
+    }
+    return false;
+}
+
 void CanvasItem::hoverMoveEvent(QHoverEvent *event)
 {
     const auto hits = m_index.queryPoint(event->position());
-    const quint64 newHovered = hits.isEmpty() ? 0 : hits.last();
-    if (newHovered != m_hoveredId) {
-        m_hoveredId = newHovered;
+    const quint64 newHoveredId = hits.isEmpty() ? 0 : hits.last();
+
+    if (newHoveredId != m_hoveredId) {
+        // Leaving the old element first, entering the new one after, mirrors real Scene
+        // behavior (and IC's own preview show/hide request pairing -- see this class's doc
+        // comment on the hover-preview signal chain).
+        if (auto *oldIc = qobject_cast<IC *>(m_elementsById.value(m_hoveredId, nullptr))) {
+            oldIc->previewHideRequested();
+        }
+        m_hoveredId = newHoveredId;
+        if (auto *newIc = qobject_cast<IC *>(m_elementsById.value(newHoveredId, nullptr))) {
+            if (isOverOwnPort(newIc, event->position())) {
+                newIc->previewHideRequested();
+            } else {
+                newIc->previewRequested(newIc, event->globalPosition().toPoint());
+            }
+        }
         update();
+    } else if (auto *ic = qobject_cast<IC *>(m_elementsById.value(m_hoveredId, nullptr))) {
+        // Same IC, cursor still moving within it -- keep the pending-preview position current.
+        if (isOverOwnPort(ic, event->position())) {
+            ic->previewHideRequested();
+        } else {
+            ic->previewMoved(ic, event->globalPosition().toPoint());
+        }
     }
 }
 
 void CanvasItem::hoverLeaveEvent(QHoverEvent *)
 {
     if (m_hoveredId != 0) {
+        if (auto *ic = qobject_cast<IC *>(m_elementsById.value(m_hoveredId, nullptr))) {
+            ic->previewHideRequested();
+        }
         m_hoveredId = 0;
         update();
     }

@@ -124,6 +124,13 @@ private:
     void updateSelectionRect(const QPointF &current);
     void finishSelectionRect();
 
+    /// Returns true if \a pos (canvas space) lands on one of \a owner's own ports. Reimplements
+    /// IC::isCursorOverPort()'s decision against this canvas's own SpatialIndex/m_portsById
+    /// rather than calling IC's private isCursorOverPort()/protected hoverXxxEvent()
+    /// overrides directly -- same pattern as activateOnPress() reimplementing
+    /// InputSwitch/InputRotary's mousePressEvent logic instead of calling it.
+    bool isOverOwnPort(GraphicElement *owner, const QPointF &pos) const;
+
     // --- Wire-creation-by-dragging (ports ConnectionManager's workflow) ---
     void startWireFromOutput(OutputPort *startPort);
     void startWireFromInput(InputPort *endPort);

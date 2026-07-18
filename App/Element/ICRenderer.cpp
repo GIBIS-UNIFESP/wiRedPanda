@@ -5,6 +5,7 @@
 
 #include <cmath>
 
+#include <QApplication>
 #include <QGraphicsScene>
 #include <QPainter>
 #include <QScopeGuard>
@@ -114,6 +115,19 @@ void ICRenderer::generatePreviewPixmap(IC &ic, const QList<QGraphicsItem *> &ite
 
     // Skip for empty or very large circuits.
     if (elements.isEmpty() || elements.size() > ICPreviewPopup::MaxElementCount) {
+        ic.m_previewPixmap = QPixmap();
+        return;
+    }
+
+    // QGraphicsScene's constructor depends on Widgets-private, QApplication-owned
+    // application-level state that a bare QGuiApplication never initializes -- constructing
+    // one crashes outside a real QApplication. The only process that can reach this without
+    // one is the Qt Quick rewrite's shell (wiredpanda_quick, App/QuickShell/Main.cpp), which
+    // deliberately never constructs a QApplication; the preview it would generate is only
+    // ever consumed by ICPreviewPopup, a Widgets-era UI feature meaningless without one
+    // anyway. No-op for the real app: it always runs under a real QApplication. See project
+    // memory project_ic_preview_pixmap_needs_qapplication.md.
+    if (!qobject_cast<QApplication *>(QCoreApplication::instance())) {
         ic.m_previewPixmap = QPixmap();
         return;
     }
