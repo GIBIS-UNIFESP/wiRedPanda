@@ -1,6 +1,6 @@
 # wiRedPanda Site
 
-This branch contains the source code for the official wiRedPanda website. The site is built using Astro and Bulma CSS. We hope you enjoy using the wiRedPanda software!
+This branch contains the source code for the official wiRedPanda website. The site is built using Astro and Tailwind CSS. We hope you enjoy using the wiRedPanda software!
 
 If you'd like to see more:
 
