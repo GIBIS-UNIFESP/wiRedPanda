@@ -11,6 +11,7 @@
 #include <QScrollBar>
 #include <QTimer>
 
+#include "App/Core/ThemeManager.h"
 #include "App/Scene/GraphicsView.h"
 #include "App/Scene/Scene.h"
 
@@ -35,6 +36,12 @@ MinimapWidget::MinimapWidget(Scene *scene, GraphicsView *view, QWidget *parent)
     if (m_scene) {
         connect(m_scene, &Scene::circuitHasChanged, this, &MinimapWidget::invalidateCache);
     }
+
+    // The thumbnail is a cached render of the scene (see paintEvent()/m_cache), so a theme
+    // switch -- which recolors the scene's background/dots/elements in place, the same way
+    // Scene::updateTheme() does for the main view -- leaves the cached pixmap showing the old
+    // theme's colors until the next real circuit edit. Invalidate it here too.
+    connect(&ThemeManager::instance(), &ThemeManager::themeChanged, this, &MinimapWidget::invalidateCache);
 
     if (m_view) {
         connect(m_view, &GraphicsView::zoomChanged, this, &MinimapWidget::updateOverlay);

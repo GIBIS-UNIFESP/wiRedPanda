@@ -5,6 +5,7 @@
 
 #include <QGraphicsRectItem>
 
+#include "App/Core/ThemeManager.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/UI/MinimapWidget.h"
@@ -327,4 +328,22 @@ void TestMinimapWidget::testHoverStateOverInteriorClearsHighlightAndCursor()
     QCOMPARE(minimap.m_hoverResizeMode, MinimapWidget::ResizeMode::None);
     QVERIFY(!minimap.m_hoverMoveHandle);
     QCOMPARE(minimap.cursor().shape(), Qt::ArrowCursor);
+}
+
+void TestMinimapWidget::testThemeChangeInvalidatesCache()
+{
+    WorkSpace workspace;
+    MinimapWidget minimap(workspace.scene(), workspace.view());
+
+    // Simulate a cache that's already up to date, then a theme switch delivered the way
+    // ThemeManager actually delivers it -- not by calling invalidateCache() directly, which
+    // would trivially pass without proving the theme-change connection itself exists.
+    minimap.m_cacheDirty = false;
+    QVERIFY(!minimap.m_throttle.isActive());
+
+    ThemeManager::instance().themeChanged();
+
+    // invalidateCache() (like circuitHasChanged()) goes through the throttle timer rather
+    // than flipping m_cacheDirty immediately; the timer being started confirms the slot ran.
+    QVERIFY(minimap.m_throttle.isActive());
 }
