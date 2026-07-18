@@ -36,4 +36,7 @@ private slots:
     void testHoverStateOverCornerSetsResizeCursorAndHighlight();
     void testHoverStateOverMoveStripSetsOpenHandCursorAndHighlight();
     void testHoverStateOverInteriorClearsHighlightAndCursor();
+
+    // Theme
+    void testThemeChangeInvalidatesCache();
 };
