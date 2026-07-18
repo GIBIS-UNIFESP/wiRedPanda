@@ -34,9 +34,9 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
 if(EMSCRIPTEN)
-    find_package(Qt6 6.9 REQUIRED COMPONENTS Core Gui Network PrintSupport Multimedia Widgets Svg Test Quick QuickControls2 Qml)
+    find_package(Qt6 6.9 REQUIRED COMPONENTS Core Gui Network PrintSupport Multimedia Widgets Svg Test Quick QuickControls2 QuickDialogs2 Qml)
 else()
-    find_package(Qt6 6.2 REQUIRED COMPONENTS Core Gui Network PrintSupport Multimedia Widgets Svg Test Quick QuickControls2 Qml)
+    find_package(Qt6 6.2 REQUIRED COMPONENTS Core Gui Network PrintSupport Multimedia Widgets Svg Test Quick QuickControls2 QuickDialogs2 Qml)
 endif()
 
 set(QT_VERSION_MAJOR 6)
@@ -48,7 +48,9 @@ set(QT_LIBS Qt6::Core Qt6::Gui Qt6::Network Qt6::PrintSupport Qt6::Multimedia Qt
 # unconditionally now (not gated behind a Qt6Quick_FOUND check like the discarded
 # qtquick-gpu-prototype spike used) because this is a real, permanent dependency of the
 # ongoing Widgets-to-Quick rewrite (qtquick-rewrite branch), not an optional spike.
-set(QUICK_LIBS Qt6::Quick Qt6::QuickControls2 Qt6::Qml)
+# QuickDialogs2 backs the Chrome/QuickDialogProvider confirm/notice dialogs (Phase 4) via
+# QtQuick.Dialogs' MessageDialog -- the QMessageBox/QInputDialog equivalent for the new UI.
+set(QUICK_LIBS Qt6::Quick Qt6::QuickControls2 Qt6::QuickDialogs2 Qt6::Qml)
 
 # QML modules default to the ":/qt/qml/" resource prefix as of this policy (introduced in
 # Qt 6.5) — set it explicitly to silence qt_add_qml_module's dev warning. Guarded per this

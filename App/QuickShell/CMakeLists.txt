@@ -14,6 +14,10 @@ set(QUICK_SHELL_SOURCES
     Canvas/SpatialIndex.h
     Canvas/TextureAtlas.cpp
     Canvas/TextureAtlas.h
+    Chrome/DialogProvider.cpp
+    Chrome/DialogProvider.h
+    Chrome/QuickDialogProvider.cpp
+    Chrome/QuickDialogProvider.h
     Main.cpp
 )
 
@@ -23,10 +27,28 @@ else()
     add_executable(wiredpanda_quick ${QUICK_SHELL_SOURCES})
 endif()
 
+# qt_add_qml_module's generated QML type registration includes every QML_ELEMENT-tagged
+# header via a bare #if __has_include(<CanvasItem.h>) -- which needs the header's own
+# directory on the include path, not just the repo root (App/QuickShell/Canvas/CanvasItem.h
+# is normally reached via its full "App/QuickShell/Canvas/CanvasItem.h" path against the
+# root -I, which the bare-name form can't use). Add each QML_ELEMENT header's directory
+# explicitly so this keeps working regardless of unity-batch luck as QUICK_SHELL_SOURCES grows.
+target_include_directories(wiredpanda_quick PRIVATE Canvas)
+
+# See the target_include_directories comment above: this target was relying on the bare-name
+# __has_include() resolving by unity-batch accident (whichever translation unit happened to
+# include CanvasItem.h via its full path landing in the same batch as the generated
+# registration file). Disable unity build for this small target so a future source-list change
+# can't silently reintroduce that same fragility.
+set_target_properties(wiredpanda_quick PROPERTIES UNITY_BUILD OFF)
+
 qt_add_qml_module(wiredpanda_quick
     URI QuickShell
     VERSION 1.0
-    QML_FILES Main.qml
+    QML_FILES
+        ChoiceDialog.qml
+        Main.qml
+        TextPromptDialog.qml
 )
 
 # CanvasItem constructs real GraphicElement subclasses (And/InputSwitch/Led) and drives them
