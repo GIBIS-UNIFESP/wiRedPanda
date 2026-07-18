@@ -219,6 +219,17 @@ CanvasItem::CanvasItem(QQuickItem *parent, bool buildDemo)
 
 CanvasItem::~CanvasItem()
 {
+    // QUndoStack::~QUndoStack() calls clear() internally, which emits indexChanged() --
+    // still connected (see the constructor) to a lambda that calls rebuildSpatialIndex(),
+    // which would dereference m_elements' pointees below right after qDeleteAll() frees them.
+    // m_undoStack is destroyed later, as an implicit member (after this body runs, in reverse
+    // declaration order), so that emission is still live at that point unless silenced now.
+    // Same gotcha, same fix WorkSpace::~WorkSpace() already uses for its own Scene undo stack
+    // (blockSignals -- a scope-exiting QSignalBlocker won't do, since m_undoStack isn't
+    // destroyed until after this whole body returns). Confirmed via GDB: a real SIGSEGV in
+    // CanvasItem::rebuildSpatialIndex(), not a hypothetical.
+    m_undoStack.blockSignals(true);
+
     m_simulation.reset(); // stop the timer before the elements it references are destroyed
 
     // An in-progress wire never made it into m_connections; tear it down the same way

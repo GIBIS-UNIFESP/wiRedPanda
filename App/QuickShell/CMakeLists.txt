@@ -20,6 +20,8 @@ set(QUICK_SHELL_SOURCES
     Chrome/QuickDialogProvider.h
     Chrome/QuickWorkSpace.cpp
     Chrome/QuickWorkSpace.h
+    Chrome/QuickWorkspaceManager.cpp
+    Chrome/QuickWorkspaceManager.h
     Main.cpp
 )
 
