@@ -19,6 +19,7 @@ This directory contains the configuration for a streamlined containerized develo
 ## 🛠️ What's Included
 
 ### Development Tools
+
 - **Build System**: CMake 3.27+ with Ninja generator
 - **Compiler**: GCC 13+ with C++20 support (Ubuntu 24.04's default `build-essential`)
 - **Qt Framework**: Qt 6.2+ with core, widgets, multimedia, SVG modules
@@ -27,10 +28,12 @@ This directory contains the configuration for a streamlined containerized develo
 - **AI Assistant**: Claude Code CLI for AI-powered development assistance
 
 ### VS Code Extensions
+
 - C/C++ extension pack (IntelliSense, debugging, themes)
 - CMake Tools for build management and configuration
 
 ### Core Utilities
+
 - **Version Control**: Git and GitHub CLI
 - **Languages**: Python 3, Node.js 20.x
 - **Testing**: lcov for coverage analysis
@@ -38,7 +41,7 @@ This directory contains the configuration for a streamlined containerized develo
 
 ## 📁 Container Structure
 
-```
+```text
 /workspace/          # Your project files (mounted from host)
 ├── App/            # Application source code
 ├── Tests/           # Test suite
@@ -49,7 +52,9 @@ This directory contains the configuration for a streamlined containerized develo
 ## 🔧 Build Commands
 
 ### VS Code Tasks (Recommended)
+
 Use **Ctrl+Shift+P** → "Tasks: Run Task":
+
 - **Build** - Build the project (default: Ctrl+Shift+B)
 - **Configure Debug** - Configure CMake for debug build
 - **Configure Release** - Configure CMake for release build
@@ -63,7 +68,6 @@ Use **Ctrl+Shift+P** → "Tasks: Run Task":
 cmake --preset debug
 cmake --build --preset debug
 ```
-
 
 ## 🧪 Testing
 
@@ -93,16 +97,19 @@ The container is configured to run in **offscreen mode** automatically (via test
 ## 🐛 Troubleshooting
 
 ### Container Won't Start
+
 - Ensure Docker is running
 - Check Docker has enough resources allocated
 - Try rebuilding: "Dev Containers: Rebuild Container"
 
 ### Build Failures
+
 - Check Qt installation: `qmake6 --version`
 - Verify CMake configuration: `cmake --preset debug`
 - Clean build: `rm -rf build`
 
 ### Permission Issues
+
 - The container user (ubuntu) should have UID 1000
 - If issues persist, rebuild container with correct UID mapping
 
@@ -116,12 +123,15 @@ When the Dockerfile changes:
 ## 📝 Customization
 
 ### Adding Packages
+
 Edit `.devcontainer/Dockerfile` and add packages to the `apt-get install` command.
 
 ### VS Code Settings
+
 Modify `.devcontainer/devcontainer.json` to change VS Code settings and extensions.
 
 ### Environment Variables
+
 Add environment variables in the `containerEnv` section of `devcontainer.json`.
 
 ## 🤝 Development Workflow

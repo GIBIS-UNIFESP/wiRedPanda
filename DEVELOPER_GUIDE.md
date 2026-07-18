@@ -73,16 +73,16 @@ The project is maintained by [GIBIS-UNIFESP](https://github.com/GIBIS-UNIFESP) a
 
 ### Tech Stack
 
-| Component        | Technology                           |
-|------------------|--------------------------------------|
-| Language         | C++20                                |
-| UI Framework     | Qt 6.2+                              |
-| Build System     | CMake 3.27+ with Ninja               |
-| Tests            | Qt Test Framework + CTest            |
-| CI/CD            | GitHub Actions                       |
-| Crash Reporting  | Sentry (Crashpad/Breakpad)           |
-| Dependencies     | nlohmann/json, json-schema-validator |
-| i18n             | Qt Linguist / Weblate                |
+| Component       | Technology                           |
+|-----------------|--------------------------------------|
+| Language        | C++20                                |
+| UI Framework    | Qt 6.2+                              |
+| Build System    | CMake 3.27+ with Ninja               |
+| Tests           | Qt Test Framework + CTest            |
+| CI/CD           | GitHub Actions                       |
+| Crash Reporting | Sentry (Crashpad/Breakpad)           |
+| Dependencies    | nlohmann/json, json-schema-validator |
+| i18n            | Qt Linguist / Weblate                |
 
 ---
 
@@ -104,6 +104,7 @@ ctest --preset debug
 ```
 
 The container includes:
+
 - Ubuntu 24.04 LTS
 - Qt 6.2+ with Multimedia and SVG modules
 - CMake, Ninja, GCC 13+
@@ -151,7 +152,7 @@ brew install cmake ninja qt6 ccache
 ./build/wiredpanda.exe                              # Windows
 ```
 
-### Running Tests
+### Running Tests (Quick Reference)
 
 ```bash
 ctest --preset debug                         # Run all tests
@@ -163,7 +164,7 @@ ctest --preset debug                         # Run all tests
 
 ## Project Structure
 
-```
+```text
 wiRedPanda/
 ├── App/                                    # All application source code
 │   ├── Main.cpp                            #   Entry point
@@ -269,21 +270,21 @@ cmake --build --preset debug
 ctest --preset debug
 ```
 
-| Preset           | Purpose                                           |
-|------------------|---------------------------------------------------|
-| `debug`          | Development with debug symbols                    |
-| `release`        | Optimized build for distribution                  |
-| `relwithdebinfo` | Release with symbols (deploy with Sentry)         |
-| `coverage`       | Code coverage instrumentation                     |
-| `asan`           | Address Sanitizer (invalid memory access)         |
-| `tsan`           | Thread Sanitizer (data races)                     |
-| `msan`           | Memory Sanitizer (Clang only, uninitialized mem)  |
-| `ubsan`          | Undefined Behavior Sanitizer                      |
-| `macos-universal`| Release build with universal x86_64+arm64 macOS binaries (Darwin only) |
-| `fuzzer`         | Clang libFuzzer harnesses + ASan + UBSan (see [Coverage and Sanitizers](#coverage-and-sanitizers)) |
-| `fuzzer-coverage`| Source-based coverage report over the fuzz corpus, no sanitizers |
-| `sentry-crashpad`| RelWithDebInfo build with the Sentry crashpad backend |
-| `sentry-breakpad`| RelWithDebInfo build with the Sentry breakpad backend (Darwin only) |
+| Preset            | Purpose                                                                                            |
+|-------------------|----------------------------------------------------------------------------------------------------|
+| `debug`           | Development with debug symbols                                                                     |
+| `release`         | Optimized build for distribution                                                                   |
+| `relwithdebinfo`  | Release with symbols (deploy with Sentry)                                                          |
+| `coverage`        | Code coverage instrumentation                                                                      |
+| `asan`            | Address Sanitizer (invalid memory access)                                                          |
+| `tsan`            | Thread Sanitizer (data races)                                                                      |
+| `msan`            | Memory Sanitizer (Clang only, uninitialized mem)                                                   |
+| `ubsan`           | Undefined Behavior Sanitizer                                                                       |
+| `macos-universal` | Release build with universal x86_64+arm64 macOS binaries (Darwin only)                             |
+| `fuzzer`          | Clang libFuzzer harnesses + ASan + UBSan (see [Coverage and Sanitizers](#coverage-and-sanitizers)) |
+| `fuzzer-coverage` | Source-based coverage report over the fuzz corpus, no sanitizers                                   |
+| `sentry-crashpad` | RelWithDebInfo build with the Sentry crashpad backend                                              |
+| `sentry-breakpad` | RelWithDebInfo build with the Sentry breakpad backend (Darwin only)                                |
 
 ### Incremental Builds and Cache
 
@@ -302,7 +303,7 @@ The project is configured for fast builds:
 
 The application follows a layered architecture:
 
-```
+```text
 ┌─────────────────────────────────────┐
 │           UI Layer (App/UI/)        │  MainWindow, dialogs, toolbars
 ├─────────────────────────────────────┤
@@ -321,7 +322,7 @@ The application follows a layered architecture:
 
 ### Module Dependency Diagram
 
-```
+```text
                     ┌──────────────┐
                     │   Main.cpp   │
                     └──────┬───────┘
@@ -362,6 +363,7 @@ The **Scene** is the central point: it holds the elements, the connections, and 
 ### Application
 
 `App/Core/Application.cpp/h` is a `QApplication` subclass that initializes:
+
 - OS theme detection
 - Persistent settings (via `QSettings`)
 - Language/translation management
@@ -387,6 +389,7 @@ This 4-state system (inspired by VHDL's `std_logic`) is central to the entire si
 #### `ElementType`
 
 Each element type has a unique numeric identifier. Examples:
+
 - `And = 5`, `Or = 6`, `Not = 4`
 - `DFlipFlop = 17`, `JKFlipFlop = 18`
 - `Led = 3`, `Display7 = 14`
@@ -396,6 +399,7 @@ Each element type has a unique numeric identifier. Examples:
 #### `ElementGroup`
 
 Groups elements in the UI palette:
+
 - `Gate` (logic gates), `Memory` (flip-flops and latches)
 - `Input`, `Output`, `StaticInput` (VCC/GND)
 - `Mux`, `IC`, `Other`
@@ -407,6 +411,7 @@ Wireless node modes: `None` (default), `Tx` (transmitter), or `Rx` (receiver).
 ### Settings
 
 `App/Core/Settings.cpp/h` wraps Qt's `QSettings` to persist user preferences:
+
 - Last opened directory
 - Selected language
 - Theme
@@ -415,6 +420,7 @@ Wireless node modes: `None` (default), `Tx` (transmitter), or `Rx` (receiver).
 ### Themes
 
 `App/Core/ThemeManager.cpp/h` manages the UI themes:
+
 - **Light**: light theme
 - **Dark**: dark theme
 - **System**: automatically follows the OS theme
@@ -429,7 +435,7 @@ This is the most important subsystem of the project. All circuit components (log
 
 ### Class Hierarchy
 
-```
+```text
 QGraphicsObject
   └── GraphicElement              (abstract base — all circuit components)
         ├── GraphicElementInput   (abstract — user-interactive inputs)
@@ -450,10 +456,12 @@ QGraphicsObject
 ### GraphicElement: The Base Class
 
 `App/Element/GraphicElement.h` is the abstract base class for **all** graphic elements in the circuit. It inherits from:
+
 - `QGraphicsObject`: visual representation in the Qt scene
 - `ItemWithId`: stable numeric identity (for serialization and undo/redo)
 
 **Responsibilities:**
+
 - Port management (input and output)
 - Rendering with pixmaps/skins
 - Serialization to QDataStream (save/load)
@@ -506,25 +514,25 @@ The `ElementConstraints` are **validated at compile time** by the `constexpr val
 
 `ElementConstraints` defines the restrictions for an element:
 
-| Field           | Description                                    |
-|-----------------|------------------------------------------------|
-| `type`          | Element type (`ElementType`)                   |
-| `group`         | Palette group (`ElementGroup`)                 |
-| `minInputSize`  | Minimum number of input ports                  |
-| `maxInputSize`  | Maximum number of input ports                  |
-| `minOutputSize` | Minimum number of output ports                 |
-| `maxOutputSize` | Maximum number of output ports                 |
-| `canChangeAppearance` | Allows the user to assign a custom SVG appearance (e.g., ANSI/IEC) |
-| `hasColors`     | Has color option (e.g., LED)                   |
-| `hasAudio`      | Produces sound (e.g., Buzzer)                  |
-| `hasAudioBox`   | Has audio box capability (e.g., AudioBox)      |
-| `hasTrigger`    | Can be triggered via keyboard                  |
-| `hasFrequency`  | Configurable frequency (e.g., Clock)           |
-| `hasDelay`      | Has configurable delay                         |
-| `hasLabel`      | Displays a text label                          |
-| `hasTruthTable` | Based on a truth table                         |
-| `hasVolume`     | Has volume control (e.g., Buzzer, AudioBox)    |
-| `rotatesGraphic` | Rotating/flipping re-orients the graphic (false = icon fixed, ports still move) |
+| Field                 | Description                                                                     |
+|-----------------------|---------------------------------------------------------------------------------|
+| `type`                | Element type (`ElementType`)                                                    |
+| `group`               | Palette group (`ElementGroup`)                                                  |
+| `minInputSize`        | Minimum number of input ports                                                   |
+| `maxInputSize`        | Maximum number of input ports                                                   |
+| `minOutputSize`       | Minimum number of output ports                                                  |
+| `maxOutputSize`       | Maximum number of output ports                                                  |
+| `canChangeAppearance` | Allows the user to assign a custom SVG appearance (e.g., ANSI/IEC)              |
+| `hasColors`           | Has color option (e.g., LED)                                                    |
+| `hasAudio`            | Produces sound (e.g., Buzzer)                                                   |
+| `hasAudioBox`         | Has audio box capability (e.g., AudioBox)                                       |
+| `hasTrigger`          | Can be triggered via keyboard                                                   |
+| `hasFrequency`        | Configurable frequency (e.g., Clock)                                            |
+| `hasDelay`            | Has configurable delay                                                          |
+| `hasLabel`            | Displays a text label                                                           |
+| `hasTruthTable`       | Based on a truth table                                                          |
+| `hasVolume`           | Has volume control (e.g., Buzzer, AudioBox)                                     |
+| `rotatesGraphic`      | Rotating/flipping re-orients the graphic (false = icon fixed, ports still move) |
 
 `ElementMetadata` extends this with visual information: pixmap paths, translated names, and `defaultAppearances`/`alternativeAppearances` lists.
 
@@ -534,15 +542,15 @@ The 31 concrete elements live in `App/Element/GraphicElements/`:
 
 #### Logic Gates (combinational)
 
-| Element | File       | Inputs | Description                        |
-|---------|------------|--------|------------------------------------|
-| AND     | `And.cpp`  | 2-8    | Output 1 if all inputs are 1       |
-| OR      | `Or.cpp`   | 2-8    | Output 1 if any input is 1         |
-| NOT     | `Not.cpp`  | 1      | Inverts the signal                 |
-| NAND    | `Nand.cpp` | 2-8    | Inverted AND                       |
-| NOR     | `Nor.cpp`  | 2-8    | Inverted OR                        |
-| XOR     | `Xor.cpp`  | 2-8    | Exclusive OR                       |
-| XNOR    | `Xnor.cpp` | 2-8    | Inverted exclusive OR              |
+| Element | File       | Inputs | Description                  |
+|---------|------------|--------|------------------------------|
+| AND     | `And.cpp`  | 2-8    | Output 1 if all inputs are 1 |
+| OR      | `Or.cpp`   | 2-8    | Output 1 if any input is 1   |
+| NOT     | `Not.cpp`  | 1      | Inverts the signal           |
+| NAND    | `Nand.cpp` | 2-8    | Inverted AND                 |
+| NOR     | `Nor.cpp`  | 2-8    | Inverted OR                  |
+| XOR     | `Xor.cpp`  | 2-8    | Exclusive OR                 |
+| XNOR    | `Xnor.cpp` | 2-8    | Inverted exclusive OR        |
 
 #### Sequential Elements (memory)
 
@@ -557,47 +565,48 @@ The 31 concrete elements live in `App/Element/GraphicElements/`:
 
 #### Inputs
 
-| Element     | File               | Description                            |
-|-------------|--------------------|----------------------------------------|
-| InputButton | `InputButton.cpp`  | Momentary button (active while pressed)|
-| InputSwitch | `InputSwitch.cpp`  | Toggle switch (on/off)                 |
-| InputRotary | `InputRotary.cpp`  | Rotary switch with N positions         |
-| InputVCC    | `InputVCC.cpp`     | Constant HIGH source (1)               |
-| InputGND    | `InputGND.cpp`     | Constant LOW source (0)                |
+| Element     | File              | Description                             |
+|-------------|-------------------|-----------------------------------------|
+| InputButton | `InputButton.cpp` | Momentary button (active while pressed) |
+| InputSwitch | `InputSwitch.cpp` | Toggle switch (on/off)                  |
+| InputRotary | `InputRotary.cpp` | Rotary switch with N positions          |
+| InputVCC    | `InputVCC.cpp`    | Constant HIGH source (1)                |
+| InputGND    | `InputGND.cpp`    | Constant LOW source (0)                 |
 
 #### Outputs
 
-| Element   | File            | Description                            |
-|-----------|-----------------|----------------------------------------|
-| Led       | `Led.cpp`       | LED indicator (with color option)      |
-| Display7  | `Display7.cpp`  | 7-segment display                      |
-| Display14 | `Display14.cpp` | 14-segment display (alphanumeric)      |
-| Display16 | `Display16.cpp` | 16-segment display                     |
-| Buzzer    | `Buzzer.cpp`    | Audio buzzer with configurable freq    |
-| AudioBox  | `AudioBox.cpp`  | Audio player                           |
+| Element   | File            | Description                         |
+|-----------|-----------------|-------------------------------------|
+| Led       | `Led.cpp`       | LED indicator (with color option)   |
+| Display7  | `Display7.cpp`  | 7-segment display                   |
+| Display14 | `Display14.cpp` | 14-segment display (alphanumeric)   |
+| Display16 | `Display16.cpp` | 16-segment display                  |
+| Buzzer    | `Buzzer.cpp`    | Audio buzzer with configurable freq |
+| AudioBox  | `AudioBox.cpp`  | Audio player                        |
 
 #### Multiplexing
 
-| Element | File        | Description                              |
-|---------|-------------|------------------------------------------|
-| Mux     | `Mux.cpp`   | Multiplexer: selects 1 of N inputs       |
-| Demux   | `Demux.cpp` | Demultiplexer: routes input to 1 of N    |
+| Element | File        | Description                           |
+|---------|-------------|---------------------------------------|
+| Mux     | `Mux.cpp`   | Multiplexer: selects 1 of N inputs    |
+| Demux   | `Demux.cpp` | Demultiplexer: routes input to 1 of N |
 
 #### Utilities
 
-| Element    | File             | Description                            |
-|------------|------------------|----------------------------------------|
-| Clock      | `Clock.cpp`      | Clock generator with adjustable freq   |
-| Node       | `Node.cpp`       | Wire junction / wireless node (Tx/Rx)  |
-| Line       | `Line.cpp`       | Decorative line (no logic function)    |
-| Text       | `Text.cpp`       | Text annotation                        |
-| TruthTable | `TruthTable.cpp` | Element defined by a truth table       |
+| Element    | File             | Description                           |
+|------------|------------------|---------------------------------------|
+| Clock      | `Clock.cpp`      | Clock generator with adjustable freq  |
+| Node       | `Node.cpp`       | Wire junction / wireless node (Tx/Rx) |
+| Line       | `Line.cpp`       | Decorative line (no logic function)   |
+| Text       | `Text.cpp`       | Text annotation                       |
+| TruthTable | `TruthTable.cpp` | Element defined by a truth table      |
 
 ### Anatomy of a Logic Gate
 
 Here is the complete AND gate, the simplest element to understand:
 
 **`App/Element/GraphicElements/And.h`**:
+
 ```cpp
 class And : public GraphicElement {
     Q_OBJECT
@@ -608,6 +617,7 @@ public:
 ```
 
 **`App/Element/GraphicElements/And.cpp`**:
+
 ```cpp
 #include "And.h"
 
@@ -664,6 +674,7 @@ All other combinational gates (`Or`, `Not`, `Xor`, `Nand`, `Nor`, `Xnor`) follow
 Sequential elements like flip-flops store internal state and respond to clock edges:
 
 **D Flip-Flop** (`DFlipFlop.cpp`, simplified):
+
 ```cpp
 void DFlipFlop::updateLogic() {
     if (!simUpdateInputs()) return;          // Strict: needs ALL inputs valid
@@ -695,6 +706,7 @@ void DFlipFlop::updateLogic() {
 ```
 
 Key differences from combinational gates:
+
 - Uses `simUpdateInputs()` (strict) instead of `simUpdateInputsAllowUnknown()`.
 - Stores `m_simLastClk` and `m_simLastValue` across cycles for edge detection.
 - Has custom port layout via `updatePortsProperties()` (Clock pin at bottom-left, Preset at top, etc.).
@@ -760,12 +772,12 @@ ICs support **arbitrary hierarchy** — an IC can contain other ICs inside it. T
 
 All signals in wiRedPanda use four states, defined in `App/Core/Enums.h`:
 
-| State      | Value | Meaning                      | Visual Color |
-|------------|-------|------------------------------|--------------|
-| `Unknown`  | -1    | Not yet resolved / floating  | Gray                        |
+| State      | Value | Meaning                      | Visual Color                 |
+|------------|-------|------------------------------|------------------------------|
+| `Unknown`  | -1    | Not yet resolved / floating  | Gray                         |
 | `Inactive` | 0     | Logic LOW                    | Dark green (theme-dependent) |
-| `Active`   | 1     | Logic HIGH                   | Green (theme-dependent)    |
-| `Error`    | 2     | Bus conflict / indeterminate | Red                         |
+| `Active`   | 1     | Logic HIGH                   | Green (theme-dependent)      |
+| `Error`    | 2     | Bus conflict / indeterminate | Red                          |
 
 `App/Core/StatusOps.h` provides logic operations that respect these states with **domination rules**:
 
@@ -828,7 +840,7 @@ Before simulation starts, the engine builds a dependency graph from wire connect
 - Elements with higher priority are evaluated first (sources before sinks).
 - This guarantees that when an element's `updateLogic()` runs, all its predecessors have already been updated this cycle.
 
-```
+```text
 Input → AND → OR → LED
   1st    2nd   3rd   4th
 ```
@@ -873,6 +885,7 @@ Each port carries a `Status` (the current logic value) and maintains a list of c
 `App/Wiring/Connection.h` represents a **wire** between two ports. A connection links exactly one `OutputPort` to one `InputPort`; `App/Wiring/ConnectionSerializer.h` handles its save/load.
 
 Properties:
+
 - Rendered as a Bézier curve on the QGraphicsScene
 - Color reflects the signal's logic state (dark green=0, green=1, gray=unknown, red=error) — exact shades are theme-dependent
 - Magnetic snap to nearby ports during creation
@@ -891,6 +904,7 @@ Properties:
 ### Scene (`App/Scene/Scene.cpp`)
 
 The `Scene` extends `QGraphicsScene` and owns:
+
 - A **`SceneItemRegistry`** mapping integer IDs to elements (for stable undo/redo references via `ItemWithId`).
 - The **`Simulation`** instance.
 - A **`QUndoStack`** for undo/redo.
@@ -903,28 +917,29 @@ The `Scene` extends `QGraphicsScene` and owns:
 
 All user operations are `QUndoCommand` subclasses:
 
-| Command                          | What It Does                                         |
-|----------------------------------|------------------------------------------------------|
-| `AddItemsCommand`                | Add elements and wires to the scene                  |
-| `DeleteItemsCommand`             | Remove selected items                                |
-| `MoveCommand`                    | Drag elements to new positions                       |
-| `RotateCommand`                  | Rotate elements                                      |
-| `FlipCommand`                    | Flip horizontally or vertically                      |
-| `UpdateCommand`                  | Change element properties (label, color, frequency)  |
-| `MorphCommand`                   | Change element type while preserving connections     |
-| `ChangePortSizeCommand`          | Add/remove input or output ports                     |
-| `SplitCommand`                   | Insert a junction node into a wire                   |
-| `ToggleTruthTableOutputCommand`  | Toggle a truth table output bit                      |
-| `RegisterBlobCommand`            | Register a new blob resource                         |
-| `RemoveBlobCommand`              | Remove a blob resource                               |
-| `RenameBlobCommand`              | Rename a blob resource                               |
-| `UpdateBlobCommand`              | Update an existing blob resource                     |
+| Command                         | What It Does                                        |
+|---------------------------------|-----------------------------------------------------|
+| `AddItemsCommand`               | Add elements and wires to the scene                 |
+| `DeleteItemsCommand`            | Remove selected items                               |
+| `MoveCommand`                   | Drag elements to new positions                      |
+| `RotateCommand`                 | Rotate elements                                     |
+| `FlipCommand`                   | Flip horizontally or vertically                     |
+| `UpdateCommand`                 | Change element properties (label, color, frequency) |
+| `MorphCommand`                  | Change element type while preserving connections    |
+| `ChangePortSizeCommand`         | Add/remove input or output ports                    |
+| `SplitCommand`                  | Insert a junction node into a wire                  |
+| `ToggleTruthTableOutputCommand` | Toggle a truth table output bit                     |
+| `RegisterBlobCommand`           | Register a new blob resource                        |
+| `RemoveBlobCommand`             | Remove a blob resource                              |
+| `RenameBlobCommand`             | Rename a blob resource                              |
+| `UpdateBlobCommand`             | Update an existing blob resource                    |
 
 Each command serializes enough state to fully undo and redo the operation, including saving and restoring wire connections that would otherwise be broken.
 
 The `CommandUtils` namespace provides helpers for serializing/deserializing items during undo/redo, ensuring state is preserved correctly.
 
 **Example flow:**
+
 1. User drags an AND gate onto the scene.
 2. `AddItemsCommand` is created with the element data.
 3. `redo()` adds the element to the scene.
@@ -934,6 +949,7 @@ The `CommandUtils` namespace provides helpers for serializing/deserializing item
 ### Workspace
 
 `App/Scene/Workspace.h` manages the working context:
+
 - Currently open file
 - Modification state (asterisk in title)
 - Save, save-as, and open operations
@@ -946,6 +962,7 @@ The `CommandUtils` namespace provides helpers for serializing/deserializing item
 ### MainWindow
 
 `App/UI/MainWindow.h` is the main application window. It contains:
+
 - **Menu bar**: File, Edit, View, Simulation, Examples, Learn, Language, Help. The Learn menu holds Exercises and Tours submenus; "Report Translation Error" lives under Help.
 - **Toolbar**: New, Open, Save | Undo, Redo, Rotate, Cut, Copy, Paste, Delete | Zoom In, Zoom Out, Reset Zoom, Zoom to Fit | Play, Restart, Waveform. Undo/Redo are inserted dynamically for the active tab by `App/UI/SceneUiBinder.cpp/h`.
 - **Element palette** (side dock): drag elements onto the scene, plus a draggable/resizable **minimap** overlay (`App/UI/MinimapWidget.cpp/h`) over the canvas
@@ -959,6 +976,7 @@ The `CommandUtils` namespace provides helpers for serializing/deserializing item
 ### Property Editor
 
 `App/UI/ElementEditor.h` dynamically generates the property interface based on the metadata of the selected element. For example:
+
 - A **Clock** shows a frequency slider
 - A **LED** shows a color selector
 - An **AND** gate shows an input count control
@@ -971,7 +989,7 @@ The `CommandUtils` namespace provides helpers for serializing/deserializing item
 
 Circuit files (`.panda`) use a binary format (`App/IO/Serialization.h`):
 
-```
+```text
 [Preamble]
   - Magic number (0x57504346 = "WPCF") + format version
   - Metadata (QMap): dolphin data, rect, etc.
@@ -997,18 +1015,18 @@ On load, a **port map** is built during element deserialization so that connecti
 
 The file `App/IO/VersionInfo.h` tracks all format versions:
 
-| Version | Release | Key Changes                                       |
-|---------|---------|---------------------------------------------------|
-| V_1_1   | 2015    | Clock element added                               |
-| V_2_4   | 2019    | Audio element support (Buzzer, AudioBox)          |
-| V_3_1   | 2021    | Lock state for input elements; display colors     |
-| V_4_1   | 2024    | QMap-based format; port serial IDs                |
-| V_4_2   | 2024    | TruthTable output data stored in file             |
-| V_4_5   | 2025    | Preamble gains a metadata QMap                    |
+| Version | Release | Key Changes                                                                              |
+|---------|---------|------------------------------------------------------------------------------------------|
+| V_1_1   | 2015    | Clock element added                                                                      |
+| V_2_4   | 2019    | Audio element support (Buzzer, AudioBox)                                                 |
+| V_3_1   | 2021    | Lock state for input elements; display colors                                            |
+| V_4_1   | 2024    | QMap-based format; port serial IDs                                                       |
+| V_4_2   | 2024    | TruthTable output data stored in file                                                    |
+| V_4_5   | 2025    | Preamble gains a metadata QMap                                                           |
 | V_4_6   | 2025    | Preamble unified into a single metadata QMap (dolphin filename and scene rect folded in) |
-| V_4_7   | 2026    | Connection uses QMap-based serialization          |
-| V_5_0   | 2026    | File format version bump for 5.0.0                |
-| V_5_1   | 2026    | Versioned blob registry                           |
+| V_4_7   | 2026    | Connection uses QMap-based serialization                                                 |
+| V_5_0   | 2026    | File format version bump for 5.0.0                                                       |
+| V_5_1   | 2026    | Versioned blob registry                                                                  |
 
 The deserialization code reads the file version and applies automatic migrations as needed. Reading older versions is **always** supported.
 
@@ -1024,6 +1042,7 @@ element id + position, omits non-IC port names and resource-path appearance slot
 ### Arduino (`App/CodeGen/ArduinoCodeGen.cpp`)
 
 Converts a circuit into an Arduino sketch:
+
 - Maps circuit inputs/outputs to GPIO pins.
 - Emits `setup()` with `pinMode()` calls.
 - Emits `computeLogic()` with boolean expressions for combinational logic and state machines for sequential elements.
@@ -1034,6 +1053,7 @@ Converts a circuit into an Arduino sketch:
 ### SystemVerilog (`App/CodeGen/SystemVerilogCodeGen.cpp`)
 
 Converts a circuit into synthesizable SystemVerilog:
+
 - Emits `module` declarations with `input`/`output` ports.
 - Generates `assign` statements for combinational logic.
 - Handles hierarchical IC modules recursively.
@@ -1057,6 +1077,7 @@ The built-in waveform viewer (`App/BeWavedDolphin/`) provides signal visualizati
 - **`DolphinZoom.cpp`**: waveform view zoom handling
 
 **Features:**
+
 - **Table-based**: Rows = signals, Columns = time steps.
 - **Simulation**: Runs the circuit for every input combination (or user-specified patterns).
 - **Visualization**: Renders waveforms as line plots or binary values.
@@ -1073,6 +1094,7 @@ Access it from the **Simulation** menu → **Waveform** (Ctrl+W) to see how sign
 ### Element Icons
 
 Icons live in `App/Resources/Components/`, organized by category:
+
 - `Input/`, `Logic/`, `Memory/`, `Output/`, `Misc/`
 - SVG format for scalability
 
@@ -1086,6 +1108,7 @@ wiRedPanda supports 39 languages:
 - Uses `tr()` and `QT_TR_NOOP()` in code
 
 To add a new translatable string:
+
 ```cpp
 QString msg = tr("New translatable message");
 ```
@@ -1098,7 +1121,7 @@ wiRedPanda has a comprehensive test suite with **192 test classes**.
 
 ### Test Organization
 
-```
+```text
 Tests/
 ├── Unit/                      # Individual unit tests
 │   ├── Commands/              #   Undo/redo tests
@@ -1177,17 +1200,17 @@ bool result = TestUtils::inputStatus(&led);  // false (1 AND 0 = 0)
 
 **Useful helpers:**
 
-| Function                                        | Purpose                                  |
-|-------------------------------------------------|------------------------------------------|
-| `TestUtils::createWorkspace()`                  | Create a `std::unique_ptr<WorkSpace>` with an initialized scene |
-| `TestUtils::setMultiBitInput(switches, int)`    | Decompose an integer into bits           |
-| `TestUtils::readMultiBitOutput<T>(elms, port)`  | Combine multiple outputs into an integer |
-| `TestUtils::clockCycle(sim, clk)`               | Full clock pulse: LOW → HIGH → LOW       |
-| `TestUtils::clockToggle(sim, clk)`              | Single clock edge toggle                 |
-| `TestUtils::inputStatus(elm, port = 0)`         | Read a port's input status as bool       |
-| `TestUtils::outputStatus(elm, port = 0)`        | Read a port's output status as bool      |
-| `TestUtils::countConnections(scene)`            | Count `Connection` items in a scene      |
-| `TestUtils::sceneConnections(scene)`            | List all `Connection` items in a scene   |
+| Function                                       | Purpose                                                         |
+|------------------------------------------------|-----------------------------------------------------------------|
+| `TestUtils::createWorkspace()`                 | Create a `std::unique_ptr<WorkSpace>` with an initialized scene |
+| `TestUtils::setMultiBitInput(switches, int)`   | Decompose an integer into bits                                  |
+| `TestUtils::readMultiBitOutput<T>(elms, port)` | Combine multiple outputs into an integer                        |
+| `TestUtils::clockCycle(sim, clk)`              | Full clock pulse: LOW → HIGH → LOW                              |
+| `TestUtils::clockToggle(sim, clk)`             | Single clock edge toggle                                        |
+| `TestUtils::inputStatus(elm, port = 0)`        | Read a port's input status as bool                              |
+| `TestUtils::outputStatus(elm, port = 0)`       | Read a port's output status as bool                             |
+| `TestUtils::countConnections(scene)`           | Count `Connection` items in a scene                             |
+| `TestUtils::sceneConnections(scene)`           | List all `Connection` items in a scene                          |
 
 > Note: `getInputStatus`/`getOutputStatus` were renamed to `inputStatus`/`outputStatus` (and
 > `createSwitches`/`setInputValues` were removed) in a project-wide cleanup that dropped the
@@ -1198,6 +1221,7 @@ bool result = TestUtils::inputStatus(&led);  // false (1 AND 0 = 0)
 Here is a complete, minimal test for an AND gate:
 
 **`Tests/Unit/Elements/TestMyGate.h`**:
+
 ```cpp
 #pragma once
 #include <QObject>
@@ -1210,6 +1234,7 @@ private slots:
 ```
 
 **`Tests/Unit/Elements/TestMyGate.cpp`**:
+
 ```cpp
 #include "TestMyGate.h"
 #include "Tests/Common/TestUtils.h"
@@ -1310,6 +1335,7 @@ ctest --preset debug --verbose
 > **Important**: Always run tests from the project root directory. Never `cd build/`.
 
 **Conventions:**
+
 - One test file per class being tested
 - Method names start with `test`
 - Use `QVERIFY(condition)` for boolean assertions
@@ -1367,16 +1393,16 @@ The project uses **GitHub Actions** for continuous integration:
 
 ### Other Workflows
 
-| Workflow             | Purpose                                |
-|-----------------------|----------------------------------------|
-| `codeql.yml`          | Code security analysis (CodeQL)        |
-| `coverage.yml`        | Code coverage tracking; uploads to Codecov |
-| `sanitizers.yml`      | Runs the ASan/TSan/UBSan/MSan presets as their own dedicated CI job |
-| `lint.yml`            | Lints the Python trees (`MCP/Client/`, `Scripts/`, test fixture generators) with ruff/pylint/pyrefly/vulture, plus `actionlint` for the workflow YAML itself |
-| `fresh-deps.yml`      | Builds from a clean distro image using only the apt packages `BUILD.md` documents, to catch package drift and keep the CMake version floor honest |
-| `aur-publish.yml`     | Publishes the Arch Linux AUR package (`Packaging/AUR/`) |
-| `translate.yml`       | Translation management                 |
-| `wasm.yml`             | WebAssembly build                      |
+| Workflow          | Purpose                                                                                                                                                      |
+|-------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `codeql.yml`      | Code security analysis (CodeQL)                                                                                                                              |
+| `coverage.yml`    | Code coverage tracking; uploads to Codecov                                                                                                                   |
+| `sanitizers.yml`  | Runs the ASan/TSan/UBSan/MSan presets as their own dedicated CI job                                                                                          |
+| `lint.yml`        | Lints the Python trees (`MCP/Client/`, `Scripts/`, test fixture generators) with ruff/pylint/pyrefly/vulture, plus `actionlint` for the workflow YAML itself |
+| `fresh-deps.yml`  | Builds from a clean distro image using only the apt packages `BUILD.md` documents, to catch package drift and keep the CMake version floor honest            |
+| `aur-publish.yml` | Publishes the Arch Linux AUR package (`Packaging/AUR/`)                                                                                                      |
+| `translate.yml`   | Translation management                                                                                                                                       |
+| `wasm.yml`        | WebAssembly build                                                                                                                                            |
 
 ---
 
@@ -1387,6 +1413,7 @@ This walkthrough adds a hypothetical **Buffer** gate (output = input, 1 input, 1
 ### Step 1: Create the Header
 
 **`App/Element/GraphicElements/Buffer.h`**:
+
 ```cpp
 // Copyright (C) 2026 - Your Name
 // SPDX-License-Identifier: GPL-3.0-or-later
@@ -1406,6 +1433,7 @@ public:
 ### Step 2: Create the Implementation
 
 **`App/Element/GraphicElements/Buffer.cpp`**:
+
 ```cpp
 // Copyright (C) 2026 - Your Name
 // SPDX-License-Identifier: GPL-3.0-or-later
@@ -1478,6 +1506,7 @@ cmake --build --preset debug
 ### Step 1: Create the Test Files
 
 **`Tests/Unit/Elements/TestMyElement.h`**:
+
 ```cpp
 #pragma once
 #include <QObject>
@@ -1491,6 +1520,7 @@ private slots:
 ```
 
 **`Tests/Unit/Elements/TestMyElement.cpp`**:
+
 ```cpp
 #include "TestMyElement.h"
 #include "Tests/Common/TestUtils.h"
@@ -1589,15 +1619,15 @@ git push origin feat/my-feature
 
 The project uses **Conventional Commits**:
 
-| Prefix      | Use                                           |
-|-------------|-----------------------------------------------|
-| `feat:`     | New feature                                   |
-| `fix:`      | Bug fix                                       |
-| `refactor:` | Refactoring without behavior change           |
-| `docs:`     | Documentation changes                         |
-| `test:`     | Adding or fixing tests                        |
-| `perf:`     | Performance improvement                       |
-| `chore:`    | Maintenance tasks (CI, dependencies, etc.)    |
+| Prefix      | Use                                        |
+|-------------|--------------------------------------------|
+| `feat:`     | New feature                                |
+| `fix:`      | Bug fix                                    |
+| `refactor:` | Refactoring without behavior change        |
+| `docs:`     | Documentation changes                      |
+| `test:`     | Adding or fixing tests                     |
+| `perf:`     | Performance improvement                    |
+| `chore:`    | Maintenance tasks (CI, dependencies, etc.) |
 
 ---
 
@@ -1612,23 +1642,23 @@ The project uses **Conventional Commits**:
 
 ### Week 2: Read the Code
 
-5. **Read one gate end-to-end**: Start with `And.h` → `And.cpp` → the `ElementInfo<And>` specialization → `StatusOps::statusAndAll()`.
-6. **Compare with other gates**: `Not.cpp`, `Or.cpp`, `Xor.cpp` — notice the pattern.
-7. **Read a sequential element**: `DFlipFlop.cpp` — understand edge detection and state storage.
-8. **Read a test**: `TestLogicGates.cpp` — see how `CircuitBuilder` and `TestUtils` work.
-9. **Trace the simulation loop**: Read `Simulation::update()` to see the five phases.
+1. **Read one gate end-to-end**: Start with `And.h` → `And.cpp` → the `ElementInfo<And>` specialization → `StatusOps::statusAndAll()`.
+2. **Compare with other gates**: `Not.cpp`, `Or.cpp`, `Xor.cpp` — notice the pattern.
+3. **Read a sequential element**: `DFlipFlop.cpp` — understand edge detection and state storage.
+4. **Read a test**: `TestLogicGates.cpp` — see how `CircuitBuilder` and `TestUtils` work.
+5. **Trace the simulation loop**: Read `Simulation::update()` to see the five phases.
 
 ### Week 3: Make a Change
 
-10. **Write a test** for an existing element — add a truth-table test for `Xnor` or test a flip-flop's async reset.
-11. **Break something on purpose**: change an AND gate to OR behavior, run the tests, see what fails.
-12. **Fix a small issue** or improve a tooltip string.
+1. **Write a test** for an existing element — add a truth-table test for `Xnor` or test a flip-flop's async reset.
+2. **Break something on purpose**: change an AND gate to OR behavior, run the tests, see what fails.
+3. **Fix a small issue** or improve a tooltip string.
 
 ### Week 4: Build Something
 
-13. **Implement a new element** following the walkthrough above.
-14. **Add tests** for your new element.
-15. **Open a PR** and go through the review process.
+1. **Implement a new element** following the walkthrough above.
+2. **Add tests** for your new element.
+3. **Open a PR** and go through the review process.
 
 ---
 
@@ -1638,30 +1668,30 @@ Ordered by difficulty:
 
 ### Beginner
 
-| Task                                                      | Skills Practiced              |
-|-----------------------------------------------------------|-------------------------------|
-| Add a missing truth-table test for an existing gate       | Test framework, element API   |
-| Add Doxygen comments to `GraphicElement.h` public methods | Code reading, documentation   |
-| Create a new example circuit (`.panda` file)              | Understanding the UI          |
-| Fix a typo or improve a UI string                         | Build system, PR workflow     |
+| Task                                                      | Skills Practiced            |
+|-----------------------------------------------------------|-----------------------------|
+| Add a missing truth-table test for an existing gate       | Test framework, element API |
+| Add Doxygen comments to `GraphicElement.h` public methods | Code reading, documentation |
+| Create a new example circuit (`.panda` file)              | Understanding the UI        |
+| Fix a typo or improve a UI string                         | Build system, PR workflow   |
 
 ### Intermediate
 
-| Task                                                          | Skills Practiced                   |
-|---------------------------------------------------------------|------------------------------------|
-| Implement a simple new gate (e.g., 3-input majority)          | Full element lifecycle             |
-| Add a test for async preset/clear on a flip-flop              | Sequential logic testing           |
-| Trace and document how an IC loads its internal circuit       | Serialization, hierarchical design |
-| Improve an error message in the code generator                | CodeGen architecture               |
+| Task                                                    | Skills Practiced                   |
+|---------------------------------------------------------|------------------------------------|
+| Implement a simple new gate (e.g., 3-input majority)    | Full element lifecycle             |
+| Add a test for async preset/clear on a flip-flop        | Sequential logic testing           |
+| Trace and document how an IC loads its internal circuit | Serialization, hierarchical design |
+| Improve an error message in the code generator          | CodeGen architecture               |
 
 ### Advanced
 
-| Task                                                       | Skills Practiced                 |
-|------------------------------------------------------------|----------------------------------|
-| Add a new display variant (e.g., dot matrix)               | Qt painting, element rendering   |
-| Add export to a new HDL format                             | Code generation, visitor pattern |
-| Optimize the simulation loop for large circuits            | Profiling, performance           |
-| Add a new waveform analysis feature to BeWavedDolphin      | Signal visualization             |
+| Task                                                  | Skills Practiced                 |
+|-------------------------------------------------------|----------------------------------|
+| Add a new display variant (e.g., dot matrix)          | Qt painting, element rendering   |
+| Add export to a new HDL format                        | Code generation, visitor pattern |
+| Optimize the simulation loop for large circuits       | Profiling, performance           |
+| Add a new waveform analysis feature to BeWavedDolphin | Signal visualization             |
 
 ---
 
@@ -1697,73 +1727,73 @@ Ordered by difficulty:
 
 ### Common Errors
 
-| Error                                | Likely Cause                                    | Solution                                          |
-|--------------------------------------|-------------------------------------------------|---------------------------------------------------|
-| `Qt6 not found`                      | Qt not installed or not in PATH                 | Install Qt 6.2+ and set CMAKE_PREFIX_PATH         |
-| `Ninja not found`                    | Ninja not installed                             | `apt install ninja-build`                         |
-| `undefined reference to ...`         | .cpp file not listed in CMakeSources.cmake      | Add the file to the source list                   |
-| Tests crash with segfault            | Accessing destroyed object                      | Use ASAN: `cmake --preset asan`                   |
-| Tests pass locally but fail in CI    | Platform-dependent behavior                     | Test with the same Qt versions as CI              |
+| Error                             | Likely Cause                               | Solution                                  |
+|-----------------------------------|--------------------------------------------|-------------------------------------------|
+| `Qt6 not found`                   | Qt not installed or not in PATH            | Install Qt 6.2+ and set CMAKE_PREFIX_PATH |
+| `Ninja not found`                 | Ninja not installed                        | `apt install ninja-build`                 |
+| `undefined reference to ...`      | .cpp file not listed in CMakeSources.cmake | Add the file to the source list           |
+| Tests crash with segfault         | Accessing destroyed object                 | Use ASAN: `cmake --preset asan`           |
+| Tests pass locally but fail in CI | Platform-dependent behavior                | Test with the same Qt versions as CI      |
 
 ---
 
 ## Key Files Reference
 
-| File                                 | Purpose                                              |
-|--------------------------------------|------------------------------------------------------|
-| `App/Core/Enums.h`                   | All enums: `ElementType`, `ElementGroup`, `Status`   |
-| `App/Core/StatusOps.h`               | Four-state logic operations (AND, OR, NOT, XOR)      |
-| `App/Core/Application.h`             | Custom QApplication with theme and i18n setup        |
-| `App/Core/Settings.h`                | Persistent settings management                       |
-| `App/Core/ThemeManager.h`            | Theme system (light/dark/system)                     |
-| `App/Core/Priorities.h`              | Topological sorting and feedback detection           |
-| `App/Element/GraphicElement.h`       | Base class for all elements                          |
-| `App/Element/GraphicElementInput.h`  | Base class for input elements                        |
-| `App/Element/ElementInfo.h`          | Self-registration template and constraints           |
-| `App/Element/ElementFactory.h`       | Factory for creating elements by type                |
-| `App/Element/ElementMetadata.h`      | Element metadata (icons, names, capabilities)        |
-| `App/Element/IC.h`                   | Integrated circuit element                           |
-| `App/Element/ICLoader.h`             | Loads an IC's sub-circuit from file or embedded blob |
-| `App/Scene/ICRegistry.h`             | Central IC registry with file monitoring             |
-| `App/Simulation/Simulation.h`        | Simulation engine and update loop                    |
-| `App/Scene/Scene.h`                  | Main graphics scene                                  |
-| `App/Scene/Commands.h`               | All undo/redo command classes                        |
-| `App/Scene/Workspace.h`              | File and workspace management                        |
-| `App/Wiring/Port.h`                  | Port base class, plus InputPort/OutputPort           |
-| `App/Wiring/Connection.h`            | Wire connection class                                |
-| `App/IO/Serialization.h`             | File format save/load                                |
-| `App/Versions.h`                     | File-format version/revision constants               |
-| `App/IO/VersionInfo.h`               | Named predicates for file-format compatibility checks |
-| `Tests/Common/TestUtils.h`           | CircuitBuilder and test helpers                      |
-| `CMakeSources.cmake`                 | Source file lists (add new files here)               |
-| `CMakePresets.json`                  | Build presets (debug, release, asan, etc.)           |
+| File                                | Purpose                                               |
+|-------------------------------------|-------------------------------------------------------|
+| `App/Core/Enums.h`                  | All enums: `ElementType`, `ElementGroup`, `Status`    |
+| `App/Core/StatusOps.h`              | Four-state logic operations (AND, OR, NOT, XOR)       |
+| `App/Core/Application.h`            | Custom QApplication with theme and i18n setup         |
+| `App/Core/Settings.h`               | Persistent settings management                        |
+| `App/Core/ThemeManager.h`           | Theme system (light/dark/system)                      |
+| `App/Core/Priorities.h`             | Topological sorting and feedback detection            |
+| `App/Element/GraphicElement.h`      | Base class for all elements                           |
+| `App/Element/GraphicElementInput.h` | Base class for input elements                         |
+| `App/Element/ElementInfo.h`         | Self-registration template and constraints            |
+| `App/Element/ElementFactory.h`      | Factory for creating elements by type                 |
+| `App/Element/ElementMetadata.h`     | Element metadata (icons, names, capabilities)         |
+| `App/Element/IC.h`                  | Integrated circuit element                            |
+| `App/Element/ICLoader.h`            | Loads an IC's sub-circuit from file or embedded blob  |
+| `App/Scene/ICRegistry.h`            | Central IC registry with file monitoring              |
+| `App/Simulation/Simulation.h`       | Simulation engine and update loop                     |
+| `App/Scene/Scene.h`                 | Main graphics scene                                   |
+| `App/Scene/Commands.h`              | All undo/redo command classes                         |
+| `App/Scene/Workspace.h`             | File and workspace management                         |
+| `App/Wiring/Port.h`                 | Port base class, plus InputPort/OutputPort            |
+| `App/Wiring/Connection.h`           | Wire connection class                                 |
+| `App/IO/Serialization.h`            | File format save/load                                 |
+| `App/Versions.h`                    | File-format version/revision constants                |
+| `App/IO/VersionInfo.h`              | Named predicates for file-format compatibility checks |
+| `Tests/Common/TestUtils.h`          | CircuitBuilder and test helpers                       |
+| `CMakeSources.cmake`                | Source file lists (add new files here)                |
+| `CMakePresets.json`                 | Build presets (debug, release, asan, etc.)            |
 
 ---
 
 ## Glossary
 
-| Term                        | Description                                                      |
-|-----------------------------|------------------------------------------------------------------|
-| **Combinational Circuit**   | Circuit whose output depends only on current inputs              |
-| **Sequential Circuit**      | Circuit with memory elements (flip-flops, latches)               |
-| **Clock**                   | Periodic signal that synchronizes sequential elements            |
-| **Rising Edge**             | Transition from 0 to 1 on the clock signal                       |
-| **Feedback Loop**           | Path where an output feeds back to an input                      |
-| **Grid Snapping**           | Automatic alignment of elements to the 16px grid                 |
-| **IC**                      | Integrated Circuit — sub-circuit encapsulated as a component     |
-| **Latch**                   | Level-sensitive memory element                                   |
-| **Flip-Flop**               | Edge-sensitive memory element                                    |
-| **Mux/Demux**               | Multiplexer/Demultiplexer — signal routing                       |
-| **PCH**                     | Precompiled Header — precompiled header for faster builds        |
-| **QGraphicsScene**          | Qt class that manages 2D graphic items                           |
-| **QDataStream**             | Qt class for binary serialization                                |
-| **Scene**                   | The main scene containing the circuit                            |
-| **Appearance**              | The SVG used to render an element; user-replaceable via `canChangeAppearance` (e.g., ANSI vs IEC) |
-| **Status**                  | 4-value logic state (Unknown, Inactive, Active, Error)           |
-| **Topological Sort**        | Ordering that respects dependencies between elements             |
-| **Tx/Rx**                   | Transmitter/Receiver — wireless mode of the Node element         |
-| **Unity Build**             | Compilation technique that groups .cpp files to reduce overhead  |
-| **Workspace**               | Working context (open file, modification state)                  |
+| Term                      | Description                                                                                       |
+|---------------------------|---------------------------------------------------------------------------------------------------|
+| **Combinational Circuit** | Circuit whose output depends only on current inputs                                               |
+| **Sequential Circuit**    | Circuit with memory elements (flip-flops, latches)                                                |
+| **Clock**                 | Periodic signal that synchronizes sequential elements                                             |
+| **Rising Edge**           | Transition from 0 to 1 on the clock signal                                                        |
+| **Feedback Loop**         | Path where an output feeds back to an input                                                       |
+| **Grid Snapping**         | Automatic alignment of elements to the 16px grid                                                  |
+| **IC**                    | Integrated Circuit — sub-circuit encapsulated as a component                                      |
+| **Latch**                 | Level-sensitive memory element                                                                    |
+| **Flip-Flop**             | Edge-sensitive memory element                                                                     |
+| **Mux/Demux**             | Multiplexer/Demultiplexer — signal routing                                                        |
+| **PCH**                   | Precompiled Header — precompiled header for faster builds                                         |
+| **QGraphicsScene**        | Qt class that manages 2D graphic items                                                            |
+| **QDataStream**           | Qt class for binary serialization                                                                 |
+| **Scene**                 | The main scene containing the circuit                                                             |
+| **Appearance**            | The SVG used to render an element; user-replaceable via `canChangeAppearance` (e.g., ANSI vs IEC) |
+| **Status**                | 4-value logic state (Unknown, Inactive, Active, Error)                                            |
+| **Topological Sort**      | Ordering that respects dependencies between elements                                              |
+| **Tx/Rx**                 | Transmitter/Receiver — wireless mode of the Node element                                          |
+| **Unity Build**           | Compilation technique that groups .cpp files to reduce overhead                                   |
+| **Workspace**             | Working context (open file, modification state)                                                   |
 
 ---
 

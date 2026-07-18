@@ -32,17 +32,17 @@ Tour-specific schema and the `target` vocabulary.
 }
 ```
 
-| Field | Type | Required | Notes |
-|---|---|---|---|
-| `id` | string | yes | Globally unique across **both** `Exercises/` and `Tours/` (see Exercises README). |
-| `title` | string | yes | Shown as the menu item text in the Learn → Tours menu. |
-| `description` | string | no | Shown as the menu item's status-tip (status bar text on hover). |
-| `steps` | array | yes | At least one step. |
-| `steps[].key` | string | no | Same purpose as in Exercises — translation-catalog key only, unique within this file. |
-| `steps[].title` | string | yes | Callout heading for this step. |
-| `steps[].body` | string | no | Callout body text. |
-| `steps[].target` | string | no | Which widget to spotlight — see "Closed `target` vocabulary" below. Empty string or `"none"` shows a centered callout with the whole window dimmed uniformly, no spotlight. |
-| `steps[].click` | array of strings | no | Same as Exercises — widget/action IDs run before the step is presented. |
+| Field            | Type             | Required | Notes                                                                                                                                                                       |
+|------------------|------------------|----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `id`             | string           | yes      | Globally unique across **both** `Exercises/` and `Tours/` (see Exercises README).                                                                                           |
+| `title`          | string           | yes      | Shown as the menu item text in the Learn → Tours menu.                                                                                                                      |
+| `description`    | string           | no       | Shown as the menu item's status-tip (status bar text on hover).                                                                                                             |
+| `steps`          | array            | yes      | At least one step.                                                                                                                                                          |
+| `steps[].key`    | string           | no       | Same purpose as in Exercises — translation-catalog key only, unique within this file.                                                                                       |
+| `steps[].title`  | string           | yes      | Callout heading for this step.                                                                                                                                              |
+| `steps[].body`   | string           | no       | Callout body text.                                                                                                                                                          |
+| `steps[].target` | string           | no       | Which widget to spotlight — see "Closed `target` vocabulary" below. Empty string or `"none"` shows a centered callout with the whole window dimmed uniformly, no spotlight. |
+| `steps[].click`  | array of strings | no       | Same as Exercises — widget/action IDs run before the step is presented.                                                                                                     |
 
 ### Closed `target` vocabulary
 
