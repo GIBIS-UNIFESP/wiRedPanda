@@ -18,6 +18,9 @@
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/Demux.h"
+#include "App/Element/GraphicElements/Display14.h"
+#include "App/Element/GraphicElements/Display16.h"
+#include "App/Element/GraphicElements/Display7.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Mux.h"
@@ -234,7 +237,19 @@ void CanvasItem::buildDemoCircuit()
     auto *truthTable = new TruthTable();
     truthTable->setPos(400, 460);
 
-    m_elements = { switchA, switchB, andGate, led, switchC, led2, mux, demux, truthTable };
+    // Also unwired: the segment-compositing family. Their active-segment overlays paint on
+    // top of an unchanged base pixmap (see appearanceKeyFor()'s doc comment), so these three
+    // also exercise the one extra cache-key dimension this family needs beyond every other
+    // ported family so far.
+    auto *display7 = new Display7();
+    display7->setPos(40, 620);
+    auto *display14 = new Display14();
+    display14->setPos(220, 620);
+    auto *display16 = new Display16();
+    display16->setPos(460, 620);
+
+    m_elements = { switchA, switchB, andGate, led, switchC, led2,
+                    mux, demux, truthTable, display7, display14, display16 };
 
     auto *connA = new Connection();
     connA->setStartPort(switchA->outputPort(0));
@@ -308,12 +323,27 @@ QString CanvasItem::appearanceKeyFor(GraphicElement *element)
     // e.g. two unrotated And gates) since it tracks the live QPixmap's own identity -- see
     // this class's doc comment for why that's enough for every ported family except
     // Display7/14/16, whose segment overlays paint on top of an unchanged base pixmap.
-    return QStringLiteral("%1|%2|%3|%4|%5")
+    QString key = QStringLiteral("%1|%2|%3|%4|%5")
         .arg(element->appearanceCacheKey())
         .arg(element->rotation())
         .arg(element->isFlippedX())
         .arg(element->isFlippedY())
         .arg(element->isSelected());
+
+    // Display7/14/16::paint() reads each input port's live Status directly to decide which
+    // segment overlays to draw on top of the (unchanged) base pixmap -- append them explicitly
+    // so a segment toggling actually invalidates the cached tile. No shared base class exists
+    // to test for generically (see this method's usage site discussion), so this is a
+    // deliberate, narrowly-scoped type check rather than a generic mechanism -- exactly the
+    // one extra cache-key dimension "Phase 2 in depth" flagged this family as needing.
+    if (qobject_cast<Display7 *>(element) || qobject_cast<Display14 *>(element) || qobject_cast<Display16 *>(element)) {
+        for (int i = 0; i < element->inputSize(); ++i) {
+            key += QLatin1Char('|');
+            key += QString::number(int(element->inputPort(i)->status()));
+        }
+    }
+
+    return key;
 }
 
 void CanvasItem::startWireFromOutput(OutputPort *startPort)
