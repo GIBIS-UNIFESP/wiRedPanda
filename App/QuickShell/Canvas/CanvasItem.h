@@ -325,7 +325,7 @@ public:
     /// Selects every element on the canvas. Mirrors Scene::selectAll().
     void selectAll();
 
-    /// Builds and adds one element of \a type at \a pos, mirroring SceneDropHandler::
+    /// Builds and adds one element of \a type at \a screenPos, mirroring SceneDropHandler::
     /// addFromMimeData()'s element-construction logic (built-in / file-based IC / embedded IC)
     /// without the QMimeData round-trip -- Quick's Drag/DropArea has no cross-widget-hierarchy
     /// boundary to serialize across the way Widgets' native drag-and-drop does, so the
@@ -333,7 +333,11 @@ public:
     /// a bare (contextDir()-relative) file name for a file-based IC, or a blob name for an
     /// embedded IC (when \a isEmbedded is true). Does nothing if \a type is IC, \a isEmbedded
     /// is true, and \a icFileName doesn't name a blob in icRegistry() (a stale palette entry).
-    void addElementFromPalette(ElementType type, const QString &icFileName, bool isEmbedded, const QPointF &pos);
+    /// \a screenPos is in this item's own screen/QML-facing coordinate space (canvasHost-local
+    /// pixels, e.g. a DropArea's drop.x/drop.y or a viewport-center double-click target) --
+    /// converted internally via screenToWorld() before placing the element, so drops/adds land
+    /// at the correct world position under whatever pan/zoom is currently active.
+    void addElementFromPalette(ElementType type, const QString &icFileName, bool isEmbedded, const QPointF &screenPos);
 
     /// Commits an inline label edit on \a element: pushes a CanvasUpdateCommand only if \a
     /// newLabel actually differs from the element's current label. Mirrors
@@ -400,11 +404,71 @@ public:
     /// file" step (ExportController::exportPdfDialog()/exportImageDialog()'s own first line).
     void clearSelection();
 
-    /// Last known cursor position in canvas coordinates, updated on every mouse press/move.
-    /// Mirrors Scene::mousePos(); used to place pasted elements relative to the cursor.
+    /// Last known cursor position in world (canvas/scene) coordinates, updated on every mouse
+    /// press/move. Mirrors Scene::mousePos(); used to place pasted elements relative to the
+    /// cursor.
     [[nodiscard]] QPointF mousePos() const { return m_lastMousePos; }
 
+    // --- Pan/zoom (mirrors App/Scene/GraphicsView.h's discrete zoom ladder and pan gestures)
+    //
+    // Introduces a real screen/world coordinate split this canvas didn't have before: every
+    // element/port/wire position (pos(), boundingRect(), SpatialIndex entries) stays in WORLD
+    // coordinates, unaffected by pan/zoom, exactly as it always has. What's new is the mapping
+    // between that world space and this item's own local (screen/QML-facing) coordinate space,
+    // via screenToWorld()/worldToScreen() below -- the same job QGraphicsView performs
+    // implicitly for Scene via its view transform, done explicitly here since this canvas has
+    // no QGraphicsView underneath it. mousePressEvent()/mouseMoveEvent()/etc. convert incoming
+    // event positions through screenToWorld() before any spatial reasoning (hit-testing via
+    // m_index, drag deltas); updatePaintNode() applies the inverse via one QSGTransformNode
+    // wrapping its existing (still world-coordinate) geometry, so no vertex-building code
+    // needed to change. Signals that position QML overlays (elementContextMenuRequested/
+    // emptyContextMenuRequested/inlineEditRequested) keep emitting screen coordinates --
+    // worldToScreen() is applied at the point of emission -- since those are consumed directly
+    // as canvasHost-local pixel coordinates by Main.qml, unaware of this canvas's internal
+    // world space.
+
+    /// Converts \a screenPt (this item's own local/QML-facing coordinates) to world (scene)
+    /// coordinates, accounting for the current pan/zoom. Inverse of worldToScreen().
+    [[nodiscard]] QPointF screenToWorld(const QPointF &screenPt) const;
+    /// Converts \a worldPt (scene coordinates, matching every GraphicElement's pos()) to this
+    /// item's own local/QML-facing screen coordinates, accounting for the current pan/zoom.
+    /// Inverse of screenToWorld().
+    [[nodiscard]] QPointF worldToScreen(const QPointF &worldPt) const;
+
+    /// Current zoom scale factor (1.0 == 1:1). 1.25^zoomLevel, matching
+    /// GraphicsView::zoomIn()/zoomOut()'s exact reciprocal step (1.25 in, 0.8 out) so a zoom
+    /// in then out returns to exactly the original scale without floating-point drift.
+    [[nodiscard]] qreal zoomScale() const;
+    /// Returns true if zooming in further is possible. Mirrors GraphicsView::canZoomIn().
+    [[nodiscard]] bool canZoomIn() const;
+    /// Returns true if zooming out further is possible. Mirrors GraphicsView::canZoomOut().
+    [[nodiscard]] bool canZoomOut() const;
+    /// Increases the zoom level by one step, anchored on \a screenAnchor (defaults to this
+    /// item's own center) -- the world point under \a screenAnchor stays under it after the
+    /// zoom, mirroring GraphicsView's AnchorUnderMouse viewport behavior. Mirrors
+    /// GraphicsView::zoomIn().
+    void zoomIn(std::optional<QPointF> screenAnchor = std::nullopt);
+    /// Decreases the zoom level by one step, anchored on \a screenAnchor. Mirrors
+    /// GraphicsView::zoomOut().
+    void zoomOut(std::optional<QPointF> screenAnchor = std::nullopt);
+    /// Resets zoom to 1:1 and pan to the origin. Mirrors GraphicsView::resetZoom() -- also
+    /// resets pan, unlike GraphicsView (whose scrollbars are separate state resetTransform()
+    /// doesn't touch), since this canvas has no independent scroll-position concept to leave
+    /// alone; a bare "reset zoom" that left pan wherever it was would be a surprising partial
+    /// reset.
+    void resetZoom();
+    /// Scales and pans so the whole circuit -- or the current selection, if any -- fits within
+    /// this item's own visible bounds, snapping to the nearest discrete zoom step that still
+    /// fits. Mirrors GraphicsView::zoomToFit() exactly, including its selection-or-whole-circuit
+    /// choice and floor-not-round snapping (never overshoots the viewport).
+    void zoomToFit();
+
 signals:
+    /// Emitted whenever the zoom level or pan offset changes. Mirrors GraphicsView::zoomChanged()
+    /// (extended to cover pan too, since this canvas has no separate scroll-position signal the
+    /// way GraphicsView's scrollbars would have provided one).
+    void zoomChanged();
+
     /// Emitted whenever the set of selected elements changes, or when an already-selected
     /// element's properties change in a way a property inspector needs to re-read (the
     /// deliberate reselect-to-refresh toggle in adjustMainProperty()/adjustSecondaryProperty()).
@@ -415,21 +479,24 @@ signals:
     void selectionChanged();
 
     /// Emitted on right-click over an element (mousePressEvent() has already selected it if it
-    /// wasn't already part of the selection, mirroring Scene::contextMenu()). \a pos is
-    /// canvas-local. Mirrors Scene::contextMenuPos().
+    /// wasn't already part of the selection, mirroring Scene::contextMenu()). \a pos is this
+    /// item's own local/screen coordinates (not world -- Main.qml positions the popup menu
+    /// directly at it). Mirrors Scene::contextMenuPos().
     void elementContextMenuRequested(GraphicElement *element, QPointF pos);
     /// Emitted on right-click over empty canvas. Mirrors Scene::contextMenu()'s "no item"
     /// branch (a separate, simpler Paste/Select-all menu built inline there rather than via
-    /// ElementContextMenu::exec()).
+    /// ElementContextMenu::exec()). \a pos is screen coordinates, same as
+    /// elementContextMenuRequested()'s.
     void emptyContextMenuRequested(QPointF pos);
 
     /// Emitted on double-click over an element with hasLabel() true. \a currentLabel is
     /// passed explicitly (rather than left for QML to read off \a element) since
     /// GraphicElement -- Layer 1 domain code -- has no Q_PROPERTY/Q_INVOKABLE QML can call;
     /// QML only ever holds \a element opaquely and passes it back into
-    /// commitInlineLabelEdit(). \a targetRect is \a element's labelSceneBoundingRect()
-    /// (canvas-local, matching mousePos()/palette-drop coordinates) to position an inline
-    /// editor over. Mirrors GraphicElement::mouseDoubleClickEvent()'s inlineEditRequested()
+    /// commitInlineLabelEdit(). \a targetRect is \a element's labelSceneBoundingRect(),
+    /// converted from world to this item's own local/screen coordinates (worldToScreen()) to
+    /// position an inline editor over -- Main.qml places the TextField directly at this rect,
+    /// in canvasHost-local pixels. Mirrors GraphicElement::mouseDoubleClickEvent()'s inlineEditRequested()
     /// emission -- CanvasItem's own mouseDoubleClickEvent() override never forwards to the
     /// element's (it's dedicated to wire-splitting), so this replicates the same hasLabel()
     /// check directly instead of fabricating a QGraphicsSceneMouseEvent to feed the real method.
@@ -473,6 +540,9 @@ protected:
     void keyPressEvent(QKeyEvent *event) override;
     /// \reimp Releases a momentary InputButton keyboard trigger (InputSwitch stays latched).
     void keyReleaseEvent(QKeyEvent *event) override;
+    /// \reimp Zooms in/out by one step, anchored on the cursor position -- mirrors
+    /// GraphicsView::wheelEvent()'s AnchorUnderMouse-plus-centerOn() correction.
+    void wheelEvent(QWheelEvent *event) override;
 
 private:
     void buildDemoCircuit();
@@ -504,10 +574,12 @@ private:
     /// Mirrors Scene::contextMenu(QPoint)'s hit-test/select/emit logic: right-clicking a
     /// selected element emits elementContextMenuRequested() as-is; right-clicking an
     /// unselected element clears the selection, selects just that element, then emits the
-    /// same signal; right-clicking empty space emits emptyContextMenuRequested().
-    void handleRightClick(const QPointF &pos);
+    /// same signal; right-clicking empty space emits emptyContextMenuRequested(). \a screenPos
+    /// is this item's own local coordinates (screenToWorld() is applied internally for
+    /// hit-testing; the signals themselves keep emitting screenPos unconverted).
+    void handleRightClick(const QPointF &screenPos);
 
-    /// Returns true if \a pos (canvas space) lands on one of \a owner's own ports. Reimplements
+    /// Returns true if \a pos (world/scene coordinates) lands on one of \a owner's own ports. Reimplements
     /// IC::isCursorOverPort()'s decision against this canvas's own SpatialIndex/m_portsById
     /// rather than calling IC's private isCursorOverPort()/protected hoverXxxEvent()
     /// overrides directly -- same pattern as activateOnPress() reimplementing
@@ -613,4 +685,24 @@ private:
     /// stay in sync with live simulation output. Matches Simulation's own documented ~60fps
     /// visual-throttle cadence (see Simulation.h's m_visualTickInterval).
     QTimer m_refreshTimer;
+
+    /// Discrete zoom step (0 == 1:1, positive == zoomed in) -- backs zoomScale()/canZoomIn()/
+    /// canZoomOut(). Mirrors GraphicsView::m_zoomLevel and its exact -9..7 range (see
+    /// CanvasItem.cpp's kMaxZoomLevel/kMinZoomLevel).
+    int m_zoomLevel = 0;
+    /// World point currently at this item's own local (0, 0) -- backs screenToWorld()/
+    /// worldToScreen(). Mirrors what GraphicsView's scrollbar values + view transform jointly
+    /// represent, collapsed into one QPointF since this canvas has no separate widget/viewport
+    /// distinction to split it across.
+    QPointF m_panOffset;
+
+    /// True while the user is middle-click or space-drag panning. Mirrors GraphicsView::m_pan.
+    bool m_panning = false;
+    /// True while the space bar is held (enables pan mode). Mirrors GraphicsView::m_space.
+    bool m_spacePanHeld = false;
+    /// Screen-space cursor position at the start of (or during, updated every move) the
+    /// current pan gesture -- mirrors GraphicsView::m_panStartX/m_panStartY, kept as one
+    /// QPointF instead of two ints since this canvas already uses QPointF for every other
+    /// screen/world position.
+    QPointF m_panAnchor;
 };

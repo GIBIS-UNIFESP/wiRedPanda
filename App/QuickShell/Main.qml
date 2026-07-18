@@ -139,13 +139,22 @@ ApplicationWindow {
             MenuItem { text: qsTr("Image..."); onTriggered: AppController.exportImage() }
         }
 
-        // Mirrors MainWindowUi's View menu, scoped to just the Theme submenu -- View's other
-        // items (zoom, wire/gate visibility, fast-mode, minimap toggle) all depend on chrome
-        // that doesn't exist yet in this Quick shell (zoom/pan in particular -- see
-        // project_canvasitem_no_panzoom_blocks_minimap.md), so they stay out of this menu
-        // rather than being built as non-functional entries.
+        // Mirrors MainWindowUi's View menu, scoped to the Zoom and Theme submenus -- View's
+        // remaining items (wire/gate visibility, fast-mode, minimap toggle) still depend on
+        // chrome that doesn't exist yet in this Quick shell, so they stay out of this menu
+        // rather than being built as non-functional entries. Zoom keyboard shortcuts
+        // (Ctrl+=/Ctrl+-/Ctrl+0/Ctrl+Shift+F) are handled directly by CanvasItem::keyPressEvent()
+        // -- no chrome QAction/Shortcut layer exists yet, same as rotate/flip -- so these
+        // MenuItems are plain, unshortcut-ed triggers, matching the Theme submenu below.
         Menu {
             title: qsTr("&View")
+            Menu {
+                title: qsTr("Zoom")
+                MenuItem { text: qsTr("Zoom In"); onTriggered: AppController.zoomIn() }
+                MenuItem { text: qsTr("Zoom Out"); onTriggered: AppController.zoomOut() }
+                MenuItem { text: qsTr("Reset Zoom"); onTriggered: AppController.resetZoom() }
+                MenuItem { text: qsTr("Zoom to Fit"); onTriggered: AppController.zoomToFit() }
+            }
             Menu {
                 title: qsTr("Theme")
                 MenuItem { text: qsTr("Light"); checkable: true; checked: AppController.theme === 0; onTriggered: AppController.theme = 0 }
@@ -235,9 +244,10 @@ ApplicationWindow {
             // set on), so its modelData carries everything addElementToCurrentTab() needs.
             // Cast to PaletteItemDelegate (DragEvent.source's declared type is plain QObject,
             // since a drag source can be any Item) so modelData resolves to a real property
-            // instead of an unqualified access. drop.x/drop.y are already canvasHost-local
-            // (DragEvent coordinates are relative to the DropArea), which is also canvas-local
-            // since CanvasItem has no pan/zoom transform yet.
+            // instead of an unqualified access. drop.x/drop.y are canvasHost-local (DragEvent
+            // coordinates are relative to the DropArea) -- i.e. CanvasItem's own screen space --
+            // which addElementFromPalette() converts to world coordinates internally via
+            // screenToWorld(), so drops land correctly under whatever pan/zoom is active.
             DropArea {
                 anchors.fill: parent
                 onDropped: (drop) => {

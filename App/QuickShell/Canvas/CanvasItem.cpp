@@ -22,6 +22,7 @@
 #include <QSGGeometry>
 #include <QSGGeometryNode>
 #include <QSGTextureMaterial>
+#include <QSGTransformNode>
 #include <QSGVertexColorMaterial>
 
 #include "App/Core/Common.h"
@@ -95,6 +96,12 @@ public:
 private:
     const QVector<GraphicElement *> &m_elements;
 };
+
+// Zoom step ladder (factor 1.25 per step), identical range to GraphicsView.cpp's own
+// kMaxViewZoomLevel/kMinViewZoomLevel -- deliberately asymmetric (elements stay useful when
+// tiny, so far more zoom-out than in is allowed).
+constexpr int kMaxZoomLevel = 7;  ///< 1.25^7 ~= 4.8x.
+constexpr int kMinZoomLevel = -9; ///< 0.8^9 ~= 0.13x.
 
 /// Packs an id into the quint64 id space SpatialIndex uses, tagged by kind in the top bits so
 /// elements/wires/ports never collide. elementId()/wireId() now take the real
@@ -194,8 +201,9 @@ CanvasItem::CanvasItem(QQuickItem *parent, bool buildDemo)
 {
     setFlag(QQuickItem::ItemHasContents, true);
     // RightButton is needed for the context-menu gesture (mousePressEvent()'s RightButton
-    // branch) -- LeftButton-only until this sub-step, since nothing consumed a right-click.
-    setAcceptedMouseButtons(Qt::LeftButton | Qt::RightButton);
+    // branch); MiddleButton for the pan gesture (mirrors GraphicsView::mousePressEvent()'s
+    // identical MiddleButton check).
+    setAcceptedMouseButtons(Qt::LeftButton | Qt::RightButton | Qt::MiddleButton);
     setAcceptHoverEvents(true);
 
     if (buildDemo) {
@@ -961,8 +969,10 @@ void CanvasItem::duplicateAction()
     emit selectionChanged();
 }
 
-void CanvasItem::addElementFromPalette(ElementType type, const QString &icFileName, bool isEmbedded, const QPointF &pos)
+void CanvasItem::addElementFromPalette(ElementType type, const QString &icFileName, bool isEmbedded, const QPointF &screenPos)
 {
+    const QPointF pos = screenToWorld(screenPos);
+
     std::unique_ptr<GraphicElement> element(ElementFactory::buildElement(type));
 
     if (isEmbedded && type == ElementType::IC) {
@@ -1237,6 +1247,121 @@ void CanvasItem::clearSelection()
     }
     m_selectedIds.clear();
     emit selectionChanged();
+}
+
+qreal CanvasItem::zoomScale() const
+{
+    // 1.25/0.8 are exact reciprocals, matching GraphicsView::zoomIn()/zoomOut()'s own comment:
+    // a zoom in then out returns to exactly the original scale without floating-point drift.
+    return std::pow(1.25, m_zoomLevel);
+}
+
+QPointF CanvasItem::screenToWorld(const QPointF &screenPt) const
+{
+    return screenPt / zoomScale() + m_panOffset;
+}
+
+QPointF CanvasItem::worldToScreen(const QPointF &worldPt) const
+{
+    return (worldPt - m_panOffset) * zoomScale();
+}
+
+bool CanvasItem::canZoomIn() const
+{
+    return m_zoomLevel < kMaxZoomLevel;
+}
+
+bool CanvasItem::canZoomOut() const
+{
+    return m_zoomLevel > kMinZoomLevel;
+}
+
+void CanvasItem::zoomIn(std::optional<QPointF> screenAnchor)
+{
+    if (!canZoomIn()) {
+        return;
+    }
+
+    // Anchor defaults to this item's own center, mirroring GraphicsView::AnchorUnderMouse's
+    // fallback behavior (the last-known mouse position if the wheel hasn't moved recently is
+    // Qt's own internal concern; a menu-triggered zoom has no mouse position to anchor on at
+    // all, so the visible center is the closest equivalent to "zoom into what's on screen").
+    const QPointF anchor = screenAnchor.value_or(QPointF(width() / 2.0, height() / 2.0));
+    const QPointF worldAnchor = screenToWorld(anchor);
+
+    ++m_zoomLevel;
+
+    // Re-solve panOffset so worldAnchor keeps mapping to the same screen point post-zoom --
+    // mirrors GraphicsView::wheelEvent()'s centerOn(mapToScene(...)) correction, done directly
+    // via the same worldToScreen()/screenToWorld() relationship instead of a separate
+    // scroll-and-recenter step.
+    m_panOffset = worldAnchor - anchor / zoomScale();
+
+    update();
+    emit zoomChanged();
+}
+
+void CanvasItem::zoomOut(std::optional<QPointF> screenAnchor)
+{
+    if (!canZoomOut()) {
+        return;
+    }
+
+    const QPointF anchor = screenAnchor.value_or(QPointF(width() / 2.0, height() / 2.0));
+    const QPointF worldAnchor = screenToWorld(anchor);
+
+    --m_zoomLevel;
+
+    m_panOffset = worldAnchor - anchor / zoomScale();
+
+    update();
+    emit zoomChanged();
+}
+
+void CanvasItem::resetZoom()
+{
+    m_zoomLevel = 0;
+    m_panOffset = QPointF();
+    update();
+    emit zoomChanged();
+}
+
+void CanvasItem::zoomToFit()
+{
+    // Fit the current selection if there is one (zoom-to-selection); otherwise the whole
+    // circuit -- mirrors GraphicsView::zoomToFit() exactly, including its own 16px padding.
+    QRectF target;
+    const auto selected = selectedElements();
+    if (!selected.isEmpty()) {
+        for (auto *element : selected) {
+            target |= element->boundingRect().translated(element->pos());
+        }
+    } else {
+        target = elementsBoundingRect();
+    }
+
+    if (!target.isValid() || target.isEmpty() || width() <= 0.0 || height() <= 0.0) {
+        return;
+    }
+
+    target.adjust(-16.0, -16.0, 16.0, 16.0);
+
+    // fitInView's ideal continuous scale, snapped DOWN to the nearest discrete zoom step so the
+    // whole target still fits (floor never overshoots the viewport) -- mirrors
+    // GraphicsView::zoomToFit()'s identical fitScale/std::floor(std::log(...)/std::log(1.25))
+    // snapping, computed directly here since this canvas has no QGraphicsView::fitInView() to
+    // call.
+    const qreal fitScale = std::min(width() / target.width(), height() / target.height());
+    const int level = std::clamp(static_cast<int>(std::floor(std::log(fitScale) / std::log(1.25))), kMinZoomLevel, kMaxZoomLevel);
+
+    m_zoomLevel = level;
+    // Center target in the viewport at the new scale: the world point at target's center must
+    // map to the screen point at this item's own center.
+    const QPointF screenCenter(width() / 2.0, height() / 2.0);
+    m_panOffset = target.center() - screenCenter / zoomScale();
+
+    update();
+    emit zoomChanged();
 }
 
 void CanvasItem::buildDemoCircuit()
@@ -1543,9 +1668,31 @@ void CanvasItem::detachWire(InputPort *endPort)
 
 void CanvasItem::mousePressEvent(QMouseEvent *event)
 {
-    m_lastMousePos = event->position();
+    // Middle-button drag pans the canvas -- mirrors GraphicsView::mousePressEvent(). Space-held
+    // left-drag also pans (see m_spacePanHeld's doc comment for why this is a press-time branch
+    // here rather than GraphicsView's own mouseMoveEvent-only "m_pan || m_space" check: a
+    // deliberate, small cleanup, not a behavior change a user could observe -- either way,
+    // space+drag pans the view and nothing else).
+    if (event->button() == Qt::MiddleButton || (m_spacePanHeld && event->button() == Qt::LeftButton)) {
+        m_panning = true;
+        m_panAnchor = event->position();
+        setCursor(Qt::ClosedHandCursor);
+        event->accept();
+        return;
+    }
+
+    // Every other branch below reasons about positions in WORLD (scene) coordinates -- see
+    // screenToWorld()/worldToScreen()'s doc comment on this class. m_lastMousePos backs
+    // mousePos(), documented as world coordinates (used to place pasted elements relative to
+    // where the elements themselves live, not relative to this item's own local pixels).
+    const QPointF worldPos = screenToWorld(event->position());
+    m_lastMousePos = worldPos;
 
     if (event->button() == Qt::RightButton) {
+        // handleRightClick() takes the SCREEN position -- it needs both: world, for its own
+        // hit-testing, and screen, to pass through to elementContextMenuRequested()/
+        // emptyContextMenuRequested() unchanged (Main.qml positions the popup menu directly at
+        // that canvasHost-local pixel coordinate).
         handleRightClick(event->position());
         return;
     }
@@ -1554,7 +1701,7 @@ void CanvasItem::mousePressEvent(QMouseEvent *event)
         return;
     }
 
-    const auto hits = m_index.queryPoint(event->position());
+    const auto hits = m_index.queryPoint(worldPos);
 
     // Port hit: wire-creation workflow, mirrors SceneInteraction::mousePress's
     // "if (item->type() == Port::Type) { ... }" branch -- handled first, and returns, so a
@@ -1571,7 +1718,7 @@ void CanvasItem::mousePressEvent(QMouseEvent *event)
         if (m_editedConnection) {
             // An in-progress wire exists; try to complete it at this port -- mirrors
             // "if (hasEditedConnection()) { tryComplete(pos); return true; }".
-            tryCompleteWire(event->position());
+            tryCompleteWire(worldPos);
         } else if (auto *outputPort = dynamic_cast<OutputPort *>(hitPort)) {
             startWireFromOutput(outputPort);
         } else if (auto *inputPort = dynamic_cast<InputPort *>(hitPort)) {
@@ -1594,7 +1741,7 @@ void CanvasItem::mousePressEvent(QMouseEvent *event)
     if (hits.isEmpty()) {
         // Empty space: mirrors SceneInteraction::mousePress's "if (!item && LeftButton)
         // startSelectionRect()".
-        startSelectionRect(event->position());
+        startSelectionRect(worldPos);
         update();
         return;
     }
@@ -1672,17 +1819,20 @@ void CanvasItem::mousePressEvent(QMouseEvent *event)
             m_dragStartPositions.append(dragElement->pos());
         }
     }
-    m_dragAnchor = event->position();
+    m_dragAnchor = worldPos;
     m_draggingElement = true;
 
     update();
 }
 
-void CanvasItem::handleRightClick(const QPointF &pos)
+void CanvasItem::handleRightClick(const QPointF &screenPos)
 {
-    const auto hits = m_index.queryPoint(pos);
+    // Hit-testing needs world coordinates; the emitted signals keep screenPos as-is (Main.qml
+    // positions the popup menu directly at that canvasHost-local pixel coordinate).
+    const QPointF worldPos = screenToWorld(screenPos);
+    const auto hits = m_index.queryPoint(worldPos);
     if (hits.isEmpty()) {
-        emit emptyContextMenuRequested(pos);
+        emit emptyContextMenuRequested(screenPos);
         return;
     }
 
@@ -1707,15 +1857,28 @@ void CanvasItem::handleRightClick(const QPointF &pos)
         emit selectionChanged();
     }
 
-    emit elementContextMenuRequested(element, pos);
+    emit elementContextMenuRequested(element, screenPos);
 }
 
 void CanvasItem::mouseMoveEvent(QMouseEvent *event)
 {
-    m_lastMousePos = event->position();
+    if (m_panning) {
+        // Mirrors GraphicsView::mouseMoveEvent()'s "m_pan || m_space" branch, adjusting
+        // m_panOffset directly instead of scrollbar values -- screen-space delta divided by
+        // the current zoom scale, since m_panOffset lives in world units.
+        const QPointF screenDelta = event->position() - m_panAnchor;
+        m_panOffset -= screenDelta / zoomScale();
+        m_panAnchor = event->position();
+        update();
+        emit zoomChanged();
+        return;
+    }
+
+    const QPointF worldPos = screenToWorld(event->position());
+    m_lastMousePos = worldPos;
 
     if (m_draggingElement) {
-        const QPointF delta = event->position() - m_dragAnchor;
+        const QPointF delta = worldPos - m_dragAnchor;
         for (int i = 0; i < m_dragElements.size(); ++i) {
             m_dragElements.at(i)->setPos(m_dragStartPositions.at(i) + delta);
         }
@@ -1730,20 +1893,37 @@ void CanvasItem::mouseMoveEvent(QMouseEvent *event)
     // In-progress wire routing: mirrors SceneInteraction::mouseMove's
     // "if (hasEditedConnection()) { updateEditedEnd(pos); return true; }".
     if (m_editedConnection) {
-        updateEditedWireEnd(event->position());
+        updateEditedWireEnd(worldPos);
         update();
         return;
     }
 
     if (m_markingSelectionBox) {
-        updateSelectionRect(event->position());
+        updateSelectionRect(worldPos);
         update();
     }
 }
 
 void CanvasItem::mouseReleaseEvent(QMouseEvent *event)
 {
+    if (event->button() == Qt::MiddleButton) {
+        m_panning = false;
+        unsetCursor();
+        event->accept();
+        return;
+    }
+
     if (event->button() != Qt::LeftButton) {
+        return;
+    }
+
+    // A space-held pan-drag started on a LeftButton press (see mousePressEvent()) ends here
+    // too, without falling through to the click/drag-release logic below -- mirrors
+    // GraphicsView's own pan gesture ending cleanly regardless of which button drove it.
+    if (m_panning) {
+        m_panning = false;
+        unsetCursor();
+        event->accept();
         return;
     }
 
@@ -1788,7 +1968,7 @@ void CanvasItem::mouseReleaseEvent(QMouseEvent *event)
     // -> release on input). event->buttons() (plural: still-held buttons) rather than
     // event->button() (the button that triggered this release), matching the real check.
     if (m_editedConnection && event->buttons() == Qt::NoButton) {
-        tryCompleteWire(event->position());
+        tryCompleteWire(screenToWorld(event->position()));
     }
 
     update();
@@ -1800,7 +1980,8 @@ void CanvasItem::mouseDoubleClickEvent(QMouseEvent *event)
         return;
     }
 
-    const auto hits = m_index.queryPoint(event->position());
+    const QPointF worldPos = screenToWorld(event->position());
+    const auto hits = m_index.queryPoint(worldPos);
 
     // Same port-priority scan as mousePressEvent(): a port at this point means there's no
     // wire-split to do here (mirrors Scene::itemAt()'s port-over-everything priority, which
@@ -1825,7 +2006,10 @@ void CanvasItem::mouseDoubleClickEvent(QMouseEvent *event)
             if (targetRect.isEmpty()) {
                 targetRect = element->sceneBoundingRect();
             }
-            emit inlineEditRequested(element, element->label(), targetRect);
+            // World -> screen: Main.qml positions the inline TextField directly at this rect,
+            // in canvasHost-local pixel coordinates (see inlineEditRequested()'s doc comment).
+            const QRectF screenRect(worldToScreen(targetRect.topLeft()), targetRect.size() * zoomScale());
+            emit inlineEditRequested(element, element->label(), screenRect);
         }
         // Mirrors IC::mouseDoubleClickEvent()'s unconditional preview cancel (the popup should
         // never linger once the user has double-clicked past it) -- requestOpenSubCircuit's
@@ -1839,7 +2023,7 @@ void CanvasItem::mouseDoubleClickEvent(QMouseEvent *event)
     // Must be a wire id (SpatialIndex only ever holds element/port/wire ids here).
     const int connId = unwrapId(topHit);
     if (auto *connection = CanvasCommandUtils::findConn(this, connId); connection && connection->startPort() && connection->endPort()) {
-        receiveCommand(new CanvasSplitCommand(connection, event->position(), this));
+        receiveCommand(new CanvasSplitCommand(connection, worldPos, this));
     }
 }
 
@@ -1921,7 +2105,11 @@ bool CanvasItem::isOverOwnPort(GraphicElement *owner, const QPointF &pos) const
 
 void CanvasItem::hoverMoveEvent(QHoverEvent *event)
 {
-    const auto hits = m_index.queryPoint(event->position());
+    // event->globalPosition() (used below for the IC hover-preview popup) is OS-level global
+    // screen coordinates -- entirely separate from this item's own local space, unaffected by
+    // pan/zoom, so it's used unconverted exactly as before.
+    const QPointF worldPos = screenToWorld(event->position());
+    const auto hits = m_index.queryPoint(worldPos);
     const quint64 newHoveredId = hits.isEmpty() ? 0 : hits.last();
 
     if (newHoveredId != m_hoveredId) {
@@ -1934,7 +2122,7 @@ void CanvasItem::hoverMoveEvent(QHoverEvent *event)
         }
         m_hoveredId = newHoveredId;
         if (auto *newIc = qobject_cast<IC *>(m_elementsById.value(newHoveredId, nullptr))) {
-            if (isOverOwnPort(newIc, event->position())) {
+            if (isOverOwnPort(newIc, worldPos)) {
                 newIc->previewHideRequested();
                 emit icPreviewHideRequested();
             } else {
@@ -1946,7 +2134,7 @@ void CanvasItem::hoverMoveEvent(QHoverEvent *event)
         update();
     } else if (auto *ic = qobject_cast<IC *>(m_elementsById.value(m_hoveredId, nullptr))) {
         // Same IC, cursor still moving within it -- keep the pending-preview position current.
-        if (isOverOwnPort(ic, event->position())) {
+        if (isOverOwnPort(ic, worldPos)) {
             ic->previewHideRequested();
             emit icPreviewHideRequested();
         } else {
@@ -2019,6 +2207,17 @@ void CanvasItem::keyPressEvent(QKeyEvent *event)
         return;
     }
 
+    // Spacebar held = pan mode (same as middle-mouse drag), mirroring
+    // GraphicsView::keyPressEvent(); checked by mousePressEvent()'s own m_spacePanHeld branch.
+    // Returns here rather than production's fall-through (which still calls the base handler
+    // afterwards) -- harmless, since Space matches none of this method's other shortcuts below.
+    if (event->key() == Qt::Key_Space) {
+        m_spacePanHeld = true;
+        setCursor(Qt::ClosedHandCursor);
+        event->accept();
+        return;
+    }
+
     // Arrow keys nudge the current selection by a grid step (Shift = a larger step) as one
     // undoable move; consumes the event only when it actually moves a selection.
     if (nudgeSelection(event)) {
@@ -2030,6 +2229,31 @@ void CanvasItem::keyPressEvent(QKeyEvent *event)
     // so they're matched directly -- see this class's doc comment on rotateRight()/etc. for
     // why flipVertically() has no binding here (it has none in the real app either).
     if (event->modifiers().testFlag(Qt::ControlModifier)) {
+        // Zoom: mirrors GraphicsView's own actions (MainWindowUI.cpp's setupUi() -- "Ctrl+="/
+        // "Ctrl++" both zoom in since most users reach for the unshifted "=" key, "Ctrl+-" zooms
+        // out, "Ctrl+0" resets, "Ctrl+Shift+F" fits). No chrome menu/QAction shortcut layer
+        // exists yet (Phase 4) to intercept these before they reach here, same as rotate/flip
+        // below.
+        if (event->modifiers().testFlag(Qt::ShiftModifier) && event->key() == Qt::Key_F) {
+            zoomToFit();
+            event->accept();
+            return;
+        }
+        if (event->key() == Qt::Key_Equal || event->key() == Qt::Key_Plus) {
+            zoomIn();
+            event->accept();
+            return;
+        }
+        if (event->key() == Qt::Key_Minus) {
+            zoomOut();
+            event->accept();
+            return;
+        }
+        if (event->key() == Qt::Key_0) {
+            resetZoom();
+            event->accept();
+            return;
+        }
         if (event->modifiers().testFlag(Qt::ShiftModifier) && event->key() == Qt::Key_R) {
             rotateLeft();
             event->accept();
@@ -2118,6 +2342,13 @@ void CanvasItem::keyReleaseEvent(QKeyEvent *event)
         return;
     }
 
+    if (event->key() == Qt::Key_Space) {
+        m_spacePanHeld = false;
+        unsetCursor();
+        event->accept();
+        return;
+    }
+
     if (!event->modifiers().testFlag(Qt::ControlModifier)) {
         for (auto *element : std::as_const(m_elements)) {
             if (element->hasTrigger() && !element->trigger().isEmpty() && element->trigger().matches(event->key())) {
@@ -2133,24 +2364,53 @@ void CanvasItem::keyReleaseEvent(QKeyEvent *event)
     QQuickItem::keyReleaseEvent(event);
 }
 
+void CanvasItem::wheelEvent(QWheelEvent *event)
+{
+    const int zoomDirection = event->angleDelta().y();
+    if (zoomDirection > 0) {
+        zoomIn(event->position());
+    } else if (zoomDirection < 0) {
+        zoomOut(event->position());
+    }
+    event->accept();
+}
+
 QSGNode *CanvasItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
 {
     // Element/wire positions can change now (drag-to-move rebuilds m_index on every move, see
     // mouseMoveEvent()); this method itself only ever reads current live state on each repaint,
     // it never assumes positions are static.
     auto *root = oldNode ? oldNode : new QSGNode();
+    QSGTransformNode *transformNode;
     if (!oldNode) {
+        // One QSGTransformNode carries the pan/zoom mapping for every child below it, so the
+        // gate/wire/hover/overlay vertex-building code beneath stays entirely in WORLD
+        // coordinates, unchanged by pan/zoom -- see screenToWorld()/worldToScreen()'s doc
+        // comment on this class for the split this mirrors.
+        transformNode = new QSGTransformNode();
         auto *wireNode = new QSGGeometryNode();
         auto *hoverNode = new QSGGeometryNode(); // hover highlight, underneath the gate it highlights
         auto *gateNode = new QSGGeometryNode();  // real per-element appearance, textured
         auto *overlayNode = new QSGGeometryNode(); // live rubber-band rect, paints on top of everything
-        root->appendChildNode(wireNode); // wires paint first
-        root->appendChildNode(hoverNode);
-        root->appendChildNode(gateNode);
-        root->appendChildNode(overlayNode);
+        transformNode->appendChildNode(wireNode); // wires paint first
+        transformNode->appendChildNode(hoverNode);
+        transformNode->appendChildNode(gateNode);
+        transformNode->appendChildNode(overlayNode);
+        root->appendChildNode(transformNode);
+    } else {
+        transformNode = static_cast<QSGTransformNode *>(root->firstChild());
     }
 
-    QSGNode *wireNode = root->firstChild();
+    // screenPt = (worldPt - panOffset) * zoomScale, exactly matching worldToScreen() -- QMatrix4x4
+    // composes right-to-left (the last-called op applies to the input vector first), so
+    // translate is built AFTER scale here even though it conceptually happens first.
+    QMatrix4x4 matrix;
+    const auto scale = float(zoomScale());
+    matrix.scale(scale, scale, 1.0f);
+    matrix.translate(float(-m_panOffset.x()), float(-m_panOffset.y()), 0.0f);
+    transformNode->setMatrix(matrix);
+
+    QSGNode *wireNode = transformNode->firstChild();
     QSGNode *hoverNode = wireNode->nextSibling();
     QSGNode *gateNode = hoverNode->nextSibling();
     QSGNode *overlayNode = gateNode->nextSibling();

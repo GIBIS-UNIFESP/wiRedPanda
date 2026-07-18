@@ -188,8 +188,8 @@ QString QuickAppController::redoText() const
 
 QString QuickAppController::shortcutsHelpHtml() const
 {
-    // QString::arg()'s multi-argument overload maxes out at 9 placeholders per call -- 11
-    // needed here, so chained across two calls.
+    // QString::arg()'s multi-argument overload maxes out at 9 placeholders per call -- 13
+    // needed here, so chained across three calls.
     return QStringLiteral(
         "<table>"
         "<tr><td>Ctrl+N</td><td>%1</td></tr>"
@@ -203,11 +203,14 @@ QString QuickAppController::shortcutsHelpHtml() const
         "<tr><td>Ctrl+R / Ctrl+Shift+R</td><td>%9</td></tr>"
         "<tr><td>Ctrl+H</td><td>%10</td></tr>"
         "<tr><td>[ ] { } &lt; &gt;</td><td>%11</td></tr>"
+        "<tr><td>Ctrl+= / Ctrl+-</td><td>%12</td></tr>"
+        "<tr><td>Ctrl+0 / Ctrl+Shift+F</td><td>%13</td></tr>"
         "</table>")
         .arg(tr("New project"), tr("Open file"), tr("Save file"), tr("Undo"), tr("Redo"),
              tr("Cut / Copy / Paste / Duplicate"), tr("Delete selection"), tr("Select all"),
              tr("Rotate right / left"))
-        .arg(tr("Flip horizontally"), tr("Cycle element type / properties (selected element)"));
+        .arg(tr("Flip horizontally"), tr("Cycle element type / properties (selected element)"))
+        .arg(tr("Zoom in / out"), tr("Reset zoom / zoom to fit"));
 }
 
 void QuickAppController::undo()
@@ -322,6 +325,26 @@ void QuickAppController::distributeHorizontally()
 void QuickAppController::distributeVertically()
 {
     if (auto *c = activeCanvas()) c->distributeVertically();
+}
+
+void QuickAppController::zoomIn()
+{
+    if (auto *c = activeCanvas()) c->zoomIn();
+}
+
+void QuickAppController::zoomOut()
+{
+    if (auto *c = activeCanvas()) c->zoomOut();
+}
+
+void QuickAppController::resetZoom()
+{
+    if (auto *c = activeCanvas()) c->resetZoom();
+}
+
+void QuickAppController::zoomToFit()
+{
+    if (auto *c = activeCanvas()) c->zoomToFit();
 }
 
 void QuickAppController::addElementToCurrentTab(int type, const QString &icFileName, bool isEmbedded, qreal x, qreal y)

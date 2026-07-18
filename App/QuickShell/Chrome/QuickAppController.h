@@ -223,10 +223,11 @@ public:
 
     /// Adds one element from a palette entry to the current tab's canvas. \a type/\a
     /// icFileName/\a isEmbedded mirror QuickElementPalette's entry fields exactly (QML passes
-    /// them straight through from whichever entry was dragged or double-clicked); \a x/\a y
-    /// are canvas-local coordinates (== canvasHost-local, since CanvasItem has no pan/zoom
-    /// transform yet). No-op if there is no current tab. Mirrors the connect(m_palette,
-    /// &ElementPalette::addElementRequested, ...) lambda in MainWindow's constructor.
+    /// them straight through from whichever entry was dragged or double-clicked); \a x/\a y are
+    /// canvas-local screen coordinates (== canvasHost-local) -- CanvasItem::addElementFromPalette()
+    /// converts them to world coordinates internally via screenToWorld(). No-op if there is no
+    /// current tab. Mirrors the connect(m_palette, &ElementPalette::addElementRequested, ...)
+    /// lambda in MainWindow's constructor.
     Q_INVOKABLE void addElementToCurrentTab(int type, const QString &icFileName, bool isEmbedded, qreal x, qreal y);
 
     /// Returns true if the system clipboard holds a pasteable wiRedPanda payload. Mirrors
@@ -274,6 +275,15 @@ public slots:
     void alignVerticalCenter();
     void distributeHorizontally();
     void distributeVertically();
+
+    // --- View menu (zoom) --- mirrors GraphicsView's own actions exactly (no reactive
+    // canZoomIn/canZoomOut property exposed -- like Transform's rotate/flip, these are always
+    // enabled and safely no-op at the zoom limits, the same design zoomIn()/zoomOut() already
+    // use internally, rather than needing per-tab signal relay wiring for a menu-enabled nicety).
+    void zoomIn();
+    void zoomOut();
+    void resetZoom();
+    void zoomToFit();
 
     // --- Simulation menu ---
     void mute(bool muted);
