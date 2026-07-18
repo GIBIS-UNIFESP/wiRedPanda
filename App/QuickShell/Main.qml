@@ -134,6 +134,9 @@ ApplicationWindow {
             title: qsTr("E&xport")
             MenuItem { text: qsTr("Arduino..."); onTriggered: AppController.exportArduino() }
             MenuItem { text: qsTr("SystemVerilog..."); onTriggered: AppController.exportSystemVerilog() }
+            MenuSeparator {}
+            MenuItem { text: qsTr("PDF..."); onTriggered: AppController.exportPdf() }
+            MenuItem { text: qsTr("Image..."); onTriggered: AppController.exportImage() }
         }
 
         // Mirrors MainWindowUi's View menu, scoped to just the Theme submenu -- View's other

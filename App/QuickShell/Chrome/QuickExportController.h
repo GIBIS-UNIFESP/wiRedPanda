@@ -22,12 +22,12 @@ class QuickMainWindowHost;
  * ExportController: MainWindowHost::currentTab() returns a concrete WorkSpace* (a Widgets
  * type), which this class has no use for.
  *
- * Scoped to Arduino/SystemVerilog export only (ArduinoCodeGen/SystemVerilogCodeGen, both
- * confirmed portable Layer-1 logic taking exactly the QVector<GraphicElement *>
- * CanvasItem::elements() already returns). PDF/image export needs a CircuitExporter overload
- * that takes a CanvasItem instead of a Scene -- not built yet, tracked as sub-step 8's job.
- * Waveform export needs BeWavedDolphin, out of scope until Phase 6. Both are real, named
- * deferrals, not oversights.
+ * Scoped to Arduino/SystemVerilog/PDF/image export (ArduinoCodeGen/SystemVerilogCodeGen take
+ * exactly the QVector<GraphicElement *> CanvasItem::elements() already returns; PDF/image
+ * export uses CanvasItem::exportToPdf()/renderExportImage() instead of
+ * CircuitExporter::renderToPdf()/renderScaledImage(), which need a real QGraphicsScene this
+ * canvas's elements were never added to). Waveform export needs BeWavedDolphin, out of scope
+ * until Phase 6 -- a real, named deferral, not an oversight.
  */
 class QuickExportController : public QObject
 {
@@ -45,6 +45,8 @@ public:
 public slots:
     void exportArduinoDialog();
     void exportSystemVerilogDialog();
+    void exportPdfDialog();
+    void exportImageDialog();
 
 private:
     QuickMainWindowHost &m_host;

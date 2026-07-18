@@ -282,6 +282,8 @@ public slots:
     // --- Export menu ---
     void exportArduino() { m_exportController.exportArduinoDialog(); }
     void exportSystemVerilog() { m_exportController.exportSystemVerilogDialog(); }
+    void exportPdf() { m_exportController.exportPdfDialog(); }
+    void exportImage() { m_exportController.exportImageDialog(); }
 
     // --- IC drag-and-drop targets (ElementPalette.qml's IC tab -- Phase 4 sub-step 7) ---
     void embedICByFile(const QString &fileName) { m_icController.embedICByFile(fileName); }

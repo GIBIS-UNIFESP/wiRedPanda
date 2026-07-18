@@ -14,13 +14,17 @@
 #include <QKeyEvent>
 #include <QMimeData>
 #include <QMouseEvent>
+#include <QPageLayout>
+#include <QPageSize>
 #include <QPainter>
+#include <QPrinter>
 #include <QQuickWindow>
 #include <QSGGeometry>
 #include <QSGGeometryNode>
 #include <QSGTextureMaterial>
 #include <QSGVertexColorMaterial>
 
+#include "App/Core/Common.h"
 #include "App/Core/Constants.h"
 #include "App/Core/Enums.h"
 #include "App/Core/InstallRelativePaths.h"
@@ -49,6 +53,7 @@
 #include "App/QuickShell/Canvas/CanvasCommands.h"
 #include "App/Scene/ConnectionManager.h"
 #include "App/Simulation/Simulation.h"
+#include "App/UI/CircuitExporter.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
 
@@ -1119,6 +1124,119 @@ QImage CanvasItem::renderICPreviewImage(GraphicElement *ic) const
     }
 
     return image;
+}
+
+QRectF CanvasItem::elementsBoundingRect() const
+{
+    QRectF bounds;
+    for (auto *element : m_elements) {
+        bounds |= element->boundingRect().translated(element->pos());
+    }
+    for (auto *connection : m_connections) {
+        // Connection's path is built directly in canvas coordinates (Connection::updatePath()
+        // moveTo()s m_startPos/m_endPos, real port scene positions) -- pos() is never set away
+        // from its (0, 0) default, unlike GraphicElement, so boundingRect() alone is already
+        // canvas-space; no translate needed here or in paintElementsInto() below.
+        bounds |= connection->boundingRect();
+    }
+    return bounds;
+}
+
+void CanvasItem::paintElementsInto(QPainter *painter, const QRectF &target, const QRectF &source) const
+{
+    if (target.isEmpty() || source.isEmpty()) {
+        return;
+    }
+
+    const qreal scale = std::min(target.width() / source.width(), target.height() / source.height());
+    const QSizeF scaledSize = source.size() * scale;
+    const QPointF offset = target.topLeft()
+        + QPointF((target.width() - scaledSize.width()) / 2.0, (target.height() - scaledSize.height()) / 2.0);
+
+    painter->save();
+    painter->translate(offset);
+    painter->scale(scale, scale);
+    painter->translate(-source.topLeft());
+
+    // World position == local paint coordinate + pos(), same relationship
+    // renderICPreviewImage()'s own comment documents.
+    for (auto *element : m_elements) {
+        painter->save();
+        painter->translate(element->pos());
+        element->paint(painter, nullptr, nullptr);
+        painter->restore();
+    }
+    for (auto *connection : m_connections) {
+        connection->paint(painter, nullptr, nullptr);
+    }
+
+    painter->restore();
+}
+
+QImage CanvasItem::renderExportImage(const QRectF &paddedRect) const
+{
+    // Mirrors CircuitExporter::renderScaledImage()'s exact cap: scale down only if paddedRect
+    // exceeds kMaxImageDimension per side, 1:1 otherwise (see that function's own doc comment
+    // for why -- unbounded element positions could otherwise size this proportionally to tens
+    // of gigabytes).
+    QSizeF targetSize = paddedRect.size();
+    const qreal scale = std::min({1.0, CircuitExporter::kMaxImageDimension / targetSize.width(),
+                                   CircuitExporter::kMaxImageDimension / targetSize.height()});
+    if (scale < 1.0) {
+        targetSize *= scale;
+    }
+
+    // Transparent background, unlike renderICPreviewImage()'s opaque dark fill -- this is an
+    // export product, not a popup with its own chrome. Explicit ARGB32_Premultiplied +
+    // fill(), not QPixmap: see CircuitExporter::renderScaledImage()'s identical comment on why
+    // QPixmap(size) can silently flatten to opaque on some platforms.
+    QImage image(targetSize.toSize(), QImage::Format_ARGB32_Premultiplied);
+    image.fill(Qt::transparent);
+
+    QPainter painter(&image);
+    painter.setRenderHint(QPainter::Antialiasing);
+    paintElementsInto(&painter, QRectF(QPointF(), targetSize), paddedRect);
+
+    return image;
+}
+
+void CanvasItem::exportToImage(const QString &filePath) const
+{
+    const QImage image = renderExportImage(elementsBoundingRect().adjusted(-64, -64, 64, 64));
+    if (!image.save(filePath)) {
+        throw PANDACEPTION("Could not save image to %1.", filePath);
+    }
+}
+
+void CanvasItem::exportToPdf(const QString &filePath) const
+{
+    QPrinter printer(QPrinter::HighResolution);
+    printer.setPageSize(QPageSize(QPageSize::A4));
+    // Landscape fits most circuits better than portrait, matching CircuitExporter::renderToPdf().
+    printer.setPageOrientation(QPageLayout::Orientation::Landscape);
+    printer.setOutputFormat(QPrinter::PdfFormat);
+    printer.setOutputFileName(filePath);
+
+    QPainter painter;
+    if (!painter.begin(&printer)) {
+        throw PANDACEPTION("Could not print this circuit to PDF.");
+    }
+
+    // painter.viewport() after begin() is the printer's full device rect in the painter's own
+    // coordinate system -- exactly what QGraphicsScene::render(painter, QRectF(), source) uses
+    // internally when its target argument is empty (CircuitExporter::renderToPdf()'s own call
+    // shape), so this reproduces that behavior without needing QGraphicsScene::render() itself.
+    paintElementsInto(&painter, QRectF(painter.viewport()), elementsBoundingRect().adjusted(-64, -64, 64, 64));
+    painter.end();
+}
+
+void CanvasItem::clearSelection()
+{
+    for (auto *elm : std::as_const(m_elements)) {
+        elm->setSelected(false);
+    }
+    m_selectedIds.clear();
+    emit selectionChanged();
 }
 
 void CanvasItem::buildDemoCircuit()

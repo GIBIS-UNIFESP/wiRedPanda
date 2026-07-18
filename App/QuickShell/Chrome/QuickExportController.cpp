@@ -3,7 +3,9 @@
 
 #include "App/QuickShell/Chrome/QuickExportController.h"
 
+#include <QDesktopServices>
 #include <QDir>
+#include <QUrl>
 
 #include "App/CodeGen/ArduinoCodeGen.h"
 #include "App/CodeGen/SystemVerilogCodeGen.h"
@@ -117,5 +119,63 @@ void QuickExportController::exportSystemVerilogDialog()
         if (!fileName.isEmpty()) {
             exportToSystemVerilog(fileName);
         }
+    });
+}
+
+void QuickExportController::exportPdfDialog()
+{
+    Application::guardedSlot(this, [this] {
+        sentryBreadcrumb("export", QStringLiteral("Export to PDF"));
+        auto *tab = m_host.currentTab();
+        if (!tab) {
+            return;
+        }
+
+        // De-select elements so their selection handles don't appear in the export.
+        tab->canvas()->clearSelection();
+
+        const QString path = m_host.currentFile().exists() ? m_host.currentFile().absolutePath() : QString();
+        QString pdfFile = FileDialogs::provider()->getSaveFileName(nullptr, tr("Export to PDF"), path, tr("PDF files") + " (*.pdf)").fileName;
+
+        if (pdfFile.isEmpty()) {
+            return;
+        }
+
+        if (!pdfFile.endsWith(".pdf", Qt::CaseInsensitive)) {
+            pdfFile.append(".pdf");
+        }
+
+        tab->canvas()->exportToPdf(pdfFile);
+        m_host.showStatusMessage(tr("Exported file successfully."), 4000);
+        QDesktopServices::openUrl(QUrl::fromLocalFile(pdfFile));
+    });
+}
+
+void QuickExportController::exportImageDialog()
+{
+    Application::guardedSlot(this, [this] {
+        sentryBreadcrumb("export", QStringLiteral("Export to image"));
+        auto *tab = m_host.currentTab();
+        if (!tab) {
+            return;
+        }
+
+        // De-select elements so their selection handles don't appear in the export.
+        tab->canvas()->clearSelection();
+
+        const QString path = m_host.currentFile().exists() ? m_host.currentFile().absolutePath() : QString();
+        QString pngFile = FileDialogs::provider()->getSaveFileName(nullptr, tr("Export to Image"), path, tr("PNG files") + " (*.png)").fileName;
+
+        if (pngFile.isEmpty()) {
+            return;
+        }
+
+        if (!pngFile.endsWith(".png", Qt::CaseInsensitive)) {
+            pngFile.append(".png");
+        }
+
+        tab->canvas()->exportToImage(pngFile);
+        m_host.showStatusMessage(tr("Exported file successfully."), 4000);
+        QDesktopServices::openUrl(QUrl::fromLocalFile(pngFile));
     });
 }

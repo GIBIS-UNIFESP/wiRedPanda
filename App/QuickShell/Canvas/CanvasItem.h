@@ -37,6 +37,7 @@ class OutputPort;
 class Port;
 class QDataStream;
 class QGraphicsItem;
+class QPainter;
 class Simulation;
 class SimulationHost;
 struct SerializationContext;
@@ -360,6 +361,45 @@ public:
     /// item list isn't available at hover time without re-parsing the source file).
     [[nodiscard]] QImage renderICPreviewImage(GraphicElement *ic) const;
 
+    /// Union of every element's and connection's bounding rect, in canvas coordinates. Mirrors
+    /// Scene::itemsBoundingRect() -- confirmed to be plain inherited
+    /// QGraphicsScene::itemsBoundingRect() (Scene has no override of its own), which is why
+    /// this sums over connections() too, not just elements(): a wire's Bezier curve can extend
+    /// past both endpoint gates' own bounds.
+    [[nodiscard]] QRectF elementsBoundingRect() const;
+
+    /// Renders elements()+connections() into a transparent-filled QImage bounded by
+    /// CircuitExporter::kMaxImageDimension per side (1:1 below that, scaled down to fit
+    /// otherwise -- mirrors CircuitExporter::renderScaledImage()'s exact contract, including
+    /// \a paddedRect meaning scene-coordinate content to render with the caller's own padding
+    /// already applied). Uses the same offscreen-QPainter-plus-real-paint() technique as
+    /// renderICPreviewImage(), generalized from a single IC's internalElements() to this
+    /// canvas's whole element+connection set -- CircuitExporter itself calls
+    /// QGraphicsScene::render(), unusable here for the same reason renderICPreviewImage() and
+    /// every other QGraphicsScene-dependent production method this rewrite has ported needed a
+    /// substitute technique instead of a literal port.
+    [[nodiscard]] QImage renderExportImage(const QRectF &paddedRect) const;
+
+    /// Renders elements()+connections() (padded by 64px, mirroring
+    /// CircuitExporter::paddedBoundingRect()) and saves the result to \a filePath. Mirrors
+    /// CircuitExporter::renderToImage()'s exact wrapper shape around renderScaledImage().
+    /// Throws Pandaception if the image can't be saved (e.g. an unwritable path or unrecognized
+    /// extension), matching production.
+    void exportToImage(const QString &filePath) const;
+
+    /// Renders elements()+connections() to a landscape A4 PDF at \a filePath. Mirrors
+    /// CircuitExporter::renderToPdf() exactly (same QPrinter setup, same 64px padding via
+    /// elementsBoundingRect().adjusted(-64, -64, 64, 64)) but paints via renderExportImage()'s
+    /// shared paintElementsInto() helper instead of QGraphicsScene::render(). Throws
+    /// Pandaception if the QPainter cannot begin painting to the printer, matching production.
+    void exportToPdf(const QString &filePath) const;
+
+    /// Clears the current selection (setSelected(false) on every element, deselect from
+    /// m_selectedIds too), without pushing any command. Mirrors Scene::clearSelection() --
+    /// added for QuickExportController's pre-export "hide selection handles from the exported
+    /// file" step (ExportController::exportPdfDialog()/exportImageDialog()'s own first line).
+    void clearSelection();
+
     /// Last known cursor position in canvas coordinates, updated on every mouse press/move.
     /// Mirrors Scene::mousePos(); used to place pasted elements relative to the cursor.
     [[nodiscard]] QPointF mousePos() const { return m_lastMousePos; }
@@ -473,6 +513,14 @@ private:
     /// overrides directly -- same pattern as activateOnPress() reimplementing
     /// InputSwitch/InputRotary's mousePressEvent logic instead of calling it.
     bool isOverOwnPort(GraphicElement *owner, const QPointF &pos) const;
+
+    /// Paints elements()+connections() into \a painter, scaled and centered to fit \a source
+    /// (canvas coordinates) into \a target (painter/device coordinates), preserving aspect
+    /// ratio -- mirrors QGraphicsScene::render()'s own target/source/Qt::KeepAspectRatio
+    /// contract (the default aspectRatioMode every CircuitExporter call site relies on implicitly),
+    /// since that's the real method renderExportImage()/exportToPdf() stand in for. Shared by
+    /// both so the fit-and-center math has exactly one implementation.
+    void paintElementsInto(QPainter *painter, const QRectF &target, const QRectF &source) const;
 
     // --- Wire-creation-by-dragging (ports ConnectionManager's workflow) ---
     void startWireFromOutput(OutputPort *startPort);
