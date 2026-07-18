@@ -6,6 +6,7 @@
 #include <algorithm>
 
 #include <QDir>
+#include <QQmlEngine>
 #include <QSaveFile>
 #include <QStandardPaths>
 #include <QUuid>
@@ -62,6 +63,20 @@ QuickWorkSpace::QuickWorkSpace(QObject *parent)
     : QObject(parent)
     , m_canvas(std::make_unique<CanvasItem>(nullptr, /*buildDemo=*/false))
 {
+    // m_canvas's QQuickItem parent is nullptr above (QuickWorkSpace is a QObject, not a
+    // QQuickItem, so it can't be one -- Main.qml reparents the canvas into the visible tree
+    // itself, via canvas() below). Qt/QML's default ownership rule for a QObject with no
+    // parent at the moment it's first exposed to JS (via canvas(), Q_INVOKABLE) is
+    // JavaScriptOwnership: the JS garbage collector decides when to delete it, independent of
+    // this unique_ptr -- and it will, silently, the first time nothing in the QML/JS graph
+    // still references the returned value, calling ~CanvasItem() out from under this
+    // unique_ptr's later use. Found via a real, reproducible SIGSEGV (Simulation::start() on
+    // a null `this`) once the app ran long enough under a real QQmlEngine/event loop for the
+    // GC to actually fire -- every earlier diagnostic in this rewrite ran synchronously before
+    // app.exec() started, never letting this happen. CppOwnership makes this unique_ptr the
+    // sole, correct owner, matching every other owned-but-QML-exposed object in this rewrite.
+    QQmlEngine::setObjectOwnership(m_canvas.get(), QQmlEngine::CppOwnership);
+
     // Coalesce bursts of changes into one autosave write, mirroring WorkSpace's own debounce.
     // WorkSpace restarts the timer off Scene::circuitHasChanged (an autosave-specific signal
     // coalesced separately, with no CanvasItem equivalent yet); QUndoStack::indexChanged is the

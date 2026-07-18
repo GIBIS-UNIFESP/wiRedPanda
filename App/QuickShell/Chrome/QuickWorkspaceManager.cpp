@@ -4,6 +4,7 @@
 #include "App/QuickShell/Chrome/QuickWorkspaceManager.h"
 
 #include <QFile>
+#include <QQmlEngine>
 #include <QUndoStack>
 
 #include "App/Core/Application.h"
@@ -131,6 +132,14 @@ QString QuickWorkspaceManager::nextUntitledTitle() const
 void QuickWorkspaceManager::createNewTab()
 {
     auto workspace = std::make_unique<QuickWorkSpace>();
+    // Owned here via m_tabs (a vector of unique_ptr) -- constructed with no QObject parent
+    // (QuickWorkspaceManager isn't a QQuickItem/can't parent it in a QML-meaningful way), so
+    // without this, QML's default "no parent at first JS exposure" rule would mark it
+    // JavaScriptOwnership the first time appController.currentTab/tabAt() hands it to QML,
+    // and the GC could delete it out from under this vector. Same mechanism, same real
+    // reproduced crash, as QuickWorkSpace's own m_canvas fix -- see that constructor's comment
+    // for the full story.
+    QQmlEngine::setObjectOwnership(workspace.get(), QQmlEngine::CppOwnership);
 
     connect(workspace.get(), &QuickWorkSpace::fileChanged, this, &QuickWorkspaceManager::onTabFileChanged);
     // WorkspaceManager also connects ICRegistry::blobRenamed here to retitle an open inline-IC
