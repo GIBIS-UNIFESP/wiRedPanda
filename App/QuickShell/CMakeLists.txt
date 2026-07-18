@@ -16,8 +16,13 @@ set(QUICK_SHELL_SOURCES
     Canvas/TextureAtlas.h
     Chrome/DialogProvider.cpp
     Chrome/DialogProvider.h
+    Chrome/QuickAppController.cpp
+    Chrome/QuickAppController.h
     Chrome/QuickDialogProvider.cpp
     Chrome/QuickDialogProvider.h
+    Chrome/QuickExportController.cpp
+    Chrome/QuickExportController.h
+    Chrome/QuickMainWindowHost.h
     Chrome/QuickWorkSpace.cpp
     Chrome/QuickWorkSpace.h
     Chrome/QuickWorkspaceManager.cpp

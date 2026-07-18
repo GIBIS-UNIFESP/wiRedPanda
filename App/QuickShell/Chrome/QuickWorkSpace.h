@@ -56,7 +56,8 @@ public:
 
     /// Returns the canvas this workspace owns. Mirrors WorkSpace::view()/scene() combined --
     /// CanvasItem plays both roles (rendering + circuit/simulation state) on this side.
-    [[nodiscard]] CanvasItem *canvas() const { return m_canvas.get(); }
+    /// Q_INVOKABLE so QML (the tab StackLayout) can reach it directly off a QuickWorkSpace*.
+    [[nodiscard]] Q_INVOKABLE CanvasItem *canvas() const { return m_canvas.get(); }
 
     // --- File Operations ---
 
