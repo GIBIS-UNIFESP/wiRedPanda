@@ -20,6 +20,15 @@ Item {
 
     readonly property QtObject editor: appController.elementEditor
 
+    // Mirrors ElementEditor::renameAction()/changeTriggerAction() -- focuses + selects the
+    // corresponding field. Triggered from Main.qml's element context menu's Rename/Change
+    // Trigger items.
+    Connections {
+        target: root.editor
+        function onFocusLabelRequested() { labelField.forceActiveFocus(); labelField.selectAll() }
+        function onFocusTriggerRequested() { triggerField.forceActiveFocus(); triggerField.selectAll() }
+    }
+
     ScrollView {
         anchors.fill: parent
         contentWidth: availableWidth
@@ -53,6 +62,7 @@ Item {
                 visible: root.editor.labelVisible
                 Label { text: qsTr("Label:") }
                 TextField {
+                    id: labelField
                     Layout.fillWidth: true
                     text: root.editor.label
                     onTextEdited: root.editor.label = text
@@ -204,6 +214,7 @@ Item {
                 visible: root.editor.triggerVisible
                 Label { text: qsTr("Trigger:") }
                 TextField {
+                    id: triggerField
                     Layout.fillWidth: true
                     text: root.editor.trigger
                     maximumLength: 1

@@ -136,6 +136,11 @@ public:
     /// &ElementPalette::addElementRequested, ...) lambda in MainWindow's constructor.
     Q_INVOKABLE void addElementToCurrentTab(int type, const QString &icFileName, bool isEmbedded, qreal x, qreal y);
 
+    /// Returns true if the system clipboard holds a pasteable wiRedPanda payload. Mirrors
+    /// Scene::contextMenu()'s ClipboardManager::canPaste(QApplication::clipboard()->mimeData())
+    /// check, backing the empty-canvas context menu's Paste item.
+    Q_INVOKABLE static bool canPaste();
+
 public slots:
     // --- File menu ---
     void newTab() { m_workspaceManager.newTab(); }

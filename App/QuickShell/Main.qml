@@ -205,6 +205,121 @@ ApplicationWindow {
                         drop.source.modelData.isEmbedded, drop.x, drop.y)
                 }
             }
+
+            // Right-click / inline-label-edit gestures deferred from Phase 3 (sub-step 6).
+            // target re-evaluates whenever currentTab changes since the expression reads
+            // appController.currentTab (a property) before calling the plain .canvas() method.
+            Connections {
+                target: appController.currentTab ? appController.currentTab.canvas() : null
+
+                function onElementContextMenuRequested(element, pos) {
+                    appController.elementEditor.prepareContextMenu(element)
+                    elementContextMenu.popup(pos.x, pos.y)
+                }
+
+                function onEmptyContextMenuRequested(pos) {
+                    emptyContextMenu.popup(pos.x, pos.y)
+                }
+
+                function onInlineEditRequested(element, currentLabel, targetRect) {
+                    inlineLabelEditor.targetElement = element
+                    inlineLabelEditor.text = currentLabel
+                    inlineLabelEditor.x = targetRect.x
+                    inlineLabelEditor.y = targetRect.y
+                    inlineLabelEditor.width = Math.max(80, targetRect.width)
+                    inlineLabelEditor.visible = true
+                    inlineLabelEditor.forceActiveFocus()
+                    inlineLabelEditor.selectAll()
+                }
+            }
+
+            Menu {
+                id: elementContextMenu
+
+                MenuItem {
+                    text: qsTr("Rename")
+                    visible: appController.elementEditor.labelVisible
+                    onTriggered: appController.elementEditor.requestRenameFocus()
+                }
+                MenuItem {
+                    text: qsTr("Change trigger")
+                    visible: appController.elementEditor.triggerVisible
+                    onTriggered: appController.elementEditor.requestTriggerFocus()
+                }
+                MenuItem { text: qsTr("Rotate left"); onTriggered: appController.rotateLeft() }
+                MenuItem { text: qsTr("Rotate right"); onTriggered: appController.rotateRight() }
+                MenuItem { text: qsTr("Flip horizontally"); onTriggered: appController.flipHorizontal() }
+                MenuItem { text: qsTr("Flip vertically"); onTriggered: appController.flipVertical() }
+                Menu {
+                    title: qsTr("Change color to...")
+                    enabled: appController.elementEditor.colorVisible
+                    Repeater {
+                        model: appController.elementEditor.colorOptions
+                        MenuItem {
+                            required property var modelData
+                            text: modelData.translatedName
+                            onTriggered: appController.elementEditor.color = modelData.name
+                        }
+                    }
+                }
+                Menu {
+                    title: qsTr("Morph to...")
+                    enabled: appController.elementEditor.canMorph && appController.elementEditor.morphCandidates.length > 0
+                    Repeater {
+                        model: appController.elementEditor.morphCandidates
+                        MenuItem {
+                            required property var modelData
+                            text: modelData.name
+                            onTriggered: appController.elementEditor.morphSelectionTo(modelData.type)
+                        }
+                    }
+                }
+                MenuSeparator {}
+                MenuItem { text: qsTr("Copy"); onTriggered: appController.copy() }
+                MenuItem { text: qsTr("Cut"); onTriggered: appController.cut() }
+                MenuItem { text: qsTr("Delete"); onTriggered: appController.deleteSelection() }
+            }
+
+            // Right-click on empty canvas: mirrors Scene::contextMenu()'s "no item" branch.
+            Menu {
+                id: emptyContextMenu
+
+                MenuItem {
+                    text: qsTr("Paste")
+                    enabled: appController.canPaste()
+                    onTriggered: appController.paste()
+                }
+                MenuItem {
+                    text: qsTr("Select all")
+                    onTriggered: appController.selectAll()
+                }
+            }
+
+            // Inline label editing (double-click an element with a label). Positioned/sized by
+            // onInlineEditRequested above; canvas-local coordinates match canvasHost directly.
+            TextField {
+                id: inlineLabelEditor
+                visible: false
+                z: 1000
+
+                property var targetElement: null
+
+                function commit() {
+                    if (targetElement) {
+                        appController.currentTab.canvas().commitInlineLabelEdit(targetElement, text)
+                        targetElement = null
+                    }
+                    visible = false
+                }
+
+                function cancelEdit() {
+                    targetElement = null
+                    visible = false
+                }
+
+                onEditingFinished: commit()
+                Keys.onEscapePressed: cancelEdit()
+            }
         }
 
         ElementEditor {

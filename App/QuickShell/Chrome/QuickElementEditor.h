@@ -43,6 +43,14 @@ class GraphicElement;
  * dialog), TruthTable (the editor grid dialog -- CanvasToggleTruthTableOutputCommand itself is
  * already ported and usable once a QML dialog exists), and embedded-IC blob rename. Each needs
  * its own QML dialog surface this pass doesn't build yet.
+ *
+ * \details Also backs the right-click context menu (Phase 4 sub-step 6): shares the exact same
+ * m_elements/m_caps this class already tracks reactively (canMorph/hasSelection double as the
+ * menu's Morph-submenu/Copy-Cut-Delete visibility, colorOptions doubles as the Colors submenu),
+ * plus morphCandidates -- computed from whichever element was right-clicked (prepareContextMenu()),
+ * not the whole selection, mirroring ElementContextMenu::exec()'s addElementAction() switch
+ * exactly. Change-Appearance/Revert-Appearance menu items are not built, matching Appearance's
+ * deferral above.
  */
 class QuickElementEditor : public QObject
 {
@@ -96,6 +104,9 @@ class QuickElementEditor : public QObject
     Q_PROPERTY(bool wirelessModeVisible READ isWirelessModeVisible NOTIFY refreshed)
     Q_PROPERTY(int wirelessMode READ wirelessMode WRITE setWirelessMode NOTIFY refreshed)
     Q_PROPERTY(QVariantList wirelessModeOptions READ wirelessModeOptions CONSTANT)
+
+    Q_PROPERTY(bool canMorph READ canMorph NOTIFY refreshed)
+    Q_PROPERTY(QVariantList morphCandidates READ morphCandidates NOTIFY refreshed)
 
 public:
     explicit QuickElementEditor(QObject *parent = nullptr);
@@ -170,8 +181,28 @@ public:
     void setWirelessMode(int value);
     [[nodiscard]] static QVariantList wirelessModeOptions();
 
+    [[nodiscard]] bool canMorph() const { return m_caps.canMorph; }
+    [[nodiscard]] QVariantList morphCandidates() const { return m_morphCandidates; }
+
+    /// Recomputes morphCandidates() from \a item's element group/input size, mirroring
+    /// ElementContextMenu::exec()'s per-ElementGroup switch exactly (Gate/StaticInput+Input/
+    /// Memory/Output candidate lists, each excluding \a item's own current type via the same
+    /// "hasSameType" rule addElementAction() uses). Called from Main.qml's onElementContextMenuRequested.
+    Q_INVOKABLE void prepareContextMenu(GraphicElement *item);
+    /// Morphs every selected element to \a type. Mirrors the "Morph to..." submenu action.
+    Q_INVOKABLE void morphSelectionTo(int type);
+
+    /// Requests keyboard focus land on ElementEditor.qml's label field. Mirrors
+    /// ElementEditor::renameAction() (focuses + selects lineEditElementLabel).
+    Q_INVOKABLE void requestRenameFocus() { emit focusLabelRequested(); }
+    /// Requests keyboard focus land on ElementEditor.qml's trigger field. Mirrors
+    /// ElementEditor::changeTriggerAction().
+    Q_INVOKABLE void requestTriggerFocus() { emit focusTriggerRequested(); }
+
 signals:
     void refreshed();
+    void focusLabelRequested();
+    void focusTriggerRequested();
 
 private:
     /// Slot: the canvas's selection changed; re-reads it and refreshes every field. Mirrors
@@ -222,4 +253,6 @@ private:
     bool m_triggerDirty = false;
     int m_wirelessMode = 0;
     bool m_wirelessModeDirty = false;
+
+    QVariantList m_morphCandidates;
 };

@@ -460,3 +460,97 @@ QVariantList QuickElementEditor::wirelessModeOptions()
 {
     return {tr("None"), tr("Transmit (Tx)"), tr("Receive (Rx)")};
 }
+
+void QuickElementEditor::prepareContextMenu(GraphicElement *item)
+{
+    m_morphCandidates.clear();
+
+    if (item && m_caps.canMorph) {
+        // hasSameType here is the WHOLE selection's flag (matches addElementAction()'s own
+        // "hasSameType && selectedElm->elementType() == type" guard exactly) -- a mixed-type
+        // selection excludes nothing, since the exclusion only means "don't offer morphing to
+        // the type everything already is."
+        const bool hasSameType = m_caps.hasSameType;
+        const auto addCandidate = [this, item, hasSameType](ElementType type) {
+            if (hasSameType && item->elementType() == type) {
+                return;
+            }
+            m_morphCandidates.append(QVariantMap{
+                {"type", static_cast<int>(type)},
+                {"name", ElementFactory::translatedName(type)},
+                {"iconSource", QStringLiteral("qrc") + ElementMetadataRegistry::metadata(type).pixmapPath()},
+            });
+        };
+
+        // Mirrors ElementContextMenu::exec()'s per-ElementGroup switch exactly.
+        switch (item->elementGroup()) {
+        case ElementGroup::Gate:
+            if (item->inputSize() == 1) {
+                addCandidate(ElementType::Node);
+                addCandidate(ElementType::Not);
+            } else {
+                addCandidate(ElementType::And);
+                addCandidate(ElementType::Nand);
+                addCandidate(ElementType::Nor);
+                addCandidate(ElementType::Or);
+                addCandidate(ElementType::Xnor);
+                addCandidate(ElementType::Xor);
+            }
+            break;
+
+        case ElementGroup::StaticInput:
+        case ElementGroup::Input:
+            addCandidate(ElementType::Clock);
+            addCandidate(ElementType::InputButton);
+            addCandidate(ElementType::InputGnd);
+            addCandidate(ElementType::InputRotary);
+            addCandidate(ElementType::InputSwitch);
+            addCandidate(ElementType::InputVcc);
+            break;
+
+        case ElementGroup::Memory:
+            // 2 inputs -> DLatch; 4 inputs -> DFF/TFF; 5 inputs -> JKFF/SRFF.
+            if (item->inputSize() == 2) {
+                addCandidate(ElementType::DLatch);
+            } else if (item->inputSize() == 4) {
+                addCandidate(ElementType::DFlipFlop);
+                addCandidate(ElementType::TFlipFlop);
+            } else if (item->inputSize() == 5) {
+                addCandidate(ElementType::JKFlipFlop);
+                addCandidate(ElementType::SRFlipFlop);
+            }
+            break;
+
+        case ElementGroup::Output:
+            if (item->elementType() == ElementType::Display7 || item->elementType() == ElementType::Display14
+                || item->elementType() == ElementType::Display16) {
+                addCandidate(ElementType::Display7);
+                addCandidate(ElementType::Display14);
+                addCandidate(ElementType::Display16);
+            } else {
+                addCandidate(ElementType::Buzzer);
+                addCandidate(ElementType::Led);
+            }
+            break;
+
+        case ElementGroup::IC:
+        case ElementGroup::Mux:
+        case ElementGroup::Other:
+        case ElementGroup::Unknown:
+            break;
+
+        default:
+            break;
+        }
+    }
+
+    emit refreshed();
+}
+
+void QuickElementEditor::morphSelectionTo(int type)
+{
+    if (!m_canvas) {
+        return;
+    }
+    m_canvas->morphSelectionTo(static_cast<ElementType>(type));
+}

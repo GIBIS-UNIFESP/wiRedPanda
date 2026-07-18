@@ -3,9 +3,12 @@
 
 #include "App/QuickShell/Chrome/QuickAppController.h"
 
+#include <QClipboard>
 #include <QDir>
 #include <QFileInfo>
+#include <QGuiApplication>
 #include <QPointF>
+#include <QQmlEngine>
 #include <QUndoStack>
 
 #include "App/Core/InstallRelativePaths.h"
@@ -13,12 +16,24 @@
 #include "App/QuickShell/Canvas/CanvasItem.h"
 #include "App/QuickShell/Chrome/DialogProvider.h"
 #include "App/QuickShell/Chrome/QuickWorkSpace.h"
+#include "App/Scene/ClipboardManager.h"
 #include "App/Simulation/Simulation.h"
 
 QuickAppController::QuickAppController(QObject *parent)
     : QObject(parent)
     , m_exportController(*this)
 {
+    // m_palette/m_elementEditor are plain member subobjects (not heap-allocated), exposed to
+    // QML via elementPalette()/elementEditor()'s CONSTANT Q_PROPERTYs. Without this, Qt/QML's
+    // default "no QObject parent at first JS exposure -> JavaScriptOwnership" rule would apply
+    // to them exactly as it did to QuickWorkSpace's m_canvas (see that class's constructor for
+    // the full story, including the real SIGSEGV that found it) -- except here the GC calling
+    // delete on a pointer to a non-heap-allocated member would be undefined behavior, not just
+    // a dangling pointer. Defensive fix applied preemptively (not yet reproduced as a crash for
+    // these two specifically, but the risk is the same mechanism and strictly more severe).
+    QQmlEngine::setObjectOwnership(&m_palette, QQmlEngine::CppOwnership);
+    QQmlEngine::setObjectOwnership(&m_elementEditor, QQmlEngine::CppOwnership);
+
     connect(&m_workspaceManager, &QuickWorkspaceManager::currentTabChanged, this, [this] {
         bindCurrentTab();
         emit currentTabChanged();
@@ -298,6 +313,11 @@ void QuickAppController::addElementToCurrentTab(int type, const QString &icFileN
     if (auto *c = activeCanvas()) {
         c->addElementFromPalette(static_cast<ElementType>(type), icFileName, isEmbedded, QPointF(x, y));
     }
+}
+
+bool QuickAppController::canPaste()
+{
+    return ClipboardManager::canPaste(QGuiApplication::clipboard()->mimeData());
 }
 
 QVariantList QuickAppController::examplesList() const

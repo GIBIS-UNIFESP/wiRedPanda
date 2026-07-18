@@ -22,13 +22,13 @@
 #include <QVersionNumber>
 
 #include "App/Core/Enums.h"
+#include "App/Element/GraphicElement.h"
 #include "App/QuickShell/Canvas/CanvasICRegistry.h"
 #include "App/QuickShell/Canvas/SpatialIndex.h"
 #include "App/QuickShell/Canvas/TextureAtlas.h"
 #include "App/Scene/SceneItemRegistry.h"
 
 class Connection;
-class GraphicElement;
 class InputPort;
 class ItemWithId;
 class OutputPort;
@@ -323,6 +323,18 @@ public:
     /// is true, and \a icFileName doesn't name a blob in icRegistry() (a stale palette entry).
     void addElementFromPalette(ElementType type, const QString &icFileName, bool isEmbedded, const QPointF &pos);
 
+    /// Commits an inline label edit on \a element: pushes a CanvasUpdateCommand only if \a
+    /// newLabel actually differs from the element's current label. Mirrors
+    /// InlineLabelEditor::commit()'s undo-command logic (the QLineEdit-hosting QGraphicsProxyWidget
+    /// itself has no Quick equivalent to port; ElementEditor.qml's inline TextInput calls this
+    /// directly instead).
+    void commitInlineLabelEdit(GraphicElement *element, const QString &newLabel);
+
+    /// Pushes a CanvasMorphCommand morphing every selected element to \a type. Mirrors
+    /// ElementContextMenu::exec()'s "Morph to..." submenu action -- unlike nextElm()/prevElm()'s
+    /// fixed next/prev-in-cycle morph, this morphs to a caller-chosen target type.
+    void morphSelectionTo(ElementType type);
+
     /// Last known cursor position in canvas coordinates, updated on every mouse press/move.
     /// Mirrors Scene::mousePos(); used to place pasted elements relative to the cursor.
     [[nodiscard]] QPointF mousePos() const { return m_lastMousePos; }
@@ -336,6 +348,27 @@ signals:
     /// mutating method emits this explicitly. Mirrors QGraphicsScene::selectionChanged(),
     /// which ElementEditor::setScene() connects to in production.
     void selectionChanged();
+
+    /// Emitted on right-click over an element (mousePressEvent() has already selected it if it
+    /// wasn't already part of the selection, mirroring Scene::contextMenu()). \a pos is
+    /// canvas-local. Mirrors Scene::contextMenuPos().
+    void elementContextMenuRequested(GraphicElement *element, QPointF pos);
+    /// Emitted on right-click over empty canvas. Mirrors Scene::contextMenu()'s "no item"
+    /// branch (a separate, simpler Paste/Select-all menu built inline there rather than via
+    /// ElementContextMenu::exec()).
+    void emptyContextMenuRequested(QPointF pos);
+
+    /// Emitted on double-click over an element with hasLabel() true. \a currentLabel is
+    /// passed explicitly (rather than left for QML to read off \a element) since
+    /// GraphicElement -- Layer 1 domain code -- has no Q_PROPERTY/Q_INVOKABLE QML can call;
+    /// QML only ever holds \a element opaquely and passes it back into
+    /// commitInlineLabelEdit(). \a targetRect is \a element's labelSceneBoundingRect()
+    /// (canvas-local, matching mousePos()/palette-drop coordinates) to position an inline
+    /// editor over. Mirrors GraphicElement::mouseDoubleClickEvent()'s inlineEditRequested()
+    /// emission -- CanvasItem's own mouseDoubleClickEvent() override never forwards to the
+    /// element's (it's dedicated to wire-splitting), so this replicates the same hasLabel()
+    /// check directly instead of fabricating a QGraphicsSceneMouseEvent to feed the real method.
+    void inlineEditRequested(GraphicElement *element, QString currentLabel, QRectF targetRect);
 
 protected:
     /// \reimp Builds the batched geometry nodes (gates, wires, selection overlay) from current state.
@@ -390,6 +423,11 @@ private:
     void startSelectionRect(const QPointF &anchor);
     void updateSelectionRect(const QPointF &current);
     void finishSelectionRect();
+    /// Mirrors Scene::contextMenu(QPoint)'s hit-test/select/emit logic: right-clicking a
+    /// selected element emits elementContextMenuRequested() as-is; right-clicking an
+    /// unselected element clears the selection, selects just that element, then emits the
+    /// same signal; right-clicking empty space emits emptyContextMenuRequested().
+    void handleRightClick(const QPointF &pos);
 
     /// Returns true if \a pos (canvas space) lands on one of \a owner's own ports. Reimplements
     /// IC::isCursorOverPort()'s decision against this canvas's own SpatialIndex/m_portsById

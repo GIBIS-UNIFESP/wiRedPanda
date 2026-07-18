@@ -187,7 +187,9 @@ CanvasItem::CanvasItem(QQuickItem *parent, bool buildDemo)
     : QQuickItem(parent)
 {
     setFlag(QQuickItem::ItemHasContents, true);
-    setAcceptedMouseButtons(Qt::LeftButton);
+    // RightButton is needed for the context-menu gesture (mousePressEvent()'s RightButton
+    // branch) -- LeftButton-only until this sub-step, since nothing consumed a right-click.
+    setAcceptedMouseButtons(Qt::LeftButton | Qt::RightButton);
     setAcceptHoverEvents(true);
 
     if (buildDemo) {
@@ -1033,6 +1035,30 @@ void CanvasItem::selectAll()
     emit selectionChanged();
 }
 
+void CanvasItem::commitInlineLabelEdit(GraphicElement *element, const QString &newLabel)
+{
+    if (!element || newLabel == element->label()) {
+        return;
+    }
+
+    QByteArray oldData;
+    QDataStream stream(&oldData, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(stream);
+    element->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
+
+    element->setLabel(newLabel);
+    receiveCommand(new CanvasUpdateCommand({element}, oldData, this));
+}
+
+void CanvasItem::morphSelectionTo(ElementType type)
+{
+    const auto selected = selectedElements();
+    if (selected.isEmpty()) {
+        return;
+    }
+    receiveCommand(new CanvasMorphCommand(selected, type, this));
+}
+
 void CanvasItem::buildDemoCircuit()
 {
     auto *switchA = new InputSwitch();
@@ -1339,6 +1365,11 @@ void CanvasItem::mousePressEvent(QMouseEvent *event)
 {
     m_lastMousePos = event->position();
 
+    if (event->button() == Qt::RightButton) {
+        handleRightClick(event->position());
+        return;
+    }
+
     if (event->button() != Qt::LeftButton) {
         return;
     }
@@ -1467,6 +1498,38 @@ void CanvasItem::mousePressEvent(QMouseEvent *event)
     update();
 }
 
+void CanvasItem::handleRightClick(const QPointF &pos)
+{
+    const auto hits = m_index.queryPoint(pos);
+    if (hits.isEmpty()) {
+        emit emptyContextMenuRequested(pos);
+        return;
+    }
+
+    const quint64 topHit = hits.last();
+    auto *element = m_elementsById.value(topHit, nullptr);
+    if (!element) {
+        // A port or wire hit -- and (this canvas has no wire/port selection concept) never
+        // already-selected -- mirrors Scene::contextMenu()'s silent no-op for this exact case:
+        // an unselected non-GraphicElement item shows no menu at all, not even the empty-canvas
+        // one.
+        return;
+    }
+
+    if (!element->isSelected()) {
+        // Right-clicking an unselected element clears the old selection and selects only it.
+        for (auto *other : selectedElements()) {
+            other->setSelected(false);
+        }
+        element->setSelected(true);
+        m_selectedIds.clear();
+        m_selectedIds.insert(topHit);
+        emit selectionChanged();
+    }
+
+    emit elementContextMenuRequested(element, pos);
+}
+
 void CanvasItem::mouseMoveEvent(QMouseEvent *event)
 {
     m_lastMousePos = event->position();
@@ -1573,8 +1636,18 @@ void CanvasItem::mouseDoubleClickEvent(QMouseEvent *event)
     }
 
     const quint64 topHit = hits.last();
-    if (m_elementsById.contains(topHit)) {
-        return; // an element is here, not a wire -- mirrors mousePressEvent()'s identical check
+    if (auto *element = m_elementsById.value(topHit, nullptr)) {
+        // An element is here, not a wire -- mirrors GraphicElement::mouseDoubleClickEvent()'s
+        // "if (hasLabel()) emit inlineEditRequested(this)" (see this method's own class-level
+        // doc comment for why that real method isn't called directly).
+        if (element->hasLabel()) {
+            QRectF targetRect = element->labelSceneBoundingRect();
+            if (targetRect.isEmpty()) {
+                targetRect = element->sceneBoundingRect();
+            }
+            emit inlineEditRequested(element, element->label(), targetRect);
+        }
+        return;
     }
 
     // Must be a wire id (SpatialIndex only ever holds element/port/wire ids here).
