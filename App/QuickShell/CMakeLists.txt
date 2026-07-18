@@ -61,6 +61,17 @@ set_target_properties(wiredpanda_quick PROPERTIES UNITY_BUILD OFF)
 qt_add_qml_module(wiredpanda_quick
     URI QuickShell
     VERSION 1.0
+    # QtQuick.Controls resolves its actual style (Basic/Fusion/Material/...) at runtime by
+    # default, which blocks the Qt Quick Compiler from resolving Controls types at all --
+    # confirmed via .aotstats: 156/216 bindings across this module fell back to the
+    # interpreter, almost entirely "Could not find property/signal" on stock Controls
+    # members (MenuItem.triggered, TextField.text, ComboBox.currentIndex, etc.), not our
+    # own code. Pinning Fusion here matches App/Main.cpp's own unconditional
+    # app.setStyle("Fusion") on the Widgets side -- no user-facing style switcher exists
+    # today, so this gives up nothing the app actually offers, and keeps this window
+    # visually consistent with the app it's replacing mid-migration.
+    IMPORTS
+        QtQuick.Controls.Fusion
     QML_FILES
         ChoiceDialog.qml
         ElementEditor.qml
@@ -80,6 +91,29 @@ qt_add_qml_module(wiredpanda_quick
 set_source_files_properties(
     ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_qmlcache_loader.cpp
     PROPERTIES COMPILE_OPTIONS "-Wno-null-dereference"
+)
+
+# Pinning the Controls style above (see the IMPORTS comment) lets qmlcachegen actually
+# compile far more bindings to native C++ instead of falling back to the interpreter --
+# the generated string-concatenation code it emits for those newly-compiled bindings
+# wraps an already-QString expression in an explicit QString(...) constructor call,
+# which trips -Werror=useless-cast. Same category as the loader suppression above: Qt's
+# own generated code, not something we can edit, so disable just this one warning on
+# just these generated files. Applied to all 7 QML_FILES' generated .cpp outputs (not
+# only whichever ones hit it today) since which specific bindings get compiled vs.
+# interpreted is qmlcachegen's own decision and can shift with any future QML edit.
+set(QUICK_SHELL_QML_CACHEGEN_SOURCES
+    ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_ChoiceDialog_qml.cpp
+    ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_ElementEditor_qml.cpp
+    ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_ElementPalette_qml.cpp
+    ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_Main_qml.cpp
+    ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_PaletteItemDelegate_qml.cpp
+    ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_QuickFileDialog_qml.cpp
+    ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_TextPromptDialog_qml.cpp
+)
+set_source_files_properties(
+    ${QUICK_SHELL_QML_CACHEGEN_SOURCES}
+    PROPERTIES COMPILE_OPTIONS "-Wno-useless-cast"
 )
 
 # CanvasItem constructs real GraphicElement subclasses (And/InputSwitch/Led) and drives them

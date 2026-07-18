@@ -128,8 +128,10 @@ Item {
                     to: Math.round(root.editor.frequencyMax * 10)
                     stepSize: Math.max(1, Math.round(root.editor.frequencyStep * 10))
                     value: Math.round(root.editor.frequency * 10)
-                    textFromValue: (v) => (v / 10).toFixed(root.editor.frequencyDecimals) + qsTr(" Hz")
-                    valueFromText: (t) => Math.round(parseFloat(t) * 10)
+                    // Arrow functions cannot carry type annotations in QML -- plain
+                    // function expressions can, so these use that form instead.
+                    textFromValue: function (v: int): string { return (v / 10).toFixed(root.editor.frequencyDecimals) + qsTr(" Hz"); }
+                    valueFromText: function (t: string): int { return Math.round(parseFloat(t) * 10); }
                     onValueModified: root.editor.frequency = value / 10
                 }
             }

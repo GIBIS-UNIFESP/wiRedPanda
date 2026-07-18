@@ -30,7 +30,7 @@ MessageDialog {
     // Named (not an inline onButtonClicked lambda) so QuickDialogProvider's dialogOpened()
     // testability hook can invoke it directly with a raw button value, simulating a click
     // without needing real synthetic mouse/window input.
-    function handleButtonClicked(button) {
+    function handleButtonClicked(button: int) {
         resultIndex = buttonOrder.indexOf(button);
     }
 

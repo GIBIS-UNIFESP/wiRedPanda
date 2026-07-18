@@ -221,12 +221,15 @@ ApplicationWindow {
             Connections {
                 target: AppController.currentTab ? AppController.currentTab.canvas() : null
 
-                function onElementContextMenuRequested(element, pos) {
+                // `element` stays untyped in these three handlers: GraphicElement is
+                // deliberately not QML-registered at all (Layer-1 domain code, see
+                // CanvasItem.h), so it has no QML type name a type annotation could name.
+                function onElementContextMenuRequested(element, pos: point) {
                     AppController.elementEditor.prepareContextMenu(element);
                     elementContextMenu.popup(pos.x, pos.y);
                 }
 
-                function onEmptyContextMenuRequested(pos) {
+                function onEmptyContextMenuRequested(pos: point) {
                     // canPaste() reads the live OS clipboard directly (no NOTIFY-backed
                     // property behind it), so it can't be a live `enabled:` binding --
                     // recompute it fresh here, mirroring Scene::contextMenu()'s own
@@ -235,7 +238,7 @@ ApplicationWindow {
                     emptyContextMenu.popup(pos.x, pos.y);
                 }
 
-                function onInlineEditRequested(element, currentLabel, targetRect) {
+                function onInlineEditRequested(element, currentLabel: string, targetRect: rect) {
                     inlineLabelEditor.targetElement = element;
                     inlineLabelEditor.text = currentLabel;
                     inlineLabelEditor.x = targetRect.x;
