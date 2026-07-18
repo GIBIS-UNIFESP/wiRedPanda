@@ -10,8 +10,12 @@
 #include <QList>
 #include <QMetaObject>
 #include <QObject>
+#include <QRect>
 #include <QString>
+#include <QStringList>
+#include <QVariantList>
 
+#include "App/IO/RecentFiles.h"
 #include "App/QuickShell/Chrome/QuickExportController.h"
 #include "App/QuickShell/Chrome/QuickMainWindowHost.h"
 #include "App/QuickShell/Chrome/QuickWorkSpace.h"
@@ -43,6 +47,7 @@ class QuickAppController : public QObject, public QuickMainWindowHost
     Q_PROPERTY(bool canRedo READ canRedo NOTIFY undoRedoStateChanged)
     Q_PROPERTY(QString undoText READ undoText NOTIFY undoRedoStateChanged)
     Q_PROPERTY(QString redoText READ redoText NOTIFY undoRedoStateChanged)
+    Q_PROPERTY(QStringList recentFiles READ recentFiles NOTIFY recentFilesChanged)
 
 public:
     explicit QuickAppController(QObject *parent = nullptr);
@@ -70,6 +75,26 @@ public:
     /// generated from its own QAction set, which doesn't exist here).
     Q_INVOKABLE QString shortcutsHelpHtml() const;
 
+    // Not const: RecentFiles::recentFiles() isn't const-qualified upstream either.
+    [[nodiscard]] QStringList recentFiles() { return m_recentFiles.recentFiles(); }
+
+    /// Bundled example .panda files, prettified for display. Mirrors
+    /// MainWindow::setupExamplesMenu()'s title-prettification logic exactly (word-split on
+    /// '-'/'_', capitalize each word). Each entry is a {title, path} map; QML iterates this
+    /// directly as a Repeater model. Not reactive (no NOTIFY) since the bundled example set
+    /// never changes at runtime, unlike recentFiles.
+    Q_INVOKABLE QVariantList examplesList() const;
+
+    /// Restores the persisted window geometry (Settings::quickWindowGeometry()), or an
+    /// invalid/empty QRect if none was ever saved -- QML checks width/height before applying.
+    Q_INVOKABLE QRect restoreWindowGeometry() const;
+    Q_INVOKABLE void saveWindowGeometry(int x, int y, int width, int height);
+
+    /// Mirrors MainWindow::closeEvent()'s logic: confirms exit (a plain yes/no) if nothing is
+    /// modified, or runs the per-tab close-and-save-prompt flow (closeFiles()) otherwise.
+    /// Returns true if it's OK to actually close the window.
+    Q_INVOKABLE bool confirmClose();
+
 public slots:
     // --- File menu ---
     void newTab() { m_workspaceManager.newTab(); }
@@ -77,6 +102,7 @@ public slots:
     void saveFile() { m_workspaceManager.saveFile(); }
     void saveFileAs() { m_workspaceManager.saveFileAs(); }
     void reloadFile() { m_workspaceManager.reloadFile(); }
+    void openRecentFile(const QString &path) { m_workspaceManager.loadPandaFile(path); }
     /// Closes the tab at \a index (prompting to save if needed). Mirrors the MainWindow tab
     /// close button / Ctrl+W path -- there's no tab-bar close button yet (sub-step 4-adjacent
     /// chrome), but the underlying operation is real and exercised here.
@@ -126,6 +152,7 @@ signals:
     void tabsChanged();
     void windowTitleChanged();
     void undoRedoStateChanged();
+    void recentFilesChanged();
 
 private:
     /// Returns the active tab's canvas, or nullptr. Shared by every Edit/Transform/Align
@@ -142,5 +169,6 @@ private:
 
     QuickWorkspaceManager m_workspaceManager;
     QuickExportController m_exportController;
+    RecentFiles m_recentFiles;
     QList<QMetaObject::Connection> m_tabConnections;
 };

@@ -43,6 +43,12 @@ public:
     static void setSplitterState(const QByteArray &state);
     static QByteArray dolphinGeometry();
     static void setDolphinGeometry(const QByteArray &geometry);
+    /// wiredpanda_quick's window geometry, stored under its own key (a plain QRect) rather
+    /// than reusing mainWindowGeometry()'s QWidget::saveGeometry()-format QByteArray -- the
+    /// two apps' stored formats are incompatible, and sharing a key would corrupt whichever
+    /// one reads what the other wrote during the migration's two-executable period.
+    static QRect quickWindowGeometry();
+    static void setQuickWindowGeometry(const QRect &geometry);
 
     // UI preferences
     static bool fastMode();

@@ -3,9 +3,14 @@
 
 #include "App/QuickShell/Chrome/QuickAppController.h"
 
+#include <QDir>
+#include <QFileInfo>
 #include <QUndoStack>
 
+#include "App/Core/InstallRelativePaths.h"
+#include "App/Core/Settings.h"
 #include "App/QuickShell/Canvas/CanvasItem.h"
+#include "App/QuickShell/Chrome/DialogProvider.h"
 #include "App/QuickShell/Chrome/QuickWorkSpace.h"
 
 QuickAppController::QuickAppController(QObject *parent)
@@ -20,6 +25,8 @@ QuickAppController::QuickAppController(QObject *parent)
     });
     connect(&m_workspaceManager, &QuickWorkspaceManager::tabsChanged, this, &QuickAppController::tabsChanged);
     connect(&m_workspaceManager, &QuickWorkspaceManager::titleChanged, this, &QuickAppController::windowTitleChanged);
+    connect(&m_workspaceManager, &QuickWorkspaceManager::recentFileAdded, &m_recentFiles, &RecentFiles::addRecentFile);
+    connect(&m_recentFiles, &RecentFiles::recentFilesUpdated, this, &QuickAppController::recentFilesChanged);
 }
 
 QuickWorkSpace *QuickAppController::currentTab() const
@@ -245,4 +252,52 @@ void QuickAppController::distributeHorizontally()
 void QuickAppController::distributeVertically()
 {
     if (auto *c = activeCanvas()) c->distributeVertically();
+}
+
+QVariantList QuickAppController::examplesList() const
+{
+    QVariantList result;
+
+    const QString examplesPath = InstallRelativePaths::resolve(QStringLiteral("Examples"));
+    if (examplesPath.isEmpty()) {
+        return result;
+    }
+
+    const auto entryList = QDir(examplesPath).entryList({"*.panda"}, QDir::Files);
+    for (const auto &entry : entryList) {
+        QString title = QFileInfo(entry).completeBaseName();
+        title.replace(QLatin1Char('-'), QLatin1Char(' '));
+        title.replace(QLatin1Char('_'), QLatin1Char(' '));
+        QStringList words = title.split(QLatin1Char(' '), Qt::SkipEmptyParts);
+        for (QString &word : words) {
+            word[0] = word[0].toUpper();
+        }
+
+        QVariantMap entryMap;
+        entryMap["title"] = words.join(QLatin1Char(' '));
+        entryMap["path"] = examplesPath + "/" + entry;
+        result.append(entryMap);
+    }
+
+    return result;
+}
+
+QRect QuickAppController::restoreWindowGeometry() const
+{
+    return Settings::quickWindowGeometry();
+}
+
+void QuickAppController::saveWindowGeometry(int x, int y, int width, int height)
+{
+    Settings::setQuickWindowGeometry(QRect(x, y, width, height));
+}
+
+bool QuickAppController::confirmClose()
+{
+    if (!m_workspaceManager.hasModifiedFiles()) {
+        const DialogButton reply = Dialogs::provider()->choice(
+            tr("Exit wiRedPanda"), tr("Are you sure?"), {DialogButton::Yes, DialogButton::Cancel}, DialogButton::Yes);
+        return reply == DialogButton::Yes;
+    }
+    return m_workspaceManager.closeFiles();
 }

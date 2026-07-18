@@ -20,6 +20,24 @@ ApplicationWindow {
     visible: true
     title: appController.windowTitle
 
+    Component.onCompleted: {
+        const geom = appController.restoreWindowGeometry()
+        if (geom.width > 0 && geom.height > 0) {
+            window.x = geom.x
+            window.y = geom.y
+            window.width = geom.width
+            window.height = geom.height
+        }
+    }
+
+    onClosing: (close) => {
+        if (!appController.confirmClose()) {
+            close.accepted = false
+            return
+        }
+        appController.saveWindowGeometry(window.x, window.y, window.width, window.height)
+    }
+
     menuBar: MenuBar {
         Menu {
             title: qsTr("&File")
@@ -28,6 +46,29 @@ ApplicationWindow {
             MenuItem { text: qsTr("Save"); onTriggered: appController.saveFile() }
             MenuItem { text: qsTr("Save As..."); onTriggered: appController.saveFileAs() }
             MenuItem { text: qsTr("Reload"); onTriggered: appController.reloadFile() }
+            Menu {
+                title: qsTr("Recent Files")
+                enabled: appController.recentFiles.length > 0
+                Repeater {
+                    model: appController.recentFiles
+                    MenuItem {
+                        required property string modelData
+                        text: modelData
+                        onTriggered: appController.openRecentFile(modelData)
+                    }
+                }
+            }
+            Menu {
+                title: qsTr("Examples")
+                Repeater {
+                    model: appController.examplesList()
+                    MenuItem {
+                        required property var modelData
+                        text: modelData.title
+                        onTriggered: appController.openRecentFile(modelData.path)
+                    }
+                }
+            }
             MenuSeparator {}
             MenuItem { text: qsTr("Quit"); onTriggered: Qt.quit() }
         }
