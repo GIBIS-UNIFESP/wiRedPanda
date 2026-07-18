@@ -52,9 +52,18 @@ void Simulation::update()
 {
     // Lazily build the simulation layer on the first tick after a restart so
     // that circuit edits made while stopped are always reflected when the
-    // simulation resumes.
-    if (!m_initialized && !initialize()) {
-        return;
+    // simulation resumes. Only attempt this once per restart(): a scene with
+    // nothing to simulate yet (a freshly created, still-empty tab) can never
+    // succeed until a structural edit calls restart() again, so retrying on
+    // every single 1 ms tick forever would just busy-loop for no reason.
+    if (!m_initialized) {
+        if (!m_needsInitializeAttempt) {
+            return;
+        }
+        m_needsInitializeAttempt = false;
+        if (!initialize()) {
+            return;
+        }
     }
 
     // Bug 5 invariant: the H2 cluster fix established that m_initialized=true
@@ -291,6 +300,10 @@ void Simulation::restart()
     // element we've already freed faults on its vtable read. Drop every
     // reference so the next tick's initialize() can rebuild them cleanly.
     m_initialized = false;
+    // A structural edit means there may be something new to simulate -- allow
+    // update() one more initialize() attempt even if a prior attempt (on an
+    // empty scene) already gave up and stopped retrying.
+    m_needsInitializeAttempt = true;
     // A structural edit invalidates the fixed point: the next tick must sweep, and its
     // visuals must flush even if the throttle boundary lands on a later skipped tick.
     m_atFixedPoint = false;

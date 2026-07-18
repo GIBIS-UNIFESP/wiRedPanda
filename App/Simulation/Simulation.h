@@ -171,6 +171,11 @@ private:
     // --- Members: State flags ---
 
     bool m_initialized = false;
+    /// \c true when update() should try initialize() again: set at construction and by
+    /// restart(), cleared the moment an attempt is made. Distinct from m_initialized
+    /// itself so a scene with nothing to simulate (initialize() returns \c false forever
+    /// until the next structural edit) is attempted once per restart(), not every tick.
+    bool m_needsInitializeAttempt = true;
     bool m_convergenceWarned = false;
     bool m_userMuted = false;
 
