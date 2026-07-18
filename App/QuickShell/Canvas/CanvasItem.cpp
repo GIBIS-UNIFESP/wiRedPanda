@@ -381,6 +381,7 @@ void CanvasItem::deleteSelected()
     }
 
     receiveCommand(new CanvasDeleteItemsCommand(items, this));
+    emit selectionChanged();
 }
 
 void CanvasItem::rotate(int angle)
@@ -650,6 +651,7 @@ void CanvasItem::nextElm()
     if (needsMacro) {
         m_undoStack.endMacro();
     }
+    emit selectionChanged();
 }
 
 void CanvasItem::prevElm()
@@ -675,6 +677,7 @@ void CanvasItem::prevElm()
     if (needsMacro) {
         m_undoStack.endMacro();
     }
+    emit selectionChanged();
 }
 
 void CanvasItem::applyPropertyWithUndo(GraphicElement *element, const std::function<void()> &mutate)
@@ -776,6 +779,7 @@ void CanvasItem::adjustMainProperty(int dir)
     if (needsMacro) {
         m_undoStack.endMacro();
     }
+    emit selectionChanged();
 }
 
 void CanvasItem::prevMainPropShortcut() { adjustMainProperty(-1); }
@@ -847,6 +851,7 @@ void CanvasItem::adjustSecondaryProperty(int dir)
     if (needsMacro) {
         m_undoStack.endMacro();
     }
+    emit selectionChanged();
 }
 
 void CanvasItem::prevSecndPropShortcut() { adjustSecondaryProperty(-1); }
@@ -945,6 +950,7 @@ void CanvasItem::duplicateAction()
     for (auto *item : added) {
         item->setSelected(true);
     }
+    emit selectionChanged();
 }
 
 void CanvasItem::addElementFromPalette(ElementType type, const QString &icFileName, bool isEmbedded, const QPointF &pos)
@@ -972,6 +978,7 @@ void CanvasItem::addElementFromPalette(ElementType type, const QString &icFileNa
     raw->setSelected(true);
     raw->setPos(pos);
     rebuildSpatialIndex();
+    emit selectionChanged();
 }
 
 QList<QGraphicsItem *> CanvasItem::deserializeAndAdd(QDataStream &stream, const QVersionNumber &version,
@@ -1002,6 +1009,7 @@ QList<QGraphicsItem *> CanvasItem::deserializeAndAdd(QDataStream &stream, const 
         }
     }
     rebuildSpatialIndex();
+    emit selectionChanged();
 
     return itemList;
 }
@@ -1022,6 +1030,7 @@ void CanvasItem::selectAll()
         element->setSelected(true);
         m_selectedIds.insert(elementId(element->id()));
     }
+    emit selectionChanged();
 }
 
 void CanvasItem::buildDemoCircuit()
@@ -1393,13 +1402,40 @@ void CanvasItem::mousePressEvent(QMouseEvent *event)
         // SceneInteraction::mousePress's "item->setSelected(!item->isSelected())" -- including
         // the real QGraphicsItem::setSelected() flag, so real paint()'s own selection-outline
         // drawing (ElementAppearance::render()'s `if (selected) {...}` branch) reflects it.
-        if (m_selectedIds.contains(topHit)) {
+        // Checked/updated via element->isSelected() (the real state selectedElements() reads),
+        // not m_selectedIds.contains() -- m_selectedIds is a write-only cache the mouse
+        // gestures use for their own delta-tracking and several other call sites
+        // (addElementFromPalette(), deserializeAndAdd(), nextElm()/prevElm()) leave stale by
+        // calling setSelected(true) without inserting into it, found while verifying this fix.
+        if (element->isSelected()) {
             m_selectedIds.remove(topHit);
             element->setSelected(false);
         } else {
             m_selectedIds.insert(topHit);
             element->setSelected(true);
         }
+        emit selectionChanged();
+    } else if (!element->isSelected()) {
+        // Plain click on an element outside the current selection. In production this is
+        // NOT something SceneInteraction::mousePress() implements itself -- it returns false
+        // for a plain element click, and Scene::mousePressEvent() falls through to
+        // QGraphicsScene::mousePressEvent(), whose built-in default click-to-select handles
+        // it for free. CanvasItem has no QGraphicsScene base to inherit that from, so it
+        // needs its own explicit version here -- a real gap, not present in the original
+        // Phase 1 gesture-parity read (SceneInteraction.cpp alone never shows it; it only
+        // becomes visible by also reading what Scene::mousePressEvent() does when
+        // m_interaction.mousePress() returns false). Clicking an element that's already part
+        // of the current selection leaves the selection alone (so a drag can move the whole
+        // group); only a click outside it collapses the selection to just this element,
+        // mirroring QGraphicsScene's own default behavior. Collapses via selectedElements()
+        // (real isSelected() state), not m_selectedIds, for the same staleness reason as above.
+        for (auto *other : selectedElements()) {
+            other->setSelected(false);
+        }
+        m_selectedIds.clear();
+        m_selectedIds.insert(topHit);
+        element->setSelected(true);
+        emit selectionChanged();
     }
 
     activateOnPress(element);
@@ -1557,12 +1593,16 @@ void CanvasItem::startSelectionRect(const QPointF &anchor)
     // modifier-driven add/subtract) rubber-band behavior -- SceneInteraction's own
     // setSelectionArea() call has the same replace semantics by default. Clear the real
     // QGraphicsItem::setSelected() flag too, so real paint()'s selection outline matches.
+    const bool hadSelection = !m_selectedIds.isEmpty();
     for (const quint64 id : std::as_const(m_selectedIds)) {
         if (auto *element = m_elementsById.value(id, nullptr)) {
             element->setSelected(false);
         }
     }
     m_selectedIds.clear();
+    if (hadSelection) {
+        emit selectionChanged();
+    }
 }
 
 void CanvasItem::updateSelectionRect(const QPointF &current)
@@ -1581,11 +1621,13 @@ void CanvasItem::updateSelectionRect(const QPointF &current)
     // Sync the real QGraphicsItem::setSelected() flag for exactly the delta -- elements
     // leaving the rubber band vs. entering it -- rather than clearing everything and
     // resetting, so this stays correct even if called every mouse-move during a drag.
+    bool changed = false;
     for (const quint64 id : std::as_const(m_selectedIds)) {
         if (!newSelection.contains(id)) {
             if (auto *element = m_elementsById.value(id, nullptr)) {
                 element->setSelected(false);
             }
+            changed = true;
         }
     }
     for (const quint64 id : std::as_const(newSelection)) {
@@ -1593,9 +1635,13 @@ void CanvasItem::updateSelectionRect(const QPointF &current)
             if (auto *element = m_elementsById.value(id, nullptr)) {
                 element->setSelected(true);
             }
+            changed = true;
         }
     }
     m_selectedIds = std::move(newSelection);
+    if (changed) {
+        emit selectionChanged();
+    }
 }
 
 void CanvasItem::finishSelectionRect()

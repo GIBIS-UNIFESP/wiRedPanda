@@ -327,6 +327,16 @@ public:
     /// Mirrors Scene::mousePos(); used to place pasted elements relative to the cursor.
     [[nodiscard]] QPointF mousePos() const { return m_lastMousePos; }
 
+signals:
+    /// Emitted whenever the set of selected elements changes, or when an already-selected
+    /// element's properties change in a way a property inspector needs to re-read (the
+    /// deliberate reselect-to-refresh toggle in adjustMainProperty()/adjustSecondaryProperty()).
+    /// CanvasItem has no QGraphicsScene base to inherit QGraphicsScene::selectionChanged()
+    /// from (Scene::selectedElements() changes are otherwise silent here), so every selection-
+    /// mutating method emits this explicitly. Mirrors QGraphicsScene::selectionChanged(),
+    /// which ElementEditor::setScene() connects to in production.
+    void selectionChanged();
+
 protected:
     /// \reimp Builds the batched geometry nodes (gates, wires, selection overlay) from current state.
     QSGNode *updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data) override;
