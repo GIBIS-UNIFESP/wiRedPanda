@@ -285,12 +285,31 @@ jobs:
         APPIMAGE_EXTRACT_AND_RUN=1 VERSION=$VERSION \
           ./appimagetool appimage
 
-        mv wiRedPanda-*-${ARCH_TRIPLE}.AppImage wiRedPanda-$VERSION-Linux-${{ matrix.arch }}-Qt${{ matrix.qt }}.AppImage
+        # x86_64's arch token sits right before the extension instead of right after "Linux-"
+        # like arm64's does: GitHub's Releases API returns assets alphabetically sorted, and
+        # pre-5.1.3 updater builds picked the first ".AppImage" match with no arch check at all
+        # -- "arm64" < "x86_64" alphabetically, so those old clients always grabbed the arm64
+        # build regardless of the user's actual CPU. This ordering flips who wins that blind
+        # pick to x86_64 (the far larger population); isMatchingReleaseAsset() still finds
+        # either file correctly for already-fixed clients since it's a substring match,
+        # position-independent.
+        if [ "${{ matrix.arch }}" = "x86_64" ]; then
+          APPIMAGE_NAME="wiRedPanda-$VERSION-Linux-Qt${{ matrix.qt }}-x86_64.AppImage"
+        else
+          APPIMAGE_NAME="wiRedPanda-$VERSION-Linux-${{ matrix.arch }}-Qt${{ matrix.qt }}.AppImage"
+        fi
+        mv wiRedPanda-*-${ARCH_TRIPLE}.AppImage "$APPIMAGE_NAME"
 
     - name: Validate Ubuntu Release Artifacts
       if: runner.os == 'Linux'
       run: |
-        APPIMAGE_FILE="wiRedPanda-$VERSION-Linux-${{ matrix.arch }}-Qt${{ matrix.qt }}.AppImage"
+        # Same asymmetric x86_64-vs-arm64 naming as the build step above (see the comment
+        # there) -- must be reconstructed identically since it's not passed between steps.
+        if [ "${{ matrix.arch }}" = "x86_64" ]; then
+          APPIMAGE_FILE="wiRedPanda-$VERSION-Linux-Qt${{ matrix.qt }}-x86_64.AppImage"
+        else
+          APPIMAGE_FILE="wiRedPanda-$VERSION-Linux-${{ matrix.arch }}-Qt${{ matrix.qt }}.AppImage"
+        fi
 
         if [ ! -f "$APPIMAGE_FILE" ]; then
           echo "Error: AppImage not found"
@@ -492,13 +511,29 @@ jobs:
 
         # Create the ZIP from the clean directory
         cd ..
-        Compress-Archive -Path wiredpanda-$env:VERSION -DestinationPath wiRedPanda-$env:VERSION-Windows-${{ matrix.arch }}-Qt${{ matrix.qt }}-Portable.zip
+        # x86_64's arch token sits right before the extension instead of right after
+        # "Windows-" like arm64's does -- see the matching Linux comment above for why
+        # (GitHub's alphabetically-sorted Releases API assets + pre-5.1.3 updater builds
+        # blindly grabbing the first match). Reconstructed identically in the validate
+        # step below since it's not passed between steps.
+        if ("${{ matrix.arch }}" -eq "x86_64") {
+          $zipName = "wiRedPanda-$env:VERSION-Windows-Qt${{ matrix.qt }}-Portable-x86_64.zip"
+        } else {
+          $zipName = "wiRedPanda-$env:VERSION-Windows-${{ matrix.arch }}-Qt${{ matrix.qt }}-Portable.zip"
+        }
+        Compress-Archive -Path wiredpanda-$env:VERSION -DestinationPath $zipName
 
     - name: Validate Windows Release Artifacts
       if: runner.os == 'Windows'
       run: |
+        if ("${{ matrix.arch }}" -eq "x86_64") {
+          $zipName = "wiRedPanda-$env:VERSION-Windows-Qt${{ matrix.qt }}-Portable-x86_64.zip"
+        } else {
+          $zipName = "wiRedPanda-$env:VERSION-Windows-${{ matrix.arch }}-Qt${{ matrix.qt }}-Portable.zip"
+        }
+
         # Verify ZIP file exists
-        if (!(Test-Path "build-sentry-crashpad/wiRedPanda-$env:VERSION-Windows-${{ matrix.arch }}-Qt${{ matrix.qt }}-Portable.zip")) {
+        if (!(Test-Path "build-sentry-crashpad/$zipName")) {
           Write-Error "Error: Windows ZIP file not found"
           exit 1
         }
