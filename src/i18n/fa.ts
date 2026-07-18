@@ -57,11 +57,6 @@ export default {
   // Download page
   'download.title': 'دانلود',
   'download.heading': 'دانلود نرم‌افزار',
-  'download.fetching': 'در حال دریافت اطلاعات آخرین نسخه...',
-  'download.errorHeading': 'بارگذاری آخرین لینک‌های دانلود ممکن نشد:',
-  'download.errorVisit': 'لطفاً از',
-  'download.errorVisitLink': 'صفحه GitHub Releases',
-  'download.errorVisitSuffix': 'مستقیماً بازدید کنید.',
   'download.windows': 'Windows',
   'download.linux': 'Linux',
   'download.macos': 'Mac OS',
@@ -74,12 +69,6 @@ export default {
   'download.copyCommand': 'کپی دستور نصب برای {platform}',
   'download.versionText':
     'اینجا می‌توانید فایل‌های باینری wiRedPanda نسخه {version} را دانلود کنید:',
-  'download.errorFetching': 'خطا در دریافت آخرین نسخه: {status} {statusText}.',
-  'download.errorNotFound': 'هیچ نسخه‌ای برای {owner}/{repo} یافت نشد.',
-  'download.errorRateLimit':
-    'احتمالاً محدودیت درخواست API GitHub بیش از حد شده است. لطفاً بعداً دوباره امتحان کنید.',
-  'download.errorConnection':
-    'اتصال به API GitHub یا پردازش پاسخ ممکن نشد. اتصال اینترنت خود را بررسی کنید یا بعداً دوباره امتحان کنید.',
   'download.x86_64': 'x86_64',
   'download.arm64': 'ARM64',
   'download.universal': 'جهانی',

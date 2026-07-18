@@ -57,11 +57,6 @@ export default {
   // Download page
   'download.title': 'Λήψη',
   'download.heading': 'Λήψη λογισμικού',
-  'download.fetching': 'Ανάκτηση πληροφοριών για την τελευταία έκδοση...',
-  'download.errorHeading': 'Δεν ήταν δυνατή η φόρτωση των τελευταίων συνδέσμων λήψης:',
-  'download.errorVisit': 'Επισκεφθείτε',
-  'download.errorVisitLink': 'τη σελίδα GitHub Releases',
-  'download.errorVisitSuffix': 'απευθείας.',
   'download.windows': 'Windows',
   'download.linux': 'Linux',
   'download.macos': 'Mac OS',
@@ -75,13 +70,6 @@ export default {
   'download.copyCommand': 'Αντιγραφή εντολής εγκατάστασης για {platform}',
   'download.versionText':
     'Εδώ μπορείτε να κατεβάσετε τα δυαδικά αρχεία του wiRedPanda {version} για:',
-  'download.errorFetching':
-    'Σφάλμα κατά την ανάκτηση της τελευταίας έκδοσης: {status} {statusText}.',
-  'download.errorNotFound': 'Δεν βρέθηκαν εκδόσεις για {owner}/{repo}.',
-  'download.errorRateLimit':
-    'Το όριο αιτημάτων API του GitHub πιθανότατα έχει υπερβεί. Παρακαλώ δοκιμάστε ξανά αργότερα.',
-  'download.errorConnection':
-    'Αδυναμία σύνδεσης στο API GitHub ή ανάλυσης της απόκρισης. Ελέγξτε τη σύνδεσή σας στο διαδίκτυο ή δοκιμάστε αργότερα.',
   'download.x86_64': 'x86_64',
   'download.arm64': 'ARM64',
   'download.universal': 'Καθολική',

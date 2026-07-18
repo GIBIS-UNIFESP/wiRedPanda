@@ -57,11 +57,6 @@ export default {
   // Download page
   'download.title': 'Lejupielādēt',
   'download.heading': 'Lejupielādēt programmatūru',
-  'download.fetching': 'Tiek iegūta jaunākās versijas informācija...',
-  'download.errorHeading': 'Nevarēja ielādēt jaunākās lejupielādes saites:',
-  'download.errorVisit': 'Lūdzu, apmeklējiet',
-  'download.errorVisitLink': 'GitHub Releases lapu',
-  'download.errorVisitSuffix': 'tieši.',
   'download.windows': 'Windows',
   'download.linux': 'Linux',
   'download.macos': 'Mac OS',
@@ -74,12 +69,6 @@ export default {
   'download.copiedToClipboard': 'Nokopēts starpliktuvē!',
   'download.copyCommand': 'Kopēt {platform} instalācijas komandu',
   'download.versionText': 'Šeit varat lejupielādēt wiRedPanda {version} bināros failus:',
-  'download.errorFetching': 'Kļūda, iegūstot jaunāko versiju: {status} {statusText}.',
-  'download.errorNotFound': '{owner}/{repo} izlaidumi nav atrasti.',
-  'download.errorRateLimit':
-    'GitHub API pieprasījumu limits, iespējams, ir pārsniegts. Lūdzu, mēģiniet vēlāk.',
-  'download.errorConnection':
-    'Neizdevās savienoties ar GitHub API vai apstrādāt atbildi. Pārbaudiet interneta savienojumu vai mēģiniet vēlāk.',
   'download.x86_64': 'x86_64',
   'download.arm64': 'ARM64',
   'download.universal': 'Universāls',

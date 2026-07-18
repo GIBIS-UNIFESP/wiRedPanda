@@ -57,11 +57,6 @@ export default {
   // Download page
   'download.title': 'Atsisiųsti',
   'download.heading': 'Atsisiųsti programinę įrangą',
-  'download.fetching': 'Gaunama naujausia versija...',
-  'download.errorHeading': 'Nepavyko įkelti naujausių atsisiuntimo nuorodų:',
-  'download.errorVisit': 'Prašome apsilankyti',
-  'download.errorVisitLink': 'GitHub Releases puslapyje',
-  'download.errorVisitSuffix': 'tiesiogiai.',
   'download.windows': 'Windows',
   'download.linux': 'Linux',
   'download.macos': 'Mac OS',
@@ -73,11 +68,6 @@ export default {
   'download.copiedToClipboard': 'Nukopijuota į iškarpinę!',
   'download.copyCommand': 'Kopijuoti {platform} diegimo komandą',
   'download.versionText': 'Čia galite atsisiųsti wiRedPanda {version} dvejetainius failus:',
-  'download.errorFetching': 'Klaida gaunant naujausią versiją: {status} {statusText}.',
-  'download.errorNotFound': '{owner}/{repo} leidimų nerasta.',
-  'download.errorRateLimit': 'GitHub API užklausų limitas tikriausiai viršytas. Bandykite vėliau.',
-  'download.errorConnection':
-    'Nepavyko prisijungti prie GitHub API arba apdoroti atsakymo. Patikrinkite interneto ryšį arba bandykite vėliau.',
   'download.x86_64': 'x86_64',
   'download.arm64': 'ARM64',
   'download.universal': 'Universalus',

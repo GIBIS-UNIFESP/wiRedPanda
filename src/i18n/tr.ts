@@ -57,11 +57,6 @@ export default {
   // Download page
   'download.title': 'İndir',
   'download.heading': 'Yazılımı İndir',
-  'download.fetching': 'Son sürüm bilgileri alınıyor...',
-  'download.errorHeading': 'Son indirme bağlantıları yüklenemedi:',
-  'download.errorVisit': 'Lütfen',
-  'download.errorVisitLink': 'GitHub Releases sayfasını',
-  'download.errorVisitSuffix': 'doğrudan ziyaret edin.',
   'download.windows': 'Windows',
   'download.linux': 'Linux',
   'download.macos': 'Mac OS',
@@ -74,12 +69,6 @@ export default {
   'download.copyCommand': '{platform} kurulum komutunu kopyala',
   'download.versionText':
     'wiRedPanda {version} sürümünün ikili dosyalarını buradan indirebilirsiniz:',
-  'download.errorFetching': 'Son sürüm alınırken hata oluştu: {status} {statusText}.',
-  'download.errorNotFound': '{owner}/{repo} için sürüm bulunamadı.',
-  'download.errorRateLimit':
-    'GitHub API istek sınırı muhtemelen aşıldı. Lütfen daha sonra tekrar deneyin.',
-  'download.errorConnection':
-    "GitHub API'ye bağlanılamadı veya yanıt işlenemedi. İnternet bağlantınızı kontrol edin veya daha sonra tekrar deneyin.",
   'download.x86_64': 'x86_64',
   'download.arm64': 'ARM64',
   'download.universal': 'Evrensel',

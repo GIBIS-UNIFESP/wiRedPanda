@@ -57,11 +57,6 @@ export default {
   // Download page
   'download.title': 'Скачать',
   'download.heading': 'Скачать программу',
-  'download.fetching': 'Получение информации о последней версии...',
-  'download.errorHeading': 'Не удалось загрузить последние ссылки для скачивания:',
-  'download.errorVisit': 'Пожалуйста, посетите',
-  'download.errorVisitLink': 'страницу GitHub Releases',
-  'download.errorVisitSuffix': 'напрямую.',
   'download.windows': 'Windows',
   'download.linux': 'Linux',
   'download.macos': 'Mac OS',
@@ -73,11 +68,6 @@ export default {
   'download.copiedToClipboard': 'Скопировано в буфер обмена!',
   'download.copyCommand': 'Скопировать команду установки для {platform}',
   'download.versionText': 'Здесь вы можете скачать бинарные файлы wiRedPanda версии {version} для:',
-  'download.errorFetching': 'Ошибка при получении последней версии: {status} {statusText}.',
-  'download.errorNotFound': 'Релизы для {owner}/{repo} не найдены.',
-  'download.errorRateLimit': 'Вероятно, превышен лимит запросов к API GitHub. Попробуйте позже.',
-  'download.errorConnection':
-    'Не удалось подключиться к API GitHub или обработать ответ. Проверьте подключение к интернету или попробуйте позже.',
   'download.x86_64': 'x86_64',
   'download.arm64': 'ARM64',
   'download.universal': 'Универсальная',

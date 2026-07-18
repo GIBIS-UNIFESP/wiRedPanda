@@ -56,11 +56,6 @@ export default {
   // Download page
   'download.title': '다운로드',
   'download.heading': '소프트웨어 다운로드',
-  'download.fetching': '최신 릴리즈 정보를 불러오는 중...',
-  'download.errorHeading': '최신 다운로드 링크를 불러올 수 없습니다:',
-  'download.errorVisit': '방문해 주세요',
-  'download.errorVisitLink': 'GitHub Releases 페이지',
-  'download.errorVisitSuffix': '에서 직접 다운로드하세요.',
   'download.windows': 'Windows',
   'download.linux': 'Linux',
   'download.macos': 'Mac OS',
@@ -72,12 +67,6 @@ export default {
   'download.copiedToClipboard': '클립보드에 복사되었습니다!',
   'download.copyCommand': '{platform} 설치 명령어 복사',
   'download.versionText': '여기에서 wiRedPanda {version}의 바이너리 파일을 다운로드할 수 있습니다:',
-  'download.errorFetching': '최신 릴리즈를 불러오는 중 오류가 발생했습니다: {status} {statusText}.',
-  'download.errorNotFound': '{owner}/{repo}의 릴리즈를 찾을 수 없습니다.',
-  'download.errorRateLimit':
-    'GitHub API 요청 한도를 초과했을 수 있습니다. 잠시 후 다시 시도해 주세요.',
-  'download.errorConnection':
-    'GitHub API에 연결하거나 응답을 처리할 수 없습니다. 인터넷 연결을 확인하거나 잠시 후 다시 시도해 주세요.',
   'download.x86_64': 'x86_64',
   'download.arm64': 'ARM64',
   'download.universal': '유니버설',

@@ -55,11 +55,6 @@ export default {
   // Download page
   'download.title': 'ダウンロード',
   'download.heading': 'ソフトウェアのダウンロード',
-  'download.fetching': '最新バージョン情報を取得中...',
-  'download.errorHeading': '最新のダウンロードリンクを読み込めませんでした：',
-  'download.errorVisit': 'こちらの',
-  'download.errorVisitLink': 'GitHub Releases ページ',
-  'download.errorVisitSuffix': 'から直接ダウンロードしてください。',
   'download.windows': 'Windows',
   'download.linux': 'Linux',
   'download.macos': 'Mac OS',
@@ -72,12 +67,6 @@ export default {
   'download.copyCommand': '{platform} のインストールコマンドをコピー',
   'download.versionText':
     'wiRedPanda {version} のバイナリファイルはこちらからダウンロードできます：',
-  'download.errorFetching': '最新バージョンの取得エラー：{status} {statusText}。',
-  'download.errorNotFound': '{owner}/{repo} のリリースが見つかりませんでした。',
-  'download.errorRateLimit':
-    'GitHub API のレート制限に達した可能性があります。しばらくしてからもう一度お試しください。',
-  'download.errorConnection':
-    'GitHub API に接続できないか、レスポンスを解析できませんでした。ネットワーク接続を確認するか、しばらくしてからもう一度お試しください。',
   'download.x86_64': 'x86_64',
   'download.arm64': 'ARM64',
   'download.universal': 'ユニバーサル',

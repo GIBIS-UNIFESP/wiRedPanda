@@ -57,11 +57,6 @@ export default {
   // Download page
   'download.title': 'डाउनलोड',
   'download.heading': 'सॉफ़्टवेयर डाउनलोड करें',
-  'download.fetching': 'नवीनतम रिलीज़ जानकारी प्राप्त की जा रही है...',
-  'download.errorHeading': 'नवीनतम डाउनलोड लिंक लोड नहीं हो सके:',
-  'download.errorVisit': 'कृपया',
-  'download.errorVisitLink': 'GitHub Releases पेज',
-  'download.errorVisitSuffix': 'पर सीधे जाएं।',
   'download.windows': 'Windows',
   'download.linux': 'Linux',
   'download.macos': 'Mac OS',
@@ -73,12 +68,6 @@ export default {
   'download.copiedToClipboard': 'क्लिपबोर्ड पर कॉपी किया गया!',
   'download.copyCommand': '{platform} इंस्टॉल कमांड कॉपी करें',
   'download.versionText': 'यहाँ आप wiRedPanda {version} के बाइनरी फ़ाइलें डाउनलोड कर सकते हैं:',
-  'download.errorFetching': 'नवीनतम रिलीज़ प्राप्त करने में त्रुटि: {status} {statusText}।',
-  'download.errorNotFound': '{owner}/{repo} के लिए कोई रिलीज़ नहीं मिली।',
-  'download.errorRateLimit':
-    'GitHub API अनुरोध सीमा संभवतः पार हो गई है। कृपया बाद में पुनः प्रयास करें।',
-  'download.errorConnection':
-    'GitHub API से कनेक्ट या प्रतिक्रिया पार्स नहीं हो सकी। अपना इंटरनेट कनेक्शन जांचें या बाद में पुनः प्रयास करें।',
   'download.x86_64': 'x86_64',
   'download.arm64': 'ARM64',
   'download.universal': 'यूनिवर्सल',

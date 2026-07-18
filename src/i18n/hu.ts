@@ -57,11 +57,6 @@ export default {
   // Download page
   'download.title': 'Letöltés',
   'download.heading': 'Szoftver letöltése',
-  'download.fetching': 'A legújabb verzió adatainak lekérése...',
-  'download.errorHeading': 'Nem sikerült betölteni a legújabb letöltési hivatkozásokat:',
-  'download.errorVisit': 'Kérjük, látogass el',
-  'download.errorVisitLink': 'a GitHub Releases oldalra',
-  'download.errorVisitSuffix': 'közvetlenül.',
   'download.windows': 'Windows',
   'download.linux': 'Linux',
   'download.macos': 'Mac OS',
@@ -75,12 +70,6 @@ export default {
   'download.copyCommand': '{platform} telepítési parancs másolása',
   'download.versionText':
     'Itt töltheted le a wiRedPanda {version} bináris fájljait a következő rendszerekre:',
-  'download.errorFetching': 'Hiba a legújabb verzió lekérésekor: {status} {statusText}.',
-  'download.errorNotFound': 'Nem találhatók kiadások a következőhöz: {owner}/{repo}.',
-  'download.errorRateLimit':
-    'Valószínűleg túllépted a GitHub API kérési korlátját. Kérjük, próbáld meg később.',
-  'download.errorConnection':
-    'Nem sikerült csatlakozni a GitHub API-hoz, vagy feldolgozni a választ. Ellenőrizd az internetkapcsolatodat, vagy próbáld meg később.',
   'download.x86_64': 'x86_64',
   'download.arm64': 'ARM64',
   'download.universal': 'Univerzális',

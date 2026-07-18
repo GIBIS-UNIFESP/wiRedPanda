@@ -57,11 +57,6 @@ export default {
   // Download page
   'download.title': 'Download',
   'download.heading': 'Download softwaren',
-  'download.fetching': 'Henter oplysninger om den seneste version...',
-  'download.errorHeading': 'Kunne ikke indlæse de seneste downloadlinks:',
-  'download.errorVisit': 'Besøg venligst',
-  'download.errorVisitLink': 'GitHub Releases-siden',
-  'download.errorVisitSuffix': 'direkte.',
   'download.windows': 'Windows',
   'download.linux': 'Linux',
   'download.macos': 'Mac OS',
@@ -74,12 +69,6 @@ export default {
   'download.copiedToClipboard': 'Kopieret til udklipsholder!',
   'download.copyCommand': 'Kopier installationskommando til {platform}',
   'download.versionText': 'Her kan du downloade de binære filer for wiRedPanda {version} til:',
-  'download.errorFetching': 'Fejl ved hentning af den seneste version: {status} {statusText}.',
-  'download.errorNotFound': 'Ingen versioner fundet for {owner}/{repo}.',
-  'download.errorRateLimit':
-    'GitHub API-hastighedsgrænsen er sandsynligvis overskredet. Prøv igen senere.',
-  'download.errorConnection':
-    'Kunne ikke oprette forbindelse til GitHub API eller fortolke svaret. Tjek din internetforbindelse, eller prøv igen senere.',
   'download.x86_64': 'x86_64',
   'download.arm64': 'ARM64',
   'download.universal': 'Universel',

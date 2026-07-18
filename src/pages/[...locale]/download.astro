@@ -3,6 +3,7 @@ import { Icon } from 'astro-icon/components';
 import Base from '../../layouts/Base.astro';
 import DownloadPlatform from '../../components/DownloadPlatform.astro';
 import { getStaticLocalePaths, useTranslations, type Locale } from '../../i18n';
+import releaseData from '../../data/latest-release.json';
 
 export function getStaticPaths() {
   return getStaticLocalePaths();
@@ -17,49 +18,30 @@ const GITHUB_RELEASES_PAGE_URL = `https://github.com/${GITHUB_REPO_OWNER}/${GITH
 
 const archInstallCommand = 'yay -S wiredpanda';
 const debianInstallCommand = 'sudo apt-get install wiredpanda';
+
+interface DownloadChip {
+  id: string;
+  href: string | null;
+  label: string;
+}
+
+const chips: DownloadChip[] = [
+  { id: 'windows-x64-link', href: releaseData.windowsX64, label: t('download.x86_64') },
+  { id: 'windows-arm64-link', href: releaseData.windowsArm64, label: t('download.arm64') },
+  { id: 'linux-x64-link', href: releaseData.linuxX64, label: t('download.x86_64') },
+  { id: 'linux-arm64-link', href: releaseData.linuxArm64, label: t('download.arm64') },
+  { id: 'macos-universal-link', href: releaseData.macosUniversal, label: t('download.universal') },
+];
+const chipById = Object.fromEntries(chips.map((c) => [c.id, c]));
 ---
 
 <Base pageTitle={t('download.title')}>
-  <!-- Config for client-side script (avoids define:vars / is:inline) -->
-  <div
-    id="download-config"
-    hidden
-    data-owner={GITHUB_REPO_OWNER}
-    data-repo={GITHUB_REPO_NAME}
-    data-releases-url={GITHUB_RELEASES_PAGE_URL}
-    data-tr-version={t('download.versionText')}
-    data-tr-error-fetching={t('download.errorFetching')}
-    data-tr-error-not-found={t('download.errorNotFound')}
-    data-tr-error-rate-limit={t('download.errorRateLimit')}
-    data-tr-error-connection={t('download.errorConnection')}
-  >
-  </div>
-
   <section class="max-w-4xl mx-auto px-6 pt-24 pb-16 text-center">
     <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-6">{t('download.heading')}</h1>
 
-    <div id="release-info-container" class="mb-8 min-h-[50px]">
-      <p id="release-version-text" class="text-gray-600 dark:text-gray-300">
-        {t('download.fetching')}
-      </p>
-      <div
-        id="error-message-container"
-        class="hidden bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-500/40 rounded-xl p-4 mt-4 text-left"
-      >
-        <p class="text-red-600 dark:text-red-400 font-semibold">{t('download.errorHeading')}</p>
-        <p id="error-text" class="text-red-500 dark:text-red-300 mt-1"></p>
-        <p class="text-gray-600 dark:text-gray-300 mt-2">
-          {t('download.errorVisit')}
-          <a
-            href={GITHUB_RELEASES_PAGE_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="text-brand-light-blue hover:underline">{t('download.errorVisitLink')}</a
-          >
-          {t('download.errorVisitSuffix')}
-        </p>
-      </div>
-    </div>
+    <p class="text-gray-600 dark:text-gray-300 mb-8">
+      {t('download.versionText').replace('{version}', releaseData.version)}
+    </p>
 
     <div
       class="rounded-xl border border-brand-blue/20 dark:border-brand-blue/40 bg-bg-card-light dark:bg-bg-card backdrop-blur-sm p-8 mb-10 flex flex-col sm:flex-row items-center justify-around gap-8"
@@ -69,20 +51,22 @@ const debianInstallCommand = 'sudo apt-get install wiredpanda';
         <span class="text-gray-600 dark:text-gray-300">{t('download.windows')}</span>
         <div class="flex gap-2 mt-1">
           <a
-            id="windows-x64-link"
-            class="arch-chip disabled-chip"
-            href={GITHUB_RELEASES_PAGE_URL}
+            id={chipById['windows-x64-link']!.id}
+            class:list={['arch-chip', { 'disabled-chip': !chipById['windows-x64-link']!.href }]}
+            href={chipById['windows-x64-link']!.href ?? GITHUB_RELEASES_PAGE_URL}
             target="_blank"
             rel="noopener noreferrer"
-            aria-disabled="true">{t('download.x86_64')}</a
+            aria-disabled={chipById['windows-x64-link']!.href ? undefined : 'true'}
+            >{chipById['windows-x64-link']!.label}</a
           >
           <a
-            id="windows-arm64-link"
-            class="arch-chip disabled-chip"
-            href={GITHUB_RELEASES_PAGE_URL}
+            id={chipById['windows-arm64-link']!.id}
+            class:list={['arch-chip', { 'disabled-chip': !chipById['windows-arm64-link']!.href }]}
+            href={chipById['windows-arm64-link']!.href ?? GITHUB_RELEASES_PAGE_URL}
             target="_blank"
             rel="noopener noreferrer"
-            aria-disabled="true">{t('download.arm64')}</a
+            aria-disabled={chipById['windows-arm64-link']!.href ? undefined : 'true'}
+            >{chipById['windows-arm64-link']!.label}</a
           >
         </div>
       </div>
@@ -91,20 +75,22 @@ const debianInstallCommand = 'sudo apt-get install wiredpanda';
         <span class="text-gray-600 dark:text-gray-300">{t('download.linux')}</span>
         <div class="flex gap-2 mt-1">
           <a
-            id="linux-x64-link"
-            class="arch-chip disabled-chip"
-            href={GITHUB_RELEASES_PAGE_URL}
+            id={chipById['linux-x64-link']!.id}
+            class:list={['arch-chip', { 'disabled-chip': !chipById['linux-x64-link']!.href }]}
+            href={chipById['linux-x64-link']!.href ?? GITHUB_RELEASES_PAGE_URL}
             target="_blank"
             rel="noopener noreferrer"
-            aria-disabled="true">{t('download.x86_64')}</a
+            aria-disabled={chipById['linux-x64-link']!.href ? undefined : 'true'}
+            >{chipById['linux-x64-link']!.label}</a
           >
           <a
-            id="linux-arm64-link"
-            class="arch-chip disabled-chip"
-            href={GITHUB_RELEASES_PAGE_URL}
+            id={chipById['linux-arm64-link']!.id}
+            class:list={['arch-chip', { 'disabled-chip': !chipById['linux-arm64-link']!.href }]}
+            href={chipById['linux-arm64-link']!.href ?? GITHUB_RELEASES_PAGE_URL}
             target="_blank"
             rel="noopener noreferrer"
-            aria-disabled="true">{t('download.arm64')}</a
+            aria-disabled={chipById['linux-arm64-link']!.href ? undefined : 'true'}
+            >{chipById['linux-arm64-link']!.label}</a
           >
         </div>
       </div>
@@ -113,12 +99,13 @@ const debianInstallCommand = 'sudo apt-get install wiredpanda';
         <span class="text-gray-600 dark:text-gray-300">{t('download.macos')}</span>
         <div class="flex gap-2 mt-1">
           <a
-            id="macos-universal-link"
-            class="arch-chip disabled-chip"
-            href={GITHUB_RELEASES_PAGE_URL}
+            id={chipById['macos-universal-link']!.id}
+            class:list={['arch-chip', { 'disabled-chip': !chipById['macos-universal-link']!.href }]}
+            href={chipById['macos-universal-link']!.href ?? GITHUB_RELEASES_PAGE_URL}
             target="_blank"
             rel="noopener noreferrer"
-            aria-disabled="true">{t('download.universal')}</a
+            aria-disabled={chipById['macos-universal-link']!.href ? undefined : 'true'}
+            >{chipById['macos-universal-link']!.label}</a
           >
         </div>
       </div>
@@ -149,7 +136,7 @@ const debianInstallCommand = 'sudo apt-get install wiredpanda';
     </div>
 
     <p class="text-gray-600 dark:text-gray-300">
-      {t('download.allReleases')}
+      {t('download.allReleases')}{' '}
       <a
         href={GITHUB_RELEASES_PAGE_URL}
         target="_blank"
@@ -173,108 +160,12 @@ const debianInstallCommand = 'sudo apt-get install wiredpanda';
 </Base>
 
 <script>
-  import { parseReleaseAssets } from '../../lib/release-assets';
   import { COPY_SUCCESS_EVENT } from '../../lib/events';
 
   document.addEventListener('astro:page-load', () => {
     const controller = new AbortController();
     const { signal } = controller;
     document.addEventListener('astro:before-preparation', () => controller.abort(), { once: true });
-
-    const config = document.getElementById('download-config') as HTMLElement | null;
-    if (!config) return;
-
-    const owner = config.dataset['owner'] ?? '';
-    const repo = config.dataset['repo'] ?? '';
-    const releasesUrl = config.dataset['releasesUrl'] ?? '';
-    const translations = {
-      versionText: config.dataset['trVersion'] ?? '',
-      errorFetching: config.dataset['trErrorFetching'] ?? '',
-      errorNotFound: config.dataset['trErrorNotFound'] ?? '',
-      errorRateLimit: config.dataset['trErrorRateLimit'] ?? '',
-      errorConnection: config.dataset['trErrorConnection'] ?? '',
-    };
-
-    const releaseVersionTextEl = document.getElementById('release-version-text');
-    const errorMessageContainerEl = document.getElementById('error-message-container');
-    const errorTextEl = document.getElementById('error-text');
-
-    const windowsX64El = document.getElementById('windows-x64-link');
-    const windowsArmEl = document.getElementById('windows-arm64-link');
-    const linuxX64El = document.getElementById('linux-x64-link');
-    const linuxArmEl = document.getElementById('linux-arm64-link');
-    const macosEl = document.getElementById('macos-universal-link');
-
-    function setChip(el: HTMLElement | null, url: string | null) {
-      if (!el) return;
-      if (url) {
-        (el as HTMLAnchorElement).href = url;
-        el.classList.remove('disabled-chip');
-        el.removeAttribute('aria-disabled');
-      } else {
-        (el as HTMLAnchorElement).href = releasesUrl;
-        el.classList.add('disabled-chip');
-        el.setAttribute('aria-disabled', 'true');
-      }
-    }
-
-    function showError(message: string) {
-      if (releaseVersionTextEl) releaseVersionTextEl.style.display = 'none';
-      if (errorTextEl) errorTextEl.textContent = message;
-      if (errorMessageContainerEl) errorMessageContainerEl.classList.remove('hidden');
-    }
-
-    async function fetchLatestRelease() {
-      try {
-        const response = await fetch(
-          `https://api.github.com/repos/${owner}/${repo}/releases/latest`
-        );
-
-        if (!response.ok) {
-          let message = translations.errorFetching
-            .replace('{status}', String(response.status))
-            .replace('{statusText}', response.statusText);
-          if (response.status === 404) {
-            message = translations.errorNotFound.replace('{owner}', owner).replace('{repo}', repo);
-          } else if (response.status === 403) {
-            message = translations.errorRateLimit;
-          }
-          console.error(message);
-          showError(message);
-          return;
-        }
-
-        const latestRelease = (await response.json()) as {
-          tag_name?: string;
-          assets?: { name: string; browser_download_url: string }[];
-        };
-        const releaseVersion = latestRelease.tag_name ?? 'latest';
-
-        if (releaseVersionTextEl) {
-          releaseVersionTextEl.textContent = translations.versionText.replace(
-            '{version}',
-            releaseVersion
-          );
-        }
-        if (errorMessageContainerEl) errorMessageContainerEl.classList.add('hidden');
-
-        if (latestRelease.assets) {
-          const parsed = parseReleaseAssets(latestRelease.assets);
-          setChip(windowsX64El, parsed.windowsX64?.browser_download_url ?? null);
-          setChip(windowsArmEl, parsed.windowsArm64?.browser_download_url ?? null);
-          setChip(linuxX64El, parsed.linuxX64?.browser_download_url ?? null);
-          setChip(linuxArmEl, parsed.linuxArm64?.browser_download_url ?? null);
-          setChip(macosEl, parsed.macosUniversal?.browser_download_url ?? null);
-        } else {
-          console.warn('Latest release found, but it contains no assets.');
-        }
-      } catch (error) {
-        console.error('Error fetching or parsing latest release data:', error);
-        showError(translations.errorConnection);
-      }
-    }
-
-    void fetchLatestRelease();
 
     // Show copy-toast when DownloadPlatform signals a successful copy
     window.addEventListener(
@@ -292,16 +183,25 @@ const debianInstallCommand = 'sudo apt-get install wiredpanda';
       { signal }
     );
 
-    // Analytics: track download clicks
+    // Analytics: track download clicks. Hrefs are resolved statically at
+    // build time (see scripts/update-release-data.mjs) — this script only
+    // attaches click tracking, it doesn't fetch or set anything.
     function trackDownload(platform: string) {
       window.umami?.track('Download', { platform });
     }
 
-    windowsX64El?.addEventListener('click', () => trackDownload('Windows-x64'), { signal });
-    windowsArmEl?.addEventListener('click', () => trackDownload('Windows-arm64'), { signal });
-    linuxX64El?.addEventListener('click', () => trackDownload('Linux-x64'), { signal });
-    linuxArmEl?.addEventListener('click', () => trackDownload('Linux-arm64'), { signal });
-    macosEl?.addEventListener('click', () => trackDownload('macOS'), { signal });
+    const platformById: Record<string, string> = {
+      'windows-x64-link': 'Windows-x64',
+      'windows-arm64-link': 'Windows-arm64',
+      'linux-x64-link': 'Linux-x64',
+      'linux-arm64-link': 'Linux-arm64',
+      'macos-universal-link': 'macOS',
+    };
+    for (const [id, platform] of Object.entries(platformById)) {
+      document.getElementById(id)?.addEventListener('click', () => trackDownload(platform), {
+        signal,
+      });
+    }
   });
 </script>
 
@@ -335,7 +235,8 @@ const debianInstallCommand = 'sudo apt-get install wiredpanda';
     color: #fff;
   }
 
-  /* Loading state: click still works (goes to releases page as fallback) */
+  /* No asset for this platform in the latest release: click still works
+     (goes to the releases page as a fallback). */
   .disabled-chip {
     opacity: 0.4;
     cursor: default;

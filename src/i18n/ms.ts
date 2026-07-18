@@ -57,11 +57,6 @@ export default {
   // Download page
   'download.title': 'Muat turun',
   'download.heading': 'Muat turun perisian',
-  'download.fetching': 'Mendapatkan maklumat keluaran terkini...',
-  'download.errorHeading': 'Tidak dapat memuatkan pautan muat turun terkini:',
-  'download.errorVisit': 'Sila lawati',
-  'download.errorVisitLink': 'halaman GitHub Releases',
-  'download.errorVisitSuffix': 'terus.',
   'download.windows': 'Windows',
   'download.linux': 'Linux',
   'download.macos': 'Mac OS',
@@ -73,12 +68,6 @@ export default {
   'download.copiedToClipboard': 'Disalin ke papan keratan!',
   'download.copyCommand': 'Salin perintah pemasangan {platform}',
   'download.versionText': 'Di sini anda boleh memuat turun fail binari wiRedPanda {version} untuk:',
-  'download.errorFetching': 'Ralat semasa mendapatkan keluaran terkini: {status} {statusText}.',
-  'download.errorNotFound': 'Tiada keluaran ditemui untuk {owner}/{repo}.',
-  'download.errorRateLimit':
-    'Had permintaan API GitHub kemungkinan telah melebihi. Sila cuba lagi sebentar.',
-  'download.errorConnection':
-    'Gagal menyambung ke API GitHub atau menghurai respons. Semak sambungan internet anda atau cuba lagi kemudian.',
   'download.x86_64': 'x86_64',
   'download.arm64': 'ARM64',
   'download.universal': 'Universal',

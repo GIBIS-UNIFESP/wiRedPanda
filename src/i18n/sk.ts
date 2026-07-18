@@ -57,11 +57,6 @@ export default {
   // Download page
   'download.title': 'Stiahnuť',
   'download.heading': 'Stiahnuť softvér',
-  'download.fetching': 'Načítavanie informácií o najnovšej verzii...',
-  'download.errorHeading': 'Nepodarilo sa načítať najnovšie odkazy na stiahnutie:',
-  'download.errorVisit': 'Prosím navštívte',
-  'download.errorVisitLink': 'stránku GitHub Releases',
-  'download.errorVisitSuffix': 'priamo.',
   'download.windows': 'Windows',
   'download.linux': 'Linux',
   'download.macos': 'Mac OS',
@@ -73,12 +68,6 @@ export default {
   'download.copiedToClipboard': 'Skopírované do schránky!',
   'download.copyCommand': 'Kopírovať inštalačný príkaz pre {platform}',
   'download.versionText': 'Tu si môžete stiahnuť binárne súbory wiRedPanda {version} pre:',
-  'download.errorFetching': 'Chyba pri načítavaní najnovšej verzie: {status} {statusText}.',
-  'download.errorNotFound': 'Pre {owner}/{repo} neboli nájdené žiadne verzie.',
-  'download.errorRateLimit':
-    'Pravdepodobne bol prekročený limit požiadaviek API GitHubu. Skúste to znova neskôr.',
-  'download.errorConnection':
-    'Nepodarilo sa pripojiť k API GitHubu alebo spracovať odpoveď. Skontrolujte internetové pripojenie alebo skúste znova.',
   'download.x86_64': 'x86_64',
   'download.arm64': 'ARM64',
   'download.universal': 'Univerzálny',

@@ -57,11 +57,6 @@ export default {
   // Download page
   'download.title': 'Lataa',
   'download.heading': 'Lataa ohjelmisto',
-  'download.fetching': 'Haetaan uusimman version tietoja...',
-  'download.errorHeading': 'Uusimpien lataauslinkkien lataaminen epäonnistui:',
-  'download.errorVisit': 'Käy osoitteessa',
-  'download.errorVisitLink': 'GitHub Releases -sivu',
-  'download.errorVisitSuffix': 'suoraan.',
   'download.windows': 'Windows',
   'download.linux': 'Linux',
   'download.macos': 'Mac OS',
@@ -74,12 +69,6 @@ export default {
   'download.copiedToClipboard': 'Kopioitu leikepöydälle!',
   'download.copyCommand': 'Kopioi {platform}-asennuskomento',
   'download.versionText': 'Täältä voit ladata wiRedPanda {version} -binaaritiedostot:',
-  'download.errorFetching': 'Virhe uusimman version hakemisessa: {status} {statusText}.',
-  'download.errorNotFound': '{owner}/{repo}-julkaisuja ei löydy.',
-  'download.errorRateLimit':
-    'GitHub API -pyyntöraja on todennäköisesti ylitetty. Yritä myöhemmin uudelleen.',
-  'download.errorConnection':
-    'GitHub API -yhteys tai vastauksen käsittely epäonnistui. Tarkista internet-yhteytesi tai yritä myöhemmin uudelleen.',
   'download.x86_64': 'x86_64',
   'download.arm64': 'ARM64',
   'download.universal': 'Universaali',

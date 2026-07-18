@@ -57,11 +57,6 @@ export default {
   // Download page
   'download.title': 'Descargar',
   'download.heading': 'Descargar el software',
-  'download.fetching': 'Obteniendo información de la última versión...',
-  'download.errorHeading': 'No se pudieron cargar los enlaces de descarga:',
-  'download.errorVisit': 'Por favor, visita la',
-  'download.errorVisitLink': 'página de Releases en GitHub',
-  'download.errorVisitSuffix': 'directamente.',
   'download.windows': 'Windows',
   'download.linux': 'Linux',
   'download.macos': 'Mac OS',
@@ -75,12 +70,6 @@ export default {
   'download.copyCommand': 'Copiar comando de instalación para {platform}',
   'download.versionText':
     'Aquí puedes descargar la versión {version} de los binarios de wiRedPanda para:',
-  'download.errorFetching': 'Error al obtener la última versión: {status} {statusText}.',
-  'download.errorNotFound': 'No se encontraron releases para {owner}/{repo}.',
-  'download.errorRateLimit':
-    'Probablemente se excedió el límite de solicitudes de la API de GitHub. Por favor, inténtalo de nuevo más tarde.',
-  'download.errorConnection':
-    'Error al conectar con la API de GitHub o al procesar la respuesta. Verifica tu conexión a internet o inténtalo de nuevo más tarde.',
   'download.x86_64': 'x86_64',
   'download.arm64': 'ARM64',
   'download.universal': 'Universal',

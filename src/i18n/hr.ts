@@ -57,11 +57,6 @@ export default {
   // Download page
   'download.title': 'Preuzmi',
   'download.heading': 'Preuzmi softver',
-  'download.fetching': 'Dohvaćanje informacija o najnovijem izdanju...',
-  'download.errorHeading': 'Nije moguće učitati najnovije veze za preuzimanje:',
-  'download.errorVisit': 'Posjetite',
-  'download.errorVisitLink': 'stranicu GitHub Releases',
-  'download.errorVisitSuffix': 'izravno.',
   'download.windows': 'Windows',
   'download.linux': 'Linux',
   'download.macos': 'Mac OS',
@@ -73,12 +68,6 @@ export default {
   'download.copiedToClipboard': 'Kopirano u međuspremnik!',
   'download.copyCommand': 'Kopiraj naredbu za instalaciju za {platform}',
   'download.versionText': 'Ovdje možete preuzeti binarne datoteke wiRedPanda {version} za:',
-  'download.errorFetching': 'Pogreška pri dohvaćanju najnovijeg izdanja: {status} {statusText}.',
-  'download.errorNotFound': 'Nisu pronađena izdanja za {owner}/{repo}.',
-  'download.errorRateLimit':
-    'Vjerojatno je prekoračeno ograničenje zahtjeva GitHub API-ja. Pokušajte ponovno kasnije.',
-  'download.errorConnection':
-    'Nije moguće spojiti se na GitHub API ili obraditi odgovor. Provjerite internetsku vezu ili pokušajte ponovno kasnije.',
   'download.x86_64': 'x86_64',
   'download.arm64': 'ARM64',
   'download.universal': 'Univerzalni',

@@ -57,11 +57,6 @@ export default {
   // Download page
   'download.title': 'Descarcă',
   'download.heading': 'Descarcă software-ul',
-  'download.fetching': 'Se obțin informații despre cea mai recentă versiune...',
-  'download.errorHeading': 'Nu s-au putut încărca cele mai recente linkuri de descărcare:',
-  'download.errorVisit': 'Te rugăm să vizitezi',
-  'download.errorVisitLink': 'pagina GitHub Releases',
-  'download.errorVisitSuffix': 'direct.',
   'download.windows': 'Windows',
   'download.linux': 'Linux',
   'download.macos': 'Mac OS',
@@ -74,13 +69,6 @@ export default {
   'download.copiedToClipboard': 'Copiat în clipboard!',
   'download.copyCommand': 'Copiază comanda de instalare pentru {platform}',
   'download.versionText': 'Aici poți descărca fișierele binare ale wiRedPanda {version} pentru:',
-  'download.errorFetching':
-    'Eroare la obținerea celei mai recente versiuni: {status} {statusText}.',
-  'download.errorNotFound': 'Nu s-au găsit versiuni pentru {owner}/{repo}.',
-  'download.errorRateLimit':
-    'Limita de cereri a API-ului GitHub a fost probabil depășită. Te rugăm să încerci din nou mai târziu.',
-  'download.errorConnection':
-    'Nu s-a putut conecta la API-ul GitHub sau procesa răspunsul. Verifică conexiunea la internet sau încearcă din nou mai târziu.',
   'download.x86_64': 'x86_64',
   'download.arm64': 'ARM64',
   'download.universal': 'Universal',

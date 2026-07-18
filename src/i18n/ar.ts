@@ -56,11 +56,6 @@ export default {
   // Download page
   'download.title': 'تنزيل',
   'download.heading': 'تنزيل البرنامج',
-  'download.fetching': 'جارٍ جلب معلومات أحدث إصدار...',
-  'download.errorHeading': 'تعذّر تحميل أحدث روابط التنزيل:',
-  'download.errorVisit': 'يرجى زيارة',
-  'download.errorVisitLink': 'صفحة GitHub Releases',
-  'download.errorVisitSuffix': 'مباشرةً.',
   'download.windows': 'Windows',
   'download.linux': 'Linux',
   'download.macos': 'Mac OS',
@@ -72,11 +67,6 @@ export default {
   'download.copiedToClipboard': 'تم النسخ إلى الحافظة!',
   'download.copyCommand': 'نسخ أمر تثبيت {platform}',
   'download.versionText': 'يمكنك هنا تنزيل ملفات wiRedPanda الثنائية للإصدار {version} لـ:',
-  'download.errorFetching': 'خطأ أثناء جلب أحدث إصدار: {status} {statusText}.',
-  'download.errorNotFound': 'لم يتم العثور على إصدارات لـ {owner}/{repo}.',
-  'download.errorRateLimit': 'ربما تم تجاوز حد معدل طلبات API GitHub. يرجى المحاولة لاحقاً.',
-  'download.errorConnection':
-    'تعذّر الاتصال بـ GitHub API أو تحليل الاستجابة. يرجى التحقق من اتصالك بالإنترنت أو المحاولة لاحقاً.',
   'download.x86_64': 'x86_64',
   'download.arm64': 'ARM64',
   'download.universal': 'عالمي',

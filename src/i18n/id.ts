@@ -57,11 +57,6 @@ export default {
   // Download page
   'download.title': 'Unduh',
   'download.heading': 'Unduh perangkat lunak',
-  'download.fetching': 'Mengambil informasi rilis terbaru...',
-  'download.errorHeading': 'Gagal memuat tautan unduhan terbaru:',
-  'download.errorVisit': 'Silakan kunjungi',
-  'download.errorVisitLink': 'halaman GitHub Releases',
-  'download.errorVisitSuffix': 'secara langsung.',
   'download.windows': 'Windows',
   'download.linux': 'Linux',
   'download.macos': 'Mac OS',
@@ -73,12 +68,6 @@ export default {
   'download.copiedToClipboard': 'Disalin ke clipboard!',
   'download.copyCommand': 'Salin perintah instalasi {platform}',
   'download.versionText': 'Di sini Anda dapat mengunduh file biner wiRedPanda {version} untuk:',
-  'download.errorFetching': 'Kesalahan saat mengambil rilis terbaru: {status} {statusText}.',
-  'download.errorNotFound': 'Tidak ada rilis yang ditemukan untuk {owner}/{repo}.',
-  'download.errorRateLimit':
-    'Batas permintaan API GitHub kemungkinan terlampaui. Silakan coba lagi nanti.',
-  'download.errorConnection':
-    'Gagal terhubung ke API GitHub atau memproses respons. Periksa koneksi internet Anda atau coba lagi nanti.',
   'download.x86_64': 'x86_64',
   'download.arm64': 'ARM64',
   'download.universal': 'Universal',

@@ -57,11 +57,6 @@ export default {
   // Download page
   'download.title': 'Tải xuống',
   'download.heading': 'Tải xuống phần mềm',
-  'download.fetching': 'Đang lấy thông tin phiên bản mới nhất...',
-  'download.errorHeading': 'Không thể tải các liên kết tải xuống mới nhất:',
-  'download.errorVisit': 'Vui lòng truy cập',
-  'download.errorVisitLink': 'trang GitHub Releases',
-  'download.errorVisitSuffix': 'trực tiếp.',
   'download.windows': 'Windows',
   'download.linux': 'Linux',
   'download.macos': 'Mac OS',
@@ -74,12 +69,6 @@ export default {
   'download.copiedToClipboard': 'Đã sao chép vào clipboard!',
   'download.copyCommand': 'Sao chép lệnh cài đặt {platform}',
   'download.versionText': 'Tại đây bạn có thể tải xuống tệp nhị phân wiRedPanda {version} cho:',
-  'download.errorFetching': 'Lỗi khi lấy phiên bản mới nhất: {status} {statusText}.',
-  'download.errorNotFound': 'Không tìm thấy bản phát hành nào cho {owner}/{repo}.',
-  'download.errorRateLimit':
-    'Giới hạn yêu cầu API GitHub có thể đã bị vượt quá. Vui lòng thử lại sau.',
-  'download.errorConnection':
-    'Không thể kết nối với API GitHub hoặc phân tích phản hồi. Vui lòng kiểm tra kết nối internet hoặc thử lại sau.',
   'download.x86_64': 'x86_64',
   'download.arm64': 'ARM64',
   'download.universal': 'Đa năng',

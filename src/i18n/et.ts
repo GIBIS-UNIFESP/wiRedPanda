@@ -57,11 +57,6 @@ export default {
   // Download page
   'download.title': 'Laadi alla',
   'download.heading': 'Laadi tarkvara alla',
-  'download.fetching': 'Uusima versiooni teabe toomine...',
-  'download.errorHeading': 'Uusimate allalaadimislinkide laadimine ebaõnnestus:',
-  'download.errorVisit': 'Palun külasta',
-  'download.errorVisitLink': 'GitHubi väljalaselehte',
-  'download.errorVisitSuffix': 'otse.',
   'download.windows': 'Windows',
   'download.linux': 'Linux',
   'download.macos': 'Mac OS',
@@ -73,12 +68,6 @@ export default {
   'download.copiedToClipboard': 'Kopeeritud lõikelauale!',
   'download.copyCommand': 'Kopeeri {platform} installikäsk',
   'download.versionText': 'Siit saad alla laadida wiRedPanda {version} binaarfailid järgmistele:',
-  'download.errorFetching': 'Uusima versiooni toomine ebaõnnestus: {status} {statusText}.',
-  'download.errorNotFound': '{owner}/{repo} jaoks ei leitud väljalaseid.',
-  'download.errorRateLimit':
-    'GitHubi API päringute limiit on tõenäoliselt ületatud. Palun proovi hiljem uuesti.',
-  'download.errorConnection':
-    'GitHubi API-ga ühendamine või vastuse töötlemine ebaõnnestus. Kontrolli oma internetiühendust või proovi hiljem uuesti.',
   'download.x86_64': 'x86_64',
   'download.arm64': 'ARM64',
   'download.universal': 'Universaalne',

@@ -57,11 +57,6 @@ export default {
   // Download page
   'download.title': 'Изтегляне',
   'download.heading': 'Изтеглете софтуера',
-  'download.fetching': 'Извличане на информация за последната версия...',
-  'download.errorHeading': 'Неуспешно зареждане на последните връзки за изтегляне:',
-  'download.errorVisit': 'Моля, посетете',
-  'download.errorVisitLink': 'страницата GitHub Releases',
-  'download.errorVisitSuffix': 'директно.',
   'download.windows': 'Windows',
   'download.linux': 'Linux',
   'download.macos': 'Mac OS',
@@ -74,12 +69,6 @@ export default {
   'download.copyCommand': 'Копиране на командата за инсталиране на {platform}',
   'download.versionText':
     'Тук можете да изтеглите двоичните файлове на wiRedPanda версия {version} за:',
-  'download.errorFetching': 'Грешка при извличане на последната версия: {status} {statusText}.',
-  'download.errorNotFound': 'Няма намерени версии за {owner}/{repo}.',
-  'download.errorRateLimit':
-    'Вероятно е надвишен лимитът на заявките към API на GitHub. Моля, опитайте отново по-късно.',
-  'download.errorConnection':
-    'Неуспешно свързване с GitHub API или анализиране на отговора. Проверете интернет връзката си или опитайте отново по-късно.',
   'download.x86_64': 'x86_64',
   'download.arm64': 'ARM64',
   'download.universal': 'Универсален',

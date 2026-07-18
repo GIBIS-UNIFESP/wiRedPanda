@@ -57,11 +57,6 @@ export default {
   // Download page
   'download.title': 'Downloaden',
   'download.heading': 'De software downloaden',
-  'download.fetching': 'Informatie over de nieuwste release ophalen...',
-  'download.errorHeading': 'Kan de nieuwste downloadlinks niet laden:',
-  'download.errorVisit': 'Ga naar',
-  'download.errorVisitLink': 'de GitHub Releases-pagina',
-  'download.errorVisitSuffix': 'om direct te downloaden.',
   'download.windows': 'Windows',
   'download.linux': 'Linux',
   'download.macos': 'Mac OS',
@@ -74,12 +69,6 @@ export default {
   'download.copyCommand': 'Installatieopdracht voor {platform} kopiëren',
   'download.versionText':
     'Hier kun je de binaire bestanden van wiRedPanda {version} downloaden voor:',
-  'download.errorFetching': 'Fout bij ophalen van nieuwste release: {status} {statusText}.',
-  'download.errorNotFound': 'Geen releases gevonden voor {owner}/{repo}.',
-  'download.errorRateLimit':
-    'De GitHub API-limiet is waarschijnlijk overschreden. Probeer het later opnieuw.',
-  'download.errorConnection':
-    'Kan geen verbinding maken met de GitHub API of de respons verwerken. Controleer je internetverbinding of probeer het later opnieuw.',
   'download.x86_64': 'x86_64',
   'download.arm64': 'ARM64',
   'download.universal': 'Universeel',

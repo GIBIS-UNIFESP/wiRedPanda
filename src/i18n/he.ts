@@ -56,11 +56,6 @@ export default {
   // Download page
   'download.title': 'הורדה',
   'download.heading': 'הורד את התוכנה',
-  'download.fetching': 'מאחזר מידע על הגרסה האחרונה...',
-  'download.errorHeading': 'לא ניתן לטעון את קישורי ההורדה האחרונים:',
-  'download.errorVisit': 'בקר ב-',
-  'download.errorVisitLink': 'דף GitHub Releases',
-  'download.errorVisitSuffix': 'ישירות.',
   'download.windows': 'Windows',
   'download.linux': 'Linux',
   'download.macos': 'Mac OS',
@@ -72,11 +67,6 @@ export default {
   'download.copiedToClipboard': 'הועתק ללוח!',
   'download.copyCommand': 'העתק פקודת התקנה עבור {platform}',
   'download.versionText': 'כאן תוכל להוריד את קבצי הבינארי של wiRedPanda {version} עבור:',
-  'download.errorFetching': 'שגיאה באחזור הגרסה האחרונה: {status} {statusText}.',
-  'download.errorNotFound': 'לא נמצאו גרסאות עבור {owner}/{repo}.',
-  'download.errorRateLimit': 'מגבלת בקשות ה-API של GitHub כנראה חרגה. אנא נסה שוב מאוחר יותר.',
-  'download.errorConnection':
-    'לא ניתן להתחבר ל-GitHub API או לנתח את התגובה. בדוק את חיבור האינטרנט שלך או נסה שוב מאוחר יותר.',
   'download.x86_64': 'x86_64',
   'download.arm64': 'ARM64',
   'download.universal': 'אוניברסלי',
