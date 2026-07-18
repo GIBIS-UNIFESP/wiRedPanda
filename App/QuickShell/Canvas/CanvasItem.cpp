@@ -5,9 +5,12 @@
 
 #include <algorithm>
 
+#include <QClipboard>
 #include <QColor>
+#include <QGuiApplication>
 #include <QHoverEvent>
 #include <QKeyEvent>
+#include <QMimeData>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QQuickWindow>
@@ -20,10 +23,12 @@
 #include "App/Core/Enums.h"
 #include "App/Core/InstallRelativePaths.h"
 #include "App/Core/ItemWithId.h"
+#include "App/Core/MimeTypes.h"
 #include "App/Core/SimulationHost.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElementInput.h"
 #include "App/Element/GraphicElements/And.h"
+#include "App/Element/GraphicElements/AudioOutputElement.h"
 #include "App/Element/GraphicElements/Demux.h"
 #include "App/Element/GraphicElements/Display14.h"
 #include "App/Element/GraphicElements/Display16.h"
@@ -36,6 +41,7 @@
 #include "App/Element/GraphicElements/Text.h"
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/IC.h"
+#include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/QuickShell/Canvas/CanvasCommands.h"
 #include "App/Scene/ConnectionManager.h"
@@ -589,6 +595,151 @@ void CanvasItem::distributeVertically()
     moveElementsTo(this, elements_, newPositions);
 }
 
+void CanvasItem::copyAction()
+{
+    QList<QGraphicsItem *> items;
+    for (auto *elm : selectedElements()) {
+        items.append(elm);
+    }
+    if (items.isEmpty()) {
+        QGuiApplication::clipboard()->clear();
+        return;
+    }
+
+    QByteArray itemData;
+    QDataStream stream(&itemData, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(stream);
+    CanvasCommandUtils::serializeItems(items, stream);
+
+    auto *mimeData = new QMimeData();
+    mimeData->setData(MimeType::Clipboard, itemData);
+    QGuiApplication::clipboard()->setMimeData(mimeData);
+}
+
+void CanvasItem::cutAction()
+{
+    QList<QGraphicsItem *> items;
+    for (auto *elm : selectedElements()) {
+        items.append(elm);
+    }
+    if (items.isEmpty()) {
+        QGuiApplication::clipboard()->clear();
+        return;
+    }
+
+    QByteArray itemData;
+    QDataStream stream(&itemData, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(stream);
+    CanvasCommandUtils::serializeItems(items, stream);
+
+    deleteSelected();
+
+    auto *mimeData = new QMimeData();
+    mimeData->setData(MimeType::Clipboard, itemData);
+    QGuiApplication::clipboard()->setMimeData(mimeData);
+}
+
+void CanvasItem::pasteAction()
+{
+    const auto *mimeData = QGuiApplication::clipboard()->mimeData();
+    if (!mimeData) {
+        return;
+    }
+
+    // Blob-registry import (cross-tab paste of embedded ICs) deferred to the IC-embedding
+    // sub-step -- this canvas has no ICRegistry yet.
+    QByteArray itemData;
+    if (mimeData->hasFormat(MimeType::ClipboardLegacy)) {
+        itemData = mimeData->data(MimeType::ClipboardLegacy);
+    }
+    if (mimeData->hasFormat(MimeType::Clipboard)) {
+        itemData = mimeData->data(MimeType::Clipboard);
+    }
+    if (itemData.isEmpty()) {
+        return;
+    }
+
+    QDataStream stream(&itemData, QIODevice::ReadOnly);
+    QVersionNumber version = Serialization::readPandaHeader(stream);
+    deserializeAndAdd(stream, version);
+}
+
+void CanvasItem::duplicateAction()
+{
+    QList<QGraphicsItem *> items;
+    for (auto *elm : selectedElements()) {
+        items.append(elm);
+    }
+    if (items.isEmpty()) {
+        return;
+    }
+
+    // Serialize to a private buffer so the system clipboard is left untouched.
+    QByteArray itemData;
+    QDataStream writeStream(&itemData, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(writeStream);
+    CanvasCommandUtils::serializeItems(items, writeStream);
+
+    QDataStream readStream(&itemData, QIODevice::ReadOnly);
+    const QVersionNumber version = Serialization::readPandaHeader(readStream);
+    const QPointF step(Constants::gridSize, Constants::gridSize);
+    const auto added = deserializeAndAdd(readStream, version, step);
+
+    for (auto *item : added) {
+        item->setSelected(true);
+    }
+}
+
+QList<QGraphicsItem *> CanvasItem::deserializeAndAdd(QDataStream &stream, const QVersionNumber &version,
+                                                     std::optional<QPointF> fixedOffset)
+{
+    for (auto *elm : std::as_const(m_elements)) {
+        elm->setSelected(false);
+    }
+    m_selectedIds.clear();
+
+    QPointF center;
+    stream >> center;
+
+    QHash<quint64, Port *> portMap;
+    auto context = deserializationContext(portMap, version, SerializationPurpose::InMemorySnapshot);
+    const auto itemList = Serialization::deserialize(stream, context);
+
+    // Paste: shift elements so their centroid lands at the cursor, then nudge 32px diagonally
+    // so repeated pastes don't completely overlap. Duplicate: shift by exactly fixedOffset
+    // from the originals so the copies sit a grid step down-right, in place.
+    const QPointF offset = fixedOffset ? *fixedOffset : (mousePos() - center - QPointF(32.0, 32.0));
+
+    receiveCommand(new CanvasAddItemsCommand(itemList, this));
+
+    for (auto *item : itemList) {
+        if (item->type() == GraphicElement::Type) {
+            item->setPos(item->pos() + offset);
+        }
+    }
+    rebuildSpatialIndex();
+
+    return itemList;
+}
+
+void CanvasItem::mute(bool mute)
+{
+    for (auto *element : std::as_const(m_elements)) {
+        if (auto *audioElement = qobject_cast<AudioOutputElement *>(element)) {
+            audioElement->mute(mute);
+        }
+    }
+}
+
+void CanvasItem::selectAll()
+{
+    for (int i = 0; i < m_elements.size(); ++i) {
+        auto *element = m_elements.at(i);
+        element->setSelected(true);
+        m_selectedIds.insert(elementId(element->id()));
+    }
+}
+
 void CanvasItem::buildDemoCircuit()
 {
     auto *switchA = new InputSwitch();
@@ -896,6 +1047,8 @@ void CanvasItem::detachWire(InputPort *endPort)
 
 void CanvasItem::mousePressEvent(QMouseEvent *event)
 {
+    m_lastMousePos = event->position();
+
     if (event->button() != Qt::LeftButton) {
         return;
     }
@@ -999,6 +1152,8 @@ void CanvasItem::mousePressEvent(QMouseEvent *event)
 
 void CanvasItem::mouseMoveEvent(QMouseEvent *event)
 {
+    m_lastMousePos = event->position();
+
     if (m_draggingElement) {
         const QPointF delta = event->position() - m_dragAnchor;
         for (int i = 0; i < m_dragElements.size(); ++i) {
@@ -1260,6 +1415,33 @@ void CanvasItem::keyPressEvent(QKeyEvent *event)
         }
         if (event->key() == Qt::Key_H) {
             flipHorizontally();
+            event->accept();
+            return;
+        }
+        // Clipboard/select-all: matches the real app's Ctrl+A/C/X/V/D shortcuts
+        // (MainWindowUI.cpp's setupUi()).
+        if (event->key() == Qt::Key_A) {
+            selectAll();
+            event->accept();
+            return;
+        }
+        if (event->key() == Qt::Key_C) {
+            copyAction();
+            event->accept();
+            return;
+        }
+        if (event->key() == Qt::Key_X) {
+            cutAction();
+            event->accept();
+            return;
+        }
+        if (event->key() == Qt::Key_V) {
+            pasteAction();
+            event->accept();
+            return;
+        }
+        if (event->key() == Qt::Key_D) {
+            duplicateAction();
             event->accept();
             return;
         }

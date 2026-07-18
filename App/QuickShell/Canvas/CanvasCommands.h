@@ -55,6 +55,11 @@ namespace CanvasCommandUtils {
 
     void storeIds(const QList<QGraphicsItem *> &items, QList<int> &ids);
     void storeOtherIds(const QList<QGraphicsItem *> &connections, const QList<int> &ids, QList<int> &otherIds);
+
+    /// Serializes \a items into \a stream (centroid + element data). Port of
+    /// ClipboardManager::serializeItems(); used by CanvasItem::copyAction()/cutAction()/
+    /// duplicateAction().
+    void serializeItems(const QList<QGraphicsItem *> &items, QDataStream &stream);
 }
 
 /**

@@ -372,6 +372,24 @@ void drainPortConnections(GraphicElement *elm, int fromPort, int toPort,
     }
 }
 
+void serializeItems(const QList<QGraphicsItem *> &items, QDataStream &stream)
+{
+    // Compute the centroid of all selected elements (not connections) so paste can place the
+    // clipboard contents relative to the cursor position.
+    QPointF center(0.0, 0.0);
+    int itemsQuantity = 0;
+
+    for (auto *item : items) {
+        if (item->type() == GraphicElement::Type) {
+            center += item->pos();
+            ++itemsQuantity;
+        }
+    }
+
+    stream << center / static_cast<qreal>(itemsQuantity);
+    Serialization::serialize(items, stream, {.purpose = SerializationPurpose::InMemorySnapshot});
+}
+
 }  // namespace CanvasCommandUtils
 
 CanvasAddItemsCommand::CanvasAddItemsCommand(const QList<QGraphicsItem *> &items, CanvasItem *canvas, QUndoCommand *parent)

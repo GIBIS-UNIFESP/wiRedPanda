@@ -9,6 +9,7 @@
 #pragma once
 
 #include <memory>
+#include <optional>
 
 #include <QPointF>
 #include <QQmlEngine>
@@ -29,6 +30,8 @@ class InputPort;
 class ItemWithId;
 class OutputPort;
 class Port;
+class QDataStream;
+class QGraphicsItem;
 class Simulation;
 class SimulationHost;
 struct SerializationContext;
@@ -214,6 +217,41 @@ public:
     /// bottommost elements fixed as anchors. No-op below 3 elements.
     void distributeVertically();
 
+    // --- Clipboard / mute / select-all (ports ClipboardManager's/Scene's equivalents) ---
+    //
+    // Ports copy/cut/paste/duplicate only -- ClipboardManager::cloneDrag() (Ctrl+drag) needs
+    // QGraphicsScene::render() for its drag-ghost image, the same category of dependency
+    // Phase 2 hit and fixed in ICRenderer::generatePreviewPixmap(), except here there's no
+    // default-safe fallback since the rendered ghost IS the feature; tracked as a named
+    // follow-up, not ported here (see the plan's "Phase 3 in depth" section). Blob-registry
+    // inclusion (copy/cut of embedded ICs, paste's blob import) is also deferred: it needs
+    // this canvas's own ICRegistry, which doesn't exist until the IC-embedding sub-step.
+    // Selection itself is element-only here (SpatialIndex::queryRect()'s rubber-band already
+    // excludes wire ids, see updateSelectionRect()'s doc comment), so unlike the real
+    // ClipboardManager, copying two wired elements without a chrome-driven wire selection
+    // won't carry the wire between them -- an inherited Phase 1 selection-model limitation,
+    // not a new gap from this port.
+
+    /// Copies the selected elements to the system clipboard. Mirrors Scene::copyAction().
+    void copyAction();
+    /// Cuts the selected elements (copy + delete). Mirrors Scene::cutAction().
+    void cutAction();
+    /// Pastes elements from the system clipboard, offset from the last known cursor position.
+    /// Mirrors Scene::pasteAction().
+    void pasteAction();
+    /// Duplicates the current selection in place (one grid step down-right), without touching
+    /// the system clipboard; the copies become the new selection. Mirrors Scene::duplicateAction().
+    void duplicateAction();
+
+    /// Mutes or unmutes every AudioOutputElement on the canvas. Mirrors Scene::mute().
+    void mute(bool mute = true);
+    /// Selects every element on the canvas. Mirrors Scene::selectAll().
+    void selectAll();
+
+    /// Last known cursor position in canvas coordinates, updated on every mouse press/move.
+    /// Mirrors Scene::mousePos(); used to place pasted elements relative to the cursor.
+    [[nodiscard]] QPointF mousePos() const { return m_lastMousePos; }
+
 protected:
     /// \reimp Builds the batched geometry nodes (gates, wires, selection overlay) from current state.
     QSGNode *updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data) override;
@@ -275,6 +313,14 @@ private:
     /// enough for every element family except Display7/14/16 (not yet ported).
     static QString appearanceKeyFor(GraphicElement *element);
 
+    /// Shared by pasteAction()/duplicateAction(): deserializes from \a stream and adds the
+    /// result via CanvasAddItemsCommand. Without \a fixedOffset the new items are placed
+    /// relative to the cursor (paste); with it they are shifted by exactly that vector from
+    /// the originals (duplicate). Returns the items added. Mirrors ClipboardManager::
+    /// deserializeAndAdd().
+    QList<QGraphicsItem *> deserializeAndAdd(QDataStream &stream, const QVersionNumber &version,
+                                             std::optional<QPointF> fixedOffset = std::nullopt);
+
     std::unique_ptr<SimulationHost> m_host;
     std::unique_ptr<Simulation> m_simulation;
     QVector<GraphicElement *> m_elements; // owned; never added to a QGraphicsScene
@@ -325,6 +371,9 @@ private:
     bool m_markingSelectionBox = false;
     QPointF m_selectionAnchor;
     QRectF m_selectionRect;
+
+    /// Last known cursor position, updated on every mouse press/move -- backs mousePos().
+    QPointF m_lastMousePos;
 
     /// Offscreen-render cache backing real per-element appearance (Phase 2) -- see this
     /// class's doc comment and TextureAtlas's own for the design.
