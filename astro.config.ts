@@ -2,6 +2,7 @@ import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import icon from 'astro-icon';
 import sitemap from '@astrojs/sitemap';
+import { languages, defaultLocale } from './src/i18n';
 
 // https://astro.build/config
 export default defineConfig({
@@ -10,48 +11,10 @@ export default defineConfig({
   base: '/wiRedPanda/',
   integrations: [icon(), sitemap()],
   i18n: {
-    defaultLocale: 'en',
-    locales: [
-      'en',
-      'pt-br',
-      'es',
-      'zh',
-      'ja',
-      'fr',
-      'de',
-      'ar',
-      'bg',
-      'bn',
-      'cs',
-      'da',
-      'el',
-      'et',
-      'fa',
-      'fi',
-      'he',
-      'hi',
-      'hr',
-      'hu',
-      'id',
-      'it',
-      'ko',
-      'lt',
-      'lv',
-      'ms',
-      'nb',
-      'nl',
-      'pl',
-      'pt',
-      'ro',
-      'ru',
-      'sk',
-      'sv',
-      'th',
-      'tr',
-      'uk',
-      'vi',
-      'zh-hant',
-    ],
+    defaultLocale,
+    // Single source of truth: src/i18n/index.ts's `languages` map, so this
+    // list can't silently drift from the one routing/translations actually use.
+    locales: Object.keys(languages),
     routing: {
       prefixDefaultLocale: false,
       redirectToDefaultLocale: false,
