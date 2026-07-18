@@ -315,6 +315,13 @@ public:
     /// Loads and applies the appearance at position \a index in the appearance list.
     void setPixmap(const int index);
 
+    /// Returns a cheap, stable identity for the currently displayed pixmap's content
+    /// (`QPixmap::cacheKey()` — shared by any other `QPixmap` holding the same data, changes
+    /// whenever the displayed pixmap actually changes). Used by the Qt Quick canvas's
+    /// offscreen-render texture atlas to build a per-appearance cache key without reaching
+    /// into `ElementAppearance`'s private path-tracking state.
+    qint64 appearanceCacheKey() const { return m_appearance.pixmap().cacheKey(); }
+
     // --- Truth Table ---
 
     /// Returns \c true if this element type has an editable truth table.

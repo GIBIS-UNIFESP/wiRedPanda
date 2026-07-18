@@ -6,8 +6,11 @@
 #include <QColor>
 #include <QHoverEvent>
 #include <QMouseEvent>
+#include <QPainter>
+#include <QQuickWindow>
 #include <QSGGeometry>
 #include <QSGGeometryNode>
+#include <QSGTextureMaterial>
 #include <QSGVertexColorMaterial>
 
 #include "App/Core/Enums.h"
@@ -77,20 +80,6 @@ QColor colorForStatus(const Status status)
     return QColor(120, 120, 120);
 }
 
-/// The status this prototype renders an element's own color from: its first output when it
-/// has one (switches, the AND gate), otherwise its first input (Led, a pure sink with no
-/// outputs of its own).
-Status representativeStatus(const GraphicElement *element)
-{
-    if (element->outputSize() > 0) {
-        return element->outputValue(0);
-    }
-    if (element->inputSize() > 0) {
-        return element->inputPort(0)->status();
-    }
-    return Status::Unknown;
-}
-
 void appendQuad(QSGGeometry::ColoredPoint2D *vertices, int &cursor, const QRectF &rect, const QColor &color)
 {
     const auto r = uchar(color.red());
@@ -109,6 +98,27 @@ void appendQuad(QSGGeometry::ColoredPoint2D *vertices, int &cursor, const QRectF
     vertices[cursor++].set(right, top, r, g, b, a);
     vertices[cursor++].set(right, bottom, r, g, b, a);
     vertices[cursor++].set(left, bottom, r, g, b, a);
+}
+
+/// Same two-triangle quad as appendQuad(), but textured (position + UV) instead of flat-colored
+/// -- used for real per-element appearance drawn through TextureAtlas.
+void appendTexturedQuad(QSGGeometry::TexturedPoint2D *vertices, int &cursor, const QRectF &rect, const QRectF &uv)
+{
+    const float left = float(rect.left());
+    const float top = float(rect.top());
+    const float right = float(rect.right());
+    const float bottom = float(rect.bottom());
+    const float u0 = float(uv.left());
+    const float v0 = float(uv.top());
+    const float u1 = float(uv.right());
+    const float v1 = float(uv.bottom());
+
+    vertices[cursor++].set(left, top, u0, v0);
+    vertices[cursor++].set(right, top, u1, v0);
+    vertices[cursor++].set(left, bottom, u0, v1);
+    vertices[cursor++].set(right, top, u1, v0);
+    vertices[cursor++].set(right, bottom, u1, v1);
+    vertices[cursor++].set(left, bottom, u0, v1);
 }
 
 /// Local undo command for the drag gesture -- see CanvasItem's doc comment for why this
@@ -274,6 +284,21 @@ void CanvasItem::toggleIfInput(GraphicElement *element)
     if (auto *inputSwitch = qobject_cast<InputSwitch *>(element)) {
         inputSwitch->setOn(!inputSwitch->isOn(), 0);
     }
+}
+
+QString CanvasItem::appearanceKeyFor(GraphicElement *element)
+{
+    // appearanceCacheKey() alone already distinguishes different elements showing different
+    // pixmaps (and correctly *shares* a cache entry between elements showing identical ones,
+    // e.g. two unrotated And gates) since it tracks the live QPixmap's own identity -- see
+    // this class's doc comment for why that's enough for every ported family except
+    // Display7/14/16, whose segment overlays paint on top of an unchanged base pixmap.
+    return QStringLiteral("%1|%2|%3|%4|%5")
+        .arg(element->appearanceCacheKey())
+        .arg(element->rotation())
+        .arg(element->isFlippedX())
+        .arg(element->isFlippedY())
+        .arg(element->isSelected());
 }
 
 void CanvasItem::startWireFromOutput(OutputPort *startPort)
@@ -448,11 +473,15 @@ void CanvasItem::mousePressEvent(QMouseEvent *event)
 
     if (event->modifiers().testFlag(Qt::ControlModifier)) {
         // Ctrl+click toggles individual membership in the selection, mirroring
-        // SceneInteraction::mousePress's "item->setSelected(!item->isSelected())".
+        // SceneInteraction::mousePress's "item->setSelected(!item->isSelected())" -- including
+        // the real QGraphicsItem::setSelected() flag, so real paint()'s own selection-outline
+        // drawing (ElementAppearance::render()'s `if (selected) {...}` branch) reflects it.
         if (m_selectedIds.contains(topHit)) {
             m_selectedIds.remove(topHit);
+            element->setSelected(false);
         } else {
             m_selectedIds.insert(topHit);
+            element->setSelected(true);
         }
     }
 
@@ -561,7 +590,13 @@ void CanvasItem::startSelectionRect(const QPointF &anchor)
     m_selectionRect = QRectF(anchor, anchor);
     // A fresh rubber-band replaces the previous selection, matching the baseline (no
     // modifier-driven add/subtract) rubber-band behavior -- SceneInteraction's own
-    // setSelectionArea() call has the same replace semantics by default.
+    // setSelectionArea() call has the same replace semantics by default. Clear the real
+    // QGraphicsItem::setSelected() flag too, so real paint()'s selection outline matches.
+    for (const quint64 id : std::as_const(m_selectedIds)) {
+        if (auto *element = m_elementsById.value(id, nullptr)) {
+            element->setSelected(false);
+        }
+    }
     m_selectedIds.clear();
 }
 
@@ -571,12 +606,31 @@ void CanvasItem::updateSelectionRect(const QPointF &current)
     // Mirrors SceneInteraction::mouseMove's "m_scene->setSelectionArea(selectionBox)":
     // SpatialIndex::queryRect() is this canvas's equivalent intersects-shape query.
     const auto hits = m_index.queryRect(m_selectionRect);
-    m_selectedIds.clear();
+    QSet<quint64> newSelection;
     for (const quint64 id : hits) {
         if (m_elementsById.contains(id)) { // exclude wire ids -- only elements are selectable
-            m_selectedIds.insert(id);
+            newSelection.insert(id);
         }
     }
+
+    // Sync the real QGraphicsItem::setSelected() flag for exactly the delta -- elements
+    // leaving the rubber band vs. entering it -- rather than clearing everything and
+    // resetting, so this stays correct even if called every mouse-move during a drag.
+    for (const quint64 id : std::as_const(m_selectedIds)) {
+        if (!newSelection.contains(id)) {
+            if (auto *element = m_elementsById.value(id, nullptr)) {
+                element->setSelected(false);
+            }
+        }
+    }
+    for (const quint64 id : std::as_const(newSelection)) {
+        if (!m_selectedIds.contains(id)) {
+            if (auto *element = m_elementsById.value(id, nullptr)) {
+                element->setSelected(true);
+            }
+        }
+    }
+    m_selectedIds = std::move(newSelection);
 }
 
 void CanvasItem::finishSelectionRect()
@@ -611,15 +665,18 @@ QSGNode *CanvasItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
     auto *root = oldNode ? oldNode : new QSGNode();
     if (!oldNode) {
         auto *wireNode = new QSGGeometryNode();
-        auto *gateNode = new QSGGeometryNode();
+        auto *hoverNode = new QSGGeometryNode(); // hover highlight, underneath the gate it highlights
+        auto *gateNode = new QSGGeometryNode();  // real per-element appearance, textured
         auto *overlayNode = new QSGGeometryNode(); // live rubber-band rect, paints on top of everything
-        root->appendChildNode(wireNode); // wires paint first, gates on top
+        root->appendChildNode(wireNode); // wires paint first
+        root->appendChildNode(hoverNode);
         root->appendChildNode(gateNode);
         root->appendChildNode(overlayNode);
     }
 
     QSGNode *wireNode = root->firstChild();
-    QSGNode *gateNode = wireNode->nextSibling();
+    QSGNode *hoverNode = wireNode->nextSibling();
+    QSGNode *gateNode = hoverNode->nextSibling();
     QSGNode *overlayNode = gateNode->nextSibling();
 
     // --- Wires: one QSGGeometryNode, GL_LINES, colored by the driving port's live status.
@@ -664,40 +721,80 @@ QSGNode *CanvasItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
         }
     }
 
-    // --- Gates: one QSGGeometryNode, GL_TRIANGLES. Each selected element gets an extra
-    // padded underlay quad drawn just before its own (mirrors ElementAppearance::render()'s
-    // real selection treatment: a rounded selection-brush rect drawn behind the body before
-    // the body itself). Plain fill color reflects live simulation state; hover brightens it. ---
+    // --- Hover highlight: a padded translucent quad under the hovered element only, in place
+    // of the flat-color brightening this prototype used before real appearance rendering --
+    // a QSGTextureMaterial has no per-vertex tint to brighten, so this is a separate underlay,
+    // the same technique the marquee/selection overlays already use. ---
     {
-        const int vertexCount = int(m_elements.size() + m_selectedIds.size()) * 6;
+        GraphicElement *hovered = m_elementsById.value(m_hoveredId, nullptr);
+        const int vertexCount = hovered ? 6 : 0;
         auto *geometry = new QSGGeometry(QSGGeometry::defaultAttributes_ColoredPoint2D(), vertexCount);
         geometry->setDrawingMode(QSGGeometry::DrawTriangles);
-        QSGGeometry::ColoredPoint2D *vertices = geometry->vertexDataAsColoredPoint2D();
+        if (hovered) {
+            QSGGeometry::ColoredPoint2D *vertices = geometry->vertexDataAsColoredPoint2D();
+            int cursor = 0;
+            static const QColor kHoverColor(255, 255, 255, 90);
+            const QRectF worldRect = hovered->boundingRect().translated(hovered->pos());
+            appendQuad(vertices, cursor, worldRect.adjusted(-4, -4, 4, 4), kHoverColor);
+        }
+        static_cast<QSGGeometryNode *>(hoverNode)->setGeometry(geometry);
+        static_cast<QSGGeometryNode *>(hoverNode)->setFlag(QSGNode::OwnsGeometry);
+        if (!static_cast<QSGGeometryNode *>(hoverNode)->material()) {
+            auto *material = new QSGVertexColorMaterial();
+            static_cast<QSGGeometryNode *>(hoverNode)->setMaterial(material);
+            static_cast<QSGGeometryNode *>(hoverNode)->setFlag(QSGNode::OwnsMaterial);
+        }
+    }
+
+    // --- Gates: one QSGGeometryNode, GL_TRIANGLES, textured. Real per-element appearance --
+    // each element's own real, unmodified paint() (dispatched polymorphically) rendered
+    // offscreen and cached via m_atlas; see this class's doc comment. Selection is now the
+    // real QGraphicsItem::setSelected() flag baked into that paint() call (real
+    // ElementAppearance::render() draws its own selection-outline rectangle), not a separate
+    // underlay quad like Phase 1's flat-colored placeholder used. ---
+    {
+        struct PlacedTile {
+            QRectF worldRect;
+            QRectF uv;
+        };
+        QVector<PlacedTile> placed;
+        placed.reserve(m_elements.size());
+
+        for (auto *element : std::as_const(m_elements)) {
+            const QRectF localRect = element->boundingRect();
+            const QSize tileSize = localRect.size().toSize();
+            const QString key = appearanceKeyFor(element);
+            const auto tile = m_atlas.lookup(key, tileSize, [element](QPainter &painter) {
+                painter.translate(-element->boundingRect().topLeft());
+                element->paint(&painter, nullptr, nullptr);
+            });
+            if (!tile.isValid()) {
+                continue; // atlas page full or a degenerate (empty) boundingRect -- skip, don't crash
+            }
+            placed.append(PlacedTile{localRect.translated(element->pos()), tile.uv});
+        }
+
+        auto *geometry = new QSGGeometry(QSGGeometry::defaultAttributes_TexturedPoint2D(), int(placed.size()) * 6);
+        geometry->setDrawingMode(QSGGeometry::DrawTriangles);
+        QSGGeometry::TexturedPoint2D *vertices = geometry->vertexDataAsTexturedPoint2D();
         int cursor = 0;
-        for (int i = 0; i < m_elements.size(); ++i) {
-            GraphicElement *element = m_elements.at(i);
-            const quint64 id = elementId(i);
-            const QRectF worldRect = element->boundingRect().translated(element->pos());
-
-            if (m_selectedIds.contains(id)) {
-                static const QColor kSelectionColor(33, 150, 243, 140); // translucent blue underlay
-                const QRectF padded = worldRect.adjusted(-4, -4, 4, 4);
-                appendQuad(vertices, cursor, padded, kSelectionColor);
-            }
-
-            QColor color = colorForStatus(representativeStatus(element));
-            if (id == m_hoveredId) {
-                color = color.lighter(150); // hover highlight: brighten the batched fill in place
-            }
-            appendQuad(vertices, cursor, worldRect, color);
+        for (const auto &tile : std::as_const(placed)) {
+            appendTexturedQuad(vertices, cursor, tile.worldRect, tile.uv);
         }
         static_cast<QSGGeometryNode *>(gateNode)->setGeometry(geometry);
         static_cast<QSGGeometryNode *>(gateNode)->setFlag(QSGNode::OwnsGeometry);
-        if (!static_cast<QSGGeometryNode *>(gateNode)->material()) {
-            auto *material = new QSGVertexColorMaterial();
+
+        auto *material = static_cast<QSGTextureMaterial *>(static_cast<QSGGeometryNode *>(gateNode)->material());
+        if (!material) {
+            material = new QSGTextureMaterial();
             static_cast<QSGGeometryNode *>(gateNode)->setMaterial(material);
             static_cast<QSGGeometryNode *>(gateNode)->setFlag(QSGNode::OwnsMaterial);
         }
+        // The atlas page may have been re-uploaded (new tile this frame); refresh the
+        // material's texture pointer every frame regardless -- texture() only actually
+        // re-uploads when its own dirty flag is set (see its doc comment), so calling it
+        // unconditionally here is cheap and avoids tracking staleness a second time.
+        material->setTexture(m_atlas.texture(window()));
     }
 
     // --- Rubber-band overlay: translucent quad over the live selection rect, only while

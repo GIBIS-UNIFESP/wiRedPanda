@@ -8,6 +8,8 @@ set(QUICK_SHELL_SOURCES
     Canvas/CanvasItem.h
     Canvas/SpatialIndex.cpp
     Canvas/SpatialIndex.h
+    Canvas/TextureAtlas.cpp
+    Canvas/TextureAtlas.h
     Main.cpp
 )
 
