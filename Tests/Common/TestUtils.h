@@ -20,6 +20,17 @@
 #  define QVERIFY_THROWS(exType, ...) QVERIFY_EXCEPTION_THROWN(__VA_ARGS__, exType)
 #endif
 
+// Qt 6.12 deprecated QDragEnterEvent's QPoint-based constructor in favour of a new
+// QPointF overload; the QPointF overload doesn't exist before 6.12, so this can't be a
+// plain call-site swap without dropping support for older Qt.
+#if QT_VERSION >= QT_VERSION_CHECK(6, 12, 0)
+#  define MAKE_DRAG_ENTER_EVENT(name, pos, actions, data, buttons, modifiers) \
+    QDragEnterEvent name(QPointF(pos), actions, data, buttons, modifiers)
+#else
+#  define MAKE_DRAG_ENTER_EVENT(name, pos, actions, data, buttons, modifiers) \
+    QDragEnterEvent name(pos, actions, data, buttons, modifiers)
+#endif
+
 #include "App/Core/Common.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Scene/Scene.h"
