@@ -9,6 +9,7 @@
 #include <QColor>
 #include <QGuiApplication>
 #include <QHoverEvent>
+#include <QIODevice>
 #include <QKeyEvent>
 #include <QMimeData>
 #include <QMouseEvent>
@@ -291,12 +292,10 @@ SerializationContext CanvasItem::deserializationContext(QHash<quint64, Port *> &
                                                          const QVersionNumber &version,
                                                          SerializationPurpose purpose)
 {
-    // contextDir stays empty: this canvas has no notion of "the directory of the loaded
-    // .panda file" yet -- nothing here loads a top-level file through this context (IC's own
-    // loadFile()/loadFromBlob() calls, used by buildDemoCircuit()'s demo IC, resolve paths
-    // through InstallRelativePaths/their own file argument instead). blobRegistry stays null
-    // until the IC embedding sub-step gives this canvas a real blob map.
-    return SerializationContext{.portMap = portMap, .version = version, .purpose = purpose};
+    // contextDir stays empty -- a real, confirmed gap, see this method's header doc comment.
+    SerializationContext context{.portMap = portMap, .version = version, .purpose = purpose};
+    context.blobRegistry = &m_icRegistry.blobMapRef();
+    return context;
 }
 
 QList<GraphicElement *> CanvasItem::selectedElements() const

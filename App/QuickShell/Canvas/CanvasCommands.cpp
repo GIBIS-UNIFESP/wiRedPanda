@@ -13,6 +13,7 @@
 #include "App/Element/GraphicElement.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
+#include "App/QuickShell/Canvas/CanvasICRegistry.h"
 #include "App/QuickShell/Canvas/CanvasItem.h"
 #include "App/Simulation/SimulationBlocker.h"
 #include "App/Wiring/Connection.h"
@@ -638,4 +639,210 @@ void CanvasChangePortSizeCommand::undo()
     }
 
     m_canvas->restartSimulation();
+}
+
+// --- CanvasRegisterBlobCommand ---
+
+CanvasRegisterBlobCommand::CanvasRegisterBlobCommand(const QString &blobName, const QByteArray &data, CanvasItem *canvas, QUndoCommand *parent)
+    : QUndoCommand(parent)
+    , m_blobName(blobName)
+    , m_data(data)
+    , m_canvas(canvas)
+{
+}
+
+void CanvasRegisterBlobCommand::redo()
+{
+    m_canvas->icRegistry()->registerBlob(m_blobName, m_data);
+}
+
+void CanvasRegisterBlobCommand::undo()
+{
+    m_canvas->icRegistry()->removeBlob(m_blobName);
+}
+
+// --- CanvasRemoveBlobCommand ---
+
+CanvasRemoveBlobCommand::CanvasRemoveBlobCommand(const QString &blobName, CanvasItem *canvas, QUndoCommand *parent)
+    : QUndoCommand(parent)
+    , m_blobName(blobName)
+    , m_data(canvas->icRegistry()->blob(blobName))
+    , m_canvas(canvas)
+{
+}
+
+void CanvasRemoveBlobCommand::redo()
+{
+    m_canvas->icRegistry()->removeBlob(m_blobName);
+}
+
+void CanvasRemoveBlobCommand::undo()
+{
+    m_canvas->icRegistry()->setBlob(m_blobName, m_data);
+}
+
+// --- CanvasRenameBlobCommand ---
+
+CanvasRenameBlobCommand::CanvasRenameBlobCommand(const QString &oldName, const QString &newName, CanvasItem *canvas, QUndoCommand *parent)
+    : QUndoCommand(parent)
+    , m_oldName(oldName)
+    , m_newName(newName)
+    , m_canvas(canvas)
+{
+}
+
+void CanvasRenameBlobCommand::redo()
+{
+    m_canvas->icRegistry()->renameBlob(m_oldName, m_newName);
+}
+
+void CanvasRenameBlobCommand::undo()
+{
+    m_canvas->icRegistry()->renameBlob(m_newName, m_oldName);
+}
+
+// --- CanvasUpdateBlobCommand ---
+
+QList<CanvasUpdateBlobCommand::ConnectionInfo> CanvasUpdateBlobCommand::captureConnections(const QList<GraphicElement *> &targets)
+{
+    QList<ConnectionInfo> connections;
+    for (auto *target : targets) {
+        for (int i = 0; i < target->inputSize(); ++i) {
+            for (auto *conn : target->inputPort(i)->connections()) {
+                auto *otherPort = conn->startPort();
+                if (otherPort && otherPort->graphicElement()) {
+                    connections.append({conn->id(), target->id(), i, true,
+                                        otherPort->graphicElement()->id(), otherPort->index()});
+                }
+            }
+        }
+        for (int i = 0; i < target->outputSize(); ++i) {
+            for (auto *conn : target->outputPort(i)->connections()) {
+                auto *otherPort = conn->endPort();
+                if (otherPort && otherPort->graphicElement()) {
+                    connections.append({conn->id(), target->id(), i, false,
+                                        otherPort->graphicElement()->id(), otherPort->index()});
+                }
+            }
+        }
+    }
+    return connections;
+}
+
+CanvasUpdateBlobCommand::CanvasUpdateBlobCommand(const QList<GraphicElement *> &elements, const QByteArray &oldData,
+                                                 const QList<ConnectionInfo> &connections, CanvasItem *canvas, QUndoCommand *parent)
+    : CanvasElementsCommand(elements, canvas, parent)
+    , m_oldData(oldData)
+    , m_connections(connections)
+{
+    QDataStream stream(&m_newData, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(stream);
+
+    for (auto *elm : elements) {
+        elm->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
+    }
+
+    if (!elements.isEmpty()) {
+        m_blobName = elements.first()->blobName();
+        m_newBlob = m_canvas->icRegistry()->blob(m_blobName);
+    }
+}
+
+void CanvasUpdateBlobCommand::redo()
+{
+    SimulationBlocker blocker(m_canvas->simulation());
+    auto *reg = m_canvas->icRegistry();
+
+    if (!m_blobName.isEmpty()) {
+        if (m_newBlob.isEmpty()) {
+            reg->removeBlob(m_blobName);
+        } else {
+            reg->setBlob(m_blobName, m_newBlob);
+        }
+    }
+    loadData(m_newData);
+    reconnectConnections();
+    m_canvas->restartSimulation();
+}
+
+void CanvasUpdateBlobCommand::undo()
+{
+    SimulationBlocker blocker(m_canvas->simulation());
+    auto *reg = m_canvas->icRegistry();
+
+    if (!m_blobName.isEmpty()) {
+        if (m_oldBlob.isEmpty()) {
+            reg->removeBlob(m_blobName);
+        } else {
+            reg->setBlob(m_blobName, m_oldBlob);
+        }
+    }
+    loadData(m_oldData);
+    reconnectConnections();
+    m_canvas->restartSimulation();
+}
+
+void CanvasUpdateBlobCommand::loadData(QByteArray &itemData)
+{
+    const auto elems = elements();
+    if (elems.isEmpty()) {
+        return;
+    }
+
+    QDataStream stream(&itemData, QIODevice::ReadOnly);
+    QVersionNumber version = Serialization::readPandaHeader(stream);
+
+    QHash<quint64, Port *> portMap;
+    auto context = m_canvas->deserializationContext(portMap, version, SerializationPurpose::InMemorySnapshot);
+
+    for (auto *elm : elems) {
+        elm->load(stream, context);
+        elm->setSelected(true);
+    }
+}
+
+void CanvasUpdateBlobCommand::reconnectConnections()
+{
+    for (const auto &ci : std::as_const(m_connections)) {
+        auto *elm = dynamic_cast<GraphicElement *>(m_canvas->itemById(ci.elementId));
+        auto *otherElm = dynamic_cast<GraphicElement *>(m_canvas->itemById(ci.otherElementId));
+        if (!elm || !otherElm) {
+            continue;
+        }
+
+        InputPort *inPort = nullptr;
+        OutputPort *outPort = nullptr;
+
+        if (ci.isInput) {
+            inPort = (ci.portIndex >= 0 && ci.portIndex < elm->inputSize()) ? elm->inputPort(ci.portIndex) : nullptr;
+            outPort = (ci.otherPortIndex >= 0 && ci.otherPortIndex < otherElm->outputSize()) ? otherElm->outputPort(ci.otherPortIndex) : nullptr;
+        } else {
+            outPort = (ci.portIndex >= 0 && ci.portIndex < elm->outputSize()) ? elm->outputPort(ci.portIndex) : nullptr;
+            inPort = (ci.otherPortIndex >= 0 && ci.otherPortIndex < otherElm->inputSize()) ? otherElm->inputPort(ci.otherPortIndex) : nullptr;
+        }
+
+        if (!inPort || !outPort) {
+            // Port shrunk: the Connection that occupied this slot was cascade-deleted when
+            // the IC's port was destroyed. Undo restores the port count and recreates the
+            // connection with the original id below.
+            continue;
+        }
+
+        bool alreadyConnected = false;
+        for (auto *conn : inPort->connections()) {
+            if (conn->startPort() == outPort) {
+                alreadyConnected = true;
+                break;
+            }
+        }
+        if (alreadyConnected) {
+            continue;
+        }
+
+        auto *conn = new Connection();
+        conn->setStartPort(outPort);
+        conn->setEndPort(inPort);
+        m_canvas->updateItemId(conn, ci.connectionId);
+        m_canvas->addItem(conn);
+    }
 }

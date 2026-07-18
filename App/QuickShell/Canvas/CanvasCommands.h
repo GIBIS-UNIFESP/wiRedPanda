@@ -237,3 +237,104 @@ private:
     int m_newPortSize;
     bool m_isInput;
 };
+
+/**
+ * \class CanvasRegisterBlobCommand
+ * \brief Port of Commands.h's RegisterBlobCommand: registers/unregisters a blob in this
+ * canvas's ICRegistry port. Used with beginMacro/endMacro to pair blob registration with
+ * CanvasAddItemsCommand when creating new embedded ICs (see CanvasICRegistry::createEmbeddedIC()).
+ */
+class CanvasRegisterBlobCommand : public QUndoCommand
+{
+public:
+    CanvasRegisterBlobCommand(const QString &blobName, const QByteArray &data, CanvasItem *canvas, QUndoCommand *parent = nullptr);
+
+    void redo() override;
+    void undo() override;
+
+private:
+    QString m_blobName;
+    QByteArray m_data;
+    CanvasItem *m_canvas;
+};
+
+/**
+ * \class CanvasRemoveBlobCommand
+ * \brief Port of Commands.h's RemoveBlobCommand: removes/restores a blob. Inverse of
+ * CanvasRegisterBlobCommand.
+ */
+class CanvasRemoveBlobCommand : public QUndoCommand
+{
+public:
+    CanvasRemoveBlobCommand(const QString &blobName, CanvasItem *canvas, QUndoCommand *parent = nullptr);
+
+    void redo() override;
+    void undo() override;
+
+private:
+    QString m_blobName;
+    QByteArray m_data;
+    CanvasItem *m_canvas;
+};
+
+/**
+ * \class CanvasRenameBlobCommand
+ * \brief Port of Commands.h's RenameBlobCommand: renames a blob in this canvas's ICRegistry port.
+ */
+class CanvasRenameBlobCommand : public QUndoCommand
+{
+public:
+    CanvasRenameBlobCommand(const QString &oldName, const QString &newName, CanvasItem *canvas, QUndoCommand *parent = nullptr);
+
+    void redo() override;
+    void undo() override;
+
+private:
+    QString m_oldName;
+    QString m_newName;
+    CanvasItem *m_canvas;
+};
+
+/**
+ * \class CanvasUpdateBlobCommand
+ * \brief Port of Commands.h's UpdateBlobCommand: embedded IC blob changes that may alter port
+ * counts. Captures connection topology before the change so connections to removed ports can
+ * be restored on undo.
+ */
+class CanvasUpdateBlobCommand : public CanvasElementsCommand
+{
+public:
+    struct ConnectionInfo {
+        int connectionId;
+        int elementId;
+        int portIndex;
+        bool isInput;
+        int otherElementId;
+        int otherPortIndex;
+    };
+
+    explicit CanvasUpdateBlobCommand(const QList<GraphicElement *> &elements, const QByteArray &oldData,
+                                     const QList<ConnectionInfo> &connections, CanvasItem *canvas, QUndoCommand *parent = nullptr);
+
+    /// Captures connection topology for all target elements before a blob operation.
+    static QList<ConnectionInfo> captureConnections(const QList<GraphicElement *> &targets);
+
+    /// Sets the old blob data for registry swap on undo.
+    void setOldBlob(const QByteArray &blob) { m_oldBlob = blob; }
+    /// Overrides the blob name (needed when elements are already file-backed at construction time).
+    void setBlobName(const QString &name) { m_blobName = name; }
+
+    void redo() override;
+    void undo() override;
+
+private:
+    void loadData(QByteArray &itemData);
+    void reconnectConnections();
+
+    QByteArray m_oldData;
+    QByteArray m_newData;
+    QByteArray m_oldBlob;
+    QByteArray m_newBlob;
+    QString m_blobName;
+    QList<ConnectionInfo> m_connections;
+};

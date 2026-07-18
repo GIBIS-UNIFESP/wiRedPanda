@@ -6,6 +6,8 @@
 set(QUICK_SHELL_SOURCES
     Canvas/CanvasCommands.cpp
     Canvas/CanvasCommands.h
+    Canvas/CanvasICRegistry.cpp
+    Canvas/CanvasICRegistry.h
     Canvas/CanvasItem.cpp
     Canvas/CanvasItem.h
     Canvas/SpatialIndex.cpp

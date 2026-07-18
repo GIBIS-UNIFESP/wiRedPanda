@@ -20,6 +20,7 @@
 #include <QVector>
 #include <QVersionNumber>
 
+#include "App/QuickShell/Canvas/CanvasICRegistry.h"
 #include "App/QuickShell/Canvas/SpatialIndex.h"
 #include "App/QuickShell/Canvas/TextureAtlas.h"
 #include "App/Scene/SceneItemRegistry.h"
@@ -151,8 +152,18 @@ public:
     void removeItem(Connection *connection);
     /// Builds a deserialization context for this canvas -- thin wrapper around the already-
     /// portable SerializationContext, mirroring Scene::deserializationContext(). \a purpose has
-    /// no default, matching Scene's own signature. blobRegistry stays null until the IC
-    /// embedding sub-step (Phase 3's ICRegistry port) gives this canvas a real blob map.
+    /// no default, matching Scene's own signature. blobRegistry now points at this canvas's
+    /// real CanvasICRegistry blob map. contextDir stays empty, a real, confirmed gap (not just
+    /// "nothing loads a top-level file through this yet"): any element whose state includes a
+    /// nested relative-path file reference (e.g. an IC embedding another file-backed IC by
+    /// relative path) fails to re-resolve that path once it round-trips through this context --
+    /// which every Add/Delete/Update/paste/duplicate/undo/redo does. Confirmed via a crash
+    /// (Pandaception: file not found) when a diagnostic exercised exactly this case; worked
+    /// around there by using a self-contained fixture instead of fixing the root cause here --
+    /// this canvas has no notion of "the directory of the loaded top-level .panda file" yet
+    /// because nothing loads one through Workspace/Serialization onto this canvas (see the
+    /// plan's Verification section on that still-open gap). Needs a real contextDir concept
+    /// (mirroring Scene::contextDir()/setContextDir()) once that lands.
     [[nodiscard]] SerializationContext deserializationContext(QHash<quint64, Port *> &portMap,
                                                                const QVersionNumber &version,
                                                                SerializationPurpose purpose);
@@ -160,10 +171,19 @@ public:
     /// Returns the currently selected elements. Mirrors Scene::selectedElements(); used by
     /// this class's local command classes and by keyPressEvent()'s shortcut dispatch.
     [[nodiscard]] QList<GraphicElement *> selectedElements() const;
+    /// Returns all elements on the canvas, unsorted. Mirrors Scene::unsortedElements(); used
+    /// by CanvasICRegistry's findICsByBlobName()/renameBlob() element scans.
+    [[nodiscard]] const QVector<GraphicElement *> &elements() const { return m_elements; }
     /// Pushes \a cmd onto this canvas's undo stack (immediately executes its redo()) and
     /// resyncs the spatial index/repaints via the indexChanged connection set up in the
     /// constructor. Mirrors Scene::receiveCommand().
     void receiveCommand(QUndoCommand *cmd);
+    /// Returns this canvas's undo stack. Mirrors Scene::undoStack(); used by
+    /// CanvasICRegistry::createEmbeddedIC() to macro a blob-register with an item-add.
+    [[nodiscard]] QUndoStack *undoStack() { return &m_undoStack; }
+
+    /// Returns the embedded-IC blob registry for this canvas. Mirrors Scene::icRegistry().
+    [[nodiscard]] CanvasICRegistry *icRegistry() { return &m_icRegistry; }
 
     /// Returns the simulation engine driving this canvas. Mirrors Scene::simulation(); used by
     /// this class's local command classes to wrap topology-mutating redo()/undo() bodies in a
@@ -335,6 +355,10 @@ private:
     /// doc comment above those declarations. SceneItemRegistry itself is ported unmodified
     /// (confirmed Widgets-free: a bare QHash<int, ItemWithId *> plus a monotonic counter).
     SceneItemRegistry m_itemRegistry;
+
+    /// Embedded-IC blob registry backing icRegistry() -- see CanvasICRegistry's own doc
+    /// comment for what's ported vs. deliberately narrower than production ICRegistry.
+    CanvasICRegistry m_icRegistry{this};
 
     /// The wire currently being dragged into place, or nullptr. Owned here directly (not
     /// added to m_connections) until tryCompleteWire() commits it -- mirrors
