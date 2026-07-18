@@ -16,7 +16,9 @@
 #include <QStringList>
 #include <QVariantList>
 
+#include "App/Core/Enums.h"
 #include "App/IO/RecentFiles.h"
+#include "App/QuickShell/Chrome/QuickElementPalette.h"
 #include "App/QuickShell/Chrome/QuickExportController.h"
 #include "App/QuickShell/Chrome/QuickMainWindowHost.h"
 #include "App/QuickShell/Chrome/QuickWorkSpace.h"
@@ -53,6 +55,7 @@ class QuickAppController : public QObject, public QuickMainWindowHost
     Q_PROPERTY(QStringList recentFiles READ recentFiles NOTIFY recentFilesChanged)
     Q_PROPERTY(bool simulationRunning READ isSimulationRunning WRITE setSimulationRunning NOTIFY simulationRunningChanged)
     Q_PROPERTY(bool backgroundSimulationEnabled READ isBackgroundSimulationEnabled WRITE setBackgroundSimulationEnabled NOTIFY backgroundSimulationEnabledChanged)
+    Q_PROPERTY(QuickElementPalette *elementPalette READ elementPalette CONSTANT)
 
 public:
     explicit QuickAppController(QObject *parent = nullptr);
@@ -119,6 +122,16 @@ public:
     /// survives a temporary focus loss -- unless backgroundSimulationEnabled opts out of
     /// pausing on deactivate.
     Q_INVOKABLE void handleWindowActiveChanged(bool active);
+
+    [[nodiscard]] QuickElementPalette *elementPalette() { return &m_palette; }
+
+    /// Adds one element from a palette entry to the current tab's canvas. \a type/\a
+    /// icFileName/\a isEmbedded mirror QuickElementPalette's entry fields exactly (QML passes
+    /// them straight through from whichever entry was dragged or double-clicked); \a x/\a y
+    /// are canvas-local coordinates (== canvasHost-local, since CanvasItem has no pan/zoom
+    /// transform yet). No-op if there is no current tab. Mirrors the connect(m_palette,
+    /// &ElementPalette::addElementRequested, ...) lambda in MainWindow's constructor.
+    Q_INVOKABLE void addElementToCurrentTab(int type, const QString &icFileName, bool isEmbedded, qreal x, qreal y);
 
 public slots:
     // --- File menu ---
@@ -201,6 +214,7 @@ private:
 
     QuickWorkspaceManager m_workspaceManager;
     QuickExportController m_exportController;
+    QuickElementPalette m_palette;
     RecentFiles m_recentFiles;
     QList<QMetaObject::Connection> m_tabConnections;
     bool m_simulationRunning = true;

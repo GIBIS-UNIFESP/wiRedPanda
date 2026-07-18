@@ -21,6 +21,7 @@
 #include <QVector>
 #include <QVersionNumber>
 
+#include "App/Core/Enums.h"
 #include "App/QuickShell/Canvas/CanvasICRegistry.h"
 #include "App/QuickShell/Canvas/SpatialIndex.h"
 #include "App/QuickShell/Canvas/TextureAtlas.h"
@@ -311,6 +312,16 @@ public:
     void mute(bool mute = true);
     /// Selects every element on the canvas. Mirrors Scene::selectAll().
     void selectAll();
+
+    /// Builds and adds one element of \a type at \a pos, mirroring SceneDropHandler::
+    /// addFromMimeData()'s element-construction logic (built-in / file-based IC / embedded IC)
+    /// without the QMimeData round-trip -- Quick's Drag/DropArea has no cross-widget-hierarchy
+    /// boundary to serialize across the way Widgets' native drag-and-drop does, so the
+    /// palette entry's fields are passed directly. \a icFileName is empty for built-in types,
+    /// a bare (contextDir()-relative) file name for a file-based IC, or a blob name for an
+    /// embedded IC (when \a isEmbedded is true). Does nothing if \a type is IC, \a isEmbedded
+    /// is true, and \a icFileName doesn't name a blob in icRegistry() (a stale palette entry).
+    void addElementFromPalette(ElementType type, const QString &icFileName, bool isEmbedded, const QPointF &pos);
 
     /// Last known cursor position in canvas coordinates, updated on every mouse press/move.
     /// Mirrors Scene::mousePos(); used to place pasted elements relative to the cursor.

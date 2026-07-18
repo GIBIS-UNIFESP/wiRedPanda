@@ -26,6 +26,7 @@
 #include "App/Core/ItemWithId.h"
 #include "App/Core/MimeTypes.h"
 #include "App/Core/SimulationHost.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElementInput.h"
 #include "App/Element/GraphicElements/And.h"
@@ -944,6 +945,33 @@ void CanvasItem::duplicateAction()
     for (auto *item : added) {
         item->setSelected(true);
     }
+}
+
+void CanvasItem::addElementFromPalette(ElementType type, const QString &icFileName, bool isEmbedded, const QPointF &pos)
+{
+    std::unique_ptr<GraphicElement> element(ElementFactory::buildElement(type));
+
+    if (isEmbedded && type == ElementType::IC) {
+        if (!icRegistry()->initEmbeddedIC(static_cast<IC *>(element.get()), icFileName)) {
+            return;
+        }
+    } else {
+        // A no-op for every type but IC (GraphicElement::loadFromDrop() is a bare no-op base
+        // implementation) -- loadFromDrop can throw on a malformed IC file; the unique_ptr
+        // above keeps the freshly-allocated element from leaking when it does.
+        element->loadFromDrop(icFileName, contextDir());
+    }
+
+    for (auto *elm : std::as_const(m_elements)) {
+        elm->setSelected(false);
+    }
+    m_selectedIds.clear();
+
+    auto *raw = element.release();
+    receiveCommand(new CanvasAddItemsCommand({raw}, this));
+    raw->setSelected(true);
+    raw->setPos(pos);
+    rebuildSpatialIndex();
 }
 
 QList<QGraphicsItem *> CanvasItem::deserializeAndAdd(QDataStream &stream, const QVersionNumber &version,

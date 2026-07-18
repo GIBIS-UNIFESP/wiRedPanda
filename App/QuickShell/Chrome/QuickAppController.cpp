@@ -5,6 +5,7 @@
 
 #include <QDir>
 #include <QFileInfo>
+#include <QPointF>
 #include <QUndoStack>
 
 #include "App/Core/InstallRelativePaths.h"
@@ -72,8 +73,13 @@ void QuickAppController::bindCurrentTab()
     }
     m_boundCanvas = nullptr;
 
+    auto *tab = currentTab();
     auto *canvas = activeCanvas();
     if (!canvas) {
+        // Mirrors MainWindow's "no tab" branch (MainWindow.cpp's setupExamplesMenu()-adjacent
+        // startup code): an empty palette IC section, no embedded-IC registry to read from.
+        m_palette.updateICList(QFileInfo());
+        m_palette.updateEmbeddedICList(nullptr);
         return;
     }
 
@@ -95,6 +101,16 @@ void QuickAppController::bindCurrentTab()
     m_tabConnections.append(connect(undoStack, &QUndoStack::undoTextChanged, this, reemit));
     m_tabConnections.append(connect(undoStack, &QUndoStack::redoTextChanged, this, reemit));
     m_tabConnections.append(connect(undoStack, &QUndoStack::cleanChanged, this, reemit));
+
+    // Mirrors SceneUiBinder::bind()'s updateEmbeddedICList(scene) call plus WorkspaceManager's
+    // updateICList(icListFile()) calls on load/save -- currentFile() is used directly rather
+    // than icListFile()'s parent-workspace-chain walk, since inline IC tabs have no UI trigger
+    // in the Quick chrome yet (see QuickElementPalette::updateICList()'s doc comment).
+    m_palette.updateICList(currentFile());
+    m_palette.updateEmbeddedICList(canvas->icRegistry());
+    m_tabConnections.append(connect(tab, &QuickWorkSpace::fileChanged, this, [this](const QFileInfo &fileInfo) {
+        m_palette.updateICList(fileInfo);
+    }));
 }
 
 QString QuickAppController::windowTitle() const
@@ -270,6 +286,13 @@ void QuickAppController::distributeHorizontally()
 void QuickAppController::distributeVertically()
 {
     if (auto *c = activeCanvas()) c->distributeVertically();
+}
+
+void QuickAppController::addElementToCurrentTab(int type, const QString &icFileName, bool isEmbedded, qreal x, qreal y)
+{
+    if (auto *c = activeCanvas()) {
+        c->addElementFromPalette(static_cast<ElementType>(type), icFileName, isEmbedded, QPointF(x, y));
+    }
 }
 
 QVariantList QuickAppController::examplesList() const

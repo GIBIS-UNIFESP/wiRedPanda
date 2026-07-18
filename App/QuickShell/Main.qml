@@ -156,29 +156,55 @@ ApplicationWindow {
         }
     }
 
-    // Hosts the current tab's CanvasItem; reparented here on every tab switch (see
-    // Connections below) since each open QuickWorkSpace owns its own CanvasItem instance
-    // rather than one shared canvas whose content gets swapped.
-    Item {
-        id: canvasHost
+    RowLayout {
         anchors.fill: parent
+        spacing: 0
 
-        function showCurrentTab() {
-            const tab = appController.currentTab
-            if (!tab) {
-                return
-            }
-            const canvas = tab.canvas()
-            canvas.parent = canvasHost
-            canvas.anchors.fill = canvasHost
-            canvas.forceActiveFocus()
+        ElementPalette {
+            Layout.fillHeight: true
+            Layout.preferredWidth: 220
         }
 
-        Component.onCompleted: showCurrentTab()
+        // Hosts the current tab's CanvasItem; reparented here on every tab switch (see
+        // Connections below) since each open QuickWorkSpace owns its own CanvasItem instance
+        // rather than one shared canvas whose content gets swapped.
+        Item {
+            id: canvasHost
+            Layout.fillWidth: true
+            Layout.fillHeight: true
 
-        Connections {
-            target: appController
-            function onCurrentTabChanged() { canvasHost.showCurrentTab() }
+            function showCurrentTab() {
+                const tab = appController.currentTab
+                if (!tab) {
+                    return
+                }
+                const canvas = tab.canvas()
+                canvas.parent = canvasHost
+                canvas.anchors.fill = canvasHost
+                canvas.forceActiveFocus()
+            }
+
+            Component.onCompleted: showCurrentTab()
+
+            Connections {
+                target: appController
+                function onCurrentTabChanged() { canvasHost.showCurrentTab() }
+            }
+
+            // Drop target for ElementPalette.qml's delegates -- drop.source is the dragged
+            // delegate itself (Drag.source defaults to the Item the Drag attached property is
+            // set on), so its modelData carries everything addElementToCurrentTab() needs.
+            // drop.x/drop.y are already canvasHost-local (DragEvent coordinates are relative
+            // to the DropArea), which is also canvas-local since CanvasItem has no pan/zoom
+            // transform yet.
+            DropArea {
+                anchors.fill: parent
+                onDropped: (drop) => {
+                    appController.addElementToCurrentTab(
+                        drop.source.modelData.type, drop.source.modelData.icFileName,
+                        drop.source.modelData.isEmbedded, drop.x, drop.y)
+                }
+            }
         }
     }
 
