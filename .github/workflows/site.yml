@@ -51,7 +51,8 @@ jobs:
 
       - name: Install Doxygen
         run: |
-          curl -sL https://github.com/doxygen/doxygen/releases/download/Release_1_16_1/doxygen-1.16.1.linux.bin.tar.gz -o doxygen.tar.gz
+          curl -fsSL https://github.com/doxygen/doxygen/releases/download/Release_1_16_1/doxygen-1.16.1.linux.bin.tar.gz -o doxygen.tar.gz
+          echo "a56f885d37e3aae08a99f638d17bbb381224c03a878d9e2dda4f9fa4baf1d8bd  doxygen.tar.gz" | sha256sum -c -
           tar xzf doxygen.tar.gz
           echo "$PWD/doxygen-1.16.1/bin" >> "$GITHUB_PATH"
           sudo apt-get update && sudo apt-get install -y --no-install-recommends graphviz
