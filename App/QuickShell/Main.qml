@@ -22,21 +22,21 @@ ApplicationWindow {
     title: AppController.windowTitle
 
     Component.onCompleted: {
-        const geom = AppController.restoreWindowGeometry()
+        const geom = AppController.restoreWindowGeometry();
         if (geom.width > 0 && geom.height > 0) {
-            window.x = geom.x
-            window.y = geom.y
-            window.width = geom.width
-            window.height = geom.height
+            window.x = geom.x;
+            window.y = geom.y;
+            window.width = geom.width;
+            window.height = geom.height;
         }
     }
 
     onClosing: (close) => {
         if (!AppController.confirmClose()) {
-            close.accepted = false
-            return
+            close.accepted = false;
+            return;
         }
-        AppController.saveWindowGeometry(window.x, window.y, window.width, window.height)
+        AppController.saveWindowGeometry(window.x, window.y, window.width, window.height);
     }
 
     onActiveChanged: AppController.handleWindowActiveChanged(active)
@@ -152,7 +152,10 @@ ApplicationWindow {
             model: AppController.tabCount
             delegate: TabButton {
                 required property int index
-                text: AppController.tabTitle(AppController.tabAt(index))
+                // A real property read (QuickWorkSpace.title), not the invokable
+                // tabTitle()/tabAt() pair -- stays live across Save/Save As renaming an
+                // Untitled tab, since title has a NOTIFY signal behind it.
+                text: AppController.tabAt(index).title
             }
         }
     }
@@ -177,21 +180,21 @@ ApplicationWindow {
             Layout.fillHeight: true
 
             function showCurrentTab() {
-                const tab = AppController.currentTab
+                const tab = AppController.currentTab;
                 if (!tab) {
-                    return
+                    return;
                 }
-                const canvas = tab.canvas()
-                canvas.parent = canvasHost
-                canvas.anchors.fill = canvasHost
-                canvas.forceActiveFocus()
+                const canvas = tab.canvas();
+                canvas.parent = canvasHost;
+                canvas.anchors.fill = canvasHost;
+                canvas.forceActiveFocus();
             }
 
             Component.onCompleted: showCurrentTab()
 
             Connections {
                 target: AppController
-                function onCurrentTabChanged() { canvasHost.showCurrentTab() }
+                function onCurrentTabChanged() { canvasHost.showCurrentTab(); }
             }
 
             // Drop target for ElementPalette.qml's delegates -- drop.source is the dragged
@@ -205,10 +208,10 @@ ApplicationWindow {
             DropArea {
                 anchors.fill: parent
                 onDropped: (drop) => {
-                    const item = drop.source as PaletteItemDelegate
+                    const item = drop.source as PaletteItemDelegate;
                     AppController.addElementToCurrentTab(
                         item.modelData.type, item.modelData.icFileName,
-                        item.modelData.isEmbedded, drop.x, drop.y)
+                        item.modelData.isEmbedded, drop.x, drop.y);
                 }
             }
 
@@ -219,23 +222,28 @@ ApplicationWindow {
                 target: AppController.currentTab ? AppController.currentTab.canvas() : null
 
                 function onElementContextMenuRequested(element, pos) {
-                    AppController.elementEditor.prepareContextMenu(element)
-                    elementContextMenu.popup(pos.x, pos.y)
+                    AppController.elementEditor.prepareContextMenu(element);
+                    elementContextMenu.popup(pos.x, pos.y);
                 }
 
                 function onEmptyContextMenuRequested(pos) {
-                    emptyContextMenu.popup(pos.x, pos.y)
+                    // canPaste() reads the live OS clipboard directly (no NOTIFY-backed
+                    // property behind it), so it can't be a live `enabled:` binding --
+                    // recompute it fresh here, mirroring Scene::contextMenu()'s own
+                    // "recompute when the menu is built" behavior.
+                    pasteMenuItem.enabled = AppController.canPaste();
+                    emptyContextMenu.popup(pos.x, pos.y);
                 }
 
                 function onInlineEditRequested(element, currentLabel, targetRect) {
-                    inlineLabelEditor.targetElement = element
-                    inlineLabelEditor.text = currentLabel
-                    inlineLabelEditor.x = targetRect.x
-                    inlineLabelEditor.y = targetRect.y
-                    inlineLabelEditor.width = Math.max(80, targetRect.width)
-                    inlineLabelEditor.visible = true
-                    inlineLabelEditor.forceActiveFocus()
-                    inlineLabelEditor.selectAll()
+                    inlineLabelEditor.targetElement = element;
+                    inlineLabelEditor.text = currentLabel;
+                    inlineLabelEditor.x = targetRect.x;
+                    inlineLabelEditor.y = targetRect.y;
+                    inlineLabelEditor.width = Math.max(80, targetRect.width);
+                    inlineLabelEditor.visible = true;
+                    inlineLabelEditor.forceActiveFocus();
+                    inlineLabelEditor.selectAll();
                 }
             }
 
@@ -291,8 +299,8 @@ ApplicationWindow {
                 id: emptyContextMenu
 
                 MenuItem {
+                    id: pasteMenuItem
                     text: qsTr("Paste")
-                    enabled: AppController.canPaste()
                     onTriggered: AppController.paste()
                 }
                 MenuItem {
@@ -312,15 +320,15 @@ ApplicationWindow {
 
                 function commit() {
                     if (targetElement) {
-                        AppController.currentTab.canvas().commitInlineLabelEdit(targetElement, text)
-                        targetElement = null
+                        AppController.currentTab.canvas().commitInlineLabelEdit(targetElement, text);
+                        targetElement = null;
                     }
-                    visible = false
+                    visible = false;
                 }
 
                 function cancelEdit() {
-                    targetElement = null
-                    visible = false
+                    targetElement = null;
+                    visible = false;
                 }
 
                 onEditingFinished: commit()

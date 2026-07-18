@@ -71,7 +71,6 @@ public:
 
     // --- QML-facing accessors ---
     Q_INVOKABLE QuickWorkSpace *tabAt(int index) const { return m_workspaceManager.tabAt(index); }
-    Q_INVOKABLE QString tabTitle(QuickWorkSpace *tab) const { return m_workspaceManager.tabTitle(tab); }
     [[nodiscard]] int tabCount() const { return m_workspaceManager.count(); }
     [[nodiscard]] int currentIndex() const { return m_workspaceManager.currentIndex(); }
     void setCurrentIndex(int index) { m_workspaceManager.setCurrentIndex(index); }

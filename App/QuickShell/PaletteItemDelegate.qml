@@ -64,18 +64,18 @@ Item {
         onDoubleClicked: {
             AppController.addElementToCurrentTab(
                 delegateRoot.modelData.type, delegateRoot.modelData.icFileName,
-                delegateRoot.modelData.isEmbedded, delegateRoot.canvasWidth / 2, delegateRoot.canvasHeight / 2)
+                delegateRoot.modelData.isEmbedded, delegateRoot.canvasWidth / 2, delegateRoot.canvasHeight / 2);
         }
 
         onReleased: {
             if (delegateRoot.Drag.active) {
-                delegateRoot.Drag.drop()
+                delegateRoot.Drag.drop();
             }
             // Snap back to the grid cell -- this delegate is the real dragged item
             // (no separate drag-ghost), so it must return to its layout position
             // rather than staying wherever the drag left it.
-            delegateRoot.x = 0
-            delegateRoot.y = 0
+            delegateRoot.x = 0;
+            delegateRoot.y = 0;
         }
     }
 }

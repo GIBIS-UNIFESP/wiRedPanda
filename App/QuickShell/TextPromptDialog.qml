@@ -22,8 +22,8 @@ Dialog {
     onAccepted: root.accepted_ = true
     onRejected: root.accepted_ = false
     onOpened: {
-        field.selectAll()
-        field.forceActiveFocus()
+        field.selectAll();
+        field.forceActiveFocus();
     }
 
     contentItem: ColumnLayout {

@@ -43,6 +43,7 @@ class QuickWorkSpace : public QObject
 {
     Q_OBJECT
     QML_ANONYMOUS
+    Q_PROPERTY(QString title READ title NOTIFY titleChanged)
 
 public:
     /// Outcome of a save attempt. Mirrors WorkSpace::SaveOutcome.
@@ -63,6 +64,11 @@ public:
 
     // --- File Operations ---
 
+    /// Display title for this tab (file name, numbered placeholder, or "[blob]" for an
+    /// inline IC tab), without the unsaved "*" marker. A real Q_PROPERTY (not a plain
+    /// invokable) so the tab bar's binding actually stays live -- titleChanged() is
+    /// emitted alongside every fileChanged() this class already fires.
+    [[nodiscard]] QString title() const;
     [[nodiscard]] QFileInfo fileInfo() const { return m_fileInfo; }
     void load(const QString &fileName);
     void load(QDataStream &stream, const QVersionNumber &version, const QString &contextDir);
@@ -111,6 +117,9 @@ signals:
     /// Emitted whenever the file info of this workspace changes (load/save). Mirrors
     /// WorkSpace::fileChanged().
     void fileChanged(const QFileInfo &fileInfo);
+
+    /// Emitted whenever title() may have changed -- paired with every fileChanged() emit.
+    void titleChanged();
 
     /// Emitted when an inline IC tab saves its blob (propagated to parent). Mirrors
     /// WorkSpace::icBlobSaved().

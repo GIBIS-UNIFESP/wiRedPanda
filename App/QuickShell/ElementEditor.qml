@@ -27,8 +27,8 @@ Item {
     // Trigger items.
     Connections {
         target: root.editor
-        function onFocusLabelRequested() { labelField.forceActiveFocus(); labelField.selectAll() }
-        function onFocusTriggerRequested() { triggerField.forceActiveFocus(); triggerField.selectAll() }
+        function onFocusLabelRequested() { labelField.forceActiveFocus(); labelField.selectAll(); }
+        function onFocusTriggerRequested() { triggerField.forceActiveFocus(); triggerField.selectAll(); }
     }
 
     ScrollView {

@@ -56,21 +56,7 @@ QFileInfo QuickWorkspaceManager::currentFile() const
 
 QString QuickWorkspaceManager::tabTitle(QuickWorkSpace *tab) const
 {
-    if (!tab) {
-        return {};
-    }
-    if (tab->isInlineIC()) {
-        return "[" + tab->inlineBlobName() + "]";
-    }
-    const QFileInfo fileInfo = tab->fileInfo();
-    if (fileInfo.exists()) {
-        return fileInfo.fileName();
-    }
-    QString name = tab->untitledTitle().isEmpty() ? tr("New Project") : tab->untitledTitle();
-    if (tab->isRecovered()) {
-        name += tr(" (recovered)");
-    }
-    return name;
+    return tab ? tab->title() : QString();
 }
 
 QString QuickWorkspaceManager::currentTabName() const

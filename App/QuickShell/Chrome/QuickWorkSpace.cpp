@@ -93,6 +93,7 @@ QuickWorkSpace::QuickWorkSpace(QObject *parent)
     // parent workspace. Mirrors WorkSpace's identical connection.
     connect(m_canvas->undoStack(), &QUndoStack::cleanChanged, this, [this](bool /*clean*/) {
         emit fileChanged(m_fileInfo);
+        emit titleChanged();
     });
 
     setAutosaveFileName();
@@ -116,6 +117,21 @@ QuickWorkSpace::~QuickWorkSpace()
 bool QuickWorkSpace::isFromNewerVersion() const
 {
     return !m_loadedVersion.isNull() && m_loadedVersion > FormatRev::current;
+}
+
+QString QuickWorkSpace::title() const
+{
+    if (m_isInlineIC) {
+        return "[" + m_inlineBlobName + "]";
+    }
+    if (m_fileInfo.exists()) {
+        return m_fileInfo.fileName();
+    }
+    QString name = m_untitledTitle.isEmpty() ? tr("New Project") : m_untitledTitle;
+    if (m_isRecovered) {
+        name += tr(" (recovered)");
+    }
+    return name;
 }
 
 QuickWorkSpace::SaveOutcome QuickWorkSpace::save(const QString &fileName)
@@ -241,6 +257,7 @@ QuickWorkSpace::SaveOutcome QuickWorkSpace::save(const QString &fileName)
     }
 
     emit fileChanged(m_fileInfo);
+    emit titleChanged();
     return SaveOutcome::Saved;
 }
 
@@ -331,6 +348,7 @@ void QuickWorkSpace::load(const QString &fileName)
     }
 
     emit fileChanged(m_fileInfo);
+    emit titleChanged();
 }
 
 void QuickWorkSpace::load(QDataStream &stream, const QVersionNumber &version, const QString &contextDir)
@@ -423,6 +441,7 @@ void QuickWorkSpace::autosave()
             m_autosaveFileName.clear();
         }
         emit fileChanged(m_fileInfo);
+        emit titleChanged();
         return;
     }
 
@@ -474,6 +493,7 @@ void QuickWorkSpace::autosave()
     Settings::setAutosaveFiles(autosaves);
 
     emit fileChanged(m_fileInfo);
+    emit titleChanged();
 }
 
 void QuickWorkSpace::setAutosaveFile()

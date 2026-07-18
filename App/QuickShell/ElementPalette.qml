@@ -58,12 +58,12 @@ Item {
             onTextChanged: root.controller.searchText = text
 
             Keys.onReturnPressed: {
-                const result = root.controller.firstSearchResult()
+                const result = root.controller.firstSearchResult();
                 if (result.type !== undefined) {
                     AppController.addElementToCurrentTab(
                         result.type, result.icFileName, result.isEmbedded,
-                        root.canvasWidth / 2, root.canvasHeight / 2)
-                    searchField.text = ""
+                        root.canvasWidth / 2, root.canvasHeight / 2);
+                    searchField.text = "";
                 }
             }
         }

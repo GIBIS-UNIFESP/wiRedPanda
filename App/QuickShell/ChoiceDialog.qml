@@ -20,18 +20,18 @@ MessageDialog {
     ]
 
     buttons: {
-        let flags = 0
+        let flags = 0;
         for (const b of requestedButtons) {
-            flags |= buttonOrder[b]
+            flags |= buttonOrder[b];
         }
-        return flags
+        return flags;
     }
 
     // Named (not an inline onButtonClicked lambda) so QuickDialogProvider's dialogOpened()
     // testability hook can invoke it directly with a raw button value, simulating a click
     // without needing real synthetic mouse/window input.
     function handleButtonClicked(button) {
-        resultIndex = buttonOrder.indexOf(button)
+        resultIndex = buttonOrder.indexOf(button);
     }
 
     onButtonClicked: (button, role) => handleButtonClicked(button)
