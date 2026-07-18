@@ -16,6 +16,7 @@
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
+#include "App/Scene/ConnectionManager.h"
 #include "App/Simulation/Simulation.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
@@ -51,12 +52,16 @@ private:
     QVector<GraphicElement *> m_elements;
 };
 
-/// Packs a small-integer element index into the quint64 id space SpatialIndex uses. Wires get
-/// odd ids, elements even ids -- cheap and sufficient while this canvas only ever holds a
-/// handful of hardcoded demo objects; a real id scheme (element/port database ids) belongs to
-/// the SceneItemRegistry port in a later Phase 1 iteration.
-quint64 elementId(int index) { return quint64(index) * 2; }
-quint64 wireId(int index) { return quint64(index) * 2 + 1; }
+/// Packs a small-integer index into the quint64 id space SpatialIndex uses, tagged by kind in
+/// the top bits so elements/wires/ports never collide -- cheap and sufficient while this
+/// canvas only ever holds a handful of hardcoded demo objects; a real id scheme (element/port
+/// database ids) belongs to the SceneItemRegistry port in a later Phase 1 iteration.
+constexpr quint64 kElementTag = 0ULL << 62;
+constexpr quint64 kWireTag = 1ULL << 62;
+constexpr quint64 kPortTag = 2ULL << 62;
+quint64 elementId(int index) { return kElementTag | quint64(index); }
+quint64 wireId(int index) { return kWireTag | quint64(index); }
+quint64 portId(int index) { return kPortTag | quint64(index); }
 
 /// Maps a Status to a display color for the flat-quad/line rendering this prototype uses in
 /// place of real per-element SVG appearance (that porting work is Phase 2's job -- see the
@@ -173,6 +178,10 @@ CanvasItem::~CanvasItem()
 {
     m_simulation.reset(); // stop the timer before the elements it references are destroyed
 
+    // An in-progress wire never made it into m_connections; tear it down the same way
+    // (before the elements/ports it may still be attached to one end of).
+    cancelEditedWire();
+
     // Connections must be torn down before the elements they reference: Port's destructor only
     // detaches (nulls out) any connection still pointing at it, it never deletes the Connection
     // itself (see InputPort::~InputPort()/drainConnections()) -- deleting Connections first runs
@@ -192,7 +201,15 @@ void CanvasItem::buildDemoCircuit()
     auto *led = new Led();
     led->setPos(400, 100);
 
-    m_elements = { switchA, switchB, andGate, led };
+    // Deliberately left unwired: exercises the wire-creation-by-dragging gesture (drag from
+    // switchC's output port to led2's input port) against something real, since the rest of
+    // the demo circuit above is fully pre-wired for the simulation-propagation demo.
+    auto *switchC = new InputSwitch();
+    switchC->setPos(40, 300);
+    auto *led2 = new Led();
+    led2->setPos(400, 300);
+
+    m_elements = { switchA, switchB, andGate, led, switchC, led2 };
 
     auto *connA = new Connection();
     connA->setStartPort(switchA->outputPort(0));
@@ -218,13 +235,26 @@ void CanvasItem::rebuildSpatialIndex()
 {
     m_index.clear();
     m_elementsById.clear();
+    m_portsById.clear();
 
+    int portIndex = 0;
     for (int i = 0; i < m_elements.size(); ++i) {
         GraphicElement *element = m_elements.at(i);
         const quint64 id = elementId(i);
         const QRectF worldRect = element->boundingRect().translated(element->pos());
         m_index.insertBox(id, worldRect);
         m_elementsById.insert(id, element);
+
+        // Ports are indexed on top of (not instead of) their owning element -- a click that
+        // lands on a port's small glyph should hit the port, not just the element body, so
+        // ports must be inserted after their element to win SpatialIndex::queryPoint()'s
+        // insertion-order "last wins" priority (see its doc comment).
+        for (auto *port : element->allPorts()) {
+            const quint64 pid = portId(portIndex++);
+            const QRectF portRect = port->boundingRect().translated(port->scenePos());
+            m_index.insertBox(pid, portRect);
+            m_portsById.insert(pid, port);
+        }
     }
 
     for (int i = 0; i < m_connections.size(); ++i) {
@@ -246,6 +276,116 @@ void CanvasItem::toggleIfInput(GraphicElement *element)
     }
 }
 
+void CanvasItem::startWireFromOutput(OutputPort *startPort)
+{
+    auto *connection = new Connection();
+    connection->setStartPort(startPort);
+    m_editedConnection = connection;
+    m_editedWireFreeEnd = startPort->scenePos();
+}
+
+void CanvasItem::startWireFromInput(InputPort *endPort)
+{
+    auto *connection = new Connection();
+    connection->setEndPort(endPort);
+    m_editedConnection = connection;
+    m_editedWireFreeEnd = endPort->scenePos();
+}
+
+void CanvasItem::updateEditedWireEnd(const QPointF &pos)
+{
+    if (!m_editedConnection) {
+        return;
+    }
+    m_editedWireFreeEnd = pos;
+    // Keep Connection's own start/end-pos state consistent even though this canvas doesn't
+    // paint through Connection::paint() -- see this class's doc comment on m_editedWireFreeEnd.
+    if (m_editedConnection->startPort()) {
+        m_editedConnection->setEndPos(pos);
+    } else if (m_editedConnection->endPort()) {
+        m_editedConnection->setStartPos(pos);
+    }
+}
+
+void CanvasItem::tryCompleteWire(const QPointF &pos)
+{
+    if (!m_editedConnection) {
+        return;
+    }
+
+    // Same lookup priority SpatialIndex::queryPoint() already guarantees (last = topmost);
+    // scanning in reverse finds the topmost PORT specifically, mirroring Scene::portAt()'s
+    // dedicated port-only lookup rather than the general element/wire/port itemAt() query.
+    const auto hits = m_index.queryPoint(pos);
+    Port *targetPort = nullptr;
+    for (auto it = hits.crbegin(); it != hits.crend(); ++it) {
+        if (auto *port = m_portsById.value(*it, nullptr)) {
+            targetPort = port;
+            break;
+        }
+    }
+
+    // Mirrors ConnectionManager::tryComplete's exact three-tier logic: nothing under the
+    // cursor at all leaves the wire in-progress (no cancel -- a release over empty space
+    // just means the wire keeps following the mouse until an explicit cancel elsewhere);
+    // only a genuinely incompatible/rejected port cancels it.
+    if (!targetPort) {
+        return;
+    }
+
+    OutputPort *startPort = nullptr;
+    InputPort *endPort = nullptr;
+    if (m_editedConnection->startPort()) {
+        startPort = m_editedConnection->startPort();
+        endPort = dynamic_cast<InputPort *>(targetPort);
+    } else if (m_editedConnection->endPort()) {
+        startPort = dynamic_cast<OutputPort *>(targetPort);
+        endPort = m_editedConnection->endPort();
+    }
+
+    if (!startPort || !endPort) {
+        return;
+    }
+
+    if (!ConnectionManager::isConnectionAllowed(startPort, endPort)) {
+        cancelEditedWire();
+        return;
+    }
+
+    m_editedConnection->setStartPort(startPort);
+    m_editedConnection->setEndPort(endPort);
+    m_connections.append(m_editedConnection);
+    m_editedConnection = nullptr;
+    // The new wire changes both the simulation graph and the spatial index.
+    m_simulation->restart();
+    rebuildSpatialIndex();
+}
+
+void CanvasItem::cancelEditedWire()
+{
+    delete m_editedConnection;
+    m_editedConnection = nullptr;
+}
+
+void CanvasItem::detachWire(InputPort *endPort)
+{
+    const auto connections = endPort->connections();
+    if (connections.isEmpty()) {
+        return;
+    }
+    auto *connection = connections.last();
+    auto *startPort = connection->startPort();
+    if (!startPort) {
+        return;
+    }
+
+    m_connections.removeAll(connection);
+    delete connection;
+    m_simulation->restart();
+
+    startWireFromOutput(startPort);
+}
+
 void CanvasItem::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() != Qt::LeftButton) {
@@ -253,19 +393,56 @@ void CanvasItem::mousePressEvent(QMouseEvent *event)
     }
 
     const auto hits = m_index.queryPoint(event->position());
+
+    // Port hit: wire-creation workflow, mirrors SceneInteraction::mousePress's
+    // "if (item->type() == Port::Type) { ... }" branch -- handled first, and returns, so a
+    // port press never also starts an element drag or a rubber-band underneath it. Scans in
+    // reverse for the topmost PORT specifically, same reasoning as tryCompleteWire().
+    Port *hitPort = nullptr;
+    for (auto it = hits.crbegin(); it != hits.crend(); ++it) {
+        if (auto *port = m_portsById.value(*it, nullptr)) {
+            hitPort = port;
+            break;
+        }
+    }
+    if (hitPort) {
+        if (m_editedConnection) {
+            // An in-progress wire exists; try to complete it at this port -- mirrors
+            // "if (hasEditedConnection()) { tryComplete(pos); return true; }".
+            tryCompleteWire(event->position());
+        } else if (auto *outputPort = dynamic_cast<OutputPort *>(hitPort)) {
+            startWireFromOutput(outputPort);
+        } else if (auto *inputPort = dynamic_cast<InputPort *>(hitPort)) {
+            // Empty input port: begin a new wire; occupied port: detach the existing wire.
+            if (inputPort->connections().isEmpty()) {
+                startWireFromInput(inputPort);
+            } else {
+                detachWire(inputPort);
+            }
+        }
+        update();
+        return;
+    }
+
+    // Not a port press: any wire still being dragged is cancelled here, mirroring
+    // SceneInteraction::mousePress's unconditional "m_scene->connectionManager()->cancel()"
+    // once the Port::Type branch above didn't already return.
+    cancelEditedWire();
+
     if (hits.isEmpty()) {
         // Empty space: mirrors SceneInteraction::mousePress's "if (!item && LeftButton)
         // startSelectionRect()".
         startSelectionRect(event->position());
+        update();
         return;
     }
 
     const quint64 topHit = hits.last(); // insertion-order priority, see SpatialIndex's doc comment
     auto *element = m_elementsById.value(topHit, nullptr);
     if (!element) {
-        // A wire, not an element (odd ids, not in m_elementsById) -- wire interaction
-        // (splitting, drag-to-detach) isn't ported yet, see this class's doc comment, so a
-        // wire click is deliberately a no-op rather than starting a rubber-band underneath it.
+        // A wire, not an element or port -- wire-splitting isn't ported yet (see this
+        // class's doc comment), so a wire click is deliberately a no-op past the cancel above.
+        update();
         return;
     }
 
@@ -316,6 +493,14 @@ void CanvasItem::mouseMoveEvent(QMouseEvent *event)
         return;
     }
 
+    // In-progress wire routing: mirrors SceneInteraction::mouseMove's
+    // "if (hasEditedConnection()) { updateEditedEnd(pos); return true; }".
+    if (m_editedConnection) {
+        updateEditedWireEnd(event->position());
+        update();
+        return;
+    }
+
     if (m_markingSelectionBox) {
         updateSelectionRect(event->position());
         update();
@@ -355,6 +540,15 @@ void CanvasItem::mouseReleaseEvent(QMouseEvent *event)
 
     if (m_markingSelectionBox) {
         finishSelectionRect();
+    }
+
+    // Complete an in-progress wire on release once no button is held any more -- mirrors
+    // SceneInteraction::mouseRelease's "hasEditedConnection() && (event->buttons() ==
+    // Qt::NoButton) -> tryComplete(pos)", the drag-to-connect gesture (press output -> drag
+    // -> release on input). event->buttons() (plural: still-held buttons) rather than
+    // event->button() (the button that triggered this release), matching the real check.
+    if (m_editedConnection && event->buttons() == Qt::NoButton) {
+        tryCompleteWire(event->position());
     }
 
     update();
@@ -428,9 +622,14 @@ QSGNode *CanvasItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
     QSGNode *gateNode = wireNode->nextSibling();
     QSGNode *overlayNode = gateNode->nextSibling();
 
-    // --- Wires: one QSGGeometryNode, GL_LINES, colored by the driving port's live status ---
+    // --- Wires: one QSGGeometryNode, GL_LINES, colored by the driving port's live status.
+    // The in-progress wire (if any) is appended last, from its anchored port to
+    // m_editedWireFreeEnd, in a neutral color -- it has no driving Status yet since it isn't
+    // committed to any element's simulation graph. ---
     {
-        auto *geometry = new QSGGeometry(QSGGeometry::defaultAttributes_ColoredPoint2D(), int(m_connections.size()) * 2);
+        const int committedCount = int(m_connections.size());
+        const int vertexCount = (committedCount + (m_editedConnection ? 1 : 0)) * 2;
+        auto *geometry = new QSGGeometry(QSGGeometry::defaultAttributes_ColoredPoint2D(), vertexCount);
         geometry->setDrawingMode(QSGGeometry::DrawLines);
         geometry->setLineWidth(2.0f);
         QSGGeometry::ColoredPoint2D *vertices = geometry->vertexDataAsColoredPoint2D();
@@ -443,6 +642,18 @@ QSGNode *CanvasItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
                                     uchar(color.red()), uchar(color.green()), uchar(color.blue()), uchar(color.alpha()));
             vertices[cursor++].set(float(end.x()), float(end.y()),
                                     uchar(color.red()), uchar(color.green()), uchar(color.blue()), uchar(color.alpha()));
+        }
+        if (m_editedConnection) {
+            static const QColor kEditedWireColor(158, 158, 158, 220);
+            const QPointF anchored = m_editedConnection->startPort()
+                ? m_editedConnection->startPort()->scenePos()
+                : m_editedConnection->endPort()->scenePos();
+            vertices[cursor++].set(float(anchored.x()), float(anchored.y()),
+                                    uchar(kEditedWireColor.red()), uchar(kEditedWireColor.green()),
+                                    uchar(kEditedWireColor.blue()), uchar(kEditedWireColor.alpha()));
+            vertices[cursor++].set(float(m_editedWireFreeEnd.x()), float(m_editedWireFreeEnd.y()),
+                                    uchar(kEditedWireColor.red()), uchar(kEditedWireColor.green()),
+                                    uchar(kEditedWireColor.blue()), uchar(kEditedWireColor.alpha()));
         }
         static_cast<QSGGeometryNode *>(wireNode)->setGeometry(geometry);
         static_cast<QSGGeometryNode *>(wireNode)->setFlag(QSGNode::OwnsGeometry);

@@ -22,6 +22,9 @@
 
 class Connection;
 class GraphicElement;
+class InputPort;
+class OutputPort;
+class Port;
 class Simulation;
 class SimulationHost;
 
@@ -52,13 +55,23 @@ class SimulationHost;
  * selected" rule); move repositions live and rebuilds the spatial index; release commits a
  * local undo entry only if something actually moved (click-without-drag pushes nothing).
  * Press on empty space starts a rubber-band rect; SpatialIndex::queryRect() replaces
- * QGraphicsScene::setSelectionArea(). What's deliberately NOT ported yet: wire-creation-by-
- * dragging (ConnectionManager's startFromOutput/tryComplete/... state machine) and the real
- * production Commands.h/QUndoStack integration (MoveCommand needs a concrete Scene* for its
- * ID-based element lookup — CommandUtils::findElements(Scene*, ids) — which doesn't exist
- * here yet; that's explicitly Phase 3 scope per the plan's roadmap, "port Commands.h's base
- * once, then each pattern"). This item's own m_undoStack is a minimal local stand-in scoped
- * to proving the drag gesture itself works, not a preview of the eventual real integration.
+ * QGraphicsScene::setSelectionArea(). The real production Commands.h/QUndoStack integration
+ * is NOT ported (MoveCommand needs a concrete Scene* for its ID-based element lookup —
+ * CommandUtils::findElements(Scene*, ids) — which doesn't exist here yet; that's explicitly
+ * Phase 3 scope per the plan's roadmap, "port Commands.h's base once, then each pattern").
+ * This item's own m_undoStack is a minimal local stand-in scoped to proving the drag gesture
+ * itself works, not a preview of the eventual real integration.
+ *
+ * Wire-creation-by-dragging ports ConnectionManager's startFromOutput/startFromInput/
+ * tryComplete/cancel/detach/updateEditedEnd state machine the same way: press on a port
+ * begins (or completes, or detaches-and-restarts) an in-progress Connection tracked in
+ * m_editedConnection; move follows the free end; release completes it at whatever port is
+ * under the cursor, or cancels it if that's not a valid port. isConnectionAllowed()/
+ * connectionRejectionReason() are `static` with zero Scene coupling, so they're called
+ * directly, unmodified. What's NOT ported: hover-port highlighting and the in-situ label
+ * chips (PortHoverLabel — a separate Widgets-tooltip subsystem, chrome polish rather than
+ * core wire-creation logic) and, again, the real AddItemsCommand/DeleteItemsCommand
+ * (Phase 3 scope) — completing or detaching a wire here mutates m_connections directly.
  */
 class CanvasItem : public QQuickItem
 {
@@ -72,11 +85,13 @@ public:
 protected:
     /// \reimp Builds the batched geometry nodes (gates, wires, selection overlay) from current state.
     QSGNode *updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data) override;
-    /// \reimp Hit-tests via m_index; toggles a clicked input, or starts a drag/rubber-band.
+    /// \reimp Hit-tests via m_index; toggles a clicked input, starts/completes/detaches a
+    /// wire on a port hit, or starts a drag/rubber-band.
     void mousePressEvent(QMouseEvent *event) override;
-    /// \reimp Drives the in-progress element drag or rubber-band rect.
+    /// \reimp Drives the in-progress element drag, in-progress wire, or rubber-band rect.
     void mouseMoveEvent(QMouseEvent *event) override;
-    /// \reimp Commits the drag as a local undo entry if anything actually moved.
+    /// \reimp Commits the drag as a local undo entry if anything actually moved; completes
+    /// an in-progress wire if released over a compatible port.
     void mouseReleaseEvent(QMouseEvent *event) override;
     /// \reimp Updates the hovered element for the next paint's highlight.
     void hoverMoveEvent(QHoverEvent *event) override;
@@ -91,14 +106,36 @@ private:
     void updateSelectionRect(const QPointF &current);
     void finishSelectionRect();
 
+    // --- Wire-creation-by-dragging (ports ConnectionManager's workflow) ---
+    void startWireFromOutput(OutputPort *startPort);
+    void startWireFromInput(InputPort *endPort);
+    void tryCompleteWire(const QPointF &pos);
+    void cancelEditedWire();
+    void detachWire(InputPort *endPort);
+    void updateEditedWireEnd(const QPointF &pos);
+
     std::unique_ptr<SimulationHost> m_host;
     std::unique_ptr<Simulation> m_simulation;
     QVector<GraphicElement *> m_elements; // owned; never added to a QGraphicsScene
     QVector<Connection *> m_connections;  // owned; never added to a QGraphicsScene
     QHash<quint64, GraphicElement *> m_elementsById;
+    QHash<quint64, Port *> m_portsById; // ports aren't owned here, they're owned by m_elements
     SpatialIndex m_index;
     quint64 m_hoveredId = 0;
     QSet<quint64> m_selectedIds;
+
+    /// The wire currently being dragged into place, or nullptr. Owned here directly (not
+    /// added to m_connections) until tryCompleteWire() commits it -- mirrors
+    /// ConnectionManager's m_editedConnectionId, just as a raw pointer instead of a
+    /// Scene::itemById()-resolved id, since this transient state never needs to survive an
+    /// undo/redo the way ConnectionManager's does.
+    Connection *m_editedConnection = nullptr;
+    /// Where the in-progress wire's free (not-yet-attached) end currently is, for rendering
+    /// only -- Connection's own m_startPos/m_endPos are private with no public getters, and
+    /// this canvas doesn't paint through Connection::paint() anyway (see the batched-
+    /// rendering discussion in this class's doc comment), so tracking it here avoids adding
+    /// getters to production Wiring/Connection.h for a Phase-1-prototype-only need.
+    QPointF m_editedWireFreeEnd;
 
     /// Local undo stack for the drag gesture only -- see this class's doc comment for why
     /// this isn't the real Commands.h/MoveCommand integration (that needs a concrete Scene*,
