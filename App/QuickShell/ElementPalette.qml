@@ -1,12 +1,20 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+// Lets paletteItemComponent's PaletteItemDelegate {} reference this file's root id (see
+// canvasWidth/canvasHeight below) in a way qmllint can verify statically -- the pragma
+// binds inner Components to their defining context; modelData already flows in via a
+// required property, not a context property, so this loses nothing this file relies on.
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
+import QuickShell
+
 // Phase 4 sub-step 4: element palette panel, backed by App/QuickShell/Chrome/
-// QuickElementPalette (appController.elementPalette). Every category grid and the search
+// QuickElementPalette (AppController.elementPalette). Every category grid and the search
 // grid share one delegate (paletteItemComponent) so drag-to-canvas and double-click-to-add
 // behave identically everywhere an element can be picked from -- mirrors ElementPalette::
 // populateMenu()'s "every entry gets the same ElementLabel behavior" invariant.
@@ -21,72 +29,20 @@ Item {
     id: root
     implicitWidth: 220
 
-    readonly property QtObject controller: appController.elementPalette
+    readonly property QuickElementPalette controller: AppController.elementPalette
+    // Canvas-area size, for centering a newly-added element (double-click/search-Enter
+    // below) -- passed down explicitly by Main.qml rather than reached for via an implicit
+    // ancestor-id lookup (this component doesn't otherwise know or need to know that a
+    // sibling called canvasHost exists).
+    property real canvasWidth: 0
+    property real canvasHeight: 0
 
     Component {
         id: paletteItemComponent
 
-        Item {
-            id: delegateRoot
-            required property var modelData
-            width: 76
-            height: 76
-
-            Drag.active: dragArea.drag.active
-            Drag.hotSpot.x: width / 2
-            Drag.hotSpot.y: height / 2
-
-            ColumnLayout {
-                anchors.fill: parent
-                anchors.margins: 2
-                spacing: 2
-
-                Image {
-                    source: delegateRoot.modelData.iconSource
-                    Layout.alignment: Qt.AlignHCenter
-                    Layout.preferredWidth: 44
-                    Layout.preferredHeight: 44
-                    fillMode: Image.PreserveAspectFit
-                }
-
-                Label {
-                    Layout.fillWidth: true
-                    text: delegateRoot.modelData.name
-                    horizontalAlignment: Text.AlignHCenter
-                    font.pixelSize: 9
-                    elide: Text.ElideRight
-                }
-            }
-
-            MouseArea {
-                id: dragArea
-                anchors.fill: parent
-                drag.target: delegateRoot
-                hoverEnabled: true
-                ToolTip.visible: containsMouse && !dragArea.drag.active
-                ToolTip.text: delegateRoot.modelData.tooltip
-                ToolTip.delay: 500
-
-                // Drag-free shortcut, mirroring ElementLabel::mouseDoubleClickEvent(). Lands
-                // at the centre of the visible canvas -- CanvasItem has no pan/zoom transform
-                // yet, so canvas-local coordinates are just canvasHost-local coordinates.
-                onDoubleClicked: {
-                    appController.addElementToCurrentTab(
-                        delegateRoot.modelData.type, delegateRoot.modelData.icFileName,
-                        delegateRoot.modelData.isEmbedded, canvasHost.width / 2, canvasHost.height / 2)
-                }
-
-                onReleased: {
-                    if (delegateRoot.Drag.active) {
-                        delegateRoot.Drag.drop()
-                    }
-                    // Snap back to the grid cell -- this delegate is the real dragged item
-                    // (no separate drag-ghost), so it must return to its layout position
-                    // rather than staying wherever the drag left it.
-                    delegateRoot.x = 0
-                    delegateRoot.y = 0
-                }
-            }
+        PaletteItemDelegate {
+            canvasWidth: root.canvasWidth
+            canvasHeight: root.canvasHeight
         }
     }
 
@@ -104,9 +60,9 @@ Item {
             Keys.onReturnPressed: {
                 const result = root.controller.firstSearchResult()
                 if (result.type !== undefined) {
-                    appController.addElementToCurrentTab(
+                    AppController.addElementToCurrentTab(
                         result.type, result.icFileName, result.isEmbedded,
-                        canvasHost.width / 2, canvasHost.height / 2)
+                        root.canvasWidth / 2, root.canvasHeight / 2)
                     searchField.text = ""
                 }
             }

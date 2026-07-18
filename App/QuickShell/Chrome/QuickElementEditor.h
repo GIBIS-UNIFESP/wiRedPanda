@@ -9,6 +9,7 @@
 
 #include <QList>
 #include <QObject>
+#include <QQmlEngine>
 #include <QString>
 #include <QVariantList>
 
@@ -55,6 +56,8 @@ class GraphicElement;
 class QuickElementEditor : public QObject
 {
     Q_OBJECT
+    QML_ELEMENT
+    QML_UNCREATABLE("QuickElementEditor is only ever exposed via AppController.elementEditor")
 
     Q_PROPERTY(bool hasSelection READ hasSelection NOTIFY refreshed)
     Q_PROPERTY(QString elementTypeTitle READ elementTypeTitle NOTIFY refreshed)

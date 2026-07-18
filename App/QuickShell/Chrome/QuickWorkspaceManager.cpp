@@ -135,7 +135,7 @@ void QuickWorkspaceManager::createNewTab()
     // Owned here via m_tabs (a vector of unique_ptr) -- constructed with no QObject parent
     // (QuickWorkspaceManager isn't a QQuickItem/can't parent it in a QML-meaningful way), so
     // without this, QML's default "no parent at first JS exposure" rule would mark it
-    // JavaScriptOwnership the first time appController.currentTab/tabAt() hands it to QML,
+    // JavaScriptOwnership the first time AppController.currentTab/tabAt() hands it to QML,
     // and the GC could delete it out from under this vector. Same mechanism, same real
     // reproduced crash, as QuickWorkSpace's own m_canvas fix -- see that constructor's comment
     // for the full story.

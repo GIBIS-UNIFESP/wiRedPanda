@@ -12,6 +12,7 @@
 #include <QFileInfo>
 #include <QObject>
 #include <QPointer>
+#include <QQmlEngine>
 #include <QString>
 #include <QTimer>
 #include <QVersionNumber>
@@ -41,6 +42,7 @@ class QDataStream;
 class QuickWorkSpace : public QObject
 {
     Q_OBJECT
+    QML_ANONYMOUS
 
 public:
     /// Outcome of a save attempt. Mirrors WorkSpace::SaveOutcome.

@@ -9,6 +9,7 @@
 
 #include <QFileInfo>
 #include <QObject>
+#include <QQmlEngine>
 #include <QString>
 #include <QVariantList>
 #include <QVariantMap>
@@ -43,6 +44,8 @@ class CanvasICRegistry;
 class QuickElementPalette : public QObject
 {
     Q_OBJECT
+    QML_ELEMENT
+    QML_UNCREATABLE("QuickElementPalette is only ever exposed via AppController.elementPalette")
 
     Q_PROPERTY(QVariantList ioElements READ ioElements CONSTANT)
     Q_PROPERTY(QVariantList gatesElements READ gatesElements CONSTANT)

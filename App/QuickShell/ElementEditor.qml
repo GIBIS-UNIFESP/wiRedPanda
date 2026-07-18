@@ -5,8 +5,10 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
+import QuickShell
+
 // Phase 4 sub-step 5: element property panel, backed by App/QuickShell/Chrome/
-// QuickElementEditor (appController.elementEditor). Every section below is shown/hidden by
+// QuickElementEditor (AppController.elementEditor). Every section below is shown/hidden by
 // one of the editor's *Visible properties, computed from SelectionCapabilities exactly as
 // ElementEditor::applyCapabilitiesToUi() does -- QML's declarative visible: bindings replace
 // that method's imperative setSection() calls.
@@ -18,7 +20,7 @@ Item {
     id: root
     implicitWidth: 240
 
-    readonly property QtObject editor: appController.elementEditor
+    readonly property QuickElementEditor editor: AppController.elementEditor
 
     // Mirrors ElementEditor::renameAction()/changeTriggerAction() -- focuses + selects the
     // corresponding field. Triggered from Main.qml's element context menu's Rename/Change

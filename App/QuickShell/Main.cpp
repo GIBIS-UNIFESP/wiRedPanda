@@ -3,7 +3,6 @@
 
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
-#include <QQmlContext>
 #include <QQuickWindow>
 
 #include "App/QuickShell/Chrome/DialogProvider.h"
@@ -16,14 +15,16 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
 
     // appController owns the tab list and every menu action Main.qml binds to; it's exposed
-    // as a context property (not a QML_ELEMENT the .qml file instantiates itself) since
+    // as the AppController QML singleton (AppControllerForeign, in QuickAppController.h) since
     // there's exactly one per running app and it must exist -- with an initial tab already
-    // open -- before the QML that reads its properties in Component.onCompleted loads.
+    // open -- before the QML that reads its properties in Component.onCompleted loads. A
+    // context property would also satisfy that ordering constraint, but is invisible to
+    // qmllint/the QML Language Server; the singleton isn't.
     static QuickAppController appController;
     appController.newTab();
+    AppControllerForeign::s_instance = &appController;
 
     QQmlApplicationEngine engine;
-    engine.rootContext()->setContextProperty("appController", &appController);
     QObject::connect(
         &engine, &QQmlApplicationEngine::objectCreationFailed, &app,
         []() { QCoreApplication::exit(-1); }, Qt::QueuedConnection);

@@ -11,6 +11,7 @@
 #include <QMetaObject>
 #include <QObject>
 #include <QPointer>
+#include <QQmlEngine>
 #include <QRect>
 #include <QString>
 #include <QStringList>
@@ -234,4 +235,34 @@ private:
     /// whatever tab becomes current next, so the previously-bound canvas may already be
     /// destroyed by the time bindCurrentTab() runs.
     QPointer<CanvasItem> m_boundCanvas;
+};
+
+/**
+ * \brief Exposes the single, C++-constructed \c QuickAppController instance (see Main.cpp) to
+ * QML as the \c AppController singleton, replacing the earlier context-property approach --
+ * context properties are invisible to qmllint/the QML Language Server, which the Qt docs
+ * identify as their central drawback. Uses the \c QML_FOREIGN wrapper pattern Qt documents for
+ * exposing a pre-existing, externally-owned instance (rather than one the engine constructs
+ * itself via create()): \c s_instance is set once, before the QML engine loads Main.qml.
+ */
+struct AppControllerForeign
+{
+    Q_GADGET
+    QML_FOREIGN(QuickAppController)
+    QML_SINGLETON
+    QML_NAMED_ELEMENT(AppController)
+
+public:
+    inline static QuickAppController *s_instance = nullptr;
+
+    static QuickAppController *create(QQmlEngine *, QJSEngine *)
+    {
+        Q_ASSERT(s_instance);
+        // Same rule as QuickAppController's own m_palette/m_elementEditor (see this class's
+        // constructor): a QObject with no parent becomes eligible for JavaScriptOwnership --
+        // and GC deletion -- the moment QML first sees it. s_instance is a static-storage
+        // object Main.cpp owns for the whole process lifetime, so it must stay C++-owned.
+        QQmlEngine::setObjectOwnership(s_instance, QQmlEngine::CppOwnership);
+        return s_instance;
+    }
 };
