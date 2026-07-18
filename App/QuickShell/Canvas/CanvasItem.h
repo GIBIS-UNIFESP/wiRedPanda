@@ -17,17 +17,22 @@
 #include <QTimer>
 #include <QUndoStack>
 #include <QVector>
+#include <QVersionNumber>
 
 #include "App/QuickShell/Canvas/SpatialIndex.h"
 #include "App/QuickShell/Canvas/TextureAtlas.h"
+#include "App/Scene/SceneItemRegistry.h"
 
 class Connection;
 class GraphicElement;
 class InputPort;
+class ItemWithId;
 class OutputPort;
 class Port;
 class Simulation;
 class SimulationHost;
+struct SerializationContext;
+enum class SerializationPurpose;
 
 /**
  * \class CanvasItem
@@ -113,6 +118,49 @@ protected:
     void hoverLeaveEvent(QHoverEvent *event) override;
 
 private:
+    // --- Real id/registry layer (Phase 3 foundational sub-step) ---
+    //
+    // Commands.h's entire machinery (CommandUtils::findElm/findConn/findElements/findItems,
+    // ElementsCommand::elements()) resolves its targets through Scene::itemById(), backed by
+    // a real ItemWithId::id()/SceneItemRegistry pair every GraphicElement/Connection already
+    // carries. Phase 1's SpatialIndex used a synthetic tagged-index id scheme instead (a small
+    // integer per element/connection, tagged by kind in CanvasItem.cpp's anonymous namespace)
+    // because nothing needed real ids yet; that placeholder is retired here in favor of the
+    // real ItemWithId id space, mirrored on this class the same way Scene exposes it -- so a
+    // ported Commands.h-equivalent (Phase 3's later sub-steps) has the same shape to resolve
+    // targets against. Ports are NOT ItemWithId (see Port.h: QGraphicsPathItem only), so
+    // SpatialIndex's port ids stay synthetic-indexed, unaffected by this.
+
+    /// Returns the element or connection registered under \a id, or nullptr. Mirrors
+    /// Scene::itemById().
+    [[nodiscard]] ItemWithId *itemById(int id) const;
+    /// Returns a fresh, previously unused id. Mirrors Scene::nextId().
+    int nextId();
+    /// Reassigns \a item's id to \a newId without registering it -- mirrors Scene::updateItemId(),
+    /// used by future undo/redo restore paths to preserve an item's original id across a
+    /// serialize/deserialize round-trip.
+    void updateItemId(ItemWithId *item, int newId);
+    /// Assigns \a element a fresh id if unassigned (or preserves a pre-assigned one, e.g. from
+    /// updateItemId()) and registers it. Mirrors the id-registration half of Scene::addItem().
+    void addItem(GraphicElement *element);
+    /// Assigns \a connection a fresh id if unassigned and registers it. Overload of the above
+    /// for Connection, mirroring Scene::addItem()'s single QGraphicsItem*-typed overload split
+    /// across this class's two separately-typed element/connection vectors.
+    void addItem(Connection *connection);
+    /// Unregisters \a element's id. Mirrors the id-unregistration half of Scene::removeItem() --
+    /// called before deletion for clarity/symmetry with Scene's pattern, even though
+    /// ItemWithId's destructor would self-unregister regardless.
+    void removeItem(GraphicElement *element);
+    /// Unregisters \a connection's id. Connection overload of the above.
+    void removeItem(Connection *connection);
+    /// Builds a deserialization context for this canvas -- thin wrapper around the already-
+    /// portable SerializationContext, mirroring Scene::deserializationContext(). \a purpose has
+    /// no default, matching Scene's own signature. blobRegistry stays null until the IC
+    /// embedding sub-step (Phase 3's ICRegistry port) gives this canvas a real blob map.
+    [[nodiscard]] SerializationContext deserializationContext(QHash<quint64, Port *> &portMap,
+                                                               const QVersionNumber &version,
+                                                               SerializationPurpose purpose);
+
     void buildDemoCircuit();
     void rebuildSpatialIndex();
     /// Dispatches a press on \a element to whichever interactive-input behavior applies:
@@ -153,6 +201,11 @@ private:
     SpatialIndex m_index;
     quint64 m_hoveredId = 0;
     QSet<quint64> m_selectedIds;
+
+    /// Real id/registry layer backing itemById()/nextId()/updateItemId() -- see this class's
+    /// doc comment above those declarations. SceneItemRegistry itself is ported unmodified
+    /// (confirmed Widgets-free: a bare QHash<int, ItemWithId *> plus a monotonic counter).
+    SceneItemRegistry m_itemRegistry;
 
     /// The wire currently being dragged into place, or nullptr. Owned here directly (not
     /// added to m_connections) until tryCompleteWire() commits it -- mirrors

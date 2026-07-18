@@ -15,6 +15,7 @@
 
 #include "App/Core/Enums.h"
 #include "App/Core/InstallRelativePaths.h"
+#include "App/Core/ItemWithId.h"
 #include "App/Core/SimulationHost.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/And.h"
@@ -30,6 +31,7 @@
 #include "App/Element/GraphicElements/Text.h"
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/IC.h"
+#include "App/IO/SerializationContext.h"
 #include "App/Scene/ConnectionManager.h"
 #include "App/Simulation/Simulation.h"
 #include "App/Wiring/Connection.h"
@@ -66,15 +68,18 @@ private:
     QVector<GraphicElement *> m_elements;
 };
 
-/// Packs a small-integer index into the quint64 id space SpatialIndex uses, tagged by kind in
-/// the top bits so elements/wires/ports never collide -- cheap and sufficient while this
-/// canvas only ever holds a handful of hardcoded demo objects; a real id scheme (element/port
-/// database ids) belongs to the SceneItemRegistry port in a later Phase 1 iteration.
+/// Packs an id into the quint64 id space SpatialIndex uses, tagged by kind in the top bits so
+/// elements/wires/ports never collide. elementId()/wireId() now take the real
+/// ItemWithId::id() (assigned via CanvasItem::addItem(), see this class's doc comment on the
+/// id/registry layer) rather than a synthetic array index -- ItemWithId::id() is always
+/// non-negative once assigned, same precondition an array index had. portId() stays
+/// index-based: Port (QGraphicsPathItem only, see Port.h) is not an ItemWithId, so it has no
+/// real id to tag.
 constexpr quint64 kElementTag = 0ULL << 62;
 constexpr quint64 kWireTag = 1ULL << 62;
 constexpr quint64 kPortTag = 2ULL << 62;
-quint64 elementId(int index) { return kElementTag | quint64(index); }
-quint64 wireId(int index) { return kWireTag | quint64(index); }
+quint64 elementId(int id) { return kElementTag | quint64(id); }
+quint64 wireId(int id) { return kWireTag | quint64(id); }
 quint64 portId(int index) { return kPortTag | quint64(index); }
 
 /// Maps a Status to a display color for the flat-quad/line rendering this prototype uses in
@@ -211,6 +216,75 @@ CanvasItem::~CanvasItem()
     qDeleteAll(m_elements);
 }
 
+ItemWithId *CanvasItem::itemById(int id) const
+{
+    return m_itemRegistry.itemById(id);
+}
+
+int CanvasItem::nextId()
+{
+    return m_itemRegistry.nextId();
+}
+
+void CanvasItem::updateItemId(ItemWithId *item, int newId)
+{
+    m_itemRegistry.updateItemId(item, newId);
+}
+
+void CanvasItem::addItem(GraphicElement *element)
+{
+    if (!element) {
+        return;
+    }
+    // Unassigned (-1): give it the next id. Pre-assigned (updateItemId() restore path):
+    // preserve it and advance the counter past it -- mirrors Scene::addItem() exactly.
+    if (element->id() < 0) {
+        element->setId(nextId());
+    } else {
+        m_itemRegistry.setLastId(element->id());
+    }
+    m_itemRegistry.registerItem(element);
+}
+
+void CanvasItem::addItem(Connection *connection)
+{
+    if (!connection) {
+        return;
+    }
+    if (connection->id() < 0) {
+        connection->setId(nextId());
+    } else {
+        m_itemRegistry.setLastId(connection->id());
+    }
+    m_itemRegistry.registerItem(connection);
+}
+
+void CanvasItem::removeItem(GraphicElement *element)
+{
+    if (element) {
+        m_itemRegistry.unregisterItem(element);
+    }
+}
+
+void CanvasItem::removeItem(Connection *connection)
+{
+    if (connection) {
+        m_itemRegistry.unregisterItem(connection);
+    }
+}
+
+SerializationContext CanvasItem::deserializationContext(QHash<quint64, Port *> &portMap,
+                                                         const QVersionNumber &version,
+                                                         SerializationPurpose purpose)
+{
+    // contextDir stays empty: this canvas has no notion of "the directory of the loaded
+    // .panda file" yet -- nothing here loads a top-level file through this context (IC's own
+    // loadFile()/loadFromBlob() calls, used by buildDemoCircuit()'s demo IC, resolve paths
+    // through InstallRelativePaths/their own file argument instead). blobRegistry stays null
+    // until the IC embedding sub-step gives this canvas a real blob map.
+    return SerializationContext{.portMap = portMap, .version = version, .purpose = purpose};
+}
+
 void CanvasItem::buildDemoCircuit()
 {
     auto *switchA = new InputSwitch();
@@ -289,6 +363,9 @@ void CanvasItem::buildDemoCircuit()
     m_elements = { switchA, switchB, andGate, led, switchC, led2,
                     mux, demux, truthTable, display7, display14, display16,
                     inputButton, inputRotary, text, ic };
+    for (auto *element : std::as_const(m_elements)) {
+        addItem(element);
+    }
 
     auto *connA = new Connection();
     connA->setStartPort(switchA->outputPort(0));
@@ -303,6 +380,9 @@ void CanvasItem::buildDemoCircuit()
     connOut->setEndPort(led->inputPort(0));
 
     m_connections = { connA, connB, connOut };
+    for (auto *connection : std::as_const(m_connections)) {
+        addItem(connection);
+    }
 
     m_host = std::make_unique<ListSimulationHost>(m_elements);
     m_simulation = std::make_unique<Simulation>(m_host.get());
@@ -319,7 +399,7 @@ void CanvasItem::rebuildSpatialIndex()
     int portIndex = 0;
     for (int i = 0; i < m_elements.size(); ++i) {
         GraphicElement *element = m_elements.at(i);
-        const quint64 id = elementId(i);
+        const quint64 id = elementId(element->id());
         const QRectF worldRect = element->boundingRect().translated(element->pos());
         m_index.insertBox(id, worldRect);
         m_elementsById.insert(id, element);
@@ -344,7 +424,7 @@ void CanvasItem::rebuildSpatialIndex()
         QPainterPathStroker stroker;
         stroker.setWidth(6.0); // generous click target, matching Port::kRadius's spirit
         const QPainterPath stroke = stroker.createStroke(path);
-        m_index.insertShape(wireId(i), stroke.boundingRect(), stroke);
+        m_index.insertShape(wireId(connection->id()), stroke.boundingRect(), stroke);
     }
 }
 
@@ -475,6 +555,7 @@ void CanvasItem::tryCompleteWire(const QPointF &pos)
     m_editedConnection->setStartPort(startPort);
     m_editedConnection->setEndPort(endPort);
     m_connections.append(m_editedConnection);
+    addItem(m_editedConnection);
     m_editedConnection = nullptr;
     // The new wire changes both the simulation graph and the spatial index.
     m_simulation->restart();
@@ -500,6 +581,7 @@ void CanvasItem::detachWire(InputPort *endPort)
     }
 
     m_connections.removeAll(connection);
+    removeItem(connection);
     delete connection;
     m_simulation->restart();
 
