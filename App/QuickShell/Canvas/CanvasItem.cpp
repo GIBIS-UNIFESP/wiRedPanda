@@ -17,8 +17,11 @@
 #include "App/Core/SimulationHost.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/And.h"
+#include "App/Element/GraphicElements/Demux.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
+#include "App/Element/GraphicElements/Mux.h"
+#include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Scene/ConnectionManager.h"
 #include "App/Simulation/Simulation.h"
 #include "App/Wiring/Connection.h"
@@ -219,7 +222,19 @@ void CanvasItem::buildDemoCircuit()
     auto *led2 = new Led();
     led2->setPos(400, 300);
 
-    m_elements = { switchA, switchB, andGate, led, switchC, led2 };
+    // Unwired too: these three exercise Phase 2's custom-paint families (vector trapezoid/
+    // DIP-rect bodies drawn via drawBody()-equivalent methods, offscreen-rendered through the
+    // same TextureAtlas as the icon-based elements above) rendering correctly through the
+    // atlas -- proving the polymorphic paint()-dispatch design generalizes, not just that it
+    // works for GraphicElement::paint()'s free-inheritance majority.
+    auto *mux = new Mux();
+    mux->setPos(40, 460);
+    auto *demux = new Demux();
+    demux->setPos(220, 460);
+    auto *truthTable = new TruthTable();
+    truthTable->setPos(400, 460);
+
+    m_elements = { switchA, switchB, andGate, led, switchC, led2, mux, demux, truthTable };
 
     auto *connA = new Connection();
     connA->setStartPort(switchA->outputPort(0));
