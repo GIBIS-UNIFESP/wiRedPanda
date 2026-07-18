@@ -67,6 +67,17 @@ qt_add_qml_module(wiredpanda_quick
         TextPromptDialog.qml
 )
 
+# qt_add_qml_module's generated cache-unit lookup table (Registry::lookupCachedUnit(),
+# via QHash::value()) trips a false-positive -Werror=null-dereference inside Qt's own
+# qhash.h under GCC 15's -O3 inliner -- reproduces identically against Qt 6.9.3 and
+# 6.12.0, so it's a GCC/Qt-header interaction, not something either Qt version fixes.
+# This is Qt-generated code we don't author and can't add a null-check to, so disable
+# just this one warning for just this one generated file rather than project-wide.
+set_source_files_properties(
+    ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_qmlcache_loader.cpp
+    PROPERTIES COMPILE_OPTIONS "-Wno-null-dereference"
+)
+
 # CanvasItem constructs real GraphicElement subclasses (And/InputSwitch/Led) and drives them
 # through the real Simulation engine (see CanvasItem.h's doc comment) -- it needs the actual
 # domain/simulation classes and their embedded SVG icon resources (ElementAppearance::setPixmap()

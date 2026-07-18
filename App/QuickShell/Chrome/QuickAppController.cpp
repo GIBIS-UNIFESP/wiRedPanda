@@ -84,7 +84,9 @@ void QuickAppController::bindCurrentTab()
     // QuickWorkSpace -- and therefore its CanvasItem -- before emitting currentTabChanged for
     // whatever tab becomes current next, so the previously-bound canvas may already be gone.
     if (m_boundCanvas) {
-        m_boundCanvas->simulation()->stop();
+        if (auto *sim = m_boundCanvas->simulation()) {
+            sim->stop();
+        }
     }
     m_boundCanvas = nullptr;
 
@@ -371,7 +373,9 @@ bool QuickAppController::confirmClose()
 void QuickAppController::applySimulationRunningState(bool running)
 {
     if (auto *c = activeCanvas()) {
-        running ? c->simulation()->start() : c->simulation()->stop();
+        if (auto *sim = c->simulation()) {
+            running ? sim->start() : sim->stop();
+        }
     }
 }
 

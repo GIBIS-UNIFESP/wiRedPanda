@@ -209,7 +209,16 @@ public:
     /// Returns the simulation engine driving this canvas. Mirrors Scene::simulation(); used by
     /// this class's local command classes to wrap topology-mutating redo()/undo() bodies in a
     /// SimulationBlocker, exactly as Commands.cpp does through Scene::simulation().
+    ///
+    /// The pragma works around a GCC/Clang false positive: -O3's inliner walks into
+    /// std::unique_ptr::get()'s own implementation here and flags a "potential null
+    /// pointer dereference" that has nothing to do with any caller's use of the
+    /// returned pointer -- it reproduces on an untouched one-line accessor regardless
+    /// of null-checking at the call site, across both Qt 6.9.3 and 6.12.0.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wnull-dereference"
     [[nodiscard]] Simulation *simulation() const { return m_simulation.get(); }
+#pragma GCC diagnostic pop
     /// Marks the simulation topology stale (restart()) and resyncs the spatial index/repaints.
     /// Mirrors Scene::setCircuitUpdateRequired() -- this canvas has no autosave/visibility-
     /// dirty machinery to also flag, so it's just the simulation-rebuild half.
