@@ -10,6 +10,7 @@
 #include <QList>
 #include <QMetaObject>
 #include <QObject>
+#include <QPointer>
 #include <QRect>
 #include <QString>
 #include <QStringList>
@@ -20,6 +21,8 @@
 #include "App/QuickShell/Chrome/QuickMainWindowHost.h"
 #include "App/QuickShell/Chrome/QuickWorkSpace.h"
 #include "App/QuickShell/Chrome/QuickWorkspaceManager.h"
+
+class CanvasItem;
 
 /**
  * \class QuickAppController
@@ -48,6 +51,8 @@ class QuickAppController : public QObject, public QuickMainWindowHost
     Q_PROPERTY(QString undoText READ undoText NOTIFY undoRedoStateChanged)
     Q_PROPERTY(QString redoText READ redoText NOTIFY undoRedoStateChanged)
     Q_PROPERTY(QStringList recentFiles READ recentFiles NOTIFY recentFilesChanged)
+    Q_PROPERTY(bool simulationRunning READ isSimulationRunning WRITE setSimulationRunning NOTIFY simulationRunningChanged)
+    Q_PROPERTY(bool backgroundSimulationEnabled READ isBackgroundSimulationEnabled WRITE setBackgroundSimulationEnabled NOTIFY backgroundSimulationEnabledChanged)
 
 public:
     explicit QuickAppController(QObject *parent = nullptr);
@@ -95,6 +100,26 @@ public:
     /// Returns true if it's OK to actually close the window.
     Q_INVOKABLE bool confirmClose();
 
+    [[nodiscard]] bool isSimulationRunning() const { return m_simulationRunning; }
+    /// The user's Play/pause intent (mirrors actionPlay's checked state, which starts checked
+    /// in MainWindow.cpp). Starts/stops the *current* tab's real Simulation via the same
+    /// Simulation::start()/stop() entry points MainWindow::on_actionPlay_toggled() uses --
+    /// these are already public, unlike an earlier draft of this plan assumed.
+    void setSimulationRunning(bool running);
+
+    [[nodiscard]] bool isBackgroundSimulationEnabled() const { return m_backgroundSimulationEnabled; }
+    /// Mirrors actionBackground_Simulation: when false (the default), losing window focus
+    /// pauses the current tab's simulation; when true, it keeps running (e.g. for demoing a
+    /// circuit on a second display).
+    void setBackgroundSimulationEnabled(bool enabled);
+
+    /// Mirrors MainWindow::event()'s QEvent::WindowActivate/WindowDeactivate handling. Called
+    /// from Main.qml's ApplicationWindow.onActiveChanged. Pauses/resumes the current tab's
+    /// simulation without touching simulationRunning itself, so the user's Play intent
+    /// survives a temporary focus loss -- unless backgroundSimulationEnabled opts out of
+    /// pausing on deactivate.
+    Q_INVOKABLE void handleWindowActiveChanged(bool active);
+
 public slots:
     // --- File menu ---
     void newTab() { m_workspaceManager.newTab(); }
@@ -136,10 +161,7 @@ public slots:
     void distributeHorizontally();
     void distributeVertically();
 
-    // --- Simulation menu (Play/pause is deliberately not here: CanvasItem's Simulation has
-    // no public indefinite-pause entry point of its own yet, only the RAII SimulationBlocker
-    // used internally by topology-mutating commands -- a real gap, not an oversight, tracked
-    // for whichever later pass needs it) ---
+    // --- Simulation menu ---
     void mute(bool muted);
     void restartSimulation();
 
@@ -153,22 +175,39 @@ signals:
     void windowTitleChanged();
     void undoRedoStateChanged();
     void recentFilesChanged();
+    void simulationRunningChanged();
+    void backgroundSimulationEnabledChanged();
 
 private:
     /// Returns the active tab's canvas, or nullptr. Shared by every Edit/Transform/Align
     /// action above -- mirrors MainWindow::connectSceneAction()'s "guarded by a current-tab
     /// check" pattern.
-    class CanvasItem *activeCanvas() const;
+    CanvasItem *activeCanvas() const;
 
     /// Disconnects the previous tab's undo-stack signal wiring and reconnects to the new
-    /// current tab's, re-emitting undoRedoStateChanged()/windowTitleChanged() as needed.
-    /// The CanvasItem-side counterpart of SceneUiBinder::bind()/unbind()'s undo/redo half --
-    /// element-editor rebinding, zoom/mute/play action sync, and status-bar info are the
-    /// other half, deferred to when their chrome exists (sub-steps 4/5/7).
+    /// current tab's, re-emitting undoRedoStateChanged()/windowTitleChanged() as needed. Also
+    /// stops the previously-bound tab's simulation and starts the new one's if
+    /// simulationRunning is set, mirroring SceneUiBinder::unbind()/bind()'s play-state half.
+    /// The CanvasItem-side counterpart of SceneUiBinder::bind()/unbind()'s undo/redo and
+    /// play-state halves -- element-editor rebinding, zoom/mute action sync, and status-bar
+    /// info are the remaining pieces, deferred to when their chrome exists (sub-steps 4/5/7).
     void bindCurrentTab();
+
+    /// Literal start()/stop() call on the current tab's Simulation, mirroring
+    /// MainWindow::on_actionPlay_toggled()'s body. Shared by setSimulationRunning() (the user
+    /// toggling Play) and handleWindowActiveChanged() (a temporary focus-driven pause/resume
+    /// that must NOT alter m_simulationRunning itself).
+    void applySimulationRunningState(bool running);
 
     QuickWorkspaceManager m_workspaceManager;
     QuickExportController m_exportController;
     RecentFiles m_recentFiles;
     QList<QMetaObject::Connection> m_tabConnections;
+    bool m_simulationRunning = true;
+    bool m_backgroundSimulationEnabled = false;
+    /// QPointer, not a raw CanvasItem*: QuickWorkspaceManager::closeTab() erases the closed
+    /// QuickWorkSpace (and therefore its CanvasItem) before emitting currentTabChanged for
+    /// whatever tab becomes current next, so the previously-bound canvas may already be
+    /// destroyed by the time bindCurrentTab() runs.
+    QPointer<CanvasItem> m_boundCanvas;
 };

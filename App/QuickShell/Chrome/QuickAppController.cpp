@@ -12,6 +12,7 @@
 #include "App/QuickShell/Canvas/CanvasItem.h"
 #include "App/QuickShell/Chrome/DialogProvider.h"
 #include "App/QuickShell/Chrome/QuickWorkSpace.h"
+#include "App/Simulation/Simulation.h"
 
 QuickAppController::QuickAppController(QObject *parent)
     : QObject(parent)
@@ -62,10 +63,27 @@ void QuickAppController::bindCurrentTab()
     }
     m_tabConnections.clear();
 
+    // Mirrors SceneUiBinder::unbind()'s "stop so it doesn't keep running in the background".
+    // m_boundCanvas is a QPointer since QuickWorkspaceManager::closeTab() erases the closed
+    // QuickWorkSpace -- and therefore its CanvasItem -- before emitting currentTabChanged for
+    // whatever tab becomes current next, so the previously-bound canvas may already be gone.
+    if (m_boundCanvas) {
+        m_boundCanvas->simulation()->stop();
+    }
+    m_boundCanvas = nullptr;
+
     auto *canvas = activeCanvas();
     if (!canvas) {
         return;
     }
+
+    // Mirrors SceneUiBinder::bind()'s "if (m_ui->actionPlay->isChecked())" resume-on-switch --
+    // symmetric here (explicit stop too), unlike bind()'s start-only version, because a freshly
+    // constructed CanvasItem always auto-starts its own Simulation (unlike Scene, which starts
+    // paused until something calls start()); binding into a paused session must actively stop
+    // a brand-new tab's already-running simulation, not just skip starting it.
+    applySimulationRunningState(m_simulationRunning);
+    m_boundCanvas = canvas;
 
     auto *undoStack = canvas->undoStack();
     const auto reemit = [this] {
@@ -300,4 +318,41 @@ bool QuickAppController::confirmClose()
         return reply == DialogButton::Yes;
     }
     return m_workspaceManager.closeFiles();
+}
+
+void QuickAppController::applySimulationRunningState(bool running)
+{
+    if (auto *c = activeCanvas()) {
+        running ? c->simulation()->start() : c->simulation()->stop();
+    }
+}
+
+void QuickAppController::setSimulationRunning(bool running)
+{
+    if (m_simulationRunning == running) {
+        return;
+    }
+    m_simulationRunning = running;
+    applySimulationRunningState(running);
+    emit simulationRunningChanged();
+}
+
+void QuickAppController::setBackgroundSimulationEnabled(bool enabled)
+{
+    if (m_backgroundSimulationEnabled == enabled) {
+        return;
+    }
+    m_backgroundSimulationEnabled = enabled;
+    emit backgroundSimulationEnabledChanged();
+}
+
+void QuickAppController::handleWindowActiveChanged(bool active)
+{
+    if (active) {
+        if (m_simulationRunning) {
+            applySimulationRunningState(true);
+        }
+    } else if (!m_backgroundSimulationEnabled) {
+        applySimulationRunningState(false);
+    }
 }

@@ -38,6 +38,8 @@ ApplicationWindow {
         appController.saveWindowGeometry(window.x, window.y, window.width, window.height)
     }
 
+    onActiveChanged: appController.handleWindowActiveChanged(active)
+
     menuBar: MenuBar {
         Menu {
             title: qsTr("&File")
@@ -107,11 +109,24 @@ ApplicationWindow {
         Menu {
             title: qsTr("&Simulation")
             MenuItem {
+                text: qsTr("Play")
+                checkable: true
+                checked: appController.simulationRunning
+                onTriggered: appController.simulationRunning = checked
+            }
+            MenuItem {
                 text: qsTr("Mute")
                 checkable: true
                 onTriggered: appController.mute(checked)
             }
             MenuItem { text: qsTr("Restart"); onTriggered: appController.restartSimulation() }
+            MenuSeparator {}
+            MenuItem {
+                text: qsTr("Background Simulation")
+                checkable: true
+                checked: appController.backgroundSimulationEnabled
+                onTriggered: appController.backgroundSimulationEnabled = checked
+            }
         }
 
         Menu {
