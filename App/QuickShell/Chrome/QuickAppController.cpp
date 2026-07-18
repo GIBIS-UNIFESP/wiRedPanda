@@ -7,6 +7,7 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QGuiApplication>
+#include <QLocale>
 #include <QPointF>
 #include <QQmlEngine>
 #include <QUndoStack>
@@ -48,6 +49,10 @@ QuickAppController::QuickAppController(QObject *parent)
     connect(&m_workspaceManager, &QuickWorkspaceManager::titleChanged, this, &QuickAppController::windowTitleChanged);
     connect(&m_workspaceManager, &QuickWorkspaceManager::recentFileAdded, &m_recentFiles, &RecentFiles::addRecentFile);
     connect(&m_recentFiles, &RecentFiles::recentFilesUpdated, this, &QuickAppController::recentFilesChanged);
+    connect(&ThemeManager::instance(), &ThemeManager::themeChanged, this, &QuickAppController::themeChanged);
+    connect(&m_languageManager, &LanguageManager::translationChanged, this, &QuickAppController::currentLanguageChanged);
+
+    setupLanguage();
 }
 
 QuickWorkSpace *QuickAppController::currentTab() const
@@ -354,6 +359,52 @@ QList<ExampleEntry> QuickAppController::examplesList() const
     }
 
     return result;
+}
+
+namespace {
+// Qt resource paths (":/Interface/...") need the "qrc" scheme prefix to be usable as a QML
+// Image.source URL. Same helper as QuickElementPalette.cpp's own toQmlUrl() -- kept local
+// rather than shared, matching that one-line helper's own precedent.
+QString toQmlUrl(const QString &resourcePath)
+{
+    return resourcePath.startsWith(QLatin1Char(':')) ? QStringLiteral("qrc") + resourcePath : resourcePath;
+}
+} // namespace
+
+QList<LanguageEntry> QuickAppController::languages() const
+{
+    QList<LanguageEntry> result;
+    for (const QString &code : m_languageManager.availableLanguages()) {
+        result.append(LanguageEntry(code, m_languageManager.displayName(code), toQmlUrl(m_languageManager.flagIcon(code))));
+    }
+    return result;
+}
+
+QString QuickAppController::currentLanguage() const
+{
+    const QString language = Settings::language();
+    return language.isEmpty() ? QStringLiteral("en") : language;
+}
+
+void QuickAppController::setupLanguage()
+{
+    QString language = Settings::language();
+    if (language.isEmpty()) {
+        const QLocale systemLocale = QLocale::system();
+        const QString systemLang = systemLocale.name();
+        const QString baseLang = systemLang.split('_').first();
+
+        const auto available = m_languageManager.availableLanguages();
+        if (available.contains(systemLang)) {
+            language = systemLang;
+        } else if (available.contains(baseLang)) {
+            language = baseLang;
+        } else {
+            language = QStringLiteral("en");
+        }
+    }
+
+    m_languageManager.loadTranslation(language);
 }
 
 QRect QuickAppController::restoreWindowGeometry() const

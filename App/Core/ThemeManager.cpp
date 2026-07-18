@@ -4,6 +4,7 @@
 #include "App/Core/ThemeManager.h"
 
 #include <QCoreApplication>
+#include <QGuiApplication>
 #include <QStyleHints>
 #include <QThread>
 
@@ -30,7 +31,15 @@ ThemeManager::ThemeManager(QObject *parent)
     // System theme: leave m_requestedColorScheme as Unknown so the platform reads the
     // OS color scheme naturally. Setting it to Dark/Light explicitly would block runtime
     // OS theme-change events from propagating through QGtk3Theme::colorScheme().
-    if (auto *app = qApp) {
+    //
+    // qGuiApp (unambiguously static_cast<QGuiApplication*>(...)), not the qApp macro: qApp
+    // resolves to static_cast<QApplication*>(QCoreApplication::instance()) once <QApplication>
+    // has been included anywhere in this translation unit's include graph (it is,
+    // transitively, via this file's own ThemeManager.h -> Application.h) -- an invalid cast
+    // when the real singleton is a QGuiApplication (wiredpanda_quick never constructs a
+    // QApplication). styleHints()/colorSchemeChanged are QGuiApplication-level APIs, not
+    // QApplication-specific, so qGuiApp is both the correct and the safe type here.
+    if (auto *app = qGuiApp) {
         switch (m_theme) {
         case Theme::Light:  app->styleHints()->setColorScheme(Qt::ColorScheme::Light);  break;
         case Theme::Dark:   app->styleHints()->setColorScheme(Qt::ColorScheme::Dark);   break;
@@ -44,7 +53,7 @@ ThemeManager::ThemeManager(QObject *parent)
 #if QT_VERSION >= QT_VERSION_CHECK(6, 5, 0)
     // Qt 6.5+ provides a built-in color-scheme change signal; use it so System
     // theme reacts at runtime when the user toggles OS dark/light mode.
-    if (auto *app = qApp) {
+    if (auto *app = qGuiApp) {
         connect(app->styleHints(), &QStyleHints::colorSchemeChanged,
                 this, [this](Qt::ColorScheme) { onSystemColorSchemeChanged(); });
     }
@@ -70,11 +79,15 @@ Theme ThemeManager::effectiveTheme()
 Theme ThemeManager::resolveSystemTheme()
 {
 #if QT_VERSION >= QT_VERSION_CHECK(6, 5, 0)
-    if (auto *app = qApp) {
+    // qGuiApp, not qApp -- see the constructor's identical comment.
+    if (auto *app = qGuiApp) {
         return (app->styleHints()->colorScheme() == Qt::ColorScheme::Dark) ? Theme::Dark : Theme::Light;
     }
     return Theme::Light;
 #else
+    // Pre-6.5 fallback: QPalette is QApplication-only, so this branch genuinely needs qApp
+    // (and a real Widgets QApplication to be meaningful) -- left as-is, not reachable at this
+    // project's actual Qt 6.12 floor.
     if (auto *app = qApp) {
         return (app->palette().color(QPalette::Window).lightness() < 128)
                    ? Theme::Dark : Theme::Light;

@@ -137,3 +137,22 @@ set_source_files_properties(
 # engine, not synthetic data" goal.
 link_wiredpanda_whole_archive(wiredpanda_quick)
 target_link_libraries(wiredpanda_quick PRIVATE ${QUICK_LIBS} wiredpanda_resources)
+
+# Compile .ts -> .qm and embed as :/i18n/wpanda_<lang>.qm for this target too. qt_add_translations()
+# attaches its generated resource directly to whichever target is passed as its own first
+# argument -- the root CMakeLists.txt's own call (for the "wiredpanda" executable) doesn't
+# propagate here even though wiredpanda_quick links wiredpanda_resources, since translations
+# were never routed through that shared library. A second, independent call (same TS_FILES/
+# MERGE_QT_TRANSLATIONS/LUPDATE_OPTIONS flags as the root one, all already in scope from the
+# parent directory) is the minimal fix -- confirmed necessary, not assumed, by a real
+# QuickAppController::languages() diagnostic that found only the hardcoded "en" fallback
+# without this. Re-compiles the same .ts sources a second time (real, small, accepted
+# duplication) rather than restructuring the existing wiredpanda-target-owned call, which
+# project memory feedback_translations_at_release.md flags as infrequently-touched/sensitive.
+if(Qt6LinguistTools_FOUND)
+    qt_add_translations(wiredpanda_quick
+        TS_FILES ${TS_FILES}
+        ${_merge_qt_translations}
+        ${_lupdate_opts}
+    )
+endif()

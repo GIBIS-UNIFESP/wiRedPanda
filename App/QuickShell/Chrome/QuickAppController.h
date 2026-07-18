@@ -17,6 +17,7 @@
 #include <QStringList>
 
 #include "App/Core/Enums.h"
+#include "App/Core/ThemeManager.h"
 #include "App/IO/RecentFiles.h"
 #include "App/QuickShell/Chrome/QuickElementEditor.h"
 #include "App/QuickShell/Chrome/QuickElementPalette.h"
@@ -26,6 +27,7 @@
 #include "App/QuickShell/Chrome/QuickMainWindowHost.h"
 #include "App/QuickShell/Chrome/QuickWorkSpace.h"
 #include "App/QuickShell/Chrome/QuickWorkspaceManager.h"
+#include "App/UI/LanguageManager.h"
 
 class CanvasItem;
 
@@ -55,6 +57,37 @@ public:
 private:
     QString m_title;
     QString m_path;
+};
+
+/// One entry in QuickAppController::languages(). Mirrors MainWindow::populateLanguageMenu()'s
+/// per-action fields (displayName/flagIcon), built from LanguageManager::availableLanguages().
+/// A real QML value type for the same qmlcachegen reason as ExampleEntry/ElementDescriptor.
+class LanguageEntry
+{
+    Q_GADGET
+    QML_VALUE_TYPE(languageEntry)
+
+    Q_PROPERTY(QString code READ code FINAL)
+    Q_PROPERTY(QString displayName READ displayName FINAL)
+    Q_PROPERTY(QString flagIcon READ flagIcon FINAL)
+
+public:
+    LanguageEntry() = default;
+    LanguageEntry(QString code, QString displayName, QString flagIcon)
+        : m_code(std::move(code))
+        , m_displayName(std::move(displayName))
+        , m_flagIcon(std::move(flagIcon))
+    {
+    }
+
+    [[nodiscard]] QString code() const { return m_code; }
+    [[nodiscard]] QString displayName() const { return m_displayName; }
+    [[nodiscard]] QString flagIcon() const { return m_flagIcon; }
+
+private:
+    QString m_code;
+    QString m_displayName;
+    QString m_flagIcon;
 };
 
 /**
@@ -93,6 +126,12 @@ class QuickAppController : public QObject, public QuickMainWindowHost
     Q_PROPERTY(QuickElementPalette *elementPalette READ elementPalette CONSTANT FINAL)
     Q_PROPERTY(QuickElementEditor *elementEditor READ elementEditor CONSTANT FINAL)
     Q_PROPERTY(QuickICPreview *icPreview READ icPreview CONSTANT FINAL)
+    // theme is a plain int (Enums::ElementType's own precedent for exposing a C++ enum class to
+    // QML without registering it) -- Theme is declared at namespace scope in ThemeManager.h, not
+    // inside a Q_GADGET/Q_NAMESPACE, so it has no Q_ENUM registration to expose directly.
+    Q_PROPERTY(int theme READ themeInt WRITE setThemeInt NOTIFY themeChanged FINAL)
+    Q_PROPERTY(QList<LanguageEntry> languages READ languages CONSTANT FINAL)
+    Q_PROPERTY(QString currentLanguage READ currentLanguage NOTIFY currentLanguageChanged FINAL)
 
 public:
     explicit QuickAppController(QObject *parent = nullptr);
@@ -165,6 +204,23 @@ public:
     [[nodiscard]] QuickElementEditor *elementEditor() { return &m_elementEditor; }
     [[nodiscard]] QuickICPreview *icPreview() { return &m_icPreview; }
 
+    /// Mirrors MainWindowUi's actionLightTheme/actionDarkTheme/actionSystemTheme radio group,
+    /// as the raw Theme ordinal (Light=0, Dark=1, System=2).
+    [[nodiscard]] int themeInt() const { return static_cast<int>(ThemeManager::theme()); }
+    void setThemeInt(int value) { ThemeManager::setTheme(static_cast<Theme>(value)); }
+
+    /// Every available UI language, prettified for display. Mirrors
+    /// MainWindow::populateLanguageMenu()'s per-action displayName()/flagIcon() lookups. Not
+    /// reactive (no NOTIFY) since the bundled translation set never changes at runtime, unlike
+    /// currentLanguage -- same reasoning as examplesList()'s own CONSTANT choice, just exposed
+    /// as a property here since (unlike the Examples submenu) nothing needs to force a re-scan.
+    [[nodiscard]] QList<LanguageEntry> languages() const;
+
+    /// The currently active language code (e.g. "en", "pt_BR"), driving the Language submenu's
+    /// checked radio item. Mirrors Settings::language(), defaulting to "en" the same way
+    /// MainWindow::populateLanguageMenu()'s own checked-state check does.
+    [[nodiscard]] QString currentLanguage() const;
+
     /// Adds one element from a palette entry to the current tab's canvas. \a type/\a
     /// icFileName/\a isEmbedded mirror QuickElementPalette's entry fields exactly (QML passes
     /// them straight through from whichever entry was dragged or double-clicked); \a x/\a y
@@ -233,6 +289,13 @@ public slots:
     void removeICFile(const QString &icFileName) { m_icController.removeICFile(icFileName); }
     void removeEmbeddedIC(const QString &blobName) { m_icController.removeEmbeddedIC(blobName); }
 
+    // --- Language menu ---
+    /// Mirrors the Language submenu action lambdas: m_languageManager->loadTranslation(langCode).
+    /// QML's qsTr()-bound text retranslates automatically once the new QTranslator is
+    /// installed (Qt Quick's engine listens for QEvent::LanguageChange itself) -- unlike
+    /// MainWindow::retranslateUi(), no explicit re-translation call is needed here.
+    void switchLanguage(const QString &code) { m_languageManager.loadTranslation(code); }
+
 signals:
     void currentTabChanged();
     void tabsChanged();
@@ -241,6 +304,8 @@ signals:
     void recentFilesChanged();
     void simulationRunningChanged();
     void backgroundSimulationEnabledChanged();
+    void themeChanged();
+    void currentLanguageChanged();
 
 private:
     /// Returns the active tab's canvas, or nullptr. Shared by every Edit/Transform/Align
@@ -265,6 +330,12 @@ private:
     /// that must NOT alter m_simulationRunning itself).
     void applySimulationRunningState(bool running);
 
+    /// Loads the initial UI language, mirroring MainWindow::setupLanguage(): if
+    /// Settings::language() was never set (first run), auto-detects from the system locale
+    /// (exact code, then base language, then "en"), otherwise loads the persisted choice.
+    /// Called once from the constructor.
+    void setupLanguage();
+
     QuickWorkspaceManager m_workspaceManager;
     QuickExportController m_exportController;
     QuickICController m_icController;
@@ -272,6 +343,7 @@ private:
     QuickElementEditor m_elementEditor;
     QuickICPreview m_icPreview;
     RecentFiles m_recentFiles;
+    LanguageManager m_languageManager;
     QList<QMetaObject::Connection> m_tabConnections;
     bool m_simulationRunning = true;
     bool m_backgroundSimulationEnabled = false;

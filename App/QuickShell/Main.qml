@@ -136,6 +136,36 @@ ApplicationWindow {
             MenuItem { text: qsTr("SystemVerilog..."); onTriggered: AppController.exportSystemVerilog() }
         }
 
+        // Mirrors MainWindowUi's View menu, scoped to just the Theme submenu -- View's other
+        // items (zoom, wire/gate visibility, fast-mode, minimap toggle) all depend on chrome
+        // that doesn't exist yet in this Quick shell (zoom/pan in particular -- see
+        // project_canvasitem_no_panzoom_blocks_minimap.md), so they stay out of this menu
+        // rather than being built as non-functional entries.
+        Menu {
+            title: qsTr("&View")
+            Menu {
+                title: qsTr("Theme")
+                MenuItem { text: qsTr("Light"); checkable: true; checked: AppController.theme === 0; onTriggered: AppController.theme = 0 }
+                MenuItem { text: qsTr("Dark"); checkable: true; checked: AppController.theme === 1; onTriggered: AppController.theme = 1 }
+                MenuItem { text: qsTr("System"); checkable: true; checked: AppController.theme === 2; onTriggered: AppController.theme = 2 }
+            }
+        }
+
+        Menu {
+            title: qsTr("&Language")
+            Repeater {
+                model: AppController.languages
+                MenuItem {
+                    required property languageEntry modelData
+                    text: modelData.displayName
+                    icon.source: modelData.flagIcon
+                    checkable: true
+                    checked: AppController.currentLanguage === modelData.code
+                    onTriggered: AppController.switchLanguage(modelData.code)
+                }
+            }
+        }
+
         Menu {
             title: qsTr("&Help")
             MenuItem { text: qsTr("Shortcuts and Tips"); onTriggered: shortcutsDialog.open() }

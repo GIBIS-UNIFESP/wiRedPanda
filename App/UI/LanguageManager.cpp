@@ -3,6 +3,7 @@
 
 #include "App/UI/LanguageManager.h"
 
+#include <QCoreApplication>
 #include <QDir>
 #include <QLocale>
 #include <QResource>
@@ -12,7 +13,6 @@
 #include <QFontDatabase>
 #endif
 
-#include "App/Core/Application.h"
 #include "App/Core/Settings.h"
 
 #ifdef Q_OS_WASM
@@ -47,8 +47,14 @@ LanguageManager::LanguageManager(QObject *parent)
 
 LanguageManager::~LanguageManager()
 {
-    // Remove translator from Application::instance() before it is deleted by the QObject parent tree.
-    Application::instance()->removeTranslator(m_translator);
+    // QCoreApplication::installTranslator()/removeTranslator() are static -- translator
+    // management doesn't need a QApplication (Widgets) instance at all, only a QCoreApplication
+    // one, which always exists. Using the static form directly (rather than routing through
+    // Application::instance(), a QApplication-typed accessor that returns nullptr in
+    // wiredpanda_quick, which only ever constructs a QGuiApplication) avoids an unconditional
+    // null-pointer dereference there. Remove translator before it is deleted by the QObject
+    // parent tree.
+    QCoreApplication::removeTranslator(m_translator);
 }
 
 void LanguageManager::loadTranslation(const QString &language)
@@ -62,7 +68,7 @@ void LanguageManager::loadTranslation(const QString &language)
     // Always recreate the translator rather than re-loading; Qt does not
     // guarantee that calling load() on an existing translator re-emits
     // languageChanged.
-    Application::instance()->removeTranslator(m_translator);
+    QCoreApplication::removeTranslator(m_translator);
     delete m_translator;
     m_translator = nullptr;
 
@@ -82,7 +88,7 @@ void LanguageManager::loadTranslation(const QString &language)
     if (QResource(qmFile).isValid()) {
         m_translator = new QTranslator(this);
 
-        if (!m_translator->load(qmFile) || !Application::instance()->installTranslator(m_translator)) {
+        if (!m_translator->load(qmFile) || !QCoreApplication::installTranslator(m_translator)) {
             qWarning() << "Failed to load translation for" << language << ", falling back to English";
             delete m_translator;
             m_translator = nullptr;
