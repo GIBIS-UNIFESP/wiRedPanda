@@ -11,6 +11,7 @@
 #include <QFileInfo>
 
 class QString;
+class QuickElementPalette;
 class QuickWorkSpace;
 
 /**
@@ -22,10 +23,14 @@ class QuickWorkSpace;
  * \details Not a literal implementation of the production MainWindowHost interface --
  * MainWindowHost::currentTab() returns a concrete WorkSpace* (a Widgets type), which
  * QuickExportController has no use for and can't satisfy. Copy-and-adapt port (same
- * precedent as CanvasCommands/CanvasICRegistry/QuickWorkSpace/QuickWorkspaceManager), sized
- * to what's actually needed so far: no palette()/dolphinHost()/setICButtonsVisible()/
- * refreshICButtonsEnabled() yet, since nothing on the Quick side needs them until the
- * palette (sub-step 4) and IC controller port exist.
+ * precedent as CanvasCommands/CanvasICRegistry/QuickWorkSpace/QuickWorkspaceManager). Gained
+ * palette()/requestSave() for QuickICController (Phase 4 sub-step 7); still no
+ * dolphinHost()/widget()/setICButtonsVisible()/refreshICButtonsEnabled() -- no Quick-side
+ * caller needs them yet (no BeWavedDolphin/IC-toolbar-button chrome exists), and no
+ * icListFile() -- QuickAppController::bindCurrentTab() already established the precedent of
+ * using currentFile() directly instead of icListFile()'s inline-IC-tab parent-chain walk,
+ * since inline IC tabs have no UI trigger in the Quick chrome yet; QuickICController follows
+ * the same simplification rather than adding a redundant interface method for it.
  */
 class QuickMainWindowHost
 {
@@ -44,4 +49,15 @@ public:
     /// Shows \a message for \a timeout milliseconds -- a no-op until a status bar exists to
     /// display it, matching QuickWorkspaceManager's own "no chrome yet" deferrals.
     virtual void showStatusMessage(const QString &message, int timeout) = 0;
+
+    /// The element palette panel (file-based and embedded IC lists live here). Mirrors
+    /// MainWindowHost::palette() -- not const, unlike the production signature: the
+    /// implementation stores its QuickElementPalette as a plain value member (see
+    /// QuickAppController::elementPalette()'s own identical non-const precedent), so a const
+    /// override could only return a const pointer to it.
+    virtual QuickElementPalette *palette() = 0;
+
+    /// Saves the current tab (equivalent to triggering the Save action). Mirrors
+    /// MainWindowHost::requestSave().
+    virtual void requestSave() = 0;
 };

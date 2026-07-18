@@ -23,6 +23,7 @@
 QuickAppController::QuickAppController(QObject *parent)
     : QObject(parent)
     , m_exportController(*this)
+    , m_icController(*this)
 {
     // m_palette/m_elementEditor/m_icPreview are plain member subobjects (not heap-allocated),
     // exposed to QML via elementPalette()/elementEditor()/icPreview()'s CONSTANT Q_PROPERTYs.

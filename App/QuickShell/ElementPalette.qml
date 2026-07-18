@@ -22,9 +22,15 @@ import QuickShell
 // The IC tab holds two sections (file-based ICs, embedded ICs) in one scrollable column,
 // mirroring MainWindowUi's single "ic" tab widget (scrollAreaWidgetContents_IC and
 // scrollAreaWidgetContents_EmbeddedIC are both children of the same tab, not separate tabs --
-// confirmed by reading MainWindowUI.cpp's layout construction). Add/remove-embedded-IC
-// buttons (pushButtonAddEmbeddedIC/pushButtonRemoveEmbeddedIC in production) are not here --
-// that's ICController/ICDropZone/TrashButton, deferred to sub-step 7.
+// confirmed by reading MainWindowUI.cpp's layout construction). Each section is wrapped in a
+// DropArea (ICDropZone port) so dragging the opposite type onto it embeds/extracts; a trash
+// drop target below both (TrashButton port) removes whichever is dropped on it -- all three
+// wired to QuickICController via AppController (Phase 4 sub-step 7). Add/remove-embedded-IC
+// *buttons* (pushButtonAddEmbeddedIC/pushButtonRemoveEmbeddedIC in production -- a different,
+// toolbar-driven way to trigger the same operations) are still not here: they need
+// ICController methods (addEmbeddedICFromFile()/embedSelectedIC()/etc.) this pass
+// deliberately didn't port, since they need their own toolbar-button UI trigger that doesn't
+// exist yet -- see QuickICController's own doc comment for the full list.
 Item {
     id: root
     implicitWidth: 220
@@ -93,20 +99,141 @@ Item {
 
             ColumnLayout {
                 Label { text: qsTr("Files"); leftPadding: 4 }
-                GridView {
+                // ICDropZone port (Section::FileBased): dropping an embedded IC label here
+                // extracts it to a file. drag.source is only meaningful while containsDrag is
+                // true (no drag in progress otherwise), hence the "as PaletteItemDelegate" cast
+                // + null check rather than trusting it unconditionally.
+                Item {
+                    id: fileBasedZone
                     Layout.fillWidth: true
-                    Layout.preferredHeight: Math.max(78, contentHeight)
-                    cellWidth: 78; cellHeight: 78; clip: true
-                    model: root.controller.icElements
-                    delegate: paletteItemComponent
+                    Layout.preferredHeight: Math.max(78, filesGrid.contentHeight)
+
+                    GridView {
+                        id: filesGrid
+                        anchors.fill: parent
+                        cellWidth: 78; cellHeight: 78; clip: true
+                        model: root.controller.icElements
+                        delegate: paletteItemComponent
+                    }
+
+                    DropArea {
+                        id: fileBasedDropArea
+                        anchors.fill: parent
+                        readonly property PaletteItemDelegate dragged: drag.source as PaletteItemDelegate
+                        onDropped: (drop) => {
+                            const item = drop.source as PaletteItemDelegate;
+                            if (item && item.modelData.isEmbedded) {
+                                AppController.extractICByBlobName(item.modelData.icFileName);
+                            }
+                        }
+                    }
+
+                    Rectangle {
+                        anchors.fill: parent
+                        visible: fileBasedDropArea.containsDrag && fileBasedDropArea.dragged !== null
+                                 && fileBasedDropArea.dragged.modelData.isEmbedded
+                        radius: 4
+                        color: "#3381cc"
+                        border.color: "white"
+                        border.width: 2
+
+                        Label {
+                            anchors.centerIn: parent
+                            width: parent.width - 16
+                            wrapMode: Text.WordWrap
+                            horizontalAlignment: Text.AlignHCenter
+                            color: "white"
+                            font.bold: true
+                            text: qsTr("Drop here to extract this IC to a file")
+                        }
+                    }
                 }
+
                 Label { text: qsTr("Embedded"); leftPadding: 4 }
-                GridView {
+                // ICDropZone port (Section::Embedded): dropping a file-based IC label here
+                // embeds it.
+                Item {
+                    id: embeddedZone
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    cellWidth: 78; cellHeight: 78; clip: true
-                    model: root.controller.embeddedICElements
-                    delegate: paletteItemComponent
+
+                    GridView {
+                        id: embeddedGrid
+                        anchors.fill: parent
+                        cellWidth: 78; cellHeight: 78; clip: true
+                        model: root.controller.embeddedICElements
+                        delegate: paletteItemComponent
+                    }
+
+                    DropArea {
+                        id: embeddedDropArea
+                        anchors.fill: parent
+                        readonly property PaletteItemDelegate dragged: drag.source as PaletteItemDelegate
+                        onDropped: (drop) => {
+                            const item = drop.source as PaletteItemDelegate;
+                            if (item && !item.modelData.isEmbedded) {
+                                AppController.embedICByFile(item.modelData.icFileName);
+                            }
+                        }
+                    }
+
+                    Rectangle {
+                        anchors.fill: parent
+                        visible: embeddedDropArea.containsDrag && embeddedDropArea.dragged !== null
+                                 && !embeddedDropArea.dragged.modelData.isEmbedded
+                        radius: 4
+                        color: "#3381cc"
+                        border.color: "white"
+                        border.width: 2
+
+                        Label {
+                            anchors.centerIn: parent
+                            width: parent.width - 16
+                            wrapMode: Text.WordWrap
+                            horizontalAlignment: Text.AlignHCenter
+                            color: "white"
+                            font.bold: true
+                            text: qsTr("Drop here to embed this IC in the circuit")
+                        }
+                    }
+                }
+
+                // TrashButton port: drag either an embedded or file-based IC label here to
+                // remove it (after a confirmation -- handled in C++, see QuickICController's
+                // own doc comment on why the confirm lives there instead of here).
+                Item {
+                    id: trashZone
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 32
+
+                    Rectangle {
+                        anchors.fill: parent
+                        radius: 4
+                        color: trashDropArea.containsDrag ? "#cc3333" : "transparent"
+                        border.color: trashZone.palette.mid
+                        border.width: 1
+                    }
+
+                    Label {
+                        anchors.centerIn: parent
+                        text: qsTr("Drag here to remove")
+                    }
+
+                    DropArea {
+                        id: trashDropArea
+                        anchors.fill: parent
+                        onDropped: (drop) => {
+                            const item = drop.source as PaletteItemDelegate;
+                            if (!item) {
+                                return;
+                            }
+                            if (item.modelData.isEmbedded) {
+                                AppController.removeEmbeddedIC(item.modelData.icFileName);
+                            } else {
+                                AppController.removeICFile(item.modelData.icFileName);
+                            }
+                        }
+                    }
                 }
             }
 

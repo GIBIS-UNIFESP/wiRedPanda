@@ -21,6 +21,7 @@
 #include "App/QuickShell/Chrome/QuickElementEditor.h"
 #include "App/QuickShell/Chrome/QuickElementPalette.h"
 #include "App/QuickShell/Chrome/QuickExportController.h"
+#include "App/QuickShell/Chrome/QuickICController.h"
 #include "App/QuickShell/Chrome/QuickICPreview.h"
 #include "App/QuickShell/Chrome/QuickMainWindowHost.h"
 #include "App/QuickShell/Chrome/QuickWorkSpace.h"
@@ -101,6 +102,8 @@ public:
     QFileInfo currentFile() const override;
     QDir currentDir() const override;
     void showStatusMessage(const QString &message, int timeout) override;
+    QuickElementPalette *palette() override { return &m_palette; }
+    void requestSave() override { saveFile(); }
 
     // --- QML-facing accessors ---
     Q_INVOKABLE QuickWorkSpace *tabAt(int index) const { return m_workspaceManager.tabAt(index); }
@@ -224,6 +227,12 @@ public slots:
     void exportArduino() { m_exportController.exportArduinoDialog(); }
     void exportSystemVerilog() { m_exportController.exportSystemVerilogDialog(); }
 
+    // --- IC drag-and-drop targets (ElementPalette.qml's IC tab -- Phase 4 sub-step 7) ---
+    void embedICByFile(const QString &fileName) { m_icController.embedICByFile(fileName); }
+    void extractICByBlobName(const QString &blobName) { m_icController.extractICByBlobName(blobName); }
+    void removeICFile(const QString &icFileName) { m_icController.removeICFile(icFileName); }
+    void removeEmbeddedIC(const QString &blobName) { m_icController.removeEmbeddedIC(blobName); }
+
 signals:
     void currentTabChanged();
     void tabsChanged();
@@ -258,6 +267,7 @@ private:
 
     QuickWorkspaceManager m_workspaceManager;
     QuickExportController m_exportController;
+    QuickICController m_icController;
     QuickElementPalette m_palette;
     QuickElementEditor m_elementEditor;
     QuickICPreview m_icPreview;

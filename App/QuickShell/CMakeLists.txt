@@ -26,6 +26,8 @@ set(QUICK_SHELL_SOURCES
     Chrome/QuickElementPalette.h
     Chrome/QuickExportController.cpp
     Chrome/QuickExportController.h
+    Chrome/QuickICController.cpp
+    Chrome/QuickICController.h
     Chrome/QuickICPreview.cpp
     Chrome/QuickICPreview.h
     Chrome/QuickMainWindowHost.h

@@ -142,11 +142,34 @@ Item {
                 Layout.rightMargin: 6
                 visible: root.editor.delayVisible
                 Label { text: qsTr("Delay:") }
-                Slider {
+                // LabeledSlider port (App/UI/LabeledSlider.h): a fraction-of-clock-period label
+                // under each tick, so the exact value is visible without a tooltip. delaySteps
+                // is eighths of a clock period, -4..4 -- a fixed, closed set, so the value/label
+                // mapping is inlined here rather than round-tripping through C++ for a table
+                // this small.
+                ColumnLayout {
                     Layout.fillWidth: true
-                    from: -4; to: 4; stepSize: 1
-                    value: root.editor.delaySteps
-                    onMoved: root.editor.delaySteps = Math.round(value)
+                    spacing: 2
+                    Slider {
+                        Layout.fillWidth: true
+                        from: -4; to: 4; stepSize: 1
+                        value: root.editor.delaySteps
+                        onMoved: root.editor.delaySteps = Math.round(value)
+                    }
+                    RowLayout {
+                        Layout.fillWidth: true
+                        spacing: 0
+                        Repeater {
+                            model: [-4, -3, -2, -1, 0, 1, 2, 3, 4]
+                            delegate: Label {
+                                required property int modelData
+                                Layout.fillWidth: true
+                                horizontalAlignment: Text.AlignHCenter
+                                font.pixelSize: 9
+                                text: ["-1/2", "-3/8", "-1/4", "-1/8", "0", "1/8", "1/4", "3/8", "1/2"][modelData + 4]
+                            }
+                        }
+                    }
                 }
             }
 

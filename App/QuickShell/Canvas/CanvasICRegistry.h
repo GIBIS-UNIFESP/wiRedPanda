@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <functional>
+
 #include <QByteArray>
 #include <QList>
 #include <QMap>
@@ -24,7 +26,10 @@ class IC;
  * findICsByBlobName()/initEmbeddedIC()/uniqueBlobName()/createEmbeddedIC()/captureSnapshot()/
  * rollbackElements() -- the half
  * MCP's embed_ic/instantiate_ic handlers actually exercise (confirmed by reading
- * MCP/Server/Handlers/ICHandler.cpp directly, not assumed). Deliberately NOT ported, named
+ * MCP/Server/Handlers/ICHandler.cpp directly, not assumed). Also ports findICsByFile()/
+ * embedICsByFile()/extractToFile() (Phase 4 sub-step 7 -- ICDropZone/TrashButton's real
+ * drag-and-drop targets need them; QuickICController is their caller, mirroring
+ * ICController::embedICByFile()/extractICByBlobName()). Deliberately NOT ported, named
  * here and in the plan's "Phase 3 in depth" section rather than silently dropped:
  *
  * - File watching (QFileSystemWatcher/onFileChanged()): this canvas has no file-backed-IC
@@ -35,8 +40,6 @@ class IC;
  *   a silent behavior change -- the blob still resolves correctly as long as the referenced
  *   file exists at load time (exactly like an ordinary file-backed IC does); it just isn't
  *   portable to a machine without that file, the way a fully self-contained blob would be.
- * - extractToFile()/embedICsByFile(): bulk file<->embedded conversion operations with no
- *   trigger surface yet (chrome-driven bulk operations, Phase 4/5).
  *
  * Owned by CanvasItem the same way ICRegistry is owned by Scene.
  */
@@ -84,7 +87,30 @@ public:
     /// ICRegistry::rollbackElements().
     static void rollbackElements(const QList<GraphicElement *> &elements, const QByteArray &snapshot, CanvasItem *canvas);
 
+    /// Finds all file-based (non-embedded) IC elements referencing \a fileName. Mirrors
+    /// ICRegistry::findICsByFile().
+    [[nodiscard]] QList<GraphicElement *> findICsByFile(const QString &fileName) const;
+
+    /// Registers \a fileBytes under \a blobName and converts every file-based IC instance
+    /// referencing \a fileName to embedded, pushing one CanvasUpdateBlobCommand. Returns the
+    /// number of instances converted -- 0 if none reference \a fileName, in which case the
+    /// blob is NOT registered here (the caller registers it separately via
+    /// CanvasRegisterBlobCommand, matching ICController::embedICByFile()'s exact contract).
+    /// Mirrors ICRegistry::embedICsByFile().
+    int embedICsByFile(const QString &fileName, const QByteArray &fileBytes, const QString &blobName);
+
+    /// Writes the blob named \a blobName to \a filePath, then converts every embedded IC
+    /// instance referencing it to file-based, pushing one CanvasUpdateBlobCommand. Throws on
+    /// write failure. Mirrors ICRegistry::extractToFile().
+    int extractToFile(const QString &blobName, const QString &filePath);
+
 private:
+    /// Mutates each of \a targets via \a mutate under a SimulationBlocker, rolling all of them
+    /// back to \a oldData if any mutation throws partway through. Mirrors
+    /// ICRegistry::reloadTargetsAtomically().
+    void reloadTargetsAtomically(const QList<GraphicElement *> &targets, const QByteArray &oldData,
+                                  const std::function<void(IC *)> &mutate);
+
     CanvasItem *m_canvas;
     QMap<QString, QByteArray> m_blobs;
 };
