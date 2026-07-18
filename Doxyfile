@@ -108,6 +108,7 @@ HTML_EXTRA_FILES       = doxygen-awesome-css/doxygen-awesome-darkmode-toggle.js 
 HTML_COLORSTYLE        = LIGHT
 HTML_DYNAMIC_MENUS     = YES
 HTML_DYNAMIC_SECTIONS  = NO
+HTML_COPY_CLIPBOARD    = NO
 GENERATE_DOCSET        = NO
 GENERATE_HTMLHELP      = NO
 GENERATE_QHP           = NO

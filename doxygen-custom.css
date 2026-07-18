@@ -83,6 +83,14 @@ html.dark-mode {
   background-color: #bd2812;
 }
 
+/* ── Doxygen's own title bar and attribution line ─────────────────────────── */
+/* Superseded by the site's header/footer bars below; kept in the template   */
+/* (not stripped) so doxygen's own layout/treeview JS always finds them.     */
+#titlearea,
+.wp-doxygen-attribution {
+  display: none;
+}
+
 /* ── Custom site header bar ────────────────────────────────────────────────── */
 #site-header-bar {
   position: sticky;

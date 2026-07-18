@@ -50,7 +50,11 @@ jobs:
           path: master-src
 
       - name: Install Doxygen
-        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends doxygen graphviz
+        run: |
+          curl -sL https://github.com/doxygen/doxygen/releases/download/Release_1_16_1/doxygen-1.16.1.linux.bin.tar.gz -o doxygen.tar.gz
+          tar xzf doxygen.tar.gz
+          echo "$PWD/doxygen-1.16.1/bin" >> "$GITHUB_PATH"
+          sudo apt-get update && sudo apt-get install -y --no-install-recommends graphviz
 
       - name: Generate API docs
         run: doxygen Doxyfile

@@ -1,8 +1,19 @@
 <!-- Doxygen custom header — matches the wiRedPanda Astro site layout -->
 <!-- This file is referenced by HTML_HEADER in the Doxyfile.                 -->
 <!-- Doxygen replaces $-prefixed variables at generation time.               -->
+<!-- Based on doxygen 1.16.1's stock templates/html/header.html (the version -->
+<!-- .github/workflows/site.yml pins — the newest doxygen-awesome-css's own  -->
+<!-- README claims compatibility with: "Works best with Doxygen 1.9.1 -      -->
+<!-- 1.9.4 and 1.9.6 - 1.16.1"; 1.17.0 dropped jquery.js internally, which   -->
+<!-- doxygen-awesome's own darkmode-toggle.js/fragment-copy-button.js still  -->
+<!-- need — don't bump past 1.16.1 without re-checking that). Every         -->
+<!-- BEGIN/END conditional block below is kept verbatim from the stock      -->
+<!-- template so Doxyfile setting changes keep working; when bumping the    -->
+<!-- pinned doxygen version, regenerate a fresh template with               -->
+<!-- `doxygen -w html new-header.html new-footer.html x.css` and diff it    -->
+<!-- against this file to see what upstream changed.                       -->
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="$langISO">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -10,7 +21,19 @@
 <meta name="description" content="wiRedPanda API Documentation"/>
 <!--BEGIN PROJECT_NAME--><title>$projectname: $title</title><!--END PROJECT_NAME-->
 <!--BEGIN !PROJECT_NAME--><title>$title</title><!--END !PROJECT_NAME-->
-<link rel="icon" type="image/x-icon" href="$relpath^../../wpanda.ico"/>
+<!--BEGIN PROJECT_ICON-->
+<link rel="icon" href="$relpath^$projecticon" type="image/x-icon" />
+<!--END PROJECT_ICON-->
+<link rel="icon" type="image/x-icon" href="$relpath^../wpanda.ico"/>
+<link href="$relpath^tabs.css" rel="stylesheet" type="text/css"/>
+<!--BEGIN FULL_SIDEBAR-->
+<script type="text/javascript">var page_layout=1;</script>
+<!--END FULL_SIDEBAR-->
+<script type="text/javascript" src="$relpath^jquery.js"></script>
+<script type="text/javascript" src="$relpath^dynsections.js"></script>
+<!--BEGIN COPY_CLIPBOARD-->
+<script type="text/javascript" src="$relpath^clipboard.js"></script>
+<!--END COPY_CLIPBOARD-->
 <!-- Theme init: prevent FOUC by applying dark class before first paint -->
 <script>
 (function() {
@@ -24,20 +47,26 @@
 $treeview
 $search
 $mathjax
+$darkmode
+<link href="$relpath^$stylesheet" rel="stylesheet" type="text/css" />
 $extrastylesheet
 </head>
 <body>
+<!--BEGIN FULL_SIDEBAR-->
+<div id="side-nav" class="ui-resizable side-nav-resizable"><!-- do not remove this div, it is closed by doxygen! -->
+<!--END FULL_SIDEBAR-->
+
 <!-- ── Site header bar (mirrors Astro Header component) ────────────────────── -->
 <div id="site-header-bar">
-  <a href="$relpath^../../" class="header-logo">
-    <img src="$relpath^../../wpanda.ico" alt="wiRedPanda logo"/>
+  <a href="$relpath^../" class="header-logo">
+    <img src="$relpath^../wpanda.ico" alt="wiRedPanda logo"/>
     <span>wiRedPanda</span>
   </a>
   <nav>
-    <a href="$relpath^../../">Home</a>
-    <a href="$relpath^../../about/">About</a>
-    <a href="$relpath^../../download/">Download</a>
-    <a href="$relpath^../../wasm/index.html">Try out</a>
+    <a href="$relpath^../">Home</a>
+    <a href="$relpath^../about/">About</a>
+    <a href="$relpath^../download/">Download</a>
+    <a href="$relpath^../wasm/index.html">Try out</a>
     <a href="$relpath^index.html" class="active">API Docs</a>
     <a href="https://github.com/GIBIS-UNIFESP/wiRedPanda" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: middle;">
@@ -47,5 +76,45 @@ $extrastylesheet
   </nav>
 </div>
 
-<div id="top"><!-- Marker used by doxygen-awesome -->
-<!-- end header -->
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+
+<!--BEGIN TITLEAREA-->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <!--BEGIN PROJECT_LOGO-->
+  <td id="projectlogo"><img alt="Logo" src="$relpath^$projectlogo"$logosize/></td>
+  <!--END PROJECT_LOGO-->
+  <!--BEGIN PROJECT_NAME-->
+  <td id="projectalign">
+   <div id="projectname">$projectname<!--BEGIN PROJECT_NUMBER--><span id="projectnumber">&#160;$projectnumber</span><!--END PROJECT_NUMBER-->
+   </div>
+   <!--BEGIN PROJECT_BRIEF--><div id="projectbrief">$projectbrief</div><!--END PROJECT_BRIEF-->
+  </td>
+  <!--END PROJECT_NAME-->
+  <!--BEGIN !PROJECT_NAME-->
+   <!--BEGIN PROJECT_BRIEF-->
+    <td>
+    <div id="projectbrief">$projectbrief</div>
+    </td>
+   <!--END PROJECT_BRIEF-->
+  <!--END !PROJECT_NAME-->
+  <!--BEGIN DISABLE_INDEX-->
+   <!--BEGIN SEARCHENGINE-->
+     <!--BEGIN !FULL_SIDEBAR-->
+    <td>$searchbox</td>
+     <!--END !FULL_SIDEBAR-->
+   <!--END SEARCHENGINE-->
+  <!--END DISABLE_INDEX-->
+ </tr>
+  <!--BEGIN SEARCHENGINE-->
+   <!--BEGIN FULL_SIDEBAR-->
+   <tr><td colspan="2">$searchbox</td></tr>
+   <!--END FULL_SIDEBAR-->
+  <!--END SEARCHENGINE-->
+ </tbody>
+</table>
+</div>
+<!--END TITLEAREA-->
+<!-- end header part -->

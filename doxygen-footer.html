@@ -1,6 +1,24 @@
 <!-- Doxygen custom footer — matches the wiRedPanda Astro site layout -->
+<!-- Based on doxygen 1.16.1's stock templates/html/footer.html, see the note -->
+<!-- at the top of doxygen-header.html. The GENERATE_TREEVIEW=YES branch      -->
+<!-- below (the only one this Doxyfile uses) is unchanged across 1.9.8,      -->
+<!-- 1.16.1, and 1.17.0.                                                     -->
 <!-- end content -->
 </div><!-- id="doc-content" (closed by doxygen) -->
+
+<!--BEGIN GENERATE_TREEVIEW-->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    $navpath
+    <li class="footer wp-doxygen-attribution">$generatedby <a href="https://www.doxygen.org/index.html"><img class="footer" src="$relpath^doxygen.svg" width="104" height="31" alt="doxygen"/></a> $doxygenversion </li>
+  </ul>
+</div>
+<!--END GENERATE_TREEVIEW-->
+<!--BEGIN !GENERATE_TREEVIEW-->
+<hr class="footer"/><address class="footer wp-doxygen-attribution"><small>
+$generatedby&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="$relpath^doxygen.svg" width="104" height="31" alt="doxygen"/></a> $doxygenversion
+</small></address>
+<!--END !GENERATE_TREEVIEW-->
 
 <!-- ── Site footer bar (mirrors Astro Footer component) ────────────────────── -->
 <div id="site-footer-bar">
@@ -14,12 +32,17 @@
 <script type="text/javascript" src="$relpath^doxygen-awesome-interactive-toc.js"></script>
 <script type="text/javascript" src="$relpath^doxygen-awesome-tabs.js"></script>
 <script type="text/javascript">
-  // Initialize doxygen-awesome extensions
-  DoxygenAwesomeDarkModeToggle.init();
-  DoxygenAwesomeFragmentCopyButton.init();
-  DoxygenAwesomeParagraphLink.init();
-  DoxygenAwesomeInteractiveToc.init();
-  DoxygenAwesomeTabs.init();
+  // Each extension is initialized independently: one throwing (e.g. a future
+  // jQuery-dependent script failing) must not stop the others from running.
+  [
+    () => DoxygenAwesomeDarkModeToggle.init(),
+    () => DoxygenAwesomeFragmentCopyButton.init(),
+    () => DoxygenAwesomeParagraphLink.init(),
+    () => DoxygenAwesomeInteractiveToc.init(),
+    () => DoxygenAwesomeTabs.init(),
+  ].forEach((init) => {
+    try { init(); } catch (e) { console.error(e); }
+  });
 
   // Sync with site-wide theme preference stored in localStorage
   (function() {
