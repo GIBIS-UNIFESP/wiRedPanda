@@ -5,6 +5,7 @@
 #include <QQmlApplicationEngine>
 #include <QQuickWindow>
 
+#include "App/Core/Common.h"
 #include "App/QuickShell/Chrome/DialogProvider.h"
 #include "App/QuickShell/Chrome/QuickAppController.h"
 #include "App/QuickShell/Chrome/QuickDialogProvider.h"
@@ -12,6 +13,12 @@
 
 int main(int argc, char *argv[])
 {
+    // Disable all debug/verbose output at startup -- mirrors App/Main.cpp's identical call,
+    // without which Qt's custom logging categories (qCDebug(zero)/qCDebug(two)/etc., used
+    // throughout Simulation.cpp and ElementFactory registration) default to enabled and spam
+    // the console on every tab/CanvasItem construction.
+    Comment::setVerbosity(-1);
+
     QGuiApplication app(argc, argv);
 
     // appController owns the tab list and every menu action Main.qml binds to; it's exposed

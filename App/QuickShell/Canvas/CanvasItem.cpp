@@ -206,6 +206,11 @@ CanvasItem::CanvasItem(QQuickItem *parent, bool buildDemo)
     // identical MiddleButton check).
     setAcceptedMouseButtons(Qt::LeftButton | Qt::RightButton | Qt::MiddleButton);
     setAcceptHoverEvents(true);
+    // Without this, panned/dragged content (built in world coordinates, unbounded by this
+    // item's own screen rect) paints straight over whatever QML sits to this item's left --
+    // the SplitView's palette/element-editor pane. GraphicsView gets this for free from its
+    // viewport; Quick items don't clip their own paint node by default.
+    setClip(true);
 
     if (buildDemo) {
         buildDemoCircuit();
