@@ -38,6 +38,7 @@ QuickAppController::QuickAppController(QObject *parent)
     QQmlEngine::setObjectOwnership(&m_palette, QQmlEngine::CppOwnership);
     QQmlEngine::setObjectOwnership(&m_elementEditor, QQmlEngine::CppOwnership);
     QQmlEngine::setObjectOwnership(&m_icPreview, QQmlEngine::CppOwnership);
+    QQmlEngine::setObjectOwnership(&m_minimap, QQmlEngine::CppOwnership);
 
     connect(&m_workspaceManager, &QuickWorkspaceManager::currentTabChanged, this, [this] {
         bindCurrentTab();
@@ -108,6 +109,7 @@ void QuickAppController::bindCurrentTab()
         m_palette.updateEmbeddedICList(nullptr);
         m_elementEditor.setCanvas(nullptr);
         m_icPreview.setCanvas(nullptr);
+        m_minimap.setCanvas(nullptr);
         return;
     }
 
@@ -147,6 +149,11 @@ void QuickAppController::bindCurrentTab()
     // Rebinds the IC hover-preview presenter to the new tab's CanvasItem signals -- setCanvas()
     // itself hides any popup left pending/visible from the previously-bound tab.
     m_icPreview.setCanvas(canvas);
+
+    // Rebinds the minimap presenter to the new tab's CanvasItem, triggering an immediate
+    // (throttled) thumbnail regen so it shows the newly-current circuit rather than whatever
+    // the previously-bound tab last rendered.
+    m_minimap.setCanvas(canvas);
 }
 
 QString QuickAppController::windowTitle() const

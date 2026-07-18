@@ -139,10 +139,10 @@ ApplicationWindow {
             MenuItem { text: qsTr("Image..."); onTriggered: AppController.exportImage() }
         }
 
-        // Mirrors MainWindowUi's View menu, scoped to the Zoom and Theme submenus -- View's
-        // remaining items (wire/gate visibility, fast-mode, minimap toggle) still depend on
-        // chrome that doesn't exist yet in this Quick shell, so they stay out of this menu
-        // rather than being built as non-functional entries. Zoom keyboard shortcuts
+        // Mirrors MainWindowUi's View menu, scoped to the Zoom, Minimap, and Theme items --
+        // View's remaining items (wire/gate visibility, fast-mode) still depend on chrome that
+        // doesn't exist yet in this Quick shell, so they stay out of this menu rather than
+        // being built as non-functional entries. Zoom keyboard shortcuts
         // (Ctrl+=/Ctrl+-/Ctrl+0/Ctrl+Shift+F) are handled directly by CanvasItem::keyPressEvent()
         // -- no chrome QAction/Shortcut layer exists yet, same as rotate/flip -- so these
         // MenuItems are plain, unshortcut-ed triggers, matching the Theme submenu below.
@@ -154,6 +154,12 @@ ApplicationWindow {
                 MenuItem { text: qsTr("Zoom Out"); onTriggered: AppController.zoomOut() }
                 MenuItem { text: qsTr("Reset Zoom"); onTriggered: AppController.resetZoom() }
                 MenuItem { text: qsTr("Zoom to Fit"); onTriggered: AppController.zoomToFit() }
+            }
+            MenuItem {
+                text: qsTr("Show Minimap")
+                checkable: true
+                checked: AppController.minimap.visible
+                onTriggered: AppController.minimap.visible = checked
             }
             Menu {
                 title: qsTr("Theme")
@@ -386,6 +392,11 @@ ApplicationWindow {
             // global coordinate, not canvasHost-local -- declared here only for proximity to the
             // other canvasHost-adjacent overlays above.
             ICPreviewPopup {}
+
+            // Circuit-overview minimap (the pan/zoom follow-up's own follow-up -- see
+            // Minimap.qml's own doc comment). Genuinely canvasHost-local (unlike
+            // ICPreviewPopup), so no reparenting is needed here.
+            Minimap {}
         }
 
         ElementEditor {

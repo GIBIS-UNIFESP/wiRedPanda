@@ -1364,6 +1364,69 @@ void CanvasItem::zoomToFit()
     emit zoomChanged();
 }
 
+void CanvasItem::centerOn(const QPointF &worldPoint)
+{
+    // The world point at this item's own center must map to worldPoint, at the current zoom
+    // level -- same relationship zoomToFit() solves for target.center(), just without also
+    // changing m_zoomLevel.
+    const QPointF screenCenter(width() / 2.0, height() / 2.0);
+    m_panOffset = worldPoint - screenCenter / zoomScale();
+    update();
+    emit zoomChanged();
+}
+
+QRectF CanvasItem::visibleWorldRect() const
+{
+    return QRectF(screenToWorld(QPointF(0.0, 0.0)), screenToWorld(QPointF(width(), height())));
+}
+
+QRectF CanvasItem::minimapContentRect(qreal targetWidth, qreal targetHeight) const
+{
+    if (targetWidth <= 0.0 || targetHeight <= 0.0) {
+        return {};
+    }
+
+    // Mirrors MinimapWidget::computeTransform()'s "never more zoomed-in than the view"
+    // reasoning: elementsBoundingRect() alone would tightly crop a freshly-loaded or small
+    // circuit; unioning with the live viewport guarantees the viewport-rect overlay this rect
+    // feeds never needs to extend past the thumbnail's own bounds.
+    const QRectF src = elementsBoundingRect().united(visibleWorldRect());
+    if (!src.isValid() || src.isEmpty()) {
+        return {};
+    }
+
+    QRectF grown = src;
+    const qreal targetAspect = targetWidth / targetHeight;
+    const qreal srcAspect = src.width() / src.height();
+    if (srcAspect < targetAspect) {
+        const qreal grow = (src.height() * targetAspect - src.width()) / 2.0;
+        grown.adjust(-grow, 0.0, grow, 0.0);
+    } else if (srcAspect > targetAspect) {
+        const qreal grow = (src.width() / targetAspect - src.height()) / 2.0;
+        grown.adjust(0.0, -grow, 0.0, grow);
+    }
+    return grown;
+}
+
+QImage CanvasItem::renderMinimapImage(qreal targetWidth, qreal targetHeight) const
+{
+    const QRectF content = minimapContentRect(targetWidth, targetHeight);
+    if (content.isEmpty()) {
+        return {};
+    }
+
+    QImage image(QSize(qRound(targetWidth), qRound(targetHeight)), QImage::Format_ARGB32_Premultiplied);
+    image.fill(Qt::transparent);
+
+    QPainter painter(&image);
+    painter.setRenderHint(QPainter::Antialiasing);
+    // content already matches the target aspect ratio exactly (grown above), so this fit is
+    // always exact -- no letterboxing offset for the caller to separately track.
+    paintElementsInto(&painter, QRectF(0.0, 0.0, targetWidth, targetHeight), content);
+
+    return image;
+}
+
 void CanvasItem::buildDemoCircuit()
 {
     auto *switchA = new InputSwitch();

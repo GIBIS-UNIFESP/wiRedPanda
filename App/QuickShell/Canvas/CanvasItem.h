@@ -463,6 +463,40 @@ public:
     /// choice and floor-not-round snapping (never overshoots the viewport).
     void zoomToFit();
 
+    /// Pans so \a worldPoint is centered in this item's own visible bounds, preserving the
+    /// current zoom level. Mirrors GraphicsView::centerOn() -- used by the minimap's
+    /// click/drag-to-navigate gesture (QuickMinimap::navigateTo()) -- but sets m_panOffset
+    /// directly instead of GraphicsView's scrollbar-based implementation, the same way
+    /// zoomIn()/zoomOut()'s anchor math does.
+    void centerOn(const QPointF &worldPoint);
+
+    /// The world-coordinate rect currently visible on screen: this item's own local bounds
+    /// (0,0)-(width(),height()) mapped through screenToWorld(). Mirrors
+    /// GraphicsView::mapToScene(viewport()->rect()).boundingRect().
+    [[nodiscard]] QRectF visibleWorldRect() const;
+
+    /// World-coordinate content rect for a minimap thumbnail of size \a targetWidth x
+    /// \a targetHeight: elementsBoundingRect() unioned with visibleWorldRect() (so the minimap
+    /// is never more zoomed-in than the main view, even on an empty or tiny circuit), then
+    /// symmetrically expanded on its shorter axis to exactly match the target aspect ratio.
+    /// Mirrors MinimapWidget::computeTransform()'s src computation, minus the
+    /// QGraphicsScene::sceneRect() term -- CanvasItem has no equivalent stable "navigable area"
+    /// concept distinct from its items' own bounds, so elementsBoundingRect() already serves
+    /// the "defensive superset" role sceneRect() plays in production. Returns an empty rect if
+    /// there is nothing to show yet (\a targetWidth/\a targetHeight <= 0, or both source terms
+    /// are empty).
+    [[nodiscard]] QRectF minimapContentRect(qreal targetWidth, qreal targetHeight) const;
+
+    /// Renders a minimap thumbnail of elements()+connections() at \a targetWidth x
+    /// \a targetHeight, fit via minimapContentRect() -- since that rect is pre-grown to the
+    /// target aspect ratio, the fit is always exact (no letterboxing offset for the caller to
+    /// track, unlike renderExportImage()/paintElementsInto()'s general case). Transparent
+    /// background; QML paints the minimap's own background/border. Uses the same
+    /// offscreen-QPainter-plus-real-paint() technique as renderICPreviewImage()/
+    /// renderExportImage() (paintElementsInto()). Returns a null QImage if minimapContentRect()
+    /// is empty.
+    [[nodiscard]] QImage renderMinimapImage(qreal targetWidth, qreal targetHeight) const;
+
 signals:
     /// Emitted whenever the zoom level or pan offset changes. Mirrors GraphicsView::zoomChanged()
     /// (extended to cover pan too, since this canvas has no separate scroll-position signal the

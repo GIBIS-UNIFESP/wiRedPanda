@@ -25,6 +25,7 @@
 #include "App/QuickShell/Chrome/QuickICController.h"
 #include "App/QuickShell/Chrome/QuickICPreview.h"
 #include "App/QuickShell/Chrome/QuickMainWindowHost.h"
+#include "App/QuickShell/Chrome/QuickMinimap.h"
 #include "App/QuickShell/Chrome/QuickWorkSpace.h"
 #include "App/QuickShell/Chrome/QuickWorkspaceManager.h"
 #include "App/UI/LanguageManager.h"
@@ -126,6 +127,7 @@ class QuickAppController : public QObject, public QuickMainWindowHost
     Q_PROPERTY(QuickElementPalette *elementPalette READ elementPalette CONSTANT FINAL)
     Q_PROPERTY(QuickElementEditor *elementEditor READ elementEditor CONSTANT FINAL)
     Q_PROPERTY(QuickICPreview *icPreview READ icPreview CONSTANT FINAL)
+    Q_PROPERTY(QuickMinimap *minimap READ minimap CONSTANT FINAL)
     // theme is a plain int (Enums::ElementType's own precedent for exposing a C++ enum class to
     // QML without registering it) -- Theme is declared at namespace scope in ThemeManager.h, not
     // inside a Q_GADGET/Q_NAMESPACE, so it has no Q_ENUM registration to expose directly.
@@ -203,6 +205,7 @@ public:
     [[nodiscard]] QuickElementPalette *elementPalette() { return &m_palette; }
     [[nodiscard]] QuickElementEditor *elementEditor() { return &m_elementEditor; }
     [[nodiscard]] QuickICPreview *icPreview() { return &m_icPreview; }
+    [[nodiscard]] QuickMinimap *minimap() { return &m_minimap; }
 
     /// Mirrors MainWindowUi's actionLightTheme/actionDarkTheme/actionSystemTheme radio group,
     /// as the raw Theme ordinal (Light=0, Dark=1, System=2).
@@ -354,6 +357,7 @@ private:
     QuickElementPalette m_palette;
     QuickElementEditor m_elementEditor;
     QuickICPreview m_icPreview;
+    QuickMinimap m_minimap;
     RecentFiles m_recentFiles;
     LanguageManager m_languageManager;
     QList<QMetaObject::Connection> m_tabConnections;
