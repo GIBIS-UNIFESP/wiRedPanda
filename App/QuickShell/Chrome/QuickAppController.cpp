@@ -15,6 +15,7 @@
 #include "App/Core/Settings.h"
 #include "App/QuickShell/Canvas/CanvasItem.h"
 #include "App/QuickShell/Chrome/DialogProvider.h"
+#include "App/QuickShell/Chrome/QuickICPreview.h"
 #include "App/QuickShell/Chrome/QuickWorkSpace.h"
 #include "App/Scene/ClipboardManager.h"
 #include "App/Simulation/Simulation.h"
@@ -23,16 +24,18 @@ QuickAppController::QuickAppController(QObject *parent)
     : QObject(parent)
     , m_exportController(*this)
 {
-    // m_palette/m_elementEditor are plain member subobjects (not heap-allocated), exposed to
-    // QML via elementPalette()/elementEditor()'s CONSTANT Q_PROPERTYs. Without this, Qt/QML's
-    // default "no QObject parent at first JS exposure -> JavaScriptOwnership" rule would apply
-    // to them exactly as it did to QuickWorkSpace's m_canvas (see that class's constructor for
-    // the full story, including the real SIGSEGV that found it) -- except here the GC calling
-    // delete on a pointer to a non-heap-allocated member would be undefined behavior, not just
-    // a dangling pointer. Defensive fix applied preemptively (not yet reproduced as a crash for
-    // these two specifically, but the risk is the same mechanism and strictly more severe).
+    // m_palette/m_elementEditor/m_icPreview are plain member subobjects (not heap-allocated),
+    // exposed to QML via elementPalette()/elementEditor()/icPreview()'s CONSTANT Q_PROPERTYs.
+    // Without this, Qt/QML's default "no QObject parent at first JS exposure ->
+    // JavaScriptOwnership" rule would apply to them exactly as it did to QuickWorkSpace's
+    // m_canvas (see that class's constructor for the full story, including the real SIGSEGV
+    // that found it) -- except here the GC calling delete on a pointer to a non-heap-allocated
+    // member would be undefined behavior, not just a dangling pointer. Defensive fix applied
+    // preemptively (not yet reproduced as a crash for these specifically, but the risk is the
+    // same mechanism and strictly more severe).
     QQmlEngine::setObjectOwnership(&m_palette, QQmlEngine::CppOwnership);
     QQmlEngine::setObjectOwnership(&m_elementEditor, QQmlEngine::CppOwnership);
+    QQmlEngine::setObjectOwnership(&m_icPreview, QQmlEngine::CppOwnership);
 
     connect(&m_workspaceManager, &QuickWorkspaceManager::currentTabChanged, this, [this] {
         bindCurrentTab();
@@ -98,6 +101,7 @@ void QuickAppController::bindCurrentTab()
         m_palette.updateICList(QFileInfo());
         m_palette.updateEmbeddedICList(nullptr);
         m_elementEditor.setCanvas(nullptr);
+        m_icPreview.setCanvas(nullptr);
         return;
     }
 
@@ -133,6 +137,10 @@ void QuickAppController::bindCurrentTab()
     // Mirrors ElementEditor::setScene(): rebinds the property panel to the new tab's
     // selection. Closes the "element-editor rebinding" deferral named back in sub-step 3.
     m_elementEditor.setCanvas(canvas);
+
+    // Rebinds the IC hover-preview presenter to the new tab's CanvasItem signals -- setCanvas()
+    // itself hides any popup left pending/visible from the previously-bound tab.
+    m_icPreview.setCanvas(canvas);
 }
 
 QString QuickAppController::windowTitle() const

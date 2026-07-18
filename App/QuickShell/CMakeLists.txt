@@ -26,6 +26,8 @@ set(QUICK_SHELL_SOURCES
     Chrome/QuickElementPalette.h
     Chrome/QuickExportController.cpp
     Chrome/QuickExportController.h
+    Chrome/QuickICPreview.cpp
+    Chrome/QuickICPreview.h
     Chrome/QuickMainWindowHost.h
     Chrome/QuickWorkSpace.cpp
     Chrome/QuickWorkSpace.h
@@ -76,6 +78,7 @@ qt_add_qml_module(wiredpanda_quick
         ChoiceDialog.qml
         ElementEditor.qml
         ElementPalette.qml
+        ICPreviewPopup.qml
         Main.qml
         PaletteItemDelegate.qml
         QuickFileDialog.qml
@@ -102,7 +105,7 @@ set_source_files_properties(
 # list<int>.indexOf() (ChoiceDialog.qml's buttonOrder) returns qsizetype narrowed into
 # an int without a cast (-Werror=conversion). Same category as the loader suppression
 # above: Qt's own generated code, not something we can edit, so disable just these
-# warnings on just these generated files. Applied to all 7 QML_FILES' generated .cpp
+# warnings on just these generated files. Applied to all 8 QML_FILES' generated .cpp
 # outputs (not only whichever ones hit it today) since which specific bindings get
 # compiled vs. interpreted is qmlcachegen's own decision and can shift with any future
 # QML edit.
@@ -110,6 +113,7 @@ set(QUICK_SHELL_QML_CACHEGEN_SOURCES
     ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_ChoiceDialog_qml.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_ElementEditor_qml.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_ElementPalette_qml.cpp
+    ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_ICPreviewPopup_qml.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_Main_qml.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_PaletteItemDelegate_qml.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_QuickFileDialog_qml.cpp

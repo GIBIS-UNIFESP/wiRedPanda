@@ -337,6 +337,12 @@ ApplicationWindow {
                 onEditingFinished: commit()
                 Keys.onEscapePressed: cancelEdit()
             }
+
+            // IC hover preview (Phase 4 sub-step 6's last deferred gesture). Reparents itself to
+            // the window's content area (see its own parent: binding) since its screenPos is a
+            // global coordinate, not canvasHost-local -- declared here only for proximity to the
+            // other canvasHost-adjacent overlays above.
+            ICPreviewPopup {}
         }
 
         ElementEditor {

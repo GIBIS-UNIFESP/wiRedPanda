@@ -15,13 +15,13 @@
 #include <QRect>
 #include <QString>
 #include <QStringList>
-#include <QVariantList>
 
 #include "App/Core/Enums.h"
 #include "App/IO/RecentFiles.h"
 #include "App/QuickShell/Chrome/QuickElementEditor.h"
 #include "App/QuickShell/Chrome/QuickElementPalette.h"
 #include "App/QuickShell/Chrome/QuickExportController.h"
+#include "App/QuickShell/Chrome/QuickICPreview.h"
 #include "App/QuickShell/Chrome/QuickMainWindowHost.h"
 #include "App/QuickShell/Chrome/QuickWorkSpace.h"
 #include "App/QuickShell/Chrome/QuickWorkspaceManager.h"
@@ -91,6 +91,7 @@ class QuickAppController : public QObject, public QuickMainWindowHost
     Q_PROPERTY(bool backgroundSimulationEnabled READ isBackgroundSimulationEnabled WRITE setBackgroundSimulationEnabled NOTIFY backgroundSimulationEnabledChanged FINAL)
     Q_PROPERTY(QuickElementPalette *elementPalette READ elementPalette CONSTANT FINAL)
     Q_PROPERTY(QuickElementEditor *elementEditor READ elementEditor CONSTANT FINAL)
+    Q_PROPERTY(QuickICPreview *icPreview READ icPreview CONSTANT FINAL)
 
 public:
     explicit QuickAppController(QObject *parent = nullptr);
@@ -159,6 +160,7 @@ public:
 
     [[nodiscard]] QuickElementPalette *elementPalette() { return &m_palette; }
     [[nodiscard]] QuickElementEditor *elementEditor() { return &m_elementEditor; }
+    [[nodiscard]] QuickICPreview *icPreview() { return &m_icPreview; }
 
     /// Adds one element from a palette entry to the current tab's canvas. \a type/\a
     /// icFileName/\a isEmbedded mirror QuickElementPalette's entry fields exactly (QML passes
@@ -241,10 +243,11 @@ private:
     /// current tab's, re-emitting undoRedoStateChanged()/windowTitleChanged() as needed. Also
     /// stops the previously-bound tab's simulation and starts the new one's if
     /// simulationRunning is set, mirroring SceneUiBinder::unbind()/bind()'s play-state half,
-    /// and rebinds m_elementEditor to the new canvas (QuickElementEditor::setCanvas() itself
-    /// refreshes from the new canvas's current selection). The CanvasItem-side counterpart of
-    /// SceneUiBinder::bind()/unbind() -- zoom/mute action sync and status-bar info are the
-    /// remaining pieces, deferred to when their chrome exists (sub-step 7).
+    /// and rebinds m_elementEditor/m_icPreview to the new canvas (QuickElementEditor::setCanvas()
+    /// itself refreshes from the new canvas's current selection; QuickICPreview::setCanvas()
+    /// hides any popup left pending/visible from the previous tab). The CanvasItem-side
+    /// counterpart of SceneUiBinder::bind()/unbind() -- zoom/mute action sync and status-bar
+    /// info are the remaining pieces, deferred to when their chrome exists (sub-step 7).
     void bindCurrentTab();
 
     /// Literal start()/stop() call on the current tab's Simulation, mirroring
@@ -257,6 +260,7 @@ private:
     QuickExportController m_exportController;
     QuickElementPalette m_palette;
     QuickElementEditor m_elementEditor;
+    QuickICPreview m_icPreview;
     RecentFiles m_recentFiles;
     QList<QMetaObject::Connection> m_tabConnections;
     bool m_simulationRunning = true;

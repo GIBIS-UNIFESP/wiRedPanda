@@ -12,6 +12,8 @@
 #include <memory>
 #include <optional>
 
+#include <QImage>
+#include <QPoint>
 #include <QPointF>
 #include <QQmlEngine>
 #include <QQuickItem>
@@ -344,6 +346,20 @@ public:
     /// fixed next/prev-in-cycle morph, this morphs to a caller-chosen target type.
     void morphSelectionTo(ElementType type);
 
+    /// Renders \a ic's internalElements() into a scaled-to-fit preview image, mirroring
+    /// ICRenderer::generatePreviewPixmap()'s scale/pad/render shape but using the same
+    /// offscreen-QPainter-plus-real-paint() technique this class's own gate rendering already
+    /// uses (not QGraphicsScene::render(), which crashes without a real QApplication -- see
+    /// ICRenderer.cpp's own guard and project memory project_ic_preview_pixmap_needs_qapplication.md).
+    /// \a ic must really be an IC (checked internally); returns a null QImage for a non-IC, an
+    /// IC with no internal elements, or one exceeding the same element-count guard
+    /// ICPreviewPopup::MaxElementCount uses in production. Shows internalElements() (the
+    /// post-boundary-substitution simulation graph, with proxy Nodes at I/O boundaries) rather
+    /// than the pre-substitution designed circuit generatePreviewPixmap() renders -- a real,
+    /// small, deliberately-accepted visual difference, not an oversight (the pre-substitution
+    /// item list isn't available at hover time without re-parsing the source file).
+    [[nodiscard]] QImage renderICPreviewImage(GraphicElement *ic) const;
+
     /// Last known cursor position in canvas coordinates, updated on every mouse press/move.
     /// Mirrors Scene::mousePos(); used to place pasted elements relative to the cursor.
     [[nodiscard]] QPointF mousePos() const { return m_lastMousePos; }
@@ -378,6 +394,19 @@ signals:
     /// element's (it's dedicated to wire-splitting), so this replicates the same hasLabel()
     /// check directly instead of fabricating a QGraphicsSceneMouseEvent to feed the real method.
     void inlineEditRequested(GraphicElement *element, QString currentLabel, QRectF targetRect);
+
+    /// IC hover-preview lifecycle, mirroring Scene::icPreviewRequested()/icPreviewMoved()/
+    /// icPreviewHideRequested()/icPreviewCancelRequested() -- Scene re-emits these from each
+    /// IC's own IC::previewRequested()/etc. signals (connected per-addItem()/removeItem());
+    /// hoverMoveEvent()/hoverLeaveEvent() already call IC's real signals directly (unconsumed
+    /// until this sub-step), so these are emitted from those exact call sites instead of
+    /// needing the same per-IC connect()/disconnect() bookkeeping Scene does. \a element is
+    /// always really an IC (never a plain GraphicElement) -- GraphicElement*, not IC*, to match
+    /// elementContextMenuRequested()'s precedent (IC isn't QML-registered either).
+    void icPreviewRequested(GraphicElement *element, QPoint screenPos);
+    void icPreviewMoved(GraphicElement *element, QPoint screenPos);
+    void icPreviewHideRequested();
+    void icPreviewCancelRequested(GraphicElement *element);
 
 protected:
     /// \reimp Builds the batched geometry nodes (gates, wires, selection overlay) from current state.

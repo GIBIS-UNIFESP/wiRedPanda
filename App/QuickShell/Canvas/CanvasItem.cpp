@@ -4,6 +4,7 @@
 #include "App/QuickShell/Canvas/CanvasItem.h"
 
 #include <algorithm>
+#include <cmath>
 
 #include <QClipboard>
 #include <QColor>
@@ -1059,6 +1060,67 @@ void CanvasItem::morphSelectionTo(ElementType type)
     receiveCommand(new CanvasMorphCommand(selected, type, this));
 }
 
+QImage CanvasItem::renderICPreviewImage(GraphicElement *ic) const
+{
+    auto *icElement = qobject_cast<IC *>(ic);
+    if (!icElement) {
+        return {};
+    }
+
+    const auto &internal = icElement->internalElements();
+    // Mirrors ICPreviewPopup::MaxElementCount -- ICPreviewPopup itself is Widgets-only, not
+    // includable here, so the same real limit is duplicated as a local constant.
+    constexpr qsizetype kMaxElementCount = 500;
+    if (internal.isEmpty() || internal.size() > kMaxElementCount) {
+        return {};
+    }
+
+    QRectF bounds;
+    for (auto *element : internal) {
+        bounds |= element->boundingRect().translated(element->pos());
+    }
+    // Padding matches ICRenderer::generatePreviewPixmap()'s own -16..+16.
+    bounds = bounds.adjusted(-16, -16, 16, 16);
+    // Defense-in-depth, mirroring generatePreviewPixmap()'s identical guard: a non-finite
+    // element position/rotation makes this NaN, and QSizeF::toSize() asserts on that.
+    if (!std::isfinite(bounds.width()) || !std::isfinite(bounds.height())) {
+        return {};
+    }
+
+    // Mirrors ICPreviewPopup::MaxWidth/MaxHeight.
+    constexpr int kMaxWidth = 500;
+    constexpr int kMaxHeight = 350;
+    QSize targetSize = bounds.size().toSize();
+    targetSize.scale(kMaxWidth, kMaxHeight, Qt::KeepAspectRatio);
+    if (targetSize.isEmpty()) {
+        return {};
+    }
+
+    QImage image(targetSize, QImage::Format_ARGB32_Premultiplied);
+    image.fill(QColor(42, 42, 42));
+
+    QPainter painter(&image);
+    painter.setRenderHint(QPainter::Antialiasing);
+    const qreal scale = std::min(static_cast<qreal>(targetSize.width()) / bounds.width(),
+                                 static_cast<qreal>(targetSize.height()) / bounds.height());
+    painter.scale(scale, scale);
+    painter.translate(-bounds.topLeft());
+
+    // Each element's paint() draws in its own local coordinate system; translating by pos()
+    // alone (not boundingRect().topLeft()) lands it correctly here, mirroring how this class's
+    // own gate-rendering block's tile-placement math resolves to the same "world position ==
+    // local paint coordinate + pos()" relationship (see updatePaintNode()'s gate-rendering
+    // block for the single-element, tile-packed version of the same technique).
+    for (auto *element : internal) {
+        painter.save();
+        painter.translate(element->pos());
+        element->paint(&painter, nullptr, nullptr);
+        painter.restore();
+    }
+
+    return image;
+}
+
 void CanvasItem::buildDemoCircuit()
 {
     auto *switchA = new InputSwitch();
@@ -1647,6 +1709,12 @@ void CanvasItem::mouseDoubleClickEvent(QMouseEvent *event)
             }
             emit inlineEditRequested(element, element->label(), targetRect);
         }
+        // Mirrors IC::mouseDoubleClickEvent()'s unconditional preview cancel (the popup should
+        // never linger once the user has double-clicked past it) -- requestOpenSubCircuit's
+        // actual tab-opening half stays out of scope, no inline-IC-tab UI trigger exists yet.
+        if (qobject_cast<IC *>(element)) {
+            emit icPreviewCancelRequested(element);
+        }
         return;
     }
 
@@ -1744,13 +1812,17 @@ void CanvasItem::hoverMoveEvent(QHoverEvent *event)
         // comment on the hover-preview signal chain).
         if (auto *oldIc = qobject_cast<IC *>(m_elementsById.value(m_hoveredId, nullptr))) {
             oldIc->previewHideRequested();
+            emit icPreviewHideRequested();
         }
         m_hoveredId = newHoveredId;
         if (auto *newIc = qobject_cast<IC *>(m_elementsById.value(newHoveredId, nullptr))) {
             if (isOverOwnPort(newIc, event->position())) {
                 newIc->previewHideRequested();
+                emit icPreviewHideRequested();
             } else {
-                newIc->previewRequested(newIc, event->globalPosition().toPoint());
+                const QPoint screenPos = event->globalPosition().toPoint();
+                newIc->previewRequested(newIc, screenPos);
+                emit icPreviewRequested(newIc, screenPos);
             }
         }
         update();
@@ -1758,8 +1830,11 @@ void CanvasItem::hoverMoveEvent(QHoverEvent *event)
         // Same IC, cursor still moving within it -- keep the pending-preview position current.
         if (isOverOwnPort(ic, event->position())) {
             ic->previewHideRequested();
+            emit icPreviewHideRequested();
         } else {
-            ic->previewMoved(ic, event->globalPosition().toPoint());
+            const QPoint screenPos = event->globalPosition().toPoint();
+            ic->previewMoved(ic, screenPos);
+            emit icPreviewMoved(ic, screenPos);
         }
     }
 }
@@ -1769,6 +1844,7 @@ void CanvasItem::hoverLeaveEvent(QHoverEvent *)
     if (m_hoveredId != 0) {
         if (auto *ic = qobject_cast<IC *>(m_elementsById.value(m_hoveredId, nullptr))) {
             ic->previewHideRequested();
+            emit icPreviewHideRequested();
         }
         m_hoveredId = 0;
         update();
