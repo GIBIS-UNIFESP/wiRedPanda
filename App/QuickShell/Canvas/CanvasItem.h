@@ -335,9 +335,9 @@ public:
     /// Commits an inline label edit on \a element: pushes a CanvasUpdateCommand only if \a
     /// newLabel actually differs from the element's current label. Mirrors
     /// InlineLabelEditor::commit()'s undo-command logic (the QLineEdit-hosting QGraphicsProxyWidget
-    /// itself has no Quick equivalent to port; ElementEditor.qml's inline TextInput calls this
-    /// directly instead).
-    void commitInlineLabelEdit(GraphicElement *element, const QString &newLabel);
+    /// itself has no Quick equivalent to port; Main.qml's inline TextField calls this directly
+    /// instead, so it needs Q_INVOKABLE like CanvasItem's other QML-called methods).
+    Q_INVOKABLE void commitInlineLabelEdit(GraphicElement *element, const QString &newLabel);
 
     /// Pushes a CanvasMorphCommand morphing every selected element to \a type. Mirrors
     /// ElementContextMenu::exec()'s "Morph to..." submenu action -- unlike nextElm()/prevElm()'s
