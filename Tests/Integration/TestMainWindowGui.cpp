@@ -15,14 +15,14 @@
 #include <QScrollBar>
 #include <QShortcut>
 #include <QSignalSpy>
+#include <QSlider>
 #include <QStatusBar>
 #include <QTabBar>
-#include <QTemporaryDir>
-#include <QSlider>
 #include <QTabWidget>
+#include <QTemporaryDir>
 #include <QTest>
-#include <QToolBar>
 #include <QTimer>
+#include <QToolBar>
 #include <QTranslator>
 #include <QWheelEvent>
 
