@@ -3,6 +3,8 @@
 
 #include "App/QuickShell/Canvas/CanvasItem.h"
 
+#include <algorithm>
+
 #include <QColor>
 #include <QHoverEvent>
 #include <QKeyEvent>
@@ -14,6 +16,7 @@
 #include <QSGTextureMaterial>
 #include <QSGVertexColorMaterial>
 
+#include "App/Core/Constants.h"
 #include "App/Core/Enums.h"
 #include "App/Core/InstallRelativePaths.h"
 #include "App/Core/ItemWithId.h"
@@ -34,6 +37,7 @@
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/IC.h"
 #include "App/IO/SerializationContext.h"
+#include "App/QuickShell/Canvas/CanvasCommands.h"
 #include "App/Scene/ConnectionManager.h"
 #include "App/Simulation/Simulation.h"
 #include "App/Wiring/Connection.h"
@@ -139,42 +143,23 @@ void appendTexturedQuad(QSGGeometry::TexturedPoint2D *vertices, int &cursor, con
     vertices[cursor++].set(left, bottom, u0, v1);
 }
 
-/// Local undo command for the drag gesture -- see CanvasItem's doc comment for why this
-/// isn't the real MoveCommand (ElementsCommand::elements() resolves through a concrete
-/// Scene*'s itemById(), which doesn't exist here; that's Phase 3 scope). Mirrors
-/// MoveCommand::redo()/undo()'s exact shape otherwise: elements are already at their new
-/// positions when this is pushed (this canvas moves them live during the drag, same as
-/// QGraphicsView's built-in ItemIsMovable handling does for the real MoveCommand), so
-/// redo() re-applying m_newPositions on push is idempotent, not a second move.
-class CanvasMoveCommand : public QUndoCommand
+/// Snapshots each element's current position, applies \a newPositions (already computed by
+/// the caller), then pushes one CanvasMoveCommand for the whole batch -- shared by every
+/// align/distribute method. Mirrors Scene.cpp's identically-named anonymous-namespace helper.
+void moveElementsTo(CanvasItem *canvas, const QList<GraphicElement *> &elements, const QList<QPointF> &newPositions)
 {
-public:
-    CanvasMoveCommand(QVector<GraphicElement *> elements, QVector<QPointF> oldPositions, QVector<QPointF> newPositions)
-        : m_elements(std::move(elements))
-        , m_oldPositions(std::move(oldPositions))
-        , m_newPositions(std::move(newPositions))
-    {
+    QList<QPointF> oldPositions;
+    oldPositions.reserve(elements.size());
+    for (auto *elm : elements) {
+        oldPositions.append(elm->pos());
     }
 
-    void redo() override
-    {
-        for (int i = 0; i < m_elements.size(); ++i) {
-            m_elements.at(i)->setPos(m_newPositions.at(i));
-        }
+    for (int i = 0; i < elements.size(); ++i) {
+        elements.at(i)->setPos(newPositions.at(i));
     }
 
-    void undo() override
-    {
-        for (int i = 0; i < m_elements.size(); ++i) {
-            m_elements.at(i)->setPos(m_oldPositions.at(i));
-        }
-    }
-
-private:
-    QVector<GraphicElement *> m_elements;
-    QVector<QPointF> m_oldPositions;
-    QVector<QPointF> m_newPositions;
-};
+    canvas->receiveCommand(new CanvasMoveCommand(elements, oldPositions, canvas));
+}
 
 } // namespace
 
@@ -285,6 +270,265 @@ SerializationContext CanvasItem::deserializationContext(QHash<quint64, Port *> &
     // through InstallRelativePaths/their own file argument instead). blobRegistry stays null
     // until the IC embedding sub-step gives this canvas a real blob map.
     return SerializationContext{.portMap = portMap, .version = version, .purpose = purpose};
+}
+
+QList<GraphicElement *> CanvasItem::selectedElements() const
+{
+    QList<GraphicElement *> result;
+    for (auto *element : m_elements) {
+        if (element->isSelected()) {
+            result.append(element);
+        }
+    }
+    return result;
+}
+
+void CanvasItem::receiveCommand(QUndoCommand *cmd)
+{
+    m_undoStack.push(cmd);
+    update();
+}
+
+void CanvasItem::rotate(int angle)
+{
+    const auto elements_ = selectedElements();
+    if (!elements_.isEmpty()) {
+        receiveCommand(new CanvasRotateCommand(elements_, angle, this));
+    }
+}
+
+void CanvasItem::rotateRight()
+{
+    rotate(90);
+}
+
+void CanvasItem::rotateLeft()
+{
+    rotate(-90);
+}
+
+void CanvasItem::flipHorizontally()
+{
+    const auto elements_ = selectedElements();
+    if (!elements_.isEmpty()) {
+        receiveCommand(new CanvasFlipCommand(elements_, 0, this));
+    }
+}
+
+void CanvasItem::flipVertically()
+{
+    const auto elements_ = selectedElements();
+    if (!elements_.isEmpty()) {
+        receiveCommand(new CanvasFlipCommand(elements_, 1, this));
+    }
+}
+
+void CanvasItem::alignLeft()
+{
+    const auto elements_ = selectedElements();
+    if (elements_.size() < 2) {
+        return;
+    }
+
+    qreal target = elements_.constFirst()->sceneBoundingRect().left();
+    for (auto *elm : elements_) {
+        target = std::min(target, elm->sceneBoundingRect().left());
+    }
+
+    QList<QPointF> newPositions;
+    newPositions.reserve(elements_.size());
+    for (auto *elm : elements_) {
+        const qreal delta = target - elm->sceneBoundingRect().left();
+        newPositions.append(elm->pos() + QPointF(delta, 0));
+    }
+
+    moveElementsTo(this, elements_, newPositions);
+}
+
+void CanvasItem::alignRight()
+{
+    const auto elements_ = selectedElements();
+    if (elements_.size() < 2) {
+        return;
+    }
+
+    qreal target = elements_.constFirst()->sceneBoundingRect().right();
+    for (auto *elm : elements_) {
+        target = std::max(target, elm->sceneBoundingRect().right());
+    }
+
+    QList<QPointF> newPositions;
+    newPositions.reserve(elements_.size());
+    for (auto *elm : elements_) {
+        const qreal delta = target - elm->sceneBoundingRect().right();
+        newPositions.append(elm->pos() + QPointF(delta, 0));
+    }
+
+    moveElementsTo(this, elements_, newPositions);
+}
+
+void CanvasItem::alignTop()
+{
+    const auto elements_ = selectedElements();
+    if (elements_.size() < 2) {
+        return;
+    }
+
+    qreal target = elements_.constFirst()->sceneBoundingRect().top();
+    for (auto *elm : elements_) {
+        target = std::min(target, elm->sceneBoundingRect().top());
+    }
+
+    QList<QPointF> newPositions;
+    newPositions.reserve(elements_.size());
+    for (auto *elm : elements_) {
+        const qreal delta = target - elm->sceneBoundingRect().top();
+        newPositions.append(elm->pos() + QPointF(0, delta));
+    }
+
+    moveElementsTo(this, elements_, newPositions);
+}
+
+void CanvasItem::alignBottom()
+{
+    const auto elements_ = selectedElements();
+    if (elements_.size() < 2) {
+        return;
+    }
+
+    qreal target = elements_.constFirst()->sceneBoundingRect().bottom();
+    for (auto *elm : elements_) {
+        target = std::max(target, elm->sceneBoundingRect().bottom());
+    }
+
+    QList<QPointF> newPositions;
+    newPositions.reserve(elements_.size());
+    for (auto *elm : elements_) {
+        const qreal delta = target - elm->sceneBoundingRect().bottom();
+        newPositions.append(elm->pos() + QPointF(0, delta));
+    }
+
+    moveElementsTo(this, elements_, newPositions);
+}
+
+void CanvasItem::alignHorizontalCenter()
+{
+    const auto elements_ = selectedElements();
+    if (elements_.size() < 2) {
+        return;
+    }
+
+    qreal sum = 0;
+    for (auto *elm : elements_) {
+        sum += elm->sceneBoundingRect().center().x();
+    }
+    const qreal target = sum / static_cast<qreal>(elements_.size());
+
+    QList<QPointF> newPositions;
+    newPositions.reserve(elements_.size());
+    for (auto *elm : elements_) {
+        const qreal delta = target - elm->sceneBoundingRect().center().x();
+        newPositions.append(elm->pos() + QPointF(delta, 0));
+    }
+
+    moveElementsTo(this, elements_, newPositions);
+}
+
+void CanvasItem::alignVerticalCenter()
+{
+    const auto elements_ = selectedElements();
+    if (elements_.size() < 2) {
+        return;
+    }
+
+    qreal sum = 0;
+    for (auto *elm : elements_) {
+        sum += elm->sceneBoundingRect().center().y();
+    }
+    const qreal target = sum / static_cast<qreal>(elements_.size());
+
+    QList<QPointF> newPositions;
+    newPositions.reserve(elements_.size());
+    for (auto *elm : elements_) {
+        const qreal delta = target - elm->sceneBoundingRect().center().y();
+        newPositions.append(elm->pos() + QPointF(0, delta));
+    }
+
+    moveElementsTo(this, elements_, newPositions);
+}
+
+void CanvasItem::distributeHorizontally()
+{
+    auto elements_ = selectedElements();
+    if (elements_.size() < 3) {
+        return;
+    }
+
+    std::sort(elements_.begin(), elements_.end(), [](GraphicElement *a, GraphicElement *b) {
+        return a->sceneBoundingRect().left() < b->sceneBoundingRect().left();
+    });
+
+    const qreal spanStart = elements_.constFirst()->sceneBoundingRect().left();
+    const qreal spanEnd = elements_.constLast()->sceneBoundingRect().right();
+
+    qreal totalWidth = 0;
+    for (auto *elm : elements_) {
+        totalWidth += elm->sceneBoundingRect().width();
+    }
+    const qreal gap = (spanEnd - spanStart - totalWidth) / static_cast<qreal>(elements_.size() - 1);
+
+    QList<QPointF> newPositions;
+    newPositions.reserve(elements_.size());
+    newPositions.append(elements_.constFirst()->pos()); // leftmost stays fixed as an anchor
+
+    qreal cursor = elements_.constFirst()->sceneBoundingRect().right() + gap;
+    for (int i = 1; i < elements_.size() - 1; ++i) {
+        auto *elm = elements_.at(i);
+        const qreal delta = cursor - elm->sceneBoundingRect().left();
+        newPositions.append(elm->pos() + QPointF(delta, 0));
+        cursor += elm->sceneBoundingRect().width() + gap;
+    }
+
+    newPositions.append(elements_.constLast()->pos()); // rightmost stays fixed as an anchor
+
+    moveElementsTo(this, elements_, newPositions);
+}
+
+void CanvasItem::distributeVertically()
+{
+    auto elements_ = selectedElements();
+    if (elements_.size() < 3) {
+        return;
+    }
+
+    std::sort(elements_.begin(), elements_.end(), [](GraphicElement *a, GraphicElement *b) {
+        return a->sceneBoundingRect().top() < b->sceneBoundingRect().top();
+    });
+
+    const qreal spanStart = elements_.constFirst()->sceneBoundingRect().top();
+    const qreal spanEnd = elements_.constLast()->sceneBoundingRect().bottom();
+
+    qreal totalHeight = 0;
+    for (auto *elm : elements_) {
+        totalHeight += elm->sceneBoundingRect().height();
+    }
+    const qreal gap = (spanEnd - spanStart - totalHeight) / static_cast<qreal>(elements_.size() - 1);
+
+    QList<QPointF> newPositions;
+    newPositions.reserve(elements_.size());
+    newPositions.append(elements_.constFirst()->pos()); // topmost stays fixed as an anchor
+
+    qreal cursor = elements_.constFirst()->sceneBoundingRect().bottom() + gap;
+    for (int i = 1; i < elements_.size() - 1; ++i) {
+        auto *elm = elements_.at(i);
+        const qreal delta = cursor - elm->sceneBoundingRect().top();
+        newPositions.append(elm->pos() + QPointF(0, delta));
+        cursor += elm->sceneBoundingRect().height() + gap;
+    }
+
+    newPositions.append(elements_.constLast()->pos()); // bottommost stays fixed as an anchor
+
+    moveElementsTo(this, elements_, newPositions);
 }
 
 void CanvasItem::buildDemoCircuit()
@@ -738,22 +982,20 @@ void CanvasItem::mouseReleaseEvent(QMouseEvent *event)
 
     if (m_draggingElement) {
         bool moved = false;
-        QVector<QPointF> newPositions;
-        newPositions.reserve(m_dragElements.size());
         for (int i = 0; i < m_dragElements.size(); ++i) {
-            const QPointF newPos = m_dragElements.at(i)->pos();
-            newPositions.append(newPos);
-            if (newPos != m_dragStartPositions.at(i)) {
+            if (m_dragElements.at(i)->pos() != m_dragStartPositions.at(i)) {
                 moved = true;
+                break;
             }
         }
 
         // Only push an undo entry if something actually moved -- mirrors
         // SceneInteraction::mouseRelease's "avoids polluting the undo stack with no-op moves
-        // (click without drag)". indexChanged() (connected in the constructor) resyncs the
-        // spatial index and repaints; this branch doesn't need to do either itself.
+        // (click without drag)". CanvasMoveCommand's constructor captures the new (already-
+        // applied) positions itself, mirroring MoveCommand's exact "elements are already at
+        // their new positions when pushed" shape.
         if (moved) {
-            m_undoStack.push(new CanvasMoveCommand(m_dragElements, m_dragStartPositions, newPositions));
+            receiveCommand(new CanvasMoveCommand(m_dragElements, m_dragStartPositions, this));
         }
 
         m_draggingElement = false;
@@ -885,6 +1127,46 @@ void CanvasItem::hoverLeaveEvent(QHoverEvent *)
     }
 }
 
+bool CanvasItem::nudgeSelection(QKeyEvent *event)
+{
+    // Only plain / Shift+arrow -- leave Ctrl/Alt combinations to other handlers.
+    if (event->modifiers().testFlag(Qt::ControlModifier) || event->modifiers().testFlag(Qt::AltModifier)) {
+        return false;
+    }
+
+    int dx = 0;
+    int dy = 0;
+    switch (event->key()) {
+    case Qt::Key_Left:  dx = -1; break;
+    case Qt::Key_Right: dx =  1; break;
+    case Qt::Key_Up:    dy = -1; break;
+    case Qt::Key_Down:  dy =  1; break;
+    default: return false;
+    }
+
+    const QList<GraphicElement *> selected = selectedElements();
+    if (selected.isEmpty()) {
+        return false; // nothing selected -- let the arrow key do whatever the base class does
+    }
+
+    // One grid cell by default; Shift jumps four cells for coarse positioning.
+    const int step = event->modifiers().testFlag(Qt::ShiftModifier) ? Constants::gridSize * 4 : Constants::gridSize;
+    const QPointF delta(dx * step, dy * step);
+
+    QList<QPointF> oldPositions;
+    oldPositions.reserve(selected.size());
+    for (auto *elm : selected) {
+        oldPositions.append(elm->pos());
+    }
+    for (auto *elm : selected) {
+        elm->setPos(elm->pos() + delta);
+    }
+
+    receiveCommand(new CanvasMoveCommand(selected, oldPositions, this));
+    event->accept();
+    return true;
+}
+
 void CanvasItem::keyPressEvent(QKeyEvent *event)
 {
     // Ignore auto-repeat: holding a trigger key must fire once, not oscillate an InputSwitch
@@ -895,9 +1177,37 @@ void CanvasItem::keyPressEvent(QKeyEvent *event)
         return;
     }
 
-    // Skip keyboard triggers while Ctrl is held, so future Ctrl+Z/C/V shortcuts (later Phase 3
-    // sub-steps) landing in this same method don't also fire an element's trigger key --
-    // mirrors Scene::keyPressEvent()'s identical guard.
+    // Arrow keys nudge the current selection by a grid step (Shift = a larger step) as one
+    // undoable move; consumes the event only when it actually moves a selection.
+    if (nudgeSelection(event)) {
+        return;
+    }
+
+    // Rotate/flip: no chrome menu/QAction shortcut layer exists yet (Phase 4) to intercept
+    // these before they reach here the way the real app's MainWindowUI.cpp-bound QActions do,
+    // so they're matched directly -- see this class's doc comment on rotateRight()/etc. for
+    // why flipVertically() has no binding here (it has none in the real app either).
+    if (event->modifiers().testFlag(Qt::ControlModifier)) {
+        if (event->modifiers().testFlag(Qt::ShiftModifier) && event->key() == Qt::Key_R) {
+            rotateLeft();
+            event->accept();
+            return;
+        }
+        if (event->key() == Qt::Key_R) {
+            rotateRight();
+            event->accept();
+            return;
+        }
+        if (event->key() == Qt::Key_H) {
+            flipHorizontally();
+            event->accept();
+            return;
+        }
+    }
+
+    // Skip keyboard triggers while Ctrl is held, so the Ctrl+R/Ctrl+H shortcuts above (and
+    // future Ctrl+Z/C/V shortcuts, later Phase 3 sub-steps) don't also fire an element's
+    // trigger key -- mirrors Scene::keyPressEvent()'s identical guard.
     if (!event->modifiers().testFlag(Qt::ControlModifier)) {
         for (auto *element : std::as_const(m_elements)) {
             if (element->hasTrigger() && !element->trigger().isEmpty() && element->trigger().matches(event->key())) {

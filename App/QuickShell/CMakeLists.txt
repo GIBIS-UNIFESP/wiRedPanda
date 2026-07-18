@@ -4,6 +4,8 @@
 # nothing needs to be re-set here.
 
 set(QUICK_SHELL_SOURCES
+    Canvas/CanvasCommands.cpp
+    Canvas/CanvasCommands.h
     Canvas/CanvasItem.cpp
     Canvas/CanvasItem.h
     Canvas/SpatialIndex.cpp

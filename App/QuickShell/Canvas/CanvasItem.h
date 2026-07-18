@@ -71,15 +71,22 @@ enum class SerializationPurpose;
  * App/Scene/SceneInteraction.cpp's mousePress/mouseMove/mouseRelease onto this hit-test
  * backend: press on an element snapshots its pre-drag position (and the rest of the current
  * selection's, mirroring SceneInteraction's "include the clicked element even if not yet
- * selected" rule); move repositions live and rebuilds the spatial index; release commits a
- * local undo entry only if something actually moved (click-without-drag pushes nothing).
+ * selected" rule); move repositions live and rebuilds the spatial index; release commits an
+ * undo entry only if something actually moved (click-without-drag pushes nothing).
  * Press on empty space starts a rubber-band rect; SpatialIndex::queryRect() replaces
- * QGraphicsScene::setSelectionArea(). The real production Commands.h/QUndoStack integration
- * is NOT ported (MoveCommand needs a concrete Scene* for its ID-based element lookup —
- * CommandUtils::findElements(Scene*, ids) — which doesn't exist here yet; that's explicitly
- * Phase 3 scope per the plan's roadmap, "port Commands.h's base once, then each pattern").
- * This item's own m_undoStack is a minimal local stand-in scoped to proving the drag gesture
- * itself works, not a preview of the eventual real integration.
+ * QGraphicsScene::setSelectionArea().
+ *
+ * **Commands (Phase 3)**: App/QuickShell/Canvas/CanvasCommands.h ports Commands.h's
+ * MoveCommand/RotateCommand/FlipCommand as CanvasMoveCommand/CanvasRotateCommand/
+ * CanvasFlipCommand, resolving their targets through this class's own itemById()/
+ * SceneItemRegistry-backed id layer instead of a concrete Scene* (see the "Real id/registry
+ * layer" doc comment on this class's public section). m_undoStack is the real undo stack now,
+ * not a stand-in -- rotateRight()/rotateLeft()/flipHorizontally()/flipVertically() and the
+ * eight align/distribute methods push these real commands the same way Scene's equivalents
+ * do. Still not ported: the serialize/deserialize snapshot family (AddItemsCommand/
+ * DeleteItemsCommand/UpdateCommand/ChangePortSizeCommand), clipboard, IC embedding, and the
+ * topology-surgery family (SplitCommand/MorphCommand) -- see the plan's "Phase 3 in depth"
+ * section for the full sub-step breakdown.
  *
  * Wire-creation-by-dragging ports ConnectionManager's startFromOutput/startFromInput/
  * tryComplete/cancel/detach/updateEditedEnd state machine the same way: press on a port
@@ -90,7 +97,8 @@ enum class SerializationPurpose;
  * directly, unmodified. What's NOT ported: hover-port highlighting and the in-situ label
  * chips (PortHoverLabel — a separate Widgets-tooltip subsystem, chrome polish rather than
  * core wire-creation logic) and, again, the real AddItemsCommand/DeleteItemsCommand
- * (Phase 3 scope) — completing or detaching a wire here mutates m_connections directly.
+ * (Phase 3 scope, not yet landed) — completing or detaching a wire here mutates
+ * m_connections directly.
  */
 class CanvasItem : public QQuickItem
 {
@@ -100,6 +108,97 @@ class CanvasItem : public QQuickItem
 public:
     explicit CanvasItem(QQuickItem *parent = nullptr);
     ~CanvasItem() override;
+
+    // --- Real id/registry layer (Phase 3 foundational sub-step) ---
+    //
+    // Commands.h's entire machinery (CommandUtils::findElm/findConn/findElements/findItems,
+    // ElementsCommand::elements()) resolves its targets through Scene::itemById(), backed by
+    // a real ItemWithId::id()/SceneItemRegistry pair every GraphicElement/Connection already
+    // carries. Phase 1's SpatialIndex used a synthetic tagged-index id scheme instead (a small
+    // integer per element/connection, tagged by kind in CanvasItem.cpp's anonymous namespace)
+    // because nothing needed real ids yet; that placeholder is retired here in favor of the
+    // real ItemWithId id space, mirrored on this class the same way Scene exposes it -- public,
+    // like Scene's own equivalents, since this class's own local command classes
+    // (App/QuickShell/Canvas/CanvasCommands.h, Phase 3's later sub-steps) resolve their
+    // targets through it from outside this class, the same way Commands.cpp does through
+    // Scene. Ports are NOT ItemWithId (see Port.h: QGraphicsPathItem only), so SpatialIndex's
+    // port ids stay synthetic-indexed, unaffected by this.
+
+    /// Returns the element or connection registered under \a id, or nullptr. Mirrors
+    /// Scene::itemById().
+    [[nodiscard]] ItemWithId *itemById(int id) const;
+    /// Returns a fresh, previously unused id. Mirrors Scene::nextId().
+    int nextId();
+    /// Reassigns \a item's id to \a newId without registering it -- mirrors Scene::updateItemId(),
+    /// used by undo/redo restore paths to preserve an item's original id across a
+    /// serialize/deserialize round-trip.
+    void updateItemId(ItemWithId *item, int newId);
+    /// Assigns \a element a fresh id if unassigned (or preserves a pre-assigned one, e.g. from
+    /// updateItemId()) and registers it. Mirrors the id-registration half of Scene::addItem().
+    void addItem(GraphicElement *element);
+    /// Assigns \a connection a fresh id if unassigned and registers it. Overload of the above
+    /// for Connection, mirroring Scene::addItem()'s single QGraphicsItem*-typed overload split
+    /// across this class's two separately-typed element/connection vectors.
+    void addItem(Connection *connection);
+    /// Unregisters \a element's id. Mirrors the id-unregistration half of Scene::removeItem() --
+    /// called before deletion for clarity/symmetry with Scene's pattern, even though
+    /// ItemWithId's destructor would self-unregister regardless.
+    void removeItem(GraphicElement *element);
+    /// Unregisters \a connection's id. Connection overload of the above.
+    void removeItem(Connection *connection);
+    /// Builds a deserialization context for this canvas -- thin wrapper around the already-
+    /// portable SerializationContext, mirroring Scene::deserializationContext(). \a purpose has
+    /// no default, matching Scene's own signature. blobRegistry stays null until the IC
+    /// embedding sub-step (Phase 3's ICRegistry port) gives this canvas a real blob map.
+    [[nodiscard]] SerializationContext deserializationContext(QHash<quint64, Port *> &portMap,
+                                                               const QVersionNumber &version,
+                                                               SerializationPurpose purpose);
+
+    /// Returns the currently selected elements. Mirrors Scene::selectedElements(); used by
+    /// this class's local command classes and by keyPressEvent()'s shortcut dispatch.
+    [[nodiscard]] QList<GraphicElement *> selectedElements() const;
+    /// Pushes \a cmd onto this canvas's undo stack (immediately executes its redo()) and
+    /// resyncs the spatial index/repaints via the indexChanged connection set up in the
+    /// constructor. Mirrors Scene::receiveCommand().
+    void receiveCommand(QUndoCommand *cmd);
+
+    // --- Rotate / flip / align / distribute (ports Scene.h's equivalents) ---
+    //
+    // No chrome menu exists yet (Phase 4) to trigger these, so keyPressEvent() wires the same
+    // keyboard shortcuts the real MainWindowUI.cpp binds for the ones that have one (Ctrl+R,
+    // Ctrl+Shift+R, Ctrl+H -- see MainWindowUI.cpp's setupUi()); flipVertically() has no
+    // keyboard shortcut in the real app either (menu-only there too), so it's exercised
+    // directly rather than through a synthesized key event.
+
+    /// Rotates the current selection 90 degrees clockwise.
+    void rotateRight();
+    /// Rotates the current selection 90 degrees counter-clockwise.
+    void rotateLeft();
+    /// Flips the current selection horizontally.
+    void flipHorizontally();
+    /// Flips the current selection vertically.
+    void flipVertically();
+
+    /// Aligns selected elements' left edges to the leftmost selected edge. No-op below 2 elements.
+    void alignLeft();
+    /// Aligns selected elements' right edges to the rightmost selected edge. No-op below 2 elements.
+    void alignRight();
+    /// Aligns selected elements' top edges to the topmost selected edge. No-op below 2 elements.
+    void alignTop();
+    /// Aligns selected elements' bottom edges to the bottommost selected edge. No-op below 2 elements.
+    void alignBottom();
+    /// Aligns selected elements' horizontal (X) centers so they share one vertical line.
+    /// No-op below 2 elements.
+    void alignHorizontalCenter();
+    /// Aligns selected elements' vertical (Y) centers so they share one horizontal line.
+    /// No-op below 2 elements.
+    void alignVerticalCenter();
+    /// Redistributes selected elements with equal horizontal gaps, keeping the leftmost and
+    /// rightmost elements fixed as anchors. No-op below 3 elements.
+    void distributeHorizontally();
+    /// Redistributes selected elements with equal vertical gaps, keeping the topmost and
+    /// bottommost elements fixed as anchors. No-op below 3 elements.
+    void distributeVertically();
 
 protected:
     /// \reimp Builds the batched geometry nodes (gates, wires, selection overlay) from current state.
@@ -124,51 +223,15 @@ protected:
     void keyReleaseEvent(QKeyEvent *event) override;
 
 private:
-    // --- Real id/registry layer (Phase 3 foundational sub-step) ---
-    //
-    // Commands.h's entire machinery (CommandUtils::findElm/findConn/findElements/findItems,
-    // ElementsCommand::elements()) resolves its targets through Scene::itemById(), backed by
-    // a real ItemWithId::id()/SceneItemRegistry pair every GraphicElement/Connection already
-    // carries. Phase 1's SpatialIndex used a synthetic tagged-index id scheme instead (a small
-    // integer per element/connection, tagged by kind in CanvasItem.cpp's anonymous namespace)
-    // because nothing needed real ids yet; that placeholder is retired here in favor of the
-    // real ItemWithId id space, mirrored on this class the same way Scene exposes it -- so a
-    // ported Commands.h-equivalent (Phase 3's later sub-steps) has the same shape to resolve
-    // targets against. Ports are NOT ItemWithId (see Port.h: QGraphicsPathItem only), so
-    // SpatialIndex's port ids stay synthetic-indexed, unaffected by this.
-
-    /// Returns the element or connection registered under \a id, or nullptr. Mirrors
-    /// Scene::itemById().
-    [[nodiscard]] ItemWithId *itemById(int id) const;
-    /// Returns a fresh, previously unused id. Mirrors Scene::nextId().
-    int nextId();
-    /// Reassigns \a item's id to \a newId without registering it -- mirrors Scene::updateItemId(),
-    /// used by future undo/redo restore paths to preserve an item's original id across a
-    /// serialize/deserialize round-trip.
-    void updateItemId(ItemWithId *item, int newId);
-    /// Assigns \a element a fresh id if unassigned (or preserves a pre-assigned one, e.g. from
-    /// updateItemId()) and registers it. Mirrors the id-registration half of Scene::addItem().
-    void addItem(GraphicElement *element);
-    /// Assigns \a connection a fresh id if unassigned and registers it. Overload of the above
-    /// for Connection, mirroring Scene::addItem()'s single QGraphicsItem*-typed overload split
-    /// across this class's two separately-typed element/connection vectors.
-    void addItem(Connection *connection);
-    /// Unregisters \a element's id. Mirrors the id-unregistration half of Scene::removeItem() --
-    /// called before deletion for clarity/symmetry with Scene's pattern, even though
-    /// ItemWithId's destructor would self-unregister regardless.
-    void removeItem(GraphicElement *element);
-    /// Unregisters \a connection's id. Connection overload of the above.
-    void removeItem(Connection *connection);
-    /// Builds a deserialization context for this canvas -- thin wrapper around the already-
-    /// portable SerializationContext, mirroring Scene::deserializationContext(). \a purpose has
-    /// no default, matching Scene's own signature. blobRegistry stays null until the IC
-    /// embedding sub-step (Phase 3's ICRegistry port) gives this canvas a real blob map.
-    [[nodiscard]] SerializationContext deserializationContext(QHash<quint64, Port *> &portMap,
-                                                               const QVersionNumber &version,
-                                                               SerializationPurpose purpose);
-
     void buildDemoCircuit();
     void rebuildSpatialIndex();
+    /// Shared implementation for rotateRight()/rotateLeft(); \a angle is the clockwise degrees
+    /// to rotate (e.g. 90 or -90). No-op if nothing is selected. Mirrors Scene::rotate().
+    void rotate(int angle);
+    /// If \a event is a plain/Shift arrow key and something is selected, moves the selection by
+    /// one grid step (Shift = a larger step) as a single undoable command and returns true.
+    /// Mirrors Scene::nudgeSelection().
+    bool nudgeSelection(QKeyEvent *event);
     /// Dispatches a press on \a element to whichever interactive-input behavior applies:
     /// InputSwitch toggles, InputRotary advances to its next port. InputButton is momentary
     /// (press = on, release = off, tracked separately via m_pressedInputButton) so it isn't
@@ -232,9 +295,9 @@ private:
     /// that was pressed keeps receiving the release even if the cursor has moved off it).
     GraphicElement *m_pressedInputButton = nullptr;
 
-    /// Local undo stack for the drag gesture only -- see this class's doc comment for why
-    /// this isn't the real Commands.h/MoveCommand integration (that needs a concrete Scene*,
-    /// which is explicitly Phase 3 scope).
+    /// This canvas's real undo stack -- receiveCommand() pushes onto it, matching
+    /// Scene::receiveCommand()/m_undoStack exactly. See this class's doc comment on
+    /// CanvasCommands.h for which command families are ported onto it so far.
     QUndoStack m_undoStack;
 
     /// Per-drag snapshot: parallel to m_dragElements, captured at press, compared at release.
