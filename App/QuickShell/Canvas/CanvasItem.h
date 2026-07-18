@@ -115,7 +115,11 @@ protected:
 private:
     void buildDemoCircuit();
     void rebuildSpatialIndex();
-    void toggleIfInput(GraphicElement *element);
+    /// Dispatches a press on \a element to whichever interactive-input behavior applies:
+    /// InputSwitch toggles, InputRotary advances to its next port. InputButton is momentary
+    /// (press = on, release = off, tracked separately via m_pressedInputButton) so it isn't
+    /// handled here -- see mousePressEvent()/mouseReleaseEvent().
+    void activateOnPress(GraphicElement *element);
     void startSelectionRect(const QPointF &anchor);
     void updateSelectionRect(const QPointF &current);
     void finishSelectionRect();
@@ -155,6 +159,12 @@ private:
     /// rendering discussion in this class's doc comment), so tracking it here avoids adding
     /// getters to production Wiring/Connection.h for a Phase-1-prototype-only need.
     QPointF m_editedWireFreeEnd;
+
+    /// The InputButton currently held down, or nullptr. Set on press, cleared (and released
+    /// back to off) on release -- regardless of where the release happens, matching the real
+    /// QGraphicsItem mouse-grab semantics InputButton::mouseReleaseEvent relies on (the item
+    /// that was pressed keeps receiving the release even if the cursor has moved off it).
+    GraphicElement *m_pressedInputButton = nullptr;
 
     /// Local undo stack for the drag gesture only -- see this class's doc comment for why
     /// this isn't the real Commands.h/MoveCommand integration (that needs a concrete Scene*,

@@ -21,9 +21,12 @@
 #include "App/Element/GraphicElements/Display14.h"
 #include "App/Element/GraphicElements/Display16.h"
 #include "App/Element/GraphicElements/Display7.h"
+#include "App/Element/GraphicElements/InputButton.h"
+#include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Mux.h"
+#include "App/Element/GraphicElements/Text.h"
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Scene/ConnectionManager.h"
 #include "App/Simulation/Simulation.h"
@@ -248,8 +251,20 @@ void CanvasItem::buildDemoCircuit()
     auto *display16 = new Display16();
     display16->setPos(460, 620);
 
+    // InputButton: exercises the momentary press/release path (m_pressedInputButton, see this
+    // class's header). InputRotary: click-to-advance-port, via activateOnPress(). Text: the
+    // one non-rendering-strategy custom-paint case, a boundingRect() override that includes an
+    // empty-state hint child item.
+    auto *inputButton = new InputButton();
+    inputButton->setPos(40, 720);
+    auto *inputRotary = new InputRotary();
+    inputRotary->setPos(220, 720);
+    auto *text = new Text();
+    text->setPos(400, 720);
+
     m_elements = { switchA, switchB, andGate, led, switchC, led2,
-                    mux, demux, truthTable, display7, display14, display16 };
+                    mux, demux, truthTable, display7, display14, display16,
+                    inputButton, inputRotary, text };
 
     auto *connA = new Connection();
     connA->setStartPort(switchA->outputPort(0));
@@ -309,11 +324,22 @@ void CanvasItem::rebuildSpatialIndex()
     }
 }
 
-void CanvasItem::toggleIfInput(GraphicElement *element)
+void CanvasItem::activateOnPress(GraphicElement *element)
 {
     if (auto *inputSwitch = qobject_cast<InputSwitch *>(element)) {
         inputSwitch->setOn(!inputSwitch->isOn(), 0);
+        return;
     }
+    if (auto *inputRotary = qobject_cast<InputRotary *>(element)) {
+        // Mirrors InputRotary::mousePressEvent's "setOn(true, (m_currentPort + 1) %
+        // outputSize())" -- outputValue() is the public equivalent of the private
+        // m_currentPort it reads (InputRotary::outputValue() returns "the index of the
+        // currently active output port").
+        inputRotary->setOn(true, (inputRotary->outputValue() + 1) % inputRotary->outputSize());
+    }
+    // InputButton isn't dispatched through here: its momentary on-while-held behavior needs
+    // a release counterpart too, so it's handled directly in mousePressEvent()/
+    // mouseReleaseEvent() via m_pressedInputButton instead of this press-only dispatcher.
 }
 
 QString CanvasItem::appearanceKeyFor(GraphicElement *element)
@@ -530,7 +556,14 @@ void CanvasItem::mousePressEvent(QMouseEvent *event)
         }
     }
 
-    toggleIfInput(element);
+    activateOnPress(element);
+    if (auto *inputButton = qobject_cast<InputButton *>(element)) {
+        // Momentary: on for as long as the button is held, matching real
+        // InputButton::mousePressEvent()/mouseReleaseEvent(). See m_pressedInputButton's doc
+        // comment for why release is tracked here rather than re-hit-tested on release.
+        inputButton->setOn();
+        m_pressedInputButton = inputButton;
+    }
 
     // Drag snapshot: the clicked element plus the rest of the current selection, mirroring
     // SceneInteraction::mousePress's "include the clicked element even if not yet selected,
@@ -585,6 +618,14 @@ void CanvasItem::mouseReleaseEvent(QMouseEvent *event)
 {
     if (event->button() != Qt::LeftButton) {
         return;
+    }
+
+    if (m_pressedInputButton) {
+        if (auto *inputButton = qobject_cast<InputButton *>(m_pressedInputButton)) {
+            inputButton->setOff();
+        }
+        m_pressedInputButton = nullptr;
+        update();
     }
 
     if (m_draggingElement) {
