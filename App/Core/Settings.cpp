@@ -102,6 +102,18 @@ void Settings::setQuickWindowGeometry(const QRect &geometry)
     setValue("QuickMainWindow/geometry", geometry);
 }
 
+int Settings::quickSplitterWidth()
+{
+    // 0 (an invalid QVariant's toInt(), and never a real splitter width) means "never set" --
+    // callers fall back to a default width.
+    return value("QuickMainWindow/splitterWidth").toInt();
+}
+
+void Settings::setQuickSplitterWidth(int width)
+{
+    setValue("QuickMainWindow/splitterWidth", width);
+}
+
 // UI preferences
 
 bool Settings::fastMode()

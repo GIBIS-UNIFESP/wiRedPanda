@@ -447,6 +447,16 @@ void QuickAppController::saveWindowGeometry(int x, int y, int width, int height)
     Settings::setQuickWindowGeometry(QRect(x, y, width, height));
 }
 
+int QuickAppController::restoreSplitterWidth() const
+{
+    return Settings::quickSplitterWidth();
+}
+
+void QuickAppController::saveSplitterWidth(int width)
+{
+    Settings::setQuickSplitterWidth(width);
+}
+
 bool QuickAppController::confirmClose()
 {
     if (!m_workspaceManager.hasModifiedFiles()) {

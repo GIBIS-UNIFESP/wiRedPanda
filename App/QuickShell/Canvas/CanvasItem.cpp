@@ -32,6 +32,7 @@
 #include "App/Core/ItemWithId.h"
 #include "App/Core/MimeTypes.h"
 #include "App/Core/SimulationHost.h"
+#include "App/Core/ThemeManager.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElementInput.h"
@@ -232,6 +233,11 @@ CanvasItem::CanvasItem(QQuickItem *parent, bool buildDemo)
         rebuildSpatialIndex();
         update();
     });
+
+    // Repaint on a live theme switch so the background fill/grid-dot colors (read fresh from
+    // ThemeManager::attributes() every updatePaintNode() call) pick up the change immediately
+    // -- mirrors Scene::updateTheme()'s own identical connection.
+    connect(&ThemeManager::instance(), &ThemeManager::themeChanged, this, [this] { update(); });
 }
 
 CanvasItem::~CanvasItem()
@@ -1415,11 +1421,41 @@ QImage CanvasItem::renderMinimapImage(qreal targetWidth, qreal targetHeight) con
         return {};
     }
 
+    const ThemeAttributes &theme = ThemeManager::attributes();
     QImage image(QSize(qRound(targetWidth), qRound(targetHeight)), QImage::Format_ARGB32_Premultiplied);
-    image.fill(Qt::transparent);
+    image.fill(theme.m_sceneBgBrush);
 
     QPainter painter(&image);
     painter.setRenderHint(QPainter::Antialiasing);
+
+    // Grid dots, matching Scene::drawBackground()'s algorithm and this class's own
+    // updatePaintNode() grid-node -- a cosmetic (0-width, so QPainter always renders it at
+    // exactly 1 device pixel regardless of the content->target fit scale below) pen, the same
+    // "stay a constant, legible size" choice updatePaintNode()'s own zoom-compensated dot
+    // quads make for the interactive canvas.
+    {
+        painter.save();
+        const qreal scale = targetWidth / content.width();
+        painter.scale(scale, scale);
+        painter.translate(-content.topLeft());
+        QPen dotPen(theme.m_sceneBgDots);
+        dotPen.setWidth(0);
+        painter.setPen(dotPen);
+        const int gridSize = Constants::gridSize;
+        const int left = int(std::floor(content.left() / gridSize)) * gridSize;
+        const int top = int(std::floor(content.top() / gridSize)) * gridSize;
+        const int right = int(std::ceil(content.right() / gridSize)) * gridSize;
+        const int bottom = int(std::ceil(content.bottom() / gridSize)) * gridSize;
+        QPolygon points;
+        for (int x = left; x <= right; x += gridSize) {
+            for (int y = top; y <= bottom; y += gridSize) {
+                points.append(QPoint(x, y));
+            }
+        }
+        painter.drawPoints(points);
+        painter.restore();
+    }
+
     // content already matches the target aspect ratio exactly (grown above), so this fit is
     // always exact -- no letterboxing offset for the caller to separately track.
     paintElementsInto(&painter, QRectF(0.0, 0.0, targetWidth, targetHeight), content);
@@ -2444,24 +2480,35 @@ QSGNode *CanvasItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
     // mouseMoveEvent()); this method itself only ever reads current live state on each repaint,
     // it never assumes positions are static.
     auto *root = oldNode ? oldNode : new QSGNode();
+    QSGGeometryNode *backgroundNode;
     QSGTransformNode *transformNode;
     if (!oldNode) {
+        // Screen-space (not a transformNode child): a background fill doesn't pan/zoom, it
+        // just always covers this item's own visible bounds -- mirrors
+        // QGraphicsScene::setBackgroundBrush(), which Scene::updateTheme() feeds from the same
+        // ThemeAttributes::m_sceneBgBrush this reads below. Painted first (root's first child).
+        backgroundNode = new QSGGeometryNode();
+        root->appendChildNode(backgroundNode);
+
         // One QSGTransformNode carries the pan/zoom mapping for every child below it, so the
-        // gate/wire/hover/overlay vertex-building code beneath stays entirely in WORLD
+        // grid/gate/wire/hover/overlay vertex-building code beneath stays entirely in WORLD
         // coordinates, unchanged by pan/zoom -- see screenToWorld()/worldToScreen()'s doc
         // comment on this class for the split this mirrors.
         transformNode = new QSGTransformNode();
+        auto *gridNode = new QSGGeometryNode();  // grid dots, world-space, paints behind wires
         auto *wireNode = new QSGGeometryNode();
         auto *hoverNode = new QSGGeometryNode(); // hover highlight, underneath the gate it highlights
         auto *gateNode = new QSGGeometryNode();  // real per-element appearance, textured
         auto *overlayNode = new QSGGeometryNode(); // live rubber-band rect, paints on top of everything
-        transformNode->appendChildNode(wireNode); // wires paint first
+        transformNode->appendChildNode(gridNode); // grid dots paint first
+        transformNode->appendChildNode(wireNode);
         transformNode->appendChildNode(hoverNode);
         transformNode->appendChildNode(gateNode);
         transformNode->appendChildNode(overlayNode);
         root->appendChildNode(transformNode);
     } else {
-        transformNode = static_cast<QSGTransformNode *>(root->firstChild());
+        backgroundNode = static_cast<QSGGeometryNode *>(root->firstChild());
+        transformNode = static_cast<QSGTransformNode *>(backgroundNode->nextSibling());
     }
 
     // screenPt = (worldPt - panOffset) * zoomScale, exactly matching worldToScreen() -- QMatrix4x4
@@ -2473,10 +2520,81 @@ QSGNode *CanvasItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
     matrix.translate(float(-m_panOffset.x()), float(-m_panOffset.y()), 0.0f);
     transformNode->setMatrix(matrix);
 
-    QSGNode *wireNode = transformNode->firstChild();
+    QSGNode *gridNode = transformNode->firstChild();
+    QSGNode *wireNode = gridNode->nextSibling();
     QSGNode *hoverNode = wireNode->nextSibling();
     QSGNode *gateNode = hoverNode->nextSibling();
     QSGNode *overlayNode = gateNode->nextSibling();
+
+    const ThemeAttributes &theme = ThemeManager::attributes();
+
+    // --- Background: one flat-colored quad covering this item's own visible bounds. ---
+    {
+        auto *geometry = new QSGGeometry(QSGGeometry::defaultAttributes_ColoredPoint2D(), 6);
+        geometry->setDrawingMode(QSGGeometry::DrawTriangles);
+        QSGGeometry::ColoredPoint2D *vertices = geometry->vertexDataAsColoredPoint2D();
+        int cursor = 0;
+        appendQuad(vertices, cursor, QRectF(0.0, 0.0, width(), height()), theme.m_sceneBgBrush);
+        backgroundNode->setGeometry(geometry);
+        backgroundNode->setFlag(QSGNode::OwnsGeometry);
+        if (!backgroundNode->material()) {
+            auto *material = new QSGVertexColorMaterial();
+            backgroundNode->setMaterial(material);
+            backgroundNode->setFlag(QSGNode::OwnsMaterial);
+        }
+    }
+
+    // --- Grid dots: world-space points, grid-aligned every Constants::gridSize, spanning the
+    // currently visible world rect. Mirrors Scene::drawBackground()'s exact algorithm,
+    // including its zoomScale() < 0.3 skip (sub-pixel dots aren't worth the cost) and its
+    // 1,000,000-point defensive cap.
+    //
+    // Each dot is a tiny quad, not a QSGGeometry::DrawPoints primitive: confirmed via a real
+    // runtime warning ("Point size is not controllable by QSGGeometry. Set gl_PointSize from
+    // the vertex shader instead."), not guessed, that this environment's QRhi backend doesn't
+    // honor setLineWidth()-as-point-size -- exactly the contingency this plan's own design
+    // anticipated. production's dots are drawn with a cosmetic (zero-width) QPen, which
+    // QPainter always renders at exactly 1 device pixel regardless of the view's zoom
+    // transform -- so each quad's world-space half-extent is countered by 1/zoomScale(),
+    // keeping its on-screen size constant across zoom levels the same way a cosmetic pen does. ---
+    {
+        QVector<QPointF> points;
+        if (zoomScale() >= 0.3) {
+            const QRectF visible = visibleWorldRect();
+            const int gridSize = Constants::gridSize;
+            const int left = int(std::floor(visible.left() / gridSize)) * gridSize;
+            const int top = int(std::floor(visible.top() / gridSize)) * gridSize;
+            const int right = int(std::ceil(visible.right() / gridSize)) * gridSize;
+            const int bottom = int(std::ceil(visible.bottom() / gridSize)) * gridSize;
+            const qint64 columns = (qint64(right) - left) / gridSize + 1;
+            const qint64 rows = (qint64(bottom) - top) / gridSize + 1;
+            constexpr qint64 kMaxGridPoints = 1'000'000;
+            if (columns * rows <= kMaxGridPoints) {
+                points.reserve(int(columns * rows));
+                for (int x = left; x <= right; x += gridSize) {
+                    for (int y = top; y <= bottom; y += gridSize) {
+                        points.append(QPointF(x, y));
+                    }
+                }
+            }
+        }
+        const qreal halfExtent = 0.75 / zoomScale(); // 1.5 screen px square, zoom-compensated
+        auto *geometry = new QSGGeometry(QSGGeometry::defaultAttributes_ColoredPoint2D(), int(points.size()) * 6);
+        geometry->setDrawingMode(QSGGeometry::DrawTriangles);
+        QSGGeometry::ColoredPoint2D *vertices = geometry->vertexDataAsColoredPoint2D();
+        int cursor = 0;
+        for (const QPointF &point : std::as_const(points)) {
+            const QRectF dotRect(point.x() - halfExtent, point.y() - halfExtent, halfExtent * 2.0, halfExtent * 2.0);
+            appendQuad(vertices, cursor, dotRect, theme.m_sceneBgDots);
+        }
+        static_cast<QSGGeometryNode *>(gridNode)->setGeometry(geometry);
+        static_cast<QSGGeometryNode *>(gridNode)->setFlag(QSGNode::OwnsGeometry);
+        if (!static_cast<QSGGeometryNode *>(gridNode)->material()) {
+            auto *material = new QSGVertexColorMaterial();
+            static_cast<QSGGeometryNode *>(gridNode)->setMaterial(material);
+            static_cast<QSGGeometryNode *>(gridNode)->setFlag(QSGNode::OwnsMaterial);
+        }
+    }
 
     // --- Wires: one QSGGeometryNode, GL_LINES, colored by the driving port's live status.
     // The in-progress wire (if any) is appended last, from its anchored port to

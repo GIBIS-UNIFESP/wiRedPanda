@@ -207,8 +207,15 @@ void ThemeAttributes::setTheme(const Theme theme)
         lightPalette.setColor(QPalette::Disabled, QPalette::Base, QColor(240, 240, 240));
         lightPalette.setColor(QPalette::Disabled, QPalette::WindowText, QColor(128, 128, 128));
 
-        if (Application::instance()) {
-            Application::instance()->setPalette(lightPalette);
+        // Application::instance() is the Widgets-specific singleton (a QApplication
+        // subclass) -- always null in wiredpanda_quick, a bare QGuiApplication. Fall back to
+        // QGuiApplication::setPalette() (Qt 6.5+, unifies Widgets/Quick palette propagation)
+        // so Quick Controls actually reflect the chosen theme too; the Widgets app keeps its
+        // existing Application::instance()->setPalette() call, unchanged.
+        if (auto *app = Application::instance()) {
+            app->setPalette(lightPalette);
+        } else {
+            QGuiApplication::setPalette(lightPalette);
         }
 #endif
 
@@ -258,8 +265,11 @@ void ThemeAttributes::setTheme(const Theme theme)
         darkPalette.setColor(QPalette::Disabled, QPalette::Base, QColor(120, 120, 120));
         darkPalette.setColor(QPalette::Disabled, QPalette::WindowText, QColor(120, 120, 120));
 
-        if (Application::instance()) {
-            Application::instance()->setPalette(darkPalette);
+        // See the Light branch's identical comment above.
+        if (auto *app = Application::instance()) {
+            app->setPalette(darkPalette);
+        } else {
+            QGuiApplication::setPalette(darkPalette);
         }
 #endif
 

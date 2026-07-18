@@ -49,6 +49,11 @@ public:
     /// one reads what the other wrote during the migration's two-executable period.
     static QRect quickWindowGeometry();
     static void setQuickWindowGeometry(const QRect &geometry);
+    /// wiredpanda_quick's left-pane (palette+editor) width, stored as a plain int rather than
+    /// reusing splitterGeometry()/splitterState()'s QSplitter::saveGeometry()/saveState()
+    /// format -- same "incompatible stored format" reasoning as quickWindowGeometry() above.
+    static int quickSplitterWidth();
+    static void setQuickSplitterWidth(int width);
 
     // UI preferences
     static bool fastMode();

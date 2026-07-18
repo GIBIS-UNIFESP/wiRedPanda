@@ -19,6 +19,10 @@ import QuickShell
 Item {
     id: root
     implicitWidth: 240
+    // Mirrors ElementEditor::setCurrentElements()'s hide()/show(): the whole panel disappears
+    // when nothing is selected (Main.qml's leftPane ColumnLayout collapses this row back to
+    // just the palette above), not a placeholder message shown in its place.
+    visible: root.editor.hasSelection
 
     readonly property QuickElementEditor editor: AppController.elementEditor
 
@@ -39,15 +43,6 @@ Item {
         ColumnLayout {
             width: root.width
             spacing: 8
-
-            Label {
-                Layout.fillWidth: true
-                Layout.margins: 6
-                visible: !root.editor.hasSelection
-                text: qsTr("No element selected")
-                wrapMode: Text.WordWrap
-                opacity: 0.6
-            }
 
             Label {
                 Layout.fillWidth: true

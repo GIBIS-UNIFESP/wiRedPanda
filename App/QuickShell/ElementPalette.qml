@@ -74,17 +74,21 @@ Item {
             }
         }
 
+        // Icon-only tabs with tooltips, matching MainWindowUI.cpp's tabElements exactly
+        // (tabElements->addTab(..., QIcon(...), QString()) -- empty text, real name as a
+        // tooltip) -- not a truncated-text sizing bug to fix, a different (unintentional)
+        // design Quick had never matched to begin with.
         TabBar {
             id: categoryTabBar
             Layout.fillWidth: true
             visible: searchField.text.length === 0
 
-            TabButton { text: qsTr("I/O") }
-            TabButton { text: qsTr("Gates") }
-            TabButton { text: qsTr("Combinational") }
-            TabButton { text: qsTr("Memory") }
-            TabButton { text: qsTr("IC") }
-            TabButton { text: qsTr("Misc") }
+            TabButton { icon.source: "qrc:/Components/Input/buttonOff.svg"; ToolTip.text: qsTr("Inputs/Outputs"); ToolTip.visible: hovered }
+            TabButton { icon.source: "qrc:/Components/Logic/xor.svg"; ToolTip.text: qsTr("Gates"); ToolTip.visible: hovered }
+            TabButton { icon.source: "qrc:/Components/Logic/truthtable-rotated.svg"; ToolTip.text: qsTr("Combinational"); ToolTip.visible: hovered }
+            TabButton { icon.source: "qrc:/Components/Memory/Light/D-flipflop.svg"; ToolTip.text: qsTr("Memory"); ToolTip.visible: hovered }
+            TabButton { icon.source: "qrc:/Components/Logic/ic-panda.svg"; ToolTip.text: qsTr("Integrated Circuits"); ToolTip.visible: hovered }
+            TabButton { icon.source: "qrc:/Components/Misc/text.png"; ToolTip.text: qsTr("Miscellaneous"); ToolTip.visible: hovered }
         }
 
         StackLayout {

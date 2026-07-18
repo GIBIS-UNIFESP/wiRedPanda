@@ -190,33 +190,196 @@ ApplicationWindow {
         }
     }
 
-    header: TabBar {
-        id: tabBar
-        visible: AppController.tabCount > 0
-        currentIndex: AppController.currentIndex
-        onCurrentIndexChanged: AppController.currentIndex = currentIndex
+    header: ColumnLayout {
+        spacing: 0
 
-        Repeater {
-            model: AppController.tabCount
-            delegate: TabButton {
-                required property int index
-                // A real property read (QuickWorkSpace.title), not the invokable
-                // tabTitle()/tabAt() pair -- stays live across Save/Save As renaming an
-                // Untitled tab, since title has a NOTIFY signal behind it.
-                text: AppController.tabAt(index).title
+        // Mirrors MainWindowUi's mainToolBar exactly (MainWindowUI.cpp's addAction() order and
+        // separators): New/Open/Save | Rotate/Cut/Copy/Paste/Delete | Zoom In/Out/Reset/Fit |
+        // Play/Restart. Waveform is deliberately excluded -- it opens BeWavedDolphin, not
+        // ported to Quick yet (Phase 6); matches this rewrite's "don't build dead UI" precedent
+        // (the Learn menu's own deferral).
+        ToolBar {
+            Layout.fillWidth: true
+
+            RowLayout {
+                anchors.fill: parent
+                spacing: 0
+
+                ToolButton {
+                    icon.source: "qrc:/Interface/Toolbar/new.svg"
+                    ToolTip.text: qsTr("New")
+                    ToolTip.visible: hovered
+                    onClicked: AppController.newTab()
+                }
+                ToolButton {
+                    icon.source: "qrc:/Interface/Toolbar/folder.svg"
+                    ToolTip.text: qsTr("Open...")
+                    ToolTip.visible: hovered
+                    onClicked: AppController.openFile()
+                }
+                ToolButton {
+                    icon.source: "qrc:/Interface/Toolbar/save.svg"
+                    ToolTip.text: qsTr("Save")
+                    ToolTip.visible: hovered
+                    onClicked: AppController.saveFile()
+                }
+
+                ToolSeparator {}
+
+                ToolButton {
+                    icon.source: "qrc:/Interface/Toolbar/rotateL.svg"
+                    ToolTip.text: qsTr("Rotate left")
+                    ToolTip.visible: hovered
+                    onClicked: AppController.rotateLeft()
+                }
+                ToolButton {
+                    icon.source: "qrc:/Interface/Toolbar/rotateR.svg"
+                    ToolTip.text: qsTr("Rotate right")
+                    ToolTip.visible: hovered
+                    onClicked: AppController.rotateRight()
+                }
+                ToolButton {
+                    icon.source: "qrc:/Interface/Toolbar/cut.svg"
+                    ToolTip.text: qsTr("Cut")
+                    ToolTip.visible: hovered
+                    onClicked: AppController.cut()
+                }
+                ToolButton {
+                    icon.source: "qrc:/Interface/Toolbar/copy.svg"
+                    ToolTip.text: qsTr("Copy")
+                    ToolTip.visible: hovered
+                    onClicked: AppController.copy()
+                }
+                ToolButton {
+                    icon.source: "qrc:/Interface/Toolbar/paste.svg"
+                    ToolTip.text: qsTr("Paste")
+                    ToolTip.visible: hovered
+                    onClicked: AppController.paste()
+                }
+                ToolButton {
+                    icon.source: "qrc:/Interface/Toolbar/delete.svg"
+                    ToolTip.text: qsTr("Delete")
+                    ToolTip.visible: hovered
+                    onClicked: AppController.deleteSelection()
+                }
+
+                ToolSeparator {}
+
+                ToolButton {
+                    icon.source: "qrc:/Interface/Toolbar/zoomIn.svg"
+                    ToolTip.text: qsTr("Zoom in")
+                    ToolTip.visible: hovered
+                    onClicked: AppController.zoomIn()
+                }
+                ToolButton {
+                    icon.source: "qrc:/Interface/Toolbar/zoomOut.svg"
+                    ToolTip.text: qsTr("Zoom out")
+                    ToolTip.visible: hovered
+                    onClicked: AppController.zoomOut()
+                }
+                ToolButton {
+                    icon.source: "qrc:/Interface/Toolbar/zoomReset.svg"
+                    ToolTip.text: qsTr("Reset zoom")
+                    ToolTip.visible: hovered
+                    onClicked: AppController.resetZoom()
+                }
+                ToolButton {
+                    icon.source: "qrc:/Interface/Dolphin/zoomRange.svg"
+                    ToolTip.text: qsTr("Zoom to fit")
+                    ToolTip.visible: hovered
+                    onClicked: AppController.zoomToFit()
+                }
+
+                ToolSeparator {}
+
+                ToolButton {
+                    checkable: true
+                    checked: AppController.simulationRunning
+                    icon.source: checked ? "qrc:/Interface/Toolbar/pause.svg" : "qrc:/Interface/Toolbar/play.svg"
+                    ToolTip.text: qsTr("Play/Pause")
+                    ToolTip.visible: hovered
+                    onToggled: AppController.simulationRunning = checked
+                }
+                ToolButton {
+                    icon.source: "qrc:/Interface/Toolbar/reset.svg"
+                    ToolTip.text: qsTr("Restart")
+                    ToolTip.visible: hovered
+                    onClicked: AppController.restartSimulation()
+                }
+
+                Item { Layout.fillWidth: true } // pushes the toolbar's own content left
+            }
+        }
+
+        TabBar {
+            id: tabBar
+            Layout.fillWidth: true
+            visible: AppController.tabCount > 0
+            currentIndex: AppController.currentIndex
+            onCurrentIndexChanged: AppController.currentIndex = currentIndex
+
+            Repeater {
+                model: AppController.tabCount
+                delegate: TabButton {
+                    required property int index
+                    // A real property read (QuickWorkSpace.title), not the invokable
+                    // tabTitle()/tabAt() pair -- stays live across Save/Save As renaming an
+                    // Untitled tab, since title has a NOTIFY signal behind it.
+                    text: AppController.tabAt(index).title
+                }
             }
         }
     }
 
-    RowLayout {
+    // Mirrors MainWindowUI.cpp's real structure: one QSplitter with the palette+editor stacked
+    // in a single left pane (a QGridLayout there, a ColumnLayout here) and the canvas tabs as
+    // the other pane -- not two independent side-by-side columns the way an earlier pass of
+    // this Quick chrome had it. SplitView (QtQuick.Controls, already imported) is the direct
+    // equivalent of QSplitter -- no reason to hand-roll drag logic the way Minimap.qml's
+    // floating-overlay resize needed to, since this is exactly the two-pane case SplitView is
+    // built for.
+    SplitView {
         anchors.fill: parent
-        spacing: 0
+        orientation: Qt.Horizontal
 
-        ElementPalette {
-            Layout.fillHeight: true
-            Layout.preferredWidth: 220
-            canvasWidth: canvasHost.width
-            canvasHeight: canvasHost.height
+        ColumnLayout {
+            id: leftPane
+            // 280-600px, matching leftPannel's own setMinimumSize(280,0)/setMaximumSize(600,...).
+            SplitView.preferredWidth: 280
+            SplitView.minimumWidth: 280
+            SplitView.maximumWidth: 600
+            spacing: 0
+
+            Component.onCompleted: {
+                const saved = AppController.restoreSplitterWidth();
+                if (saved > 0) {
+                    SplitView.preferredWidth = saved;
+                }
+            }
+            // Debounced (not every drag frame) persistence, mirroring Minimap.qml's own
+            // "commit on release, not every frame" discipline -- SplitView has no direct
+            // per-pane "drag finished" signal to hook, so a short idle timer stands in for one.
+            onWidthChanged: splitterPersistTimer.restart()
+            Timer {
+                id: splitterPersistTimer
+                interval: 300
+                onTriggered: AppController.saveSplitterWidth(leftPane.width)
+            }
+
+            ElementPalette {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                canvasWidth: canvasHost.width
+                canvasHeight: canvasHost.height
+            }
+
+            // Mirrors ElementEditor::setCurrentElements()'s hide()/show() exactly: the whole
+            // panel disappears when nothing is selected (no placeholder message), collapsing
+            // this column's remaining space back to the palette above -- see
+            // ElementEditor.qml's own visible: binding.
+            ElementEditor {
+                Layout.fillWidth: true
+            }
         }
 
         // Hosts the current tab's CanvasItem; reparented here on every tab switch (see
@@ -224,8 +387,7 @@ ApplicationWindow {
         // rather than one shared canvas whose content gets swapped.
         Item {
             id: canvasHost
-            Layout.fillWidth: true
-            Layout.fillHeight: true
+            SplitView.fillWidth: true
 
             function showCurrentTab() {
                 const tab = AppController.currentTab;
@@ -397,11 +559,6 @@ ApplicationWindow {
             // Minimap.qml's own doc comment). Genuinely canvasHost-local (unlike
             // ICPreviewPopup), so no reparenting is needed here.
             Minimap {}
-        }
-
-        ElementEditor {
-            Layout.fillHeight: true
-            Layout.preferredWidth: 240
         }
     }
 

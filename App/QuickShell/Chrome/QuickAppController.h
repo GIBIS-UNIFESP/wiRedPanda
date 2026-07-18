@@ -177,6 +177,11 @@ public:
     Q_INVOKABLE QRect restoreWindowGeometry() const;
     Q_INVOKABLE void saveWindowGeometry(int x, int y, int width, int height);
 
+    /// Restores the persisted left-pane (palette+editor) width (Settings::quickSplitterWidth()),
+    /// or 0 if never saved -- QML falls back to a default width in that case.
+    Q_INVOKABLE int restoreSplitterWidth() const;
+    Q_INVOKABLE void saveSplitterWidth(int width);
+
     /// Mirrors MainWindow::closeEvent()'s logic: confirms exit (a plain yes/no) if nothing is
     /// modified, or runs the per-tab close-and-save-prompt flow (closeFiles()) otherwise.
     /// Returns true if it's OK to actually close the window.

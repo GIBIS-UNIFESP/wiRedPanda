@@ -181,10 +181,17 @@ Item {
         cursorShape: pressed ? Qt.ClosedHandCursor : Qt.OpenHandCursor
         property point lastGlobal
 
+        // Mirrors MinimapWidget::drawMoveHandle() exactly: a real, non-zero idle-state fill
+        // (bg.setAlpha(35) there == 35/255 here), not hover-only -- production's strip is
+        // always visible, just recolored/brightened on hover/drag. The earlier idle-opacity-0
+        // version (found via direct screenshot comparison against the real app) is why the
+        // grip dots below used to look like they were floating above the border with nothing
+        // to sit inside.
+        readonly property bool highlighted: moveHandle.pressed || moveHandle.containsMouse
         Rectangle {
             anchors.fill: parent
-            color: root.palette.highlight
-            opacity: moveHandle.pressed ? 0.35 : (moveHandle.containsMouse ? 0.2 : 0.0)
+            color: moveHandle.highlighted ? root.palette.highlight : root.palette.windowText
+            opacity: moveHandle.highlighted ? 0.35 : 0.14 // 90/255 : 35/255
         }
         Row {
             anchors.centerIn: parent
@@ -276,12 +283,21 @@ Item {
         }
         onReleased: root.presenter.commitGeometry(root.x, root.y, root.width, root.height)
     }
+    // Corner tick marks (an "L" of two thin rectangles per corner), restored to match
+    // MinimapWidget::drawResizeGrips() -- production always shows these (alpha 130/255 idle,
+    // 230/255 highlighted), not cursor-feedback-only; found worth restoring alongside the
+    // move-handle strip fix above, since both are the same "production keeps a visible
+    // idle-state affordance" pattern (armLength/inset match drawResizeGrips() exactly).
     MouseArea {
         id: resizeNW
         anchors.top: parent.top; anchors.left: parent.left
         width: root.handleSize * 2; height: root.handleSize * 2
         cursorShape: Qt.SizeFDiagCursor
         property point lastGlobal
+        readonly property bool highlighted: pressed || containsMouse
+        readonly property color tickColor: highlighted ? root.palette.highlight : root.palette.windowText
+        Rectangle { x: 3; y: 3; width: 9; height: 1.4; color: resizeNW.tickColor; opacity: resizeNW.highlighted ? 0.9 : 0.51 }
+        Rectangle { x: 3; y: 3; width: 1.4; height: 9; color: resizeNW.tickColor; opacity: resizeNW.highlighted ? 0.9 : 0.51 }
         onPressed: (mouse) => { lastGlobal = mapToItem(root.parent, mouse.x, mouse.y); }
         onPositionChanged: (mouse) => {
             if (!pressed) return;
@@ -297,6 +313,10 @@ Item {
         width: root.handleSize * 2; height: root.handleSize * 2
         cursorShape: Qt.SizeFDiagCursor
         property point lastGlobal
+        readonly property bool highlighted: pressed || containsMouse
+        readonly property color tickColor: highlighted ? root.palette.highlight : root.palette.windowText
+        Rectangle { x: width - 3 - 9; y: height - 3 - 1.4; width: 9; height: 1.4; color: resizeSE.tickColor; opacity: resizeSE.highlighted ? 0.9 : 0.51 }
+        Rectangle { x: width - 3 - 1.4; y: height - 3 - 9; width: 1.4; height: 9; color: resizeSE.tickColor; opacity: resizeSE.highlighted ? 0.9 : 0.51 }
         onPressed: (mouse) => { lastGlobal = mapToItem(root.parent, mouse.x, mouse.y); }
         onPositionChanged: (mouse) => {
             if (!pressed) return;
@@ -312,6 +332,10 @@ Item {
         width: root.handleSize * 2; height: root.handleSize * 2
         cursorShape: Qt.SizeBDiagCursor
         property point lastGlobal
+        readonly property bool highlighted: pressed || containsMouse
+        readonly property color tickColor: highlighted ? root.palette.highlight : root.palette.windowText
+        Rectangle { x: width - 3 - 9; y: 3; width: 9; height: 1.4; color: resizeNE.tickColor; opacity: resizeNE.highlighted ? 0.9 : 0.51 }
+        Rectangle { x: width - 3 - 1.4; y: 3; width: 1.4; height: 9; color: resizeNE.tickColor; opacity: resizeNE.highlighted ? 0.9 : 0.51 }
         onPressed: (mouse) => { lastGlobal = mapToItem(root.parent, mouse.x, mouse.y); }
         onPositionChanged: (mouse) => {
             if (!pressed) return;
@@ -327,6 +351,10 @@ Item {
         width: root.handleSize * 2; height: root.handleSize * 2
         cursorShape: Qt.SizeBDiagCursor
         property point lastGlobal
+        readonly property bool highlighted: pressed || containsMouse
+        readonly property color tickColor: highlighted ? root.palette.highlight : root.palette.windowText
+        Rectangle { x: 3; y: height - 3 - 1.4; width: 9; height: 1.4; color: resizeSW.tickColor; opacity: resizeSW.highlighted ? 0.9 : 0.51 }
+        Rectangle { x: 3; y: height - 3 - 9; width: 1.4; height: 9; color: resizeSW.tickColor; opacity: resizeSW.highlighted ? 0.9 : 0.51 }
         onPressed: (mouse) => { lastGlobal = mapToItem(root.parent, mouse.x, mouse.y); }
         onPositionChanged: (mouse) => {
             if (!pressed) return;
