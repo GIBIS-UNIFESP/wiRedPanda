@@ -38,5 +38,6 @@ ApplicationWindow {
     // the AND gate and LED update live, driven by the real Simulation engine.
     CanvasItem {
         anchors.fill: parent
+        focus: true
     }
 }

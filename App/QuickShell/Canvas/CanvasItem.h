@@ -116,6 +116,12 @@ protected:
     void hoverMoveEvent(QHoverEvent *event) override;
     /// \reimp Clears hover highlight when the pointer leaves the canvas entirely.
     void hoverLeaveEvent(QHoverEvent *event) override;
+    /// \reimp Fires keyboard-triggered InputSwitch/InputButton elements (GraphicElement::
+    /// trigger()); the dispatch point future Phase 3 sub-steps (undo/redo, clipboard,
+    /// nudge, rotate/flip) extend, mirroring Scene::keyPressEvent()'s dispatch order.
+    void keyPressEvent(QKeyEvent *event) override;
+    /// \reimp Releases a momentary InputButton keyboard trigger (InputSwitch stays latched).
+    void keyReleaseEvent(QKeyEvent *event) override;
 
 private:
     // --- Real id/registry layer (Phase 3 foundational sub-step) ---

@@ -5,6 +5,7 @@
 
 #include <QColor>
 #include <QHoverEvent>
+#include <QKeyEvent>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QQuickWindow>
@@ -18,6 +19,7 @@
 #include "App/Core/ItemWithId.h"
 #include "App/Core/SimulationHost.h"
 #include "App/Element/GraphicElement.h"
+#include "App/Element/GraphicElementInput.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/Demux.h"
 #include "App/Element/GraphicElements/Display14.h"
@@ -881,6 +883,56 @@ void CanvasItem::hoverLeaveEvent(QHoverEvent *)
         m_hoveredId = 0;
         update();
     }
+}
+
+void CanvasItem::keyPressEvent(QKeyEvent *event)
+{
+    // Ignore auto-repeat: holding a trigger key must fire once, not oscillate an InputSwitch
+    // (whose keyboard trigger toggles on every press) dozens of times a second -- mirrors
+    // Scene::keyPressEvent()'s identical guard.
+    if (event->isAutoRepeat()) {
+        QQuickItem::keyPressEvent(event);
+        return;
+    }
+
+    // Skip keyboard triggers while Ctrl is held, so future Ctrl+Z/C/V shortcuts (later Phase 3
+    // sub-steps) landing in this same method don't also fire an element's trigger key --
+    // mirrors Scene::keyPressEvent()'s identical guard.
+    if (!event->modifiers().testFlag(Qt::ControlModifier)) {
+        for (auto *element : std::as_const(m_elements)) {
+            if (element->hasTrigger() && !element->trigger().isEmpty() && element->trigger().matches(event->key())) {
+                if (auto *input = qobject_cast<GraphicElementInput *>(element); input && !input->isLocked()) {
+                    input->setOn();
+                }
+            }
+        }
+    }
+
+    QQuickItem::keyPressEvent(event);
+}
+
+void CanvasItem::keyReleaseEvent(QKeyEvent *event)
+{
+    // On X11 a held key emits release/press pairs; ignoring auto-repeat here avoids releasing
+    // a momentary InputButton mid-hold -- mirrors Scene::keyReleaseEvent()'s identical guard.
+    if (event->isAutoRepeat()) {
+        QQuickItem::keyReleaseEvent(event);
+        return;
+    }
+
+    if (!event->modifiers().testFlag(Qt::ControlModifier)) {
+        for (auto *element : std::as_const(m_elements)) {
+            if (element->hasTrigger() && !element->trigger().isEmpty() && element->trigger().matches(event->key())) {
+                // Only InputButton (momentary) is released on key-up; InputSwitch stays latched.
+                if (auto *input = qobject_cast<GraphicElementInput *>(element);
+                    input && !input->isLocked() && (element->elementType() == ElementType::InputButton)) {
+                    input->setOff();
+                }
+            }
+        }
+    }
+
+    QQuickItem::keyReleaseEvent(event);
 }
 
 QSGNode *CanvasItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
