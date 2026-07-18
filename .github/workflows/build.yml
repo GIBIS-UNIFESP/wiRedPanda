@@ -52,15 +52,24 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-24.04, windows-2025-vs2026]
-        qt: [6.8.3, 6.9.3]
+        qt: [6.8.3, 6.12.0]
         cmake_args: ['']
+        # windows-2025-vs2026 x86_64 desktop Qt 6.12.0 packages aren't published yet
+        # (verified via `aqt list-qt windows desktop --arch 6.12.0`, which fails, vs
+        # `--arch 6.9.3`, which resolves fine -- every other arch here, including
+        # windows_arm64 below, already has 6.12.0). Exclude that one combo from the
+        # base cross product and pin it at the last version Windows x64 actually has
+        # until Qt publishes 6.12.0 there; re-check that command before bumping it.
+        exclude:
+          - { os: windows-2025-vs2026, qt: 6.12.0 }
         include:
-          - { os: ubuntu-24.04, qt: '6.9.3', cmake_args: '-DENABLE_UNITY=OFF -DENABLE_PCH=OFF' }
-          - { os: ubuntu-24.04, qt: '6.9.3', cmake_args: '-DUNITY_BUILD_BATCH_SIZE=1000' }
+          - { os: ubuntu-24.04, qt: '6.12.0', cmake_args: '-DENABLE_UNITY=OFF -DENABLE_PCH=OFF' }
+          - { os: ubuntu-24.04, qt: '6.12.0', cmake_args: '-DUNITY_BUILD_BATCH_SIZE=1000' }
+          - { os: windows-2025-vs2026, qt: '6.9.3', cmake_args: '' }
           - { os: macos-15, qt: '6.8.3', cmake_args: '', qt_host: mac, qt_arch: clang_64 }
-          - { os: macos-26, qt: '6.9.3', cmake_args: '', qt_host: mac, qt_arch: clang_64 }
-          - { os: ubuntu-24.04-arm, qt: '6.9.3', cmake_args: '', qt_host: linux_arm64,   qt_arch: linux_gcc_arm64      }
-          - { os: windows-11-arm,   qt: '6.9.3', cmake_args: '', qt_host: windows_arm64, qt_arch: win64_msvc2022_arm64 }
+          - { os: macos-26, qt: '6.12.0', cmake_args: '', qt_host: mac, qt_arch: clang_64 }
+          - { os: ubuntu-24.04-arm, qt: '6.12.0', cmake_args: '', qt_host: linux_arm64,   qt_arch: linux_gcc_arm64      }
+          - { os: windows-11-arm,   qt: '6.12.0', cmake_args: '', qt_host: windows_arm64, qt_arch: win64_msvc2022_arm64 }
 
 # =================================
 
@@ -134,7 +143,7 @@ jobs:
     # specific rules to error there is how this becomes a hard gate once the current
     # warning backlog is cleared.
     - name: QML lint (qmllint)
-      if: matrix.os == 'ubuntu-24.04' && matrix.qt == '6.9.3' && matrix.cmake_args == ''
+      if: matrix.os == 'ubuntu-24.04' && matrix.qt == '6.12.0' && matrix.cmake_args == ''
       run: |
         cmake --build --preset release --target all_qmllint_json
         python3 - <<'PY'

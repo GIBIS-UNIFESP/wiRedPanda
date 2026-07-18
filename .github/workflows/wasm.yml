@@ -36,7 +36,7 @@ jobs:
     - name: Setup Qt (host, for LinguistTools)
       uses: jurplel/install-qt-action@48d3ad6db93f3627c8ee7a0454bc6f3744f7e730 # v4.3.1
       with:
-        version: 6.9.3
+        version: 6.12.0
         host: linux
         target: desktop
         arch: linux_gcc_64
@@ -50,7 +50,7 @@ jobs:
     - name: Setup Qt for WASM
       uses: jurplel/install-qt-action@48d3ad6db93f3627c8ee7a0454bc6f3744f7e730 # v4.3.1
       with:
-        version: 6.9.3
+        version: 6.12.0
         host: all_os
         target: wasm
         arch: wasm_multithread

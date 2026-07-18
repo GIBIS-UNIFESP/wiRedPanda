@@ -10,10 +10,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && pip3 install --break-system-packages aqtinstall \
     && mkdir -p /opt/Qt \
     && cd /opt/Qt \
-    && aqt install-qt linux desktop 6.9.3 linux_gcc_64 \
+    && aqt install-qt linux desktop 6.12.0 linux_gcc_64 \
         -m qtmultimedia \
-    && rm -rf /opt/Qt/6.9.3/gcc_64/doc \
-    && rm -rf /opt/Qt/6.9.3/gcc_64/examples \
+    && rm -rf /opt/Qt/6.12.0/gcc_64/doc \
+    && rm -rf /opt/Qt/6.12.0/gcc_64/examples \
     && find /opt/Qt -name "*.debug" -delete \
     && find /opt/Qt -name "*.pdb" -delete \
     && find /opt/Qt -name "*_debug*" -delete
@@ -57,7 +57,7 @@ RUN npm install -g @anthropic-ai/claude-code
 COPY --from=builder /opt/Qt /opt/Qt
 
 # Set Qt environment variables
-ENV QT_ROOT="/opt/Qt/6.9.3/gcc_64"
+ENV QT_ROOT="/opt/Qt/6.12.0/gcc_64"
 ENV PATH="${QT_ROOT}/bin:${PATH}"
 ENV LD_LIBRARY_PATH="${QT_ROOT}/lib"
 ENV PKG_CONFIG_PATH="${QT_ROOT}/lib/pkgconfig"

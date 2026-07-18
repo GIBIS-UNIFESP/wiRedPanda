@@ -56,7 +56,7 @@ jobs:
         sanitizer: [asan, ubsan]
 
     runs-on: ubuntu-latest
-    name: Ubuntu Qt6.9.3 (${{ matrix.sanitizer }})
+    name: Ubuntu Qt6.12.0 (${{ matrix.sanitizer }})
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
 
     env:
@@ -78,7 +78,7 @@ jobs:
     - name: Install Qt
       uses: jurplel/install-qt-action@48d3ad6db93f3627c8ee7a0454bc6f3744f7e730 # v4.3.1
       with:
-        version: 6.9.3
+        version: 6.12.0
         cache: true
         aqtversion: ==3.*
         modules: qtmultimedia qtimageformats
@@ -86,7 +86,7 @@ jobs:
     - name: ccache
       uses: hendrikmuhs/ccache-action@9e72c68cf32eb51fa30568928aca57ff79155270 # main
       with:
-        key: ${{ matrix.sanitizer }}-ubuntu-6.9.3
+        key: ${{ matrix.sanitizer }}-ubuntu-6.12.0
 
     - name: Build
       run: |
