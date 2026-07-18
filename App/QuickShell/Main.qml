@@ -206,6 +206,11 @@ ApplicationWindow {
                 }
             }
         }
+
+        ElementEditor {
+            Layout.fillHeight: true
+            Layout.preferredWidth: 240
+        }
     }
 
     Dialog {

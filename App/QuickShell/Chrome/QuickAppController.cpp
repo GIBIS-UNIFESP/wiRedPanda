@@ -80,6 +80,7 @@ void QuickAppController::bindCurrentTab()
         // startup code): an empty palette IC section, no embedded-IC registry to read from.
         m_palette.updateICList(QFileInfo());
         m_palette.updateEmbeddedICList(nullptr);
+        m_elementEditor.setCanvas(nullptr);
         return;
     }
 
@@ -111,6 +112,10 @@ void QuickAppController::bindCurrentTab()
     m_tabConnections.append(connect(tab, &QuickWorkSpace::fileChanged, this, [this](const QFileInfo &fileInfo) {
         m_palette.updateICList(fileInfo);
     }));
+
+    // Mirrors ElementEditor::setScene(): rebinds the property panel to the new tab's
+    // selection. Closes the "element-editor rebinding" deferral named back in sub-step 3.
+    m_elementEditor.setCanvas(canvas);
 }
 
 QString QuickAppController::windowTitle() const

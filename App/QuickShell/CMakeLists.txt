@@ -20,6 +20,8 @@ set(QUICK_SHELL_SOURCES
     Chrome/QuickAppController.h
     Chrome/QuickDialogProvider.cpp
     Chrome/QuickDialogProvider.h
+    Chrome/QuickElementEditor.cpp
+    Chrome/QuickElementEditor.h
     Chrome/QuickElementPalette.cpp
     Chrome/QuickElementPalette.h
     Chrome/QuickExportController.cpp
@@ -58,6 +60,7 @@ qt_add_qml_module(wiredpanda_quick
     VERSION 1.0
     QML_FILES
         ChoiceDialog.qml
+        ElementEditor.qml
         ElementPalette.qml
         Main.qml
         QuickFileDialog.qml

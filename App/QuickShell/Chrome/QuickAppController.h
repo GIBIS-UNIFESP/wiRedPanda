@@ -18,6 +18,7 @@
 
 #include "App/Core/Enums.h"
 #include "App/IO/RecentFiles.h"
+#include "App/QuickShell/Chrome/QuickElementEditor.h"
 #include "App/QuickShell/Chrome/QuickElementPalette.h"
 #include "App/QuickShell/Chrome/QuickExportController.h"
 #include "App/QuickShell/Chrome/QuickMainWindowHost.h"
@@ -56,6 +57,7 @@ class QuickAppController : public QObject, public QuickMainWindowHost
     Q_PROPERTY(bool simulationRunning READ isSimulationRunning WRITE setSimulationRunning NOTIFY simulationRunningChanged)
     Q_PROPERTY(bool backgroundSimulationEnabled READ isBackgroundSimulationEnabled WRITE setBackgroundSimulationEnabled NOTIFY backgroundSimulationEnabledChanged)
     Q_PROPERTY(QuickElementPalette *elementPalette READ elementPalette CONSTANT)
+    Q_PROPERTY(QuickElementEditor *elementEditor READ elementEditor CONSTANT)
 
 public:
     explicit QuickAppController(QObject *parent = nullptr);
@@ -124,6 +126,7 @@ public:
     Q_INVOKABLE void handleWindowActiveChanged(bool active);
 
     [[nodiscard]] QuickElementPalette *elementPalette() { return &m_palette; }
+    [[nodiscard]] QuickElementEditor *elementEditor() { return &m_elementEditor; }
 
     /// Adds one element from a palette entry to the current tab's canvas. \a type/\a
     /// icFileName/\a isEmbedded mirror QuickElementPalette's entry fields exactly (QML passes
@@ -200,10 +203,11 @@ private:
     /// Disconnects the previous tab's undo-stack signal wiring and reconnects to the new
     /// current tab's, re-emitting undoRedoStateChanged()/windowTitleChanged() as needed. Also
     /// stops the previously-bound tab's simulation and starts the new one's if
-    /// simulationRunning is set, mirroring SceneUiBinder::unbind()/bind()'s play-state half.
-    /// The CanvasItem-side counterpart of SceneUiBinder::bind()/unbind()'s undo/redo and
-    /// play-state halves -- element-editor rebinding, zoom/mute action sync, and status-bar
-    /// info are the remaining pieces, deferred to when their chrome exists (sub-steps 4/5/7).
+    /// simulationRunning is set, mirroring SceneUiBinder::unbind()/bind()'s play-state half,
+    /// and rebinds m_elementEditor to the new canvas (QuickElementEditor::setCanvas() itself
+    /// refreshes from the new canvas's current selection). The CanvasItem-side counterpart of
+    /// SceneUiBinder::bind()/unbind() -- zoom/mute action sync and status-bar info are the
+    /// remaining pieces, deferred to when their chrome exists (sub-step 7).
     void bindCurrentTab();
 
     /// Literal start()/stop() call on the current tab's Simulation, mirroring
@@ -215,6 +219,7 @@ private:
     QuickWorkspaceManager m_workspaceManager;
     QuickExportController m_exportController;
     QuickElementPalette m_palette;
+    QuickElementEditor m_elementEditor;
     RecentFiles m_recentFiles;
     QList<QMetaObject::Connection> m_tabConnections;
     bool m_simulationRunning = true;
