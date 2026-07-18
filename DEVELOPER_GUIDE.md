@@ -68,6 +68,7 @@ The project is maintained by [GIBIS-UNIFESP](https://github.com/GIBIS-UNIFESP) a
 - **Integrated Circuits (ICs)**: create reusable sub-circuits from `.panda` files
 - **Export**: images, PDF, Arduino code, and SystemVerilog
 - **Waveform viewer**: BeWavedDolphin tool for temporal analysis
+- **Guided learning**: built-in UI Tours and step-by-step circuit Exercises, with a tour auto-started on first launch
 - **39 languages** supported via Weblate
 
 ### Tech Stack
@@ -180,10 +181,11 @@ wiRedPanda/
 │   │   ├── ElementInfo.h                   #     Self-registration template
 │   │   ├── ElementMetadata.cpp/h           #     Element metadata and capabilities
 │   │   ├── PropertyDescriptor.h            #     Property system
-│   │   ├── IC.cpp/h                        #     Integrated circuit (sub-circuit)
-│   │   ├── ICDefinition.cpp/h              #     IC definition
-│   │   ├── ICRegistry.cpp/h                #     Central IC registry
-│   │   ├── GraphicElementSerializer.cpp    #     Serialization
+│   │   ├── IC.cpp/h                        #     Integrated circuit (sub-circuit) element
+│   │   ├── ICLoader.cpp/h                  #     Loads an IC's sub-circuit from file or embedded blob
+│   │   ├── ICRenderer.cpp/h                #     Draws an IC's body and cached pixmaps
+│   │   ├── ICSimulation.cpp/h              #     Builds/runs an IC's internal simulation graph
+│   │   ├── GraphicElementSerializer.cpp/h  #     Serialization
 │   │   └── GraphicElements/                #     31 concrete element implementations
 │   ├── Simulation/                         #   Simulation engine
 │   │   ├── Simulation.cpp/h                #     Main simulation loop
@@ -197,7 +199,8 @@ wiRedPanda/
 │   │   ├── Commands.cpp/h                  #     Undo/redo commands
 │   │   ├── Workspace.cpp/h                 #     Workspace management
 │   │   ├── ClipboardManager.cpp/h          #     Copy/paste
-│   │   └── ConnectionManager.cpp/h         #     Connection creation
+│   │   ├── ConnectionManager.cpp/h         #     Connection creation
+│   │   └── ICRegistry.cpp/h                #     Central IC registry (moved here from App/Element/)
 │   ├── IO/                                 #   File serialization
 │   │   ├── Serialization.cpp/h             #     .panda format
 │   │   └── RecentFiles.cpp/h               #     Recent files tracking
@@ -206,14 +209,19 @@ wiRedPanda/
 │   │   ├── ElementPalette.cpp/h            #     Element palette
 │   │   ├── ElementEditor.cpp/h             #     Property editor
 │   │   ├── CircuitExporter.cpp/h           #     Image/PDF export
+│   │   ├── MinimapWidget.cpp/h             #     Draggable/resizable canvas overview widget
 │   │   └── LanguageManager.cpp/h           #     Language management
 │   ├── CodeGen/                            #   Arduino & SystemVerilog export
 │   │   ├── ArduinoCodeGen.cpp/h            #     Arduino/C code generation
 │   │   └── SystemVerilogCodeGen.cpp/h      #     SystemVerilog HDL
 │   ├── BeWavedDolphin/                     #   Waveform viewer/editor
+│   ├── Exercise/                           #   Circuit-challenge Exercise system
+│   ├── Tour/                               #   Guided UI Tour system
 │   └── Resources/                          #   SVGs, icons, translations
 │       ├── Components/                     #     Element SVG icons by category
 │       ├── Assets/                         #     App logos and icons
+│       ├── Exercises/                      #     Built-in Exercise .json files
+│       ├── Tours/                          #     Built-in Tour .json files
 │       ├── Interface/                      #     UI resources
 │       └── Translations/                   #     Translation files (.ts)
 ├── Tests/
@@ -224,9 +232,11 @@ wiRedPanda/
 │   ├── BackwardCompatibility/              #   Old file format test fixtures
 │   ├── Resources/                          #   Resource validation tests
 │   ├── Fixtures/                           #   Test .panda files
+│   ├── Fuzz/                               #   libFuzzer harnesses (local/manual, not run in CI)
 │   └── Runners/                            #   Unified test entry point
 ├── Examples/                               #   21 example .panda circuit files
-├── MCP/                                    #   Model Context Protocol server
+├── MCP/                                    #   Model Context Protocol server (internal use)
+├── Packaging/                              #   Distro packaging (AUR PKGBUILD, etc.)
 ├── Scripts/                                #   Build and utility scripts
 ├── .devcontainer/                          #   Dev container configuration
 ├── .github/workflows/                      #   CI/CD pipelines
@@ -269,6 +279,11 @@ ctest --preset debug
 | `tsan`           | Thread Sanitizer (data races)                     |
 | `msan`           | Memory Sanitizer (Clang only, uninitialized mem)  |
 | `ubsan`          | Undefined Behavior Sanitizer                      |
+| `macos-universal`| Release build with universal x86_64+arm64 macOS binaries (Darwin only) |
+| `fuzzer`         | Clang libFuzzer harnesses + ASan + UBSan (see [Coverage and Sanitizers](#coverage-and-sanitizers)) |
+| `fuzzer-coverage`| Source-based coverage report over the fuzz corpus, no sanitizers |
+| `sentry-crashpad`| RelWithDebInfo build with the Sentry crashpad backend |
+| `sentry-breakpad`| RelWithDebInfo build with the Sentry breakpad backend (Darwin only) |
 
 ### Incremental Builds and Cache
 
@@ -404,7 +419,7 @@ Wireless node modes: `None` (default), `Tx` (transmitter), or `Rx` (receiver).
 - **Dark**: dark theme
 - **System**: automatically follows the OS theme
 
-The `SystemThemeDetector` detects OS theme changes in real time (via DBus on Linux, native APIs on Windows/macOS).
+`ThemeManager` detects OS theme changes in real time by connecting to Qt's cross-platform `QStyleHints::colorSchemeChanged` signal (Qt 6.5+; a palette-lightness heuristic is used as a fallback on older Qt), with several version-gated workarounds for Qt 6.8/6.9/6.10 differences in how pending theme-change events get flushed.
 
 ---
 
@@ -499,7 +514,7 @@ The `ElementConstraints` are **validated at compile time** by the `constexpr val
 | `maxInputSize`  | Maximum number of input ports                  |
 | `minOutputSize` | Minimum number of output ports                 |
 | `maxOutputSize` | Maximum number of output ports                 |
-| `canChangeSkin` | Can change appearance (e.g., ANSI/IEC)         |
+| `canChangeAppearance` | Allows the user to assign a custom SVG appearance (e.g., ANSI/IEC) |
 | `hasColors`     | Has color option (e.g., LED)                   |
 | `hasAudio`      | Produces sound (e.g., Buzzer)                  |
 | `hasAudioBox`   | Has audio box capability (e.g., AudioBox)      |
@@ -511,7 +526,7 @@ The `ElementConstraints` are **validated at compile time** by the `constexpr val
 | `hasVolume`     | Has volume control (e.g., Buzzer, AudioBox)    |
 | `rotatesGraphic` | Rotating/flipping re-orients the graphic (false = icon fixed, ports still move) |
 
-`ElementMetadata` extends this with visual information: pixmap paths, translated names, default and alternative skins.
+`ElementMetadata` extends this with visual information: pixmap paths, translated names, and `defaultAppearances`/`alternativeAppearances` lists.
 
 ### Element Catalog
 
@@ -604,7 +619,7 @@ struct ElementInfo<And> {
         .group = ElementGroup::Gate,
         .minInputSize = 2, .maxInputSize = 8,
         .minOutputSize = 1, .maxOutputSize = 1,
-        .canChangeSkin = true,
+        .canChangeAppearance = true,
     };
     static_assert(validate(constraints));
 
@@ -614,7 +629,7 @@ struct ElementInfo<And> {
         meta.titleText = QT_TRANSLATE_NOOP("And", "AND");
         meta.translatedName = QT_TRANSLATE_NOOP("And", "And");
         meta.trContext = "And";
-        meta.defaultSkins = {":/Components/Logic/and.svg"};
+        meta.defaultAppearances = {":/Components/Logic/and.svg"};
         return meta;
     }
 
@@ -691,28 +706,51 @@ Input elements like `InputSwitch` are driven by user interaction, not by upstrea
 ```cpp
 // No updateLogic() — state is set by mouse events
 void InputSwitch::mousePressEvent(QGraphicsSceneMouseEvent *event) {
-    if (!m_locked && event->button() == Qt::LeftButton) {
+    if (!m_locked && (event->button() == Qt::LeftButton)) {
+        // Snapshot the pre-toggle state so the toggle can be pushed onto the undo
+        // stack as an UpdateCommand, same as any other property edit.
+        QByteArray oldData;
+        auto *scene_ = qobject_cast<Scene *>(scene());
+        if (scene_) {
+            QDataStream stream(&oldData, QIODevice::WriteOnly);
+            Serialization::writePandaHeader(stream);
+            save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
+        }
+
         setOn(!m_isOn);   // Toggle the switch
         event->accept();
+
+        if (scene_) {
+            scene_->receiveCommand(new UpdateCommand({this}, oldData, scene_));
+        }
     }
 }
 
-void InputSwitch::setOn(const bool value, const int port) {
+// setOn(bool, int) is inherited from GraphicElementInput:
+void GraphicElementInput::setOn(const bool value, const int port) {
+    Q_UNUSED(port)
     m_isOn = value;
-    setPixmap(static_cast<int>(m_isOn));                     // Visual update
-    outputPort()->setStatus(static_cast<Status>(m_isOn));    // Electrical update
+    setPixmap(static_cast<int>(m_isOn));                      // Visual update
+    if (auto *out = outputPort()) {
+        out->setStatus(static_cast<Status>(m_isOn));          // Electrical update
+    }
 }
 ```
+
+Routing the toggle through `UpdateCommand` (rather than calling `setOn()` directly) makes it undoable and marks the tab modified.
 
 The `Clock` element is special: it is driven by wall-clock time via `updateClock()`, comparing elapsed time against a configurable frequency interval.
 
 ### Integrated Circuits (ICs)
 
-The IC system allows reusing circuits as sub-components:
+The IC system allows reusing circuits as sub-components, split across several focused classes:
 
-- **`IC.cpp/h`**: the element representing an IC in the scene (a "black box" with ports)
-- **`ICDefinition.cpp/h`**: defines the internal structure of the IC (which elements and connections it contains)
-- **`ICRegistry.cpp/h`**: central registry that monitors `.panda` files and auto-updates ICs when the file changes
+- **`IC.cpp/h`** (`App/Element/`): the element representing an IC in the scene (a "black box" with ports)
+- **`ICLoader.cpp/h`** (`App/Element/`): loads an IC's sub-circuit from an external `.panda` file or an embedded blob
+- **`ICRenderer.cpp/h`** (`App/Element/`): draws the IC's body and builds its cached pixmaps
+- **`ICSimulation.cpp/h`** (`App/Element/`): builds and runs the IC's internal simulation graph
+- **`ICPreviewPopup.cpp/h`** (`App/Element/`): frameless popup showing a preview of an IC's internal circuit on hover
+- **`ICRegistry.cpp/h`** (`App/Scene/`): central registry that monitors `.panda` files and auto-updates ICs when the file changes
 
 ICs support **arbitrary hierarchy** — an IC can contain other ICs inside it. The tests include up to 9 levels of complexity, culminating in complete CPU implementations.
 
@@ -724,10 +762,10 @@ All signals in wiRedPanda use four states, defined in `App/Core/Enums.h`:
 
 | State      | Value | Meaning                      | Visual Color |
 |------------|-------|------------------------------|--------------|
-| `Unknown`  | -1    | Not yet resolved / floating  | Gray         |
-| `Inactive` | 0     | Logic LOW                    | Dark blue    |
-| `Active`   | 1     | Logic HIGH                   | Green/red    |
-| `Error`    | 2     | Bus conflict / indeterminate | Red          |
+| `Unknown`  | -1    | Not yet resolved / floating  | Gray                        |
+| `Inactive` | 0     | Logic LOW                    | Dark green (theme-dependent) |
+| `Active`   | 1     | Logic HIGH                   | Green (theme-dependent)    |
+| `Error`    | 2     | Bus conflict / indeterminate | Red                         |
 
 `App/Core/StatusOps.h` provides logic operations that respect these states with **domination rules**:
 
@@ -814,7 +852,7 @@ Each element stores a vector of these for its inputs. During `updateLogic()`, re
 
 Some circuits have feedback (e.g., an SR latch where outputs feed back to inputs). The engine detects these using **Tarjan's strongly connected components** algorithm:
 
-1. Any element in a cycle is marked as a **feedback node**.
+1. Any element in a cycle is marked as a **feedback node** — including a single element whose own output feeds directly back into its own input (a size-1 strongly connected component via self-loop).
 2. Instead of a single-pass evaluation, the engine uses **iterative settling**: it runs `updateLogic()` on all elements, checks if any output changed, and repeats — up to 10 iterations or until convergence.
 3. If the circuit does not converge (e.g., a ring oscillator), a warning is emitted via the status bar.
 
@@ -836,7 +874,7 @@ Each port carries a `Status` (the current logic value) and maintains a list of c
 
 Properties:
 - Rendered as a Bézier curve on the QGraphicsScene
-- Color reflects the signal's logic state (blue=0, green=1, gray=unknown, red=error)
+- Color reflects the signal's logic state (dark green=0, green=1, gray=unknown, red=error) — exact shades are theme-dependent
 - Magnetic snap to nearby ports during creation
 
 ### Connection Flow
@@ -853,12 +891,13 @@ Properties:
 ### Scene (`App/Scene/Scene.cpp`)
 
 The `Scene` extends `QGraphicsScene` and owns:
-- An **element registry** mapping integer IDs to elements (for stable undo/redo references via `ItemWithId`).
+- A **`SceneItemRegistry`** mapping integer IDs to elements (for stable undo/redo references via `ItemWithId`).
 - The **`Simulation`** instance.
 - A **`QUndoStack`** for undo/redo.
 - Managers for connections, clipboard, visibility, and property shortcuts.
-- Grid-snapping (16px grid, 8px snap).
-- Mouse event processing for drag, selection, and connection creation.
+- A **`SceneDropHandler`** that decodes drag-and-drop payloads onto the canvas.
+- Grid-snapping (16px grid, 8px snap). Selected elements can also be nudged with the arrow keys — one grid cell per press, or four cells with Shift held.
+- **`SceneInteraction`**, which handles mouse event processing for drag, selection, and connection creation.
 
 ### Undo/Redo Commands (`App/Scene/Commands.h`)
 
@@ -877,6 +916,8 @@ All user operations are `QUndoCommand` subclasses:
 | `SplitCommand`                   | Insert a junction node into a wire                   |
 | `ToggleTruthTableOutputCommand`  | Toggle a truth table output bit                      |
 | `RegisterBlobCommand`            | Register a new blob resource                         |
+| `RemoveBlobCommand`              | Remove a blob resource                               |
+| `RenameBlobCommand`              | Rename a blob resource                               |
 | `UpdateBlobCommand`              | Update an existing blob resource                     |
 
 Each command serializes enough state to fully undo and redo the operation, including saving and restoring wire connections that would otherwise be broken.
@@ -896,6 +937,7 @@ The `CommandUtils` namespace provides helpers for serializing/deserializing item
 - Currently open file
 - Modification state (asterisk in title)
 - Save, save-as, and open operations
+- Autosave to a temporary file for crash recovery — debounced 500ms after the last change; a tab restored from an autosave on launch is marked "(recovered)" in its tab title
 
 ---
 
@@ -904,15 +946,15 @@ The `CommandUtils` namespace provides helpers for serializing/deserializing item
 ### MainWindow
 
 `App/UI/MainWindow.h` is the main application window. It contains:
-- **Menu bar**: File, Edit, View, Circuit, Tools, Help
-- **Toolbar**: New, Open, Save, Undo/Redo, Zoom, Simulation
-- **Element palette** (side dock): drag elements onto the scene
+- **Menu bar**: File, Edit, View, Simulation, Examples, Learn, Language, Help. The Learn menu holds Exercises and Tours submenus; "Report Translation Error" lives under Help.
+- **Toolbar**: New, Open, Save | Undo, Redo, Rotate, Cut, Copy, Paste, Delete | Zoom In, Zoom Out, Reset Zoom, Zoom to Fit | Play, Restart, Waveform. Undo/Redo are inserted dynamically for the active tab by `App/UI/SceneUiBinder.cpp/h`.
+- **Element palette** (side dock): drag elements onto the scene, plus a draggable/resizable **minimap** overlay (`App/UI/MinimapWidget.cpp/h`) over the canvas
 - **Property editor** (bottom dock): edit properties of the selected element
 - **Central area**: `GraphicsView` with the circuit `Scene`
 
 ### Element Palette
 
-`App/UI/ElementPalette.h` organizes the available elements in tabs by category (Gates, I/O, Memory, etc.). The user drags an element from the palette onto the scene.
+`App/UI/ElementPalette.h` organizes the available elements in tabs by category: I/O, Gates, Combinational, Memory, IC, and Misc, plus a Search tab that appears once the user types into the palette's filter box. The user drags an element from the palette onto the scene.
 
 ### Property Editor
 
@@ -955,16 +997,25 @@ On load, a **port map** is built during element deserialization so that connecti
 
 The file `App/IO/VersionInfo.h` tracks all format versions:
 
-| Version | Release | Key Changes                         |
-|---------|---------|-------------------------------------|
-| V_1_1   | 2015    | Original format                     |
-| V_2_4   | 2019    | Added Display7                      |
-| V_3_1   | 2021    | New IC system                       |
-| V_4_2   | 2024    | Property support                    |
-| V_4_6   | 2025    | Unified metadata in QMap            |
-| V_4_7   | 2026    | Updated connection format           |
+| Version | Release | Key Changes                                       |
+|---------|---------|---------------------------------------------------|
+| V_1_1   | 2015    | Clock element added                               |
+| V_2_4   | 2019    | Audio element support (Buzzer, AudioBox)          |
+| V_3_1   | 2021    | Lock state for input elements; display colors     |
+| V_4_1   | 2024    | QMap-based format; port serial IDs                |
+| V_4_2   | 2024    | TruthTable output data stored in file             |
+| V_4_5   | 2025    | Preamble gains a metadata QMap                    |
+| V_4_6   | 2025    | Preamble unified into a single metadata QMap (dolphin filename and scene rect folded in) |
+| V_4_7   | 2026    | Connection uses QMap-based serialization          |
+| V_5_0   | 2026    | File format version bump for 5.0.0                |
+| V_5_1   | 2026    | Versioned blob registry                           |
 
 The deserialization code reads the file version and applies automatic migrations as needed. Reading older versions is **always** supported.
+
+Past `V_5_1`, `App/Versions.h` switches to a monotonic single-segment revision scheme independent
+of the app version: **`Rev100`** (the circuit payload is zlib-compressed after the header) and
+**`Rev101`** ("slim portable payload" — elides default-valued fields, derives port serialIds from
+element id + position, omits non-IC port names and resource-path appearance slots).
 
 ---
 
@@ -976,7 +1027,7 @@ Converts a circuit into an Arduino sketch:
 - Maps circuit inputs/outputs to GPIO pins.
 - Emits `setup()` with `pinMode()` calls.
 - Emits `computeLogic()` with boolean expressions for combinational logic and state machines for sequential elements.
-- Supports multiple board configurations (Uno, Mega, etc.).
+- Supports multiple board configurations: Arduino UNO R3/R4, Arduino Nano, Arduino Mega 2560, and ESP32 (WiFi/Bluetooth).
 - Generates testbench for validation.
 - Supports IC hierarchy.
 
@@ -993,12 +1044,17 @@ Converts a circuit into synthesizable SystemVerilog:
 
 ## BeWavedDolphin (Waveform Viewer)
 
-The built-in waveform viewer (`App/BeWavedDolphin/`) provides signal visualization, similar to GTKWave:
+The built-in waveform viewer (`App/BeWavedDolphin/`) provides signal visualization, similar to GTKWave. The tool grew from a handful of files into a set of focused classes:
 
 - **`BeWavedDolphin.cpp`**: main tool window
 - **`WaveformView.cpp`**: waveform rendering
 - **`SignalModel.cpp`**: data model with input and output signals
 - **`Serializer.cpp`**: saves/loads waveform captures
+- **`DolphinCommands.cpp`**: undo/redo commands for waveform edits
+- **`DolphinClipboard.cpp`** / **`DolphinEdits.cpp`**: copy/paste and cell-edit operations
+- **`DolphinFile.cpp`** / **`DolphinExporter.cpp`**: file open/save workflow and PDF/PNG/text export
+- **`WaveformSimulator.cpp`** / **`DolphinModelBuilder.cpp`**: drives the simulation and builds the signal table from it
+- **`DolphinZoom.cpp`**: waveform view zoom handling
 
 **Features:**
 - **Table-based**: Rows = signals, Columns = time steps.
@@ -1006,8 +1062,9 @@ The built-in waveform viewer (`App/BeWavedDolphin/`) provides signal visualizati
 - **Visualization**: Renders waveforms as line plots or binary values.
 - **Export**: PDF, PNG, and text formats.
 - **Interactive**: Users can edit input patterns, set clock waves, and zoom.
+- **Undo/Redo**: Waveform cell edits are undoable, backed by `DolphinCommands`.
 
-Access it from the main menu (Tools > BeWavedDolphin) to see how signals propagate through a circuit over time. Ideal for analyzing sequential circuits.
+Access it from the **Simulation** menu → **Waveform** (Ctrl+W) to see how signals propagate through a circuit over time. Ideal for analyzing sequential circuits.
 
 ---
 
@@ -1025,7 +1082,7 @@ wiRedPanda supports 39 languages:
 
 - `.ts` files (Qt Linguist) in `App/Resources/Translations/`
 - Managed via [Weblate](https://hosted.weblate.org/projects/wiredpanda/wiredpanda)
-- Compiled to `.qm` during build
+- Compiled to `.qm` and merged directly into the binary during build via Qt's `qt_add_translations()` (`MERGE_QT_TRANSLATIONS`) — no separate `.qm` files are shipped
 - Uses `tr()` and `QT_TR_NOOP()` in code
 
 To add a new translatable string:
@@ -1037,7 +1094,7 @@ QString msg = tr("New translatable message");
 
 ## The Test System
 
-wiRedPanda has a comprehensive test suite with **176 test classes**.
+wiRedPanda has a comprehensive test suite with **192 test classes**.
 
 ### Test Organization
 
@@ -1046,14 +1103,18 @@ Tests/
 ├── Unit/                      # Individual unit tests
 │   ├── Commands/              #   Undo/redo tests
 │   ├── Common/                #   Utility tests
+│   ├── Core/                  #   Core type tests
 │   ├── Elements/              #   Individual element tests
+│   ├── Exercise/              #   ExerciseEngine tests
 │   ├── Factory/               #   ElementFactory tests
 │   ├── Logic/                 #   Logic gate tests
-│   ├── Nodes/                 #   Port and connection tests
+│   ├── MCP/                   #   MCP server tests (internal use)
 │   ├── Scene/                 #   QGraphicsScene tests
 │   ├── Serialization/         #   Serialization tests
 │   ├── Simulation/            #   Simulation engine tests
-│   └── Ui/                    #   UI component tests
+│   ├── Tour/                  #   TourEngine tests
+│   ├── Ui/                    #   UI component tests
+│   └── Wiring/                #   Port and connection tests
 ├── Integration/               # Integration tests
 │   ├── IC/                    #   Hierarchical IC tests (9 levels)
 │   │   └── Tests/
@@ -1068,6 +1129,7 @@ Tests/
 │   └── TestWorkspace.cpp      #   Workspace operations
 ├── System/                    # System-level tests
 │   └── TestWaveform.cpp       #   BeWavedDolphin
+├── Fuzz/                      # libFuzzer harnesses (local/manual, not run in CI)
 ├── BackwardCompatibility/     # Old format compatibility
 ├── Resources/                 # Icon/resource validation
 │   └── TestIcons.cpp
@@ -1110,21 +1172,26 @@ sw2.setOn(false);
 sim->update();
 
 // Read outputs
-bool result = TestUtils::getInputStatus(&led);  // false (1 AND 0 = 0)
+bool result = TestUtils::inputStatus(&led);  // false (1 AND 0 = 0)
 ```
 
 **Useful helpers:**
 
 | Function                                        | Purpose                                  |
 |-------------------------------------------------|------------------------------------------|
-| `TestUtils::createSwitches(n)`                  | Create n input switches                  |
-| `TestUtils::setInputValues(switches, bools)`    | Set multiple switches at once            |
+| `TestUtils::createWorkspace()`                  | Create a `std::unique_ptr<WorkSpace>` with an initialized scene |
 | `TestUtils::setMultiBitInput(switches, int)`    | Decompose an integer into bits           |
 | `TestUtils::readMultiBitOutput<T>(elms, port)`  | Combine multiple outputs into an integer |
 | `TestUtils::clockCycle(sim, clk)`               | Full clock pulse: LOW → HIGH → LOW       |
 | `TestUtils::clockToggle(sim, clk)`              | Single clock edge toggle                 |
-| `TestUtils::getInputStatus(elm)`                | Read input port 0 as bool                |
-| `TestUtils::getOutputStatus(elm)`               | Read output port 0 as bool               |
+| `TestUtils::inputStatus(elm, port = 0)`         | Read a port's input status as bool       |
+| `TestUtils::outputStatus(elm, port = 0)`        | Read a port's output status as bool      |
+| `TestUtils::countConnections(scene)`            | Count `Connection` items in a scene      |
+| `TestUtils::sceneConnections(scene)`            | List all `Connection` items in a scene   |
+
+> Note: `getInputStatus`/`getOutputStatus` were renamed to `inputStatus`/`outputStatus` (and
+> `createSwitches`/`setInputValues` were removed) in a project-wide cleanup that dropped the
+> `get`-prefix from public accessor APIs.
 
 ### Writing Your First Test
 
@@ -1168,19 +1235,19 @@ void TestMyGate::testAndTruthTable()
 
     // 0 AND 0 = 0
     sw0.setOn(false); sw1.setOn(false); sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&led), false);
+    QCOMPARE(TestUtils::inputStatus(&led), false);
 
     // 0 AND 1 = 0
     sw0.setOn(false); sw1.setOn(true); sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&led), false);
+    QCOMPARE(TestUtils::inputStatus(&led), false);
 
     // 1 AND 0 = 0
     sw0.setOn(true); sw1.setOn(false); sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&led), false);
+    QCOMPARE(TestUtils::inputStatus(&led), false);
 
     // 1 AND 1 = 1
     sw0.setOn(true); sw1.setOn(true); sim->update();
-    QCOMPARE(TestUtils::getInputStatus(&led), true);
+    QCOMPARE(TestUtils::inputStatus(&led), true);
 }
 ```
 
@@ -1211,16 +1278,16 @@ void TestMyFlipFlop::testDFlipFlop()
     sim->update();
     TestUtils::clockCycle(sim, &swClk);       // LOW → HIGH → LOW
 
-    QCOMPARE(TestUtils::getInputStatus(&ledQ), true);
-    QCOMPARE(TestUtils::getInputStatus(&ledNQ), false);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), true);
+    QCOMPARE(TestUtils::inputStatus(&ledNQ), false);
 
     // Set D = 0, then pulse clock
     swD.setOn(false);
     sim->update();
     TestUtils::clockCycle(sim, &swClk);
 
-    QCOMPARE(TestUtils::getInputStatus(&ledQ), false);
-    QCOMPARE(TestUtils::getInputStatus(&ledNQ), true);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), false);
+    QCOMPARE(TestUtils::inputStatus(&ledNQ), true);
 }
 ```
 
@@ -1247,7 +1314,7 @@ ctest --preset debug --verbose
 - Method names start with `test`
 - Use `QVERIFY(condition)` for boolean assertions
 - Use `QCOMPARE(actual, expected)` for comparisons
-- Use `QVERIFY_EXCEPTION_THROWN(expr, ExceptionType)` for exception tests
+- Use `QVERIFY_THROWS(ExceptionType, expr)` for exception tests (a `TestUtils.h` macro wrapping `QVERIFY_THROWS_EXCEPTION` on Qt 6.7+ or `QVERIFY_EXCEPTION_THROWN` on older Qt)
 - **Always prefer fixing code over changing tests** to accept incorrect behavior
 
 ### Coverage and Sanitizers
@@ -1283,11 +1350,11 @@ The project uses **GitHub Actions** for continuous integration:
 
 ### `build.yml` — Build and Tests
 
-- **Platform matrix**: Ubuntu, Windows, macOS
-- **Qt versions**: 6.2.4, 6.8.3, 6.10.2
-- **External tools**: simavr, iverilog, yosys, verilator, arduino-cli
+- **Platform matrix**: Ubuntu (x86_64 and ARM), Windows (x86_64 and ARM), macOS
+- **Qt versions**: 6.8.3, 6.9.3
 - **Timeout**: 10 minutes for tests
-- **Upload**: coverage to Codecov
+- **MCP integration test**: runs `MCP/Client/run_tests.py` after every build
+- **Artifacts**: uploads build logs on failure
 
 ### `deploy.yml` — Releases
 
@@ -1300,12 +1367,16 @@ The project uses **GitHub Actions** for continuous integration:
 
 ### Other Workflows
 
-| Workflow        | Purpose                                |
-|-----------------|----------------------------------------|
-| `codeql.yml`    | Code security analysis (CodeQL)        |
-| `coverage.yml`  | Code coverage tracking                 |
-| `translate.yml` | Translation management                 |
-| `wasm.yml`      | WebAssembly build                      |
+| Workflow             | Purpose                                |
+|-----------------------|----------------------------------------|
+| `codeql.yml`          | Code security analysis (CodeQL)        |
+| `coverage.yml`        | Code coverage tracking; uploads to Codecov |
+| `sanitizers.yml`      | Runs the ASan/TSan/UBSan/MSan presets as their own dedicated CI job |
+| `lint.yml`            | Lints the Python trees (`MCP/Client/`, `Scripts/`, test fixture generators) with ruff/pylint/pyrefly/vulture, plus `actionlint` for the workflow YAML itself |
+| `fresh-deps.yml`      | Builds from a clean distro image using only the apt packages `BUILD.md` documents, to catch package drift and keep the CMake version floor honest |
+| `aur-publish.yml`     | Publishes the Arch Linux AUR package (`Packaging/AUR/`) |
+| `translate.yml`       | Translation management                 |
+| `wasm.yml`             | WebAssembly build                      |
 
 ---
 
@@ -1351,7 +1422,7 @@ struct ElementInfo<Buffer> {
         .group = ElementGroup::Gate,
         .minInputSize = 1, .maxInputSize = 1,
         .minOutputSize = 1, .maxOutputSize = 1,
-        .canChangeSkin = true,
+        .canChangeAppearance = true,
     };
     static_assert(validate(constraints));
 
@@ -1361,7 +1432,7 @@ struct ElementInfo<Buffer> {
         meta.titleText = QT_TRANSLATE_NOOP("Buffer", "BUFFER");
         meta.translatedName = QT_TRANSLATE_NOOP("Buffer", "Buffer");
         meta.trContext = "Buffer";
-        meta.defaultSkins = {":/Components/Logic/buffer.svg"};
+        meta.defaultAppearances = {":/Components/Logic/buffer.svg"};
         return meta;
     }
 
@@ -1451,7 +1522,28 @@ set(TEST_WIREDPANDA_SOURCES
 )
 ```
 
-### Step 3: Run
+### Step 3: Register in `Tests/Runners/TestWiredpanda.cpp`
+
+Add an `#include` at the top with the other includes, then add an entry to the `tests` vector in `main()`:
+
+```cpp
+#include "Tests/Unit/Elements/TestMyElement.h"
+```
+
+```cpp
+{"TestMyElement", []() -> QObject * { return new TestMyElement; }},
+```
+
+### Step 4: Register in `CMakeLists.txt`
+
+Add an `add_test()` call and label it so CTest picks it up:
+
+```cmake
+add_test(NAME TestMyElement COMMAND test_wiredpanda TestMyElement WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+set_tests_properties(TestMyElement PROPERTIES LABELS "unit")
+```
+
+### Step 5: Run
 
 ```bash
 cmake --build --preset debug
@@ -1585,6 +1677,7 @@ Ordered by difficulty:
 - **End files with a trailing newline** — project requirement
 - **Trim trailing whitespace** — no spaces/tabs at line ends
 - **Use `///` for Doxygen docs** — never `//!`
+- **Generate browsable API docs locally** (if Doxygen is installed) — `cmake --build --preset debug --target doxygen`, output at `build/docs/html/index.html`
 
 ### Don't
 
@@ -1630,16 +1723,17 @@ Ordered by difficulty:
 | `App/Element/ElementFactory.h`       | Factory for creating elements by type                |
 | `App/Element/ElementMetadata.h`      | Element metadata (icons, names, capabilities)        |
 | `App/Element/IC.h`                   | Integrated circuit element                           |
-| `App/Element/ICDefinition.h`         | IC internal structure definition                     |
-| `App/Element/ICRegistry.h`           | Central IC registry with file monitoring             |
+| `App/Element/ICLoader.h`             | Loads an IC's sub-circuit from file or embedded blob |
+| `App/Scene/ICRegistry.h`             | Central IC registry with file monitoring             |
 | `App/Simulation/Simulation.h`        | Simulation engine and update loop                    |
 | `App/Scene/Scene.h`                  | Main graphics scene                                  |
 | `App/Scene/Commands.h`               | All undo/redo command classes                        |
 | `App/Scene/Workspace.h`              | File and workspace management                        |
-| `App/Wiring/Port.h`                  | Port base class                                      |
+| `App/Wiring/Port.h`                  | Port base class, plus InputPort/OutputPort           |
 | `App/Wiring/Connection.h`            | Wire connection class                                |
 | `App/IO/Serialization.h`             | File format save/load                                |
-| `App/IO/VersionInfo.h`               | Format version history                               |
+| `App/Versions.h`                     | File-format version/revision constants               |
+| `App/IO/VersionInfo.h`               | Named predicates for file-format compatibility checks |
 | `Tests/Common/TestUtils.h`           | CircuitBuilder and test helpers                      |
 | `CMakeSources.cmake`                 | Source file lists (add new files here)               |
 | `CMakePresets.json`                  | Build presets (debug, release, asan, etc.)           |
@@ -1664,7 +1758,7 @@ Ordered by difficulty:
 | **QGraphicsScene**          | Qt class that manages 2D graphic items                           |
 | **QDataStream**             | Qt class for binary serialization                                |
 | **Scene**                   | The main scene containing the circuit                            |
-| **Skin**                    | Visual appearance of an element (e.g., ANSI vs IEC)              |
+| **Appearance**              | The SVG used to render an element; user-replaceable via `canChangeAppearance` (e.g., ANSI vs IEC) |
 | **Status**                  | 4-value logic state (Unknown, Inactive, Active, Error)           |
 | **Topological Sort**        | Ordering that respects dependencies between elements             |
 | **Tx/Rx**                   | Transmitter/Receiver — wireless mode of the Node element         |

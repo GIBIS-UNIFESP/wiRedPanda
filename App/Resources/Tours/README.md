@@ -2,12 +2,13 @@
 
 A Tour is a guided walkthrough of the UI: a sequence of spotlighted widgets with explanatory
 callouts. Each `.json` file in this folder is one tour; `App/Tour/TourEngine` loads and drives
-it, `App/Tour/TourBrowserDialog` lists all of them for the user to pick from.
+it. There's no separate browser dialog — `MainWindow` rebuilds the **Learn → Tours** menu every
+time it's opened, listing all of them for the user to pick from.
 
 For the general authoring workflow (adding a new file, running the translation-catalog
 generator, the `key` field, how translation works, and the three discovery locations — built-in,
-the install-relative/Documents-fallback pair opened by the **"Open My Tours Folder"** button,
-and the AppData folder reserved for teacher/IT provisioning) see
+the install-relative/Documents-fallback pair opened by the **"Open My Tours Folder"** menu
+action, and the AppData folder reserved for teacher/IT provisioning) see
 [`../Exercises/README.md`](../Exercises/README.md) — it's identical for Tours, just with
 "Tours" in place of "Exercises" throughout. This file covers only what's different: the
 Tour-specific schema and the `target` vocabulary.
@@ -34,8 +35,8 @@ Tour-specific schema and the `target` vocabulary.
 | Field | Type | Required | Notes |
 |---|---|---|---|
 | `id` | string | yes | Globally unique across **both** `Exercises/` and `Tours/` (see Exercises README). |
-| `title` | string | yes | Shown in the tour browser dialog. |
-| `description` | string | no | Shown below the title in the tour browser dialog. |
+| `title` | string | yes | Shown as the menu item text in the Learn → Tours menu. |
+| `description` | string | no | Shown as the menu item's status-tip (status bar text on hover). |
 | `steps` | array | yes | At least one step. |
 | `steps[].key` | string | no | Same purpose as in Exercises — translation-catalog key only, unique within this file. |
 | `steps[].title` | string | yes | Callout heading for this step. |

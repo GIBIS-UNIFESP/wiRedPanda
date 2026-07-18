@@ -290,15 +290,22 @@ adding new Exercise/Tour content rather than translating, see
 
 ### API Documentation
 
-We use Doxygen for API documentation:
+We use Doxygen for API documentation, with backslash-style tags (not `@`-style) — single-line
+docs use `///`, multi-line docs use `/** ... */`:
 
 ```cpp
-/**
- * @brief Brief description of the function
- * @param parameter Description of parameter
- * @return Description of return value
- */
+/// Brief description of the function
+/// \param parameter Description of parameter
+/// \return Description of return value
 ```
+
+If Doxygen is installed, generate browsable HTML API docs locally with:
+
+```bash
+cmake --build --preset debug --target doxygen
+```
+
+Output lands at `build/docs/html/index.html`.
 
 ## Project Management
 

@@ -20,7 +20,7 @@ This directory contains the configuration for a streamlined containerized develo
 
 ### Development Tools
 - **Build System**: CMake 3.27+ with Ninja generator
-- **Compiler**: GCC 11+ with C++20 support
+- **Compiler**: GCC 13+ with C++20 support (Ubuntu 24.04's default `build-essential`)
 - **Qt Framework**: Qt 6.2+ with core, widgets, multimedia, SVG modules
 - **Performance**: Mold linker and ccache for faster builds
 - **Shell**: Zsh with Oh My Zsh for enhanced terminal experience

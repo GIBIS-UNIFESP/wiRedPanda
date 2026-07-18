@@ -93,7 +93,7 @@ Advanced development features supported:
 - Main project file: `CMakeLists.txt`
 - App code: `App/` directory
 - Tests: `Tests/` directory with comprehensive test suite
-- Test executable: single unified `test_wiredpanda` binary with 176 test classes (run via `ctest --preset debug`)
+- Test executable: single unified `test_wiredpanda` binary with 192 test classes (run via `ctest --preset debug`)
 
 ## Digital Logic Simulation
 
@@ -197,7 +197,16 @@ Two JSON-driven, in-app learning features share one architecture:
 
 ### Content discovery: flat directory scan, not hardcoded lists
 
-`ExerciseBrowserDialog`/`TourBrowserDialog` call `ExerciseTourResources::discover("Exercises")`/`discover("Tours")` (`App/Core/ExerciseTourResources.h`), which merges four sources rather than one: the built-in bundled content (`scan(":/Exercises")`, mirroring `LanguageManager::availableLanguages()`'s `QDir(prefix).entryList({"*.json"}, QDir::Files)` pattern) plus three real, on-disk, end-user-writable locations — see below. Dropping a new built-in `.json` file into `App/Resources/Exercises/` or `App/Resources/Tours/` (with a globally unique `id`) is picked up automatically on the next reconfigure — no C++ or `.qrc` edits.
+There is no separate browser dialog class — `MainWindow::populateContentMenu()` rebuilds the
+**Learn → Exercises**/**Tours** submenu every time it's about to show (`QMenu::aboutToShow`,
+wired up in `MainWindow::setupExercisesMenu()`/`setupToursMenu()`), calling
+`ExerciseTourResources::discover("Exercises")`/`discover("Tours")` (`App/Core/ExerciseTourResources.h`)
+each time. `discover()` merges four sources rather than one: the built-in bundled content
+(`scan(":/Exercises")`, mirroring `LanguageManager::availableLanguages()`'s
+`QDir(prefix).entryList({"*.json"}, QDir::Files)` pattern) plus three real, on-disk,
+end-user-writable locations — see below. Dropping a new built-in `.json` file into
+`App/Resources/Exercises/` or `App/Resources/Tours/` (with a globally unique `id`) is picked up
+automatically on the next reconfigure — no C++ or `.qrc` edits.
 
 ### End-user-writable discovery: three locations, two audiences
 
@@ -205,8 +214,9 @@ Built-in content only solves *contributor* flexibility (source-tree + reconfigur
 custom exercise or tour into an already-*compiled* app needs a real filesystem location, and
 this splits by audience — deliberately kept separate, not merged into one "user folder":
 
-- **`ExerciseTourResources::preferredContentDir(category)`** — what the **"Open Folder" button**
-  in the browser dialogs opens: the install-relative folder next to the app (mirrors
+- **`ExerciseTourResources::preferredContentDir(category)`** — what the **"Open My
+  Exercises/Tours Folder"** menu action (added by `populateContentMenu()` at the top of each
+  submenu) opens: the install-relative folder next to the app (mirrors
   `MainWindow::setupExamplesMenu()`'s per-platform search paths, parameterized instead of
   hardcoded to `"Examples"`), or, if that isn't writable (e.g. installed under Program Files
   without admin rights), a `Documents/wiRedPanda/<category>` fallback created only at that
@@ -236,11 +246,16 @@ See `App/Resources/Exercises/README.md` and `App/Resources/Tours/README.md` for 
 - **Ubuntu 24.04 LTS** based development environment
 - **Location**: `.devcontainer/` directory with full configuration
 - **Features**:
-  - Qt 6.2+ development environment
+  - GCC 13+ with C++20 support (Ubuntu 24.04's default `build-essential`), Qt 6.9.3 pinned
   - CMake and build tools pre-configured
   - VS Code extensions for C++/Qt development
 - **Usage**: Open project in VS Code and select "Reopen in Container"
 - **Testing**: Supports headless test execution
+
+## Release Pipeline (`.github/workflows/deploy.yml`)
+
+Not part of the dev container — this runs on CI when cutting a release:
+
 - **Sentry Integration**: Comprehensive crash reporting with platform-specific backends
   - **Ubuntu/Windows**: Crashpad backend with handler process
   - **macOS**: Breakpad backend (in-process, sandbox-compatible)

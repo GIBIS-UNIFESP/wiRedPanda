@@ -2,8 +2,8 @@
 
 An Exercise is a step-by-step circuit-building challenge, validated against the live scene as
 the user works. Each `.json` file in this folder is one exercise; `App/Exercise/ExerciseEngine`
-loads and drives it, `App/Exercise/ExerciseBrowserDialog` lists all of them for the user to pick
-from.
+loads and drives it. There's no separate browser dialog — `MainWindow` rebuilds the **Learn →
+Exercises** menu every time it's opened, listing all of them for the user to pick from.
 
 ## Adding a new built-in exercise (for contributors)
 
@@ -23,15 +23,15 @@ The built-in exercises above ship compiled into the app. Anyone running an alrea
 copy of wiRedPanda can add their own exercises too — no C++ toolchain needed — by dropping a
 `.json` file (same schema as below) into one of two other real, on-disk locations, each aimed
 at a different audience. `App/Core/ExerciseTourResources::discover()` merges all of them (plus
-the built-in content above) into one list every time the Circuit Exercises dialog opens; if an
+the built-in content above) into one list every time the **Learn → Exercises** menu opens; if an
 `id` collides across sources, the built-in file wins and the duplicate is silently skipped.
 
-**For an individual user**: click **"Open My Exercises Folder"** in the Circuit Exercises
-dialog. It opens (creating if needed) a simple, visible folder next to the installed app —
-normally `<install dir>/Exercises`. If that location isn't writable (e.g. installed under
-`Program Files` without admin rights), the button transparently falls back to a folder under
-your Documents folder instead (`Documents/wiRedPanda/Exercises`) — either way, whatever it
-opens is where you drop your `.json` file; reopen the dialog and it appears.
+**For an individual user**: click **"Open My Exercises Folder"** — the first item in the
+**Learn → Exercises** menu. It opens (creating if needed) a simple, visible folder next to the
+installed app — normally `<install dir>/Exercises`. If that location isn't writable (e.g.
+installed under `Program Files` without admin rights), the action transparently falls back to a
+folder under your Documents folder instead (`Documents/wiRedPanda/Exercises`) — either way,
+whatever it opens is where you drop your `.json` file; reopen the menu and it appears.
 
 **For a teacher/IT admin provisioning a shared/managed install** (e.g. a school computer lab
 image or a login script): place `.json` files in
@@ -40,9 +40,9 @@ image or a login script): place `.json` files in
 `%APPDATA%\GIBIS-UNIFESP\wiRedPanda\Exercises` on Windows,
 `~/.local/share/wiRedPanda/Exercises` on Linux, or
 `~/Library/Application Support/wiRedPanda/Exercises` on macOS. This folder is auto-created the
-first time the dialog opens, is always scanned, but is **never** opened or created by the "Open
-Folder" button and has no other in-app affordance — it's deliberately not something an ordinary
-end-user needs to know about or stumble onto while browsing.
+first time the menu opens, is always scanned, but is **never** opened or created by the "Open My
+Exercises Folder" action and has no other in-app affordance — it's deliberately not something an
+ordinary end-user needs to know about or stumble onto while browsing.
 
 ## Schema
 
@@ -69,8 +69,8 @@ end-user needs to know about or stumble onto while browsing.
 | Field | Type | Required | Notes |
 |---|---|---|---|
 | `id` | string | yes | Globally unique (see above). Used as the progress/completion key and as the translation-catalog namespace. |
-| `title` | string | yes | Shown in the exercise browser dialog. |
-| `description` | string | no | Shown below the title in the exercise browser dialog. |
+| `title` | string | yes | Shown as the menu item text in the Learn → Exercises menu. |
+| `description` | string | no | Shown as the menu item's status-tip (status bar text on hover). |
 | `steps` | array | yes | At least one step. |
 | `steps[].key` | string | no | Stable slug (e.g. `"place-and-gate"`), unique within this file's `steps[]`. Used **only** to build translation-catalog keys — never read by engine logic. Omit it and the step's text is simply not translatable (English-only fallback, not an error). Give every step a `key` unless you're certain it'll never need translation. |
 | `steps[].instruction` | string | yes | Main instruction text shown while this step is active. |

@@ -1,6 +1,6 @@
 # wiRedPanda Test Suite
 
-Comprehensive test suite for the wiRedPanda digital logic simulator with 132 tests organized hierarchically by test type and complexity level.
+Comprehensive test suite for the wiRedPanda digital logic simulator with 192 tests organized hierarchically by test type and complexity level.
 
 ## Overview
 
@@ -14,13 +14,12 @@ The test suite is organized into multiple categories to ensure correctness at di
 
 ## Test Statistics
 
-- **Total Tests**: 135
+- **Total Tests**: 192 (`grep -c "^add_test(NAME" CMakeLists.txt`)
 - **IC Hierarchy Tests**: 72 (organized in 9 levels of increasing complexity)
-- **Other Integration Tests**: 7
-- **Unit Tests**: 45
-- **System Tests**: 3
-- **Resource Tests**: 1
-- **Backward Compatibility**: 7 test files with multiple versions
+- **Remaining categories** (Integration, Unit, System, Resources, plus the newer Exercise/Tour/MCP/
+  Wiring unit-test groups) make up the other 120 tests — see the directory structure below for
+  the current breakdown by area rather than a single stale count per category.
+- **Backward Compatibility**: fixtures spanning wiRedPanda versions 1.8 through 5.1.0
 
 ## Directory Structure
 
@@ -50,27 +49,34 @@ Tests/
 │   ├── TestWorkspace.cpp     # Workspace and scene management
 │   └── TestWorkspaceFileops.cpp # Workspace file operations
 ├── Unit/                     # Component-level unit tests
+│   ├── CodeGen/               # Code generation tests
 │   ├── Commands/             # Undo/Redo command tests
 │   ├── Common/               # Utility and helper tests
+│   ├── Core/                 # Core type tests
 │   ├── Elements/             # Individual element behavior
+│   ├── Exercise/             # ExerciseEngine tests
 │   ├── Factory/              # Element factory tests
 │   ├── Logic/                # Logic element unit tests
-│   ├── Nodes/                # Node and port tests
+│   ├── MCP/                  # MCP server tests (internal use)
 │   ├── Scene/                # Scene graph and serialization
 │   ├── Serialization/        # Data serialization tests
 │   ├── Simulation/           # Simulation engine unit tests
-│   └── Ui/                   # UI component tests
+│   ├── Tour/                 # TourEngine tests
+│   ├── Ui/                   # UI component tests
+│   └── Wiring/               # Port and connection tests
 ├── System/                   # System-level tests
 │   └── TestWaveform.cpp      # Waveform capture and analysis
 ├── Resources/                # Resource validation
 │   └── TestIcons.cpp         # Icon and resource tests
+├── Fuzz/                     # libFuzzer harnesses (local/manual, not run in CI)
 ├── Runners/                  # Test harness and runners
 │   └── TestWiredpanda.cpp    # Main test executable
 ├── BackwardCompatibility/    # File format compatibility tests
-│   └── [version-folders]/    # Test files from wiRedPanda versions 1.8-4.1.9
+│   └── [version-folders]/    # Test files from wiRedPanda versions 1.8 through 5.1.0
 └── Common/                   # Shared test utilities
     ├── TestUtils.h/cpp       # Test environment setup, helper functions
-    └── CPUTestUtils.h/cpp    # IC loading and CPU-specific utilities
+    ├── ICTestHelpers.h       # IC test helpers
+    └── StubFileDialogProvider.h # Testable file dialog stub
 ```
 
 ## Hierarchical IC Tests (72 tests across 9 levels)
@@ -271,7 +277,7 @@ void TestLevel2HalfAdder::testHalfAdderTruthTable()
 
 Unit tests validate individual components:
 
-- **Commands**: Undo/Redo functionality (FlipCommand, MorphCommand, ChangeInputSizeCommand, etc.)
+- **Commands**: Undo/Redo functionality (FlipCommand, MorphCommand, ChangePortSizeCommand, etc.)
 - **Elements**: Individual element behavior (AND, OR, NOT, flip-flops, etc.)
 - **Factory**: Element creation and type management
 - **Serialization**: Data persistence and format compatibility
@@ -300,7 +306,9 @@ Located in `Tests/BackwardCompatibility/`, these directories contain .panda file
 - V2.3, V2.3.3
 - V2.4.0, V2.5.1
 - V4.0.0-RC, RC2, RC3, RC4
-- V4.1.9
+- V4.1.9, V4.2.0, V4.3.0, V4.4.0, V4.5.0, V4.6.0, V4.7.0
+- V5.0.0, V5.1.0
+- V100.0 (matching the newer `Rev100` file-format revision scheme)
 
 These ensure that the simulator correctly loads and handles files from all previous versions.
 
@@ -313,8 +321,7 @@ Provides the test environment setup and common helpers:
 - `setupTestEnvironment()`: Initialize Qt, graphics system, and global properties
 - `configureApp()`: Configure application metadata
 - `createWorkspace()`: Create isolated test workspace
-- `createSwitches()`: Create input switches for testing
-- `inputStatus()`: Retrieve input switch states
+- `inputStatus()` / `outputStatus()`: Retrieve a port's input/output status
 
 ### CpuTestUtils (Integration/IC/Tests/CpuTestUtils.h/cpp)
 
@@ -453,19 +460,27 @@ private slots:
 };
 ```
 
-### Register Test in CMakeLists.txt
+### Register the Test
 
-Add to `Tests/CMakeLists.txt`:
+There is no separate `Tests/CMakeLists.txt` — registration happens in three places at the repo root:
 
-```cmake
-qt6_add_executable(test_wiredpanda
-    # ... existing tests ...
-    Tests/Integration/IC/Tests/TestLevel10NewCircuit.h
-    Tests/Integration/IC/Tests/TestLevel10NewCircuit.cpp
-)
+1. Add both files to `TEST_WIREDPANDA_SOURCES` in `CMakeSources.cmake`, in alphabetical order.
+2. Add an `#include` and a `tests` vector entry in `Tests/Runners/TestWiredpanda.cpp`:
 
-qt_add_test(test_wiredpanda NAME TestLevel10NewCircuit)
-```
+   ```cpp
+   #include "Tests/Integration/IC/Tests/TestLevel10NewCircuit.h"
+   ```
+
+   ```cpp
+   {"TestLevel10NewCircuit", []() -> QObject * { return new TestLevel10NewCircuit; }},
+   ```
+
+3. Add an `add_test()` call (with a label so CTest picks it up) in the root `CMakeLists.txt`:
+
+   ```cmake
+   add_test(NAME TestLevel10NewCircuit COMMAND test_wiredpanda TestLevel10NewCircuit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+   set_tests_properties(TestLevel10NewCircuit PROPERTIES LABELS "integration")
+   ```
 
 ### Use Test Utilities
 
