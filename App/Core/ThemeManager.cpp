@@ -4,6 +4,7 @@
 #include "App/Core/ThemeManager.h"
 
 #include <QCoreApplication>
+#include <QFont>
 #include <QStyleHints>
 #include <QThread>
 
@@ -263,8 +264,18 @@ void ThemeAttributes::setTheme(const Theme theme)
     // Force a consistent tooltip style on both themes; without this, Windows/Linux
     // style sheets would show platform-default tooltips that are illegible on dark
     // backgrounds.  The #2a82da background matches QPalette::Highlight above.
+    //
+    // Toolbar button labels are shrunk here too, relative to the app's default font size.
+    // This has to live in the same setStyleSheet() call rather than a one-off setFont() on
+    // the toolbar/buttons: applying (or re-applying) an app-wide style sheet re-polishes
+    // every widget, which silently resets any font set directly via QWidget::setFont() --
+    // and setTheme() re-runs this on every theme switch, including the async system
+    // colour-scheme change QStyleHints::colorSchemeChanged delivers a moment after startup.
     if (Application::instance()) {
-        Application::instance()->setStyleSheet("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid white; }");
+        const qreal toolBarFontPt = Application::instance()->font().pointSizeF() * 0.75;
+        Application::instance()->setStyleSheet(
+            QStringLiteral("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid white; }"
+                           "QToolBar QToolButton { font-size: %1pt; }").arg(toolBarFontPt));
     }
 #endif
 
