@@ -66,7 +66,7 @@ ApplicationWindow {
                 Repeater {
                     model: AppController.examplesList()
                     MenuItem {
-                        required property var modelData
+                        required property exampleEntry modelData
                         text: modelData.title
                         onTriggered: AppController.openRecentFile(modelData.path)
                     }
@@ -184,7 +184,7 @@ ApplicationWindow {
                 if (!tab) {
                     return;
                 }
-                const canvas = tab.canvas();
+                const canvas = tab.canvas;
                 canvas.parent = canvasHost;
                 canvas.anchors.fill = canvasHost;
                 canvas.forceActiveFocus();
@@ -217,9 +217,9 @@ ApplicationWindow {
 
             // Right-click / inline-label-edit gestures deferred from Phase 3 (sub-step 6).
             // target re-evaluates whenever currentTab changes since the expression reads
-            // AppController.currentTab (a property) before calling the plain .canvas() method.
+            // AppController.currentTab (a property) before reading the plain canvas property.
             Connections {
-                target: AppController.currentTab ? AppController.currentTab.canvas() : null
+                target: AppController.currentTab ? AppController.currentTab.canvas : null
 
                 // `element` stays untyped in these three handlers: GraphicElement is
                 // deliberately not QML-registered at all (Layer-1 domain code, see
@@ -273,7 +273,7 @@ ApplicationWindow {
                     Repeater {
                         model: AppController.elementEditor.colorOptions
                         MenuItem {
-                            required property var modelData
+                            required property colorOption modelData
                             text: modelData.translatedName
                             onTriggered: AppController.elementEditor.color = modelData.name
                         }
@@ -285,7 +285,7 @@ ApplicationWindow {
                     Repeater {
                         model: AppController.elementEditor.morphCandidates
                         MenuItem {
-                            required property var modelData
+                            required property morphCandidate modelData
                             text: modelData.name
                             onTriggered: AppController.elementEditor.morphSelectionTo(modelData.type)
                         }
@@ -323,7 +323,7 @@ ApplicationWindow {
 
                 function commit() {
                     if (targetElement) {
-                        AppController.currentTab.canvas().commitInlineLabelEdit(targetElement, text);
+                        AppController.currentTab.canvas.commitInlineLabelEdit(targetElement, text);
                         targetElement = null;
                     }
                     visible = false;

@@ -43,7 +43,8 @@ class QuickWorkSpace : public QObject
 {
     Q_OBJECT
     QML_ANONYMOUS
-    Q_PROPERTY(QString title READ title NOTIFY titleChanged)
+    Q_PROPERTY(QString title READ title NOTIFY titleChanged FINAL)
+    Q_PROPERTY(CanvasItem *canvas READ canvas CONSTANT FINAL)
 
 public:
     /// Outcome of a save attempt. Mirrors WorkSpace::SaveOutcome.
@@ -59,8 +60,11 @@ public:
 
     /// Returns the canvas this workspace owns. Mirrors WorkSpace::view()/scene() combined --
     /// CanvasItem plays both roles (rendering + circuit/simulation state) on this side.
-    /// Q_INVOKABLE so QML (the tab StackLayout) can reach it directly off a QuickWorkSpace*.
-    [[nodiscard]] Q_INVOKABLE CanvasItem *canvas() const { return m_canvas.get(); }
+    /// A plain Q_PROPERTY (not Q_INVOKABLE): the pointer is fixed at construction and
+    /// never reassigned, and being a property (not a method call) lets QML's shadow
+    /// check resolve chains through it instead of treating every further lookup as
+    /// unresolvable "var" -- see project_qml_aot_compilation_fusion_style_pin memory.
+    [[nodiscard]] CanvasItem *canvas() const { return m_canvas.get(); }
 
     // --- File Operations ---
 

@@ -93,15 +93,19 @@ set_source_files_properties(
     PROPERTIES COMPILE_OPTIONS "-Wno-null-dereference"
 )
 
-# Pinning the Controls style above (see the IMPORTS comment) lets qmlcachegen actually
+# Pinning the Controls style above (see the IMPORTS comment) and marking more
+# properties FINAL (see each class's Q_PROPERTY block) lets qmlcachegen actually
 # compile far more bindings to native C++ instead of falling back to the interpreter --
-# the generated string-concatenation code it emits for those newly-compiled bindings
-# wraps an already-QString expression in an explicit QString(...) constructor call,
-# which trips -Werror=useless-cast. Same category as the loader suppression above: Qt's
-# own generated code, not something we can edit, so disable just this one warning on
-# just these generated files. Applied to all 7 QML_FILES' generated .cpp outputs (not
-# only whichever ones hit it today) since which specific bindings get compiled vs.
-# interpreted is qmlcachegen's own decision and can shift with any future QML edit.
+# the generated code for those newly-compiled bindings trips two more GCC warnings that
+# don't reflect anything we authored: string-concatenation wraps an already-QString
+# expression in an explicit QString(...) constructor call (-Werror=useless-cast), and
+# list<int>.indexOf() (ChoiceDialog.qml's buttonOrder) returns qsizetype narrowed into
+# an int without a cast (-Werror=conversion). Same category as the loader suppression
+# above: Qt's own generated code, not something we can edit, so disable just these
+# warnings on just these generated files. Applied to all 7 QML_FILES' generated .cpp
+# outputs (not only whichever ones hit it today) since which specific bindings get
+# compiled vs. interpreted is qmlcachegen's own decision and can shift with any future
+# QML edit.
 set(QUICK_SHELL_QML_CACHEGEN_SOURCES
     ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_ChoiceDialog_qml.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_ElementEditor_qml.cpp
@@ -113,7 +117,7 @@ set(QUICK_SHELL_QML_CACHEGEN_SOURCES
 )
 set_source_files_properties(
     ${QUICK_SHELL_QML_CACHEGEN_SOURCES}
-    PROPERTIES COMPILE_OPTIONS "-Wno-useless-cast"
+    PROPERTIES COMPILE_OPTIONS "-Wno-useless-cast;-Wno-conversion"
 )
 
 # CanvasItem constructs real GraphicElement subclasses (And/InputSwitch/Led) and drives them

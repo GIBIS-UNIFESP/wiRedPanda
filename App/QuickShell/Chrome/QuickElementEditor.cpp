@@ -106,12 +106,12 @@ void QuickElementEditor::refresh()
                 }
                 const int totalInputs = dataInputs + selectLines;
                 if (totalInputs >= m_caps.minimumInputs && totalInputs <= m_caps.maximumInputs) {
-                    m_inputSizeOptions.append(QVariantMap{{"label", QString::number(dataInputs)}, {"value", totalInputs}});
+                    m_inputSizeOptions.append(SizeOption(QString::number(dataInputs), totalInputs));
                 }
             }
         } else {
             for (int port = m_caps.minimumInputs; port <= m_caps.maximumInputs; ++port) {
-                m_inputSizeOptions.append(QVariantMap{{"label", QString::number(port)}, {"value", port}});
+                m_inputSizeOptions.append(SizeOption(QString::number(port), port));
             }
         }
     }
@@ -121,11 +121,11 @@ void QuickElementEditor::refresh()
     if (m_caps.canChangeOutputSize) {
         if (m_caps.hasSameType && m_caps.elementType == ElementType::Demux) {
             for (int n = m_caps.minimumOutputs; n <= m_caps.maximumOutputs; ++n) {
-                m_outputSizeOptions.append(QVariantMap{{"label", QString::number(n)}, {"value", n}});
+                m_outputSizeOptions.append(SizeOption(QString::number(n), n));
             }
         } else {
             for (int n : {2, 3, 4, 6, 8, 10, 12, 16}) {
-                m_outputSizeOptions.append(QVariantMap{{"label", QString::number(n)}, {"value", n}});
+                m_outputSizeOptions.append(SizeOption(QString::number(n), n));
             }
         }
     }
@@ -138,7 +138,7 @@ void QuickElementEditor::refresh()
             ++maxOut;
         }
         for (int val = 0; val < maxOut; ++val) {
-            m_outputValueOptions.append(QVariantMap{{"label", QString::number(val)}, {"value", val}});
+            m_outputValueOptions.append(SizeOption(QString::number(val), val));
         }
     }
     m_outputValue = (m_caps.hasLatchedValue && firstInput) ? firstInput->outputValue() : 0;
@@ -321,16 +321,16 @@ void QuickElementEditor::setColor(const QString &value)
     apply();
 }
 
-QVariantList QuickElementEditor::colorOptions()
+QList<ColorOption> QuickElementEditor::colorOptions()
 {
     // Mirrors ElementEditor::fillColorComboBox() -- name is the internal English identifier
     // GraphicElement::setColor() expects; translatedName is display-only.
     return {
-        QVariantMap{{"name", "White"}, {"translatedName", tr("White")}, {"iconSource", "qrc:/Components/Output/Led/WhiteLed.svg"}},
-        QVariantMap{{"name", "Red"}, {"translatedName", tr("Red")}, {"iconSource", "qrc:/Components/Output/Led/RedLed.svg"}},
-        QVariantMap{{"name", "Green"}, {"translatedName", tr("Green")}, {"iconSource", "qrc:/Components/Output/Led/GreenLed.svg"}},
-        QVariantMap{{"name", "Blue"}, {"translatedName", tr("Blue")}, {"iconSource", "qrc:/Components/Output/Led/BlueLed.svg"}},
-        QVariantMap{{"name", "Purple"}, {"translatedName", tr("Purple")}, {"iconSource", "qrc:/Components/Output/Led/PurpleLed.svg"}},
+        ColorOption("White", tr("White"), "qrc:/Components/Output/Led/WhiteLed.svg"),
+        ColorOption("Red", tr("Red"), "qrc:/Components/Output/Led/RedLed.svg"),
+        ColorOption("Green", tr("Green"), "qrc:/Components/Output/Led/GreenLed.svg"),
+        ColorOption("Blue", tr("Blue"), "qrc:/Components/Output/Led/BlueLed.svg"),
+        ColorOption("Purple", tr("Purple"), "qrc:/Components/Output/Led/PurpleLed.svg"),
     };
 }
 
@@ -475,11 +475,9 @@ void QuickElementEditor::prepareContextMenu(GraphicElement *item)
             if (hasSameType && item->elementType() == type) {
                 return;
             }
-            m_morphCandidates.append(QVariantMap{
-                {"type", static_cast<int>(type)},
-                {"name", ElementFactory::translatedName(type)},
-                {"iconSource", QStringLiteral("qrc") + ElementMetadataRegistry::metadata(type).pixmapPath()},
-            });
+            m_morphCandidates.append(MorphCandidate(
+                static_cast<int>(type), ElementFactory::translatedName(type),
+                QStringLiteral("qrc") + ElementMetadataRegistry::metadata(type).pixmapPath()));
         };
 
         // Mirrors ElementContextMenu::exec()'s per-ElementGroup switch exactly.

@@ -28,6 +28,34 @@
 
 class CanvasItem;
 
+/// One entry in examplesList(). A real QML value type -- not QVariantMap -- so a
+/// delegate's `required property exampleEntry modelData` gives qmlcachegen a concrete
+/// field layout to compile against. See project_qml_aot_compilation_fusion_style_pin
+/// memory.
+class ExampleEntry
+{
+    Q_GADGET
+    QML_VALUE_TYPE(exampleEntry)
+
+    Q_PROPERTY(QString title READ title FINAL)
+    Q_PROPERTY(QString path READ path FINAL)
+
+public:
+    ExampleEntry() = default;
+    ExampleEntry(QString title, QString path)
+        : m_title(std::move(title))
+        , m_path(std::move(path))
+    {
+    }
+
+    [[nodiscard]] QString title() const { return m_title; }
+    [[nodiscard]] QString path() const { return m_path; }
+
+private:
+    QString m_title;
+    QString m_path;
+};
+
 /**
  * \class QuickAppController
  * \brief Owns the Quick chrome's document model and export workflow, exposes them to QML,
@@ -46,19 +74,23 @@ class QuickAppController : public QObject, public QuickMainWindowHost
 {
     Q_OBJECT
 
-    Q_PROPERTY(QuickWorkSpace *currentTab READ currentTab NOTIFY currentTabChanged)
-    Q_PROPERTY(int tabCount READ tabCount NOTIFY tabsChanged)
-    Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentTabChanged)
-    Q_PROPERTY(QString windowTitle READ windowTitle NOTIFY windowTitleChanged)
-    Q_PROPERTY(bool canUndo READ canUndo NOTIFY undoRedoStateChanged)
-    Q_PROPERTY(bool canRedo READ canRedo NOTIFY undoRedoStateChanged)
-    Q_PROPERTY(QString undoText READ undoText NOTIFY undoRedoStateChanged)
-    Q_PROPERTY(QString redoText READ redoText NOTIFY undoRedoStateChanged)
-    Q_PROPERTY(QStringList recentFiles READ recentFiles NOTIFY recentFilesChanged)
-    Q_PROPERTY(bool simulationRunning READ isSimulationRunning WRITE setSimulationRunning NOTIFY simulationRunningChanged)
-    Q_PROPERTY(bool backgroundSimulationEnabled READ isBackgroundSimulationEnabled WRITE setBackgroundSimulationEnabled NOTIFY backgroundSimulationEnabledChanged)
-    Q_PROPERTY(QuickElementPalette *elementPalette READ elementPalette CONSTANT)
-    Q_PROPERTY(QuickElementEditor *elementEditor READ elementEditor CONSTANT)
+    // FINAL on every property here: QuickAppController is never subclassed, so QML's
+    // shadow-check (qqmljsshadowcheck.cpp) can trust these types instead of treating
+    // any further lookup through them as unresolvable "var" -- see
+    // project_qml_aot_compilation_fusion_style_pin memory for how this was verified.
+    Q_PROPERTY(QuickWorkSpace *currentTab READ currentTab NOTIFY currentTabChanged FINAL)
+    Q_PROPERTY(int tabCount READ tabCount NOTIFY tabsChanged FINAL)
+    Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentTabChanged FINAL)
+    Q_PROPERTY(QString windowTitle READ windowTitle NOTIFY windowTitleChanged FINAL)
+    Q_PROPERTY(bool canUndo READ canUndo NOTIFY undoRedoStateChanged FINAL)
+    Q_PROPERTY(bool canRedo READ canRedo NOTIFY undoRedoStateChanged FINAL)
+    Q_PROPERTY(QString undoText READ undoText NOTIFY undoRedoStateChanged FINAL)
+    Q_PROPERTY(QString redoText READ redoText NOTIFY undoRedoStateChanged FINAL)
+    Q_PROPERTY(QStringList recentFiles READ recentFiles NOTIFY recentFilesChanged FINAL)
+    Q_PROPERTY(bool simulationRunning READ isSimulationRunning WRITE setSimulationRunning NOTIFY simulationRunningChanged FINAL)
+    Q_PROPERTY(bool backgroundSimulationEnabled READ isBackgroundSimulationEnabled WRITE setBackgroundSimulationEnabled NOTIFY backgroundSimulationEnabledChanged FINAL)
+    Q_PROPERTY(QuickElementPalette *elementPalette READ elementPalette CONSTANT FINAL)
+    Q_PROPERTY(QuickElementEditor *elementEditor READ elementEditor CONSTANT FINAL)
 
 public:
     explicit QuickAppController(QObject *parent = nullptr);
@@ -90,10 +122,10 @@ public:
 
     /// Bundled example .panda files, prettified for display. Mirrors
     /// MainWindow::setupExamplesMenu()'s title-prettification logic exactly (word-split on
-    /// '-'/'_', capitalize each word). Each entry is a {title, path} map; QML iterates this
+    /// '-'/'_', capitalize each word). Each entry is an ExampleEntry; QML iterates this
     /// directly as a Repeater model. Not reactive (no NOTIFY) since the bundled example set
     /// never changes at runtime, unlike recentFiles.
-    Q_INVOKABLE QVariantList examplesList() const;
+    Q_INVOKABLE QList<ExampleEntry> examplesList() const;
 
     /// Restores the persisted window geometry (Settings::quickWindowGeometry()), or an
     /// invalid/empty QRect if none was ever saved -- QML checks width/height before applying.

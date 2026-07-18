@@ -322,9 +322,9 @@ bool QuickAppController::canPaste()
     return ClipboardManager::canPaste(QGuiApplication::clipboard()->mimeData());
 }
 
-QVariantList QuickAppController::examplesList() const
+QList<ExampleEntry> QuickAppController::examplesList() const
 {
-    QVariantList result;
+    QList<ExampleEntry> result;
 
     const QString examplesPath = InstallRelativePaths::resolve(QStringLiteral("Examples"));
     if (examplesPath.isEmpty()) {
@@ -341,10 +341,7 @@ QVariantList QuickAppController::examplesList() const
             word[0] = word[0].toUpper();
         }
 
-        QVariantMap entryMap;
-        entryMap["title"] = words.join(QLatin1Char(' '));
-        entryMap["path"] = examplesPath + "/" + entry;
-        result.append(entryMap);
+        result.append(ExampleEntry(words.join(QLatin1Char(' ')), examplesPath + "/" + entry));
     }
 
     return result;

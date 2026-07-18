@@ -11,10 +11,10 @@ import QtQuick.Dialogs
 MessageDialog {
     id: root
 
-    property var requestedButtons: []
+    property list<int> requestedButtons: []
     property int resultIndex: -1
 
-    readonly property var buttonOrder: [
+    readonly property list<int> buttonOrder: [
         MessageDialog.Ok, MessageDialog.Yes, MessageDialog.No,
         MessageDialog.Cancel, MessageDialog.YesToAll, MessageDialog.NoToAll
     ]

@@ -25,7 +25,7 @@ QuickElementPalette::QuickElementPalette(QObject *parent)
     : QObject(parent)
 {
     const auto build = [](const QStringList &names) {
-        QVariantList list;
+        QList<ElementDescriptor> list;
         for (const auto &name : names) {
             list.append(describeBuiltin(ElementFactory::textToType(name)));
         }
@@ -40,40 +40,27 @@ QuickElementPalette::QuickElementPalette(QObject *parent)
     m_miscElements = build({"Text", "Line"});
 }
 
-QVariantMap QuickElementPalette::describeBuiltin(ElementType type)
+ElementDescriptor QuickElementPalette::describeBuiltin(ElementType type)
 {
-    QVariantMap entry;
-    entry[QStringLiteral("type")] = static_cast<int>(type);
-    entry[QStringLiteral("name")] = ElementFactory::translatedName(type);
-    entry[QStringLiteral("icFileName")] = QString();
-    entry[QStringLiteral("isEmbedded")] = false;
-    entry[QStringLiteral("iconSource")] = toQmlUrl(ElementMetadataRegistry::metadata(type).pixmapPath());
-    entry[QStringLiteral("tooltip")] = ElementFactory::description(type);
-    return entry;
+    return ElementDescriptor(
+        static_cast<int>(type), ElementFactory::translatedName(type), QString(), false,
+        toQmlUrl(ElementMetadataRegistry::metadata(type).pixmapPath()), ElementFactory::description(type));
 }
 
-QVariantMap QuickElementPalette::describeIC(const QString &filePath)
+ElementDescriptor QuickElementPalette::describeIC(const QString &filePath)
 {
-    QVariantMap entry;
-    entry[QStringLiteral("type")] = static_cast<int>(ElementType::IC);
-    entry[QStringLiteral("name")] = QFileInfo(filePath).baseName().toUpper();
-    entry[QStringLiteral("icFileName")] = filePath;
-    entry[QStringLiteral("isEmbedded")] = false;
-    entry[QStringLiteral("iconSource")] = toQmlUrl(QStringLiteral(":/Components/Logic/ic-panda.svg"));
-    entry[QStringLiteral("tooltip")] = tr("IC from file: %1").arg(QFileInfo(filePath).fileName());
-    return entry;
+    return ElementDescriptor(
+        static_cast<int>(ElementType::IC), QFileInfo(filePath).baseName().toUpper(), filePath, false,
+        toQmlUrl(QStringLiteral(":/Components/Logic/ic-panda.svg")),
+        tr("IC from file: %1").arg(QFileInfo(filePath).fileName()));
 }
 
-QVariantMap QuickElementPalette::describeEmbeddedIC(const QString &blobName)
+ElementDescriptor QuickElementPalette::describeEmbeddedIC(const QString &blobName)
 {
-    QVariantMap entry;
-    entry[QStringLiteral("type")] = static_cast<int>(ElementType::IC);
-    entry[QStringLiteral("name")] = blobName.toUpper();
-    entry[QStringLiteral("icFileName")] = blobName;
-    entry[QStringLiteral("isEmbedded")] = true;
-    entry[QStringLiteral("iconSource")] = toQmlUrl(QStringLiteral(":/Components/Logic/ic-panda-embedded.svg"));
-    entry[QStringLiteral("tooltip")] = tr("Embedded IC: %1").arg(blobName);
-    return entry;
+    return ElementDescriptor(
+        static_cast<int>(ElementType::IC), blobName.toUpper(), blobName, true,
+        toQmlUrl(QStringLiteral(":/Components/Logic/ic-panda-embedded.svg")),
+        tr("Embedded IC: %1").arg(blobName));
 }
 
 void QuickElementPalette::updateICList(const QFileInfo &currentFile)
@@ -130,12 +117,23 @@ void QuickElementPalette::setSearchText(const QString &text)
 
 QVariantMap QuickElementPalette::firstSearchResult() const
 {
-    return m_searchResults.isEmpty() ? QVariantMap() : m_searchResults.first().toMap();
+    if (m_searchResults.isEmpty()) {
+        return {};
+    }
+    const ElementDescriptor &entry = m_searchResults.first();
+    QVariantMap map;
+    map[QStringLiteral("type")] = entry.type();
+    map[QStringLiteral("name")] = entry.name();
+    map[QStringLiteral("icFileName")] = entry.icFileName();
+    map[QStringLiteral("isEmbedded")] = entry.isEmbedded();
+    map[QStringLiteral("iconSource")] = entry.iconSource();
+    map[QStringLiteral("tooltip")] = entry.tooltip();
+    return map;
 }
 
-QVariantList QuickElementPalette::allEntries() const
+QList<ElementDescriptor> QuickElementPalette::allEntries() const
 {
-    QVariantList all;
+    QList<ElementDescriptor> all;
     all += m_ioElements;
     all += m_gatesElements;
     all += m_combinationalElements;
@@ -148,16 +146,15 @@ QVariantList QuickElementPalette::allEntries() const
 
 void QuickElementPalette::recomputeSearchResults()
 {
-    QVariantList results;
+    QList<ElementDescriptor> results;
 
     if (!m_searchText.isEmpty()) {
         // Single effective pass (match against the entry's display name), not ElementPalette::
         // onSearchTextChanged()'s three passes -- see this class's doc comment for why passes
         // 1 and 3 are dead code in production and are deliberately not reproduced.
         const auto all = allEntries();
-        for (const auto &entryVariant : all) {
-            const auto entry = entryVariant.toMap();
-            if (ElementPalette::nameMatchesSearch(entry.value(QStringLiteral("name")).toString(), m_searchText)) {
+        for (const auto &entry : all) {
+            if (ElementPalette::nameMatchesSearch(entry.name(), m_searchText)) {
                 results.append(entry);
             }
         }

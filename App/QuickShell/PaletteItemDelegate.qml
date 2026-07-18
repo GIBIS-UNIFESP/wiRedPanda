@@ -14,7 +14,7 @@ import QuickShell
 // modelData member.
 Item {
     id: delegateRoot
-    required property var modelData
+    required property elementDescriptor modelData
     // Canvas-area size, for centering a newly-added element (double-click below) --
     // bound explicitly by ElementPalette.qml's Component wrapper, mirroring how
     // ElementPalette itself receives it from Main.qml (see ElementPalette.qml).

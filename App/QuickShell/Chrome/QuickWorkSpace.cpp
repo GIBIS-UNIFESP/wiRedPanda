@@ -65,8 +65,8 @@ QuickWorkSpace::QuickWorkSpace(QObject *parent)
 {
     // m_canvas's QQuickItem parent is nullptr above (QuickWorkSpace is a QObject, not a
     // QQuickItem, so it can't be one -- Main.qml reparents the canvas into the visible tree
-    // itself, via canvas() below). Qt/QML's default ownership rule for a QObject with no
-    // parent at the moment it's first exposed to JS (via canvas(), Q_INVOKABLE) is
+    // itself, via the canvas property below). Qt/QML's default ownership rule for a QObject
+    // with no parent at the moment it's first exposed to JS (via canvas) is
     // JavaScriptOwnership: the JS garbage collector decides when to delete it, independent of
     // this unique_ptr -- and it will, silently, the first time nothing in the QML/JS graph
     // still references the returned value, calling ~CanvasItem() out from under this

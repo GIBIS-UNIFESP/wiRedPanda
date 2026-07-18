@@ -47,7 +47,11 @@ DialogButton QuickDialogProvider::choice(const QString &title, const QString &te
     std::unique_ptr<QObject> dialog(m_choiceComponent.create(qmlContext(m_rootWindow)));
     Q_ASSERT(dialog);
 
-    QVariantList requested;
+    // A genuinely typed QList<int> (not QVariantList, a list of boxed QVariant(int)
+    // entries) -- QML's list<int> property only accepts the former via setProperty();
+    // a QVariantList silently fails to convert (verified empirically) and would leave
+    // requestedButtons permanently empty.
+    QList<int> requested;
     requested.reserve(buttons.size());
     for (DialogButton button : buttons) {
         requested.append(static_cast<int>(button));
@@ -56,7 +60,7 @@ DialogButton QuickDialogProvider::choice(const QString &title, const QString &te
     dialog->setProperty("parentWindow", QVariant::fromValue(static_cast<QWindow *>(m_rootWindow)));
     dialog->setProperty("title", title);
     dialog->setProperty("text", text);
-    dialog->setProperty("requestedButtons", requested);
+    dialog->setProperty("requestedButtons", QVariant::fromValue(requested));
 
     emit dialogOpened(dialog.get());
     execModal(dialog.get());

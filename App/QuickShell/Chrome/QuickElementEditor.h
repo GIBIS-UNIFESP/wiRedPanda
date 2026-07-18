@@ -18,6 +18,97 @@
 class CanvasItem;
 class GraphicElement;
 
+/// One entry in colorOptions(). A real QML value type -- not QVariantMap -- so a
+/// delegate's `required property colorOption modelData` gives qmlcachegen a concrete
+/// field layout to compile against. See project_qml_aot_compilation_fusion_style_pin
+/// memory.
+class ColorOption
+{
+    Q_GADGET
+    QML_VALUE_TYPE(colorOption)
+
+    Q_PROPERTY(QString name READ name FINAL)
+    Q_PROPERTY(QString translatedName READ translatedName FINAL)
+    Q_PROPERTY(QString iconSource READ iconSource FINAL)
+
+public:
+    ColorOption() = default;
+    ColorOption(QString name, QString translatedName, QString iconSource)
+        : m_name(std::move(name))
+        , m_translatedName(std::move(translatedName))
+        , m_iconSource(std::move(iconSource))
+    {
+    }
+
+    [[nodiscard]] QString name() const { return m_name; }
+    [[nodiscard]] QString translatedName() const { return m_translatedName; }
+    [[nodiscard]] QString iconSource() const { return m_iconSource; }
+
+private:
+    QString m_name;
+    QString m_translatedName;
+    QString m_iconSource;
+};
+
+/// One entry in prepareContextMenu()'s morphCandidates(). Real QML value type, same
+/// reasoning as ColorOption above.
+class MorphCandidate
+{
+    Q_GADGET
+    QML_VALUE_TYPE(morphCandidate)
+
+    Q_PROPERTY(int type READ type FINAL)
+    Q_PROPERTY(QString name READ name FINAL)
+    Q_PROPERTY(QString iconSource READ iconSource FINAL)
+
+public:
+    MorphCandidate() = default;
+    MorphCandidate(int type, QString name, QString iconSource)
+        : m_type(type)
+        , m_name(std::move(name))
+        , m_iconSource(std::move(iconSource))
+    {
+    }
+
+    [[nodiscard]] int type() const { return m_type; }
+    [[nodiscard]] QString name() const { return m_name; }
+    [[nodiscard]] QString iconSource() const { return m_iconSource; }
+
+private:
+    int m_type = 0;
+    QString m_name;
+    QString m_iconSource;
+};
+
+/// One entry in inputSizeOptions()/outputSizeOptions()/outputValueOptions() -- all
+/// three share this shape. Real QML value type, same reasoning as ColorOption above
+/// (these three lists aren't currently read via a user-written delegate/modelData, so
+/// this doesn't fix any AOT failure today, but keeps the whole class consistently
+/// typed instead of leaving a lone QVariantList island once the others convert).
+class SizeOption
+{
+    Q_GADGET
+    QML_VALUE_TYPE(sizeOption)
+
+    Q_PROPERTY(QString label READ label FINAL)
+    Q_PROPERTY(int value READ value FINAL)
+
+public:
+    SizeOption() = default;
+    SizeOption(QString label, int value)
+        : m_label(std::move(label))
+        , m_value(value)
+    {
+    }
+
+    [[nodiscard]] QString label() const { return m_label; }
+    [[nodiscard]] int value() const { return m_value; }
+
+private:
+    QString m_label;
+    int m_value = 0;
+};
+
 /**
  * \class QuickElementEditor
  * \brief Copy-and-adapted, Widgets-free port of App/UI/ElementEditor.h's property-read/apply
@@ -59,57 +150,61 @@ class QuickElementEditor : public QObject
     QML_ELEMENT
     QML_UNCREATABLE("QuickElementEditor is only ever exposed via AppController.elementEditor")
 
-    Q_PROPERTY(bool hasSelection READ hasSelection NOTIFY refreshed)
-    Q_PROPERTY(QString elementTypeTitle READ elementTypeTitle NOTIFY refreshed)
+    // FINAL throughout: QuickElementEditor is never subclassed, so QML's shadow-check
+    // can trust these types for chained lookups (e.g. AppController.elementEditor.
+    // labelVisible) instead of falling back to untyped "var" -- see
+    // project_qml_aot_compilation_fusion_style_pin memory.
+    Q_PROPERTY(bool hasSelection READ hasSelection NOTIFY refreshed FINAL)
+    Q_PROPERTY(QString elementTypeTitle READ elementTypeTitle NOTIFY refreshed FINAL)
 
-    Q_PROPERTY(bool labelVisible READ isLabelVisible NOTIFY refreshed)
-    Q_PROPERTY(QString label READ label WRITE setLabel NOTIFY refreshed)
+    Q_PROPERTY(bool labelVisible READ isLabelVisible NOTIFY refreshed FINAL)
+    Q_PROPERTY(QString label READ label WRITE setLabel NOTIFY refreshed FINAL)
 
-    Q_PROPERTY(bool colorVisible READ isColorVisible NOTIFY refreshed)
-    Q_PROPERTY(QString color READ color WRITE setColor NOTIFY refreshed)
-    Q_PROPERTY(QVariantList colorOptions READ colorOptions CONSTANT)
+    Q_PROPERTY(bool colorVisible READ isColorVisible NOTIFY refreshed FINAL)
+    Q_PROPERTY(QString color READ color WRITE setColor NOTIFY refreshed FINAL)
+    Q_PROPERTY(QList<ColorOption> colorOptions READ colorOptions CONSTANT FINAL)
 
-    Q_PROPERTY(bool audioVisible READ isAudioVisible NOTIFY refreshed)
-    Q_PROPERTY(QString audio READ audio WRITE setAudio NOTIFY refreshed)
-    Q_PROPERTY(QVariantList audioOptions READ audioOptions CONSTANT)
+    Q_PROPERTY(bool audioVisible READ isAudioVisible NOTIFY refreshed FINAL)
+    Q_PROPERTY(QString audio READ audio WRITE setAudio NOTIFY refreshed FINAL)
+    Q_PROPERTY(QVariantList audioOptions READ audioOptions CONSTANT FINAL)
 
-    Q_PROPERTY(bool volumeVisible READ isVolumeVisible NOTIFY refreshed)
-    Q_PROPERTY(int volume READ volume WRITE setVolume NOTIFY refreshed)
+    Q_PROPERTY(bool volumeVisible READ isVolumeVisible NOTIFY refreshed FINAL)
+    Q_PROPERTY(int volume READ volume WRITE setVolume NOTIFY refreshed FINAL)
 
-    Q_PROPERTY(bool frequencyVisible READ isFrequencyVisible NOTIFY refreshed)
-    Q_PROPERTY(double frequency READ frequency WRITE setFrequency NOTIFY refreshed)
-    Q_PROPERTY(double frequencyMin READ frequencyMin NOTIFY refreshed)
-    Q_PROPERTY(double frequencyMax READ frequencyMax NOTIFY refreshed)
-    Q_PROPERTY(double frequencyStep READ frequencyStep NOTIFY refreshed)
-    Q_PROPERTY(int frequencyDecimals READ frequencyDecimals NOTIFY refreshed)
+    Q_PROPERTY(bool frequencyVisible READ isFrequencyVisible NOTIFY refreshed FINAL)
+    Q_PROPERTY(double frequency READ frequency WRITE setFrequency NOTIFY refreshed FINAL)
+    Q_PROPERTY(double frequencyMin READ frequencyMin NOTIFY refreshed FINAL)
+    Q_PROPERTY(double frequencyMax READ frequencyMax NOTIFY refreshed FINAL)
+    Q_PROPERTY(double frequencyStep READ frequencyStep NOTIFY refreshed FINAL)
+    Q_PROPERTY(int frequencyDecimals READ frequencyDecimals NOTIFY refreshed FINAL)
 
-    Q_PROPERTY(bool delayVisible READ isDelayVisible NOTIFY refreshed)
-    Q_PROPERTY(int delaySteps READ delaySteps WRITE setDelaySteps NOTIFY refreshed)
+    Q_PROPERTY(bool delayVisible READ isDelayVisible NOTIFY refreshed FINAL)
+    Q_PROPERTY(int delaySteps READ delaySteps WRITE setDelaySteps NOTIFY refreshed FINAL)
 
-    Q_PROPERTY(bool inputSizeVisible READ isInputSizeVisible NOTIFY refreshed)
-    Q_PROPERTY(QVariantList inputSizeOptions READ inputSizeOptions NOTIFY refreshed)
-    Q_PROPERTY(int inputSize READ inputSize WRITE setInputSize NOTIFY refreshed)
+    Q_PROPERTY(bool inputSizeVisible READ isInputSizeVisible NOTIFY refreshed FINAL)
+    Q_PROPERTY(QList<SizeOption> inputSizeOptions READ inputSizeOptions NOTIFY refreshed FINAL)
+    Q_PROPERTY(int inputSize READ inputSize WRITE setInputSize NOTIFY refreshed FINAL)
 
-    Q_PROPERTY(bool outputSizeVisible READ isOutputSizeVisible NOTIFY refreshed)
-    Q_PROPERTY(QVariantList outputSizeOptions READ outputSizeOptions NOTIFY refreshed)
-    Q_PROPERTY(int outputSize READ outputSize WRITE setOutputSize NOTIFY refreshed)
+    Q_PROPERTY(bool outputSizeVisible READ isOutputSizeVisible NOTIFY refreshed FINAL)
+    Q_PROPERTY(QList<SizeOption> outputSizeOptions READ outputSizeOptions NOTIFY refreshed FINAL)
+    Q_PROPERTY(int outputSize READ outputSize WRITE setOutputSize NOTIFY refreshed FINAL)
 
-    Q_PROPERTY(bool outputValueVisible READ isOutputValueVisible NOTIFY refreshed)
-    Q_PROPERTY(QVariantList outputValueOptions READ outputValueOptions NOTIFY refreshed)
-    Q_PROPERTY(int outputValue READ outputValue WRITE setOutputValue NOTIFY refreshed)
+    Q_PROPERTY(bool outputValueVisible READ isOutputValueVisible NOTIFY refreshed FINAL)
+    Q_PROPERTY(QList<SizeOption> outputValueOptions READ outputValueOptions NOTIFY refreshed FINAL)
+    Q_PROPERTY(int outputValue READ outputValue WRITE setOutputValue NOTIFY refreshed FINAL)
 
-    Q_PROPERTY(bool lockedVisible READ isLockedVisible NOTIFY refreshed)
-    Q_PROPERTY(int lockedState READ lockedState WRITE setLockedState NOTIFY refreshed)
+    Q_PROPERTY(bool lockedVisible READ isLockedVisible NOTIFY refreshed FINAL)
+    Q_PROPERTY(int lockedState READ lockedState WRITE setLockedState NOTIFY refreshed FINAL)
 
-    Q_PROPERTY(bool triggerVisible READ isTriggerVisible NOTIFY refreshed)
-    Q_PROPERTY(QString trigger READ trigger WRITE setTrigger NOTIFY refreshed)
+    Q_PROPERTY(bool triggerVisible READ isTriggerVisible NOTIFY refreshed FINAL)
+    Q_PROPERTY(QString trigger READ trigger WRITE setTrigger NOTIFY refreshed FINAL)
 
-    Q_PROPERTY(bool wirelessModeVisible READ isWirelessModeVisible NOTIFY refreshed)
-    Q_PROPERTY(int wirelessMode READ wirelessMode WRITE setWirelessMode NOTIFY refreshed)
-    Q_PROPERTY(QVariantList wirelessModeOptions READ wirelessModeOptions CONSTANT)
+    Q_PROPERTY(bool wirelessModeVisible READ isWirelessModeVisible NOTIFY refreshed FINAL)
+    Q_PROPERTY(int wirelessMode READ wirelessMode WRITE setWirelessMode NOTIFY refreshed FINAL)
+    Q_PROPERTY(QVariantList wirelessModeOptions READ wirelessModeOptions CONSTANT FINAL)
 
-    Q_PROPERTY(bool canMorph READ canMorph NOTIFY refreshed)
-    Q_PROPERTY(QVariantList morphCandidates READ morphCandidates NOTIFY refreshed)
+    Q_PROPERTY(bool canMorph READ canMorph NOTIFY refreshed FINAL)
+    Q_PROPERTY(QList<MorphCandidate> morphCandidates READ morphCandidates NOTIFY refreshed FINAL)
 
 public:
     explicit QuickElementEditor(QObject *parent = nullptr);
@@ -129,7 +224,7 @@ public:
     [[nodiscard]] bool isColorVisible() const { return m_caps.hasColors; }
     [[nodiscard]] QString color() const { return m_color; }
     void setColor(const QString &value);
-    [[nodiscard]] static QVariantList colorOptions();
+    [[nodiscard]] static QList<ColorOption> colorOptions();
 
     [[nodiscard]] bool isAudioVisible() const { return m_caps.hasAudio; }
     [[nodiscard]] QString audio() const { return m_audio; }
@@ -155,17 +250,17 @@ public:
     void setDelaySteps(int value);
 
     [[nodiscard]] bool isInputSizeVisible() const { return m_caps.canChangeInputSize; }
-    [[nodiscard]] QVariantList inputSizeOptions() const { return m_inputSizeOptions; }
+    [[nodiscard]] QList<SizeOption> inputSizeOptions() const { return m_inputSizeOptions; }
     [[nodiscard]] int inputSize() const { return m_inputSize; }
     void setInputSize(int value);
 
     [[nodiscard]] bool isOutputSizeVisible() const { return m_caps.canChangeOutputSize; }
-    [[nodiscard]] QVariantList outputSizeOptions() const { return m_outputSizeOptions; }
+    [[nodiscard]] QList<SizeOption> outputSizeOptions() const { return m_outputSizeOptions; }
     [[nodiscard]] int outputSize() const { return m_outputSize; }
     void setOutputSize(int value);
 
     [[nodiscard]] bool isOutputValueVisible() const { return m_caps.hasLatchedValue; }
-    [[nodiscard]] QVariantList outputValueOptions() const { return m_outputValueOptions; }
+    [[nodiscard]] QList<SizeOption> outputValueOptions() const { return m_outputValueOptions; }
     [[nodiscard]] int outputValue() const { return m_outputValue; }
     void setOutputValue(int value);
 
@@ -185,7 +280,7 @@ public:
     [[nodiscard]] static QVariantList wirelessModeOptions();
 
     [[nodiscard]] bool canMorph() const { return m_caps.canMorph; }
-    [[nodiscard]] QVariantList morphCandidates() const { return m_morphCandidates; }
+    [[nodiscard]] QList<MorphCandidate> morphCandidates() const { return m_morphCandidates; }
 
     /// Recomputes morphCandidates() from \a item's element group/input size, mirroring
     /// ElementContextMenu::exec()'s per-ElementGroup switch exactly (Gate/StaticInput+Input/
@@ -243,11 +338,11 @@ private:
     bool m_frequencyDirty = false;
     int m_delaySteps = 0;
     bool m_delayDirty = false;
-    QVariantList m_inputSizeOptions;
+    QList<SizeOption> m_inputSizeOptions;
     int m_inputSize = 0;
-    QVariantList m_outputSizeOptions;
+    QList<SizeOption> m_outputSizeOptions;
     int m_outputSize = 0;
-    QVariantList m_outputValueOptions;
+    QList<SizeOption> m_outputValueOptions;
     int m_outputValue = 0;
     bool m_outputValueDirty = false;
     int m_lockedState = 0;
@@ -257,5 +352,5 @@ private:
     int m_wirelessMode = 0;
     bool m_wirelessModeDirty = false;
 
-    QVariantList m_morphCandidates;
+    QList<MorphCandidate> m_morphCandidates;
 };
