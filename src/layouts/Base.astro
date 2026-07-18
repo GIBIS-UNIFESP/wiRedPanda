@@ -169,6 +169,9 @@ const nonDefaultLocales = getAllLocales().filter((l) => l !== defaultLocale);
         // Match browser language against the redirect map (first match wins).
         // Entries with region sub-tags (e.g. 'pt-br') appear before generic codes
         // ('pt') so more specific matches take priority.
+        // Keep this loop in sync with matchBrowserLanguage() in src/i18n/index.ts
+        // (this script must stay is:inline to run before first paint, so it can't
+        // import that function directly) — src/i18n/index.test.ts guards parity.
         var lang = (navigator.language || '').toLowerCase();
         for (var j = 0; j < localeRedirectMap.length; j++) {
           var prefix = localeRedirectMap[j][0];

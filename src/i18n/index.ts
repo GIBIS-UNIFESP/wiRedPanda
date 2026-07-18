@@ -230,6 +230,25 @@ export const localeRedirectMap: readonly [string, Locale][] = [
 ];
 
 /**
+ * Match a browser `navigator.language` value against `localeRedirectMap`
+ * (first match wins; specific region/script prefixes are ordered before their
+ * generic equivalents). Returns `null` when nothing matches.
+ *
+ * This is the single source of truth for that matching logic — used directly
+ * by 404.astro. Base.astro's locale-redirect script needs the identical logic
+ * inline (it must run synchronously before first paint to avoid a flash of the
+ * wrong locale, so it can't import this module); keep the two in sync, guarded
+ * by the parity test below.
+ */
+export function matchBrowserLanguage(lang: string): Locale | null {
+  const l = lang.toLowerCase();
+  for (const [prefix, target] of localeRedirectMap) {
+    if (l === prefix || l.startsWith(prefix + '-')) return target;
+  }
+  return null;
+}
+
+/**
  * Extract the locale from the current URL pathname.
  * With Astro's i18n routing (prefixDefaultLocale: false),
  * English pages have no prefix, other locale pages have /{locale}/ prefix.

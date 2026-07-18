@@ -1,4 +1,6 @@
 import { describe, it, expect } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import {
   getLocaleFromUrl,
   getLocalePath,
@@ -8,6 +10,7 @@ import {
   getOtherLocales,
   getAllLocales,
   getStaticLocalePaths,
+  matchBrowserLanguage,
   localeRedirectMap,
   defaultLocale,
   languages,
@@ -304,5 +307,116 @@ describe('localeRedirectMap', () => {
 
     const zhHantIdx = prefixes.indexOf('zh-hant');
     expect(zhHantIdx).toBeLessThan(zhIdx);
+  });
+});
+
+// ---------------------------------------------------------------------------
+
+describe('matchBrowserLanguage', () => {
+  it('matches pt-BR to pt-br (region code before generic)', () => {
+    expect(matchBrowserLanguage('pt-BR')).toBe('pt-br');
+  });
+
+  it('matches zh-TW to zh-hant (script/region code before generic zh)', () => {
+    expect(matchBrowserLanguage('zh-TW')).toBe('zh-hant');
+  });
+
+  it('matches generic pt to pt (European Portuguese)', () => {
+    expect(matchBrowserLanguage('pt')).toBe('pt');
+  });
+
+  it('matches a bare 2-letter code', () => {
+    expect(matchBrowserLanguage('de')).toBe('de');
+  });
+
+  it('matches a region-suffixed code via prefix', () => {
+    expect(matchBrowserLanguage('de-DE')).toBe('de');
+  });
+
+  it('matches Norwegian generic to Bokmål', () => {
+    expect(matchBrowserLanguage('no')).toBe('nb');
+  });
+
+  it('returns null for an unrecognized language', () => {
+    expect(matchBrowserLanguage('xx-YY')).toBeNull();
+  });
+
+  it('is case-insensitive', () => {
+    expect(matchBrowserLanguage('PT-BR')).toBe('pt-br');
+  });
+});
+
+// ---------------------------------------------------------------------------
+
+describe('Base.astro locale-matching parity', () => {
+  // Base.astro's redirect script must stay `is:inline` (it has to run before
+  // first paint to avoid a flash of the wrong locale), so it can't import
+  // matchBrowserLanguage directly and carries its own copy of the matching
+  // loop. This guards that copy against silently drifting from the canonical
+  // implementation above.
+  const baseAstroPath = fileURLToPath(new URL('../layouts/Base.astro', import.meta.url));
+  const baseAstroSource = readFileSync(baseAstroPath, 'utf-8');
+  const scriptMatch =
+    /Redirect users to their preferred locale on first visit -->\s*<script[^>]*>([\s\S]*?)<\/script>/.exec(
+      baseAstroSource
+    );
+  if (!scriptMatch?.[1]) {
+    throw new Error('Could not find the locale-redirect inline script in Base.astro');
+  }
+  const redirectScriptBody = scriptMatch[1];
+
+  it('the inline redirect script is present and still matches via localeRedirectMap', () => {
+    expect(redirectScriptBody).toContain('localeRedirectMap[j][0]');
+    expect(redirectScriptBody).toContain('localeRedirectMap[j][1]');
+    expect(redirectScriptBody).toMatch(/lang === prefix/);
+    expect(redirectScriptBody).toMatch(/lang\.indexOf\(prefix \+ '-'\) === 0/);
+  });
+
+  it('produces the same redirect target as matchBrowserLanguage for representative inputs', () => {
+    const cases = ['pt-BR', 'zh-TW', 'zh-Hans-CN', 'de', 'de-DE', 'no', 'xx-YY'];
+
+    for (const language of cases) {
+      let redirectedTo: string | null = null;
+      const fakeWindow = {
+        location: {
+          pathname: '/',
+          replace: (target: string) => {
+            redirectedTo = target;
+          },
+        },
+      };
+      const fakeSessionStorage = (() => {
+        const store = new Map<string, string>();
+        return {
+          getItem: (k: string) => store.get(k) ?? null,
+          setItem: (k: string, v: string) => void store.set(k, v),
+        };
+      })();
+
+      // Executing the extracted inline-script text is the point of this test
+      // (verifying Base.astro's necessarily-duplicated matching loop behaves
+      // identically to matchBrowserLanguage) — not a dynamic/untrusted eval.
+      // eslint-disable-next-line @typescript-eslint/no-implied-eval -- see above
+      const run = new Function(
+        'window',
+        'sessionStorage',
+        'navigator',
+        'siteBase',
+        'nonDefaultLocales',
+        'localeRedirectMap',
+        redirectScriptBody
+      );
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call -- see above
+      run(fakeWindow, fakeSessionStorage, { language }, '', [], localeRedirectMap);
+
+      const expected = matchBrowserLanguage(language);
+      if (expected === null) {
+        expect(redirectedTo, `expected no redirect for '${language}'`).toBeNull();
+      } else {
+        expect(redirectedTo, `expected redirect to '${expected}' for '${language}'`).toBe(
+          '/' + expected + '/'
+        );
+      }
+    }
   });
 });
