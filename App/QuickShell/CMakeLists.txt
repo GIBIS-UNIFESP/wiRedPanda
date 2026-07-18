@@ -48,6 +48,7 @@ qt_add_qml_module(wiredpanda_quick
     QML_FILES
         ChoiceDialog.qml
         Main.qml
+        QuickFileDialog.qml
         TextPromptDialog.qml
 )
 

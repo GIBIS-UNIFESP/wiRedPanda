@@ -7,6 +7,7 @@
 
 #include "App/QuickShell/Chrome/DialogProvider.h"
 #include "App/QuickShell/Chrome/QuickDialogProvider.h"
+#include "App/UI/FileDialogProvider.h"
 
 int main(int argc, char *argv[])
 {
@@ -19,10 +20,12 @@ int main(int argc, char *argv[])
     engine.loadFromModule("QuickShell", "Main");
 
     // Registered before app.exec() so it's ready before any controller code (ported in later
-    // Phase 4 sub-steps) could call Dialogs::provider() -- see DialogProvider.h's contract.
+    // Phase 4 sub-steps) could call Dialogs::provider()/FileDialogs::provider() -- see
+    // DialogProvider.h's and FileDialogProvider.h's contracts.
     auto *window = qobject_cast<QQuickWindow *>(engine.rootObjects().value(0));
     static QuickDialogProvider dialogProvider(window);
     Dialogs::setProvider(&dialogProvider);
+    FileDialogs::setProvider(&dialogProvider);
 
     return app.exec();
 }
