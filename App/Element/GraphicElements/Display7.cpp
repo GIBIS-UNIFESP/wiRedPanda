@@ -67,7 +67,7 @@ struct ElementInfo<Display7> {
             ":/Components/Output/Counter/counter_dp.svg",
         });
         return meta;
-    }
+    } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementMetadata's QString/QStringList members, never reached after the return above.
 
     static inline const bool registered = []() {
         ElementMetadataRegistry::registerMetadata(metadata());
