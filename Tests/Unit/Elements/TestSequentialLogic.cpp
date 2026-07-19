@@ -362,3 +362,212 @@ void TestSequentialLogic::testTFlipFlopBehavior()
     QCOMPARE(TestUtils::inputStatus(&ledQ), false);
     QCOMPARE(TestUtils::inputStatus(&ledNQ), true);
 }
+
+// ============================================================================
+// resetSimState() Tests
+// ============================================================================
+// resetSimState() is called by WaveformSimulator before each fresh BeWavedDolphin sweep;
+// no BeWavedDolphin test circuit happens to include a flip-flop, so these exercise it
+// directly: drive Q away from its power-on default, reset, and confirm both the output
+// AND the edge-detection state came back cleanly (a subsequent real clock edge still
+// behaves correctly, proving the internal m_simLastXxx bookkeeping wasn't left corrupt).
+//
+// Each test drives an input change (setOn(false) on the data-like input) right after
+// resetSimState(), exactly as WaveformSimulator::sweep() always does immediately after
+// its own reset loop (it goes straight into driving the first column's input values).
+// resetSimState() bypasses setOutputValue()'s change-detection (Simulation::update()'s
+// idle-tick skip only wakes on a clock/input-element change), so calling it with no
+// following input change is not a scenario any real caller produces.
+
+void TestSequentialLogic::testDFlipFlopResetSimState()
+{
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    InputSwitch swD, swClk;
+    DFlipFlop dff;
+    Led ledQ, ledNQ;
+
+    builder.add(&swD, &swClk, &dff, &ledQ, &ledNQ);
+    builder.connect(&swD, 0, &dff, 0);
+    builder.connect(&swClk, 0, &dff, 1);
+    builder.connect(&dff, 0, &ledQ, 0);
+    builder.connect(&dff, 1, &ledNQ, 0);
+
+    auto *sim = builder.initSimulation();
+    sim->update();
+
+    swD.setOn(true);
+    sim->update();
+    TestUtils::clockCycle(sim, &swClk);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), true);
+
+    dff.resetSimState();
+    swD.setOn(false); // wakes the simulation's idle-tick skip, as a real sweep column would
+    sim->update();
+    QCOMPARE(TestUtils::inputStatus(&ledQ), false);
+    QCOMPARE(TestUtils::inputStatus(&ledNQ), true);
+
+    // A fresh rising edge with D=1 must still set Q=1 correctly after the reset.
+    swD.setOn(true);
+    sim->update();
+    TestUtils::clockCycle(sim, &swClk);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), true);
+    QCOMPARE(TestUtils::inputStatus(&ledNQ), false);
+}
+
+void TestSequentialLogic::testJKFlipFlopResetSimState()
+{
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    InputSwitch swJ, swClk, swK;
+    JKFlipFlop jkff;
+    Led ledQ, ledNQ;
+
+    builder.add(&swJ, &swClk, &swK, &jkff, &ledQ, &ledNQ);
+    builder.connect(&swJ, 0, &jkff, 0);
+    builder.connect(&swClk, 0, &jkff, 1);
+    builder.connect(&swK, 0, &jkff, 2);
+    builder.connect(&jkff, 0, &ledQ, 0);
+    builder.connect(&jkff, 1, &ledNQ, 0);
+
+    auto *sim = builder.initSimulation();
+    sim->update();
+
+    swJ.setOn(true);
+    swK.setOn(false);
+    sim->update();
+    TestUtils::clockCycle(sim, &swClk);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), true);
+
+    jkff.resetSimState();
+    swJ.setOn(false); // wakes the simulation's idle-tick skip, as a real sweep column would
+    sim->update();
+    QCOMPARE(TestUtils::inputStatus(&ledQ), false);
+    QCOMPARE(TestUtils::inputStatus(&ledNQ), true);
+
+    // A fresh rising edge with J=1,K=0 must still Set correctly after the reset.
+    swJ.setOn(true);
+    sim->update();
+    TestUtils::clockCycle(sim, &swClk);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), true);
+    QCOMPARE(TestUtils::inputStatus(&ledNQ), false);
+}
+
+void TestSequentialLogic::testSRFlipFlopResetSimState()
+{
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    InputSwitch swS, swClk, swR;
+    SRFlipFlop srff;
+    Led ledQ, ledNQ;
+
+    builder.add(&swS, &swClk, &swR, &srff, &ledQ, &ledNQ);
+    builder.connect(&swS, 0, &srff, 0);
+    builder.connect(&swClk, 0, &srff, 1);
+    builder.connect(&swR, 0, &srff, 2);
+    builder.connect(&srff, 0, &ledQ, 0);
+    builder.connect(&srff, 1, &ledNQ, 0);
+
+    auto *sim = builder.initSimulation();
+    sim->update();
+
+    swS.setOn(true);
+    swR.setOn(false);
+    sim->update();
+    TestUtils::clockCycle(sim, &swClk);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), true);
+
+    srff.resetSimState();
+    swS.setOn(false); // wakes the simulation's idle-tick skip, as a real sweep column would
+    sim->update();
+    QCOMPARE(TestUtils::inputStatus(&ledQ), false);
+    QCOMPARE(TestUtils::inputStatus(&ledNQ), true);
+
+    // A fresh rising edge with S=1,R=0 must still Set correctly after the reset.
+    swS.setOn(true);
+    sim->update();
+    TestUtils::clockCycle(sim, &swClk);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), true);
+    QCOMPARE(TestUtils::inputStatus(&ledNQ), false);
+}
+
+void TestSequentialLogic::testTFlipFlopResetSimState()
+{
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    InputSwitch swT, swClk;
+    TFlipFlop tff;
+    Led ledQ, ledNQ;
+
+    builder.add(&swT, &swClk, &tff, &ledQ, &ledNQ);
+    builder.connect(&swT, 0, &tff, 0);
+    builder.connect(&swClk, 0, &tff, 1);
+    builder.connect(&tff, 0, &ledQ, 0);
+    builder.connect(&tff, 1, &ledNQ, 0);
+
+    auto *sim = builder.initSimulation();
+    sim->update();
+
+    swT.setOn(true);
+    sim->update();
+    TestUtils::clockCycle(sim, &swClk);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), true);
+
+    tff.resetSimState();
+    swT.setOn(false); // wakes the simulation's idle-tick skip, as a real sweep column would
+    sim->update();
+    QCOMPARE(TestUtils::inputStatus(&ledQ), false);
+    QCOMPARE(TestUtils::inputStatus(&ledNQ), true);
+
+    // A fresh rising edge with T=1 must still toggle correctly after the reset.
+    swT.setOn(true);
+    sim->update();
+    TestUtils::clockCycle(sim, &swClk);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), true);
+    QCOMPARE(TestUtils::inputStatus(&ledNQ), false);
+}
+
+// ============================================================================
+// updateTheme() Tests
+// ============================================================================
+
+void TestSequentialLogic::testSequentialElementsUpdateTheme()
+{
+    // pixmap() is protected, so appearancePreviewPixmap() (backed by the same
+    // ElementAppearance the pixmap()/setPixmap() pair reads/writes) stands in for it.
+    const QSize previewSize(64, 64);
+
+    DFlipFlop dff;
+    QVERIFY(!dff.appearancePreviewPixmap(0, previewSize).isNull());
+    dff.updateTheme();
+    QVERIFY(!dff.appearancePreviewPixmap(0, previewSize).isNull());
+
+    JKFlipFlop jkff;
+    QVERIFY(!jkff.appearancePreviewPixmap(0, previewSize).isNull());
+    jkff.updateTheme();
+    QVERIFY(!jkff.appearancePreviewPixmap(0, previewSize).isNull());
+
+    SRFlipFlop srff;
+    QVERIFY(!srff.appearancePreviewPixmap(0, previewSize).isNull());
+    srff.updateTheme();
+    QVERIFY(!srff.appearancePreviewPixmap(0, previewSize).isNull());
+
+    TFlipFlop tff;
+    QVERIFY(!tff.appearancePreviewPixmap(0, previewSize).isNull());
+    tff.updateTheme();
+    QVERIFY(!tff.appearancePreviewPixmap(0, previewSize).isNull());
+
+    DLatch dlatch;
+    QVERIFY(!dlatch.appearancePreviewPixmap(0, previewSize).isNull());
+    dlatch.updateTheme();
+    QVERIFY(!dlatch.appearancePreviewPixmap(0, previewSize).isNull());
+
+    SRLatch srlatch;
+    QVERIFY(!srlatch.appearancePreviewPixmap(0, previewSize).isNull());
+    srlatch.updateTheme();
+    QVERIFY(!srlatch.appearancePreviewPixmap(0, previewSize).isNull());
+}
