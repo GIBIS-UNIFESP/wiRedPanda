@@ -82,7 +82,11 @@ protected:
     }
 
     /// Writing is not supported.
-    qint64 writeData(const char *, qint64) override { return -1; }
+    // start() always opens ReadOnly, and nothing in this codebase ever writes to a
+    // ToneGenerator; QIODevice::write() itself rejects the call before this override
+    // could run on a device not opened WriteOnly/ReadWrite. Kept only because it's a
+    // pure-virtual QIODevice override that must exist.
+    qint64 writeData(const char *, qint64) override { return -1; } // LCOV_EXCL_LINE
 
 private:
     static constexpr int SampleRate = 44100;
