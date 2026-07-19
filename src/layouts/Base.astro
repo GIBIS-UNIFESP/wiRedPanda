@@ -118,7 +118,10 @@ const nonDefaultLocales = getAllLocales().filter((l) => l !== defaultLocale);
             var script = document.createElement('script');
             script.defer = true;
             script.src = 'https://cloud.umami.is/script.js';
-            script.setAttribute('data-website-id', '8cf1c01a-4505-4de2-a5ea-0facfe5a71dd');
+            script.setAttribute(
+              'data-website-id',
+              '8cf1c01a-4505-4de2-a5ea-0facfe5a71dd,fe7ce6ae-37b9-4b74-852f-12535d614ff7'
+            );
             document.head.appendChild(script);
           }
         } else {
