@@ -3686,7 +3686,7 @@ void TestICInline::testICDropZoneMimeAcceptance()
     auto fileBasedMime = std::make_unique<QMimeData>();
     fileBasedMime->setData("application/x-wiredpanda-dragdrop", fileBasedData);
 
-    QDragEnterEvent enterFileBased(QPoint(10, 10), Qt::CopyAction, fileBasedMime.get(), Qt::LeftButton, Qt::NoModifier);
+    QDragEnterEvent enterFileBased = makeDragEnterEvent(QPoint(10, 10), Qt::CopyAction, fileBasedMime.get(), Qt::LeftButton, Qt::NoModifier);
     QCoreApplication::sendEvent(&embeddedZone, &enterFileBased);
     QVERIFY2(enterFileBased.isAccepted(), "Embedded zone should accept file-based IC drops");
 
@@ -3699,17 +3699,17 @@ void TestICInline::testICDropZoneMimeAcceptance()
     auto embeddedMime = std::make_unique<QMimeData>();
     embeddedMime->setData("application/x-wiredpanda-dragdrop", embeddedData);
 
-    QDragEnterEvent enterEmbedded(QPoint(10, 10), Qt::CopyAction, embeddedMime.get(), Qt::LeftButton, Qt::NoModifier);
+    QDragEnterEvent enterEmbedded = makeDragEnterEvent(QPoint(10, 10), Qt::CopyAction, embeddedMime.get(), Qt::LeftButton, Qt::NoModifier);
     QCoreApplication::sendEvent(&embeddedZone, &enterEmbedded);
     QVERIFY2(!enterEmbedded.isAccepted(), "Embedded zone should reject embedded IC drops");
 
     ICDropZone fileZone(ICDropZone::Section::FileBased);
 
-    QDragEnterEvent enterEmbOnFile(QPoint(10, 10), Qt::CopyAction, embeddedMime.get(), Qt::LeftButton, Qt::NoModifier);
+    QDragEnterEvent enterEmbOnFile = makeDragEnterEvent(QPoint(10, 10), Qt::CopyAction, embeddedMime.get(), Qt::LeftButton, Qt::NoModifier);
     QCoreApplication::sendEvent(&fileZone, &enterEmbOnFile);
     QVERIFY2(enterEmbOnFile.isAccepted(), "File-based zone should accept embedded IC drops");
 
-    QDragEnterEvent enterFileOnFile(QPoint(10, 10), Qt::CopyAction, fileBasedMime.get(), Qt::LeftButton, Qt::NoModifier);
+    QDragEnterEvent enterFileOnFile = makeDragEnterEvent(QPoint(10, 10), Qt::CopyAction, fileBasedMime.get(), Qt::LeftButton, Qt::NoModifier);
     QCoreApplication::sendEvent(&fileZone, &enterFileOnFile);
     QVERIFY2(!enterFileOnFile.isAccepted(), "File-based zone should reject file-based IC drops");
 }
@@ -3730,7 +3730,7 @@ void TestICInline::testICDropZoneWiredInUI()
     embeddedMime->setData("application/x-wiredpanda-dragdrop", embeddedData);
 
     QSignalSpy extractSpy(&fileZone, &ICDropZone::extractByBlobNameRequested);
-    QDragEnterEvent enterEvent(QPoint(10, 10), Qt::CopyAction, embeddedMime.get(), Qt::LeftButton, Qt::NoModifier);
+    QDragEnterEvent enterEvent = makeDragEnterEvent(QPoint(10, 10), Qt::CopyAction, embeddedMime.get(), Qt::LeftButton, Qt::NoModifier);
     QCoreApplication::sendEvent(&fileZone, &enterEvent);
     QVERIFY(enterEvent.isAccepted());
 
@@ -3750,7 +3750,7 @@ void TestICInline::testICDropZoneWiredInUI()
     fileMime->setData("application/x-wiredpanda-dragdrop", fileData);
 
     QSignalSpy embedSpy(&embeddedZone, &ICDropZone::embedByFileRequested);
-    QDragEnterEvent enterEvent2(QPoint(10, 10), Qt::CopyAction, fileMime.get(), Qt::LeftButton, Qt::NoModifier);
+    QDragEnterEvent enterEvent2 = makeDragEnterEvent(QPoint(10, 10), Qt::CopyAction, fileMime.get(), Qt::LeftButton, Qt::NoModifier);
     QCoreApplication::sendEvent(&embeddedZone, &enterEvent2);
     QVERIFY(enterEvent2.isAccepted());
 
@@ -3776,7 +3776,7 @@ void TestICInline::testICDropZoneDropEventSignals()
         auto mime = std::make_unique<QMimeData>();
         mime->setData("application/x-wiredpanda-dragdrop", itemData);
 
-        QDragEnterEvent dragEnter(QPoint(10, 10), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier);
+        QDragEnterEvent dragEnter = makeDragEnterEvent(QPoint(10, 10), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier);
         QCoreApplication::sendEvent(&embeddedZone, &dragEnter);
         QVERIFY(dragEnter.isAccepted());
 
@@ -3801,7 +3801,7 @@ void TestICInline::testICDropZoneDropEventSignals()
         auto mime = std::make_unique<QMimeData>();
         mime->setData("application/x-wiredpanda-dragdrop", itemData);
 
-        QDragEnterEvent dragEnter(QPoint(10, 10), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier);
+        QDragEnterEvent dragEnter = makeDragEnterEvent(QPoint(10, 10), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier);
         QCoreApplication::sendEvent(&fileZone, &dragEnter);
         QVERIFY(dragEnter.isAccepted());
 
@@ -3826,7 +3826,7 @@ void TestICInline::testICDropZoneDropEventSignals()
         auto mime = std::make_unique<QMimeData>();
         mime->setData("application/x-wiredpanda-dragdrop", itemData);
 
-        QDragEnterEvent dragEnter(QPoint(10, 10), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier);
+        QDragEnterEvent dragEnter = makeDragEnterEvent(QPoint(10, 10), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier);
         QCoreApplication::sendEvent(&embeddedZone, &dragEnter);
         QVERIFY(!dragEnter.isAccepted());
 
@@ -3847,21 +3847,21 @@ void TestICInline::testTrashButtonDragAcceptance()
     auto currentMime = std::make_unique<QMimeData>();
     currentMime->setData("application/x-wiredpanda-dragdrop", itemData);
 
-    QDragEnterEvent enterCurrent(QPoint(10, 10), Qt::CopyAction, currentMime.get(), Qt::LeftButton, Qt::NoModifier);
+    QDragEnterEvent enterCurrent = makeDragEnterEvent(QPoint(10, 10), Qt::CopyAction, currentMime.get(), Qt::LeftButton, Qt::NoModifier);
     QCoreApplication::sendEvent(&button, &enterCurrent);
     QVERIFY2(enterCurrent.isAccepted(), "TrashButton should accept current MIME type");
 
     auto legacyMime = std::make_unique<QMimeData>();
     legacyMime->setData("wpanda/x-dnditemdata", itemData);
 
-    QDragEnterEvent enterLegacy(QPoint(10, 10), Qt::CopyAction, legacyMime.get(), Qt::LeftButton, Qt::NoModifier);
+    QDragEnterEvent enterLegacy = makeDragEnterEvent(QPoint(10, 10), Qt::CopyAction, legacyMime.get(), Qt::LeftButton, Qt::NoModifier);
     QCoreApplication::sendEvent(&button, &enterLegacy);
     QVERIFY2(enterLegacy.isAccepted(), "TrashButton should accept legacy MIME type");
 
     auto textMime = std::make_unique<QMimeData>();
     textMime->setText("hello");
 
-    QDragEnterEvent enterText(QPoint(10, 10), Qt::CopyAction, textMime.get(), Qt::LeftButton, Qt::NoModifier);
+    QDragEnterEvent enterText = makeDragEnterEvent(QPoint(10, 10), Qt::CopyAction, textMime.get(), Qt::LeftButton, Qt::NoModifier);
     QCoreApplication::sendEvent(&button, &enterText);
     QVERIFY2(!enterText.isAccepted(), "TrashButton should reject unrelated MIME types");
 }

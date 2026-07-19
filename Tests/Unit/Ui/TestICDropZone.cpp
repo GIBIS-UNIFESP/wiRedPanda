@@ -147,7 +147,7 @@ void TestICDropZone::testHintShownOnCompatibleDragEnter()
     QVERIFY2(hint->text().contains(QStringLiteral("embed")), qPrintable(hint->text()));
 
     // Dragging a compatible IC over the zone reveals the hint...
-    QDragEnterEvent enterEvent(QPoint(5, 5), Qt::CopyAction, &mimeData, Qt::LeftButton, Qt::NoModifier);
+    QDragEnterEvent enterEvent = makeDragEnterEvent(QPoint(5, 5), Qt::CopyAction, &mimeData, Qt::LeftButton, Qt::NoModifier);
     QApplication::sendEvent(&dropZone, &enterEvent);
     QVERIFY(!hint->isHidden());
 

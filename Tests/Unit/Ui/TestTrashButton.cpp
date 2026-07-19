@@ -59,7 +59,7 @@ void TestTrashButton::testDragEnterEvent()
     QMimeData mimeData;
     mimeData.setData(MimeType::DragDrop, makeIcDragPayload());
 
-    QDragEnterEvent event(QPoint(5, 5), Qt::CopyAction, &mimeData, Qt::LeftButton, Qt::NoModifier);
+    QDragEnterEvent event = makeDragEnterEvent(QPoint(5, 5), Qt::CopyAction, &mimeData, Qt::LeftButton, Qt::NoModifier);
     button.dragEnterEvent(&event);
 
     QVERIFY(event.isAccepted());
