@@ -30,7 +30,14 @@ const letters = 'wiRedPanda'.split('');
       <h1
         class="hero-title text-gray-900 dark:text-white font-bold tracking-tight select-none"
         aria-label="wiRedPanda"
+        dir="ltr"
       >
+        {
+          /* dir="ltr" is required: in an RTL page each per-letter inline-block
+             span below is laid out as its own atomic bidi box, so without an
+             explicit LTR scope here an RTL browser reverses their visual
+             order (the brand name renders backwards). */
+        }
         {
           letters.map((char, i) => (
             <span class="hero-letter" data-index={i}>
