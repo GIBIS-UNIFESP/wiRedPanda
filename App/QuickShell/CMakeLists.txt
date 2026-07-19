@@ -239,6 +239,12 @@ set(QUICK_SHELL_TEST_SOURCES
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasCommands.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasItemSmoke.cpp
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasItemSmoke.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestQuickElementHandler.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestQuickElementHandler.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestQuickFileHandlerSecurity.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestQuickFileHandlerSecurity.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestQuickICHandlerSecurity.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestQuickICHandlerSecurity.h
 )
 
 # Usage: ./build/test_wiredpanda_quick ClassName [functionName] -- mirrors test_wiredpanda's

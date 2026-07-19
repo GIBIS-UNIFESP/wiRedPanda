@@ -5,11 +5,17 @@
 
 #include "Tests/QuickShell/TestCanvasCommands.h"
 #include "Tests/QuickShell/TestCanvasItemSmoke.h"
+#include "Tests/QuickShell/TestQuickElementHandler.h"
+#include "Tests/QuickShell/TestQuickFileHandlerSecurity.h"
+#include "Tests/QuickShell/TestQuickICHandlerSecurity.h"
 
 int main(int argc, char **argv)
 {
     return runQuickTestSuite(argc, argv, {
         {"TestCanvasItemSmoke", []() -> QObject * { return new TestCanvasItemSmoke; }},
         {"TestCanvasCommands", []() -> QObject * { return new TestCanvasCommands; }},
+        {"TestQuickElementHandler", []() -> QObject * { return new TestQuickElementHandler; }},
+        {"TestQuickFileHandlerSecurity", []() -> QObject * { return new TestQuickFileHandlerSecurity; }},
+        {"TestQuickICHandlerSecurity", []() -> QObject * { return new TestQuickICHandlerSecurity; }},
     });
 }
