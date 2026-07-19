@@ -12,6 +12,7 @@
 #include "Tests/QuickShell/TestQuickDolphinController.h"
 #include "Tests/QuickShell/TestQuickElementEditor.h"
 #include "Tests/QuickShell/TestQuickElementHandler.h"
+#include "Tests/QuickShell/TestQuickElementPalette.h"
 #include "Tests/QuickShell/TestQuickFileHandlerSecurity.h"
 #include "Tests/QuickShell/TestQuickICHandlerSecurity.h"
 
@@ -29,5 +30,6 @@ int main(int argc, char **argv)
         {"TestCanvasInlineIC", []() -> QObject * { return new TestCanvasInlineIC; }},
         {"TestCanvasItemInteraction", []() -> QObject * { return new TestCanvasItemInteraction; }},
         {"TestQuickElementEditor", []() -> QObject * { return new TestQuickElementEditor; }},
+        {"TestQuickElementPalette", []() -> QObject * { return new TestQuickElementPalette; }},
     });
 }
