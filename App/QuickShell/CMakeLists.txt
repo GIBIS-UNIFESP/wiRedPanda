@@ -213,3 +213,42 @@ if(Qt6LinguistTools_FOUND)
         ${_lupdate_opts}
     )
 endif()
+
+# ========= QUICK SHELL TESTS ===================================
+
+# Phase 7a of the qtquick-rewrite plan (.claude/plans/we-were-profiling-in-hidden-emerson.md):
+# a genuinely separate test binary, not new classes registered into test_wiredpanda --
+# CanvasItem.cpp/QuickAppController.cpp/etc. are only ever compiled into wiredpanda_quick's own
+# object files (the same constraint Phase 5a's ExerciseEngine::setCanvas() type-erasure
+# workaround exists for), so test_wiredpanda would fail with undefined-symbol linker errors
+# calling into them regardless of which Qt modules it links.
+#
+# QUICK_SHELL_LIB_SOURCES duplicates the compile of every QUICK_SHELL_SOURCES file except
+# Main.cpp into this second target rather than factoring a shared library: wiredpanda_quick's
+# own qt_add_qml_module() type scanner only walks its own target's directly-listed SOURCES (see
+# the root CMakeLists.txt's Qt6::Qml comment for the same constraint biting wiredpanda_lib) --
+# splitting QUICK_SHELL_SOURCES into a shared library risks silently breaking that scanner for
+# the real app. Not worth that risk to save a second compile of ~25 files.
+set(QUICK_SHELL_LIB_SOURCES ${QUICK_SHELL_SOURCES})
+list(REMOVE_ITEM QUICK_SHELL_LIB_SOURCES Main.cpp)
+
+set(QUICK_SHELL_TEST_SOURCES
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/Runners/QuickRunnerUtils.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/Runners/TestWiredpandaQuick.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasItemSmoke.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasItemSmoke.h
+)
+
+# Usage: ./build/test_wiredpanda_quick ClassName [functionName] -- mirrors test_wiredpanda's
+# own consolidated-binary convention (Tests/Runners/RunnerUtils.h), via its own
+# self-contained QuickRunnerUtils.h copy (see that header's doc comment for why it isn't
+# shared with the Widgets runner). CTest registration lives in the root CMakeLists.txt's TESTS
+# section alongside every other add_test() call, not here -- add_subdirectory(App/QuickShell)
+# runs before the root CMakeLists.txt's own enable_testing() call, so add_test() calls made
+# from inside this file would silently fail to register.
+add_executable(test_wiredpanda_quick ${QUICK_SHELL_LIB_SOURCES} ${QUICK_SHELL_TEST_SOURCES})
+link_wiredpanda_whole_archive(test_wiredpanda_quick)
+target_link_libraries(test_wiredpanda_quick PRIVATE ${QUICK_LIBS} wiredpanda_resources)
+target_compile_definitions(test_wiredpanda_quick PRIVATE
+    CURRENTDIR=${CMAKE_SOURCE_DIR}/Tests
+)

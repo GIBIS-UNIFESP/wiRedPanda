@@ -989,6 +989,12 @@ add_test(NAME TestExerciseEngine COMMAND test_wiredpanda TestExerciseEngine WORK
 add_test(NAME TestTourEngine COMMAND test_wiredpanda TestTourEngine WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestUpdateChecker COMMAND test_wiredpanda TestUpdateChecker WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 
+# ---- Quick shell tests (test_wiredpanda_quick) ----
+# Phase 7a of the qtquick-rewrite plan: a separate consolidated binary, not new classes
+# registered into test_wiredpanda -- see App/QuickShell/CMakeLists.txt's "QUICK SHELL TESTS"
+# section for why. Grows alongside Phase 7's later sub-steps (7b-7h).
+add_test(NAME TestCanvasItemSmoke COMMAND test_wiredpanda_quick TestCanvasItemSmoke WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+
 # ============================================================================
 # Test Properties: Labels and Timeouts
 # ============================================================================
@@ -1081,6 +1087,12 @@ foreach(TEST TestCommands TestCommon TestEnums TestNotifyCatch TestPriorities Te
     set_tests_properties(${TEST} PROPERTIES LABELS "unit")
 endforeach()
 
+# Quick shell tests (test_wiredpanda_quick) - own "quick" label so `ctest -L quick` can target
+# just this tier once Phase 7b+ grows it.
+foreach(TEST TestCanvasItemSmoke)
+    set_tests_properties(${TEST} PROPERTIES LABELS "unit;quick")
+endforeach()
+
 # GUI tests run sequentially after all other tests complete
 set(GUI_TESTS TestDialogs TestFileDialogProvider TestMainWindowGui TestBewavedDolphinGui)
 set(ALL_TESTS
@@ -1139,7 +1151,8 @@ set(ALL_TESTS
     TestFileHandlerSecurity TestICHandlerSecurity TestMCPProcessor TestElementHandler
     TestExerciseEngine TestTourEngine
     TestSimulationUnit TestWorkspaceUnit
-    TestICFixtureLayout)
+    TestICFixtureLayout
+    TestCanvasItemSmoke)
 foreach(TEST ${ALL_TESTS})
     set_tests_properties(${TEST} PROPERTIES FIXTURES_SETUP "non_gui_complete")
 endforeach()
