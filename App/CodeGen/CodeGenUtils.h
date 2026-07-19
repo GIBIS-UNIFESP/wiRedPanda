@@ -47,7 +47,7 @@ inline QString removeForbiddenChars(const QString &input, const bool stripFirst 
     }
 
     return result;
-}
+} // LCOV_EXCL_LINE -- compiler-generated cleanup for the returned QString's exception-unwind path, never taken
 
 /**
  * \brief Makes \a input safe to embed in a single-line "//" comment.
@@ -63,6 +63,6 @@ inline QString sanitizeComment(const QString &input)
     result.replace(QLatin1Char('\r'), QLatin1Char(' '));
     result.replace(QLatin1Char('\n'), QLatin1Char(' '));
     return result;
-}
+} // LCOV_EXCL_LINE -- compiler-generated cleanup for the returned QString's exception-unwind path, never taken
 
 }  // namespace CodeGenUtils
