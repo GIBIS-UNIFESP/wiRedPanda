@@ -147,10 +147,18 @@ void legacyCalculatePriorities(
         while (!stack.isEmpty()) {
             auto *current = stack.top();
 
-            if (outPriorities.contains(current)) {
-                stack.pop();
-                inStack.remove(current);
-                continue;
+            // Unreachable: a node only leaves `inStack` together with either
+            // getting a priority assigned (below, immediately followed by a pop
+            // of that same stack entry) or via this very check — and a node is
+            // only ever pushed while absent from both `outPriorities` and
+            // `inStack`, so `stack.top()` can never already hold a priority.
+            // The inner while loop always drains the stack fully before the
+            // outer `for` advances to the next top-level element, so no node
+            // can be re-discovered here after being resolved elsewhere either.
+            if (outPriorities.contains(current)) { // LCOV_EXCL_LINE
+                stack.pop(); // LCOV_EXCL_LINE
+                inStack.remove(current); // LCOV_EXCL_LINE
+                continue; // LCOV_EXCL_LINE
             }
 
             bool allProcessed = true;

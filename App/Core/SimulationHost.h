@@ -19,7 +19,7 @@ class QGraphicsItem;
 class SimulationHost
 {
 public:
-    virtual ~SimulationHost() = default;
+    virtual ~SimulationHost() = default; // LCOV_EXCL_LINE -- inlined at every derived-class destruction site, not separately attributed
 
     /// Returns every item currently in the host scene.
     virtual QList<QGraphicsItem *> simulationItems() const = 0;

@@ -32,4 +32,15 @@ private slots:
     void testPreferredContentDirReturnsWritablePathOutsideManagedDir();
 
     void testResolveWritableDirFallsBackWhenCandidatesUnwritable();
+    void testResolveWritableDirEmptyCandidateSkipped();
+    void testResolveWritableDirReturnsEmptyWhenNothingWorks();
+
+    void testScanUnreadableFileSkipped();
+    void testManagedContentDirCreatesFreshDirectory();
+
+    void testDiscoverMergesInstallRelativeDir();
+    void testDiscoverMergesDocumentsFallbackDir();
+
+    void testTranslateFromCatalogNonObjectMidPathFallsBack();
+    void testTranslateNonEnglishReadsCatalog();
 };

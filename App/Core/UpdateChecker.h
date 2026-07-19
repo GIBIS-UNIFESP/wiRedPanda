@@ -29,6 +29,8 @@ class UpdateChecker : public QObject
 {
     Q_OBJECT
 
+    friend class TestUpdateChecker;
+
 public:
     explicit UpdateChecker(QObject *parent = nullptr);
 
@@ -53,6 +55,14 @@ private:
     void onReplyFinished(class QNetworkReply *reply);
 
     QNetworkAccessManager m_network;
+    /// The release-data endpoint checkForUpdates() queries (defaults to the site's
+    /// published latest-release.json). Overridable only by TestUpdateChecker (via
+    /// setApiUrlForTesting()), to point at a local test server instead of the real network.
+    QUrl m_apiUrl;
+
+    /// Test-only seam letting TestUpdateChecker redirect checkForUpdates() at
+    /// a local QTcpServer instead of the real release-data endpoint.
+    void setApiUrlForTesting(const QUrl &url) { m_apiUrl = url; }
 };
 
 /// \brief The key in latest-release.json holding the download URL for the given
