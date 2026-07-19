@@ -43,6 +43,23 @@ void TestMux::testMuxPainting()
     QVERIFY2(TestUtils::pixmapHasInk(pixmap), "Mux paint() must draw visible pixels");
 }
 
+void TestMux::testMuxPaintingSelected()
+{
+    WorkSpace workspace;
+    auto *mux = new Mux;
+    workspace.scene()->addItem(mux);
+    mux->setSelected(true);
+
+    QPixmap pixmap(128, 128);
+    pixmap.fill(Qt::transparent);
+    QPainter painter(&pixmap);
+    QStyleOptionGraphicsItem option;
+    mux->paint(&painter, &option, nullptr);
+    painter.end();
+
+    QVERIFY2(TestUtils::pixmapHasInk(pixmap), "Mux paint() must draw the selection highlight when selected");
+}
+
 void TestMux::testMuxOutOfRangeSelect_data()
 {
     QTest::addColumn<int>("totalInputs");
