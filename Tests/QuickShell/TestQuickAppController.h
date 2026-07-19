@@ -23,6 +23,13 @@
 /// (CanvasICRegistry has no permanent test yet either -- a real, separate gap), drag-from-palette,
 /// and every dialog/window-chrome-specific test (About, fullscreen, theme switching, language
 /// change, toolbar/status-bar widget presence, Learn menu structure).
+///
+/// Phase 7e-8 follow-up, added to this same class rather than a new file (same class under
+/// test): the window-title/theme/language/shortcuts-help/Learn-menu slice of the "dialog/
+/// window-chrome" deferral above -- the part reachable through real QuickAppController state/
+/// methods with no QQuickWindow needed. Genuinely un-testable-without-a-window pieces (About/
+/// AboutQt dialogs, fullscreen toggle, the Report-Translation-Error menu item's reachability)
+/// stay deferred; see the plan's Phase 7e-8+ entry.
 class TestQuickAppController : public QObject
 {
     Q_OBJECT
@@ -57,4 +64,21 @@ private slots:
 
     // --- Mute (genuinely per-tab state) ---
     void testMuteTogglePersistsPerTab();
+
+    // --- Window title ---
+    void testWindowTitleFallsBackToAppNameWithNoTabs();
+    void testWindowTitleShowsNewProjectAndAppName();
+    void testWindowTitleShowsAsteriskWhenModified();
+    void testWindowTitleReflectsOpenedFileName();
+
+    // --- Theme / language ---
+    void testThemeSwitchingUpdatesThemeManagerAndDarkThemeFlag();
+    void testLanguageSwitchUpdatesCurrentLanguageAndRestores();
+    void testLanguagesListIncludesEnglish();
+
+    // --- Shortcuts help / Learn menu / Examples ---
+    void testShortcutsHelpHtmlCoversRealBindings();
+    void testExercisesListReturnsBundledContent();
+    void testToursListReturnsBundledContent();
+    void testExamplesListStructureAndOpenAddsTab();
 };

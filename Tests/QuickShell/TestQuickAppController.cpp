@@ -8,6 +8,7 @@
 #include <QTemporaryDir>
 
 #include "App/Core/Enums.h"
+#include "App/Core/ThemeManager.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
 #include "App/QuickShell/Canvas/CanvasCommands.h"
@@ -357,4 +358,165 @@ void TestQuickAppController::testMuteTogglePersistsPerTab()
 
     controller.setCurrentIndex(0);
     QVERIFY(controller.isMuted());
+}
+
+// ===========================================================================
+// Window title
+// ===========================================================================
+
+void TestQuickAppController::testWindowTitleFallsBackToAppNameWithNoTabs()
+{
+    QuickAppController controller;
+    QVERIFY(!controller.currentTab());
+
+    const QString title = controller.windowTitle();
+    QVERIFY(title.contains(QStringLiteral("wiRedPanda")));
+    QVERIFY(!title.contains(QStringLiteral("New Project")));
+}
+
+void TestQuickAppController::testWindowTitleShowsNewProjectAndAppName()
+{
+    QuickAppController controller;
+    controller.newTab();
+
+    const QString title = controller.windowTitle();
+    QVERIFY2(title.contains(QStringLiteral("New Project")), qPrintable(title));
+    QVERIFY2(title.contains(QStringLiteral("wiRedPanda")), qPrintable(title));
+    QVERIFY(!title.contains(QStringLiteral("*")));
+}
+
+void TestQuickAppController::testWindowTitleShowsAsteriskWhenModified()
+{
+    QuickAppController controller;
+    controller.newTab();
+    auto *canvas = controller.currentTab()->canvas();
+
+    canvas->receiveCommand(new CanvasAddItemsCommand({ElementFactory::buildElement(ElementType::And)}, canvas));
+
+    QVERIFY2(controller.windowTitle().contains(QStringLiteral("*")), qPrintable(controller.windowTitle()));
+}
+
+void TestQuickAppController::testWindowTitleReflectsOpenedFileName()
+{
+    QTemporaryDir tmpDir;
+    QVERIFY(tmpDir.isValid());
+    const QString path = tmpDir.path() + "/my_circuit.panda";
+    writeFixture(path);
+
+    QuickAppController controller;
+    controller.openRecentFile(path);
+
+    QVERIFY2(controller.windowTitle().contains(QStringLiteral("my_circuit")), qPrintable(controller.windowTitle()));
+}
+
+// ===========================================================================
+// Theme / language
+// ===========================================================================
+
+void TestQuickAppController::testThemeSwitchingUpdatesThemeManagerAndDarkThemeFlag()
+{
+    QuickAppController controller;
+    const Theme original = ThemeManager::theme();
+
+    controller.setThemeInt(static_cast<int>(Theme::Dark));
+    QCOMPARE(ThemeManager::theme(), Theme::Dark);
+    QCOMPARE(controller.themeInt(), static_cast<int>(Theme::Dark));
+
+    controller.setThemeInt(static_cast<int>(Theme::Light));
+    QCOMPARE(ThemeManager::theme(), Theme::Light);
+    QVERIFY(!controller.isDarkTheme());
+
+    controller.setThemeInt(static_cast<int>(Theme::System));
+    QCOMPARE(ThemeManager::theme(), Theme::System);
+
+    // ThemeManager::theme() is process-global state -- restore it so later tests in this same
+    // binary run aren't affected by whatever this test last set it to.
+    controller.setThemeInt(static_cast<int>(original));
+}
+
+void TestQuickAppController::testLanguageSwitchUpdatesCurrentLanguageAndRestores()
+{
+    QuickAppController controller;
+    controller.switchLanguage("en");
+    QCOMPARE(controller.currentLanguage(), QString("en"));
+
+    controller.switchLanguage("pt_BR");
+    QCOMPARE(controller.currentLanguage(), QString("pt_BR"));
+
+    controller.switchLanguage("en");
+    QCOMPARE(controller.currentLanguage(), QString("en"));
+}
+
+void TestQuickAppController::testLanguagesListIncludesEnglish()
+{
+    QuickAppController controller;
+    const auto languages = controller.languages();
+    QVERIFY(!languages.isEmpty());
+
+    bool foundEnglish = false;
+    for (const auto &entry : languages) {
+        if (entry.code() == QStringLiteral("en")) {
+            foundEnglish = true;
+            QVERIFY(!entry.displayName().isEmpty());
+        }
+    }
+    QVERIFY(foundEnglish);
+}
+
+// ===========================================================================
+// Shortcuts help / Learn menu / Examples
+// ===========================================================================
+
+void TestQuickAppController::testShortcutsHelpHtmlCoversRealBindings()
+{
+    QuickAppController controller;
+    const QString html = controller.shortcutsHelpHtml();
+
+    QVERIFY(html.contains("Ctrl+X / C / V / D")); // Cut/Copy/Paste/Duplicate row
+    QVERIFY(html.contains("Ctrl+Z"));
+    QVERIFY(html.contains("Ctrl+A"));
+    QVERIFY(html.contains("Ctrl+R"));
+    QVERIFY(html.contains("Ctrl+H"));
+    QVERIFY(html.contains("Ctrl+Shift+F"));
+}
+
+void TestQuickAppController::testExercisesListReturnsBundledContent()
+{
+    QuickAppController controller;
+    const auto exercises = controller.exercisesList();
+    QVERIFY2(!exercises.isEmpty(), "bundled Exercises content should always be discoverable");
+    for (const auto &entry : exercises) {
+        QVERIFY(!entry.title().isEmpty());
+        QVERIFY(!entry.path().isEmpty());
+    }
+}
+
+void TestQuickAppController::testToursListReturnsBundledContent()
+{
+    QuickAppController controller;
+    const auto tours = controller.toursList();
+    QVERIFY2(!tours.isEmpty(), "bundled Tours content should always be discoverable");
+    for (const auto &entry : tours) {
+        QVERIFY(!entry.title().isEmpty());
+        QVERIFY(!entry.path().isEmpty());
+    }
+}
+
+void TestQuickAppController::testExamplesListStructureAndOpenAddsTab()
+{
+    QuickAppController controller;
+    const auto examples = controller.examplesList();
+    if (examples.isEmpty()) {
+        QSKIP("Examples/ directory not resolvable in this test environment");
+    }
+
+    const auto &first = examples.first();
+    QVERIFY2(!first.title().contains(QStringLiteral(".panda")), qPrintable(first.title()));
+    QVERIFY2(!first.title().contains(QLatin1Char('-')), qPrintable(first.title()));
+    QVERIFY2(first.path().endsWith(QStringLiteral(".panda")), qPrintable(first.path()));
+
+    controller.newTab();
+    const int before = controller.tabCount();
+    controller.openRecentFile(first.path());
+    QCOMPARE(controller.tabCount(), before + 1);
 }
