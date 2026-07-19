@@ -714,6 +714,43 @@ private:
     /// class's doc comment and TextureAtlas's own for the design.
     TextureAtlas m_atlas;
 
+    /// Per-element memoization of updatePaintNode()'s gate-rendering loop, added after a real
+    /// profiling pass (clocked_2000.panda, see project memory
+    /// project_quick_real_fixture_profiling_finding.md) found appearanceKeyFor()'s QString::arg()
+    /// chain and GraphicElement::boundingRect()'s port-walking cost dominating render-thread
+    /// time -- both recomputed from scratch for every element on every single frame regardless
+    /// of whether anything actually changed. Every field here is exactly what appearanceKeyFor()
+    /// already reads to build its key (plus port count, which boundingRect() depends on via
+    /// portsBoundingRect()) -- comparing them directly is cheap (an int64 and a handful of
+    /// bool/int reads, no string construction), so the cache can never be stale in a way the
+    /// original unconditional-rebuild code wasn't already accounting for.
+    struct ElementRenderCache {
+        qint64 pixmapCacheKey = 0;
+        qreal rotation = 0.0;
+        bool flipX = false;
+        bool flipY = false;
+        bool selected = false;
+        int inputSize = 0;
+        int outputSize = 0;
+        /// Display7/14/16 only (appearanceKeyFor()'s own extra cache-key dimension for their
+        /// live segment states) -- stays default-empty (no allocation) for every other type.
+        QVector<int> segmentStates;
+        QRectF localRect;
+        TextureAtlas::TileLocation tile;
+    };
+    QHash<GraphicElement *, ElementRenderCache> m_elementRenderCache;
+
+    /// Per-port memoization of updatePaintNode()'s wire-rendering loop -- the same profiling
+    /// pass found real QGraphicsItem::scenePos() (ensureSceneTransform()/mapToScene()) costs
+    /// dominating time there too, called for every port of every connection on every frame even
+    /// though a port only moves when its owning element is moved/rotated/flipped or the topology
+    /// changes -- all events rebuildSpatialIndex() already runs after. Cleared wholesale there
+    /// (not per-element) -- conservative (a one-element rotate still invalidates every cached
+    /// position) but adds no new O(n) event, since rebuildSpatialIndex() is already one at
+    /// exactly those same trigger points; wire *color* stays a fresh per-frame read regardless,
+    /// since that's what a live simulation actually changes.
+    QHash<Port *, QPointF> m_portScenePosCache;
+
     /// Real Simulation state changes on its own 1ms QTimer, independent of this item's
     /// render loop; this timer periodically calls QQuickItem::update() so the batched nodes
     /// stay in sync with live simulation output. Matches Simulation's own documented ~60fps

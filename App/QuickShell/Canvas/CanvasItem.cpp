@@ -336,6 +336,10 @@ void CanvasItem::removeItem(GraphicElement *element)
     if (element) {
         m_elements.removeAll(element);
         m_itemRegistry.unregisterItem(element);
+        // Prunes the render-state memoization (see m_elementRenderCache's doc comment) so it
+        // never grows unbounded across a long editing session -- always safe to call here since
+        // removeItem() runs before any real C++ destruction of element.
+        m_elementRenderCache.remove(element);
     }
 }
 
@@ -1579,6 +1583,13 @@ void CanvasItem::rebuildSpatialIndex()
     m_index.clear();
     m_elementsById.clear();
     m_portsById.clear();
+    // Conservative, wholesale invalidation of the wire-rendering position cache -- see
+    // m_portScenePosCache's doc comment for why "clear everything here" (rather than a
+    // per-element-precise invalidation) is the right, safe trade-off: this function already
+    // runs at exactly the events that could have moved a port (drag-move, add/delete/paste/
+    // undo/redo/rotate/flip/morph), so this adds no new O(n) event, only removes a
+    // sixty-times-a-second one for frames where nothing changed.
+    m_portScenePosCache.clear();
 
     int portIndex = 0;
     for (int i = 0; i < m_elements.size(); ++i) {
@@ -2664,6 +2675,20 @@ QSGNode *CanvasItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
     // m_editedWireFreeEnd, in a neutral color -- it has no driving Status yet since it isn't
     // committed to any element's simulation graph. ---
     {
+        // Memoizes Port::scenePos() (a real QGraphicsItem::scenePos() call --
+        // ensureSceneTransform()/mapToScene() internally) -- see m_portScenePosCache's doc
+        // comment. Ports only move when rebuildSpatialIndex() has already run, so a cache miss
+        // here means "not seen since the cache was last cleared", populated on first use.
+        const auto cachedScenePos = [this](Port *port) {
+            auto it = m_portScenePosCache.constFind(port);
+            if (it != m_portScenePosCache.cend()) {
+                return *it;
+            }
+            const QPointF pos = port->scenePos();
+            m_portScenePosCache.insert(port, pos);
+            return pos;
+        };
+
         const int committedCount = int(m_connections.size());
         const int vertexCount = (committedCount + (m_editedConnection ? 1 : 0)) * 2;
         auto *geometry = new QSGGeometry(QSGGeometry::defaultAttributes_ColoredPoint2D(), vertexCount);
@@ -2673,8 +2698,8 @@ QSGNode *CanvasItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
         int cursor = 0;
         for (auto *connection : m_connections) {
             const QColor color = colorForStatus(connection->startPort()->status());
-            const QPointF start = connection->startPort()->scenePos();
-            const QPointF end = connection->endPort()->scenePos();
+            const QPointF start = cachedScenePos(connection->startPort());
+            const QPointF end = cachedScenePos(connection->endPort());
             vertices[cursor++].set(float(start.x()), float(start.y()),
                                     uchar(color.red()), uchar(color.green()), uchar(color.blue()), uchar(color.alpha()));
             vertices[cursor++].set(float(end.x()), float(end.y()),
@@ -2683,8 +2708,8 @@ QSGNode *CanvasItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
         if (m_editedConnection) {
             static const QColor kEditedWireColor(158, 158, 158, 220);
             const QPointF anchored = m_editedConnection->startPort()
-                ? m_editedConnection->startPort()->scenePos()
-                : m_editedConnection->endPort()->scenePos();
+                ? cachedScenePos(m_editedConnection->startPort())
+                : cachedScenePos(m_editedConnection->endPort());
             vertices[cursor++].set(float(anchored.x()), float(anchored.y()),
                                     uchar(kEditedWireColor.red()), uchar(kEditedWireColor.green()),
                                     uchar(kEditedWireColor.blue()), uchar(kEditedWireColor.alpha()));
@@ -2741,13 +2766,58 @@ QSGNode *CanvasItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
         placed.reserve(m_elements.size());
 
         for (auto *element : std::as_const(m_elements)) {
-            const QRectF localRect = element->boundingRect();
-            const QSize tileSize = localRect.size().toSize();
-            const QString key = appearanceKeyFor(element);
-            const auto tile = m_atlas.lookup(key, tileSize, [element](QPainter &painter) {
-                painter.translate(-element->boundingRect().topLeft());
-                element->paint(&painter, nullptr, nullptr);
-            });
+            // Cheap fingerprint of everything appearanceKeyFor()/boundingRect() actually depend
+            // on -- see m_elementRenderCache's doc comment. A full match means neither
+            // boundingRect() (a real port-walking, transform-mapping recompute) nor
+            // appearanceKeyFor() (a QString::arg() chain) nor the atlas lookup need to run
+            // again this frame for this element.
+            const qint64 pixmapCacheKey = element->appearanceCacheKey();
+            const qreal rotation = element->rotation();
+            const bool flipX = element->isFlippedX();
+            const bool flipY = element->isFlippedY();
+            const bool selected = element->isSelected();
+            const int inputSize = element->inputSize();
+            const int outputSize = element->outputSize();
+
+            // Matches appearanceKeyFor()'s own Display7/14/16 special case exactly -- stays
+            // empty (no allocation) for every other type.
+            QVector<int> segmentStates;
+            if (qobject_cast<Display7 *>(element) || qobject_cast<Display14 *>(element) || qobject_cast<Display16 *>(element)) {
+                segmentStates.reserve(inputSize);
+                for (int i = 0; i < inputSize; ++i) {
+                    segmentStates.append(int(element->inputPort(i)->status()));
+                }
+            }
+
+            const auto cacheIt = m_elementRenderCache.constFind(element);
+            const bool cacheHit = cacheIt != m_elementRenderCache.cend()
+                && cacheIt->pixmapCacheKey == pixmapCacheKey
+                && cacheIt->rotation == rotation
+                && cacheIt->flipX == flipX
+                && cacheIt->flipY == flipY
+                && cacheIt->selected == selected
+                && cacheIt->inputSize == inputSize
+                && cacheIt->outputSize == outputSize
+                && cacheIt->segmentStates == segmentStates;
+
+            QRectF localRect;
+            TextureAtlas::TileLocation tile;
+            if (cacheHit) {
+                localRect = cacheIt->localRect;
+                tile = cacheIt->tile;
+            } else {
+                localRect = element->boundingRect();
+                const QSize tileSize = localRect.size().toSize();
+                const QString key = appearanceKeyFor(element);
+                tile = m_atlas.lookup(key, tileSize, [element](QPainter &painter) {
+                    painter.translate(-element->boundingRect().topLeft());
+                    element->paint(&painter, nullptr, nullptr);
+                });
+                m_elementRenderCache[element] = ElementRenderCache{
+                    pixmapCacheKey, rotation, flipX, flipY, selected, inputSize, outputSize,
+                    segmentStates, localRect, tile};
+            }
+
             if (!tile.isValid()) {
                 continue; // atlas page full or a degenerate (empty) boundingRect -- skip, don't crash
             }
