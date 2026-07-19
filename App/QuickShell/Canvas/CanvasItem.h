@@ -19,6 +19,7 @@
 #include <QQuickItem>
 #include <QSet>
 #include <QUndoStack>
+#include <QVarLengthArray>
 #include <QVector>
 #include <QVersionNumber>
 
@@ -769,6 +770,12 @@ private:
         /// Display7/14/16 only (appearanceKeyFor()'s own extra cache-key dimension for their
         /// live segment states) -- stays default-empty (no allocation) for every other type.
         QVector<int> segmentStates;
+        /// Every port's live Status (inputs then outputs, matching allPorts()' order), added
+        /// alongside segmentStates so a port status change invalidates the tile the same way --
+        /// see the Phase 7.5b port-glyph drawing this backs. QVarLengthArray, not QVector: unlike
+        /// segmentStates (Display-family only), this is computed for every element every frame,
+        /// so avoiding a heap allocation for the common (<=8 total ports) case actually matters.
+        QVarLengthArray<int, 8> portStatuses;
         QRectF localRect;
         TextureAtlas::TileLocation tile;
     };

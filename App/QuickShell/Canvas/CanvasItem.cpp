@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <cmath>
 
+#include <QBrush>
 #include <QClipboard>
 #include <QColor>
 #include <QGuiApplication>
@@ -17,6 +18,7 @@
 #include <QPageLayout>
 #include <QPageSize>
 #include <QPainter>
+#include <QPen>
 #include <QPrinter>
 #include <QQuickWindow>
 #include <QSGGeometry>
@@ -149,6 +151,28 @@ QColor colorForStatus(const Status status)
     case Status::Unknown:  return QColor(255, 152, 0);   // orange
     }
     return QColor(120, 120, 120);
+}
+
+/// Pen/brush a port glyph is drawn with for a given live Status, per the theme -- mirrors
+/// Port::updateTheme()'s exact switch statement (App/Wiring/Port.cpp) rather than reusing
+/// port->currentPen()/currentBrush() directly: that method early-returns for a sceneless port
+/// (Round 3 Fix D, project memory project_quick_hotspot_fixes_2_landed.md, landed when ports
+/// were confirmed dead-for-painting under CanvasItem) -- since CanvasItem's ports are always
+/// sceneless, m_currentPen/m_currentBrush are permanently-stale placeholders there, not a live
+/// per-status value, now that this phase actually paints them.
+struct PortPaintStyle {
+    QPen pen;
+    QBrush brush;
+};
+PortPaintStyle portPaintStyleFor(const Status status, const ThemeAttributes &theme)
+{
+    switch (status) {
+    case Status::Unknown:  return {QPen(theme.m_portUnknownPen),  QBrush(theme.m_portUnknownBrush)};
+    case Status::Inactive: return {QPen(theme.m_portInactivePen), QBrush(theme.m_portInactiveBrush)};
+    case Status::Active:   return {QPen(theme.m_portActivePen),   QBrush(theme.m_portActiveBrush)};
+    case Status::Error:    return {QPen(theme.m_portErrorPen),    QBrush(theme.m_portErrorBrush)};
+    }
+    return {QPen(theme.m_portUnknownPen), QBrush(theme.m_portUnknownBrush)};
 }
 
 /// Segment count each wire is tessellated into for the Bézier curve below -- matches the "16x
@@ -3099,6 +3123,19 @@ QSGNode *CanvasItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
                 }
             }
 
+            // Every port's live status (inputs then outputs, matching allPorts()' order) --
+            // see m_elementRenderCache's own doc comment on why this is a QVarLengthArray, not
+            // a QVector, unlike segmentStates: this runs for every element every frame, not just
+            // the Display family.
+            QVarLengthArray<int, 8> portStatuses;
+            portStatuses.reserve(inputSize + outputSize);
+            for (int i = 0; i < inputSize; ++i) {
+                portStatuses.append(int(element->inputPort(i)->status()));
+            }
+            for (int i = 0; i < outputSize; ++i) {
+                portStatuses.append(int(element->outputPort(i)->status()));
+            }
+
             const auto cacheIt = m_elementRenderCache.constFind(element);
             const bool cacheHit = cacheIt != m_elementRenderCache.cend()
                 && cacheIt->pixmapCacheKey == pixmapCacheKey
@@ -3108,7 +3145,8 @@ QSGNode *CanvasItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
                 && cacheIt->selected == selected
                 && cacheIt->inputSize == inputSize
                 && cacheIt->outputSize == outputSize
-                && cacheIt->segmentStates == segmentStates;
+                && cacheIt->segmentStates == segmentStates
+                && cacheIt->portStatuses == portStatuses;
 
             QRectF localRect;
             TextureAtlas::TileLocation tile;
@@ -3119,13 +3157,29 @@ QSGNode *CanvasItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
                 localRect = element->boundingRect();
                 const QSize tileSize = localRect.size().toSize();
                 const QString key = appearanceKeyFor(element);
-                tile = m_atlas.lookup(key, tileSize, [element](QPainter &painter) {
+                tile = m_atlas.lookup(key, tileSize, [element, &theme](QPainter &painter) {
                     painter.translate(-element->boundingRect().topLeft());
                     element->paint(&painter, nullptr, nullptr);
+
+                    // Port glyphs: real production shape (Port's own path(), a circle for
+                    // InputPort / triangle for OutputPort), positioned via the same pos()+
+                    // transform() composition QGraphicsScene's own child-item painting would
+                    // use, colored by the port's live status via portPaintStyleFor() -- see its
+                    // own doc comment for why port->currentPen()/currentBrush() aren't reused.
+                    for (auto *port : element->allPorts()) {
+                        painter.save();
+                        painter.translate(port->pos());
+                        painter.setTransform(port->transform(), true);
+                        const PortPaintStyle style = portPaintStyleFor(port->status(), theme);
+                        painter.setPen(style.pen);
+                        painter.setBrush(style.brush);
+                        painter.drawPath(port->path());
+                        painter.restore();
+                    }
                 });
                 m_elementRenderCache[element] = ElementRenderCache{
                     pixmapCacheKey, rotation, flipX, flipY, selected, inputSize, outputSize,
-                    segmentStates, localRect, tile};
+                    segmentStates, portStatuses, localRect, tile};
             }
 
             if (!tile.isValid()) {
