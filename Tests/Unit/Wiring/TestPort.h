@@ -19,4 +19,5 @@ private slots:
     void testSetInputsReindexesPorts();
 
     void testPortCurrentPenTracksStatusColor();
+    void testPortSkipsThemeUpdateWhenSceneless();
 };

@@ -222,6 +222,20 @@ void Port::hoverEnter()
 
 void Port::updateTheme()
 {
+    // m_currentPen/m_currentBrush exist purely to feed paint() (QGraphicsView-based rendering),
+    // and the update() call below purely to schedule a QGraphicsScene repaint -- both are
+    // unconditionally dead work for a port that was never added to a QGraphicsScene: confirmed
+    // by reading GraphicElement::paint() (calls only m_appearance.render(), never port->paint())
+    // -- ports paint themselves as separate sibling QGraphicsItems via QGraphicsScene's own
+    // child-item traversal, which CanvasItem's offscreen TextureAtlas render (paint() called
+    // directly, no scene involved) never triggers. scene() is a cheap O(1) cached-pointer read,
+    // safe to keep unconditional; everything past it was real, measurable, always-wasted cost on
+    // every single status change for CanvasItem's ports -- see project memory
+    // project_quick_hotspot_fixes_2_landed.md for the profile that found it.
+    if (!scene()) {
+        return;
+    }
+
     const auto &theme = ThemeManager::attributes();
 
     // m_currentPen (drawn by paint()) is set directly instead of going through the item's

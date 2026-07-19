@@ -143,16 +143,6 @@ void Connection::updatePath()
     m_shapeDirty = true;
 }
 
-OutputPort *Connection::startPort() const
-{
-    return m_startPort;
-}
-
-InputPort *Connection::endPort() const
-{
-    return m_endPort;
-}
-
 double Connection::angle()
 {
     Port *port1 = m_startPort;
@@ -204,10 +194,16 @@ void Connection::setStatus(const Status status)
 
     m_status = status;
 
-    // Feed idle detection for adaptive wire antialiasing: a stream of status changes IS
-    // the simulation repaint storm, and it stops exactly when the simulation does.
-    if (auto *scene_ = qobject_cast<Scene *>(scene())) {
-        scene_->noteWireActivity();
+    // Feed idle detection for adaptive wire antialiasing (a stream of status changes IS the
+    // simulation repaint storm, and it stops exactly when the simulation does) -- meaningless,
+    // always-wasted work for a Connection never added to a QGraphicsScene (CanvasItem's case).
+    // scene() is a cheap O(1) cached-pointer read, kept unconditional; the qobject_cast is
+    // skipped entirely when there's no scene at all. See applyStatusPen()'s own guard and
+    // project memory project_quick_hotspot_fixes_2_landed.md for the profile that found this.
+    if (scene()) {
+        if (auto *scene_ = qobject_cast<Scene *>(scene())) {
+            scene_->noteWireActivity();
+        }
     }
 
     applyStatusPen();
@@ -220,6 +216,17 @@ void Connection::setStatus(const Status status)
 
 void Connection::applyStatusPen()
 {
+    // m_statusPen only feeds paint() (QGraphicsView-based rendering) and, on a width change,
+    // the item's real pen (for shape()'s hit-testing stroke) -- both meaningless, always-wasted
+    // work for a Connection never added to a QGraphicsScene: CanvasItem never calls paint() on
+    // these (its wire rendering reads startPort()->status() directly) and hit-tests wires
+    // through its own SpatialIndex-built stroke, never QGraphicsItem::shape(). scene() is a
+    // cheap O(1) cached-pointer read; everything past it is real, measurable, always-wasted
+    // cost otherwise -- see project memory project_quick_hotspot_fixes_2_landed.md.
+    if (!scene()) {
+        return;
+    }
+
     // Error wires are drawn thicker (5 px) to draw attention to the problem;
     // other wires are thinner (3 px) to reduce visual clutter during simulation.
     // Unknown (undriven) wires use a distinct gray from Error (red).
@@ -248,6 +255,13 @@ void Connection::applyStatusPen()
 
 void Connection::updateTheme()
 {
+    // The color-member refresh below is cheap (five QColor copies) and load-bearing: it's
+    // called once unconditionally from the constructor -- necessarily before this item could
+    // ever be scene-attached -- and applyStatusPen() reads these cached members rather than
+    // the theme directly, so skipping this here would leave them permanently uninitialized for
+    // any item, Widgets or not. Only the expensive, purely-paint-facing tail (the real pen
+    // rebuild, the repaint request) is skipped when sceneless; applyStatusPen() already
+    // no-ops itself in that case (see its own doc comment), so it's safe to call unconditionally.
     const auto &theme = ThemeManager::attributes();
     m_unknownColor = theme.m_connectionUnknown;
     m_inactiveColor = theme.m_connectionInactive;
@@ -259,7 +273,9 @@ void Connection::updateTheme()
     // the previous theme's colour until its status next changes
     applyStatusPen();
 
-    update();
+    if (scene()) {
+        update();
+    }
 }
 
 void Connection::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)

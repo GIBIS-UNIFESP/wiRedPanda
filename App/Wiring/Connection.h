@@ -47,9 +47,9 @@ public:
     // --- Port / Endpoint Access ---
 
     /// Returns the output port this connection originates from.
-    OutputPort *startPort() const;
+    OutputPort *startPort() const { return m_startPort; }
     /// Returns the input port this connection leads to.
-    InputPort *endPort() const;
+    InputPort *endPort() const { return m_endPort; }
     /// Returns the port at the other end of this connection from \a port.
     Port *otherPort(const Port *port) const;
 

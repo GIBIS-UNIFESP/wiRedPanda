@@ -5,6 +5,8 @@
 
 #include <algorithm>
 
+#include <QGraphicsScene>
+
 #include "App/Core/ThemeManager.h"
 #include "App/Element/GraphicElements/Display7.h"
 #include "App/Wiring/Port.h"
@@ -50,8 +52,18 @@ void TestPort::testPortCurrentPenTracksStatusColor()
     // triggers) for every status, tracking colour via currentPen() instead -- this must
     // still reflect the correct colour for every status. OutputPort is always valid
     // regardless of connection state, so its status can be driven directly.
+    //
+    // Added to a real QGraphicsScene: Port::updateTheme() now skips its pen/brush work
+    // entirely for a sceneless port -- real, always-wasted cost otherwise for CanvasItem's
+    // Quick-rendered ports, which are never scene-attached and never painted via
+    // QGraphicsView (see project memory project_quick_hotspot_fixes_2_landed.md). A real
+    // port's currentPen() is only ever read by paint(), which itself only ever runs on a
+    // scene-attached item, so a scene here matches the precondition production always
+    // satisfies before this code path runs.
     const auto &theme = ThemeManager::attributes();
+    QGraphicsScene scene;
     OutputPort port;
+    scene.addItem(&port);
 
     port.setStatus(Status::Active);
     QCOMPARE(port.currentPen().color(), theme.m_portActivePen);
@@ -64,4 +76,23 @@ void TestPort::testPortCurrentPenTracksStatusColor()
 
     port.setStatus(Status::Unknown);
     QCOMPARE(port.currentPen().color(), theme.m_portUnknownPen);
+}
+
+void TestPort::testPortSkipsThemeUpdateWhenSceneless()
+{
+    // The optimization the test above's scene setup exists to accommodate: a port that is
+    // NOT in any QGraphicsScene (CanvasItem's real, permanent case -- its ports are never
+    // scene-attached) must skip updateTheme()'s pen/brush computation entirely on a status
+    // change, not just happen to still work. currentPen() must stay at its default
+    // (never computed), proving the early-return actually ran rather than merely being
+    // consistent with a different code path reaching the same values by coincidence.
+    OutputPort port;
+    QVERIFY(!port.scene());
+    const QPen before = port.currentPen();
+
+    port.setStatus(Status::Active);
+    port.setStatus(Status::Error);
+    port.setStatus(Status::Unknown);
+
+    QCOMPARE(port.currentPen(), before);
 }

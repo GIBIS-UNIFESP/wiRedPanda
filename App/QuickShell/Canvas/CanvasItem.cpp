@@ -150,6 +150,29 @@ QColor colorForStatus(const Status status)
     return QColor(120, 120, 120);
 }
 
+/// Returns a QSGGeometry with exactly \a vertexCount vertices, reusing \a node's existing
+/// geometry object across frames (via QSGGeometry::allocate()) instead of `new`-ing a fresh one
+/// on every repaint -- the common case is that a node's vertex count stays the same frame to
+/// frame (only add/delete/paste/undo/redo/hover-toggle/rubber-band-toggle actually change one),
+/// so the allocation itself doesn't need redoing just because the *contents* do. Only allocates
+/// a genuinely new QSGGeometry on the node's first-ever build (\a node has none yet). Callers
+/// still write fresh vertex data into the returned geometry and must call
+/// node->markDirty(QSGNode::DirtyGeometry) themselves -- this only owns the allocation, not the
+/// data or the dirty notification.
+QSGGeometry *geometryFor(QSGGeometryNode *node, const QSGGeometry::AttributeSet &attributes, int vertexCount)
+{
+    if (QSGGeometry *existing = node->geometry()) {
+        if (existing->vertexCount() != vertexCount) {
+            existing->allocate(vertexCount);
+        }
+        return existing;
+    }
+    auto *geometry = new QSGGeometry(attributes, vertexCount);
+    node->setGeometry(geometry);
+    node->setFlag(QSGNode::OwnsGeometry);
+    return geometry;
+}
+
 void appendQuad(QSGGeometry::ColoredPoint2D *vertices, int &cursor, const QRectF &rect, const QColor &color)
 {
     const auto r = uchar(color.red());
@@ -2669,13 +2692,12 @@ QSGNode *CanvasItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
 
     // --- Background: one flat-colored quad covering this item's own visible bounds. ---
     {
-        auto *geometry = new QSGGeometry(QSGGeometry::defaultAttributes_ColoredPoint2D(), 6);
+        QSGGeometry *geometry = geometryFor(backgroundNode, QSGGeometry::defaultAttributes_ColoredPoint2D(), 6);
         geometry->setDrawingMode(QSGGeometry::DrawTriangles);
         QSGGeometry::ColoredPoint2D *vertices = geometry->vertexDataAsColoredPoint2D();
         int cursor = 0;
         appendQuad(vertices, cursor, QRectF(0.0, 0.0, width(), height()), theme.m_sceneBgBrush);
-        backgroundNode->setGeometry(geometry);
-        backgroundNode->setFlag(QSGNode::OwnsGeometry);
+        backgroundNode->markDirty(QSGNode::DirtyGeometry);
         if (!backgroundNode->material()) {
             auto *material = new QSGVertexColorMaterial();
             backgroundNode->setMaterial(material);
@@ -2718,7 +2740,8 @@ QSGNode *CanvasItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
             }
         }
         const qreal halfExtent = 0.75 / zoomScale(); // 1.5 screen px square, zoom-compensated
-        auto *geometry = new QSGGeometry(QSGGeometry::defaultAttributes_ColoredPoint2D(), int(points.size()) * 6);
+        QSGGeometry *geometry = geometryFor(static_cast<QSGGeometryNode *>(gridNode),
+                                             QSGGeometry::defaultAttributes_ColoredPoint2D(), int(points.size()) * 6);
         geometry->setDrawingMode(QSGGeometry::DrawTriangles);
         QSGGeometry::ColoredPoint2D *vertices = geometry->vertexDataAsColoredPoint2D();
         int cursor = 0;
@@ -2726,8 +2749,7 @@ QSGNode *CanvasItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
             const QRectF dotRect(point.x() - halfExtent, point.y() - halfExtent, halfExtent * 2.0, halfExtent * 2.0);
             appendQuad(vertices, cursor, dotRect, theme.m_sceneBgDots);
         }
-        static_cast<QSGGeometryNode *>(gridNode)->setGeometry(geometry);
-        static_cast<QSGGeometryNode *>(gridNode)->setFlag(QSGNode::OwnsGeometry);
+        static_cast<QSGGeometryNode *>(gridNode)->markDirty(QSGNode::DirtyGeometry);
         if (!static_cast<QSGGeometryNode *>(gridNode)->material()) {
             auto *material = new QSGVertexColorMaterial();
             static_cast<QSGGeometryNode *>(gridNode)->setMaterial(material);
@@ -2756,7 +2778,8 @@ QSGNode *CanvasItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
 
         const int committedCount = int(m_connections.size());
         const int vertexCount = (committedCount + (m_editedConnection ? 1 : 0)) * 2;
-        auto *geometry = new QSGGeometry(QSGGeometry::defaultAttributes_ColoredPoint2D(), vertexCount);
+        QSGGeometry *geometry = geometryFor(static_cast<QSGGeometryNode *>(wireNode),
+                                             QSGGeometry::defaultAttributes_ColoredPoint2D(), vertexCount);
         geometry->setDrawingMode(QSGGeometry::DrawLines);
         geometry->setLineWidth(2.0f);
         QSGGeometry::ColoredPoint2D *vertices = geometry->vertexDataAsColoredPoint2D();
@@ -2782,8 +2805,7 @@ QSGNode *CanvasItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
                                     uchar(kEditedWireColor.red()), uchar(kEditedWireColor.green()),
                                     uchar(kEditedWireColor.blue()), uchar(kEditedWireColor.alpha()));
         }
-        static_cast<QSGGeometryNode *>(wireNode)->setGeometry(geometry);
-        static_cast<QSGGeometryNode *>(wireNode)->setFlag(QSGNode::OwnsGeometry);
+        static_cast<QSGGeometryNode *>(wireNode)->markDirty(QSGNode::DirtyGeometry);
         if (!static_cast<QSGGeometryNode *>(wireNode)->material()) {
             auto *material = new QSGVertexColorMaterial();
             static_cast<QSGGeometryNode *>(wireNode)->setMaterial(material);
@@ -2798,7 +2820,8 @@ QSGNode *CanvasItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
     {
         GraphicElement *hovered = m_elementsById.value(m_hoveredId, nullptr);
         const int vertexCount = hovered ? 6 : 0;
-        auto *geometry = new QSGGeometry(QSGGeometry::defaultAttributes_ColoredPoint2D(), vertexCount);
+        QSGGeometry *geometry = geometryFor(static_cast<QSGGeometryNode *>(hoverNode),
+                                             QSGGeometry::defaultAttributes_ColoredPoint2D(), vertexCount);
         geometry->setDrawingMode(QSGGeometry::DrawTriangles);
         if (hovered) {
             QSGGeometry::ColoredPoint2D *vertices = geometry->vertexDataAsColoredPoint2D();
@@ -2807,8 +2830,7 @@ QSGNode *CanvasItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
             const QRectF worldRect = hovered->boundingRect().translated(hovered->pos());
             appendQuad(vertices, cursor, worldRect.adjusted(-4, -4, 4, 4), kHoverColor);
         }
-        static_cast<QSGGeometryNode *>(hoverNode)->setGeometry(geometry);
-        static_cast<QSGGeometryNode *>(hoverNode)->setFlag(QSGNode::OwnsGeometry);
+        static_cast<QSGGeometryNode *>(hoverNode)->markDirty(QSGNode::DirtyGeometry);
         if (!static_cast<QSGGeometryNode *>(hoverNode)->material()) {
             auto *material = new QSGVertexColorMaterial();
             static_cast<QSGGeometryNode *>(hoverNode)->setMaterial(material);
@@ -2889,15 +2911,15 @@ QSGNode *CanvasItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
             placed.append(PlacedTile{localRect.translated(element->pos()), tile.uv});
         }
 
-        auto *geometry = new QSGGeometry(QSGGeometry::defaultAttributes_TexturedPoint2D(), int(placed.size()) * 6);
+        QSGGeometry *geometry = geometryFor(static_cast<QSGGeometryNode *>(gateNode),
+                                             QSGGeometry::defaultAttributes_TexturedPoint2D(), int(placed.size()) * 6);
         geometry->setDrawingMode(QSGGeometry::DrawTriangles);
         QSGGeometry::TexturedPoint2D *vertices = geometry->vertexDataAsTexturedPoint2D();
         int cursor = 0;
         for (const auto &tile : std::as_const(placed)) {
             appendTexturedQuad(vertices, cursor, tile.worldRect, tile.uv);
         }
-        static_cast<QSGGeometryNode *>(gateNode)->setGeometry(geometry);
-        static_cast<QSGGeometryNode *>(gateNode)->setFlag(QSGNode::OwnsGeometry);
+        static_cast<QSGGeometryNode *>(gateNode)->markDirty(QSGNode::DirtyGeometry);
 
         auto *material = static_cast<QSGTextureMaterial *>(static_cast<QSGGeometryNode *>(gateNode)->material());
         if (!material) {
@@ -2917,7 +2939,8 @@ QSGNode *CanvasItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
     // re-adding the node every press/release. ---
     {
         const int vertexCount = m_markingSelectionBox ? 6 : 0;
-        auto *geometry = new QSGGeometry(QSGGeometry::defaultAttributes_ColoredPoint2D(), vertexCount);
+        QSGGeometry *geometry = geometryFor(static_cast<QSGGeometryNode *>(overlayNode),
+                                             QSGGeometry::defaultAttributes_ColoredPoint2D(), vertexCount);
         geometry->setDrawingMode(QSGGeometry::DrawTriangles);
         if (m_markingSelectionBox) {
             QSGGeometry::ColoredPoint2D *vertices = geometry->vertexDataAsColoredPoint2D();
@@ -2925,8 +2948,7 @@ QSGNode *CanvasItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
             static const QColor kMarqueeColor(33, 150, 243, 70);
             appendQuad(vertices, cursor, m_selectionRect, kMarqueeColor);
         }
-        static_cast<QSGGeometryNode *>(overlayNode)->setGeometry(geometry);
-        static_cast<QSGGeometryNode *>(overlayNode)->setFlag(QSGNode::OwnsGeometry);
+        static_cast<QSGGeometryNode *>(overlayNode)->markDirty(QSGNode::DirtyGeometry);
         if (!static_cast<QSGGeometryNode *>(overlayNode)->material()) {
             auto *material = new QSGVertexColorMaterial();
             static_cast<QSGGeometryNode *>(overlayNode)->setMaterial(material);

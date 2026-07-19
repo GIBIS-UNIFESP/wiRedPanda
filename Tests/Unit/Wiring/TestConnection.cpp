@@ -5,6 +5,8 @@
 
 #include <memory>
 
+#include <QGraphicsScene>
+
 #include "App/Core/Application.h"
 #include "App/Core/ThemeManager.h"
 #include "App/Element/GraphicElements/And.h"
@@ -91,8 +93,16 @@ void TestConnection::testConnectionStatusPenTracksColorAndWidth()
     // triggers) whenever the pen width doesn't change, tracking colour via statusPen()
     // instead -- this must still reflect the correct colour and width for every status,
     // including the Error <-> non-Error transitions that exercise the real-setPen() branch.
+    //
+    // Added to a real QGraphicsScene: applyStatusPen() now skips this entirely for a
+    // sceneless connection -- real, always-wasted cost otherwise for CanvasItem's
+    // Quick-rendered wires, which are never scene-attached and never painted via
+    // QGraphicsView (see project memory project_quick_hotspot_fixes_2_landed.md). A scene
+    // here matches the precondition production always satisfies before this runs.
     const auto &theme = ThemeManager::attributes();
+    QGraphicsScene scene;
     Connection connection;
+    scene.addItem(&connection);
 
     connection.setStatus(Status::Active);
     QCOMPARE(connection.statusPen().color(), theme.m_connectionActive);
@@ -117,10 +127,15 @@ void TestConnection::testShapeFollowsPathAndPenWidth()
 {
     // shape() is cached (the QGraphicsPathItem default re-strokes the Bézier on every
     // call) -- the cache must follow path geometry changes and real pen-width changes.
+    // Needs a real QGraphicsScene: the Error-pen-width assertion below depends on
+    // applyStatusPen()'s real setPen() call, which now short-circuits for a sceneless
+    // connection (see testConnectionStatusPenTracksColorAndWidth()'s doc comment).
     const bool prevRendering = Application::renderingEnabled;
     Application::renderingEnabled = true; // updatePath() builds geometry only when rendering
 
+    QGraphicsScene scene;
     Connection connection;
+    scene.addItem(&connection);
     connection.setStartPos({0, 0});
     connection.setEndPos({100, 0});
     connection.updatePath();
@@ -143,4 +158,23 @@ void TestConnection::testShapeFollowsPathAndPenWidth()
     QVERIFY(connection.shape().contains(QPointF(2, 2)));
 
     Application::renderingEnabled = prevRendering;
+}
+
+void TestConnection::testConnectionSkipsStatusPenWhenSceneless()
+{
+    // The optimization the two tests above's scene setup exists to accommodate: a
+    // connection that is NOT in any QGraphicsScene (CanvasItem's real, permanent case --
+    // its wires are never scene-attached; wire colour is read directly from
+    // startPort()->status() instead) must skip applyStatusPen() entirely on a status
+    // change, not just happen to still work. statusPen() must stay at its default
+    // (never computed), proving the early-return actually ran.
+    Connection connection;
+    QVERIFY(!connection.scene());
+    const QPen before = connection.statusPen();
+
+    connection.setStatus(Status::Active);
+    connection.setStatus(Status::Error);
+    connection.setStatus(Status::Unknown);
+
+    QCOMPARE(connection.statusPen(), before);
 }

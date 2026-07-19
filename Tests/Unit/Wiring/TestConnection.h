@@ -18,4 +18,5 @@ private slots:
     void testConnectionDestruction();
     void testConnectionStatusPenTracksColorAndWidth();
     void testShapeFollowsPathAndPenWidth();
+    void testConnectionSkipsStatusPenWhenSceneless();
 };
