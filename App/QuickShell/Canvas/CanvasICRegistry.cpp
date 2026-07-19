@@ -19,7 +19,8 @@
 #include "App/Wiring/Port.h"
 
 CanvasICRegistry::CanvasICRegistry(CanvasItem *canvas)
-    : m_canvas(canvas)
+    : QObject(canvas)
+    , m_canvas(canvas)
 {
 }
 
@@ -61,6 +62,8 @@ void CanvasICRegistry::renameBlob(const QString &oldName, const QString &newName
             static_cast<IC *>(elm)->setBlobName(newName);
         }
     }
+
+    emit blobRenamed(oldName, newName);
 }
 
 QList<GraphicElement *> CanvasICRegistry::findICsByBlobName(const QString &blobName) const

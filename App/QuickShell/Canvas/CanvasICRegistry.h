@@ -12,6 +12,7 @@
 #include <QByteArray>
 #include <QList>
 #include <QMap>
+#include <QObject>
 #include <QString>
 
 class CanvasItem;
@@ -40,11 +41,24 @@ class IC;
  *   a silent behavior change -- the blob still resolves correctly as long as the referenced
  *   file exists at load time (exactly like an ordinary file-backed IC does); it just isn't
  *   portable to a machine without that file, the way a fully self-contained blob would be.
+ * - renameBlob()'s recursive rewrite of nested blob references inside other blobs' metadata
+ *   (ICRegistry::renameBlobReference()) -- same class of gap as the makeBlobSelfContained()
+ *   one above, unrelated to this class's real QObject-ness (added for blobRenamed() below).
+ *
+ * A real QObject (unlike most other Canvas* Phase 3 ports, which are plain classes) so it can
+ * emit blobRenamed() -- QuickWorkspaceManager listens for this to keep an open inline-IC tab's
+ * displayed title in sync with its blob's current name, mirroring ICRegistry's identical
+ * signal and WorkspaceManager::onBlobRenamed(). Composed as a plain (non-heap, non-pointer)
+ * member of CanvasItem, same as before -- a QObject-derived value member with its owner as
+ * QObject parent is a normal, supported Qt pattern; nothing about adding Q_OBJECT requires
+ * heap allocation.
  *
  * Owned by CanvasItem the same way ICRegistry is owned by Scene.
  */
-class CanvasICRegistry
+class CanvasICRegistry : public QObject
 {
+    Q_OBJECT
+
 public:
     explicit CanvasICRegistry(CanvasItem *canvas);
 
@@ -103,6 +117,12 @@ public:
     /// instance referencing it to file-based, pushing one CanvasUpdateBlobCommand. Throws on
     /// write failure. Mirrors ICRegistry::extractToFile().
     int extractToFile(const QString &blobName, const QString &filePath);
+
+signals:
+    /// Emitted at the end of a successful renameBlob() (redo and undo alike -- both funnel
+    /// through renameBlob() itself). Mirrors ICRegistry::blobRenamed(); QuickWorkspaceManager
+    /// listens for this to retitle any open inline-IC tab tracking the renamed blob.
+    void blobRenamed(const QString &oldName, const QString &newName);
 
 private:
     /// Mutates each of \a targets via \a mutate under a SimulationBlocker, rolling all of them

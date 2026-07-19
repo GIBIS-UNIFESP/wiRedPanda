@@ -128,11 +128,12 @@ void QuickWorkspaceManager::createNewTab()
     QQmlEngine::setObjectOwnership(workspace.get(), QQmlEngine::CppOwnership);
 
     connect(workspace.get(), &QuickWorkSpace::fileChanged, this, &QuickWorkspaceManager::onTabFileChanged);
-    // WorkspaceManager also connects ICRegistry::blobRenamed here to retitle an open inline-IC
-    // tab when its tracked blob is renamed elsewhere -- CanvasICRegistry (Phase 3, scoped to
-    // the blob-storage core) has no such signal yet, and isn't even a QObject. Deliberately not
-    // ported: an inline-IC tab's title would go stale after an out-of-tab rename until this
-    // lands. Named here rather than silently dropped.
+    // Mirrors WorkspaceManager's identical per-workspace connection: retitles an open inline-IC
+    // tab when its tracked blob is renamed elsewhere. Connected here (not just for inline tabs)
+    // since createNewTab() is the single shared construction path for both root and inline tabs
+    // (openICInTab() below calls this first) -- every canvas's own registry can rename a blob
+    // some other tab's inline view is tracking.
+    connect(workspace->canvas()->icRegistry(), &CanvasICRegistry::blobRenamed, this, &QuickWorkspaceManager::onBlobRenamed);
 
     const QString untitledTitle = nextUntitledTitle();
     workspace->setUntitledTitle(untitledTitle);
@@ -484,6 +485,15 @@ void QuickWorkspaceManager::onTabFileChanged(const QFileInfo &fileInfo)
     }
 
     // IC-button enabled-state refresh: no chrome exists yet (sub-step 3).
+}
+
+void QuickWorkspaceManager::onBlobRenamed(const QString &oldName, const QString &newName)
+{
+    for (auto &ws : m_tabs) {
+        if (ws->isInlineIC() && ws->inlineBlobName() == oldName) {
+            ws->setInlineBlobName(newName);
+        }
+    }
 }
 
 bool QuickWorkspaceManager::closeTab(const int tabIndex)

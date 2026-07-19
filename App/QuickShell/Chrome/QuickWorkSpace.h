@@ -94,7 +94,12 @@ public:
     [[nodiscard]] QuickWorkSpace *parentWorkspace() const { return m_parentWorkspace; }
     [[nodiscard]] int parentICElementId() const { return m_parentICElementId; }
     [[nodiscard]] const QString &inlineBlobName() const { return m_inlineBlobName; }
-    void setInlineBlobName(const QString &blobName) { m_inlineBlobName = blobName; }
+    /// Emits titleChanged() -- title() reads m_inlineBlobName directly for an inline tab, so
+    /// any change here always changes what it returns. Lets QuickWorkspaceManager::
+    /// onBlobRenamed() just call this and trust the tab bar's real NOTIFY-bound title property
+    /// to refresh itself, instead of reaching in to poke a signal (or a QTabWidget-specific
+    /// setTabText(), WorkspaceManager::onBlobRenamed()'s own Widgets-side equivalent) itself.
+    void setInlineBlobName(const QString &blobName) { m_inlineBlobName = blobName; emit titleChanged(); }
 
     [[nodiscard]] const QString &untitledTitle() const { return m_untitledTitle; }
     void setUntitledTitle(const QString &title) { m_untitledTitle = title; }

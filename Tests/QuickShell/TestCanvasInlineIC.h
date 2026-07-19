@@ -13,17 +13,13 @@
 /// operations" sections. Driven directly through QuickWorkspaceManager's real methods
 /// (openICInTab(), saveFile()), not synthesized QKeyEvents.
 ///
-/// A real, confirmed architectural gap found while scoping this sub-step, deliberately NOT
-/// fixed here (out of scope for a test-authoring pass -- it needs a design decision, not a
-/// bounded bug fix): Widgets' WorkspaceManager keeps an open inline-IC tab's displayed title
-/// in sync with its blob's name by connecting to ICRegistry::blobRenamed, a real Qt signal
-/// (App/UI/WorkspaceManager.cpp's onBlobRenamed()). CanvasICRegistry is a plain, non-QObject
-/// class (deliberately, since Phase 3) -- it has no signal to connect to, so
-/// QuickWorkspaceManager has no equivalent, and an inline tab's title goes stale after its
-/// blob is renamed. testInlineTabTitleUpdatesAfterBlobRename is deferred for exactly this
-/// reason, not silently dropped.
+/// A real gap found while scoping this sub-step, since fixed: CanvasICRegistry gained a
+/// blobRenamed signal (mirroring ICRegistry::blobRenamed exactly -- the Widgets original is
+/// already a QObject, so there was no real design fork here) and QuickWorkspaceManager now
+/// connects to it per-tab in createNewTab(), retitling any open inline-IC tab tracking the
+/// renamed blob. testInlineTabTitleUpdatesAfterBlobRename below exercises this for real.
 ///
-/// Also deferred: testInlineICDropSaveCloseReopen (heavy QTabWidget close/reopen-specific
+/// Still deferred: testInlineICDropSaveCloseReopen (heavy QTabWidget close/reopen-specific
 /// mechanics needing real adaptation to QuickWorkspaceManager::closeTab()/openICInTab(), a
 /// substantial effort of its own) and testEmbeddedICCopyPastePreservesState (duplicates
 /// TestCanvasEmbeddedIC::testEmbeddedICCopyPaste's intent exactly, Phase 7e-2).
@@ -35,6 +31,7 @@ private slots:
     void initTestCase();
 
     void testInlineTabDeduplication();
+    void testInlineTabTitleUpdatesAfterBlobRename();
     void testEmbeddedICSaveReloadRoundTrip();
     void testInlineICSaveNoFileDialog();
     void testInlineICSaveMarksRootDirty();

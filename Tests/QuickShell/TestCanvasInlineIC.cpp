@@ -70,6 +70,26 @@ void TestCanvasInlineIC::testInlineTabDeduplication()
     QCOMPARE(wsManager.count(), initialTabs + 1);
 }
 
+void TestCanvasInlineIC::testInlineTabTitleUpdatesAfterBlobRename()
+{
+    QuickWorkspaceManager wsManager;
+    wsManager.newTab();
+    auto *canvas = wsManager.currentTab()->canvas();
+    auto *ic = placeInlineTestIC(*canvas, m_fixtureDir, "rename_tab_test");
+    const QByteArray blob = canvas->icRegistry()->blob("rename_tab_test");
+
+    wsManager.openICInTab("rename_tab_test", ic->id(), blob);
+    auto *inlineTab = wsManager.currentTab();
+    QCOMPARE(wsManager.tabTitle(inlineTab), QString("[rename_tab_test]"));
+
+    // Rename the blob from the parent canvas (the inline tab stays open throughout) --
+    // CanvasICRegistry::blobRenamed, connected in createNewTab(), must retitle it live.
+    canvas->icRegistry()->renameBlob("rename_tab_test", "renamed_tab_test");
+
+    QCOMPARE(wsManager.tabTitle(inlineTab), QString("[renamed_tab_test]"));
+    QCOMPARE(inlineTab->inlineBlobName(), QString("renamed_tab_test"));
+}
+
 void TestCanvasInlineIC::testEmbeddedICSaveReloadRoundTrip()
 {
     const QString savePath = m_fixtureDir + "/save_reload_test.panda";

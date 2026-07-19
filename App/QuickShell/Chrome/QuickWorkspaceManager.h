@@ -133,6 +133,13 @@ private:
     /// tabsChanged() as needed.
     void removeTabAt(int tabIndex);
 
+    /// Retitles any open inline-IC tab tracking \a oldName to \a newName, following a
+    /// CanvasICRegistry::blobRenamed signal -- otherwise an already-open sub-circuit tab keeps
+    /// showing the pre-rename name indefinitely (it was only ever set once, at tab creation).
+    /// Mirrors WorkspaceManager::onBlobRenamed() exactly, minus the QTabWidget-specific
+    /// setTabText() poke (QuickWorkSpace::setInlineBlobName() emits titleChanged() itself).
+    void onBlobRenamed(const QString &oldName, const QString &newName);
+
     [[nodiscard]] int closeTabAnyway();
     [[nodiscard]] int findTabWithFile(const QString &fileName) const;
     [[nodiscard]] QString nextUntitledTitle() const;
