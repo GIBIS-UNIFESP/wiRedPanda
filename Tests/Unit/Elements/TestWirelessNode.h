@@ -36,4 +36,7 @@ private slots:
     void testLoadNegativeWirelessModeClampsToNone();
     void testSaveLoadRxPortVisibility();
     void testSaveLoadTxPortVisibility();
+
+    // updateWirelessColor()'s Status::Error case
+    void testWirelessIndicatorHandlesBusConflictError();
 };
