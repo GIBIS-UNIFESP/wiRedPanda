@@ -3,16 +3,21 @@
 
 #include "Tests/Unit/Elements/TestIC.h"
 
+#include <limits>
+#include <memory>
+
 #include <QGraphicsSceneMouseEvent>
 #include <QSignalSpy>
 #include <QTemporaryDir>
 
 #include "App/Core/Settings.h"
 #include "App/Element/GraphicElement.h"
+#include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/Element/ICPreviewPopup.h"
+#include "App/Element/ICRenderer.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -160,4 +165,58 @@ void TestICUnit::testLoadedIcWithDisconnectedInputIsUnknown()
 
     ic->resettleCombinational();
     QCOMPARE(ic->outputValue(0), Status::Unknown);
+}
+
+void TestICUnit::testGeneratePixmapWithNonFiniteBoundsIsNoOp()
+{
+    // Defense-in-depth: a non-finite port position makes renderBodyBounds() NaN, and
+    // QSizeF::toSize() asserts (!qIsNaN) on that -> process abort. The load-side guards
+    // (validateFinitePos/validateFiniteAngle) reject this on a real load, so it's forced
+    // directly via the port's own public setPos() to exercise the guard deterministically.
+    QTemporaryDir subDir;
+    QVERIFY(subDir.isValid());
+    WorkSpace subWorkspace;
+    CircuitBuilder subBuilder(subWorkspace.scene());
+    InputSwitch sw;
+    Led led;
+    subBuilder.add(&sw, &led);
+    subBuilder.connect(&sw, 0, &led, 0);
+    const QString subPath = subDir.path() + "/nonfinite_pixmap_probe.panda";
+    QCOMPARE(subWorkspace.save(subPath), WorkSpace::SaveOutcome::Saved);
+
+    auto ic = std::make_unique<IC>();
+    ic->loadFile(subPath, subDir.path());
+    QVERIFY(ic->inputSize() >= 1);
+
+    ic->inputPort(0)->setPos(std::numeric_limits<qreal>::quiet_NaN(), 0);
+    ICRenderer::generatePixmap(*ic); // must return early rather than abort
+}
+
+void TestICUnit::testGeneratePreviewPixmapWithNonFiniteBoundsIsNoOp()
+{
+    IC ic;
+    auto elm = std::make_unique<And>();
+    elm->setPos(std::numeric_limits<qreal>::quiet_NaN(), 0);
+
+    QList<QGraphicsItem *> items{elm.get()};
+    ICRenderer::generatePreviewPixmap(ic, items);
+
+    QVERIFY2(ic.previewPixmap().isNull(), "a non-finite item bounding rect must reset the preview to null, not abort");
+}
+
+void TestICUnit::testGeneratePreviewPixmapWithDegenerateAspectRatioIsEmpty()
+{
+    // An extremely wide/thin circuit layout scales down to a QSize with one dimension
+    // rounding to 0 (empty), which must reset the preview to null rather than construct a
+    // degenerate QPixmap.
+    IC ic;
+    auto elm1 = std::make_unique<And>();
+    auto elm2 = std::make_unique<And>();
+    elm1->setPos(0, 0);
+    elm2->setPos(100000000, 0);
+
+    QList<QGraphicsItem *> items{elm1.get(), elm2.get()};
+    ICRenderer::generatePreviewPixmap(ic, items);
+
+    QVERIFY(ic.previewPixmap().isNull());
 }

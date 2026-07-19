@@ -27,4 +27,9 @@ private slots:
     // ICSimulation's empty-IC and disconnected-input guards
     void testUnloadedIcSimulationMethodsAreNoOps();
     void testLoadedIcWithDisconnectedInputIsUnknown();
+
+    // ICRenderer's non-finite/degenerate-geometry defense-in-depth guards
+    void testGeneratePixmapWithNonFiniteBoundsIsNoOp();
+    void testGeneratePreviewPixmapWithNonFiniteBoundsIsNoOp();
+    void testGeneratePreviewPixmapWithDegenerateAspectRatioIsEmpty();
 };
