@@ -243,6 +243,8 @@ set(QUICK_SHELL_TEST_SOURCES
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestQuickElementHandler.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestQuickFileHandlerSecurity.cpp
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestQuickFileHandlerSecurity.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestQuickAppController.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestQuickAppController.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestQuickDolphinController.cpp
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestQuickDolphinController.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestQuickICHandlerSecurity.cpp

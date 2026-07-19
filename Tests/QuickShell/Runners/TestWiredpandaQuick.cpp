@@ -5,6 +5,7 @@
 
 #include "Tests/QuickShell/TestCanvasCommands.h"
 #include "Tests/QuickShell/TestCanvasItemSmoke.h"
+#include "Tests/QuickShell/TestQuickAppController.h"
 #include "Tests/QuickShell/TestQuickDolphinController.h"
 #include "Tests/QuickShell/TestQuickElementHandler.h"
 #include "Tests/QuickShell/TestQuickFileHandlerSecurity.h"
@@ -19,5 +20,6 @@ int main(int argc, char **argv)
         {"TestQuickFileHandlerSecurity", []() -> QObject * { return new TestQuickFileHandlerSecurity; }},
         {"TestQuickICHandlerSecurity", []() -> QObject * { return new TestQuickICHandlerSecurity; }},
         {"TestQuickDolphinController", []() -> QObject * { return new TestQuickDolphinController; }},
+        {"TestQuickAppController", []() -> QObject * { return new TestQuickAppController; }},
     });
 }
