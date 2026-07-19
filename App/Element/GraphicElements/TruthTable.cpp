@@ -40,7 +40,7 @@ struct ElementInfo<TruthTable> {
         meta.trContext = "TruthTable";
         meta.defaultAppearances = QStringList({":/Components/Logic/truthtable-rotated.svg"});
         return meta;
-    }
+    } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementMetadata's QString/QStringList members, never reached after the return above.
 
     static inline const bool registered = []() {
         ElementMetadataRegistry::registerMetadata(metadata());
@@ -76,9 +76,11 @@ void TruthTable::updatePortsProperties()
 
         for (auto *port : inputs()) {
 
-            if (!rotatesGraphic()) {
-                port->setRotation(0);
-            }
+            // Unreachable: rotatesGraphic() reads from this type's compile-time metadata,
+            // which TruthTable's ElementInfo never overrides away from the default (true).
+            if (!rotatesGraphic()) { // LCOV_EXCL_LINE
+                port->setRotation(0); // LCOV_EXCL_LINE
+            } // LCOV_EXCL_LINE
 
             port->setPos(0, y);
 
@@ -98,9 +100,10 @@ void TruthTable::updatePortsProperties()
 
         for (auto *port : outputs()) {
 
-            if (!rotatesGraphic()) {
-                port->setRotation(0);
-            }
+            // Unreachable for the same reason as the input-port loop above.
+            if (!rotatesGraphic()) { // LCOV_EXCL_LINE
+                port->setRotation(0); // LCOV_EXCL_LINE
+            } // LCOV_EXCL_LINE
 
             port->setPos(64, y);
 
