@@ -177,3 +177,85 @@ void TestCanvasInlineIC::testInlineICSaveMarksRootDirty()
 
     QFile::remove(rootPath);
 }
+
+void TestCanvasInlineIC::testInlineICDropSaveCloseReopen()
+{
+    // Full scenario TestMainWindowGui::testInlineICDropSaveCloseReopen() guards: place an
+    // embedded IC, open its inline tab, drop a file-backed IC into it, save (must auto-embed
+    // the dropped IC into a self-contained blob -- QuickWorkSpace::save()'s inline branch),
+    // close the tab, then reopen the same embedded IC and confirm the dropped IC survived as a
+    // real, embedded element. See this class's header doc comment for why the ORIGINAL bug
+    // mechanism (stale QTabWidget connections) can't recur under QuickWorkspaceManager.
+    QuickWorkspaceManager wsManager;
+    wsManager.newTab();
+    auto *rootTab = wsManager.currentTab();
+    auto *rootCanvas = rootTab->canvas();
+    rootCanvas->setContextDir(m_fixtureDir);
+
+    auto *embeddedIC = placeInlineTestIC(*rootCanvas, m_fixtureDir, "parent_ic");
+    const int embeddedICId = embeddedIC->id();
+    const QByteArray blob = rootCanvas->icRegistry()->blob("parent_ic");
+    QVERIFY(!blob.isEmpty());
+
+    // A second, real fixture file to act as the file-based IC dropped into the inline tab.
+    const QString dropFile = m_fixtureDir + "/drop_target.panda";
+    {
+        QuickWorkSpace fixtureWs;
+        fixtureWs.canvas()->addItem(ElementFactory::buildElement(ElementType::InputSwitch));
+        fixtureWs.canvas()->addItem(ElementFactory::buildElement(ElementType::Led));
+        QVERIFY2(fixtureWs.save(dropFile) == QuickWorkSpace::SaveOutcome::Saved, "drop fixture write");
+    }
+
+    wsManager.openICInTab("parent_ic", embeddedICId, blob);
+    QCOMPARE(wsManager.count(), 2);
+    auto *inlineTab = wsManager.currentTab();
+    QVERIFY(inlineTab->isInlineIC());
+    auto *inlineCanvas = inlineTab->canvas();
+
+    auto *droppedIC = new IC();
+    droppedIC->loadFile(dropFile, m_fixtureDir);
+    droppedIC->setPos(200, 200);
+    inlineCanvas->receiveCommand(new CanvasAddItemsCommand({droppedIC}, inlineCanvas));
+    QVERIFY2(!droppedIC->isEmbedded(), "Dropped IC should be file-backed before save");
+
+    ScopedFileDialogStub guard;
+    wsManager.saveFile();
+    QCOMPARE(guard.stub.saveCallCount, 0);
+    QCOMPARE(guard.stub.openCallCount, 0);
+
+    QVERIFY2(droppedIC->isEmbedded(), "IC should be embedded after inline save");
+    QCOMPARE(droppedIC->blobName(), QString("drop_target"));
+    QCOMPARE(wsManager.tabTitle(inlineTab), QString("[parent_ic]"));
+    QVERIFY2(!rootCanvas->undoStack()->isClean(), "Root tab should be dirty after inline save");
+
+    const QByteArray updatedBlob = rootCanvas->icRegistry()->blob("parent_ic");
+    QVERIFY(!updatedBlob.isEmpty());
+
+    const int inlineTabIndex = wsManager.indexOf(inlineTab);
+    QVERIFY(wsManager.closeTab(inlineTabIndex)); // just saved, clean -- no confirm dialog needed
+    QCOMPARE(wsManager.count(), 1);
+    QCOMPARE(wsManager.currentTab(), rootTab);
+
+    bool reopenOK = false;
+    try {
+        wsManager.openICInTab("parent_ic", embeddedICId, updatedBlob);
+        reopenOK = true;
+    } catch (const std::exception &e) {
+        QFAIL(qPrintable(QString("Reopen threw: %1").arg(e.what())));
+    }
+    QVERIFY(reopenOK);
+    QCOMPARE(wsManager.count(), 2);
+
+    auto *reopenedTab = wsManager.currentTab();
+    QVERIFY(reopenedTab->isInlineIC());
+
+    bool foundDropped = false;
+    for (auto *elm : reopenedTab->canvas()->elements()) {
+        if (elm->isEmbedded() && elm->blobName() == "drop_target") {
+            foundDropped = true;
+        }
+    }
+    QVERIFY2(foundDropped, "Reopened inline tab should contain the embedded drop_target IC");
+
+    QFile::remove(dropFile);
+}
