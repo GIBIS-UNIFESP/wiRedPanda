@@ -29,9 +29,18 @@ MessageDialog {
 
     // Named (not an inline onButtonClicked lambda) so QuickDialogProvider's dialogOpened()
     // testability hook can invoke it directly with a raw button value, simulating a click
-    // without needing real synthetic mouse/window input.
+    // without needing real synthetic mouse/window input. Also calls accept() explicitly --
+    // a *real* click closes the dialog via MessageDialog's own native/platform click handling
+    // before this handler even runs, so accept() here is normally a harmless no-op; the
+    // synthetic path (this function invoked directly, bypassing that native mechanism entirely)
+    // needs it to actually unblock QuickDialogProvider::choice()'s execModal(), which waits on
+    // accepted()/rejected() -- confirmed the hard way: without this, a direct
+    // handleButtonClicked() call left it waiting forever. Which of accept()/reject() fires
+    // doesn't matter to choice()'s own caller (it reads resultIndex, not accepted state) --
+    // only that execModal()'s loop, listening for either, gets one.
     function handleButtonClicked(button: int) {
         resultIndex = buttonOrder.indexOf(button);
+        root.accept();
     }
 
     onButtonClicked: (button, role) => handleButtonClicked(button)

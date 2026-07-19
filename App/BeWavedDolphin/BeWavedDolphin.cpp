@@ -172,10 +172,10 @@ void BewavedDolphin::prepare(const QString &fileName)
     qCDebug(zero) << "Updating window name with current: " << fileName;
     m_simulation = m_externalScene->simulation();
     // Construct the sweep driver before loadNewTable(), whose initial clear triggers run().
-    m_simDriver = std::make_unique<WaveformSimulator>(m_externalScene, m_simulation);
+    m_simDriver = std::make_unique<WaveformSimulator>(m_simulation);
 
     qCDebug(zero) << "Collecting and ordering the scene's input/output elements.";
-    const auto tableSignals = DolphinModelBuilder::collect(m_externalScene);
+    const auto tableSignals = DolphinModelBuilder::collect(m_externalScene->elements());
     m_inputs     = tableSignals.inputs;
     m_outputs    = tableSignals.outputs;
     m_inputPorts = tableSignals.inputPorts;
@@ -299,7 +299,7 @@ void BewavedDolphin::run()
     {
         SignalModel::BulkEditGuard guard(*m_model);
         m_simDriver->sweep(
-            m_inputs, m_outputs, m_inputPorts, m_model->columnCount(),
+            m_inputs, m_outputs, m_externalScene->elements(), m_inputPorts, m_model->columnCount(),
             [this](int row, int col) { return m_model->value(row, col) != 0; },
             [this](int row, int col, int value) { m_model->setValue(row, col, value); });
     }
@@ -505,7 +505,7 @@ void BewavedDolphin::saveToTxt(QTextStream &stream)
     {
         SignalModel::BulkEditGuard guard(truthTable);
         m_simDriver->sweep(
-            m_inputs, m_outputs, m_inputPorts, columns,
+            m_inputs, m_outputs, m_externalScene->elements(), m_inputPorts, columns,
             [&truthTable](int row, int col) { return truthTable.value(row, col) != 0; },
             [&truthTable](int row, int col, int value) { truthTable.setValue(row, col, value); });
     }

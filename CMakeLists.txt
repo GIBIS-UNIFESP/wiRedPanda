@@ -50,6 +50,18 @@ set(QT_LIBS Qt6::Core Qt6::Gui Qt6::Network Qt6::PrintSupport Qt6::Multimedia Qt
 # ongoing Widgets-to-Quick rewrite (qtquick-rewrite branch), not an optional spike.
 # QuickDialogs2 backs the Chrome/QuickDialogProvider confirm/notice dialogs (Phase 4) via
 # QtQuick.Dialogs' MessageDialog -- the QMessageBox/QInputDialog equivalent for the new UI.
+#
+# Considered and rejected while landing Phase 6a: moving Qt6::Qml alone into QT_LIBS so shared
+# classes (SignalModel was the trigger) could use QML_ELEMENT directly instead of a QML_FOREIGN
+# registration struct in Quick-owned code. Verified empirically (not assumed) that this doesn't
+# actually work: qt_add_qml_module(wiredpanda_quick ...)'s type scanner (and qmltyperegistrar
+# behind it) only walks wiredpanda_quick's own listed sources -- never wiredpanda_lib's, even
+# though wiredpanda_quick whole-archives it. A wiredpanda_lib class's own QML_ELEMENT never
+# reaches wiredpanda_quick's generated .qmltypes at all; it shows up only as an
+# `isTypeOpaque: true` stub (confirmed by inspecting the generated wiredpanda_quick.qmltypes
+# directly), which is exactly the same "member not found" qmllint failure as not registering it
+# at all. QML_FOREIGN in Quick-owned code is necessary regardless of what wiredpanda_lib links,
+# so linking Qt6::Qml into it bought nothing and was reverted.
 set(QUICK_LIBS Qt6::Quick Qt6::QuickControls2 Qt6::QuickDialogs2 Qt6::Qml)
 
 # QML modules default to the ":/qt/qml/" resource prefix as of this policy (introduced in

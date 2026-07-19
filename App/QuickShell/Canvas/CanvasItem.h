@@ -342,10 +342,15 @@ public:
     /// addElementFromPalette()'s selection/command shape, minus the palette-entry/IC/screen-
     /// position plumbing this caller doesn't need. Backs the ui-overview tour's
     /// "element-properties" step (App/Resources/Tours/ui-overview.json's "setupElementEditorDemo"
-    /// click id) so the element editor panel has something real to show; see
-    /// QuickAppController::runTourDemoAction()'s doc comment for why this is the only one of the
-    /// two "setup*Demo" click ids implemented in Quick.
+    /// click id) so the element editor panel has something real to show.
     void addTourDemoInputSwitch();
+
+    /// Adds two Clocks -> And -> Led (all wired), clearing any prior selection -- port of
+    /// MainWindow::runTourDemoAction()'s identical "setupWaveformDemo" case. Backs the
+    /// ui-overview tour's "waveform-table" step, priming a real circuit for the
+    /// AppController.openWaveform() click that immediately follows it in the same step's click
+    /// list.
+    void addTourDemoWaveformCircuit();
 
     /// Commits an inline label edit on \a element: pushes a CanvasUpdateCommand only if \a
     /// newLabel actually differs from the element's current label. Mirrors

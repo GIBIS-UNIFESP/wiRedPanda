@@ -5,25 +5,24 @@
 
 #include "MCP/Server/Handlers/QuickBaseHandler.h"
 
+class QuickDolphinController;
+
 /**
  * \class QuickSimulationHandler
  * \brief CanvasItem-side port of SimulationHandler.
  *
- * \details simulation_control (start/stop/restart/update) is fully ported -- it only ever
- * touched Scene::simulation(), now CanvasItem::simulation(). create_waveform/export_waveform
- * are NOT ported: both are entirely built on constructing a real BewavedDolphin (a QMainWindow-
- * derived Widgets class -- SimulationHandler.cpp literally does `new BewavedDolphin(scene,
- * false, m_mainWindow, m_mainWindow)`), which doesn't exist in the Quick chrome yet (Phase 6).
- * Both return a clean, discoverable "not yet available" error instead of a crash or silent
- * no-op -- the same graceful-degradation precedent this rewrite already uses for BeWavedDolphin-
- * scoped Tour/Exercise steps (see App/QuickShell/TourOverlay.qml's resolveTarget()) and for
- * QuickExportController's identically-scoped waveform-export gap (see that class's own doc
- * comment).
+ * \details simulation_control (start/stop/restart/update) only ever touched
+ * Scene::simulation(), now CanvasItem::simulation() -- a mechanical repoint. create_waveform/
+ * export_waveform (Phase 6e) mirror SimulationHandler's own m_persistentDolphin design: a
+ * dedicated, hidden QuickDolphinController owned by this handler, entirely separate from
+ * AppController.dolphin (the interactive one DolphinWindow.qml shows) -- an MCP script calling
+ * create_waveform must never silently reset/mutate whatever waveform the user currently has open.
  */
 class QuickSimulationHandler : public QuickBaseHandler
 {
 public:
     explicit QuickSimulationHandler(QuickAppController *appController, const MCPValidator *validator);
+    ~QuickSimulationHandler() override;
 
     QJsonObject handleCommand(const QString &command, const QJsonObject &params, const QJsonValue &requestId) override;
 
@@ -31,4 +30,8 @@ private:
     Q_DISABLE_COPY_MOVE(QuickSimulationHandler)
 
     QJsonObject handleSimulationControl(const QJsonObject &params, const QJsonValue &requestId);
+    QJsonObject handleCreateWaveform(const QJsonObject &params, const QJsonValue &requestId);
+    QJsonObject handleExportWaveform(const QJsonObject &params, const QJsonValue &requestId);
+
+    QuickDolphinController *m_persistentDolphin = nullptr; // owned; see class doc comment
 };

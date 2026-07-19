@@ -42,6 +42,12 @@ set(QUICK_SHELL_SOURCES
     Chrome/QuickWorkSpace.h
     Chrome/QuickWorkspaceManager.cpp
     Chrome/QuickWorkspaceManager.h
+    Dolphin/QuickDolphinController.cpp
+    Dolphin/QuickDolphinController.h
+    Dolphin/QuickDolphinExporter.cpp
+    Dolphin/QuickDolphinExporter.h
+    Dolphin/QuickDolphinZoom.cpp
+    Dolphin/QuickDolphinZoom.h
     Main.cpp
     ${CMAKE_SOURCE_DIR}/MCP/Server/Core/QuickMCPProcessor.cpp
     ${CMAKE_SOURCE_DIR}/MCP/Server/Core/QuickMCPProcessor.h
@@ -76,7 +82,7 @@ endif()
 # of unity-batch luck as QUICK_SHELL_SOURCES grows -- Chrome/ joined Canvas/ here once
 # QuickAppController/QuickElementEditor/QuickElementPalette/QuickWorkSpace also became
 # QML-registered types (see those headers).
-target_include_directories(wiredpanda_quick PRIVATE Canvas Chrome)
+target_include_directories(wiredpanda_quick PRIVATE Canvas Chrome Dolphin)
 
 # Copy JSON schema to executable directory after build -- mirrors the root CMakeLists.txt's
 # identical POST_BUILD command for the "wiredpanda" target (that one can't also cover this
@@ -115,6 +121,8 @@ qt_add_qml_module(wiredpanda_quick
         QtQuick.Controls.Fusion
     QML_FILES
         ChoiceDialog.qml
+        Dolphin/DolphinWindow.qml
+        Dolphin/RangeDialog.qml
         ElementEditor.qml
         ElementPalette.qml
         ExerciseOverlay.qml
@@ -123,6 +131,7 @@ qt_add_qml_module(wiredpanda_quick
         Minimap.qml
         PaletteItemDelegate.qml
         QuickFileDialog.qml
+        SignalTable.qml
         TextPromptDialog.qml
         TourOverlay.qml
         TruthTableDialog.qml
@@ -148,12 +157,14 @@ set_source_files_properties(
 # list<int>.indexOf() (ChoiceDialog.qml's buttonOrder) returns qsizetype narrowed into
 # an int without a cast (-Werror=conversion). Same category as the loader suppression
 # above: Qt's own generated code, not something we can edit, so disable just these
-# warnings on just these generated files. Applied to all 12 QML_FILES' generated .cpp
+# warnings on just these generated files. Applied to all 15 QML_FILES' generated .cpp
 # outputs (not only whichever ones hit it today) since which specific bindings get
 # compiled vs. interpreted is qmlcachegen's own decision and can shift with any future
 # QML edit.
 set(QUICK_SHELL_QML_CACHEGEN_SOURCES
     ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_ChoiceDialog_qml.cpp
+    ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_Dolphin_DolphinWindow_qml.cpp
+    ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_Dolphin_RangeDialog_qml.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_ElementEditor_qml.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_ElementPalette_qml.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_ExerciseOverlay_qml.cpp
@@ -162,6 +173,7 @@ set(QUICK_SHELL_QML_CACHEGEN_SOURCES
     ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_Minimap_qml.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_PaletteItemDelegate_qml.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_QuickFileDialog_qml.cpp
+    ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_SignalTable_qml.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_TextPromptDialog_qml.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_TourOverlay_qml.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_TruthTableDialog_qml.cpp

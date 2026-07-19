@@ -8,14 +8,13 @@
 #include "App/Core/Common.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElementInput.h"
-#include "App/Scene/Scene.h"
 #include "App/Simulation/Simulation.h"
 #include "App/Simulation/SimulationBlocker.h"
 #include "App/Simulation/SimulationThrottleDisabler.h"
+#include "App/Wiring/Port.h"
 
-WaveformSimulator::WaveformSimulator(Scene *externalScene, Simulation *simulation)
-    : m_externalScene(externalScene)
-    , m_simulation(simulation)
+WaveformSimulator::WaveformSimulator(Simulation *simulation)
+    : m_simulation(simulation)
 {
 }
 
@@ -57,6 +56,7 @@ void WaveformSimulator::restoreInputs(const QVector<GraphicElementInput *> &inpu
 
 void WaveformSimulator::sweep(const QVector<GraphicElementInput *> &inputs,
                               const QVector<GraphicElement *> &outputs,
+                              const QVector<GraphicElement *> &allElements,
                               const int inputPorts, const int columns,
                               const std::function<bool(int row, int col)> &readInput,
                               const std::function<void(int row, int col, int value)> &writeOutput) const
@@ -73,7 +73,7 @@ void WaveformSimulator::sweep(const QVector<GraphicElementInput *> &inputs,
     // power-on defaults before the sweep so results are reproducible regardless of any
     // prior simulation run that may have left flip-flops in a different state.
     qCDebug(zero) << "Resetting simulation state of all elements.";
-    for (auto *elm : m_externalScene->elements()) {
+    for (auto *elm : allElements) {
         if (elm && elm->type() == GraphicElement::Type) {
             elm->resetSimState();
         }

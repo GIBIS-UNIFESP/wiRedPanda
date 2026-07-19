@@ -62,6 +62,12 @@ QuickAppController::QuickAppController(QObject *parent)
     });
 
     setupLanguage();
+
+    // Called in the constructor body, not the initializer list: m_dolphinController is a plain
+    // member (already fully constructed by this point), and setHost() just stores the pointer
+    // for later use -- never dereferenced synchronously during this call -- so `this` being
+    // mid-construction here is safe, same reasoning as QuickExerciseEngineBinding's setCanvas().
+    m_dolphinController.setHost(this);
 }
 
 QuickWorkSpace *QuickAppController::currentTab() const
@@ -84,6 +90,35 @@ void QuickAppController::showStatusMessage(const QString &message, int timeout)
     m_statusMessage = message;
     emit statusMessageChanged();
     m_statusMessageTimer.start(timeout);
+}
+
+QString QuickAppController::dolphinFileName()
+{
+    auto *tab = currentTab();
+    return tab ? tab->dolphinFileName() : QString();
+}
+
+void QuickAppController::setDolphinFileName(const QString &fileName)
+{
+    if (auto *tab = currentTab()) {
+        tab->setDolphinFileName(fileName);
+    }
+}
+
+void QuickAppController::openWaveform()
+{
+    Application::guardedSlot(this, [this] {
+        if (!m_waveformWindowOpen) {
+            auto *canvas = activeCanvas();
+            if (!canvas) {
+                return;
+            }
+            auto *tab = currentTab();
+            m_dolphinController.createWaveform(canvas, tab ? tab->dolphinFileName() : QString());
+            m_waveformWindowOpen = true;
+        }
+        emit waveformOpenRequested();
+    });
 }
 
 CanvasItem *QuickAppController::activeCanvas() const
@@ -401,18 +436,14 @@ bool QuickAppController::canPaste()
 
 void QuickAppController::runTourDemoAction(const QString &id)
 {
-    // Only "setupElementEditorDemo" is implemented. The vocabulary's other demo id,
-    // "setupWaveformDemo", exists solely to prime a BeWavedDolphin view for the
-    // "actionWaveform"/"bwd:actionCombinational" steps that follow it in the bundled
-    // ui-overview tour -- BeWavedDolphin isn't ported to Quick yet (Phase 6), so running it
-    // would leave stray clock/gate/LED elements on the user's live canvas in service of a step
-    // that can't actually show anything. Left as a silent no-op here, matching Main.qml's
-    // resolveTourTarget()'s identical bwd:*/toolbar-target skip.
-    if (id != QStringLiteral("setupElementEditorDemo")) {
+    auto *c = activeCanvas();
+    if (!c) {
         return;
     }
-    if (auto *c = activeCanvas()) {
+    if (id == QStringLiteral("setupElementEditorDemo")) {
         c->addTourDemoInputSwitch();
+    } else if (id == QStringLiteral("setupWaveformDemo")) {
+        c->addTourDemoWaveformCircuit();
     }
 }
 

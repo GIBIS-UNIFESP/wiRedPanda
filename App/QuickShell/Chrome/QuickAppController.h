@@ -17,6 +17,7 @@
 #include <QStringList>
 #include <QTimer>
 
+#include "App/BeWavedDolphin/DolphinHost.h"
 #include "App/Core/Enums.h"
 #include "App/Core/ThemeManager.h"
 #include "App/Exercise/ExerciseEngine.h"
@@ -32,6 +33,7 @@
 #include "App/QuickShell/Chrome/QuickTourController.h"
 #include "App/QuickShell/Chrome/QuickWorkSpace.h"
 #include "App/QuickShell/Chrome/QuickWorkspaceManager.h"
+#include "App/QuickShell/Dolphin/QuickDolphinController.h"
 #include "App/UI/LanguageManager.h"
 
 class CanvasItem;
@@ -145,7 +147,7 @@ private:
  * editor rebinding needs sub-step 5's property panel to exist; View-menu toggles, Theme/
  * Language menus, and the Learn menu need sub-steps 4/8/Phase 5's chrome).
  */
-class QuickAppController : public QObject, public QuickMainWindowHost
+class QuickAppController : public QObject, public QuickMainWindowHost, public DolphinHost
 {
     Q_OBJECT
 
@@ -170,6 +172,7 @@ class QuickAppController : public QObject, public QuickMainWindowHost
     Q_PROPERTY(QuickMinimap *minimap READ minimap CONSTANT FINAL)
     Q_PROPERTY(QuickExerciseController *exercise READ exercise CONSTANT FINAL)
     Q_PROPERTY(QuickTourController *tour READ tour CONSTANT FINAL)
+    Q_PROPERTY(QuickDolphinController *dolphin READ dolphin CONSTANT FINAL)
     // theme is a plain int (Enums::ElementType's own precedent for exposing a C++ enum class to
     // QML without registering it) -- Theme is declared at namespace scope in ThemeManager.h, not
     // inside a Q_GADGET/Q_NAMESPACE, so it has no Q_ENUM registration to expose directly.
@@ -205,6 +208,28 @@ public:
     void requestSave() override { saveFile(); }
 
     [[nodiscard]] QString statusMessage() const { return m_statusMessage; }
+
+    // --- DolphinHost ---
+    // currentFile()/currentDir() above (QuickMainWindowHost) already satisfy this interface's
+    // identical pure virtuals too -- confirmed exact signature match, not assumed; a single
+    // override in a most-derived class satisfies matching pure virtuals from multiple
+    // unrelated base classes in standard C++.
+    [[nodiscard]] QString dolphinFileName() override;
+    void setDolphinFileName(const QString &fileName) override;
+    void save(const QString &fileName) override { m_workspaceManager.save(fileName); }
+
+    /// Opens (or raises, if already open) the BeWavedDolphin waveform window for the current
+    /// tab's circuit -- mirrors MainWindow::on_actionWaveform_triggered()'s `if (m_bwd) {
+    /// raise(); activateWindow(); return; }` early branch: m_waveformWindowOpen tracks that same
+    /// condition (there's no live BewavedDolphin* to null-check here -- DolphinWindow.qml is a
+    /// single static, reused QML instance, matching TruthTableDialog's own precedent), so a
+    /// second Waveform click while one's already open just re-shows/raises it rather than
+    /// rebuilding (and thereby discarding any unsaved edits/undo history) a working waveform.
+    Q_INVOKABLE void openWaveform();
+    /// Called from DolphinWindow.qml's onClosing (after checkSave() allows the close through) so
+    /// the next openWaveform() rebuilds instead of just re-raising a window that's no longer
+    /// showing anything current.
+    Q_INVOKABLE void notifyWaveformClosed() { m_waveformWindowOpen = false; }
 
     // --- QML-facing accessors ---
     Q_INVOKABLE QuickWorkSpace *tabAt(int index) const { return m_workspaceManager.tabAt(index); }
@@ -285,6 +310,11 @@ public:
     [[nodiscard]] QuickMinimap *minimap() { return &m_minimap; }
     [[nodiscard]] QuickExerciseController *exercise() { return &m_exerciseController; }
     [[nodiscard]] QuickTourController *tour() { return &m_tourController; }
+    /// The BeWavedDolphin waveform-editor presenter (Phase 6). Not yet launched by any real UI
+    /// trigger (that's Phase 6e's Waveform toolbar action) -- wired in now, same as exercise()/
+    /// tour() were before their own menu integration landed, since QuickDolphinController's
+    /// eventual real home is here regardless.
+    [[nodiscard]] QuickDolphinController *dolphin() { return &m_dolphinController; }
 
     /// Discovered exercise content (built-in + user-provided, see ExerciseTourResources::discover()),
     /// each entry's title/description translated and completed flag looked up from
@@ -440,6 +470,11 @@ signals:
     void currentLanguageChanged();
     void mutedChanged();
     void statusMessageChanged();
+    /// Tells Main.qml's static DolphinWindow instance to become visible/raised/activated --
+    /// emitted whether openWaveform() just rebuilt the waveform or is just re-showing an
+    /// already-open one, mirroring TruthTableDialog's identical onXRequested-opens-a-static-
+    /// instance precedent.
+    void waveformOpenRequested();
 
 private:
     /// Returns the active tab's canvas, or nullptr. Shared by every Edit/Transform/Align
@@ -485,6 +520,8 @@ private:
     /// QuickTourController's own doc comment), so this owns its TourEngine directly -- no
     /// sibling engine member or setCanvas() binding needed.
     QuickTourController m_tourController;
+    QuickDolphinController m_dolphinController;
+    bool m_waveformWindowOpen = false;
     RecentFiles m_recentFiles;
     LanguageManager m_languageManager;
     QList<QMetaObject::Connection> m_tabConnections;

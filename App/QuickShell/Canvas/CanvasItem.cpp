@@ -1075,6 +1075,46 @@ void CanvasItem::addTourDemoInputSwitch()
     emit selectionChanged();
 }
 
+void CanvasItem::addTourDemoWaveformCircuit()
+{
+    for (auto *elm : std::as_const(m_elements)) {
+        elm->setSelected(false);
+    }
+    m_selectedIds.clear();
+
+    auto *clock1 = ElementFactory::buildElement(ElementType::Clock);
+    auto *clock2 = ElementFactory::buildElement(ElementType::Clock);
+    auto *gate = ElementFactory::buildElement(ElementType::And);
+    auto *led = ElementFactory::buildElement(ElementType::Led);
+    clock1->setPos(-160, -60);
+    clock2->setPos(-160, 60);
+    gate->setPos(0, 0);
+    led->setPos(160, 0);
+
+    auto *conn1 = new Connection();
+    conn1->setStartPort(clock1->outputPort(0));
+    conn1->setEndPort(gate->inputPort(0));
+    auto *conn2 = new Connection();
+    conn2->setStartPort(clock2->outputPort(0));
+    conn2->setEndPort(gate->inputPort(1));
+    auto *conn3 = new Connection();
+    conn3->setStartPort(gate->outputPort(0));
+    conn3->setEndPort(led->inputPort(0));
+
+    // CanvasAddItemsCommand auto-discovers conn1..conn3 via port traversal (loadList(), same
+    // mechanism as addElementFromPalette()'s own single-item add) and registers all 7 items with
+    // the canvas's Simulation -- mirrors MainWindow::runTourDemoAction()'s identical single-call
+    // AddItemsCommand shape, not three separate connection-only commands.
+    receiveCommand(new CanvasAddItemsCommand({clock1, clock2, gate, led}, this));
+
+    conn1->updatePath();
+    conn2->updatePath();
+    conn3->updatePath();
+
+    rebuildSpatialIndex();
+    emit selectionChanged();
+}
+
 QList<QGraphicsItem *> CanvasItem::deserializeAndAdd(QDataStream &stream, const QVersionNumber &version,
                                                      std::optional<QPointF> fixedOffset)
 {

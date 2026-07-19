@@ -129,6 +129,8 @@ ApplicationWindow {
                 checked: AppController.backgroundSimulationEnabled
                 onTriggered: AppController.backgroundSimulationEnabled = checked
             }
+            MenuSeparator {}
+            MenuItem { text: qsTr("&Waveform"); onTriggered: AppController.openWaveform() }
         }
 
         Menu {
@@ -239,10 +241,10 @@ ApplicationWindow {
 
         // Mirrors MainWindowUi's mainToolBar exactly (MainWindowUI.cpp's addAction() order and
         // separators): New/Open/Save | Rotate/Cut/Copy/Paste/Delete | Zoom In/Out/Reset/Fit |
-        // Play/Restart. Waveform is deliberately excluded -- it opens BeWavedDolphin, not
-        // ported to Quick yet (Phase 6); matches this rewrite's "don't build dead UI" precedent
-        // (the Learn menu was the same deferral, now filled in by Phase 5 -- see its own Menu
-        // block above and ExerciseOverlay.qml).
+        // Play/Restart/Waveform. Waveform opens the DolphinWindow instance declared near the
+        // bottom of this file (Phase 6e) -- the same "don't build dead UI" precedent that
+        // deferred it (matching the Learn menu's own earlier deferral, filled in by Phase 5) no
+        // longer applies now that BeWavedDolphin is actually ported.
         ToolBar {
             Layout.fillWidth: true
 
@@ -350,6 +352,13 @@ ApplicationWindow {
                     ToolTip.text: qsTr("Restart")
                     ToolTip.visible: hovered
                     onClicked: AppController.restartSimulation()
+                }
+                ToolButton {
+                    id: waveformToolButton
+                    icon.source: "qrc:/Interface/Toolbar/dolphin_icon.svg"
+                    ToolTip.text: qsTr("Waveform")
+                    ToolTip.visible: hovered
+                    onClicked: AppController.openWaveform()
                 }
 
                 Item { Layout.fillWidth: true } // pushes the toolbar's own content left
@@ -652,6 +661,7 @@ ApplicationWindow {
         paletteItem: elementPalette
         editorItem: elementEditor
         canvasAreaItem: canvasHost
+        toolbarItem: waveformToolButton
     }
 
     Dialog {
@@ -680,5 +690,25 @@ ApplicationWindow {
     Connections {
         target: AppController.elementEditor
         function onTruthTableRequested() { truthTableDialog.open() }
+    }
+
+    // A single, reused top-level window (like truthTableDialog/shortcutsDialog above) rather
+    // than a dynamically created-and-destroyed one -- AppController.openWaveform() decides
+    // whether to rebuild the waveform (QuickDolphinController::createWaveform()) or just
+    // re-show/raise an already-open one; this instance's own visible/close lifecycle only ever
+    // hides it (DolphinWindow.qml's onClosing calls AppController.notifyWaveformClosed(), never
+    // destroys the QML object), so the next openWaveform() has a real instance ready either way.
+    DolphinWindow {
+        id: dolphinWindow
+        visible: false
+        controller: AppController.dolphin
+    }
+    Connections {
+        target: AppController
+        function onWaveformOpenRequested() {
+            dolphinWindow.visible = true;
+            dolphinWindow.raise();
+            dolphinWindow.requestActivate();
+        }
     }
 }

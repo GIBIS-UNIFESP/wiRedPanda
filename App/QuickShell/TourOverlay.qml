@@ -33,13 +33,14 @@ Item {
     id: root
 
     readonly property QuickTourController presenter: AppController.tour
-    // The three item references resolveTarget()/dispatchClick() need. paletteItem is typed as
-    // the real ElementPalette component (not plain Item) so paletteItem.categoryTabBar/
-    // .searchField resolve statically; editorItem/canvasAreaItem only ever need width/height
+    // The item references resolveTarget()/dispatchClick() need. paletteItem is typed as the real
+    // ElementPalette component (not plain Item) so paletteItem.categoryTabBar/.searchField
+    // resolve statically; editorItem/canvasAreaItem/toolbarItem only ever need width/height
     // (real Item properties), so plain Item is enough for them.
     required property ElementPalette paletteItem
     required property Item editorItem
     required property Item canvasAreaItem
+    required property Item toolbarItem
 
     visible: presenter.active
     z: 2000
@@ -61,10 +62,16 @@ Item {
     readonly property bool hasHighlight: highlightRect.width > 0 && highlightRect.height > 0
 
     // Maps \a id (App/Resources/Tours/README.md's closed target vocabulary) to a rect in this
-    // item's local coordinate space, or null if \a id is empty/"none"/unresolvable. "toolbar"
-    // (points at the not-yet-ported Waveform toolbar button) and every "bwd:"-prefixed id
-    // (BeWavedDolphin, Phase 6) fall through to null -- graceful degradation to "no highlight",
-    // matching this rewrite's established precedent for not-yet-ported features.
+    // item's local coordinate space, or null if \a id is empty/"none"/unresolvable. Every
+    // "bwd:"-prefixed id still falls through to null: BeWavedDolphin's DolphinWindow is a
+    // genuinely separate top-level QQuickWindow (Phase 6b), and Qt Quick has no cross-window
+    // item-to-item coordinate mapping/compositing the way Widgets' mapToGlobal()-based
+    // overlay-reparenting trick (MainWindow::resolveTourTarget()'s own overlay->
+    // setParentWindow(m_bwd) branch) relies on -- this overlay, living in the main window, can
+    // never draw a spotlight rect over a different window's surface. A real, architecturally
+    // sound fix would need a second overlay instance living inside DolphinWindow.qml itself;
+    // "toolbar" (the real Waveform button, still in *this* window) has no such constraint and is
+    // real now that BeWavedDolphin is ported (Phase 6e).
     function resolveTarget(id) {
         function mapRect(item) {
             if (!item) {
@@ -83,15 +90,18 @@ Item {
         if (id === "canvasArea") return mapRect(canvasAreaItem);
         if (id === "elementEditor") return mapRect(editorItem);
         if (id === "searchBar") return mapRect(paletteItem.searchField);
+        if (id === "toolbar") return mapRect(toolbarItem);
         return null;
     }
 
     // Runs \a id (App/Resources/Exercises/README.md's closed click vocabulary, shared with
     // Tours) before this step's target is resolved -- see QuickTourController::
     // clicksRequested()'s doc comment for the emission-order guarantee that makes "click
-    // executes before target resolution" hold. "actionWaveform" and "bwd:actionCombinational"
-    // have nothing to trigger yet (BeWavedDolphin isn't ported) and fall through as a silent
-    // no-op, matching resolveTarget()'s identical skip above.
+    // executes before target resolution" hold. "actionWaveform"/"bwd:actionCombinational" are
+    // real now (Phase 6e): AppController.dolphin is the same QuickDolphinController instance
+    // DolphinWindow.qml binds to, so calling combinational() on it here works regardless of
+    // which window is currently focused -- no reference to the DolphinWindow instance itself
+    // needed, unlike resolveTarget()'s spotlight-rect problem above.
     function dispatchClick(id) {
         switch (id) {
         case "ioTab": paletteItem.categoryTabBar.currentIndex = 0; break;
@@ -99,6 +109,8 @@ Item {
         case "combinational": paletteItem.categoryTabBar.currentIndex = 2; break;
         case "memoryTab": paletteItem.categoryTabBar.currentIndex = 3; break;
         case "actionPlay": AppController.simulationRunning = !AppController.simulationRunning; break;
+        case "actionWaveform": AppController.openWaveform(); break;
+        case "bwd:actionCombinational": AppController.dolphin.combinational(); break;
         case "setupElementEditorDemo":
         case "setupWaveformDemo":
             AppController.runTourDemoAction(id);
