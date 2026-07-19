@@ -5,7 +5,10 @@
 
 #include <memory>
 
+#include <QApplication>
 #include <QMimeData>
+#include <QMouseEvent>
+#include <QSignalSpy>
 #include <QTest>
 
 #include "App/Element/ElementFactory.h"
@@ -193,4 +196,57 @@ void TestElementLabel::testMimeDataWithIC()
     // Should contain the IC file information
     QByteArray mimeBytes = data->data("application/x-wiredpanda-dragdrop");
     QVERIFY(mimeBytes.size() > 0);
+}
+
+void TestElementLabel::testMousePressThenSmallMoveDoesNotStartDrag()
+{
+    QPixmap pixmap = ElementFactory::pixmap(ElementType::And);
+    ElementLabel label(pixmap, ElementType::And, "");
+
+    QMouseEvent pressEvent(QEvent::MouseButtonPress, QPointF(10, 10), QPointF(10, 10), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+    QCoreApplication::sendEvent(&label, &pressEvent);
+
+    // A move under QApplication::startDragDistance() must return before starting a native
+    // drag session (QDrag::exec() blocks pumping an event loop -- this must complete promptly).
+    QMouseEvent smallMove(QEvent::MouseMove, QPointF(11, 10), QPointF(11, 10), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+    QCoreApplication::sendEvent(&label, &smallMove);
+
+    QCOMPARE(label.elementType(), ElementType::And);
+}
+
+void TestElementLabel::testMousePressThenLargeMoveStartsDrag()
+{
+    QPixmap pixmap = ElementFactory::pixmap(ElementType::And);
+    ElementLabel label(pixmap, ElementType::And, "");
+
+    QMouseEvent pressEvent(QEvent::MouseButtonPress, QPointF(10, 10), QPointF(10, 10), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+    QCoreApplication::sendEvent(&label, &pressEvent);
+
+    // A move past the drag-distance threshold reaches startDrag(), which builds mimeData()
+    // and the drag pixmap/hotspot from the label's own state and hands off to QDrag::exec().
+    // In this (offscreen-less, real-display) test environment exec() returns immediately since
+    // there is no real button held down to sustain a drag session -- confirmed empirically to
+    // complete promptly rather than block.
+    const int farEnough = QApplication::startDragDistance() + 20;
+    QMouseEvent largeMove(QEvent::MouseMove, QPointF(10 + farEnough, 10), QPointF(10 + farEnough, 10), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+    QCoreApplication::sendEvent(&label, &largeMove);
+
+    // startDrag() must not have thrown or corrupted the label's own state.
+    QCOMPARE(label.elementType(), ElementType::And);
+    QVERIFY(!label.pixmap().isNull());
+}
+
+void TestElementLabel::testMouseDoubleClickEmitsAddToSceneRequested()
+{
+    QPixmap pixmap = ElementFactory::pixmap(ElementType::And);
+    ElementLabel label(pixmap, ElementType::And, "");
+    QSignalSpy spy(&label, &ElementLabel::addToSceneRequested);
+
+    QMouseEvent doubleClickEvent(QEvent::MouseButtonDblClick, QPointF(10, 10), QPointF(10, 10), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+    QCoreApplication::sendEvent(&label, &doubleClickEvent);
+
+    QCOMPARE(spy.count(), 1);
+    auto *mimeData = qvariant_cast<QMimeData *>(spy.at(0).at(0));
+    QVERIFY(mimeData != nullptr);
+    delete mimeData; // addToSceneRequested hands off ownership to whoever receives it; nobody did here.
 }

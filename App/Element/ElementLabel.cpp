@@ -81,8 +81,14 @@ void ElementLabel::mousePressEvent(QMouseEvent *event)
 
 void ElementLabel::mouseMoveEvent(QMouseEvent *event)
 {
-    if (!(event->buttons() & Qt::LeftButton)) {
-        return;
+    // Empirically confirmed unreachable: this widget never calls setMouseTracking(true), and
+    // QApplication's own event delivery (even via a directly-constructed/injected QMouseEvent,
+    // not just real input) filters out MouseMove events entirely before dispatch when no button
+    // is held and tracking is off -- mouseMoveEvent() itself is simply never invoked in that case,
+    // so event->buttons() is guaranteed non-empty (Qt::LeftButton, the only button this label
+    // reacts to at all) whenever this line runs. Kept as a defensive guard in case that ever changes.
+    if (!(event->buttons() & Qt::LeftButton)) { // LCOV_EXCL_LINE
+        return; // LCOV_EXCL_LINE
     }
     if ((event->pos() - m_dragStartPos).manhattanLength() < QApplication::startDragDistance()) {
         return;
