@@ -6,6 +6,7 @@
 #include <limits>
 #include <memory>
 
+#include <QEnterEvent>
 #include <QGraphicsSceneMouseEvent>
 #include <QSignalSpy>
 #include <QTemporaryDir>
@@ -219,4 +220,120 @@ void TestICUnit::testGeneratePreviewPixmapWithDegenerateAspectRatioIsEmpty()
     ICRenderer::generatePreviewPixmap(ic, items);
 
     QVERIFY(ic.previewPixmap().isNull());
+}
+
+void TestICUnit::testShowForIcNullIcIsNoOp()
+{
+    ICPreviewPopup popup;
+    popup.showForIC(nullptr, QPoint(0, 0));
+
+    QVERIFY(popup.pendingIC() == nullptr);
+    QVERIFY(!popup.isVisible());
+}
+
+void TestICUnit::testShowForIcImmediateWhenAlreadyVisible()
+{
+    // showForIC() only defers to the 1-second timer while the popup isn't visible yet; once
+    // visible (e.g. the cursor moved quickly from one IC to another), it must update immediately.
+    IC ic;
+    ICPreviewPopup popup;
+    popup.show();
+    QVERIFY(popup.isVisible());
+
+    popup.showForIC(&ic, QPoint(100, 100));
+
+    QCOMPARE(popup.pendingIC(), &ic);
+    // executeShow() ran synchronously (not via the timer): an empty-name, no-preview IC hides
+    // the popup again rather than leaving stale content displayed.
+    QVERIFY(!popup.isVisible());
+}
+
+void TestICUnit::testExecuteShowWithNullPendingIcIsNoOp()
+{
+    ICPreviewPopup popup;
+    popup.executeShow(); // m_pendingIC was never set -- must return before touching anything
+
+    QVERIFY(!popup.isVisible());
+}
+
+void TestICUnit::testExecuteShowWithEmptyTitleAndNullPreviewHides()
+{
+    IC ic; // unloaded: displayName() and previewPixmap() are both empty/null
+    ICPreviewPopup popup;
+    popup.showForIC(&ic, QPoint(50, 50)); // sets m_pendingIC without starting/waiting on the timer
+
+    popup.executeShow();
+
+    QVERIFY(!popup.isVisible());
+}
+
+void TestICUnit::testExecuteShowWithTitleAndPreviewShowsBoth()
+{
+    QTemporaryDir subDir;
+    QVERIFY(subDir.isValid());
+    WorkSpace subWorkspace;
+    CircuitBuilder subBuilder(subWorkspace.scene());
+    InputSwitch sw;
+    Led led;
+    subBuilder.add(&sw, &led);
+    subBuilder.connect(&sw, 0, &led, 0);
+    const QString subPath = subDir.path() + "/popup_probe.panda";
+    QCOMPARE(subWorkspace.save(subPath), WorkSpace::SaveOutcome::Saved);
+
+    auto ic = std::make_unique<IC>();
+    ic->loadFile(subPath, subDir.path());
+    QVERIFY2(!ic->displayName().isEmpty(), "a loaded IC's display name is its file's basename");
+    QVERIFY2(!ic->previewPixmap().isNull(), "loadFile() generates a preview pixmap for a small sub-circuit");
+
+    ICPreviewPopup popup;
+    popup.showForIC(ic.get(), QPoint(50, 50));
+    popup.executeShow();
+
+    QVERIFY(popup.isVisible());
+}
+
+void TestICUnit::testExecuteShowWithTitleButNullPreviewHidesImageOnly()
+{
+    // An IC loaded from an empty sub-circuit (0 elements) still gets a real display name (the
+    // file's basename), but generatePreviewPixmap()'s own elements.isEmpty() guard leaves the
+    // preview null -- "we still show the name" per executeShow()'s own comment.
+    QTemporaryDir subDir;
+    QVERIFY(subDir.isValid());
+    WorkSpace subWorkspace;
+    const QString subPath = subDir.path() + "/empty_popup_probe.panda";
+    QCOMPARE(subWorkspace.save(subPath), WorkSpace::SaveOutcome::Saved);
+
+    auto ic = std::make_unique<IC>();
+    ic->loadFile(subPath, subDir.path());
+    QVERIFY2(!ic->displayName().isEmpty(), "a loaded IC's display name is its file's basename");
+    QVERIFY2(ic->previewPixmap().isNull(), "an empty sub-circuit must not produce a preview pixmap");
+
+    ICPreviewPopup popup;
+    popup.showForIC(ic.get(), QPoint(50, 50));
+    popup.executeShow();
+
+    QVERIFY(popup.isVisible());
+}
+
+void TestICUnit::testEnterEventCancelsHide()
+{
+    ICPreviewPopup popup;
+    popup.scheduleHide(); // arms m_hideTimer
+    QVERIFY(popup.m_hideTimer.isActive());
+
+    QEnterEvent event(QPointF(0, 0), QPointF(0, 0), QPointF(0, 0));
+    QCoreApplication::sendEvent(&popup, &event);
+
+    QVERIFY2(!popup.m_hideTimer.isActive(), "entering the popup must cancel a pending hide");
+}
+
+void TestICUnit::testLeaveEventSchedulesHide()
+{
+    ICPreviewPopup popup;
+    QVERIFY(!popup.m_hideTimer.isActive());
+
+    QEvent event(QEvent::Leave);
+    QCoreApplication::sendEvent(&popup, &event);
+
+    QVERIFY2(popup.m_hideTimer.isActive(), "leaving the popup must arm the delayed hide");
 }
