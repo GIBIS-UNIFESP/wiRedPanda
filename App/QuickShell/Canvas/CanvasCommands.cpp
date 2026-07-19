@@ -405,10 +405,22 @@ CanvasAddItemsCommand::CanvasAddItemsCommand(const QList<QGraphicsItem *> &items
     SimulationBlocker blocker(m_canvas->simulation());
     // Add items to the canvas first so they receive real ids before loadList captures them.
     CanvasCommandUtils::addItems(m_canvas, items);
-    // Collect the canonical list (elements + attached wires) and store their ids. The second
-    // addItems() call handles any wires discovered via port traversal.
-    const auto items_ = CanvasCommandUtils::loadList(items, m_ids, m_otherIds);
+    // Collect the canonical list (elements + attached wires). loadList()'s own id-capture output
+    // is discarded here -- a wire discovered via port traversal (rather than passed in `items`
+    // directly) has never itself been through addItem() at this point, so it would still read
+    // id() == -1, and storing that -1 in m_ids left it permanently unresolvable by undo()'s own
+    // findItems(m_ids) call: removeItem() never ran, so the wire stayed a zombie entry in
+    // m_connections after its endpoints were deleted -- a real crash, not hypothetical (confirmed
+    // via a real undo of a freshly-added, pre-wired connection segfaulting the next
+    // rebuildSpatialIndex() call on that stranded, now-portless Connection). Re-deriving m_ids/
+    // m_otherIds after the second addItems() call below -- once every item, wires included, has
+    // its real assigned id -- is the fix.
+    QList<int> discardedIds;
+    QList<int> discardedOtherIds;
+    const auto items_ = CanvasCommandUtils::loadList(items, discardedIds, discardedOtherIds);
     CanvasCommandUtils::addItems(m_canvas, items_);
+    CanvasCommandUtils::storeIds(items_, m_ids);
+    CanvasCommandUtils::storeOtherIds(items_, m_ids, m_otherIds);
 }
 
 void CanvasAddItemsCommand::undo()

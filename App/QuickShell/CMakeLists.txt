@@ -235,6 +235,8 @@ list(REMOVE_ITEM QUICK_SHELL_LIB_SOURCES Main.cpp)
 set(QUICK_SHELL_TEST_SOURCES
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/Runners/QuickRunnerUtils.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/Runners/TestWiredpandaQuick.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasCommands.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasCommands.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasItemSmoke.cpp
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasItemSmoke.h
 )

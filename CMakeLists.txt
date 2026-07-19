@@ -994,6 +994,7 @@ add_test(NAME TestUpdateChecker COMMAND test_wiredpanda TestUpdateChecker WORKIN
 # registered into test_wiredpanda -- see App/QuickShell/CMakeLists.txt's "QUICK SHELL TESTS"
 # section for why. Grows alongside Phase 7's later sub-steps (7b-7h).
 add_test(NAME TestCanvasItemSmoke COMMAND test_wiredpanda_quick TestCanvasItemSmoke WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestCanvasCommands COMMAND test_wiredpanda_quick TestCanvasCommands WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 # ============================================================================
 # Test Properties: Labels and Timeouts
@@ -1089,7 +1090,7 @@ endforeach()
 
 # Quick shell tests (test_wiredpanda_quick) - own "quick" label so `ctest -L quick` can target
 # just this tier once Phase 7b+ grows it.
-foreach(TEST TestCanvasItemSmoke)
+foreach(TEST TestCanvasItemSmoke TestCanvasCommands)
     set_tests_properties(${TEST} PROPERTIES LABELS "unit;quick")
 endforeach()
 
@@ -1152,7 +1153,7 @@ set(ALL_TESTS
     TestExerciseEngine TestTourEngine
     TestSimulationUnit TestWorkspaceUnit
     TestICFixtureLayout
-    TestCanvasItemSmoke)
+    TestCanvasItemSmoke TestCanvasCommands)
 foreach(TEST ${ALL_TESTS})
     set_tests_properties(${TEST} PROPERTIES FIXTURES_SETUP "non_gui_complete")
 endforeach()

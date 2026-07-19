@@ -3,11 +3,13 @@
 
 #include "Tests/QuickShell/Runners/QuickRunnerUtils.h"
 
+#include "Tests/QuickShell/TestCanvasCommands.h"
 #include "Tests/QuickShell/TestCanvasItemSmoke.h"
 
 int main(int argc, char **argv)
 {
     return runQuickTestSuite(argc, argv, {
         {"TestCanvasItemSmoke", []() -> QObject * { return new TestCanvasItemSmoke; }},
+        {"TestCanvasCommands", []() -> QObject * { return new TestCanvasCommands; }},
     });
 }
