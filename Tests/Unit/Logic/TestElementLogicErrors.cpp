@@ -8,8 +8,10 @@
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/DFlipFlop.h"
 #include "App/Element/GraphicElements/InputVCC.h"
+#include "App/Element/GraphicElements/Nor.h"
 #include "App/Element/GraphicElements/Not.h"
 #include "App/Element/GraphicElements/Or.h"
+#include "App/Element/GraphicElements/Xnor.h"
 #include "Tests/Common/TestUtils.h"
 
 using TestUtils::initSrc;
@@ -87,6 +89,16 @@ void TestElementLogicErrors::testDisconnectedInput()
     initElm(notGate);
     notGate.updateLogic();
     QCOMPARE(notGate.outputValue(), Status::Unknown);
+
+    Nor norGate;
+    initElm(norGate);
+    norGate.updateLogic();
+    QCOMPARE(norGate.outputValue(), Status::Unknown);
+
+    Xnor xnorGate;
+    initElm(xnorGate);
+    xnorGate.updateLogic();
+    QCOMPARE(xnorGate.outputValue(), Status::Unknown);
 }
 
 void TestElementLogicErrors::testMultipleConnectionsSamePort()

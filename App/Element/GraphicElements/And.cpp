@@ -33,7 +33,7 @@ struct ElementInfo<And> {
         // entries in m_alternativeAppearances without losing the originals in m_defaultAppearances.
         meta.defaultAppearances = QStringList({":/Components/Logic/and.svg"});
         return meta;
-    }
+    } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementMetadata's QString/QStringList members, never reached after the return above.
 
     static inline const bool registered = []() {
         ElementMetadataRegistry::registerMetadata(metadata());
