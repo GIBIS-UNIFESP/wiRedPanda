@@ -25,4 +25,14 @@ private slots:
     void testSRFlipFlopBehavior();
     void testSRLatchBehavior();
     void testTFlipFlopBehavior();
+
+    // resetSimState() tests (only the 4 asynchronous-preset/clear flip-flops override it;
+    // DLatch/SRLatch have no edge-detection state to restore)
+    void testDFlipFlopResetSimState();
+    void testJKFlipFlopResetSimState();
+    void testSRFlipFlopResetSimState();
+    void testTFlipFlopResetSimState();
+
+    // updateTheme() reloads the theme-specific pixmap for every sequential element
+    void testSequentialElementsUpdateTheme();
 };
