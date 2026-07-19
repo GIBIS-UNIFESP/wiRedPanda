@@ -23,6 +23,8 @@ private slots:
     void testSelfLoopOscillation();
     void testInputValueBoundary();
     void testGateWithZeroInputs();
+    void testConnectPredecessorOutOfBoundsIsNoOp();
+    void testResetSimStateWithMoreSimOutputsThanPorts();
 
     // Status propagation tests (Phase 4+6)
     void testInvalidPropagatesChain();

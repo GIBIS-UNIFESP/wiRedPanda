@@ -286,6 +286,42 @@ void TestElementLogicErrors::testGateWithZeroInputs()
     QCOMPARE(orGate.outputValue(), Status::Inactive);
 }
 
+void TestElementLogicErrors::testConnectPredecessorOutOfBoundsIsNoOp()
+{
+    And andGate; // 2 inputs
+    initElm(andGate);
+
+    // An index past the connection vector must be silently ignored, not crash.
+    InputVcc input;
+    initSrc(input);
+    andGate.connectPredecessor(5, &input, 0);
+
+    // The real (in-bounds) inputs are unaffected: both still read as unconnected (Unknown).
+    andGate.updateLogic();
+    QCOMPARE(andGate.outputValue(), Status::Unknown);
+}
+
+void TestElementLogicErrors::testResetSimStateWithMoreSimOutputsThanPorts()
+{
+    // ElementSimState::reset()'s per-slot default lookup indexes outputPorts (the element's
+    // real output ports) but iterates m_outputs (the simulation-vector size set by
+    // initSimulationVectors()) -- these can momentarily disagree (setOutputSize() alone
+    // doesn't resync simulation vectors; only initSimulationVectors() does, normally called
+    // by Simulation::initialize()). Inflate m_outputs past the real port count directly to
+    // exercise the "no matching real port" fallback deterministically.
+    And andGate;
+    initElm(andGate);
+    andGate.initSimulationVectors(andGate.inputSize(), andGate.outputSize() + 2);
+    QCOMPARE(andGate.simOutputSize(), 3);
+
+    andGate.resetSimState();
+
+    // Slot 0 has a real port to read a default from; slots 1-2 don't and fall back to Inactive.
+    QCOMPARE(andGate.outputValue(0), Status::Inactive);
+    QCOMPARE(andGate.outputValue(1), Status::Inactive);
+    QCOMPARE(andGate.outputValue(2), Status::Inactive);
+}
+
 void TestElementLogicErrors::testInvalidPropagatesChain()
 {
     And andGate;
