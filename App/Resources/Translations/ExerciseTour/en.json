@@ -47,11 +47,9 @@
     },
     "title": "More basic gates: OR and NOT",
     "toggle-observe-nor": {
-      "hint": "",
       "instruction": "The NOT gate inverts the signal. Now, the circuit will output 1 only when none of the inputs are 1"
     },
     "toggle-observe-or": {
-      "hint": "",
       "instruction": "Play around with the inputs and notice how the OR gate outputs 1 when any of its inputs are 1"
     }
   },
@@ -102,11 +100,9 @@
     },
     "description": "Learn about the MUX and DEMUX circuits.",
     "explain-demux-select": {
-      "hint": "",
       "instruction": "The S0 port at the bottom of the DEMUX selects which output will receive the input's signal. When S0 = 0, Out0 = In0. When S0 = 1, Out1 = In0"
     },
     "explain-mux-select": {
-      "hint": "",
       "instruction": "The S0 port at the bottom of the MUX selects which input is routed to the output. When S0 = 0, the signal from Input 0 is sent to the output. When S0 = 1, the signal from Input 1 is sent to the output."
     },
     "place-mux": {
@@ -134,7 +130,6 @@
     },
     "description": "Learn how to build an adder circuit.",
     "explain-full-adder": {
-      "hint": "",
       "instruction": "This circuit forms a full adder. Unlike a half adder, a full adder accepts a carry-in (Cin) from a previous addition and produces a carry-out (Cout) for the next stage. By connecting the Cout of one full adder to the Cin of another, multiple full adders can be chained together to add binary numbers of any length"
     },
     "label-half-adder-outputs": {
@@ -166,7 +161,6 @@
     },
     "description": "Learn how to build a 2-to-4 Decoder.",
     "explain-decoder": {
-      "hint": "",
       "instruction": "For every specific combination of input bits, only one corresponding output line is activated while all others remain inactive"
     },
     "title": "Combinational Circuits II: Decoder",
@@ -186,11 +180,9 @@
     },
     "description": "Learn how to use Latches.",
     "explain-d-latch": {
-      "hint": "",
       "instruction": "Toggle the Input Switches and observe the D latch. When Enable is 1, the output follows the D input. When Enable is 0, the latch remembers its previous value"
     },
     "explain-sr-latch": {
-      "hint": "",
       "instruction": "Toggle the Input Switches and observe how the SR latch stores its state. Setting the S input to 1 causes the Q output to become 1, while setting the R input to 1 resets Q to 0. When both inputs return to 0, the latch remembers its last state until it is set or reset again"
     },
     "title": "Sequential Circuits I: Latches",
@@ -210,7 +202,6 @@
     },
     "description": "Learn how to build a counter circuit.",
     "explain-counter": {
-      "hint": "",
       "instruction": "Turn all three Input Switches on and start the Clock. Observe the LEDs as the counter runs. The first LED changes state every clock pulse, the second changes every two pulses, and the third changes every four pulses, displaying a repeating 3-bit binary count from 000 to 111"
     },
     "title": "Sequential Circuits III: Counter",
@@ -223,7 +214,6 @@
       "instruction": "Connect the Q output of each flip-flop to a different LED"
     },
     "wire-ripple-clock": {
-      "hint": "",
       "instruction": "Connect the Q output of the first flip-flop to the Clk input of the second flip-flop, then connect the Q output of the second flip-flop to the Clk input of the third flip-flop. Each flip-flop is clocked by the output of the previous one, creating a ripple counter"
     },
     "wire-t-inputs": {
@@ -246,19 +236,15 @@
     },
     "description": "Learn about Flip-Flops.",
     "explain-clear-preset": {
-      "hint": "",
       "instruction": "Connect the second Input Switch to either the Clear or Preset input and observe its effect. Unlike the D input, the Clear and Preset inputs act immediately without waiting for a clock edge. Clear forces Q to 0, while Preset forces Q to 1"
     },
     "explain-d-flipflop": {
-      "hint": "",
       "instruction": "Toggle the D Input Switch and observe the D flip-flop. The value on the D input is copied to the Q output only on the active clock edge. Between clock edges, the output remains unchanged"
     },
     "explain-jk-flipflop": {
-      "hint": "",
       "instruction": "Toggle the Input Switches and observe the JK flip-flop. When J = K = 0, the output holds its current state. When J = 1 and K = 0, the output is set. When J = 0 and K = 1, the output is reset. When J = K = 1, the output toggles on every active clock edge"
     },
     "explain-t-flipflop": {
-      "hint": "",
       "instruction": "Toggle the Input Switch and observe the T flip-flop. When T = 0, the output keeps its current state. When T = 1, the output toggles on every active clock edge. T flip-flops are commonly used to build binary counters and frequency dividers"
     },
     "title": "Sequential Circuits II: Flip-Flops",

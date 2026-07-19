@@ -60,11 +60,15 @@ def extract_entries(content_dir, is_tour):
             if key in seen_keys:
                 raise SystemExit(f"{json_file}: duplicate step key '{key}'")
             seen_keys.add(key)
-            entry[key] = (
-                {"title": step.get("title", ""), "body": step.get("body", "")}
-                if is_tour
-                else {"instruction": step.get("instruction", ""), "hint": step.get("hint", "")}
-            )
+            if is_tour:
+                step_entry = {"title": step.get("title", "")}
+                if step.get("body"):
+                    step_entry["body"] = step["body"]
+            else:
+                step_entry = {"instruction": step.get("instruction", "")}
+                if step.get("hint"):
+                    step_entry["hint"] = step["hint"]
+            entry[key] = step_entry
         catalog[file_id] = entry
     return catalog
 
