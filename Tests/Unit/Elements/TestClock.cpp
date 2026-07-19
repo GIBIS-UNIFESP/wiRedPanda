@@ -12,6 +12,8 @@
 
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/IO/SerializationContext.h"
+#include "App/Versions.h"
+#include "App/Wiring/Port.h"
 #include "Tests/Common/TestUtils.h"
 
 using namespace std::chrono_literals;
@@ -466,6 +468,44 @@ void TestClock::testLoadVersionVeryOld()
     // Should not crash, frequency/delay remain at defaults
     QCOMPARE(clock->frequency(), 1.0);  // Default
     QCOMPARE(clock->delay(), 0.0);      // Default
+}
+
+void TestClock::testLoadWithNonNumericDelayFallsBackToZero()
+{
+    // Force map.value("delay").toDouble(&ok) to fail by rewriting the saved "delay" entry
+    // to a non-numeric QVariant, exercising load()'s "ok" fallback (delayValue = 0.0).
+    auto clock1 = std::make_unique<Clock>();
+    clock1->setFrequency(10.0);
+    clock1->setDelay(0.5);
+
+    QByteArray data;
+    QDataStream saveStream(&data, QIODevice::WriteOnly);
+    clock1->save(saveStream, {.purpose = SerializationPurpose::PortableFile});
+
+    QMap<QString, QVariant> propsMap;
+    QList<QMap<QString, QVariant>> inputPorts, outputPorts, appearances;
+    QMap<QString, QVariant> clockMap;
+    {
+        QDataStream readStream(data);
+        readStream >> propsMap >> inputPorts >> outputPorts >> appearances >> clockMap;
+    }
+    QVERIFY(clockMap.contains("delay"));
+    clockMap["delay"] = QVariant(QStringList{"not", "a", "number"}); // toDouble() fails on this
+
+    QByteArray rewritten;
+    {
+        QDataStream writeStream(&rewritten, QIODevice::WriteOnly);
+        writeStream << propsMap << inputPorts << outputPorts << appearances << clockMap;
+    }
+
+    auto clock2 = std::make_unique<Clock>();
+    QDataStream loadStream(rewritten);
+    QHash<quint64, Port *> portMap;
+    SerializationContext context = {portMap, Versions::V_4_3, SerializationPurpose::PortableFile};
+    clock2->load(loadStream, context);
+
+    QCOMPARE(clock2->frequency(), 10.0); // unaffected sibling field still loads correctly
+    QCOMPARE(clock2->delay(), 0.0);      // falls back to 0.0 rather than keeping stale/garbage state
 }
 
 // ============================================================================
