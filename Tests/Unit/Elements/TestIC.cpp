@@ -5,9 +5,12 @@
 
 #include <QGraphicsSceneMouseEvent>
 #include <QSignalSpy>
+#include <QTemporaryDir>
 
 #include "App/Core/Settings.h"
 #include "App/Element/GraphicElement.h"
+#include "App/Element/GraphicElements/InputSwitch.h"
+#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/Element/ICPreviewPopup.h"
 #include "App/IO/SerializationContext.h"
@@ -103,4 +106,58 @@ void TestICUnit::testDoubleClickOpensSubCircuitNotInlineEditor()
 
     QCOMPARE(openSpy.count(), 1);
     QCOMPARE(inlineEditSpy.count(), 0);
+}
+
+void TestICUnit::testUnloadedIcSimulationMethodsAreNoOps()
+{
+    // A freshly-constructed, never-loaded IC has 0 internal elements -- ICSimulation::initialize()/
+    // update()/resettle() must all recognize this and return immediately rather than operate on
+    // an empty m_sortedInternalElements/m_internalElements.
+    IC ic;
+    ic.initializeSimulation();
+    ic.updateLogic();
+    ic.resettleCombinational();
+
+    QCOMPARE(ic.inputSize(), 0);
+    QCOMPARE(ic.outputSize(), 0);
+}
+
+void TestICUnit::testLoadedIcWithDisconnectedInputIsUnknown()
+{
+    // Build a tiny real sub-circuit (the established WorkSpace::save() + IC::loadFile()
+    // technique) so the loaded IC has genuine internal elements and m_sortedInternalElements is
+    // non-empty, then drive it with its own input port left disconnected, exercising
+    // ICSimulation::update()'s/resettle()'s "!simUpdateInputsAllowUnknown()" guard.
+    QTemporaryDir subDir;
+    QVERIFY(subDir.isValid());
+
+    WorkSpace subWorkspace;
+    CircuitBuilder subBuilder(subWorkspace.scene());
+    InputSwitch sw;
+    Led led;
+    subBuilder.add(&sw, &led);
+    subBuilder.connect(&sw, 0, &led, 0);
+
+    const QString subPath = subDir.path() + "/disconnected_input_probe.panda";
+    QCOMPARE(subWorkspace.save(subPath), WorkSpace::SaveOutcome::Saved);
+
+    auto ic = std::make_unique<IC>();
+    ic->loadFile(subPath, subDir.path());
+    QVERIFY(ic->inputSize() >= 1);
+    QVERIFY(ic->outputSize() >= 1);
+
+    // ICLoader derives an input port's default status from its internal boundary element's
+    // status *at load time* (Inactive here, since InputSwitch defaults off) -- force it to
+    // Unknown directly so the disconnected port genuinely fails simUpdateInputsAllowUnknown(),
+    // rather than "successfully" resolving to a definite level nothing actually drove.
+    ic->inputPort(0)->setDefaultStatus(Status::Unknown);
+
+    TestUtils::initElm(*ic); // allocate the IC's own sim vectors without connecting its ports
+    ic->initializeSimulation();
+
+    ic->updateLogic();
+    QCOMPARE(ic->outputValue(0), Status::Unknown);
+
+    ic->resettleCombinational();
+    QCOMPARE(ic->outputValue(0), Status::Unknown);
 }

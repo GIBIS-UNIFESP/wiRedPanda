@@ -23,4 +23,8 @@ private slots:
     // shadow IC's own double-click override -- ordinary virtual dispatch should guarantee
     // this, but it's asserted directly rather than assumed.
     void testDoubleClickOpensSubCircuitNotInlineEditor();
+
+    // ICSimulation's empty-IC and disconnected-input guards
+    void testUnloadedIcSimulationMethodsAreNoOps();
+    void testLoadedIcWithDisconnectedInputIsUnknown();
 };
