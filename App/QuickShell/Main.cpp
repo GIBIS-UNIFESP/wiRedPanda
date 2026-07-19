@@ -1,6 +1,8 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+#include <QCommandLineParser>
+#include <QDir>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQuickWindow>
@@ -20,6 +22,22 @@ int main(int argc, char *argv[])
     Comment::setVerbosity(-1);
 
     QGuiApplication app(argc, argv);
+
+    // A scoped-down mirror of App/Main.cpp's QCommandLineParser handling -- just the
+    // positional file argument (none of the export/MCP-mode flags apply to this shell yet).
+    // Resolved to an absolute path up front (App/Main.cpp:356's identical reasoning: any
+    // "file does not exist" error should echo back the absolute path the user actually typed,
+    // not a bare basename that's confusing once the app's own working directory is involved).
+    QCommandLineParser parser;
+    parser.setApplicationDescription(app.applicationName());
+    parser.addHelpOption();
+    parser.addVersionOption();
+    parser.addPositionalArgument("file", QCoreApplication::translate("main", "Circuit file to open."));
+    parser.process(app);
+    const QStringList positionalArgs = parser.positionalArguments();
+    const QString inputFile = positionalArgs.isEmpty()
+        ? QString()
+        : QDir::current().absoluteFilePath(positionalArgs.at(0));
 
     // appController owns the tab list and every menu action Main.qml binds to; it's exposed
     // as the AppController QML singleton (AppControllerForeign, in QuickAppController.h) since
@@ -45,6 +63,16 @@ int main(int argc, char *argv[])
     static QuickDialogProvider dialogProvider(window);
     Dialogs::setProvider(&dialogProvider);
     FileDialogs::setProvider(&dialogProvider);
+
+    // Loaded after the dialog providers are registered so a load failure's error path (once
+    // QuickWorkspaceManager/QuickWorkSpace surfaces one through Dialogs::provider()) has a
+    // real provider to use, mirroring App/Main.cpp's own call-after-show() ordering. Mirrors
+    // MainWindow's own behavior of always having an initial empty tab already open underneath
+    // the loaded one (App/UI/MainWindow.cpp:147's unconditional createNewTab()) -- not a
+    // Quick-specific quirk to special-case around.
+    if (!inputFile.isEmpty()) {
+        appController.openRecentFile(inputFile);
+    }
 
     return app.exec();
 }
