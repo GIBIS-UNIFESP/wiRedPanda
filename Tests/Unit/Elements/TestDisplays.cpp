@@ -3,14 +3,48 @@
 
 #include "Tests/Unit/Elements/TestDisplays.h"
 
+#include <QKeySequence>
+#include <QPointF>
+
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/Display14.h"
 #include "App/Element/GraphicElements/Display16.h"
 #include "App/Element/GraphicElements/Display7.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
+#include "App/IO/SerializationContext.h"
 #include "App/Scene/Workspace.h"
+#include "App/Versions.h"
+#include "App/Wiring/Port.h"
 #include "Tests/Common/TestUtils.h"
+
+namespace {
+/// Hand-builds a v3.1-4.0 old-format element stream (bare-QString color, predating the
+/// v4.1 QMap format) with \a inputPortCount ports and 0 outputs/appearances, mirroring
+/// GraphicElementSerializer::loadOldFormat()'s exact field order. Used for Display14/
+/// Display16, whose bare-string color load path has no bundled backward-compatibility
+/// fixture (unlike e.g. Buzzer's real notes.panda).
+QByteArray buildOldFormatDisplayStream(int inputPortCount, const QString &color)
+{
+    QByteArray data;
+    QDataStream writeStream(&data, QIODevice::WriteOnly);
+    writeStream << QPointF(0.0, 0.0);
+    writeStream << 0.0; // rotation -- Displays skip the old-convention adjustment outright
+    writeStream << QString("label");
+    writeStream << quint64(inputPortCount) << quint64(inputPortCount) << quint64(0) << quint64(1);
+    writeStream << QKeySequence(); // hasTrigger is true at V_4_0
+    writeStream << quint64(inputPortCount);
+    for (int i = 0; i < inputPortCount; ++i) {
+        writeStream << quint64(i);
+        writeStream << QString("old %1").arg(i);
+        writeStream << 0;
+    }
+    writeStream << quint64(0); // outputSize = 0
+    writeStream << quint64(0); // appearance-names count = 0 (hasAppearanceNames is true at V_4_0)
+    writeStream << color;      // the bare color QString these two loaders are being tested for
+    return data;
+}
+} // namespace
 
 // Display_7 Tests
 
@@ -329,4 +363,54 @@ void TestDisplays::testDisplay7()
     QCOMPARE(elm.color(), QString("Green"));
     elm.setColor("Blue");
     QCOMPARE(elm.color(), QString("Blue"));
+}
+
+// ============================================================================
+// Bare-QString Color Load Path (v3.1-4.0)
+// ============================================================================
+
+void TestDisplays::testDisplay14LoadOldFormatBareColor()
+{
+    Display14 display;
+    const QByteArray data = buildOldFormatDisplayStream(display.inputSize(), "Green");
+
+    QHash<quint64, Port *> portMap;
+    SerializationContext context = {portMap, Versions::V_4_0, SerializationPurpose::PortableFile};
+    QDataStream readStream(data);
+    display.load(readStream, context);
+
+    QCOMPARE(readStream.status(), QDataStream::Ok);
+    QCOMPARE(display.color(), QString("Green"));
+}
+
+void TestDisplays::testDisplay16LoadOldFormatBareColor()
+{
+    Display16 display;
+    const QByteArray data = buildOldFormatDisplayStream(display.inputSize(), "Blue");
+
+    QHash<quint64, Port *> portMap;
+    SerializationContext context = {portMap, Versions::V_4_0, SerializationPurpose::PortableFile};
+    QDataStream readStream(data);
+    display.load(readStream, context);
+
+    QCOMPARE(readStream.status(), QDataStream::Ok);
+    QCOMPARE(display.color(), QString("Blue"));
+}
+
+void TestDisplays::testDisplay16SaveLoadCurrentFormat()
+{
+    Display16 display1;
+    display1.setColor("Purple");
+
+    QByteArray data;
+    QDataStream saveStream(&data, QIODevice::WriteOnly);
+    display1.save(saveStream, {.purpose = SerializationPurpose::PortableFile});
+
+    Display16 display2;
+    QDataStream loadStream(data);
+    QHash<quint64, Port *> portMap;
+    SerializationContext context = {portMap, FormatRev::current, SerializationPurpose::PortableFile};
+    display2.load(loadStream, context);
+
+    QCOMPARE(display2.color(), QString("Purple"));
 }
