@@ -33,4 +33,9 @@ private slots:
     void testMimeData();
     void testMimeDataContent();
     void testMimeDataWithIC();
+
+    // Mouse interaction tests
+    void testMousePressThenSmallMoveDoesNotStartDrag();
+    void testMousePressThenLargeMoveStartsDrag();
+    void testMouseDoubleClickEmitsAddToSceneRequested();
 };
