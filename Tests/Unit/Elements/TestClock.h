@@ -46,6 +46,7 @@ private slots:
     void testLoadVersionOld();
     void testLoadVersionNew();
     void testLoadVersionVeryOld();
+    void testLoadWithNonNumericDelayFallsBackToZero();
 
     // Generic properties tests
     void testGenericProperties();
