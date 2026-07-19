@@ -32,4 +32,11 @@ private slots:
 
     // Basic Display7 test (migrated from testelements)
     void testDisplay7();
+
+    // Bare-QString color load path (v3.1-4.0)
+    void testDisplay14LoadOldFormatBareColor();
+    void testDisplay16LoadOldFormatBareColor();
+
+    // Current-format (v4.1+ QMap) save/load round trip
+    void testDisplay16SaveLoadCurrentFormat();
 };

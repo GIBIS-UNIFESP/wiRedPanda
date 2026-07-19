@@ -17,4 +17,5 @@ private slots:
     void testDisplay7SaveLoad();
     void testDisplay7AllColors();
     void testDisplay7Paint();
+    void testDisplay7LoadPreV16RemapsPinsToCanonicalOrder();
 };
