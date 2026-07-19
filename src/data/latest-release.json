@@ -1,8 +1,8 @@
 {
   "version": "5.2.1",
-  "windowsX64": null,
-  "windowsArm64": null,
-  "linuxX64": null,
-  "linuxArm64": null,
-  "macosUniversal": null
+  "windowsX64": "https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/5.2.1/wiRedPanda-5.2.1-Windows-Qt6.9.3-Portable-x86_64.zip",
+  "windowsArm64": "https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/5.2.1/wiRedPanda-5.2.1-Windows-arm64-Qt6.9.3-Portable.zip",
+  "linuxX64": "https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/5.2.1/wiRedPanda-5.2.1-Linux-Qt6.9.3-x86_64.AppImage",
+  "linuxArm64": "https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/5.2.1/wiRedPanda-5.2.1-Linux-arm64-Qt6.9.3.AppImage",
+  "macosUniversal": "https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/download/5.2.1/wiRedPanda-5.2.1-macOS-Qt6.9.3.dmg"
 }
