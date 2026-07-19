@@ -242,6 +242,8 @@ set(QUICK_SHELL_TEST_SOURCES
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasEmbeddedIC.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasInlineIC.cpp
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasInlineIC.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasItemInteraction.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasItemInteraction.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasItemSmoke.cpp
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasItemSmoke.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestQuickElementHandler.cpp

@@ -2416,20 +2416,17 @@ void CanvasItem::startSelectionRect(const QPointF &anchor)
     m_selectionAnchor = anchor;
     m_markingSelectionBox = true;
     m_selectionRect = QRectF(anchor, anchor);
-    // A fresh rubber-band replaces the previous selection, matching the baseline (no
-    // modifier-driven add/subtract) rubber-band behavior -- SceneInteraction's own
-    // setSelectionArea() call has the same replace semantics by default. Clear the real
-    // QGraphicsItem::setSelected() flag too, so real paint()'s selection outline matches.
-    const bool hadSelection = !m_selectedIds.isEmpty();
-    for (const quint64 id : std::as_const(m_selectedIds)) {
-        if (auto *element = m_elementsById.value(id, nullptr)) {
-            element->setSelected(false);
-        }
-    }
-    m_selectedIds.clear();
-    if (hadSelection) {
-        emit selectionChanged();
-    }
+    // A fresh rubber-band (or a plain click on empty space, which starts and immediately ends
+    // one) replaces the previous selection, matching the baseline (no modifier-driven
+    // add/subtract) rubber-band behavior -- SceneInteraction's own setSelectionArea() call has
+    // the same replace semantics by default. clearSelection() (not a hand-rolled
+    // m_selectedIds-driven loop, as this used to be) deselects via the real isSelected() state
+    // across every element -- m_selectedIds is a write-only mouse-gesture cache (see this
+    // class's own mousePressEvent() doc comment) that several call sites (addItems(), palette
+    // adds, morph/nextElm()/prevElm(), any command's own auto-select) never populate, so the old
+    // version silently failed to deselect an element selected via any of those paths. Found via
+    // TestCanvasItemInteraction::testMouseClickEmptyDeselects (Phase 7e-4).
+    clearSelection();
 }
 
 void CanvasItem::updateSelectionRect(const QPointF &current)
