@@ -338,6 +338,15 @@ public:
     /// at the correct world position under whatever pan/zoom is currently active.
     void addElementFromPalette(ElementType type, const QString &icFileName, bool isEmbedded, const QPointF &screenPos);
 
+    /// Adds one InputSwitch at world origin, selected, clearing any prior selection -- exactly
+    /// addElementFromPalette()'s selection/command shape, minus the palette-entry/IC/screen-
+    /// position plumbing this caller doesn't need. Backs the ui-overview tour's
+    /// "element-properties" step (App/Resources/Tours/ui-overview.json's "setupElementEditorDemo"
+    /// click id) so the element editor panel has something real to show; see
+    /// QuickAppController::runTourDemoAction()'s doc comment for why this is the only one of the
+    /// two "setup*Demo" click ids implemented in Quick.
+    void addTourDemoInputSwitch();
+
     /// Commits an inline label edit on \a element: pushes a CanvasUpdateCommand only if \a
     /// newLabel actually differs from the element's current label. Mirrors
     /// InlineLabelEditor::commit()'s undo-command logic (the QLineEdit-hosting QGraphicsProxyWidget
@@ -396,6 +405,18 @@ public:
     /// shared paintElementsInto() helper instead of QGraphicsScene::render(). Throws
     /// Pandaception if the QPainter cannot begin painting to the printer, matching production.
     void exportToPdf(const QString &filePath) const;
+
+    /// Paints elements()+connections() into \a painter, scaled and centered to fit \a source
+    /// (canvas coordinates) into \a target (painter/device coordinates), preserving aspect
+    /// ratio -- mirrors QGraphicsScene::render()'s own target/source/Qt::KeepAspectRatio
+    /// contract (the default aspectRatioMode every CircuitExporter call site relies on implicitly),
+    /// since that's the real method renderExportImage()/exportToPdf() stand in for. Shared by
+    /// both so the fit-and-center math has exactly one implementation. Public (not just
+    /// renderExportImage()/exportToPdf()'s private implementation detail) so QuickFileHandler's
+    /// export_image (SVG/PDF paths) can paint at an arbitrary content-fitted rect instead of
+    /// exportToPdf()'s fixed A4-landscape/64px-padding shape -- mirrors FileHandler.cpp's own
+    /// direct Scene::render() calls for the same MCP command.
+    void paintElementsInto(QPainter *painter, const QRectF &target, const QRectF &source) const;
 
     /// Clears the current selection (setSelected(false) on every element, deselect from
     /// m_selectedIds too), without pushing any command. Mirrors Scene::clearSelection() --
@@ -635,13 +656,6 @@ private:
     /// InputSwitch/InputRotary's mousePressEvent logic instead of calling it.
     bool isOverOwnPort(GraphicElement *owner, const QPointF &pos) const;
 
-    /// Paints elements()+connections() into \a painter, scaled and centered to fit \a source
-    /// (canvas coordinates) into \a target (painter/device coordinates), preserving aspect
-    /// ratio -- mirrors QGraphicsScene::render()'s own target/source/Qt::KeepAspectRatio
-    /// contract (the default aspectRatioMode every CircuitExporter call site relies on implicitly),
-    /// since that's the real method renderExportImage()/exportToPdf() stand in for. Shared by
-    /// both so the fit-and-center math has exactly one implementation.
-    void paintElementsInto(QPainter *painter, const QRectF &target, const QRectF &source) const;
 
     // --- Wire-creation-by-dragging (ports ConnectionManager's workflow) ---
     void startWireFromOutput(OutputPort *startPort);

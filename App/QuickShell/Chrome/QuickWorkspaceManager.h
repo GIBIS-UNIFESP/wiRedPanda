@@ -89,6 +89,15 @@ public:
     /// QMessageBox::StandardButton int.
     DialogButton confirmSave(bool multiple);
 
+    /// Removes the tab at \a tabIndex immediately, without prompting to save even if modified.
+    /// Mirrors FileHandler::handleCloseCircuit()'s original QTabWidget-direct-manipulation
+    /// bypass of WorkspaceManager's own interactive confirmSave() path: MCP mode is
+    /// non-interactive, and a save-confirmation dialog would otherwise block forever with no
+    /// user to answer it. Used only by QuickFileHandler's close_circuit MCP command --
+    /// interactive callers (the tab bar's own close affordance, once it exists) should use
+    /// closeTab() instead.
+    void removeTabWithoutPrompt(int tabIndex);
+
 public slots:
     /// Closes the tab at \a tabIndex (prompting to save if needed). Returns false if cancelled.
     bool closeTab(int tabIndex);
@@ -119,6 +128,11 @@ signals:
     void tabsChanged();
 
 private:
+    /// Shared tail of closeTab()/removeTabWithoutPrompt(): erases the tab at \a tabIndex and
+    /// re-establishes m_currentTab/m_currentIndex consistency, emitting currentTabChanged()/
+    /// tabsChanged() as needed.
+    void removeTabAt(int tabIndex);
+
     [[nodiscard]] int closeTabAnyway();
     [[nodiscard]] int findTabWithFile(const QString &fileName) const;
     [[nodiscard]] QString nextUntitledTitle() const;

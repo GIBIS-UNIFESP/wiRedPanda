@@ -8,6 +8,7 @@
 #pragma once
 
 #include <QObject>
+#include <QPointer>
 #include <QQmlEngine>
 #include <QRect>
 #include <QRectF>
@@ -135,7 +136,9 @@ private:
     /// the same content rect, so they can never disagree about what region is being shown.
     void regenerate();
 
-    CanvasItem *m_canvas = nullptr;
+    // QPointer, not a raw CanvasItem*: see QuickElementEditor::m_canvas's identical doc comment
+    // -- the previously-bound canvas may already be destroyed by the time setCanvas() runs again.
+    QPointer<CanvasItem> m_canvas;
     QTimer m_regenTimer;
 
     bool m_visible = true;

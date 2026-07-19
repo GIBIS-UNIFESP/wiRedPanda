@@ -12,6 +12,8 @@
 #include <QQmlEngine>
 #include <QUndoStack>
 
+#include "App/Core/Application.h"
+#include "App/Core/ExerciseTourResources.h"
 #include "App/Core/InstallRelativePaths.h"
 #include "App/Core/Settings.h"
 #include "App/QuickShell/Canvas/CanvasItem.h"
@@ -118,6 +120,7 @@ void QuickAppController::bindCurrentTab()
         m_elementEditor.setCanvas(nullptr);
         m_icPreview.setCanvas(nullptr);
         m_minimap.setCanvas(nullptr);
+        m_exerciseController.setCanvas(nullptr);
         emit mutedChanged();
         return;
     }
@@ -163,6 +166,11 @@ void QuickAppController::bindCurrentTab()
     // (throttled) thumbnail regen so it shows the newly-current circuit rather than whatever
     // the previously-bound tab last rendered.
     m_minimap.setCanvas(canvas);
+
+    // Rebinds the exercise controller's "current canvas" record; only actually rebinds the
+    // underlying ExerciseEngine if an exercise is currently active (mirrors MainWindow.cpp's
+    // own tab-switch handler, itself guarded on m_exerciseEngine->isActive()).
+    m_exerciseController.setCanvas(canvas);
 
     // Resyncs the Mute menu item to this tab's own Simulation::isUserMuted() state -- mute is
     // per-tab (unlike simulationRunning's global intent), so a tab switch must re-emit even
@@ -391,6 +399,23 @@ bool QuickAppController::canPaste()
     return ClipboardManager::canPaste(QGuiApplication::clipboard()->mimeData());
 }
 
+void QuickAppController::runTourDemoAction(const QString &id)
+{
+    // Only "setupElementEditorDemo" is implemented. The vocabulary's other demo id,
+    // "setupWaveformDemo", exists solely to prime a BeWavedDolphin view for the
+    // "actionWaveform"/"bwd:actionCombinational" steps that follow it in the bundled
+    // ui-overview tour -- BeWavedDolphin isn't ported to Quick yet (Phase 6), so running it
+    // would leave stray clock/gate/LED elements on the user's live canvas in service of a step
+    // that can't actually show anything. Left as a silent no-op here, matching Main.qml's
+    // resolveTourTarget()'s identical bwd:*/toolbar-target skip.
+    if (id != QStringLiteral("setupElementEditorDemo")) {
+        return;
+    }
+    if (auto *c = activeCanvas()) {
+        c->addTourDemoInputSwitch();
+    }
+}
+
 QList<ExampleEntry> QuickAppController::examplesList() const
 {
     QList<ExampleEntry> result;
@@ -413,6 +438,30 @@ QList<ExampleEntry> QuickAppController::examplesList() const
         result.append(ExampleEntry(words.join(QLatin1Char(' ')), examplesPath + "/" + entry));
     }
 
+    return result;
+}
+
+QList<LearnEntry> QuickAppController::exercisesList() const
+{
+    const QStringList completed = Settings::completedExercises();
+    QList<LearnEntry> result;
+    for (const auto &entry : ExerciseTourResources::discover(QStringLiteral("Exercises"))) {
+        const QString title = ExerciseTourResources::translate(entry.id + QStringLiteral(".title"), entry.title);
+        const QString description = ExerciseTourResources::translate(entry.id + QStringLiteral(".description"), entry.description);
+        result.append(LearnEntry(title, description, entry.path, completed.contains(entry.id)));
+    }
+    return result;
+}
+
+QList<LearnEntry> QuickAppController::toursList() const
+{
+    const QStringList completed = Settings::completedTours();
+    QList<LearnEntry> result;
+    for (const auto &entry : ExerciseTourResources::discover(QStringLiteral("Tours"))) {
+        const QString title = ExerciseTourResources::translate(entry.id + QStringLiteral(".title"), entry.title);
+        const QString description = ExerciseTourResources::translate(entry.id + QStringLiteral(".description"), entry.description);
+        result.append(LearnEntry(title, description, entry.path, completed.contains(entry.id)));
+    }
     return result;
 }
 
@@ -484,6 +533,19 @@ void QuickAppController::saveSplitterWidth(int width)
 
 bool QuickAppController::confirmClose()
 {
+    // Main.qml's ApplicationWindow hardcodes visible: true (unlike MainWindow, which --mcp
+    // mode never show()s -- see Main.cpp's own doc comment on that difference), so it's always
+    // a real, closeable top-level window here, including under --mcp. QCoreApplication::quit()
+    // (called on stdin EOF, see QuickMCPProcessor::onStdinReadable()) closes every top-level
+    // window as part of shutting down, which fires this via Main.qml's onClosing -- with no
+    // user present to answer a confirmation dialog in MCP mode, that would otherwise hang the
+    // process forever (reproduced via gdb: a nested QEventLoop parked in QuickDialogProvider::
+    // choice(), never returning). Application::interactiveMode is already false for the whole
+    // --mcp/--mcp-gui session (see Main.cpp), so it's the correct, already-established gate.
+    if (!Application::interactiveMode) {
+        return true;
+    }
+
     if (!m_workspaceManager.hasModifiedFiles()) {
         const DialogButton reply = Dialogs::provider()->choice(
             tr("Exit wiRedPanda"), tr("Are you sure?"), {DialogButton::Yes, DialogButton::Cancel}, DialogButton::Yes);

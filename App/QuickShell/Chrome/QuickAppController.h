@@ -19,14 +19,17 @@
 
 #include "App/Core/Enums.h"
 #include "App/Core/ThemeManager.h"
+#include "App/Exercise/ExerciseEngine.h"
 #include "App/IO/RecentFiles.h"
 #include "App/QuickShell/Chrome/QuickElementEditor.h"
 #include "App/QuickShell/Chrome/QuickElementPalette.h"
+#include "App/QuickShell/Chrome/QuickExerciseController.h"
 #include "App/QuickShell/Chrome/QuickExportController.h"
 #include "App/QuickShell/Chrome/QuickICController.h"
 #include "App/QuickShell/Chrome/QuickICPreview.h"
 #include "App/QuickShell/Chrome/QuickMainWindowHost.h"
 #include "App/QuickShell/Chrome/QuickMinimap.h"
+#include "App/QuickShell/Chrome/QuickTourController.h"
 #include "App/QuickShell/Chrome/QuickWorkSpace.h"
 #include "App/QuickShell/Chrome/QuickWorkspaceManager.h"
 #include "App/UI/LanguageManager.h"
@@ -92,6 +95,42 @@ private:
     QString m_flagIcon;
 };
 
+/// One entry in QuickAppController::exercisesList(). Mirrors MainWindow::populateContentMenu()'s
+/// per-action fields (translated title/description, completed state), built from
+/// ExerciseTourResources::discover("Exercises") + Settings::completedExercises(). A real QML
+/// value type for the same qmlcachegen reason as ExampleEntry/LanguageEntry.
+class LearnEntry
+{
+    Q_GADGET
+    QML_VALUE_TYPE(learnEntry)
+
+    Q_PROPERTY(QString title READ title FINAL)
+    Q_PROPERTY(QString description READ description FINAL)
+    Q_PROPERTY(QString path READ path FINAL)
+    Q_PROPERTY(bool completed READ completed FINAL)
+
+public:
+    LearnEntry() = default;
+    LearnEntry(QString title, QString description, QString path, bool completed)
+        : m_title(std::move(title))
+        , m_description(std::move(description))
+        , m_path(std::move(path))
+        , m_completed(completed)
+    {
+    }
+
+    [[nodiscard]] QString title() const { return m_title; }
+    [[nodiscard]] QString description() const { return m_description; }
+    [[nodiscard]] QString path() const { return m_path; }
+    [[nodiscard]] bool completed() const { return m_completed; }
+
+private:
+    QString m_title;
+    QString m_description;
+    QString m_path;
+    bool m_completed = false;
+};
+
 /**
  * \class QuickAppController
  * \brief Owns the Quick chrome's document model and export workflow, exposes them to QML,
@@ -129,10 +168,20 @@ class QuickAppController : public QObject, public QuickMainWindowHost
     Q_PROPERTY(QuickElementEditor *elementEditor READ elementEditor CONSTANT FINAL)
     Q_PROPERTY(QuickICPreview *icPreview READ icPreview CONSTANT FINAL)
     Q_PROPERTY(QuickMinimap *minimap READ minimap CONSTANT FINAL)
+    Q_PROPERTY(QuickExerciseController *exercise READ exercise CONSTANT FINAL)
+    Q_PROPERTY(QuickTourController *tour READ tour CONSTANT FINAL)
     // theme is a plain int (Enums::ElementType's own precedent for exposing a C++ enum class to
     // QML without registering it) -- Theme is declared at namespace scope in ThemeManager.h, not
     // inside a Q_GADGET/Q_NAMESPACE, so it has no Q_ENUM registration to expose directly.
     Q_PROPERTY(int theme READ themeInt WRITE setThemeInt NOTIFY themeChanged FINAL)
+    // TourOverlay.qml's dim/spotlight colors are a bespoke accent identity (amber on dark,
+    // blue on light) shared between the callout border and the spotlight ring -- not
+    // decomposable into existing QPalette roles the way ExerciseOverlay.qml's plain root.palette
+    // reuse was, so it needs the resolved dark/light bool directly. Shares themeChanged() as its
+    // NOTIFY: ThemeManager::effectiveTheme() only ever changes together with a real
+    // ThemeManager::themeChanged() emission (explicit switch, or System-mode OS change via
+    // onSystemColorSchemeChanged()) -- confirmed by reading ThemeManager.cpp, not assumed.
+    Q_PROPERTY(bool darkTheme READ isDarkTheme NOTIFY themeChanged FINAL)
     Q_PROPERTY(QList<LanguageEntry> languages READ languages CONSTANT FINAL)
     Q_PROPERTY(QString currentLanguage READ currentLanguage NOTIFY currentLanguageChanged FINAL)
     Q_PROPERTY(bool muted READ isMuted WRITE setMuted NOTIFY mutedChanged FINAL)
@@ -234,11 +283,26 @@ public:
     [[nodiscard]] QuickElementEditor *elementEditor() { return &m_elementEditor; }
     [[nodiscard]] QuickICPreview *icPreview() { return &m_icPreview; }
     [[nodiscard]] QuickMinimap *minimap() { return &m_minimap; }
+    [[nodiscard]] QuickExerciseController *exercise() { return &m_exerciseController; }
+    [[nodiscard]] QuickTourController *tour() { return &m_tourController; }
+
+    /// Discovered exercise content (built-in + user-provided, see ExerciseTourResources::discover()),
+    /// each entry's title/description translated and completed flag looked up from
+    /// Settings::completedExercises(). Mirrors MainWindow::setupExercisesMenu()'s
+    /// aboutToShow-populated menu -- QML re-reads this each time the Learn menu opens instead
+    /// (Instantiator's own onObjectAdded-per-open equivalent), so no NOTIFY is needed: content
+    /// added/removed on disk between menu opens is exactly what a fresh discover() call picks up.
+    Q_INVOKABLE QList<LearnEntry> exercisesList() const;
+
+    /// Same shape as exercisesList(), scanning "Tours" (Settings::completedTours()) instead of
+    /// "Exercises" -- backs the Learn menu's Tours submenu (Main.qml's toursMenu).
+    Q_INVOKABLE QList<LearnEntry> toursList() const;
 
     /// Mirrors MainWindowUi's actionLightTheme/actionDarkTheme/actionSystemTheme radio group,
     /// as the raw Theme ordinal (Light=0, Dark=1, System=2).
     [[nodiscard]] int themeInt() const { return static_cast<int>(ThemeManager::theme()); }
     void setThemeInt(int value) { ThemeManager::setTheme(static_cast<Theme>(value)); }
+    [[nodiscard]] bool isDarkTheme() const { return ThemeManager::effectiveTheme() == Theme::Dark; }
 
     /// Every available UI language, prettified for display. Mirrors
     /// MainWindow::populateLanguageMenu()'s per-action displayName()/flagIcon() lookups. Not
@@ -266,6 +330,28 @@ public:
     /// check, backing the empty-canvas context menu's Paste item.
     Q_INVOKABLE static bool canPaste();
 
+    /// Saves the current tab directly to \a fileName, no dialog -- mirrors MainWindow::save(),
+    /// the direct-filename counterpart to saveFile()/saveFileAs()'s dialog-driven pair. Used by
+    /// QuickFileHandler's save_circuit MCP command, which (unlike the GUI) always supplies an
+    /// explicit path.
+    void saveCurrentTabAs(const QString &fileName) { m_workspaceManager.save(fileName); }
+    /// Direct-filename Arduino/SystemVerilog export, no dialog -- mirrors MainWindow::
+    /// exportToArduino()/exportToSystemVerilog(), the same direct-filename/dialog split
+    /// saveCurrentTabAs() has relative to saveFile(). Used by QuickFileHandler's
+    /// export_arduino/export_systemverilog MCP commands.
+    void exportArduinoTo(const QString &fileName) { m_exportController.exportToArduino(fileName); }
+    void exportSystemVerilogTo(const QString &fileName) { m_exportController.exportToSystemVerilog(fileName); }
+
+    /// Runs the real, canvas-mutating half of the Tour/Exercise "click" vocabulary's two
+    /// "setup*Demo" ids (App/Resources/Exercises/README.md's "Closed widget/action vocabulary")
+    /// -- the ids Main.qml's dispatchTourClick() can't handle by touching QML state alone, since
+    /// they build real GraphicElement/Connection instances. Mirrors
+    /// MainWindow::clickTarget()'s "setupElementEditorDemo"/"setupWaveformDemo" cases, adapted to
+    /// CanvasItem's command API -- see this method's own .cpp doc comment for why only
+    /// "setupElementEditorDemo" is actually implemented. Unrecognized ids (everything else in
+    /// the vocabulary is handled entirely in QML) are a silent no-op.
+    Q_INVOKABLE void runTourDemoAction(const QString &id);
+
 public slots:
     // --- File menu ---
     void newTab() { m_workspaceManager.newTab(); }
@@ -278,6 +364,10 @@ public slots:
     /// close button / Ctrl+W path -- there's no tab-bar close button yet (sub-step 4-adjacent
     /// chrome), but the underlying operation is real and exercised here.
     bool closeTab(int index) { return m_workspaceManager.closeTab(index); }
+    /// Closes the tab at \a index immediately, without a save prompt. See
+    /// QuickWorkspaceManager::removeTabWithoutPrompt()'s doc comment; used only by
+    /// QuickFileHandler's close_circuit MCP command.
+    void removeTabWithoutPrompt(int index) { m_workspaceManager.removeTabWithoutPrompt(index); }
 
     // --- Edit menu (the six scene-property shortcuts -- [ ] { } < > -- are NOT here: they're
     // already implemented directly in CanvasItem::keyPressEvent() since Phase 3, see the plan's
@@ -387,6 +477,14 @@ private:
     QuickElementEditor m_elementEditor;
     QuickICPreview m_icPreview;
     QuickMinimap m_minimap;
+    /// m_exerciseEngine must be declared (and thus constructed) before m_exerciseController,
+    /// which takes a pointer to it in its own constructor.
+    ExerciseEngine m_exerciseEngine;
+    QuickExerciseController m_exerciseController{&m_exerciseEngine};
+    /// Unlike ExerciseEngine, TourEngine has zero Scene/CanvasItem coupling (see
+    /// QuickTourController's own doc comment), so this owns its TourEngine directly -- no
+    /// sibling engine member or setCanvas() binding needed.
+    QuickTourController m_tourController;
     RecentFiles m_recentFiles;
     LanguageManager m_languageManager;
     QList<QMetaObject::Connection> m_tabConnections;

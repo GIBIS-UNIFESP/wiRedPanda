@@ -9,6 +9,7 @@
 
 #include <QList>
 #include <QObject>
+#include <QPointer>
 #include <QQmlEngine>
 #include <QString>
 #include <QVariantList>
@@ -467,7 +468,15 @@ private:
     /// own reuse (called again at the end of setTruthTableProposition()).
     void rebuildTruthTableRows(class TruthTable *table);
 
-    CanvasItem *m_canvas = nullptr;
+    // QPointer, not a raw CanvasItem*: QuickWorkspaceManager::removeTabAt() (closeTab()'s and
+    // removeTabWithoutPrompt()'s shared tail) erases the closed QuickWorkSpace -- and therefore
+    // its CanvasItem -- before emitting currentTabChanged() for whatever tab becomes current
+    // next, so the previously-bound canvas may already be destroyed by the time setCanvas() is
+    // called again. Mirrors QuickAppController::m_boundCanvas's identical QPointer choice for
+    // the exact same documented reason; a raw pointer here caused a real, reproduced SIGSEGV
+    // (disconnect() on a dangling CanvasItem*, confirmed via gdb) the first time a non-last tab
+    // was actually closed while bound -- MCP's close_circuit command, Phase 5c.
+    QPointer<CanvasItem> m_canvas;
     QList<GraphicElement *> m_elements;
     SelectionCapabilities m_caps;
 

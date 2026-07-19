@@ -1061,6 +1061,20 @@ void CanvasItem::addElementFromPalette(ElementType type, const QString &icFileNa
     emit selectionChanged();
 }
 
+void CanvasItem::addTourDemoInputSwitch()
+{
+    for (auto *elm : std::as_const(m_elements)) {
+        elm->setSelected(false);
+    }
+    m_selectedIds.clear();
+
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
+    sw->setPos(0, 0);
+    receiveCommand(new CanvasAddItemsCommand({sw}, this));
+    sw->setSelected(true);
+    emit selectionChanged();
+}
+
 QList<QGraphicsItem *> CanvasItem::deserializeAndAdd(QDataStream &stream, const QVersionNumber &version,
                                                      std::optional<QPointF> fixedOffset)
 {

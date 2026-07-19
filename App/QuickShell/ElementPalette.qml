@@ -36,6 +36,10 @@ Item {
     implicitWidth: 220
 
     readonly property QuickElementPalette controller: AppController.elementPalette
+    // Exposed for Main.qml's tour target-resolution/click-dispatch functions (Phase 5b) --
+    // neither is otherwise reachable from outside this file.
+    property alias categoryTabBar: categoryTabBar
+    property alias searchField: searchField
     // Canvas-area size, for centering a newly-added element (double-click/search-Enter
     // below) -- passed down explicitly by Main.qml rather than reached for via an implicit
     // ancestor-id lookup (this component doesn't otherwise know or need to know that a

@@ -4,6 +4,7 @@
 #include "App/Exercise/ExerciseEngine.h"
 
 #include <QDebug>
+#include <QPointer>
 
 #include "App/Core/Settings.h"
 #include "App/Element/ElementFactory.h"
@@ -67,13 +68,40 @@ bool ExerciseEngine::loadFromResource(const QString &resourcePath)
 
 void ExerciseEngine::setScene(Scene *scene)
 {
-    if (m_scene) {
-        disconnect(m_scene, &Scene::circuitHasChanged, this, &ExerciseEngine::onCircuitChanged);
+    if (m_disconnectFn) {
+        m_disconnectFn();
     }
-    m_scene = scene;
-    if (m_scene && m_core.isActive()) {
-        connect(m_scene, &Scene::circuitHasChanged, this, &ExerciseEngine::onCircuitChanged);
+    if (scene) {
+        // A local QPointer, captured by value into each closure below -- not a class member --
+        // for the usual destroyed-out-from-under-us safety net without this class ever storing
+        // Scene* itself (see m_connectFn's doc comment for why that matters).
+        const QPointer<Scene> safeScene(scene);
+        m_connectFn = [this, safeScene] {
+            if (safeScene) {
+                connect(safeScene, &Scene::circuitHasChanged, this, &ExerciseEngine::onCircuitChanged);
+            }
+        };
+        m_disconnectFn = [this, safeScene] {
+            if (safeScene) {
+                disconnect(safeScene, &Scene::circuitHasChanged, this, &ExerciseEngine::onCircuitChanged);
+            }
+        };
+        m_elementsFn = [safeScene] {
+            return safeScene ? safeScene->elements() : QVector<GraphicElement *>{};
+        };
+    } else {
+        m_connectFn = nullptr;
+        m_disconnectFn = nullptr;
+        m_elementsFn = nullptr;
     }
+    if (scene && m_core.isActive()) {
+        m_connectFn();
+    }
+}
+
+QVector<GraphicElement *> ExerciseEngine::currentElements() const
+{
+    return m_elementsFn ? m_elementsFn() : QVector<GraphicElement *>{};
 }
 
 const ExerciseStep &ExerciseEngine::currentStepData() const
@@ -86,8 +114,8 @@ void ExerciseEngine::start()
     if (!m_core.start()) {
         return;
     }
-    if (m_scene) {
-        connect(m_scene, &Scene::circuitHasChanged, this, &ExerciseEngine::onCircuitChanged);
+    if (m_connectFn) {
+        m_connectFn();
     }
     emitCurrentStep();
 }
@@ -97,8 +125,8 @@ void ExerciseEngine::stop()
     if (!m_core.stop()) {
         return;
     }
-    if (m_scene) {
-        disconnect(m_scene, &Scene::circuitHasChanged, this, &ExerciseEngine::onCircuitChanged);
+    if (m_disconnectFn) {
+        m_disconnectFn();
     }
     emit exerciseStopped();
 }
@@ -145,7 +173,7 @@ void ExerciseEngine::onCircuitChanged()
 
 bool ExerciseEngine::validateCurrentStep() const
 {
-    if (!m_core.isActive() || m_core.totalSteps() == 0 || !m_scene) {
+    if (!m_core.isActive() || m_core.totalSteps() == 0 || !m_elementsFn) {
         return false;
     }
     const ExerciseStep &step = m_core.currentStepData();
@@ -165,7 +193,7 @@ bool ExerciseEngine::validateElements(const QVector<ExerciseElementRequirement> 
         return true;
     }
 
-    const QVector<GraphicElement *> elements = m_scene->elements();
+    const QVector<GraphicElement *> elements = currentElements();
 
     for (const ExerciseElementRequirement &req : reqs) {
         const ElementType required = ElementFactory::textToType(req.typeName);
@@ -193,7 +221,7 @@ bool ExerciseEngine::validateConnections(const QVector<ExerciseConnectionRequire
         return true;
     }
 
-    const QVector<GraphicElement *> elements = m_scene->elements();
+    const QVector<GraphicElement *> elements = currentElements();
 
     for (const ExerciseConnectionRequirement &req : reqs) {
         const ElementType toType   = ElementFactory::textToType(req.toTypeName);
@@ -235,8 +263,8 @@ void ExerciseEngine::emitCurrentStep()
 void ExerciseEngine::markCompleted()
 {
     m_core.markCompleted();
-    if (m_scene) {
-        disconnect(m_scene, &Scene::circuitHasChanged, this, &ExerciseEngine::onCircuitChanged);
+    if (m_disconnectFn) {
+        m_disconnectFn();
     }
     emit exerciseCompleted();
 }

@@ -24,6 +24,9 @@ set(QUICK_SHELL_SOURCES
     Chrome/QuickElementEditor.h
     Chrome/QuickElementPalette.cpp
     Chrome/QuickElementPalette.h
+    Chrome/QuickExerciseController.cpp
+    Chrome/QuickExerciseController.h
+    Chrome/QuickExerciseEngineBinding.cpp
     Chrome/QuickExportController.cpp
     Chrome/QuickExportController.h
     Chrome/QuickICController.cpp
@@ -33,11 +36,29 @@ set(QUICK_SHELL_SOURCES
     Chrome/QuickMainWindowHost.h
     Chrome/QuickMinimap.cpp
     Chrome/QuickMinimap.h
+    Chrome/QuickTourController.cpp
+    Chrome/QuickTourController.h
     Chrome/QuickWorkSpace.cpp
     Chrome/QuickWorkSpace.h
     Chrome/QuickWorkspaceManager.cpp
     Chrome/QuickWorkspaceManager.h
     Main.cpp
+    ${CMAKE_SOURCE_DIR}/MCP/Server/Core/QuickMCPProcessor.cpp
+    ${CMAKE_SOURCE_DIR}/MCP/Server/Core/QuickMCPProcessor.h
+    ${CMAKE_SOURCE_DIR}/MCP/Server/Handlers/QuickBaseHandler.cpp
+    ${CMAKE_SOURCE_DIR}/MCP/Server/Handlers/QuickBaseHandler.h
+    ${CMAKE_SOURCE_DIR}/MCP/Server/Handlers/QuickConnectionHandler.cpp
+    ${CMAKE_SOURCE_DIR}/MCP/Server/Handlers/QuickConnectionHandler.h
+    ${CMAKE_SOURCE_DIR}/MCP/Server/Handlers/QuickElementHandler.cpp
+    ${CMAKE_SOURCE_DIR}/MCP/Server/Handlers/QuickElementHandler.h
+    ${CMAKE_SOURCE_DIR}/MCP/Server/Handlers/QuickFileHandler.cpp
+    ${CMAKE_SOURCE_DIR}/MCP/Server/Handlers/QuickFileHandler.h
+    ${CMAKE_SOURCE_DIR}/MCP/Server/Handlers/QuickHistoryHandler.cpp
+    ${CMAKE_SOURCE_DIR}/MCP/Server/Handlers/QuickHistoryHandler.h
+    ${CMAKE_SOURCE_DIR}/MCP/Server/Handlers/QuickICHandler.cpp
+    ${CMAKE_SOURCE_DIR}/MCP/Server/Handlers/QuickICHandler.h
+    ${CMAKE_SOURCE_DIR}/MCP/Server/Handlers/QuickSimulationHandler.cpp
+    ${CMAKE_SOURCE_DIR}/MCP/Server/Handlers/QuickSimulationHandler.h
 )
 
 if(EMSCRIPTEN)
@@ -56,6 +77,20 @@ endif()
 # QuickAppController/QuickElementEditor/QuickElementPalette/QuickWorkSpace also became
 # QML-registered types (see those headers).
 target_include_directories(wiredpanda_quick PRIVATE Canvas Chrome)
+
+# Copy JSON schema to executable directory after build -- mirrors the root CMakeLists.txt's
+# identical POST_BUILD command for the "wiredpanda" target (that one can't also cover this
+# target: it runs before add_subdirectory(App/QuickShell), so wiredpanda_quick doesn't exist
+# yet at that point). QuickMCPProcessor resolves this the same way MCPProcessor does --
+# QDir(QCoreApplication::applicationDirPath()).absoluteFilePath("schema-mcp.json") -- so it
+# needs its own copy regardless of where "wiredpanda"'s ends up landing.
+add_custom_command(TARGET wiredpanda_quick POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+        ${CMAKE_SOURCE_DIR}/MCP/schema-mcp.json
+        $<TARGET_FILE_DIR:wiredpanda_quick>/schema-mcp.json
+    COMMENT "Copying JSON schema to executable directory"
+    VERBATIM
+)
 
 # See the target_include_directories comment above: this target was relying on the bare-name
 # __has_include() resolving by unity-batch accident (whichever translation unit happened to
@@ -82,12 +117,14 @@ qt_add_qml_module(wiredpanda_quick
         ChoiceDialog.qml
         ElementEditor.qml
         ElementPalette.qml
+        ExerciseOverlay.qml
         ICPreviewPopup.qml
         Main.qml
         Minimap.qml
         PaletteItemDelegate.qml
         QuickFileDialog.qml
         TextPromptDialog.qml
+        TourOverlay.qml
         TruthTableDialog.qml
 )
 
@@ -111,7 +148,7 @@ set_source_files_properties(
 # list<int>.indexOf() (ChoiceDialog.qml's buttonOrder) returns qsizetype narrowed into
 # an int without a cast (-Werror=conversion). Same category as the loader suppression
 # above: Qt's own generated code, not something we can edit, so disable just these
-# warnings on just these generated files. Applied to all 10 QML_FILES' generated .cpp
+# warnings on just these generated files. Applied to all 12 QML_FILES' generated .cpp
 # outputs (not only whichever ones hit it today) since which specific bindings get
 # compiled vs. interpreted is qmlcachegen's own decision and can shift with any future
 # QML edit.
@@ -119,12 +156,14 @@ set(QUICK_SHELL_QML_CACHEGEN_SOURCES
     ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_ChoiceDialog_qml.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_ElementEditor_qml.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_ElementPalette_qml.cpp
+    ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_ExerciseOverlay_qml.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_ICPreviewPopup_qml.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_Main_qml.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_Minimap_qml.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_PaletteItemDelegate_qml.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_QuickFileDialog_qml.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_TextPromptDialog_qml.cpp
+    ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_TourOverlay_qml.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_TruthTableDialog_qml.cpp
 )
 set_source_files_properties(

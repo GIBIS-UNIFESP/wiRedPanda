@@ -110,7 +110,9 @@ private:
     /// Marks the popup hidden and notifies, if it wasn't already.
     void hidePopup();
 
-    CanvasItem *m_canvas = nullptr;
+    // QPointer, not a raw CanvasItem*: see QuickElementEditor::m_canvas's identical doc comment
+    // -- the previously-bound canvas may already be destroyed by the time setCanvas() runs again.
+    QPointer<CanvasItem> m_canvas;
 
     QTimer m_showTimer;
     QTimer m_hideTimer;

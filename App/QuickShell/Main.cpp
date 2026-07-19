@@ -7,11 +7,16 @@
 #include <QQmlApplicationEngine>
 #include <QQuickWindow>
 
+#include "App/Core/Application.h"
 #include "App/Core/Common.h"
 #include "App/QuickShell/Chrome/DialogProvider.h"
 #include "App/QuickShell/Chrome/QuickAppController.h"
 #include "App/QuickShell/Chrome/QuickDialogProvider.h"
 #include "App/UI/FileDialogProvider.h"
+
+#ifdef ENABLE_MCP_SERVER
+#include "MCP/Server/Core/QuickMCPProcessor.h"
+#endif
 
 int main(int argc, char *argv[])
 {
@@ -33,11 +38,33 @@ int main(int argc, char *argv[])
     parser.addHelpOption();
     parser.addVersionOption();
     parser.addPositionalArgument("file", QCoreApplication::translate("main", "Circuit file to open."));
+
+#ifdef ENABLE_MCP_SERVER
+    // Mirrors App/Main.cpp's identical pair -- --mcp-gui exists there only to distinguish a
+    // shown-but-headless MainWindow from a never-shown one; wiredpanda_quick's ApplicationWindow
+    // hardcodes visible: true (Main.qml), so both flags behave identically here. Kept as two
+    // options (not collapsed into one) so existing MCP client tooling that passes either flag
+    // keeps working unmodified.
+    QCommandLineOption mcpModeOption("mcp",
+        QCoreApplication::translate("main", "Run in MCP (Model Context Protocol) mode for programmatic control."));
+    parser.addOption(mcpModeOption);
+    QCommandLineOption mcpGuiOption("mcp-gui",
+        QCoreApplication::translate("main", "Run MCP mode with a visible GUI window."));
+    parser.addOption(mcpGuiOption);
+#endif
+
     parser.process(app);
     const QStringList positionalArgs = parser.positionalArguments();
     const QString inputFile = positionalArgs.isEmpty()
         ? QString()
         : QDir::current().absoluteFilePath(positionalArgs.at(0));
+
+#ifdef ENABLE_MCP_SERVER
+    const bool mcpMode = parser.isSet(mcpModeOption) || parser.isSet(mcpGuiOption);
+    if (mcpMode) {
+        Application::interactiveMode = false;
+    }
+#endif
 
     // appController owns the tab list and every menu action Main.qml binds to; it's exposed
     // as the AppController QML singleton (AppControllerForeign, in QuickAppController.h) since
@@ -70,6 +97,17 @@ int main(int argc, char *argv[])
     // MainWindow's own behavior of always having an initial empty tab already open underneath
     // the loaded one (App/UI/MainWindow.cpp:147's unconditional createNewTab()) -- not a
     // Quick-specific quirk to special-case around.
+#ifdef ENABLE_MCP_SERVER
+    if (mcpMode) {
+        // MCP mode: skip positional-file loading (an MCP client loads circuits via its own
+        // load_circuit call, mirroring App/Main.cpp's identical early-return before its own
+        // positional-file handling) and start the MCP stdin/stdout processor instead.
+        QuickMCPProcessor processor(&appController);
+        processor.startProcessing();
+        return app.exec();
+    }
+#endif
+
     if (!inputFile.isEmpty()) {
         appController.openRecentFile(inputFile);
     }

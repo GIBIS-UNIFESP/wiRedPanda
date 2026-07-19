@@ -515,6 +515,18 @@ bool QuickWorkspaceManager::closeTab(const int tabIndex)
         }
     }
 
+    removeTabAt(tabIndex);
+    return true;
+}
+
+void QuickWorkspaceManager::removeTabWithoutPrompt(int tabIndex)
+{
+    setCurrentIndex(tabIndex);
+    removeTabAt(tabIndex);
+}
+
+void QuickWorkspaceManager::removeTabAt(int tabIndex)
+{
     sentryBreadcrumb("ui", QStringLiteral("Tab closed"));
     m_tabs.erase(m_tabs.begin() + tabIndex);
 
@@ -531,6 +543,4 @@ bool QuickWorkspaceManager::closeTab(const int tabIndex)
         setCurrentIndex(newIndex);
     }
     emit tabsChanged();
-
-    return true;
 }

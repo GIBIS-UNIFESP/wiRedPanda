@@ -186,6 +186,49 @@ ApplicationWindow {
         }
 
         Menu {
+            title: qsTr("&Learn")
+            Menu {
+                id: exercisesMenu
+                title: qsTr("Exercises")
+                // Re-scanned on every open (not just once, unlike examplesList()'s bundled-only
+                // precedent): mirrors MainWindow::setupExercisesMenu()'s aboutToShow-triggered
+                // rescan, since discover() also picks up custom content a teacher/user may have
+                // dropped into a real folder while the app is running.
+                onAboutToShow: exercisesRepeater.model = AppController.exercisesList()
+                Repeater {
+                    id: exercisesRepeater
+                    model: []
+                    MenuItem {
+                        required property learnEntry modelData
+                        text: (modelData.completed ? "✓ " : "") + modelData.title
+                        ToolTip.text: modelData.description
+                        ToolTip.visible: hovered && modelData.description.length > 0
+                        onTriggered: AppController.exercise.start(modelData.path)
+                    }
+                }
+            }
+            Menu {
+                id: toursMenu
+                title: qsTr("Tours")
+                // Mirrors exercisesMenu's own aboutToShow-triggered rescan, MainWindow::
+                // setupToursMenu()'s equivalent -- ExerciseTourResources::discover("Tours")
+                // picks up custom content the same way discover("Exercises") does above.
+                onAboutToShow: toursRepeater.model = AppController.toursList()
+                Repeater {
+                    id: toursRepeater
+                    model: []
+                    MenuItem {
+                        required property learnEntry modelData
+                        text: (modelData.completed ? "✓ " : "") + modelData.title
+                        ToolTip.text: modelData.description
+                        ToolTip.visible: hovered && modelData.description.length > 0
+                        onTriggered: AppController.tour.start(modelData.path)
+                    }
+                }
+            }
+        }
+
+        Menu {
             title: qsTr("&Help")
             MenuItem { text: qsTr("Shortcuts and Tips"); onTriggered: shortcutsDialog.open() }
         }
@@ -198,7 +241,8 @@ ApplicationWindow {
         // separators): New/Open/Save | Rotate/Cut/Copy/Paste/Delete | Zoom In/Out/Reset/Fit |
         // Play/Restart. Waveform is deliberately excluded -- it opens BeWavedDolphin, not
         // ported to Quick yet (Phase 6); matches this rewrite's "don't build dead UI" precedent
-        // (the Learn menu's own deferral).
+        // (the Learn menu was the same deferral, now filled in by Phase 5 -- see its own Menu
+        // block above and ExerciseOverlay.qml).
         ToolBar {
             Layout.fillWidth: true
 
@@ -381,6 +425,7 @@ ApplicationWindow {
             }
 
             ElementPalette {
+                id: elementPalette
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 canvasWidth: canvasHost.width
@@ -399,6 +444,7 @@ ApplicationWindow {
             // Layout.fillHeight; it was dropped in the move and never re-verified with a real
             // selection, only the empty/collapsed case).
             ElementEditor {
+                id: elementEditor
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 Layout.maximumHeight: 360
@@ -582,7 +628,30 @@ ApplicationWindow {
             // Minimap.qml's own doc comment). Genuinely canvasHost-local (unlike
             // ICPreviewPopup), so no reparenting is needed here.
             Minimap {}
+
+            // Circuit-exercise step overlay (Phase 5, filling the Learn menu's own deferral
+            // above) -- see ExerciseOverlay.qml's own doc comment. Genuinely canvasHost-local,
+            // same as Minimap.
+            ExerciseOverlay {}
         }
+    }
+
+    // Guided-interface-tour overlay (Phase 5, the Learn menu's Tours submenu above). Unlike
+    // ExerciseOverlay/Minimap, this is a direct content child, not a canvasHost child: it needs
+    // to spotlight items outside canvasHost too (elementPalette, its category tabs, the search
+    // bar, elementEditor -- all in leftPane). anchors.fill: parent covers exactly the same
+    // content area SplitView does (below the menu bar/toolbar/tab bar header, above footer).
+    // paletteItem/editorItem/canvasAreaItem are passed down explicitly rather than reached for
+    // via an implicit ancestor-id lookup -- same precedent as ElementPalette.qml's own
+    // canvasWidth/canvasHeight properties -- so TourOverlay.qml's target-resolution/click-
+    // dispatch functions can be statically typed against real item types instead of an untyped
+    // cross-file id reference (qmllint can't see custom QML functions through the generic
+    // Window attached property's QQuickWindow type, unlike a typed property).
+    TourOverlay {
+        anchors.fill: parent
+        paletteItem: elementPalette
+        editorItem: elementEditor
+        canvasAreaItem: canvasHost
     }
 
     Dialog {
