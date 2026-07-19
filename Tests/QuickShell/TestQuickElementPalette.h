@@ -21,6 +21,23 @@
 ///
 /// Neither QuickElementPalette nor addElementToCurrentTab() had any permanent test before this
 /// sub-step, despite being fully ported since Phase 4 sub-step 4.
+///
+/// Phase 7f follow-up (Tests/Integration/TestICInline.cpp's "Batch 8 -- UI widgets" disposition,
+/// ~19 tests): the 3 testSelectionCapabilities*/testContextMenuICActionConditions tests are
+/// pure computeCapabilities() domain logic (KEEP, no Quick porting needed -- already covered by
+/// the dedicated Tests/Unit/Ui/TestSelectionCapabilities.cpp regardless of UI framework). The 2
+/// testElementLabelMime*/5 testSceneDrop*(MIME-specific)/3 testICDropZone*/1
+/// testTrashButtonDragAcceptance tests all test Widgets' QMimeData-based drag-and-drop transport
+/// (a custom "wpanda/x-dnditemdata"/"application/x-wiredpanda-dragdrop" binary MIME format) --
+/// confirmed by reading Main.qml/PaletteItemDelegate.qml that Quick's own DnD never serializes
+/// anything: DropArea.onDropped reads drop.source.modelData directly, an in-process live
+/// reference. No MIME format exists to test on this side; ICDropZone/TrashButton's underlying
+/// *actions* (embedICByFile()/extractICByBlobName()/removeICFile()) are already covered by
+/// TestCanvasEmbeddedIC (Phase 7e-2). Two of the 5 testSceneDrop* tests' real *semantic* intent
+/// (not their MIME mechanism) still applies to addElementFromPalette()'s own embedded-IC branch,
+/// though, and are added below (missing-blob no-op, non-IC ignores the embedded flag) -- along
+/// with 2 real testElementPaletteUpdateEmbeddedICList* scenarios (dedup-by-blob-name, a real
+/// add/remove/refresh round trip) not covered by this file's original 7e-6 pass.
 class TestQuickElementPalette : public QObject
 {
     Q_OBJECT
@@ -47,6 +64,11 @@ private slots:
 
     void testAddElementToCurrentTabAddsBuiltinElement();
     void testAddElementToCurrentTabAddsEmbeddedIC();
+    void testAddElementToCurrentTabWithMissingEmbeddedBlobIsNoOp();
+    void testAddElementToCurrentTabIgnoresEmbeddedFlagForNonICTypes();
+
+    void testUpdateEmbeddedICListDedupesByBlobName();
+    void testUpdateEmbeddedICListReflectsRemovalAfterRemoveEmbeddedIC();
 
 private:
     QTemporaryDir m_tempDir;

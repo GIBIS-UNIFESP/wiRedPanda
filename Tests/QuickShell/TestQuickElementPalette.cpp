@@ -10,6 +10,8 @@
 #include "App/Core/Enums.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
+#include "App/Element/IC.h"
+#include "App/QuickShell/Canvas/CanvasCommands.h"
 #include "App/QuickShell/Canvas/CanvasICRegistry.h"
 #include "App/QuickShell/Canvas/CanvasItem.h"
 #include "App/QuickShell/Chrome/QuickAppController.h"
@@ -34,6 +36,30 @@ void writeFile(const QString &path, const QByteArray &content = "placeholder")
     QFile file(path);
     QVERIFY(file.open(QIODevice::WriteOnly));
     file.write(content);
+}
+
+/// Places a real embedded IC on \a canvas, backed by \a fixtureDir's "test_circuit.panda" bytes
+/// stored under \a blobName. Mirrors TestCanvasEmbeddedIC.cpp's identical placeEmbeddedIC() --
+/// named distinctly (not placeEmbeddedTestIC) to avoid a unity-build symbol collision with
+/// TestQuickElementEditor.cpp's own identically-shaped helper (same class of gotcha as Phase
+/// 7e-3's placeInlineTestIC() rename).
+IC *placeEmbeddedPaletteTestIC(CanvasItem &canvas, const QString &fixtureDir, const QString &blobName,
+                                const QPointF &pos = {100, 100})
+{
+    QFile file(fixtureDir + "/test_circuit.panda");
+    if (!file.open(QIODevice::ReadOnly)) {
+        return nullptr;
+    }
+    const QByteArray blob = file.readAll();
+
+    auto *reg = canvas.icRegistry();
+    auto *ic = new IC();
+    reg->setBlob(blobName, blob);
+    ic->setBlobName(blobName);
+    ic->loadFromBlob(blob, fixtureDir);
+    ic->setPos(pos);
+    canvas.receiveCommand(new CanvasAddItemsCommand({ic}, &canvas));
+    return ic;
 }
 
 } // namespace
@@ -244,4 +270,79 @@ void TestQuickElementPalette::testAddElementToCurrentTabAddsEmbeddedIC()
     QVERIFY(added->isEmbedded());
     QCOMPARE(added->blobName(), QString("palette_embedded_test"));
     QCOMPARE(added->pos(), QPointF(50, 60));
+}
+
+void TestQuickElementPalette::testAddElementToCurrentTabWithMissingEmbeddedBlobIsNoOp()
+{
+    // Real semantic intent of TestICInline::testSceneDropEmbeddedICMissingBlob(), ported past
+    // its Widgets-only QMimeData transport: addElementFromPalette()'s embedded-IC branch calls
+    // CanvasICRegistry::initEmbeddedIC(), which returns false (and adds nothing) when the blob
+    // name isn't registered -- confirmed by reading CanvasItem::addElementFromPalette() itself.
+    QuickAppController controller;
+    controller.newTab();
+    auto *canvas = controller.currentTab()->canvas();
+    const int before = static_cast<int>(canvas->elements().size());
+
+    controller.addElementToCurrentTab(static_cast<int>(ElementType::IC), "no_such_blob",
+                                       /*isEmbedded=*/true, 50, 60);
+
+    QCOMPARE(canvas->elements().size(), before);
+}
+
+void TestQuickElementPalette::testAddElementToCurrentTabIgnoresEmbeddedFlagForNonICTypes()
+{
+    // Real semantic intent of TestICInline::testSceneDropNonICIgnoresEmbeddedFlag(): a non-IC
+    // type is added normally regardless of the isEmbedded flag's value -- addElementFromPalette()
+    // only ever consults isEmbedded when type == ElementType::IC.
+    QuickAppController controller;
+    controller.newTab();
+    auto *canvas = controller.currentTab()->canvas();
+    const int before = static_cast<int>(canvas->elements().size());
+
+    controller.addElementToCurrentTab(static_cast<int>(ElementType::And), "bogus",
+                                       /*isEmbedded=*/true, 50, 60);
+
+    QCOMPARE(canvas->elements().size(), before + 1);
+    QCOMPARE(canvas->elements().last()->elementType(), ElementType::And);
+}
+
+void TestQuickElementPalette::testUpdateEmbeddedICListDedupesByBlobName()
+{
+    // Real semantic intent of TestICInline::testElementPaletteUpdateEmbeddedICListDedup():
+    // multiple IC instances sharing one blob name must still surface as exactly one palette
+    // entry. QuickElementPalette::updateEmbeddedICList() iterates the registry's own blob map
+    // keys (a name can only ever be registered once -- QMap/QHash key uniqueness) rather than
+    // scanning scene elements and de-duping labels the way the Widgets original does -- a real,
+    // different implementation strategy that happens to guarantee the same outcome. Three real
+    // IC elements referencing the same already-registered blob confirm this holds in practice,
+    // not just by map-key construction.
+    CanvasItem canvas(nullptr, /*buildDemo=*/false);
+    auto *ic1 = placeEmbeddedPaletteTestIC(canvas, m_fixtureDir, "same_name", {0, 100});
+    placeEmbeddedPaletteTestIC(canvas, m_fixtureDir, "same_name", {100, 100});
+    placeEmbeddedPaletteTestIC(canvas, m_fixtureDir, "same_name", {200, 100});
+    QVERIFY(ic1);
+
+    QuickElementPalette palette;
+    palette.updateEmbeddedICList(canvas.icRegistry());
+
+    QCOMPARE(palette.embeddedICElements().size(), 1);
+    QCOMPARE(palette.embeddedICElements().first().icFileName(), QString("same_name"));
+}
+
+void TestQuickElementPalette::testUpdateEmbeddedICListReflectsRemovalAfterRemoveEmbeddedIC()
+{
+    // Real semantic intent of TestICInline::testElementPaletteRefreshAfterRemoveAll(): a full
+    // add -> refresh -> remove -> refresh round trip through QuickWorkSpace::removeEmbeddedIC()
+    // (the real production entry point for "remove this embedded IC everywhere").
+    QuickWorkSpace ws;
+    placeEmbeddedPaletteTestIC(*ws.canvas(), m_fixtureDir, "removable");
+
+    QuickElementPalette palette;
+    palette.updateEmbeddedICList(ws.canvas()->icRegistry());
+    QCOMPARE(palette.embeddedICElements().size(), 1);
+
+    ws.removeEmbeddedIC("removable");
+
+    palette.updateEmbeddedICList(ws.canvas()->icRegistry());
+    QCOMPARE(palette.embeddedICElements().size(), 0);
 }
