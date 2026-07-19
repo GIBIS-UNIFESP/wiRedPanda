@@ -188,6 +188,7 @@
 #include "Tests/Unit/Scene/TestWorkspace.h"
 // unit/serialization
 #include "Tests/Unit/Serialization/TestDolphinClipboard.h"
+#include "Tests/Unit/Serialization/TestDolphinFile.h"
 #include "Tests/Unit/Serialization/TestDolphinSerializer.h"
 #include "Tests/Unit/Serialization/TestFileUtils.h"
 #include "Tests/Unit/Serialization/TestRecentFiles.h"
@@ -393,6 +394,7 @@ int main(int argc, char **argv)
         {"TestPropertyShortcutHandler", []() -> QObject * { return new TestPropertyShortcutHandler; }},
         {"TestWorkspaceUnit", []() -> QObject * { return new TestWorkspaceUnit; }},
         {"TestDolphinClipboard", []() -> QObject * { return new TestDolphinClipboard; }},
+        {"TestDolphinFile", []() -> QObject * { return new TestDolphinFile; }},
         {"TestDolphinSerializer", []() -> QObject * { return new TestDolphinSerializer; }},
         {"TestFileUtils", []() -> QObject * { return new TestFileUtils; }},
         {"TestRecentFilesUnit", []() -> QObject * { return new TestRecentFilesUnit; }},

@@ -912,6 +912,7 @@ add_test(NAME TestDemux COMMAND test_wiredpanda TestDemux WORKING_DIRECTORY ${CM
 add_test(NAME TestDisplay COMMAND test_wiredpanda TestDisplay WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestDisplay7 COMMAND test_wiredpanda TestDisplay7 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestDolphinClipboard COMMAND test_wiredpanda TestDolphinClipboard WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestDolphinFile COMMAND test_wiredpanda TestDolphinFile WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestDolphinSerializer COMMAND test_wiredpanda TestDolphinSerializer WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestDragDropPayload COMMAND test_wiredpanda TestDragDropPayload WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestElementContextMenu COMMAND test_wiredpanda TestElementContextMenu WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -1089,7 +1090,7 @@ set(ALL_TESTS
     TestTrashButton
     TestConnection TestConnectionManager TestGraphicsView TestPropertyShortcutHandler TestPort
     TestDemux TestDisplay TestDisplay7 TestGraphicElement TestICRegistry TestICUnit TestMux
-    TestDolphinClipboard TestDolphinSerializer TestFileUtils TestRecentFilesUnit
+    TestDolphinClipboard TestDolphinFile TestDolphinSerializer TestFileUtils TestRecentFilesUnit
     TestFileHandlerSecurity TestICHandlerSecurity TestMCPProcessor TestElementHandler
     TestExerciseEngine TestTourEngine
     TestSimulationUnit TestWorkspaceUnit
