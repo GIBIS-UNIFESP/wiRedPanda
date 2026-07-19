@@ -14,6 +14,6 @@ private slots:
 
     void testUpdateAvailable();
     void testNoUpdate();
-    void testAssetSelection();
+    void testReleaseAssetKey();
     void testSafeGitHubUrl();
 };

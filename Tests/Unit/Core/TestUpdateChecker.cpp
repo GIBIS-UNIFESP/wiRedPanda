@@ -47,52 +47,33 @@ void TestUpdateChecker::testNoUpdate()
     QVERIFY(!shouldOfferUpdate("5.2.0", current, "5.2"));
 }
 
-void TestUpdateChecker::testAssetSelection()
+void TestUpdateChecker::testReleaseAssetKey()
 {
-    // Regression: a release ships per-architecture Linux AppImages and Windows
-    // ZIPs. The GitHub API returns assets sorted alphabetically, so "arm64"
-    // precedes "x86_64"; selecting by suffix alone wrongly picked the arm64
-    // binary for x86_64 users. Pin architecture-aware selection here. These are
-    // the real 5.1.2 asset names.
-    const QString linuxArm = "wiRedPanda-5.1.2-Linux-arm64-Qt6.9.3.AppImage";
-    const QString linuxX86 = "wiRedPanda-5.1.2-Linux-x86_64-Qt6.9.3.AppImage";
-    const QString macUniversal = "wiRedPanda-5.1.2-macOS-Qt6.9.3.dmg";
-    const QString winArm = "wiRedPanda-5.1.2-Windows-arm64-Qt6.9.3-Portable.zip";
-    const QString winX86 = "wiRedPanda-5.1.2-Windows-x86_64-Qt6.9.3-Portable.zip";
+    // Each platform/arch combination must select its own key in latest-release.json.
+    QCOMPARE(releaseAssetKey("Linux", "x86_64"), QStringLiteral("linuxX64"));
+    QCOMPARE(releaseAssetKey("Linux", "arm64"), QStringLiteral("linuxArm64"));
+    QCOMPARE(releaseAssetKey("Windows", "x86_64"), QStringLiteral("windowsX64"));
+    QCOMPARE(releaseAssetKey("Windows", "arm64"), QStringLiteral("windowsArm64"));
 
-    // Linux: each arch matches only its own AppImage (the exact reported bug).
-    QVERIFY(isMatchingReleaseAsset(linuxX86, "Linux", "x86_64"));
-    QVERIFY(!isMatchingReleaseAsset(linuxArm, "Linux", "x86_64"));
-    QVERIFY(isMatchingReleaseAsset(linuxArm, "Linux", "arm64"));
-    QVERIFY(!isMatchingReleaseAsset(linuxX86, "Linux", "arm64"));
+    // macOS: single universal DMG, keyed on platform regardless of arch token.
+    QCOMPARE(releaseAssetKey("macOS", "x86_64"), QStringLiteral("macosUniversal"));
+    QCOMPARE(releaseAssetKey("macOS", "arm64"), QStringLiteral("macosUniversal"));
 
-    // Windows: same latent defect, same guard.
-    QVERIFY(isMatchingReleaseAsset(winX86, "Windows", "x86_64"));
-    QVERIFY(!isMatchingReleaseAsset(winArm, "Windows", "x86_64"));
-    QVERIFY(isMatchingReleaseAsset(winArm, "Windows", "arm64"));
-    QVERIFY(!isMatchingReleaseAsset(winX86, "Windows", "arm64"));
+    // Unknown architecture resolves to no key where one is required — the caller
+    // then falls back to the release page rather than a wrong binary.
+    QVERIFY(releaseAssetKey("Linux", "ppc64").isEmpty());
+    QVERIFY(releaseAssetKey("Windows", "ppc64").isEmpty());
 
-    // A Linux build must never select a Windows or macOS asset, and vice-versa.
-    QVERIFY(!isMatchingReleaseAsset(winX86, "Linux", "x86_64"));
-    QVERIFY(!isMatchingReleaseAsset(linuxX86, "Windows", "x86_64"));
-
-    // macOS: single universal DMG, matched on platform regardless of arch token.
-    QVERIFY(isMatchingReleaseAsset(macUniversal, "macOS", "x86_64"));
-    QVERIFY(isMatchingReleaseAsset(macUniversal, "macOS", "arm64"));
-    QVERIFY(!isMatchingReleaseAsset(linuxX86, "macOS", "x86_64"));
-
-    // Unknown architecture matches nothing where an arch token is required —
-    // the caller then falls back to the release page rather than a wrong binary.
-    QVERIFY(!isMatchingReleaseAsset(linuxX86, "Linux", "ppc64"));
-    QVERIFY(!isMatchingReleaseAsset(winX86, "Windows", "ppc64"));
+    // Unknown platform resolves to no key at all.
+    QVERIFY(releaseAssetKey("BeOS", "x86_64").isEmpty());
 }
 
 void TestUpdateChecker::testSafeGitHubUrl()
 {
-    // Regression: browser_download_url/html_url from the GitHub API response were used for a
-    // network download + file write and QDesktopServices::openUrl with no scheme/host check.
-    // GitHub's release JSON only ever populates these fields as https://github.com/... — the
-    // CDN redirect happens only after fetching this URL, so its host never appears here.
+    // Regression: a download URL from the (response-controlled) release data was used for a
+    // network download + file write with no scheme/host check. The site's latest-release.json
+    // only ever populates that field as https://github.com/... — the CDN redirect happens only
+    // after fetching this URL, so its host never appears here.
     QVERIFY(isSafeGitHubUrl(QUrl("https://github.com/gibis-unifesp/wiredpanda/releases/download/5.1.2/wiRedPanda.AppImage")));
     QVERIFY(isSafeGitHubUrl(QUrl("https://github.com/gibis-unifesp/wiredpanda/releases/tag/5.1.2")));
 
