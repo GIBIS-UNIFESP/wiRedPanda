@@ -31,4 +31,12 @@ private slots:
     void testTypedTheme();
     void testTypedRecentFiles();
     void testTypedAutosaveFiles();
+
+    void testTypedHideV4Warning();
+    void testTypedUpdateCheckLastDate();
+    void testTypedUpdateCheckSkippedVersion();
+    void testTypedCompletedExercises();
+    void testTypedCompletedTours();
+    void testTypedMinimapVisible();
+    void testThemeOutOfRangeFallsBackToSystem();
 };

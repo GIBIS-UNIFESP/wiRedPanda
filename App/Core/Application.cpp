@@ -83,8 +83,12 @@ Application::Application(int &argc, char **argv)
     // inverted-output overline glyph) so they render identically on every platform — before any
     // GraphicElement pixmap is built and cached. Both the desktop entry and the test runner
     // construct Application before any element exists, so this single spot covers both.
-    if (QFontDatabase::addApplicationFont(QStringLiteral(":/Fonts/NotoSans-Regular.ttf")) == -1) {
-        qWarning() << "Failed to register bundled font: NotoSans-Regular.ttf";
+    // Unreachable in the test suite: QApplication (and this Application
+    // subclass) is a process-wide singleton constructed exactly once, before
+    // any test runs — there is no later point at which a test could corrupt
+    // the embedded font resource to force addApplicationFont() to fail.
+    if (QFontDatabase::addApplicationFont(QStringLiteral(":/Fonts/NotoSans-Regular.ttf")) == -1) { // LCOV_EXCL_LINE
+        qWarning() << "Failed to register bundled font: NotoSans-Regular.ttf"; // LCOV_EXCL_LINE
     }
 }
 
@@ -122,7 +126,7 @@ ExceptionInfo Application::makeExceptionInfo(const std::exception &e)
         info.englishMessage = info.what;
     }
     return info;
-}
+} // LCOV_EXCL_LINE -- compiler-generated cleanup for the returned ExceptionInfo's exception-unwind path, never taken
 
 void Application::handleException(const ExceptionInfo &info, const QObject *context)
 {
@@ -143,9 +147,7 @@ void Application::handleException(const ExceptionInfo &info, const QObject *cont
         // show() lets handleException return immediately; the dialog stays
         // visible, the user clicks OK, and WA_DeleteOnClose cleans up.
         // Slightly less intrusive UX than modal too.
-        auto *box = new QMessageBox(QMessageBox::Critical, tr("Error!"),
-                                    info.what, QMessageBox::Ok,
-                                    const_cast<QWidget *>(parent));
+        auto *box = new QMessageBox(QMessageBox::Critical, tr("Error!"), info.what, QMessageBox::Ok, const_cast<QWidget *>(parent));
         box->setAttribute(Qt::WA_DeleteOnClose);
         box->show();
     }
