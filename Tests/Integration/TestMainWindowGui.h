@@ -161,6 +161,7 @@ private slots:
     void testPropertyCycleMain();
     void testToggleInputDuringSimulation();
     void testInputButtonMomentary();
+    void testInputButtonMousePressReleaseIsMomentary();
     void testRapidSimulationToggle();
     void testOpenSameFileTwice();
     void testOpenSameFileFromDifferentDirs();

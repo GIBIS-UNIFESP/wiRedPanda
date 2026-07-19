@@ -2717,6 +2717,41 @@ void TestMainWindowGui::testInputButtonMomentary()
     QCOMPARE(TestUtils::inputStatus(led), false);
 }
 
+void TestMainWindowGui::testInputButtonMousePressReleaseIsMomentary()
+{
+    // Drives InputButton::mousePressEvent()/mouseReleaseEvent() through the real
+    // QGraphicsView/Scene event pipeline (unlike testInputButtonMomentary() above,
+    // which calls setOn() directly and never reaches those overrides at all).
+    std::unique_ptr<MainWindow> window(createMW());
+    auto *scene = window->currentTab()->scene();
+    auto *view = window->currentTab()->view();
+
+    auto *button = new InputButton();
+    auto *led = new Led();
+    button->setPos(50, 100);
+    led->setPos(250, 100);
+    scene->addItem(button);
+    scene->addItem(led);
+
+    CircuitBuilder builder(scene);
+    builder.connect(button, 0, led, 0);
+    auto *sim = builder.initSimulation();
+    sim->update();
+
+    QCOMPARE(TestUtils::inputStatus(led), false);
+
+    const QPoint viewPos = view->mapFromScene(button->scenePos());
+    QTest::mousePress(view->viewport(), Qt::LeftButton, Qt::NoModifier, viewPos);
+    sim->update();
+    QVERIFY2(button->isOn(), "InputButton must go ON while the mouse button is held down");
+    QCOMPARE(TestUtils::inputStatus(led), true);
+
+    QTest::mouseRelease(view->viewport(), Qt::LeftButton, Qt::NoModifier, viewPos);
+    sim->update();
+    QVERIFY2(!button->isOn(), "InputButton must return OFF as soon as the mouse button is released");
+    QCOMPARE(TestUtils::inputStatus(led), false);
+}
+
 void TestMainWindowGui::testRapidSimulationToggle()
 {
     std::unique_ptr<MainWindow> window(createMW());
