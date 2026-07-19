@@ -496,6 +496,7 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestSceneUndoredo.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestWorkspace.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinClipboard.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinFile.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinSerializer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestFileUtils.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestRecentFiles.cpp
@@ -697,6 +698,7 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestSceneUndoredo.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestWorkspace.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinClipboard.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinFile.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinSerializer.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestFileUtils.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestRecentFiles.h
