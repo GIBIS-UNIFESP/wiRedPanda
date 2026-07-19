@@ -23,7 +23,7 @@
 class DolphinHost
 {
 public:
-    virtual ~DolphinHost() = default;
+    virtual ~DolphinHost() = default; // LCOV_EXCL_LINE -- defaulted virtual dtor call is inlined at each derived-class destruction site, not attributable to this line
 
     /// Path of the host's current circuit (.panda) file.
     virtual QFileInfo currentFile() const = 0;

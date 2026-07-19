@@ -250,3 +250,70 @@ void TestDolphinSerializer::testReadDolphinHeaderParsesLegacyAppName()
     // land exactly where the caller (DolphinSerializer::loadBinary) expects it.
     QCOMPARE(stream.device()->pos(), qint64(4 + byteLen));
 }
+
+void TestDolphinSerializer::testCSVRejectsInsufficientData()
+{
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.path() + "/insufficient.csv";
+    {
+        QFile out(path);
+        QVERIFY(out.open(QIODevice::WriteOnly));
+        out.write("3"); // no comma at all — splits to a single element
+    }
+    QFile in(path);
+    QVERIFY(in.open(QIODevice::ReadOnly));
+    QVERIFY_THROWS(std::exception, DolphinSerializer::loadCSV(in, 8));
+}
+
+void TestDolphinSerializer::testCSVRejectsInvalidColumnCount()
+{
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.path() + "/bad_cols.csv";
+    {
+        QFile out(path);
+        QVERIFY(out.open(QIODevice::WriteOnly));
+        out.write("1,1,0\n"); // 1 row, 1 column — below the minimum of 2
+    }
+    QFile in(path);
+    QVERIFY(in.open(QIODevice::ReadOnly));
+    QVERIFY_THROWS(std::exception, DolphinSerializer::loadCSV(in, 8));
+}
+
+void TestDolphinSerializer::testCSVRejectsTruncatedData()
+{
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.path() + "/truncated.csv";
+    {
+        QFile out(path);
+        QVERIFY(out.open(QIODevice::WriteOnly));
+        // Header promises 2 rows x 3 columns (6 values) but only 2 are present.
+        out.write("2,3,1,0\n");
+    }
+    QFile in(path);
+    QVERIFY(in.open(QIODevice::ReadOnly));
+    QVERIFY_THROWS(std::exception, DolphinSerializer::loadCSV(in, 8));
+}
+
+void TestDolphinSerializer::testCSVClampsNonBinaryValues()
+{
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.path() + "/non_binary.csv";
+    {
+        QFile out(path);
+        QVERIFY(out.open(QIODevice::WriteOnly));
+        // 1 row x 2 columns: a valid 1 and an out-of-range 5, which must clamp to 0
+        // (only an exact 1 maps to 1) while still loading successfully (a warning, not
+        // a throw).
+        out.write("1,2,1,5,\n");
+    }
+    QFile in(path);
+    QVERIFY(in.open(QIODevice::ReadOnly));
+    const auto result = DolphinSerializer::loadCSV(in, 8);
+    QCOMPARE(result.inputPorts, 1);
+    QCOMPARE(result.columns, 2);
+    QCOMPARE(result.values, QVector<int>({1, 0}));
+}

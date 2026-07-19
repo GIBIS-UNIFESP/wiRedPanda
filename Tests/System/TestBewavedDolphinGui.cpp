@@ -5,7 +5,6 @@
 
 #include <cmath>
 #include <cstdio>
-#include <unistd.h>
 
 #include <QAction>
 #include <QApplication>
@@ -1537,7 +1536,7 @@ void TestBewavedDolphinGui::testCreateWaveformFromTerminalReadsStdin()
     }
 
     fflush(stdin);
-    QVERIFY2(freopen(qPrintable(stdinPath), "r", stdin) != nullptr,
+    QVERIFY2(testUtilsFreopen(qPrintable(stdinPath), "r", stdin) != nullptr,
              "Failed to redirect stdin to the terminal-protocol fixture");
 
     auto ws = createAndCircuit();
@@ -1684,6 +1683,7 @@ void TestBewavedDolphinGui::testTrivialAccessors()
     std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
 
     QVERIFY(dolphin->mainToolBar() != nullptr);
+    QCOMPARE(dolphin->signalTableView(), findTableView(dolphin.get()));
 
     auto *combinationalAction = dolphin->findChild<QAction *>("actionCombinational");
     QCOMPARE(dolphin->actionCombinational(), combinationalAction);
@@ -2102,22 +2102,9 @@ void TestBewavedDolphinGui::testPrintWritesCsvToStdout()
 
     const QString capturePath = m_tempDir.filePath("stdout_capture.txt");
 
-    fflush(stdout);
-    const int savedStdoutFd = dup(fileno(stdout));
-    QVERIFY(savedStdoutFd >= 0);
-    QVERIFY2(freopen(qPrintable(capturePath), "w", stdout) != nullptr,
-             "Failed to redirect stdout to the capture file");
-
+    TestUtils::ScopedStdoutCapture capture(capturePath);
     dolphin->print();
-
-    fflush(stdout);
-    dup2(savedStdoutFd, fileno(stdout));
-    close(savedStdoutFd);
-    clearerr(stdout);
-
-    QFile captured(capturePath);
-    QVERIFY(captured.open(QIODevice::ReadOnly));
-    const QString output = QString::fromUtf8(captured.readAll());
+    const QString output = capture.contents();
 
     QVERIFY2(!output.isEmpty(), "print() should have written CSV text to stdout");
     QVERIFY2(output.contains(','), "print() output should be comma-separated CSV-ish text");
@@ -2133,17 +2120,10 @@ void TestBewavedDolphinGui::testPrintAndSaveToTxtBeforePrepareAreNoOp()
     dolphin->setAttribute(Qt::WA_DeleteOnClose, false);
 
     const QString capturePath = m_tempDir.filePath("print_noop_capture.txt");
-    fflush(stdout);
-    const int savedStdoutFd = dup(fileno(stdout));
-    QVERIFY(savedStdoutFd >= 0);
-    QVERIFY(freopen(qPrintable(capturePath), "w", stdout) != nullptr);
-
-    dolphin->print(); // must not crash; must write nothing
-
-    fflush(stdout);
-    dup2(savedStdoutFd, fileno(stdout));
-    close(savedStdoutFd);
-    clearerr(stdout);
+    {
+        TestUtils::ScopedStdoutCapture capture(capturePath);
+        dolphin->print(); // must not crash; must write nothing
+    }
 
     QCOMPARE(QFileInfo(capturePath).size(), qint64(0));
 

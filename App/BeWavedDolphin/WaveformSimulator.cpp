@@ -33,7 +33,7 @@ QVector<Status> WaveformSimulator::captureInputs(const QVector<GraphicElementInp
     }
 
     return oldValues;
-}
+} // LCOV_EXCL_LINE -- compiler-generated QVector cleanup for an exception path captureInputs() never takes
 
 void WaveformSimulator::restoreInputs(const QVector<GraphicElementInput *> &inputs, const QVector<Status> &saved)
 {
@@ -47,7 +47,13 @@ void WaveformSimulator::restoreInputs(const QVector<GraphicElementInput *> &inpu
         for (int port = 0; port < input->outputSize(); ++port) {
             const bool oldValue = static_cast<bool>(saved.at(portIndex++));
             if (input->outputSize() > 1) {
-                input->setOn(oldValue, port);
+                // Multi-port inputs (e.g. InputRotary) are one-hot: selecting any port
+                // deselects the others, so calling setOn() for every port in sequence would
+                // just leave the last one selected regardless of what was captured. Only the
+                // port that was actually active needs to be (re-)selected.
+                if (oldValue) {
+                    input->setOn(oldValue, port);
+                }
             } else {
                 input->setOn(oldValue);
             }

@@ -188,11 +188,17 @@
 #include "Tests/Unit/Scene/TestWorkspace.h"
 // unit/serialization
 #include "Tests/Unit/Serialization/TestDolphinClipboard.h"
+#include "Tests/Unit/Serialization/TestDolphinEdits.h"
+#include "Tests/Unit/Serialization/TestDolphinExporter.h"
 #include "Tests/Unit/Serialization/TestDolphinFile.h"
+#include "Tests/Unit/Serialization/TestDolphinModelBuilder.h"
 #include "Tests/Unit/Serialization/TestDolphinSerializer.h"
+#include "Tests/Unit/Serialization/TestDolphinZoom.h"
 #include "Tests/Unit/Serialization/TestFileUtils.h"
 #include "Tests/Unit/Serialization/TestRecentFiles.h"
 #include "Tests/Unit/Serialization/TestSerialization.h"
+#include "Tests/Unit/Serialization/TestSignalDelegate.h"
+#include "Tests/Unit/Serialization/TestWaveformSimulator.h"
 // unit/simulation
 #include "Tests/Unit/Simulation/TestDanglingPointer.h"
 #include "Tests/Unit/Simulation/TestSimulation.h"
@@ -394,11 +400,17 @@ int main(int argc, char **argv)
         {"TestPropertyShortcutHandler", []() -> QObject * { return new TestPropertyShortcutHandler; }},
         {"TestWorkspaceUnit", []() -> QObject * { return new TestWorkspaceUnit; }},
         {"TestDolphinClipboard", []() -> QObject * { return new TestDolphinClipboard; }},
+        {"TestDolphinEdits", []() -> QObject * { return new TestDolphinEdits; }},
+        {"TestDolphinExporter", []() -> QObject * { return new TestDolphinExporter; }},
         {"TestDolphinFile", []() -> QObject * { return new TestDolphinFile; }},
+        {"TestDolphinModelBuilder", []() -> QObject * { return new TestDolphinModelBuilder; }},
         {"TestDolphinSerializer", []() -> QObject * { return new TestDolphinSerializer; }},
+        {"TestDolphinZoom", []() -> QObject * { return new TestDolphinZoom; }},
         {"TestFileUtils", []() -> QObject * { return new TestFileUtils; }},
         {"TestRecentFilesUnit", []() -> QObject * { return new TestRecentFilesUnit; }},
         {"TestSerialization", []() -> QObject * { return new TestSerialization; }},
+        {"TestSignalDelegate", []() -> QObject * { return new TestSignalDelegate; }},
+        {"TestWaveformSimulator", []() -> QObject * { return new TestWaveformSimulator; }},
         {"TestConnection", []() -> QObject * { return new TestConnection; }},
         {"TestPort", []() -> QObject * { return new TestPort; }},
         {"TestSimulationUnit", []() -> QObject * { return new TestSimulationUnit; }},

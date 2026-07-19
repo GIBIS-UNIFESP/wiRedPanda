@@ -496,11 +496,17 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestSceneUndoredo.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestWorkspace.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinClipboard.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinEdits.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinExporter.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinFile.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinModelBuilder.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinSerializer.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinZoom.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestFileUtils.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestRecentFiles.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestSerialization.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestSignalDelegate.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestWaveformSimulator.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestDanglingPointer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestSimulation.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestSimulationBlocker.cpp
@@ -698,11 +704,17 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestSceneUndoredo.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestWorkspace.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinClipboard.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinEdits.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinExporter.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinFile.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinModelBuilder.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinSerializer.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinZoom.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestFileUtils.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestRecentFiles.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestSerialization.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestSignalDelegate.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestWaveformSimulator.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestDanglingPointer.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestSimulation.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestSimulationBlocker.h
