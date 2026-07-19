@@ -115,14 +115,20 @@ const nonDefaultLocales = getAllLocales().filter((l) => l !== defaultLocale);
           // removed when ClientRouter diffs and replaces the <head> on each swap)
           if (!window.__umamiLoaded) {
             window.__umamiLoaded = true;
-            var script = document.createElement('script');
-            script.defer = true;
-            script.src = 'https://cloud.umami.is/script.js';
-            script.setAttribute(
-              'data-website-id',
-              '8cf1c01a-4505-4de2-a5ea-0facfe5a71dd,fe7ce6ae-37b9-4b74-852f-12535d614ff7'
-            );
-            document.head.appendChild(script);
+            // Umami's tracker reads one data-website-id per script tag (no
+            // comma-separated multi-ID support), so each maintainer's own
+            // Umami Cloud dashboard needs its own <script> instance.
+            var websiteIds = [
+              '8cf1c01a-4505-4de2-a5ea-0facfe5a71dd',
+              'fe7ce6ae-37b9-4b74-852f-12535d614ff7',
+            ];
+            websiteIds.forEach(function (websiteId) {
+              var script = document.createElement('script');
+              script.defer = true;
+              script.src = 'https://cloud.umami.is/script.js';
+              script.setAttribute('data-website-id', websiteId);
+              document.head.appendChild(script);
+            });
           }
         } else {
           console.info('Analytics disabled to respect Do Not Track preference.');
