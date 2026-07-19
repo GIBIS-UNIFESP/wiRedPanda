@@ -36,6 +36,11 @@ private slots:
     // Rendering under rotation
     void testRotationKeepsSizingPixmap();
     void testRotatedIconStaysUpright();
+    void testPaintingSelected();
+
+    // Interaction / simulation edge cases
+    void testMouseDoubleClickRequestsEditor();
+    void testDisconnectedInputsAreUnknown();
 
     // Rotation/flip pivot on a "big" TruthTable (ports extend past the 64x64 body)
     void testBigPivotsAtBoundingRectCenter();
