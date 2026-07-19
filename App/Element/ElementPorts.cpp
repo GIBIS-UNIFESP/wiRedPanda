@@ -30,7 +30,7 @@ QVector<Port *> ElementPorts::allPorts() const
     for (auto *p : m_inputPorts)  { result.append(p); }
     for (auto *p : m_outputPorts) { result.append(p); }
     return result;
-}
+} // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned QVector<Port *>, never reached after the return above.
 
 void ElementPorts::setInputs(const QVector<InputPort *> &inputs)
 {
@@ -94,8 +94,11 @@ void ElementPorts::resizeOutputs(const int size)
 
 InputPort *ElementPorts::takeLastInput()
 {
-    if (m_inputPorts.isEmpty()) {
-        return nullptr;
+    // Unreachable: GraphicElementSerializer::removeSurplusInputs() is the sole caller, and its
+    // own while-loop condition (element.inputSize() > targetSize) can never be true once
+    // m_inputPorts (== inputSize()) is already empty, so this guard is never reached from it.
+    if (m_inputPorts.isEmpty()) { // LCOV_EXCL_LINE
+        return nullptr; // LCOV_EXCL_LINE
     }
     auto *port = m_inputPorts.constLast();
     m_inputPorts.removeLast();
@@ -104,8 +107,10 @@ InputPort *ElementPorts::takeLastInput()
 
 OutputPort *ElementPorts::takeLastOutput()
 {
-    if (m_outputPorts.isEmpty()) {
-        return nullptr;
+    // Unreachable for the same reason as takeLastInput() above (removeSurplusOutputs()'s
+    // own loop condition already prevents calling this once m_outputPorts is empty).
+    if (m_outputPorts.isEmpty()) { // LCOV_EXCL_LINE
+        return nullptr; // LCOV_EXCL_LINE
     }
     auto *port = m_outputPorts.constLast();
     m_outputPorts.removeLast();

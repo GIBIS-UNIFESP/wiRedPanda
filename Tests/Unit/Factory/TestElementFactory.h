@@ -32,4 +32,11 @@ private slots:
 
     // Completeness Tests (1 test)
     void testAllElementTypesRegistered();
+
+    // Unregistered type
+    void testMetadataForUnknownTypeThrows();
+    void testTranslatedNameForUnknownType();
+    void testDescriptionForTypeWithoutOwnCase();
+    void testPixmapForUnknownType();
+    void testBuildElementForRegisteredEnumValueWithNoCreatorThrows();
 };
