@@ -2499,17 +2499,17 @@ wiRedPanda %1 יציג אוטומטית את כל קבצי ה-.panda האחרי�
 <context>
     <name>MinimapWidget</name>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="30"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="31"/>
         <source>Mini-map: click or drag to navigate</source>
         <translation>מפה ממוזערת: לחצו או גררו כדי לנווט</translation>
     </message>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="31"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="32"/>
         <source>Circuit minimap</source>
         <translation>מפת-מיני של המעגל</translation>
     </message>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="32"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="33"/>
         <source>A miniature overview of the whole circuit. Click or drag inside it to jump the main canvas to that location.</source>
         <translation>תצוגה ממוזערת של המעגל כולו. לחץ או גרור בתוכה כדי להעביר את הקנבס הראשי למיקום זה.</translation>
     </message>

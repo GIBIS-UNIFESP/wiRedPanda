@@ -2499,17 +2499,17 @@ Az új projekteket mentenie kell, mielőtt hozzáférne az IC-khez és megjelen�
 <context>
     <name>MinimapWidget</name>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="30"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="31"/>
         <source>Mini-map: click or drag to navigate</source>
         <translation>Minitérkép: kattintson vagy húzza a navigáláshoz</translation>
     </message>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="31"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="32"/>
         <source>Circuit minimap</source>
         <translation>Áramkör minitérkép</translation>
     </message>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="32"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="33"/>
         <source>A miniature overview of the whole circuit. Click or drag inside it to jump the main canvas to that location.</source>
         <translation>A teljes áramkör miniatűr áttekintése. Kattintson vagy húzza a belsejében, hogy a fő vászon arra a helyre ugorjon.</translation>
     </message>

@@ -2499,17 +2499,17 @@ Uudet projektit on tallennettava ennen IC:iden ja ulkoasujen käyttöä tai beWa
 <context>
     <name>MinimapWidget</name>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="30"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="31"/>
         <source>Mini-map: click or drag to navigate</source>
         <translation>Pienoiskartta: napsauta tai vedä navigoidaksesi</translation>
     </message>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="31"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="32"/>
         <source>Circuit minimap</source>
         <translation>Piirin pienoiskartta</translation>
     </message>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="32"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="33"/>
         <source>A miniature overview of the whole circuit. Click or drag inside it to jump the main canvas to that location.</source>
         <translation>Pienoiskuva koko piiristä. Napsauta tai vedä sen sisällä hypättääksesi pääpiirtoalueen kyseiseen kohtaan.</translation>
     </message>

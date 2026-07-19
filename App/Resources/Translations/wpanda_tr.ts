@@ -2499,17 +2499,17 @@ IC&apos;lere ve görünümlere erişmeden veya beWavedDolphin simülasyonların�
 <context>
     <name>MinimapWidget</name>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="30"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="31"/>
         <source>Mini-map: click or drag to navigate</source>
         <translation>Mini harita: gezinmek için tıklayın veya sürükleyin</translation>
     </message>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="31"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="32"/>
         <source>Circuit minimap</source>
         <translation>Devre küçük haritası</translation>
     </message>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="32"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="33"/>
         <source>A miniature overview of the whole circuit. Click or drag inside it to jump the main canvas to that location.</source>
         <translation>Tüm devrenin küçük bir genel görünümü. Ana tuvali o konuma atlatmak için içinde tıklayın veya sürükleyin.</translation>
     </message>

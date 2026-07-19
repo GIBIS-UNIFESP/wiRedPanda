@@ -2499,17 +2499,17 @@ wiRedPanda %1 θα εμφανίσει αυτόματα όλα τα άλλα αρ
 <context>
     <name>MinimapWidget</name>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="30"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="31"/>
         <source>Mini-map: click or drag to navigate</source>
         <translation>Μικρός χάρτης: κάντε κλικ ή σύρετε για πλοήγηση</translation>
     </message>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="31"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="32"/>
         <source>Circuit minimap</source>
         <translation>Μικρός χάρτης κυκλώματος</translation>
     </message>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="32"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="33"/>
         <source>A miniature overview of the whole circuit. Click or drag inside it to jump the main canvas to that location.</source>
         <translation>Μια μικρογραφική επισκόπηση ολόκληρου του κυκλώματος. Κάντε κλικ ή σύρετε μέσα σε αυτόν για να μεταφέρετε τον κύριο καμβά σε αυτήν τη θέση.</translation>
     </message>

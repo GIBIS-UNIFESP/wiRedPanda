@@ -2499,17 +2499,17 @@ Enne IC-de ja välimuste kasutamist või beWavedDolphini simulatsioonide käivit
 <context>
     <name>MinimapWidget</name>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="30"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="31"/>
         <source>Mini-map: click or drag to navigate</source>
         <translation>Väikekaart: navigeerimiseks klõpsake või lohistage</translation>
     </message>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="31"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="32"/>
         <source>Circuit minimap</source>
         <translation>Skeemi minikaart</translation>
     </message>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="32"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="33"/>
         <source>A miniature overview of the whole circuit. Click or drag inside it to jump the main canvas to that location.</source>
         <translation>Kogu skeemi pisiülevaade. Klõpsa või lohista selle sees, et hüpata põhilõuendiga sellesse kohta.</translation>
     </message>

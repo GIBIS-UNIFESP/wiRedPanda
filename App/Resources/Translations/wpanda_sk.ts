@@ -2499,17 +2499,17 @@ Nové projekty musíte uložiť pred prístupom k IO a vzhľadom alebo spustení
 <context>
     <name>MinimapWidget</name>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="30"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="31"/>
         <source>Mini-map: click or drag to navigate</source>
         <translation>Minimapa: kliknite alebo potiahnite na navigáciu</translation>
     </message>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="31"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="32"/>
         <source>Circuit minimap</source>
         <translation>Minimapa obvodu</translation>
     </message>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="32"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="33"/>
         <source>A miniature overview of the whole circuit. Click or drag inside it to jump the main canvas to that location.</source>
         <translation>Miniatúrny prehľad celého obvodu. Kliknite alebo ťahajte vnútri neho, aby hlavné plátno preskočilo na dané miesto.</translation>
     </message>

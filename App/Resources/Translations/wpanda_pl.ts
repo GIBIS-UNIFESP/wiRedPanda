@@ -2499,17 +2499,17 @@ Musisz zapisać nowe projekty przed uzyskaniem dostępu do IC i wyglądów lub u
 <context>
     <name>MinimapWidget</name>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="30"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="31"/>
         <source>Mini-map: click or drag to navigate</source>
         <translation>Minimapa: kliknij lub przeciągnij, aby nawigować</translation>
     </message>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="31"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="32"/>
         <source>Circuit minimap</source>
         <translation>Minimapa obwodu</translation>
     </message>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="32"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="33"/>
         <source>A miniature overview of the whole circuit. Click or drag inside it to jump the main canvas to that location.</source>
         <translation>Miniaturowy podgląd całego obwodu. Kliknij lub przeciągnij wewnątrz niego, aby przeskoczyć głównym płótnem do tego miejsca.</translation>
     </message>
