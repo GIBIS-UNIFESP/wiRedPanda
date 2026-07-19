@@ -19,7 +19,7 @@
 class ContextDirProvider
 {
 public:
-    virtual ~ContextDirProvider() = default;
+    virtual ~ContextDirProvider() = default; // LCOV_EXCL_LINE -- inlined at every derived-class destruction site, not separately attributed
 
     /// Returns the directory of the .panda file associated with the scene.
     virtual QString contextDir() const = 0;

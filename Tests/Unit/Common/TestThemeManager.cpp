@@ -3,6 +3,8 @@
 
 #include "Tests/Unit/Common/TestThemeManager.h"
 
+#include <QStyleHints>
+
 #include "App/Core/Settings.h"
 #include "App/Core/ThemeManager.h"
 #include "Tests/Common/TestUtils.h"
@@ -395,4 +397,62 @@ void TestThemeManager::testRepeatedThemeSwitching()
         // Light should always be lighter than Dark
         QVERIFY(lightLuminance > darkLuminance);
     }
+}
+
+void TestThemeManager::testSystemColorSchemeChangeReactsWhenThemeIsSystem()
+{
+#if QT_VERSION < QT_VERSION_CHECK(6, 5, 0)
+    QSKIP("QStyleHints::colorSchemeChanged requires Qt 6.5+");
+#else
+    // onSystemColorSchemeChanged() is a private slot-like callback only ever
+    // invoked by a real OS color-scheme change, which never happens in a
+    // headless test run. QStyleHints::colorSchemeChanged is a real Qt signal
+    // though, so invoking it directly (the same mechanism `emit` compiles
+    // to) exercises the connected callback exactly as a genuine OS toggle
+    // would, without needing platform integration.
+    ThemeManager::setTheme(Theme::System);
+    QCOMPARE(ThemeManager::theme(), Theme::System);
+
+    QSignalSpy spy(&ThemeManager::instance(), &ThemeManager::themeChanged);
+    QMetaObject::invokeMethod(qApp->styleHints(), "colorSchemeChanged", Qt::DirectConnection,
+                              Q_ARG(Qt::ColorScheme, Qt::ColorScheme::Dark));
+    QCOMPARE(spy.size(), 1);
+#endif
+}
+
+void TestThemeManager::testSystemColorSchemeChangeIgnoredWhenThemeIsExplicit()
+{
+#if QT_VERSION < QT_VERSION_CHECK(6, 5, 0)
+    QSKIP("QStyleHints::colorSchemeChanged requires Qt 6.5+");
+#else
+    // The guard inside onSystemColorSchemeChanged() must actually gate
+    // re-emission: an explicit (non-System) theme choice must not react to
+    // OS-level color-scheme toggles.
+    ThemeManager::setTheme(Theme::Dark);
+    QCOMPARE(ThemeManager::theme(), Theme::Dark);
+
+    QSignalSpy spy(&ThemeManager::instance(), &ThemeManager::themeChanged);
+    QMetaObject::invokeMethod(qApp->styleHints(), "colorSchemeChanged", Qt::DirectConnection,
+                              Q_ARG(Qt::ColorScheme, Qt::ColorScheme::Light));
+    QCOMPARE(spy.size(), 0);
+#endif
+}
+
+void TestThemeManager::testThemeAttributesSystemFallsBackToLight()
+{
+    // ThemeAttributes::setTheme() is only ever called by ThemeManager with an
+    // already-resolved Light/Dark value (see its constructor/setTheme()) —
+    // Theme::System never reaches it in practice. Constructing ThemeAttributes
+    // directly lets this defensive fallback be verified for real: passing
+    // System must still produce valid Light-theme colors, not a
+    // default-constructed (invalid) attribute set.
+    ThemeAttributes attrs;
+    attrs.setTheme(Theme::System);
+
+    ThemeAttributes lightAttrs;
+    lightAttrs.setTheme(Theme::Light);
+
+    QCOMPARE(attrs.m_sceneBgBrush, lightAttrs.m_sceneBgBrush);
+    QCOMPARE(attrs.m_connectionActive, lightAttrs.m_connectionActive);
+    QVERIFY(attrs.m_sceneBgBrush.isValid());
 }

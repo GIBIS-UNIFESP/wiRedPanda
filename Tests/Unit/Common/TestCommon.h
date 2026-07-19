@@ -17,4 +17,8 @@ private slots:
 
     // Regression: F8 — verbosity 5 enables category five; >5 doesn't silence
     void testSetVerbosityCategoryScale();
+
+    // Category "one" (verbosity level 1) has no production qCDebug(one) call
+    // site yet, so its Q_LOGGING_CATEGORY accessor was otherwise never invoked.
+    void testLoggingCategoryOneRespondsToVerbosity();
 };

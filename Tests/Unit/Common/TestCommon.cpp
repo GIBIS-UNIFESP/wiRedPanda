@@ -75,3 +75,18 @@ void TestCommon::testSetVerbosityCategoryScale()
     // Restore the quiet test default.
     Comment::setVerbosity(-1);
 }
+
+void TestCommon::testLoggingCategoryOneRespondsToVerbosity()
+{
+    // Category "one" (declared alongside zero/two/three/four/five) has no
+    // production qCDebug(one) call site anywhere in the codebase yet, so its
+    // lazily-constructed QLoggingCategory singleton was never touched by any
+    // other test. qCDebug(one) invokes the same accessor a real call site
+    // would, checking (not necessarily printing) isDebugEnabled().
+    Comment::setVerbosity(2);
+    QVERIFY(one().isDebugEnabled());
+    qCDebug(one) << "exercise the \"one\" logging category accessor";
+
+    Comment::setVerbosity(-1);
+    QVERIFY(!one().isDebugEnabled());
+}
