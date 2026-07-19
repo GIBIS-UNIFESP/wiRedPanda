@@ -26,6 +26,7 @@
 #include <QSGTextureMaterial>
 #include <QSGTransformNode>
 #include <QSGVertexColorMaterial>
+#include <QStyleOptionGraphicsItem>
 #include <QVarLengthArray>
 
 #include "App/Core/Common.h"
@@ -173,6 +174,55 @@ PortPaintStyle portPaintStyleFor(const Status status, const ThemeAttributes &the
     case Status::Error:    return {QPen(theme.m_portErrorPen),    QBrush(theme.m_portErrorBrush)};
     }
     return {QPen(theme.m_portUnknownPen), QBrush(theme.m_portUnknownBrush)};
+}
+
+/// Draws \a element's port glyphs and label/empty-hint on top of its already-painted body --
+/// shared by the interactive canvas's per-element atlas-tile capture (updatePaintNode()'s gate
+/// node) and paintElementsInto() (PNG/PDF export, IC hover preview), so both paths show the same
+/// content instead of the interactive canvas alone closing this phase's gap. Assumes \a painter
+/// is already positioned at element-local (0,0) -- the same frame element->paint() itself draws
+/// in, so this can simply be called right after it.
+void paintElementDecorations(QPainter &painter, GraphicElement *element, const ThemeAttributes &theme)
+{
+    // Port glyphs: real production shape (Port's own path(), a circle for InputPort / triangle
+    // for OutputPort), positioned via the same pos()+transform() composition QGraphicsScene's own
+    // child-item painting would use, colored by the port's live status via portPaintStyleFor() --
+    // see its own doc comment for why port->currentPen()/currentBrush() aren't reused.
+    for (auto *port : element->allPorts()) {
+        painter.save();
+        painter.translate(port->pos());
+        painter.setTransform(port->transform(), true);
+        const PortPaintStyle style = portPaintStyleFor(port->status(), theme);
+        painter.setPen(style.pen);
+        painter.setBrush(style.brush);
+        painter.drawPath(port->path());
+        painter.restore();
+    }
+
+    // Label (and, for Text, its empty-state hint): real QGraphicsSimpleTextItem paint(),
+    // positioned via the same pos()+transform() composition as ports -- font()/brush()/text() are
+    // kept live by updateLabel()/updateTheme(), unlike Port's currentPen()/currentBrush(), so no
+    // local restyling is needed here. A real QStyleOptionGraphicsItem is required, unlike
+    // element->paint()/Port::paint() above: confirmed via gdb, Qt's own
+    // QGraphicsSimpleTextItem::paint() unconditionally reads option->state (its selection-
+    // highlight check) with no null guard -- passing nullptr (safe for every paint() override
+    // this project actually wrote, which all Q_UNUSED it) segfaulted on the render thread.
+    if (element->hasLabel() && element->labelItem()->isVisible()) {
+        QStyleOptionGraphicsItem option;
+        painter.save();
+        painter.translate(element->labelItem()->pos());
+        painter.setTransform(element->labelItem()->transform(), true);
+        element->labelItem()->paint(&painter, &option, nullptr);
+        painter.restore();
+    }
+    if (auto *textElement = qobject_cast<Text *>(element); textElement && textElement->emptyHintItem()->isVisible()) {
+        QStyleOptionGraphicsItem option;
+        painter.save();
+        painter.translate(textElement->emptyHintItem()->pos());
+        painter.setTransform(textElement->emptyHintItem()->transform(), true);
+        textElement->emptyHintItem()->paint(&painter, &option, nullptr);
+        painter.restore();
+    }
 }
 
 /// Segment count each wire is tessellated into for the Bézier curve below -- matches the "16x
@@ -1373,10 +1423,12 @@ QImage CanvasItem::renderICPreviewImage(GraphicElement *ic) const
     // own gate-rendering block's tile-placement math resolves to the same "world position ==
     // local paint coordinate + pos()" relationship (see updatePaintNode()'s gate-rendering
     // block for the single-element, tile-packed version of the same technique).
+    const ThemeAttributes &theme = ThemeManager::attributes();
     for (auto *element : internal) {
         painter.save();
         painter.translate(element->pos());
         element->paint(&painter, nullptr, nullptr);
+        paintElementDecorations(painter, element, theme);
         painter.restore();
     }
 
@@ -1417,10 +1469,12 @@ void CanvasItem::paintElementsInto(QPainter *painter, const QRectF &target, cons
 
     // World position == local paint coordinate + pos(), same relationship
     // renderICPreviewImage()'s own comment documents.
+    const ThemeAttributes &theme = ThemeManager::attributes();
     for (auto *element : m_elements) {
         painter->save();
         painter->translate(element->pos());
         element->paint(painter, nullptr, nullptr);
+        paintElementDecorations(*painter, element, theme);
         painter->restore();
     }
     for (auto *connection : m_connections) {
@@ -1736,9 +1790,8 @@ void CanvasItem::buildDemoCircuit()
     truthTable->setPos(400, 460);
 
     // Also unwired: the segment-compositing family. Their active-segment overlays paint on
-    // top of an unchanged base pixmap (see appearanceKeyFor()'s doc comment), so these three
-    // also exercise the one extra cache-key dimension this family needs beyond every other
-    // ported family so far.
+    // top of an unchanged base pixmap, reading input port Status directly (see
+    // appearanceKeyFor()'s doc comment) -- these three exercise that path.
     auto *display7 = new Display7();
     display7->setPos(40, 620);
     auto *display14 = new Display14();
@@ -1903,8 +1956,8 @@ QString CanvasItem::appearanceKeyFor(GraphicElement *element)
     // appearanceCacheKey() alone already distinguishes different elements showing different
     // pixmaps (and correctly *shares* a cache entry between elements showing identical ones,
     // e.g. two unrotated And gates) since it tracks the live QPixmap's own identity -- see
-    // this class's doc comment for why that's enough for every ported family except
-    // Display7/14/16, whose segment overlays paint on top of an unchanged base pixmap.
+    // this class's doc comment for why that's not enough on its own once per-instance content
+    // (port glyphs, labels) is also baked into the same tile, below.
     QString key = QStringLiteral("%1|%2|%3|%4|%5")
         .arg(element->appearanceCacheKey())
         .arg(element->rotation())
@@ -1912,17 +1965,29 @@ QString CanvasItem::appearanceKeyFor(GraphicElement *element)
         .arg(element->isFlippedY())
         .arg(element->isSelected());
 
-    // Display7/14/16::paint() reads each input port's live Status directly to decide which
-    // segment overlays to draw on top of the (unchanged) base pixmap -- append them explicitly
-    // so a segment toggling actually invalidates the cached tile. No shared base class exists
-    // to test for generically (see this method's usage site discussion), so this is a
-    // deliberate, narrowly-scoped type check rather than a generic mechanism -- exactly the
-    // one extra cache-key dimension "Phase 2 in depth" flagged this family as needing.
-    if (qobject_cast<Display7 *>(element) || qobject_cast<Display14 *>(element) || qobject_cast<Display16 *>(element)) {
-        for (int i = 0; i < element->inputSize(); ++i) {
-            key += QLatin1Char('|');
-            key += QString::number(int(element->inputPort(i)->status()));
-        }
+    // Port glyphs (Phase 7.5b) are drawn into the same tile, colored by each port's live
+    // status -- two elements that would otherwise share a tile (identical appearanceCacheKey/
+    // rotation/flip/selection) must NOT share one if their ports differ, or one's real status
+    // colors leak onto the other's glyphs. This also covers Display7/14/16::paint()'s own
+    // segment-overlay read of each input port's Status (previously this method's only extra key
+    // dimension, input-only and Display-specific) as a special case of the same general need.
+    for (int i = 0; i < element->inputSize(); ++i) {
+        key += QLatin1Char('|');
+        key += QString::number(int(element->inputPort(i)->status()));
+    }
+    for (int i = 0; i < element->outputSize(); ++i) {
+        key += QLatin1Char('|');
+        key += QString::number(int(element->outputPort(i)->status()));
+    }
+
+    // Labels (Phase 7.5c) are drawn into the same tile too -- two otherwise-identical elements
+    // (e.g. two Text annotations, or two labeled InputSwitches) must not share a tile once their
+    // actual label content differs, including a Text element's real content vs. another still-
+    // empty one's "double-click to add text" hint (both driven by the same label() value, see
+    // labelContentChanged()).
+    if (element->hasLabel()) {
+        key += QLatin1Char('|');
+        key += element->label();
     }
 
     return key;
@@ -3136,6 +3201,11 @@ QSGNode *CanvasItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
                 portStatuses.append(int(element->outputPort(i)->status()));
             }
 
+            // Empty for every element without a label (the vast majority) -- for Text, this
+            // single field also drives m_emptyHint's own visibility (label().isEmpty()), so no
+            // separate fingerprint field is needed for that.
+            const QString labelText = element->hasLabel() ? element->label() : QString();
+
             const auto cacheIt = m_elementRenderCache.constFind(element);
             const bool cacheHit = cacheIt != m_elementRenderCache.cend()
                 && cacheIt->pixmapCacheKey == pixmapCacheKey
@@ -3146,7 +3216,8 @@ QSGNode *CanvasItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
                 && cacheIt->inputSize == inputSize
                 && cacheIt->outputSize == outputSize
                 && cacheIt->segmentStates == segmentStates
-                && cacheIt->portStatuses == portStatuses;
+                && cacheIt->portStatuses == portStatuses
+                && cacheIt->labelText == labelText;
 
             QRectF localRect;
             TextureAtlas::TileLocation tile;
@@ -3154,32 +3225,30 @@ QSGNode *CanvasItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
                 localRect = cacheIt->localRect;
                 tile = cacheIt->tile;
             } else {
-                localRect = element->boundingRect();
+                // Widen past the plain body+ports rect (element->boundingRect()) to also cover
+                // the label/hint, which can extend beyond it (e.g. a custom name below a small
+                // icon) -- Text is the one type that already folds this into its own
+                // boundingRect() override (childrenBoundingRect()), so the union below is a
+                // harmless no-op there, not a special case.
+                QRectF captureRect = element->boundingRect();
+                if (element->hasLabel() && element->labelItem()->isVisible()) {
+                    captureRect = captureRect.united(element->labelItem()->mapRectToParent(element->labelItem()->boundingRect()));
+                }
+                if (auto *textElement = qobject_cast<Text *>(element); textElement && textElement->emptyHintItem()->isVisible()) {
+                    captureRect = captureRect.united(
+                        textElement->emptyHintItem()->mapRectToParent(textElement->emptyHintItem()->boundingRect()));
+                }
+                localRect = captureRect;
                 const QSize tileSize = localRect.size().toSize();
                 const QString key = appearanceKeyFor(element);
-                tile = m_atlas.lookup(key, tileSize, [element, &theme](QPainter &painter) {
-                    painter.translate(-element->boundingRect().topLeft());
+                tile = m_atlas.lookup(key, tileSize, [element, &theme, captureRect](QPainter &painter) {
+                    painter.translate(-captureRect.topLeft());
                     element->paint(&painter, nullptr, nullptr);
-
-                    // Port glyphs: real production shape (Port's own path(), a circle for
-                    // InputPort / triangle for OutputPort), positioned via the same pos()+
-                    // transform() composition QGraphicsScene's own child-item painting would
-                    // use, colored by the port's live status via portPaintStyleFor() -- see its
-                    // own doc comment for why port->currentPen()/currentBrush() aren't reused.
-                    for (auto *port : element->allPorts()) {
-                        painter.save();
-                        painter.translate(port->pos());
-                        painter.setTransform(port->transform(), true);
-                        const PortPaintStyle style = portPaintStyleFor(port->status(), theme);
-                        painter.setPen(style.pen);
-                        painter.setBrush(style.brush);
-                        painter.drawPath(port->path());
-                        painter.restore();
-                    }
+                    paintElementDecorations(painter, element, theme);
                 });
                 m_elementRenderCache[element] = ElementRenderCache{
                     pixmapCacheKey, rotation, flipX, flipY, selected, inputSize, outputSize,
-                    segmentStates, portStatuses, localRect, tile};
+                    segmentStates, portStatuses, labelText, localRect, tile};
             }
 
             if (!tile.isValid()) {

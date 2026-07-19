@@ -776,6 +776,10 @@ private:
         /// segmentStates (Display-family only), this is computed for every element every frame,
         /// so avoiding a heap allocation for the common (<=8 total ports) case actually matters.
         QVarLengthArray<int, 8> portStatuses;
+        /// Empty for every element without a label -- see Phase 7.5c's labelText doc comment at
+        /// its own call site for why this one field covers both the label text itself and (for
+        /// Text) its empty-state hint's visibility.
+        QString labelText;
         QRectF localRect;
         TextureAtlas::TileLocation tile;
     };

@@ -30,6 +30,11 @@ public:
     /// Refreshes the empty-state hint's color alongside the base label/port theming.
     void updateTheme() override;
 
+    /// Returns the empty-state hint child item -- visible() only while label() is empty (see
+    /// labelContentChanged()). Lets a caller (CanvasItem's texture-atlas capture) draw it the
+    /// same pos()+transform()+paint() way GraphicElement::labelItem() exposes the real label.
+    QGraphicsSimpleTextItem *emptyHintItem() const { return m_emptyHint; }
+
 protected:
     /// Shows a faint "double-click to add text" hint whenever the label is empty, since an
     /// empty Text element is otherwise a fully transparent, near-invisible placeholder.

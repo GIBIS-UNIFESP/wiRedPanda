@@ -191,6 +191,14 @@ public:
     /// caller should fall back to the element's own sceneBoundingRect() in that case).
     QRectF labelSceneBoundingRect() const;
 
+    /// Returns the label child item itself -- its pos()/transform() already carry
+    /// updateLabelOrientation()'s rotation-compensation (see that method's own doc comment), and
+    /// its font()/brush()/text()/visible() are kept live by updateLabel()/updateTheme(). Lets a
+    /// caller (CanvasItem's texture-atlas capture) draw the real label via the same
+    /// pos()+transform() composition + real paint() call already used for Port, rather than
+    /// duplicating this class's own label-positioning logic.
+    QGraphicsSimpleTextItem *labelItem() const { return m_label; }
+
     // --- Embedded IC ---
 
     /// Returns true if this element is an embedded IC (not file-backed). Base returns false.
