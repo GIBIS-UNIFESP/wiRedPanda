@@ -15,6 +15,7 @@
 #include <QRect>
 #include <QString>
 #include <QStringList>
+#include <QTimer>
 
 #include "App/Core/Enums.h"
 #include "App/Core/ThemeManager.h"
@@ -134,6 +135,8 @@ class QuickAppController : public QObject, public QuickMainWindowHost
     Q_PROPERTY(int theme READ themeInt WRITE setThemeInt NOTIFY themeChanged FINAL)
     Q_PROPERTY(QList<LanguageEntry> languages READ languages CONSTANT FINAL)
     Q_PROPERTY(QString currentLanguage READ currentLanguage NOTIFY currentLanguageChanged FINAL)
+    Q_PROPERTY(bool muted READ isMuted WRITE setMuted NOTIFY mutedChanged FINAL)
+    Q_PROPERTY(QString statusMessage READ statusMessage NOTIFY statusMessageChanged FINAL)
 
 public:
     explicit QuickAppController(QObject *parent = nullptr);
@@ -142,9 +145,17 @@ public:
     QuickWorkSpace *currentTab() const override;
     QFileInfo currentFile() const override;
     QDir currentDir() const override;
+    /// Sets statusMessage and restarts a single-shot timer that clears it after \a timeout ms --
+    /// mirrors QStatusBar::showMessage()'s own auto-clear-after-timeout contract, production's
+    /// entire status bar surface (no permanent zoom/selection widgets exist to port -- confirmed
+    /// by grep, not assumed). Already called from every real site that needs it
+    /// (QuickICController/QuickExportController/QuickWorkspaceManager); this makes it real
+    /// instead of a no-op stub.
     void showStatusMessage(const QString &message, int timeout) override;
     QuickElementPalette *palette() override { return &m_palette; }
     void requestSave() override { saveFile(); }
+
+    [[nodiscard]] QString statusMessage() const { return m_statusMessage; }
 
     // --- QML-facing accessors ---
     Q_INVOKABLE QuickWorkSpace *tabAt(int index) const { return m_workspaceManager.tabAt(index); }
@@ -199,6 +210,18 @@ public:
     /// pauses the current tab's simulation; when true, it keeps running (e.g. for demoing a
     /// circuit on a second display).
     void setBackgroundSimulationEnabled(bool enabled);
+
+    /// Mute is genuinely per-tab state (Simulation::isUserMuted(), "persists across
+    /// stop/start cycles" per its own doc comment -- each tab owns its own Simulation),
+    /// unlike simulationRunning's global user-intent property -- so this is computed live from
+    /// the current tab, mirroring canUndo()'s pattern, not simulationRunning's cached-member one.
+    [[nodiscard]] bool isMuted() const;
+    /// Mirrors MainWindow::on_actionMute_triggered(): calls Simulation::setUserMuted(), NOT
+    /// CanvasItem::mute() directly -- setUserMuted() both records the intent isMuted() reads
+    /// back and propagates to every AudioOutputElement via the SimulationHost::setMuted()
+    /// callback (CanvasItem::mute()'s real caller), so calling mute() directly (the previous,
+    /// incomplete implementation this replaces) never actually persisted the mute state.
+    void setMuted(bool muted);
 
     /// Mirrors MainWindow::event()'s QEvent::WindowActivate/WindowDeactivate handling. Called
     /// from Main.qml's ApplicationWindow.onActiveChanged. Pauses/resumes the current tab's
@@ -294,7 +317,6 @@ public slots:
     void zoomToFit();
 
     // --- Simulation menu ---
-    void mute(bool muted);
     void restartSimulation();
 
     // --- Export menu ---
@@ -326,6 +348,8 @@ signals:
     void backgroundSimulationEnabledChanged();
     void themeChanged();
     void currentLanguageChanged();
+    void mutedChanged();
+    void statusMessageChanged();
 
 private:
     /// Returns the active tab's canvas, or nullptr. Shared by every Edit/Transform/Align
@@ -339,9 +363,9 @@ private:
     /// simulationRunning is set, mirroring SceneUiBinder::unbind()/bind()'s play-state half,
     /// and rebinds m_elementEditor/m_icPreview to the new canvas (QuickElementEditor::setCanvas()
     /// itself refreshes from the new canvas's current selection; QuickICPreview::setCanvas()
-    /// hides any popup left pending/visible from the previous tab). The CanvasItem-side
-    /// counterpart of SceneUiBinder::bind()/unbind() -- zoom/mute action sync and status-bar
-    /// info are the remaining pieces, deferred to when their chrome exists (sub-step 7).
+    /// hides any popup left pending/visible from the previous tab). Also re-emits mutedChanged()
+    /// so the Mute menu item resyncs to the newly-current tab's own Simulation::isUserMuted()
+    /// state -- the CanvasItem-side counterpart of SceneUiBinder::bind()/unbind()'s mute-sync.
     void bindCurrentTab();
 
     /// Literal start()/stop() call on the current tab's Simulation, mirroring
@@ -368,6 +392,9 @@ private:
     QList<QMetaObject::Connection> m_tabConnections;
     bool m_simulationRunning = true;
     bool m_backgroundSimulationEnabled = false;
+    QString m_statusMessage;
+    /// Single-shot; restarted on every showStatusMessage() call, clears m_statusMessage on fire.
+    QTimer m_statusMessageTimer;
     /// QPointer, not a raw CanvasItem*: QuickWorkspaceManager::closeTab() erases the closed
     /// QuickWorkSpace (and therefore its CanvasItem) before emitting currentTabChanged for
     /// whatever tab becomes current next, so the previously-bound canvas may already be

@@ -109,6 +109,64 @@ private:
     int m_value = 0;
 };
 
+/// One row in truthTableRows() -- cells holds every column's "0"/"1" text, input columns first
+/// then output columns (matching truthTableColumnLabels()'s own ordering), so a delegate can
+/// tell them apart via `column < root.editor.truthTableInputCount`. Real QML value type, same
+/// reasoning as ColorOption above.
+class TruthTableRow
+{
+    Q_GADGET
+    QML_VALUE_TYPE(truthTableRow)
+
+    Q_PROPERTY(QStringList cells READ cells FINAL)
+
+public:
+    TruthTableRow() = default;
+    explicit TruthTableRow(QStringList cells)
+        : m_cells(std::move(cells))
+    {
+    }
+
+    [[nodiscard]] QStringList cells() const { return m_cells; }
+
+private:
+    QStringList m_cells;
+};
+
+/// One entry in appearanceStates() -- a multi-state element's per-state appearance tile (e.g.
+/// Led's color states, Display7's lit-segment states). previewImageUrl is a base64
+/// "data:image/png;base64,..." URL (same technique as QuickICPreview::imageUrl -- a one-off,
+/// occasionally-regenerated image, not worth a QQuickImageProvider request-id scheme), built
+/// from GraphicElement::appearancePreviewPixmap(index, size). Real QML value type, same
+/// reasoning as ColorOption above.
+class AppearanceStateOption
+{
+    Q_GADGET
+    QML_VALUE_TYPE(appearanceStateOption)
+
+    Q_PROPERTY(int index READ index FINAL)
+    Q_PROPERTY(QString label READ label FINAL)
+    Q_PROPERTY(QString previewImageUrl READ previewImageUrl FINAL)
+
+public:
+    AppearanceStateOption() = default;
+    AppearanceStateOption(int index, QString label, QString previewImageUrl)
+        : m_index(index)
+        , m_label(std::move(label))
+        , m_previewImageUrl(std::move(previewImageUrl))
+    {
+    }
+
+    [[nodiscard]] int index() const { return m_index; }
+    [[nodiscard]] QString label() const { return m_label; }
+    [[nodiscard]] QString previewImageUrl() const { return m_previewImageUrl; }
+
+private:
+    int m_index = 0;
+    QString m_label;
+    QString m_previewImageUrl;
+};
+
 /**
  * \class QuickElementEditor
  * \brief Copy-and-adapted, Widgets-free port of App/UI/ElementEditor.h's property-read/apply
@@ -130,19 +188,18 @@ private:
  * multi-selection) is skipped by apply() exactly like ElementEditor::applyProperty() skips it;
  * touching it applies the new value to every selected element, also matching production.
  *
- * \details Explicitly NOT ported in this pass (real, separately-scoped follow-ups, not
- * oversights): Appearance (custom pixmap file dialog + per-state tile grid), AudioBox (file
- * dialog), TruthTable (the editor grid dialog -- CanvasToggleTruthTableOutputCommand itself is
- * already ported and usable once a QML dialog exists), and embedded-IC blob rename. Each needs
- * its own QML dialog surface this pass doesn't build yet.
+ * \details Appearance, AudioBox, TruthTable, and embedded-IC blob rename (Phase 4's own
+ * "named deferrals" follow-up) are now also ported here -- see their own Q_PROPERTY/Q_INVOKABLE
+ * groups below.
  *
  * \details Also backs the right-click context menu (Phase 4 sub-step 6): shares the exact same
  * m_elements/m_caps this class already tracks reactively (canMorph/hasSelection double as the
  * menu's Morph-submenu/Copy-Cut-Delete visibility, colorOptions doubles as the Colors submenu),
  * plus morphCandidates -- computed from whichever element was right-clicked (prepareContextMenu()),
  * not the whole selection, mirroring ElementContextMenu::exec()'s addElementAction() switch
- * exactly. Change-Appearance/Revert-Appearance menu items are not built, matching Appearance's
- * deferral above.
+ * exactly. Change-Appearance/Revert-Appearance context-menu items are not built -- the panel's
+ * own "Change Appearance..."/"Reset" buttons cover the same operations; only the context-menu
+ * shortcut to them is missing.
  */
 class QuickElementEditor : public QObject
 {
@@ -167,6 +224,9 @@ class QuickElementEditor : public QObject
     Q_PROPERTY(bool audioVisible READ isAudioVisible NOTIFY refreshed FINAL)
     Q_PROPERTY(QString audio READ audio WRITE setAudio NOTIFY refreshed FINAL)
     Q_PROPERTY(QVariantList audioOptions READ audioOptions CONSTANT FINAL)
+
+    Q_PROPERTY(bool audioBoxVisible READ isAudioBoxVisible NOTIFY refreshed FINAL)
+    Q_PROPERTY(QString audioBoxFileName READ audioBoxFileName NOTIFY refreshed FINAL)
 
     Q_PROPERTY(bool volumeVisible READ isVolumeVisible NOTIFY refreshed FINAL)
     Q_PROPERTY(int volume READ volume WRITE setVolume NOTIFY refreshed FINAL)
@@ -206,6 +266,18 @@ class QuickElementEditor : public QObject
     Q_PROPERTY(bool canMorph READ canMorph NOTIFY refreshed FINAL)
     Q_PROPERTY(QList<MorphCandidate> morphCandidates READ morphCandidates NOTIFY refreshed FINAL)
 
+    Q_PROPERTY(bool appearanceVisible READ isAppearanceVisible NOTIFY refreshed FINAL)
+    Q_PROPERTY(QList<AppearanceStateOption> appearanceStates READ appearanceStates NOTIFY refreshed FINAL)
+    Q_PROPERTY(int appearanceStateIndex READ appearanceStateIndex WRITE setAppearanceStateIndex NOTIFY refreshed FINAL)
+
+    Q_PROPERTY(bool truthTableVisible READ isTruthTableVisible NOTIFY refreshed FINAL)
+    Q_PROPERTY(QStringList truthTableColumnLabels READ truthTableColumnLabels NOTIFY truthTableChanged FINAL)
+    Q_PROPERTY(int truthTableInputCount READ truthTableInputCount NOTIFY truthTableChanged FINAL)
+    Q_PROPERTY(QList<TruthTableRow> truthTableRows READ truthTableRows NOTIFY truthTableChanged FINAL)
+
+    Q_PROPERTY(bool blobNameVisible READ isBlobNameVisible NOTIFY refreshed FINAL)
+    Q_PROPERTY(QString blobName READ blobName NOTIFY refreshed FINAL)
+
 public:
     explicit QuickElementEditor(QObject *parent = nullptr);
 
@@ -230,6 +302,19 @@ public:
     [[nodiscard]] QString audio() const { return m_audio; }
     void setAudio(const QString &value);
     [[nodiscard]] static QVariantList audioOptions();
+
+    [[nodiscard]] bool isAudioBoxVisible() const { return m_caps.hasAudioBox; }
+    /// Just the file's base name (matches ElementEditor::applyCapabilitiesToUi()'s
+    /// QFileInfo(...).fileName() display, not the full path) -- "<Multiple>" style placeholder
+    /// for a multi-selection, mirroring the same unconditional-placeholder rule production uses
+    /// here specifically (m_elements.size() > 1 ? m_manyAudios : ...), unlike every other field
+    /// in this class, which just shows the first element's value without a consensus check.
+    [[nodiscard]] QString audioBoxFileName() const;
+    /// Opens a native "select an audio file" dialog and, if a file was picked, sets it directly
+    /// on the selected AudioBox element -- mirrors ElementEditor::audioBox() exactly, including
+    /// its real production quirk of NOT going through apply()/a CanvasUpdateCommand (setAudio()
+    /// on an AudioBox is not undoable in production either; preserved as-is).
+    Q_INVOKABLE void pickAudioBoxFile();
 
     [[nodiscard]] bool isVolumeVisible() const { return m_caps.hasVolume; }
     [[nodiscard]] int volume() const { return m_volume; }
@@ -282,6 +367,57 @@ public:
     [[nodiscard]] bool canMorph() const { return m_caps.canMorph; }
     [[nodiscard]] QList<MorphCandidate> morphCandidates() const { return m_morphCandidates; }
 
+    [[nodiscard]] bool isAppearanceVisible() const { return m_caps.canChangeAppearance; }
+    /// Populated in refresh() only when canChangeAppearance is true AND exactly one element is
+    /// selected (mirrors applyCapabilitiesToUi()'s identical "m_elements.size() == 1" gate) --
+    /// empty for a single-state element (appearanceStates().size() == 1) too, so QML's own
+    /// "appearanceStates.length > 1" check decides whether to show the tile grid at all.
+    [[nodiscard]] QList<AppearanceStateOption> appearanceStates() const { return m_appearanceStates; }
+    /// Which tile is selected (only meaningful while appearanceStates().size() > 1) -- pure UI
+    /// selection state, mirrors rebuildAppearanceStateTiles()'s "default-select the first tile".
+    /// No apply() on its own; changeAppearance() reads it at file-pick time.
+    [[nodiscard]] int appearanceStateIndex() const { return m_appearanceStateIndex; }
+    void setAppearanceStateIndex(int index);
+    /// Opens an image file picker (QImageReader::supportedImageFormats() filter, mirrors
+    /// ElementEditor::updateElementAppearance() exactly). With a multi-state tile selected,
+    /// applies directly to that state via a CanvasUpdateCommand (undoable, mirrors
+    /// updateElementAppearance()'s tile-grid branch); otherwise sets the one-shot
+    /// m_isUpdatingAppearance/m_appearanceName flags applyProperty()'s Appearance case reads,
+    /// then calls apply() (undoable through the normal snapshot path).
+    Q_INVOKABLE void changeAppearance();
+    /// Restores the built-in default appearance -- mirrors ElementEditor::defaultAppearance().
+    Q_INVOKABLE void resetAppearance();
+
+    [[nodiscard]] bool isTruthTableVisible() const { return m_caps.hasTruthTable; }
+    [[nodiscard]] QStringList truthTableColumnLabels() const { return m_truthTableColumnLabels; }
+    [[nodiscard]] int truthTableInputCount() const { return m_truthTableInputCount; }
+    [[nodiscard]] QList<TruthTableRow> truthTableRows() const { return m_truthTableRows; }
+    /// (Re)builds truthTableColumnLabels/truthTableInputCount/truthTableRows from the single
+    /// selected TruthTable element and emits truthTableRequested() so ElementEditor.qml opens
+    /// TruthTableDialog.qml. Mirrors ElementEditor::truthTable()'s "Build/refresh table" block
+    /// exactly (column labels A/B/C.../S0/S1..., 2^nInputs rows). No-op if the selection isn't
+    /// exactly one TruthTable.
+    Q_INVOKABLE void openTruthTable();
+    /// Toggles the output bit at (\a row, \a column) -- a no-op for an input column (<
+    /// truthTableInputCount, read-only, mirrors setTruthTableProposition()'s identical guard).
+    /// Pushes the already-ported CanvasToggleTruthTableOutputCommand, then rebuilds the row data
+    /// and re-emits truthTableChanged() so the dialog reflects the new state immediately.
+    Q_INVOKABLE void toggleTruthTableCell(int row, int column);
+
+    [[nodiscard]] bool isBlobNameVisible() const { return m_caps.isEmbedded; }
+    /// Computed live from the first selected element rather than cached in refresh() -- same
+    /// "no explicit differs hint for a divergent multi-selection, just show the first element's
+    /// value" simplification this class already documents for every other field (see class doc
+    /// comment). commitBlobRename()'s own newName==oldBlobName check is what this display value
+    /// backs, so it stays live rather than snapshotted.
+    [[nodiscard]] QString blobName() const;
+    /// Mirrors ElementEditor::blobNameEditingFinished(): trims, rejects an empty/unchanged
+    /// value, rejects a collision with an already-registered blob (via a Dialogs::provider()
+    /// warning), then pushes a standalone CanvasRenameBlobCommand -- not part of apply()'s
+    /// generic UpdateCommand snapshot, since renaming is the shared IC registry's blob key, not
+    /// a per-element property. Called from ElementEditor.qml's TextField.onEditingFinished.
+    Q_INVOKABLE void commitBlobRename(const QString &newName);
+
     /// Recomputes morphCandidates() from \a item's element group/input size, mirroring
     /// ElementContextMenu::exec()'s per-ElementGroup switch exactly (Gate/StaticInput+Input/
     /// Memory/Output candidate lists, each excluding \a item's own current type via the same
@@ -301,6 +437,14 @@ signals:
     void refreshed();
     void focusLabelRequested();
     void focusTriggerRequested();
+    /// truthTableColumnLabels/truthTableInputCount/truthTableRows changed -- separate from
+    /// refreshed() since rebuilding a truth table's row data is real work (up to 256 rows) that
+    /// only needs to happen when the dialog is actually open/being edited, not on every
+    /// unrelated field's refresh() call.
+    void truthTableChanged();
+    /// Emitted by openTruthTable() once the row data is ready; ElementEditor.qml's Connections
+    /// block opens TruthTableDialog.qml in response.
+    void truthTableRequested();
 
 private:
     /// Slot: the canvas's selection changed; re-reads it and refreshes every field. Mirrors
@@ -317,6 +461,11 @@ private:
     /// Applies one property to \a elm if it's not a skipped (mixed, untouched) field. Mirrors
     /// ElementEditor::applyProperty()'s per-type switch, scoped to this pass's property set.
     void applyProperty(GraphicElement *elm);
+    /// Rebuilds m_truthTableColumnLabels/m_truthTableInputCount/m_truthTableRows from \a table's
+    /// current inputSize()/outputSize()/key(). Shared by openTruthTable() (first build) and
+    /// toggleTruthTableCell() (rebuild after a toggle) -- mirrors ElementEditor::truthTable()'s
+    /// own reuse (called again at the end of setTruthTableProposition()).
+    void rebuildTruthTableRows(class TruthTable *table);
 
     CanvasItem *m_canvas = nullptr;
     QList<GraphicElement *> m_elements;
@@ -353,4 +502,18 @@ private:
     bool m_wirelessModeDirty = false;
 
     QList<MorphCandidate> m_morphCandidates;
+
+    // --- Appearance (single-shot flags, mirroring ElementEditor's identically-named members:
+    // set by changeAppearance()/resetAppearance(), read once by applyProperty()'s Appearance
+    // case, then reset -- not a per-field "dirty" bool like every other property above, since
+    // production's own apply() flow works the same one-shot way here) ---
+    bool m_isUpdatingAppearance = false;
+    bool m_isDefaultAppearance = true;
+    QString m_appearanceName;
+    QList<AppearanceStateOption> m_appearanceStates;
+    int m_appearanceStateIndex = 0;
+
+    QStringList m_truthTableColumnLabels;
+    int m_truthTableInputCount = 0;
+    QList<TruthTableRow> m_truthTableRows;
 };

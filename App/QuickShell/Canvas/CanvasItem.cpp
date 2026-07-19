@@ -1860,7 +1860,62 @@ void CanvasItem::mousePressEvent(QMouseEvent *event)
     }
 
     if (event->modifiers().testFlag(Qt::ControlModifier)) {
-        // Ctrl+click toggles individual membership in the selection, mirroring
+        // Ctrl+click(-and-drag) clones the current selection in place, then drags the copies --
+        // mirrors Scene::eventFilter() (App/Scene/Scene.cpp), which intercepts Ctrl+Left-click
+        // on a GraphicElement/Connection *before* SceneInteraction::mousePress() ever sees it:
+        // "item->setSelected(true)" (adds to the existing selection without clearing it, so a
+        // Ctrl-click on an already-multi-selected group clones the whole group) followed by
+        // ClipboardManager::cloneDrag(). Production's own "ghost" image is deliberately fully
+        // transparent (ClipboardManager::buildDragImage() renders at opacity 0.0 -- only the
+        // OS's default drag cursor is visible during the drag itself, the clone only becomes
+        // visible on drop) -- so driving this canvas's own existing drag-to-move machinery
+        // directly on real, live duplicated elements gives the identical net effect (new
+        // elements at original + dragDelta, selected, one undoable add) with strictly better
+        // visual feedback, not a simplification that drops anything a user could observe. A
+        // Ctrl-click with no subsequent movement still leaves a real, undoable duplicate behind
+        // (via the add command alone), matching production's own zero-distance case.
+        element->setSelected(true);
+        m_selectedIds.insert(topHit);
+
+        QList<QGraphicsItem *> toClone;
+        for (auto *selected : selectedElements()) {
+            toClone.append(selected);
+        }
+
+        QByteArray itemData;
+        QDataStream writeStream(&itemData, QIODevice::WriteOnly);
+        Serialization::writePandaHeader(writeStream);
+        CanvasCommandUtils::serializeItems(toClone, writeStream);
+
+        QDataStream readStream(&itemData, QIODevice::ReadOnly);
+        const QVersionNumber version = Serialization::readPandaHeader(readStream);
+        // Zero offset: the clone starts exactly overlapping the originals (under the cursor),
+        // unlike duplicateAction()'s deliberate one-grid-step offset.
+        const auto added = deserializeAndAdd(readStream, version, QPointF());
+
+        m_dragElements.clear();
+        m_dragStartPositions.clear();
+        for (auto *item : added) {
+            // added can include Connections (wires between two cloned elements, per
+            // Serialization's usual selection-serialize semantics) alongside GraphicElements --
+            // dynamic_cast, not qobject_cast, since item is statically a plain QGraphicsItem*.
+            if (auto *addedElement = dynamic_cast<GraphicElement *>(item)) {
+                addedElement->setSelected(true);
+                m_selectedIds.insert(elementId(addedElement->id()));
+                m_dragElements.append(addedElement);
+                m_dragStartPositions.append(addedElement->pos());
+            }
+        }
+        m_dragAnchor = worldPos;
+        m_draggingElement = true;
+
+        emit selectionChanged();
+        update();
+        return;
+    }
+
+    if (event->modifiers().testFlag(Qt::ShiftModifier)) {
+        // Shift+click toggles individual membership in the selection, mirroring
         // SceneInteraction::mousePress's "item->setSelected(!item->isSelected())" -- including
         // the real QGraphicsItem::setSelected() flag, so real paint()'s own selection-outline
         // drawing (ElementAppearance::render()'s `if (selected) {...}` branch) reflects it.
@@ -1869,6 +1924,9 @@ void CanvasItem::mousePressEvent(QMouseEvent *event)
         // gestures use for their own delta-tracking and several other call sites
         // (addElementFromPalette(), deserializeAndAdd(), nextElm()/prevElm()) leave stale by
         // calling setSelected(true) without inserting into it, found while verifying this fix.
+        // Shift, not Ctrl: production's Scene::eventFilter() remaps Shift+click to Ctrl+click
+        // internally before falling through to this exact toggle logic -- Ctrl+click itself is
+        // intercepted first, unconditionally, for clone-drag (above), so it never reaches here.
         if (element->isSelected()) {
             m_selectedIds.remove(topHit);
             element->setSelected(false);

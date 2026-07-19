@@ -53,6 +53,12 @@ QuickAppController::QuickAppController(QObject *parent)
     connect(&ThemeManager::instance(), &ThemeManager::themeChanged, this, &QuickAppController::themeChanged);
     connect(&m_languageManager, &LanguageManager::translationChanged, this, &QuickAppController::currentLanguageChanged);
 
+    m_statusMessageTimer.setSingleShot(true);
+    connect(&m_statusMessageTimer, &QTimer::timeout, this, [this] {
+        m_statusMessage.clear();
+        emit statusMessageChanged();
+    });
+
     setupLanguage();
 }
 
@@ -71,9 +77,11 @@ QDir QuickAppController::currentDir() const
     return m_workspaceManager.currentDir();
 }
 
-void QuickAppController::showStatusMessage(const QString & /*message*/, int /*timeout*/)
+void QuickAppController::showStatusMessage(const QString &message, int timeout)
 {
-    // No-op until a status bar exists (sub-step 3's remaining chrome / sub-step 7).
+    m_statusMessage = message;
+    emit statusMessageChanged();
+    m_statusMessageTimer.start(timeout);
 }
 
 CanvasItem *QuickAppController::activeCanvas() const
@@ -110,6 +118,7 @@ void QuickAppController::bindCurrentTab()
         m_elementEditor.setCanvas(nullptr);
         m_icPreview.setCanvas(nullptr);
         m_minimap.setCanvas(nullptr);
+        emit mutedChanged();
         return;
     }
 
@@ -154,6 +163,11 @@ void QuickAppController::bindCurrentTab()
     // (throttled) thumbnail regen so it shows the newly-current circuit rather than whatever
     // the previously-bound tab last rendered.
     m_minimap.setCanvas(canvas);
+
+    // Resyncs the Mute menu item to this tab's own Simulation::isUserMuted() state -- mute is
+    // per-tab (unlike simulationRunning's global intent), so a tab switch must re-emit even
+    // though setMuted() itself was never called for this canvas.
+    emit mutedChanged();
 }
 
 QString QuickAppController::windowTitle() const
@@ -284,9 +298,20 @@ void QuickAppController::flipVertical()
     if (auto *c = activeCanvas()) c->flipVertically();
 }
 
-void QuickAppController::mute(bool muted)
+bool QuickAppController::isMuted() const
 {
-    if (auto *c = activeCanvas()) c->mute(muted);
+    auto *c = activeCanvas();
+    return c && c->simulation()->isUserMuted();
+}
+
+void QuickAppController::setMuted(bool muted)
+{
+    auto *c = activeCanvas();
+    if (!c || c->simulation()->isUserMuted() == muted) {
+        return;
+    }
+    c->simulation()->setUserMuted(muted);
+    emit mutedChanged();
 }
 
 void QuickAppController::restartSimulation()

@@ -13,9 +13,9 @@ import QuickShell
 // ElementEditor::applyCapabilitiesToUi() does -- QML's declarative visible: bindings replace
 // that method's imperative setSection() calls.
 //
-// Not built in this pass (real, separately-scoped follow-ups, not oversights): Appearance
-// (custom pixmap file dialog + per-state tile grid), AudioBox (file dialog), TruthTable (the
-// editor grid dialog), and embedded-IC blob rename -- each needs its own QML dialog surface.
+// Appearance (custom pixmap file dialog + per-state tile grid), AudioBox (file dialog),
+// TruthTable (button opens TruthTableDialog.qml), and embedded-IC blob rename were all ported
+// in a later follow-up pass (Phase 4 named-deferrals) -- see their own sections below.
 Item {
     id: root
     implicitWidth: 240
@@ -93,6 +93,22 @@ Item {
                     model: root.editor.audioOptions
                     currentIndex: find(root.editor.audio)
                     onActivated: root.editor.audio = currentText
+                }
+            }
+
+            RowLayout {
+                Layout.fillWidth: true
+                Layout.leftMargin: 6
+                Layout.rightMargin: 6
+                visible: root.editor.audioBoxVisible
+                Button {
+                    text: qsTr("Choose Audio...")
+                    onClicked: root.editor.pickAudioBoxFile()
+                }
+                Label {
+                    Layout.fillWidth: true
+                    elide: Text.ElideMiddle
+                    text: root.editor.audioBoxFileName
                 }
             }
 
@@ -256,6 +272,76 @@ Item {
                     model: root.editor.wirelessModeOptions
                     currentIndex: root.editor.wirelessMode
                     onActivated: root.editor.wirelessMode = currentIndex
+                }
+            }
+
+            RowLayout {
+                Layout.fillWidth: true
+                Layout.leftMargin: 6
+                Layout.rightMargin: 6
+                visible: root.editor.truthTableVisible
+                Button {
+                    text: qsTr("Edit Truth Table...")
+                    onClicked: root.editor.openTruthTable()
+                }
+            }
+
+            ColumnLayout {
+                Layout.fillWidth: true
+                Layout.leftMargin: 6
+                Layout.rightMargin: 6
+                spacing: 4
+                visible: root.editor.appearanceVisible
+
+                RowLayout {
+                    Layout.fillWidth: true
+                    Button {
+                        text: qsTr("Change Appearance...")
+                        onClicked: root.editor.changeAppearance()
+                    }
+                    Button {
+                        text: qsTr("Reset")
+                        onClicked: root.editor.resetAppearance()
+                    }
+                }
+
+                // Multi-state tile grid (Led/Display7/14/16/Clock/InputButton/InputSwitch) --
+                // empty for single-state elements, per QuickElementEditor::refresh()'s own gate.
+                Flow {
+                    Layout.fillWidth: true
+                    visible: root.editor.appearanceStates.length > 1
+                    spacing: 2
+
+                    Repeater {
+                        model: root.editor.appearanceStates
+                        delegate: ToolButton {
+                            required property appearanceStateOption modelData
+                            checkable: true
+                            // AppController (not root.editor) avoids needing "pragma
+                            // ComponentBehavior: Bound" for this delegate -- same precedent as
+                            // Main.qml's colorOptions/morphCandidates Repeaters, which reference
+                            // the global singleton directly rather than a local alias property.
+                            checked: AppController.elementEditor.appearanceStateIndex === modelData.index
+                            icon.source: modelData.previewImageUrl
+                            ToolTip.text: modelData.label
+                            ToolTip.visible: hovered
+                            onClicked: AppController.elementEditor.appearanceStateIndex = modelData.index
+                        }
+                    }
+                }
+            }
+
+            RowLayout {
+                Layout.fillWidth: true
+                Layout.leftMargin: 6
+                Layout.rightMargin: 6
+                Layout.bottomMargin: 6
+                visible: root.editor.blobNameVisible
+                Label { text: qsTr("IC name:") }
+                TextField {
+                    Layout.fillWidth: true
+                    text: root.editor.blobName
+                    onEditingFinished: root.editor.commitBlobRename(text)
                 }
             }
         }

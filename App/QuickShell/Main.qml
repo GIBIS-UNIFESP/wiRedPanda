@@ -118,7 +118,8 @@ ApplicationWindow {
             MenuItem {
                 text: qsTr("Mute")
                 checkable: true
-                onTriggered: AppController.mute(checked)
+                checked: AppController.muted
+                onTriggered: AppController.muted = checked
             }
             MenuItem { text: qsTr("Restart"); onTriggered: AppController.restartSimulation() }
             MenuSeparator {}
@@ -331,6 +332,19 @@ ApplicationWindow {
         }
     }
 
+    // Mirrors MainWindow::showStatusMessage()'s real (and only) status-bar contract: a
+    // transient message that auto-clears after its timeout (AppController.statusMessage/
+    // showStatusMessage() -- see QuickAppController.h). No permanent zoom/selection widgets
+    // exist in production's status bar to port alongside it (confirmed by grep, not assumed).
+    footer: Label {
+        visible: AppController.statusMessage.length > 0
+        text: AppController.statusMessage
+        leftPadding: 6
+        topPadding: 2
+        bottomPadding: 2
+        background: Rectangle { color: window.palette.window }
+    }
+
     // Mirrors MainWindowUI.cpp's real structure: one QSplitter with the palette+editor stacked
     // in a single left pane (a QGridLayout there, a ColumnLayout here) and the canvas tabs as
     // the other pane -- not two independent side-by-side columns the way an earlier pass of
@@ -376,9 +390,18 @@ ApplicationWindow {
             // Mirrors ElementEditor::setCurrentElements()'s hide()/show() exactly: the whole
             // panel disappears when nothing is selected (no placeholder message), collapsing
             // this column's remaining space back to the palette above -- see
-            // ElementEditor.qml's own visible: binding.
+            // ElementEditor.qml's own visible: binding. Layout.fillHeight (capped by
+            // maximumHeight so it doesn't crowd out the palette above) is required, not
+            // optional: an invisible item is excluded from ColumnLayout's size calculation
+            // entirely, but once visible, a plain Item with no explicit height renders at zero
+            // height without this -- a real, previously-unnoticed regression from this file's
+            // own SplitView restructure (the prior RowLayout-based placement had this same
+            // Layout.fillHeight; it was dropped in the move and never re-verified with a real
+            // selection, only the empty/collapsed case).
             ElementEditor {
                 Layout.fillWidth: true
+                Layout.fillHeight: true
+                Layout.maximumHeight: 360
             }
         }
 
@@ -578,5 +601,15 @@ ApplicationWindow {
             wrapMode: Text.WordWrap
             width: parent ? parent.width : 480
         }
+    }
+
+    // Opened via AppController.elementEditor.openTruthTable() (ElementEditor.qml's "Edit Truth
+    // Table..." button), mirroring shortcutsDialog's own open()-by-id precedent.
+    TruthTableDialog {
+        id: truthTableDialog
+    }
+    Connections {
+        target: AppController.elementEditor
+        function onTruthTableRequested() { truthTableDialog.open() }
     }
 }
