@@ -256,6 +256,8 @@ set(QUICK_SHELL_TEST_SOURCES
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestQuickDolphinController.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestQuickICHandlerSecurity.cpp
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestQuickICHandlerSecurity.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestQuickElementEditor.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestQuickElementEditor.h
 )
 
 # Usage: ./build/test_wiredpanda_quick ClassName [functionName] -- mirrors test_wiredpanda's

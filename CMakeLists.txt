@@ -1003,6 +1003,7 @@ add_test(NAME TestQuickAppController COMMAND test_wiredpanda_quick TestQuickAppC
 add_test(NAME TestCanvasEmbeddedIC COMMAND test_wiredpanda_quick TestCanvasEmbeddedIC WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestCanvasInlineIC COMMAND test_wiredpanda_quick TestCanvasInlineIC WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestCanvasItemInteraction COMMAND test_wiredpanda_quick TestCanvasItemInteraction WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestQuickElementEditor COMMAND test_wiredpanda_quick TestQuickElementEditor WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 # ============================================================================
 # Test Properties: Labels and Timeouts
@@ -1100,7 +1101,8 @@ endforeach()
 # just this tier once Phase 7b+ grows it.
 foreach(TEST TestCanvasItemSmoke TestCanvasCommands TestQuickElementHandler
         TestQuickFileHandlerSecurity TestQuickICHandlerSecurity TestQuickDolphinController
-        TestQuickAppController TestCanvasEmbeddedIC TestCanvasInlineIC TestCanvasItemInteraction)
+        TestQuickAppController TestCanvasEmbeddedIC TestCanvasInlineIC TestCanvasItemInteraction
+        TestQuickElementEditor)
     set_tests_properties(${TEST} PROPERTIES LABELS "unit;quick")
 endforeach()
 
@@ -1165,7 +1167,8 @@ set(ALL_TESTS
     TestICFixtureLayout
     TestCanvasItemSmoke TestCanvasCommands TestQuickElementHandler
     TestQuickFileHandlerSecurity TestQuickICHandlerSecurity TestQuickDolphinController
-    TestQuickAppController TestCanvasEmbeddedIC TestCanvasInlineIC TestCanvasItemInteraction)
+    TestQuickAppController TestCanvasEmbeddedIC TestCanvasInlineIC TestCanvasItemInteraction
+    TestQuickElementEditor)
 foreach(TEST ${ALL_TESTS})
     set_tests_properties(${TEST} PROPERTIES FIXTURES_SETUP "non_gui_complete")
 endforeach()

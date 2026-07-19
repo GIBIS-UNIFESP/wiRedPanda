@@ -10,6 +10,7 @@
 #include "Tests/QuickShell/TestCanvasItemSmoke.h"
 #include "Tests/QuickShell/TestQuickAppController.h"
 #include "Tests/QuickShell/TestQuickDolphinController.h"
+#include "Tests/QuickShell/TestQuickElementEditor.h"
 #include "Tests/QuickShell/TestQuickElementHandler.h"
 #include "Tests/QuickShell/TestQuickFileHandlerSecurity.h"
 #include "Tests/QuickShell/TestQuickICHandlerSecurity.h"
@@ -27,5 +28,6 @@ int main(int argc, char **argv)
         {"TestCanvasEmbeddedIC", []() -> QObject * { return new TestCanvasEmbeddedIC; }},
         {"TestCanvasInlineIC", []() -> QObject * { return new TestCanvasInlineIC; }},
         {"TestCanvasItemInteraction", []() -> QObject * { return new TestCanvasItemInteraction; }},
+        {"TestQuickElementEditor", []() -> QObject * { return new TestQuickElementEditor; }},
     });
 }
