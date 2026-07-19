@@ -56,7 +56,7 @@ const dropdownId = `lang-dropdown-${instanceId}`;
             class="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-colors duration-150"
           >
             <Icon name={localeFlags[altLocale]} class="w-4 h-4 rounded-full flex-shrink-0" />
-            <span class="truncate">{languages[altLocale]}</span>
+            <span>{languages[altLocale]}</span>
           </a>
         ))
       }
