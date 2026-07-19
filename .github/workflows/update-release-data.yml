@@ -11,6 +11,7 @@ on:
 
 permissions:
   contents: write
+  actions: write
 
 jobs:
   update:
@@ -45,3 +46,12 @@ jobs:
           git add src/data/latest-release.json
           git diff --cached --quiet || git commit -m "chore: update latest release data"
           git push
+
+      - name: Trigger site rebuild
+        # The push above authenticates as GITHUB_TOKEN, which GitHub excludes from triggering
+        # other on:push workflows (anti-loop protection) -- so site.yml's `on: push: branches:
+        # [site]` never fires from it. workflow_dispatch is explicitly exempt from that
+        # restriction, so dispatch the site build directly instead of relying on the push.
+        run: gh workflow run "Deploy to GitHub Pages" --repo ${{ github.repository }} --ref site
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
