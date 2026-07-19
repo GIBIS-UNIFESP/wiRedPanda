@@ -40,4 +40,10 @@ private slots:
     // Regression: issue #453 — legacy beWavedDolphin header's raw UTF-16
     // app-name probe must still parse correctly after the -Wcast-align fix.
     void testReadDolphinHeaderParsesLegacyAppName();
+
+    // CSV error paths not covered above.
+    void testCSVRejectsInsufficientData();
+    void testCSVRejectsInvalidColumnCount();
+    void testCSVRejectsTruncatedData();
+    void testCSVClampsNonBinaryValues();
 };

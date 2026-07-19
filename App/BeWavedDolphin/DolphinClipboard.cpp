@@ -77,8 +77,7 @@ void paste(SignalModel &model, const QItemSelection &ranges, QDataStream &stream
     const qint64 available = stream.device() ? stream.device()->bytesAvailable() : 0;
     const quint64 maxItems = available > 0 ? static_cast<quint64>(available / kBytesPerItem) : 0;
     if (itemListSize > maxItems) {
-        qCWarning(zero) << "DolphinClipboard: truncating paste from" << itemListSize
-                         << "items to" << maxItems << "(insufficient stream data)";
+        qCWarning(zero) << "DolphinClipboard: truncating paste from" << itemListSize << "items to" << maxItems << "(insufficient stream data)";
         itemListSize = maxItems;
     }
 
