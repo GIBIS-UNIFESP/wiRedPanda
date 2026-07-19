@@ -44,7 +44,7 @@ QStringList buildLabels(const Elements &elements, const PortCount &portCount)
     }
 
     return labels;
-}
+} // LCOV_EXCL_LINE -- compiler-generated QStringList cleanup for an exception path buildLabels() never takes (both template instantiations)
 
 } // namespace
 
@@ -59,8 +59,12 @@ Signals collect(Scene *scene)
     }
 
     for (auto *elm : elements) {
+        // Not reachable: Scene::elements() (the only real caller) already filters to items
+        // whose type() == GraphicElement::Type via qgraphicsitem_cast, so this can't be null
+        // or the wrong type here — kept as a defensive guard against a future caller passing
+        // a hand-built element list.
         if (!elm || (elm->type() != GraphicElement::Type)) {
-            continue;
+            continue; // LCOV_EXCL_LINE
         }
 
         if (elm->elementGroup() == ElementGroup::Input) {

@@ -888,6 +888,7 @@ add_test(NAME TestSequential COMMAND test_wiredpanda TestSequential WORKING_DIRE
 add_test(NAME TestSequentialLogic COMMAND test_wiredpanda TestSequentialLogic WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSerialization COMMAND test_wiredpanda TestSerialization WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSettings COMMAND test_wiredpanda TestSettings WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestSignalDelegate COMMAND test_wiredpanda TestSignalDelegate WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSimulation COMMAND test_wiredpanda TestSimulation WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSimulationBlocker COMMAND test_wiredpanda TestSimulationBlocker WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestStatusOps COMMAND test_wiredpanda TestStatusOps WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -895,6 +896,7 @@ add_test(NAME TestSystemVerilogExport COMMAND test_wiredpanda TestSystemVerilogE
 add_test(NAME TestThemeManager COMMAND test_wiredpanda TestThemeManager WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestTruthTable COMMAND test_wiredpanda TestTruthTable WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestWaveform COMMAND test_wiredpanda TestWaveform WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestWaveformSimulator COMMAND test_wiredpanda TestWaveformSimulator WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestWirelessNode COMMAND test_wiredpanda TestWirelessNode WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestWorkspace COMMAND test_wiredpanda TestWorkspace WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestWorkspaceFileops COMMAND test_wiredpanda TestWorkspaceFileops WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -912,8 +914,12 @@ add_test(NAME TestDemux COMMAND test_wiredpanda TestDemux WORKING_DIRECTORY ${CM
 add_test(NAME TestDisplay COMMAND test_wiredpanda TestDisplay WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestDisplay7 COMMAND test_wiredpanda TestDisplay7 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestDolphinClipboard COMMAND test_wiredpanda TestDolphinClipboard WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestDolphinEdits COMMAND test_wiredpanda TestDolphinEdits WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestDolphinExporter COMMAND test_wiredpanda TestDolphinExporter WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestDolphinFile COMMAND test_wiredpanda TestDolphinFile WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestDolphinModelBuilder COMMAND test_wiredpanda TestDolphinModelBuilder WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestDolphinSerializer COMMAND test_wiredpanda TestDolphinSerializer WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestDolphinZoom COMMAND test_wiredpanda TestDolphinZoom WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestDragDropPayload COMMAND test_wiredpanda TestDragDropPayload WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestElementContextMenu COMMAND test_wiredpanda TestElementContextMenu WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestElementEditor COMMAND test_wiredpanda TestElementEditor WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -1090,7 +1096,8 @@ set(ALL_TESTS
     TestTrashButton
     TestConnection TestConnectionManager TestGraphicsView TestPropertyShortcutHandler TestPort
     TestDemux TestDisplay TestDisplay7 TestGraphicElement TestICRegistry TestICUnit TestMux
-    TestDolphinClipboard TestDolphinFile TestDolphinSerializer TestFileUtils TestRecentFilesUnit
+    TestDolphinClipboard TestDolphinEdits TestDolphinExporter TestDolphinFile TestDolphinModelBuilder
+    TestDolphinSerializer TestDolphinZoom TestSignalDelegate TestWaveformSimulator TestFileUtils TestRecentFilesUnit
     TestFileHandlerSecurity TestICHandlerSecurity TestMCPProcessor TestElementHandler
     TestExerciseEngine TestTourEngine
     TestSimulationUnit TestWorkspaceUnit

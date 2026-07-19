@@ -5,11 +5,15 @@
 
 #include <limits>
 
+#include <QApplication>
+#include <QClipboard>
 #include <QDataStream>
 #include <QItemSelection>
+#include <QMimeData>
 
 #include "App/BeWavedDolphin/DolphinClipboard.h"
 #include "App/BeWavedDolphin/SignalModel.h"
+#include "App/IO/Serialization.h"
 
 void TestDolphinClipboard::testPasteRoundTrip()
 {
@@ -77,4 +81,47 @@ void TestDolphinClipboard::testPasteWithNoDataDoesNothing()
     DolphinClipboard::paste(target, ranges, readStream);
 
     QCOMPARE(target.value(0, 0), 0);
+}
+
+void TestDolphinClipboard::testPasteFromClipboardAcceptsLegacyMimeType()
+{
+    SignalModel source(1, 3);
+    source.setInputRows(1);
+    source.setValue(0, 0, 1);
+    source.setValue(0, 1, 0);
+    source.setValue(0, 2, 1);
+
+    QItemSelection ranges(source.index(0, 0), source.index(0, 2));
+
+    QByteArray itemData;
+    {
+        QDataStream stream(&itemData, QIODevice::WriteOnly);
+        Serialization::writeDolphinHeader(stream);
+        DolphinClipboard::copy(source, ranges, stream);
+    }
+
+    auto *mimeData = new QMimeData();
+    mimeData->setData("bdolphin/copydata", itemData); // legacy MIME type, no current-type data
+    QApplication::clipboard()->setMimeData(mimeData);
+
+    SignalModel target(1, 3);
+    target.setInputRows(1);
+    QVERIFY(DolphinClipboard::pasteFromClipboard(target, ranges));
+
+    QCOMPARE(target.value(0, 0), 1);
+    QCOMPARE(target.value(0, 1), 0);
+    QCOMPARE(target.value(0, 2), 1);
+}
+
+void TestDolphinClipboard::testPasteFromClipboardReturnsFalseWhenEmpty()
+{
+    QApplication::clipboard()->setText("not a waveform payload");
+
+    SignalModel target(1, 3);
+    target.setInputRows(1);
+    target.setValue(0, 0, 0);
+    QItemSelection ranges(target.index(0, 0), target.index(0, 0));
+
+    QVERIFY(!DolphinClipboard::pasteFromClipboard(target, ranges));
+    QCOMPARE(target.value(0, 0), 0); // unchanged
 }
