@@ -38,6 +38,17 @@
 /// though, and are added below (missing-blob no-op, non-IC ignores the embedded flag) -- along
 /// with 2 real testElementPaletteUpdateEmbeddedICList* scenarios (dedup-by-blob-name, a real
 /// add/remove/refresh round trip) not covered by this file's original 7e-6 pass.
+///
+/// Phase 7h follow-up (Tests/Unit/Ui/TestElementPalette.cpp's own disposition, the last open
+/// question from Phase 7f): testPaletteSearch() tests ElementPalette::nameMatchesSearch() --
+/// KEEP as-is (QuickElementPalette::recomputeSearchResults() calls that exact static function
+/// directly, no duplicate logic to test here). testPaletteRebuild()/testAccessibleNameSet() are
+/// Widgets-widget-construction/accessibility tests with the same disposition already established
+/// elsewhere in 7f (DELETE-CANDIDATE / real-but-unported accessibility gap, respectively).
+/// testElementLabelHasDescriptiveTooltip() is real, portable, and was a genuine small gap in this
+/// file's own 7e-6 pass -- confirmed by reading ElementLabel.cpp that its tooltip is built from
+/// the exact same ElementFactory::description() call ElementDescriptor::tooltip() uses, so
+/// testCategoryEntriesHaveDescriptiveTooltips() below closes it directly.
 class TestQuickElementPalette : public QObject
 {
     Q_OBJECT
@@ -46,6 +57,7 @@ private slots:
     void initTestCase();
 
     void testCategoryListsPopulatedAtConstruction();
+    void testCategoryEntriesHaveDescriptiveTooltips();
 
     void testSearchEmptyTextYieldsNoResults();
     void testSearchMatchesByNameCaseInsensitive();

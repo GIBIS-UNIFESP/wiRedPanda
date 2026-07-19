@@ -93,6 +93,24 @@ void TestQuickElementPalette::testCategoryListsPopulatedAtConstruction()
     QVERIFY(palette.embeddedICElements().isEmpty());
 }
 
+void TestQuickElementPalette::testCategoryEntriesHaveDescriptiveTooltips()
+{
+    // Mirrors TestElementPalette::testElementLabelHasDescriptiveTooltip(): ElementDescriptor::
+    // tooltip() is built from the same ElementFactory::description() call ElementLabel's own
+    // Widgets tooltip uses (confirmed by reading ElementLabel.cpp), so it must be non-empty and
+    // genuinely element-specific, not a shared placeholder.
+    QuickElementPalette palette;
+
+    const auto *andEntry = findByName(palette.gatesElements(), "AND");
+    const auto *switchEntry = findByName(palette.ioElements(), "SWITCH");
+    QVERIFY(andEntry);
+    QVERIFY(switchEntry);
+
+    QVERIFY(!andEntry->tooltip().isEmpty());
+    QVERIFY(!switchEntry->tooltip().isEmpty());
+    QVERIFY(andEntry->tooltip() != switchEntry->tooltip());
+}
+
 void TestQuickElementPalette::testSearchEmptyTextYieldsNoResults()
 {
     QuickElementPalette palette;
