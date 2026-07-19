@@ -4,6 +4,8 @@
 #include "Tests/System/TestBewavedDolphinGui.h"
 
 #include <cmath>
+#include <cstdio>
+#include <unistd.h>
 
 #include <QAction>
 #include <QApplication>
@@ -16,24 +18,32 @@
 #include <QImage>
 #include <QItemSelectionModel>
 #include <QKeySequence>
+#include <QMessageBox>
 #include <QRegularExpression>
 #include <QScrollBar>
 #include <QSet>
+#include <QSpinBox>
 #include <QStandardItemModel>
 #include <QTableView>
 #include <QTest>
 #include <QTextStream>
+#include <QWheelEvent>
 
 #include "App/BeWavedDolphin/BeWavedDolphin.h"
+#include "App/BeWavedDolphin/DolphinFile.h"
 #include "App/BeWavedDolphin/DolphinHost.h"
 #include "App/BeWavedDolphin/DolphinZoom.h"
+#include "App/Core/Application.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
+#include "App/Exercise/ExerciseEngine.h"
+#include "App/Exercise/ExerciseOverlay.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/SimulationBlocker.h"
 #include "App/UI/FileDialogProvider.h"
+#include "App/UI/LengthDialog.h"
 #include "Tests/Common/StubFileDialogProvider.h"
 #include "Tests/Common/TestUtils.h"
 
@@ -1451,4 +1461,806 @@ void TestBewavedDolphinGui::testUndoRedoMultipleOperationsRestoresOriginalState(
         QCOMPARE(model->index(0, col).data().toInt(), pristine.at(i++));
         QCOMPARE(model->index(1, col).data().toInt(), pristine.at(i++));
     }
+}
+
+// ===========================================================================
+// Coverage completion (100% sweep)
+// ===========================================================================
+
+void TestBewavedDolphinGui::testCreateWaveformRelativePathResolvesViaHostDir()
+{
+    auto ws = createAndCircuit();
+    StubDolphinHost host;
+    host.m_currentDir = QDir(m_tempDir.path());
+
+    // Save a waveform directly to disk (bypassing the GUI) with a known pattern, at a path
+    // inside the host's current directory.
+    {
+        SignalModel seed(1, 4);
+        seed.setValue(0, 0, 1);
+        seed.setValue(0, 1, 0);
+        seed.setValue(0, 2, 1);
+        seed.setValue(0, 3, 0);
+        DolphinFile::save(seed, m_tempDir.filePath("relative.dolphin"), 1);
+    }
+
+    std::unique_ptr<BewavedDolphin> dolphin(new BewavedDolphin(ws->scene(), false, &host));
+    dolphin->setAttribute(Qt::WA_DeleteOnClose, false);
+
+    // A bare relative filename (no directory component) must resolve via the host's current
+    // directory, not the process's working directory.
+    dolphin->createWaveform("relative.dolphin");
+
+    auto *model = dolphin->model();
+    QVERIFY(model);
+    QCOMPARE(model->index(0, 0).data().toInt(), 1);
+    QCOMPARE(model->index(0, 1).data().toInt(), 0);
+    QCOMPARE(model->index(0, 2).data().toInt(), 1);
+    QCOMPARE(model->index(0, 3).data().toInt(), 0);
+}
+
+void TestBewavedDolphinGui::testCreateWaveformMissingFileShowsStatusMessage()
+{
+    auto ws = createAndCircuit();
+    StubDolphinHost host;
+    host.m_currentDir = QDir(m_tempDir.path());
+
+    std::unique_ptr<BewavedDolphin> dolphin(new BewavedDolphin(ws->scene(), false, &host));
+    dolphin->setAttribute(Qt::WA_DeleteOnClose, false);
+
+    // A relative filename that doesn't exist anywhere, including after resolving through the
+    // host's current directory, must show a status message and fall back to a blank waveform
+    // rather than throwing or crashing.
+    dolphin->createWaveform("does_not_exist_anywhere.dolphin");
+
+    auto *statusBar = dolphin->statusBar();
+    QVERIFY(statusBar);
+    QVERIFY2(statusBar->currentMessage().contains("does not exist"),
+             qPrintable(statusBar->currentMessage()));
+
+    // prepare() (called unconditionally before the not-found check) already built a blank
+    // waveform — the early return must not leave the model unset.
+    QVERIFY(dolphin->model() != nullptr);
+}
+
+void TestBewavedDolphinGui::testCreateWaveformFromTerminalReadsStdin()
+{
+    // createWaveform() (no-arg) drives loadFromTerminal(), which reads the "rows,cols" +
+    // per-row-values protocol from the real process stdin. DolphinFile::parseTerminal owns
+    // the parsing itself (covered directly by TestDolphinFile) — this only proves the glue
+    // that wires stdin into it and applies the result to the live table.
+    const QString stdinPath = m_tempDir.filePath("terminal_input.txt");
+    {
+        QFile f(stdinPath);
+        QVERIFY(f.open(QIODevice::WriteOnly));
+        f.write("2,3\n1,0,1\n0,1,0\n");
+    }
+
+    fflush(stdin);
+    QVERIFY2(freopen(qPrintable(stdinPath), "r", stdin) != nullptr,
+             "Failed to redirect stdin to the terminal-protocol fixture");
+
+    auto ws = createAndCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(new BewavedDolphin(ws->scene(), false));
+    dolphin->setAttribute(Qt::WA_DeleteOnClose, false);
+
+    dolphin->createWaveform();
+
+    auto *model = dolphin->model();
+    QVERIFY(model);
+    QCOMPARE(model->index(0, 0).data().toInt(), 1);
+    QCOMPARE(model->index(0, 1).data().toInt(), 0);
+    QCOMPARE(model->index(0, 2).data().toInt(), 1);
+    QCOMPARE(model->index(1, 0).data().toInt(), 0);
+    QCOMPARE(model->index(1, 1).data().toInt(), 1);
+    QCOMPARE(model->index(1, 2).data().toInt(), 0);
+}
+
+void TestBewavedDolphinGui::testRunWithoutPrepareIsNoOp()
+{
+    // run() is a public MCP-accessible entry point with no compile-time guarantee that
+    // prepare()/loadNewTable() ran first; calling it on a freshly constructed window must
+    // return harmlessly instead of dereferencing a null simulation driver/model.
+    auto ws = createAndCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(new BewavedDolphin(ws->scene(), false));
+    dolphin->setAttribute(Qt::WA_DeleteOnClose, false);
+
+    dolphin->run();
+    QVERIFY(dolphin->model() == nullptr);
+}
+
+void TestBewavedDolphinGui::testElementsStillLiveDetectsDeletedOutputElement()
+{
+    auto ws = createAndCircuit();
+    auto *scene = ws->scene();
+    auto *dolphin = createDolphin(ws.get());
+
+    // Mirrors testRunAndSaveToTxtHandleDeletedTrackedElement, but deletes a tracked OUTPUT
+    // element instead of an input one, to exercise elementsStillLive()'s second loop.
+    const auto &outputs = dolphin->outputElements();
+    QVERIFY(!outputs.isEmpty());
+    auto *trackedOutput = outputs.first();
+    scene->receiveCommand(new DeleteItemsCommand({trackedOutput}, scene));
+
+    dolphin->run(); // must skip the sweep, not dereference the deleted output element
+
+    QString text;
+    QTextStream stream(&text);
+    QVERIFY_THROWS(std::exception, dolphin->saveToTxt(stream));
+}
+
+void TestBewavedDolphinGui::testWheelEventZoomsColumns()
+{
+    auto ws = createAndCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+
+    auto *tv = findTableView(dolphin.get());
+    QVERIFY(tv);
+    QCOMPARE(dolphin->m_zoom->zoomLevel(), 0);
+
+    QWheelEvent zoomInEvent(QPointF(5, 5), QPointF(5, 5), QPoint(0, 0), QPoint(0, 120),
+                            Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase, false);
+    QVERIFY(QCoreApplication::sendEvent(tv->viewport(), &zoomInEvent));
+    QCOMPARE(dolphin->m_zoom->zoomLevel(), 1);
+
+    QWheelEvent zoomOutEvent(QPointF(5, 5), QPointF(5, 5), QPoint(0, 0), QPoint(0, -120),
+                             Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase, false);
+    QVERIFY(QCoreApplication::sendEvent(tv->viewport(), &zoomOutEvent));
+    QCOMPARE(dolphin->m_zoom->zoomLevel(), 0);
+}
+
+void TestBewavedDolphinGui::testCloseEventPromptsAndCanBeCancelled()
+{
+    auto ws = createAndCircuit();
+    // askConnection=true is required for closeEvent to consult checkSave() at all.
+    std::unique_ptr<BewavedDolphin> dolphin(new BewavedDolphin(ws->scene(), true));
+    dolphin->setAttribute(Qt::WA_DeleteOnClose, false);
+    dolphin->createWaveform("");
+    dolphin->show();
+    dolphin->m_edited = true; // pretend the user made an unsaved change
+
+    {
+        auto dismisser = TestUtils::AutoDismisser::answerMessageBox(QMessageBox::Cancel);
+        dolphin->close();
+        QVERIFY2(TestUtils::waitFor([&] { return dismisser.dismissCount() >= 1; }),
+                 "The unsaved-changes prompt must have appeared");
+    }
+    // Cancel must keep the window open.
+    QVERIFY(dolphin->isVisible());
+
+    {
+        auto dismisser = TestUtils::AutoDismisser::answerMessageBox(QMessageBox::Discard);
+        dolphin->close();
+        QVERIFY2(TestUtils::waitFor([&] { return dismisser.dismissCount() >= 1; }),
+                 "The unsaved-changes prompt must have appeared");
+    }
+    // Discard must let the window close.
+    QVERIFY(!dolphin->isVisible());
+}
+
+void TestBewavedDolphinGui::testCloseEventClosesDirectlyWhenNotEdited()
+{
+    auto ws = createAndCircuit();
+    // askConnection=true, but nothing was ever edited: checkSave() must return true without
+    // showing any prompt, and the window must close immediately.
+    std::unique_ptr<BewavedDolphin> dolphin(new BewavedDolphin(ws->scene(), true));
+    dolphin->setAttribute(Qt::WA_DeleteOnClose, false);
+    dolphin->createWaveform("");
+    dolphin->show();
+    QVERIFY(!dolphin->m_edited);
+
+    auto dismisser = TestUtils::AutoDismisser::closeAnyModal();
+    dolphin->close();
+
+    QVERIFY(!dolphin->isVisible());
+    QCOMPARE(dismisser.dismissCount(), 0); // no prompt should have appeared
+}
+
+void TestBewavedDolphinGui::testResizeEventRepositionsExerciseOverlay()
+{
+    auto ws = createAndCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+    dolphin->resize(900, 600);
+    dolphin->show();
+    QApplication::processEvents();
+
+    ExerciseEngine engine;
+    auto *overlay = new ExerciseOverlay(&engine, dolphin.get());
+    overlay->show();
+    dolphin->setExerciseOverlay(overlay);
+    QApplication::processEvents();
+
+    dolphin->resize(700, 500);
+    QApplication::processEvents();
+
+    const int expectedX = (dolphin->width() - overlay->width()) / 2;
+    const int expectedY = dolphin->height() - overlay->height() - 12;
+    QCOMPARE(overlay->pos(), QPoint(expectedX, expectedY));
+}
+
+void TestBewavedDolphinGui::testTrivialAccessors()
+{
+    auto ws = createAndCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+
+    QVERIFY(dolphin->mainToolBar() != nullptr);
+
+    auto *combinationalAction = dolphin->findChild<QAction *>("actionCombinational");
+    QCOMPARE(dolphin->actionCombinational(), combinationalAction);
+
+    dolphin->triggerCombinational(); // must behave exactly like the action firing
+    QVERIFY(dolphin->length() >= 4);
+    auto *model = dolphin->model();
+    int outputRow = static_cast<int>(dolphin->inputElements().size());
+    QCOMPARE(model->index(outputRow, 3).data().toInt(), 1); // both inputs 1 -> AND=1
+    QCOMPARE(model->index(outputRow, 0).data().toInt(), 0); // both inputs 0 -> AND=0
+
+    // createAndCircuit()'s InputSwitches don't get distinct default labels, so give them one
+    // each here to make inputRow()'s label lookup unambiguous.
+    dolphin->inputElements().first()->setLabel("swA");
+    dolphin->inputElements().last()->setLabel("swB");
+    QCOMPARE(dolphin->inputRow("swA"), 0);
+    QCOMPARE(dolphin->inputRow("swB"), 1);
+    QCOMPARE(dolphin->inputRow("no such signal"), -1);
+
+    dolphin->setLength(4, false);
+    dolphin->setCellValue(0, 0, 1);
+    dolphin->setCellValue(0, 1, 0);
+    dolphin->setCellValue(0, 2, 1);
+    dolphin->setCellValue(0, 3, 0);
+    dolphin->setCellValue(1, 0, 0);
+    dolphin->setCellValue(1, 1, 1);
+    dolphin->setCellValue(1, 2, 1);
+    dolphin->setCellValue(1, 3, 0);
+    dolphin->run();
+
+    const auto snap = dolphin->snapshot(4);
+    QCOMPARE(snap.inputs.size(), 2);
+    QCOMPARE(snap.outputs.size(), 1);
+    QCOMPARE(snap.inputs[0].values, QVector<int>({1, 0, 1, 0}));
+    QCOMPARE(snap.inputs[1].values, QVector<int>({0, 1, 1, 0}));
+    QCOMPARE(snap.outputs[0].values, QVector<int>({0, 0, 1, 0})); // AND per column
+}
+
+void TestBewavedDolphinGui::testCheckSaveDiscardAndSaveButtons()
+{
+    auto ws = createAndCircuit();
+    StubDolphinHost host;
+    host.m_currentDir = QDir(m_tempDir.path());
+    std::unique_ptr<BewavedDolphin> dolphin(new BewavedDolphin(ws->scene(), true, &host));
+    dolphin->setAttribute(Qt::WA_DeleteOnClose, false);
+    dolphin->createWaveform("");
+    dolphin->show();
+
+    // Give the waveform a current file first (Save As), so the later "Save" button click
+    // inside the close prompt takes the direct-save path, not the redirect-to-Save-As one.
+    const QString savePath = m_tempDir.filePath("checksave.dolphin");
+    {
+        ScopedFileDialogStub guard;
+        guard.stub.saveResult = {savePath, "Dolphin files (*.dolphin)"};
+        dolphin->findChild<QAction *>("actionSaveAs")->trigger();
+    }
+    QVERIFY(!dolphin->m_edited);
+
+    dolphin->m_edited = true;
+
+    auto dismisser = TestUtils::AutoDismisser::answerMessageBox(QMessageBox::Save);
+    dolphin->close();
+    QVERIFY2(TestUtils::waitFor([&] { return dismisser.dismissCount() >= 1; }),
+             "The unsaved-changes prompt must have appeared");
+
+    // Clicking Save must have written the file and cleared the edited flag, allowing the
+    // close to proceed.
+    QVERIFY(!dolphin->isVisible());
+    QVERIFY(!dolphin->m_edited);
+}
+
+void TestBewavedDolphinGui::testActionSetClockWaveNoSelectionThrowsUserFacingError()
+{
+    // Defense in depth: the action is disabled without a selection (see
+    // testSetClockWaveDisabledWithoutSelectionC9), but trigger() still fires the handler when
+    // invoked directly (as the MCP server or a stray shortcut could), and the handler must
+    // reject it cleanly with a user-facing message rather than crashing.
+    auto ws = createAndCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+
+    const bool prevInteractive = Application::interactiveMode;
+    Application::interactiveMode = true;
+
+    QString capturedText;
+    TestUtils::AutoDismisser dismisser([&capturedText](QWidget *w) {
+        if (auto *box = qobject_cast<QMessageBox *>(w)) {
+            capturedText = box->text();
+            box->close();
+            return true;
+        }
+        return false;
+    });
+
+    // The action itself is disabled without a selection (testSetClockWaveDisabledWithoutSelectionC9),
+    // and a disabled QAction's trigger() is a no-op in this Qt version, so the handler's own
+    // "No cells selected." guard can only be exercised by calling it directly (TestBewavedDolphinGui
+    // is a friend) — this proves the handler degrades cleanly in isolation, independent of whether
+    // the QAction gating ever changes.
+    dolphin->on_actionSetClockWave_triggered();
+
+    QVERIFY2(TestUtils::waitFor([&] { return dismisser.dismissCount() >= 1; }),
+             "The error dialog must have appeared");
+    QVERIFY2(capturedText.contains("No cells selected"), qPrintable(capturedText));
+
+    Application::interactiveMode = prevInteractive;
+}
+
+void TestBewavedDolphinGui::testActionSetClockWaveDialogRejectedLeavesGridUnchanged()
+{
+    auto ws = createAndCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+    auto *model = dolphin->model();
+
+    dolphin->setCellValue(0, 0, 1);
+    selectCells(dolphin.get(), 0, 0, 0, 3);
+
+    QTimer::singleShot(0, [&dolphin] {
+        auto *dialog = dolphin->findChild<QDialog *>();
+        if (dialog) dialog->reject();
+    });
+
+    auto *action = dolphin->findChild<QAction *>("actionSetClockWave");
+    QVERIFY(action);
+    action->trigger();
+
+    // Cancelling the dialog must leave the grid untouched and push nothing onto the undo
+    // stack.
+    QCOMPARE(model->index(0, 0).data().toInt(), 1);
+    QVERIFY(!dolphin->m_undoStack.canUndo());
+}
+
+void TestBewavedDolphinGui::testActionSetLengthDialogAcceptedChangesLength()
+{
+    auto ws = createAndCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+    QCOMPARE(dolphin->length(), 32);
+
+    QTimer::singleShot(0, [&dolphin] {
+        auto *dialog = dolphin->findChild<QDialog *>();
+        QVERIFY(dialog);
+        auto *spin = dialog->findChild<QSpinBox *>("lengthSpinBox");
+        QVERIFY(spin);
+        spin->setValue(48);
+        dialog->accept();
+    });
+
+    auto *action = dolphin->findChild<QAction *>("actionSetLength");
+    QVERIFY(action);
+    action->trigger();
+
+    QCOMPARE(dolphin->length(), 48);
+}
+
+void TestBewavedDolphinGui::testActionSetLengthDialogRejectedNoOp()
+{
+    auto ws = createAndCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+    QCOMPARE(dolphin->length(), 32);
+
+    QTimer::singleShot(0, [&dolphin] {
+        auto *dialog = dolphin->findChild<QDialog *>();
+        if (dialog) dialog->reject();
+    });
+
+    auto *action = dolphin->findChild<QAction *>("actionSetLength");
+    QVERIFY(action);
+    action->trigger();
+
+    QCOMPARE(dolphin->length(), 32);
+}
+
+void TestBewavedDolphinGui::testCopyCutPasteWithEmptySelection()
+{
+    auto ws = createAndCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+
+    QApplication::clipboard()->setText("sentinel");
+    auto *copyAction = dolphin->findChild<QAction *>("actionCopy");
+    QVERIFY(copyAction);
+    copyAction->trigger();
+    QVERIFY2(QApplication::clipboard()->text().isEmpty(), "Copy with no selection must clear the clipboard");
+
+    QApplication::clipboard()->setText("sentinel");
+    auto *cutAction = dolphin->findChild<QAction *>("actionCut");
+    QVERIFY(cutAction);
+    cutAction->trigger();
+    QVERIFY2(QApplication::clipboard()->text().isEmpty(), "Cut with no selection must clear the clipboard");
+
+    auto *pasteAction = dolphin->findChild<QAction *>("actionPaste");
+    QVERIFY(pasteAction);
+    pasteAction->trigger(); // must return harmlessly with nothing selected
+}
+
+void TestBewavedDolphinGui::testActionSaveRedirectsToSaveAsWhenNoCurrentFile()
+{
+    auto ws = createAndCircuit();
+    StubDolphinHost host;
+    host.m_currentDir = QDir(m_tempDir.path());
+    std::unique_ptr<BewavedDolphin> dolphin(new BewavedDolphin(ws->scene(), false, &host));
+    dolphin->setAttribute(Qt::WA_DeleteOnClose, false);
+    dolphin->createWaveform("");
+
+    const QString savePath = m_tempDir.filePath("via_save_redirect.dolphin");
+    ScopedFileDialogStub guard;
+    guard.stub.saveResult = {savePath, "Dolphin files (*.dolphin)"};
+
+    auto *action = dolphin->findChild<QAction *>("actionSave");
+    QVERIFY2(action, "actionSave not found");
+    action->trigger();
+
+    // With no current file, Save must redirect to Save As rather than silently no-op'ing.
+    QVERIFY(QFile::exists(savePath));
+    QVERIFY(!dolphin->m_edited);
+}
+
+void TestBewavedDolphinGui::testActionSaveWritesDirectlyWhenCurrentFileSet()
+{
+    auto ws = createAndCircuit();
+    StubDolphinHost host;
+    host.m_currentDir = QDir(m_tempDir.path());
+    std::unique_ptr<BewavedDolphin> dolphin(new BewavedDolphin(ws->scene(), false, &host));
+    dolphin->setAttribute(Qt::WA_DeleteOnClose, false);
+    dolphin->createWaveform("");
+
+    const QString savePath = m_tempDir.filePath("via_save_direct.dolphin");
+    {
+        ScopedFileDialogStub guard;
+        guard.stub.saveResult = {savePath, "Dolphin files (*.dolphin)"};
+        dolphin->findChild<QAction *>("actionSaveAs")->trigger();
+    }
+    QVERIFY(QFile::exists(savePath));
+    QFile::remove(savePath); // prove the next Save actually rewrites it directly
+
+    dolphin->setCellValue(0, 0, 1);
+    dolphin->m_edited = true;
+
+    // No ScopedFileDialogStub active here: if actionSave incorrectly redirected to Save As,
+    // it would fall through to the real QFileDialog-backed provider instead of saving directly.
+    auto *action = dolphin->findChild<QAction *>("actionSave");
+    QVERIFY2(action, "actionSave not found");
+    action->trigger();
+
+    QVERIFY2(QFile::exists(savePath), "Save should write directly to the already-known file");
+    QVERIFY(!dolphin->m_edited);
+}
+
+void TestBewavedDolphinGui::testSaveAsInfersExtensionFromFilter()
+{
+    auto ws = createAndCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+
+    // A bare filename with no extension, with the Dolphin filter active, must have
+    // ".dolphin" appended.
+    const QString basePath = m_tempDir.filePath("bare_name_dolphin");
+    {
+        ScopedFileDialogStub guard;
+        guard.stub.saveResult = {basePath, "Dolphin files (*.dolphin)"};
+        dolphin->findChild<QAction *>("actionSaveAs")->trigger();
+    }
+    QVERIFY(QFile::exists(basePath + ".dolphin"));
+
+    // Same, but with the CSV filter active — must append ".csv" instead.
+    const QString basePath2 = m_tempDir.filePath("bare_name_csv");
+    {
+        ScopedFileDialogStub guard;
+        guard.stub.saveResult = {basePath2, "CSV files (*.csv)"};
+        dolphin->findChild<QAction *>("actionSaveAs")->trigger();
+    }
+    QVERIFY(QFile::exists(basePath2 + ".csv"));
+}
+
+void TestBewavedDolphinGui::testSaveAsCancelled()
+{
+    auto ws = createAndCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+
+    ScopedFileDialogStub guard;
+    guard.stub.saveResult = {"", ""}; // user cancelled the dialog
+
+    auto *action = dolphin->findChild<QAction *>("actionSaveAs");
+    QVERIFY(action);
+    action->trigger();
+
+    QVERIFY(dolphin->m_currentFile.fileName().isEmpty());
+}
+
+void TestBewavedDolphinGui::testAssociateToWiRedPandaPromptsAndLinks()
+{
+    auto ws = createAndCircuit();
+    const bool prevInteractive = Application::interactiveMode;
+    Application::interactiveMode = true;
+
+    StubDolphinHost hostYes;
+    hostYes.m_currentDir = QDir(m_tempDir.path());
+    std::unique_ptr<BewavedDolphin> dolphinYes(new BewavedDolphin(ws->scene(), false, &hostYes));
+    dolphinYes->setAttribute(Qt::WA_DeleteOnClose, false);
+    dolphinYes->createWaveform("");
+
+    const QString savePathYes = m_tempDir.filePath("link_yes.dolphin");
+    {
+        ScopedFileDialogStub guard;
+        guard.stub.saveResult = {savePathYes, "Dolphin files (*.dolphin)"};
+        auto dismisser = TestUtils::AutoDismisser::answerMessageBox(QMessageBox::Yes);
+        dolphinYes->findChild<QAction *>("actionSaveAs")->trigger();
+        QVERIFY2(TestUtils::waitFor([&] { return dismisser.dismissCount() >= 1; }),
+                 "The link-to-project prompt must have appeared");
+    }
+    QCOMPARE(hostYes.m_dolphinFileName, savePathYes);
+    QCOMPARE(hostYes.saveCount, 1);
+
+    // "No" must leave the file unlinked.
+    StubDolphinHost hostNo;
+    hostNo.m_currentDir = QDir(m_tempDir.path());
+    std::unique_ptr<BewavedDolphin> dolphinNo(new BewavedDolphin(ws->scene(), false, &hostNo));
+    dolphinNo->setAttribute(Qt::WA_DeleteOnClose, false);
+    dolphinNo->createWaveform("");
+
+    const QString savePathNo = m_tempDir.filePath("link_no.dolphin");
+    {
+        ScopedFileDialogStub guard;
+        guard.stub.saveResult = {savePathNo, "Dolphin files (*.dolphin)"};
+        auto dismisser = TestUtils::AutoDismisser::answerMessageBox(QMessageBox::No);
+        dolphinNo->findChild<QAction *>("actionSaveAs")->trigger();
+        QVERIFY2(TestUtils::waitFor([&] { return dismisser.dismissCount() >= 1; }),
+                 "The link-to-project prompt must have appeared");
+    }
+    QVERIFY(hostNo.m_dolphinFileName.isEmpty());
+    QCOMPARE(hostNo.saveCount, 0);
+
+    Application::interactiveMode = prevInteractive;
+}
+
+void TestBewavedDolphinGui::testActionLoadTriggeredOpensAndLoadsFile()
+{
+    auto ws = createAndCircuit();
+    StubDolphinHost host;
+    host.m_currentDir = QDir(m_tempDir.path());
+
+    // Pre-seed a .dolphin file with a known pattern via a throwaway model, independent of
+    // the dolphin window under test.
+    const QString loadPath = m_tempDir.filePath("to_load.dolphin");
+    {
+        SignalModel seed(1, 4);
+        seed.setValue(0, 0, 0);
+        seed.setValue(0, 1, 1);
+        seed.setValue(0, 2, 1);
+        seed.setValue(0, 3, 0);
+        DolphinFile::save(seed, loadPath, 1);
+    }
+
+    std::unique_ptr<BewavedDolphin> dolphin(new BewavedDolphin(ws->scene(), false, &host));
+    dolphin->setAttribute(Qt::WA_DeleteOnClose, false);
+    dolphin->createWaveform("");
+    dolphin->m_edited = true;
+
+    ScopedFileDialogStub guard;
+    guard.stub.openResult = loadPath;
+
+    auto *action = dolphin->findChild<QAction *>("actionLoad");
+    QVERIFY2(action, "actionLoad not found");
+    action->trigger();
+
+    auto *model = dolphin->model();
+    QVERIFY(model);
+    QCOMPARE(model->index(0, 0).data().toInt(), 0);
+    QCOMPARE(model->index(0, 1).data().toInt(), 1);
+    QCOMPARE(model->index(0, 2).data().toInt(), 1);
+    QCOMPARE(model->index(0, 3).data().toInt(), 0);
+    QVERIFY(!dolphin->m_edited);
+}
+
+void TestBewavedDolphinGui::testActionExportToPngTriggeredCreatesFile()
+{
+    const QString pngPath = m_tempDir.filePath("export_via_action.png");
+
+    auto ws = createAndCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+    dolphin->setCellValue(0, 0, 1);
+    dolphin->run();
+
+    {
+        ScopedFileDialogStub guard;
+        guard.stub.saveResult = {pngPath, "PNG files (*.png)"};
+        auto *action = dolphin->findChild<QAction *>("actionExportToPng");
+        QVERIFY2(action, "actionExportToPng not found");
+        action->trigger();
+    }
+    QVERIFY(QFile::exists(pngPath));
+    QVERIFY(QFileInfo(pngPath).size() > 0);
+    QFile::remove(pngPath);
+
+    // Cancelled dialog must no-op.
+    {
+        ScopedFileDialogStub guard;
+        guard.stub.saveResult = {"", ""};
+        dolphin->findChild<QAction *>("actionExportToPng")->trigger();
+    }
+    QVERIFY(!QFile::exists(pngPath));
+
+    // A bare filename without ".png" must have it appended.
+    const QString barePath = m_tempDir.filePath("bare_png_name");
+    {
+        ScopedFileDialogStub guard;
+        guard.stub.saveResult = {barePath, "PNG files (*.png)"};
+        dolphin->findChild<QAction *>("actionExportToPng")->trigger();
+    }
+    QVERIFY(QFile::exists(barePath + ".png"));
+}
+
+void TestBewavedDolphinGui::testPrintWritesCsvToStdout()
+{
+    auto ws = createAndCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+    dolphin->setCellValue(0, 0, 1);
+    dolphin->run();
+
+    const QString capturePath = m_tempDir.filePath("stdout_capture.txt");
+
+    fflush(stdout);
+    const int savedStdoutFd = dup(fileno(stdout));
+    QVERIFY(savedStdoutFd >= 0);
+    QVERIFY2(freopen(qPrintable(capturePath), "w", stdout) != nullptr,
+             "Failed to redirect stdout to the capture file");
+
+    dolphin->print();
+
+    fflush(stdout);
+    dup2(savedStdoutFd, fileno(stdout));
+    close(savedStdoutFd);
+    clearerr(stdout);
+
+    QFile captured(capturePath);
+    QVERIFY(captured.open(QIODevice::ReadOnly));
+    const QString output = QString::fromUtf8(captured.readAll());
+
+    QVERIFY2(!output.isEmpty(), "print() should have written CSV text to stdout");
+    QVERIFY2(output.contains(','), "print() output should be comma-separated CSV-ish text");
+}
+
+void TestBewavedDolphinGui::testPrintAndSaveToTxtBeforePrepareAreNoOp()
+{
+    // Both are public MCP-accessible entry points with no compile-time guarantee that
+    // prepare()/loadNewTable() ran first; calling them on a freshly constructed window (no
+    // model yet) must return harmlessly instead of dereferencing a null model.
+    auto ws = createAndCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(new BewavedDolphin(ws->scene(), false));
+    dolphin->setAttribute(Qt::WA_DeleteOnClose, false);
+
+    const QString capturePath = m_tempDir.filePath("print_noop_capture.txt");
+    fflush(stdout);
+    const int savedStdoutFd = dup(fileno(stdout));
+    QVERIFY(savedStdoutFd >= 0);
+    QVERIFY(freopen(qPrintable(capturePath), "w", stdout) != nullptr);
+
+    dolphin->print(); // must not crash; must write nothing
+
+    fflush(stdout);
+    dup2(savedStdoutFd, fileno(stdout));
+    close(savedStdoutFd);
+    clearerr(stdout);
+
+    QCOMPARE(QFileInfo(capturePath).size(), qint64(0));
+
+    QString text;
+    QTextStream stream(&text);
+    dolphin->saveToTxt(stream); // must not crash; must write nothing
+    QVERIFY(text.isEmpty());
+}
+
+void TestBewavedDolphinGui::testActionLoadDefaultDirectoryPrefersCurrentFile()
+{
+    // With m_currentFile already set (from a prior Save/Save As), the Load dialog's default
+    // directory must come from it, not the host.
+    auto ws = createAndCircuit();
+    StubDolphinHost host;
+    host.m_currentDir = QDir(m_tempDir.path());
+    std::unique_ptr<BewavedDolphin> dolphin(new BewavedDolphin(ws->scene(), false, &host));
+    dolphin->setAttribute(Qt::WA_DeleteOnClose, false);
+    dolphin->createWaveform("");
+
+    const QString firstSavePath = m_tempDir.filePath("already_current.dolphin");
+    {
+        ScopedFileDialogStub guard;
+        guard.stub.saveResult = {firstSavePath, "Dolphin files (*.dolphin)"};
+        dolphin->findChild<QAction *>("actionSaveAs")->trigger();
+    }
+
+    ScopedFileDialogStub guard;
+    guard.stub.openResult = firstSavePath; // reload the same file
+    dolphin->findChild<QAction *>("actionLoad")->trigger();
+
+    QCOMPARE(guard.stub.lastOpenCall.dir, QFileInfo(firstSavePath).absolutePath());
+}
+
+void TestBewavedDolphinGui::testActionLoadDefaultDirectoryFallsBackToHostFile()
+{
+    // No current file yet, but the host reports one that exists on disk: the (currently
+    // write-only/dead — see m_host->currentFile().dir() in on_actionLoad_triggered) branch
+    // is exercised for coverage; the only independently-observable behavior here is that the
+    // Load action still completes normally.
+    auto ws = createAndCircuit();
+    StubDolphinHost host;
+    host.m_currentDir = QDir(m_tempDir.path());
+    host.m_currentFile = QFileInfo(m_tempDir.filePath("host_current.panda"));
+    {
+        QFile f(host.m_currentFile.absoluteFilePath());
+        QVERIFY(f.open(QIODevice::WriteOnly)); // must actually exist to hit that branch
+    }
+
+    std::unique_ptr<BewavedDolphin> dolphin(new BewavedDolphin(ws->scene(), false, &host));
+    dolphin->setAttribute(Qt::WA_DeleteOnClose, false);
+    dolphin->createWaveform("");
+
+    const QString loadPath = m_tempDir.filePath("host_fallback_load.dolphin");
+    {
+        SignalModel seed(1, 2);
+        seed.setValue(0, 0, 1);
+        seed.setValue(0, 1, 0);
+        DolphinFile::save(seed, loadPath, 1);
+    }
+
+    ScopedFileDialogStub guard;
+    guard.stub.openResult = loadPath;
+    dolphin->findChild<QAction *>("actionLoad")->trigger();
+
+    auto *model = dolphin->model();
+    QVERIFY(model);
+    QCOMPARE(model->index(0, 0).data().toInt(), 1);
+    QCOMPARE(model->index(0, 1).data().toInt(), 0);
+}
+
+void TestBewavedDolphinGui::testActionLoadDefaultDirectoryFallsBackToHomeWithoutHost()
+{
+    auto ws = createAndCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(new BewavedDolphin(ws->scene(), false)); // no host
+    dolphin->setAttribute(Qt::WA_DeleteOnClose, false);
+    dolphin->createWaveform("");
+
+    ScopedFileDialogStub guard;
+    guard.stub.openResult = ""; // cancelled — only the directory resolution is under test
+
+    dolphin->findChild<QAction *>("actionLoad")->trigger();
+
+    QCOMPARE(guard.stub.lastOpenCall.dir, QDir::homePath());
+}
+
+void TestBewavedDolphinGui::testActionLoadCancelled()
+{
+    auto ws = createAndCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+    dolphin->m_edited = true;
+
+    ScopedFileDialogStub guard;
+    guard.stub.openResult = "";
+
+    dolphin->findChild<QAction *>("actionLoad")->trigger();
+
+    QVERIFY(dolphin->m_edited); // unchanged — cancelling must not have loaded anything
+}
+
+void TestBewavedDolphinGui::testActionExportToPdfCancelledAndBareNameAppendsExtension()
+{
+    auto ws = createAndCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+    dolphin->setCellValue(0, 0, 1);
+    dolphin->run();
+
+    const QString bareName = m_tempDir.filePath("bare_pdf_name");
+    {
+        ScopedFileDialogStub guard;
+        guard.stub.saveResult = {bareName, "PDF files (*.pdf)"};
+        dolphin->findChild<QAction *>("actionExportToPdf")->trigger();
+    }
+    QVERIFY(QFile::exists(bareName + ".pdf"));
+
+    // Cancelled dialog must no-op, not crash.
+    ScopedFileDialogStub guard;
+    guard.stub.saveResult = {"", ""};
+    dolphin->findChild<QAction *>("actionExportToPdf")->trigger();
 }
