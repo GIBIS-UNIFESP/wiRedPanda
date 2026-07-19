@@ -141,6 +141,7 @@
 #include "Tests/Unit/Elements/TestDisplay.h"
 #include "Tests/Unit/Elements/TestDisplay7.h"
 #include "Tests/Unit/Elements/TestGraphicElement.h"
+#include "Tests/Unit/Elements/TestGraphicElementSerializer.h"
 #include "Tests/Unit/Elements/TestIC.h"
 #include "Tests/Unit/Elements/TestBuzzer.h"
 #include "Tests/Unit/Elements/TestClock.h"
@@ -357,6 +358,7 @@ int main(int argc, char **argv)
         {"TestDisplay", []() -> QObject * { return new TestDisplay; }},
         {"TestDisplay7", []() -> QObject * { return new TestDisplay7; }},
         {"TestGraphicElement", []() -> QObject * { return new TestGraphicElement; }},
+        {"TestGraphicElementSerializer", []() -> QObject * { return new TestGraphicElementSerializer; }},
         {"TestICUnit", []() -> QObject * { return new TestICUnit; }},
         {"TestClock", []() -> QObject * { return new TestClock; }},
         {"TestClocksAdvanced", []() -> QObject * { return new TestClocksAdvanced; }},

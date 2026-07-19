@@ -402,10 +402,14 @@ void GraphicElementSerializer::loadNewFormat(GraphicElement &element, QDataStrea
 
     QList<QMap<QString, QVariant>> appearancesMap = readPortList(stream, "appearances");
 
-    if (stream.status() != QDataStream::Ok) {
-        throw PANDACEPTION("Stream error reading appearances at position %1",
-                           QString::number(stream.device()->pos()));
-    }
+    // Unreachable: unlike Serialization::readBoundedMetadata() (which silently `break`s out of
+    // its per-entry loop on a stream error, leaving a bad status for its caller to notice),
+    // readPortList()'s own per-entry loop throws immediately on the same condition -- it can
+    // never return normally with a bad stream status for this redundant check to catch.
+    if (stream.status() != QDataStream::Ok) { // LCOV_EXCL_LINE
+        throw PANDACEPTION("Stream error reading appearances at position %1", // LCOV_EXCL_LINE
+                           QString::number(stream.device()->pos())); // LCOV_EXCL_LINE
+    } // LCOV_EXCL_LINE
 
     int index = 0;
 

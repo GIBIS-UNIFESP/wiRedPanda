@@ -42,6 +42,12 @@ class GraphicElementSerializer
     // extracted.
     Q_DECLARE_TR_FUNCTIONS(GraphicElementSerializer)
 
+    // Test-only seam: several load-error throws (truncated-stream / implausible-count guards)
+    // are private helpers one level below the public load() entry point. Precisely truncating a
+    // full element stream at the exact byte offset each one needs is far more fragile than
+    // calling the helper directly with a minimal hand-built stream.
+    friend class TestGraphicElementSerializer;
+
 public:
     /// Writes \a element to \a stream (current keyed-QMap format).
     static void save(const GraphicElement &element, QDataStream &stream, SerializationOptions options);

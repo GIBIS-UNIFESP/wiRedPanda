@@ -788,6 +788,7 @@ add_test(NAME TestFileDialogProvider COMMAND test_wiredpanda TestFileDialogProvi
 add_test(NAME TestFileHandlerSecurity COMMAND test_wiredpanda TestFileHandlerSecurity WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestFiles COMMAND test_wiredpanda TestFiles WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestGeometry COMMAND test_wiredpanda TestGeometry WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestGraphicElementSerializer COMMAND test_wiredpanda TestGraphicElementSerializer WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestGraphicelementAdvanced COMMAND test_wiredpanda TestGraphicelementAdvanced WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestIC COMMAND test_wiredpanda TestIC WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestICFixtureLayout COMMAND test_wiredpanda TestICFixtureLayout WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -1005,7 +1006,7 @@ endforeach()
 # Element and Component Unit Tests - Unit category
 foreach(TEST TestBewavedDolphinGui TestAudioBox TestBuzzer TestClock TestClocksAdvanced TestComponents TestDisplays
         TestElementAppearance TestElementLabel TestElementProperties TestFeatures TestGeometry
-        TestGraphicelementAdvanced TestIcons TestInputElements TestInputRotary TestLED
+        TestGraphicElementSerializer TestGraphicelementAdvanced TestIcons TestInputElements TestInputRotary TestLED
         TestLogicGates TestMultiplexing TestSequentialLogic TestTruthTable TestWaveform
         TestWirelessNode)
     set_tests_properties(${TEST} PROPERTIES LABELS "unit")
@@ -1080,7 +1081,7 @@ set(ALL_TESTS
     TestSimulation TestSystemVerilogExport TestWorkspace TestWorkspaceFileops
     TestIcons TestWaveform TestAudioBox TestBuzzer TestClock TestClocksAdvanced
     TestComponents TestDisplays TestElementAppearance TestElementLabel TestElementProperties TestFeatures
-    TestGeometry TestGraphicelementAdvanced TestInputElements TestInputRotary TestLED
+    TestGeometry TestGraphicElementSerializer TestGraphicelementAdvanced TestInputElements TestInputRotary TestLED
     TestLogicGates TestMultiplexing TestSequentialLogic TestTruthTable TestWirelessNode
     TestElementFactory TestElementLogic TestElementLogicErrors TestNodeLogic TestStatusOps
     TestConnectionSerialization TestConnectionValidity TestConnections TestScene
