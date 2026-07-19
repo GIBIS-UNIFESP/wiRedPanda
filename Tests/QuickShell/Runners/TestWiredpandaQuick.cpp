@@ -4,6 +4,7 @@
 #include "Tests/QuickShell/Runners/QuickRunnerUtils.h"
 
 #include "Tests/QuickShell/TestCanvasCommands.h"
+#include "Tests/QuickShell/TestCanvasEmbeddedIC.h"
 #include "Tests/QuickShell/TestCanvasItemSmoke.h"
 #include "Tests/QuickShell/TestQuickAppController.h"
 #include "Tests/QuickShell/TestQuickDolphinController.h"
@@ -21,5 +22,6 @@ int main(int argc, char **argv)
         {"TestQuickICHandlerSecurity", []() -> QObject * { return new TestQuickICHandlerSecurity; }},
         {"TestQuickDolphinController", []() -> QObject * { return new TestQuickDolphinController; }},
         {"TestQuickAppController", []() -> QObject * { return new TestQuickAppController; }},
+        {"TestCanvasEmbeddedIC", []() -> QObject * { return new TestCanvasEmbeddedIC; }},
     });
 }

@@ -935,10 +935,47 @@ void CanvasItem::adjustSecondaryProperty(int dir)
 void CanvasItem::prevSecndPropShortcut() { adjustSecondaryProperty(-1); }
 void CanvasItem::nextSecndPropShortcut() { adjustSecondaryProperty(1); }
 
+namespace {
+
+/// Bundles every blob referenced by an embedded IC in \a items into \a mimeData, under both
+/// MimeType::BlobRegistry (legacy, unversioned) and MimeType::BlobRegistryV2 (Qt_5_12-versioned,
+/// preferred on paste) -- mirrors ClipboardManager::copy()/cut()'s identical dual-format
+/// bundling exactly, so a clipboard round trip stays interoperable with the Widgets app during
+/// the migration (either side's clipboard payload can be pasted into the other's).
+void bundleUsedBlobs(CanvasItem *canvas, const QList<GraphicElement *> &elements, QMimeData *mimeData)
+{
+    QMap<QString, QByteArray> usedBlobs;
+    for (auto *elm : elements) {
+        if (elm->isEmbedded() && !elm->blobName().isEmpty()) {
+            const QString &name = elm->blobName();
+            if (!usedBlobs.contains(name) && canvas->icRegistry()->hasBlob(name)) {
+                usedBlobs[name] = canvas->icRegistry()->blob(name);
+            }
+        }
+    }
+    if (usedBlobs.isEmpty()) {
+        return;
+    }
+
+    QByteArray regBytes;
+    QDataStream regStream(&regBytes, QIODevice::WriteOnly);
+    regStream << usedBlobs;
+    mimeData->setData(MimeType::BlobRegistry, regBytes);
+
+    QByteArray regBytesV2;
+    QDataStream regStreamV2(&regBytesV2, QIODevice::WriteOnly);
+    regStreamV2.setVersion(QDataStream::Qt_5_12);
+    regStreamV2 << usedBlobs;
+    mimeData->setData(MimeType::BlobRegistryV2, regBytesV2);
+}
+
+} // namespace
+
 void CanvasItem::copyAction()
 {
+    const auto selected = selectedElements();
     QList<QGraphicsItem *> items;
-    for (auto *elm : selectedElements()) {
+    for (auto *elm : selected) {
         items.append(elm);
     }
     if (items.isEmpty()) {
@@ -953,13 +990,15 @@ void CanvasItem::copyAction()
 
     auto *mimeData = new QMimeData();
     mimeData->setData(MimeType::Clipboard, itemData);
+    bundleUsedBlobs(this, selected, mimeData);
     QGuiApplication::clipboard()->setMimeData(mimeData);
 }
 
 void CanvasItem::cutAction()
 {
+    const auto selected = selectedElements();
     QList<QGraphicsItem *> items;
-    for (auto *elm : selectedElements()) {
+    for (auto *elm : selected) {
         items.append(elm);
     }
     if (items.isEmpty()) {
@@ -972,10 +1011,12 @@ void CanvasItem::cutAction()
     Serialization::writePandaHeader(stream);
     CanvasCommandUtils::serializeItems(items, stream);
 
-    deleteSelected();
-
     auto *mimeData = new QMimeData();
     mimeData->setData(MimeType::Clipboard, itemData);
+    bundleUsedBlobs(this, selected, mimeData);
+
+    deleteSelected();
+
     QGuiApplication::clipboard()->setMimeData(mimeData);
 }
 
@@ -986,8 +1027,22 @@ void CanvasItem::pasteAction()
         return;
     }
 
-    // Blob-registry import (cross-tab paste of embedded ICs) deferred to the IC-embedding
-    // sub-step -- this canvas has no ICRegistry yet.
+    // Import blob registry from clipboard so cross-tab (or cross-window, cross-app-instance --
+    // the OS clipboard doesn't care) paste of embedded ICs works, mirroring
+    // ClipboardManager::paste()'s identical import. Prefer BlobRegistryV2; fall back to the
+    // legacy unversioned BlobRegistry a Widgets-side copy on an older version might have set.
+    QMap<QString, QByteArray> clipboardBlobs;
+    if (mimeData->hasFormat(MimeType::BlobRegistryV2)) {
+        QByteArray regBytes = mimeData->data(MimeType::BlobRegistryV2);
+        QDataStream regStream(&regBytes, QIODevice::ReadOnly);
+        regStream.setVersion(QDataStream::Qt_5_12);
+        try { clipboardBlobs = Serialization::readBoundedBlobMap(regStream); } catch (...) {}
+    } else if (mimeData->hasFormat(MimeType::BlobRegistry)) {
+        QByteArray regBytes = mimeData->data(MimeType::BlobRegistry);
+        QDataStream regStream(&regBytes, QIODevice::ReadOnly);
+        try { clipboardBlobs = Serialization::readBoundedBlobMap(regStream); } catch (...) {}
+    }
+
     QByteArray itemData;
     if (mimeData->hasFormat(MimeType::ClipboardLegacy)) {
         itemData = mimeData->data(MimeType::ClipboardLegacy);
@@ -995,13 +1050,35 @@ void CanvasItem::pasteAction()
     if (mimeData->hasFormat(MimeType::Clipboard)) {
         itemData = mimeData->data(MimeType::Clipboard);
     }
-    if (itemData.isEmpty()) {
+    if (itemData.isEmpty() && clipboardBlobs.isEmpty()) {
         return;
     }
 
-    QDataStream stream(&itemData, QIODevice::ReadOnly);
-    QVersionNumber version = Serialization::readPandaHeader(stream);
-    deserializeAndAdd(stream, version);
+    // Register any new embedded-IC blobs and add the pasted items as a single undo step --
+    // registering the blobs untracked would leave them orphaned in the registry forever after
+    // an undo, since CanvasAddItemsCommand only knows about canvas items, not the blob registry.
+    const bool needsMacro = !clipboardBlobs.isEmpty() && !itemData.isEmpty();
+    if (needsMacro) {
+        m_undoStack.beginMacro(tr("Paste"));
+    }
+
+    if (!clipboardBlobs.isEmpty()) {
+        for (auto it = clipboardBlobs.cbegin(); it != clipboardBlobs.cend(); ++it) {
+            if (!icRegistry()->hasBlob(it.key())) {
+                receiveCommand(new CanvasRegisterBlobCommand(it.key(), it.value(), this));
+            }
+        }
+    }
+
+    if (!itemData.isEmpty()) {
+        QDataStream stream(&itemData, QIODevice::ReadOnly);
+        QVersionNumber version = Serialization::readPandaHeader(stream);
+        deserializeAndAdd(stream, version);
+    }
+
+    if (needsMacro) {
+        m_undoStack.endMacro();
+    }
 }
 
 void CanvasItem::duplicateAction()
