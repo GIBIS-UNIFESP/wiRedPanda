@@ -50,4 +50,25 @@ private slots:
 
     // Regression: F13 — negative positions (from file) clamp to port 0
     void testSetOnNegativePortClamps();
+
+    // Non-standard output size (default branch of updatePortsProperties()'s switch)
+    void testPortConfigurationWithNonStandardPortCount();
+
+    // Painting
+    void testPainting();
+
+    // setWaveformValue()
+    void testSetWaveformValueTrueSelectsPort();
+    void testSetWaveformValueFalseIsNoOp();
+
+    // mousePressEvent()
+    void testMousePressAdvancesPort();
+
+    // setAppearance()
+    void testSetAppearanceCustom();
+    void testSetAppearanceResetToDefault();
+
+    // load()'s pre-4.1 bare-field format and the "locked" map key
+    void testLoadOldFormatBareFields();
+    void testLoadLockedFlagFromMap();
 };
