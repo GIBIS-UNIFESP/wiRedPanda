@@ -9,6 +9,7 @@
 #include "Tests/QuickShell/TestCanvasItemInteraction.h"
 #include "Tests/QuickShell/TestCanvasItemSmoke.h"
 #include "Tests/QuickShell/TestQuickAppController.h"
+#include "Tests/QuickShell/TestQuickCanvasZoom.h"
 #include "Tests/QuickShell/TestQuickDolphinController.h"
 #include "Tests/QuickShell/TestQuickElementEditor.h"
 #include "Tests/QuickShell/TestQuickElementHandler.h"
@@ -31,5 +32,6 @@ int main(int argc, char **argv)
         {"TestCanvasItemInteraction", []() -> QObject * { return new TestCanvasItemInteraction; }},
         {"TestQuickElementEditor", []() -> QObject * { return new TestQuickElementEditor; }},
         {"TestQuickElementPalette", []() -> QObject * { return new TestQuickElementPalette; }},
+        {"TestQuickCanvasZoom", []() -> QObject * { return new TestQuickCanvasZoom; }},
     });
 }
