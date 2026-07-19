@@ -7,6 +7,8 @@
 
 #include <QDataStream>
 #include <QFile>
+#include <QKeySequence>
+#include <QPointF>
 #include <QTemporaryDir>
 #include <QTemporaryFile>
 #include <QTest>
@@ -189,6 +191,44 @@ void TestAudioBox::testUnmute()
 {
     AudioBox audioBox;
     AudioElementTestHelpers::testUnmute(audioBox);
+}
+
+// ============================================================================
+// Hardware-detection seam tests
+// ============================================================================
+// This test machine has a real (virtual) ALSA device, so m_hasOutputDevice is always
+// true from construction — the "!m_hasOutputDevice" guards below are otherwise
+// unreachable here (and would be reachable-but-untested the other way around on a
+// headless CI box with no device). Force it false post-construction to deterministically
+// exercise those guards regardless of which machine runs the test.
+
+void TestAudioBox::testMuteWithoutOutputDevice()
+{
+    AudioBox audioBox;
+    audioBox.setHasOutputDeviceForTesting(false);
+
+    audioBox.mute(true);
+    QVERIFY(audioBox.isMuted());
+}
+
+void TestAudioBox::testSetAudioWithoutOutputDeviceSkipsHardwareSetup()
+{
+    AudioBox audioBox;
+    audioBox.setHasOutputDeviceForTesting(false);
+
+    audioBox.setAudio(":/Components/Output/Audio/wiredpanda.wav");
+    QCOMPARE(audioBox.audio(), QString(":/Components/Output/Audio/wiredpanda.wav"));
+}
+
+void TestAudioBox::testSetAudioRestartsPlaybackWhenPlaying()
+{
+    AudioBox audioBox;
+    AudioElementTestHelpers::testRefreshWithActiveInput(audioBox);
+    QVERIFY(audioBox.isPlaying());
+
+    // Changing audio while already playing must restart playback with the new source.
+    audioBox.setAudio(":/Components/Output/Audio/wiredpanda.wav");
+    QVERIFY(audioBox.isPlaying());
 }
 
 // ============================================================================
@@ -437,4 +477,55 @@ void TestAudioBox::testUpdateCommandUndoRedoPreservesFullAudioPath()
     // redo() reapplies the custom audio path, full and unstripped
     workspace.scene()->undoStack()->redo();
     QCOMPARE(dynamic_cast<GraphicElement *>(workspace.scene()->itemById(id))->externalFiles(), QStringList{audioPath});
+}
+
+void TestAudioBox::testLoadBeforeAudioExisted()
+{
+    // AudioBox was introduced at V_2_4 (see VersionInfo::hasAudio) -- no real pre-2.4 .panda
+    // file can ever contain one, so this guard clause is otherwise unreachable by any fixture.
+    AudioBox audioBox;
+
+    AudioElementTestHelpers::testLoadBeforeAudioExisted(audioBox);
+
+    // load() must have returned before touching anything AudioBox-specific.
+    QCOMPARE(audioBox.audio(), QString(":/Components/Output/Audio/wiredpanda.wav"));
+}
+
+void TestAudioBox::testLoadOldFormatBareAudioPath()
+{
+    // No bundled backward-compatibility fixture happens to contain an AudioBox (unlike
+    // Buzzer's "notes.panda"), so the v2.4-4.0 bare-QString load branch is hand-built here,
+    // mirroring GraphicElementSerializer::loadOldFormat()'s exact old-format field order.
+    //
+    // A real (non-resource) absolute path is used, not a ":/..." resource string: per
+    // ExternalFilePath::forReading(), a resource path always resolves to std::nullopt for
+    // PortableFile loads, which would leave audio() at its unchanged default and make this
+    // test pass without ever actually reaching the setAudio() call it's meant to cover.
+    QTemporaryFile tempFile;
+    QVERIFY(tempFile.open());
+    tempFile.write("DUMMY AUDIO DATA");
+    tempFile.close();
+    const QString absolutePath = QFileInfo(tempFile.fileName()).absoluteFilePath();
+
+    QByteArray data;
+    QDataStream writeStream(&data, QIODevice::WriteOnly);
+    writeStream << QPointF(5.0, 5.0);     // loadPos
+    writeStream << 0.0;                   // loadRotation (qreal)
+    writeStream << QString("old label");  // loadLabel (hasLabels since V_1_2)
+    writeStream << quint64(1) << quint64(1) << quint64(1) << quint64(1); // loadPortsSize (V_1_3)
+    writeStream << QKeySequence();        // loadTrigger (V_1_9)
+    writeStream << quint64(0);            // loadInputPorts: inputSize = 0
+    writeStream << quint64(0);            // loadOutputPorts: outputSize = 0
+    // hasAppearanceNames() is V_2_7 -- false at V_2_4, so nothing further is written there.
+    writeStream << absolutePath;           // bare audio path
+
+    QHash<quint64, Port *> portMap;
+    SerializationContext context = {portMap, Versions::V_2_4, SerializationPurpose::PortableFile};
+
+    AudioBox audioBox;
+    QDataStream readStream(data);
+    audioBox.load(readStream, context);
+
+    QCOMPARE(readStream.status(), QDataStream::Ok);
+    QCOMPARE(audioBox.audio(), absolutePath);
 }
