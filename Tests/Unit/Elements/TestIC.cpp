@@ -12,18 +12,25 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QKeySequence>
 #include <QPointF>
+#include <QSaveFile>
 #include <QSignalSpy>
 #include <QTemporaryDir>
+#include <QVersionNumber>
 
+#include "App/Core/Application.h"
+#include "App/Core/Common.h"
 #include "App/Core/Settings.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/And.h"
+#include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/Element/ICPreviewPopup.h"
 #include "App/Element/ICRenderer.h"
+#include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
+#include "App/Scene/ICRegistry.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/Versions.h"
@@ -517,4 +524,265 @@ void TestICUnit::testDisplayNameForEmbeddedIc()
 
     QCOMPARE(readStream.status(), QDataStream::Ok);
     QCOMPARE(ic.displayName(), QString("my_embedded_ic"));
+}
+
+void TestICUnit::testLoadFileDirectlyOpenFailureThrows()
+{
+#ifdef Q_OS_WIN
+    QSKIP("QFile::setPermissions cannot simulate an unreadable file on Windows (uses ACLs, not Unix permission bits)");
+#else
+    // ICLoader::loadFileDirectly()'s QFile::open(ReadOnly) guard: a path that passes the outer
+    // loadFile()'s exists()/isFile() check (the file is really there) but cannot be reopened for
+    // reading (permission-stripped) must throw cleanly instead of dereferencing a closed device.
+    QTemporaryDir tempDir;
+    QVERIFY(tempDir.isValid());
+    const QString path = tempDir.path() + "/unreadable.panda";
+
+    {
+        QFile f(path);
+        QVERIFY(f.open(QIODevice::WriteOnly));
+        f.write("irrelevant -- open() itself must fail before any of this is parsed");
+    }
+    QVERIFY(QFile::setPermissions(path, QFileDevice::Permissions()));
+
+    // Sanity: confirm the file really can't be opened for reading under this permission set
+    // on this system before relying on it below.
+    {
+        QFile probe(path);
+        QVERIFY(!probe.open(QIODevice::ReadOnly));
+    }
+
+    auto ic = std::make_unique<IC>();
+    bool threw = false;
+    QString message;
+    try {
+        ic->loadFile("unreadable.panda", tempDir.path());
+    } catch (const Pandaception &e) {
+        threw = true;
+        message = e.englishMessage();
+    }
+
+    QFile::setPermissions(path, QFileDevice::ReadOwner | QFileDevice::WriteOwner);
+
+    QVERIFY2(threw, "Loading a file that cannot be opened for reading must throw");
+    QVERIFY2(message.contains("Error opening file"), qPrintable(message));
+#endif
+}
+
+void TestICUnit::testLoadFileDetectsCircularSelfReference()
+{
+    // loadFileDirectly()'s cycle-detection guard: a sub-circuit file that references itself
+    // must throw instead of recursing until the call stack overflows. Reproduced by having a
+    // real IC element load a small circuit as its own sub-circuit, then re-saving over that same
+    // file -- IC::save() writes ExternalFilePath::forWriting(m_file, ...), which strips to the
+    // bare filename, so the re-saved file's "name" entry becomes a genuine self-reference.
+    QTemporaryDir subDir;
+    QVERIFY(subDir.isValid());
+    const QString cyclePath = subDir.path() + "/cycle.panda";
+
+    WorkSpace baseWorkspace;
+    CircuitBuilder baseBuilder(baseWorkspace.scene());
+    InputSwitch sw;
+    Led led;
+    baseBuilder.add(&sw, &led);
+    baseBuilder.connect(&sw, 0, &led, 0);
+    QCOMPARE(baseWorkspace.save(cyclePath), WorkSpace::SaveOutcome::Saved);
+
+    WorkSpace selfRefWorkspace;
+    auto *ic = new IC;
+    selfRefWorkspace.scene()->addItem(ic);
+    ic->loadFile(cyclePath, subDir.path());
+    QVERIFY(ic->inputSize() >= 1);
+
+    QCOMPARE(selfRefWorkspace.save(cyclePath), WorkSpace::SaveOutcome::Saved);
+
+    auto ic2 = std::make_unique<IC>();
+    bool threw = false;
+    QString message;
+    try {
+        ic2->loadFile(cyclePath, subDir.path());
+    } catch (const Pandaception &e) {
+        threw = true;
+        message = e.englishMessage();
+    }
+
+    QVERIFY2(threw, "A self-referencing IC file must be rejected as a circular reference, not stack-overflow");
+    QVERIFY2(message.contains("Circular IC reference"), qPrintable(message));
+}
+
+void TestICUnit::testMigrateFileOpenForWriteFailureThrowsAndCleansUpItems()
+{
+#ifdef Q_OS_WIN
+    QSKIP("QFile::setPermissions cannot make a directory unwritable on Windows (uses ACLs, not Unix permission bits)");
+#else
+    // migrateFile()'s QSaveFile::open(WriteOnly) guard, plus loadFileDirectly()'s itemsGuard
+    // cleanup of a still-live Connection when migration throws before processLoadedItems() ever
+    // runs (items is still fully populated at that point -- nothing has been drained yet).
+    // Pre-create the versioned backup so createVersionedBackup() no-ops (its own QFile::copy
+    // would otherwise throw first, from an unrelated line in Serialization.cpp), then lock the
+    // directory so only the QSaveFile::open() this test targets fails.
+    const QString srcDir = TestUtils::backwardCompatibilityDir() + "v4.2.0/";
+    QTemporaryDir tempDir;
+    QVERIFY(tempDir.isValid());
+
+    const QString subName = "dlatch.panda";
+    const QString subDst = tempDir.path() + "/" + subName;
+    QVERIFY(QFile::copy(srcDir + subName, subDst));
+
+    QVersionNumber oldVersion;
+    {
+        QFile f(subDst);
+        QVERIFY(f.open(QIODevice::ReadOnly));
+        QDataStream s(&f);
+        oldVersion = Serialization::readPandaHeader(s);
+        QVERIFY2(oldVersion < FormatRev::current, "Fixture must be older than current version for this test");
+    }
+
+    const QString backupPath = tempDir.path() + "/dlatch.v" + oldVersion.toString() + ".panda";
+    QVERIFY(QFile::copy(subDst, backupPath));
+
+    QVERIFY(QFile::setPermissions(tempDir.path(), QFileDevice::ReadOwner | QFileDevice::ExeOwner));
+
+    // Sanity: confirm QSaveFile really can't open under this directory on this system.
+    {
+        QSaveFile probe(subDst);
+        QVERIFY(!probe.open(QIODevice::WriteOnly));
+    }
+
+    Application::migrationEnabled = true;
+    auto ic = std::make_unique<IC>();
+    bool threw = false;
+    QString message;
+    try {
+        ic->loadFile(subName, tempDir.path());
+    } catch (const Pandaception &e) {
+        threw = true;
+        message = e.englishMessage();
+    }
+    Application::migrationEnabled = false;
+
+    QFile::setPermissions(tempDir.path(),
+        QFileDevice::ReadOwner | QFileDevice::WriteOwner | QFileDevice::ExeOwner);
+
+    QVERIFY2(threw, "Migration must throw when the sub-circuit file cannot be reopened for writing");
+    QVERIFY2(message.contains("cannot open file for writing"), qPrintable(message));
+#endif
+}
+
+void TestICUnit::testLoadBoundaryElementProxiesMultiOutputInputPortNames()
+{
+    // loadBoundaryElement()'s per-port name proxying (nodeInput->setName(srcPort->name())) only
+    // runs for a boundary input element with more than one port. InputRotary defaults to 2
+    // outputs (minOutputSize == 2), each explicitly named "0"/"1" at construction -- the
+    // matching case for a multi-input boundary *output* (Display7/14/16) is already covered
+    // elsewhere.
+    QTemporaryDir subDir;
+    QVERIFY(subDir.isValid());
+
+    WorkSpace subWorkspace;
+    CircuitBuilder subBuilder(subWorkspace.scene());
+    InputRotary rotary;
+    QCOMPARE(rotary.outputSize(), 2);
+    subBuilder.add(&rotary);
+    const QString subPath = subDir.path() + "/rotary_probe.panda";
+    QCOMPARE(subWorkspace.save(subPath), WorkSpace::SaveOutcome::Saved);
+
+    auto ic = std::make_unique<IC>();
+    ic->loadFile(subPath, subDir.path());
+
+    QCOMPARE(ic->inputSize(), 2);
+    QVERIFY2(ic->inputPort(0)->name().endsWith("0"), qPrintable(ic->inputPort(0)->name()));
+    QVERIFY2(ic->inputPort(1)->name().endsWith("1"), qPrintable(ic->inputPort(1)->name()));
+}
+
+void TestICUnit::testLoadBoundaryPortsLogsSummaryAtVerbosity()
+{
+    // loadBoundaryPorts()'s qCDebug(three) summary is gated behind logging category "three",
+    // which the shared test setup disables by default (Comment::setVerbosity(-1) in
+    // TestUtils.cpp) -- bump verbosity just for this load so the line actually executes, then
+    // restore it regardless of outcome.
+    QTemporaryDir subDir;
+    QVERIFY(subDir.isValid());
+
+    WorkSpace subWorkspace;
+    CircuitBuilder subBuilder(subWorkspace.scene());
+    InputSwitch sw;
+    Led led;
+    subBuilder.add(&sw, &led);
+    subBuilder.connect(&sw, 0, &led, 0);
+    const QString subPath = subDir.path() + "/verbosity_probe.panda";
+    QCOMPARE(subWorkspace.save(subPath), WorkSpace::SaveOutcome::Saved);
+
+    Comment::setVerbosity(4); // enables categories 0-3, including "three"
+    auto ic = std::make_unique<IC>();
+    try {
+        ic->loadFile(subPath, subDir.path());
+    } catch (...) {
+        Comment::setVerbosity(-1);
+        throw;
+    }
+    Comment::setVerbosity(-1);
+
+    QCOMPARE(ic->inputSize(), 1);
+    QCOMPARE(ic->outputSize(), 1);
+}
+
+void TestICUnit::testDeserializeAndLoadEnforcesNestingDepthLimit()
+{
+    // ICLoader::deserializeAndLoad()'s own nesting-depth guard -- the blob-cache path's
+    // counterpart to loadFileDirectly()'s identical-purpose check. Build a chain of blobs,
+    // each embedding only its immediate predecessor's bytes directly into the scene's
+    // ICRegistry blob map (via blobMapRef(), bypassing ICRegistry::registerBlob()'s own,
+    // separate self-containment depth cap -- which would otherwise reject a chain this long
+    // before it ever reaches ICLoader).
+    QTemporaryDir tempDir;
+    QVERIFY(tempDir.isValid());
+
+    WorkSpace leafWorkspace;
+    CircuitBuilder leafBuilder(leafWorkspace.scene());
+    InputSwitch sw;
+    Led led;
+    leafBuilder.add(&sw, &led);
+    leafBuilder.connect(&sw, 0, &led, 0);
+    const QString leafPath = tempDir.path() + "/level0.panda";
+    QCOMPARE(leafWorkspace.save(leafPath), WorkSpace::SaveOutcome::Saved);
+
+    QFile leafFile(leafPath);
+    QVERIFY(leafFile.open(QIODevice::ReadOnly));
+    QByteArray prevBytes = leafFile.readAll();
+    leafFile.close();
+    QString prevKey = QStringLiteral("level0");
+
+    constexpr int kChainLength = 20; // > ICLoader's kMaxICNestingDepth (16)
+    bool threw = false;
+    QString message;
+
+    for (int level = 1; level <= kChainLength; ++level) {
+        WorkSpace levelWorkspace;
+        auto *ic = new IC;
+        levelWorkspace.scene()->addItem(ic);
+
+        try {
+            ic->loadFromBlob(prevBytes, tempDir.path());
+        } catch (const Pandaception &e) {
+            threw = true;
+            message = e.englishMessage();
+            break;
+        }
+        ic->setBlobName(prevKey);
+        levelWorkspace.scene()->icRegistry()->blobMapRef()[prevKey] = prevBytes;
+
+        const QString levelPath = tempDir.path() + QString("/level%1.panda").arg(level);
+        QCOMPARE(levelWorkspace.save(levelPath), WorkSpace::SaveOutcome::Saved);
+
+        QFile levelFile(levelPath);
+        QVERIFY(levelFile.open(QIODevice::ReadOnly));
+        prevBytes = levelFile.readAll();
+        levelFile.close();
+        prevKey = QString("level%1").arg(level);
+    }
+
+    QVERIFY2(threw, "A chain of 20 nested embedded-IC blobs must eventually throw a "
+                     "nesting-depth exception, not crash or succeed unbounded.");
+    QVERIFY2(message.contains("nesting depth", Qt::CaseInsensitive), qPrintable(message));
 }
