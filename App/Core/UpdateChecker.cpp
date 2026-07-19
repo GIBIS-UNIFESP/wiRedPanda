@@ -5,7 +5,6 @@
 
 #include <QDate>
 #include <QDebug>
-#include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QNetworkReply>
@@ -17,10 +16,10 @@
 #include "App/Core/Settings.h"
 #include "App/Versions.h"
 
-static constexpr auto k_apiUrl = "https://api.github.com/repos/gibis-unifesp/wiredpanda/releases/latest";
+static constexpr auto k_releaseDataUrl = "https://gibis-unifesp.github.io/wiRedPanda/latest-release.json";
 
 /// Compile-time name of the platform this binary was built for, matching the
-/// platform token embedded in release asset filenames by deploy.yml.
+/// platform token releaseAssetKey() expects.
 static QString currentPlatform()
 {
 #if defined(Q_OS_WIN)
@@ -34,19 +33,31 @@ static QString currentPlatform()
 #endif
 }
 
-bool isMatchingReleaseAsset(const QString &name, const QString &platform, const QString &arch)
+QString releaseAssetKey(const QString &platform, const QString &arch)
 {
     if (platform == "Linux") {
-        return name.endsWith(".AppImage") && name.contains(arch, Qt::CaseInsensitive);
+        if (arch == "x86_64") {
+            return QStringLiteral("linuxX64");
+        }
+        if (arch == "arm64") {
+            return QStringLiteral("linuxArm64");
+        }
+        return {};
     }
     if (platform == "Windows") {
-        return name.contains("Windows") && name.endsWith(".zip") && name.contains(arch, Qt::CaseInsensitive);
+        if (arch == "x86_64") {
+            return QStringLiteral("windowsX64");
+        }
+        if (arch == "arm64") {
+            return QStringLiteral("windowsArm64");
+        }
+        return {};
     }
     if (platform == "macOS") {
-        // A single universal DMG serves both architectures, so it carries no arch token.
-        return name.contains("macOS") && name.endsWith(".dmg");
+        // A single universal DMG serves both architectures, so it carries no arch-specific key.
+        return QStringLiteral("macosUniversal");
     }
-    return false;
+    return {};
 }
 
 bool shouldOfferUpdate(const QString &tagName, const QVersionNumber &currentVersion, const QString &skippedVersion)
@@ -93,14 +104,14 @@ void UpdateChecker::checkForUpdates()
         return;
     }
 
-    QNetworkRequest request = QNetworkRequest{QUrl(k_apiUrl)};
+    QNetworkRequest request = QNetworkRequest{QUrl(k_releaseDataUrl)};
     request.setHeader(QNetworkRequest::UserAgentHeader, "wiRedPanda/" APP_VERSION);
     request.setAttribute(QNetworkRequest::RedirectPolicyAttribute,
                          QNetworkRequest::NoLessSafeRedirectPolicy);
     request.setTransferTimeout(10000);
 
     QNetworkReply *reply = m_network.get(request);
-    // The GitHub API response is realistically tens of KB; cap well above that
+    // The release data response is realistically under 1KB; cap well above that
     // as defense-in-depth against a hostile/corrupted endpoint buffering unbounded
     // bytes into memory before onReplyFinished ever gets a chance to react.
     reply->setReadBufferSize(1024 * 1024 + 1);
@@ -129,30 +140,22 @@ void UpdateChecker::onReplyFinished(QNetworkReply *reply)
 
     // A successful, parseable reply IS the daily check — record it here, not
     // when a dialog is shown: with no newer release (the common case) the
-    // date was never written and the API was hit on every launch. Network
+    // date was never written and the endpoint was hit on every launch. Network
     // failures above intentionally don't record, so the check retries.
     Settings::setUpdateCheckLastDate(QDate::currentDate().toString(Qt::ISODate));
 
-    const QString tagName = doc.object().value("tag_name").toString();
-    if (!shouldOfferUpdate(tagName, AppVersion::current, Settings::updateCheckSkippedVersion())) {
+    const QString version = doc.object().value("version").toString();
+    if (!shouldOfferUpdate(version, AppVersion::current, Settings::updateCheckSkippedVersion())) {
         return;
     }
-    const QVersionNumber latest = QVersionNumber::fromString(tagName).normalized();
+    const QVersionNumber latest = QVersionNumber::fromString(version).normalized();
 
-    QUrl downloadUrl;
     const QString platform = currentPlatform();
     const QString arch = QSysInfo::buildCpuArchitecture(); // "x86_64" / "arm64"
-    const QJsonArray assets = doc.object().value("assets").toArray();
-    for (const QJsonValue &assetVal : assets) {
-        const QJsonObject asset = assetVal.toObject();
-        const QString name = asset.value("name").toString();
-        if (isMatchingReleaseAsset(name, platform, arch)) {
-            downloadUrl = QUrl(asset.value("browser_download_url").toString());
-            break;
-        }
-    }
+    const QString key = releaseAssetKey(platform, arch);
+    QUrl downloadUrl = key.isEmpty() ? QUrl{} : QUrl(doc.object().value(key).toString());
 
-    const QUrl releaseUrl = QUrl(doc.object().value("html_url").toString());
+    const QUrl releaseUrl = QUrl(QStringLiteral("https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/tag/%1").arg(latest.toString()));
     if (!isSafeGitHubUrl(releaseUrl)) {
         qWarning() << "UpdateChecker: release URL has unexpected scheme/host, ignoring update notification:" << releaseUrl;
         return;

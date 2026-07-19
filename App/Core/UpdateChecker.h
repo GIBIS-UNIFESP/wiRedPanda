@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 /** \file
- * \brief Checks the GitHub Releases API for newer versions of wiRedPanda.
+ * \brief Checks the wiRedPanda site's published release data for newer versions.
  */
 
 #pragma once
@@ -15,11 +15,15 @@
 
 /**
  * \class UpdateChecker
- * \brief Asynchronously queries the GitHub Releases API and emits a signal when a newer version is available.
+ * \brief Asynchronously queries the site's release data and emits a signal when a newer version is available.
  *
  * \details Call checkForUpdates() once after the main window is shown. The check is skipped if one
  * was already performed today. If the fetched release version is newer than the running application
  * and has not been suppressed by the user, \c updateAvailable is emitted.
+ *
+ * \note Polls the wiRedPanda site's published \c latest-release.json rather than the GitHub Releases
+ * API directly, so the per-user daily check never counts against GitHub's per-IP API rate limit; that
+ * file is itself kept fresh by a CI job that queries the API once per release, not once per user.
  */
 class UpdateChecker : public QObject
 {
@@ -51,14 +55,14 @@ private:
     QNetworkAccessManager m_network;
 };
 
-/// \brief True when a GitHub release asset filename is the binary for the given
+/// \brief The key in latest-release.json holding the download URL for the given
 /// platform ("Windows"/"macOS"/"Linux") and CPU arch token (a QSysInfo arch name,
-/// e.g. "x86_64", "arm64").
+/// e.g. "x86_64", "arm64"), or an empty string if that combination isn't published.
 ///
-/// \details Exposed for testing. Linux (.AppImage) and Windows (.zip) releases
-/// ship a per-architecture asset, so the arch token must also match; macOS ships
-/// a single universal DMG and is matched on platform alone.
-bool isMatchingReleaseAsset(const QString &name, const QString &platform, const QString &arch);
+/// \details Exposed for testing. Linux and Windows ship a per-architecture asset, so
+/// the arch token selects between two keys; macOS ships a single universal DMG and is
+/// keyed on platform alone.
+QString releaseAssetKey(const QString &platform, const QString &arch);
 
 /// \brief True when the release tagged \p tagName should be offered to a user
 /// running \p currentVersion who may have suppressed \p skippedVersion.
@@ -71,9 +75,10 @@ bool shouldOfferUpdate(const QString &tagName, const QVersionNumber &currentVers
 /// \brief True when \a url is safe to download from or hand to the OS's URL handler.
 ///
 /// \details Exposed for testing. Requires scheme https and host github.com — the only shape
-/// GitHub's release JSON ever populates \c browser_download_url / \c html_url with (the CDN
-/// redirect for the actual asset happens only after fetching this URL, so the field itself
-/// never contains the CDN's host). Guards against a compromised/future-relaxed API response
-/// smuggling a \c file:// path (silently copies a local file into the Downloads folder) or an
-/// unexpected scheme/UNC-style URL into QDesktopServices::openUrl.
+/// the site's latest-release.json ever populates a download URL with (it's copied verbatim
+/// from GitHub's \c browser_download_url; the CDN redirect for the actual asset happens only
+/// after fetching this URL, so the field itself never contains the CDN's host). Guards against
+/// a compromised/corrupted release-data response smuggling a \c file:// path (silently copies
+/// a local file into the Downloads folder) or an unexpected scheme/UNC-style URL into
+/// QDesktopServices::openUrl.
 bool isSafeGitHubUrl(const QUrl &url);
