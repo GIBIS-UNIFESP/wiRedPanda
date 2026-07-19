@@ -1,5 +1,6 @@
 ---
 import { ClientRouter } from 'astro:transitions';
+import { getImage } from 'astro:assets';
 
 import '../styles/global.css';
 
@@ -16,13 +17,15 @@ import {
   getAllLocales,
   localeRedirectMap,
 } from '../i18n';
-import ogScreenshot from '../images/panda/panda1.png';
+import ogScreenshotSource from '../images/panda/panda1.png';
 
 interface Props {
   pageTitle: string;
 }
 
 const { pageTitle } = Astro.props;
+
+const ogScreenshot = await getImage({ src: ogScreenshotSource, width: 1200, format: 'webp' });
 
 const locale = getLocaleFromUrl(Astro.url);
 const t = useTranslations(locale);
@@ -88,8 +91,8 @@ const nonDefaultLocales = getAllLocales().filter((l) => l !== defaultLocale);
     <meta property="og:description" content={t('meta.description')} />
     <meta property="og:url" content={`${origin}${getLocalePath(Astro.url.pathname, locale)}`} />
     <meta property="og:image" content={`${origin}${ogScreenshot.src}`} />
-    <meta property="og:image:width" content={String(ogScreenshot.width)} />
-    <meta property="og:image:height" content={String(ogScreenshot.height)} />
+    <meta property="og:image:width" content={String(ogScreenshot.attributes['width'])} />
+    <meta property="og:image:height" content={String(ogScreenshot.attributes['height'])} />
     <meta property="og:locale" content={htmlLang.replace('-', '_')} />
     {
       otherLocales.map((altLocale) => (
