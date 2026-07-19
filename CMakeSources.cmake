@@ -459,6 +459,7 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestDisplay.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestDisplay7.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestDisplays.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementAppearance.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementLabel.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementProperties.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestFeatures.cpp
@@ -667,6 +668,7 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestDisplay.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestDisplay7.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestDisplays.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementAppearance.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementLabel.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementProperties.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestFeatures.h

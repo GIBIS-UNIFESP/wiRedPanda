@@ -147,6 +147,7 @@
 #include "Tests/Unit/Elements/TestClocksAdvanced.h"
 #include "Tests/Unit/Elements/TestComponents.h"
 #include "Tests/Unit/Elements/TestDisplays.h"
+#include "Tests/Unit/Elements/TestElementAppearance.h"
 #include "Tests/Unit/Elements/TestElementLabel.h"
 #include "Tests/Unit/Elements/TestElementProperties.h"
 #include "Tests/Unit/Elements/TestFeatures.h"
@@ -361,6 +362,7 @@ int main(int argc, char **argv)
         {"TestClocksAdvanced", []() -> QObject * { return new TestClocksAdvanced; }},
         {"TestComponents", []() -> QObject * { return new TestComponents; }},
         {"TestDisplays", []() -> QObject * { return new TestDisplays; }},
+        {"TestElementAppearance", []() -> QObject * { return new TestElementAppearance; }},
         {"TestElementContextMenu", []() -> QObject * { return new TestElementContextMenu; }},
         {"TestElementEditor", []() -> QObject * { return new TestElementEditor; }},
         {"TestElementLabel", []() -> QObject * { return new TestElementLabel; }},
