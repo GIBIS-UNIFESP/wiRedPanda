@@ -465,6 +465,7 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestFeatures.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestGeometry.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestGraphicElement.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestGraphicElementSerializer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestGraphicelementAdvanced.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestIC.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestICRegistry.cpp
@@ -674,6 +675,7 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestFeatures.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestGeometry.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestGraphicElement.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestGraphicElementSerializer.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestGraphicelementAdvanced.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestIC.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestICRegistry.h
