@@ -7,6 +7,7 @@
 #include <memory>
 
 #include <QApplication>
+#include <QDragEnterEvent>
 #include <QImage>
 #include <QMessageBox>
 #include <QPixmap>
@@ -18,6 +19,27 @@
 #  define QVERIFY_THROWS(exType, ...) QVERIFY_THROWS_EXCEPTION(exType, __VA_ARGS__)
 #else
 #  define QVERIFY_THROWS(exType, ...) QVERIFY_EXCEPTION_THROWN(__VA_ARGS__, exType)
+#endif
+
+/// QDragEnterEvent's QPoint-taking constructor is deprecated in favour of a new QPointF-taking
+/// overload -- which doesn't exist on older Qt (confirmed against the actual installed headers:
+/// absent in 6.9.3, present -- and the QPoint overload deprecated -- in 6.12.0), so neither type
+/// works unmodified across the versions this project supports. The deprecation attribute names
+/// "6.16" as its target release, but that label doesn't track when the QPointF overload actually
+/// shipped in this toolchain, so the version gate below is pinned to the verified boundary
+/// instead of that label.
+#if QT_VERSION >= QT_VERSION_CHECK(6, 12, 0)
+inline QDragEnterEvent makeDragEnterEvent(QPoint pos, Qt::DropActions actions, const QMimeData *data,
+                                           Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers)
+{
+    return QDragEnterEvent(QPointF(pos), actions, data, buttons, modifiers);
+}
+#else
+inline QDragEnterEvent makeDragEnterEvent(QPoint pos, Qt::DropActions actions, const QMimeData *data,
+                                           Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers)
+{
+    return QDragEnterEvent(pos, actions, data, buttons, modifiers);
+}
 #endif
 
 #include "App/Core/Common.h"

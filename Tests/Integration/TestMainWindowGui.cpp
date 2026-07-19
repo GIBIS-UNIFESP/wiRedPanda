@@ -3310,7 +3310,7 @@ static void simulateDrop(QWidget *dropZone, const QByteArray &mimePayload)
     QMimeData mime;
     mime.setData("application/x-wiredpanda-dragdrop", mimePayload);
 
-    QDragEnterEvent enterEv(QPoint(10, 10), Qt::CopyAction, &mime, Qt::LeftButton, Qt::NoModifier);
+    QDragEnterEvent enterEv = makeDragEnterEvent(QPoint(10, 10), Qt::CopyAction, &mime, Qt::LeftButton, Qt::NoModifier);
     QCoreApplication::sendEvent(dropZone, &enterEv);
 
     QDropEvent dropEv(QPointF(10, 10), Qt::CopyAction, &mime, Qt::LeftButton, Qt::NoModifier);
