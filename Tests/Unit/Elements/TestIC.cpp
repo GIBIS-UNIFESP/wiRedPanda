@@ -7,7 +7,11 @@
 #include <memory>
 
 #include <QEnterEvent>
+#include <QFile>
+#include <QGraphicsSceneEvent>
 #include <QGraphicsSceneMouseEvent>
+#include <QKeySequence>
+#include <QPointF>
 #include <QSignalSpy>
 #include <QTemporaryDir>
 
@@ -22,6 +26,8 @@
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
+#include "App/Versions.h"
+#include "App/Wiring/Port.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestICUnit::testICLoadFromFile()
@@ -336,4 +342,179 @@ void TestICUnit::testLeaveEventSchedulesHide()
     QCoreApplication::sendEvent(&popup, &event);
 
     QVERIFY2(popup.m_hideTimer.isActive(), "leaving the popup must arm the delayed hide");
+}
+
+void TestICUnit::testReloadWithFewerPortsEvictsStalePortMapKeys()
+{
+    // Fuzz-hardening (surfaced by libFuzzer, see TestSerialization's bugB_ic_blob_shrink
+    // fixture): if a re-load's sub-circuit reference resolves to fewer ports than the IC
+    // currently has, IC::load() must evict the now-dangling portMap keys rather than leave
+    // them pointing at ports loadFile() just deleted (a later Connection::load() would
+    // otherwise dereference a freed pointer). Reproduced directly: load a real 2-input/
+    // 1-output sub-circuit, then feed IC::load() a stream whose own input/output lists match
+    // that current port count (so both get captured into savedInputKeys/savedOutputKeys), but
+    // whose IC-specific "name" field points at a smaller, 1-input/1-output sub-circuit.
+    QTemporaryDir subDir;
+    QVERIFY(subDir.isValid());
+
+    WorkSpace bigWorkspace;
+    CircuitBuilder bigBuilder(bigWorkspace.scene());
+    InputSwitch bigSw1, bigSw2;
+    And andGate;
+    Led bigLed1, bigLed2;
+    bigBuilder.add(&bigSw1, &bigSw2, &andGate, &bigLed1, &bigLed2);
+    bigBuilder.connect(&bigSw1, 0, &andGate, 0);
+    bigBuilder.connect(&bigSw2, 0, &andGate, 1);
+    bigBuilder.connect(&andGate, 0, &bigLed1, 0);
+    bigBuilder.connect(&andGate, 0, &bigLed2, 0);
+    const QString bigPath = subDir.path() + "/big.panda";
+    QCOMPARE(bigWorkspace.save(bigPath), WorkSpace::SaveOutcome::Saved);
+
+    WorkSpace smallWorkspace;
+    CircuitBuilder smallBuilder(smallWorkspace.scene());
+    InputSwitch smallSw;
+    Led smallLed;
+    smallBuilder.add(&smallSw, &smallLed);
+    smallBuilder.connect(&smallSw, 0, &smallLed, 0);
+    const QString smallPath = subDir.path() + "/small.panda";
+    QCOMPARE(smallWorkspace.save(smallPath), WorkSpace::SaveOutcome::Saved);
+
+    auto ic = std::make_unique<IC>();
+    ic->loadFile(bigPath, subDir.path());
+    QCOMPARE(ic->inputSize(), 2);
+    QCOMPARE(ic->outputSize(), 2);
+
+    // New-format stream: empty properties map, 2 input entries + 1 output entry (matching the
+    // IC's current port count, using Qt's own QMap/QList serialization -- wire-compatible with
+    // readBoundedMetadata()/readPortList()'s manual readers), then the IC-specific "name" map
+    // pointing at the smaller sub-circuit.
+    QByteArray data;
+    QDataStream writeStream(&data, QIODevice::WriteOnly);
+    writeStream << QMap<QString, QVariant>(); // properties: empty
+
+    QMap<QString, QVariant> in0, in1;
+    in0["serialId"] = QVariant::fromValue<quint64>(100);
+    in1["serialId"] = QVariant::fromValue<quint64>(101);
+    writeStream << QList<QMap<QString, QVariant>>{in0, in1};
+
+    QMap<QString, QVariant> out0, out1;
+    out0["serialId"] = QVariant::fromValue<quint64>(200);
+    out1["serialId"] = QVariant::fromValue<quint64>(201);
+    writeStream << QList<QMap<QString, QVariant>>{out0, out1};
+
+    writeStream << QList<QMap<QString, QVariant>>{}; // appearances: none (IC has no appearance slots)
+
+    QMap<QString, QVariant> icMap;
+    icMap["name"] = QStringLiteral("small.panda");
+    writeStream << icMap;
+
+    QHash<quint64, Port *> portMap;
+    SerializationContext context = {portMap, FormatRev::current, SerializationPurpose::PortableFile, subDir.path()};
+
+    QDataStream readStream(data);
+    ic->load(readStream, context);
+
+    QCOMPARE(readStream.status(), QDataStream::Ok);
+    QCOMPARE(ic->inputSize(), 1);
+    QCOMPARE(ic->outputSize(), 1);
+
+    // Keys 101 and 201 (the second input/output, which no longer exist after the shrink) must
+    // have been evicted; keys 100 and 200 (still valid, now pointing at the sole remaining
+    // ports) must remain.
+    QVERIFY(portMap.contains(100));
+    QVERIFY(!portMap.contains(101));
+    QVERIFY(portMap.contains(200));
+    QVERIFY(!portMap.contains(201));
+}
+
+void TestICUnit::testHoverOverPortRequestsPreviewHide()
+{
+    // isCursorOverPort() checks the hover position against each port's own small circular
+    // shape; the IC's own hover handlers must request the preview be hidden (not shown) while
+    // hovering directly over a pin, since the ports are child items that don't themselves
+    // consume hover events -- the IC receives them even over the pins.
+    QTemporaryDir subDir;
+    QVERIFY(subDir.isValid());
+    WorkSpace subWorkspace;
+    CircuitBuilder subBuilder(subWorkspace.scene());
+    InputSwitch sw;
+    Led led;
+    subBuilder.add(&sw, &led);
+    subBuilder.connect(&sw, 0, &led, 0);
+    const QString subPath = subDir.path() + "/hover_probe.panda";
+    QCOMPARE(subWorkspace.save(subPath), WorkSpace::SaveOutcome::Saved);
+
+    WorkSpace workspace;
+    auto *ic = new IC;
+    workspace.scene()->addItem(ic);
+    ic->loadFile(subPath, subDir.path());
+    QVERIFY(ic->inputSize() >= 1);
+
+    QSignalSpy hideSpy(ic, &IC::previewHideRequested);
+    QSignalSpy showSpy(ic, &IC::previewRequested);
+
+    QGraphicsSceneHoverEvent enterEvent(QEvent::GraphicsSceneHoverEnter);
+    enterEvent.setPos(ic->inputPort(0)->pos()); // IC-local position exactly at the port's own origin
+    enterEvent.setScenePos(ic->mapToScene(ic->inputPort(0)->pos()));
+    QCoreApplication::sendEvent(workspace.scene(), &enterEvent);
+
+    // QGraphicsScene synthesizes an immediate hoverMove alongside hoverEnter, so both handlers'
+    // "over port" branches (hoverEnterEvent's and hoverMoveEvent's) may already have fired once
+    // each from this single dispatch -- assert at least one hide, never a show.
+    const auto hideCountAfterEnter = hideSpy.count();
+    QVERIFY2(hideCountAfterEnter >= 1, "hovering over a port must request the preview be hidden");
+    QCOMPARE(showSpy.count(), 0);
+
+    QGraphicsSceneHoverEvent moveEvent(QEvent::GraphicsSceneHoverMove);
+    moveEvent.setPos(ic->inputPort(0)->pos());
+    moveEvent.setScenePos(ic->mapToScene(ic->inputPort(0)->pos()));
+    QCoreApplication::sendEvent(workspace.scene(), &moveEvent);
+
+    QVERIFY2(hideSpy.count() > hideCountAfterEnter, "a further hover-move over the port must request hide again");
+    QCOMPARE(showSpy.count(), 0);
+}
+
+void TestICUnit::testDisplayNameForEmbeddedIc()
+{
+    // An embedded (blob-backed) IC's displayName() is its blob name, taking priority over any
+    // file path -- reached only via the real IC::load() blob-registry resolution path, since
+    // loadFromBlob() itself doesn't set m_blobName (its caller, IC::load(), does).
+    QTemporaryDir subDir;
+    QVERIFY(subDir.isValid());
+    WorkSpace subWorkspace;
+    CircuitBuilder subBuilder(subWorkspace.scene());
+    InputSwitch sw;
+    Led led;
+    subBuilder.add(&sw, &led);
+    subBuilder.connect(&sw, 0, &led, 0);
+    const QString subPath = subDir.path() + "/embedded_probe.panda";
+    QCOMPARE(subWorkspace.save(subPath), WorkSpace::SaveOutcome::Saved);
+
+    QFile blobFile(subPath);
+    QVERIFY(blobFile.open(QIODevice::ReadOnly));
+    const QByteArray blobBytes = blobFile.readAll();
+    blobFile.close();
+
+    QMap<QString, QByteArray> blobRegistry;
+    blobRegistry["my_embedded_ic"] = blobBytes;
+
+    QByteArray data;
+    QDataStream writeStream(&data, QIODevice::WriteOnly);
+    writeStream << QMap<QString, QVariant>();          // properties: empty
+    writeStream << QList<QMap<QString, QVariant>>{};   // input ports: none (fresh IC has 0)
+    writeStream << QList<QMap<QString, QVariant>>{};   // output ports: none
+    writeStream << QList<QMap<QString, QVariant>>{};   // appearances: none
+    QMap<QString, QVariant> icMap;
+    icMap["name"] = QStringLiteral("my_embedded_ic");
+    writeStream << icMap;
+
+    QHash<quint64, Port *> portMap;
+    SerializationContext context = {portMap, FormatRev::current, SerializationPurpose::PortableFile, subDir.path(), {}, 1, &blobRegistry};
+
+    QDataStream readStream(data);
+    IC ic;
+    ic.load(readStream, context);
+
+    QCOMPARE(readStream.status(), QDataStream::Ok);
+    QCOMPARE(ic.displayName(), QString("my_embedded_ic"));
 }
