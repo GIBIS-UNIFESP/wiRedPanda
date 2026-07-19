@@ -138,6 +138,13 @@ signals:
     /// Emitted (at most once per initialize()) when a feedback circuit fails to converge.
     void simulationWarning(const QString &message);
 
+    /// Emitted whenever pushVisualStatuses() actually ran this tick -- a real, display-rate-
+    /// throttled visual flush, exactly the condition m_atFixedPoint/m_visualsDirty/visualsDue
+    /// already compute internally. Lets a driving view (CanvasItem) schedule exactly one
+    /// repaint per real visual change instead of polling on a blind timer. Emitted at both
+    /// pushVisualStatuses() call sites in update().
+    void visualStateChanged();
+
 private:
     Q_DISABLE_COPY(Simulation)
 

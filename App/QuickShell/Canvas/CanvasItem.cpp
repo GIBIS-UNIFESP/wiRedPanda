@@ -105,12 +105,13 @@ constexpr int kMaxZoomLevel = 7;  ///< 1.25^7 ~= 4.8x.
 constexpr int kMinZoomLevel = -9; ///< 0.8^9 ~= 0.13x.
 
 /// Packs an id into the quint64 id space SpatialIndex uses, tagged by kind in the top bits so
-/// elements/wires/ports never collide. elementId()/wireId() now take the real
-/// ItemWithId::id() (assigned via CanvasItem::addItem(), see this class's doc comment on the
-/// id/registry layer) rather than a synthetic array index -- ItemWithId::id() is always
-/// non-negative once assigned, same precondition an array index had. portId() stays
-/// index-based: Port (QGraphicsPathItem only, see Port.h) is not an ItemWithId, so it has no
-/// real id to tag.
+/// elements/wires/ports never collide. elementId()/wireId() take the real ItemWithId::id()
+/// (assigned via CanvasItem::addItem(), see this class's doc comment on the id/registry layer)
+/// -- ItemWithId::id() is always non-negative once assigned, same precondition an array index
+/// had. portId() stays index-based, but the index itself is never positional: Port (QGraphicsPathItem
+/// only, see Port.h) is not an ItemWithId, so CanvasItem::spatialIdFor() assigns and caches a
+/// real one per Port* the first time each is seen, the same "real assigned id" shape
+/// m_itemRegistry gives elements/connections.
 constexpr quint64 kElementTag = 0ULL << 62;
 constexpr quint64 kWireTag = 1ULL << 62;
 constexpr quint64 kPortTag = 2ULL << 62;
@@ -121,6 +122,19 @@ quint64 portId(int index) { return kPortTag | quint64(index); }
 /// elementId()/wireId()/portId(). Used by mouseDoubleClickEvent() to recover a wire's real
 /// Connection::id() from a SpatialIndex hit.
 int unwrapId(quint64 tagged) { return int(tagged & ~(kWireTag | kPortTag)); }
+
+/// Builds the click-target stroke SpatialIndex indexes \a connection's wire under -- shared by
+/// CanvasItem::rebuildSpatialIndex() and CanvasItem::updateSpatialIndexFor() so the stroke
+/// width can't drift between the two paths.
+QPainterPath strokeShapeFor(Connection *connection)
+{
+    QPainterPath path;
+    path.moveTo(connection->startPort()->scenePos());
+    path.lineTo(connection->endPort()->scenePos());
+    QPainterPathStroker stroker;
+    stroker.setWidth(6.0); // generous click target, matching Port::kRadius's spirit
+    return stroker.createStroke(path);
+}
 
 /// Maps a Status to a display color for the flat-quad/line rendering this prototype uses in
 /// place of real per-element SVG appearance (that porting work is Phase 2's job -- see the
@@ -227,9 +241,12 @@ CanvasItem::CanvasItem(QQuickItem *parent, bool buildDemo)
     rebuildSpatialIndex();
 
     // Simulation drives real state changes on its own 1ms timer, independent of this item's
-    // render loop -- this periodic update() is what actually gets those changes on screen.
-    connect(&m_refreshTimer, &QTimer::timeout, this, [this] { update(); });
-    m_refreshTimer.start(16); // matches Simulation's own ~60fps visual-throttle cadence
+    // render loop; visualStateChanged() fires only when a real, display-rate-throttled visual
+    // flush actually happened (Simulation::update()'s own m_atFixedPoint/m_visualsDirty/
+    // visualsDue gate) -- schedules exactly one repaint per real change instead of the blind
+    // 16ms poll this replaced (see project memory project_quick_real_fixture_profiling_finding.md
+    // for why that poll was a real, previously-unmeasured cost on an idle/settled circuit).
+    connect(m_simulation.get(), &Simulation::visualStateChanged, this, [this] { update(); });
 
     // Undo/redo (via m_undoStack.undo()/redo(), not yet wired to a keyboard shortcut) moves
     // elements directly through CanvasMoveCommand::undo()/redo() -- resync the index and
@@ -340,6 +357,13 @@ void CanvasItem::removeItem(GraphicElement *element)
         // never grows unbounded across a long editing session -- always safe to call here since
         // removeItem() runs before any real C++ destruction of element.
         m_elementRenderCache.remove(element);
+        // Same pruning for spatialIdFor()'s id cache -- otherwise a long add/delete/add churn
+        // would grow m_portSpatialIds unbounded even though most of its entries name ports that
+        // no longer exist.
+        for (auto *port : element->allPorts()) {
+            m_portSpatialIds.remove(port);
+            m_portScenePosCache.remove(port);
+        }
     }
 }
 
@@ -1583,15 +1607,14 @@ void CanvasItem::rebuildSpatialIndex()
     m_index.clear();
     m_elementsById.clear();
     m_portsById.clear();
-    // Conservative, wholesale invalidation of the wire-rendering position cache -- see
-    // m_portScenePosCache's doc comment for why "clear everything here" (rather than a
-    // per-element-precise invalidation) is the right, safe trade-off: this function already
-    // runs at exactly the events that could have moved a port (drag-move, add/delete/paste/
-    // undo/redo/rotate/flip/morph), so this adds no new O(n) event, only removes a
-    // sixty-times-a-second one for frames where nothing changed.
+    // Wholesale invalidation of the wire-rendering position cache -- this function runs at
+    // every structural change (add/delete/paste/undo/redo/rotate/flip/morph), so this adds no
+    // new O(n) event, it only removes stale entries at a point where the index is being rebuilt
+    // anyway. Element drag no longer calls this function at all (see updateSpatialIndexFor(),
+    // which invalidates only the moved element's own ports) -- see m_portScenePosCache's doc
+    // comment.
     m_portScenePosCache.clear();
 
-    int portIndex = 0;
     for (int i = 0; i < m_elements.size(); ++i) {
         GraphicElement *element = m_elements.at(i);
         const quint64 id = elementId(element->id());
@@ -1604,7 +1627,7 @@ void CanvasItem::rebuildSpatialIndex()
         // ports must be inserted after their element to win SpatialIndex::queryPoint()'s
         // insertion-order "last wins" priority (see its doc comment).
         for (auto *port : element->allPorts()) {
-            const quint64 pid = portId(portIndex++);
+            const quint64 pid = spatialIdFor(port);
             const QRectF portRect = port->boundingRect().translated(port->scenePos());
             m_index.insertBox(pid, portRect);
             m_portsById.insert(pid, port);
@@ -1613,13 +1636,39 @@ void CanvasItem::rebuildSpatialIndex()
 
     for (int i = 0; i < m_connections.size(); ++i) {
         Connection *connection = m_connections.at(i);
-        QPainterPath path;
-        path.moveTo(connection->startPort()->scenePos());
-        path.lineTo(connection->endPort()->scenePos());
-        QPainterPathStroker stroker;
-        stroker.setWidth(6.0); // generous click target, matching Port::kRadius's spirit
-        const QPainterPath stroke = stroker.createStroke(path);
+        const QPainterPath stroke = strokeShapeFor(connection);
         m_index.insertShape(wireId(connection->id()), stroke.boundingRect(), stroke);
+    }
+}
+
+quint64 CanvasItem::spatialIdFor(Port *port)
+{
+    const auto it = m_portSpatialIds.constFind(port);
+    if (it != m_portSpatialIds.constEnd()) {
+        return *it;
+    }
+    const quint64 pid = portId(int(m_nextPortSpatialId++));
+    m_portSpatialIds.insert(port, pid);
+    return pid;
+}
+
+void CanvasItem::updateSpatialIndexFor(GraphicElement *element)
+{
+    const quint64 id = elementId(element->id());
+    const QRectF worldRect = element->boundingRect().translated(element->pos());
+    m_index.insertBox(id, worldRect);
+
+    for (auto *port : element->allPorts()) {
+        const quint64 pid = spatialIdFor(port);
+        const QRectF portRect = port->boundingRect().translated(port->scenePos());
+        m_index.insertBox(pid, portRect);
+        m_portsById.insert(pid, port); // idempotent on a cache hit, needed on a genuine first sight
+        m_portScenePosCache.remove(port); // must not paint the wire from its pre-move position
+
+        for (auto *connection : port->connections()) {
+            const QPainterPath stroke = strokeShapeFor(connection);
+            m_index.insertShape(wireId(connection->id()), stroke.boundingRect(), stroke);
+        }
     }
 }
 
@@ -2055,10 +2104,18 @@ void CanvasItem::mouseMoveEvent(QMouseEvent *event)
         for (int i = 0; i < m_dragElements.size(); ++i) {
             m_dragElements.at(i)->setPos(m_dragStartPositions.at(i) + delta);
         }
-        // Positions changed -- the index must reflect them for hit-testing/wire endpoints
-        // (and for the wire batch node, which reads live scenePos() every paint anyway, but
-        // the *index* itself is only ever rebuilt explicitly, not derived lazily).
-        rebuildSpatialIndex();
+        // Positions changed -- the index must reflect them for hit-testing/wire endpoints (and
+        // for the wire batch node, which reads live scenePos() every paint anyway, but the
+        // *index* itself is only ever rebuilt explicitly, not derived lazily). Every position
+        // was set above before this loop starts, so each updateSpatialIndexFor() call already
+        // sees every dragged element's final position regardless of iteration order -- a wire
+        // between two co-dragged elements gets re-stroked once per endpoint, a harmless
+        // idempotent overwrite, not a correctness issue. A full rebuildSpatialIndex() here would
+        // redo this for every element/port/wire on the whole canvas on every mouse-move sample --
+        // see project memory project_quick_real_fixture_profiling_finding.md.
+        for (auto *element : std::as_const(m_dragElements)) {
+            updateSpatialIndexFor(element);
+        }
         update();
         return;
     }
@@ -2498,6 +2555,13 @@ void CanvasItem::keyPressEvent(QKeyEvent *event)
             if (element->hasTrigger() && !element->trigger().isEmpty() && element->trigger().matches(event->key())) {
                 if (auto *input = qobject_cast<GraphicElementInput *>(element); input && !input->isLocked()) {
                     input->setOn();
+                    // Unlike mouse-driven triggers (mousePressEvent() calls update()
+                    // unconditionally at the end of its element-click branch), this had no
+                    // explicit repaint call of its own -- silently relying on the blind refresh
+                    // timer CanvasItem no longer has (see visualStateChanged()'s doc comment).
+                    // Without this, a keyboard-triggered switch would never visibly update while
+                    // the simulation is paused.
+                    update();
                 }
             }
         }
@@ -2529,6 +2593,7 @@ void CanvasItem::keyReleaseEvent(QKeyEvent *event)
                 if (auto *input = qobject_cast<GraphicElementInput *>(element);
                     input && !input->isLocked() && (element->elementType() == ElementType::InputButton)) {
                     input->setOff();
+                    update(); // see the matching keyPressEvent() branch's doc comment
                 }
             }
         }

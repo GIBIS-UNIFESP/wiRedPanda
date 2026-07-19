@@ -18,7 +18,6 @@
 #include <QQmlEngine>
 #include <QQuickItem>
 #include <QSet>
-#include <QTimer>
 #include <QUndoStack>
 #include <QVector>
 #include <QVersionNumber>
@@ -581,6 +580,22 @@ protected:
 private:
     void buildDemoCircuit();
     void rebuildSpatialIndex();
+    /// Incrementally refreshes \a element's own SpatialIndex box, each of its ports' boxes
+    /// (invalidating their m_portScenePosCache entry too, since they just moved), and every
+    /// wire attached to those ports -- via Port::connections(), not a scan over m_connections,
+    /// so this stays O(this element's own port/wire fan-out), not O(every wire on the canvas).
+    /// Used by mouseMoveEvent()'s drag branch in place of a full rebuildSpatialIndex() call on
+    /// every mouse-move sample -- see project memory project_quick_real_fixture_profiling_finding.md
+    /// for why that full rebuild (recomputing every element/port/wire-stroke on the canvas per
+    /// pixel of drag movement) was a real, previously-unmeasured interactive-use cost.
+    void updateSpatialIndexFor(GraphicElement *element);
+    /// Returns \a port's SpatialIndex id, assigning a fresh one on first sight. Port is not an
+    /// ItemWithId (see Port.h), so unlike elements/connections it has no real id of its own to
+    /// tag -- this is the single source of truth for that id, used by both rebuildSpatialIndex()
+    /// and updateSpatialIndexFor() so the two paths can never disagree about which id names a
+    /// given Port* (required for updateSpatialIndexFor()'s incremental update to be consistent
+    /// with a full rebuild, e.g. across an undo/redo round-trip).
+    quint64 spatialIdFor(Port *port);
     /// Shared implementation for rotateRight()/rotateLeft(); \a angle is the clockwise degrees
     /// to rotate (e.g. 90 or -90). No-op if nothing is selected. Mirrors Scene::rotate().
     void rotate(int angle);
@@ -744,18 +759,18 @@ private:
     /// pass found real QGraphicsItem::scenePos() (ensureSceneTransform()/mapToScene()) costs
     /// dominating time there too, called for every port of every connection on every frame even
     /// though a port only moves when its owning element is moved/rotated/flipped or the topology
-    /// changes -- all events rebuildSpatialIndex() already runs after. Cleared wholesale there
-    /// (not per-element) -- conservative (a one-element rotate still invalidates every cached
-    /// position) but adds no new O(n) event, since rebuildSpatialIndex() is already one at
-    /// exactly those same trigger points; wire *color* stays a fresh per-frame read regardless,
-    /// since that's what a live simulation actually changes.
+    /// changes. Invalidated wholesale by rebuildSpatialIndex() (add/delete/paste/undo/redo/
+    /// rotate/flip/morph -- every structural change) and per-port by updateSpatialIndexFor()
+    /// (element drag) -- either way, invalidation always rides along an event that was already
+    /// happening, never a new one; wire *color* stays a fresh per-frame read regardless, since
+    /// that's what a live simulation actually changes.
     QHash<Port *, QPointF> m_portScenePosCache;
 
-    /// Real Simulation state changes on its own 1ms QTimer, independent of this item's
-    /// render loop; this timer periodically calls QQuickItem::update() so the batched nodes
-    /// stay in sync with live simulation output. Matches Simulation's own documented ~60fps
-    /// visual-throttle cadence (see Simulation.h's m_visualTickInterval).
-    QTimer m_refreshTimer;
+    /// Backs spatialIdFor() -- see its own doc comment. Pruned per-port by removeItem(
+    /// GraphicElement*) so it never grows unbounded across a long editing session's add/delete
+    /// churn, mirroring m_elementRenderCache's identical pruning.
+    QHash<Port *, quint64> m_portSpatialIds;
+    quint64 m_nextPortSpatialId = 0;
 
     /// Discrete zoom step (0 == 1:1, positive == zoomed in) -- backs zoomScale()/canZoomIn()/
     /// canZoomOut(). Mirrors GraphicsView::m_zoomLevel and its exact -9..7 range (see

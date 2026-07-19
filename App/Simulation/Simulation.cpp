@@ -137,6 +137,7 @@ void Simulation::update()
         if (visualsDue && m_visualsDirty) {
             pushVisualStatuses(elements, outputs);
             m_visualsDirty = false;
+            emit visualStateChanged();
         }
         return;
     }
@@ -228,6 +229,7 @@ void Simulation::update()
     if (visualsDue) {
         pushVisualStatuses(elements, outputs);
         m_visualsDirty = false;
+        emit visualStateChanged();
     }
 }
 
