@@ -15,7 +15,10 @@ private slots:
     void testDemuxOutputSize();
     void testDemuxRouting();
     void testDemuxPainting();
+    void testDemuxPaintingSelected();
     void testDemuxOutOfRangeSelect();
+    void testDemuxSetInputSizeIsNoOp();
+    void testDemuxDisconnectedInputsAreUnknown();
 
     // Rotation/flip pivot on a "big" Demux (ports extend past the 64x64 body)
     void testDemuxBigPivotsAtBoundingRectCenter();

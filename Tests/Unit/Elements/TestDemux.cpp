@@ -6,6 +6,7 @@
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 
+#include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/Demux.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Scene/Workspace.h"
@@ -42,6 +43,50 @@ void TestDemux::testDemuxPainting()
     painter.end();
 
     QVERIFY2(TestUtils::pixmapHasInk(pixmap), "Demux paint() must draw visible pixels");
+}
+
+void TestDemux::testDemuxPaintingSelected()
+{
+    WorkSpace workspace;
+    auto *demux = new Demux;
+    workspace.scene()->addItem(demux);
+    demux->setSelected(true);
+
+    QPixmap pixmap(128, 128);
+    pixmap.fill(Qt::transparent);
+    QPainter painter(&pixmap);
+    QStyleOptionGraphicsItem option;
+    demux->paint(&painter, &option, nullptr);
+    painter.end();
+
+    QVERIFY2(TestUtils::pixmapHasInk(pixmap), "Demux paint() must draw the selection highlight when selected");
+}
+
+void TestDemux::testDemuxSetInputSizeIsNoOp()
+{
+    // Demux derives its input count from setOutputSize() (1 data + log2(outputs) select
+    // lines); setInputSize() is overridden as a deliberate no-op so a caller can't desync
+    // that invariant. The override is reachable via generic GraphicElement* callers (e.g.
+    // Commands.cpp's port-resize command), not just direct Demux:: calls -- exercise it
+    // that way so the virtual dispatch itself is what's under test.
+    Demux demux;
+    const int before = demux.inputSize();
+
+    auto *elm = static_cast<GraphicElement *>(&demux);
+    elm->setInputSize(before + 5);
+
+    QCOMPARE(demux.inputSize(), before);
+}
+
+void TestDemux::testDemuxDisconnectedInputsAreUnknown()
+{
+    Demux demux;
+    TestUtils::initElm(demux);
+    demux.updateLogic();
+
+    for (int i = 0; i < demux.outputSize(); ++i) {
+        QCOMPARE(demux.outputValue(i), Status::Unknown);
+    }
 }
 
 void TestDemux::testDemuxOutOfRangeSelect()
