@@ -85,7 +85,7 @@ export const defaultLocale = 'en' as const;
 export type Locale = keyof typeof languages;
 export type TranslationKey = keyof typeof en;
 
-const translations: Record<Locale, Record<string, string>> = {
+const translations: Record<Locale, Record<TranslationKey, string>> = {
   en,
   'pt-br': ptBr,
   es,
@@ -276,7 +276,7 @@ export function getLocaleFromUrl(url: URL): Locale {
  */
 export function useTranslations(locale: Locale) {
   return function t(key: TranslationKey): string {
-    return translations[locale][key] ?? translations[defaultLocale][key] ?? key;
+    return translations[locale][key];
   };
 }
 
