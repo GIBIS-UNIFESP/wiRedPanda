@@ -32,4 +32,14 @@ private slots:
     void testGeneratePixmapWithNonFiniteBoundsIsNoOp();
     void testGeneratePreviewPixmapWithNonFiniteBoundsIsNoOp();
     void testGeneratePreviewPixmapWithDegenerateAspectRatioIsEmpty();
+
+    // ICPreviewPopup::executeShow() and showForIC()'s remaining branches
+    void testShowForIcNullIcIsNoOp();
+    void testShowForIcImmediateWhenAlreadyVisible();
+    void testExecuteShowWithNullPendingIcIsNoOp();
+    void testExecuteShowWithEmptyTitleAndNullPreviewHides();
+    void testExecuteShowWithTitleAndPreviewShowsBoth();
+    void testExecuteShowWithTitleButNullPreviewHidesImageOnly();
+    void testEnterEventCancelsHide();
+    void testLeaveEventSchedulesHide();
 };
