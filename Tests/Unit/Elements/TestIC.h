@@ -42,4 +42,13 @@ private slots:
     void testExecuteShowWithTitleButNullPreviewHidesImageOnly();
     void testEnterEventCancelsHide();
     void testLeaveEventSchedulesHide();
+
+    // IC::load()'s stale-portMap-key eviction (fuzz-hardening: reload shrinks port count)
+    void testReloadWithFewerPortsEvictsStalePortMapKeys();
+
+    // hoverEnterEvent()/hoverMoveEvent()'s "cursor over a port" branch
+    void testHoverOverPortRequestsPreviewHide();
+
+    // displayName() for an embedded (blob-backed) IC
+    void testDisplayNameForEmbeddedIc();
 };

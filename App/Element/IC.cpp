@@ -78,7 +78,7 @@ QStringList IC::externalFiles() const
         result.append(m_file);
     }
     return result;
-}
+} // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned QStringList, never reached after the return above.
 
 void IC::save(QDataStream &stream, SerializationOptions options) const
 {
