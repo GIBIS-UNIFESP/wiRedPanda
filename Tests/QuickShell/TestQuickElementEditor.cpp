@@ -324,6 +324,65 @@ void TestQuickElementEditor::testWirelessModeRejectsDuplicateTxLabel()
     QCOMPARE(static_cast<Node *>(node2)->wirelessMode(), WirelessMode::None);
 }
 
+void TestQuickElementEditor::testWirelessModeAllowsUniqueTxLabelRename()
+{
+    // Mirrors TestDialogs::testElementEditorAllowsUniqueTxLabel() -- and, since apply()'s
+    // duplicate-Tx scan runs on every apply() for any wireless-capable selection (not just when
+    // the mode itself changes), also exercises its "other == elm" self-skip: the node being
+    // renamed is scanned against every *other* Tx node's real label, never against its own.
+    CanvasItem canvas(nullptr, /*buildDemo=*/false);
+    auto *nodeA = ElementFactory::buildElement(ElementType::Node);
+    auto *nodeB = ElementFactory::buildElement(ElementType::Node);
+    nodeB->setPos(200, 0);
+    canvas.receiveCommand(new CanvasAddItemsCommand({nodeA}, &canvas));
+    canvas.receiveCommand(new CanvasAddItemsCommand({nodeB}, &canvas));
+
+    QuickElementEditor editor;
+    selectOnly(canvas, editor, nodeA);
+    editor.setLabel("CLOCK");
+    editor.setWirelessMode(1); // Tx
+
+    selectOnly(canvas, editor, nodeB);
+    editor.setLabel("DATA");
+    editor.setWirelessMode(1); // Tx
+
+    selectOnly(canvas, editor, nodeA);
+    ScopedDialogStub guard;
+    editor.setLabel("BUS"); // unique -- no collision with nodeB's "DATA" or its own old label
+
+    QCOMPARE(guard.stub.choiceCallCount, 0);
+    QCOMPARE(nodeA->label(), QString("BUS"));
+}
+
+void TestQuickElementEditor::testWirelessModeAllowsRxNodeToShareLabelWithTx()
+{
+    // Mirrors TestDialogs::testElementEditorAllowsRxWithDuplicateLabel() -- the duplicate-label
+    // guard in apply() only ever fires for a Tx *candidate* (`candidateMode != WirelessMode::Tx`
+    // short-circuits the whole check), so an Rx node sharing a label with an existing Tx node
+    // must be allowed.
+    CanvasItem canvas(nullptr, /*buildDemo=*/false);
+    auto *txNode = ElementFactory::buildElement(ElementType::Node);
+    auto *rxNode = ElementFactory::buildElement(ElementType::Node);
+    rxNode->setPos(200, 0);
+    canvas.receiveCommand(new CanvasAddItemsCommand({txNode}, &canvas));
+    canvas.receiveCommand(new CanvasAddItemsCommand({rxNode}, &canvas));
+
+    QuickElementEditor editor;
+    selectOnly(canvas, editor, txNode);
+    editor.setLabel("SDA");
+    editor.setWirelessMode(1); // Tx
+
+    selectOnly(canvas, editor, rxNode);
+    editor.setLabel("SDA_OLD");
+    editor.setWirelessMode(2); // Rx
+
+    ScopedDialogStub guard;
+    editor.setLabel("SDA"); // same label as the Tx node -- allowed, this node is Rx
+
+    QCOMPARE(guard.stub.choiceCallCount, 0);
+    QCOMPARE(rxNode->label(), QString("SDA"));
+}
+
 void TestQuickElementEditor::testPrepareContextMenuPopulatesGateMorphCandidates()
 {
     CanvasItem canvas(nullptr, /*buildDemo=*/false);

@@ -31,6 +31,19 @@
 /// (thin, low-risk pass-throughs, same shape as Color/Label already covered) and the
 /// appearance tile-grid multi-state path (needs a real multi-state element, e.g. Led's color
 /// states or Display7's segment states -- this pass only exercises the single-state flag path).
+///
+/// Phase 7f follow-up (Tests/Unit/Ui/TestDialogs.cpp's disposition): its 5
+/// testElementEditorRejectsDuplicateTxLabel-family tests are this same class's wireless-Tx
+/// duplicate-label guard, seen from a different angle than testWirelessModeRejectsDuplicateTxLabel
+/// above -- two of its five scenarios are genuinely new coverage (a same-node label rename that
+/// must NOT collide with itself; an Rx node sharing a Tx's label, which the guard must allow
+/// since it only fires for Tx candidates), added below. ClockDialog/LengthDialog's own 11 tests
+/// (min/max/range/constructor-default checks on a QSpinBox/QSlider) have NO C++ equivalent to
+/// port at all, confirmed by reading QuickDolphinController.cpp: RangeDialog.qml's min/max
+/// range is a plain QML property passed in at each call site, with zero backing C++
+/// clamp/validate logic (applyClockWave()/setLength() take the value as-is, unclamped) -- a
+/// real architectural shift (declarative range binding replacing a widget's own min()/max()),
+/// not a testing gap this pass can close.
 class TestQuickElementEditor : public QObject
 {
     Q_OBJECT
@@ -53,6 +66,8 @@ private slots:
 
     void testWirelessModeChangeSeversStaleConnection();
     void testWirelessModeRejectsDuplicateTxLabel();
+    void testWirelessModeAllowsUniqueTxLabelRename();
+    void testWirelessModeAllowsRxNodeToShareLabelWithTx();
 
     void testPrepareContextMenuPopulatesGateMorphCandidates();
     void testPrepareContextMenuExcludesSelectionsOwnType();
