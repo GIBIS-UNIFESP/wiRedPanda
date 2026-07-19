@@ -24,6 +24,7 @@
 #include <QSGTextureMaterial>
 #include <QSGTransformNode>
 #include <QSGVertexColorMaterial>
+#include <QVarLengthArray>
 
 #include "App/Core/Common.h"
 #include "App/Core/Constants.h"
@@ -148,6 +149,35 @@ QColor colorForStatus(const Status status)
     case Status::Unknown:  return QColor(255, 152, 0);   // orange
     }
     return QColor(120, 120, 120);
+}
+
+/// Segment count each wire is tessellated into for the Bézier curve below -- matches the "16x
+/// more per-wire geometry" quality level the original Phase 0 spike already measured and found
+/// essentially free on the GPU path (project_qtquick_gpu_render_spike.md, mistake #5): 1 straight
+/// segment (2 vertices) -> 16 segments (32 vertices) per wire.
+constexpr int kWireSegments = 16;
+
+/// Evaluates the exact same cubic Bézier S-curve Connection::updatePath() builds
+/// (App/Wiring/Connection.cpp) at kWireSegments+1 points from \a start to \a end, so the
+/// interactive canvas's wire shape matches the real production curve instead of a single
+/// straight line segment.
+QVarLengthArray<QPointF, kWireSegments + 1> tessellateWire(const QPointF &start, const QPointF &end)
+{
+    const qreal dx = end.x() - start.x();
+    const qreal dy = end.y() - start.y();
+    const QPointF ctr1(start.x() + dx * 0.25, start.y() + dy * 0.1);
+    const QPointF ctr2(start.x() + dx * 0.75, start.y() + dy * 0.9);
+
+    QVarLengthArray<QPointF, kWireSegments + 1> points;
+    for (int i = 0; i <= kWireSegments; ++i) {
+        const qreal t = qreal(i) / kWireSegments;
+        const qreal mt = 1.0 - t;
+        // Cubic Bézier: B(t) = mt^3*P0 + 3*mt^2*t*P1 + 3*mt*t^2*P2 + t^3*P3
+        const qreal x = mt * mt * mt * start.x() + 3 * mt * mt * t * ctr1.x() + 3 * mt * t * t * ctr2.x() + t * t * t * end.x();
+        const qreal y = mt * mt * mt * start.y() + 3 * mt * mt * t * ctr1.y() + 3 * mt * t * t * ctr2.y() + t * t * t * end.y();
+        points.append(QPointF(x, y));
+    }
+    return points;
 }
 
 /// Returns a QSGGeometry with exactly \a vertexCount vertices, reusing \a node's existing
@@ -2785,12 +2815,14 @@ QSGNode *CanvasItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
         // coordinates, unchanged by pan/zoom -- see screenToWorld()/worldToScreen()'s doc
         // comment on this class for the split this mirrors.
         transformNode = new QSGTransformNode();
-        auto *gridNode = new QSGGeometryNode();  // grid dots, world-space, paints behind wires
+        auto *gridNode = new QSGGeometryNode();     // grid dots, world-space, paints behind wires
+        auto *wireHaloNode = new QSGGeometryNode(); // selected-element wire highlight, underneath the wires themselves
         auto *wireNode = new QSGGeometryNode();
         auto *hoverNode = new QSGGeometryNode(); // hover highlight, underneath the gate it highlights
         auto *gateNode = new QSGGeometryNode();  // real per-element appearance, textured
         auto *overlayNode = new QSGGeometryNode(); // live rubber-band rect, paints on top of everything
         transformNode->appendChildNode(gridNode); // grid dots paint first
+        transformNode->appendChildNode(wireHaloNode);
         transformNode->appendChildNode(wireNode);
         transformNode->appendChildNode(hoverNode);
         transformNode->appendChildNode(gateNode);
@@ -2811,7 +2843,8 @@ QSGNode *CanvasItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
     transformNode->setMatrix(matrix);
 
     QSGNode *gridNode = transformNode->firstChild();
-    QSGNode *wireNode = gridNode->nextSibling();
+    QSGNode *wireHaloNode = gridNode->nextSibling();
+    QSGNode *wireNode = wireHaloNode->nextSibling();
     QSGNode *hoverNode = wireNode->nextSibling();
     QSGNode *gateNode = hoverNode->nextSibling();
     QSGNode *overlayNode = gateNode->nextSibling();
@@ -2885,10 +2918,19 @@ QSGNode *CanvasItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
         }
     }
 
-    // --- Wires: one QSGGeometryNode, GL_LINES, colored by the driving port's live status.
-    // The in-progress wire (if any) is appended last, from its anchored port to
-    // m_editedWireFreeEnd, in a neutral color -- it has no driving Status yet since it isn't
-    // committed to any element's simulation graph. ---
+    // --- Wires: two QSGGeometryNodes, GL_LINES, both tessellated into the same cubic Bézier
+    // S-curve Connection::updatePath() draws (see tessellateWire()) instead of a single straight
+    // segment. wireNode carries the real wire, colored by the driving port's live status, or by
+    // the theme's selection color when the wire itself is selected (mirrors Connection::paint()'s
+    // own isSelected() branch). wireHaloNode carries a wider underlay stroke, painted just before
+    // wireNode so it sits underneath, for every wire attached to a currently-selected element
+    // (mirrors Connection::paint()'s own highlight halo, normally driven by
+    // GraphicElement::highlight()/Connection::setHighLight() via itemChange() -- dead for
+    // CanvasItem since its elements are never scene-attached, so this reads live isSelected()
+    // state fresh every frame instead, the same pattern the gate node already uses for its own
+    // selection outline). The in-progress wire (if any) is appended last to wireNode, from its
+    // anchored port to m_editedWireFreeEnd, in a neutral color -- it has no driving Status yet
+    // since it isn't committed to any element's simulation graph, and is never haloed. ---
     {
         // Memoizes Port::scenePos() (a real QGraphicsItem::scenePos() call --
         // ensureSceneTransform()/mapToScene() internally) -- see m_portScenePosCache's doc
@@ -2904,40 +2946,93 @@ QSGNode *CanvasItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
             return pos;
         };
 
-        const int committedCount = int(m_connections.size());
-        const int vertexCount = (committedCount + (m_editedConnection ? 1 : 0)) * 2;
+        struct WireGeometry {
+            QVarLengthArray<QPointF, kWireSegments + 1> points;
+            QColor color;
+            bool highlighted;
+        };
+        QVector<WireGeometry> wires;
+        wires.reserve(m_connections.size());
+        int highlightedCount = 0;
+        for (auto *connection : m_connections) {
+            const QPointF start = cachedScenePos(connection->startPort());
+            const QPointF end = cachedScenePos(connection->endPort());
+            const QColor color = connection->isSelected()
+                ? theme.m_connectionSelected
+                : colorForStatus(connection->startPort()->status());
+            auto *startElement = connection->startPort()->graphicElement();
+            auto *endElement = connection->endPort()->graphicElement();
+            const bool highlighted = (startElement && startElement->isSelected()) || (endElement && endElement->isSelected());
+            if (highlighted) {
+                ++highlightedCount;
+            }
+            wires.append(WireGeometry{tessellateWire(start, end), color, highlighted});
+        }
+
+        const int editedVertexCount = m_editedConnection ? kWireSegments * 2 : 0;
         QSGGeometry *geometry = geometryFor(static_cast<QSGGeometryNode *>(wireNode),
-                                             QSGGeometry::defaultAttributes_ColoredPoint2D(), vertexCount);
+                                             QSGGeometry::defaultAttributes_ColoredPoint2D(),
+                                             int(wires.size()) * kWireSegments * 2 + editedVertexCount);
         geometry->setDrawingMode(QSGGeometry::DrawLines);
         geometry->setLineWidth(2.0f);
         QSGGeometry::ColoredPoint2D *vertices = geometry->vertexDataAsColoredPoint2D();
         int cursor = 0;
-        for (auto *connection : m_connections) {
-            const QColor color = colorForStatus(connection->startPort()->status());
-            const QPointF start = cachedScenePos(connection->startPort());
-            const QPointF end = cachedScenePos(connection->endPort());
-            vertices[cursor++].set(float(start.x()), float(start.y()),
-                                    uchar(color.red()), uchar(color.green()), uchar(color.blue()), uchar(color.alpha()));
-            vertices[cursor++].set(float(end.x()), float(end.y()),
-                                    uchar(color.red()), uchar(color.green()), uchar(color.blue()), uchar(color.alpha()));
+        for (const auto &wire : std::as_const(wires)) {
+            const auto r = uchar(wire.color.red());
+            const auto g = uchar(wire.color.green());
+            const auto b = uchar(wire.color.blue());
+            const auto a = uchar(wire.color.alpha());
+            for (int i = 0; i < kWireSegments; ++i) {
+                vertices[cursor++].set(float(wire.points[i].x()), float(wire.points[i].y()), r, g, b, a);
+                vertices[cursor++].set(float(wire.points[i + 1].x()), float(wire.points[i + 1].y()), r, g, b, a);
+            }
         }
         if (m_editedConnection) {
             static const QColor kEditedWireColor(158, 158, 158, 220);
             const QPointF anchored = m_editedConnection->startPort()
                 ? cachedScenePos(m_editedConnection->startPort())
                 : cachedScenePos(m_editedConnection->endPort());
-            vertices[cursor++].set(float(anchored.x()), float(anchored.y()),
-                                    uchar(kEditedWireColor.red()), uchar(kEditedWireColor.green()),
-                                    uchar(kEditedWireColor.blue()), uchar(kEditedWireColor.alpha()));
-            vertices[cursor++].set(float(m_editedWireFreeEnd.x()), float(m_editedWireFreeEnd.y()),
-                                    uchar(kEditedWireColor.red()), uchar(kEditedWireColor.green()),
-                                    uchar(kEditedWireColor.blue()), uchar(kEditedWireColor.alpha()));
+            const auto editedPoints = tessellateWire(anchored, m_editedWireFreeEnd);
+            const auto r = uchar(kEditedWireColor.red());
+            const auto g = uchar(kEditedWireColor.green());
+            const auto b = uchar(kEditedWireColor.blue());
+            const auto a = uchar(kEditedWireColor.alpha());
+            for (int i = 0; i < kWireSegments; ++i) {
+                vertices[cursor++].set(float(editedPoints[i].x()), float(editedPoints[i].y()), r, g, b, a);
+                vertices[cursor++].set(float(editedPoints[i + 1].x()), float(editedPoints[i + 1].y()), r, g, b, a);
+            }
         }
         static_cast<QSGGeometryNode *>(wireNode)->markDirty(QSGNode::DirtyGeometry);
         if (!static_cast<QSGGeometryNode *>(wireNode)->material()) {
             auto *material = new QSGVertexColorMaterial();
             static_cast<QSGGeometryNode *>(wireNode)->setMaterial(material);
             static_cast<QSGGeometryNode *>(wireNode)->setFlag(QSGNode::OwnsMaterial);
+        }
+
+        static const QColor kHaloColor(33, 150, 243, 130);
+        QSGGeometry *haloGeometry = geometryFor(static_cast<QSGGeometryNode *>(wireHaloNode),
+                                                 QSGGeometry::defaultAttributes_ColoredPoint2D(),
+                                                 highlightedCount * kWireSegments * 2);
+        haloGeometry->setDrawingMode(QSGGeometry::DrawLines);
+        haloGeometry->setLineWidth(10.0f);
+        QSGGeometry::ColoredPoint2D *haloVertices = haloGeometry->vertexDataAsColoredPoint2D();
+        int haloCursor = 0;
+        for (const auto &wire : std::as_const(wires)) {
+            if (!wire.highlighted) {
+                continue;
+            }
+            for (int i = 0; i < kWireSegments; ++i) {
+                haloVertices[haloCursor++].set(float(wire.points[i].x()), float(wire.points[i].y()),
+                                                uchar(kHaloColor.red()), uchar(kHaloColor.green()), uchar(kHaloColor.blue()), uchar(kHaloColor.alpha()));
+                haloVertices[haloCursor++].set(float(wire.points[i + 1].x()), float(wire.points[i + 1].y()),
+                                                uchar(kHaloColor.red()), uchar(kHaloColor.green()), uchar(kHaloColor.blue()), uchar(kHaloColor.alpha()));
+            }
+        }
+        static_cast<QSGGeometryNode *>(wireHaloNode)->markDirty(QSGNode::DirtyGeometry);
+        if (!static_cast<QSGGeometryNode *>(wireHaloNode)->material()) {
+            auto *haloMaterial = new QSGVertexColorMaterial();
+            static_cast<QSGGeometryNode *>(wireHaloNode)->setMaterial(haloMaterial);
+            static_cast<QSGGeometryNode *>(wireHaloNode)->setFlag(QSGNode::OwnsMaterial);
         }
     }
 
