@@ -2499,17 +2499,17 @@ wiRedPanda %1 автоматично відобразить усі інші фа
 <context>
     <name>MinimapWidget</name>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="30"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="31"/>
         <source>Mini-map: click or drag to navigate</source>
         <translation>Мінікарта: клацніть або перетягніть для навігації</translation>
     </message>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="31"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="32"/>
         <source>Circuit minimap</source>
         <translation>Міні-карта схеми</translation>
     </message>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="32"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="33"/>
         <source>A miniature overview of the whole circuit. Click or drag inside it to jump the main canvas to that location.</source>
         <translation>Мініатюрний огляд усієї схеми. Клацніть або перетягніть усередині неї, щоб перемістити основне полотно до цього місця.</translation>
     </message>

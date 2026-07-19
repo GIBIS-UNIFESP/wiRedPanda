@@ -2499,17 +2499,17 @@ Prieš pasiekiant IC ir išvaizdas arba paleidžiant beWavedDolphin simuliacijas
 <context>
     <name>MinimapWidget</name>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="30"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="31"/>
         <source>Mini-map: click or drag to navigate</source>
         <translation>Mažasis žemėlapis: spustelėkite arba tempkite naršymui</translation>
     </message>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="31"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="32"/>
         <source>Circuit minimap</source>
         <translation>Grandinės mažasis žemėlapis</translation>
     </message>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="32"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="33"/>
         <source>A miniature overview of the whole circuit. Click or drag inside it to jump the main canvas to that location.</source>
         <translation>Miniatiūrinė visos grandinės apžvalga. Spustelėkite arba vilkite jos viduje, kad perkeltumėte pagrindinę drobę į tą vietą.</translation>
     </message>

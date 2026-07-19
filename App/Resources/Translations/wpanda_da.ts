@@ -2499,17 +2499,17 @@ Du skal gemme nye projekter før du kan tilgå IC&apos;er og udseender eller kø
 <context>
     <name>MinimapWidget</name>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="30"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="31"/>
         <source>Mini-map: click or drag to navigate</source>
         <translation>Minikort: klik eller træk for at navigere</translation>
     </message>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="31"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="32"/>
         <source>Circuit minimap</source>
         <translation>Kredsløbsminikort</translation>
     </message>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="32"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="33"/>
         <source>A miniature overview of the whole circuit. Click or drag inside it to jump the main canvas to that location.</source>
         <translation>Et miniatureoverblik over hele kredsløbet. Klik eller træk i det for at få hovedtegnefladen til at springe til det sted.</translation>
     </message>

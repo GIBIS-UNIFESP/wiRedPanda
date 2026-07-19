@@ -2499,17 +2499,17 @@ IC এবং চেহারা অ্যাক্সেস করতে বা 
 <context>
     <name>MinimapWidget</name>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="30"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="31"/>
         <source>Mini-map: click or drag to navigate</source>
         <translation>মিনি-ম্যাপ: নেভিগেট করতে ক্লিক করুন বা টেনে আনুন</translation>
     </message>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="31"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="32"/>
         <source>Circuit minimap</source>
         <translation>সার্কিট মিনিম্যাপ</translation>
     </message>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="32"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="33"/>
         <source>A miniature overview of the whole circuit. Click or drag inside it to jump the main canvas to that location.</source>
         <translation>সম্পূর্ণ সার্কিটের একটি ক্ষুদ্র সংক্ষিপ্ত বিবরণ। প্রধান ক্যানভাসটিকে সেই অবস্থানে নিয়ে যেতে এর ভিতরে ক্লিক করুন বা টেনে আনুন।</translation>
     </message>

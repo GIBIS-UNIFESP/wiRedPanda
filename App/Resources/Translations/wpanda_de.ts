@@ -2499,17 +2499,17 @@ Sie müssen neue Projekte speichern, bevor Sie auf ICs und Erscheinungsbilder zu
 <context>
     <name>MinimapWidget</name>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="30"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="31"/>
         <source>Mini-map: click or drag to navigate</source>
         <translation>Minikarte: Klicken oder ziehen zum Navigieren</translation>
     </message>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="31"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="32"/>
         <source>Circuit minimap</source>
         <translation>Schaltungs-Minimap</translation>
     </message>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="32"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="33"/>
         <source>A miniature overview of the whole circuit. Click or drag inside it to jump the main canvas to that location.</source>
         <translation>Eine Miniaturübersicht der gesamten Schaltung. Klicken oder ziehen Sie hinein, um die Hauptzeichenfläche zu dieser Stelle springen zu lassen.</translation>
     </message>

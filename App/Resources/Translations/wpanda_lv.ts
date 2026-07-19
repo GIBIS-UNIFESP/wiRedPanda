@@ -2499,17 +2499,17 @@ Jums ir jāsaglabā jaunie projekti pirms piekļuves IC un izskatiem vai beWaved
 <context>
     <name>MinimapWidget</name>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="30"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="31"/>
         <source>Mini-map: click or drag to navigate</source>
         <translation>Mazā karte: noklikšķiniet vai velciet, lai pārvietotos</translation>
     </message>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="31"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="32"/>
         <source>Circuit minimap</source>
         <translation>Ķēdes mazā karte</translation>
     </message>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="32"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="33"/>
         <source>A miniature overview of the whole circuit. Click or drag inside it to jump the main canvas to that location.</source>
         <translation>Miniatūrs viss ķēdes pārskats. Noklikšķiniet vai velciet tajā, lai pārvietotu galveno audeklu uz to vietu.</translation>
     </message>

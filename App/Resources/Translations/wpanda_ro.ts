@@ -2499,17 +2499,17 @@ Trebuie să salvați proiectele noi înainte de a accesa IC-uri și aspecte sau 
 <context>
     <name>MinimapWidget</name>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="30"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="31"/>
         <source>Mini-map: click or drag to navigate</source>
         <translation>Minimapă: faceți clic sau trageți pentru a naviga</translation>
     </message>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="31"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="32"/>
         <source>Circuit minimap</source>
         <translation>Minihartă circuit</translation>
     </message>
     <message>
-        <location filename="../../UI/MinimapWidget.cpp" line="32"/>
+        <location filename="../../UI/MinimapWidget.cpp" line="33"/>
         <source>A miniature overview of the whole circuit. Click or drag inside it to jump the main canvas to that location.</source>
         <translation>O prezentare generală în miniatură a întregului circuit. Faceți clic sau trageți în interiorul ei pentru a face pânza principală să sară la acea locație.</translation>
     </message>
