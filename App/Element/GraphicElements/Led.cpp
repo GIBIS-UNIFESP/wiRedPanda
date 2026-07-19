@@ -65,7 +65,7 @@ struct ElementInfo<Led> {
             ":/Components/Output/Led/WhiteLed.png",      // 25
         });
         return meta;
-    }
+    } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementMetadata's QString/QStringList members, never reached after the return above.
 
     static inline const bool registered = []() {
         ElementMetadataRegistry::registerMetadata(metadata());
@@ -140,9 +140,12 @@ int Led::colorIndex()
     case 3: index2 = 18 + index;                     break;
     case 4: index2 = 10 + index;                     break;
 
-    default:
-        index2 = index;
-        break;
+    default: // LCOV_EXCL_LINE
+        // Unreachable: GraphicElement::setPortSize() rejects any inputSize() request
+        // outside [minInputSize(), maxInputSize()] = [1, 4] as a no-op, so inputSize()
+        // can never legitimately be anything this switch doesn't already handle.
+        index2 = index; // LCOV_EXCL_LINE
+        break; // LCOV_EXCL_LINE
     }
 
     return index2;
@@ -276,13 +279,15 @@ QList<std::pair<int, QString>> Led::appearanceStates() const
         }
         break;
 
-    default:
-        states.append({0, tr("Default")});
-        break;
+    default: // LCOV_EXCL_LINE
+        // Unreachable for the same reason as colorIndex()'s default case above:
+        // inputSize() can never be outside [1, 4].
+        states.append({0, tr("Default")}); // LCOV_EXCL_LINE
+        break; // LCOV_EXCL_LINE
     }
 
     return states;
-}
+} // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned QList<std::pair<int, QString>>, never reached after the return above.
 
 void Led::updateLogic()
 {
