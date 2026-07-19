@@ -1006,6 +1006,7 @@ add_test(NAME TestCanvasItemInteraction COMMAND test_wiredpanda_quick TestCanvas
 add_test(NAME TestQuickElementEditor COMMAND test_wiredpanda_quick TestQuickElementEditor WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestQuickElementPalette COMMAND test_wiredpanda_quick TestQuickElementPalette WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestQuickCanvasZoom COMMAND test_wiredpanda_quick TestQuickCanvasZoom WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestQuickMinimap COMMAND test_wiredpanda_quick TestQuickMinimap WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 # ============================================================================
 # Test Properties: Labels and Timeouts
@@ -1104,7 +1105,7 @@ endforeach()
 foreach(TEST TestCanvasItemSmoke TestCanvasCommands TestQuickElementHandler
         TestQuickFileHandlerSecurity TestQuickICHandlerSecurity TestQuickDolphinController
         TestQuickAppController TestCanvasEmbeddedIC TestCanvasInlineIC TestCanvasItemInteraction
-        TestQuickElementEditor TestQuickElementPalette TestQuickCanvasZoom)
+        TestQuickElementEditor TestQuickElementPalette TestQuickCanvasZoom TestQuickMinimap)
     set_tests_properties(${TEST} PROPERTIES LABELS "unit;quick")
 endforeach()
 
@@ -1170,7 +1171,7 @@ set(ALL_TESTS
     TestCanvasItemSmoke TestCanvasCommands TestQuickElementHandler
     TestQuickFileHandlerSecurity TestQuickICHandlerSecurity TestQuickDolphinController
     TestQuickAppController TestCanvasEmbeddedIC TestCanvasInlineIC TestCanvasItemInteraction
-    TestQuickElementEditor TestQuickElementPalette TestQuickCanvasZoom)
+    TestQuickElementEditor TestQuickElementPalette TestQuickCanvasZoom TestQuickMinimap)
 foreach(TEST ${ALL_TESTS})
     set_tests_properties(${TEST} PROPERTIES FIXTURES_SETUP "non_gui_complete")
 endforeach()

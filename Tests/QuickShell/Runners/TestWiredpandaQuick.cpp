@@ -14,6 +14,7 @@
 #include "Tests/QuickShell/TestQuickElementEditor.h"
 #include "Tests/QuickShell/TestQuickElementHandler.h"
 #include "Tests/QuickShell/TestQuickElementPalette.h"
+#include "Tests/QuickShell/TestQuickMinimap.h"
 #include "Tests/QuickShell/TestQuickFileHandlerSecurity.h"
 #include "Tests/QuickShell/TestQuickICHandlerSecurity.h"
 
@@ -33,5 +34,6 @@ int main(int argc, char **argv)
         {"TestQuickElementEditor", []() -> QObject * { return new TestQuickElementEditor; }},
         {"TestQuickElementPalette", []() -> QObject * { return new TestQuickElementPalette; }},
         {"TestQuickCanvasZoom", []() -> QObject * { return new TestQuickCanvasZoom; }},
+        {"TestQuickMinimap", []() -> QObject * { return new TestQuickMinimap; }},
     });
 }

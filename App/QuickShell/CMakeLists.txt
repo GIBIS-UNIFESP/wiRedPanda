@@ -262,6 +262,8 @@ set(QUICK_SHELL_TEST_SOURCES
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestQuickElementPalette.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestQuickCanvasZoom.cpp
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestQuickCanvasZoom.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestQuickMinimap.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestQuickMinimap.h
 )
 
 # Usage: ./build/test_wiredpanda_quick ClassName [functionName] -- mirrors test_wiredpanda's
