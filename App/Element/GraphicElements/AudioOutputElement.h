@@ -25,6 +25,9 @@ class AudioOutputElement : public GraphicElement
 {
     Q_OBJECT
 
+    friend class TestAudioBox;
+    friend class TestBuzzer;
+
 public:
     /// Default playback volume. Single source of truth: used by the constructor's
     /// initialVolume default and serialization's default-elision checks. Buzzer
@@ -79,4 +82,11 @@ protected:
 
     void play();
     void stop();
+
+private:
+    /// Test-only seam letting TestAudioBox/TestBuzzer force the hardware-detection result
+    /// deterministically. The real result depends on whether the machine running the test
+    /// has an audio device, which varies between sandboxes and CI and would otherwise make
+    /// the m_hasOutputDevice-gated branches' coverage environment-dependent.
+    void setHasOutputDeviceForTesting(bool has) { m_hasOutputDevice = has; }
 };

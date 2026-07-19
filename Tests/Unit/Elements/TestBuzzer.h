@@ -43,8 +43,15 @@ private slots:
     void testMute();
     void testUnmute();
 
+    // Hardware-detection seam tests (deterministic, environment-independent)
+    void testMuteWithoutOutputDevice();
+    void testSetFrequencyWithoutOutputDevice();
+    void testSetFrequencyRestartsPlaybackWhenPlaying();
+    void testSetAudioWithEmptyNoteIsNoOp();
+
     // Serialization tests
     void testSaveFrequency();
     void testLoadVersionOld();
     void testLoadVersionNew();
+    void testLoadBeforeAudioExisted();
 };

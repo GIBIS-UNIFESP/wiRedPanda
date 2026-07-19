@@ -35,10 +35,17 @@ private slots:
     void testMute();
     void testUnmute();
 
+    // Hardware-detection seam tests (deterministic, environment-independent)
+    void testMuteWithoutOutputDevice();
+    void testSetAudioWithoutOutputDeviceSkipsHardwareSetup();
+    void testSetAudioRestartsPlaybackWhenPlaying();
+
     // Serialization tests
     void testSaveAudioPath();
     void testLoadVersionOld();
     void testLoadVersionNew();
+    void testLoadBeforeAudioExisted();
+    void testLoadOldFormatBareAudioPath();
 
     // Path resolution (mechanics tested directly in Tests/Unit/Core/TestExternalFilePath.cpp;
     // these confirm AudioBox itself is wired to it correctly)

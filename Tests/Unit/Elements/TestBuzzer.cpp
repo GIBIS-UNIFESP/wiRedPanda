@@ -203,6 +203,54 @@ void TestBuzzer::testUnmute()
 }
 
 // ============================================================================
+// Hardware-detection seam tests
+// ============================================================================
+// This test machine has a real (virtual) ALSA device, so m_hasOutputDevice is always
+// true from construction — the "!m_hasOutputDevice" guards below are otherwise
+// unreachable here (and would be reachable-but-untested the other way around on a
+// headless CI box with no device). Force it false post-construction to deterministically
+// exercise those guards regardless of which machine runs the test.
+
+void TestBuzzer::testMuteWithoutOutputDevice()
+{
+    Buzzer buzzer;
+    buzzer.setHasOutputDeviceForTesting(false);
+
+    buzzer.mute(true);
+    QVERIFY(buzzer.isMuted());
+}
+
+void TestBuzzer::testSetFrequencyWithoutOutputDevice()
+{
+    Buzzer buzzer;
+    buzzer.setHasOutputDeviceForTesting(false);
+
+    buzzer.setFrequency(880.0);
+    QCOMPARE(buzzer.frequency(), 880.0);
+}
+
+void TestBuzzer::testSetFrequencyRestartsPlaybackWhenPlaying()
+{
+    Buzzer buzzer;
+    AudioElementTestHelpers::testRefreshWithActiveInput(buzzer);
+    QVERIFY(buzzer.isPlaying());
+
+    // Changing frequency while already playing must restart the tone at the new pitch.
+    buzzer.setFrequency(2000.0);
+    QCOMPARE(buzzer.frequency(), 2000.0);
+    QVERIFY(buzzer.isPlaying());
+}
+
+void TestBuzzer::testSetAudioWithEmptyNoteIsNoOp()
+{
+    Buzzer buzzer;
+    buzzer.setFrequency(880.0);
+
+    buzzer.setAudio("");
+    QCOMPARE(buzzer.frequency(), 880.0);
+}
+
+// ============================================================================
 // Serialization Tests
 // ============================================================================
 
@@ -280,4 +328,17 @@ void TestBuzzer::testLoadVersionNew()
     buzzer2->load(loadStream, context);
 
     QCOMPARE(buzzer2->frequency(), 440.0);
+}
+
+void TestBuzzer::testLoadBeforeAudioExisted()
+{
+    // Buzzer was introduced at V_2_4 (see VersionInfo::hasAudio) -- no real pre-2.4 .panda
+    // file can ever contain one, so this guard clause is otherwise unreachable by any fixture.
+    Buzzer buzzer;
+    buzzer.setFrequency(1234.0);
+
+    AudioElementTestHelpers::testLoadBeforeAudioExisted(buzzer);
+
+    // load() must have returned before touching anything Buzzer-specific.
+    QCOMPARE(buzzer.frequency(), 1234.0);
 }
