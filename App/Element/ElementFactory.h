@@ -31,7 +31,13 @@ public:
     /// Returns the singleton ElementFactory instance.
     static ElementFactory &instance()
     {
-        static ElementFactory instance;
+        // gcov doesn't attribute a hit to this construction line: the very first call to
+        // instance() happens during static initialization (each element .cpp's file-scope
+        // "static inline const bool registered = [](){ ...; ElementFactory::registerCreator(...); }();"
+        // lambda calls it before main() runs), and coverage instrumentation for code executed
+        // that early isn't recorded here (same class of limitation as the Meyer's-singleton
+        // pattern documented for ThemeManager::instance() in App/Core).
+        static ElementFactory instance; // LCOV_EXCL_LINE
         return instance;
     }
 

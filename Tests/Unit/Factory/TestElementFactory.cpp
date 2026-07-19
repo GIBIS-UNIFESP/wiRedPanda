@@ -336,3 +336,50 @@ void TestElementFactory::testAllElementTypesRegistered()
                  qPrintable(QString("Missing factory creator for %1").arg(metaEnum.key(i))));
     }
 }
+
+void TestElementFactory::testMetadataForUnknownTypeThrows()
+{
+    QVERIFY(!ElementMetadataRegistry::hasMetadata(ElementType::Unknown));
+
+    bool threw = false;
+    try {
+        ElementMetadataRegistry::metadata(ElementType::Unknown);
+    } catch (const Pandaception &) {
+        threw = true;
+    }
+    QVERIFY2(threw, "metadata() must throw for a type with no registered ElementInfo<>");
+}
+
+void TestElementFactory::testTranslatedNameForUnknownType()
+{
+    QCOMPARE(ElementFactory::translatedName(ElementType::Unknown), QString("Unknown"));
+}
+
+void TestElementFactory::testDescriptionForTypeWithoutOwnCase()
+{
+    // IC is a real, always-registered type, but description()'s switch has no case for it --
+    // it falls into the default (empty description), unlike every element type listed there.
+    QVERIFY(ElementFactory::description(ElementType::IC).isEmpty());
+}
+
+void TestElementFactory::testPixmapForUnknownType()
+{
+    QVERIFY(ElementFactory::pixmap(ElementType::Unknown).isNull());
+}
+
+void TestElementFactory::testBuildElementForRegisteredEnumValueWithNoCreatorThrows()
+{
+    // JKLatch is a real (if deprecated) ElementType enum value kept only for backward
+    // compatibility -- no ElementInfo<> registers a creator for it, so unlike Unknown (which
+    // throws earlier, before ever consulting the creator map), this exercises the second,
+    // map-lookup-failure throw in buildElement().
+    QVERIFY(!ElementFactory::hasCreator(ElementType::JKLatch));
+
+    bool threw = false;
+    try {
+        ElementFactory::buildElement(ElementType::JKLatch);
+    } catch (const Pandaception &) {
+        threw = true;
+    }
+    QVERIFY2(threw, "buildElement() must throw for a registered enum value with no creator");
+}
