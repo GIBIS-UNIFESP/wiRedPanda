@@ -5,7 +5,11 @@
 
 #include <QDataStream>
 #include <QGraphicsScene>
+#include <QGraphicsSceneMouseEvent>
 #include <QImage>
+#include <QPainter>
+#include <QSignalSpy>
+#include <QStyleOptionGraphicsItem>
 #include <QTest>
 
 #include "App/Element/GraphicElements/TruthTable.h"
@@ -405,6 +409,46 @@ void TestTruthTable::testRotatedIconStaysUpright()
     QVERIFY2(mismatch <= 20,
              qPrintable(QString("Icon is not upright after a 180° rotation: %1 mismatching pixels")
                             .arg(mismatch)));
+}
+
+void TestTruthTable::testPaintingSelected()
+{
+    QGraphicsScene scene;
+    auto *truthTable = new TruthTable();
+    scene.addItem(truthTable);
+    truthTable->setSelected(true);
+
+    QPixmap pixmap(128, 128);
+    pixmap.fill(Qt::transparent);
+    QPainter painter(&pixmap);
+    QStyleOptionGraphicsItem option;
+    truthTable->paint(&painter, &option, nullptr);
+    painter.end();
+
+    QVERIFY2(TestUtils::pixmapHasInk(pixmap), "TruthTable paint() must draw the selection highlight when selected");
+}
+
+void TestTruthTable::testMouseDoubleClickRequestsEditor()
+{
+    TruthTable truthTable;
+    QSignalSpy spy(&truthTable, &TruthTable::requestOpenTruthTableEditor);
+
+    QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMouseDoubleClick);
+    truthTable.mouseDoubleClickEvent(&event);
+
+    QCOMPARE(spy.count(), 1);
+    QVERIFY(event.isAccepted());
+}
+
+void TestTruthTable::testDisconnectedInputsAreUnknown()
+{
+    TruthTable truthTable;
+    TestUtils::initElm(truthTable);
+    truthTable.updateLogic();
+
+    for (int i = 0; i < truthTable.outputSize(); ++i) {
+        QCOMPARE(truthTable.outputValue(i), Status::Unknown);
+    }
 }
 
 void TestTruthTable::testBigPivotsAtBoundingRectCenter()
