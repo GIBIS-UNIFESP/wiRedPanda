@@ -998,6 +998,7 @@ add_test(NAME TestCanvasCommands COMMAND test_wiredpanda_quick TestCanvasCommand
 add_test(NAME TestQuickElementHandler COMMAND test_wiredpanda_quick TestQuickElementHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestQuickFileHandlerSecurity COMMAND test_wiredpanda_quick TestQuickFileHandlerSecurity WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestQuickICHandlerSecurity COMMAND test_wiredpanda_quick TestQuickICHandlerSecurity WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestQuickDolphinController COMMAND test_wiredpanda_quick TestQuickDolphinController WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 # ============================================================================
 # Test Properties: Labels and Timeouts
@@ -1094,7 +1095,7 @@ endforeach()
 # Quick shell tests (test_wiredpanda_quick) - own "quick" label so `ctest -L quick` can target
 # just this tier once Phase 7b+ grows it.
 foreach(TEST TestCanvasItemSmoke TestCanvasCommands TestQuickElementHandler
-        TestQuickFileHandlerSecurity TestQuickICHandlerSecurity)
+        TestQuickFileHandlerSecurity TestQuickICHandlerSecurity TestQuickDolphinController)
     set_tests_properties(${TEST} PROPERTIES LABELS "unit;quick")
 endforeach()
 
@@ -1158,7 +1159,7 @@ set(ALL_TESTS
     TestSimulationUnit TestWorkspaceUnit
     TestICFixtureLayout
     TestCanvasItemSmoke TestCanvasCommands TestQuickElementHandler
-    TestQuickFileHandlerSecurity TestQuickICHandlerSecurity)
+    TestQuickFileHandlerSecurity TestQuickICHandlerSecurity TestQuickDolphinController)
 foreach(TEST ${ALL_TESTS})
     set_tests_properties(${TEST} PROPERTIES FIXTURES_SETUP "non_gui_complete")
 endforeach()
