@@ -4,8 +4,9 @@
 name: Update latest release data
 
 on:
-  release:
-    types: [published]
+  workflow_run:
+    workflows: ["Deploy"]
+    types: [completed]
   workflow_dispatch:
 
 permissions:
@@ -14,6 +15,13 @@ permissions:
 jobs:
   update:
     runs-on: ubuntu-24.04
+    # Deploy's build matrix (5 platforms) uploads release assets from within each job; a
+    # workflow_run "completed" event only fires once every one of those jobs has finished, and
+    # conclusion == 'success' means all of them did -- so assets are guaranteed present by the
+    # time this runs. Triggering directly off `release: published` (the previous approach) raced
+    # against Deploy: this job would resolve and commit real-looking-but-actually-null asset URLs
+    # before any binary had been built, let alone uploaded.
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     steps:
       - name: Checkout site branch
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
