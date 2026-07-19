@@ -6,12 +6,21 @@
 #include <memory>
 
 #include <QDataStream>
+#include <QGraphicsSceneMouseEvent>
+#include <QKeySequence>
+#include <QPainter>
+#include <QPixmap>
+#include <QPointF>
+#include <QStyleOptionGraphicsItem>
+#include <QTemporaryFile>
 #include <QTest>
 
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/IO/SerializationContext.h"
+#include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
+#include "App/Versions.h"
 #include "App/Wiring/Port.h"
 #include "Tests/Common/TestUtils.h"
 
@@ -571,4 +580,171 @@ void TestInputRotary::testSetOnNegativePortClamps()
     for (int i = 1; i < rotary->outputSize(); ++i) {
         QCOMPARE(rotary->outputPort(i)->status(), Status::Inactive);
     }
+}
+
+void TestInputRotary::testPortConfigurationWithNonStandardPortCount()
+{
+    // updatePortsProperties()'s switch only lists layouts for the "standard" rotary
+    // sizes (2,3,4,6,8,10,12,16); the property-shortcut cycle changes output count one
+    // step at a time through the full [minOutputSize, maxOutputSize] range, so a
+    // non-standard size (e.g. 5) is reachable in normal use and falls into its default case.
+    WorkSpace workspace;
+    auto *rotary = new InputRotary;
+    workspace.scene()->addItem(rotary);
+
+    rotary->setOutputSize(5);
+    QCOMPARE(rotary->outputSize(), 5);
+
+    for (int i = 0; i < 5; ++i) {
+        auto *port = rotary->outputPort(i);
+        QVERIFY(port != nullptr);
+        QCOMPARE(port->pos(), QPointF(32, i * 16));
+        QCOMPARE(port->name(), QString::number(i + 1));
+    }
+}
+
+void TestInputRotary::testPainting()
+{
+    WorkSpace workspace;
+    auto *rotary = new InputRotary;
+    workspace.scene()->addItem(rotary);
+    rotary->setOutputSize(4);
+    rotary->setOn(true, 2); // exercises the arrow-overlay branch for a non-zero port too
+
+    QPixmap pixmap(128, 128);
+    pixmap.fill(Qt::transparent);
+    QPainter painter(&pixmap);
+    QStyleOptionGraphicsItem option;
+    rotary->paint(&painter, &option, nullptr);
+    painter.end();
+
+    QVERIFY2(TestUtils::pixmapHasInk(pixmap), "InputRotary paint() must draw visible pixels");
+}
+
+void TestInputRotary::testSetWaveformValueTrueSelectsPort()
+{
+    WorkSpace workspace;
+    auto *rotary = new InputRotary;
+    workspace.scene()->addItem(rotary);
+
+    rotary->setWaveformValue(true, 1);
+    QCOMPARE(rotary->outputValue(), 1);
+}
+
+void TestInputRotary::testSetWaveformValueFalseIsNoOp()
+{
+    WorkSpace workspace;
+    auto *rotary = new InputRotary;
+    workspace.scene()->addItem(rotary);
+
+    rotary->setOn(true, 1);
+    rotary->setWaveformValue(false, 3); // a low cell must not re-select port 3
+    QCOMPARE(rotary->outputValue(), 1);
+}
+
+void TestInputRotary::testMousePressAdvancesPort()
+{
+    Scene scene;
+    auto *rotary = new InputRotary;
+    rotary->setPos(0, 0);
+    scene.addItem(rotary);
+
+    QCOMPARE(rotary->outputValue(), 0);
+
+    QGraphicsSceneMouseEvent pressEvent(QEvent::GraphicsSceneMousePress);
+    pressEvent.setScenePos(rotary->scenePos());
+    pressEvent.setButton(Qt::LeftButton);
+    pressEvent.setButtons(Qt::LeftButton);
+    QCoreApplication::sendEvent(&scene, &pressEvent);
+
+    QCOMPARE(rotary->outputValue(), 1);
+}
+
+void TestInputRotary::testSetAppearanceCustom()
+{
+    WorkSpace workspace;
+    auto *rotary = new InputRotary;
+    workspace.scene()->addItem(rotary);
+
+    QTemporaryFile tempFile("XXXXXX.svg");
+    QVERIFY(tempFile.open());
+    tempFile.write("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"/>");
+    tempFile.close();
+
+    rotary->setAppearance(false, tempFile.fileName());
+    QVERIFY(!rotary->externalFiles().isEmpty());
+}
+
+void TestInputRotary::testSetAppearanceResetToDefault()
+{
+    WorkSpace workspace;
+    auto *rotary = new InputRotary;
+    workspace.scene()->addItem(rotary);
+
+    QTemporaryFile tempFile("XXXXXX.svg");
+    QVERIFY(tempFile.open());
+    tempFile.write("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"/>");
+    tempFile.close();
+    rotary->setAppearance(false, tempFile.fileName());
+    QVERIFY(!rotary->externalFiles().isEmpty());
+
+    rotary->setAppearance(true, "");
+    QVERIFY(rotary->externalFiles().isEmpty());
+}
+
+void TestInputRotary::testLoadOldFormatBareFields()
+{
+    // Hand-built old-format (pre-4.1) stream, mirroring GraphicElementSerializer::
+    // loadOldFormat()'s exact field order. InputRotary has 0 inputs and (at construction)
+    // 2 outputs; appearance-name count is written as 0 to skip that loop entirely.
+    QByteArray data;
+    QDataStream writeStream(&data, QIODevice::WriteOnly);
+    writeStream << QPointF(0.0, 0.0);   // loadPos
+    writeStream << 0.0;                 // loadRotation (qreal)
+    writeStream << QString("label");    // loadLabel (hasLabels since V_1_2)
+    writeStream << quint64(2) << quint64(16) << quint64(0) << quint64(1); // loadPortsSize (V_1_3)
+    writeStream << QKeySequence();      // loadTrigger (V_1_9)
+    writeStream << quint64(0);          // loadInputPorts: inputSize = 0
+    writeStream << quint64(2);          // loadOutputPorts: outputSize = 2
+    for (int i = 0; i < 2; ++i) {
+        writeStream << quint64(i);
+        writeStream << QString("old %1").arg(i);
+        writeStream << 0;
+    }
+    writeStream << quint64(0); // appearance-names count = 0 (hasAppearanceNames is true at V_3_1)
+    writeStream << 1;          // InputRotary::load()'s bare m_currentPort
+    writeStream << true;       // hasLockState is true at V_3_1 -- bare m_locked
+
+    QHash<quint64, Port *> portMap;
+    SerializationContext context = {portMap, Versions::V_3_1, SerializationPurpose::PortableFile};
+
+    InputRotary rotary;
+    QDataStream readStream(data);
+    rotary.load(readStream, context);
+
+    QCOMPARE(readStream.status(), QDataStream::Ok);
+    QCOMPARE(rotary.outputValue(), 1);
+    QVERIFY(rotary.isLocked());
+}
+
+void TestInputRotary::testLoadLockedFlagFromMap()
+{
+    auto rotary1 = std::make_unique<InputRotary>();
+    rotary1->setLocked(true);
+
+    QByteArray data;
+    QDataStream saveStream(&data, QIODevice::WriteOnly);
+    // InMemorySnapshot writes "locked" unconditionally (PortableFile elides a false-default,
+    // but this test needs true to round-trip, which PortableFile would also write -- either
+    // purpose works here since m_locked is true; InMemorySnapshot is used for consistency
+    // with other whole-state round-trip tests).
+    rotary1->save(saveStream, {.purpose = SerializationPurpose::InMemorySnapshot});
+
+    auto rotary2 = std::make_unique<InputRotary>();
+    QDataStream loadStream(data);
+    QHash<quint64, Port *> portMap;
+    SerializationContext context = {portMap, FormatRev::current, SerializationPurpose::InMemorySnapshot};
+    rotary2->load(loadStream, context);
+
+    QVERIFY(rotary2->isLocked());
 }
