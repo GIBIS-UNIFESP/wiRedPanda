@@ -53,7 +53,7 @@ function isActive(href: string): boolean {
     </a>
 
     <!-- Desktop Navigation -->
-    <ul class="hidden lg:flex items-center gap-1">
+    <ul class="hidden xl:flex items-center gap-1">
       <li>
         <LanguageSwitcher instanceId="desktop" />
       </li>
@@ -91,7 +91,7 @@ function isActive(href: string): boolean {
     </ul>
 
     <!-- Mobile: theme toggle + lang switcher + hamburger -->
-    <div class="flex items-center gap-2 lg:hidden">
+    <div class="flex items-center gap-2 xl:hidden">
       <LanguageSwitcher instanceId="mobile" />
       <ThemeToggle />
       <button
@@ -124,7 +124,7 @@ function isActive(href: string): boolean {
   <!-- Mobile Navigation -->
   <div
     id="mobile-menu"
-    class="hidden lg:hidden border-t border-gray-200 dark:border-brand-blue/20 bg-white/80 dark:bg-bg-darker/90 backdrop-blur-md"
+    class="hidden xl:hidden border-t border-gray-200 dark:border-brand-blue/20 bg-white/80 dark:bg-bg-darker/90 backdrop-blur-md"
   >
     <ul class="px-4 py-3 space-y-1">
       {
