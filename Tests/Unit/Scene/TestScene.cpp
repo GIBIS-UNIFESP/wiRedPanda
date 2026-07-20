@@ -8,8 +8,10 @@
 
 #include <QApplication>
 #include <QClipboard>
+#include <QGraphicsProxyWidget>
 #include <QImage>
 #include <QKeyEvent>
+#include <QLineEdit>
 #include <QMimeData>
 #include <QPainter>
 #include <QTest>
@@ -25,9 +27,11 @@
 #include "App/Element/GraphicElements/AudioOutputElement.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
+#include "App/Element/GraphicElements/Node.h"
 #include "App/Element/GraphicElements/Not.h"
 #include "App/Element/GraphicElements/Or.h"
 #include "App/Scene/ClipboardManager.h"
+#include "App/Scene/InlineLabelEditor.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/Wiring/Connection.h"
@@ -1223,6 +1227,99 @@ void TestScene::testShowWiresWithMultipleConnections()
 
     // All elements should remain
     QCOMPARE(scene->elements().size(), 3);
+}
+
+void TestScene::testShowWiresTogglesNodeVisibility()
+{
+    // Node elements are pure wire-routing helpers with no logical function; showWires()
+    // must hide/show the Node itself (not just its ports, like other element types).
+    auto scene = std::make_unique<Scene>();
+
+    auto *node = ElementFactory::buildElement(ElementType::Node);
+    scene->addItem(node);
+    QVERIFY(node->isVisible());
+
+    scene->showWires(false);
+    QVERIFY(!node->isVisible());
+
+    scene->showWires(true);
+    QVERIFY(node->isVisible());
+}
+
+void TestScene::testLastIdTracksHighestAssignedId()
+{
+    auto scene = std::make_unique<Scene>();
+    const int before = scene->lastId();
+
+    auto *elm = ElementFactory::buildElement(ElementType::And);
+    scene->addItem(elm); // an unassigned (id < 0) item is given the next sequential id
+
+    QCOMPARE(elm->id(), before + 1);
+    QCOMPARE(scene->lastId(), before + 1);
+}
+
+void TestScene::testInlineLabelEditorStartWithNullElementIsNoOp()
+{
+    WorkSpace workspace;
+    InlineLabelEditor editor(workspace.scene());
+    const auto itemCountBefore = workspace.scene()->items().size();
+
+    editor.start(nullptr);
+
+    QCOMPARE(workspace.scene()->items().size(), itemCountBefore);
+}
+
+void TestScene::testInlineLabelEditorStartWhileEditingCommitsPrevious()
+{
+    WorkSpace workspace;
+    auto *elmA = new And;
+    elmA->setLabel("Original A");
+    workspace.scene()->addItem(elmA);
+    auto *elmB = new And;
+    elmB->setLabel("Original B");
+    elmB->setPos(200, 0);
+    workspace.scene()->addItem(elmB);
+
+    InlineLabelEditor editor(workspace.scene());
+    editor.start(elmA);
+
+    QLineEdit *lineEdit = nullptr;
+    for (auto *item : workspace.scene()->items()) {
+        if (auto *proxy = qgraphicsitem_cast<QGraphicsProxyWidget *>(item)) {
+            lineEdit = qobject_cast<QLineEdit *>(proxy->widget());
+        }
+    }
+    QVERIFY(lineEdit != nullptr);
+    lineEdit->setText("Renamed A");
+
+    // Starting a second edit before committing the first must commit it first.
+    editor.start(elmB);
+
+    QCOMPARE(elmA->label(), QString("Renamed A"));
+}
+
+void TestScene::testInlineLabelEditorEmptyLabelUsesElementBoundingRectFallback()
+{
+    // labelSceneBoundingRect() is empty when the label has no text yet; start() must fall
+    // back to the element's own sceneBoundingRect() to position the editor.
+    WorkSpace workspace;
+    auto *elm = new And;
+    elm->setPos(100, 50);
+    workspace.scene()->addItem(elm);
+    QVERIFY(elm->label().isEmpty());
+    QVERIFY(elm->labelSceneBoundingRect().isEmpty());
+
+    InlineLabelEditor editor(workspace.scene());
+    editor.start(elm);
+
+    QGraphicsProxyWidget *proxy = nullptr;
+    for (auto *item : workspace.scene()->items()) {
+        if (auto *p = qgraphicsitem_cast<QGraphicsProxyWidget *>(item)) {
+            proxy = p;
+        }
+    }
+    QVERIFY(proxy != nullptr);
+    QCOMPARE(proxy->pos(), elm->sceneBoundingRect().topLeft());
 }
 
 // ============================================================================
