@@ -291,6 +291,30 @@ set(QUICK_SHELL_TEST_SOURCES
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel2Decoder2to4.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel2Decoder3to8.cpp
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel2Decoder3to8.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel2Decoder4to16.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel2Decoder4to16.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel2Decoder5to32.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel2Decoder5to32.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel2Mux2to1.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel2Mux2to1.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel2Mux4to1.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel2Mux4to1.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel2Mux8to1.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel2Mux8to1.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel2PriorityEncoder8to3.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel2PriorityEncoder8to3.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel2PriorityMux3to1.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel2PriorityMux3to1.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel3AluSelector5way.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel3AluSelector5way.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel3Bcd7segmentDecoder.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel3Bcd7segmentDecoder.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel3Comparator4bit.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel3Comparator4bit.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel3Comparator4bitEquality.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel3Comparator4bitEquality.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel3Register1bit.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel3Register1bit.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/StubDialogProvider.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasCommands.cpp
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasCommands.h

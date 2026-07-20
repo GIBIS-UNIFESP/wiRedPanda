@@ -240,18 +240,6 @@ set(MEMORY_HELPERS_HEADERS
 
 set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestICFixtureLayout.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2Decoder4to16.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2Decoder5to32.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2Mux2to1.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2Mux4to1.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2Mux8to1.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2PriorityEncoder8to3.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2PriorityMux3to1.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel3AluSelector5way.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel3Bcd7segmentDecoder.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel3Comparator4bit.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel3Comparator4bitEquality.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel3Register1bit.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel4BinaryCounter4bit.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel4BusMux4bit.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel4BusMux8bit.cpp
@@ -412,18 +400,6 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/CpuHelpers.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/CpuTestUtils.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestICFixtureLayout.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2Decoder4to16.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2Decoder5to32.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2Mux2to1.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2Mux4to1.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2Mux8to1.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2PriorityEncoder8to3.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2PriorityMux3to1.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel3AluSelector5way.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel3Bcd7segmentDecoder.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel3Comparator4bit.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel3Comparator4bitEquality.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel3Register1bit.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel4BinaryCounter4bit.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel4BusMux4bit.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel4BusMux8bit.h

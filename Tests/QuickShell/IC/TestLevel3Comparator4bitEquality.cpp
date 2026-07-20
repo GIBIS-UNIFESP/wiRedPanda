@@ -1,24 +1,20 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/TestLevel3Comparator4bitEquality.h"
-
-#include <QFile>
+#include "Tests/QuickShell/IC/TestLevel3Comparator4bitEquality.h"
 
 #include "App/Core/Common.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "App/Scene/Workspace.h"
-#include "Tests/Common/TestUtils.h"
-#include "Tests/Integration/IC/Tests/Cpu/CpuCommon.h"
-#include "Tests/Integration/IC/Tests/CpuTestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct Comparator4bitEqualityFixture {
-    std::unique_ptr<WorkSpace> workspace;
+    std::unique_ptr<QuickCircuitBuilder> builder;
     IC *ic = nullptr;
     InputSwitch *inputA[4] = {}, *inputB[4] = {};
     Led *ledEqual = nullptr;
@@ -26,25 +22,21 @@ struct Comparator4bitEqualityFixture {
 
     bool build()
     {
-        workspace = std::make_unique<WorkSpace>();
-        CircuitBuilder builder(workspace->scene());
+        builder = std::make_unique<QuickCircuitBuilder>();
 
-        ic = loadBuildingBlockIC("level3_comparator_4bit_equality.panda");
-        builder.add(ic);
+        ic = static_cast<IC *>(builder->addOwnedElement(loadBuildingBlockIC("level3_comparator_4bit_equality.panda")));
 
-        ledEqual = new Led();
-        builder.add(ledEqual);
+        ledEqual = static_cast<Led *>(builder->addOwnedElement(new Led()));
 
         for (int i = 0; i < 4; ++i) {
-            inputA[i] = new InputSwitch();
-            inputB[i] = new InputSwitch();
-            builder.add(inputA[i], inputB[i]);
-            builder.connect(inputA[i], 0, ic, QString("A[%1]").arg(i));
-            builder.connect(inputB[i], 0, ic, QString("B[%1]").arg(i));
+            inputA[i] = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+            inputB[i] = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+            builder->connect(inputA[i], 0, ic, QString("A[%1]").arg(i));
+            builder->connect(inputB[i], 0, ic, QString("B[%1]").arg(i));
         }
-        builder.connect(ic, "Equal", ledEqual, 0);
+        builder->connect(ic, "Equal", ledEqual, 0);
 
-        sim = builder.initSimulation();
+        sim = builder->initSimulation();
         sim->update();
         return true;
     }

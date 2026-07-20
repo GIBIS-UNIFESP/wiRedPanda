@@ -1,22 +1,19 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/TestLevel3Register1bit.h"
-
-#include <QFile>
-#include <QFileInfo>
+#include "Tests/QuickShell/IC/TestLevel3Register1bit.h"
 
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "Tests/Common/TestUtils.h"
-#include "Tests/Integration/IC/Tests/CpuTestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 using TestUtils::clockCycle;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct Register1bitFixture {
-    std::unique_ptr<WorkSpace> workspace;
+    std::unique_ptr<QuickCircuitBuilder> builder;
     IC *ic = nullptr;
     InputSwitch *data = nullptr, *clock = nullptr, *writeEnable = nullptr, *reset = nullptr;
     Led *q = nullptr, *notQ = nullptr;
@@ -24,29 +21,25 @@ struct Register1bitFixture {
 
     bool build()
     {
-        workspace = std::make_unique<WorkSpace>();
-        CircuitBuilder builder(workspace->scene());
+        builder = std::make_unique<QuickCircuitBuilder>();
 
-        data = new InputSwitch();
-        clock = new InputSwitch();
-        writeEnable = new InputSwitch();
-        reset = new InputSwitch();
-        q = new Led();
-        notQ = new Led();
+        data = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        clock = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        writeEnable = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        reset = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        q = static_cast<Led *>(builder->addOwnedElement(new Led()));
+        notQ = static_cast<Led *>(builder->addOwnedElement(new Led()));
 
-        builder.add(data, clock, writeEnable, reset, q, notQ);
+        ic = static_cast<IC *>(builder->addOwnedElement(loadBuildingBlockIC("level3_register_1bit.panda")));
 
-        ic = loadBuildingBlockIC("level3_register_1bit.panda");
-        builder.add(ic);
+        builder->connect(data, 0, ic, "Data");
+        builder->connect(clock, 0, ic, "Clock");
+        builder->connect(writeEnable, 0, ic, "WriteEnable");
+        builder->connect(reset, 0, ic, "Reset");
+        builder->connect(ic, "Q", q, 0);
+        builder->connect(ic, "NotQ", notQ, 0);
 
-        builder.connect(data, 0, ic, "Data");
-        builder.connect(clock, 0, ic, "Clock");
-        builder.connect(writeEnable, 0, ic, "WriteEnable");
-        builder.connect(reset, 0, ic, "Reset");
-        builder.connect(ic, "Q", q, 0);
-        builder.connect(ic, "NotQ", notQ, 0);
-
-        sim = builder.initSimulation();
+        sim = builder->initSimulation();
         sim->update();
         return true;
     }

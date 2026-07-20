@@ -30,6 +30,18 @@
 #include "Tests/QuickShell/IC/TestLevel2ParityGenerator.h"
 #include "Tests/QuickShell/IC/TestLevel2Decoder2to4.h"
 #include "Tests/QuickShell/IC/TestLevel2Decoder3to8.h"
+#include "Tests/QuickShell/IC/TestLevel2Decoder4to16.h"
+#include "Tests/QuickShell/IC/TestLevel2Decoder5to32.h"
+#include "Tests/QuickShell/IC/TestLevel2Mux2to1.h"
+#include "Tests/QuickShell/IC/TestLevel2Mux4to1.h"
+#include "Tests/QuickShell/IC/TestLevel2Mux8to1.h"
+#include "Tests/QuickShell/IC/TestLevel2PriorityEncoder8to3.h"
+#include "Tests/QuickShell/IC/TestLevel2PriorityMux3to1.h"
+#include "Tests/QuickShell/IC/TestLevel3AluSelector5way.h"
+#include "Tests/QuickShell/IC/TestLevel3Bcd7segmentDecoder.h"
+#include "Tests/QuickShell/IC/TestLevel3Comparator4bit.h"
+#include "Tests/QuickShell/IC/TestLevel3Comparator4bitEquality.h"
+#include "Tests/QuickShell/IC/TestLevel3Register1bit.h"
 #include "Tests/QuickShell/TestFeedback.h"
 #include "Tests/QuickShell/TestSimulation.h"
 #include "Tests/QuickShell/TestQuickWorkSpace.h"
@@ -95,5 +107,17 @@ int main(int argc, char **argv)
         {"TestLevel2ParityGenerator", []() -> QObject * { return new TestLevel2ParityGenerator; }},
         {"TestLevel2Decoder2To4", []() -> QObject * { return new TestLevel2Decoder2To4; }},
         {"TestLevel2Decoder3To8", []() -> QObject * { return new TestLevel2Decoder3To8; }},
+        {"TestLevel2Decoder4To16", []() -> QObject * { return new TestLevel2Decoder4To16; }},
+        {"TestLevel2Decoder5To32", []() -> QObject * { return new TestLevel2Decoder5To32; }},
+        {"TestLevel2MUX2To1", []() -> QObject * { return new TestLevel2MUX2To1; }},
+        {"TestLevel2MUX4To1", []() -> QObject * { return new TestLevel2MUX4To1; }},
+        {"TestLevel2MUX8To1", []() -> QObject * { return new TestLevel2MUX8To1; }},
+        {"TestLevel2PriorityEncoder8To3", []() -> QObject * { return new TestLevel2PriorityEncoder8To3; }},
+        {"TestLevel2PriorityMUX3To1", []() -> QObject * { return new TestLevel2PriorityMUX3To1; }},
+        {"TestLevel3ALUSelector5Way", []() -> QObject * { return new TestLevel3ALUSelector5Way; }},
+        {"TestLevel3BCD7SegmentDecoder", []() -> QObject * { return new TestLevel3BCD7SegmentDecoder; }},
+        {"TestLevel3Comparator4Bit", []() -> QObject * { return new TestLevel3Comparator4Bit; }},
+        {"TestLevel3Comparator4BitEquality", []() -> QObject * { return new TestLevel3Comparator4BitEquality; }},
+        {"TestLevel3Register1Bit", []() -> QObject * { return new TestLevel3Register1Bit; }},
     });
 }
