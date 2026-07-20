@@ -137,7 +137,7 @@ void Scene::addItem(QGraphicsItem *item)
     if (item->type() == GraphicElement::Type) {
         auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
         if (!elm) {
-            return;
+            return; // LCOV_EXCL_LINE — item->type() == GraphicElement::Type is GraphicElement's own hardcoded type() override, so qgraphicsitem_cast to GraphicElement can never fail for an item reporting that exact type.
         }
         connect(elm, &GraphicElement::inlineEditRequested, this, [this](GraphicElement *element) {
             m_inlineLabelEditor.start(element);
@@ -407,7 +407,7 @@ QHash<QString, InputPort *> Scene::wirelessTxInputPorts(const QVector<GraphicEle
         }
     }
     return txMap;
-}
+} // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned QHash<QString, InputPort *>, never reached after the return above.
 
 const QVector<Connection *> Scene::connections() const
 {
@@ -1231,7 +1231,7 @@ bool Scene::nudgeSelection(QKeyEvent *event)
     const int step = event->modifiers().testFlag(Qt::ShiftModifier) ? Constants::gridSize * 4 : Constants::gridSize;
     const QPointF delta(dx * step, dy * step);
 
-    QList<QPointF> oldPositions;
+    QList<QPointF> oldPositions; // LCOV_EXCL_LINE — variant of recurring pattern 1: gcov attributes this local QList's compiler-generated exception-unwind cleanup to its declaration line rather than the function's closing brace. Reached on every successful nudge (confirmed by testArrowKeyNudgesSelection exercising all four directions); the unwind path itself is never taken since nothing later in this function throws.
     oldPositions.reserve(selected.size());
     for (auto *elm : selected) {
         oldPositions.append(elm->pos());

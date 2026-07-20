@@ -42,6 +42,7 @@ private slots:
     void testAlignRightUsesSceneEdgeNotBarePos();     // differently-sized elements distinguish edge- vs pos()-based alignment
     void testAlignBottomUsesSceneEdgeNotBarePos();
     void testAlignHorizontalCenterUsesSceneEdge();
+    void testAlignVerticalCenterUsesSceneEdge();
     void testAlignLeftAndTopMatchEdges();             // simpler case: all elements land on the same left/top edge
     void testAlignNoopBelowTwoElements();
     void testDistributeHorizontallyEqualizesGaps();
