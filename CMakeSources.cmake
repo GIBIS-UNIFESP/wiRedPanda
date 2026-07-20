@@ -523,6 +523,7 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestElementTabNavigator.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestExportController.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestFileDialogProvider.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestICController.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestICDropZone.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestLabeledSlider.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestLanguageManager.cpp
@@ -737,6 +738,7 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestElementTabNavigator.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestExportController.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestFileDialogProvider.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestICController.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestICDropZone.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestLabeledSlider.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestLanguageManager.h
