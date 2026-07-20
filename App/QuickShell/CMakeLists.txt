@@ -273,6 +273,20 @@ set(QUICK_SHELL_TEST_SOURCES
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestCPURegisterBank.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestCPURegisters.cpp
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestCPURegisters.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel1DLatch.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel1DLatch.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel1SrLatch.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel1SrLatch.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel1JkFlipFlop.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel1JkFlipFlop.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel2HalfAdder.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel2HalfAdder.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel2FullAdder1bit.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel2FullAdder1bit.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel2ParityChecker.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel2ParityChecker.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel2ParityGenerator.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel2ParityGenerator.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/StubDialogProvider.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasCommands.cpp
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasCommands.h

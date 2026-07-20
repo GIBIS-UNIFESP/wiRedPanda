@@ -1,19 +1,19 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/TestLevel1DLatch.h"
+#include "Tests/QuickShell/IC/TestLevel1DLatch.h"
 
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "Tests/Common/TestUtils.h"
-#include "Tests/Integration/IC/Tests/CpuTestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct DLatchFixture {
-    std::unique_ptr<WorkSpace> workspace;
+    std::unique_ptr<QuickCircuitBuilder> builder;
     IC *ic = nullptr;
     InputSwitch *dataIn = nullptr, *enableIn = nullptr;
     Led *ledQ = nullptr, *ledQBar = nullptr;
@@ -21,25 +21,21 @@ struct DLatchFixture {
 
     bool build()
     {
-        workspace = std::make_unique<WorkSpace>();
-        CircuitBuilder builder(workspace->scene());
+        builder = std::make_unique<QuickCircuitBuilder>();
 
-        dataIn = new InputSwitch();
-        enableIn = new InputSwitch();
-        ledQ = new Led();
-        ledQBar = new Led();
+        dataIn = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        enableIn = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        ledQ = static_cast<Led *>(builder->addOwnedElement(new Led()));
+        ledQBar = static_cast<Led *>(builder->addOwnedElement(new Led()));
 
-        builder.add(dataIn, enableIn, ledQ, ledQBar);
+        ic = static_cast<IC *>(builder->addOwnedElement(loadBuildingBlockIC("level1_d_latch.panda")));
 
-        ic = loadBuildingBlockIC("level1_d_latch.panda");
-        builder.add(ic);
+        builder->connect(dataIn, 0, ic, "D");
+        builder->connect(enableIn, 0, ic, "Enable");
+        builder->connect(ic, "Q", ledQ, 0);
+        builder->connect(ic, "Q_bar", ledQBar, 0);
 
-        builder.connect(dataIn, 0, ic, "D");
-        builder.connect(enableIn, 0, ic, "Enable");
-        builder.connect(ic, "Q", ledQ, 0);
-        builder.connect(ic, "Q_bar", ledQBar, 0);
-
-        sim = builder.initSimulation();
+        sim = builder->initSimulation();
         sim->update();
         return true;
     }

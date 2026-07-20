@@ -858,20 +858,13 @@ add_test(NAME TestInputRotary COMMAND test_wiredpanda TestInputRotary WORKING_DI
 add_test(NAME TestLED COMMAND test_wiredpanda TestLED WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestMainWindowGui COMMAND test_wiredpanda TestMainWindowGui WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestMinimapWidget COMMAND test_wiredpanda TestMinimapWidget WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel1DLatch COMMAND test_wiredpanda TestLevel1DLatch WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel1JKFlipFlop COMMAND test_wiredpanda TestLevel1JKFlipFlop WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel1SRLatch COMMAND test_wiredpanda TestLevel1SRLatch WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel2Decoder2To4 COMMAND test_wiredpanda TestLevel2Decoder2To4 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel2Decoder3To8 COMMAND test_wiredpanda TestLevel2Decoder3To8 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel2Decoder4To16 COMMAND test_wiredpanda TestLevel2Decoder4To16 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel2Decoder5To32 COMMAND test_wiredpanda TestLevel2Decoder5To32 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel2FullAdder1Bit COMMAND test_wiredpanda TestLevel2FullAdder1Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel2HalfAdder COMMAND test_wiredpanda TestLevel2HalfAdder WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel2MUX2To1 COMMAND test_wiredpanda TestLevel2MUX2To1 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel2MUX4To1 COMMAND test_wiredpanda TestLevel2MUX4To1 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel2MUX8To1 COMMAND test_wiredpanda TestLevel2MUX8To1 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel2ParityChecker COMMAND test_wiredpanda TestLevel2ParityChecker WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel2ParityGenerator COMMAND test_wiredpanda TestLevel2ParityGenerator WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel2PriorityEncoder8To3 COMMAND test_wiredpanda TestLevel2PriorityEncoder8To3 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel2PriorityMUX3To1 COMMAND test_wiredpanda TestLevel2PriorityMUX3To1 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel3ALUSelector5Way COMMAND test_wiredpanda TestLevel3ALUSelector5Way WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -1041,6 +1034,13 @@ add_test(NAME TestCPUIntegration COMMAND test_wiredpanda_quick TestCPUIntegratio
 add_test(NAME TestCPUMemoryInterface COMMAND test_wiredpanda_quick TestCPUMemoryInterface WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestCPURegisterBank COMMAND test_wiredpanda_quick TestCPURegisterBank WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestCPURegisters COMMAND test_wiredpanda_quick TestCPURegisters WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel1DLatch COMMAND test_wiredpanda_quick TestLevel1DLatch WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel1SRLatch COMMAND test_wiredpanda_quick TestLevel1SRLatch WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel1JKFlipFlop COMMAND test_wiredpanda_quick TestLevel1JKFlipFlop WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel2HalfAdder COMMAND test_wiredpanda_quick TestLevel2HalfAdder WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel2FullAdder1Bit COMMAND test_wiredpanda_quick TestLevel2FullAdder1Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel2ParityChecker COMMAND test_wiredpanda_quick TestLevel2ParityChecker WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel2ParityGenerator COMMAND test_wiredpanda_quick TestLevel2ParityGenerator WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 # ============================================================================
 # Test Properties: Labels and Timeouts
@@ -1053,11 +1053,10 @@ add_test(NAME TestCPURegisters COMMAND test_wiredpanda_quick TestCPURegisters WO
 # Level Tests - Integration category (IC-level hierarchical tests)
 # TestLevel1DFlipFlop moved to test_wiredpanda_quick (Phase C/D of the qtquick-rewrite plan's
 # Widgets-test-parity audit) -- see the "quick" label foreach below.
-foreach(TEST TestLevel1DLatch TestLevel1JKFlipFlop TestLevel1SRLatch
-        TestLevel2Decoder2To4 TestLevel2Decoder3To8 TestLevel2Decoder4To16 TestLevel2Decoder5To32
-        TestLevel2FullAdder1Bit TestLevel2HalfAdder TestLevel2MUX2To1 TestLevel2MUX4To1
-        TestLevel2MUX8To1 TestLevel2ParityChecker TestLevel2ParityGenerator 
-        TestLevel2PriorityEncoder8To3 TestLevel2PriorityMUX3To1 TestLevel3ALUSelector5Way 
+foreach(TEST TestLevel2Decoder2To4 TestLevel2Decoder3To8 TestLevel2Decoder4To16 TestLevel2Decoder5To32
+        TestLevel2MUX2To1 TestLevel2MUX4To1
+        TestLevel2MUX8To1
+        TestLevel2PriorityEncoder8To3 TestLevel2PriorityMUX3To1 TestLevel3ALUSelector5Way
         TestLevel3BCD7SegmentDecoder TestLevel3Comparator4Bit TestLevel3Comparator4BitEquality 
         TestLevel3Register1Bit TestLevel4BinaryCounter4Bit TestLevel4BusMUX4Bit 
         TestLevel4BusMUX8Bit TestLevel4Comparator4Bit TestLevel4JohnsonCounter4Bit 
@@ -1143,17 +1142,18 @@ foreach(TEST TestCanvasItemSmoke TestCanvasCommands TestQuickElementHandler
         TestCanvasPortHover TestLevel1DFlipFlop TestCPUProgramCounter
         TestCPUAlu TestCPUBranch TestCPUControlUnit TestCPUDecoders
         TestCPUInstructionExecute TestCPUInstructionFetch TestCPUIntegration
-        TestCPUMemoryInterface TestCPURegisterBank TestCPURegisters)
+        TestCPUMemoryInterface TestCPURegisterBank TestCPURegisters
+        TestLevel1DLatch TestLevel1SRLatch TestLevel1JKFlipFlop
+        TestLevel2HalfAdder TestLevel2FullAdder1Bit TestLevel2ParityChecker TestLevel2ParityGenerator)
     set_tests_properties(${TEST} PROPERTIES LABELS "unit;quick")
 endforeach()
 
 # GUI tests run sequentially after all other tests complete
 set(GUI_TESTS TestDialogs TestFileDialogProvider TestMainWindowGui TestBewavedDolphinGui)
 set(ALL_TESTS
-    TestLevel1DLatch TestLevel1JKFlipFlop TestLevel1SRLatch
     TestLevel2Decoder2To4 TestLevel2Decoder3To8 TestLevel2Decoder4To16 TestLevel2Decoder5To32
-    TestLevel2FullAdder1Bit TestLevel2HalfAdder TestLevel2MUX2To1 TestLevel2MUX4To1
-    TestLevel2MUX8To1 TestLevel2ParityChecker TestLevel2ParityGenerator
+    TestLevel2MUX2To1 TestLevel2MUX4To1
+    TestLevel2MUX8To1
     TestLevel2PriorityEncoder8To3 TestLevel2PriorityMUX3To1
     TestLevel3ALUSelector5Way TestLevel3BCD7SegmentDecoder TestLevel3Comparator4Bit
     TestLevel3Comparator4BitEquality TestLevel3Register1Bit

@@ -21,6 +21,13 @@
 #include "Tests/QuickShell/IC/TestCPUMemoryInterface.h"
 #include "Tests/QuickShell/IC/TestCPURegisterBank.h"
 #include "Tests/QuickShell/IC/TestCPURegisters.h"
+#include "Tests/QuickShell/IC/TestLevel1DLatch.h"
+#include "Tests/QuickShell/IC/TestLevel1SrLatch.h"
+#include "Tests/QuickShell/IC/TestLevel1JkFlipFlop.h"
+#include "Tests/QuickShell/IC/TestLevel2HalfAdder.h"
+#include "Tests/QuickShell/IC/TestLevel2FullAdder1bit.h"
+#include "Tests/QuickShell/IC/TestLevel2ParityChecker.h"
+#include "Tests/QuickShell/IC/TestLevel2ParityGenerator.h"
 #include "Tests/QuickShell/TestFeedback.h"
 #include "Tests/QuickShell/TestSimulation.h"
 #include "Tests/QuickShell/TestQuickWorkSpace.h"
@@ -77,5 +84,12 @@ int main(int argc, char **argv)
         {"TestCPUMemoryInterface", []() -> QObject * { return new TestCPUMemoryInterface; }},
         {"TestCPURegisterBank", []() -> QObject * { return new TestCPURegisterBank; }},
         {"TestCPURegisters", []() -> QObject * { return new TestCPURegisters; }},
+        {"TestLevel1DLatch", []() -> QObject * { return new TestLevel1DLatch; }},
+        {"TestLevel1SRLatch", []() -> QObject * { return new TestLevel1SRLatch; }},
+        {"TestLevel1JKFlipFlop", []() -> QObject * { return new TestLevel1JKFlipFlop; }},
+        {"TestLevel2HalfAdder", []() -> QObject * { return new TestLevel2HalfAdder; }},
+        {"TestLevel2FullAdder1Bit", []() -> QObject * { return new TestLevel2FullAdder1Bit; }},
+        {"TestLevel2ParityChecker", []() -> QObject * { return new TestLevel2ParityChecker; }},
+        {"TestLevel2ParityGenerator", []() -> QObject * { return new TestLevel2ParityGenerator; }},
     });
 }

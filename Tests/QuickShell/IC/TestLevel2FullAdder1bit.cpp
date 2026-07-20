@@ -1,21 +1,18 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/TestLevel2FullAdder1bit.h"
-
-#include <QFile>
-#include <QFileInfo>
+#include "Tests/QuickShell/IC/TestLevel2FullAdder1bit.h"
 
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "Tests/Common/TestUtils.h"
-#include "Tests/Integration/IC/Tests/CpuTestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 using TestUtils::inputStatus;
 
 struct FullAdder1bitFixture {
-    std::unique_ptr<WorkSpace> workspace;
+    std::unique_ptr<QuickCircuitBuilder> builder;
     IC *ic = nullptr;
     InputSwitch *a = nullptr, *b = nullptr, *carryIn = nullptr;
     Led *sum = nullptr, *carryOut = nullptr;
@@ -23,27 +20,23 @@ struct FullAdder1bitFixture {
 
     bool build()
     {
-        workspace = std::make_unique<WorkSpace>();
-        CircuitBuilder builder(workspace->scene());
+        builder = std::make_unique<QuickCircuitBuilder>();
 
-        a = new InputSwitch();
-        b = new InputSwitch();
-        carryIn = new InputSwitch();
-        sum = new Led();
-        carryOut = new Led();
+        a = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        b = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        carryIn = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        sum = static_cast<Led *>(builder->addOwnedElement(new Led()));
+        carryOut = static_cast<Led *>(builder->addOwnedElement(new Led()));
 
-        builder.add(a, b, carryIn, sum, carryOut);
+        ic = static_cast<IC *>(builder->addOwnedElement(CPUTestUtils::loadBuildingBlockIC("level2_full_adder_1bit.panda")));
 
-        ic = CPUTestUtils::loadBuildingBlockIC("level2_full_adder_1bit.panda");
-        builder.add(ic);
+        builder->connect(a, 0, ic, "A");
+        builder->connect(b, 0, ic, "B");
+        builder->connect(carryIn, 0, ic, "Cin");
+        builder->connect(ic, "Sum", sum, 0);
+        builder->connect(ic, "Cout", carryOut, 0);
 
-        builder.connect(a, 0, ic, "A");
-        builder.connect(b, 0, ic, "B");
-        builder.connect(carryIn, 0, ic, "Cin");
-        builder.connect(ic, "Sum", sum, 0);
-        builder.connect(ic, "Cout", carryOut, 0);
-
-        sim = builder.initSimulation();
+        sim = builder->initSimulation();
         sim->update();
         return true;
     }

@@ -1,21 +1,19 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/TestLevel2ParityChecker.h"
+#include "Tests/QuickShell/IC/TestLevel2ParityChecker.h"
 
-#include "App/Core/Common.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "App/Scene/Workspace.h"
-#include "Tests/Common/TestUtils.h"
-#include "Tests/Integration/IC/Tests/CpuTestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct ParityCheckerFixture {
-    std::unique_ptr<WorkSpace> workspace;
+    std::unique_ptr<QuickCircuitBuilder> builder;
     IC *ic = nullptr;
     InputSwitch *swD[4] = {};
     InputSwitch *swP = nullptr;
@@ -25,29 +23,25 @@ struct ParityCheckerFixture {
 
     bool build()
     {
-        workspace = std::make_unique<WorkSpace>();
-        CircuitBuilder builder(workspace->scene());
+        builder = std::make_unique<QuickCircuitBuilder>();
 
         for (int i = 0; i < 4; ++i) {
-            swD[i] = new InputSwitch();
-            builder.add(swD[i]);
+            swD[i] = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
         }
-        swP = new InputSwitch();
-        cascadeIn = new InputSwitch();
-        ledResult = new Led();
-        builder.add(swP, cascadeIn, ledResult);
+        swP = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        cascadeIn = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        ledResult = static_cast<Led *>(builder->addOwnedElement(new Led()));
 
-        ic = loadBuildingBlockIC("level2_parity_checker.panda");
-        builder.add(ic);
+        ic = static_cast<IC *>(builder->addOwnedElement(loadBuildingBlockIC("level2_parity_checker.panda")));
 
         for (int i = 0; i < 4; ++i) {
-            builder.connect(swD[i], 0, ic, QString("data[%1]").arg(i));
+            builder->connect(swD[i], 0, ic, QString("data[%1]").arg(i));
         }
-        builder.connect(swP, 0, ic, "data[4]");
-        builder.connect(cascadeIn, 0, ic, "CascadeIn");
-        builder.connect(ic, "parity", ledResult, 0);
+        builder->connect(swP, 0, ic, "data[4]");
+        builder->connect(cascadeIn, 0, ic, "CascadeIn");
+        builder->connect(ic, "parity", ledResult, 0);
 
-        sim = builder.initSimulation();
+        sim = builder->initSimulation();
         sim->update();
         return true;
     }

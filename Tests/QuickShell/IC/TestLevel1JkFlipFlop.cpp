@@ -1,13 +1,13 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/TestLevel1JkFlipFlop.h"
+#include "Tests/QuickShell/IC/TestLevel1JkFlipFlop.h"
 
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "Tests/Common/TestUtils.h"
-#include "Tests/Integration/IC/Tests/CpuTestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
@@ -32,7 +32,7 @@ using CPUTestUtils::loadBuildingBlockIC;
 //   Clear=0  -> Q=0 (asynchronous clear)
 
 struct JkFlipFlopFixture {
-    std::unique_ptr<WorkSpace> workspace;
+    std::unique_ptr<QuickCircuitBuilder> builder;
     IC *ic = nullptr;
     InputSwitch *jIn = nullptr, *kIn = nullptr, *clockIn = nullptr;
     InputSwitch *presetIn = nullptr, *clearIn = nullptr;
@@ -41,34 +41,30 @@ struct JkFlipFlopFixture {
 
     bool build()
     {
-        workspace = std::make_unique<WorkSpace>();
-        CircuitBuilder builder(workspace->scene());
+        builder = std::make_unique<QuickCircuitBuilder>();
 
-        jIn = new InputSwitch();
-        kIn = new InputSwitch();
-        clockIn = new InputSwitch();
-        presetIn = new InputSwitch();
-        clearIn = new InputSwitch();
-        ledQ = new Led();
-        ledQBar = new Led();
+        jIn = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        kIn = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        clockIn = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        presetIn = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        clearIn = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        ledQ = static_cast<Led *>(builder->addOwnedElement(new Led()));
+        ledQBar = static_cast<Led *>(builder->addOwnedElement(new Led()));
 
-        builder.add(jIn, kIn, clockIn, presetIn, clearIn, ledQ, ledQBar);
+        ic = static_cast<IC *>(builder->addOwnedElement(loadBuildingBlockIC("level1_jk_flip_flop.panda")));
 
-        ic = loadBuildingBlockIC("level1_jk_flip_flop.panda");
-        builder.add(ic);
-
-        builder.connect(jIn, 0, ic, "J");
-        builder.connect(kIn, 0, ic, "K");
-        builder.connect(clockIn, 0, ic, "Clock");
-        builder.connect(presetIn, 0, ic, "Preset");
-        builder.connect(clearIn, 0, ic, "Clear");
-        builder.connect(ic, "Q", ledQ, 0);
-        builder.connect(ic, "Q_bar", ledQBar, 0);
+        builder->connect(jIn, 0, ic, "J");
+        builder->connect(kIn, 0, ic, "K");
+        builder->connect(clockIn, 0, ic, "Clock");
+        builder->connect(presetIn, 0, ic, "Preset");
+        builder->connect(clearIn, 0, ic, "Clear");
+        builder->connect(ic, "Q", ledQ, 0);
+        builder->connect(ic, "Q_bar", ledQBar, 0);
 
         presetIn->setOn(true);
         clearIn->setOn(true);
 
-        sim = builder.initSimulation();
+        sim = builder->initSimulation();
         sim->update();
         return true;
     }
