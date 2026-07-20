@@ -486,6 +486,7 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestNodeLogic.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestStatusOps.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestBaseHandler.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestConnectionHandler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestElementHandler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestFileHandlerSecurity.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestHistoryHandler.cpp
@@ -493,6 +494,7 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestMCPProcessor.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestMCPValidator.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestServerInfoHandler.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestSimulationHandler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestThemeHandler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestConnectionManager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestConnectionValidity.cpp
@@ -707,6 +709,7 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestNodeLogic.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestStatusOps.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestBaseHandler.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestConnectionHandler.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestElementHandler.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestFileHandlerSecurity.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestHistoryHandler.h
@@ -714,6 +717,7 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestMCPProcessor.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestMCPValidator.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestServerInfoHandler.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestSimulationHandler.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestThemeHandler.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestConnectionManager.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestConnectionValidity.h

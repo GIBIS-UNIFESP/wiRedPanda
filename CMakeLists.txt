@@ -777,6 +777,7 @@ add_test(NAME TestDisplays COMMAND test_wiredpanda TestDisplays WORKING_DIRECTOR
 add_test(NAME TestElementAppearance COMMAND test_wiredpanda TestElementAppearance WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestElementFactory COMMAND test_wiredpanda TestElementFactory WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestBaseHandler COMMAND test_wiredpanda TestBaseHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestConnectionHandler COMMAND test_wiredpanda TestConnectionHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestElementHandler COMMAND test_wiredpanda TestElementHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestElementLabel COMMAND test_wiredpanda TestElementLabel WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestElementLogic COMMAND test_wiredpanda TestElementLogic WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -798,6 +799,7 @@ add_test(NAME TestICHandlerSecurity COMMAND test_wiredpanda TestICHandlerSecurit
 add_test(NAME TestMCPProcessor COMMAND test_wiredpanda TestMCPProcessor WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestMCPValidator COMMAND test_wiredpanda TestMCPValidator WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestServerInfoHandler COMMAND test_wiredpanda TestServerInfoHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestSimulationHandler COMMAND test_wiredpanda TestSimulationHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestThemeHandler COMMAND test_wiredpanda TestThemeHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestICInline COMMAND test_wiredpanda TestICInline WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestIcons COMMAND test_wiredpanda TestIcons WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -1111,7 +1113,7 @@ set(ALL_TESTS
     TestDemux TestDisplay TestDisplay7 TestGraphicElement TestICRegistry TestICUnit TestMux
     TestDolphinClipboard TestDolphinEdits TestDolphinExporter TestDolphinFile TestDolphinModelBuilder
     TestDolphinSerializer TestDolphinZoom TestSignalDelegate TestWaveformSimulator TestFileUtils TestRecentFilesUnit
-    TestFileHandlerSecurity TestICHandlerSecurity TestMCPProcessor TestMCPValidator TestElementHandler TestBaseHandler TestThemeHandler TestHistoryHandler TestServerInfoHandler
+    TestFileHandlerSecurity TestICHandlerSecurity TestMCPProcessor TestMCPValidator TestElementHandler TestBaseHandler TestThemeHandler TestHistoryHandler TestServerInfoHandler TestConnectionHandler TestSimulationHandler
     TestExerciseEngine TestTourEngine
     TestSimulationUnit TestWorkspaceUnit
     TestICFixtureLayout)

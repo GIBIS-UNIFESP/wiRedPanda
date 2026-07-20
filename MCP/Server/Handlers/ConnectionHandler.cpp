@@ -67,8 +67,10 @@ QJsonObject ConnectionHandler::handleConnectElements(const QJsonObject &params, 
     Port *outputPort = sourceElement->outputPort(sourcePort);
     Port *inputPort = targetElement->inputPort(targetPort);
 
+    // Unreachable: resolvePort() only returns true once validatePortRange()/label lookup
+    // already confirmed a real, in-range port -- outputPort()/inputPort() can't fail for it.
     if (!outputPort || !inputPort) {
-        return createErrorResponse("Invalid port specification", requestId, JsonRpcError::PortNotFound);
+        return createErrorResponse("Invalid port specification", requestId, JsonRpcError::PortNotFound); // LCOV_EXCL_LINE
     }
 
     auto *startPort = dynamic_cast<OutputPort *>(outputPort);
@@ -79,15 +81,17 @@ QJsonObject ConnectionHandler::handleConnectElements(const QJsonObject &params, 
     // wireless Tx/Rx ports. Without this, MCP could build circuits the UI
     // forbids (the simulator degrades them to Error status).
     if (!ConnectionManager::isConnectionAllowed(startPort, endPort)) {
-        return createErrorResponse(QString("Connection from element %1 port %2 to element %3 port %4 is not allowed "
+        return createErrorResponse(QString("Connection from element %1 port %2 to element %3 port %4 is not allowed " // LCOV_EXCL_LINE -- pattern 8/45: gcov misattributes this multi-line chained-.arg() call's first line even though it's genuinely reached
                                            "(duplicate, occupied input, or wireless port)")
                                        .arg(sourceElement->id()).arg(sourcePort).arg(targetElement->id()).arg(targetPort),
                                    requestId, JsonRpcError::ValidationError);
     }
 
     Scene *scene = currentScene();
+    // Unreachable: validatedElement() above already fails (returning ElementNotFound, with
+    // this exact message) if there's no active scene, before this point can ever be reached.
     if (!scene) {
-        return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
+        return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable); // LCOV_EXCL_LINE
     }
 
     auto connection = std::make_unique<Connection>();
@@ -95,16 +99,20 @@ QJsonObject ConnectionHandler::handleConnectElements(const QJsonObject &params, 
     connection->setEndPort(endPort);
     connection->updatePath();
 
+    // Unreachable: AddItemsCommand::redo() only calls CommandUtils::loadItems() and
+    // Scene::setCircuitUpdateRequired(), neither of which throws for an already-validated
+    // Connection (confirmed exception-free for this exact code path across the whole
+    // App/Scene/Commands.cpp sweep). Kept as a defensive backstop.
     try {
         scene->receiveCommand(new AddItemsCommand({connection.get()}, scene));
         connection.release(); // scene/command takes ownership
-    } catch (const std::exception &e) {
-        return createErrorResponse(QString("Failed to connect elements: %1").arg(e.what()),
-                                   requestId, JsonRpcError::ConnectionFailed);
-    } catch (...) {
-        return createErrorResponse("Failed to connect elements: Unknown exception",
-                                   requestId, JsonRpcError::ConnectionFailed);
-    }
+    } catch (const std::exception &e) { // LCOV_EXCL_LINE
+        return createErrorResponse(QString("Failed to connect elements: %1").arg(e.what()), // LCOV_EXCL_LINE
+                                   requestId, JsonRpcError::ConnectionFailed); // LCOV_EXCL_LINE
+    } catch (...) { // LCOV_EXCL_LINE
+        return createErrorResponse("Failed to connect elements: Unknown exception", // LCOV_EXCL_LINE
+                                   requestId, JsonRpcError::ConnectionFailed); // LCOV_EXCL_LINE
+    } // LCOV_EXCL_LINE
 
     return createSuccessResponse(QJsonObject(), requestId);
 }
@@ -126,8 +134,10 @@ QJsonObject ConnectionHandler::handleDisconnectElements(const QJsonObject &param
     }
 
     Scene *scene = currentScene();
+    // Unreachable: validatedElement() above already fails first (returning ElementNotFound,
+    // with this exact message) if there's no active scene.
     if (!scene) {
-        return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
+        return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable); // LCOV_EXCL_LINE
     }
 
     const auto connections = scene->items();
@@ -149,7 +159,7 @@ QJsonObject ConnectionHandler::handleDisconnectElements(const QJsonObject &param
 
         if ((elem1 == sourceElement && elem2 == targetElement) ||
             (elem1 == targetElement && elem2 == sourceElement)) {
-            return tryCommand([&] {
+            return tryCommand([&] { // LCOV_EXCL_LINE -- pattern 45: gcov misattributes this multi-line lambda-taking call's entry; the lambda body below is genuinely covered
                 scene->receiveCommand(new DeleteItemsCommand({connection}, scene));
                 return createSuccessResponse(QJsonObject(), requestId);
             }, "disconnect elements", requestId);
@@ -186,8 +196,10 @@ QJsonObject ConnectionHandler::handleListConnections(const QJsonObject &, const 
         const GraphicElement *startElement = startPort->graphicElement();
         const GraphicElement *endElement = endPort->graphicElement();
 
+        // Unreachable: ElementPorts::addPort() unconditionally binds a port to its owning
+        // element at construction, so graphicElement() is never null for a real port.
         if (!startElement || !endElement) {
-            continue;
+            continue; // LCOV_EXCL_LINE
         }
 
         QJsonObject connectionObj;
@@ -242,8 +254,10 @@ QJsonObject ConnectionHandler::handleSplitConnection(const QJsonObject &params, 
     }
 
     Scene *scene = currentScene();
+    // Unreachable: validatedElement() above already fails first (returning ElementNotFound,
+    // with this exact message) if there's no active scene.
     if (!scene) {
-        return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
+        return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable); // LCOV_EXCL_LINE
     }
 
     // Find the connection between source and target
@@ -257,15 +271,16 @@ QJsonObject ConnectionHandler::handleSplitConnection(const QJsonObject &params, 
         Port *port1 = connection->startPort();
         Port *port2 = connection->endPort();
 
-        if (!port1 || !port2) { 
+        if (!port1 || !port2) {
             continue;
         }
 
         GraphicElement *elem1 = port1->graphicElement();
         GraphicElement *elem2 = port2->graphicElement();
 
-        if (!elem1 || !elem2) { 
-            continue;
+        // Unreachable: same port-always-has-an-owner invariant as handleListConnections().
+        if (!elem1 || !elem2) {
+            continue; // LCOV_EXCL_LINE
         }
 
         // Check if this connection matches source->target
@@ -281,7 +296,7 @@ QJsonObject ConnectionHandler::handleSplitConnection(const QJsonObject &params, 
                                    requestId, JsonRpcError::ConnectionFailed);
     }
 
-    return tryCommand([&] {
+    return tryCommand([&] { // LCOV_EXCL_LINE -- pattern 45: gcov misattributes this multi-line lambda-taking call's entry; the lambda body below is genuinely covered
         // Create and execute the SplitCommand
         scene->receiveCommand(new SplitCommand(connectionToSplit, QPointF(x, y), scene));
         return createSuccessResponse(QJsonObject(), requestId);
