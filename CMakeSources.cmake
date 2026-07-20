@@ -290,8 +290,6 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestGeometry.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestGraphicElement.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestGraphicelementAdvanced.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestIC.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestICRegistry.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestInputElements.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestInputRotary.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestLed.cpp
@@ -301,7 +299,6 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestSequentialLogic.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestTruthTable.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestWirelessNode.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Exercise/TestExerciseEngine.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Factory/TestElementFactory.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestElementLogic.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestElementLogicErrors.cpp
@@ -397,8 +394,6 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestGeometry.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestGraphicElement.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestGraphicelementAdvanced.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestIC.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestICRegistry.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestInputElements.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestInputRotary.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestLed.h
@@ -408,7 +403,6 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestSequentialLogic.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestTruthTable.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestWirelessNode.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Exercise/TestExerciseEngine.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Factory/TestElementFactory.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestElementLogic.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestElementLogicErrors.h

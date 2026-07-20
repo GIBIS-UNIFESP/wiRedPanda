@@ -113,6 +113,9 @@
 #include "Tests/QuickShell/TestSimulationUnit.h"
 #include "Tests/QuickShell/TestSimulationBlocker.h"
 #include "Tests/QuickShell/TestDanglingPointer.h"
+#include "Tests/QuickShell/TestICUnit.h"
+#include "Tests/QuickShell/TestICRegistry.h"
+#include "Tests/QuickShell/TestExerciseEngine.h"
 
 int main(int argc, char **argv)
 {
@@ -227,5 +230,8 @@ int main(int argc, char **argv)
         {"TestSimulationUnit", []() -> QObject * { return new TestSimulationUnit; }},
         {"TestSimulationBlocker", []() -> QObject * { return new TestSimulationBlocker; }},
         {"TestDanglingPointer", []() -> QObject * { return new TestDanglingPointer; }},
+        {"TestICUnit", []() -> QObject * { return new TestICUnit; }},
+        {"TestICRegistry", []() -> QObject * { return new TestICRegistry; }},
+        {"TestExerciseEngine", []() -> QObject * { return new TestExerciseEngine; }},
     });
 }

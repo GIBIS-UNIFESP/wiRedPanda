@@ -1,23 +1,18 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Unit/Exercise/TestExerciseEngine.h"
+#include "Tests/QuickShell/TestExerciseEngine.h"
 
-#include <QApplication>
 #include <QFile>
-#include <QFont>
 #include <QRegularExpression>
 #include <QSignalSpy>
 #include <QTemporaryDir>
-#include <QTest>
 
 #include "App/Core/Settings.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Exercise/ExerciseEngine.h"
-#include "App/Exercise/ExerciseOverlay.h"
-#include "App/Scene/Commands.h"
-#include "App/Scene/Scene.h"
-#include "App/Scene/Workspace.h"
+#include "App/QuickShell/Canvas/CanvasCommands.h"
+#include "App/QuickShell/Canvas/CanvasItem.h"
 
 namespace {
 
@@ -193,40 +188,20 @@ void TestExerciseEngine::testUnknownElementTypeWarnsAndNeverAdvances()
         file.write(json);
     }
 
-    WorkSpace workspace;
+    CanvasItem canvas(nullptr, /*buildDemo=*/false);
     ExerciseEngine engine;
     QVERIFY(engine.loadFromResource(path));
-    engine.setScene(workspace.scene());
+    engine.setCanvas(&canvas);
     engine.start();
 
     QTest::ignoreMessage(QtWarningMsg,
         QRegularExpression(".*ExerciseEngine::validateElements.*NotARealElementType.*"));
 
     auto *elm = ElementFactory::buildElement(ElementType::And);
-    workspace.scene()->receiveCommand(new AddItemsCommand({elm}, workspace.scene()));
+    canvas.receiveCommand(new CanvasAddItemsCommand({elm}, &canvas));
 
     // The step's only requirement references an unknown type, so it can never be satisfied —
     // the engine must stay on step 0 no matter what the user builds.
     QCOMPARE(engine.currentStep(), 0);
     QVERIFY(engine.isActive());
-}
-
-void TestExerciseEngine::testOverlayFontScalesWithApplicationFont()
-{
-    const QFont originalFont = QApplication::font();
-
-    QFont smallFont = originalFont;
-    smallFont.setPointSize(8);
-    QApplication::setFont(smallFont);
-    const int smallPx = ExerciseOverlay::scaledFontPx(13);
-
-    QFont largeFont = originalFont;
-    largeFont.setPointSize(24);
-    QApplication::setFont(largeFont);
-    const int largePx = ExerciseOverlay::scaledFontPx(13);
-
-    QApplication::setFont(originalFont);
-
-    QVERIFY2(largePx > smallPx, "scaledFontPx must grow with the application's font size, "
-                                "so exercise overlay text respects an OS/Qt font-scale setting");
 }

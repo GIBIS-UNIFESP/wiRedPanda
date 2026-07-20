@@ -471,6 +471,12 @@ set(QUICK_SHELL_TEST_SOURCES
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestSimulationBlocker.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestDanglingPointer.cpp
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestDanglingPointer.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestICUnit.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestICUnit.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestICRegistry.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestICRegistry.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestExerciseEngine.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestExerciseEngine.h
 )
 
 # Usage: ./build/test_wiredpanda_quick ClassName [functionName] -- mirrors test_wiredpanda's

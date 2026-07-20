@@ -6,6 +6,9 @@
 #include <QObject>
 #include <QTest>
 
+/// testOverlayFontScalesWithApplicationFont is dropped, not ported: it tests
+/// ExerciseOverlay::scaledFontPx(), a Widgets-only QWidget-based overlay confirmed dead for
+/// Quick (QML's own font-scaling is handled declaratively, not through an equivalent C++ helper).
 class TestExerciseEngine : public QObject
 {
     Q_OBJECT
@@ -21,7 +24,4 @@ private slots:
     // permanently unsolvable with no diagnostic, unlike every other malformed-content path
     // in this feature.
     void testUnknownElementTypeWarnsAndNeverAdvances();
-
-    // ExerciseOverlay::scaledFontPx() (#14 accessibility: font-scale-hostile hardcoded px sizes)
-    void testOverlayFontScalesWithApplicationFont();
 };

@@ -905,8 +905,6 @@ add_test(NAME TestFileUtils COMMAND test_wiredpanda TestFileUtils WORKING_DIRECT
 add_test(NAME TestGraphicElement COMMAND test_wiredpanda TestGraphicElement WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestGraphicsView COMMAND test_wiredpanda TestGraphicsView WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestICDropZone COMMAND test_wiredpanda TestICDropZone WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestICRegistry COMMAND test_wiredpanda TestICRegistry WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestICUnit COMMAND test_wiredpanda TestICUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLabeledSlider COMMAND test_wiredpanda TestLabeledSlider WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLanguageManager COMMAND test_wiredpanda TestLanguageManager WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestMux COMMAND test_wiredpanda TestMux WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -917,7 +915,6 @@ add_test(NAME TestTrashButton COMMAND test_wiredpanda TestTrashButton WORKING_DI
 add_test(NAME TestExerciseTourResources COMMAND test_wiredpanda TestExerciseTourResources WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestExternalFilePath COMMAND test_wiredpanda TestExternalFilePath WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestInstallRelativePaths COMMAND test_wiredpanda TestInstallRelativePaths WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestExerciseEngine COMMAND test_wiredpanda TestExerciseEngine WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestTourEngine COMMAND test_wiredpanda TestTourEngine WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestUpdateChecker COMMAND test_wiredpanda TestUpdateChecker WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 
@@ -1041,6 +1038,9 @@ add_test(NAME TestNotifyCatch COMMAND test_wiredpanda_quick TestNotifyCatch WORK
 add_test(NAME TestSimulationUnit COMMAND test_wiredpanda_quick TestSimulationUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSimulationBlocker COMMAND test_wiredpanda_quick TestSimulationBlocker WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestDanglingPointer COMMAND test_wiredpanda_quick TestDanglingPointer WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestICUnit COMMAND test_wiredpanda_quick TestICUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestICRegistry COMMAND test_wiredpanda_quick TestICRegistry WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestExerciseEngine COMMAND test_wiredpanda_quick TestExerciseEngine WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 # ============================================================================
 # Test Properties: Labels and Timeouts
@@ -1136,7 +1136,8 @@ foreach(TEST TestCanvasItemSmoke TestCanvasCommands TestQuickElementHandler
         TestLevel8DecodeStage TestLevel8ExecuteStage TestLevel8FetchStage TestLevel8MemoryStage
         TestLevel9CPU16BitRISC TestLevel9FetchStage16Bit TestLevel9MemoryStage16Bit
         TestLevel9MultiCycleCPU8Bit TestLevel9RegisterFile32X16 TestLevel9SingleCycleCPU8Bit
-        TestNotifyCatch TestSimulationUnit TestSimulationBlocker TestDanglingPointer)
+        TestNotifyCatch TestSimulationUnit TestSimulationBlocker TestDanglingPointer
+        TestICUnit TestICRegistry TestExerciseEngine)
     set_tests_properties(${TEST} PROPERTIES LABELS "unit;quick")
 endforeach()
 
@@ -1164,10 +1165,10 @@ set(ALL_TESTS
     TestLanguageManager TestMinimapWidget TestSelectionCapabilities
     TestTrashButton
     TestConnection TestConnectionManager TestGraphicsView TestPropertyShortcutHandler TestPort
-    TestDemux TestDisplay TestDisplay7 TestGraphicElement TestICRegistry TestICUnit TestMux
+    TestDemux TestDisplay TestDisplay7 TestGraphicElement TestMux
     TestDolphinClipboard TestDolphinSerializer TestFileUtils TestRecentFilesUnit
     TestFileHandlerSecurity TestICHandlerSecurity TestMCPProcessor TestElementHandler
-    TestExerciseEngine TestTourEngine
+    TestTourEngine
     TestWorkspaceUnit
     TestICFixtureLayout
     TestCanvasItemSmoke TestCanvasCommands TestQuickElementHandler
