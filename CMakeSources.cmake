@@ -251,7 +251,6 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPURegisterBank.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPURegisters.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestICFixtureLayout.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel1DFlipFlop.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel1DLatch.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel1JkFlipFlop.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel1SrLatch.cpp
@@ -444,7 +443,6 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPURegisters.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/CpuTestUtils.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestICFixtureLayout.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel1DFlipFlop.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel1DLatch.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel1JkFlipFlop.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel1SrLatch.h

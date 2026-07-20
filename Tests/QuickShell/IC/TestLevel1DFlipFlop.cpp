@@ -1,19 +1,19 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/TestLevel1DFlipFlop.h"
+#include "Tests/QuickShell/IC/TestLevel1DFlipFlop.h"
 
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "Tests/Common/TestUtils.h"
-#include "Tests/Integration/IC/Tests/CpuTestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct DFlipFlopFixture {
-    std::unique_ptr<WorkSpace> workspace;
+    std::unique_ptr<QuickCircuitBuilder> builder;
     IC *ic = nullptr;
     InputSwitch *dataIn = nullptr, *clockIn = nullptr, *presetIn = nullptr, *clearIn = nullptr;
     Led *ledQ = nullptr, *ledQBar = nullptr;
@@ -21,32 +21,31 @@ struct DFlipFlopFixture {
 
     bool build()
     {
-        workspace = std::make_unique<WorkSpace>();
-        CircuitBuilder builder(workspace->scene());
+        builder = std::make_unique<QuickCircuitBuilder>();
 
-        dataIn = new InputSwitch();
-        clockIn = new InputSwitch();
-        presetIn = new InputSwitch();
-        clearIn = new InputSwitch();
-        ledQ = new Led();
-        ledQBar = new Led();
-
-        builder.add(dataIn, clockIn, presetIn, clearIn, ledQ, ledQBar);
+        // Heap-allocated -- unlike the old Scene-backed CircuitBuilder, QuickCircuitBuilder's
+        // addElement()/add() are non-owning (see its class doc comment), so these need
+        // addOwnedElement() instead of add() or they'd leak.
+        dataIn = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        clockIn = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        presetIn = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        clearIn = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        ledQ = static_cast<Led *>(builder->addOwnedElement(new Led()));
+        ledQBar = static_cast<Led *>(builder->addOwnedElement(new Led()));
 
         presetIn->setOn(true);
         clearIn->setOn(true);
 
-        ic = loadBuildingBlockIC("level1_d_flip_flop.panda");
-        builder.add(ic);
+        ic = static_cast<IC *>(builder->addOwnedElement(loadBuildingBlockIC("level1_d_flip_flop.panda")));
 
-        builder.connect(dataIn, 0, ic, "D");
-        builder.connect(clockIn, 0, ic, "Clock");
-        builder.connect(presetIn, 0, ic, "Preset");
-        builder.connect(clearIn, 0, ic, "Clear");
-        builder.connect(ic, "Q", ledQ, 0);
-        builder.connect(ic, "Q_bar", ledQBar, 0);
+        builder->connect(dataIn, 0, ic, "D");
+        builder->connect(clockIn, 0, ic, "Clock");
+        builder->connect(presetIn, 0, ic, "Preset");
+        builder->connect(clearIn, 0, ic, "Clear");
+        builder->connect(ic, "Q", ledQ, 0);
+        builder->connect(ic, "Q_bar", ledQBar, 0);
 
-        sim = builder.initSimulation();
+        sim = builder->initSimulation();
         sim->update();
         return true;
     }

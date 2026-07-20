@@ -9,6 +9,7 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Wiring/Connection.h"
+#include "App/Wiring/Port.h"
 
 // ============================================================
 // Connection State and Query Tests
