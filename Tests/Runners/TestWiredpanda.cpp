@@ -217,6 +217,7 @@
 #include "Tests/Unit/Ui/TestElementTabNavigator.h"
 #include "Tests/Unit/Ui/TestExportController.h"
 #include "Tests/Unit/Ui/TestFileDialogProvider.h"
+#include "Tests/Unit/Ui/TestICController.h"
 #include "Tests/Unit/Ui/TestICDropZone.h"
 #include "Tests/Unit/Ui/TestLabeledSlider.h"
 #include "Tests/Unit/Ui/TestLanguageManager.h"
@@ -431,6 +432,7 @@ int main(int argc, char **argv)
         {"TestDialogs", []() -> QObject * { return new TestDialogs; }},
         {"TestElementPalette", []() -> QObject * { return new TestElementPalette; }},
         {"TestFileDialogProviderUnit", []() -> QObject * { return new TestFileDialogProviderUnit; }},
+        {"TestICController", []() -> QObject * { return new TestICController; }},
         {"TestICDropZone", []() -> QObject * { return new TestICDropZone; }},
         {"TestLabeledSlider", []() -> QObject * { return new TestLabeledSlider; }},
         {"TestLanguageManager", []() -> QObject * { return new TestLanguageManager; }},
