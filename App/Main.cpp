@@ -24,9 +24,11 @@
 
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
+#include "App/Core/FileDialogProvider.h"
 #include "App/Core/ThemeManager.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Scene/Workspace.h"
+#include "App/UI/FileDialogProvider.h"
 #include "App/UI/MainWindow.h"
 
 #ifdef ENABLE_MCP_SERVER
@@ -216,6 +218,12 @@ int main(int argc, char *argv[])
     // Application::instance() is still null.  Re-apply the persisted theme now
     // that the Application and Fusion style are ready.
     ThemeManager::setTheme(ThemeManager::theme());
+
+    // FileDialogs::provider() asserts if never set (App/Core/FileDialogProvider.h -- extracted
+    // out of App/UI/ in Phase 8c, so it can no longer default to a Widgets-only implementation
+    // itself) -- set it once here, mirroring wiredpanda_quick's own identical call in its Main.cpp.
+    static RealFileDialogProvider realFileDialogProvider;
+    FileDialogs::setDefaultProvider(&realFileDialogProvider);
 
 #ifdef Q_OS_LINUX
     // When running as an AppImage, the Wayland compositor resolves the window icon

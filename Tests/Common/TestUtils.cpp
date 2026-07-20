@@ -16,10 +16,12 @@
 #include <QTest>
 
 #include "App/Core/Application.h"
+#include "App/Core/FileDialogProvider.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Simulation/Simulation.h"
+#include "App/UI/FileDialogProvider.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
 
@@ -70,6 +72,13 @@ void configureApp()
     QCoreApplication::setOrganizationName("GIBIS-UNIFESP");
     QCoreApplication::setApplicationName("wiRedPanda");
     QCoreApplication::setApplicationVersion(APP_VERSION);
+
+    // FileDialogs::provider() asserts if never set (App/Core/FileDialogProvider.h -- extracted
+    // out of App/UI/ in Phase 8c, so it no longer defaults to a Widgets-only implementation
+    // itself) -- mirrors App/Main.cpp's own identical call so tests that don't use
+    // StubFileDialogProviderGuard still get a real, working default, exactly like before.
+    static RealFileDialogProvider realFileDialogProvider;
+    FileDialogs::setDefaultProvider(&realFileDialogProvider);
 }
 
 std::unique_ptr<WorkSpace> createWorkspace()

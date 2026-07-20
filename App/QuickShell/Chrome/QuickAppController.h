@@ -19,6 +19,7 @@
 
 #include "App/BeWavedDolphin/DolphinHost.h"
 #include "App/Core/Enums.h"
+#include "App/Core/LanguageManager.h"
 #include "App/Core/ThemeManager.h"
 #include "App/Exercise/ExerciseEngine.h"
 #include "App/IO/RecentFiles.h"
@@ -34,7 +35,6 @@
 #include "App/QuickShell/Chrome/QuickWorkSpace.h"
 #include "App/QuickShell/Chrome/QuickWorkspaceManager.h"
 #include "App/QuickShell/Dolphin/QuickDolphinController.h"
-#include "App/UI/LanguageManager.h"
 
 class CanvasItem;
 

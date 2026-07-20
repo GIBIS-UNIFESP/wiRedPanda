@@ -9,9 +9,9 @@
 #include <QTemporaryDir>
 
 #include "App/Element/ElementFactory.h"
+#include "App/IO/CircuitExporter.h"
 #include "App/QuickShell/Canvas/CanvasItem.h"
 #include "App/QuickShell/Chrome/QuickAppController.h"
-#include "App/UI/CircuitExporter.h"
 #include "MCP/Server/Handlers/QuickFileHandler.h"
 
 void TestQuickFileHandlerSecurity::testExportImagePngClampsExtremeSceneDimensions()

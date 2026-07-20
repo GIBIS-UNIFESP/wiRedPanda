@@ -15,6 +15,7 @@
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
 #include "App/Core/Enums.h"
+#include "App/Core/FileDialogProvider.h"
 #include "App/Core/SentryHelpers.h"
 #include "App/Element/IC.h"
 #include "App/IO/FileUtils.h"
@@ -25,7 +26,6 @@
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
 #include "App/UI/ElementPalette.h"
-#include "App/UI/FileDialogProvider.h"
 #include "App/UI/MainWindowHost.h"
 
 ICController::ICController(MainWindowHost &host, QObject *parent)

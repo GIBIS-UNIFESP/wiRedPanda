@@ -9,11 +9,11 @@
 
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
+#include "App/Core/FileDialogProvider.h"
 #include "App/Core/SentryHelpers.h"
 #include "App/Core/Settings.h"
 #include "App/QuickShell/Canvas/CanvasItem.h"
 #include "App/QuickShell/Chrome/QuickWorkSpace.h"
-#include "App/UI/FileDialogProvider.h"
 
 QuickWorkspaceManager::QuickWorkspaceManager(QObject *parent)
     : QObject(parent)

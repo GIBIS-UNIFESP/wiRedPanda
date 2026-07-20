@@ -9,10 +9,10 @@
 
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
+#include "App/Core/FileDialogProvider.h"
 #include "App/QuickShell/Chrome/DialogProvider.h"
 #include "App/QuickShell/Chrome/QuickAppController.h"
 #include "App/QuickShell/Chrome/QuickDialogProvider.h"
-#include "App/UI/FileDialogProvider.h"
 
 #ifdef ENABLE_MCP_SERVER
 #include "MCP/Server/Core/QuickMCPProcessor.h"
@@ -89,7 +89,7 @@ int main(int argc, char *argv[])
     auto *window = qobject_cast<QQuickWindow *>(engine.rootObjects().value(0));
     static QuickDialogProvider dialogProvider(window);
     Dialogs::setProvider(&dialogProvider);
-    FileDialogs::setProvider(&dialogProvider);
+    FileDialogs::setDefaultProvider(&dialogProvider);
 
     // Loaded after the dialog providers are registered so a load failure's error path (once
     // QuickWorkspaceManager/QuickWorkSpace surfaces one through Dialogs::provider()) has a

@@ -11,13 +11,13 @@
 #include <QTest>
 
 #include "App/Core/Application.h"
+#include "App/Core/FileDialogProvider.h"
 #include "App/Core/Settings.h"
 #include "App/Element/GraphicElements/AudioBox.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Scene/Workspace.h"
 #include "App/UI/ElementEditor.h"
-#include "App/UI/FileDialogProvider.h"
 #include "App/UI/MainWindow.h"
 #include "Tests/Common/StubFileDialogProvider.h"
 #include "Tests/Common/TestUtils.h"

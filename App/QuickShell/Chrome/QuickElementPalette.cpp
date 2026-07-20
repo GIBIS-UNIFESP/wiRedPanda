@@ -8,7 +8,6 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementMetadata.h"
 #include "App/QuickShell/Canvas/CanvasICRegistry.h"
-#include "App/UI/ElementPalette.h"
 
 namespace {
 
@@ -154,7 +153,7 @@ void QuickElementPalette::recomputeSearchResults()
         // 1 and 3 are dead code in production and are deliberately not reproduced.
         const auto all = allEntries();
         for (const auto &entry : all) {
-            if (ElementPalette::nameMatchesSearch(entry.name(), m_searchText)) {
+            if (ElementFactory::nameMatchesSearch(entry.name(), m_searchText)) {
                 results.append(entry);
             }
         }

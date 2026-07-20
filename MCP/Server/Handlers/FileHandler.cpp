@@ -15,9 +15,9 @@
 #include <QSvgGenerator>
 #include <QTabWidget>
 
+#include "App/IO/CircuitExporter.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
-#include "App/UI/CircuitExporter.h"
 #include "App/UI/MainWindow.h"
 
 namespace {

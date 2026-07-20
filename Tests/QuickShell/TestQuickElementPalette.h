@@ -40,9 +40,11 @@
 /// add/remove/refresh round trip) not covered by this file's original 7e-6 pass.
 ///
 /// Phase 7h follow-up (Tests/Unit/Ui/TestElementPalette.cpp's own disposition, the last open
-/// question from Phase 7f): testPaletteSearch() tests ElementPalette::nameMatchesSearch() --
+/// question from Phase 7f): testPaletteSearch() tests ElementFactory::nameMatchesSearch() --
 /// KEEP as-is (QuickElementPalette::recomputeSearchResults() calls that exact static function
-/// directly, no duplicate logic to test here). testPaletteRebuild()/testAccessibleNameSet() are
+/// directly, no duplicate logic to test here; extracted from ElementPalette to ElementFactory
+/// in Phase 8c so it survives ElementPalette's own eventual deletion). testPaletteRebuild()/
+/// testAccessibleNameSet() are
 /// Widgets-widget-construction/accessibility tests with the same disposition already established
 /// elsewhere in 7f (DELETE-CANDIDATE / real-but-unported accessibility gap, respectively).
 /// testElementLabelHasDescriptiveTooltip() is real, portable, and was a genuine small gap in this

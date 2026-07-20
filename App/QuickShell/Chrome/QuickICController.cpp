@@ -10,6 +10,7 @@
 
 #include "App/Core/Common.h"
 #include "App/Core/Enums.h"
+#include "App/Core/FileDialogProvider.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/IC.h"
 #include "App/QuickShell/Canvas/CanvasCommands.h"
@@ -20,7 +21,6 @@
 #include "App/QuickShell/Chrome/QuickMainWindowHost.h"
 #include "App/QuickShell/Chrome/QuickWorkSpace.h"
 #include "App/Simulation/Simulation.h"
-#include "App/UI/FileDialogProvider.h"
 
 QuickICController::QuickICController(QuickMainWindowHost &host, QObject *parent)
     : QObject(parent)

@@ -13,12 +13,12 @@
 #include "App/CodeGen/SystemVerilogCodeGen.h"
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
+#include "App/Core/FileDialogProvider.h"
 #include "App/Core/SentryHelpers.h"
+#include "App/IO/CircuitExporter.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/SimulationBlocker.h"
-#include "App/UI/CircuitExporter.h"
-#include "App/UI/FileDialogProvider.h"
 #include "App/UI/MainWindowHost.h"
 
 ExportController::ExportController(MainWindowHost &host, QObject *parent)

@@ -3,7 +3,7 @@
 
 #include "Tests/Unit/Ui/TestSelectionCapabilities.h"
 
-#include "App/UI/SelectionCapabilities.h"
+#include "App/Element/SelectionCapabilities.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestSelectionCapabilities::testSelectionCapabilities()

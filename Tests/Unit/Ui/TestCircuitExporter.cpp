@@ -8,8 +8,8 @@
 #include <QTemporaryDir>
 
 #include "App/Element/GraphicElements/InputSwitch.h"
+#include "App/IO/CircuitExporter.h"
 #include "App/Scene/Workspace.h"
-#include "App/UI/CircuitExporter.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestCircuitExporter::testExporterCreation()

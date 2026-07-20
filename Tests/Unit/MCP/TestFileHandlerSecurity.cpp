@@ -9,9 +9,9 @@
 #include <QTemporaryDir>
 
 #include "App/Element/GraphicElements/InputSwitch.h"
+#include "App/IO/CircuitExporter.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
-#include "App/UI/CircuitExporter.h"
 #include "App/UI/MainWindow.h"
 #include "MCP/Server/Handlers/FileHandler.h"
 

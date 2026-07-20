@@ -19,8 +19,10 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/DragDropPayload.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Enums.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/ExerciseTourResources.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Core/FileDialogProvider.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/InstallRelativePaths.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/ItemWithId.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Core/LanguageManager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Settings.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/ThemeManager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/UpdateChecker.cpp
@@ -71,8 +73,10 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICPreviewPopup.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICRenderer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICSimulation.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/SelectionCapabilities.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseEngine.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseOverlay.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/IO/CircuitExporter.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/RecentFiles.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/Serialization.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/ClipboardManager.cpp
@@ -94,7 +98,6 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationThrottleDisabler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourEngine.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourOverlay.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/CircuitExporter.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialog.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialogUI.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementContextMenu.cpp
@@ -107,14 +110,12 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ICController.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ICDropZone.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/LabeledSlider.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/LanguageManager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/LengthDialog.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/LengthDialogUI.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindow.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindowUI.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/MinimapWidget.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/SceneUiBinder.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/SelectionCapabilities.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/TrashButton.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/UpdateController.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/WorkspaceManager.cpp
@@ -159,8 +160,10 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/DragDropPayload.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Enums.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/ExerciseTourResources.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Core/FileDialogProvider.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/InstallRelativePaths.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/ItemWithId.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Core/LanguageManager.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/MimeTypes.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Priorities.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/SentryHelpers.h
@@ -220,9 +223,11 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICRenderer.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICSimulation.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/PropertyDescriptor.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/SelectionCapabilities.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseEngine.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseOverlay.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseStep.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/IO/CircuitExporter.h
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/ExternalFilePath.h
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/FileUtils.h
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/RecentFiles.h
@@ -249,7 +254,6 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourEngine.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourOverlay.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourStep.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/CircuitExporter.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialog.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialogUI.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementContextMenu.h
@@ -262,7 +266,6 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ICController.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ICDropZone.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/LabeledSlider.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/LanguageManager.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/LengthDialog.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/LengthDialogUI.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindow.h
@@ -270,7 +273,6 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindowUI.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/MinimapWidget.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/SceneUiBinder.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/SelectionCapabilities.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/TrashButton.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/UpdateController.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/WorkspaceManager.h

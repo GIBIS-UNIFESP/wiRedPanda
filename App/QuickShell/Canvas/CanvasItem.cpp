@@ -54,12 +54,12 @@
 #include "App/Element/GraphicElements/Text.h"
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/IC.h"
+#include "App/IO/CircuitExporter.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/QuickShell/Canvas/CanvasCommands.h"
 #include "App/Scene/ConnectionManager.h"
 #include "App/Simulation/Simulation.h"
-#include "App/UI/CircuitExporter.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
 

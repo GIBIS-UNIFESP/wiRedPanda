@@ -28,6 +28,7 @@
 #include "App/BeWavedDolphin/WaveformSimulator.h"
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
+#include "App/Core/FileDialogProvider.h"
 #include "App/Core/SentryHelpers.h"
 #include "App/Core/Settings.h"
 #include "App/Element/GraphicElement.h"
@@ -35,7 +36,6 @@
 #include "App/Exercise/ExerciseOverlay.h"
 #include "App/Scene/GraphicsView.h"
 #include "App/UI/ClockDialog.h"
-#include "App/UI/FileDialogProvider.h"
 #include "App/UI/LengthDialog.h"
 
 BewavedDolphin::BewavedDolphin(Scene *scene, const bool askConnection, DolphinHost *host, QWidget *parent)

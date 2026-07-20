@@ -5,6 +5,7 @@
 
 #include <QCoreApplication>
 #include <QMetaEnum>
+#include <QRegularExpression>
 
 #include "App/Core/Common.h"
 #include "App/Element/ElementMetadata.h"
@@ -126,4 +127,14 @@ void ElementFactory::registerCreator(ElementType type, std::function<GraphicElem
 bool ElementFactory::hasCreator(ElementType type)
 {
     return instance().m_creatorMap.contains(type);
+}
+
+bool ElementFactory::nameMatchesSearch(const QString &name, const QString &query)
+{
+    // Escape the raw query so regex metacharacters ('(', '[', '\\', '+', ...) are matched
+    // literally; an unescaped query can form an invalid pattern whose match() never succeeds,
+    // silently returning zero results even when items match.
+    const QRegularExpression regex(".*" + QRegularExpression::escape(query) + ".*",
+                                   QRegularExpression::CaseInsensitiveOption);
+    return regex.match(name).hasMatch();
 }

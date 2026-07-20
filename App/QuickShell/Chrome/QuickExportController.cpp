@@ -11,12 +11,12 @@
 #include "App/CodeGen/SystemVerilogCodeGen.h"
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
+#include "App/Core/FileDialogProvider.h"
 #include "App/Core/SentryHelpers.h"
 #include "App/QuickShell/Canvas/CanvasItem.h"
 #include "App/QuickShell/Chrome/QuickMainWindowHost.h"
 #include "App/QuickShell/Chrome/QuickWorkSpace.h"
 #include "App/Simulation/SimulationBlocker.h"
-#include "App/UI/FileDialogProvider.h"
 
 QuickExportController::QuickExportController(QuickMainWindowHost &host, QObject *parent)
     : QObject(parent)

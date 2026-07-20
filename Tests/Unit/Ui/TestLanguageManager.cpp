@@ -9,8 +9,8 @@
 #include <QSignalSpy>
 #include <QTranslator>
 
+#include "App/Core/LanguageManager.h"
 #include "App/Core/Settings.h"
-#include "App/UI/LanguageManager.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestLanguageManager::testAvailableLanguages()

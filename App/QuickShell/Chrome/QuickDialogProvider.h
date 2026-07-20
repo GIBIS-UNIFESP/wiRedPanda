@@ -13,8 +13,8 @@
 #include <QObject>
 #include <QQmlComponent>
 
+#include "App/Core/FileDialogProvider.h"
 #include "App/QuickShell/Chrome/DialogProvider.h"
-#include "App/UI/FileDialogProvider.h"
 
 class QQuickWindow;
 

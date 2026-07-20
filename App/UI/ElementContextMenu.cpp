@@ -11,9 +11,9 @@
 #include "App/Core/Common.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
+#include "App/Element/SelectionCapabilities.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
-#include "App/UI/SelectionCapabilities.h"
 
 // Helper: add a morph target unless the element already IS that type.
 static QAction *addElementAction(QMenu *menu, GraphicElement *selectedElm, ElementType type, const bool hasSameType)

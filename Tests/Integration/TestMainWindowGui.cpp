@@ -28,6 +28,7 @@
 
 #include "App/BeWavedDolphin/BeWavedDolphin.h"
 #include "App/Core/Application.h"
+#include "App/Core/FileDialogProvider.h"
 #include "App/Core/Settings.h"
 #include "App/Core/ThemeManager.h"
 #include "App/Element/ElementLabel.h"
@@ -48,7 +49,6 @@
 #include "App/Simulation/Simulation.h"
 #include "App/UI/ElementEditor.h"
 #include "App/UI/ElementPalette.h"
-#include "App/UI/FileDialogProvider.h"
 #include "App/UI/MainWindow.h"
 #include "App/UI/TrashButton.h"
 #include "App/Wiring/Connection.h"

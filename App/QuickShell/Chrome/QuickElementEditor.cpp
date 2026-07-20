@@ -10,6 +10,7 @@
 #include <QKeySequence>
 
 #include "App/Core/Enums.h"
+#include "App/Core/FileDialogProvider.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElementInput.h"
@@ -23,7 +24,6 @@
 #include "App/QuickShell/Canvas/CanvasICRegistry.h"
 #include "App/QuickShell/Canvas/CanvasItem.h"
 #include "App/QuickShell/Chrome/DialogProvider.h"
-#include "App/UI/FileDialogProvider.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
 

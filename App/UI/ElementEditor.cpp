@@ -15,6 +15,7 @@
 #include <QToolButton>
 
 #include "App/Core/Common.h"
+#include "App/Core/FileDialogProvider.h"
 #include "App/Core/SentryHelpers.h"
 #include "App/Core/ThemeManager.h"
 #include "App/Element/ElementFactory.h"
@@ -23,6 +24,7 @@
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/IC.h"
+#include "App/Element/SelectionCapabilities.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/Commands.h"
@@ -31,9 +33,7 @@
 #include "App/UI/ElementContextMenu.h"
 #include "App/UI/ElementEditorUI.h"
 #include "App/UI/ElementTabNavigator.h"
-#include "App/UI/FileDialogProvider.h"
 #include "App/UI/LabeledSlider.h"
-#include "App/UI/SelectionCapabilities.h"
 #include "App/Wiring/Connection.h"
 
 ElementEditor::ElementEditor(QWidget *parent)

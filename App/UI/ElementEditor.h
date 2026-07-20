@@ -16,9 +16,9 @@
 #include <QWidget>
 
 #include "App/Element/PropertyDescriptor.h"
+#include "App/Element/SelectionCapabilities.h"
 #include "App/Scene/Scene.h"
 #include "App/UI/ElementEditorUI.h"
-#include "App/UI/SelectionCapabilities.h"
 
 class ElementTabNavigator;
 

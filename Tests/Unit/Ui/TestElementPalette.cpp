@@ -21,21 +21,21 @@ void TestElementPalette::testPaletteSearch()
 
     // A lone '(' is an invalid regex on its own; it must still match a name that contains '('
     // and must not match one that doesn't — never error into matching nothing.
-    QVERIFY(ElementPalette::nameMatchesSearch("nand(2)", "("));
-    QVERIFY(!ElementPalette::nameMatchesSearch("nand", "("));
+    QVERIFY(ElementFactory::nameMatchesSearch("nand(2)", "("));
+    QVERIFY(!ElementFactory::nameMatchesSearch("nand", "("));
 
     // An IC named with parentheses is findable by a substring that includes them.
-    QVERIFY(ElementPalette::nameMatchesSearch("counter(2)", "counter(2)"));
-    QVERIFY(ElementPalette::nameMatchesSearch("counter(2)", "(2)"));
+    QVERIFY(ElementFactory::nameMatchesSearch("counter(2)", "counter(2)"));
+    QVERIFY(ElementFactory::nameMatchesSearch("counter(2)", "(2)"));
 
     // Ordinary substring matching still works and is case-insensitive.
-    QVERIFY(ElementPalette::nameMatchesSearch("Input Switch", "switch"));
-    QVERIFY(!ElementPalette::nameMatchesSearch("And", "xyz"));
+    QVERIFY(ElementFactory::nameMatchesSearch("Input Switch", "switch"));
+    QVERIFY(!ElementFactory::nameMatchesSearch("And", "xyz"));
 
     // Other metacharacters that would break an unescaped pattern are matched literally.
-    QVERIFY(ElementPalette::nameMatchesSearch("a+b", "+"));
-    QVERIFY(ElementPalette::nameMatchesSearch("a[b", "["));
-    QVERIFY(ElementPalette::nameMatchesSearch("a\\b", "\\"));
+    QVERIFY(ElementFactory::nameMatchesSearch("a+b", "+"));
+    QVERIFY(ElementFactory::nameMatchesSearch("a[b", "["));
+    QVERIFY(ElementFactory::nameMatchesSearch("a\\b", "\\"));
 }
 
 void TestElementPalette::testPaletteRebuild()

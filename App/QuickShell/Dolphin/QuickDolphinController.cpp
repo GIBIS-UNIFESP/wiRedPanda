@@ -23,6 +23,7 @@
 #include "App/BeWavedDolphin/WaveformSimulator.h"
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
+#include "App/Core/FileDialogProvider.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElementInput.h"
 #include "App/QuickShell/Canvas/CanvasItem.h"
@@ -30,7 +31,6 @@
 #include "App/QuickShell/Dolphin/QuickDolphinExporter.h"
 #include "App/QuickShell/Dolphin/QuickDolphinZoom.h"
 #include "App/Simulation/Simulation.h"
-#include "App/UI/FileDialogProvider.h"
 
 namespace {
 /// Mirrors BewavedDolphin::snapshotCells(): pairs each index's (row, col) with its current

@@ -67,6 +67,15 @@ public:
     /// Returns the pixmap icon for the given element \a type.
     static QPixmap pixmap(const ElementType type);
 
+    // --- Search ---
+
+    /// Returns \c true if \a name matches the palette search \a query -- a case-insensitive
+    /// substring match, with \a query's own regex metacharacters escaped so a query like "74LS(00)"
+    /// matches literally instead of silently returning zero results. Shared between
+    /// ElementPalette (Widgets) and QuickElementPalette (Quick), which both filter the same
+    /// element/IC name lists this same way.
+    static bool nameMatchesSearch(const QString &name, const QString &query);
+
 private:
     QHash<ElementType, std::function<GraphicElement *()>> m_creatorMap;
 };

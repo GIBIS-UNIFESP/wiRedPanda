@@ -5,9 +5,9 @@
 
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/IC.h"
+#include "App/Element/SelectionCapabilities.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Workspace.h"
-#include "App/UI/SelectionCapabilities.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestElementContextMenu::testRotateRightAction()

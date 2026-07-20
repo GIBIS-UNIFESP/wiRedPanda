@@ -14,7 +14,7 @@
 #include <QString>
 #include <QVariantList>
 
-#include "App/UI/SelectionCapabilities.h"
+#include "App/Element/SelectionCapabilities.h"
 
 class CanvasItem;
 class GraphicElement;

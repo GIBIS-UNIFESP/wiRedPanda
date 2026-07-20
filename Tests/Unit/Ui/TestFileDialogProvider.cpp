@@ -3,7 +3,7 @@
 
 #include "Tests/Unit/Ui/TestFileDialogProvider.h"
 
-#include "App/UI/FileDialogProvider.h"
+#include "App/Core/FileDialogProvider.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestFileDialogProviderUnit::testFileDialogCreation()

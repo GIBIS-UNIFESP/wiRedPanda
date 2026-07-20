@@ -72,8 +72,9 @@ private:
  * over a data model replaces all of that widget-construction machinery outright. What DOES
  * carry over as real, reused logic: the five fixed category lists from populate(), the
  * updateICList()/updateEmbeddedICList() file-system/blob-registry scans, and
- * ElementPalette::nameMatchesSearch() itself (called directly -- it's already static and
- * needs no MainWindowUi, so there is no reason to duplicate its regex-escaping logic here).
+ * ElementFactory::nameMatchesSearch() itself (called directly -- it's already static and
+ * needs no ElementPalette instance, so there is no reason to duplicate its regex-escaping
+ * logic here; both this class and the Widgets ElementPalette call the same shared function).
  *
  * The three-pass search in ElementPalette::onSearchTextChanged() is NOT reproduced faithfully:
  * passes 1 and 3 match against QObject::objectName() values ("label_and", "label_ic") that no

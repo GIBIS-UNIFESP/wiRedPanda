@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "App/UI/FileDialogProvider.h"
+#include "App/Core/FileDialogProvider.h"
 
 /// Test stub that returns pre-configured results and captures call parameters.
 class StubFileDialogProvider : public FileDialogProvider
