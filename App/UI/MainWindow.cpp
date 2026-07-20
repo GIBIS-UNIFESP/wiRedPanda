@@ -45,7 +45,6 @@
 #include "App/Core/Settings.h"
 #include "App/Core/ThemeManager.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/ElementLabel.h"
 #include "App/Element/IC.h"
 #include "App/Element/ICPreviewPopup.h"
 #include "App/Exercise/ExerciseEngine.h"
@@ -1076,24 +1075,6 @@ void MainWindow::on_actionRestart_triggered()
 
         currentTab()->simulation()->restart();
     });
-}
-
-void MainWindow::populateMenu(QSpacerItem *spacer, const QStringList &names, QLayout *layout)
-{
-    // The spacer must be removed before inserting widgets so it stays at the
-    // bottom after they are added; it is put back at the end of this function.
-    layout->removeItem(spacer);
-
-    // Each element type gets two labels: one in its own category panel and a
-    // duplicate in the shared search panel so search can find everything in one place.
-    for (const auto &name : names) {
-        auto type = ElementFactory::textToType(name);
-        auto pixmap(ElementFactory::pixmap(type));
-        layout->addWidget(new ElementLabel(pixmap, type, name, this));
-        m_ui->scrollAreaWidgetContents_Search->layout()->addWidget(new ElementLabel(pixmap, type, name, this));
-    }
-
-    layout->addItem(spacer);
 }
 
 void MainWindow::on_actionFastMode_triggered(const bool checked)
