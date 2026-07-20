@@ -7,8 +7,12 @@
 #include <functional>
 #include <memory>
 
+#include <QtGlobal> // defines Q_OS_WIN, needed before the platform check just below
+
 #if defined(Q_OS_WIN)
+#include <fcntl.h>
 #include <io.h>
+#include <share.h>
 #else
 #include <unistd.h>
 #endif
@@ -34,11 +38,36 @@ inline int testUtilsDupFd(int fd) { return _dup(fd); }
 inline int testUtilsDup2Fd(int oldFd, int newFd) { return _dup2(oldFd, newFd); }
 inline int testUtilsCloseFd(int fd) { return _close(fd); }
 inline int testUtilsFilenoFd(FILE *f) { return _fileno(f); }
+inline int testUtilsPipeFd(int fds[2]) { return _pipe(fds, 4096, _O_BINARY); }
+inline qint64 testUtilsWriteFd(int fd, const void *buf, size_t count) { return _write(fd, buf, static_cast<unsigned int>(count)); }
+// std::fopen()/freopen() trip MSVC's C4996 (deprecated in favour of fopen_s/freopen_s) under /WX.
+// fopen_s() itself is NOT a drop-in replacement here, though: unlike plain fopen() (a thin
+// wrapper over _fsopen(..., _SH_DENYNO) -- fully shareable), fopen_s() opens the file without
+// that share flag, so a second handle (e.g. ScopedStdoutCapture::contents()'s QFile::open()
+// while fd 1 is still dup2()'d onto the same file) fails outright with a Windows sharing
+// violation -- confirmed against Microsoft's own documented fopen()/_fsopen() equivalence and a
+// corroborating upstream report (tinyxml2 #914) of fopen_s()'s narrower default. _fsopen() with
+// an explicit _SH_DENYNO restores fopen()'s original shareable behavior without tripping C4996
+// (only fopen()/freopen() are deprecated, not the _fsopen()/_wfsopen() family).
+inline FILE *testUtilsFopen(const char *path, const char *mode)
+{
+    return _fsopen(path, mode, _SH_DENYNO);
+}
+inline FILE *testUtilsFreopen(const char *path, const char *mode, FILE *stream)
+{
+    FILE *f = nullptr;
+    freopen_s(&f, path, mode, stream);
+    return f;
+}
 #else
 inline int testUtilsDupFd(int fd) { return dup(fd); }
 inline int testUtilsDup2Fd(int oldFd, int newFd) { return dup2(oldFd, newFd); }
 inline int testUtilsCloseFd(int fd) { return close(fd); }
 inline int testUtilsFilenoFd(FILE *f) { return fileno(f); }
+inline int testUtilsPipeFd(int fds[2]) { return pipe(fds); }
+inline qint64 testUtilsWriteFd(int fd, const void *buf, size_t count) { return write(fd, buf, count); }
+inline FILE *testUtilsFopen(const char *path, const char *mode) { return std::fopen(path, mode); }
+inline FILE *testUtilsFreopen(const char *path, const char *mode, FILE *stream) { return std::freopen(path, mode, stream); }
 #endif
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 7, 0)
@@ -330,7 +359,7 @@ struct ScopedStdinRedirect {
         : savedFd(testUtilsDupFd(0))
     {
         std::fflush(stdin);
-        FILE *f = std::fopen(qPrintable(path), "r");
+        FILE *f = testUtilsFopen(qPrintable(path), "r");
         testUtilsDup2Fd(testUtilsFilenoFd(f), 0);
         std::fclose(f);
         std::clearerr(stdin);
@@ -358,7 +387,7 @@ struct ScopedStdoutCapture {
         , savedFd(testUtilsDupFd(1))
     {
         std::fflush(stdout);
-        FILE *f = std::fopen(qPrintable(path), "w");
+        FILE *f = testUtilsFopen(qPrintable(path), "w");
         testUtilsDup2Fd(testUtilsFilenoFd(f), 1);
         std::fclose(f);
     }

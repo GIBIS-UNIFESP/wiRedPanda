@@ -215,6 +215,7 @@
 #include "Tests/Unit/Ui/TestElementEditor.h"
 #include "Tests/Unit/Ui/TestElementPalette.h"
 #include "Tests/Unit/Ui/TestElementTabNavigator.h"
+#include "Tests/Unit/Ui/TestExportController.h"
 #include "Tests/Unit/Ui/TestFileDialogProvider.h"
 #include "Tests/Unit/Ui/TestICDropZone.h"
 #include "Tests/Unit/Ui/TestLabeledSlider.h"
@@ -373,6 +374,7 @@ int main(int argc, char **argv)
         {"TestElementLabel", []() -> QObject * { return new TestElementLabel; }},
         {"TestElementProperties", []() -> QObject * { return new TestElementProperties; }},
         {"TestElementTabNavigator", []() -> QObject * { return new TestElementTabNavigator; }},
+        {"TestExportController", []() -> QObject * { return new TestExportController; }},
         {"TestFeatures", []() -> QObject * { return new TestFeatures; }},
         {"TestGeometry", []() -> QObject * { return new TestGeometry; }},
         {"TestWirelessNode", []() -> QObject * { return new TestWirelessNode; }},

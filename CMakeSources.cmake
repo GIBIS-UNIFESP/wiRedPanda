@@ -521,6 +521,7 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestElementEditor.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestElementPalette.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestElementTabNavigator.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestExportController.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestFileDialogProvider.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestICDropZone.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestLabeledSlider.cpp
@@ -734,6 +735,7 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestElementEditor.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestElementPalette.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestElementTabNavigator.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestExportController.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestFileDialogProvider.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestICDropZone.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestLabeledSlider.h
