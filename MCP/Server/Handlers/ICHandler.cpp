@@ -77,7 +77,7 @@ QJsonObject ICHandler::handleCreateIC(const QJsonObject &params, const QJsonValu
                                    requestId, JsonRpcError::InvalidParams);
     }
 
-    return tryCommand([&]() -> QJsonObject {
+    return tryCommand([&]() -> QJsonObject { // LCOV_EXCL_LINE -- pattern 45: gcov misattributes this multi-line lambda-taking call's entry; the lambda body below is genuinely covered
         QString icFileName = name + ".panda";
         QString fullPath = m_mainWindow->currentDir().absoluteFilePath(icFileName);
 
@@ -91,14 +91,22 @@ QJsonObject ICHandler::handleCreateIC(const QJsonObject &params, const QJsonValu
             return createErrorResponse("Cannot create IC from empty circuit", requestId, JsonRpcError::IcError);
         }
 
+        // Unreachable: currentScene() above already returned non-null, which (per its own
+        // implementation) requires m_mainWindow->currentTab() to be non-null -- nothing
+        // between there and here can close the current tab.
         auto *workspace = m_mainWindow->currentTab();
         if (!workspace) {
-            return createErrorResponse("No active workspace available", requestId, JsonRpcError::InternalError);
+            return createErrorResponse("No active workspace available", requestId, JsonRpcError::InternalError); // LCOV_EXCL_LINE
         }
 
+        // Unreachable in any real MCP invocation: Main.cpp sets Application::interactiveMode
+        // = false unconditionally before ICHandler is ever constructed for --mcp-mode/
+        // --mcp-gui, and WorkSpace::save() only ever returns SaveOutcome::ReadOnlyTarget when
+        // Application::interactiveMode is true -- an open failure here always throws instead
+        // (caught generically by tryCommand, see testHandleCreateIcFailsOnUnwritableTarget).
         if (workspace->save(fullPath) == WorkSpace::SaveOutcome::ReadOnlyTarget) {
-            return createErrorResponse(QString("Cannot write IC file (target location is read-only): %1").arg(fullPath),
-                                       requestId, JsonRpcError::IcError);
+            return createErrorResponse(QString("Cannot write IC file (target location is read-only): %1").arg(fullPath), // LCOV_EXCL_LINE
+                                       requestId, JsonRpcError::IcError); // LCOV_EXCL_LINE
         }
 
         QJsonObject result;
@@ -150,7 +158,7 @@ QJsonObject ICHandler::handleInstantiateIC(const QJsonObject &params, const QJso
     int y = qRound(params.value("y").toDouble() / snap) * snap;
     QString label = params.value("label").toString(icName);
 
-    return tryCommand([&]() -> QJsonObject {
+    return tryCommand([&]() -> QJsonObject { // LCOV_EXCL_LINE -- pattern 45: gcov misattributes this multi-line lambda-taking call's entry; the lambda body below is genuinely covered
         QString icFileName = icName + ".panda";
         QString fullPath = isAbsolute ? icFileName : m_mainWindow->currentDir().absoluteFilePath(icFileName);
 
@@ -187,7 +195,7 @@ QJsonObject ICHandler::handleInstantiateIC(const QJsonObject &params, const QJso
 
             auto *reg = scene->icRegistry();
             if (reg->hasBlob(blobName)) {
-                return createErrorResponse(QString("Blob name collision: an embedded IC named '%1' already exists. "
+                return createErrorResponse(QString("Blob name collision: an embedded IC named '%1' already exists. " // LCOV_EXCL_LINE -- pattern 8: gcov misattributes this multi-line chained string/.arg() call's first line even though it's genuinely reached (see testHandleInstantiateIcInlineRejectsBlobNameCollision)
                                                    "Use blob_name parameter to specify a different name.").arg(blobName),
                                            requestId, JsonRpcError::IcError);
             }
@@ -229,7 +237,7 @@ QJsonObject ICHandler::handleInstantiateIC(const QJsonObject &params, const QJso
 
 QJsonObject ICHandler::handleListICs(const QJsonObject &, const QJsonValue &requestId)
 {
-    return tryCommand([&]() -> QJsonObject {
+    return tryCommand([&]() -> QJsonObject { // LCOV_EXCL_LINE -- pattern 45: gcov misattributes this multi-line lambda-taking call's entry; the lambda body below is genuinely covered
         QJsonArray icsArray;
 
         QDir currentDir(m_mainWindow->currentDir());
@@ -303,7 +311,7 @@ QJsonObject ICHandler::handleEmbedIC(const QJsonObject &params, const QJsonValue
         return createErrorResponse("element_id must be a positive integer", requestId, JsonRpcError::InvalidParams);
     }
 
-    return tryCommand([&]() -> QJsonObject {
+    return tryCommand([&]() -> QJsonObject { // LCOV_EXCL_LINE -- pattern 45: gcov misattributes this multi-line lambda-taking call's entry; the lambda body below is genuinely covered
         auto *item = scene->itemById(elementId);
         if (!item) {
             return createErrorResponse(QString("Element with ID %1 not found").arg(elementId),
@@ -391,7 +399,7 @@ QJsonObject ICHandler::handleExtractIC(const QJsonObject &params, const QJsonVal
         return createErrorResponse("blob_name must not be empty", requestId, JsonRpcError::InvalidParams);
     }
 
-    return tryCommand([&]() -> QJsonObject {
+    return tryCommand([&]() -> QJsonObject { // LCOV_EXCL_LINE -- pattern 45: gcov misattributes this multi-line lambda-taking call's entry; the lambda body below is genuinely covered
         auto *reg = scene->icRegistry();
         if (!reg->hasBlob(blobName)) {
             return createErrorResponse(QString("No embedded IC with blob name '%1' found").arg(blobName),
