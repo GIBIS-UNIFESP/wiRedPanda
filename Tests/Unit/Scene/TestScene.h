@@ -74,6 +74,14 @@ private slots:
     void testWireVisibilityStateTracking();
     void testShowGatesWithMultipleElements();
     void testShowWiresWithMultipleConnections();
+    void testShowWiresTogglesNodeVisibility();
+    void testLastIdTracksHighestAssignedId();
+
+    // InlineLabelEditor: null-element guard, commit-previous-on-restart, and the
+    // empty-label bounding-rect fallback
+    void testInlineLabelEditorStartWithNullElementIsNoOp();
+    void testInlineLabelEditorStartWhileEditingCommitsPrevious();
+    void testInlineLabelEditorEmptyLabelUsesElementBoundingRectFallback();
 
     // ============================================================
     // Topological Sort Tests (4 tests)
