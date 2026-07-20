@@ -1,14 +1,13 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/TestLevel9RegisterFile32x16.h"
+#include "Tests/QuickShell/IC/TestLevel9RegisterFile32x16.h"
 
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "App/Scene/Workspace.h"
-#include "Tests/Common/TestUtils.h"
-#include "Tests/Integration/IC/Tests/CpuTestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 using TestUtils::readMultiBitOutput;
 using TestUtils::setMultiBitInput;
@@ -16,7 +15,7 @@ using TestUtils::clockCycle;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct RegFile32x16Fixture {
-    std::unique_ptr<WorkSpace> workspace;
+    std::unique_ptr<QuickCircuitBuilder> builder;
     IC *ic = nullptr;
     QVector<InputSwitch *> writeAddr;
     QVector<InputSwitch *> readAddr1;
@@ -28,36 +27,34 @@ struct RegFile32x16Fixture {
 
     bool build()
     {
-        workspace = std::make_unique<WorkSpace>();
-        CircuitBuilder builder(workspace->scene());
+        builder = std::make_unique<QuickCircuitBuilder>();
 
-        ic = loadBuildingBlockIC("level9_register_file_32x16.panda");
-        builder.add(ic);
+        ic = static_cast<IC *>(builder->addOwnedElement(loadBuildingBlockIC("level9_register_file_32x16.panda")));
 
-        we = new InputSwitch(); builder.add(we);
-        clk = new InputSwitch(); builder.add(clk);
+        we = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        clk = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
 
         for (int i = 0; i < 5; ++i) {
-            auto *w = new InputSwitch(); builder.add(w); writeAddr.append(w);
-            auto *r = new InputSwitch(); builder.add(r); readAddr1.append(r);
+            auto *w = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch())); writeAddr.append(w);
+            auto *r = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch())); readAddr1.append(r);
         }
         for (int i = 0; i < 16; ++i) {
-            auto *d = new InputSwitch(); builder.add(d); dataIn.append(d);
-            auto *led = new Led(); builder.add(led); readData1.append(led);
+            auto *d = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch())); dataIn.append(d);
+            auto *led = static_cast<Led *>(builder->addOwnedElement(new Led())); readData1.append(led);
         }
 
         for (int i = 0; i < 5; ++i) {
-            builder.connect(writeAddr[i], 0, ic, QString("Write_Addr[%1]").arg(i));
-            builder.connect(readAddr1[i], 0, ic, QString("Read_Addr1[%1]").arg(i));
+            builder->connect(writeAddr[i], 0, ic, QString("Write_Addr[%1]").arg(i));
+            builder->connect(readAddr1[i], 0, ic, QString("Read_Addr1[%1]").arg(i));
         }
         for (int i = 0; i < 16; ++i) {
-            builder.connect(dataIn[i], 0, ic, QString("Data_In[%1]").arg(i));
-            builder.connect(ic, QString("Read_Data1[%1]").arg(i), readData1[i], 0);
+            builder->connect(dataIn[i], 0, ic, QString("Data_In[%1]").arg(i));
+            builder->connect(ic, QString("Read_Data1[%1]").arg(i), readData1[i], 0);
         }
-        builder.connect(we, 0, ic, "WriteEnable");
-        builder.connect(clk, 0, ic, "Clock");
+        builder->connect(we, 0, ic, "WriteEnable");
+        builder->connect(clk, 0, ic, "Clock");
 
-        sim = builder.initSimulation();
+        sim = builder->initSimulation();
         sim->update();
         return true;
     }

@@ -403,6 +403,19 @@ set(QUICK_SHELL_TEST_SOURCES
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel8FetchStage.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel8MemoryStage.cpp
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel8MemoryStage.h
+    ${CMAKE_SOURCE_DIR}/Tests/Integration/IC/Tests/Cpu/Cpu8bitIsa.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel9Cpu16bitRisc.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel9Cpu16bitRisc.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel9FetchStage16bit.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel9FetchStage16bit.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel9MemoryStage16bit.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel9MemoryStage16bit.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel9MultiCycleCpu8bit.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel9MultiCycleCpu8bit.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel9RegisterFile32x16.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel9RegisterFile32x16.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel9SingleCycleCpu8bit.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel9SingleCycleCpu8bit.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/StubDialogProvider.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasCommands.cpp
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasCommands.h

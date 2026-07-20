@@ -1,17 +1,13 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/TestLevel9MemoryStage16bit.h"
-
-#include <QFile>
-#include <QFileInfo>
+#include "Tests/QuickShell/IC/TestLevel9MemoryStage16bit.h"
 
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "App/Scene/Workspace.h"
-#include "Tests/Common/TestUtils.h"
-#include "Tests/Integration/IC/Tests/CpuTestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 using TestUtils::readMultiBitOutput;
 using TestUtils::setMultiBitInput;
@@ -19,7 +15,7 @@ using TestUtils::clockCycle;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct MemoryStage16bitFixture {
-    std::unique_ptr<WorkSpace> workspace;
+    std::unique_ptr<QuickCircuitBuilder> builder;
     IC *ic = nullptr;
     QVector<InputSwitch *> addressInputs;
     QVector<InputSwitch *> datainInputs;
@@ -33,41 +29,39 @@ struct MemoryStage16bitFixture {
 
     bool build()
     {
-        workspace = std::make_unique<WorkSpace>();
-        CircuitBuilder builder(workspace->scene());
+        builder = std::make_unique<QuickCircuitBuilder>();
 
-        ic = loadBuildingBlockIC("level9_memory_stage_16bit.panda");
-        builder.add(ic);
+        ic = static_cast<IC *>(builder->addOwnedElement(loadBuildingBlockIC("level9_memory_stage_16bit.panda")));
 
         for (int i = 0; i < 8; i++) {
-            auto *a = new InputSwitch(); builder.add(a); addressInputs.append(a);
+            auto *a = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch())); addressInputs.append(a);
         }
         for (int i = 0; i < 16; i++) {
-            auto *d = new InputSwitch(); builder.add(d); datainInputs.append(d);
-            auto *r = new InputSwitch(); builder.add(r); resultInputs.append(r);
-            auto *led = new Led(); builder.add(led); dataoutLeds.append(led);
+            auto *d = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch())); datainInputs.append(d);
+            auto *r = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch())); resultInputs.append(r);
+            auto *led = static_cast<Led *>(builder->addOwnedElement(new Led())); dataoutLeds.append(led);
         }
 
-        memread = new InputSwitch(); builder.add(memread);
-        memwrite = new InputSwitch(); builder.add(memwrite);
-        clk = new InputSwitch(); builder.add(clk);
-        reset = new InputSwitch(); builder.add(reset);
+        memread = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        memwrite = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        clk = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        reset = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
 
         for (int i = 0; i < 8; i++) {
-            builder.connect(addressInputs[i], 0, ic, QString("Address[%1]").arg(i));
+            builder->connect(addressInputs[i], 0, ic, QString("Address[%1]").arg(i));
         }
         for (int i = 0; i < 16; i++) {
-            builder.connect(datainInputs[i], 0, ic, QString("DataIn[%1]").arg(i));
-            builder.connect(resultInputs[i], 0, ic, QString("Result[%1]").arg(i));
-            builder.connect(ic, QString("DataOut[%1]").arg(i), dataoutLeds[i], 0);
+            builder->connect(datainInputs[i], 0, ic, QString("DataIn[%1]").arg(i));
+            builder->connect(resultInputs[i], 0, ic, QString("Result[%1]").arg(i));
+            builder->connect(ic, QString("DataOut[%1]").arg(i), dataoutLeds[i], 0);
         }
 
-        builder.connect(memread, 0, ic, "MemRead");
-        builder.connect(memwrite, 0, ic, "MemWrite");
-        builder.connect(clk, 0, ic, "Clock");
-        builder.connect(reset, 0, ic, "Reset");
+        builder->connect(memread, 0, ic, "MemRead");
+        builder->connect(memwrite, 0, ic, "MemWrite");
+        builder->connect(clk, 0, ic, "Clock");
+        builder->connect(reset, 0, ic, "Reset");
 
-        sim = builder.initSimulation();
+        sim = builder->initSimulation();
         sim->update();
         return true;
     }

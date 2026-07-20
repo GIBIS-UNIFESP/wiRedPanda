@@ -1,17 +1,13 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/TestLevel9Cpu16bitRisc.h"
-
-#include <QFile>
-#include <QFileInfo>
+#include "Tests/QuickShell/IC/TestLevel9Cpu16bitRisc.h"
 
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "App/Scene/Workspace.h"
-#include "Tests/Common/TestUtils.h"
-#include "Tests/Integration/IC/Tests/CpuTestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 using TestUtils::readMultiBitOutput;
 using TestUtils::setMultiBitInput;
@@ -19,7 +15,7 @@ using TestUtils::clockCycle;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct Cpu16bitRiscFixture {
-    std::unique_ptr<WorkSpace> workspace;
+    std::unique_ptr<QuickCircuitBuilder> builder;
     IC *ic = nullptr;
     InputSwitch *clk = nullptr;
     InputSwitch *reset = nullptr;
@@ -37,61 +33,59 @@ struct Cpu16bitRiscFixture {
 
     bool build()
     {
-        workspace = std::make_unique<WorkSpace>();
-        CircuitBuilder builder(workspace->scene());
+        builder = std::make_unique<QuickCircuitBuilder>();
 
-        ic = loadBuildingBlockIC("level9_cpu_16bit_risc.panda");
-        builder.add(ic);
+        ic = static_cast<IC *>(builder->addOwnedElement(loadBuildingBlockIC("level9_cpu_16bit_risc.panda")));
 
-        clk = new InputSwitch(); builder.add(clk);
-        reset = new InputSwitch(); builder.add(reset);
-        progWrite = new InputSwitch(); builder.add(progWrite);
-        regProgWrite = new InputSwitch(); builder.add(regProgWrite);
+        clk = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        reset = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        progWrite = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        regProgWrite = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
         for (int i = 0; i < 8; i++) {
-            progAddr[i] = new InputSwitch(); builder.add(progAddr[i]);
+            progAddr[i] = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
         }
         for (int i = 0; i < 16; i++) {
-            progData[i] = new InputSwitch(); builder.add(progData[i]);
+            progData[i] = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
         }
         for (int i = 0; i < 5; i++) {
-            regProgAddr[i] = new InputSwitch(); builder.add(regProgAddr[i]);
+            regProgAddr[i] = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
         }
         for (int i = 0; i < 16; i++) {
-            regProgData[i] = new InputSwitch(); builder.add(regProgData[i]);
+            regProgData[i] = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
         }
 
         for (int i = 0; i < 8; i++) {
-            auto *p = new Led(); builder.add(p); pcLeds.append(p);
+            auto *p = static_cast<Led *>(builder->addOwnedElement(new Led())); pcLeds.append(p);
         }
         for (int i = 0; i < 16; i++) {
-            auto *r = new Led(); builder.add(r); resultLeds.append(r);
-            auto *il = new Led(); builder.add(il); instrLeds.append(il);
+            auto *r = static_cast<Led *>(builder->addOwnedElement(new Led())); resultLeds.append(r);
+            auto *il = static_cast<Led *>(builder->addOwnedElement(new Led())); instrLeds.append(il);
         }
         for (int i = 0; i < 5; i++) {
-            auto *o = new Led(); builder.add(o); opcodeLeds.append(o);
+            auto *o = static_cast<Led *>(builder->addOwnedElement(new Led())); opcodeLeds.append(o);
         }
 
-        builder.connect(clk, 0, ic, "Clock");
-        builder.connect(reset, 0, ic, "Reset");
-        builder.connect(progWrite, 0, ic, "ProgWrite");
-        builder.connect(regProgWrite, 0, ic, "RegProgWrite");
+        builder->connect(clk, 0, ic, "Clock");
+        builder->connect(reset, 0, ic, "Reset");
+        builder->connect(progWrite, 0, ic, "ProgWrite");
+        builder->connect(regProgWrite, 0, ic, "RegProgWrite");
 
         for (int i = 0; i < 8; i++) {
-            builder.connect(ic, QString("PC[%1]").arg(i), pcLeds[i], 0);
-            builder.connect(progAddr[i], 0, ic, QString("ProgAddr[%1]").arg(i));
+            builder->connect(ic, QString("PC[%1]").arg(i), pcLeds[i], 0);
+            builder->connect(progAddr[i], 0, ic, QString("ProgAddr[%1]").arg(i));
         }
         for (int i = 0; i < 16; i++) {
-            builder.connect(ic, QString("Result[%1]").arg(i), resultLeds[i], 0);
-            builder.connect(ic, QString("Instruction[%1]").arg(i), instrLeds[i], 0);
-            builder.connect(progData[i], 0, ic, QString("ProgData[%1]").arg(i));
-            builder.connect(regProgData[i], 0, ic, QString("RegProgData[%1]").arg(i));
+            builder->connect(ic, QString("Result[%1]").arg(i), resultLeds[i], 0);
+            builder->connect(ic, QString("Instruction[%1]").arg(i), instrLeds[i], 0);
+            builder->connect(progData[i], 0, ic, QString("ProgData[%1]").arg(i));
+            builder->connect(regProgData[i], 0, ic, QString("RegProgData[%1]").arg(i));
         }
         for (int i = 0; i < 5; i++) {
-            builder.connect(ic, QString("OpCode[%1]").arg(i), opcodeLeds[i], 0);
-            builder.connect(regProgAddr[i], 0, ic, QString("RegProgAddr[%1]").arg(i));
+            builder->connect(ic, QString("OpCode[%1]").arg(i), opcodeLeds[i], 0);
+            builder->connect(regProgAddr[i], 0, ic, QString("RegProgAddr[%1]").arg(i));
         }
 
-        sim = builder.initSimulation();
+        sim = builder->initSimulation();
         sim->update();
         return true;
     }

@@ -1,17 +1,14 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/TestLevel9SingleCycleCpu8bit.h"
-
-#include <QFile>
-#include <QFileInfo>
+#include "Tests/QuickShell/IC/TestLevel9SingleCycleCpu8bit.h"
 
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/Cpu/Cpu8bitIsa.h"
-#include "Tests/Integration/IC/Tests/CpuTestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 using TestUtils::readMultiBitOutput;
 using TestUtils::setMultiBitInput;
@@ -21,7 +18,7 @@ using CPUTestUtils::loadBuildingBlockIC;
 
 /// Fixture holding the full CPU test harness.
 struct CPUFixture {
-    std::unique_ptr<WorkSpace> workspace;
+    std::unique_ptr<QuickCircuitBuilder> builder;
     IC *cpu = nullptr;
     InputSwitch *clk = nullptr;
     InputSwitch *reset = nullptr;
@@ -40,82 +37,71 @@ struct CPUFixture {
 
     bool build()
     {
-        workspace = std::make_unique<WorkSpace>();
-        CircuitBuilder builder(workspace->scene());
+        builder = std::make_unique<QuickCircuitBuilder>();
 
-        cpu = loadBuildingBlockIC("level9_single_cycle_cpu_8bit.panda");
-        builder.add(cpu);
+        cpu = static_cast<IC *>(builder->addOwnedElement(loadBuildingBlockIC("level9_single_cycle_cpu_8bit.panda")));
 
-        clk = new InputSwitch();
-        reset = new InputSwitch();
-        progWrite = new InputSwitch();
-        regProgWrite = new InputSwitch();
-        builder.add(clk, reset, progWrite, regProgWrite);
+        clk = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        reset = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        progWrite = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        regProgWrite = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
 
         for (int i = 0; i < 8; ++i) {
-            auto *sw = new InputSwitch();
-            builder.add(sw);
+            auto *sw = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
             progAddr.append(sw);
         }
         for (int i = 0; i < 8; ++i) {
-            auto *sw = new InputSwitch();
-            builder.add(sw);
+            auto *sw = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
             progData.append(sw);
         }
         for (int i = 0; i < 3; ++i) {
-            auto *sw = new InputSwitch();
-            builder.add(sw);
+            auto *sw = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
             regProgAddr.append(sw);
         }
         for (int i = 0; i < 8; ++i) {
-            auto *sw = new InputSwitch();
-            builder.add(sw);
+            auto *sw = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
             regProgData.append(sw);
         }
 
         // Connect inputs
-        builder.connect(clk, 0, cpu, "Clock");
-        builder.connect(reset, 0, cpu, "Reset");
-        builder.connect(progWrite, 0, cpu, "ProgWrite");
-        builder.connect(regProgWrite, 0, cpu, "RegProgWrite");
+        builder->connect(clk, 0, cpu, "Clock");
+        builder->connect(reset, 0, cpu, "Reset");
+        builder->connect(progWrite, 0, cpu, "ProgWrite");
+        builder->connect(regProgWrite, 0, cpu, "RegProgWrite");
 
         for (int i = 0; i < 8; ++i) {
-            builder.connect(progAddr[i], 0, cpu, QString("ProgAddr[%1]").arg(i));
-            builder.connect(progData[i], 0, cpu, QString("ProgData[%1]").arg(i));
+            builder->connect(progAddr[i], 0, cpu, QString("ProgAddr[%1]").arg(i));
+            builder->connect(progData[i], 0, cpu, QString("ProgData[%1]").arg(i));
         }
         for (int i = 0; i < 3; ++i) {
-            builder.connect(regProgAddr[i], 0, cpu, QString("RegProgAddr[%1]").arg(i));
+            builder->connect(regProgAddr[i], 0, cpu, QString("RegProgAddr[%1]").arg(i));
         }
         for (int i = 0; i < 8; ++i) {
-            builder.connect(regProgData[i], 0, cpu, QString("RegProgData[%1]").arg(i));
+            builder->connect(regProgData[i], 0, cpu, QString("RegProgData[%1]").arg(i));
         }
 
         // Connect outputs
         for (int i = 0; i < 8; ++i) {
-            auto *led = new Led();
-            builder.add(led);
+            auto *led = static_cast<Led *>(builder->addOwnedElement(new Led()));
             pcLeds.append(led);
-            builder.connect(cpu, QString("PC[%1]").arg(i), led, 0);
+            builder->connect(cpu, QString("PC[%1]").arg(i), led, 0);
         }
         for (int i = 0; i < 8; ++i) {
-            auto *led = new Led();
-            builder.add(led);
+            auto *led = static_cast<Led *>(builder->addOwnedElement(new Led()));
             resultLeds.append(led);
-            builder.connect(cpu, QString("Result[%1]").arg(i), led, 0);
+            builder->connect(cpu, QString("Result[%1]").arg(i), led, 0);
         }
         for (int i = 0; i < 8; ++i) {
-            auto *led = new Led();
-            builder.add(led);
+            auto *led = static_cast<Led *>(builder->addOwnedElement(new Led()));
             instrLeds.append(led);
-            builder.connect(cpu, QString("Instruction[%1]").arg(i), led, 0);
+            builder->connect(cpu, QString("Instruction[%1]").arg(i), led, 0);
         }
-        zeroLed = new Led();
-        signLed = new Led();
-        builder.add(zeroLed, signLed);
-        builder.connect(cpu, "Zero", zeroLed, 0);
-        builder.connect(cpu, "Sign", signLed, 0);
+        zeroLed = static_cast<Led *>(builder->addOwnedElement(new Led()));
+        signLed = static_cast<Led *>(builder->addOwnedElement(new Led()));
+        builder->connect(cpu, "Zero", zeroLed, 0);
+        builder->connect(cpu, "Sign", signLed, 0);
 
-        sim = builder.initSimulation();
+        sim = builder->initSimulation();
         sim->update();
         return true;
     }

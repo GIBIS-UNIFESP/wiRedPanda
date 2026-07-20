@@ -86,6 +86,12 @@
 #include "Tests/QuickShell/IC/TestLevel8ExecuteStage.h"
 #include "Tests/QuickShell/IC/TestLevel8FetchStage.h"
 #include "Tests/QuickShell/IC/TestLevel8MemoryStage.h"
+#include "Tests/QuickShell/IC/TestLevel9Cpu16bitRisc.h"
+#include "Tests/QuickShell/IC/TestLevel9FetchStage16bit.h"
+#include "Tests/QuickShell/IC/TestLevel9MemoryStage16bit.h"
+#include "Tests/QuickShell/IC/TestLevel9MultiCycleCpu8bit.h"
+#include "Tests/QuickShell/IC/TestLevel9RegisterFile32x16.h"
+#include "Tests/QuickShell/IC/TestLevel9SingleCycleCpu8bit.h"
 #include "Tests/QuickShell/TestFeedback.h"
 #include "Tests/QuickShell/TestSimulation.h"
 #include "Tests/QuickShell/TestQuickWorkSpace.h"
@@ -207,5 +213,11 @@ int main(int argc, char **argv)
         {"TestLevel8ExecuteStage", []() -> QObject * { return new TestLevel8ExecuteStage; }},
         {"TestLevel8FetchStage", []() -> QObject * { return new TestLevel8FetchStage; }},
         {"TestLevel8MemoryStage", []() -> QObject * { return new TestLevel8MemoryStage; }},
+        {"TestLevel9CPU16BitRISC", []() -> QObject * { return new TestLevel9CPU16BitRISC; }},
+        {"TestLevel9FetchStage16Bit", []() -> QObject * { return new TestLevel9FetchStage16Bit; }},
+        {"TestLevel9MemoryStage16Bit", []() -> QObject * { return new TestLevel9MemoryStage16Bit; }},
+        {"TestLevel9MultiCycleCPU8Bit", []() -> QObject * { return new TestLevel9MultiCycleCPU8Bit; }},
+        {"TestLevel9RegisterFile32X16", []() -> QObject * { return new TestLevel9RegisterFile32X16; }},
+        {"TestLevel9SingleCycleCPU8Bit", []() -> QObject * { return new TestLevel9SingleCycleCPU8Bit; }},
     });
 }
