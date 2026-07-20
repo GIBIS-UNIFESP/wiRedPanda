@@ -638,6 +638,12 @@ private:
     /// see ElementAppearance::setPixmap()/setRenderPixmap().
     friend class ElementAppearance;
 
+    /// Calls the protected sceneEvent() directly to test its Ctrl+click swallow deterministically:
+    /// a real QTest::mousePress(..., Qt::ControlModifier, ...) depends on the platform's actual
+    /// keyboard-modifier state reaching the synthesized QGraphicsSceneMouseEvent, which this
+    /// sandbox's offscreen/X11 setup does not reproduce reliably.
+    friend class TestGraphicElement;
+
     /// Drops and re-enables the item's DeviceCoordinateCache so the next paint re-renders the
     /// whole item. DeviceCoordinateCache invalidates incrementally and keeps the previously
     /// cached device tile when the displayed pixmap swaps to a different size (e.g. a small

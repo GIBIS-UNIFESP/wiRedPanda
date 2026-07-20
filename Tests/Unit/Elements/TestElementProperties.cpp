@@ -274,6 +274,12 @@ void TestElementProperties::testColorCycling()
     led.setColor("Red");
     QString prev = led.previousColor();
     QCOMPARE(prev, QString("White"));
+
+    led.setColor("Blue");
+    QCOMPARE(led.previousColor(), QString("Green"));
+
+    led.setColor("Purple");
+    QCOMPARE(led.previousColor(), QString("Blue"));
 }
 
 // Rotation Tests
