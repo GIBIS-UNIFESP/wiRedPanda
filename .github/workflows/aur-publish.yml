@@ -24,7 +24,7 @@ jobs:
       HAS_AUR_KEY: ${{ secrets.AUR_SSH_PRIVATE_KEY != '' }}
 
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v7.0.0
 
     - name: Extract Version
       run: |
