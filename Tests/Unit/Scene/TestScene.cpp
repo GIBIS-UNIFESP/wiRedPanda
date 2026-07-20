@@ -9,15 +9,19 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QGraphicsProxyWidget>
+#include <QGraphicsSceneEvent>
 #include <QImage>
 #include <QKeyEvent>
 #include <QLineEdit>
 #include <QMimeData>
 #include <QPainter>
+#include <QScrollBar>
+#include <QSignalSpy>
 #include <QTest>
 #include <QTransform>
 #include <QUrl>
 
+#include "App/Core/Application.h"
 #include "App/Core/Constants.h"
 #include "App/Core/ItemWithId.h"
 #include "App/Core/MimeTypes.h"
@@ -32,11 +36,13 @@
 #include "App/Element/GraphicElements/Or.h"
 #include "App/IO/Serialization.h"
 #include "App/Scene/ClipboardManager.h"
+#include "App/Scene/GraphicsView.h"
 #include "App/Scene/ICRegistry.h"
 #include "App/Scene/InlineLabelEditor.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/Wiring/Connection.h"
+#include "App/Wiring/Port.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestScene::initTestCase()
@@ -2068,4 +2074,212 @@ void TestScene::testResizeSceneQuantizesSceneRect()
     QVERIFY(grown.bottom() > rect.bottom());
     QVERIFY(isQuantized(grown.right()));
     QVERIFY(isQuantized(grown.bottom()));
+}
+
+void TestScene::testCtrlClickTogglesElementSelection()
+{
+    // A Ctrl-modifier QGraphicsSceneMouseEvent synthesized via QTest doesn't reliably carry
+    // the modifier through this sandbox's event pipeline (confirmed empirically: isSelected()
+    // stayed unchanged after a QTest-driven Ctrl+click, meaning the modifier never arrived) --
+    // call Scene's protected mousePressEvent() directly instead, via the friend seam.
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+
+    auto *gate = new And();
+    gate->setPos(100, 100);
+    scene->addItem(gate);
+    gate->setSelected(true);
+
+    QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMousePress);
+    event.setScenePos(gate->sceneBoundingRect().center());
+    event.setButton(Qt::LeftButton);
+    event.setButtons(Qt::LeftButton);
+    event.setModifiers(Qt::ControlModifier);
+    scene->mousePressEvent(&event);
+
+    QVERIFY2(!gate->isSelected(), "Ctrl+click on a selected element must deselect it");
+}
+
+void TestScene::testPressOnPortWhileWireInProgressCompletesConnection()
+{
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    GraphicsView *view = workspace.view();
+
+    auto *sw = new InputSwitch();
+    sw->setPos(0, 0);
+    scene->addItem(sw);
+    auto *led = new Led();
+    led->setPos(200, 0);
+    scene->addItem(led);
+
+    auto *outputPort = sw->outputPort(0);
+    auto *inputPort = led->inputPort(0);
+
+    scene->connectionManager()->startFromOutput(outputPort);
+    QVERIFY(scene->connectionManager()->hasEditedConnection());
+
+    const QPoint inputViewPos = view->mapFromScene(inputPort->sceneBoundingRect().center());
+    QTest::mousePress(view->viewport(), Qt::LeftButton, Qt::NoModifier, inputViewPos);
+
+    QVERIFY2(!scene->connectionManager()->hasEditedConnection(),
+              "Pressing a compatible port while a wire is in progress must complete it immediately");
+    QCOMPARE(TestUtils::countConnections(scene), 1);
+}
+
+void TestScene::testPressOnEmptyInputPortStartsWireFromInput()
+{
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    GraphicsView *view = workspace.view();
+
+    auto *led = new Led();
+    led->setPos(100, 100);
+    scene->addItem(led);
+
+    auto *inputPort = led->inputPort(0);
+    const QPoint viewPos = view->mapFromScene(inputPort->sceneBoundingRect().center());
+    QTest::mousePress(view->viewport(), Qt::LeftButton, Qt::NoModifier, viewPos);
+
+    QVERIFY(scene->connectionManager()->hasEditedConnection());
+    QCOMPARE(scene->connectionManager()->editedConnection()->endPort(), inputPort);
+}
+
+void TestScene::testPressOnOccupiedInputPortDetachesWire()
+{
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    GraphicsView *view = workspace.view();
+    CircuitBuilder builder(scene);
+
+    auto *sw = new InputSwitch();
+    sw->setPos(0, 0);
+    auto *led = new Led();
+    led->setPos(200, 0);
+    builder.add(sw, led);
+    Connection *conn = builder.connect(sw, 0, led, 0);
+    QVERIFY(conn);
+    QCOMPARE(TestUtils::countConnections(scene), 1);
+
+    auto *outputPort = sw->outputPort(0);
+    auto *inputPort = led->inputPort(0);
+    const QPoint viewPos = view->mapFromScene(inputPort->sceneBoundingRect().center());
+    QTest::mousePress(view->viewport(), Qt::LeftButton, Qt::NoModifier, viewPos);
+
+    // detach() deletes the old (completed) connection and starts a NEW in-progress wire
+    // re-anchored at the SAME output port -- countConnections() alone can't tell them apart
+    // (the in-progress wire is itself a real Connection item), so check that the input port's
+    // original completed connection is really gone, and the new edited wire starts where the
+    // old one did.
+    QVERIFY2(inputPort->connections().isEmpty(), "The original completed connection must be detached from the input port");
+    QVERIFY(scene->connectionManager()->hasEditedConnection());
+    QCOMPARE(scene->connectionManager()->editedConnection()->startPort(), outputPort);
+}
+
+void TestScene::testRightClickOnElementOpensContextMenu()
+{
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    GraphicsView *view = workspace.view();
+
+    auto *gate = new And();
+    gate->setPos(50, 50);
+    scene->addItem(gate);
+
+    QSignalSpy contextMenuSpy(scene, &Scene::contextMenuPos);
+    const QPoint viewPos = view->mapFromScene(gate->sceneBoundingRect().center());
+    QTest::mousePress(view->viewport(), Qt::RightButton, Qt::NoModifier, viewPos);
+
+    QCOMPARE(contextMenuSpy.count(), 1);
+    QVERIFY2(gate->isSelected(), "Right-clicking an unselected element must select it before opening its menu");
+}
+
+void TestScene::testDraggingElementPastTimerThresholdEnsuresVisible()
+{
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    GraphicsView *view = workspace.view();
+    view->resize(400, 300);
+
+    auto *gate = new And();
+    gate->setPos(50, 50);
+    scene->addItem(gate);
+    gate->setSelected(true);
+
+    const QPoint startPos = view->mapFromScene(gate->sceneBoundingRect().center());
+    QTest::mousePress(view->viewport(), Qt::LeftButton, Qt::NoModifier, startPos);
+
+    const int hBefore = view->horizontalScrollBar()->value();
+    const int vBefore = view->verticalScrollBar()->value();
+
+    // Exceed the 50ms move-throttle so the next move actually calls ensureVisible().
+    QTest::qWait(60);
+
+    const QPoint farPos = startPos + QPoint(5000, 5000);
+    QMouseEvent move(QEvent::MouseMove, farPos, view->viewport()->mapToGlobal(farPos),
+                      Qt::NoButton, Qt::LeftButton, Qt::NoModifier);
+    QApplication::sendEvent(view->viewport(), &move);
+
+    QVERIFY2(view->horizontalScrollBar()->value() != hBefore || view->verticalScrollBar()->value() != vBefore,
+              "Dragging far outside the viewport past the throttle must scroll the view to follow it");
+
+    QTest::mouseRelease(view->viewport(), Qt::LeftButton, Qt::NoModifier, farPos);
+}
+
+void TestScene::testCtrlDoubleClickOnWireDoesNotInsertNode()
+{
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    GraphicsView *view = workspace.view();
+    CircuitBuilder builder(scene);
+
+    auto *sw = new InputSwitch();
+    auto *led = new Led();
+    builder.add(sw, led);
+    builder.connect(sw, 0, led, 0);
+
+    const int undoCountBefore = scene->undoStack()->count();
+    const QPoint viewPos = view->mapFromScene(QPointF(100, 0));
+    QTest::mouseDClick(view->viewport(), Qt::LeftButton, Qt::ControlModifier, viewPos);
+
+    QCOMPARE(scene->undoStack()->count(), undoCountBefore);
+    QCOMPARE(TestUtils::countConnections(scene), 1);
+}
+
+void TestScene::testDoubleClickOnConnectedWireInsertsSplitNode()
+{
+    // Connection::updatePath() (real Bézier geometry, needed for the double-click hit test
+    // below to find the wire at all) is a no-op unless rendering is enabled -- see
+    // Application::renderingEnabled, disabled globally for the test suite.
+    const bool prevRendering = Application::renderingEnabled;
+    Application::renderingEnabled = true;
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    GraphicsView *view = workspace.view();
+    CircuitBuilder builder(scene);
+
+    auto *sw = new InputSwitch();
+    sw->setPos(0, 0);
+    auto *led = new Led();
+    led->setPos(200, 0);
+    builder.add(sw, led);
+    Connection *conn = builder.connect(sw, 0, led, 0);
+    QVERIFY(conn);
+    conn->updatePath();
+
+    const int undoCountBefore = scene->undoStack()->count();
+    const QPointF midScenePos = conn->path().pointAtPercent(0.5);
+    const QPoint viewPos = view->mapFromScene(midScenePos);
+
+    // SceneInteraction::mouseDoubleClick() looks up the connection via its own tracked
+    // m_mousePos (last set by a mousePress/mouseMove), not the double-click event's own
+    // position -- send a real click at the same spot first so it's primed correctly.
+    QTest::mouseClick(view->viewport(), Qt::LeftButton, Qt::NoModifier, viewPos);
+    QTest::mouseDClick(view->viewport(), Qt::LeftButton, Qt::NoModifier, viewPos);
+
+    QCOMPARE(scene->undoStack()->count(), undoCountBefore + 1);
+    QCOMPARE(TestUtils::countConnections(scene), 2);
+
+    Application::renderingEnabled = prevRendering;
 }
