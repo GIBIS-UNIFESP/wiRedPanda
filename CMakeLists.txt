@@ -941,6 +941,7 @@ add_test(NAME TestMux COMMAND test_wiredpanda TestMux WORKING_DIRECTORY ${CMAKE_
 add_test(NAME TestPort COMMAND test_wiredpanda TestPort WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestPropertyShortcutHandler COMMAND test_wiredpanda TestPropertyShortcutHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestRecentFilesUnit COMMAND test_wiredpanda TestRecentFilesUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestSceneUiBinder COMMAND test_wiredpanda TestSceneUiBinder WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSelectionCapabilities COMMAND test_wiredpanda TestSelectionCapabilities WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSimulationUnit COMMAND test_wiredpanda TestSimulationUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestDanglingPointer COMMAND test_wiredpanda TestDanglingPointer WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -1095,7 +1096,7 @@ set(ALL_TESTS
     TestArduinoCodeGenUnit TestCodeGenUtils TestSystemVerilogCodeGenUnit
     TestCircuitExporter TestElementContextMenu TestElementEditor TestElementPalette
     TestElementTabNavigator TestFileDialogProviderUnit TestICDropZone TestLabeledSlider
-    TestLanguageManager TestMinimapWidget TestSelectionCapabilities
+    TestLanguageManager TestMinimapWidget TestSceneUiBinder TestSelectionCapabilities
     TestTrashButton
     TestConnection TestConnectionManager TestGraphicsView TestPropertyShortcutHandler TestPort TestSceneDropHandler
     TestDemux TestDisplay TestDisplay7 TestGraphicElement TestICRegistry TestICUnit TestMux
