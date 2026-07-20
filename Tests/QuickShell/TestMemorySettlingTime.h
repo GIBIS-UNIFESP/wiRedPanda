@@ -10,8 +10,6 @@ class TestMemorySettlingTime : public QObject
     Q_OBJECT
 
 private slots:
-    void initTestCase();
-
     // ============================================================
     // Settling Time Benchmarks
     // ============================================================

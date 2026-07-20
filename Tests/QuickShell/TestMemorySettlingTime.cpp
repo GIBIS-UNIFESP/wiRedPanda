@@ -1,13 +1,14 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/TestsWithoutPanda/TestMemorySettlingTime.h"
+#include "Tests/QuickShell/TestMemorySettlingTime.h"
 
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Not.h"
-#include "Tests/Common/TestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 using TestUtils::inputStatus;
 
@@ -36,14 +37,14 @@ struct SingleStageDecoderCircuit {
     Not notGates[6];
 };
 
-void buildSingleStageDecoder6bit(WorkSpace* workspace,
+void buildSingleStageDecoder6bit(QuickCircuitBuilder *builderPtr,
                                  InputSwitch*& address,
                                  InputSwitch*& control,
                                  Led*& outputs,
                                  std::unique_ptr<SingleStageDecoderCircuit>& circuit,
                                  Simulation*& sim)
 {
-    CircuitBuilder builder(workspace->scene());
+    QuickCircuitBuilder &builder = *builderPtr;
 
     circuit = std::make_unique<SingleStageDecoderCircuit>();
 
@@ -101,14 +102,14 @@ struct CascadedDecoderCircuit {
     Not notGates[6];
 };
 
-void buildCascadedDecoder6bit(WorkSpace* workspace,
+void buildCascadedDecoder6bit(QuickCircuitBuilder *builderPtr,
                               InputSwitch*& address,
                               InputSwitch*& control,
                               Led*& outputs,
                               std::unique_ptr<CascadedDecoderCircuit>& circuit,
                               Simulation*& sim)
 {
-    CircuitBuilder builder(workspace->scene());
+    QuickCircuitBuilder &builder = *builderPtr;
 
     circuit = std::make_unique<CascadedDecoderCircuit>();
 
@@ -177,11 +178,6 @@ static bool isOneHot(Led *outputs, int activeAddr)
 // Test Implementation
 // ============================================================
 
-void TestMemorySettlingTime::initTestCase()
-{
-    TestUtils::setupTestEnvironment();
-}
-
 void TestMemorySettlingTime::testDecoderSettlingTime_singlestage_data()
 {
     QTest::addColumn<int>("addressValue");
@@ -200,10 +196,10 @@ void TestMemorySettlingTime::testDecoderSettlingTime_singlestage()
     InputSwitch *address, *control;
     Led *outputs;
 
-    auto workspace = std::make_unique<WorkSpace>();
+    QuickCircuitBuilder builder;
     std::unique_ptr<SingleStageDecoderCircuit> circuit;
     Simulation *sim = nullptr;
-    buildSingleStageDecoder6bit(workspace.get(), address, control, outputs, circuit, sim);
+    buildSingleStageDecoder6bit(&builder, address, control, outputs, circuit, sim);
 
     sim->update();
     for (int bit = 0; bit < 6; bit++) {
@@ -235,10 +231,10 @@ void TestMemorySettlingTime::testDecoderSettlingTime_cascaded()
     InputSwitch *address, *control;
     Led *outputs;
 
-    auto workspace = std::make_unique<WorkSpace>();
+    QuickCircuitBuilder builder;
     std::unique_ptr<CascadedDecoderCircuit> circuit;
     Simulation *sim = nullptr;
-    buildCascadedDecoder6bit(workspace.get(), address, control, outputs, circuit, sim);
+    buildCascadedDecoder6bit(&builder, address, control, outputs, circuit, sim);
 
     sim->update();
     for (int bit = 0; bit < 6; bit++) {
@@ -273,15 +269,15 @@ void TestMemorySettlingTime::testReadMuxSettlingTime()
     InputSwitch *addr_ss, *ctrl_ss, *addr_cas, *ctrl_cas;
     Led *out_ss, *out_cas;
 
-    auto workspace_ss = std::make_unique<WorkSpace>();
+    QuickCircuitBuilder builder_ss;
     std::unique_ptr<SingleStageDecoderCircuit> circuit_ss;
     Simulation *sim_ss = nullptr;
-    buildSingleStageDecoder6bit(workspace_ss.get(), addr_ss, ctrl_ss, out_ss, circuit_ss, sim_ss);
+    buildSingleStageDecoder6bit(&builder_ss, addr_ss, ctrl_ss, out_ss, circuit_ss, sim_ss);
 
-    auto workspace_cas = std::make_unique<WorkSpace>();
+    QuickCircuitBuilder builder_cas;
     std::unique_ptr<CascadedDecoderCircuit> circuit_cas;
     Simulation *sim_cas = nullptr;
-    buildCascadedDecoder6bit(workspace_cas.get(), addr_cas, ctrl_cas, out_cas, circuit_cas, sim_cas);
+    buildCascadedDecoder6bit(&builder_cas, addr_cas, ctrl_cas, out_cas, circuit_cas, sim_cas);
 
     sim_ss->update();
     sim_cas->update();
@@ -305,15 +301,15 @@ void TestMemorySettlingTime::testSettlingTimeBenchmarkSummary()
     InputSwitch *addr_ss, *ctrl_ss, *addr_cas, *ctrl_cas;
     Led *out_ss, *out_cas;
 
-    auto workspace_ss = std::make_unique<WorkSpace>();
+    QuickCircuitBuilder builder_ss;
     std::unique_ptr<SingleStageDecoderCircuit> circuit_ss;
     Simulation *sim_ss = nullptr;
-    buildSingleStageDecoder6bit(workspace_ss.get(), addr_ss, ctrl_ss, out_ss, circuit_ss, sim_ss);
+    buildSingleStageDecoder6bit(&builder_ss, addr_ss, ctrl_ss, out_ss, circuit_ss, sim_ss);
 
-    auto workspace_cas = std::make_unique<WorkSpace>();
+    QuickCircuitBuilder builder_cas;
     std::unique_ptr<CascadedDecoderCircuit> circuit_cas;
     Simulation *sim_cas = nullptr;
-    buildCascadedDecoder6bit(workspace_cas.get(), addr_cas, ctrl_cas, out_cas, circuit_cas, sim_cas);
+    buildCascadedDecoder6bit(&builder_cas, addr_cas, ctrl_cas, out_cas, circuit_cas, sim_cas);
 
     const int testAddresses[] = {0x00, 0x01, 0x15, 0x2A, 0x3F, 0x20, 0x10, 0x0F};
 

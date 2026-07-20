@@ -491,6 +491,8 @@ set(QUICK_SHELL_TEST_SOURCES
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestDisplays.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestSequentialLogic.cpp
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestSequentialLogic.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestMemorySettlingTime.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestMemorySettlingTime.h
 )
 
 # Usage: ./build/test_wiredpanda_quick ClassName [functionName] -- mirrors test_wiredpanda's

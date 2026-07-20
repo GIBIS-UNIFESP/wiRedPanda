@@ -241,7 +241,6 @@ set(MEMORY_HELPERS_HEADERS
 set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestICFixtureLayout.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestsWithoutPanda/TestDecoder8to256.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestsWithoutPanda/TestMemorySettlingTime.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestsWithoutPanda/TestRamCell1bit.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestsWithoutPanda/TestSequential.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/Logic/TestMuxDemuxComprehensive.cpp
@@ -337,7 +336,6 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/CpuTestUtils.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestICFixtureLayout.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestsWithoutPanda/TestDecoder8to256.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestsWithoutPanda/TestMemorySettlingTime.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestsWithoutPanda/TestRamCell1bit.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestsWithoutPanda/TestSequential.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/Logic/TestMuxDemuxComprehensive.h

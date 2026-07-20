@@ -123,6 +123,7 @@
 #include "Tests/QuickShell/TestLogicGates.h"
 #include "Tests/QuickShell/TestDisplays.h"
 #include "Tests/QuickShell/TestSequentialLogic.h"
+#include "Tests/QuickShell/TestMemorySettlingTime.h"
 
 int main(int argc, char **argv)
 {
@@ -247,5 +248,6 @@ int main(int argc, char **argv)
         {"TestLogicGates", []() -> QObject * { return new TestLogicGates; }},
         {"TestDisplays", []() -> QObject * { return new TestDisplays; }},
         {"TestSequentialLogic", []() -> QObject * { return new TestSequentialLogic; }},
+        {"TestMemorySettlingTime", []() -> QObject * { return new TestMemorySettlingTime; }},
     });
 }
