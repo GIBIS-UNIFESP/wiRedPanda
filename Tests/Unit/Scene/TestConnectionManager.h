@@ -20,5 +20,10 @@ private slots:
     void testHoverSkipsUnnamedPortLabels();
     void testHoverFanOutShowsAllPeerLabels();
     void testHoverLabelExcludedFromHitTesting();
+
+    // PortHoverLabel's remaining geometry/paint surface, not exercised via ConnectionManager
+    void testHoverLabelConstructsForTopAndBottomSides();
+    void testHoverLabelBoundingRectInflatesBoundsByOnePixel();
+    void testHoverLabelPaintDrawsVisibleChip();
     void testHoverReleaseClearsPeerHighlightAfterWireDeleted();
 };

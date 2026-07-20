@@ -23,4 +23,15 @@ private slots:
     void testMorphNextElement();
     void testMorphPrevElement();
     void testMultiElementShortcutIsSingleUndoStep();
+
+    // Display16's previous-color-only main-property branch
+    void testDisplay16ColorPrevMainProperty();
+    // A "not implemented" main-property type (e.g. AudioBox) is a genuine no-op
+    void testAudioBoxMainPropertyIsNoOp();
+    // TruthTable's output-size secondary property
+    void testTruthTableOutputSizeSecondaryProperty();
+    // Multi-selection macro grouping for adjustSecondaryProperty()/nextElement()/prevElement()
+    void testMultiElementSecondaryPropertyIsSingleUndoStep();
+    void testMultiElementMorphNextIsSingleUndoStep();
+    void testMultiElementMorphPrevIsSingleUndoStep();
 };
