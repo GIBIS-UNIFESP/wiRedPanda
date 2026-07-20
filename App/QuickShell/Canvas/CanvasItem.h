@@ -20,6 +20,7 @@
 #include <QSet>
 #include <QUndoStack>
 #include <QVarLengthArray>
+#include <QVariant>
 #include <QVector>
 #include <QVersionNumber>
 
@@ -36,7 +37,6 @@ class ItemWithId;
 class OutputPort;
 class Port;
 class QDataStream;
-class QGraphicsItem;
 class QPainter;
 class Simulation;
 class SimulationHost;
@@ -50,9 +50,9 @@ enum class SerializationPurpose;
  * \details Proves the plan's riskiest bet in one place: a handful of *real* GraphicElement
  * subclasses (InputSwitch/And/Led — no synthetic stand-ins) are constructed and wired
  * together with real Connection objects, exactly as production code does, but without ever
- * being added to a QGraphicsScene — GraphicElement/Port/Connection's geometry (pos(),
- * boundingRect(), scenePos()) all work from the QGraphicsItem parent-child chain alone, no
- * scene membership required. A real Simulation instance (bound through the narrow
+ * being added to a QGraphicsScene — GraphicElement/Port/Connection are plain, non-QGraphicsItem
+ * classes; their geometry (pos(), boundingRect(), scenePos()) is computed directly from their
+ * own stored state, no scene membership required. A real Simulation instance (bound through the narrow
  * SimulationHost interface, same seam Scene itself uses) drives them on its own 1ms timer.
  * Each simulation-driven state change is picked up by this item's own refresh timer and
  * rendered as batched QSGGeometryNodes (gate bodies, wires, rubber-band overlay). Hit-testing
@@ -405,11 +405,12 @@ public:
     /// extension), matching production.
     void exportToImage(const QString &filePath) const;
 
-    /// Renders elements()+connections() to a landscape A4 PDF at \a filePath. Mirrors
-    /// CircuitExporter::renderToPdf() exactly (same QPrinter setup, same 64px padding via
-    /// elementsBoundingRect().adjusted(-64, -64, 64, 64)) but paints via renderExportImage()'s
-    /// shared paintElementsInto() helper instead of QGraphicsScene::render(). Throws
-    /// Pandaception if the QPainter cannot begin painting to the printer, matching production.
+    /// Renders elements()+connections() to a landscape A4 PDF at \a filePath via QPdfWriter
+    /// (not QPrinter -- see this method's own comment for why), same page setup and 64px
+    /// padding (elementsBoundingRect().adjusted(-64, -64, 64, 64)) as CircuitExporter::
+    /// renderToPdf(), but paints via renderExportImage()'s shared paintElementsInto() helper
+    /// instead of QGraphicsScene::render(). Throws Pandaception if the QPainter cannot begin
+    /// painting to the writer, matching production.
     void exportToPdf(const QString &filePath) const;
 
     /// Paints elements()+connections() into \a painter, scaled and centered to fit \a source
@@ -575,6 +576,21 @@ signals:
     void icPreviewHideRequested();
     void icPreviewCancelRequested(GraphicElement *element);
 
+    /// Emitted whenever the hovered-port highlight set changes: the port under the cursor plus
+    /// every port connected to it via a wire, so the user can trace where a wire's far end
+    /// lands without following it by hand. Mirrors ConnectionManager::setHoverPort()'s
+    /// highlight/showHoverLabels() combined -- collapsed into one signal/one stage (no separate
+    /// tooltip-delay reveal) since Quick has no QToolTip-timed helpEvent() to mirror. An empty
+    /// list means "hide" (nothing hovered, or the port left the canvas). Each QVariantMap has
+    /// screenX/screenY/radius (screen-space, matching worldToScreen()'s own doc comment on why
+    /// signals apply it at the point of emission rather than leaving QML to track pan/zoom),
+    /// side ("left"/"right"/"top"/"bottom", biased away from the element body), text (the
+    /// port's name, empty for an unnamed port -- QML still draws the highlight but skips the
+    /// label chip for those, matching showHoverLabels()'s own empty-name skip), and
+    /// ringColor/labelBgColor/labelTextColor (real QColor values from ThemeManager, not generic
+    /// Qt Quick palette roles -- see buildPortHoverChips()'s own doc comment for why).
+    void portHoverChanged(const QVariantList &chips);
+
 protected:
     /// \reimp Builds the batched geometry nodes (gates, wires, selection overlay) from current state.
     QSGNode *updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data) override;
@@ -671,6 +687,30 @@ private:
     void detachWire(InputPort *endPort);
     void updateEditedWireEnd(const QPointF &pos);
 
+    /// Re-derives the port under \a worldPos (same topmost-hit lookup tryCompleteWire() uses)
+    /// and, if it differs from the currently tracked hover port, emits portHoverChanged() with
+    /// a freshly built chip list. A no-op if the hovered port hasn't changed, mirroring
+    /// ConnectionManager::updateHover()'s identical "only tear down and rebuild... when the
+    /// port under the cursor actually changes" guard (avoids re-emitting/rebuilding every
+    /// mouse-move frame while the cursor sits still on one port).
+    void updatePortHover(const QPointF &worldPos);
+    /// Emits portHoverChanged({}) if a port was tracked as hovered, then clears the tracking.
+    /// Mirrors ConnectionManager::clearHover(). Called from hoverLeaveEvent() and anywhere the
+    /// pointer stops being meaningfully "over" a port (e.g. a button-down drag begins).
+    void clearPortHover();
+    /// Builds the highlight/label payload for \a hoverPort itself plus every port connected to
+    /// it, in this canvas's screen coordinates. Mirrors ConnectionManager::connectedPeers() +
+    /// showHoverLabels()'s combined chip data. Returns an empty list for a null \a hoverPort.
+    /// Includes real ThemeManager colors (not generic Qt Quick palette roles): PortHoverOverlay.
+    /// qml originally used root.palette.highlight/toolTipBase/toolTipText the way Minimap.qml/
+    /// ICPreviewPopup.qml do, but this app's Fusion-style palette leaves those tooltip roles
+    /// unthemed for the dark palette (confirmed via a real screenshot -- white-on-white,
+    /// invisible label text), unlike the generic window/highlight roles those other two files
+    /// read. ThemeManager's own m_portHoverPort/m_portHoverLabelBg/m_portHoverLabelText -- the
+    /// colors PortHoverLabel's original Widgets implementation actually painted with -- sidestep
+    /// that gap entirely.
+    [[nodiscard]] QVariantList buildPortHoverChips(Port *hoverPort) const;
+
     /// Builds an appearance-cache-key string for \a element's current pixmap identity,
     /// rotation, flip, and selection state -- see this class's doc comment for why that's
     /// enough for every element family except Display7/14/16 (not yet ported).
@@ -681,8 +721,8 @@ private:
     /// relative to the cursor (paste); with it they are shifted by exactly that vector from
     /// the originals (duplicate). Returns the items added. Mirrors ClipboardManager::
     /// deserializeAndAdd().
-    QList<QGraphicsItem *> deserializeAndAdd(QDataStream &stream, const QVersionNumber &version,
-                                             std::optional<QPointF> fixedOffset = std::nullopt);
+    QList<ItemWithId *> deserializeAndAdd(QDataStream &stream, const QVersionNumber &version,
+                                          std::optional<QPointF> fixedOffset = std::nullopt);
 
     std::unique_ptr<SimulationHost> m_host;
     std::unique_ptr<Simulation> m_simulation;
@@ -693,6 +733,15 @@ private:
     SpatialIndex m_index;
     quint64 m_hoveredId = 0;
     QSet<quint64> m_selectedIds;
+
+    /// Hover-port tracking stored as element ID + port index, not a raw Port* -- mirrors
+    /// ConnectionManager::m_hoverPortElmId/m_hoverPortNumber exactly (Port isn't an ItemWithId,
+    /// so it has no id of its own; ID 0 for both fields means "nothing hovered", matching that
+    /// same sentinel scheme). Re-resolved fresh through itemById() every use, so a hovered
+    /// port's owning element being deleted mid-hover just makes the next lookup return nullptr
+    /// instead of dereferencing a dangling pointer.
+    int m_hoverPortElmId = 0;
+    int m_hoverPortNumber = 0;
 
     /// Real id/registry layer backing itemById()/nextId()/updateItemId() -- see this class's
     /// doc comment above those declarations. SceneItemRegistry itself is ported unmodified

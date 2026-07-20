@@ -642,6 +642,10 @@ ApplicationWindow {
             // above) -- see ExerciseOverlay.qml's own doc comment. Genuinely canvasHost-local,
             // same as Minimap.
             ExerciseOverlay {}
+
+            // Port-hover highlight/label overlay -- see PortHoverOverlay.qml's own doc comment.
+            // Genuinely canvasHost-local, same as Minimap/ExerciseOverlay.
+            PortHoverOverlay {}
         }
     }
 

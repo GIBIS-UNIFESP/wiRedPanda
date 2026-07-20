@@ -18,15 +18,14 @@
 #include <QPageLayout>
 #include <QPageSize>
 #include <QPainter>
+#include <QPdfWriter>
 #include <QPen>
-#include <QPrinter>
 #include <QQuickWindow>
 #include <QSGGeometry>
 #include <QSGGeometryNode>
 #include <QSGTextureMaterial>
 #include <QSGTransformNode>
 #include <QSGVertexColorMaterial>
-#include <QStyleOptionGraphicsItem>
 #include <QVarLengthArray>
 
 #include "App/Core/Common.h"
@@ -83,9 +82,9 @@ public:
     {
     }
 
-    QList<QGraphicsItem *> simulationItems() const override
+    QList<ItemWithId *> simulationItems() const override
     {
-        QList<QGraphicsItem *> items;
+        QList<ItemWithId *> items;
         items.reserve(m_elements.size());
         for (auto *element : m_elements) {
             items.append(element);
@@ -191,7 +190,7 @@ void paintElementDecorations(QPainter &painter, GraphicElement *element, const T
     for (auto *port : element->allPorts()) {
         painter.save();
         painter.translate(port->pos());
-        painter.setTransform(port->transform(), true);
+        painter.setTransform(port->orientationTransform(), true);
         const PortPaintStyle style = portPaintStyleFor(port->status(), theme);
         painter.setPen(style.pen);
         painter.setBrush(style.brush);
@@ -199,31 +198,103 @@ void paintElementDecorations(QPainter &painter, GraphicElement *element, const T
         painter.restore();
     }
 
-    // Label (and, for Text, its empty-state hint): real QGraphicsSimpleTextItem paint(),
-    // positioned via the same pos()+transform() composition as ports -- font()/brush()/text() are
-    // kept live by updateLabel()/updateTheme(), unlike Port's currentPen()/currentBrush(), so no
-    // local restyling is needed here. A real QStyleOptionGraphicsItem is required, unlike
-    // element->paint()/Port::paint() above: confirmed via gdb, Qt's own
-    // QGraphicsSimpleTextItem::paint() unconditionally reads option->state (its selection-
-    // highlight check) with no null guard -- passing nullptr (safe for every paint() override
-    // this project actually wrote, which all Q_UNUSED it) segfaulted on the render thread.
+    // Label (and, for Text, its empty-state hint): real GraphicElementLabel::paint(), positioned
+    // via the same pos()+transform() composition as ports -- font()/brush()/text() are kept live
+    // by updateLabel()/updateTheme(), unlike Port's currentPen()/currentBrush(), so no local
+    // restyling is needed here.
     if (element->hasLabel() && element->labelItem()->isVisible()) {
-        QStyleOptionGraphicsItem option;
         painter.save();
         painter.translate(element->labelItem()->pos());
         painter.setTransform(element->labelItem()->transform(), true);
-        element->labelItem()->paint(&painter, &option, nullptr);
+        element->labelItem()->paint(&painter);
         painter.restore();
     }
     if (auto *textElement = qobject_cast<Text *>(element); textElement && textElement->emptyHintItem()->isVisible()) {
-        QStyleOptionGraphicsItem option;
         painter.save();
         painter.translate(textElement->emptyHintItem()->pos());
         painter.setTransform(textElement->emptyHintItem()->transform(), true);
-        textElement->emptyHintItem()->paint(&painter, &option, nullptr);
+        textElement->emptyHintItem()->paint(&painter);
         painter.restore();
     }
 }
+
+/// Encodes \a port's position within \a element as a single index (inputs first, then
+/// outputs), or -1 if \a port doesn't belong to \a element. Mirrors decodePort() below and
+/// ConnectionManager's identical original (App/Scene/ConnectionManager.cpp, pre-Quick-rewrite).
+int encodePortIndex(GraphicElement *element, Port *port)
+{
+    for (int i = 0; i < (element->inputSize() + element->outputSize()); ++i) {
+        if (i < element->inputSize()) {
+            if (port == element->inputPort(i)) {
+                return i;
+            }
+        } else if (port == element->outputPort(i - element->inputSize())) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+/// Resolves an (element ID, port index) pair back to a Port, or nullptr if the element no
+/// longer exists or the index is out of range. Mirrors encodePortIndex() above.
+Port *decodePort(const CanvasItem *canvas, const int elmId, const int portNumber)
+{
+    auto *element = dynamic_cast<GraphicElement *>(canvas->itemById(elmId));
+    if (!element) {
+        return nullptr;
+    }
+    if (portNumber < element->inputSize()) {
+        return element->inputPort(portNumber);
+    }
+    if ((portNumber - element->inputSize()) < element->outputSize()) {
+        return element->outputPort(portNumber - element->inputSize());
+    }
+    return nullptr;
+}
+
+/// Returns the ports on the far end of every wire attached to \a port (skips dangling ends).
+/// Mirrors ConnectionManager::connectedPeers().
+QList<Port *> connectedPeers(Port *port)
+{
+    QList<Port *> peers;
+    if (!port) {
+        return peers;
+    }
+
+    const auto &connections = port->connections();
+    peers.reserve(connections.size());
+    for (auto *conn : connections) {
+        Port *peer = (conn->startPort() == port) ? static_cast<Port *>(conn->endPort())
+                                                    : static_cast<Port *>(conn->startPort());
+        if (peer) {
+            peers.append(peer);
+        }
+    }
+
+    return peers;
+}
+
+/// Which side of its element \a port faces, so its hover label chip can be biased away from
+/// the body regardless of rotation/mirroring. Mirrors the sideFor() helper PortHoverLabel's
+/// original spawn site used (App/Scene/ConnectionManager.cpp, pre-Quick-rewrite).
+QString sideForPort(Port *port)
+{
+    auto *element = port->graphicElement();
+    if (!element) {
+        return QStringLiteral("right");
+    }
+
+    const QPointF delta = port->scenePos() - element->sceneBoundingRect().center();
+    if (qAbs(delta.x()) >= qAbs(delta.y())) {
+        return (delta.x() < 0) ? QStringLiteral("left") : QStringLiteral("right");
+    }
+    return (delta.y() < 0) ? QStringLiteral("top") : QStringLiteral("bottom");
+}
+
+/// Screen-space radius of the port-hover highlight marker at \a zoomScale, matching Port's own
+/// kRadius world-space glyph half-size (App/Wiring/Port.h) so the highlight roughly rings the
+/// real port glyph rather than looking arbitrarily sized.
+constexpr qreal kPortHoverMarkerRadius = 7.0;
 
 /// Segment count each wire is tessellated into for the Bézier curve below -- matches the "16x
 /// more per-wire geometry" quality level the original Phase 0 spike already measured and found
@@ -537,7 +608,7 @@ void CanvasItem::restartSimulation()
 
 void CanvasItem::deleteSelected()
 {
-    QList<QGraphicsItem *> items;
+    QList<ItemWithId *> items;
     for (auto *elm : selectedElements()) {
         items.append(elm);
     }
@@ -554,7 +625,7 @@ void CanvasItem::deleteSelected()
     }
     m_selectedIds.clear();
     for (auto *item : std::as_const(items)) {
-        if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item); elm && m_dragElements.contains(elm)) {
+        if (auto *elm = dynamic_cast<GraphicElement *>(item); elm && m_dragElements.contains(elm)) {
             m_draggingElement = false;
             m_dragElements.clear();
             m_dragStartPositions.clear();
@@ -1078,7 +1149,7 @@ void bundleUsedBlobs(CanvasItem *canvas, const QList<GraphicElement *> &elements
 void CanvasItem::copyAction()
 {
     const auto selected = selectedElements();
-    QList<QGraphicsItem *> items;
+    QList<ItemWithId *> items;
     for (auto *elm : selected) {
         items.append(elm);
     }
@@ -1101,7 +1172,7 @@ void CanvasItem::copyAction()
 void CanvasItem::cutAction()
 {
     const auto selected = selectedElements();
-    QList<QGraphicsItem *> items;
+    QList<ItemWithId *> items;
     for (auto *elm : selected) {
         items.append(elm);
     }
@@ -1187,7 +1258,7 @@ void CanvasItem::pasteAction()
 
 void CanvasItem::duplicateAction()
 {
-    QList<QGraphicsItem *> items;
+    QList<ItemWithId *> items;
     for (auto *elm : selectedElements()) {
         items.append(elm);
     }
@@ -1207,7 +1278,11 @@ void CanvasItem::duplicateAction()
     const auto added = deserializeAndAdd(readStream, version, step);
 
     for (auto *item : added) {
-        item->setSelected(true);
+        if (auto *elm = dynamic_cast<GraphicElement *>(item)) {
+            elm->setSelected(true);
+        } else if (auto *conn = dynamic_cast<Connection *>(item)) {
+            conn->setSelected(true);
+        }
     }
     emit selectionChanged();
 }
@@ -1296,8 +1371,8 @@ void CanvasItem::addTourDemoWaveformCircuit()
     emit selectionChanged();
 }
 
-QList<QGraphicsItem *> CanvasItem::deserializeAndAdd(QDataStream &stream, const QVersionNumber &version,
-                                                     std::optional<QPointF> fixedOffset)
+QList<ItemWithId *> CanvasItem::deserializeAndAdd(QDataStream &stream, const QVersionNumber &version,
+                                                   std::optional<QPointF> fixedOffset)
 {
     for (auto *elm : std::as_const(m_elements)) {
         elm->setSelected(false);
@@ -1319,8 +1394,8 @@ QList<QGraphicsItem *> CanvasItem::deserializeAndAdd(QDataStream &stream, const 
     receiveCommand(new CanvasAddItemsCommand(itemList, this));
 
     for (auto *item : itemList) {
-        if (item->type() == GraphicElement::Type) {
-            item->setPos(item->pos() + offset);
+        if (auto *elm = dynamic_cast<GraphicElement *>(item)) {
+            elm->setPos(elm->pos() + offset);
         }
     }
     rebuildSpatialIndex();
@@ -1427,7 +1502,7 @@ QImage CanvasItem::renderICPreviewImage(GraphicElement *ic) const
     for (auto *element : internal) {
         painter.save();
         painter.translate(element->pos());
-        element->paint(&painter, nullptr, nullptr);
+        element->paint(&painter);
         paintElementDecorations(painter, element, theme);
         painter.restore();
     }
@@ -1473,12 +1548,12 @@ void CanvasItem::paintElementsInto(QPainter *painter, const QRectF &target, cons
     for (auto *element : m_elements) {
         painter->save();
         painter->translate(element->pos());
-        element->paint(painter, nullptr, nullptr);
+        element->paint(painter);
         paintElementDecorations(*painter, element, theme);
         painter->restore();
     }
     for (auto *connection : m_connections) {
-        connection->paint(painter, nullptr, nullptr);
+        connection->paint(painter);
     }
 
     painter->restore();
@@ -1521,15 +1596,17 @@ void CanvasItem::exportToImage(const QString &filePath) const
 
 void CanvasItem::exportToPdf(const QString &filePath) const
 {
-    QPrinter printer(QPrinter::HighResolution);
-    printer.setPageSize(QPageSize(QPageSize::A4));
+    // QPdfWriter, not QPrinter: writes PDF directly via QtGui, no Qt6::PrintSupport/Widgets
+    // dependency (QPrinter's cross-platform print-dialog plumbing hard-requires Widgets in Qt6,
+    // even though nothing here ever shows a print dialog).
+    QPdfWriter writer(filePath);
+    writer.setResolution(1200); // matches QPrinter::HighResolution's DPI
+    writer.setPageSize(QPageSize(QPageSize::A4));
     // Landscape fits most circuits better than portrait, matching CircuitExporter::renderToPdf().
-    printer.setPageOrientation(QPageLayout::Orientation::Landscape);
-    printer.setOutputFormat(QPrinter::PdfFormat);
-    printer.setOutputFileName(filePath);
+    writer.setPageOrientation(QPageLayout::Orientation::Landscape);
 
     QPainter painter;
-    if (!painter.begin(&printer)) {
+    if (!painter.begin(&writer)) {
         throw PANDACEPTION("Could not print this circuit to PDF.");
     }
 
@@ -2103,6 +2180,83 @@ void CanvasItem::detachWire(InputPort *endPort)
     startWireFromOutput(startPort);
 }
 
+void CanvasItem::updatePortHover(const QPointF &worldPos)
+{
+    // Same topmost-hit lookup tryCompleteWire() uses: SpatialIndex::queryPoint() guarantees
+    // last = topmost, so scanning in reverse finds the first (topmost) id that's actually a
+    // port rather than an element or wire.
+    const auto hits = m_index.queryPoint(worldPos);
+    Port *portUnderCursor = nullptr;
+    for (auto it = hits.crbegin(); it != hits.crend(); ++it) {
+        if (auto *port = m_portsById.value(*it, nullptr)) {
+            portUnderCursor = port;
+            break;
+        }
+    }
+
+    if (decodePort(this, m_hoverPortElmId, m_hoverPortNumber) == portUnderCursor) {
+        return;
+    }
+
+    if (auto *elm = portUnderCursor ? portUnderCursor->graphicElement() : nullptr) {
+        m_hoverPortElmId = elm->id();
+        m_hoverPortNumber = encodePortIndex(elm, portUnderCursor);
+    } else {
+        m_hoverPortElmId = 0;
+        m_hoverPortNumber = 0;
+    }
+
+    emit portHoverChanged(buildPortHoverChips(portUnderCursor));
+}
+
+void CanvasItem::clearPortHover()
+{
+    if (m_hoverPortElmId == 0 && m_hoverPortNumber == 0) {
+        return;
+    }
+    m_hoverPortElmId = 0;
+    m_hoverPortNumber = 0;
+    emit portHoverChanged({});
+}
+
+QVariantList CanvasItem::buildPortHoverChips(Port *hoverPort) const
+{
+    QVariantList chips;
+    if (!hoverPort) {
+        return chips;
+    }
+
+    const qreal markerRadius = kPortHoverMarkerRadius * zoomScale();
+    const auto &theme = ThemeManager::attributes();
+    const auto addChip = [this, &chips, markerRadius, &theme](Port *port) {
+        if (!port) {
+            return;
+        }
+        const QPointF screenPos = worldToScreen(port->scenePos());
+        QVariantMap chip;
+        chip[QStringLiteral("screenX")] = screenPos.x();
+        chip[QStringLiteral("screenY")] = screenPos.y();
+        chip[QStringLiteral("radius")] = markerRadius;
+        chip[QStringLiteral("side")] = sideForPort(port);
+        chip[QStringLiteral("text")] = port->name();
+        // Real theme colors, not generic Qt Quick palette roles (QtQuick's own tooltip
+        // palette entries aren't customized for this app's dark theme -- see this method's
+        // call site in buildPortHoverChips()'s own doc comment). Mirrors PortHoverLabel's
+        // original color choices exactly (App/Scene/PortHoverLabel.cpp, pre-Quick-rewrite).
+        chip[QStringLiteral("ringColor")] = theme.m_portHoverPort;
+        chip[QStringLiteral("labelBgColor")] = theme.m_portHoverLabelBg;
+        chip[QStringLiteral("labelTextColor")] = theme.m_portHoverLabelText;
+        chips.append(chip);
+    };
+
+    addChip(hoverPort);
+    for (auto *peer : connectedPeers(hoverPort)) {
+        addChip(peer);
+    }
+
+    return chips;
+}
+
 void CanvasItem::mousePressEvent(QMouseEvent *event)
 {
     // Middle-button drag pans the canvas -- mirrors GraphicsView::mousePressEvent(). Space-held
@@ -2210,7 +2364,7 @@ void CanvasItem::mousePressEvent(QMouseEvent *event)
         element->setSelected(true);
         m_selectedIds.insert(topHit);
 
-        QList<QGraphicsItem *> toClone;
+        QList<ItemWithId *> toClone;
         for (auto *selected : selectedElements()) {
             toClone.append(selected);
         }
@@ -2231,7 +2385,7 @@ void CanvasItem::mousePressEvent(QMouseEvent *event)
         for (auto *item : added) {
             // added can include Connections (wires between two cloned elements, per
             // Serialization's usual selection-serialize semantics) alongside GraphicElements --
-            // dynamic_cast, not qobject_cast, since item is statically a plain QGraphicsItem*.
+            // dynamic_cast, not qobject_cast, since item is statically a plain ItemWithId*.
             if (auto *addedElement = dynamic_cast<GraphicElement *>(item)) {
                 addedElement->setSelected(true);
                 m_selectedIds.insert(elementId(addedElement->id()));
@@ -2250,7 +2404,7 @@ void CanvasItem::mousePressEvent(QMouseEvent *event)
     if (event->modifiers().testFlag(Qt::ShiftModifier)) {
         // Shift+click toggles individual membership in the selection, mirroring
         // SceneInteraction::mousePress's "item->setSelected(!item->isSelected())" -- including
-        // the real QGraphicsItem::setSelected() flag, so real paint()'s own selection-outline
+        // the real GraphicElement::setSelected() flag, so real paint()'s own selection-outline
         // drawing (ElementAppearance::render()'s `if (selected) {...}` branch) reflects it.
         // Checked/updated via element->isSelected() (the real state selectedElements() reads),
         // not m_selectedIds.contains() -- m_selectedIds is a write-only cache the mouse
@@ -2561,7 +2715,7 @@ void CanvasItem::updateSelectionRect(const QPointF &current)
         }
     }
 
-    // Sync the real QGraphicsItem::setSelected() flag for exactly the delta -- elements
+    // Sync the real GraphicElement::setSelected() flag for exactly the delta -- elements
     // leaving the rubber band vs. entering it -- rather than clearing everything and
     // resetting, so this stays correct even if called every mouse-move during a drag.
     bool changed = false;
@@ -2643,6 +2797,8 @@ void CanvasItem::hoverMoveEvent(QHoverEvent *event)
             emit icPreviewMoved(ic, screenPos);
         }
     }
+
+    updatePortHover(worldPos);
 }
 
 void CanvasItem::hoverLeaveEvent(QHoverEvent *)
@@ -2655,6 +2811,8 @@ void CanvasItem::hoverLeaveEvent(QHoverEvent *)
         m_hoveredId = 0;
         update();
     }
+
+    clearPortHover();
 }
 
 bool CanvasItem::nudgeSelection(QKeyEvent *event)
@@ -3021,10 +3179,10 @@ QSGNode *CanvasItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
     // anchored port to m_editedWireFreeEnd, in a neutral color -- it has no driving Status yet
     // since it isn't committed to any element's simulation graph, and is never haloed. ---
     {
-        // Memoizes Port::scenePos() (a real QGraphicsItem::scenePos() call --
-        // ensureSceneTransform()/mapToScene() internally) -- see m_portScenePosCache's doc
-        // comment. Ports only move when rebuildSpatialIndex() has already run, so a cache miss
-        // here means "not seen since the cache was last cleared", populated on first use.
+        // Memoizes Port::scenePos() (a real, non-trivial transform computation each call -- see
+        // its own doc comment) -- see m_portScenePosCache's doc comment. Ports only move when
+        // rebuildSpatialIndex() has already run, so a cache miss here means "not seen since the
+        // cache was last cleared", populated on first use.
         const auto cachedScenePos = [this](Port *port) {
             auto it = m_portScenePosCache.constFind(port);
             if (it != m_portScenePosCache.cend()) {
@@ -3153,7 +3311,7 @@ QSGNode *CanvasItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
     // --- Gates: one QSGGeometryNode, GL_TRIANGLES, textured. Real per-element appearance --
     // each element's own real, unmodified paint() (dispatched polymorphically) rendered
     // offscreen and cached via m_atlas; see this class's doc comment. Selection is now the
-    // real QGraphicsItem::setSelected() flag baked into that paint() call (real
+    // real GraphicElement::setSelected() flag baked into that paint() call (real
     // ElementAppearance::render() draws its own selection-outline rectangle), not a separate
     // underlay quad like Phase 1's flat-colored placeholder used. ---
     {
@@ -3228,22 +3386,29 @@ QSGNode *CanvasItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
                 // Widen past the plain body+ports rect (element->boundingRect()) to also cover
                 // the label/hint, which can extend beyond it (e.g. a custom name below a small
                 // icon) -- Text is the one type that already folds this into its own
-                // boundingRect() override (childrenBoundingRect()), so the union below is a
-                // harmless no-op there, not a special case.
+                // boundingRect() override, so the union below is a harmless no-op there, not a
+                // special case.
                 QRectF captureRect = element->boundingRect();
+                // GraphicElementLabel has no QGraphicsItem::mapRectToParent() equivalent; compose
+                // the same pos()+transform() mapping by hand.
+                auto mapChildRectToParent = [](const GraphicElementLabel *child) {
+                    QTransform t;
+                    t.translate(child->pos().x(), child->pos().y());
+                    t *= child->transform();
+                    return t.mapRect(child->boundingRect());
+                };
                 if (element->hasLabel() && element->labelItem()->isVisible()) {
-                    captureRect = captureRect.united(element->labelItem()->mapRectToParent(element->labelItem()->boundingRect()));
+                    captureRect = captureRect.united(mapChildRectToParent(element->labelItem()));
                 }
                 if (auto *textElement = qobject_cast<Text *>(element); textElement && textElement->emptyHintItem()->isVisible()) {
-                    captureRect = captureRect.united(
-                        textElement->emptyHintItem()->mapRectToParent(textElement->emptyHintItem()->boundingRect()));
+                    captureRect = captureRect.united(mapChildRectToParent(textElement->emptyHintItem()));
                 }
                 localRect = captureRect;
                 const QSize tileSize = localRect.size().toSize();
                 const QString key = appearanceKeyFor(element);
                 tile = m_atlas.lookup(key, tileSize, [element, &theme, captureRect](QPainter &painter) {
                     painter.translate(-captureRect.topLeft());
-                    element->paint(&painter, nullptr, nullptr);
+                    element->paint(&painter);
                     paintElementDecorations(painter, element, theme);
                 });
                 m_elementRenderCache[element] = ElementRenderCache{

@@ -31,6 +31,7 @@
 #include "App/QuickShell/Chrome/QuickICPreview.h"
 #include "App/QuickShell/Chrome/QuickMainWindowHost.h"
 #include "App/QuickShell/Chrome/QuickMinimap.h"
+#include "App/QuickShell/Chrome/QuickPortHoverOverlay.h"
 #include "App/QuickShell/Chrome/QuickTourController.h"
 #include "App/QuickShell/Chrome/QuickUpdateController.h"
 #include "App/QuickShell/Chrome/QuickWorkSpace.h"
@@ -170,6 +171,7 @@ class QuickAppController : public QObject, public QuickMainWindowHost, public Do
     Q_PROPERTY(QuickElementPalette *elementPalette READ elementPalette CONSTANT FINAL)
     Q_PROPERTY(QuickElementEditor *elementEditor READ elementEditor CONSTANT FINAL)
     Q_PROPERTY(QuickICPreview *icPreview READ icPreview CONSTANT FINAL)
+    Q_PROPERTY(QuickPortHoverOverlay *portHoverOverlay READ portHoverOverlay CONSTANT FINAL)
     Q_PROPERTY(QuickMinimap *minimap READ minimap CONSTANT FINAL)
     Q_PROPERTY(QuickExerciseController *exercise READ exercise CONSTANT FINAL)
     Q_PROPERTY(QuickTourController *tour READ tour CONSTANT FINAL)
@@ -309,6 +311,7 @@ public:
     [[nodiscard]] QuickElementPalette *elementPalette() { return &m_palette; }
     [[nodiscard]] QuickElementEditor *elementEditor() { return &m_elementEditor; }
     [[nodiscard]] QuickICPreview *icPreview() { return &m_icPreview; }
+    [[nodiscard]] QuickPortHoverOverlay *portHoverOverlay() { return &m_portHoverOverlay; }
     [[nodiscard]] QuickMinimap *minimap() { return &m_minimap; }
     [[nodiscard]] QuickExerciseController *exercise() { return &m_exerciseController; }
     [[nodiscard]] QuickTourController *tour() { return &m_tourController; }
@@ -518,6 +521,7 @@ private:
     QuickElementPalette m_palette;
     QuickElementEditor m_elementEditor;
     QuickICPreview m_icPreview;
+    QuickPortHoverOverlay m_portHoverOverlay;
     QuickMinimap m_minimap;
     /// m_exerciseEngine must be declared (and thus constructed) before m_exerciseController,
     /// which takes a pointer to it in its own constructor.

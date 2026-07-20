@@ -36,6 +36,8 @@ set(QUICK_SHELL_SOURCES
     Chrome/QuickMainWindowHost.h
     Chrome/QuickMinimap.cpp
     Chrome/QuickMinimap.h
+    Chrome/QuickPortHoverOverlay.cpp
+    Chrome/QuickPortHoverOverlay.h
     Chrome/QuickTourController.cpp
     Chrome/QuickTourController.h
     Chrome/QuickUpdateController.cpp
@@ -132,6 +134,7 @@ qt_add_qml_module(wiredpanda_quick
         Main.qml
         Minimap.qml
         PaletteItemDelegate.qml
+        PortHoverOverlay.qml
         QuickFileDialog.qml
         SignalTable.qml
         TextPromptDialog.qml
@@ -161,7 +164,7 @@ set_source_files_properties(
 # list<int>.indexOf() (ChoiceDialog.qml's buttonOrder) returns qsizetype narrowed into
 # an int without a cast (-Werror=conversion). Same category as the loader suppression
 # above: Qt's own generated code, not something we can edit, so disable just these
-# warnings on just these generated files. Applied to all 17 QML_FILES' generated .cpp
+# warnings on just these generated files. Applied to all 18 QML_FILES' generated .cpp
 # outputs (not only whichever ones hit it today) since which specific bindings get
 # compiled vs. interpreted is qmlcachegen's own decision and can shift with any future
 # QML edit.
@@ -176,6 +179,7 @@ set(QUICK_SHELL_QML_CACHEGEN_SOURCES
     ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_Main_qml.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_Minimap_qml.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_PaletteItemDelegate_qml.cpp
+    ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_PortHoverOverlay_qml.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_QuickFileDialog_qml.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_SignalTable_qml.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_TextPromptDialog_qml.cpp
@@ -252,6 +256,8 @@ set(QUICK_SHELL_TEST_SOURCES
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasInlineIC.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasItemInteraction.cpp
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasItemInteraction.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasPortHover.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasPortHover.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasItemSmoke.cpp
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasItemSmoke.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestFeedback.cpp
