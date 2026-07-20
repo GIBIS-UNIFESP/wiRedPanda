@@ -19,4 +19,7 @@ private slots:
     void testPaintEventHandlesZeroTickIntervalWithoutCrashing();
 
     void testSizeHintReservesLabelSpace();
+
+    void testPaintEventUsesFallbackFormatForNonCanonicalFraction();
+    void testPaintEventSkipsLabelsWhenTickCountIsZero();
 };
