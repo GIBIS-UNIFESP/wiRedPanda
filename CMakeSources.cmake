@@ -320,14 +320,6 @@ set(TEST_UTILS_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/TestUtils.h
 )
 
-set(MEMORY_HELPERS_SOURCES
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/MemoryHelpers.cpp
-)
-
-set(MEMORY_HELPERS_HEADERS
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/MemoryHelpers.h
-)
-
 set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPUAlu.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPUBranch.cpp
