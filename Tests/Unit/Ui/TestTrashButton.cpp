@@ -48,6 +48,21 @@ QByteArray makeIcDragPayload()
     return itemData;
 }
 
+// Same layout as makeIcDragPayload(), but for an embedded IC (isEmbedded = true, with a
+// blobName instead of a real file name).
+QByteArray makeEmbeddedIcDragPayload(const QString &blobName)
+{
+    QByteArray itemData;
+    QDataStream stream(&itemData, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(stream);
+    stream << QPoint(0, 0);
+    stream << ElementType::IC;
+    stream << QString(); // icFileName -- not used for an embedded IC
+    stream << true;       // isEmbedded
+    stream << blobName;
+    return itemData;
+}
+
 } // namespace
 
 void TestTrashButton::testDragEnterEvent()
@@ -100,6 +115,77 @@ void TestTrashButton::testEmptyDrop()
     QDropEvent dropEvent(QPointF(5, 5), Qt::CopyAction, &mimeData, Qt::LeftButton, Qt::NoModifier);
     button.dropEvent(&dropEvent);
 
+    QCOMPARE(removeFileSpy.count(), 0);
+    QCOMPARE(removeEmbeddedSpy.count(), 0);
+}
+
+void TestTrashButton::testDropEventAcceptsLegacyMimeFormat()
+{
+    // dropEvent() checks the legacy format before the current one; a drag carrying only
+    // MimeType::DragDropLegacy (from an older element panel) must still be handled.
+    TestableTrashButton button;
+    QSignalSpy removeFileSpy(&button, &TrashButton::removeICFile);
+
+    QMimeData mimeData;
+    mimeData.setData(MimeType::DragDropLegacy, makeIcDragPayload());
+
+    auto dismisser = TestUtils::AutoDismisser::answerMessageBox(QMessageBox::Yes);
+
+    QDropEvent dropEvent(QPointF(5, 5), Qt::CopyAction, &mimeData, Qt::LeftButton, Qt::NoModifier);
+    button.dropEvent(&dropEvent);
+
+    QVERIFY2(TestUtils::waitFor([&] { return dismisser.dismissCount() >= 1; }), "The delete-confirmation dialog must have appeared");
+    QCOMPARE(removeFileSpy.count(), 1);
+    QCOMPARE(removeFileSpy.constFirst().at(0).toString(), QStringLiteral("some_ic"));
+}
+
+void TestTrashButton::testDropEventEmbeddedIcAsksToRemoveByBlobName()
+{
+    // Dropping an embedded IC asks to remove "all <blobName> instances" (distinct wording
+    // from the file-backed case) and, on confirmation, emits removeEmbeddedIC() with the
+    // blob name rather than removeICFile() with a file name.
+    TestableTrashButton button;
+    QSignalSpy removeFileSpy(&button, &TrashButton::removeICFile);
+    QSignalSpy removeEmbeddedSpy(&button, &TrashButton::removeEmbeddedIC);
+
+    QMimeData mimeData;
+    mimeData.setData(MimeType::DragDrop, makeEmbeddedIcDragPayload("some_blob"));
+
+    auto dismisser = TestUtils::AutoDismisser([](QWidget *w) {
+        auto *box = qobject_cast<QMessageBox *>(w);
+        if (!box) return false;
+        if (!box->text().contains(QStringLiteral("some_blob"))) return false;
+        box->button(QMessageBox::Yes)->click();
+        return true;
+    });
+
+    QDropEvent dropEvent(QPointF(5, 5), Qt::CopyAction, &mimeData, Qt::LeftButton, Qt::NoModifier);
+    button.dropEvent(&dropEvent);
+
+    QVERIFY2(TestUtils::waitFor([&] { return dismisser.dismissCount() >= 1; }), "The delete-confirmation dialog must have appeared");
+    QCOMPARE(removeEmbeddedSpy.count(), 1);
+    QCOMPARE(removeEmbeddedSpy.constFirst().at(0).toString(), QStringLiteral("some_blob"));
+    QCOMPARE(removeFileSpy.count(), 0);
+}
+
+void TestTrashButton::testDropEventDeclinedConfirmationIsNoOp()
+{
+    // Clicking No on the confirmation dialog must decline the drop event and emit neither
+    // removal signal -- the IC stays exactly as it was.
+    TestableTrashButton button;
+    QSignalSpy removeFileSpy(&button, &TrashButton::removeICFile);
+    QSignalSpy removeEmbeddedSpy(&button, &TrashButton::removeEmbeddedIC);
+
+    QMimeData mimeData;
+    mimeData.setData(MimeType::DragDrop, makeIcDragPayload());
+
+    auto dismisser = TestUtils::AutoDismisser::answerMessageBox(QMessageBox::No);
+
+    QDropEvent dropEvent(QPointF(5, 5), Qt::CopyAction, &mimeData, Qt::LeftButton, Qt::NoModifier);
+    button.dropEvent(&dropEvent);
+
+    QVERIFY2(TestUtils::waitFor([&] { return dismisser.dismissCount() >= 1; }), "The delete-confirmation dialog must have appeared");
+    QVERIFY(!dropEvent.isAccepted());
     QCOMPARE(removeFileSpy.count(), 0);
     QCOMPARE(removeEmbeddedSpy.count(), 0);
 }
