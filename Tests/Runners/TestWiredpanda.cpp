@@ -175,6 +175,7 @@
 #include "Tests/Unit/Logic/TestStatusOps.h"
 // unit/mcp
 #include "Tests/Unit/MCP/TestBaseHandler.h"
+#include "Tests/Unit/MCP/TestConnectionHandler.h"
 #include "Tests/Unit/MCP/TestElementHandler.h"
 #include "Tests/Unit/MCP/TestFileHandlerSecurity.h"
 #include "Tests/Unit/MCP/TestHistoryHandler.h"
@@ -182,6 +183,7 @@
 #include "Tests/Unit/MCP/TestMCPProcessor.h"
 #include "Tests/Unit/MCP/TestMCPValidator.h"
 #include "Tests/Unit/MCP/TestServerInfoHandler.h"
+#include "Tests/Unit/MCP/TestSimulationHandler.h"
 #include "Tests/Unit/MCP/TestThemeHandler.h"
 // unit/scene
 #include "Tests/Unit/Scene/TestConnectionManager.h"
@@ -406,7 +408,9 @@ int main(int argc, char **argv)
         {"TestMCPProcessor", []() -> QObject * { return new TestMCPProcessor; }},
         {"TestMCPValidator", []() -> QObject * { return new TestMCPValidator; }},
         {"TestServerInfoHandler", []() -> QObject * { return new TestServerInfoHandler; }},
+        {"TestSimulationHandler", []() -> QObject * { return new TestSimulationHandler; }},
         {"TestThemeHandler", []() -> QObject * { return new TestThemeHandler; }},
+        {"TestConnectionHandler", []() -> QObject * { return new TestConnectionHandler; }},
         {"TestElementHandler", []() -> QObject * { return new TestElementHandler; }},
         {"TestBaseHandler", []() -> QObject * { return new TestBaseHandler; }},
         {"TestConnectionSerialization", []() -> QObject * { return new TestConnectionSerialization; }},
