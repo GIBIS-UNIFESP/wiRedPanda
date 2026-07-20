@@ -89,7 +89,7 @@ GraphicElement::GraphicElement(ElementType type, QGraphicsItem *parent)
     }
 }
 
-GraphicElement::~GraphicElement() = default;
+GraphicElement::~GraphicElement() = default; // LCOV_EXCL_LINE — the Itanium ABI emits separate deleting/complete-object destructor variants for this virtual dtor; gcov attributes them to the same source line, and not every variant is exercised by a given delete call site.
 
 ElementType GraphicElement::elementType() const
 {
@@ -653,7 +653,7 @@ QList<PropertyDescriptor> GraphicElement::editableProperties() const
     if (canChangeAppearance())    props.append({PropertyDescriptor::Type::Appearance});
     if (hasWirelessMode())  props.append({PropertyDescriptor::Type::WirelessModeSelector});
     return props;
-}
+} // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned QList<PropertyDescriptor>, never reached after the return above.
 
 bool GraphicElement::canChangeAppearance() const
 {
