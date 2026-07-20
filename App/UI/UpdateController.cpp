@@ -95,7 +95,12 @@ void UpdateController::showUpdateDialog(const QString &latestVersion, const QUrl
 void UpdateController::downloadUpdate(const QString &latestVersion, const QUrl &url)
 {
     const QString fileName = url.fileName();
-    const QString savePath = QDir(QStandardPaths::writableLocation(QStandardPaths::DownloadLocation)).filePath(fileName);
+    const QString downloadDir = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
+    // Not guaranteed to already exist -- e.g. a minimal/headless environment with no
+    // pre-populated XDG user-dirs -- and QFile::open(WriteOnly) doesn't create missing
+    // parent directories.
+    QDir().mkpath(downloadDir);
+    const QString savePath = QDir(downloadDir).filePath(fileName);
 
     auto *progress = new QProgressDialog(tr("Downloading wiRedPanda %1…").arg(latestVersion), tr("Cancel"), 0, 100, m_parent);
     progress->setWindowTitle(tr("Downloading Update"));
