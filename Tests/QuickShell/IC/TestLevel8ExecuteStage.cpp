@@ -1,17 +1,13 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/TestLevel8ExecuteStage.h"
-
-#include <QFile>
-#include <QFileInfo>
+#include "Tests/QuickShell/IC/TestLevel8ExecuteStage.h"
 
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "App/Scene/Workspace.h"
-#include "Tests/Common/TestUtils.h"
-#include "Tests/Integration/IC/Tests/CpuTestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 using TestUtils::readMultiBitOutput;
 using TestUtils::setMultiBitInput;
@@ -19,7 +15,7 @@ using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct ExecuteStageFixture {
-    std::unique_ptr<WorkSpace> workspace;
+    std::unique_ptr<QuickCircuitBuilder> builder;
     IC *ic = nullptr;
     QVector<InputSwitch *> operandAInputs;
     QVector<InputSwitch *> operandBInputs;
@@ -31,35 +27,33 @@ struct ExecuteStageFixture {
 
     bool build()
     {
-        workspace = std::make_unique<WorkSpace>();
-        CircuitBuilder builder(workspace->scene());
+        builder = std::make_unique<QuickCircuitBuilder>();
 
-        ic = loadBuildingBlockIC("level8_execute_stage.panda");
-        builder.add(ic);
+        ic = static_cast<IC *>(builder->addOwnedElement(loadBuildingBlockIC("level8_execute_stage.panda")));
 
         for (int i = 0; i < 8; i++) {
-            auto *a = new InputSwitch(); builder.add(a); operandAInputs.append(a);
-            auto *b = new InputSwitch(); builder.add(b); operandBInputs.append(b);
-            auto *led = new Led(); builder.add(led); resultLeds.append(led);
+            auto *a = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch())); operandAInputs.append(a);
+            auto *b = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch())); operandBInputs.append(b);
+            auto *led = static_cast<Led *>(builder->addOwnedElement(new Led())); resultLeds.append(led);
         }
         for (int i = 0; i < 3; i++) {
-            auto *sw = new InputSwitch(); builder.add(sw); aluopInputs.append(sw);
+            auto *sw = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch())); aluopInputs.append(sw);
         }
-        zeroLed = new Led(); builder.add(zeroLed);
-        signLed = new Led(); builder.add(signLed);
+        zeroLed = static_cast<Led *>(builder->addOwnedElement(new Led()));
+        signLed = static_cast<Led *>(builder->addOwnedElement(new Led()));
 
         for (int i = 0; i < 8; i++) {
-            builder.connect(operandAInputs[i], 0, ic, QString("OperandA[%1]").arg(i));
-            builder.connect(operandBInputs[i], 0, ic, QString("OperandB[%1]").arg(i));
-            builder.connect(ic, QString("Result[%1]").arg(i), resultLeds[i], 0);
+            builder->connect(operandAInputs[i], 0, ic, QString("OperandA[%1]").arg(i));
+            builder->connect(operandBInputs[i], 0, ic, QString("OperandB[%1]").arg(i));
+            builder->connect(ic, QString("Result[%1]").arg(i), resultLeds[i], 0);
         }
         for (int i = 0; i < 3; i++) {
-            builder.connect(aluopInputs[i], 0, ic, QString("ALUOp[%1]").arg(i));
+            builder->connect(aluopInputs[i], 0, ic, QString("ALUOp[%1]").arg(i));
         }
-        builder.connect(ic, "Zero", zeroLed, 0);
-        builder.connect(ic, "Sign", signLed, 0);
+        builder->connect(ic, "Zero", zeroLed, 0);
+        builder->connect(ic, "Sign", signLed, 0);
 
-        sim = builder.initSimulation();
+        sim = builder->initSimulation();
         sim->update();
         return true;
     }

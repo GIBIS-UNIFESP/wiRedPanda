@@ -82,6 +82,10 @@
 #include "Tests/QuickShell/IC/TestLevel7InstructionDecoder8bit.h"
 #include "Tests/QuickShell/IC/TestLevel7InstructionMemoryInterface.h"
 #include "Tests/QuickShell/IC/TestLevel7InstructionRegister8bit.h"
+#include "Tests/QuickShell/IC/TestLevel8DecodeStage.h"
+#include "Tests/QuickShell/IC/TestLevel8ExecuteStage.h"
+#include "Tests/QuickShell/IC/TestLevel8FetchStage.h"
+#include "Tests/QuickShell/IC/TestLevel8MemoryStage.h"
 #include "Tests/QuickShell/TestFeedback.h"
 #include "Tests/QuickShell/TestSimulation.h"
 #include "Tests/QuickShell/TestQuickWorkSpace.h"
@@ -199,5 +203,9 @@ int main(int argc, char **argv)
         {"TestLevel7InstructionDecoder8Bit", []() -> QObject * { return new TestLevel7InstructionDecoder8Bit; }},
         {"TestLevel7InstructionMemoryInterface", []() -> QObject * { return new TestLevel7InstructionMemoryInterface; }},
         {"TestLevel7InstructionRegister8Bit", []() -> QObject * { return new TestLevel7InstructionRegister8Bit; }},
+        {"TestLevel8DecodeStage", []() -> QObject * { return new TestLevel8DecodeStage; }},
+        {"TestLevel8ExecuteStage", []() -> QObject * { return new TestLevel8ExecuteStage; }},
+        {"TestLevel8FetchStage", []() -> QObject * { return new TestLevel8FetchStage; }},
+        {"TestLevel8MemoryStage", []() -> QObject * { return new TestLevel8MemoryStage; }},
     });
 }

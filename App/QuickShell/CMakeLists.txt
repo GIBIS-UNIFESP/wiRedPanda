@@ -395,6 +395,14 @@ set(QUICK_SHELL_TEST_SOURCES
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel7InstructionMemoryInterface.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel7InstructionRegister8bit.cpp
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel7InstructionRegister8bit.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel8DecodeStage.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel8DecodeStage.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel8ExecuteStage.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel8ExecuteStage.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel8FetchStage.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel8FetchStage.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel8MemoryStage.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel8MemoryStage.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/StubDialogProvider.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasCommands.cpp
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasCommands.h

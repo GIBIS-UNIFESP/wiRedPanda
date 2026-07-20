@@ -1,16 +1,13 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/TestLevel8FetchStage.h"
-
-#include <QFile>
-#include <QFileInfo>
+#include "Tests/QuickShell/IC/TestLevel8FetchStage.h"
 
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "Tests/Common/TestUtils.h"
-#include "Tests/Integration/IC/Tests/CpuTestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 using TestUtils::setMultiBitInput;
 using TestUtils::readMultiBitOutput;
@@ -21,7 +18,7 @@ using CPUTestUtils::loadBuildingBlockIC;
 // program-write path and the OpCode/RegisterAddr/RawInstr outputs unconnected).
 // Mirrors the DecodeStage/ExecuteStage/MemoryStage fixtures in this directory.
 struct FetchStageFixture {
-    std::unique_ptr<WorkSpace> workspace;
+    std::unique_ptr<QuickCircuitBuilder> builder;
     IC *ic = nullptr;
     InputSwitch *pcData[8] = {};
     InputSwitch *progAddr[8] = {};
@@ -41,59 +38,54 @@ struct FetchStageFixture {
 
     bool build()
     {
-        workspace = std::make_unique<WorkSpace>();
-        CircuitBuilder builder(workspace->scene());
+        builder = std::make_unique<QuickCircuitBuilder>();
 
-        ic = loadBuildingBlockIC("level8_fetch_stage.panda");
+        ic = static_cast<IC *>(builder->addOwnedElement(loadBuildingBlockIC("level8_fetch_stage.panda")));
 
-        clk = new InputSwitch();
-        reset = new InputSwitch();
-        pcLoad = new InputSwitch();
-        pcInc = new InputSwitch();
-        instrLoad = new InputSwitch();
-        progWrite = new InputSwitch();
-        builder.add(ic, clk, reset, pcLoad, pcInc, instrLoad, progWrite);
+        clk = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        reset = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        pcLoad = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        pcInc = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        instrLoad = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        progWrite = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
 
         for (int i = 0; i < 8; ++i) {
-            pcData[i] = new InputSwitch();
-            progAddr[i] = new InputSwitch();
-            progData[i] = new InputSwitch();
-            pc[i] = new Led();
-            instr[i] = new Led();
-            raw[i] = new Led();
-            builder.add(pcData[i], progAddr[i], progData[i], pc[i], instr[i], raw[i]);
+            pcData[i] = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+            progAddr[i] = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+            progData[i] = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+            pc[i] = static_cast<Led *>(builder->addOwnedElement(new Led()));
+            instr[i] = static_cast<Led *>(builder->addOwnedElement(new Led()));
+            raw[i] = static_cast<Led *>(builder->addOwnedElement(new Led()));
         }
         for (int i = 0; i < 5; ++i) {
-            opcode[i] = new Led();
-            builder.add(opcode[i]);
+            opcode[i] = static_cast<Led *>(builder->addOwnedElement(new Led()));
         }
         for (int i = 0; i < 3; ++i) {
-            regAddr[i] = new Led();
-            builder.add(regAddr[i]);
+            regAddr[i] = static_cast<Led *>(builder->addOwnedElement(new Led()));
         }
 
         for (int i = 0; i < 8; ++i) {
-            builder.connect(pcData[i], 0, ic, QString("PCData[%1]").arg(i));
-            builder.connect(progAddr[i], 0, ic, QString("ProgAddr[%1]").arg(i));
-            builder.connect(progData[i], 0, ic, QString("ProgData[%1]").arg(i));
-            builder.connect(ic, QString("PC[%1]").arg(i), pc[i], 0);
-            builder.connect(ic, QString("Instruction[%1]").arg(i), instr[i], 0);
-            builder.connect(ic, QString("RawInstr[%1]").arg(i), raw[i], 0);
+            builder->connect(pcData[i], 0, ic, QString("PCData[%1]").arg(i));
+            builder->connect(progAddr[i], 0, ic, QString("ProgAddr[%1]").arg(i));
+            builder->connect(progData[i], 0, ic, QString("ProgData[%1]").arg(i));
+            builder->connect(ic, QString("PC[%1]").arg(i), pc[i], 0);
+            builder->connect(ic, QString("Instruction[%1]").arg(i), instr[i], 0);
+            builder->connect(ic, QString("RawInstr[%1]").arg(i), raw[i], 0);
         }
         for (int i = 0; i < 5; ++i) {
-            builder.connect(ic, QString("OpCode[%1]").arg(i), opcode[i], 0);
+            builder->connect(ic, QString("OpCode[%1]").arg(i), opcode[i], 0);
         }
         for (int i = 0; i < 3; ++i) {
-            builder.connect(ic, QString("RegisterAddr[%1]").arg(i), regAddr[i], 0);
+            builder->connect(ic, QString("RegisterAddr[%1]").arg(i), regAddr[i], 0);
         }
-        builder.connect(clk, 0, ic, "Clock");
-        builder.connect(reset, 0, ic, "Reset");
-        builder.connect(pcLoad, 0, ic, "PCLoad");
-        builder.connect(pcInc, 0, ic, "PCInc");
-        builder.connect(instrLoad, 0, ic, "InstrLoad");
-        builder.connect(progWrite, 0, ic, "ProgWrite");
+        builder->connect(clk, 0, ic, "Clock");
+        builder->connect(reset, 0, ic, "Reset");
+        builder->connect(pcLoad, 0, ic, "PCLoad");
+        builder->connect(pcInc, 0, ic, "PCInc");
+        builder->connect(instrLoad, 0, ic, "InstrLoad");
+        builder->connect(progWrite, 0, ic, "ProgWrite");
 
-        sim = builder.initSimulation();
+        sim = builder->initSimulation();
         sim->update();
         return true;
     }
@@ -211,55 +203,46 @@ void TestLevel8FetchStage::testFetchStage()
     QFETCH(int, expectedPC);
     QFETCH(int, expectedInstr);
 
-    auto workspace = std::make_unique<WorkSpace>();
-    CircuitBuilder builder(workspace->scene());
+    auto builder = std::make_unique<QuickCircuitBuilder>();
 
     // Create PC data input switches (8-bit)
     QVector<InputSwitch *> pcdata_inputs;
     for (int i = 0; i < 8; i++) {
-        InputSwitch *sw = new InputSwitch();
-        builder.add(sw);
+        InputSwitch *sw = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
         sw->setLabel(QString("PCData[%1]").arg(i));
         sw->setPos(50 + i * 60, 100);
         pcdata_inputs.append(sw);
     }
 
     // Create clock input
-    InputSwitch *clk = new InputSwitch();
-    builder.add(clk);
+    InputSwitch *clk = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
     clk->setLabel("Clock");
     clk->setPos(600, 100);
 
     // Create control signals
-    InputSwitch *reset = new InputSwitch();
-    builder.add(reset);
+    InputSwitch *reset = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
     reset->setLabel("Reset");
     reset->setPos(650, 100);
 
-    InputSwitch *pcload = new InputSwitch();
-    builder.add(pcload);
+    InputSwitch *pcload = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
     pcload->setLabel("PCLoad");
     pcload->setPos(700, 100);
 
-    InputSwitch *pcinc = new InputSwitch();
-    builder.add(pcinc);
+    InputSwitch *pcinc = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
     pcinc->setLabel("PCInc");
     pcinc->setPos(750, 100);
 
-    InputSwitch *instrload = new InputSwitch();
-    builder.add(instrload);
+    InputSwitch *instrload = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
     instrload->setLabel("InstrLoad");
     instrload->setPos(800, 100);
 
     // Load the fetch stage IC
-    IC *fetch = loadBuildingBlockIC("level8_fetch_stage.panda");
-    builder.add(fetch);
+    IC *fetch = static_cast<IC *>(builder->addOwnedElement(loadBuildingBlockIC("level8_fetch_stage.panda")));
 
     // Create output LEDs for PC (8-bit)
     QVector<Led *> pc_leds;
     for (int i = 0; i < 8; i++) {
-        Led *led = new Led();
-        builder.add(led);
+        Led *led = static_cast<Led *>(builder->addOwnedElement(new Led()));
         led->setLabel(QString("PC[%1]").arg(i));
         led->setPos(50 + i * 60, 200);
         pc_leds.append(led);
@@ -268,8 +251,7 @@ void TestLevel8FetchStage::testFetchStage()
     // Create output LEDs for Instruction (8-bit)
     QVector<Led *> instr_leds;
     for (int i = 0; i < 8; i++) {
-        Led *led = new Led();
-        builder.add(led);
+        Led *led = static_cast<Led *>(builder->addOwnedElement(new Led()));
         led->setLabel(QString("Instruction[%1]").arg(i));
         led->setPos(50 + i * 60, 300);
         instr_leds.append(led);
@@ -277,23 +259,23 @@ void TestLevel8FetchStage::testFetchStage()
 
     // Connect PC data inputs
     for (int i = 0; i < 8; i++) {
-        builder.connect(pcdata_inputs[i], 0, fetch, QString("PCData[%1]").arg(i));
+        builder->connect(pcdata_inputs[i], 0, fetch, QString("PCData[%1]").arg(i));
     }
 
     // Connect control signals
-    builder.connect(clk, 0, fetch, "Clock");
-    builder.connect(reset, 0, fetch, "Reset");
-    builder.connect(pcload, 0, fetch, "PCLoad");
-    builder.connect(pcinc, 0, fetch, "PCInc");
-    builder.connect(instrload, 0, fetch, "InstrLoad");
+    builder->connect(clk, 0, fetch, "Clock");
+    builder->connect(reset, 0, fetch, "Reset");
+    builder->connect(pcload, 0, fetch, "PCLoad");
+    builder->connect(pcinc, 0, fetch, "PCInc");
+    builder->connect(instrload, 0, fetch, "InstrLoad");
 
     // Connect outputs to LEDs
     for (int i = 0; i < 8; i++) {
-        builder.connect(fetch, QString("PC[%1]").arg(i), pc_leds[i], 0);
-        builder.connect(fetch, QString("Instruction[%1]").arg(i), instr_leds[i], 0);
+        builder->connect(fetch, QString("PC[%1]").arg(i), pc_leds[i], 0);
+        builder->connect(fetch, QString("Instruction[%1]").arg(i), instr_leds[i], 0);
     }
 
-    Simulation *sim = builder.initSimulation();
+    Simulation *sim = builder->initSimulation();
     sim->update();
 
     // Set PC value
@@ -462,22 +444,18 @@ void TestLevel8FetchStage::testInstructionBitIsolation()
 
 void TestLevel8FetchStage::testFetchStageStructure()
 {
-    auto workspace = std::make_unique<WorkSpace>();
-    CircuitBuilder builder(workspace->scene());
+    auto builder = std::make_unique<QuickCircuitBuilder>();
 
     // Load IC and verify it exists
-    IC *fetch = loadBuildingBlockIC("level8_fetch_stage.panda");
-    builder.add(fetch);
+    IC *fetch = static_cast<IC *>(builder->addOwnedElement(loadBuildingBlockIC("level8_fetch_stage.panda")));
 
     // Verify IC has been loaded
     QVERIFY(fetch != nullptr);
 
     // Create dummy elements for connection testing
-    InputSwitch *sw = new InputSwitch();
-    builder.add(sw);
+    InputSwitch *sw = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
 
-    Led *out = new Led();
-    builder.add(out);
+    Led *out = static_cast<Led *>(builder->addOwnedElement(new Led()));
 
     // Verify IC port structure
     // Inputs: 8 PCData + Clock + Reset + PCLoad + PCInc + InstrLoad + 8 ProgAddr + 8 ProgData + ProgWrite = 30
@@ -487,18 +465,18 @@ void TestLevel8FetchStage::testFetchStageStructure()
 
     // Verify port connections work (don't throw)
     try {
-        builder.connect(sw, 0, fetch, "PCData[0]");
-        builder.connect(sw, 0, fetch, "PCData[7]");
-        builder.connect(sw, 0, fetch, "Clock");
-        builder.connect(sw, 0, fetch, "Reset");
-        builder.connect(sw, 0, fetch, "PCLoad");
-        builder.connect(sw, 0, fetch, "PCInc");
-        builder.connect(sw, 0, fetch, "InstrLoad");
-        builder.connect(fetch, "PC[0]", out, 0);
-        builder.connect(fetch, "PC[7]", out, 0);
-        builder.connect(fetch, "Instruction[0]", out, 0);
-        builder.connect(fetch, "OpCode[0]", out, 0);
-        builder.connect(fetch, "RegisterAddr[0]", out, 0);
+        builder->connect(sw, 0, fetch, "PCData[0]");
+        builder->connect(sw, 0, fetch, "PCData[7]");
+        builder->connect(sw, 0, fetch, "Clock");
+        builder->connect(sw, 0, fetch, "Reset");
+        builder->connect(sw, 0, fetch, "PCLoad");
+        builder->connect(sw, 0, fetch, "PCInc");
+        builder->connect(sw, 0, fetch, "InstrLoad");
+        builder->connect(fetch, "PC[0]", out, 0);
+        builder->connect(fetch, "PC[7]", out, 0);
+        builder->connect(fetch, "Instruction[0]", out, 0);
+        builder->connect(fetch, "OpCode[0]", out, 0);
+        builder->connect(fetch, "RegisterAddr[0]", out, 0);
     } catch (const std::exception &e) {
         QFAIL(qPrintable(QString("Fetch stage port access failed: %1").arg(e.what())));
     }

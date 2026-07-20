@@ -858,10 +858,6 @@ add_test(NAME TestInputRotary COMMAND test_wiredpanda TestInputRotary WORKING_DI
 add_test(NAME TestLED COMMAND test_wiredpanda TestLED WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestMainWindowGui COMMAND test_wiredpanda TestMainWindowGui WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestMinimapWidget COMMAND test_wiredpanda TestMinimapWidget WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel8DecodeStage COMMAND test_wiredpanda TestLevel8DecodeStage WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel8ExecuteStage COMMAND test_wiredpanda TestLevel8ExecuteStage WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel8FetchStage COMMAND test_wiredpanda TestLevel8FetchStage WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel8MemoryStage COMMAND test_wiredpanda TestLevel8MemoryStage WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel9CPU16BitRISC COMMAND test_wiredpanda TestLevel9CPU16BitRISC WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel9FetchStage16Bit COMMAND test_wiredpanda TestLevel9FetchStage16Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel9MemoryStage16Bit COMMAND test_wiredpanda TestLevel9MemoryStage16Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -1041,6 +1037,10 @@ add_test(NAME TestLevel7FlagRegister COMMAND test_wiredpanda_quick TestLevel7Fla
 add_test(NAME TestLevel7InstructionDecoder8Bit COMMAND test_wiredpanda_quick TestLevel7InstructionDecoder8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel7InstructionMemoryInterface COMMAND test_wiredpanda_quick TestLevel7InstructionMemoryInterface WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel7InstructionRegister8Bit COMMAND test_wiredpanda_quick TestLevel7InstructionRegister8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel8DecodeStage COMMAND test_wiredpanda_quick TestLevel8DecodeStage WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel8ExecuteStage COMMAND test_wiredpanda_quick TestLevel8ExecuteStage WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel8FetchStage COMMAND test_wiredpanda_quick TestLevel8FetchStage WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel8MemoryStage COMMAND test_wiredpanda_quick TestLevel8MemoryStage WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 # ============================================================================
 # Test Properties: Labels and Timeouts
@@ -1053,8 +1053,7 @@ add_test(NAME TestLevel7InstructionRegister8Bit COMMAND test_wiredpanda_quick Te
 # Level Tests - Integration category (IC-level hierarchical tests)
 # TestLevel1DFlipFlop moved to test_wiredpanda_quick (Phase C/D of the qtquick-rewrite plan's
 # Widgets-test-parity audit) -- see the "quick" label foreach below.
-foreach(TEST TestLevel8DecodeStage TestLevel8ExecuteStage TestLevel8FetchStage TestLevel8MemoryStage
-        TestLevel9CPU16BitRISC TestLevel9FetchStage16Bit TestLevel9MemoryStage16Bit
+foreach(TEST TestLevel9CPU16BitRISC TestLevel9FetchStage16Bit TestLevel9MemoryStage16Bit
         TestLevel9MultiCycleCPU8Bit TestLevel9RegisterFile32X16 TestLevel9SingleCycleCPU8Bit)
     set_tests_properties(${TEST} PROPERTIES LABELS "integration")
 endforeach()
@@ -1144,14 +1143,14 @@ foreach(TEST TestCanvasItemSmoke TestCanvasCommands TestQuickElementHandler
         TestLevel6StackMemoryInterface TestLevel6StackPointer8Bit
         TestLevel7ALU16Bit TestLevel7CPUProgramCounter8Bit TestLevel7DataForwardingUnit
         TestLevel7ExecutionDatapath TestLevel7FlagRegister TestLevel7InstructionDecoder8Bit
-        TestLevel7InstructionMemoryInterface TestLevel7InstructionRegister8Bit)
+        TestLevel7InstructionMemoryInterface TestLevel7InstructionRegister8Bit
+        TestLevel8DecodeStage TestLevel8ExecuteStage TestLevel8FetchStage TestLevel8MemoryStage)
     set_tests_properties(${TEST} PROPERTIES LABELS "unit;quick")
 endforeach()
 
 # GUI tests run sequentially after all other tests complete
 set(GUI_TESTS TestDialogs TestFileDialogProvider TestMainWindowGui TestBewavedDolphinGui)
 set(ALL_TESTS
-    TestLevel8DecodeStage TestLevel8ExecuteStage TestLevel8FetchStage TestLevel8MemoryStage
     TestLevel9CPU16BitRISC TestLevel9FetchStage16Bit TestLevel9MemoryStage16Bit
     TestLevel9MultiCycleCPU8Bit TestLevel9RegisterFile32X16 TestLevel9SingleCycleCPU8Bit
     TestDecoder8To256 TestMemorySettlingTime TestRAMCell1Bit TestSequential
