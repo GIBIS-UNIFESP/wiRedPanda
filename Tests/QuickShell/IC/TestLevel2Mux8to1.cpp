@@ -1,21 +1,19 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/TestLevel2Mux8to1.h"
+#include "Tests/QuickShell/IC/TestLevel2Mux8to1.h"
 
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "App/Scene/Workspace.h"
-#include "Tests/Common/TestUtils.h"
-#include "Tests/Integration/IC/Tests/Cpu/CpuCommon.h"
-#include "Tests/Integration/IC/Tests/CpuTestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct Mux8to1Fixture {
-    std::unique_ptr<WorkSpace> workspace;
+    std::unique_ptr<QuickCircuitBuilder> builder;
     IC *ic = nullptr;
     InputSwitch *inputs[8] = {};
     InputSwitch *selectBit[3] = {};
@@ -24,33 +22,28 @@ struct Mux8to1Fixture {
 
     bool build()
     {
-        workspace = std::make_unique<WorkSpace>();
-        CircuitBuilder builder(workspace->scene());
+        builder = std::make_unique<QuickCircuitBuilder>();
 
         for (int i = 0; i < 8; ++i) {
-            inputs[i] = new InputSwitch();
+            inputs[i] = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
             inputs[i]->setOn(i % 2 == 0);
-            builder.add(inputs[i]);
         }
         for (int i = 0; i < 3; ++i) {
-            selectBit[i] = new InputSwitch();
-            builder.add(selectBit[i]);
+            selectBit[i] = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
         }
-        output = new Led();
-        builder.add(output);
+        output = static_cast<Led *>(builder->addOwnedElement(new Led()));
 
-        ic = loadBuildingBlockIC("level2_mux_8to1.panda");
-        builder.add(ic);
+        ic = static_cast<IC *>(builder->addOwnedElement(loadBuildingBlockIC("level2_mux_8to1.panda")));
 
         for (int i = 0; i < 8; ++i) {
-            builder.connect(inputs[i], 0, ic, QString("Data[%1]").arg(i));
+            builder->connect(inputs[i], 0, ic, QString("Data[%1]").arg(i));
         }
         for (int i = 0; i < 3; ++i) {
-            builder.connect(selectBit[i], 0, ic, QString("Sel[%1]").arg(i));
+            builder->connect(selectBit[i], 0, ic, QString("Sel[%1]").arg(i));
         }
-        builder.connect(ic, "Output", output, 0);
+        builder->connect(ic, "Output", output, 0);
 
-        sim = builder.initSimulation();
+        sim = builder->initSimulation();
         sim->update();
         return true;
     }
@@ -113,34 +106,29 @@ void TestLevel2MUX8To1::testMultiplexer8to1()
 // shared fixture (Enable unconnected → defaulted high) is untouched.
 void TestLevel2MUX8To1::testEnableGating()
 {
-    auto workspace = std::make_unique<WorkSpace>();
-    CircuitBuilder builder(workspace->scene());
+    auto builder = std::make_unique<QuickCircuitBuilder>();
 
     InputSwitch *data[8] = {};
     for (auto &d : data) {
-        d = new InputSwitch();
-        builder.add(d);
+        d = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
     }
     InputSwitch *sel[3] = {};
     for (auto &s : sel) {
-        s = new InputSwitch();
-        builder.add(s);
+        s = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
     }
-    auto *en = new InputSwitch();
-    auto *out = new Led();
-    builder.add(en, out);
+    auto *en = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+    auto *out = static_cast<Led *>(builder->addOwnedElement(new Led()));
 
-    auto *ic = loadBuildingBlockIC("level2_mux_8to1.panda");
-    builder.add(ic);
+    auto *ic = static_cast<IC *>(builder->addOwnedElement(loadBuildingBlockIC("level2_mux_8to1.panda")));
     for (int i = 0; i < 8; ++i) {
-        builder.connect(data[i], 0, ic, QString("Data[%1]").arg(i));
+        builder->connect(data[i], 0, ic, QString("Data[%1]").arg(i));
     }
     for (int i = 0; i < 3; ++i) {
-        builder.connect(sel[i], 0, ic, QString("Sel[%1]").arg(i));
+        builder->connect(sel[i], 0, ic, QString("Sel[%1]").arg(i));
     }
-    builder.connect(en, 0, ic, "Enable");
-    builder.connect(ic, "Output", out, 0);
-    auto *sim = builder.initSimulation();
+    builder->connect(en, 0, ic, "Enable");
+    builder->connect(ic, "Output", out, 0);
+    auto *sim = builder->initSimulation();
 
     // Select Data[5]=1 (Sel=101); Enable low → output forced low.
     for (int i = 0; i < 8; ++i) {

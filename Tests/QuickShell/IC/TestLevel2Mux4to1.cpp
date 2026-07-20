@@ -1,21 +1,19 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/TestLevel2Mux4to1.h"
+#include "Tests/QuickShell/IC/TestLevel2Mux4to1.h"
 
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "App/Scene/Workspace.h"
-#include "Tests/Common/TestUtils.h"
-#include "Tests/Integration/IC/Tests/Cpu/CpuCommon.h"
-#include "Tests/Integration/IC/Tests/CpuTestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct Mux4to1Fixture {
-    std::unique_ptr<WorkSpace> workspace;
+    std::unique_ptr<QuickCircuitBuilder> builder;
     IC *ic = nullptr;
     InputSwitch *inputs[4] = {};
     InputSwitch *selectBit0 = nullptr, *selectBit1 = nullptr;
@@ -24,33 +22,28 @@ struct Mux4to1Fixture {
 
     bool build()
     {
-        workspace = std::make_unique<WorkSpace>();
-        CircuitBuilder builder(workspace->scene());
+        builder = std::make_unique<QuickCircuitBuilder>();
 
         for (int i = 0; i < 4; ++i) {
-            inputs[i] = new InputSwitch();
+            inputs[i] = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
             inputs[i]->setOn(i % 2 == 0);  // Inputs: 1, 0, 1, 0
-            builder.add(inputs[i]);
         }
 
-        selectBit0 = new InputSwitch();
-        selectBit1 = new InputSwitch();
-        output = new Led();
+        selectBit0 = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        selectBit1 = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        output = static_cast<Led *>(builder->addOwnedElement(new Led()));
 
-        builder.add(selectBit0, selectBit1, output);
+        ic = static_cast<IC *>(builder->addOwnedElement(loadBuildingBlockIC("level2_mux_4to1.panda")));
 
-        ic = loadBuildingBlockIC("level2_mux_4to1.panda");
-        builder.add(ic);
+        builder->connect(inputs[0], 0, ic, "Data[0]");
+        builder->connect(inputs[1], 0, ic, "Data[1]");
+        builder->connect(inputs[2], 0, ic, "Data[2]");
+        builder->connect(inputs[3], 0, ic, "Data[3]");
+        builder->connect(selectBit0, 0, ic, "Sel[0]");
+        builder->connect(selectBit1, 0, ic, "Sel[1]");
+        builder->connect(ic, "Output", output, 0);
 
-        builder.connect(inputs[0], 0, ic, "Data[0]");
-        builder.connect(inputs[1], 0, ic, "Data[1]");
-        builder.connect(inputs[2], 0, ic, "Data[2]");
-        builder.connect(inputs[3], 0, ic, "Data[3]");
-        builder.connect(selectBit0, 0, ic, "Sel[0]");
-        builder.connect(selectBit1, 0, ic, "Sel[1]");
-        builder.connect(ic, "Output", output, 0);
-
-        sim = builder.initSimulation();
+        sim = builder->initSimulation();
         sim->update();
         return true;
     }
@@ -133,30 +126,26 @@ void TestLevel2MUX4To1::testMultiplexer4to1()
 // shared fixture (Enable unconnected → defaulted high) is untouched.
 void TestLevel2MUX4To1::testEnableGating()
 {
-    auto workspace = std::make_unique<WorkSpace>();
-    CircuitBuilder builder(workspace->scene());
+    auto builder = std::make_unique<QuickCircuitBuilder>();
 
     InputSwitch *data[4] = {};
     for (auto &d : data) {
-        d = new InputSwitch();
-        builder.add(d);
+        d = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
     }
-    auto *s0 = new InputSwitch();
-    auto *s1 = new InputSwitch();
-    auto *en = new InputSwitch();
-    auto *out = new Led();
-    builder.add(s0, s1, en, out);
+    auto *s0 = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+    auto *s1 = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+    auto *en = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+    auto *out = static_cast<Led *>(builder->addOwnedElement(new Led()));
 
-    auto *ic = loadBuildingBlockIC("level2_mux_4to1.panda");
-    builder.add(ic);
+    auto *ic = static_cast<IC *>(builder->addOwnedElement(loadBuildingBlockIC("level2_mux_4to1.panda")));
     for (int i = 0; i < 4; ++i) {
-        builder.connect(data[i], 0, ic, QString("Data[%1]").arg(i));
+        builder->connect(data[i], 0, ic, QString("Data[%1]").arg(i));
     }
-    builder.connect(s0, 0, ic, "Sel[0]");
-    builder.connect(s1, 0, ic, "Sel[1]");
-    builder.connect(en, 0, ic, "Enable");
-    builder.connect(ic, "Output", out, 0);
-    auto *sim = builder.initSimulation();
+    builder->connect(s0, 0, ic, "Sel[0]");
+    builder->connect(s1, 0, ic, "Sel[1]");
+    builder->connect(en, 0, ic, "Enable");
+    builder->connect(ic, "Output", out, 0);
+    auto *sim = builder->initSimulation();
 
     // Select Data[2]=1 (Sel=10); Enable low → output forced low.
     for (int i = 0; i < 4; ++i) {

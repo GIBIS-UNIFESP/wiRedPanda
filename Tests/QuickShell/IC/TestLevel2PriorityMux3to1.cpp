@@ -1,21 +1,20 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/TestLevel2PriorityMux3to1.h"
+#include "Tests/QuickShell/IC/TestLevel2PriorityMux3to1.h"
 
 #include "App/Core/Common.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "App/Scene/Workspace.h"
-#include "Tests/Common/TestUtils.h"
-#include "Tests/Integration/IC/Tests/CpuTestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct PriorityMux3to1Fixture {
-    std::unique_ptr<WorkSpace> workspace;
+    std::unique_ptr<QuickCircuitBuilder> builder;
     IC *ic = nullptr;
     InputSwitch *data[3] = {};
     InputSwitch *sel[2] = {};
@@ -24,32 +23,27 @@ struct PriorityMux3to1Fixture {
 
     bool build()
     {
-        workspace = std::make_unique<WorkSpace>();
-        CircuitBuilder builder(workspace->scene());
+        builder = std::make_unique<QuickCircuitBuilder>();
 
         for (int i = 0; i < 3; ++i) {
-            data[i] = new InputSwitch();
-            builder.add(data[i]);
+            data[i] = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
         }
         for (int i = 0; i < 2; ++i) {
-            sel[i] = new InputSwitch();
-            builder.add(sel[i]);
+            sel[i] = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
         }
-        output = new Led();
-        builder.add(output);
+        output = static_cast<Led *>(builder->addOwnedElement(new Led()));
 
-        ic = loadBuildingBlockIC("level2_priority_mux_3to1.panda");
-        builder.add(ic);
+        ic = static_cast<IC *>(builder->addOwnedElement(loadBuildingBlockIC("level2_priority_mux_3to1.panda")));
 
         for (int i = 0; i < 3; ++i) {
-            builder.connect(data[i], 0, ic, QString("data%1").arg(i));
+            builder->connect(data[i], 0, ic, QString("data%1").arg(i));
         }
         for (int i = 0; i < 2; ++i) {
-            builder.connect(sel[i], 0, ic, QString("sel%1").arg(i));
+            builder->connect(sel[i], 0, ic, QString("sel%1").arg(i));
         }
-        builder.connect(ic, "out", output, 0);
+        builder->connect(ic, "out", output, 0);
 
-        sim = builder.initSimulation();
+        sim = builder->initSimulation();
         sim->update();
         return true;
     }
