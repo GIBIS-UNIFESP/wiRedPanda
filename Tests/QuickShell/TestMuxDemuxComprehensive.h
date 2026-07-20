@@ -10,9 +10,6 @@ class TestMUXDEMUXComprehensive : public QObject
     Q_OBJECT
 
 private slots:
-    void initTestCase();
-    void cleanup();
-
     // ============================================================
     // MUX TESTS
     // ============================================================

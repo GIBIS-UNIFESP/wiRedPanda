@@ -493,6 +493,8 @@ set(QUICK_SHELL_TEST_SOURCES
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestSequentialLogic.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestMemorySettlingTime.cpp
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestMemorySettlingTime.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestMuxDemuxComprehensive.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestMuxDemuxComprehensive.h
 )
 
 # Usage: ./build/test_wiredpanda_quick ClassName [functionName] -- mirrors test_wiredpanda's

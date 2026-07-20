@@ -1,7 +1,7 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/Logic/TestMuxDemuxComprehensive.h"
+#include "Tests/QuickShell/TestMuxDemuxComprehensive.h"
 
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/Demux.h"
@@ -10,19 +10,10 @@
 #include "App/Element/GraphicElements/Mux.h"
 #include "App/Element/GraphicElements/Not.h"
 #include "App/Element/GraphicElements/Or.h"
-#include "App/Scene/Workspace.h"
-#include "Tests/Common/TestUtils.h"
-#include "Tests/Integration/IC/Tests/Cpu/CpuCommon.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 using TestUtils::inputStatus;
-
-void TestMUXDEMUXComprehensive::initTestCase()
-{
-}
-
-void TestMUXDEMUXComprehensive::cleanup()
-{
-}
 
 // ============================================================
 // MUX TESTS
@@ -57,8 +48,7 @@ void TestMUXDEMUXComprehensive::testMux2to1()
     QFETCH(int, selectLine);
     QFETCH(int, expectedOutput);
 
-    WorkSpace workspace;
-    CircuitBuilder builder(workspace.scene());
+    QuickCircuitBuilder builder;
 
     InputSwitch in0, in1, sel;
     Led out;
@@ -118,8 +108,7 @@ void TestMUXDEMUXComprehensive::testMux4to1()
 
     QCOMPARE(dataInputs.size(), 4);
 
-    WorkSpace workspace;
-    CircuitBuilder builder(workspace.scene());
+    QuickCircuitBuilder builder;
 
     QVector<InputSwitch *> dataIn(4);
     for (int i = 0; i < 4; ++i) dataIn[i] = new InputSwitch();
@@ -172,8 +161,7 @@ void TestMUXDEMUXComprehensive::testMux8to1()
     QFETCH(int, selectIndex);
     QFETCH(int, expectedOutput);
 
-    WorkSpace workspace;
-    CircuitBuilder builder(workspace.scene());
+    QuickCircuitBuilder builder;
 
     QVector<InputSwitch *> dataIn(8);
     for (int i = 0; i < 8; ++i) dataIn[i] = new InputSwitch();
@@ -249,8 +237,7 @@ void TestMUXDEMUXComprehensive::testMuxSelectLineTransitions()
     QFETCH(int, initialExpected);
     QFETCH(int, finalExpected);
 
-    WorkSpace workspace;
-    CircuitBuilder builder(workspace.scene());
+    QuickCircuitBuilder builder;
 
     QVector<InputSwitch *> dataIn(4);
     for (int i = 0; i < 4; ++i) dataIn[i] = new InputSwitch();
@@ -317,8 +304,7 @@ void TestMUXDEMUXComprehensive::testMuxCascaded()
     QFETCH(int, secondarySelect);
     QFETCH(int, expectedOutput);
 
-    WorkSpace workspace;
-    CircuitBuilder builder(workspace.scene());
+    QuickCircuitBuilder builder;
 
     // Create 4 data inputs
     QVector<InputSwitch *> dataIn(4);
@@ -389,8 +375,7 @@ void TestMUXDEMUXComprehensive::testMuxDataInputPatterns()
     QFETCH(int, selectIndex);
     QFETCH(int, expectedOutput);
 
-    WorkSpace workspace;
-    CircuitBuilder builder(workspace.scene());
+    QuickCircuitBuilder builder;
 
     QVector<InputSwitch *> dataIn(4);
     for (int i = 0; i < 4; ++i) dataIn[i] = new InputSwitch();
@@ -453,8 +438,7 @@ void TestMUXDEMUXComprehensive::testDemux1to2()
     QFETCH(int, expectedOut0);
     QFETCH(int, expectedOut1);
 
-    WorkSpace workspace;
-    CircuitBuilder builder(workspace.scene());
+    QuickCircuitBuilder builder;
 
     InputSwitch in, sel;
     Led out0, out1;
@@ -493,8 +477,7 @@ void TestMUXDEMUXComprehensive::testDemux1to4()
 {
     QFETCH(int, selectIndex);
 
-    WorkSpace workspace;
-    CircuitBuilder builder(workspace.scene());
+    QuickCircuitBuilder builder;
 
     InputSwitch in;
     QVector<InputSwitch *> selectLines(2);
@@ -555,8 +538,7 @@ void TestMUXDEMUXComprehensive::testDemux1to8()
 {
     QFETCH(int, selectIndex);
 
-    WorkSpace workspace;
-    CircuitBuilder builder(workspace.scene());
+    QuickCircuitBuilder builder;
 
     InputSwitch in;
     QVector<InputSwitch *> selectLines(3);
@@ -621,8 +603,7 @@ void TestMUXDEMUXComprehensive::testDemuxDataInputVariations()
     QFETCH(int, dataValue);
     QFETCH(int, selectIndex);
 
-    WorkSpace workspace;
-    CircuitBuilder builder(workspace.scene());
+    QuickCircuitBuilder builder;
 
     InputSwitch in;
     QVector<InputSwitch *> selectLines(2);
@@ -685,8 +666,7 @@ void TestMUXDEMUXComprehensive::testDemuxSelectTransitions()
     QFETCH(int, initialSelect);
     QFETCH(int, finalSelect);
 
-    WorkSpace workspace;
-    CircuitBuilder builder(workspace.scene());
+    QuickCircuitBuilder builder;
 
     InputSwitch in;
     QVector<InputSwitch *> selectLines(2);
@@ -775,8 +755,7 @@ void TestMUXDEMUXComprehensive::testMuxDemuxChained()
     QFETCH(int, muxSelect);
     QFETCH(int, demuxSelect);
 
-    WorkSpace workspace;
-    CircuitBuilder builder(workspace.scene());
+    QuickCircuitBuilder builder;
 
     // 4 data inputs
     QVector<InputSwitch *> dataIn(4);
