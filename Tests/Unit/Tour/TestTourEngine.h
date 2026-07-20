@@ -34,4 +34,26 @@ private slots:
     void testStepWithoutKeyUsesRawTitleAndBodyDirectly();
     void testCurrentStepDataBeforeLoadReturnsEmptyStep();
     void testRetranslateReloadFailureDeactivatesEngine();
+
+    // TourOverlay
+    void testOverlayConstructionBuildsUiWidgets();
+    void testOverlayAppliesThemeReactsToThemeChange();
+    void testOverlayOnStepChangedUpdatesLabelsAndButtons();
+    void testOverlayOnStepChangedEnablesPrevAfterFirstStep();
+    void testOverlayOnStepChangedLastStepShowsFinish();
+    void testOverlayOnStepChangedSkipsResolverForEmptyOrNoneTarget();
+    void testOverlayOnStepChangedResolvesHighlightRectForRealTarget();
+    void testOverlayOnRetranslatedUpdatesLabelsAndButtons();
+    void testOverlayOnTourFinishedHidesAndEmitsCloseRequested();
+    void testOverlaySetParentWindowReparentsAndResizes();
+    void testOverlayEventFilterResizesOnParentResize();
+    void testOverlayPrevButtonCallsGoToPreviousStep();
+    void testOverlayNextButtonCallsAdvanceStep();
+    void testOverlayCloseButtonEmitsCloseRequested();
+    void testRepositionCalloutCentersWhenNoHighlight();
+    void testRepositionCalloutPositionsBelowSpotlight();
+    void testRepositionCalloutPositionsAboveWhenNoRoomBelow();
+    void testRepositionCalloutCentersRightWhenNoRoomAboveOrBelow();
+    void testPaintEventDrawsWithoutHighlight();
+    void testPaintEventReResolvesHighlightRectFromResolver();
 };

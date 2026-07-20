@@ -125,67 +125,35 @@ void TourOverlay::applyTheme()
         m_spotlightColor = QColor(255, 200, 50, 220);
 
         m_callout->setStyleSheet(
-            QString("QFrame {"
-                    "  background: rgba(20,20,20,240);"
-                    "  border: 1px solid rgba(255,200,50,120);"
-                    "  border-radius: 8px;"
-                    "}"
-                    "QLabel { background: transparent; border: none; }"
-                    "QPushButton { border-radius: 4px; padding: 4px 12px; font-size: %1px; }")
-                .arg(navFontPx)
+            QString("QFrame { background: rgba(20,20,20,240); border: 1px solid rgba(255,200,50,120); border-radius: 8px; } QLabel { background: transparent; border: none; } QPushButton { border-radius: 4px; padding: 4px 12px; font-size: %1px; }").arg(navFontPx)
         );
         m_stepCounter->setStyleSheet(QString("color: rgba(255,200,50,200); font-size: %1px;").arg(counterFontPx));
         m_titleLabel->setStyleSheet(QString("color: white; font-size: %1px; font-weight: bold;").arg(titleFontPx));
         m_bodyLabel->setStyleSheet(QString("color: rgba(220,220,220,230); font-size: %1px;").arg(bodyFontPx));
 
         const QString navStyle =
-            QString("QPushButton { color: white; background: rgba(255,255,255,40);"
-                    " border: 1px solid rgba(255,255,255,80); border-radius: 4px;"
-                    " padding: 4px 12px; font-size: %1px; }"
-                    "QPushButton:hover { background: rgba(255,255,255,60); }"
-                    "QPushButton:disabled { color: rgba(255,255,255,80); background: rgba(80,80,80,60); }")
-                .arg(navFontPx);
+            QString("QPushButton { color: white; background: rgba(255,255,255,40); border: 1px solid rgba(255,255,255,80); border-radius: 4px; padding: 4px 12px; font-size: %1px; } QPushButton:hover { background: rgba(255,255,255,60); } QPushButton:disabled { color: rgba(255,255,255,80); background: rgba(80,80,80,60); }").arg(navFontPx);
         m_closeButton->setStyleSheet(navStyle);
         m_prevButton->setStyleSheet(navStyle);
         m_nextButton->setStyleSheet(
-            QString("QPushButton { color: white; background: rgba(255,160,20,200);"
-                    " border: 1px solid rgba(255,200,50,150); border-radius: 4px;"
-                    " padding: 4px 12px; font-size: %1px; }"
-                    "QPushButton:hover { background: rgba(255,180,40,230); }")
-                .arg(navFontPx));
+            QString("QPushButton { color: white; background: rgba(255,160,20,200); border: 1px solid rgba(255,200,50,150); border-radius: 4px; padding: 4px 12px; font-size: %1px; } QPushButton:hover { background: rgba(255,180,40,230); }").arg(navFontPx));
     } else {
         m_dimColor       = QColor(0, 0, 0, 90);
         m_spotlightColor = QColor(0, 120, 210, 220);
 
         m_callout->setStyleSheet(
-            QString("QFrame {"
-                    "  background: rgba(255,255,255,240);"
-                    "  border: 1px solid rgba(0,100,200,150);"
-                    "  border-radius: 8px;"
-                    "}"
-                    "QLabel { background: transparent; border: none; }"
-                    "QPushButton { border-radius: 4px; padding: 4px 12px; font-size: %1px; }")
-                .arg(navFontPx)
+            QString("QFrame { background: rgba(255,255,255,240); border: 1px solid rgba(0,100,200,150); border-radius: 8px; } QLabel { background: transparent; border: none; } QPushButton { border-radius: 4px; padding: 4px 12px; font-size: %1px; }").arg(navFontPx)
         );
         m_stepCounter->setStyleSheet(QString("color: rgba(0,100,200,200); font-size: %1px;").arg(counterFontPx));
         m_titleLabel->setStyleSheet(QString("color: rgb(20,20,20); font-size: %1px; font-weight: bold;").arg(titleFontPx));
         m_bodyLabel->setStyleSheet(QString("color: rgba(50,50,50,230); font-size: %1px;").arg(bodyFontPx));
 
         const QString navStyle =
-            QString("QPushButton { color: rgb(20,20,20); background: rgba(0,0,0,20);"
-                    " border: 1px solid rgba(0,0,0,80); border-radius: 4px;"
-                    " padding: 4px 12px; font-size: %1px; }"
-                    "QPushButton:hover { background: rgba(0,0,0,40); }"
-                    "QPushButton:disabled { color: rgba(0,0,0,60); background: rgba(0,0,0,10); }")
-                .arg(navFontPx);
+            QString("QPushButton { color: rgb(20,20,20); background: rgba(0,0,0,20); border: 1px solid rgba(0,0,0,80); border-radius: 4px; padding: 4px 12px; font-size: %1px; } QPushButton:hover { background: rgba(0,0,0,40); } QPushButton:disabled { color: rgba(0,0,0,60); background: rgba(0,0,0,10); }").arg(navFontPx);
         m_closeButton->setStyleSheet(navStyle);
         m_prevButton->setStyleSheet(navStyle);
         m_nextButton->setStyleSheet(
-            QString("QPushButton { color: white; background: rgba(0,120,210,200);"
-                    " border: 1px solid rgba(0,100,200,150); border-radius: 4px;"
-                    " padding: 4px 12px; font-size: %1px; }"
-                    "QPushButton:hover { background: rgba(0,140,230,230); }")
-                .arg(navFontPx));
+            QString("QPushButton { color: white; background: rgba(0,120,210,200); border: 1px solid rgba(0,100,200,150); border-radius: 4px; padding: 4px 12px; font-size: %1px; } QPushButton:hover { background: rgba(0,140,230,230); }").arg(navFontPx));
     }
 
     update();
@@ -282,8 +250,8 @@ void TourOverlay::repositionCallout()
         // No room above either — center vertically, shift right of spotlight
         cy = (oh - ch) / 2;
         cx = qMin(spot.right() + pad, ow - cw - pad);
-        if (cx + cw + pad > ow) {
-            cx = qMax(pad, spot.left() - cw - pad);
+        if (cx + cw + pad > ow) { // LCOV_EXCL_LINE — unreachable by construction: cx is qMin(A, ow-cw-pad), so cx+cw+pad <= (ow-cw-pad)+cw+pad == ow always, regardless of which side of the min wins.
+            cx = qMax(pad, spot.left() - cw - pad); // LCOV_EXCL_LINE — see above.
         }
     }
 
