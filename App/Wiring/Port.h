@@ -169,6 +169,15 @@ public:
      */
     void detachConnection(Connection *conn);
 
+    /// Marks this port as mid-teardown without draining its connections yet -- see
+    /// m_draining's own comment. Called by ElementPorts::~ElementPorts() on every port of an
+    /// element (not just the one about to be deleted) before any of them start deleting, so a
+    /// still-alive neighbor's own surviving fan-out (its updateConnections() reaching one of
+    /// our other, not-yet-deleted ports via a shared connection) can detect the mid-destruction
+    /// owner via scenePos() and bail out, instead of reaching into GraphicElement's already-
+    /// destroyed m_appearance member (declared after m_ports, so destroyed first).
+    void markDraining() { m_draining = true; }
+
     /// Applies hover-enter visual feedback.
     void hoverEnter();
 

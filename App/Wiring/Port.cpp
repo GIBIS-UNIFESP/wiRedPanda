@@ -39,7 +39,11 @@ QTransform Port::orientationTransform() const
 
 QPointF Port::scenePos() const
 {
-    if (!m_graphicElement) {
+    // Mid-teardown (see m_draining's own comment): elementTransform()/pixmapCenter() may read
+    // GraphicElement::m_appearance, already destroyed by the time a port is draining (it's
+    // declared after m_ports, so it destructs first). The exact position doesn't matter here --
+    // nothing downstream of a draining port's geometry is ever observed.
+    if (!m_graphicElement || m_draining) {
         return m_pos;
     }
 

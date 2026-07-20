@@ -24,6 +24,20 @@ ElementPorts::~ElementPorts()
     // qtquick-rewrite plan's CPU/Level test port (confirmed via AddressSanitizer, not guessed).
     const QVector<InputPort *> inputs = std::exchange(m_inputPorts, {});
     const QVector<OutputPort *> outputs = std::exchange(m_outputPorts, {});
+
+    // Mark every port draining before deleting any of them -- not just the one about to be
+    // deleted. A still-alive neighbor element with its own surviving fan-out (e.g. an
+    // InputSwitch driving three of this element's input ports) still calls
+    // updateConnections() -> Connection::updatePosFromPorts() -> Port::scenePos() against
+    // whichever of our ports its other connections terminate at, even while we're mid-
+    // teardown and haven't reached those specific ports in qDeleteAll() yet. Port::scenePos()
+    // checks m_draining and bails out before touching this element's (already-destroyed)
+    // m_appearance member -- see that check's own comment. Real crash found while porting
+    // Tests/Integration/IC/Tests/TestLevel7InstructionMemoryInterface.cpp's structure test
+    // (qtquick-rewrite plan, Phase D), confirmed via gdb, not guessed.
+    for (auto *p : inputs)  { p->markDraining(); }
+    for (auto *p : outputs) { p->markDraining(); }
+
     qDeleteAll(inputs);
     qDeleteAll(outputs);
 }
