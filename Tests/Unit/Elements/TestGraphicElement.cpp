@@ -11,6 +11,7 @@
 #include <QStyleOptionGraphicsItem>
 #include <QUndoStack>
 
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/Display14.h"
 #include "App/Element/GraphicElements/Display16.h"
@@ -20,6 +21,8 @@
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
+#include "App/Wiring/Connection.h"
+#include "App/Wiring/Port.h"
 #include "Tests/Common/TestUtils.h"
 
 namespace {
@@ -237,4 +240,100 @@ void TestGraphicElement::testTextEmptyStateHintTogglesWithLabelContent()
 
     text->setLabel("Second time");
     QVERIFY(!text->m_emptyHint->isVisible());
+}
+
+void TestGraphicElement::testSceneEventSwallowsCtrlClickPress()
+{
+    // GraphicElement::sceneEvent() swallows Ctrl+click presses so the scene's rubber-band
+    // selection logic can handle them, instead of the element intercepting the press and
+    // starting its own move. Called directly (via friendship) rather than through a real
+    // QTest::mousePress(..., Qt::ControlModifier, ...): this sandbox's offscreen/X11 setup does
+    // not reliably reproduce the requested keyboard modifier on the resulting scene event (a
+    // real Shift-modifier request was observed arriving as Control at the scene level), making
+    // that route non-deterministic for this specific guard.
+    And gate;
+
+    QGraphicsSceneMouseEvent pressEvent(QEvent::GraphicsSceneMousePress);
+    pressEvent.setButton(Qt::LeftButton);
+    pressEvent.setButtons(Qt::LeftButton);
+    pressEvent.setModifiers(Qt::ControlModifier);
+    QVERIFY2(gate.sceneEvent(&pressEvent), "Ctrl+click press must be swallowed (return true)");
+
+    QGraphicsSceneMouseEvent releaseEvent(QEvent::GraphicsSceneMouseRelease);
+    releaseEvent.setButton(Qt::LeftButton);
+    releaseEvent.setModifiers(Qt::ControlModifier);
+    QVERIFY2(gate.sceneEvent(&releaseEvent), "Ctrl+click release must also be swallowed");
+}
+
+void TestGraphicElement::testColorCycleFunctionsDefaultToWhiteForNonColoredElement()
+{
+    // The base GraphicElement::color() always returns an empty string; previousColor()/
+    // nextColor() must fall back to "White" (not an empty/garbage result) for an element type
+    // that never overrides color(), e.g. And.
+    And gate;
+    QCOMPARE(gate.color(), QString());
+    QCOMPARE(gate.previousColor(), QString("White"));
+    QCOMPARE(gate.nextColor(), QString("White"));
+}
+
+void TestGraphicElement::testColorNameToIndexUnknownColorDefaultsToZero()
+{
+    QCOMPARE(GraphicElement::colorNameToIndex("NotARealColor"), 0);
+}
+
+void TestGraphicElement::testIsValidPropagatesErrorStatusToConnectedOutputs()
+{
+    // An element with an unconnected, required input is invalid; isValid() must then mark every
+    // connection on its outputs -- and the port at the connection's far end -- Status::Error, so
+    // the visual chain shows where validity breaks.
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+    auto *gate = new And;
+    auto *led = new Led;
+    builder.add(gate, led);
+    builder.connect(gate, 0, led, 0);
+
+    QVERIFY(!gate->isValid()); // both inputs are unconnected and required by default
+
+    Connection *conn = gate->outputPort(0)->connections().constFirst();
+    QCOMPARE(conn->status(), Status::Error);
+    QCOMPARE(led->inputPort(0)->status(), Status::Error);
+}
+
+void TestGraphicElement::testBaseSettersAreNoOpsForUnsupportedProperties()
+{
+    // GraphicElement's default setColor()/setAudio()/setVolume()/setFrequency()/setDelay() are
+    // no-ops for element types that don't override them -- confirm the matching getters stay at
+    // their fixed defaults afterward.
+    And gate;
+    gate.setColor("Red");
+    QCOMPARE(gate.color(), QString());
+
+    gate.setAudio("some/path.wav");
+    QCOMPARE(gate.audio(), QString());
+
+    gate.setVolume(0.5f);
+    QCOMPARE(gate.volume(), 0.0f);
+
+    gate.setFrequency(42.0);
+    QCOMPARE(gate.frequency(), 0.0);
+
+    gate.setDelay(42.0);
+    QCOMPARE(gate.delay(), 0.0);
+}
+
+void TestGraphicElement::testBlobNameDefaultsToEmptyForNonIcElement()
+{
+    And gate;
+    QVERIFY(gate.blobName().isEmpty());
+}
+
+void TestGraphicElement::testRetranslateUpdatesTranslatedNameToolTipAndPortName()
+{
+    And gate;
+    gate.retranslate();
+
+    const QString expected = ElementFactory::translatedName(gate.elementType());
+    QCOMPARE(gate.toolTip(), expected);
+    QCOMPARE(gate.objectName(), expected);
 }
