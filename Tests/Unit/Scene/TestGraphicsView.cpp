@@ -3,7 +3,12 @@
 
 #include "Tests/Unit/Scene/TestGraphicsView.h"
 
+#include <QApplication>
+#include <QGraphicsScene>
+#include <QKeyEvent>
 #include <QPainter>
+#include <QSignalSpy>
+#include <QWheelEvent>
 
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
@@ -112,4 +117,137 @@ void TestGraphicsView::testAccessibleNameSet()
     GraphicsView *view = workspace.view();
     QVERIFY(!view->accessibleName().isEmpty());
     QVERIFY(!view->whatsThis().isEmpty());
+}
+
+void TestGraphicsView::testMiddleButtonPanPressAndRelease()
+{
+    WorkSpace workspace;
+    GraphicsView *view = workspace.view();
+
+    QTest::mousePress(view->viewport(), Qt::MiddleButton, Qt::NoModifier, QPoint(100, 100));
+    QCOMPARE(view->viewport()->cursor().shape(), Qt::ClosedHandCursor);
+
+    QTest::mouseRelease(view->viewport(), Qt::MiddleButton, Qt::NoModifier, QPoint(100, 100));
+    QVERIFY(view->viewport()->cursor().shape() != Qt::ClosedHandCursor);
+}
+
+void TestGraphicsView::testAutoRepeatKeyPressForwardsWithoutEnteringPanMode()
+{
+    WorkSpace workspace;
+    GraphicsView *view = workspace.view();
+
+    QKeyEvent repeat(QEvent::KeyPress, Qt::Key_Space, Qt::NoModifier, QString(), /*autorep*/ true);
+    QApplication::sendEvent(view, &repeat);
+
+    // Auto-repeat must be ignored by the pan-mode logic entirely (early return before the
+    // Key_Space check), so the cursor must not switch to the pan cursor.
+    QVERIFY(view->viewport()->cursor().shape() != Qt::ClosedHandCursor);
+}
+
+void TestGraphicsView::testAutoRepeatKeyReleaseDoesNotExitPanMode()
+{
+    WorkSpace workspace;
+    GraphicsView *view = workspace.view();
+
+    QKeyEvent press(QEvent::KeyPress, Qt::Key_Space, Qt::NoModifier, QString(), /*autorep*/ false);
+    QApplication::sendEvent(view, &press);
+    QCOMPARE(view->viewport()->cursor().shape(), Qt::ClosedHandCursor);
+
+    QKeyEvent autoRepeatRelease(QEvent::KeyRelease, Qt::Key_Space, Qt::NoModifier, QString(), /*autorep*/ true);
+    QApplication::sendEvent(view, &autoRepeatRelease);
+    QCOMPARE(view->viewport()->cursor().shape(), Qt::ClosedHandCursor);
+
+    QKeyEvent realRelease(QEvent::KeyRelease, Qt::Key_Space, Qt::NoModifier, QString(), /*autorep*/ false);
+    QApplication::sendEvent(view, &realRelease);
+    QVERIFY(view->viewport()->cursor().shape() != Qt::ClosedHandCursor);
+}
+
+void TestGraphicsView::testWheelEventZoomsOut()
+{
+    WorkSpace workspace;
+    GraphicsView *view = workspace.view();
+    view->resize(800, 600);
+
+    const double scaleBefore = view->transform().m11();
+
+    const QPoint center = view->viewport()->rect().center();
+    QWheelEvent wheel(QPointF(center), view->viewport()->mapToGlobal(center),
+                       QPoint(0, 0), QPoint(0, -120),
+                       Qt::NoButton, Qt::NoModifier,
+                       Qt::NoScrollPhase, false);
+    QApplication::sendEvent(view->viewport(), &wheel);
+
+    QVERIFY(view->transform().m11() < scaleBefore);
+}
+
+void TestGraphicsView::testZoomToFitWithNoSceneIsNoOp()
+{
+    GraphicsView view;
+    QVERIFY(!view.scene());
+
+    QSignalSpy zoomSpy(&view, &GraphicsView::zoomChanged);
+    view.zoomToFit();
+
+    QCOMPARE(zoomSpy.count(), 0);
+    QCOMPARE(view.transform().m11(), 1.0);
+}
+
+void TestGraphicsView::testZoomToFitFitsSelectionOnly()
+{
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    GraphicsView *view = workspace.view();
+    view->resize(800, 600);
+
+    auto *inputSwitch = new InputSwitch();
+    inputSwitch->setPos(0, 0);
+    scene->addItem(inputSwitch);
+    auto *led = new Led();
+    led->setPos(3000, 2000);
+    scene->addItem(led);
+
+    inputSwitch->setSelected(true);
+
+    view->zoomToFit();
+
+    // Fitting a single small selected element (ignoring the far-away Led) must zoom IN,
+    // unlike fitting the whole spread-out circuit (see testZoomToFit).
+    QVERIFY(view->transform().m11() > 1.0);
+
+    const QRect switchInView = view->mapFromScene(inputSwitch->sceneBoundingRect()).boundingRect();
+    QVERIFY(view->viewport()->rect().contains(switchInView));
+}
+
+void TestGraphicsView::testZoomToFitWithPlainSceneUsesItemsBoundingRect()
+{
+    GraphicsView view;
+    view.resize(400, 300);
+    QGraphicsScene plainScene;
+    plainScene.addRect(0, 0, 50, 50);
+    view.setScene(&plainScene);
+
+    QSignalSpy zoomSpy(&view, &GraphicsView::zoomChanged);
+    view.zoomToFit();
+
+    // Reached the non-Scene fallback branch and completed the fit (a 50x50 rect fitted into a
+    // 400x300 viewport zooms in well past 1:1).
+    QCOMPARE(zoomSpy.count(), 1);
+    QVERIFY(view.transform().m11() > 1.0);
+}
+
+void TestGraphicsView::testZoomToFitWithEmptySceneIsNoOp()
+{
+    // A real Scene always carries SceneInteraction's rubber-band selection item, so its
+    // items-bounding-rect is never truly empty -- only a genuinely bare QGraphicsScene can
+    // reach the invalid-target guard.
+    GraphicsView view;
+    view.resize(400, 300);
+    QGraphicsScene emptyScene;
+    view.setScene(&emptyScene);
+
+    QSignalSpy zoomSpy(&view, &GraphicsView::zoomChanged);
+    view.zoomToFit();
+
+    QCOMPARE(zoomSpy.count(), 0);
+    QCOMPARE(view.transform().m11(), 1.0);
 }
