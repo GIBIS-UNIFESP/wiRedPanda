@@ -181,6 +181,7 @@
 #include "Tests/Unit/MCP/TestICHandlerSecurity.h"
 #include "Tests/Unit/MCP/TestMCPProcessor.h"
 #include "Tests/Unit/MCP/TestMCPValidator.h"
+#include "Tests/Unit/MCP/TestServerInfoHandler.h"
 #include "Tests/Unit/MCP/TestThemeHandler.h"
 // unit/scene
 #include "Tests/Unit/Scene/TestConnectionManager.h"
@@ -404,6 +405,7 @@ int main(int argc, char **argv)
         {"TestHistoryHandler", []() -> QObject * { return new TestHistoryHandler; }},
         {"TestMCPProcessor", []() -> QObject * { return new TestMCPProcessor; }},
         {"TestMCPValidator", []() -> QObject * { return new TestMCPValidator; }},
+        {"TestServerInfoHandler", []() -> QObject * { return new TestServerInfoHandler; }},
         {"TestThemeHandler", []() -> QObject * { return new TestThemeHandler; }},
         {"TestElementHandler", []() -> QObject * { return new TestElementHandler; }},
         {"TestBaseHandler", []() -> QObject * { return new TestBaseHandler; }},
