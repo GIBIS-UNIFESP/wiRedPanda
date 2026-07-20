@@ -163,7 +163,9 @@ double Connection::angle()
         // QLineF::angle() measures from positive X axis counter-clockwise, so the
         // returned angle always describes the direction from output to input.
         if (port2->isOutput()) {
-            std::swap(port1, port2);
+            // Unreachable: m_endPort is always an InputPort (setEndPort()'s parameter type
+            // enforces it at compile time), and InputPort::isOutput() is hardcoded false.
+            std::swap(port1, port2); // LCOV_EXCL_LINE
         }
 
         return QLineF(port1->scenePos(), port2->scenePos()).angle();
