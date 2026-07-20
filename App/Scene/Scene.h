@@ -56,6 +56,12 @@ class Scene : public QGraphicsScene, public ContextDirProvider, public Simulatio
 {
     Q_OBJECT
 
+    // Ctrl-modifier QGraphicsSceneMouseEvents synthesized via QTest don't reliably carry
+    // the modifier through this sandbox's event pipeline (see the coverage tracking doc's
+    // "recurring exclusion patterns" #22) -- lets tests call the protected mouse handlers
+    // directly with a hand-built event instead of chasing unreliable synthetic input.
+    friend class TestScene;
+
 public:
     /// \brief Adds \a item to the scene and registers it in the per-scene ID registry.
     void addItem(QGraphicsItem *item);
