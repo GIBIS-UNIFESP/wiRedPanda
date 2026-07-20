@@ -13,4 +13,5 @@ class TestSelectionCapabilities : public QObject
 private slots:
 
     void testSelectionCapabilities();
+    void testDemuxSelectionCannotChangeInputSize();
 };
