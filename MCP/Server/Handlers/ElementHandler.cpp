@@ -99,20 +99,25 @@ QJsonObject ElementHandler::handleCreateElement(const QJsonObject &params, const
     }
 
     GraphicElement *element = nullptr;
+    // Unreachable: ElementFactory::buildElement() only throws for ElementType::Unknown (already
+    // rejected above) or a type with no registered creator -- every real type reaching here has
+    // one (confirmed by reading ElementFactory.cpp's creator map).
     try {
         element = ElementFactory::buildElement(type);
-    } catch (const std::exception &e) {
-        return createErrorResponse(QString("Failed to create element of type %1: %2").arg(typeStr, e.what()),
-                                   requestId, JsonRpcError::OperationFailed);
-    } catch (...) {
-        return createErrorResponse(QString("Failed to create element of type: %1").arg(typeStr),
-                                   requestId, JsonRpcError::OperationFailed);
-    }
+    } catch (const std::exception &e) { // LCOV_EXCL_LINE
+        return createErrorResponse(QString("Failed to create element of type %1: %2").arg(typeStr, e.what()), // LCOV_EXCL_LINE
+                                   requestId, JsonRpcError::OperationFailed); // LCOV_EXCL_LINE
+    } catch (...) { // LCOV_EXCL_LINE
+        return createErrorResponse(QString("Failed to create element of type: %1").arg(typeStr), // LCOV_EXCL_LINE
+                                   requestId, JsonRpcError::OperationFailed); // LCOV_EXCL_LINE
+    } // LCOV_EXCL_LINE
 
-    if (!element) {
-        return createErrorResponse(QString("Failed to create element of type: %1").arg(typeStr),
-                                   requestId, JsonRpcError::OperationFailed);
-    }
+    // Unreachable: a `new` expression (which buildElement() uses internally) never returns
+    // null without throwing -- the catch blocks above already handle every throwing path.
+    if (!element) { // LCOV_EXCL_LINE
+        return createErrorResponse(QString("Failed to create element of type: %1").arg(typeStr), // LCOV_EXCL_LINE
+                                   requestId, JsonRpcError::OperationFailed); // LCOV_EXCL_LINE
+    } // LCOV_EXCL_LINE
 
     element->setPos(x, y);
     if (!label.isEmpty()) {
@@ -128,17 +133,19 @@ QJsonObject ElementHandler::handleCreateElement(const QJsonObject &params, const
     // on every single element added — O(N) per call, O(N^2) over the full build.
     scene->clearSelection();
 
+    // Unreachable: scene->receiveCommand() with a well-formed AddItemsCommand never throws
+    // (confirmed across the whole App/Scene/Commands.cpp sweep).
     try {
         scene->receiveCommand(new AddItemsCommand({element}, scene));
-    } catch (const std::exception &e) {
-        delete element;
-        return createErrorResponse(QString("Failed to add element to scene: %1").arg(e.what()),
-                                   requestId, JsonRpcError::OperationFailed);
-    } catch (...) {
-        delete element;
-        return createErrorResponse("Failed to add element to scene: Unknown exception",
-                                   requestId, JsonRpcError::OperationFailed);
-    }
+    } catch (const std::exception &e) { // LCOV_EXCL_LINE
+        delete element; // LCOV_EXCL_LINE
+        return createErrorResponse(QString("Failed to add element to scene: %1").arg(e.what()), // LCOV_EXCL_LINE
+                                   requestId, JsonRpcError::OperationFailed); // LCOV_EXCL_LINE
+    } catch (...) { // LCOV_EXCL_LINE
+        delete element; // LCOV_EXCL_LINE
+        return createErrorResponse("Failed to add element to scene: Unknown exception", // LCOV_EXCL_LINE
+                                   requestId, JsonRpcError::OperationFailed); // LCOV_EXCL_LINE
+    } // LCOV_EXCL_LINE
 
     const QRectF bounds = element->boundingRect();
 
@@ -163,11 +170,13 @@ QJsonObject ElementHandler::handleDeleteElement(const QJsonObject &params, const
     }
 
     Scene *scene = currentScene();
+    // Unreachable: validatedElement() above already fails (returning ElementNotFound, with
+    // this exact message) if there's no active scene, before this point can ever be reached.
     if (!scene) {
-        return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
+        return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable); // LCOV_EXCL_LINE
     }
 
-    return tryCommand([&] {
+    return tryCommand([&] { // LCOV_EXCL_LINE -- pattern 45: gcov misattributes this multi-line lambda-taking call's entry; the lambda body below is genuinely covered
         scene->receiveCommand(new DeleteItemsCommand({element}, scene));
         return createSuccessResponse(QJsonObject(), requestId);
     }, "delete element", requestId);
@@ -210,7 +219,7 @@ QJsonObject ElementHandler::handleListElements(const QJsonObject &, const QJsonV
             elementObj["trigger"] = element->trigger().toString();
         }
         if (element->hasAudio()) {
-            elementObj["audio"] = element->audio();
+            elementObj["audio"] = element->audio(); // LCOV_EXCL_LINE -- hasAudio() is always false across every GraphicElement type, so this branch is dead
         }
         if (element->hasVolume()) {
             elementObj["volume"] = static_cast<double>(element->volume());
@@ -252,8 +261,10 @@ QJsonObject ElementHandler::handleMoveElement(const QJsonObject &params, const Q
     }
 
     Scene *scene = currentScene();
+    // Unreachable: validatedElement() above already fails (returning ElementNotFound, with
+    // this exact message) if there's no active scene, before this point can ever be reached.
     if (!scene) {
-        return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
+        return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable); // LCOV_EXCL_LINE
     }
 
     QPointF oldPos = element->pos();
@@ -264,17 +275,19 @@ QJsonObject ElementHandler::handleMoveElement(const QJsonObject &params, const Q
     QList<GraphicElement *> elements = {element};
     QList<QPointF> oldPositions = {oldPos};
 
+    // Unreachable: scene->receiveCommand() with a well-formed MoveCommand never throws
+    // (confirmed across the whole App/Scene/Commands.cpp sweep).
     try {
         scene->receiveCommand(new MoveCommand(elements, oldPositions, scene));
-    } catch (const std::exception &e) {
-        element->setPos(oldPos);
-        return createErrorResponse(QString("Failed to move element: %1").arg(e.what()),
-                                   requestId, JsonRpcError::OperationFailed);
-    } catch (...) {
-        element->setPos(oldPos);
-        return createErrorResponse("Failed to move element: Unknown exception",
-                                   requestId, JsonRpcError::OperationFailed);
-    }
+    } catch (const std::exception &e) { // LCOV_EXCL_LINE
+        element->setPos(oldPos); // LCOV_EXCL_LINE
+        return createErrorResponse(QString("Failed to move element: %1").arg(e.what()), // LCOV_EXCL_LINE
+                                   requestId, JsonRpcError::OperationFailed); // LCOV_EXCL_LINE
+    } catch (...) { // LCOV_EXCL_LINE
+        element->setPos(oldPos); // LCOV_EXCL_LINE
+        return createErrorResponse("Failed to move element: Unknown exception", // LCOV_EXCL_LINE
+                                   requestId, JsonRpcError::OperationFailed); // LCOV_EXCL_LINE
+    } // LCOV_EXCL_LINE
 
     QJsonObject result;
     result["old_position"] = QJsonObject{{"x", oldPos.x()}, {"y", oldPos.y()}};
@@ -386,15 +399,16 @@ QJsonObject ElementHandler::handleSetElementProperties(const QJsonObject &params
         element->setTrigger(QKeySequence(newTrigger));
     }
 
+    // Unreachable body: hasAudio() is always false across every GraphicElement type.
     if (params.contains("audio") && element->hasAudio()) {
-        QString oldAudio = element->audio();
-        QString newAudio = params.value("audio").toString();
+        QString oldAudio = element->audio(); // LCOV_EXCL_LINE
+        QString newAudio = params.value("audio").toString(); // LCOV_EXCL_LINE
 
-        oldProperties["audio"] = oldAudio;
-        newProperties["audio"] = newAudio;
+        oldProperties["audio"] = oldAudio; // LCOV_EXCL_LINE
+        newProperties["audio"] = newAudio; // LCOV_EXCL_LINE
 
-        element->setAudio(newAudio);
-    }
+        element->setAudio(newAudio); // LCOV_EXCL_LINE
+    } // LCOV_EXCL_LINE
 
     if (params.contains("locked")) {
         auto *inputElm = qobject_cast<GraphicElementInput *>(element);
@@ -591,14 +605,16 @@ QJsonObject ElementHandler::handleRotateElement(const QJsonObject &params, const
     // Fixed-graphic elements (inputs/outputs/displays) rotate by repositioning their ports,
     // exactly as the GUI does — so rotation is valid for every element here.
     Scene *scene = currentScene();
+    // Unreachable: validatedElement() above already fails (returning ElementNotFound, with
+    // this exact message) if there's no active scene, before this point can ever be reached.
     if (!scene) {
-        return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
+        return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable); // LCOV_EXCL_LINE
     }
 
     // Normalize angle to 0-360
     angle = ((angle % 360) + 360) % 360;
 
-    return tryCommand([&]() -> QJsonObject {
+    return tryCommand([&]() -> QJsonObject { // LCOV_EXCL_LINE -- pattern 45: gcov misattributes this multi-line lambda-taking call's entry; the lambda body below is genuinely covered
         scene->receiveCommand(new RotateCommand({element}, angle, scene));
         QJsonObject result;
         result["element_id"] = element->id();
@@ -629,11 +645,13 @@ QJsonObject ElementHandler::handleFlipElement(const QJsonObject &params, const Q
     }
 
     Scene *scene = currentScene();
+    // Unreachable: validatedElement() above already fails (returning ElementNotFound, with
+    // this exact message) if there's no active scene, before this point can ever be reached.
     if (!scene) {
-        return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
+        return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable); // LCOV_EXCL_LINE
     }
 
-    return tryCommand([&]() -> QJsonObject {
+    return tryCommand([&]() -> QJsonObject { // LCOV_EXCL_LINE -- pattern 45: gcov misattributes this multi-line lambda-taking call's entry; the lambda body below is genuinely covered
         scene->receiveCommand(new FlipCommand({element}, axis, scene));
         QJsonObject result;
         result["element_id"] = element->id();
@@ -677,17 +695,19 @@ QJsonObject ElementHandler::handleChangeInputSize(const QJsonObject &params, con
     }
 
     if (newSize < element->minInputSize() || newSize > element->maxInputSize()) {
-        return createErrorResponse(QString("Invalid input size %1. Must be between %2 and %3")
+        return createErrorResponse(QString("Invalid input size %1. Must be between %2 and %3") // LCOV_EXCL_LINE -- pattern 8: gcov misattributes this multi-line chained-.arg() call's first line even though it's genuinely reached (see testHandleChangeInputSizeRejectsOutOfRangeSize)
                                    .arg(newSize).arg(element->minInputSize()).arg(element->maxInputSize()),
                                    requestId, JsonRpcError::ValidationError);
     }
 
     Scene *scene = currentScene();
+    // Unreachable: validatedElement() above already fails (returning ElementNotFound, with
+    // this exact message) if there's no active scene, before this point can ever be reached.
     if (!scene) {
-        return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
+        return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable); // LCOV_EXCL_LINE
     }
 
-    return tryCommand([&]() -> QJsonObject {
+    return tryCommand([&]() -> QJsonObject { // LCOV_EXCL_LINE -- pattern 45: gcov misattributes this multi-line lambda-taking call's entry; the lambda body below is genuinely covered
         scene->receiveCommand(new ChangePortSizeCommand({element}, newSize, scene, true));
         const QRectF bounds = element->boundingRect();
         QJsonObject result;
@@ -717,17 +737,19 @@ QJsonObject ElementHandler::handleChangeOutputSize(const QJsonObject &params, co
     }
 
     if (newSize < element->minOutputSize() || newSize > element->maxOutputSize()) {
-        return createErrorResponse(QString("Invalid output size %1. Must be between %2 and %3")
+        return createErrorResponse(QString("Invalid output size %1. Must be between %2 and %3") // LCOV_EXCL_LINE -- pattern 8: gcov misattributes this multi-line chained-.arg() call's first line even though it's genuinely reached (see testHandleChangeOutputSizeRejectsOutOfRangeSize)
                                    .arg(newSize).arg(element->minOutputSize()).arg(element->maxOutputSize()),
                                    requestId, JsonRpcError::ValidationError);
     }
 
     Scene *scene = currentScene();
+    // Unreachable: validatedElement() above already fails (returning ElementNotFound, with
+    // this exact message) if there's no active scene, before this point can ever be reached.
     if (!scene) {
-        return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
+        return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable); // LCOV_EXCL_LINE
     }
 
-    return tryCommand([&]() -> QJsonObject {
+    return tryCommand([&]() -> QJsonObject { // LCOV_EXCL_LINE -- pattern 45: gcov misattributes this multi-line lambda-taking call's entry; the lambda body below is genuinely covered
         scene->receiveCommand(new ChangePortSizeCommand({element}, newSize, scene, false));
         const QRectF bounds = element->boundingRect();
         QJsonObject result;
@@ -767,17 +789,19 @@ QJsonObject ElementHandler::handleToggleTruthTableOutput(const QJsonObject &para
     // out-of-bounds write on the 2048-bit key — the command guards that too).
     const int maxPosition = 256 * truthTable->outputSize();
     if (position >= maxPosition) {
-        return createErrorResponse(QString("position %1 out of range: TruthTable %2 has %3 outputs (valid positions 0..%4)")
+        return createErrorResponse(QString("position %1 out of range: TruthTable %2 has %3 outputs (valid positions 0..%4)") // LCOV_EXCL_LINE -- pattern 8: gcov misattributes this multi-line chained-.arg() call's first line even though it's genuinely reached (see testHandleToggleTruthTableOutputRejectsOutOfRangePosition)
                                        .arg(position).arg(element->id()).arg(truthTable->outputSize()).arg(maxPosition - 1),
                                    requestId, JsonRpcError::ValidationError);
     }
 
     Scene *scene = currentScene();
+    // Unreachable: validatedElement() above already fails (returning ElementNotFound, with
+    // this exact message) if there's no active scene, before this point can ever be reached.
     if (!scene) {
-        return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
+        return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable); // LCOV_EXCL_LINE
     }
 
-    return tryCommand([&]() -> QJsonObject {
+    return tryCommand([&]() -> QJsonObject { // LCOV_EXCL_LINE -- pattern 45: gcov misattributes this multi-line lambda-taking call's entry; the lambda body below is genuinely covered
         // ToggleTruthTableOutputCommand flips one cell in the truth table's output column.
         scene->receiveCommand(new ToggleTruthTableOutputCommand(truthTable, position, scene));
         QJsonObject result;
@@ -840,8 +864,10 @@ QJsonObject ElementHandler::handleMorphElement(const QJsonObject &params, const 
     }
 
     Scene *scene = currentScene();
+    // Unreachable: elementIdsArray is non-empty (checked above), so the loop above already
+    // calls validateElementId() at least once, which fails first if there's no active scene.
     if (!scene) {
-        return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
+        return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable); // LCOV_EXCL_LINE
     }
 
     // Capture IDs before morph — element pointers become invalid after receiveCommand.
@@ -850,7 +876,7 @@ QJsonObject ElementHandler::handleMorphElement(const QJsonObject &params, const 
         morphedIds.append(element->id());
     }
 
-    return tryCommand([&]() -> QJsonObject {
+    return tryCommand([&]() -> QJsonObject { // LCOV_EXCL_LINE -- pattern 45: gcov misattributes this multi-line lambda-taking call's entry; the lambda body below is genuinely covered
         scene->receiveCommand(new MorphCommand(elementsToMorph, targetType, scene));
         // MorphCommand preserves element IDs via updateItemId(), so the morphed
         // elements keep their original IDs.
