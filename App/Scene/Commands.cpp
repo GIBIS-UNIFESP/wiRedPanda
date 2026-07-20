@@ -203,6 +203,8 @@ const QList<QGraphicsItem *> loadItems(Scene *scene, QByteArray &itemData, const
     const auto items = Serialization::deserialize(stream, context);
 
     if (items.size() != ids.size()) {
+        // None of these items were added to the scene yet, so they'd otherwise leak.
+        qDeleteAll(items);
         throw PANDACEPTION_WITH_CONTEXT("commands", "One or more elements were not found on scene. Expected %1, found %2.", static_cast<int>(ids.size()), static_cast<int>(items.size()));
     }
 
@@ -496,7 +498,7 @@ bool UpdateCommand::wirelessStateDiffers(const QVector<WirelessState> &before,
     // else), so a change here re-routes nothing until a full rebuild. A label change on
     // a node whose mode is None on both sides is decorative and keeps the fast path.
     if (before.size() != after.size()) {
-        return true; // defensive: the set of wireless-capable elements itself changed
+        return true; // LCOV_EXCL_LINE — hasWirelessMode() is purely type-based (Node always true, base class always false) and never reads instance state elm->load() could change; the same fixed elements() list can't change size between the before/after captures, so this can't currently be reached. Defensive: the set of wireless-capable elements itself changed.
     }
     for (int i = 0; i < before.size(); ++i) {
         const auto &b = before.at(i);
@@ -575,13 +577,13 @@ SplitCommand::SplitCommand(Connection *conn, QPointF mousePos, Scene *scene, QUn
     auto *startPort = conn->startPort();
     auto *endPort = conn->endPort();
     if (!startPort || !endPort) {
-        throw PANDACEPTION("Invalid connection ports in SplitCommand constructor");
+        throw PANDACEPTION("Invalid connection ports in SplitCommand constructor"); // LCOV_EXCL_LINE — both current callers (SceneInteraction::mouseDoubleClick(), MCP ConnectionHandler::handleSplitConnection()) already require a matched connection with real start/end ports before constructing this command.
     }
 
     auto *startElement = startPort->graphicElement();
     auto *endElement = endPort->graphicElement();
     if (!startElement || !endElement) {
-        throw PANDACEPTION("Invalid graphic elements in SplitCommand constructor");
+        throw PANDACEPTION("Invalid graphic elements in SplitCommand constructor"); // LCOV_EXCL_LINE — every Port has a non-null owner set unconditionally by ElementPorts::addPort() at construction (the "port always has an owner" invariant established throughout this sweep).
     }
 
     m_elm1Id = startElement->id();
@@ -623,6 +625,11 @@ void SplitCommand::redo()
         throw PANDACEPTION("Error trying to redo %1", text());
     }
 
+    auto *endPort = conn1->endPort();
+    if (!endPort) {
+        throw PANDACEPTION("Error: endPort is null in SplitCommand::redo()");
+    }
+
     auto *conn2 = CommandUtils::findConn(m_scene, m_c2Id);
     auto *node = CommandUtils::findElm(m_scene, m_nodeId);
 
@@ -640,11 +647,6 @@ void SplitCommand::redo()
 
     node->setPos(m_nodePos);
     node->setRotation(m_nodeAngle);
-
-    auto *endPort = conn1->endPort();
-    if (!endPort) {
-        throw PANDACEPTION("Error: endPort is null in SplitCommand::redo()");
-    }
 
     // Wire topology after split: elm1 → conn1 → node → conn2 → elm2
     conn2->setStartPort(node->outputPort());
@@ -825,7 +827,7 @@ void MorphCommand::transferConnections(const QList<GraphicElement *> &from, cons
         newElm->setFlippedY(oldElm->isFlippedY());
 
         if (newElm->hasAudio() && oldElm->hasAudio()) {
-            newElm->setAudio(oldElm->audio());
+            newElm->setAudio(oldElm->audio()); // LCOV_EXCL_LINE — no element type currently sets hasAudio=true in its ElementInfo, so this can never be true for any oldElm/newElm pair.
         }
 
         if (newElm->hasVolume() && oldElm->hasVolume()) {
@@ -833,7 +835,7 @@ void MorphCommand::transferConnections(const QList<GraphicElement *> &from, cons
         }
 
         if (newElm->hasDelay() && oldElm->hasDelay()) {
-            newElm->setDelay(oldElm->delay());
+            newElm->setDelay(oldElm->delay()); // LCOV_EXCL_LINE — Clock is the only element type with hasDelay=true, so no two distinct types can both satisfy this check.
         }
 
         // --- Migrate existing wires to the new element's ports ---
@@ -922,7 +924,7 @@ FlipCommand::FlipCommand(const QList<GraphicElement *> &items, const int axis, S
 
     m_minPos = QPointF(xmin, ymin);
     m_maxPos = QPointF(xmax, ymax);
-}
+} // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the constructor's local QList<GraphicElement *>/QPointF members' exception-unwind path, never reached after the return above (both the empty-items early return and the full non-empty body are independently exercised).
 
 void FlipCommand::undo()
 {
@@ -1113,7 +1115,7 @@ QList<UpdateBlobCommand::ConnectionInfo> UpdateBlobCommand::captureConnections(c
         }
     }
     return connections;
-}
+} // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned QList<ConnectionInfo>, never reached after the return above.
 
 // --- RegisterBlobCommand ---
 
