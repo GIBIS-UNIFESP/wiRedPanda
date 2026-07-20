@@ -29,6 +29,8 @@ namespace {
 struct TestableICDropZone : ICDropZone {
     using ICDropZone::ICDropZone;
     using ICDropZone::dropEvent;
+    using ICDropZone::dragMoveEvent;
+    using ICDropZone::resizeEvent;
 };
 
 // A well-formed drag-drop payload matching the layout readDragDropPayload()
@@ -155,6 +157,68 @@ void TestICDropZone::testHintShownOnCompatibleDragEnter()
     QDragLeaveEvent leaveEvent;
     QApplication::sendEvent(&dropZone, &leaveEvent);
     QVERIFY(hint->isHidden());
+}
+
+void TestICDropZone::testDropEventAcceptsLegacyMimeFormat()
+{
+    // extractDragPayload() falls back to MimeType::DragDropLegacy when the current
+    // MimeType::DragDrop format isn't present, for drags that predate the current format.
+    TestableICDropZone dropZone(ICDropZone::Section::Embedded);
+    QSignalSpy embedSpy(&dropZone, &ICDropZone::embedByFileRequested);
+
+    QMimeData mimeData;
+    mimeData.setData(MimeType::DragDropLegacy, makePayload("legacy_ic", false, QString()));
+    QDropEvent dropEvent(QPointF(5, 5), Qt::CopyAction, &mimeData, Qt::LeftButton, Qt::NoModifier);
+    dropZone.dropEvent(&dropEvent);
+
+    QCOMPARE(embedSpy.count(), 1);
+    QCOMPARE(embedSpy.constFirst().at(0).toString(), QStringLiteral("legacy_ic"));
+}
+
+void TestICDropZone::testDropEventIgnoresUnrecognizedMimeFormat()
+{
+    // Neither MimeType::DragDrop nor MimeType::DragDropLegacy is present -- e.g. a plain-text
+    // or file-manager drop landing on the zone by mistake. extractDragPayload() must return
+    // nullopt and dropEvent() must do nothing, not misinterpret unrelated MIME data.
+    TestableICDropZone dropZone(ICDropZone::Section::Embedded);
+    QSignalSpy embedSpy(&dropZone, &ICDropZone::embedByFileRequested);
+    QSignalSpy extractSpy(&dropZone, &ICDropZone::extractByBlobNameRequested);
+
+    QMimeData mimeData;
+    mimeData.setText(QStringLiteral("plain text drop"));
+    QDropEvent dropEvent(QPointF(5, 5), Qt::CopyAction, &mimeData, Qt::LeftButton, Qt::NoModifier);
+    dropZone.dropEvent(&dropEvent);
+
+    QCOMPARE(embedSpy.count(), 0);
+    QCOMPARE(extractSpy.count(), 0);
+}
+
+void TestICDropZone::testResizeEventResizesHintOverlayToMatch()
+{
+    // The hint overlay must always cover the whole zone, even after a resize, so it can't be
+    // sized once in the constructor -- resizeEvent() has to keep it in sync.
+    TestableICDropZone dropZone(ICDropZone::Section::Embedded);
+    auto *hint = dropZone.findChild<QLabel *>("icDropHint");
+    QVERIFY(hint);
+
+    QResizeEvent resizeEvent(QSize(300, 120), QSize(100, 100));
+    dropZone.resizeEvent(&resizeEvent);
+
+    QCOMPARE(hint->size(), QSize(300, 120));
+}
+
+void TestICDropZone::testDragMoveEventAlwaysAcceptsProposedAction()
+{
+    // dragMoveEvent() unconditionally accepts -- acceptance was already decided once by
+    // dragEnterEvent() for the whole drag session; move events just need to keep the drop
+    // cursor showing "allowed" as the pointer travels within the zone.
+    TestableICDropZone dropZone(ICDropZone::Section::Embedded);
+
+    QMimeData mimeData; // content is irrelevant -- dragMoveEvent() doesn't inspect it
+    QDragMoveEvent moveEvent = makeDragMoveEvent(QPoint(5, 5), Qt::CopyAction, &mimeData, Qt::LeftButton, Qt::NoModifier);
+    dropZone.dragMoveEvent(&moveEvent);
+
+    QVERIFY(moveEvent.isAccepted());
 }
 
 void TestICDropZone::testAccessibleNameSet()

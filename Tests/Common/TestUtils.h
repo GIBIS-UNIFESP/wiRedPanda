@@ -3,17 +3,43 @@
 
 #pragma once
 
+#include <cstdio>
 #include <functional>
 #include <memory>
 
+#if defined(Q_OS_WIN)
+#include <io.h>
+#else
+#include <unistd.h>
+#endif
+
 #include <QApplication>
 #include <QDragEnterEvent>
+#include <QDragMoveEvent>
+#include <QFile>
 #include <QImage>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include <QMessageBox>
 #include <QPixmap>
 #include <QPoint>
 #include <QTest>
 #include <QTimer>
+
+// Cross-platform wrappers over the raw fd-duplication primitives ScopedStdinRedirect/
+// ScopedStdoutCapture below need -- POSIX's dup/dup2/close/fileno have no equivalent
+// names on MSVC, which only provides the underscore-prefixed forms via <io.h>.
+#if defined(Q_OS_WIN)
+inline int testUtilsDupFd(int fd) { return _dup(fd); }
+inline int testUtilsDup2Fd(int oldFd, int newFd) { return _dup2(oldFd, newFd); }
+inline int testUtilsCloseFd(int fd) { return _close(fd); }
+inline int testUtilsFilenoFd(FILE *f) { return _fileno(f); }
+#else
+inline int testUtilsDupFd(int fd) { return dup(fd); }
+inline int testUtilsDup2Fd(int oldFd, int newFd) { return dup2(oldFd, newFd); }
+inline int testUtilsCloseFd(int fd) { return close(fd); }
+inline int testUtilsFilenoFd(FILE *f) { return fileno(f); }
+#endif
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 7, 0)
 #  define QVERIFY_THROWS(exType, ...) QVERIFY_THROWS_EXCEPTION(exType, __VA_ARGS__)
@@ -34,11 +60,23 @@ inline QDragEnterEvent makeDragEnterEvent(QPoint pos, Qt::DropActions actions, c
 {
     return QDragEnterEvent(QPointF(pos), actions, data, buttons, modifiers);
 }
+
+inline QDragMoveEvent makeDragMoveEvent(QPoint pos, Qt::DropActions actions, const QMimeData *data,
+                                         Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers)
+{
+    return QDragMoveEvent(QPointF(pos), actions, data, buttons, modifiers);
+}
 #else
 inline QDragEnterEvent makeDragEnterEvent(QPoint pos, Qt::DropActions actions, const QMimeData *data,
                                            Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers)
 {
     return QDragEnterEvent(pos, actions, data, buttons, modifiers);
+}
+
+inline QDragMoveEvent makeDragMoveEvent(QPoint pos, Qt::DropActions actions, const QMimeData *data,
+                                         Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers)
+{
+    return QDragMoveEvent(pos, actions, data, buttons, modifiers);
 }
 #endif
 
@@ -274,6 +312,79 @@ public:
 private:
     QTimer m_timer;
     int m_dismissCount = 0;
+};
+
+/**
+ * @brief Redirects the process's real stdin to read from @a path's content for the guard's
+ * lifetime, restoring the exact original file descriptor afterward (dup/dup2, not freopen() to
+ * a fixed fallback -- freopen()'ing stdin to e.g. /dev/null on restore would permanently sever
+ * it from wherever it really pointed). Needed for code with no injection seam that reads the
+ * real stdin directly (e.g. BewavedDolphin::createWaveform()'s QTextStream cin(stdin) overload)
+ * -- redirecting the actual fd is the only way to drive it deterministically without risking a
+ * hang on an unredirected/interactive stdin.
+ */
+struct ScopedStdinRedirect {
+    int savedFd;
+
+    explicit ScopedStdinRedirect(const QString &path)
+        : savedFd(testUtilsDupFd(0))
+    {
+        std::fflush(stdin);
+        FILE *f = std::fopen(qPrintable(path), "r");
+        testUtilsDup2Fd(testUtilsFilenoFd(f), 0);
+        std::fclose(f);
+        std::clearerr(stdin);
+    }
+
+    ~ScopedStdinRedirect()
+    {
+        testUtilsDup2Fd(savedFd, 0);
+        testUtilsCloseFd(savedFd);
+        std::clearerr(stdin);
+    }
+};
+
+/**
+ * @brief Same idea as ScopedStdinRedirect, for capturing real stdout writes (e.g.
+ * BewavedDolphin::print()'s QTextStream(stdout), MCPProcessor::sendResponse()) without
+ * disturbing QTestLib's own use of stdout for the rest of the test run.
+ */
+struct ScopedStdoutCapture {
+    QString path;
+    int savedFd;
+
+    explicit ScopedStdoutCapture(const QString &capturePath)
+        : path(capturePath)
+        , savedFd(testUtilsDupFd(1))
+    {
+        std::fflush(stdout);
+        FILE *f = std::fopen(qPrintable(path), "w");
+        testUtilsDup2Fd(testUtilsFilenoFd(f), 1);
+        std::fclose(f);
+    }
+
+    ~ScopedStdoutCapture()
+    {
+        std::fflush(stdout);
+        testUtilsDup2Fd(savedFd, 1);
+        testUtilsCloseFd(savedFd);
+    }
+
+    QString contents() const
+    {
+        std::fflush(stdout);
+        QFile file(path);
+        if (!file.open(QIODevice::ReadOnly)) {
+            return {};
+        }
+        return QString::fromUtf8(file.readAll());
+    }
+
+    /// Convenience for callers capturing a JSON-RPC response.
+    QJsonObject json() const
+    {
+        return QJsonDocument::fromJson(contents().toUtf8()).object();
+    }
 };
 
 /**
