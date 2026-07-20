@@ -51,7 +51,7 @@ jobs:
         working-directory: MCP/Client
 
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v7.0.0
 
     - uses: actions/setup-python@v6
       with:
@@ -104,7 +104,7 @@ jobs:
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
 
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v7.0.0
 
     - uses: actions/setup-python@v6
       with:
@@ -142,7 +142,7 @@ jobs:
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
 
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v7.0.0
 
     # reporter: local prints results to the job log instead of posting PR
     # annotations, so this needs no extra permissions beyond contents: read.
