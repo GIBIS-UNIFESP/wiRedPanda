@@ -131,6 +131,19 @@ the ~80-class `TestLevel*` suite (Level1-9).
 (MISSING, needs porting), individual per-class audit isn't the bottleneck here, the harness port
 (Phase C) is. See the plan file for the full list and the 97-file/2-chokepoint leverage finding.
 
+**Update 2026-07-20 (Phase E batch 1)**: `TestNotifyCatch` (2 tests), `TestSimulationUnit` (5
+tests), `TestSimulationBlocker` (3 tests), `TestDanglingPointer` (15 of 16 tests — see below) are
+now ported and green. `TestDanglingPointer::bug7_icRegistryFileChangedMustNotLeaveDanglingPointers`
+was dropped (not just skipped): it regression-tested `ICRegistry::onFileChanged()`'s
+`QFileSystemWatcher`-driven hot-reload, and `CanvasICRegistry.h`'s own doc comment already
+confirms file watching is deliberately not ported yet — there is no Quick-side function left to
+check. This pass found a third real production bug (distinct from the two found in Phase D):
+`Port::drainConnections()` bare-deletes a `Connection` during cascade-teardown, bypassing
+`CanvasItem::removeItem(Connection*)` — the connection stayed in `m_connections`/the id registry
+pointing at freed memory (WIREDPANDA-HC class), later double-freeing at `~CanvasItem()`'s own
+`qDeleteAll(m_connections)`. Fixed via a `Connection::setDestroyedCallback()` hook (commit
+`f63ac4b93`), separate from the mechanical test-port commit (`dc0fe23e2`).
+
 ## Next steps
 
 1. Phase C (harness port) unblocks judging the ~80-class CPU/Level bucket as a group once a
