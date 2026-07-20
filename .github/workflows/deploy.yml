@@ -71,7 +71,7 @@ jobs:
           libxkbcommon-x11-dev \
           patchelf
 
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v7.0.0
       with:
         submodules: recursive
         fetch-depth: 0
