@@ -858,14 +858,6 @@ add_test(NAME TestInputRotary COMMAND test_wiredpanda TestInputRotary WORKING_DI
 add_test(NAME TestLED COMMAND test_wiredpanda TestLED WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestMainWindowGui COMMAND test_wiredpanda TestMainWindowGui WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestMinimapWidget COMMAND test_wiredpanda TestMinimapWidget WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel7ALU16Bit COMMAND test_wiredpanda TestLevel7ALU16Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel7CPUProgramCounter8Bit COMMAND test_wiredpanda TestLevel7CPUProgramCounter8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel7DataForwardingUnit COMMAND test_wiredpanda TestLevel7DataForwardingUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel7ExecutionDatapath COMMAND test_wiredpanda TestLevel7ExecutionDatapath WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel7FlagRegister COMMAND test_wiredpanda TestLevel7FlagRegister WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel7InstructionDecoder8Bit COMMAND test_wiredpanda TestLevel7InstructionDecoder8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel7InstructionMemoryInterface COMMAND test_wiredpanda TestLevel7InstructionMemoryInterface WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel7InstructionRegister8Bit COMMAND test_wiredpanda TestLevel7InstructionRegister8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel8DecodeStage COMMAND test_wiredpanda TestLevel8DecodeStage WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel8ExecuteStage COMMAND test_wiredpanda TestLevel8ExecuteStage WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel8FetchStage COMMAND test_wiredpanda TestLevel8FetchStage WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -1041,6 +1033,14 @@ add_test(NAME TestLevel6RegisterFile8X8 COMMAND test_wiredpanda_quick TestLevel6
 add_test(NAME TestLevel6RippleAdder8Bit COMMAND test_wiredpanda_quick TestLevel6RippleAdder8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel6StackMemoryInterface COMMAND test_wiredpanda_quick TestLevel6StackMemoryInterface WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel6StackPointer8Bit COMMAND test_wiredpanda_quick TestLevel6StackPointer8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel7ALU16Bit COMMAND test_wiredpanda_quick TestLevel7ALU16Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel7CPUProgramCounter8Bit COMMAND test_wiredpanda_quick TestLevel7CPUProgramCounter8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel7DataForwardingUnit COMMAND test_wiredpanda_quick TestLevel7DataForwardingUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel7ExecutionDatapath COMMAND test_wiredpanda_quick TestLevel7ExecutionDatapath WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel7FlagRegister COMMAND test_wiredpanda_quick TestLevel7FlagRegister WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel7InstructionDecoder8Bit COMMAND test_wiredpanda_quick TestLevel7InstructionDecoder8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel7InstructionMemoryInterface COMMAND test_wiredpanda_quick TestLevel7InstructionMemoryInterface WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel7InstructionRegister8Bit COMMAND test_wiredpanda_quick TestLevel7InstructionRegister8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 # ============================================================================
 # Test Properties: Labels and Timeouts
@@ -1053,11 +1053,7 @@ add_test(NAME TestLevel6StackPointer8Bit COMMAND test_wiredpanda_quick TestLevel
 # Level Tests - Integration category (IC-level hierarchical tests)
 # TestLevel1DFlipFlop moved to test_wiredpanda_quick (Phase C/D of the qtquick-rewrite plan's
 # Widgets-test-parity audit) -- see the "quick" label foreach below.
-foreach(TEST TestLevel7ALU16Bit
-        TestLevel7CPUProgramCounter8Bit TestLevel7DataForwardingUnit TestLevel7ExecutionDatapath
-        TestLevel7FlagRegister TestLevel7InstructionDecoder8Bit 
-        TestLevel7InstructionMemoryInterface TestLevel7InstructionRegister8Bit 
-        TestLevel8DecodeStage TestLevel8ExecuteStage TestLevel8FetchStage TestLevel8MemoryStage 
+foreach(TEST TestLevel8DecodeStage TestLevel8ExecuteStage TestLevel8FetchStage TestLevel8MemoryStage
         TestLevel9CPU16BitRISC TestLevel9FetchStage16Bit TestLevel9MemoryStage16Bit
         TestLevel9MultiCycleCPU8Bit TestLevel9RegisterFile32X16 TestLevel9SingleCycleCPU8Bit)
     set_tests_properties(${TEST} PROPERTIES LABELS "integration")
@@ -1145,16 +1141,16 @@ foreach(TEST TestCanvasItemSmoke TestCanvasCommands TestQuickElementHandler
         TestLevel5RegisterFile8X8 TestLevel5UpDownCounter4Bit
         TestLevel6ALU8Bit TestLevel6ProgramCounter8BitArithmetic TestLevel6RAM8X8
         TestLevel6Register8Bit TestLevel6RegisterFile8X8 TestLevel6RippleAdder8Bit
-        TestLevel6StackMemoryInterface TestLevel6StackPointer8Bit)
+        TestLevel6StackMemoryInterface TestLevel6StackPointer8Bit
+        TestLevel7ALU16Bit TestLevel7CPUProgramCounter8Bit TestLevel7DataForwardingUnit
+        TestLevel7ExecutionDatapath TestLevel7FlagRegister TestLevel7InstructionDecoder8Bit
+        TestLevel7InstructionMemoryInterface TestLevel7InstructionRegister8Bit)
     set_tests_properties(${TEST} PROPERTIES LABELS "unit;quick")
 endforeach()
 
 # GUI tests run sequentially after all other tests complete
 set(GUI_TESTS TestDialogs TestFileDialogProvider TestMainWindowGui TestBewavedDolphinGui)
 set(ALL_TESTS
-    TestLevel7ALU16Bit TestLevel7CPUProgramCounter8Bit TestLevel7DataForwardingUnit
-    TestLevel7ExecutionDatapath TestLevel7FlagRegister TestLevel7InstructionDecoder8Bit
-    TestLevel7InstructionMemoryInterface TestLevel7InstructionRegister8Bit
     TestLevel8DecodeStage TestLevel8ExecuteStage TestLevel8FetchStage TestLevel8MemoryStage
     TestLevel9CPU16BitRISC TestLevel9FetchStage16Bit TestLevel9MemoryStage16Bit
     TestLevel9MultiCycleCPU8Bit TestLevel9RegisterFile32X16 TestLevel9SingleCycleCPU8Bit

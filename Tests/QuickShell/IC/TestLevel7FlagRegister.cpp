@@ -1,17 +1,13 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/TestLevel7FlagRegister.h"
-
-#include <QFile>
-#include <QFileInfo>
+#include "Tests/QuickShell/IC/TestLevel7FlagRegister.h"
 
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "App/Scene/Workspace.h"
-#include "Tests/Common/TestUtils.h"
-#include "Tests/Integration/IC/Tests/CpuTestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 using TestUtils::setMultiBitInput;
 using TestUtils::readMultiBitOutput;
@@ -19,7 +15,7 @@ using TestUtils::clockCycle;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct FlagRegisterFixture {
-    std::unique_ptr<WorkSpace> workspace;
+    std::unique_ptr<QuickCircuitBuilder> builder;
     IC *ic = nullptr;
     QVector<InputSwitch *> flagInputs;
     InputSwitch *load = nullptr;
@@ -29,33 +25,31 @@ struct FlagRegisterFixture {
 
     bool build()
     {
-        workspace = std::make_unique<WorkSpace>();
-        CircuitBuilder builder(workspace->scene());
+        builder = std::make_unique<QuickCircuitBuilder>();
 
-        ic = loadBuildingBlockIC("level7_flag_register.panda");
-        builder.add(ic);
+        ic = static_cast<IC *>(builder->addOwnedElement(loadBuildingBlockIC("level7_flag_register.panda")));
 
         for (int i = 0; i < 4; i++) {
-            auto *sw = new InputSwitch(); builder.add(sw); flagInputs.append(sw);
+            auto *sw = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch())); flagInputs.append(sw);
         }
 
-        load = new InputSwitch(); builder.add(load);
-        clk = new InputSwitch(); builder.add(clk);
+        load = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        clk = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
 
         for (int i = 0; i < 4; i++) {
-            auto *led = new Led(); builder.add(led); flagOutputs.append(led);
+            auto *led = static_cast<Led *>(builder->addOwnedElement(new Led())); flagOutputs.append(led);
         }
 
         const QStringList flag_names = {"Zero", "Sign", "Carry", "Overflow"};
         for (int i = 0; i < 4; i++) {
-            builder.connect(flagInputs[i], 0, ic, QString("FlagIn[%1]_%2").arg(i).arg(flag_names[i]));
-            builder.connect(ic, QString("FlagOut[%1]_%2").arg(i).arg(flag_names[i]), flagOutputs[i], 0);
+            builder->connect(flagInputs[i], 0, ic, QString("FlagIn[%1]_%2").arg(i).arg(flag_names[i]));
+            builder->connect(ic, QString("FlagOut[%1]_%2").arg(i).arg(flag_names[i]), flagOutputs[i], 0);
         }
 
-        builder.connect(load, 0, ic, "Load");
-        builder.connect(clk, 0, ic, "Clock");
+        builder->connect(load, 0, ic, "Load");
+        builder->connect(clk, 0, ic, "Clock");
 
-        sim = builder.initSimulation();
+        sim = builder->initSimulation();
         sim->update();
         return true;
     }

@@ -1,23 +1,19 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/TestLevel7Alu16bit.h"
-
-#include <QFile>
-#include <QFileInfo>
+#include "Tests/QuickShell/IC/TestLevel7Alu16bit.h"
 
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "App/Scene/Workspace.h"
-#include "Tests/Common/TestUtils.h"
-#include "Tests/Integration/IC/Tests/CpuTestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct Alu16bitFixture {
-    std::unique_ptr<WorkSpace> workspace;
+    std::unique_ptr<QuickCircuitBuilder> builder;
     IC *ic = nullptr;
     InputSwitch *opAIn[16] = {};
     InputSwitch *opBIn[16] = {};
@@ -30,42 +26,38 @@ struct Alu16bitFixture {
 
     bool build()
     {
-        workspace = std::make_unique<WorkSpace>();
-        CircuitBuilder builder(workspace->scene());
+        builder = std::make_unique<QuickCircuitBuilder>();
 
-        ic = loadBuildingBlockIC("level7_alu_16bit.panda");
+        ic = static_cast<IC *>(builder->addOwnedElement(loadBuildingBlockIC("level7_alu_16bit.panda")));
 
-        zeroFlag = new Led();
-        signFlag = new Led();
-        carryFlag = new Led();
-        builder.add(ic, zeroFlag, signFlag, carryFlag);
+        zeroFlag = static_cast<Led *>(builder->addOwnedElement(new Led()));
+        signFlag = static_cast<Led *>(builder->addOwnedElement(new Led()));
+        carryFlag = static_cast<Led *>(builder->addOwnedElement(new Led()));
 
         for (int i = 0; i < 16; ++i) {
-            opAIn[i] = new InputSwitch();
-            opBIn[i] = new InputSwitch();
-            resultOut[i] = new Led();
-            builder.add(opAIn[i], opBIn[i], resultOut[i]);
+            opAIn[i] = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+            opBIn[i] = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+            resultOut[i] = static_cast<Led *>(builder->addOwnedElement(new Led()));
         }
         for (int i = 0; i < 3; ++i) {
-            opIn[i] = new InputSwitch();
-            builder.add(opIn[i]);
+            opIn[i] = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
         }
 
         for (int i = 0; i < 16; ++i) {
-            builder.connect(opAIn[i], 0, ic, QString("OperandA[%1]").arg(i));
-            builder.connect(opBIn[i], 0, ic, QString("OperandB[%1]").arg(i));
-            builder.connect(ic, QString("Result[%1]").arg(i), resultOut[i], 0);
+            builder->connect(opAIn[i], 0, ic, QString("OperandA[%1]").arg(i));
+            builder->connect(opBIn[i], 0, ic, QString("OperandB[%1]").arg(i));
+            builder->connect(ic, QString("Result[%1]").arg(i), resultOut[i], 0);
         }
 
         for (int i = 0; i < 3; ++i) {
-            builder.connect(opIn[i], 0, ic, QString("ALUOp[%1]").arg(i));
+            builder->connect(opIn[i], 0, ic, QString("ALUOp[%1]").arg(i));
         }
 
-        builder.connect(ic, "Zero", zeroFlag, 0);
-        builder.connect(ic, "Sign", signFlag, 0);
-        builder.connect(ic, "Carry", carryFlag, 0);
+        builder->connect(ic, "Zero", zeroFlag, 0);
+        builder->connect(ic, "Sign", signFlag, 0);
+        builder->connect(ic, "Carry", carryFlag, 0);
 
-        sim = builder.initSimulation();
+        sim = builder->initSimulation();
         sim->update();
         return true;
     }

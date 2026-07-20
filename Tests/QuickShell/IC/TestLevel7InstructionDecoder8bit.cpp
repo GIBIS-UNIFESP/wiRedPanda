@@ -1,25 +1,22 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/TestLevel7InstructionDecoder8bit.h"
+#include "Tests/QuickShell/IC/TestLevel7InstructionDecoder8bit.h"
 
-#include <QFile>
-#include <QFileInfo>
 #include <QMap>
 
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "App/Scene/Workspace.h"
-#include "Tests/Common/TestUtils.h"
-#include "Tests/Integration/IC/Tests/CpuTestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 using TestUtils::inputStatus;
 using TestUtils::setMultiBitInput;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct InstrDecoder8bitFixture {
-    std::unique_ptr<WorkSpace> workspace;
+    std::unique_ptr<QuickCircuitBuilder> builder;
     IC *ic = nullptr;
     QVector<InputSwitch *> instrInputs;
     QMap<int, Led *> opOutputs;
@@ -27,35 +24,31 @@ struct InstrDecoder8bitFixture {
 
     bool build()
     {
-        workspace = std::make_unique<WorkSpace>();
-        CircuitBuilder builder(workspace->scene());
+        builder = std::make_unique<QuickCircuitBuilder>();
 
-        ic = loadBuildingBlockIC("level7_instruction_decoder_8bit.panda");
-        builder.add(ic);
+        ic = static_cast<IC *>(builder->addOwnedElement(loadBuildingBlockIC("level7_instruction_decoder_8bit.panda")));
 
         for (int i = 0; i < 8; i++) {
-            auto *sw = new InputSwitch();
-            builder.add(sw);
+            auto *sw = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
             sw->setLabel(QString("instr[%1]").arg(i));
             instrInputs.append(sw);
         }
 
         // Connect all instruction inputs to decoder
         for (int i = 0; i < 8; i++) {
-            builder.connect(instrInputs[i], 0, ic, QString("instr[%1]").arg(i));
+            builder->connect(instrInputs[i], 0, ic, QString("instr[%1]").arg(i));
         }
 
         // Connect every one of the 256 output lines — testInstructionDecoder8BitOneHot()
         // sweeps all of them, not just the handful of named rows in _data().
         for (int idx = 0; idx < 256; idx++) {
-            auto *led = new Led();
-            builder.add(led);
+            auto *led = static_cast<Led *>(builder->addOwnedElement(new Led()));
             led->setLabel(QString("op[%1]").arg(idx));
-            builder.connect(ic, QString("op[%1]").arg(idx), led, 0);
+            builder->connect(ic, QString("op[%1]").arg(idx), led, 0);
             opOutputs[idx] = led;
         }
 
-        sim = builder.initSimulation();
+        sim = builder->initSimulation();
         sim->update();
         return true;
     }

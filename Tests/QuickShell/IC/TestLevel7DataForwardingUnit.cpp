@@ -1,24 +1,20 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/TestLevel7DataForwardingUnit.h"
-
-#include <QFile>
-#include <QFileInfo>
+#include "Tests/QuickShell/IC/TestLevel7DataForwardingUnit.h"
 
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "App/Scene/Workspace.h"
-#include "Tests/Common/TestUtils.h"
-#include "Tests/Integration/IC/Tests/CpuTestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 using TestUtils::setMultiBitInput;
 using TestUtils::readMultiBitOutput;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct DataForwardingUnitFixture {
-    std::unique_ptr<WorkSpace> workspace;
+    std::unique_ptr<QuickCircuitBuilder> builder;
     IC *ic = nullptr;
     QVector<InputSwitch *> dataAInputs;
     QVector<InputSwitch *> dataBInputs;
@@ -30,37 +26,35 @@ struct DataForwardingUnitFixture {
 
     bool build()
     {
-        workspace = std::make_unique<WorkSpace>();
-        CircuitBuilder builder(workspace->scene());
+        builder = std::make_unique<QuickCircuitBuilder>();
 
-        ic = loadBuildingBlockIC("level7_data_forwarding_unit.panda");
-        builder.add(ic);
+        ic = static_cast<IC *>(builder->addOwnedElement(loadBuildingBlockIC("level7_data_forwarding_unit.panda")));
 
         for (int i = 0; i < 8; i++) {
-            auto *a = new InputSwitch(); builder.add(a); dataAInputs.append(a);
-            auto *b = new InputSwitch(); builder.add(b); dataBInputs.append(b);
-            auto *c = new InputSwitch(); builder.add(c); dataCInputs.append(c);
-            auto *d = new InputSwitch(); builder.add(d); dataDInputs.append(d);
-            auto *led = new Led(); builder.add(led); outputLeds.append(led);
+            auto *a = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch())); dataAInputs.append(a);
+            auto *b = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch())); dataBInputs.append(b);
+            auto *c = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch())); dataCInputs.append(c);
+            auto *d = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch())); dataDInputs.append(d);
+            auto *led = static_cast<Led *>(builder->addOwnedElement(new Led())); outputLeds.append(led);
         }
 
         for (int i = 0; i < 2; i++) {
-            auto *sw = new InputSwitch(); builder.add(sw); selectInputs.append(sw);
+            auto *sw = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch())); selectInputs.append(sw);
         }
 
         for (int i = 0; i < 8; i++) {
-            builder.connect(dataAInputs[i], 0, ic, QString("DataA[%1]").arg(i));
-            builder.connect(dataBInputs[i], 0, ic, QString("DataB[%1]").arg(i));
-            builder.connect(dataCInputs[i], 0, ic, QString("DataC[%1]").arg(i));
-            builder.connect(dataDInputs[i], 0, ic, QString("DataD[%1]").arg(i));
-            builder.connect(ic, QString("ForwardedData[%1]").arg(i), outputLeds[i], 0);
+            builder->connect(dataAInputs[i], 0, ic, QString("DataA[%1]").arg(i));
+            builder->connect(dataBInputs[i], 0, ic, QString("DataB[%1]").arg(i));
+            builder->connect(dataCInputs[i], 0, ic, QString("DataC[%1]").arg(i));
+            builder->connect(dataDInputs[i], 0, ic, QString("DataD[%1]").arg(i));
+            builder->connect(ic, QString("ForwardedData[%1]").arg(i), outputLeds[i], 0);
         }
 
         for (int i = 0; i < 2; i++) {
-            builder.connect(selectInputs[i], 0, ic, QString("Select[%1]").arg(i));
+            builder->connect(selectInputs[i], 0, ic, QString("Select[%1]").arg(i));
         }
 
-        sim = builder.initSimulation();
+        sim = builder->initSimulation();
         sim->update();
         return true;
     }

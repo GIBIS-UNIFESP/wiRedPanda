@@ -74,6 +74,14 @@
 #include "Tests/QuickShell/IC/TestLevel6RippleAdder8bit.h"
 #include "Tests/QuickShell/IC/TestLevel6StackMemoryInterface.h"
 #include "Tests/QuickShell/IC/TestLevel6StackPointer8bit.h"
+#include "Tests/QuickShell/IC/TestLevel7Alu16bit.h"
+#include "Tests/QuickShell/IC/TestLevel7CpuProgramCounter8bit.h"
+#include "Tests/QuickShell/IC/TestLevel7DataForwardingUnit.h"
+#include "Tests/QuickShell/IC/TestLevel7ExecutionDatapath.h"
+#include "Tests/QuickShell/IC/TestLevel7FlagRegister.h"
+#include "Tests/QuickShell/IC/TestLevel7InstructionDecoder8bit.h"
+#include "Tests/QuickShell/IC/TestLevel7InstructionMemoryInterface.h"
+#include "Tests/QuickShell/IC/TestLevel7InstructionRegister8bit.h"
 #include "Tests/QuickShell/TestFeedback.h"
 #include "Tests/QuickShell/TestSimulation.h"
 #include "Tests/QuickShell/TestQuickWorkSpace.h"
@@ -183,5 +191,13 @@ int main(int argc, char **argv)
         {"TestLevel6RippleAdder8Bit", []() -> QObject * { return new TestLevel6RippleAdder8Bit; }},
         {"TestLevel6StackMemoryInterface", []() -> QObject * { return new TestLevel6StackMemoryInterface; }},
         {"TestLevel6StackPointer8Bit", []() -> QObject * { return new TestLevel6StackPointer8Bit; }},
+        {"TestLevel7ALU16Bit", []() -> QObject * { return new TestLevel7ALU16Bit; }},
+        {"TestLevel7CPUProgramCounter8Bit", []() -> QObject * { return new TestLevel7CPUProgramCounter8Bit; }},
+        {"TestLevel7DataForwardingUnit", []() -> QObject * { return new TestLevel7DataForwardingUnit; }},
+        {"TestLevel7ExecutionDatapath", []() -> QObject * { return new TestLevel7ExecutionDatapath; }},
+        {"TestLevel7FlagRegister", []() -> QObject * { return new TestLevel7FlagRegister; }},
+        {"TestLevel7InstructionDecoder8Bit", []() -> QObject * { return new TestLevel7InstructionDecoder8Bit; }},
+        {"TestLevel7InstructionMemoryInterface", []() -> QObject * { return new TestLevel7InstructionMemoryInterface; }},
+        {"TestLevel7InstructionRegister8Bit", []() -> QObject * { return new TestLevel7InstructionRegister8Bit; }},
     });
 }

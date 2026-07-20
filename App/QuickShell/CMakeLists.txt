@@ -379,6 +379,22 @@ set(QUICK_SHELL_TEST_SOURCES
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel6StackMemoryInterface.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel6StackPointer8bit.cpp
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel6StackPointer8bit.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel7Alu16bit.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel7Alu16bit.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel7CpuProgramCounter8bit.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel7CpuProgramCounter8bit.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel7DataForwardingUnit.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel7DataForwardingUnit.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel7ExecutionDatapath.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel7ExecutionDatapath.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel7FlagRegister.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel7FlagRegister.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel7InstructionDecoder8bit.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel7InstructionDecoder8bit.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel7InstructionMemoryInterface.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel7InstructionMemoryInterface.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel7InstructionRegister8bit.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel7InstructionRegister8bit.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/StubDialogProvider.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasCommands.cpp
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasCommands.h
