@@ -485,6 +485,7 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestElementLogicErrors.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestNodeLogic.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestStatusOps.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestBaseHandler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestElementHandler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestFileHandlerSecurity.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestICHandlerSecurity.cpp
@@ -702,6 +703,7 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestElementLogicErrors.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestNodeLogic.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestStatusOps.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestBaseHandler.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestElementHandler.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestFileHandlerSecurity.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestICHandlerSecurity.h

@@ -776,6 +776,7 @@ add_test(NAME TestDialogs COMMAND test_wiredpanda TestDialogs WORKING_DIRECTORY 
 add_test(NAME TestDisplays COMMAND test_wiredpanda TestDisplays WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestElementAppearance COMMAND test_wiredpanda TestElementAppearance WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestElementFactory COMMAND test_wiredpanda TestElementFactory WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestBaseHandler COMMAND test_wiredpanda TestBaseHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestElementHandler COMMAND test_wiredpanda TestElementHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestElementLabel COMMAND test_wiredpanda TestElementLabel WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestElementLogic COMMAND test_wiredpanda TestElementLogic WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -1107,7 +1108,7 @@ set(ALL_TESTS
     TestDemux TestDisplay TestDisplay7 TestGraphicElement TestICRegistry TestICUnit TestMux
     TestDolphinClipboard TestDolphinEdits TestDolphinExporter TestDolphinFile TestDolphinModelBuilder
     TestDolphinSerializer TestDolphinZoom TestSignalDelegate TestWaveformSimulator TestFileUtils TestRecentFilesUnit
-    TestFileHandlerSecurity TestICHandlerSecurity TestMCPProcessor TestMCPValidator TestElementHandler
+    TestFileHandlerSecurity TestICHandlerSecurity TestMCPProcessor TestMCPValidator TestElementHandler TestBaseHandler
     TestExerciseEngine TestTourEngine
     TestSimulationUnit TestWorkspaceUnit
     TestICFixtureLayout)

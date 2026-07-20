@@ -29,7 +29,7 @@ QJsonObject BaseHandler::createSuccessResponse(const QJsonObject &result, const 
         response["id"] = requestId;
     }
     return response;
-}
+} // LCOV_EXCL_LINE -- compiler-generated cleanup for the returned QJsonObject (pattern 1)
 
 QJsonObject BaseHandler::createErrorResponse(const QString &error, const QJsonValue &requestId, int code) const
 {
@@ -279,7 +279,10 @@ QString BaseHandler::availablePorts(GraphicElement *element, bool isOutput) cons
             QString portName = port->name().isEmpty() ? "(unnamed)" : port->name();
             ports.append(QString("[%1] %2").arg(i).arg(portName));
         } else {
-            ports.append(QString("[%1] (null)").arg(i));
+            // Unreachable: ElementPorts::inputPort()/outputPort() only return null for an
+            // out-of-range index, but this loop's own bound (count) is that same size, so i
+            // is always in range -- every index up to count has a real, non-null port.
+            ports.append(QString("[%1] (null)").arg(i)); // LCOV_EXCL_LINE
         }
     }
 
