@@ -16,4 +16,9 @@ private slots:
     void testPaletteRebuild();
     void testElementLabelHasDescriptiveTooltip();
     void testAccessibleNameSet(); // #14 accessibility sweep
+
+    void testPopulateFallsBackToFirstTabWhenIoTabIsMissing();
+    void testSearchFirstPassMatchesByInternalTypeKeyword();
+    void testSearchSecondPassMatchesByTranslatedNameOnly();
+    void testSearchThirdPassMatchesByIcFullFileName();
 };
