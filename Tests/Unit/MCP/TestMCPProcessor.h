@@ -17,4 +17,21 @@ private slots:
     // grow the pending-line buffer without bound.
     void testExtractStdinLinesKeepsIncompleteLineAtExactCap();
     void testExtractStdinLinesDropsIncompleteLineOverCap();
+
+    void testProcessIncomingDataIgnoresBlankLine();
+    void testProcessCommandRejectsInvalidJson();
+    void testProcessCommandRejectsWrongJsonRpcVersion();
+    void testProcessCommandRejectsSchemaViolation();
+    void testProcessCommandRejectsUnknownMethod();
+    void testProcessCommandDispatchesKnownMethodSuccessfully();
+
+    // These drive the real QSocketNotifier -- MCPProcessor uses a dedicated StdinReader
+    // thread on Windows instead (see MCPProcessor.h), so there's no m_stdinNotifier there.
+#ifndef Q_OS_WIN
+    void testStartStopProcessingTogglesNotifier();
+    void testOnStdinReadableDispatchesRealData();
+    void testOnStdinReadableQuitsOnEof();
+#endif
+
+    void testHeapAllocationDeletesCleanly();
 };
