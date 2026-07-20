@@ -74,8 +74,8 @@ void MinimapWidget::paintEvent(QPaintEvent * /*event*/)
 
     QRectF srcUsed;
     double scale = 1.0, dx = 0.0, dy = 0.0, usedW = 0.0, usedH = 0.0;
-    if (!computeTransform(srcUsed, scale, dx, dy, usedW, usedH))
-        return;
+    if (!computeTransform(srcUsed, scale, dx, dy, usedW, usedH)) // LCOV_EXCL_LINE — unreachable with m_scene non-null (guarded above): a real Scene's permanent, always-added rubber-band selection-rect item keeps computeTransform()'s own union non-empty (see its comment), so it can only ever return false for a null m_scene, which is already excluded by this function's earlier guard.
+        return; // LCOV_EXCL_LINE — see above.
 
     const qreal dpr = this->devicePixelRatioF();
     const QSize pixSize = QSize(qRound(usedW * dpr), qRound(usedH * dpr));
@@ -202,8 +202,8 @@ bool MinimapWidget::computeTransform(QRectF &srcOut, double &scaleOut, double &d
     QRectF src = m_scene->sceneRect().united(m_scene->cachedItemsBoundingRect());
     if (m_view && m_view->viewport())
         src = src.united(m_view->mapToScene(m_view->viewport()->rect()).boundingRect());
-    if (!src.isValid() || src.isEmpty())
-        return false;
+    if (!src.isValid() || src.isEmpty()) // LCOV_EXCL_LINE — unreachable in practice: a real Scene always contains a permanent, non-empty rubber-band selection-rect item (see comment above), so this union is never invalid/empty for any Scene constructed the normal way.
+        return false; // LCOV_EXCL_LINE — see above.
 
     const double w = static_cast<double>(width());
     const double h = static_cast<double>(height());
@@ -358,8 +358,9 @@ void MinimapWidget::applyResize(const QPoint &globalPos)
         newHeight = qRound(newWidth / aspect);
     }
 
-    newWidth = qMax(minimumWidth(), newWidth);
-    newHeight = qMax(minimumHeight(), newHeight);
+    // Clamping each dimension independently (qMax(minimum..(), new..)) would silently drop the
+    // locked aspect ratio right at the floor -- re-derive the other dimension from whichever
+    // one actually needed clamping instead, same as the drag-direction branches above.
     if (newWidth < minimumWidth()) {
         newWidth = minimumWidth();
         newHeight = qMax(minimumHeight(), qRound(newWidth / aspect));
