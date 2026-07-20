@@ -52,4 +52,27 @@ private slots:
 
     // Regression: F17 — toggle position must be bounds-checked (OOB write)
     void testToggleTruthTableOutputCommandBounds();
+
+    // MorphCommand's remaining property-transfer/connection-drop branches
+    void testMorphNotToNodeAdjustsPosition();
+    void testMorphNodeToNotAdjustsPosition();
+    void testMorphPreservesFrequency();
+    void testMorphDropsAndRestoresOutputConnection();
+    void testMorphUndoSkipsRestoringConnectionToDeletedPeer();
+
+    // Empty-target no-ops
+    void testUpdateCommandWithNoElementsIsNoOp();
+    void testUpdateBlobCommandWithNoElementsIsNoOp();
+    void testFlipCommandWithEmptyItemsIsNoOp();
+
+    // SplitCommand's remaining upstream-lookup-fails throws
+    void testSplitCommandRedoThrowsWhenEndPortIsNull();
+    void testSplitCommandUndoThrowsWhenUpstreamMissing();
+
+    // CommandUtils::findItems()/findElements() throw when scene state is corrupted
+    // independently of the undo stack (mirrors testSplitCommandRedoThrowsBeforeAllocation's
+    // forgetItemId technique).
+    void testFindItemsThrowsWhenItemMissing();
+    void testLoadItemsThrowsOnCountMismatch();
+    void testElementsCommandElementsThrowsWhenItemMissing();
 };
