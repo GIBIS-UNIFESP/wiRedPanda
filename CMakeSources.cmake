@@ -525,6 +525,7 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestLabeledSlider.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestLanguageManager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestMinimapWidget.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestSceneUiBinder.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestSelectionCapabilities.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestTrashButton.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Wiring/TestConnection.cpp
@@ -736,6 +737,7 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestLabeledSlider.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestLanguageManager.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestMinimapWidget.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestSceneUiBinder.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestSelectionCapabilities.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestTrashButton.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Wiring/TestConnection.h

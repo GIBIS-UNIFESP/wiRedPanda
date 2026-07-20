@@ -35,6 +35,11 @@ class SceneUiBinder : public QObject
 {
     Q_OBJECT
 
+    // Test-only seam: the private guard methods below are only reachable through their
+    // signal connections once bind() has run, which always sets m_bound first -- calling
+    // them directly is the only way to exercise their "not bound yet" guards.
+    friend class TestSceneUiBinder;
+
 public:
     /// \param ui Shared UI (element editor, menus, actions, status bar).
     /// \param palette Element palette (embedded-IC list reflects the active scene).

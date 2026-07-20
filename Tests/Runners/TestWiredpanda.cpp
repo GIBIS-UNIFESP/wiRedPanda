@@ -220,6 +220,7 @@
 #include "Tests/Unit/Ui/TestLabeledSlider.h"
 #include "Tests/Unit/Ui/TestLanguageManager.h"
 #include "Tests/Unit/Ui/TestMinimapWidget.h"
+#include "Tests/Unit/Ui/TestSceneUiBinder.h"
 #include "Tests/Unit/Ui/TestSelectionCapabilities.h"
 #include "Tests/Unit/Ui/TestTrashButton.h"
 // unit/wiring
@@ -431,6 +432,7 @@ int main(int argc, char **argv)
         {"TestLabeledSlider", []() -> QObject * { return new TestLabeledSlider; }},
         {"TestLanguageManager", []() -> QObject * { return new TestLanguageManager; }},
         {"TestMinimapWidget", []() -> QObject * { return new TestMinimapWidget; }},
+        {"TestSceneUiBinder", []() -> QObject * { return new TestSceneUiBinder; }},
         {"TestSelectionCapabilities", []() -> QObject * { return new TestSelectionCapabilities; }},
         {"TestTrashButton", []() -> QObject * { return new TestTrashButton; }},
     });
