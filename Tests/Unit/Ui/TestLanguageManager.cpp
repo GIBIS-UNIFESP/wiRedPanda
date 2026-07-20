@@ -88,3 +88,60 @@ void TestLanguageManager::testQtTranslatorIsLoadable()
     QVERIFY2(!translator.isEmpty(),
              "Loaded Qt German translator is empty — translation file may be a stub");
 }
+
+void TestLanguageManager::testDisplayNamePtBrUsesPortugueseBrazilWithCountrySuffix()
+{
+    // pt_BR gets its own QLocale(Portuguese, Brazil) override (LanguageManager.cpp) rather
+    // than the generic QLocale(langCode) construction, and its underscore also triggers the
+    // "(territory)" suffix -- covers both branches at once.
+    LanguageManager manager;
+    QCOMPARE(manager.displayName("pt_BR"), QStringLiteral("Português (Brasil)"));
+}
+
+void TestLanguageManager::testDisplayNameWithCountrySuffixAppendsTerritory()
+{
+    // A non-pt_BR code with an underscore still gets the "(territory)" suffix, proving that
+    // branch isn't special-cased to pt_BR specifically.
+    LanguageManager manager;
+    QCOMPARE(manager.displayName("zh_Hans"), QStringLiteral("简体中文 (中国)"));
+}
+
+void TestLanguageManager::testDisplayNameFallsBackToRawCodeForUnknownLanguage()
+{
+    // "zz" isn't a real language QLocale recognises (nativeLanguageName() degrades to empty,
+    // confirmed empirically), exercising the manual-fallback map's default: langCode itself,
+    // capitalized. The four hand-picked fallback entries (bn/fa/he/th) are all now fully
+    // supported by this Qt version's own locale data (also confirmed empirically), so they
+    // can't be reached this way any more -- this proves the fallback mechanism itself still
+    // works for whatever QLocale gap prompted it originally.
+    LanguageManager manager;
+    QCOMPARE(manager.displayName("zz"), QStringLiteral("Zz"));
+}
+
+void TestLanguageManager::testLoadTranslationForNonEnglishLanguageWithoutEmbeddedResource()
+{
+    // wpanda_de.qm isn't embedded in this test binary (see testAvailableLanguages()), so
+    // QResource(qmFile).isValid() is false here and loadTranslation() falls straight through
+    // to translationChanged() without installing anything -- still real behavior worth
+    // pinning, since every previous test only ever passed "en" or an empty string.
+    LanguageManager manager;
+    QSignalSpy translationChangedSpy(&manager, &LanguageManager::translationChanged);
+
+    manager.loadTranslation("de");
+
+    QCOMPARE(Settings::language(), QStringLiteral("de"));
+    QCOMPARE(translationChangedSpy.count(), 1);
+}
+
+void TestLanguageManager::testFlagIconReturnsMappedIconForKnownLanguage()
+{
+    LanguageManager manager;
+    QCOMPARE(manager.flagIcon("de"), QStringLiteral(":/Interface/Locale/german.svg"));
+    QCOMPARE(manager.flagIcon("pt_BR"), QStringLiteral(":/Interface/Locale/brasil.svg"));
+}
+
+void TestLanguageManager::testFlagIconFallsBackToDefaultForUnknownLanguage()
+{
+    LanguageManager manager;
+    QCOMPARE(manager.flagIcon("zz"), QStringLiteral(":/Interface/Locale/default.svg"));
+}

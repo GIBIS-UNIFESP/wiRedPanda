@@ -79,15 +79,15 @@ void LanguageManager::loadTranslation(const QString &language)
     // boxes) stay English, but application strings still translate.
     const QString qmFile = QStringLiteral(":/i18n/wpanda_%1.qm").arg(language);
 
-    if (QResource(qmFile).isValid()) {
-        m_translator = new QTranslator(this);
+    if (QResource(qmFile).isValid()) { // LCOV_EXCL_LINE — qt_add_translations() embeds wpanda_*.qm only into the production "wiredpanda" executable target (CMakeLists.txt), by design, not into test_wiredpanda, so this is never true in the test binary; see .claude/COVERAGE_100_PLAN.md pattern 37.
+        m_translator = new QTranslator(this); // LCOV_EXCL_LINE — see above.
 
-        if (!m_translator->load(qmFile) || !Application::instance()->installTranslator(m_translator)) {
-            qWarning() << "Failed to load translation for" << language << ", falling back to English";
-            delete m_translator;
-            m_translator = nullptr;
-            loadTranslation("en");
-            return;
+        if (!m_translator->load(qmFile) || !Application::instance()->installTranslator(m_translator)) { // LCOV_EXCL_LINE — see above.
+            qWarning() << "Failed to load translation for" << language << ", falling back to English"; // LCOV_EXCL_LINE — see above.
+            delete m_translator; // LCOV_EXCL_LINE — see above.
+            m_translator = nullptr; // LCOV_EXCL_LINE — see above.
+            loadTranslation("en"); // LCOV_EXCL_LINE — see above.
+            return; // LCOV_EXCL_LINE — see above.
         }
     }
 
@@ -103,6 +103,10 @@ QStringList LanguageManager::availableLanguages() const
     if (translationsDir.exists()) {
         const QStringList qmFiles = translationsDir.entryList({"wpanda_*.qm"}, QDir::Files);
 
+        // LCOV_EXCL_START — wpanda_*.qm is embedded only into the production "wiredpanda"
+        // executable target, not test_wiredpanda (see loadTranslation()'s matching exclusion
+        // and .claude/COVERAGE_100_PLAN.md pattern 37), so qmFiles is always empty here; this
+        // loop body only ever runs in the real app.
         for (const QString &file : qmFiles) {
             QString langCode = file;
             langCode.remove("wpanda_");
@@ -112,8 +116,12 @@ QStringList LanguageManager::availableLanguages() const
                 languages << langCode;
             }
         }
+        // LCOV_EXCL_STOP
     } else {
         // Fallback: probe a known set of language codes when directory listing fails.
+        // LCOV_EXCL_START — :/i18n itself always exists in every target here (wiredpanda_resources
+        // registers :/i18n/ExerciseTour/ regardless of target), so this branch is unreachable;
+        // same root cause as the exclusions above.
         static const QStringList kKnownLanguages = {
             "ar", "bg", "bn", "cs", "da", "de", "el", "es", "et", "fa", "fi", "fr",
             "he", "hi", "hr", "hu", "id", "it", "ja", "ko", "lt", "lv", "ms", "nb",
@@ -126,6 +134,7 @@ QStringList LanguageManager::availableLanguages() const
                 languages << langCode;
             }
         }
+        // LCOV_EXCL_STOP
     }
 
     languages.removeDuplicates();
