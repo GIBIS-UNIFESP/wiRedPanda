@@ -144,6 +144,21 @@ the ~80-class `TestLevel*` suite (Level1-9).
 (MISSING, needs porting), individual per-class audit isn't the bottleneck here, the harness port
 (Phase C) is. See the plan file for the full list and the 97-file/2-chokepoint leverage finding.
 
+**Update 2026-07-20 (Phase E batch 2)**: `TestDemux`, `TestMux`, `TestPriorities`,
+`TestClocksAdvanced`, `TestLogicGates`, `TestDisplays`, `TestSequentialLogic`,
+`TestMemorySettlingTime`, `TestMUXDEMUXComprehensive`, `TestSequential` are now ported and green
+(10 classes, ~470 tests total). All ported essentially unchanged — pure element/circuit domain
+logic, only ever needing `WorkSpace`+`CircuitBuilder(Scene*)` swapped for `QuickCircuitBuilder`.
+`TestDemux`/`TestMux` each dropped 3 "Big/rotation/pivot/drift" sub-tests that duplicate the
+already-tracked `TestIc` 8-test rotation/pivot gap (`mapToScene()`/`transformOriginPoint()` no
+longer exist on `GraphicElement`) rather than re-deriving a new pivot-testing technique
+per-element — that's one Phase F item, not several. Two dead `Tests/Integration/IC/Tests/Cpu/
+CpuCommon.h` includes (in `TestMuxDemuxComprehensive`/`TestSequential`) were dropped, confirmed
+via grep that neither file referenced anything from it. Remaining in this bucket:
+`TestSerialization`, `TestArduino`, `TestArduinoCodeGenUnit`, `TestSystemVerilogExport`,
+`TestSystemVerilogCodeGenUnit`, `TestTourEngine`, `TestCircuitExporter`, `TestWorkspaceUnit`,
+`TestConnections`, plus the large `TestICInline` bucket (~142 domain tests).
+
 **Update 2026-07-20 (Phase E batch 1)**: `TestNotifyCatch` (2 tests), `TestSimulationUnit` (5
 tests), `TestSimulationBlocker` (3 tests), `TestDanglingPointer` (15 of 16 tests — see below) are
 now ported and green. `TestDanglingPointer::bug7_icRegistryFileChangedMustNotLeaveDanglingPointers`
