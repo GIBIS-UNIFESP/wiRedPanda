@@ -483,6 +483,10 @@ set(QUICK_SHELL_TEST_SOURCES
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestMux.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestPriorities.cpp
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestPriorities.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestClocksAdvanced.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestClocksAdvanced.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestLogicGates.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestLogicGates.h
 )
 
 # Usage: ./build/test_wiredpanda_quick ClassName [functionName] -- mirrors test_wiredpanda's

@@ -277,7 +277,6 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestAudioBox.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestBuzzer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestClock.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestClocksAdvanced.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestComponents.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestDisplay.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestDisplay7.cpp
@@ -291,7 +290,6 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestInputElements.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestInputRotary.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestLed.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestLogicGates.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestMultiplexing.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestSequentialLogic.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestTruthTable.cpp
@@ -378,7 +376,6 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestAudioElementHelpers.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestBuzzer.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestClock.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestClocksAdvanced.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestComponents.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestDisplay.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestDisplay7.h
@@ -392,7 +389,6 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestInputElements.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestInputRotary.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestLed.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestLogicGates.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestMultiplexing.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestSequentialLogic.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestTruthTable.h

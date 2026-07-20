@@ -825,7 +825,6 @@ add_test(NAME TestAudioBox COMMAND test_wiredpanda TestAudioBox WORKING_DIRECTOR
 add_test(NAME TestBewavedDolphinGui COMMAND test_wiredpanda TestBewavedDolphinGui WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestBuzzer COMMAND test_wiredpanda TestBuzzer WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestClock COMMAND test_wiredpanda TestClock WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestClocksAdvanced COMMAND test_wiredpanda TestClocksAdvanced WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestCommands COMMAND test_wiredpanda TestCommands WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestCommon COMMAND test_wiredpanda TestCommon WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestComponents COMMAND test_wiredpanda TestComponents WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -858,7 +857,6 @@ add_test(NAME TestInputRotary COMMAND test_wiredpanda TestInputRotary WORKING_DI
 add_test(NAME TestLED COMMAND test_wiredpanda TestLED WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestMainWindowGui COMMAND test_wiredpanda TestMainWindowGui WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestMinimapWidget COMMAND test_wiredpanda TestMinimapWidget WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLogicGates COMMAND test_wiredpanda TestLogicGates WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestMemorySettlingTime COMMAND test_wiredpanda TestMemorySettlingTime WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestMUXDEMUXComprehensive COMMAND test_wiredpanda TestMUXDEMUXComprehensive WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestMultiplexing COMMAND test_wiredpanda TestMultiplexing WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -1041,6 +1039,8 @@ add_test(NAME TestExerciseEngine COMMAND test_wiredpanda_quick TestExerciseEngin
 add_test(NAME TestDemux COMMAND test_wiredpanda_quick TestDemux WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestMux COMMAND test_wiredpanda_quick TestMux WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestPriorities COMMAND test_wiredpanda_quick TestPriorities WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestClocksAdvanced COMMAND test_wiredpanda_quick TestClocksAdvanced WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLogicGates COMMAND test_wiredpanda_quick TestLogicGates WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 # ============================================================================
 # Test Properties: Labels and Timeouts
@@ -1066,10 +1066,10 @@ foreach(TEST TestArduino TestFiles TestIC TestICInline
 endforeach()
 
 # Element and Component Unit Tests - Unit category
-foreach(TEST TestBewavedDolphinGui TestAudioBox TestBuzzer TestClock TestClocksAdvanced TestComponents TestDisplays
+foreach(TEST TestBewavedDolphinGui TestAudioBox TestBuzzer TestClock TestComponents TestDisplays
         TestElementLabel TestElementProperties TestFeatures TestGeometry
         TestGraphicelementAdvanced TestIcons TestInputElements TestInputRotary TestLED
-        TestLogicGates TestMultiplexing TestSequentialLogic TestTruthTable TestWaveform
+        TestMultiplexing TestSequentialLogic TestTruthTable TestWaveform
         TestWirelessNode)
     set_tests_properties(${TEST} PROPERTIES LABELS "unit")
 endforeach()
@@ -1138,7 +1138,8 @@ foreach(TEST TestCanvasItemSmoke TestCanvasCommands TestQuickElementHandler
         TestLevel9MultiCycleCPU8Bit TestLevel9RegisterFile32X16 TestLevel9SingleCycleCPU8Bit
         TestNotifyCatch TestSimulationUnit TestSimulationBlocker TestDanglingPointer
         TestICUnit TestICRegistry TestExerciseEngine
-        TestDemux TestMux TestPriorities)
+        TestDemux TestMux TestPriorities
+        TestClocksAdvanced TestLogicGates)
     set_tests_properties(${TEST} PROPERTIES LABELS "unit;quick")
 endforeach()
 
@@ -1149,10 +1150,10 @@ set(ALL_TESTS
     TestMUXDEMUXComprehensive
     TestArduino TestFeedback TestFiles TestIC TestICInline
     TestSimulation TestSystemVerilogExport TestWorkspace TestWorkspaceFileops
-    TestIcons TestWaveform TestAudioBox TestBuzzer TestClock TestClocksAdvanced
+    TestIcons TestWaveform TestAudioBox TestBuzzer TestClock
     TestComponents TestDisplays TestElementLabel TestElementProperties TestFeatures
     TestGeometry TestGraphicelementAdvanced TestInputElements TestInputRotary TestLED
-    TestLogicGates TestMultiplexing TestSequentialLogic TestTruthTable TestWirelessNode
+    TestMultiplexing TestSequentialLogic TestTruthTable TestWirelessNode
     TestElementFactory TestElementLogic TestElementLogicErrors TestNodeLogic TestStatusOps
     TestConnectionSerialization TestConnectionValidity TestConnections TestScene
     TestSceneConnections TestSceneState TestSceneUndoredo

@@ -1,7 +1,7 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Unit/Elements/TestClocksAdvanced.h"
+#include "Tests/QuickShell/TestClocksAdvanced.h"
 
 #include <chrono>
 #include <memory>
@@ -10,12 +10,12 @@
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/Led.h"
-#include "Tests/Common/TestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 void TestClocksAdvanced::testClockBehavior()
 {
-    WorkSpace workspace;
-    CircuitBuilder builder(workspace.scene());
+    QuickCircuitBuilder builder;
 
     Clock clock;
     Led led;

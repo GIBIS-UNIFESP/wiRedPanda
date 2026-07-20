@@ -119,6 +119,8 @@
 #include "Tests/QuickShell/TestDemux.h"
 #include "Tests/QuickShell/TestMux.h"
 #include "Tests/QuickShell/TestPriorities.h"
+#include "Tests/QuickShell/TestClocksAdvanced.h"
+#include "Tests/QuickShell/TestLogicGates.h"
 
 int main(int argc, char **argv)
 {
@@ -239,5 +241,7 @@ int main(int argc, char **argv)
         {"TestDemux", []() -> QObject * { return new TestDemux; }},
         {"TestMux", []() -> QObject * { return new TestMux; }},
         {"TestPriorities", []() -> QObject * { return new TestPriorities; }},
+        {"TestClocksAdvanced", []() -> QObject * { return new TestClocksAdvanced; }},
+        {"TestLogicGates", []() -> QObject * { return new TestLogicGates; }},
     });
 }

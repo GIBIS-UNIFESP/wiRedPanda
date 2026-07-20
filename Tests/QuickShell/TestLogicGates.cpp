@@ -1,7 +1,7 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Unit/Elements/TestLogicGates.h"
+#include "Tests/QuickShell/TestLogicGates.h"
 
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
@@ -12,7 +12,8 @@
 #include "App/Element/GraphicElements/Or.h"
 #include "App/Element/GraphicElements/Xnor.h"
 #include "App/Element/GraphicElements/Xor.h"
-#include "Tests/Common/TestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 void TestLogicGates::testAnd()
 {
@@ -84,8 +85,7 @@ void TestLogicGates::testXnor()
 
 void TestLogicGates::testAndGateBehavior()
 {
-    WorkSpace workspace;
-    CircuitBuilder builder(workspace.scene());
+    QuickCircuitBuilder builder;
 
     InputSwitch sw1, sw2;
     And andGate;
@@ -114,8 +114,7 @@ void TestLogicGates::testAndGateBehavior()
 
 void TestLogicGates::testOrGateBehavior()
 {
-    WorkSpace workspace;
-    CircuitBuilder builder(workspace.scene());
+    QuickCircuitBuilder builder;
 
     InputSwitch sw1, sw2;
     Or orGate;
@@ -144,8 +143,7 @@ void TestLogicGates::testOrGateBehavior()
 
 void TestLogicGates::testNotGateBehavior()
 {
-    WorkSpace workspace;
-    CircuitBuilder builder(workspace.scene());
+    QuickCircuitBuilder builder;
 
     InputSwitch sw;
     Not notGate;
@@ -167,8 +165,7 @@ void TestLogicGates::testNotGateBehavior()
 
 void TestLogicGates::testNandGateBehavior()
 {
-    WorkSpace workspace;
-    CircuitBuilder builder(workspace.scene());
+    QuickCircuitBuilder builder;
 
     InputSwitch sw1, sw2;
     Nand nandGate;
@@ -197,8 +194,7 @@ void TestLogicGates::testNandGateBehavior()
 
 void TestLogicGates::testNorGateBehavior()
 {
-    WorkSpace workspace;
-    CircuitBuilder builder(workspace.scene());
+    QuickCircuitBuilder builder;
 
     InputSwitch sw1, sw2;
     Nor norGate;
@@ -227,8 +223,7 @@ void TestLogicGates::testNorGateBehavior()
 
 void TestLogicGates::testXorGateBehavior()
 {
-    WorkSpace workspace;
-    CircuitBuilder builder(workspace.scene());
+    QuickCircuitBuilder builder;
 
     InputSwitch sw1, sw2;
     Xor xorGate;
@@ -257,8 +252,7 @@ void TestLogicGates::testXorGateBehavior()
 
 void TestLogicGates::testXnorGateBehavior()
 {
-    WorkSpace workspace;
-    CircuitBuilder builder(workspace.scene());
+    QuickCircuitBuilder builder;
 
     InputSwitch sw1, sw2;
     Xnor xnorGate;
