@@ -248,8 +248,11 @@ set(QUICK_SHELL_TEST_SOURCES
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/QuickCircuitBuilder.cpp
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/QuickCircuitBuilder.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/QuickCpuTestUtils.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/QuickCpuHelpers.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel1DFlipFlop.cpp
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel1DFlipFlop.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestCPUProgramCounter.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestCPUProgramCounter.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/StubDialogProvider.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasCommands.cpp
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasCommands.h

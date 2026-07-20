@@ -832,7 +832,6 @@ add_test(NAME TestCPUInstructionExecute COMMAND test_wiredpanda TestCPUInstructi
 add_test(NAME TestCPUInstructionFetch COMMAND test_wiredpanda TestCPUInstructionFetch WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestCPUIntegration COMMAND test_wiredpanda TestCPUIntegration WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestCPUMemoryInterface COMMAND test_wiredpanda TestCPUMemoryInterface WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestCPUProgramCounter COMMAND test_wiredpanda TestCPUProgramCounter WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestCPURegisterBank COMMAND test_wiredpanda TestCPURegisterBank WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestCPURegisters COMMAND test_wiredpanda TestCPURegisters WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestClock COMMAND test_wiredpanda TestClock WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -1041,6 +1040,7 @@ add_test(NAME TestQuickWorkSpace COMMAND test_wiredpanda_quick TestQuickWorkSpac
 # Phase C/D of the qtquick-rewrite plan's Widgets-test-parity audit: the Level/CPU regression
 # suite re-registered onto QuickCircuitBuilder (Tests/QuickShell/IC/), one class at a time.
 add_test(NAME TestLevel1DFlipFlop COMMAND test_wiredpanda_quick TestLevel1DFlipFlop WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestCPUProgramCounter COMMAND test_wiredpanda_quick TestCPUProgramCounter WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 # ============================================================================
 # Test Properties: Labels and Timeouts
@@ -1048,9 +1048,11 @@ add_test(NAME TestLevel1DFlipFlop COMMAND test_wiredpanda_quick TestLevel1DFlipF
 # Labels: unit (fast unit tests), integration (system/IC tests)
 
 # CPU Tests - Integration category (high complexity)
-foreach(TEST TestCPUAlu TestCPUBranch TestCPUControlUnit TestCPUDecoders 
-        TestCPUInstructionExecute TestCPUInstructionFetch TestCPUIntegration 
-        TestCPUMemoryInterface TestCPUProgramCounter TestCPURegisterBank TestCPURegisters)
+# TestCPUProgramCounter moved to test_wiredpanda_quick (Phase D of the qtquick-rewrite plan's
+# Widgets-test-parity audit) -- see the "quick" label foreach below.
+foreach(TEST TestCPUAlu TestCPUBranch TestCPUControlUnit TestCPUDecoders
+        TestCPUInstructionExecute TestCPUInstructionFetch TestCPUIntegration
+        TestCPUMemoryInterface TestCPURegisterBank TestCPURegisters)
     set_tests_properties(${TEST} PROPERTIES LABELS "integration")
 endforeach()
 
@@ -1144,7 +1146,7 @@ foreach(TEST TestCanvasItemSmoke TestCanvasCommands TestQuickElementHandler
         TestQuickElementEditor TestQuickElementPalette TestQuickCanvasZoom TestQuickMinimap
         TestConnection TestConnectionValidity TestPort TestSelectionCapabilities
         TestSceneConnections TestFeedback TestSimulation TestQuickWorkSpace
-        TestCanvasPortHover TestLevel1DFlipFlop)
+        TestCanvasPortHover TestLevel1DFlipFlop TestCPUProgramCounter)
     set_tests_properties(${TEST} PROPERTIES LABELS "unit;quick")
 endforeach()
 
@@ -1153,7 +1155,7 @@ set(GUI_TESTS TestDialogs TestFileDialogProvider TestMainWindowGui TestBewavedDo
 set(ALL_TESTS
     TestCPUAlu TestCPUBranch TestCPUControlUnit TestCPUDecoders
     TestCPUInstructionExecute TestCPUInstructionFetch TestCPUIntegration
-    TestCPUMemoryInterface TestCPUProgramCounter TestCPURegisterBank TestCPURegisters
+    TestCPUMemoryInterface TestCPURegisterBank TestCPURegisters
     TestLevel1DLatch TestLevel1JKFlipFlop TestLevel1SRLatch
     TestLevel2Decoder2To4 TestLevel2Decoder3To8 TestLevel2Decoder4To16 TestLevel2Decoder5To32
     TestLevel2FullAdder1Bit TestLevel2HalfAdder TestLevel2MUX2To1 TestLevel2MUX4To1

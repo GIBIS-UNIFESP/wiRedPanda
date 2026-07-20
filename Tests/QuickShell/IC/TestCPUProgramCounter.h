@@ -10,9 +10,6 @@ class TestCPUProgramCounter : public QObject
     Q_OBJECT
 
 private slots:
-    void initTestCase();
-    void cleanup();
-
     void testProgramCounter();
     void testProgramCounter_data();
     void testProgramCounterPriority();

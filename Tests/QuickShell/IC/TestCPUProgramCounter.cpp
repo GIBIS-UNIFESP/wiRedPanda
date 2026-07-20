@@ -1,9 +1,9 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/Cpu/TestCPUProgramCounter.h"
+#include "Tests/QuickShell/IC/TestCPUProgramCounter.h"
 
-#include "Tests/Integration/IC/Tests/Cpu/CpuHelpers.h"
+#include "Tests/QuickShell/IC/QuickCpuHelpers.h"
 
 using TestUtils::clockCycle;
 using TestUtils::readMultiBitOutput;
@@ -17,15 +17,6 @@ using TestUtils::readMultiBitOutput;
 // - TestCPU6ProgramCounterSequences
 //
 
-void TestCPUProgramCounter::initTestCase()
-{
-    TestUtils::setupTestEnvironment();
-}
-
-void TestCPUProgramCounter::cleanup()
-{
-}
-
 void TestCPUProgramCounter::testProgramCounter()
 {
     QFETCH(int, initialValue);
@@ -34,19 +25,21 @@ void TestCPUProgramCounter::testProgramCounter()
     QFETCH(int, loadValue);
     QFETCH(int, incrementCount);
     QFETCH(int, expectedResult);
+
+    TestUtils::OwnedElementPool pool;
     QVector<InputSwitch *> loadValueBits;
-    InputSwitch *load, *inc, *reset, *clock;
     QVector<Led *> pcBits;
     for (int i = 0; i < 8; i++) {
-        loadValueBits.append(new InputSwitch());
-        pcBits.append(new Led());
+        loadValueBits.append(pool.make<InputSwitch>());
+        pcBits.append(pool.make<Led>());
     }
-    load = new InputSwitch();
-    inc = new InputSwitch();
-    reset = new InputSwitch();
-    clock = new InputSwitch();
-    std::unique_ptr<WorkSpace> workspace(buildProgramCounter8bit(loadValueBits.data(), load, inc, reset, clock, pcBits.data()));
-    auto *sim = workspace->simulation();
+    InputSwitch *load = pool.make<InputSwitch>();
+    InputSwitch *inc = pool.make<InputSwitch>();
+    InputSwitch *reset = pool.make<InputSwitch>();
+    InputSwitch *clock = pool.make<InputSwitch>();
+
+    auto builder = buildProgramCounter8bit(loadValueBits.data(), load, inc, reset, clock, pcBits.data());
+    auto *sim = builder->simulation();
     // Test setup - set initial load values using setOn(bool) instead of setMultiBitInput
     for (int i = 0; i < 8; i++) {
         bool bit = (initialValue >> i) & 1;
@@ -132,19 +125,21 @@ void TestCPUProgramCounter::testProgramCounterPriority()
     QFETCH(bool, inc);
     QFETCH(int, loadValue);
     QFETCH(int, expectedResult);
+
+    TestUtils::OwnedElementPool pool;
     QVector<InputSwitch *> loadValueBits;
-    InputSwitch *loadSwitch, *incSwitch, *resetSwitch, *clock;
     QVector<Led *> pcBits;
     for (int i = 0; i < 8; i++) {
-        loadValueBits.append(new InputSwitch());
-        pcBits.append(new Led());
+        loadValueBits.append(pool.make<InputSwitch>());
+        pcBits.append(pool.make<Led>());
     }
-    loadSwitch = new InputSwitch();
-    incSwitch = new InputSwitch();
-    resetSwitch = new InputSwitch();
-    clock = new InputSwitch();
-    std::unique_ptr<WorkSpace> workspace(buildProgramCounter8bit(loadValueBits.data(), loadSwitch, incSwitch, resetSwitch, clock, pcBits.data()));
-    auto *sim = workspace->simulation();
+    InputSwitch *loadSwitch = pool.make<InputSwitch>();
+    InputSwitch *incSwitch = pool.make<InputSwitch>();
+    InputSwitch *resetSwitch = pool.make<InputSwitch>();
+    InputSwitch *clock = pool.make<InputSwitch>();
+
+    auto builder = buildProgramCounter8bit(loadValueBits.data(), loadSwitch, incSwitch, resetSwitch, clock, pcBits.data());
+    auto *sim = builder->simulation();
     // Set up load value
     for (int i = 0; i < 8; i++) {
         bool bit = (loadValue >> i) & 1;

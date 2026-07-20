@@ -112,6 +112,32 @@ inline void clockToggle(Simulation *simulation, InputSwitch *clk)
     simulation->update();
 }
 
+/// New (no Widgets-side equivalent): under the old Scene-backed CircuitBuilder, every element a
+/// test heap-`new`'d and passed into a CpuHelpers.h build*() function was implicitly
+/// Scene-owned (QGraphicsScene::addItem() semantics), so the test itself never needed to track
+/// its own cleanup. QuickCircuitBuilder::add() is deliberately non-owning (it also has to accept
+/// stack-allocated elements -- see its own class doc comment), so a build*() function's own
+/// internal add(param) call does NOT take ownership of caller-supplied elements either. A test
+/// that still heap-`new`'s its InputSwitch/Led fixtures before calling into a build*() function
+/// needs its own RAII for them -- this pool is that, kept independent of the builder's own
+/// ownership tracking (calling both add() and addOwnedElement() on the same element would
+/// double-register it in QuickCircuitBuilder::m_elements, corrupting simulationItems()).
+class OwnedElementPool
+{
+public:
+    template<typename T>
+    T *make()
+    {
+        auto elm = std::make_unique<T>();
+        T *raw = elm.get();
+        m_pool.push_back(std::move(elm));
+        return raw;
+    }
+
+private:
+    std::vector<std::unique_ptr<GraphicElement>> m_pool;
+};
+
 } // namespace TestUtils
 
 namespace CPUTestUtils {

@@ -10,6 +10,7 @@
 #include "Tests/QuickShell/TestCanvasPortHover.h"
 #include "Tests/QuickShell/TestCanvasItemSmoke.h"
 #include "Tests/QuickShell/IC/TestLevel1DFlipFlop.h"
+#include "Tests/QuickShell/IC/TestCPUProgramCounter.h"
 #include "Tests/QuickShell/TestFeedback.h"
 #include "Tests/QuickShell/TestSimulation.h"
 #include "Tests/QuickShell/TestQuickWorkSpace.h"
@@ -55,5 +56,6 @@ int main(int argc, char **argv)
         {"TestSimulation", []() -> QObject * { return new TestSimulation; }},
         {"TestQuickWorkSpace", []() -> QObject * { return new TestQuickWorkSpace; }},
         {"TestLevel1DFlipFlop", []() -> QObject * { return new TestLevel1DFlipFlop; }},
+        {"TestCPUProgramCounter", []() -> QObject * { return new TestCPUProgramCounter; }},
     });
 }
