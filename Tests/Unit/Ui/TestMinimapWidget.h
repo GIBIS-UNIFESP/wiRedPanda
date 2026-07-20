@@ -39,4 +39,41 @@ private slots:
 
     // Theme
     void testThemeChangeInvalidatesCache();
+
+    void testSizeHint();
+    void testPaintEventNoOpWithoutSceneOrView();
+    void testCursorForResizeModeMapsEachModeToExpectedCursor();
+
+    // Mouse press
+    void testMousePressGuardsNullSceneOrView();
+    void testMousePressOnResizeHandleStartsResizing();
+    void testMousePressOnMoveHandleStartsMoving();
+    void testMousePressElsewhereCentersViewAndStartsDragging();
+
+    void testWheelEventSwallowsEvent();
+
+    // applyResize()'s minimum-size clamp: regression coverage for the fix that makes it
+    // actually re-derive the other dimension from the locked aspect ratio (previously dead
+    // code -- the clamp ran unconditionally one line earlier, making the "did we just clamp"
+    // checks always false).
+    void testApplyResizeFallsBackToSquareAspectWithNoScene();
+    void testApplyResizeDiagonalHorizontalDominant();
+    void testApplyResizeDiagonalVerticalDominant();
+    void testApplyResizeAtWidthFloorRederivesHeightFromAspect();
+    void testApplyResizeAtHeightFloorRederivesWidthFromAspect();
+
+    void testMoveByIsNoOpWithoutParent();
+
+    // Mouse move
+    void testMouseMoveWhileResizingAppliesResizeAndInvalidatesCache();
+    void testMouseMoveWhileMovingRepositionsWidget();
+    void testMouseMoveUpdatesHoverStateWhenNotDragging();
+    void testMouseMoveFallsBackToBaseClassWithoutSceneOrView();
+    void testMouseMoveWhileDraggingRecentersView();
+
+    // Mouse release
+    void testMouseReleaseWhileResizingStopsAndEmitsGeometryChanged();
+    void testMouseReleaseWhileMovingStopsAndEmitsGeometryChanged();
+    void testMouseReleaseWhileDraggingStopsDragging();
+    void testMouseReleaseFallsBackToBaseClassWhenIdle();
 };
