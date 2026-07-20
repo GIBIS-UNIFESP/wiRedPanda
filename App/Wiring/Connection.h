@@ -118,6 +118,8 @@ protected:
     bool sceneEvent(QEvent *event) override;
 
 private:
+    friend class TestConnection;
+
     Q_DISABLE_COPY_MOVE(Connection)
 
     /// Detaches \a oldPort and attaches \a newPort to this connection (base-pointer version).

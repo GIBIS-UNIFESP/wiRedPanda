@@ -5,10 +5,16 @@
 
 #include <memory>
 
+#include <QGraphicsSceneMouseEvent>
+#include <QImage>
+#include <QPainter>
+#include <QStyleOptionGraphicsItem>
+
 #include "App/Core/Application.h"
 #include "App/Core/ThemeManager.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
+#include "App/Scene/Workspace.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
 #include "Tests/Common/TestUtils.h"
@@ -143,4 +149,115 @@ void TestConnection::testShapeFollowsPathAndPenWidth()
     QVERIFY(connection.shape().contains(QPointF(2, 2)));
 
     Application::renderingEnabled = prevRendering;
+}
+
+void TestConnection::testAngleReturnsZeroWithoutBothPorts()
+{
+    Connection connection;
+    QCOMPARE(connection.angle(), 0.0);
+}
+
+void TestConnection::testPaintDisablesAntialiasingWhenSceneWireAaDisabled()
+{
+    const bool prevRendering = Application::renderingEnabled;
+    Application::renderingEnabled = true;
+
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+
+    auto *connection = new Connection();
+    connection->setStartPos({0, 0});
+    connection->setEndPos({100, 0});
+    connection->updatePath();
+    scene->addItem(connection);
+
+    QImage image(120, 40, QImage::Format_ARGB32);
+    QPainter painter(&image);
+    QStyleOptionGraphicsItem option;
+
+    QVERIFY(scene->wireAntialiasingEnabled());
+    painter.setRenderHint(QPainter::Antialiasing, true);
+    connection->paint(&painter, &option, nullptr);
+    QVERIFY2(painter.testRenderHint(QPainter::Antialiasing), "full-quality wires must not touch the painter's hint");
+
+    // Degrade: two consecutive slow (60ms) passes trip the debounce -- same recipe as
+    // TestScene's Scene::recordWirePaintPass() coverage.
+    scene->recordWirePaintPass(60'000'000);
+    scene->recordWirePaintPass(60'000'000);
+    QVERIFY(!scene->wireAntialiasingEnabled());
+
+    painter.setRenderHint(QPainter::Antialiasing, true);
+    connection->paint(&painter, &option, nullptr);
+    QVERIFY2(!painter.testRenderHint(QPainter::Antialiasing), "degraded wires must drop the painter's antialiasing hint");
+
+    painter.end();
+    Application::renderingEnabled = prevRendering;
+}
+
+void TestConnection::testPaintDrawsHighlightHalo()
+{
+    const bool prevRendering = Application::renderingEnabled;
+    Application::renderingEnabled = true;
+
+    Connection connection;
+    connection.setStartPos({0, 0});
+    connection.setEndPos({100, 0});
+    connection.updatePath();
+
+    QStyleOptionGraphicsItem option;
+    // 4px off the horizontal wire's centreline: outside the default 3-wide status pen's
+    // stroke (half-width 1.5) but inside the 10-wide highlight halo (half-width 5) -- pure
+    // halo blue with nothing else drawn there.
+    const QPoint samplePoint(60, 24);
+
+    QImage highlighted(120, 40, QImage::Format_ARGB32);
+    highlighted.fill(Qt::white);
+    {
+        QPainter painter(&highlighted);
+        painter.translate(10, 20);
+        connection.setHighLight(true);
+        connection.paint(&painter, &option, nullptr);
+    }
+    const QColor highlightedColor = highlighted.pixelColor(samplePoint);
+    QVERIFY2(highlightedColor.blue() > highlightedColor.red(), "highlighted wire must paint a blue halo off its centreline");
+
+    QImage plain(120, 40, QImage::Format_ARGB32);
+    plain.fill(Qt::white);
+    {
+        QPainter painter(&plain);
+        painter.translate(10, 20);
+        connection.setHighLight(false);
+        connection.paint(&painter, &option, nullptr);
+    }
+    QCOMPARE(plain.pixelColor(samplePoint), QColor(Qt::white));
+
+    Application::renderingEnabled = prevRendering;
+}
+
+void TestConnection::testSceneEventSwallowsCtrlClick()
+{
+    Connection connection;
+
+    QGraphicsSceneMouseEvent ctrlEvent(QEvent::GraphicsSceneMousePress);
+    ctrlEvent.setModifiers(Qt::ControlModifier);
+    QVERIFY2(connection.sceneEvent(&ctrlEvent), "Ctrl+click must be swallowed so the scene can use it for multi-selection");
+}
+
+void TestConnection::testPortAttachConnectionIgnoresNull()
+{
+    auto inputSwitch = std::make_unique<InputSwitch>();
+    OutputPort *outPort = inputSwitch->outputPort();
+    const qsizetype before = outPort->connections().size();
+
+    outPort->attachConnection(nullptr);
+
+    QCOMPARE(outPort->connections().size(), before);
+}
+
+void TestConnection::testPortConstGraphicElementAccessor()
+{
+    auto andGate = std::make_unique<And>();
+    const Port *constPort = andGate->outputPort();
+
+    QCOMPARE(constPort->graphicElement(), andGate.get());
 }

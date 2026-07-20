@@ -18,4 +18,10 @@ private slots:
     void testConnectionDestruction();
     void testConnectionStatusPenTracksColorAndWidth();
     void testShapeFollowsPathAndPenWidth();
+    void testAngleReturnsZeroWithoutBothPorts();
+    void testPaintDisablesAntialiasingWhenSceneWireAaDisabled();
+    void testPaintDrawsHighlightHalo();
+    void testSceneEventSwallowsCtrlClick();
+    void testPortAttachConnectionIgnoresNull();
+    void testPortConstGraphicElementAccessor();
 };
