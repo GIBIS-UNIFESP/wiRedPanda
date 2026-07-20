@@ -635,6 +635,33 @@ void TestSceneUndoredo::testAlignHorizontalCenterUsesSceneEdge()
     QVERIFY(std::abs(elm1->pos().x() - elm1PosXBefore) > snapTolerance);
 }
 
+void TestSceneUndoredo::testAlignVerticalCenterUsesSceneEdge()
+{
+    Scene scene;
+    auto *elm1 = ElementFactory::buildElement(ElementType::And); // default 64-tall
+    auto *elm2 = ElementFactory::buildElement(ElementType::And);
+    giveCustomSize(m_tempDir, elm2, "align_vcenter_tall.png", 64, 128); // double height
+    elm1->setPos(0, 0);
+    elm2->setPos(0, 200);
+    scene.addItem(elm1);
+    scene.addItem(elm2);
+    elm1->setSelected(true);
+    elm2->setSelected(true);
+
+    const qreal elm1PosYBefore = elm1->pos().y();
+    const qreal expectedCenter = (elm1->sceneBoundingRect().center().y() + elm2->sceneBoundingRect().center().y()) / 2.0;
+
+    scene.alignVerticalCenter();
+
+    constexpr qreal snapTolerance = 8.0;
+    QVERIFY(std::abs(elm1->sceneBoundingRect().center().y() - expectedCenter) <= snapTolerance);
+    QVERIFY(std::abs(elm2->sceneBoundingRect().center().y() - expectedCenter) <= snapTolerance);
+
+    // A pos()-only (buggy) implementation would instead equalize raw pos().y() values,
+    // leaving elm1 near its ORIGINAL position rather than moved toward the shared center.
+    QVERIFY(std::abs(elm1->pos().y() - elm1PosYBefore) > snapTolerance);
+}
+
 void TestSceneUndoredo::testAlignNoopBelowTwoElements()
 {
     Scene scene;

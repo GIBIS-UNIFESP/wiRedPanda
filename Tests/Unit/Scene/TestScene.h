@@ -149,4 +149,29 @@ private slots:
     void testDraggingElementPastTimerThresholdEnsuresVisible();
     void testCtrlDoubleClickOnWireDoesNotInsertNode();
     void testDoubleClickOnConnectedWireInsertsSplitNode();
+
+    // Scene.cpp's own remaining gaps (mostly reached via the friend seam added above,
+    // for protected/private overrides QCoreApplication::sendEvent() can't reach directly).
+    void testAddItemWithNullItemIsNoOp();
+    void testRemoveItemWithNullItemIsNoOp();
+    void testConnectionsReturnsRealConnections();
+    void testUpdateThemeUpdatesConnectionTheme();
+    void testCheckWireIdleRestoreReArmsWhileStillActive();
+    void testCheckWireIdleRestoreRestoresAfterBothWindowsElapse();
+    void testRestoreWireAntialiasingIsNoOpWhenAlreadyEnabled();
+    void testContextMenuOnSelectedItemEmitsWithoutClearingSelection();
+    void testContextMenuOnEmptyCanvasWithNothingToPasteOrSelect();
+    void testContextMenuOnEmptyCanvasWithPasteableClipboard();
+    void testDroppedPandaFileSkipsNonLocalUrls();
+    void testDragEnterEventAcceptsSupportedFormat();
+    void testDragEnterEventFallsBackForUnsupportedFormat();
+    void testDragMoveEventAcceptsSupportedFormat();
+    void testDragMoveEventFallsBackForUnsupportedFormat();
+    void testDropEventHandlesCloneDragFormat();
+    void testDropEventOpensDroppedPandaFile();
+    void testNudgeSelectionIgnoresCtrlAndAltModifiers();
+    void testKeyReleaseEventReleasesInputButtonTrigger();
+    void testEventFilterRemapsShiftClickToCtrlClick();
+    void testHelpEventShowsPortHoverLabelsOverPort();
+    void testHelpEventFallsBackForNonPortItem();
 };
