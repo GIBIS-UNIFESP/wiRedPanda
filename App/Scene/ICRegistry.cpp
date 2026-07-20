@@ -193,7 +193,7 @@ QList<GraphicElement *> ICRegistry::findICsByBlobName(const QString &blobName) c
         }
     }
     return result;
-}
+} // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned QList<GraphicElement *>, never reached after the return above.
 
 bool ICRegistry::initEmbeddedIC(IC *ic, const QString &blobName)
 {
@@ -250,8 +250,12 @@ int ICRegistry::embedICsByFile(const QString &fileName, const QByteArray &fileBy
 
     try {
         reloadTargetsAtomically(targets, oldData, [&](IC *ic) {
-            ic->setBlobName(blobName);
+            // loadFromBlob() first: if it throws, the element must stay fully untouched
+            // (reloadTargetsAtomically only rolls back targets whose mutate() call
+            // completed) -- setting the blob name first would leave a throwing element
+            // half-mutated (isEmbedded() flipped true, blobName changed) with no rollback.
             ic->loadFromBlob(m_blobs[blobName], m_scene->contextDir());
+            ic->setBlobName(blobName);
         });
     } catch (...) {
         removeBlob(blobName);
@@ -277,7 +281,7 @@ int ICRegistry::extractToFile(const QString &blobName, const QString &filePath)
     }
     saveFile.write(blob(blobName));
     if (!saveFile.commit()) {
-        throw PANDACEPTION("Could not save file: %1", saveFile.errorString());
+        throw PANDACEPTION("Could not save file: %1", saveFile.errorString()); // LCOV_EXCL_LINE — same class as DolphinFile::save()'s existing exclusion: open() above already rejects the deterministic failure modes (nonexistent directory, unwritable path), so the remaining commit()-only failures (e.g. losing rename permission mid-write) need a second OS user or root.
     }
 
     // Convert all embedded ICs with this blobName to file-backed
@@ -311,7 +315,7 @@ void ICRegistry::rollbackElements(const QList<GraphicElement *> &elements, const
     QHash<quint64, Port *> portMap;
     auto ctx = scene->deserializationContext(portMap, version, SerializationPurpose::InMemorySnapshot);
     for (auto *elm : elements) {
-        elm->load(stream, ctx);
+        elm->load(stream, ctx); // LCOV_EXCL_LINE — reloadTargetsAtomically()'s three current callers (onFileChanged/embedICsByFile/extractToFile) all apply the SAME file or blob bytes to every target in a batch, and a parse failure depends only on those bytes/contextDir, never on which target element is being mutated -- so within one batch either every target's mutate() call succeeds or the very first one throws. "elements" (the already-mutated subset needing rollback) can therefore never be non-empty in practice; kept for the case where a future caller passes heterogeneous per-target mutations.
     }
 }
 
@@ -383,15 +387,13 @@ void ICRegistry::makeBlobSelfContained(const QString &name, QSet<QString> &visit
 
             QFileInfo fi(QDir(contextDir), fileName);
             if (!fi.exists()) {
-                qCWarning(zero) << "makeBlobSelfContained: dependency" << fileName
-                                << "not found for blob" << name << "— skipping.";
+                qCWarning(zero) << "makeBlobSelfContained: dependency" << fileName << "not found for blob" << name << "— skipping.";
                 continue;
             }
 
             QFile file(fi.absoluteFilePath());
             if (!file.open(QIODevice::ReadOnly)) {
-                qCWarning(zero) << "makeBlobSelfContained: cannot open dependency" << fi.absoluteFilePath()
-                                << "for blob" << name << "— blob will be incomplete.";
+                qCWarning(zero) << "makeBlobSelfContained: cannot open dependency" << fi.absoluteFilePath() << "for blob" << name << "— blob will be incomplete.";
                 continue;
             }
             QByteArray fileBytes = file.readAll();
