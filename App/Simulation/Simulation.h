@@ -39,6 +39,7 @@ class Simulation : public QObject
     Q_OBJECT
 
     friend class TestDanglingPointer;
+    friend class TestSimulationUnit;
 
 public:
     /// Maximum iteration count for post-commit combinational re-settle passes.
@@ -56,7 +57,7 @@ public:
     explicit Simulation(SimulationHost *host, QObject *parent = nullptr);
 
     /// Destructor; stops the simulation timer.
-    ~Simulation() override = default;
+    ~Simulation() override = default; // LCOV_EXCL_LINE -- destructor-ABI-variant gcov gap (Itanium ABI's separate deleting/complete-object destructors), same class as other `= default` destructors across this sweep.
 
     // --- Control ---
 
