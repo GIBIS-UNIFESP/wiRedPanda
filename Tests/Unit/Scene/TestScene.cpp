@@ -30,7 +30,9 @@
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Element/GraphicElements/Not.h"
 #include "App/Element/GraphicElements/Or.h"
+#include "App/IO/Serialization.h"
 #include "App/Scene/ClipboardManager.h"
+#include "App/Scene/ICRegistry.h"
 #include "App/Scene/InlineLabelEditor.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -1320,6 +1322,103 @@ void TestScene::testInlineLabelEditorEmptyLabelUsesElementBoundingRectFallback()
     }
     QVERIFY(proxy != nullptr);
     QCOMPARE(proxy->pos(), elm->sceneBoundingRect().topLeft());
+}
+
+void TestScene::testCutWithNoSelectionClearsClipboard()
+{
+    QApplication::clipboard()->setText("something");
+    QVERIFY(!QApplication::clipboard()->text().isEmpty());
+
+    auto scene = std::make_unique<Scene>();
+    scene->clearSelection();
+
+    scene->clipboardManager()->cut();
+
+    QVERIFY(QApplication::clipboard()->text().isEmpty());
+}
+
+void TestScene::testCloneDragWithNoSelectionIsNoOp()
+{
+    auto scene = std::make_unique<Scene>();
+    auto *elm = ElementFactory::buildElement(ElementType::And);
+    scene->addItem(elm);
+    scene->clearSelection();
+
+    scene->clipboardManager()->cloneDrag(QPointF(0, 0));
+
+    QCOMPARE(scene->elements().size(), 1); // untouched
+}
+
+void TestScene::testDuplicateWithNoSelectionIsNoOp()
+{
+    auto scene = std::make_unique<Scene>();
+    auto *elm = ElementFactory::buildElement(ElementType::And);
+    scene->addItem(elm);
+    scene->clearSelection();
+
+    scene->clipboardManager()->duplicate();
+
+    QCOMPARE(scene->elements().size(), 1);
+}
+
+void TestScene::testPasteLegacyUnversionedBlobRegistryFormat()
+{
+    // Older app versions wrote only the unversioned BlobRegistry format (no explicit
+    // QDataStream version set); paste() must still parse it as a fallback when the newer
+    // BlobRegistryV2 format isn't present. The blob value must be a real, parseable panda
+    // file: ICRegistry::registerBlob() (invoked via RegisterBlobCommand::redo(), which
+    // paste() triggers) validates it and would otherwise throw on garbage bytes.
+    WorkSpace subWorkspace;
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
+    subWorkspace.scene()->addItem(andGate);
+    QByteArray subCircuitBytes;
+    {
+        QDataStream subStream(&subCircuitBytes, QIODevice::WriteOnly);
+        Serialization::writePandaHeader(subStream);
+        subWorkspace.save(subStream);
+    }
+
+    QMap<QString, QByteArray> blobs;
+    blobs["legacy_blob"] = subCircuitBytes;
+
+    QByteArray regBytes;
+    QDataStream regStream(&regBytes, QIODevice::WriteOnly);
+    regStream << blobs; // no explicit setVersion(), matching the legacy writer
+
+    auto *mimeData = new QMimeData;
+    mimeData->setData(MimeType::BlobRegistry, regBytes);
+    QApplication::clipboard()->setMimeData(mimeData);
+
+    auto scene = std::make_unique<Scene>();
+    scene->clipboardManager()->paste();
+
+    QVERIFY(scene->icRegistry()->hasBlob("legacy_blob"));
+}
+
+void TestScene::testPasteClipboardLegacyItemFormat()
+{
+    // Older app versions wrote item data under the ClipboardLegacy mime type; paste() must
+    // still read it when the modern Clipboard format isn't present.
+    WorkSpace sourceWorkspace;
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
+    sourceWorkspace.scene()->addItem(andGate);
+    andGate->setSelected(true);
+    sourceWorkspace.scene()->clipboardManager()->copy();
+
+    const QByteArray itemData = QApplication::clipboard()->mimeData()->data(MimeType::Clipboard);
+    QVERIFY(!itemData.isEmpty());
+
+    auto *mimeData = new QMimeData;
+    mimeData->setData(MimeType::ClipboardLegacy, itemData); // re-tag as the legacy format only
+    QApplication::clipboard()->setMimeData(mimeData);
+
+    WorkSpace destWorkspace;
+    QCOMPARE(destWorkspace.scene()->elements().size(), 0);
+
+    destWorkspace.scene()->clipboardManager()->paste();
+
+    QCOMPARE(destWorkspace.scene()->elements().size(), 1);
+    QCOMPARE(destWorkspace.scene()->elements().first()->elementType(), ElementType::And);
 }
 
 // ============================================================================

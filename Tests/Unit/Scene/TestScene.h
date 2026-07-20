@@ -83,6 +83,13 @@ private slots:
     void testInlineLabelEditorStartWhileEditingCommitsPrevious();
     void testInlineLabelEditorEmptyLabelUsesElementBoundingRectFallback();
 
+    // ClipboardManager: no-selection no-ops, and legacy clipboard mime-type fallbacks
+    void testCutWithNoSelectionClearsClipboard();
+    void testCloneDragWithNoSelectionIsNoOp();
+    void testDuplicateWithNoSelectionIsNoOp();
+    void testPasteLegacyUnversionedBlobRegistryFormat();
+    void testPasteClipboardLegacyItemFormat();
+
     // ============================================================
     // Topological Sort Tests (4 tests)
     // ============================================================
