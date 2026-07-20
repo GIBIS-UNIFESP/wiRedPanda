@@ -24,8 +24,8 @@ namespace {
 PortHoverLabel::Side sideFor(Port *port)
 {
     auto *element = port->graphicElement();
-    if (!element) {
-        return PortHoverLabel::Side::Right;
+    if (!element) { // LCOV_EXCL_LINE — ElementPorts::addPort() unconditionally sets the owner right after constructing a port; every port reachable here already has one.
+        return PortHoverLabel::Side::Right; // LCOV_EXCL_LINE
     }
 
     const QPointF delta = port->scenePos() - element->sceneBoundingRect().center();
@@ -48,7 +48,7 @@ int encodePortIndex(GraphicElement *element, Port *port)
             return i;
         }
     }
-    return -1;
+    return -1; // LCOV_EXCL_LINE — both call sites (setHoverPort()'s own port and its peers) pass `element == port->graphicElement()`, so port is always found among that element's own ports.
 }
 
 /// Resolves an (element ID, port index) pair back to a Port, or nullptr if the element
@@ -398,7 +398,7 @@ QList<Port *> ConnectionManager::connectedPeers(Port *port)
     }
 
     return peers;
-}
+} // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned QList<Port *>, never reached after the return above.
 
 void ConnectionManager::clearHoverLabels()
 {
