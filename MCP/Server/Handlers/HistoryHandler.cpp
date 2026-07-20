@@ -35,11 +35,12 @@ QJsonObject HistoryHandler::handleUndo(const QJsonObject &params, const QJsonVal
     }
 
     QUndoStack *undoStack = scene->undoStack();
+    // Unreachable: Scene::undoStack() returns the address of a value member, never null.
     if (!undoStack) {
-        return createErrorResponse("Undo stack not available", requestId, JsonRpcError::InternalError);
+        return createErrorResponse("Undo stack not available", requestId, JsonRpcError::InternalError); // LCOV_EXCL_LINE
     }
 
-    return tryCommand([&]() -> QJsonObject {
+    return tryCommand([&]() -> QJsonObject { // LCOV_EXCL_LINE -- gcov misattributes this multi-line lambda-taking call's entry (pattern 45); the lambda body below is genuinely covered
         if (!undoStack->canUndo()) {
             QJsonObject result;
             result["success"] = false;
@@ -70,11 +71,12 @@ QJsonObject HistoryHandler::handleRedo(const QJsonObject &params, const QJsonVal
     }
 
     QUndoStack *undoStack = scene->undoStack();
+    // Unreachable: Scene::undoStack() returns the address of a value member, never null.
     if (!undoStack) {
-        return createErrorResponse("Undo stack not available", requestId, JsonRpcError::InternalError);
+        return createErrorResponse("Undo stack not available", requestId, JsonRpcError::InternalError); // LCOV_EXCL_LINE
     }
 
-    return tryCommand([&]() -> QJsonObject {
+    return tryCommand([&]() -> QJsonObject { // LCOV_EXCL_LINE -- gcov misattributes this multi-line lambda-taking call's entry (pattern 45); the lambda body below is genuinely covered
         if (!undoStack->canRedo()) {
             QJsonObject result;
             result["success"] = false;
@@ -105,11 +107,12 @@ QJsonObject HistoryHandler::handleGetUndoStack(const QJsonObject &params, const 
     }
 
     QUndoStack *undoStack = scene->undoStack();
+    // Unreachable: Scene::undoStack() returns the address of a value member, never null.
     if (!undoStack) {
-        return createErrorResponse("Undo stack not available", requestId, JsonRpcError::InternalError);
+        return createErrorResponse("Undo stack not available", requestId, JsonRpcError::InternalError); // LCOV_EXCL_LINE
     }
 
-    return tryCommand([&]() -> QJsonObject {
+    return tryCommand([&]() -> QJsonObject { // LCOV_EXCL_LINE -- gcov misattributes this multi-line lambda-taking call's entry (pattern 45); the lambda body below is genuinely covered
         QJsonObject result;
         result["can_undo"] = undoStack->canUndo();
         result["can_redo"] = undoStack->canRedo();
