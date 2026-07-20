@@ -25,6 +25,10 @@ Connection::Connection()
 
 Connection::~Connection()
 {
+    if (m_destroyedCallback) {
+        m_destroyedCallback(this);
+    }
+
     if (m_startPort) {
         m_startPort->detachConnection(this);
     }

@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <utility>
 
 #include <QBrush>
 #include <QClipboard>
@@ -483,7 +484,13 @@ CanvasItem::~CanvasItem()
     // detaches (nulls out) any connection still pointing at it, it never deletes the Connection
     // itself (see InputPort::~InputPort()/drainConnections()) -- deleting Connections first runs
     // their own destructor's clean detachConnection() calls while the ports are still alive.
-    qDeleteAll(m_connections);
+    //
+    // Extract via std::exchange (same idiom ElementPorts::~ElementPorts() uses for its own port
+    // lists) rather than qDeleteAll(m_connections) directly: each Connection's destroyed
+    // callback (see addItem(Connection*)) calls back into removeItem(), which mutates
+    // m_connections -- iterating the live member while deleting its own entries would invalidate
+    // qDeleteAll's iterators mid-loop. Iterating a local copy stays valid regardless.
+    qDeleteAll(std::exchange(m_connections, {}));
     qDeleteAll(m_elements);
 }
 
@@ -544,6 +551,13 @@ void CanvasItem::addItem(Connection *connection)
         m_itemRegistry.setLastId(connection->id());
     }
     m_itemRegistry.registerItem(connection);
+    // WIREDPANDA-HC: keeps m_connections/the id registry consistent even if this connection is
+    // torn down out-of-band (Port::drainConnections() bare-deleting it while a neighboring
+    // element's own destruction cascade reaches one of this connection's ports), not just
+    // through the explicit removeItem()+delete pair every in-repo caller is disciplined about
+    // today. Safe to fire on top of an explicit removeItem() too: removeItem(Connection*)'s own
+    // removeAll()/unregisterItem() calls are idempotent against an already-removed connection.
+    connection->setDestroyedCallback([this](Connection *c) { removeItem(c); });
 }
 
 void CanvasItem::removeItem(GraphicElement *element)

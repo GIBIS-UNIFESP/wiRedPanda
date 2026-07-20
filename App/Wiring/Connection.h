@@ -14,6 +14,8 @@
 
 #pragma once
 
+#include <functional>
+
 #include <QPainterPath>
 #include <QPen>
 #include <QPointF>
@@ -53,6 +55,16 @@ public:
     /// Constructs an unconnected wire.
     Connection();
     ~Connection();
+
+    /// Registers a callback invoked at the very start of ~Connection(), regardless of which
+    /// code path triggers the deletion -- an explicit `owner->removeItem(this); delete this;`
+    /// pair, or an out-of-band cascade (Port::drainConnections() bare-deleting this connection
+    /// while tearing down one of its own ports' owning element). Lets an owning registry (e.g.
+    /// CanvasItem) stay consistent even when it never got the chance to unregister this
+    /// connection itself first -- see WIREDPANDA-HC. A plain std::function rather than a Qt
+    /// signal: nothing could usefully connect to a signal on an object already mid-destruction,
+    /// and Connection (unlike GraphicElement) isn't a QObject at all.
+    void setDestroyedCallback(std::function<void(Connection *)> callback) { m_destroyedCallback = std::move(callback); }
 
     // --- Port / Endpoint Access ---
 
@@ -154,6 +166,7 @@ private:
     QPointF m_startPos;
     QPointF m_endPos;
     QPainterPath m_path;
+    std::function<void(Connection *)> m_destroyedCallback;
 
     // --- Members: State ---
 
