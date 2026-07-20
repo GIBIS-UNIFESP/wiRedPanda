@@ -112,6 +112,17 @@ the higher-leverage next step — it unblocks judging/porting the largest single
 CPU/Level classes) as a group. The remaining TBD items above are real but individually small;
 finishing them can interleave with Phase E rather than gating Phase C's start.
 
+**Update 2026-07-20**: all 11 `TestCPU*` classes (the CPU integration-level sub-bucket) are now
+fully ported and green — `TestCPUProgramCounter`, `TestCPUAlu`, `TestCPUBranch`,
+`TestCPUControlUnit`, `TestCPUDecoders`, `TestCPUInstructionExecute`, `TestCPUInstructionFetch`,
+`TestCPUIntegration`, `TestCPUMemoryInterface`, `TestCPURegisterBank`, `TestCPURegisters`. This
+also surfaced a real, confirmed (AddressSanitizer) production heap-use-after-free: destroying a
+procedural-render-pixmap element (IC/Mux/Demux/TruthTable) with a remaining multi-fanout output
+connection read already-freed input ports during teardown. Fixed in `App/Element/ElementPorts.cpp`
++ `App/Wiring/Port.{h,cpp}` (commit `a9b0f670b`) — a real bug, not a test-porting artifact, so it
+was root-cause-fixed in production code, not worked around in the test. Remaining in this bucket:
+the ~80-class `TestLevel*` suite (Level1-9).
+
 **~150-class pure-domain bucket** (Level1-9/CPU suite + `TestSerialization`/`TestClocksAdvanced`/
 `TestDemux`/`TestDisplays`/`TestLogicGates`/`TestMux`/`TestSequentialLogic`/`TestPriorities`/
 `TestMemorySettlingTime`/`TestSequential`/`TestMuxDemuxComprehensive`/`TestArduino`/
