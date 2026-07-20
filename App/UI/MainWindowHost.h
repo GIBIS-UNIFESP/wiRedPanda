@@ -28,7 +28,7 @@ class WorkSpace;
 class MainWindowHost
 {
 public:
-    virtual ~MainWindowHost() = default;
+    virtual ~MainWindowHost() = default; // LCOV_EXCL_LINE — this class is abstract (pure virtual methods below), so it can never be the most-derived type of a real object; its own vtable "deleting destructor" entry (distinct from the base-object destructor, which real MainWindow destruction does exercise) is therefore permanently unreachable, not merely untested (pattern 35).
 
     /// Currently visible WorkSpace tab, or nullptr when none is open.
     virtual WorkSpace *currentTab() const = 0;
