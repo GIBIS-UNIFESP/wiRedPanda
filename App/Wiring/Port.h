@@ -235,7 +235,8 @@ protected:
      * \brief Drains all attached connections, breaking back-references before deletion.
      * \param isInput True if this is an input port (sets endPort to nullptr); false for output.
      * \details Called from the InputPort and OutputPort destructors to avoid
-     * re-entrant disconnect() calls into a partially destroyed port.
+     * re-entrant disconnect() calls into a partially destroyed port. Sets m_draining so
+     * updateConnections() no-ops for the rest of teardown -- see that flag's own comment.
      */
     void drainConnections(bool isInput);
 
@@ -260,6 +261,18 @@ protected:
     bool m_required = true;
     bool m_visible = true;
     int m_index = 0;
+    /// Set once drainConnections() starts (this port is being destroyed). While true,
+    /// updateConnections() no-ops instead of redrawing/re-validating: detachConnection()'s
+    /// changePortAttachment() -> detachConnection() re-entry (setStartPort(nullptr)/
+    /// setEndPort(nullptr) routes back through the general attach/detach path) would
+    /// otherwise call updateConnections() for every connection still left on this port,
+    /// each of which calls Connection::updatePosFromPorts() -> Port::scenePos() ->
+    /// GraphicElement::boundingRect() on this port's own (mid-destruction) owner --
+    /// real, AddressSanitizer-confirmed crashes on procedural-render-pixmap elements
+    /// (IC/Mux/Demux/TruthTable) found via the qtquick-rewrite plan's CPU/Level test port
+    /// (TestCPUAlu/TestCPUInstructionExecute/TestCPURegisterBank). None of this recompute
+    /// is ever observed anyway -- the port and/or its owner are moments from being freed.
+    bool m_draining = false;
 
 private:
     /// Sets the currently-painted brush directly, bypassing the hover-preserving check

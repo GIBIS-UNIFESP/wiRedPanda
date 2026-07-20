@@ -3,14 +3,29 @@
 
 #include "App/Element/ElementPorts.h"
 
+#include <utility>
+
 #include "App/Core/Common.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Wiring/Port.h"
 
 ElementPorts::~ElementPorts()
 {
-    qDeleteAll(m_inputPorts);
-    qDeleteAll(m_outputPorts);
+    // Member vectors are cleared BEFORE deleting (from local copies), not after: deleting a
+    // port runs Port::drainConnections(), which for a remaining fan-out connection re-triggers
+    // Port::updateConnections() -> Connection::updatePosFromPorts() -> Port::scenePos() ->
+    // GraphicElement::boundingRect() on this same owner -- and for a procedural-render-pixmap
+    // element (IC/Mux/Demux/TruthTable), boundingRect() reads portsBoundingRect(), which walks
+    // allPorts() (inputs + outputs). An IC can have several output ports, so even deleting
+    // m_outputPorts alone risks the same read hitting an already-deleted sibling output still
+    // sitting in that same vector mid-qDeleteAll -- only clearing both vectors first, so
+    // allPorts() sees nothing throughout, closes every ordering. Real heap-use-after-free found
+    // via TestCPUAlu/TestCPUInstructionExecute/TestCPURegisterBank crashing under the
+    // qtquick-rewrite plan's CPU/Level test port (confirmed via AddressSanitizer, not guessed).
+    const QVector<InputPort *> inputs = std::exchange(m_inputPorts, {});
+    const QVector<OutputPort *> outputs = std::exchange(m_outputPorts, {});
+    qDeleteAll(inputs);
+    qDeleteAll(outputs);
 }
 
 InputPort *ElementPorts::inputPort(const int index) const

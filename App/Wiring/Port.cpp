@@ -98,6 +98,12 @@ bool Port::isConnected(Port *otherPort)
 
 void Port::updateConnections()
 {
+    // Mid-teardown (see m_draining's own comment): none of this work is ever observed,
+    // and recomputing geometry here can read a partially-destroyed owner element.
+    if (m_draining) {
+        return;
+    }
+
     // Redraw all wires whose geometry depends on this port's scene position
     for (auto *conn : std::as_const(m_connections)) {
         conn->updatePosFromPorts();
@@ -239,6 +245,7 @@ void Port::updateTheme()
 
 void Port::drainConnections(bool isInput)
 {
+    m_draining = true;
     while (!m_connections.isEmpty()) {
         auto *conn = m_connections.constLast();
         m_connections.removeAll(conn);
