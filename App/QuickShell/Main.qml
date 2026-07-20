@@ -692,6 +692,20 @@ ApplicationWindow {
         function onTruthTableRequested() { truthTableDialog.open() }
     }
 
+    // Check-for-updates workflow (App/QuickShell/Chrome/QuickUpdateController), triggered once
+    // from Main.cpp mirroring MainWindow::show()'s single checkForUpdates() call.
+    UpdateDialog {
+        id: updateDialog
+    }
+    UpdateDownloadDialog {
+        id: updateDownloadDialog
+    }
+    Connections {
+        target: AppController.updateController
+        function onUpdateAvailable() { updateDialog.open() }
+        function onDownloadStarted() { updateDownloadDialog.open() }
+    }
+
     // A single, reused top-level window (like truthTableDialog/shortcutsDialog above) rather
     // than a dynamically created-and-destroyed one -- AppController.openWaveform() decides
     // whether to rebuild the waveform (QuickDolphinController::createWaveform()) or just

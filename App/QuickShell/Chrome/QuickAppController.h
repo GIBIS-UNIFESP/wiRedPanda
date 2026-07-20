@@ -32,6 +32,7 @@
 #include "App/QuickShell/Chrome/QuickMainWindowHost.h"
 #include "App/QuickShell/Chrome/QuickMinimap.h"
 #include "App/QuickShell/Chrome/QuickTourController.h"
+#include "App/QuickShell/Chrome/QuickUpdateController.h"
 #include "App/QuickShell/Chrome/QuickWorkSpace.h"
 #include "App/QuickShell/Chrome/QuickWorkspaceManager.h"
 #include "App/QuickShell/Dolphin/QuickDolphinController.h"
@@ -173,6 +174,7 @@ class QuickAppController : public QObject, public QuickMainWindowHost, public Do
     Q_PROPERTY(QuickExerciseController *exercise READ exercise CONSTANT FINAL)
     Q_PROPERTY(QuickTourController *tour READ tour CONSTANT FINAL)
     Q_PROPERTY(QuickDolphinController *dolphin READ dolphin CONSTANT FINAL)
+    Q_PROPERTY(QuickUpdateController *updateController READ updateController CONSTANT FINAL)
     // theme is a plain int (Enums::ElementType's own precedent for exposing a C++ enum class to
     // QML without registering it) -- Theme is declared at namespace scope in ThemeManager.h, not
     // inside a Q_GADGET/Q_NAMESPACE, so it has no Q_ENUM registration to expose directly.
@@ -315,6 +317,11 @@ public:
     /// tour() were before their own menu integration landed, since QuickDolphinController's
     /// eventual real home is here regardless.
     [[nodiscard]] QuickDolphinController *dolphin() { return &m_dolphinController; }
+    /// The check-for-updates workflow (App/UI/UpdateController.h's Quick port). Owned here so
+    /// there's exactly one instance per running app, mirroring dolphin()/tour()/exercise()'s own
+    /// reasoning; checkForUpdates() is called once from Main.cpp, mirroring MainWindow::show()'s
+    /// identical single call site.
+    [[nodiscard]] QuickUpdateController *updateController() { return &m_updateController; }
 
     /// Discovered exercise content (built-in + user-provided, see ExerciseTourResources::discover()),
     /// each entry's title/description translated and completed flag looked up from
@@ -521,6 +528,7 @@ private:
     /// sibling engine member or setCanvas() binding needed.
     QuickTourController m_tourController;
     QuickDolphinController m_dolphinController;
+    QuickUpdateController m_updateController;
     bool m_waveformWindowOpen = false;
     RecentFiles m_recentFiles;
     LanguageManager m_languageManager;

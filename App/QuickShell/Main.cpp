@@ -91,6 +91,10 @@ int main(int argc, char *argv[])
     Dialogs::setProvider(&dialogProvider);
     FileDialogs::setDefaultProvider(&dialogProvider);
 
+    // Mirrors MainWindow::show()'s single checkForUpdates() call -- internally gated on
+    // Application::interactiveMode, so this is a safe no-op in MCP mode too.
+    appController.updateController()->checkForUpdates();
+
     // Loaded after the dialog providers are registered so a load failure's error path (once
     // QuickWorkspaceManager/QuickWorkSpace surfaces one through Dialogs::provider()) has a
     // real provider to use, mirroring App/Main.cpp's own call-after-show() ordering. Mirrors

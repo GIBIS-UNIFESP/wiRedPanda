@@ -63,6 +63,13 @@ Item {
                     Layout.fillWidth: true
                     text: root.editor.label
                     onTextEdited: root.editor.label = text
+                    // Port of App/UI/ElementTabNavigator.h: Tab/Shift+Tab jump the canvas
+                    // selection to the next/previous element (in reading order) that also has a
+                    // visible label field, keeping focus in this same field. Falls through to
+                    // QML's own default Tab focus-chain handling (event not accepted) when
+                    // cycleLabelField() can't apply (no single selection, etc.).
+                    Keys.onTabPressed: (event) => event.accepted = root.editor.cycleLabelField(true)
+                    Keys.onBacktabPressed: (event) => event.accepted = root.editor.cycleLabelField(false)
                 }
             }
 
@@ -257,6 +264,10 @@ Item {
                     text: root.editor.trigger
                     maximumLength: 1
                     onTextEdited: root.editor.trigger = text
+                    // Same Tab/Shift+Tab reading-order cycling as labelField above, scoped to
+                    // the trigger field.
+                    Keys.onTabPressed: (event) => event.accepted = root.editor.cycleTriggerField(true)
+                    Keys.onBacktabPressed: (event) => event.accepted = root.editor.cycleTriggerField(false)
                 }
             }
 

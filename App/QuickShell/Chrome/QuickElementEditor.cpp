@@ -3,6 +3,8 @@
 
 #include "App/QuickShell/Chrome/QuickElementEditor.h"
 
+#include <algorithm>
+
 #include <QBuffer>
 #include <QDataStream>
 #include <QFileInfo>
@@ -801,4 +803,86 @@ void QuickElementEditor::commitBlobRename(const QString &newName)
     }
 
     m_canvas->receiveCommand(new CanvasRenameBlobCommand(oldName, trimmed, m_canvas));
+}
+
+QVector<GraphicElement *> QuickElementEditor::readingOrder(QVector<GraphicElement *> elements)
+{
+    // Reading order is row-major: top-to-bottom by Y (primary key), left-to-right by X within a
+    // row (secondary key). std::stable_sort is stable, so sorting by the secondary key (X) first
+    // and the primary key (Y) last leaves Y dominant while elements sharing a row keep their
+    // left-to-right X order.
+    std::stable_sort(elements.begin(), elements.end(), [](const auto &a, const auto &b) {
+        return a->pos().rx() < b->pos().rx();
+    });
+    std::stable_sort(elements.begin(), elements.end(), [](const auto &a, const auto &b) {
+        return a->pos().ry() < b->pos().ry();
+    });
+    return elements;
+}
+
+bool QuickElementEditor::cycleLabelField(bool forward)
+{
+    return cycleSelectionField(forward, /* wantLabel */ true);
+}
+
+bool QuickElementEditor::cycleTriggerField(bool forward)
+{
+    return cycleSelectionField(forward, /* wantLabel */ false);
+}
+
+bool QuickElementEditor::cycleSelectionField(bool forward, bool wantLabel)
+{
+    if (!m_canvas || m_elements.size() != 1) {
+        return false;
+    }
+
+    auto *originalElement = m_elements.constFirst();
+    const auto elements = readingOrder(m_canvas->elements());
+
+    const qsizetype elmPos = elements.indexOf(originalElement);
+    if (elmPos < 0) {
+        // The focused element isn't among the canvas's own elements -- can't happen in
+        // practice, but the modular advance loop below would spin forever on elmPos == -1.
+        return false;
+    }
+
+    const qsizetype step  = forward ? 1 : -1;
+    const qsizetype total = elements.size();
+
+    auto *candidate = originalElement;
+    bool found = false;
+    qsizetype pos = (total + elmPos + step) % total;
+
+    // Advance until we find an element that actually exposes the field being cycled (some
+    // elements don't), rebinding this editor to each candidate along the way so
+    // isLabelVisible()/isTriggerVisible() reflect it -- mirrors ElementTabNavigator's own
+    // setCurrentElements()-per-candidate loop.
+    for (; pos != elmPos; pos = (total + pos + step) % total) {
+        candidate = elements.at(pos);
+        m_elements = {candidate};
+        refresh();
+
+        if (wantLabel ? isLabelVisible() : isTriggerVisible()) {
+            found = true;
+            break;
+        }
+    }
+
+    if (!found) {
+        // No other element exposes this field -- fall back to the original selection, mirroring
+        // ElementTabNavigator::eventFilter()'s identical "!widget->isEnabled()" fallback.
+        candidate = originalElement;
+        m_elements = {candidate};
+        refresh();
+    }
+
+    originalElement->setSelected(false);
+    candidate->setSelected(true);
+
+    if (!m_canvas->visibleWorldRect().contains(candidate->sceneBoundingRect())) {
+        m_canvas->centerOn(candidate->sceneBoundingRect().center());
+    }
+
+    emit m_canvas->selectionChanged();
+    return true;
 }

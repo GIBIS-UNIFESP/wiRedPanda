@@ -592,3 +592,136 @@ void TestQuickElementEditor::testToggleTruthTableCellPushesUndoableCommand()
     editor.openTruthTable(); // rebuild rows from the now-reverted table
     QCOMPARE(editor.truthTableRows().first().cells().at(outputColumn), before);
 }
+
+void TestQuickElementEditor::testReadingOrderIsRowMajor()
+{
+    // Two rows of two elements. Reading order must be row-major (top row left-to-right, then
+    // bottom row left-to-right): a, b, c, d. Mirrors TestElementTabNavigator's identical guard
+    // against a column-major regression (the Widgets-side "B2 bug").
+    Node a, b, c, d;
+    a.setPos(0, 0);     // top-left
+    b.setPos(100, 0);   // top-right
+    c.setPos(0, 100);   // bottom-left
+    d.setPos(100, 100); // bottom-right
+
+    const QVector<GraphicElement *> scrambled = {&d, &b, &c, &a};
+    const QVector<GraphicElement *> expected  = {&a, &b, &c, &d};
+    QCOMPARE(QuickElementEditor::readingOrder(scrambled), expected);
+}
+
+void TestQuickElementEditor::testReadingOrderTieBreaksLeftToRight()
+{
+    // Elements sharing a row (equal Y) are ordered left-to-right by X.
+    Node left, middle, right;
+    left.setPos(0, 50);
+    middle.setPos(100, 50);
+    right.setPos(200, 50);
+
+    const QVector<GraphicElement *> scrambled = {&right, &left, &middle};
+    const QVector<GraphicElement *> expected  = {&left, &middle, &right};
+    QCOMPARE(QuickElementEditor::readingOrder(scrambled), expected);
+}
+
+void TestQuickElementEditor::testReadingOrderEmptyAndSingle()
+{
+    QVERIFY(QuickElementEditor::readingOrder({}).isEmpty());
+
+    Node only;
+    only.setPos(42, 42);
+    const QVector<GraphicElement *> one = {&only};
+    QCOMPARE(QuickElementEditor::readingOrder(one), one);
+}
+
+void TestQuickElementEditor::testCycleLabelFieldAdvancesSelectionInReadingOrder()
+{
+    // InputSwitch has both hasLabel and hasTrigger true (App/Element/GraphicElements/
+    // InputSwitch.cpp), matching TestElementTabNavigator's own reason for using it: cycling
+    // must land on an element that actually exposes the field being cycled.
+    CanvasItem canvas(nullptr, /*buildDemo=*/false);
+    auto *left = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *right = ElementFactory::buildElement(ElementType::InputSwitch);
+    left->setPos(0, 0);
+    right->setPos(200, 0);
+    canvas.receiveCommand(new CanvasAddItemsCommand({left, right}, &canvas));
+
+    QuickElementEditor editor;
+    selectOnly(canvas, editor, left);
+    QVERIFY(editor.isLabelVisible());
+
+    QVERIFY(editor.cycleLabelField(true));
+    QVERIFY(!left->isSelected());
+    QVERIFY(right->isSelected());
+}
+
+void TestQuickElementEditor::testCycleLabelFieldBackwardMovesToPreviousElement()
+{
+    CanvasItem canvas(nullptr, /*buildDemo=*/false);
+    auto *left = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *right = ElementFactory::buildElement(ElementType::InputSwitch);
+    left->setPos(0, 0);
+    right->setPos(200, 0);
+    canvas.receiveCommand(new CanvasAddItemsCommand({left, right}, &canvas));
+
+    QuickElementEditor editor;
+    selectOnly(canvas, editor, right);
+
+    QVERIFY(editor.cycleLabelField(false));
+    QVERIFY(!right->isSelected());
+    QVERIFY(left->isSelected());
+}
+
+void TestQuickElementEditor::testCycleLabelFieldWrapsAroundWithTwoElements()
+{
+    // With only two elements, cycling forward from the last one in reading order wraps back to
+    // the first ((total + elmPos + step) % total in QuickElementEditor::cycleSelectionField()).
+    CanvasItem canvas(nullptr, /*buildDemo=*/false);
+    auto *left = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *right = ElementFactory::buildElement(ElementType::InputSwitch);
+    left->setPos(0, 0);
+    right->setPos(200, 0);
+    canvas.receiveCommand(new CanvasAddItemsCommand({left, right}, &canvas));
+
+    QuickElementEditor editor;
+    selectOnly(canvas, editor, right);
+
+    QVERIFY(editor.cycleLabelField(true));
+    QVERIFY(!right->isSelected());
+    QVERIFY(left->isSelected());
+}
+
+void TestQuickElementEditor::testCycleTriggerFieldAdvancesSelectionInReadingOrder()
+{
+    CanvasItem canvas(nullptr, /*buildDemo=*/false);
+    auto *left = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *right = ElementFactory::buildElement(ElementType::InputSwitch);
+    left->setPos(0, 0);
+    right->setPos(200, 0);
+    canvas.receiveCommand(new CanvasAddItemsCommand({left, right}, &canvas));
+
+    QuickElementEditor editor;
+    selectOnly(canvas, editor, left);
+    QVERIFY(editor.isTriggerVisible());
+
+    QVERIFY(editor.cycleTriggerField(true));
+    QVERIFY(!left->isSelected());
+    QVERIFY(right->isSelected());
+}
+
+void TestQuickElementEditor::testCycleFieldNoopsWithoutASingleSelection()
+{
+    CanvasItem canvas(nullptr, /*buildDemo=*/false);
+    auto *left = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *right = ElementFactory::buildElement(ElementType::InputSwitch);
+    left->setPos(0, 0);
+    right->setPos(200, 0);
+    canvas.receiveCommand(new CanvasAddItemsCommand({left, right}, &canvas)); // both selected
+
+    QuickElementEditor editor;
+    editor.setCanvas(&canvas);
+    QCOMPARE(canvas.selectedElements().size(), 2);
+
+    QVERIFY(!editor.cycleLabelField(true));
+    QVERIFY(!editor.cycleTriggerField(true));
+    QVERIFY(left->isSelected());
+    QVERIFY(right->isSelected());
+}

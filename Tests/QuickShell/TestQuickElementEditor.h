@@ -83,6 +83,21 @@ private slots:
     void testOpenTruthTableBuildsRowsAndEmitsSignal();
     void testToggleTruthTableCellPushesUndoableCommand();
 
+    // Port of Tests/Unit/Ui/TestElementTabNavigator.cpp (App/UI/ElementTabNavigator.h had no
+    // Quick equivalent at all -- project_quick_real_missing_features_found_in_phase7.md, now
+    // resolved). readingOrder() tests lock the row-major ordering directly (the original
+    // Widgets "B2 bug" was a column-major regression); the cycle*Field() tests cover the same
+    // ordering through the real cycling path.
+    void testReadingOrderIsRowMajor();
+    void testReadingOrderTieBreaksLeftToRight();
+    void testReadingOrderEmptyAndSingle();
+
+    void testCycleLabelFieldAdvancesSelectionInReadingOrder();
+    void testCycleLabelFieldBackwardMovesToPreviousElement();
+    void testCycleLabelFieldWrapsAroundWithTwoElements();
+    void testCycleTriggerFieldAdvancesSelectionInReadingOrder();
+    void testCycleFieldNoopsWithoutASingleSelection();
+
 private:
     QTemporaryDir m_tempDir;
     QString m_fixtureDir;

@@ -13,6 +13,7 @@
 #include <QQmlEngine>
 #include <QString>
 #include <QVariantList>
+#include <QVector>
 
 #include "App/Element/SelectionCapabilities.h"
 
@@ -434,6 +435,23 @@ public:
     /// ElementEditor::changeTriggerAction().
     Q_INVOKABLE void requestTriggerFocus() { emit focusTriggerRequested(); }
 
+    /// Orders \a elements in reading order -- row-major: top-to-bottom by Y (primary key),
+    /// left-to-right by X within a row (secondary key). Port of
+    /// App/UI/ElementTabNavigator.h's identically-named static function -- exposed here as a
+    /// pure function so the ordering can be verified directly, same reasoning as the original.
+    [[nodiscard]] static QVector<GraphicElement *> readingOrder(QVector<GraphicElement *> elements);
+
+    /// Tab/Shift+Tab cycling from ElementEditor.qml's label field, called from its
+    /// Keys.onTabPressed/onBacktabPressed. Port of App/UI/ElementTabNavigator::eventFilter(),
+    /// scoped to the label field: advances the canvas selection to the next (\a forward) or
+    /// previous element in readingOrder() that also has a visible label field, wrapping around
+    /// and skipping elements that don't. No-op (returns false, so QML's own default Tab
+    /// focus-chain handling proceeds) unless exactly one element is selected and it's found
+    /// among the canvas's own elements.
+    Q_INVOKABLE bool cycleLabelField(bool forward);
+    /// Same as cycleLabelField(), for the trigger field.
+    Q_INVOKABLE bool cycleTriggerField(bool forward);
+
 signals:
     void refreshed();
     void focusLabelRequested();
@@ -467,6 +485,10 @@ private:
     /// toggleTruthTableCell() (rebuild after a toggle) -- mirrors ElementEditor::truthTable()'s
     /// own reuse (called again at the end of setTruthTableProposition()).
     void rebuildTruthTableRows(class TruthTable *table);
+    /// Shared implementation of cycleLabelField()/cycleTriggerField() -- \a wantLabel selects
+    /// which of isLabelVisible()/isTriggerVisible() a candidate element must satisfy to stop
+    /// the search on. Mirrors ElementTabNavigator::eventFilter()'s body exactly.
+    bool cycleSelectionField(bool forward, bool wantLabel);
 
     // QPointer, not a raw CanvasItem*: QuickWorkspaceManager::removeTabAt() (closeTab()'s and
     // removeTabWithoutPrompt()'s shared tail) erases the closed QuickWorkSpace -- and therefore
