@@ -5,9 +5,12 @@
 
 #include <QDataStream>
 #include <QFile>
+#include <QFileDevice>
 #include <QFileInfo>
 #include <QKeySequence>
+#include <QMetaType>
 #include <QRectF>
+#include <QTemporaryDir>
 #include <QTest>
 
 #include "App/Element/ElementFactory.h"
@@ -20,6 +23,7 @@
 #include "App/Element/GraphicElements/Or.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
+#include "App/IO/SerializationContext.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/Versions.h"
@@ -2082,4 +2086,610 @@ void TestSerialization::testReadBoundedKeySequenceRejectsImplausibleCount()
         threw = true;
     }
     QVERIFY2(threw, "Implausible QKeySequence count must be rejected, not allocated");
+}
+
+void TestSerialization::testReadVersionNumberRejectsImplausibleSegmentCount()
+{
+    // readVersionNumber() (reached only via readPandaHeader()'s modern-magic path) caps
+    // segment count at 8 — no real release version has more than 3.
+    QByteArray data;
+    QDataStream writeStream(&data, QIODevice::WriteOnly);
+    writeStream.setVersion(QDataStream::Qt_5_12);
+    writeStream << Serialization::MAGIC_HEADER_CIRCUIT;
+    writeStream << static_cast<quint32>(9); // > the 8-segment cap
+
+    QDataStream readStream(data);
+    bool threw = false;
+    QString message;
+    try {
+        Serialization::readPandaHeader(readStream);
+    } catch (const Pandaception &e) {
+        threw = true;
+        message = e.englishMessage();
+    }
+
+    QVERIFY2(threw, "An implausible version segment count must be rejected");
+    QVERIFY2(message.contains("Implausible version segment count"), qPrintable(message));
+}
+
+void TestSerialization::testReadBoundedByteArrayRejectsImplausibleLength()
+{
+    // readBoundedByteArray() is reached via Serialization::readBoundedBlobMap()'s value read.
+    QByteArray data;
+    QDataStream writeStream(&data, QIODevice::WriteOnly);
+    writeStream.setVersion(QDataStream::Qt_5_12);
+    writeStream << static_cast<quint32>(1); // 1 blob entry
+    writeStream << QStringLiteral("k");     // key
+    writeStream << 0xFFFFFFF0u; // implausible byte length
+
+    QDataStream readStream(data);
+    readStream.setVersion(QDataStream::Qt_5_12);
+
+    bool threw = false;
+    QString message;
+    try {
+        Serialization::readBoundedBlobMap(readStream);
+    } catch (const Pandaception &e) {
+        threw = true;
+        message = e.englishMessage();
+    }
+
+    QVERIFY2(threw, "An implausible QByteArray length must be rejected");
+    QVERIFY2(message.contains("QByteArray length"), qPrintable(message));
+}
+
+void TestSerialization::testReadBoundedStringListRejectsImplausibleCount()
+{
+    // readBoundedStringList() is reached via readBoundedVariant() for a QStringList-typed
+    // metadata value, which in turn is reached via Serialization::readBoundedMetadata().
+    QByteArray data;
+    QDataStream writeStream(&data, QIODevice::WriteOnly);
+    writeStream.setVersion(QDataStream::Qt_5_12);
+    writeStream << static_cast<quint32>(1); // 1 metadata entry
+    writeStream << QStringLiteral("k");     // key
+    writeStream << static_cast<quint32>(QMetaType::QStringList); // typeId
+    writeStream << static_cast<quint8>(0);  // isNull = false
+    writeStream << 0xFFFFFFF0u; // implausible element count
+
+    QDataStream readStream(data);
+    readStream.setVersion(QDataStream::Qt_5_12);
+
+    bool threw = false;
+    QString message;
+    try {
+        Serialization::readBoundedMetadata(readStream);
+    } catch (const Pandaception &e) {
+        threw = true;
+        message = e.englishMessage();
+    }
+
+    QVERIFY2(threw, "An implausible QStringList count must be rejected");
+    QVERIFY2(message.contains("QStringList count"), qPrintable(message));
+}
+
+void TestSerialization::testReadBoundedBitArrayRejectsImplausibleNumBits()
+{
+    QByteArray data;
+    QDataStream writeStream(&data, QIODevice::WriteOnly);
+    writeStream.setVersion(QDataStream::Qt_5_12);
+    writeStream << static_cast<quint32>(1);
+    writeStream << QStringLiteral("k");
+    writeStream << static_cast<quint32>(QMetaType::QBitArray);
+    writeStream << static_cast<quint8>(0);
+    writeStream << 0xFFFFFFF0u; // implausible numBits
+
+    QDataStream readStream(data);
+    readStream.setVersion(QDataStream::Qt_5_12);
+
+    bool threw = false;
+    QString message;
+    try {
+        Serialization::readBoundedMetadata(readStream);
+    } catch (const Pandaception &e) {
+        threw = true;
+        message = e.englishMessage();
+    }
+
+    QVERIFY2(threw, "An implausible QBitArray numBits must be rejected");
+    QVERIFY2(message.contains("QBitArray numBits"), qPrintable(message));
+}
+
+void TestSerialization::testReadBoundedVariantTooShortForHeaderFallsBackToRawRead()
+{
+    // readBoundedVariant()'s <5-remaining-bytes fallback delegates to Qt's own (unbounded)
+    // QVariant operator>>, which fails cleanly (bad stream status, no throw) when truncated
+    // this early -- the caller's own status check breaks the loop rather than inserting a
+    // bogus entry, returning normally with whatever was parsed so far.
+    QByteArray data;
+    QDataStream writeStream(&data, QIODevice::WriteOnly);
+    writeStream.setVersion(QDataStream::Qt_5_12);
+    writeStream << static_cast<quint32>(1);
+    writeStream << QStringLiteral("k");
+    const char shortTail[3] = {0, 0, 0};
+    writeStream.writeRawData(shortTail, sizeof(shortTail));
+
+    QDataStream readStream(data);
+    readStream.setVersion(QDataStream::Qt_5_12);
+
+    const QMap<QString, QVariant> result = Serialization::readBoundedMetadata(readStream);
+
+    QVERIFY(result.isEmpty());
+    QVERIFY(readStream.status() != QDataStream::Ok);
+}
+
+void TestSerialization::testReadBoundedVariantRejectsVariantListType()
+{
+    // QVariantList/QVariantMap are never used in metadata; rejected outright to avoid a
+    // nested-container OOM (inner QVariants would bypass this bounded reader entirely).
+    QByteArray data;
+    QDataStream writeStream(&data, QIODevice::WriteOnly);
+    writeStream.setVersion(QDataStream::Qt_5_12);
+    writeStream << static_cast<quint32>(1);
+    writeStream << QStringLiteral("k");
+    writeStream << static_cast<quint32>(QMetaType::QVariantList);
+    writeStream << static_cast<quint8>(0);
+
+    QDataStream readStream(data);
+    readStream.setVersion(QDataStream::Qt_5_12);
+
+    bool threw = false;
+    QString message;
+    try {
+        Serialization::readBoundedMetadata(readStream);
+    } catch (const Pandaception &e) {
+        threw = true;
+        message = e.englishMessage();
+    }
+
+    QVERIFY2(threw, "QVariantList must never be accepted as a metadata value type");
+    QVERIFY2(message.contains("Unsupported container type"), qPrintable(message));
+}
+
+void TestSerialization::testReadBoundedMetadataRejectsImplausibleCount()
+{
+    QByteArray data;
+    QDataStream writeStream(&data, QIODevice::WriteOnly);
+    writeStream.setVersion(QDataStream::Qt_5_12);
+    writeStream << static_cast<quint32>(1000000); // far more entries than remaining bytes allow
+
+    QDataStream readStream(data);
+    readStream.setVersion(QDataStream::Qt_5_12);
+
+    bool threw = false;
+    QString message;
+    try {
+        Serialization::readBoundedMetadata(readStream);
+    } catch (const Pandaception &e) {
+        threw = true;
+        message = e.englishMessage();
+    }
+
+    QVERIFY2(threw, "An implausible metadata map count must be rejected");
+    QVERIFY2(message.contains("Metadata map count"), qPrintable(message));
+}
+
+void TestSerialization::testReadBoundedBlobMapRejectsTruncatedCount()
+{
+    QByteArray data; // empty -- not even a full 4-byte count field
+    QDataStream readStream(data);
+    readStream.setVersion(QDataStream::Qt_5_12);
+
+    bool threw = false;
+    QString message;
+    try {
+        Serialization::readBoundedBlobMap(readStream);
+    } catch (const Pandaception &e) {
+        threw = true;
+        message = e.englishMessage();
+    }
+
+    QVERIFY2(threw, "A stream too short to even hold the blob map count must be rejected");
+    QVERIFY2(message.contains("Stream error reading blob map count"), qPrintable(message));
+}
+
+void TestSerialization::testReadPayloadRejectsTooShortCompressedPayload()
+{
+    QByteArray data;
+    QDataStream writeStream(&data, QIODevice::WriteOnly);
+    const char raw[3] = {1, 2, 3}; // fewer than the 4-byte "uncompressed size" header needs
+    writeStream.writeRawData(raw, sizeof(raw));
+
+    QDataStream readStream(data);
+    bool threw = false;
+    QString message;
+    try {
+        Serialization::readPayload(readStream, Versions::Rev100);
+    } catch (const Pandaception &e) {
+        threw = true;
+        message = e.englishMessage();
+    }
+
+    QVERIFY2(threw, "A compressed payload shorter than its own size header must be rejected");
+    QVERIFY2(message.contains("Compressed payload too short"), qPrintable(message));
+}
+
+void TestSerialization::testReadPandaHeaderNoDeviceThrows()
+{
+    QDataStream stream; // default-constructed: no I/O device attached
+    QVERIFY_THROWS(std::exception, Serialization::readPandaHeader(stream));
+}
+
+void TestSerialization::testReadPandaHeaderLegacyHeaderMissingVersionPartThrows()
+{
+    QByteArray data;
+    QDataStream writeStream(&data, QIODevice::WriteOnly);
+    writeStream.setVersion(QDataStream::Qt_5_12);
+    writeStream << QStringLiteral("wiRedPanda"); // no trailing " X.Y" version part
+
+    QDataStream readStream(data);
+    bool threw = false;
+    QString message;
+    try {
+        Serialization::readPandaHeader(readStream);
+    } catch (const Pandaception &e) {
+        threw = true;
+        message = e.englishMessage();
+    }
+
+    QVERIFY2(threw, "A legacy header with no version part must be rejected");
+    QVERIFY2(message.contains("Invalid legacy file header"), qPrintable(message));
+}
+
+void TestSerialization::testReadDolphinHeaderNoDeviceThrows()
+{
+    QDataStream stream;
+    QVERIFY_THROWS(std::exception, Serialization::readDolphinHeader(stream));
+}
+
+void TestSerialization::testReadDolphinHeaderTruncatedLegacyHeaderThrows()
+{
+    QByteArray data;
+    QDataStream writeStream(&data, QIODevice::WriteOnly);
+    writeStream.setVersion(QDataStream::Qt_5_12);
+    writeStream << static_cast<quint32>(40); // claims 40 bytes of app-name text follow; none do
+
+    QDataStream readStream(data);
+    bool threw = false;
+    QString message;
+    try {
+        Serialization::readDolphinHeader(readStream);
+    } catch (const Pandaception &e) {
+        threw = true;
+        message = e.englishMessage();
+    }
+
+    QVERIFY2(threw, "A legacy dolphin header claiming more bytes than the file has must be rejected");
+    QVERIFY2(message.contains("Invalid file format"), qPrintable(message));
+}
+
+void TestSerialization::testReadDolphinHeaderWrongAppNameThrows()
+{
+    // A syntactically valid legacy-header shape (even byte length, matching bytes present)
+    // but text that isn't "beWavedDolphin".
+    QByteArray data;
+    QDataStream writeStream(&data, QIODevice::WriteOnly);
+    writeStream << static_cast<quint32>(20); // claims 20 bytes (10 UTF-16 code units)
+    const char garbage[20] = "XXXXXXXXXXXXXXXXXXX";
+    writeStream.writeRawData(garbage, 20);
+
+    QDataStream readStream(data);
+    bool threw = false;
+    QString message;
+    try {
+        Serialization::readDolphinHeader(readStream);
+    } catch (const Pandaception &e) {
+        threw = true;
+        message = e.englishMessage();
+    }
+
+    QVERIFY2(threw, "A legacy header whose text isn't beWavedDolphin must be rejected");
+    QVERIFY2(message.contains("Invalid file format"), qPrintable(message));
+}
+
+void TestSerialization::testDeserializeTruncatedTypeTagThrows()
+{
+    // deserialize()'s own post-type-tag-read check: this is a raw stream >> read directly in
+    // the loop, not delegated to a sub-loader with its own check.
+    QByteArray data;
+    QDataStream writeStream(&data, QIODevice::WriteOnly);
+    writeStream.setVersion(QDataStream::Qt_5_12);
+    const char stray = 0x00; // 1 byte: enough for !atEnd() to be true, not enough for a full int
+    writeStream.writeRawData(&stray, 1);
+
+    QHash<quint64, Port *> portMap;
+    SerializationContext context{portMap, FormatRev::current, SerializationPurpose::PortableFile};
+
+    QDataStream readStream(data);
+    readStream.setVersion(QDataStream::Qt_5_12);
+
+    bool threw = false;
+    QString message;
+    try {
+        Serialization::deserialize(readStream, context);
+    } catch (const Pandaception &e) {
+        threw = true;
+        message = e.englishMessage();
+    }
+
+    QVERIFY2(threw, "A truncated type tag must throw, not silently stop parsing");
+    QVERIFY2(message.contains("Stream error reading type tag"), qPrintable(message));
+}
+
+void TestSerialization::testDeserializeTruncatedElementTypeThrows()
+{
+    QByteArray data;
+    QDataStream writeStream(&data, QIODevice::WriteOnly);
+    writeStream.setVersion(QDataStream::Qt_5_12);
+    writeStream << static_cast<int>(GraphicElement::Type);
+    const char partial[2] = {0, 0}; // 2 of the 8 bytes a quint64 ElementType needs
+    writeStream.writeRawData(partial, sizeof(partial));
+
+    QHash<quint64, Port *> portMap;
+    SerializationContext context{portMap, FormatRev::current, SerializationPurpose::PortableFile};
+
+    QDataStream readStream(data);
+    readStream.setVersion(QDataStream::Qt_5_12);
+
+    bool threw = false;
+    QString message;
+    try {
+        Serialization::deserialize(readStream, context);
+    } catch (const Pandaception &e) {
+        threw = true;
+        message = e.englishMessage();
+    }
+
+    QVERIFY2(threw, "A truncated element type must throw, not proceed with a garbage ElementType");
+    QVERIFY2(message.contains("Stream error reading element type"), qPrintable(message));
+}
+
+void TestSerialization::testDeserializeTruncatedOldFormatElementLoadThrows()
+{
+    // Unlike the modern (4.1+) format's loadNewFormat(), which explicitly checks-and-throws
+    // on every truncation itself, the old-format loadOldFormat() path's very first step
+    // (loadPos()) does a raw, unchecked `stream >> pos;` -- a truncated read there leaves
+    // stream.status() silently bad (Qt zeroes the value rather than throwing), which only
+    // deserialize()'s own outer check catches.
+    QByteArray data;
+    QDataStream writeStream(&data, QIODevice::WriteOnly);
+    writeStream.setVersion(QDataStream::Qt_5_12);
+    writeStream << static_cast<int>(GraphicElement::Type);
+    writeStream << ElementType::And;
+    // Nothing follows: loadPos()'s QPointF read (16 bytes) has 0 bytes available.
+
+    QHash<quint64, Port *> portMap;
+    SerializationContext context{portMap, QVersionNumber(1, 2), SerializationPurpose::PortableFile};
+
+    QDataStream readStream(data);
+    readStream.setVersion(QDataStream::Qt_5_12);
+
+    bool threw = false;
+    QString message;
+    try {
+        Serialization::deserialize(readStream, context);
+    } catch (const Pandaception &e) {
+        threw = true;
+        message = e.englishMessage();
+    }
+
+    QVERIFY2(threw, "A truncated old-format element load must throw, not silently produce a bad element");
+    QVERIFY2(message.contains("Stream error loading element"), qPrintable(message));
+}
+
+void TestSerialization::testLoadDolphinFileNameNormalizesNoneSentinelForOldVersions()
+{
+    QByteArray data;
+    QDataStream writeStream(&data, QIODevice::WriteOnly);
+    writeStream.setVersion(QDataStream::Qt_5_12);
+    writeStream << QStringLiteral("none");
+
+    QDataStream readStream(data);
+    readStream.setVersion(QDataStream::Qt_5_12);
+
+    // V_3_1: hasDolphinFilename() true, hasDolphinSentinelFix() false.
+    const QString filename = Serialization::loadDolphinFileName(readStream, Versions::V_3_1);
+
+    QVERIFY2(filename.isEmpty(), "The pre-3.3 \"none\" sentinel must be normalized to an empty string");
+}
+
+void TestSerialization::testCreateVersionedBackupCopyFailureThrows()
+{
+#ifdef Q_OS_WIN
+    QSKIP("QFile::setPermissions cannot make a directory unwritable on Windows (uses ACLs, not Unix permission bits)");
+#else
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+
+    const QString fileName = dir.path() + "/circuit.panda";
+    {
+        QFile f(fileName);
+        QVERIFY(f.open(QIODevice::WriteOnly));
+        f.write("data");
+    }
+
+    QVERIFY(QFile::setPermissions(dir.path(), QFileDevice::ReadOwner | QFileDevice::ExeOwner));
+
+    // Sanity: confirm a copy into this directory really fails on this system.
+    QVERIFY(!QFile::copy(fileName, dir.path() + "/probe.panda"));
+
+    bool threw = false;
+    QString message;
+    try {
+        Serialization::createVersionedBackup(fileName, QVersionNumber(1, 2));
+    } catch (const Pandaception &e) {
+        threw = true;
+        message = e.englishMessage();
+    }
+
+    QFile::setPermissions(dir.path(), QFileDevice::ReadOwner | QFileDevice::WriteOwner | QFileDevice::ExeOwner);
+
+    QVERIFY2(threw, "A failed backup copy must throw");
+    QVERIFY2(message.contains("Failed to create versioned backup"), qPrintable(message));
+#endif
+}
+
+void TestSerialization::testReadPreambleTruncatedMetadataThrows()
+{
+    // Mirrors testReadBoundedVariantTooShortForHeaderFallsBackToRawRead(): readBoundedMetadata()
+    // can return normally with a bad stream status (no throw of its own); readPreamble() is
+    // the caller that must detect and throw on it.
+    QByteArray metadataBytes;
+    QDataStream metaStream(&metadataBytes, QIODevice::WriteOnly);
+    metaStream.setVersion(QDataStream::Qt_5_12);
+    metaStream << static_cast<quint32>(1);
+    metaStream << QStringLiteral("k");
+    const char shortTail[3] = {0, 0, 0};
+    metaStream.writeRawData(shortTail, sizeof(shortTail));
+
+    QByteArray data;
+    QDataStream writeStream(&data, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(writeStream);
+    Serialization::writePayload(writeStream, metadataBytes);
+
+    QDataStream readStream(data);
+    bool threw = false;
+    QString message;
+    try {
+        Serialization::readPreamble(readStream);
+    } catch (const Pandaception &e) {
+        threw = true;
+        message = e.englishMessage();
+    }
+
+    QVERIFY2(threw, "Truncated metadata content must be caught by readPreamble()'s own status check");
+    QVERIFY2(message.contains("Stream error reading preamble"), qPrintable(message));
+}
+
+void TestSerialization::testTypeNameMapsKnownTypesAndDefaultsForUnknown()
+{
+    // typeName() is otherwise reached only as an argument to a qCDebug() call, which the
+    // disabled-by-default logging category never evaluates in tests -- call it directly.
+    QCOMPARE(Serialization::typeName(QGraphicsItem::UserType + 1), QStringLiteral("Port"));
+    QCOMPARE(Serialization::typeName(QGraphicsItem::UserType + 2), QStringLiteral("Connection"));
+    QCOMPARE(Serialization::typeName(QGraphicsItem::UserType + 3), QStringLiteral("GraphicElement"));
+    QCOMPARE(Serialization::typeName(0), QStringLiteral("UnknownType"));
+}
+
+void TestSerialization::testCopyPandaFileCopyFailureThrows()
+{
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+
+    const QString srcPath = dir.path() + "/source.panda";
+    {
+        QFile f(srcPath);
+        QVERIFY(f.open(QIODevice::WriteOnly));
+        f.write("anything");
+    }
+
+    const QString destPath = dir.path() + "/no/such/subdir/dest.panda";
+
+    QVERIFY_THROWS(std::exception,
+        Serialization::copyPandaFile(QFileInfo(srcPath), QFileInfo(destPath)));
+}
+
+void TestSerialization::testCopyPandaFileTruncatedLegacyHeaderIsSkipped()
+{
+    // A file whose first 4 bytes look like a plausible legacy-header length prefix, but the
+    // file doesn't actually contain that many bytes -- copyPandaFile must still copy the file
+    // itself (it always does, unconditionally, before this check) and simply skip dependency
+    // scanning.
+    QTemporaryDir srcDir;
+    QTemporaryDir destDir;
+    QVERIFY(srcDir.isValid());
+    QVERIFY(destDir.isValid());
+
+    const QString srcPath = srcDir.path() + "/weird.panda";
+    QByteArray data;
+    QDataStream writeStream(&data, QIODevice::WriteOnly);
+    writeStream << static_cast<quint32>(100); // claims 100 bytes follow; none do
+    {
+        QFile f(srcPath);
+        QVERIFY(f.open(QIODevice::WriteOnly));
+        f.write(data);
+    }
+
+    const QString destPath = destDir.path() + "/weird.panda";
+    Serialization::copyPandaFile(QFileInfo(srcPath), QFileInfo(destPath));
+
+    QVERIFY(QFile::exists(destPath));
+}
+
+void TestSerialization::testCopyPandaFileNonWiredPandaTextHeaderIsSkipped()
+{
+    QTemporaryDir srcDir;
+    QTemporaryDir destDir;
+    QVERIFY(srcDir.isValid());
+    QVERIFY(destDir.isValid());
+
+    const QString srcPath = srcDir.path() + "/notpanda.panda";
+    QByteArray data;
+    QDataStream writeStream(&data, QIODevice::WriteOnly);
+    writeStream.setVersion(QDataStream::Qt_5_12);
+    writeStream << QStringLiteral("SomeOtherApp"); // plausible-length text header, wrong content
+    {
+        QFile f(srcPath);
+        QVERIFY(f.open(QIODevice::WriteOnly));
+        f.write(data);
+    }
+
+    const QString destPath = destDir.path() + "/notpanda.panda";
+    Serialization::copyPandaFile(QFileInfo(srcPath), QFileInfo(destPath));
+
+    QVERIFY(QFile::exists(destPath));
+}
+
+void TestSerialization::testCopyPandaFileCorruptButPlausibleHeaderIsSkipped()
+{
+    // A genuine modern magic header + version (so copyPandaFile's own peek-based plausibility
+    // pre-check -- which only runs for non-modern-magic files -- is bypassed entirely) but
+    // corrupt content beyond that: readPreamble() throws, and copyPandaFile must swallow it
+    // (the file itself was already copied; nothing to recurse into) rather than propagating.
+    QTemporaryDir srcDir;
+    QTemporaryDir destDir;
+    QVERIFY(srcDir.isValid());
+    QVERIFY(destDir.isValid());
+
+    const QString srcPath = srcDir.path() + "/corrupt.panda";
+    QByteArray data;
+    QDataStream writeStream(&data, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(writeStream);
+    writeStream << static_cast<quint8>(0xFF); // too short to be a valid compressed payload
+    {
+        QFile f(srcPath);
+        QVERIFY(f.open(QIODevice::WriteOnly));
+        f.write(data);
+    }
+
+    const QString destPath = destDir.path() + "/corrupt.panda";
+    Serialization::copyPandaFile(QFileInfo(srcPath), QFileInfo(destPath));
+
+    QVERIFY(QFile::exists(destPath));
+}
+
+void TestSerialization::testCopyPandaFileOldVersionWithoutMetadataSupportIsSkipped()
+{
+    // A genuinely valid, fully parseable old-format file (pre-4.5, !hasMetadata) -- readPreamble()
+    // succeeds cleanly, but there's no fileBackedICs metadata to scan for this version.
+    QTemporaryDir srcDir;
+    QTemporaryDir destDir;
+    QVERIFY(srcDir.isValid());
+    QVERIFY(destDir.isValid());
+
+    const QString srcPath = srcDir.path() + "/old.panda";
+    QByteArray data;
+    QDataStream writeStream(&data, QIODevice::WriteOnly);
+    writeStream.setVersion(QDataStream::Qt_5_12);
+    writeStream << Serialization::MAGIC_HEADER_CIRCUIT;
+    writeStream << Versions::V_1_2; // pre-Rev100/hasDolphinFilename/hasSceneRect/hasMetadata
+    {
+        QFile f(srcPath);
+        QVERIFY(f.open(QIODevice::WriteOnly));
+        f.write(data);
+    }
+
+    const QString destPath = destDir.path() + "/old.panda";
+    Serialization::copyPandaFile(QFileInfo(srcPath), QFileInfo(destPath));
+
+    QVERIFY(QFile::exists(destPath));
 }
