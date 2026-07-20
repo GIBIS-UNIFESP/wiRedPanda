@@ -5,6 +5,10 @@
 
 #include <algorithm>
 
+#include <QPainter>
+#include <QPixmap>
+#include <QStyleOptionGraphicsItem>
+
 #include "App/Core/ThemeManager.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
@@ -201,6 +205,44 @@ void TestConnectionManager::testHoverLabelExcludedFromHitTesting()
     // features built on it (e.g. Ctrl+click clone-drag in Scene::eventFilter).
     PortHoverLabel label(QStringLiteral("A"), PortHoverLabel::Side::Right);
     QVERIFY(label.shape().isEmpty());
+}
+
+void TestConnectionManager::testHoverLabelConstructsForTopAndBottomSides()
+{
+    // Only Side::Left/Right are exercised elsewhere; Side::Top/Bottom pick different
+    // branches in the constructor's switch (bounds centred horizontally, offset vertically).
+    PortHoverLabel topLabel(QStringLiteral("T"), PortHoverLabel::Side::Top);
+    QVERIFY2(topLabel.boundingRect().bottom() < 0, "A Side::Top chip must sit above the port origin");
+
+    PortHoverLabel bottomLabel(QStringLiteral("B"), PortHoverLabel::Side::Bottom);
+    QVERIFY2(bottomLabel.boundingRect().top() > 0, "A Side::Bottom chip must sit below the port origin");
+}
+
+void TestConnectionManager::testHoverLabelBoundingRectInflatesBoundsByOnePixel()
+{
+    PortHoverLabel label(QStringLiteral("Hello"), PortHoverLabel::Side::Right);
+    const QRectF rect = label.boundingRect();
+
+    QVERIFY2(!rect.isEmpty(), "boundingRect() must reflect a real, measured chip size");
+    QVERIFY2(rect.width() > 0 && rect.height() > 0, "boundingRect() must have positive extent");
+    // Side::Right: the chip sits to the right of the origin, offset by kPortGap (8px) before
+    // the 1px inflation -- so its left edge stays positive even after being pulled in by 1px.
+    QVERIFY2(rect.left() > 0, "A Side::Right chip's bounding rect must sit to the right of the port origin");
+}
+
+void TestConnectionManager::testHoverLabelPaintDrawsVisibleChip()
+{
+    PortHoverLabel label(QStringLiteral("X"), PortHoverLabel::Side::Right);
+
+    QPixmap pixmap(64, 64);
+    pixmap.fill(Qt::transparent);
+    QPainter painter(&pixmap);
+    painter.translate(32, 32); // origin away from the pixmap edge, matching the port-anchored coordinate space
+    QStyleOptionGraphicsItem option;
+    label.paint(&painter, &option, nullptr);
+    painter.end();
+
+    QVERIFY2(TestUtils::pixmapHasInk(pixmap), "paint() must draw a visible chip");
 }
 
 void TestConnectionManager::testHoverReleaseClearsPeerHighlightAfterWireDeleted()

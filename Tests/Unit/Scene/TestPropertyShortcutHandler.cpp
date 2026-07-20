@@ -4,14 +4,18 @@
 #include "Tests/Unit/Scene/TestPropertyShortcutHandler.h"
 
 #include "App/Element/GraphicElements/And.h"
+#include "App/Element/GraphicElements/AudioBox.h"
 #include "App/Element/GraphicElements/Buzzer.h"
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/Display14.h"
+#include "App/Element/GraphicElements/Display16.h"
 #include "App/Element/GraphicElements/Display7.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Or.h"
+#include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Scene/PropertyShortcutHandler.h"
+#include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
 
@@ -239,4 +243,152 @@ void TestPropertyShortcutHandler::testMultiElementShortcutIsSingleUndoStep()
     undoStack->undo();
     QCOMPARE(clock1->frequency(), originalFreq1);
     QCOMPARE(clock2->frequency(), originalFreq2);
+}
+
+void TestPropertyShortcutHandler::testDisplay16ColorPrevMainProperty()
+{
+    // Only previous-color is handled for Display16 (no next-color cycling).
+    WorkSpace workspace;
+    auto *disp16 = new Display16;
+    workspace.scene()->addItem(disp16);
+
+    PropertyShortcutHandler handler(workspace.scene());
+    workspace.scene()->clearSelection();
+    disp16->setSelected(true);
+
+    const QString originalColor = disp16->color();
+    handler.prevMainProperty();
+    QVERIFY(disp16->color() != originalColor);
+
+    const QString afterPrev = disp16->color();
+    handler.nextMainProperty();
+    QCOMPARE(disp16->color(), afterPrev); // next is deliberately not implemented: no-op
+}
+
+void TestPropertyShortcutHandler::testAudioBoxMainPropertyIsNoOp()
+{
+    // AudioBox has no main-property cycling behavior defined -- confirm the shortcut is a
+    // genuine no-op (no undo command pushed), not silently doing something unexpected.
+    WorkSpace workspace;
+    auto *audioBox = new AudioBox;
+    workspace.scene()->addItem(audioBox);
+
+    PropertyShortcutHandler handler(workspace.scene());
+    workspace.scene()->clearSelection();
+    audioBox->setSelected(true);
+
+    auto *undoStack = workspace.scene()->undoStack();
+    const int countBefore = undoStack->count();
+
+    handler.nextMainProperty();
+
+    QCOMPARE(undoStack->count(), countBefore);
+}
+
+void TestPropertyShortcutHandler::testTruthTableOutputSizeSecondaryProperty()
+{
+    WorkSpace workspace;
+    auto *tt = new TruthTable;
+    workspace.scene()->addItem(tt);
+    const int originalOutputs = tt->outputSize();
+
+    PropertyShortcutHandler handler(workspace.scene());
+    workspace.scene()->clearSelection();
+    tt->setSelected(true);
+
+    handler.nextSecondaryProperty();
+    QCOMPARE(tt->outputSize(), originalOutputs + 1);
+
+    handler.prevSecondaryProperty();
+    QCOMPARE(tt->outputSize(), originalOutputs);
+}
+
+void TestPropertyShortcutHandler::testMultiElementSecondaryPropertyIsSingleUndoStep()
+{
+    WorkSpace workspace;
+    auto *led1 = new Led;
+    auto *led2 = new Led;
+    led2->setPos(100, 0);
+    workspace.scene()->addItem(led1);
+    workspace.scene()->addItem(led2);
+    const QString originalColor1 = led1->color();
+    const QString originalColor2 = led2->color();
+
+    PropertyShortcutHandler handler(workspace.scene());
+    workspace.scene()->clearSelection();
+    led1->setSelected(true);
+    led2->setSelected(true);
+
+    auto *undoStack = workspace.scene()->undoStack();
+    const int countBefore = undoStack->count();
+
+    handler.nextSecondaryProperty();
+
+    QVERIFY(led1->color() != originalColor1);
+    QVERIFY(led2->color() != originalColor2);
+    QCOMPARE(undoStack->count(), countBefore + 1);
+
+    undoStack->undo();
+    QCOMPARE(led1->color(), originalColor1);
+    QCOMPARE(led2->color(), originalColor2);
+}
+
+void TestPropertyShortcutHandler::testMultiElementMorphNextIsSingleUndoStep()
+{
+    WorkSpace workspace;
+    auto *and1 = new And;
+    auto *and2 = new And;
+    and2->setPos(200, 0);
+    workspace.scene()->addItem(and1);
+    workspace.scene()->addItem(and2);
+
+    PropertyShortcutHandler handler(workspace.scene());
+    workspace.scene()->clearSelection();
+    and1->setSelected(true);
+    and2->setSelected(true);
+
+    auto *undoStack = workspace.scene()->undoStack();
+    const int countBefore = undoStack->count();
+
+    handler.nextElement();
+
+    const auto selected = workspace.scene()->selectedElements();
+    QCOMPARE(selected.size(), 2);
+    for (auto *elm : selected) {
+        QCOMPARE(elm->elementType(), ElementType::Or);
+    }
+    QCOMPARE(undoStack->count(), countBefore + 1);
+
+    undoStack->undo();
+    QCOMPARE(workspace.scene()->elements().size(), 2);
+}
+
+void TestPropertyShortcutHandler::testMultiElementMorphPrevIsSingleUndoStep()
+{
+    WorkSpace workspace;
+    auto *and1 = new And;
+    auto *and2 = new And;
+    and2->setPos(200, 0);
+    workspace.scene()->addItem(and1);
+    workspace.scene()->addItem(and2);
+
+    PropertyShortcutHandler handler(workspace.scene());
+    workspace.scene()->clearSelection();
+    and1->setSelected(true);
+    and2->setSelected(true);
+
+    auto *undoStack = workspace.scene()->undoStack();
+    const int countBefore = undoStack->count();
+
+    handler.prevElement();
+
+    const auto selected = workspace.scene()->selectedElements();
+    QCOMPARE(selected.size(), 2);
+    for (auto *elm : selected) {
+        QCOMPARE(elm->elementType(), ElementType::Xnor);
+    }
+    QCOMPARE(undoStack->count(), countBefore + 1);
+
+    undoStack->undo();
+    QCOMPARE(workspace.scene()->elements().size(), 2);
 }
