@@ -23,4 +23,8 @@ private slots:
     void testSaveLoadRoundTripPreservesPorts();
     void testSaveLoadPreservesConnectionStatus();
     void testSaveLoadWithStatusPropagation();
+
+    // Malformed-stream error paths (2 tests)
+    void testLoadThrowsOnTruncatedQMapStream();
+    void testLoadThrowsOnTruncatedLegacyIdStream();
 };

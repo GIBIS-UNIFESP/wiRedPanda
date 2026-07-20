@@ -58,7 +58,12 @@ public:
 
     /// Constructs the port with optional \a parent item.
     explicit Port(QGraphicsItem *parent = nullptr);
-    virtual ~Port() = default;
+    // Port is abstract (isInput()/isOutput()/isValid()/setStatus() are pure virtual), so it can
+    // never be the most-derived type of a real object -- its own vtable "deleting destructor"
+    // (D0) slot is dead by construction, unlike a concrete class's (pattern 34/pattern 35's
+    // MainWindowHost precedent). Every real deletion, even through a base Port* pointer, resolves
+    // to InputPort's/OutputPort's own D0, which then invokes this D2 (base-object destructor).
+    virtual ~Port() = default; // LCOV_EXCL_LINE
 
     // --- Element Access ---
 

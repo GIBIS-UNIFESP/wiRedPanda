@@ -8,6 +8,7 @@
 #include <QDataStream>
 #include <QTest>
 
+#include "App/Core/Common.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
@@ -466,4 +467,67 @@ void TestConnectionSerialization::testSaveLoadWithStatusPropagation()
     QCOMPARE(loadedConn1->status(), sw->outputPort()->status());
     QCOMPARE(loadedConn1->status(), Status::Active);
     QCOMPARE(loadedConn2->status(), and1->outputPort()->status());
+}
+
+// ============================================================================
+// Malformed-stream error paths (2 tests)
+// ============================================================================
+
+void TestConnectionSerialization::testLoadThrowsOnTruncatedQMapStream()
+{
+    // hasConnectionQMap(current) is true, so load() takes the QMap-based branch.
+    // A bare declared count (no bytes behind it) trips readBoundedMetadata()'s own
+    // implausible-count guard, which throws *its* own exception -- not the one under test
+    // here. To reach the genuine truncated-*entry* path instead (mirrors
+    // TestGraphicElementSerializer::testReadPortListEntryReadFailureThrows()'s identical
+    // recipe): the count and key must both read successfully (comfortably over the 9-byte-
+    // per-entry plausibility minimum), with nothing left for the value, so
+    // readBoundedVariant() falls back to a plain `stream >> v` that fails silently (bad
+    // status, no throw of its own) rather than reading a full value.
+    QByteArray data;
+    {
+        QDataStream stream(&data, QIODevice::WriteOnly);
+        stream << quint32(1);        // metadata map count: 1 key/value pair
+        stream << QString("key12");  // a real key, comfortably over the 9-byte-per-entry minimum
+        // No value bytes follow.
+    }
+
+    QHash<quint64, Port *> portMap;
+    SerializationContext context = {portMap, FormatRev::current, SerializationPurpose::PortableFile, QString()};
+
+    Connection connection;
+    QDataStream loadStream(data);
+
+    bool threw = false;
+    try {
+        connection.load(loadStream, context);
+    } catch (const Pandaception &) {
+        threw = true;
+    }
+    QVERIFY2(threw, "a truncated connection metadata map must be reported, not silently accepted");
+}
+
+void TestConnectionSerialization::testLoadThrowsOnTruncatedLegacyIdStream()
+{
+    // Before V_4_7, load() reads two raw quint64 port IDs directly; writing only the first
+    // makes the second read run past the end of the stream.
+    QByteArray data;
+    {
+        QDataStream stream(&data, QIODevice::WriteOnly);
+        stream << quint64(42);
+    }
+
+    QHash<quint64, Port *> portMap;
+    SerializationContext context = {portMap, Versions::V_4_6, SerializationPurpose::PortableFile, QString()};
+
+    Connection connection;
+    QDataStream loadStream(data);
+
+    bool threw = false;
+    try {
+        connection.load(loadStream, context);
+    } catch (const Pandaception &) {
+        threw = true;
+    }
+    QVERIFY2(threw, "a truncated legacy connection ID pair must be reported, not silently accepted");
 }
