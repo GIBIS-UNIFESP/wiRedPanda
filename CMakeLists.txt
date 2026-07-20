@@ -863,7 +863,6 @@ add_test(NAME TestMemorySettlingTime COMMAND test_wiredpanda TestMemorySettlingT
 add_test(NAME TestMUXDEMUXComprehensive COMMAND test_wiredpanda TestMUXDEMUXComprehensive WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestMultiplexing COMMAND test_wiredpanda TestMultiplexing WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestNodeLogic COMMAND test_wiredpanda TestNodeLogic WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestPriorities COMMAND test_wiredpanda TestPriorities WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestRAMCell1Bit COMMAND test_wiredpanda TestRAMCell1Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestRecentFiles COMMAND test_wiredpanda TestRecentFiles WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestScene COMMAND test_wiredpanda TestScene WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -890,7 +889,6 @@ add_test(NAME TestCircuitExporter COMMAND test_wiredpanda TestCircuitExporter WO
 add_test(NAME TestCodeGenUtils COMMAND test_wiredpanda TestCodeGenUtils WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestConnectionManager COMMAND test_wiredpanda TestConnectionManager WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestCoreSettings COMMAND test_wiredpanda TestCoreSettings WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestDemux COMMAND test_wiredpanda TestDemux WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestDisplay COMMAND test_wiredpanda TestDisplay WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestDisplay7 COMMAND test_wiredpanda TestDisplay7 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestDolphinClipboard COMMAND test_wiredpanda TestDolphinClipboard WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -907,7 +905,6 @@ add_test(NAME TestGraphicsView COMMAND test_wiredpanda TestGraphicsView WORKING_
 add_test(NAME TestICDropZone COMMAND test_wiredpanda TestICDropZone WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLabeledSlider COMMAND test_wiredpanda TestLabeledSlider WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLanguageManager COMMAND test_wiredpanda TestLanguageManager WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestMux COMMAND test_wiredpanda TestMux WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestPropertyShortcutHandler COMMAND test_wiredpanda TestPropertyShortcutHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestRecentFilesUnit COMMAND test_wiredpanda TestRecentFilesUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSystemVerilogCodeGenUnit COMMAND test_wiredpanda TestSystemVerilogCodeGenUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -1041,6 +1038,9 @@ add_test(NAME TestDanglingPointer COMMAND test_wiredpanda_quick TestDanglingPoin
 add_test(NAME TestICUnit COMMAND test_wiredpanda_quick TestICUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestICRegistry COMMAND test_wiredpanda_quick TestICRegistry WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestExerciseEngine COMMAND test_wiredpanda_quick TestExerciseEngine WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestDemux COMMAND test_wiredpanda_quick TestDemux WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestMux COMMAND test_wiredpanda_quick TestMux WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestPriorities COMMAND test_wiredpanda_quick TestPriorities WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 # ============================================================================
 # Test Properties: Labels and Timeouts
@@ -1095,7 +1095,7 @@ foreach(TEST TestSerialization)
 endforeach()
 
 # Core Functionality Tests - Unit category
-foreach(TEST TestCommands TestCommon TestEnums TestPriorities TestRecentFiles TestSettings
+foreach(TEST TestCommands TestCommon TestEnums TestRecentFiles TestSettings
         TestThemeManager)
     set_tests_properties(${TEST} PROPERTIES LABELS "unit")
 endforeach()
@@ -1137,7 +1137,8 @@ foreach(TEST TestCanvasItemSmoke TestCanvasCommands TestQuickElementHandler
         TestLevel9CPU16BitRISC TestLevel9FetchStage16Bit TestLevel9MemoryStage16Bit
         TestLevel9MultiCycleCPU8Bit TestLevel9RegisterFile32X16 TestLevel9SingleCycleCPU8Bit
         TestNotifyCatch TestSimulationUnit TestSimulationBlocker TestDanglingPointer
-        TestICUnit TestICRegistry TestExerciseEngine)
+        TestICUnit TestICRegistry TestExerciseEngine
+        TestDemux TestMux TestPriorities)
     set_tests_properties(${TEST} PROPERTIES LABELS "unit;quick")
 endforeach()
 
@@ -1156,7 +1157,7 @@ set(ALL_TESTS
     TestConnectionSerialization TestConnectionValidity TestConnections TestScene
     TestSceneConnections TestSceneState TestSceneUndoredo
     TestSerialization
-    TestCommands TestCommon TestEnums TestPriorities TestRecentFiles TestSettings TestThemeManager
+    TestCommands TestCommon TestEnums TestRecentFiles TestSettings TestThemeManager
     TestApplication TestCoreSettings TestDragDropPayload TestExerciseTourResources
     TestExternalFilePath TestInstallRelativePaths TestUpdateChecker
     TestArduinoCodeGenUnit TestCodeGenUtils TestSystemVerilogCodeGenUnit
@@ -1165,7 +1166,7 @@ set(ALL_TESTS
     TestLanguageManager TestMinimapWidget TestSelectionCapabilities
     TestTrashButton
     TestConnection TestConnectionManager TestGraphicsView TestPropertyShortcutHandler TestPort
-    TestDemux TestDisplay TestDisplay7 TestGraphicElement TestMux
+    TestDisplay TestDisplay7 TestGraphicElement
     TestDolphinClipboard TestDolphinSerializer TestFileUtils TestRecentFilesUnit
     TestFileHandlerSecurity TestICHandlerSecurity TestMCPProcessor TestElementHandler
     TestTourEngine

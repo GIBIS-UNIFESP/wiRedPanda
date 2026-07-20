@@ -28,6 +28,8 @@
 #include <memory>
 
 #include <QFileInfo>
+#include <QImage>
+#include <QPixmap>
 #include <QTest>
 #include <QVector>
 
@@ -57,6 +59,22 @@ inline QString cpuComponentsDir()
 inline QString examplesDir()
 {
     return QString(QUOTE(CURRENTDIR)) + "/../Examples/";
+}
+
+/// Returns true if any pixel in \a pixmap has non-zero alpha -- identical to
+/// Tests/Common/TestUtils.cpp's own pixmapHasInk(), pure QPixmap/QImage logic with no Widgets
+/// dependency.
+inline bool pixmapHasInk(const QPixmap &pixmap)
+{
+    const QImage image = pixmap.toImage();
+    for (int y = 0; y < image.height(); ++y) {
+        for (int x = 0; x < image.width(); ++x) {
+            if (qAlpha(image.pixel(x, y)) != 0) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 inline bool inputStatus(GraphicElement *elm, int port = 0)

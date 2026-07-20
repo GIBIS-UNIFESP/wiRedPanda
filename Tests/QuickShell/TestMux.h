@@ -6,6 +6,9 @@
 #include <QObject>
 #include <QTest>
 
+/// testMuxBigPivotsAtBoundingRectCenter/testMuxBigRotationDoesNotDriftInScene/
+/// testMuxBigFlipDoesNotDriftInScene are dropped, not ported: same already-tracked "TestIc's 8
+/// rotation/pivot tests" gap as TestDemux's own dropped trio -- see that class's doc comment.
 class TestMux : public QObject
 {
     Q_OBJECT
@@ -17,9 +20,4 @@ private slots:
     void testMuxPainting();
     void testMuxOutOfRangeSelect_data();
     void testMuxOutOfRangeSelect();
-
-    // Rotation/flip pivot on a "big" Mux (ports extend past the 64x64 body)
-    void testMuxBigPivotsAtBoundingRectCenter();
-    void testMuxBigRotationDoesNotDriftInScene();
-    void testMuxBigFlipDoesNotDriftInScene();
 };

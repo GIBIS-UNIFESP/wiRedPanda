@@ -1,15 +1,14 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Unit/Common/TestPriorities.h"
+#include "Tests/QuickShell/TestPriorities.h"
 
 #include "App/Core/Priorities.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
-#include "App/Scene/Workspace.h"
 #include "App/Wiring/Connection.h"
-#include "Tests/Common/TestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
 
 // Priority Calculation Tests
 
@@ -17,8 +16,7 @@ void TestPriorities::testPriorityBasic()
 {
     // Test: Priority is calculated based on distance from outputs
     // SW → AND → LED: LED=1, AND=2, SW=3
-    WorkSpace workspace;
-    CircuitBuilder builder(workspace.scene());
+    QuickCircuitBuilder builder;
 
     InputSwitch sw;
     And andGate;
@@ -66,8 +64,7 @@ void TestPriorities::testPriorityMemoization()
     // Create: SW1 → AND → LED
     //         SW2 ↗
     // Both SW1 and SW2 connect to AND, so AND's priority calculated only once
-    WorkSpace workspace;
-    CircuitBuilder builder(workspace.scene());
+    QuickCircuitBuilder builder;
 
     InputSwitch sw1, sw2;
     And andGate;

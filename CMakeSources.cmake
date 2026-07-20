@@ -264,7 +264,6 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Commands/TestCommands.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestCommon.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestEnums.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestPriorities.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestRecentFiles.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestSettings.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestThemeManager.cpp
@@ -280,7 +279,6 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestClock.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestClocksAdvanced.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestComponents.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestDemux.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestDisplay.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestDisplay7.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestDisplays.cpp
@@ -295,7 +293,6 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestLed.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestLogicGates.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestMultiplexing.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestMux.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestSequentialLogic.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestTruthTable.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestWirelessNode.cpp
@@ -367,7 +364,6 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Commands/TestCommands.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestCommon.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestEnums.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestPriorities.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestRecentFiles.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestSettings.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestThemeManager.h
@@ -384,7 +380,6 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestClock.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestClocksAdvanced.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestComponents.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestDemux.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestDisplay.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestDisplay7.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestDisplays.h
@@ -399,7 +394,6 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestLed.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestLogicGates.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestMultiplexing.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestMux.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestSequentialLogic.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestTruthTable.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestWirelessNode.h

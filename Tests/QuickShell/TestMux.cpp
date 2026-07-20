@@ -1,43 +1,41 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Unit/Elements/TestMux.h"
+#include "Tests/QuickShell/TestMux.h"
 
 #include <QPainter>
-#include <QStyleOptionGraphicsItem>
 
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Mux.h"
-#include "App/Scene/Workspace.h"
-#include "Tests/Common/TestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 void TestMux::testMuxInputSize()
 {
-    WorkSpace workspace;
-    auto *mux = new Mux;
-    workspace.scene()->addItem(mux);
-    QVERIFY(mux->inputSize() > 0);
+    QuickCircuitBuilder builder;
+    Mux mux;
+    builder.add(&mux);
+    QVERIFY(mux.inputSize() > 0);
 }
 
 void TestMux::testMuxSelection()
 {
-    WorkSpace workspace;
-    auto *mux = new Mux;
-    workspace.scene()->addItem(mux);
-    QVERIFY(mux->inputSize() > 0);
+    QuickCircuitBuilder builder;
+    Mux mux;
+    builder.add(&mux);
+    QVERIFY(mux.inputSize() > 0);
 }
 
 void TestMux::testMuxPainting()
 {
-    WorkSpace workspace;
-    auto *mux = new Mux;
-    workspace.scene()->addItem(mux);
+    QuickCircuitBuilder builder;
+    Mux mux;
+    builder.add(&mux);
 
     QPixmap pixmap(128, 128);
     pixmap.fill(Qt::transparent);
     QPainter painter(&pixmap);
-    QStyleOptionGraphicsItem option;
-    mux->paint(&painter, &option, nullptr);
+    mux.paint(&painter);
     painter.end();
 
     QVERIFY2(TestUtils::pixmapHasInk(pixmap), "Mux paint() must draw visible pixels");
@@ -69,8 +67,7 @@ void TestMux::testMuxOutOfRangeSelect()
     QFETCH(int, numDataInputs);
     QFETCH(int, selectValue);
 
-    WorkSpace workspace;
-    CircuitBuilder builder(workspace.scene());
+    QuickCircuitBuilder builder;
 
     const int numSelectLines = totalInputs - numDataInputs;
 
@@ -110,57 +107,4 @@ void TestMux::testMuxOutOfRangeSelect()
     simulation->update();
 
     QCOMPARE(mux.outputValue(), Status::Unknown);
-}
-
-void TestMux::testMuxBigPivotsAtBoundingRectCenter()
-{
-    // Direct regression: a big Mux's rotation/flip pivot must be the element's actual
-    // footprint centre, not the (0,0)-anchored raw pixmap centre that only happens to
-    // coincide with it for small instances.
-    WorkSpace workspace;
-    auto *mux = new Mux;
-    workspace.scene()->addItem(mux);
-    mux->setInputSize(11); // max input size -> tallest body
-
-    // Mux's data-port column grows downward from a fixed top, so unlike IC/TruthTable its
-    // boundingRect() top-left never goes negative — height is what distinguishes "grew past
-    // the base skin" from "still the base skin".
-    QVERIFY2(mux->boundingRect().height() > 64,
-             "Test Mux isn't actually 'big' — boundingRect() didn't grow past the 64x64 body");
-    QCOMPARE(mux->transformOriginPoint(), mux->boundingRect().center());
-}
-
-void TestMux::testMuxBigRotationDoesNotDriftInScene()
-{
-    WorkSpace workspace;
-    auto *mux = new Mux;
-    workspace.scene()->addItem(mux);
-    mux->setInputSize(11);
-
-    const QPointF centerScene = mux->mapToScene(mux->boundingRect().center());
-
-    for (const qreal angle : {90.0, 180.0, 270.0, 0.0}) {
-        mux->setRotation(angle);
-        QCOMPARE(mux->mapToScene(mux->boundingRect().center()), centerScene);
-    }
-}
-
-void TestMux::testMuxBigFlipDoesNotDriftInScene()
-{
-    WorkSpace workspace;
-    auto *mux = new Mux;
-    workspace.scene()->addItem(mux);
-    mux->setInputSize(11);
-
-    const QPointF centerScene = mux->mapToScene(mux->boundingRect().center());
-
-    mux->setFlippedX(true);
-    QCOMPARE(mux->mapToScene(mux->boundingRect().center()), centerScene);
-
-    mux->setFlippedY(true);
-    QCOMPARE(mux->mapToScene(mux->boundingRect().center()), centerScene);
-
-    mux->setFlippedX(false);
-    mux->setFlippedY(false);
-    QCOMPARE(mux->mapToScene(mux->boundingRect().center()), centerScene);
 }

@@ -116,6 +116,9 @@
 #include "Tests/QuickShell/TestICUnit.h"
 #include "Tests/QuickShell/TestICRegistry.h"
 #include "Tests/QuickShell/TestExerciseEngine.h"
+#include "Tests/QuickShell/TestDemux.h"
+#include "Tests/QuickShell/TestMux.h"
+#include "Tests/QuickShell/TestPriorities.h"
 
 int main(int argc, char **argv)
 {
@@ -233,5 +236,8 @@ int main(int argc, char **argv)
         {"TestICUnit", []() -> QObject * { return new TestICUnit; }},
         {"TestICRegistry", []() -> QObject * { return new TestICRegistry; }},
         {"TestExerciseEngine", []() -> QObject * { return new TestExerciseEngine; }},
+        {"TestDemux", []() -> QObject * { return new TestDemux; }},
+        {"TestMux", []() -> QObject * { return new TestMux; }},
+        {"TestPriorities", []() -> QObject * { return new TestPriorities; }},
     });
 }

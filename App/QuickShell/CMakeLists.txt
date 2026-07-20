@@ -477,6 +477,12 @@ set(QUICK_SHELL_TEST_SOURCES
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestICRegistry.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestExerciseEngine.cpp
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestExerciseEngine.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestDemux.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestDemux.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestMux.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestMux.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestPriorities.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestPriorities.h
 )
 
 # Usage: ./build/test_wiredpanda_quick ClassName [functionName] -- mirrors test_wiredpanda's
