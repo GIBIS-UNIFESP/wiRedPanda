@@ -6,8 +6,6 @@
 #include <array>
 
 #include <QElapsedTimer>
-#include <QFontDatabase>
-#include <QMessageBox>
 #include <QMutex>
 
 #include "App/Core/Common.h"
@@ -64,6 +62,8 @@ bool shouldSendToSentry(const QString &message)
 }
 #endif
 
+std::function<void(const ExceptionInfo &, const QObject *)> s_exceptionPresenter;
+
 } // namespace
 
 bool Application::isSentryDenyMessage(const QString &message)
@@ -76,37 +76,9 @@ bool Application::isSentryDenyMessage(const QString &message)
     return false;
 }
 
-Application::Application(int &argc, char **argv)
-    : QApplication(argc, argv)
+void Application::setExceptionPresenter(std::function<void(const ExceptionInfo &, const QObject *)> presenter)
 {
-    // Register the bundled font used by element SVG labels (flip-flop / latch pin letters and the
-    // inverted-output overline glyph) so they render identically on every platform — before any
-    // GraphicElement pixmap is built and cached. Both the desktop entry and the test runner
-    // construct Application before any element exists, so this single spot covers both.
-    if (QFontDatabase::addApplicationFont(QStringLiteral(":/Fonts/NotoSans-Regular.ttf")) == -1) {
-        qWarning() << "Failed to register bundled font: NotoSans-Regular.ttf";
-    }
-}
-
-Application *Application::instance()
-{
-    return qobject_cast<Application *>(QCoreApplication::instance());
-}
-
-bool Application::notify(QObject *receiver, QEvent *event)
-{
-    // Defence-in-depth backstop for exceptions escaping Qt event handlers on
-    // Linux/Windows.  This catch is structurally UNREACHABLE on macOS for
-    // exceptions thrown from queued slots (Qt 6.11 Exception Safety doc +
-    // QTBUG-15197) — slots that may throw must wrap their body in
-    // Application::guardedSlot.  See .claude/SENTRY_TRIAGE.md §A25.
-    bool done = false;
-    try {
-        done = QApplication::notify(receiver, event);
-    } catch (const std::exception &e) {
-        handleException(makeExceptionInfo(e), receiver);
-    }
-    return done;
+    s_exceptionPresenter = std::move(presenter);
 }
 
 ExceptionInfo Application::makeExceptionInfo(const std::exception &e)
@@ -126,28 +98,8 @@ ExceptionInfo Application::makeExceptionInfo(const std::exception &e)
 
 void Application::handleException(const ExceptionInfo &info, const QObject *context)
 {
-    if (Application::interactiveMode) {
-        // Prefer the slot's `this` as the dialog parent, falling back to
-        // whatever top-level window currently has focus if context isn't a
-        // widget. See guardedSlot's call site for context.
-        const QWidget *parent = qobject_cast<const QWidget *>(context);
-        if (!parent) {
-            parent = QApplication::activeWindow();
-        }
-
-        // Use show() (non-modal) instead of QMessageBox::critical() (modal
-        // exec()).  On macOS the modal exec() does not pump Qt timer events
-        // reliably from inside Qt's notify dispatch — the polling auto-
-        // dismiss in tests gets blocked indefinitely (run 25285904950 +
-        // earlier diagnostic runs all showed 300 s hangs).  Non-modal
-        // show() lets handleException return immediately; the dialog stays
-        // visible, the user clicks OK, and WA_DeleteOnClose cleans up.
-        // Slightly less intrusive UX than modal too.
-        auto *box = new QMessageBox(QMessageBox::Critical, tr("Error!"),
-                                    info.what, QMessageBox::Ok,
-                                    const_cast<QWidget *>(parent));
-        box->setAttribute(Qt::WA_DeleteOnClose);
-        box->show();
+    if (Application::interactiveMode && s_exceptionPresenter) {
+        s_exceptionPresenter(info, context);
     }
 
 #ifdef HAVE_SENTRY

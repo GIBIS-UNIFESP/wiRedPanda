@@ -11,8 +11,6 @@
 #include <QObject>
 #include <QPalette>
 
-#include "App/Core/Application.h"
-
 /// Enumeration of available application themes.
 enum class Theme { Light, Dark, System };
 

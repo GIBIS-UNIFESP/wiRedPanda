@@ -30,6 +30,7 @@
 #include "App/Scene/Workspace.h"
 #include "App/UI/FileDialogProvider.h"
 #include "App/UI/MainWindow.h"
+#include "App/UI/WidgetsApplication.h"
 
 #ifdef ENABLE_MCP_SERVER
 #include "MCP/Server/Core/MCPProcessor.h"
@@ -196,7 +197,7 @@ int main(int argc, char *argv[])
     }
 #endif
 
-    Application app(argc, argv);
+    WidgetsApplication app(argc, argv);
     app.setOrganizationName("GIBIS-UNIFESP");
     app.setApplicationName("wiRedPanda");
     app.setApplicationVersion(APP_VERSION);
@@ -214,9 +215,10 @@ int main(int argc, char *argv[])
 
     // Self-registering element metadata (static initialisers in each element's
     // .cpp) may trigger ThemeManager construction before QApplication exists.
-    // When that happens the dark palette is silently dropped because
-    // Application::instance() is still null.  Re-apply the persisted theme now
-    // that the Application and Fusion style are ready.
+    // When that happens the dark palette is silently dropped, since
+    // QGuiApplication::setPalette() before any QGuiApplication/QApplication
+    // instance exists has nothing to apply to. Re-apply the persisted theme now
+    // that the real application object and Fusion style are ready.
     ThemeManager::setTheme(ThemeManager::theme());
 
     // FileDialogs::provider() asserts if never set (App/Core/FileDialogProvider.h -- extracted

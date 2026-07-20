@@ -3,6 +3,7 @@
 
 #include <QCommandLineParser>
 #include <QDir>
+#include <QFontDatabase>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQuickWindow>
@@ -27,6 +28,15 @@ int main(int argc, char *argv[])
     Comment::setVerbosity(-1);
 
     QGuiApplication app(argc, argv);
+
+    // Register the bundled font used by element SVG labels (flip-flop / latch pin letters and
+    // the inverted-output overline glyph) so they render identically on every platform -- before
+    // any GraphicElement pixmap is built and cached. Mirrors WidgetsApplication's identical call
+    // (App/UI/WidgetsApplication.cpp) -- wiredpanda_quick never linked that Widgets-only class,
+    // so this registration was previously missing here entirely.
+    if (QFontDatabase::addApplicationFont(QStringLiteral(":/Fonts/NotoSans-Regular.ttf")) == -1) {
+        qWarning() << "Failed to register bundled font: NotoSans-Regular.ttf";
+    }
 
     // A scoped-down mirror of App/Main.cpp's QCommandLineParser handling -- just the
     // positional file argument (none of the export/MCP-mode flags apply to this shell yet).
@@ -90,6 +100,15 @@ int main(int argc, char *argv[])
     static QuickDialogProvider dialogProvider(window);
     Dialogs::setProvider(&dialogProvider);
     FileDialogs::setDefaultProvider(&dialogProvider);
+
+    // Application::guardedSlot()'s exception path (App/Core/Application.h) previously had no
+    // presenter registered here at all -- Application::handleException() would silently drop
+    // every exception on the floor under wiredpanda_quick (Sentry reporting aside), since the
+    // presenter hook defaults to unset. Route through the same Dialogs::provider() every other
+    // Quick error/info message already uses.
+    Application::setExceptionPresenter([](const ExceptionInfo &info, const QObject *) {
+        Dialogs::provider()->choice(QObject::tr("Error!"), info.what, {DialogButton::Ok}, DialogButton::Ok);
+    });
 
     // Mirrors MainWindow::show()'s single checkForUpdates() call -- internally gated on
     // Application::interactiveMode, so this is a safe no-op in MCP mode too.

@@ -12,6 +12,7 @@
 #include <QTest>
 
 #include "App/Core/Application.h"
+#include "App/UI/WidgetsApplication.h"
 #include "Tests/Common/TestUtils.h"
 
 struct TestEntry {
@@ -36,7 +37,7 @@ struct TestEntry {
 inline int runTestSuite(int argc, char **argv, const std::vector<TestEntry> &tests)
 {
     TestUtils::setupTestEnvironment();
-    Application app(argc, argv);
+    WidgetsApplication app(argc, argv);
     TestUtils::configureApp();
 
     // Global -functions: list all test functions across all classes as ClassName::method()

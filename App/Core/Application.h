@@ -2,18 +2,18 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 /** \file
- * \brief Custom QApplication subclass with exception handling and main-window access.
+ * \brief Application-wide runtime flags and exception-safety helpers, shared by both apps.
  */
 
 #pragma once
 
 #include <exception>
+#include <functional>
 #include <utility>
 
-#include <QApplication>
-#include <QMetaObject>
-#include <QPointer>
 #include <QString>
+
+class QObject;
 
 /**
  * \struct ExceptionInfo
@@ -28,7 +28,7 @@
  */
 struct ExceptionInfo
 {
-    QString what;            ///< The translated message for QMessageBox display.
+    QString what;            ///< The translated message shown to the user.
     QString englishMessage;  ///< English message for Sentry; equals `what` for non-Pandaception types.
     QString file;            ///< Throw-site file when the exception is a Pandaception, else empty.
     int line = 0;            ///< Throw-site line when the exception is a Pandaception, else 0.
@@ -36,40 +36,22 @@ struct ExceptionInfo
 
 /**
  * \class Application
- * \brief Custom QApplication that wraps event dispatch with exception handling.
+ * \brief Cross-app runtime flags and exception-safety helpers.
  *
- * \details Overrides notify() to catch Pandaception and std::exception objects
- * thrown during event processing and display appropriate error dialogs.
+ * \details Framework-agnostic: no longer a `QApplication` subclass (that's
+ * `App/UI/WidgetsApplication.h`, the real application object `wiredpanda`'s
+ * `App/Main.cpp` constructs — `wiredpanda_quick` uses a plain `QGuiApplication`).
+ * Both apps call these statics directly. Presenting an exception to the user is done
+ * through a pluggable presenter (setExceptionPresenter()) each app registers once at
+ * startup, mirroring `FileDialogs::setDefaultProvider()`'s pattern: `wiredpanda` registers
+ * a real `QMessageBox`; `wiredpanda_quick` registers `Dialogs::provider()->choice()`.
  */
-class Application : public QApplication
+class Application
 {
-    Q_OBJECT
-
 public:
-    /**
-     * \brief Constructs the application with command-line arguments.
-     * \param argc Argument count (passed by reference as required by QApplication).
-     * \param argv Argument vector.
-     */
-    Application(int &argc, char **argv);
-
-    /**
-     * \brief Returns the application instance cast to Application*.
-     * \return Pointer to the Application instance, or nullptr if not available.
-     */
-    static Application *instance();
-
-    /// Destructor.
-    ~Application() override = default;
-
-    // --- Event Handling ---
-
-    /// \reimp Dispatches \a event to \a receiver, catching and reporting exceptions.
-    bool notify(QObject *receiver, QEvent *event) override;
-
     /// When false, suppresses informational dialogs (e.g. version-mismatch warnings).
-    /// Stays false in BOTH MCP modes: an automated session can't dismiss a
-    /// QMessageBox. Visual concerns are governed by renderingEnabled instead.
+    /// Stays false in BOTH MCP modes: an automated session can't dismiss a dialog.
+    /// Visual concerns are governed by renderingEnabled instead.
     inline static bool interactiveMode = true;
 
     /// When false, skips wire-geometry construction (Connection::updatePath)
@@ -81,7 +63,7 @@ public:
 
     /// When true, old-format files are automatically backed up and re-saved in the current
     /// format on load. Independent of interactiveMode so tests can enable migration
-    /// without triggering any QMessageBox dialogs.
+    /// without triggering any dialogs.
     inline static bool migrationEnabled = true;
 
     /// Returns true if \a message matches any deny pattern that should be
@@ -91,14 +73,20 @@ public:
 
     // --- Exception handling ---
 
+    /// Registers the callback handleException() invokes (when interactiveMode is true) to
+    /// present an exception to the user. Each app calls this once at startup with its own
+    /// concrete presentation mechanism; an app that never registers one simply skips
+    /// presentation (Sentry reporting below still happens).
+    static void setExceptionPresenter(std::function<void(const ExceptionInfo &, const QObject *)> presenter);
+
     /**
-     * \brief Centralised exception-reporting handler used by both
-     *        `Application::notify` (defence-in-depth on Linux/Windows) and
-     *        `Application::guardedSlot` (the macOS-correct catch-in-slot path).
-     * \details Shows a QMessageBox::critical when interactiveMode is true, and
-     * forwards the event to Sentry as a `handled:1` warning when sentry is
-     * compiled in.  Safe to call from a deferred QMetaObject::invokeMethod
-     * callback (the exception has finished unwinding by then).
+     * \brief Centralised exception-reporting handler used by both each app's `notify()`
+     *        override (defence-in-depth on Linux/Windows) and `Application::guardedSlot`
+     *        (the macOS-correct catch-in-slot path).
+     * \details Invokes the registered exception presenter (see setExceptionPresenter()) when
+     * interactiveMode is true, and forwards the event to Sentry as a `handled:1` warning when
+     * sentry is compiled in. Safe to call from a deferred `QMetaObject::invokeMethod` callback
+     * (the exception has finished unwinding by then).
      */
     static void handleException(const ExceptionInfo &info, const QObject *context);
 
@@ -113,11 +101,11 @@ public:
      * `catch` runs.  guardedSlot keeps the catch frame inside the slot itself
      * (below any Qt-internal frame) so the unwinder never crosses a structure
      * that aborts.  Reporting was originally deferred to the next event-loop
-     * iteration via a queued `invokeMethod`, but that hangs on macOS — the
-     * modal `QMessageBox::exec()` deep inside the queued dispatch never
-     * returns (see the catch block below and `.claude/SENTRY_TRIAGE.md` §A25).
-     * `handleException` is called directly instead, using a non-modal
-     * `show()` so it returns immediately even when interactive.
+     * iteration via a queued `invokeMethod`, but that hangs on macOS — a modal
+     * dialog deep inside the queued dispatch never returns (see the catch block
+     * below and `.claude/SENTRY_TRIAGE.md` §A25). `handleException` is called
+     * directly instead, using a non-modal presentation so it returns immediately
+     * even when interactive.
      *
      * \tparam Body  Invocable callable with no arguments returning anything.
      * \param context  Non-owning pointer used as the receiver hint passed to
@@ -132,19 +120,17 @@ public:
             std::forward<Body>(body)();
         } catch (const std::exception &e) {
             // Synchronous report: tested deferred (Qt::QueuedConnection) on
-            // macOS and the modal QMessageBox::exec() deep inside the queued
-            // dispatch hangs (run 25285325668 — 300 s timeout).  The catch
-            // here is below the noexcept boundary so std::terminate is not
-            // triggered; the modal dialog runs in the slot's frame and
-            // returns cleanly before the slot exits.
+            // macOS and a modal dialog deep inside the queued dispatch hangs
+            // (run 25285325668 — 300 s timeout). The catch here is below the
+            // noexcept boundary so std::terminate is not triggered; the dialog
+            // runs in the slot's frame and returns cleanly before the slot exits.
             handleException(makeExceptionInfo(e), context);
         }
     }
 
-private:
-    Q_DISABLE_COPY(Application)
-
     /// Extracts user-facing and Sentry-side details from a std::exception,
-    /// recovering Pandaception-specific fields when applicable.
+    /// recovering Pandaception-specific fields when applicable. Public so each app's own
+    /// `notify()` override (a member of a different class, App/UI/WidgetsApplication.h) can
+    /// build an ExceptionInfo the same way guardedSlot() does above.
     static ExceptionInfo makeExceptionInfo(const std::exception &e);
 };

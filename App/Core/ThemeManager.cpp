@@ -33,9 +33,8 @@ ThemeManager::ThemeManager(QObject *parent)
     // OS theme-change events from propagating through QGtk3Theme::colorScheme().
     //
     // qGuiApp (unambiguously static_cast<QGuiApplication*>(...)), not the qApp macro: qApp
-    // resolves to static_cast<QApplication*>(QCoreApplication::instance()) once <QApplication>
-    // has been included anywhere in this translation unit's include graph (it is,
-    // transitively, via this file's own ThemeManager.h -> Application.h) -- an invalid cast
+    // resolves to static_cast<QApplication*>(QCoreApplication::instance()) whenever <QApplication>
+    // has been included anywhere in this translation unit's include graph -- an invalid cast
     // when the real singleton is a QGuiApplication (wiredpanda_quick never constructs a
     // QApplication). styleHints()/colorSchemeChanged are QGuiApplication-level APIs, not
     // QApplication-specific, so qGuiApp is both the correct and the safe type here.
@@ -115,7 +114,8 @@ void ThemeManager::setTheme(const Theme theme)
     // value until the event loop runs. Flushing here replicates the fix that Qt 6.10.0
     // added directly inside requestColorScheme().
     if (theme == Theme::System) {
-        if (auto *app = Application::instance()) {
+        // qGuiApp, not qApp -- see the constructor's identical comment.
+        if (auto *app = qGuiApp) {
             app->styleHints()->setColorScheme(Qt::ColorScheme::Unknown);
             // Flush the pending QWindowSystemInterface::handleThemeChange() event so
             // QStyleHintsPrivate::m_colorScheme is updated before we call resolveSystemTheme().
@@ -138,7 +138,8 @@ void ThemeManager::setTheme(const Theme theme)
     // leave it there. Re-setting it to Dark/Light would break runtime OS theme-change
     // detection (QGtk3Theme::colorScheme() would return the explicit value, ignoring
     // any subsequent OS toggle).
-    if (auto *app = Application::instance()) {
+    // qGuiApp, not qApp -- see the constructor's identical comment.
+    if (auto *app = qGuiApp) {
         switch (theme) {
         case Theme::Light:  app->styleHints()->setColorScheme(Qt::ColorScheme::Light);  break;
         case Theme::Dark:   app->styleHints()->setColorScheme(Qt::ColorScheme::Dark);   break;
@@ -207,16 +208,10 @@ void ThemeAttributes::setTheme(const Theme theme)
         lightPalette.setColor(QPalette::Disabled, QPalette::Base, QColor(240, 240, 240));
         lightPalette.setColor(QPalette::Disabled, QPalette::WindowText, QColor(128, 128, 128));
 
-        // Application::instance() is the Widgets-specific singleton (a QApplication
-        // subclass) -- always null in wiredpanda_quick, a bare QGuiApplication. Fall back to
         // QGuiApplication::setPalette() (Qt 6.5+, unifies Widgets/Quick palette propagation)
-        // so Quick Controls actually reflect the chosen theme too; the Widgets app keeps its
-        // existing Application::instance()->setPalette() call, unchanged.
-        if (auto *app = Application::instance()) {
-            app->setPalette(lightPalette);
-        } else {
-            QGuiApplication::setPalette(lightPalette);
-        }
+        // works for both apps -- wiredpanda_quick never constructs a QApplication, only a
+        // bare QGuiApplication.
+        QGuiApplication::setPalette(lightPalette);
 #endif
 
         break;
@@ -266,11 +261,7 @@ void ThemeAttributes::setTheme(const Theme theme)
         darkPalette.setColor(QPalette::Disabled, QPalette::WindowText, QColor(120, 120, 120));
 
         // See the Light branch's identical comment above.
-        if (auto *app = Application::instance()) {
-            app->setPalette(darkPalette);
-        } else {
-            QGuiApplication::setPalette(darkPalette);
-        }
+        QGuiApplication::setPalette(darkPalette);
 #endif
 
         break;
@@ -281,15 +272,6 @@ void ThemeAttributes::setTheme(const Theme theme)
         setTheme(Theme::Light);
         break;
     }
-
-#ifndef Q_OS_MAC
-    // Force a consistent tooltip style on both themes; without this, Windows/Linux
-    // style sheets would show platform-default tooltips that are illegible on dark
-    // backgrounds.  The #2a82da background matches QPalette::Highlight above.
-    if (Application::instance()) {
-        Application::instance()->setStyleSheet("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid white; }");
-    }
-#endif
 
     // Port brushes mirror the wire colours for consistency so users can visually
     // correlate a wire's colour with the port it connects to.
@@ -307,8 +289,8 @@ void ThemeAttributes::setTheme(const Theme theme)
 
     m_portHoverPort = QColor(Qt::yellow); // bright yellow on hover for high visibility regardless of theme
 
-    // Hover-label chips reuse the forced tooltip palette (see the QToolTip stylesheet above):
-    // #2a82da background with white text, theme-invariant so the labels read clearly on both themes.
+    // Hover-label chips use the same #2a82da background with white text as a native tooltip's
+    // QPalette::Highlight, theme-invariant so the labels read clearly on both themes.
     m_portHoverLabelBg = QColor(0x2a, 0x82, 0xda);
     m_portHoverLabelText = QColor(Qt::white);
 }
