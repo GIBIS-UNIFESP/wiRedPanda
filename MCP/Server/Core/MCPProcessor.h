@@ -101,6 +101,8 @@ private slots:
 #endif
 
 private:
+    friend class TestMCPProcessor;
+
     void processCommand(const QString &line);
     void sendResponse(const QJsonObject &response);
 
