@@ -39,7 +39,7 @@ struct ElementInfo<Or> {
     }();
 };
 
-Or::Or(QGraphicsItem *parent)
+Or::Or(QObject *parent)
     : GraphicElement(ElementType::Or, parent)
 {
     // Skip full initialisation when building a property-probe instance (see ElementFactory).

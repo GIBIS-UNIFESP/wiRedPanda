@@ -19,5 +19,5 @@ class InputGnd : public GraphicElement
 
 public:
     /// Constructs an InputGnd element.
-    explicit InputGnd(QGraphicsItem *parent = nullptr);
+    explicit InputGnd(QObject *parent = nullptr);
 };

@@ -24,7 +24,7 @@ public:
     // --- Lifecycle ---
 
     /// Constructs the rotary switch with optional \a parent.
-    explicit InputRotary(QGraphicsItem *parent = nullptr);
+    explicit InputRotary(QObject *parent = nullptr);
 
     // --- State Queries ---
 
@@ -59,7 +59,7 @@ public:
     // --- Visual ---
 
     /// Paints the rotary wheel with the indicator arrow pointing to the active port.
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+    void paint(QPainter *painter) override;
 
     /// Refreshes the arrow direction and port positions.
     void refresh() override;
@@ -77,12 +77,6 @@ public:
 
     /// Serializes the current port selection to \a stream.
     void save(QDataStream &stream, SerializationOptions options) const override;
-
-protected:
-    // --- Event handlers ---
-
-    /// \reimp
-    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
 
 private:
     // --- Members ---

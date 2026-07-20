@@ -27,7 +27,7 @@ class GraphicElementInput : public GraphicElement
 public:
     // --- Lifecycle ---
 
-    explicit GraphicElementInput(ElementType type, QGraphicsItem *parent = nullptr)
+    explicit GraphicElementInput(ElementType type, QObject *parent = nullptr)
         : GraphicElement(type, parent) {}
     ~GraphicElementInput() override = default;
 

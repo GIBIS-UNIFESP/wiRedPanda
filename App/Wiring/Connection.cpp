@@ -6,30 +6,18 @@
 
 #include "App/Wiring/Connection.h"
 
-#include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QPainterPath>
 #include <QPen>
 #include <QPolygonF>
-#include <QStyleOptionGraphicsItem>
 
 #include "App/Core/Application.h"
 #include "App/Core/ThemeManager.h"
-#include "App/Scene/Scene.h"
 #include "App/Wiring/ConnectionSerializer.h"
 #include "App/Wiring/Port.h"
 
-Connection::Connection(QGraphicsItem *parent)
-    : QGraphicsPathItem(parent)
+Connection::Connection()
 {
-    setFlag(QGraphicsItem::ItemIsSelectable);
-    // Deliberately NOT DeviceCoordinateCache (the default NoCache stays): a wire is a thin
-    // stroke crossing a huge, mostly-empty bounding box, so a device-cache tile costs a
-    // bbox-sized pixmap clear + blend on every status colour change -- vastly more than just
-    // re-stroking the path -- and multi-MB tiles for long wires thrash the global QPixmapCache.
-    // Draw wires behind elements so port dots and element bodies always render on top
-    setZValue(-1);
-
     // m_status starts at Status::Unknown; updateTheme() applies its pen via
     // applyStatusPen(). The wire colour is updated once both ports are attached.
     updateTheme();
@@ -139,7 +127,7 @@ void Connection::updatePath()
 
     path.cubicTo(ctr1, ctr2, m_endPos);
 
-    setPath(path);
+    m_path = path;
     m_shapeDirty = true;
 }
 
@@ -193,19 +181,6 @@ void Connection::setStatus(const Status status)
     }
 
     m_status = status;
-
-    // Feed idle detection for adaptive wire antialiasing (a stream of status changes IS the
-    // simulation repaint storm, and it stops exactly when the simulation does) -- meaningless,
-    // always-wasted work for a Connection never added to a QGraphicsScene (CanvasItem's case).
-    // scene() is a cheap O(1) cached-pointer read, kept unconditional; the qobject_cast is
-    // skipped entirely when there's no scene at all. See applyStatusPen()'s own guard and
-    // project memory project_quick_hotspot_fixes_2_landed.md for the profile that found this.
-    if (scene()) {
-        if (auto *scene_ = qobject_cast<Scene *>(scene())) {
-            scene_->noteWireActivity();
-        }
-    }
-
     applyStatusPen();
 
     // Propagate to the destination port so its fill colour also reflects the signal state
@@ -216,52 +191,28 @@ void Connection::setStatus(const Status status)
 
 void Connection::applyStatusPen()
 {
-    // m_statusPen only feeds paint() (QGraphicsView-based rendering) and, on a width change,
-    // the item's real pen (for shape()'s hit-testing stroke) -- both meaningless, always-wasted
-    // work for a Connection never added to a QGraphicsScene: CanvasItem never calls paint() on
-    // these (its wire rendering reads startPort()->status() directly) and hit-tests wires
-    // through its own SpatialIndex-built stroke, never QGraphicsItem::shape(). scene() is a
-    // cheap O(1) cached-pointer read; everything past it is real, measurable, always-wasted
-    // cost otherwise -- see project memory project_quick_hotspot_fixes_2_landed.md.
-    if (!scene()) {
-        return;
-    }
-
     // Error wires are drawn thicker (5 px) to draw attention to the problem;
     // other wires are thinner (3 px) to reduce visual clutter during simulation.
     // Unknown (undriven) wires use a distinct gray from Error (red).
+    QPen pen;
     switch (m_status) {
-    case Status::Unknown:  m_statusPen = QPen(m_unknownColor,  3); break;
-    case Status::Inactive: m_statusPen = QPen(m_inactiveColor, 3); break;
-    case Status::Active:   m_statusPen = QPen(m_activeColor,   3); break;
-    case Status::Error:    m_statusPen = QPen(m_errorColor,    5); break;
+    case Status::Unknown:  pen = QPen(m_unknownColor,  3); break;
+    case Status::Inactive: pen = QPen(m_inactiveColor, 3); break;
+    case Status::Active:   pen = QPen(m_activeColor,   3); break;
+    case Status::Error:    pen = QPen(m_errorColor,    5); break;
     }
 
-    // paint() draws with m_statusPen, not the item's own pen() -- boundingRect() is a fixed
-    // margin independent of pen width (see its own comment), so calling the real setPen()
-    // here would pay for a BSP-tree re-index (prepareGeometryChange()) on every status colour
-    // change for no actual geometry benefit. The one exception is width: shape()'s default
-    // hit-testing *does* stroke the path using the item's real pen width, so the real setPen()
-    // still runs whenever the width actually changes (Error <-> non-Error) to keep an
-    // Error-status wire's (wider) click target accurate.
-    if (!qFuzzyCompare(m_statusPen.widthF(), pen().widthF())) {
-        setPen(m_statusPen);
-        // The real pen's width sets shape()'s stroke tolerance -- rebuild the cached shape.
+    // shape()'s hit-testing stroke tolerance tracks the pen width -- only invalidate the
+    // cached shape when the width actually changes (Error <-> non-Error), not on every status
+    // colour change that shares the same width.
+    if (!qFuzzyCompare(pen.widthF(), m_statusPen.widthF())) {
         m_shapeDirty = true;
-    } else {
-        update();
     }
+    m_statusPen = pen;
 }
 
 void Connection::updateTheme()
 {
-    // The color-member refresh below is cheap (five QColor copies) and load-bearing: it's
-    // called once unconditionally from the constructor -- necessarily before this item could
-    // ever be scene-attached -- and applyStatusPen() reads these cached members rather than
-    // the theme directly, so skipping this here would leave them permanently uninitialized for
-    // any item, Widgets or not. Only the expensive, purely-paint-facing tail (the real pen
-    // rebuild, the repaint request) is skipped when sceneless; applyStatusPen() already
-    // no-ops itself in that case (see its own doc comment), so it's safe to call unconditionally.
     const auto &theme = ThemeManager::attributes();
     m_unknownColor = theme.m_connectionUnknown;
     m_inactiveColor = theme.m_connectionInactive;
@@ -272,56 +223,23 @@ void Connection::updateTheme()
     // Re-derive the pen from the refreshed palette; without this the wire keeps
     // the previous theme's colour until its status next changes
     applyStatusPen();
-
-    if (scene()) {
-        update();
-    }
 }
 
-void Connection::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void Connection::paint(QPainter *painter)
 {
-    Q_UNUSED(widget)
-    Q_UNUSED(option)
-
-    // Adaptive quality (see Scene's wire-antialiasing accessors): while measured paint
-    // passes are too slow for interactivity, drop this wire's antialiasing -- never force
-    // it on, so a global choice like Fast Mode still wins. The painter state is
-    // saved/restored around each item's paint by QGraphicsView (the DontSavePainterState
-    // optimization flag is not set), so the hint can't leak into other items.
-    if (auto *scene_ = qobject_cast<Scene *>(scene()); scene_ && !scene_->wireAntialiasingEnabled()) {
-        painter->setRenderHint(QPainter::Antialiasing, false);
-    }
-
     // Highlight is drawn as a wider blue halo beneath the normal wire, so users can
     // easily see which wires belong to a selected element
     if (m_highLight) {
         painter->save();
         painter->setPen(QPen(Qt::blue, 10));
-        painter->drawPath(path());
+        painter->drawPath(m_path);
         painter->restore();
     }
 
     // When the wire itself is selected (clicked), switch to the selection colour;
     // otherwise use the status-driven pen set by setStatus() via applyStatusPen()
     painter->setPen(isSelected() ? QPen(m_selectedColor, 5) : m_statusPen);
-    painter->drawPath(path());
-}
-
-QVariant Connection::itemChange(GraphicsItemChange change, const QVariant &value)
-{
-    // When the wire is selected/deselected, visually highlight both endpoint ports
-    // so the user can see which element pins are connected by this wire
-    if (change == ItemSelectedChange) {
-        if (value.toBool()) {
-            if (startPort()) startPort()->hoverEnter();
-            if (endPort()) endPort()->hoverEnter();
-        } else {
-            if (startPort()) startPort()->hoverLeave();
-            if (endPort()) endPort()->hoverLeave();
-        }
-    }
-
-    return QGraphicsPathItem::itemChange(change, value);
+    painter->drawPath(m_path);
 }
 
 bool Connection::highLight()
@@ -332,35 +250,31 @@ bool Connection::highLight()
 void Connection::setHighLight(const bool highLight)
 {
     m_highLight = highLight;
-    update();
 }
 
 QRectF Connection::boundingRect() const
 {
     // Expand beyond the path's tight bounding box by 10 px on all sides to ensure
     // the thick selection outline and highlight halo are fully covered during repaints
-    return path().boundingRect().adjusted(-10, -10, 10, 10);
+    return m_path.boundingRect().adjusted(-10, -10, 10, 10);
 }
 
 QPainterPath Connection::shape() const
 {
     if (m_shapeDirty) {
-        // Same stroke semantics as Qt's default (qt_graphicsItem_shapeFromPath): the real
-        // pen's width sets the click tolerance along the wire -- which is why the real
-        // setPen() still runs on Error<->normal width transitions (see applyStatusPen()).
-        // Stroking a flattened (polygonal) copy instead of the raw Bézier keeps later
-        // intersects()/contains() tests on line segments; the flattening error is
-        // sub-pixel, far inside the stroke tolerance.
+        // Same stroke semantics as Qt's default (qt_graphicsItem_shapeFromPath): the pen's
+        // width sets the click tolerance along the wire -- which is why m_statusPen's width
+        // (see applyStatusPen()) is what this reads, not a fixed constant.
         QPainterPathStroker stroker;
-        stroker.setWidth(qMax(pen().widthF(), 0.00000001));
-        stroker.setCapStyle(pen().capStyle());
-        stroker.setJoinStyle(pen().joinStyle());
-        stroker.setMiterLimit(pen().miterLimit());
+        stroker.setWidth(qMax(m_statusPen.widthF(), 0.00000001));
+        stroker.setCapStyle(m_statusPen.capStyle());
+        stroker.setJoinStyle(m_statusPen.joinStyle());
+        stroker.setMiterLimit(m_statusPen.miterLimit());
 
         // toSubpathPolygons() keeps open subpaths open -- toFillPolygon() would close the
         // polyline back to its start, adding a phantom straight segment to the hit area.
         QPainterPath flattened;
-        for (const QPolygonF &polygon : path().toSubpathPolygons()) {
+        for (const QPolygonF &polygon : m_path.toSubpathPolygons()) {
             flattened.addPolygon(polygon);
         }
 
@@ -369,17 +283,4 @@ QPainterPath Connection::shape() const
     }
 
     return m_cachedShape;
-}
-
-bool Connection::sceneEvent(QEvent *event)
-{
-    // Swallow Ctrl+click so the scene can use Ctrl+click for multi-selection without
-    // the wire consuming the event and blocking the rubber-band/deselect behaviour
-    if (auto mouseEvent = dynamic_cast<QGraphicsSceneMouseEvent *>(event)) {
-        if (mouseEvent->modifiers().testFlag(Qt::ControlModifier)) {
-            return true;
-        }
-    }
-
-    return QGraphicsPathItem::sceneEvent(event);
 }

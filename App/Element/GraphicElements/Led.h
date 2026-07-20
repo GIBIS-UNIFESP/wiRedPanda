@@ -28,7 +28,7 @@ public:
     // --- Lifecycle ---
 
     /// Constructs the element with optional \a parent.
-    explicit Led(QGraphicsItem *parent = nullptr);
+    explicit Led(QObject *parent = nullptr);
 
     // --- Color State ---
 

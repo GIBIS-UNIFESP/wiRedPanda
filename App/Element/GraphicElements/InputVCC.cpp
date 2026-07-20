@@ -39,7 +39,7 @@ struct ElementInfo<InputVcc> {
     }();
 };
 
-InputVcc::InputVcc(QGraphicsItem *parent)
+InputVcc::InputVcc(QObject *parent)
     : GraphicElement(ElementType::InputVcc, parent)
 {
     // VCC always outputs logic HIGH; set the port default so both the visual

@@ -7,10 +7,7 @@
 
 #pragma once
 
-#include <QList>
-
 class IC;
-class QGraphicsItem;
 class QPainter;
 
 /**
@@ -33,8 +30,4 @@ public:
     /// Rebuilds \a ic's sizing pixmap (its image content is never displayed; only its size,
     /// which pixmapCenter()/boundingRect() depend on, matters — the body is drawn as vectors).
     static void generatePixmap(IC &ic);
-
-    /// Snapshots \a items (the sub-circuit as designed, before boundary substitution) into
-    /// \a ic's cached hover-preview pixmap.
-    static void generatePreviewPixmap(IC &ic, const QList<QGraphicsItem *> &items);
 };

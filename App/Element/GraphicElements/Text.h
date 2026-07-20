@@ -22,7 +22,7 @@ class Text : public GraphicElement
 
 public:
     /// Constructs a Text element.
-    explicit Text(QGraphicsItem *parent = nullptr);
+    explicit Text(QObject *parent = nullptr);
 
     /// Returns a bounding rect that includes the label text, not just the pixmap.
     QRectF boundingRect() const override;
@@ -33,7 +33,8 @@ public:
     /// Returns the empty-state hint child item -- visible() only while label() is empty (see
     /// labelContentChanged()). Lets a caller (CanvasItem's texture-atlas capture) draw it the
     /// same pos()+transform()+paint() way GraphicElement::labelItem() exposes the real label.
-    QGraphicsSimpleTextItem *emptyHintItem() const { return m_emptyHint; }
+    GraphicElementLabel *emptyHintItem() { return &m_emptyHint; }
+    const GraphicElementLabel *emptyHintItem() const { return &m_emptyHint; }
 
 protected:
     /// Shows a faint "double-click to add text" hint whenever the label is empty, since an
@@ -41,5 +42,5 @@ protected:
     void labelContentChanged() override;
 
 private:
-    QGraphicsSimpleTextItem *m_emptyHint = new QGraphicsSimpleTextItem(this);
+    GraphicElementLabel m_emptyHint;
 };

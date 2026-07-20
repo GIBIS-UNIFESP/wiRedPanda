@@ -19,7 +19,7 @@ class CanvasItem;
 class Connection;
 class GraphicElement;
 class QDataStream;
-class QGraphicsItem;
+class ItemWithId;
 
 /**
  * \namespace CanvasCommandUtils
@@ -40,26 +40,26 @@ namespace CanvasCommandUtils {
     GraphicElement *findElm(CanvasItem *canvas, int id);
     Connection *findConn(CanvasItem *canvas, int id);
     QList<GraphicElement *> findElements(CanvasItem *canvas, const QList<int> &ids);
-    QList<QGraphicsItem *> findItems(CanvasItem *canvas, const QList<int> &ids);
+    QList<ItemWithId *> findItems(CanvasItem *canvas, const QList<int> &ids);
 
-    QList<QGraphicsItem *> loadItems(CanvasItem *canvas, QByteArray &itemData, const QList<int> &ids, QList<int> &otherIds);
-    QList<QGraphicsItem *> loadList(const QList<QGraphicsItem *> &items, QList<int> &ids, QList<int> &otherIds);
-    void saveItems(CanvasItem *canvas, QByteArray &itemData, const QList<QGraphicsItem *> &items, const QList<int> &otherIds);
+    QList<ItemWithId *> loadItems(CanvasItem *canvas, QByteArray &itemData, const QList<int> &ids, QList<int> &otherIds);
+    QList<ItemWithId *> loadList(const QList<ItemWithId *> &items, QList<int> &ids, QList<int> &otherIds);
+    void saveItems(CanvasItem *canvas, QByteArray &itemData, const QList<ItemWithId *> &items, const QList<int> &otherIds);
 
-    void addItems(CanvasItem *canvas, const QList<QGraphicsItem *> &items);
-    void deleteItems(CanvasItem *canvas, const QList<QGraphicsItem *> &items);
+    void addItems(CanvasItem *canvas, const QList<ItemWithId *> &items);
+    void deleteItems(CanvasItem *canvas, const QList<ItemWithId *> &items);
 
     /// Saves and deletes connections on ports in range [fromPort, toPort).
     void drainPortConnections(GraphicElement *elm, int fromPort, int toPort,
                               bool isInput, QDataStream &stream, CanvasItem *canvas);
 
-    void storeIds(const QList<QGraphicsItem *> &items, QList<int> &ids);
-    void storeOtherIds(const QList<QGraphicsItem *> &connections, const QList<int> &ids, QList<int> &otherIds);
+    void storeIds(const QList<ItemWithId *> &items, QList<int> &ids);
+    void storeOtherIds(const QList<ItemWithId *> &connections, const QList<int> &ids, QList<int> &otherIds);
 
     /// Serializes \a items into \a stream (centroid + element data). Port of
     /// ClipboardManager::serializeItems(); used by CanvasItem::copyAction()/cutAction()/
     /// duplicateAction().
-    void serializeItems(const QList<QGraphicsItem *> &items, QDataStream &stream);
+    void serializeItems(const QList<ItemWithId *> &items, QDataStream &stream);
 }
 
 /**
@@ -150,7 +150,7 @@ private:
 class CanvasAddItemsCommand : public QUndoCommand
 {
 public:
-    explicit CanvasAddItemsCommand(const QList<QGraphicsItem *> &items, CanvasItem *canvas, QUndoCommand *parent = nullptr);
+    explicit CanvasAddItemsCommand(const QList<ItemWithId *> &items, CanvasItem *canvas, QUndoCommand *parent = nullptr);
 
     void redo() override;
     void undo() override;
@@ -169,7 +169,7 @@ private:
 class CanvasDeleteItemsCommand : public QUndoCommand
 {
 public:
-    explicit CanvasDeleteItemsCommand(const QList<QGraphicsItem *> &items, CanvasItem *canvas, QUndoCommand *parent = nullptr);
+    explicit CanvasDeleteItemsCommand(const QList<ItemWithId *> &items, CanvasItem *canvas, QUndoCommand *parent = nullptr);
 
     void redo() override;
     void undo() override;

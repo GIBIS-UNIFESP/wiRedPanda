@@ -40,7 +40,7 @@ struct ElementInfo<InputGnd> {
     }();
 };
 
-InputGnd::InputGnd(QGraphicsItem *parent)
+InputGnd::InputGnd(QObject *parent)
     : GraphicElement(ElementType::InputGnd, parent)
 {
     // GND always outputs logic LOW; set the port default so both the visual

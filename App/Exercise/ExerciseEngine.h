@@ -11,7 +11,6 @@
 #include "App/Core/StepEngineCore.h"
 #include "App/Exercise/ExerciseStep.h"
 
-class Scene;
 class CanvasItem;
 class GraphicElement;
 
@@ -29,21 +28,13 @@ public:
     QString exerciseId()    const { return m_core.id(); }
     QString exerciseTitle() const { return m_core.title(); }
 
-    /// Binds the engine to \a scene. Disconnects the previous scene/canvas if any.
-    /// Pass nullptr to detach without binding a new scene.
-    void setScene(Scene *scene);
-
-    /// Binds the engine to \a canvas -- the Quick canvas equivalent of setScene(), mutually
-    /// exclusive with it (binding one clears the other). Disconnects the previous scene/canvas
-    /// if any. Pass nullptr to detach without binding a new canvas.
+    /// Binds the engine to \a canvas. Disconnects the previous canvas if any. Pass nullptr to
+    /// detach without binding a new canvas.
     ///
     /// Reuses CanvasItem::undoStack()'s indexChanged signal as the "circuit changed" trigger --
-    /// the exact signal QuickMinimap already uses for the identical purpose. This is the right
-    /// Quick-side equivalent of Scene::circuitHasChanged, not a workaround: that signal is
-    /// itself purely QUndoStack::indexChanged-driven (see Scene::checkUpdateRequest(), the same
-    /// trigger autosave uses), and ExerciseStep validation (requiredElements/requiredConnections)
-    /// is entirely structural, never live simulation values -- so a structural-edit signal is
-    /// exactly the right shape on both sides.
+    /// the exact signal QuickMinimap already uses for the identical purpose. ExerciseStep
+    /// validation (requiredElements/requiredConnections) is entirely structural, never live
+    /// simulation values, so a structural-edit signal is exactly the right trigger.
     ///
     /// Defined in a separate translation unit (App/QuickShell/Chrome/QuickExerciseEngineBinding.cpp,
     /// compiled only into wiredpanda_quick), not ExerciseEngine.cpp: this class is shared,
@@ -51,12 +42,10 @@ public:
     /// with no Qt Quick dependency at all (see CMakeLists.txt's QT_LIBS/QUICK_LIBS split) --
     /// CanvasItem.h (a real QQuickItem) can't be included from anything wiredpanda_lib compiles.
     /// m_connectFn/m_disconnectFn/m_elementsFn (std::function, fully type-erased) are what let
-    /// this one shared class support both sources without the shared TU ever needing to know
-    /// CanvasItem's concrete type -- setScene() assigns Scene-capturing closures from within
-    /// ExerciseEngine.cpp; setCanvas() assigns CanvasItem-capturing closures from within its own
-    /// Quick-only TU; every other method (start()/stop()/markCompleted()/validation) only ever
-    /// calls through the type-erased std::function members, never the concrete Scene*/CanvasItem*
-    /// directly.
+    /// this shared class stay ignorant of CanvasItem's concrete type: setCanvas() assigns
+    /// CanvasItem-capturing closures from within its own Quick-only TU; every other method
+    /// (start()/stop()/markCompleted()/validation) only ever calls through the type-erased
+    /// std::function members, never a concrete CanvasItem* directly.
     void setCanvas(CanvasItem *canvas);
 
     int  currentStep() const { return m_core.currentStep(); }
@@ -110,21 +99,17 @@ private:
 
     StepEngineCore<ExerciseStep> m_core;
 
-    /// Type-erased "connect/disconnect the currently-bound source's change signal" and "read
-    /// its current elements" -- assigned by setScene() (compiled in ExerciseEngine.cpp) or
-    /// setCanvas() (compiled in its own Quick-only TU). Each closure captures a *local*
-    /// QPointer<Scene>/QPointer<CanvasItem> by value (not a class member) for the usual
-    /// destroyed-out-from-under-us safety net, without this class ever storing either type as
-    /// a member -- deliberately: a stored QPointer<CanvasItem> member would need CanvasItem's
-    /// complete type wherever it's ever assigned, including nullptr-clearing from setScene()'s
-    /// own body in ExerciseEngine.cpp, which can't include CanvasItem.h (a real QQuickItem):
-    /// this class is shared, whole-archived Layer 1 code compiled once into wiredpanda_lib,
-    /// deliberately built with no Qt Quick dependency at all (see CMakeLists.txt's
-    /// QT_LIBS/QUICK_LIBS split). Every other method (start()/stop()/markCompleted()/
-    /// currentElements()) calls through these std::function members only, never a concrete
-    /// Scene*/CanvasItem* directly -- that's what makes this one shared class buildable into
-    /// both wiredpanda_lib (Scene, always available) and wiredpanda_quick (CanvasItem, only
-    /// available there).
+    /// Type-erased "connect/disconnect the currently-bound canvas's change signal" and "read
+    /// its current elements" -- assigned by setCanvas() (compiled in its own Quick-only TU).
+    /// Each closure captures a *local* QPointer<CanvasItem> by value (not a class member) for
+    /// the usual destroyed-out-from-under-us safety net, without this class ever storing that
+    /// type as a member -- deliberately: a stored QPointer<CanvasItem> member would need
+    /// CanvasItem's complete type wherever it's ever assigned, but this class is shared,
+    /// whole-archived Layer 1 code compiled once into wiredpanda_lib, deliberately built with
+    /// no Qt Quick dependency at all (see CMakeLists.txt's QT_LIBS/QUICK_LIBS split) --
+    /// CanvasItem.h (a real QQuickItem) can't be included from anything wiredpanda_lib compiles.
+    /// Every other method (start()/stop()/markCompleted()/currentElements()) calls through
+    /// these std::function members only, never a concrete CanvasItem* directly.
     std::function<void()> m_connectFn;
     std::function<void()> m_disconnectFn;
     std::function<QVector<GraphicElement *>()> m_elementsFn;

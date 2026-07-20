@@ -14,8 +14,9 @@
 
 #pragma once
 
-#include <QGraphicsPathItem>
+#include <QPainterPath>
 #include <QPen>
+#include <QPointF>
 
 #include "App/Core/Enums.h"
 #include "App/Core/ItemWithId.h"
@@ -24,6 +25,7 @@ struct SerializationContext;
 class InputPort;
 class OutputPort;
 class Port;
+class QPainter;
 
 /**
  * \class Connection
@@ -33,16 +35,24 @@ class Port;
  * ports.  It is coloured according to its logical status (active/inactive/unknown/selected)
  * and can be highlighted when the cursor hovers over it.  Connections are serializable
  * and participate in the undo/redo system.
+ *
+ * \details No longer a `QGraphicsPathItem` -- `isSelected()`/`boundingRect()`/`shape()`/
+ * `paint()` etc. below are plain members/methods, not inherited Qt Graphics View machinery.
  */
-class Connection : public QGraphicsPathItem, public ItemWithId
+class Connection : public ItemWithId
 {
 public:
-    enum { Type = QGraphicsItem::UserType + 2 }; ///< Custom QGraphicsItem type discriminator.
-    int type() const override { return Type; }
+    /// File-format type tag Serialization::serialize()/deserialize() writes/reads to
+    /// discriminate a Connection from a GraphicElement in the flat item stream. The literal
+    /// value must stay 65536 + 2 -- existing .panda files on disk encode this exact integer,
+    /// originally QGraphicsItem::UserType + 2 (UserType == 65536) back when this class
+    /// overrode QGraphicsItem::type(); QGraphicsItem is no longer in scope, but the on-disk
+    /// value can never change. See GraphicElement::Type's identical note.
+    static constexpr int Type = 65536 + 2;
 
     /// Constructs an unconnected wire.
-    explicit Connection(QGraphicsItem *parent = nullptr);
-    ~Connection() override;
+    Connection();
+    ~Connection();
 
     // --- Port / Endpoint Access ---
 
@@ -64,6 +74,16 @@ public:
     /// Sets the visual end position to \a point (used when dragging).
     void setEndPos(const QPointF point);
 
+    // --- Selection ---
+
+    /// Returns \c true if this connection is currently selected.
+    bool isSelected() const { return m_selected; }
+    /// Sets the selection state. Plain flag, no propagation side effects (peer-port
+    /// hover-highlight-on-select was itemChange()'s job, already confirmed dead for
+    /// CanvasItem's own usage -- port-hover peer labels are a real, separately-tracked
+    /// missing Quick feature, not something to reproduce here).
+    void setSelected(bool selected) { m_selected = selected; }
+
     // --- Status & Visualization ---
 
     /// Returns the current four-state signal status (Active/Inactive/Unknown/Error).
@@ -79,13 +99,14 @@ public:
 
     // --- Geometric properties ---
 
-    /// \reimp
-    QRectF boundingRect() const override;
-    /// \reimp Cached, flattened stroke of the wire path -- the QGraphicsPathItem default
-    /// re-strokes the Bézier on every call and keeps its cubics, making every shape-exact
-    /// hit test (clicks, rubber-band selection) pay for stroking plus recursive curve
-    /// subdivision. Invalidated when the path or the real pen width changes.
-    QPainterPath shape() const override;
+    /// Bounding box in world/canvas coordinates -- pos() is always (0,0) for a Connection
+    /// (its path is built directly in canvas coordinates by updatePath(), unlike
+    /// GraphicElement), so this needs no separate "scene" variant.
+    QRectF boundingRect() const;
+    /// Cached, flattened stroke of the wire path -- re-stroking the Bézier (and keeping its
+    /// cubics) on every shape-exact hit test would pay for stroking plus recursive curve
+    /// subdivision each time. Invalidated when the path or the real pen width changes.
+    QPainterPath shape() const;
     /// Returns the current angle of the bezier midpoint in radians.
     double angle();
     /// Recomputes the bezier control points from the current start/end positions.
@@ -96,8 +117,8 @@ public:
 
     // --- Visual rendering ---
 
-    /// \reimp
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+    /// Draws the wire (and, for a selected/highlighted one, its halo/selection colour).
+    void paint(QPainter *painter);
 
     /// Refreshes wire colours from the current ThemeManager palette.
     void updateTheme();
@@ -108,14 +129,6 @@ public:
     void load(QDataStream &stream, SerializationContext &context);
     /// Serializes the connection endpoints to \a stream.
     void save(QDataStream &stream) const;
-
-protected:
-    // --- Qt event overrides ---
-
-    /// \reimp
-    QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
-    /// \reimp
-    bool sceneEvent(QEvent *event) override;
 
 private:
     Q_DISABLE_COPY_MOVE(Connection)
@@ -140,15 +153,19 @@ private:
     InputPort *m_endPort = nullptr;
     QPointF m_startPos;
     QPointF m_endPos;
+    QPainterPath m_path;
 
     // --- Members: State ---
 
     Status m_status = Status::Unknown;
     bool m_highLight = false;
+    bool m_selected = false;
 
-    /// Pen paint() actually draws with, kept separate from the item's own QGraphicsPathItem
-    /// pen -- see applyStatusPen() for why (avoids an unneeded BSP-tree re-index on every
-    /// status colour change).
+    /// Pen paint() draws with, and shape()'s stroke-width source -- kept as one field (unlike
+    /// the original QGraphicsPathItem-era split between this and the item's own real pen():
+    /// that split existed only to avoid QGraphicsItem::setPen()'s expensive
+    /// prepareGeometryChange()-triggering BSP-tree re-index on every status colour change,
+    /// which is a no-op now (see GraphicElement.h's identical note).
     QPen m_statusPen;
 
     /// Backing cache for shape(); mutable since the override is const.

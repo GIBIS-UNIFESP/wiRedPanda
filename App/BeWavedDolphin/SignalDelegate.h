@@ -2,14 +2,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 /** \file
- * \brief SignalDelegate: paints digital waveform graphics into table cells.
+ * \brief SignalDelegate: waveform cell-segment classification shared by the exporters.
  */
 
 #pragma once
-
-#include <QItemDelegate>
-
-class QPainter;
 
 /// Controls how signal cells are rendered in the waveform table.
 enum class PlotType {
@@ -26,46 +22,24 @@ enum class WaveSegment {
 };
 
 /**
- * \class SignalDelegate
- * \brief Item delegate that draws digital waveform graphics inside table cells.
+ * \namespace SignalDelegate
+ * \brief Waveform cell-segment classification, shared by every renderer of a SignalModel.
  *
- * \details Replaces the default text rendering with vector waveforms representing
- * logic-high, logic-low, rising-edge, and falling-edge states, painted directly
- * with QPainter at the cell's real size.  Everything is derived at paint time from
- * the SignalModel: the WaveSegment from the cell value and its left neighbour, and
- * the input/output colour from SignalModel::isInputRow().  Nothing is stored per cell.
- *
- * In Number mode (see setPlotType()) the delegate falls back to centered
- * QItemDelegate text rendering.
+ * \details Originally a QItemDelegate subclass that painted waveform cells directly into a
+ * QTableView (App/BeWavedDolphin/BeWavedDolphin.cpp, the Widgets waveform editor). That
+ * painting code is gone along with the rest of the Widgets app; segmentFor() is the one
+ * genuinely shared piece -- QuickDolphinExporter.cpp's drawWaveformCell() and
+ * SignalTable.qml's cell delegate both reproduce the same band/plateau/edge-bar geometry
+ * independently (QML can't call into this), keyed off this same classification.
  */
-class SignalDelegate : public QItemDelegate
-{
-    Q_OBJECT
+namespace SignalDelegate {
 
-public:
-    /// Constructs the delegate.
-    explicit SignalDelegate(QObject *parent = nullptr);
+/**
+ * \brief Returns the waveform segment a cell should draw.
+ * \param value      Current cell value (0 or 1).
+ * \param hasPrev    true if a cell exists to the left of this one.
+ * \param prevValue  Value of the previous cell (only meaningful when hasPrev is true).
+ */
+WaveSegment segmentFor(int value, bool hasPrev, int prevValue);
 
-    /// Selects the cell rendering mode (waveform graphics vs. numeric text).
-    void setPlotType(PlotType plotType);
-
-    /// Returns the current cell rendering mode.
-    PlotType plotType() const { return m_plotType; }
-
-    /// \reimp
-    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
-
-    /**
-     * \brief Returns the waveform segment a cell should draw.
-     * \param value      Current cell value (0 or 1).
-     * \param hasPrev    true if a cell exists to the left of this one.
-     * \param prevValue  Value of the previous cell (only meaningful when hasPrev is true).
-     */
-    static WaveSegment segmentFor(int value, bool hasPrev, int prevValue);
-
-private:
-    /// Draws \a seg into \a cell using the input/output color selected by \a isInput.
-    void drawWaveform(QPainter *painter, const QRectF &cell, WaveSegment seg, bool isInput) const;
-
-    PlotType m_plotType = PlotType::Line; ///< Line → draw waveforms; Number → numeric text.
-};
+} // namespace SignalDelegate

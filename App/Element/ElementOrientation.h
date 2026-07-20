@@ -19,7 +19,7 @@ class Port;
  *
  * \details Extracted from GraphicElement, mirroring the ElementAppearance / ElementSimState
  * pattern (owner back-pointer, used through the element's public interface). Rotatable
- * elements rotate the whole QGraphicsItem; non-rotatable elements keep their pixmap fixed
+ * elements rotate the whole element graphic; non-rotatable elements keep their pixmap fixed
  * and instead re-transform each port individually — both paths are implemented here.
  */
 class ElementOrientation
@@ -81,7 +81,8 @@ public:
     }
 
 private:
-    /// Recomputes the QGraphicsItem transform from the current flip flags.
+    /// Re-applies the current rotation + flip flags (via reapplyAppearanceOrientation()/
+    /// rotatePorts()).
     void applyFlipTransform();
 
     GraphicElement *m_owner;

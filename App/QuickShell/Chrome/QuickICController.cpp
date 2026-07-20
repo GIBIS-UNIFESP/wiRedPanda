@@ -169,7 +169,7 @@ void QuickICController::removeICFile(const QString &icFileName)
         return;
     }
 
-    QList<QGraphicsItem *> toDelete;
+    QList<ItemWithId *> toDelete;
     for (auto *element : canvas->elements()) {
         if (element->elementType() != ElementType::IC) {
             continue;
@@ -212,7 +212,7 @@ void QuickICController::removeEmbeddedIC(const QString &blobName)
         return;
     }
 
-    QList<QGraphicsItem *> toDelete;
+    QList<ItemWithId *> toDelete;
     for (auto *elm : canvas->elements()) {
         if (elm->isEmbedded() && elm->blobName() == blobName) {
             toDelete.append(elm);

@@ -8,7 +8,7 @@
 
 #include "App/Wiring/Port.h"
 
-AudioOutputElement::AudioOutputElement(ElementType type, QGraphicsItem *parent, float initialVolume)
+AudioOutputElement::AudioOutputElement(ElementType type, QObject *parent, float initialVolume)
     : GraphicElement(type, parent)
     , m_volume(initialVolume)
 {

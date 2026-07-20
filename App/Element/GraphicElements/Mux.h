@@ -24,7 +24,7 @@ public:
     // --- Lifecycle ---
 
     /// Constructs the element with optional \a parent.
-    explicit Mux(QGraphicsItem *parent = nullptr);
+    explicit Mux(QObject *parent = nullptr);
 
     // --- Visual / Port Configuration ---
 
@@ -32,7 +32,7 @@ public:
     QRectF boundingRect() const override;
 
     /// \reimp
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+    void paint(QPainter *painter) override;
 
     /// Recalculates port positions for the current port count.
     void updatePortsProperties() override;

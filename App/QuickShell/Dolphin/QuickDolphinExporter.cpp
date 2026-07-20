@@ -7,8 +7,10 @@
 
 #include <QFontMetrics>
 #include <QImage>
+#include <QPageLayout>
+#include <QPageSize>
 #include <QPainter>
-#include <QPrinter>
+#include <QPdfWriter>
 #include <QStandardItem>
 #include <QString>
 
@@ -17,9 +19,8 @@
 
 namespace {
 
-/// Reproduces SignalDelegate::drawWaveform()'s exact band/plateau/edge-bar geometry (the same
-/// fractions SignalTable.qml's Canvas delegate already duplicated, decoded from the original
-/// 100x30 SVGs) via direct QPainter fillRect() calls instead of a QPainter-based QItemDelegate.
+/// Band/plateau/edge-bar geometry decoded from the original 100x30 SVGs -- the same fractions
+/// SignalTable.qml's Canvas delegate independently reproduces in QML.
 void drawWaveformCell(QPainter &painter, const QRectF &cell, WaveSegment seg, bool isInput)
 {
     const QColor color = isInput ? QColor(0x75, 0x8e, 0xff) : QColor(0, 128, 0);
@@ -124,14 +125,15 @@ bool exportToPng(const SignalModel *model, const PlotType plotType, const QStrin
 
 void exportToPdf(const SignalModel *model, const PlotType plotType, const QString &fileName)
 {
-    QPrinter printer(QPrinter::HighResolution);
-    printer.setPageSize(QPageSize(QPageSize::A4));
-    printer.setPageOrientation(QPageLayout::Orientation::Landscape);
-    printer.setOutputFormat(QPrinter::PdfFormat);
-    printer.setOutputFileName(fileName);
+    // QPdfWriter, not QPrinter: writes PDF directly via QtGui, no Qt6::PrintSupport/Widgets
+    // dependency.
+    QPdfWriter writer(fileName);
+    writer.setResolution(1200); // matches QPrinter::HighResolution's DPI
+    writer.setPageSize(QPageSize(QPageSize::A4));
+    writer.setPageOrientation(QPageLayout::Orientation::Landscape);
 
     QPainter painter;
-    if (!painter.begin(&printer)) {
+    if (!painter.begin(&writer)) {
         throw PANDACEPTION_WITH_CONTEXT("BewavedDolphin", "Could not print this circuit to PDF.");
     }
 

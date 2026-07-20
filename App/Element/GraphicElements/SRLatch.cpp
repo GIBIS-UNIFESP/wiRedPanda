@@ -37,7 +37,7 @@ struct ElementInfo<SRLatch> {
     }();
 };
 
-SRLatch::SRLatch(QGraphicsItem *parent)
+SRLatch::SRLatch(QObject *parent)
     : GraphicElement(ElementType::SRLatch, parent)
 {
     // Call the most-derived override explicitly (see SRFlipFlop.cpp for rationale).

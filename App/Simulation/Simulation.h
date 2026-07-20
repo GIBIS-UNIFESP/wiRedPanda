@@ -9,7 +9,6 @@
 
 #include <memory>
 
-#include <QGraphicsItem>
 #include <QHash>
 #include <QObject>
 #include <QSet>

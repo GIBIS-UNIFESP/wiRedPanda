@@ -7,11 +7,7 @@
 
 #include <QJsonObject>
 
-#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
-#include "App/Scene/Scene.h"
-#include "App/Scene/Workspace.h"
-#include "App/UI/MainWindow.h"
 #include "App/Wiring/Port.h"
 
 BaseHandler::BaseHandler(MainWindow *mainWindow, const MCPValidator *validator)
@@ -55,34 +51,6 @@ bool BaseHandler::validateParameters(const QJsonObject &params, const QStringLis
         }
     }
     return true;
-}
-
-Scene *BaseHandler::currentScene()
-{
-    if (!m_mainWindow) {
-        return nullptr;
-    }
-
-    WorkSpace *workspace = m_mainWindow->currentTab();
-    if (!workspace) {
-        return nullptr;
-    }
-
-    return workspace->scene();
-}
-
-const Scene *BaseHandler::currentScene() const
-{
-    if (!m_mainWindow) {
-        return nullptr;
-    }
-
-    const WorkSpace *workspace = m_mainWindow->currentTab();
-    if (!workspace) {
-        return nullptr;
-    }
-
-    return workspace->scene();
 }
 
 bool BaseHandler::validatePositiveInteger(const QJsonValue &value, const QString &paramName, QString &errorMsg) const
@@ -133,28 +101,6 @@ bool BaseHandler::validateNonEmptyString(const QJsonValue &value, const QString 
     return true;
 }
 
-bool BaseHandler::validateElementId(int elementId, const QString &paramName, QString &errorMsg) const
-{
-    if (elementId <= 0) {
-        errorMsg = QString("Parameter '%1' must be a positive integer (got %2)").arg(paramName).arg(elementId);
-        return false;
-    }
-
-    const Scene *scene = currentScene();
-    if (!scene) {
-        errorMsg = "No active circuit scene available";
-        return false;
-    }
-
-    auto *item = scene->itemById(elementId);
-    if (!item) {
-        errorMsg = QString("Element not found: %1").arg(elementId);
-        return false;
-    }
-
-    return true;
-}
-
 bool BaseHandler::validateNumeric(const QJsonValue &value, const QString &paramName, QString &errorMsg) const
 {
     if (!value.isDouble()) {
@@ -197,24 +143,6 @@ bool BaseHandler::validatePortRange(GraphicElement *element, int portIndex, bool
     }
 
     return true;
-}
-
-GraphicElement *BaseHandler::validatedElement(const QJsonObject &params, const QString &paramName, QString &errorMsg)
-{
-    if (!validatePositiveInteger(params.value(paramName), paramName, errorMsg)) {
-        return nullptr;
-    }
-    const int elementId = params.value(paramName).toInt();
-    if (!validateElementId(elementId, paramName, errorMsg)) {
-        return nullptr;
-    }
-    auto *item = currentScene()->itemById(elementId);
-    auto *element = dynamic_cast<GraphicElement *>(item);
-    if (!element) {
-        errorMsg = QString("Item %1 is not a graphic element").arg(elementId);
-        return nullptr;
-    }
-    return element;
 }
 
 bool BaseHandler::inputPortByLabel(GraphicElement *element, const QString &label, int &portIndex, QString &errorMsg) const

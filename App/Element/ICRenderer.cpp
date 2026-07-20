@@ -5,16 +5,10 @@
 
 #include <cmath>
 
-#include <QApplication>
-#include <QGraphicsScene>
 #include <QPainter>
-#include <QScopeGuard>
-#include <QStyleOptionGraphicsItem>
 #include <QSvgRenderer>
 
 #include "App/Element/IC.h"
-#include "App/Element/ICPreviewPopup.h"
-#include "App/Wiring/Connection.h"
 
 /// Shared, lazily-constructed vector renderer for the IC mascot logo — one per process, drawn
 /// directly in drawBody() so the logo stays crisp at any zoom. GUI-thread only, like pixmapCache().
@@ -94,95 +88,4 @@ void ICRenderer::drawBody(IC &ic, QPainter *painter)
     painter->drawChord(topCenter, 0, -180 * 16);
 
     painter->restore();
-}
-
-void ICRenderer::generatePreviewPixmap(IC &ic, const QList<QGraphicsItem *> &items)
-{
-    // Split the freshly-deserialized items into elements and connections.  The
-    // boundary Input/Output elements are still in their designed form here; the
-    // substitution to proxy Nodes happens later in processLoadedItems().
-    QVector<GraphicElement *> elements;
-    QVector<Connection *> connections;
-    elements.reserve(items.size());
-    connections.reserve(items.size());
-    for (auto *item : items) {
-        if (auto *conn = qgraphicsitem_cast<Connection *>(item)) {
-            connections.append(conn);
-        } else if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item)) {
-            elements.append(elm);
-        }
-    }
-
-    // Skip for empty or very large circuits.
-    if (elements.isEmpty() || elements.size() > ICPreviewPopup::MaxElementCount) {
-        ic.m_previewPixmap = QPixmap();
-        return;
-    }
-
-    // QGraphicsScene's constructor depends on Widgets-private, QApplication-owned
-    // application-level state that a bare QGuiApplication never initializes -- constructing
-    // one crashes outside a real QApplication. The only process that can reach this without
-    // one is the Qt Quick rewrite's shell (wiredpanda_quick, App/QuickShell/Main.cpp), which
-    // deliberately never constructs a QApplication; the preview it would generate is only
-    // ever consumed by ICPreviewPopup, a Widgets-era UI feature meaningless without one
-    // anyway. No-op for the real app: it always runs under a real QApplication. See project
-    // memory project_ic_preview_pixmap_needs_qapplication.md.
-    if (!qobject_cast<QApplication *>(QCoreApplication::instance())) {
-        ic.m_previewPixmap = QPixmap();
-        return;
-    }
-
-    // Temporarily borrow the items into a throwaway scene so QGraphicsScene::render()
-    // can be used without disturbing the real scene.  The scope guard guarantees
-    // cleanup even if render() throws.
-    QGraphicsScene tempScene;
-    tempScene.setBackgroundBrush(QColor(42, 42, 42));
-
-    auto cleanup = qScopeGuard([&] {
-        for (auto *elm  : std::as_const(elements))    { tempScene.removeItem(elm);  }
-        for (auto *conn : std::as_const(connections)) { tempScene.removeItem(conn); }
-    });
-
-    for (auto *elm : std::as_const(elements)) {
-        tempScene.addItem(elm);
-    }
-    for (auto *conn : std::as_const(connections)) {
-        tempScene.addItem(conn);
-    }
-
-    // Compute the bounding rect with some padding
-    const QRectF sourceRect = tempScene.itemsBoundingRect().adjusted(-16, -16, 16, 16);
-
-    // Defense-in-depth: a non-finite item geometry makes the bounding rect NaN,
-    // and QSizeF::toSize() asserts (!qIsNaN) on a NaN dimension → process abort.
-    // The load-side guards reject non-finite element position/rotation up front;
-    // skip the (non-essential) preview here for any other geometry source rather
-    // than crash.  Surfaced by libFuzzer (fuzz_ic_file).
-    if (!std::isfinite(sourceRect.width()) || !std::isfinite(sourceRect.height())) {
-        ic.m_previewPixmap = QPixmap();
-        return;
-    }
-
-    // Scale to fit within max preview dimensions while preserving aspect ratio
-    QSize targetSize = sourceRect.size().toSize();
-    targetSize.scale(ICPreviewPopup::MaxWidth, ICPreviewPopup::MaxHeight, Qt::KeepAspectRatio);
-
-    if (targetSize.isEmpty()) {
-        ic.m_previewPixmap = QPixmap();
-        return;
-    }
-
-    // QPixmap(QSize) is uninitialised; tempScene.render() paints the background
-    // brush over the source→target affine, but subpixel rounding can leave a
-    // 1-pixel sliver unpainted at the right/bottom edge, exposing whatever was
-    // in memory (commonly white on Windows).  Fill explicitly to avoid that.
-    QPixmap preview(targetSize);
-    preview.fill(QColor(42, 42, 42));
-
-    QPainter painter(&preview);
-    painter.setRenderHint(QPainter::Antialiasing);
-    tempScene.render(&painter, QRectF(), sourceRect);
-    painter.end();
-
-    ic.m_previewPixmap = preview;
 }

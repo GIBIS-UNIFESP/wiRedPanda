@@ -178,22 +178,20 @@ void CanvasFlipCommand::redo()
 
 namespace CanvasCommandUtils {
 
-void storeIds(const QList<QGraphicsItem *> &items, QList<int> &ids)
+void storeIds(const QList<ItemWithId *> &items, QList<int> &ids)
 {
     ids.reserve(ids.size() + items.size());
     for (auto *item : items) {
-        if (auto *itemId = dynamic_cast<ItemWithId *>(item)) {
-            ids.append(itemId->id());
-        }
+        ids.append(item->id());
     }
 }
 
-void storeOtherIds(const QList<QGraphicsItem *> &connections, const QList<int> &ids, QList<int> &otherIds)
+void storeOtherIds(const QList<ItemWithId *> &connections, const QList<int> &ids, QList<int> &otherIds)
 {
     // Track elements on the opposite end of connections that are NOT being operated on. Their
     // port state must be re-saved/re-loaded alongside the operation so undo restores it too.
     for (auto *item : connections) {
-        if (auto *conn = qgraphicsitem_cast<Connection *>(item)) {
+        if (auto *conn = dynamic_cast<Connection *>(item)) {
             if (auto *port1 = conn->startPort(); port1 && port1->graphicElement() && !ids.contains(port1->graphicElement()->id())) {
                 otherIds.append(port1->graphicElement()->id());
             }
@@ -204,11 +202,11 @@ void storeOtherIds(const QList<QGraphicsItem *> &connections, const QList<int> &
     }
 }
 
-QList<QGraphicsItem *> loadList(const QList<QGraphicsItem *> &items, QList<int> &ids, QList<int> &otherIds)
+QList<ItemWithId *> loadList(const QList<ItemWithId *> &items, QList<int> &ids, QList<int> &otherIds)
 {
-    QList<QGraphicsItem *> elements;
+    QList<ItemWithId *> elements;
     for (auto *item : items) {
-        if (item->type() == GraphicElement::Type) {
+        if (dynamic_cast<GraphicElement *>(item)) {
             if (!elements.contains(item)) {
                 elements.append(item);
             }
@@ -217,9 +215,9 @@ QList<QGraphicsItem *> loadList(const QList<QGraphicsItem *> &items, QList<int> 
 
     // Always include the wires connected to the affected elements, even if the caller only
     // passed the element body -- keeps the topology consistent on undo/redo.
-    QList<QGraphicsItem *> connections;
+    QList<ItemWithId *> connections;
     for (auto *item : elements) {
-        if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item)) {
+        if (auto *elm = dynamic_cast<GraphicElement *>(item)) {
             for (auto *port : elm->inputs()) {
                 for (auto *conn : port->connections()) {
                     if (!connections.contains(conn)) {
@@ -238,7 +236,7 @@ QList<QGraphicsItem *> loadList(const QList<QGraphicsItem *> &items, QList<int> 
     }
 
     for (auto *item : items) {
-        if (item->type() == Connection::Type) {
+        if (dynamic_cast<Connection *>(item)) {
             if (!connections.contains(item)) {
                 connections.append(item);
             }
@@ -250,12 +248,12 @@ QList<QGraphicsItem *> loadList(const QList<QGraphicsItem *> &items, QList<int> 
     return elements + connections;
 }
 
-QList<QGraphicsItem *> findItems(CanvasItem *canvas, const QList<int> &ids)
+QList<ItemWithId *> findItems(CanvasItem *canvas, const QList<int> &ids)
 {
-    QList<QGraphicsItem *> items;
+    QList<ItemWithId *> items;
     items.reserve(ids.size());
     for (const int id : ids) {
-        if (auto *item = dynamic_cast<QGraphicsItem *>(canvas->itemById(id))) {
+        if (auto *item = canvas->itemById(id)) {
             items.append(item);
         }
     }
@@ -284,7 +282,7 @@ GraphicElement *findElm(CanvasItem *canvas, int id)
     return dynamic_cast<GraphicElement *>(canvas->itemById(id));
 }
 
-void saveItems(CanvasItem *canvas, QByteArray &itemData, const QList<QGraphicsItem *> &items, const QList<int> &otherIds)
+void saveItems(CanvasItem *canvas, QByteArray &itemData, const QList<ItemWithId *> &items, const QList<int> &otherIds)
 {
     itemData.clear();
     QDataStream stream(&itemData, QIODevice::WriteOnly);
@@ -298,19 +296,19 @@ void saveItems(CanvasItem *canvas, QByteArray &itemData, const QList<QGraphicsIt
     Serialization::serialize(items, stream, {.purpose = SerializationPurpose::InMemorySnapshot});
 }
 
-void addItems(CanvasItem *canvas, const QList<QGraphicsItem *> &items)
+void addItems(CanvasItem *canvas, const QList<ItemWithId *> &items)
 {
     for (auto *item : items) {
-        if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item)) {
+        if (auto *elm = dynamic_cast<GraphicElement *>(item)) {
             canvas->addItem(elm);
             elm->setSelected(true);
-        } else if (auto *conn = qgraphicsitem_cast<Connection *>(item)) {
+        } else if (auto *conn = dynamic_cast<Connection *>(item)) {
             canvas->addItem(conn);
         }
     }
 }
 
-QList<QGraphicsItem *> loadItems(CanvasItem *canvas, QByteArray &itemData, const QList<int> &ids, QList<int> &otherIds)
+QList<ItemWithId *> loadItems(CanvasItem *canvas, QByteArray &itemData, const QList<int> &ids, QList<int> &otherIds)
 {
     if (itemData.isEmpty()) {
         return {};
@@ -331,22 +329,20 @@ QList<QGraphicsItem *> loadItems(CanvasItem *canvas, QByteArray &itemData, const
 
     // Re-assign the original ids so undo/redo chains that store ids elsewhere remain valid.
     for (int i = 0; i < items.size() && i < ids.size(); ++i) {
-        if (auto *itemId = dynamic_cast<ItemWithId *>(items.at(i))) {
-            canvas->updateItemId(itemId, ids.at(i));
-        }
+        canvas->updateItemId(items.at(i), ids.at(i));
     }
 
     addItems(canvas, items);
     return items;
 }
 
-void deleteItems(CanvasItem *canvas, const QList<QGraphicsItem *> &items)
+void deleteItems(CanvasItem *canvas, const QList<ItemWithId *> &items)
 {
     // Delete in reverse order, same as Commands.cpp's CommandUtils::deleteItems().
     for (auto it = items.rbegin(); it != items.rend(); ++it) {
-        if (auto *elm = qgraphicsitem_cast<GraphicElement *>(*it)) {
+        if (auto *elm = dynamic_cast<GraphicElement *>(*it)) {
             canvas->removeItem(elm);
-        } else if (auto *conn = qgraphicsitem_cast<Connection *>(*it)) {
+        } else if (auto *conn = dynamic_cast<Connection *>(*it)) {
             canvas->removeItem(conn);
         }
         delete *it;
@@ -377,7 +373,7 @@ void drainPortConnections(GraphicElement *elm, int fromPort, int toPort,
     }
 }
 
-void serializeItems(const QList<QGraphicsItem *> &items, QDataStream &stream)
+void serializeItems(const QList<ItemWithId *> &items, QDataStream &stream)
 {
     // Compute the centroid of all selected elements (not connections) so paste can place the
     // clipboard contents relative to the cursor position.
@@ -385,8 +381,8 @@ void serializeItems(const QList<QGraphicsItem *> &items, QDataStream &stream)
     int itemsQuantity = 0;
 
     for (auto *item : items) {
-        if (item->type() == GraphicElement::Type) {
-            center += item->pos();
+        if (auto *elm = dynamic_cast<GraphicElement *>(item)) {
+            center += elm->pos();
             ++itemsQuantity;
         }
     }
@@ -397,7 +393,7 @@ void serializeItems(const QList<QGraphicsItem *> &items, QDataStream &stream)
 
 }  // namespace CanvasCommandUtils
 
-CanvasAddItemsCommand::CanvasAddItemsCommand(const QList<QGraphicsItem *> &items, CanvasItem *canvas, QUndoCommand *parent)
+CanvasAddItemsCommand::CanvasAddItemsCommand(const QList<ItemWithId *> &items, CanvasItem *canvas, QUndoCommand *parent)
     : QUndoCommand(parent)
     , m_canvas(canvas)
 {
@@ -439,7 +435,7 @@ void CanvasAddItemsCommand::redo()
     m_canvas->restartSimulation();
 }
 
-CanvasDeleteItemsCommand::CanvasDeleteItemsCommand(const QList<QGraphicsItem *> &items, CanvasItem *canvas, QUndoCommand *parent)
+CanvasDeleteItemsCommand::CanvasDeleteItemsCommand(const QList<ItemWithId *> &items, CanvasItem *canvas, QUndoCommand *parent)
     : QUndoCommand(parent)
     , m_canvas(canvas)
 {

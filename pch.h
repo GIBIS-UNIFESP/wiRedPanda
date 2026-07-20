@@ -9,11 +9,15 @@
 #include <vector>
 
 // Qt includes
+//
+// Deliberately Qt6::Widgets/PrintSupport-free: this PCH backs wiredpanda_lib, whose compiled
+// sources (see CMakeSources.cmake's SOURCES list, split for Quick in Task 106) have no real
+// Widgets dependency. wiredpanda/test_wiredpanda (the Widgets-only targets) REUSE_FROM this
+// PCH too, but that's a compile-speed optimization only -- any Widgets header their own
+// sources need gets pulled in normally by their #includes, same as any header not listed here.
 
-#include <QAbstractItemView>
 #include <QAction>
 #include <QActionGroup>
-#include <QApplication>
 #include <QAudio>
 #include <QAudioDevice>
 #include <QAudioOutput>
@@ -21,11 +25,9 @@
 #include <QBrush>
 #include <QBuffer>
 #include <QByteArray>
-#include <QCheckBox>
 #include <QClipboard>
 #include <QCloseEvent>
 #include <QColor>
-#include <QComboBox>
 #include <QCommandLineParser>
 #include <QCoreApplication>
 #include <QCursor>
@@ -33,10 +35,7 @@
 #include <QDate>
 #include <QDebug>
 #include <QDesktopServices>
-#include <QDialog>
-#include <QDialogButtonBox>
 #include <QDir>
-#include <QDoubleSpinBox>
 #include <QDrag>
 #include <QDragEnterEvent>
 #include <QDragMoveEvent>
@@ -44,47 +43,25 @@
 #include <QElapsedTimer>
 #include <QEvent>
 #include <QFile>
-#include <QFileDialog>
 #include <QFileInfo>
 #include <QFileSystemWatcher>
 #include <QFontMetrics>
-#include <QFrame>
-#include <QGraphicsItem>
-#include <QGraphicsPathItem>
-#include <QGraphicsPixmapItem>
-#include <QGraphicsScene>
-#include <QGraphicsSceneDragDropEvent>
-#include <QGraphicsSceneMouseEvent>
-#include <QGraphicsView>
-#include <QGridLayout>
-#include <QGroupBox>
-#include <QHBoxLayout>
 #include <QHash>
-#include <QHeaderView>
 #include <QIODevice>
 #include <QIcon>
 #include <QImageReader>
-#include <QInputDialog>
-#include <QItemDelegate>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonValue>
 #include <QKeyEvent>
 #include <QKeySequence>
-#include <QLabel>
-#include <QLayout>
-#include <QLineEdit>
 #include <QList>
 #include <QLocale>
 #include <QLoggingCategory>
-#include <QMainWindow>
 #include <QMap>
 #include <QMediaDevices>
 #include <QMediaPlayer>
-#include <QMenu>
-#include <QMenuBar>
-#include <QMessageBox>
 #include <QMetaEnum>
 #include <QMimeData>
 #include <QMouseEvent>
@@ -102,42 +79,27 @@
 #include <QPoint>
 #include <QPointF>
 #include <QPointer>
-#include <QPrinter>
 #include <QProcess>
-#include <QPushButton>
 #include <QRandomGenerator>
 #include <QRectF>
 #include <QRegularExpression>
 #include <QResource>
 #include <QSaveFile>
 #include <QScopeGuard>
-#include <QScrollArea>
-#include <QScrollBar>
 #include <QSet>
 #include <QSettings>
 #include <QShortcut>
 #include <QSignalSpy>
 #include <QSizeF>
-#include <QSlider>
 #include <QSoundEffect>
-#include <QSpacerItem>
-#include <QSpinBox>
-#include <QSplitter>
 #include <QStack>
 #include <QStandardItemModel>
 #include <QStandardPaths>
-#include <QStatusBar>
 #include <QString>
 #include <QStringList>
-#include <QStyle>
 #include <QStyleHints>
-#include <QStyleOptionGraphicsItem>
-#include <QStyleOptionViewItem>
 #include <QSvgGenerator>
 #include <QSvgRenderer>
-#include <QTabWidget>
-#include <QTableView>
-#include <QTableWidget>
 #include <QTemporaryDir>
 #include <QTemporaryFile>
 #include <QTest>
@@ -145,18 +107,15 @@
 #include <QThread>
 #include <QTime>
 #include <QTimer>
-#include <QToolBar>
 #include <QTranslator>
 #include <QUndoCommand>
 #include <QUndoStack>
 #include <QUrl>
 #include <QUuid>
-#include <QVBoxLayout>
 #include <QVariant>
 #include <QVector>
 #include <QVersionNumber>
 #include <QWheelEvent>
-#include <QWidget>
 #include <QtGlobal>
 #include <QtTest>
 

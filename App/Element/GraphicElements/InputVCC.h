@@ -19,5 +19,5 @@ class InputVcc : public GraphicElement
 
 public:
     /// Constructs an InputVcc element.
-    explicit InputVcc(QGraphicsItem *parent = nullptr);
+    explicit InputVcc(QObject *parent = nullptr);
 };

@@ -11,9 +11,12 @@
 #include <utility>
 
 #include <QBitArray>
-#include <QGraphicsItem>
 #include <QKeySequence>
 #include <QList>
+#include <QObject>
+#include <QPointF>
+#include <QRectF>
+#include <QTransform>
 
 #include "App/Core/Enums.h"
 #include "App/Core/ItemWithId.h"
@@ -22,6 +25,7 @@
 #include "App/Element/ElementOrientation.h"
 #include "App/Element/ElementPorts.h"
 #include "App/Element/ElementSimState.h"
+#include "App/Element/GraphicElementLabel.h"
 #include "App/Element/PropertyDescriptor.h"
 
 struct SerializationContext;
@@ -32,54 +36,51 @@ class InputPort;
 class OutputPort;
 class Port;
 class QPainter;
-class QStyleOptionGraphicsItem;
 class QSvgRenderer;
-class QWidget;
 
 /**
  * \class GraphicElement
  * \brief Abstract base class for all graphical circuit elements in wiRedPanda.
  *
- * \details Combines a QGraphicsObject (visual representation on the scene) with
- * ItemWithId (stable numeric identity) to form the common interface that every
- * circuit element must implement.  Concrete subclasses cover gates, flip-flops,
- * I/O elements, integrated circuits, and all other element types.
+ * \details Combines a plain QObject (for signals and qobject_cast-based RTTI -- see
+ * `ElementPorts`/`Connection` for why `Port`/`Connection` need no such base) with ItemWithId
+ * (stable numeric identity) to form the common interface that every circuit element must
+ * implement. Concrete subclasses cover gates, flip-flops, I/O elements, integrated circuits,
+ * and all other element types.
+ *
+ * \details No longer a `QGraphicsItem` (see App/UI/WidgetsApplication.h's sibling note in
+ * Application.h and the qtquick-rewrite plan for why): `pos()`/`isSelected()`/`sceneBoundingRect()`
+ * etc. below are plain members/methods this class implements itself, not inherited Qt Graphics
+ * View machinery. `CanvasItem` depends on real, unmodified instances of this class directly.
  *
  * Responsibilities handled here:
  * - Port management (input and output Port children).
  * - Pixmap / appearance rendering with default and user-defined appearances.
  * - Serialization to / from a versioned QDataStream (save/load).
- * - Grid-snapping and wire-update callbacks via itemChange().
  * - Label and keyboard-trigger display.
  * - Theme-aware selection highlight painting.
  * - Polymorphic hooks for clock frequency, audio, color, and truth-table
  *   features that only a subset of elements support.
  */
-class GraphicElement : public QGraphicsObject, public ItemWithId
+class GraphicElement : public QObject, public ItemWithId
 {
     Q_OBJECT
 public:
-    // --- Type Info ---
-
-    enum { Type = QGraphicsItem::UserType + 3 };
-
-    /// Returns the custom type identifier for this item.
-    int type() const override { return Type; }
+    /// File-format type tag Serialization::serialize()/deserialize() writes/reads to
+    /// discriminate a GraphicElement from a Connection in the flat item stream. The literal
+    /// value must stay 65536 + 3 -- existing .panda files on disk encode this exact integer,
+    /// originally QGraphicsItem::UserType + 3 (UserType == 65536) back when this class
+    /// overrode QGraphicsItem::type(); QGraphicsItem is no longer in scope, but the on-disk
+    /// value can never change.
+    static constexpr int Type = 65536 + 3;
 
     // --- Lifecycle ---
 
     /// Constructs a graphic element of the given \a type, fetching all properties from the metadata registry.
-    explicit GraphicElement(ElementType type, QGraphicsItem *parent = nullptr);
+    explicit GraphicElement(ElementType type, QObject *parent = nullptr);
 
     /// Out-of-line so the unique_ptr to the forward-declared QSvgRenderer can be destroyed.
     ~GraphicElement() override;
-
-signals:
-    /// Emitted on double-click for a labelable element (hasLabel()) whose type doesn't already
-    /// claim double-click for something else (IC/TruthTable override mouseDoubleClickEvent()
-    /// directly and this signal never fires for them). The owning Scene listens and drives the
-    /// actual inline edit widget -- see InlineLabelEditor.
-    void inlineEditRequested(GraphicElement *element);
 
 public:
     // --- External file dependencies ---
@@ -186,18 +187,19 @@ public:
     /// Returns \c true if this element type supports a user-editable label.
     bool hasLabel() const;
 
-    /// Returns the label child item's bounding rect in scene coordinates -- used to position the
+    /// Returns the label's bounding rect in scene coordinates -- used to position the
     /// inline rename editor over the visible label. Empty when the label has no text yet (a
     /// caller should fall back to the element's own sceneBoundingRect() in that case).
     QRectF labelSceneBoundingRect() const;
 
-    /// Returns the label child item itself -- its pos()/transform() already carry
+    /// Returns the label item itself -- its pos()/transform() already carry
     /// updateLabelOrientation()'s rotation-compensation (see that method's own doc comment), and
     /// its font()/brush()/text()/visible() are kept live by updateLabel()/updateTheme(). Lets a
     /// caller (CanvasItem's texture-atlas capture) draw the real label via the same
     /// pos()+transform() composition + real paint() call already used for Port, rather than
     /// duplicating this class's own label-positioning logic.
-    QGraphicsSimpleTextItem *labelItem() const { return m_label; }
+    GraphicElementLabel *labelItem() { return &m_label; }
+    const GraphicElementLabel *labelItem() const { return &m_label; }
 
     // --- Embedded IC ---
 
@@ -373,11 +375,43 @@ public:
 
     // --- Geometric Properties ---
 
+    /// Returns the position of this element in world/canvas coordinates -- there is no separate
+    /// parent-item frame anymore (see class doc comment), so this IS its "scene" position too.
+    QPointF pos() const { return m_pos; }
+    /// Sets the world/canvas position. No grid-snap side effect (that was itemChange()'s job,
+    /// already confirmed dead for CanvasItem's own usage -- it never adds elements to a
+    /// QGraphicsScene -- and CanvasItem's own drag-move code does its own snapping).
+    void setPos(const QPointF &pos) { m_pos = pos; }
+    /// \overload
+    void setPos(qreal x, qreal y) { m_pos = QPointF(x, y); }
+    /// Offsets the current position by (\a dx, \a dy).
+    void moveBy(qreal dx, qreal dy) { m_pos += QPointF(dx, dy); }
+
+    /// Returns \c true if the element is currently selected.
+    bool isSelected() const { return m_selected; }
+    /// Sets the selection state. Plain flag, no propagation side effects (highlighting attached
+    /// wires on select/deselect was itemChange()'s job -- see setPos()'s identical note).
+    void setSelected(bool selected) { m_selected = selected; }
+
     /// Returns the centre point of the element's pixmap in local coordinates.
     QPointF pixmapCenter() const;
 
-    /// Returns the bounding rectangle of this element in local coordinates.
-    QRectF boundingRect() const override;
+    /// Returns the bounding rectangle of this element in local (unrotated) coordinates.
+    virtual QRectF boundingRect() const;
+
+    /// Returns boundingRect() mapped through this element's own pos()+rotation+flip -- the
+    /// world/canvas-space extent. Mirrors QGraphicsItem::sceneBoundingRect(), which CanvasItem's
+    /// align/distribute/selection-rect code depended on before this class stopped being one.
+    QRectF sceneBoundingRect() const;
+
+    /// The combined pos()+pixmapCenter-pivot+flip+rotate transform mapping this element's local
+    /// coordinates to world/canvas coordinates. Oracle-validated (qtquick-rewrite plan, Phase 8a):
+    /// flip is applied BEFORE rotate in the composition -- getting this order backwards produces
+    /// positions that are close but wrong once both a non-zero rotation and a flip are active.
+    /// Only meaningful when rotatesGraphic() is true; Port::scenePos() has its own, separate
+    /// per-port formula for the non-rotatable case (mirroring the original
+    /// ElementOrientation::orientPort()'s QGraphicsItem::setTransform() composition).
+    QTransform elementTransform() const;
 
     // --- State Queries ---
 
@@ -465,19 +499,18 @@ public:
     // --- Qt Graphics & Display ---
 
     /**
-     * \brief Paints the element onto the scene.
+     * \brief Paints the element at local (0,0).
      * \details Draws a rounded selection rectangle when the item is selected,
-     * then draws the current pixmap at the item origin.
-     * \param painter Painter provided by the graphics view framework.
-     * \param option  Style options (unused).
-     * \param widget  Target widget (unused).
+     * then draws the current pixmap at the item origin. The caller (CanvasItem) is
+     * responsible for translating the painter to this element's pos() first.
+     * \param painter Painter to draw with.
      */
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+    virtual void paint(QPainter *painter);
 
     /**
-     * \brief Updates the translated display name, tooltip, and port object name after a locale change.
+     * \brief Updates the translated display name after a locale change.
      * \details Queries ElementFactory for the new translated name and propagates
-     * it to setPortName() and setToolTip().
+     * it to setPortName().
      */
     void retranslate();
 
@@ -506,6 +539,12 @@ public:
     /// Updates the element's visual theme according to the current dark/light palette.
     virtual void updateTheme();
 
+    /// No-op: QGraphicsScene's own repaint scheduling. CanvasItem drives its own QQuickItem
+    /// repaints independently (see project_quick_hotspot_fixes_2_landed.md) and never relied on
+    /// this to know when to redraw. Public (like the rest of this section) since it was public
+    /// on QGraphicsItem and ElementOrientation (a sibling collaborator, not a friend) calls it.
+    void update() {}
+
 protected:
     // --- Graphics & Rendering ---
 
@@ -513,9 +552,13 @@ protected:
     QPixmap pixmap() const;
 
     /**
-     * \brief Returns the bounding rectangle that encompasses all child ports.
-     * \details Iterates over childItems(), mapping each Port's bounding rect
-     * into the element's local coordinate space.
+     * \brief Returns the bounding rectangle that encompasses all child ports, in this
+     * element's own local (unrotated) frame.
+     * \details Unions each port's own boundingRect(), mapped through the same per-port
+     * pos()+orientation transform Port::scenePos() uses for the non-rotatable case (rotatable
+     * elements' ports never get a per-port transform -- their pos() alone is already the
+     * element-local position; the element's own rotation applies uniformly on top, in
+     * sceneBoundingRect()).
      * \return Combined bounding QRectF of all port children.
      */
     QRectF portsBoundingRect() const;
@@ -540,38 +583,20 @@ protected:
     /// commit). Base is a no-op; Text overrides it to toggle its empty-state hint.
     virtual void labelContentChanged() {}
 
-    // --- Qt Event Handling ---
-
-    /**
-     * \brief Handles item state changes such as position, rotation, and selection.
-     * \details Three change types are intercepted:
-     * - ItemPositionChange: snaps the new position to half the scene grid size.
-     * - ItemScenePositionHasChanged / ItemRotationHasChanged / ItemTransformHasChanged:
-     *   calls updateConnections() on all ports to redraw attached wires.
-     * - ItemSelectedHasChanged: toggles connection highlight via highlight().
-     * \param change The type of change that occurred.
-     * \param value  The new value associated with the change.
-     * \return The (possibly modified) value to use, or the base class result.
-     */
-    QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
-
-    /**
-     * \brief Requests inline label editing on double-click.
-     * \details Only fires for hasLabel() elements; other types fall through to the base
-     * Qt behavior unchanged. IC and TruthTable override this method themselves (to open a
-     * sub-circuit / the truth-table editor instead), so this base implementation is never
-     * reached for them -- ordinary virtual dispatch, no elementType() check needed here.
-     */
-    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
-
-    /**
-     * \brief Intercepts mouse-press and mouse-release events to handle Ctrl+click.
-     * \details When Ctrl is held during a mouse press or release, the event is
-     * consumed here and not forwarded, preventing accidental multi-selection.
-     * \param event The scene event to inspect.
-     * \return true if the event was consumed; otherwise the base class result.
-     */
-    bool sceneEvent(QEvent *event) override;
+    // --- No-op geometry-change hooks ---
+    //
+    // These mirror QGraphicsItem members ElementAppearance/ElementOrientation called on this
+    // class before it stopped being one -- QGraphicsScene's BSP-tree re-bucketing
+    // (prepareGeometryChange()), device-coordinate paint caching (invalidateRenderCache(), via
+    // setCacheMode()), and the rotation/scale pivot property (setTransformOriginPoint(), whose
+    // only real job was feeding QGraphicsItem's own transform composition) are all meaningless
+    // without a QGraphicsScene. Kept as real no-op methods -- rather than deleting every call
+    // site in ElementAppearance.cpp -- since this class's own elementTransform()/
+    // Port::scenePos() read pixmapCenter() fresh every time instead of relying on a stored
+    // "transform origin" property, so setTransformOriginPoint()'s argument was never needed here.
+    void prepareGeometryChange() {}
+    void invalidateRenderCache() {}
+    void setTransformOriginPoint(const QPointF &) {}
 
     // --- Capability Setters ---
 
@@ -600,7 +625,7 @@ protected:
     /// this element forwards its rendering and appearance interface here.  See ElementAppearance.
     ElementAppearance m_appearance{this};
 
-    QGraphicsSimpleTextItem *m_label = new QGraphicsSimpleTextItem(this); ///< Child text item that displays the label and optional trigger shortcut.
+    GraphicElementLabel m_label; ///< Displays the label and optional trigger shortcut.
     QPointF m_labelAnchor; ///< The label's intended anchor point in the element's un-rotated local frame; see setLabelAnchor().
 
     // --- Members: Metadata ---
@@ -653,13 +678,6 @@ private:
     /// see ElementAppearance::setPixmap()/setRenderPixmap().
     friend class ElementAppearance;
 
-    /// Drops and re-enables the item's DeviceCoordinateCache so the next paint re-renders the
-    /// whole item. DeviceCoordinateCache invalidates incrementally and keeps the previously
-    /// cached device tile when the displayed pixmap swaps to a different size (e.g. a small
-    /// built-in SVG replaced by a large custom raster), which would leave a stale image of the
-    /// old appearance behind the new one. Call only on an actual size change.
-    void invalidateRenderCache();
-
     // --- Port Management Helpers ---
 
     /// Shared implementation for setInputSize() and setOutputSize(): resizes the port store
@@ -667,14 +685,6 @@ private:
     void setPortSize(const int size, const bool isInput);
 
     // --- Display & Interaction ---
-
-    /**
-     * \brief Highlights or un-highlights all connections attached to this element.
-     * \details Iterates over every port and every connection, toggling the highLight
-     * flag to match the element's new selection state.
-     * \param isSelected true when the element has just been selected.
-     */
-    void highlight(const bool isSelected);
 
     /// Counter-orients the name label about its own centre for the current rotation + flip
     /// state, so the text reads upright and unmirrored at any element orientation. Recomputed
@@ -706,6 +716,9 @@ private:
 
     bool m_hasColors = false;
     bool m_selected = false;
+
+    /// This element's world/canvas position -- see pos()/setPos().
+    QPointF m_pos;
 
     /// Owns the rotation angle and flip flags, and the transform math that applies them to
     /// the item and its ports; this element forwards its orientation interface here.

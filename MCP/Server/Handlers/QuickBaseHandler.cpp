@@ -14,12 +14,12 @@
 // validatePositiveInteger()/validatePortRange()/inputPortByLabel()/outputPortByLabel()/
 // availablePorts()/availableInputPorts()/availableOutputPorts() operate only on
 // GraphicElement*/Port*/QJsonObject/QJsonValue -- zero Scene/MainWindow coupling anywhere in
-// their bodies, so they're inherited here completely unmodified. Only validateElementId() and
-// validatedElement() touch currentScene() (directly, or via a call BaseHandler's own body binds
-// statically to its own currentScene()/validateElementId() -- non-virtual functions resolve at
-// their *defining* class's scope, not the runtime object's most-derived type, so shadowing
-// validateElementId() alone would NOT fix validatedElement(), which needed its own
-// reimplementation too) -- those two are reimplemented below against currentCanvas().
+// their bodies, so they're inherited here completely unmodified. The other group
+// (currentScene(), and the validateElementId()/validatedElement() built on it) needed real
+// Scene/MainWindow access no longer meaningful once GraphicElement/Connection stopped being
+// QGraphicsItems and the Widgets Scene stopped compiling -- removed from BaseHandler outright
+// (its only other real subclasses, ServerInfoHandler/ThemeHandler, never called them either);
+// validateElementId()/validatedElement() are reimplemented below against currentCanvas().
 
 QuickBaseHandler::QuickBaseHandler(QuickAppController *appController, const MCPValidator *validator)
     : BaseHandler(nullptr, validator)

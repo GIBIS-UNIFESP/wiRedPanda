@@ -35,6 +35,11 @@ public:
     {
     }
 
+    /// Deletes every owned port. Previously handled for free by QGraphicsItem's parent-child
+    /// auto-deletion (ports were constructed with the owning element as their QGraphicsItem
+    /// parent); now explicit, since Port is a plain class with no such lifecycle hook.
+    ~ElementPorts();
+
     // --- Read access ---
 
     /// Returns the input port vector.

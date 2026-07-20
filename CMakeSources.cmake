@@ -1,13 +1,10 @@
 set(SOURCES
-    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/BeWavedDolphin.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/BeWavedDolphinUI.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinClipboard.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinCommands.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinEdits.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinExporter.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinFile.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinModelBuilder.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinZoom.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/Serializer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/SignalDelegate.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/SignalModel.cpp
@@ -28,13 +25,13 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/UpdateChecker.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementAppearance.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementFactory.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementLabel.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementMetadata.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementOrientation.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementPorts.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementSimState.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElement.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElementInput.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElementLabel.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/And.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/AudioBox.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/AudioOutputElement.cpp
@@ -70,75 +67,30 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElementSerializer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/IC.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICLoader.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICPreviewPopup.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICRenderer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICSimulation.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/SelectionCapabilities.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseEngine.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseOverlay.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/IO/CircuitExporter.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/RecentFiles.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/Serialization.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/ClipboardManager.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Commands.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/ConnectionManager.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/GraphicsView.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/ICRegistry.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/InlineLabelEditor.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/PortHoverLabel.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/PropertyShortcutHandler.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Scene.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/SceneDropHandler.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/SceneInteraction.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/SceneItemRegistry.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/VisibilityManager.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Workspace.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/Simulation.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationBlocker.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationThrottleDisabler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourEngine.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourOverlay.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialog.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialogUI.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementContextMenu.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementEditor.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementEditorUI.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementPalette.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementTabNavigator.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ExportController.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/FileDialogProvider.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ICController.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ICDropZone.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/LabeledSlider.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/LengthDialog.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/LengthDialogUI.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindow.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindowUI.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/MinimapWidget.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/SceneUiBinder.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/TrashButton.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/UpdateController.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/WidgetsApplication.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/WorkspaceManager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Wiring/Connection.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Wiring/ConnectionSerializer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Wiring/Port.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Core/MCPProcessor.cpp
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Core/MCPValidator.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Core/StdinLineReader.cpp
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/BaseHandler.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ConnectionHandler.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ElementHandler.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/FileHandler.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/HistoryHandler.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ICHandler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ServerInfoHandler.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/SimulationHandler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ThemeHandler.cpp
 )
 
 set(HEADERS
-    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/BeWavedDolphin.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/BeWavedDolphinUI.h
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinClipboard.h
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinCommands.h
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinEdits.h
@@ -146,7 +98,6 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinFile.h
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinHost.h
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinModelBuilder.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinZoom.h
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/Serializer.h
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/SignalDelegate.h
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/SignalModel.h
@@ -177,13 +128,13 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementAppearance.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementFactory.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementInfo.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementLabel.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementMetadata.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementOrientation.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementPorts.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementSimState.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElement.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElementInput.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElementLabel.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/And.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/AudioBox.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/AudioOutputElement.h
@@ -220,15 +171,12 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElementSerializer.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/IC.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICLoader.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICPreviewPopup.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICRenderer.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICSimulation.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/PropertyDescriptor.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/SelectionCapabilities.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseEngine.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseOverlay.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseStep.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/IO/CircuitExporter.h
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/ExternalFilePath.h
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/FileUtils.h
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/RecentFiles.h
@@ -236,63 +184,22 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/SerializationContext.h
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/VersionInfo.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/ClipboardManager.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Commands.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/ConnectionManager.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/GraphicsView.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/ICRegistry.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/InlineLabelEditor.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/PortHoverLabel.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/PropertyShortcutHandler.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Scene.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/SceneDropHandler.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/SceneInteraction.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/SceneItemRegistry.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/VisibilityManager.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Workspace.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/Simulation.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationBlocker.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationThrottleDisabler.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourEngine.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourOverlay.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourStep.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialog.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialogUI.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementContextMenu.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementEditor.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementEditorUI.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementPalette.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementTabNavigator.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ExportController.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/FileDialogProvider.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ICController.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ICDropZone.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/LabeledSlider.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/LengthDialog.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/LengthDialogUI.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindow.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindowHost.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindowUI.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/MinimapWidget.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/SceneUiBinder.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/TrashButton.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/UpdateController.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/WidgetsApplication.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/WorkspaceManager.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Versions.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Wiring/Connection.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Wiring/ConnectionSerializer.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Wiring/Port.h
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Core/JsonRpcError.h
-    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Core/MCPProcessor.h
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Core/MCPValidator.h
+    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Core/StdinLineReader.h
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/BaseHandler.h
-    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ConnectionHandler.h
-    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ElementHandler.h
-    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/FileHandler.h
-    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/HistoryHandler.h
-    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ICHandler.h
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ServerInfoHandler.h
-    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/SimulationHandler.h
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ThemeHandler.h
 )
 
@@ -422,13 +329,11 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestsWithoutPanda/TestSequential.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/Logic/TestMuxDemuxComprehensive.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestArduino.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestFeedback.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestFileDialogProvider.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestFiles.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestIc.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestICInline.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestMainWindowGui.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestSimulation.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestSystemVerilogExport.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestWorkspace.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestWorkspaceFileops.cpp
@@ -491,11 +396,9 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestICHandlerSecurity.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestMCPProcessor.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestConnectionManager.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestConnectionValidity.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestGraphicsView.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestPropertyShortcutHandler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestScene.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestSceneConnections.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestSceneState.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestSceneUndoredo.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestWorkspace.cpp
@@ -519,12 +422,9 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestLabeledSlider.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestLanguageManager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestMinimapWidget.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestSelectionCapabilities.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestTrashButton.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Wiring/TestConnection.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Wiring/TestConnections.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Wiring/TestConnectionSerialization.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Wiring/TestPort.cpp
 )
 
 set(TEST_WIREDPANDA_HEADERS
@@ -622,13 +522,11 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestsWithoutPanda/TestSequential.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/Logic/TestMuxDemuxComprehensive.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestArduino.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestFeedback.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestFileDialogProvider.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestFiles.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestIc.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestICInline.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestMainWindowGui.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestSimulation.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestSystemVerilogExport.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestWorkspace.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestWorkspaceFileops.h
@@ -692,11 +590,9 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestICHandlerSecurity.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestMCPProcessor.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestConnectionManager.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestConnectionValidity.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestGraphicsView.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestPropertyShortcutHandler.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestScene.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestSceneConnections.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestSceneState.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestSceneUndoredo.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestWorkspace.h
@@ -720,10 +616,7 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestLabeledSlider.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestLanguageManager.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestMinimapWidget.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestSelectionCapabilities.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestTrashButton.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Wiring/TestConnection.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Wiring/TestConnections.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Wiring/TestConnectionSerialization.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Wiring/TestPort.h
 )

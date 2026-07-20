@@ -45,25 +45,39 @@ struct ElementInfo<Text> {
 };
 
 // Text is a purely decorative annotation element with no ports and no simulation role.
-Text::Text(QGraphicsItem *parent)
+Text::Text(QObject *parent)
     : GraphicElement(ElementType::Text, parent)
 {
-    QFont hintFont = m_emptyHint->font();
+    QFont hintFont = m_emptyHint.font();
     hintFont.setItalic(true);
-    m_emptyHint->setFont(hintFont);
+    m_emptyHint.setFont(hintFont);
     // Matches the default label anchor (GraphicElement's own constructor, since Text never
     // calls setLabelAnchor() to override it) -- the hint stands in for the label until there's
     // real content to show.
-    m_emptyHint->setPos(0, 64);
-    m_emptyHint->setText(tr("Double-click to add text"));
+    m_emptyHint.setPos(QPointF(0, 64));
+    m_emptyHint.setText(tr("Double-click to add text"));
     updateTheme();
     labelContentChanged(); // a fresh Text starts with an empty label -- show the hint explicitly
-                            // rather than relying on QGraphicsSimpleTextItem's default visibility
+                            // rather than relying on GraphicElementLabel's default visibility
 }
 
 QRectF Text::boundingRect() const
 {
-    return GraphicElement::boundingRect().united(childrenBoundingRect());
+    QRectF bounds = GraphicElement::boundingRect();
+
+    // Union in the label and empty-hint child items' own local footprints -- mirrors what
+    // QGraphicsItem::childrenBoundingRect() used to fold in for free. Exactly one of the two
+    // ever has real text at a time (labelContentChanged() toggles between them), and
+    // GraphicElementLabel::boundingRect() is already empty for empty text, so no visibility
+    // check is needed here.
+    for (const GraphicElementLabel *child : {labelItem(), emptyHintItem()}) {
+        QTransform t;
+        t.translate(child->pos().x(), child->pos().y());
+        t *= child->transform();
+        bounds = bounds.united(t.mapRect(child->boundingRect()));
+    }
+
+    return bounds;
 }
 
 void Text::updateTheme()
@@ -74,10 +88,10 @@ void Text::updateTheme()
     // glance, but not so loud it reads as an actual (empty) label.
     QColor hintColor = ThemeManager::attributes().m_graphicElementLabelColor;
     hintColor.setAlpha(140);
-    m_emptyHint->setBrush(hintColor);
+    m_emptyHint.setBrush(hintColor);
 }
 
 void Text::labelContentChanged()
 {
-    m_emptyHint->setVisible(label().isEmpty());
+    m_emptyHint.setVisible(label().isEmpty());
 }

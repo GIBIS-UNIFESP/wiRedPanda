@@ -35,14 +35,12 @@ public:
     /// \overload
     const CanvasItem *currentCanvas() const;
 
-    /// Reimplements BaseHandler::validateElementId() against currentCanvas()->itemById()
-    /// instead of BaseHandler::currentScene()->itemById() -- shadows (hides, not overrides;
-    /// BaseHandler's version is non-virtual) the base class version so every Quick handler's
-    /// unqualified validateElementId(...) call resolves here.
+    /// Quick-native counterpart of the Scene-based validateElementId() BaseHandler used to
+    /// have (removed -- see this class's .cpp), built against currentCanvas()->itemById()
+    /// instead of a Scene's.
     bool validateElementId(int elementId, const QString &paramName, QString &errorMsg) const;
-    /// Reimplements BaseHandler::validatedElement() the same way, and for the same reason:
-    /// BaseHandler's own version calls currentScene() internally, which would always resolve
-    /// through the (always-null) inherited m_mainWindow if left un-reimplemented here.
+    /// Quick-native counterpart of the Scene-based validatedElement() BaseHandler used to have,
+    /// for the same reason.
     GraphicElement *validatedElement(const QJsonObject &params, const QString &paramName, QString &errorMsg);
 
 protected:

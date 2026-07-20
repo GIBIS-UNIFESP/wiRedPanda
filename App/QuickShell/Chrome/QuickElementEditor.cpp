@@ -252,7 +252,7 @@ void QuickElementEditor::apply()
 
     // Collect connections that will be severed by a wireless mode change, before it happens --
     // setWirelessMode() hides the replaced port but does not delete connections itself.
-    QList<QGraphicsItem *> wirelessConnsToDelete;
+    QList<ItemWithId *> wirelessConnsToDelete;
     if (m_caps.hasWirelessMode && m_wirelessModeDirty) {
         const auto newMode = static_cast<WirelessMode>(m_wirelessMode);
         for (auto *elm : std::as_const(m_elements)) {
@@ -265,7 +265,7 @@ void QuickElementEditor::apply()
                          : nullptr;
             if (port) {
                 for (auto *conn : port->connections()) {
-                    wirelessConnsToDelete.append(static_cast<QGraphicsItem *>(conn));
+                    wirelessConnsToDelete.append(static_cast<ItemWithId *>(conn));
                 }
             }
         }

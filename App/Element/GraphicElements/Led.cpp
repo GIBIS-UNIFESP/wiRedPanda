@@ -74,7 +74,7 @@ struct ElementInfo<Led> {
     }();
 };
 
-Led::Led(QGraphicsItem *parent)
+Led::Led(QObject *parent)
     : GraphicElement(ElementType::Led, parent)
 {
     // The appearance list is indexed by colorIndex(). For a 1-input LED the index is

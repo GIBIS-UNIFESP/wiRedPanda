@@ -34,7 +34,7 @@ public:
     /// \param initialVolume lets a subclass set its own volume default in one write --
     /// a derived class cannot member-initialize a base's field, and a ctor-body
     /// assignment would write m_volume twice per construction.
-    explicit AudioOutputElement(ElementType type, QGraphicsItem *parent = nullptr,
+    explicit AudioOutputElement(ElementType type, QObject *parent = nullptr,
                                 float initialVolume = kDefaultVolume);
 
     // --- State Queries ---

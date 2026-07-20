@@ -33,7 +33,7 @@ public:
     // --- Lifecycle ---
 
     /// Constructs the element with optional \a parent.
-    explicit Display7(QGraphicsItem *parent = nullptr);
+    explicit Display7(QObject *parent = nullptr);
 
     // --- Color utilities ---
 
@@ -56,7 +56,7 @@ public:
     // --- Visual ---
 
     /// \reimp
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+    void paint(QPainter *painter) override;
 
     /// Refreshes the displayed segments based on current input states.
     void refresh() override;

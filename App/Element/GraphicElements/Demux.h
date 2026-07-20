@@ -24,7 +24,7 @@ public:
     // --- Lifecycle ---
 
     /// Constructs the element with optional \a parent.
-    explicit Demux(QGraphicsItem *parent = nullptr);
+    explicit Demux(QObject *parent = nullptr);
 
     // --- Visual / Port Configuration ---
 
@@ -32,7 +32,7 @@ public:
     QRectF boundingRect() const override;
 
     /// \reimp
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+    void paint(QPainter *painter) override;
 
     /// \reimp Co-updates input count when output size changes.
     void setOutputSize(const int size) override;

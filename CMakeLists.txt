@@ -40,7 +40,13 @@ else()
 endif()
 
 set(QT_VERSION_MAJOR 6)
-set(QT_LIBS Qt6::Core Qt6::Gui Qt6::Network Qt6::PrintSupport Qt6::Multimedia Qt6::Widgets Qt6::Svg Qt6::Test)
+# Qt6::Widgets/PrintSupport deliberately NOT here: wiredpanda_lib's currently-compiled sources
+# (the shared, Quick-needed subset -- see Task 106) have zero real dependency on either, and
+# PrintSupport hard-requires Widgets in Qt6's own CMake package regardless of which PrintSupport
+# symbols are actually used (see Qt6PrintSupportDependencies.cmake), so leaving either linked
+# here would silently drag Widgets back into wiredpanda_quick. The Widgets-only targets
+# (wiredpanda/test_wiredpanda) link both directly instead -- see their own target_link_libraries.
+set(QT_LIBS Qt6::Core Qt6::Gui Qt6::Network Qt6::Multimedia Qt6::Svg Qt6::Test)
 
 # Qt Quick/QML/QuickControls2: kept separate from QT_LIBS deliberately. QT_LIBS is what
 # wiredpanda_lib and test_wiredpanda link against, and neither needs the Quick stack yet —
@@ -253,6 +259,13 @@ endif()
 # environments that forbid network access during the build. See issue #404.
 option(WIREDPANDA_USE_SYSTEM_JSON "Use system nlohmann/json and json-schema-validator instead of fetching them" OFF)
 
+# The legacy Qt Widgets app (wiredpanda) and its test binary (test_wiredpanda) are mid-removal
+# on the qtquick-rewrite branch: GraphicElement/Port/Connection/IC stopped being QGraphicsItems,
+# so App/Scene/*, most of App/UI/*, and the non-Quick MCP handlers no longer compile. Default OFF
+# so `wiredpanda_quick`/`test_wiredpanda_quick` (the only targets this branch actively maintains)
+# build cleanly; set ON to work on the Widgets app itself (expect it to be broken right now).
+option(WIREDPANDA_BUILD_WIDGETS_APP "Build the legacy Qt Widgets wiredpanda app and test_wiredpanda" OFF)
+
 if(WIREDPANDA_USE_SYSTEM_JSON)
     find_package(nlohmann_json REQUIRED)
     find_package(nlohmann_json_schema_validator REQUIRED)
@@ -457,6 +470,8 @@ endif()
 
 # ========= APP ===================================
 
+if(WIREDPANDA_BUILD_WIDGETS_APP)
+
 # Use qt_add_executable for WASM builds as recommended by Qt docs
 if(EMSCRIPTEN)
     qt_add_executable(wiredpanda App/Main.cpp)
@@ -464,7 +479,9 @@ else()
     add_executable(wiredpanda App/Main.cpp)
 endif()
 link_wiredpanda_whole_archive(wiredpanda)
-target_link_libraries(wiredpanda PRIVATE wiredpanda_resources)
+# Qt6::Widgets/PrintSupport dropped from the shared QT_LIBS (wiredpanda_quick doesn't need
+# them); the Widgets app's own sources (Main.cpp, App/UI/) still do, so it links them directly.
+target_link_libraries(wiredpanda PRIVATE Qt6::Widgets Qt6::PrintSupport wiredpanda_resources)
 
 # Compile .ts → .qm and embed as Qt resources at :/i18n/wpanda_<lang>.qm.
 # On Qt 6.9+ MERGE_QT_TRANSLATIONS also bakes qtbase / Widgets / Gui /
@@ -616,6 +633,8 @@ if(APPLE)
     )
 endif()
 
+endif() # WIREDPANDA_BUILD_WIDGETS_APP
+
 # ========= QUICK SHELL ===================================
 
 # New Qt Quick-based UI, built up on the long-lived qtquick-rewrite branch alongside the
@@ -630,11 +649,13 @@ add_subdirectory(App/QuickShell)
 
 # ========= INSTALLATION =============================
 
+if(WIREDPANDA_BUILD_WIDGETS_APP)
 # Install executable
 install(TARGETS wiredpanda
     RUNTIME DESTINATION bin
     BUNDLE DESTINATION .
 )
+endif()
 
 # Install example circuits (found at runtime via InstallRelativePaths::resolve("Examples")).
 # Destination is platform-specific: it must match InstallRelativePaths.cpp's own candidate
@@ -695,6 +716,7 @@ endif()
 # Add CTest support
 enable_testing()
 
+if(WIREDPANDA_BUILD_WIDGETS_APP)
 # Test utilities library (shared helpers for all tests)
 add_library(test_utils STATIC ${TEST_UTILS_SOURCES} ${TEST_UTILS_HEADERS})
 # Headers only: every test executable whole-archives wiredpanda_lib itself
@@ -715,7 +737,9 @@ target_link_libraries(memory_helpers PUBLIC "$<COMPILE_ONLY:wiredpanda_lib>" tes
 # Usage: ./build/test_wiredpanda ClassName [functionName]
 add_executable(test_wiredpanda ${TEST_WIREDPANDA_SOURCES} ${TEST_WIREDPANDA_HEADERS})
 link_wiredpanda_whole_archive(test_wiredpanda)
-target_link_libraries(test_wiredpanda PRIVATE test_utils wiredpanda_resources memory_helpers)
+# See the wiredpanda target's identical comment: Qt6::Widgets/PrintSupport moved off the
+# shared QT_LIBS, so the Widgets-only test binary links them directly.
+target_link_libraries(test_wiredpanda PRIVATE Qt6::Widgets Qt6::PrintSupport test_utils wiredpanda_resources memory_helpers)
 target_compile_definitions(test_wiredpanda PRIVATE
     CURRENTDIR=${CMAKE_CURRENT_SOURCE_DIR}/Tests
 )
@@ -731,6 +755,8 @@ if(ENABLE_UNITY)
         UNITY_BUILD_BATCH_SIZE ${UNITY_BUILD_BATCH_SIZE}
     )
 endif()
+
+endif() # WIREDPANDA_BUILD_WIDGETS_APP
 
 # ---- libFuzzer harness for the .panda deserializer ----
 # Clang-only.  Driven by `-fsanitize=fuzzer` plus ASan + UBSan.  Built only
@@ -815,7 +841,6 @@ add_test(NAME TestCommands COMMAND test_wiredpanda TestCommands WORKING_DIRECTOR
 add_test(NAME TestCommon COMMAND test_wiredpanda TestCommon WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestComponents COMMAND test_wiredpanda TestComponents WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestConnectionSerialization COMMAND test_wiredpanda TestConnectionSerialization WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestConnectionValidity COMMAND test_wiredpanda TestConnectionValidity WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestConnections COMMAND test_wiredpanda TestConnections WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestDecoder8To256 COMMAND test_wiredpanda TestDecoder8To256 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestDialogs COMMAND test_wiredpanda TestDialogs WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -828,7 +853,6 @@ add_test(NAME TestElementLogicErrors COMMAND test_wiredpanda TestElementLogicErr
 add_test(NAME TestElementProperties COMMAND test_wiredpanda TestElementProperties WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestEnums COMMAND test_wiredpanda TestEnums WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestFeatures COMMAND test_wiredpanda TestFeatures WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestFeedback COMMAND test_wiredpanda TestFeedback WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestFileDialogProvider COMMAND test_wiredpanda TestFileDialogProvider WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestFileHandlerSecurity COMMAND test_wiredpanda TestFileHandlerSecurity WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestFiles COMMAND test_wiredpanda TestFiles WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -927,14 +951,12 @@ add_test(NAME TestPriorities COMMAND test_wiredpanda TestPriorities WORKING_DIRE
 add_test(NAME TestRAMCell1Bit COMMAND test_wiredpanda TestRAMCell1Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestRecentFiles COMMAND test_wiredpanda TestRecentFiles WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestScene COMMAND test_wiredpanda TestScene WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestSceneConnections COMMAND test_wiredpanda TestSceneConnections WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSceneState COMMAND test_wiredpanda TestSceneState WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSceneUndoredo COMMAND test_wiredpanda TestSceneUndoredo WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSequential COMMAND test_wiredpanda TestSequential WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSequentialLogic COMMAND test_wiredpanda TestSequentialLogic WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSerialization COMMAND test_wiredpanda TestSerialization WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSettings COMMAND test_wiredpanda TestSettings WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestSimulation COMMAND test_wiredpanda TestSimulation WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSimulationBlocker COMMAND test_wiredpanda TestSimulationBlocker WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestStatusOps COMMAND test_wiredpanda TestStatusOps WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSystemVerilogExport COMMAND test_wiredpanda TestSystemVerilogExport WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -951,7 +973,6 @@ add_test(NAME TestApplication COMMAND test_wiredpanda TestApplication WORKING_DI
 add_test(NAME TestArduinoCodeGenUnit COMMAND test_wiredpanda TestArduinoCodeGenUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestCircuitExporter COMMAND test_wiredpanda TestCircuitExporter WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestCodeGenUtils COMMAND test_wiredpanda TestCodeGenUtils WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestConnection COMMAND test_wiredpanda TestConnection WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestConnectionManager COMMAND test_wiredpanda TestConnectionManager WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestCoreSettings COMMAND test_wiredpanda TestCoreSettings WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestDemux COMMAND test_wiredpanda TestDemux WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -974,10 +995,8 @@ add_test(NAME TestICUnit COMMAND test_wiredpanda TestICUnit WORKING_DIRECTORY ${
 add_test(NAME TestLabeledSlider COMMAND test_wiredpanda TestLabeledSlider WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLanguageManager COMMAND test_wiredpanda TestLanguageManager WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestMux COMMAND test_wiredpanda TestMux WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestPort COMMAND test_wiredpanda TestPort WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestPropertyShortcutHandler COMMAND test_wiredpanda TestPropertyShortcutHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestRecentFilesUnit COMMAND test_wiredpanda TestRecentFilesUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestSelectionCapabilities COMMAND test_wiredpanda TestSelectionCapabilities WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSimulationUnit COMMAND test_wiredpanda TestSimulationUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestDanglingPointer COMMAND test_wiredpanda TestDanglingPointer WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSystemVerilogCodeGenUnit COMMAND test_wiredpanda TestSystemVerilogCodeGenUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -1003,10 +1022,22 @@ add_test(NAME TestQuickAppController COMMAND test_wiredpanda_quick TestQuickAppC
 add_test(NAME TestCanvasEmbeddedIC COMMAND test_wiredpanda_quick TestCanvasEmbeddedIC WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestCanvasInlineIC COMMAND test_wiredpanda_quick TestCanvasInlineIC WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestCanvasItemInteraction COMMAND test_wiredpanda_quick TestCanvasItemInteraction WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestCanvasPortHover COMMAND test_wiredpanda_quick TestCanvasPortHover WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestQuickElementEditor COMMAND test_wiredpanda_quick TestQuickElementEditor WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestQuickElementPalette COMMAND test_wiredpanda_quick TestQuickElementPalette WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestQuickCanvasZoom COMMAND test_wiredpanda_quick TestQuickCanvasZoom WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestQuickMinimap COMMAND test_wiredpanda_quick TestQuickMinimap WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+
+# Re-registered here (moved, not duplicated) from the disabled test_wiredpanda binary as part of
+# Phase 8's KEEP-tagged test migration -- see App/QuickShell CMakeLists.txt's QUICK_SHELL_TEST_SOURCES.
+add_test(NAME TestConnection COMMAND test_wiredpanda_quick TestConnection WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestConnectionValidity COMMAND test_wiredpanda_quick TestConnectionValidity WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestPort COMMAND test_wiredpanda_quick TestPort WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestSelectionCapabilities COMMAND test_wiredpanda_quick TestSelectionCapabilities WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestSceneConnections COMMAND test_wiredpanda_quick TestSceneConnections WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestFeedback COMMAND test_wiredpanda_quick TestFeedback WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestSimulation COMMAND test_wiredpanda_quick TestSimulation WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestQuickWorkSpace COMMAND test_wiredpanda_quick TestQuickWorkSpace WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 # ============================================================================
 # Test Properties: Labels and Timeouts
@@ -1054,8 +1085,8 @@ foreach(TEST TestDecoder8To256 TestMemorySettlingTime TestMUXDEMUXComprehensive 
 endforeach()
 
 # File and Simulation Tests - Integration category
-foreach(TEST TestArduino TestFeedback TestFiles TestIC TestICInline
-        TestSimulation TestSystemVerilogExport TestWorkspace TestWorkspaceFileops)
+foreach(TEST TestArduino TestFiles TestIC TestICInline
+        TestSystemVerilogExport TestWorkspace TestWorkspaceFileops)
     set_tests_properties(${TEST} PROPERTIES LABELS "integration")
 endforeach()
 
@@ -1075,8 +1106,8 @@ foreach(TEST TestElementFactory TestElementLogic TestElementLogicErrors TestNode
 endforeach()
 
 # Connection and Scene Tests - Integration category
-foreach(TEST TestConnections TestConnectionSerialization TestConnectionValidity TestScene 
-        TestSceneConnections TestSceneState TestSceneUndoredo)
+foreach(TEST TestConnections TestConnectionSerialization TestScene
+        TestSceneState TestSceneUndoredo)
     set_tests_properties(${TEST} PROPERTIES LABELS "integration")
 endforeach()
 
@@ -1105,7 +1136,10 @@ endforeach()
 foreach(TEST TestCanvasItemSmoke TestCanvasCommands TestQuickElementHandler
         TestQuickFileHandlerSecurity TestQuickICHandlerSecurity TestQuickDolphinController
         TestQuickAppController TestCanvasEmbeddedIC TestCanvasInlineIC TestCanvasItemInteraction
-        TestQuickElementEditor TestQuickElementPalette TestQuickCanvasZoom TestQuickMinimap)
+        TestQuickElementEditor TestQuickElementPalette TestQuickCanvasZoom TestQuickMinimap
+        TestConnection TestConnectionValidity TestPort TestSelectionCapabilities
+        TestSceneConnections TestFeedback TestSimulation TestQuickWorkSpace
+        TestCanvasPortHover)
     set_tests_properties(${TEST} PROPERTIES LABELS "unit;quick")
 endforeach()
 

@@ -11,8 +11,8 @@
 
 #include "App/QuickShell/Chrome/QuickAppController.h"
 #include "MCP/Server/Core/JsonRpcError.h"
-#include "MCP/Server/Core/MCPProcessor.h"
 #include "MCP/Server/Core/MCPValidator.h"
+#include "MCP/Server/Core/StdinLineReader.h"
 #include "MCP/Server/Handlers/QuickConnectionHandler.h"
 #include "MCP/Server/Handlers/QuickElementHandler.h"
 #include "MCP/Server/Handlers/QuickFileHandler.h"
@@ -150,7 +150,7 @@ void QuickMCPProcessor::onStdinReadable()
             const QByteArray chunk(buffer, static_cast<qsizetype>(bytesRead));
             // extractStdinLines() is a pure static method, independent of any live file
             // descriptor -- reused directly from MCPProcessor rather than duplicated.
-            const QStringList lines = MCPProcessor::extractStdinLines(m_stdinBuffer, chunk);
+            const QStringList lines = StdinLineReader::extractLines(m_stdinBuffer, chunk);
             for (const QString &line : lines) {
                 processIncomingData(line);
             }

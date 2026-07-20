@@ -40,10 +40,8 @@ constexpr int kExportCellHeight = 40;
 /// Renders \a model to an image: a light-grey column-number header row, a light-grey row-label
 /// column (auto-sized to the widest label, mirroring QHeaderView's own default content-based
 /// sizing), and \a cellW x \a cellH data cells in \a plotType (numeric text or waveform
-/// graphics, reproducing SignalDelegate::drawWaveform()'s exact band/plateau/edge-bar geometry
-/// -- the same fractions SignalTable.qml's per-cell Canvas delegate already duplicated for the
-/// identical reason: the source lives in a QItemDelegate-coupled class this file has no
-/// dependency on otherwise).
+/// graphics, using the same band/plateau/edge-bar fractions SignalTable.qml's per-cell Canvas
+/// delegate independently reproduces in QML).
 [[nodiscard]] QImage renderToImage(const SignalModel *model, PlotType plotType, int cellW, int cellH);
 
 /// Renders \a model with \a plotType and saves it to \a fileName as a PNG. Returns \c true on

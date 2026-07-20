@@ -3,7 +3,6 @@
 
 #include "App/IO/RecentFiles.h"
 
-#include <QApplication>
 #include <QFile>
 #include <QFileInfo>
 #include <QThread>

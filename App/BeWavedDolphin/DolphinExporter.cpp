@@ -3,78 +3,12 @@
 
 #include "App/BeWavedDolphin/DolphinExporter.h"
 
-#include <QHeaderView>
-#include <QPainter>
-#include <QPixmap>
-#include <QPrinter>
 #include <QString>
-#include <QTableView>
 #include <QTextStream>
 
-#include "App/BeWavedDolphin/SignalDelegate.h"
 #include "App/BeWavedDolphin/SignalModel.h"
-#include "App/Core/Common.h"
-
-namespace {
-constexpr int kExportCellWidth  = 50;  ///< Per-column pixel width for PNG/PDF export.
-constexpr int kExportCellHeight = 40;  ///< Per-row pixel height for PNG/PDF export.
-} // namespace
 
 namespace DolphinExporter {
-
-QPixmap renderToPixmap(const SignalModel *model, const PlotType plotType, const int cellW, const int cellH)
-{
-    // Render through a throwaway table bound to the same model, so the live view
-    // (its zoom, selection, scroll position) is never disturbed by an export.
-    QTableView view;
-    view.setModel(const_cast<SignalModel *>(model));
-    auto *delegate = new SignalDelegate(&view);
-    delegate->setPlotType(plotType);
-    view.setItemDelegate(delegate);
-    view.setShowGrid(false);
-    view.setAlternatingRowColors(true);
-    view.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    view.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    view.horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
-    view.verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
-    view.horizontalHeader()->setDefaultSectionSize(cellW);
-    view.verticalHeader()->setDefaultSectionSize(cellH);
-
-    // Size the view to its full content so grab() captures every row/column with
-    // no scrollbars and no blank padding.
-    const int contentW = view.horizontalHeader()->length() + view.verticalHeader()->width();
-    const int contentH = view.verticalHeader()->length() + view.horizontalHeader()->height();
-    view.resize(contentW, contentH);
-
-    return view.grab();
-}
-
-bool exportToPng(const SignalModel *model, const PlotType plotType, const QString &fileName)
-{
-    return renderToPixmap(model, plotType, kExportCellWidth, kExportCellHeight).save(fileName);
-}
-
-void exportToPdf(const SignalModel *model, const PlotType plotType, const QString &fileName)
-{
-    // Landscape A4 fits a reasonably long waveform without excessive scaling.
-    QPrinter printer(QPrinter::HighResolution);
-    printer.setPageSize(QPageSize(QPageSize::A4));
-    printer.setPageOrientation(QPageLayout::Orientation::Landscape);
-    printer.setOutputFormat(QPrinter::PdfFormat);
-    printer.setOutputFileName(fileName);
-
-    QPainter painter;
-
-    if (!painter.begin(&printer)) {
-        throw PANDACEPTION_WITH_CONTEXT("BewavedDolphin", "Could not print this circuit to PDF.");
-    }
-
-    // Render the waveform offscreen, then scale it to fit the page preserving aspect.
-    const QPixmap pixmap = renderToPixmap(model, plotType, kExportCellWidth, kExportCellHeight);
-    const QSize target = pixmap.size().scaled(painter.viewport().size(), Qt::KeepAspectRatio);
-    painter.drawPixmap(QRect(QPoint(0, 0), target), pixmap);
-    painter.end();
-}
 
 void writeTruthTableText(QTextStream &out, const SignalModel *model, const int inputRowCount)
 {
@@ -98,25 +32,6 @@ void writeTruthTableText(QTextStream &out, const SignalModel *model, const int i
         const auto *header = model->verticalHeaderItem(row);
         out << " : \"" << (header ? header->text() : QString()) << "\"\n";
     }
-}
-
-QString csvText(const SignalModel *model)
-{
-    // CSV-ish format: "rows,cols," header line, then one comma-separated line per row.
-    QString text;
-    QTextStream out(&text);
-
-    out << model->rowCount() << "," << model->columnCount() << ",\n";
-
-    for (int row = 0; row < model->rowCount(); ++row) {
-        for (int col = 0; col < model->columnCount(); ++col) {
-            out << model->value(row, col) << ",";
-        }
-
-        out << "\n";
-    }
-
-    return text;
 }
 
 } // namespace DolphinExporter

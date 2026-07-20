@@ -24,7 +24,7 @@ public:
     // --- Lifecycle ---
 
     /// Constructs the element with optional \a parent.
-    explicit JKFlipFlop(QGraphicsItem *parent = nullptr);
+    explicit JKFlipFlop(QObject *parent = nullptr);
 
     // --- Visual ---
 

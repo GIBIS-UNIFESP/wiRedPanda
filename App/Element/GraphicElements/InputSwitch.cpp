@@ -3,15 +3,11 @@
 
 #include "App/Element/GraphicElements/InputSwitch.h"
 
-#include <QGraphicsSceneMouseEvent>
-
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
-#include "App/Scene/Commands.h"
-#include "App/Scene/Scene.h"
 
 template<>
 struct ElementInfo<InputSwitch> {
@@ -48,7 +44,7 @@ struct ElementInfo<InputSwitch> {
     }();
 };
 
-InputSwitch::InputSwitch(QGraphicsItem *parent)
+InputSwitch::InputSwitch(QObject *parent)
     : GraphicElementInput(ElementType::InputSwitch, parent)
 {
     // A switch drives a definite level from birth: push the OFF state to the
@@ -74,32 +70,6 @@ void InputSwitch::setOff()
 void InputSwitch::setOn()
 {
     InputSwitch::setOn(!isOn());
-}
-
-void InputSwitch::mousePressEvent(QGraphicsSceneMouseEvent *event)
-{
-    if (!m_locked && (event->button() == Qt::LeftButton)) {
-        // Snapshot the pre-toggle state and push it through the same UpdateCommand path
-        // every other property edit uses, so the toggle is undoable and marks the file
-        // modified (previously it called setOn() directly, so a mouse-clicked switch was
-        // silently lost on undo and never made the tab show as unsaved).
-        QByteArray oldData;
-        auto *scene_ = qobject_cast<Scene *>(scene());
-        if (scene_) {
-            QDataStream stream(&oldData, QIODevice::WriteOnly);
-            Serialization::writePandaHeader(stream);
-            save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
-        }
-
-        setOn(!m_isOn);
-        event->accept();
-
-        if (scene_) {
-            scene_->receiveCommand(new UpdateCommand({this}, oldData, scene_));
-        }
-    }
-
-    QGraphicsItem::mousePressEvent(event);
 }
 
 void InputSwitch::save(QDataStream &stream, SerializationOptions options) const

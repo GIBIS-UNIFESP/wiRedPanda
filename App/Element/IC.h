@@ -8,14 +8,12 @@
 #pragma once
 
 #include <QByteArray>
-#include <QPixmap>
 #include <QPoint>
 #include <QSet>
 
 #include "App/Element/GraphicElement.h"
 #include "App/IO/SerializationContext.h"
 
-class QGraphicsSceneHoverEvent;
 class Connection;
 
 /**
@@ -44,7 +42,7 @@ class IC : public GraphicElement
 
 public:
     /// Constructs an IC element without loading a file.
-    explicit IC(QGraphicsItem *parent = nullptr);
+    explicit IC(QObject *parent = nullptr);
 
     ~IC() override;
 
@@ -84,12 +82,6 @@ public:
     const QVector<Port *> &internalInputs() const { return m_internalInputs; }
     const QVector<Port *> &internalOutputs() const { return m_internalOutputs; }
 
-    /// Returns the cached preview pixmap of the designed circuit.
-    /// The snapshot is taken once during load (before boundary elements are
-    /// substituted with proxy Nodes), so the preview reflects what the user
-    /// actually placed — buttons, switches, LEDs — not the simulation graph.
-    const QPixmap &previewPixmap() const { return m_previewPixmap; }
-
     // --- Port metadata ---
 
     /// Port count and label metadata extracted from Input/Output elements.
@@ -119,7 +111,7 @@ public:
     /// \reimp
     QRectF boundingRect() const override;
     /// \reimp
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+    void paint(QPainter *painter) override;
     /// \reimp
     void refresh() override;
 
@@ -135,30 +127,10 @@ public:
     /// \reimp
     void save(QDataStream &stream, SerializationOptions options) const override;
 
-protected:
-    // --- Event handlers ---
-
-    /// \reimp Opens the IC sub-circuit for editing on double-click.
-    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
-
-    /// \reimp Schedules a floating preview of the internal circuit after a short hover delay.
-    void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
-
-    /// \reimp Updates the pending preview position so the popup appears near
-    /// the current cursor when the show delay elapses, not at the entry point.
-    void hoverMoveEvent(QGraphicsSceneHoverEvent *event) override;
-
-    /// \reimp Dismisses the floating preview with a short delay.
-    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
-
 private:
     Q_DISABLE_COPY_MOVE(IC)
 
     // --- Utility methods ---
-
-    /// True when \a localPos (in IC item coordinates) lies over one of this IC's
-    /// ports.  Used to suppress the hover preview over the connection pins.
-    bool isCursorOverPort(const QPointF &localPos) const;
 
     /// Clears the internal element/connection/port vectors and derived simulation state,
     /// freeing the previously-loaded sub-circuit.  Called before loading a new one.
@@ -182,8 +154,4 @@ private:
     QVector<GraphicElement *> m_sortedInternalElements;
     QSet<GraphicElement *> m_boundaryInputElements;
     bool m_internalHasFeedback = false;
-
-    // --- Members: Hover preview ---
-
-    QPixmap m_previewPixmap;           ///< Snapshot of the designed circuit, rendered at load time.
 };

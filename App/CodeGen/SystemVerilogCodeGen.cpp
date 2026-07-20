@@ -13,7 +13,6 @@
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/IC.h"
-#include "App/Scene/Scene.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
 
@@ -490,7 +489,7 @@ void SystemVerilogCodeGen::generateSingleICModule(ICModuleInfo &info)
 
 void SystemVerilogCodeGen::generate()
 {
-    m_txInputPorts = Scene::wirelessTxInputPorts(m_elements);
+    m_txInputPorts = CodeGenUtils::wirelessTxInputPorts(m_elements);
 
     m_stream << "// ==================================================================== //" << Qt::endl;
     m_stream << "// ======= This code was generated automatically by wiRedPanda ======== //" << Qt::endl;

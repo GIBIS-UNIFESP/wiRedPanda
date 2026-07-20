@@ -635,7 +635,7 @@ void TestQuickDolphinController::testSaveToTxtOutput()
 void TestQuickDolphinController::testSaveToTxtClampsColumnCountForManyInputPorts()
 {
     CanvasItem canvas(nullptr, /*buildDemo=*/false);
-    QList<QGraphicsItem *> items;
+    QList<ItemWithId *> items;
     for (int i = 0; i < 12; ++i) {
         items.append(ElementFactory::buildElement(ElementType::InputSwitch));
     }

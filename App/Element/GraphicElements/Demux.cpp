@@ -43,7 +43,7 @@ struct ElementInfo<Demux> {
     }();
 };
 
-Demux::Demux(QGraphicsItem *parent)
+Demux::Demux(QObject *parent)
     : GraphicElement(ElementType::Demux, parent)
 {
     Demux::updatePortsProperties();
@@ -176,11 +176,8 @@ void Demux::drawBody(QPainter *painter)
     painter->restore();
 }
 
-void Demux::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void Demux::paint(QPainter *painter)
 {
-    Q_UNUSED(widget)
-    Q_UNUSED(option)
-
     if (isSelected()) {
         painter->save();
         painter->setBrush(m_appearance.selectionBrush());

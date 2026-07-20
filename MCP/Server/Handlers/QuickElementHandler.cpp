@@ -442,7 +442,7 @@ QJsonObject QuickElementHandler::handleSetElementProperties(const QJsonObject &p
     }
 
     // Wireless mode is only meaningful for Node elements; non-Nodes are silently ignored.
-    QList<QGraphicsItem *> wirelessConnsToDelete;
+    QList<ItemWithId *> wirelessConnsToDelete;
     if (params.contains("wireless_mode")) {
         if (auto *node = qobject_cast<Node *>(element)) {
             int modeInt = params.value("wireless_mode").toInt();
@@ -463,7 +463,7 @@ QJsonObject QuickElementHandler::handleSetElementProperties(const QJsonObject &p
                           : nullptr;
             if (port) {
                 for (auto *conn : port->connections()) {
-                    wirelessConnsToDelete.append(static_cast<QGraphicsItem *>(conn));
+                    wirelessConnsToDelete.append(static_cast<ItemWithId *>(conn));
                 }
             }
 

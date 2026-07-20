@@ -9,7 +9,7 @@
 
 #include <QList>
 
-class QGraphicsItem;
+class ItemWithId;
 
 /**
  * \class SimulationHost
@@ -22,7 +22,7 @@ public:
     virtual ~SimulationHost() = default;
 
     /// Returns every item currently in the host scene.
-    virtual QList<QGraphicsItem *> simulationItems() const = 0;
+    virtual QList<ItemWithId *> simulationItems() const = 0;
 
     /// Mutes or unmutes audio-producing elements in the host scene.
     virtual void setMuted(bool muted) = 0;

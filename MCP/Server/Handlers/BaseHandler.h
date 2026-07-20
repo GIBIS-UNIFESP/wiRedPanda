@@ -10,7 +10,6 @@
 
 class MainWindow;
 class MCPValidator;
-class Scene;
 class GraphicElement;
 
 /**
@@ -34,10 +33,6 @@ public:
                                     const QJsonValue &requestId = QJsonValue(),
                                     int code = JsonRpcError::InternalError) const;
     QJsonObject createSuccessResponse(const QJsonObject &result = {}, const QJsonValue &requestId = QJsonValue()) const;
-    Scene *currentScene();
-    /// \overload
-    const Scene *currentScene() const;
-    bool validateElementId(int elementId, const QString &paramName, QString &errorMsg) const;
     bool validateNonEmptyString(const QJsonValue &value, const QString &paramName, QString &errorMsg) const;
     bool validateNonNegativeInteger(const QJsonValue &value, const QString &paramName, QString &errorMsg) const;
     bool validateNumeric(const QJsonValue &value, const QString &paramName, QString &errorMsg) const;
@@ -64,14 +59,6 @@ public:
                                        requestId, JsonRpcError::OperationFailed);
         }
     }
-
-    /**
-     * \brief Validates \a paramName in \a params, looks up the element, and returns it.
-     * \details Combines validatePositiveInteger() + validateElementId() + itemById() +
-     * dynamic_cast in one call. On failure sets \a errorMsg and returns nullptr.
-     * Typical use: `auto *e = validatedElement(params, "element_id", errorMsg); if (!e) return createErrorResponse(errorMsg, requestId);`
-     */
-    GraphicElement *validatedElement(const QJsonObject &params, const QString &paramName, QString &errorMsg);
 
     // Port lookup by label (similar to CircuitBuilder in testutils.cpp)
     bool inputPortByLabel(GraphicElement *element, const QString &label, int &portIndex, QString &errorMsg) const;

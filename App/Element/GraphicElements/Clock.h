@@ -43,7 +43,7 @@ public:
     // --- Lifecycle ---
 
     /// Constructs the element with optional \a parent.
-    explicit Clock(QGraphicsItem *parent = nullptr);
+    explicit Clock(QObject *parent = nullptr);
 
     // --- State Queries ---
 

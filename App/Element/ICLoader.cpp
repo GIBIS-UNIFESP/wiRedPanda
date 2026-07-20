@@ -11,14 +11,13 @@
 
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
+#include "App/Core/ItemWithId.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ICRenderer.h"
 #include "App/IO/ExternalFilePath.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
-#include "App/Scene/ICRegistry.h"
-#include "App/Scene/Scene.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
 
@@ -99,33 +98,11 @@ void ICLoader::loadFile(IC &ic, const QString &fileName, const QString &contextD
     // the file is not found and an exception is thrown above.
     ic.m_blobName.clear();
 
-    // Use cached file bytes from ICRegistry when available (avoids re-reading from disk)
-    if (auto *scene_ = qobject_cast<Scene *>(ic.scene())) {
-        auto *reg = scene_->icRegistry();
-        const QByteArray &cached = reg->cachedFileBytes(fileInfo.absoluteFilePath());
-        if (!cached.isEmpty()) {
-            deserializeAndLoad(ic, cached, fileInfo.absolutePath());
-            ic.m_file = fileInfo.absoluteFilePath();
-            // No Qt tooltip: the filename is shown in the hover preview popup
-            // (see ICPreviewPopup) so the two don't overlap. Clear the base
-            // class's translated-name tooltip set at construction.
-            ic.setToolTip(QString());
-            if (ic.label().isEmpty()) {
-                ic.setLabel(fileInfo.baseName().toUpper());
-            }
-            qCDebug(zero) << "Finished reading IC (via cache).";
-            return;
-        }
-    }
-
-    // Fallback: direct file load (IC not yet in a scene, e.g. during deserialization).
-    // loadFileDirectly() mirrors deserializeAndLoad()'s parse-first, reset-after shape:
-    // a failed parse (corrupt file, missing dependency, circular reference) propagates
-    // without ever leaving m_sortedInternalElements pointing at freed elements.
+    // Direct file load -- always parse-first, reset-after: a failed parse (corrupt file,
+    // missing dependency, circular reference) propagates without ever leaving
+    // m_sortedInternalElements pointing at freed elements.
     loadFileDirectly(ic, fileInfo);
     ic.m_file = fileInfo.absoluteFilePath();
-    // Name is carried by the hover preview popup, not a Qt tooltip — see above.
-    ic.setToolTip(QString());
 
     qCDebug(zero) << "Finished reading IC.";
 }
@@ -170,7 +147,7 @@ void ICLoader::loadFileDirectly(IC &ic, const QFileInfo &fileInfo)
     subCtx.blobRegistry = fileRegistry.isEmpty() ? nullptr : &fileRegistry;
     QDataStream elementsStream(&preamble.remainingPayload, QIODevice::ReadOnly);
     elementsStream.setVersion(QDataStream::Qt_5_12);
-    QList<QGraphicsItem *> items = Serialization::deserialize(elementsStream, subCtx);
+    QList<ItemWithId *> items = Serialization::deserialize(elementsStream, subCtx);
     file.close(); // must be closed before QSaveFile can write on Windows (mandatory file locking)
 
     // Cleans up whatever is still in `items` if an exception unwinds through
@@ -183,7 +160,7 @@ void ICLoader::loadFileDirectly(IC &ic, const QFileInfo &fileInfo)
     // connections).
     auto itemsGuard = qScopeGuard([&items] {
         for (qsizetype i = 0; i < items.size(); ++i) {
-            if (items[i] && items[i]->type() == Connection::Type) {
+            if (items[i] && dynamic_cast<Connection *>(items[i])) {
                 delete items[i];
                 items[i] = nullptr;
             }
@@ -207,7 +184,7 @@ void ICLoader::loadFileDirectly(IC &ic, const QFileInfo &fileInfo)
     }
 }
 
-void ICLoader::migrateFile(const QFileInfo &fileInfo, const QList<QGraphicsItem *> &items,
+void ICLoader::migrateFile(const QFileInfo &fileInfo, const QList<ItemWithId *> &items,
                             const QVersionNumber &version, const QMap<QString, QByteArray> &fileRegistry)
 {
     Serialization::createVersionedBackup(fileInfo.absoluteFilePath(), version);
@@ -215,10 +192,8 @@ void ICLoader::migrateFile(const QFileInfo &fileInfo, const QList<QGraphicsItem 
     // Build port metadata for the migrated file header
     QVector<GraphicElement *> elements;
     for (auto *item : items) {
-        if (item->type() == GraphicElement::Type) {
-            if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item)) {
-                elements.append(elm);
-            }
+        if (auto *elm = dynamic_cast<GraphicElement *>(item)) {
+            elements.append(elm);
         }
     }
     const auto portMeta = buildPortMetadata(elements);
@@ -248,14 +223,8 @@ void ICLoader::migrateFile(const QFileInfo &fileInfo, const QList<QGraphicsItem 
     }
 }
 
-void ICLoader::processLoadedItems(IC &ic, QList<QGraphicsItem *> &items)
+void ICLoader::processLoadedItems(IC &ic, QList<ItemWithId *> &items)
 {
-    // Snapshot the preview now, while the original Input/Output elements (buttons,
-    // switches, LEDs, …) are still alive in `items`.  loadBoundaryElement() below
-    // replaces each of them with a proxy Node, so a later render would only see
-    // the simulation graph.
-    ICRenderer::generatePreviewPixmap(ic, items);
-
     // Drain items one at a time: as ownership of each transfers (to
     // m_internalConnections/m_internalElements) or the item is deleted
     // (loadBoundaryElement()'s original Input/Output element), remove it from
@@ -266,12 +235,12 @@ void ICLoader::processLoadedItems(IC &ic, QList<QGraphicsItem *> &items)
     while (!items.isEmpty()) {
         auto *item = items.takeFirst();
 
-        if (auto *conn = qgraphicsitem_cast<Connection *>(item)) {
+        if (auto *conn = dynamic_cast<Connection *>(item)) {
             ic.m_internalConnections.append(conn);
             continue;
         }
 
-        auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
+        auto *elm = dynamic_cast<GraphicElement *>(item);
         if (!elm) {
             continue;
         }
@@ -326,13 +295,13 @@ void ICLoader::deserializeAndLoad(IC &ic, const QByteArray &bytes, const QString
     subCtx.blobRegistry = blobRegistry.isEmpty() ? nullptr : &blobRegistry;
     QDataStream elementsStream(&preamble.remainingPayload, QIODevice::ReadOnly);
     elementsStream.setVersion(QDataStream::Qt_5_12);
-    QList<QGraphicsItem *> items = Serialization::deserialize(elementsStream, subCtx);
+    QList<ItemWithId *> items = Serialization::deserialize(elementsStream, subCtx);
 
     // See loadFileDirectly()'s itemsGuard for why this nulls connections
     // before qDeleteAll() and why it's a no-op on the success path.
     auto itemsGuard = qScopeGuard([&items] {
         for (qsizetype i = 0; i < items.size(); ++i) {
-            if (items[i] && items[i]->type() == Connection::Type) {
+            if (items[i] && dynamic_cast<Connection *>(items[i])) {
                 delete items[i];
                 items[i] = nullptr;
             }
@@ -351,10 +320,6 @@ void ICLoader::loadFromBlob(IC &ic, const QByteArray &blob, const QString &conte
 
     deserializeAndLoad(ic, blob, contextDir);
     ic.m_file.clear(); // switching to blob-backed, no file association
-
-    // Name is carried by the hover preview popup, not a Qt tooltip; clear the
-    // base class's translated-name tooltip so no bubble fights the preview.
-    ic.setToolTip(QString());
 
     qCDebug(zero) << "Finished loading IC from blob.";
 }

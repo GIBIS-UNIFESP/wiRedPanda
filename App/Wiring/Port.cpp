@@ -6,52 +6,51 @@
 
 #include "App/Wiring/Port.h"
 
-#include <QPainter>
-#include <QPen>
+#include <QTransform>
 
 #include "App/Core/ThemeManager.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Wiring/Connection.h"
 
-Port::Port(QGraphicsItem *parent)
-    : QGraphicsPathItem(parent)
+Port::Port() = default;
+
+Port::~Port() = default;
+
+QTransform Port::orientationTransform() const
 {
-    // ItemSendsScenePositionChanges triggers itemChange(ItemScenePositionHasChanged)
-    // which keeps connected wires redrawn when the parent element moves
-    setFlag(QGraphicsItem::ItemSendsScenePositionChanges);
-    setCacheMode(QGraphicsItem::DeviceCoordinateCache);
+    if (!m_graphicElement || m_graphicElement->rotatesGraphic()) {
+        // Rotatable elements apply no per-port transform -- their own rotation, applied
+        // uniformly via elementTransform(), moves every port (and the body) together.
+        return {};
+    }
+
+    // Non-rotatable elements keep their pixmap fixed and instead transform each port about
+    // the pixmap centre individually, so the port moves to the rotated/mirrored side while
+    // the graphic stays upright. Oracle-validated (qtquick-rewrite plan, Phase 8a) against the
+    // original QGraphicsItem::setTransform()-based ElementOrientation::orientPort().
+    const QPointF origin = m_graphicElement->pixmapCenter() - m_pos;
+    QTransform t;
+    t.translate(origin.x(), origin.y());
+    t.rotate(m_graphicElement->rotation());
+    t.scale(m_graphicElement->isFlippedX() ? -1 : 1, m_graphicElement->isFlippedY() ? -1 : 1);
+    t.translate(-origin.x(), -origin.y());
+    return t;
 }
 
-QPainterPath Port::shape() const
+QPointF Port::scenePos() const
 {
-    // Hit-area: a small square centred on the port's origin (±kRadius), independent
-    // of the painted glyph — the direction shapes (circle/triangle) would otherwise
-    // shrink the grab target.
-    QPainterPath path;
-    path.addRect(QRectF(QPointF(-kRadius, -kRadius), QPointF(kRadius, kRadius)));
-    return path;
-}
+    if (!m_graphicElement) {
+        return m_pos;
+    }
 
-QRectF Port::boundingRect() const
-{
-    // The default QGraphicsPathItem bound is pen-exact (zero slack beyond the stroke), which
-    // gives DeviceCoordinateCache's device-pixel tile no room to antialias the edge -- at high
-    // zoom the pen's edge gets a hard clip instead of a soft fade. 1 local unit of margin (the
-    // port glyph is only ~10 units across) fixes that without perceptibly growing the glyph.
-    return QGraphicsPathItem::boundingRect().adjusted(-1, -1, 1, 1);
-}
+    if (m_graphicElement->rotatesGraphic()) {
+        return m_graphicElement->elementTransform().map(m_pos);
+    }
 
-void Port::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
-{
-    Q_UNUSED(option)
-    Q_UNUSED(widget)
-
-    // Mirrors QGraphicsPathItem's default paint exactly, except the pen comes from
-    // m_currentPen (see updateTheme()) instead of the item's own, real pen() -- the brush
-    // is unaffected, still the item's real (and cheap to update) brush().
-    painter->setPen(m_currentPen);
-    painter->setBrush(brush());
-    painter->drawPath(path());
+    // The port's own pos() is added *outside* the rotate/flip-about-origin transform, not
+    // mapped through it directly -- getting this backwards produces positions that are close
+    // but wrong (oracle-validated, see orientationTransform()'s doc comment).
+    return m_graphicElement->pos() + m_pos + orientationTransform().map(QPointF(0, 0));
 }
 
 const QList<Connection *> &Port::connections() const
@@ -126,15 +125,6 @@ void Port::updateConnections()
     }
 }
 
-QVariant Port::itemChange(GraphicsItemChange change, const QVariant &value)
-{
-    if (change == ItemScenePositionHasChanged) {
-        updateConnections();
-    }
-
-    return QGraphicsPathItem::itemChange(change, value);
-}
-
 int Port::index() const
 {
     return m_index;
@@ -166,7 +156,6 @@ QString Port::name() const
 void Port::setName(const QString &name)
 {
     m_name = name;
-    setToolTip(name);
 }
 
 void Port::setDefaultStatus(const Status defaultStatus)
@@ -222,29 +211,8 @@ void Port::hoverEnter()
 
 void Port::updateTheme()
 {
-    // m_currentPen/m_currentBrush exist purely to feed paint() (QGraphicsView-based rendering),
-    // and the update() call below purely to schedule a QGraphicsScene repaint -- both are
-    // unconditionally dead work for a port that was never added to a QGraphicsScene: confirmed
-    // by reading GraphicElement::paint() (calls only m_appearance.render(), never port->paint())
-    // -- ports paint themselves as separate sibling QGraphicsItems via QGraphicsScene's own
-    // child-item traversal, which CanvasItem's offscreen TextureAtlas render (paint() called
-    // directly, no scene involved) never triggers. scene() is a cheap O(1) cached-pointer read,
-    // safe to keep unconditional; everything past it was real, measurable, always-wasted cost on
-    // every single status change for CanvasItem's ports -- see project memory
-    // project_quick_hotspot_fixes_2_landed.md for the profile that found it.
-    if (!scene()) {
-        return;
-    }
-
     const auto &theme = ThemeManager::attributes();
 
-    // m_currentPen (drawn by paint()) is set directly instead of going through the item's
-    // own setPen() -- boundingRect() pads a pen-exact bound (see its own comment) but all
-    // four status pens below share the same implicit default width (theme.m_port*Pen are
-    // bare QColor, converted to QPen here), so the value never actually changes and the
-    // real setPen() would only pay for an unneeded BSP-tree re-index (prepareGeometryChange()).
-    // shape() already uses a fixed hit-area independent of pen width, so unlike Connection
-    // there's no hit-testing reason to ever fall back to the item's real pen either.
     switch (m_status) {
     case Status::Unknown: {
         m_currentPen = theme.m_portUnknownPen;
@@ -267,8 +235,6 @@ void Port::updateTheme()
         break;
     }
     }
-
-    update();
 }
 
 void Port::drainConnections(bool isInput)
@@ -281,17 +247,11 @@ void Port::drainConnections(bool isInput)
         } else {
             conn->setStartPort(nullptr);
         }
-        // No Scene::removeItem call needed: ItemWithId self-unregisters from its
-        // SceneItemRegistry in its own destructor, on any destruction path -- including
-        // this one, where Qt's ~QGraphicsItem cascade dispatches to the non-virtual
-        // QGraphicsScene::removeItem and would otherwise skip our override, leaving a
-        // stale itemById entry pointing at freed memory (the WIREDPANDA-HC family).
         delete conn;
     }
 }
 
-InputPort::InputPort(QGraphicsItem *parent)
-    : Port(parent)
+InputPort::InputPort()
 {
     // Circle: neutral connection point — the signal terminates here
     QPainterPath path;
@@ -349,8 +309,7 @@ bool InputPort::isValid() const
     return m_connections.isEmpty() ? !isRequired() : (m_connections.size() == 1);
 }
 
-OutputPort::OutputPort(QGraphicsItem *parent)
-    : Port(parent)
+OutputPort::OutputPort()
 {
     // Right-pointing triangle: tip toward the wire, indicating signal flows outward
     QPainterPath path;

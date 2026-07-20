@@ -63,7 +63,7 @@ struct ElementInfo<Display14> {
     }();
 };
 
-Display14::Display14(QGraphicsItem *parent)
+Display14::Display14(QObject *parent)
     : GraphicElement(ElementType::Display14, parent)
 {
     a  = Display7::cachedSegmentRenderers(m_appearance.defaultAppearances().at(1));
@@ -121,11 +121,11 @@ void Display14::updatePortsProperties()
     rotatePorts();
 }
 
-void Display14::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void Display14::paint(QPainter *painter)
 {
     // Base class paints the off-state background; active segments are overlaid as vector
     // renders on top, crisp at any zoom.
-    GraphicElement::paint(painter, option, widget);
+    GraphicElement::paint(painter);
 
     const QRectF body(0, 0, 64, 64);
     if (inputPort(0)->status() == Status::Active)  { g1.at(m_colorNumber)->render(painter, body); }

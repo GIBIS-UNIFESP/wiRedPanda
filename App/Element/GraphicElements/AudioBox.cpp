@@ -48,7 +48,7 @@ struct ElementInfo<AudioBox> {
     }();
 };
 
-AudioBox::AudioBox(QGraphicsItem *parent)
+AudioBox::AudioBox(QObject *parent)
     : AudioOutputElement(ElementType::AudioBox, parent)
 {
     if (m_hasOutputDevice) {

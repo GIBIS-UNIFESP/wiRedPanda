@@ -19,7 +19,7 @@ class And : public GraphicElement
 
 public:
     /// Constructs an And gate element with default 2 inputs.
-    explicit And(QGraphicsItem *parent = nullptr);
+    explicit And(QObject *parent = nullptr);
 
     /// Sets output to the logical AND of all inputs.
     void updateLogic() override;

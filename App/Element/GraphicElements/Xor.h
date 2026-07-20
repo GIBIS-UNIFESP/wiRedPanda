@@ -19,7 +19,7 @@ class Xor : public GraphicElement
 
 public:
     /// Constructs an Xor gate element with default 2 inputs.
-    explicit Xor(QGraphicsItem *parent = nullptr);
+    explicit Xor(QObject *parent = nullptr);
 
     /// Sets output to the logical XOR of all inputs.
     void updateLogic() override;

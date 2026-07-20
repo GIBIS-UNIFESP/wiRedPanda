@@ -10,13 +10,9 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
-#include <QGraphicsScene>
-#include <QGraphicsSceneMouseEvent>
-#include <QKeyEvent>
 #include <QPainter>
 #include <QPixmap>
 #include <QRegularExpression>
-#include <QStyleOptionGraphicsItem>
 #include <QSvgRenderer>
 #include <QThread>
 
@@ -40,8 +36,8 @@ static const QFont &labelFont()
     return font;
 }
 
-GraphicElement::GraphicElement(ElementType type, QGraphicsItem *parent)
-    : QGraphicsObject(parent)
+GraphicElement::GraphicElement(ElementType type, QObject *parent)
+    : QObject(parent)
     , m_elementType(type)
     , m_metadata(ElementMetadataRegistry::metadata(type))
 {
@@ -56,22 +52,15 @@ GraphicElement::GraphicElement(ElementType type, QGraphicsItem *parent)
     m_minInputSize = metadata.minInputSize;
     m_minOutputSize = metadata.minOutputSize;
 
-    qCDebug(four) << "Setting flags of elements.";
-    // ItemSendsGeometryChanges is required so itemChange() receives ItemPositionChange and
-    // can snap movement to the grid
-    setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable | QGraphicsItem::ItemSendsGeometryChanges);
-
     qCDebug(four) << "Setting attributes.";
-    m_label->setVisible(metadata.hasLabel);
+    m_label.setVisible(metadata.hasLabel);
     // Font is applied lazily in updateLabel() to avoid expensive text layout
     // passes for elements that never display a label (e.g. IC sub-elements).
-    m_label->setParentItem(this);
-    m_label->setBrush(Qt::black);
+    m_label.setBrush(Qt::black);
     // 64 px below origin keeps the label below the standard 64×64 element body
     setLabelAnchor(QPointF(0, 64));
 
     setPortName(m_translatedName);
-    setToolTip(m_translatedName);
 
     qCDebug(four) << "Including input and output ports.";
     GraphicElement::setInputSize(static_cast<int>(metadata.minInputSize));
@@ -79,10 +68,6 @@ GraphicElement::GraphicElement(ElementType type, QGraphicsItem *parent)
 
     GraphicElement::updatePortsProperties();
     GraphicElement::updateTheme();
-
-    // DeviceCoordinateCache reuses the rendered pixmap when the device transform changes,
-    // giving a large speedup for elements that don't redraw on every pan/zoom
-    setCacheMode(QGraphicsItem::DeviceCoordinateCache);
 
     if (m_appearance.hasDefaultAppearances()) {
         m_appearance.setPixmap(0);
@@ -171,14 +156,56 @@ QRectF GraphicElement::boundingRect() const
     return portsBoundingRect().united(pixmap().rect());
 }
 
+QTransform GraphicElement::elementTransform() const
+{
+    // Oracle-validated (qtquick-rewrite plan, Phase 8a): pivot is pixmapCenter(), flip is
+    // applied BEFORE rotate. Matches QGraphicsItem's own pos()+transformOriginPoint()+
+    // rotation()+transform() composition this class used to get for free.
+    const QPointF origin = pixmapCenter();
+    QTransform t;
+    t.translate(m_pos.x(), m_pos.y());
+    t.translate(origin.x(), origin.y());
+    t.scale(isFlippedX() ? -1 : 1, isFlippedY() ? -1 : 1);
+    t.rotate(rotation());
+    t.translate(-origin.x(), -origin.y());
+    return t;
+}
+
+QRectF GraphicElement::sceneBoundingRect() const
+{
+    if (rotatesGraphic()) {
+        return elementTransform().mapRect(boundingRect());
+    }
+    // Non-rotatable elements never transform their own graphic -- only their ports move
+    // (see portsBoundingRect()'s identical per-port formula) -- so the body itself is just
+    // translated by pos(), matching QGraphicsItem::sceneBoundingRect()'s behavior for an
+    // item with identity rotation/transform.
+    return boundingRect().translated(m_pos);
+}
+
 QRectF GraphicElement::portsBoundingRect() const
 {
     QRectF rectChildren;
-    const auto children = childItems();
 
-    for (auto *child : children) {
-        if (auto *port = qgraphicsitem_cast<Port *>(child)) {
-            rectChildren = rectChildren.united(mapRectFromItem(port, port->boundingRect()));
+    for (auto *port : allPorts()) {
+        if (rotatesGraphic()) {
+            // Rotatable elements apply no per-port transform -- port->pos() is already the
+            // element-local position (the element's own rotation, applied uniformly in
+            // sceneBoundingRect()/elementTransform(), moves it from there).
+            rectChildren = rectChildren.united(port->boundingRect().translated(port->pos()));
+        } else {
+            // Non-rotatable elements bake rotation+flip into each port individually, about a
+            // per-port pivot -- mirrors Port::scenePos()'s identical non-rotatable formula
+            // (oracle-validated against the original QGraphicsItem::setTransform()-based
+            // composition; see that method's own doc comment), minus the element's own pos()
+            // term, since this rect is in the element's *local* frame.
+            const QPointF origin = pixmapCenter() - port->pos();
+            QTransform t;
+            t.translate(origin.x(), origin.y());
+            t.rotate(rotation());
+            t.scale(isFlippedX() ? -1 : 1, isFlippedY() ? -1 : 1);
+            t.translate(-origin.x(), -origin.y());
+            rectChildren = rectChildren.united(t.mapRect(port->boundingRect()).translated(port->pos()));
         }
     }
 
@@ -193,25 +220,13 @@ QRectF GraphicElement::renderBodyBounds() const
 void GraphicElement::setLabelAnchor(const QPointF &pos)
 {
     m_labelAnchor = pos;
-    m_label->setPos(pos);     // baseline: always correct for non-rotatable elements
+    m_label.setPos(pos);      // baseline: always correct for non-rotatable elements
     updateLabelOrientation(); // rotatable elements get position+orientation corrected on top
 }
 
-void GraphicElement::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void GraphicElement::paint(QPainter *painter)
 {
-    Q_UNUSED(widget)
-    Q_UNUSED(option)
-
     m_appearance.render(painter, boundingRect(), isSelected());
-}
-
-void GraphicElement::invalidateRenderCache()
-{
-    // Toggling the mode discards the cached device pixmap; re-enabling it forces the next
-    // paint to re-render the whole item from scratch — the same full regen a pan/zoom
-    // triggers. See the header for why a plain update() is not enough on a size change.
-    setCacheMode(QGraphicsItem::NoCache);
-    setCacheMode(QGraphicsItem::DeviceCoordinateCache);
 }
 
 void GraphicElement::setPortName(const QString &name)
@@ -323,68 +338,6 @@ void GraphicElement::refresh()
     setPixmap(0);
 }
 
-QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value)
-{
-    // Guard against changes fired during construction before the item is added to a scene
-    if (!scene()) {
-        return QGraphicsItem::itemChange(change, value);
-    }
-
-    if (change == ItemPositionChange) {
-        qCDebug(four) << "Align to grid.";
-        QPointF newPos = value.toPointF();
-        // Snap to half-grid (8 px steps) so elements always align with each other
-        // and with the port positions computed in updatePortsProperties().
-        const int gridSize = Constants::gridSize / 2;
-        const int xV = qRound(newPos.x() / gridSize) * gridSize;
-        const int yV = qRound(newPos.y() / gridSize) * gridSize;
-        return QPoint(xV, yV);
-    }
-
-    // Any geometric change (move, rotate, shear) requires redrawing all connected wires
-    if ((change == ItemScenePositionHasChanged) || (change == ItemRotationHasChanged) || (change == ItemTransformHasChanged)) {
-        qCDebug(four) << "Moves wires.";
-        for (auto *port : allPorts()) {
-            port->updateConnections();
-        }
-    }
-
-    if (change == ItemSelectedHasChanged) {
-        m_selected = value.toBool();
-        // Propagate selection highlight to all connected wires so users see which
-        // signals are attached to the selected element
-        highlight(m_selected);
-    }
-
-    return QGraphicsItem::itemChange(change, value);
-}
-
-bool GraphicElement::sceneEvent(QEvent *event)
-{
-    // Swallow Ctrl+click events so the scene's rubber-band selection logic can handle them
-    // without the element intercepting the press and starting a move instead
-    if (event->type() == QEvent::GraphicsSceneMousePress || event->type() == QEvent::GraphicsSceneMouseRelease) {
-        if (auto mouseEvent = dynamic_cast<QGraphicsSceneMouseEvent *>(event)) {
-            if (mouseEvent->modifiers().testFlag(Qt::ControlModifier)) {
-                return true;
-            }
-        }
-    }
-
-    return QGraphicsItem::sceneEvent(event);
-}
-
-void GraphicElement::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
-{
-    if (hasLabel()) {
-        event->accept();
-        emit inlineEditRequested(this);
-        return;
-    }
-
-    QGraphicsItem::mouseDoubleClickEvent(event);
-}
-
 bool GraphicElement::hasAudio() const
 {
     return m_metadata.hasAudio;
@@ -421,11 +374,11 @@ void GraphicElement::updateLabel()
 
     // Apply the shared font on first use — deferred from the constructor to
     // avoid an expensive QTextDocumentLayout pass for elements that never show a label.
-    if (!label.isEmpty() && m_label->font() != labelFont()) {
-        m_label->setFont(labelFont());
+    if (!label.isEmpty() && m_label.font() != labelFont()) {
+        m_label.setFont(labelFont());
     }
 
-    m_label->setText(label);
+    m_label.setText(label);
     // The counter-orientation pivots on the label's centre, which the new text just moved.
     updateLabelOrientation();
     labelContentChanged();
@@ -439,26 +392,15 @@ void GraphicElement::updateLabelOrientation()
         return;
     }
 
-    // The label is a child item and inherits the element's Flip∘Rotate. Left alone, its anchor
-    // point (m_labelAnchor, in the element's un-rotated local frame) would orbit around the
-    // rotation pivot along with everything else -- fine for ports/pins, but it leaves the label
-    // sweeping past wherever the pivot's "below"/"beside" edge currently points to, which for a
-    // wide/tall body (or once ports are packed along an edge) can land it squarely on a pin.
-    // Counter-rotate the anchor's *position* about the same pivot the element itself rotates
-    // about (pixmapCenter()), so it stays fixed in world space -- built by replaying the exact
-    // transform the element applies to its children (its own extra transform(), i.e. the flip
-    // matrix already set by ElementOrientation::applyFlipTransform(), composed with a rotation
-    // about that pivot matching rotation()) and inverting it, rather than hand-deriving the
-    // reversed composition.
-    const QPointF pivot = pixmapCenter();
-
-    QTransform pivotRotate;
-    pivotRotate.translate(pivot.x(), pivot.y());
-    pivotRotate.rotate(rotation());
-    pivotRotate.translate(-pivot.x(), -pivot.y());
-
-    const QTransform elementRotateFlip = pivotRotate * transform();
-    m_label->setPos(elementRotateFlip.inverted().map(m_labelAnchor));
+    // The label inherits the element's Flip∘Rotate. Left alone, its anchor point (m_labelAnchor,
+    // in the element's un-rotated local frame) would orbit around the rotation pivot along with
+    // everything else -- fine for ports/pins, but it leaves the label sweeping past wherever the
+    // pivot's "below"/"beside" edge currently points to, which for a wide/tall body (or once
+    // ports are packed along an edge) can land it squarely on a pin. Counter-rotate the anchor's
+    // *position* about the same pivot the element itself rotates about (pixmapCenter()), so it
+    // stays fixed in world space -- built from the same elementTransform() the element's own
+    // rotation/flip already use, and inverted, rather than hand-deriving the reversed composition.
+    m_label.setPos(elementTransform().inverted().map(m_labelAnchor));
 
     // Independently counter-orient the glyphs themselves so the text reads upright and
     // unmirrored too. Pivots about the label's own local origin (0,0) -- the same point setPos()
@@ -471,7 +413,7 @@ void GraphicElement::updateLabelOrientation()
     QTransform t;
     t.rotate(-rotation());
     t.scale(isFlippedX() ? -1 : 1, isFlippedY() ? -1 : 1);
-    m_label->setTransform(t);
+    m_label.setTransform(t);
 }
 
 void GraphicElement::setLabel(const QString &label)
@@ -487,7 +429,14 @@ QString GraphicElement::label() const
 
 QRectF GraphicElement::labelSceneBoundingRect() const
 {
-    return m_label->sceneBoundingRect();
+    if (m_label.text().isEmpty()) {
+        return {};
+    }
+    QTransform t;
+    t.translate(m_pos.x(), m_pos.y());
+    t.translate(m_label.pos().x(), m_label.pos().y());
+    t *= m_label.transform();
+    return t.mapRect(m_label.boundingRect());
 }
 
 // Color cycle (forward): White → Red → Green → Blue → Purple → White
@@ -517,7 +466,7 @@ void GraphicElement::updateTheme()
 {
     const ThemeAttributes theme = ThemeManager::attributes();
 
-    m_label->setBrush(theme.m_graphicElementLabelColor);
+    m_label.setBrush(theme.m_graphicElementLabelColor);
     m_appearance.applyTheme(theme);
 
     for (auto *input : m_ports.inputs()) {
@@ -527,8 +476,6 @@ void GraphicElement::updateTheme()
     for (auto *output : m_ports.outputs()) {
         output->updateTheme();
     }
-
-    update();
 }
 
 bool GraphicElement::isValid()
@@ -679,10 +626,6 @@ void GraphicElement::setPortSize(const int size, const bool isInput)
         return;
     }
 
-    // Adding/removing ports changes portsBoundingRect(), and thus boundingRect(): notify the
-    // scene's spatial index before mutating so its stale bounds can't crash a later paint.
-    prepareGeometryChange();
-
     if (isInput) {
         m_ports.resizeInputs(size);
     } else {
@@ -787,27 +730,11 @@ void GraphicElement::setMinOutputSize(const int minOutputSize)
     m_minOutputSize = static_cast<quint64>(minOutputSize);
 }
 
-void GraphicElement::highlight(const bool isSelected)
-{
-    for (auto *port : allPorts()) {
-        for (auto *connection : port->connections()) {
-            // Skip connections already in the desired highlight state to avoid
-            // triggering unnecessary repaints
-            if (connection->highLight() == isSelected) {
-                continue;
-            }
-
-            connection->setHighLight(isSelected);
-        }
-    }
-}
-
 void GraphicElement::retranslate()
 {
     m_translatedName = ElementFactory::translatedName(m_elementType);
 
     setPortName(m_translatedName);
-    setToolTip(m_translatedName);
 }
 
 void GraphicElement::loadFromDrop(const QString &fileName, const QString &contextDir)

@@ -42,7 +42,7 @@ struct ElementInfo<And> {
     }();
 };
 
-And::And(QGraphicsItem *parent)
+And::And(QObject *parent)
     : GraphicElement(ElementType::And, parent)
 {
 }

@@ -50,7 +50,7 @@ struct ElementInfo<Buzzer> {
     }();
 };
 
-Buzzer::Buzzer(QGraphicsItem *parent)
+Buzzer::Buzzer(QObject *parent)
     : AudioOutputElement(ElementType::Buzzer, parent, kDefaultVolume)
 {
     if (m_hasOutputDevice) {

@@ -15,8 +15,10 @@
 #pragma once
 
 #include <QBrush>
-#include <QGraphicsPathItem>
+#include <QPainterPath>
 #include <QPen>
+#include <QPointF>
+#include <QTransform>
 
 #include "App/Core/Enums.h"
 
@@ -33,32 +35,22 @@ class Port;
  * It stores a reference to the owning GraphicElement, all attached
  * Connections, and its current logical status.
  *
+ * \details No longer a `QGraphicsPathItem` -- `pos()`/`path()`/etc. below are plain
+ * members/methods, not inherited Qt Graphics View machinery. `scenePos()` computes the
+ * port's world/canvas position fresh from the owning element's current pos()/rotation()/
+ * flip state every call (oracle-validated formula, qtquick-rewrite plan Phase 8a) rather
+ * than caching a transform the way `QGraphicsItem::setTransform()` used to.
+ *
  * Concrete subclasses InputPort and OutputPort differentiate direction.
  */
-class Port : public QGraphicsPathItem
+class Port
 {
 public:
-    // --- Type ---
-
-    enum { Type = QGraphicsItem::UserType + 1 };
-    int type() const override { return Type; }
-
-    /// \reimp Hit-testing uses the full ±kRadius square regardless of the painted glyph.
-    QPainterPath shape() const override;
-
-    /// \reimp Pads the default pen-exact bound by a small margin so DeviceCoordinateCache
-    /// has room to antialias the stroke edge instead of clipping it (visible at high zoom).
-    QRectF boundingRect() const override;
-
-    /// \reimp Draws with m_currentPen instead of the item's own pen() -- see updateTheme()
-    /// for why -- otherwise identical to the default QGraphicsPathItem paint.
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
-
     // --- Lifecycle ---
 
-    /// Constructs the port with optional \a parent item.
-    explicit Port(QGraphicsItem *parent = nullptr);
-    virtual ~Port() = default;
+    /// Constructs the port.
+    Port();
+    virtual ~Port();
 
     // --- Element Access ---
 
@@ -66,6 +58,55 @@ public:
     GraphicElement *graphicElement() { return m_graphicElement; }
     /// \overload
     const GraphicElement *graphicElement() const { return m_graphicElement; }
+
+    // --- Geometry ---
+
+    /// Returns the port's base position, relative to the owning element's local frame.
+    QPointF pos() const { return m_pos; }
+    /// Sets the port's base position.
+    void setPos(const QPointF &pos) { m_pos = pos; }
+    /// \overload
+    void setPos(qreal x, qreal y) { m_pos = QPointF(x, y); }
+
+    /// Returns the glyph shape (circle for InputPort, triangle for OutputPort), in the
+    /// port's own local frame centred on (0,0).
+    QPainterPath path() const { return m_path; }
+    /// Sets the glyph shape. Called once by InputPort/OutputPort's own constructor.
+    void setPath(const QPainterPath &path) { m_path = path; }
+
+    /// Returns \c true if this port should be drawn/hit-tested (Node hides whichever port a
+    /// wireless Tx/Rx mode replaces with a channel). Plain state -- mirrors what
+    /// QGraphicsItem::setVisible()/isVisible() used to provide for free; CanvasItem's own
+    /// rendering/hit-testing doesn't consult this yet (a real, separately-tracked gap).
+    bool isVisible() const { return m_visible; }
+    /// Sets the visibility flag.
+    void setVisible(bool visible) { m_visible = visible; }
+
+    /// Local-frame bounding rect, padded 1 unit beyond the pen-exact glyph bound so a
+    /// device-coordinate-cached paint has room to antialias the stroke edge instead of
+    /// clipping it (visible at high zoom).
+    QRectF boundingRect() const { return m_path.boundingRect().adjusted(-1, -1, 1, 1); }
+
+    /// Returns this port's position in world/canvas coordinates -- the owning element's
+    /// pos()/rotation()/flip state composed with this port's own pos(), computed fresh each
+    /// call. Oracle-validated (qtquick-rewrite plan, Phase 8a): a rotatable element applies
+    /// no per-port transform (its own rotation, applied uniformly, is enough); a
+    /// non-rotatable element bakes rotation+flip into each port individually about a
+    /// per-port pivot (mirrors the original QGraphicsItem::setTransform()-based
+    /// ElementOrientation::orientPort(), now computed lazily here instead of cached on the
+    /// port).
+    QPointF scenePos() const;
+
+    /// Returns the per-port rotate+flip transform a caller composes with pos() to draw this
+    /// port's glyph (path()) correctly oriented -- mirrors what QGraphicsItem::setTransform()
+    /// used to hold cached on Port before it stopped being one. Identity for a rotatable
+    /// element's port: the element's own rotation, applied once by the caller's outer transform,
+    /// already reorients the whole element including its ports, so no separate per-port
+    /// transform is needed there (see scenePos()'s identical rotatesGraphic() branch). For a
+    /// non-rotatable element this is exactly the transform scenePos() maps (0,0) through, minus
+    /// the outer pos() translation -- oracle-validated together with scenePos() (qtquick-rewrite
+    /// plan, Phase 8a).
+    QTransform orientationTransform() const;
 
     // --- Identity & Status ---
 
@@ -143,6 +184,10 @@ public:
      */
     void setCurrentBrush(const QBrush &currentBrush);
 
+    /// Returns the port's currently-painted fill brush -- the status colour, or the transient
+    /// hover-highlight hoverEnter() applies on top of it (see setCurrentBrush()/hoverEnter()).
+    QBrush brush() const { return m_ownBrush; }
+
     /// Returns the pen paint() draws the port outline with for its current status.
     QPen currentPen() const { return m_currentPen; }
 
@@ -180,12 +225,12 @@ public:
     /// Triggers a path update on all attached connections.
     void updateConnections();
 
+    /// No-op, kept for call-site compatibility with the many places that used to call this
+    /// unconditionally when Port was a QGraphicsItem (a scene() guard already made it dead
+    /// work in every one of those cases -- see project_quick_hotspot_fixes_2_landed.md).
+    void show() {}
+
 protected:
-    // --- Qt Event Handling ---
-
-    /// \reimp
-    QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
-
     /**
      * \brief Drains all attached connections, breaking back-references before deletion.
      * \param isInput True if this is an input port (sets endPort to nullptr); false for output.
@@ -201,21 +246,28 @@ protected:
     // --- Members ---
 
     GraphicElement *m_graphicElement = nullptr;
+    QPointF m_pos;
+    QPainterPath m_path;
     QBrush m_currentBrush;
-    /// Pen paint() actually draws the outline with, kept separate from the item's own
-    /// QGraphicsPathItem pen -- see updateTheme() for why (avoids an unneeded BSP-tree
-    /// re-index on every status colour change; all four status pens share the same width,
-    /// so unlike Connection this never needs to fall back to the item's real pen).
+    /// Pen paint() actually draws the outline with, kept separate from m_brush -- see
+    /// updateTheme() for why (avoids recomputing a QPen on every status colour change; all
+    /// four status pens share the same width).
     QPen m_currentPen;
     QList<Connection *> m_connections;
     QString m_name;
     Status m_defaultStatus = Status::Unknown;
     Status m_status = Status::Unknown;
     bool m_required = true;
+    bool m_visible = true;
     int m_index = 0;
 
 private:
+    /// Sets the currently-painted brush directly, bypassing the hover-preserving check
+    /// setCurrentBrush() does. Used by setCurrentBrush() itself and hoverEnter()/hoverLeave().
+    void setBrush(const QBrush &brush) { m_ownBrush = brush; }
     QBrush currentBrush() const;
+
+    QBrush m_ownBrush; ///< The port's currently-painted fill brush; see brush().
 };
 
 /**
@@ -228,8 +280,8 @@ private:
 class InputPort : public Port
 {
 public:
-    /// Constructs an input port attached to \a parent.
-    explicit InputPort(QGraphicsItem *parent = nullptr);
+    /// Constructs an input port.
+    InputPort();
     ~InputPort() override;
 
     // --- Type Queries ---
@@ -260,8 +312,8 @@ private:
 class OutputPort : public Port
 {
 public:
-    /// Constructs an output port attached to \a parent.
-    explicit OutputPort(QGraphicsItem *parent = nullptr);
+    /// Constructs an output port.
+    OutputPort();
     ~OutputPort() override;
 
     // --- Type Queries ---

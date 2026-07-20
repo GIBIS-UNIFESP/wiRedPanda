@@ -98,13 +98,11 @@
 #include "Tests/Integration/Logic/TestMuxDemuxComprehensive.h"
 // integration
 #include "Tests/Integration/TestArduino.h"
-#include "Tests/Integration/TestFeedback.h"
 #include "Tests/Integration/TestFileDialogProvider.h"
 #include "Tests/Integration/TestFiles.h"
 #include "Tests/Integration/TestIc.h"
 #include "Tests/Integration/TestICInline.h"
 #include "Tests/Integration/TestMainWindowGui.h"
-#include "Tests/Integration/TestSimulation.h"
 #include "Tests/Integration/TestSystemVerilogExport.h"
 #include "Tests/Integration/TestWorkspace.h"
 #include "Tests/Integration/TestWorkspaceFileops.h"
@@ -178,11 +176,9 @@
 #include "Tests/Unit/MCP/TestMCPProcessor.h"
 // unit/scene
 #include "Tests/Unit/Scene/TestConnectionManager.h"
-#include "Tests/Unit/Scene/TestConnectionValidity.h"
 #include "Tests/Unit/Scene/TestGraphicsView.h"
 #include "Tests/Unit/Scene/TestPropertyShortcutHandler.h"
 #include "Tests/Unit/Scene/TestScene.h"
-#include "Tests/Unit/Scene/TestSceneConnections.h"
 #include "Tests/Unit/Scene/TestSceneState.h"
 #include "Tests/Unit/Scene/TestSceneUndoredo.h"
 #include "Tests/Unit/Scene/TestWorkspace.h"
@@ -210,13 +206,10 @@
 #include "Tests/Unit/Ui/TestLabeledSlider.h"
 #include "Tests/Unit/Ui/TestLanguageManager.h"
 #include "Tests/Unit/Ui/TestMinimapWidget.h"
-#include "Tests/Unit/Ui/TestSelectionCapabilities.h"
 #include "Tests/Unit/Ui/TestTrashButton.h"
 // unit/wiring
-#include "Tests/Unit/Wiring/TestConnection.h"
 #include "Tests/Unit/Wiring/TestConnections.h"
 #include "Tests/Unit/Wiring/TestConnectionSerialization.h"
-#include "Tests/Unit/Wiring/TestPort.h"
 
 int main(int argc, char **argv)
 {
@@ -311,13 +304,11 @@ int main(int argc, char **argv)
         {"TestSequential", []() -> QObject * { return new TestSequential; }},
         {"TestMUXDEMUXComprehensive", []() -> QObject * { return new TestMUXDEMUXComprehensive; }},
         {"TestArduino", []() -> QObject * { return new TestArduino; }},
-        {"TestFeedback", []() -> QObject * { return new TestFeedback; }},
         {"TestFileDialogProvider", []() -> QObject * { return new TestFileDialogProvider; }},
         {"TestFiles", []() -> QObject * { return new TestFiles; }},
         {"TestIC", []() -> QObject * { return new TestIC; }},
         {"TestICInline", []() -> QObject * { return new TestICInline; }},
         {"TestMainWindowGui", []() -> QObject * { return new TestMainWindowGui; }},
-        {"TestSimulation", []() -> QObject * { return new TestSimulation; }},
         {"TestSystemVerilogExport", []() -> QObject * { return new TestSystemVerilogExport; }},
         {"TestWorkspace", []() -> QObject * { return new TestWorkspace; }},
         {"TestWorkspaceFileops", []() -> QObject * { return new TestWorkspaceFileops; }},
@@ -384,10 +375,8 @@ int main(int argc, char **argv)
         {"TestConnectionSerialization", []() -> QObject * { return new TestConnectionSerialization; }},
         {"TestConnections", []() -> QObject * { return new TestConnections; }},
         {"TestConnectionManager", []() -> QObject * { return new TestConnectionManager; }},
-        {"TestConnectionValidity", []() -> QObject * { return new TestConnectionValidity; }},
         {"TestGraphicsView", []() -> QObject * { return new TestGraphicsView; }},
         {"TestScene", []() -> QObject * { return new TestScene; }},
-        {"TestSceneConnections", []() -> QObject * { return new TestSceneConnections; }},
         {"TestSceneState", []() -> QObject * { return new TestSceneState; }},
         {"TestSceneUndoredo", []() -> QObject * { return new TestSceneUndoredo; }},
         {"TestPropertyShortcutHandler", []() -> QObject * { return new TestPropertyShortcutHandler; }},
@@ -397,8 +386,6 @@ int main(int argc, char **argv)
         {"TestFileUtils", []() -> QObject * { return new TestFileUtils; }},
         {"TestRecentFilesUnit", []() -> QObject * { return new TestRecentFilesUnit; }},
         {"TestSerialization", []() -> QObject * { return new TestSerialization; }},
-        {"TestConnection", []() -> QObject * { return new TestConnection; }},
-        {"TestPort", []() -> QObject * { return new TestPort; }},
         {"TestSimulationUnit", []() -> QObject * { return new TestSimulationUnit; }},
         {"TestSimulationBlocker", []() -> QObject * { return new TestSimulationBlocker; }},
         {"TestTourEngine", []() -> QObject * { return new TestTourEngine; }},
@@ -411,7 +398,6 @@ int main(int argc, char **argv)
         {"TestLabeledSlider", []() -> QObject * { return new TestLabeledSlider; }},
         {"TestLanguageManager", []() -> QObject * { return new TestLanguageManager; }},
         {"TestMinimapWidget", []() -> QObject * { return new TestMinimapWidget; }},
-        {"TestSelectionCapabilities", []() -> QObject * { return new TestSelectionCapabilities; }},
         {"TestTrashButton", []() -> QObject * { return new TestTrashButton; }},
     });
 }

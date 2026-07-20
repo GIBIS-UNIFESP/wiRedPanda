@@ -17,7 +17,6 @@
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/IC.h"
-#include "App/Scene/Scene.h"
 #include "App/Simulation/Simulation.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
@@ -135,7 +134,7 @@ QString ArduinoCodeGen::otherPortNameImpl(Port *port, QSet<Port *> &visited)
 void ArduinoCodeGen::generate()
 {
     try {
-        m_txInputPorts = Scene::wirelessTxInputPorts(m_elements);
+        m_txInputPorts = CodeGenUtils::wirelessTxInputPorts(m_elements);
         m_hasSequential = hasNativeMemory(m_elements);
 
         int requiredInputPins = 0;
@@ -698,7 +697,7 @@ void ArduinoCodeGen::assignVariablesRec(const QVector<GraphicElement *> &element
                         boundaryInputs.insert(boundaryElement);
                     }
                 }
-                auto sortedInternal = Scene::sortByTopology(ic->internalElements());
+                auto sortedInternal = CodeGenUtils::sortByTopology(ic->internalElements());
                 std::stable_partition(sortedInternal.begin(), sortedInternal.end(),
                     [&boundaryInputs](GraphicElement *e) { return boundaryInputs.contains(e); });
                 assignVariablesRec(sortedInternal);

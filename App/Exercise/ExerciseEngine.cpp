@@ -4,12 +4,10 @@
 #include "App/Exercise/ExerciseEngine.h"
 
 #include <QDebug>
-#include <QPointer>
 
 #include "App/Core/Settings.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
-#include "App/Scene/Scene.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
 
@@ -64,39 +62,6 @@ ExerciseEngine::ExerciseEngine(QObject *parent)
 bool ExerciseEngine::loadFromResource(const QString &resourcePath)
 {
     return m_core.loadFromResource(resourcePath);
-}
-
-void ExerciseEngine::setScene(Scene *scene)
-{
-    if (m_disconnectFn) {
-        m_disconnectFn();
-    }
-    if (scene) {
-        // A local QPointer, captured by value into each closure below -- not a class member --
-        // for the usual destroyed-out-from-under-us safety net without this class ever storing
-        // Scene* itself (see m_connectFn's doc comment for why that matters).
-        const QPointer<Scene> safeScene(scene);
-        m_connectFn = [this, safeScene] {
-            if (safeScene) {
-                connect(safeScene, &Scene::circuitHasChanged, this, &ExerciseEngine::onCircuitChanged);
-            }
-        };
-        m_disconnectFn = [this, safeScene] {
-            if (safeScene) {
-                disconnect(safeScene, &Scene::circuitHasChanged, this, &ExerciseEngine::onCircuitChanged);
-            }
-        };
-        m_elementsFn = [safeScene] {
-            return safeScene ? safeScene->elements() : QVector<GraphicElement *>{};
-        };
-    } else {
-        m_connectFn = nullptr;
-        m_disconnectFn = nullptr;
-        m_elementsFn = nullptr;
-    }
-    if (scene && m_core.isActive()) {
-        m_connectFn();
-    }
 }
 
 QVector<GraphicElement *> ExerciseEngine::currentElements() const

@@ -51,7 +51,7 @@ struct ElementInfo<Clock> {
     }();
 };
 
-Clock::Clock(QGraphicsItem *parent)
+Clock::Clock(QObject *parent)
     : GraphicElementInput(ElementType::Clock, parent)
 {
     // Frequency, interval, delay, and locked state are all covered by member

@@ -31,10 +31,10 @@ public:
     static constexpr const char *kDefaultAudioPath = ":/Components/Output/Audio/wiredpanda.wav";
 
     /// Constructs an AudioBox element.
-    explicit AudioBox(QGraphicsItem *parent = nullptr);
+    explicit AudioBox(QObject *parent = nullptr);
 
     /// Copy-constructs by delegating to the parent item constructor.
-    AudioBox(const AudioBox &other) : AudioBox(other.parentItem()) {}
+    AudioBox(const AudioBox &other) : AudioBox(other.parent()) {}
 
     // --- State Queries ---
 

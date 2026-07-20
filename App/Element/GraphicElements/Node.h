@@ -7,9 +7,10 @@
 
 #pragma once
 
-#include "App/Element/GraphicElement.h"
+#include <QPixmap>
+#include <QTransform>
 
-class QGraphicsPixmapItem;
+#include "App/Element/GraphicElement.h"
 
 /**
  * \class Node
@@ -28,7 +29,7 @@ public:
     // --- Lifecycle ---
 
     /// Constructs the element with optional \a parent.
-    explicit Node(QGraphicsItem *parent = nullptr);
+    explicit Node(QObject *parent = nullptr);
 
     // --- Visual ---
 
@@ -61,9 +62,23 @@ public:
     void load(QDataStream &stream, SerializationContext &context) override;
 
 private:
+    /// Plain, framework-agnostic replacement for the QGraphicsPixmapItem child the wireless
+    /// broadcast-arcs indicator used to be. CanvasItem doesn't render this yet -- a real,
+    /// separately-tracked missing Quick feature, not addressed here -- so this is scaffolding
+    /// for a future paint()-style consumer (mirroring GraphicElementLabel's pos()+transform()+
+    /// isVisible() shape) rather than something exercised by CanvasItem.cpp today. An empty
+    /// (null) pixmap means "never rendered yet", equivalent to the old lazily-constructed
+    /// pointer being null.
+    struct WirelessIndicator {
+        QPixmap pixmap;
+        QPointF pos;
+        QTransform transform;
+        bool visible = false;
+    };
+
     void updateWirelessColor(Status status);
 
     WirelessMode m_wirelessMode = WirelessMode::None;
-    QGraphicsPixmapItem *m_wirelessIndicator = nullptr;
+    WirelessIndicator m_wirelessIndicator;
     QColor m_wirelessColor;
 };

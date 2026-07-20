@@ -47,12 +47,12 @@ bool isReadOnlyFailure(QFileDevice::FileError error)
 /// body, split across CanvasItem's two separately-typed overloads (see CanvasItem.h's doc
 /// comment on addItem()). Unlike CanvasCommandUtils::addItems(), does not select the item --
 /// a top-level file load shouldn't leave everything selected the way a paste/duplicate does.
-void addLoadedItem(CanvasItem *canvas, QGraphicsItem *item, int &lastId)
+void addLoadedItem(CanvasItem *canvas, ItemWithId *item, int &lastId)
 {
-    if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item)) {
+    if (auto *elm = dynamic_cast<GraphicElement *>(item)) {
         canvas->addItem(elm);
         lastId = (std::max)(lastId, elm->id());
-    } else if (auto *conn = qgraphicsitem_cast<Connection *>(item)) {
+    } else if (auto *conn = dynamic_cast<Connection *>(item)) {
         canvas->addItem(conn);
     }
 }
@@ -183,7 +183,7 @@ QuickWorkSpace::SaveOutcome QuickWorkSpace::save(const QString &fileName)
         QDataStream payloadStream(&payload, QIODevice::WriteOnly);
         payloadStream.setVersion(QDataStream::Qt_5_12);
         payloadStream << metadata;
-        QList<QGraphicsItem *> allItems;
+        QList<ItemWithId *> allItems;
         for (auto *elm : m_canvas->elements()) {
             allItems.append(elm);
         }
@@ -297,7 +297,7 @@ void QuickWorkSpace::save(QDataStream &stream)
     payloadStream.setVersion(QDataStream::Qt_5_12);
 
     payloadStream << metadata;
-    QList<QGraphicsItem *> allItems;
+    QList<ItemWithId *> allItems;
     for (auto *elm : m_canvas->elements()) {
         allItems.append(elm);
     }
@@ -598,7 +598,7 @@ void QuickWorkSpace::onChildICBlobSaved(int icElementId, const QByteArray &blob)
 
 void QuickWorkSpace::removeEmbeddedIC(const QString &blobName)
 {
-    QList<QGraphicsItem *> toDelete;
+    QList<ItemWithId *> toDelete;
 
     for (auto *elm : m_canvas->elements()) {
         if (elm->isEmbedded() && elm->blobName() == blobName) {

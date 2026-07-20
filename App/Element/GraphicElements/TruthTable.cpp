@@ -3,7 +3,6 @@
 
 #include "App/Element/GraphicElements/TruthTable.h"
 
-#include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QSvgRenderer>
 
@@ -49,7 +48,7 @@ struct ElementInfo<TruthTable> {
     }();
 };
 
-TruthTable::TruthTable(QGraphicsItem *parent)
+TruthTable::TruthTable(QObject *parent)
     : GraphicElement(ElementType::TruthTable, parent)
 {
     // 2048 bits = 256 rows × 8 output columns (max: 8 inputs × 8 outputs).
@@ -76,10 +75,6 @@ void TruthTable::updatePortsProperties()
 
         for (auto *port : inputs()) {
 
-            if (!rotatesGraphic()) {
-                port->setRotation(0);
-            }
-
             port->setPos(0, y);
 
             y += step * 2;
@@ -97,10 +92,6 @@ void TruthTable::updatePortsProperties()
         int y = 32 - (static_cast<int>(outputs().size()) * step) + step;
 
         for (auto *port : outputs()) {
-
-            if (!rotatesGraphic()) {
-                port->setRotation(0);
-            }
 
             port->setPos(64, y);
 
@@ -186,11 +177,8 @@ void TruthTable::drawBody(QPainter *painter)
     painter->restore();
 }
 
-void TruthTable::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void TruthTable::paint(QPainter *painter)
 {
-    Q_UNUSED(widget)
-    Q_UNUSED(option)
-
     if (isSelected()) {
         painter->save();
         painter->setBrush(m_appearance.selectionBrush());
@@ -202,12 +190,6 @@ void TruthTable::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
 
     // Draw the body as vectors (crisp at any zoom) rather than blitting a fixed-resolution pixmap.
     drawBody(painter);
-}
-
-void TruthTable::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
-{
-    event->accept();
-    emit requestOpenTruthTableEditor();
 }
 
 QBitArray &TruthTable::key()

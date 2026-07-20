@@ -5,7 +5,6 @@
 
 #include <algorithm>
 
-#include <QGraphicsView>
 #include <QGuiApplication>
 #include <QScreen>
 
@@ -408,25 +407,25 @@ bool Simulation::initialize()
     auto items = m_host->simulationItems();
 
     // Sort items by position coordinates for consistent ordering between runs.
-    // QGraphicsScene::items() returns items in an unspecified Z/stacking order;
-    // stabilising on (Y, X) gives deterministic wire-update sequences across
-    // sessions and makes test results reproducible.
+    // QGraphicsScene::items() (the original Widgets host) returned items in an unspecified
+    // Z/stacking order; stabilising on (Y, X) gives deterministic wire-update sequences across
+    // sessions and makes test results reproducible. Only GraphicElement has a real position --
+    // a non-element item (there are none in practice; every SimulationHost::simulationItems()
+    // implementation returns GraphicElements only) sorts as if at the origin.
     std::stable_sort(items.begin(), items.end(), [](const auto &a, const auto &b) {
         if (!a || !b) {
             return a != nullptr;
         }
+        const auto *elementA = dynamic_cast<const GraphicElement *>(a);
+        const auto *elementB = dynamic_cast<const GraphicElement *>(b);
+        const QPointF posA = elementA ? elementA->pos() : QPointF();
+        const QPointF posB = elementB ? elementB->pos() : QPointF();
         // Sort by Y coordinate first, then X coordinate for consistent 2D ordering
-        if (qFuzzyCompare(a->y(), b->y())) {
-            return a->x() < b->x();
+        if (qFuzzyCompare(posA.y(), posB.y())) {
+            return posA.x() < posB.x();
         }
-        return a->y() < b->y();
+        return posA.y() < posB.y();
     });
-
-    // A scene with only one item is the scene border/background rectangle;
-    // there is no circuit yet, so building a simulation graph would be pointless.
-    if (items.size() == 1) {
-        return false;
-    }
 
     qCDebug(two) << "GENERATING SIMULATION LAYER.";
 
@@ -437,11 +436,7 @@ bool Simulation::initialize()
             continue;
         }
 
-        if (item->type() == GraphicElement::Type) {
-            auto *element = qgraphicsitem_cast<GraphicElement *>(item);
-            if (!element) {
-                continue;
-            }
+        if (auto *element = dynamic_cast<GraphicElement *>(item)) {
             elements.append(element);
 
             if (element->elementType() == ElementType::Clock) {

@@ -40,7 +40,7 @@ struct ElementInfo<Line> {
 // Line is a purely decorative element: 0 inputs and 0 outputs mean it has no
 // simulation role. It exists so users can draw visual separators and annotation
 // lines on the canvas.
-Line::Line(QGraphicsItem *parent)
+Line::Line(QObject *parent)
     : GraphicElement(ElementType::Line, parent)
 {
 }

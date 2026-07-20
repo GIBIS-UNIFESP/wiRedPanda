@@ -7,6 +7,12 @@
 #include "App/Element/GraphicElement.h"
 #include "App/Wiring/Port.h"
 
+ElementPorts::~ElementPorts()
+{
+    qDeleteAll(m_inputPorts);
+    qDeleteAll(m_outputPorts);
+}
+
 InputPort *ElementPorts::inputPort(const int index) const
 {
     if (index < 0 || index >= m_inputPorts.size()) {
@@ -58,11 +64,11 @@ void ElementPorts::addPort(const QString &name, const bool isOutput)
     Port *port = nullptr;
 
     if (isOutput) {
-        m_outputPorts.push_back(new OutputPort(m_owner));
+        m_outputPorts.push_back(new OutputPort());
         port = m_outputPorts.constLast();
         port->setIndex(outputSize() - 1);
     } else {
-        m_inputPorts.push_back(new InputPort(m_owner));
+        m_inputPorts.push_back(new InputPort());
         port = m_inputPorts.constLast();
         port->setIndex(inputSize() - 1);
     }

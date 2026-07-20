@@ -56,7 +56,7 @@ Signals collect(const QVector<GraphicElement *> &elements)
     }
 
     for (auto *elm : elements) {
-        if (!elm || (elm->type() != GraphicElement::Type)) {
+        if (!elm) {
             continue;
         }
 

@@ -74,7 +74,7 @@ void WaveformSimulator::sweep(const QVector<GraphicElementInput *> &inputs,
     // prior simulation run that may have left flip-flops in a different state.
     qCDebug(zero) << "Resetting simulation state of all elements.";
     for (auto *elm : allElements) {
-        if (elm && elm->type() == GraphicElement::Type) {
+        if (elm) {
             elm->resetSimState();
         }
     }

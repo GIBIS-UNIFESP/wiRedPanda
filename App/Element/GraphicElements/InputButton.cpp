@@ -3,8 +3,6 @@
 
 #include "App/Element/GraphicElements/InputButton.h"
 
-#include <QGraphicsSceneMouseEvent>
-
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 #include "App/IO/Serialization.h"
@@ -46,31 +44,10 @@ struct ElementInfo<InputButton> {
     }();
 };
 
-InputButton::InputButton(QGraphicsItem *parent)
+InputButton::InputButton(QObject *parent)
     : GraphicElementInput(ElementType::InputButton, parent)
 {
     InputButton::setOff();
-}
-
-void InputButton::mousePressEvent(QGraphicsSceneMouseEvent *event)
-{
-    // Momentary action: button goes HIGH on press, LOW on release (unlike InputSwitch which latches)
-    if (!m_locked && (event->button() == Qt::LeftButton)) {
-        setOn();
-        event->accept();
-    }
-
-    QGraphicsItem::mousePressEvent(event);
-}
-
-void InputButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
-{
-    if (!m_locked && (event->button() == Qt::LeftButton)) {
-        setOff();
-        event->accept();
-    }
-
-    QGraphicsItem::mouseReleaseEvent(event);
 }
 
 void InputButton::save(QDataStream &stream, SerializationOptions options) const

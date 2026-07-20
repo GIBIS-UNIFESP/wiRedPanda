@@ -37,7 +37,7 @@ struct ElementInfo<DFlipFlop> {
     }();
 };
 
-DFlipFlop::DFlipFlop(QGraphicsItem *parent)
+DFlipFlop::DFlipFlop(QObject *parent)
     : GraphicElement(ElementType::DFlipFlop, parent)
 {
     // Call the most-derived override explicitly (see SRFlipFlop.cpp for rationale).
