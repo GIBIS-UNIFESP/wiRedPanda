@@ -660,16 +660,12 @@ add_library(test_utils STATIC ${TEST_UTILS_SOURCES} ${TEST_UTILS_HEADERS})
 target_link_libraries(test_utils PUBLIC "$<COMPILE_ONLY:wiredpanda_lib>")
 target_compile_definitions(test_utils PRIVATE CURRENTDIR=${CMAKE_CURRENT_SOURCE_DIR}/Tests)
 
-# Helper library for shared circuit builders (register file, memory tests)
-add_library(memory_helpers STATIC ${MEMORY_HELPERS_SOURCES} ${MEMORY_HELPERS_HEADERS})
-target_link_libraries(memory_helpers PUBLIC "$<COMPILE_ONLY:wiredpanda_lib>" test_utils)
-
 # ---- Single consolidated test executable ----
 # All test classes in one binary; CTest registers per-class entries.
 # Usage: ./build/test_wiredpanda ClassName [functionName]
 add_executable(test_wiredpanda ${TEST_WIREDPANDA_SOURCES} ${TEST_WIREDPANDA_HEADERS})
 link_wiredpanda_whole_archive(test_wiredpanda)
-target_link_libraries(test_wiredpanda PRIVATE test_utils wiredpanda_resources memory_helpers)
+target_link_libraries(test_wiredpanda PRIVATE test_utils wiredpanda_resources)
 target_compile_definitions(test_wiredpanda PRIVATE
     CURRENTDIR=${CMAKE_CURRENT_SOURCE_DIR}/Tests
 )
