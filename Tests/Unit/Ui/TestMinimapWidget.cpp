@@ -4,6 +4,7 @@
 #include "Tests/Unit/Ui/TestMinimapWidget.h"
 
 #include <QGraphicsRectItem>
+#include <QSignalSpy>
 
 #include "App/Core/ThemeManager.h"
 #include "App/Scene/Scene.h"
@@ -328,6 +329,372 @@ void TestMinimapWidget::testHoverStateOverInteriorClearsHighlightAndCursor()
     QCOMPARE(minimap.m_hoverResizeMode, MinimapWidget::ResizeMode::None);
     QVERIFY(!minimap.m_hoverMoveHandle);
     QCOMPARE(minimap.cursor().shape(), Qt::ArrowCursor);
+}
+
+void TestMinimapWidget::testSizeHint()
+{
+    WorkSpace workspace;
+    MinimapWidget minimap(workspace.scene(), workspace.view());
+    QCOMPARE(minimap.sizeHint(), QSize(200, 150));
+}
+
+void TestMinimapWidget::testPaintEventNoOpWithoutSceneOrView()
+{
+    MinimapWidget minimap(nullptr, nullptr);
+    // Must not crash despite a null event -- the guard returns before the event (or anything
+    // else) is touched.
+    minimap.paintEvent(nullptr);
+}
+
+void TestMinimapWidget::testCursorForResizeModeMapsEachModeToExpectedCursor()
+{
+    WorkSpace workspace;
+    MinimapWidget minimap(workspace.scene(), workspace.view());
+    using Mode = MinimapWidget::ResizeMode;
+
+    QCOMPARE(minimap.cursorForResizeMode(Mode::Top), Qt::SizeVerCursor);
+    QCOMPARE(minimap.cursorForResizeMode(Mode::Bottom), Qt::SizeVerCursor);
+    QCOMPARE(minimap.cursorForResizeMode(Mode::Left), Qt::SizeHorCursor);
+    QCOMPARE(minimap.cursorForResizeMode(Mode::Right), Qt::SizeHorCursor);
+    QCOMPARE(minimap.cursorForResizeMode(Mode::TopLeft), Qt::SizeFDiagCursor);
+    QCOMPARE(minimap.cursorForResizeMode(Mode::BottomRight), Qt::SizeFDiagCursor);
+    QCOMPARE(minimap.cursorForResizeMode(Mode::TopRight), Qt::SizeBDiagCursor);
+    QCOMPARE(minimap.cursorForResizeMode(Mode::BottomLeft), Qt::SizeBDiagCursor);
+    QCOMPARE(minimap.cursorForResizeMode(Mode::None), Qt::ArrowCursor);
+}
+
+void TestMinimapWidget::testMousePressGuardsNullSceneOrView()
+{
+    MinimapWidget minimap(nullptr, nullptr);
+    QMouseEvent event(QEvent::MouseButtonPress, QPointF(5, 5), QPointF(5, 5), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+    minimap.mousePressEvent(&event);
+
+    // The guard returns before touching any state -- none of the drag/resize/move flags
+    // must flip just because a press arrived with nothing to navigate.
+    QVERIFY(!minimap.m_resizing);
+    QVERIFY(!minimap.m_moving);
+    QVERIFY(!minimap.m_dragging);
+}
+
+void TestMinimapWidget::testMousePressOnResizeHandleStartsResizing()
+{
+    WorkSpace workspace;
+    MinimapWidget minimap(workspace.scene(), workspace.view());
+
+    QMouseEvent event(QEvent::MouseButtonPress, QPointF(0, 0), QPointF(0, 0), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+    minimap.mousePressEvent(&event);
+
+    QVERIFY(minimap.m_resizing);
+    QCOMPARE(minimap.m_resizeMode, MinimapWidget::ResizeMode::TopLeft);
+    QVERIFY(!minimap.m_moving);
+    QVERIFY(!minimap.m_dragging);
+    QVERIFY(event.isAccepted());
+
+    minimap.releaseMouse();
+}
+
+void TestMinimapWidget::testMousePressOnMoveHandleStartsMoving()
+{
+    WorkSpace workspace;
+    MinimapWidget minimap(workspace.scene(), workspace.view());
+
+    // Top strip (moveHandleRect), away from any corner's resize zone.
+    const QPointF pos(minimap.width() / 2.0, 15.0);
+    QMouseEvent event(QEvent::MouseButtonPress, pos, pos, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+    minimap.mousePressEvent(&event);
+
+    QVERIFY(minimap.m_moving);
+    QVERIFY(!minimap.m_resizing);
+    QVERIFY(event.isAccepted());
+
+    minimap.releaseMouse();
+}
+
+void TestMinimapWidget::testMousePressElsewhereCentersViewAndStartsDragging()
+{
+    WorkSpace workspace;
+    workspace.view()->resize(100, 100); // small but non-degenerate viewport to center within
+    auto *rectItem = new QGraphicsRectItem(QRectF(0, 0, 4000, 2000));
+    rectItem->setPen(Qt::NoPen);
+    workspace.scene()->addItem(rectItem);
+    workspace.scene()->setSceneRect(QRectF(0, 0, 4000, 2000));
+
+    MinimapWidget minimap(workspace.scene(), workspace.view());
+
+    const QPointF centerBefore = workspace.view()->mapToScene(workspace.view()->viewport()->rect().center());
+
+    const QPointF pressPos(20.0, minimap.height() / 2.0); // interior, off-center
+    QMouseEvent event(QEvent::MouseButtonPress, pressPos, pressPos, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+    minimap.mousePressEvent(&event);
+
+    QVERIFY(minimap.m_dragging);
+    QVERIFY(!minimap.m_resizing);
+    QVERIFY(!minimap.m_moving);
+    QVERIFY(event.isAccepted());
+
+    const QPointF centerAfter = workspace.view()->mapToScene(workspace.view()->viewport()->rect().center());
+    QVERIFY2(centerAfter != centerBefore, "mousePressEvent must recenter the view on the pressed point");
+}
+
+void TestMinimapWidget::testWheelEventSwallowsEvent()
+{
+    WorkSpace workspace;
+    MinimapWidget minimap(workspace.scene(), workspace.view());
+
+    QWheelEvent event(QPointF(10, 10), QPointF(10, 10), QPoint(0, 0), QPoint(0, 120),
+                       Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase, false);
+    minimap.wheelEvent(&event);
+
+    QVERIFY(event.isAccepted());
+}
+
+void TestMinimapWidget::testApplyResizeFallsBackToSquareAspectWithNoScene()
+{
+    MinimapWidget minimap(nullptr, nullptr);
+    minimap.m_resizeMode = MinimapWidget::ResizeMode::Right;
+    minimap.m_lastGlobalPos = QPoint(0, 0);
+    const QRect oldGeom = minimap.geometry();
+
+    minimap.applyResize(QPoint(40, 0));
+
+    // No scene to derive an aspect ratio from -> falls back to 1:1, so a horizontal-only
+    // drag still updates the height to match the new (now-square) width.
+    QCOMPARE(minimap.width(), oldGeom.width() + 40);
+    QCOMPARE(minimap.height(), minimap.width());
+}
+
+void TestMinimapWidget::testApplyResizeDiagonalHorizontalDominant()
+{
+    WorkSpace workspace;
+    auto *rectItem = new QGraphicsRectItem(QRectF(0, 0, 400, 200)); // 2:1 aspect
+    rectItem->setPen(Qt::NoPen);
+    workspace.scene()->addItem(rectItem);
+
+    MinimapWidget minimap(workspace.scene(), workspace.view());
+    minimap.m_resizeMode = MinimapWidget::ResizeMode::BottomRight;
+    minimap.m_lastGlobalPos = QPoint(0, 0);
+    const QRect oldGeom = minimap.geometry();
+
+    minimap.applyResize(QPoint(40, 5)); // horizontal delta dominates
+
+    QCOMPARE(minimap.width(), oldGeom.width() + 40);
+    QVERIFY2(qAbs(static_cast<double>(minimap.width()) / minimap.height() - 2.0) < 0.05,
+             "height must be derived from the locked 2:1 aspect ratio");
+}
+
+void TestMinimapWidget::testApplyResizeDiagonalVerticalDominant()
+{
+    WorkSpace workspace;
+    auto *rectItem = new QGraphicsRectItem(QRectF(0, 0, 400, 200)); // 2:1 aspect
+    rectItem->setPen(Qt::NoPen);
+    workspace.scene()->addItem(rectItem);
+
+    MinimapWidget minimap(workspace.scene(), workspace.view());
+    minimap.m_resizeMode = MinimapWidget::ResizeMode::BottomRight;
+    minimap.m_lastGlobalPos = QPoint(0, 0);
+    const QRect oldGeom = minimap.geometry();
+
+    minimap.applyResize(QPoint(5, 40)); // vertical delta dominates
+
+    QCOMPARE(minimap.height(), oldGeom.height() + 40);
+    QVERIFY2(qAbs(static_cast<double>(minimap.width()) / minimap.height() - 2.0) < 0.05,
+             "width must be derived from the locked 2:1 aspect ratio");
+}
+
+void TestMinimapWidget::testApplyResizeAtWidthFloorRederivesHeightFromAspect()
+{
+    // Regression test for a real bug: applyResize() used to clamp width/height to their
+    // minimums independently (qMax) *before* checking whether a clamp had actually happened,
+    // so the "re-derive the other dimension from the locked aspect ratio" branches right below
+    // were dead code -- hitting the width floor silently fell back to the raw minimumHeight()
+    // instead of a height that still matches the locked aspect.
+    WorkSpace workspace;
+    // 1.3:1 aspect -- close to, but distinct from, the widget's own minimum-size ratio
+    // (160x120 = 1.333:1), so a wrong fallback-to-raw-minimum is numerically distinguishable
+    // from the correct aspect-derived value (123 vs 120).
+    auto *rectItem = new QGraphicsRectItem(QRectF(0, 0, 130, 100));
+    rectItem->setPen(Qt::NoPen);
+    workspace.scene()->addItem(rectItem);
+
+    MinimapWidget minimap(workspace.scene(), workspace.view());
+    minimap.m_resizeMode = MinimapWidget::ResizeMode::Right;
+    minimap.m_lastGlobalPos = QPoint(0, 0);
+    minimap.applyResize(QPoint(-1000, 0)); // drag drastically inward, past the width floor
+
+    QCOMPARE(minimap.width(), minimap.minimumWidth());
+    QCOMPARE(minimap.height(), 123); // qRound(160 / 1.3), not the raw minimumHeight() of 120
+}
+
+void TestMinimapWidget::testApplyResizeAtHeightFloorRederivesWidthFromAspect()
+{
+    // Symmetric regression test to testApplyResizeAtWidthFloorRederivesHeightFromAspect(),
+    // for the height-floor branch.
+    WorkSpace workspace;
+    auto *rectItem = new QGraphicsRectItem(QRectF(0, 0, 400, 200)); // 2:1 aspect
+    rectItem->setPen(Qt::NoPen);
+    workspace.scene()->addItem(rectItem);
+
+    MinimapWidget minimap(workspace.scene(), workspace.view()); // starts at 220x160
+    minimap.m_resizeMode = MinimapWidget::ResizeMode::Bottom;
+    minimap.m_lastGlobalPos = QPoint(0, 0);
+    minimap.applyResize(QPoint(0, -50)); // drag the bottom edge up past the height floor
+
+    QCOMPARE(minimap.height(), minimap.minimumHeight());
+    QCOMPARE(minimap.width(), 240); // qRound(120 * 2.0), not the raw (unclamped) 220
+}
+
+void TestMinimapWidget::testMoveByIsNoOpWithoutParent()
+{
+    WorkSpace workspace;
+    MinimapWidget minimap(workspace.scene(), workspace.view()); // no parent
+    const QPoint posBefore = minimap.pos();
+
+    minimap.moveBy(QPoint(50, 50));
+
+    QCOMPARE(minimap.pos(), posBefore);
+}
+
+void TestMinimapWidget::testMouseMoveWhileResizingAppliesResizeAndInvalidatesCache()
+{
+    WorkSpace workspace;
+    auto *rectItem = new QGraphicsRectItem(QRectF(0, 0, 400, 200));
+    rectItem->setPen(Qt::NoPen);
+    workspace.scene()->addItem(rectItem);
+
+    MinimapWidget minimap(workspace.scene(), workspace.view());
+    minimap.m_resizing = true;
+    minimap.m_resizeMode = MinimapWidget::ResizeMode::Right;
+    minimap.m_lastGlobalPos = QPoint(0, 0);
+    minimap.m_cacheDirty = false;
+    QVERIFY(!minimap.m_throttle.isActive());
+
+    QMouseEvent event(QEvent::MouseMove, QPointF(40, 0), QPointF(40, 0), Qt::NoButton, Qt::NoButton, Qt::NoModifier);
+    minimap.mouseMoveEvent(&event);
+
+    QCOMPARE(minimap.width(), 260);
+    QVERIFY2(minimap.m_throttle.isActive(), "invalidateCache() must have started the throttle timer");
+    QVERIFY(event.isAccepted());
+}
+
+void TestMinimapWidget::testMouseMoveWhileMovingRepositionsWidget()
+{
+    WorkSpace workspace;
+    QWidget parentWidget;
+    parentWidget.resize(400, 300);
+    MinimapWidget minimap(workspace.scene(), workspace.view(), &parentWidget);
+    minimap.move(50, 50);
+
+    minimap.m_moving = true;
+    minimap.m_lastGlobalPos = QPoint(100, 100);
+
+    QMouseEvent event(QEvent::MouseMove, QPointF(30, 30), QPointF(130, 130), Qt::NoButton, Qt::NoButton, Qt::NoModifier);
+    minimap.mouseMoveEvent(&event);
+
+    QCOMPARE(minimap.pos(), QPoint(80, 80)); // moved by the (130,130)-(100,100) delta
+    QCOMPARE(minimap.m_lastGlobalPos, QPoint(130, 130));
+    QVERIFY(event.isAccepted());
+}
+
+void TestMinimapWidget::testMouseMoveUpdatesHoverStateWhenNotDragging()
+{
+    WorkSpace workspace;
+    MinimapWidget minimap(workspace.scene(), workspace.view());
+
+    QMouseEvent event(QEvent::MouseMove, QPointF(0, 0), QPointF(0, 0), Qt::NoButton, Qt::NoButton, Qt::NoModifier);
+    minimap.mouseMoveEvent(&event);
+
+    QCOMPARE(minimap.m_hoverResizeMode, MinimapWidget::ResizeMode::TopLeft);
+    QVERIFY(!event.isAccepted()); // not dragging -- falls through to the base-class handler
+}
+
+void TestMinimapWidget::testMouseMoveFallsBackToBaseClassWithoutSceneOrView()
+{
+    MinimapWidget minimap(nullptr, nullptr);
+    minimap.m_dragging = true; // dragging, but with no scene/view to center on
+
+    QMouseEvent event(QEvent::MouseMove, QPointF(10, 10), QPointF(10, 10), Qt::NoButton, Qt::NoButton, Qt::NoModifier);
+    minimap.mouseMoveEvent(&event);
+
+    QVERIFY(!event.isAccepted());
+}
+
+void TestMinimapWidget::testMouseMoveWhileDraggingRecentersView()
+{
+    WorkSpace workspace;
+    workspace.view()->resize(100, 100); // small but non-degenerate viewport to center within
+    auto *rectItem = new QGraphicsRectItem(QRectF(0, 0, 4000, 2000));
+    rectItem->setPen(Qt::NoPen);
+    workspace.scene()->addItem(rectItem);
+    workspace.scene()->setSceneRect(QRectF(0, 0, 4000, 2000));
+
+    MinimapWidget minimap(workspace.scene(), workspace.view());
+    minimap.m_dragging = true;
+
+    const QPointF centerBefore = workspace.view()->mapToScene(workspace.view()->viewport()->rect().center());
+
+    const QPointF pos(20.0, minimap.height() / 2.0);
+    QMouseEvent event(QEvent::MouseMove, pos, pos, Qt::NoButton, Qt::NoButton, Qt::NoModifier);
+    minimap.mouseMoveEvent(&event);
+
+    const QPointF centerAfter = workspace.view()->mapToScene(workspace.view()->viewport()->rect().center());
+    QVERIFY2(centerAfter != centerBefore, "dragging must recenter the view on the new position");
+    QVERIFY(event.isAccepted());
+}
+
+void TestMinimapWidget::testMouseReleaseWhileResizingStopsAndEmitsGeometryChanged()
+{
+    WorkSpace workspace;
+    MinimapWidget minimap(workspace.scene(), workspace.view());
+    minimap.m_resizing = true;
+    minimap.m_resizeMode = MinimapWidget::ResizeMode::Right;
+
+    QSignalSpy spy(&minimap, &MinimapWidget::geometryChangeFinished);
+    QMouseEvent event(QEvent::MouseButtonRelease, QPointF(0, 0), QPointF(0, 0), Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
+    minimap.mouseReleaseEvent(&event);
+
+    QVERIFY(!minimap.m_resizing);
+    QCOMPARE(minimap.m_resizeMode, MinimapWidget::ResizeMode::None);
+    QCOMPARE(spy.count(), 1);
+    QVERIFY(event.isAccepted());
+}
+
+void TestMinimapWidget::testMouseReleaseWhileMovingStopsAndEmitsGeometryChanged()
+{
+    WorkSpace workspace;
+    MinimapWidget minimap(workspace.scene(), workspace.view());
+    minimap.m_moving = true;
+
+    QSignalSpy spy(&minimap, &MinimapWidget::geometryChangeFinished);
+    QMouseEvent event(QEvent::MouseButtonRelease, QPointF(0, 0), QPointF(0, 0), Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
+    minimap.mouseReleaseEvent(&event);
+
+    QVERIFY(!minimap.m_moving);
+    QCOMPARE(spy.count(), 1);
+    QVERIFY(event.isAccepted());
+}
+
+void TestMinimapWidget::testMouseReleaseWhileDraggingStopsDragging()
+{
+    WorkSpace workspace;
+    MinimapWidget minimap(workspace.scene(), workspace.view());
+    minimap.m_dragging = true;
+
+    QSignalSpy spy(&minimap, &MinimapWidget::geometryChangeFinished);
+    QMouseEvent event(QEvent::MouseButtonRelease, QPointF(0, 0), QPointF(0, 0), Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
+    minimap.mouseReleaseEvent(&event);
+
+    QVERIFY(!minimap.m_dragging);
+    QCOMPARE(spy.count(), 0); // plain click-to-navigate doesn't emit geometryChangeFinished
+    QVERIFY(event.isAccepted());
+}
+
+void TestMinimapWidget::testMouseReleaseFallsBackToBaseClassWhenIdle()
+{
+    MinimapWidget minimap(nullptr, nullptr);
+    QMouseEvent event(QEvent::MouseButtonRelease, QPointF(0, 0), QPointF(0, 0), Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
+    minimap.mouseReleaseEvent(&event);
+
+    QVERIFY(!event.isAccepted());
 }
 
 void TestMinimapWidget::testThemeChangeInvalidatesCache()
