@@ -158,7 +158,7 @@ void ElementContextMenu::exec(QPoint screenPos,
         case ElementGroup::Other:
         case ElementGroup::Unknown: break;
 
-        default: break;
+        default: break; // LCOV_EXCL_LINE — ElementGroup is an `enum class` with every one of its 9 values already handled by name above; this default can't be reached without an out-of-range cast.
         }
 
         if (submenuMorph->actions().empty()) {

@@ -16,4 +16,22 @@ private slots:
     void testRotateRightAction();
     void testMorphMenuAction();
     void testICSubcircuitAction();
+
+    // Real ElementContextMenu::exec() menu-driving tests
+    void testDismissWithoutChoosingIsNoOp();
+    void testRotateLeftAndRightActionsPushCommands();
+    void testFlipHorizontalAndVerticalActionsPushCommands();
+    void testColorSubmenuPopulatesAndDispatches();
+    void testCopyCutDeleteActionsDelegateToScene();
+    void testMorphSubmenuGateSingleInput();
+    void testMorphSubmenuGateMultiInputExcludesSameType();
+    void testMorphSubmenuInputGroup();
+    void testMorphSubmenuMemoryTwoInputEmptiesSubmenu();
+    void testMorphSubmenuMemoryFourInput();
+    void testMorphSubmenuMemoryFiveInput();
+    void testMorphSubmenuOutputDisplay();
+    void testMorphSubmenuOutputNonDisplay();
+    void testMorphSubmenuGroupWithNoMorphTargetsRemovesSubmenu();
+    void testMorphActionDispatchesMorphCommand();
+    void testUnknownMenuOptionThrows();
 };
