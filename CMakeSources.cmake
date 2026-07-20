@@ -492,6 +492,7 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestICHandlerSecurity.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestMCPProcessor.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestMCPValidator.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestServerInfoHandler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestThemeHandler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestConnectionManager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestConnectionValidity.cpp
@@ -712,6 +713,7 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestICHandlerSecurity.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestMCPProcessor.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestMCPValidator.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestServerInfoHandler.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestThemeHandler.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestConnectionManager.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestConnectionValidity.h
