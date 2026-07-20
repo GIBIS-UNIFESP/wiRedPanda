@@ -10,9 +10,6 @@ class TestCPURegisters : public QObject
     Q_OBJECT
 
 private slots:
-    void initTestCase();
-    void cleanup();
-
     void testFlagRegister();
     void testFlagRegister_data();
     void testFlagRegisterPersistence();

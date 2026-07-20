@@ -5,14 +5,11 @@
 
 #include <QObject>
 
-class TestCPURegisterBank : public QObject
+class TestCPUDecoders : public QObject
 {
     Q_OBJECT
 
 private slots:
-    void initTestCase();
-    void cleanup();
-
-    void testRegisterBank();
-    void testRegisterBank_data();
+    void testDecoder3to8();
+    void testInstructionDecoder4to16();
 };

@@ -1,9 +1,9 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/Cpu/TestCPUIntegration.h"
+#include "Tests/QuickShell/IC/TestCPUIntegration.h"
 
-#include "Tests/Integration/IC/Tests/Cpu/CpuHelpers.h"
+#include "Tests/QuickShell/IC/QuickCpuHelpers.h"
 
 using TestUtils::clockCycle;
 using TestUtils::readMultiBitOutput;
@@ -15,32 +15,24 @@ using TestUtils::readMultiBitOutput;
 // increment-by-one behavior over N clock cycles.
 //
 
-void TestCPUIntegration::initTestCase()
-{
-    TestUtils::setupTestEnvironment();
-}
-
-void TestCPUIntegration::cleanup()
-{
-}
-
 void TestCPUIntegration::testProgramCounterIncrement()
 {
     QFETCH(int, programLength);
     // Build 8-bit Program Counter component
-    InputSwitch *pc_clock = new InputSwitch();
-    InputSwitch *reset = new InputSwitch();
+    TestUtils::OwnedElementPool pool;
+    InputSwitch *pc_clock = pool.make<InputSwitch>();
+    InputSwitch *reset = pool.make<InputSwitch>();
     QVector<InputSwitch *> pc_load_val;
     QVector<Led *> pc_out;
     for (int i = 0; i < 8; i++) {
-        pc_load_val.append(new InputSwitch());
-        pc_out.append(new Led());
+        pc_load_val.append(pool.make<InputSwitch>());
+        pc_out.append(pool.make<Led>());
     }
-    InputSwitch *pc_load = new InputSwitch();
-    InputSwitch *pc_inc = new InputSwitch();
-    std::unique_ptr<WorkSpace> workspace_pc(buildProgramCounter8bit(
-        pc_load_val.data(), pc_load, pc_inc, reset, pc_clock, pc_out.data()));
-    auto *sim_pc = workspace_pc->simulation();
+    InputSwitch *pc_load = pool.make<InputSwitch>();
+    InputSwitch *pc_inc = pool.make<InputSwitch>();
+    auto builder_pc = buildProgramCounter8bit(
+        pc_load_val.data(), pc_load, pc_inc, reset, pc_clock, pc_out.data());
+    auto *sim_pc = builder_pc->simulation();
     // Reset system to initial state
     reset->setOn(true);
     pc_inc->setOn(false);

@@ -5,14 +5,11 @@
 
 #include <QObject>
 
-class TestCPUIntegration : public QObject
+class TestCPUInstructionFetch : public QObject
 {
     Q_OBJECT
 
 private slots:
-    void initTestCase();
-    void cleanup();
-
-    void testProgramCounterIncrement();
-    void testProgramCounterIncrement_data();
+    void testInstructionFetch();
+    void testInstructionFetch_data();
 };

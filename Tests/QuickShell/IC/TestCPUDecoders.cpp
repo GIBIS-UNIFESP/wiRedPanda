@@ -1,9 +1,9 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/Cpu/TestCPUDecoders.h"
+#include "Tests/QuickShell/IC/TestCPUDecoders.h"
 
-#include "Tests/Integration/IC/Tests/Cpu/CpuHelpers.h"
+#include "Tests/QuickShell/IC/QuickCpuHelpers.h"
 
 using TestUtils::inputStatus;
 using TestUtils::readMultiBitOutput;
@@ -16,28 +16,19 @@ using TestUtils::readMultiBitOutput;
 // - TestCPU12InstructionDecoder4To16
 //
 
-void TestCPUDecoders::initTestCase()
-{
-    // Initialize test case resources if needed
-}
-
-void TestCPUDecoders::cleanup()
-{
-    // Clean up test resources if needed
-}
-
 void TestCPUDecoders::testDecoder3to8()
 {
+    TestUtils::OwnedElementPool pool;
     InputSwitch *addr[3];
     Led *outputs[8];
     for (int i = 0; i < 3; i++) {
-        addr[i] = new InputSwitch();
+        addr[i] = pool.make<InputSwitch>();
     }
     for (int i = 0; i < 8; i++) {
-        outputs[i] = new Led();
+        outputs[i] = pool.make<Led>();
     }
-    std::unique_ptr<WorkSpace> workspace(buildDecoder3to8Debug(addr, outputs));
-    auto *sim = workspace->simulation();
+    auto builder = buildDecoder3to8Debug(addr, outputs);
+    auto *sim = builder->simulation();
     // Test each address from 0-7
     for (int address = 0; address < 8; address++) {
         // Set address bits
@@ -67,16 +58,17 @@ void TestCPUDecoders::testDecoder3to8()
 
 void TestCPUDecoders::testInstructionDecoder4to16()
 {
+    TestUtils::OwnedElementPool pool;
     QVector<InputSwitch *> opcodeBits;
     QVector<Led *> decodedOutput;
     for (int i = 0; i < 4; i++) {
-        opcodeBits.append(new InputSwitch());
+        opcodeBits.append(pool.make<InputSwitch>());
     }
     for (int i = 0; i < 16; i++) {
-        decodedOutput.append(new Led());
+        decodedOutput.append(pool.make<Led>());
     }
-    std::unique_ptr<WorkSpace> workspace(buildInstructionDecoder4to16(opcodeBits.data(), decodedOutput.data()));
-    auto *sim = workspace->simulation();
+    auto builder = buildInstructionDecoder4to16(opcodeBits.data(), decodedOutput.data());
+    auto *sim = builder->simulation();
     // Test all 16 opcodes - each should produce one-hot output
     struct TestCase {
         int opcode;

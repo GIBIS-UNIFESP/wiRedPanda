@@ -824,16 +824,6 @@ add_test(NAME TestArduino COMMAND test_wiredpanda TestArduino WORKING_DIRECTORY 
 add_test(NAME TestAudioBox COMMAND test_wiredpanda TestAudioBox WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestBewavedDolphinGui COMMAND test_wiredpanda TestBewavedDolphinGui WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestBuzzer COMMAND test_wiredpanda TestBuzzer WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestCPUAlu COMMAND test_wiredpanda TestCPUAlu WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestCPUBranch COMMAND test_wiredpanda TestCPUBranch WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestCPUControlUnit COMMAND test_wiredpanda TestCPUControlUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestCPUDecoders COMMAND test_wiredpanda TestCPUDecoders WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestCPUInstructionExecute COMMAND test_wiredpanda TestCPUInstructionExecute WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestCPUInstructionFetch COMMAND test_wiredpanda TestCPUInstructionFetch WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestCPUIntegration COMMAND test_wiredpanda TestCPUIntegration WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestCPUMemoryInterface COMMAND test_wiredpanda TestCPUMemoryInterface WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestCPURegisterBank COMMAND test_wiredpanda TestCPURegisterBank WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestCPURegisters COMMAND test_wiredpanda TestCPURegisters WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestClock COMMAND test_wiredpanda TestClock WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestClocksAdvanced COMMAND test_wiredpanda TestClocksAdvanced WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestCommands COMMAND test_wiredpanda TestCommands WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -1041,20 +1031,24 @@ add_test(NAME TestQuickWorkSpace COMMAND test_wiredpanda_quick TestQuickWorkSpac
 # suite re-registered onto QuickCircuitBuilder (Tests/QuickShell/IC/), one class at a time.
 add_test(NAME TestLevel1DFlipFlop COMMAND test_wiredpanda_quick TestLevel1DFlipFlop WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestCPUProgramCounter COMMAND test_wiredpanda_quick TestCPUProgramCounter WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestCPUAlu COMMAND test_wiredpanda_quick TestCPUAlu WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestCPUBranch COMMAND test_wiredpanda_quick TestCPUBranch WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestCPUControlUnit COMMAND test_wiredpanda_quick TestCPUControlUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestCPUDecoders COMMAND test_wiredpanda_quick TestCPUDecoders WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestCPUInstructionExecute COMMAND test_wiredpanda_quick TestCPUInstructionExecute WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestCPUInstructionFetch COMMAND test_wiredpanda_quick TestCPUInstructionFetch WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestCPUIntegration COMMAND test_wiredpanda_quick TestCPUIntegration WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestCPUMemoryInterface COMMAND test_wiredpanda_quick TestCPUMemoryInterface WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestCPURegisterBank COMMAND test_wiredpanda_quick TestCPURegisterBank WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestCPURegisters COMMAND test_wiredpanda_quick TestCPURegisters WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 # ============================================================================
 # Test Properties: Labels and Timeouts
 # ============================================================================
 # Labels: unit (fast unit tests), integration (system/IC tests)
 
-# CPU Tests - Integration category (high complexity)
-# TestCPUProgramCounter moved to test_wiredpanda_quick (Phase D of the qtquick-rewrite plan's
-# Widgets-test-parity audit) -- see the "quick" label foreach below.
-foreach(TEST TestCPUAlu TestCPUBranch TestCPUControlUnit TestCPUDecoders
-        TestCPUInstructionExecute TestCPUInstructionFetch TestCPUIntegration
-        TestCPUMemoryInterface TestCPURegisterBank TestCPURegisters)
-    set_tests_properties(${TEST} PROPERTIES LABELS "integration")
-endforeach()
+# All CPU tests (TestCPU*) moved to test_wiredpanda_quick (Phase D of the qtquick-rewrite
+# plan's Widgets-test-parity audit) -- see the "quick" label foreach below.
 
 # Level Tests - Integration category (IC-level hierarchical tests)
 # TestLevel1DFlipFlop moved to test_wiredpanda_quick (Phase C/D of the qtquick-rewrite plan's
@@ -1146,16 +1140,16 @@ foreach(TEST TestCanvasItemSmoke TestCanvasCommands TestQuickElementHandler
         TestQuickElementEditor TestQuickElementPalette TestQuickCanvasZoom TestQuickMinimap
         TestConnection TestConnectionValidity TestPort TestSelectionCapabilities
         TestSceneConnections TestFeedback TestSimulation TestQuickWorkSpace
-        TestCanvasPortHover TestLevel1DFlipFlop TestCPUProgramCounter)
+        TestCanvasPortHover TestLevel1DFlipFlop TestCPUProgramCounter
+        TestCPUAlu TestCPUBranch TestCPUControlUnit TestCPUDecoders
+        TestCPUInstructionExecute TestCPUInstructionFetch TestCPUIntegration
+        TestCPUMemoryInterface TestCPURegisterBank TestCPURegisters)
     set_tests_properties(${TEST} PROPERTIES LABELS "unit;quick")
 endforeach()
 
 # GUI tests run sequentially after all other tests complete
 set(GUI_TESTS TestDialogs TestFileDialogProvider TestMainWindowGui TestBewavedDolphinGui)
 set(ALL_TESTS
-    TestCPUAlu TestCPUBranch TestCPUControlUnit TestCPUDecoders
-    TestCPUInstructionExecute TestCPUInstructionFetch TestCPUIntegration
-    TestCPUMemoryInterface TestCPURegisterBank TestCPURegisters
     TestLevel1DLatch TestLevel1JKFlipFlop TestLevel1SRLatch
     TestLevel2Decoder2To4 TestLevel2Decoder3To8 TestLevel2Decoder4To16 TestLevel2Decoder5To32
     TestLevel2FullAdder1Bit TestLevel2HalfAdder TestLevel2MUX2To1 TestLevel2MUX4To1

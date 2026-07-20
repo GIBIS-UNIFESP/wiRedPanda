@@ -239,16 +239,6 @@ set(MEMORY_HELPERS_HEADERS
 )
 
 set(TEST_WIREDPANDA_SOURCES
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPUAlu.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPUBranch.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPUControlUnit.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPUDecoders.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPUInstructionExecute.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPUInstructionFetch.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPUIntegration.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPUMemoryInterface.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPURegisterBank.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPURegisters.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestICFixtureLayout.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel1DLatch.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel1JkFlipFlop.cpp
@@ -429,16 +419,6 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/Cpu8bitIsa.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/CpuCommon.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/CpuHelpers.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPUAlu.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPUBranch.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPUControlUnit.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPUDecoders.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPUInstructionExecute.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPUInstructionFetch.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPUIntegration.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPUMemoryInterface.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPURegisterBank.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPURegisters.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/CpuTestUtils.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestICFixtureLayout.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel1DLatch.h

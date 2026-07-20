@@ -5,14 +5,12 @@
 
 #include <QObject>
 
-class TestCPUDecoders : public QObject
+class TestCPUBranch : public QObject
 {
     Q_OBJECT
 
 private slots:
-    void initTestCase();
-    void cleanup();
-
-    void testDecoder3to8();
-    void testInstructionDecoder4to16();
+    void testBranchCondition();
+    void testBranchIntegration();
+    void testBranchIntegration_data();
 };

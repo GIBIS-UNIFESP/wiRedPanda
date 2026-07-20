@@ -1,9 +1,9 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/Cpu/TestCPURegisters.h"
+#include "Tests/QuickShell/IC/TestCPURegisters.h"
 
-#include "Tests/Integration/IC/Tests/Cpu/CpuHelpers.h"
+#include "Tests/QuickShell/IC/QuickCpuHelpers.h"
 
 using TestUtils::clockCycle;
 using TestUtils::inputStatus;
@@ -18,16 +18,6 @@ using TestUtils::readMultiBitOutput;
 // - TestCPU3InstructionRegister
 //
 
-void TestCPURegisters::initTestCase()
-{
-    // Initialize test case resources if needed
-}
-
-void TestCPURegisters::cleanup()
-{
-    // Clean up test resources if needed
-}
-
 void TestCPURegisters::testFlagRegister()
 {
     QFETCH(bool, zeroIn);
@@ -35,14 +25,17 @@ void TestCPURegisters::testFlagRegister()
     QFETCH(bool, writeEnable);
     QFETCH(bool, expectedZero);
     QFETCH(bool, expectedNegative);
-    InputSwitch *zeroInput = new InputSwitch();
-    InputSwitch *negativeInput = new InputSwitch();
-    InputSwitch *flagWrite = new InputSwitch();
-    InputSwitch *clock = new InputSwitch();
-    Led *zeroOut = new Led();
-    Led *negativeOut = new Led();
-    std::unique_ptr<WorkSpace> workspace(buildFlagRegister(zeroInput, negativeInput, flagWrite, clock, zeroOut, negativeOut));
-    auto *sim = workspace->simulation();
+
+    TestUtils::OwnedElementPool pool;
+    InputSwitch *zeroInput = pool.make<InputSwitch>();
+    InputSwitch *negativeInput = pool.make<InputSwitch>();
+    InputSwitch *flagWrite = pool.make<InputSwitch>();
+    InputSwitch *clock = pool.make<InputSwitch>();
+    Led *zeroOut = pool.make<Led>();
+    Led *negativeOut = pool.make<Led>();
+
+    auto builder = buildFlagRegister(zeroInput, negativeInput, flagWrite, clock, zeroOut, negativeOut);
+    auto *sim = builder->simulation();
     // Initialize - all inputs off
     zeroInput->setOn(false);
     negativeInput->setOn(false);
@@ -93,14 +86,16 @@ void TestCPURegisters::testFlagRegisterPersistence()
     // Store a known non-zero flag state, then drive the OPPOSITE inputs while
     // write is disabled and clock repeatedly: the latched values must persist.
     // (A transparent latch or a missing write-gate would leak the new inputs.)
-    InputSwitch *zeroInput = new InputSwitch();
-    InputSwitch *negativeInput = new InputSwitch();
-    InputSwitch *flagWrite = new InputSwitch();
-    InputSwitch *clock = new InputSwitch();
-    Led *zeroOut = new Led();
-    Led *negativeOut = new Led();
-    std::unique_ptr<WorkSpace> workspace(buildFlagRegister(zeroInput, negativeInput, flagWrite, clock, zeroOut, negativeOut));
-    auto *sim = workspace->simulation();
+    TestUtils::OwnedElementPool pool;
+    InputSwitch *zeroInput = pool.make<InputSwitch>();
+    InputSwitch *negativeInput = pool.make<InputSwitch>();
+    InputSwitch *flagWrite = pool.make<InputSwitch>();
+    InputSwitch *clock = pool.make<InputSwitch>();
+    Led *zeroOut = pool.make<Led>();
+    Led *negativeOut = pool.make<Led>();
+
+    auto builder = buildFlagRegister(zeroInput, negativeInput, flagWrite, clock, zeroOut, negativeOut);
+    auto *sim = builder->simulation();
 
     // Store zero=1, negative=0 with write enabled.
     zeroInput->setOn(true);
@@ -131,17 +126,19 @@ void TestCPURegisters::testInstructionRegister()
     QFETCH(int, instructionValue);
     QFETCH(bool, shouldLoad);
     QFETCH(int, expectedIR);
+
+    TestUtils::OwnedElementPool pool;
     QVector<InputSwitch *> instruction;
-    InputSwitch *load, *clock;
     QVector<Led *> ir;
     for (int i = 0; i < 8; i++) {
-        instruction.append(new InputSwitch());
-        ir.append(new Led());
+        instruction.append(pool.make<InputSwitch>());
+        ir.append(pool.make<Led>());
     }
-    load = new InputSwitch();
-    clock = new InputSwitch();
-    std::unique_ptr<WorkSpace> workspace(buildInstructionRegister8bit(instruction.data(), load, clock, ir.data()));
-    auto *sim = workspace->simulation();
+    InputSwitch *load = pool.make<InputSwitch>();
+    InputSwitch *clock = pool.make<InputSwitch>();
+
+    auto builder = buildInstructionRegister8bit(instruction.data(), load, clock, ir.data());
+    auto *sim = builder->simulation();
     // Load initial value using setOn(bool)
     for (int i = 0; i < 8; i++) {
         instruction[i]->setOn((0x55 >> i) & 1);
@@ -208,18 +205,19 @@ void TestCPURegisters::testInstructionRegister_data()
 
 void TestCPURegisters::testSingleGatedRegister()
 {
+    TestUtils::OwnedElementPool pool;
     InputSwitch *writeData[8];
-    InputSwitch *decoderOut, *writeEnable, *clock;
     Led *readOut[8];
     for (int i = 0; i < 8; i++) {
-        writeData[i] = new InputSwitch();
-        readOut[i] = new Led();
+        writeData[i] = pool.make<InputSwitch>();
+        readOut[i] = pool.make<Led>();
     }
-    decoderOut = new InputSwitch();
-    writeEnable = new InputSwitch();
-    clock = new InputSwitch();
-    std::unique_ptr<WorkSpace> workspace(buildSingleGatedRegister(writeData, decoderOut, writeEnable, clock, readOut));
-    auto *sim = workspace->simulation();
+    InputSwitch *decoderOut = pool.make<InputSwitch>();
+    InputSwitch *writeEnable = pool.make<InputSwitch>();
+    InputSwitch *clock = pool.make<InputSwitch>();
+
+    auto builder = buildSingleGatedRegister(writeData, decoderOut, writeEnable, clock, readOut);
+    auto *sim = builder->simulation();
     // Test 1: Write 0x42 when decoderOut is HIGH
     for (int i = 0; i < 8; i++) {
         writeData[i]->setOn((0x42 >> i) & 1);

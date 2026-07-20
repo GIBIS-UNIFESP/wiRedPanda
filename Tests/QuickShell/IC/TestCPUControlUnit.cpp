@@ -1,9 +1,9 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/Cpu/TestCPUControlUnit.h"
+#include "Tests/QuickShell/IC/TestCPUControlUnit.h"
 
-#include "Tests/Integration/IC/Tests/Cpu/CpuHelpers.h"
+#include "Tests/QuickShell/IC/QuickCpuHelpers.h"
 
 using TestUtils::clockCycle;
 using TestUtils::inputStatus;
@@ -17,35 +17,26 @@ using TestUtils::readMultiBitOutput;
 // - TestCPU22ControlUnitFlagwrite
 //
 
-void TestCPUControlUnit::initTestCase()
-{
-    // Initialize test case resources if needed
-}
-
-void TestCPUControlUnit::cleanup()
-{
-    // Clean up test resources if needed
-}
-
 void TestCPUControlUnit::testControlUnit()
 {
     QFETCH(int, stateTransitions);
     QFETCH(int, expectedFinalState);
-    InputSwitch *reset, *clock;
+
+    TestUtils::OwnedElementPool pool;
+    InputSwitch *reset = pool.make<InputSwitch>();
+    InputSwitch *clock = pool.make<InputSwitch>();
     QVector<Led *> state;
-    Led *pcInc, *irLoad, *regWrite, *aluEnable, *flagWrite;
-    reset = new InputSwitch();
-    clock = new InputSwitch();
     for (int i = 0; i < 3; i++) {
-        state.append(new Led());
+        state.append(pool.make<Led>());
     }
-    pcInc = new Led();
-    irLoad = new Led();
-    regWrite = new Led();
-    aluEnable = new Led();
-    flagWrite = new Led();
-    std::unique_ptr<WorkSpace> workspace(buildControlUnit(reset, clock, state.data(), pcInc, irLoad, regWrite, aluEnable, flagWrite));
-    auto *sim = workspace->simulation();
+    Led *pcInc = pool.make<Led>();
+    Led *irLoad = pool.make<Led>();
+    Led *regWrite = pool.make<Led>();
+    Led *aluEnable = pool.make<Led>();
+    Led *flagWrite = pool.make<Led>();
+
+    auto builder = buildControlUnit(reset, clock, state.data(), pcInc, irLoad, regWrite, aluEnable, flagWrite);
+    auto *sim = builder->simulation();
     // Reset to FETCH
     reset->setOn(true);
     sim->update();
@@ -69,21 +60,21 @@ void TestCPUControlUnit::testControlUnit()
 void TestCPUControlUnit::testControlUnitFlagWrite()
 {
     // Test that flagWrite is asserted during EXECUTE state (state 2 = 010)
-    InputSwitch *reset, *clock;
+    TestUtils::OwnedElementPool pool;
+    InputSwitch *reset = pool.make<InputSwitch>();
+    InputSwitch *clock = pool.make<InputSwitch>();
     QVector<Led *> state;
-    Led *pcInc, *irLoad, *regWrite, *aluEnable, *flagWrite;
-    reset = new InputSwitch();
-    clock = new InputSwitch();
     for (int i = 0; i < 3; i++) {
-        state.append(new Led());
+        state.append(pool.make<Led>());
     }
-    pcInc = new Led();
-    irLoad = new Led();
-    regWrite = new Led();
-    aluEnable = new Led();
-    flagWrite = new Led();
-    std::unique_ptr<WorkSpace> workspace(buildControlUnit(reset, clock, state.data(), pcInc, irLoad, regWrite, aluEnable, flagWrite));
-    auto *sim = workspace->simulation();
+    Led *pcInc = pool.make<Led>();
+    Led *irLoad = pool.make<Led>();
+    Led *regWrite = pool.make<Led>();
+    Led *aluEnable = pool.make<Led>();
+    Led *flagWrite = pool.make<Led>();
+
+    auto builder = buildControlUnit(reset, clock, state.data(), pcInc, irLoad, regWrite, aluEnable, flagWrite);
+    auto *sim = builder->simulation();
     // Reset to FETCH (state 0)
     reset->setOn(true);
     sim->update();
@@ -127,14 +118,16 @@ void TestCPUControlUnit::testControlUnitSignals()
     // state bit before, so e.g. aluEnable asserted in HALT instead of EXECUTE):
     //   FETCH(0): pcInc, irLoad     EXECUTE(2): aluEnable, flagWrite
     //   WRITEBACK(3): regWrite      DECODE(1) and HALT(4): none
-    InputSwitch *reset = new InputSwitch();
-    InputSwitch *clock = new InputSwitch();
+    TestUtils::OwnedElementPool pool;
+    InputSwitch *reset = pool.make<InputSwitch>();
+    InputSwitch *clock = pool.make<InputSwitch>();
     QVector<Led *> state;
-    for (int i = 0; i < 3; i++) state.append(new Led());
-    Led *pcInc = new Led(), *irLoad = new Led(), *regWrite = new Led();
-    Led *aluEnable = new Led(), *flagWrite = new Led();
-    std::unique_ptr<WorkSpace> workspace(buildControlUnit(reset, clock, state.data(), pcInc, irLoad, regWrite, aluEnable, flagWrite));
-    auto *sim = workspace->simulation();
+    for (int i = 0; i < 3; i++) state.append(pool.make<Led>());
+    Led *pcInc = pool.make<Led>(), *irLoad = pool.make<Led>(), *regWrite = pool.make<Led>();
+    Led *aluEnable = pool.make<Led>(), *flagWrite = pool.make<Led>();
+
+    auto builder = buildControlUnit(reset, clock, state.data(), pcInc, irLoad, regWrite, aluEnable, flagWrite);
+    auto *sim = builder->simulation();
 
     reset->setOn(true);
     sim->update();
@@ -169,14 +162,16 @@ void TestCPUControlUnit::testControlUnitResetClears()
     // Reset must clear the state from a non-zero value, not merely hold it. The
     // earlier mux tied port 0 to Q, so reset held the current state and only
     // looked correct because the register powers up at 0.
-    InputSwitch *reset = new InputSwitch();
-    InputSwitch *clock = new InputSwitch();
+    TestUtils::OwnedElementPool pool;
+    InputSwitch *reset = pool.make<InputSwitch>();
+    InputSwitch *clock = pool.make<InputSwitch>();
     QVector<Led *> state;
-    for (int i = 0; i < 3; i++) state.append(new Led());
-    Led *pcInc = new Led(), *irLoad = new Led(), *regWrite = new Led();
-    Led *aluEnable = new Led(), *flagWrite = new Led();
-    std::unique_ptr<WorkSpace> workspace(buildControlUnit(reset, clock, state.data(), pcInc, irLoad, regWrite, aluEnable, flagWrite));
-    auto *sim = workspace->simulation();
+    for (int i = 0; i < 3; i++) state.append(pool.make<Led>());
+    Led *pcInc = pool.make<Led>(), *irLoad = pool.make<Led>(), *regWrite = pool.make<Led>();
+    Led *aluEnable = pool.make<Led>(), *flagWrite = pool.make<Led>();
+
+    auto builder = buildControlUnit(reset, clock, state.data(), pcInc, irLoad, regWrite, aluEnable, flagWrite);
+    auto *sim = builder->simulation();
 
     // Advance to a non-zero state (EXECUTE = 2).
     reset->setOn(false);

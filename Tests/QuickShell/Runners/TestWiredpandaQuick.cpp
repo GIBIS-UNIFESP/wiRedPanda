@@ -11,6 +11,16 @@
 #include "Tests/QuickShell/TestCanvasItemSmoke.h"
 #include "Tests/QuickShell/IC/TestLevel1DFlipFlop.h"
 #include "Tests/QuickShell/IC/TestCPUProgramCounter.h"
+#include "Tests/QuickShell/IC/TestCPUAlu.h"
+#include "Tests/QuickShell/IC/TestCPUBranch.h"
+#include "Tests/QuickShell/IC/TestCPUControlUnit.h"
+#include "Tests/QuickShell/IC/TestCPUDecoders.h"
+#include "Tests/QuickShell/IC/TestCPUInstructionExecute.h"
+#include "Tests/QuickShell/IC/TestCPUInstructionFetch.h"
+#include "Tests/QuickShell/IC/TestCPUIntegration.h"
+#include "Tests/QuickShell/IC/TestCPUMemoryInterface.h"
+#include "Tests/QuickShell/IC/TestCPURegisterBank.h"
+#include "Tests/QuickShell/IC/TestCPURegisters.h"
 #include "Tests/QuickShell/TestFeedback.h"
 #include "Tests/QuickShell/TestSimulation.h"
 #include "Tests/QuickShell/TestQuickWorkSpace.h"
@@ -57,5 +67,15 @@ int main(int argc, char **argv)
         {"TestQuickWorkSpace", []() -> QObject * { return new TestQuickWorkSpace; }},
         {"TestLevel1DFlipFlop", []() -> QObject * { return new TestLevel1DFlipFlop; }},
         {"TestCPUProgramCounter", []() -> QObject * { return new TestCPUProgramCounter; }},
+        {"TestCPUAlu", []() -> QObject * { return new TestCPUAlu; }},
+        {"TestCPUBranch", []() -> QObject * { return new TestCPUBranch; }},
+        {"TestCPUControlUnit", []() -> QObject * { return new TestCPUControlUnit; }},
+        {"TestCPUDecoders", []() -> QObject * { return new TestCPUDecoders; }},
+        {"TestCPUInstructionExecute", []() -> QObject * { return new TestCPUInstructionExecute; }},
+        {"TestCPUInstructionFetch", []() -> QObject * { return new TestCPUInstructionFetch; }},
+        {"TestCPUIntegration", []() -> QObject * { return new TestCPUIntegration; }},
+        {"TestCPUMemoryInterface", []() -> QObject * { return new TestCPUMemoryInterface; }},
+        {"TestCPURegisterBank", []() -> QObject * { return new TestCPURegisterBank; }},
+        {"TestCPURegisters", []() -> QObject * { return new TestCPURegisters; }},
     });
 }

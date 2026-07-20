@@ -1,9 +1,9 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/Cpu/TestCPURegisterBank.h"
+#include "Tests/QuickShell/IC/TestCPURegisterBank.h"
 
-#include "Tests/Integration/IC/Tests/Cpu/CpuHelpers.h"
+#include "Tests/QuickShell/IC/QuickCpuHelpers.h"
 
 using TestUtils::clockCycle;
 using TestUtils::inputStatus;
@@ -18,15 +18,6 @@ using TestUtils::readMultiBitOutput;
 // - TestCPU20RegisterBank
 //
 
-void TestCPURegisterBank::initTestCase()
-{
-    TestUtils::setupTestEnvironment();
-}
-
-void TestCPURegisterBank::cleanup()
-{
-}
-
 void TestCPURegisterBank::testRegisterBank()
 {
     QFETCH(int, writeAddr);
@@ -35,23 +26,25 @@ void TestCPURegisterBank::testRegisterBank()
     QFETCH(int, readAddrB);
     QFETCH(int, expectedReadA);
     QFETCH(int, expectedReadB);
+
+    TestUtils::OwnedElementPool pool;
     QVector<InputSwitch *> wAddr, wData, rAddrA, rAddrB;
-    InputSwitch *writeEnable, *clock;
     QVector<Led *> readDataA, readDataB;
     for (int i = 0; i < 3; i++) {
-        wAddr.append(new InputSwitch());
-        rAddrA.append(new InputSwitch());
-        rAddrB.append(new InputSwitch());
+        wAddr.append(pool.make<InputSwitch>());
+        rAddrA.append(pool.make<InputSwitch>());
+        rAddrB.append(pool.make<InputSwitch>());
     }
     for (int i = 0; i < 8; i++) {
-        wData.append(new InputSwitch());
-        readDataA.append(new Led());
-        readDataB.append(new Led());
+        wData.append(pool.make<InputSwitch>());
+        readDataA.append(pool.make<Led>());
+        readDataB.append(pool.make<Led>());
     }
-    writeEnable = new InputSwitch();
-    clock = new InputSwitch();
-    std::unique_ptr<WorkSpace> workspace(buildRegisterBank8x8(wAddr.data(), wData.data(), writeEnable, clock, rAddrA.data(), rAddrB.data(), readDataA.data(), readDataB.data()));
-    auto *sim = workspace->simulation();
+    InputSwitch *writeEnable = pool.make<InputSwitch>();
+    InputSwitch *clock = pool.make<InputSwitch>();
+
+    auto builder = buildRegisterBank8x8(wAddr.data(), wData.data(), writeEnable, clock, rAddrA.data(), rAddrB.data(), readDataA.data(), readDataB.data());
+    auto *sim = builder->simulation();
     // Set write address and data
     for (int i = 0; i < 3; i++) {
         wAddr[i]->setOn((writeAddr >> i) & 1);

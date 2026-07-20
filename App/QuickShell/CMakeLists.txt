@@ -253,6 +253,26 @@ set(QUICK_SHELL_TEST_SOURCES
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel1DFlipFlop.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestCPUProgramCounter.cpp
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestCPUProgramCounter.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestCPUAlu.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestCPUAlu.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestCPUBranch.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestCPUBranch.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestCPUControlUnit.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestCPUControlUnit.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestCPUDecoders.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestCPUDecoders.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestCPUInstructionExecute.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestCPUInstructionExecute.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestCPUInstructionFetch.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestCPUInstructionFetch.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestCPUIntegration.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestCPUIntegration.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestCPUMemoryInterface.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestCPUMemoryInterface.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestCPURegisterBank.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestCPURegisterBank.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestCPURegisters.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestCPURegisters.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/StubDialogProvider.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasCommands.cpp
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasCommands.h

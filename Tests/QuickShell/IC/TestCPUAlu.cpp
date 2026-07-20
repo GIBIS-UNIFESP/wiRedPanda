@@ -1,9 +1,9 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/Cpu/TestCPUAlu.h"
+#include "Tests/QuickShell/IC/TestCPUAlu.h"
 
-#include "Tests/Integration/IC/Tests/Cpu/CpuHelpers.h"
+#include "Tests/QuickShell/IC/QuickCpuHelpers.h"
 
 using TestUtils::readMultiBitOutput;
 
@@ -17,39 +17,31 @@ using TestUtils::readMultiBitOutput;
 // - TestCPU10ALU8BitFlags
 //
 
-void TestCPUAlu::initTestCase()
-{
-    // Initialize test case resources if needed
-}
-
-void TestCPUAlu::cleanup()
-{
-    // Clean up test resources if needed
-}
-
 void TestCPUAlu::testALU8bit()
 {
     QFETCH(int, aValue);
     QFETCH(int, bValue);
     QFETCH(int, aluOp);
     QFETCH(int, expectedResult);
+
+    TestUtils::OwnedElementPool pool;
     QVector<InputSwitch *> a, b, op;
     QVector<Led *> result;
-    Led *zeroFlag, *signFlag, *carryFlag, *overflowFlag;
     for (int i = 0; i < 8; i++) {
-        a.append(new InputSwitch());
-        b.append(new InputSwitch());
-        result.append(new Led());
+        a.append(pool.make<InputSwitch>());
+        b.append(pool.make<InputSwitch>());
+        result.append(pool.make<Led>());
     }
     for (int i = 0; i < 3; i++) {
-        op.append(new InputSwitch());
+        op.append(pool.make<InputSwitch>());
     }
-    zeroFlag = new Led();
-    signFlag = new Led();
-    carryFlag = new Led();
-    overflowFlag = new Led();
-    std::unique_ptr<WorkSpace> workspace(buildALU8bit(a.data(), b.data(), op.data(), result.data(), zeroFlag, signFlag, carryFlag, overflowFlag));
-    auto *sim = workspace->simulation();
+    Led *zeroFlag = pool.make<Led>();
+    Led *signFlag = pool.make<Led>();
+    Led *carryFlag = pool.make<Led>();
+    Led *overflowFlag = pool.make<Led>();
+
+    auto builder = buildALU8bit(a.data(), b.data(), op.data(), result.data(), zeroFlag, signFlag, carryFlag, overflowFlag);
+    auto *sim = builder->simulation();
     // Set inputs
     for (int i = 0; i < 8; i++) {
         a[i]->setOn((aValue >> i) & 1);
@@ -73,23 +65,25 @@ void TestCPUAlu::testALU8bitFlags()
     QFETCH(int, expectedResult);
     QFETCH(bool, expectedCarry);
     QFETCH(bool, expectedOverflow);
+
+    TestUtils::OwnedElementPool pool;
     QVector<InputSwitch *> a, b, op;
     QVector<Led *> result;
-    Led *zeroFlag, *signFlag, *carryFlag, *overflowFlag;
     for (int i = 0; i < 8; i++) {
-        a.append(new InputSwitch());
-        b.append(new InputSwitch());
-        result.append(new Led());
+        a.append(pool.make<InputSwitch>());
+        b.append(pool.make<InputSwitch>());
+        result.append(pool.make<Led>());
     }
     for (int i = 0; i < 3; i++) {
-        op.append(new InputSwitch());
+        op.append(pool.make<InputSwitch>());
     }
-    zeroFlag = new Led();
-    signFlag = new Led();
-    carryFlag = new Led();
-    overflowFlag = new Led();
-    std::unique_ptr<WorkSpace> workspace(buildALU8bit(a.data(), b.data(), op.data(), result.data(), zeroFlag, signFlag, carryFlag, overflowFlag));
-    auto *sim = workspace->simulation();
+    Led *zeroFlag = pool.make<Led>();
+    Led *signFlag = pool.make<Led>();
+    Led *carryFlag = pool.make<Led>();
+    Led *overflowFlag = pool.make<Led>();
+
+    auto builder = buildALU8bit(a.data(), b.data(), op.data(), result.data(), zeroFlag, signFlag, carryFlag, overflowFlag);
+    auto *sim = builder->simulation();
     // Set inputs
     for (int i = 0; i < 8; i++) {
         a[i]->setOn((aValue >> i) & 1);

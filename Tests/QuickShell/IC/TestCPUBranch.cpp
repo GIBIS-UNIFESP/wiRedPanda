@@ -1,9 +1,9 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/Cpu/TestCPUBranch.h"
+#include "Tests/QuickShell/IC/TestCPUBranch.h"
 
-#include "Tests/Integration/IC/Tests/Cpu/CpuHelpers.h"
+#include "Tests/QuickShell/IC/QuickCpuHelpers.h"
 
 using TestUtils::clockCycle;
 using TestUtils::inputStatus;
@@ -20,30 +20,22 @@ using TestUtils::readMultiBitOutput;
 // - TestCPU17BranchIntegration
 //
 
-void TestCPUBranch::initTestCase()
-{
-    // Initialize test case resources if needed
-}
-
-void TestCPUBranch::cleanup()
-{
-    // Clean up test resources if needed
-}
-
 void TestCPUBranch::testBranchCondition()
 {
-    InputSwitch *decoderJMP = new InputSwitch();
-    InputSwitch *decoderBEQ = new InputSwitch();
-    InputSwitch *decoderBNE = new InputSwitch();
-    InputSwitch *decoderBLT = new InputSwitch();
-    InputSwitch *decoderBGE = new InputSwitch();
-    InputSwitch *zeroFlag = new InputSwitch();
-    InputSwitch *negativeFlag = new InputSwitch();
-    Led *pcLoad = new Led();
-    std::unique_ptr<WorkSpace> workspace(buildBranchCondition(
+    TestUtils::OwnedElementPool pool;
+    InputSwitch *decoderJMP = pool.make<InputSwitch>();
+    InputSwitch *decoderBEQ = pool.make<InputSwitch>();
+    InputSwitch *decoderBNE = pool.make<InputSwitch>();
+    InputSwitch *decoderBLT = pool.make<InputSwitch>();
+    InputSwitch *decoderBGE = pool.make<InputSwitch>();
+    InputSwitch *zeroFlag = pool.make<InputSwitch>();
+    InputSwitch *negativeFlag = pool.make<InputSwitch>();
+    Led *pcLoad = pool.make<Led>();
+
+    auto builder = buildBranchCondition(
         decoderJMP, decoderBEQ, decoderBNE, decoderBLT, decoderBGE,
-        zeroFlag, negativeFlag, pcLoad));
-    auto *sim = workspace->simulation();
+        zeroFlag, negativeFlag, pcLoad);
+    auto *sim = builder->simulation();
     // Test cases: {decoder_signals, zero, negative, expected_pcLoad}
     struct TestCase {
         bool jmp, beq, bne, blt, bge;  // Decoder signals
@@ -97,58 +89,59 @@ void TestCPUBranch::testBranchIntegration()
     // 2. 4-to-16 Instruction Decoder
     // 3. Flag Register
     // 4. Branch Condition Evaluator
-    // Each build function creates its own workspace/simulation
+    // Each build function creates its own builder/simulation
+    TestUtils::OwnedElementPool pool;
     // === Program Counter ===
-    InputSwitch *pc_clock = new InputSwitch();
-    InputSwitch *reset = new InputSwitch();
+    InputSwitch *pc_clock = pool.make<InputSwitch>();
+    InputSwitch *reset = pool.make<InputSwitch>();
     QVector<InputSwitch *> pc_load_val;
     QVector<Led *> pc_out;
     for (int i = 0; i < 8; i++) {
-        pc_load_val.append(new InputSwitch());
-        pc_out.append(new Led());
+        pc_load_val.append(pool.make<InputSwitch>());
+        pc_out.append(pool.make<Led>());
     }
-    InputSwitch *pc_load = new InputSwitch();
-    InputSwitch *pc_inc = new InputSwitch();
-    // Build PC using existing function (creates its own workspace/simulation)
-    std::unique_ptr<WorkSpace> workspace_pc(buildProgramCounter8bit(
-        pc_load_val.data(), pc_load, pc_inc, reset, pc_clock, pc_out.data()));
-    auto *sim_pc = workspace_pc->simulation();
+    InputSwitch *pc_load = pool.make<InputSwitch>();
+    InputSwitch *pc_inc = pool.make<InputSwitch>();
+    // Build PC using existing function (creates its own builder/simulation)
+    auto builder_pc = buildProgramCounter8bit(
+        pc_load_val.data(), pc_load, pc_inc, reset, pc_clock, pc_out.data());
+    auto *sim_pc = builder_pc->simulation();
     // === Instruction Decoder (4-to-16) ===
     QVector<InputSwitch *> opcode_bits;
     QVector<Led *> decoder_out;
     for (int i = 0; i < 4; i++) {
-        opcode_bits.append(new InputSwitch());
+        opcode_bits.append(pool.make<InputSwitch>());
     }
     for (int i = 0; i < 16; i++) {
-        decoder_out.append(new Led());
+        decoder_out.append(pool.make<Led>());
     }
-    std::unique_ptr<WorkSpace> workspace_decoder(buildInstructionDecoder4to16(
-        opcode_bits.data(), decoder_out.data()));
-    auto *sim_decoder = workspace_decoder->simulation();
+    auto builder_decoder = buildInstructionDecoder4to16(
+        opcode_bits.data(), decoder_out.data());
+    auto *sim_decoder = builder_decoder->simulation();
     // === Flag Register ===
-    InputSwitch *flag_zero_in = new InputSwitch();
-    InputSwitch *flag_negative_in = new InputSwitch();
-    InputSwitch *flag_write = new InputSwitch();
-    InputSwitch *flag_clock = new InputSwitch();
-    Led *flag_zero_out = new Led();
-    Led *flag_negative_out = new Led();
-    std::unique_ptr<WorkSpace> workspace_flags(buildFlagRegister(
-        flag_zero_in, flag_negative_in, flag_write, flag_clock, flag_zero_out, flag_negative_out));
-    auto *sim_flags = workspace_flags->simulation();
+    InputSwitch *flag_zero_in = pool.make<InputSwitch>();
+    InputSwitch *flag_negative_in = pool.make<InputSwitch>();
+    InputSwitch *flag_write = pool.make<InputSwitch>();
+    InputSwitch *flag_clock = pool.make<InputSwitch>();
+    Led *flag_zero_out = pool.make<Led>();
+    Led *flag_negative_out = pool.make<Led>();
+    auto builder_flags = buildFlagRegister(
+        flag_zero_in, flag_negative_in, flag_write, flag_clock, flag_zero_out, flag_negative_out);
+    auto *sim_flags = builder_flags->simulation();
     // === Branch Condition Evaluator ===
-    InputSwitch *branch_decoder_jmp = new InputSwitch();
-    InputSwitch *branch_decoder_beq = new InputSwitch();
-    InputSwitch *branch_decoder_bne = new InputSwitch();
-    InputSwitch *branch_decoder_blt = new InputSwitch();
-    InputSwitch *branch_decoder_bge = new InputSwitch();
-    InputSwitch *branch_zero_flag = new InputSwitch();
-    InputSwitch *branch_negative_flag = new InputSwitch();
-    Led *branch_pc_load = new Led();
-    std::unique_ptr<WorkSpace> workspace_branch(buildBranchCondition(
+    InputSwitch *branch_decoder_jmp = pool.make<InputSwitch>();
+    InputSwitch *branch_decoder_beq = pool.make<InputSwitch>();
+    InputSwitch *branch_decoder_bne = pool.make<InputSwitch>();
+    InputSwitch *branch_decoder_blt = pool.make<InputSwitch>();
+    InputSwitch *branch_decoder_bge = pool.make<InputSwitch>();
+    InputSwitch *branch_zero_flag = pool.make<InputSwitch>();
+    InputSwitch *branch_negative_flag = pool.make<InputSwitch>();
+    Led *branch_pc_load = pool.make<Led>();
+    auto builder_branch = buildBranchCondition(
         branch_decoder_jmp, branch_decoder_beq, branch_decoder_bne,
         branch_decoder_blt, branch_decoder_bge,
-        branch_zero_flag, branch_negative_flag, branch_pc_load));
-    auto *sim_branch = workspace_branch->simulation();
+        branch_zero_flag, branch_negative_flag, branch_pc_load);
+    auto *sim_branch = builder_branch->simulation();
     // === Initialize System ===
     // Reset PC
     reset->setOn(true);

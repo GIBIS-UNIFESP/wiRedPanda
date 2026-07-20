@@ -1,9 +1,9 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/Cpu/TestCPUInstructionFetch.h"
+#include "Tests/QuickShell/IC/TestCPUInstructionFetch.h"
 
-#include "Tests/Integration/IC/Tests/Cpu/CpuHelpers.h"
+#include "Tests/QuickShell/IC/QuickCpuHelpers.h"
 
 using TestUtils::clockCycle;
 using TestUtils::readMultiBitOutput;
@@ -18,35 +18,25 @@ using TestUtils::readMultiBitOutput;
 // - TestCPU26InstructionFetch
 //
 
-void TestCPUInstructionFetch::initTestCase()
-{
-    TestUtils::setupTestEnvironment();
-}
-
-void TestCPUInstructionFetch::cleanup()
-{
-}
-
 void TestCPUInstructionFetch::testInstructionFetch()
 {
     QFETCH(int, initialPC);
     QFETCH(int, cyclesPerFetch);
     // This is an integration test combining PC + Memory + IR
+    TestUtils::OwnedElementPool pool;
     QVector<InputSwitch *> pcLoadVal;
     QVector<Led *> pcOut;
-    InputSwitch *pcLoad, *pcInc, *pcReset;
-    InputSwitch *clock;
     for (int i = 0; i < 8; i++) {
-        pcLoadVal.append(new InputSwitch());
-        pcOut.append(new Led());
+        pcLoadVal.append(pool.make<InputSwitch>());
+        pcOut.append(pool.make<Led>());
     }
-    pcLoad = new InputSwitch();
-    pcInc = new InputSwitch();
-    pcReset = new InputSwitch();
-    clock = new InputSwitch();
+    InputSwitch *pcLoad = pool.make<InputSwitch>();
+    InputSwitch *pcInc = pool.make<InputSwitch>();
+    InputSwitch *pcReset = pool.make<InputSwitch>();
+    InputSwitch *clock = pool.make<InputSwitch>();
     // Build integrated fetch circuit
-    std::unique_ptr<WorkSpace> workspace(buildProgramCounter8bit(pcLoadVal.data(), pcLoad, pcInc, pcReset, clock, pcOut.data()));
-    auto *sim = workspace->simulation();
+    auto builder = buildProgramCounter8bit(pcLoadVal.data(), pcLoad, pcInc, pcReset, clock, pcOut.data());
+    auto *sim = builder->simulation();
     pcInc->setOn(false);
     pcLoad->setOn(false);
     pcReset->setOn(false);

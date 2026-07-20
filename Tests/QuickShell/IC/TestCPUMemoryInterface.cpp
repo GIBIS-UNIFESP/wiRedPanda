@@ -1,40 +1,31 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/Cpu/TestCPUMemoryInterface.h"
+#include "Tests/QuickShell/IC/TestCPUMemoryInterface.h"
 
-#include "Tests/Integration/IC/Tests/Cpu/CpuHelpers.h"
+#include "Tests/QuickShell/IC/QuickCpuHelpers.h"
 
 using TestUtils::clockCycle;
 using TestUtils::readMultiBitOutput;
-
-void TestCPUMemoryInterface::initTestCase()
-{
-    TestUtils::setupTestEnvironment();
-}
-
-void TestCPUMemoryInterface::cleanup()
-{
-}
 
 // Helper: build a memory fixture, write data, read back, compare.
 // Used by both tests to avoid duplicating setup code.
 static void writeAndVerify(int address, int dataToWrite, bool doWrite, int expectedData)
 {
+    TestUtils::OwnedElementPool pool;
     QVector<InputSwitch *> addr, dataIn;
-    InputSwitch *memRead, *memWrite, *memEnable, *clock;
     QVector<Led *> dataOut;
     for (int i = 0; i < 8; i++) {
-        addr.append(new InputSwitch());
-        dataIn.append(new InputSwitch());
-        dataOut.append(new Led());
+        addr.append(pool.make<InputSwitch>());
+        dataIn.append(pool.make<InputSwitch>());
+        dataOut.append(pool.make<Led>());
     }
-    memRead = new InputSwitch();
-    memWrite = new InputSwitch();
-    memEnable = new InputSwitch();
-    clock = new InputSwitch();
-    std::unique_ptr<WorkSpace> workspace(buildMemoryInterface(addr.data(), dataIn.data(), memRead, memWrite, memEnable, clock, dataOut.data()));
-    auto *sim = workspace->simulation();
+    InputSwitch *memRead = pool.make<InputSwitch>();
+    InputSwitch *memWrite = pool.make<InputSwitch>();
+    InputSwitch *memEnable = pool.make<InputSwitch>();
+    InputSwitch *clock = pool.make<InputSwitch>();
+    auto builder = buildMemoryInterface(addr.data(), dataIn.data(), memRead, memWrite, memEnable, clock, dataOut.data());
+    auto *sim = builder->simulation();
     // Set address and data inputs
     for (int i = 0; i < 8; i++) {
         addr[i]->setOn((address >> i) & 1);
@@ -75,20 +66,20 @@ void TestCPUMemoryInterface::testMemoryWriteRead()
         {0x30, 0xCC, 0xCC},
     };
 
+    TestUtils::OwnedElementPool pool;
     QVector<InputSwitch *> addr, dataIn;
-    InputSwitch *memRead, *memWrite, *memEnable, *clock;
     QVector<Led *> dataOut;
     for (int i = 0; i < 8; i++) {
-        addr.append(new InputSwitch());
-        dataIn.append(new InputSwitch());
-        dataOut.append(new Led());
+        addr.append(pool.make<InputSwitch>());
+        dataIn.append(pool.make<InputSwitch>());
+        dataOut.append(pool.make<Led>());
     }
-    memRead = new InputSwitch();
-    memWrite = new InputSwitch();
-    memEnable = new InputSwitch();
-    clock = new InputSwitch();
-    std::unique_ptr<WorkSpace> workspace(buildMemoryInterface(addr.data(), dataIn.data(), memRead, memWrite, memEnable, clock, dataOut.data()));
-    auto *sim = workspace->simulation();
+    InputSwitch *memRead = pool.make<InputSwitch>();
+    InputSwitch *memWrite = pool.make<InputSwitch>();
+    InputSwitch *memEnable = pool.make<InputSwitch>();
+    InputSwitch *clock = pool.make<InputSwitch>();
+    auto builder = buildMemoryInterface(addr.data(), dataIn.data(), memRead, memWrite, memEnable, clock, dataOut.data());
+    auto *sim = builder->simulation();
 
     for (const auto &c : cases) {
         // Set address and data inputs

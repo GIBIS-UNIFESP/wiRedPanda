@@ -28,6 +28,7 @@
 #include <memory>
 
 #include <QFileInfo>
+#include <QTest>
 #include <QVector>
 
 #include "App/Core/Common.h"

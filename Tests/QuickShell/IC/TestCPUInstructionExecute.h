@@ -10,9 +10,6 @@ class TestCPUInstructionExecute : public QObject
     Q_OBJECT
 
 private slots:
-    void initTestCase();
-    void cleanup();
-
     void testInstructionExecute();
     void testInstructionExecute_data();
 };

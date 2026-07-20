@@ -10,9 +10,6 @@ class TestCPUControlUnit : public QObject
     Q_OBJECT
 
 private slots:
-    void initTestCase();
-    void cleanup();
-
     void testControlUnit();
     void testControlUnitFlagWrite();
     void testControlUnit_data();
