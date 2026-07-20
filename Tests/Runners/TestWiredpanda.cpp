@@ -177,6 +177,7 @@
 #include "Tests/Unit/MCP/TestBaseHandler.h"
 #include "Tests/Unit/MCP/TestElementHandler.h"
 #include "Tests/Unit/MCP/TestFileHandlerSecurity.h"
+#include "Tests/Unit/MCP/TestHistoryHandler.h"
 #include "Tests/Unit/MCP/TestICHandlerSecurity.h"
 #include "Tests/Unit/MCP/TestMCPProcessor.h"
 #include "Tests/Unit/MCP/TestMCPValidator.h"
@@ -400,6 +401,7 @@ int main(int argc, char **argv)
         {"TestStatusOps", []() -> QObject * { return new TestStatusOps; }},
         {"TestICHandlerSecurity", []() -> QObject * { return new TestICHandlerSecurity; }},
         {"TestFileHandlerSecurity", []() -> QObject * { return new TestFileHandlerSecurity; }},
+        {"TestHistoryHandler", []() -> QObject * { return new TestHistoryHandler; }},
         {"TestMCPProcessor", []() -> QObject * { return new TestMCPProcessor; }},
         {"TestMCPValidator", []() -> QObject * { return new TestMCPValidator; }},
         {"TestThemeHandler", []() -> QObject * { return new TestThemeHandler; }},

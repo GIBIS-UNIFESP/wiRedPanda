@@ -488,6 +488,7 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestBaseHandler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestElementHandler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestFileHandlerSecurity.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestHistoryHandler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestICHandlerSecurity.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestMCPProcessor.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestMCPValidator.cpp
@@ -707,6 +708,7 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestBaseHandler.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestElementHandler.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestFileHandlerSecurity.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestHistoryHandler.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestICHandlerSecurity.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestMCPProcessor.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestMCPValidator.h

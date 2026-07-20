@@ -793,6 +793,7 @@ add_test(NAME TestGraphicElementSerializer COMMAND test_wiredpanda TestGraphicEl
 add_test(NAME TestGraphicelementAdvanced COMMAND test_wiredpanda TestGraphicelementAdvanced WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestIC COMMAND test_wiredpanda TestIC WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestICFixtureLayout COMMAND test_wiredpanda TestICFixtureLayout WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestHistoryHandler COMMAND test_wiredpanda TestHistoryHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestICHandlerSecurity COMMAND test_wiredpanda TestICHandlerSecurity WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestMCPProcessor COMMAND test_wiredpanda TestMCPProcessor WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestMCPValidator COMMAND test_wiredpanda TestMCPValidator WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -1109,7 +1110,7 @@ set(ALL_TESTS
     TestDemux TestDisplay TestDisplay7 TestGraphicElement TestICRegistry TestICUnit TestMux
     TestDolphinClipboard TestDolphinEdits TestDolphinExporter TestDolphinFile TestDolphinModelBuilder
     TestDolphinSerializer TestDolphinZoom TestSignalDelegate TestWaveformSimulator TestFileUtils TestRecentFilesUnit
-    TestFileHandlerSecurity TestICHandlerSecurity TestMCPProcessor TestMCPValidator TestElementHandler TestBaseHandler TestThemeHandler
+    TestFileHandlerSecurity TestICHandlerSecurity TestMCPProcessor TestMCPValidator TestElementHandler TestBaseHandler TestThemeHandler TestHistoryHandler
     TestExerciseEngine TestTourEngine
     TestSimulationUnit TestWorkspaceUnit
     TestICFixtureLayout)
