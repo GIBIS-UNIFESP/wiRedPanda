@@ -1,15 +1,13 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/TestLevel4RippleAlu4bit.h"
+#include "Tests/QuickShell/IC/TestLevel4RippleAlu4bit.h"
 
-#include "App/Core/Common.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "App/Scene/Workspace.h"
-#include "Tests/Common/TestUtils.h"
-#include "Tests/Integration/IC/Tests/CpuTestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
@@ -19,7 +17,7 @@ using CPUTestUtils::loadBuildingBlockIC;
 // SubCarryOut). One shared fixture wires every output once; each test reads
 // the lanes for its operation.
 struct RippleAlu4bitFixture {
-    std::unique_ptr<WorkSpace> workspace;
+    std::unique_ptr<QuickCircuitBuilder> builder;
     IC *ic = nullptr;
     InputSwitch *swA[4] = {}, *swB[4] = {};
     InputSwitch *swCarryIn = nullptr, *swSubCarryIn = nullptr;
@@ -29,41 +27,37 @@ struct RippleAlu4bitFixture {
 
     bool build()
     {
-        workspace = std::make_unique<WorkSpace>();
-        CircuitBuilder builder(workspace->scene());
+        builder = std::make_unique<QuickCircuitBuilder>();
 
-        ic = loadBuildingBlockIC("level4_ripple_alu_4bit.panda");
-        builder.add(ic);
+        ic = static_cast<IC *>(builder->addOwnedElement(loadBuildingBlockIC("level4_ripple_alu_4bit.panda")));
 
         for (int i = 0; i < 4; ++i) {
-            swA[i] = new InputSwitch();
-            swB[i] = new InputSwitch();
-            ledAdd[i] = new Led();
-            ledSub[i] = new Led();
-            ledAnd[i] = new Led();
-            ledOr[i] = new Led();
-            builder.add(swA[i], swB[i], ledAdd[i], ledSub[i], ledAnd[i], ledOr[i]);
+            swA[i] = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+            swB[i] = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+            ledAdd[i] = static_cast<Led *>(builder->addOwnedElement(new Led()));
+            ledSub[i] = static_cast<Led *>(builder->addOwnedElement(new Led()));
+            ledAnd[i] = static_cast<Led *>(builder->addOwnedElement(new Led()));
+            ledOr[i] = static_cast<Led *>(builder->addOwnedElement(new Led()));
         }
-        swCarryIn = new InputSwitch();
-        swSubCarryIn = new InputSwitch();
-        ledCarryOut = new Led();
-        ledSubCarryOut = new Led();
-        builder.add(swCarryIn, swSubCarryIn, ledCarryOut, ledSubCarryOut);
+        swCarryIn = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        swSubCarryIn = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        ledCarryOut = static_cast<Led *>(builder->addOwnedElement(new Led()));
+        ledSubCarryOut = static_cast<Led *>(builder->addOwnedElement(new Led()));
 
         for (int i = 0; i < 4; ++i) {
-            builder.connect(swA[i], 0, ic, QString("A[%1]").arg(i));
-            builder.connect(swB[i], 0, ic, QString("B[%1]").arg(i));
-            builder.connect(ic, QString("Result_ADD[%1]").arg(i), ledAdd[i], 0);
-            builder.connect(ic, QString("Result_SUB[%1]").arg(i), ledSub[i], 0);
-            builder.connect(ic, QString("Result_AND[%1]").arg(i), ledAnd[i], 0);
-            builder.connect(ic, QString("Result_OR[%1]").arg(i), ledOr[i], 0);
+            builder->connect(swA[i], 0, ic, QString("A[%1]").arg(i));
+            builder->connect(swB[i], 0, ic, QString("B[%1]").arg(i));
+            builder->connect(ic, QString("Result_ADD[%1]").arg(i), ledAdd[i], 0);
+            builder->connect(ic, QString("Result_SUB[%1]").arg(i), ledSub[i], 0);
+            builder->connect(ic, QString("Result_AND[%1]").arg(i), ledAnd[i], 0);
+            builder->connect(ic, QString("Result_OR[%1]").arg(i), ledOr[i], 0);
         }
-        builder.connect(swCarryIn, 0, ic, "CarryIn");
-        builder.connect(swSubCarryIn, 0, ic, "SubCarryIn");
-        builder.connect(ic, "CarryOut", ledCarryOut, 0);
-        builder.connect(ic, "SubCarryOut", ledSubCarryOut, 0);
+        builder->connect(swCarryIn, 0, ic, "CarryIn");
+        builder->connect(swSubCarryIn, 0, ic, "SubCarryIn");
+        builder->connect(ic, "CarryOut", ledCarryOut, 0);
+        builder->connect(ic, "SubCarryOut", ledSubCarryOut, 0);
 
-        sim = builder.initSimulation();
+        sim = builder->initSimulation();
         sim->update();
         return true;
     }

@@ -1,23 +1,19 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/TestLevel4RippleAdder4bit.h"
+#include "Tests/QuickShell/IC/TestLevel4RippleAdder4bit.h"
 
-#include <QFileInfo>
-
-#include "App/Core/Common.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "App/Scene/Workspace.h"
-#include "Tests/Common/TestUtils.h"
-#include "Tests/Integration/IC/Tests/CpuTestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct RippleAdder4bitFixture {
-    std::unique_ptr<WorkSpace> workspace;
+    std::unique_ptr<QuickCircuitBuilder> builder;
     IC *ic = nullptr;
     InputSwitch *swA[4] = {}, *swB[4] = {};
     InputSwitch *carryIn = nullptr;
@@ -27,29 +23,25 @@ struct RippleAdder4bitFixture {
 
     bool build()
     {
-        workspace = std::make_unique<WorkSpace>();
-        CircuitBuilder builder(workspace->scene());
+        builder = std::make_unique<QuickCircuitBuilder>();
 
-        ic = loadBuildingBlockIC("level4_ripple_adder_4bit.panda");
-        builder.add(ic);
+        ic = static_cast<IC *>(builder->addOwnedElement(loadBuildingBlockIC("level4_ripple_adder_4bit.panda")));
 
         for (int i = 0; i < 4; ++i) {
-            swA[i] = new InputSwitch();
-            swB[i] = new InputSwitch();
-            ledSum[i] = new Led();
-            builder.add(swA[i], swB[i], ledSum[i]);
-            builder.connect(swA[i], 0, ic, QString("A[%1]").arg(i));
-            builder.connect(swB[i], 0, ic, QString("B[%1]").arg(i));
-            builder.connect(ic, QString("Sum[%1]").arg(i), ledSum[i], 0);
+            swA[i] = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+            swB[i] = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+            ledSum[i] = static_cast<Led *>(builder->addOwnedElement(new Led()));
+            builder->connect(swA[i], 0, ic, QString("A[%1]").arg(i));
+            builder->connect(swB[i], 0, ic, QString("B[%1]").arg(i));
+            builder->connect(ic, QString("Sum[%1]").arg(i), ledSum[i], 0);
         }
 
-        carryIn = new InputSwitch();
-        ledCarryOut = new Led();
-        builder.add(carryIn, ledCarryOut);
-        builder.connect(carryIn, 0, ic, "CarryIn");
-        builder.connect(ic, "CarryOut", ledCarryOut, 0);
+        carryIn = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        ledCarryOut = static_cast<Led *>(builder->addOwnedElement(new Led()));
+        builder->connect(carryIn, 0, ic, "CarryIn");
+        builder->connect(ic, "CarryOut", ledCarryOut, 0);
 
-        sim = builder.initSimulation();
+        sim = builder->initSimulation();
         sim->update();
         return true;
     }

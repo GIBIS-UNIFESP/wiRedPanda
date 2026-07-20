@@ -1,24 +1,20 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/TestLevel4ShiftRegisterPiso.h"
+#include "Tests/QuickShell/IC/TestLevel4ShiftRegisterPiso.h"
 
-#include <QFile>
-#include <QFileInfo>
-
-#include "App/Core/Common.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "Tests/Common/TestUtils.h"
-#include "Tests/Integration/IC/Tests/CpuTestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 using TestUtils::clockCycle;
 using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct ShiftRegisterPisoFixture {
-    std::unique_ptr<WorkSpace> workspace;
+    std::unique_ptr<QuickCircuitBuilder> builder;
     IC *ic = nullptr;
     InputSwitch *clk = nullptr, *load = nullptr;
     InputSwitch *dataIn[4] = {};
@@ -27,30 +23,25 @@ struct ShiftRegisterPisoFixture {
 
     bool build()
     {
-        workspace = std::make_unique<WorkSpace>();
-        CircuitBuilder builder(workspace->scene());
+        builder = std::make_unique<QuickCircuitBuilder>();
 
-        clk = new InputSwitch();
-        load = new InputSwitch();
-        builder.add(clk, load);
+        clk = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        load = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
 
-        ic = loadBuildingBlockIC("level4_shift_register_piso.panda");
-        builder.add(ic);
+        ic = static_cast<IC *>(builder->addOwnedElement(loadBuildingBlockIC("level4_shift_register_piso.panda")));
 
-        builder.connect(clk, 0, ic, "Clock");
-        builder.connect(load, 0, ic, "Load");
+        builder->connect(clk, 0, ic, "Clock");
+        builder->connect(load, 0, ic, "Load");
 
         for (int i = 0; i < 4; ++i) {
-            dataIn[i] = new InputSwitch();
-            builder.add(dataIn[i]);
-            builder.connect(dataIn[i], 0, ic, QString("D%1").arg(i));
+            dataIn[i] = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+            builder->connect(dataIn[i], 0, ic, QString("D%1").arg(i));
         }
 
-        serialOut = new Led();
-        builder.add(serialOut);
-        builder.connect(ic, "SOUT", serialOut, 0);
+        serialOut = static_cast<Led *>(builder->addOwnedElement(new Led()));
+        builder->connect(ic, "SOUT", serialOut, 0);
 
-        sim = builder.initSimulation();
+        sim = builder->initSimulation();
         sim->update();
         return true;
     }

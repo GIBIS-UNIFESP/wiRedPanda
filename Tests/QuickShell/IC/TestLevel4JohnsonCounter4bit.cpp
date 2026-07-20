@@ -1,24 +1,20 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/TestLevel4JohnsonCounter4bit.h"
+#include "Tests/QuickShell/IC/TestLevel4JohnsonCounter4bit.h"
 
-#include <QFile>
-#include <QFileInfo>
-
-#include "App/Core/Common.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "Tests/Common/TestUtils.h"
-#include "Tests/Integration/IC/Tests/CpuTestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 using TestUtils::clockCycle;
 using TestUtils::readMultiBitOutput;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct JohnsonCounter4bitFixture {
-    std::unique_ptr<WorkSpace> workspace;
+    std::unique_ptr<QuickCircuitBuilder> builder;
     IC *ic = nullptr;
     InputSwitch *clk = nullptr, *preset = nullptr, *ce = nullptr, *load = nullptr;
     InputSwitch *data[4] = {};
@@ -27,37 +23,32 @@ struct JohnsonCounter4bitFixture {
 
     bool build()
     {
-        workspace = std::make_unique<WorkSpace>();
-        CircuitBuilder builder(workspace->scene());
+        builder = std::make_unique<QuickCircuitBuilder>();
 
-        clk = new InputSwitch();
-        preset = new InputSwitch();
-        ce = new InputSwitch();
-        load = new InputSwitch();
-        builder.add(clk, preset, ce, load);
+        clk = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        preset = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        ce = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        load = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
         for (int i = 0; i < 4; ++i) {
-            data[i] = new InputSwitch();
-            builder.add(data[i]);
+            data[i] = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
         }
 
-        ic = loadBuildingBlockIC("level4_johnson_counter_4bit.panda");
-        builder.add(ic);
+        ic = static_cast<IC *>(builder->addOwnedElement(loadBuildingBlockIC("level4_johnson_counter_4bit.panda")));
 
-        builder.connect(clk, 0, ic, "Clock");
-        builder.connect(preset, 0, ic, "Init");
-        builder.connect(ce, 0, ic, "CountEnable");
-        builder.connect(load, 0, ic, "Load");
+        builder->connect(clk, 0, ic, "Clock");
+        builder->connect(preset, 0, ic, "Init");
+        builder->connect(ce, 0, ic, "CountEnable");
+        builder->connect(load, 0, ic, "Load");
         for (int i = 0; i < 4; ++i) {
-            builder.connect(data[i], 0, ic, QString("Data[%1]").arg(i));
+            builder->connect(data[i], 0, ic, QString("Data[%1]").arg(i));
         }
 
         for (int i = 0; i < 4; ++i) {
-            counterOut[i] = new Led();
-            builder.add(counterOut[i]);
-            builder.connect(ic, QString("Q%1").arg(i), counterOut[i], 0);
+            counterOut[i] = static_cast<Led *>(builder->addOwnedElement(new Led()));
+            builder->connect(ic, QString("Q%1").arg(i), counterOut[i], 0);
         }
 
-        sim = builder.initSimulation();
+        sim = builder->initSimulation();
         sim->update();
         return true;
     }

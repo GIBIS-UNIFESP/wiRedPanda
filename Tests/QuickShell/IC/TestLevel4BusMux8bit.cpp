@@ -1,21 +1,19 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/TestLevel4BusMux8bit.h"
-
-#include <QFile>
+#include "Tests/QuickShell/IC/TestLevel4BusMux8bit.h"
 
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "Tests/Common/TestUtils.h"
-#include "Tests/Integration/IC/Tests/CpuTestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 using TestUtils::readMultiBitOutput;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct BusMux8bitFixture {
-    std::unique_ptr<WorkSpace> workspace;
+    std::unique_ptr<QuickCircuitBuilder> builder;
     IC *ic = nullptr;
     InputSwitch *in0[8] = {}, *in1[8] = {};
     InputSwitch *sel = nullptr;
@@ -24,27 +22,23 @@ struct BusMux8bitFixture {
 
     bool build()
     {
-        workspace = std::make_unique<WorkSpace>();
-        CircuitBuilder builder(workspace->scene());
+        builder = std::make_unique<QuickCircuitBuilder>();
 
-        sel = new InputSwitch();
-        builder.add(sel);
+        sel = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
 
-        ic = loadBuildingBlockIC("level4_bus_mux_8bit.panda");
-        builder.add(ic);
+        ic = static_cast<IC *>(builder->addOwnedElement(loadBuildingBlockIC("level4_bus_mux_8bit.panda")));
 
         for (int i = 0; i < 8; ++i) {
-            in0[i] = new InputSwitch();
-            in1[i] = new InputSwitch();
-            out[i] = new Led();
-            builder.add(in0[i], in1[i], out[i]);
-            builder.connect(in0[i], 0, ic, QString("In0[%1]").arg(i));
-            builder.connect(in1[i], 0, ic, QString("In1[%1]").arg(i));
-            builder.connect(ic, QString("Out[%1]").arg(i), out[i], 0);
+            in0[i] = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+            in1[i] = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+            out[i] = static_cast<Led *>(builder->addOwnedElement(new Led()));
+            builder->connect(in0[i], 0, ic, QString("In0[%1]").arg(i));
+            builder->connect(in1[i], 0, ic, QString("In1[%1]").arg(i));
+            builder->connect(ic, QString("Out[%1]").arg(i), out[i], 0);
         }
-        builder.connect(sel, 0, ic, "Sel");
+        builder->connect(sel, 0, ic, "Sel");
 
-        sim = builder.initSimulation();
+        sim = builder->initSimulation();
         sim->update();
         return true;
     }

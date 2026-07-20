@@ -1,23 +1,20 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/TestLevel4BinaryCounter4bit.h"
+#include "Tests/QuickShell/IC/TestLevel4BinaryCounter4bit.h"
 
-#include <QFile>
-
-#include "App/Core/Common.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "Tests/Common/TestUtils.h"
-#include "Tests/Integration/IC/Tests/CpuTestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 using TestUtils::clockCycle;
 using TestUtils::readMultiBitOutput;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct BinaryCounter4bitFixture {
-    std::unique_ptr<WorkSpace> workspace;
+    std::unique_ptr<QuickCircuitBuilder> builder;
     IC *ic = nullptr;
     InputSwitch *clk = nullptr;
     InputSwitch *ce = nullptr, *load = nullptr, *clear = nullptr;
@@ -27,36 +24,31 @@ struct BinaryCounter4bitFixture {
 
     bool build()
     {
-        workspace = std::make_unique<WorkSpace>();
-        CircuitBuilder builder(workspace->scene());
+        builder = std::make_unique<QuickCircuitBuilder>();
 
-        clk = new InputSwitch();
-        ce = new InputSwitch();
-        load = new InputSwitch();
-        clear = new InputSwitch();
-        builder.add(clk, ce, load, clear);
+        clk = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        ce = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        load = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        clear = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
         for (int i = 0; i < 4; ++i) {
-            data[i] = new InputSwitch();
-            builder.add(data[i]);
+            data[i] = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
         }
 
-        ic = loadBuildingBlockIC("level4_binary_counter_4bit.panda");
-        builder.add(ic);
+        ic = static_cast<IC *>(builder->addOwnedElement(loadBuildingBlockIC("level4_binary_counter_4bit.panda")));
 
         for (int i = 0; i < 4; ++i) {
-            counterOut[i] = new Led();
-            builder.add(counterOut[i]);
-            builder.connect(ic, QString("Q%1").arg(i), counterOut[i], 0);
+            counterOut[i] = static_cast<Led *>(builder->addOwnedElement(new Led()));
+            builder->connect(ic, QString("Q%1").arg(i), counterOut[i], 0);
         }
-        builder.connect(clk, 0, ic, "Clock");
-        builder.connect(ce, 0, ic, "CountEnable");
-        builder.connect(load, 0, ic, "Load");
-        builder.connect(clear, 0, ic, "Reset");
+        builder->connect(clk, 0, ic, "Clock");
+        builder->connect(ce, 0, ic, "CountEnable");
+        builder->connect(load, 0, ic, "Load");
+        builder->connect(clear, 0, ic, "Reset");
         for (int i = 0; i < 4; ++i) {
-            builder.connect(data[i], 0, ic, QString("Data[%1]").arg(i));
+            builder->connect(data[i], 0, ic, QString("Data[%1]").arg(i));
         }
 
-        sim = builder.initSimulation();
+        sim = builder->initSimulation();
         sim->update();
         return true;
     }
@@ -129,7 +121,7 @@ void TestLevel4BinaryCounter4Bit::testBinaryCounter_data()
     // Count up 16 cycles (wrap to 0)
     QTest::newRow("count 16 cycles (wrap)") << 16 << 0;
 
-    // Count up 17 cycles (wrap to 1)
+    // Count up 17 cycles
     QTest::newRow("count 17 cycles") << 17 << 1;
 }
 

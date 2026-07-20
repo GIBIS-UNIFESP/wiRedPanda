@@ -315,6 +315,32 @@ set(QUICK_SHELL_TEST_SOURCES
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel3Comparator4bitEquality.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel3Register1bit.cpp
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel3Register1bit.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel4BinaryCounter4bit.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel4BinaryCounter4bit.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel4BusMux4bit.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel4BusMux4bit.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel4BusMux8bit.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel4BusMux8bit.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel4Comparator4bit.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel4Comparator4bit.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel4JohnsonCounter4bit.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel4JohnsonCounter4bit.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel4Ram4x1.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel4Ram4x1.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel4Ram8x1.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel4Ram8x1.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel4Register4bit.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel4Register4bit.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel4RingCounter4bit.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel4RingCounter4bit.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel4RippleAdder4bit.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel4RippleAdder4bit.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel4RippleAlu4bit.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel4RippleAlu4bit.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel4ShiftRegisterPiso.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel4ShiftRegisterPiso.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel4ShiftRegisterSipo.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel4ShiftRegisterSipo.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/StubDialogProvider.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasCommands.cpp
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasCommands.h

@@ -1,23 +1,19 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/TestLevel4Ram4x1.h"
-
-#include <QFileInfo>
+#include "Tests/QuickShell/IC/TestLevel4Ram4x1.h"
 
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "App/Scene/Workspace.h"
-#include "Tests/Common/TestUtils.h"
-#include "Tests/Integration/IC/Tests/Cpu/CpuCommon.h"
-#include "Tests/Integration/IC/Tests/CpuTestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct Ram4x1Fixture {
-    std::unique_ptr<WorkSpace> workspace;
+    std::unique_ptr<QuickCircuitBuilder> builder;
     IC *ramIC = nullptr;
     InputSwitch *addressBits[2] = {};
     InputSwitch *dataIn = nullptr;
@@ -29,34 +25,30 @@ struct Ram4x1Fixture {
 
     bool build()
     {
-        workspace = std::make_unique<WorkSpace>();
-        CircuitBuilder builder(workspace->scene());
+        builder = std::make_unique<QuickCircuitBuilder>();
 
         for (int i = 0; i < 2; ++i) {
-            addressBits[i] = new InputSwitch();
-            builder.add(addressBits[i]);
+            addressBits[i] = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
         }
-        dataIn = new InputSwitch();
-        writeEnable = new InputSwitch();
-        clock = new InputSwitch();
-        reset = new InputSwitch();
-        dataOut = new Led();
-        builder.add(dataIn, writeEnable, clock, reset, dataOut);
+        dataIn = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        writeEnable = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        clock = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        reset = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        dataOut = static_cast<Led *>(builder->addOwnedElement(new Led()));
 
-        ramIC = loadBuildingBlockIC("level4_ram_4x1.panda");
-        builder.add(ramIC);
+        ramIC = static_cast<IC *>(builder->addOwnedElement(loadBuildingBlockIC("level4_ram_4x1.panda")));
 
-        builder.connect(addressBits[0], 0, ramIC, "Address[0]");
-        builder.connect(addressBits[1], 0, ramIC, "Address[1]");
-        builder.connect(dataIn, 0, ramIC, "DataIn");
-        builder.connect(writeEnable, 0, ramIC, "WriteEnable");
-        builder.connect(clock, 0, ramIC, "Clock");
-        builder.connect(reset, 0, ramIC, "Reset");
-        builder.connect(ramIC, "DataOut", dataOut, 0);
+        builder->connect(addressBits[0], 0, ramIC, "Address[0]");
+        builder->connect(addressBits[1], 0, ramIC, "Address[1]");
+        builder->connect(dataIn, 0, ramIC, "DataIn");
+        builder->connect(writeEnable, 0, ramIC, "WriteEnable");
+        builder->connect(clock, 0, ramIC, "Clock");
+        builder->connect(reset, 0, ramIC, "Reset");
+        builder->connect(ramIC, "DataOut", dataOut, 0);
 
         reset->setOn(false);  // async clear inactive by default
 
-        sim = builder.initSimulation();
+        sim = builder->initSimulation();
         sim->update();
         return true;
     }

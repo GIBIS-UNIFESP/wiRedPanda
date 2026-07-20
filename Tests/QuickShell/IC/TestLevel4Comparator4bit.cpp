@@ -1,21 +1,19 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/TestLevel4Comparator4bit.h"
-
-#include <QFile>
+#include "Tests/QuickShell/IC/TestLevel4Comparator4bit.h"
 
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "Tests/Common/TestUtils.h"
-#include "Tests/Integration/IC/Tests/CpuTestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct Level4Comparator4bitFixture {
-    std::unique_ptr<WorkSpace> workspace;
+    std::unique_ptr<QuickCircuitBuilder> builder;
     IC *ic = nullptr;
     InputSwitch *swA[4] = {}, *swB[4] = {};
     InputSwitch *swGtIn = nullptr, *swEqIn = nullptr, *swLtIn = nullptr;
@@ -24,37 +22,32 @@ struct Level4Comparator4bitFixture {
 
     bool build()
     {
-        workspace = std::make_unique<WorkSpace>();
-        CircuitBuilder builder(workspace->scene());
+        builder = std::make_unique<QuickCircuitBuilder>();
 
-        ic = loadBuildingBlockIC("level4_comparator_4bit.panda");
-        builder.add(ic);
+        ic = static_cast<IC *>(builder->addOwnedElement(loadBuildingBlockIC("level4_comparator_4bit.panda")));
 
         for (int i = 0; i < 4; ++i) {
-            swA[i] = new InputSwitch();
-            swB[i] = new InputSwitch();
-            builder.add(swA[i], swB[i]);
-            builder.connect(swA[i], 0, ic, QString("A[%1]").arg(i));
-            builder.connect(swB[i], 0, ic, QString("B[%1]").arg(i));
+            swA[i] = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+            swB[i] = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+            builder->connect(swA[i], 0, ic, QString("A[%1]").arg(i));
+            builder->connect(swB[i], 0, ic, QString("B[%1]").arg(i));
         }
-        swGtIn = new InputSwitch();
-        swEqIn = new InputSwitch();
-        swLtIn = new InputSwitch();
-        builder.add(swGtIn, swEqIn, swLtIn);
-        builder.connect(swGtIn, 0, ic, "GreaterIn");
-        builder.connect(swEqIn, 0, ic, "EqualIn");
-        builder.connect(swLtIn, 0, ic, "LessIn");
+        swGtIn = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        swEqIn = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        swLtIn = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        builder->connect(swGtIn, 0, ic, "GreaterIn");
+        builder->connect(swEqIn, 0, ic, "EqualIn");
+        builder->connect(swLtIn, 0, ic, "LessIn");
 
-        ledGreater = new Led();
-        ledEqual = new Led();
-        ledLess = new Led();
-        builder.add(ledGreater, ledEqual, ledLess);
+        ledGreater = static_cast<Led *>(builder->addOwnedElement(new Led()));
+        ledEqual = static_cast<Led *>(builder->addOwnedElement(new Led()));
+        ledLess = static_cast<Led *>(builder->addOwnedElement(new Led()));
 
-        builder.connect(ic, "Greater", ledGreater, 0);
-        builder.connect(ic, "Equal", ledEqual, 0);
-        builder.connect(ic, "Less", ledLess, 0);
+        builder->connect(ic, "Greater", ledGreater, 0);
+        builder->connect(ic, "Equal", ledEqual, 0);
+        builder->connect(ic, "Less", ledLess, 0);
 
-        sim = builder.initSimulation();
+        sim = builder->initSimulation();
         sim->update();
         return true;
     }

@@ -42,6 +42,19 @@
 #include "Tests/QuickShell/IC/TestLevel3Comparator4bit.h"
 #include "Tests/QuickShell/IC/TestLevel3Comparator4bitEquality.h"
 #include "Tests/QuickShell/IC/TestLevel3Register1bit.h"
+#include "Tests/QuickShell/IC/TestLevel4BinaryCounter4bit.h"
+#include "Tests/QuickShell/IC/TestLevel4BusMux4bit.h"
+#include "Tests/QuickShell/IC/TestLevel4BusMux8bit.h"
+#include "Tests/QuickShell/IC/TestLevel4Comparator4bit.h"
+#include "Tests/QuickShell/IC/TestLevel4JohnsonCounter4bit.h"
+#include "Tests/QuickShell/IC/TestLevel4Ram4x1.h"
+#include "Tests/QuickShell/IC/TestLevel4Ram8x1.h"
+#include "Tests/QuickShell/IC/TestLevel4Register4bit.h"
+#include "Tests/QuickShell/IC/TestLevel4RingCounter4bit.h"
+#include "Tests/QuickShell/IC/TestLevel4RippleAdder4bit.h"
+#include "Tests/QuickShell/IC/TestLevel4RippleAlu4bit.h"
+#include "Tests/QuickShell/IC/TestLevel4ShiftRegisterPiso.h"
+#include "Tests/QuickShell/IC/TestLevel4ShiftRegisterSipo.h"
 #include "Tests/QuickShell/TestFeedback.h"
 #include "Tests/QuickShell/TestSimulation.h"
 #include "Tests/QuickShell/TestQuickWorkSpace.h"
@@ -119,5 +132,18 @@ int main(int argc, char **argv)
         {"TestLevel3Comparator4Bit", []() -> QObject * { return new TestLevel3Comparator4Bit; }},
         {"TestLevel3Comparator4BitEquality", []() -> QObject * { return new TestLevel3Comparator4BitEquality; }},
         {"TestLevel3Register1Bit", []() -> QObject * { return new TestLevel3Register1Bit; }},
+        {"TestLevel4BinaryCounter4Bit", []() -> QObject * { return new TestLevel4BinaryCounter4Bit; }},
+        {"TestLevel4BusMUX4Bit", []() -> QObject * { return new TestLevel4BusMUX4Bit; }},
+        {"TestLevel4BusMUX8Bit", []() -> QObject * { return new TestLevel4BusMUX8Bit; }},
+        {"TestLevel4Comparator4Bit", []() -> QObject * { return new TestLevel4Comparator4Bit; }},
+        {"TestLevel4JohnsonCounter4Bit", []() -> QObject * { return new TestLevel4JohnsonCounter4Bit; }},
+        {"TestLevel4RAM4X1", []() -> QObject * { return new TestLevel4RAM4X1; }},
+        {"TestLevel4RAM8X1", []() -> QObject * { return new TestLevel4RAM8X1; }},
+        {"TestLevel4Register4Bit", []() -> QObject * { return new TestLevel4Register4Bit; }},
+        {"TestLevel4RingCounter4Bit", []() -> QObject * { return new TestLevel4RingCounter4Bit; }},
+        {"TestLevel4RippleAdder4Bit", []() -> QObject * { return new TestLevel4RippleAdder4Bit; }},
+        {"TestLevel4RippleALU4Bit", []() -> QObject * { return new TestLevel4RippleALU4Bit; }},
+        {"TestLevel4ShiftRegisterPISO", []() -> QObject * { return new TestLevel4ShiftRegisterPISO; }},
+        {"TestLevel4ShiftRegisterSIPO", []() -> QObject * { return new TestLevel4ShiftRegisterSIPO; }},
     });
 }
