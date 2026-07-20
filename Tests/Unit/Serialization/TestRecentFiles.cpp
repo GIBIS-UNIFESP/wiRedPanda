@@ -4,6 +4,7 @@
 #include "Tests/Unit/Serialization/TestRecentFiles.h"
 
 #include <QFile>
+#include <QSignalSpy>
 #include <QTemporaryFile>
 
 #include "App/Core/Settings.h"
@@ -74,6 +75,39 @@ void TestRecentFilesUnit::testMaxFilesLimit()
     for (const QString &path : std::as_const(paths)) {
         QFile::remove(path);
     }
+    Settings::setRecentFiles({});
+}
+
+void TestRecentFilesUnit::testFileWatcherRemovesDeletedFileFromList()
+{
+    // RecentFiles watches every recent file so the menu updates live if it's deleted/renamed
+    // outside the application. The watcher's fileChanged signal is queued, so an event loop
+    // (QSignalSpy::wait()) must actually run for the handler to fire.
+    Settings::setRecentFiles({});
+    RecentFiles recentFiles;
+
+    QString filePath;
+    {
+        // QTemporaryFile::close() doesn't release its underlying OS handle (by design, so the
+        // object can still manage/auto-remove the file later) -- only destroying the object
+        // does. On Windows that leftover handle would make the QFile::remove() below fail with
+        // a sharing violation, so scope tempFile out before removing the file ourselves.
+        QTemporaryFile tempFile;
+        tempFile.setAutoRemove(false);
+        QVERIFY(tempFile.open());
+        filePath = tempFile.fileName();
+        tempFile.close();
+    }
+
+    recentFiles.addRecentFile(filePath);
+    QVERIFY(recentFiles.recentFiles().contains(filePath));
+
+    QSignalSpy updatedSpy(&recentFiles, &RecentFiles::recentFilesUpdated);
+    QVERIFY(QFile::remove(filePath));
+
+    QVERIFY2(updatedSpy.wait(), "recentFilesUpdated() must fire once the watcher notices the deletion");
+    QVERIFY(!recentFiles.recentFiles().contains(filePath));
+
     Settings::setRecentFiles({});
 }
 
