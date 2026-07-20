@@ -19,7 +19,7 @@ jobs:
       CCACHE_SLOPPINESS: pch_defines,time_macros,include_file_ctime,include_file_mtime
 
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v7.0.0
       with:
         submodules: recursive
         fetch-depth: 0
