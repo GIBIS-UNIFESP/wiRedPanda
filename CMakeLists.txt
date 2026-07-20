@@ -670,6 +670,18 @@ target_compile_definitions(test_wiredpanda PRIVATE
     CURRENTDIR=${CMAKE_CURRENT_SOURCE_DIR}/Tests
 )
 
+# Copy JSON schema to the test executable's own directory too -- MCPProcessor locates it via
+# QCoreApplication::applicationDirPath(), and the copy above (attached to the `wiredpanda`
+# target) lands inside wiredpanda.app/Contents/MacOS/ on macOS (MACOSX_BUNDLE ON), nowhere near
+# test_wiredpanda's own (non-bundle) output directory.
+add_custom_command(TARGET test_wiredpanda POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+        ${CMAKE_SOURCE_DIR}/MCP/schema-mcp.json
+        $<TARGET_FILE_DIR:test_wiredpanda>/schema-mcp.json
+    COMMENT "Copying JSON schema to test executable directory"
+    VERBATIM
+)
+
 if(ENABLE_PCH)
     target_precompile_headers(test_wiredpanda REUSE_FROM wiredpanda_lib)
 endif()
