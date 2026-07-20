@@ -316,6 +316,7 @@ set(TEST_UTILS_SOURCES
 set(TEST_UTILS_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/ICTestHelpers.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/StubFileDialogProvider.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/StubMainWindowHost.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/TestUtils.h
 )
 
@@ -528,6 +529,7 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestSceneUiBinder.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestSelectionCapabilities.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestTrashButton.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestWorkspaceManager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Wiring/TestConnection.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Wiring/TestConnections.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Wiring/TestConnectionSerialization.cpp
@@ -740,6 +742,7 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestSceneUiBinder.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestSelectionCapabilities.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestTrashButton.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestWorkspaceManager.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Wiring/TestConnection.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Wiring/TestConnections.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Wiring/TestConnectionSerialization.h

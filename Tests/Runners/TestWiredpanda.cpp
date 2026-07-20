@@ -223,6 +223,7 @@
 #include "Tests/Unit/Ui/TestSceneUiBinder.h"
 #include "Tests/Unit/Ui/TestSelectionCapabilities.h"
 #include "Tests/Unit/Ui/TestTrashButton.h"
+#include "Tests/Unit/Ui/TestWorkspaceManager.h"
 // unit/wiring
 #include "Tests/Unit/Wiring/TestConnection.h"
 #include "Tests/Unit/Wiring/TestConnections.h"
@@ -435,5 +436,6 @@ int main(int argc, char **argv)
         {"TestSceneUiBinder", []() -> QObject * { return new TestSceneUiBinder; }},
         {"TestSelectionCapabilities", []() -> QObject * { return new TestSelectionCapabilities; }},
         {"TestTrashButton", []() -> QObject * { return new TestTrashButton; }},
+        {"TestWorkspaceManager", []() -> QObject * { return new TestWorkspaceManager; }},
     });
 }
