@@ -5,6 +5,7 @@
 
 #include <QImage>
 
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/AudioBox.h"
 #include "App/Element/GraphicElements/Buzzer.h"
@@ -16,6 +17,7 @@
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
+#include "App/Element/GraphicElements/Not.h"
 #include "App/Element/GraphicElements/Or.h"
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/IO/Serialization.h"
@@ -1020,4 +1022,321 @@ void TestCommands::testToggleTruthTableOutputCommandBounds()
     expectThrow(2048);
     expectThrow(99999);
     expectThrow(-1);
+}
+
+void TestCommands::testMorphNotToNodeAdjustsPosition()
+{
+    // Not and Node have different pixmap sizes; morphing between them needs a 16px
+    // position adjustment so the visual center stays put.
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+
+    auto *notGate = new Not();
+    notGate->setPos(100, 100);
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{notGate}, scene));
+    const int id = notGate->id();
+
+    scene->receiveCommand(new MorphCommand({notGate}, ElementType::Node, scene));
+    auto *node = dynamic_cast<GraphicElement *>(scene->itemById(id));
+    QVERIFY(node);
+    QCOMPARE(node->elementType(), ElementType::Node);
+    QCOMPARE(node->pos(), QPointF(116, 116));
+}
+
+void TestCommands::testMorphNodeToNotAdjustsPosition()
+{
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+
+    auto *node = ElementFactory::buildElement(ElementType::Node);
+    node->setPos(100, 100);
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{node}, scene));
+    const int id = node->id();
+
+    scene->receiveCommand(new MorphCommand({node}, ElementType::Not, scene));
+    auto *notGate = dynamic_cast<GraphicElement *>(scene->itemById(id));
+    QVERIFY(notGate);
+    QCOMPARE(notGate->elementType(), ElementType::Not);
+    QCOMPARE(notGate->pos(), QPointF(84, 84));
+}
+
+void TestCommands::testMorphPreservesFrequency()
+{
+    // Buzzer and Clock are the only two element types that both set hasFrequency in their
+    // ElementInfo, so this is the only reachable pairing for this transfer branch.
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *undoStack = scene->undoStack();
+
+    auto *buzzer = new Buzzer();
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{buzzer}, scene));
+    QVERIFY(buzzer->hasFrequency());
+    buzzer->setFrequency(123);
+
+    scene->receiveCommand(new MorphCommand(scene->elements().toList(), ElementType::Clock, scene));
+    auto *morphed = scene->elements().first();
+    QCOMPARE(morphed->elementType(), ElementType::Clock);
+    QVERIFY(morphed->hasFrequency());
+    QCOMPARE(morphed->frequency(), 123);
+
+    undoStack->undo();
+    auto *restored = scene->elements().first();
+    QCOMPARE(restored->elementType(), ElementType::Buzzer);
+    QCOMPARE(restored->frequency(), 123);
+}
+
+void TestCommands::testMorphDropsAndRestoresOutputConnection()
+{
+    // And has 1 output; Display7 has 0. Morphing down must drop the output connection
+    // (transferPortConnections()'s output-side "port no longer exists" branch), and undo
+    // must restore it via restoreDeletedConnections()'s output-side (isInput == false) path.
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *undoStack = scene->undoStack();
+
+    auto *andGate = new And();
+    auto *led = new Led();
+    andGate->setPos(0, 0);
+    led->setPos(200, 0);
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{andGate, led}, scene));
+
+    auto *conn = new Connection();
+    conn->setStartPort(andGate->outputPort());
+    conn->setEndPort(led->inputPort());
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{conn}, scene));
+    const int andId = andGate->id();
+
+    scene->receiveCommand(new MorphCommand({andGate}, ElementType::Display7, scene));
+    auto *disp7 = dynamic_cast<GraphicElement *>(scene->itemById(andId));
+    QVERIFY(disp7);
+    QCOMPARE(disp7->elementType(), ElementType::Display7);
+    QCOMPARE(disp7->outputSize(), 0);
+    // The output connection can't survive on an element with no output port.
+    QVERIFY(led->inputPort(0)->connections().isEmpty());
+
+    undoStack->undo();
+    auto *restoredAnd = dynamic_cast<GraphicElement *>(scene->itemById(andId));
+    QVERIFY(restoredAnd);
+    QCOMPARE(restoredAnd->elementType(), ElementType::And);
+    QVERIFY2(!led->inputPort(0)->connections().isEmpty(),
+              "Undoing the morph must restore the dropped output connection");
+    QCOMPARE(led->inputPort(0)->connections().constFirst()->startPort()->graphicElement()->id(), andId);
+}
+
+void TestCommands::testMorphUndoSkipsRestoringConnectionToDeletedPeer()
+{
+    // Same setup as testMorphDropsAndRestoresOutputConnection, but the peer element (led) is
+    // deleted before the undo -- restoreDeletedConnections() must skip it (its own
+    // "element no longer found" guard), not crash trying to dereference a stale ID.
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *undoStack = scene->undoStack();
+
+    auto *andGate = new And();
+    auto *led = new Led();
+    andGate->setPos(0, 0);
+    led->setPos(200, 0);
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{andGate, led}, scene));
+
+    auto *conn = new Connection();
+    conn->setStartPort(andGate->outputPort());
+    conn->setEndPort(led->inputPort());
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{conn}, scene));
+    const int andId = andGate->id();
+
+    scene->receiveCommand(new MorphCommand({andGate}, ElementType::Display7, scene));
+
+    // Delete led directly (bypassing the undo stack, like forgetItemId elsewhere in this
+    // file) so the dropped connection's peer can no longer be found by ID.
+    scene->removeItem(led);
+    delete led;
+
+    bool threw = false;
+    try {
+        undoStack->undo();
+    } catch (const std::exception &) {
+        threw = true;
+    }
+    QVERIFY2(!threw, "Undo must skip restoring a connection whose peer element is gone, not throw");
+
+    auto *restoredAnd = dynamic_cast<GraphicElement *>(scene->itemById(andId));
+    QVERIFY(restoredAnd);
+    QCOMPARE(restoredAnd->elementType(), ElementType::And);
+}
+
+void TestCommands::testUpdateCommandWithNoElementsIsNoOp()
+{
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+
+    UpdateCommand cmd({}, QByteArray(), scene);
+    // loadData() on an empty elements() list must return immediately rather than trying to
+    // read a header from an empty QByteArray.
+    cmd.redo();
+    cmd.undo();
+}
+
+void TestCommands::testUpdateBlobCommandWithNoElementsIsNoOp()
+{
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+
+    UpdateBlobCommand cmd({}, QByteArray(), {}, scene);
+    cmd.redo();
+    cmd.undo();
+}
+
+void TestCommands::testFlipCommandWithEmptyItemsIsNoOp()
+{
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+
+    FlipCommand cmd({}, 0, scene);
+    QVERIFY2(cmd.text().isEmpty(), "The constructor must return before setText() for an empty selection");
+}
+
+void TestCommands::testSplitCommandRedoThrowsWhenEndPortIsNull()
+{
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+
+    auto *sw = new InputSwitch();
+    auto *led = new Led();
+    sw->setPos(0, 0);
+    led->setPos(200, 0);
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{sw, led}, scene));
+
+    auto *conn = new Connection();
+    conn->setStartPort(sw->outputPort());
+    conn->setEndPort(led->inputPort());
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{conn}, scene));
+
+    SplitCommand cmd(conn, QPointF(100, 0), scene);
+    cmd.redo();
+    cmd.undo();
+
+    // conn1 (the original wire) survived the undo; corrupt its endPort directly -- something
+    // no current caller can do through normal interaction, but SplitCommand::redo() defends
+    // against it anyway.
+    conn->setEndPort(nullptr);
+
+    bool threw = false;
+    try {
+        cmd.redo();
+    } catch (const std::exception &) {
+        threw = true;
+    }
+    QVERIFY2(threw, "SplitCommand::redo() must throw when the original wire's endPort is null");
+}
+
+void TestCommands::testSplitCommandUndoThrowsWhenUpstreamMissing()
+{
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+
+    auto *sw = new InputSwitch();
+    auto *led = new Led();
+    sw->setPos(0, 0);
+    led->setPos(200, 0);
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{sw, led}, scene));
+
+    auto *conn = new Connection();
+    conn->setStartPort(sw->outputPort());
+    conn->setEndPort(led->inputPort());
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{conn}, scene));
+
+    SplitCommand cmd(conn, QPointF(100, 0), scene);
+    cmd.redo();
+
+    // Make the split node unfindable without freeing it, mirroring
+    // testSplitCommandRedoThrowsBeforeAllocation's forgetItemId technique.
+    for (auto *elm : scene->elements()) {
+        if (elm->elementType() == ElementType::Node) {
+            scene->forgetItemId(elm->id());
+            break;
+        }
+    }
+
+    bool threw = false;
+    try {
+        cmd.undo();
+    } catch (const std::exception &) {
+        threw = true;
+    }
+    QVERIFY2(threw, "SplitCommand::undo() must throw when an upstream item can no longer be found");
+}
+
+void TestCommands::testFindItemsThrowsWhenItemMissing()
+{
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+
+    auto *andGate = new And();
+    AddItemsCommand cmd(QList<QGraphicsItem *>{andGate}, scene);
+
+    // Drop the registry entry without freeing the object, so findItems() can't resolve the
+    // ID -- mirrors testSplitCommandRedoThrowsBeforeAllocation's forgetItemId technique.
+    scene->forgetItemId(andGate->id());
+
+    bool threw = false;
+    try {
+        cmd.undo();
+    } catch (const std::exception &) {
+        threw = true;
+    }
+    QVERIFY2(threw, "AddItemsCommand::undo() must throw when a tracked item can no longer be found");
+}
+
+void TestCommands::testLoadItemsThrowsOnCountMismatch()
+{
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+
+    auto *andGate = new And();
+    scene->addItem(andGate);
+
+    QByteArray itemData;
+    QDataStream stream(&itemData, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(stream);
+    // Serialization::serialize() (not elm->save() directly) writes the leading type tag
+    // Serialization::deserialize() expects, so this parses as exactly one real item --
+    // otherwise the mismatch below would be masked by an earlier stream-parsing error.
+    Serialization::serialize({andGate}, stream, {.purpose = SerializationPurpose::InMemorySnapshot});
+
+    // Claim two IDs are expected, but the stream only holds one serialized element.
+    const QList<int> ids{1, 2};
+    QList<int> otherIds;
+
+    bool threw = false;
+    try {
+        CommandUtils::loadItems(scene, itemData, ids, otherIds);
+    } catch (const std::exception &) {
+        threw = true;
+    }
+    QVERIFY2(threw, "loadItems() must throw when the deserialized item count doesn't match the expected ID count");
+}
+
+void TestCommands::testElementsCommandElementsThrowsWhenItemMissing()
+{
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+
+    auto *andGate = new And();
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{andGate}, scene));
+
+    QByteArray oldData;
+    QDataStream stream(&oldData, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(stream);
+    andGate->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
+
+    UpdateCommand cmd({andGate}, oldData, scene);
+    scene->forgetItemId(andGate->id());
+
+    bool threw = false;
+    try {
+        cmd.redo();
+    } catch (const std::exception &) {
+        threw = true;
+    }
+    QVERIFY2(threw, "ElementsCommand::elements() must throw when a tracked element can no longer be found");
 }
