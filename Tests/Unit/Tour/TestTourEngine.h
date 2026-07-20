@@ -18,4 +18,20 @@ private slots:
 
     // TourOverlay::scaledFontPx() (#14 accessibility: font-scale-hostile hardcoded px sizes)
     void testOverlayFontScalesWithApplicationFont();
+
+    void testStartWithoutLoadIsNoOp();
+    void testAdvanceStepWhileInactiveIsNoOp();
+    void testStopWhileActiveEmitsAndDeactivates();
+    void testStopWhileInactiveIsNoOp();
+    void testGoToPreviousStepMovesBackAndPersists();
+    void testGoToPreviousStepAtFirstStepIsNoOp();
+    void testGoToPreviousStepWhileInactiveIsNoOp();
+    void testAdvanceStepReachesEndMarksCompletedAndEmits();
+    void testLoadFromResourceMissingFileFails();
+    void testLoadFromResourceInvalidJsonFails();
+    void testLoadFromResourceMissingIdOrTitleFails();
+    void testLoadFromResourceEmptyStepsArrayFails();
+    void testStepWithoutKeyUsesRawTitleAndBodyDirectly();
+    void testCurrentStepDataBeforeLoadReturnsEmptyStep();
+    void testRetranslateReloadFailureDeactivatesEngine();
 };
