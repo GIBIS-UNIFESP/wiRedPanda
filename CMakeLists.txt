@@ -858,17 +858,6 @@ add_test(NAME TestInputRotary COMMAND test_wiredpanda TestInputRotary WORKING_DI
 add_test(NAME TestLED COMMAND test_wiredpanda TestLED WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestMainWindowGui COMMAND test_wiredpanda TestMainWindowGui WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestMinimapWidget COMMAND test_wiredpanda TestMinimapWidget WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel5BarrelRotator COMMAND test_wiredpanda TestLevel5BarrelRotator WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel5BarrelShifter4Bit COMMAND test_wiredpanda TestLevel5BarrelShifter4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel5ClockGatedDecoder COMMAND test_wiredpanda TestLevel5ClockGatedDecoder WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel5Controller4Bit COMMAND test_wiredpanda TestLevel5Controller4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel5InstructionDecoder4Bit COMMAND test_wiredpanda TestLevel5InstructionDecoder4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel5LoadableCounter4Bit COMMAND test_wiredpanda TestLevel5LoadableCounter4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel5ModuloCounter4Bit COMMAND test_wiredpanda TestLevel5ModuloCounter4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel5ProgramCounter4Bit COMMAND test_wiredpanda TestLevel5ProgramCounter4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel5RegisterFile4X4 COMMAND test_wiredpanda TestLevel5RegisterFile4X4 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel5RegisterFile8X8 COMMAND test_wiredpanda TestLevel5RegisterFile8X8 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel5UpDownCounter4Bit COMMAND test_wiredpanda TestLevel5UpDownCounter4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel6ALU8Bit COMMAND test_wiredpanda TestLevel6ALU8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel6ProgramCounter8BitArithmetic COMMAND test_wiredpanda TestLevel6ProgramCounter8BitArithmetic WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel6RAM8X8 COMMAND test_wiredpanda TestLevel6RAM8X8 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -1041,6 +1030,17 @@ add_test(NAME TestLevel4RippleAdder4Bit COMMAND test_wiredpanda_quick TestLevel4
 add_test(NAME TestLevel4RippleALU4Bit COMMAND test_wiredpanda_quick TestLevel4RippleALU4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel4ShiftRegisterPISO COMMAND test_wiredpanda_quick TestLevel4ShiftRegisterPISO WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel4ShiftRegisterSIPO COMMAND test_wiredpanda_quick TestLevel4ShiftRegisterSIPO WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel5RegisterFile4X4 COMMAND test_wiredpanda_quick TestLevel5RegisterFile4X4 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel5BarrelRotator COMMAND test_wiredpanda_quick TestLevel5BarrelRotator WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel5BarrelShifter4Bit COMMAND test_wiredpanda_quick TestLevel5BarrelShifter4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel5ClockGatedDecoder COMMAND test_wiredpanda_quick TestLevel5ClockGatedDecoder WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel5Controller4Bit COMMAND test_wiredpanda_quick TestLevel5Controller4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel5InstructionDecoder4Bit COMMAND test_wiredpanda_quick TestLevel5InstructionDecoder4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel5LoadableCounter4Bit COMMAND test_wiredpanda_quick TestLevel5LoadableCounter4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel5ModuloCounter4Bit COMMAND test_wiredpanda_quick TestLevel5ModuloCounter4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel5ProgramCounter4Bit COMMAND test_wiredpanda_quick TestLevel5ProgramCounter4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel5RegisterFile8X8 COMMAND test_wiredpanda_quick TestLevel5RegisterFile8X8 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel5UpDownCounter4Bit COMMAND test_wiredpanda_quick TestLevel5UpDownCounter4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 # ============================================================================
 # Test Properties: Labels and Timeouts
@@ -1053,11 +1053,7 @@ add_test(NAME TestLevel4ShiftRegisterSIPO COMMAND test_wiredpanda_quick TestLeve
 # Level Tests - Integration category (IC-level hierarchical tests)
 # TestLevel1DFlipFlop moved to test_wiredpanda_quick (Phase C/D of the qtquick-rewrite plan's
 # Widgets-test-parity audit) -- see the "quick" label foreach below.
-foreach(TEST TestLevel5BarrelRotator TestLevel5BarrelShifter4Bit
-        TestLevel5ClockGatedDecoder TestLevel5Controller4Bit TestLevel5InstructionDecoder4Bit 
-        TestLevel5LoadableCounter4Bit TestLevel5ModuloCounter4Bit TestLevel5ProgramCounter4Bit 
-        TestLevel5RegisterFile4X4 TestLevel5RegisterFile8X8 TestLevel5UpDownCounter4Bit 
-        TestLevel6ALU8Bit TestLevel6ProgramCounter8BitArithmetic TestLevel6RAM8X8 
+foreach(TEST TestLevel6ALU8Bit TestLevel6ProgramCounter8BitArithmetic TestLevel6RAM8X8
         TestLevel6Register8Bit TestLevel6RegisterFile8X8 TestLevel6RippleAdder8Bit 
         TestLevel6StackMemoryInterface TestLevel6StackPointer8Bit TestLevel7ALU16Bit 
         TestLevel7CPUProgramCounter8Bit TestLevel7DataForwardingUnit TestLevel7ExecutionDatapath 
@@ -1144,17 +1140,18 @@ foreach(TEST TestCanvasItemSmoke TestCanvasCommands TestQuickElementHandler
         TestLevel4BinaryCounter4Bit TestLevel4BusMUX4Bit TestLevel4BusMUX8Bit
         TestLevel4Comparator4Bit TestLevel4JohnsonCounter4Bit TestLevel4RAM4X1 TestLevel4RAM8X1
         TestLevel4Register4Bit TestLevel4RingCounter4Bit TestLevel4RippleAdder4Bit
-        TestLevel4RippleALU4Bit TestLevel4ShiftRegisterPISO TestLevel4ShiftRegisterSIPO)
+        TestLevel4RippleALU4Bit TestLevel4ShiftRegisterPISO TestLevel4ShiftRegisterSIPO
+        TestLevel5RegisterFile4X4 TestLevel5BarrelRotator TestLevel5BarrelShifter4Bit
+        TestLevel5ClockGatedDecoder TestLevel5Controller4Bit TestLevel5InstructionDecoder4Bit
+        TestLevel5LoadableCounter4Bit TestLevel5ModuloCounter4Bit TestLevel5ProgramCounter4Bit
+        TestLevel5RegisterFile8X8 TestLevel5UpDownCounter4Bit)
     set_tests_properties(${TEST} PROPERTIES LABELS "unit;quick")
 endforeach()
 
 # GUI tests run sequentially after all other tests complete
 set(GUI_TESTS TestDialogs TestFileDialogProvider TestMainWindowGui TestBewavedDolphinGui)
 set(ALL_TESTS
-    TestLevel5BarrelRotator TestLevel5BarrelShifter4Bit TestLevel5ClockGatedDecoder
-    TestLevel5Controller4Bit TestLevel5InstructionDecoder4Bit TestLevel5LoadableCounter4Bit
-    TestLevel5ModuloCounter4Bit TestLevel5ProgramCounter4Bit TestLevel5RegisterFile4X4
-    TestLevel5RegisterFile8X8 TestLevel6StackMemoryInterface TestLevel5UpDownCounter4Bit
+    TestLevel6StackMemoryInterface
     TestLevel6ALU8Bit TestLevel6ProgramCounter8BitArithmetic TestLevel6RAM8X8
     TestLevel6Register8Bit TestLevel6RegisterFile8X8 TestLevel6RippleAdder8Bit
     TestLevel6StackPointer8Bit

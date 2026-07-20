@@ -1,23 +1,20 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/TestLevel5Controller4bit.h"
-
-#include <QFile>
-#include <QFileInfo>
+#include "Tests/QuickShell/IC/TestLevel5Controller4bit.h"
 
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "Tests/Common/TestUtils.h"
-#include "Tests/Integration/IC/Tests/CpuTestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 using TestUtils::setMultiBitInput;
 using TestUtils::readMultiBitOutput;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct Controller4bitFixture {
-    std::unique_ptr<WorkSpace> workspace;
+    std::unique_ptr<QuickCircuitBuilder> builder;
     IC *ic = nullptr;
     QVector<InputSwitch *> opcodeInputs;
     QVector<Led *> ctrlOutputs;
@@ -25,26 +22,22 @@ struct Controller4bitFixture {
 
     bool build()
     {
-        workspace = std::make_unique<WorkSpace>();
-        CircuitBuilder builder(workspace->scene());
+        builder = std::make_unique<QuickCircuitBuilder>();
 
-        ic = loadBuildingBlockIC("level5_controller_4bit.panda");
-        builder.add(ic);
+        ic = static_cast<IC *>(builder->addOwnedElement(loadBuildingBlockIC("level5_controller_4bit.panda")));
 
         for (int i = 0; i < 4; ++i) {
-            auto *sw = new InputSwitch();
-            builder.add(sw);
+            auto *sw = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
             opcodeInputs.append(sw);
-            builder.connect(sw, 0, ic, QString("opcode[%1]").arg(i));
+            builder->connect(sw, 0, ic, QString("opcode[%1]").arg(i));
         }
         for (int i = 0; i < 4; ++i) {
-            auto *led = new Led();
-            builder.add(led);
+            auto *led = static_cast<Led *>(builder->addOwnedElement(new Led()));
             ctrlOutputs.append(led);
-            builder.connect(ic, QString("ctrl[%1]").arg(i), led, 0);
+            builder->connect(ic, QString("ctrl[%1]").arg(i), led, 0);
         }
 
-        sim = builder.initSimulation();
+        sim = builder->initSimulation();
         sim->update();
         return true;
     }

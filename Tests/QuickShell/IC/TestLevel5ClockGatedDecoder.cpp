@@ -1,21 +1,19 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/TestLevel5ClockGatedDecoder.h"
-
-#include <QFileInfo>
+#include "Tests/QuickShell/IC/TestLevel5ClockGatedDecoder.h"
 
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "Tests/Common/TestUtils.h"
-#include "Tests/Integration/IC/Tests/CpuTestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct ClockGatedDecoderFixture {
-    std::unique_ptr<WorkSpace> workspace;
+    std::unique_ptr<QuickCircuitBuilder> builder;
     IC *ic = nullptr;
     InputSwitch *addressBits[3] = {};
     InputSwitch *clockGate = nullptr;
@@ -25,36 +23,31 @@ struct ClockGatedDecoderFixture {
 
     bool build()
     {
-        workspace = std::make_unique<WorkSpace>();
-        CircuitBuilder builder(workspace->scene());
+        builder = std::make_unique<QuickCircuitBuilder>();
 
         for (int i = 0; i < 3; ++i) {
-            addressBits[i] = new InputSwitch();
-            builder.add(addressBits[i]);
+            addressBits[i] = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
         }
-        clockGate = new InputSwitch();
-        writeEnable = new InputSwitch();
-        builder.add(clockGate, writeEnable);
+        clockGate = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        writeEnable = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
 
         for (int i = 0; i < 8; ++i) {
-            outputs[i] = new Led();
-            builder.add(outputs[i]);
+            outputs[i] = static_cast<Led *>(builder->addOwnedElement(new Led()));
         }
 
-        ic = loadBuildingBlockIC("level5_clock_gated_decoder.panda");
-        builder.add(ic);
+        ic = static_cast<IC *>(builder->addOwnedElement(loadBuildingBlockIC("level5_clock_gated_decoder.panda")));
 
         for (int i = 0; i < 3; ++i) {
-            builder.connect(addressBits[i], 0, ic, QString("addr%1").arg(i));
+            builder->connect(addressBits[i], 0, ic, QString("addr%1").arg(i));
         }
-        builder.connect(clockGate, 0, ic, "Clock");
-        builder.connect(writeEnable, 0, ic, "writeEnable");
+        builder->connect(clockGate, 0, ic, "Clock");
+        builder->connect(writeEnable, 0, ic, "writeEnable");
 
         for (int i = 0; i < 8; ++i) {
-            builder.connect(ic, QString("out%1").arg(i), outputs[i], 0);
+            builder->connect(ic, QString("out%1").arg(i), outputs[i], 0);
         }
 
-        sim = builder.initSimulation();
+        sim = builder->initSimulation();
         sim->update();
         return true;
     }

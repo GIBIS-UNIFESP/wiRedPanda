@@ -1,24 +1,20 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/TestLevel5RegisterFile8x8.h"
-
-#include <QFile>
-#include <QFileInfo>
+#include "Tests/QuickShell/IC/TestLevel5RegisterFile8x8.h"
 
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "App/Scene/Workspace.h"
-#include "Tests/Common/TestUtils.h"
-#include "Tests/Integration/IC/Tests/CpuTestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 using TestUtils::inputStatus;
 using TestUtils::clockCycle;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct RegFile8x8Fixture {
-    std::unique_ptr<WorkSpace> workspace;
+    std::unique_ptr<QuickCircuitBuilder> builder;
     IC *ic = nullptr;
     InputSwitch *writeAddr[3] = {};
     InputSwitch *readAddr[3] = {};
@@ -32,46 +28,41 @@ struct RegFile8x8Fixture {
 
     bool build()
     {
-        workspace = std::make_unique<WorkSpace>();
-        CircuitBuilder builder(workspace->scene());
+        builder = std::make_unique<QuickCircuitBuilder>();
 
-        ic = loadBuildingBlockIC("level5_register_file_8x8.panda");
-        builder.add(ic);
+        ic = static_cast<IC *>(builder->addOwnedElement(loadBuildingBlockIC("level5_register_file_8x8.panda")));
 
-        writeEnable = new InputSwitch();
-        clock = new InputSwitch();
-        builder.add(writeEnable, clock);
+        writeEnable = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        clock = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
 
         for (int i = 0; i < 3; ++i) {
-            writeAddr[i] = new InputSwitch();
-            readAddr[i] = new InputSwitch();
-            readAddr2[i] = new InputSwitch();
-            builder.add(writeAddr[i], readAddr[i], readAddr2[i]);
+            writeAddr[i] = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+            readAddr[i] = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+            readAddr2[i] = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
         }
         for (int i = 0; i < 8; ++i) {
-            writeData[i] = new InputSwitch();
-            readData[i] = new Led();
-            readData2[i] = new Led();
-            builder.add(writeData[i], readData[i], readData2[i]);
+            writeData[i] = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+            readData[i] = static_cast<Led *>(builder->addOwnedElement(new Led()));
+            readData2[i] = static_cast<Led *>(builder->addOwnedElement(new Led()));
         }
 
         for (int i = 0; i < 3; ++i) {
-            builder.connect(writeAddr[i], 0, ic, QString("Write_Addr[%1]").arg(i));
-            builder.connect(readAddr[i], 0, ic, QString("Read_Addr1[%1]").arg(i));
-            builder.connect(readAddr2[i], 0, ic, QString("Read_Addr2[%1]").arg(i));
+            builder->connect(writeAddr[i], 0, ic, QString("Write_Addr[%1]").arg(i));
+            builder->connect(readAddr[i], 0, ic, QString("Read_Addr1[%1]").arg(i));
+            builder->connect(readAddr2[i], 0, ic, QString("Read_Addr2[%1]").arg(i));
         }
         for (int i = 0; i < 8; ++i) {
-            builder.connect(writeData[i], 0, ic, QString("Data_In[%1]").arg(i));
+            builder->connect(writeData[i], 0, ic, QString("Data_In[%1]").arg(i));
         }
-        builder.connect(writeEnable, 0, ic, "WriteEnable");
-        builder.connect(clock, 0, ic, "Clock");
+        builder->connect(writeEnable, 0, ic, "WriteEnable");
+        builder->connect(clock, 0, ic, "Clock");
 
         for (int i = 0; i < 8; ++i) {
-            builder.connect(ic, QString("Read_Data1[%1]").arg(i), readData[i], 0);
-            builder.connect(ic, QString("Read_Data2[%1]").arg(i), readData2[i], 0);
+            builder->connect(ic, QString("Read_Data1[%1]").arg(i), readData[i], 0);
+            builder->connect(ic, QString("Read_Data2[%1]").arg(i), readData2[i], 0);
         }
 
-        sim = builder.initSimulation();
+        sim = builder->initSimulation();
         sim->update();
         return true;
     }

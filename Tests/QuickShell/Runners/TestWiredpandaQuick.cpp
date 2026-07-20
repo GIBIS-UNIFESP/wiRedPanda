@@ -55,6 +55,17 @@
 #include "Tests/QuickShell/IC/TestLevel4RippleAlu4bit.h"
 #include "Tests/QuickShell/IC/TestLevel4ShiftRegisterPiso.h"
 #include "Tests/QuickShell/IC/TestLevel4ShiftRegisterSipo.h"
+#include "Tests/QuickShell/IC/TestLevel5RegisterFile4x4.h"
+#include "Tests/QuickShell/IC/TestLevel5BarrelRotator.h"
+#include "Tests/QuickShell/IC/TestLevel5BarrelShifter4bit.h"
+#include "Tests/QuickShell/IC/TestLevel5ClockGatedDecoder.h"
+#include "Tests/QuickShell/IC/TestLevel5Controller4bit.h"
+#include "Tests/QuickShell/IC/TestLevel5InstructionDecoder4bit.h"
+#include "Tests/QuickShell/IC/TestLevel5LoadableCounter4bit.h"
+#include "Tests/QuickShell/IC/TestLevel5ModuloCounter4bit.h"
+#include "Tests/QuickShell/IC/TestLevel5ProgramCounter4bit.h"
+#include "Tests/QuickShell/IC/TestLevel5RegisterFile8x8.h"
+#include "Tests/QuickShell/IC/TestLevel5UpDownCounter4bit.h"
 #include "Tests/QuickShell/TestFeedback.h"
 #include "Tests/QuickShell/TestSimulation.h"
 #include "Tests/QuickShell/TestQuickWorkSpace.h"
@@ -145,5 +156,16 @@ int main(int argc, char **argv)
         {"TestLevel4RippleALU4Bit", []() -> QObject * { return new TestLevel4RippleALU4Bit; }},
         {"TestLevel4ShiftRegisterPISO", []() -> QObject * { return new TestLevel4ShiftRegisterPISO; }},
         {"TestLevel4ShiftRegisterSIPO", []() -> QObject * { return new TestLevel4ShiftRegisterSIPO; }},
+        {"TestLevel5RegisterFile4X4", []() -> QObject * { return new TestLevel5RegisterFile4X4; }},
+        {"TestLevel5BarrelRotator", []() -> QObject * { return new TestLevel5BarrelRotator; }},
+        {"TestLevel5BarrelShifter4Bit", []() -> QObject * { return new TestLevel5BarrelShifter4Bit; }},
+        {"TestLevel5ClockGatedDecoder", []() -> QObject * { return new TestLevel5ClockGatedDecoder; }},
+        {"TestLevel5Controller4Bit", []() -> QObject * { return new TestLevel5Controller4Bit; }},
+        {"TestLevel5InstructionDecoder4Bit", []() -> QObject * { return new TestLevel5InstructionDecoder4Bit; }},
+        {"TestLevel5LoadableCounter4Bit", []() -> QObject * { return new TestLevel5LoadableCounter4Bit; }},
+        {"TestLevel5ModuloCounter4Bit", []() -> QObject * { return new TestLevel5ModuloCounter4Bit; }},
+        {"TestLevel5ProgramCounter4Bit", []() -> QObject * { return new TestLevel5ProgramCounter4Bit; }},
+        {"TestLevel5RegisterFile8X8", []() -> QObject * { return new TestLevel5RegisterFile8X8; }},
+        {"TestLevel5UpDownCounter4Bit", []() -> QObject * { return new TestLevel5UpDownCounter4Bit; }},
     });
 }

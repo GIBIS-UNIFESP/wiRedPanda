@@ -341,6 +341,28 @@ set(QUICK_SHELL_TEST_SOURCES
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel4ShiftRegisterPiso.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel4ShiftRegisterSipo.cpp
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel4ShiftRegisterSipo.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel5RegisterFile4x4.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel5RegisterFile4x4.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel5BarrelRotator.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel5BarrelRotator.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel5BarrelShifter4bit.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel5BarrelShifter4bit.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel5ClockGatedDecoder.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel5ClockGatedDecoder.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel5Controller4bit.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel5Controller4bit.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel5InstructionDecoder4bit.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel5InstructionDecoder4bit.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel5LoadableCounter4bit.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel5LoadableCounter4bit.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel5ModuloCounter4bit.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel5ModuloCounter4bit.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel5ProgramCounter4bit.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel5ProgramCounter4bit.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel5RegisterFile8x8.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel5RegisterFile8x8.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel5UpDownCounter4bit.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel5UpDownCounter4bit.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/StubDialogProvider.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasCommands.cpp
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasCommands.h

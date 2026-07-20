@@ -1,21 +1,19 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/TestLevel5BarrelShifter4bit.h"
-
-#include <QFileInfo>
+#include "Tests/QuickShell/IC/TestLevel5BarrelShifter4bit.h"
 
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "Tests/Common/TestUtils.h"
-#include "Tests/Integration/IC/Tests/CpuTestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct BarrelShifter4bitFixture {
-    std::unique_ptr<WorkSpace> workspace;
+    std::unique_ptr<QuickCircuitBuilder> builder;
     IC *ic = nullptr;
     InputSwitch *swData[4] = {};
     InputSwitch *swShift[2] = {};
@@ -25,29 +23,24 @@ struct BarrelShifter4bitFixture {
 
     bool build()
     {
-        workspace = std::make_unique<WorkSpace>();
-        CircuitBuilder builder(workspace->scene());
+        builder = std::make_unique<QuickCircuitBuilder>();
 
-        ic = loadBuildingBlockIC("level5_barrel_shifter_4bit.panda");
-        builder.add(ic);
+        ic = static_cast<IC *>(builder->addOwnedElement(loadBuildingBlockIC("level5_barrel_shifter_4bit.panda")));
 
         for (int i = 0; i < 4; ++i) {
-            swData[i] = new InputSwitch();
-            ledOut[i] = new Led();
-            builder.add(swData[i], ledOut[i]);
-            builder.connect(swData[i], 0, ic, QString("Data[%1]").arg(i));
-            builder.connect(ic, QString("ShiftedData[%1]").arg(i), ledOut[i], 0);
+            swData[i] = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+            ledOut[i] = static_cast<Led *>(builder->addOwnedElement(new Led()));
+            builder->connect(swData[i], 0, ic, QString("Data[%1]").arg(i));
+            builder->connect(ic, QString("ShiftedData[%1]").arg(i), ledOut[i], 0);
         }
         for (int i = 0; i < 2; ++i) {
-            swShift[i] = new InputSwitch();
-            builder.add(swShift[i]);
-            builder.connect(swShift[i], 0, ic, QString("ShiftAmount[%1]").arg(i));
+            swShift[i] = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+            builder->connect(swShift[i], 0, ic, QString("ShiftAmount[%1]").arg(i));
         }
-        swDir = new InputSwitch();
-        builder.add(swDir);
-        builder.connect(swDir, 0, ic, "ShiftDirection");
+        swDir = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        builder->connect(swDir, 0, ic, "ShiftDirection");
 
-        sim = builder.initSimulation();
+        sim = builder->initSimulation();
         sim->update();
         return true;
     }

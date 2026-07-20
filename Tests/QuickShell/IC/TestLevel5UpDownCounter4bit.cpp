@@ -1,24 +1,20 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/TestLevel5UpDownCounter4bit.h"
+#include "Tests/QuickShell/IC/TestLevel5UpDownCounter4bit.h"
 
-#include <QFile>
-#include <QFileInfo>
-
-#include "App/Core/Common.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "Tests/Common/TestUtils.h"
-#include "Tests/Integration/IC/Tests/CpuTestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 using TestUtils::clockCycle;
 using TestUtils::readMultiBitOutput;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct UpDownCounter4bitFixture {
-    std::unique_ptr<WorkSpace> workspace;
+    std::unique_ptr<QuickCircuitBuilder> builder;
     IC *ic = nullptr;
     InputSwitch *clk = nullptr, *dir = nullptr, *en = nullptr;
     Led *counterOut[4] = {};
@@ -26,28 +22,24 @@ struct UpDownCounter4bitFixture {
 
     bool build()
     {
-        workspace = std::make_unique<WorkSpace>();
-        CircuitBuilder builder(workspace->scene());
+        builder = std::make_unique<QuickCircuitBuilder>();
 
-        clk = new InputSwitch();
-        dir = new InputSwitch();
-        en = new InputSwitch();
-        builder.add(clk, dir, en);
+        clk = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        dir = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        en = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
 
-        ic = loadBuildingBlockIC("level5_up_down_counter_4bit.panda");
-        builder.add(ic);
+        ic = static_cast<IC *>(builder->addOwnedElement(loadBuildingBlockIC("level5_up_down_counter_4bit.panda")));
 
-        builder.connect(clk, 0, ic, "Clock");
-        builder.connect(dir, 0, ic, "Direction");
-        builder.connect(en, 0, ic, "Enable");
+        builder->connect(clk, 0, ic, "Clock");
+        builder->connect(dir, 0, ic, "Direction");
+        builder->connect(en, 0, ic, "Enable");
 
         for (int i = 0; i < 4; ++i) {
-            counterOut[i] = new Led();
-            builder.add(counterOut[i]);
-            builder.connect(ic, QString("Q[%1]").arg(i), counterOut[i], 0);
+            counterOut[i] = static_cast<Led *>(builder->addOwnedElement(new Led()));
+            builder->connect(ic, QString("Q[%1]").arg(i), counterOut[i], 0);
         }
 
-        sim = builder.initSimulation();
+        sim = builder->initSimulation();
         sim->update();
         return true;
     }

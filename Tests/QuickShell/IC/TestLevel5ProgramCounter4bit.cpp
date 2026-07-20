@@ -1,16 +1,13 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/TestLevel5ProgramCounter4bit.h"
-
-#include <QFile>
-#include <QFileInfo>
+#include "Tests/QuickShell/IC/TestLevel5ProgramCounter4bit.h"
 
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "Tests/Common/TestUtils.h"
-#include "Tests/Integration/IC/Tests/CpuTestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 using TestUtils::clockCycle;
 using TestUtils::readMultiBitOutput;
@@ -18,7 +15,7 @@ using TestUtils::setMultiBitInput;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct ProgramCounter4bitFixture {
-    std::unique_ptr<WorkSpace> workspace;
+    std::unique_ptr<QuickCircuitBuilder> builder;
     IC *ic = nullptr;
     QVector<InputSwitch *> loadValueInputs;
     InputSwitch *clock = nullptr, *load = nullptr, *inc = nullptr, *reset = nullptr;
@@ -28,43 +25,38 @@ struct ProgramCounter4bitFixture {
 
     bool build()
     {
-        workspace = std::make_unique<WorkSpace>();
-        CircuitBuilder builder(workspace->scene());
+        builder = std::make_unique<QuickCircuitBuilder>();
 
         for (int i = 0; i < 4; ++i) {
-            auto *lv = new InputSwitch();
-            builder.add(lv);
+            auto *lv = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
             loadValueInputs.append(lv);
         }
 
-        clock = new InputSwitch();
-        load = new InputSwitch();
-        inc = new InputSwitch();
-        reset = new InputSwitch();
-        builder.add(clock, load, inc, reset);
+        clock = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        load = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        inc = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        reset = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
 
-        ic = loadBuildingBlockIC("level5_program_counter_4bit.panda");
-        builder.add(ic);
+        ic = static_cast<IC *>(builder->addOwnedElement(loadBuildingBlockIC("level5_program_counter_4bit.panda")));
 
         for (int i = 0; i < 4; ++i) {
-            auto *p = new Led();
-            auto *p1 = new Led();
-            builder.add(p, p1);
+            auto *p = static_cast<Led *>(builder->addOwnedElement(new Led()));
+            auto *p1 = static_cast<Led *>(builder->addOwnedElement(new Led()));
             pcOutputs.append(p);
             pcPlus1Outputs.append(p1);
         }
 
         for (int i = 0; i < 4; ++i) {
-            builder.connect(loadValueInputs[i], 0, ic, QString("LoadValue[%1]").arg(i));
-            builder.connect(ic, QString("pc[%1]").arg(i), pcOutputs[i], 0);
-            builder.connect(ic, QString("pc_plus_1[%1]").arg(i), pcPlus1Outputs[i], 0);
+            builder->connect(loadValueInputs[i], 0, ic, QString("LoadValue[%1]").arg(i));
+            builder->connect(ic, QString("pc[%1]").arg(i), pcOutputs[i], 0);
+            builder->connect(ic, QString("pc_plus_1[%1]").arg(i), pcPlus1Outputs[i], 0);
         }
-        builder.connect(clock, 0, ic, "Clock");
-        builder.connect(load, 0, ic, "Load");
-        builder.connect(inc, 0, ic, "Inc");
-        builder.connect(reset, 0, ic, "Reset");
+        builder->connect(clock, 0, ic, "Clock");
+        builder->connect(load, 0, ic, "Load");
+        builder->connect(inc, 0, ic, "Inc");
+        builder->connect(reset, 0, ic, "Reset");
 
-        sim = builder.initSimulation();
+        sim = builder->initSimulation();
         sim->update();
         return true;
     }
