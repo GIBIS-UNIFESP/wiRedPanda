@@ -125,6 +125,7 @@
 #include "Tests/QuickShell/TestSequentialLogic.h"
 #include "Tests/QuickShell/TestMemorySettlingTime.h"
 #include "Tests/QuickShell/TestMuxDemuxComprehensive.h"
+#include "Tests/QuickShell/TestSequential.h"
 
 int main(int argc, char **argv)
 {
@@ -251,5 +252,6 @@ int main(int argc, char **argv)
         {"TestSequentialLogic", []() -> QObject * { return new TestSequentialLogic; }},
         {"TestMemorySettlingTime", []() -> QObject * { return new TestMemorySettlingTime; }},
         {"TestMUXDEMUXComprehensive", []() -> QObject * { return new TestMUXDEMUXComprehensive; }},
+        {"TestSequential", []() -> QObject * { return new TestSequential; }},
     });
 }

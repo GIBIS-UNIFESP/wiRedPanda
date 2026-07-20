@@ -1,7 +1,7 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/TestsWithoutPanda/TestSequential.h"
+#include "Tests/QuickShell/TestSequential.h"
 
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/DFlipFlop.h"
@@ -11,8 +11,8 @@
 #include "App/Element/GraphicElements/Or.h"
 #include "App/Element/GraphicElements/SRFlipFlop.h"
 #include "App/Element/GraphicElements/TFlipFlop.h"
-#include "Tests/Common/TestUtils.h"
-#include "Tests/Integration/IC/Tests/Cpu/CpuCommon.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 using TestUtils::clockCycle;
 using TestUtils::clockToggle;
@@ -29,7 +29,7 @@ using TestUtils::setMultiBitInput;
  * @param stateNotLed Output: Optional Led for Q_not output (can be null)
  * @return Simulation pointer for the circuit
  */
-void buildSimple2StateFsm(WorkSpace* workspace,
+void buildSimple2StateFsm(QuickCircuitBuilder *builderPtr,
                           InputSwitch*& triggerSwitch,
                           InputSwitch*& clockSwitch,
                           Led*& stateLed,
@@ -37,8 +37,7 @@ void buildSimple2StateFsm(WorkSpace* workspace,
                           DFlipFlop*& outStateFf,
                           Simulation*& sim)
 {
-    // Create fresh circuit for each test
-    CircuitBuilder builder(workspace->scene());
+    QuickCircuitBuilder &builder = *builderPtr;
 
     triggerSwitch = new InputSwitch();
     clockSwitch = new InputSwitch();
@@ -118,8 +117,7 @@ void TestSequential::testRegisterAsyncClear()
     QFETCH(int, initialValue);
     QFETCH(bool, shouldReleaseClear);
 
-    WorkSpace workspace;
-    CircuitBuilder builder(workspace.scene());
+    QuickCircuitBuilder builder;
 
     // Input controls
     InputSwitch clk;
@@ -209,8 +207,7 @@ void TestSequential::testCounterAsyncReset()
     QFETCH(int, targetCount);
     QFETCH(int, resetAction);
 
-    WorkSpace workspace;
-    CircuitBuilder builder(workspace.scene());
+    QuickCircuitBuilder builder;
 
     // Clock input
     InputSwitch clk;
@@ -378,8 +375,7 @@ void TestSequential::testShiftRegisterAsyncClear()
     QFETCH(QVector<bool>, shiftInSequence);
     QFETCH(bool, shouldReleaseClear);
 
-    WorkSpace workspace;
-    CircuitBuilder builder(workspace.scene());
+    QuickCircuitBuilder builder;
 
     // Input controls
     InputSwitch clk;
@@ -494,9 +490,9 @@ void TestSequential::testSimpleStateMachine()
     Led *stateNotLed = nullptr;
     DFlipFlop *stateFf = nullptr;
 
-    auto workspace = std::make_unique<WorkSpace>();
+    QuickCircuitBuilder builder;
     Simulation *simulation = nullptr;
-    buildSimple2StateFsm(workspace.get(), triggerSwitch, clockSwitch, stateLed, stateNotLed, stateFf, simulation);
+    buildSimple2StateFsm(&builder, triggerSwitch, clockSwitch, stateLed, stateNotLed, stateFf, simulation);
 
     // CRITICAL FIX #1: Verify initial state is IDLE (Q=0)
     int initialQ = inputStatus(stateLed);
@@ -565,9 +561,9 @@ void TestSequential::testFsmStateTransitions()
     Led *stateNotLed = nullptr;
     DFlipFlop *stateFf = nullptr;
 
-    auto workspace = std::make_unique<WorkSpace>();
+    QuickCircuitBuilder builder;
     Simulation *simulation = nullptr;
-    buildSimple2StateFsm(workspace.get(), triggerSwitch, clockSwitch, stateLed, stateNotLed, stateFf, simulation);
+    buildSimple2StateFsm(&builder, triggerSwitch, clockSwitch, stateLed, stateNotLed, stateFf, simulation);
 
     // CRITICAL FIX #2: Verify initial state is IDLE (Q=0)
     int initialQ = inputStatus(stateLed);
@@ -652,9 +648,9 @@ void TestSequential::testFsmTimingEdgeCases()
     Led *stateNotLed = nullptr;
     DFlipFlop *stateFf = nullptr;
 
-    auto workspace = std::make_unique<WorkSpace>();
+    QuickCircuitBuilder builder;
     Simulation *simulation = nullptr;
-    buildSimple2StateFsm(workspace.get(), triggerSwitch, clockSwitch, stateLed, stateNotLed, stateFf, simulation);
+    buildSimple2StateFsm(&builder, triggerSwitch, clockSwitch, stateLed, stateNotLed, stateFf, simulation);
 
     // CRITICAL FIX #2: Verify initial state is IDLE (Q=0)
     int initialQ = inputStatus(stateLed);
@@ -742,9 +738,9 @@ void TestSequential::testFsmExtendedSequences()
     Led *stateNotLed = nullptr;
     DFlipFlop *stateFf = nullptr;
 
-    auto workspace = std::make_unique<WorkSpace>();
+    QuickCircuitBuilder builder;
     Simulation *simulation = nullptr;
-    buildSimple2StateFsm(workspace.get(), triggerSwitch, clockSwitch, stateLed, stateNotLed, stateFf, simulation);
+    buildSimple2StateFsm(&builder, triggerSwitch, clockSwitch, stateLed, stateNotLed, stateFf, simulation);
 
     // CRITICAL FIX #2: Verify initial state is IDLE (Q=0)
     int initialQ = inputStatus(stateLed);
@@ -836,9 +832,9 @@ void TestSequential::testFsmQnotComplementarity()
     Led *stateNotLed = nullptr;
     DFlipFlop *stateFf = nullptr;
 
-    auto workspace = std::make_unique<WorkSpace>();
+    QuickCircuitBuilder builder;
     Simulation *simulation = nullptr;
-    buildSimple2StateFsm(workspace.get(), triggerSwitch, clockSwitch, stateLed, stateNotLed, stateFf, simulation);
+    buildSimple2StateFsm(&builder, triggerSwitch, clockSwitch, stateLed, stateNotLed, stateFf, simulation);
 
     int complementViolations = 0;
     QStringList violationDetails;
@@ -901,9 +897,9 @@ void TestSequential::testFsmLongSequenceStability()
     Led *stateNotLed = nullptr;
     DFlipFlop *stateFf = nullptr;
 
-    auto workspace = std::make_unique<WorkSpace>();
+    QuickCircuitBuilder builder;
     Simulation *simulation = nullptr;
-    buildSimple2StateFsm(workspace.get(), triggerSwitch, clockSwitch, stateLed, stateNotLed, stateFf, simulation);
+    buildSimple2StateFsm(&builder, triggerSwitch, clockSwitch, stateLed, stateNotLed, stateFf, simulation);
 
     // Verify initial state
     int initialQ = inputStatus(stateLed);
@@ -966,9 +962,9 @@ void TestSequential::testFsmStateLock()
     Led *stateNotLed = nullptr;
     DFlipFlop *stateFf = nullptr;
 
-    auto workspace = std::make_unique<WorkSpace>();
+    QuickCircuitBuilder builder;
     Simulation *simulation = nullptr;
-    buildSimple2StateFsm(workspace.get(), triggerSwitch, clockSwitch, stateLed, stateNotLed, stateFf, simulation);
+    buildSimple2StateFsm(&builder, triggerSwitch, clockSwitch, stateLed, stateNotLed, stateFf, simulation);
 
     triggerSwitch->setOn(true);
     simulation->update();
@@ -1025,9 +1021,9 @@ void TestSequential::testFsmRapidClockNoSettle()
     Led *stateNotLed = nullptr;
     DFlipFlop *stateFf = nullptr;
 
-    auto workspace = std::make_unique<WorkSpace>();
+    QuickCircuitBuilder builder;
     Simulation *simulation = nullptr;
-    buildSimple2StateFsm(workspace.get(), triggerSwitch, clockSwitch, stateLed, stateNotLed, stateFf, simulation);
+    buildSimple2StateFsm(&builder, triggerSwitch, clockSwitch, stateLed, stateNotLed, stateFf, simulation);
 
     int stateErrors = 0;
 
@@ -1080,9 +1076,9 @@ void TestSequential::testFsmTriggerDuringClock()
     Led *stateNotLed = nullptr;
     DFlipFlop *stateFf = nullptr;
 
-    auto workspace = std::make_unique<WorkSpace>();
+    QuickCircuitBuilder builder;
     Simulation *simulation = nullptr;
-    buildSimple2StateFsm(workspace.get(), triggerSwitch, clockSwitch, stateLed, stateNotLed, stateFf, simulation);
+    buildSimple2StateFsm(&builder, triggerSwitch, clockSwitch, stateLed, stateNotLed, stateFf, simulation);
 
     triggerSwitch->setOn(initialTrigger);
     simulation->update();
@@ -1123,9 +1119,9 @@ void TestSequential::testFsmLongTermStability()
     Led *stateNotLed = nullptr;
     DFlipFlop *stateFf = nullptr;
 
-    auto workspace = std::make_unique<WorkSpace>();
+    QuickCircuitBuilder builder;
     Simulation *simulation = nullptr;
-    buildSimple2StateFsm(workspace.get(), triggerSwitch, clockSwitch, stateLed, stateNotLed, stateFf, simulation);
+    buildSimple2StateFsm(&builder, triggerSwitch, clockSwitch, stateLed, stateNotLed, stateFf, simulation);
 
     const int STRESS_CYCLES = 500;
     int stateErrors = 0;
@@ -1193,8 +1189,7 @@ void TestSequential::testTFlipFlopToggle()
     QFETCH(bool, tInput);
     QFETCH(bool, expectedToggle);
 
-    WorkSpace workspace;
-    CircuitBuilder builder(workspace.scene());
+    QuickCircuitBuilder builder;
 
     InputSwitch tSwitch, clockSwitch;
     TFlipFlop tff;
@@ -1267,8 +1262,7 @@ void TestSequential::testSRFlipFlopSetReset()
     QFETCH(bool, rInput);
     QFETCH(bool, expectedQ);
 
-    WorkSpace workspace;
-    CircuitBuilder builder(workspace.scene());
+    QuickCircuitBuilder builder;
 
     InputSwitch sSwitch, clockSwitch, rSwitch;
     SRFlipFlop srff;

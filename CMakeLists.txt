@@ -863,7 +863,6 @@ add_test(NAME TestRecentFiles COMMAND test_wiredpanda TestRecentFiles WORKING_DI
 add_test(NAME TestScene COMMAND test_wiredpanda TestScene WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSceneState COMMAND test_wiredpanda TestSceneState WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSceneUndoredo COMMAND test_wiredpanda TestSceneUndoredo WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestSequential COMMAND test_wiredpanda TestSequential WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSerialization COMMAND test_wiredpanda TestSerialization WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSettings COMMAND test_wiredpanda TestSettings WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestStatusOps COMMAND test_wiredpanda TestStatusOps WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -1041,6 +1040,7 @@ add_test(NAME TestDisplays COMMAND test_wiredpanda_quick TestDisplays WORKING_DI
 add_test(NAME TestSequentialLogic COMMAND test_wiredpanda_quick TestSequentialLogic WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestMemorySettlingTime COMMAND test_wiredpanda_quick TestMemorySettlingTime WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestMUXDEMUXComprehensive COMMAND test_wiredpanda_quick TestMUXDEMUXComprehensive WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestSequential COMMAND test_wiredpanda_quick TestSequential WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 # ============================================================================
 # Test Properties: Labels and Timeouts
@@ -1054,8 +1054,7 @@ add_test(NAME TestMUXDEMUXComprehensive COMMAND test_wiredpanda_quick TestMUXDEM
 # TestLevel1DFlipFlop moved to test_wiredpanda_quick (Phase C/D of the qtquick-rewrite plan's
 # Widgets-test-parity audit) -- see the "quick" label foreach below.
 # IC-specific deep tests - Integration category
-foreach(TEST TestDecoder8To256 TestRAMCell1Bit
-        TestSequential)
+foreach(TEST TestDecoder8To256 TestRAMCell1Bit)
     set_tests_properties(${TEST} PROPERTIES LABELS "integration")
 endforeach()
 
@@ -1141,14 +1140,14 @@ foreach(TEST TestCanvasItemSmoke TestCanvasCommands TestQuickElementHandler
         TestDemux TestMux TestPriorities
         TestClocksAdvanced TestLogicGates
         TestDisplays TestSequentialLogic TestMemorySettlingTime
-        TestMUXDEMUXComprehensive)
+        TestMUXDEMUXComprehensive TestSequential)
     set_tests_properties(${TEST} PROPERTIES LABELS "unit;quick")
 endforeach()
 
 # GUI tests run sequentially after all other tests complete
 set(GUI_TESTS TestDialogs TestFileDialogProvider TestMainWindowGui TestBewavedDolphinGui)
 set(ALL_TESTS
-    TestDecoder8To256 TestRAMCell1Bit TestSequential
+    TestDecoder8To256 TestRAMCell1Bit
     TestArduino TestFeedback TestFiles TestIC TestICInline
     TestSimulation TestSystemVerilogExport TestWorkspace TestWorkspaceFileops
     TestIcons TestWaveform TestAudioBox TestBuzzer TestClock
