@@ -12,6 +12,8 @@ class TestElementEditor : public QObject
 
 private slots:
 
+    void initTestCase();
+
     void testCreation();
     void testSetScene();
     void testRetranslateUi();
