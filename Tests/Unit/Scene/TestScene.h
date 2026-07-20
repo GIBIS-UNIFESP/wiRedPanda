@@ -137,4 +137,16 @@ private slots:
     // resizeScene() quantizes the scene rect so small interaction steps yield
     // bit-identical rects -- any changed rect makes Qt's BSP index re-insert every item.
     void testResizeSceneQuantizesSceneRect();
+
+    // SceneInteraction, driven through Scene's real mouse-event pipeline (it has no public
+    // accessor of its own, so it's only reachable this way -- see the port-hover tests above
+    // for the same "no accessor, exercised via Scene" shape).
+    void testCtrlClickTogglesElementSelection();
+    void testPressOnPortWhileWireInProgressCompletesConnection();
+    void testPressOnEmptyInputPortStartsWireFromInput();
+    void testPressOnOccupiedInputPortDetachesWire();
+    void testRightClickOnElementOpensContextMenu();
+    void testDraggingElementPastTimerThresholdEnsuresVisible();
+    void testCtrlDoubleClickOnWireDoesNotInsertNode();
+    void testDoubleClickOnConnectedWireInsertsSplitNode();
 };
