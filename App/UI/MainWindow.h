@@ -13,13 +13,11 @@
 #include <QDir>
 #include <QMainWindow>
 #include <QPointer>
-#include <QSpacerItem>
 
 #include "App/BeWavedDolphin/DolphinHost.h"
 #include "App/UI/MainWindowHost.h"
 #include "App/UI/MainWindowUI.h"
 
-class ElementLabel;
 class ElementPalette;
 class ExerciseEngine;
 class ExerciseOverlay;
@@ -169,16 +167,6 @@ public:
 
     /// Populates the Language submenu with available translations.
     void populateLanguageMenu();
-
-    // --- Palette ---
-
-    /**
-     * \brief Fills \a layout with ElementLabel buttons from \a names, preceded by \a spacer.
-     * \param spacer   Spacer item to insert before the buttons.
-     * \param names    Element type names to add.
-     * \param layout   Target layout.
-     */
-    void populateMenu(QSpacerItem *spacer, const QStringList &names, QLayout *layout);
 
     // --- View / Rendering ---
 
