@@ -180,6 +180,7 @@
 #include "Tests/Unit/MCP/TestICHandlerSecurity.h"
 #include "Tests/Unit/MCP/TestMCPProcessor.h"
 #include "Tests/Unit/MCP/TestMCPValidator.h"
+#include "Tests/Unit/MCP/TestThemeHandler.h"
 // unit/scene
 #include "Tests/Unit/Scene/TestConnectionManager.h"
 #include "Tests/Unit/Scene/TestConnectionValidity.h"
@@ -401,6 +402,7 @@ int main(int argc, char **argv)
         {"TestFileHandlerSecurity", []() -> QObject * { return new TestFileHandlerSecurity; }},
         {"TestMCPProcessor", []() -> QObject * { return new TestMCPProcessor; }},
         {"TestMCPValidator", []() -> QObject * { return new TestMCPValidator; }},
+        {"TestThemeHandler", []() -> QObject * { return new TestThemeHandler; }},
         {"TestElementHandler", []() -> QObject * { return new TestElementHandler; }},
         {"TestBaseHandler", []() -> QObject * { return new TestBaseHandler; }},
         {"TestConnectionSerialization", []() -> QObject * { return new TestConnectionSerialization; }},

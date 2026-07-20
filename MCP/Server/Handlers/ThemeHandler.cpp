@@ -75,5 +75,5 @@ QString ThemeHandler::themeToString(Theme theme) const
     case Theme::System:
         return "system";
     }
-    Q_UNREACHABLE();
+    Q_UNREACHABLE(); // LCOV_EXCL_LINE -- Theme is an enum class with all 3 values handled by name
 }
