@@ -949,6 +949,7 @@ add_test(NAME TestSimulationUnit COMMAND test_wiredpanda TestSimulationUnit WORK
 add_test(NAME TestDanglingPointer COMMAND test_wiredpanda TestDanglingPointer WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSystemVerilogCodeGenUnit COMMAND test_wiredpanda TestSystemVerilogCodeGenUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestTrashButton COMMAND test_wiredpanda TestTrashButton WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestUpdateController COMMAND test_wiredpanda TestUpdateController WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestWorkspaceManager COMMAND test_wiredpanda TestWorkspaceManager WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestExerciseTourResources COMMAND test_wiredpanda TestExerciseTourResources WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestExternalFilePath COMMAND test_wiredpanda TestExternalFilePath WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -1100,7 +1101,7 @@ set(ALL_TESTS
     TestCircuitExporter TestElementContextMenu TestElementEditor TestElementPalette
     TestElementTabNavigator TestExportController TestFileDialogProviderUnit TestICController TestICDropZone TestLabeledSlider
     TestLanguageManager TestMinimapWidget TestSceneUiBinder TestSelectionCapabilities
-    TestTrashButton TestWorkspaceManager
+    TestTrashButton TestUpdateController TestWorkspaceManager
     TestConnection TestConnectionManager TestGraphicsView TestPropertyShortcutHandler TestPort TestSceneDropHandler
     TestDemux TestDisplay TestDisplay7 TestGraphicElement TestICRegistry TestICUnit TestMux
     TestDolphinClipboard TestDolphinEdits TestDolphinExporter TestDolphinFile TestDolphinModelBuilder
