@@ -241,6 +241,8 @@ list(REMOVE_ITEM QUICK_SHELL_LIB_SOURCES Main.cpp)
 set(QUICK_SHELL_TEST_SOURCES
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/Runners/QuickRunnerUtils.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/Runners/TestWiredpandaQuick.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/QuickCircuitBuilder.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/QuickCircuitBuilder.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/StubDialogProvider.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasCommands.cpp
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasCommands.h
@@ -252,6 +254,22 @@ set(QUICK_SHELL_TEST_SOURCES
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasItemInteraction.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasItemSmoke.cpp
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasItemSmoke.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestFeedback.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestFeedback.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestSimulation.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestSimulation.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestQuickWorkSpace.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestQuickWorkSpace.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestConnection.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestConnection.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestConnectionValidity.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestConnectionValidity.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestPort.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestPort.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestSceneConnections.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestSceneConnections.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestSelectionCapabilities.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestSelectionCapabilities.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestQuickElementHandler.cpp
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestQuickElementHandler.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestQuickFileHandlerSecurity.cpp

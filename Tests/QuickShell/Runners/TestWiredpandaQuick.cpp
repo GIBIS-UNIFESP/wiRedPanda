@@ -7,7 +7,16 @@
 #include "Tests/QuickShell/TestCanvasEmbeddedIC.h"
 #include "Tests/QuickShell/TestCanvasInlineIC.h"
 #include "Tests/QuickShell/TestCanvasItemInteraction.h"
+#include "Tests/QuickShell/TestCanvasPortHover.h"
 #include "Tests/QuickShell/TestCanvasItemSmoke.h"
+#include "Tests/QuickShell/TestFeedback.h"
+#include "Tests/QuickShell/TestSimulation.h"
+#include "Tests/QuickShell/TestQuickWorkSpace.h"
+#include "Tests/QuickShell/TestConnection.h"
+#include "Tests/QuickShell/TestConnectionValidity.h"
+#include "Tests/QuickShell/TestPort.h"
+#include "Tests/QuickShell/TestSceneConnections.h"
+#include "Tests/QuickShell/TestSelectionCapabilities.h"
 #include "Tests/QuickShell/TestQuickAppController.h"
 #include "Tests/QuickShell/TestQuickCanvasZoom.h"
 #include "Tests/QuickShell/TestQuickDolphinController.h"
@@ -31,9 +40,18 @@ int main(int argc, char **argv)
         {"TestCanvasEmbeddedIC", []() -> QObject * { return new TestCanvasEmbeddedIC; }},
         {"TestCanvasInlineIC", []() -> QObject * { return new TestCanvasInlineIC; }},
         {"TestCanvasItemInteraction", []() -> QObject * { return new TestCanvasItemInteraction; }},
+        {"TestCanvasPortHover", []() -> QObject * { return new TestCanvasPortHover; }},
         {"TestQuickElementEditor", []() -> QObject * { return new TestQuickElementEditor; }},
         {"TestQuickElementPalette", []() -> QObject * { return new TestQuickElementPalette; }},
         {"TestQuickCanvasZoom", []() -> QObject * { return new TestQuickCanvasZoom; }},
         {"TestQuickMinimap", []() -> QObject * { return new TestQuickMinimap; }},
+        {"TestConnection", []() -> QObject * { return new TestConnection; }},
+        {"TestConnectionValidity", []() -> QObject * { return new TestConnectionValidity; }},
+        {"TestPort", []() -> QObject * { return new TestPort; }},
+        {"TestSelectionCapabilities", []() -> QObject * { return new TestSelectionCapabilities; }},
+        {"TestSceneConnections", []() -> QObject * { return new TestSceneConnections; }},
+        {"TestFeedback", []() -> QObject * { return new TestFeedback; }},
+        {"TestSimulation", []() -> QObject * { return new TestSimulation; }},
+        {"TestQuickWorkSpace", []() -> QObject * { return new TestQuickWorkSpace; }},
     });
 }

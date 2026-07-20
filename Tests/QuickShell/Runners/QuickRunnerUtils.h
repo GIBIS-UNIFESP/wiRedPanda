@@ -15,6 +15,8 @@
 #include <QTemporaryDir>
 #include <QTest>
 
+#include "App/Core/Application.h"
+
 struct QuickTestEntry {
     const char *name;
     std::function<QObject *()> create;
@@ -47,6 +49,16 @@ inline int runQuickTestSuite(int argc, char **argv, const std::vector<QuickTestE
     auto *settingsDir = new QTemporaryDir();
     QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, settingsDir->path());
     QStandardPaths::setTestModeEnabled(true);
+
+    // Same reasoning as TestUtils::setupTestEnvironment(): suppresses UI dialogs, and --
+    // load-bearing for Simulation::update(), whose visual-refresh throttle only engages
+    // when Application::interactiveMode is true (see Simulation::update()'s visualsDue) --
+    // otherwise a test driving Simulation::update() synchronously with no real wall-clock
+    // time between ticks can see stale port statuses for many ticks.
+    Application::interactiveMode = false;
+    // Also matches TestUtils::setupTestEnvironment(): preserves backward-compatibility test
+    // fixtures (old-format .panda files) as-is instead of silently auto-migrating them on load.
+    Application::migrationEnabled = false;
 
     QGuiApplication app(argc, argv);
     QCoreApplication::setOrganizationName("GIBIS-UNIFESP");
