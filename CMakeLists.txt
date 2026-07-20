@@ -858,8 +858,6 @@ add_test(NAME TestInputRotary COMMAND test_wiredpanda TestInputRotary WORKING_DI
 add_test(NAME TestLED COMMAND test_wiredpanda TestLED WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestMainWindowGui COMMAND test_wiredpanda TestMainWindowGui WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestMinimapWidget COMMAND test_wiredpanda TestMinimapWidget WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel2Decoder2To4 COMMAND test_wiredpanda TestLevel2Decoder2To4 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel2Decoder3To8 COMMAND test_wiredpanda TestLevel2Decoder3To8 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel2Decoder4To16 COMMAND test_wiredpanda TestLevel2Decoder4To16 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel2Decoder5To32 COMMAND test_wiredpanda TestLevel2Decoder5To32 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel2MUX2To1 COMMAND test_wiredpanda TestLevel2MUX2To1 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -1041,6 +1039,8 @@ add_test(NAME TestLevel2HalfAdder COMMAND test_wiredpanda_quick TestLevel2HalfAd
 add_test(NAME TestLevel2FullAdder1Bit COMMAND test_wiredpanda_quick TestLevel2FullAdder1Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel2ParityChecker COMMAND test_wiredpanda_quick TestLevel2ParityChecker WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel2ParityGenerator COMMAND test_wiredpanda_quick TestLevel2ParityGenerator WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel2Decoder2To4 COMMAND test_wiredpanda_quick TestLevel2Decoder2To4 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel2Decoder3To8 COMMAND test_wiredpanda_quick TestLevel2Decoder3To8 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 # ============================================================================
 # Test Properties: Labels and Timeouts
@@ -1053,7 +1053,7 @@ add_test(NAME TestLevel2ParityGenerator COMMAND test_wiredpanda_quick TestLevel2
 # Level Tests - Integration category (IC-level hierarchical tests)
 # TestLevel1DFlipFlop moved to test_wiredpanda_quick (Phase C/D of the qtquick-rewrite plan's
 # Widgets-test-parity audit) -- see the "quick" label foreach below.
-foreach(TEST TestLevel2Decoder2To4 TestLevel2Decoder3To8 TestLevel2Decoder4To16 TestLevel2Decoder5To32
+foreach(TEST TestLevel2Decoder4To16 TestLevel2Decoder5To32
         TestLevel2MUX2To1 TestLevel2MUX4To1
         TestLevel2MUX8To1
         TestLevel2PriorityEncoder8To3 TestLevel2PriorityMUX3To1 TestLevel3ALUSelector5Way
@@ -1144,14 +1144,15 @@ foreach(TEST TestCanvasItemSmoke TestCanvasCommands TestQuickElementHandler
         TestCPUInstructionExecute TestCPUInstructionFetch TestCPUIntegration
         TestCPUMemoryInterface TestCPURegisterBank TestCPURegisters
         TestLevel1DLatch TestLevel1SRLatch TestLevel1JKFlipFlop
-        TestLevel2HalfAdder TestLevel2FullAdder1Bit TestLevel2ParityChecker TestLevel2ParityGenerator)
+        TestLevel2HalfAdder TestLevel2FullAdder1Bit TestLevel2ParityChecker TestLevel2ParityGenerator
+        TestLevel2Decoder2To4 TestLevel2Decoder3To8)
     set_tests_properties(${TEST} PROPERTIES LABELS "unit;quick")
 endforeach()
 
 # GUI tests run sequentially after all other tests complete
 set(GUI_TESTS TestDialogs TestFileDialogProvider TestMainWindowGui TestBewavedDolphinGui)
 set(ALL_TESTS
-    TestLevel2Decoder2To4 TestLevel2Decoder3To8 TestLevel2Decoder4To16 TestLevel2Decoder5To32
+    TestLevel2Decoder4To16 TestLevel2Decoder5To32
     TestLevel2MUX2To1 TestLevel2MUX4To1
     TestLevel2MUX8To1
     TestLevel2PriorityEncoder8To3 TestLevel2PriorityMUX3To1

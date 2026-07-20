@@ -1,19 +1,19 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/TestLevel2Decoder3to8.h"
+#include "Tests/QuickShell/IC/TestLevel2Decoder3to8.h"
 
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "Tests/Common/TestUtils.h"
-#include "Tests/Integration/IC/Tests/CpuTestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct Decoder3to8Fixture {
-    std::unique_ptr<WorkSpace> workspace;
+    std::unique_ptr<QuickCircuitBuilder> builder;
     IC *ic = nullptr;
     InputSwitch *swAddr[3] = {};
     Led *ledOut[8] = {};
@@ -21,30 +21,26 @@ struct Decoder3to8Fixture {
 
     bool build()
     {
-        workspace = std::make_unique<WorkSpace>();
-        CircuitBuilder builder(workspace->scene());
+        builder = std::make_unique<QuickCircuitBuilder>();
 
         for (int i = 0; i < 3; ++i) {
-            swAddr[i] = new InputSwitch();
-            builder.add(swAddr[i]);
+            swAddr[i] = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
         }
         for (int i = 0; i < 8; ++i) {
-            ledOut[i] = new Led();
-            builder.add(ledOut[i]);
+            ledOut[i] = static_cast<Led *>(builder->addOwnedElement(new Led()));
         }
 
-        ic = loadBuildingBlockIC("level2_decoder_3to8.panda");
-        builder.add(ic);
+        ic = static_cast<IC *>(builder->addOwnedElement(loadBuildingBlockIC("level2_decoder_3to8.panda")));
 
-        builder.connect(swAddr[0], 0, ic, "addr[0]");
-        builder.connect(swAddr[1], 0, ic, "addr[1]");
-        builder.connect(swAddr[2], 0, ic, "addr[2]");
+        builder->connect(swAddr[0], 0, ic, "addr[0]");
+        builder->connect(swAddr[1], 0, ic, "addr[1]");
+        builder->connect(swAddr[2], 0, ic, "addr[2]");
 
         for (int i = 0; i < 8; ++i) {
-            builder.connect(ic, QString("out[%1]").arg(i), ledOut[i], 0);
+            builder->connect(ic, QString("out[%1]").arg(i), ledOut[i], 0);
         }
 
-        sim = builder.initSimulation();
+        sim = builder->initSimulation();
         sim->update();
         return true;
     }
@@ -114,32 +110,27 @@ void TestLevel2Decoder3To8::test3to8Decoder()
 // the shared fixture (Enable unconnected → defaulted high) is untouched.
 void TestLevel2Decoder3To8::testEnableGating()
 {
-    auto workspace = std::make_unique<WorkSpace>();
-    CircuitBuilder builder(workspace->scene());
+    auto builder = std::make_unique<QuickCircuitBuilder>();
 
     InputSwitch *addr[3] = {};
     for (auto &a : addr) {
-        a = new InputSwitch();
-        builder.add(a);
+        a = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
     }
-    auto *en = new InputSwitch();
-    builder.add(en);
+    auto *en = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
     Led *outs[8] = {};
     for (auto &o : outs) {
-        o = new Led();
-        builder.add(o);
+        o = static_cast<Led *>(builder->addOwnedElement(new Led()));
     }
 
-    auto *ic = loadBuildingBlockIC("level2_decoder_3to8.panda");
-    builder.add(ic);
+    auto *ic = static_cast<IC *>(builder->addOwnedElement(loadBuildingBlockIC("level2_decoder_3to8.panda")));
     for (int i = 0; i < 3; ++i) {
-        builder.connect(addr[i], 0, ic, QString("addr[%1]").arg(i));
+        builder->connect(addr[i], 0, ic, QString("addr[%1]").arg(i));
     }
-    builder.connect(en, 0, ic, "Enable");
+    builder->connect(en, 0, ic, "Enable");
     for (int i = 0; i < 8; ++i) {
-        builder.connect(ic, QString("out[%1]").arg(i), outs[i], 0);
+        builder->connect(ic, QString("out[%1]").arg(i), outs[i], 0);
     }
-    auto *sim = builder.initSimulation();
+    auto *sim = builder->initSimulation();
 
     // Address 5 selected, Enable low → all outputs forced low.
     for (int i = 0; i < 3; ++i) {

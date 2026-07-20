@@ -240,8 +240,6 @@ set(MEMORY_HELPERS_HEADERS
 
 set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestICFixtureLayout.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2Decoder2to4.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2Decoder3to8.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2Decoder4to16.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2Decoder5to32.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2Mux2to1.cpp
@@ -414,8 +412,6 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/CpuHelpers.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/CpuTestUtils.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestICFixtureLayout.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2Decoder2to4.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2Decoder3to8.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2Decoder4to16.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2Decoder5to32.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2Mux2to1.h

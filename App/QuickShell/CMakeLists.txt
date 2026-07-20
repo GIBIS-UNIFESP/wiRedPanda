@@ -287,6 +287,10 @@ set(QUICK_SHELL_TEST_SOURCES
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel2ParityChecker.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel2ParityGenerator.cpp
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel2ParityGenerator.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel2Decoder2to4.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel2Decoder2to4.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel2Decoder3to8.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel2Decoder3to8.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/StubDialogProvider.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasCommands.cpp
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasCommands.h

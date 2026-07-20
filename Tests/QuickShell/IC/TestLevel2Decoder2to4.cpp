@@ -1,21 +1,20 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/TestLevel2Decoder2to4.h"
+#include "Tests/QuickShell/IC/TestLevel2Decoder2to4.h"
 
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "App/Scene/Workspace.h"
-#include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/Cpu/CpuCommon.h"
-#include "Tests/Integration/IC/Tests/CpuTestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct Decoder2to4Fixture {
-    std::unique_ptr<WorkSpace> workspace;
+    std::unique_ptr<QuickCircuitBuilder> builder;
     IC *ic = nullptr;
     InputSwitch *addressBits[2] = {};
     Led *outputs[4] = {};
@@ -23,28 +22,24 @@ struct Decoder2to4Fixture {
 
     bool build()
     {
-        workspace = std::make_unique<WorkSpace>();
-        CircuitBuilder builder(workspace->scene());
+        builder = std::make_unique<QuickCircuitBuilder>();
 
         for (int i = 0; i < 2; ++i) {
-            addressBits[i] = new InputSwitch();
-            builder.add(addressBits[i]);
+            addressBits[i] = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
         }
         for (int i = 0; i < 4; ++i) {
-            outputs[i] = new Led();
-            builder.add(outputs[i]);
+            outputs[i] = static_cast<Led *>(builder->addOwnedElement(new Led()));
         }
 
-        ic = loadBuildingBlockIC("level2_decoder_2to4.panda");
-        builder.add(ic);
+        ic = static_cast<IC *>(builder->addOwnedElement(loadBuildingBlockIC("level2_decoder_2to4.panda")));
 
-        builder.connect(addressBits[0], 0, ic, "addr[0]");
-        builder.connect(addressBits[1], 0, ic, "addr[1]");
+        builder->connect(addressBits[0], 0, ic, "addr[0]");
+        builder->connect(addressBits[1], 0, ic, "addr[1]");
         for (int i = 0; i < 4; ++i) {
-            builder.connect(ic, QString("out[%1]").arg(i), outputs[i], 0);
+            builder->connect(ic, QString("out[%1]").arg(i), outputs[i], 0);
         }
 
-        sim = builder.initSimulation();
+        sim = builder->initSimulation();
         sim->update();
         return true;
     }
@@ -161,28 +156,24 @@ void TestLevel2Decoder2To4::testMutualExclusivity()
 // untouched.
 void TestLevel2Decoder2To4::testEnableGating()
 {
-    auto workspace = std::make_unique<WorkSpace>();
-    CircuitBuilder builder(workspace->scene());
+    auto builder = std::make_unique<QuickCircuitBuilder>();
 
-    auto *a0 = new InputSwitch();
-    auto *a1 = new InputSwitch();
-    auto *en = new InputSwitch();
-    builder.add(a0, a1, en);
+    auto *a0 = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+    auto *a1 = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+    auto *en = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
     Led *outs[4] = {};
     for (auto &o : outs) {
-        o = new Led();
-        builder.add(o);
+        o = static_cast<Led *>(builder->addOwnedElement(new Led()));
     }
 
-    auto *ic = loadBuildingBlockIC("level2_decoder_2to4.panda");
-    builder.add(ic);
-    builder.connect(a0, 0, ic, "addr[0]");
-    builder.connect(a1, 0, ic, "addr[1]");
-    builder.connect(en, 0, ic, "Enable");
+    auto *ic = static_cast<IC *>(builder->addOwnedElement(loadBuildingBlockIC("level2_decoder_2to4.panda")));
+    builder->connect(a0, 0, ic, "addr[0]");
+    builder->connect(a1, 0, ic, "addr[1]");
+    builder->connect(en, 0, ic, "Enable");
     for (int i = 0; i < 4; ++i) {
-        builder.connect(ic, QString("out[%1]").arg(i), outs[i], 0);
+        builder->connect(ic, QString("out[%1]").arg(i), outs[i], 0);
     }
-    auto *sim = builder.initSimulation();
+    auto *sim = builder->initSimulation();
 
     // Address 2 selected, Enable low → all outputs forced low.
     a0->setOn(false);

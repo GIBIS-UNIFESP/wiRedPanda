@@ -28,6 +28,8 @@
 #include "Tests/QuickShell/IC/TestLevel2FullAdder1bit.h"
 #include "Tests/QuickShell/IC/TestLevel2ParityChecker.h"
 #include "Tests/QuickShell/IC/TestLevel2ParityGenerator.h"
+#include "Tests/QuickShell/IC/TestLevel2Decoder2to4.h"
+#include "Tests/QuickShell/IC/TestLevel2Decoder3to8.h"
 #include "Tests/QuickShell/TestFeedback.h"
 #include "Tests/QuickShell/TestSimulation.h"
 #include "Tests/QuickShell/TestQuickWorkSpace.h"
@@ -91,5 +93,7 @@ int main(int argc, char **argv)
         {"TestLevel2FullAdder1Bit", []() -> QObject * { return new TestLevel2FullAdder1Bit; }},
         {"TestLevel2ParityChecker", []() -> QObject * { return new TestLevel2ParityChecker; }},
         {"TestLevel2ParityGenerator", []() -> QObject * { return new TestLevel2ParityGenerator; }},
+        {"TestLevel2Decoder2To4", []() -> QObject * { return new TestLevel2Decoder2To4; }},
+        {"TestLevel2Decoder3To8", []() -> QObject * { return new TestLevel2Decoder3To8; }},
     });
 }
