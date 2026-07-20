@@ -832,7 +832,6 @@ add_test(NAME TestConnectionSerialization COMMAND test_wiredpanda TestConnection
 add_test(NAME TestConnections COMMAND test_wiredpanda TestConnections WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestDecoder8To256 COMMAND test_wiredpanda TestDecoder8To256 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestDialogs COMMAND test_wiredpanda TestDialogs WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestDisplays COMMAND test_wiredpanda TestDisplays WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestElementFactory COMMAND test_wiredpanda TestElementFactory WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestElementHandler COMMAND test_wiredpanda TestElementHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestElementLabel COMMAND test_wiredpanda TestElementLabel WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -867,7 +866,6 @@ add_test(NAME TestScene COMMAND test_wiredpanda TestScene WORKING_DIRECTORY ${CM
 add_test(NAME TestSceneState COMMAND test_wiredpanda TestSceneState WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSceneUndoredo COMMAND test_wiredpanda TestSceneUndoredo WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSequential COMMAND test_wiredpanda TestSequential WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestSequentialLogic COMMAND test_wiredpanda TestSequentialLogic WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSerialization COMMAND test_wiredpanda TestSerialization WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSettings COMMAND test_wiredpanda TestSettings WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestStatusOps COMMAND test_wiredpanda TestStatusOps WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -1041,6 +1039,8 @@ add_test(NAME TestMux COMMAND test_wiredpanda_quick TestMux WORKING_DIRECTORY ${
 add_test(NAME TestPriorities COMMAND test_wiredpanda_quick TestPriorities WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestClocksAdvanced COMMAND test_wiredpanda_quick TestClocksAdvanced WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLogicGates COMMAND test_wiredpanda_quick TestLogicGates WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestDisplays COMMAND test_wiredpanda_quick TestDisplays WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestSequentialLogic COMMAND test_wiredpanda_quick TestSequentialLogic WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 # ============================================================================
 # Test Properties: Labels and Timeouts
@@ -1066,10 +1066,10 @@ foreach(TEST TestArduino TestFiles TestIC TestICInline
 endforeach()
 
 # Element and Component Unit Tests - Unit category
-foreach(TEST TestBewavedDolphinGui TestAudioBox TestBuzzer TestClock TestComponents TestDisplays
+foreach(TEST TestBewavedDolphinGui TestAudioBox TestBuzzer TestClock TestComponents
         TestElementLabel TestElementProperties TestFeatures TestGeometry
         TestGraphicelementAdvanced TestIcons TestInputElements TestInputRotary TestLED
-        TestMultiplexing TestSequentialLogic TestTruthTable TestWaveform
+        TestMultiplexing TestTruthTable TestWaveform
         TestWirelessNode)
     set_tests_properties(${TEST} PROPERTIES LABELS "unit")
 endforeach()
@@ -1139,7 +1139,8 @@ foreach(TEST TestCanvasItemSmoke TestCanvasCommands TestQuickElementHandler
         TestNotifyCatch TestSimulationUnit TestSimulationBlocker TestDanglingPointer
         TestICUnit TestICRegistry TestExerciseEngine
         TestDemux TestMux TestPriorities
-        TestClocksAdvanced TestLogicGates)
+        TestClocksAdvanced TestLogicGates
+        TestDisplays TestSequentialLogic)
     set_tests_properties(${TEST} PROPERTIES LABELS "unit;quick")
 endforeach()
 
@@ -1151,9 +1152,9 @@ set(ALL_TESTS
     TestArduino TestFeedback TestFiles TestIC TestICInline
     TestSimulation TestSystemVerilogExport TestWorkspace TestWorkspaceFileops
     TestIcons TestWaveform TestAudioBox TestBuzzer TestClock
-    TestComponents TestDisplays TestElementLabel TestElementProperties TestFeatures
+    TestComponents TestElementLabel TestElementProperties TestFeatures
     TestGeometry TestGraphicelementAdvanced TestInputElements TestInputRotary TestLED
-    TestMultiplexing TestSequentialLogic TestTruthTable TestWirelessNode
+    TestMultiplexing TestTruthTable TestWirelessNode
     TestElementFactory TestElementLogic TestElementLogicErrors TestNodeLogic TestStatusOps
     TestConnectionSerialization TestConnectionValidity TestConnections TestScene
     TestSceneConnections TestSceneState TestSceneUndoredo

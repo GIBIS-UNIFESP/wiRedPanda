@@ -121,6 +121,8 @@
 #include "Tests/QuickShell/TestPriorities.h"
 #include "Tests/QuickShell/TestClocksAdvanced.h"
 #include "Tests/QuickShell/TestLogicGates.h"
+#include "Tests/QuickShell/TestDisplays.h"
+#include "Tests/QuickShell/TestSequentialLogic.h"
 
 int main(int argc, char **argv)
 {
@@ -243,5 +245,7 @@ int main(int argc, char **argv)
         {"TestPriorities", []() -> QObject * { return new TestPriorities; }},
         {"TestClocksAdvanced", []() -> QObject * { return new TestClocksAdvanced; }},
         {"TestLogicGates", []() -> QObject * { return new TestLogicGates; }},
+        {"TestDisplays", []() -> QObject * { return new TestDisplays; }},
+        {"TestSequentialLogic", []() -> QObject * { return new TestSequentialLogic; }},
     });
 }

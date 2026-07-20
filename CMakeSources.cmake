@@ -280,7 +280,6 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestComponents.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestDisplay.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestDisplay7.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestDisplays.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementLabel.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementProperties.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestFeatures.cpp
@@ -291,7 +290,6 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestInputRotary.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestLed.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestMultiplexing.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestSequentialLogic.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestTruthTable.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestWirelessNode.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Factory/TestElementFactory.cpp
@@ -379,7 +377,6 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestComponents.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestDisplay.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestDisplay7.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestDisplays.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementLabel.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementProperties.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestFeatures.h
@@ -390,7 +387,6 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestInputRotary.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestLed.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestMultiplexing.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestSequentialLogic.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestTruthTable.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestWirelessNode.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Factory/TestElementFactory.h

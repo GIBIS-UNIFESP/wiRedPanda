@@ -1,7 +1,7 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Unit/Elements/TestSequentialLogic.h"
+#include "Tests/QuickShell/TestSequentialLogic.h"
 
 #include "App/Element/GraphicElements/DFlipFlop.h"
 #include "App/Element/GraphicElements/DLatch.h"
@@ -11,7 +11,8 @@
 #include "App/Element/GraphicElements/SRFlipFlop.h"
 #include "App/Element/GraphicElements/SRLatch.h"
 #include "App/Element/GraphicElements/TFlipFlop.h"
-#include "Tests/Common/TestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 void TestSequentialLogic::testDFlipFlop()
 {
@@ -91,8 +92,7 @@ void TestSequentialLogic::testTFlipFlop()
 
 void TestSequentialLogic::testDFlipFlopBehavior()
 {
-    WorkSpace workspace;
-    CircuitBuilder builder(workspace.scene());
+    QuickCircuitBuilder builder;
 
     InputSwitch swD, swClk;
     DFlipFlop dff;
@@ -132,8 +132,7 @@ void TestSequentialLogic::testDFlipFlopBehavior()
 
 void TestSequentialLogic::testDLatchBehavior()
 {
-    WorkSpace workspace;
-    CircuitBuilder builder(workspace.scene());
+    QuickCircuitBuilder builder;
 
     InputSwitch swD, swEnable;
     DLatch dlatch;
@@ -175,8 +174,7 @@ void TestSequentialLogic::testDLatchBehavior()
 
 void TestSequentialLogic::testJKFlipFlopBehavior()
 {
-    WorkSpace workspace;
-    CircuitBuilder builder(workspace.scene());
+    QuickCircuitBuilder builder;
 
     InputSwitch swJ, swClk, swK;
     JKFlipFlop jkff;
@@ -228,8 +226,7 @@ void TestSequentialLogic::testJKFlipFlopBehavior()
 
 void TestSequentialLogic::testSRFlipFlopBehavior()
 {
-    WorkSpace workspace;
-    CircuitBuilder builder(workspace.scene());
+    QuickCircuitBuilder builder;
 
     InputSwitch swS, swClk, swR;
     SRFlipFlop srff;
@@ -275,8 +272,7 @@ void TestSequentialLogic::testSRFlipFlopBehavior()
 
 void TestSequentialLogic::testSRLatchBehavior()
 {
-    WorkSpace workspace;
-    CircuitBuilder builder(workspace.scene());
+    QuickCircuitBuilder builder;
 
     InputSwitch swS, swR;
     SRLatch srlatch;
@@ -323,8 +319,7 @@ void TestSequentialLogic::testSRLatchBehavior()
 
 void TestSequentialLogic::testTFlipFlopBehavior()
 {
-    WorkSpace workspace;
-    CircuitBuilder builder(workspace.scene());
+    QuickCircuitBuilder builder;
 
     InputSwitch swT, swClk;
     TFlipFlop tff;

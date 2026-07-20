@@ -1,7 +1,7 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Unit/Elements/TestDisplays.h"
+#include "Tests/QuickShell/TestDisplays.h"
 
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/Display14.h"
@@ -9,8 +9,7 @@
 #include "App/Element/GraphicElements/Display7.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
-#include "App/Scene/Workspace.h"
-#include "Tests/Common/TestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
 
 // Display_7 Tests
 
@@ -212,8 +211,7 @@ void TestDisplays::testDisplayColors()
 
 void TestDisplays::testDisplay7InCircuit()
 {
-    WorkSpace workspace;
-    CircuitBuilder builder(workspace.scene());
+    QuickCircuitBuilder builder;
 
     // Create circuit: 8 InputSwitches → Display_7
     InputSwitch sw0, sw1, sw2, sw3, sw4, sw5, sw6, sw7;
@@ -268,8 +266,7 @@ void TestDisplays::testDisplay7InCircuit()
 
 void TestDisplays::testDisplayWithDecoder()
 {
-    WorkSpace workspace;
-    CircuitBuilder builder(workspace.scene());
+    QuickCircuitBuilder builder;
 
     // Create simple 2-bit decoder → Display_7
     // This simulates a partial BCD decoder for digit display
