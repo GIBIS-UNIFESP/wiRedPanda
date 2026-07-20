@@ -981,16 +981,16 @@ void MainWindow::retranslateUi()
 
     for (int index = 0; index < m_ui->tab->count(); ++index) {
         auto *workspace = qobject_cast<WorkSpace *>(m_ui->tab->widget(index));
-        if (!workspace) {
-            continue;
+        if (!workspace) { // LCOV_EXCL_LINE — WorkspaceManager::createNewTab()/openICInTab() are the only two call sites that ever add a widget to m_ui->tab, and both always add a real WorkSpace.
+            continue; // LCOV_EXCL_LINE — see above.
         }
         auto *scene = workspace->scene();
-        if (!scene) {
-            continue;
+        if (!scene) { // LCOV_EXCL_LINE — WorkSpace::scene() returns &m_scene (a value member's address), never null.
+            continue; // LCOV_EXCL_LINE — see above.
         }
         auto *undoStack = scene->undoStack();
-        if (!undoStack) {
-            continue;
+        if (!undoStack) { // LCOV_EXCL_LINE — Scene::undoStack() returns &m_undoStack (a value member's address), never null.
+            continue; // LCOV_EXCL_LINE — see above.
         }
         QString text;
         if (workspace->isInlineIC()) {
@@ -1531,8 +1531,8 @@ QRect MainWindow::resolveTourTarget(const QString &id) const
     BewavedDolphin *bwd = m_bwd;
     if (id.startsWith("bwd:") && bwd) {
         auto mapBwd = [this](QWidget *w) -> QRect {
-            if (!w || !m_tourOverlay) {
-                return {};
+            if (!w || !m_tourOverlay) { // LCOV_EXCL_LINE — !m_tourOverlay is provably unreachable here (the function's own top-level guard above already returned if null, and nothing between there and here can null it out within one synchronous const call); !w would need one of BewavedDolphin's own core widgets (signalTableView()/toolbar action widget/menuBar()) to be null, which none are once it's constructed.
+                return {}; // LCOV_EXCL_LINE — see above.
             }
             const QPoint tl = m_tourOverlay->mapFromGlobal(w->mapToGlobal(QPoint(0, 0)));
             return QRect(tl, w->size());
