@@ -1,17 +1,13 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/TestLevel6ProgramCounter8bitArithmetic.h"
-
-#include <QFile>
-#include <QFileInfo>
+#include "Tests/QuickShell/IC/TestLevel6ProgramCounter8bitArithmetic.h"
 
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "App/Scene/Workspace.h"
-#include "Tests/Common/TestUtils.h"
-#include "Tests/Integration/IC/Tests/CpuTestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 using TestUtils::clockCycle;
 using TestUtils::readMultiBitOutput;
@@ -19,7 +15,7 @@ using TestUtils::setMultiBitInput;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct ProgramCounter8bitArithFixture {
-    std::unique_ptr<WorkSpace> workspace;
+    std::unique_ptr<QuickCircuitBuilder> builder;
     IC *ic = nullptr;
     QVector<InputSwitch *> dataInputs;
     InputSwitch *clock = nullptr;
@@ -32,61 +28,52 @@ struct ProgramCounter8bitArithFixture {
 
     bool build()
     {
-        workspace = std::make_unique<WorkSpace>();
-        CircuitBuilder builder(workspace->scene());
+        builder = std::make_unique<QuickCircuitBuilder>();
 
-        ic = loadBuildingBlockIC("level6_program_counter_8bit_arithmetic.panda");
-        builder.add(ic);
+        ic = static_cast<IC *>(builder->addOwnedElement(loadBuildingBlockIC("level6_program_counter_8bit_arithmetic.panda")));
 
         for (int i = 0; i < 8; i++) {
-            auto *data = new InputSwitch();
-            builder.add(data);
+            auto *data = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
             data->setLabel(QString("Data[%1]").arg(i));
             dataInputs.append(data);
         }
 
-        clock = new InputSwitch();
-        builder.add(clock);
+        clock = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
         clock->setLabel("Clock");
 
-        load = new InputSwitch();
-        builder.add(load);
+        load = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
         load->setLabel("Load");
 
-        inc = new InputSwitch();
-        builder.add(inc);
+        inc = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
         inc->setLabel("Inc");
 
-        reset = new InputSwitch();
-        builder.add(reset);
+        reset = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
         reset->setLabel("Reset");
 
         for (int i = 0; i < 8; i++) {
-            auto *p = new Led();
-            builder.add(p);
+            auto *p = static_cast<Led *>(builder->addOwnedElement(new Led()));
             p->setLabel(QString("pc[%1]").arg(i));
             pcOutputs.append(p);
 
-            auto *p1 = new Led();
-            builder.add(p1);
+            auto *p1 = static_cast<Led *>(builder->addOwnedElement(new Led()));
             p1->setLabel(QString("pc_plus_1[%1]").arg(i));
             pcPlus1Outputs.append(p1);
         }
 
         for (int i = 0; i < 8; i++) {
-            builder.connect(dataInputs[i], 0, ic, QString("loadValue[%1]").arg(i));
+            builder->connect(dataInputs[i], 0, ic, QString("loadValue[%1]").arg(i));
         }
-        builder.connect(clock, 0, ic, "Clock");
-        builder.connect(load, 0, ic, "Load");
-        builder.connect(inc, 0, ic, "Inc");
-        builder.connect(reset, 0, ic, "reset");
+        builder->connect(clock, 0, ic, "Clock");
+        builder->connect(load, 0, ic, "Load");
+        builder->connect(inc, 0, ic, "Inc");
+        builder->connect(reset, 0, ic, "reset");
 
         for (int i = 0; i < 8; i++) {
-            builder.connect(ic, QString("pc[%1]").arg(i), pcOutputs[i], 0);
-            builder.connect(ic, QString("pc_plus_1[%1]").arg(i), pcPlus1Outputs[i], 0);
+            builder->connect(ic, QString("pc[%1]").arg(i), pcOutputs[i], 0);
+            builder->connect(ic, QString("pc_plus_1[%1]").arg(i), pcPlus1Outputs[i], 0);
         }
 
-        sim = builder.initSimulation();
+        sim = builder->initSimulation();
         sim->update();
         return true;
     }

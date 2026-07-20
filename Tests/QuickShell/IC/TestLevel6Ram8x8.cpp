@@ -1,17 +1,13 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/TestLevel6Ram8x8.h"
-
-#include <QFile>
-#include <QFileInfo>
+#include "Tests/QuickShell/IC/TestLevel6Ram8x8.h"
 
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "App/Scene/Workspace.h"
-#include "Tests/Common/TestUtils.h"
-#include "Tests/Integration/IC/Tests/CpuTestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 using TestUtils::setMultiBitInput;
 using TestUtils::readMultiBitOutput;
@@ -19,7 +15,7 @@ using TestUtils::clockCycle;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct Ram8x8Fixture {
-    std::unique_ptr<WorkSpace> workspace;
+    std::unique_ptr<QuickCircuitBuilder> builder;
     IC *ic = nullptr;
     QVector<InputSwitch *> addressInputs;
     QVector<InputSwitch *> dataInInputs;
@@ -31,60 +27,52 @@ struct Ram8x8Fixture {
 
     bool build()
     {
-        workspace = std::make_unique<WorkSpace>();
-        CircuitBuilder builder(workspace->scene());
+        builder = std::make_unique<QuickCircuitBuilder>();
 
-        ic = loadBuildingBlockIC("level6_ram_8x8.panda");
-        builder.add(ic);
+        ic = static_cast<IC *>(builder->addOwnedElement(loadBuildingBlockIC("level6_ram_8x8.panda")));
 
         for (int i = 0; i < 3; i++) {
-            auto *sw = new InputSwitch();
-            builder.add(sw);
+            auto *sw = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
             sw->setLabel(QString("Address[%1]").arg(i));
             addressInputs.append(sw);
         }
 
         for (int i = 0; i < 8; i++) {
-            auto *sw = new InputSwitch();
-            builder.add(sw);
+            auto *sw = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
             sw->setLabel(QString("DataIn[%1]").arg(i));
             dataInInputs.append(sw);
         }
 
-        we = new InputSwitch();
-        builder.add(we);
+        we = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
         we->setLabel("WriteEnable");
 
-        clk = new InputSwitch();
-        builder.add(clk);
+        clk = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
         clk->setLabel("Clock");
 
-        reset = new InputSwitch();
-        builder.add(reset);
+        reset = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
         reset->setLabel("Reset");
 
         for (int i = 0; i < 8; i++) {
-            auto *led = new Led();
-            builder.add(led);
+            auto *led = static_cast<Led *>(builder->addOwnedElement(new Led()));
             led->setLabel(QString("DataOut[%1]").arg(i));
             dataOutOutputs.append(led);
         }
 
         for (int i = 0; i < 3; i++) {
-            builder.connect(addressInputs[i], 0, ic, QString("Address[%1]").arg(i));
+            builder->connect(addressInputs[i], 0, ic, QString("Address[%1]").arg(i));
         }
         for (int i = 0; i < 8; i++) {
-            builder.connect(dataInInputs[i], 0, ic, QString("DataIn[%1]").arg(i));
+            builder->connect(dataInInputs[i], 0, ic, QString("DataIn[%1]").arg(i));
         }
-        builder.connect(we, 0, ic, "WriteEnable");
-        builder.connect(clk, 0, ic, "Clock");
-        builder.connect(reset, 0, ic, "Reset");
+        builder->connect(we, 0, ic, "WriteEnable");
+        builder->connect(clk, 0, ic, "Clock");
+        builder->connect(reset, 0, ic, "Reset");
 
         for (int i = 0; i < 8; i++) {
-            builder.connect(ic, QString("DataOut[%1]").arg(i), dataOutOutputs[i], 0);
+            builder->connect(ic, QString("DataOut[%1]").arg(i), dataOutOutputs[i], 0);
         }
 
-        sim = builder.initSimulation();
+        sim = builder->initSimulation();
         sim->update();
         return true;
     }

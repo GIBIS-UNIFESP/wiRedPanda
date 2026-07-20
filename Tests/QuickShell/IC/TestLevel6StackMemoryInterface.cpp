@@ -1,24 +1,20 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/TestLevel6StackMemoryInterface.h"
-
-#include <QFile>
-#include <QFileInfo>
+#include "Tests/QuickShell/IC/TestLevel6StackMemoryInterface.h"
 
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "App/Scene/Workspace.h"
-#include "Tests/Common/TestUtils.h"
-#include "Tests/Integration/IC/Tests/CpuTestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 using TestUtils::inputStatus;
 using TestUtils::clockCycle;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct StackMemoryInterfaceFixture {
-    std::unique_ptr<WorkSpace> workspace;
+    std::unique_ptr<QuickCircuitBuilder> builder;
     IC *ic = nullptr;
     InputSwitch *dataInSwitches[8] = {};
     InputSwitch *addressSwitches[8] = {};
@@ -36,48 +32,43 @@ struct StackMemoryInterfaceFixture {
 
     bool build()
     {
-        workspace = std::make_unique<WorkSpace>();
-        CircuitBuilder builder(workspace->scene());
+        builder = std::make_unique<QuickCircuitBuilder>();
 
-        ic = loadBuildingBlockIC("level6_stack_memory_interface.panda");
+        ic = static_cast<IC *>(builder->addOwnedElement(loadBuildingBlockIC("level6_stack_memory_interface.panda")));
 
-        spLoad = new InputSwitch();
-        spPush = new InputSwitch();
-        spPop = new InputSwitch();
-        spReset = new InputSwitch();
-        addressSelect = new InputSwitch();
-        memWrite = new InputSwitch();
-        clk = new InputSwitch();
-
-        builder.add(spLoad, spPush, spPop, spReset, addressSelect,
-                    memWrite, clk, ic);
+        spLoad = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        spPush = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        spPop = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        spReset = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        addressSelect = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        memWrite = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+        clk = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
 
         for (int i = 0; i < 8; ++i) {
-            dataInSwitches[i] = new InputSwitch();
-            addressSwitches[i] = new InputSwitch();
-            spOut[i] = new Led();
-            dataOutLeds[i] = new Led();
-            finalAddrLeds[i] = new Led();
-            builder.add(dataInSwitches[i], addressSwitches[i], spOut[i], dataOutLeds[i], finalAddrLeds[i]);
+            dataInSwitches[i] = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+            addressSwitches[i] = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
+            spOut[i] = static_cast<Led *>(builder->addOwnedElement(new Led()));
+            dataOutLeds[i] = static_cast<Led *>(builder->addOwnedElement(new Led()));
+            finalAddrLeds[i] = static_cast<Led *>(builder->addOwnedElement(new Led()));
         }
 
         for (int i = 0; i < 8; ++i) {
-            builder.connect(dataInSwitches[i], 0, ic, QString("DataIn[%1]").arg(i));
-            builder.connect(addressSwitches[i], 0, ic, QString("Address[%1]").arg(i));
-            builder.connect(ic, QString("SP[%1]").arg(i), spOut[i], 0);
-            builder.connect(ic, QString("DataOut[%1]").arg(i), dataOutLeds[i], 0);
-            builder.connect(ic, QString("FinalAddress[%1]").arg(i), finalAddrLeds[i], 0);
+            builder->connect(dataInSwitches[i], 0, ic, QString("DataIn[%1]").arg(i));
+            builder->connect(addressSwitches[i], 0, ic, QString("Address[%1]").arg(i));
+            builder->connect(ic, QString("SP[%1]").arg(i), spOut[i], 0);
+            builder->connect(ic, QString("DataOut[%1]").arg(i), dataOutLeds[i], 0);
+            builder->connect(ic, QString("FinalAddress[%1]").arg(i), finalAddrLeds[i], 0);
         }
 
-        builder.connect(spLoad, 0, ic, "SP_Load");
-        builder.connect(spPush, 0, ic, "SP_Push");
-        builder.connect(spPop, 0, ic, "SP_Pop");
-        builder.connect(spReset, 0, ic, "SP_Reset");
-        builder.connect(addressSelect, 0, ic, "AddressSelect");
-        builder.connect(memWrite, 0, ic, "MemWrite");
-        builder.connect(clk, 0, ic, "Clock");
+        builder->connect(spLoad, 0, ic, "SP_Load");
+        builder->connect(spPush, 0, ic, "SP_Push");
+        builder->connect(spPop, 0, ic, "SP_Pop");
+        builder->connect(spReset, 0, ic, "SP_Reset");
+        builder->connect(addressSelect, 0, ic, "AddressSelect");
+        builder->connect(memWrite, 0, ic, "MemWrite");
+        builder->connect(clk, 0, ic, "Clock");
 
-        sim = builder.initSimulation();
+        sim = builder->initSimulation();
         sim->update();
         return true;
     }

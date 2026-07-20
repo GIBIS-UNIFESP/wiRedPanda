@@ -1,24 +1,20 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/TestLevel6RippleAdder8bit.h"
-
-#include <QFile>
-#include <QFileInfo>
+#include "Tests/QuickShell/IC/TestLevel6RippleAdder8bit.h"
 
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "App/Scene/Workspace.h"
-#include "Tests/Common/TestUtils.h"
-#include "Tests/Integration/IC/Tests/CpuTestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 using TestUtils::readMultiBitOutput;
 using TestUtils::setMultiBitInput;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct RippleAdder8bitFixture {
-    std::unique_ptr<WorkSpace> workspace;
+    std::unique_ptr<QuickCircuitBuilder> builder;
     IC *ic = nullptr;
     InputSwitch *a[8] = {};
     InputSwitch *b[8] = {};
@@ -29,48 +25,41 @@ struct RippleAdder8bitFixture {
 
     bool build()
     {
-        workspace = std::make_unique<WorkSpace>();
-        CircuitBuilder builder(workspace->scene());
+        builder = std::make_unique<QuickCircuitBuilder>();
 
-        ic = loadBuildingBlockIC("level6_ripple_adder_8bit.panda");
-        builder.add(ic);
+        ic = static_cast<IC *>(builder->addOwnedElement(loadBuildingBlockIC("level6_ripple_adder_8bit.panda")));
 
         for (int i = 0; i < 8; i++) {
-            a[i] = new InputSwitch();
-            builder.add(a[i]);
+            a[i] = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
             a[i]->setLabel(QString("A[%1]").arg(i));
 
-            b[i] = new InputSwitch();
-            builder.add(b[i]);
+            b[i] = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
             b[i]->setLabel(QString("B[%1]").arg(i));
         }
 
-        carryIn = new InputSwitch();
-        builder.add(carryIn);
+        carryIn = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
         carryIn->setLabel("CarryIn");
 
         for (int i = 0; i < 8; i++) {
-            sum[i] = new Led();
-            builder.add(sum[i]);
+            sum[i] = static_cast<Led *>(builder->addOwnedElement(new Led()));
             sum[i]->setLabel(QString("Sum[%1]").arg(i));
         }
 
-        carryOut = new Led();
-        builder.add(carryOut);
+        carryOut = static_cast<Led *>(builder->addOwnedElement(new Led()));
         carryOut->setLabel("CarryOut");
 
         for (int i = 0; i < 8; i++) {
-            builder.connect(a[i], 0, ic, QString("A[%1]").arg(i));
-            builder.connect(b[i], 0, ic, QString("B[%1]").arg(i));
+            builder->connect(a[i], 0, ic, QString("A[%1]").arg(i));
+            builder->connect(b[i], 0, ic, QString("B[%1]").arg(i));
         }
-        builder.connect(carryIn, 0, ic, "CarryIn");
+        builder->connect(carryIn, 0, ic, "CarryIn");
 
         for (int i = 0; i < 8; i++) {
-            builder.connect(ic, QString("Sum[%1]").arg(i), sum[i], 0);
+            builder->connect(ic, QString("Sum[%1]").arg(i), sum[i], 0);
         }
-        builder.connect(ic, "CarryOut", carryOut, 0);
+        builder->connect(ic, "CarryOut", carryOut, 0);
 
-        sim = builder.initSimulation();
+        sim = builder->initSimulation();
         sim->update();
         return true;
     }

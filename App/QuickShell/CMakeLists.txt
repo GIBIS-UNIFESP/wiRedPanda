@@ -363,6 +363,22 @@ set(QUICK_SHELL_TEST_SOURCES
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel5RegisterFile8x8.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel5UpDownCounter4bit.cpp
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel5UpDownCounter4bit.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel6Alu8bit.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel6Alu8bit.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel6ProgramCounter8bitArithmetic.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel6ProgramCounter8bitArithmetic.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel6Ram8x8.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel6Ram8x8.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel6Register8bit.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel6Register8bit.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel6RegisterFile8x8.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel6RegisterFile8x8.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel6RippleAdder8bit.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel6RippleAdder8bit.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel6StackMemoryInterface.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel6StackMemoryInterface.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel6StackPointer8bit.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/IC/TestLevel6StackPointer8bit.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/StubDialogProvider.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasCommands.cpp
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestCanvasCommands.h

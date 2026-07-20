@@ -1,16 +1,13 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/TestLevel6Alu8bit.h"
-
-#include <QFileInfo>
+#include "Tests/QuickShell/IC/TestLevel6Alu8bit.h"
 
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "App/Scene/Workspace.h"
-#include "Tests/Common/TestUtils.h"
-#include "Tests/Integration/IC/Tests/CpuTestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 using TestUtils::inputStatus;
 using TestUtils::readMultiBitOutput;
@@ -18,7 +15,7 @@ using TestUtils::setMultiBitInput;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct Alu8bitFixture {
-    std::unique_ptr<WorkSpace> workspace;
+    std::unique_ptr<QuickCircuitBuilder> builder;
     IC *ic = nullptr;
     QVector<InputSwitch *> aInputs;
     QVector<InputSwitch *> bInputs;
@@ -31,66 +28,57 @@ struct Alu8bitFixture {
 
     bool build()
     {
-        workspace = std::make_unique<WorkSpace>();
-        CircuitBuilder builder(workspace->scene());
+        builder = std::make_unique<QuickCircuitBuilder>();
 
-        ic = loadBuildingBlockIC("level6_alu_8bit.panda");
-        builder.add(ic);
+        ic = static_cast<IC *>(builder->addOwnedElement(loadBuildingBlockIC("level6_alu_8bit.panda")));
 
         for (int i = 0; i < 8; i++) {
-            auto *a = new InputSwitch();
-            builder.add(a);
+            auto *a = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
             a->setLabel(QString("A[%1]").arg(i));
             aInputs.append(a);
 
-            auto *b = new InputSwitch();
-            builder.add(b);
+            auto *b = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
             b->setLabel(QString("B[%1]").arg(i));
             bInputs.append(b);
         }
 
         for (int i = 0; i < 3; i++) {
-            auto *op = new InputSwitch();
-            builder.add(op);
+            auto *op = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
             op->setLabel(QString("OpCode[%1]").arg(i));
             opcodeInputs.append(op);
         }
 
         for (int i = 0; i < 8; i++) {
-            auto *result = new Led();
-            builder.add(result);
+            auto *result = static_cast<Led *>(builder->addOwnedElement(new Led()));
             result->setLabel(QString("Result[%1]").arg(i));
             resultOutputs.append(result);
         }
 
-        zeroFlag = new Led();
-        builder.add(zeroFlag);
+        zeroFlag = static_cast<Led *>(builder->addOwnedElement(new Led()));
         zeroFlag->setLabel("Zero");
 
-        negativeFlag = new Led();
-        builder.add(negativeFlag);
+        negativeFlag = static_cast<Led *>(builder->addOwnedElement(new Led()));
         negativeFlag->setLabel("Negative");
 
-        carryFlag = new Led();
-        builder.add(carryFlag);
+        carryFlag = static_cast<Led *>(builder->addOwnedElement(new Led()));
         carryFlag->setLabel("Carry");
 
         for (int i = 0; i < 8; i++) {
-            builder.connect(aInputs[i], 0, ic, QString("A[%1]").arg(i));
-            builder.connect(bInputs[i], 0, ic, QString("B[%1]").arg(i));
+            builder->connect(aInputs[i], 0, ic, QString("A[%1]").arg(i));
+            builder->connect(bInputs[i], 0, ic, QString("B[%1]").arg(i));
         }
         for (int i = 0; i < 3; i++) {
-            builder.connect(opcodeInputs[i], 0, ic, QString("OpCode[%1]").arg(i));
+            builder->connect(opcodeInputs[i], 0, ic, QString("OpCode[%1]").arg(i));
         }
 
         for (int i = 0; i < 8; i++) {
-            builder.connect(ic, QString("Result[%1]").arg(i), resultOutputs[i], 0);
+            builder->connect(ic, QString("Result[%1]").arg(i), resultOutputs[i], 0);
         }
-        builder.connect(ic, "Zero", zeroFlag, 0);
-        builder.connect(ic, "Negative", negativeFlag, 0);
-        builder.connect(ic, "Carry", carryFlag, 0);
+        builder->connect(ic, "Zero", zeroFlag, 0);
+        builder->connect(ic, "Negative", negativeFlag, 0);
+        builder->connect(ic, "Carry", carryFlag, 0);
 
-        sim = builder.initSimulation();
+        sim = builder->initSimulation();
         sim->update();
         return true;
     }

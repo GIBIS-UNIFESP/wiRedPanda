@@ -66,6 +66,14 @@
 #include "Tests/QuickShell/IC/TestLevel5ProgramCounter4bit.h"
 #include "Tests/QuickShell/IC/TestLevel5RegisterFile8x8.h"
 #include "Tests/QuickShell/IC/TestLevel5UpDownCounter4bit.h"
+#include "Tests/QuickShell/IC/TestLevel6Alu8bit.h"
+#include "Tests/QuickShell/IC/TestLevel6ProgramCounter8bitArithmetic.h"
+#include "Tests/QuickShell/IC/TestLevel6Ram8x8.h"
+#include "Tests/QuickShell/IC/TestLevel6Register8bit.h"
+#include "Tests/QuickShell/IC/TestLevel6RegisterFile8x8.h"
+#include "Tests/QuickShell/IC/TestLevel6RippleAdder8bit.h"
+#include "Tests/QuickShell/IC/TestLevel6StackMemoryInterface.h"
+#include "Tests/QuickShell/IC/TestLevel6StackPointer8bit.h"
 #include "Tests/QuickShell/TestFeedback.h"
 #include "Tests/QuickShell/TestSimulation.h"
 #include "Tests/QuickShell/TestQuickWorkSpace.h"
@@ -167,5 +175,13 @@ int main(int argc, char **argv)
         {"TestLevel5ProgramCounter4Bit", []() -> QObject * { return new TestLevel5ProgramCounter4Bit; }},
         {"TestLevel5RegisterFile8X8", []() -> QObject * { return new TestLevel5RegisterFile8X8; }},
         {"TestLevel5UpDownCounter4Bit", []() -> QObject * { return new TestLevel5UpDownCounter4Bit; }},
+        {"TestLevel6ALU8Bit", []() -> QObject * { return new TestLevel6ALU8Bit; }},
+        {"TestLevel6ProgramCounter8BitArithmetic", []() -> QObject * { return new TestLevel6ProgramCounter8BitArithmetic; }},
+        {"TestLevel6RAM8X8", []() -> QObject * { return new TestLevel6RAM8X8; }},
+        {"TestLevel6Register8Bit", []() -> QObject * { return new TestLevel6Register8Bit; }},
+        {"TestLevel6RegisterFile8X8", []() -> QObject * { return new TestLevel6RegisterFile8X8; }},
+        {"TestLevel6RippleAdder8Bit", []() -> QObject * { return new TestLevel6RippleAdder8Bit; }},
+        {"TestLevel6StackMemoryInterface", []() -> QObject * { return new TestLevel6StackMemoryInterface; }},
+        {"TestLevel6StackPointer8Bit", []() -> QObject * { return new TestLevel6StackPointer8Bit; }},
     });
 }

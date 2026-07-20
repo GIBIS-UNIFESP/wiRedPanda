@@ -240,14 +240,6 @@ set(MEMORY_HELPERS_HEADERS
 
 set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestICFixtureLayout.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel6Alu8bit.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel6ProgramCounter8bitArithmetic.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel6Ram8x8.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel6Register8bit.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel6RegisterFile8x8.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel6RippleAdder8bit.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel6StackMemoryInterface.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel6StackPointer8bit.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel7Alu16bit.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel7CpuProgramCounter8bit.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel7DataForwardingUnit.cpp
@@ -376,14 +368,6 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/CpuHelpers.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/CpuTestUtils.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestICFixtureLayout.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel6Alu8bit.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel6ProgramCounter8bitArithmetic.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel6Ram8x8.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel6Register8bit.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel6RegisterFile8x8.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel6RippleAdder8bit.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel6StackMemoryInterface.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel6StackPointer8bit.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel7Alu16bit.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel7CpuProgramCounter8bit.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel7DataForwardingUnit.h

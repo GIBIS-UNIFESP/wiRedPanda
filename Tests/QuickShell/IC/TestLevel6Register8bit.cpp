@@ -1,23 +1,20 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Integration/IC/Tests/TestLevel6Register8bit.h"
-
-#include <QFileInfo>
+#include "Tests/QuickShell/IC/TestLevel6Register8bit.h"
 
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
-#include "App/Scene/Workspace.h"
-#include "Tests/Common/TestUtils.h"
-#include "Tests/Integration/IC/Tests/CpuTestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+#include "Tests/QuickShell/QuickCpuTestUtils.h"
 
 using TestUtils::clockCycle;
 using TestUtils::setMultiBitInput;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct Register8bitFixture {
-    std::unique_ptr<WorkSpace> workspace;
+    std::unique_ptr<QuickCircuitBuilder> builder;
     IC *ic = nullptr;
     InputSwitch *data[8] = {};
     InputSwitch *clock = nullptr;
@@ -28,48 +25,41 @@ struct Register8bitFixture {
 
     bool build()
     {
-        workspace = std::make_unique<WorkSpace>();
-        CircuitBuilder builder(workspace->scene());
+        builder = std::make_unique<QuickCircuitBuilder>();
 
-        ic = loadBuildingBlockIC("level6_register_8bit.panda");
-        builder.add(ic);
+        ic = static_cast<IC *>(builder->addOwnedElement(loadBuildingBlockIC("level6_register_8bit.panda")));
 
         for (int i = 0; i < 8; i++) {
-            data[i] = new InputSwitch();
-            builder.add(data[i]);
+            data[i] = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
             data[i]->setLabel(QString("Data[%1]").arg(i));
         }
 
-        clock = new InputSwitch();
-        builder.add(clock);
+        clock = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
         clock->setLabel("Clock");
 
-        writeEnable = new InputSwitch();
-        builder.add(writeEnable);
+        writeEnable = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
         writeEnable->setLabel("WriteEnable");
 
-        reset = new InputSwitch();
-        builder.add(reset);
+        reset = static_cast<InputSwitch *>(builder->addOwnedElement(new InputSwitch()));
         reset->setLabel("Reset");
 
         for (int i = 0; i < 8; i++) {
-            q[i] = new Led();
-            builder.add(q[i]);
+            q[i] = static_cast<Led *>(builder->addOwnedElement(new Led()));
             q[i]->setLabel(QString("Q[%1]").arg(i));
         }
 
         for (int i = 0; i < 8; i++) {
-            builder.connect(data[i], 0, ic, QString("Data[%1]").arg(i));
+            builder->connect(data[i], 0, ic, QString("Data[%1]").arg(i));
         }
-        builder.connect(clock, 0, ic, "Clock");
-        builder.connect(writeEnable, 0, ic, "WriteEnable");
-        builder.connect(reset, 0, ic, "Reset");
+        builder->connect(clock, 0, ic, "Clock");
+        builder->connect(writeEnable, 0, ic, "WriteEnable");
+        builder->connect(reset, 0, ic, "Reset");
 
         for (int i = 0; i < 8; i++) {
-            builder.connect(ic, QString("Q[%1]").arg(i), q[i], 0);
+            builder->connect(ic, QString("Q[%1]").arg(i), q[i], 0);
         }
 
-        sim = builder.initSimulation();
+        sim = builder->initSimulation();
         sim->update();
         return true;
     }
