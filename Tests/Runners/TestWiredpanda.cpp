@@ -185,6 +185,7 @@
 #include "Tests/Unit/Scene/TestPropertyShortcutHandler.h"
 #include "Tests/Unit/Scene/TestScene.h"
 #include "Tests/Unit/Scene/TestSceneConnections.h"
+#include "Tests/Unit/Scene/TestSceneDropHandler.h"
 #include "Tests/Unit/Scene/TestSceneState.h"
 #include "Tests/Unit/Scene/TestSceneUndoredo.h"
 #include "Tests/Unit/Scene/TestWorkspace.h"
@@ -399,6 +400,7 @@ int main(int argc, char **argv)
         {"TestGraphicsView", []() -> QObject * { return new TestGraphicsView; }},
         {"TestScene", []() -> QObject * { return new TestScene; }},
         {"TestSceneConnections", []() -> QObject * { return new TestSceneConnections; }},
+        {"TestSceneDropHandler", []() -> QObject * { return new TestSceneDropHandler; }},
         {"TestSceneState", []() -> QObject * { return new TestSceneState; }},
         {"TestSceneUndoredo", []() -> QObject * { return new TestSceneUndoredo; }},
         {"TestPropertyShortcutHandler", []() -> QObject * { return new TestPropertyShortcutHandler; }},

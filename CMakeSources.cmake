@@ -494,6 +494,7 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestPropertyShortcutHandler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestScene.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestSceneConnections.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestSceneDropHandler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestSceneState.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestSceneUndoredo.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestWorkspace.cpp
@@ -704,6 +705,7 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestPropertyShortcutHandler.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestScene.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestSceneConnections.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestSceneDropHandler.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestSceneState.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestSceneUndoredo.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestWorkspace.h
