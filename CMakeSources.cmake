@@ -273,7 +273,6 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestExerciseTourResources.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestExternalFilePath.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestInstallRelativePaths.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestNotifyCatch.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestSettings.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestUpdateChecker.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestAudioBox.cpp
@@ -324,9 +323,6 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestFileUtils.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestRecentFiles.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestSerialization.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestDanglingPointer.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestSimulation.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestSimulationBlocker.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Tour/TestTourEngine.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestCircuitExporter.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestDialogs.cpp
@@ -383,7 +379,6 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestExerciseTourResources.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestExternalFilePath.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestInstallRelativePaths.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestNotifyCatch.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestSettings.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestUpdateChecker.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestAudioBox.h
@@ -435,9 +430,6 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestFileUtils.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestRecentFiles.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestSerialization.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestDanglingPointer.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestSimulation.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestSimulationBlocker.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Tour/TestTourEngine.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestCircuitExporter.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestDialogs.h

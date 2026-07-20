@@ -87,6 +87,12 @@ public:
     /// builder will reference again -- see the class doc comment.
     GraphicElement *addOwnedElement(GraphicElement *elm);
 
+    /// Untracks \a elm (mirrors Scene::removeItem()'s contract exactly): does NOT delete it --
+    /// the caller deletes it separately, same two-step as the real Scene::removeItem()+delete
+    /// pattern tests already use. If \a elm was added via addOwnedElement(), ownership is
+    /// released here too, so the builder's destructor won't later double-delete it.
+    void removeElement(GraphicElement *elm);
+
     /// Every element added so far (owned or not), in addition order.
     QVector<GraphicElement *> elements() const;
 

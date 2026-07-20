@@ -463,6 +463,14 @@ set(QUICK_SHELL_TEST_SOURCES
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestQuickCanvasZoom.h
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestQuickMinimap.cpp
     ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestQuickMinimap.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestNotifyCatch.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestNotifyCatch.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestSimulationUnit.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestSimulationUnit.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestSimulationBlocker.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestSimulationBlocker.h
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestDanglingPointer.cpp
+    ${CMAKE_SOURCE_DIR}/Tests/QuickShell/TestDanglingPointer.h
 )
 
 # Usage: ./build/test_wiredpanda_quick ClassName [functionName] -- mirrors test_wiredpanda's

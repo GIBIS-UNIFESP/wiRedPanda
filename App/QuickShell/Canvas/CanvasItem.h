@@ -114,6 +114,12 @@ class CanvasItem : public QQuickItem
     Q_OBJECT
     QML_ELEMENT
 
+    /// Exercises the private wire-drag state machine (startWireFromOutput()/cancelEditedWire())
+    /// directly rather than through synthesized mouse events + spatial-index hit-testing --
+    /// these WIREDPANDA-H2/JD regression tests care about the in-progress-wire lifecycle itself,
+    /// not port hit-testing (already covered by TestCanvasPortHover).
+    friend class TestDanglingPointer;
+
 public:
     /// \param buildDemo When true (the default -- and the only value QML's own construction
     /// of this QML_ELEMENT type ever uses), seeds the canvas with Phase 1/2's demo circuit

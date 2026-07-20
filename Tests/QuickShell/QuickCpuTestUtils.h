@@ -53,6 +53,12 @@ inline QString cpuComponentsDir()
     return QString(QUOTE(CURRENTDIR)) + "/Integration/IC/Components/";
 }
 
+/// Path to Examples/ -- identical construction to Tests/Common/TestUtils.h's own examplesDir().
+inline QString examplesDir()
+{
+    return QString(QUOTE(CURRENTDIR)) + "/../Examples/";
+}
+
 inline bool inputStatus(GraphicElement *elm, int port = 0)
 {
     auto *inputPort = elm->inputPort(port);

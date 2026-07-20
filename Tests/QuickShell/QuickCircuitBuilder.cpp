@@ -43,6 +43,23 @@ GraphicElement *QuickCircuitBuilder::addOwnedElement(GraphicElement *elm)
     return elm;
 }
 
+void QuickCircuitBuilder::removeElement(GraphicElement *elm)
+{
+    m_elements.removeOne(elm);
+    // NOT std::remove_if()+erase(): with a single matching entry (the common case here),
+    // remove_if's shift-left loop never runs (nothing past it to move into place), leaving the
+    // matched unique_ptr untouched -- so the erase() below would destroy it for real, deleting
+    // elm right here instead of just releasing the builder's ownership of it. release() first so
+    // erase() destroys an already-null (no-op) unique_ptr.
+    for (auto it = m_owned.begin(); it != m_owned.end(); ++it) {
+        if (it->get() == elm) {
+            it->release();
+            m_owned.erase(it);
+            break;
+        }
+    }
+}
+
 QVector<GraphicElement *> QuickCircuitBuilder::elements() const
 {
     return m_elements;

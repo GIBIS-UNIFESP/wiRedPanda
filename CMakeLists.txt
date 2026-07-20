@@ -863,7 +863,6 @@ add_test(NAME TestMemorySettlingTime COMMAND test_wiredpanda TestMemorySettlingT
 add_test(NAME TestMUXDEMUXComprehensive COMMAND test_wiredpanda TestMUXDEMUXComprehensive WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestMultiplexing COMMAND test_wiredpanda TestMultiplexing WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestNodeLogic COMMAND test_wiredpanda TestNodeLogic WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestNotifyCatch COMMAND test_wiredpanda TestNotifyCatch WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestPriorities COMMAND test_wiredpanda TestPriorities WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestRAMCell1Bit COMMAND test_wiredpanda TestRAMCell1Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestRecentFiles COMMAND test_wiredpanda TestRecentFiles WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -874,7 +873,6 @@ add_test(NAME TestSequential COMMAND test_wiredpanda TestSequential WORKING_DIRE
 add_test(NAME TestSequentialLogic COMMAND test_wiredpanda TestSequentialLogic WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSerialization COMMAND test_wiredpanda TestSerialization WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSettings COMMAND test_wiredpanda TestSettings WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestSimulationBlocker COMMAND test_wiredpanda TestSimulationBlocker WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestStatusOps COMMAND test_wiredpanda TestStatusOps WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSystemVerilogExport COMMAND test_wiredpanda TestSystemVerilogExport WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestThemeManager COMMAND test_wiredpanda TestThemeManager WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -914,8 +912,6 @@ add_test(NAME TestLanguageManager COMMAND test_wiredpanda TestLanguageManager WO
 add_test(NAME TestMux COMMAND test_wiredpanda TestMux WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestPropertyShortcutHandler COMMAND test_wiredpanda TestPropertyShortcutHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestRecentFilesUnit COMMAND test_wiredpanda TestRecentFilesUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestSimulationUnit COMMAND test_wiredpanda TestSimulationUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestDanglingPointer COMMAND test_wiredpanda TestDanglingPointer WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSystemVerilogCodeGenUnit COMMAND test_wiredpanda TestSystemVerilogCodeGenUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestTrashButton COMMAND test_wiredpanda TestTrashButton WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestExerciseTourResources COMMAND test_wiredpanda TestExerciseTourResources WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -1041,6 +1037,10 @@ add_test(NAME TestLevel9MemoryStage16Bit COMMAND test_wiredpanda_quick TestLevel
 add_test(NAME TestLevel9MultiCycleCPU8Bit COMMAND test_wiredpanda_quick TestLevel9MultiCycleCPU8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel9RegisterFile32X16 COMMAND test_wiredpanda_quick TestLevel9RegisterFile32X16 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel9SingleCycleCPU8Bit COMMAND test_wiredpanda_quick TestLevel9SingleCycleCPU8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestNotifyCatch COMMAND test_wiredpanda_quick TestNotifyCatch WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestSimulationUnit COMMAND test_wiredpanda_quick TestSimulationUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestSimulationBlocker COMMAND test_wiredpanda_quick TestSimulationBlocker WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestDanglingPointer COMMAND test_wiredpanda_quick TestDanglingPointer WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 # ============================================================================
 # Test Properties: Labels and Timeouts
@@ -1090,18 +1090,12 @@ endforeach()
 set_tests_properties(TestScene TestSceneUndoredo PROPERTIES RESOURCE_LOCK clipboard)
 
 # Serialization and Command Tests - Integration category
-foreach(TEST TestSerialization TestSimulationBlocker)
+foreach(TEST TestSerialization)
     set_tests_properties(${TEST} PROPERTIES LABELS "integration")
 endforeach()
 
-# Dangling-pointer regression tests (WIREDPANDA-H2 cluster). These are
-# designed to fail on the current tree and to pass once the corresponding
-# fixes in App/Element/IC.{h,cpp} and App/Simulation/Simulation.{h,cpp}
-# land. See .claude/SENTRY_CRASH_ANALYSIS_WIREDPANDA-H2.md.
-set_tests_properties(TestDanglingPointer PROPERTIES LABELS "unit;regression")
-
 # Core Functionality Tests - Unit category
-foreach(TEST TestCommands TestCommon TestEnums TestNotifyCatch TestPriorities TestRecentFiles TestSettings
+foreach(TEST TestCommands TestCommon TestEnums TestPriorities TestRecentFiles TestSettings
         TestThemeManager)
     set_tests_properties(${TEST} PROPERTIES LABELS "unit")
 endforeach()
@@ -1141,7 +1135,8 @@ foreach(TEST TestCanvasItemSmoke TestCanvasCommands TestQuickElementHandler
         TestLevel7InstructionMemoryInterface TestLevel7InstructionRegister8Bit
         TestLevel8DecodeStage TestLevel8ExecuteStage TestLevel8FetchStage TestLevel8MemoryStage
         TestLevel9CPU16BitRISC TestLevel9FetchStage16Bit TestLevel9MemoryStage16Bit
-        TestLevel9MultiCycleCPU8Bit TestLevel9RegisterFile32X16 TestLevel9SingleCycleCPU8Bit)
+        TestLevel9MultiCycleCPU8Bit TestLevel9RegisterFile32X16 TestLevel9SingleCycleCPU8Bit
+        TestNotifyCatch TestSimulationUnit TestSimulationBlocker TestDanglingPointer)
     set_tests_properties(${TEST} PROPERTIES LABELS "unit;quick")
 endforeach()
 
@@ -1159,9 +1154,8 @@ set(ALL_TESTS
     TestElementFactory TestElementLogic TestElementLogicErrors TestNodeLogic TestStatusOps
     TestConnectionSerialization TestConnectionValidity TestConnections TestScene
     TestSceneConnections TestSceneState TestSceneUndoredo
-    TestSerialization TestSimulationBlocker
-    TestDanglingPointer
-    TestCommands TestCommon TestEnums TestNotifyCatch TestPriorities TestRecentFiles TestSettings TestThemeManager
+    TestSerialization
+    TestCommands TestCommon TestEnums TestPriorities TestRecentFiles TestSettings TestThemeManager
     TestApplication TestCoreSettings TestDragDropPayload TestExerciseTourResources
     TestExternalFilePath TestInstallRelativePaths TestUpdateChecker
     TestArduinoCodeGenUnit TestCodeGenUtils TestSystemVerilogCodeGenUnit
@@ -1174,7 +1168,7 @@ set(ALL_TESTS
     TestDolphinClipboard TestDolphinSerializer TestFileUtils TestRecentFilesUnit
     TestFileHandlerSecurity TestICHandlerSecurity TestMCPProcessor TestElementHandler
     TestExerciseEngine TestTourEngine
-    TestSimulationUnit TestWorkspaceUnit
+    TestWorkspaceUnit
     TestICFixtureLayout
     TestCanvasItemSmoke TestCanvasCommands TestQuickElementHandler
     TestQuickFileHandlerSecurity TestQuickICHandlerSecurity TestQuickDolphinController

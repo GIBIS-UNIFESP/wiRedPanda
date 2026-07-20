@@ -109,6 +109,10 @@
 #include "Tests/QuickShell/TestQuickMinimap.h"
 #include "Tests/QuickShell/TestQuickFileHandlerSecurity.h"
 #include "Tests/QuickShell/TestQuickICHandlerSecurity.h"
+#include "Tests/QuickShell/TestNotifyCatch.h"
+#include "Tests/QuickShell/TestSimulationUnit.h"
+#include "Tests/QuickShell/TestSimulationBlocker.h"
+#include "Tests/QuickShell/TestDanglingPointer.h"
 
 int main(int argc, char **argv)
 {
@@ -219,5 +223,9 @@ int main(int argc, char **argv)
         {"TestLevel9MultiCycleCPU8Bit", []() -> QObject * { return new TestLevel9MultiCycleCPU8Bit; }},
         {"TestLevel9RegisterFile32X16", []() -> QObject * { return new TestLevel9RegisterFile32X16; }},
         {"TestLevel9SingleCycleCPU8Bit", []() -> QObject * { return new TestLevel9SingleCycleCPU8Bit; }},
+        {"TestNotifyCatch", []() -> QObject * { return new TestNotifyCatch; }},
+        {"TestSimulationUnit", []() -> QObject * { return new TestSimulationUnit; }},
+        {"TestSimulationBlocker", []() -> QObject * { return new TestSimulationBlocker; }},
+        {"TestDanglingPointer", []() -> QObject * { return new TestDanglingPointer; }},
     });
 }
