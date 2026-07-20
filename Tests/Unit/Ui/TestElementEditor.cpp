@@ -42,11 +42,20 @@
 
 namespace {
 
-// Finds the top-level QMenu shown by ElementEditor::contextMenu() and clicks the action with
+// Finds the top-level QMenu shown by ElementEditor::contextMenu() and triggers the action with
 // the given text. A plain action->trigger() only emits the signal -- it does not drive
 // QMenuPrivate's internal close/return machinery, so QMenu::exec() itself would never unblock.
-// A real synthetic mouse click on the item's geometry goes through QMenu's own event handling,
-// which both activates the action and makes exec() return it, same as a genuine user click.
+// Deliberately NOT a synthetic mouse click on the item's computed geometry: that only proves
+// this code found the right action and clicked where it believes that action is -- it doesn't
+// prove QMenu's own internal hit-testing (which independently resolves what's "under" a point at
+// click time) agrees, so under any layout/timing skew a geometry-based click can silently
+// activate an *adjacent* action instead while this helper still reports success (confirmed root
+// cause of several outwardly-unrelated-looking flakes: a mistargeted click one item over from
+// "Rename" never reaches renameAction()/setFocus() at all, and one item over from "Restore
+// default appearance" instead opens the real (unstubbed) file-open dialog, which returns empty
+// on a headless runner and silently no-ops). menu->setActiveAction() + Key_Return instead
+// operates directly on the QAction* through Qt's own current-action state -- no pixel geometry,
+// DPI scaling, or native hit-testing involved, so it cannot mistarget.
 TestUtils::AutoDismisser dismisserForMenuAction(const QString &actionText)
 {
     return TestUtils::AutoDismisser([actionText](QWidget *w) {
@@ -54,7 +63,8 @@ TestUtils::AutoDismisser dismisserForMenuAction(const QString &actionText)
         if (!menu) return false;
         for (auto *action : menu->actions()) {
             if (action->text() == actionText) {
-                QTest::mouseClick(menu, Qt::LeftButton, Qt::NoModifier, menu->actionGeometry(action).center());
+                menu->setActiveAction(action);
+                QTest::keyClick(menu, Qt::Key_Return);
                 return true;
             }
         }
@@ -77,12 +87,65 @@ QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
     QApplication::setActiveWindow(top);
 QT_WARNING_POP
+    // Under parallel ctest execution (real CPU contention across processes), activation isn't
+    // always synchronous even on the offscreen platform -- wait for it to actually land before
+    // any caller relies on hasFocus() working (confirmed empirically: a fixed single
+    // processEvents() call after this function was insufficient under load; this widened it to
+    // an actively-polling, bounded wait instead of assuming one flush is always enough).
+    TestUtils::waitFor([top] { return QApplication::activeWindow() == top; });
 }
 
 // IC::loadFile()/loadFromBlob() accepts this as real IC file content.
 using ICTestHelpers::minimalPandaBytes;
 
 } // namespace
+
+void TestElementEditor::initTestCase()
+{
+    // Force ElementFactory::pixmap()'s per-element-type render cache to populate for every type
+    // whose icon this file's contextMenu() tests depend on (e.g. the "Change frequency" action's
+    // Clock pixmap) -- a plain, side-effect-free static call, so it can't disturb anything else.
+    // Confirmed via CI this cost is real and per-type (keyed by ElementType, not shared): a
+    // Node-only warm-up left the first test using a Clock element to pay this cost on its own.
+    ElementFactory::pixmap(ElementType::Clock);
+    ElementFactory::pixmap(ElementType::InputButton);
+
+    // Separately, force the one-time costs of the first real ElementContextMenu::exec() call in
+    // this process -- Qt's lazy font-alias table population, plus the first-ever decode of the
+    // menu's toolbar SVG icons (rename.svg, rotateL.svg, etc.) via the SVG image plugin -- to
+    // happen here instead of inside the first contextMenu()-driven test below. A plain icon-less
+    // throwaway QMenu closed immediately (an earlier version of this warm-up) did NOT reproduce
+    // this: closing before a real paint pass meant nothing was actually forced, so the cost
+    // landed on the first real test instead (confirmed via CI). Going through the real
+    // production entry point with a real element guarantees whatever one-time costs exist get
+    // paid here. Deliberately a single element/editor/workspace, constructed and torn down once:
+    // an earlier attempt looped this over multiple elements to also cover the Clock icon above,
+    // but two ElementEditor windows briefly taking and releasing "active window" status back to
+    // back left QApplication's activation tracking in a state that broke the very first real
+    // test's own showAndActivate() (confirmed via CI: re-introduced the failure this was meant to
+    // fix) -- hence handling the icon-cache warm-up above as a plain function call instead.
+    WorkSpace workspace;
+    auto *node = new Node();
+    workspace.scene()->addItem(node);
+    ElementEditor editor(&workspace);
+    editor.setScene(workspace.scene());
+    node->setSelected(true);
+    showAndActivate(&editor);
+
+    TestUtils::AutoDismisser dismisser([](QWidget *w) {
+        auto *menu = qobject_cast<QMenu *>(w);
+        if (!menu) return false;
+        // isVisible() becoming true doesn't mean a paint has actually happened yet -- closing
+        // immediately (an earlier version of this warm-up) tore the menu down before the
+        // windowing system ever exposed/painted it, so the font-layout and icon-decode costs
+        // never actually ran here. qWaitForWindowExposed() is QTest's own mechanism for waiting
+        // until a widget has really been painted at least once.
+        [[maybe_unused]] const bool exposed = QTest::qWaitForWindowExposed(menu);
+        menu->close();
+        return true;
+    });
+    editor.contextMenu(QPoint(0, 0), nullptr);
+}
 
 void TestElementEditor::testCreation()
 {
@@ -284,9 +347,7 @@ void TestElementEditor::testRenameActionFocusesAndSelectsLabelField()
     lineEdit->setText("MyLabel");
 
     editor.renameAction();
-    QApplication::processEvents(); // flush the queued focus-change event before asserting.
-
-    QVERIFY(lineEdit->hasFocus());
+    QVERIFY2(TestUtils::waitFor([&] { return lineEdit->hasFocus(); }), "lineEditElementLabel must gain focus");
     QCOMPARE(lineEdit->selectedText(), QStringLiteral("MyLabel"));
 }
 
@@ -307,9 +368,7 @@ void TestElementEditor::testChangeTriggerActionFocusesAndSelectsTriggerField()
     lineEdit->setText("A");
 
     editor.changeTriggerAction();
-    QApplication::processEvents(); // flush the queued focus-change event before asserting.
-
-    QVERIFY(lineEdit->hasFocus());
+    QVERIFY2(TestUtils::waitFor([&] { return lineEdit->hasFocus(); }), "lineEditTrigger must gain focus");
     QCOMPARE(lineEdit->selectedText(), QStringLiteral("A"));
 }
 
@@ -329,10 +388,14 @@ void TestElementEditor::testContextMenuRenameActionFocusesLabelField()
     editor.contextMenu(QPoint(0, 0), nullptr);
 
     QVERIFY2(dismisser.dismissCount() >= 1, "the \"Rename\" action must have been found in the menu");
-    QApplication::processEvents(); // flush the queued focus-change event before asserting.
+    // The now-closed popup may have taken over "active window" status without handing it back
+    // (no real window manager under the offscreen platform to do that automatically) -- without
+    // re-asserting it, setFocus() below can never surface via hasFocus() (see showAndActivate()'s
+    // own comment; same mechanism, just needed again after the popup closes this time).
+    showAndActivate(&editor);
     auto *lineEdit = editor.findChild<QLineEdit *>("lineEditElementLabel");
     QVERIFY(lineEdit);
-    QVERIFY(lineEdit->hasFocus());
+    QVERIFY2(TestUtils::waitFor([&] { return lineEdit->hasFocus(); }), "lineEditElementLabel must gain focus");
 }
 
 void TestElementEditor::testContextMenuTriggerActionFocusesTriggerField()
@@ -351,10 +414,10 @@ void TestElementEditor::testContextMenuTriggerActionFocusesTriggerField()
     editor.contextMenu(QPoint(0, 0), nullptr);
 
     QVERIFY2(dismisser.dismissCount() >= 1, "the \"Change trigger\" action must have been found in the menu");
-    QApplication::processEvents(); // flush the queued focus-change event before asserting.
+    showAndActivate(&editor); // re-assert activation lost to the now-closed popup -- see above
     auto *lineEdit = editor.findChild<QLineEdit *>("lineEditTrigger");
     QVERIFY(lineEdit);
-    QVERIFY(lineEdit->hasFocus());
+    QVERIFY2(TestUtils::waitFor([&] { return lineEdit->hasFocus(); }), "lineEditTrigger must gain focus");
 }
 
 void TestElementEditor::testContextMenuFrequencyActionFocusesSpinBox()
@@ -373,10 +436,10 @@ void TestElementEditor::testContextMenuFrequencyActionFocusesSpinBox()
     editor.contextMenu(QPoint(0, 0), nullptr);
 
     QVERIFY2(dismisser.dismissCount() >= 1, "the \"Change frequency\" action must have been found in the menu");
-    QApplication::processEvents(); // flush the queued focus-change event before asserting.
+    showAndActivate(&editor); // re-assert activation lost to the now-closed popup -- see above
     auto *spinBox = editor.findChild<QDoubleSpinBox *>("doubleSpinBoxFrequency");
     QVERIFY(spinBox);
-    QVERIFY(spinBox->hasFocus());
+    QVERIFY2(TestUtils::waitFor([&] { return spinBox->hasFocus(); }), "doubleSpinBoxFrequency must gain focus");
 }
 
 void TestElementEditor::testContextMenuAppearanceRevertSetsDefaultAppearance()
