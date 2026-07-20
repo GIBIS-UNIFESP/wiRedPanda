@@ -13,4 +13,9 @@ class TestFileDialogProviderUnit : public QObject
 private slots:
 
     void testFileDialogCreation();
+
+    void testRealGetOpenFileNameReturnsSelectedPath();
+    void testRealGetOpenFileNameReturnsEmptyOnCancel();
+    void testRealGetSaveFileNameReturnsPathAndFilter();
+    void testRealGetSaveFileNameReturnsEmptyOnCancel();
 };
