@@ -3,6 +3,8 @@
 
 #include "Tests/Unit/Simulation/TestSimulation.h"
 
+#include "App/Core/Application.h"
+#include "App/Core/SimulationHost.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/And.h"
@@ -15,6 +17,21 @@
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
 #include "Tests/Common/TestUtils.h"
+
+namespace {
+// Minimal SimulationHost stub giving full control over simulationItems() (including
+// injecting nullptrs), so Simulation::initialize()'s defensive item-list handling can be
+// tested in isolation from a real Scene.
+class StubSimulationHost : public SimulationHost
+{
+public:
+    QList<QGraphicsItem *> simulationItems() const override { return m_items; }
+    void setMuted(bool muted) override { m_muted = muted; }
+
+    QList<QGraphicsItem *> m_items;
+    bool m_muted = false;
+};
+} // namespace
 
 void TestSimulationUnit::testSimulationWithNoElements()
 {
@@ -202,4 +219,80 @@ void TestSimulationUnit::testUnconnectedOutputPortVisualUpdates()
     // NOT(1) = 0 — and the unwired output port's visual must reflect it
     QCOMPARE(notGate->outputPort(0)->status(), Status::Inactive);
     QCOMPARE(notGate->outputPort(0)->status(), notGate->outputValue(0));
+}
+
+void TestSimulationUnit::testInitializeReturnsFalseWithNoHost()
+{
+    Simulation sim(nullptr);
+    QVERIFY(!sim.initialize());
+}
+
+void TestSimulationUnit::testInitializeSkipsNullItemsAndFailsWithNoElements()
+{
+    // Two null items: bypasses the "single background item" early return (size != 1), the
+    // sort comparator's null-handling branch runs, the item loop's null-item continue runs
+    // for both, and since nothing real was ever appended, initialize() must still fail.
+    StubSimulationHost host;
+    host.m_items = {nullptr, nullptr};
+
+    Simulation sim(&host);
+    QVERIFY(!sim.initialize());
+}
+
+void TestSimulationUnit::testUpdatePortWithNullPortsAreNoOps()
+{
+    // Pure defensive guards on private static helpers -- reachable directly via the friend
+    // seam; nothing to observe besides "does not crash" since a null port has no state.
+    Simulation::updatePort(static_cast<OutputPort *>(nullptr));
+    Simulation::updatePort(static_cast<InputPort *>(nullptr));
+}
+
+void TestSimulationUnit::testCollectSequentialElementsSkipsNullElements()
+{
+    StubSimulationHost host;
+    Simulation sim(&host);
+
+    QVector<GraphicElement *> elements{nullptr};
+    sim.collectSequentialElements(elements);
+
+    QVERIFY(sim.m_sequentialElements.isEmpty());
+}
+
+void TestSimulationUnit::testUpdateFlushesPendingVisualsOnLaterIdleTick()
+{
+    // The visual throttle only engages when Application::interactiveMode is true (forced
+    // false globally for the rest of the test suite) -- toggle it locally and restore after,
+    // mirroring the established Application::renderingEnabled pattern.
+    const bool prevInteractive = Application::interactiveMode;
+    Application::interactiveMode = true;
+
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *sw = new InputSwitch();
+    auto *led = new Led();
+    scene->addItem(sw);
+    scene->addItem(led);
+    CircuitBuilder builder(scene);
+    builder.connect(sw, 0, led, 0);
+
+    Simulation sim(scene);
+    sim.setVisualThrottleEnabled(true);
+    // Friend-seam access: a short, deterministic interval instead of the real screen-derived
+    // one (usually ~16), so this test doesn't depend on the host's refresh rate.
+    sim.m_visualTickInterval = 5;
+    sim.m_visualTickCount = 0;
+
+    sw->setOn(true); // a real change -- the sweep runs
+    sim.update(); // tick 1/5: visualsDue is false, so the sweep's visual flush is skipped
+    QVERIFY2(sim.m_visualsDirty, "Precondition: the sweep must leave a pending visual flush");
+
+    // No further change: every subsequent tick hits the fixed-point early return until the
+    // throttle interval elapses.
+    for (int i = 0; i < 4; ++i) {
+        sim.update();
+    }
+    QVERIFY2(!sim.m_visualsDirty,
+              "A pending visual flush must happen on an idle tick once the throttle interval elapses");
+
+    Application::interactiveMode = prevInteractive;
 }
