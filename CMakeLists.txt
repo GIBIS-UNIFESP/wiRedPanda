@@ -928,6 +928,7 @@ add_test(NAME TestElementContextMenu COMMAND test_wiredpanda TestElementContextM
 add_test(NAME TestElementEditor COMMAND test_wiredpanda TestElementEditor WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestElementPalette COMMAND test_wiredpanda TestElementPalette WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestElementTabNavigator COMMAND test_wiredpanda TestElementTabNavigator WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestExportController COMMAND test_wiredpanda TestExportController WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestFileDialogProviderUnit COMMAND test_wiredpanda TestFileDialogProviderUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestFileUtils COMMAND test_wiredpanda TestFileUtils WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestGraphicElement COMMAND test_wiredpanda TestGraphicElement WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -1096,7 +1097,7 @@ set(ALL_TESTS
     TestExternalFilePath TestInstallRelativePaths TestUpdateChecker
     TestArduinoCodeGenUnit TestCodeGenUtils TestSystemVerilogCodeGenUnit
     TestCircuitExporter TestElementContextMenu TestElementEditor TestElementPalette
-    TestElementTabNavigator TestFileDialogProviderUnit TestICDropZone TestLabeledSlider
+    TestElementTabNavigator TestExportController TestFileDialogProviderUnit TestICDropZone TestLabeledSlider
     TestLanguageManager TestMinimapWidget TestSceneUiBinder TestSelectionCapabilities
     TestTrashButton TestWorkspaceManager
     TestConnection TestConnectionManager TestGraphicsView TestPropertyShortcutHandler TestPort TestSceneDropHandler
