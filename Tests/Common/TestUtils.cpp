@@ -104,30 +104,34 @@ QString systemVerilogExpectedDir()
 
 bool inputStatus(GraphicElement *elm, int port)
 {
+    // Unreachable in any correctly-written test: this guards against a test-author mistake
+    // (wrong port index/element), and qFatal() aborts the whole process -- there is no way
+    // to exercise it without crashing the test binary itself.
     auto *inputPort = elm->inputPort(port);
     if (!inputPort) {
-        qFatal("FATAL ERROR in inputStatus():\n"
-               "  Attempted to read input port %d from element %s\n"
-               "  Element type: %s\n"
-               "  Element has ZERO input ports!\n"
-               "  This element may only have OUTPUT ports (e.g., InputSwitch)\n"
-               "  Use outputStatus() to read output ports, or read downstream elements to verify signal propagation.",
-               port, qPrintable(elm->objectName()), elm->metaObject()->className());
-    }
+        qFatal("FATAL ERROR in inputStatus():\n" // LCOV_EXCL_LINE
+               "  Attempted to read input port %d from element %s\n" // LCOV_EXCL_LINE
+               "  Element type: %s\n" // LCOV_EXCL_LINE
+               "  Element has ZERO input ports!\n" // LCOV_EXCL_LINE
+               "  This element may only have OUTPUT ports (e.g., InputSwitch)\n" // LCOV_EXCL_LINE
+               "  Use outputStatus() to read output ports, or read downstream elements to verify signal propagation.", // LCOV_EXCL_LINE
+               port, qPrintable(elm->objectName()), elm->metaObject()->className()); // LCOV_EXCL_LINE
+    } // LCOV_EXCL_LINE
     return inputPort->status() == Status::Active;
 }
 
 bool outputStatus(GraphicElement *elm, int port)
 {
+    // Unreachable in any correctly-written test: same class as inputStatus()'s guard above.
     auto *outputPort = elm->outputPort(port);
     if (!outputPort) {
-        qFatal("FATAL ERROR in outputStatus():\n"
-               "  Attempted to read output port %d from element %s\n"
-               "  Element type: %s\n"
-               "  Element has no output port at this index!\n"
-               "  Check that the port index is within valid range for this element type",
-               port, qPrintable(elm->objectName()), elm->metaObject()->className());
-    }
+        qFatal("FATAL ERROR in outputStatus():\n" // LCOV_EXCL_LINE
+               "  Attempted to read output port %d from element %s\n" // LCOV_EXCL_LINE
+               "  Element type: %s\n" // LCOV_EXCL_LINE
+               "  Element has no output port at this index!\n" // LCOV_EXCL_LINE
+               "  Check that the port index is within valid range for this element type", // LCOV_EXCL_LINE
+               port, qPrintable(elm->objectName()), elm->metaObject()->className()); // LCOV_EXCL_LINE
+    } // LCOV_EXCL_LINE
     return outputPort->status() == Status::Active;
 }
 
@@ -165,12 +169,13 @@ void setMultiBitInput(const QVector<InputSwitch *> &inputs, int value)
 
 void clockCycle(Simulation *simulation, InputSwitch *clk)
 {
+    // Unreachable in any correctly-written test: same class as inputStatus()'s guard above.
     if (!simulation) {
-        qFatal("FATAL ERROR in clockCycle(): Simulation pointer is nullptr");
-    }
+        qFatal("FATAL ERROR in clockCycle(): Simulation pointer is nullptr"); // LCOV_EXCL_LINE
+    } // LCOV_EXCL_LINE
     if (!clk) {
-        qFatal("FATAL ERROR in clockCycle(): Clock switch pointer is nullptr");
-    }
+        qFatal("FATAL ERROR in clockCycle(): Clock switch pointer is nullptr"); // LCOV_EXCL_LINE
+    } // LCOV_EXCL_LINE
     // Complete clock pulse: ensure rising edge followed by falling edge
     // This guarantees a rising edge occurs regardless of initial state
     clk->setOn(true);   // Rising edge (triggers latch on edge-triggered flip-flops)
@@ -184,12 +189,13 @@ void initElm(GraphicElement &elm) { elm.initSimulationVectors(elm.inputSize(), e
 
 void clockToggle(Simulation *simulation, InputSwitch *clk)
 {
+    // Unreachable in any correctly-written test: same class as inputStatus()'s guard above.
     if (!simulation) {
-        qFatal("FATAL ERROR in clockToggle(): Simulation pointer is nullptr");
-    }
+        qFatal("FATAL ERROR in clockToggle(): Simulation pointer is nullptr"); // LCOV_EXCL_LINE
+    } // LCOV_EXCL_LINE
     if (!clk) {
-        qFatal("FATAL ERROR in clockToggle(): Clock switch pointer is nullptr");
-    }
+        qFatal("FATAL ERROR in clockToggle(): Clock switch pointer is nullptr"); // LCOV_EXCL_LINE
+    } // LCOV_EXCL_LINE
     // Single edge toggle for fine-grained clock control
     clk->setOn(!clk->isOn());
     simulation->update();
