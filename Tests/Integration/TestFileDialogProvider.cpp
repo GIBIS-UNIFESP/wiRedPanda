@@ -373,6 +373,9 @@ void TestFileDialogProvider::testWorkspaceSaveIsProviderFree()
 
 void TestFileDialogProvider::testWorkspaceSaveRepromptsOnPermissionsErrorB24()
 {
+#ifdef Q_OS_WIN
+    QSKIP("QFile::setPermissions cannot make a file/directory unwritable on Windows (uses ACLs, not Unix permission bits)");
+#else
     // Pre-fix, Ctrl+S to a read-only path threw straight into a modal "Acesso negado"
     // dialog with no way out. Now WorkSpace::save() reports the failure as
     // SaveOutcome::ReadOnlyTarget instead of throwing, and WorkspaceManager::save()
@@ -427,6 +430,7 @@ void TestFileDialogProvider::testWorkspaceSaveRepromptsOnPermissionsErrorB24()
              qPrintable("Save should have been redirected to " + writablePath));
 
     QFile::remove(writablePath);
+#endif
 }
 
 void TestFileDialogProvider::testWorkspaceManagerSaveAddsExtensionIfMissing()
