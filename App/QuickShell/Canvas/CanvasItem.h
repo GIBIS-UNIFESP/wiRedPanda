@@ -120,6 +120,10 @@ class CanvasItem : public QQuickItem
     /// not port hit-testing (already covered by TestCanvasPortHover).
     friend class TestDanglingPointer;
 
+    /// Exercises m_minimapRebuildCount directly to assert on renderMinimapImage()'s cache-skip
+    /// behavior (pan/zoom-in-bounds must not rebuild; edits/zoom-out-past-bounds must).
+    friend class TestCanvasItemSmoke;
+
 public:
     /// \param buildDemo When true (the default -- and the only value QML's own construction
     /// of this QML_ELEMENT type ever uses), seeds the canvas with Phase 1/2's demo circuit
@@ -684,6 +688,13 @@ private:
     /// InputSwitch/InputRotary's mousePressEvent logic instead of calling it.
     bool isOverOwnPort(GraphicElement *owner, const QPointF &pos) const;
 
+    /// Shared by paintElementsInto()/paintElementsSimplifiedInto() -- see that definition's own
+    /// doc comment.
+    void applyContentFitTransform(QPainter *painter, const QRectF &target, const QRectF &source) const;
+    /// Large-circuit fallback used by renderMinimapImage() -- see kMinimapSimplifiedThreshold's
+    /// and this method's own doc comments (CanvasItem.cpp) for why and how.
+    void paintElementsSimplifiedInto(QPainter *painter, const QRectF &target, const QRectF &source) const;
+
 
     // --- Wire-creation-by-dragging (ports ConnectionManager's workflow) ---
     void startWireFromOutput(OutputPort *startPort);
@@ -850,6 +861,23 @@ private:
     /// happening, never a new one; wire *color* stays a fresh per-frame read regardless, since
     /// that's what a live simulation actually changes.
     QHash<Port *, QPointF> m_portScenePosCache;
+
+    /// Memoizes renderMinimapImage() itself -- found real (~1.6s on an 8000-element circuit,
+    /// GDB-measured) uncached cost re-triggered on every pan/zoom pause, even though
+    /// minimapContentRect()'s viewport-union is a no-op whenever the viewport is already inside
+    /// the circuit's own bounds (the common case for any circuit big enough for this cost to
+    /// matter). `mutable` since renderMinimapImage() is const; invalidated the same way
+    /// m_portScenePosCache is -- wholesale inside rebuildSpatialIndex() -- so this can never be
+    /// stale in a way that cache wasn't already accounting for. A target-size change (the
+    /// minimap widget itself being resized) also forces a rebuild, checked directly in
+    /// renderMinimapImage() rather than via a separate invalidation path.
+    mutable QImage m_cachedMinimapImage;
+    mutable QRectF m_cachedMinimapContentRect;
+    mutable QSizeF m_cachedMinimapTargetSize;
+    /// Real-rebuild counter for renderMinimapImage() -- test-only observability (see
+    /// TestCanvasItemSmoke's minimap-caching tests), incremented only when the cache above is
+    /// actually rebuilt, never on a skipped/reused call.
+    mutable int m_minimapRebuildCount = 0;
 
     /// Backs spatialIdFor() -- see its own doc comment. Pruned per-port by removeItem(
     /// GraphicElement*) so it never grows unbounded across a long editing session's add/delete

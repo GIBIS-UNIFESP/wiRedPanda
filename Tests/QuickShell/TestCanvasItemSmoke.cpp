@@ -39,3 +39,57 @@ void TestCanvasItemSmoke::testAddElementUndoRemovesIt()
 
     QCOMPARE(canvas.elements().size(), 0);
 }
+
+void TestCanvasItemSmoke::testMinimapZoomInWithinBoundsSkipsRebuild()
+{
+    CanvasItem canvas(nullptr, /*buildDemo=*/false);
+    canvas.setSize(QSizeF(400, 400));
+    auto *elm = ElementFactory::buildElement(ElementType::And);
+    canvas.receiveCommand(new CanvasAddItemsCommand({elm}, &canvas));
+
+    (void)canvas.renderMinimapImage(200, 200);
+    QCOMPARE(canvas.m_minimapRebuildCount, 1);
+
+    // Zooming in strictly shrinks visibleWorldRect() -- the new viewport is guaranteed to still
+    // fit inside the rect the first render already cached, regardless of direction.
+    canvas.zoomIn();
+    (void)canvas.renderMinimapImage(200, 200);
+
+    QCOMPARE(canvas.m_minimapRebuildCount, 1);
+}
+
+void TestCanvasItemSmoke::testMinimapZoomOutPastBoundsForcesRebuild()
+{
+    CanvasItem canvas(nullptr, /*buildDemo=*/false);
+    canvas.setSize(QSizeF(400, 400));
+    auto *elm = ElementFactory::buildElement(ElementType::And);
+    canvas.receiveCommand(new CanvasAddItemsCommand({elm}, &canvas));
+
+    (void)canvas.renderMinimapImage(200, 200);
+    QCOMPARE(canvas.m_minimapRebuildCount, 1);
+
+    // Zooming out enough times grows visibleWorldRect() well past what the first render cached.
+    for (int i = 0; i < 5; ++i) {
+        canvas.zoomOut();
+    }
+    (void)canvas.renderMinimapImage(200, 200);
+
+    QCOMPARE(canvas.m_minimapRebuildCount, 2);
+}
+
+void TestCanvasItemSmoke::testMinimapStructuralEditForcesRebuild()
+{
+    CanvasItem canvas(nullptr, /*buildDemo=*/false);
+    canvas.setSize(QSizeF(400, 400));
+    auto *elm = ElementFactory::buildElement(ElementType::And);
+    canvas.receiveCommand(new CanvasAddItemsCommand({elm}, &canvas));
+
+    (void)canvas.renderMinimapImage(200, 200);
+    QCOMPARE(canvas.m_minimapRebuildCount, 1);
+
+    auto *elm2 = ElementFactory::buildElement(ElementType::InputSwitch);
+    canvas.receiveCommand(new CanvasAddItemsCommand({elm2}, &canvas));
+    (void)canvas.renderMinimapImage(200, 200);
+
+    QCOMPARE(canvas.m_minimapRebuildCount, 2);
+}

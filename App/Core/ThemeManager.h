@@ -44,6 +44,13 @@ public:
 
     QColor m_graphicElementLabelColor;
 
+    // --- Members: Minimap Colors ---
+
+    /// Flat fill color for CanvasItem::paintElementsSimplifiedInto()'s per-element rects -- the
+    /// large-circuit minimap thumbnail fallback that skips each element's real appearance/label
+    /// (see that method's own doc comment for why).
+    QColor m_minimapElementBrush;
+
     // --- Members: Connection Colors ---
 
     QColor m_connectionUnknown;

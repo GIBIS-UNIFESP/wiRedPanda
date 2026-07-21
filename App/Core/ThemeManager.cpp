@@ -182,6 +182,8 @@ void ThemeAttributes::setTheme(const Theme theme)
 
         m_graphicElementLabelColor = QColor(Qt::black);
 
+        m_minimapElementBrush = QColor(120, 120, 120); // mid-gray; contrasts with the warm off-white background
+
         m_connectionUnknown = QColor(140, 140, 140);    // neutral gray — "nothing is driving this"
         m_connectionInactive = QColor(Qt::darkGreen);
         m_connectionActive = QColor(Qt::green);
@@ -226,6 +228,8 @@ void ThemeAttributes::setTheme(const Theme theme)
         m_selectionPen = QColor(230, 255, 85, 255);   // fully-opaque for a crisp selection border
 
         m_graphicElementLabelColor = QColor(Qt::white);
+
+        m_minimapElementBrush = QColor(150, 155, 165); // light-blue-grey; contrasts with the dark blue-grey background
 
         m_connectionUnknown = QColor(160, 160, 160, 255);    // light gray — "nothing is driving this"
         m_connectionInactive = QColor(65, 150, 130, 255);  // muted teal; visible on dark background without competing with active wires

@@ -17,4 +17,10 @@ private slots:
     void testConstructWithoutDemoStartsEmpty();
     void testAddElementViaCommandUpdatesElements();
     void testAddElementUndoRemovesIt();
+
+    // --- renderMinimapImage() cache-skip behavior (see project memory
+    // project_quick_clocked_8000_profile_finding.md for the real-world cost this caches away) ---
+    void testMinimapZoomInWithinBoundsSkipsRebuild();
+    void testMinimapZoomOutPastBoundsForcesRebuild();
+    void testMinimapStructuralEditForcesRebuild();
 };

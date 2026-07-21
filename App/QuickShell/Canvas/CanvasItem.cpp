@@ -108,6 +108,19 @@ private:
 constexpr int kMaxZoomLevel = 7;  ///< 1.25^7 ~= 4.8x.
 constexpr int kMinZoomLevel = -9; ///< 0.8^9 ~= 0.13x.
 
+/// Above this many elements, renderMinimapImage() switches from each element's real
+/// appearance+label (paintElementsInto()) to flat rects + straight wire lines
+/// (paintElementsSimplifiedInto()) -- individual element detail is imperceptible at the
+/// minimap's thumbnail scale regardless, and the real paint's SVG rasterization/text-shaping
+/// cost is what a real profiling pass (see project memory
+/// project_quick_clocked_8000_profile_finding.md) measured at ~1.625s for an 8001-element
+/// circuit. Chosen from real GDB entry/finish-timestamp measurement (same technique that
+/// memory used), not a guess: ~116ms at 1000 elements (combinational_1000.panda), ~121ms at
+/// 2001 elements (clocked_2000.panda) -- both a real but tolerable one-shot cost, and this is a
+/// rare event post-caching (see m_cachedMinimapContentRect's own doc comment) -- vs. ~1.625s at
+/// 8001 elements. 2000 sits just past the highest real measurement that was still fine.
+constexpr int kMinimapSimplifiedThreshold = 2000;
+
 /// Packs an id into the quint64 id space SpatialIndex uses, tagged by kind in the top bits so
 /// elements/wires/ports never collide. elementId()/wireId() take the real ItemWithId::id()
 /// (assigned via CanvasItem::addItem(), see this class's doc comment on the id/registry layer)
@@ -1540,21 +1553,30 @@ QRectF CanvasItem::elementsBoundingRect() const
     return bounds;
 }
 
+/// Shared by paintElementsInto()/paintElementsSimplifiedInto(): sets \a painter's transform so
+/// \a source (canvas coordinates) fits centered into \a target (painter/device coordinates),
+/// preserving aspect ratio -- mirrors QGraphicsScene::render()'s own target/source/
+/// Qt::KeepAspectRatio contract. Caller owns the surrounding painter->save()/restore() pair.
+void CanvasItem::applyContentFitTransform(QPainter *painter, const QRectF &target, const QRectF &source) const
+{
+    const qreal scale = std::min(target.width() / source.width(), target.height() / source.height());
+    const QSizeF scaledSize = source.size() * scale;
+    const QPointF offset = target.topLeft()
+        + QPointF((target.width() - scaledSize.width()) / 2.0, (target.height() - scaledSize.height()) / 2.0);
+
+    painter->translate(offset);
+    painter->scale(scale, scale);
+    painter->translate(-source.topLeft());
+}
+
 void CanvasItem::paintElementsInto(QPainter *painter, const QRectF &target, const QRectF &source) const
 {
     if (target.isEmpty() || source.isEmpty()) {
         return;
     }
 
-    const qreal scale = std::min(target.width() / source.width(), target.height() / source.height());
-    const QSizeF scaledSize = source.size() * scale;
-    const QPointF offset = target.topLeft()
-        + QPointF((target.width() - scaledSize.width()) / 2.0, (target.height() - scaledSize.height()) / 2.0);
-
     painter->save();
-    painter->translate(offset);
-    painter->scale(scale, scale);
-    painter->translate(-source.topLeft());
+    applyContentFitTransform(painter, target, source);
 
     // World position == local paint coordinate + pos(), same relationship
     // renderICPreviewImage()'s own comment documents.
@@ -1568,6 +1590,41 @@ void CanvasItem::paintElementsInto(QPainter *painter, const QRectF &target, cons
     }
     for (auto *connection : m_connections) {
         connection->paint(painter);
+    }
+
+    painter->restore();
+}
+
+/// Large-circuit fallback for renderMinimapImage() (see kMinimapSimplifiedThreshold's own doc
+/// comment): each element becomes a flat filled rect (its boundingRect(), no real paint()/SVG
+/// rasterization, no port glyphs/label text-shaping) and each wire a plain straight line between
+/// its two ports' real scenePos() (no Bezier tessellation) -- individual element/wire detail is
+/// imperceptible at the minimap's thumbnail scale regardless, so this trades it away for real
+/// per-call cost too small to matter even on an 8000+-element circuit. Antialiasing explicitly
+/// off for this call only (axis-aligned flat rects/lines don't need it at this scale, and it
+/// skips the raster engine's antialiased span-fill path) -- the grid dots drawn earlier in
+/// renderMinimapImage() are unaffected, already painted in their own save()/restore() block
+/// before this call runs.
+void CanvasItem::paintElementsSimplifiedInto(QPainter *painter, const QRectF &target, const QRectF &source) const
+{
+    if (target.isEmpty() || source.isEmpty()) {
+        return;
+    }
+
+    painter->save();
+    applyContentFitTransform(painter, target, source);
+    painter->setRenderHint(QPainter::Antialiasing, false);
+
+    const ThemeAttributes &theme = ThemeManager::attributes();
+    for (auto *element : m_elements) {
+        painter->fillRect(element->boundingRect().translated(element->pos()), theme.m_minimapElementBrush);
+    }
+
+    QPen wirePen(theme.m_connectionInactive);
+    wirePen.setWidth(0);
+    painter->setPen(wirePen);
+    for (auto *connection : m_connections) {
+        painter->drawLine(connection->startPort()->scenePos(), connection->endPort()->scenePos());
     }
 
     painter->restore();
@@ -1802,10 +1859,32 @@ QRectF CanvasItem::minimapContentRect(qreal targetWidth, qreal targetHeight) con
 
 QImage CanvasItem::renderMinimapImage(qreal targetWidth, qreal targetHeight) const
 {
+    // Cache check: minimapContentRect() unions the circuit's own bounds with the *current*
+    // viewport only to guarantee the viewport-rect overlay never has to extend past the
+    // thumbnail's own edges (small/empty-circuit case) -- for any circuit big enough for this
+    // render's cost to matter, the viewport is already inside the content bounds, so that union
+    // is a no-op and the thumbnail genuinely doesn't need to change while panning/zooming within
+    // it. GDB-measured at ~1.6s/call on an 8000-element circuit, previously rebuilt on every
+    // pan/zoom pause (see project memory project_quick_clocked_8000_profile_finding.md).
+    // Invalidated wholesale by rebuildSpatialIndex(), the same trigger m_portScenePosCache
+    // already uses for an identical reason -- see that field's own doc comment.
+    const QRectF visible = visibleWorldRect();
+    const QSizeF targetSize(targetWidth, targetHeight);
+    const bool cacheValid = !m_cachedMinimapContentRect.isEmpty()
+        && m_cachedMinimapTargetSize == targetSize
+        && m_cachedMinimapContentRect.contains(visible);
+    if (cacheValid) {
+        return m_cachedMinimapImage;
+    }
+
     const QRectF content = minimapContentRect(targetWidth, targetHeight);
     if (content.isEmpty()) {
-        return {};
+        m_cachedMinimapImage = QImage();
+        m_cachedMinimapContentRect = QRectF();
+        m_cachedMinimapTargetSize = targetSize;
+        return m_cachedMinimapImage;
     }
+    ++m_minimapRebuildCount;
 
     const ThemeAttributes &theme = ThemeManager::attributes();
     QImage image(QSize(qRound(targetWidth), qRound(targetHeight)), QImage::Format_ARGB32_Premultiplied);
@@ -1844,9 +1923,16 @@ QImage CanvasItem::renderMinimapImage(qreal targetWidth, qreal targetHeight) con
 
     // content already matches the target aspect ratio exactly (grown above), so this fit is
     // always exact -- no letterboxing offset for the caller to separately track.
-    paintElementsInto(&painter, QRectF(0.0, 0.0, targetWidth, targetHeight), content);
+    if (m_elements.size() > kMinimapSimplifiedThreshold) {
+        paintElementsSimplifiedInto(&painter, QRectF(0.0, 0.0, targetWidth, targetHeight), content);
+    } else {
+        paintElementsInto(&painter, QRectF(0.0, 0.0, targetWidth, targetHeight), content);
+    }
 
-    return image;
+    m_cachedMinimapImage = image;
+    m_cachedMinimapContentRect = content;
+    m_cachedMinimapTargetSize = targetSize;
+    return m_cachedMinimapImage;
 }
 
 void CanvasItem::buildDemoCircuit()
@@ -1966,6 +2052,9 @@ void CanvasItem::rebuildSpatialIndex()
     // which invalidates only the moved element's own ports) -- see m_portScenePosCache's doc
     // comment.
     m_portScenePosCache.clear();
+    // Also invalidates the minimap thumbnail cache (m_cachedMinimapImage/m_cachedMinimapContentRect)
+    // for the identical reason as m_portScenePosCache above -- see that field's own doc comment.
+    m_cachedMinimapContentRect = QRectF();
 
     for (int i = 0; i < m_elements.size(); ++i) {
         GraphicElement *element = m_elements.at(i);
