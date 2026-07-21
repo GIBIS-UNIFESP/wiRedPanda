@@ -201,7 +201,7 @@ void paintElementDecorations(QPainter &painter, GraphicElement *element, const T
     // for OutputPort), positioned via the same pos()+transform() composition QGraphicsScene's own
     // child-item painting would use, colored by the port's live status via portPaintStyleFor() --
     // see its own doc comment for why port->currentPen()/currentBrush() aren't reused.
-    for (auto *port : element->allPorts()) {
+    const auto paintPort = [&](Port *port) {
         painter.save();
         painter.translate(port->pos());
         painter.setTransform(port->orientationTransform(), true);
@@ -210,7 +210,9 @@ void paintElementDecorations(QPainter &painter, GraphicElement *element, const T
         painter.setBrush(style.brush);
         painter.drawPath(port->path());
         painter.restore();
-    }
+    };
+    for (auto *port : element->inputs())  { paintPort(port); }
+    for (auto *port : element->outputs()) { paintPort(port); }
 
     // Label (and, for Text, its empty-state hint): real GraphicElementLabel::paint(), positioned
     // via the same pos()+transform() composition as ports -- font()/brush()/text() are kept live
@@ -585,7 +587,11 @@ void CanvasItem::removeItem(GraphicElement *element)
         // Same pruning for spatialIdFor()'s id cache -- otherwise a long add/delete/add churn
         // would grow m_portSpatialIds unbounded even though most of its entries name ports that
         // no longer exist.
-        for (auto *port : element->allPorts()) {
+        for (auto *port : element->inputs()) {
+            m_portSpatialIds.remove(port);
+            m_portScenePosCache.remove(port);
+        }
+        for (auto *port : element->outputs()) {
             m_portSpatialIds.remove(port);
             m_portScenePosCache.remove(port);
         }
@@ -2067,12 +2073,14 @@ void CanvasItem::rebuildSpatialIndex()
         // lands on a port's small glyph should hit the port, not just the element body, so
         // ports must be inserted after their element to win SpatialIndex::queryPoint()'s
         // insertion-order "last wins" priority (see its doc comment).
-        for (auto *port : element->allPorts()) {
+        const auto indexPort = [&](Port *port) {
             const quint64 pid = spatialIdFor(port);
             const QRectF portRect = port->boundingRect().translated(port->scenePos());
             m_index.insertBox(pid, portRect);
             m_portsById.insert(pid, port);
-        }
+        };
+        for (auto *port : element->inputs())  { indexPort(port); }
+        for (auto *port : element->outputs()) { indexPort(port); }
     }
 
     for (int i = 0; i < m_connections.size(); ++i) {
@@ -2099,7 +2107,7 @@ void CanvasItem::updateSpatialIndexFor(GraphicElement *element)
     const QRectF worldRect = element->boundingRect().translated(element->pos());
     m_index.insertBox(id, worldRect);
 
-    for (auto *port : element->allPorts()) {
+    const auto indexPort = [&](Port *port) {
         const quint64 pid = spatialIdFor(port);
         const QRectF portRect = port->boundingRect().translated(port->scenePos());
         m_index.insertBox(pid, portRect);
@@ -2110,7 +2118,9 @@ void CanvasItem::updateSpatialIndexFor(GraphicElement *element)
             const QPainterPath stroke = strokeShapeFor(connection);
             m_index.insertShape(wireId(connection->id()), stroke.boundingRect(), stroke);
         }
-    }
+    };
+    for (auto *port : element->inputs())  { indexPort(port); }
+    for (auto *port : element->outputs()) { indexPort(port); }
 }
 
 void CanvasItem::activateOnPress(GraphicElement *element)

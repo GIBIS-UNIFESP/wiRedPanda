@@ -150,9 +150,6 @@ public:
     /// Returns a const reference to the vector of all output ports.
     const QVector<OutputPort *> &outputs() const;
 
-    /// Returns a combined list of all input and output ports as Port pointers.
-    QVector<Port *> allPorts() const;
-
     /// Returns the current number of input ports.
     int inputSize() const;
 

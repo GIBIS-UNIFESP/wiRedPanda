@@ -27,9 +27,8 @@ void ElementOrientation::setRotation(const qreal angle)
 
 void ElementOrientation::rotatePorts()
 {
-    for (auto *port : m_owner->allPorts()) {
-        orientPort(port);
-    }
+    for (auto *port : m_owner->inputs())  { orientPort(port); }
+    for (auto *port : m_owner->outputs()) { orientPort(port); }
 }
 
 void ElementOrientation::orientPort(Port *port)

@@ -58,15 +58,6 @@ OutputPort *ElementPorts::outputPort(const int index) const
     return m_outputPorts.at(index);
 }
 
-QVector<Port *> ElementPorts::allPorts() const
-{
-    QVector<Port *> result;
-    result.reserve(m_inputPorts.size() + m_outputPorts.size());
-    for (auto *p : m_inputPorts)  { result.append(p); }
-    for (auto *p : m_outputPorts) { result.append(p); }
-    return result;
-}
-
 void ElementPorts::setInputs(const QVector<InputPort *> &inputs)
 {
     m_inputPorts = inputs;

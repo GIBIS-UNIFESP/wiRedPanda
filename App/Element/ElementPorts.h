@@ -60,9 +60,6 @@ public:
     /// Returns the current number of output ports.
     int outputSize() const { return static_cast<int>(m_outputPorts.size()); }
 
-    /// Returns a combined list of all input and output ports as Port pointers.
-    QVector<Port *> allPorts() const;
-
     // --- Mutation ---
 
     /// Replaces the input port vector with \a inputs, re-indexing each port to its new vector

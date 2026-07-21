@@ -136,11 +136,6 @@ const QVector<InputPort *> &GraphicElement::inputs() const
     return m_ports.inputs();
 }
 
-QVector<Port *> GraphicElement::allPorts() const
-{
-    return m_ports.allPorts();
-}
-
 void GraphicElement::setInputs(const QVector<InputPort *> &inputs)
 {
     m_ports.setInputs(inputs);
@@ -187,7 +182,7 @@ QRectF GraphicElement::portsBoundingRect() const
 {
     QRectF rectChildren;
 
-    for (auto *port : allPorts()) {
+    const auto includePort = [&](Port *port) {
         if (rotatesGraphic()) {
             // Rotatable elements apply no per-port transform -- port->pos() is already the
             // element-local position (the element's own rotation, applied uniformly in
@@ -207,7 +202,10 @@ QRectF GraphicElement::portsBoundingRect() const
             t.translate(-origin.x(), -origin.y());
             rectChildren = rectChildren.united(t.mapRect(port->boundingRect()).translated(port->pos()));
         }
-    }
+    };
+
+    for (auto *port : inputs())  { includePort(port); }
+    for (auto *port : outputs()) { includePort(port); }
 
     return rectChildren;
 }
