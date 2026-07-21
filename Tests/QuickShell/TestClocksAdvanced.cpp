@@ -290,3 +290,34 @@ void TestClocksAdvanced::testMultiClockPhaseRelationships()
              qPrintable(QString("Expected ~2:1 toggle ratio, got %1:%2 (ratio %3)")
                             .arg(toggles1).arg(toggles2).arg(ratio)));
 }
+
+void TestClocksAdvanced::testNextDeadlineMatchesStartTimePlusInterval()
+{
+    // Simulation's deadline-based timer scheduling (rescheduleTimer()) relies on this being
+    // exactly the instant updateClock() will next toggle the clock -- not an approximation.
+    Clock clock;
+    clock.setFrequency(2.0); // 250ms half-period
+
+    const auto now = std::chrono::steady_clock::now();
+    clock.resetClock(now);
+
+    QVERIFY(clock.nextDeadline() == now + Clock::halfPeriod(2.0));
+}
+
+void TestClocksAdvanced::testNextDeadlineExcludesLockedClock()
+{
+    // A locked clock never toggles (updateClock() returns immediately), so it must never
+    // pin Simulation's next wake -- otherwise a locked, slow clock would keep the timer
+    // firing for a clock that will never actually flip.
+    Clock clock;
+    clock.setFrequency(1.0);
+    clock.resetClock(std::chrono::steady_clock::now());
+
+    QVERIFY(clock.nextDeadline() != std::chrono::steady_clock::time_point::max());
+
+    clock.setLocked(true);
+    QVERIFY(clock.nextDeadline() == std::chrono::steady_clock::time_point::max());
+
+    clock.setLocked(false);
+    QVERIFY(clock.nextDeadline() != std::chrono::steady_clock::time_point::max());
+}

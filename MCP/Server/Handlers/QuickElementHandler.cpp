@@ -489,6 +489,15 @@ QJsonObject QuickElementHandler::handleSetElementProperties(const QJsonObject &p
         }
     }
 
+    // A frequency/delay/locked change above may have moved this element's (if it's a
+    // tracked Clock) next deadline earlier, later, or removed it entirely -- re-derive
+    // Simulation's scheduled wake so it doesn't fire on a now-stale deadline. Same
+    // reasoning as QuickElementEditor::applyProperty()'s identical call; cheap and
+    // correctly a no-op when nothing relevant changed or the simulation isn't running.
+    if (auto *canvas = currentCanvas(); canvas && canvas->simulation()) {
+        canvas->simulation()->rescheduleTimer();
+    }
+
     result["old_properties"] = oldProperties;
     result["new_properties"] = newProperties;
 

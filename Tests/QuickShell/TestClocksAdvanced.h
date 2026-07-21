@@ -23,4 +23,8 @@ private slots:
     void testThreeClocksConcurrentExecution();
     void testClockSynchronizationEdgeCases();
     void testMultiClockPhaseRelationships();
+
+    // nextDeadline() tests -- backs Simulation's deadline-based timer scheduling
+    void testNextDeadlineMatchesStartTimePlusInterval();
+    void testNextDeadlineExcludesLockedClock();
 };

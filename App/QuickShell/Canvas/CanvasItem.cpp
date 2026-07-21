@@ -2127,6 +2127,7 @@ void CanvasItem::activateOnPress(GraphicElement *element)
 {
     if (auto *inputSwitch = qobject_cast<InputSwitch *>(element)) {
         inputSwitch->setOn(!inputSwitch->isOn(), 0);
+        m_simulation->wakeSoon();
         return;
     }
     if (auto *inputRotary = qobject_cast<InputRotary *>(element)) {
@@ -2135,6 +2136,7 @@ void CanvasItem::activateOnPress(GraphicElement *element)
         // m_currentPort it reads (InputRotary::outputValue() returns "the index of the
         // currently active output port").
         inputRotary->setOn(true, (inputRotary->outputValue() + 1) % inputRotary->outputSize());
+        m_simulation->wakeSoon();
     }
     // InputButton isn't dispatched through here: its momentary on-while-held behavior needs
     // a release counterpart too, so it's handled directly in mousePressEvent()/
@@ -2576,6 +2578,7 @@ void CanvasItem::mousePressEvent(QMouseEvent *event)
         // comment for why release is tracked here rather than re-hit-tested on release.
         inputButton->setOn();
         m_pressedInputButton = inputButton;
+        m_simulation->wakeSoon();
     }
 
     // Drag snapshot: the clicked element plus the rest of the current selection, mirroring
@@ -2713,6 +2716,7 @@ void CanvasItem::mouseReleaseEvent(QMouseEvent *event)
             inputButton->setOff();
         }
         m_pressedInputButton = nullptr;
+        m_simulation->wakeSoon();
         update();
     }
 
@@ -3114,6 +3118,11 @@ void CanvasItem::keyPressEvent(QKeyEvent *event)
                     // Without this, a keyboard-triggered switch would never visibly update while
                     // the simulation is paused.
                     update();
+                    // Downstream propagation through the rest of the circuit only happens inside
+                    // Simulation::update() -- with the timer possibly fully stopped (no clocks),
+                    // this input's own change needs an explicit prompt sweep, same reasoning as
+                    // the mouse-driven triggers in activateOnPress()/mousePressEvent().
+                    m_simulation->wakeSoon();
                 }
             }
         }
@@ -3146,6 +3155,7 @@ void CanvasItem::keyReleaseEvent(QKeyEvent *event)
                     input && !input->isLocked() && (element->elementType() == ElementType::InputButton)) {
                     input->setOff();
                     update(); // see the matching keyPressEvent() branch's doc comment
+                    m_simulation->wakeSoon(); // see the matching keyPressEvent() branch's doc comment
                 }
             }
         }

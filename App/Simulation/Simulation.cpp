@@ -24,9 +24,11 @@ Simulation::Simulation(SimulationHost *host, QObject *parent)
     : QObject(parent)
     , m_host(host)
 {
-    // 1ms tick drives the simulation at ~1000 steps/second — fast enough for
-    // human perception while keeping CPU load predictable.
-    m_timer.setInterval(1ms);
+    // Retargeted to the next clock deadline after every real update() (see
+    // rescheduleTimer()) rather than a fixed interval -- single-shot so each firing
+    // represents exactly the one wake it was armed for; update() re-arms it before
+    // returning.
+    m_timer.setSingleShot(true);
     connect(&m_timer, &QTimer::timeout, this, &Simulation::update);
 
     // Derive the visual refresh interval from the monitor's refresh rate so
@@ -84,8 +86,13 @@ void Simulation::update()
     const auto outputs = m_outputs;
 
     // Clock elements are the only truly time-driven components; all other logic
-    // is combinational and responds immediately to their values.
-    if (m_timer.isActive()) {
+    // is combinational and responds immediately to their values. Gated on m_running,
+    // not the timer's own (now-variable, retargeted) active state: a manual/test-driven
+    // update() call (start() never called) must not advance real Clocks by wall-clock
+    // time, exactly as before -- only now m_running is the explicit flag that means it,
+    // since m_timer.isActive() can be false at this exact instant even while genuinely
+    // running (see m_running's own doc comment).
+    if (m_running) {
         const auto globalTime = std::chrono::steady_clock::now();
 
         for (auto *clock : clocks) {
@@ -138,6 +145,7 @@ void Simulation::update()
             m_visualsDirty = false;
             emit visualStateChanged();
         }
+        rescheduleTimer();
         return;
     }
 
@@ -230,6 +238,8 @@ void Simulation::update()
         m_visualsDirty = false;
         emit visualStateChanged();
     }
+
+    rescheduleTimer();
 }
 
 void Simulation::pushVisualStatuses(const QVector<GraphicElement *> &elements, const QVector<GraphicElement *> &outputs)
@@ -320,11 +330,18 @@ void Simulation::restart()
     Q_ASSERT(!m_initialized);
     Q_ASSERT(m_sortedElements.isEmpty() && m_sequentialElements.isEmpty()
           && m_clocks.isEmpty() && m_inputs.isEmpty() && m_outputs.isEmpty());
+
+    // The edit that triggered this may have added the first Clock to a previously
+    // clockless (and so timer-stopped) circuit, sped up what was the soonest deadline,
+    // or simply need one immediate sweep regardless of clocks (e.g. a new gate wired
+    // between two already-driven elements) -- wakeSoon() covers all three uniformly. A
+    // no-op while stopped.
+    wakeSoon();
 }
 
 bool Simulation::isRunning()
 {
-    return m_timer.isActive();
+    return m_running;
 }
 
 bool Simulation::isInFeedbackLoop(const GraphicElement *element) const
@@ -334,6 +351,7 @@ bool Simulation::isInFeedbackLoop(const GraphicElement *element) const
 
 void Simulation::stop()
 {
+    m_running = false;
     m_timer.stop();
     if (m_host) {
         m_host->setMuted(true);
@@ -357,11 +375,50 @@ void Simulation::start()
         }
     }
 
-    m_timer.start();
+    m_running = true;
+    rescheduleTimer();
     if (m_host) {
         m_host->setMuted(m_userMuted);
     }
     qCDebug(zero) << "Simulation started.";
+}
+
+void Simulation::wakeSoon()
+{
+    if (!m_running) {
+        return;
+    }
+    // Safe to call unconditionally, even if a wake is already imminent: restarting an
+    // already-about-to-fire single-shot timer with the same near-zero delay doesn't
+    // meaningfully delay anything, and is far simpler than comparing against whatever
+    // is currently scheduled.
+    m_timer.start(0ms);
+}
+
+void Simulation::rescheduleTimer()
+{
+    if (!m_running) {
+        return;
+    }
+
+    auto nextWake = std::chrono::steady_clock::time_point::max();
+    for (const auto *clock : std::as_const(m_clocks)) {
+        if (clock) {
+            nextWake = (std::min)(nextWake, clock->nextDeadline());
+        }
+    }
+
+    if (nextWake == std::chrono::steady_clock::time_point::max()) {
+        // Nothing left to wait for (no clocks, or all locked) -- the only remaining
+        // triggers are wakeSoon() (restart()/interactive input), which arm the timer
+        // explicitly when needed.
+        m_timer.stop();
+        return;
+    }
+
+    const auto now = std::chrono::steady_clock::now();
+    const auto delay = (std::max)(std::chrono::duration_cast<std::chrono::milliseconds>(nextWake - now), 1ms);
+    m_timer.start(delay);
 }
 
 void Simulation::setUserMuted(const bool muted)

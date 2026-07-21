@@ -76,11 +76,32 @@ public:
     /// can be dereferenced on subsequent ticks. The next update() call
     /// re-runs initialize(). The QTimer's run state (running/stopped) is
     /// preserved — callers who also want to pause should use
-    /// SimulationBlocker.
+    /// SimulationBlocker. Also wakes the timer soon (see wakeSoon()): a
+    /// structural edit may have added the first Clock to a previously
+    /// clockless (and so timer-stopped) circuit, or changed what the very
+    /// next sweep needs to compute regardless of clocks.
     void restart();
 
-    /// Returns \c true if the simulation timer is currently running.
+    /// Returns \c true if start() has been called without a subsequent stop() --
+    /// the logical running state, independent of whether the underlying QTimer
+    /// happens to be armed at this exact moment (see m_running's own doc comment).
     bool isRunning();
+
+    /// Schedules an update() call as soon as possible if the simulation is running,
+    /// regardless of what's currently scheduled -- used whenever something outside
+    /// a clock's own deadline needs the next sweep to happen promptly: a structural
+    /// edit (restart(), which calls this) or an interactive input change whose
+    /// downstream propagation would otherwise wait for the next clock deadline (or
+    /// forever, if there are no clocks at all). A no-op while stopped.
+    void wakeSoon();
+
+    /// Recomputes the timer's next wake from the current clocks' nextDeadline() and
+    /// re-arms (or stops, if there's nothing to wait for) -- used both internally
+    /// (start(), end of every update()) and externally, whenever a clock's own
+    /// timing changes independent of a structural edit (frequency/delay/locked, via
+    /// the element editor) so the previously-scheduled deadline doesn't go stale.
+    /// A no-op while stopped.
+    void rescheduleTimer();
 
     /// Returns \c true if \a element is part of a combinational feedback loop.
     bool isInFeedbackLoop(const GraphicElement *element) const;
@@ -184,6 +205,18 @@ private:
     bool m_needsInitializeAttempt = true;
     bool m_convergenceWarned = false;
     bool m_userMuted = false;
+
+    /// \c true from start() until stop(): the logical "is this simulation running"
+    /// state isRunning() reports. Deliberately independent of m_timer.isActive() --
+    /// since the timer now retargets to the next clock deadline (or stops entirely
+    /// when there are no clocks to wait for, see rescheduleTimer()), the timer can be
+    /// inactive at any given instant even while the simulation is very much running
+    /// (a clockless circuit between edits). Also gates whether Clock elements are
+    /// advanced by wall-clock time in update() -- manual/test-driven update() calls
+    /// (start() never called) must not advance real Clocks, matching the pre-existing
+    /// behavior this replaces (which used to check m_timer.isActive() for the same
+    /// reason, back when the timer's active state and "running" were equivalent).
+    bool m_running = false;
 
     /// \c true after a completed sweep whose settle passes converged: outputs are a fixed
     /// point of the (deterministic) element functions, so a tick where no clock and no

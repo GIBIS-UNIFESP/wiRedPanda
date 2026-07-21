@@ -26,6 +26,7 @@
 #include "App/QuickShell/Canvas/CanvasICRegistry.h"
 #include "App/QuickShell/Canvas/CanvasItem.h"
 #include "App/QuickShell/Chrome/DialogProvider.h"
+#include "App/Simulation/Simulation.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
 
@@ -283,6 +284,15 @@ void QuickElementEditor::apply()
 
     for (auto *elm : std::as_const(m_elements)) {
         applyProperty(elm);
+    }
+
+    // A frequency/delay/locked change above may have moved a tracked Clock's next
+    // deadline earlier, later, or removed it entirely -- re-derive Simulation's
+    // scheduled wake so it doesn't fire on a now-stale deadline (or stay silent for a
+    // clock that just got unlocked/sped up). Cheap and correctly a no-op when nothing
+    // relevant changed or the simulation isn't running.
+    if (m_canvas && m_canvas->simulation()) {
+        m_canvas->simulation()->rescheduleTimer();
     }
 
     // Reset the one-shot appearance-update flag after applying to all elements -- mirrors

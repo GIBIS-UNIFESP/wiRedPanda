@@ -21,4 +21,9 @@ private slots:
 
     // Regression: Phase 3 must refresh output-port visuals even with no wire attached
     void testUnconnectedOutputPortVisualUpdates();
+
+    // Deadline-based timer scheduling (replaces the fixed 1ms poll)
+    void testAddingClockToClocklessRunningSimulationStartsTicking();
+    void testInteractiveInputWakesStoppedTimer();
+    void testRescheduleTimerAfterFrequencyIncrease();
 };

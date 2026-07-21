@@ -189,3 +189,90 @@ void TestSimulationUnit::testUnconnectedOutputPortVisualUpdates()
     QCOMPARE(notGate->outputPort(0)->status(), Status::Inactive);
     QCOMPARE(notGate->outputPort(0)->status(), notGate->outputValue(0));
 }
+
+void TestSimulationUnit::testAddingClockToClocklessRunningSimulationStartsTicking()
+{
+    // Regression for the gap found while designing Simulation's deadline-based timer
+    // scheduling: a circuit with no Clock has nothing to wait for, so start()'s timer
+    // stays stopped. Adding the *first* Clock afterwards is a structural edit
+    // (restart()) and must actually resume ticking on its own -- via the real QTimer and
+    // event loop, with no manual update() call from this test -- not silently stay dead.
+    QuickCircuitBuilder builder;
+    auto *sim = builder.simulation();
+
+    auto *sw = new InputSwitch();
+    auto *led = new Led();
+    builder.add(sw, led);
+    builder.connect(sw, 0, led, 0);
+
+    sim->start();
+    QVERIFY(sim->isRunning());
+
+    // A fast clock (2kHz, 250us half-period) driving a fresh LED, wired in after start().
+    auto *clock = new Clock();
+    clock->setFrequency(2000.0);
+    auto *clockLed = new Led();
+    builder.add(clock, clockLed);
+    builder.connect(clock, 0, clockLed, 0);
+    sim->restart();
+
+    // No manual sim->update() anywhere below -- only the real timer, woken by restart(),
+    // may drive this.
+    QVERIFY(QTest::qWaitFor([&] {
+        return clockLed->inputPort(0)->status() == Status::Active;
+    }, 500));
+}
+
+void TestSimulationUnit::testInteractiveInputWakesStoppedTimer()
+{
+    // Mirrors what CanvasItem::activateOnPress() does on a real click: write the input's
+    // own value, then call wakeSoon(). With no Clock in the circuit, start()'s timer is
+    // stopped -- downstream propagation to the LED must still happen promptly via the
+    // one prompt wake wakeSoon() schedules, not require a manual update() call.
+    QuickCircuitBuilder builder;
+    auto *sim = builder.simulation();
+
+    auto *sw = new InputSwitch();
+    auto *led = new Led();
+    builder.add(sw, led);
+    builder.connect(sw, 0, led, 0);
+
+    sim->start();
+    QVERIFY(sim->isRunning());
+
+    sw->setOn(true);
+    sim->wakeSoon();
+
+    QVERIFY(QTest::qWaitFor([&] {
+        return led->inputPort(0)->status() == Status::Active;
+    }, 500));
+}
+
+void TestSimulationUnit::testRescheduleTimerAfterFrequencyIncrease()
+{
+    // Mirrors QuickElementEditor::applyProperty()'s/the MCP element handler's live
+    // frequency-edit hook: a clock's own timing can change after start() already
+    // scheduled a wake for its old (slower) deadline. rescheduleTimer() must re-derive
+    // the schedule from the clock's new frequency, not leave the stale, far-future wake
+    // in place.
+    QuickCircuitBuilder builder;
+    auto *sim = builder.simulation();
+
+    auto *clock = new Clock();
+    clock->setFrequency(1.0); // 500ms half-period -- far outside this test's timeout below
+    auto *led = new Led();
+    builder.add(clock, led);
+    builder.connect(clock, 0, led, 0);
+
+    sim->start();
+    QVERIFY(sim->isRunning());
+
+    clock->setFrequency(2000.0); // 250us half-period
+    sim->rescheduleTimer();
+
+    // Only reachable within this short timeout if the reschedule actually took effect --
+    // the original 1Hz deadline wouldn't fire for another ~500ms.
+    QVERIFY(QTest::qWaitFor([&] {
+        return led->inputPort(0)->status() == Status::Active;
+    }, 100));
+}
