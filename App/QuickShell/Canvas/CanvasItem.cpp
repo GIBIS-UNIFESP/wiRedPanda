@@ -582,6 +582,7 @@ void CanvasItem::removeItem(GraphicElement *element)
         // never grows unbounded across a long editing session -- always safe to call here since
         // removeItem() runs before any real C++ destruction of element.
         m_elementRenderCache.remove(element);
+        m_displayFamilyCache.remove(element);
         // Same pruning for spatialIdFor()'s id cache -- otherwise a long add/delete/add churn
         // would grow m_portSpatialIds unbounded even though most of its entries name ports that
         // no longer exist.
@@ -3451,9 +3452,20 @@ QSGNode *CanvasItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
             const int outputSize = element->outputSize();
 
             // Matches appearanceKeyFor()'s own Display7/14/16 special case exactly -- stays
-            // empty (no allocation) for every other type.
+            // empty (no allocation) for every other type. isDisplayFamily is memoized (see
+            // m_displayFamilyCache's own doc comment) instead of re-deriving it via qobject_cast
+            // every repaint -- an element's concrete type never changes across its lifetime.
+            const auto displayIt = m_displayFamilyCache.constFind(element);
+            bool isDisplayFamily;
+            if (displayIt != m_displayFamilyCache.cend()) {
+                isDisplayFamily = *displayIt;
+            } else {
+                isDisplayFamily = qobject_cast<Display7 *>(element) || qobject_cast<Display14 *>(element)
+                    || qobject_cast<Display16 *>(element);
+                m_displayFamilyCache.insert(element, isDisplayFamily);
+            }
             QVector<int> segmentStates;
-            if (qobject_cast<Display7 *>(element) || qobject_cast<Display14 *>(element) || qobject_cast<Display16 *>(element)) {
+            if (isDisplayFamily) {
                 segmentStates.reserve(inputSize);
                 for (int i = 0; i < inputSize; ++i) {
                     segmentStates.append(int(element->inputPort(i)->status()));

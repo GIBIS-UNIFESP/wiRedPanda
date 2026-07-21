@@ -851,6 +851,19 @@ private:
     };
     QHash<GraphicElement *, ElementRenderCache> m_elementRenderCache;
 
+    /// Memoizes "is this element a Display7/14/16" -- a classification that can never change
+    /// for a given GraphicElement's lifetime (its concrete C++ type is fixed at construction),
+    /// but updatePaintNode()'s fingerprint loop needs it for *every* element *every* repaint
+    /// (to decide whether to include segmentStates in that frame's fingerprint), before it even
+    /// knows whether m_elementRenderCache will hit. Profiling clocked_8000.panda found this
+    /// unconditional qobject_cast<Display7/14/16*>() chain a real, sustained cost (DFlipFlop::
+    /// metaObject() in the profile -- see project memory project_appearancekeyfor_arg_chain_found
+    /// for the sibling fix this follows the same pattern as): a plain QHash<GraphicElement*,
+    /// bool> lookup is cheap where three qobject_cast chains, paid every repaint for thousands
+    /// of non-Display elements, were not. Pruned in removeItem(GraphicElement*) alongside
+    /// m_elementRenderCache.
+    QHash<GraphicElement *, bool> m_displayFamilyCache;
+
     /// Per-port memoization of updatePaintNode()'s wire-rendering loop -- the same profiling
     /// pass found real QGraphicsItem::scenePos() (ensureSceneTransform()/mapToScene()) costs
     /// dominating time there too, called for every port of every connection on every frame even
