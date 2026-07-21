@@ -2138,12 +2138,23 @@ QString CanvasItem::appearanceKeyFor(GraphicElement *element)
     // e.g. two unrotated And gates) since it tracks the live QPixmap's own identity -- see
     // this class's doc comment for why that's not enough on its own once per-instance content
     // (port glyphs, labels) is also baked into the same tile, below.
-    QString key = QStringLiteral("%1|%2|%3|%4|%5")
-        .arg(element->appearanceCacheKey())
-        .arg(element->rotation())
-        .arg(element->isFlippedX())
-        .arg(element->isFlippedY())
-        .arg(element->isSelected());
+    //
+    // QString::number() below, not .arg(): .arg(qreal)/.arg(int) route through
+    // QLocaleData::doubleToString()/applyIntegerFormatting() even with no explicit width/locale,
+    // which profiled as a real, sustained cost (~15-19% of a clocked_8000.panda capture, see
+    // project memory project_appearancekeyfor_arg_chain_found.md) once this cache-miss-only
+    // builder runs across thousands of continuously-clocking elements. QString::number() takes
+    // the plain digit-conversion fast path instead. Output is the same '|'-joined text (still
+    // just an opaque identity key, not user-facing), so this changes nothing else.
+    QString key = QString::number(element->appearanceCacheKey());
+    key += QLatin1Char('|');
+    key += QString::number(element->rotation());
+    key += QLatin1Char('|');
+    key += QString::number(element->isFlippedX() ? 1 : 0);
+    key += QLatin1Char('|');
+    key += QString::number(element->isFlippedY() ? 1 : 0);
+    key += QLatin1Char('|');
+    key += QString::number(element->isSelected() ? 1 : 0);
 
     // Port glyphs (Phase 7.5b) are drawn into the same tile, colored by each port's live
     // status -- two elements that would otherwise share a tile (identical appearanceCacheKey/
