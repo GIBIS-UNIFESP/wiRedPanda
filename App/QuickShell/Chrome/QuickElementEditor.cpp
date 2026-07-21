@@ -221,7 +221,17 @@ void QuickElementEditor::apply()
                 continue;
             }
 
+            // GCC 15's -Wnull-dereference false-positives on this range-for: QList::begin()/
+            // end() get inlined and flagged, same false-positive class as
+            // CanvasItem::simulation() (see project_release_null_deref_quickappcontroller memory).
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wnull-dereference"
+#endif
             for (auto *other : m_canvas->elements()) {
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
                 if (other == elm) {
                     continue;
                 }
@@ -837,7 +847,17 @@ bool QuickElementEditor::cycleSelectionField(bool forward, bool wantLabel)
     }
 
     auto *originalElement = m_elements.constFirst();
+    // GCC 15's -Wnull-dereference false-positives on the QVector copy inside readingOrder()'s
+    // argument-passing, same false-positive class as CanvasItem::simulation() (see
+    // project_release_null_deref_quickappcontroller memory).
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wnull-dereference"
+#endif
     const auto elements = readingOrder(m_canvas->elements());
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
 
     const qsizetype elmPos = elements.indexOf(originalElement);
     if (elmPos < 0) {

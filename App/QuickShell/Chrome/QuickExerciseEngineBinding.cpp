@@ -35,9 +35,21 @@ void ExerciseEngine::setCanvas(CanvasItem *canvas)
                 disconnect(safeCanvas->undoStack(), &QUndoStack::indexChanged, this, &ExerciseEngine::onCircuitChanged);
             }
         };
+        // GCC 15's -Wnull-dereference false-positives here: the ternary's QVector copy gets
+        // inlined through QArrayDataPointer's copy ctor, the same false-positive class as
+        // CanvasItem::simulation() (see project_release_null_deref_quickappcontroller memory) --
+        // confirmed genuine by testing that a call-site null-guard doesn't change anything, since
+        // the ternary already guards via `safeCanvas ?`.
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wnull-dereference"
+#endif
         m_elementsFn = [safeCanvas] {
             return safeCanvas ? safeCanvas->elements() : QVector<GraphicElement *>{};
         };
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
     } else {
         m_connectFn = nullptr;
         m_disconnectFn = nullptr;

@@ -561,6 +561,14 @@ bool QuickDolphinController::checkSave()
     }
 }
 
+// GCC 15's -Wnull-dereference false-positives on the QVector copy below, the same
+// false-positive class as CanvasItem::simulation() (see
+// project_release_null_deref_quickappcontroller memory) -- QArrayDataPointer's copy ctor
+// gets inlined and flagged even though m_canvas is already null-checked above.
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wnull-dereference"
+#endif
 bool QuickDolphinController::elementsStillLive() const
 {
     if (!m_canvas) {
@@ -579,6 +587,9 @@ bool QuickDolphinController::elementsStillLive() const
     }
     return true;
 }
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
 
 int QuickDolphinController::inputRow(const QString &label) const
 {

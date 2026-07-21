@@ -170,6 +170,13 @@ set_source_files_properties(
 # QML edit.
 set(QUICK_SHELL_QML_CACHEGEN_SOURCES
     ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_ChoiceDialog_qml.cpp
+    # qmlcachegen's output path for a QML_FILES entry under a subdirectory (Dolphin/) differs by
+    # Qt version: Qt 6.9.3 nests it (wiredpanda_quick_Dolphin/DolphinWindow_qml.cpp), Qt 6.12.0
+    # flattens it (wiredpanda_quick_Dolphin_DolphinWindow_qml.cpp) -- list both forms so the
+    # suppression applies regardless of which toolchain configured this build. A path that
+    # doesn't exist for a given generator is simply unused, not an error.
+    ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_Dolphin/DolphinWindow_qml.cpp
+    ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_Dolphin/RangeDialog_qml.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_Dolphin_DolphinWindow_qml.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_Dolphin_RangeDialog_qml.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/.rcc/qmlcache/wiredpanda_quick_ElementEditor_qml.cpp
