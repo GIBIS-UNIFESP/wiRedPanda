@@ -1048,7 +1048,7 @@ foreach(TEST TestConnections TestConnectionSerialization TestConnectionValidity 
 endforeach()
 
 # Tests that touch the system clipboard must not run in parallel (Windows OLE contention).
-set_tests_properties(TestScene TestSceneUndoredo PROPERTIES RESOURCE_LOCK clipboard)
+set_tests_properties(TestScene TestSceneUndoredo TestICInline TestDolphinClipboard PROPERTIES RESOURCE_LOCK clipboard)
 
 # Serialization and Command Tests - Integration category
 foreach(TEST TestSerialization TestSimulationBlocker)
@@ -1068,7 +1068,7 @@ foreach(TEST TestCommands TestCommon TestEnums TestNotifyCatch TestPriorities Te
 endforeach()
 
 # GUI tests run sequentially after all other tests complete
-set(GUI_TESTS TestDialogs TestFileDialogProvider TestMainWindowGui TestBewavedDolphinGui)
+set(GUI_TESTS TestDialogs TestFileDialogProvider TestFileDialogProviderUnit TestMainWindowGui TestBewavedDolphinGui TestUpdateController TestElementContextMenu)
 set(ALL_TESTS
     TestCPUAlu TestCPUBranch TestCPUControlUnit TestCPUDecoders
     TestCPUInstructionExecute TestCPUInstructionFetch TestCPUIntegration
@@ -1115,10 +1115,10 @@ set(ALL_TESTS
     TestApplication TestCoreSettings TestDragDropPayload TestExerciseTourResources
     TestExternalFilePath TestInstallRelativePaths TestUpdateChecker
     TestArduinoCodeGenUnit TestCodeGenUtils TestSystemVerilogCodeGenUnit
-    TestCircuitExporter TestElementContextMenu TestElementEditor TestElementPalette
-    TestElementTabNavigator TestExportController TestFileDialogProviderUnit TestICController TestICDropZone TestLabeledSlider
+    TestCircuitExporter TestElementEditor TestElementPalette
+    TestElementTabNavigator TestExportController TestICController TestICDropZone TestLabeledSlider
     TestLanguageManager TestMinimapWidget TestSceneUiBinder TestSelectionCapabilities
-    TestTrashButton TestUpdateController TestWorkspaceManager
+    TestTrashButton TestWorkspaceManager
     TestConnection TestConnectionManager TestGraphicsView TestPropertyShortcutHandler TestPort TestSceneDropHandler
     TestDemux TestDisplay TestDisplay7 TestGraphicElement TestICRegistry TestICUnit TestMux
     TestDolphinClipboard TestDolphinEdits TestDolphinExporter TestDolphinFile TestDolphinModelBuilder
