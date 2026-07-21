@@ -745,6 +745,15 @@ private:
     std::unique_ptr<Simulation> m_simulation;
     QVector<GraphicElement *> m_elements; // owned; never added to a QGraphicsScene
     QVector<Connection *> m_connections;  // owned; never added to a QGraphicsScene
+    // O(1) membership companions to m_elements/m_connections: addItem()'s idempotency
+    // check (needed for callers like buildDemoCircuit() that pre-populate the vector
+    // directly) was a QVector::contains() linear scan, making a large sequential file
+    // load O(n^2) in the element/connection count -- see project memory
+    // project_allports_allocation_removed.md's identical-shaped fix and
+    // project_port_attachconnection_cascade_fixed.md for the earlier O(fanout^2) case
+    // this mirrors. Kept in lockstep with the vectors at every add/remove site.
+    QSet<GraphicElement *> m_elementSet;
+    QSet<Connection *> m_connectionSet;
     QHash<quint64, GraphicElement *> m_elementsById;
     QHash<quint64, Port *> m_portsById; // ports aren't owned here, they're owned by m_elements
     SpatialIndex m_index;

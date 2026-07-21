@@ -538,8 +538,10 @@ void CanvasItem::addItem(GraphicElement *element)
     // addItem()'s job): idempotent, so callers that already appended element to m_elements
     // directly (buildDemoCircuit()) and callers relying on addItem() to do it
     // (CanvasCommandUtils::addItems(), Phase 3's Add/Delete command family) both work.
-    if (!m_elements.contains(element)) {
+    // m_elementSet is the O(1) membership check backing this -- see its own doc comment.
+    if (!m_elementSet.contains(element)) {
         m_elements.append(element);
+        m_elementSet.insert(element);
     }
     // Id-registration half. Unassigned (-1): give it the next id. Pre-assigned
     // (updateItemId() restore path): preserve it and advance the counter past it -- mirrors
@@ -557,8 +559,9 @@ void CanvasItem::addItem(Connection *connection)
     if (!connection) {
         return;
     }
-    if (!m_connections.contains(connection)) {
+    if (!m_connectionSet.contains(connection)) {
         m_connections.append(connection);
+        m_connectionSet.insert(connection);
     }
     if (connection->id() < 0) {
         connection->setId(nextId());
@@ -579,6 +582,7 @@ void CanvasItem::removeItem(GraphicElement *element)
 {
     if (element) {
         m_elements.removeAll(element);
+        m_elementSet.remove(element);
         m_itemRegistry.unregisterItem(element);
         // Prunes the render-state memoization (see m_elementRenderCache's doc comment) so it
         // never grows unbounded across a long editing session -- always safe to call here since
@@ -602,6 +606,7 @@ void CanvasItem::removeItem(Connection *connection)
 {
     if (connection) {
         m_connections.removeAll(connection);
+        m_connectionSet.remove(connection);
         m_itemRegistry.unregisterItem(connection);
     }
 }
