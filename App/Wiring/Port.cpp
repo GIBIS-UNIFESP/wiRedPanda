@@ -74,7 +74,18 @@ void Port::attachConnection(Connection *conn)
         m_connections.append(conn);
     }
 
-    updateConnections();
+    // Only re-derive status/validity here, not a full updateConnections() -- attaching one
+    // more wire doesn't move this port, so every already-attached sibling connection's cached
+    // position is still correct; conn's own position is already set by Connection::
+    // setStartPort()/setEndPort() (the only callers of attachConnection()) right after this
+    // call returns. Calling the full updateConnections() here was previously re-running
+    // Connection::updatePosFromPorts() -> Port::scenePos() for *every* connection already on
+    // this port on *every single attach* -- for a high fan-out net (e.g. one shared clock
+    // output driving thousands of inputs), that made deserializing a large circuit file
+    // effectively O(fan-out^2) instead of O(fan-out). See project memory
+    // project_quick_minimap_optimization_landed.md's follow-up investigation for the
+    // measurement that found this (clocked_8000.panda's ~20s load time).
+    revalidateStatus();
 }
 
 void Port::detachConnection(Connection *conn)
@@ -91,7 +102,10 @@ void Port::detachConnection(Connection *conn)
         conn->setEndPort(nullptr);
     }
 
-    updateConnections();
+    // Same reasoning as attachConnection(): removing a wire doesn't move this port, so the
+    // remaining connections' cached positions are still correct -- only status/validity needs
+    // re-deriving.
+    revalidateStatus();
 }
 
 bool Port::isConnected(Port *otherPort)
@@ -108,9 +122,22 @@ void Port::updateConnections()
         return;
     }
 
-    // Redraw all wires whose geometry depends on this port's scene position
+    // Redraw all wires whose geometry depends on this port's scene position -- only needed
+    // when this port itself may have moved (rotate/flip, via ElementOrientation::orientPort()),
+    // unlike attachConnection()/detachConnection() which call revalidateStatus() directly.
     for (auto *conn : std::as_const(m_connections)) {
         conn->updatePosFromPorts();
+    }
+
+    revalidateStatus();
+}
+
+void Port::revalidateStatus()
+{
+    // Mid-teardown (see m_draining's own comment): none of this work is ever observed, and
+    // isValid()/defaultValue() can read a partially-destroyed owner element.
+    if (m_draining) {
+        return;
     }
 
     // A port that violates its validity constraints (e.g. required but unconnected,
@@ -200,8 +227,9 @@ void Port::setRequired(const bool required)
     m_required = required;
 
     // Requiredness feeds isValid(): re-derive the displayed status so a port
-    // marked optional recovers from Error and a newly required one shows it
-    updateConnections();
+    // marked optional recovers from Error and a newly required one shows it -- this doesn't
+    // move the port, so only status/validity needs re-deriving, not connection positions.
+    revalidateStatus();
 }
 
 void Port::setGraphicElement(GraphicElement *graphicElement)

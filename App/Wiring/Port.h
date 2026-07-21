@@ -231,8 +231,16 @@ public:
      */
     void setRequired(const bool required);
 
-    /// Triggers a path update on all attached connections.
+    /// Triggers a path update on all attached connections, then re-derives status/validity --
+    /// use only when this port itself may have moved (rotate/flip). attachConnection()/
+    /// detachConnection()/setRequired() call the cheaper revalidateStatus() directly instead,
+    /// since attaching/detaching/requiring doesn't move the port or its existing connections.
     void updateConnections();
+
+    /// Re-derives this port's displayed status from its current connections/validity, without
+    /// touching any connection's cached position -- see updateConnections()'s own doc comment
+    /// for when to use which.
+    void revalidateStatus();
 
     /// No-op, kept for call-site compatibility with the many places that used to call this
     /// unconditionally when Port was a QGraphicsItem (a scene() guard already made it dead
