@@ -482,6 +482,24 @@ public:
     /// normal change-detecting path so visuals refresh correctly.
     void commitDeferredOutputs() { m_sim.commitDeferredOutputs(); }
 
+    /// True if any of this element's ports (input or output) changed status since the flag
+    /// was last cleared -- CanvasItem::updatePaintNode()'s render cache uses this instead of
+    /// re-reading every port's live status every repaint (see m_portStatusDirty's own doc
+    /// comment). Deliberately separate from outputChanged()/clearOutputChanged() above: that
+    /// pair is Simulation's own internal settling-detection flag, cleared on its own schedule
+    /// for unrelated reasons -- sharing it here would silently break either that logic or this
+    /// one, whichever's clear happened to run first.
+    bool isRenderDirty() const { return m_portStatusDirty; }
+
+    /// Clears the render-dirty flag after CanvasItem has rebuilt this element's cached
+    /// appearance to reflect the change(s) that set it.
+    void clearRenderDirty() { m_portStatusDirty = false; }
+
+    /// Marks this element render-dirty -- called from InputPort::setStatus()/
+    /// OutputPort::setStatus() (only after their own "did the value actually change" guard),
+    /// never directly by application code.
+    void markRenderDirty() { m_portStatusDirty = true; }
+
     /// Allocates simulation I/O vectors with \a inputs inputs and \a outputs outputs.
     void initSimulationVectors(const int inputCount, const int outputCount);
 
@@ -706,6 +724,11 @@ private:
     /// Owns the simulation runtime state (I/O values + connection graph); this element
     /// forwards its direct-simulation interface here.  See ElementSimState.
     ElementSimState m_sim;
+
+    /// Backs isRenderDirty()/clearRenderDirty()/markRenderDirty() -- starts true so a brand
+    /// new element's first repaint always rebuilds (redundant with CanvasItem's own "no cache
+    /// entry yet" bootstrapping, but a harmless, cheap belt-and-suspenders default either way).
+    bool m_portStatusDirty = true;
 
     // --- Members: Trigger & Label ---
 

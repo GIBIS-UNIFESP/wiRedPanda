@@ -326,7 +326,19 @@ void InputPort::setStatus(const Status status)
     // If the port is invalid due to multiple drivers (bus conflict), emit Error so the
     // user sees a clear red signal instead of a silent gray Unknown.
     // Required-but-unconnected ports also become Error to make missing connections visible.
+    const Status oldStatus = m_status;
     m_status = InputPort::isValid() ? status : Status::Error;
+
+    // Compares the *final* value, not just the requested one: isValid()'s Error override above
+    // can leave m_status unchanged even past the guard (e.g. status was already Error and stays
+    // Error) -- only mark the owning element render-dirty (see GraphicElement::markRenderDirty()'s
+    // own doc comment) on a real change, matching what CanvasItem::updatePaintNode()'s
+    // portStatuses fingerprint would actually have detected.
+    if (m_status != oldStatus) {
+        if (auto *element = graphicElement()) {
+            element->markRenderDirty();
+        }
+    }
 
     updateTheme();
 }
@@ -377,6 +389,9 @@ void OutputPort::setStatus(const Status status)
     }
 
     m_status = status;
+    if (auto *element = graphicElement()) {
+        element->markRenderDirty();
+    }
     updateTheme();
 
     // Fan-out: broadcast the new signal status to every wire leaving this output port;

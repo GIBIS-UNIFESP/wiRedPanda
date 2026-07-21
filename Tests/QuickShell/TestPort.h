@@ -18,4 +18,11 @@ private slots:
     void testSetInputsReindexesPorts();
 
     void testPortCurrentPenTracksStatusColor();
+
+    // Push-based render-dirty tracking (replaces CanvasItem::updatePaintNode()'s
+    // per-repaint portStatuses fingerprint rebuild)
+    void testOutputPortSetStatusMarksElementRenderDirty();
+    void testOutputPortSetStatusNoOpDoesNotMarkElementRenderDirty();
+    void testInputPortSetStatusMarksElementRenderDirty();
+    void testInputPortInvalidOverrideNoOpDoesNotMarkElementRenderDirty();
 };

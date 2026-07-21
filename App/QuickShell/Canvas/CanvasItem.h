@@ -824,7 +824,12 @@ private:
     /// already reads to build its key (plus port count, which boundingRect() depends on via
     /// portsBoundingRect()) -- comparing them directly is cheap (an int64 and a handful of
     /// bool/int reads, no string construction), so the cache can never be stale in a way the
-    /// original unconditional-rebuild code wasn't already accounting for.
+    /// original unconditional-rebuild code wasn't already accounting for. Port status (inputs
+    /// and outputs) used to be a `segmentStates`/`portStatuses` pair of fields here, rebuilt and
+    /// compared every repaint for every element -- superseded by GraphicElement::isRenderDirty()
+    /// (see project memory project_port_status_dirty_tracking_landed.md), which also made the
+    /// short-lived m_displayFamilyCache/qobject_cast<Display7/14/16*>() memoization these two
+    /// fields needed unnecessary, so that's gone too.
     struct ElementRenderCache {
         qint64 pixmapCacheKey = 0;
         qreal rotation = 0.0;
@@ -833,15 +838,6 @@ private:
         bool selected = false;
         int inputSize = 0;
         int outputSize = 0;
-        /// Display7/14/16 only (appearanceKeyFor()'s own extra cache-key dimension for their
-        /// live segment states) -- stays default-empty (no allocation) for every other type.
-        QVector<int> segmentStates;
-        /// Every port's live Status (inputs then outputs, matching allPorts()' order), added
-        /// alongside segmentStates so a port status change invalidates the tile the same way --
-        /// see the Phase 7.5b port-glyph drawing this backs. QVarLengthArray, not QVector: unlike
-        /// segmentStates (Display-family only), this is computed for every element every frame,
-        /// so avoiding a heap allocation for the common (<=8 total ports) case actually matters.
-        QVarLengthArray<int, 8> portStatuses;
         /// Empty for every element without a label -- see Phase 7.5c's labelText doc comment at
         /// its own call site for why this one field covers both the label text itself and (for
         /// Text) its empty-state hint's visibility.
@@ -850,19 +846,6 @@ private:
         TextureAtlas::TileLocation tile;
     };
     QHash<GraphicElement *, ElementRenderCache> m_elementRenderCache;
-
-    /// Memoizes "is this element a Display7/14/16" -- a classification that can never change
-    /// for a given GraphicElement's lifetime (its concrete C++ type is fixed at construction),
-    /// but updatePaintNode()'s fingerprint loop needs it for *every* element *every* repaint
-    /// (to decide whether to include segmentStates in that frame's fingerprint), before it even
-    /// knows whether m_elementRenderCache will hit. Profiling clocked_8000.panda found this
-    /// unconditional qobject_cast<Display7/14/16*>() chain a real, sustained cost (DFlipFlop::
-    /// metaObject() in the profile -- see project memory project_appearancekeyfor_arg_chain_found
-    /// for the sibling fix this follows the same pattern as): a plain QHash<GraphicElement*,
-    /// bool> lookup is cheap where three qobject_cast chains, paid every repaint for thousands
-    /// of non-Display elements, were not. Pruned in removeItem(GraphicElement*) alongside
-    /// m_elementRenderCache.
-    QHash<GraphicElement *, bool> m_displayFamilyCache;
 
     /// Per-port memoization of updatePaintNode()'s wire-rendering loop -- the same profiling
     /// pass found real QGraphicsItem::scenePos() (ensureSceneTransform()/mapToScene()) costs

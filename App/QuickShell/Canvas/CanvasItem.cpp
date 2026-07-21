@@ -582,7 +582,6 @@ void CanvasItem::removeItem(GraphicElement *element)
         // never grows unbounded across a long editing session -- always safe to call here since
         // removeItem() runs before any real C++ destruction of element.
         m_elementRenderCache.remove(element);
-        m_displayFamilyCache.remove(element);
         // Same pruning for spatialIdFor()'s id cache -- otherwise a long add/delete/add churn
         // would grow m_portSpatialIds unbounded even though most of its entries name ports that
         // no longer exist.
@@ -3442,7 +3441,13 @@ QSGNode *CanvasItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
             // on -- see m_elementRenderCache's doc comment. A full match means neither
             // boundingRect() (a real port-walking, transform-mapping recompute) nor
             // appearanceKeyFor() (a QString::arg() chain) nor the atlas lookup need to run
-            // again this frame for this element.
+            // again this frame for this element. Port status (inputs and outputs, which used
+            // to be re-read from every port of every element here to build a portStatuses/
+            // segmentStates fingerprint -- see project memory project_display_family_memoization_landed
+            // for the now-superseded qobject_cast-memoization half-fix) is covered by
+            // isRenderDirty() instead: GraphicElement::markRenderDirty() is called directly from
+            // InputPort::setStatus()/OutputPort::setStatus() on a genuine change, so this is an
+            // O(1) field read replacing an O(total ports) rebuild-and-compare every repaint.
             const qint64 pixmapCacheKey = element->appearanceCacheKey();
             const qreal rotation = element->rotation();
             const bool flipX = element->isFlippedX();
@@ -3451,40 +3456,6 @@ QSGNode *CanvasItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
             const int inputSize = element->inputSize();
             const int outputSize = element->outputSize();
 
-            // Matches appearanceKeyFor()'s own Display7/14/16 special case exactly -- stays
-            // empty (no allocation) for every other type. isDisplayFamily is memoized (see
-            // m_displayFamilyCache's own doc comment) instead of re-deriving it via qobject_cast
-            // every repaint -- an element's concrete type never changes across its lifetime.
-            const auto displayIt = m_displayFamilyCache.constFind(element);
-            bool isDisplayFamily;
-            if (displayIt != m_displayFamilyCache.cend()) {
-                isDisplayFamily = *displayIt;
-            } else {
-                isDisplayFamily = qobject_cast<Display7 *>(element) || qobject_cast<Display14 *>(element)
-                    || qobject_cast<Display16 *>(element);
-                m_displayFamilyCache.insert(element, isDisplayFamily);
-            }
-            QVector<int> segmentStates;
-            if (isDisplayFamily) {
-                segmentStates.reserve(inputSize);
-                for (int i = 0; i < inputSize; ++i) {
-                    segmentStates.append(int(element->inputPort(i)->status()));
-                }
-            }
-
-            // Every port's live status (inputs then outputs, matching allPorts()' order) --
-            // see m_elementRenderCache's own doc comment on why this is a QVarLengthArray, not
-            // a QVector, unlike segmentStates: this runs for every element every frame, not just
-            // the Display family.
-            QVarLengthArray<int, 8> portStatuses;
-            portStatuses.reserve(inputSize + outputSize);
-            for (int i = 0; i < inputSize; ++i) {
-                portStatuses.append(int(element->inputPort(i)->status()));
-            }
-            for (int i = 0; i < outputSize; ++i) {
-                portStatuses.append(int(element->outputPort(i)->status()));
-            }
-
             // Empty for every element without a label (the vast majority) -- for Text, this
             // single field also drives m_emptyHint's own visibility (label().isEmpty()), so no
             // separate fingerprint field is needed for that.
@@ -3492,6 +3463,7 @@ QSGNode *CanvasItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
 
             const auto cacheIt = m_elementRenderCache.constFind(element);
             const bool cacheHit = cacheIt != m_elementRenderCache.cend()
+                && !element->isRenderDirty()
                 && cacheIt->pixmapCacheKey == pixmapCacheKey
                 && cacheIt->rotation == rotation
                 && cacheIt->flipX == flipX
@@ -3499,8 +3471,6 @@ QSGNode *CanvasItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
                 && cacheIt->selected == selected
                 && cacheIt->inputSize == inputSize
                 && cacheIt->outputSize == outputSize
-                && cacheIt->segmentStates == segmentStates
-                && cacheIt->portStatuses == portStatuses
                 && cacheIt->labelText == labelText;
 
             QRectF localRect;
@@ -3539,7 +3509,13 @@ QSGNode *CanvasItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
                 });
                 m_elementRenderCache[element] = ElementRenderCache{
                     pixmapCacheKey, rotation, flipX, flipY, selected, inputSize, outputSize,
-                    segmentStates, portStatuses, labelText, localRect, tile};
+                    labelText, localRect, tile};
+                // Cleared regardless of tile.isValid() below, matching the cache entry itself
+                // being stored either way -- an atlas-full/degenerate-rect element that stays
+                // dirty would otherwise retry the same failed rebuild every single repaint
+                // forever, instead of settling into a stable (if unpainted) cache hit like a
+                // fingerprint-mismatch miss already does today.
+                element->clearRenderDirty();
             }
 
             if (!tile.isValid()) {

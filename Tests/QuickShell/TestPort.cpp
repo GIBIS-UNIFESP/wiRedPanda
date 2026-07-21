@@ -56,3 +56,71 @@ void TestPort::testPortCurrentPenTracksStatusColor()
     port.setStatus(Status::Unknown);
     QCOMPARE(port.currentPen().color(), theme.m_portUnknownPen);
 }
+
+void TestPort::testOutputPortSetStatusMarksElementRenderDirty()
+{
+    // OutputPort::isValid() is always true, so setStatus()'s guard is the only gate:
+    // a genuine value change must reach GraphicElement::markRenderDirty().
+    Display7 display;
+    OutputPort port;
+    port.setGraphicElement(&display);
+
+    display.clearRenderDirty();
+    QVERIFY(!display.isRenderDirty());
+
+    port.setStatus(Status::Active);
+    QVERIFY(display.isRenderDirty());
+}
+
+void TestPort::testOutputPortSetStatusNoOpDoesNotMarkElementRenderDirty()
+{
+    // setStatus()'s early-return guard (status == m_status) must prevent a spurious
+    // markRenderDirty() call on the very common no-op repaint case.
+    Display7 display;
+    OutputPort port;
+    port.setGraphicElement(&display);
+    port.setStatus(Status::Active);
+
+    display.clearRenderDirty();
+    QVERIFY(!display.isRenderDirty());
+
+    port.setStatus(Status::Active);
+    QVERIFY(!display.isRenderDirty());
+}
+
+void TestPort::testInputPortSetStatusMarksElementRenderDirty()
+{
+    // An optional, unconnected InputPort is valid, so setStatus()'s isValid() override
+    // doesn't kick in -- a requested change is a real change.
+    Display7 display;
+    InputPort port;
+    port.setGraphicElement(&display);
+    port.setRequired(false);
+
+    display.clearRenderDirty();
+    QVERIFY(!display.isRenderDirty());
+
+    port.setStatus(Status::Active);
+    QCOMPARE(port.status(), Status::Active);
+    QVERIFY(display.isRenderDirty());
+}
+
+void TestPort::testInputPortInvalidOverrideNoOpDoesNotMarkElementRenderDirty()
+{
+    // Regression for the isValid()-override edge case found while implementing this: a
+    // required, unconnected InputPort already shows Error (see InputPort's constructor).
+    // Requesting a different status still passes setStatus()'s "status == m_status" guard,
+    // but isValid()'s override forces it right back to Error -- the final value never
+    // actually changes, so this must NOT mark the element render-dirty.
+    Display7 display;
+    InputPort port;
+    port.setGraphicElement(&display);
+    QCOMPARE(port.status(), Status::Error);
+
+    display.clearRenderDirty();
+    QVERIFY(!display.isRenderDirty());
+
+    port.setStatus(Status::Active);
+    QCOMPARE(port.status(), Status::Error);
+    QVERIFY(!display.isRenderDirty());
+}
