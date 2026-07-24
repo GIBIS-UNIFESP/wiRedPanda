@@ -97,7 +97,9 @@ void TestCommon::testLoggingCategoryOneRespondsToVerbosity()
 void TestCommon::testDeliberateCrashForCiDiagnosticsVerification()
 {
     // TEMPORARY -- deliberately segfaults to exercise the CI crash-
-    // diagnostics capture (core dump / lldb wrap / cdb wrap) end-to-end.
+    // diagnostics capture (core dump / lldb wrap / cdb wrap) end-to-end,
+    // including confirming lldb's -k/--one-line-on-crash actually produces
+    // a full backtrace rather than just the one-frame default crash summary.
     // Must be removed before this branch is merged anywhere.
     //
     // A literal `int *p = nullptr; *p = 42;` is NOT reliable here: the
