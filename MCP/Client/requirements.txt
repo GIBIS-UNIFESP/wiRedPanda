@@ -1,5 +1,10 @@
 # Core formatters and linters
-ruff>=0.1.0              # Fast Python linter + formatter + import sorter (replaces black, isort, and flake8)
+ruff>=0.1.0,<0.16.0      # Fast Python linter + formatter + import sorter (replaces black, isort, and flake8)
+                         # <0.16.0: that release (2026-07-23) expanded ruff's default rule set from 59 to
+                         # 413 rules; since ruff.toml's extend-select ADDS to the defaults rather than
+                         # replacing them, the new default set brought in whole rule categories (BLE, S,
+                         # EXE, PYI, TC, DTZ, PIE) never selected here, on top of the deliberately curated
+                         # list -- confirmed via ruff's own changelog, not a real code-quality regression.
 pylint>=3.0.0            # Static analysis and linting
 mypy>=1.5.0              # Static type checker
 pyright>=1.1.300         # Microsoft's Python type checker
