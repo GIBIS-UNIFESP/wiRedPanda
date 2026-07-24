@@ -713,6 +713,14 @@ if(APPLE)
     set_target_properties(test_wiredpanda PROPERTIES
         CROSSCOMPILING_EMULATOR "${CMAKE_SOURCE_DIR}/Scripts/ci_macos_lldb_wrap.sh"
     )
+elseif(WIN32)
+    # Same idea as the APPLE branch above, under cdb instead of lldb: retrying
+    # a failed test after the fact (up to 20 attempts, for every failed test)
+    # had no overall time bound and hung a real CI job for hours instead of
+    # the ~10 minutes the Test step itself is capped at.
+    set_target_properties(test_wiredpanda PROPERTIES
+        CROSSCOMPILING_EMULATOR "powershell.exe;-ExecutionPolicy;Bypass;-File;${CMAKE_SOURCE_DIR}/Scripts/ci_windows_cdb_wrap.ps1"
+    )
 endif()
 
 # ---- libFuzzer harness for the .panda deserializer ----
