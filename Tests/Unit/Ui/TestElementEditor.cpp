@@ -374,6 +374,9 @@ void TestElementEditor::testChangeTriggerActionFocusesAndSelectsTriggerField()
 
 void TestElementEditor::testContextMenuRenameActionFocusesLabelField()
 {
+#ifdef Q_OS_MACOS
+    QSKIP("macOS's real Cocoa windowing makes dismisserForMenuAction()'s QMenu::exec()-driven context-menu tests unreliable outside the offscreen QPA platform");
+#endif
     WorkSpace workspace;
     auto *node = new Node(); // Node has hasLabel == true.
     workspace.scene()->addItem(node);
@@ -400,6 +403,9 @@ void TestElementEditor::testContextMenuRenameActionFocusesLabelField()
 
 void TestElementEditor::testContextMenuTriggerActionFocusesTriggerField()
 {
+#ifdef Q_OS_MACOS
+    QSKIP("macOS's real Cocoa windowing makes dismisserForMenuAction()'s QMenu::exec()-driven context-menu tests unreliable outside the offscreen QPA platform");
+#endif
     WorkSpace workspace;
     auto *button = ElementFactory::buildElement(ElementType::InputButton);
     workspace.scene()->addItem(button);
@@ -422,6 +428,9 @@ void TestElementEditor::testContextMenuTriggerActionFocusesTriggerField()
 
 void TestElementEditor::testContextMenuFrequencyActionFocusesSpinBox()
 {
+#ifdef Q_OS_MACOS
+    QSKIP("macOS's real Cocoa windowing makes dismisserForMenuAction()'s QMenu::exec()-driven context-menu tests unreliable outside the offscreen QPA platform");
+#endif
     WorkSpace workspace;
     auto *clock = new Clock();
     workspace.scene()->addItem(clock);
@@ -444,6 +453,9 @@ void TestElementEditor::testContextMenuFrequencyActionFocusesSpinBox()
 
 void TestElementEditor::testContextMenuAppearanceRevertSetsDefaultAppearance()
 {
+#ifdef Q_OS_MACOS
+    QSKIP("macOS's real Cocoa windowing makes dismisserForMenuAction()'s QMenu::exec()-driven context-menu tests unreliable outside the offscreen QPA platform");
+#endif
     WorkSpace workspace;
     auto *andGate = new And(); // And has canChangeAppearance == true.
     workspace.scene()->addItem(andGate);
@@ -465,6 +477,9 @@ void TestElementEditor::testContextMenuAppearanceRevertSetsDefaultAppearance()
 
 void TestElementEditor::testContextMenuEditSubcircuitEmitsForEmbeddedIC()
 {
+#ifdef Q_OS_MACOS
+    QSKIP("macOS's real Cocoa windowing makes dismisserForMenuAction()'s QMenu::exec()-driven context-menu tests unreliable outside the offscreen QPA platform");
+#endif
     WorkSpace workspace;
     auto *ic = new IC();
     workspace.scene()->addItem(ic);
@@ -488,6 +503,9 @@ void TestElementEditor::testContextMenuEditSubcircuitEmitsForEmbeddedIC()
 
 void TestElementEditor::testContextMenuEmbedSubcircuitEmitsForFileBackedIC()
 {
+#ifdef Q_OS_MACOS
+    QSKIP("macOS's real Cocoa windowing makes dismisserForMenuAction()'s QMenu::exec()-driven context-menu tests unreliable outside the offscreen QPA platform");
+#endif
     QTemporaryDir dir;
     QVERIFY(dir.isValid());
     const QString icPath = dir.filePath("sub.panda");
@@ -528,6 +546,9 @@ void TestElementEditor::testContextMenuEmbedSubcircuitEmitsForFileBackedIC()
 
 void TestElementEditor::testContextMenuExtractToFileEmitsForEmbeddedIC()
 {
+#ifdef Q_OS_MACOS
+    QSKIP("macOS's real Cocoa windowing makes dismisserForMenuAction()'s QMenu::exec()-driven context-menu tests unreliable outside the offscreen QPA platform");
+#endif
     WorkSpace workspace;
     auto *ic = new IC();
     workspace.scene()->addItem(ic);
