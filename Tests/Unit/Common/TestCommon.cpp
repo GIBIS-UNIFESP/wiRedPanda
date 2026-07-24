@@ -3,6 +3,9 @@
 
 #include "Tests/Unit/Common/TestCommon.h"
 
+#include <cstdint>
+
+#include <QCoreApplication>
 #include <QTest>
 
 #include "App/Core/Common.h"
@@ -89,4 +92,24 @@ void TestCommon::testLoggingCategoryOneRespondsToVerbosity()
 
     Comment::setVerbosity(-1);
     QVERIFY(!one().isDebugEnabled());
+}
+
+void TestCommon::testDeliberateCrashForCiDiagnosticsVerification()
+{
+    // TEMPORARY -- deliberately segfaults to exercise the CI crash-
+    // diagnostics capture (core dump / lldb wrap / cdb wrap) end-to-end.
+    // Must be removed before this branch is merged anywhere.
+    //
+    // A literal `int *p = nullptr; *p = 42;` is NOT reliable here: the
+    // compiler is permitted to assume a provably-null dereference never
+    // executes and can eliminate it entirely under -O3 (confirmed
+    // empirically -- that version silently PASSED on ubuntu-24.04's
+    // Release CI build while genuinely crashing in a local build using a
+    // newer GCC). Deriving the address from a real runtime call the
+    // optimizer cannot see through -- QCoreApplication::arguments(), whose
+    // result size isn't knowable at compile time -- forces an actual,
+    // unoptimizable write to a guaranteed-unmapped low address.
+    const auto tinyRuntimeValue = static_cast<std::uintptr_t>(qApp->arguments().size());
+    auto *p = reinterpret_cast<int *>(tinyRuntimeValue);
+    *p = 42;
 }

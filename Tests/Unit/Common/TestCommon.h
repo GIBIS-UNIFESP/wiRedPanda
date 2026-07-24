@@ -21,4 +21,8 @@ private slots:
     // Category "one" (verbosity level 1) has no production qCDebug(one) call
     // site yet, so its Q_LOGGING_CATEGORY accessor was otherwise never invoked.
     void testLoggingCategoryOneRespondsToVerbosity();
+
+    // TEMPORARY -- verifies the CI crash-diagnostics pipeline end-to-end.
+    // Must be removed before this branch is merged anywhere.
+    void testDeliberateCrashForCiDiagnosticsVerification();
 };
