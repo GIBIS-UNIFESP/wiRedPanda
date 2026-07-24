@@ -186,9 +186,16 @@ if(CCACHE_BIN)
     if(MSVC)
         # MSVC's default /Zi writes external .pdb files that ccache can't track,
         # so any RelWithDebInfo/Debug compile is uncacheable. /Z7 embeds debug
-        # info in each .obj instead, making the object cacheable. Release builds
-        # have no debug info either way.
-        set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<$<CONFIG:Debug,RelWithDebInfo>:Embedded>")
+        # info in each .obj instead, making the object cacheable. Also covers
+        # Release now: CI needs a real PDB to symbolicate a crashed test's
+        # minidump (see Scripts/ci_windows_dump_analyze.ps1) instead of a bare
+        # signal number, and a PDB helps Sentry symbolicate release crashes too
+        # -- neither the .pdb itself nor embedding this at compile time bloats
+        # the shipped .exe (that needs /DEBUG at link time too, see below).
+        set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<$<CONFIG:Debug,RelWithDebInfo,Release>:Embedded>")
+        # Without /DEBUG the linker doesn't emit a .pdb for a plain Release
+        # config at all, regardless of the compile-time format above.
+        add_link_options("$<$<CONFIG:Release>:/DEBUG>")
     endif()
     message(STATUS "Compiler cache (ccache) enabled")
 else()

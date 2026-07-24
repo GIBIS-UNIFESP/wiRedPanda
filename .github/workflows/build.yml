@@ -116,6 +116,50 @@ jobs:
       with:
         arch: ${{ matrix.os == 'windows-11-arm' && 'arm64' || 'x64' }}
 
+    # Crash-diagnostics setup: a crashed test only ever printed a bare signal number
+    # before (see Scripts/ci_*.{sh,ps1} for the analysis side of this). core_pattern
+    # is a kernel-wide (not per-shell) setting, so it only needs configuring once per
+    # job, unlike ulimit below. gdb is not preinstalled on GitHub's ubuntu-24.04 image
+    # (confirmed against actions/runner-images' own Ubuntu2404-Readme.md), unlike the
+    # debian-i386 job's container, which installs it explicitly from scratch already.
+    - name: Configure core dumps
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get update -qq
+        sudo apt-get install -y --no-install-recommends gdb
+        mkdir -p "$RUNNER_TEMP/cores"
+        sudo bash -c 'echo "'"$RUNNER_TEMP"'/cores/%e.%p.%t" > /proc/sys/kernel/core_pattern'
+
+    # Debugging Tools for Windows (cdb.exe) ships as part of the Windows Driver
+    # Kit, which recent Windows runner images already bundle for other reasons
+    # (confirmed present as "Windows Driver Kit Visual Studio Extension" in the
+    # actual Windows2025-VS2026-Readme.md manifest) at a well-known, stable path
+    # (confirmed via actions/runner-images#942) -- check there first rather than
+    # reaching straight for choco's community "windbg" package, which has a real
+    # history of breaking outright (404s when Microsoft moved the download,
+    # per adamrehn/ue4-docker#92 and #109).
+    #
+    # Used to live-debug a crashed test on failure (Scripts/ci_windows_cdb_retry.ps1),
+    # not to analyze a passively-captured WER dump: WER's LocalDumps can never
+    # see a QTest crash on Windows, because QTest installs its own
+    # SetUnhandledExceptionFilter handler that always reports the exception as
+    # handled (confirmed directly against Qt's qtestcrashhandler_win.cpp source),
+    # so the exception never reaches the OS path WER hooks into. A live debugger
+    # attached via cdb sees it as a first-chance event before that filter runs.
+    - name: Install Debugging Tools for Windows (cdb)
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        $arch = "${{ matrix.os == 'windows-11-arm' && 'arm64' || 'x64' }}"
+        $cdbPath = "C:\Program Files (x86)\Windows Kits\10\Debuggers\$arch"
+        if (Test-Path "$cdbPath\cdb.exe") {
+          Write-Host "cdb.exe already present at $cdbPath -- adding to PATH"
+          $cdbPath | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+        } else {
+          Write-Host "cdb.exe not found at $cdbPath -- falling back to choco"
+          choco install windbg -y
+        }
+
 # =================================
 
     - name: Build
@@ -125,10 +169,25 @@ jobs:
 
     - name: Test
       timeout-minutes: 10
+      shell: bash
       env:
         QT_FORCE_STDERR_LOGGING: 1
       run: |
+        if [ "$RUNNER_OS" = "Linux" ]; then ulimit -c unlimited; fi
         ctest --preset release -V -LE gui
+
+    - name: Analyze crashed tests (Linux core dump)
+      if: runner.os == 'Linux' && failure()
+      run: ./Scripts/ci_linux_core_analyze.sh build-release/test_wiredpanda "$RUNNER_TEMP/cores" crash-diagnostics
+
+    - name: Analyze crashed tests (macOS lldb retry)
+      if: runner.os == 'macOS' && failure()
+      run: ./Scripts/ci_macos_lldb_retry.sh build-release build-release/test_wiredpanda crash-diagnostics
+
+    - name: Analyze crashed tests (Windows cdb retry)
+      if: runner.os == 'Windows' && failure()
+      shell: pwsh
+      run: ./Scripts/ci_windows_cdb_retry.ps1 -BuildDir build-release -TestBinary build-release/test_wiredpanda.exe -OutDir crash-diagnostics
 
     # The gui-labeled suite (TestMainWindowGui's ~120 cases, TestDialogs,
     # TestFileDialogProvider, TestBewavedDolphinGui) is otherwise never executed in CI: every
@@ -142,7 +201,12 @@ jobs:
       env:
         QT_FORCE_STDERR_LOGGING: 1
       run: |
+        ulimit -c unlimited
         ctest --preset release -V -L gui -FS non_gui_complete
+
+    - name: Analyze crashed GUI tests (Linux core dump)
+      if: runner.os == 'Linux' && failure()
+      run: ./Scripts/ci_linux_core_analyze.sh build-release/test_wiredpanda "$RUNNER_TEMP/cores" crash-diagnostics
 
     # Trial runs of the gui suite off-Linux, non-blocking while they build a
     # track record (promote to blocking once proven stable; see the polling
@@ -153,6 +217,7 @@ jobs:
     # green. Separate steps on purpose: a ternary env expression could set
     # QT_QPA_PLATFORM to "" (set-but-empty), which makes Qt load no platform.
     - name: Test (GUI, offscreen, trial)
+      id: test-gui-macos-trial
       if: runner.os == 'macOS'
       timeout-minutes: 10
       continue-on-error: true
@@ -162,7 +227,14 @@ jobs:
       run: |
         ctest --preset release -V -L gui -FS non_gui_complete
 
+    # continue-on-error above means a crash here doesn't make failure() true --
+    # check this step's own outcome directly instead.
+    - name: Analyze crashed GUI-trial tests (macOS lldb retry)
+      if: runner.os == 'macOS' && steps.test-gui-macos-trial.outcome == 'failure'
+      run: ./Scripts/ci_macos_lldb_retry.sh build-release build-release/test_wiredpanda crash-diagnostics
+
     - name: Test (GUI, native, trial)
+      id: test-gui-windows-trial
       if: runner.os == 'Windows'
       timeout-minutes: 10
       continue-on-error: true
@@ -170,6 +242,11 @@ jobs:
         QT_FORCE_STDERR_LOGGING: 1
       run: |
         ctest --preset release -V -L gui -FS non_gui_complete
+
+    - name: Analyze crashed GUI-trial tests (Windows cdb retry)
+      if: runner.os == 'Windows' && steps.test-gui-windows-trial.outcome == 'failure'
+      shell: pwsh
+      run: ./Scripts/ci_windows_cdb_retry.ps1 -BuildDir build-release -TestBinary build-release/test_wiredpanda.exe -OutDir crash-diagnostics
 
     - name: Smoke-test cmake --install
       shell: bash
@@ -192,16 +269,25 @@ jobs:
         fi
 
     - name: Upload build artifacts on failure
-      if: failure()
+      # continue-on-error on the two GUI-trial steps means their failure alone
+      # doesn't make failure() true -- check those steps' own outcomes too, or a
+      # GUI-trial-only crash's diagnostics would never get uploaded.
+      if: failure() || steps.test-gui-macos-trial.outcome == 'failure' || steps.test-gui-windows-trial.outcome == 'failure'
       uses: actions/upload-artifact@v7
       with:
         name: build-logs-${{ matrix.os }}-${{ matrix.qt }}${{ contains(matrix.cmake_args, 'ENABLE_UNITY=OFF') && '-no-unity' || contains(matrix.cmake_args, 'BATCH_SIZE=1000') && '-mega-unity' || '' }}
         # CMake 3.26+ writes CMakeConfigureLog.yaml (the old CMakeOutput.log /
         # CMakeError.log no longer exist); compile errors stream to the step log.
+        # LastTest.log is the full console output of every test that ran, gui or
+        # not, whichever ctest invocation ran last in this job. crash-diagnostics/
+        # is written by the ci_*_analyze/retry scripts above, if anything crashed.
         path: |
           build-release/CMakeCache.txt
           build-release/CMakeFiles/CMakeConfigureLog.yaml
+          build-release/Testing/Temporary/LastTest.log
+          crash-diagnostics/
         retention-days: 7
+        if-no-files-found: ignore
 
     - name: MCP Integration Test
       run: |
@@ -255,6 +341,25 @@ jobs:
         WORK_DIR="$RUNNER_TEMP/work-i386"
         CACHE_DIR="$RUNNER_TEMP/ccache-i386"
         mkdir -p "$WORK_DIR" "$CACHE_DIR"
+        # /proc/sys/kernel/core_pattern must be set from the HOST: confirmed
+        # (not assumed) that a non-privileged container's own /proc/sys is
+        # read-only, so writing it from inside the container fails with
+        # "Read-only file system".
+        #
+        # The pattern itself must be an ABSOLUTE path, not a relative one:
+        # test_wiredpanda runs under `su builder` inside the container (see
+        # below), and a process whose credentials changed via su/sudo/setuid
+        # is subject to /proc/sys/fs/suid_dumpable's rules regardless of
+        # whether the executable file itself has the setuid bit -- confirmed
+        # or was a real, empirically-hit bug here: this host's suid_dumpable
+        # is 2 ("suidsafe"), and core(5) documents that suid_dumpable=2
+        # requires an absolute pattern (or a pipe); a relative one is
+        # silently rejected (no core file, no error). An absolute pattern
+        # still resolves against the *crashing process's own* mount
+        # namespace root (per core(5)), so /work/... (not the host's
+        # $WORK_DIR) is what must appear here -- it reaches the same
+        # bind-mounted directory from the container's side.
+        sudo bash -c 'echo "/work/cores/%e.%p.%t" > /proc/sys/kernel/core_pattern'
         docker run --rm -i \
           -v "$PWD":/src \
           -v "$WORK_DIR":/work \
@@ -264,7 +369,7 @@ jobs:
         export DEBIAN_FRONTEND=noninteractive
         apt-get update -qq
         apt-get install -y --no-install-recommends \
-          build-essential cmake ninja-build ccache pkg-config git ca-certificates \
+          build-essential cmake ninja-build ccache pkg-config git ca-certificates gdb \
           qt6-base-dev qt6-multimedia-dev qt6-svg-dev qt6-svg-plugins \
           qt6-image-formats-plugins libgl1-mesa-dev libglu1-mesa-dev
         # Run as a non-root user that OWNS the checkout (matches /src's uid), like
@@ -282,7 +387,19 @@ jobs:
           cmake --build /work
           cd /work
           export QT_QPA_PLATFORM=offscreen QT_FORCE_STDERR_LOGGING=1
+          # core_pattern (see the host-side comment above this docker run
+          # invocation) is already configured before this container started --
+          # only the cores/ subdirectory it resolves into needs creating here.
+          mkdir -p cores
+          ulimit -c unlimited
+          set +e
           ctest -V -j$(nproc) -LE gui
+          CTEST_EXIT=$?
+          set -e
+          if [ "$CTEST_EXIT" -ne 0 ]; then
+            /src/Scripts/ci_linux_core_analyze.sh ./test_wiredpanda ./cores ./crash-diagnostics || true
+          fi
+          exit "$CTEST_EXIT"
         '
         EOF
 
@@ -293,7 +410,12 @@ jobs:
         name: build-logs-debian-i386
         # CMake 3.26+ writes CMakeConfigureLog.yaml (the old CMakeOutput.log /
         # CMakeError.log no longer exist); compile errors stream to the step log.
+        # crash-diagnostics/ is written under /work (bind-mounted from
+        # work-i386 below) by ci_linux_core_analyze.sh above, if anything crashed.
         path: |
           ${{ runner.temp }}/work-i386/CMakeCache.txt
           ${{ runner.temp }}/work-i386/CMakeFiles/CMakeConfigureLog.yaml
+          ${{ runner.temp }}/work-i386/Testing/Temporary/LastTest.log
+          ${{ runner.temp }}/work-i386/crash-diagnostics/
         retention-days: 7
+        if-no-files-found: ignore
