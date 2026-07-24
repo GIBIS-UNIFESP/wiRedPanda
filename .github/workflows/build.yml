@@ -139,12 +139,14 @@ jobs:
     # history of breaking outright (404s when Microsoft moved the download,
     # per adamrehn/ue4-docker#92 and #109).
     #
-    # Used to live-debug a crashed test on failure (Scripts/ci_windows_cdb_retry.ps1),
-    # not to analyze a passively-captured WER dump: WER's LocalDumps can never
-    # see a QTest crash on Windows, because QTest installs its own
-    # SetUnhandledExceptionFilter handler that always reports the exception as
-    # handled (confirmed directly against Qt's qtestcrashhandler_win.cpp source),
-    # so the exception never reaches the OS path WER hooks into. A live debugger
+    # Needed on PATH for every test invocation: test_wiredpanda's
+    # CROSSCOMPILING_EMULATOR (see CMakeLists.txt) runs each one live under
+    # cdb via Scripts/ci_windows_cdb_wrap.ps1, not to analyze a passively-
+    # captured WER dump -- WER's LocalDumps can never see a QTest crash on
+    # Windows, because QTest installs its own SetUnhandledExceptionFilter
+    # handler that always reports the exception as handled (confirmed
+    # directly against Qt's qtestcrashhandler_win.cpp source), so the
+    # exception never reaches the OS path WER hooks into. A live debugger
     # attached via cdb sees it as a first-chance event before that filter runs.
     - name: Install Debugging Tools for Windows (cdb)
       if: runner.os == 'Windows'
@@ -180,16 +182,14 @@ jobs:
       if: runner.os == 'Linux' && failure()
       run: ./Scripts/ci_linux_core_analyze.sh build-release/test_wiredpanda "$RUNNER_TEMP/cores" crash-diagnostics
 
-    # macOS needs no separate analysis step: test_wiredpanda's CROSSCOMPILING_EMULATOR
-    # (see CMakeLists.txt) already runs every test live under lldb in CI, writing
-    # a backtrace straight to crash-diagnostics/ the moment a crash actually
-    # happens -- replaces retrying a crashed test after the fact, which
-    # confirmed unreliable for a genuinely rare, timing-dependent race.
-
-    - name: Analyze crashed tests (Windows cdb retry)
-      if: runner.os == 'Windows' && failure()
-      shell: pwsh
-      run: ./Scripts/ci_windows_cdb_retry.ps1 -BuildDir build-release -TestBinary build-release/test_wiredpanda.exe -OutDir crash-diagnostics
+    # macOS and Windows need no separate analysis step: test_wiredpanda's
+    # CROSSCOMPILING_EMULATOR (see CMakeLists.txt) already runs every test
+    # live under lldb/cdb in CI, writing a backtrace/dump straight to
+    # crash-diagnostics/ the moment a crash actually happens -- replaces
+    # retrying a crashed test after the fact, which confirmed both
+    # unreliable (a genuinely rare race never reproduced across 20 retry
+    # attempts) and unsafe (no bound on total retry time across every
+    # failed test, once hanging a real CI job for hours).
 
     # The gui-labeled suite (TestMainWindowGui's ~120 cases, TestDialogs,
     # TestFileDialogProvider, TestBewavedDolphinGui) is otherwise never executed in CI: every
@@ -238,11 +238,6 @@ jobs:
         QT_FORCE_STDERR_LOGGING: 1
       run: |
         ctest --preset release -V -L gui -FS non_gui_complete
-
-    - name: Analyze crashed GUI-trial tests (Windows cdb retry)
-      if: runner.os == 'Windows' && steps.test-gui-windows-trial.outcome == 'failure'
-      shell: pwsh
-      run: ./Scripts/ci_windows_cdb_retry.ps1 -BuildDir build-release -TestBinary build-release/test_wiredpanda.exe -OutDir crash-diagnostics
 
     - name: Smoke-test cmake --install
       shell: bash
