@@ -180,9 +180,11 @@ jobs:
       if: runner.os == 'Linux' && failure()
       run: ./Scripts/ci_linux_core_analyze.sh build-release/test_wiredpanda "$RUNNER_TEMP/cores" crash-diagnostics
 
-    - name: Analyze crashed tests (macOS lldb retry)
-      if: runner.os == 'macOS' && failure()
-      run: ./Scripts/ci_macos_lldb_retry.sh build-release build-release/test_wiredpanda crash-diagnostics
+    # macOS needs no separate analysis step: test_wiredpanda's CROSSCOMPILING_EMULATOR
+    # (see CMakeLists.txt) already runs every test live under lldb in CI, writing
+    # a backtrace straight to crash-diagnostics/ the moment a crash actually
+    # happens -- replaces retrying a crashed test after the fact, which
+    # confirmed unreliable for a genuinely rare, timing-dependent race.
 
     - name: Analyze crashed tests (Windows cdb retry)
       if: runner.os == 'Windows' && failure()
@@ -226,12 +228,6 @@ jobs:
         QT_QPA_PLATFORM: offscreen
       run: |
         ctest --preset release -V -L gui -FS non_gui_complete
-
-    # continue-on-error above means a crash here doesn't make failure() true --
-    # check this step's own outcome directly instead.
-    - name: Analyze crashed GUI-trial tests (macOS lldb retry)
-      if: runner.os == 'macOS' && steps.test-gui-macos-trial.outcome == 'failure'
-      run: ./Scripts/ci_macos_lldb_retry.sh build-release build-release/test_wiredpanda crash-diagnostics
 
     - name: Test (GUI, native, trial)
       id: test-gui-windows-trial
