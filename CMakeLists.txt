@@ -701,6 +701,20 @@ if(ENABLE_UNITY)
     )
 endif()
 
+if(APPLE)
+    # CROSSCOMPILING_EMULATOR is the mechanism CMake gives cross-compilation
+    # setups to run a test binary through a wrapper (e.g. an emulator); ctest
+    # prepends it ahead of every add_test()-registered invocation of this
+    # target automatically, so this needs no per-test changes. Repurposed
+    # here to run every test live under lldb in CI (see the script for why:
+    # retrying a crash after the fact didn't reliably reproduce it). The
+    # script itself no-ops to a direct exec outside CI, so local builds pay
+    # nothing.
+    set_target_properties(test_wiredpanda PROPERTIES
+        CROSSCOMPILING_EMULATOR "${CMAKE_SOURCE_DIR}/Scripts/ci_macos_lldb_wrap.sh"
+    )
+endif()
+
 # ---- libFuzzer harness for the .panda deserializer ----
 # Clang-only.  Driven by `-fsanitize=fuzzer` plus ASan + UBSan.  Built only
 # when ENABLE_FUZZER=ON (see the `fuzzer` CMake preset).  Not registered as a
