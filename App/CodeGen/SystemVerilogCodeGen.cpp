@@ -1320,7 +1320,10 @@ void SystemVerilogCodeGen::assignVariablesRec(const QVector<GraphicElement *> &e
             // switch — IC by the dedicated branch at the top of this function, the 8
             // gate types by the "top-level gate" if-branch above, and every remaining
             // Input-/Output-group element by the inputs().isEmpty()/outputs().isEmpty()
-            // continue at the top of this loop.
+            // continue at the top of this loop. ElementType::JKLatch is unreachable for a
+            // different, stronger reason: it's a deprecated enum value with no live
+            // GraphicElement implementation at all (ElementFactory::hasCreator(JKLatch) is
+            // false), so no real `elm` can ever report it.
             // LCOV_EXCL_START
             case ElementType::And:
             case ElementType::AudioBox:
@@ -1385,7 +1388,10 @@ QString SystemVerilogCodeGen::generateLogicExpressionImpl(GraphicElement *elm, Q
     // Unreachable: this function is only ever reached for the 8 gate types handled
     // above/below — its two callers (generateLogicExpression(), used by
     // assignVariablesRec's top-level-gate branch, and otherPortNameImpl()'s own
-    // gate-type dispatch) both restrict `elm` to exactly that set.
+    // gate-type dispatch) both restrict `elm` to exactly that set. ElementType::JKLatch
+    // is unreachable for a different, stronger reason: it's a deprecated enum value with
+    // no live GraphicElement implementation at all (ElementFactory::hasCreator(JKLatch)
+    // is false), so no real `elm` can ever report it.
     // LCOV_EXCL_START
     case ElementType::AudioBox:
     case ElementType::Buzzer:
