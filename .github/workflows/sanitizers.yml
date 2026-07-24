@@ -88,6 +88,20 @@ jobs:
       with:
         key: ${{ matrix.sanitizer }}-ubuntu-6.9.3
 
+    # Crash-diagnostics setup: a crashed test only ever printed a bare signal
+    # number before (see Scripts/ci_linux_core_analyze.sh for the analysis side
+    # of this). A hard crash under a sanitizer is rare (the sanitizer runtime
+    # usually intercepts the underlying bug first), but when one does slip
+    # through as a real SIGSEGV/SIGABRT, this is the only path to a backtrace.
+    # gdb is not preinstalled on GitHub's ubuntu-latest image (confirmed against
+    # actions/runner-images' own Ubuntu2404-Readme.md).
+    - name: Configure core dumps
+      run: |
+        sudo apt-get update -qq
+        sudo apt-get install -y --no-install-recommends gdb
+        mkdir -p "$RUNNER_TEMP/cores"
+        sudo bash -c 'echo "'"$RUNNER_TEMP"'/cores/%e.%p.%t" > /proc/sys/kernel/core_pattern'
+
     - name: Build
       run: |
         cmake --preset ${{ matrix.sanitizer }}
@@ -104,13 +118,19 @@ jobs:
         LSAN_OPTIONS: suppressions=${{ github.workspace }}/Tests/lsan_suppressions.txt
         UBSAN_OPTIONS: print_stacktrace=1:halt_on_error=1
       run: |
+        ulimit -c unlimited
         ctest --preset ${{ matrix.sanitizer }} -V -LE gui
+
+    - name: Analyze crashed tests (Linux core dump)
+      if: failure()
+      run: ./Scripts/ci_linux_core_analyze.sh build-${{ matrix.sanitizer }}/test_wiredpanda "$RUNNER_TEMP/cores" crash-diagnostics
 
     # The gui suite under sanitizers is where teardown-order UAFs (the
     # WIREDPANDA-HC / MainWindow-destruction class of intermittent segfault)
     # become deterministic instead of once-a-month. Non-blocking while it
     # accumulates a track record; promote to blocking once proven stable.
     - name: Test (GUI, headless)
+      id: test-gui-headless
       timeout-minutes: 15
       continue-on-error: true
       env:
@@ -119,10 +139,17 @@ jobs:
         LSAN_OPTIONS: suppressions=${{ github.workspace }}/Tests/lsan_suppressions.txt
         UBSAN_OPTIONS: print_stacktrace=1:halt_on_error=1
       run: |
+        ulimit -c unlimited
         ctest --preset ${{ matrix.sanitizer }} -V -L gui -FS non_gui_complete
 
+    # continue-on-error above means a crash here doesn't make failure() true --
+    # check this step's own outcome directly instead.
+    - name: Analyze crashed GUI tests (Linux core dump)
+      if: steps.test-gui-headless.outcome == 'failure'
+      run: ./Scripts/ci_linux_core_analyze.sh build-${{ matrix.sanitizer }}/test_wiredpanda "$RUNNER_TEMP/cores" crash-diagnostics
+
     - name: Upload build artifacts on failure
-      if: failure()
+      if: failure() || steps.test-gui-headless.outcome == 'failure'
       uses: actions/upload-artifact@v7
       with:
         name: ${{ matrix.sanitizer }}-build-logs
@@ -131,4 +158,6 @@ jobs:
           build-${{ matrix.sanitizer }}/CMakeFiles/CMakeOutput.log
           build-${{ matrix.sanitizer }}/CMakeFiles/CMakeError.log
           build-${{ matrix.sanitizer }}/Testing/Temporary/LastTest.log
+          crash-diagnostics/
         retention-days: 7
+        if-no-files-found: ignore
