@@ -6,6 +6,7 @@
 #include <QLabel>
 #include <QMainWindow>
 #include <QTabWidget>
+#include <QTemporaryDir>
 
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementLabel.h"
@@ -86,4 +87,136 @@ void TestElementPalette::testAccessibleNameSet()
     QVERIFY(!ui.lineEditSearch->whatsThis().isEmpty());
     QVERIFY(!ui.tabElements->accessibleName().isEmpty());
     QVERIFY(!ui.tabElements->whatsThis().isEmpty());
+}
+
+void TestElementPalette::testPopulateFallsBackToFirstTabWhenIoTabIsMissing()
+{
+    // Regression seam: populate() looks up the "io" tab by object name and falls back to
+    // tab 0 if it isn't found. Rename the real "io" tab so the lookup misses, exercising
+    // both the fallback branch and tabIndex()'s own "not found" return.
+    QMainWindow window;
+    MainWindowUi ui;
+    ui.setupUi(&window);
+
+    bool foundIoTab = false;
+    for (int i = 0; i < ui.tabElements->count(); ++i) {
+        if (ui.tabElements->widget(i)->objectName() == QLatin1String("io")) {
+            ui.tabElements->widget(i)->setObjectName(QStringLiteral("io_renamed"));
+            foundIoTab = true;
+            break;
+        }
+    }
+    QVERIFY2(foundIoTab, "expected MainWindowUi to have a tab named \"io\"");
+
+    ElementPalette palette(&ui);
+    palette.populate();
+
+    QCOMPARE(ui.tabElements->currentIndex(), 0);
+}
+
+void TestElementPalette::testSearchFirstPassMatchesByInternalTypeKeyword()
+{
+    // First pass matches the internal, locale-independent type keyword via the label's
+    // object name ("label_truthtable"), separately from the second pass's translated-name
+    // match. "Truth Table" (the translated name) contains a space, so a contiguous query of
+    // "truthtable" can only ever match through the first pass's object-name check.
+    QMainWindow window;
+    MainWindowUi ui;
+    ui.setupUi(&window);
+
+    ElementPalette palette(&ui);
+    palette.populate();
+
+    ElementLabel *truthTableSearchLabel = nullptr;
+    ElementLabel *andSearchLabel = nullptr;
+    const auto searchItems = ui.scrollAreaWidgetContents_Search->findChildren<ElementLabel *>();
+    for (auto *item : searchItems) {
+        if (item->objectName() == QLatin1String("label_truthtable")) {
+            truthTableSearchLabel = item;
+        } else if (item->objectName() == QLatin1String("label_and")) {
+            andSearchLabel = item;
+        }
+    }
+    QVERIFY(truthTableSearchLabel);
+    QVERIFY(andSearchLabel);
+    QVERIFY2(!truthTableSearchLabel->name().contains(QStringLiteral("truthtable"), Qt::CaseInsensitive),
+              "test assumes the translated name has a space, so it can't itself match the query");
+
+    ui.lineEditSearch->setText(QStringLiteral("truthtable"));
+
+    QVERIFY2(!truthTableSearchLabel->isHidden(), "the first-pass object-name match must surface TruthTable");
+    QVERIFY2(andSearchLabel->isHidden(), "And must not match a query that hits neither of its passes");
+}
+
+void TestElementPalette::testSearchSecondPassMatchesByTranslatedNameOnly()
+{
+    // Second pass adds items matched by translated name that the first pass's object-name
+    // check didn't already find. InputButton's object name is "label_inputbutton" (from its
+    // raw type keyword), while its translated name is "Push Button" -- a query of "push"
+    // matches only the translated name, so it can only ever be appended by the second pass.
+    QMainWindow window;
+    MainWindowUi ui;
+    ui.setupUi(&window);
+
+    ElementPalette palette(&ui);
+    palette.populate();
+
+    ElementLabel *inputButtonSearchLabel = nullptr;
+    const auto searchItems = ui.scrollAreaWidgetContents_Search->findChildren<ElementLabel *>();
+    for (auto *item : searchItems) {
+        if (item->objectName() == QLatin1String("label_inputbutton")) {
+            inputButtonSearchLabel = item;
+        }
+    }
+    QVERIFY(inputButtonSearchLabel);
+    QCOMPARE(inputButtonSearchLabel->name(), QStringLiteral("Push Button"));
+    QVERIFY2(!inputButtonSearchLabel->objectName().contains(QStringLiteral("push"), Qt::CaseInsensitive),
+              "test assumes the object name can't itself match the query");
+
+    ui.lineEditSearch->setText(QStringLiteral("push"));
+
+    QVERIFY2(!inputButtonSearchLabel->isHidden(), "the second-pass translated-name match must surface Push Button");
+}
+
+void TestElementPalette::testSearchThirdPassMatchesByIcFullFileName()
+{
+    // Third pass matches the IC's full file name (including the .panda extension) via
+    // objectName "label_ic", separately from the second pass's name() match (the upper-cased
+    // base name only, without the extension). Querying the extension itself can only ever
+    // match through the third pass.
+    QMainWindow window;
+    MainWindowUi ui;
+    ui.setupUi(&window);
+
+    ElementPalette palette(&ui);
+    palette.populate();
+
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString currentProjectPath = dir.filePath(QStringLiteral("currentproject.panda"));
+    const QString icPath = dir.filePath(QStringLiteral("widget.panda"));
+    QFile currentProjectFile(currentProjectPath);
+    QVERIFY(currentProjectFile.open(QIODevice::WriteOnly));
+    currentProjectFile.close();
+    QFile icFile(icPath);
+    QVERIFY(icFile.open(QIODevice::WriteOnly));
+    icFile.close();
+
+    palette.updateICList(QFileInfo(currentProjectPath));
+
+    ElementLabel *icSearchLabel = nullptr;
+    const auto searchItems = ui.scrollAreaWidgetContents_Search->findChildren<ElementLabel *>();
+    for (auto *item : searchItems) {
+        if (item->elementType() == ElementType::IC && item->icFileName() == QLatin1String("widget.panda")) {
+            icSearchLabel = item;
+        }
+    }
+    QVERIFY(icSearchLabel);
+    QCOMPARE(icSearchLabel->objectName(), QStringLiteral("label_ic"));
+    QVERIFY2(!icSearchLabel->name().contains(QStringLiteral("panda"), Qt::CaseInsensitive),
+              "test assumes the base name alone doesn't contain the query, so pass two can't match it");
+
+    ui.lineEditSearch->setText(QStringLiteral("panda"));
+
+    QVERIFY2(!icSearchLabel->isHidden(), "the third-pass file-name match must surface widget.panda");
 }

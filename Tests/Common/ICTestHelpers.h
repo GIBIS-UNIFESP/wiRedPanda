@@ -3,9 +3,14 @@
 
 #pragma once
 
+#include <QDataStream>
 #include <QFile>
+#include <QMap>
+#include <QRectF>
+#include <QVariant>
 
 #include "App/Element/IC.h"
+#include "App/IO/Serialization.h"
 #include "App/Scene/ICRegistry.h"
 
 namespace ICTestHelpers {
@@ -17,6 +22,26 @@ inline QByteArray readFile(const QString &path)
         return {};
     }
     return f.readAll();
+}
+
+/// A minimal, valid .panda payload (header + empty-element metadata) -- enough for
+/// IC::loadFile()/loadFromBlob() to accept as real IC file content.
+inline QByteArray minimalPandaBytes()
+{
+    QMap<QString, QVariant> metadata;
+    metadata["dolphinFileName"] = QString();
+    metadata["sceneRect"] = QRectF();
+
+    QByteArray payload;
+    QDataStream payloadStream(&payload, QIODevice::WriteOnly);
+    payloadStream.setVersion(QDataStream::Qt_5_12);
+    payloadStream << metadata;
+
+    QByteArray data;
+    QDataStream stream(&data, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(stream);
+    Serialization::writePayload(stream, payload);
+    return data;
 }
 
 /// Stores the raw .panda file bytes as a blob and loads the IC.

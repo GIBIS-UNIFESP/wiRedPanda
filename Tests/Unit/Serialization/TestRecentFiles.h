@@ -16,4 +16,7 @@ private slots:
     void testDuplicateFileHandling();
     void testMaxFilesLimit();
     void testRemoveOldestFile();
+
+    // The QFileSystemWatcher-driven live cleanup when a watched file disappears externally
+    void testFileWatcherRemovesDeletedFileFromList();
 };

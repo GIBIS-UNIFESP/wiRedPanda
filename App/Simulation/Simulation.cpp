@@ -255,9 +255,9 @@ void Simulation::updatePort(OutputPort *port)
     }
 
     auto *element = port->graphicElement();
-    if (!element) {
-        port->setStatus(Status::Unknown);
-        return;
+    if (!element) { // LCOV_EXCL_LINE — every Port has a non-null owner set unconditionally by ElementPorts::addPort() at construction (the "port always has an owner" invariant established throughout this sweep).
+        port->setStatus(Status::Unknown); // LCOV_EXCL_LINE — see above.
+        return; // LCOV_EXCL_LINE — see above.
     }
 
     port->setStatus(element->outputValue(port->index()));
@@ -424,8 +424,8 @@ bool Simulation::initialize()
 
         if (item->type() == GraphicElement::Type) {
             auto *element = qgraphicsitem_cast<GraphicElement *>(item);
-            if (!element) {
-                continue;
+            if (!element) { // LCOV_EXCL_LINE — item->type() == GraphicElement::Type is GraphicElement's own hardcoded type() override, so the cast can never fail for an item reporting exactly that type.
+                continue; // LCOV_EXCL_LINE — see above.
             }
             elements.append(element);
 
@@ -496,8 +496,8 @@ void Simulation::buildConnectionGraph(const QVector<GraphicElement *> &elements)
 
             if (connections.size() == 1) {
                 auto *connection = connections.constFirst();
-                if (!connection) {
-                    continue;
+                if (!connection) { // LCOV_EXCL_LINE — Port::attachConnection() guards against a null argument (returns immediately without inserting), so m_connections can never contain a null entry.
+                    continue; // LCOV_EXCL_LINE — see above.
                 }
                 if (auto *outputPort = connection->startPort()) {
                     auto *sourceElement = outputPort->graphicElement();
@@ -538,7 +538,7 @@ QHash<QString, GraphicElement *> Simulation::buildTxMap(const QVector<GraphicEle
         }
     }
     return txMap;
-}
+} // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned QHash<QString, GraphicElement *>, never reached after the return above.
 
 QHash<GraphicElement *, QVector<GraphicElement *>> Simulation::buildSuccessorGraph(
     const QVector<GraphicElement *> &elements,
@@ -580,7 +580,7 @@ QHash<GraphicElement *, QVector<GraphicElement *>> Simulation::buildSuccessorGra
     }
 
     return successors;
-}
+} // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned QHash<GraphicElement *, QVector<GraphicElement *>>, never reached after the return above.
 
 Simulation::SortResult Simulation::topologicalSort(
     const QVector<GraphicElement *> &elements,

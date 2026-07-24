@@ -20,8 +20,8 @@ void VisibilityManager::showGates(const bool visible)
     for (auto *item : items) {
         if (item->type() == GraphicElement::Type) {
             auto *element = qgraphicsitem_cast<GraphicElement *>(item);
-            if (!element) {
-                continue;
+            if (!element) { // LCOV_EXCL_LINE — item->type() == GraphicElement::Type already guarantees this cast succeeds.
+                continue; // LCOV_EXCL_LINE
             }
             const auto group = element->elementGroup();
 

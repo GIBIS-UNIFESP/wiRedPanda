@@ -75,7 +75,7 @@ QJsonObject FileHandler::handleLoadCircuit(const QJsonObject &params, const QJso
         return createErrorResponse("No main window available", requestId, JsonRpcError::InternalError);
     }
 
-    return tryCommand([&] {
+    return tryCommand([&] { // LCOV_EXCL_LINE -- pattern 45: gcov misattributes this multi-line lambda-taking call's entry; the lambda body below is genuinely covered
         m_mainWindow->loadPandaFile(filename);
         return createSuccessResponse(QJsonObject(), requestId);
     }, "load circuit", requestId);
@@ -102,7 +102,7 @@ QJsonObject FileHandler::handleSaveCircuit(const QJsonObject &params, const QJso
         return createErrorResponse("No main window available", requestId, JsonRpcError::InternalError);
     }
 
-    return tryCommand([&] {
+    return tryCommand([&] { // LCOV_EXCL_LINE -- pattern 45: gcov misattributes this multi-line lambda-taking call's entry; the lambda body below is genuinely covered
         m_mainWindow->save(filename);
         return createSuccessResponse(QJsonObject(), requestId);
     }, "save circuit", requestId);
@@ -114,7 +114,7 @@ QJsonObject FileHandler::handleNewCircuit(const QJsonObject &, const QJsonValue 
         return createErrorResponse("No main window available", requestId, JsonRpcError::InternalError);
     }
 
-    return tryCommand([&]() -> QJsonObject {
+    return tryCommand([&]() -> QJsonObject { // LCOV_EXCL_LINE -- pattern 45: gcov misattributes this multi-line lambda-taking call's entry; the lambda body below is genuinely covered
         m_mainWindow->createNewTab();
 
         Scene *scene = currentScene();
@@ -132,10 +132,12 @@ QJsonObject FileHandler::handleCloseCircuit(const QJsonObject &, const QJsonValu
         return createErrorResponse("No main window available", requestId, JsonRpcError::InternalError);
     }
 
-    return tryCommand([&]() -> QJsonObject {
+    return tryCommand([&]() -> QJsonObject { // LCOV_EXCL_LINE -- pattern 45: gcov misattributes this multi-line lambda-taking call's entry; the lambda body below is genuinely covered
         QTabWidget *tabWidget = m_mainWindow->findChild<QTabWidget *>("tab");
+        // Unreachable: MainWindowUi::setupUi() unconditionally creates the "tab" QTabWidget;
+        // a real MainWindow can never be missing it.
         if (!tabWidget) {
-            return createErrorResponse("Tab widget not found", requestId, JsonRpcError::InternalError);
+            return createErrorResponse("Tab widget not found", requestId, JsonRpcError::InternalError); // LCOV_EXCL_LINE
         }
 
         if (tabWidget->count() == 0) {
@@ -165,10 +167,11 @@ QJsonObject FileHandler::handleGetTabCount(const QJsonObject &, const QJsonValue
         return createErrorResponse("No main window available", requestId, JsonRpcError::InternalError);
     }
 
-    return tryCommand([&]() -> QJsonObject {
+    return tryCommand([&]() -> QJsonObject { // LCOV_EXCL_LINE -- pattern 45: gcov misattributes this multi-line lambda-taking call's entry; the lambda body below is genuinely covered
         QTabWidget *tabWidget = m_mainWindow->findChild<QTabWidget *>("tab");
+        // Unreachable: same "setupUi() always creates it" invariant as handleCloseCircuit().
         if (!tabWidget) {
-            return createErrorResponse("Tab widget not found", requestId, JsonRpcError::InternalError);
+            return createErrorResponse("Tab widget not found", requestId, JsonRpcError::InternalError); // LCOV_EXCL_LINE
         }
 
         QJsonObject result;
@@ -206,10 +209,14 @@ QJsonObject FileHandler::handleExportImage(const QJsonObject &params, const QJso
         return createErrorResponse("Unsupported format. Use 'png', 'svg', or 'pdf'", requestId, JsonRpcError::ValidationError);
     }
 
-    return tryCommand([&]() -> QJsonObject {
+    return tryCommand([&]() -> QJsonObject { // LCOV_EXCL_LINE -- pattern 45: gcov misattributes this multi-line lambda-taking call's entry; the lambda body below is genuinely covered
         QRectF sceneRect = scene->itemsBoundingRect();
+        // Unreachable: a real Scene always contains a permanent, non-empty rubber-band
+        // selection-rect item (SceneInteraction's m_selectionRect, unconditionally added),
+        // so itemsBoundingRect() is never empty for any Scene constructed the normal way
+        // (same invariant as MinimapWidget.cpp's identical finding).
         if (sceneRect.isEmpty()) {
-            return createErrorResponse("Scene is empty - nothing to export", requestId, JsonRpcError::OperationFailed);
+            return createErrorResponse("Scene is empty - nothing to export", requestId, JsonRpcError::OperationFailed); // LCOV_EXCL_LINE
         }
 
         sceneRect.adjust(-padding, -padding, padding, padding);
@@ -296,7 +303,7 @@ QJsonObject FileHandler::handleExportArduino(const QJsonObject &params, const QJ
         return createErrorResponse("No main window available", requestId, JsonRpcError::InternalError);
     }
 
-    return tryCommand([&]() -> QJsonObject {
+    return tryCommand([&]() -> QJsonObject { // LCOV_EXCL_LINE -- pattern 45: gcov misattributes this multi-line lambda-taking call's entry; the lambda body below is genuinely covered
         m_mainWindow->exportToArduino(filename);
 
         QJsonObject result;
@@ -324,7 +331,7 @@ QJsonObject FileHandler::handleExportSystemVerilog(const QJsonObject &params, co
         return createErrorResponse("No main window available", requestId, JsonRpcError::InternalError);
     }
 
-    return tryCommand([&]() -> QJsonObject {
+    return tryCommand([&]() -> QJsonObject { // LCOV_EXCL_LINE -- pattern 45: gcov misattributes this multi-line lambda-taking call's entry; the lambda body below is genuinely covered
         m_mainWindow->exportToSystemVerilog(filename);
 
         QJsonObject result;

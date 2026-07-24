@@ -37,8 +37,7 @@ void ConnectionSerializer::load(Connection &connection, QDataStream &stream, Ser
         QMap<QString, QVariant> map = Serialization::readBoundedMetadata(stream);
 
         if (stream.status() != QDataStream::Ok) {
-            throw PANDACEPTION("Stream error reading connection map at offset %1",
-                              stream.device()->pos());
+            throw PANDACEPTION("Stream error reading connection map at offset %1", stream.device()->pos());
         }
 
         id1 = map.value("startPortId").toULongLong();

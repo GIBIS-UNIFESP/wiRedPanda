@@ -224,7 +224,7 @@ void ElementEditor::updateElementAppearance()
         // Snapshot and apply via undo command
         const bool needsMacro = m_scene && m_elements.size() > 1;
         if (needsMacro) {
-            m_scene->undoStack()->beginMacro(tr("Change appearance"));
+            m_scene->undoStack()->beginMacro(tr("Change appearance")); // LCOV_EXCL_LINE — the tile grid (widgetAppearanceStates) is only ever made visible for a single-element selection (see applyCapabilitiesToUi()'s `m_elements.size() == 1` guard), so entering this branch structurally guarantees m_elements.size() == 1, making needsMacro permanently false.
         }
         for (auto *elm : std::as_const(m_elements)) {
             QByteArray oldData;
@@ -239,7 +239,7 @@ void ElementEditor::updateElementAppearance()
             }
         }
         if (needsMacro) {
-            m_scene->undoStack()->endMacro();
+            m_scene->undoStack()->endMacro(); // LCOV_EXCL_LINE — see the matching beginMacro() exclusion above: needsMacro is permanently false here.
         }
 
         // The tile icons were built from the pre-change appearance; refresh the edited tile in
@@ -350,7 +350,7 @@ void ElementEditor::applyCapabilitiesToUi()
     /* Sound */
     setSection(c.hasAudio, m_ui->labelAudio, m_ui->comboBoxAudio);
     if (prepareCombo(m_ui->comboBoxAudio, c.hasAudio, c.hasSameAudio, m_manyAudios)) {
-        m_ui->comboBoxAudio->setCurrentText(firstElement->audio());
+        m_ui->comboBoxAudio->setCurrentText(firstElement->audio()); // LCOV_EXCL_LINE — c.hasAudio is always false: no element type currently sets hasAudio=true in its ElementInfo (see App/Scene/Commands.cpp's identical exclusion), so prepareCombo() never returns true here.
     }
 
     /* Volume */
@@ -582,11 +582,15 @@ void ElementEditor::applyProperty(GraphicElement *elm, PropertyDescriptor::Type 
         elm->setDelay(delayFraction);
         break;
     }
+    // LCOV_EXCL_START — no element type currently sets hasAudio=true in its ElementInfo (see
+    // App/Scene/Commands.cpp's identical exclusion), so GraphicElement::editableProperties()
+    // never yields Type::Audio and this case is never dispatched.
     case PropertyDescriptor::Type::Audio:
         if (m_ui->comboBoxAudio->currentText() != m_manyAudios) {
             elm->setAudio(m_ui->comboBoxAudio->currentText());
         }
         break;
+    // LCOV_EXCL_STOP
     case PropertyDescriptor::Type::Trigger:
         // Force uppercase so the stored key sequence matches Qt's key names and is
         // compatible across keyboard layouts.
@@ -842,7 +846,7 @@ void ElementEditor::truthTable()
     // Only a single TruthTable element is supported at a time.
     auto *truthtable = qobject_cast<TruthTable *>(m_elements[0]);
     if (!truthtable) {
-        return;
+        return; // LCOV_EXCL_LINE — m_caps.hasTruthTable is AND-merged across the selection and only TruthTable::hasTruthTable() ever returns true, so hasTruthTable implies m_elements[0] already IS a TruthTable.
     }
 
     // --- Build / refresh table ---

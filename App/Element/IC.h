@@ -34,6 +34,7 @@ class IC : public GraphicElement
     friend class TestArduino;
     friend class TestIC;
     friend class TestDanglingPointer;
+    friend class TestICController;
 
     /// Reach ic's internal-element/port vectors and protected GraphicElement members
     /// (pixmap(), portsBoundingRect(), setMax/MinInputSize/OutputSize(), etc.) directly;

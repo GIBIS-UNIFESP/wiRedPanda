@@ -21,4 +21,10 @@ private slots:
 
     // Regression: Phase 3 must refresh output-port visuals even with no wire attached
     void testUnconnectedOutputPortVisualUpdates();
+
+    void testInitializeReturnsFalseWithNoHost();
+    void testInitializeSkipsNullItemsAndFailsWithNoElements();
+    void testUpdatePortWithNullPortsAreNoOps();
+    void testCollectSequentialElementsSkipsNullElements();
+    void testUpdateFlushesPendingVisualsOnLaterIdleTick();
 };

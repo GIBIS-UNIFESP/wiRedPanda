@@ -20,4 +20,12 @@ private slots:
 
     // Regression: F19 — every TruthTable output gets emitted, not just 0
     void testTruthTableMultiOutput();
+
+    void testSRLatchCircuit();
+    void testGenerateTestbenchDeclaresSequentialState();
+    void testTooManyInputRotaryPositionsThrowsPinOverflow();
+    void testGenerateTestbenchUnwritablePathThrows();
+    void testTruthTableInputTiedToVccResolvesToHigh();
+    void testGenerateTestbenchNonSequentialSettleLoop();
+    void testDemuxWithFourOutputsUsesTwoSelectLines();
 };

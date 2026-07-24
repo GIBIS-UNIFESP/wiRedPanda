@@ -434,8 +434,13 @@ void ElementAppearance::setAppearanceAt(const int index, const QString &fileName
 
 void ElementAppearance::setAlternativeAppearanceAt(const int index, const QString &path)
 {
-    if (index < 0 || index >= m_alternativeAppearances.size()) {
-        return;
+    // Unreachable: every call site passes a provably in-range index -- GraphicElementInput
+    // (static_cast<int>(m_isOn), always 0/1 for its always-2-slot appearance list),
+    // InputRotary (hardcoded 0), Led (colorIndex(), always in its own valid range), and
+    // GraphicElementSerializer's two appearance-name loaders (which already throw on an
+    // out-of-range index *before* ever reaching this call).
+    if (index < 0 || index >= m_alternativeAppearances.size()) { // LCOV_EXCL_LINE
+        return; // LCOV_EXCL_LINE
     }
     m_alternativeAppearances[index] = path;
 }
@@ -458,7 +463,7 @@ QStringList ElementAppearance::externalFiles() const
         }
     }
     return result;
-}
+} // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned QStringList, never reached after the return above.
 
 void ElementAppearance::render(QPainter *painter, const QRectF &boundingRect, const bool selected) const
 {

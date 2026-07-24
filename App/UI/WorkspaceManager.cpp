@@ -554,13 +554,13 @@ bool WorkspaceManager::hasModifiedFiles()
 
     for (auto *workspace : workspaces) {
         auto *scene = workspace->scene();
-        if (!scene) {
-            continue;
+        if (!scene) { // LCOV_EXCL_LINE — unreachable: WorkSpace::scene() returns &m_scene (a value member's address), never null.
+            continue; // LCOV_EXCL_LINE — see above.
         }
 
         auto *undoStack = scene->undoStack();
-        if (!undoStack) {
-            continue;
+        if (!undoStack) { // LCOV_EXCL_LINE — unreachable: Scene::undoStack() returns &m_undoStack (a value member's address), never null.
+            continue; // LCOV_EXCL_LINE — see above.
         }
 
         // An un-clean undo stack means uncommitted edits since the last save.

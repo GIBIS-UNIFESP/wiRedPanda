@@ -23,4 +23,51 @@ private slots:
     // shadow IC's own double-click override -- ordinary virtual dispatch should guarantee
     // this, but it's asserted directly rather than assumed.
     void testDoubleClickOpensSubCircuitNotInlineEditor();
+
+    // ICSimulation's empty-IC and disconnected-input guards
+    void testUnloadedIcSimulationMethodsAreNoOps();
+    void testLoadedIcWithDisconnectedInputIsUnknown();
+
+    // ICRenderer's non-finite/degenerate-geometry defense-in-depth guards
+    void testGeneratePixmapWithNonFiniteBoundsIsNoOp();
+    void testGeneratePreviewPixmapWithNonFiniteBoundsIsNoOp();
+    void testGeneratePreviewPixmapWithDegenerateAspectRatioIsEmpty();
+
+    // ICPreviewPopup::executeShow() and showForIC()'s remaining branches
+    void testShowForIcNullIcIsNoOp();
+    void testShowForIcImmediateWhenAlreadyVisible();
+    void testExecuteShowWithNullPendingIcIsNoOp();
+    void testExecuteShowWithEmptyTitleAndNullPreviewHides();
+    void testExecuteShowWithTitleAndPreviewShowsBoth();
+    void testExecuteShowWithTitleButNullPreviewHidesImageOnly();
+    void testEnterEventCancelsHide();
+    void testLeaveEventSchedulesHide();
+
+    // IC::load()'s stale-portMap-key eviction (fuzz-hardening: reload shrinks port count)
+    void testReloadWithFewerPortsEvictsStalePortMapKeys();
+
+    // hoverEnterEvent()/hoverMoveEvent()'s "cursor over a port" branch
+    void testHoverOverPortRequestsPreviewHide();
+
+    // displayName() for an embedded (blob-backed) IC
+    void testDisplayNameForEmbeddedIc();
+
+    // ICLoader::loadFileDirectly()'s file-open and circular-reference guards
+    void testLoadFileDirectlyOpenFailureThrows();
+    void testLoadFileDetectsCircularSelfReference();
+
+    // ICLoader::migrateFile()'s write-open failure, and loadFileDirectly()'s
+    // itemsGuard cleanup of a still-live Connection when migration throws
+    void testMigrateFileOpenForWriteFailureThrowsAndCleansUpItems();
+
+    // loadBoundaryElement()'s port-name proxying for a boundary input with
+    // more than one port (e.g. InputRotary)
+    void testLoadBoundaryElementProxiesMultiOutputInputPortNames();
+
+    // loadBoundaryPorts()'s summary qCDebug, only emitted at verbosity >= 4
+    void testLoadBoundaryPortsLogsSummaryAtVerbosity();
+
+    // ICLoader::deserializeAndLoad()'s own nesting-depth guard (the blob-cache
+    // path's counterpart to loadFileDirectly()'s identical-purpose check)
+    void testDeserializeAndLoadEnforcesNestingDepthLimit();
 };

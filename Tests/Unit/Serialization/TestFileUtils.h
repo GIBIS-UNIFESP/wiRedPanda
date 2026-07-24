@@ -21,6 +21,11 @@ private slots:
     // Regression: D17 — copy failures must throw
     void testCopyToDirThrowsOnFailure();
 
+    // copyToDir's "source doesn't exist" and "source already lives in destDir" no-ops
+    void testCopyToDirNonExistentSourceIsNoOp();
+    void testCopyToDirSourceAlreadyInDestDirIsNoOp();
+
     // filesHaveSameContent — same-file vs name-collision detection
     void testFilesHaveSameContent();
+    void testFilesHaveSameContentUnreadableFileTreatedAsDifferent();
 };

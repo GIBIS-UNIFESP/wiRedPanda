@@ -26,6 +26,8 @@ class UpdateController : public QObject
 {
     Q_OBJECT
 
+    friend class TestUpdateController;
+
 public:
     /// \param parent Widget used to parent the modal update dialogs (and as QObject parent).
     explicit UpdateController(QWidget *parent);

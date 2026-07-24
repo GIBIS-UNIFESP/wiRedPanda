@@ -23,4 +23,9 @@ private slots:
     void testHintShownOnCompatibleDragEnter();
 
     void testAccessibleNameSet(); // #14 accessibility sweep
+
+    void testDropEventAcceptsLegacyMimeFormat();
+    void testDropEventIgnoresUnrecognizedMimeFormat();
+    void testResizeEventResizesHintOverlayToMatch();
+    void testDragMoveEventAlwaysAcceptsProposedAction();
 };

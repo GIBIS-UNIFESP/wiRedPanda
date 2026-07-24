@@ -74,6 +74,21 @@ private slots:
     void testWireVisibilityStateTracking();
     void testShowGatesWithMultipleElements();
     void testShowWiresWithMultipleConnections();
+    void testShowWiresTogglesNodeVisibility();
+    void testLastIdTracksHighestAssignedId();
+
+    // InlineLabelEditor: null-element guard, commit-previous-on-restart, and the
+    // empty-label bounding-rect fallback
+    void testInlineLabelEditorStartWithNullElementIsNoOp();
+    void testInlineLabelEditorStartWhileEditingCommitsPrevious();
+    void testInlineLabelEditorEmptyLabelUsesElementBoundingRectFallback();
+
+    // ClipboardManager: no-selection no-ops, and legacy clipboard mime-type fallbacks
+    void testCutWithNoSelectionClearsClipboard();
+    void testCloneDragWithNoSelectionIsNoOp();
+    void testDuplicateWithNoSelectionIsNoOp();
+    void testPasteLegacyUnversionedBlobRegistryFormat();
+    void testPasteClipboardLegacyItemFormat();
 
     // ============================================================
     // Topological Sort Tests (4 tests)
@@ -122,4 +137,41 @@ private slots:
     // resizeScene() quantizes the scene rect so small interaction steps yield
     // bit-identical rects -- any changed rect makes Qt's BSP index re-insert every item.
     void testResizeSceneQuantizesSceneRect();
+
+    // SceneInteraction, driven through Scene's real mouse-event pipeline (it has no public
+    // accessor of its own, so it's only reachable this way -- see the port-hover tests above
+    // for the same "no accessor, exercised via Scene" shape).
+    void testCtrlClickTogglesElementSelection();
+    void testPressOnPortWhileWireInProgressCompletesConnection();
+    void testPressOnEmptyInputPortStartsWireFromInput();
+    void testPressOnOccupiedInputPortDetachesWire();
+    void testRightClickOnElementOpensContextMenu();
+    void testDraggingElementPastTimerThresholdEnsuresVisible();
+    void testCtrlDoubleClickOnWireDoesNotInsertNode();
+    void testDoubleClickOnConnectedWireInsertsSplitNode();
+
+    // Scene.cpp's own remaining gaps (mostly reached via the friend seam added above,
+    // for protected/private overrides QCoreApplication::sendEvent() can't reach directly).
+    void testAddItemWithNullItemIsNoOp();
+    void testRemoveItemWithNullItemIsNoOp();
+    void testConnectionsReturnsRealConnections();
+    void testUpdateThemeUpdatesConnectionTheme();
+    void testCheckWireIdleRestoreReArmsWhileStillActive();
+    void testCheckWireIdleRestoreRestoresAfterBothWindowsElapse();
+    void testRestoreWireAntialiasingIsNoOpWhenAlreadyEnabled();
+    void testContextMenuOnSelectedItemEmitsWithoutClearingSelection();
+    void testContextMenuOnEmptyCanvasWithNothingToPasteOrSelect();
+    void testContextMenuOnEmptyCanvasWithPasteableClipboard();
+    void testDroppedPandaFileSkipsNonLocalUrls();
+    void testDragEnterEventAcceptsSupportedFormat();
+    void testDragEnterEventFallsBackForUnsupportedFormat();
+    void testDragMoveEventAcceptsSupportedFormat();
+    void testDragMoveEventFallsBackForUnsupportedFormat();
+    void testDropEventHandlesCloneDragFormat();
+    void testDropEventOpensDroppedPandaFile();
+    void testNudgeSelectionIgnoresCtrlAndAltModifiers();
+    void testKeyReleaseEventReleasesInputButtonTrigger();
+    void testEventFilterRemapsShiftClickToCtrlClick();
+    void testHelpEventShowsPortHoverLabelsOverPort();
+    void testHelpEventFallsBackForNonPortItem();
 };

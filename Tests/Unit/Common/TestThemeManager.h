@@ -42,4 +42,8 @@ private slots:
     void testDarkToLightPaletteSwitching();
     void testLightToDarkPaletteSwitching();
     void testRepeatedThemeSwitching();
+
+    void testSystemColorSchemeChangeReactsWhenThemeIsSystem();
+    void testSystemColorSchemeChangeIgnoredWhenThemeIsExplicit();
+    void testThemeAttributesSystemFallsBackToLight();
 };

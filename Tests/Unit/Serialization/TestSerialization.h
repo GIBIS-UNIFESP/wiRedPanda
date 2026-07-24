@@ -125,6 +125,52 @@ private slots:
     void testReadBoundedKeySequenceAcceptsMaxFourKeys();
     void testReadBoundedKeySequenceRejectsImplausibleCount();
 
+    // Bounded-reader implausible-size/count guards not otherwise exercised
+    void testReadVersionNumberRejectsImplausibleSegmentCount();
+    void testReadBoundedByteArrayRejectsImplausibleLength();
+    void testReadBoundedStringListRejectsImplausibleCount();
+    void testReadBoundedBitArrayRejectsImplausibleNumBits();
+    void testReadBoundedVariantTooShortForHeaderFallsBackToRawRead();
+    void testReadBoundedVariantRejectsVariantListType();
+    void testReadBoundedMetadataRejectsImplausibleCount();
+    void testReadBoundedBlobMapRejectsTruncatedCount();
+
+    // readPayload()'s compressed-size sanity guard
+    void testReadPayloadRejectsTooShortCompressedPayload();
+
+    // readPandaHeader()/readDolphinHeader()'s "no device" and malformed-legacy-header guards
+    void testReadPandaHeaderNoDeviceThrows();
+    void testReadPandaHeaderLegacyHeaderMissingVersionPartThrows();
+    void testReadDolphinHeaderNoDeviceThrows();
+    void testReadDolphinHeaderTruncatedLegacyHeaderThrows();
+    void testReadDolphinHeaderWrongAppNameThrows();
+
+    // deserialize()'s own truncation guards, for reads it makes directly (not delegated to a
+    // sub-loader with its own check)
+    void testDeserializeTruncatedTypeTagThrows();
+    void testDeserializeTruncatedElementTypeThrows();
+    void testDeserializeTruncatedOldFormatElementLoadThrows();
+
+    // loadDolphinFileName()'s pre-3.2 "none" sentinel normalization
+    void testLoadDolphinFileNameNormalizesNoneSentinelForOldVersions();
+
+    // createVersionedBackup()'s copy-failure guard
+    void testCreateVersionedBackupCopyFailureThrows();
+
+    // readPreamble()'s own post-metadata stream-status check
+    void testReadPreambleTruncatedMetadataThrows();
+
+    // typeName() -- reached only via a qCDebug() argument, which the disabled-by-default
+    // logging category never evaluates in tests; call it directly instead.
+    void testTypeNameMapsKnownTypesAndDefaultsForUnknown();
+
+    // copyPandaFile()'s error/early-return branches beyond what's already tested
+    void testCopyPandaFileCopyFailureThrows();
+    void testCopyPandaFileTruncatedLegacyHeaderIsSkipped();
+    void testCopyPandaFileNonWiredPandaTextHeaderIsSkipped();
+    void testCopyPandaFileCorruptButPlausibleHeaderIsSkipped();
+    void testCopyPandaFileOldVersionWithoutMetadataSupportIsSkipped();
+
 private:
     // Helper methods
     QByteArray saveToMemory(WorkSpace &workspace);

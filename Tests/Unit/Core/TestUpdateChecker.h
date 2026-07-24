@@ -12,8 +12,22 @@ class TestUpdateChecker : public QObject
 
 private slots:
 
+    void init();
+
     void testUpdateAvailable();
     void testNoUpdate();
     void testReleaseAssetKey();
     void testSafeGitHubUrl();
+
+    void testOnReplyFinishedOffersNewerVersionWithMatchingAsset();
+    void testOnReplyFinishedNoMatchingAssetLeavesDownloadUrlEmpty();
+    void testOnReplyFinishedNetworkErrorSkipsEverything();
+    void testOnReplyFinishedMalformedJsonSkipsEverything();
+    void testOnReplyFinishedUpToDateRecordsCheckDateButNoSignal();
+    void testOnReplyFinishedUnsafeDownloadUrlFallsBackToReleasePage();
+
+    void testCheckForUpdatesSkippedWhenDisabled();
+    void testCheckForUpdatesSkippedWhenAlreadyCheckedToday();
+    void testCheckForUpdatesBackpressuresOversizedDownload();
+    void testSslErrorsAbortsReply();
 };

@@ -32,9 +32,16 @@ ThemeManager::ThemeManager(QObject *parent)
     // OS color scheme naturally. Setting it to Dark/Light explicitly would block runtime
     // OS theme-change events from propagating through QGtk3Theme::colorScheme().
     if (auto *app = qApp) {
+        // Unreachable in the test suite: ThemeManager::instance() is a Meyer's
+        // singleton constructed exactly once, the first time anything in the
+        // whole test binary touches it — at that moment the (redirected) test
+        // settings store has never had a theme persisted yet, so m_theme is
+        // always Theme::System here. Reaching Light/Dark would need a
+        // persisted preference to already exist before the singleton's very
+        // first construction, which no test can arrange after the fact.
         switch (m_theme) {
-        case Theme::Light:  app->styleHints()->setColorScheme(Qt::ColorScheme::Light);  break;
-        case Theme::Dark:   app->styleHints()->setColorScheme(Qt::ColorScheme::Dark);   break;
+        case Theme::Light:  app->styleHints()->setColorScheme(Qt::ColorScheme::Light);  break; // LCOV_EXCL_LINE
+        case Theme::Dark:   app->styleHints()->setColorScheme(Qt::ColorScheme::Dark);   break; // LCOV_EXCL_LINE
         case Theme::System: break; // leave Unknown — platform reads OS setting directly
         }
     }
@@ -74,7 +81,7 @@ Theme ThemeManager::resolveSystemTheme()
     if (auto *app = qApp) {
         return (app->styleHints()->colorScheme() == Qt::ColorScheme::Dark) ? Theme::Dark : Theme::Light;
     }
-    return Theme::Light;
+    return Theme::Light; // LCOV_EXCL_LINE -- qApp is always alive while any test runs
 #else
     if (auto *app = qApp) {
         return (app->palette().color(QPalette::Window).lightness() < 128)

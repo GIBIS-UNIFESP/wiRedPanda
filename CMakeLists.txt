@@ -186,9 +186,16 @@ if(CCACHE_BIN)
     if(MSVC)
         # MSVC's default /Zi writes external .pdb files that ccache can't track,
         # so any RelWithDebInfo/Debug compile is uncacheable. /Z7 embeds debug
-        # info in each .obj instead, making the object cacheable. Release builds
-        # have no debug info either way.
-        set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<$<CONFIG:Debug,RelWithDebInfo>:Embedded>")
+        # info in each .obj instead, making the object cacheable. Also covers
+        # Release now: CI needs a real PDB to symbolicate a crashed test's
+        # minidump (see Scripts/ci_windows_dump_analyze.ps1) instead of a bare
+        # signal number, and a PDB helps Sentry symbolicate release crashes too
+        # -- neither the .pdb itself nor embedding this at compile time bloats
+        # the shipped .exe (that needs /DEBUG at link time too, see below).
+        set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<$<CONFIG:Debug,RelWithDebInfo,Release>:Embedded>")
+        # Without /DEBUG the linker doesn't emit a .pdb for a plain Release
+        # config at all, regardless of the compile-time format above.
+        add_link_options("$<$<CONFIG:Release>:/DEBUG>")
     endif()
     message(STATUS "Compiler cache (ccache) enabled")
 else()
@@ -660,18 +667,26 @@ add_library(test_utils STATIC ${TEST_UTILS_SOURCES} ${TEST_UTILS_HEADERS})
 target_link_libraries(test_utils PUBLIC "$<COMPILE_ONLY:wiredpanda_lib>")
 target_compile_definitions(test_utils PRIVATE CURRENTDIR=${CMAKE_CURRENT_SOURCE_DIR}/Tests)
 
-# Helper library for shared circuit builders (register file, memory tests)
-add_library(memory_helpers STATIC ${MEMORY_HELPERS_SOURCES} ${MEMORY_HELPERS_HEADERS})
-target_link_libraries(memory_helpers PUBLIC "$<COMPILE_ONLY:wiredpanda_lib>" test_utils)
-
 # ---- Single consolidated test executable ----
 # All test classes in one binary; CTest registers per-class entries.
 # Usage: ./build/test_wiredpanda ClassName [functionName]
 add_executable(test_wiredpanda ${TEST_WIREDPANDA_SOURCES} ${TEST_WIREDPANDA_HEADERS})
 link_wiredpanda_whole_archive(test_wiredpanda)
-target_link_libraries(test_wiredpanda PRIVATE test_utils wiredpanda_resources memory_helpers)
+target_link_libraries(test_wiredpanda PRIVATE test_utils wiredpanda_resources)
 target_compile_definitions(test_wiredpanda PRIVATE
     CURRENTDIR=${CMAKE_CURRENT_SOURCE_DIR}/Tests
+)
+
+# Copy JSON schema to the test executable's own directory too -- MCPProcessor locates it via
+# QCoreApplication::applicationDirPath(), and the copy above (attached to the `wiredpanda`
+# target) lands inside wiredpanda.app/Contents/MacOS/ on macOS (MACOSX_BUNDLE ON), nowhere near
+# test_wiredpanda's own (non-bundle) output directory.
+add_custom_command(TARGET test_wiredpanda POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+        ${CMAKE_SOURCE_DIR}/MCP/schema-mcp.json
+        $<TARGET_FILE_DIR:test_wiredpanda>/schema-mcp.json
+    COMMENT "Copying JSON schema to test executable directory"
+    VERBATIM
 )
 
 if(ENABLE_PCH)
@@ -774,7 +789,10 @@ add_test(NAME TestConnections COMMAND test_wiredpanda TestConnections WORKING_DI
 add_test(NAME TestDecoder8To256 COMMAND test_wiredpanda TestDecoder8To256 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestDialogs COMMAND test_wiredpanda TestDialogs WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestDisplays COMMAND test_wiredpanda TestDisplays WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestElementAppearance COMMAND test_wiredpanda TestElementAppearance WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestElementFactory COMMAND test_wiredpanda TestElementFactory WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestBaseHandler COMMAND test_wiredpanda TestBaseHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestConnectionHandler COMMAND test_wiredpanda TestConnectionHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestElementHandler COMMAND test_wiredpanda TestElementHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestElementLabel COMMAND test_wiredpanda TestElementLabel WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestElementLogic COMMAND test_wiredpanda TestElementLogic WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -784,14 +802,22 @@ add_test(NAME TestEnums COMMAND test_wiredpanda TestEnums WORKING_DIRECTORY ${CM
 add_test(NAME TestFeatures COMMAND test_wiredpanda TestFeatures WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestFeedback COMMAND test_wiredpanda TestFeedback WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestFileDialogProvider COMMAND test_wiredpanda TestFileDialogProvider WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestFileHandler COMMAND test_wiredpanda TestFileHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestFileHandlerSecurity COMMAND test_wiredpanda TestFileHandlerSecurity WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestFiles COMMAND test_wiredpanda TestFiles WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestGeometry COMMAND test_wiredpanda TestGeometry WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestGraphicElementSerializer COMMAND test_wiredpanda TestGraphicElementSerializer WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestGraphicelementAdvanced COMMAND test_wiredpanda TestGraphicelementAdvanced WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestIC COMMAND test_wiredpanda TestIC WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestICFixtureLayout COMMAND test_wiredpanda TestICFixtureLayout WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestHistoryHandler COMMAND test_wiredpanda TestHistoryHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestICHandler COMMAND test_wiredpanda TestICHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestICHandlerSecurity COMMAND test_wiredpanda TestICHandlerSecurity WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestMCPProcessor COMMAND test_wiredpanda TestMCPProcessor WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestMCPValidator COMMAND test_wiredpanda TestMCPValidator WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestServerInfoHandler COMMAND test_wiredpanda TestServerInfoHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestSimulationHandler COMMAND test_wiredpanda TestSimulationHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestThemeHandler COMMAND test_wiredpanda TestThemeHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestICInline COMMAND test_wiredpanda TestICInline WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestIcons COMMAND test_wiredpanda TestIcons WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestInputElements COMMAND test_wiredpanda TestInputElements WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -882,12 +908,14 @@ add_test(NAME TestRAMCell1Bit COMMAND test_wiredpanda TestRAMCell1Bit WORKING_DI
 add_test(NAME TestRecentFiles COMMAND test_wiredpanda TestRecentFiles WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestScene COMMAND test_wiredpanda TestScene WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSceneConnections COMMAND test_wiredpanda TestSceneConnections WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestSceneDropHandler COMMAND test_wiredpanda TestSceneDropHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSceneState COMMAND test_wiredpanda TestSceneState WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSceneUndoredo COMMAND test_wiredpanda TestSceneUndoredo WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSequential COMMAND test_wiredpanda TestSequential WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSequentialLogic COMMAND test_wiredpanda TestSequentialLogic WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSerialization COMMAND test_wiredpanda TestSerialization WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSettings COMMAND test_wiredpanda TestSettings WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestSignalDelegate COMMAND test_wiredpanda TestSignalDelegate WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSimulation COMMAND test_wiredpanda TestSimulation WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSimulationBlocker COMMAND test_wiredpanda TestSimulationBlocker WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestStatusOps COMMAND test_wiredpanda TestStatusOps WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -895,6 +923,7 @@ add_test(NAME TestSystemVerilogExport COMMAND test_wiredpanda TestSystemVerilogE
 add_test(NAME TestThemeManager COMMAND test_wiredpanda TestThemeManager WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestTruthTable COMMAND test_wiredpanda TestTruthTable WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestWaveform COMMAND test_wiredpanda TestWaveform WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestWaveformSimulator COMMAND test_wiredpanda TestWaveformSimulator WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestWirelessNode COMMAND test_wiredpanda TestWirelessNode WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestWorkspace COMMAND test_wiredpanda TestWorkspace WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestWorkspaceFileops COMMAND test_wiredpanda TestWorkspaceFileops WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -912,17 +941,24 @@ add_test(NAME TestDemux COMMAND test_wiredpanda TestDemux WORKING_DIRECTORY ${CM
 add_test(NAME TestDisplay COMMAND test_wiredpanda TestDisplay WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestDisplay7 COMMAND test_wiredpanda TestDisplay7 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestDolphinClipboard COMMAND test_wiredpanda TestDolphinClipboard WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestDolphinEdits COMMAND test_wiredpanda TestDolphinEdits WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestDolphinExporter COMMAND test_wiredpanda TestDolphinExporter WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestDolphinFile COMMAND test_wiredpanda TestDolphinFile WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestDolphinModelBuilder COMMAND test_wiredpanda TestDolphinModelBuilder WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestDolphinSerializer COMMAND test_wiredpanda TestDolphinSerializer WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestDolphinZoom COMMAND test_wiredpanda TestDolphinZoom WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestDragDropPayload COMMAND test_wiredpanda TestDragDropPayload WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestElementContextMenu COMMAND test_wiredpanda TestElementContextMenu WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestElementEditor COMMAND test_wiredpanda TestElementEditor WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestElementPalette COMMAND test_wiredpanda TestElementPalette WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestElementTabNavigator COMMAND test_wiredpanda TestElementTabNavigator WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestExportController COMMAND test_wiredpanda TestExportController WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestFileDialogProviderUnit COMMAND test_wiredpanda TestFileDialogProviderUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestFileUtils COMMAND test_wiredpanda TestFileUtils WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestGraphicElement COMMAND test_wiredpanda TestGraphicElement WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestGraphicsView COMMAND test_wiredpanda TestGraphicsView WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestICDropZone COMMAND test_wiredpanda TestICDropZone WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestICController COMMAND test_wiredpanda TestICController WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestICRegistry COMMAND test_wiredpanda TestICRegistry WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestICUnit COMMAND test_wiredpanda TestICUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLabeledSlider COMMAND test_wiredpanda TestLabeledSlider WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -931,11 +967,14 @@ add_test(NAME TestMux COMMAND test_wiredpanda TestMux WORKING_DIRECTORY ${CMAKE_
 add_test(NAME TestPort COMMAND test_wiredpanda TestPort WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestPropertyShortcutHandler COMMAND test_wiredpanda TestPropertyShortcutHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestRecentFilesUnit COMMAND test_wiredpanda TestRecentFilesUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestSceneUiBinder COMMAND test_wiredpanda TestSceneUiBinder WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSelectionCapabilities COMMAND test_wiredpanda TestSelectionCapabilities WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSimulationUnit COMMAND test_wiredpanda TestSimulationUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestDanglingPointer COMMAND test_wiredpanda TestDanglingPointer WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSystemVerilogCodeGenUnit COMMAND test_wiredpanda TestSystemVerilogCodeGenUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestTrashButton COMMAND test_wiredpanda TestTrashButton WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestUpdateController COMMAND test_wiredpanda TestUpdateController WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestWorkspaceManager COMMAND test_wiredpanda TestWorkspaceManager WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestExerciseTourResources COMMAND test_wiredpanda TestExerciseTourResources WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestExternalFilePath COMMAND test_wiredpanda TestExternalFilePath WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestInstallRelativePaths COMMAND test_wiredpanda TestInstallRelativePaths WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -996,8 +1035,8 @@ endforeach()
 
 # Element and Component Unit Tests - Unit category
 foreach(TEST TestBewavedDolphinGui TestAudioBox TestBuzzer TestClock TestClocksAdvanced TestComponents TestDisplays
-        TestElementLabel TestElementProperties TestFeatures TestGeometry
-        TestGraphicelementAdvanced TestIcons TestInputElements TestInputRotary TestLED
+        TestElementAppearance TestElementLabel TestElementProperties TestFeatures TestGeometry
+        TestGraphicElementSerializer TestGraphicelementAdvanced TestIcons TestInputElements TestInputRotary TestLED
         TestLogicGates TestMultiplexing TestSequentialLogic TestTruthTable TestWaveform
         TestWirelessNode)
     set_tests_properties(${TEST} PROPERTIES LABELS "unit")
@@ -1016,7 +1055,7 @@ foreach(TEST TestConnections TestConnectionSerialization TestConnectionValidity 
 endforeach()
 
 # Tests that touch the system clipboard must not run in parallel (Windows OLE contention).
-set_tests_properties(TestScene TestSceneUndoredo PROPERTIES RESOURCE_LOCK clipboard)
+set_tests_properties(TestScene TestSceneUndoredo TestICInline TestDolphinClipboard PROPERTIES RESOURCE_LOCK clipboard)
 
 # Serialization and Command Tests - Integration category
 foreach(TEST TestSerialization TestSimulationBlocker)
@@ -1036,7 +1075,7 @@ foreach(TEST TestCommands TestCommon TestEnums TestNotifyCatch TestPriorities Te
 endforeach()
 
 # GUI tests run sequentially after all other tests complete
-set(GUI_TESTS TestDialogs TestFileDialogProvider TestMainWindowGui TestBewavedDolphinGui)
+set(GUI_TESTS TestDialogs TestFileDialogProvider TestFileDialogProviderUnit TestMainWindowGui TestBewavedDolphinGui TestUpdateController TestElementContextMenu)
 set(ALL_TESTS
     TestCPUAlu TestCPUBranch TestCPUControlUnit TestCPUDecoders
     TestCPUInstructionExecute TestCPUInstructionFetch TestCPUIntegration
@@ -1071,8 +1110,8 @@ set(ALL_TESTS
     TestArduino TestFeedback TestFiles TestIC TestICInline
     TestSimulation TestSystemVerilogExport TestWorkspace TestWorkspaceFileops
     TestIcons TestWaveform TestAudioBox TestBuzzer TestClock TestClocksAdvanced
-    TestComponents TestDisplays TestElementLabel TestElementProperties TestFeatures
-    TestGeometry TestGraphicelementAdvanced TestInputElements TestInputRotary TestLED
+    TestComponents TestDisplays TestElementAppearance TestElementLabel TestElementProperties TestFeatures
+    TestGeometry TestGraphicElementSerializer TestGraphicelementAdvanced TestInputElements TestInputRotary TestLED
     TestLogicGates TestMultiplexing TestSequentialLogic TestTruthTable TestWirelessNode
     TestElementFactory TestElementLogic TestElementLogicErrors TestNodeLogic TestStatusOps
     TestConnectionSerialization TestConnectionValidity TestConnections TestScene
@@ -1083,14 +1122,15 @@ set(ALL_TESTS
     TestApplication TestCoreSettings TestDragDropPayload TestExerciseTourResources
     TestExternalFilePath TestInstallRelativePaths TestUpdateChecker
     TestArduinoCodeGenUnit TestCodeGenUtils TestSystemVerilogCodeGenUnit
-    TestCircuitExporter TestElementContextMenu TestElementEditor TestElementPalette
-    TestElementTabNavigator TestFileDialogProviderUnit TestICDropZone TestLabeledSlider
-    TestLanguageManager TestMinimapWidget TestSelectionCapabilities
-    TestTrashButton
-    TestConnection TestConnectionManager TestGraphicsView TestPropertyShortcutHandler TestPort
+    TestCircuitExporter TestElementEditor TestElementPalette
+    TestElementTabNavigator TestExportController TestICController TestICDropZone TestLabeledSlider
+    TestLanguageManager TestMinimapWidget TestSceneUiBinder TestSelectionCapabilities
+    TestTrashButton TestWorkspaceManager
+    TestConnection TestConnectionManager TestGraphicsView TestPropertyShortcutHandler TestPort TestSceneDropHandler
     TestDemux TestDisplay TestDisplay7 TestGraphicElement TestICRegistry TestICUnit TestMux
-    TestDolphinClipboard TestDolphinSerializer TestFileUtils TestRecentFilesUnit
-    TestFileHandlerSecurity TestICHandlerSecurity TestMCPProcessor TestElementHandler
+    TestDolphinClipboard TestDolphinEdits TestDolphinExporter TestDolphinFile TestDolphinModelBuilder
+    TestDolphinSerializer TestDolphinZoom TestSignalDelegate TestWaveformSimulator TestFileUtils TestRecentFilesUnit
+    TestFileHandlerSecurity TestICHandlerSecurity TestMCPProcessor TestMCPValidator TestElementHandler TestBaseHandler TestThemeHandler TestHistoryHandler TestServerInfoHandler TestConnectionHandler TestSimulationHandler TestFileHandler TestICHandler
     TestExerciseEngine TestTourEngine
     TestSimulationUnit TestWorkspaceUnit
     TestICFixtureLayout)

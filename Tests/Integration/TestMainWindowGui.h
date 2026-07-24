@@ -161,6 +161,7 @@ private slots:
     void testPropertyCycleMain();
     void testToggleInputDuringSimulation();
     void testInputButtonMomentary();
+    void testInputButtonMousePressReleaseIsMomentary();
     void testRapidSimulationToggle();
     void testOpenSameFileTwice();
     void testOpenSameFileFromDifferentDirs();
@@ -222,6 +223,31 @@ private slots:
     // --- Deep-review regressions ---
 
     void testRecoveredAutosaveCountsAsModifiedF6();
+
+    // --- MainWindow.cpp coverage completion ---
+
+    void testConstructorWithFileNameArgumentLoadsFile();
+    void testExamplesMenuHiddenWhenNoExamplesDirectoryFound();
+    void testPopulateContentMenuOpenFolderAction();
+    void testEditSubcircuitRequestedOpensICTab();
+    void testReportTranslationErrorOpensWeblate();
+    void testCloseEventClosesAfterConfirmedSave();
+    void testCloseEventIgnoredWhenCancelled();
+    void testWidgetAndDolphinHostAccessors();
+    void testActionsAreNoOpsWithNoCurrentTab();
+    void testAlignDistributeFlipZoomToFitActionsWithTab();
+    void testExerciseOverlayDetachesAndReattachesAcrossTabSwitch();
+    void testExportWrapperMethodsDelegateToController();
+    void testRetranslateUiHandlesInlineIcAndElementsAndEngines();
+    void testPopulateLanguageMenuSwitchesLanguage();
+    void testWaveformActionRaisesExistingWindow();
+    void testWindowActivateDeactivateTogglesSimulation();
+    void testDolphinFileNameAccessors();
+    void testActionICPreviewTogglesSetting();
+    void testClickTargetDrivesEachKnownId();
+    void testResolveTourTargetForEachKnownId();
+    void testStartExerciseDrivesClickTargetsAndOverlayParenting();
+    void testStartTourDrivesClickTargetsAndOverlayParenting();
 
 private:
     QTemporaryDir m_tempDir;

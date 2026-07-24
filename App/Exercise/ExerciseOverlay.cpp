@@ -110,48 +110,22 @@ void ExerciseOverlay::applyTheme()
         m_hintColor    = QColor(255, 255, 180, 230);
         m_counterColor = QColor(255, 255, 255, 200);
 
-        const QString navStyle =
-            QString("QPushButton { color: white; background: rgba(255,255,255,40);"
-                     " border: 1px solid rgba(255,255,255,80); border-radius: 4px;"
-                     " padding: 3px 10px; font-size: %1px; }"
-                     "QPushButton:hover { background: rgba(255,255,255,60); }"
-                     "QPushButton:disabled { color: rgba(255,255,255,80); background: rgba(80,80,80,60); }")
-                .arg(navFontPx);
+        const QString navStyle = QString("QPushButton { color: white; background: rgba(255,255,255,40); border: 1px solid rgba(255,255,255,80); border-radius: 4px; padding: 3px 10px; font-size: %1px; } QPushButton:hover { background: rgba(255,255,255,60); } QPushButton:disabled { color: rgba(255,255,255,80); background: rgba(80,80,80,60); }").arg(navFontPx);
         m_closeButton->setStyleSheet(navStyle);
         m_hintButton->setStyleSheet(navStyle);
         m_prevButton->setStyleSheet(navStyle);
-        m_nextButton->setStyleSheet(
-            QString("QPushButton { color: white; background: rgba(60,150,60,180);"
-                     " border: 1px solid rgba(255,255,255,80); border-radius: 4px;"
-                     " padding: 3px 10px; font-size: %1px; }"
-                     "QPushButton:hover { background: rgba(60,180,60,200); }"
-                     "QPushButton:disabled { background: rgba(100,100,100,80);"
-                     " color: rgba(255,255,255,100); }")
-                .arg(navFontPx));
+        m_nextButton->setStyleSheet(QString("QPushButton { color: white; background: rgba(60,150,60,180); border: 1px solid rgba(255,255,255,80); border-radius: 4px; padding: 3px 10px; font-size: %1px; } QPushButton:hover { background: rgba(60,180,60,200); } QPushButton:disabled { background: rgba(100,100,100,80); color: rgba(255,255,255,100); }").arg(navFontPx));
     } else {
         m_bgColor      = QColor(245, 245, 245, 230);
         m_textColor    = QColor(20, 20, 20);
         m_hintColor    = QColor(110, 90, 0, 230);
         m_counterColor = QColor(80, 80, 80, 200);
 
-        const QString navStyle =
-            QString("QPushButton { color: rgb(20,20,20); background: rgba(0,0,0,20);"
-                     " border: 1px solid rgba(0,0,0,80); border-radius: 4px;"
-                     " padding: 3px 10px; font-size: %1px; }"
-                     "QPushButton:hover { background: rgba(0,0,0,40); }"
-                     "QPushButton:disabled { color: rgba(0,0,0,60); background: rgba(0,0,0,10); }")
-                .arg(navFontPx);
+        const QString navStyle = QString("QPushButton { color: rgb(20,20,20); background: rgba(0,0,0,20); border: 1px solid rgba(0,0,0,80); border-radius: 4px; padding: 3px 10px; font-size: %1px; } QPushButton:hover { background: rgba(0,0,0,40); } QPushButton:disabled { color: rgba(0,0,0,60); background: rgba(0,0,0,10); }").arg(navFontPx);
         m_closeButton->setStyleSheet(navStyle);
         m_hintButton->setStyleSheet(navStyle);
         m_prevButton->setStyleSheet(navStyle);
-        m_nextButton->setStyleSheet(
-            QString("QPushButton { color: white; background: rgba(40,130,40,220);"
-                     " border: 1px solid rgba(0,100,0,150); border-radius: 4px;"
-                     " padding: 3px 10px; font-size: %1px; }"
-                     "QPushButton:hover { background: rgba(40,160,40,230); }"
-                     "QPushButton:disabled { background: rgba(150,150,150,80);"
-                     " color: rgba(255,255,255,120); }")
-                .arg(navFontPx));
+        m_nextButton->setStyleSheet(QString("QPushButton { color: white; background: rgba(40,130,40,220); border: 1px solid rgba(0,100,0,150); border-radius: 4px; padding: 3px 10px; font-size: %1px; } QPushButton:hover { background: rgba(40,160,40,230); } QPushButton:disabled { background: rgba(150,150,150,80); color: rgba(255,255,255,120); }").arg(navFontPx));
     }
 
     m_stepCounter->setStyleSheet(

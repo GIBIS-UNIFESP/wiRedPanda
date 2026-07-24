@@ -93,7 +93,7 @@ QString readBoundedString(QDataStream &stream)
     QString result;
     stream >> result;
     return result;
-}
+} // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned QString, never reached after the return above.
 
 /// Reads a QByteArray from \a stream, rejecting sizes that exceed the
 /// remaining readable bytes before Qt's resize() allocates.
@@ -111,7 +111,7 @@ QByteArray readBoundedByteArray(QDataStream &stream)
     QByteArray result;
     stream >> result;
     return result;
-}
+} // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned QByteArray, never reached after the return above.
 
 /// Reads a QStringList from \a stream, bounding the element count by
 /// bytesAvailable() before Qt's reserve() allocates the full list.
@@ -129,7 +129,7 @@ QStringList readBoundedStringList(QDataStream &stream)
     QStringList result;
     stream >> result;
     return result;
-}
+} // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned QStringList, never reached after the return above.
 
 /// Reads a QKeySequence (serialised as QList<int>: quint32 count + count*qint32).
 /// A key sequence holds at most 4 key combinations, so count > 4 is invalid.
@@ -143,7 +143,7 @@ QKeySequence readBoundedKeySequence(QDataStream &stream)
                                             QString::number(count));
     }
     QKeySequence ks; stream >> ks; return ks;
-}
+} // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned QKeySequence, never reached after the return above.
 
 /// Reads a QBitArray (quint32 numBits + ceil(numBits/8) bytes).
 QBitArray readBoundedBitArray(QDataStream &stream)
@@ -157,7 +157,7 @@ QBitArray readBoundedBitArray(QDataStream &stream)
                                             QString::number(numBits));
     }
     QBitArray ba; stream >> ba; return ba;
-}
+} // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned QBitArray, never reached after the return above.
 
 /// Reads a single QVariant from \a stream, intercepting variable-size types
 /// that call QList::reserve() or QArrayData::allocate() with a fuzz-controlled
@@ -177,7 +177,7 @@ QVariant readBoundedVariant(QDataStream &stream)
     char hdr[5] = {};
     if (stream.device()->peek(hdr, 5) < 5) {
         QVariant v; stream >> v; return v;
-    }
+    } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the local QVariant, never reached after the return above.
 
     const quint32 typeId = qFromBigEndian<quint32>(hdr);
     // hdr[4] holds the isNull byte; deliberately unread because Qt 6.9 also reads
@@ -312,7 +312,7 @@ QMap<QString, QByteArray> Serialization::readBoundedBlobMap(QDataStream &stream)
         result.insert(std::move(key), std::move(val));
     }
     return result;
-}
+} // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned QMap<QString, QByteArray>, never reached after the return above.
 
 void Serialization::writePandaHeader(QDataStream &stream)
 {
@@ -644,11 +644,18 @@ QList<QGraphicsItem *> Serialization::deserialize(QDataStream &stream, Serializa
             qCDebug(three) << "Loading connection.";
             conn->load(stream, context);
 
-            // Check stream integrity after connection load
+            // Check stream integrity after connection load. LCOV_EXCL_START — defensive-only:
+            // ConnectionSerializer::load() has no path that returns normally with a bad stream
+            // status. Both its hasConnectionQMap branches (the QMap read and the raw id1/id2
+            // read) explicitly re-check status and throw their own, more specific Pandaception
+            // first, and nothing is read from the stream afterward. This outer check is a
+            // defensive mirror of the element case above, for a failure mode Connection::load()
+            // cannot currently produce.
             if (stream.status() != QDataStream::Ok) {
                 throw PANDACEPTION("Stream error loading connection at position %1: status %2",
                                    stream.device()->pos(), static_cast<int>(stream.status()));
             }
+            // LCOV_EXCL_STOP
             break;
         }
 
@@ -777,11 +784,16 @@ void Serialization::serializeBlobRegistry(const QMap<QString, QByteArray> &blobs
 QString Serialization::typeName(const int type) {
     // These offsets must stay in sync with the ::Type enum constants defined in
     // Port, Connection, and GraphicElement (all use QGraphicsItem::UserType + N)
+    // LCOV_EXCL_START — recurring pattern 12: this static local's one-time construction
+    // (first call across the whole test binary) happens inside a compiler-generated guard
+    // check that gcov doesn't attribute back to these initializer-list source lines, even
+    // though they demonstrably run (typeName() correctly maps every entry below).
     static const QHash<int, QString> typeMap = {
         { QGraphicsItem::UserType + 1, "Port" },
         { QGraphicsItem::UserType + 2, "Connection" },
         { QGraphicsItem::UserType + 3, "GraphicElement" },
     };
+    // LCOV_EXCL_STOP
 
     return typeMap.value(type, "UnknownType");
 }

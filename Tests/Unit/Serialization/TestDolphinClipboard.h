@@ -18,4 +18,7 @@ private slots:
     // paste loop for eons instead of failing fast.
     void testPasteTruncatesImplausibleItemCount();
     void testPasteWithNoDataDoesNothing();
+
+    void testPasteFromClipboardAcceptsLegacyMimeType();
+    void testPasteFromClipboardReturnsFalseWhenEmpty();
 };

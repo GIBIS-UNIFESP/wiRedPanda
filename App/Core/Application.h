@@ -45,6 +45,8 @@ class Application : public QApplication
 {
     Q_OBJECT
 
+    friend class TestApplication;
+
 public:
     /**
      * \brief Constructs the application with command-line arguments.

@@ -10,11 +10,15 @@
 
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
+#include "App/Element/GraphicElements/InputGND.h"
+#include "App/Element/GraphicElements/InputVCC.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Element/PropertyDescriptor.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
+#include "App/Scene/Workspace.h"
 #include "App/Wiring/Port.h"
+#include "Tests/Common/TestUtils.h"
 
 void TestWirelessNode::testDefaultModeIsNone()
 {
@@ -517,4 +521,33 @@ void TestWirelessNode::testSaveLoadTxPortVisibility()
     QCOMPARE(node2->wirelessMode(), WirelessMode::Tx);
     QVERIFY(node2->inputPort()->isVisible());
     QVERIFY(!node2->outputPort()->isVisible());
+}
+
+void TestWirelessNode::testWirelessIndicatorHandlesBusConflictError()
+{
+    // updateWirelessColor()'s Status::Error case is only reachable via a genuine
+    // multi-driver bus conflict (two real Connections into the same input port) --
+    // ElementSimState::updateInputs() only produces Error that way, never through
+    // the connectPredecessor() shortcut other tests use.
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    CircuitBuilder builder(scene);
+
+    auto *node = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    QVERIFY(node != nullptr);
+    node->setWirelessMode(WirelessMode::Tx); // creates m_wirelessIndicator
+
+    InputVcc vcc;
+    InputGnd gnd;
+    builder.add(node, &vcc, &gnd);
+    builder.connect(&vcc, 0, node, 0);
+    builder.connect(&gnd, 0, node, 0); // second driver on the same input -> bus conflict
+
+    QCOMPARE(node->inputPort()->connections().size(), 2);
+    QVERIFY(!node->inputPort()->isValid());
+
+    auto *sim = builder.initSimulation();
+    sim->update();
+
+    QCOMPARE(node->outputPort()->status(), Status::Error);
 }

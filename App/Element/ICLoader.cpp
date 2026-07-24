@@ -29,7 +29,7 @@ bool comparePorts(Port *port1, Port *port2)
     auto *elem1 = port1->graphicElement();
     auto *elem2 = port2->graphicElement();
     if (!elem1 || !elem2) {
-        return false;
+        return false; // LCOV_EXCL_LINE — ElementPorts::addPort() unconditionally calls setGraphicElement() right after constructing a port, so every port reachable here already has a non-null owner.
     }
 
     // Primary sort: top-to-bottom by parent element Y, then left-to-right by X.
@@ -60,7 +60,7 @@ void buildPortLabels(const QVector<Port *> &ports, QVector<QString> &labels)
         auto *port = ports.at(i);
         auto *elm = port->graphicElement();
         if (!elm) {
-            continue;
+            continue; // LCOV_EXCL_LINE — same invariant as comparePorts() above: every port has a non-null owner from construction onward.
         }
         QString lb = elm->label();
 
@@ -244,7 +244,12 @@ void ICLoader::migrateFile(const QFileInfo &fileInfo, const QList<QGraphicsItem 
     Serialization::writePandaHeader(outStream);
     Serialization::writePayload(outStream, payload);
     if (!saveFile.commit()) {
-        throw PANDACEPTION("IC migration: failed to commit re-saved file: %1", fileInfo.absoluteFilePath());
+        // Not deterministically reachable from a single-user test process: QSaveFile::open()
+        // above already rejects an existing non-regular-file destination up front, so the
+        // remaining commit()-only failure modes (e.g. losing rename permission on the
+        // destination between open() and commit()) need a second OS user or root — same class
+        // of gap as DolphinFile::save()'s identical guard.
+        throw PANDACEPTION("IC migration: failed to commit re-saved file: %1", fileInfo.absoluteFilePath()); // LCOV_EXCL_LINE
     }
 }
 
@@ -273,7 +278,7 @@ void ICLoader::processLoadedItems(IC &ic, QList<QGraphicsItem *> &items)
 
         auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
         if (!elm) {
-            continue;
+            continue; // LCOV_EXCL_LINE — the Connection case above already handled the only other type Serialization::deserialize() ever produces; every remaining item is a GraphicElement.
         }
 
         // Input/Output elements become the IC's external ports; everything else is internal logic
@@ -329,12 +334,20 @@ void ICLoader::deserializeAndLoad(IC &ic, const QByteArray &bytes, const QString
     QList<QGraphicsItem *> items = Serialization::deserialize(elementsStream, subCtx);
 
     // See loadFileDirectly()'s itemsGuard for why this nulls connections
-    // before qDeleteAll() and why it's a no-op on the success path.
+    // before qDeleteAll() and why it's a no-op on the success path. Unlike
+    // loadFileDirectly() (whose migrateFile() call can throw between items being
+    // populated and processLoadedItems() draining them), nothing on this path can
+    // currently throw in that window: resetInternalState() only asserts already-
+    // guaranteed invariants, and processLoadedItems()'s one step before its drain
+    // loop (generatePreviewPixmap()) has no throwing path of its own. The
+    // Connection-first deletion order below is therefore unreached today — kept
+    // for structural symmetry with loadFileDirectly()'s identical-purpose guard,
+    // which genuinely needs it.
     auto itemsGuard = qScopeGuard([&items] {
         for (qsizetype i = 0; i < items.size(); ++i) {
-            if (items[i] && items[i]->type() == Connection::Type) {
-                delete items[i];
-                items[i] = nullptr;
+            if (items[i] && items[i]->type() == Connection::Type) { // LCOV_EXCL_LINE
+                delete items[i]; // LCOV_EXCL_LINE
+                items[i] = nullptr; // LCOV_EXCL_LINE
             }
         }
         qDeleteAll(items);

@@ -45,4 +45,10 @@ private slots:
     // ElementGroup Enum Tests (2 tests)
     void testElementGroupValues();
     void testElementGroupToString();
+
+    // Q_ENUM/QMetaEnum registration for every enum declared in Enums.h
+    void testAllEnumsExposeMetaEnum();
+
+    // WirelessMode had no dedicated test at all.
+    void testWirelessModeValues();
 };

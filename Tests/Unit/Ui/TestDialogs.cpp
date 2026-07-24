@@ -89,6 +89,17 @@ void TestDialogs::testClockDialogPeriodReturnValue()
     QCOMPARE(dialog2.period(), 256);
 }
 
+void TestDialogs::testClockDialogHeapAllocationDeletesCleanly()
+{
+    // Every other test (and every production caller) stack-allocates this dialog, which only
+    // ever invokes the base-object destructor. `delete` through a pointer instead dispatches
+    // through the virtual-destructor's separate "deleting destructor" entry point -- a
+    // distinct compiled function this is the only test to exercise.
+    auto *dialog = new ClockDialog(100);
+    QCOMPARE(dialog->period(), 100);
+    delete dialog;
+}
+
 // ============================================================================
 // LengthDialog Tests (5 tests)
 // ============================================================================
@@ -160,6 +171,14 @@ void TestDialogs::testLengthDialogReturnValue()
     QTimer::singleShot(0, &dialog2, &QDialog::accept);
     QCOMPARE(dialog2.exec(), static_cast<int>(QDialog::Accepted));
     QCOMPARE(dialog2.length(), 128);
+}
+
+void TestDialogs::testLengthDialogHeapAllocationDeletesCleanly()
+{
+    // See TestDialogs::testClockDialogHeapAllocationDeletesCleanly() -- same reasoning.
+    auto *dialog = new LengthDialog(64);
+    QCOMPARE(dialog->length(), 64);
+    delete dialog;
 }
 
 void TestDialogs::testLengthDialogTitleAndRangeLabels()

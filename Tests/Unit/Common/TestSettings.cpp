@@ -177,3 +177,81 @@ void TestSettings::testTypedAutosaveFiles()
     Settings::setAutosaveFiles(autosaveFiles);
     QCOMPARE(Settings::autosaveFiles(), autosaveFiles);
 }
+
+void TestSettings::testTypedHideV4Warning()
+{
+    // Fresh store: not hidden by default.
+    QCOMPARE(Settings::hideV4Warning(), false);
+
+    Settings::setHideV4Warning(true);
+    QCOMPARE(Settings::hideV4Warning(), true);
+
+    // setHideV4Warning(false) removes the key outright rather than storing
+    // "false" (so a stale "true" from an older release can't linger under a
+    // different key casing/format) — verify the round trip back to unhidden.
+    Settings::setHideV4Warning(false);
+    QCOMPARE(Settings::hideV4Warning(), false);
+}
+
+void TestSettings::testTypedUpdateCheckLastDate()
+{
+    QCOMPARE(Settings::updateCheckLastDate(), QString());
+
+    Settings::setUpdateCheckLastDate("2026-07-19");
+    QCOMPARE(Settings::updateCheckLastDate(), QString("2026-07-19"));
+}
+
+void TestSettings::testTypedUpdateCheckSkippedVersion()
+{
+    QCOMPARE(Settings::updateCheckSkippedVersion(), QString());
+
+    Settings::setUpdateCheckSkippedVersion("5.2.0");
+    QCOMPARE(Settings::updateCheckSkippedVersion(), QString("5.2.0"));
+}
+
+void TestSettings::testTypedCompletedExercises()
+{
+    QVERIFY(Settings::completedExercises().isEmpty());
+
+    const QStringList ids = {"level1_and_gate", "level2_half_adder"};
+    Settings::setCompletedExercises(ids);
+    QCOMPARE(Settings::completedExercises(), ids);
+}
+
+void TestSettings::testTypedCompletedTours()
+{
+    QVERIFY(Settings::completedTours().isEmpty());
+
+    const QStringList ids = {"welcome_tour", "wiring_tour"};
+    Settings::setCompletedTours(ids);
+    QCOMPARE(Settings::completedTours(), ids);
+}
+
+void TestSettings::testTypedMinimapVisible()
+{
+    // Fresh store: visible by default.
+    QCOMPARE(Settings::minimapVisible(), true);
+
+    Settings::setMinimapVisible(false);
+    QCOMPARE(Settings::minimapVisible(), false);
+
+    Settings::setMinimapVisible(true);
+    QCOMPARE(Settings::minimapVisible(), true);
+}
+
+void TestSettings::testThemeOutOfRangeFallsBackToSystem()
+{
+    // Settings::setTheme() can never itself write an out-of-range value; this
+    // simulates a corrupted/future settings file (e.g. downgrading from a
+    // release that added a new Theme enumerator) by writing the raw int
+    // directly, bypassing the typed setter.
+    QSettings appSettings(Settings::fileName(), QSettings::IniFormat);
+    appSettings.setValue("theme", 99);
+    appSettings.sync();
+
+    QCOMPARE(Settings::theme(), Theme::System);
+
+    appSettings.setValue("theme", -1);
+    appSettings.sync();
+    QCOMPARE(Settings::theme(), Theme::System);
+}

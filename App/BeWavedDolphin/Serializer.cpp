@@ -60,7 +60,7 @@ WaveformData loadBinary(QDataStream &stream, const int maxInputPorts)
     }
 
     return data;
-}
+} // LCOV_EXCL_LINE -- compiler-generated WaveformData cleanup for an exception path loadBinary() never takes
 
 void saveCSV(QSaveFile &file, const QStandardItemModel *model)
 {

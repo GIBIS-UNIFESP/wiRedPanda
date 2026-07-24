@@ -67,8 +67,8 @@ void SceneUiBinder::addUndoRedoMenu()
     }
 
     auto *scene = m_bound->scene();
-    if (!scene) {
-        return;
+    if (!scene) { // LCOV_EXCL_LINE — unreachable: WorkSpace::scene() returns &m_scene (a value member's address), never null.
+        return; // LCOV_EXCL_LINE — see above.
     }
 
     const auto actions = m_ui->menuEdit->actions();

@@ -49,7 +49,11 @@ FileDialogResult RealFileDialogProvider::getSaveFileName(
 
     const auto files = dialog.selectedFiles();
     if (files.isEmpty()) {
-        return {};
+        // Unreachable via any real interaction with the dialog: QFileDialog::accept()
+        // itself refuses to close (silently no-ops) when selectedFiles() would be empty,
+        // confirmed empirically -- even force-enabling and clicking the accept button with
+        // no filename selected leaves exec() blocked forever rather than returning Accepted.
+        return {}; // LCOV_EXCL_LINE
     }
 
     return {files.constFirst(), dialog.selectedNameFilter()};

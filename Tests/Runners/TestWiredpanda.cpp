@@ -141,12 +141,14 @@
 #include "Tests/Unit/Elements/TestDisplay.h"
 #include "Tests/Unit/Elements/TestDisplay7.h"
 #include "Tests/Unit/Elements/TestGraphicElement.h"
+#include "Tests/Unit/Elements/TestGraphicElementSerializer.h"
 #include "Tests/Unit/Elements/TestIC.h"
 #include "Tests/Unit/Elements/TestBuzzer.h"
 #include "Tests/Unit/Elements/TestClock.h"
 #include "Tests/Unit/Elements/TestClocksAdvanced.h"
 #include "Tests/Unit/Elements/TestComponents.h"
 #include "Tests/Unit/Elements/TestDisplays.h"
+#include "Tests/Unit/Elements/TestElementAppearance.h"
 #include "Tests/Unit/Elements/TestElementLabel.h"
 #include "Tests/Unit/Elements/TestElementProperties.h"
 #include "Tests/Unit/Elements/TestFeatures.h"
@@ -172,10 +174,19 @@
 #include "Tests/Unit/Logic/TestNodeLogic.h"
 #include "Tests/Unit/Logic/TestStatusOps.h"
 // unit/mcp
+#include "Tests/Unit/MCP/TestBaseHandler.h"
+#include "Tests/Unit/MCP/TestConnectionHandler.h"
 #include "Tests/Unit/MCP/TestElementHandler.h"
+#include "Tests/Unit/MCP/TestFileHandler.h"
 #include "Tests/Unit/MCP/TestFileHandlerSecurity.h"
+#include "Tests/Unit/MCP/TestHistoryHandler.h"
+#include "Tests/Unit/MCP/TestICHandler.h"
 #include "Tests/Unit/MCP/TestICHandlerSecurity.h"
 #include "Tests/Unit/MCP/TestMCPProcessor.h"
+#include "Tests/Unit/MCP/TestMCPValidator.h"
+#include "Tests/Unit/MCP/TestServerInfoHandler.h"
+#include "Tests/Unit/MCP/TestSimulationHandler.h"
+#include "Tests/Unit/MCP/TestThemeHandler.h"
 // unit/scene
 #include "Tests/Unit/Scene/TestConnectionManager.h"
 #include "Tests/Unit/Scene/TestConnectionValidity.h"
@@ -183,15 +194,23 @@
 #include "Tests/Unit/Scene/TestPropertyShortcutHandler.h"
 #include "Tests/Unit/Scene/TestScene.h"
 #include "Tests/Unit/Scene/TestSceneConnections.h"
+#include "Tests/Unit/Scene/TestSceneDropHandler.h"
 #include "Tests/Unit/Scene/TestSceneState.h"
 #include "Tests/Unit/Scene/TestSceneUndoredo.h"
 #include "Tests/Unit/Scene/TestWorkspace.h"
 // unit/serialization
 #include "Tests/Unit/Serialization/TestDolphinClipboard.h"
+#include "Tests/Unit/Serialization/TestDolphinEdits.h"
+#include "Tests/Unit/Serialization/TestDolphinExporter.h"
+#include "Tests/Unit/Serialization/TestDolphinFile.h"
+#include "Tests/Unit/Serialization/TestDolphinModelBuilder.h"
 #include "Tests/Unit/Serialization/TestDolphinSerializer.h"
+#include "Tests/Unit/Serialization/TestDolphinZoom.h"
 #include "Tests/Unit/Serialization/TestFileUtils.h"
 #include "Tests/Unit/Serialization/TestRecentFiles.h"
 #include "Tests/Unit/Serialization/TestSerialization.h"
+#include "Tests/Unit/Serialization/TestSignalDelegate.h"
+#include "Tests/Unit/Serialization/TestWaveformSimulator.h"
 // unit/simulation
 #include "Tests/Unit/Simulation/TestDanglingPointer.h"
 #include "Tests/Unit/Simulation/TestSimulation.h"
@@ -205,13 +224,18 @@
 #include "Tests/Unit/Ui/TestElementEditor.h"
 #include "Tests/Unit/Ui/TestElementPalette.h"
 #include "Tests/Unit/Ui/TestElementTabNavigator.h"
+#include "Tests/Unit/Ui/TestExportController.h"
 #include "Tests/Unit/Ui/TestFileDialogProvider.h"
+#include "Tests/Unit/Ui/TestICController.h"
 #include "Tests/Unit/Ui/TestICDropZone.h"
 #include "Tests/Unit/Ui/TestLabeledSlider.h"
 #include "Tests/Unit/Ui/TestLanguageManager.h"
 #include "Tests/Unit/Ui/TestMinimapWidget.h"
+#include "Tests/Unit/Ui/TestSceneUiBinder.h"
 #include "Tests/Unit/Ui/TestSelectionCapabilities.h"
 #include "Tests/Unit/Ui/TestTrashButton.h"
+#include "Tests/Unit/Ui/TestUpdateController.h"
+#include "Tests/Unit/Ui/TestWorkspaceManager.h"
 // unit/wiring
 #include "Tests/Unit/Wiring/TestConnection.h"
 #include "Tests/Unit/Wiring/TestConnections.h"
@@ -349,16 +373,19 @@ int main(int argc, char **argv)
         {"TestDisplay", []() -> QObject * { return new TestDisplay; }},
         {"TestDisplay7", []() -> QObject * { return new TestDisplay7; }},
         {"TestGraphicElement", []() -> QObject * { return new TestGraphicElement; }},
+        {"TestGraphicElementSerializer", []() -> QObject * { return new TestGraphicElementSerializer; }},
         {"TestICUnit", []() -> QObject * { return new TestICUnit; }},
         {"TestClock", []() -> QObject * { return new TestClock; }},
         {"TestClocksAdvanced", []() -> QObject * { return new TestClocksAdvanced; }},
         {"TestComponents", []() -> QObject * { return new TestComponents; }},
         {"TestDisplays", []() -> QObject * { return new TestDisplays; }},
+        {"TestElementAppearance", []() -> QObject * { return new TestElementAppearance; }},
         {"TestElementContextMenu", []() -> QObject * { return new TestElementContextMenu; }},
         {"TestElementEditor", []() -> QObject * { return new TestElementEditor; }},
         {"TestElementLabel", []() -> QObject * { return new TestElementLabel; }},
         {"TestElementProperties", []() -> QObject * { return new TestElementProperties; }},
         {"TestElementTabNavigator", []() -> QObject * { return new TestElementTabNavigator; }},
+        {"TestExportController", []() -> QObject * { return new TestExportController; }},
         {"TestFeatures", []() -> QObject * { return new TestFeatures; }},
         {"TestGeometry", []() -> QObject * { return new TestGeometry; }},
         {"TestWirelessNode", []() -> QObject * { return new TestWirelessNode; }},
@@ -378,9 +405,18 @@ int main(int argc, char **argv)
         {"TestNodeLogic", []() -> QObject * { return new TestNodeLogic; }},
         {"TestStatusOps", []() -> QObject * { return new TestStatusOps; }},
         {"TestICHandlerSecurity", []() -> QObject * { return new TestICHandlerSecurity; }},
+        {"TestICHandler", []() -> QObject * { return new TestICHandler; }},
+        {"TestFileHandler", []() -> QObject * { return new TestFileHandler; }},
         {"TestFileHandlerSecurity", []() -> QObject * { return new TestFileHandlerSecurity; }},
+        {"TestHistoryHandler", []() -> QObject * { return new TestHistoryHandler; }},
         {"TestMCPProcessor", []() -> QObject * { return new TestMCPProcessor; }},
+        {"TestMCPValidator", []() -> QObject * { return new TestMCPValidator; }},
+        {"TestServerInfoHandler", []() -> QObject * { return new TestServerInfoHandler; }},
+        {"TestSimulationHandler", []() -> QObject * { return new TestSimulationHandler; }},
+        {"TestThemeHandler", []() -> QObject * { return new TestThemeHandler; }},
+        {"TestConnectionHandler", []() -> QObject * { return new TestConnectionHandler; }},
         {"TestElementHandler", []() -> QObject * { return new TestElementHandler; }},
+        {"TestBaseHandler", []() -> QObject * { return new TestBaseHandler; }},
         {"TestConnectionSerialization", []() -> QObject * { return new TestConnectionSerialization; }},
         {"TestConnections", []() -> QObject * { return new TestConnections; }},
         {"TestConnectionManager", []() -> QObject * { return new TestConnectionManager; }},
@@ -388,15 +424,23 @@ int main(int argc, char **argv)
         {"TestGraphicsView", []() -> QObject * { return new TestGraphicsView; }},
         {"TestScene", []() -> QObject * { return new TestScene; }},
         {"TestSceneConnections", []() -> QObject * { return new TestSceneConnections; }},
+        {"TestSceneDropHandler", []() -> QObject * { return new TestSceneDropHandler; }},
         {"TestSceneState", []() -> QObject * { return new TestSceneState; }},
         {"TestSceneUndoredo", []() -> QObject * { return new TestSceneUndoredo; }},
         {"TestPropertyShortcutHandler", []() -> QObject * { return new TestPropertyShortcutHandler; }},
         {"TestWorkspaceUnit", []() -> QObject * { return new TestWorkspaceUnit; }},
         {"TestDolphinClipboard", []() -> QObject * { return new TestDolphinClipboard; }},
+        {"TestDolphinEdits", []() -> QObject * { return new TestDolphinEdits; }},
+        {"TestDolphinExporter", []() -> QObject * { return new TestDolphinExporter; }},
+        {"TestDolphinFile", []() -> QObject * { return new TestDolphinFile; }},
+        {"TestDolphinModelBuilder", []() -> QObject * { return new TestDolphinModelBuilder; }},
         {"TestDolphinSerializer", []() -> QObject * { return new TestDolphinSerializer; }},
+        {"TestDolphinZoom", []() -> QObject * { return new TestDolphinZoom; }},
         {"TestFileUtils", []() -> QObject * { return new TestFileUtils; }},
         {"TestRecentFilesUnit", []() -> QObject * { return new TestRecentFilesUnit; }},
         {"TestSerialization", []() -> QObject * { return new TestSerialization; }},
+        {"TestSignalDelegate", []() -> QObject * { return new TestSignalDelegate; }},
+        {"TestWaveformSimulator", []() -> QObject * { return new TestWaveformSimulator; }},
         {"TestConnection", []() -> QObject * { return new TestConnection; }},
         {"TestPort", []() -> QObject * { return new TestPort; }},
         {"TestSimulationUnit", []() -> QObject * { return new TestSimulationUnit; }},
@@ -407,11 +451,15 @@ int main(int argc, char **argv)
         {"TestDialogs", []() -> QObject * { return new TestDialogs; }},
         {"TestElementPalette", []() -> QObject * { return new TestElementPalette; }},
         {"TestFileDialogProviderUnit", []() -> QObject * { return new TestFileDialogProviderUnit; }},
+        {"TestICController", []() -> QObject * { return new TestICController; }},
         {"TestICDropZone", []() -> QObject * { return new TestICDropZone; }},
         {"TestLabeledSlider", []() -> QObject * { return new TestLabeledSlider; }},
         {"TestLanguageManager", []() -> QObject * { return new TestLanguageManager; }},
         {"TestMinimapWidget", []() -> QObject * { return new TestMinimapWidget; }},
+        {"TestSceneUiBinder", []() -> QObject * { return new TestSceneUiBinder; }},
         {"TestSelectionCapabilities", []() -> QObject * { return new TestSelectionCapabilities; }},
         {"TestTrashButton", []() -> QObject * { return new TestTrashButton; }},
+        {"TestUpdateController", []() -> QObject * { return new TestUpdateController; }},
+        {"TestWorkspaceManager", []() -> QObject * { return new TestWorkspaceManager; }},
     });
 }

@@ -22,4 +22,9 @@ private slots:
     void testTabNavigation();
     void testBacktabNavigation();
     void testTabWrapAround();
+
+    void testEventFilterIgnoresNonSingleSelection();
+    void testEventFilterIgnoresKeyPressWithNoScene();
+    void testEventFilterIgnoresFocusedElementNotInVisibleElements();
+    void testTabRevertsToOriginalElementWhenNoOtherFieldIsEnabled();
 };

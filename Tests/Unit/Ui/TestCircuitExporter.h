@@ -41,4 +41,7 @@ private slots:
     // same bounding logic instead of re-implementing (and never bounding) it. Pin the
     // extracted function's own contract directly, independent of the file round-trip above.
     void testRenderScaledImageClampsExtremeDimensionsDirectly();
+
+    void testRenderToPdfThrowsOnInvalidPath();
+    void testRenderScaledImageThrowsOnEmptyPaddedRect();
 };

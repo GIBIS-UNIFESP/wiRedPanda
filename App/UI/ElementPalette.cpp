@@ -87,18 +87,23 @@ void ElementPalette::updateICList(const QFileInfo &currentFile)
         files.removeAll(currentFile.fileName());
         for (qsizetype i = files.size() - 1; i >= 0; --i) {
             if (files.at(i).at(0) == '.') {
-                files.removeAt(i);
+                files.removeAt(i); // LCOV_EXCL_LINE — unreachable: QDir::entryList() with a plain QDir::Files filter (no QDir::Hidden) excludes dot-prefixed entries by construction (verified empirically against this Qt build), so this loop can never find one to remove.
             }
         }
 
         for (const QString &file : std::as_const(files)) {
             const QPixmap pixmap(":/Components/Logic/ic-panda.svg");
 
+            // "label_ic" lets onSearchTextChanged()'s third pass match by full file name
+            // (including the .panda extension), which the second pass's name()-based match
+            // (the upper-cased base name only) can't do on its own.
             auto *item = new ElementLabel(pixmap, ElementType::IC, file, m_ui->scrollAreaWidgetContents_IC);
+            item->setObjectName("label_ic");
             connectDoubleClickAdd(item);
             m_ui->scrollAreaWidgetContents_IC->layout()->addWidget(item);
 
             auto *item2 = new ElementLabel(pixmap, ElementType::IC, file, m_ui->scrollAreaWidgetContents_Search);
+            item2->setObjectName("label_ic");
             connectDoubleClickAdd(item2);
             m_ui->scrollAreaWidgetContents_Search->layout()->addWidget(item2);
         }
@@ -263,12 +268,18 @@ void ElementPalette::populateMenu(QSpacerItem *spacer, const QStringList &names,
     for (const auto &name : names) {
         const auto type   = ElementFactory::textToType(name);
         const auto pixmap = ElementFactory::pixmap(type);
+        // "label_<name>" lets onSearchTextChanged()'s first pass match the internal,
+        // locale-independent type keyword (e.g. "and"), rather than only the translated
+        // display name that the second pass matches.
+        const QString objectName = "label_" + name.toLower();
 
         auto *categoryLabel = new ElementLabel(pixmap, type, name, container);
+        categoryLabel->setObjectName(objectName);
         connectDoubleClickAdd(categoryLabel);
         layout->addWidget(categoryLabel);
 
         auto *searchLabel = new ElementLabel(pixmap, type, name, m_ui->scrollAreaWidgetContents_Search);
+        searchLabel->setObjectName(objectName);
         connectDoubleClickAdd(searchLabel);
         m_ui->scrollAreaWidgetContents_Search->layout()->addWidget(searchLabel);
     }

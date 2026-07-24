@@ -36,7 +36,12 @@ void save(const SignalModel &model, const QString &fileName, const int inputPort
     }
 
     if (!file.commit()) {
-        throw PANDACEPTION_WITH_CONTEXT("BewavedDolphin", "Error saving file: %1", file.errorString());
+        // Not deterministically reachable from a single-user test process: QSaveFile::open()
+        // already rejects an existing non-regular-file destination (e.g. a directory) up
+        // front, so the remaining commit()-only failure modes (e.g. losing rename permission
+        // on the destination between open() and commit(), such as a sticky-bit directory
+        // with a target owned by another user) need a second OS user or root.
+        throw PANDACEPTION_WITH_CONTEXT("BewavedDolphin", "Error saving file: %1", file.errorString()); // LCOV_EXCL_LINE
     }
 }
 

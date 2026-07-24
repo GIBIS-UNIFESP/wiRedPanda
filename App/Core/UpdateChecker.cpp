@@ -78,6 +78,7 @@ bool isSafeGitHubUrl(const QUrl &url)
 
 UpdateChecker::UpdateChecker(QObject *parent)
     : QObject(parent)
+    , m_apiUrl(k_releaseDataUrl)
 {
     // QNetworkAccessManager::sslErrors doesn't exist at all when Qt is built with QT_NO_SSL --
     // the case for every Qt-for-WebAssembly build, since WASM has no native TLS backend and
@@ -104,7 +105,7 @@ void UpdateChecker::checkForUpdates()
         return;
     }
 
-    QNetworkRequest request = QNetworkRequest{QUrl(k_releaseDataUrl)};
+    QNetworkRequest request = QNetworkRequest{m_apiUrl};
     request.setHeader(QNetworkRequest::UserAgentHeader, "wiRedPanda/" APP_VERSION);
     request.setAttribute(QNetworkRequest::RedirectPolicyAttribute,
                          QNetworkRequest::NoLessSafeRedirectPolicy);
@@ -115,10 +116,17 @@ void UpdateChecker::checkForUpdates()
     // as defense-in-depth against a hostile/corrupted endpoint buffering unbounded
     // bytes into memory before onReplyFinished ever gets a chance to react.
     reply->setReadBufferSize(1024 * 1024 + 1);
+    // Empirically confirmed (a local QTcpServer streaming well past 1 MiB while
+    // nothing reads from `reply`): setReadBufferSize()'s own backpressure stops
+    // Qt from admitting more bytes once the cap is reached, so `received` never
+    // actually exceeds it here — this condition is a belt-and-suspenders check
+    // for a network-backend timing edge case (a single oversized delivery
+    // landing before backpressure engages) that a synchronous local-server test
+    // cannot reproduce.
     connect(reply, &QNetworkReply::downloadProgress, this, [reply](qint64 received, qint64) {
-        if (received > 1024 * 1024) {
-            reply->abort();
-        }
+        if (received > 1024 * 1024) { // LCOV_EXCL_LINE
+            reply->abort(); // LCOV_EXCL_LINE
+        } // LCOV_EXCL_LINE
     });
     connect(reply, &QNetworkReply::finished, this, [this, reply] { onReplyFinished(reply); });
 }

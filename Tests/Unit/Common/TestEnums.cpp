@@ -4,6 +4,7 @@
 #include "Tests/Unit/Common/TestEnums.h"
 
 #include <QDataStream>
+#include <QMetaEnum>
 
 #include "App/Core/Enums.h"
 #include "App/Element/ElementFactory.h"
@@ -419,4 +420,49 @@ void TestEnums::testElementGroupToString()
     // Different groups should have different strings
     QVERIFY(varGate.toString() != varInput.toString());
     QVERIFY(varInput.toString() != varOutput.toString());
+}
+
+void TestEnums::testAllEnumsExposeMetaEnum()
+{
+    // Q_ENUM's moc-generated registration for Status/WirelessMode/ElementType/
+    // ElementGroup is only touched by a QMetaEnum-based reflective lookup, not
+    // by plain enum-value comparisons or QVariant round-tripping — exercise it
+    // directly via QMetaEnum::fromType() for every enum this header declares.
+    const QMetaEnum statusMeta = QMetaEnum::fromType<Enums::Status>();
+    QCOMPARE(QString(statusMeta.valueToKey(static_cast<int>(Status::Active))), QString("Active"));
+    QCOMPARE(statusMeta.keyToValue("Active"), static_cast<int>(Status::Active));
+    QCOMPARE(QString(statusMeta.key(0)), QString("Unknown"));
+    qDebug().noquote() << Status::Active;
+
+    const QMetaEnum wirelessMeta = QMetaEnum::fromType<Enums::WirelessMode>();
+    QCOMPARE(QString(wirelessMeta.valueToKey(static_cast<int>(WirelessMode::Tx))), QString("Tx"));
+    QCOMPARE(wirelessMeta.keyToValue("Tx"), static_cast<int>(WirelessMode::Tx));
+    QCOMPARE(QString(wirelessMeta.key(0)), QString("None"));
+    qDebug().noquote() << WirelessMode::Tx;
+
+    const QMetaEnum elementTypeMeta = QMetaEnum::fromType<Enums::ElementType>();
+    QCOMPARE(QString(elementTypeMeta.valueToKey(static_cast<int>(ElementType::And))), QString("And"));
+    QCOMPARE(elementTypeMeta.keyToValue("And"), static_cast<int>(ElementType::And));
+    QCOMPARE(QString(elementTypeMeta.key(0)), QString("And"));
+    qDebug().noquote() << ElementType::And;
+
+    const QMetaEnum elementGroupMeta = QMetaEnum::fromType<Enums::ElementGroup>();
+    QCOMPARE(QString(elementGroupMeta.valueToKey(static_cast<int>(ElementGroup::Gate))), QString("Gate"));
+    QCOMPARE(elementGroupMeta.keyToValue("Gate"), static_cast<int>(ElementGroup::Gate));
+    QCOMPARE(QString(elementGroupMeta.key(0)), QString("Gate"));
+    qDebug().noquote() << ElementGroup::Gate;
+}
+
+void TestEnums::testWirelessModeValues()
+{
+    // WirelessMode had no dedicated test anywhere: None/Tx/Rx are the closed
+    // set of routing modes a Node can take.
+    QCOMPARE(static_cast<int>(WirelessMode::None), 0);
+    QCOMPARE(static_cast<int>(WirelessMode::Tx), 1);
+    QCOMPARE(static_cast<int>(WirelessMode::Rx), 2);
+
+    QVariant varTx = QVariant::fromValue(WirelessMode::Tx);
+    QVariant varRx = QVariant::fromValue(WirelessMode::Rx);
+    QVERIFY(!varTx.toString().isEmpty());
+    QVERIFY(varTx.toString() != varRx.toString());
 }

@@ -316,15 +316,8 @@ set(TEST_UTILS_SOURCES
 set(TEST_UTILS_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/ICTestHelpers.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/StubFileDialogProvider.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/StubMainWindowHost.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/TestUtils.h
-)
-
-set(MEMORY_HELPERS_SOURCES
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/MemoryHelpers.cpp
-)
-
-set(MEMORY_HELPERS_HEADERS
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/MemoryHelpers.h
 )
 
 set(TEST_WIREDPANDA_SOURCES
@@ -459,11 +452,13 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestDisplay.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestDisplay7.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestDisplays.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementAppearance.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementLabel.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementProperties.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestFeatures.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestGeometry.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestGraphicElement.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestGraphicElementSerializer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestGraphicelementAdvanced.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestIC.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestICRegistry.cpp
@@ -482,24 +477,41 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestElementLogicErrors.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestNodeLogic.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestStatusOps.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestBaseHandler.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestConnectionHandler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestElementHandler.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestFileHandler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestFileHandlerSecurity.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestHistoryHandler.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestICHandler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestICHandlerSecurity.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestMCPProcessor.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestMCPValidator.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestServerInfoHandler.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestSimulationHandler.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestThemeHandler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestConnectionManager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestConnectionValidity.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestGraphicsView.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestPropertyShortcutHandler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestScene.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestSceneConnections.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestSceneDropHandler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestSceneState.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestSceneUndoredo.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestWorkspace.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinClipboard.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinEdits.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinExporter.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinFile.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinModelBuilder.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinSerializer.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinZoom.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestFileUtils.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestRecentFiles.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestSerialization.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestSignalDelegate.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestWaveformSimulator.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestDanglingPointer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestSimulation.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestSimulationBlocker.cpp
@@ -510,13 +522,18 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestElementEditor.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestElementPalette.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestElementTabNavigator.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestExportController.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestFileDialogProvider.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestICController.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestICDropZone.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestLabeledSlider.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestLanguageManager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestMinimapWidget.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestSceneUiBinder.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestSelectionCapabilities.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestTrashButton.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestUpdateController.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestWorkspaceManager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Wiring/TestConnection.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Wiring/TestConnections.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Wiring/TestConnectionSerialization.cpp
@@ -660,11 +677,13 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestDisplay.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestDisplay7.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestDisplays.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementAppearance.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementLabel.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementProperties.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestFeatures.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestGeometry.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestGraphicElement.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestGraphicElementSerializer.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestGraphicelementAdvanced.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestIC.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestICRegistry.h
@@ -683,24 +702,41 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestElementLogicErrors.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestNodeLogic.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestStatusOps.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestBaseHandler.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestConnectionHandler.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestElementHandler.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestFileHandler.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestFileHandlerSecurity.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestHistoryHandler.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestICHandler.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestICHandlerSecurity.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestMCPProcessor.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestMCPValidator.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestServerInfoHandler.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestSimulationHandler.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestThemeHandler.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestConnectionManager.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestConnectionValidity.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestGraphicsView.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestPropertyShortcutHandler.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestScene.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestSceneConnections.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestSceneDropHandler.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestSceneState.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestSceneUndoredo.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestWorkspace.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinClipboard.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinEdits.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinExporter.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinFile.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinModelBuilder.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinSerializer.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinZoom.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestFileUtils.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestRecentFiles.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestSerialization.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestSignalDelegate.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestWaveformSimulator.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestDanglingPointer.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestSimulation.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestSimulationBlocker.h
@@ -711,13 +747,18 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestElementEditor.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestElementPalette.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestElementTabNavigator.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestExportController.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestFileDialogProvider.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestICController.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestICDropZone.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestLabeledSlider.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestLanguageManager.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestMinimapWidget.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestSceneUiBinder.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestSelectionCapabilities.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestTrashButton.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestUpdateController.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestWorkspaceManager.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Wiring/TestConnection.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Wiring/TestConnections.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Wiring/TestConnectionSerialization.h

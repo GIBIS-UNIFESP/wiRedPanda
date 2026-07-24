@@ -99,6 +99,7 @@ private:
     Q_DISABLE_COPY(ElementEditor)
 
     friend class ElementTabNavigator;
+    friend class TestElementEditor;
 
     // --- Helpers ---
 

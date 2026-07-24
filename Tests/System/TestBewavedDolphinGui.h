@@ -125,6 +125,39 @@ private slots:
     void testUndoRedoDoubleClickToggle();
     void testUndoRedoMultipleOperationsRestoresOriginalState();
 
+    // --- Coverage completion (100% sweep) ---
+
+    void testCreateWaveformRelativePathResolvesViaHostDir();
+    void testCreateWaveformMissingFileShowsStatusMessage();
+    void testCreateWaveformFromTerminalReadsStdin();
+    void testRunWithoutPrepareIsNoOp();
+    void testElementsStillLiveDetectsDeletedOutputElement();
+    void testWheelEventZoomsColumns();
+    void testCloseEventPromptsAndCanBeCancelled();
+    void testCloseEventClosesDirectlyWhenNotEdited();
+    void testResizeEventRepositionsExerciseOverlay();
+    void testTrivialAccessors();
+    void testCheckSaveDiscardAndSaveButtons();
+    void testActionSetClockWaveNoSelectionThrowsUserFacingError();
+    void testActionSetClockWaveDialogRejectedLeavesGridUnchanged();
+    void testActionSetLengthDialogAcceptedChangesLength();
+    void testActionSetLengthDialogRejectedNoOp();
+    void testCopyCutPasteWithEmptySelection();
+    void testActionSaveRedirectsToSaveAsWhenNoCurrentFile();
+    void testActionSaveWritesDirectlyWhenCurrentFileSet();
+    void testSaveAsInfersExtensionFromFilter();
+    void testSaveAsCancelled();
+    void testAssociateToWiRedPandaPromptsAndLinks();
+    void testActionLoadTriggeredOpensAndLoadsFile();
+    void testActionExportToPngTriggeredCreatesFile();
+    void testPrintWritesCsvToStdout();
+    void testPrintAndSaveToTxtBeforePrepareAreNoOp();
+    void testActionLoadDefaultDirectoryPrefersCurrentFile();
+    void testActionLoadDefaultDirectoryFallsBackToHostFile();
+    void testActionLoadDefaultDirectoryFallsBackToHomeWithoutHost();
+    void testActionLoadCancelled();
+    void testActionExportToPdfCancelledAndBareNameAppendsExtension();
+
 private:
     QTemporaryDir m_tempDir;
 };

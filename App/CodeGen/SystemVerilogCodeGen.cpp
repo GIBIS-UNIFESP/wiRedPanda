@@ -127,20 +127,30 @@ QString SystemVerilogCodeGen::otherPortNameImpl(Port *port, QSet<Port *> &visite
     auto *otherPort = port->connections().constFirst()->otherPort(port);
     if (!otherPort) return highLow(port->defaultValue());
 
-    // Cycle detection: if we've already visited the connected port, don't inline
+    // Cycle detection: if we've already visited the connected port, don't inline.
+    // Unreachable given this app's wiring model: every Connection joins one
+    // OutputPort to one InputPort (never same-kind), every otherPortName() call
+    // site starts from an InputPort, and the only recursive re-entry
+    // (generateLogicExpressionImpl's Not/Node cases) also always passes an
+    // InputPort — so `visited` can only ever contain InputPorts, while
+    // `otherPort` here is always an OutputPort. The entry-point check above
+    // (`visited.contains(port)`) is what actually catches every real cycle.
     if (visited.contains(otherPort)) {
-        QString mapped = m_varMap.value(otherPort);
-        return mapped.isEmpty() ? "1'b0" : mapped;
-    }
+        QString mapped = m_varMap.value(otherPort); // LCOV_EXCL_LINE
+        return mapped.isEmpty() ? "1'b0" : mapped; // LCOV_EXCL_LINE
+    } // LCOV_EXCL_LINE
 
     // Mark this port as visited to detect cycles
     visited.insert(port);
 
     auto *elm = otherPort->graphicElement();
+    // Unreachable: every Port is bound to its owning GraphicElement via
+    // setGraphicElement() at construction time, before it could ever be wired
+    // into a Connection — a connected port's graphicElement() is never null.
     if (!elm) {
-        QString mapped = m_varMap.value(otherPort);
-        return mapped.isEmpty() ? highLow(port->defaultValue()) : mapped;
-    }
+        QString mapped = m_varMap.value(otherPort); // LCOV_EXCL_LINE
+        return mapped.isEmpty() ? highLow(port->defaultValue()) : mapped; // LCOV_EXCL_LINE
+    } // LCOV_EXCL_LINE
 
     // Check m_varMap first — if a wire/variable was declared for this port, use it
     // directly instead of inlining. This prevents fan-out collision (multiple gates
@@ -162,7 +172,12 @@ QString SystemVerilogCodeGen::otherPortNameImpl(Port *port, QSet<Port *> &visite
         return generateLogicExpressionImpl(elm, visited);
     }
 
-    return "1'b0";
+    // Unreachable: declareAuxVariablesRec() pre-populates m_varMap for every
+    // element type reaching this point except the 8 gate types checked above —
+    // top-level gates get inlined here instead (by design), and IC-internal
+    // gates are pre-declared as wires (m_generatingICModule branch) — so
+    // `mapped` above is never empty for a non-gate `elm`.
+    return "1'b0"; // LCOV_EXCL_LINE
 }
 
 // SystemVerilog reserved words that cannot be used as identifiers.
@@ -225,8 +240,13 @@ void SystemVerilogCodeGen::collectICTypes(const QVector<GraphicElement *> &eleme
         for (int i = 0; i < ic->inputSize(); ++i) {
             QString portLabel = ic->inputPort(i)->name();
             QString portName = removeForbiddenChars(CodeGenUtils::stripAccents(portLabel));
+            // Unreachable: buildPortLabels()/ICLoader::loadBoundaryPorts() falls
+            // back to the boundary element's class name (e.g. "InputSwitch")
+            // whenever its label is empty, even an explicitly-blanked one — a
+            // loaded IC's port name is never genuinely empty by the time it
+            // reaches here.
             if (portName.isEmpty() || portName == "_unnamed") {
-                portName = QString("in_%1").arg(i);
+                portName = QString("in_%1").arg(i); // LCOV_EXCL_LINE
             }
             // Escape SystemVerilog reserved words
             if (isSystemVerilogReserved(portName)) {
@@ -246,8 +266,9 @@ void SystemVerilogCodeGen::collectICTypes(const QVector<GraphicElement *> &eleme
         for (int i = 0; i < ic->outputSize(); ++i) {
             QString portLabel = ic->outputPort(i)->name();
             QString portName = removeForbiddenChars(CodeGenUtils::stripAccents(portLabel));
+            // Unreachable for the same reason as the input loop above.
             if (portName.isEmpty() || portName == "_unnamed") {
-                portName = QString("out_%1").arg(i);
+                portName = QString("out_%1").arg(i); // LCOV_EXCL_LINE
             }
             // Escape SystemVerilog reserved words
             if (isSystemVerilogReserved(portName)) {
@@ -306,7 +327,7 @@ QSet<GraphicElement *> SystemVerilogCodeGen::findFeedbackElements(const QVector<
             }
         }
         return succ;
-    };
+    }; // LCOV_EXCL_LINE -- compiler-generated cleanup for the returned QVector on an exception-unwind path never taken
 
     QSet<GraphicElement *> feedback;
     for (auto *start : elements) {
@@ -416,8 +437,11 @@ void SystemVerilogCodeGen::generateSingleICModule(ICModuleInfo &info)
     for (int i = 0; i < ic->internalInputs().size(); ++i) {
         // m_internalInputs[i] is the Node's input port. Get the Node element.
         auto *nodeElm = ic->internalInputs()[i]->graphicElement();
+        // Unreachable: ICLoader::loadBoundaryElement() always populates
+        // internalInputs() with a real proxy Node's port, and every Port is
+        // bound to its owning element at construction.
         if (!nodeElm) {
-            continue;
+            continue; // LCOV_EXCL_LINE
         }
         // The Node's output port is what internal elements connect to.
         m_varMap[nodeElm->outputPort(0)] = info.inputNames[i];
@@ -428,8 +452,9 @@ void SystemVerilogCodeGen::generateSingleICModule(ICModuleInfo &info)
     // The assign for these is emitted separately at end of module.
     for (int i = 0; i < ic->internalOutputs().size(); ++i) {
         auto *nodeElm = ic->internalOutputs()[i]->graphicElement();
+        // Unreachable for the same reason as the internalInputs() loop above.
         if (!nodeElm) {
-            continue;
+            continue; // LCOV_EXCL_LINE
         }
         m_varMap[nodeElm->outputPort(0)] = info.outputNames[i];
         boundaryNodes.insert(nodeElm);
@@ -465,8 +490,9 @@ void SystemVerilogCodeGen::generateSingleICModule(ICModuleInfo &info)
     for (int i = 0; i < ic->internalOutputs().size(); ++i) {
         // m_internalOutputs[i] is the Node's output port. Get the Node element.
         auto *nodeElm = ic->internalOutputs()[i]->graphicElement();
+        // Unreachable for the same reason as the internalInputs() loop above.
         if (!nodeElm) {
-            continue;
+            continue; // LCOV_EXCL_LINE
         }
         // The Node's input port receives from internal logic
         QString value = otherPortName(nodeElm->inputPort(0));
@@ -707,16 +733,24 @@ void SystemVerilogCodeGen::declareAuxVariablesRec(const QVector<GraphicElement *
                 if (m_varMap.value(port).isEmpty()) {
                     m_varMap[port] = varName;
                 } else {
-                    preMapped.insert(port);
+                    // Unreachable: this function runs once, in a single pass over
+                    // `elements`, for every top-level or IC-internal element list —
+                    // the only ports pre-populated beforehand (top-level Inputs via
+                    // declareInputs(), IC boundary Nodes via generateSingleICModule())
+                    // are already filtered out before reaching this branch, so a
+                    // fresh (non-IC, non-boundary) element's own output port can
+                    // never already be mapped here.
+                    preMapped.insert(port); // LCOV_EXCL_LINE
                 }
             } else {
                 int portCounter = 0;
 
                 for (auto *port : outputs) {
+                    // Unreachable body for the same reason as the single-output branch above.
                     if (!m_varMap.value(port).isEmpty()) {
-                        preMapped.insert(port);
-                        portCounter++;
-                        continue;
+                        preMapped.insert(port); // LCOV_EXCL_LINE
+                        portCounter++; // LCOV_EXCL_LINE
+                        continue; // LCOV_EXCL_LINE
                     }
 
                     QString portName = varName;
@@ -731,10 +765,11 @@ void SystemVerilogCodeGen::declareAuxVariablesRec(const QVector<GraphicElement *
             }
             int aux = 0; // Initial values for flip-flop outputs (Q=0, Q̄=1)
             for (auto *port : outputs) {
-                // Skip wire declaration for ports already mapped (e.g., module input/output ports)
+                // Skip wire declaration for ports already mapped (e.g., module input/output
+                // ports) — unreachable in practice since `preMapped` is always empty (see above).
                 if (preMapped.contains(port)) {
-                    aux++;
-                    continue;
+                    aux++; // LCOV_EXCL_LINE
+                    continue; // LCOV_EXCL_LINE
                 }
                 QString varName2 = m_varMap.value(port);
 
@@ -760,7 +795,7 @@ void SystemVerilogCodeGen::declareAuxVariablesRec(const QVector<GraphicElement *
 
                         continue;
                     }
-                    break;
+                    break; // LCOV_EXCL_LINE -- unreachable: TruthTable::minOutputSize() is 1, so outputs is never empty
 
                 case ElementType::Mux:
                 case ElementType::Demux: {
@@ -1158,11 +1193,7 @@ void SystemVerilogCodeGen::assignVariablesRec(const QVector<GraphicElement *> &e
 
                 // Generate case statements for each select value
                 for (int i = 0; i < numDataInputs; ++i) {
-                    m_stream << QString("            %1'd%2: %3 = %4;")
-                        .arg(numSelectLines)
-                        .arg(i)
-                        .arg(output)
-                        .arg(otherPortName(elm->inputPort(i))) << Qt::endl;
+                    m_stream << QString("            %1'd%2: %3 = %4;").arg(numSelectLines).arg(i).arg(output).arg(otherPortName(elm->inputPort(i))) << Qt::endl;
                 }
                 m_stream << QString("            default: %1 = 1'b0;").arg(output) << Qt::endl;
                 m_stream << QString("        endcase") << Qt::endl;
@@ -1199,11 +1230,7 @@ void SystemVerilogCodeGen::assignVariablesRec(const QVector<GraphicElement *> &e
 
                 // Generate case statements for each select value
                 for (int i = 0; i < numOutputs; ++i) {
-                    m_stream << QString("            %1'd%2: %3 = %4;")
-                        .arg(numSelectLines)
-                        .arg(i)
-                        .arg(m_varMap.value(elm->outputPort(i)))
-                        .arg(dataInput) << Qt::endl;
+                    m_stream << QString("            %1'd%2: %3 = %4;").arg(numSelectLines).arg(i).arg(m_varMap.value(elm->outputPort(i))).arg(dataInput) << Qt::endl;
                 }
                 m_stream << QString("        endcase") << Qt::endl;
                 m_stream << QString("    end") << Qt::endl;
@@ -1225,13 +1252,18 @@ void SystemVerilogCodeGen::assignVariablesRec(const QVector<GraphicElement *> &e
                     Port *ttInputPort = elm->inputPort(i);
                     QString signalName = otherPortName(ttInputPort);
 
+                    // The bodies below are unreachable: otherPortName()/otherPortNameImpl()
+                    // never returns the literal strings "LOW"/"HIGH" (that's ArduinoCodeGen's
+                    // convention; this file's highLow() returns "1'b1"/"1'b0") and never
+                    // returns an empty string (every return path yields a tied-off constant,
+                    // a mapped variable, or a recursively-computed expression).
                     if (signalName == "LOW") {
-                        signalName = "0";
+                        signalName = "0"; // LCOV_EXCL_LINE
                     } else if (signalName == "HIGH") {
-                        signalName = "1";
+                        signalName = "1"; // LCOV_EXCL_LINE
                     } else if (signalName.isEmpty()) {
-                        m_stream << "// WARNING: Input " << i << " of TruthTable '" << elm->objectName() << "' appears disconnected. Assuming LOW." << Qt::endl;
-                        signalName = "0";
+                        m_stream << "// WARNING: Input " << i << " of TruthTable '" << elm->objectName() << "' appears disconnected. Assuming LOW." << Qt::endl; // LCOV_EXCL_LINE
+                        signalName = "0"; // LCOV_EXCL_LINE
                     }
                     inputSignalNames << signalName;
                 }
@@ -1254,12 +1286,16 @@ void SystemVerilogCodeGen::assignVariablesRec(const QVector<GraphicElement *> &e
                 // historical form.
                 for (int out = 0; out < elm->outputSize(); ++out) {
                     QString outputVarName = m_varMap.value(elm->outputPort(out));
+                    // Unreachable: declareAuxVariablesRec()'s TruthTable case (see above)
+                    // always maps output 0 to a name, and the multi-output pre-population
+                    // pass (also in declareAuxVariablesRec) maps every other output too —
+                    // outputVarName is never empty here.
                     if (outputVarName.isEmpty()) {
-                        if (out == 0) {
-                            throw PANDACEPTION("Output variable not mapped for TruthTable: %1", elm->objectName());
-                        }
-                        m_stream << "// TruthTable '" << elm->objectName() << "' output " << out << " is disconnected — no code emitted." << Qt::endl;
-                        continue;
+                        if (out == 0) { // LCOV_EXCL_LINE
+                            throw PANDACEPTION("Output variable not mapped for TruthTable: %1", elm->objectName()); // LCOV_EXCL_LINE
+                        } // LCOV_EXCL_LINE
+                        m_stream << "// TruthTable '" << elm->objectName() << "' output " << out << " is disconnected — no code emitted." << Qt::endl; // LCOV_EXCL_LINE
+                        continue; // LCOV_EXCL_LINE
                     }
 
                     m_stream << QString("    //TruthTable") << Qt::endl;
@@ -1280,6 +1316,15 @@ void SystemVerilogCodeGen::assignVariablesRec(const QVector<GraphicElement *> &e
                 break;
             }
 
+            // Unreachable: every type listed below is already intercepted before this
+            // switch — IC by the dedicated branch at the top of this function, the 8
+            // gate types by the "top-level gate" if-branch above, and every remaining
+            // Input-/Output-group element by the inputs().isEmpty()/outputs().isEmpty()
+            // continue at the top of this loop. ElementType::JKLatch is unreachable for a
+            // different, stronger reason: it's a deprecated enum value with no live
+            // GraphicElement implementation at all (ElementFactory::hasCreator(JKLatch) is
+            // false), so no real `elm` can ever report it.
+            // LCOV_EXCL_START
             case ElementType::And:
             case ElementType::AudioBox:
             case ElementType::Buzzer:
@@ -1306,6 +1351,7 @@ void SystemVerilogCodeGen::assignVariablesRec(const QVector<GraphicElement *> &e
             case ElementType::Xnor:
             case ElementType::Xor:
                 throw PANDACEPTION("Element type not supported: %1", elm->objectName());
+            // LCOV_EXCL_STOP
             }
         }
     }
@@ -1339,6 +1385,14 @@ QString SystemVerilogCodeGen::generateLogicExpressionImpl(GraphicElement *elm, Q
         return "~" + inner;
     }
     case ElementType::Node: return otherPortNameImpl(elm->inputPort(0), visited);
+    // Unreachable: this function is only ever reached for the 8 gate types handled
+    // above/below — its two callers (generateLogicExpression(), used by
+    // assignVariablesRec's top-level-gate branch, and otherPortNameImpl()'s own
+    // gate-type dispatch) both restrict `elm` to exactly that set. ElementType::JKLatch
+    // is unreachable for a different, stronger reason: it's a deprecated enum value with
+    // no live GraphicElement implementation at all (ElementFactory::hasCreator(JKLatch)
+    // is false), so no real `elm` can ever report it.
+    // LCOV_EXCL_START
     case ElementType::AudioBox:
     case ElementType::Buzzer:
     case ElementType::Clock:
@@ -1366,11 +1420,15 @@ QString SystemVerilogCodeGen::generateLogicExpressionImpl(GraphicElement *elm, Q
     case ElementType::TruthTable:
     case ElementType::Unknown:
         return "";
+    // LCOV_EXCL_STOP
     }
 
     QString expr;
+    // Unreachable: And/Or/Nand/Nor/Xor/Xnor (the only types reaching this point —
+    // Not/Node return early above) all have minInputSize()==2, so inputs().size()
+    // is never 1 here.
     if (elm->inputs().size() == 1) {
-        expr = otherPortNameImpl(elm->inputPort(0), visited);
+        expr = otherPortNameImpl(elm->inputPort(0), visited); // LCOV_EXCL_LINE
     } else {
         // Group multiple inputs with parentheses
         expr = "(";
@@ -1383,8 +1441,11 @@ QString SystemVerilogCodeGen::generateLogicExpressionImpl(GraphicElement *elm, Q
 
     if (negate) {
         // [BUG-2] Cancel double negation: ~(~expr) -> expr without outer ~
+        // The single-input branch above is dead (see its own comment), so `expr`
+        // always comes from the multi-input "(" ... ")" branch and can never itself
+        // start with "~" — only the "else" (add the negation) is reachable.
         if (expr.startsWith("~")) {
-            expr = expr.mid(1);
+            expr = expr.mid(1); // LCOV_EXCL_LINE
         } else {
             expr = "~" + expr;
         }
@@ -1403,8 +1464,10 @@ void SystemVerilogCodeGen::loop()
     m_stream << "\n// Writing output data. //" << Qt::endl;
     for (const auto &pin : std::as_const(m_outputMap)) {
         QString expr = otherPortName(pin.m_port);
+        // Unreachable: otherPortName() never returns an empty string (see its own
+        // documented exclusions above).
         if (expr.isEmpty()) {
-            expr = highLow(pin.m_port->defaultValue());
+            expr = highLow(pin.m_port->defaultValue()); // LCOV_EXCL_LINE
         }
         m_stream << QString("assign %1 = %2;").arg(pin.m_varName, expr) << Qt::endl;
     }

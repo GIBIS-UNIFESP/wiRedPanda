@@ -25,4 +25,19 @@ private slots:
     void testTruthTableMultiOutput();
     // Regression: F23 — rotary positions become module inputs, not floating wires
     void testRotaryInputsDeclared();
+
+    void testDLatchAndSRLatchCircuits();
+    void testFlipFlopsNormalClockPath();
+    void testFlipFlopsWithPresetAndClearWired();
+    void testFlipFlopWithPresetOnlySensitivityList();
+    void testAsyncControlWithComplexExpressionCreatesAuxWire();
+    void testOutOfTopologicalOrderGateResolution();
+    void testDeclareInputsWithNoOutputElements();
+    void testDeclareOutputsWithLabel();
+    void testDemuxWithFourOutputsUsesTwoSelectLines();
+    void testIcPortNamesEscapeReservedWordsAndDedup();
+    void testOutOfOrderNodeUpstreamResolution();
+    void testWirelessNodeCycleDoesNotInfiniteRecurse();
+    void testNandGateCircuit();
+    void testDoubleNotCancelsNegation();
 };

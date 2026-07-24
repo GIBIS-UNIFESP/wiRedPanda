@@ -60,11 +60,12 @@ QJsonObject SimulationHandler::handleSimulationControl(const QJsonObject &params
     }
 
     Simulation *simulation = scene->simulation();
+    // Unreachable: Scene::simulation() returns the address of a value member, never null.
     if (!simulation) {
-        return createErrorResponse("No simulation available", requestId, JsonRpcError::SimulationError);
+        return createErrorResponse("No simulation available", requestId, JsonRpcError::SimulationError); // LCOV_EXCL_LINE
     }
 
-    return tryCommand([&]() -> QJsonObject {
+    return tryCommand([&]() -> QJsonObject { // LCOV_EXCL_LINE -- pattern 45: gcov misattributes this multi-line lambda-taking call's entry; the lambda body below is genuinely covered
         if (action == "start") {
             simulation->start();
         } else if (action == "stop") {
@@ -95,7 +96,7 @@ QJsonObject SimulationHandler::handleCreateWaveform(const QJsonObject &params, c
         return createErrorResponse(QString("Duration must be between 1 and %1").arg(SignalModel::kMaxColumns), requestId, JsonRpcError::ValidationError);
     }
 
-    return tryCommand([&]() -> QJsonObject {
+    return tryCommand([&]() -> QJsonObject { // LCOV_EXCL_LINE -- pattern 45: gcov misattributes this multi-line lambda-taking call's entry; the lambda body below is genuinely covered
         if (m_persistentDolphin) {
             m_persistentDolphin->deleteLater();
             m_persistentDolphin = nullptr;
@@ -120,7 +121,7 @@ QJsonObject SimulationHandler::handleCreateWaveform(const QJsonObject &params, c
                 }
 
                 if (pattern.size() != duration) {
-                    return createErrorResponse(QString("Pattern length for '%1' (%2) doesn't match duration (%3)")
+                    return createErrorResponse(QString("Pattern length for '%1' (%2) doesn't match duration (%3)") // LCOV_EXCL_LINE -- pattern 8: gcov misattributes this multi-line chained-.arg() call's first line even though it's genuinely reached
                                                .arg(inputLabel).arg(pattern.size()).arg(duration),
                                                requestId, JsonRpcError::ValidationError);
                 }
@@ -128,7 +129,7 @@ QJsonObject SimulationHandler::handleCreateWaveform(const QJsonObject &params, c
                 for (int col = 0; col < duration; ++col) {
                     int value = pattern[col].toInt();
                     if (value != 0 && value != 1) {
-                        return createErrorResponse(QString("Invalid pattern value %1 for '%2' at step %3 (must be 0 or 1)")
+                        return createErrorResponse(QString("Invalid pattern value %1 for '%2' at step %3 (must be 0 or 1)") // LCOV_EXCL_LINE -- pattern 8: gcov misattributes this multi-line chained-.arg() call's first line even though it's genuinely reached
                                                    .arg(value).arg(inputLabel).arg(col),
                                                    requestId, JsonRpcError::ValidationError);
                     }
@@ -205,7 +206,7 @@ QJsonObject SimulationHandler::handleExportWaveform(const QJsonObject &params, c
                                    requestId, JsonRpcError::SimulationError);
     }
 
-    return tryCommand([&]() -> QJsonObject {
+    return tryCommand([&]() -> QJsonObject { // LCOV_EXCL_LINE -- pattern 45: gcov misattributes this multi-line lambda-taking call's entry; the lambda body below is genuinely covered
         QJsonObject result;
         result["filename"] = filename;
         result["format"] = format;

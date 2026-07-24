@@ -76,3 +76,53 @@ void TestLabeledSlider::testSizeHintReservesLabelSpace()
     QVERIFY(withTicksHint.height() > noTicksHint.height());
     QCOMPARE(slider.minimumSizeHint(), slider.sizeHint());
 }
+
+void TestLabeledSlider::testPaintEventUsesFallbackFormatForNonCanonicalFraction()
+{
+    // periodFractionLabel() only special-cases the canonical eighths from -1/2 to 1/2
+    // (0, +-1/8, +-1/4, +-3/8, +-1/2); anything else falls back to a 3-decimal float.
+    // Range -8..8 with interval 2 puts the endpoint values at +-8, i.e. periodFraction
+    // +-1.0 -- outside the canonical set. The endpoints are always drawn unconditionally
+    // (see repositionCallout-style reservation comment in paintEvent()), so this
+    // deterministically exercises the fallback branch rather than merely making it likely.
+    LabeledSlider fallbackSlider;
+    fallbackSlider.resize(200, 60);
+    fallbackSlider.setRange(-8, 8);
+    fallbackSlider.setTickPosition(QSlider::TicksBelow);
+    fallbackSlider.setTickInterval(2);
+    const QPixmap fallbackPixmap = fallbackSlider.grab();
+
+    LabeledSlider noLabelsSlider;
+    noLabelsSlider.resize(200, 60);
+    noLabelsSlider.setRange(-8, 8);
+    noLabelsSlider.setTickPosition(QSlider::NoTicks);
+    const QPixmap baselinePixmap = noLabelsSlider.grab();
+
+    QVERIFY(TestUtils::pixmapHasInk(fallbackPixmap));
+    QVERIFY2(fallbackPixmap.toImage() != baselinePixmap.toImage(),
+              "fallback fraction labels must actually render extra content vs. no ticks at all");
+}
+
+void TestLabeledSlider::testPaintEventSkipsLabelsWhenTickCountIsZero()
+{
+    // Regression seam: tickCount = (max - min) / interval can integer-divide down to 0
+    // when the interval is larger than the whole range, even though interval itself is
+    // non-zero (so the earlier interval<=0 guard doesn't fire). paintEvent() must bail
+    // out before computing/drawing any labels in that case.
+    LabeledSlider zeroCountSlider;
+    zeroCountSlider.resize(200, 60);
+    zeroCountSlider.setRange(0, 5);
+    zeroCountSlider.setTickPosition(QSlider::TicksBelow);
+    zeroCountSlider.setTickInterval(10); // (5 - 0) / 10 == 0
+    const QPixmap zeroCountPixmap = zeroCountSlider.grab();
+
+    LabeledSlider withLabelsSlider;
+    withLabelsSlider.resize(200, 60);
+    withLabelsSlider.setRange(0, 5);
+    withLabelsSlider.setTickPosition(QSlider::TicksBelow);
+    withLabelsSlider.setTickInterval(1); // (5 - 0) / 1 == 5, labels are drawn
+    const QPixmap withLabelsPixmap = withLabelsSlider.grab();
+
+    QVERIFY2(zeroCountPixmap.toImage() != withLabelsPixmap.toImage(),
+              "zero tick count must skip the fraction labels drawn in the interval=1 case");
+}

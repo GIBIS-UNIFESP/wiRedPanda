@@ -131,7 +131,7 @@ void BewavedDolphin::createWaveform(const QString &fileName)
         // resolve, fall back to just the filename relative to the main window's working
         // directory so that relative paths stored inside .panda files still resolve.
         QFileInfo fileInfo(fileName);
-        if (fileInfo.isRelative() || !fileInfo.exists()) {
+        if (m_host && (fileInfo.isRelative() || !fileInfo.exists())) {
             fileInfo.setFile(m_host->currentDir(), QFileInfo(fileName).fileName());
         }
 
@@ -399,7 +399,9 @@ bool BewavedDolphin::checkSave()
     case QMessageBox::Save:    on_actionSave_triggered(); return (!m_edited);
     case QMessageBox::Discard: return true;
     case QMessageBox::Cancel:  return false;
-    default:                   return true;
+    // Not reachable: the dialog above offers exactly these 3 StandardButtons, so
+    // QMessageBox::question() can only ever return one of them.
+    default:                   return true; // LCOV_EXCL_LINE
     }
 }
 
@@ -448,7 +450,7 @@ BewavedDolphin::WaveformSnapshot BewavedDolphin::snapshot(const int duration) co
     }
 
     return result;
-}
+} // LCOV_EXCL_LINE -- compiler-generated WaveformSnapshot cleanup for an exception path snapshot() never takes
 
 void BewavedDolphin::show()
 {
@@ -517,12 +519,16 @@ void BewavedDolphin::saveToTxt(QTextStream &stream)
 bool BewavedDolphin::exportToPng(const QString &filename)
 {
     // Public façade for the MCP server: swallow exceptions and report success as a bool.
+    // Not reachable as currently implemented: DolphinExporter::renderToPixmap() only calls
+    // plain Qt widget/painting APIs (none of which throw) and QPixmap::save() reports
+    // failure via its bool return, not an exception — but the catch stays as a defensive
+    // backstop against a future renderToPixmap()/save() change that does throw.
     try {
         return DolphinExporter::exportToPng(m_model, m_delegate->plotType(), filename);
-    } catch (...) {
-        return false;
-    }
-}
+    } catch (...) { // LCOV_EXCL_LINE
+        return false; // LCOV_EXCL_LINE
+    } // LCOV_EXCL_LINE
+} // LCOV_EXCL_LINE
 
 std::pair<QList<QPair<int, int>>, QList<int>> BewavedDolphin::snapshotCells(const QModelIndexList &indexes) const
 {
@@ -547,7 +553,7 @@ QModelIndexList BewavedDolphin::allCellIndexes(int rows, int cols) const
         }
     }
     return indexes;
-}
+} // LCOV_EXCL_LINE -- compiler-generated QModelIndexList cleanup for an exception path allCellIndexes() never takes
 
 void BewavedDolphin::applyToSelectedCells(const std::function<int(int)> &valueFn)
 {
@@ -839,7 +845,7 @@ void BewavedDolphin::on_actionSaveAs_triggered()
                   : tr("Dolphin files") + " (*.dolphin);;" + tr("CSV files") + " (*.csv);;" + tr("All supported files") + " (*.dolphin *.csv)";
 
         const QString initialPath = m_currentFile.fileName().isEmpty()
-                                        ? m_host->currentFile().absolutePath()
+                                        ? (m_host ? m_host->currentFile().absolutePath() : QString())
                                         : m_currentFile.absoluteFilePath();
 
         const auto result = FileDialogs::provider()->getSaveFileName(this, tr("Save File as..."), initialPath, fileFilter);
@@ -870,6 +876,11 @@ void BewavedDolphin::on_actionSaveAs_triggered()
 
 void BewavedDolphin::associateToWiRedPanda(const QString &fileName)
 {
+    // Without a host there is no wiRedPanda project file to link this waveform to.
+    if (!m_host) {
+        return;
+    }
+
     // Only prompt when the file is new (not already linked) and we are in interactive mode;
     // non-interactive (command-line / test) sessions skip the dialog entirely
     if ((m_host->dolphinFileName() != fileName) && Application::interactiveMode) {
@@ -897,15 +908,17 @@ void BewavedDolphin::on_actionLoad_triggered()
         // working directory, and finally to the home directory
         if (m_currentFile.exists()) {
             defaultDirectory.setPath(m_currentFile.absolutePath());
-        } else {
+        } else if (m_host) {
             if (m_host->currentFile().exists()) {
                 m_host->currentFile().dir();
             } else {
                 defaultDirectory.setPath(QDir::homePath());
             }
+        } else {
+            defaultDirectory.setPath(QDir::homePath());
         }
 
-        const QString homeDir(m_host->currentDir().absolutePath());
+        const QString homeDir(m_host ? m_host->currentDir().absolutePath() : QDir::homePath());
 
         const QString fileName = FileDialogs::provider()->getOpenFileName(
             this, tr("Open File"), homeDir,

@@ -5,6 +5,7 @@
 
 #include <QDir>
 #include <QFile>
+#include <QFileDevice>
 #include <QTemporaryDir>
 
 #include "App/IO/FileUtils.h"
@@ -85,6 +86,41 @@ void TestFileUtils::testCopyToDirThrowsOnFailure()
     QVERIFY_THROWS(std::exception, FileUtils::copyToDir(sourceFile, badDest));
 }
 
+void TestFileUtils::testCopyToDirNonExistentSourceIsNoOp()
+{
+    // A real (non-resource, non-empty) path whose file doesn't actually exist on disk is a
+    // no-op — nothing to copy, and nothing must be written into destDir.
+    QTemporaryDir sourceDir;
+    QTemporaryDir destDir;
+    QVERIFY(sourceDir.isValid());
+    QVERIFY(destDir.isValid());
+
+    FileUtils::copyToDir(sourceDir.path() + "/does_not_exist.txt", destDir.path());
+
+    QVERIFY(QDir(destDir.path()).entryList(QDir::Files | QDir::NoDotAndDotDot).isEmpty());
+}
+
+void TestFileUtils::testCopyToDirSourceAlreadyInDestDirIsNoOp()
+{
+    // A source file that already lives inside destDir needs no copy -- confirmed by verifying
+    // the file's content is untouched (a self-copy attempt would at least touch mtime, and
+    // QFile::copy() onto an existing destination would fail outright).
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+
+    const QString path = dir.path() + "/already_here.txt";
+    QFile file(path);
+    QVERIFY(file.open(QIODevice::WriteOnly));
+    file.write("original content");
+    file.close();
+
+    FileUtils::copyToDir(path, dir.path());
+
+    QFile check(path);
+    QVERIFY(check.open(QIODevice::ReadOnly));
+    QCOMPARE(check.readAll(), QByteArray("original content"));
+}
+
 void TestFileUtils::testFilesHaveSameContent()
 {
     QTemporaryDir dir;
@@ -114,4 +150,41 @@ void TestFileUtils::testFilesHaveSameContent()
     QVERIFY(!FileUtils::filesHaveSameContent(QFileInfo(original), QFileInfo(differentSameSize)));
     // Different size.
     QVERIFY(!FileUtils::filesHaveSameContent(QFileInfo(original), QFileInfo(differentSize)));
+}
+
+void TestFileUtils::testFilesHaveSameContentUnreadableFileTreatedAsDifferent()
+{
+#ifdef Q_OS_WIN
+    QSKIP("QFile::setPermissions cannot simulate an unreadable file on Windows (uses ACLs, not Unix permission bits)");
+#else
+    // Same size, distinct paths (so the canonical-path/size shortcuts don't short-circuit
+    // first), but one file can't actually be opened for reading -- must be treated as
+    // "different" (can't confirm identical) rather than throwing or crashing.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+
+    const QString readablePath = dir.path() + "/readable.panda";
+    const QString unreadablePath = dir.path() + "/unreadable.panda";
+    {
+        QFile a(readablePath);
+        QVERIFY(a.open(QIODevice::WriteOnly));
+        a.write("same size");
+        a.close();
+        QFile b(unreadablePath);
+        QVERIFY(b.open(QIODevice::WriteOnly));
+        b.write("same size");
+        b.close();
+    }
+    QVERIFY(QFile::setPermissions(unreadablePath, QFileDevice::Permissions()));
+
+    // Sanity: confirm the file really can't be opened for reading under this permission set.
+    {
+        QFile probe(unreadablePath);
+        QVERIFY(!probe.open(QIODevice::ReadOnly));
+    }
+
+    QVERIFY(!FileUtils::filesHaveSameContent(QFileInfo(readablePath), QFileInfo(unreadablePath)));
+
+    QFile::setPermissions(unreadablePath, QFileDevice::ReadOwner | QFileDevice::WriteOwner);
+#endif
 }

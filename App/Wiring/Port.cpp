@@ -30,7 +30,7 @@ QPainterPath Port::shape() const
     QPainterPath path;
     path.addRect(QRectF(QPointF(-kRadius, -kRadius), QPointF(kRadius, kRadius)));
     return path;
-}
+} // LCOV_EXCL_LINE -- compiler-generated cleanup for the returned QPainterPath; the body above is reached on every real hit-test (pattern 1)
 
 QRectF Port::boundingRect() const
 {

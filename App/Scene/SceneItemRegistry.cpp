@@ -52,8 +52,8 @@ void SceneItemRegistry::forgetItemId(const int id)
 
 void SceneItemRegistry::registerItem(ItemWithId *item)
 {
-    if (!item) {
-        return;
+    if (!item) { // LCOV_EXCL_LINE — Scene::addItem() is the sole caller and only invokes this inside its own `if (auto *iwid = dynamic_cast<...>(item))` block, already non-null.
+        return; // LCOV_EXCL_LINE
     }
     // HC invariant: an id must map to exactly one live item — never to a stale pointer
     // left behind by a missed unregisterItem (the WIREDPANDA-HC family upstream condition)
@@ -65,8 +65,8 @@ void SceneItemRegistry::registerItem(ItemWithId *item)
 
 void SceneItemRegistry::unregisterItem(ItemWithId *item)
 {
-    if (!item) {
-        return;
+    if (!item) { // LCOV_EXCL_LINE — Scene::removeItem() is the sole caller and only invokes this inside its own `if (auto *iwid = dynamic_cast<...>(item))` block, already non-null.
+        return; // LCOV_EXCL_LINE
     }
     m_elementRegistry.remove(item->id());
     item->setRegistry(nullptr);
@@ -76,8 +76,8 @@ void SceneItemRegistry::unregisterItem(ItemWithId *item)
 
 void SceneItemRegistry::forget(ItemWithId *item)
 {
-    if (!item) {
-        return;
+    if (!item) { // LCOV_EXCL_LINE — sole caller is ItemWithId::~ItemWithId(), which passes `this`; a member function's `this` can never be null.
+        return; // LCOV_EXCL_LINE
     }
     // Identity-checked: a reused id may already have been claimed by a new item by the
     // time this fires (e.g. undo/redo restoring a different item under the same id).

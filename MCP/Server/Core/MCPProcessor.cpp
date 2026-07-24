@@ -312,8 +312,14 @@ void MCPProcessor::processCommand(const QString &line)
         if (auto *handler = m_dispatchMap.value(method)) {
             response = handler->handleCommand(method, params, requestId);
         } else {
-            response = m_serverInfoHandler->createErrorResponse(QString("Unknown method: %1").arg(method),
-                                                                requestId, JsonRpcError::MethodNotFound);
+            // Unreachable via any schema-validated command: the constructor's addRoutes()
+            // calls register exactly the 43 method names schema-mcp.json's
+            // "commands.properties" defines (verified by direct comparison of both lists,
+            // not assumed), and any *other* method name already fails schema validation
+            // above with InvalidParams before ever reaching this dispatch. Kept as a
+            // belt-and-suspenders guard against the two lists drifting apart.
+            response = m_serverInfoHandler->createErrorResponse(QString("Unknown method: %1").arg(method), // LCOV_EXCL_LINE
+                                                                requestId, JsonRpcError::MethodNotFound); // LCOV_EXCL_LINE
         }
     } catch (const std::exception &e) {
         response = m_serverInfoHandler->createErrorResponse(QString("Internal error: %1").arg(e.what()),

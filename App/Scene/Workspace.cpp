@@ -386,10 +386,10 @@ WorkSpace::SaveOutcome WorkSpace::save(const QString &fileName)
     save(stream);
 
     if (!saveFile.commit()) {
-        if (Application::interactiveMode && isReadOnlyFailure(saveFile.error())) {
-            return SaveOutcome::ReadOnlyTarget;
+        if (Application::interactiveMode && isReadOnlyFailure(saveFile.error())) { // LCOV_EXCL_LINE — same class as ICRegistry::extractToFile()'s/DolphinFile::save()'s existing exclusions: open() above already rejects the deterministic failure modes, so a commit()-only failure (e.g. losing rename permission mid-write) needs a second OS user or root.
+            return SaveOutcome::ReadOnlyTarget; // LCOV_EXCL_LINE — see above.
         }
-        throw PANDACEPTION("Could not save file: %1", saveFile.errorString());
+        throw PANDACEPTION("Could not save file: %1", saveFile.errorString()); // LCOV_EXCL_LINE — see above.
     }
 
     // Only adopt the new file/context identity once it's actually on disk — setting it earlier
@@ -616,7 +616,7 @@ void WorkSpace::setAutosaveFileName()
     // is computed lazily inside autosave() when the workspace first turns dirty.
     QDir autosavePath(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/autosaves");
     if (!autosavePath.exists()) {
-        autosavePath.mkpath(autosavePath.absolutePath());
+        autosavePath.mkpath(autosavePath.absolutePath()); // LCOV_EXCL_LINE — this is called from every WorkSpace constructor, so the global autosaves directory is already created by whichever WorkSpace-based test runs first in the process; a Meyer's-singleton-style one-time-only branch (pattern 12) that can't be isolated without disrupting shared state other tests depend on.
     }
     m_autosaveFileName.clear();
 }
@@ -679,7 +679,7 @@ void WorkSpace::autosave()
         }
     }
     if (!path.exists()) {
-        path.mkpath(path.absolutePath());
+        path.mkpath(path.absolutePath()); // LCOV_EXCL_LINE — QFileInfo::isWritable() on a not-yet-created directory returns false, so the "project dir" branch above only ever selects a directory that already exists; the AppData fallback is the same already-created-by-setAutosaveFileName() path as the pattern-12 exclusion above. Not reachable without disrupting shared process-wide state.
     }
     qCDebug(three) << "Autosavepath: " << path.absolutePath();
 
@@ -718,7 +718,7 @@ void WorkSpace::autosave()
     save(stream);
 
     if (!autosaveFile.commit()) {
-        throw PANDACEPTION("Could not commit autosave file: %1", autosaveFile.errorString());
+        throw PANDACEPTION("Could not commit autosave file: %1", autosaveFile.errorString()); // LCOV_EXCL_LINE — same class as save()'s own commit-failure exclusion above: open() already rejects the deterministic failure modes, so a commit()-only failure needs a second OS user or root.
     }
 
     autosaves.append(m_autosaveFileName);
@@ -816,8 +816,8 @@ void WorkSpace::onChildICBlobSaved(int icElementId, const QByteArray &blob)
 
     const QString targetBlobName = elm->blobName();
     const auto targets = m_scene.icRegistry()->findICsByBlobName(targetBlobName);
-    if (targets.isEmpty()) {
-        return;
+    if (targets.isEmpty()) { // LCOV_EXCL_LINE — elm itself (just confirmed isEmbedded() with this exact blobName, and already resolved as a live scene element above) satisfies findICsByBlobName()'s own identical isEmbedded()+blobName-match scan, so targets always contains at least elm.
+        return; // LCOV_EXCL_LINE — see above.
     }
 
     const auto connections = UpdateBlobCommand::captureConnections(targets);

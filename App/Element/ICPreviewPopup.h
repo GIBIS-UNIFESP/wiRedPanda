@@ -27,6 +27,11 @@ class ICPreviewPopup : public QWidget
 {
     Q_OBJECT
 
+    // Test-only seam: executeShow() is the real timer-fired slot, but waiting out the real
+    // 1-second m_showTimer in a test is slow and non-deterministic. Calling it directly lets
+    // tests drive the exact same logic showForIC() would eventually trigger, synchronously.
+    friend class TestICUnit;
+
 public:
     /// Maximum preview dimensions in pixels.
     static constexpr int MaxWidth = 500;

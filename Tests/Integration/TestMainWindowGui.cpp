@@ -6,11 +6,13 @@
 #include <QAction>
 #include <QApplication>
 #include <QClipboard>
+#include <QDesktopServices>
 #include <QFile>
 #include <QLabel>
 #include <QLineEdit>
 #include <QMenu>
 #include <QMessageBox>
+#include <QMimeData>
 #include <QMouseEvent>
 #include <QScrollBar>
 #include <QShortcut>
@@ -27,6 +29,7 @@
 #include <QWheelEvent>
 
 #include "App/BeWavedDolphin/BeWavedDolphin.h"
+#include "App/BeWavedDolphin/DolphinHost.h"
 #include "App/Core/Application.h"
 #include "App/Core/Settings.h"
 #include "App/Core/ThemeManager.h"
@@ -39,6 +42,8 @@
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Element/GraphicElements/Or.h"
 #include "App/Element/IC.h"
+#include "App/Exercise/ExerciseEngine.h"
+#include "App/Exercise/ExerciseOverlay.h"
 #include "App/IO/Serialization.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/GraphicsView.h"
@@ -46,6 +51,8 @@
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
+#include "App/Tour/TourEngine.h"
+#include "App/Tour/TourOverlay.h"
 #include "App/UI/ElementEditor.h"
 #include "App/UI/ElementPalette.h"
 #include "App/UI/FileDialogProvider.h"
@@ -161,9 +168,41 @@ static void wheelZoom(GraphicsView *view, int delta)
 // no-op'd when the dialog wasn't active yet, leaving exec() blocked until
 // Qt Test's function watchdog killed the binary.)
 
+// Writes `content` to a fresh file under `dir` and returns its path -- used to build minimal
+// hand-crafted Exercise/Tour JSON fixtures matching the real schema (App/Resources/*/README.md)
+// without depending on the real bundled resources' exact content.
+static QString writeJsonFixture(const QTemporaryDir &dir, const QString &name, const QString &content)
+{
+    const QString path = dir.filePath(name);
+    QFile file(path);
+    if (!file.open(QIODevice::WriteOnly)) {
+        return {};
+    }
+    file.write(content.toUtf8());
+    file.close();
+    return path;
+}
+
 } // namespace MainWindowGuiHelpers
 
 using namespace MainWindowGuiHelpers;
+
+namespace {
+
+// QDesktopServices::setUrlHandler() needs a real, moc-processed slot -- a function-local class
+// can't have one, so this capturer lives at namespace scope (mirrors TestExportController.cpp's
+// identical helper). Requires TestMainWindowGui.moc at file end (CMake AUTOMOC convention for a
+// Q_OBJECT class defined directly in a .cpp).
+class MainWindowGuiUrlOpenCapturer : public QObject
+{
+    Q_OBJECT
+public:
+    QStringList urls;
+public slots:
+    void handle(const QUrl &url) { urls.append(url.toString()); }
+};
+
+} // namespace
 
 // ---------------------------------------------------------------------------
 // Setup
@@ -2717,6 +2756,41 @@ void TestMainWindowGui::testInputButtonMomentary()
     QCOMPARE(TestUtils::inputStatus(led), false);
 }
 
+void TestMainWindowGui::testInputButtonMousePressReleaseIsMomentary()
+{
+    // Drives InputButton::mousePressEvent()/mouseReleaseEvent() through the real
+    // QGraphicsView/Scene event pipeline (unlike testInputButtonMomentary() above,
+    // which calls setOn() directly and never reaches those overrides at all).
+    std::unique_ptr<MainWindow> window(createMW());
+    auto *scene = window->currentTab()->scene();
+    auto *view = window->currentTab()->view();
+
+    auto *button = new InputButton();
+    auto *led = new Led();
+    button->setPos(50, 100);
+    led->setPos(250, 100);
+    scene->addItem(button);
+    scene->addItem(led);
+
+    CircuitBuilder builder(scene);
+    builder.connect(button, 0, led, 0);
+    auto *sim = builder.initSimulation();
+    sim->update();
+
+    QCOMPARE(TestUtils::inputStatus(led), false);
+
+    const QPoint viewPos = view->mapFromScene(button->scenePos());
+    QTest::mousePress(view->viewport(), Qt::LeftButton, Qt::NoModifier, viewPos);
+    sim->update();
+    QVERIFY2(button->isOn(), "InputButton must go ON while the mouse button is held down");
+    QCOMPARE(TestUtils::inputStatus(led), true);
+
+    QTest::mouseRelease(view->viewport(), Qt::LeftButton, Qt::NoModifier, viewPos);
+    sim->update();
+    QVERIFY2(!button->isOn(), "InputButton must return OFF as soon as the mouse button is released");
+    QCOMPARE(TestUtils::inputStatus(led), false);
+}
+
 void TestMainWindowGui::testRapidSimulationToggle()
 {
     std::unique_ptr<MainWindow> window(createMW());
@@ -3710,3 +3784,652 @@ void TestMainWindowGui::testRecoveredAutosaveCountsAsModifiedF6()
     Settings::setAutosaveFiles(previousAutosaves);
     QFile::remove(savePath);
 }
+
+// ===========================================================================
+// MainWindow.cpp coverage completion
+// ===========================================================================
+
+void TestMainWindowGui::testConstructorWithFileNameArgumentLoadsFile()
+{
+    const QString path = m_fixtureDir + "/ctor_load_test.panda";
+    createMWFixture(path);
+
+    Settings::setLanguage("en");
+    std::unique_ptr<MainWindow> window(new MainWindow(path));
+    window->show();
+
+    QVERIFY(window->currentTab());
+    QCOMPARE(window->currentTab()->fileInfo().absoluteFilePath(), QFileInfo(path).absoluteFilePath());
+}
+
+void TestMainWindowGui::testExamplesMenuHiddenWhenNoExamplesDirectoryFound()
+{
+    // InstallRelativePaths::candidates("Examples")'s only candidate that matches in this build
+    // (no Examples/ next to the built binary) is the bare-CWD fallback -- this repo's own root
+    // has a real top-level Examples/ directory, which is why every other test here finds real
+    // examples. Temporarily running from an empty directory forces every candidate to miss,
+    // deterministically reproducing setupExamplesMenu()'s "hide the empty menu" branch without
+    // touching any real shared resource (each ctest test is its own process; this only affects
+    // this one process's CWD, restored before returning).
+    const QString originalCwd = QDir::currentPath();
+    QTemporaryDir emptyDir;
+    QVERIFY(emptyDir.isValid());
+    QVERIFY(QDir::setCurrent(emptyDir.path()));
+
+    Settings::setLanguage("en");
+    std::unique_ptr<MainWindow> window(new MainWindow());
+    window->show();
+
+    QVERIFY(QDir::setCurrent(originalCwd));
+
+    auto *menuExamples = window->findChild<QMenu *>("menuExamples");
+    QVERIFY(menuExamples);
+    QVERIFY(menuExamples->isEmpty());
+    QVERIFY(!menuExamples->menuAction()->isVisible());
+}
+
+void TestMainWindowGui::testPopulateContentMenuOpenFolderAction()
+{
+    std::unique_ptr<MainWindow> window(createMW());
+
+    auto *menuExercises = window->findChild<QMenu *>("menuExercises");
+    QVERIFY(menuExercises);
+    emit menuExercises->aboutToShow(); // populateContentMenu() rebuilds the menu on demand
+
+    auto *openFolderAction = menuExercises->actions().constFirst();
+    QVERIFY2(openFolderAction->text().contains("Exercises"), qPrintable(openFolderAction->text()));
+
+    MainWindowGuiUrlOpenCapturer capturer;
+    QDesktopServices::setUrlHandler(QStringLiteral("file"), &capturer, "handle");
+
+    openFolderAction->trigger();
+
+    QDesktopServices::unsetUrlHandler(QStringLiteral("file"));
+
+    // preferredContentDir() always resolves to a real writable directory in a normal test
+    // environment (falls back to Documents/wiRedPanda/Exercises, created on demand) -- the
+    // "could not create or access a folder" warning branch needs a non-writable Documents
+    // directory, not reproducible here without root/deferred infrastructure.
+    QCOMPARE(capturer.urls.size(), 1);
+}
+
+void TestMainWindowGui::testEditSubcircuitRequestedOpensICTab()
+{
+    std::unique_ptr<MainWindow> window(createMW());
+    auto *scene = window->currentTab()->scene();
+    scene->setContextDir(m_fixtureDir);
+
+    auto *ic = placeEmbeddedIC(scene, m_fixtureDir, "edit_subcircuit_test");
+
+    auto *editor = window->findChild<ElementEditor *>();
+    QVERIFY(editor);
+
+    auto *tabs = findTabs(window.get());
+    const int countBefore = tabs->count();
+
+    emit editor->editSubcircuitRequested(ic->blobName(), ic->id());
+
+    QCOMPARE(tabs->count(), countBefore + 1);
+}
+
+void TestMainWindowGui::testReportTranslationErrorOpensWeblate()
+{
+    std::unique_ptr<MainWindow> window(createMW());
+
+    MainWindowGuiUrlOpenCapturer capturer;
+    QDesktopServices::setUrlHandler(QStringLiteral("https"), &capturer, "handle");
+
+    auto *action = window->findChild<QAction *>("actionReportTranslationError");
+    QVERIFY(action);
+    action->trigger();
+
+    QDesktopServices::unsetUrlHandler(QStringLiteral("https"));
+
+    QCOMPARE(capturer.urls.size(), 1);
+    QCOMPARE(capturer.urls.constFirst(), QStringLiteral("https://hosted.weblate.org/projects/wiredpanda/wiredpanda"));
+}
+
+void TestMainWindowGui::testCloseEventClosesAfterConfirmedSave()
+{
+    std::unique_ptr<MainWindow> window(createMW());
+    window->setAttribute(Qt::WA_DeleteOnClose, false);
+
+    // Dirty the tab's undo stack so hasModifiedFiles() is true, driving closeEvent() into the
+    // closeFiles() branch rather than the plain "Are you sure?" one.
+    auto *scene = window->currentTab()->scene();
+    scene->receiveCommand(new AddItemsCommand({new And()}, scene));
+    QVERIFY(!scene->undoStack()->isClean());
+
+    // Discard (don't save) so closeTab()/closeFiles() succeed without needing a real path.
+    TestUtils::AutoDismisser dismisser([](QWidget *w) {
+        auto *msgBox = qobject_cast<QMessageBox *>(w);
+        if (!msgBox) return false;
+        if (auto *btn = msgBox->button(QMessageBox::No)) { btn->click(); return true; }
+        return false;
+    });
+
+    window->close();
+
+    QVERIFY2(TestUtils::waitFor([&] { return !window->isVisible(); }), "window must have closed after discarding");
+}
+
+void TestMainWindowGui::testCloseEventIgnoredWhenCancelled()
+{
+    std::unique_ptr<MainWindow> window(createMW());
+    window->setAttribute(Qt::WA_DeleteOnClose, false);
+    QVERIFY(window->currentTab()->scene()->undoStack()->isClean());
+
+    TestUtils::AutoDismisser dismisser([](QWidget *w) {
+        auto *msgBox = qobject_cast<QMessageBox *>(w);
+        if (!msgBox) return false;
+        if (auto *btn = msgBox->button(QMessageBox::Cancel)) { btn->click(); return true; }
+        return false;
+    });
+
+    window->close();
+
+    QVERIFY2(TestUtils::waitFor([&] { return dismisser.dismissCount() >= 1; }), "the \"Are you sure?\" dialog must have appeared");
+    QVERIFY(window->isVisible());
+}
+
+void TestMainWindowGui::testWidgetAndDolphinHostAccessors()
+{
+    std::unique_ptr<MainWindow> window(createMW());
+    QCOMPARE(window->widget(), static_cast<QWidget *>(window.get()));
+    QCOMPARE(window->dolphinHost(), static_cast<DolphinHost *>(window.get()));
+}
+
+void TestMainWindowGui::testActionsAreNoOpsWithNoCurrentTab()
+{
+    std::unique_ptr<MainWindow> window(createMW());
+    auto *tabs = findTabs(window.get());
+    tabs->tabCloseRequested(0);
+    QCOMPARE(window->currentTab(), nullptr);
+
+    const QStringList actionNames = {
+        "actionSelectAll", "actionGates", "actionZoomIn", "actionZoomOut",
+        "actionResetZoom", "actionZoomToFit", "actionRestart",
+        "actionFlipHorizontally", "actionFlipVertically",
+        "actionAlignLeft", "actionAlignRight", "actionAlignTop", "actionAlignBottom",
+        "actionAlignHorizontalCenter", "actionAlignVerticalCenter",
+        "actionDistributeHorizontally", "actionDistributeVertically",
+        "actionMute", "actionWaveform",
+    };
+    for (const QString &name : actionNames) {
+        auto *action = window->findChild<QAction *>(name);
+        QVERIFY2(action, qPrintable(name));
+        action->trigger();
+    }
+    QVERIFY2(!window->m_bwd, "actionWaveform must be a no-op with no current tab and no existing m_bwd");
+
+    // ElementPalette::addElementRequested's no-tab guard: deletes the payload and returns.
+    emit window->palette()->addElementRequested(new QMimeData());
+
+    // clickTarget()'s own no-tab guards for its two circuit-building demo targets.
+    window->clickTarget(QStringLiteral("setupElementEditorDemo"));
+    window->clickTarget(QStringLiteral("setupWaveformDemo"));
+
+    QVERIFY(window->isVisible());
+    QCOMPARE(window->currentTab(), nullptr);
+}
+
+void TestMainWindowGui::testAlignDistributeFlipZoomToFitActionsWithTab()
+{
+    std::unique_ptr<MainWindow> window(createMW());
+    auto *scene = window->currentTab()->scene();
+
+    auto *and1 = new And();
+    auto *and2 = new And();
+    auto *and3 = new And();
+    and1->setPos(0, 0);
+    and2->setPos(200, 80);
+    and3->setPos(400, 160);
+    scene->receiveCommand(new AddItemsCommand({and1, and2, and3}, scene));
+
+    auto *undoStack = scene->undoStack();
+
+    // Each of these delegates unconditionally to a Scene method that only pushes an undo
+    // command with a real (3-element, for distribute) selection -- reselect before every
+    // trigger since some of these can shift positions enough to matter for the next one.
+    const QStringList actionsToCheck = {
+        "actionFlipVertically",
+        "actionAlignLeft", "actionAlignRight", "actionAlignTop", "actionAlignBottom",
+        "actionAlignHorizontalCenter", "actionAlignVerticalCenter",
+        "actionDistributeHorizontally", "actionDistributeVertically",
+    };
+    for (const QString &name : actionsToCheck) {
+        scene->clearSelection();
+        and1->setSelected(true);
+        and2->setSelected(true);
+        and3->setSelected(true);
+
+        auto *action = window->findChild<QAction *>(name);
+        QVERIFY2(action, qPrintable(name));
+        const int countBefore = undoStack->count();
+        action->trigger();
+        QVERIFY2(undoStack->count() > countBefore, qPrintable(name));
+    }
+
+    auto *zoomToFitAction = window->findChild<QAction *>("actionZoomToFit");
+    QVERIFY(zoomToFitAction);
+    auto *view = window->currentTab()->view();
+    const QTransform transformBefore = view->transform();
+    view->scale(5.0, 5.0); // zoom in first so zoomToFit has a real change to make
+    zoomToFitAction->trigger();
+    QVERIFY(view->transform() != transformBefore * QTransform().scale(5.0, 5.0));
+
+    auto *minimapAction = window->findChild<QAction *>("actionShowMinimap");
+    QVERIFY(minimapAction);
+    const bool checkedBefore = minimapAction->isChecked();
+    minimapAction->trigger();
+    QCOMPARE(Settings::minimapVisible(), !checkedBefore);
+}
+
+void TestMainWindowGui::testExerciseOverlayDetachesAndReattachesAcrossTabSwitch()
+{
+    std::unique_ptr<MainWindow> window(createMW());
+    auto *tabs = findTabs(window.get());
+
+    const QString exercisePath = writeJsonFixture(m_tempDir, "tabswitch_exercise.json", R"({
+        "id": "test-mw-tabswitch",
+        "title": "T",
+        "description": "T",
+        "steps": [
+            { "key": "s0", "instruction": "i", "hint": "h", "requiredElements": [], "requiredConnections": [] }
+        ]
+    })");
+
+    window->startExercise(exercisePath);
+    QVERIFY(window->m_exerciseEngine->isActive());
+    QVERIFY(window->m_exerciseOverlay);
+    QCOMPARE(window->m_exerciseOverlay->parentWidget(), tabs->widget(0));
+
+    auto *newTabAction = window->findChild<QAction *>("actionNew");
+    QVERIFY(newTabAction);
+    newTabAction->trigger();
+    QCOMPARE(tabs->count(), 2);
+    tabs->setCurrentIndex(1);
+
+    // Detached from tab0, reattached to tab1 by onCurrentTabChanged() since the exercise is
+    // still active.
+    QCOMPARE(window->m_exerciseOverlay->parentWidget(), tabs->widget(1));
+    QVERIFY(window->m_exerciseOverlay->isVisible());
+}
+
+void TestMainWindowGui::testExportWrapperMethodsDelegateToController()
+{
+    std::unique_ptr<MainWindow> window(createMW());
+    auto *scene = window->currentTab()->scene();
+    scene->receiveCommand(new AddItemsCommand({new InputSwitch(), new Led()}, scene));
+
+    const QString arduinoPath = m_fixtureDir + "/wrapper_test.ino";
+    window->exportToArduino(arduinoPath);
+    QVERIFY(QFile::exists(arduinoPath));
+
+    const QString svPath = m_fixtureDir + "/wrapper_test.sv";
+    window->exportToSystemVerilog(svPath);
+    QVERIFY(QFile::exists(svPath));
+
+    {
+        TestUtils::ScopedStdoutCapture capture(m_fixtureDir + "/wrapper_stdout1.txt");
+        window->exportToWaveFormFile(QStringLiteral("nonexistent_waveform.dolphin"));
+        QVERIFY2(!capture.contents().isEmpty(), "exportToWaveFormFile's print() must have written CSV output");
+    }
+
+    {
+        const QString stdinPath = m_fixtureDir + "/wrapper_stdin.txt";
+        QFile stdinFile(stdinPath);
+        QVERIFY(stdinFile.open(QIODevice::WriteOnly));
+        stdinFile.write("1,1\n0\n");
+        stdinFile.close();
+
+        TestUtils::ScopedStdoutCapture capture(m_fixtureDir + "/wrapper_stdout2.txt");
+        TestUtils::ScopedStdinRedirect stdinRedirect(stdinPath);
+        window->exportToWaveFormTerminal();
+        QVERIFY2(!capture.contents().isEmpty(), "exportToWaveFormTerminal's print() must have written CSV output");
+    }
+}
+
+void TestMainWindowGui::testRetranslateUiHandlesInlineIcAndElementsAndEngines()
+{
+    std::unique_ptr<MainWindow> window(createMW());
+    auto *scene = window->currentTab()->scene();
+    scene->receiveCommand(new AddItemsCommand({new And()}, scene));
+
+    const QString exercisePath = writeJsonFixture(m_tempDir, "retranslate_exercise.json", R"({
+        "id": "test-mw-retranslate-ex",
+        "title": "T",
+        "description": "T",
+        "steps": [
+            { "key": "s0", "instruction": "i", "hint": "h", "requiredElements": [], "requiredConnections": [] }
+        ]
+    })");
+    window->startExercise(exercisePath);
+    QVERIFY(window->m_exerciseEngine->isActive());
+
+    const QString tourPath = writeJsonFixture(m_tempDir, "retranslate_tour.json", R"({
+        "id": "test-mw-retranslate-tour",
+        "title": "T",
+        "description": "T",
+        "steps": [
+            { "key": "s0", "title": "T", "body": "B", "target": "" }
+        ]
+    })");
+    window->startTour(tourPath);
+    QVERIFY(window->m_tourEngine->isActive());
+
+    // Exercises a real inline-IC tab's "[blobName]" tab-title branch alongside the regular
+    // fileInfo-based one already exercised elsewhere.
+    window->openICInTab("inline_blob", -1, ICTestHelpers::readFile(m_fixtureDir + "/test_circuit.panda"));
+
+    window->retranslateUi(); // must not crash with a real element, an inline-IC tab, and both engines active.
+
+    QVERIFY(window->isVisible());
+}
+
+void TestMainWindowGui::testPopulateLanguageMenuSwitchesLanguage()
+{
+    std::unique_ptr<MainWindow> window(createMW());
+
+    auto *menuLanguage = window->findChild<QMenu *>("menuLanguage");
+    QVERIFY(menuLanguage);
+    QVERIFY(!menuLanguage->actions().isEmpty());
+
+    auto *action = menuLanguage->actions().constFirst();
+    action->trigger();
+
+    QCOMPARE(Settings::language(), action->data().toString());
+}
+
+void TestMainWindowGui::testWaveformActionRaisesExistingWindow()
+{
+    std::unique_ptr<MainWindow> window(createMW());
+    // BewavedDolphin requires at least one input and one output element.
+    window->currentTab()->scene()->addItem(new InputSwitch());
+    window->currentTab()->scene()->addItem(new Led());
+    auto *action = window->findChild<QAction *>("actionWaveform");
+    QVERIFY(action);
+
+    action->trigger();
+    QVERIFY(window->m_bwd);
+    BewavedDolphin *firstInstance = window->m_bwd;
+
+    action->trigger(); // already open -- must raise/activate the same instance, not recreate it.
+    QCOMPARE(window->m_bwd, firstInstance);
+}
+
+void TestMainWindowGui::testWindowActivateDeactivateTogglesSimulation()
+{
+    std::unique_ptr<MainWindow> window(createMW());
+    auto *sim = window->currentTab()->simulation();
+    QVERIFY(sim->isRunning());
+
+    QEvent deactivate(QEvent::WindowDeactivate);
+    QApplication::sendEvent(window.get(), &deactivate);
+    QVERIFY(!sim->isRunning());
+
+    QEvent activate(QEvent::WindowActivate);
+    QApplication::sendEvent(window.get(), &activate);
+    QVERIFY(sim->isRunning());
+}
+
+void TestMainWindowGui::testDolphinFileNameAccessors()
+{
+    std::unique_ptr<MainWindow> window(createMW());
+    window->setDolphinFileName(QStringLiteral("myWave.dolphin"));
+    QCOMPARE(window->dolphinFileName(), QStringLiteral("myWave.dolphin"));
+}
+
+void TestMainWindowGui::testActionICPreviewTogglesSetting()
+{
+    std::unique_ptr<MainWindow> window(createMW());
+    auto *action = window->findChild<QAction *>("actionICPreview");
+    QVERIFY(action);
+
+    action->trigger();
+
+    QCOMPARE(Settings::icPreviewDisabled(), !action->isChecked());
+}
+
+void TestMainWindowGui::testClickTargetDrivesEachKnownId()
+{
+    std::unique_ptr<MainWindow> window(createMW());
+    auto *tabElements = window->findChild<QTabWidget *>("tabElements");
+    QVERIFY(tabElements);
+    auto *scene = window->currentTab()->scene();
+    // BewavedDolphin requires at least one input and one output element.
+    scene->addItem(new InputSwitch());
+    scene->addItem(new Led());
+
+    window->clickTarget(QStringLiteral("ioTab"));
+    QCOMPARE(tabElements->currentIndex(), 0);
+    window->clickTarget(QStringLiteral("gatesTab"));
+    QCOMPARE(tabElements->currentIndex(), 1);
+    window->clickTarget(QStringLiteral("combinational"));
+    QCOMPARE(tabElements->currentIndex(), 2);
+    window->clickTarget(QStringLiteral("memoryTab"));
+    QCOMPARE(tabElements->currentIndex(), 3);
+
+    auto *playAction = window->findChild<QAction *>("actionPlay");
+    QVERIFY(playAction);
+    const bool checkedBefore = playAction->isChecked();
+    window->clickTarget(QStringLiteral("actionPlay"));
+    QCOMPARE(playAction->isChecked(), !checkedBefore);
+
+    window->clickTarget(QStringLiteral("actionWaveform"));
+    QVERIFY(window->m_bwd);
+
+    window->clickTarget(QStringLiteral("bwd:actionCombinational")); // m_bwd is valid now.
+
+    const int elementsBefore = static_cast<int>(scene->elements().size());
+    window->clickTarget(QStringLiteral("setupElementEditorDemo"));
+    QCOMPARE(scene->elements().size(), elementsBefore + 1);
+
+    const int elementsBeforeWave = static_cast<int>(scene->elements().size());
+    window->clickTarget(QStringLiteral("setupWaveformDemo"));
+    QCOMPARE(scene->elements().size(), elementsBeforeWave + 4); // 2 clocks + And + Led
+
+    // Unknown id: no-op, no crash.
+    window->clickTarget(QStringLiteral("not-a-real-target"));
+}
+
+void TestMainWindowGui::testResolveTourTargetForEachKnownId()
+{
+    std::unique_ptr<MainWindow> window(createMW());
+
+    // Guard: no active tour overlay yet.
+    QCOMPARE(window->resolveTourTarget(QStringLiteral("toolbar")), QRect());
+
+    const QString tourPath = writeJsonFixture(m_tempDir, "resolve_targets_tour.json", R"({
+        "id": "test-mw-resolve-targets",
+        "title": "T",
+        "description": "T",
+        "steps": [
+            { "key": "s0", "title": "T", "body": "B", "target": "" }
+        ]
+    })");
+    window->startTour(tourPath);
+    QVERIFY(window->m_tourOverlay);
+
+    // Guard variants: empty id / literal "none".
+    QCOMPARE(window->resolveTourTarget(QStringLiteral("")), QRect());
+    QCOMPARE(window->resolveTourTarget(QStringLiteral("none")), QRect());
+
+    // Widget-based targets: each must resolve to a real, non-null rect.
+    const QStringList widgetIds = {"toolbar", "elementPalette", "gatesTab", "ioTab", "canvasArea", "elementEditor", "searchBar"};
+    for (const QString &id : widgetIds) {
+        QVERIFY2(!window->resolveTourTarget(id).isNull(), qPrintable(id));
+    }
+
+    // "bwd:" targets need a real BewavedDolphin instance first.
+    window->currentTab()->scene()->addItem(new InputSwitch());
+    window->currentTab()->scene()->addItem(new Led());
+    auto *waveformAction = window->findChild<QAction *>("actionWaveform");
+    QVERIFY(waveformAction);
+    waveformAction->trigger();
+    QVERIFY(window->m_bwd);
+
+    QVERIFY2(!window->resolveTourTarget(QStringLiteral("bwd:tableView")).isNull(), "bwd:tableView");
+    QVERIFY2(!window->resolveTourTarget(QStringLiteral("bwd:toolbar")).isNull(), "bwd:toolbar");
+    QVERIFY2(!window->resolveTourTarget(QStringLiteral("bwd:menuBar")).isNull(), "bwd:menuBar");
+
+    // Unknown "bwd:" sub-target and unknown plain id both fall through to the empty rect.
+    QCOMPARE(window->resolveTourTarget(QStringLiteral("bwd:notreal")), QRect());
+    QCOMPARE(window->resolveTourTarget(QStringLiteral("not-a-real-target")), QRect());
+}
+
+void TestMainWindowGui::testStartExerciseDrivesClickTargetsAndOverlayParenting()
+{
+    std::unique_ptr<MainWindow> window(createMW());
+    window->currentTab()->scene()->addItem(new Led()); // BewavedDolphin requires at least one output element
+    auto *tabElements = window->findChild<QTabWidget *>("tabElements");
+    QVERIFY(tabElements);
+
+    // Guards: empty resourcePath, and (separately) a load failure with a real tab.
+    window->startExercise(QString());
+    QVERIFY(!window->m_exerciseEngine->isActive());
+    window->startExercise(QStringLiteral(":/does/not/exist.json"));
+    QVERIFY(!window->m_exerciseEngine->isActive());
+
+    const QString path = writeJsonFixture(m_tempDir, "start_exercise.json", R"({
+        "id": "test-mw-start-exercise",
+        "title": "T",
+        "description": "T",
+        "steps": [
+            { "key": "s0", "instruction": "i", "hint": "h", "requiredElements": [{"type":"InputSwitch","minCount":1}], "requiredConnections": [], "click": ["ioTab"] },
+            { "key": "s1", "instruction": "i", "hint": "h", "requiredElements": [{"type":"InputSwitch","minCount":1}], "requiredConnections": [], "click": ["actionWaveform"], "context": "bwd" },
+            { "key": "s2", "instruction": "i", "hint": "h", "requiredElements": [{"type":"InputSwitch","minCount":1}], "requiredConnections": [], "click": [] }
+        ]
+    })");
+
+    window->startExercise(path);
+    QVERIFY(window->m_exerciseEngine->isActive());
+    QVERIFY(window->m_exerciseOverlay);
+    QCOMPARE(tabElements->currentIndex(), 0); // step 0's click ["ioTab"] ran immediately on start().
+
+    // Satisfy step 0's requirement to advance to step 1, whose click opens the waveform dialog
+    // (context "bwd") -- exercises the wantBwd && m_bwd overlay-reparenting branch.
+    auto *scene = window->currentTab()->scene();
+    scene->receiveCommand(new AddItemsCommand({new InputSwitch()}, scene));
+
+    QVERIFY2(TestUtils::waitFor([&] { return window->m_bwd != nullptr; }), "step 1's actionWaveform click must have opened BeWavedDolphin");
+    QVERIFY(window->m_exerciseOverlay);
+    QCOMPARE(window->m_exerciseOverlay->parentWidget(), window->m_bwd->centralWidget());
+
+    // Step 1's requirement is already satisfied -- any further circuit change advances to
+    // step 2 (context ""), exercising the "!wantBwd && currentTab()" branch's m_bwd-detach line.
+    scene->receiveCommand(new AddItemsCommand({new And()}, scene));
+    QVERIFY2(TestUtils::waitFor([&] { return window->m_exerciseOverlay && window->m_exerciseOverlay->parentWidget() == static_cast<QWidget *>(window->currentTab()); }),
+             "step 2 must have reparented the overlay back onto the current tab");
+
+    // Closing bwd (still open, now detached from the exercise overlay) while the exercise is
+    // still active must hide the overlay and null out bwd's own reference to it.
+    ExerciseOverlay *overlay = window->m_exerciseOverlay;
+    window->m_bwd->close();
+    QCoreApplication::sendPostedEvents(nullptr, QEvent::DeferredDelete);
+    QCoreApplication::processEvents();
+    QVERIFY(overlay->isHidden());
+
+    // closeRequested: tears down the overlay (real handler, while it's still valid).
+    emit overlay->closeRequested();
+    QVERIFY(!window->m_exerciseEngine->isActive());
+
+    // Separately, on a fresh run: force the "overlay already gone" guard by nulling the member
+    // directly (friend access) before a circuit change fires stepChanged again -- the handler
+    // must return before touching it.
+    const QString guardPath = writeJsonFixture(m_tempDir, "start_exercise_guard.json", R"({
+        "id": "test-mw-start-exercise-guard",
+        "title": "T",
+        "description": "T",
+        "steps": [
+            { "key": "g0", "instruction": "i", "hint": "h", "requiredElements": [{"type":"Or","minCount":1}], "requiredConnections": [] },
+            { "key": "g1", "instruction": "i", "hint": "h", "requiredElements": [{"type":"Or","minCount":1}], "requiredConnections": [] }
+        ]
+    })");
+    window->startExercise(guardPath);
+    QVERIFY(window->m_exerciseEngine->isActive());
+    window->m_exerciseOverlay = nullptr;
+    scene->receiveCommand(new AddItemsCommand({new Or()}, scene)); // satisfies g0 -> advances to g1
+    QVERIFY(window->isVisible()); // no crash
+}
+
+void TestMainWindowGui::testStartTourDrivesClickTargetsAndOverlayParenting()
+{
+    std::unique_ptr<MainWindow> window(createMW());
+    // BewavedDolphin requires at least one input and one output element.
+    window->currentTab()->scene()->addItem(new InputSwitch());
+    window->currentTab()->scene()->addItem(new Led());
+
+    // Guards: empty resourcePath, and (separately) a load failure.
+    window->startTour(QString());
+    QVERIFY(!window->m_tourEngine->isActive());
+    window->startTour(QStringLiteral(":/does/not/exist.json"));
+    QVERIFY(!window->m_tourEngine->isActive());
+
+    const QString path = writeJsonFixture(m_tempDir, "start_tour.json", R"({
+        "id": "test-mw-start-tour",
+        "title": "T",
+        "description": "T",
+        "steps": [
+            { "key": "s0", "title": "T", "body": "B", "target": "elementPalette", "click": ["gatesTab"] },
+            { "key": "s1", "title": "T", "body": "B", "target": "bwd:tableView", "click": ["actionWaveform"] },
+            { "key": "s2", "title": "T", "body": "B", "target": "elementPalette" }
+        ]
+    })");
+
+    window->startTour(path);
+    QVERIFY(window->m_tourEngine->isActive());
+    QVERIFY(window->m_tourOverlay);
+
+    auto *tabElements = window->findChild<QTabWidget *>("tabElements");
+    QVERIFY(tabElements);
+    QCOMPARE(tabElements->currentIndex(), 1); // step 0's click ["gatesTab"] ran on start().
+    QCOMPARE(window->m_tourOverlay->parentWidget(), static_cast<QWidget *>(window.get()));
+
+    window->m_tourEngine->advanceStep();
+
+    // step 1's click opens the waveform dialog, then its "bwd:" target reparents the overlay.
+    QVERIFY2(TestUtils::waitFor([&] { return window->m_bwd != nullptr; }), "step 1's actionWaveform click must have opened BeWavedDolphin");
+    // GCC's -O3 inliner flags the parentWidget() call below as a potential null dereference --
+    // a false positive: it fires on evaluating parentWidget() itself, not on anything this
+    // lambda does with the result (the preceding null-guard doesn't change the warning), and
+    // Clang/MSVC don't see it.
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wnull-dereference"
+#endif
+    QVERIFY2(TestUtils::waitFor([&] { return window->m_tourOverlay && window->m_tourOverlay->parentWidget() == static_cast<QWidget *>(window->m_bwd); }),
+             "tour overlay must have reparented onto the bwd window");
+
+    window->m_tourEngine->advanceStep();
+
+    // step 2's non-"bwd:" target reparents the overlay back onto MainWindow itself.
+    QVERIFY2(TestUtils::waitFor([&] { return window->m_tourOverlay && window->m_tourOverlay->parentWidget() == static_cast<QWidget *>(window.get()); }),
+             "tour overlay must have reparented back onto MainWindow for a non-bwd target");
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
+
+    // closeRequested: tears down the overlay (real handler, while it's still valid).
+    emit window->m_tourOverlay->closeRequested();
+    QVERIFY(!window->m_tourEngine->isActive());
+
+    // Separately, on a fresh run: force the "overlay already gone" guard by nulling the member
+    // directly (friend access) before advancing -- the handler must return before touching it.
+    const QString guardPath = writeJsonFixture(m_tempDir, "start_tour_guard.json", R"({
+        "id": "test-mw-start-tour-guard",
+        "title": "T",
+        "description": "T",
+        "steps": [
+            { "key": "g0", "title": "T", "body": "B", "target": "elementPalette" },
+            { "key": "g1", "title": "T", "body": "B", "target": "elementPalette" }
+        ]
+    })");
+    window->startTour(guardPath);
+    QVERIFY(window->m_tourEngine->isActive());
+    window->m_tourOverlay = nullptr;
+    window->m_tourEngine->advanceStep();
+    QVERIFY(window->isVisible()); // no crash
+}
+
+#include "TestMainWindowGui.moc"

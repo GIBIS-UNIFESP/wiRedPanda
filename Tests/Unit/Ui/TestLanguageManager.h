@@ -17,4 +17,12 @@ private slots:
     void testQtTranslationsPathExists();
     void testQtTranslationFilesExist();
     void testQtTranslatorIsLoadable();
+
+    void testDisplayNamePtBrUsesPortugueseBrazilWithCountrySuffix();
+    void testDisplayNameWithCountrySuffixAppendsTerritory();
+    void testDisplayNameFallsBackToRawCodeForUnknownLanguage();
+
+    void testLoadTranslationForNonEnglishLanguageWithoutEmbeddedResource();
+    void testFlagIconReturnsMappedIconForKnownLanguage();
+    void testFlagIconFallsBackToDefaultForUnknownLanguage();
 };
