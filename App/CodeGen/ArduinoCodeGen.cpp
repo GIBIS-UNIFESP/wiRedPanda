@@ -1172,6 +1172,9 @@ void ArduinoCodeGen::assignLogicOperator(GraphicElement *elm)
     // Not reachable: assignVariablesRec()'s switch is the only caller, and it only
     // dispatches here for And/Or/Nand/Nor/Xor/Xnor/Not/Node — every other case below is
     // handled by a different branch of that switch (or filtered out before reaching it).
+    // ElementType::JKLatch is unreachable for a different, stronger reason: it's a
+    // deprecated enum value with no live GraphicElement implementation at all
+    // (ElementFactory::hasCreator(JKLatch) is false), so no real `elm` can ever report it.
     case ElementType::AudioBox: // LCOV_EXCL_LINE
     case ElementType::Buzzer:
     case ElementType::Clock:
