@@ -27,25 +27,13 @@ namespace TestUtils {
 
 void setupTestEnvironment()
 {
-#if defined(Q_OS_LINUX) || defined(Q_OS_MACOS)
+#ifdef Q_OS_LINUX
     // Default to headless, but never clobber an explicit choice — CI workflows
     // and developers set QT_QPA_PLATFORM to pick the platform per-OS (e.g.
-    // xcb/cocoa to exercise native window-activation timing locally).
-    //
-    // Needed on macOS too, not just Linux: only the explicitly gui-labeled
-    // suite pinned offscreen before (build.yml's "Test (GUI, offscreen,
-    // trial)" step) -- every other test ran under real native Cocoa
-    // windowing, including ones that create real widgets/menus without being
-    // gui-labeled (e.g. TestElementEditor's context-menu tests, which call
-    // QMenu::exec() for a real native NSMenu ~30 times across the file).
-    // Confirmed via CI crash diagnostics: a SIGSEGV recurring after enough
-    // consecutive real popup cycles, the same native-Cocoa-timing class of
-    // issue the GUI-trial step was already pinning offscreen to avoid.
+    // xcb to exercise native window-activation timing locally).
     if (!qEnvironmentVariableIsSet("QT_QPA_PLATFORM")) {
         qputenv("QT_QPA_PLATFORM", "offscreen");
     }
-#endif
-#ifdef Q_OS_LINUX
     // Disable input method plugins — ibus daemon is single-threaded and serializes
     // parallel test startup, causing 8 processes to take 4s instead of 0.06s.
     if (!qEnvironmentVariableIsSet("QT_IM_MODULES")) {
