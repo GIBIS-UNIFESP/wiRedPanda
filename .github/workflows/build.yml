@@ -130,38 +130,6 @@ jobs:
         mkdir -p "$RUNNER_TEMP/cores"
         sudo bash -c 'echo "'"$RUNNER_TEMP"'/cores/%e.%p.%t" > /proc/sys/kernel/core_pattern'
 
-    # Debugging Tools for Windows (cdb.exe) ships as part of the Windows Driver
-    # Kit, which recent Windows runner images already bundle for other reasons
-    # (confirmed present as "Windows Driver Kit Visual Studio Extension" in the
-    # actual Windows2025-VS2026-Readme.md manifest) at a well-known, stable path
-    # (confirmed via actions/runner-images#942) -- check there first rather than
-    # reaching straight for choco's community "windbg" package, which has a real
-    # history of breaking outright (404s when Microsoft moved the download,
-    # per adamrehn/ue4-docker#92 and #109).
-    #
-    # Needed on PATH for every test invocation: test_wiredpanda's
-    # CROSSCOMPILING_EMULATOR (see CMakeLists.txt) runs each one live under
-    # cdb via Scripts/ci_windows_cdb_wrap.ps1, not to analyze a passively-
-    # captured WER dump -- WER's LocalDumps can never see a QTest crash on
-    # Windows, because QTest installs its own SetUnhandledExceptionFilter
-    # handler that always reports the exception as handled (confirmed
-    # directly against Qt's qtestcrashhandler_win.cpp source), so the
-    # exception never reaches the OS path WER hooks into. A live debugger
-    # attached via cdb sees it as a first-chance event before that filter runs.
-    - name: Install Debugging Tools for Windows (cdb)
-      if: runner.os == 'Windows'
-      shell: pwsh
-      run: |
-        $arch = "${{ matrix.os == 'windows-11-arm' && 'arm64' || 'x64' }}"
-        $cdbPath = "C:\Program Files (x86)\Windows Kits\10\Debuggers\$arch"
-        if (Test-Path "$cdbPath\cdb.exe") {
-          Write-Host "cdb.exe already present at $cdbPath -- adding to PATH"
-          $cdbPath | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-        } else {
-          Write-Host "cdb.exe not found at $cdbPath -- falling back to choco"
-          choco install windbg -y
-        }
-
 # =================================
 
     - name: Build
@@ -181,15 +149,6 @@ jobs:
     - name: Analyze crashed tests (Linux core dump)
       if: runner.os == 'Linux' && failure()
       run: ./Scripts/ci_linux_core_analyze.sh build-release/test_wiredpanda "$RUNNER_TEMP/cores" crash-diagnostics
-
-    # macOS and Windows need no separate analysis step: test_wiredpanda's
-    # CROSSCOMPILING_EMULATOR (see CMakeLists.txt) already runs every test
-    # live under lldb/cdb in CI, writing a backtrace/dump straight to
-    # crash-diagnostics/ the moment a crash actually happens -- replaces
-    # retrying a crashed test after the fact, which confirmed both
-    # unreliable (a genuinely rare race never reproduced across 20 retry
-    # attempts) and unsafe (no bound on total retry time across every
-    # failed test, once hanging a real CI job for hours).
 
     # The gui-labeled suite (TestMainWindowGui's ~120 cases, TestDialogs,
     # TestFileDialogProvider, TestBewavedDolphinGui) is otherwise never executed in CI: every
