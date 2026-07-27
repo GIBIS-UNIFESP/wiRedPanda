@@ -71,7 +71,7 @@ jobs:
           libxkbcommon-x11-dev \
           patchelf
 
-    - uses: actions/checkout@v7.0.0
+    - uses: actions/checkout@v7.0.1
       with:
         submodules: recursive
         fetch-depth: 0
@@ -462,7 +462,7 @@ jobs:
 
     - name: Setup Windows MSVC Toolchain
       if: runner.os == 'Windows'
-      uses: TheMrMilchmann/setup-msvc-dev@79dac248aac9d0059f86eae9d8b5bfab4e95e97c # v4.0.0
+      uses: TheMrMilchmann/setup-msvc-dev@368ef7d1ee4d1171b31d4a7f67f4d954f903f5a9 # v4.1.0
       with:
         arch: ${{ matrix.arch == 'arm64' && 'arm64' || 'x64' }}
 
