@@ -308,6 +308,66 @@ void TestWorkspaceUnit::testSaveRemovesStaleAutosaveFile()
     QVERIFY(workspace.m_autosaveFileName.isEmpty());
 }
 
+void TestWorkspaceUnit::testSaveReturnsReadOnlyTargetWhenCommitFailsInteractive()
+{
+#ifdef Q_OS_WIN
+    QSKIP("RLIMIT_FSIZE (used to force a deferred QSaveFile write failure) has no Windows equivalent");
+#else
+    // isReadOnlyFailure() treats QFileDevice::WriteError (what a deferred QSaveFile
+    // write failure surfaces as at commit()) the same as an open()-time permission
+    // failure, so in interactive mode this must return ReadOnlyTarget, not throw.
+    WorkSpace workspace;
+    auto *gate = new And();
+    workspace.scene()->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{gate}, workspace.scene()));
+
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("out.panda");
+
+    const bool prevInteractive = Application::interactiveMode;
+    Application::interactiveMode = true;
+
+    WorkSpace::SaveOutcome outcome;
+    {
+        TestUtils::ScopedTinyFsizeLimit tinyLimit;
+        outcome = workspace.save(path);
+    }
+    Application::interactiveMode = prevInteractive;
+
+    QCOMPARE(static_cast<int>(outcome), static_cast<int>(WorkSpace::SaveOutcome::ReadOnlyTarget));
+    QVERIFY2(!QFile::exists(path), "A failed commit() must not leave a partial file behind");
+#endif
+}
+
+void TestWorkspaceUnit::testSaveThrowsWhenCommitFailsNonInteractive()
+{
+#ifdef Q_OS_WIN
+    QSKIP("RLIMIT_FSIZE (used to force a deferred QSaveFile write failure) has no Windows equivalent");
+#else
+    // Application::interactiveMode stays false (the test-suite default), so save()'s
+    // commit()-failure guard takes the throw branch instead of ReadOnlyTarget.
+    WorkSpace workspace;
+    auto *gate = new And();
+    workspace.scene()->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{gate}, workspace.scene()));
+
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("out.panda");
+
+    bool threw = false;
+    {
+        TestUtils::ScopedTinyFsizeLimit tinyLimit;
+        try {
+            workspace.save(path);
+        } catch (const std::exception &) {
+            threw = true;
+        }
+    }
+    QVERIFY2(threw, "save() must throw when commit() fails outside interactive mode");
+    QVERIFY2(!QFile::exists(path), "A failed commit() must not leave a partial file behind");
+#endif
+}
+
 void TestWorkspaceUnit::testLoadThrowsWhenFileCannotBeOpened()
 {
 #ifdef Q_OS_WIN
@@ -560,4 +620,26 @@ void TestWorkspaceUnit::testAutosaveThrowsWhenFileCannotBeOpened()
         threw = true;
     }
     QVERIFY2(threw, "autosave() must throw when the autosave file cannot be opened");
+}
+
+void TestWorkspaceUnit::testAutosaveThrowsWhenCommitFails()
+{
+#ifdef Q_OS_WIN
+    QSKIP("RLIMIT_FSIZE (used to force a deferred QSaveFile write failure) has no Windows equivalent");
+#else
+    WorkSpace workspace;
+    auto *gate = new And();
+    workspace.scene()->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{gate}, workspace.scene()));
+
+    bool threw = false;
+    {
+        TestUtils::ScopedTinyFsizeLimit tinyLimit;
+        try {
+            workspace.autosave();
+        } catch (const std::exception &) {
+            threw = true;
+        }
+    }
+    QVERIFY2(threw, "autosave() must throw when commit() fails");
+#endif
 }

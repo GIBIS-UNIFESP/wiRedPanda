@@ -386,10 +386,15 @@ WorkSpace::SaveOutcome WorkSpace::save(const QString &fileName)
     save(stream);
 
     if (!saveFile.commit()) {
-        if (Application::interactiveMode && isReadOnlyFailure(saveFile.error())) { // LCOV_EXCL_LINE — same class as ICRegistry::extractToFile()'s/DolphinFile::save()'s existing exclusions: open() above already rejects the deterministic failure modes, so a commit()-only failure (e.g. losing rename permission mid-write) needs a second OS user or root.
-            return SaveOutcome::ReadOnlyTarget; // LCOV_EXCL_LINE — see above.
+        // Covered: TestWorkspaceUnit::testSaveReturnsReadOnlyTargetWhenCommitFailsInteractive()/
+        // testSaveThrowsWhenCommitFailsNonInteractive() force this via RLIMIT_FSIZE
+        // (ScopedTinyFsizeLimit) -- Qt defers write() errors, so a failed write() above only
+        // surfaces here, at commit(), as QFileDevice::WriteError (which isReadOnlyFailure()
+        // treats the same as an open()-time permission failure).
+        if (Application::interactiveMode && isReadOnlyFailure(saveFile.error())) {
+            return SaveOutcome::ReadOnlyTarget;
         }
-        throw PANDACEPTION("Could not save file: %1", saveFile.errorString()); // LCOV_EXCL_LINE — see above.
+        throw PANDACEPTION("Could not save file: %1", saveFile.errorString());
     }
 
     // Only adopt the new file/context identity once it's actually on disk — setting it earlier
@@ -718,7 +723,10 @@ void WorkSpace::autosave()
     save(stream);
 
     if (!autosaveFile.commit()) {
-        throw PANDACEPTION("Could not commit autosave file: %1", autosaveFile.errorString()); // LCOV_EXCL_LINE — same class as save()'s own commit-failure exclusion above: open() already rejects the deterministic failure modes, so a commit()-only failure needs a second OS user or root.
+        // Covered: TestWorkspaceUnit::testAutosaveThrowsWhenCommitFails() forces this via
+        // RLIMIT_FSIZE (ScopedTinyFsizeLimit) -- Qt defers write() errors, so a failed
+        // write() above only surfaces here, at commit().
+        throw PANDACEPTION("Could not commit autosave file: %1", autosaveFile.errorString());
     }
 
     autosaves.append(m_autosaveFileName);

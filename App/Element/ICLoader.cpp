@@ -244,12 +244,10 @@ void ICLoader::migrateFile(const QFileInfo &fileInfo, const QList<QGraphicsItem 
     Serialization::writePandaHeader(outStream);
     Serialization::writePayload(outStream, payload);
     if (!saveFile.commit()) {
-        // Not deterministically reachable from a single-user test process: QSaveFile::open()
-        // above already rejects an existing non-regular-file destination up front, so the
-        // remaining commit()-only failure modes (e.g. losing rename permission on the
-        // destination between open() and commit()) need a second OS user or root — same class
-        // of gap as DolphinFile::save()'s identical guard.
-        throw PANDACEPTION("IC migration: failed to commit re-saved file: %1", fileInfo.absoluteFilePath()); // LCOV_EXCL_LINE
+        // Covered: TestICUnit::testMigrateFileCommitFailureThrows() forces this via
+        // RLIMIT_FSIZE (ScopedTinyFsizeLimit) -- Qt defers write() errors, so a failed
+        // write during writePayload() above only surfaces here, at commit().
+        throw PANDACEPTION("IC migration: failed to commit re-saved file: %1", fileInfo.absoluteFilePath());
     }
 }
 

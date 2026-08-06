@@ -31,6 +31,7 @@ private slots:
     void testEmbedICsByFileRollsBackOnLoadFailure();
 
     void testExtractToFileThrowsWhenFileCannotBeOpened();
+    void testExtractToFileThrowsWhenCommitFails();
 
     void testMakeBlobSelfContainedSkipsBlobPredatingMetadata();
     void testMakeBlobSelfContainedRecursesIntoAlreadyEmbeddedBlob();
