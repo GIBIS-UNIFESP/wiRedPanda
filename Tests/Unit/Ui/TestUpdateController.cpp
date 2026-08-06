@@ -10,8 +10,13 @@
 #include <QDir>
 #include <QFile>
 #include <QMessageBox>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QNetworkRequest>
 #include <QProgressDialog>
 #include <QPushButton>
+#include <QSignalSpy>
+#include <QSslError>
 #include <QStandardPaths>
 #include <QTcpServer>
 #include <QTcpSocket>
@@ -307,6 +312,90 @@ void TestUpdateController::testDownloadUpdateFileOpenFailureShowsWarning()
     controller.downloadUpdate(QStringLiteral("1.0.0"), url);
 
     QVERIFY2(TestUtils::waitFor([&] { return dismisser.dismissCount() >= 1; }), "the \"Download Failed\" (can't save) dialog must have appeared");
+}
+
+void TestUpdateController::testDownloadUpdateWriteFailureShowsWarning()
+{
+#ifdef Q_OS_WIN
+    QSKIP("RLIMIT_FSIZE (used to force a deferred write failure) has no Windows equivalent");
+#else
+    QWidget parent;
+    UpdateController controller(&parent);
+
+    // QFile buffers writes up to QFILE_WRITEBUFFER_SIZE (16 KiB) in memory, so write() lies
+    // about success for anything at or under that -- confirmed empirically (a standalone probe
+    // sweeping payload sizes under the same RLIMIT_FSIZE technique showed write() reporting the
+    // full size, undetected, for every payload <= 16384 bytes, and only correctly reporting a
+    // short write once the payload exceeds the buffer and bypasses it). 32 KiB comfortably
+    // clears that threshold so file.write(payload) below is guaranteed to return less than
+    // payload.size() -- the FakeHttpServer's own socket writes aren't affected (RLIMIT_FSIZE
+    // only caps regular-file writes), only the final QFile::write().
+    const QByteArray body(32768, 'x');
+    FakeHttpServer server(body);
+    const QUrl url = server.url("write-failure.bin");
+
+    const QString savePath = QDir(QStandardPaths::writableLocation(QStandardPaths::DownloadLocation)).filePath("write-failure.bin");
+    QFile::remove(savePath);
+
+    // Checks the dialog's actual text, not just that *some* QMessageBox appeared -- a weaker
+    // assertion here previously let the test pass while silently hitting the "Download
+    // Complete" dialog instead (the intended failure branch was never reached until the
+    // payload was made big enough to defeat QFile's write buffering, see above).
+    bool sawWriteFailureDialog = false;
+    TestUtils::AutoDismisser dismisser([&](QWidget *w) {
+        auto *box = qobject_cast<QMessageBox *>(w);
+        if (!box) return false;
+        if (box->text().contains(QStringLiteral("Could not write the file"))) {
+            sawWriteFailureDialog = true;
+        }
+        box->accept();
+        return true;
+    });
+    {
+        TestUtils::ScopedTinyFsizeLimit tinyLimit;
+        controller.downloadUpdate(QStringLiteral("1.0.0"), url);
+        QVERIFY2(TestUtils::waitFor([&] { return dismisser.dismissCount() >= 1; }), "a dialog must have appeared");
+    }
+
+    QVERIFY2(sawWriteFailureDialog, "the \"Download Failed\" (can't write) dialog must have appeared");
+    QFile::remove(savePath);
+#endif
+}
+
+void TestUpdateController::testDownloadUpdateSslErrorsAbortsReply()
+{
+    QWidget parent;
+    UpdateController controller(&parent);
+
+    // A server that accepts the connection but never replies -- downloadUpdate()'s real
+    // request stays in flight, which is all we need: its QNetworkAccessManager gets
+    // constructed and the sslErrors handler gets connected before this function returns.
+    QTcpServer server;
+    QVERIFY(server.listen(QHostAddress::LocalHost));
+    QObject::connect(&server, &QTcpServer::newConnection, &server, [&server] {
+        QTcpSocket *socket = server.nextPendingConnection();
+        QObject::connect(socket, &QTcpSocket::disconnected, socket, &QObject::deleteLater);
+    });
+    const QUrl url(QStringLiteral("http://127.0.0.1:%1/slow.bin").arg(server.serverPort()));
+
+    controller.downloadUpdate(QStringLiteral("1.0.0"), url);
+
+    auto *network = controller.findChild<QNetworkAccessManager *>();
+    QVERIFY2(network, "downloadUpdate() must have created its own QNetworkAccessManager as a child of the controller");
+
+    // Invoking QNetworkAccessManager::sslErrors directly (the same mechanism `emit` compiles
+    // to) exercises the connected lambda without needing a real TLS handshake failure --
+    // same technique as TestUpdateChecker::testSslErrorsAbortsReply(). The "data:" reply
+    // just needs to be *some* real QNetworkReply for the lambda's reply->abort() to act on.
+    QNetworkReply *dummyReply = network->get(QNetworkRequest(QUrl(QStringLiteral("data:text/plain,x"))));
+
+    const QList<QSslError> errors{QSslError(QSslError::SelfSignedCertificate)};
+    QTest::ignoreMessage(QtWarningMsg, "MainWindow::downloadUpdate: SSL errors, aborting reply: QList(\"The certificate is self-signed, and untrusted\")");
+    QMetaObject::invokeMethod(network, "sslErrors", Q_ARG(QNetworkReply *, dummyReply), Q_ARG(QList<QSslError>, errors));
+
+    QSignalSpy spy(dummyReply, &QNetworkReply::finished);
+    QVERIFY(spy.wait(1000));
+    QVERIFY(dummyReply->error() == QNetworkReply::NoError || dummyReply->error() == QNetworkReply::OperationCanceledError);
 }
 
 #include "TestUpdateController.moc"
