@@ -24,4 +24,6 @@ private slots:
     void testDownloadUpdateNetworkErrorShowsWarning();
     void testDownloadUpdateCanceledSkipsWarning();
     void testDownloadUpdateFileOpenFailureShowsWarning();
+    void testDownloadUpdateWriteFailureShowsWarning();
+    void testDownloadUpdateSslErrorsAbortsReply();
 };
