@@ -62,7 +62,13 @@ public:
     static Application *instance();
 
     /// Destructor.
-    ~Application() override = default;
+    // Same D0/D2 ABI-variant gap as App/Wiring/Port.h's destructor, for a different reason:
+    // every real Application is a stack-local value in main()/runTestSuite() (single instance,
+    // one per process), destroyed via normal scope-exit at process end -- never `delete`d
+    // through any pointer. Grepped every Application::instance() use in the repo: all read-only
+    // (setPalette/font/installTranslator/removeTranslator), none ever delete it, so this class's
+    // own D0 (deleting destructor) never runs; only the direct D1 (complete-object) path does.
+    ~Application() override = default; // LCOV_EXCL_LINE
 
     // --- Event Handling ---
 

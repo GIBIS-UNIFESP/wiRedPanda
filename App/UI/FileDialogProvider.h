@@ -25,7 +25,13 @@ struct FileDialogResult
 class FileDialogProvider
 {
 public:
-    virtual ~FileDialogProvider() = default;
+    // Same D0/D2 ABI-variant gap as App/Wiring/Port.h's destructor: FileDialogProvider is
+    // abstract (getOpenFileName()/getSaveFileName() are pure virtual), so it can never be the
+    // most-derived type of a real object -- its own vtable "deleting destructor" (D0) slot is
+    // dead by construction. Every real instance (the static s_realProvider, or a test's
+    // stack-local stub passed by address to FileDialogs::setProvider()) is destroyed via normal
+    // scope/static-storage teardown, never `delete`d through this base pointer.
+    virtual ~FileDialogProvider() = default; // LCOV_EXCL_LINE
 
     /// Shows an "Open File" dialog and returns the selected file path.
     /// Returns an empty string if the user cancels.
