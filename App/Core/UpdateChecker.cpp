@@ -165,9 +165,18 @@ void UpdateChecker::onReplyFinished(QNetworkReply *reply)
 
     const QUrl releaseUrl = QUrl(QStringLiteral("https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/tag/%1").arg(latest.toString()));
     if (!isSafeGitHubUrl(releaseUrl)) {
-        qWarning() << "UpdateChecker: release URL has unexpected scheme/host, ignoring update notification:" << releaseUrl;
-        return;
-    }
+        // Unlike downloadUrl just below (built from an untrusted JSON field, and covered by
+        // testOnReplyFinishedUnsafeDownloadUrlFallsBackToReleasePage()), releaseUrl is built
+        // from a hardcoded "https://github.com/..." literal plus latest.toString() --
+        // QVersionNumber::toString() can only ever produce digits and dots (fromString()
+        // stops parsing at the first non-digit-dot character), so it can't inject a scheme,
+        // host, or path segment that would make isSafeGitHubUrl() reject this URL. Belt-and-
+        // suspenders, same class as checkForUpdates()'s downloadProgress backpressure guard
+        // above -- not reachable from a real test process. isSafeGitHubUrl() itself is
+        // directly unit-tested (testSafeGitHubUrl()).
+        qWarning() << "UpdateChecker: release URL has unexpected scheme/host, ignoring update notification:" << releaseUrl; // LCOV_EXCL_LINE
+        return; // LCOV_EXCL_LINE
+    } // LCOV_EXCL_LINE
     if (!downloadUrl.isEmpty() && !isSafeGitHubUrl(downloadUrl)) {
         qWarning() << "UpdateChecker: download URL has unexpected scheme/host, falling back to release page:" << downloadUrl;
         downloadUrl.clear();
