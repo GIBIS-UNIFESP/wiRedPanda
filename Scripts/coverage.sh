@@ -13,6 +13,13 @@ echo "Building with coverage enabled..."
 cmake --preset coverage
 cmake --build --preset coverage
 
+# Reset counters left over from any previous local run -- otherwise a file that isn't
+# recompiled this time (its .gcno/.gcda are still fresh) keeps accumulating hit counts
+# across separate script invocations instead of reflecting just this run. Doesn't affect
+# whether a line shows as covered at all, but does inflate the per-line hit counts genhtml
+# displays.
+lcov --zerocounters --directory build-coverage
+
 echo "Running tests with coverage collection..."
 ctest --preset coverage
 
@@ -27,6 +34,8 @@ lcov --remove coverage.info \
     '*/Qt*/' \
     '*MCP/*' \
     --output-file coverage_filtered.info --ignore-errors inconsistent,unused
+
+lcov --summary coverage_filtered.info
 
 genhtml coverage_filtered.info --output-directory coverage_html --dark-mode
 
