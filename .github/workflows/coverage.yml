@@ -68,11 +68,13 @@ jobs:
     - name: Install MCP client dependencies
       run: pip install -r MCP/Client/requirements.txt
 
-    # gcovr (unlike raw gcov) honors LCOV_EXCL_LINE/LCOV_EXCL_START/LCOV_EXCL_STOP markers,
+    # lcov (unlike raw gcov) honors LCOV_EXCL_LINE/LCOV_EXCL_START/LCOV_EXCL_STOP markers,
     # dropping genuinely-unreachable lines from both the numerator and denominator before
     # Codecov ever sees them — passing raw .gcov files straight to codecov-action does not.
-    - name: Install gcovr
-      run: pip install gcovr==8.6
+    # Same tool Scripts/coverage.sh already uses for the local report (unlike the gcovr this
+    # replaces), so local and CI numbers no longer come from two different coverage engines.
+    - name: Install lcov
+      run: sudo apt-get update && sudo apt-get install -y lcov
 
     # Exercise the MCP/Server C++ paths through the Python integration suite,
     # driving the coverage-instrumented binary so its subprocess .gcda files
@@ -85,15 +87,28 @@ jobs:
         WIREDPANDA_EXE: ${{ github.workspace }}/build-coverage/wiredpanda
       run: python3 MCP/Client/run_tests.py
 
+    # gcovr's default filter (with no --filter given) was --root itself, so it silently
+    # dropped anything outside the checkout -- Qt SDK headers, /usr/include's libstdc++, etc.
+    # -- with no extra config. lcov has no such default (it reports on every file any .gcda
+    # references, wherever it lives), so replicate the same scope explicitly here. Everything
+    # else -- moc_*/qrc_*/*_autogen, Tests/**, MCP/Server/** -- is left alone: codecov.yml's
+    # own ignore:/component_management: already handle those the same way regardless of which
+    # tool produced the report (Tests/**/MCP/Server/** must stay in, unlike
+    # Scripts/coverage.sh's local-only report, since Codecov tracks them as their own
+    # components).
     - name: Generate coverage report
       run: |
-        gcovr --root . --object-directory build-coverage --cobertura build-coverage/coverage.xml
+        lcov --capture --directory build-coverage --output-file build-coverage/coverage.info --ignore-errors source,inconsistent
+        lcov --remove build-coverage/coverage.info \
+            '/usr/*' \
+            '*/Qt*/' \
+            --output-file build-coverage/coverage_filtered.info --ignore-errors inconsistent,unused
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        files: build-coverage/coverage.xml
+        files: build-coverage/coverage_filtered.info
         fail_ci_if_error: true
         verbose: true
 
