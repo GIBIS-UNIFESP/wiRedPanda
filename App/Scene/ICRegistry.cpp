@@ -281,7 +281,10 @@ int ICRegistry::extractToFile(const QString &blobName, const QString &filePath)
     }
     saveFile.write(blob(blobName));
     if (!saveFile.commit()) {
-        throw PANDACEPTION("Could not save file: %1", saveFile.errorString()); // LCOV_EXCL_LINE — same class as DolphinFile::save()'s existing exclusion: open() above already rejects the deterministic failure modes (nonexistent directory, unwritable path), so the remaining commit()-only failures (e.g. losing rename permission mid-write) need a second OS user or root.
+        // Covered: TestICRegistry::testExtractToFileThrowsWhenCommitFails() forces this via
+        // RLIMIT_FSIZE (ScopedTinyFsizeLimit) -- Qt defers write() errors, so a failed
+        // write() above only surfaces here, at commit().
+        throw PANDACEPTION("Could not save file: %1", saveFile.errorString());
     }
 
     // Convert all embedded ICs with this blobName to file-backed
