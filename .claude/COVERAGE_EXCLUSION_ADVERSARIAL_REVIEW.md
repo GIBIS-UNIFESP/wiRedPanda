@@ -14,46 +14,65 @@ cross-cutting deferred templates (`Application.h`'s `guardedSlot<Body>`,
 `coverage.yml`, `Scripts/coverage.sh`).
 
 **Bottom line:** the original sweep holds up very well under adversarial
-re-derivation. One real reasoning gap (not fully resolved either way — see
-below), three cosmetic/informational inaccuracies in stated justifications
-(conclusions still correct), and one local-tooling/CI divergence worth being
-aware of. No exclusion was found to be hiding a genuinely reachable, untested
-bug.
+re-derivation. One real reasoning gap, found and **closed with real tests**
+(see below), three cosmetic/informational inaccuracies in stated
+justifications (conclusions still correct, fixed), and one local-tooling/CI
+divergence worth being aware of. No exclusion was found to be hiding a
+genuinely reachable, untested bug.
 
 ---
 
-## Finding: `QSaveFile::commit()` cluster — reasoning gap, not fully resolved
+## Finding: `QSaveFile::commit()` cluster — reasoning gap, closed with real tests
 
-**Files:** `App/BeWavedDolphin/DolphinFile.cpp:44`, `App/Element/ICLoader.cpp`'s
-`migrateFile()` (:252), `App/Scene/Workspace.cpp`'s `save()`/`autosave()`
-(:392, :721), `App/Scene/ICRegistry.cpp`'s `extractToFile()` (:284) — five sites,
-one shared justification.
+**Files (all fixed):** `App/BeWavedDolphin/DolphinFile.cpp`'s `save()`,
+`App/Element/ICLoader.cpp`'s `migrateFile()`, `App/Scene/Workspace.cpp`'s
+`save()`/`autosave()`, `App/Scene/ICRegistry.cpp`'s `extractToFile()` — five
+sites, one shared justification.
 
-The justification says `QSaveFile::commit()` can only fail, once `open()`
+The justification said `QSaveFile::commit()` can only fail, once `open()`
 already succeeded, via a scenario needing "a second OS user or root" (e.g.
-losing rename permission on a sticky-bit directory). But Qt's `QSaveFile`
-documented behavior defers *write* errors to `commit()`: if any `write()` call
-during the preceding `saveBinary()`/`saveCSV()`/stream-write fails, `commit()`
-itself returns `false` without attempting the rename — and an ordinary
-unprivileged process can force a write failure via
+losing rename permission on a sticky-bit directory). That's wrong: Qt's
+`QSaveFile` documented behavior defers *write* errors to `commit()` — if any
+`write()` call during the preceding `saveBinary()`/`saveCSV()`/stream-write
+fails, `commit()` itself returns `false` without attempting the rename — and
+an ordinary unprivileged process can force that write failure via
 `setrlimit(RLIMIT_FSIZE, ...)` (+ `signal(SIGXFSZ, SIG_IGN)` so the failure
 surfaces as `EFBIG` instead of killing the process), no second user or root
-needed. That's a different reachability path than the one the exclusion's
-comment considers, so the stated justification is incomplete as written.
+needed.
 
-I tried to empirically confirm this with a standalone Qt probe
-(`QSaveFile::write()` under a tight `RLIMIT_FSIZE`), but got inconsistent,
-non-reproducible results in this sandbox's Bash tool across identical runs
-(consistent with the project's known `feedback_test_writes_sandboxed.md`
-finding that this Bash tool interferes with subprocess file-write semantics)
-— a plain Python `open()`+`write()` under the same rlimit *did* fail
-deterministically with `EFBIG`, so the OS-level limit itself works in this
-sandbox, but the Qt/C++ probe's behavior wasn't trustworthy enough to call
-this either confirmed or refuted.
+**Confirmed empirically**, twice over:
 
-**Recommendation:** re-run the same probe outside this sandbox (or as a real
-CTest) before deciding whether these 5 lines are truly unreachable or whether
-an `RLIMIT_FSIZE`-based test could close them for real.
+1. A standalone fork-based Qt probe (child sets a 16-byte `RLIMIT_FSIZE` and
+   drives `QSaveFile::open()`/`write()`/`commit()`, reports outcome purely via
+   exit code so the file-size cap can't also strangle the probe's own
+   diagnostic output — the earlier single-process attempt's "inconsistent,
+   truncated output" turned out to be exactly that self-inflicted trap, not a
+   Bash-sandbox artifact) — reproduced 10/10 across 2 runs × 5 iterations,
+   both with and without the sandbox: `write()` reports success (Qt buffers
+   internally), but `commit()` reliably returns `false` with
+   `QFileDevice::WriteError`.
+2. A new `TestUtils::ScopedTinyFsizeLimit` RAII helper
+   (`Tests/Common/TestUtils.h`, POSIX-only) applies the identical technique
+   inside real `QTest` classes. One new regression test per call site — plus a
+   second test at `Workspace::save()`, since `isReadOnlyFailure()` treats
+   `QFileDevice::WriteError` the same as an open()-time permission failure, so
+   interactive vs. non-interactive mode takes genuinely different branches
+   there:
+   - `TestDolphinFile::testSaveCommitFailureThrows()`
+   - `TestICUnit::testMigrateFileCommitFailureThrows()`
+   - `TestWorkspaceUnit::testSaveReturnsReadOnlyTargetWhenCommitFailsInteractive()`
+   - `TestWorkspaceUnit::testSaveThrowsWhenCommitFailsNonInteractive()`
+   - `TestWorkspaceUnit::testAutosaveThrowsWhenCommitFails()`
+   - `TestICRegistry::testExtractToFileThrowsWhenCommitFails()`
+
+   All 6 pass. Verified with real `gcov` line-hit data from a `--preset
+   coverage` build (not just "tests pass"): every previously-excluded line at
+   all 5 sites shows a nonzero execution count after running just these 4 test
+   classes.
+
+All 5 `LCOV_EXCL_LINE` markers removed; each site's comment now points at the
+covering test and explains the deferred-write mechanism instead of the wrong
+"needs root" claim.
 
 ---
 

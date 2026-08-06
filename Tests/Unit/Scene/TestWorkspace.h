@@ -28,6 +28,8 @@ private slots:
     void testSaveWarnsAndNoOpsForNewerVersionFile();
     void testSaveCopiesAssociatedDolphinFile();
     void testSaveRemovesStaleAutosaveFile();
+    void testSaveReturnsReadOnlyTargetWhenCommitFailsInteractive();
+    void testSaveThrowsWhenCommitFailsNonInteractive();
     void testLoadThrowsWhenFileCannotBeOpened();
     void testLoadMigratesNonPandaSuffixedFileName();
     void testLoadWarnsWhenMigrationTargetIsReadOnly();
@@ -39,4 +41,5 @@ private slots:
     void testAutosaveFallsBackToAppDataWhenProjectDirIsReadOnly();
     void testAutosaveRemovesPreviousFileWhenProjectDirChanges();
     void testAutosaveThrowsWhenFileCannotBeOpened();
+    void testAutosaveThrowsWhenCommitFails();
 };

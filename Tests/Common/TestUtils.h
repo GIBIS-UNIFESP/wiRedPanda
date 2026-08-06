@@ -14,6 +14,8 @@
 #include <io.h>
 #include <share.h>
 #else
+#include <csignal>
+#include <sys/resource.h>
 #include <unistd.h>
 #endif
 
@@ -415,6 +417,44 @@ struct ScopedStdoutCapture {
         return QJsonDocument::fromJson(contents().toUtf8()).object();
     }
 };
+
+#if !defined(Q_OS_WIN)
+/**
+ * @brief RAII guard that caps the process's own max file size (RLIMIT_FSIZE) to a few
+ * bytes for its lifetime, ignoring SIGXFSZ so an over-limit write() fails with EFBIG
+ * instead of killing the process. Lets a test deterministically force a QSaveFile (or
+ * any other) write to fail without needing a second OS user, root, or a full disk --
+ * e.g. to exercise QSaveFile::commit()'s deferred-write-failure path, since Qt buffers
+ * writes and only surfaces the failure when the buffer is actually flushed to the real
+ * fd (at commit()/close(), not at the write() call itself).
+ *
+ * POSIX-only; RLIMIT_FSIZE has no Windows equivalent, so tests using this guard must
+ * QSKIP there. The limit is process-wide (RLIMIT_FSIZE applies to every write the
+ * process makes, including its own stdout/stderr if a test harness captures those via a
+ * regular file), so the guard restores the previous limit on destruction rather than
+ * lifting it back to unlimited -- letting a nested/later part of the same test process
+ * keep whatever limit it had before.
+ */
+struct ScopedTinyFsizeLimit {
+    struct rlimit previousLimit {};
+    void (*previousHandler)(int) = nullptr;
+
+    ScopedTinyFsizeLimit()
+    {
+        previousHandler = std::signal(SIGXFSZ, SIG_IGN);
+        getrlimit(RLIMIT_FSIZE, &previousLimit);
+        struct rlimit tiny = previousLimit;
+        tiny.rlim_cur = 16;
+        setrlimit(RLIMIT_FSIZE, &tiny);
+    }
+
+    ~ScopedTinyFsizeLimit()
+    {
+        setrlimit(RLIMIT_FSIZE, &previousLimit);
+        std::signal(SIGXFSZ, previousHandler);
+    }
+};
+#endif
 
 /**
  * @brief Renders @a elm's scene footprint into an image; @a centerOut receives the centre of

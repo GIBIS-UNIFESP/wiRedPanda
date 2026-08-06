@@ -315,6 +315,36 @@ void TestICRegistry::testExtractToFileThrowsWhenFileCannotBeOpened()
     QVERIFY2(threw, "extractToFile() must throw when the destination file cannot be opened");
 }
 
+void TestICRegistry::testExtractToFileThrowsWhenCommitFails()
+{
+#ifdef Q_OS_WIN
+    QSKIP("RLIMIT_FSIZE (used to force a deferred QSaveFile write failure) has no Windows equivalent");
+#else
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+
+    WorkSpace workspace;
+    ICRegistry *registry = workspace.scene()->icRegistry();
+    // Bigger than ScopedTinyFsizeLimit's cap, so the write is guaranteed to force
+    // QSaveFile::commit() to fail rather than open() (already covered above).
+    registry->setBlob("some_blob", QByteArray(64, 'x'));
+
+    const QString path = dir.filePath("out.panda");
+
+    bool threw = false;
+    {
+        TestUtils::ScopedTinyFsizeLimit tinyLimit;
+        try {
+            registry->extractToFile("some_blob", path);
+        } catch (...) {
+            threw = true;
+        }
+    }
+    QVERIFY2(threw, "extractToFile() must throw when commit() fails");
+    QVERIFY2(!QFile::exists(path), "A failed commit() must not leave a partial file behind");
+#endif
+}
+
 void TestICRegistry::testMakeBlobSelfContainedSkipsBlobPredatingMetadata()
 {
     WorkSpace workspace;

@@ -17,6 +17,7 @@ private slots:
 
     // save() error paths
     void testSaveOpenFailureThrows();
+    void testSaveCommitFailureThrows();
 
     // load() error paths
     void testLoadMissingFileThrows();

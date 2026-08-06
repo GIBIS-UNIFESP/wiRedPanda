@@ -59,6 +59,7 @@ private slots:
     // ICLoader::migrateFile()'s write-open failure, and loadFileDirectly()'s
     // itemsGuard cleanup of a still-live Connection when migration throws
     void testMigrateFileOpenForWriteFailureThrowsAndCleansUpItems();
+    void testMigrateFileCommitFailureThrows();
 
     // loadBoundaryElement()'s port-name proxying for a boundary input with
     // more than one port (e.g. InputRotary)

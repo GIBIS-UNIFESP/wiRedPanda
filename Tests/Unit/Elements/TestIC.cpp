@@ -669,6 +669,54 @@ void TestICUnit::testMigrateFileOpenForWriteFailureThrowsAndCleansUpItems()
 #endif
 }
 
+void TestICUnit::testMigrateFileCommitFailureThrows()
+{
+#ifdef Q_OS_WIN
+    QSKIP("RLIMIT_FSIZE (used to force a deferred QSaveFile write failure) has no Windows equivalent");
+#else
+    // Same fixture/backup setup as testMigrateFileOpenForWriteFailureThrowsAndCleansUpItems()
+    // above, but forces the write to fail after open() succeeds (ScopedTinyFsizeLimit) instead
+    // of denying open() itself -- exercises migrateFile()'s commit()-failure guard.
+    const QString srcDir = TestUtils::backwardCompatibilityDir() + "v4.2.0/";
+    QTemporaryDir tempDir;
+    QVERIFY(tempDir.isValid());
+
+    const QString subName = "dlatch.panda";
+    const QString subDst = tempDir.path() + "/" + subName;
+    QVERIFY(QFile::copy(srcDir + subName, subDst));
+
+    QVersionNumber oldVersion;
+    {
+        QFile f(subDst);
+        QVERIFY(f.open(QIODevice::ReadOnly));
+        QDataStream s(&f);
+        oldVersion = Serialization::readPandaHeader(s);
+        QVERIFY2(oldVersion < FormatRev::current, "Fixture must be older than current version for this test");
+    }
+
+    const QString backupPath = tempDir.path() + "/dlatch.v" + oldVersion.toString() + ".panda";
+    QVERIFY(QFile::copy(subDst, backupPath));
+
+    Application::migrationEnabled = true;
+    auto ic = std::make_unique<IC>();
+    bool threw = false;
+    QString message;
+    {
+        TestUtils::ScopedTinyFsizeLimit tinyLimit;
+        try {
+            ic->loadFile(subName, tempDir.path());
+        } catch (const Pandaception &e) {
+            threw = true;
+            message = e.englishMessage();
+        }
+    }
+    Application::migrationEnabled = false;
+
+    QVERIFY2(threw, "Migration must throw when the re-saved file's commit() fails");
+    QVERIFY2(message.contains("failed to commit re-saved file"), qPrintable(message));
+#endif
+}
+
 void TestICUnit::testLoadBoundaryElementProxiesMultiOutputInputPortNames()
 {
     // loadBoundaryElement()'s per-port name proxying (nodeInput->setName(srcPort->name())) only

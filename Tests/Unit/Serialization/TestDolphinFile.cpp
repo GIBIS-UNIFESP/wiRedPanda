@@ -82,6 +82,35 @@ void TestDolphinFile::testSaveOpenFailureThrows()
 #endif
 }
 
+void TestDolphinFile::testSaveCommitFailureThrows()
+{
+#ifdef Q_OS_WIN
+    QSKIP("RLIMIT_FSIZE (used to force a deferred QSaveFile write failure) has no Windows equivalent");
+#else
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.path() + "/waveform.csv";
+
+    // Bigger than the CSV a single-row model produces, so the write is guaranteed to
+    // exceed ScopedTinyFsizeLimit's cap and force QSaveFile::commit() to fail, rather
+    // than open() (already covered by testSaveOpenFailureThrows() above).
+    auto model = makeSignalModel({{0, 1, 1, 0, 1, 0, 1, 0, 1, 0}}, 1);
+
+    bool threw = false;
+    {
+        TestUtils::ScopedTinyFsizeLimit tinyLimit;
+        try {
+            DolphinFile::save(*model, path, 1);
+        } catch (const Pandaception &e) {
+            threw = true;
+            QVERIFY2(!QString(e.what()).isEmpty(), "Exception should provide a meaningful error message");
+        }
+    }
+    QVERIFY2(threw, "A commit() failure (deferred write error) should throw");
+    QVERIFY2(!QFile::exists(path), "QSaveFile must not leave a partial/committed file behind on failure");
+#endif
+}
+
 void TestDolphinFile::testLoadMissingFileThrows()
 {
     QTemporaryDir dir;
