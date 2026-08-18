@@ -1391,9 +1391,6 @@ void MainWindow::on_actionSetBackgroundImage_triggered()
         auto *clearButton = new QPushButton(tr("Clear"), &dialog);
         layout->addWidget(clearButton);
 
-        auto *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dialog);
-        layout->addWidget(buttonBox);
-
         auto updatePreview = [&] {
             const auto currentMode = static_cast<Scene::BackgroundMode>(modeGroup->checkedId());
             const QPixmap pixmap = scene->backgroundImage();
@@ -1411,8 +1408,6 @@ void MainWindow::on_actionSetBackgroundImage_triggered()
             painter.setRenderHint(QPainter::SmoothPixmapTransform);
 
             const QRectF canvasRect(0, 0, previewSize.width(), previewSize.height());
-            QBrush checker;
-            checker.setStyle(Qt::TexturePattern);
             QImage checkerTexture(16, 16, QImage::Format_ARGB32);
             checkerTexture.fill(Qt::white);
             QPainter checkerPainter(&checkerTexture);
@@ -1421,8 +1416,12 @@ void MainWindow::on_actionSetBackgroundImage_triggered()
             checkerPainter.fillRect(8, 0, 8, 8, QColor(240, 240, 240));
             checkerPainter.fillRect(0, 8, 8, 8, QColor(240, 240, 240));
             checkerPainter.end();
-            checker.setTextureImage(checkerTexture);
-            painter.fillRect(canvasRect, checker);
+
+            for (int y = 0; y < previewSize.height(); y += checkerTexture.height()) {
+                for (int x = 0; x < previewSize.width(); x += checkerTexture.width()) {
+                    painter.drawImage(x, y, checkerTexture);
+                }
+            }
 
             const QPixmap source = pixmap;
             switch (currentMode) {
@@ -1477,6 +1476,8 @@ void MainWindow::on_actionSetBackgroundImage_triggered()
         }
 
         connect(modeGroup, qOverload<int>(&QButtonGroup::idClicked), &dialog, [&](int) {
+            const auto mode = static_cast<Scene::BackgroundMode>(modeGroup->checkedId());
+            scene->setBackgroundMode(mode);
             updatePreview();
         });
 
@@ -1504,16 +1505,7 @@ void MainWindow::on_actionSetBackgroundImage_triggered()
             updatePreview();
         });
 
-        connect(buttonBox, &QDialogButtonBox::accepted, &dialog, [&] {
-            const auto mode = static_cast<Scene::BackgroundMode>(modeGroup->checkedId());
-            scene->setBackgroundMode(mode);
-            dialog.accept();
-        });
-        connect(buttonBox, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
-
-        if (dialog.exec() == QDialog::Accepted) {
-            // Already applied by the accepted signal.
-        }
+        dialog.exec();
     });
 }
 

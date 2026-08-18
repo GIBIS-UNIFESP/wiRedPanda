@@ -847,7 +847,7 @@ void MainWindowUi::retranslateUi()
     actionLabelsUnderIcons->setText(QCoreApplication::translate("MainWindow", "Labels under icons"));
     actionICPreview->setText(QCoreApplication::translate("MainWindow", "Show IC Preview"));
     actionShowMinimap->setText(QCoreApplication::translate("MainWindow", "Show Minimap"));
-    actionSetBackgroundImage->setText(QCoreApplication::translate("MainWindow", "Background Image..."));
+    actionSetBackgroundImage->setText(QCoreApplication::translate("MainWindow", "Change Background Image"));
     actionAboutThisVersion->setText(QCoreApplication::translate("MainWindow", "About this version"));
     actionCheckForUpdates->setText(QCoreApplication::translate("MainWindow", "Check for updates automatically"));
     actionRestart->setText(QCoreApplication::translate("MainWindow", "&Restart"));
