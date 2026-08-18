@@ -184,6 +184,8 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     actionShowMinimap = new QAction(MainWindow);
     actionShowMinimap->setObjectName("actionShowMinimap");
     actionShowMinimap->setCheckable(true);
+    actionSetBackgroundImage = new QAction(MainWindow);
+    actionSetBackgroundImage->setObjectName("actionSetBackgroundImage");
     actionAboutThisVersion = new QAction(MainWindow);
     actionAboutThisVersion->setObjectName("actionAboutThisVersion");
     actionRestart = new QAction(MainWindow);
@@ -726,6 +728,7 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     menuView->addSeparator();
     menuView->addAction(actionFastMode);
     menuView->addAction(actionShowMinimap);
+    menuView->addAction(actionSetBackgroundImage);
     menuView->addSeparator();
     menuView->addAction(menuTheme->menuAction());
     menuView->addAction(actionFullscreen);
@@ -844,6 +847,7 @@ void MainWindowUi::retranslateUi()
     actionLabelsUnderIcons->setText(QCoreApplication::translate("MainWindow", "Labels under icons"));
     actionICPreview->setText(QCoreApplication::translate("MainWindow", "Show IC Preview"));
     actionShowMinimap->setText(QCoreApplication::translate("MainWindow", "Show Minimap"));
+    actionSetBackgroundImage->setText(QCoreApplication::translate("MainWindow", "Background Image..."));
     actionAboutThisVersion->setText(QCoreApplication::translate("MainWindow", "About this version"));
     actionCheckForUpdates->setText(QCoreApplication::translate("MainWindow", "Check for updates automatically"));
     actionRestart->setText(QCoreApplication::translate("MainWindow", "&Restart"));

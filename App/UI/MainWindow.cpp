@@ -13,24 +13,30 @@
 #endif
 
 #include <QActionGroup>
+#include <QButtonGroup>
 #include <QCloseEvent>
 #include <QDebug>
 #include <QDesktopServices>
+#include <QDialogButtonBox>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
 #include <QIcon>
 #include <QKeySequence>
+#include <QLabel>
 #include <QLocale>
 #include <QLoggingCategory>
 #include <QMap>
 #include <QMessageBox>
+#include <QPainter>
 #include <QPixmapCache>
 #include <QPushButton>
+#include <QRadioButton>
 #include <QShortcut>
 #include <QStyle>
 #include <QTabBar>
 #include <QUrl>
+#include <QVBoxLayout>
 
 #ifdef Q_OS_MAC
 #include <QSvgRenderer>
@@ -56,6 +62,7 @@
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
 #include "App/Tour/TourEngine.h"
+#include "App/UI/FileDialogProvider.h"
 #include "App/Tour/TourOverlay.h"
 #include "App/UI/ElementPalette.h"
 #include "App/UI/ExportController.h"
@@ -370,6 +377,7 @@ void MainWindow::setupConnections()
     connect(m_ui->actionICPreview,             &QAction::triggered,       this,                &MainWindow::on_actionICPreview_triggered);
     connect(m_ui->actionCheckForUpdates,       &QAction::triggered,       this,                &MainWindow::on_actionCheckForUpdates_triggered);
     connect(m_ui->actionShowMinimap,           &QAction::triggered,       this,                &MainWindow::on_actionShowMinimap_triggered);
+    connect(m_ui->actionSetBackgroundImage,    &QAction::triggered,       this,                &MainWindow::on_actionSetBackgroundImage_triggered);
     connect(m_ui->actionLightTheme,            &QAction::triggered,       this,                &MainWindow::on_actionLightTheme_triggered);
     connect(m_ui->actionMute,                  &QAction::triggered,       this,                &MainWindow::on_actionMute_triggered);
     connect(m_ui->actionNew,                   &QAction::triggered,       m_workspaceManager,  &WorkspaceManager::newTab);
@@ -1335,6 +1343,177 @@ void MainWindow::on_actionShowMinimap_triggered(const bool checked)
         sentryBreadcrumb("ui", QStringLiteral("Show minimap: %1").arg(checked));
         Settings::setMinimapVisible(checked);
         if (currentTab()) currentTab()->setMinimapVisible(checked);
+    });
+}
+
+void MainWindow::on_actionSetBackgroundImage_triggered()
+{
+    Application::guardedSlot(this, [this] {
+        auto *tab = currentTab();
+        if (!tab) {
+            return;
+        }
+
+        auto *scene = tab->scene();
+        QDialog dialog(this);
+        dialog.setWindowTitle(tr("Background Image"));
+        dialog.setWindowModality(Qt::WindowModal);
+        dialog.setMinimumWidth(420);
+
+        auto *layout = new QVBoxLayout(&dialog);
+        auto *preview = new QLabel(&dialog);
+        preview->setAlignment(Qt::AlignCenter);
+        preview->setMinimumSize(320, 180);
+        preview->setFrameShape(QFrame::Box);
+        preview->setStyleSheet(QStringLiteral("QLabel { background: rgba(0,0,0,10%); }"));
+        layout->addWidget(preview);
+
+        auto *chooseButton = new QPushButton(tr("Choose Image..."), &dialog);
+        layout->addWidget(chooseButton);
+
+        auto *modeGroup = new QButtonGroup(&dialog);
+        auto *tileButton = new QRadioButton(tr("Tile"), &dialog);
+        auto *stretchButton = new QRadioButton(tr("Stretch"), &dialog);
+        auto *centerButton = new QRadioButton(tr("Center"), &dialog);
+        auto *fitButton = new QRadioButton(tr("Fit"), &dialog);
+        modeGroup->addButton(tileButton, static_cast<int>(Scene::BackgroundMode::Tile));
+        modeGroup->addButton(stretchButton, static_cast<int>(Scene::BackgroundMode::Stretch));
+        modeGroup->addButton(centerButton, static_cast<int>(Scene::BackgroundMode::Center));
+        modeGroup->addButton(fitButton, static_cast<int>(Scene::BackgroundMode::Fit));
+
+        auto *modeLayout = new QHBoxLayout();
+        modeLayout->addWidget(tileButton);
+        modeLayout->addWidget(stretchButton);
+        modeLayout->addWidget(centerButton);
+        modeLayout->addWidget(fitButton);
+        layout->addLayout(modeLayout);
+
+        auto *clearButton = new QPushButton(tr("Clear"), &dialog);
+        layout->addWidget(clearButton);
+
+        auto *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dialog);
+        layout->addWidget(buttonBox);
+
+        auto updatePreview = [&] {
+            const auto currentMode = static_cast<Scene::BackgroundMode>(modeGroup->checkedId());
+            const QPixmap pixmap = scene->backgroundImage();
+            if (pixmap.isNull()) {
+                preview->setText(tr("No image selected"));
+                preview->setPixmap(QPixmap());
+                return;
+            }
+
+            const QSize previewSize = preview->size().expandedTo(QSize(1, 1));
+            QImage sampleImage(previewSize, QImage::Format_ARGB32_Premultiplied);
+            sampleImage.fill(Qt::transparent);
+
+            QPainter painter(&sampleImage);
+            painter.setRenderHint(QPainter::SmoothPixmapTransform);
+
+            const QRectF canvasRect(0, 0, previewSize.width(), previewSize.height());
+            QBrush checker;
+            checker.setStyle(Qt::TexturePattern);
+            QImage checkerTexture(16, 16, QImage::Format_ARGB32);
+            checkerTexture.fill(Qt::white);
+            QPainter checkerPainter(&checkerTexture);
+            checkerPainter.fillRect(0, 0, 8, 8, QColor(220, 220, 220));
+            checkerPainter.fillRect(8, 8, 8, 8, QColor(220, 220, 220));
+            checkerPainter.fillRect(8, 0, 8, 8, QColor(240, 240, 240));
+            checkerPainter.fillRect(0, 8, 8, 8, QColor(240, 240, 240));
+            checkerPainter.end();
+            checker.setTextureImage(checkerTexture);
+            painter.fillRect(canvasRect, checker);
+
+            const QPixmap source = pixmap;
+            switch (currentMode) {
+            case Scene::BackgroundMode::Tile: {
+                const int imgW = source.width();
+                const int imgH = source.height();
+                for (int y = 0; y < previewSize.height(); y += imgH) {
+                    for (int x = 0; x < previewSize.width(); x += imgW) {
+                        painter.drawPixmap(x, y, source);
+                    }
+                }
+                break;
+            }
+            case Scene::BackgroundMode::Stretch:
+                painter.drawPixmap(canvasRect.toRect(), source.scaled(previewSize, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+                break;
+            case Scene::BackgroundMode::Center: {
+                const QRectF sourceBounds = source.rect();
+                const QRectF centered(
+                    (previewSize.width() - sourceBounds.width()) / 2.0,
+                    (previewSize.height() - sourceBounds.height()) / 2.0,
+                    sourceBounds.width(),
+                    sourceBounds.height());
+                painter.drawPixmap(centered.toRect(), source);
+                break;
+            }
+            case Scene::BackgroundMode::Fit:
+            default: {
+                const QPixmap fitPix = source.scaled(previewSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+                const QRect fitRect(
+                    (previewSize.width() - fitPix.width()) / 2,
+                    (previewSize.height() - fitPix.height()) / 2,
+                    fitPix.width(),
+                    fitPix.height());
+                painter.drawPixmap(fitRect, fitPix);
+                break;
+            }
+            }
+
+            painter.end();
+            preview->setText(QString());
+            preview->setPixmap(QPixmap::fromImage(sampleImage));
+        };
+
+        const auto selectedMode = scene->backgroundMode();
+        switch (selectedMode) {
+        case Scene::BackgroundMode::Tile: tileButton->setChecked(true); break;
+        case Scene::BackgroundMode::Stretch: stretchButton->setChecked(true); break;
+        case Scene::BackgroundMode::Center: centerButton->setChecked(true); break;
+        case Scene::BackgroundMode::Fit:
+        default: fitButton->setChecked(true); break;
+        }
+
+        connect(modeGroup, qOverload<int>(&QButtonGroup::idClicked), &dialog, [&](int) {
+            updatePreview();
+        });
+
+        if (!scene->backgroundImage().isNull()) {
+            updatePreview();
+        }
+
+        connect(chooseButton, &QPushButton::clicked, &dialog, [&] {
+            const QString imageFilter = tr("Image files (*.png *.jpg *.jpeg *.bmp *.gif *.webp *.svg);;All files (*.*)");
+            const QString selected = FileDialogs::provider()->getOpenFileName(
+                this,
+                tr("Select Background Image"),
+                currentDir().absolutePath(),
+                imageFilter);
+            if (!selected.isEmpty()) {
+                scene->setBackgroundImage(selected);
+                const auto mode = static_cast<Scene::BackgroundMode>(modeGroup->checkedId());
+                scene->setBackgroundMode(mode);
+                updatePreview();
+            }
+        });
+
+        connect(clearButton, &QPushButton::clicked, &dialog, [&] {
+            scene->clearBackgroundImage();
+            updatePreview();
+        });
+
+        connect(buttonBox, &QDialogButtonBox::accepted, &dialog, [&] {
+            const auto mode = static_cast<Scene::BackgroundMode>(modeGroup->checkedId());
+            scene->setBackgroundMode(mode);
+            dialog.accept();
+        });
+        connect(buttonBox, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
+
+        if (dialog.exec() == QDialog::Accepted) {
+            // Already applied by the accepted signal.
+        }
     });
 }
 
