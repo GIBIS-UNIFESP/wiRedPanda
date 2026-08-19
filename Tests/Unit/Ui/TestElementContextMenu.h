@@ -16,4 +16,9 @@ private slots:
     void testRotateRightAction();
     void testMorphMenuAction();
     void testICSubcircuitAction();
+
+    // "Connect corresponding ports" bulk-connect helper tests
+    void testBuildCorrespondingConnectionsPairsPortsInOrder();
+    void testBuildCorrespondingConnectionsSkipsOccupiedInputs();
+    void testConnectCorrespondingPortsUndoRemovesAllAsOneStep();
 };

@@ -13,6 +13,8 @@
 #include <QPoint>
 
 class GraphicElement;
+class InputPort;
+class OutputPort;
 class QComboBox;
 class QGraphicsItem;
 class QUndoCommand;
@@ -62,5 +64,24 @@ void exec(QPoint screenPos,
           const std::function<void()> &onEditSubcircuit = {},
           const std::function<void()> &onEmbedSubcircuit = {},
           const std::function<void()> &onExtractToFile = {});
+
+// --- Bulk port-connection helpers ---
+// Extracted from exec()'s "Connect corresponding ports" action so its port-pairing logic
+// is directly unit-testable -- exec() itself can't be driven from a headless test since it
+// blocks on a real QMenu::exec() popup (see Tests/Unit/Ui/TestElementContextMenu.cpp).
+
+/// Returns \a elm's free (unconnected) input ports, in port-index order.
+QList<InputPort *> freeInputPorts(GraphicElement *elm);
+
+/// Returns all of \a elm's output ports, in port-index order. Unlike inputs, an existing
+/// connection doesn't disqualify an output -- outputs are meant to fan out.
+QList<OutputPort *> allOutputPorts(GraphicElement *elm);
+
+/// Builds one Connection per (output, free input) pair taken in order (truncated to the
+/// shorter list), skipping any pair ConnectionManager::connectionRejectionReason()
+/// disallows (e.g. a wireless Rx/Tx port). Connections are not added to any scene here --
+/// the caller wraps the result in a single AddItemsCommand, whose constructor adds them.
+QList<QGraphicsItem *> buildCorrespondingConnections(const QList<OutputPort *> &outputs,
+                                                      const QList<InputPort *> &inputs);
 
 } // namespace ElementContextMenu

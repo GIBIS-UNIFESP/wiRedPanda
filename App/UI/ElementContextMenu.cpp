@@ -7,13 +7,19 @@
 #include <QComboBox>
 #include <QMenu>
 #include <QPixmap>
+#include <QScopeGuard>
+
+#include <algorithm>
 
 #include "App/Core/Common.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Scene/Commands.h"
+#include "App/Scene/ConnectionManager.h"
 #include "App/Scene/Scene.h"
 #include "App/UI/SelectionCapabilities.h"
+#include "App/Wiring/Connection.h"
+#include "App/Wiring/Port.h"
 
 // Helper: add a morph target unless the element already IS that type.
 static QAction *addElementAction(QMenu *menu, GraphicElement *selectedElm, ElementType type, const bool hasSameType)
@@ -26,6 +32,51 @@ static QAction *addElementAction(QMenu *menu, GraphicElement *selectedElm, Eleme
     action->setData(static_cast<int>(type));
     return action;
 }
+
+namespace ElementContextMenu {
+
+QList<InputPort *> freeInputPorts(GraphicElement *elm)
+{
+    QList<InputPort *> result;
+    for (int i = 0; i < elm->inputSize(); ++i) {
+        if (auto *port = elm->inputPort(i); port->connections().isEmpty()) {
+            result.append(port);
+        }
+    }
+    return result;
+}
+
+QList<OutputPort *> allOutputPorts(GraphicElement *elm)
+{
+    QList<OutputPort *> result;
+    result.reserve(elm->outputSize());
+    for (int i = 0; i < elm->outputSize(); ++i) {
+        result.append(elm->outputPort(i));
+    }
+    return result;
+}
+
+QList<QGraphicsItem *> buildCorrespondingConnections(const QList<OutputPort *> &outputs,
+                                                      const QList<InputPort *> &inputs)
+{
+    QList<QGraphicsItem *> result;
+    const int count = std::min(outputs.size(), inputs.size());
+    result.reserve(count);
+
+    for (int i = 0; i < count; ++i) {
+        if (!ConnectionManager::connectionRejectionReason(outputs[i], inputs[i]).isEmpty()) {
+            continue;
+        }
+        auto *conn = new Connection();
+        conn->setStartPort(outputs[i]);
+        conn->setEndPort(inputs[i]);
+        conn->updatePath();
+        result.append(conn);
+    }
+    return result;
+}
+
+} // namespace ElementContextMenu
 
 void ElementContextMenu::exec(QPoint screenPos,
                               QGraphicsItem *itemAtMouse,
@@ -181,6 +232,45 @@ void ElementContextMenu::exec(QPoint screenPos,
         menu.addAction(extractToFileText)->setData(extractToFileText);
     }
 
+    // --- Bulk-connect corresponding ports between exactly two selected elements ---
+    // (e.g. an IC's output ports wired one-by-one to a Display14's input ports --
+    // connect every matched pair in one action instead of drawing each wire by hand.)
+    constexpr auto kConnectFirstToSecond = "connectFirstToSecond";
+    constexpr auto kConnectSecondToFirst = "connectSecondToFirst";
+    QList<QGraphicsItem *> connectFirstToSecondItems;
+    QList<QGraphicsItem *> connectSecondToFirstItems;
+    // Whichever list (if either) isn't handed to a command below stays owned here and must
+    // be freed -- a menu dismissal or an unrelated action picked instead must not leak the
+    // Connection objects built (and port-attached) speculatively above.
+    const auto freeUnusedConnections = qScopeGuard([&connectFirstToSecondItems, &connectSecondToFirstItems] {
+        qDeleteAll(connectFirstToSecondItems);
+        qDeleteAll(connectSecondToFirstItems);
+    });
+
+    if (elements.size() == 2) {
+        auto *first = elements[0];
+        auto *second = elements[1];
+        const auto firstOutputs = allOutputPorts(first);
+        const auto secondOutputs = allOutputPorts(second);
+        const auto firstFreeInputs = freeInputPorts(first);
+        const auto secondFreeInputs = freeInputPorts(second);
+
+        connectFirstToSecondItems = buildCorrespondingConnections(firstOutputs, secondFreeInputs);
+        connectSecondToFirstItems = buildCorrespondingConnections(secondOutputs, firstFreeInputs);
+
+        const QString firstName = ElementFactory::translatedName(first->elementType());
+        const QString secondName = ElementFactory::translatedName(second->elementType());
+
+        if (!connectFirstToSecondItems.isEmpty()) {
+            const QString text = QObject::tr("Connect corresponding ports (%1 → %2)").arg(firstName, secondName);
+            menu.addAction(text)->setData(QString::fromLatin1(kConnectFirstToSecond));
+        }
+        if (!connectSecondToFirstItems.isEmpty()) {
+            const QString text = QObject::tr("Connect corresponding ports (%1 → %2)").arg(secondName, firstName);
+            menu.addAction(text)->setData(QString::fromLatin1(kConnectSecondToFirst));
+        }
+    }
+
     menu.addSeparator();
 
     if (caps.hasElements) {
@@ -210,6 +300,18 @@ void ElementContextMenu::exec(QPoint screenPos,
     if (actionData == editSubcircuitText)  { onEditSubcircuit(); return; }
     if (actionData == embedSubcircuitText) { onEmbedSubcircuit(); return; }
     if (actionData == extractToFileText)   { onExtractToFile(); return; }
+
+    if (actionData == QLatin1String(kConnectFirstToSecond)) {
+        sendCommand(new AddItemsCommand(connectFirstToSecondItems, scene));
+        connectFirstToSecondItems.clear(); // ownership transferred to the command
+        return;
+    }
+
+    if (actionData == QLatin1String(kConnectSecondToFirst)) {
+        sendCommand(new AddItemsCommand(connectSecondToFirstItems, scene));
+        connectSecondToFirstItems.clear(); // ownership transferred to the command
+        return;
+    }
 
     if (actionData == rotateLeftText) {
         sendCommand(new RotateCommand(elements, -90.0, scene));
