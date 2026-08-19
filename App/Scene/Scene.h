@@ -304,6 +304,10 @@ public:
     /// Pauses or resumes hardware playback of every audio-producing element according to
     /// \a paused, independent of mute(). See SimulationHost::setPaused().
     void pauseAudio(const bool paused = true);
+
+    /// Shows or hides the coarser major-gridline overlay drawn on top of the regular dot
+    /// grid, for aligning elements across long distances. See Settings::majorGridVisible().
+    void setMajorGridVisible(const bool visible);
     /// Selects all items in the scene.
     void selectAll();
 
@@ -488,6 +492,7 @@ private:
 
     // Rendering
     QPen m_dots;
+    bool m_majorGridVisible = false;
 
     // Mouse-move re-entrancy guard. Stays on Scene (not SceneInteraction) because it
     // must wrap the base QGraphicsScene::mouseMoveEvent call, where the re-entrancy

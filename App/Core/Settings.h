@@ -107,6 +107,12 @@ public:
     static QRect minimapGeometry();
     static void setMinimapGeometry(const QRect &geometry);
 
+    /// Whether the coarser major-gridline overlay (every few minor grid cells, for aligning
+    /// elements across long distances) is drawn on top of the regular dot grid. Off by
+    /// default -- it's an opt-in aid, not a replacement for the dot grid.
+    static bool majorGridVisible();
+    static void setMajorGridVisible(bool visible);
+
 private:
     static QVariant value(const QString &key);
     static void setValue(const QString &key, const QVariant &value);

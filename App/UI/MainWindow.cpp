@@ -152,6 +152,10 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     m_ui->actionShowMinimap->setChecked(Settings::minimapVisible());
     if (currentTab()) currentTab()->setMinimapVisible(Settings::minimapVisible());
 
+    // Restore major-gridline visibility preference the same way.
+    m_ui->actionShowMajorGrid->setChecked(Settings::majorGridVisible());
+    if (currentTab()) currentTab()->scene()->setMajorGridVisible(Settings::majorGridVisible());
+
     qCDebug(zero) << "Opening file if not empty.";
     if (!fileName.isEmpty()) {
         loadPandaFile(fileName);
@@ -371,6 +375,7 @@ void MainWindow::setupConnections()
     connect(m_ui->actionICPreview,             &QAction::triggered,       this,                &MainWindow::on_actionICPreview_triggered);
     connect(m_ui->actionCheckForUpdates,       &QAction::triggered,       this,                &MainWindow::on_actionCheckForUpdates_triggered);
     connect(m_ui->actionShowMinimap,           &QAction::triggered,       this,                &MainWindow::on_actionShowMinimap_triggered);
+    connect(m_ui->actionShowMajorGrid,         &QAction::triggered,       this,                &MainWindow::on_actionShowMajorGrid_triggered);
     connect(m_ui->actionLightTheme,            &QAction::triggered,       this,                &MainWindow::on_actionLightTheme_triggered);
     connect(m_ui->actionMute,                  &QAction::triggered,       this,                &MainWindow::on_actionMute_triggered);
     connect(m_ui->actionNew,                   &QAction::triggered,       m_workspaceManager,  &WorkspaceManager::newTab);
@@ -811,6 +816,7 @@ void MainWindow::onCurrentTabChanged(WorkSpace *newTab)
     // per-tab (each WorkSpace restores its own from Settings::minimapGeometry() on first
     // layout), so there's nothing to push here for those.
     newTab->setMinimapVisible(Settings::minimapVisible());
+    newTab->scene()->setMajorGridVisible(Settings::majorGridVisible());
 
     // Hide management buttons for inline IC tabs (they use currentFile/currentDir which are empty)
     setICButtonsVisible(!newTab->isInlineIC());
@@ -1340,6 +1346,15 @@ void MainWindow::on_actionShowMinimap_triggered(const bool checked)
         sentryBreadcrumb("ui", QStringLiteral("Show minimap: %1").arg(checked));
         Settings::setMinimapVisible(checked);
         if (currentTab()) currentTab()->setMinimapVisible(checked);
+    });
+}
+
+void MainWindow::on_actionShowMajorGrid_triggered(const bool checked)
+{
+    Application::guardedSlot(this, [this, checked] {
+        sentryBreadcrumb("ui", QStringLiteral("Show major gridlines: %1").arg(checked));
+        Settings::setMajorGridVisible(checked);
+        if (currentTab()) currentTab()->scene()->setMajorGridVisible(checked);
     });
 }
 

@@ -302,6 +302,17 @@ QRect Settings::minimapGeometry()
     return value("minimap/geometry").toRect();
 }
 
+bool Settings::majorGridVisible()
+{
+    // An unset/invalid QVariant's toBool() is already false, matching the "off by default" intent.
+    return value("grid/majorVisible").toBool();
+}
+
+void Settings::setMajorGridVisible(bool visible)
+{
+    setValue("grid/majorVisible", visible);
+}
+
 void Settings::setMinimapGeometry(const QRect &geometry)
 {
     setValue("minimap/geometry", geometry);

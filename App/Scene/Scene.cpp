@@ -11,6 +11,7 @@
 #include <QGraphicsSceneDragDropEvent>
 #include <QGraphicsSceneHelpEvent>
 #include <QKeyEvent>
+#include <QLineF>
 #include <QMenu>
 #include <QMimeData>
 #include <QPolygon>
@@ -278,11 +279,44 @@ void Scene::drawBackground(QPainter *painter, const QRectF &rect)
     }
 
     painter->drawPoints(points);
+
+    if (!m_majorGridVisible) {
+        return;
+    }
+
+    // Coarser reference lines every few minor cells, for aligning elements across long
+    // distances -- the dot grid alone is too fine-grained to eyeball that from a distance.
+    // kMaxGridPoints above already bounds columns/rows for this same rect, so no separate
+    // cap is needed here: a line per major column/row is a small fraction of that.
+    constexpr int kMajorGridInterval = 8; // in minor grid cells
+    const int majorGridSize = gridSize * kMajorGridInterval;
+    const int majorLeft = static_cast<int>(std::floor(rect.left() / majorGridSize)) * majorGridSize;
+    const int majorTop = static_cast<int>(std::floor(rect.top() / majorGridSize)) * majorGridSize;
+
+    QColor majorColor = m_dots.color();
+    majorColor.setAlpha(majorColor.alpha() / 2);
+    painter->setPen(QPen(majorColor));
+
+    for (int x = majorLeft; x <= right; x += majorGridSize) {
+        painter->drawLine(QLineF(x, rect.top(), x, rect.bottom()));
+    }
+    for (int y = majorTop; y <= bottom; y += majorGridSize) {
+        painter->drawLine(QLineF(rect.left(), y, rect.right(), y));
+    }
 }
 
 void Scene::setDots(const QPen &dots)
 {
     m_dots = dots;
+}
+
+void Scene::setMajorGridVisible(const bool visible)
+{
+    if (m_majorGridVisible == visible) {
+        return;
+    }
+    m_majorGridVisible = visible;
+    update();
 }
 
 Simulation *Scene::simulation()
