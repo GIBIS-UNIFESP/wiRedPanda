@@ -10,6 +10,7 @@
 #include <functional>
 
 #include <QList>
+#include <QPair>
 #include <QPoint>
 
 class GraphicElement;
@@ -66,9 +67,12 @@ void exec(QPoint screenPos,
           const std::function<void()> &onExtractToFile = {});
 
 // --- Bulk port-connection helpers ---
-// Extracted from exec()'s "Connect corresponding ports" action so its port-pairing logic
-// is directly unit-testable -- exec() itself can't be driven from a headless test since it
-// blocks on a real QMenu::exec() popup (see Tests/Unit/Ui/TestElementContextMenu.cpp).
+// Extracted from exec()'s "Connect ports" submenu so its port-pairing logic is directly
+// unit-testable -- exec() itself can't be driven from a headless test since it blocks on a
+// real QMenu::exec() popup (see Tests/Unit/Ui/TestElementContextMenu.cpp).
+
+/// An (output, input) port pairing that Connection::setStartPort()/setEndPort() can wire up.
+using PortPair = QPair<OutputPort *, InputPort *>;
 
 /// Returns \a elm's free (unconnected) input ports, in port-index order.
 QList<InputPort *> freeInputPorts(GraphicElement *elm);
@@ -77,11 +81,21 @@ QList<InputPort *> freeInputPorts(GraphicElement *elm);
 /// connection doesn't disqualify an output -- outputs are meant to fan out.
 QList<OutputPort *> allOutputPorts(GraphicElement *elm);
 
-/// Builds one Connection per (output, free input) pair taken in order (truncated to the
-/// shorter list), skipping any pair ConnectionManager::connectionRejectionReason()
-/// disallows (e.g. a wireless Rx/Tx port). Connections are not added to any scene here --
-/// the caller wraps the result in a single AddItemsCommand, whose constructor adds them.
-QList<QGraphicsItem *> buildCorrespondingConnections(const QList<OutputPort *> &outputs,
-                                                      const QList<InputPort *> &inputs);
+/// Pairs \a outputs against \a inputs by position (index order), truncated to the shorter
+/// list, skipping any pair ConnectionManager::connectionRejectionReason() disallows (e.g.
+/// a wireless Rx/Tx port). Ports are not mutated -- no Connection is constructed here, so
+/// nothing needs to be built-then-discarded when the user picks a different menu entry.
+QList<PortPair> pairPortsByOrder(const QList<OutputPort *> &outputs, const QList<InputPort *> &inputs);
+
+/// Pairs each port in \a inputs with the first port in \a outputs whose name matches
+/// exactly (case-insensitive), skipping inputs with no matching output and any pair
+/// ConnectionManager::connectionRejectionReason() disallows. An output may be paired with
+/// more than one input (fan-out); if multiple outputs share a name, the lowest-index one
+/// wins the match.
+QList<PortPair> pairPortsByName(const QList<OutputPort *> &outputs, const QList<InputPort *> &inputs);
+
+/// Builds one Connection per pair in \a pairs. Connections are not added to any scene here
+/// -- the caller wraps the result in a single AddItemsCommand, whose constructor adds them.
+QList<QGraphicsItem *> buildConnections(const QList<PortPair> &pairs);
 
 } // namespace ElementContextMenu

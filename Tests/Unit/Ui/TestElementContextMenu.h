@@ -17,8 +17,13 @@ private slots:
     void testMorphMenuAction();
     void testICSubcircuitAction();
 
-    // "Connect corresponding ports" bulk-connect helper tests
-    void testBuildCorrespondingConnectionsPairsPortsInOrder();
-    void testBuildCorrespondingConnectionsSkipsOccupiedInputs();
-    void testConnectCorrespondingPortsUndoRemovesAllAsOneStep();
+    // "Connect ports" bulk-connect helper tests -- by port order
+    void testPairPortsByOrderPairsPortsInOrder();
+    void testPairPortsByOrderSkipsOccupiedInputs();
+    void testConnectPortsByOrderUndoRemovesAllAsOneStep();
+
+    // "Connect ports" bulk-connect helper tests -- by matching name
+    void testPairPortsByNameMatchesExactCaseInsensitiveIgnoringOrder();
+    void testPairPortsByNameFirstMatchingOutputWinsOnDuplicateNames();
+    void testPairPortsByNameNoMatchesReturnsEmpty();
 };

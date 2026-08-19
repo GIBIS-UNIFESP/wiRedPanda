@@ -7,7 +7,6 @@
 #include <QComboBox>
 #include <QMenu>
 #include <QPixmap>
-#include <QScopeGuard>
 
 #include <algorithm>
 
@@ -56,20 +55,47 @@ QList<OutputPort *> allOutputPorts(GraphicElement *elm)
     return result;
 }
 
-QList<QGraphicsItem *> buildCorrespondingConnections(const QList<OutputPort *> &outputs,
-                                                      const QList<InputPort *> &inputs)
+QList<PortPair> pairPortsByOrder(const QList<OutputPort *> &outputs, const QList<InputPort *> &inputs)
 {
-    QList<QGraphicsItem *> result;
+    QList<PortPair> result;
     const int count = std::min(outputs.size(), inputs.size());
     result.reserve(count);
 
     for (int i = 0; i < count; ++i) {
-        if (!ConnectionManager::connectionRejectionReason(outputs[i], inputs[i]).isEmpty()) {
-            continue;
+        if (ConnectionManager::connectionRejectionReason(outputs[i], inputs[i]).isEmpty()) {
+            result.append({outputs[i], inputs[i]});
         }
+    }
+    return result;
+}
+
+QList<PortPair> pairPortsByName(const QList<OutputPort *> &outputs, const QList<InputPort *> &inputs)
+{
+    QList<PortPair> result;
+
+    for (auto *input : inputs) {
+        for (auto *output : outputs) {
+            if (output->name().compare(input->name(), Qt::CaseInsensitive) != 0) {
+                continue;
+            }
+            if (ConnectionManager::connectionRejectionReason(output, input).isEmpty()) {
+                result.append({output, input});
+            }
+            break; // first matching output wins, whether or not the pair was rejected above
+        }
+    }
+    return result;
+}
+
+QList<QGraphicsItem *> buildConnections(const QList<PortPair> &pairs)
+{
+    QList<QGraphicsItem *> result;
+    result.reserve(pairs.size());
+
+    for (const auto &pair : pairs) {
         auto *conn = new Connection();
-        conn->setStartPort(outputs[i]);
-        conn->setEndPort(inputs[i]);
+        conn->setStartPort(pair.first);
+        conn->setEndPort(pair.second);
         conn->updatePath();
         result.append(conn);
     }
@@ -232,20 +258,19 @@ void ElementContextMenu::exec(QPoint screenPos,
         menu.addAction(extractToFileText)->setData(extractToFileText);
     }
 
-    // --- Bulk-connect corresponding ports between exactly two selected elements ---
+    // --- Bulk-connect ports between exactly two selected elements ---
     // (e.g. an IC's output ports wired one-by-one to a Display14's input ports --
     // connect every matched pair in one action instead of drawing each wire by hand.)
-    constexpr auto kConnectFirstToSecond = "connectFirstToSecond";
-    constexpr auto kConnectSecondToFirst = "connectSecondToFirst";
-    QList<QGraphicsItem *> connectFirstToSecondItems;
-    QList<QGraphicsItem *> connectSecondToFirstItems;
-    // Whichever list (if either) isn't handed to a command below stays owned here and must
-    // be freed -- a menu dismissal or an unrelated action picked instead must not leak the
-    // Connection objects built (and port-attached) speculatively above.
-    const auto freeUnusedConnections = qScopeGuard([&connectFirstToSecondItems, &connectSecondToFirstItems] {
-        qDeleteAll(connectFirstToSecondItems);
-        qDeleteAll(connectSecondToFirstItems);
-    });
+    // Pairings are plain port-pointer pairs, not yet-constructed Connections: nothing is
+    // allocated or attached to a port until the user actually picks one of these entries.
+    QList<PortPair> firstToSecondByOrder;
+    QList<PortPair> firstToSecondByName;
+    QList<PortPair> secondToFirstByOrder;
+    QList<PortPair> secondToFirstByName;
+    QAction *firstToSecondByOrderAction = nullptr;
+    QAction *firstToSecondByNameAction = nullptr;
+    QAction *secondToFirstByOrderAction = nullptr;
+    QAction *secondToFirstByNameAction = nullptr;
 
     if (elements.size() == 2) {
         auto *first = elements[0];
@@ -255,19 +280,33 @@ void ElementContextMenu::exec(QPoint screenPos,
         const auto firstFreeInputs = freeInputPorts(first);
         const auto secondFreeInputs = freeInputPorts(second);
 
-        connectFirstToSecondItems = buildCorrespondingConnections(firstOutputs, secondFreeInputs);
-        connectSecondToFirstItems = buildCorrespondingConnections(secondOutputs, firstFreeInputs);
+        firstToSecondByOrder = pairPortsByOrder(firstOutputs, secondFreeInputs);
+        firstToSecondByName = pairPortsByName(firstOutputs, secondFreeInputs);
+        secondToFirstByOrder = pairPortsByOrder(secondOutputs, firstFreeInputs);
+        secondToFirstByName = pairPortsByName(secondOutputs, firstFreeInputs);
 
         const QString firstName = ElementFactory::translatedName(first->elementType());
         const QString secondName = ElementFactory::translatedName(second->elementType());
+        const QString byOrderText = QObject::tr("By port order");
+        const QString byNameText = QObject::tr("By matching name");
 
-        if (!connectFirstToSecondItems.isEmpty()) {
-            const QString text = QObject::tr("Connect corresponding ports (%1 → %2)").arg(firstName, secondName);
-            menu.addAction(text)->setData(QString::fromLatin1(kConnectFirstToSecond));
+        if (!firstToSecondByOrder.isEmpty() || !firstToSecondByName.isEmpty()) {
+            QMenu *submenu = menu.addMenu(QObject::tr("Connect ports (%1 → %2)").arg(firstName, secondName));
+            if (!firstToSecondByOrder.isEmpty()) {
+                firstToSecondByOrderAction = submenu->addAction(byOrderText);
+            }
+            if (!firstToSecondByName.isEmpty()) {
+                firstToSecondByNameAction = submenu->addAction(byNameText);
+            }
         }
-        if (!connectSecondToFirstItems.isEmpty()) {
-            const QString text = QObject::tr("Connect corresponding ports (%1 → %2)").arg(secondName, firstName);
-            menu.addAction(text)->setData(QString::fromLatin1(kConnectSecondToFirst));
+        if (!secondToFirstByOrder.isEmpty() || !secondToFirstByName.isEmpty()) {
+            QMenu *submenu = menu.addMenu(QObject::tr("Connect ports (%1 → %2)").arg(secondName, firstName));
+            if (!secondToFirstByOrder.isEmpty()) {
+                secondToFirstByOrderAction = submenu->addAction(byOrderText);
+            }
+            if (!secondToFirstByName.isEmpty()) {
+                secondToFirstByNameAction = submenu->addAction(byNameText);
+            }
         }
     }
 
@@ -301,17 +340,10 @@ void ElementContextMenu::exec(QPoint screenPos,
     if (actionData == embedSubcircuitText) { onEmbedSubcircuit(); return; }
     if (actionData == extractToFileText)   { onExtractToFile(); return; }
 
-    if (actionData == QLatin1String(kConnectFirstToSecond)) {
-        sendCommand(new AddItemsCommand(connectFirstToSecondItems, scene));
-        connectFirstToSecondItems.clear(); // ownership transferred to the command
-        return;
-    }
-
-    if (actionData == QLatin1String(kConnectSecondToFirst)) {
-        sendCommand(new AddItemsCommand(connectSecondToFirstItems, scene));
-        connectSecondToFirstItems.clear(); // ownership transferred to the command
-        return;
-    }
+    if (action == firstToSecondByOrderAction) { sendCommand(new AddItemsCommand(buildConnections(firstToSecondByOrder), scene)); return; }
+    if (action == firstToSecondByNameAction)  { sendCommand(new AddItemsCommand(buildConnections(firstToSecondByName), scene));  return; }
+    if (action == secondToFirstByOrderAction) { sendCommand(new AddItemsCommand(buildConnections(secondToFirstByOrder), scene)); return; }
+    if (action == secondToFirstByNameAction)  { sendCommand(new AddItemsCommand(buildConnections(secondToFirstByName), scene));  return; }
 
     if (actionData == rotateLeftText) {
         sendCommand(new RotateCommand(elements, -90.0, scene));
