@@ -2649,96 +2649,106 @@ Enne IC-de ja välimuste kasutamist või beWavedDolphini simulatsioonide käivit
         <translation>Viga!</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="99"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="125"/>
         <source>Change color to...</source>
         <translation>Muuda värvi...</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="102"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="128"/>
         <source>Change frequency</source>
         <translation>Muuda sagedust</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="103"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="129"/>
         <source>Morph to...</source>
         <translation>Muuda vormiks...</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="104"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="130"/>
         <source>Rename</source>
         <translation>Nimeta ümber</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="98"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="124"/>
         <source>Change appearance to ...</source>
         <translation>Muuda välimust...</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="100"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="126"/>
         <source>Flip horizontally</source>
         <translation>Pööra horisontaalselt</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="101"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="127"/>
         <source>Flip vertically</source>
         <translation>Pööra vertikaalselt</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="105"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="131"/>
         <source>Restore default appearance</source>
         <translation>Taasta vaikimisi välimus</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="106"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="132"/>
         <source>Rotate left</source>
         <translation>Pööra vasakule</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="107"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="133"/>
         <source>Rotate right</source>
         <translation>Pööra paremale</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="108"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="134"/>
         <source>Change trigger</source>
         <translation>Muuda lätestit</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="221"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="247"/>
         <source>Edit sub-circuit</source>
         <translation>Muuda alamskeemi</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="222"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="248"/>
         <source>Embed sub-circuit</source>
         <translation>Manusta alamskeem</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="223"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="249"/>
         <source>Extract to file</source>
         <translation>Ekstrakti faili</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="265"/>
-        <location filename="../../UI/ElementContextMenu.cpp" line="269"/>
-        <source>Connect corresponding ports (%1 → %2)</source>
+        <location filename="../../UI/ElementContextMenu.cpp" line="290"/>
+        <source>By port order</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="277"/>
-        <location filename="../../UI/ElementContextMenu.cpp" line="348"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="291"/>
+        <source>By matching name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/ElementContextMenu.cpp" line="294"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="303"/>
+        <source>Connect ports (%1 → %2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/ElementContextMenu.cpp" line="316"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="380"/>
         <source>Copy</source>
         <translation>Kopeeri</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="278"/>
-        <location filename="../../UI/ElementContextMenu.cpp" line="348"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="317"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="380"/>
         <source>Cut</source>
         <translation>Lõika</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="283"/>
-        <location filename="../../UI/ElementContextMenu.cpp" line="348"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="322"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="380"/>
         <source>Delete</source>
         <translation>Kustuta</translation>
     </message>
