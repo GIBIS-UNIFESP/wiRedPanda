@@ -10,6 +10,7 @@
 #include <QSaveFile>
 #include <QThread>
 
+#include "App/Core/Application.h"
 #include "App/Core/Common.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/IC.h"
@@ -26,8 +27,14 @@ ICRegistry::ICRegistry(Scene *scene)
     : QObject(scene)
     , m_scene(scene)
 {
-    connect(&m_fileWatcher, &QFileSystemWatcher::fileChanged,
-            this, &ICRegistry::onFileChanged, Qt::QueuedConnection);
+    // onFileChanged() can throw (e.g. when the watched file was renamed/deleted out from
+    // under it) -- queued-connection slots must catch in their own frame via guardedSlot,
+    // since an exception crossing Qt's queued dispatch is UB (see Application::guardedSlot's
+    // doc comment) rather than rely on Application::notify()'s synchronous backstop.
+    connect(&m_fileWatcher, &QFileSystemWatcher::fileChanged, this,
+            [this](const QString &filePath) {
+                Application::guardedSlot(this, [this, filePath] { onFileChanged(filePath); });
+            }, Qt::QueuedConnection);
 }
 
 const QByteArray &ICRegistry::cachedFileBytes(const QString &filePath)
