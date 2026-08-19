@@ -252,8 +252,20 @@ void ElementAppearance::setPixmap(const int index)
 
 void ElementAppearance::setPixmap(const QString &pixmapPath)
 {
-    // Skip if unchanged to avoid redundant loads and cache invalidation
-    if (pixmapPath.isEmpty() || (pixmapPath == m_currentPixmapPath)) {
+    if (pixmapPath.isEmpty()) {
+        return;
+    }
+
+    // Same path as last time: normally a no-op to avoid redundant loads and cache
+    // invalidation. Bundled resources (":/...") can never change on disk without a
+    // rebuild, so skip the stat entirely for the overwhelming majority of elements
+    // (every default gate icon). A custom, user-picked external image CAN be edited in
+    // place though -- re-stat it and only skip if it's genuinely unchanged, so an edit
+    // is picked up on the next call (e.g. the LED's own per-tick refresh()) instead of
+    // requiring a restart.
+    if (pixmapPath == m_currentPixmapPath
+        && (pixmapPath.startsWith(QLatin1String(":/"))
+            || QFileInfo(pixmapPath).lastModified() == m_currentPixmapMTime)) {
         return;
     }
 
@@ -291,8 +303,11 @@ void ElementAppearance::setPixmap(const QString &pixmapPath)
         m_pixmap = m_basePixmap;
         // Remember this exact request failed so a later call with the same broken path (e.g.
         // every simulation tick's refresh()) is skipped by the guard above instead of
-        // re-attempting the load and re-throwing — each distinct failure surfaces once.
+        // re-attempting the load and re-throwing — each distinct failure surfaces once,
+        // unless the file's mtime actually changes (e.g. it reappears), which the guard
+        // above still detects.
         m_currentPixmapPath = pixmapPath;
+        m_currentPixmapMTime = info.lastModified();
         qCDebug(zero) << "Problem loading pixmapPath: " << path;
         throw PANDACEPTION("Couldn't load pixmap: %1 (%2)", path, reason);
     }
@@ -317,6 +332,7 @@ void ElementAppearance::setPixmap(const QString &pixmapPath)
     m_owner->update();
 
     m_currentPixmapPath = pixmapPath;
+    m_currentPixmapMTime = QFileInfo(path).lastModified();
 }
 
 QPixmap ElementAppearance::previewPixmapAt(const int index, const QSize &size) const

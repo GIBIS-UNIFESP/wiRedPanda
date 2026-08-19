@@ -11,6 +11,7 @@
 
 #include <QColor>
 #include <QCoreApplication>
+#include <QDateTime>
 #include <QPixmap>
 #include <QSize>
 #include <QStringList>
@@ -138,6 +139,9 @@ private:
     QString m_pixmapPath;         ///< Resource/file path of the default pixmap (from metadata).
     QString m_currentPixmapPath;  ///< Path last requested via setPixmap() (change guard).
     QString m_resolvedPixmapPath; ///< Resolved path of m_basePixmap; used to build orientation variants.
+    QDateTime m_currentPixmapMTime; ///< mtime of m_currentPixmapPath at last load; re-stat on a
+                                    ///< same-path request so an in-place external edit of a custom
+                                    ///< (non-resource) image is still picked up without a restart.
 
     QStringList m_defaultAppearances;     ///< Built-in appearance paths (resource files).
     QStringList m_alternativeAppearances; ///< Active appearance paths (user paths override defaults).
