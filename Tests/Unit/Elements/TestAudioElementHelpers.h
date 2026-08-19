@@ -91,6 +91,37 @@ inline void testRefreshWithInactiveInput(T &element)
 }
 
 template<typename T>
+inline void testPauseResumeTransition(T &element)
+{
+    InputVcc vcc;
+    auto connection = std::make_unique<Connection>();
+    connection->setStartPort(vcc.outputPort());
+    connection->setEndPort(element.inputPort(0));
+
+    element.refresh();
+    QVERIFY(element.isPlaying());
+
+    // Pausing/resuming must not touch the logical playing state -- only stop() does that.
+    element.pause();
+    QVERIFY(element.isPlaying());
+
+    element.resume();
+    QVERIFY(element.isPlaying());
+}
+
+template<typename T>
+inline void testPauseResumeWhenStoppedIsNoop(T &element)
+{
+    QVERIFY(!element.isPlaying());
+
+    element.pause();
+    QVERIFY(!element.isPlaying());
+
+    element.resume();
+    QVERIFY(!element.isPlaying());
+}
+
+template<typename T>
 inline void testMute(T &element)
 {
     element.mute(true);

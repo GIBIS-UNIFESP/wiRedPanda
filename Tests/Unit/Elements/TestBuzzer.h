@@ -39,6 +39,10 @@ private slots:
     void testRefreshWithActiveInput();
     void testRefreshWithInactiveInput();
 
+    // Pause/resume control tests
+    void testPauseResumeTransition();
+    void testPauseResumeWhenStoppedIsNoop();
+
     // Mute control tests
     void testMute();
     void testUnmute();

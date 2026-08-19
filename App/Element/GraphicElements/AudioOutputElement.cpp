@@ -94,3 +94,21 @@ void AudioOutputElement::stop()
 
     m_isPlaying = false;
 }
+
+void AudioOutputElement::pause()
+{
+    if (!m_isPlaying || !m_hasOutputDevice) {
+        return;
+    }
+
+    pauseAudio();
+}
+
+void AudioOutputElement::resume()
+{
+    if (!m_isPlaying || !m_hasOutputDevice) {
+        return;
+    }
+
+    resumeAudio();
+}

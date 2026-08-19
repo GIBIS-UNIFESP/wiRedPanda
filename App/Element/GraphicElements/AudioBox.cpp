@@ -122,6 +122,16 @@ void AudioBox::stopAudio()
     m_player->stop();
 }
 
+void AudioBox::pauseAudio()
+{
+    m_player->pause();
+}
+
+void AudioBox::resumeAudio()
+{
+    m_player->play();
+}
+
 void AudioBox::applyVolume()
 {
     m_audioOutput->setVolume(m_volume);

@@ -190,6 +190,18 @@ void TestBuzzer::testRefreshWithInactiveInput()
 // Mute Control Tests
 // ============================================================================
 
+void TestBuzzer::testPauseResumeTransition()
+{
+    Buzzer buzzer;
+    AudioElementTestHelpers::testPauseResumeTransition(buzzer);
+}
+
+void TestBuzzer::testPauseResumeWhenStoppedIsNoop()
+{
+    Buzzer buzzer;
+    AudioElementTestHelpers::testPauseResumeWhenStoppedIsNoop(buzzer);
+}
+
 void TestBuzzer::testMute()
 {
     Buzzer buzzer;

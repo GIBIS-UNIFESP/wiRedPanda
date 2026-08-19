@@ -301,6 +301,9 @@ public:
 
     /// Mutes or unmutes selected elements according to \a mute.
     void mute(const bool mute = true);
+    /// Pauses or resumes hardware playback of every audio-producing element according to
+    /// \a paused, independent of mute(). See SimulationHost::setPaused().
+    void pauseAudio(const bool paused = true);
     /// Selects all items in the scene.
     void selectAll();
 
@@ -345,6 +348,8 @@ public:
     QList<QGraphicsItem *> simulationItems() const override { return items(); }
     /// \reimp SimulationHost
     void setMuted(const bool muted) override { mute(muted); }
+    /// \reimp SimulationHost
+    void setPaused(const bool paused) override { pauseAudio(paused); }
 
     // --- Context Directory ---
 

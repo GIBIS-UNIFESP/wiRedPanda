@@ -18,8 +18,8 @@
  * implementations of refresh(), isPlaying(), isMuted(), volume(),
  * mute(), setVolume(), play(), and stop().
  *
- * Concrete subclasses implement the four pure-virtual hardware hooks:
- * startAudio(), stopAudio(), applyVolume(), and applyMute().
+ * Concrete subclasses implement the six pure-virtual hardware hooks:
+ * startAudio(), stopAudio(), pauseAudio(), resumeAudio(), applyVolume(), and applyMute().
  */
 class AudioOutputElement : public GraphicElement
 {
@@ -56,6 +56,14 @@ public:
     /// Refreshes the visual appearance based on the current input state.
     void refresh() override;
 
+    /// Pauses hardware playback in place (transport position freezes) without changing
+    /// m_isPlaying, so the simulation can resume() exactly where it left off. No-op if not
+    /// currently playing. Distinct from mute(): a muted-but-unpaused element keeps
+    /// advancing in real time while silent.
+    void pause();
+    /// Resumes hardware playback previously paused by pause(). No-op if not currently playing.
+    void resume();
+
 protected:
     // --- Template Method hooks (backend-specific) ---
 
@@ -63,6 +71,10 @@ protected:
     virtual void startAudio() = 0;
     /// Stops hardware playback (called from stop() when m_hasOutputDevice is true).
     virtual void stopAudio() = 0;
+    /// Pauses hardware playback in place (called from pause()).
+    virtual void pauseAudio() = 0;
+    /// Resumes hardware playback previously paused (called from resume()).
+    virtual void resumeAudio() = 0;
     /// Applies the current m_volume to the hardware backend.
     virtual void applyVolume() = 0;
     /// Applies the current m_muted state to the hardware backend.

@@ -322,7 +322,11 @@ void Simulation::stop()
 {
     m_timer.stop();
     if (m_host) {
+        // setMuted(true) is a belt-and-suspenders silence; setPaused(true) is what actually
+        // stops hardware playback so its position freezes with the simulation clock instead
+        // of drifting out of sync in real time while paused.
         m_host->setMuted(true);
+        m_host->setPaused(true);
     }
 }
 
@@ -346,6 +350,7 @@ void Simulation::start()
     m_timer.start();
     if (m_host) {
         m_host->setMuted(m_userMuted);
+        m_host->setPaused(false);
     }
     qCDebug(zero) << "Simulation started.";
 }

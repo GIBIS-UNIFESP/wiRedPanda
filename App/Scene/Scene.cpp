@@ -890,6 +890,15 @@ void Scene::mute(const bool mute)
     }
 }
 
+void Scene::pauseAudio(const bool paused)
+{
+    for (auto *element : unsortedElements()) {
+        if (auto *audioElement = qobject_cast<AudioOutputElement *>(element)) {
+            paused ? audioElement->pause() : audioElement->resume();
+        }
+    }
+}
+
 void Scene::flipHorizontally()
 {
     sentryBreadcrumb("ui", QStringLiteral("Flip horizontal"));

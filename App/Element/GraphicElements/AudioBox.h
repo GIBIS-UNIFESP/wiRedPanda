@@ -63,6 +63,8 @@ protected:
 
     void startAudio() override;
     void stopAudio() override;
+    void pauseAudio() override;
+    void resumeAudio() override;
     void applyVolume() override;
     void applyMute() override;
 

@@ -114,6 +114,16 @@ void Buzzer::stopAudio()
     m_generator->close();
 }
 
+void Buzzer::pauseAudio()
+{
+    m_sink->suspend();
+}
+
+void Buzzer::resumeAudio()
+{
+    m_sink->resume();
+}
+
 void Buzzer::applyVolume()
 {
     if (!m_muted) {

@@ -26,4 +26,10 @@ public:
 
     /// Mutes or unmutes audio-producing elements in the host scene.
     virtual void setMuted(bool muted) = 0;
+
+    /// Pauses or resumes audio-producing elements' hardware playback in the host scene,
+    /// independent of setMuted(): pausing stops the transport (so playback position
+    /// freezes with the simulation clock) rather than merely silencing already-running
+    /// playback.
+    virtual void setPaused(bool paused) = 0;
 };

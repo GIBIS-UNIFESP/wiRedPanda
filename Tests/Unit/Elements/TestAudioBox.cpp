@@ -176,6 +176,22 @@ void TestAudioBox::testRefreshWithInactiveInput()
 }
 
 // ============================================================================
+// Pause/Resume Control Tests
+// ============================================================================
+
+void TestAudioBox::testPauseResumeTransition()
+{
+    AudioBox audioBox;
+    AudioElementTestHelpers::testPauseResumeTransition(audioBox);
+}
+
+void TestAudioBox::testPauseResumeWhenStoppedIsNoop()
+{
+    AudioBox audioBox;
+    AudioElementTestHelpers::testPauseResumeWhenStoppedIsNoop(audioBox);
+}
+
+// ============================================================================
 // Mute Control Tests
 // ============================================================================
 
