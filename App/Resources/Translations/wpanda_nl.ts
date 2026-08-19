@@ -765,22 +765,22 @@
 <context>
     <name>ElementAppearance</name>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="284"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="296"/>
         <source>File does not exist</source>
         <translation>Bestand bestaat niet</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="286"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="298"/>
         <source>File is not readable</source>
         <translation>Bestand is niet leesbaar</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="287"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="299"/>
         <source>Unknown reason</source>
         <translation>Onbekende reden</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="297"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="312"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
         <translation>Kon pixmap niet laden: %1 (%2)</translation>
     </message>
@@ -1800,17 +1800,17 @@ Nu opslaan?</translation>
 <context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="276"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="283"/>
         <source>Could not open file: %1</source>
         <translation>Kon bestand niet openen: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="280"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="287"/>
         <source>Could not save file: %1</source>
         <translation>Kon bestand niet opslaan: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="343"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="350"/>
         <source>Embedded IC dependency chain exceeds the maximum nesting depth (%1) while resolving &apos;%2&apos;</source>
         <translation>De afhankelijkheidsketen van ingesloten IC&apos;s overschrijdt de maximale nestdiepte (%1) bij het herleiden van &apos;%2&apos;</translation>
     </message>
@@ -1968,456 +1968,466 @@ Nu opslaan?</translation>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="856"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="862"/>
         <source>Inputs/Outputs</source>
         <translation>Ingangen/Uitgangen</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="858"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="864"/>
         <source>Gates</source>
         <translation>Poorten</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="860"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="866"/>
         <source>Combinational</source>
         <translation>Combinatorisch</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="862"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="868"/>
         <source>Memory</source>
         <translation>Geheugen</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="871"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="877"/>
         <source>Integrated Circuits</source>
         <translation>Geïntegreerde Schakelingen</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="864"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="870"/>
         <source>Add IC files</source>
         <translation>IC-bestanden toevoegen</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="821"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="825"/>
         <source>&amp;Light</source>
         <translation>&amp;Licht</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="822"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="826"/>
         <source>&amp;Dark</source>
         <translation>&amp;Donker</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="863"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="869"/>
         <source>File-based ICs</source>
         <translation>Bestandsgebaseerde IC’s</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="865"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="869"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="871"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="875"/>
         <source>Remove IC</source>
         <translation>IC verwijderen</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="867"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="873"/>
         <source>Embedded ICs</source>
         <translation>Ingesloten IC’s</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="868"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="874"/>
         <source>Embed IC</source>
         <translation>IC insluiten</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="873"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="879"/>
         <source>Miscellaneous</source>
         <translation>Overige</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="875"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="881"/>
         <source>Search:</source>
         <translation>Zoeken:</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="876"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="882"/>
         <source>&amp;File</source>
         <translation>&amp;Bestand</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="877"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="883"/>
         <source>&amp;Recent files:</source>
         <translation>&amp;Recente bestanden:</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="878"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="884"/>
         <source>&amp;Edit</source>
         <translation>&amp;Bewerken</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="879"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="885"/>
         <source>&amp;Help</source>
         <translation>&amp;Hulp</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="880"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="886"/>
         <source>&amp;View</source>
         <translation>&amp;Weergave</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="881"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="887"/>
         <source>&amp;Theme</source>
         <translation>&amp;Thema</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="882"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="888"/>
         <source>&amp;Language</source>
         <translation>&amp;Taal</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="883"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="889"/>
         <source>Sim&amp;ulation</source>
         <translation>Sim&amp;ulatie</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="884"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="890"/>
         <source>Examples</source>
         <translation>Voorbeelden</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="756"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="760"/>
         <source>&amp;Open...</source>
         <translation>&amp;Openen...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="757"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="761"/>
         <source>Open</source>
         <translation>Openen</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="759"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="763"/>
         <source>&amp;Save</source>
         <translation>&amp;Opslaan</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="761"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="765"/>
         <source>Save &amp;As...</source>
         <translation>Opslaan &amp;als...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="763"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="767"/>
         <source>Cu&amp;t</source>
         <translation>K&amp;nippen</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="765"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="769"/>
         <source>&amp;Copy</source>
         <translation>&amp;Kopiëren</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="767"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="771"/>
         <source>&amp;Paste</source>
         <translation>&amp;Plakken</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="769"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="773"/>
         <source>Dupli&amp;cate</source>
         <translation>&amp;Dupliceren</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="771"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="775"/>
         <source>&amp;Delete</source>
         <translation>&amp;Verwijderen</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="773"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="777"/>
         <source>&amp;New</source>
         <translation>&amp;Nieuw</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="775"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="779"/>
         <source>Zoom &amp;in</source>
         <translation>&amp;Inzoomen</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="778"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="782"/>
         <source>Zoom &amp;out</source>
         <translation>&amp;Uitzoomen</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="780"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="784"/>
         <source>&amp;Wires</source>
         <translation>&amp;Draden</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="782"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="786"/>
         <source>&amp;Gates</source>
         <translation>&amp;Poorten</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="784"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="788"/>
         <source>&amp;About</source>
         <translation>&amp;Over</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="786"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="790"/>
         <source>&amp;Exit</source>
         <translation>&amp;Afsluiten</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="788"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="792"/>
         <source>R&amp;otate right</source>
         <translation>Rechts d&amp;raaien</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="790"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="794"/>
         <source>Rotate &amp;left</source>
         <translation>&amp;Links draaien</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="792"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="796"/>
         <source>About &amp;Qt</source>
         <translation>Over &amp;Qt</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="793"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="797"/>
         <source>&amp;Select all</source>
         <translation>&amp;Alles selecteren</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="795"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="799"/>
         <source>Re&amp;load File</source>
         <translation>Bestand he&amp;rladen</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="797"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="801"/>
         <source>E&amp;xport to Arduino</source>
         <translation>&amp;Naar Arduino exporteren</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="799"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="803"/>
         <source>Export to &amp;SystemVerilog</source>
         <translation>Exporteren naar &amp;SystemVerilog</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="801"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="805"/>
         <source>&amp;Reset Zoom</source>
         <translation>Zoom &amp;resetten</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="803"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="807"/>
         <source>Zoom to &amp;Fit</source>
         <translation>&amp;Passend maken</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="804"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="808"/>
         <source>Zoom to fit the whole circuit (or the selection)</source>
         <translation>Zoomt zodat het hele circuit (of de selectie) past.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="808"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="812"/>
         <source>Export to &amp;PDF</source>
         <translation>Naar &amp;PDF exporteren</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="820"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="824"/>
         <source>&amp;System</source>
         <translation>&amp;Systeem</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="827"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="866"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="831"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="872"/>
         <source>Make file self-contained</source>
         <translation>Bestand zelfstandig maken</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="831"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="835"/>
         <source>Align &amp;Left</source>
         <translation>&amp;Links uitlijnen</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="832"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="836"/>
         <source>Align &amp;Right</source>
         <translation>&amp;Rechts uitlijnen</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="833"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="837"/>
         <source>Align &amp;Top</source>
         <translation>&amp;Boven uitlijnen</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="834"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="838"/>
         <source>Align &amp;Bottom</source>
         <translation>&amp;Onder uitlijnen</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="835"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="839"/>
         <source>Align Horizontal &amp;Centers</source>
         <translation>Horizontale &amp;middens uitlijnen</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="836"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="840"/>
         <source>Align &amp;Vertical Centers</source>
         <translation>&amp;Verticale middens uitlijnen</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="837"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="841"/>
         <source>Distribute &amp;Horizontally</source>
         <translation>&amp;Horizontaal verdelen</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="838"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="842"/>
         <source>Distribute Verti&amp;cally</source>
         <translation>Verti&amp;caal verdelen</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="842"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="846"/>
         <source>Mute/unmute circuit buzzers</source>
         <translation>Zoemers dempen/inschakelen</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="845"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="849"/>
         <source>Show IC Preview</source>
         <translation>IC-voorbeeld tonen</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="846"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="850"/>
         <source>Show Minimap</source>
         <translation>Minikaart tonen</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="848"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="851"/>
+        <source>Show Major Gridlines</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindowUI.cpp" line="852"/>
+        <source>Show coarser reference lines for aligning elements across long distances</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindowUI.cpp" line="854"/>
         <source>Check for updates automatically</source>
         <translation>Automatisch op updates controleren</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="851"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="857"/>
         <source>Background Simulation</source>
         <translation>Achtergrond Simulatie</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="853"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="859"/>
         <source>Report Translation Error</source>
         <translation>Vertaalfout melden</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="854"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="860"/>
         <source>Report translation errors or help improve translations on Weblate</source>
         <translation>Meld vertaalfouten of help vertalingen verbeteren op Weblate</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="885"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="891"/>
         <source>&amp;Learn</source>
         <translation>&amp;Leren</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="886"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="892"/>
         <source>&amp;Exercises</source>
         <translation>&amp;Oefeningen</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="887"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="893"/>
         <source>&amp;Tours</source>
         <translation>&amp;Rondleidingen</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="810"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="814"/>
         <source>&amp;Play/Pause</source>
         <translation>&amp;Afspelen/Pauzeren</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="811"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="815"/>
         <source>Play or Pause simulation.</source>
         <translation>Simulatie afspelen of pauzeren.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="813"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="817"/>
         <source>&amp;Rename</source>
         <translation>&amp;Hernoemen</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="815"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="819"/>
         <source>Cha&amp;nge Trigger</source>
         <translation>Tri&amp;gger wijzigen</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="817"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="821"/>
         <source>Cl&amp;ear selection</source>
         <translation>Selectie &amp;wissen</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="819"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="823"/>
         <source>&amp;Fast Mode</source>
         <translation>&amp;Snelle modus</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="823"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="827"/>
         <source>&amp;Waveform</source>
         <translation>&amp;Golfvorm</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="825"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="829"/>
         <source>Export to &amp;Image</source>
         <translation>Naar af&amp;beelding exporteren</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="828"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="832"/>
         <source>&amp;Flip horizontally</source>
         <translation>&amp;Horizontaal spiegelen</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="830"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="834"/>
         <source>Flip &amp;vertically</source>
         <translation>&amp;Verticaal spiegelen</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="839"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="843"/>
         <source>F&amp;ullscreen</source>
         <translation>V&amp;olledig scherm</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1308"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="841"/>
+        <location filename="../../UI/MainWindow.cpp" line="1314"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="845"/>
         <source>Mute</source>
         <translation>Dempen</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="844"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="848"/>
         <source>Labels under icons</source>
         <translation>Labels onder pictogrammen</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="847"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="853"/>
         <source>About this version</source>
         <translation>Over deze versie</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="849"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="855"/>
         <source>&amp;Restart</source>
         <translation>&amp;Herstarten</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="850"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="856"/>
         <source>Restart simulation.</source>
         <translation>Simulatie herstarten.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="639"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="852"/>
+        <location filename="../../UI/MainWindow.cpp" line="644"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="858"/>
         <source>Shortcuts and Tips</source>
         <translation>Sneltoetsen en tips</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="843"/>
+        <location filename="../../UI/MainWindow.cpp" line="849"/>
         <source>%1[*] — wiRedPanda %2</source>
         <translation>%1[*] — wiRedPanda %2</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1001"/>
+        <location filename="../../UI/MainWindow.cpp" line="1007"/>
         <source>New Project</source>
         <translation>Nieuw project</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="508"/>
+        <location filename="../../UI/MainWindow.cpp" line="513"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2436,62 +2446,62 @@ wiRedPanda %1 zal automatisch alle andere .panda-bestanden in dezelfde map als h
 U moet nieuwe projecten opslaan voordat u IC&apos;s en weergaven kunt openen of beWavedDolphin-simulaties kunt uitvoeren.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="285"/>
+        <location filename="../../UI/MainWindow.cpp" line="289"/>
         <source>Error</source>
         <translation>Fout</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="314"/>
+        <location filename="../../UI/MainWindow.cpp" line="318"/>
         <source>Open My Exercises Folder</source>
         <translation>Mijn oefeningenmap openen</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="315"/>
+        <location filename="../../UI/MainWindow.cpp" line="319"/>
         <source>Could not create or access a folder for custom exercises.</source>
         <translation>Kon geen map voor aangepaste oefeningen maken of openen.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="325"/>
+        <location filename="../../UI/MainWindow.cpp" line="329"/>
         <source>Open My Tours Folder</source>
         <translation>Mijn rondleidingenmap openen</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="326"/>
+        <location filename="../../UI/MainWindow.cpp" line="330"/>
         <source>Could not create or access a folder for custom tours.</source>
         <translation>Kon geen map voor aangepaste rondleidingen maken of openen.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="568"/>
+        <location filename="../../UI/MainWindow.cpp" line="573"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda is software ontwikkeld door studenten van de Federale Universiteit van São Paulo om studenten te helpen logische circuits te leren begrijpen.&lt;/p&gt;&lt;p&gt;Softwareversie: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Makers:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda wordt momenteel onderhouden door Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves en Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Meld een probleem op onze GitHub-pagina als je een bug vindt of een nieuwe functie wilt aanvragen.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Bezoek onze website!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="592"/>
+        <location filename="../../UI/MainWindow.cpp" line="597"/>
         <source>Redo</source>
         <translation>Opnieuw doen</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="593"/>
+        <location filename="../../UI/MainWindow.cpp" line="598"/>
         <source>Undo</source>
         <translation>Ongedaan maken</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="618"/>
+        <location filename="../../UI/MainWindow.cpp" line="623"/>
         <source>&lt;h1&gt;Keyboard Shortcuts&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;Element Property Navigation&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : Previous / next primary property &lt;/li&gt;&lt;li&gt; { / } : Previous / next secondary property &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : Morph to previous / next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Double-click a wire to create a node &lt;/li&gt;&lt;li&gt; Drag an element from the left panel onto the canvas to add it &lt;/li&gt;&lt;li&gt; Nudge the selection with the arrow keys (hold Shift for larger steps) &lt;/li&gt;&lt;li&gt; Drop a .panda file onto the canvas to open it &lt;/li&gt;&lt;/ul&gt;</source>
         <translation>&lt;h1&gt;Sneltoetsen&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;Navigatie van Elementeigenschappen&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : Vorige / volgende primaire eigenschap &lt;/li&gt;&lt;li&gt; { / } : Vorige / volgende secundaire eigenschap &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : Omvormen naar vorig / volgend element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Algemene Tips&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Dubbelklik op een draad om een knooppunt te maken &lt;/li&gt;&lt;li&gt; Sleep een element van het linkerpaneel naar het canvas om het toe te voegen &lt;/li&gt;&lt;li&gt; Verplaats de selectie met de pijltoetsen (houd Shift ingedrukt voor grotere stappen) &lt;/li&gt;&lt;li&gt; Zet een .panda-bestand op het canvas neer om het te openen &lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="669"/>
+        <location filename="../../UI/MainWindow.cpp" line="674"/>
         <source>Are you sure?</source>
         <translation>Weet u het zeker?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="668"/>
+        <location filename="../../UI/MainWindow.cpp" line="673"/>
         <source>Exit</source>
         <translation>Afsluiten</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1308"/>
+        <location filename="../../UI/MainWindow.cpp" line="1314"/>
         <source>Unmute</source>
         <translation>Geluid aan</translation>
     </message>
@@ -2626,7 +2636,7 @@ U moet nieuwe projecten opslaan voordat u IC&apos;s en weergaven kunt openen of 
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="229"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="236"/>
         <source>Add embedded IC</source>
         <translation>Ingesloten IC toevoegen</translation>
     </message>
@@ -2639,90 +2649,96 @@ U moet nieuwe projecten opslaan voordat u IC&apos;s en weergaven kunt openen of 
         <translation>Fout!</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="48"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="99"/>
         <source>Change color to...</source>
         <translation>Kleur wijzigen naar...</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="51"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="102"/>
         <source>Change frequency</source>
         <translation>Frequentie wijzigen</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="52"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="103"/>
         <source>Morph to...</source>
         <translation>Transformeren naar...</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="53"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="104"/>
         <source>Rename</source>
         <translation>Hernoemen</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="47"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="98"/>
         <source>Change appearance to ...</source>
         <translation>Skin wijzigen naar ...</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="49"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="100"/>
         <source>Flip horizontally</source>
         <translation>Horizontaal spiegelen</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="50"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="101"/>
         <source>Flip vertically</source>
         <translation>Verticaal spiegelen</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="54"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="105"/>
         <source>Restore default appearance</source>
         <translation>Standaardweergave herstellen</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="55"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="106"/>
         <source>Rotate left</source>
         <translation>Links draaien</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="56"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="107"/>
         <source>Rotate right</source>
         <translation>Rechts draaien</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="57"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="108"/>
         <source>Change trigger</source>
         <translation>Trigger wijzigen</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="170"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="221"/>
         <source>Edit sub-circuit</source>
         <translation>Deelcircuit bewerken</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="171"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="222"/>
         <source>Embed sub-circuit</source>
         <translation>Deelcircuit insluiten</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="172"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="223"/>
         <source>Extract to file</source>
         <translation>Naar bestand extraheren</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="187"/>
-        <location filename="../../UI/ElementContextMenu.cpp" line="246"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="265"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="269"/>
+        <source>Connect corresponding ports (%1 → %2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/ElementContextMenu.cpp" line="277"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="348"/>
         <source>Copy</source>
         <translation>Kopiëren</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="188"/>
-        <location filename="../../UI/ElementContextMenu.cpp" line="246"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="278"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="348"/>
         <source>Cut</source>
         <translation>Knippen</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="193"/>
-        <location filename="../../UI/ElementContextMenu.cpp" line="246"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="283"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="348"/>
         <source>Delete</source>
         <translation>Verwijderen</translation>
     </message>
@@ -2793,24 +2809,24 @@ U moet nieuwe projecten opslaan voordat u IC&apos;s en weergaven kunt openen of 
 <context>
     <name>Scene</name>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="81"/>
-        <location filename="../../Scene/Scene.cpp" line="771"/>
+        <location filename="../../Scene/Scene.cpp" line="82"/>
+        <location filename="../../Scene/Scene.cpp" line="805"/>
         <source>&amp;Undo</source>
         <translation>&amp;Ongedaan maken</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="89"/>
-        <location filename="../../Scene/Scene.cpp" line="777"/>
+        <location filename="../../Scene/Scene.cpp" line="90"/>
+        <location filename="../../Scene/Scene.cpp" line="811"/>
         <source>&amp;Redo</source>
         <translation>&amp;Opnieuw doen</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="797"/>
+        <location filename="../../Scene/Scene.cpp" line="831"/>
         <source>Paste</source>
         <translation>Plakken</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="806"/>
+        <location filename="../../Scene/Scene.cpp" line="840"/>
         <source>Select all</source>
         <translation>Alles selecteren</translation>
     </message>
@@ -2920,7 +2936,7 @@ U moet nieuwe projecten opslaan voordat u IC&apos;s en weergaven kunt openen of 
 <context>
     <name>Simulation</name>
     <message>
-        <location filename="../../Simulation/Simulation.cpp" line="372"/>
+        <location filename="../../Simulation/Simulation.cpp" line="377"/>
         <source>Warning: feedback circuit did not converge — the circuit may be oscillating.</source>
         <translation>Waarschuwing: terugkoppelingscircuit convergeerde niet — het circuit oscilleert mogelijk.</translation>
     </message>

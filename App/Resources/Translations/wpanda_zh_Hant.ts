@@ -765,22 +765,22 @@
 <context>
     <name>ElementAppearance</name>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="284"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="296"/>
         <source>File does not exist</source>
         <translation>檔案不存在</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="286"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="298"/>
         <source>File is not readable</source>
         <translation>檔案不可讀取</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="287"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="299"/>
         <source>Unknown reason</source>
         <translation>未知原因</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="297"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="312"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
         <translation>無法載入像素圖：%1 (%2)</translation>
     </message>
@@ -1800,17 +1800,17 @@ Save it now?</source>
 <context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="276"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="283"/>
         <source>Could not open file: %1</source>
         <translation>無法開啟檔案：%1</translation>
     </message>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="280"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="287"/>
         <source>Could not save file: %1</source>
         <translation>無法儲存檔案：%1</translation>
     </message>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="343"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="350"/>
         <source>Embedded IC dependency chain exceeds the maximum nesting depth (%1) while resolving &apos;%2&apos;</source>
         <translation>解析 &apos;%2&apos; 時,內嵌 IC 相依鏈超出了最大巢狀深度(%1)</translation>
     </message>
@@ -1968,451 +1968,461 @@ Save it now?</source>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="856"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="862"/>
         <source>Inputs/Outputs</source>
         <translation>輸入/輸出</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="858"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="864"/>
         <source>Gates</source>
         <translation>閘電路</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="860"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="866"/>
         <source>Combinational</source>
         <translation>組合邏輯</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="862"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="868"/>
         <source>Memory</source>
         <translation>記憶體</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="871"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="877"/>
         <source>Integrated Circuits</source>
         <translation>集成電路</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="864"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="870"/>
         <source>Add IC files</source>
         <translation>新增 IC 檔案</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="820"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="824"/>
         <source>&amp;System</source>
         <translation>系統(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="827"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="866"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="831"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="872"/>
         <source>Make file self-contained</source>
         <translation>使檔案自包含</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="842"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="846"/>
         <source>Mute/unmute circuit buzzers</source>
         <translation>靜音/取消靜音電路蜂鳴器</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="845"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="849"/>
         <source>Show IC Preview</source>
         <translation>顯示 IC 預覽</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="846"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="850"/>
         <source>Show Minimap</source>
         <translation>顯示小地圖</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="863"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="869"/>
         <source>File-based ICs</source>
         <translation>基於檔案的 IC</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="865"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="869"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="871"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="875"/>
         <source>Remove IC</source>
         <translation>移除 IC</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="867"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="873"/>
         <source>Embedded ICs</source>
         <translation>嵌入式 IC</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="868"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="874"/>
         <source>Embed IC</source>
         <translation>嵌入 IC</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="873"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="879"/>
         <source>Miscellaneous</source>
         <translation>雜項</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="875"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="881"/>
         <source>Search:</source>
         <translation>搜尋：</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="876"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="882"/>
         <source>&amp;File</source>
         <translation>檔案(&amp;F)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="877"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="883"/>
         <source>&amp;Recent files:</source>
         <translation>最近的檔案(&amp;R)：</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="878"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="884"/>
         <source>&amp;Edit</source>
         <translation>編輯(&amp;E)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="879"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="885"/>
         <source>&amp;Help</source>
         <translation>說明(&amp;H)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="880"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="886"/>
         <source>&amp;View</source>
         <translation>檢視(&amp;V)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="881"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="887"/>
         <source>&amp;Theme</source>
         <translation>主題(&amp;T)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="882"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="888"/>
         <source>&amp;Language</source>
         <translation>語言(&amp;L)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="883"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="889"/>
         <source>Sim&amp;ulation</source>
         <translation>模擬(&amp;U)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="884"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="890"/>
         <source>Examples</source>
         <translation>範例</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="756"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="760"/>
         <source>&amp;Open...</source>
         <translation>開啟(&amp;O)...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="757"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="761"/>
         <source>Open</source>
         <translation>開啟</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="759"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="763"/>
         <source>&amp;Save</source>
         <translation>儲存(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="761"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="765"/>
         <source>Save &amp;As...</source>
         <translation>另存為(&amp;A)...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="763"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="767"/>
         <source>Cu&amp;t</source>
         <translation>剪下(&amp;T)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="765"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="769"/>
         <source>&amp;Copy</source>
         <translation>複製(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="767"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="771"/>
         <source>&amp;Paste</source>
         <translation>貼上(&amp;P)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="769"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="773"/>
         <source>Dupli&amp;cate</source>
         <translation>複製(&amp;D)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="771"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="775"/>
         <source>&amp;Delete</source>
         <translation>刪除(&amp;D)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="773"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="777"/>
         <source>&amp;New</source>
         <translation>新建(&amp;N)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="775"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="779"/>
         <source>Zoom &amp;in</source>
         <translation>放大(&amp;I)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="778"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="782"/>
         <source>Zoom &amp;out</source>
         <translation>縮小(&amp;O)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="780"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="784"/>
         <source>&amp;Wires</source>
         <translation>導線(&amp;W)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="782"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="786"/>
         <source>&amp;Gates</source>
         <translation>閘電路(&amp;G)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="784"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="788"/>
         <source>&amp;About</source>
         <translation>關於(&amp;A)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="786"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="790"/>
         <source>&amp;Exit</source>
         <translation>離開(&amp;E)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="788"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="792"/>
         <source>R&amp;otate right</source>
         <translation>向右旋轉(&amp;O)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="790"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="794"/>
         <source>Rotate &amp;left</source>
         <translation>向左旋轉(&amp;L)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="792"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="796"/>
         <source>About &amp;Qt</source>
         <translation>關於 Qt(&amp;Q)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="793"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="797"/>
         <source>&amp;Select all</source>
         <translation>全選(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="795"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="799"/>
         <source>Re&amp;load File</source>
         <translation>重新載入檔案(&amp;L)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="797"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="801"/>
         <source>E&amp;xport to Arduino</source>
         <translation>匯出到 Arduino(&amp;X)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="799"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="803"/>
         <source>Export to &amp;SystemVerilog</source>
         <translation>匯出為 &amp;SystemVerilog</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="801"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="805"/>
         <source>&amp;Reset Zoom</source>
         <translation>重設縮放(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="803"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="807"/>
         <source>Zoom to &amp;Fit</source>
         <translation>符合視窗(&amp;F)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="804"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="808"/>
         <source>Zoom to fit the whole circuit (or the selection)</source>
         <translation>縮放以符合整個電路(或選取範圍)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="808"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="812"/>
         <source>Export to &amp;PDF</source>
         <translation>匯出為 PDF(&amp;P)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="810"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="814"/>
         <source>&amp;Play/Pause</source>
         <translation>播放/暫停(&amp;P)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="811"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="815"/>
         <source>Play or Pause simulation.</source>
         <translation>播放或暫停模擬。</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="813"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="817"/>
         <source>&amp;Rename</source>
         <translation>重新命名(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="815"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="819"/>
         <source>Cha&amp;nge Trigger</source>
         <translation>更改觸發(&amp;N)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="817"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="821"/>
         <source>Cl&amp;ear selection</source>
         <translation>清除選擇(&amp;E)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="819"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="823"/>
         <source>&amp;Fast Mode</source>
         <translation>快速模式(&amp;F)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="821"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="825"/>
         <source>&amp;Light</source>
         <translation>&amp;淺色</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="822"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="826"/>
         <source>&amp;Dark</source>
         <translation>&amp;深色</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="823"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="827"/>
         <source>&amp;Waveform</source>
         <translation>波形(&amp;W)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="825"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="829"/>
         <source>Export to &amp;Image</source>
         <translation>匯出為圖片(&amp;I)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="828"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="832"/>
         <source>&amp;Flip horizontally</source>
         <translation>水平翻轉(&amp;F)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="830"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="834"/>
         <source>Flip &amp;vertically</source>
         <translation>垂直翻轉(&amp;V)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="831"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="835"/>
         <source>Align &amp;Left</source>
         <translation>靠左對齊(&amp;L)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="832"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="836"/>
         <source>Align &amp;Right</source>
         <translation>靠右對齊(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="833"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="837"/>
         <source>Align &amp;Top</source>
         <translation>靠上對齊(&amp;T)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="834"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="838"/>
         <source>Align &amp;Bottom</source>
         <translation>靠下對齊(&amp;B)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="835"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="839"/>
         <source>Align Horizontal &amp;Centers</source>
         <translation>水平置中對齊(&amp;H)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="836"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="840"/>
         <source>Align &amp;Vertical Centers</source>
         <translation>垂直置中對齊(&amp;V)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="837"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="841"/>
         <source>Distribute &amp;Horizontally</source>
         <translation>水平分佈(&amp;H)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="838"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="842"/>
         <source>Distribute Verti&amp;cally</source>
         <translation>垂直分佈(&amp;V)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="839"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="843"/>
         <source>F&amp;ullscreen</source>
         <translation>全螢幕(&amp;U)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="848"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="851"/>
+        <source>Show Major Gridlines</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindowUI.cpp" line="852"/>
+        <source>Show coarser reference lines for aligning elements across long distances</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindowUI.cpp" line="854"/>
         <source>Check for updates automatically</source>
         <translation>自動檢查更新</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="885"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="891"/>
         <source>&amp;Learn</source>
         <translation>學習(&amp;L)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="886"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="892"/>
         <source>&amp;Exercises</source>
         <translation>練習(&amp;E)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="887"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="893"/>
         <source>&amp;Tours</source>
         <translation>導覽(&amp;T)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1308"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="841"/>
+        <location filename="../../UI/MainWindow.cpp" line="1314"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="845"/>
         <source>Mute</source>
         <translation>靜音</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="844"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="848"/>
         <source>Labels under icons</source>
         <translation>在圖示下方顯示標籤</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="847"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="853"/>
         <source>About this version</source>
         <translation>關於此版本</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="849"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="855"/>
         <source>&amp;Restart</source>
         <translation>重新啟動(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="850"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="856"/>
         <source>Restart simulation.</source>
         <translation>重新啟動模擬。</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="851"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="857"/>
         <source>Background Simulation</source>
         <translation>背景模擬</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="639"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="852"/>
+        <location filename="../../UI/MainWindow.cpp" line="644"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="858"/>
         <source>Shortcuts and Tips</source>
         <translation>快捷鍵與提示</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="853"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="859"/>
         <source>Report Translation Error</source>
         <translation>報告翻譯錯誤</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="854"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="860"/>
         <source>Report translation errors or help improve translations on Weblate</source>
         <translation>報告翻譯錯誤或協助改善 Weblate 上的翻譯</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1001"/>
+        <location filename="../../UI/MainWindow.cpp" line="1007"/>
         <source>New Project</source>
         <translation>新專案</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="508"/>
+        <location filename="../../UI/MainWindow.cpp" line="513"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2431,67 +2441,67 @@ wiRedPanda %1 將自動列出與目前專案位於同一目錄中的所有其他
 在存取 IC 和外觀或執行 beWavedDolphin 模擬之前，您需要先儲存新專案。</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="669"/>
+        <location filename="../../UI/MainWindow.cpp" line="674"/>
         <source>Are you sure?</source>
         <translation>您確定嗎？</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="285"/>
+        <location filename="../../UI/MainWindow.cpp" line="289"/>
         <source>Error</source>
         <translation>錯誤</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="314"/>
+        <location filename="../../UI/MainWindow.cpp" line="318"/>
         <source>Open My Exercises Folder</source>
         <translation>開啟我的練習資料夾</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="315"/>
+        <location filename="../../UI/MainWindow.cpp" line="319"/>
         <source>Could not create or access a folder for custom exercises.</source>
         <translation>無法建立或存取自訂練習的資料夾。</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="325"/>
+        <location filename="../../UI/MainWindow.cpp" line="329"/>
         <source>Open My Tours Folder</source>
         <translation>開啟我的導覽資料夾</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="326"/>
+        <location filename="../../UI/MainWindow.cpp" line="330"/>
         <source>Could not create or access a folder for custom tours.</source>
         <translation>無法建立或存取自訂導覽的資料夾。</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="568"/>
+        <location filename="../../UI/MainWindow.cpp" line="573"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda 是由聖保羅聯邦大學的學生所開發的軟體，旨在幫助學生學習邏輯電路。&lt;/p&gt;&lt;p&gt;軟體版本：%1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;創作者：&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda 目前由 Fábio Cappabianco 教授（博士）、João Pedro M. Oliveira、Matheus R. Esteves 和 Maycon A. Santana 維護。&lt;/p&gt;&lt;p&gt; 如果您發現錯誤或想要請求新功能，請在我們的 GitHub 頁面提交報告。&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;造訪我們的網站！&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="592"/>
+        <location filename="../../UI/MainWindow.cpp" line="597"/>
         <source>Redo</source>
         <translation>重做</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="593"/>
+        <location filename="../../UI/MainWindow.cpp" line="598"/>
         <source>Undo</source>
         <translation>復原</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="618"/>
+        <location filename="../../UI/MainWindow.cpp" line="623"/>
         <source>&lt;h1&gt;Keyboard Shortcuts&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;Element Property Navigation&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : Previous / next primary property &lt;/li&gt;&lt;li&gt; { / } : Previous / next secondary property &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : Morph to previous / next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Double-click a wire to create a node &lt;/li&gt;&lt;li&gt; Drag an element from the left panel onto the canvas to add it &lt;/li&gt;&lt;li&gt; Nudge the selection with the arrow keys (hold Shift for larger steps) &lt;/li&gt;&lt;li&gt; Drop a .panda file onto the canvas to open it &lt;/li&gt;&lt;/ul&gt;</source>
         <translation>&lt;h1&gt;鍵盤快速鍵&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;元件屬性導覽&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : 上一個 / 下一個主要屬性 &lt;/li&gt;&lt;li&gt; { / } : 上一個 / 下一個次要屬性 &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : 變形為上一個 / 下一個元件 &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;一般提示&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; 按兩下導線以建立節點 &lt;/li&gt;&lt;li&gt; 將元件從左側面板拖曳到畫布以新增它 &lt;/li&gt;&lt;li&gt; 使用方向鍵移動選取範圍(按住 Shift 可加大步幅) &lt;/li&gt;&lt;li&gt; 將 .panda 檔案拖放到畫布上以開啟它 &lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="668"/>
+        <location filename="../../UI/MainWindow.cpp" line="673"/>
         <source>Exit</source>
         <translation>結束</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="843"/>
+        <location filename="../../UI/MainWindow.cpp" line="849"/>
         <source>%1[*] — wiRedPanda %2</source>
         <translation>%1[*] — wiRedPanda %2</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1308"/>
+        <location filename="../../UI/MainWindow.cpp" line="1314"/>
         <source>Unmute</source>
         <translation>取消靜音</translation>
     </message>
@@ -2626,7 +2636,7 @@ wiRedPanda %1 將自動列出與目前專案位於同一目錄中的所有其他
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="229"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="236"/>
         <source>Add embedded IC</source>
         <translation>新增嵌入式 IC</translation>
     </message>
@@ -2639,90 +2649,96 @@ wiRedPanda %1 將自動列出與目前專案位於同一目錄中的所有其他
         <translation>錯誤！</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="48"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="99"/>
         <source>Change color to...</source>
         <translation>更改顏色為...</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="51"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="102"/>
         <source>Change frequency</source>
         <translation>更改頻率</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="52"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="103"/>
         <source>Morph to...</source>
         <translation>變形為...</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="53"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="104"/>
         <source>Rename</source>
         <translation>重新命名</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="47"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="98"/>
         <source>Change appearance to ...</source>
         <translation>更改外觀為...</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="49"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="100"/>
         <source>Flip horizontally</source>
         <translation>水平翻轉</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="50"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="101"/>
         <source>Flip vertically</source>
         <translation>垂直翻轉</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="54"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="105"/>
         <source>Restore default appearance</source>
         <translation>還原預設外觀</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="55"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="106"/>
         <source>Rotate left</source>
         <translation>向左旋轉</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="56"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="107"/>
         <source>Rotate right</source>
         <translation>向右旋轉</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="57"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="108"/>
         <source>Change trigger</source>
         <translation>更改觸發</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="170"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="221"/>
         <source>Edit sub-circuit</source>
         <translation>編輯子電路</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="171"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="222"/>
         <source>Embed sub-circuit</source>
         <translation>嵌入子電路</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="172"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="223"/>
         <source>Extract to file</source>
         <translation>擷取到檔案</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="187"/>
-        <location filename="../../UI/ElementContextMenu.cpp" line="246"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="265"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="269"/>
+        <source>Connect corresponding ports (%1 → %2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/ElementContextMenu.cpp" line="277"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="348"/>
         <source>Copy</source>
         <translation>複製</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="188"/>
-        <location filename="../../UI/ElementContextMenu.cpp" line="246"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="278"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="348"/>
         <source>Cut</source>
         <translation>剪下</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="193"/>
-        <location filename="../../UI/ElementContextMenu.cpp" line="246"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="283"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="348"/>
         <source>Delete</source>
         <translation>刪除</translation>
     </message>
@@ -2793,24 +2809,24 @@ wiRedPanda %1 將自動列出與目前專案位於同一目錄中的所有其他
 <context>
     <name>Scene</name>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="81"/>
-        <location filename="../../Scene/Scene.cpp" line="771"/>
+        <location filename="../../Scene/Scene.cpp" line="82"/>
+        <location filename="../../Scene/Scene.cpp" line="805"/>
         <source>&amp;Undo</source>
         <translation>復原(&amp;U)</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="89"/>
-        <location filename="../../Scene/Scene.cpp" line="777"/>
+        <location filename="../../Scene/Scene.cpp" line="90"/>
+        <location filename="../../Scene/Scene.cpp" line="811"/>
         <source>&amp;Redo</source>
         <translation>重做(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="797"/>
+        <location filename="../../Scene/Scene.cpp" line="831"/>
         <source>Paste</source>
         <translation>貼上</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="806"/>
+        <location filename="../../Scene/Scene.cpp" line="840"/>
         <source>Select all</source>
         <translation>全選</translation>
     </message>
@@ -2920,7 +2936,7 @@ wiRedPanda %1 將自動列出與目前專案位於同一目錄中的所有其他
 <context>
     <name>Simulation</name>
     <message>
-        <location filename="../../Simulation/Simulation.cpp" line="372"/>
+        <location filename="../../Simulation/Simulation.cpp" line="377"/>
         <source>Warning: feedback circuit did not converge — the circuit may be oscillating.</source>
         <translation>警告: 回饋電路未收斂 — 電路可能在振盪。</translation>
     </message>

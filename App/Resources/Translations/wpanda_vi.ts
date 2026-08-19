@@ -765,22 +765,22 @@
 <context>
     <name>ElementAppearance</name>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="284"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="296"/>
         <source>File does not exist</source>
         <translation>Tập tin không tồn tại</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="286"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="298"/>
         <source>File is not readable</source>
         <translation>Tập tin không thể đọc</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="287"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="299"/>
         <source>Unknown reason</source>
         <translation>Lý do không xác định</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="297"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="312"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
         <translation>Không thể tải pixmap: %1 (%2)</translation>
     </message>
@@ -1800,17 +1800,17 @@ Lưu ngay bây giờ?</translation>
 <context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="276"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="283"/>
         <source>Could not open file: %1</source>
         <translation>Không thể mở tệp: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="280"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="287"/>
         <source>Could not save file: %1</source>
         <translation>Không thể lưu tệp: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="343"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="350"/>
         <source>Embedded IC dependency chain exceeds the maximum nesting depth (%1) while resolving &apos;%2&apos;</source>
         <translation>Chuỗi phụ thuộc IC nhúng vượt quá độ sâu lồng nhau tối đa (%1) khi giải quyết &apos;%2&apos;</translation>
     </message>
@@ -1968,456 +1968,466 @@ Lưu ngay bây giờ?</translation>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="856"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="862"/>
         <source>Inputs/Outputs</source>
         <translation>Đầu Vào/Đầu Ra</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="858"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="864"/>
         <source>Gates</source>
         <translation>Cổng Logic</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="860"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="866"/>
         <source>Combinational</source>
         <translation>Tổ hợp</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="862"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="868"/>
         <source>Memory</source>
         <translation>Bộ Nhớ</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="871"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="877"/>
         <source>Integrated Circuits</source>
         <translation>Mạch Tích Hợp</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="864"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="870"/>
         <source>Add IC files</source>
         <translation>Thêm tệp IC</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="821"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="825"/>
         <source>&amp;Light</source>
         <translation>&amp;Sáng</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="822"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="826"/>
         <source>&amp;Dark</source>
         <translation>&amp;Tối</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="863"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="869"/>
         <source>File-based ICs</source>
         <translation>IC dựa trên tệp</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="865"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="869"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="871"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="875"/>
         <source>Remove IC</source>
         <translation>Gỡ IC</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="867"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="873"/>
         <source>Embedded ICs</source>
         <translation>IC nhúng</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="868"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="874"/>
         <source>Embed IC</source>
         <translation>Nhúng IC</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="873"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="879"/>
         <source>Miscellaneous</source>
         <translation>Khác</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="875"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="881"/>
         <source>Search:</source>
         <translation>Tìm Kiếm:</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="876"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="882"/>
         <source>&amp;File</source>
         <translation>&amp;Tệp</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="877"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="883"/>
         <source>&amp;Recent files:</source>
         <translation>&amp;Tệp gần đây:</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="878"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="884"/>
         <source>&amp;Edit</source>
         <translation>&amp;Chỉnh Sửa</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="879"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="885"/>
         <source>&amp;Help</source>
         <translation>&amp;Trợ Giúp</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="880"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="886"/>
         <source>&amp;View</source>
         <translation>&amp;Xem</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="881"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="887"/>
         <source>&amp;Theme</source>
         <translation>&amp;Giao Diện</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="882"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="888"/>
         <source>&amp;Language</source>
         <translation>&amp;Ngôn Ngữ</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="883"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="889"/>
         <source>Sim&amp;ulation</source>
         <translation>M&amp;ô Phỏng</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="884"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="890"/>
         <source>Examples</source>
         <translation>Ví Dụ</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="756"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="760"/>
         <source>&amp;Open...</source>
         <translation>&amp;Mở...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="757"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="761"/>
         <source>Open</source>
         <translation>Mở</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="759"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="763"/>
         <source>&amp;Save</source>
         <translation>&amp;Lưu</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="761"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="765"/>
         <source>Save &amp;As...</source>
         <translation>Lưu &amp;Thành...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="763"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="767"/>
         <source>Cu&amp;t</source>
         <translation>C&amp;ắt</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="765"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="769"/>
         <source>&amp;Copy</source>
         <translation>&amp;Sao Chép</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="767"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="771"/>
         <source>&amp;Paste</source>
         <translation>&amp;Dán</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="769"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="773"/>
         <source>Dupli&amp;cate</source>
         <translation>&amp;Nhân Đôi</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="771"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="775"/>
         <source>&amp;Delete</source>
         <translation>&amp;Xóa</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="773"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="777"/>
         <source>&amp;New</source>
         <translation>&amp;Mới</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="775"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="779"/>
         <source>Zoom &amp;in</source>
         <translation>Ph&amp;óng To</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="778"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="782"/>
         <source>Zoom &amp;out</source>
         <translation>Thu &amp;Nhỏ</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="780"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="784"/>
         <source>&amp;Wires</source>
         <translation>&amp;Dây Dẫn</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="782"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="786"/>
         <source>&amp;Gates</source>
         <translation>&amp;Cổng Logic</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="784"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="788"/>
         <source>&amp;About</source>
         <translation>&amp;Giới Thiệu</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="786"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="790"/>
         <source>&amp;Exit</source>
         <translation>&amp;Thoát</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="788"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="792"/>
         <source>R&amp;otate right</source>
         <translation>X&amp;oay phải</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="790"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="794"/>
         <source>Rotate &amp;left</source>
         <translation>Xoay &amp;trái</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="792"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="796"/>
         <source>About &amp;Qt</source>
         <translation>Giới thiệu &amp;Qt</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="793"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="797"/>
         <source>&amp;Select all</source>
         <translation>&amp;Chọn tất cả</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="795"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="799"/>
         <source>Re&amp;load File</source>
         <translation>Tải &amp;lại tệp</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="797"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="801"/>
         <source>E&amp;xport to Arduino</source>
         <translation>&amp;Xuất ra Arduino</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="799"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="803"/>
         <source>Export to &amp;SystemVerilog</source>
         <translation>Xuất sang &amp;SystemVerilog</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="801"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="805"/>
         <source>&amp;Reset Zoom</source>
         <translation>&amp;Đặt lại zoom</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="803"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="807"/>
         <source>Zoom to &amp;Fit</source>
         <translation>&amp;Vừa Với Cửa Sổ</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="804"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="808"/>
         <source>Zoom to fit the whole circuit (or the selection)</source>
         <translation>Thu phóng để vừa với toàn bộ mạch (hoặc vùng chọn)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="808"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="812"/>
         <source>Export to &amp;PDF</source>
         <translation>Xuất ra &amp;PDF</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="820"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="824"/>
         <source>&amp;System</source>
         <translation>&amp;Hệ thống</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="827"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="866"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="831"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="872"/>
         <source>Make file self-contained</source>
         <translation>Làm tệp tự chứa</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="831"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="835"/>
         <source>Align &amp;Left</source>
         <translation>Căn &amp;Trái</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="832"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="836"/>
         <source>Align &amp;Right</source>
         <translation>Căn &amp;Phải</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="833"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="837"/>
         <source>Align &amp;Top</source>
         <translation>Căn &amp;Trên</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="834"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="838"/>
         <source>Align &amp;Bottom</source>
         <translation>Căn &amp;Dưới</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="835"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="839"/>
         <source>Align Horizontal &amp;Centers</source>
         <translation>Căn Giữa &amp;Ngang</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="836"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="840"/>
         <source>Align &amp;Vertical Centers</source>
         <translation>Căn Giữa &amp;Dọc</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="837"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="841"/>
         <source>Distribute &amp;Horizontally</source>
         <translation>Phân Bố &amp;Ngang</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="838"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="842"/>
         <source>Distribute Verti&amp;cally</source>
         <translation>Phân Bố &amp;Dọc</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="842"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="846"/>
         <source>Mute/unmute circuit buzzers</source>
         <translation>Tắt/bật tiếng còi mạch</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="845"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="849"/>
         <source>Show IC Preview</source>
         <translation>Hiển Thị Xem Trước IC</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="846"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="850"/>
         <source>Show Minimap</source>
         <translation>Hiển Thị Bản Đồ Thu Nhỏ</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="848"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="851"/>
+        <source>Show Major Gridlines</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindowUI.cpp" line="852"/>
+        <source>Show coarser reference lines for aligning elements across long distances</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindowUI.cpp" line="854"/>
         <source>Check for updates automatically</source>
         <translation>Tự động kiểm tra cập nhật</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="851"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="857"/>
         <source>Background Simulation</source>
         <translation>Mô phỏng nền</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="853"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="859"/>
         <source>Report Translation Error</source>
         <translation>Báo cáo lỗi dịch thuật</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="854"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="860"/>
         <source>Report translation errors or help improve translations on Weblate</source>
         <translation>Báo cáo lỗi dịch thuật hoặc giúp cải thiện bản dịch trên Weblate</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="885"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="891"/>
         <source>&amp;Learn</source>
         <translation>&amp;Học Tập</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="886"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="892"/>
         <source>&amp;Exercises</source>
         <translation>&amp;Bài tập</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="887"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="893"/>
         <source>&amp;Tours</source>
         <translation>&amp;Chuyến tham quan</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="810"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="814"/>
         <source>&amp;Play/Pause</source>
         <translation>&amp;Chạy/Tạm dừng</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="811"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="815"/>
         <source>Play or Pause simulation.</source>
         <translation>Chạy hoặc tạm dừng mô phỏng.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="813"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="817"/>
         <source>&amp;Rename</source>
         <translation>&amp;Đổi tên</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="815"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="819"/>
         <source>Cha&amp;nge Trigger</source>
         <translation>Thay đổi &amp;kích hoạt</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="817"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="821"/>
         <source>Cl&amp;ear selection</source>
         <translation>Xó&amp;a lựa chọn</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="819"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="823"/>
         <source>&amp;Fast Mode</source>
         <translation>Chế độ &amp;nhanh</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="823"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="827"/>
         <source>&amp;Waveform</source>
         <translation>&amp;Dạng sóng</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="825"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="829"/>
         <source>Export to &amp;Image</source>
         <translation>Xuất ra &amp;hình ảnh</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="828"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="832"/>
         <source>&amp;Flip horizontally</source>
         <translation>&amp;Lật ngang</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="830"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="834"/>
         <source>Flip &amp;vertically</source>
         <translation>Lật &amp;dọc</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="839"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="843"/>
         <source>F&amp;ullscreen</source>
         <translation>To&amp;àn màn hình</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1308"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="841"/>
+        <location filename="../../UI/MainWindow.cpp" line="1314"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="845"/>
         <source>Mute</source>
         <translation>Tắt tiếng</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="844"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="848"/>
         <source>Labels under icons</source>
         <translation>Nhãn dưới biểu tượng</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="847"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="853"/>
         <source>About this version</source>
         <translation>Giới thiệu phiên bản này</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="849"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="855"/>
         <source>&amp;Restart</source>
         <translation>&amp;Khởi động lại</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="850"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="856"/>
         <source>Restart simulation.</source>
         <translation>Khởi động lại mô phỏng.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="639"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="852"/>
+        <location filename="../../UI/MainWindow.cpp" line="644"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="858"/>
         <source>Shortcuts and Tips</source>
         <translation>Phím tắt và mẹo</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="843"/>
+        <location filename="../../UI/MainWindow.cpp" line="849"/>
         <source>%1[*] — wiRedPanda %2</source>
         <translation>%1[*] — wiRedPanda %2</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1001"/>
+        <location filename="../../UI/MainWindow.cpp" line="1007"/>
         <source>New Project</source>
         <translation>Dự án mới</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="508"/>
+        <location filename="../../UI/MainWindow.cpp" line="513"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2436,62 +2446,62 @@ wiRedPanda %1 sẽ tự động liệt kê tất cả các tệp .panda khác tr
 Bạn phải lưu các dự án mới trước khi truy cập IC và giao diện, hoặc chạy mô phỏng beWavedDolphin.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="285"/>
+        <location filename="../../UI/MainWindow.cpp" line="289"/>
         <source>Error</source>
         <translation>Lỗi</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="314"/>
+        <location filename="../../UI/MainWindow.cpp" line="318"/>
         <source>Open My Exercises Folder</source>
         <translation>Mở Thư Mục Bài Tập Của Tôi</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="315"/>
+        <location filename="../../UI/MainWindow.cpp" line="319"/>
         <source>Could not create or access a folder for custom exercises.</source>
         <translation>Không thể tạo hoặc truy cập thư mục cho các bài tập tùy chỉnh.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="325"/>
+        <location filename="../../UI/MainWindow.cpp" line="329"/>
         <source>Open My Tours Folder</source>
         <translation>Mở Thư Mục Tham Quan Của Tôi</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="326"/>
+        <location filename="../../UI/MainWindow.cpp" line="330"/>
         <source>Could not create or access a folder for custom tours.</source>
         <translation>Không thể tạo hoặc truy cập thư mục cho các chuyến tham quan tùy chỉnh.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="568"/>
+        <location filename="../../UI/MainWindow.cpp" line="573"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda là phần mềm được phát triển bởi sinh viên của Đại học Liên bang São Paulo nhằm giúp học sinh học về mạch logic.&lt;/p&gt;&lt;p&gt;Phiên bản phần mềm: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Người tạo:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda hiện đang được duy trì bởi Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves và Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Vui lòng gửi báo cáo trên trang GitHub của chúng tôi nếu bạn tìm thấy lỗi hoặc muốn yêu cầu tính năng mới.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Truy cập trang web của chúng tôi!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="592"/>
+        <location filename="../../UI/MainWindow.cpp" line="597"/>
         <source>Redo</source>
         <translation>Làm lại</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="593"/>
+        <location filename="../../UI/MainWindow.cpp" line="598"/>
         <source>Undo</source>
         <translation>Hoàn tác</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="618"/>
+        <location filename="../../UI/MainWindow.cpp" line="623"/>
         <source>&lt;h1&gt;Keyboard Shortcuts&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;Element Property Navigation&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : Previous / next primary property &lt;/li&gt;&lt;li&gt; { / } : Previous / next secondary property &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : Morph to previous / next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Double-click a wire to create a node &lt;/li&gt;&lt;li&gt; Drag an element from the left panel onto the canvas to add it &lt;/li&gt;&lt;li&gt; Nudge the selection with the arrow keys (hold Shift for larger steps) &lt;/li&gt;&lt;li&gt; Drop a .panda file onto the canvas to open it &lt;/li&gt;&lt;/ul&gt;</source>
         <translation>&lt;h1&gt;Phím Tắt&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;Điều Hướng Thuộc Tính Phần Tử&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : Thuộc tính chính trước / sau &lt;/li&gt;&lt;li&gt; { / } : Thuộc tính phụ trước / sau &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : Biến đổi thành phần tử trước / sau &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Mẹo Chung&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Nhấp đúp vào một dây dẫn để tạo một nút &lt;/li&gt;&lt;li&gt; Kéo một phần tử từ bảng bên trái vào khung vẽ để thêm nó &lt;/li&gt;&lt;li&gt; Di chuyển vùng chọn bằng các phím mũi tên (giữ Shift để có bước lớn hơn) &lt;/li&gt;&lt;li&gt; Thả tệp .panda vào khung vẽ để mở nó &lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="669"/>
+        <location filename="../../UI/MainWindow.cpp" line="674"/>
         <source>Are you sure?</source>
         <translation>Bạn có chắc chắn?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="668"/>
+        <location filename="../../UI/MainWindow.cpp" line="673"/>
         <source>Exit</source>
         <translation>Thoát</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1308"/>
+        <location filename="../../UI/MainWindow.cpp" line="1314"/>
         <source>Unmute</source>
         <translation>Bật tiếng</translation>
     </message>
@@ -2626,7 +2636,7 @@ Bạn phải lưu các dự án mới trước khi truy cập IC và giao diện
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="229"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="236"/>
         <source>Add embedded IC</source>
         <translation>Thêm IC nhúng</translation>
     </message>
@@ -2639,90 +2649,96 @@ Bạn phải lưu các dự án mới trước khi truy cập IC và giao diện
         <translation>Lỗi!</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="48"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="99"/>
         <source>Change color to...</source>
         <translation>Thay đổi màu sắc thành...</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="51"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="102"/>
         <source>Change frequency</source>
         <translation>Thay đổi tần số</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="52"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="103"/>
         <source>Morph to...</source>
         <translation>Biến đổi thành...</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="53"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="104"/>
         <source>Rename</source>
         <translation>Đổi Tên</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="47"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="98"/>
         <source>Change appearance to ...</source>
         <translation>Thay đổi giao diện thành ...</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="49"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="100"/>
         <source>Flip horizontally</source>
         <translation>Lật ngang</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="50"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="101"/>
         <source>Flip vertically</source>
         <translation>Lật dọc</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="54"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="105"/>
         <source>Restore default appearance</source>
         <translation>Khôi phục giao diện mặc định</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="55"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="106"/>
         <source>Rotate left</source>
         <translation>Xoay trái</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="56"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="107"/>
         <source>Rotate right</source>
         <translation>Xoay phải</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="57"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="108"/>
         <source>Change trigger</source>
         <translation>Thay đổi kích hoạt</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="170"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="221"/>
         <source>Edit sub-circuit</source>
         <translation>Chỉnh sửa mạch con</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="171"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="222"/>
         <source>Embed sub-circuit</source>
         <translation>Nhúng mạch con</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="172"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="223"/>
         <source>Extract to file</source>
         <translation>Trích xuất ra tệp</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="187"/>
-        <location filename="../../UI/ElementContextMenu.cpp" line="246"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="265"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="269"/>
+        <source>Connect corresponding ports (%1 → %2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/ElementContextMenu.cpp" line="277"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="348"/>
         <source>Copy</source>
         <translation>Sao chép</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="188"/>
-        <location filename="../../UI/ElementContextMenu.cpp" line="246"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="278"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="348"/>
         <source>Cut</source>
         <translation>Cắt</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="193"/>
-        <location filename="../../UI/ElementContextMenu.cpp" line="246"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="283"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="348"/>
         <source>Delete</source>
         <translation>Xóa</translation>
     </message>
@@ -2793,24 +2809,24 @@ Bạn phải lưu các dự án mới trước khi truy cập IC và giao diện
 <context>
     <name>Scene</name>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="81"/>
-        <location filename="../../Scene/Scene.cpp" line="771"/>
+        <location filename="../../Scene/Scene.cpp" line="82"/>
+        <location filename="../../Scene/Scene.cpp" line="805"/>
         <source>&amp;Undo</source>
         <translation>&amp;Hoàn tác</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="89"/>
-        <location filename="../../Scene/Scene.cpp" line="777"/>
+        <location filename="../../Scene/Scene.cpp" line="90"/>
+        <location filename="../../Scene/Scene.cpp" line="811"/>
         <source>&amp;Redo</source>
         <translation>&amp;Làm lại</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="797"/>
+        <location filename="../../Scene/Scene.cpp" line="831"/>
         <source>Paste</source>
         <translation>Dán</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="806"/>
+        <location filename="../../Scene/Scene.cpp" line="840"/>
         <source>Select all</source>
         <translation>Chọn tất cả</translation>
     </message>
@@ -2920,7 +2936,7 @@ Bạn phải lưu các dự án mới trước khi truy cập IC và giao diện
 <context>
     <name>Simulation</name>
     <message>
-        <location filename="../../Simulation/Simulation.cpp" line="372"/>
+        <location filename="../../Simulation/Simulation.cpp" line="377"/>
         <source>Warning: feedback circuit did not converge — the circuit may be oscillating.</source>
         <translation>Cảnh báo: mạch hồi tiếp không hội tụ — mạch có thể đang dao động.</translation>
     </message>

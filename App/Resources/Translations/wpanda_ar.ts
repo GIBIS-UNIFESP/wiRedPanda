@@ -765,22 +765,22 @@
 <context>
     <name>ElementAppearance</name>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="284"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="296"/>
         <source>File does not exist</source>
         <translation>الملف غير موجود</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="286"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="298"/>
         <source>File is not readable</source>
         <translation>الملف غير قابل للقراءة</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="287"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="299"/>
         <source>Unknown reason</source>
         <translation>سبب غير معروف</translation>
     </message>
     <message>
-        <location filename="../../Element/ElementAppearance.cpp" line="297"/>
+        <location filename="../../Element/ElementAppearance.cpp" line="312"/>
         <source>Couldn&apos;t load pixmap: %1 (%2)</source>
         <translation>لا يمكن تحميل الصورة: %1 (%2)</translation>
     </message>
@@ -1800,17 +1800,17 @@ Save it now?</source>
 <context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="276"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="283"/>
         <source>Could not open file: %1</source>
         <translation>لا يمكن فتح الملف: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="280"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="287"/>
         <source>Could not save file: %1</source>
         <translation>لا يمكن حفظ الملف: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="343"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="350"/>
         <source>Embedded IC dependency chain exceeds the maximum nesting depth (%1) while resolving &apos;%2&apos;</source>
         <translation>تتجاوز سلسلة اعتماديات الدارات المتكاملة المدمجة الحد الأقصى لعمق التداخل (%1) عند حل &apos;%2&apos;</translation>
     </message>
@@ -1968,456 +1968,466 @@ Save it now?</source>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="856"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="862"/>
         <source>Inputs/Outputs</source>
         <translation>مدخلات/مخرجات</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="858"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="864"/>
         <source>Gates</source>
         <translation>بوابات</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="860"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="866"/>
         <source>Combinational</source>
         <translation>تجميعي</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="862"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="868"/>
         <source>Memory</source>
         <translation>ذاكرة</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="871"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="877"/>
         <source>Integrated Circuits</source>
         <translation>دوائر متكاملة</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="864"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="870"/>
         <source>Add IC files</source>
         <translation>إضافة ملفات الدوائر المتكاملة</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="821"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="825"/>
         <source>&amp;Light</source>
         <translation>&amp;فاتح</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="822"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="826"/>
         <source>&amp;Dark</source>
         <translation>&amp;داكن</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="863"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="869"/>
         <source>File-based ICs</source>
         <translation>دوائر متكاملة قائمة على الملفات</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="865"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="869"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="871"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="875"/>
         <source>Remove IC</source>
         <translation>إزالة الدارة المتكاملة</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="867"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="873"/>
         <source>Embedded ICs</source>
         <translation>دوائر متكاملة مضمّنة</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="868"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="874"/>
         <source>Embed IC</source>
         <translation>تضمين IC</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="873"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="879"/>
         <source>Miscellaneous</source>
         <translation>متنوعة</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="875"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="881"/>
         <source>Search:</source>
         <translation>بحث:</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="876"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="882"/>
         <source>&amp;File</source>
         <translation>&amp;ملف</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="877"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="883"/>
         <source>&amp;Recent files:</source>
         <translation>&amp;ملفات حديثة:</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="878"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="884"/>
         <source>&amp;Edit</source>
         <translation>&amp;تحرير</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="879"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="885"/>
         <source>&amp;Help</source>
         <translation>&amp;مساعدة</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="880"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="886"/>
         <source>&amp;View</source>
         <translation>&amp;عرض</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="881"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="887"/>
         <source>&amp;Theme</source>
         <translation>&amp;مظهر</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="882"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="888"/>
         <source>&amp;Language</source>
         <translation>&amp;لغة</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="883"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="889"/>
         <source>Sim&amp;ulation</source>
         <translation>مح&amp;اكاة</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="884"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="890"/>
         <source>Examples</source>
         <translation>أمثلة</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="756"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="760"/>
         <source>&amp;Open...</source>
         <translation>&amp;فتح...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="757"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="761"/>
         <source>Open</source>
         <translation>فتح</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="759"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="763"/>
         <source>&amp;Save</source>
         <translation>&amp;حفظ</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="761"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="765"/>
         <source>Save &amp;As...</source>
         <translation>حفظ &amp;باسم...</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="763"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="767"/>
         <source>Cu&amp;t</source>
         <translation>&amp;قص</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="765"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="769"/>
         <source>&amp;Copy</source>
         <translation>&amp;نسخ</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="767"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="771"/>
         <source>&amp;Paste</source>
         <translation>&amp;لصق</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="769"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="773"/>
         <source>Dupli&amp;cate</source>
         <translation>&amp;تكرار</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="771"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="775"/>
         <source>&amp;Delete</source>
         <translation>&amp;حذف</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="773"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="777"/>
         <source>&amp;New</source>
         <translation>&amp;جديد</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="775"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="779"/>
         <source>Zoom &amp;in</source>
         <translation>&amp;تكبير</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="778"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="782"/>
         <source>Zoom &amp;out</source>
         <translation>&amp;تصغير</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="780"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="784"/>
         <source>&amp;Wires</source>
         <translation>&amp;أسلاك</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="782"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="786"/>
         <source>&amp;Gates</source>
         <translation>&amp;بوابات</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="784"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="788"/>
         <source>&amp;About</source>
         <translation>&amp;حول</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="786"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="790"/>
         <source>&amp;Exit</source>
         <translation>&amp;خروج</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="788"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="792"/>
         <source>R&amp;otate right</source>
         <translation>&amp;دوران يمين</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="790"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="794"/>
         <source>Rotate &amp;left</source>
         <translation>دوران &amp;يسار</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="792"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="796"/>
         <source>About &amp;Qt</source>
         <translation>حول &amp;Qt</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="793"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="797"/>
         <source>&amp;Select all</source>
         <translation>&amp;تحديد الكل</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="795"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="799"/>
         <source>Re&amp;load File</source>
         <translation>&amp;إعادة تحميل الملف</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="797"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="801"/>
         <source>E&amp;xport to Arduino</source>
         <translation>&amp;تصدير إلى أردوينو</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="799"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="803"/>
         <source>Export to &amp;SystemVerilog</source>
         <translation>تصدير إلى &amp;SystemVerilog</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="801"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="805"/>
         <source>&amp;Reset Zoom</source>
         <translation>&amp;إعادة تعيين التكبير</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="803"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="807"/>
         <source>Zoom to &amp;Fit</source>
         <translation>&amp;ملاءمة النافذة</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="804"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="808"/>
         <source>Zoom to fit the whole circuit (or the selection)</source>
         <translation>يكبّر أو يصغّر لملاءمة الدائرة بأكملها (أو التحديد)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="808"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="812"/>
         <source>Export to &amp;PDF</source>
         <translation>تصدير إلى &amp;PDF</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="820"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="824"/>
         <source>&amp;System</source>
         <translation>الن&amp;ظام</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="827"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="866"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="831"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="872"/>
         <source>Make file self-contained</source>
         <translation>جعل الملف مكتفيًا ذاتيًا</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="831"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="835"/>
         <source>Align &amp;Left</source>
         <translation>محاذاة إلى &amp;اليسار</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="832"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="836"/>
         <source>Align &amp;Right</source>
         <translation>محاذاة إلى &amp;اليمين</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="833"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="837"/>
         <source>Align &amp;Top</source>
         <translation>محاذاة إلى &amp;الأعلى</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="834"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="838"/>
         <source>Align &amp;Bottom</source>
         <translation>محاذاة إلى &amp;الأسفل</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="835"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="839"/>
         <source>Align Horizontal &amp;Centers</source>
         <translation>محاذاة المراكز &amp;الأفقية</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="836"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="840"/>
         <source>Align &amp;Vertical Centers</source>
         <translation>محاذاة المراكز &amp;الرأسية</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="837"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="841"/>
         <source>Distribute &amp;Horizontally</source>
         <translation>توزيع &amp;أفقي</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="838"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="842"/>
         <source>Distribute Verti&amp;cally</source>
         <translation>توزيع &amp;رأسي</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="842"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="846"/>
         <source>Mute/unmute circuit buzzers</source>
         <translation>كتم/إلغاء كتم أجراس الدائرة</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="845"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="849"/>
         <source>Show IC Preview</source>
         <translation>إظهار معاينة الدارة المتكاملة</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="846"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="850"/>
         <source>Show Minimap</source>
         <translation>إظهار الخريطة المصغرة</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="848"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="851"/>
+        <source>Show Major Gridlines</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindowUI.cpp" line="852"/>
+        <source>Show coarser reference lines for aligning elements across long distances</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/MainWindowUI.cpp" line="854"/>
         <source>Check for updates automatically</source>
         <translation>التحقق من التحديثات تلقائياً</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="851"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="857"/>
         <source>Background Simulation</source>
         <translation>محاكاة خلفية</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="853"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="859"/>
         <source>Report Translation Error</source>
         <translation>الإبلاغ عن خطأ في الترجمة</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="854"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="860"/>
         <source>Report translation errors or help improve translations on Weblate</source>
         <translation>الإبلاغ عن أخطاء الترجمة أو المساعدة في تحسين الترجمات على Weblate</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="885"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="891"/>
         <source>&amp;Learn</source>
         <translation>&amp;تعلّم</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="886"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="892"/>
         <source>&amp;Exercises</source>
         <translation>&amp;تمارين</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="887"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="893"/>
         <source>&amp;Tours</source>
         <translation>&amp;جولات</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="810"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="814"/>
         <source>&amp;Play/Pause</source>
         <translation>&amp;تشغيل/إيقاف</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="811"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="815"/>
         <source>Play or Pause simulation.</source>
         <translation>تشغيل أو إيقاف المحاكاة.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="813"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="817"/>
         <source>&amp;Rename</source>
         <translation>&amp;إعادة تسمية</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="815"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="819"/>
         <source>Cha&amp;nge Trigger</source>
         <translation>&amp;تغيير المشغل</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="817"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="821"/>
         <source>Cl&amp;ear selection</source>
         <translation>&amp;مسح التحديد</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="819"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="823"/>
         <source>&amp;Fast Mode</source>
         <translation>&amp;وضع سريع</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="823"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="827"/>
         <source>&amp;Waveform</source>
         <translation>&amp;شكل الموجة</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="825"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="829"/>
         <source>Export to &amp;Image</source>
         <translation>تصدير إلى &amp;صورة</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="828"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="832"/>
         <source>&amp;Flip horizontally</source>
         <translation>&amp;قلب أفقياً</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="830"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="834"/>
         <source>Flip &amp;vertically</source>
         <translation>قلب &amp;عمودياً</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="839"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="843"/>
         <source>F&amp;ullscreen</source>
         <translation>&amp;ملء الشاشة</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1308"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="841"/>
+        <location filename="../../UI/MainWindow.cpp" line="1314"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="845"/>
         <source>Mute</source>
         <translation>كتم</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="844"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="848"/>
         <source>Labels under icons</source>
         <translation>تسميات تحت الرموز</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="847"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="853"/>
         <source>About this version</source>
         <translation>حول هذا الإصدار</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="849"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="855"/>
         <source>&amp;Restart</source>
         <translation>&amp;إعادة تشغيل</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindowUI.cpp" line="850"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="856"/>
         <source>Restart simulation.</source>
         <translation>إعادة تشغيل المحاكاة.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="639"/>
-        <location filename="../../UI/MainWindowUI.cpp" line="852"/>
+        <location filename="../../UI/MainWindow.cpp" line="644"/>
+        <location filename="../../UI/MainWindowUI.cpp" line="858"/>
         <source>Shortcuts and Tips</source>
         <translation>اختصارات ونصائح</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="843"/>
+        <location filename="../../UI/MainWindow.cpp" line="849"/>
         <source>%1[*] — wiRedPanda %2</source>
         <translation>%1[*] — wiRedPanda %2</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1001"/>
+        <location filename="../../UI/MainWindow.cpp" line="1007"/>
         <source>New Project</source>
         <translation>مشروع جديد</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="508"/>
+        <location filename="../../UI/MainWindow.cpp" line="513"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2436,62 +2446,62 @@ wiRedPanda %1 سيعرض تلقائياً جميع ملفات .panda الأخر�
 يجب عليك حفظ المشاريع الجديدة قبل الوصول إلى الدوائر المتكاملة والمظاهر أو تشغيل محاكاة beWavedDolphin.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="285"/>
+        <location filename="../../UI/MainWindow.cpp" line="289"/>
         <source>Error</source>
         <translation>خطأ</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="314"/>
+        <location filename="../../UI/MainWindow.cpp" line="318"/>
         <source>Open My Exercises Folder</source>
         <translation>فتح مجلد تمريناتي</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="315"/>
+        <location filename="../../UI/MainWindow.cpp" line="319"/>
         <source>Could not create or access a folder for custom exercises.</source>
         <translation>تعذّر إنشاء أو فتح مجلد للتمارين المخصصة.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="325"/>
+        <location filename="../../UI/MainWindow.cpp" line="329"/>
         <source>Open My Tours Folder</source>
         <translation>فتح مجلد جولاتي</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="326"/>
+        <location filename="../../UI/MainWindow.cpp" line="330"/>
         <source>Could not create or access a folder for custom tours.</source>
         <translation>تعذّر إنشاء أو فتح مجلد للجولات المخصصة.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="568"/>
+        <location filename="../../UI/MainWindow.cpp" line="573"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda هو برنامج طوّره طلاب جامعة ساو باولو الفيدرالية لمساعدة الطلاب على تعلّم الدوائر المنطقية.&lt;/p&gt;&lt;p&gt;إصدار البرنامج: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;المبتكرون:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; يتولى صيانة wiRedPanda حاليًا الأستاذ Fábio Cappabianco، دكتوراه، وJoão Pedro M. Oliveira، وMatheus R. Esteves، وMaycon A. Santana.&lt;/p&gt;&lt;p&gt; يُرجى إرسال بلاغ على صفحتنا في GitHub إذا وجدت خطأ أو أردت طلب ميزة جديدة.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;تفضل بزيارة موقعنا الإلكتروني!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="592"/>
+        <location filename="../../UI/MainWindow.cpp" line="597"/>
         <source>Redo</source>
         <translation>إعادة</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="593"/>
+        <location filename="../../UI/MainWindow.cpp" line="598"/>
         <source>Undo</source>
         <translation>تراجع</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="618"/>
+        <location filename="../../UI/MainWindow.cpp" line="623"/>
         <source>&lt;h1&gt;Keyboard Shortcuts&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;Element Property Navigation&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : Previous / next primary property &lt;/li&gt;&lt;li&gt; { / } : Previous / next secondary property &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : Morph to previous / next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Double-click a wire to create a node &lt;/li&gt;&lt;li&gt; Drag an element from the left panel onto the canvas to add it &lt;/li&gt;&lt;li&gt; Nudge the selection with the arrow keys (hold Shift for larger steps) &lt;/li&gt;&lt;li&gt; Drop a .panda file onto the canvas to open it &lt;/li&gt;&lt;/ul&gt;</source>
         <translation>&lt;h1&gt;اختصارات لوحة المفاتيح&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;التنقل بين خصائص العنصر&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : الخاصية الأساسية السابقة / التالية &lt;/li&gt;&lt;li&gt; { / } : الخاصية الثانوية السابقة / التالية &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : التحوّل إلى العنصر السابق / التالي &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;نصائح عامة&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; انقر نقراً مزدوجاً على سلك لإنشاء عقدة &lt;/li&gt;&lt;li&gt; اسحب عنصراً من اللوحة اليسرى إلى لوحة الرسم لإضافته &lt;/li&gt;&lt;li&gt; حرّك التحديد بمفاتيح الأسهم (اضغط باستمرار على Shift لخطوات أكبر) &lt;/li&gt;&lt;li&gt; أفلت ملف .panda على لوحة الرسم لفتحه &lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="669"/>
+        <location filename="../../UI/MainWindow.cpp" line="674"/>
         <source>Are you sure?</source>
         <translation>هل أنت متأكد؟</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="668"/>
+        <location filename="../../UI/MainWindow.cpp" line="673"/>
         <source>Exit</source>
         <translation>خروج</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1308"/>
+        <location filename="../../UI/MainWindow.cpp" line="1314"/>
         <source>Unmute</source>
         <translation>إلغاء الكتم</translation>
     </message>
@@ -2626,7 +2636,7 @@ wiRedPanda %1 سيعرض تلقائياً جميع ملفات .panda الأخر�
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="229"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="236"/>
         <source>Add embedded IC</source>
         <translation>إضافة IC مضمّن</translation>
     </message>
@@ -2639,90 +2649,96 @@ wiRedPanda %1 سيعرض تلقائياً جميع ملفات .panda الأخر�
         <translation>خطأ!</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="48"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="99"/>
         <source>Change color to...</source>
         <translation>تغيير اللون إلى...</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="51"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="102"/>
         <source>Change frequency</source>
         <translation>تغيير التردد</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="52"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="103"/>
         <source>Morph to...</source>
         <translation>تحويل إلى...</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="53"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="104"/>
         <source>Rename</source>
         <translation>إعادة تسمية</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="47"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="98"/>
         <source>Change appearance to ...</source>
         <translation>تغيير المظهر إلى ...</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="49"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="100"/>
         <source>Flip horizontally</source>
         <translation>قلب أفقياً</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="50"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="101"/>
         <source>Flip vertically</source>
         <translation>قلب رأسياً</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="54"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="105"/>
         <source>Restore default appearance</source>
         <translation>استعادة المظهر الافتراضي</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="55"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="106"/>
         <source>Rotate left</source>
         <translation>دوران يسار</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="56"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="107"/>
         <source>Rotate right</source>
         <translation>دوران يمين</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="57"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="108"/>
         <source>Change trigger</source>
         <translation>تغيير المشغل</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="170"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="221"/>
         <source>Edit sub-circuit</source>
         <translation>تعديل الدائرة الفرعية</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="171"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="222"/>
         <source>Embed sub-circuit</source>
         <translation>تضمين الدائرة الفرعية</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="172"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="223"/>
         <source>Extract to file</source>
         <translation>استخراج إلى ملف</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="187"/>
-        <location filename="../../UI/ElementContextMenu.cpp" line="246"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="265"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="269"/>
+        <source>Connect corresponding ports (%1 → %2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../UI/ElementContextMenu.cpp" line="277"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="348"/>
         <source>Copy</source>
         <translation>نسخ</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="188"/>
-        <location filename="../../UI/ElementContextMenu.cpp" line="246"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="278"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="348"/>
         <source>Cut</source>
         <translation>قص</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementContextMenu.cpp" line="193"/>
-        <location filename="../../UI/ElementContextMenu.cpp" line="246"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="283"/>
+        <location filename="../../UI/ElementContextMenu.cpp" line="348"/>
         <source>Delete</source>
         <translation>حذف</translation>
     </message>
@@ -2793,24 +2809,24 @@ wiRedPanda %1 سيعرض تلقائياً جميع ملفات .panda الأخر�
 <context>
     <name>Scene</name>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="81"/>
-        <location filename="../../Scene/Scene.cpp" line="771"/>
+        <location filename="../../Scene/Scene.cpp" line="82"/>
+        <location filename="../../Scene/Scene.cpp" line="805"/>
         <source>&amp;Undo</source>
         <translation>&amp;تراجع</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="89"/>
-        <location filename="../../Scene/Scene.cpp" line="777"/>
+        <location filename="../../Scene/Scene.cpp" line="90"/>
+        <location filename="../../Scene/Scene.cpp" line="811"/>
         <source>&amp;Redo</source>
         <translation>&amp;إعادة</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="797"/>
+        <location filename="../../Scene/Scene.cpp" line="831"/>
         <source>Paste</source>
         <translation>لصق</translation>
     </message>
     <message>
-        <location filename="../../Scene/Scene.cpp" line="806"/>
+        <location filename="../../Scene/Scene.cpp" line="840"/>
         <source>Select all</source>
         <translation>تحديد الكل</translation>
     </message>
@@ -2920,7 +2936,7 @@ wiRedPanda %1 سيعرض تلقائياً جميع ملفات .panda الأخر�
 <context>
     <name>Simulation</name>
     <message>
-        <location filename="../../Simulation/Simulation.cpp" line="372"/>
+        <location filename="../../Simulation/Simulation.cpp" line="377"/>
         <source>Warning: feedback circuit did not converge — the circuit may be oscillating.</source>
         <translation>تحذير: لم تتقارب دائرة التغذية الراجعة — قد تكون الدائرة في حالة تذبذب.</translation>
     </message>
