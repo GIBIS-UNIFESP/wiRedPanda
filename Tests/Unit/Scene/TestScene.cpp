@@ -730,9 +730,20 @@ void TestScene::testRotateWithConnections()
     scene->addItem(andGate);
     scene->addItem(led);
 
-    // Create connections manually (simplified - just verify rotation doesn't crash)
-    // In a real scenario, we'd connect ports
+    // Real connections into/out of the element being rotated -- the point of this test is that
+    // rotation doesn't sever or corrupt them, which a connection-free scene can't demonstrate.
+    auto *conn1 = new Connection();
+    conn1->setStartPort(inputSwitch->outputPort());
+    conn1->setEndPort(andGate->inputPort(0));
+    scene->addItem(conn1);
+
+    auto *conn2 = new Connection();
+    conn2->setStartPort(andGate->outputPort());
+    conn2->setEndPort(led->inputPort());
+    scene->addItem(conn2);
+
     int connectionsBeforeRotate = TestUtils::countConnections(scene);
+    QCOMPARE(connectionsBeforeRotate, 2);
 
     // Select and rotate
     andGate->setSelected(true);
@@ -741,9 +752,14 @@ void TestScene::testRotateWithConnections()
     // Verify rotation succeeded
     QCOMPARE(andGate->rotation(), 90.0);
 
-    // Connection count should remain the same
+    // Connection count should remain the same, and each connection must still have both its
+    // real ports -- rotation must not sever or corrupt them.
     int connectionsAfterRotate = TestUtils::countConnections(scene);
     QCOMPARE(connectionsAfterRotate, connectionsBeforeRotate);
+    QCOMPARE(conn1->startPort(), inputSwitch->outputPort());
+    QCOMPARE(conn1->endPort(), andGate->inputPort(0));
+    QCOMPARE(conn2->startPort(), andGate->outputPort());
+    QCOMPARE(conn2->endPort(), led->inputPort());
 }
 
 void TestScene::testDeleteSingleElement()

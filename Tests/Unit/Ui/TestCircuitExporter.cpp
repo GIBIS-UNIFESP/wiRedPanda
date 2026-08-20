@@ -4,6 +4,7 @@
 #include "Tests/Unit/Ui/TestCircuitExporter.h"
 
 #include <QFile>
+#include <QFileInfo>
 #include <QImage>
 #include <QTemporaryDir>
 
@@ -14,13 +15,16 @@
 
 void TestCircuitExporter::testExporterCreation()
 {
-    // CircuitExporter is a namespace — test that renderToImage doesn't crash on empty scene
+    // CircuitExporter is a namespace — test that renderToImage produces a real image file on
+    // an empty scene, not just that it survives without throwing.
     WorkSpace workspace;
     QTemporaryDir dir;
     QVERIFY(dir.isValid());
     QString path = dir.path() + "/test.png";
     CircuitExporter::renderToImage(workspace.scene(), path);
-    QVERIFY(true);
+
+    QVERIFY2(QFile::exists(path), "renderToImage() must have written the output file");
+    QVERIFY2(QFileInfo(path).size() > 0, "the written PNG must not be empty");
 }
 
 void TestCircuitExporter::testRenderToImageThrowsOnInvalidPath()

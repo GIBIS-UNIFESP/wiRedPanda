@@ -1742,9 +1742,10 @@ void TestSerialization::testCopyPandaFileTerminatesOnCircularMetadata()
     writePandaWithFileBackedIC(aPath, "b.panda");
     writePandaWithFileBackedIC(bPath, "a.panda");
 
-    // Should return promptly — if it doesn't terminate the test runner kills us.
+    // Should return promptly — if it doesn't terminate the test runner kills us. Termination
+    // alone doesn't prove the copy actually succeeded, so also check the real output file.
     Serialization::copyPandaFile(QFileInfo(aPath), QFileInfo(destDir.path() + "/a.panda"));
-    QVERIFY(true);
+    QVERIFY2(QFile::exists(destDir.path() + "/a.panda"), "The circularly-referenced file must still be copied despite the cycle");
 }
 
 void TestSerialization::testCopyPandaFileRejectsDeepDependencyChain()
