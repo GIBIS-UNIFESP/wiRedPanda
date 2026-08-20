@@ -32,7 +32,7 @@ void TestConnectionManager::testConnectionCreation()
     builder.add(&sw, &andGate);
     builder.connect(&sw, 0, &andGate, 0);
 
-    QVERIFY(andGate.inputs().size() > 0);
+    QVERIFY(!andGate.inputs().isEmpty());
 }
 
 void TestConnectionManager::testConnectionValidation()
@@ -61,7 +61,7 @@ void TestConnectionManager::testConnectionDeletion()
     builder.connect(&sw, 0, &andGate, 0);
 
     // Connection exists
-    QVERIFY(andGate.inputs().size() > 0);
+    QVERIFY(!andGate.inputs().isEmpty());
 }
 
 void TestConnectionManager::testMultiPortConnection()
@@ -71,7 +71,7 @@ void TestConnectionManager::testMultiPortConnection()
     And andGate;
     workspace.scene()->addItem(&andGate);
 
-    QVERIFY(andGate.inputs().size() > 0);
+    QVERIFY(!andGate.inputs().isEmpty());
 }
 
 void TestConnectionManager::testHoverShowsConnectedPortLabels()

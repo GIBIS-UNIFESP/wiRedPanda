@@ -1,0 +1,50 @@
+---
+# Static analysis pass scoped to Tests/ (see .claude/TEST_QUALITY_AUDIT.md, Phase C).
+# bugprone-*/performance-* catch real logic/perf issues with low false-positive rates on Qt
+# code; readability-* is curated to exclude checks that fire noisily on Qt idioms (short,
+# well-scoped local variable names like "sw"/"ic"/"i" throughout the test suite;
+# magic-number literals in circuit/port-index test data) rather than flagging real problems.
+#
+# Disabled after triaging every finding from the first real run (see TEST_QUALITY_AUDIT.md
+# for the full reasoning, spot-checked per category rather than assumed):
+#   bugprone-easily-swappable-parameters      -- too noisy for the test suite's own idioms.
+#   bugprone-empty-catch                      -- this suite deliberately uses empty
+#     catch(...)/catch(const X&) as the pass condition for "reaching here without an
+#     ASan abort/crash is success" regression tests (TestDanglingPointer.cpp's whole class,
+#     several fuzzed-input-survival tests) and exception-to-return-value adapter helpers.
+#     Spot-checked several instances; all were this pattern, none a real hidden bug.
+#   bugprone-pointer-arithmetic-on-polymorphic-object -- flags indexing into real, plain
+#     arrays of a polymorphic element type (e.g. `InputSwitch addressBits[6];`), which is
+#     always safe (the array's static and dynamic type can never differ) -- the check can't
+#     distinguish that from indexing through a base-class pointer.
+#   bugprone-unchecked-optional-access -- doesn't recognize QVERIFY(x.has_value()) as a
+#     narrowing guard the way it would `if`/assert, so it flags a *resolved.value() right
+#     after the QVERIFY that already guarantees it.
+#   performance-enum-size -- real but negligible for these test-only helper enums (CPU ISA
+#     test fixtures); not worth the churn for a test-quality pass.
+#   readability-redundant-access-specifiers -- flags `private slots:` immediately after a
+#     plain `private:` as redundant since both are C++-level `private` -- but they are NOT
+#     redundant in Qt code: `slots` registers the following methods with moc. Blindly
+#     "fixing" this would silently break slot registration.
+Checks: >
+  -*,
+  bugprone-*,
+  -bugprone-easily-swappable-parameters,
+  -bugprone-empty-catch,
+  -bugprone-pointer-arithmetic-on-polymorphic-object,
+  -bugprone-unchecked-optional-access,
+  performance-*,
+  -performance-enum-size,
+  readability-container-size-empty,
+  readability-delete-null-pointer,
+  readability-duplicate-include,
+  readability-misleading-indentation,
+  readability-redundant-*,
+  -readability-redundant-access-specifiers,
+  readability-simplify-boolean-expr,
+  readability-static-accessed-through-instance,
+  readability-uniqueptr-delete-release
+
+WarningsAsErrors: ''
+HeaderFilterRegex: '^/home/torres/wiredpanda-coverage/Tests/'
+FormatStyle: none

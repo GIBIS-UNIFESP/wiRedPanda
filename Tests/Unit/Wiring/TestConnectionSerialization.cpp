@@ -49,8 +49,8 @@ void TestConnectionSerialization::testLoadWithEmptyPortMapDirectRestore()
 
     // Create and save connection
     auto conn1 = std::make_unique<Connection>();
-    conn1->setStartPort(dynamic_cast<OutputPort *>(outputPort));
-    conn1->setEndPort(dynamic_cast<InputPort *>(inputPort));
+    conn1->setStartPort(outputPort);
+    conn1->setEndPort(inputPort);
 
     QByteArray data;
     QDataStream saveStream(&data, QIODevice::WriteOnly);
@@ -86,8 +86,8 @@ void TestConnectionSerialization::testLoadWithPortMapIndirectRestore()
     auto *inputPort1 = orGate1->inputPort(0);
 
     auto conn1 = std::make_unique<Connection>();
-    conn1->setStartPort(dynamic_cast<OutputPort *>(outputPort1));
-    conn1->setEndPort(dynamic_cast<InputPort *>(inputPort1));
+    conn1->setStartPort(outputPort1);
+    conn1->setEndPort(inputPort1);
 
     // Save connection
     QByteArray data;
@@ -141,7 +141,7 @@ void TestConnectionSerialization::testLoadInvalidPortReferencesHandled()
 
     // Create connection with one valid port
     auto conn1 = std::make_unique<Connection>();
-    conn1->setStartPort(dynamic_cast<OutputPort *>(outputPort));
+    conn1->setStartPort(outputPort);
 
     QByteArray data;
     QDataStream saveStream(&data, QIODevice::WriteOnly);
@@ -182,8 +182,8 @@ void TestConnectionSerialization::testLoadPortTypeResolution()
 
     // Create connection
     auto conn1 = std::make_unique<Connection>();
-    conn1->setStartPort(dynamic_cast<OutputPort *>(outputPort));
-    conn1->setEndPort(dynamic_cast<InputPort *>(inputPort));
+    conn1->setStartPort(outputPort);
+    conn1->setEndPort(inputPort);
 
     // Verify initial setup
     QVERIFY(conn1->startPort() == outputPort);
@@ -303,8 +303,8 @@ void TestConnectionSerialization::testSaveLoadRoundTripPreservesPorts()
     auto *outputPort = andGate->outputPort();
     auto *inputPort = orGate->inputPort(0);
 
-    conn1->setStartPort(dynamic_cast<OutputPort *>(outputPort));
-    conn1->setEndPort(dynamic_cast<InputPort *>(inputPort));
+    conn1->setStartPort(outputPort);
+    conn1->setEndPort(inputPort);
 
     // Verify initial state
     QCOMPARE(conn1->startPort(), outputPort);

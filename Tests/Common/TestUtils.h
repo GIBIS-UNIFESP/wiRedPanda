@@ -127,8 +127,8 @@ class QGraphicsScene;
  */
 #define TEST_DATA_DIR (QString(QUOTE(CURRENTDIR)) + "/../Examples/")
 
-#define QUOTE(string) _QUOTE(string)
-#define _QUOTE(string) #string
+#define QUOTE(string) QUOTE_IMPL(string)
+#define QUOTE_IMPL(string) #string
 
 namespace TestUtils {
 

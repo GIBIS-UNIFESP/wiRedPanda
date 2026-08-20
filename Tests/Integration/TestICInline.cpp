@@ -59,7 +59,7 @@ using ICTestHelpers::embedIC;
 /// Owns the stack-allocated widgets required by ElementPalette tests.
 struct PaletteTestHarness
 {
-    MainWindowUi ui{};
+    MainWindowUi ui;
     QWidget embeddedContainer;
     QWidget searchContainer;
     QLineEdit searchLine;
@@ -979,7 +979,7 @@ void TestICInline::testLoadFromBlobNested()
     QByteArray nestedBytes = readFile(m_fixtureDir + "/nested_and.panda");
     QVERIFY(!nestedBytes.isEmpty());
 
-    QByteArray blob = nestedBytes;
+    const QByteArray &blob = nestedBytes;
     QVERIFY(!blob.isEmpty());
 
     IC ic;
@@ -1288,7 +1288,7 @@ void TestICInline::testBlobVersionMigrationPath()
     QByteArray pandaBytes = readFile(m_fixtureDir + "/simple_and.panda");
     QVERIFY(!pandaBytes.isEmpty());
 
-    QByteArray blob1 = pandaBytes;
+    const QByteArray &blob1 = pandaBytes;
     QVERIFY(!blob1.isEmpty());
 
     IC ic1;
@@ -1297,7 +1297,7 @@ void TestICInline::testBlobVersionMigrationPath()
     QVERIFY(ic1.outputSize() > 0);
 
     // Second embed of the same file should produce identical blob
-    QByteArray blob2 = pandaBytes;
+    const QByteArray &blob2 = pandaBytes;
     QCOMPARE(blob1, blob2);
 
     IC ic2;
@@ -1675,7 +1675,7 @@ void TestICInline::testLoadFromBlobCleansUpConnections()
     // Load a more complex blob with nested ICs
     QByteArray chainBBytes = readFile(m_fixtureDir + "/chain_b.panda");
     QVERIFY(!chainBBytes.isEmpty());
-    QByteArray chainBBlob = chainBBytes;
+    const QByteArray &chainBBlob = chainBBytes;
     QVERIFY(!chainBBlob.isEmpty());
 
     IC ic2;
