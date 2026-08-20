@@ -14,6 +14,7 @@
 #include <QMessageBox>
 #include <QMimeData>
 #include <QMouseEvent>
+#include <QScopeGuard>
 #include <QScrollBar>
 #include <QShortcut>
 #include <QSignalSpy>
@@ -1231,6 +1232,40 @@ void TestMainWindowGui::testLanguageChange()
 
     window->loadTranslation("en");
     QCOMPARE(window->windowTitle(), titleEn);
+}
+
+void TestMainWindowGui::testSetupLanguageAutoDetectExactMatch()
+{
+    // availableLanguages() only ever contains bare "en" in the test binary (translations
+    // aren't embedded into test_wiredpanda -- see LanguageManager.cpp's matching exclusion
+    // marker), so an exact match needs the auto-detected name to literally be "en".
+    // QLocale::system() can never yield that itself (QLocale::name() always canonicalizes to
+    // a language_TERRITORY form, e.g. QLocale("en").name() == "en_US"), hence the seam.
+    Settings::setLanguage(QString());
+    MainWindow::s_testSystemLocaleNameOverride = QStringLiteral("en");
+    auto resetOverride = qScopeGuard([] { MainWindow::s_testSystemLocaleNameOverride.reset(); });
+
+    std::unique_ptr<MainWindow> window(new MainWindow());
+    window->show();
+
+    // setupLanguage() doesn't persist its choice directly, but LanguageManager::loadTranslation()
+    // (which it calls with the resolved language) does -- observable via Settings::language().
+    QCOMPARE(Settings::language(), QStringLiteral("en"));
+}
+
+void TestMainWindowGui::testSetupLanguageAutoDetectBaseLanguageMatch()
+{
+    // "en_US" itself isn't in the test binary's available list ({"en"}), but its base
+    // language "en" is -- exercises the available.contains(baseLang) fallback branch instead
+    // of the exact-match one above.
+    Settings::setLanguage(QString());
+    MainWindow::s_testSystemLocaleNameOverride = QStringLiteral("en_US");
+    auto resetOverride = qScopeGuard([] { MainWindow::s_testSystemLocaleNameOverride.reset(); });
+
+    std::unique_ptr<MainWindow> window(new MainWindow());
+    window->show();
+
+    QCOMPARE(Settings::language(), QStringLiteral("en"));
 }
 
 // ===========================================================================
@@ -3846,11 +3881,31 @@ void TestMainWindowGui::testPopulateContentMenuOpenFolderAction()
 
     QDesktopServices::unsetUrlHandler(QStringLiteral("file"));
 
-    // preferredContentDir() always resolves to a real writable directory in a normal test
-    // environment (falls back to Documents/wiRedPanda/Exercises, created on demand) -- the
-    // "could not create or access a folder" warning branch needs a non-writable Documents
-    // directory, not reproducible here without root/deferred infrastructure.
     QCOMPARE(capturer.urls.size(), 1);
+}
+
+void TestMainWindowGui::testPopulateContentMenuOpenFolderActionShowsWarningWhenUnwritable()
+{
+    // preferredContentDir() always resolves to a real writable directory in a normal test
+    // environment (falls back to Documents/wiRedPanda/Exercises, created on demand), so the
+    // "could not create or access a folder" warning branch needs
+    // m_preferredContentDirForTesting's dedicated seam rather than real OS permission
+    // manipulation -- mirrors ExerciseTourResources::resolveWritableDir()'s own testable seam
+    // for the same "nothing is writable" case.
+    std::unique_ptr<MainWindow> window(createMW());
+    window->m_preferredContentDirForTesting = [](const QString &) { return QString(); };
+
+    auto *menuExercises = window->findChild<QMenu *>("menuExercises");
+    QVERIFY(menuExercises);
+    emit menuExercises->aboutToShow();
+
+    auto *openFolderAction = menuExercises->actions().constFirst();
+    QVERIFY2(openFolderAction->text().contains("Exercises"), qPrintable(openFolderAction->text()));
+
+    auto dismisser = TestUtils::AutoDismisser::acceptMessageBox();
+    openFolderAction->trigger();
+    QVERIFY2(TestUtils::waitFor([&] { return dismisser.dismissCount() >= 1; }),
+              "The 'could not open folder' warning must have appeared");
 }
 
 void TestMainWindowGui::testEditSubcircuitRequestedOpensICTab()
@@ -4351,6 +4406,37 @@ void TestMainWindowGui::testStartExerciseDrivesClickTargetsAndOverlayParenting()
     window->m_exerciseOverlay = nullptr;
     scene->receiveCommand(new AddItemsCommand({new Or()}, scene)); // satisfies g0 -> advances to g1
     QVERIFY(window->isVisible()); // no crash
+}
+
+void TestMainWindowGui::testExerciseCloseRequestedDetachesOverlayFromOpenBewavedDolphin()
+{
+    std::unique_ptr<MainWindow> window(createMW());
+    // BewavedDolphin requires at least one input and one output element.
+    window->currentTab()->scene()->addItem(new InputSwitch());
+    window->currentTab()->scene()->addItem(new Led());
+
+    const QString path = writeJsonFixture(m_tempDir, "close_requested_bwd_open.json", R"({
+        "id": "test-mw-close-requested-bwd-open",
+        "title": "T",
+        "description": "T",
+        "steps": [
+            { "key": "s0", "instruction": "i", "hint": "h", "requiredElements": [], "requiredConnections": [], "click": ["actionWaveform"], "context": "bwd" }
+        ]
+    })");
+
+    window->startExercise(path);
+    QVERIFY(window->m_exerciseEngine->isActive());
+    QVERIFY2(TestUtils::waitFor([&] { return window->m_bwd != nullptr; }), "step 0's actionWaveform click must have opened BeWavedDolphin");
+    QVERIFY(window->m_exerciseOverlay);
+
+    // Closing the exercise overlay via its real closeRequested handler *while bwd is still
+    // open* exercises the "if (m_bwd) m_bwd->setExerciseOverlay(nullptr)" teardown line --
+    // distinct from testStartExerciseDrivesClickTargetsAndOverlayParenting()'s scenario, which
+    // closes bwd (nulling the QPointer) before ever emitting closeRequested().
+    emit window->m_exerciseOverlay->closeRequested();
+
+    QVERIFY(!window->m_exerciseEngine->isActive());
+    QVERIFY(window->m_bwd); // bwd itself stays open; only its overlay reference is cleared.
 }
 
 void TestMainWindowGui::testStartTourDrivesClickTargetsAndOverlayParenting()
