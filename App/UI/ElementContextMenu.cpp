@@ -58,7 +58,7 @@ QList<OutputPort *> allOutputPorts(GraphicElement *elm)
 QList<PortPair> pairPortsByOrder(const QList<OutputPort *> &outputs, const QList<InputPort *> &inputs)
 {
     QList<PortPair> result;
-    const int count = std::min(outputs.size(), inputs.size());
+    const int count = static_cast<int>(std::min(outputs.size(), inputs.size()));
     result.reserve(count);
 
     for (int i = 0; i < count; ++i) {
