@@ -9,6 +9,7 @@
 
 #include <functional>
 #include <memory>
+#include <optional>
 
 #include <QDir>
 #include <QMainWindow>
@@ -300,6 +301,20 @@ private:
     // --- Members ---
 
     std::unique_ptr<MainWindowUi> m_ui;
+
+    /// Test-only seam letting TestMainWindowGui force setupLanguage()'s system-locale
+    /// auto-detect down either the exact-match or base-language branch, bypassing the real
+    /// QLocale::system() (which reads the process environment once and caches — later
+    /// qputenv() calls from within a test have no effect on it — and whose QLocale::name()
+    /// always canonicalizes to a language_TERRITORY form, so it can never itself be
+    /// overridden to yield a bare "en"). Unset (nullopt) uses the real system locale's name,
+    /// as in production.
+    static inline std::optional<QString> s_testSystemLocaleNameOverride;
+
+    /// Test-only seam letting TestMainWindowGui force populateContentMenu()'s "couldn't open
+    /// folder" warning branch by returning an empty path, without real OS permission
+    /// manipulation. Defaults to the real ExerciseTourResources::preferredContentDir().
+    std::function<QString(const QString &)> m_preferredContentDirForTesting;
 
     ElementPalette   *m_palette          = nullptr;
     LanguageManager  *m_languageManager  = nullptr;

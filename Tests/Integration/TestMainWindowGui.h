@@ -92,6 +92,8 @@ private slots:
     void testBackgroundSimulation();
     void testOpenWaveformEditor();
     void testLanguageChange();
+    void testSetupLanguageAutoDetectExactMatch();
+    void testSetupLanguageAutoDetectBaseLanguageMatch();
 
     // --- Help dialogs ---
 
@@ -229,6 +231,7 @@ private slots:
     void testConstructorWithFileNameArgumentLoadsFile();
     void testExamplesMenuHiddenWhenNoExamplesDirectoryFound();
     void testPopulateContentMenuOpenFolderAction();
+    void testPopulateContentMenuOpenFolderActionShowsWarningWhenUnwritable();
     void testEditSubcircuitRequestedOpensICTab();
     void testReportTranslationErrorOpensWeblate();
     void testCloseEventClosesAfterConfirmedSave();
@@ -247,6 +250,7 @@ private slots:
     void testClickTargetDrivesEachKnownId();
     void testResolveTourTargetForEachKnownId();
     void testStartExerciseDrivesClickTargetsAndOverlayParenting();
+    void testExerciseCloseRequestedDetachesOverlayFromOpenBewavedDolphin();
     void testStartTourDrivesClickTargetsAndOverlayParenting();
 
 private:
