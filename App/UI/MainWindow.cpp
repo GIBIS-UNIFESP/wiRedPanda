@@ -87,6 +87,7 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     , m_ui(std::make_unique<MainWindowUi>())
 {
     qCDebug(zero) << "wiRedPanda Version = " APP_VERSION " OR " << AppVersion::current;
+    m_preferredContentDirForTesting = &ExerciseTourResources::preferredContentDir;
     m_ui->setupUi(this);
     qCDebug(zero) << "Settings fileName: " << Settings::fileName();
 
@@ -172,8 +173,7 @@ void MainWindow::setupLanguage()
 
     QString language = Settings::language();
     if (language.isEmpty()) {
-        const QLocale systemLocale  = QLocale::system();
-        const QString systemLang   = systemLocale.name();
+        const QString systemLang   = s_testSystemLocaleNameOverride.value_or(QLocale::system().name());
         const QString baseLang     = systemLang.split('_').first();
         qCDebug(zero) << "Auto-detected system locale:" << systemLang;
 
@@ -279,7 +279,7 @@ void MainWindow::populateContentMenu(QMenu *menu, const QString &categoryKey,
 
     auto *openFolderAction = new QAction(openFolderText, menu);
     connect(openFolderAction, &QAction::triggered, this, [this, categoryKey, openFolderFailureText] {
-        const QString dir = ExerciseTourResources::preferredContentDir(categoryKey);
+        const QString dir = m_preferredContentDirForTesting(categoryKey);
         if (dir.isEmpty()) {
             QMessageBox::warning(this, tr("Error"), openFolderFailureText);
             return;
