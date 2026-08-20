@@ -3,8 +3,6 @@
 
 #include "Tests/Integration/TestArduino.h"
 
-#include "App/Element/GraphicElements/Node.h"
-
 QString TestArduino::s_cliCachePath;
 
 #include <memory>
@@ -2158,11 +2156,7 @@ bool TestArduino::isCombinationalCircuit(const QVector<GraphicElement *> &elemen
     // invalidly applied to them.
     const auto txMap = Simulation::buildTxMap(elements);
     const auto successors = Simulation::buildSuccessorGraph(elements, txMap);
-    if (!Simulation::topologicalSort(elements, successors).feedbackNodes.isEmpty()) {
-        return false;
-    }
-
-    return true;
+    return Simulation::topologicalSort(elements, successors).feedbackNodes.isEmpty();
 }
 
 // ============================================================================

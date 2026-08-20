@@ -413,7 +413,7 @@ void TestLED::testLoadColorOldVersion()
 
         // Verify scene contains elements (LEDs from old format)
         auto items = scene->items();
-        QVERIFY2(items.size() > 0, "Loaded file should contain elements");
+        QVERIFY2(!items.isEmpty(), "Loaded file should contain elements");
     } catch (const std::exception &e) {
         QFAIL(qPrintable(QString("Failed to load backward compatibility file: %1").arg(e.what())));
     }

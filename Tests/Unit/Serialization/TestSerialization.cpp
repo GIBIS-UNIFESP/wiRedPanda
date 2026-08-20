@@ -827,7 +827,7 @@ void TestSerialization::testLargeCircuitWith500Elements()
         }
 
         auto *elem = ElementFactory::buildElement(type);
-        elem->setPos(i % 50 * 20, (i / 50) * 20);
+        elem->setPos(i % 50 * 20, (i / 50) * 20); // NOLINT(bugprone-integer-division) -- deliberate grid row index, not lossy math
         elem->setLabel(QString("Elem_%1").arg(i));
         scene1->addItem(elem);
     }
@@ -1170,7 +1170,7 @@ void TestSerialization::testInvalidUTF8InLabels()
     try {
         loadFromMemory(workspace, data);
         // If load succeeds, element should be loaded (even if label is corrupted)
-        QVERIFY2(workspace.scene()->elements().size() >= 1, "Element should load despite invalid UTF-8 in label");
+        QVERIFY2(!workspace.scene()->elements().isEmpty(), "Element should load despite invalid UTF-8 in label");
     } catch (const std::exception &e) {
         // Acceptable to fail on invalid UTF-8
         QVERIFY2(!QString(e.what()).isEmpty(), "Exception should explain the UTF-8 issue");

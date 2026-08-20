@@ -139,7 +139,7 @@ void TestIC::testICNestedMultiLevel()
         }
     }
 
-    QVERIFY2(loadedICs.size() > 0, "Should find at least one IC in scene");
+    QVERIFY2(!loadedICs.isEmpty(), "Should find at least one IC in scene");
 
     // Verify all loaded ICs have valid port configurations
     for (IC *ic : loadedICs) {

@@ -307,7 +307,7 @@ void TestWorkspaceFileops::testLoadFromValidFile()
             QCOMPARE(workspace.fileInfo().absoluteFilePath(), filePath);
 
             // Verify circuit contains elements
-            QVERIFY2(scene->elements().size() > 0, "Scene should contain loaded circuit elements");
+            QVERIFY2(!scene->elements().isEmpty(), "Scene should contain loaded circuit elements");
         } catch (const std::exception &e) {
             QFAIL(QString("Load valid file failed: %1").arg(e.what()).toUtf8().constData());
         }
