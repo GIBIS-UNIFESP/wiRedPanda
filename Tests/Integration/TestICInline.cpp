@@ -2869,12 +2869,13 @@ void TestICInline::testSetInlineDataRollbackSimulationWorks()
     }
     QVERIFY(threw);
 
-    // IC should still be fully functional
+    // IC should still be fully functional -- simple_and.panda is a 2-input AND gate, so both
+    // inputs high must actually drive the led on, not just survive the update tick.
     auto *sim = builder.initSimulation();
     swA.setOn(true);
     swB.setOn(true);
     sim->update();
-    // Just verify no crash
+    QVERIFY(TestUtils::inputStatus(&led));
 }
 
 void TestICInline::testSetInlineDataRollbackFromEmbedded()

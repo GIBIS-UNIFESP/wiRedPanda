@@ -149,7 +149,7 @@ void TestElementAppearance::testRotatedMalformedSvgFallsBackToBasePixmap()
         // is done explicitly next) before removing it ourselves.
         QTemporaryFile tempFile("XXXXXX.svg");
         tempFile.setAutoRemove(false);
-        path = writeTempSvg(tempFile, "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"><text id=\"t\">A</text></svg>");
+        path = writeTempSvg(tempFile, "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"><rect width=\"64\" height=\"64\" fill=\"black\"/><text id=\"t\">A</text></svg>");
         gate.setAppearanceAt(0, path);
     }
 
@@ -160,13 +160,17 @@ void TestElementAppearance::testRotatedMalformedSvgFallsBackToBasePixmap()
     // setRotation() itself triggers reapplyAppearanceOrientation() for a rotatable element.
     gate.setRotation(37);
 
-    // Must fall back silently (no crash, no exception) rather than propagate the failed re-open.
+    // Must fall back to the already-loaded base pixmap (silently, no exception) rather than
+    // propagate the failed re-open -- verified below by real pixel content, not just survival.
     QPixmap canvas(64, 64);
     canvas.fill(Qt::transparent);
     QPainter painter(&canvas);
     QStyleOptionGraphicsItem option;
     gate.paint(&painter, &option, nullptr);
     painter.end();
+
+    QVERIFY2(TestUtils::pixmapHasInk(canvas),
+              "paint() must have drawn the base pixmap fallback, not left the canvas blank");
 }
 
 void TestElementAppearance::testRotatedMalformedSvgFallsBackToBasePixmapContent()
@@ -179,7 +183,7 @@ void TestElementAppearance::testRotatedMalformedSvgFallsBackToBasePixmapContent(
     // route through orientSvgTextNodes() when that substring is present) actually reach it.
     And gate;
     QTemporaryFile validFile("XXXXXX.svg");
-    const QString path = writeTempSvg(validFile, "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"><text id=\"t\">A</text></svg>");
+    const QString path = writeTempSvg(validFile, "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"><rect width=\"64\" height=\"64\" fill=\"black\"/><text id=\"t\">A</text></svg>");
     gate.setAppearanceAt(0, path);
 
     // Overwrite the same (still-existing, still-readable) path with unparseable content.
@@ -196,4 +200,7 @@ void TestElementAppearance::testRotatedMalformedSvgFallsBackToBasePixmapContent(
     QStyleOptionGraphicsItem option;
     gate.paint(&painter, &option, nullptr);
     painter.end();
+
+    QVERIFY2(TestUtils::pixmapHasInk(canvas),
+              "paint() must have drawn the base pixmap fallback, not left the canvas blank");
 }

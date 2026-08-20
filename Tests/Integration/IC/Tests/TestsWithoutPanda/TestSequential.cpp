@@ -424,11 +424,17 @@ void TestSequential::testShiftRegisterAsyncClear()
         clockCycle(simulation, &clk);
     }
 
-    // Verify we can read shift register state before clearing (no crash)
     int beforeClear = readMultiBitOutput(QVector<GraphicElement *>({
         &dataOut[0], &dataOut[1], &dataOut[2], &dataOut[3]
     }));
-    QVERIFY2(beforeClear >= 0 && beforeClear <= 15, "Shift register value must be in 4-bit range before clear");
+    // Only the first 2 bits of shiftInSequence were actually shifted in (shiftCount above),
+    // into a chain that started all-zero: after cycle 1, dff[0]=seq[0]; after cycle 2 (the one
+    // that matters here), dff[0]=seq[1] (most recent) and dff[1]=seq[0] (pushed down one
+    // stage), with dff[2]/dff[3] still untouched (0). readMultiBitOutput() reads dataOut[0] as
+    // the LSB, so the exact expected value is seq[1] | (seq[0] << 1) -- verified empirically
+    // against all 4 data rows before pinning this, not assumed.
+    const int expectedBeforeClear = (shiftInSequence[1] ? 1 : 0) | (shiftInSequence[0] ? 2 : 0);
+    QCOMPARE(beforeClear, expectedBeforeClear);
 
     // Assert CLEAR (no clock)
     clear.setOn(false);  // CLEAR = LOW (active)

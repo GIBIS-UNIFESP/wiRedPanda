@@ -610,15 +610,18 @@ void TestMainWindowGui::testFullscreenToggle()
 
     bool wasFull = window->isFullScreen();
     QTest::keyClick(window.get(), Qt::Key_F11);
-    // Fullscreen state may not apply in headless CI, so verify either state changed
-    // or at least no crash occurred.
     bool isFull = window->isFullScreen();
+
     if (isFull != wasFull) {
-        // State changed as expected — toggle back
+        // Confirmed empirically: this is the actual behavior under offscreen QPA on Linux
+        // (isFullScreen() genuinely toggles) -- toggle back and confirm it round-trips cleanly.
         QTest::keyClick(window.get(), Qt::Key_F11);
         QCOMPARE(window->isFullScreen(), wasFull);
+    } else {
+        // Some platforms' headless CI doesn't honor window-state changes at all; when that's
+        // the case the window must still be alive and visible, not silently broken.
+        QVERIFY(window->isVisible());
     }
-    // If state didn't change, we're in headless mode — no-crash is sufficient.
 }
 
 void TestMainWindowGui::testLabelsUnderIconsToggle()
@@ -1225,12 +1228,18 @@ void TestMainWindowGui::testLanguageChange()
     std::unique_ptr<MainWindow> window(createMW());
     window->loadTranslation("en");
     QString titleEn = window->windowTitle();
+    QCOMPARE(Settings::language(), QStringLiteral("en"));
 
+    // wpanda_pt_BR.qm isn't embedded into test_wiredpanda (see LanguageManager.cpp's matching
+    // exclusion marker), so the visual title can't be expected to actually change here -- but
+    // LanguageManager::loadTranslation() persists the requested language unconditionally
+    // before that lookup even happens, which is real and always observable regardless of
+    // whether the .qm resource exists.
     window->loadTranslation("pt_BR");
-    // Title may or may not change depending on whether translations are bundled in test binary.
-    // At minimum verify no crash during switching.
+    QCOMPARE(Settings::language(), QStringLiteral("pt_BR"));
 
     window->loadTranslation("en");
+    QCOMPARE(Settings::language(), QStringLiteral("en"));
     QCOMPARE(window->windowTitle(), titleEn);
 }
 
@@ -2493,14 +2502,23 @@ void TestMainWindowGui::testMinZoom()
 void TestMainWindowGui::testUndoPastStack()
 {
     std::unique_ptr<MainWindow> window(createMW());
+    auto *undoStack = window->currentTab()->scene()->undoStack();
+    QVERIFY(!undoStack->canUndo());
 
-    // Undo with empty stack should be a no-op
+    // Undo with empty stack should be a real no-op, not just non-crashing: the stack must
+    // stay at index 0 and still unable to undo, not go negative or otherwise get corrupted.
     for (int i = 0; i < 5; ++i) {
         QTest::keyClick(window.get(), Qt::Key_Z, Qt::ControlModifier);
     }
+    QCOMPARE(undoStack->index(), 0);
+    QVERIFY(!undoStack->canUndo());
 
-    // No crash = pass; scene should still be functional
-    QVERIFY(window->currentTab()->scene() != nullptr);
+    // The scene must still be genuinely usable afterward, not left in a broken state.
+    auto *scene = window->currentTab()->scene();
+    scene->receiveCommand(new AddItemsCommand({new And()}, scene));
+    QVERIFY(undoStack->canUndo());
+    undoStack->undo();
+    QVERIFY(!undoStack->canUndo());
 }
 
 void TestMainWindowGui::testToolbarHasUndoRedoActions()
@@ -4284,8 +4302,10 @@ void TestMainWindowGui::testClickTargetDrivesEachKnownId()
     window->clickTarget(QStringLiteral("setupWaveformDemo"));
     QCOMPARE(scene->elements().size(), elementsBeforeWave + 4); // 2 clocks + And + Led
 
-    // Unknown id: no-op, no crash.
+    // Unknown id: must be a real no-op, not just non-crashing.
+    const int elementsBeforeUnknown = static_cast<int>(scene->elements().size());
     window->clickTarget(QStringLiteral("not-a-real-target"));
+    QCOMPARE(scene->elements().size(), elementsBeforeUnknown);
 }
 
 void TestMainWindowGui::testResolveTourTargetForEachKnownId()
@@ -4403,9 +4423,14 @@ void TestMainWindowGui::testStartExerciseDrivesClickTargetsAndOverlayParenting()
     })");
     window->startExercise(guardPath);
     QVERIFY(window->m_exerciseEngine->isActive());
+    QCOMPARE(window->m_exerciseEngine->currentStep(), 0);
     window->m_exerciseOverlay = nullptr;
     scene->receiveCommand(new AddItemsCommand({new Or()}, scene)); // satisfies g0 -> advances to g1
-    QVERIFY(window->isVisible()); // no crash
+
+    // The guard must only skip the overlay-touching part of the handler, not the rest of it --
+    // the engine itself must still have advanced to g1 despite the null overlay.
+    QVERIFY(window->isVisible());
+    QCOMPARE(window->m_exerciseEngine->currentStep(), 1);
 }
 
 void TestMainWindowGui::testExerciseCloseRequestedDetachesOverlayFromOpenBewavedDolphin()
@@ -4513,9 +4538,14 @@ void TestMainWindowGui::testStartTourDrivesClickTargetsAndOverlayParenting()
     })");
     window->startTour(guardPath);
     QVERIFY(window->m_tourEngine->isActive());
+    QCOMPARE(window->m_tourEngine->currentStep(), 0);
     window->m_tourOverlay = nullptr;
     window->m_tourEngine->advanceStep();
-    QVERIFY(window->isVisible()); // no crash
+
+    // The guard must only skip the overlay-touching part of the handler, not the rest of it --
+    // the engine itself must still have advanced to g1 despite the null overlay.
+    QVERIFY(window->isVisible());
+    QCOMPARE(window->m_tourEngine->currentStep(), 1);
 }
 
 #include "TestMainWindowGui.moc"

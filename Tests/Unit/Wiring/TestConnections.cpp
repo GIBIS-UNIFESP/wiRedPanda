@@ -7,6 +7,7 @@
 
 #include <QTest>
 
+#include "App/Core/Application.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
@@ -453,6 +454,13 @@ void TestConnections::testInvalidPortStatus()
 
 void TestConnections::testConnectionPositionUpdate()
 {
+    // updatePath() (which rebuilds the geometry boundingRect() reads) only runs when
+    // Application::renderingEnabled -- off by default in the test binary (real Bézier path
+    // construction is pure waste for tests that never paint) -- so it must be enabled here to
+    // actually exercise the geometry update rather than trivially no-op.
+    const bool prevRendering = Application::renderingEnabled;
+    Application::renderingEnabled = true;
+
     WorkSpace workspace;
     auto *scene = workspace.scene();
 
@@ -471,16 +479,27 @@ void TestConnections::testConnectionPositionUpdate()
     // Set initial positions
     conn->setStartPos(sw->outputPort()->scenePos());
     conn->setEndPos(led->inputPort()->scenePos());
+    conn->updatePath();
+
+    const QRectF boundsBeforeMove = conn->boundingRect();
 
     // Move element
     led->setPos(200, 100);
 
-    // Update connection - verify no crash
     conn->updatePosFromPorts();
 
     // Verify connection still has both ports after update
     QVERIFY(conn->startPort() != nullptr);
     QVERIFY(conn->endPort() != nullptr);
+
+    // The connection's own geometry must actually track the port's new scene position, not
+    // just survive the call -- boundingRect() is built from the cached start/end positions
+    // updatePosFromPorts() writes.
+    const QRectF boundsAfterMove = conn->boundingRect();
+    QVERIFY2(boundsAfterMove != boundsBeforeMove, "updatePosFromPorts() must change the connection's geometry when a port moves");
+    QVERIFY2(boundsAfterMove.contains(led->inputPort()->scenePos()), "the updated bounding rect must reach the moved input port");
+
+    Application::renderingEnabled = prevRendering;
 }
 
 void TestConnections::testPortIsConnected()
