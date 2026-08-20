@@ -252,7 +252,7 @@ void TestElementHandler::testHandleListElementsReturnsRealElements()
     bool foundInputSwitchWithLockedAndTrigger = false;
     bool foundLedWithColor = false;
     bool foundBuzzerWithVolume = false;
-    for (const QJsonValue &v : elements) {
+    for (const auto &v : elements) {
         const QJsonObject obj = v.toObject();
         QVERIFY(obj.contains("element_id"));
         QVERIFY(obj.contains("type"));

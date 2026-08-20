@@ -341,7 +341,7 @@ void TestFileDialogProvider::testEmbedICFromFileUsesProvider()
     QVERIFY(guard.stub.lastOpenCall.filter.contains("panda"));
 
     auto *reg = window->currentTab()->scene()->icRegistry();
-    QVERIFY(reg->blobMap().size() > 0);
+    QVERIFY(!reg->blobMap().isEmpty());
 
     QFile::remove(mainFile);
 }

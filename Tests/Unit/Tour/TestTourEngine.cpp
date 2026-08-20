@@ -34,7 +34,7 @@ const char *const kTourFixtureJson = R"({
 
 QString writeTourFixture(const QTemporaryDir &dir)
 {
-    const QString path = dir.filePath("tour.json");
+    QString path = dir.filePath("tour.json");
     QFile file(path);
     if (!file.open(QIODevice::WriteOnly)) {
         return {};
@@ -45,7 +45,7 @@ QString writeTourFixture(const QTemporaryDir &dir)
 
 QString writeJsonFile(const QTemporaryDir &dir, const QString &name, const char *contents)
 {
-    const QString path = dir.filePath(name);
+    QString path = dir.filePath(name);
     QFile file(path);
     if (!file.open(QIODevice::WriteOnly)) {
         return {};

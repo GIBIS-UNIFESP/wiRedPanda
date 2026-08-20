@@ -313,7 +313,7 @@ void TestUpdateChecker::testCheckForUpdatesBackpressuresOversizedDownload()
     QTcpServer server;
     QVERIFY(server.listen(QHostAddress::LocalHost));
 
-    const QByteArray chunk(64 * 1024, 'x'); // 64 KiB filler
+    const QByteArray chunk(64 * 1024, 'x'); // NOLINT(bugprone-implicit-widening-of-multiplication-result) -- compile-time constant, no overflow possible
     // Chunks are written one per timer tick (not in a tight loop) so the
     // client's event loop gets to process each one as its own readyRead
     // cycle instead of coalescing the whole 2.5 MiB into a single OS-level

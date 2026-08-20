@@ -174,7 +174,7 @@ static void wheelZoom(GraphicsView *view, int delta)
 // without depending on the real bundled resources' exact content.
 static QString writeJsonFixture(const QTemporaryDir &dir, const QString &name, const QString &content)
 {
-    const QString path = dir.filePath(name);
+    QString path = dir.filePath(name);
     QFile file(path);
     if (!file.open(QIODevice::WriteOnly)) {
         return {};

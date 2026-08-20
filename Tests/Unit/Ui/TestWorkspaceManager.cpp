@@ -204,6 +204,8 @@ void TestWorkspaceManager::testCloseTabSaveFailureThenCloseAnywayDiscards()
         if (box->text().contains(QStringLiteral("modified"))) {
             box->button(QMessageBox::Yes)->click();
         } else if (box->text().contains(QStringLiteral("Close tab anyway"))) {
+            // NOLINTNEXTLINE(bugprone-branch-clone) -- two distinct dialog texts that can
+            // appear on this path both need the same "Yes" response; not a copy-paste bug.
             box->button(QMessageBox::Yes)->click();
         } else {
             box->accept(); // the QMessageBox::critical() error dialog in between

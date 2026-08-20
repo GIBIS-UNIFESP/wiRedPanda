@@ -42,7 +42,7 @@ const char *const kExerciseFixtureJson = R"({
 
 QString writeExerciseFixture(const QTemporaryDir &dir)
 {
-    const QString path = dir.filePath("exercise.json");
+    QString path = dir.filePath("exercise.json");
     QFile file(path);
     if (!file.open(QIODevice::WriteOnly)) {
         return {};
@@ -54,7 +54,7 @@ QString writeExerciseFixture(const QTemporaryDir &dir)
 /// Writes a real file with \a contents at \a fileName inside \a dir, returning its path.
 QString writeJsonFile(const QTemporaryDir &dir, const QString &fileName, const QByteArray &contents)
 {
-    const QString path = dir.filePath(fileName);
+    QString path = dir.filePath(fileName);
     QFile file(path);
     if (!file.open(QIODevice::WriteOnly)) {
         return {};

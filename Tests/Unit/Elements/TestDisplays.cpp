@@ -271,7 +271,7 @@ void TestDisplays::testDisplay7InCircuit()
 
     // Verify all connections established
     for (int i = 0; i < display.inputSize(); ++i) {
-        QVERIFY2(display.inputPort(i)->connections().size() > 0,
+        QVERIFY2(!display.inputPort(i)->connections().isEmpty(),
                  qPrintable(QString("Port %1 should be connected").arg(i)));
     }
 
@@ -322,7 +322,7 @@ void TestDisplays::testDisplayWithDecoder()
     QVERIFY(sim != nullptr);
 
     // Verify connection established
-    QVERIFY(display.inputPort(4)->connections().size() > 0);
+    QVERIFY(!display.inputPort(4)->connections().isEmpty());
 
     // Test: 00 → segment A off
     bit0.setOn(false); bit1.setOn(false);

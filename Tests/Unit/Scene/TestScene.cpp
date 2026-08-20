@@ -255,7 +255,7 @@ void TestScene::testItemsAtPoint()
 
     // Test 1: items at element center should find the element
     auto items = scene->items(andGate->pos(), Qt::IntersectsItemShape);
-    QVERIFY(items.size() > 0);
+    QVERIFY(!items.isEmpty());
     QVERIFY2(items.contains(andGate), "Should find AND gate at its position");
 
     // Test 2: items at element boundary should find the element
@@ -288,7 +288,7 @@ void TestScene::testItemsAt()
     auto items = scene->items(QPointF(100, 100), Qt::IntersectsItemShape);
 
     // Should find both overlapping elements
-    QVERIFY(items.size() > 0);
+    QVERIFY(!items.isEmpty());
     QVERIFY2(items.contains(elem1), "Should find AND gate at (100, 100)");
     QVERIFY2(items.contains(elem2), "Should find OR gate at (100, 100)");
 }

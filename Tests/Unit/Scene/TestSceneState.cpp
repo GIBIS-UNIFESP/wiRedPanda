@@ -109,7 +109,7 @@ void TestSceneState::testItemAtValidPosition()
 
     // Test items() with no filters returns items
     QList<QGraphicsItem *> items = scene.items();
-    QVERIFY(items.size() >= 1);
+    QVERIFY(!items.isEmpty());
 }
 
 void TestSceneState::testItemAtEmptyPosition()
@@ -128,7 +128,7 @@ void TestSceneState::testItemAtEmptyPosition()
     // Query at element position should find it
     QList<QGraphicsItem *> itemsAtElement = scene.items(QPointF(100, 100));
     // Should find the element we just added
-    QVERIFY2(itemsAtElement.size() >= 1, "Scene should return items at element position");
+    QVERIFY2(!itemsAtElement.isEmpty(), "Scene should return items at element position");
 
     // Query at empty position should return fewer/no circuit items
     QList<QGraphicsItem *> itemsAtEmpty = scene.items(QPointF(500, 500));
@@ -181,7 +181,7 @@ void TestSceneState::testElementsInRectangle()
 
     // Query rectangle containing element
     QVector<GraphicElement *> elements = scene.elements(QRectF(0, 0, 100, 100));
-    QVERIFY(elements.size() >= 1);
+    QVERIFY(!elements.isEmpty());
 
     // Query rectangle not containing element
     QVector<GraphicElement *> emptyElements = scene.elements(QRectF(500, 500, 100, 100));

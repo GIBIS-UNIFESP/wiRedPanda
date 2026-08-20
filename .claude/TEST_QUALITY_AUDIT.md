@@ -66,3 +66,82 @@ of unverified patch this project's own conventions warn against. Memory updated
 (`project_flaky_parallel_tests.md`) to record the non-reproduction rather than silently
 carrying a stale claim forward. If this resurfaces, the next step is a real failing repro with
 `--output-on-failure` before touching `CMakeLists.txt`'s test scheduling.
+
+## Phase C — clang-tidy static pass
+
+`CMAKE_EXPORT_COMPILE_COMMANDS` was already `ON`; no CMake change needed there. First blocker:
+the default `debug`/`build` compile database only has per-*unity-batch* entries (8 files
+merged per translation unit), which clang-tidy can't parse per-file (tried it: 25k+ bogus
+warnings and `QObject` "file not found" errors from a broken fallback command). `build-coverage`
+already configures `ENABLE_UNITY=OFF`/`ENABLE_PCH=OFF` for its own reasons, giving a real
+per-file `compile_commands.json` for free — reused it via `-p build-coverage` rather than
+standing up a new preset. GCC's compile flags needed `--extra-arg=-Wno-unknown-warning-option`
+(clang doesn't recognize `-Wduplicated-branches` etc.) but otherwise worked directly; no
+separate Clang toolchain build was needed for this phase (unlike the Phase D spike, which
+needs Clang for Mull itself).
+
+Added `.clang-tidy` (`bugprone-*`, `performance-*`, a curated `readability-*` subset), scoped
+to `Tests/` via `HeaderFilterRegex`. First full run (`run-clang-tidy -p build-coverage`, 218
+files): 372 raw findings across 17 check categories. Read every category's findings in
+context — most concentrated in a handful of files/patterns rather than 372 independent issues.
+
+**Fixed** (all verified via rebuild + 2 clean full-suite runs):
+- `bugprone-reserved-identifier` (184 duplicate reports, 1 real site): `TestUtils.h`'s
+  `_QUOTE` helper macro renamed to `QUOTE_IMPL`.
+- `readability-container-size-empty` (24 sites, 15 files): `.size() > 0`/`>= 1` → `!...isEmpty()`,
+  matching this project's established Qt idiom (not bare `.empty()`).
+- `readability-redundant-casting` (9 sites, 1 file — `TestConnectionSerialization.cpp`):
+  removed no-op `dynamic_cast<OutputPort*>(outputPort)`-shaped casts where the source
+  expression was already exactly that type. Left the *other*, superficially similar casts in
+  the same file untouched (clang-tidy didn't flag them — different declared types there, real
+  casts).
+- `performance-unnecessary-copy-initialization` (8 sites, 2 files): local `QByteArray`/`QString`
+  copies that are never modified afterward → `const &`, after checking each downstream call
+  site takes its argument by `const &` too.
+- `performance-implicit-conversion-in-loop` (7 sites, 4 files, all MCP handler tests):
+  `for (const QJsonValue &v : x)` → `for (const auto &v : x)`.
+- `performance-no-automatic-move` (5 sites, 3 files): local fixture-writer helpers' `const
+  QString path` return values de-const'd so NRVO/move applies on `return path;`.
+- `bugprone-integer-division`, `bugprone-implicit-widening-of-multiplication-result` (2 of 4
+  total instances; the other 2 below): `TestTruthTable.cpp`'s `key.setBit(i * 100, ...)` given
+  an explicit `static_cast<qsizetype>(i) * 100` (real, if currently-unreachable, overflow
+  hardening for a small loop counter).
+- `readability-simplify-boolean-expr`, `readability-redundant-member-init`,
+  `readability-duplicate-include` (1 each): simplified an `if/return false; return true;` pair
+  to a direct `return`, dropped a redundant `{}` on an already-default-constructing member,
+  removed a genuine duplicate `#include`.
+
+**Reviewed and excluded via `.clang-tidy` with documented reasoning** (not blanket-suppressed
+without cause — each spot-checked against real code first; full reasoning inline in the config
+file's comments):
+- `bugprone-empty-catch` (12 sites): this suite's established "reaching here without an ASan
+  abort is the pass condition" pattern (`TestDanglingPointer.cpp` and several fuzzed-input
+  survival tests) plus exception-to-return-value adapter helpers — every spot-checked instance
+  was this shape, not a real hidden bug.
+- `bugprone-pointer-arithmetic-on-polymorphic-object` (7 sites, 1 file): indexing into real,
+  plain arrays of a polymorphic element type (`InputSwitch addressBits[6];`) — always safe
+  since the array's static and dynamic type can never differ; the check can't distinguish this
+  from indexing through a base-class pointer.
+- `bugprone-unchecked-optional-access` (3 sites): doesn't recognize `QVERIFY(x.has_value())`
+  as a narrowing guard the way it would `if`/`assert` — confirmed all 3 sites have the QVERIFY
+  immediately before the dereference.
+- `performance-enum-size` (60 duplicate reports, 5 real sites): real but negligible for
+  test-only CPU-ISA helper enums; not worth the churn for a test-*quality* pass.
+- `readability-redundant-access-specifiers` (45 duplicate reports, ~22 real sites): flags
+  `private slots:` immediately after a plain `private:` as redundant since both are
+  C++-level `private` — but they are **not** redundant in Qt code (`slots` registers the
+  following methods with moc); blindly "fixing" this would silently break slot registration.
+
+**2 remaining false positives NOLINT'd individually** (not worth disabling the whole check for
+one instance each): `TestSerialization.cpp`'s deliberate grid-layout integer division, and
+`TestUpdateChecker.cpp`'s compile-time-constant `64 * 1024` (provably can't overflow).
+`TestWorkspaceManager.cpp`'s `bugprone-branch-clone` (two distinct dialog texts that both need
+the same "click Yes" response — not a copy-paste bug) also NOLINT'd.
+
+No production bugs found this phase either — every fix was test-code quality/perf, and the
+false-positive categories were genuinely false, not disguised real issues (confirmed by
+reading the actual code at each site, not assumed from the check name).
+
+Final state: a clean `run-clang-tidy -p build-coverage` pass over all of `Tests/` reports
+**zero** findings. Full 216-test suite green across 2 consecutive `ctest --preset debug` runs
+after the fixes landed.

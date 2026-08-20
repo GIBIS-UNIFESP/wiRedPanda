@@ -85,7 +85,7 @@ void TestGeometry::testInputPortPositionSinglePort()
 
     // Get input ports
     const auto &inputs = orGate->inputs();
-    QVERIFY(inputs.size() > 0);
+    QVERIFY(!inputs.isEmpty());
 
     // Check first input port position
     // Input ports should be at x=0
@@ -128,7 +128,7 @@ void TestGeometry::testOutputPortPositionSinglePort()
     QVERIFY(notGate != nullptr);
 
     const auto &outputs = notGate->outputs();
-    QVERIFY(outputs.size() > 0);
+    QVERIFY(!outputs.isEmpty());
 
     // Output ports should be at x=64
     QPointF pos0 = outputs[0]->pos();
@@ -145,7 +145,7 @@ void TestGeometry::testOutputPortPositionMultiplePorts()
     QVERIFY(andGate != nullptr);
 
     const auto &outputs = andGate->outputs();
-    QVERIFY(outputs.size() > 0);
+    QVERIFY(!outputs.isEmpty());
 
     // All output ports should have x=64
     for (auto *output : outputs) {

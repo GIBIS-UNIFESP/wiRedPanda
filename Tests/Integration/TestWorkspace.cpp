@@ -138,7 +138,7 @@ void TestWorkspace::testAutosaveAfterElementAdd()
 
     // After autosave should have been triggered, Settings should have autosave entry
     QStringList autosaves = Settings::autosaveFiles();
-    QVERIFY2(autosaves.size() > 0, "Adding an element should trigger autosave and update settings");
+    QVERIFY2(!autosaves.isEmpty(), "Adding an element should trigger autosave and update settings");
 }
 
 void TestWorkspace::testAutosaveAfterElementModify()
@@ -204,7 +204,7 @@ void TestWorkspace::testAutosaveSignalEmitted()
     bool signalEmitted = fileSpy.wait(2000);
 
     // Verify that the signal was emitted at least once when autosave occurs
-    QVERIFY2(signalEmitted || fileSpy.size() > 0,
+    QVERIFY2(signalEmitted || !fileSpy.isEmpty(),
             "fileChanged signal should be emitted when circuit is modified and autosave triggered");
 }
 
@@ -231,7 +231,7 @@ void TestWorkspace::testMultipleAutosavesUpdateSettings()
     }
 
     QStringList autosavedAfterFirst = Settings::autosaveFiles();
-    QVERIFY2(autosavedAfterFirst.size() > 0,
+    QVERIFY2(!autosavedAfterFirst.isEmpty(),
             "Settings should record autosave files after circuit changes");
 
     WorkSpace workspace2;
@@ -427,7 +427,7 @@ void TestWorkspace::testAutosaveFileRandomSuffixGeneration()
         workspace2.flushPendingAutosave();
 
         QStringList autosaves = Settings::autosaveFiles();
-        QVERIFY2(autosaves.size() >= 1, "Second workspace should have autosave files");
+        QVERIFY2(!autosaves.isEmpty(), "Second workspace should have autosave files");
 
         // Get the latest autosave (if multiple exist)
         autosave2 = autosaves.size() >= 2 ? autosaves.last() : autosaves.first();
@@ -479,7 +479,7 @@ void TestWorkspace::testAutosavePathCreatedIfNotExists()
         QStringList autosaves = Settings::autosaveFiles();
         QVERIFY2(!autosaves.isEmpty(), "Modification should trigger autosave");
 
-        QString autosaveFile = autosaves.first();
+        const QString &autosaveFile = autosaves.first();
         QVERIFY2(!autosaveFile.isEmpty(), "Autosave filename should not be empty");
 
         // File must exist (check inside block while workspace still alive)
@@ -612,7 +612,7 @@ void TestWorkspace::testAutosaveInAppDataForNewProject()
     QStringList autosaves = Settings::autosaveFiles();
     QVERIFY2(!autosaves.isEmpty(), "New project should create autosave file");
 
-    QString autosavePath = autosaves.first();
+    const QString &autosavePath = autosaves.first();
     QVERIFY2(QFile::exists(autosavePath),
             qPrintable(QString("Autosave file should exist: %1").arg(autosavePath)));
 }
@@ -711,7 +711,7 @@ void TestWorkspace::testAutosaveFilePermissions()
     QStringList autosaves = Settings::autosaveFiles();
     QVERIFY2(!autosaves.isEmpty(), "Workspace should create autosave file");
 
-    QString autosavePath = autosaves.first();
+    const QString &autosavePath = autosaves.first();
     QVERIFY2(QFile::exists(autosavePath),
             qPrintable(QString("Autosave file should exist: %1").arg(autosavePath)));
 
@@ -1055,7 +1055,7 @@ void TestWorkspace::testAutosaveTruncatesOnShrinkB2()
 
     const QStringList autosavesBig = Settings::autosaveFiles();
     QVERIFY(!autosavesBig.isEmpty());
-    const QString autosavePath = autosavesBig.first();
+    const QString &autosavePath = autosavesBig.first();
     const qint64 sizeBig = QFileInfo(autosavePath).size();
     QVERIFY(sizeBig > 0);
 
@@ -1102,7 +1102,7 @@ void TestWorkspace::testFlushPendingAutosaveRunsImmediatelyB3()
     ws.flushPendingAutosave();
 
     // Now the autosave write happened.
-    QVERIFY(Settings::autosaveFiles().size() >= 1);
+    QVERIFY(!Settings::autosaveFiles().isEmpty());
 }
 
 void TestWorkspace::testFirstSaveCopiesExternalAppearanceFile()

@@ -197,12 +197,12 @@ void TestTruthTable::testKeyBitArray()
     // Verify we can work with the bit array
     int bitsToSet = 5;
     for (int i = 0; i < bitsToSet; ++i) {
-        key.setBit(i * 100, true);
+        key.setBit(static_cast<qsizetype>(i) * 100, true);
     }
 
     // Verify bits were set
     for (int i = 0; i < bitsToSet; ++i) {
-        QVERIFY(key.at(i * 100) == true);
+        QVERIFY(key.at(static_cast<qsizetype>(i) * 100) == true);
     }
 
     // Verify other bits remain false

@@ -53,7 +53,7 @@ void TestServerInfoHandler::testHandleListCommandsReturnsFullTableAndSortedCateg
     QCOMPARE(commands.size(), 43); // matches MCPProcessor's real dispatch-map count
 
     bool foundCreateElement = false;
-    for (const QJsonValue &v : commands) {
+    for (const auto &v : commands) {
         if (v.toObject()["name"].toString() == "create_element") {
             foundCreateElement = true;
             QCOMPARE(v.toObject()["category"].toString(), QStringLiteral("element"));
@@ -63,7 +63,7 @@ void TestServerInfoHandler::testHandleListCommandsReturnsFullTableAndSortedCateg
 
     const QJsonArray categories = result["categories"].toArray();
     QStringList categoryStrings;
-    for (const QJsonValue &v : categories) {
+    for (const auto &v : categories) {
         categoryStrings.append(v.toString());
     }
     QStringList sorted = categoryStrings;

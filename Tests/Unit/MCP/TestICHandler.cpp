@@ -464,7 +464,7 @@ void TestICHandler::testHandleListIcsReturnsRealDefinitions()
     QCOMPARE(result["count"].toInt(), ics.size());
 
     bool foundLeaf = false;
-    for (const QJsonValue &v : ics) {
+    for (const auto &v : ics) {
         const QJsonObject obj = v.toObject();
         if (obj["name"].toString() == "leaf7") {
             QVERIFY(obj["has_valid_definition"].toBool());
@@ -502,7 +502,7 @@ void TestICHandler::testHandleListIcsSkipsUnreadableFile()
     const QJsonArray ics = response["result"].toObject()["ics"].toArray();
     bool foundGood = false;
     bool foundLocked = false;
-    for (const QJsonValue &v : ics) {
+    for (const auto &v : ics) {
         const QString name = v.toObject()["name"].toString();
         if (name == "good") {
             foundGood = true;
@@ -543,7 +543,7 @@ void TestICHandler::testHandleListIcsMarksCorruptBodyAsInvalidDefinition()
     QVERIFY2(response.contains("result"), qPrintable(QJsonDocument(response).toJson()));
     const QJsonArray ics = response["result"].toObject()["ics"].toArray();
     bool found = false;
-    for (const QJsonValue &v : ics) {
+    for (const auto &v : ics) {
         const QJsonObject obj = v.toObject();
         if (obj["name"].toString() == "corruptbody") {
             QVERIFY(!obj["has_valid_definition"].toBool());
@@ -585,7 +585,7 @@ void TestICHandler::testHandleListIcsSkipsCorruptHeaderViaOuterCatch()
     const QJsonArray ics = response["result"].toObject()["ics"].toArray();
     bool foundGood = false;
     bool foundCorrupt = false;
-    for (const QJsonValue &v : ics) {
+    for (const auto &v : ics) {
         const QString name = v.toObject()["name"].toString();
         if (name == "good2") {
             foundGood = true;
