@@ -48,3 +48,21 @@ helper function, `outputStatus()` vs `inputStatus()` — caught by the resulting
 fixed before landing).
 
 Full 216-test suite green across 2 consecutive `ctest --preset debug` runs.
+
+## Phase B — Flaky-test stabilization
+
+`project_flaky_parallel_tests` memory (41 days old) reported `TestAudioBox`/`TestComponents`
+flaking under full parallel `ctest`. Re-verified rather than trusted: ran `ctest --preset
+debug` (the project's own `-j 8` default) 7 times consecutively, plus 3 more oversubscribed at
+`-j 16` to increase contention pressure — all 10 runs clean, 216/216, 0 failures. Could not
+reproduce at all on the current tree (test count has grown from 192 to 216 since that memory
+was written, with a full coverage sweep landing in between — plausible something incidental
+along the way fixed it, or the original observation was tied to a since-changed environment
+characteristic).
+
+Deliberately did **not** add a speculative `RESOURCE_LOCK` or other serialization fix: there
+was nothing currently observable to fix, and inventing one on faith would be exactly the kind
+of unverified patch this project's own conventions warn against. Memory updated
+(`project_flaky_parallel_tests.md`) to record the non-reproduction rather than silently
+carrying a stale claim forward. If this resurfaces, the next step is a real failing repro with
+`--output-on-failure` before touching `CMakeLists.txt`'s test scheduling.
