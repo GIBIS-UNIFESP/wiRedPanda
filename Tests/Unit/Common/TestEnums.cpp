@@ -94,7 +94,7 @@ void TestEnums::testTypeToTitleText()
 
     // Unknown type should return "MULTIPLE TYPES"
     QString unknownTitle = ElementFactory::typeToTitleText(ElementType::Unknown);
-    QVERIFY(unknownTitle.contains("MULTIPLE", Qt::CaseInsensitive) || !unknownTitle.isEmpty());
+    QCOMPARE(unknownTitle, QStringLiteral("MULTIPLE TYPES"));
 
     // Different types should have different titles
     QString titleOr = ElementFactory::typeToTitleText(ElementType::Or);
