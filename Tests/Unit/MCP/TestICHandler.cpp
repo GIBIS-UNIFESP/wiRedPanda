@@ -63,6 +63,20 @@ void closeCurrentTab(MainWindow &window)
     QVERIFY(!window.currentTab());
 }
 
+/// Restores \a path's permissions to read+write+execute on destruction (including on an early
+/// return from a failed QVERIFY/QCOMPARE) -- the caller narrows permissions itself (so its own
+/// QVERIFY reports a real failure there), this guard only guarantees the restore isn't skipped.
+/// A plain trailing restore statement would skip it, permanently leaving the directory
+/// unwritable to POSIX unlink() and un-removable by its own QTemporaryDir.
+struct ScopedDirPermissionsRestore {
+    QString path;
+
+    ~ScopedDirPermissionsRestore()
+    {
+        QFile::setPermissions(path, QFileDevice::ReadOwner | QFileDevice::WriteOwner | QFileDevice::ExeOwner);
+    }
+};
+
 } // namespace
 
 void TestICHandler::cleanup()
@@ -214,13 +228,12 @@ void TestICHandler::testHandleCreateIcFailsOnUnwritableTarget()
     Application::interactiveMode = false;
 
     QVERIFY(QFile::setPermissions(tmpDir.path(), QFileDevice::ReadOwner | QFileDevice::ExeOwner));
+    ScopedDirPermissionsRestore permGuard{tmpDir.path()};
 
     ICHandler handler(&window, nullptr);
     const QJsonObject response = handler.handleCommand("create_ic", {{"name", "Unwritable"}}, 1);
     QVERIFY2(response.contains("error"), qPrintable(QJsonDocument(response).toJson()));
     QCOMPARE(response["error"].toObject()["code"].toInt(), JsonRpcError::OperationFailed);
-
-    QFile::setPermissions(tmpDir.path(), QFileDevice::ReadOwner | QFileDevice::WriteOwner | QFileDevice::ExeOwner);
 #endif
 }
 
