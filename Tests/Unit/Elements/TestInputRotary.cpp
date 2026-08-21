@@ -207,126 +207,34 @@ void TestInputRotary::testIsOnAllPorts()
 // Port Configuration Tests
 // ============================================================================
 
-void TestInputRotary::testPortConfigurationWithTwoPorts()
+void TestInputRotary::testPortConfigurationWithStandardSize_data()
 {
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::InputRotary));
-    auto *rotary = dynamic_cast<InputRotary *>(elem.get());
-    QVERIFY(rotary != nullptr);
+    QTest::addColumn<int>("size");
 
-    rotary->setOutputSize(2);
-    QVERIFY(rotary->outputSize() == 2);
-
-    auto *port0 = rotary->outputPort(0);
-    auto *port1 = rotary->outputPort(1);
-    QVERIFY(port0 != nullptr);
-    QVERIFY(port1 != nullptr);
-    QCOMPARE(port0->name(), QString("0"));
-    QCOMPARE(port1->name(), QString("1"));
-}
-
-void TestInputRotary::testPortConfigurationWithThreePorts()
-{
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::InputRotary));
-    auto *rotary = dynamic_cast<InputRotary *>(elem.get());
-    QVERIFY(rotary != nullptr);
-
-    rotary->setOutputSize(3);
-    QVERIFY(rotary->outputSize() == 3);
-
-    for (int i = 0; i < 3; ++i) {
-        auto *port = rotary->outputPort(i);
-        QVERIFY(port != nullptr);
-        QVERIFY(!port->name().isEmpty());
+    for (int size : {2, 3, 4, 6, 8, 10, 12, 16}) {
+        QTest::newRow(qPrintable(QString::number(size) + " ports")) << size;
     }
 }
 
-void TestInputRotary::testPortConfigurationWithFourPorts()
+void TestInputRotary::testPortConfigurationWithStandardSize()
 {
+    QFETCH(int, size);
+
     auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::InputRotary));
     auto *rotary = dynamic_cast<InputRotary *>(elem.get());
     QVERIFY(rotary != nullptr);
 
-    rotary->setOutputSize(4);
-    QVERIFY(rotary->outputSize() == 4);
+    rotary->setOutputSize(size);
+    QCOMPARE(rotary->outputSize(), size);
 
-    for (int i = 0; i < 4; ++i) {
+    // updatePortsProperties() names ports "0".."9" for index < 10, then single hex-style
+    // letters "A".."F" for index >= 10 (12/16-port sizes only) to stay single-character --
+    // assert the exact name, not just non-null/non-empty.
+    for (int i = 0; i < size; ++i) {
         auto *port = rotary->outputPort(i);
         QVERIFY(port != nullptr);
-    }
-}
-
-void TestInputRotary::testPortConfigurationWithSixPorts()
-{
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::InputRotary));
-    auto *rotary = dynamic_cast<InputRotary *>(elem.get());
-    QVERIFY(rotary != nullptr);
-
-    rotary->setOutputSize(6);
-    QVERIFY(rotary->outputSize() == 6);
-
-    for (int i = 0; i < 6; ++i) {
-        auto *port = rotary->outputPort(i);
-        QVERIFY(port != nullptr);
-    }
-}
-
-void TestInputRotary::testPortConfigurationWithEightPorts()
-{
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::InputRotary));
-    auto *rotary = dynamic_cast<InputRotary *>(elem.get());
-    QVERIFY(rotary != nullptr);
-
-    rotary->setOutputSize(8);
-    QVERIFY(rotary->outputSize() == 8);
-
-    for (int i = 0; i < 8; ++i) {
-        auto *port = rotary->outputPort(i);
-        QVERIFY(port != nullptr);
-    }
-}
-
-void TestInputRotary::testPortConfigurationWithTenPorts()
-{
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::InputRotary));
-    auto *rotary = dynamic_cast<InputRotary *>(elem.get());
-    QVERIFY(rotary != nullptr);
-
-    rotary->setOutputSize(10);
-    QVERIFY(rotary->outputSize() == 10);
-
-    for (int i = 0; i < 10; ++i) {
-        auto *port = rotary->outputPort(i);
-        QVERIFY(port != nullptr);
-    }
-}
-
-void TestInputRotary::testPortConfigurationWithTwelvePorts()
-{
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::InputRotary));
-    auto *rotary = dynamic_cast<InputRotary *>(elem.get());
-    QVERIFY(rotary != nullptr);
-
-    rotary->setOutputSize(12);
-    QVERIFY(rotary->outputSize() == 12);
-
-    for (int i = 0; i < 12; ++i) {
-        auto *port = rotary->outputPort(i);
-        QVERIFY(port != nullptr);
-    }
-}
-
-void TestInputRotary::testPortConfigurationWithSixteenPorts()
-{
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::InputRotary));
-    auto *rotary = dynamic_cast<InputRotary *>(elem.get());
-    QVERIFY(rotary != nullptr);
-
-    rotary->setOutputSize(16);
-    QVERIFY(rotary->outputSize() == 16);
-
-    for (int i = 0; i < 16; ++i) {
-        auto *port = rotary->outputPort(i);
-        QVERIFY(port != nullptr);
+        const QString expectedName = i < 10 ? QString::number(i) : QString(QChar('A' + (i - 10)));
+        QCOMPARE(port->name(), expectedName);
     }
 }
 
