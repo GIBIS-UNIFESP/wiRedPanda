@@ -832,7 +832,19 @@ void TestScene::testDeleteWithConnections()
     scene->addItem(andGate);
     scene->addItem(led);
 
+    // Wire inputSwitch -> andGate -> led so deleting andGate has real connections to clean up.
+    auto *conn1 = new Connection(nullptr);
+    conn1->setStartPort(inputSwitch->outputPort(0));
+    conn1->setEndPort(andGate->inputPort(0));
+    scene->addItem(conn1);
+
+    auto *conn2 = new Connection(nullptr);
+    conn2->setStartPort(andGate->outputPort(0));
+    conn2->setEndPort(led->inputPort(0));
+    scene->addItem(conn2);
+
     int initialConnections = TestUtils::countConnections(scene);
+    QCOMPARE(initialConnections, 2);
 
     // Select and delete AND gate
     andGate->setSelected(true);
@@ -841,10 +853,10 @@ void TestScene::testDeleteWithConnections()
     // Verify element removed
     QCOMPARE(scene->elements().size(), 2);
 
-    // Connections should be cleaned up or removed
+    // Both connections touched the deleted AND gate, so both must be gone -- not just "no more
+    // than before" (which a leaked/still-dangling connection would also satisfy).
     int finalConnections = TestUtils::countConnections(scene);
-    // Should be less than or equal to initial
-    QVERIFY(finalConnections <= initialConnections);
+    QCOMPARE(finalConnections, 0);
 }
 
 void TestScene::testUndoDelete()
