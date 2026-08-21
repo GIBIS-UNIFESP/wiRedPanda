@@ -48,9 +48,9 @@ private slots:
     void testMixedElementTypes();
 
     // Z-order and rendering
-    void testElementZOrderOnSelection();
+    void testElementSelectionStateToggle();
     void testConnectionZOrderBehindElements();
-    void testBringToFrontAfterSelection();
+    void testElementSelectionStateRoundTrip();
 
     // Scene state persistence
     void testSceneRetainsSizeAfterClear();

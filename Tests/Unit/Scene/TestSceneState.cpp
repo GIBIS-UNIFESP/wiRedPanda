@@ -644,8 +644,14 @@ void TestSceneState::testMixedElementTypes()
 // Z-Order and Rendering
 // ============================================================================
 
-void TestSceneState::testElementZOrderOnSelection()
+void TestSceneState::testElementSelectionStateToggle()
 {
+    // Renamed from testElementZOrderOnSelection: neither GraphicElement nor Scene's selection
+    // handling ever calls setZValue() on selection -- confirmed by grepping App/ for
+    // setZValue()/stackBefore() (the only callers are Connection's fixed behind-elements
+    // value, PortHoverLabel, InlineLabelEditor, and Node's wireless indicator, none tied to
+    // selection). There is no Z-order effect of selection to test here; this covers what the
+    // body actually exercises -- independent per-element selection-state tracking.
     Scene scene;
 
     auto *elem1 = ElementFactory::buildElement(ElementType::And);
@@ -686,20 +692,27 @@ void TestSceneState::testConnectionZOrderBehindElements()
     QVERIFY(scene.items().contains(input));
     QVERIFY(scene.items().contains(output));
     QVERIFY(scene.items().contains(conn));
+
+    // The actual Z-order fact: Connection's constructor fixes its zValue() to -1, so it
+    // always paints behind elements (default zValue 0, never explicitly set by GraphicElement).
+    QCOMPARE(conn->zValue(), -1.0);
+    QCOMPARE(input->zValue(), 0.0);
+    QCOMPARE(output->zValue(), 0.0);
+    QVERIFY(conn->zValue() < input->zValue());
 }
 
-void TestSceneState::testBringToFrontAfterSelection()
+void TestSceneState::testElementSelectionStateRoundTrip()
 {
+    // Renamed from testBringToFrontAfterSelection -- see testElementSelectionStateToggle's
+    // comment: there is no bring-to-front/Z-order effect of selection anywhere in production
+    // code. This covers what the body actually exercises: a plain select/deselect round trip.
     Scene scene;
 
     auto *elem = ElementFactory::buildElement(ElementType::And);
     elem->setPos(0, 0);
     scene.addItem(elem);
 
-    // Select to bring to front
     elem->setSelected(true);
-
-    // Verify selection is tracked
     QVERIFY(elem->isSelected());
 
     elem->setSelected(false);
