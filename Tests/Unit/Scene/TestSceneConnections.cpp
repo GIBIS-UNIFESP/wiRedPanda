@@ -280,9 +280,11 @@ void TestSceneConnections::testValidConnectionBetweenInputOutput()
     connection->setEndPort(inputPort);
     scene.addItem(connection);
 
-    // Verify connection is valid
-    QVERIFY(connection->startPort() != nullptr);
-    QVERIFY(connection->endPort() != nullptr);
+    // Verify the connection is actually reflected on both ports, not just re-reading the
+    // values just assigned to the connection object itself.
+    QVERIFY(outputPort->isConnected(inputPort));
+    QCOMPARE(outputPort->connections().size(), 1);
+    QCOMPARE(inputPort->connections().size(), 1);
 }
 
 void TestSceneConnections::testConnectionStatusTracking()
