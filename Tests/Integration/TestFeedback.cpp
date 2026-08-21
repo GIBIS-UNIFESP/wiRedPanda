@@ -50,18 +50,42 @@ void TestFeedback::testRingOscillatorNonConvergence()
 
 void TestFeedback::testSetResetPriorityInSRLatch()
 {
-    // SR latch from NAND gates respects Set/Reset priority
+    // SR latch from NAND gates (createSRLatchFromNAND(): switchS(y=0) -> nand1[0] (Q, y=0);
+    // switchR(y=50) -> nand2[0] (Q', y=50); cross-feedback ties them together). This is an
+    // active-low NAND latch: driving S low forces Q high and Q' low (Set); driving R low
+    // forces Q low and Q' high (Reset).
     std::unique_ptr<Scene> scene(createSRLatchFromNAND());
     QVERIFY2(scene != nullptr, "Failed to create feedback circuit");
 
-    // Create simulation and verify stable outputs
+    InputSwitch *switchS = nullptr;
+    InputSwitch *switchR = nullptr;
+    GraphicElement *nand1 = nullptr; // Q
+    GraphicElement *nand2 = nullptr; // Q'
+    for (auto *elem : scene->elements()) {
+        const bool isSSide = (elem->pos().y() == 0);
+        if (elem->elementType() == ElementType::InputSwitch) {
+            (isSSide ? switchS : switchR) = dynamic_cast<InputSwitch *>(elem);
+        } else if (elem->elementType() == ElementType::Nand) {
+            (isSSide ? nand1 : nand2) = elem;
+        }
+    }
+    QVERIFY2(switchS && switchR && nand1 && nand2, "Failed to locate S/R switches and NAND gates");
+
     Simulation sim(scene.get());
 
-    // Update to stabilize
+    switchS->setOn(false); // S active (low)
+    switchR->setOn(true);
     sim.update();
+    sim.update();
+    QCOMPARE(nand1->outputPort(0)->status(), Status::Active);
+    QCOMPARE(nand2->outputPort(0)->status(), Status::Inactive);
 
-    // Verify outputs are stable and consistent
-    verifyStableState(scene.get());
+    switchS->setOn(true);
+    switchR->setOn(false); // R active (low)
+    sim.update();
+    sim.update();
+    QCOMPARE(nand1->outputPort(0)->status(), Status::Inactive);
+    QCOMPARE(nand2->outputPort(0)->status(), Status::Active);
 }
 
 void TestFeedback::testInitialStateDependency()
