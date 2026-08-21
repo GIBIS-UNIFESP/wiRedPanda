@@ -366,36 +366,8 @@ void TestWirelessNode::testPortVisibilityAllTransitions()
 void TestWirelessNode::testLoadCorruptedWirelessModeClampsToNone()
 {
     // Node::load() must clamp out-of-range wirelessMode values to None.
-    // Craft a buffer with wirelessMode=99 and verify it loads as None.
-    auto elm = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Node));
-    auto *node = qobject_cast<Node *>(elm.get());
-    QVERIFY(node != nullptr);
-
-    // Save a normal Tx node to get a valid buffer, then patch the mode value.
-    node->setWirelessMode(WirelessMode::Tx);
-
-    QByteArray buffer;
-    {
-        QDataStream out(&buffer, QIODevice::WriteOnly);
-        Serialization::writePandaHeader(out);
-        node->save(out, {.purpose = SerializationPurpose::PortableFile});
-    }
-
-    // Patch: replace the wirelessMode value in the trailing QMap.
-    // The map contains {"wirelessMode": 1}. We need to change the int 1 to 99.
-    // Find the last occurrence of the serialized int value 1 (which is the wireless mode).
-    // Instead of brittle byte patching, build a buffer with a corrupt map directly.
-    QByteArray corruptBuffer;
-    {
-        // Save the base element first, then append a corrupt map.
-        auto elm2 = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Node));
-        QDataStream out(&corruptBuffer, QIODevice::WriteOnly);
-        Serialization::writePandaHeader(out);
-        elm2->save(out, {.purpose = SerializationPurpose::PortableFile});  // saves base GraphicElement + normal Node map (mode=0)
-    }
-
-    // Overwrite the trailing map with one that has wirelessMode=99.
-    // Easier: save a fresh node and manually write the corrupt map.
+    // Craft a buffer with wirelessMode=99 and verify it loads as None: save a fresh node's
+    // base GraphicElement portion, then write a Node-specific map with an invalid mode.
     QByteArray finalBuffer;
     {
         auto baseElm = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Node));
