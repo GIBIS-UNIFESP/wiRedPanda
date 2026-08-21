@@ -892,8 +892,13 @@ void TestWorkspace::testAutosaveCleanupAfterSaveAs()
 
 void TestWorkspace::testAutosaveListCorrectAfterCleanup()
 {
+    // A real save must remove this workspace's own previously-tracked autosave entry (see
+    // WorkSpace::save()'s "Clean up this workspace's own tracked autosave file now that it has
+    // a real save" comment) -- exercise that by actually creating an autosave entry first.
     QTemporaryDir tempDir;
     QVERIFY2(tempDir.isValid(), "Temporary directory creation failed");
+
+    Settings::setAutosaveFiles({});
 
     QString saveFile = tempDir.filePath("test.panda");
 
@@ -901,15 +906,20 @@ void TestWorkspace::testAutosaveListCorrectAfterCleanup()
     Scene *scene = workspace.scene();
 
     auto *led = ElementFactory::buildElement(ElementType::Led);
-    scene->addItem(led);
+    scene->undoStack()->push(new AddItemsCommand({led}, scene));
+    workspace.flushPendingAutosave();
+
+    const QStringList autosavesBeforeSave = Settings::autosaveFiles();
+    QVERIFY2(!autosavesBeforeSave.isEmpty(), "Precondition: dirtying the project must have written an autosave entry");
+    const QString trackedAutosave = autosavesBeforeSave.first();
 
     try {
         workspace.save(saveFile);
 
-        // Verify autosave settings list is correct
         QStringList autosaves = Settings::autosaveFiles();
-        // Should not contain the saved file
-        QVERIFY2(!autosaves.contains(saveFile), "Deleted autosave file should be removed from list");
+        QVERIFY2(!autosaves.contains(trackedAutosave),
+                 "A real save must remove this workspace's previously-tracked autosave entry");
+        QVERIFY2(!QFile::exists(trackedAutosave), "A real save must delete the leftover autosave file, not just its Settings entry");
     } catch (const Pandaception &e) {
         QFAIL(qPrintable(QString("Failed to save file: %1").arg(e.what())));
     }
