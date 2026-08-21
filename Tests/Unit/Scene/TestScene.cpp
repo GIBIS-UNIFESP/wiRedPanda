@@ -1660,15 +1660,20 @@ void TestScene::testSortCycleDetection()
     QCOMPARE(orCount, 1);
     QCOMPARE(swCount, 1);
 
-    // Verify output element (orGate) comes early in sort order
-    // since it needs to be updated first in cycle handling
-    int orIndex = -1, andIndex = -1;
+    // The forward edges (SW->AND, AND->OR) still determine order normally; the back edge
+    // (OR->AND) that creates the cycle is simply not allowed to reorder anything, rather than
+    // pulling orGate to the front as an earlier version of this comment assumed -- confirmed
+    // empirically: sort order is sw, andGate, orGate.
+    int orIndex = -1, andIndex = -1, swIndex = -1;
     for (int i = 0; i < sorted.size(); ++i) {
         if (sorted[i] == &orGate) orIndex = i;
         if (sorted[i] == &andGate) andIndex = i;
+        if (sorted[i] == &sw) swIndex = i;
     }
     QVERIFY(orIndex >= 0);
     QVERIFY(andIndex >= 0);
+    QVERIFY2(swIndex < andIndex, "sw should come before andGate (forward edge SW->AND)");
+    QVERIFY2(andIndex < orIndex, "andGate should come before orGate (forward edge AND->OR)");
 }
 
 void TestScene::testSortDisconnectedComponents()
