@@ -80,9 +80,13 @@ void TestLevel3ALUSelector5Way::cleanup()
 // Test Implementation
 // ============================================================
 
-void TestLevel3ALUSelector5Way::testALUSelector5way()
+void TestLevel3ALUSelector5Way::testALUSelector5way_data()
 {
-    auto &f = *s_level3AluSelector5way;
+    QTest::addColumn<int>("sel0");
+    QTest::addColumn<int>("sel1");
+    QTest::addColumn<int>("sel2");
+    QTest::addColumn<QList<int>>("inputValues"); // in[0..4]
+    QTest::addColumn<int>("expected");
 
     // Test all 8 possible select combinations
     // IC should output: in[sel[2]:sel[0]]
@@ -92,47 +96,45 @@ void TestLevel3ALUSelector5Way::testALUSelector5way()
     // sel[2:0] = 011 → in[3]
     // sel[2:0] = 100 → in[4]
 
-    struct TestCase {
-        int sel0, sel1, sel2;
-        int input_values[5];  // in[0..4]
-        int expected;
-        const char *name;
-    };
+    // Test selecting each input
+    QTest::newRow("sel=000 -> in[0]=1") << 0 << 0 << 0 << QList<int>{1, 0, 0, 0, 0} << 1;
+    QTest::newRow("sel=001 -> in[1]=1") << 1 << 0 << 0 << QList<int>{0, 1, 0, 0, 0} << 1;
+    QTest::newRow("sel=010 -> in[2]=1") << 0 << 1 << 0 << QList<int>{0, 0, 1, 0, 0} << 1;
+    QTest::newRow("sel=011 -> in[3]=1") << 1 << 1 << 0 << QList<int>{0, 0, 0, 1, 0} << 1;
+    QTest::newRow("sel=100 -> in[4]=1") << 0 << 0 << 1 << QList<int>{0, 0, 0, 0, 1} << 1;
 
-    TestCase tests[] = {
-        // Test selecting each input
-        {0, 0, 0, {1, 0, 0, 0, 0}, 1, "sel=000 → in[0]=1"},
-        {1, 0, 0, {0, 1, 0, 0, 0}, 1, "sel=001 → in[1]=1"},
-        {0, 1, 0, {0, 0, 1, 0, 0}, 1, "sel=010 → in[2]=1"},
-        {1, 1, 0, {0, 0, 0, 1, 0}, 1, "sel=011 → in[3]=1"},
-        {0, 0, 1, {0, 0, 0, 0, 1}, 1, "sel=100 → in[4]=1"},
+    // op2=1 makes op0/op1 don't-care: every 1xx opcode must route in[4]
+    QTest::newRow("sel=101 -> in[4]=1") << 1 << 0 << 1 << QList<int>{0, 0, 0, 0, 1} << 1;
+    QTest::newRow("sel=110 -> in[4]=1") << 0 << 1 << 1 << QList<int>{0, 0, 0, 0, 1} << 1;
+    QTest::newRow("sel=111 -> in[4]=1") << 1 << 1 << 1 << QList<int>{0, 0, 0, 0, 1} << 1;
+    QTest::newRow("sel=111 -> in[4]=0 (others high)") << 1 << 1 << 1 << QList<int>{1, 1, 1, 1, 0} << 0;
 
-        // op2=1 makes op0/op1 don't-care: every 1xx opcode must route in[4]
-        {1, 0, 1, {0, 0, 0, 0, 1}, 1, "sel=101 → in[4]=1"},
-        {0, 1, 1, {0, 0, 0, 0, 1}, 1, "sel=110 → in[4]=1"},
-        {1, 1, 1, {0, 0, 0, 0, 1}, 1, "sel=111 → in[4]=1"},
-        {1, 1, 1, {1, 1, 1, 1, 0}, 0, "sel=111 → in[4]=0 (others high)"},
+    // Test with 0 values
+    QTest::newRow("sel=000 -> in[0]=0") << 0 << 0 << 0 << QList<int>{0, 1, 1, 1, 1} << 0;
+    QTest::newRow("sel=001 -> in[1]=0") << 1 << 0 << 0 << QList<int>{1, 0, 1, 1, 1} << 0;
+    QTest::newRow("sel=010 -> in[2]=0") << 0 << 1 << 0 << QList<int>{1, 1, 0, 1, 1} << 0;
+}
 
-        // Test with 0 values
-        {0, 0, 0, {0, 1, 1, 1, 1}, 0, "sel=000 → in[0]=0"},
-        {1, 0, 0, {1, 0, 1, 1, 1}, 0, "sel=001 → in[1]=0"},
-        {0, 1, 0, {1, 1, 0, 1, 1}, 0, "sel=010 → in[2]=0"},
-    };
+void TestLevel3ALUSelector5Way::testALUSelector5way()
+{
+    auto &f = *s_level3AluSelector5way;
 
-    for (size_t testIdx = 0; testIdx < std::size(tests); ++testIdx) {
-        const auto &test = tests[testIdx];
+    QFETCH(int, sel0);
+    QFETCH(int, sel1);
+    QFETCH(int, sel2);
+    QFETCH(QList<int>, inputValues);
+    QFETCH(int, expected);
 
-        for (int i = 0; i < 5; i++) {
-            f.in[i]->setOn(test.input_values[i]);
-        }
-        f.sel[0]->setOn(test.sel0);
-        f.sel[1]->setOn(test.sel1);
-        f.sel[2]->setOn(test.sel2);
-
-        f.sim->update();
-
-        bool result = inputStatus(f.output, 0);
-
-        QCOMPARE(result, static_cast<bool>(test.expected));
+    for (int i = 0; i < 5; i++) {
+        f.in[i]->setOn(inputValues[i]);
     }
+    f.sel[0]->setOn(sel0);
+    f.sel[1]->setOn(sel1);
+    f.sel[2]->setOn(sel2);
+
+    f.sim->update();
+
+    bool result = inputStatus(f.output, 0);
+
+    QCOMPARE(result, static_cast<bool>(expected));
 }

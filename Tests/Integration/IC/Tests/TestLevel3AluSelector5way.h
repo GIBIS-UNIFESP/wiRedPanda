@@ -14,5 +14,6 @@ private slots:
     void cleanupTestCase();
     void cleanup();
 
+    void testALUSelector5way_data();
     void testALUSelector5way();
 };
