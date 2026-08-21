@@ -20,4 +20,7 @@ private slots:
     void testRAMStructure();
 
     void testRAMReset();
+
+    void testWriteEnableGating();
+    void testAddressIsolation();
 };
