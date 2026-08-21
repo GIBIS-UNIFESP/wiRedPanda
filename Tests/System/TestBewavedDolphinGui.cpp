@@ -614,18 +614,11 @@ void TestBewavedDolphinGui::testSaveToTxtOutput()
     auto ws = createAndCircuit();
     std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
 
-    // Set a known pattern
-    dolphin->setLength(4, false);
-    dolphin->setCellValue(0, 0, 0);
-    dolphin->setCellValue(0, 1, 0);
-    dolphin->setCellValue(0, 2, 1);
-    dolphin->setCellValue(0, 3, 1);
-    dolphin->setCellValue(1, 0, 0);
-    dolphin->setCellValue(1, 1, 1);
-    dolphin->setCellValue(1, 2, 0);
-    dolphin->setCellValue(1, 3, 1);
-    dolphin->run();
-
+    // saveToTxt() dumps a fresh combinational truth table via DolphinEdits::combinational()
+    // into a throwaway model -- it never reads the live grid, so setLength()/setCellValue()/run()
+    // have no bearing on its output. For a 2-input circuit that's all 4 combinations,
+    // Gray-code-like per DolphinEdits::combinational(): input 0 toggles every column, input 1
+    // every 2 columns.
     QString output;
     QTextStream stream(&output);
     dolphin->saveToTxt(stream);
@@ -636,18 +629,14 @@ void TestBewavedDolphinGui::testSaveToTxtOutput()
     QStringList lines = output.split('\n', Qt::SkipEmptyParts);
     QVERIFY2(lines.size() >= 3, qPrintable(QString("Expected >= 3 lines, got %1").arg(lines.size())));
 
-    // Verify input 0 row contains exact pattern {0, 0, 1, 1}
-    QVERIFY2(lines[0].contains('0'), "First input row should contain value 0");
-    QVERIFY2(lines[0].contains('1'), "First input row should contain value 1");
+    // Input 0: toggles every column -> 0101
+    QVERIFY(lines[0].startsWith("0101"));
 
-    // Verify input 1 row contains exact pattern {0, 1, 0, 1}
-    QVERIFY2(lines[1].contains('0'), "Second input row should contain value 0");
-    QVERIFY2(lines[1].contains('1'), "Second input row should contain value 1");
+    // Input 1: toggles every 2 columns -> 0011
+    QVERIFY(lines[1].startsWith("0011"));
 
-    // Verify output row (AND gate) has correct result — only col 3 is 1 (both inputs high)
-    // AND(0,0)=0, AND(0,1)=0, AND(1,0)=0, AND(1,1)=1
-    QVERIFY2(lines[2].contains('0'), "Output row should contain value 0");
-    QVERIFY2(lines[2].contains('1'), "Output row should contain value 1 (AND of both inputs high)");
+    // Output row (AND gate): AND(0,0)=0, AND(1,0)=0, AND(0,1)=0, AND(1,1)=1 -> 0001
+    QVERIFY(lines[2].startsWith("0001"));
 }
 
 // ===========================================================================
