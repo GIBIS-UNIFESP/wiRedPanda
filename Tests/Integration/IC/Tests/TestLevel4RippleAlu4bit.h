@@ -33,4 +33,9 @@ private slots:
     // Result + carry-chain verification across all operations
     void testAluResultAndCarry_data();
     void testAluResultAndCarry();
+
+    // CarryIn/SubCarryIn are wired to real, independently-settable switches but every test
+    // above only ever exercises the fixed CarryIn=0/SubCarryIn=1 operating point.
+    void testCarryInAndSubCarryInVariations_data();
+    void testCarryInAndSubCarryInVariations();
 };

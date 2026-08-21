@@ -286,3 +286,60 @@ void TestLevel4RippleALU4Bit::testAluResultAndCarry()
     // subtraction does NOT borrow (A >= B), the 74181-style borrow convention.
     QCOMPARE(inputStatus(f.ledSubCarryOut), inputA >= inputB);
 }
+
+void TestLevel4RippleALU4Bit::testCarryInAndSubCarryInVariations_data()
+{
+    QTest::addColumn<int>("inputA");
+    QTest::addColumn<int>("inputB");
+    QTest::addColumn<bool>("carryIn");
+    QTest::addColumn<bool>("subCarryIn");
+    QTest::addColumn<int>("expectedAdd");
+    QTest::addColumn<bool>("expectedCarryOut");
+    QTest::addColumn<int>("expectedSub");
+    QTest::addColumn<bool>("expectedSubCarryOut");
+
+    // Result_ADD = (A + B + CarryIn) & 0xF, CarryOut = (A + B + CarryIn) > 0xF.
+    // Result_SUB = (A + ~B + SubCarryIn) & 0xF, SubCarryOut = (A + ~B + SubCarryIn) > 0xF.
+    auto addRow = [](const char *tag, int a, int b, bool cin, bool subCin) {
+        const int add = (a + b + (cin ? 1 : 0));
+        const int sub = (a + (~b & 0xF) + (subCin ? 1 : 0));
+        QTest::newRow(tag) << a << b << cin << subCin << (add & 0xF) << (add > 0xF) << (sub & 0xF) << (sub > 0xF);
+    };
+
+    // CarryIn=1 (chained addition): must actually change Result_ADD/CarryOut versus the
+    // fixed CarryIn=0 operating point every other test in this file uses.
+    addRow("CarryIn=1: 5+5+1=11, no carry out", 5, 5, true, true);
+    addRow("CarryIn=1: 15+0+1=0, carry out", 15, 0, true, true);
+    addRow("CarryIn=1: 7+8+1=0, carry out (vs 7+8+0=15, no carry)", 7, 8, true, true);
+
+    // SubCarryIn=0 (not the two's-complement +1, i.e. "subtract with borrow-in"): must
+    // actually change Result_SUB/SubCarryOut versus the fixed SubCarryIn=1 operating point.
+    addRow("SubCarryIn=0: 5-5-1=15 (borrow), vs SubCarryIn=1's exact 0", 5, 5, false, false);
+    addRow("SubCarryIn=0: 8-3-1=4, vs SubCarryIn=1's 5", 8, 3, false, false);
+    addRow("SubCarryIn=0: 0-0-1=15 (borrow), vs SubCarryIn=1's exact 0", 0, 0, false, false);
+}
+
+void TestLevel4RippleALU4Bit::testCarryInAndSubCarryInVariations()
+{
+    QFETCH(int, inputA);
+    QFETCH(int, inputB);
+    QFETCH(bool, carryIn);
+    QFETCH(bool, subCarryIn);
+    QFETCH(int, expectedAdd);
+    QFETCH(bool, expectedCarryOut);
+    QFETCH(int, expectedSub);
+    QFETCH(bool, expectedSubCarryOut);
+
+    auto &f = *s_level4RippleAlu4bit;
+
+    // setOperands() resets CarryIn=0/SubCarryIn=1 -- override them afterward.
+    f.setOperands(inputA, inputB);
+    f.swCarryIn->setOn(carryIn);
+    f.swSubCarryIn->setOn(subCarryIn);
+    f.sim->update();
+
+    QCOMPARE(f.readLanes(f.ledAdd), expectedAdd);
+    QCOMPARE(inputStatus(f.ledCarryOut), expectedCarryOut);
+    QCOMPARE(f.readLanes(f.ledSub), expectedSub);
+    QCOMPARE(inputStatus(f.ledSubCarryOut), expectedSubCarryOut);
+}
