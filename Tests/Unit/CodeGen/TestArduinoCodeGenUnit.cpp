@@ -160,6 +160,8 @@ void TestArduinoCodeGenUnit::testDemuxCircuit()
     QString content = file.readAll();
 
     QVERIFY(content.contains("void setup()"));
+    QVERIFY(content.contains("//Demultiplexer"));
+    QVERIFY2(content.contains("} else if (("), qPrintable(content));
 }
 
 void TestArduinoCodeGenUnit::testEmptyScene()
