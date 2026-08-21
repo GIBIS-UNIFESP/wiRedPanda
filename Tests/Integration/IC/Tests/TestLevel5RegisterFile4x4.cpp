@@ -277,6 +277,14 @@ void TestLevel5RegisterFile4X4::testRegisterFile4x4_debug_readmux()
             f.readAddr[0]->setOn((regIdx >> 0) & 1);
             f.readAddr[1]->setOn((regIdx >> 1) & 1);
             f.sim->update();
+
+            int writtenValue = 0;
+            for (int bit = 0; bit < 4; ++bit) {
+                if (inputStatus(f.readData[bit])) {
+                    writtenValue |= (1 << bit);
+                }
+            }
+            QCOMPARE(writtenValue, pattern[regIdx]);
         }
     }
 
