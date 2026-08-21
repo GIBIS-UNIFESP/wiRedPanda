@@ -9,6 +9,7 @@
 
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
+#include "App/Scene/ConnectionManager.h"
 #include "App/Scene/Scene.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
@@ -215,24 +216,24 @@ void TestSceneState::testSelectedElementsFiltering()
 
 void TestSceneState::testEditedConnectionSetGet()
 {
+    // Actually drive ConnectionManager's in-progress-wire state, not just simulation() identity.
     Scene scene;
 
-    // Add element to scene
     auto *elem = ElementFactory::buildElement(ElementType::And);
     scene.addItem(elem);
 
-    // Trigger update via public methods - setCircuitUpdateRequired() calls simulation.initialize()
-    Simulation *simBefore = scene.simulation();
-    scene.setCircuitUpdateRequired();
-    Simulation *simAfter = scene.simulation();
+    QVERIFY(!scene.connectionManager()->hasEditedConnection());
+    QVERIFY(!scene.connectionManager()->editedConnection());
 
-    // Both should be valid pointers and same simulation instance
-    QVERIFY2(simBefore != nullptr && simAfter != nullptr, "Simulation should exist");
-    QVERIFY2(simBefore == simAfter, "Same simulation instance should be used");
+    scene.connectionManager()->startFromOutput(elem->outputPort(0));
+    QVERIFY(scene.connectionManager()->hasEditedConnection());
+    Connection *edited = scene.connectionManager()->editedConnection();
+    QVERIFY(edited);
+    QCOMPARE(edited->startPort(), elem->outputPort(0));
 
-    // After setCircuitUpdateRequired(), simulation should be in initialized state
-    // (elements should be empty until simulation is run with circuit elements)
-    QVERIFY2(scene.simulation() != nullptr, "Circuit update should maintain simulation");
+    scene.connectionManager()->cancel();
+    QVERIFY(!scene.connectionManager()->hasEditedConnection());
+    QVERIFY(!scene.connectionManager()->editedConnection());
 }
 
 void TestSceneState::testEditedConnectionClears()
