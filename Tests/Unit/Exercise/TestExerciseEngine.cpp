@@ -654,11 +654,16 @@ void TestExerciseEngine::testOnCircuitChangedAutoAdvancesWhenElementRequirementS
     QCOMPARE(engine.currentStep(), 0);
 
     QSignalSpy stepCompletedSpy(&engine, &ExerciseEngine::stepCompleted);
+    QSignalSpy stepChangedSpy(&engine, &ExerciseEngine::stepChanged);
 
     auto *elm = ElementFactory::buildElement(ElementType::And);
     workspace.scene()->receiveCommand(new AddItemsCommand({elm}, workspace.scene()));
 
     QCOMPARE(stepCompletedSpy.count(), 1);
+    // performAdvance()'s "advanced" branch (shared by advanceStep() and onCircuitChanged())
+    // emits stepCompleted then stepChanged via emitCurrentStep() -- both halves of that pair,
+    // not just stepCompleted.
+    QCOMPARE(stepChangedSpy.count(), 1);
     QCOMPARE(engine.currentStep(), 1);
 }
 
