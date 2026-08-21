@@ -25,6 +25,7 @@ private slots:
     void testGenerateTestbenchDeclaresSequentialState();
     void testTooManyInputRotaryPositionsThrowsPinOverflow();
     void testGenerateTestbenchUnwritablePathThrows();
+    void testConstructorUnwritablePathThrows();
     void testTruthTableInputTiedToVccResolvesToHigh();
     void testGenerateTestbenchNonSequentialSettleLoop();
     void testDemuxWithFourOutputsUsesTwoSelectLines();
