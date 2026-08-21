@@ -74,7 +74,8 @@ void TestLevel5BarrelShifter4Bit::cleanup()
     }
 }
 
-// Barrel Shifter: 4-bit arithmetic shifter (SHL/SHR)
+// Barrel Shifter: 4-bit logical shifter, zero-fill (SHL/SHR) -- no arithmetic
+// (sign-extending) mode exists in this IC; see create_level5_barrel_shifter_4bit.py.
 // ============================================================================
 // INPUT/OUTPUT BIT-WIDTH
 // ============================================================================
