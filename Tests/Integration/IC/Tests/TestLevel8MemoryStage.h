@@ -17,6 +17,7 @@ private slots:
     void testMemoryStage_data();
     void testMemoryStage();
 
+    void testMemReadAndWriteBothAsserted();
     void testMemoryStageStructure();
     void testMemoryStageReset();
     void testMultiAddressStorage();
