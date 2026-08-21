@@ -1160,7 +1160,7 @@ void TestBewavedDolphinGui::testRunAndSaveToTxtHandleDeletedTrackedElement()
 {
     auto ws = createAndCircuit();
     auto *scene = ws->scene();
-    auto *dolphin = createDolphin(ws.get());
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
 
     // Find the tracked InputSwitch backing waveform row 0, then delete it directly via a
     // scene command — the same mutation an MCP client's delete_element would perform,
@@ -1199,7 +1199,7 @@ void TestBewavedDolphinGui::testSaveToTxtClampsColumnCountForManyInputPorts()
         scene->addItem(new InputSwitch());
     }
     scene->addItem(new Led());
-    auto *dolphin = createDolphin(ws.get());
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
 
     QString text;
     QTextStream stream(&text);
@@ -1563,7 +1563,7 @@ void TestBewavedDolphinGui::testElementsStillLiveDetectsDeletedOutputElement()
 {
     auto ws = createAndCircuit();
     auto *scene = ws->scene();
-    auto *dolphin = createDolphin(ws.get());
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
 
     // Mirrors testRunAndSaveToTxtHandleDeletedTrackedElement, but deletes a tracked OUTPUT
     // element instead of an input one, to exercise elementsStillLive()'s second loop.
