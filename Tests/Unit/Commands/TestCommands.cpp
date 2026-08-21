@@ -1009,6 +1009,13 @@ void TestCommands::testToggleTruthTableOutputCommandBounds()
     scene->undoStack()->undo();
     QVERIFY(!truthTable->key().at(5));
 
+    // The top edge of the valid range (2047, the last of 2048 bits) must also succeed,
+    // not just an arbitrary interior position.
+    scene->receiveCommand(new ToggleTruthTableOutputCommand(truthTable, 2047, scene));
+    QVERIFY(truthTable->key().at(2047));
+    scene->undoStack()->undo();
+    QVERIFY(!truthTable->key().at(2047));
+
     const auto expectThrow = [&](const int position) {
         ToggleTruthTableOutputCommand command(truthTable, position, scene);
         bool threw = false;
