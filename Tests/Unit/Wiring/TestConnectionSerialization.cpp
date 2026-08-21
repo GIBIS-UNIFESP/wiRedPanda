@@ -147,9 +147,12 @@ void TestConnectionSerialization::testLoadInvalidPortReferencesHandled()
     QDataStream saveStream(&data, QIODevice::WriteOnly);
     conn1->save(saveStream);
 
-    // Create port map with missing port (endPort was null, saves as 0)
+    // Create port map with missing port (endPort was null, saves as 0). Keyed by the port's
+    // real serial ID (Port::makeSerialId(), the same format save()/load() actually use) --
+    // a raw pointer address would never match what load() looks up, silently making this
+    // "known port" entry unreachable regardless of the bug this test is meant to catch.
     QHash<quint64, Port *> portMap;
-    portMap[reinterpret_cast<quint64>(outputPort)] = outputPort;
+    portMap[Port::makeSerialId(static_cast<quint64>(andGate->id()), outputPort->globalIndex())] = outputPort;
     // Missing the second port on purpose (0 is not in portMap)
 
     // Load with incomplete port map
