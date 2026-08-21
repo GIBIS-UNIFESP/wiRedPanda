@@ -122,7 +122,23 @@ void TestICRegistry::testICFileWatcher()
     QFile file(path);
     QVERIFY(file.open(QIODevice::ReadOnly));
     const QByteArray onDisk = file.readAll();
+    file.close();
     QCOMPARE(registry->cachedFileBytes(path), onDisk);
+
+    // Now actually rewrite the file and confirm onFileChanged() (QFileSystemWatcher's
+    // fileChanged signal, wired via Qt::QueuedConnection) invalidates the cache and
+    // re-reads the new content -- no IC element references this file, so onFileChanged()
+    // takes the "no targets" path and emits definitionChanged() synchronously after
+    // invalidating, which QSignalSpy::wait() below robustly waits for.
+    QSignalSpy definitionChangedSpy(registry, &ICRegistry::definitionChanged);
+    writeChainedPandaFile(path, QStringLiteral("second_dep"));
+    QVERIFY(definitionChangedSpy.wait());
+
+    QVERIFY(file.open(QIODevice::ReadOnly));
+    const QByteArray onDiskAfterChange = file.readAll();
+    file.close();
+    QVERIFY2(onDiskAfterChange != onDisk, "Rewritten fixture must actually differ from the original");
+    QCOMPARE(registry->cachedFileBytes(path), onDiskAfterChange);
 }
 
 void TestICRegistry::testRecursiveICLoading()
