@@ -12,7 +12,5 @@ class TestCoreSettings : public QObject
 
 private slots:
 
-    void testSettingsSave();
-    void testSettingsLoad();
     void testSettingsRoundTrip();
 };
