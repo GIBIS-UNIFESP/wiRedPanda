@@ -87,6 +87,7 @@ void TestHistoryHandler::testHandleUndoPerformsRealUndo()
     QCOMPARE(result["success"].toBool(), true);
     QCOMPARE(result["can_undo"].toBool(), false);
     QCOMPARE(result["can_redo"].toBool(), true);
+    QCOMPARE(result["redo_text"].toString(), scene->undoStack()->redoText());
 
     // The real undo effect: the element must actually be gone from the scene.
     QVERIFY(!scene->itemById(elementId));
@@ -122,6 +123,7 @@ void TestHistoryHandler::testHandleRedoPerformsRealRedo()
     QCOMPARE(result["success"].toBool(), true);
     QCOMPARE(result["can_undo"].toBool(), true);
     QCOMPARE(result["can_redo"].toBool(), false);
+    QCOMPARE(result["redo_text"].toString(), scene->undoStack()->redoText());
 
     // The real redo effect: the element must be back in the scene.
     QVERIFY(scene->itemById(elementId));
@@ -143,6 +145,7 @@ void TestHistoryHandler::testHandleGetUndoStackReportsRealState()
     QCOMPARE(result["can_undo"].toBool(), undoStack->canUndo());
     QCOMPARE(result["can_redo"].toBool(), undoStack->canRedo());
     QCOMPARE(result["undo_text"].toString(), undoStack->undoText());
+    QCOMPARE(result["redo_text"].toString(), undoStack->redoText());
     QCOMPARE(result["undo_count"].toInt(), undoStack->count());
     QCOMPARE(result["undo_index"].toInt(), undoStack->index());
     QCOMPARE(result["undo_limit"].toInt(), undoStack->undoLimit());
