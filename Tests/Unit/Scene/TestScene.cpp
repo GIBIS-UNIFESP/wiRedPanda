@@ -2471,7 +2471,10 @@ void TestScene::testCheckWireIdleRestoreRestoresAfterBothWindowsElapse()
     scene->recordWirePaintPass(60'000'000);
     QVERIFY(!scene->wireAntialiasingEnabled());
 
-    QTest::qWait(3100); // exceeds both kWireAaPassIdleMs (300ms) and kWireAaFlipIdleMs (3000ms)
+    // Real wall-clock wait (QElapsedTimer has no fake-clock seam) -- a 3100ms wait against the
+    // 3000ms kWireAaFlipIdleMs threshold left only a ~3.3% margin, flaky-prone on a loaded CI
+    // runner. 600ms of slack (20%) is still cheap against this test's multi-second runtime.
+    QTest::qWait(3600); // exceeds both kWireAaPassIdleMs (300ms) and kWireAaFlipIdleMs (3000ms)
     scene->checkWireIdleRestore();
     QVERIFY(scene->wireAntialiasingEnabled());
 }
