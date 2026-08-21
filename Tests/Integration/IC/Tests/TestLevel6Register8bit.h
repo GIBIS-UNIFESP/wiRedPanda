@@ -13,8 +13,14 @@ private slots:
     void cleanupTestCase();
     void cleanup();
 
-    // Functional Tests
-    void test8BitRegister();
+    // Functional Tests -- split from one ~175-line test8BitRegister() bundling 6 unrelated
+    // scenarios into separate functions so a failure in one doesn't hide the rest.
+    void testRegisterResetToZero();
+    void testRegisterWriteAndHoldWhenDisabled();
+    void testRegisterReenableAfterHold();
+    void testRegisterWriteAllOnesAndHoldAfter();
+    void testRegisterIndividualBitMapping();
+    void testRegisterMidRangeValues();
     void test8BitRegisterSequential();
     void test8BitRegisterEdgeCases();
 

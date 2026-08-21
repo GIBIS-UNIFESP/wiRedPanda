@@ -100,19 +100,25 @@ void TestLevel6Register8Bit::cleanup()
 // Test Cases
 // ============================================================
 
-void TestLevel6Register8Bit::test8BitRegister() {
+void TestLevel6Register8Bit::testRegisterResetToZero() {
     auto &f = *s_level6Reg8bit;
 
     // Allow circuit to settle
     f.sim->update();
 
-    // Test 1: Reset to 0x00
     f.reset->setOn(true);
     f.sim->update();
 
-    // Test 2: Write 0xAA on clock edge
+    QCOMPARE(CPUTestUtils::get8BitValue(f.q), 0x00);
+}
+
+void TestLevel6Register8Bit::testRegisterWriteAndHoldWhenDisabled() {
+    auto &f = *s_level6Reg8bit;
+
+    f.sim->update();
     f.reset->setOn(false);
 
+    // Write 0xAA on clock edge
     QVector<InputSwitch *> data_vec1(f.data, f.data + 8);
     setMultiBitInput(data_vec1, CPUTestUtils::PATTERN_ALTERNATING_1);
 
@@ -124,7 +130,7 @@ void TestLevel6Register8Bit::test8BitRegister() {
     int write_val = CPUTestUtils::get8BitValue(f.q);
     QCOMPARE(write_val, CPUTestUtils::PATTERN_ALTERNATING_1);
 
-    // Test 3: Hold value when WriteEnable=0
+    // Hold value when WriteEnable=0
     QVector<InputSwitch *> data_vec2(f.data, f.data + 8);
     setMultiBitInput(data_vec2, CPUTestUtils::PATTERN_ALTERNATING_2);
 
@@ -138,8 +144,14 @@ void TestLevel6Register8Bit::test8BitRegister() {
     clockCycle(f.sim, f.clock);
 
     QCOMPARE(CPUTestUtils::get8BitValue(f.q), CPUTestUtils::PATTERN_ALTERNATING_1);
+}
 
-    // Test 4: Re-enable writing
+void TestLevel6Register8Bit::testRegisterReenableAfterHold() {
+    auto &f = *s_level6Reg8bit;
+
+    f.sim->update();
+    f.reset->setOn(false);
+
     f.writeEnable->setOn(true);
     f.sim->update();
 
@@ -154,8 +166,15 @@ void TestLevel6Register8Bit::test8BitRegister() {
     clockCycle(f.sim, f.clock);
 
     QCOMPARE(CPUTestUtils::get8BitValue(f.q), CPUTestUtils::PATTERN_ALTERNATING_2);
+}
 
-    // Test 5: Write 0xFF
+void TestLevel6Register8Bit::testRegisterWriteAllOnesAndHoldAfter() {
+    auto &f = *s_level6Reg8bit;
+
+    f.sim->update();
+    f.reset->setOn(false);
+
+    // Write 0xFF
     QVector<InputSwitch *> data_vec4(f.data, f.data + 8);
     setMultiBitInput(data_vec4, CPUTestUtils::PATTERN_ALL_ONES);
     f.writeEnable->setOn(true);
@@ -169,7 +188,7 @@ void TestLevel6Register8Bit::test8BitRegister() {
     int q_after_ff = CPUTestUtils::get8BitValue(f.q);
     QCOMPARE(q_after_ff, CPUTestUtils::PATTERN_ALL_ONES);
 
-    // Test 6: Hold after known good state
+    // Hold after known good state
     QVector<InputSwitch *> data_vec5(f.data, f.data + 8);
     setMultiBitInput(data_vec5, CPUTestUtils::PATTERN_ALL_ZEROS);
 
@@ -178,14 +197,12 @@ void TestLevel6Register8Bit::test8BitRegister() {
     int q_after_hold_settle = CPUTestUtils::get8BitValue(f.q);
 
     QCOMPARE(q_after_hold_settle, q_after_ff);
+}
 
-    if (f.clock->isOn()) {
-        f.clock->setOn(false);
-        f.sim->update();
-    }
-    clockCycle(f.sim, f.clock);
+void TestLevel6Register8Bit::testRegisterIndividualBitMapping() {
+    auto &f = *s_level6Reg8bit;
 
-    // Test individual Q output mapping
+    f.sim->update();
     f.reset->setOn(true);
     f.sim->update();
     f.reset->setOn(false);
@@ -221,8 +238,12 @@ void TestLevel6Register8Bit::test8BitRegister() {
     clockCycle(f.sim, f.clock);
     int q_after_0x80 = CPUTestUtils::get8BitValue(f.q);
     QCOMPARE(q_after_0x80, 0x80);
+}
 
-    // Mid-range test values
+void TestLevel6Register8Bit::testRegisterMidRangeValues() {
+    auto &f = *s_level6Reg8bit;
+
+    f.sim->update();
     f.reset->setOn(true);
     f.sim->update();
     f.reset->setOn(false);
@@ -259,7 +280,9 @@ void TestLevel6Register8Bit::test8BitRegister() {
         clockCycle(f.sim, f.clock);
         int q_value = CPUTestUtils::get8BitValue(f.q);
 
-        QCOMPARE(q_value, testValue);
+        QVERIFY2(q_value == testValue,
+                 qPrintable(QString("Write mismatch for %1: expected %2, got %3")
+                                .arg(midRangeValues[i].description).arg(testValue).arg(q_value)));
 
         f.writeEnable->setOn(false);
         f.sim->update();
@@ -272,7 +295,9 @@ void TestLevel6Register8Bit::test8BitRegister() {
         clockCycle(f.sim, f.clock);
         int q_hold_value = CPUTestUtils::get8BitValue(f.q);
 
-        QCOMPARE(q_hold_value, testValue);
+        QVERIFY2(q_hold_value == testValue,
+                 qPrintable(QString("Hold mismatch for %1: expected %2, got %3")
+                                .arg(midRangeValues[i].description).arg(testValue).arg(q_hold_value)));
     }
 }
 
