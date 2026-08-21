@@ -73,104 +73,124 @@ void TestLevel3Register1Bit::cleanup()
     }
 }
 
-/**
- * Test: 1-bit Register with write, hold, and reset operations
- *
- * Test scenarios:
- * 1. Write 1 on clock edge
- * 2. Hold value when WriteEnable=0
- * 3. Reset to 0 (async)
- * 4. Write 0 then read Q and NotQ
- */
-void TestLevel3Register1Bit::test1BitRegister() {
+// Reset=TRUE -> NOT gate inverts it -> Clear=FALSE (active-low assert), async (no clock needed).
+void TestLevel3Register1Bit::testRegisterAsyncReset()
+{
     auto &f = *s_level3Register1bit;
-    auto *data = f.data;
-    auto *clock = f.clock;
-    auto *writeEnable = f.writeEnable;
-    auto *reset = f.reset;
-    auto *q = f.q;
-    auto *notQ = f.notQ;
-    auto *sim = f.sim;
 
-    // Test 1: Reset to 0
-    reset->setOn(true);             // Reset=TRUE → NOT gate inverts it → Clear=FALSE (active-low assert)
-    sim->update();
-    // After reset: Q=0, NotQ=1
-    QCOMPARE(TestUtils::inputStatus(q), false);
-    QCOMPARE(TestUtils::inputStatus(notQ), true);
+    f.reset->setOn(true);
+    f.sim->update();
 
-    // Test 2: Write 1 on clock edge
-    reset->setOn(false);            // De-assert reset (false = not resetting)
-    data->setOn(true);              // Set data = 1
-    writeEnable->setOn(true);       // Enable writing
-    sim->update();
+    QCOMPARE(TestUtils::inputStatus(f.q), false);
+    QCOMPARE(TestUtils::inputStatus(f.notQ), true);
+}
 
-    // Pulse clock
-    clockCycle(sim, clock);
+void TestLevel3Register1Bit::testRegisterWriteOne()
+{
+    auto &f = *s_level3Register1bit;
 
-    QCOMPARE(TestUtils::inputStatus(q), 1);
-    QCOMPARE(TestUtils::inputStatus(notQ), 0);
+    f.reset->setOn(false);
+    f.data->setOn(true);
+    f.writeEnable->setOn(true);
+    f.sim->update();
 
-    // Test 3: Hold value when WriteEnable=0
-    data->setOn(false);             // Change data to 0
+    clockCycle(f.sim, f.clock);
 
-    writeEnable->setOn(false);      // Disable writing (hold)
+    QCOMPARE(TestUtils::inputStatus(f.q), 1);
+    QCOMPARE(TestUtils::inputStatus(f.notQ), 0);
+}
 
-    sim->update();
-    int q_after_hold = TestUtils::inputStatus(q);
-    int notq_after_hold = TestUtils::inputStatus(notQ);
+void TestLevel3Register1Bit::testRegisterHoldWhenWriteDisabled()
+{
+    auto &f = *s_level3Register1bit;
 
-    // IMPORTANT: Hold should preserve value - Q should STILL be 1, not change
-    QCOMPARE(q_after_hold, 1);  // Verify hold preserves Q value
-    QCOMPARE(notq_after_hold, 0);
+    // Write 1 first so there's a non-default value to hold.
+    f.reset->setOn(false);
+    f.data->setOn(true);
+    f.writeEnable->setOn(true);
+    f.sim->update();
+    clockCycle(f.sim, f.clock);
+    QCOMPARE(TestUtils::inputStatus(f.q), 1);
 
-    clockCycle(sim, clock);
+    // Change data to 0 with WriteEnable disabled: the register must not update.
+    f.data->setOn(false);
+    f.writeEnable->setOn(false);
+    f.sim->update();
+    QCOMPARE(TestUtils::inputStatus(f.q), 1);
+    QCOMPARE(TestUtils::inputStatus(f.notQ), 0);
 
-    QCOMPARE(TestUtils::inputStatus(q), 1);
-    QCOMPARE(TestUtils::inputStatus(notQ), 0);
+    // A clock edge with WriteEnable still disabled must also not update.
+    clockCycle(f.sim, f.clock);
+    QCOMPARE(TestUtils::inputStatus(f.q), 1);
+    QCOMPARE(TestUtils::inputStatus(f.notQ), 0);
+}
 
-    // Test 4: Write 0 on clock edge
-    data->setOn(false);             // Set data = 0
-    writeEnable->setOn(true);       // Enable writing
-    sim->update();
+void TestLevel3Register1Bit::testRegisterWriteZero()
+{
+    auto &f = *s_level3Register1bit;
 
-    clockCycle(sim, clock);
+    // Write 1 first so writing 0 is a real transition, not a no-op.
+    f.reset->setOn(false);
+    f.data->setOn(true);
+    f.writeEnable->setOn(true);
+    f.sim->update();
+    clockCycle(f.sim, f.clock);
+    QCOMPARE(TestUtils::inputStatus(f.q), 1);
 
-    QCOMPARE(TestUtils::inputStatus(q), 0);
-    QCOMPARE(TestUtils::inputStatus(notQ), 1);
+    f.data->setOn(false);
+    f.writeEnable->setOn(true);
+    f.sim->update();
+    clockCycle(f.sim, f.clock);
 
-    // Test 5: Reset overrides everything
-    data->setOn(true);
+    QCOMPARE(TestUtils::inputStatus(f.q), 0);
+    QCOMPARE(TestUtils::inputStatus(f.notQ), 1);
+}
 
-    writeEnable->setOn(true);
+void TestLevel3Register1Bit::testRegisterResetOverridesWrite()
+{
+    auto &f = *s_level3Register1bit;
 
-    reset->setOn(true);             // Assert reset (triggers through NOT gate)
+    // Write 1 first so Reset has a non-zero value to override.
+    f.reset->setOn(false);
+    f.data->setOn(true);
+    f.writeEnable->setOn(true);
+    f.sim->update();
+    clockCycle(f.sim, f.clock);
+    QCOMPARE(TestUtils::inputStatus(f.q), 1);
 
-    sim->update();
+    // Assert Reset while Data/WriteEnable still request a write: Reset wins, async.
+    f.data->setOn(true);
+    f.writeEnable->setOn(true);
+    f.reset->setOn(true);
+    f.sim->update();
 
-    QCOMPARE(TestUtils::inputStatus(q), 0);
-    QCOMPARE(TestUtils::inputStatus(notQ), 1);
+    QCOMPARE(TestUtils::inputStatus(f.q), 0);
+    QCOMPARE(TestUtils::inputStatus(f.notQ), 1);
+}
 
-    // Test 5b: De-assert reset and see what happens
-    reset->setOn(false);
+void TestLevel3Register1Bit::testRegisterWriteAfterResetReleased()
+{
+    auto &f = *s_level3Register1bit;
 
-    sim->update();
+    // Drive Reset, then release it.
+    f.reset->setOn(true);
+    f.sim->update();
+    f.reset->setOn(false);
+    f.sim->update();
 
-    // Now try to write 1
-    data->setOn(true);
-    writeEnable->setOn(true);
+    // Writing must work normally again once Reset is released.
+    f.data->setOn(true);
+    f.writeEnable->setOn(true);
+    f.sim->update();
 
-    sim->update();
-
-    // Explicitly ensure clock is LOW for a clean rising edge
-    if (clock->isOn()) {
-        clock->setOn(false);
-        sim->update();
+    // Ensure clock is LOW first for a clean rising edge.
+    if (f.clock->isOn()) {
+        f.clock->setOn(false);
+        f.sim->update();
     }
+    clockCycle(f.sim, f.clock);
 
-    clockCycle(sim, clock);
-
-    QCOMPARE(TestUtils::inputStatus(q), 1);  // Verify write after reset actually worked
+    QCOMPARE(TestUtils::inputStatus(f.q), 1);
 }
 
 /**
