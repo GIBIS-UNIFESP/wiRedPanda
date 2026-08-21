@@ -39,30 +39,122 @@
 
 void TestICUnit::testICLoadFromFile()
 {
+    // A never-loaded IC's elementType() is trivially IC by construction; this actually
+    // loads a real sub-circuit (the established WorkSpace::save() + IC::loadFile() idiom
+    // used throughout this file) and checks the load actually took effect.
+    QTemporaryDir subDir;
+    QVERIFY(subDir.isValid());
+
+    WorkSpace subWorkspace;
+    CircuitBuilder subBuilder(subWorkspace.scene());
+    InputSwitch sw;
+    Led led;
+    subBuilder.add(&sw, &led);
+    subBuilder.connect(&sw, 0, &led, 0);
+    const QString subPath = subDir.path() + "/load_from_file_probe.panda";
+    QCOMPARE(subWorkspace.save(subPath), WorkSpace::SaveOutcome::Saved);
+
     IC ic;
+    ic.loadFile(subPath, subDir.path());
+
     QCOMPARE(ic.elementType(), ElementType::IC);
+    QCOMPARE(ic.file(), subPath);
+    QCOMPARE(ic.inputSize(), 1);
+    QCOMPARE(ic.outputSize(), 1);
 }
 
 void TestICUnit::testICPortLabelResolution()
 {
+    // buildPortLabels() (ICLoader.cpp) composes each boundary port's name from its internal
+    // element's label(); verify a real loaded IC actually resolves that label onto the
+    // IC's own port name, not just that an unloaded IC has zero ports.
+    QTemporaryDir subDir;
+    QVERIFY(subDir.isValid());
+
+    WorkSpace subWorkspace;
+    CircuitBuilder subBuilder(subWorkspace.scene());
+    InputSwitch sw;
+    sw.setLabel("DataIn");
+    Led led;
+    led.setLabel("DataOut");
+    subBuilder.add(&sw, &led);
+    subBuilder.connect(&sw, 0, &led, 0);
+    const QString subPath = subDir.path() + "/port_label_probe.panda";
+    QCOMPARE(subWorkspace.save(subPath), WorkSpace::SaveOutcome::Saved);
+
     IC ic;
-    // Unloaded IC has no ports
-    QVERIFY(ic.inputs().isEmpty());
-    QVERIFY(ic.outputs().isEmpty());
+    ic.loadFile(subPath, subDir.path());
+
+    QVERIFY(!ic.inputs().isEmpty());
+    QVERIFY(!ic.outputs().isEmpty());
+    QVERIFY2(ic.inputPort(0)->name().contains("DataIn"), qPrintable(ic.inputPort(0)->name()));
+    QVERIFY2(ic.outputPort(0)->name().contains("DataOut"), qPrintable(ic.outputPort(0)->name()));
 }
 
 void TestICUnit::testICNestedSaveLoad()
 {
+    // A genuinely nested sub-circuit: the inner IC (innerPath) is itself embedded as one of
+    // the outer sub-circuit's elements, so loading outerPath produces an IC whose own
+    // internal elements include another IC. Exercises both halves of "save then load" --
+    // ic.save() on the real loaded state, and reloading that same file into a second IC.
+    QTemporaryDir subDir;
+    QVERIFY(subDir.isValid());
+
+    WorkSpace innerWorkspace;
+    CircuitBuilder innerBuilder(innerWorkspace.scene());
+    InputSwitch innerSw;
+    Led innerLed;
+    innerBuilder.add(&innerSw, &innerLed);
+    innerBuilder.connect(&innerSw, 0, &innerLed, 0);
+    const QString innerPath = subDir.path() + "/nested_inner.panda";
+    QCOMPARE(innerWorkspace.save(innerPath), WorkSpace::SaveOutcome::Saved);
+
+    WorkSpace outerWorkspace;
+    CircuitBuilder outerBuilder(outerWorkspace.scene());
+    InputSwitch outerSw;
+    auto *innerIc = new IC;
+    innerIc->loadFile(innerPath, subDir.path());
+    Led outerLed;
+    outerBuilder.add(&outerSw, innerIc, &outerLed);
+    outerBuilder.connect(&outerSw, 0, innerIc, 0);
+    outerBuilder.connect(innerIc, 0, &outerLed, 0);
+    const QString outerPath = subDir.path() + "/nested_outer.panda";
+    QCOMPARE(outerWorkspace.save(outerPath), WorkSpace::SaveOutcome::Saved);
+
     IC ic;
+    ic.loadFile(outerPath, subDir.path());
+
     QByteArray data;
     QDataStream stream(&data, QIODevice::WriteOnly);
     ic.save(stream, {.purpose = SerializationPurpose::PortableFile});
     QVERIFY(!data.isEmpty());
+    QCOMPARE(ic.inputSize(), 1);
+    QCOMPARE(ic.outputSize(), 1);
+
+    // Load the same file into a second, independent IC and confirm it reaches the same
+    // structural state -- the "load" half of nested save/load was previously unexercised.
+    IC ic2;
+    ic2.loadFile(outerPath, subDir.path());
+    QCOMPARE(ic2.file(), ic.file());
+    QCOMPARE(ic2.inputSize(), ic.inputSize());
+    QCOMPARE(ic2.outputSize(), ic.outputSize());
 }
 
 void TestICUnit::testICInvalidFile()
 {
+    // A never-loaded IC's file() being empty is trivially true by construction; this
+    // actually attempts to load a genuinely nonexistent path and confirms both the throw
+    // (ICLoader::loadFile()'s exists()/isFile() guard) and that m_file is left untouched.
     IC ic;
+    const QString badPath = QStringLiteral("/no/such/directory/does_not_exist.panda");
+
+    bool threw = false;
+    try {
+        ic.loadFile(badPath, QString());
+    } catch (const std::exception &) {
+        threw = true;
+    }
+    QVERIFY2(threw, "Loading a nonexistent file must throw");
     QVERIFY(ic.file().isEmpty());
 }
 
