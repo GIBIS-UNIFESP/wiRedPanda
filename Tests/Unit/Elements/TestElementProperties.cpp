@@ -382,20 +382,13 @@ void TestElementProperties::testFrequencyValidation()
     clock.setFrequency(50.0);
     QCOMPARE(clock.frequency(), 50.0);
 
-    // Test 4: Very high frequency (may succeed or be rejected based on timing precision)
+    // Test 4: Very high frequency (1 MHz) is deterministically rejected. Clock::setFrequency()
+    // computes halfPeriod = duration_cast<microseconds>(1s / (2 * 1000000.0)) = 0.5us, which
+    // truncates to 0us, so auxInterval.count() <= 0 is always true -- there is no timing-
+    // precision ambiguity here, just a fixed rejection.
     double before = clock.frequency();
-    clock.setFrequency(1000000.0);  // 1 MHz - may exceed timing precision
-    // Either accepted or rejected (unchanged), but must be positive
-    QVERIFY(clock.frequency() > 0.0);
-    // Verify that frequency is either unchanged or set to requested value
-    // (High frequency may be rejected due to precision limits)
-    if (qFuzzyCompare(clock.frequency(), before)) {
-        // High frequency was rejected - this is acceptable
-        QCOMPARE(clock.frequency(), before);
-    } else {
-        // High frequency was accepted
-        QCOMPARE(clock.frequency(), 1000000.0);
-    }
+    clock.setFrequency(1000000.0);
+    QCOMPARE(clock.frequency(), before);
 }
 
 // Serialization Test
