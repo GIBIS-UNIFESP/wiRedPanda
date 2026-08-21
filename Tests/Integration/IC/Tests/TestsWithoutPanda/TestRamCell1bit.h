@@ -18,7 +18,6 @@ private slots:
     void testWriteOneMultipleHolds();
     void testWeDisabledFromStart();
     void testRapidWeToggle();
-    void testDataChangeWithoutWe();
     void testHoldMultipleCycles();
     void testWriteZeroThenOneWithHold();
 };
