@@ -720,6 +720,12 @@ void TestStatusOps::testDFlipFlopUnknownInputHolds()
 
 void TestStatusOps::testDFlipFlopUnknownClockNoEdge()
 {
+    // DFlipFlop::updateLogic()'s early-return path resets m_simLastClk to Unknown whenever any
+    // input (clk included) goes Unknown/Error, specifically so a later recovery with the clock
+    // already Active can't fabricate a rising edge from stale "last clock was Inactive" state.
+    // Drive the clock directly from Unknown to Active (skipping Inactive) and confirm D is NOT
+    // spuriously latched -- a buggy implementation that failed to reset m_simLastClk would
+    // incorrectly treat this as a rising edge and resolve Q to D's value.
     DFlipFlop dff; InputVcc d, clk, prst, clr;
     initElm(dff); initSrc(d); initSrc(clk); initSrc(prst); initSrc(clr);
     dff.connectPredecessor(0, &d, 0);
@@ -729,28 +735,34 @@ void TestStatusOps::testDFlipFlopUnknownClockNoEdge()
 
     prst.setOutputValue(S::Active);
     clr.setOutputValue(S::Active);
-    d.setOutputValue(S::Inactive);
+    d.setOutputValue(S::Active);
     clk.setOutputValue(S::Inactive);
 
-    // First tick: establish known state
+    // First tick: establish a known, settled state with clk Inactive.
     dff.updateLogic();
     QCOMPARE(dff.outputValue(0), S::Inactive);  // Power-on Q=0
 
-    // Rising edge: latch m_lastValue=Inactive
+    // Clock goes Unknown (e.g. a hazard/glitch): all outputs must go Unknown, and the last-
+    // known-clock-level tracking must be forgotten (not left stale at Inactive).
+    clk.setOutputValue(S::Unknown);
+    dff.updateLogic();
+    QCOMPARE(dff.outputValue(0), S::Unknown);
+    QCOMPARE(dff.outputValue(1), S::Unknown);
+
+    // Clock jumps straight from Unknown to Active, skipping Inactive. If m_simLastClk had
+    // stayed stale at Inactive, this would look like a rising edge and Q would resolve to
+    // D (Active). It must not: Q stays Unknown since no real edge was observed.
     clk.setOutputValue(S::Active);
     dff.updateLogic();
-    QCOMPARE(dff.outputValue(0), S::Inactive);  // Latched Inactive
+    QCOMPARE(dff.outputValue(0), S::Unknown);
+    QCOMPARE(dff.outputValue(1), S::Unknown);
 
-    // Return CLK to Inactive, set D=Active
+    // Confirm the flip-flop isn't permanently wedged: a real edge from here on works normally.
     clk.setOutputValue(S::Inactive);
     dff.updateLogic();
-
-    d.setOutputValue(S::Active);
-    dff.updateLogic();
-
     clk.setOutputValue(S::Active);
     dff.updateLogic();
-    QCOMPARE(dff.outputValue(0), S::Active);  // Latched D=Active
+    QCOMPARE(dff.outputValue(0), S::Active);  // Latched D=Active on the real rising edge
 }
 
 void TestStatusOps::testJKFlipFlopUnknownPresetClearNoTrigger()
