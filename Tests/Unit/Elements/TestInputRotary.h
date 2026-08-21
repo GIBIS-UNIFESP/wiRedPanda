@@ -62,6 +62,7 @@ private slots:
 
     // mousePressEvent()
     void testMousePressAdvancesPort();
+    void testMousePressWhileLockedDoesNotAdvance();
 
     // setAppearance()
     void testSetAppearanceCustom();

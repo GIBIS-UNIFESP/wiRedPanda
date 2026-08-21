@@ -527,14 +527,15 @@ void TestInputRotary::testInputRotary()
         }
     }
 
-    // Test locked state
+    // Test locked state. setOn(bool, int) is the direct/programmatic API (used by load(),
+    // MCP, etc.) and deliberately ignores m_locked -- only mousePressEvent()'s interactive
+    // path checks the lock (see testMousePressWhileLockedDoesNotAdvance).
     inputRotary->setOutputSize(4);
     inputRotary->setLocked(true);
     QVERIFY(inputRotary->isLocked());
 
-    inputRotary->setOn(true, 2);  // Try to change position while locked
-    // Note: setOn() with lock might not work depending on implementation
-    // This test verifies the locked state is preserved
+    inputRotary->setOn(true, 2);
+    QCOMPARE(inputRotary->outputValue(), 2);
 
     inputRotary->setLocked(false);
     QVERIFY(!inputRotary->isLocked());
@@ -636,6 +637,28 @@ void TestInputRotary::testMousePressAdvancesPort()
     QCoreApplication::sendEvent(&scene, &pressEvent);
 
     QCOMPARE(rotary->outputValue(), 1);
+}
+
+void TestInputRotary::testMousePressWhileLockedDoesNotAdvance()
+{
+    // mousePressEvent()'s "!m_locked && button==LeftButton" guard is the one place that
+    // actually respects the lock (setOn() itself deliberately bypasses it -- see
+    // testInputRotary's locked-state section).
+    Scene scene;
+    auto *rotary = new InputRotary;
+    rotary->setPos(0, 0);
+    rotary->setLocked(true);
+    scene.addItem(rotary);
+
+    QCOMPARE(rotary->outputValue(), 0);
+
+    QGraphicsSceneMouseEvent pressEvent(QEvent::GraphicsSceneMousePress);
+    pressEvent.setScenePos(rotary->scenePos());
+    pressEvent.setButton(Qt::LeftButton);
+    pressEvent.setButtons(Qt::LeftButton);
+    QCoreApplication::sendEvent(&scene, &pressEvent);
+
+    QCOMPARE(rotary->outputValue(), 0);
 }
 
 void TestInputRotary::testSetAppearanceCustom()
