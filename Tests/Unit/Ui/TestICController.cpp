@@ -3,6 +3,7 @@
 
 #include "Tests/Unit/Ui/TestICController.h"
 
+#include <functional>
 #include <memory>
 
 #include <QDir>
@@ -66,6 +67,47 @@ IC *selectEmbeddedIC(WorkSpace &tab, const QString &blobName, const QByteArray &
     ICTestHelpers::embedIC(ic, blobBytes, blobName, tab.scene()->contextDir(), tab.scene()->icRegistry());
     ic->setSelected(true);
     return ic;
+}
+
+// Shared setup for the addICFromFile() name-conflict scenarios: a project already containing
+// "import.panda" with different content than the incoming file, and a stubbed file dialog
+// pointing at the new file. `clickHandler` decides which control on the "Selected files"/
+// conflict dialogs to activate; the caller inspects `projectDir`'s resulting file content and
+// `f.host` afterward to assert the scenario-specific outcome.
+void runAddICFromFileConflictScenario(ICControllerFixture &f, const QTemporaryDir &projectDir,
+                                       const std::function<bool(QWidget *)> &clickHandler)
+{
+    QVERIFY(projectDir.isValid());
+    saveProject(f.tab, f.host, projectDir);
+
+    QFile existingFile(projectDir.filePath("import.panda"));
+    QVERIFY(existingFile.open(QIODevice::WriteOnly));
+    existingFile.write("existing content, deliberately different");
+    existingFile.close();
+
+    QTemporaryDir sourceDir;
+    QVERIFY(sourceDir.isValid());
+    QFile srcFile(sourceDir.filePath("import.panda"));
+    QVERIFY(srcFile.open(QIODevice::WriteOnly));
+    srcFile.write(minimalPandaBytes());
+    srcFile.close();
+
+    ICController controller(f.host);
+    ScopedFileDialogStub dialogStub;
+    dialogStub.stub.openResult = sourceDir.filePath("import.panda");
+
+    auto dismisser = TestUtils::AutoDismisser([clickHandler](QWidget *w) {
+        if (auto *box = qobject_cast<QMessageBox *>(w)) {
+            if (box->text().contains(QStringLiteral("Selected files"))) {
+                box->accept();
+                return true;
+            }
+            return clickHandler(w);
+        }
+        return false;
+    });
+
+    controller.addICFromFile();
 }
 
 } // namespace
@@ -801,43 +843,15 @@ void TestICController::testAddICFromFileConflictKeepExisting()
 {
     ICControllerFixture f;
     QTemporaryDir projectDir;
-    QVERIFY(projectDir.isValid());
-    saveProject(f.tab, f.host, projectDir);
-
-    // A different-content file already occupies the destination name.
-    QFile existingFile(projectDir.filePath("import.panda"));
-    QVERIFY(existingFile.open(QIODevice::WriteOnly));
-    existingFile.write("existing content, deliberately different");
-    existingFile.close();
-
-    QTemporaryDir sourceDir;
-    QVERIFY(sourceDir.isValid());
-    QFile srcFile(sourceDir.filePath("import.panda"));
-    QVERIFY(srcFile.open(QIODevice::WriteOnly));
-    srcFile.write(minimalPandaBytes());
-    srcFile.close();
-
-    ICController controller(f.host);
-    ScopedFileDialogStub dialogStub;
-    dialogStub.stub.openResult = sourceDir.filePath("import.panda");
-
-    auto dismisser = TestUtils::AutoDismisser([](QWidget *w) {
-        if (auto *box = qobject_cast<QMessageBox *>(w)) {
-            if (box->text().contains(QStringLiteral("Selected files"))) {
-                box->accept();
+    runAddICFromFileConflictScenario(f, projectDir, [](QWidget *box) {
+        for (auto *btn : qobject_cast<QMessageBox *>(box)->buttons()) {
+            if (btn->text().remove('&') == QStringLiteral("Keep Existing")) {
+                btn->click();
                 return true;
-            }
-            for (auto *btn : box->buttons()) {
-                if (btn->text().remove('&') == QStringLiteral("Keep Existing")) {
-                    btn->click();
-                    return true;
-                }
             }
         }
         return false;
     });
-
-    controller.addICFromFile();
 
     QFile keptFile(projectDir.filePath("import.panda"));
     QVERIFY(keptFile.open(QIODevice::ReadOnly));
@@ -848,42 +862,15 @@ void TestICController::testAddICFromFileConflictReplace()
 {
     ICControllerFixture f;
     QTemporaryDir projectDir;
-    QVERIFY(projectDir.isValid());
-    saveProject(f.tab, f.host, projectDir);
-
-    QFile existingFile(projectDir.filePath("import.panda"));
-    QVERIFY(existingFile.open(QIODevice::WriteOnly));
-    existingFile.write("existing content, deliberately different");
-    existingFile.close();
-
-    QTemporaryDir sourceDir;
-    QVERIFY(sourceDir.isValid());
-    QFile srcFile(sourceDir.filePath("import.panda"));
-    QVERIFY(srcFile.open(QIODevice::WriteOnly));
-    srcFile.write(minimalPandaBytes());
-    srcFile.close();
-
-    ICController controller(f.host);
-    ScopedFileDialogStub dialogStub;
-    dialogStub.stub.openResult = sourceDir.filePath("import.panda");
-
-    auto dismisser = TestUtils::AutoDismisser([](QWidget *w) {
-        if (auto *box = qobject_cast<QMessageBox *>(w)) {
-            if (box->text().contains(QStringLiteral("Selected files"))) {
-                box->accept();
+    runAddICFromFileConflictScenario(f, projectDir, [](QWidget *box) {
+        for (auto *btn : qobject_cast<QMessageBox *>(box)->buttons()) {
+            if (btn->text().remove('&') == QStringLiteral("Replace")) {
+                btn->click();
                 return true;
-            }
-            for (auto *btn : box->buttons()) {
-                if (btn->text().remove('&') == QStringLiteral("Replace")) {
-                    btn->click();
-                    return true;
-                }
             }
         }
         return false;
     });
-
-    controller.addICFromFile();
 
     QFile replacedFile(projectDir.filePath("import.panda"));
     QVERIFY(replacedFile.open(QIODevice::ReadOnly));
@@ -894,45 +881,17 @@ void TestICController::testAddICFromFileConflictCancelled()
 {
     ICControllerFixture f;
     QTemporaryDir projectDir;
-    QVERIFY(projectDir.isValid());
-    saveProject(f.tab, f.host, projectDir);
-
-    const QByteArray existingContent = "existing content, deliberately different";
-    QFile existingFile(projectDir.filePath("import.panda"));
-    QVERIFY(existingFile.open(QIODevice::WriteOnly));
-    existingFile.write(existingContent);
-    existingFile.close();
-
-    QTemporaryDir sourceDir;
-    QVERIFY(sourceDir.isValid());
-    QFile srcFile(sourceDir.filePath("import.panda"));
-    QVERIFY(srcFile.open(QIODevice::WriteOnly));
-    srcFile.write(minimalPandaBytes());
-    srcFile.close();
-
-    ICController controller(f.host);
-    ScopedFileDialogStub dialogStub;
-    dialogStub.stub.openResult = sourceDir.filePath("import.panda");
-
-    auto dismisser = TestUtils::AutoDismisser([](QWidget *w) {
-        if (auto *box = qobject_cast<QMessageBox *>(w)) {
-            if (box->text().contains(QStringLiteral("Selected files"))) {
-                box->accept();
-                return true;
-            }
-            if (auto *cancelBtn = box->button(QMessageBox::Cancel)) {
-                cancelBtn->click();
-                return true;
-            }
+    runAddICFromFileConflictScenario(f, projectDir, [](QWidget *box) {
+        if (auto *cancelBtn = qobject_cast<QMessageBox *>(box)->button(QMessageBox::Cancel)) {
+            cancelBtn->click();
+            return true;
         }
         return false;
     });
 
-    controller.addICFromFile();
-
     QFile untouchedFile(projectDir.filePath("import.panda"));
     QVERIFY(untouchedFile.open(QIODevice::ReadOnly));
-    QCOMPARE(untouchedFile.readAll(), existingContent);
+    QCOMPARE(untouchedFile.readAll(), QByteArray("existing content, deliberately different"));
     QCOMPARE(f.host.statusMessages.size(), 0); // updateICList() line never reached
 }
 
