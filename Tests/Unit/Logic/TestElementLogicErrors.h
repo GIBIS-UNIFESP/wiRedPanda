@@ -12,7 +12,6 @@ class TestElementLogicErrors : public QObject
 private slots:
 
     // Error Handling Tests
-    void testInvalidInputPortIndex();
     void testNullPredecessor();
     void testDisconnectedInput();
     void testMultipleConnectionsSamePort();

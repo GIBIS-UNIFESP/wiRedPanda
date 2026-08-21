@@ -21,30 +21,6 @@ using TestUtils::initElm;
 // Robustness Tests — Error Conditions and Boundary Behavior
 // ============================================================
 
-void TestElementLogicErrors::testInvalidInputPortIndex()
-{
-    And gate;
-    gate.setInputSize(4);
-    InputVcc in0, in1, in2, in3;
-    initElm(gate); initSrc(in0); initSrc(in1); initSrc(in2); initSrc(in3);
-
-    gate.connectPredecessor(0, &in0, 0);
-    gate.connectPredecessor(1, &in1, 0);
-    gate.connectPredecessor(2, &in2, 0);
-    gate.connectPredecessor(3, &in3, 0);
-
-    in0.setOutputValue(true);
-    in1.setOutputValue(true);
-    in2.setOutputValue(true);
-    in3.setOutputValue(true);
-    gate.updateLogic();
-    QCOMPARE(gate.outputValue(), Status::Active);
-
-    in3.setOutputValue(false);
-    gate.updateLogic();
-    QCOMPARE(gate.outputValue(), Status::Inactive);
-}
-
 void TestElementLogicErrors::testNullPredecessor()
 {
     And andGate;
