@@ -305,16 +305,27 @@ void TestExerciseEngine::testLoadFromResourceInvalidJsonFails()
 
 void TestExerciseEngine::testLoadFromResourceMissingIdOrTitleFails()
 {
-    const char *const json = R"({
+    // StepEngineCore's guard is the single combined condition
+    // `m_id.isEmpty() || rawTitle.isEmpty()` -- exercise both halves, not just missing id.
+    const char *const noIdJson = R"({
         "title": "No Id Here",
         "steps": [ { "instruction": "x" } ]
     })";
     QTemporaryDir dir;
     QVERIFY(dir.isValid());
-    const QString path = writeJsonFile(dir, "no_id.json", json);
+    const QString noIdPath = writeJsonFile(dir, "no_id.json", noIdJson);
 
-    ExerciseEngine engine;
-    QVERIFY(!engine.loadFromResource(path));
+    ExerciseEngine engineNoId;
+    QVERIFY(!engineNoId.loadFromResource(noIdPath));
+
+    const char *const noTitleJson = R"({
+        "id": "no-title-here",
+        "steps": [ { "instruction": "x" } ]
+    })";
+    const QString noTitlePath = writeJsonFile(dir, "no_title.json", noTitleJson);
+
+    ExerciseEngine engineNoTitle;
+    QVERIFY(!engineNoTitle.loadFromResource(noTitlePath));
 }
 
 void TestExerciseEngine::testLoadFromResourceEmptyStepsArrayFails()
