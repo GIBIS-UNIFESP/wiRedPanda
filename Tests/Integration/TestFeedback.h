@@ -61,7 +61,7 @@ private:
     Scene *createMixedCircuit();
 
     // Verification helpers
-    void verifyConvergence(Scene *scene, bool shouldConverge);
+    void verifyConvergence(Scene *scene);
     void verifyFeedbackDetection(Scene *scene);
     void verifyStableState(Scene *scene);
 

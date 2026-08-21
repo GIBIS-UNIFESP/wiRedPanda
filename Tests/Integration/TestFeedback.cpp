@@ -24,7 +24,7 @@ void TestFeedback::testSRLatchFromNANDConvergence()
     std::unique_ptr<Scene> scene(createSRLatchFromNAND());
     QVERIFY2(scene != nullptr, "Failed to create feedback circuit");
 
-    verifyConvergence(scene.get(), true);
+    verifyConvergence(scene.get());
     verifyStableState(scene.get());
 }
 
@@ -34,7 +34,7 @@ void TestFeedback::testDLatchWithFeedback()
     std::unique_ptr<Scene> scene(createDLatchWithFeedback());
     QVERIFY2(scene != nullptr, "Failed to create feedback circuit");
 
-    verifyConvergence(scene.get(), true);
+    verifyConvergence(scene.get());
     verifyStableState(scene.get());
 }
 
@@ -45,7 +45,7 @@ void TestFeedback::testRingOscillatorNonConvergence()
     std::unique_ptr<Scene> scene(createRingOscillator());
     QVERIFY2(scene != nullptr, "Failed to create feedback circuit");
 
-    verifyConvergence(scene.get(), true);
+    verifyConvergence(scene.get());
 }
 
 void TestFeedback::testSetResetPriorityInSRLatch()
@@ -301,7 +301,7 @@ void TestFeedback::testConflictingFeedbackSignals()
         }
     }
 
-    verifyConvergence(scene.get(), true);
+    verifyConvergence(scene.get());
 }
 
 void TestFeedback::testWarningMessageContent()
@@ -781,38 +781,30 @@ Scene *TestFeedback::createMixedCircuit()
     return scene;
 }
 
-void TestFeedback::verifyConvergence(Scene *scene, bool shouldConverge)
+void TestFeedback::verifyConvergence(Scene *scene)
 {
     QVERIFY2(scene != nullptr, "Failed to create feedback circuit");
-
-    if (!shouldConverge) {
-        // Non-converging circuits will print a debug warning
-        QTest::ignoreMessage(QtDebugMsg, QRegularExpression(".*converge.*"));
-    }
 
     Simulation sim(scene);
     sim.update();
 
-    if (shouldConverge) {
-        // For converging circuits, verify outputs are stable
-        // Snapshot all logic element outputs
-        QHash<GraphicElement *, Status> snapshot;
-        for (auto *elem : scene->elements()) {
-            if (elem->simOutputSize() > 0) {
-                snapshot[elem] = elem->outputValue(0);
-            }
+    // Snapshot all logic element outputs
+    QHash<GraphicElement *, Status> snapshot;
+    for (auto *elem : scene->elements()) {
+        if (elem->simOutputSize() > 0) {
+            snapshot[elem] = elem->outputValue(0);
         }
+    }
 
-        // Run another update cycle
-        sim.update();
+    // Run another update cycle
+    sim.update();
 
-        // Verify outputs haven't changed
-        for (auto *elem : scene->elements()) {
-            if (elem->simOutputSize() > 0) {
-                Status currentValue = elem->outputValue(0);
-                Status snapshotValue = snapshot.value(elem, currentValue);
-                QCOMPARE(currentValue, snapshotValue);
-            }
+    // Verify outputs haven't changed
+    for (auto *elem : scene->elements()) {
+        if (elem->simOutputSize() > 0) {
+            Status currentValue = elem->outputValue(0);
+            Status snapshotValue = snapshot.value(elem, currentValue);
+            QCOMPARE(currentValue, snapshotValue);
         }
     }
 }
