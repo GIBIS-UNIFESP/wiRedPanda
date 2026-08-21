@@ -6,10 +6,12 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QHash>
 #include <QImage>
 #include <QLineF>
 #include <QPainter>
 #include <QScopeGuard>
+#include <QSet>
 #include <QTemporaryDir>
 #include <QTemporaryFile>
 #include <QTime>
@@ -141,12 +143,19 @@ void TestIC::testICNestedMultiLevel()
 
     QVERIFY2(!loadedICs.isEmpty(), "Should find at least one IC in scene");
 
-    // Verify all loaded ICs have valid port configurations
+    // Verify every loaded IC has real internal circuitry (inputSize()/outputSize() are int
+    // sizes and thus always >= 0 -- that alone proves nothing), and that nesting genuinely
+    // occurred: this fixture's whole point is an IC that itself contains another IC.
+    bool foundNestedIC = false;
     for (IC *ic : loadedICs) {
-        QVERIFY2(ic->inputSize() >= 0, "IC should have non-negative input count");
-        QVERIFY2(ic->outputSize() >= 0, "IC should have non-negative output count");
-        // Empty ICs (no inputs and no outputs) are acceptable; nothing to assert.
+        QVERIFY2(!ic->internalElements().isEmpty(), "Loaded IC must have real internal circuitry, not an empty shell");
+        for (auto *internalElm : ic->internalElements()) {
+            if (internalElm->elementType() == ElementType::IC) {
+                foundNestedIC = true;
+            }
+        }
     }
+    QVERIFY2(foundNestedIC, "ic.panda must actually contain a nested IC (an IC whose internals include another IC)");
 }
 
 // Logic Generation Tests
@@ -343,19 +352,27 @@ void TestIC::testICStatusPropagation()
     auto *sim = builder.initSimulation();
     QVERIFY2(sim != nullptr, "Simulation should initialize successfully");
 
-    // Test 1: Set switch OFF and verify output
+    // IC input port 0 is "-Preset" (active-low, async): switch OFF drives it Inactive/low,
+    // asserting preset and forcing Q high; switch ON drives it Active/high, deasserting
+    // preset. With the clock (C) left unconnected (defaultValue, never edges), Q tracks
+    // -Preset directly -- confirmed empirically: off->true, on->false, off->true.
+
+    // Test 1: Set switch OFF (preset asserted) -- Q must be forced high.
     inputSwitch.setOn(false);
     sim->update();
     bool ledStateWhenSwitchOff = TestUtils::inputStatus(&outputLed);
+    QVERIFY2(ledStateWhenSwitchOff, "Asserting -Preset (switch off) must force the Q output high");
 
-    // Test 2: Set switch ON so the OFF state below is reached via a real transition
+    // Test 2: Set switch ON (preset deasserted) -- Q must actually change, not just hold.
     inputSwitch.setOn(true);
     sim->update();
+    QVERIFY2(!TestUtils::inputStatus(&outputLed), "Deasserting -Preset must change Q, not leave it stuck at the forced value");
 
-    // Test 3: Toggle back to OFF and verify it changes again
+    // Test 3: Toggle back to OFF (preset re-asserted) -- Q must be forced high again.
     inputSwitch.setOn(false);
     sim->update();
     bool ledStateSecondOff = TestUtils::inputStatus(&outputLed);
+    QVERIFY2(ledStateSecondOff, "Re-asserting -Preset must force Q high again");
     QCOMPARE(ledStateSecondOff, ledStateWhenSwitchOff);
 
     // Test 4: With only 1 of 5 IC inputs connected, the IC produces deterministic
@@ -385,38 +402,33 @@ void TestIC::testICRequiredPorts()
         QFAIL(qPrintable(QString("Failed to load IC file: %1").arg(e.what())));
     }
 
-    QVERIFY2(ic->inputSize() > 0, "IC should have input ports for this test");
+    QVERIFY2(ic->inputSize() >= 5, "jkflipflop.panda should have 5 input ports for this test");
 
-    // Verify all input ports exist and have well-defined required/optional status
-    int requiredCount = 0;
-    int optionalCount = 0;
-    int invalidCount = 0;
+    // jkflipflop.panda's real pin layout (confirmed via Port::name()): -Preset, J, K, and
+    // -Clear are optional (async overrides / data inputs with safe defaults when
+    // unconnected); only the clock (C) is required -- a JK flip-flop without a clock source
+    // can't do anything. Check each specific port against this, not just an aggregate count
+    // that would pass regardless of which ports ended up required or optional.
+    const QHash<QString, bool> expectedRequired = {
+        {QStringLiteral("-Preset"), false},
+        {QStringLiteral("J"), false},
+        {QStringLiteral("C"), true},
+        {QStringLiteral("K"), false},
+        {QStringLiteral("-Clear"), false},
+    };
 
+    QSet<QString> seenNames;
     for (int i = 0; i < ic->inputSize(); ++i) {
         auto *port = ic->inputPort(i);
         QVERIFY2(port != nullptr, qPrintable(QString("Input port %1 should exist").arg(i)));
 
-        // Check port status
-        if (port->status() == Status::Unknown) {
-            invalidCount++;
-            // Skip further checks for invalid ports
-            continue;
-        }
-
-        // Each valid port must be either required or optional (not both, not neither)
-        const bool isRequired = port->isRequired();
-        if (isRequired) {
-            requiredCount++;
-        } else {
-            optionalCount++;
-        }
+        const QString name = port->name();
+        seenNames.insert(name);
+        const auto it = expectedRequired.constFind(name);
+        QVERIFY2(it != expectedRequired.constEnd(), qPrintable(QString("Unexpected input port name: %1").arg(name)));
+        QCOMPARE(port->isRequired(), it.value());
     }
-
-    // Verify we found at least some valid ports
-    int validPorts = requiredCount + optionalCount;
-    QVERIFY2(validPorts > 0, qPrintable(
-        QString("IC should have at least one valid port. Found: %1 required, %2 optional, %3 invalid")
-            .arg(requiredCount).arg(optionalCount).arg(invalidCount)));
+    QCOMPARE(seenNames.size(), expectedRequired.size());
 }
 
 void TestIC::testICDefaultValues()
