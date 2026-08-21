@@ -441,6 +441,42 @@ void TestCommands::testChangeInputSizeCommand()
     QCOMPARE(andGate->inputSize(), 4);
 }
 
+void TestCommands::testChangeInputSizeCommandShrinkDropsAndRestoresConnection()
+{
+    // Growing was already covered above; shrinking with a wire on a removed port exercises
+    // a distinct, non-trivial path: redo()'s drainPortConnections() must delete the
+    // connection on the removed port, and undo() must restore it.
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *undoStack = scene->undoStack();
+
+    auto *andGate = new And();
+    auto *sw = new InputSwitch();
+    andGate->setPos(200, 0);
+    sw->setPos(0, 0);
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{andGate, sw}, scene));
+    scene->receiveCommand(new ChangePortSizeCommand({andGate}, 4, scene, true));
+    QCOMPARE(andGate->inputSize(), 4);
+
+    auto *conn = new Connection();
+    conn->setStartPort(sw->outputPort());
+    conn->setEndPort(andGate->inputPort(3));
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{conn}, scene));
+    QVERIFY(!sw->outputPort()->connections().isEmpty());
+
+    // Shrink back to 2 inputs: port 3 (and its connection) is dropped.
+    scene->receiveCommand(new ChangePortSizeCommand({andGate}, 2, scene, true));
+    QCOMPARE(andGate->inputSize(), 2);
+    QVERIFY2(sw->outputPort()->connections().isEmpty(),
+             "Shrinking must drop the connection on the removed input port");
+
+    undoStack->undo();
+    QCOMPARE(andGate->inputSize(), 4);
+    QVERIFY2(!sw->outputPort()->connections().isEmpty(),
+             "Undoing the shrink must restore the dropped connection");
+    QCOMPARE(sw->outputPort()->connections().constFirst()->endPort(), andGate->inputPort(3));
+}
+
 void TestCommands::testConnectionPreservation()
 {
     // Test that undo/redo properly restores connections
