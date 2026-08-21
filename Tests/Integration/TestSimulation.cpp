@@ -329,10 +329,7 @@ void TestSimulation::testElementProcessingOrderConsistency()
     // This verifies our fix for std::stable_sort in topological sorting
     // Uses stable element IDs for comparison, not pointer addresses
 
-    constexpr int NUM_RUNS = 10;
-    QVector<QVector<int>> runs;  // Store element IDs, which are stable per creation order
-
-    for (int run = 0; run < NUM_RUNS; ++run) {
+    verifyDeterministicAcrossRuns<int>(10, "Element processing order", []() -> QVector<int> {
         WorkSpace workspace;
         auto *scene = workspace.scene();
 
@@ -388,23 +385,15 @@ void TestSimulation::testElementProcessingOrderConsistency()
         conn7.setStartPort(not1.outputPort());
         conn7.setEndPort(led.inputPort());
 
-        // Get element processing order and extract element IDs
+        // Get element processing order and extract element IDs, which are stable based on
+        // creation order (unlike pointer addresses).
         const auto elements = Scene::sortByTopology(scene->elements());
         QVector<int> ids;
         for (auto *elem : elements) {
             ids.append(elem->id());
         }
-        runs.append(ids);
-    }
-
-    // Verify all runs produce identical element ordering
-    // Compares element IDs, which are stable based on creation order
-    for (int run = 1; run < NUM_RUNS; ++run) {
-        QCOMPARE(runs[run].size(), runs[0].size());
-        for (int i = 0; i < runs[0].size(); ++i) {
-            QCOMPARE(runs[run][i], runs[0][i]);
-        }
-    }
+        return ids;
+    });
 }
 
 void TestSimulation::testSceneInitializationDeterminism()
@@ -412,10 +401,10 @@ void TestSimulation::testSceneInitializationDeterminism()
     // Test that scene element initialization produces consistent ordering
     // This verifies our fix for scene->elements() deterministic ordering
 
-    constexpr int NUM_RUNS = 10;
-    QVector<QVector<GraphicElement *>> elementOrderings;
-
-    for (int run = 0; run < NUM_RUNS; ++run) {
+    // Compares element IDs, not pointer addresses: each run's elements live on that run's own
+    // stack, freed when the lambda returns, so comparing pointers across runs would just compare
+    // whatever addresses the stack/ASan happened to reuse -- not the actual ordering.
+    verifyDeterministicAcrossRuns<int>(10, "Scene elements order", []() -> QVector<int> {
         WorkSpace workspace;
         auto *scene = workspace.scene();
 
@@ -448,23 +437,15 @@ void TestSimulation::testSceneInitializationDeterminism()
         conn3.setStartPort(andGate.outputPort());
         conn3.setEndPort(led.inputPort());
 
-        // Get elements using our fixed deterministic method
-        auto elements = scene->elements();
-        elementOrderings.append(elements);
-    }
-
-    // Verify consistent ordering across runs
-    for (int run = 1; run < NUM_RUNS; ++run) {
-        QCOMPARE(elementOrderings[run].size(), elementOrderings[0].size());
-
-        for (int i = 0; i < elementOrderings[0].size(); ++i) {
-            if (elementOrderings[run][i] != elementOrderings[0][i]) {
-                QString msg = QString("Scene elements order mismatch at run %1, position %2")
-                                  .arg(run).arg(i);
-                QFAIL(qPrintable(msg));
-            }
+        // Get elements using our fixed deterministic method, then extract stable IDs
+        const auto elements = scene->elements();
+        QVector<int> ids;
+        ids.reserve(elements.size());
+        for (auto *elem : elements) {
+            ids.append(elem->id());
         }
-    }
+        return ids;
+    });
 }
 
 void TestSimulation::testSimulationOutputReproducibility()
@@ -472,11 +453,9 @@ void TestSimulation::testSimulationOutputReproducibility()
     // Test that identical circuits produce identical simulation outputs
     // This is the ultimate test of determinism
 
-    constexpr int NUM_RUNS = 5;
     constexpr int SIMULATION_STEPS = 20;
-    QVector<QVector<bool>> simulationResults;
 
-    for (int run = 0; run < NUM_RUNS; ++run) {
+    verifyDeterministicAcrossRuns<bool>(5, "Simulation output", []() -> QVector<bool> {
         WorkSpace workspace;
         auto *scene = workspace.scene();
         Simulation simulation(scene);
@@ -528,29 +507,19 @@ void TestSimulation::testSimulationOutputReproducibility()
             bool ledOutput = (led.inputPort()->status() == Status::Active);
             outputs.append(ledOutput);
 
-            // Verify AND gate logic
+            // Verify AND gate logic. Not QCOMPARE: this lambda returns QVector<bool>, and
+            // QCOMPARE's implicit bare `return;` on failure doesn't compile in a non-void
+            // function -- call the underlying qFail() directly and return explicitly instead.
             bool expectedOutput = input1 && input2;
-            QCOMPARE(ledOutput, expectedOutput);
-        }
-
-        simulationResults.append(outputs);
-    }
-
-    // Verify all runs produce identical outputs
-    for (int run = 1; run < NUM_RUNS; ++run) {
-        QCOMPARE(simulationResults[run].size(), simulationResults[0].size());
-
-        for (int step = 0; step < SIMULATION_STEPS; ++step) {
-            if (simulationResults[run][step] != simulationResults[0][step]) {
-                QString msg = QString("Output mismatch at run %1, step %2: "
-                                     "expected %3, got %4")
-                                  .arg(run).arg(step)
-                                  .arg(simulationResults[0][step])
-                                  .arg(simulationResults[run][step]);
-                QFAIL(qPrintable(msg));
+            if (ledOutput != expectedOutput) {
+                QTest::qFail(qPrintable(QString("AND gate logic mismatch at step %1: expected %2, got %3")
+                    .arg(step).arg(expectedOutput).arg(ledOutput)), __FILE__, __LINE__);
+                return {};
             }
         }
-    }
+
+        return outputs;
+    });
 }
 
 void TestSimulation::testSimulationGraphStability()
@@ -558,10 +527,7 @@ void TestSimulation::testSimulationGraphStability()
     // Test simulation graph for consistent behavior across multiple initializations
     // This verifies our QHash -> QMap fix for deterministic iteration
 
-    constexpr int NUM_RUNS = 10;
-    QVector<QVector<std::pair<int, int>>> mappingResults;
-
-    for (int run = 0; run < NUM_RUNS; ++run) {
+    verifyDeterministicAcrossRuns<std::pair<int, int>>(10, "Simulation graph", []() -> QVector<std::pair<int, int>> {
         WorkSpace workspace;
         auto *scene = workspace.scene();
 
@@ -653,26 +619,11 @@ void TestSimulation::testSimulationGraphStability()
             elementProperties.append({priority, outputSize});
         }
 
-        mappingResults.append(elementProperties);
-
         // Clean up connections
         qDeleteAll(connections);
-    }
 
-    // Verify consistent ordering across all runs
-    for (int run = 1; run < NUM_RUNS; ++run) {
-        QCOMPARE(mappingResults[run].size(), mappingResults[0].size());
-
-        for (int i = 0; i < mappingResults[0].size(); ++i) {
-            if (mappingResults[run][i] != mappingResults[0][i]) {
-                QString msg = QString("Simulation graph mismatch at run %1, position %2: expected (%3,%4), got (%5,%6)")
-                                  .arg(run).arg(i)
-                                  .arg(mappingResults[0][i].first).arg(mappingResults[0][i].second)
-                                  .arg(mappingResults[run][i].first).arg(mappingResults[run][i].second);
-                QFAIL(qPrintable(msg));
-            }
-        }
-    }
+        return elementProperties;
+    });
 }
 
 void TestSimulation::testCircuitWithFeedbackLoops()
@@ -681,10 +632,12 @@ void TestSimulation::testCircuitWithFeedbackLoops()
     // This exercises our feedback loop detection and priority handling fixes
     // Uses a proper NAND-based SR latch circuit
 
-    constexpr int NUM_RUNS = 5;
-    QVector<QVector<bool>> feedbackResults;
+    // verifyDeterministicAcrossRuns() only checks cross-run consistency; capture the first
+    // run's outputs here too so we can additionally assert the actual expected SR latch
+    // behavior below.
+    QVector<bool> firstRunOutputs;
 
-    for (int run = 0; run < NUM_RUNS; ++run) {
+    verifyDeterministicAcrossRuns<bool>(5, "Feedback circuit", [&firstRunOutputs]() -> QVector<bool> {
         WorkSpace workspace;
         auto *scene = workspace.scene();
         Simulation simulation(scene);
@@ -770,30 +723,17 @@ void TestSimulation::testCircuitWithFeedbackLoops()
         simulation.update();
         outputs.append(qLed.inputPort()->status() == Status::Active);  // Should be false again
 
-        feedbackResults.append(outputs);
-    }
-
-    // Verify consistent behavior across all runs
-    for (int run = 1; run < NUM_RUNS; ++run) {
-        QCOMPARE(feedbackResults[run].size(), feedbackResults[0].size());
-
-        for (int step = 0; step < feedbackResults[0].size(); ++step) {
-            if (feedbackResults[run][step] != feedbackResults[0][step]) {
-                QString msg = QString("Feedback circuit mismatch at run %1, step %2: "
-                                     "expected %3, got %4")
-                                  .arg(run).arg(step)
-                                  .arg(feedbackResults[0][step])
-                                  .arg(feedbackResults[run][step]);
-                QFAIL(qPrintable(msg));
-            }
+        if (firstRunOutputs.isEmpty()) {
+            firstRunOutputs = outputs;
         }
-    }
+        return outputs;
+    });
 
-    // Verify expected NAND SR latch behavior in first run
-    QVERIFY2(!feedbackResults[0][0], "SR Latch should be reset at state 0");
-    QVERIFY2(feedbackResults[0][1], "SR Latch should be set at state 1");
-    QVERIFY2(feedbackResults[0][2], "SR Latch should hold at state 2");
-    QVERIFY2(!feedbackResults[0][3], "SR Latch should be reset again at state 3");
+    // Verify expected NAND SR latch behavior
+    QVERIFY2(!firstRunOutputs[0], "SR Latch should be reset at state 0");
+    QVERIFY2(firstRunOutputs[1], "SR Latch should be set at state 1");
+    QVERIFY2(firstRunOutputs[2], "SR Latch should hold at state 2");
+    QVERIFY2(!firstRunOutputs[3], "SR Latch should be reset again at state 3");
 }
 
 // ============================================================================
