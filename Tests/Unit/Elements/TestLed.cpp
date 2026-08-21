@@ -375,9 +375,11 @@ void TestLED::testSaveColor()
 
 void TestLED::testLoadColorOldVersion()
 {
-    // Load a real backward compatibility file from v2.3 (old format, pre-v4.1)
-    // This verifies that LED can correctly load color data in old format
-    QString filePath = TestUtils::backwardCompatibilityDir() + "v2.3/display-3bits.panda";
+    // v2.3.3 (old format, pre-v4.1: color stored as a bare QString -- see the
+    // hasClock()/!hasQMapFormat() branch in Led::load()) has four LEDs, three of them with
+    // distinct non-default colors, unlike display-3bits.panda (which has no Led at all,
+    // only a Display7 -- confirmed by dumping every loaded element's type).
+    QString filePath = TestUtils::backwardCompatibilityDir() + "v2.3.3/box.panda";
 
     QVERIFY2(QFile::exists(filePath), qPrintable(QString("Backward compatibility file should exist: %1").arg(filePath)));
 
@@ -387,9 +389,13 @@ void TestLED::testLoadColorOldVersion()
         Scene *scene = workspace.scene();
         QVERIFY(scene != nullptr);
 
-        // Verify scene contains elements (LEDs from old format)
-        auto items = scene->items();
-        QVERIFY2(!items.isEmpty(), "Loaded file should contain elements");
+        QSet<QString> loadedColors;
+        for (auto *item : scene->items()) {
+            if (auto *led = dynamic_cast<Led *>(item)) {
+                loadedColors.insert(led->color());
+            }
+        }
+        QCOMPARE(loadedColors, QSet<QString>({"Red", "Green", "Blue", "White"}));
     } catch (const std::exception &e) {
         QFAIL(qPrintable(QString("Failed to load backward compatibility file: %1").arg(e.what())));
     }
