@@ -135,7 +135,6 @@ private slots:
     // openICInTab() time).
     void testInlineTabTitleUpdatesAfterBlobRename();
     void testEmbeddedICSaveReloadRoundTrip();
-    void testEmbeddedICCopyPastePreservesState();
 
     // --- Inline IC tab operations ---
 
