@@ -128,6 +128,8 @@ void TestArduinoCodeGenUnit::testMuxCircuit()
     QString content = file.readAll();
 
     QVERIFY(content.contains("void setup()"));
+    QVERIFY(content.contains("//Multiplexer"));
+    QVERIFY2(content.contains("} else if (("), qPrintable(content));
 }
 
 void TestArduinoCodeGenUnit::testDemuxCircuit()
