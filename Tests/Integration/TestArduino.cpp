@@ -2505,24 +2505,27 @@ void TestArduino::testArduinoExportHelper(const QString &icFile)
         }
     }
 
-    // Run testbench validation only when explicitly generating (GENERATE_EXPECTED_ARDUINO=1)
-    if (generateMode) {
-        // Functional testbench validation for combinational circuits (Phase 5)
-        if (isCombinationalCircuit(allElements)) {
-            const auto truthTable = generateTruthTable(allElements);
-            if (!truthTable.isEmpty()) {
-                const QString tbSketchName = baseName + "_tb";
-                const QString tbSketchFolder = tempDir.filePath(tbSketchName);
-                if (QDir().mkdir(tbSketchFolder)) {
-                    const QString tbInoPath = tbSketchFolder + "/" + tbSketchName + ".ino";
-                    try {
-                        generator.generateTestbench(tbInoPath, truthTable);
-                        QVERIFY2(runTestbench(tbInoPath),
-                            qPrintable(QString("Testbench functional validation failed for %1").arg(icFile)));
-                    } catch (const std::exception &ex) {
-                        QFAIL(qPrintable(QString("Testbench generation failed for %1: %2")
-                            .arg(icFile, QString::fromStdString(ex.what()))));
-                    }
+    // Functional testbench validation for combinational circuits (Phase 5). Runs whenever
+    // arduino-cli + simavr are actually available (the dev container; not the stock CI
+    // runners, which don't install them -- see testArduinoSequentialMultiCycleCpu8Bit's same
+    // graceful-skip pattern), not just when regenerating goldens: gating real functional
+    // validation behind a manual env var meant it never ran in normal test runs at all.
+    if (QStandardPaths::findExecutable("arduino-cli").isEmpty() || QStandardPaths::findExecutable("simavr").isEmpty()) {
+        qInfo() << "Testbench functional validation skipped for" << icFile << "-- arduino-cli/simavr not found";
+    } else if (isCombinationalCircuit(allElements)) {
+        const auto truthTable = generateTruthTable(allElements);
+        if (!truthTable.isEmpty()) {
+            const QString tbSketchName = baseName + "_tb";
+            const QString tbSketchFolder = tempDir.filePath(tbSketchName);
+            if (QDir().mkdir(tbSketchFolder)) {
+                const QString tbInoPath = tbSketchFolder + "/" + tbSketchName + ".ino";
+                try {
+                    generator.generateTestbench(tbInoPath, truthTable);
+                    QVERIFY2(runTestbench(tbInoPath),
+                        qPrintable(QString("Testbench functional validation failed for %1").arg(icFile)));
+                } catch (const std::exception &ex) {
+                    QFAIL(qPrintable(QString("Testbench generation failed for %1: %2")
+                        .arg(icFile, QString::fromStdString(ex.what()))));
                 }
             }
         }
