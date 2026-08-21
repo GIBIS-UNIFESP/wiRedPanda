@@ -1435,7 +1435,10 @@ void TestSerialization::testMalformedConnectionData()
         loadFromMemory(workspace, data);
         // Should load elements but skip bad connections
         QCOMPARE(workspace.scene()->elements().size(), 2);
-        QVERIFY2(workspace.scene() != nullptr, "Scene should be valid after skipping malformed connections");
+        for (auto *elm : workspace.scene()->elements()) {
+            QVERIFY2(elm->outputPort(0)->connections().isEmpty(),
+                     "A connection with invalid element/port indices must be skipped, not attached");
+        }
     } catch (const std::exception &e) {
         // Acceptable to fail on malformed data
         QVERIFY2(!QString(e.what()).isEmpty(), "Exception should explain the malformed connection issue");
