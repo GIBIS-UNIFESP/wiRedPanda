@@ -40,6 +40,7 @@ private slots:
 
     void testDiscoverMergesInstallRelativeDir();
     void testDiscoverMergesDocumentsFallbackDir();
+    void testDiscoverMergesManagedContentDir();
 
     void testTranslateFromCatalogNonObjectMidPathFallsBack();
     void testTranslateNonEnglishReadsCatalog();

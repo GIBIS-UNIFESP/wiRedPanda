@@ -357,6 +357,25 @@ void TestExerciseTourResources::testDiscoverMergesDocumentsFallbackDir()
                          [](const ExerciseTourResourceEntry &e) { return e.id == QStringLiteral("docs-entry"); }));
 }
 
+void TestExerciseTourResources::testDiscoverMergesManagedContentDir()
+{
+    // The other two writable-location merge sources (install-relative, Documents fallback)
+    // are exercised above; managedContentDir() -- the teacher/IT-admin-managed classroom
+    // location -- was previously only tested for directory creation in isolation, never for
+    // discover() actually merging a JSON entry dropped into it.
+    const QString category = QStringLiteral("TestExerciseTourResourcesManagedCategory");
+    const QString managedDir = ExerciseTourResources::managedContentDir(category);
+    QVERIFY(!managedDir.isEmpty());
+    writeFile(managedDir + "/entry.json", R"({"id": "managed-entry", "title": "Managed Entry"})");
+
+    const QVector<ExerciseTourResourceEntry> entries = ExerciseTourResources::discover(category);
+
+    QDir(managedDir).removeRecursively();
+
+    QVERIFY(std::any_of(entries.cbegin(), entries.cend(),
+                         [](const ExerciseTourResourceEntry &e) { return e.id == QStringLiteral("managed-entry"); }));
+}
+
 void TestExerciseTourResources::testTranslateFromCatalogNonObjectMidPathFallsBack()
 {
     // "basic-and-gate.title" resolves to a plain string; walking a further
