@@ -152,37 +152,11 @@ private slots:
 
     void testOutputPinExhaustion();
 
-    // Level 1 - Sequential IC tests (from real .panda files)
-    void testArduinoExportDFlipFlop();
-    void testArduinoExportDLatch();
-    void testArduinoExportJKFlipFlop();
-    void testArduinoExportSRLatch();
-
-    // Level 2 - Combinational IC tests (from real .panda files)
-    void testArduinoExportHalfAdder();
-    void testArduinoExportFullAdder1Bit();
-    void testArduinoExportDecoder2to4();
-    void testArduinoExportDecoder3to8();
-    void testArduinoExportDecoder4to16();
-    void testArduinoExportMux2to1();
-    void testArduinoExportMux4to1();
-    void testArduinoExportMux8to1();
-    void testArduinoExportParityChecker();
-    void testArduinoExportParityGenerator();
-    void testArduinoExportPriorityEncoder8to3();
-    void testArduinoExportPriorityMux3to1();
-
-    // Level 3 - Medium-complexity IC tests
-    void testArduinoExportAluSelector5Way();
-    void testArduinoExportBcd7SegmentDecoder();
-    void testArduinoExportComparator4Bit();
-    void testArduinoExportComparator4BitEquality();
-    void testArduinoExportRegister1Bit();
-
-    // Level 4 - Nested IC tests
-    void testArduinoExportRippleAdder4Bit();
-    void testArduinoExportRegister4Bit();
-    void testArduinoExportBinaryCounter4Bit();
+    // Level 1-4 IC export tests (from real .panda files), data-driven -- see
+    // testArduinoExport_data() for the full fixture list (Level 1 sequential,
+    // Level 2 combinational, Level 3 medium-complexity, Level 4 nested ICs).
+    void testArduinoExport_data();
+    void testArduinoExport();
 
     // Sequential (clocked) functional validation for hierarchical native-flip-flop
     // circuits — drives a clock sequence and checks the sketch against the engine.
