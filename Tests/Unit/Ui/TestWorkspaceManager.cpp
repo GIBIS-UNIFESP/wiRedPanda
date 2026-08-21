@@ -59,6 +59,50 @@ void dirtyUndoStack(WorkSpace *ws)
     ws->scene()->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{gate}, ws->scene()));
 }
 
+#ifndef Q_OS_WIN
+// Shared setup for the closeTab() save-failure scenarios: a saved tab, its directory made
+// read-only so the re-save throws instead of returning WorkSpace::SaveOutcome::ReadOnlyTarget
+// (Application::interactiveMode stays false, the test-suite default), and a stubbed
+// "modified"/"Close tab anyway" dialog sequence. `closeAnywayButton` selects Yes (discard and
+// close) or No (keep open) on the "Close tab anyway" dialog. Only compiled on non-Windows --
+// its two callers QSKIP() before reaching it on Windows (QFile::setPermissions can't make a
+// directory unwritable there; it uses ACLs, not Unix permission bits).
+void runCloseTabSaveFailureScenario(WorkspaceManagerFixture &f, QMessageBox::StandardButton closeAnywayButton, bool &closed)
+{
+    f.manager.createNewTab();
+
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("project.panda");
+    f.manager.save(path); // establish a real, already-saved file
+    QVERIFY(QFile::exists(path));
+
+    dirtyUndoStack(f.manager.currentTab());
+
+    QVERIFY(QFile::setPermissions(dir.path(), QFileDevice::ReadOwner | QFileDevice::ExeOwner));
+
+    auto dismisser = TestUtils::AutoDismisser([closeAnywayButton](QWidget *w) {
+        auto *box = qobject_cast<QMessageBox *>(w);
+        if (!box) return false;
+        if (box->text().contains(QStringLiteral("modified"))) {
+            box->button(QMessageBox::Yes)->click();
+        } else if (box->text().contains(QStringLiteral("Close tab anyway"))) {
+            // NOLINTNEXTLINE(bugprone-branch-clone) -- two distinct dialog texts that can
+            // appear on this path both need the same "Yes" response when closeAnywayButton is
+            // Yes; not a copy-paste bug.
+            box->button(closeAnywayButton)->click();
+        } else {
+            box->accept(); // the QMessageBox::critical() error dialog in between
+        }
+        return true;
+    });
+
+    closed = f.manager.closeTab(0);
+
+    QFile::setPermissions(dir.path(), QFileDevice::ReadOwner | QFileDevice::WriteOwner | QFileDevice::ExeOwner);
+}
+#endif
+
 } // namespace
 
 void TestWorkspaceManager::testAccessorsAreSafeWithNoCurrentTab()
@@ -183,39 +227,8 @@ void TestWorkspaceManager::testCloseTabSaveFailureThenCloseAnywayDiscards()
     QSKIP("QFile::setPermissions cannot make a directory unwritable on Windows (uses ACLs, not Unix permission bits)");
 #else
     WorkspaceManagerFixture f;
-    f.manager.createNewTab();
-
-    QTemporaryDir dir;
-    QVERIFY(dir.isValid());
-    const QString path = dir.filePath("project.panda");
-    f.manager.save(path); // establish a real, already-saved file
-    QVERIFY(QFile::exists(path));
-
-    dirtyUndoStack(f.manager.currentTab());
-
-    // Application::interactiveMode stays false (the test-suite default), so the re-save
-    // below throws unconditionally on the now-unwritable directory instead of returning
-    // WorkSpace::SaveOutcome::ReadOnlyTarget.
-    QVERIFY(QFile::setPermissions(dir.path(), QFileDevice::ReadOwner | QFileDevice::ExeOwner));
-
-    auto dismisser = TestUtils::AutoDismisser([](QWidget *w) {
-        auto *box = qobject_cast<QMessageBox *>(w);
-        if (!box) return false;
-        if (box->text().contains(QStringLiteral("modified"))) {
-            box->button(QMessageBox::Yes)->click();
-        } else if (box->text().contains(QStringLiteral("Close tab anyway"))) {
-            // NOLINTNEXTLINE(bugprone-branch-clone) -- two distinct dialog texts that can
-            // appear on this path both need the same "Yes" response; not a copy-paste bug.
-            box->button(QMessageBox::Yes)->click();
-        } else {
-            box->accept(); // the QMessageBox::critical() error dialog in between
-        }
-        return true;
-    });
-
-    const bool closed = f.manager.closeTab(0);
-
-    QFile::setPermissions(dir.path(), QFileDevice::ReadOwner | QFileDevice::WriteOwner | QFileDevice::ExeOwner);
+    bool closed = false;
+    runCloseTabSaveFailureScenario(f, QMessageBox::Yes, closed);
 
     QVERIFY(closed);
     QCOMPARE(f.tabWidget.count(), 0);
@@ -228,34 +241,8 @@ void TestWorkspaceManager::testCloseTabSaveFailureThenCloseAnywayKeepsOpen()
     QSKIP("QFile::setPermissions cannot make a directory unwritable on Windows (uses ACLs, not Unix permission bits)");
 #else
     WorkspaceManagerFixture f;
-    f.manager.createNewTab();
-
-    QTemporaryDir dir;
-    QVERIFY(dir.isValid());
-    const QString path = dir.filePath("project.panda");
-    f.manager.save(path);
-    QVERIFY(QFile::exists(path));
-
-    dirtyUndoStack(f.manager.currentTab());
-
-    QVERIFY(QFile::setPermissions(dir.path(), QFileDevice::ReadOwner | QFileDevice::ExeOwner));
-
-    auto dismisser = TestUtils::AutoDismisser([](QWidget *w) {
-        auto *box = qobject_cast<QMessageBox *>(w);
-        if (!box) return false;
-        if (box->text().contains(QStringLiteral("modified"))) {
-            box->button(QMessageBox::Yes)->click();
-        } else if (box->text().contains(QStringLiteral("Close tab anyway"))) {
-            box->button(QMessageBox::No)->click();
-        } else {
-            box->accept();
-        }
-        return true;
-    });
-
-    const bool closed = f.manager.closeTab(0);
-
-    QFile::setPermissions(dir.path(), QFileDevice::ReadOwner | QFileDevice::WriteOwner | QFileDevice::ExeOwner);
+    bool closed = false;
+    runCloseTabSaveFailureScenario(f, QMessageBox::No, closed);
 
     QVERIFY(!closed);
     QCOMPARE(f.tabWidget.count(), 1);
