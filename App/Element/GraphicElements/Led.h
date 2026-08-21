@@ -20,6 +20,8 @@ class Led : public GraphicElement
 {
     Q_OBJECT
 
+    friend class TestLED;
+
 public:
     /// Default color name. Single source of truth: used by the member
     /// initializer and serialization's default-elision check.
