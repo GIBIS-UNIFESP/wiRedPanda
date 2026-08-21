@@ -259,6 +259,7 @@ void TestLevel5LoadableCounter4Bit::testBinaryCounterHoldBehavior()
 {
     QFETCH(int, startValue);
     QFETCH(int, cycleCount);
+    QFETCH(QString, description);
 
     auto &f = *s_level5LoadableCounter4bit;
 
@@ -274,6 +275,10 @@ void TestLevel5LoadableCounter4Bit::testBinaryCounterHoldBehavior()
         clockCycle(f.sim, f.clk);
         expectedValue = (expectedValue + 1) & 0xF;
 
-        QCOMPARE(f.readValue(), expectedValue & 0xF);
+        const int actualValue = f.readValue();
+        QVERIFY2(actualValue == (expectedValue & 0xF),
+                 qPrintable(QString("%1 (cycle %2/%3): expected 0x%4, got 0x%5")
+                                .arg(description).arg(cycle + 1).arg(cycleCount)
+                                .arg(expectedValue, 0, 16).arg(actualValue, 0, 16)));
     }
 }
