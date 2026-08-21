@@ -32,6 +32,10 @@ void TestCPUInstructionExecute::testInstructionExecute()
     QFETCH(int, srcReg2);
     QFETCH(int, aluOp);
     QFETCH(int, expectedResult);
+    QFETCH(bool, expectedZero);
+    QFETCH(bool, expectedSign);
+    QFETCH(bool, expectedCarry);
+    QFETCH(bool, expectedOverflow);
     // Integration test: Register Bank + ALU
     QVector<InputSwitch *> a, b, op;
     QVector<Led *> result;
@@ -63,6 +67,12 @@ void TestCPUInstructionExecute::testInstructionExecute()
     // Read actual result
     int execResult = readMultiBitOutput(result);
     QCOMPARE(execResult, expectedResult);
+
+    // The flag outputs are wired but were never asserted -- verify them too.
+    QCOMPARE(TestUtils::inputStatus(zeroFlag), expectedZero);
+    QCOMPARE(TestUtils::inputStatus(signFlag), expectedSign);
+    QCOMPARE(TestUtils::inputStatus(carryFlag), expectedCarry);
+    QCOMPARE(TestUtils::inputStatus(overflowFlag), expectedOverflow);
 }
 
 void TestCPUInstructionExecute::testInstructionExecute_data()
@@ -71,14 +81,19 @@ void TestCPUInstructionExecute::testInstructionExecute_data()
     QTest::addColumn<int>("srcReg2");
     QTest::addColumn<int>("aluOp");
     QTest::addColumn<int>("expectedResult");
-    QTest::newRow("exec_add_r1_r2") << 0x05 << 0x03 << static_cast<int>(ALU_ADD) << 0x08;
-    QTest::newRow("exec_sub_r4_r5") << 0x0A << 0x04 << static_cast<int>(ALU_SUB) << 0x06;
-    QTest::newRow("exec_and_r0_r1") << 0xF0 << 0x0F << static_cast<int>(ALU_AND) << 0x00;
-    QTest::newRow("exec_or_r3_r4") << 0xF0 << 0x0F << static_cast<int>(ALU_OR) << 0xFF;
-    QTest::newRow("exec_xor_r2_r3") << 0xAA << 0x55 << static_cast<int>(ALU_XOR) << 0xFF;
-    QTest::newRow("exec_nop_r0") << 0x42 << 0x00 << static_cast<int>(ALU_ADD) << 0x42;
-    QTest::newRow("exec_add_zero") << 0x05 << 0x05 << static_cast<int>(ALU_SUB) << 0x00;
-    QTest::newRow("exec_subtract_negative") << 0x05 << 0x0A << static_cast<int>(ALU_SUB) << 251;
-    QTest::newRow("exec_flags_carry") << 0xFF << 0x01 << static_cast<int>(ALU_ADD) << 0x00;
-    QTest::newRow("exec_dependency_chain") << 0x10 << 0x20 << static_cast<int>(ALU_ADD) << 0x30;
+    QTest::addColumn<bool>("expectedZero");
+    QTest::addColumn<bool>("expectedSign");
+    QTest::addColumn<bool>("expectedCarry");
+    QTest::addColumn<bool>("expectedOverflow");
+    //                                                                                  zero   sign   carry  overflow
+    QTest::newRow("exec_add_r1_r2")         << 0x05 << 0x03 << static_cast<int>(ALU_ADD) << 0x08 << false << false << false << false;
+    QTest::newRow("exec_sub_r4_r5")         << 0x0A << 0x04 << static_cast<int>(ALU_SUB) << 0x06 << false << false << true  << false;
+    QTest::newRow("exec_and_r0_r1")         << 0xF0 << 0x0F << static_cast<int>(ALU_AND) << 0x00 << true  << false << false << false;
+    QTest::newRow("exec_or_r3_r4")          << 0xF0 << 0x0F << static_cast<int>(ALU_OR)  << 0xFF << false << true  << true  << false;
+    QTest::newRow("exec_xor_r2_r3")         << 0xAA << 0x55 << static_cast<int>(ALU_XOR) << 0xFF << false << true  << false << false;
+    QTest::newRow("exec_nop_r0")            << 0x42 << 0x00 << static_cast<int>(ALU_ADD) << 0x42 << false << false << false << false;
+    QTest::newRow("exec_add_zero")          << 0x05 << 0x05 << static_cast<int>(ALU_SUB) << 0x00 << true  << false << true  << false;
+    QTest::newRow("exec_subtract_negative") << 0x05 << 0x0A << static_cast<int>(ALU_SUB) << 251  << false << true  << false << false;
+    QTest::newRow("exec_flags_carry")       << 0xFF << 0x01 << static_cast<int>(ALU_ADD) << 0x00 << true  << false << true  << false;
+    QTest::newRow("exec_dependency_chain")  << 0x10 << 0x20 << static_cast<int>(ALU_ADD) << 0x30 << false << false << false << false;
 }
