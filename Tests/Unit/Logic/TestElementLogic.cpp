@@ -692,7 +692,7 @@ void TestElementLogic::testNotGateInAnd_data()
 {
     QTest::addColumn<bool>("input0");
     QTest::addColumn<bool>("input1");
-    QTest::addColumn<bool>("expectedNotInput0");
+    QTest::addColumn<bool>("expectedNotInput1");
     QTest::addColumn<bool>("expectedAndOutput");
 
     // AND gate: output = input0 AND input1
@@ -715,8 +715,7 @@ void TestElementLogic::testNotGateInAnd()
 {
     QFETCH(bool, input0);
     QFETCH(bool, input1);
-    QFETCH(bool, expectedNotInput0);
-    Q_UNUSED(expectedNotInput0);  // Using for clarity in test data
+    QFETCH(bool, expectedNotInput1);
     QFETCH(bool, expectedAndOutput);
 
     Not invGate; initElm(invGate);
@@ -730,7 +729,7 @@ void TestElementLogic::testNotGateInAnd()
     m_inputs.at(1)->setOutputValue(input1);
 
     invGate.updateLogic();
-    QCOMPARE(invGate.outputValue(), input1 ? Status::Inactive : Status::Active);
+    QCOMPARE(invGate.outputValue(), expectedNotInput1 ? Status::Active : Status::Inactive);
 
     andGate.updateLogic();
     QCOMPARE(andGate.outputValue(), expectedAndOutput ? Status::Active : Status::Inactive);
