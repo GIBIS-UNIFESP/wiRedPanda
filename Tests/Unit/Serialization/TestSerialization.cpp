@@ -12,6 +12,7 @@
 #include <QKeySequence>
 #include <QMetaType>
 #include <QRectF>
+#include <QSet>
 #include <QTemporaryDir>
 #include <QTest>
 
@@ -1268,12 +1269,16 @@ void TestSerialization::testMultiGateChainSerialization()
     // Verify all elements loaded
     QCOMPARE(workspace2.scene()->elements().size(), 7);
 
-    // Verify labels preserved (indicating structure preserved)
-    auto elements = workspace2.scene()->elements();
-    QVERIFY(elements[0]->label() == "Input1" || elements[0]->label() == "Input2" ||
-            elements[0]->label() == "Level1_AND" || elements[0]->label() == "Level2_OR" ||
-            elements[0]->label() == "Level3_NAND" || elements[0]->label() == "Level4_NOR" ||
-            elements[0]->label() == "Output");
+    // Verify every element's label survived the round trip, not just that some element
+    // has one of the expected labels.
+    QSet<QString> loadedLabels;
+    for (auto *elm : workspace2.scene()->elements()) {
+        loadedLabels.insert(elm->label());
+    }
+    const QSet<QString> expectedLabels = {
+        "Input1", "Input2", "Level1_AND", "Level2_OR", "Level3_NAND", "Level4_NOR", "Output"
+    };
+    QCOMPARE(loadedLabels, expectedLabels);
 }
 
 void TestSerialization::testExtremelyLongLabels()
