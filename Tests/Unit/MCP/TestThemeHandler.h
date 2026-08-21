@@ -15,5 +15,6 @@ private slots:
     void testHandleSetThemeRejectsMissingParam();
     void testHandleSetThemeRejectsInvalidValue();
     void testHandleGetEffectiveThemeReturnsResolvedTheme();
+    void testHandleGetEffectiveThemeResolvesSystemTheme();
     void testHandleCommandRejectsUnknownCommand();
 };
