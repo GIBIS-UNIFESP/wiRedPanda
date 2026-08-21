@@ -306,22 +306,25 @@ void TestFeedback::testConflictingFeedbackSignals()
 
 void TestFeedback::testWarningMessageContent()
 {
-    // Verify warning message for circuits that converge at Unknown
+    // Simulation::updateWithIterativeSettling() emits simulationWarning() with the actual
+    // user-facing text alongside the qDebug() line -- inspect that, rather than just its
+    // existence (already covered by testRingOscillatorWarningAfterMaxIterations) or the
+    // presence of feedback elements (already covered by testAllCycleNodesMarked/
+    // testOddLengthInverterChainFeedback).
     std::unique_ptr<Scene> scene(createRingOscillator());
     QVERIFY2(scene != nullptr, "Failed to create feedback circuit");
 
     Simulation sim(scene.get());
+    QSignalSpy warningSpy(&sim, &Simulation::simulationWarning);
+
+    QTest::ignoreMessage(QtDebugMsg, QRegularExpression(".*did not converge.*"));
     sim.update();
 
-    // Verify the circuit has feedback elements
-    bool found = false;
-    for (auto *elem : scene->elements()) {
-        if (sim.isInFeedbackLoop(elem)) {
-            found = true;
-            break;
-        }
-    }
-    QVERIFY2(found, "Ring oscillator should have feedback elements");
+    QCOMPARE(warningSpy.count(), 1);
+    const QString message = warningSpy.constFirst().constFirst().toString();
+    QVERIFY2(message.contains(QStringLiteral("did not converge"), Qt::CaseInsensitive),
+              qPrintable(QStringLiteral("Warning message '%1' must explain the circuit did not converge").arg(message)));
+    QVERIFY2(!message.isEmpty(), "Warning message must not be empty");
 }
 
 void TestFeedback::testSimulationContinuesAfterNonConvergence()
