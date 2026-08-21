@@ -1668,7 +1668,7 @@ void TestBewavedDolphinGui::testResizeEventRepositionsExerciseOverlay()
     QCOMPARE(overlay->pos(), QPoint(expectedX, expectedY));
 }
 
-void TestBewavedDolphinGui::testTrivialAccessors()
+void TestBewavedDolphinGui::testWidgetAccessors()
 {
     auto ws = createAndCircuit();
     std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
@@ -1678,6 +1678,12 @@ void TestBewavedDolphinGui::testTrivialAccessors()
 
     auto *combinationalAction = dolphin->findChild<QAction *>("actionCombinational");
     QCOMPARE(dolphin->actionCombinational(), combinationalAction);
+}
+
+void TestBewavedDolphinGui::testTriggerCombinationalFillsAllInputPatterns()
+{
+    auto ws = createAndCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
 
     dolphin->triggerCombinational(); // must behave exactly like the action firing
     QVERIFY(dolphin->length() >= 4);
@@ -1685,6 +1691,12 @@ void TestBewavedDolphinGui::testTrivialAccessors()
     int outputRow = static_cast<int>(dolphin->inputElements().size());
     QCOMPARE(model->index(outputRow, 3).data().toInt(), 1); // both inputs 1 -> AND=1
     QCOMPARE(model->index(outputRow, 0).data().toInt(), 0); // both inputs 0 -> AND=0
+}
+
+void TestBewavedDolphinGui::testInputRowLooksUpByLabel()
+{
+    auto ws = createAndCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
 
     // createAndCircuit()'s InputSwitches don't get distinct default labels, so give them one
     // each here to make inputRow()'s label lookup unambiguous.
@@ -1693,6 +1705,12 @@ void TestBewavedDolphinGui::testTrivialAccessors()
     QCOMPARE(dolphin->inputRow("swA"), 0);
     QCOMPARE(dolphin->inputRow("swB"), 1);
     QCOMPARE(dolphin->inputRow("no such signal"), -1);
+}
+
+void TestBewavedDolphinGui::testSnapshotReturnsRunValues()
+{
+    auto ws = createAndCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
 
     dolphin->setLength(4, false);
     dolphin->setCellValue(0, 0, 1);
