@@ -261,9 +261,11 @@ void TestSimulationUnit::testCollectSequentialElementsSkipsNullElements()
 void TestSimulationUnit::testUpdateFlushesPendingVisualsOnLaterIdleTick()
 {
     // The visual throttle only engages when Application::interactiveMode is true (forced
-    // false globally for the rest of the test suite) -- toggle it locally and restore after,
-    // mirroring the established Application::renderingEnabled pattern.
-    const bool prevInteractive = Application::interactiveMode;
+    // false globally for the rest of the test suite) -- toggle it locally via a scope guard
+    // that restores it even if a QVERIFY/QCOMPARE below fails and returns early, since
+    // Application::interactiveMode is process-wide and would otherwise leak into every later
+    // test in the run.
+    TestUtils::ScopedInteractiveMode interactiveGuard;
     Application::interactiveMode = true;
 
     WorkSpace workspace;
@@ -287,12 +289,14 @@ void TestSimulationUnit::testUpdateFlushesPendingVisualsOnLaterIdleTick()
     QVERIFY2(sim.m_visualsDirty, "Precondition: the sweep must leave a pending visual flush");
 
     // No further change: every subsequent tick hits the fixed-point early return until the
-    // throttle interval elapses.
-    for (int i = 0; i < 4; ++i) {
+    // throttle interval elapses. Ticks 2-4/5 must still have the flush pending -- only the
+    // 5th tick should clear it -- otherwise the throttle isn't actually gating the flush.
+    for (int i = 0; i < 3; ++i) {
         sim.update();
+        QVERIFY2(sim.m_visualsDirty,
+                  "The pending visual flush must still be pending before the throttle interval elapses");
     }
+    sim.update(); // tick 5/5: interval elapses, flush happens
     QVERIFY2(!sim.m_visualsDirty,
               "A pending visual flush must happen on an idle tick once the throttle interval elapses");
-
-    Application::interactiveMode = prevInteractive;
 }
