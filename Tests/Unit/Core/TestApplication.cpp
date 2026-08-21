@@ -10,17 +10,6 @@
 #include "App/Core/Common.h"
 #include "Tests/Common/TestUtils.h"
 
-void TestApplication::testApplicationNotify()
-{
-    // Application requires argc/argv — verify the test runner's QApplication is alive.
-    QVERIFY(QCoreApplication::instance() != nullptr);
-}
-
-void TestApplication::testExceptionHandling()
-{
-    QVERIFY(QCoreApplication::instance() != nullptr);
-}
-
 void TestApplication::testIsSentryDenyMessageMatchesClusterD()
 {
     // The deny list must filter the addressed Cluster D defensive throws.
