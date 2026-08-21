@@ -1067,21 +1067,21 @@ void TestElementLogic::test3InputXor()
     QFETCH(bool, input3);
     QFETCH(bool, expected);
 
-    // Use 2-input XOR gates to simulate 3-input: (a XOR b) XOR c
-    Xor xor1, xor2; initElm(xor1); initElm(xor2);
-    xor1.connectPredecessor(0, m_inputs.at(0), 0);
-    xor1.connectPredecessor(1, m_inputs.at(1), 0);
-    xor2.connectPredecessor(0, &xor1, 0);
-    xor2.connectPredecessor(1, m_inputs.at(2), 0);
+    // Xor::updateLogic() is setOutputValue(StatusOps::statusXorAll(simInputs())), the same
+    // native N-input path And/Or use (minInputSize=2, maxInputSize=8) -- exercise a single
+    // 3-input gate directly, not a cascade of two 2-input gates simulating one.
+    Xor elm; elm.setInputSize(3); initElm(elm);
+    elm.connectPredecessor(0, m_inputs.at(0), 0);
+    elm.connectPredecessor(1, m_inputs.at(1), 0);
+    elm.connectPredecessor(2, m_inputs.at(2), 0);
 
     m_inputs.at(0)->setOutputValue(input1);
     m_inputs.at(1)->setOutputValue(input2);
     m_inputs.at(2)->setOutputValue(input3);
 
-    xor1.updateLogic();
-    xor2.updateLogic();
+    elm.updateLogic();
 
-    QCOMPARE(xor2.outputValue(), expected ? Status::Active : Status::Inactive);
+    QCOMPARE(elm.outputValue(), expected ? Status::Active : Status::Inactive);
 }
 
 void TestElementLogic::test3InputXnor_data()
@@ -1091,16 +1091,19 @@ void TestElementLogic::test3InputXnor_data()
     QTest::addColumn<bool>("input3");
     QTest::addColumn<bool>("expected");
 
-    // 3-input XNOR: Cascaded (a XNOR b) XNOR c
-    // Tests cascaded XNOR behavior: (a==b) == c
-    QTest::newRow("0 XNOR 0 XNOR 0 = 0") << false << false << false << false;
-    QTest::newRow("0 XNOR 0 XNOR 1 = 1") << false << false << true << true;
-    QTest::newRow("0 XNOR 1 XNOR 0 = 1") << false << true << false << true;
-    QTest::newRow("0 XNOR 1 XNOR 1 = 0") << false << true << true << false;
-    QTest::newRow("1 XNOR 0 XNOR 0 = 1") << true << false << false << true;
-    QTest::newRow("1 XNOR 0 XNOR 1 = 0") << true << false << true << false;
-    QTest::newRow("1 XNOR 1 XNOR 0 = 0") << true << true << false << false;
-    QTest::newRow("1 XNOR 1 XNOR 1 = 1") << true << true << true << true;
+    // Native N-input XNOR (Xnor::updateLogic(): statusNot(statusXorAll(...))) is
+    // NOT(a XOR b XOR c) -- output=1 when an EVEN number of inputs are 1. (Cascading two
+    // 2-input XNOR gates, as this test used to, computes a XOR b XOR c instead -- XNOR's
+    // "invert" cancels out across the cascade: NOT(NOT(a^b)^c) = a^b^c -- so it is NOT a
+    // valid stand-in for the native gate and had the wrong expected table for it.)
+    QTest::newRow("0 XNOR 0 XNOR 0 = 1") << false << false << false << true;
+    QTest::newRow("0 XNOR 0 XNOR 1 = 0") << false << false << true << false;
+    QTest::newRow("0 XNOR 1 XNOR 0 = 0") << false << true << false << false;
+    QTest::newRow("0 XNOR 1 XNOR 1 = 1") << false << true << true << true;
+    QTest::newRow("1 XNOR 0 XNOR 0 = 0") << true << false << false << false;
+    QTest::newRow("1 XNOR 0 XNOR 1 = 1") << true << false << true << true;
+    QTest::newRow("1 XNOR 1 XNOR 0 = 1") << true << true << false << true;
+    QTest::newRow("1 XNOR 1 XNOR 1 = 0") << true << true << true << false;
 }
 
 void TestElementLogic::test3InputXnor()
@@ -1110,21 +1113,19 @@ void TestElementLogic::test3InputXnor()
     QFETCH(bool, input3);
     QFETCH(bool, expected);
 
-    // Use 2-input XNOR gates to simulate 3-input: (a XNOR b) XNOR c
-    Xnor xnor1, xnor2; initElm(xnor1); initElm(xnor2);
-    xnor1.connectPredecessor(0, m_inputs.at(0), 0);
-    xnor1.connectPredecessor(1, m_inputs.at(1), 0);
-    xnor2.connectPredecessor(0, &xnor1, 0);
-    xnor2.connectPredecessor(1, m_inputs.at(2), 0);
+    // Exercise a single native 3-input Xnor gate, not a cascade of two 2-input gates.
+    Xnor elm; elm.setInputSize(3); initElm(elm);
+    elm.connectPredecessor(0, m_inputs.at(0), 0);
+    elm.connectPredecessor(1, m_inputs.at(1), 0);
+    elm.connectPredecessor(2, m_inputs.at(2), 0);
 
     m_inputs.at(0)->setOutputValue(input1);
     m_inputs.at(1)->setOutputValue(input2);
     m_inputs.at(2)->setOutputValue(input3);
 
-    xnor1.updateLogic();
-    xnor2.updateLogic();
+    elm.updateLogic();
 
-    QCOMPARE(xnor2.outputValue(), expected ? Status::Active : Status::Inactive);
+    QCOMPARE(elm.outputValue(), expected ? Status::Active : Status::Inactive);
 }
 
 /**
