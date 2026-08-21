@@ -1729,7 +1729,9 @@ void TestArduino::testWirelessNodeGeneration()
 
     // Physical wire: InputSwitch → Tx node, Rx node → LED
     auto conn1 = std::unique_ptr<Connection>(createConnection(sw, 0, txNode, 0));
+    QVERIFY2(conn1, "Failed to wire InputSwitch to the Tx node -- the test below would silently exercise a disconnected Tx instead");
     auto conn2 = std::unique_ptr<Connection>(createConnection(rxNode, 0, led, 0));
+    QVERIFY2(conn2, "Failed to wire the Rx node to the LED -- the test below would silently exercise a disconnected Rx instead");
 
     QVector<GraphicElement *> elements{sw, txNode, rxNode, led};
     auto code = generateFromElements(elements);
@@ -1759,6 +1761,7 @@ void TestArduino::testWirelessOrphanedRxCodegen()
     auto *led = new Led();
 
     auto conn = std::unique_ptr<Connection>(createConnection(rxNode, 0, led, 0));
+    QVERIFY2(conn, "Failed to wire the Rx node to the LED -- the test below would silently exercise a disconnected node instead");
 
     QVector<GraphicElement *> elements{rxNode, led};
     auto code = generateFromElements(elements);
@@ -1789,6 +1792,7 @@ void TestArduino::testEmbeddedICGeneration()
     const QByteArray pandaBytes = ICTestHelpers::readFile(fixtureDir + "level2_half_adder.panda");
     QVERIFY2(!pandaBytes.isEmpty(), "Fixture file level2_half_adder.panda must exist");
     ICTestHelpers::embedIC(ic, pandaBytes, "embedded_adder", fixtureDir, reg);
+    ic->setLabel("HalfAdderUnderTest");
 
     QVERIFY(ic->isEmbedded());
     QVERIFY(ic->inputSize() > 0);
@@ -1812,6 +1816,15 @@ void TestArduino::testEmbeddedICGeneration()
     // The generated code must contain a computeLogic function with assignments
     QVERIFY2(code.content.contains("void computeLogic()"),
              "Generated code must contain computeLogic()");
+
+    // "void computeLogic()" alone is emitted for every generated sketch regardless of whether
+    // the IC's own internals were actually inlined -- ArduinoCodeGen wraps each expanded IC's
+    // body in "// IC: <label>" / "// End IC: <label>" markers; their presence is what actually
+    // proves the half-adder's internal logic (not just an opaque IC placeholder) made it in.
+    QVERIFY2(code.content.contains("// IC: HalfAdderUnderTest"),
+             "Generated code must contain the inlined IC's opening marker comment");
+    QVERIFY2(code.content.contains("// End IC: HalfAdderUnderTest"),
+             "Generated code must contain the inlined IC's closing marker comment");
 }
 
 void TestArduino::testEmbeddedICLabelWithNewlineDoesNotInjectCode()
@@ -2520,160 +2533,48 @@ void TestArduino::testArduinoExportHelper(const QString &icFile)
 // Level 1 - Sequential IC Tests (Flip-Flops and Latches)
 // ============================================================================
 
-void TestArduino::testArduinoExportDFlipFlop()
+void TestArduino::testArduinoExport_data()
 {
-    requireLinuxForArduinoTools();
-    testArduinoExportHelper("level1_d_flip_flop.panda");
+    QTest::addColumn<QString>("icFile");
+
+    // Level 1 - Sequential IC Tests (Flip-Flops and Latches)
+    QTest::newRow("DFlipFlop") << "level1_d_flip_flop.panda";
+    QTest::newRow("DLatch") << "level1_d_latch.panda";
+    QTest::newRow("JKFlipFlop") << "level1_jk_flip_flop.panda";
+    QTest::newRow("SRLatch") << "level1_sr_latch.panda";
+
+    // Level 2 - Combinational IC Tests (Adders, Multiplexers, Decoders)
+    QTest::newRow("HalfAdder") << "level2_half_adder.panda";
+    QTest::newRow("FullAdder1Bit") << "level2_full_adder_1bit.panda";
+    QTest::newRow("Decoder2to4") << "level2_decoder_2to4.panda";
+    QTest::newRow("Decoder3to8") << "level2_decoder_3to8.panda";
+    QTest::newRow("Decoder4to16") << "level2_decoder_4to16.panda";
+    QTest::newRow("Mux2to1") << "level2_mux_2to1.panda";
+    QTest::newRow("Mux4to1") << "level2_mux_4to1.panda";
+    QTest::newRow("Mux8to1") << "level2_mux_8to1.panda";
+    QTest::newRow("ParityChecker") << "level2_parity_checker.panda";
+    QTest::newRow("ParityGenerator") << "level2_parity_generator.panda";
+    QTest::newRow("PriorityEncoder8to3") << "level2_priority_encoder_8to3.panda";
+    QTest::newRow("PriorityMux3to1") << "level2_priority_mux_3to1.panda";
+
+    // Level 3 - Medium-Complexity IC Tests
+    QTest::newRow("AluSelector5Way") << "level3_alu_selector_5way.panda";
+    QTest::newRow("Bcd7SegmentDecoder") << "level3_bcd_7segment_decoder.panda";
+    QTest::newRow("Comparator4Bit") << "level3_comparator_4bit.panda";
+    QTest::newRow("Comparator4BitEquality") << "level3_comparator_4bit_equality.panda";
+    QTest::newRow("Register1Bit") << "level3_register_1bit.panda";
+
+    // Level 4 - Nested IC Tests
+    QTest::newRow("RippleAdder4Bit") << "level4_ripple_adder_4bit.panda";
+    QTest::newRow("Register4Bit") << "level4_register_4bit.panda";
+    QTest::newRow("BinaryCounter4Bit") << "level4_binary_counter_4bit.panda";
 }
 
-void TestArduino::testArduinoExportDLatch()
+void TestArduino::testArduinoExport()
 {
     requireLinuxForArduinoTools();
-    testArduinoExportHelper("level1_d_latch.panda");
-}
-
-void TestArduino::testArduinoExportJKFlipFlop()
-{
-    requireLinuxForArduinoTools();
-    testArduinoExportHelper("level1_jk_flip_flop.panda");
-}
-
-void TestArduino::testArduinoExportSRLatch()
-{
-    requireLinuxForArduinoTools();
-    testArduinoExportHelper("level1_sr_latch.panda");
-}
-
-// ============================================================================
-// Level 2 - Combinational IC Tests (Adders, Multiplexers, Decoders)
-// ============================================================================
-
-void TestArduino::testArduinoExportHalfAdder()
-{
-    requireLinuxForArduinoTools();
-    testArduinoExportHelper("level2_half_adder.panda");
-}
-
-void TestArduino::testArduinoExportFullAdder1Bit()
-{
-    requireLinuxForArduinoTools();
-    testArduinoExportHelper("level2_full_adder_1bit.panda");
-}
-
-void TestArduino::testArduinoExportDecoder2to4()
-{
-    requireLinuxForArduinoTools();
-    testArduinoExportHelper("level2_decoder_2to4.panda");
-}
-
-void TestArduino::testArduinoExportDecoder3to8()
-{
-    requireLinuxForArduinoTools();
-    testArduinoExportHelper("level2_decoder_3to8.panda");
-}
-
-void TestArduino::testArduinoExportDecoder4to16()
-{
-    requireLinuxForArduinoTools();
-    testArduinoExportHelper("level2_decoder_4to16.panda");
-}
-
-void TestArduino::testArduinoExportMux2to1()
-{
-    requireLinuxForArduinoTools();
-    testArduinoExportHelper("level2_mux_2to1.panda");
-}
-
-void TestArduino::testArduinoExportMux4to1()
-{
-    requireLinuxForArduinoTools();
-    testArduinoExportHelper("level2_mux_4to1.panda");
-}
-
-void TestArduino::testArduinoExportMux8to1()
-{
-    requireLinuxForArduinoTools();
-    testArduinoExportHelper("level2_mux_8to1.panda");
-}
-
-void TestArduino::testArduinoExportParityChecker()
-{
-    requireLinuxForArduinoTools();
-    testArduinoExportHelper("level2_parity_checker.panda");
-}
-
-void TestArduino::testArduinoExportParityGenerator()
-{
-    requireLinuxForArduinoTools();
-    testArduinoExportHelper("level2_parity_generator.panda");
-}
-
-void TestArduino::testArduinoExportPriorityEncoder8to3()
-{
-    requireLinuxForArduinoTools();
-    testArduinoExportHelper("level2_priority_encoder_8to3.panda");
-}
-
-void TestArduino::testArduinoExportPriorityMux3to1()
-{
-    requireLinuxForArduinoTools();
-    testArduinoExportHelper("level2_priority_mux_3to1.panda");
-}
-
-// ============================================================================
-// Level 3 - Medium-Complexity IC Tests
-// ============================================================================
-
-void TestArduino::testArduinoExportAluSelector5Way()
-{
-    requireLinuxForArduinoTools();
-    testArduinoExportHelper("level3_alu_selector_5way.panda");
-}
-
-void TestArduino::testArduinoExportBcd7SegmentDecoder()
-{
-    requireLinuxForArduinoTools();
-    testArduinoExportHelper("level3_bcd_7segment_decoder.panda");
-}
-
-void TestArduino::testArduinoExportComparator4Bit()
-{
-    requireLinuxForArduinoTools();
-    testArduinoExportHelper("level3_comparator_4bit.panda");
-}
-
-void TestArduino::testArduinoExportComparator4BitEquality()
-{
-    requireLinuxForArduinoTools();
-    testArduinoExportHelper("level3_comparator_4bit_equality.panda");
-}
-
-void TestArduino::testArduinoExportRegister1Bit()
-{
-    requireLinuxForArduinoTools();
-    testArduinoExportHelper("level3_register_1bit.panda");
-}
-
-// ============================================================================
-// Level 4 - Nested IC Tests
-// ============================================================================
-
-void TestArduino::testArduinoExportRippleAdder4Bit()
-{
-    requireLinuxForArduinoTools();
-    testArduinoExportHelper("level4_ripple_adder_4bit.panda");
-}
-
-void TestArduino::testArduinoExportRegister4Bit()
-{
-    requireLinuxForArduinoTools();
-    testArduinoExportHelper("level4_register_4bit.panda");
-}
-
-void TestArduino::testArduinoExportBinaryCounter4Bit()
-{
-    requireLinuxForArduinoTools();
-    testArduinoExportHelper("level4_binary_counter_4bit.panda");
+    QFETCH(QString, icFile);
+    testArduinoExportHelper(icFile);
 }
 
 // Sequential (clocked) functional validation: drive a reset+clock sequence
