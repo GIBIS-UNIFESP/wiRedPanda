@@ -119,6 +119,10 @@ void TestComponents::testIC()
     Simulation simulation(&scene);
     simulation.initialize();
 
+    // Repeat the identical clk/prst cycle 10 times (not just once) to catch a sequential-state
+    // bug that only manifests after repeated toggling -- e.g. edge-detection state leaking
+    // between cycles or an internal counter drifting -- rather than only proving the JK
+    // flip-flop resolves correctly from its initial power-on state.
     for (int i = 0; i < 10; ++i) {
         clkButton->setOff();
         prstButton->setOff();
