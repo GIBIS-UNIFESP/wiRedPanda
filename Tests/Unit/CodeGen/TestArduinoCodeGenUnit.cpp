@@ -67,6 +67,7 @@ void TestArduinoCodeGenUnit::testAndGateCircuit()
     QVERIFY(content.contains("void setup()"));
     QVERIFY(content.contains("void loop()"));
     QVERIFY(content.contains("pinMode"));
+    QVERIFY2(content.contains(" && "), qPrintable(content));
 }
 
 void TestArduinoCodeGenUnit::testMultiGateCircuit()
@@ -98,6 +99,8 @@ void TestArduinoCodeGenUnit::testMultiGateCircuit()
 
     QVERIFY(content.contains("void setup()"));
     QVERIFY(content.contains("digitalRead"));
+    QVERIFY2(content.contains(" || "), qPrintable(content));
+    QVERIFY2(content.contains(" = !"), qPrintable(content));
 }
 
 void TestArduinoCodeGenUnit::testMuxCircuit()
