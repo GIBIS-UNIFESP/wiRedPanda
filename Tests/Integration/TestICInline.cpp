@@ -3773,78 +3773,29 @@ void TestICInline::testICDropZoneWiredInUI()
     QCOMPARE(embedSpy.at(0).at(0).toString(), QString("test.panda"));
 }
 
-void TestICInline::testICDropZoneDropEventSignals()
+void TestICInline::testICDropZoneRejectsWrongDirectionDrop()
 {
-    // Embedded zone: file-backed drop → embedByFileRequested
+    // An already-embedded IC dropped onto the Embedded-section zone (the same direction it's
+    // already in, not a request to embed a file-backed one) must be rejected outright -- no
+    // drag-accept, no signal. testICDropZoneWiredInUI already covers both accepted directions
+    // (file-backed drop -> Embedded zone, embedded drop -> FileBased zone).
+    ICDropZone embeddedZone(ICDropZone::Section::Embedded);
+    QSignalSpy embedSpy(&embeddedZone, &ICDropZone::embedByFileRequested);
+
+    QByteArray itemData;
     {
-        ICDropZone embeddedZone(ICDropZone::Section::Embedded);
-        QSignalSpy embedSpy(&embeddedZone, &ICDropZone::embedByFileRequested);
-
-        QByteArray itemData;
-        {
-            QDataStream stream(&itemData, QIODevice::WriteOnly);
-            Serialization::writePandaHeader(stream);
-            stream << QPoint(32, 32) << ElementType::IC << QString("my_circuit.panda") << false;
-        }
-        auto mime = std::make_unique<QMimeData>();
-        mime->setData("application/x-wiredpanda-dragdrop", itemData);
-
-        QDragEnterEvent dragEnter = makeDragEnterEvent(QPoint(10, 10), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier);
-        QCoreApplication::sendEvent(&embeddedZone, &dragEnter);
-        QVERIFY(dragEnter.isAccepted());
-
-        QDropEvent drop(QPointF(10, 10), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier);
-        QCoreApplication::sendEvent(&embeddedZone, &drop);
-        QVERIFY(drop.isAccepted());
-        QCOMPARE(embedSpy.size(), 1);
-        QCOMPARE(embedSpy.at(0).at(0).toString(), QString("my_circuit.panda"));
+        QDataStream stream(&itemData, QIODevice::WriteOnly);
+        Serialization::writePandaHeader(stream);
+        stream << QPoint(32, 32) << ElementType::IC << QString("already_embedded") << true << QString("already_embedded");
     }
+    auto mime = std::make_unique<QMimeData>();
+    mime->setData("application/x-wiredpanda-dragdrop", itemData);
 
-    // File-based zone: embedded drop → extractByBlobNameRequested
-    {
-        ICDropZone fileZone(ICDropZone::Section::FileBased);
-        QSignalSpy extractSpy(&fileZone, &ICDropZone::extractByBlobNameRequested);
+    QDragEnterEvent dragEnter = makeDragEnterEvent(QPoint(10, 10), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier);
+    QCoreApplication::sendEvent(&embeddedZone, &dragEnter);
+    QVERIFY(!dragEnter.isAccepted());
 
-        QByteArray itemData;
-        {
-            QDataStream stream(&itemData, QIODevice::WriteOnly);
-            Serialization::writePandaHeader(stream);
-            stream << QPoint(32, 32) << ElementType::IC << QString("my_embedded") << true << QString("my_embedded");
-        }
-        auto mime = std::make_unique<QMimeData>();
-        mime->setData("application/x-wiredpanda-dragdrop", itemData);
-
-        QDragEnterEvent dragEnter = makeDragEnterEvent(QPoint(10, 10), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier);
-        QCoreApplication::sendEvent(&fileZone, &dragEnter);
-        QVERIFY(dragEnter.isAccepted());
-
-        QDropEvent drop(QPointF(10, 10), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier);
-        QCoreApplication::sendEvent(&fileZone, &drop);
-        QVERIFY(drop.isAccepted());
-        QCOMPARE(extractSpy.size(), 1);
-        QCOMPARE(extractSpy.at(0).at(0).toString(), QString("my_embedded"));
-    }
-
-    // Wrong direction: no signal
-    {
-        ICDropZone embeddedZone(ICDropZone::Section::Embedded);
-        QSignalSpy embedSpy(&embeddedZone, &ICDropZone::embedByFileRequested);
-
-        QByteArray itemData;
-        {
-            QDataStream stream(&itemData, QIODevice::WriteOnly);
-            Serialization::writePandaHeader(stream);
-            stream << QPoint(32, 32) << ElementType::IC << QString("already_embedded") << true << QString("already_embedded");
-        }
-        auto mime = std::make_unique<QMimeData>();
-        mime->setData("application/x-wiredpanda-dragdrop", itemData);
-
-        QDragEnterEvent dragEnter = makeDragEnterEvent(QPoint(10, 10), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier);
-        QCoreApplication::sendEvent(&embeddedZone, &dragEnter);
-        QVERIFY(!dragEnter.isAccepted());
-
-        QCOMPARE(embedSpy.size(), 0);
-    }
+    QCOMPARE(embedSpy.size(), 0);
 }
 
 void TestICInline::testTrashButtonDragAcceptance()
