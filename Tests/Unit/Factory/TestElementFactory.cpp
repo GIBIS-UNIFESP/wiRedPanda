@@ -23,30 +23,41 @@ void TestElementFactory::initTestCase()
     // Initialize Qt translation system if needed
 }
 
+namespace {
+/// Every real, buildable ElementType (excludes the Unknown placeholder and the deprecated,
+/// creator-less JKLatch) -- single source of truth shared by testBuildElement_data() and
+/// testTypeToTextBidirectional() instead of two independently-maintained hard-coded lists.
+QVector<ElementType> buildableElementTypes()
+{
+    QVector<ElementType> types;
+    const QMetaEnum metaEnum = QMetaEnum::fromType<ElementType>();
+    for (int i = 0; i < metaEnum.keyCount(); ++i) {
+        const auto type = static_cast<ElementType>(metaEnum.value(i));
+        if (type == ElementType::Unknown || type == ElementType::JKLatch) {
+            continue;
+        }
+        types.append(type);
+    }
+    return types;
+}
+} // namespace
+
 // Element Creation Tests
 
 void TestElementFactory::testBuildElement_data()
 {
-    // Test data: all valid element types from testTextToType_data()
+    // Every real, buildable ElementType gets this build-time invariant check, not just a
+    // hand-picked subset (mirrors testAllElementTypesRegistered()'s own Unknown/JKLatch skip).
     QTest::addColumn<int>("elementType");
 
-    QTest::newRow("And") << static_cast<int>(ElementType::And);
-    QTest::newRow("Or") << static_cast<int>(ElementType::Or);
-    QTest::newRow("Not") << static_cast<int>(ElementType::Not);
-    QTest::newRow("Nand") << static_cast<int>(ElementType::Nand);
-    QTest::newRow("Nor") << static_cast<int>(ElementType::Nor);
-    QTest::newRow("Xor") << static_cast<int>(ElementType::Xor);
-    QTest::newRow("Xnor") << static_cast<int>(ElementType::Xnor);
-    QTest::newRow("InputButton") << static_cast<int>(ElementType::InputButton);
-    QTest::newRow("InputSwitch") << static_cast<int>(ElementType::InputSwitch);
-    QTest::newRow("InputRotary") << static_cast<int>(ElementType::InputRotary);
-    QTest::newRow("Clock") << static_cast<int>(ElementType::Clock);
-    QTest::newRow("Led") << static_cast<int>(ElementType::Led);
-    QTest::newRow("DFlipFlop") << static_cast<int>(ElementType::DFlipFlop);
-    QTest::newRow("JKFlipFlop") << static_cast<int>(ElementType::JKFlipFlop);
-    QTest::newRow("Mux") << static_cast<int>(ElementType::Mux);
-    QTest::newRow("Demux") << static_cast<int>(ElementType::Demux);
-    QTest::newRow("Node") << static_cast<int>(ElementType::Node);
+    const QMetaEnum metaEnum = QMetaEnum::fromType<ElementType>();
+    for (int i = 0; i < metaEnum.keyCount(); ++i) {
+        const auto type = static_cast<ElementType>(metaEnum.value(i));
+        if (type == ElementType::Unknown || type == ElementType::JKLatch) {
+            continue;
+        }
+        QTest::newRow(metaEnum.key(i)) << metaEnum.value(i);
+    }
 }
 
 void TestElementFactory::testBuildElement()
@@ -136,19 +147,9 @@ void TestElementFactory::testTextToType()
 
 void TestElementFactory::testTypeToTextBidirectional()
 {
-    // Test round-trip conversion for all valid element types
-    // Uses the same type list as testBuildElement_data() for consistency
-    const QVector<ElementType> validTypes{
-        ElementType::And, ElementType::Or, ElementType::Not,
-        ElementType::Nand, ElementType::Nor, ElementType::Xor, ElementType::Xnor,
-        ElementType::InputButton, ElementType::InputSwitch, ElementType::InputRotary,
-        ElementType::Clock, ElementType::Led,
-        ElementType::DFlipFlop, ElementType::JKFlipFlop,
-        ElementType::Mux, ElementType::Demux,
-        ElementType::Node
-    };
-
-    for (const auto type : validTypes) {
+    // Test round-trip conversion for all valid element types -- shares buildableElementTypes()
+    // with testBuildElement_data() instead of an independently-maintained duplicate list.
+    for (const auto type : buildableElementTypes()) {
         const auto text = ElementFactory::typeToText(type);
         QVERIFY2(!text.isEmpty() && text != "Unknown",
                  qPrintable(QString("Type %1 should have valid name").arg(static_cast<int>(type))));
