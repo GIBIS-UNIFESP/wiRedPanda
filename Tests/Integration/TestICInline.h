@@ -148,7 +148,7 @@ private slots:
     void testElementPaletteRefreshAfterRemoveAll();
     void testICDropZoneMimeAcceptance();
     void testICDropZoneWiredInUI();
-    void testICDropZoneDropEventSignals();
+    void testICDropZoneRejectsWrongDirectionDrop();
     void testTrashButtonDragAcceptance();
 
     // --- Migrated: Batch 9 — SystemVerilog and drop-zone workflows ---
