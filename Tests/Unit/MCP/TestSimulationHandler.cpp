@@ -159,6 +159,27 @@ void TestSimulationHandler::testCreateWaveformCreatesRealWaveform()
     QCOMPARE(waveformData["inputs"].toArray()[0].toObject()["label"].toString(), QStringLiteral("sw1"));
 }
 
+void TestSimulationHandler::testCreateWaveformCreatesRealWaveformWithInputPatterns()
+{
+    // The label->row resolution and per-cell setCellValue() write loop was previously only
+    // exercised on the three failure paths (unknown label, length mismatch, invalid value) --
+    // none of them ever reach setCellValue() at all, since each returns before it. Drive a
+    // real valid pattern and confirm it actually lands in the response's waveform data.
+    MainWindow window;
+    SimulationHandler handler(&window, nullptr);
+    addInputAndLed(window.currentTab()->scene(), "sw1");
+
+    const QJsonObject params{{"duration", 4}, {"input_patterns", QJsonObject{{"sw1", QJsonArray{0, 1, 0, 1}}}}};
+    const QJsonObject response = handler.handleCommand("create_waveform", params, 1);
+    QVERIFY2(response.contains("result"), qPrintable(QJsonDocument(response).toJson()));
+
+    const QJsonObject result = response["result"].toObject();
+    const QJsonArray inputs = result["waveform_data"].toObject()["inputs"].toArray();
+    QVERIFY(!inputs.isEmpty());
+    QCOMPARE(inputs[0].toObject()["label"].toString(), QStringLiteral("sw1"));
+    QCOMPARE(inputs[0].toObject()["values"].toArray(), QJsonArray({0, 1, 0, 1}));
+}
+
 void TestSimulationHandler::testCreateWaveformRejectsUnknownInputLabel()
 {
     MainWindow window;
