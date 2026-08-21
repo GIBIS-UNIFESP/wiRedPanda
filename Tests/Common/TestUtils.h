@@ -111,6 +111,7 @@ inline QDragMoveEvent makeDragMoveEvent(QPoint pos, Qt::DropActions actions, con
 }
 #endif
 
+#include "App/Core/Application.h"
 #include "App/Core/Common.h"
 #include "App/Core/Settings.h"
 #include "App/Core/ThemeManager.h"
@@ -483,6 +484,19 @@ struct ScopedThemeOverride {
     ~ScopedThemeOverride()
     {
         ThemeManager::setTheme(original);
+    }
+};
+
+/**
+ * @brief Same idea as ScopedSettingsLanguage, for Application::interactiveMode -- forced false
+ * globally for the test suite; a test that toggles it must restore it even on a failed assertion.
+ */
+struct ScopedInteractiveMode {
+    bool original = Application::interactiveMode;
+
+    ~ScopedInteractiveMode()
+    {
+        Application::interactiveMode = original;
     }
 };
 
