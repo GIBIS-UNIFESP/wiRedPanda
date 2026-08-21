@@ -725,6 +725,8 @@ void TestTourEngine::testRepositionCalloutCentersRightWhenNoRoomAboveOrBelow()
     // the spotlight rather than above/below it.
     const int expectedY = (overlay.height() - overlay.m_callout->height()) / 2;
     QCOMPARE(overlay.m_callout->y(), expectedY);
+    QVERIFY2(overlay.m_callout->x() > 90,
+              "The callout must be shifted to the right of the spotlight (right edge at x=90)");
 }
 
 void TestTourEngine::testPaintEventDrawsWithoutHighlight()
