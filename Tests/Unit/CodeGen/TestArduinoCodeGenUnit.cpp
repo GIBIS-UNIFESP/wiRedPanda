@@ -361,6 +361,31 @@ void TestArduinoCodeGenUnit::testGenerateTestbenchUnwritablePathThrows()
 #endif
 }
 
+void TestArduinoCodeGenUnit::testConstructorUnwritablePathThrows()
+{
+#ifdef Q_OS_WIN
+    QSKIP("QFile::setPermissions cannot make a directory unwritable on Windows (uses ACLs, not Unix permission bits)");
+#else
+    // Regression test, mirroring TestSystemVerilogCodeGenUnit::testUnwritablePathThrows
+    // (F22): the constructor itself opens m_file eagerly and must throw when it can't,
+    // independently of generateTestbench()'s own unwritable-path check tested above.
+    QTemporaryDir lockedDir;
+    QVERIFY(lockedDir.isValid());
+    const QString path = lockedDir.path() + "/main.ino";
+    QVERIFY(QFile::setPermissions(lockedDir.path(), QFileDevice::ReadOwner | QFileDevice::ExeOwner));
+
+    {
+        QFile probe(path);
+        QVERIFY(!probe.open(QIODevice::WriteOnly));
+    }
+
+    QVERIFY_THROWS(std::exception, ArduinoCodeGen(path, {}));
+
+    QFile::setPermissions(lockedDir.path(),
+        QFileDevice::ReadOwner | QFileDevice::WriteOwner | QFileDevice::ExeOwner);
+#endif
+}
+
 void TestArduinoCodeGenUnit::testTruthTableInputTiedToVccResolvesToHigh()
 {
     WorkSpace workspace;
