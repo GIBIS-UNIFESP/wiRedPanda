@@ -184,7 +184,8 @@ void TestSystemVerilogCodeGenUnit::testMuxCircuit()
     QString content = file.readAll();
 
     QVERIFY(content.contains("module"));
-    QVERIFY(content.contains("case") || content.contains("assign"));
+    QVERIFY(content.contains("case"));
+    QVERIFY(content.contains("endcase"));
 }
 
 void TestSystemVerilogCodeGenUnit::testDemuxCircuit()
