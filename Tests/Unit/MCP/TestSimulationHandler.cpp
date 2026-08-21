@@ -12,6 +12,7 @@
 #include <QTemporaryDir>
 #include <QTest>
 
+#include "App/BeWavedDolphin/SignalModel.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Scene/Commands.h"
@@ -122,6 +123,23 @@ void TestSimulationHandler::testCreateWaveformRejectsInvalidDuration()
              JsonRpcError::ValidationError);
     QCOMPARE(handler.handleCommand("create_waveform", {{"duration", 999999}}, 1)["error"].toObject()["code"].toInt(),
              JsonRpcError::ValidationError);
+    // Boundary: kMaxColumns+1 must still be rejected -- an off-by-one in the
+    // "duration > kMaxColumns" comparison would let this slip through.
+    QCOMPARE(handler.handleCommand("create_waveform", {{"duration", SignalModel::kMaxColumns + 1}}, 1)["error"].toObject()["code"].toInt(),
+             JsonRpcError::ValidationError);
+}
+
+void TestSimulationHandler::testCreateWaveformAcceptsMaxDuration()
+{
+    // The other half of the boundary: kMaxColumns itself is the top of the valid range and
+    // must succeed, not just fail one-past-the-end.
+    MainWindow window;
+    SimulationHandler handler(&window, nullptr);
+    addInputAndLed(window.currentTab()->scene());
+
+    const QJsonObject response = handler.handleCommand("create_waveform", {{"duration", SignalModel::kMaxColumns}}, 1);
+    QVERIFY2(response.contains("result"), qPrintable(QJsonDocument(response).toJson()));
+    QCOMPARE(response["result"].toObject()["actual_duration"].toInt(), SignalModel::kMaxColumns);
 }
 
 void TestSimulationHandler::testCreateWaveformCreatesRealWaveform()
