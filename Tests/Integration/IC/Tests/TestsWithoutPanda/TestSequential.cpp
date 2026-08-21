@@ -164,6 +164,14 @@ void TestSequential::testRegisterAsyncClear()
     // Complete clock pulse to load initial value
     clockCycle(simulation, &clk);
 
+    // Verify the register actually captured the loaded value before clearing -- otherwise a
+    // broken load path (e.g. a disconnected D input) would go unnoticed, since every row
+    // asserts 0 after CLEAR regardless of what was loaded.
+    int resultAfterLoad = readMultiBitOutput(QVector<GraphicElement *>({
+        &dataOut[0], &dataOut[1], &dataOut[2], &dataOut[3]
+    }));
+    QCOMPARE(resultAfterLoad, initialValue);
+
     // Assert CLEAR (set LOW = active)
     clear.setOn(false);  // CLEAR = LOW (active) - immediate reset
     simulation->update();  // No clock, just settle
@@ -472,26 +480,32 @@ void TestSequential::testShiftRegisterAsyncClear()
 
 void TestSequential::testSimpleStateMachine_data()
 {
-    QTest::addColumn<bool>("trigger");
-    QTest::addColumn<bool>("expectedState");
+    QTest::addColumn<QList<bool>>("triggerSequence");
+    QTest::addColumn<QList<bool>>("expectedStateSequence");
 
-    // Test 1: Start in IDLE state (Q=0)
-    QTest::newRow("idle_no_trigger") << false << false;
+    // Each row runs its trigger sequence against ONE persisted circuit (via advanceFsm()), so
+    // "release_to_idle" and "second_trigger" genuinely build on a prior transition instead of
+    // (as before) each row getting a fresh circuit and silently duplicating an earlier row's
+    // single-step case under a misleading sequential-sounding name.
+
+    // Test 1: Start in IDLE, no trigger -> stays IDLE
+    QTest::newRow("idle_no_trigger") << QList<bool>{false} << QList<bool>{false};
 
     // Test 2: Trigger causes transition to ACTIVE (Q=1)
-    QTest::newRow("trigger_transition") << true << true;
+    QTest::newRow("trigger_transition") << QList<bool>{true} << QList<bool>{true};
 
-    // Test 3: Release trigger returns to IDLE (Q=0)
-    QTest::newRow("release_to_idle") << false << false;
+    // Test 3: Trigger to ACTIVE, then release back to IDLE
+    QTest::newRow("release_to_idle") << QList<bool>{true, false} << QList<bool>{true, false};
 
-    // Test 4: Multiple triggers toggle state
-    QTest::newRow("second_trigger") << true << true;
+    // Test 4: Trigger, release, trigger again -> ACTIVE, IDLE, ACTIVE
+    QTest::newRow("second_trigger") << QList<bool>{true, false, true} << QList<bool>{true, false, true};
 }
 
 void TestSequential::testSimpleStateMachine()
 {
-    QFETCH(bool, trigger);
-    QFETCH(bool, expectedState);
+    QFETCH(QList<bool>, triggerSequence);
+    QFETCH(QList<bool>, expectedStateSequence);
+    QCOMPARE(triggerSequence.size(), expectedStateSequence.size());
 
     // Build circuit using helper function
     InputSwitch *triggerSwitch = nullptr;
@@ -517,26 +531,20 @@ void TestSequential::testSimpleStateMachine()
         QFAIL(qPrintable(QString("Q and Q_not not complementary! Q=%1, Q_not=%2").arg(initialQ).arg(initialQnot)));
     }
 
-    // Set trigger and settle for setup
-    triggerSwitch->setOn(trigger);
-    simulation->update();
+    for (int step = 0; step < triggerSequence.size(); ++step) {
+        // Complete clock pulse with the new trigger value (rising edge captures D, falling
+        // edge completes).
+        advanceFsm(simulation, triggerSwitch, clockSwitch, triggerSequence[step]);
 
-    int readBeforeClock = inputStatus(stateLed);
-    QCOMPARE(readBeforeClock, 0);
+        int q = inputStatus(stateLed);
+        int qnot = inputStatus(stateNotLed);
 
-    // Complete clock pulse (rising edge captures D, falling edge completes)
-    clockCycle(simulation, clockSwitch);
+        QVERIFY2(q == (expectedStateSequence[step] ? 1 : 0),
+                 qPrintable(QString("Step %1: Q=%2, expected %3").arg(step).arg(q).arg(expectedStateSequence[step] ? 1 : 0)));
 
-    // Verify final state
-    int finalQ = inputStatus(stateLed);
-    int finalQnot = inputStatus(stateNotLed);
-
-    // Verify Q value matches expected
-    QCOMPARE(finalQ, expectedState);
-
-    // Verify Q_not is complement
-    if (finalQ != (finalQnot == 0 ? 1 : 0)) {
-        QFAIL(qPrintable(QString("Final Q and Q_not not complementary! Q=%1, Q_not=%2").arg(finalQ).arg(finalQnot)));
+        if (q != (qnot == 0 ? 1 : 0)) {
+            QFAIL(qPrintable(QString("Step %1: Q and Q_not not complementary! Q=%2, Q_not=%3").arg(step).arg(q).arg(qnot)));
+        }
     }
 }
 
