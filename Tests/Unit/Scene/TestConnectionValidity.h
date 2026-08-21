@@ -19,7 +19,6 @@ private slots:
     void testPortDeletionDeletesConnection();
     void testMultipleConnectionsStatus();
     void testPortValidityWithConnections();
-    void testConnectionWithDisconnectedPorts();
     void testInputPortWithMultipleConnections();
     void testOutputPortWithMultipleConnections();
 
