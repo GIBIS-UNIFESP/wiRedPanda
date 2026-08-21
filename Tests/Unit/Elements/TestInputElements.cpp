@@ -8,12 +8,14 @@
 #include <QDataStream>
 #include <QDir>
 #include <QFile>
+#include <QGraphicsSceneMouseEvent>
 #include <QTemporaryDir>
 #include <QTest>
 
 #include "App/Element/GraphicElements/InputButton.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/IO/SerializationContext.h"
+#include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
 
@@ -203,18 +205,44 @@ void TestInputElements::testInputSwitchLoadNewVersion()
 
 void TestInputElements::testInputSwitchLockingMechanism()
 {
+    // setOn(bool) is the direct/programmatic API and deliberately ignores m_locked -- only
+    // mousePressEvent()'s interactive path checks the lock. Actually engage the lock here so
+    // the "doesn't affect setOn(bool) directly" claim is demonstrated, not just asserted by
+    // a comment.
     InputSwitch inputSwitch;
+    inputSwitch.setLocked(true);
+    QVERIFY(inputSwitch.isLocked());
 
-    // Locking is handled by parent class, we just verify state can be changed
     inputSwitch.setOn(false);
     QVERIFY(!inputSwitch.isOn());
 
     inputSwitch.setOn(true);
     QVERIFY(inputSwitch.isOn());
 
-    // Verify locking doesn't affect setOn(bool) directly
     inputSwitch.setOn(false);
     QVERIFY(!inputSwitch.isOn());
+
+    inputSwitch.setLocked(false);
+    QVERIFY(!inputSwitch.isLocked());
+}
+
+void TestInputElements::testInputSwitchMousePressWhileLockedDoesNotToggle()
+{
+    Scene scene;
+    auto *inputSwitch = new InputSwitch;
+    inputSwitch->setPos(0, 0);
+    inputSwitch->setLocked(true);
+    scene.addItem(inputSwitch);
+
+    QVERIFY(!inputSwitch->isOn());
+
+    QGraphicsSceneMouseEvent pressEvent(QEvent::GraphicsSceneMousePress);
+    pressEvent.setScenePos(inputSwitch->scenePos());
+    pressEvent.setButton(Qt::LeftButton);
+    pressEvent.setButtons(Qt::LeftButton);
+    QCoreApplication::sendEvent(&scene, &pressEvent);
+
+    QVERIFY2(!inputSwitch->isOn(), "mousePressEvent() must not toggle a locked InputSwitch");
 }
 
 void TestInputElements::testInputSwitchAppearanceChange()
@@ -418,21 +446,48 @@ void TestInputElements::testInputButtonLoadNewVersion()
 
 void TestInputElements::testInputButtonLockingMechanism()
 {
+    // setOn()/setOff() are the direct/programmatic API and deliberately ignore m_locked --
+    // only mousePressEvent()/mouseReleaseEvent()'s interactive paths check the lock. Actually
+    // engage the lock here so that claim is demonstrated, not just asserted by a comment.
     InputButton inputButton;
+    inputButton.setLocked(true);
+    QVERIFY(inputButton.isLocked());
 
-    // Locking is handled by parent class, we just verify state can be changed
     inputButton.setOff();
     QVERIFY(!inputButton.isOn());
 
     inputButton.setOn();
     QVERIFY(inputButton.isOn());
 
-    // Verify locking doesn't affect setOn/setOff directly
     inputButton.setOff();
     QVERIFY(!inputButton.isOn());
 
-    inputButton.setOn();
-    QVERIFY(inputButton.isOn());
+    inputButton.setLocked(false);
+    QVERIFY(!inputButton.isLocked());
+}
+
+void TestInputElements::testInputButtonMousePressReleaseWhileLockedDoesNotToggle()
+{
+    Scene scene;
+    auto *inputButton = new InputButton;
+    inputButton->setPos(0, 0);
+    inputButton->setLocked(true);
+    scene.addItem(inputButton);
+
+    QVERIFY(!inputButton->isOn());
+
+    QGraphicsSceneMouseEvent pressEvent(QEvent::GraphicsSceneMousePress);
+    pressEvent.setScenePos(inputButton->scenePos());
+    pressEvent.setButton(Qt::LeftButton);
+    pressEvent.setButtons(Qt::LeftButton);
+    QCoreApplication::sendEvent(&scene, &pressEvent);
+    QVERIFY2(!inputButton->isOn(), "mousePressEvent() must not turn on a locked InputButton");
+
+    QGraphicsSceneMouseEvent releaseEvent(QEvent::GraphicsSceneMouseRelease);
+    releaseEvent.setScenePos(inputButton->scenePos());
+    releaseEvent.setButton(Qt::LeftButton);
+    QCoreApplication::sendEvent(&scene, &releaseEvent);
+    QVERIFY2(!inputButton->isOn(), "mouseReleaseEvent() must not change a locked InputButton");
 }
 
 void TestInputElements::testInputButtonAppearanceChange()
