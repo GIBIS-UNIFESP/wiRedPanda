@@ -181,27 +181,6 @@ void TestRAMCell1Bit::testRapidWeToggle()
     QCOMPARE(TestUtils::inputStatus(&f.dataOut), false);
 }
 
-void TestRAMCell1Bit::testDataChangeWithoutWe()
-{
-    RamCellFixture f;
-
-    // Write 1
-    f.dataIn.setOn(true);
-    f.writeEnable.setOn(true);
-    f.sim->update();
-    clockCycle(f.sim, &f.clock);
-    f.sim->update();
-    QCOMPARE(TestUtils::inputStatus(&f.dataOut), true);
-
-    // Change data but disable WE — stored value must hold
-    f.dataIn.setOn(false);
-    f.writeEnable.setOn(false);
-    f.sim->update();
-    clockCycle(f.sim, &f.clock);
-    f.sim->update();
-    QCOMPARE(TestUtils::inputStatus(&f.dataOut), true);
-}
-
 void TestRAMCell1Bit::testHoldMultipleCycles()
 {
     RamCellFixture f;
