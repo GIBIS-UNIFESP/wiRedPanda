@@ -125,3 +125,40 @@ void TestLevel4RippleAdder4Bit::testAdder4Bit()
     QCOMPARE(f.readSum(), expectedSum);
     QCOMPARE(inputStatus(f.ledCarryOut), expectedCarryOut);
 }
+
+// testAdder4Bit always drives CarryIn=0, so a stuck CarryIn wire would go
+// unnoticed. Verify CarryIn=1 actually adds into the sum, formulas per the
+// standard ripple-carry adder: Sum = (A+B+CarryIn) & 0xF, CarryOut = (A+B+CarryIn) > 0xF.
+void TestLevel4RippleAdder4Bit::testAdder4BitWithCarryIn_data()
+{
+    QTest::addColumn<int>("valueA");
+    QTest::addColumn<int>("valueB");
+    QTest::addColumn<int>("expectedSum");
+    QTest::addColumn<bool>("expectedCarryOut");
+
+    QTest::newRow("0 + 0 + cin, no carry") << 0 << 0 << 1 << false;      // 0+0+1 = 1
+    QTest::newRow("3 + 5 + cin, no carry") << 3 << 5 << 9 << false;      // 3+5+1 = 9
+    QTest::newRow("7 + 7 + cin, CARRY OUT") << 7 << 7 << 15 << false;    // 7+7+1 = 15, no overflow
+    QTest::newRow("15 + 0 + cin, CARRY OUT") << 15 << 0 << 0 << true;    // 15+0+1 = 16 -> overflow
+    QTest::newRow("15 + 15 + cin, CARRY OUT") << 15 << 15 << 15 << true; // 15+15+1 = 31 & 0xF = 15, overflow
+}
+
+void TestLevel4RippleAdder4Bit::testAdder4BitWithCarryIn()
+{
+    QFETCH(int, valueA);
+    QFETCH(int, valueB);
+    QFETCH(int, expectedSum);
+    QFETCH(bool, expectedCarryOut);
+
+    auto &f = *s_level4RippleAdder4bit;
+
+    for (int i = 0; i < 4; ++i) {
+        f.swA[i]->setOn((valueA >> i) & 1);
+        f.swB[i]->setOn((valueB >> i) & 1);
+    }
+    f.carryIn->setOn(true);
+    f.sim->update();
+
+    QCOMPARE(f.readSum(), expectedSum);
+    QCOMPARE(inputStatus(f.ledCarryOut), expectedCarryOut);
+}

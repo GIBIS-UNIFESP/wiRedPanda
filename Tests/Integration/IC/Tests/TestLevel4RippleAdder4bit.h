@@ -16,4 +16,7 @@ private slots:
 
     void testAdder4Bit_data();
     void testAdder4Bit();
+
+    void testAdder4BitWithCarryIn_data();
+    void testAdder4BitWithCarryIn();
 };
