@@ -14,5 +14,6 @@ private slots:
     void cleanupTestCase();
     void cleanup();
 
+    void testPriorityMux3to1_data();
     void testPriorityMux3to1();
 };
