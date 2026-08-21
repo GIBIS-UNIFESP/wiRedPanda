@@ -28,6 +28,7 @@ private slots:
 
     // Element modification commands
     void testChangeInputSizeCommand();
+    void testChangeInputSizeCommandShrinkDropsAndRestoresConnection();
     void testChangeOutputSizeCommand();
     void testMorphCommand();
     void testMorphPreservesFlip();
