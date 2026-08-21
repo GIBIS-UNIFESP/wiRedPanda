@@ -234,6 +234,10 @@ void TestTourEngine::testGoToPreviousStepMovesBackAndPersists()
 
 void TestTourEngine::testGoToPreviousStepAtFirstStepIsNoOp()
 {
+    // start() seeds currentStep() from the persisted Settings::tourProgress -- reset it
+    // explicitly rather than relying on a preceding test having left it at 0.
+    Settings::setTourProgress(QLatin1String(kTourFixtureId), 0);
+
     QTemporaryDir dir;
     QVERIFY(dir.isValid());
     const QString path = writeTourFixture(dir);
