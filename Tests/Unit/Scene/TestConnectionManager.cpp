@@ -23,7 +23,8 @@
 
 void TestConnectionManager::testConnectionCreation()
 {
-    // Test: Can create a connection between elements
+    // Test: Can create a connection between elements. inputs() is a fixed structural port
+    // vector unaffected by whether connect() actually succeeded -- assert isConnected() instead.
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
@@ -32,46 +33,69 @@ void TestConnectionManager::testConnectionCreation()
     builder.add(&sw, &andGate);
     builder.connect(&sw, 0, &andGate, 0);
 
-    QVERIFY(!andGate.inputs().isEmpty());
+    QVERIFY(sw.outputPort(0)->isConnected(andGate.inputPort(0)));
 }
 
 void TestConnectionManager::testConnectionValidation()
 {
-    // Test: ConnectionManager validates connections
-    WorkSpace workspace;
-    And andGate1;
-    And andGate2;
-    workspace.scene()->addItem(&andGate1);
-    workspace.scene()->addItem(&andGate2);
-
-    // Both gates exist in scene
-    QVERIFY(workspace.scene()->items().contains(&andGate1));
-    QVERIFY(workspace.scene()->items().contains(&andGate2));
-}
-
-void TestConnectionManager::testConnectionDeletion()
-{
-    // Test: Connections can be deleted properly
+    // Test: the direct isConnectionAllowed()/connectionRejectionReason() static contract --
+    // not just element presence checks. A normal cross-element connection is allowed; a
+    // self-loop (both ports on the same element) is rejected with a non-empty reason. This
+    // complements testTryCompleteRejectedConnectionDeletesWireAndShowsMessage, which exercises
+    // the same self-loop rejection through the interactive tryComplete() flow instead.
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw;
     And andGate;
     builder.add(&sw, &andGate);
-    builder.connect(&sw, 0, &andGate, 0);
 
-    // Connection exists
-    QVERIFY(!andGate.inputs().isEmpty());
+    QVERIFY(ConnectionManager::isConnectionAllowed(sw.outputPort(0), andGate.inputPort(0)));
+    QVERIFY(ConnectionManager::connectionRejectionReason(sw.outputPort(0), andGate.inputPort(0)).isEmpty());
+
+    QVERIFY(!ConnectionManager::isConnectionAllowed(andGate.outputPort(0), andGate.inputPort(0)));
+    QVERIFY2(!ConnectionManager::connectionRejectionReason(andGate.outputPort(0), andGate.inputPort(0)).isEmpty(),
+              "A self-loop connection must be rejected with a reason");
+}
+
+void TestConnectionManager::testConnectionDeletion()
+{
+    // Test: Connections can be deleted properly -- actually delete the wire and confirm the
+    // ports are no longer connected, not just that inputs() is non-empty (a fixed structural
+    // vector that connect()/delete can never affect).
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    InputSwitch sw;
+    And andGate;
+    builder.add(&sw, &andGate);
+    Connection *conn = builder.connect(&sw, 0, &andGate, 0);
+    QVERIFY(sw.outputPort(0)->isConnected(andGate.inputPort(0)));
+
+    workspace.scene()->removeItem(conn);
+    delete conn;
+
+    QVERIFY(!sw.outputPort(0)->isConnected(andGate.inputPort(0)));
 }
 
 void TestConnectionManager::testMultiPortConnection()
 {
-    // Test: Multi-port connections (fan-out)
+    // Test: Multi-port connections (fan-out) -- one output driving two separate inputs.
     WorkSpace workspace;
-    And andGate;
-    workspace.scene()->addItem(&andGate);
+    CircuitBuilder builder(workspace.scene());
 
-    QVERIFY(!andGate.inputs().isEmpty());
+    InputSwitch sw;
+    And and1;
+    And and2;
+    and1.setPos(100, 0);
+    and2.setPos(100, 100);
+    builder.add(&sw, &and1, &and2);
+    builder.connect(&sw, 0, &and1, 0);
+    builder.connect(&sw, 0, &and2, 0);
+
+    QVERIFY(sw.outputPort(0)->isConnected(and1.inputPort(0)));
+    QVERIFY(sw.outputPort(0)->isConnected(and2.inputPort(0)));
+    QCOMPARE(sw.outputPort(0)->connections().size(), 2);
 }
 
 void TestConnectionManager::testHoverShowsConnectedPortLabels()
