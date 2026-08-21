@@ -14,7 +14,7 @@
 #include <QSet>
 #include <QTemporaryDir>
 #include <QTemporaryFile>
-#include <QTime>
+#include <QUuid>
 
 #include "App/Core/Application.h"
 #include "App/Core/Enums.h"
@@ -212,7 +212,9 @@ void TestIC::testICSaveLoad()
     // Step 2: Save workspace to temporary file
     // Save in examples directory to keep IC file references valid
     const QString saveDirPath = TestUtils::examplesDir();
-    const QString tempPath = saveDirPath + "/test_ic_roundtrip_" + QString::number(QTime::currentTime().msec()) + ".panda";
+    // A wall-clock millisecond (0-999) can collide across parallel test processes or repeated
+    // runs within the same tick; a UUID is collision-free regardless of timing.
+    const QString tempPath = saveDirPath + "/test_ic_roundtrip_" + QUuid::createUuid().toString(QUuid::Id128) + ".panda";
 
     try {
         workspace1.save(tempPath);
