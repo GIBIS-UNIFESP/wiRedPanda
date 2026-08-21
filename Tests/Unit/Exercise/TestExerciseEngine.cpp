@@ -134,7 +134,7 @@ void TestExerciseEngine::testRetranslateWhileInactiveIsNoOp()
 
 void TestExerciseEngine::testRetranslatePreservesProgressAndData()
 {
-    const QString originalLang = Settings::language();
+    TestUtils::ScopedSettingsLanguage languageGuard;
     Settings::setLanguage("en");
     Settings::setExerciseProgress(QLatin1String(kExerciseFixtureId), 0);
 
@@ -157,13 +157,11 @@ void TestExerciseEngine::testRetranslatePreservesProgressAndData()
     QCOMPARE(engine.exerciseTitle(), QStringLiteral("Test Exercise"));
     QCOMPARE(engine.currentStepData().instruction, QStringLiteral("Instruction 1"));
     QCOMPARE(engine.currentStepData().hint, QStringLiteral("Hint 1"));
-
-    Settings::setLanguage(originalLang);
 }
 
 void TestExerciseEngine::testRetranslateEmitsRetranslatedOnly()
 {
-    const QString originalLang = Settings::language();
+    TestUtils::ScopedSettingsLanguage languageGuard;
     Settings::setLanguage("en");
     Settings::setExerciseProgress(QLatin1String(kExerciseFixtureId), 0);
 
@@ -184,8 +182,6 @@ void TestExerciseEngine::testRetranslateEmitsRetranslatedOnly()
     QCOMPARE(retranslatedSpy.count(), 1);
     QCOMPARE(stepChangedSpy.count(), 0);
     QCOMPARE(stepCompletedSpy.count(), 0);
-
-    Settings::setLanguage(originalLang);
 }
 
 void TestExerciseEngine::testNegativeMinCountClampsToZero()
