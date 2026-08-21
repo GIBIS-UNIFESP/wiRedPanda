@@ -97,11 +97,6 @@ private slots:
     /// shape as bug6/bug7.
     void hardening_icRegistryReloadHelpersMustUseSimulationBlocker();
 
-    /// Combined H2 reproduction — sits at the end so the process crash
-    /// only affects this last slot. Covers the concrete path that
-    /// Simulation.cpp:87's `element->updateLogic()` took in production.
-    void integration_simulationTickAfterResetMustNotCrash();
-
     /// WIREDPANDA-HC — Port::drainConnections issued a bare
     /// `delete conn` during cascade-destruction. Qt's ~QGraphicsItem
     /// then dispatched to the non-virtual QGraphicsScene::removeItem,
@@ -119,4 +114,9 @@ private slots:
     /// check remains valid against any future code path that might reintroduce
     /// a similar dangling reference.
     void jd_cancelledWireMustNotLeaveDanglingPointer();
+
+    /// Combined H2 reproduction — sits at the end so the process crash
+    /// only affects this last slot. Covers the concrete path that
+    /// Simulation.cpp:87's `element->updateLogic()` took in production.
+    void integration_simulationTickAfterResetMustNotCrash();
 };
