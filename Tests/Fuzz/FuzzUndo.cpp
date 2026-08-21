@@ -95,17 +95,6 @@ void applyRandomCommands(Scene *scene, FuzzedDataProvider &fdp)
 {
     QUndoStack stack;
 
-    // Grab the first connection already in the scene (came from g_validPanda or fuzz load).
-    // SplitCommand needs this; no per-run scene::addItem is needed since the connection
-    // was serialized into g_validPanda at initialization time.
-    Connection *splitableConn = nullptr;
-    for (auto *item : scene->items()) {
-        if (auto *conn = qgraphicsitem_cast<Connection *>(item)) {
-            splitableConn = conn;
-            break;
-        }
-    }
-
     const int numOps = fdp.ConsumeIntegralInRange<int>(1, 6);
     for (int op = 0; op < numOps; ++op) {
         const auto elems = scene->elements();
@@ -236,15 +225,23 @@ void applyRandomCommands(Scene *scene, FuzzedDataProvider &fdp)
             break;
         }
         case 11: { // SplitCommand — inserts a Node junction into a connection
-            // Use the pre-wired connection created at the start; if it was consumed
-            // by a previous undo or deleted, we skip gracefully.
-            if (!splitableConn || !splitableConn->scene()) break;
+            // Re-resolve a live connection from the scene every time instead of caching a
+            // raw pointer across command executions: a prior DeleteItemsCommand (or its
+            // undo/redo) can free or replace Connection objects, which would otherwise leave
+            // a dangling pointer that a scene()-only guard can't detect (use-after-free).
+            Connection *conn = nullptr;
+            for (auto *item : scene->items()) {
+                if (auto *c = qgraphicsitem_cast<Connection *>(item)) {
+                    conn = c;
+                    break;
+                }
+            }
+            if (!conn) break;
             const QPointF midPos(
                 fdp.ConsumeFloatingPointInRange<double>(-200.0, 200.0),
                 fdp.ConsumeFloatingPointInRange<double>(-200.0, 200.0));
             try {
-                stack.push(new SplitCommand(splitableConn, midPos, scene));
-                splitableConn = nullptr; // consumed — don't split again
+                stack.push(new SplitCommand(conn, midPos, scene));
             } catch (...) {}
             break;
         }
