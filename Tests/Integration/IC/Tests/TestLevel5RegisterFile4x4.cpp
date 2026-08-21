@@ -1292,10 +1292,23 @@ void TestLevel5RegisterFile4X4::testRegisterFileTimingEdges()
         f.writeEnable->setOff();
         f.sim->update();
 
+        // Empirically (confirmed via this exact sequence): the write commits using the
+        // address that was stable at the point the write pulse began -- reg0 gets the write
+        // (value 9), and reg1 (the address changed to mid-pulse) is left untouched at its
+        // power-on default (0). Changing the address after the pulse starts does not retarget
+        // the write.
+        const int expectedValues[2] = {9, 0};
         for (int regIdx = 0; regIdx < 2; ++regIdx) {
             f.readAddr[0]->setOn(regIdx & 1);
             f.readAddr[1]->setOn((regIdx >> 1) & 1);
             f.sim->update();
+            int readValue = 0;
+            for (int bit = 0; bit < 4; ++bit) {
+                if (inputStatus(f.readData[bit])) {
+                    readValue |= (1 << bit);
+                }
+            }
+            QCOMPARE(readValue, expectedValues[regIdx]);
         }
     } else if (timingTest == 4) {
         f.sim->update();
@@ -1331,7 +1344,11 @@ void TestLevel5RegisterFile4X4::testRegisterFileTimingEdges()
             }
         }
 
-        QVERIFY((readValue == 3) || (readValue == 12));
+        // Empirically (confirmed via this exact sequence, consistent with the
+        // address_change_midwrite case above): the write commits using the data that was
+        // stable at the point the write pulse began (3), not the value it was changed to
+        // mid-pulse (12).
+        QCOMPARE(readValue, 3);
     } else {
         QFAIL(qPrintable(QString("Invalid timingTest: %1").arg(timingTest)));
     }
