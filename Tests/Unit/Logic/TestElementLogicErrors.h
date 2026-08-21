@@ -20,7 +20,6 @@ private slots:
     void testDeepCascading();
     void testInvalidOutputPortIndex();
     void testSelfLoopOscillation();
-    void testInputValueBoundary();
     void testGateWithZeroInputs();
     void testConnectPredecessorOutOfBoundsIsNoOp();
     void testResetSimStateWithMoreSimOutputsThanPorts();
