@@ -169,3 +169,24 @@ void TestLevel9RegisterFile32X16::testMultiAddressStorage()
         QCOMPARE(f.readAt(write.first), write.second);
     }
 }
+
+// writeAt() always drives WriteEnable high, so no existing test ever exercises
+// WriteEnable=0 -- a clock edge with it low must leave the addressed register
+// untouched.
+void TestLevel9RegisterFile32X16::testWriteEnableGating()
+{
+    auto &f = *s_level9RegFile32x16;
+
+    f.writeAt(9, 0x1234);
+    QCOMPARE(f.readAt(9), 0x1234);
+
+    // Attempt to overwrite with WriteEnable low: the clock edge must not commit it.
+    setMultiBitInput(f.writeAddr, 9);
+    setMultiBitInput(f.dataIn, 0x5678);
+    f.we->setOn(false);
+    f.sim->update();
+    clockCycle(f.sim, f.clk);
+    f.sim->update();
+
+    QCOMPARE(f.readAt(9), 0x1234);
+}

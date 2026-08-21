@@ -18,4 +18,5 @@ private slots:
     void testRegisterFile_data();
     void testRegisterFile();
     void testMultiAddressStorage();
+    void testWriteEnableGating();
 };
