@@ -179,10 +179,13 @@ void TestThemeManager::testLightThemeSceneColors()
     // Check that it's a yellowish/cream color (255, 255, 230)
     QVERIFY(bgBrush.red() > 200);
     QVERIFY(bgBrush.green() > 200);
+    QVERIFY(bgBrush.blue() > 200);
+    QCOMPARE(bgBrush, QColor(255, 255, 230));
 
     // Dots should be darkish for visibility on light background
     QColor dots = attrs.m_sceneBgDots;
     QVERIFY(dots.isValid());
+    QCOMPARE(dots, QColor(Qt::darkGray));
 }
 
 void TestThemeManager::testLightThemeConnectionColors()
