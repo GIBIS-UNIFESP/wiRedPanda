@@ -1058,6 +1058,9 @@ void TestScene::testPropertyCycleFrequency()
 
     // Clock should still exist
     QCOMPARE(scene->elements().size(), 1);
+
+    // adjustMainProperty() cycles Clock::frequency() in 0.5 Hz steps.
+    QCOMPARE(clock->frequency(), initialFreq + 0.5);
 }
 
 void TestScene::testPropertyCycleColor()
@@ -1074,12 +1077,16 @@ void TestScene::testPropertyCycleColor()
 
     QString initialColor = led->color();
     QCOMPARE(initialColor, QString("Red"));
+    const QString expectedColor = led->nextColor();
 
-    // Cycle color
-    scene->nextMainPropShortcut();
+    // Cycle color -- Led's color is cycled by adjustSecondaryProperty() (nextSecndProp), not
+    // adjustMainProperty(): the "main" property shortcut instead changes Led's *input size*
+    // (Led shares that case with And/Or/Nand/.../TruthTable in PropertyShortcutHandler.cpp).
+    scene->nextSecndPropShortcut();
 
     // LED should still exist
     QCOMPARE(scene->elements().size(), 1);
+    QCOMPARE(led->color(), expectedColor);
 }
 
 void TestScene::testPropertyCycleAudio()
@@ -1093,11 +1100,21 @@ void TestScene::testPropertyCycleAudio()
     // Select it
     buzzer->setSelected(true);
 
-    // Cycle audio property
+    auto *audioElm = dynamic_cast<AudioOutputElement *>(buzzer);
+    QVERIFY(audioElm);
+    const float initialVolume = audioElm->volume();
+    const bool initialMuted = audioElm->isMuted();
+
+    // Cycle audio property -- PropertyShortcutHandler::adjustSecondaryProperty() has no case
+    // for ElementType::Buzzer (it falls into the shared no-op group with And/AudioBox/Clock/
+    // etc.); volume/mute have no keyboard-shortcut cycling at all. Confirm that stays true
+    // (a regression that added incorrect handling here would change these).
     scene->nextSecndPropShortcut();
 
-    // Buzzer should still exist
+    // Buzzer should still exist, unaffected.
     QCOMPARE(scene->elements().size(), 1);
+    QCOMPARE(audioElm->volume(), initialVolume);
+    QCOMPARE(audioElm->isMuted(), initialMuted);
 }
 
 void TestScene::testMorphingMultipleElements()
