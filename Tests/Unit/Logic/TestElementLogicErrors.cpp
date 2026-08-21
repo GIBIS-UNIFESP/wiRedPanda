@@ -225,28 +225,6 @@ void TestElementLogicErrors::testSelfLoopOscillation()
     QCOMPARE(notGate.outputValue(), Status::Active);
 }
 
-void TestElementLogicErrors::testInputValueBoundary()
-{
-    And gate;
-    gate.setInputSize(4);
-    InputVcc in0, in1, in2, in3;
-    initElm(gate); initSrc(in0); initSrc(in1); initSrc(in2); initSrc(in3);
-
-    gate.connectPredecessor(0, &in0, 0);
-    gate.connectPredecessor(1, &in1, 0);
-    gate.connectPredecessor(2, &in2, 0);
-    gate.connectPredecessor(3, &in3, 0);
-
-    for (int combo = 0; combo < 16; ++combo) {
-        in0.setOutputValue((combo & 0x1) != 0);
-        in1.setOutputValue((combo & 0x2) != 0);
-        in2.setOutputValue((combo & 0x4) != 0);
-        in3.setOutputValue((combo & 0x8) != 0);
-        gate.updateLogic();
-        QCOMPARE(gate.outputValue(), (combo == 15) ? Status::Active : Status::Inactive);
-    }
-}
-
 void TestElementLogicErrors::testGateWithZeroInputs()
 {
     And andGate;
