@@ -14,4 +14,15 @@ private slots:
 
     void testSelectionCapabilities();
     void testDemuxSelectionCannotChangeInputSize();
+
+    void testSingleElementReflectsItsOwnFeatureFlags();
+    void testMixedSelectionAndReducesFeatureFlags();
+    void testHasSameLabelReflectsWhetherLabelsMatch();
+    void testHasSameTypeFalseAndElementTypeUnknownForMixedTypes();
+    void testCanChangeInputSizeFalseWhenInputSizeIsFixed();
+    void testCanChangeOutputSizeFalseForTruthTableRegardlessOfRange();
+    void testHasLatchedValueFalseWhenSelectionIncludesInputButton();
+    void testCanMorphAcrossInputAndStaticInputGroups();
+    void testCanMorphFalseAcrossUnrelatedGroups();
+    void testSameCheckStateAndSameOutputValueForInputElements();
 };
