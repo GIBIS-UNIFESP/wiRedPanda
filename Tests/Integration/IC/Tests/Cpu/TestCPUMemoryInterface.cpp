@@ -62,8 +62,8 @@ static void writeAndVerify(int address, int dataToWrite, bool doWrite, int expec
 
 void TestCPUMemoryInterface::testMemoryWriteRead()
 {
-    // Each row writes to a unique address, so they are independent.
-    // Build one fixture and run all write-then-read cases.
+    // Each row writes to a unique address, so they are independent -- each
+    // can use its own fresh fixture via the shared writeAndVerify() helper.
     struct Case { int address; int data; int expected; };
     const Case cases[] = {
         {0x10, 0x55, 0x55},
@@ -75,49 +75,8 @@ void TestCPUMemoryInterface::testMemoryWriteRead()
         {0x30, 0xCC, 0xCC},
     };
 
-    QVector<InputSwitch *> addr, dataIn;
-    InputSwitch *memRead, *memWrite, *memEnable, *clock;
-    QVector<Led *> dataOut;
-    for (int i = 0; i < 8; i++) {
-        addr.append(new InputSwitch());
-        dataIn.append(new InputSwitch());
-        dataOut.append(new Led());
-    }
-    memRead = new InputSwitch();
-    memWrite = new InputSwitch();
-    memEnable = new InputSwitch();
-    clock = new InputSwitch();
-    std::unique_ptr<WorkSpace> workspace(buildMemoryInterface(addr.data(), dataIn.data(), memRead, memWrite, memEnable, clock, dataOut.data()));
-    auto *sim = workspace->simulation();
-
     for (const auto &c : cases) {
-        // Set address and data inputs
-        for (int i = 0; i < 8; i++) {
-            addr[i]->setOn((c.address >> i) & 1);
-            dataIn[i]->setOn((c.data >> i) & 1);
-        }
-        sim->update();
-        // Write cycle
-        memWrite->setOn(true);
-        memEnable->setOn(true);
-        sim->update();
-        clockCycle(sim, clock);
-        memWrite->setOn(false);
-        // Read back
-        memRead->setOn(true);
-        sim->update();
-
-        QVector<GraphicElement *> dataOutVec;
-        for (int i = 0; i < 8; i++) {
-            dataOutVec.append(dataOut[i]);
-        }
-        int result = readMultiBitOutput(dataOutVec);
-        QCOMPARE(result, c.expected);
-
-        // Reset control signals for next iteration
-        memRead->setOn(false);
-        memEnable->setOn(false);
-        sim->update();
+        writeAndVerify(c.address, c.data, true, c.expected);
     }
 }
 
