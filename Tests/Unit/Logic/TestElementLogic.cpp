@@ -831,11 +831,15 @@ void TestElementLogic::testSRLatch_data()
     QTest::addColumn<bool>("reset");
     QTest::addColumn<bool>("prevState");
     QTest::addColumn<bool>("expectedQ");
+    QTest::addColumn<bool>("expectedNotQ");
 
-    QTest::newRow("S=0, R=0, prev=0 -> Q=0") << false << false << false << false;
-    QTest::newRow("S=0, R=0, prev=1 -> Q=1") << false << false << true << true;
-    QTest::newRow("S=1, R=0, prev=X -> Q=1") << true << false << false << true;
-    QTest::newRow("S=0, R=1, prev=X -> Q=0") << false << true << false << false;
+    QTest::newRow("S=0, R=0, prev=0 -> Q=0") << false << false << false << false << true;
+    QTest::newRow("S=0, R=0, prev=1 -> Q=1") << false << false << true << true << false;
+    QTest::newRow("S=1, R=0, prev=X -> Q=1") << true << false << false << true << false;
+    QTest::newRow("S=0, R=1, prev=X -> Q=0") << false << true << false << false << true;
+    // Contention/forbidden state: SRLatch::updateLogic() sets BOTH q0 and q1 Inactive when
+    // S=R=1 -- Q and ~Q are no longer complementary here, unlike every other row.
+    QTest::newRow("S=1, R=1, prev=X -> Q=0, NotQ=0 (forbidden)") << true << true << false << false << false;
 }
 
 void TestElementLogic::testSRLatch()
@@ -844,6 +848,7 @@ void TestElementLogic::testSRLatch()
     QFETCH(bool, reset);
     QFETCH(bool, prevState);
     QFETCH(bool, expectedQ);
+    QFETCH(bool, expectedNotQ);
 
     SRLatch elm; initElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
@@ -858,7 +863,7 @@ void TestElementLogic::testSRLatch()
     elm.updateLogic();
 
     QCOMPARE(elm.outputValue(0), expectedQ ? Status::Active : Status::Inactive);
-    QCOMPARE(elm.outputValue(1), expectedQ ? Status::Inactive : Status::Active);
+    QCOMPARE(elm.outputValue(1), expectedNotQ ? Status::Active : Status::Inactive);
 }
 
 void TestElementLogic::test3InputAnd_data()
