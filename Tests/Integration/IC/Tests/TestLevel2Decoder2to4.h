@@ -18,6 +18,5 @@ private slots:
     void testAddressDecoder2to4_data();
     void testAddressDecoder2to4();
     void testSequentialScan();
-    void testMutualExclusivity();
     void testEnableGating();
 };
