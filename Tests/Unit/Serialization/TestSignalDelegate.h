@@ -14,4 +14,9 @@ private slots:
 
     void testPaintNumberModeDiffersFromLineMode();
     void testPaintSelectedCellDrawsHighlightBehindWaveform();
+
+    void testSegmentForCoversAllTransitions_data();
+    void testSegmentForCoversAllTransitions();
+
+    void testPaintOutputRowUsesDifferentColorThanInputRow();
 };
