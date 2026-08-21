@@ -211,14 +211,15 @@ void TestCommands::testFlipCommand()
     QList<GraphicElement *> elements = scene->elements().toList();
     scene->receiveCommand(new FlipCommand(elements, 0, scene));
 
-    // After horizontal flip, x positions should be swapped relative to center
-    // The center is at x=150, so gate1 (at 100) should move to 200, gate2 (at 200) to 100
+    // setPos() snaps to the 8px half-grid (GraphicElement::itemChange), so the elements'
+    // actual pre-flip positions are (104,104)/(200,104), not the raw (100,100)/(200,100)
+    // passed to setPos() above. FlipCommand mirrors x about [xmin,xmax] = [104,200] and
+    // leaves y untouched: gate1 104 -> 104+(200-104) = 200, gate2 200 -> 104+(200-200) = 104.
     const QPointF pos1After = gate1->pos();
     const QPointF pos2After = gate2->pos();
 
-    // Verify that positions actually changed
-    QVERIFY2(pos1After != pos1Before || pos2After != pos2Before,
-             "Flip command should have changed element positions");
+    QCOMPARE(pos1After, QPointF(200, 104));
+    QCOMPARE(pos2After, QPointF(104, 104));
 
     // Undo should restore original positions
     undoStack->undo();
