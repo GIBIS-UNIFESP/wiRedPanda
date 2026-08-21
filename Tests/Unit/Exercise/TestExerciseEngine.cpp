@@ -762,6 +762,8 @@ void TestExerciseEngine::testOverlayConstructionBuildsUiWidgets()
 
 void TestExerciseEngine::testOverlayAppliesThemeReactsToThemeChange()
 {
+    TestUtils::ScopedThemeOverride themeGuard;
+
     ExerciseEngine engine;
     ExerciseOverlay overlay(&engine);
 
@@ -772,8 +774,6 @@ void TestExerciseEngine::testOverlayAppliesThemeReactsToThemeChange()
     const QColor darkBg = overlay.m_bgColor;
 
     QVERIFY2(lightBg != darkBg, "applyTheme() must pick different colors for light vs dark");
-
-    ThemeManager::setTheme(Theme::Light);
 }
 
 void TestExerciseEngine::testOverlayOnStepChangedUpdatesLabelsAndButtons()
