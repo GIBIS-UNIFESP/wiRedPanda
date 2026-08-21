@@ -65,8 +65,40 @@ void TestCPUDecoders::testDecoder3to8()
     }
 }
 
+void TestCPUDecoders::testInstructionDecoder4to16_data()
+{
+    QTest::addColumn<int>("opcode");
+    QTest::addColumn<int>("expectedOneHot");
+
+    // Test all 16 opcodes - each should produce one-hot output. ISA_* are InstructionOpcode
+    // values, not int -- cast explicitly since the "opcode" column is declared as int (matching
+    // how the rest of this test treats opcodes as plain bit patterns).
+    // Arithmetic & Logic
+    QTest::newRow("NOP") << static_cast<int>(ISA_NOP) << (1 << 0);
+    QTest::newRow("LOAD") << static_cast<int>(ISA_LOAD) << (1 << 1);
+    QTest::newRow("STORE") << static_cast<int>(ISA_STORE) << (1 << 2);
+    QTest::newRow("ADD") << static_cast<int>(ISA_ADD) << (1 << 3);
+    QTest::newRow("SUB") << static_cast<int>(ISA_SUB) << (1 << 4);
+    QTest::newRow("AND") << static_cast<int>(ISA_AND) << (1 << 5);
+    QTest::newRow("OR") << static_cast<int>(ISA_OR) << (1 << 6);
+    QTest::newRow("XOR") << static_cast<int>(ISA_XOR) << (1 << 7);
+    // Control Flow
+    QTest::newRow("JMP") << static_cast<int>(ISA_JMP) << (1 << 8);
+    QTest::newRow("BEQ") << static_cast<int>(ISA_BEQ) << (1 << 9);
+    QTest::newRow("BNE") << static_cast<int>(ISA_BNE) << (1 << 10);
+    QTest::newRow("BLT") << static_cast<int>(ISA_BLT) << (1 << 11);
+    QTest::newRow("BGE") << static_cast<int>(ISA_BGE) << (1 << 12);
+    // Reserved
+    QTest::newRow("RESERVED_13") << static_cast<int>(ISA_RESERVED_13) << (1 << 13);
+    QTest::newRow("RESERVED_14") << static_cast<int>(ISA_RESERVED_14) << (1 << 14);
+    QTest::newRow("RESERVED_15") << static_cast<int>(ISA_RESERVED_15) << (1 << 15);
+}
+
 void TestCPUDecoders::testInstructionDecoder4to16()
 {
+    QFETCH(int, opcode);
+    QFETCH(int, expectedOneHot);
+
     QVector<InputSwitch *> opcodeBits;
     QVector<Led *> decodedOutput;
     for (int i = 0; i < 4; i++) {
@@ -77,47 +109,18 @@ void TestCPUDecoders::testInstructionDecoder4to16()
     }
     std::unique_ptr<WorkSpace> workspace(buildInstructionDecoder4to16(opcodeBits.data(), decodedOutput.data()));
     auto *sim = workspace->simulation();
-    // Test all 16 opcodes - each should produce one-hot output
-    struct TestCase {
-        int opcode;
-        int expectedOneHot;
-        const char *name;
-    };
-    TestCase tests[] = {
-        // Arithmetic & Logic
-        {ISA_NOP, 1 << 0, "NOP"},
-        {ISA_LOAD, 1 << 1, "LOAD"},
-        {ISA_STORE, 1 << 2, "STORE"},
-        {ISA_ADD, 1 << 3, "ADD"},
-        {ISA_SUB, 1 << 4, "SUB"},
-        {ISA_AND, 1 << 5, "AND"},
-        {ISA_OR, 1 << 6, "OR"},
-        {ISA_XOR, 1 << 7, "XOR"},
-        // Control Flow
-        {ISA_JMP, 1 << 8, "JMP"},
-        {ISA_BEQ, 1 << 9, "BEQ"},
-        {ISA_BNE, 1 << 10, "BNE"},
-        {ISA_BLT, 1 << 11, "BLT"},
-        {ISA_BGE, 1 << 12, "BGE"},
-        // Reserved
-        {ISA_RESERVED_13, 1 << 13, "RESERVED_13"},
-        {ISA_RESERVED_14, 1 << 14, "RESERVED_14"},
-        {ISA_RESERVED_15, 1 << 15, "RESERVED_15"},
-    };
-    for (int testIdx = 0; testIdx < 16; ++testIdx) {
-        const auto &test = tests[testIdx];
-        // Set opcode bits (4 bits)
-        for (int i = 0; i < 4; i++) {
-            opcodeBits[i]->setOn((test.opcode >> i) & 1);
-        }
-        sim->update();
-        // Read 16-bit output
-        int result = 0;
-        for (int i = 0; i < 16; i++) {
-            if (TestUtils::inputStatus(decodedOutput[i], 0)) {
-                result |= (1 << i);
-            }
-        }
-        QCOMPARE(result, test.expectedOneHot);
+
+    // Set opcode bits (4 bits)
+    for (int i = 0; i < 4; i++) {
+        opcodeBits[i]->setOn((opcode >> i) & 1);
     }
+    sim->update();
+    // Read 16-bit output
+    int result = 0;
+    for (int i = 0; i < 16; i++) {
+        if (TestUtils::inputStatus(decodedOutput[i], 0)) {
+            result |= (1 << i);
+        }
+    }
+    QCOMPARE(result, expectedOneHot);
 }
