@@ -413,14 +413,10 @@ void TestEnums::testElementGroupToString()
     QVariant varInput = QVariant::fromValue(input);
     QVariant varOutput = QVariant::fromValue(output);
 
-    // Verify they're not empty strings
-    QVERIFY(!varGate.toString().isEmpty());
-    QVERIFY(!varInput.toString().isEmpty());
-    QVERIFY(!varOutput.toString().isEmpty());
-
-    // Different groups should have different strings
-    QVERIFY(varGate.toString() != varInput.toString());
-    QVERIFY(varInput.toString() != varOutput.toString());
+    // Verify the exact key strings, not just non-emptiness.
+    QCOMPARE(varGate.toString(), QStringLiteral("Gate"));
+    QCOMPARE(varInput.toString(), QStringLiteral("Input"));
+    QCOMPARE(varOutput.toString(), QStringLiteral("Output"));
 }
 
 void TestEnums::testAllEnumsExposeMetaEnum()
