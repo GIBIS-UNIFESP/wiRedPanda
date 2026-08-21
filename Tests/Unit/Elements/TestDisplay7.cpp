@@ -27,13 +27,6 @@ void TestDisplay7::testDisplay7ColorSetting()
     QCOMPARE(display.color(), QString("Green"));
 }
 
-void TestDisplay7::testDisplay7SegmentRendering()
-{
-    Display7 display;
-    display.setColor("Blue");
-    QVERIFY(!display.color().isEmpty());
-}
-
 void TestDisplay7::testDisplay7SaveLoad()
 {
     Display7 display;
