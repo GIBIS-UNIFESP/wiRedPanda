@@ -1524,9 +1524,7 @@ void TestBewavedDolphinGui::testCreateWaveformFromTerminalReadsStdin()
         f.write("2,3\n1,0,1\n0,1,0\n");
     }
 
-    fflush(stdin);
-    QVERIFY2(testUtilsFreopen(qPrintable(stdinPath), "r", stdin) != nullptr,
-             "Failed to redirect stdin to the terminal-protocol fixture");
+    TestUtils::ScopedStdinRedirect stdinRedirect(stdinPath);
 
     auto ws = createAndCircuit();
     std::unique_ptr<BewavedDolphin> dolphin(new BewavedDolphin(ws->scene(), false));
