@@ -1001,14 +1001,25 @@ void TestScene::testElementMorphingWithConnections()
     conn->setEndPort(led->inputPort(0));
     scene->addItem(conn);
 
+    const int andId = andGate->id();
+
     // Select AND gate
     andGate->setSelected(true);
 
     // Morph to next type
     scene->nextElm();
 
-    // Connection should still exist
+    // Scene::elements() structurally excludes Connections, so it can't reflect wire survival --
+    // check the connection count and its actual endpoints. MorphCommand replaces andGate with a
+    // new GraphicElement instance (the old pointer is stale), so re-resolve it by id.
     QCOMPARE(scene->elements().size(), 2);
+    QCOMPARE(TestUtils::countConnections(scene.get()), 1);
+
+    auto *morphedElm = dynamic_cast<GraphicElement *>(scene->itemById(andId));
+    QVERIFY(morphedElm);
+    QVERIFY(morphedElm->elementType() != ElementType::And);
+    QCOMPARE(conn->startPort()->graphicElement(), morphedElm);
+    QCOMPARE(conn->endPort()->graphicElement(), led);
 }
 
 void TestScene::testElementMorphingPropertyPreservation()
