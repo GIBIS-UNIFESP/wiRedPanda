@@ -17,4 +17,5 @@ class TestFileHandlerSecurity : public QObject
 private slots:
     void testExportImagePngClampsExtremeSceneDimensions();
     void testExportImageClampsExcessivePadding();
+    void testExportImageClampsNegativePadding();
 };
