@@ -562,28 +562,41 @@ void TestIC::testICNestedCircuitSignalPropagation()
 
 void TestIC::testICFileDependencyResolution()
 {
-    // Test that IC correctly resolves relative file paths for dependencies
-    // Verifies that nested ICs can reference other IC files
-
+    // Test that a nested IC correctly resolves its own file-backed dependency via a relative
+    // path. jkflipflop.panda is explicitly a non-nested IC (see testICNestedSingleLevel's own
+    // comment: "a simple IC that doesn't contain other ICs"), so it can never exercise this;
+    // ic.panda is the fixture that actually contains a nested IC (confirmed by
+    // testICNestedMultiLevel).
     WorkSpace workspace;
     auto *scene = workspace.scene();
 
-    // Use examples directory to ensure IC file can find dependencies
     const QString examplesDir = TestUtils::examplesDir();
-
     auto *ic = new IC();
     scene->addItem(ic);
 
-    const QString icFile = examplesDir + "/jkflipflop.panda";
+    const QString icFile = examplesDir + "/ic.panda";
 
     try {
         ic->loadFile(icFile, QFileInfo(icFile).absolutePath());
 
-        // Verify IC loaded successfully
-        QVERIFY2(ic->inputSize() > 0 || ic->outputSize() > 0,
-                 "IC should have ports after loading");
-
-        // Verify IC has been loaded with internal elements
+        // Find the nested, file-backed IC among this IC's internals and verify its own
+        // dependency file was actually resolved and exists on disk.
+        IC *nestedFileBackedIC = nullptr;
+        for (auto *internalElm : ic->internalElements()) {
+            if (auto *internalIC = qobject_cast<IC *>(internalElm); internalIC && !internalIC->isEmbedded()) {
+                nestedFileBackedIC = internalIC;
+                break;
+            }
+        }
+        QVERIFY2(nestedFileBackedIC, "ic.panda must contain a nested, file-backed IC to exercise dependency resolution");
+        // QVERIFY2 above already returns on failure, but GCC's -Wnull-dereference at -O3
+        // can't see that through the macro; an explicit guard makes it provably non-null.
+        if (!nestedFileBackedIC) {
+            return;
+        }
+        QVERIFY2(!nestedFileBackedIC->file().isEmpty(), "The nested IC's dependency file path must have been resolved");
+        QVERIFY2(QFile::exists(nestedFileBackedIC->file()),
+                 qPrintable(QString("The nested IC's resolved dependency file must exist: %1").arg(nestedFileBackedIC->file())));
     } catch (const Pandaception &ex) {
         QFAIL(qPrintable(QString("IC file dependency resolution failed: %1").arg(ex.what())));
     }
