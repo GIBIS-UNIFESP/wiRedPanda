@@ -21,6 +21,7 @@ private slots:
     void testInputSwitchLoadOldVersion();
     void testInputSwitchLoadNewVersion();
     void testInputSwitchLockingMechanism();
+    void testInputSwitchMousePressWhileLockedDoesNotToggle();
     void testInputSwitchAppearanceChange();
 
     // InputButton Tests
@@ -34,6 +35,7 @@ private slots:
     void testInputButtonLoadOldVersion();
     void testInputButtonLoadNewVersion();
     void testInputButtonLockingMechanism();
+    void testInputButtonMousePressReleaseWhileLockedDoesNotToggle();
     void testInputButtonAppearanceChange();
 
     // Basic InputButton test (migrated from testelements)
