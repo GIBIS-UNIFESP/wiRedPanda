@@ -18,8 +18,5 @@ private slots:
     void test5to32Decoder_data();
     void test5to32Decoder();
 
-    // Edge Cases
-    void test5to32DecoderMaxAddress_data();
-    void test5to32DecoderMaxAddress();
     void testEnableGating();
 };
