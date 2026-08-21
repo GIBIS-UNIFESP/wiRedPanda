@@ -11,6 +11,7 @@
 #include "App/UI/MainWindow.h"
 #include "MCP/Server/Core/JsonRpcError.h"
 #include "MCP/Server/Handlers/ThemeHandler.h"
+#include "Tests/Common/TestUtils.h"
 
 void TestThemeHandler::testHandleGetThemeReturnsCurrentTheme()
 {
@@ -84,6 +85,25 @@ void TestThemeHandler::testHandleGetEffectiveThemeReturnsResolvedTheme()
     QCOMPARE(response["result"].toObject()["effective_theme"].toString(), QStringLiteral("light"));
 
     ThemeManager::setTheme(prevTheme);
+}
+
+void TestThemeHandler::testHandleGetEffectiveThemeResolvesSystemTheme()
+{
+    // ThemeManager::effectiveTheme() is exactly
+    // (theme()==System) ? resolveSystemTheme() : theme() -- the only interesting branch (the
+    // trivial passthrough is already covered above). resolveSystemTheme() always resolves to
+    // a concrete Light or Dark, never "system" itself, regardless of the real OS setting.
+    TestUtils::ScopedThemeOverride themeGuard;
+    ThemeManager::setTheme(Theme::System);
+
+    MainWindow window;
+    ThemeHandler handler(&window, nullptr);
+
+    const QJsonObject response = handler.handleCommand("get_effective_theme", {}, 1);
+    QVERIFY2(response.contains("result"), qPrintable(QJsonDocument(response).toJson()));
+    const QString effectiveTheme = response["result"].toObject()["effective_theme"].toString();
+    QVERIFY2(effectiveTheme == QStringLiteral("light") || effectiveTheme == QStringLiteral("dark"),
+              qPrintable(effectiveTheme));
 }
 
 void TestThemeHandler::testHandleCommandRejectsUnknownCommand()
