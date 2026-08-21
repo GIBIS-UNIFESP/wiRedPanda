@@ -20,6 +20,7 @@ private slots:
     void testCreateWaveformRejectsInvalidDuration();
     void testCreateWaveformAcceptsMaxDuration();
     void testCreateWaveformCreatesRealWaveform();
+    void testCreateWaveformCreatesRealWaveformWithInputPatterns();
     void testCreateWaveformRejectsUnknownInputLabel();
     void testCreateWaveformRejectsPatternLengthMismatch();
     void testCreateWaveformRejectsInvalidPatternValue();
