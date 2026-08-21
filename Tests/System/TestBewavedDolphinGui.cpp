@@ -499,12 +499,14 @@ void TestBewavedDolphinGui::testShowNumbers()
     auto ws = createAndCircuit();
     std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
 
+    // Start from the waveform (Line) display so the switch to Number is a real transition.
+    dolphin->m_delegate->setPlotType(PlotType::Line);
+
     auto *action = dolphin->findChild<QAction *>("actionShowNumbers");
     QVERIFY(action);
-    QVERIFY(action->isEnabled());
     action->trigger();
-    // Action toggles number display — verify it remains enabled after toggle
-    QVERIFY(action->isEnabled());
+
+    QCOMPARE(dolphin->m_delegate->plotType(), PlotType::Number);
 }
 
 void TestBewavedDolphinGui::testShowWaveforms()
@@ -512,12 +514,14 @@ void TestBewavedDolphinGui::testShowWaveforms()
     auto ws = createAndCircuit();
     std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
 
+    // Start from Number display so the switch back to Line/waveform is a real transition.
+    dolphin->m_delegate->setPlotType(PlotType::Number);
+
     auto *action = dolphin->findChild<QAction *>("actionShowWaveforms");
     QVERIFY(action);
-    QVERIFY(action->isEnabled());
     action->trigger();
-    // Action toggles waveform display — verify it remains enabled after toggle
-    QVERIFY(action->isEnabled());
+
+    QCOMPARE(dolphin->m_delegate->plotType(), PlotType::Line);
 }
 
 void TestBewavedDolphinGui::testFitScreen()
