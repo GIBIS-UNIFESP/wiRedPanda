@@ -25,14 +25,8 @@ private slots:
     void testIsOnAllPorts();
 
     // Port configuration tests
-    void testPortConfigurationWithTwoPorts();
-    void testPortConfigurationWithThreePorts();
-    void testPortConfigurationWithFourPorts();
-    void testPortConfigurationWithSixPorts();
-    void testPortConfigurationWithEightPorts();
-    void testPortConfigurationWithTenPorts();
-    void testPortConfigurationWithTwelvePorts();
-    void testPortConfigurationWithSixteenPorts();
+    void testPortConfigurationWithStandardSize_data();
+    void testPortConfigurationWithStandardSize();
 
     // Serialization tests
     void testSaveCurrentPort();
