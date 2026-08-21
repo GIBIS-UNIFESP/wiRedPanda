@@ -6,6 +6,8 @@
 #include <QObject>
 #include <QTest>
 
+class GraphicElement;
+class InputSwitch;
 class Scene;
 class Simulation;
 
@@ -62,4 +64,9 @@ private:
     void verifyConvergence(Scene *scene, bool shouldConverge);
     void verifyFeedbackDetection(Scene *scene);
     void verifyStableState(Scene *scene);
+
+    // Locates the S/R switches and the Q/Q' NAND gates in a createSRLatchFromNAND() scene,
+    // by their construction position (S-side elements at y=0, R-side at y=50).
+    void findSRLatchParts(Scene *scene, InputSwitch *&switchS, InputSwitch *&switchR,
+                          GraphicElement *&nand1Q, GraphicElement *&nand2QBar);
 };

@@ -61,14 +61,7 @@ void TestFeedback::testSetResetPriorityInSRLatch()
     InputSwitch *switchR = nullptr;
     GraphicElement *nand1 = nullptr; // Q
     GraphicElement *nand2 = nullptr; // Q'
-    for (auto *elem : scene->elements()) {
-        const bool isSSide = (elem->pos().y() == 0);
-        if (elem->elementType() == ElementType::InputSwitch) {
-            (isSSide ? switchS : switchR) = dynamic_cast<InputSwitch *>(elem);
-        } else if (elem->elementType() == ElementType::Nand) {
-            (isSSide ? nand1 : nand2) = elem;
-        }
-    }
+    findSRLatchParts(scene.get(), switchS, switchR, nand1, nand2);
     QVERIFY2(switchS && switchR && nand1 && nand2, "Failed to locate S/R switches and NAND gates");
 
     Simulation sim(scene.get());
@@ -90,23 +83,57 @@ void TestFeedback::testSetResetPriorityInSRLatch()
 
 void TestFeedback::testInitialStateDependency()
 {
-    // Feedback circuits depend on initial state
-    // Create two identical SR latches with different initial states
+    // A latch's whole point is memory: the same present input (S=1, R=1, the NAND latch's
+    // "hold" state) must settle to different stable outputs depending on which state the
+    // latch was driven into first. Two identical latches, driven to opposite states, then
+    // both released into "hold" -- if the circuit had no memory, both would converge to the
+    // same output; a real latch instead retains whichever state it was left in.
     std::unique_ptr<Scene> scene1(createSRLatchFromNAND());
     std::unique_ptr<Scene> scene2(createSRLatchFromNAND());
 
     QVERIFY2(scene1 != nullptr, "Failed to create first scene");
     QVERIFY2(scene2 != nullptr, "Failed to create second scene");
 
+    InputSwitch *switchS1 = nullptr, *switchR1 = nullptr;
+    GraphicElement *nand1Q1 = nullptr, *nand1Q1Bar = nullptr;
+    findSRLatchParts(scene1.get(), switchS1, switchR1, nand1Q1, nand1Q1Bar);
+    QVERIFY(switchS1 && switchR1 && nand1Q1 && nand1Q1Bar);
+
+    InputSwitch *switchS2 = nullptr, *switchR2 = nullptr;
+    GraphicElement *nand2Q1 = nullptr, *nand2Q1Bar = nullptr;
+    findSRLatchParts(scene2.get(), switchS2, switchR2, nand2Q1, nand2Q1Bar);
+    QVERIFY(switchS2 && switchR2 && nand2Q1 && nand2Q1Bar);
+
     Simulation sim1(scene1.get());
     Simulation sim2(scene2.get());
 
-    // Both should converge despite potentially different initial states
+    // Drive scene1 into Set (Q=1), scene2 into Reset (Q=0) -- opposite initial states.
+    switchS1->setOn(false);
+    switchR1->setOn(true);
     sim1.update();
+    sim1.update();
+
+    switchS2->setOn(true);
+    switchR2->setOn(false);
+    sim2.update();
     sim2.update();
 
-    verifyFeedbackDetection(scene1.get());
-    verifyFeedbackDetection(scene2.get());
+    // Now release both into the identical "hold" input (S=1, R=1).
+    switchS1->setOn(true);
+    switchR1->setOn(true);
+    sim1.update();
+    sim1.update();
+
+    switchS2->setOn(true);
+    switchR2->setOn(true);
+    sim2.update();
+    sim2.update();
+
+    // Same present input, different remembered state.
+    QCOMPARE(nand1Q1->outputPort(0)->status(), Status::Active);
+    QCOMPARE(nand2Q1->outputPort(0)->status(), Status::Inactive);
+    QVERIFY2(nand1Q1->outputPort(0)->status() != nand2Q1->outputPort(0)->status(),
+              "Two latches driven to opposite states and released into the same hold input must retain different states");
 }
 
 void TestFeedback::testPureCombinationalCircuit()
@@ -545,6 +572,21 @@ void TestFeedback::testMultipleSimultaneousFeedbackLoops()
 // ============================================================
 // Helper Functions
 // ============================================================
+
+void TestFeedback::findSRLatchParts(Scene *scene, InputSwitch *&switchS, InputSwitch *&switchR,
+                                    GraphicElement *&nand1Q, GraphicElement *&nand2QBar)
+{
+    switchS = switchR = nullptr;
+    nand1Q = nand2QBar = nullptr;
+    for (auto *elem : scene->elements()) {
+        const bool isSSide = (elem->pos().y() == 0);
+        if (elem->elementType() == ElementType::InputSwitch) {
+            (isSSide ? switchS : switchR) = dynamic_cast<InputSwitch *>(elem);
+        } else if (elem->elementType() == ElementType::Nand) {
+            (isSSide ? nand1Q : nand2QBar) = elem;
+        }
+    }
+}
 
 Scene *TestFeedback::createSRLatchFromNAND()
 {
