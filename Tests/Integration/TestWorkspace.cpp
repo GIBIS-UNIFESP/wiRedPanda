@@ -577,10 +577,15 @@ void TestWorkspace::testAutosaveFileExtensionCorrect()
 
 void TestWorkspace::testAutosaveInCurrentDirForSavedProject()
 {
+    // A saved project's autosave should land next to its .panda file, not in the AppData
+    // autosaves directory (that's testAutosaveInAppDataForNewProject's case, for a project
+    // with no file yet).
     QTemporaryDir tempDir;
     QVERIFY2(tempDir.isValid(), "Temporary directory creation failed");
 
-    QString testFile = tempDir.filePath("circuit.panda");
+    Settings::setAutosaveFiles({});
+
+    const QString testFile = tempDir.filePath("circuit.panda");
 
     WorkSpace workspace;
     Scene *scene = workspace.scene();
@@ -588,18 +593,19 @@ void TestWorkspace::testAutosaveInCurrentDirForSavedProject()
     auto *led = ElementFactory::buildElement(ElementType::Led);
     scene->addItem(led);
 
-    // Save file first
-    try {
-        QSaveFile saveFile(testFile);
-        if (saveFile.open(QIODevice::WriteOnly)) {
-            QDataStream stream(&saveFile);
-            Serialization::writePandaHeader(stream);
-            workspace.save(stream);
-            saveFile.commit();
-        }
-    } catch (const Pandaception &) {
-        // Ignore
-    }
+    // Real save (sets the workspace's own file location), not the raw stream helper.
+    QCOMPARE(workspace.save(testFile), WorkSpace::SaveOutcome::Saved);
+    QVERIFY2(QFile::exists(testFile), "Save must have written the project file");
+
+    scene->undoStack()->push(new AddItemsCommand({ElementFactory::buildElement(ElementType::And)}, scene));
+    workspace.flushPendingAutosave();
+
+    QStringList autosaves = Settings::autosaveFiles();
+    QVERIFY2(!autosaves.isEmpty(), "A dirtied saved project should still produce an autosave entry");
+
+    const QString &autosavePath = autosaves.first();
+    QVERIFY2(QFile::exists(autosavePath), qPrintable(QStringLiteral("Autosave file should exist: %1").arg(autosavePath)));
+    QCOMPARE(QFileInfo(autosavePath).absolutePath(), QFileInfo(testFile).absolutePath());
 }
 
 void TestWorkspace::testAutosaveInAppDataForNewProject()
