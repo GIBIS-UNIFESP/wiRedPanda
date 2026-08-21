@@ -19,4 +19,5 @@ private slots:
 
     void testStackPointerPushPop();
     void testStackPointerReset();
+    void testStackPointerPushPopWraparound();
 };
