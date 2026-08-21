@@ -140,6 +140,39 @@ void TestLevel8MemoryStage::testMemoryStage()
     QCOMPARE(f.readDataOut(), expectedOut);
 }
 
+// MemRead and MemWrite asserted simultaneously -- the 4th combination of the two independent
+// control switches, never exercised by testMemoryStage_data() (which only covers passthrough,
+// write-only, and read-only). Empirically confirmed (via this exact sequence): MemRead always
+// wins on DataOut (it reflects the RAM's current content), and a same-cycle MemWrite updates
+// that same address on the clock edge -- so DataOut reads the OLD value before the edge and
+// the JUST-WRITTEN value after it (real read-after-write-same-address RAM behavior, not an
+// undefined/don't-care combination).
+void TestLevel8MemoryStage::testMemReadAndWriteBothAsserted()
+{
+    auto &f = *s_level8MemoryStage;
+
+    // Pre-populate address 0x05 with a known, distinct value via a normal write.
+    setMultiBitInput(f.addressInputs, 0x05);
+    setMultiBitInput(f.datainInputs, 0x77);
+    setMultiBitInput(f.resultInputs, 0x00);
+    f.memread->setOn(false);
+    f.memwrite->setOn(true);
+    f.sim->update();
+    clockCycle(f.sim, f.clk);
+    f.memwrite->setOn(false);
+    f.sim->update();
+
+    // Now assert both MemRead and MemWrite at the same address, with a DIFFERENT DataIn.
+    setMultiBitInput(f.datainInputs, 0x33);
+    f.memread->setOn(true);
+    f.memwrite->setOn(true);
+    f.sim->update();
+    QCOMPARE(f.readDataOut(), 0x77);
+
+    clockCycle(f.sim, f.clk);
+    QCOMPARE(f.readDataOut(), 0x33);
+}
+
 void TestLevel8MemoryStage::testMemoryStageStructure()
 {
     auto &f = *s_level8MemoryStage;
