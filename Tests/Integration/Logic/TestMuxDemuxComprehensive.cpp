@@ -756,14 +756,22 @@ void TestMUXDEMUXComprehensive::testMuxDemuxChained_data()
     QTest::addColumn<int>("dataInputIndex");
     QTest::addColumn<int>("muxSelect");
     QTest::addColumn<int>("demuxSelect");
+    QTest::addColumn<bool>("expectedActive");
 
     // Chain: 4 inputs -> 4-to-1 Mux -> 1-to-4 Demux -> 4 outputs
-    // Data should flow through: input[i] -> mux (select mux input) -> demux output (select demux output)
-    for (int data = 0; data < 4; ++data) {
-        for (int demux = 0; demux < 4; ++demux) {
-            if (data == demux) {
-                QTest::newRow(QString("chained_data%1_demux%2").arg(data).arg(demux).toLatin1().constData())
-                    << data << data << demux;
+    // muxSelect independently determines which data input the mux forwards (its output is
+    // Active only when muxSelect matches the one driven-high input); demuxSelect independently
+    // determines which single output receives whatever the mux forwarded. Exhaustively varying
+    // all three independently (not only the diagonal case where they happen to coincide)
+    // actually exercises independent addressing through the chain, including the case where
+    // the mux forwards an undriven (Inactive) line and every demux output must read 0
+    // regardless of which one is selected.
+    for (int dataInputIndex = 0; dataInputIndex < 4; ++dataInputIndex) {
+        for (int muxSelect = 0; muxSelect < 4; ++muxSelect) {
+            for (int demuxSelect = 0; demuxSelect < 4; ++demuxSelect) {
+                const bool expectedActive = (muxSelect == dataInputIndex);
+                QTest::newRow(QString("data%1_mux%2_demux%3").arg(dataInputIndex).arg(muxSelect).arg(demuxSelect).toLatin1().constData())
+                    << dataInputIndex << muxSelect << demuxSelect << expectedActive;
             }
         }
     }
@@ -774,6 +782,7 @@ void TestMUXDEMUXComprehensive::testMuxDemuxChained()
     QFETCH(int, dataInputIndex);
     QFETCH(int, muxSelect);
     QFETCH(int, demuxSelect);
+    QFETCH(bool, expectedActive);
 
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
@@ -842,13 +851,11 @@ void TestMUXDEMUXComprehensive::testMuxDemuxChained()
 
     simulation->update();
 
-    // Only the demux-selected output should be on
+    // Only the demux-selected output can be active, and only when the mux actually forwarded
+    // the driven-high data input.
     for (int i = 0; i < 4; ++i) {
         int output = inputStatus(outs[i]) ? 1 : 0;
-        if (i == demuxSelect) {
-            QCOMPARE(output, 1);
-        } else {
-            QCOMPARE(output, 0);
-        }
+        const int expected = (i == demuxSelect && expectedActive) ? 1 : 0;
+        QCOMPARE(output, expected);
     }
 }
