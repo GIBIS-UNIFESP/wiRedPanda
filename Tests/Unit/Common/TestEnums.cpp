@@ -109,13 +109,13 @@ void TestEnums::testElementTypeIncrement()
     ++incremented;
 
     // Incrementing should produce a different value
-    QVERIFY(static_cast<int>(incremented) == static_cast<int>(type) + 1);
+    QCOMPARE(static_cast<int>(incremented), static_cast<int>(type) + 1);
 
     // Can increment multiple times
     ElementType twice = type;
     ++twice;
     ++twice;
-    QVERIFY(static_cast<int>(twice) == static_cast<int>(type) + 2);
+    QCOMPARE(static_cast<int>(twice), static_cast<int>(type) + 2);
 }
 
 void TestEnums::testElementTypeEdgeCases()
