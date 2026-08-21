@@ -374,11 +374,12 @@ void TestEnums::testStatusEnumToString()
     QVariant varUnknown = QVariant::fromValue(unknown);
     QVariant varError = QVariant::fromValue(error);
 
-    // Verify they're not empty
-    QVERIFY(!varActive.toString().isEmpty());
-    QVERIFY(!varInactive.toString().isEmpty());
-    QVERIFY(!varUnknown.toString().isEmpty());
-    QVERIFY(!varError.toString().isEmpty());
+    // Verify the exact key strings, not just non-emptiness -- QMetaEnum::valueToKey
+    // (exercised via testAllEnumsExposeMetaEnum) proves these are known, stable names.
+    QCOMPARE(varActive.toString(), QStringLiteral("Active"));
+    QCOMPARE(varInactive.toString(), QStringLiteral("Inactive"));
+    QCOMPARE(varUnknown.toString(), QStringLiteral("Unknown"));
+    QCOMPARE(varError.toString(), QStringLiteral("Error"));
 }
 
 // ============================================================
