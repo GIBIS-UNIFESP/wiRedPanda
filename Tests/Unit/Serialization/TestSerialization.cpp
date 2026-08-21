@@ -1129,8 +1129,10 @@ void TestSerialization::testTruncatedFileRecovery()
     WorkSpace workspace2;
     try {
         loadFromMemory(workspace2, truncatedData);
-        // If we get here, load succeeded partially - verify workspace is in valid state
-        QVERIFY2(workspace2.scene() != nullptr, "Scene should be valid after partial load");
+        // If we get here, load succeeded despite truncation -- it must not have fabricated
+        // elements beyond the 2 that were actually saved.
+        QVERIFY2(workspace2.scene()->elements().size() <= 2,
+                 "A load that survives truncation must not exceed the originally saved element count");
     } catch (const std::exception &e) {
         // Expected behavior for corrupted file - exception provides clear error
         QVERIFY2(!QString(e.what()).isEmpty(), "Exception should explain why the file is truncated");
