@@ -391,7 +391,9 @@ void TestConnections::testStatusPropagation()
 
 void TestConnections::testMultiConnectionStatus()
 {
-    // Test fan-out status propagation
+    // testOutputFanOut already covers Active/Inactive propagation through a fan-out; this
+    // covers the two remaining Status values (Error and Unknown) that a fan-out source can
+    // also carry, which nothing else exercises through a multi-connection output.
     WorkSpace workspace;
     auto *scene = workspace.scene();
 
@@ -420,16 +422,23 @@ void TestConnections::testMultiConnectionStatus()
     conn3->setEndPort(led3->inputPort());
     scene->addItem(conn3.get());
 
-    // Set output to Active
-    sw->outputPort()->setStatus(Status::Active);
+    sw->outputPort()->setStatus(Status::Error);
 
-    // All connections and inputs should be Active
-    QCOMPARE(conn1->status(), Status::Active);
-    QCOMPARE(conn2->status(), Status::Active);
-    QCOMPARE(conn3->status(), Status::Active);
-    QCOMPARE(led1->inputPort()->status(), Status::Active);
-    QCOMPARE(led2->inputPort()->status(), Status::Active);
-    QCOMPARE(led3->inputPort()->status(), Status::Active);
+    QCOMPARE(conn1->status(), Status::Error);
+    QCOMPARE(conn2->status(), Status::Error);
+    QCOMPARE(conn3->status(), Status::Error);
+    QCOMPARE(led1->inputPort()->status(), Status::Error);
+    QCOMPARE(led2->inputPort()->status(), Status::Error);
+    QCOMPARE(led3->inputPort()->status(), Status::Error);
+
+    sw->outputPort()->setStatus(Status::Unknown);
+
+    QCOMPARE(conn1->status(), Status::Unknown);
+    QCOMPARE(conn2->status(), Status::Unknown);
+    QCOMPARE(conn3->status(), Status::Unknown);
+    QCOMPARE(led1->inputPort()->status(), Status::Unknown);
+    QCOMPARE(led2->inputPort()->status(), Status::Unknown);
+    QCOMPARE(led3->inputPort()->status(), Status::Unknown);
 }
 
 void TestConnections::testInvalidPortStatus()
