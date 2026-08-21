@@ -4123,12 +4123,15 @@ void TestICInline::testEmbedICByDropCollisionAutoSuffix()
     bool collision = reg->hasBlob("simple_and");
     QVERIFY2(collision, "Should detect name collision with existing embedded IC");
 
-    // Use a suffixed name
-    QVERIFY(!reg->hasBlob("simple_and_2"));
+    // Exercise the real auto-suffix generator (ICRegistry::uniqueBlobName(), the same one
+    // ICController::resolveUniqueBlobName() calls) rather than hardcoding its expected output.
+    const QString autoSuffixedName = reg->uniqueBlobName("simple_and");
+    QCOMPARE(autoSuffixedName, QString("simple_and_2"));
+    QVERIFY(!reg->hasBlob(autoSuffixedName));
 
-    // Embed with the new name
+    // Embed with the generated name
     QByteArray rawBytes = readFile(m_fixtureDir + "/simple_and.panda");
-    reg->embedICsByFile(fileBacked->file(), rawBytes, "simple_and_2");
+    reg->embedICsByFile(fileBacked->file(), rawBytes, autoSuffixedName);
 
     // Both embedded ICs should coexist with distinct blobNames
     int embeddedCount = 0;
