@@ -381,8 +381,10 @@ void TestLevel9FetchStage16Bit::testSrcBitsMatchInstruction()
     f.resetCpu();
 
     // Program distinct SrcBits patterns at addresses 0..4 and walk the PC
+    QVector<int> programmedWords(5);
     for (int addr = 0; addr < 5; ++addr) {
-        f.programWord(addr, ((addr + 1) << 11) | (addr << 6) | (0x3F - addr));
+        programmedWords[addr] = ((addr + 1) << 11) | (addr << 6) | (0x3F - addr);
+        f.programWord(addr, programmedWords[addr]);
     }
 
     f.instrLoad->setOn(true);
@@ -395,7 +397,16 @@ void TestLevel9FetchStage16Bit::testSrcBitsMatchInstruction()
         int instrWord = f.readInstr();
         int srcBitsVal = f.readSrcBits();
 
-        int expectedSrcBits = instrWord & 0x3F;
+        // Ground truth: identify which programmed address this instruction word actually came
+        // from, rather than re-deriving the expectation from instrWord's own low bits -- that
+        // would trivially match regardless of whether the wrong instruction got loaded, since
+        // SrcBits and instrWord's low bits are definitionally the same field.
+        int matchedAddr = static_cast<int>(programmedWords.indexOf(instrWord));
+        QVERIFY2(matchedAddr >= 0,
+                 qPrintable(QString("readInstr() 0x%1 at step %2 does not match any programmed word")
+                                .arg(instrWord, 0, 16).arg(pc_state)));
+
+        int expectedSrcBits = 0x3F - matchedAddr;
         QCOMPARE(srcBitsVal, expectedSrcBits);
     }
 }
