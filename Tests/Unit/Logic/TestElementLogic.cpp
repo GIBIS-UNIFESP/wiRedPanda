@@ -293,8 +293,13 @@ void TestElementLogic::testDFlipFlop_data()
     QTest::newRow("Preset=false") << false << false << false << false << true << true << false;
     QTest::newRow("Clear=false") << false << false << true << true << false << false << true;
     QTest::newRow("Clear and Preset=false") << false << false << true << false << false << true << true;
-    QTest::newRow("Clk down D=0 maintain") << true << false << false << true << true << true << false;
-    QTest::newRow("Clk down D=1 maintain") << true << true << false << true << true << true << false;
+    QTest::newRow("Clk down D=0 maintain (prev Q=1)") << true << false << false << true << true << true << false;
+    QTest::newRow("Clk down D=1 maintain (prev Q=1)") << true << true << false << true << true << true << false;
+    // lastClk also seeds the forced previous Q (see testDFlipFlop()) -- pair the maintain
+    // rows above with prev Q=0 too, matching the JK/SR/T/latch siblings' explicit
+    // prevState coverage, so a bug that only breaks holding Q=0 wouldn't slip past.
+    QTest::newRow("Clk down D=0 maintain (prev Q=0)") << false << false << false << true << true << false << true;
+    QTest::newRow("Clk down D=1 maintain (prev Q=0)") << false << true << false << true << true << false << true;
 }
 
 void TestElementLogic::testDFlipFlop()
