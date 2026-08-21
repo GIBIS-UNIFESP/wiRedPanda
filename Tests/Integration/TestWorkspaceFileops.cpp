@@ -96,6 +96,7 @@ void TestWorkspaceFileops::testSaveToExistingFile()
     try {
         workspace.save(filePath);
         QVERIFY2(QFileInfo(filePath).exists(), "File should exist at the specified path");
+        const qint64 sizeBeforeExtraElement = QFileInfo(filePath).size();
 
         // Add another element
         auto *notGate = ElementFactory::buildElement(ElementType::Not);
@@ -110,9 +111,10 @@ void TestWorkspaceFileops::testSaveToExistingFile()
         QVERIFY2(fileInfo.exists(), "Expected file was not created");
         QVERIFY2(fileInfo.size() > 0, "File should contain data");
 
-        // Size should likely be different due to additional element
-        // (though not guaranteed, so we just verify it's valid)
-        QVERIFY2(fileInfo.size() > 0, "File should contain data");
+        // The extra element's data must actually be persisted, not silently dropped by the
+        // overwrite -- the file size must change to reflect it.
+        QVERIFY2(fileInfo.size() != sizeBeforeExtraElement,
+                 "Overwriting with an added element should change the saved file's size");
     } catch (const std::exception &e) {
         QFAIL(QString("Save failed with exception: %1").arg(e.what()).toUtf8().constData());
     }
@@ -316,7 +318,13 @@ void TestWorkspaceFileops::testLoadFromValidFile()
 
 void TestWorkspaceFileops::testLoadNonExistentFileThrowsException()
 {
+    // WorkSpace::load() throws before it ever touches the scene when the file doesn't exist
+    // (the exists() check runs before the stream is opened/parsed). Populate the scene first
+    // so "the circuit remains [unchanged]" is an actual claim, not a check against a scene
+    // that started empty anyway.
     WorkSpace workspace;
+    auto *existingGate = ElementFactory::buildElement(ElementType::And);
+    workspace.scene()->addItem(existingGate);
 
     QString nonExistentPath = m_tempDir.path() + "/nonexistent_file_xyz.panda";
 
@@ -336,8 +344,9 @@ void TestWorkspaceFileops::testLoadNonExistentFileThrowsException()
     // Verify exception was thrown
     QVERIFY2(exceptionThrown, "Exception should be thrown when loading non-existent file");
 
-    // Verify circuit remains empty
-    QVERIFY2(workspace.scene()->elements().isEmpty(), "Scene elements should be cleared");
+    // A failed load of a non-existent file must not touch the already-open project.
+    QCOMPARE(workspace.scene()->elements().size(), 1);
+    QCOMPARE(workspace.scene()->elements().constFirst(), existingGate);
 }
 
 void TestWorkspaceFileops::testLoadCorruptedFileHandling()
@@ -355,17 +364,19 @@ void TestWorkspaceFileops::testLoadCorruptedFileHandling()
 
     WorkSpace workspace;
 
-    // Attempt to load corrupted file
+    // Attempt to load corrupted file. The written bytes have no valid PANDA magic header, so
+    // readPandaHeader() rejects it -- either outcome below must actually be observed, not just
+    // silently accepted.
     try {
         workspace.load(filePath);
-        // If load succeeds, that's acceptable (may have error recovery)
-    } catch (const Pandaception &) {
-        // Exception is acceptable for corrupted data
-    } catch (const std::exception &) {
-        // Exception is acceptable for corrupted data
+        // If load succeeds, it must not have fabricated any circuit content from garbage bytes.
+        QVERIFY2(workspace.scene()->elements().isEmpty(),
+                 "A load that survives corrupted data must not fabricate elements from it");
+    } catch (const std::exception &e) {
+        QVERIFY2(!QString(e.what()).isEmpty(), "Exception should explain why the file is corrupted");
+        QVERIFY2(workspace.scene()->elements().isEmpty(),
+                 "A failed load must not leave a partially-populated scene");
     }
-
-    // Either exception or graceful recovery is acceptable for corrupted data
 }
 
 void TestWorkspaceFileops::testLoadEmptyCircuit()
@@ -620,7 +631,7 @@ void TestWorkspaceFileops::testFileInfoAfterCreation()
     QFileInfo fileInfo = workspace.fileInfo();
 
     // File should not exist initially (no file has been loaded/saved)
-    QVERIFY2(!fileInfo.exists(), "Autosave file should be removed after setAutoRemove");
+    QVERIFY2(!fileInfo.exists(), "A freshly-created workspace's fileInfo must not point at an existing file");
 
     // absoluteFilePath() must return a non-null string even for empty fileInfo
     QString absolutePath = fileInfo.absoluteFilePath();
