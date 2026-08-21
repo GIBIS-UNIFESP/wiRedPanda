@@ -51,6 +51,33 @@ IC *loadInitializedIC(WorkSpace &ws)
     return ic;
 }
 
+// Extracts the body of a given `Class::method` implementation from a source file's full
+// text. Matches the function header, then walks balanced braces to its closing `}`.
+// [\s\S]*? (lazy, spans newlines) rather than [^)]* for the parameter list -- a negated-
+// character-class match can't see past a nested closing paren in a parameter type like
+// std::function<void(IC *)>, so it would stop at the wrong `)`.
+QString bodyOfFunction(const QString &source, const QString &qualifiedName)
+{
+    const QString pattern =
+        QStringLiteral("\\b") + QRegularExpression::escape(qualifiedName)
+        + QStringLiteral("\\s*\\([\\s\\S]*?\\)\\s*\\{");
+    QRegularExpression rx(pattern);
+    const auto match = rx.match(source);
+    if (!match.hasMatch()) return {};
+
+    const qsizetype start = match.capturedEnd() - 1; // at the `{`
+    int depth = 0;
+    for (qsizetype i = start; i < source.size(); ++i) {
+        const QChar c = source.at(i);
+        if (c == '{') ++depth;
+        else if (c == '}') {
+            --depth;
+            if (depth == 0) return source.mid(start, i - start + 1);
+        }
+    }
+    return {};
+}
+
 } // namespace
 
 void TestDanglingPointer::initTestCase()
@@ -219,29 +246,6 @@ void TestDanglingPointer::bug6_topologyCommandsMustUseSimulationBlocker()
     const QString source = QString::fromUtf8(src.readAll());
     src.close();
 
-    // Extract the body of a given `Class::method` implementation. Matches
-    // the function header, then balanced braces to its closing `}`.
-    auto bodyOf = [&source](const QString &qualifiedName) -> QString {
-        const QString pattern =
-            QStringLiteral("\\b") + QRegularExpression::escape(qualifiedName)
-            + QStringLiteral("\\s*\\([^)]*\\)\\s*\\{");
-        QRegularExpression rx(pattern);
-        const auto match = rx.match(source);
-        if (!match.hasMatch()) return {};
-
-        const qsizetype start = match.capturedEnd() - 1; // at the `{`
-        int depth = 0;
-        for (qsizetype i = start; i < source.size(); ++i) {
-            const QChar c = source.at(i);
-            if (c == '{') ++depth;
-            else if (c == '}') {
-                --depth;
-                if (depth == 0) return source.mid(start, i - start + 1);
-            }
-        }
-        return {};
-    };
-
     const QStringList unsafeCommands = {
         "UpdateCommand::redo",
         "UpdateCommand::undo",
@@ -255,7 +259,7 @@ void TestDanglingPointer::bug6_topologyCommandsMustUseSimulationBlocker()
 
     QStringList missingBlocker;
     for (const QString &name : unsafeCommands) {
-        const QString body = bodyOf(name);
+        const QString body = bodyOfFunction(source, name);
         if (body.isEmpty()) {
             // If we can't find the function, don't silently pass — record it.
             missingBlocker << (name + " (function body not located)");
@@ -287,26 +291,9 @@ void TestDanglingPointer::hardening_deleteEditedConnectionMustUseSimulationBlock
     const QString source = QString::fromUtf8(src.readAll());
     src.close();
 
-    QRegularExpression rx(
-        QStringLiteral("\\bConnectionManager::deleteEditedConnection\\s*\\([^)]*\\)\\s*\\{"));
-    const auto match = rx.match(source);
-    QVERIFY2(match.hasMatch(),
+    const QString body = bodyOfFunction(source, "ConnectionManager::deleteEditedConnection");
+    QVERIFY2(!body.isEmpty(),
              "Could not locate ConnectionManager::deleteEditedConnection definition.");
-
-    const qsizetype bodyStart = match.capturedEnd() - 1;
-    int depth = 0;
-    qsizetype bodyEnd = -1;
-    for (qsizetype i = bodyStart; i < source.size(); ++i) {
-        const QChar c = source.at(i);
-        if (c == '{') ++depth;
-        else if (c == '}') {
-            --depth;
-            if (depth == 0) { bodyEnd = i; break; }
-        }
-    }
-    QVERIFY2(bodyEnd > bodyStart,
-             "Could not find end of ConnectionManager::deleteEditedConnection body.");
-    const QString body = source.mid(bodyStart, bodyEnd - bodyStart + 1);
 
     QVERIFY2(body.contains("SimulationBlocker"),
              "ConnectionManager::deleteEditedConnection must open a "
@@ -445,28 +432,8 @@ void TestDanglingPointer::bug7_icRegistryFileChangedMustNotLeaveDanglingPointers
     const QString source = QString::fromUtf8(src.readAll());
     src.close();
 
-    // Locate ICRegistry::onFileChanged's body.
-    QRegularExpression rx(
-        QStringLiteral("\\bICRegistry::onFileChanged\\s*\\([^)]*\\)\\s*\\{"));
-    const auto match = rx.match(source);
-    QVERIFY2(match.hasMatch(),
-             "Could not locate ICRegistry::onFileChanged definition.");
-
-    // Walk balanced braces to the end of the function body.
-    const qsizetype bodyStart = match.capturedEnd() - 1;
-    int depth = 0;
-    qsizetype bodyEnd = -1;
-    for (qsizetype i = bodyStart; i < source.size(); ++i) {
-        const QChar c = source.at(i);
-        if (c == '{') ++depth;
-        else if (c == '}') {
-            --depth;
-            if (depth == 0) { bodyEnd = i; break; }
-        }
-    }
-    QVERIFY2(bodyEnd > bodyStart,
-             "Could not find end of ICRegistry::onFileChanged body.");
-    const QString body = source.mid(bodyStart, bodyEnd - bodyStart + 1);
+    const QString body = bodyOfFunction(source, "ICRegistry::onFileChanged");
+    QVERIFY2(!body.isEmpty(), "Could not locate ICRegistry::onFileChanged definition.");
 
     QVERIFY2(body.contains("reloadTargetsAtomically"),
              "ICRegistry::onFileChanged must reload targets through "
@@ -503,31 +470,7 @@ void TestDanglingPointer::hardening_icRegistryReloadHelpersMustUseSimulationBloc
     const QString source = QString::fromUtf8(src.readAll());
     src.close();
 
-    auto bodyOf = [&source](const QString &qualifiedName) -> QString {
-        // [\s\S]*? (lazy, spans newlines) rather than [^)]* — reloadTargetsAtomically's own
-        // parameter list contains std::function<void(IC *)>, a nested closing paren that a
-        // negated-character-class match can't see past to find the parameter list's real end.
-        const QString pattern =
-            QStringLiteral("\\b") + QRegularExpression::escape(qualifiedName)
-            + QStringLiteral("\\s*\\([\\s\\S]*?\\)\\s*\\{");
-        QRegularExpression rx(pattern);
-        const auto match = rx.match(source);
-        if (!match.hasMatch()) return {};
-
-        const qsizetype start = match.capturedEnd() - 1;
-        int depth = 0;
-        for (qsizetype i = start; i < source.size(); ++i) {
-            const QChar c = source.at(i);
-            if (c == '{') ++depth;
-            else if (c == '}') {
-                --depth;
-                if (depth == 0) return source.mid(start, i - start + 1);
-            }
-        }
-        return {};
-    };
-
-    const QString helperBody = bodyOf("ICRegistry::reloadTargetsAtomically");
+    const QString helperBody = bodyOfFunction(source, "ICRegistry::reloadTargetsAtomically");
     QVERIFY2(!helperBody.isEmpty(), "Could not locate ICRegistry::reloadTargetsAtomically definition.");
     QVERIFY2(helperBody.contains("SimulationBlocker"),
              "ICRegistry::reloadTargetsAtomically must open a SimulationBlocker "
@@ -542,7 +485,7 @@ void TestDanglingPointer::hardening_icRegistryReloadHelpersMustUseSimulationBloc
     };
     QStringList missingCall;
     for (const QString &name : reloadCallers) {
-        const QString body = bodyOf(name);
+        const QString body = bodyOfFunction(source, name);
         if (body.isEmpty()) {
             missingCall << (name + " (function body not located)");
             continue;
