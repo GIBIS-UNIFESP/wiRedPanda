@@ -10,6 +10,7 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Scene/ConnectionManager.h"
+#include "App/Scene/PortHoverLabel.h"
 #include "App/Scene/Scene.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
@@ -393,94 +394,102 @@ void TestSceneState::testConnectionStateTransitions()
 // Hover Port and Autosave States (Public Methods)
 // ============================================================================
 
+namespace {
+int hoverLabelCount(Scene &scene)
+{
+    int count = 0;
+    for (auto *item : scene.items()) {
+        if (item->type() == PortHoverLabel::Type) {
+            ++count;
+        }
+    }
+    return count;
+}
+} // namespace
+
 void TestSceneState::testHoverPortSetGet()
 {
+    // Drive ConnectionManager::showHoverLabels()/clearHover(), the actual public hover-label
+    // API, instead of unrelated autosave/simulation-identity checks.
     Scene scene;
 
     auto *elem = ElementFactory::buildElement(ElementType::And);
     scene.addItem(elem);
+    Port *outPort = elem->outputPort(0);
+    outPort->setName("out"); // showHoverLabels() skips unnamed ports (most basic gates)
 
-    // Get simulation before update
-    Simulation *sim = scene.simulation();
-    QVERIFY(sim != nullptr);
+    QCOMPARE(hoverLabelCount(scene), 0);
 
-    // Signal autosave requirement and circuit update
-    scene.setAutosaveRequired();
-    scene.setCircuitUpdateRequired();
+    scene.connectionManager()->showHoverLabels(outPort);
+    QCOMPARE(hoverLabelCount(scene), 1);
 
-    // After circuit update, simulation should be reinitialized
-    // (m_simulation.initialize() is called in setCircuitUpdateRequired)
-    Simulation *simAfter = scene.simulation();
-    QVERIFY2(simAfter != nullptr, "Simulation should be reinitialized after setCircuitUpdateRequired");
-    QVERIFY2(simAfter == sim, "Same simulation instance should be maintained");
+    scene.connectionManager()->clearHover();
+    QCOMPARE(hoverLabelCount(scene), 0);
 }
 
 void TestSceneState::testHoverPortRelease()
 {
+    // A second showHoverLabels() call must replace the previous chips, not accumulate them,
+    // and clearHover() must release everything -- not just leave the element count unaffected.
     Scene scene;
 
-    // Add multiple elements
-    QVector<GraphicElement *> elements;
-    for (int i = 0; i < 3; ++i) {
-        auto *elem = ElementFactory::buildElement(ElementType::And);
-        elem->setPos(i * 50, 0);
-        scene.addItem(elem);
-        elements.append(elem);
-    }
+    auto *elem1 = ElementFactory::buildElement(ElementType::And);
+    elem1->setPos(0, 0);
+    scene.addItem(elem1);
+    Port *port1 = elem1->outputPort(0);
+    port1->setName("a");
 
-    // Verify all elements are in scene
-    QVector<GraphicElement *> sceneElements = scene.elements();
-    QCOMPARE(sceneElements.size(), 3);
-    for (GraphicElement *elem : elements) {
-        QVERIFY2(sceneElements.contains(elem), "All added elements should be in scene");
-    }
+    auto *elem2 = ElementFactory::buildElement(ElementType::And);
+    elem2->setPos(100, 0);
+    scene.addItem(elem2);
+    Port *port2 = elem2->outputPort(0);
+    port2->setName("b");
 
-    // Trigger updates - should maintain all elements
-    scene.setAutosaveRequired();
+    scene.connectionManager()->showHoverLabels(port1);
+    QCOMPARE(hoverLabelCount(scene), 1);
 
-    // Verify elements still exist after autosave trigger
-    QVector<GraphicElement *> elementsAfter = scene.elements();
-    QCOMPARE(elementsAfter.size(), 3);
+    scene.connectionManager()->showHoverLabels(port2);
+    QCOMPARE(hoverLabelCount(scene), 1);
+
+    scene.connectionManager()->clearHover();
+    QCOMPARE(hoverLabelCount(scene), 0);
 }
 
 void TestSceneState::testHoverPortTracking()
 {
+    // Hovering a connected port must reveal labels for BOTH the hovered port itself and every
+    // port on the other end of its wires (connectedPeers()), not just itself.
     Scene scene;
 
     auto *elem1 = ElementFactory::buildElement(ElementType::And);
     auto *elem2 = ElementFactory::buildElement(ElementType::Or);
-    auto *elem3 = ElementFactory::buildElement(ElementType::Not);
 
     elem1->setPos(0, 0);
     elem2->setPos(50, 0);
-    elem3->setPos(100, 0);
 
     scene.addItem(elem1);
     scene.addItem(elem2);
-    scene.addItem(elem3);
 
-    // Verify all elements are in scene
-    QVector<GraphicElement *> allElements = scene.elements();
-    QCOMPARE(allElements.size(), 3);
-
-    // Test port access (ports should be trackable for hover states)
     Port *port1 = elem1->outputPort(0);
     Port *port2 = elem2->inputPort(0);
-    Port *port3 = elem3->inputPort(0);
+    port1->setName("driver");
+    port2->setName("receiver");
 
-    QVERIFY2(port1 != nullptr, "Element should have output port");
-    QVERIFY2(port2 != nullptr, "Element should have input port");
-    QVERIFY2(port3 != nullptr, "Element should have input port");
-
-    // Verify ports can be used to create connections (for hover tracking)
     auto *conn = new Connection(nullptr);
     conn->setStartPort(dynamic_cast<OutputPort *>(port1));
     conn->setEndPort(dynamic_cast<InputPort *>(port2));
     scene.addItem(conn);
 
-    // Verify we can navigate the connection chain
-    QVERIFY2(conn->startPort() != nullptr && conn->endPort() != nullptr,
-            "Connection ports should be properly set");
+    scene.connectionManager()->showHoverLabels(port1);
+
+    QStringList labelTexts;
+    for (auto *item : scene.items()) {
+        if (auto *label = qgraphicsitem_cast<PortHoverLabel *>(item)) {
+            labelTexts << label->text();
+        }
+    }
+    labelTexts.sort();
+    QCOMPARE(labelTexts, QStringList({"driver", "receiver"}));
 }
 
 // ============================================================================
