@@ -293,6 +293,9 @@ void TestUpdateController::testDownloadUpdateCanceledSkipsWarning()
 
     controller.downloadUpdate(QStringLiteral("1.0.0"), url);
 
+    QVERIFY2(TestUtils::waitFor([&] { return cancelDismisser.dismissCount() >= 1; }),
+              "the progress dialog must have appeared and been canceled");
+
     QTest::qWait(500);
     QVERIFY2(!sawFailureDialog, "a user-canceled download must not show the \"Download Failed\" dialog");
 }
