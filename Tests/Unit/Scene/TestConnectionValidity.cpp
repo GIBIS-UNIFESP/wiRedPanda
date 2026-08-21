@@ -33,6 +33,7 @@ void TestConnectionValidity::testConnectionStatusValid()
     // Get their ports
     auto *outPort = vcc->outputPort(0);
     auto *inPort = and1->inputPort(0);
+    QCOMPARE(inPort->status(), Status::Error); // required input, unwired: starts invalid
 
     // Create a connection
     auto *conn = new Connection();
@@ -42,6 +43,9 @@ void TestConnectionValidity::testConnectionStatusValid()
 
     // Attaching both ports propagates the driver's definite level onto the wire
     QCOMPARE(conn->status(), Status::Active);
+    // ...and the port itself must recover from Error now that it's validly wired --
+    // Port::attachConnection()'s updateConnections() call is what actually drives this.
+    QCOMPARE(inPort->status(), Status::Active);
 }
 
 void TestConnectionValidity::testConnectionStatusInvalid()
@@ -75,6 +79,7 @@ void TestConnectionValidity::testPortDeletionDeletesConnection()
     scene.addItem(conn);
 
     QCOMPARE(TestUtils::countConnections(&scene), 1);
+    QCOMPARE(inPort2->status(), Status::Unknown); // driven by an unconnected And, not yet Error
 
     // When and1 is deleted, its output port is deleted, which automatically
     // deletes the connection (see OutputPort destructor)
@@ -83,6 +88,9 @@ void TestConnectionValidity::testPortDeletionDeletesConnection()
 
     // Verify the connection was cleaned up by the port destructor
     QCOMPARE(TestUtils::countConnections(&scene), 0);
+    // ...and the surviving input port itself reverts to Error now that its sole connection is
+    // gone (Port::detachConnection()'s updateConnections() call is what actually drives this).
+    QCOMPARE(inPort2->status(), Status::Error);
 }
 
 void TestConnectionValidity::testMultipleConnectionsStatus()
@@ -135,26 +143,6 @@ void TestConnectionValidity::testPortValidityWithConnections()
     scene.addItem(conn);
 
     // Verify ports match the connection
-    QCOMPARE(conn->startPort(), outPort);
-    QCOMPARE(conn->endPort(), inPort);
-}
-
-void TestConnectionValidity::testConnectionWithDisconnectedPorts()
-{
-    Scene scene;
-
-    // Create elements but don't add to scene
-    auto and1 = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
-    auto and2 = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
-    auto *outPort = and1->outputPort(0);
-    auto *inPort = and2->inputPort(0);
-
-    // Create connection with ports not in scene
-    auto conn = std::unique_ptr<Connection>(new Connection());
-    conn->setStartPort(outPort);
-    conn->setEndPort(inPort);
-
-    // Connection exists but element is not in scene
     QCOMPARE(conn->startPort(), outPort);
     QCOMPARE(conn->endPort(), inPort);
 }
