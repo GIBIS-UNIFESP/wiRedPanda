@@ -126,6 +126,7 @@ void TestLevel4JohnsonCounter4Bit::testJohnsonCounter_data()
     QTest::newRow("cycle 5") << 5 << 0xC;  // 1100
     QTest::newRow("cycle 6") << 6 << 0x8;  // 1000
     QTest::newRow("cycle 7") << 7 << 0x0;  // 0000
+    QTest::newRow("cycle 8 (wraps)") << 8 << 0x1;  // 0001 -- full 8-cycle wrap
 }
 
 void TestLevel4JohnsonCounter4Bit::testJohnsonCounter()
