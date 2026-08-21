@@ -163,7 +163,6 @@ void TestCPUAlu::testALU8bit_data()
     // SUB operations (simplified)
     QTest::newRow("alu_sub_10_4") << 10 << 4 << static_cast<int>(ALU_SUB) << 6;
     QTest::newRow("alu_sub_5_10") << 5 << 10 << static_cast<int>(ALU_SUB) << 251;
-    // Flag tests would go here
-    QTest::newRow("alu_zero_result") << 5 << 5 << static_cast<int>(ALU_SUB) << 0;
-    QTest::newRow("alu_sign_result") << 10 << 20 << static_cast<int>(ALU_SUB) << 246;
+    // "alu_zero_result" (5,5,SUB) and "alu_sign_result" (10,20,SUB) are covered,
+    // result and flags both, by testALU8bitFlags_data.
 }
