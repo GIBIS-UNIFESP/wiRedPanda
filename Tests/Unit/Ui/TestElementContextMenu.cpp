@@ -211,6 +211,9 @@ void TestElementContextMenu::testFlipHorizontalAndVerticalActionsPushCommands()
     const SelectionCapabilities caps = computeCapabilities({andGate});
     auto *undoStack = scene->undoStack();
 
+    const bool flippedXBefore = andGate->isFlippedX();
+    const bool flippedYBefore = andGate->isFlippedY();
+
     {
         const int countBefore = undoStack->count();
         auto dismisser = dismisserForContextMenuAction(QStringLiteral("Flip horizontally"));
@@ -218,6 +221,8 @@ void TestElementContextMenu::testFlipHorizontalAndVerticalActionsPushCommands()
             [scene](QUndoCommand *cmd) { scene->receiveCommand(cmd); },
             [] {}, [] {}, [] {}, [] {}, [] {});
         QCOMPARE(undoStack->count(), countBefore + 1);
+        QCOMPARE(andGate->isFlippedX(), !flippedXBefore);
+        QCOMPARE(andGate->isFlippedY(), flippedYBefore);
     }
 
     {
@@ -227,6 +232,8 @@ void TestElementContextMenu::testFlipHorizontalAndVerticalActionsPushCommands()
             [scene](QUndoCommand *cmd) { scene->receiveCommand(cmd); },
             [] {}, [] {}, [] {}, [] {}, [] {});
         QCOMPARE(undoStack->count(), countBefore + 1);
+        QCOMPARE(andGate->isFlippedX(), !flippedXBefore); // unchanged by the vertical flip
+        QCOMPARE(andGate->isFlippedY(), !flippedYBefore);
     }
 }
 
