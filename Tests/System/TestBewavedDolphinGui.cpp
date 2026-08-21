@@ -1755,7 +1755,7 @@ void TestBewavedDolphinGui::testActionSetClockWaveNoSelectionThrowsUserFacingErr
     auto ws = createAndCircuit();
     std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
 
-    const bool prevInteractive = Application::interactiveMode;
+    TestUtils::ScopedInteractiveMode interactiveGuard;
     Application::interactiveMode = true;
 
     QString capturedText;
@@ -1778,8 +1778,6 @@ void TestBewavedDolphinGui::testActionSetClockWaveNoSelectionThrowsUserFacingErr
     QVERIFY2(TestUtils::waitFor([&] { return dismisser.dismissCount() >= 1; }),
              "The error dialog must have appeared");
     QVERIFY2(capturedText.contains("No cells selected"), qPrintable(capturedText));
-
-    Application::interactiveMode = prevInteractive;
 }
 
 void TestBewavedDolphinGui::testActionSetClockWaveDialogRejectedLeavesGridUnchanged()
@@ -1964,7 +1962,7 @@ void TestBewavedDolphinGui::testSaveAsCancelled()
 void TestBewavedDolphinGui::testAssociateToWiRedPandaPromptsAndLinks()
 {
     auto ws = createAndCircuit();
-    const bool prevInteractive = Application::interactiveMode;
+    TestUtils::ScopedInteractiveMode interactiveGuard;
     Application::interactiveMode = true;
 
     StubDolphinHost hostYes;
@@ -2003,8 +2001,6 @@ void TestBewavedDolphinGui::testAssociateToWiRedPandaPromptsAndLinks()
     }
     QVERIFY(hostNo.m_dolphinFileName.isEmpty());
     QCOMPARE(hostNo.saveCount, 0);
-
-    Application::interactiveMode = prevInteractive;
 }
 
 void TestBewavedDolphinGui::testActionLoadTriggeredOpensAndLoadsFile()
