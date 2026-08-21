@@ -19,6 +19,7 @@ private slots:
 
     void testTranslateFromCatalogFoundKey();
     void testTranslateFromCatalogMissingKeyFallsBack();
+    void testTranslateFromCatalogEmptyStringValueFallsBack();
     void testTranslateFromCatalogMalformedJsonFallsBack();
     void testTranslateFromCatalogMissingFileFallsBack();
 

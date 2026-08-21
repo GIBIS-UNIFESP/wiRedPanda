@@ -120,6 +120,24 @@ void TestExerciseTourResources::testTranslateFromCatalogMissingKeyFallsBack()
     QCOMPARE(result, QStringLiteral("fallback"));
 }
 
+void TestExerciseTourResources::testTranslateFromCatalogEmptyStringValueFallsBack()
+{
+    // translateFromCatalog() ends with:
+    //   (node.isString() && !node.toString().isEmpty()) ? node.toString() : fallbackEnglish
+    // The missing-key test above exercises the !isString() half (node absent entirely);
+    // this exercises the other half -- the key resolves to a present but empty string.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+
+    const QString catalogPath = dir.filePath("catalog.json");
+    writeFile(catalogPath, R"({"basic-and-gate": {"title": ""}})");
+
+    const QString result = ExerciseTourResources::translateFromCatalog(catalogPath, QStringLiteral("basic-and-gate.title"),
+                                                                        QStringLiteral("fallback"));
+
+    QCOMPARE(result, QStringLiteral("fallback"));
+}
+
 void TestExerciseTourResources::testTranslateFromCatalogMalformedJsonFallsBack()
 {
     QTemporaryDir dir;
