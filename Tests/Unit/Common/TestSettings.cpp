@@ -153,6 +153,11 @@ void TestSettings::testTypedTheme()
 
     Settings::setTheme(Theme::Dark);
     QCOMPARE(Settings::theme(), Theme::Dark);
+
+    // Theme::System is a normal in-range value (Settings::theme() bounds-checks against it
+    // as the upper bound), not just an error fallback -- round-trip it too.
+    Settings::setTheme(Theme::System);
+    QCOMPARE(Settings::theme(), Theme::System);
 }
 
 void TestSettings::testTypedRecentFiles()
