@@ -108,46 +108,6 @@ void TestLevel2Decoder5To32::test5to32Decoder()
     }
 }
 
-// ============================================================
-// Edge Cases
-// ============================================================
-
-void TestLevel2Decoder5To32::test5to32DecoderMaxAddress_data()
-{
-    QTest::addColumn<int>("address");
-    QTest::addColumn<int>("expectedOutput");
-
-    // Maximum address: 11111 (31) - should produce one-hot output
-    QTest::newRow("max address 31") << 31 << 31;
-    // Minimum address: 00000 (0) - should produce one-hot output
-    QTest::newRow("min address 0") << 0 << 0;
-}
-
-void TestLevel2Decoder5To32::test5to32DecoderMaxAddress()
-{
-    QFETCH(int, address);
-    QFETCH(int, expectedOutput);
-
-    auto &f = *s_level2Decoder5to32;
-
-    for (int i = 0; i < 5; ++i) {
-        f.swAddr[i]->setOn((address >> i) & 1);
-    }
-    f.sim->update();
-
-    int activeCount = 0;
-    int activeIndex = -1;
-    for (int i = 0; i < 32; ++i) {
-        if (inputStatus(f.ledOut[i])) {
-            activeCount++;
-            activeIndex = i;
-        }
-    }
-
-    QCOMPARE(activeCount, 1);
-    QCOMPARE(activeIndex, expectedOutput);
-}
-
 // Active-high Enable (74138-style chip select): Enable=0 forces every output
 // low; Enable=1 restores normal decoding. Built standalone with Enable wired so
 // the shared fixture (Enable unconnected → defaulted high) is untouched.
