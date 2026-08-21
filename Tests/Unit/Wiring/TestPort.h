@@ -19,4 +19,17 @@ private slots:
     void testSetInputsReindexesPorts();
 
     void testPortCurrentPenTracksStatusColor();
+
+    void testNameGetterSetter();
+    void testDefaultValueGetterSetter();
+    void testIsRequiredGetterSetter();
+    void testGlobalIndexForInputVsOutputPort();
+    void testMakeSerialIdPacksElementBaseAndGlobalIndex();
+    void testSetGraphicElementBindsAccessor();
+    void testAttachConnectionIsIdempotent();
+    void testDetachConnectionRemovesFromListAndClearsPortReference();
+    void testIsConnectedTrueOnlyForPortsSharingAConnection();
+    void testInputPortIsValidRequiredVsOptionalUnconnected();
+    void testOutputPortIsValidAlwaysTrueRegardlessOfConnections();
+    void testHoverEnterAndLeaveChangeBrush();
 };
