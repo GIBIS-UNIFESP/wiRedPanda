@@ -315,6 +315,9 @@ void TestFileHandler::testHandleExportImageRejectsSvgOpenFailure()
 
 void TestFileHandler::testHandleExportImageRejectsSvgWriteFailure()
 {
+#ifdef Q_OS_WIN
+    QSKIP("/dev/null is a Unix device special file; Windows has no equivalent path");
+#else
     // /dev/null is genuinely openable for writing (painter.isActive() succeeds), but reports
     // size() == 0 afterward -- a real way to make the post-write existence/size check fail
     // without needing a contrived disk-full condition.
@@ -325,6 +328,7 @@ void TestFileHandler::testHandleExportImageRejectsSvgWriteFailure()
     const QJsonObject response = handler.handleCommand("export_image", {{"filename", "/dev/null"}, {"format", "svg"}}, 1);
     QVERIFY2(response.contains("error"), qPrintable(QJsonDocument(response).toJson()));
     QCOMPARE(response["error"].toObject()["code"].toInt(), JsonRpcError::FileError);
+#endif
 }
 
 void TestFileHandler::testHandleExportImageRejectsPdfOpenFailure()
