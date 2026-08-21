@@ -451,7 +451,10 @@ void TestConnectionHandler::testSplitConnectionSkipsInProgressConnection()
                                   {"source_port", 0}, {"target_port", 0}, {"x", 50}, {"y", 50}};
     const QJsonObject response = handler.handleCommand("split_connection", splitParams, 1);
     QVERIFY2(response.contains("result"), qPrintable(QJsonDocument(response).toJson()));
-    QVERIFY(scene->items().size() > itemCountBefore);
+    // SplitCommand::redo() reuses the existing connection (rewiring its endPort) and adds one
+    // new Node (itself + its label + its 2 ports, since Scene::items() flattens the whole item
+    // tree) plus one new Connection -- a precise +5, not just "more than before".
+    QCOMPARE(scene->items().size(), itemCountBefore + 5);
 }
 
 void TestConnectionHandler::testSplitConnectionPerformsRealSplit()
@@ -473,8 +476,11 @@ void TestConnectionHandler::testSplitConnectionPerformsRealSplit()
     const QJsonObject response = handler.handleCommand("split_connection", splitParams, 1);
     QVERIFY2(response.contains("result"), qPrintable(QJsonDocument(response).toJson()));
 
-    // A split inserts a new Node plus a second wire -- the scene must have grown.
-    QVERIFY(scene->items().size() > itemCountBefore);
+    // Scene::items() flattens the whole item tree, not just top-level items: the new Node
+    // contributes itself + its label + its 2 ports (4), plus the new conn2 wire (1) -- an
+    // exact +5 (see testSplitConnectionSkipsInProgressConnection for the SplitCommand::redo()
+    // reasoning on what gets added).
+    QCOMPARE(scene->items().size(), itemCountBefore + 5);
 }
 
 void TestConnectionHandler::testHandleCommandRejectsUnknownCommand()
