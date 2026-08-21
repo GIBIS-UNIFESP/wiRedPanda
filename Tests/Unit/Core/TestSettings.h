@@ -13,4 +13,6 @@ class TestCoreSettings : public QObject
 private slots:
 
     void testSettingsRoundTrip();
+    void testThemeSystemUpperBoundRoundTrip();
+    void testHideV4WarningFalseRemovesKey();
 };
