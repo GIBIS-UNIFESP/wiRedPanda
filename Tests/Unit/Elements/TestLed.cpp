@@ -186,86 +186,62 @@ void TestLED::testColorIndexSingleInput()
 
 void TestLED::testColorIndexTwoInputs()
 {
+    // For 2-input LED, color mapping is different from 1-input
+    // Special case: 0b11 (both inputs high) → index 25 (white)
+    // Otherwise: index = 18 + binary_value (18-21 for 0b00-0b11, but 0b11 maps to 25)
     auto led = std::make_unique<Led>();
     led->setInputSize(2);
     QCOMPARE(led->inputSize(), 2);
 
-    // For 2-input LED, color mapping is different from 1-input
-    // Special case: 0b11 (both inputs high) → index 25 (white)
-    // Otherwise: index = 18 + binary_value (18-21 for 0b00-0b11, but 0b11 maps to 25)
-
-    led->setColor("White");
-    led->refresh();
-    QVERIFY2(led->inputSize() == 2, "LED should have 2 inputs after setInputSize");
-
-    // Test the special case: when both inputs are high (0b11), should map to index 25 (white)
-    // Set both input ports to high
     auto *port0 = led->inputPort(0);
     auto *port1 = led->inputPort(1);
     QVERIFY2(port0 != nullptr && port1 != nullptr, "2-input LED should have 2 input ports");
 
-    // With both inputs high, the colorIndex for 2-input should return 25 (white) as special case
-    // This is tested indirectly through the refresh() call
-    led->refresh();
-    QCOMPARE(led->color(), QString("White"));
+    // colorIndex() is a private implementation detail (friended for the test above), so this
+    // asserts the live formula directly rather than through color(), which setColor() alone
+    // determines and refresh() never touches.
+    port0->setStatus(Status::Inactive);
+    port1->setStatus(Status::Inactive);
+    QCOMPARE(led->colorIndex(), 18);
+
+    port0->setStatus(Status::Active);
+    port1->setStatus(Status::Inactive);
+    QCOMPARE(led->colorIndex(), 19);
+
+    // The special case: both inputs high (0b11) maps to 25 (white), not 21.
+    port0->setStatus(Status::Active);
+    port1->setStatus(Status::Active);
+    QCOMPARE(led->colorIndex(), 25);
 }
 
 void TestLED::testColorIndexThreeInputs()
 {
+    // For 3-input LED, color mapping uses indices 18-25: colorIndex = 18 + binary_value.
     auto led = std::make_unique<Led>();
     led->setInputSize(3);
     QCOMPARE(led->inputSize(), 3);
 
-    // For 3-input LED, color mapping uses indices 18-25
-    // colorIndex = 18 + binary_value (for 3 inputs: 0-7, so indices 18-25)
-
-    led->setColor("White");
-    led->refresh();
-    QVERIFY2(led->inputSize() == 3, "LED should have 3 inputs after setInputSize");
-
-    // Verify 3-input LED has correct port count
-    int portCount = 0;
-    for (int i = 0; i < 10; ++i) { // Check up to 10 to be safe
-        if (led->inputPort(i) == nullptr) {
-            break;
+    for (int value = 0; value < 8; ++value) {
+        for (int i = 0; i < 3; ++i) {
+            led->inputPort(i)->setStatus((value & (1 << i)) ? Status::Active : Status::Inactive);
         }
-        portCount++;
+        QCOMPARE(led->colorIndex(), 18 + value);
     }
-    QCOMPARE(portCount, 3);
-
-    // With 3 inputs, there are 8 possible states (0-7), mapping to palette indices 18-25
-    // This is tested indirectly through the refresh() call
-    led->refresh();
-    QCOMPARE(led->color(), QString("White"));
 }
 
 void TestLED::testColorIndexFourInputs()
 {
+    // For 4-input LED, full 16-color palette mapping: colorIndex = 10 + binary_value.
     auto led = std::make_unique<Led>();
     led->setInputSize(4);
     QCOMPARE(led->inputSize(), 4);
 
-    // For 4-input LED, full 16-color palette mapping
-    // colorIndex = 10 + binary_value (for 4 inputs: 0-15, so indices 10-25)
-
-    led->setColor("White");
-    led->refresh();
-    QVERIFY2(led->inputSize() == 4, "LED should have 4 inputs after setInputSize");
-
-    // Verify 4-input LED has correct port count
-    int portCount = 0;
-    for (int i = 0; i < 10; ++i) { // Check up to 10 to be safe
-        if (led->inputPort(i) == nullptr) {
-            break;
+    for (int value = 0; value < 16; ++value) {
+        for (int i = 0; i < 4; ++i) {
+            led->inputPort(i)->setStatus((value & (1 << i)) ? Status::Active : Status::Inactive);
         }
-        portCount++;
+        QCOMPARE(led->colorIndex(), 10 + value);
     }
-    QCOMPARE(portCount, 4);
-
-    // With 4 inputs, there are 16 possible states (0-15), mapping to palette indices 10-25
-    // This is tested indirectly through the refresh() call
-    led->refresh();
-    QCOMPARE(led->color(), QString("White"));
 }
 
 // ============================================================================
