@@ -79,6 +79,15 @@ void TestNotifyCatch::guardedSlotCatchesPostedSlotThrow()
 
 void TestNotifyCatch::guardedSlotCatchesPostedSlotThrowWithDialog()
 {
+#ifdef Q_OS_MACOS
+    // Showing the real QMessageBox intermittently crashes on macOS: Qt's Cocoa backend renders
+    // the box's icon via a private AppKit/CoreUI code path (_CUIMultisizeImageSetSizeAndIndex)
+    // that, at least as of macOS 26, occasionally sends showsSuppressionButton to the wrong
+    // object -- a crash entirely inside Apple's own frameworks, not wiRedPanda/Qt widget code.
+    // Nondeterministic: the identical binary has passed and failed this same CI job back to
+    // back, consistent with a private icon-asset-cache race rather than a real regression.
+    QSKIP("macOS: QMessageBox icon rendering intermittently crashes in private AppKit/CoreUI internals (macOS 26)");
+#endif
     Application::interactiveMode = true;
 
     QTimer dismiss;
