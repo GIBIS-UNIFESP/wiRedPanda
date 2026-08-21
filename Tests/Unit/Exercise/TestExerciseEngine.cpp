@@ -484,6 +484,10 @@ void TestExerciseEngine::testGoToPreviousStepMovesBackAndPersists()
 
 void TestExerciseEngine::testGoToPreviousStepAtFirstStepIsNoOp()
 {
+    // engine.start() resumes from Settings::exerciseProgress(kExerciseFixtureId) -- reset it
+    // explicitly rather than relying on whatever a previous test happened to leave behind.
+    Settings::setExerciseProgress(QLatin1String(kExerciseFixtureId), 0);
+
     QTemporaryDir dir;
     QVERIFY(dir.isValid());
     const QString path = writeExerciseFixture(dir);
@@ -603,6 +607,8 @@ void TestExerciseEngine::testOnCircuitChangedGuardsAgainstInactiveOrSceneless()
 
 void TestExerciseEngine::testOnCircuitChangedDoesNotAdvanceOnObserveStep()
 {
+    Settings::setExerciseProgress(QLatin1String(kExerciseFixtureId), 0);
+
     QTemporaryDir dir;
     QVERIFY(dir.isValid());
     const QString path = writeExerciseFixture(dir); // both steps are observe steps
@@ -856,6 +862,8 @@ void TestExerciseEngine::testOverlayHintButtonTogglesVisibility()
 
 void TestExerciseEngine::testOverlayPrevButtonCallsGoToPreviousStep()
 {
+    Settings::setExerciseProgress(QLatin1String(kExerciseFixtureId), 0);
+
     QTemporaryDir dir;
     QVERIFY(dir.isValid());
     const QString path = writeExerciseFixture(dir);
@@ -874,6 +882,8 @@ void TestExerciseEngine::testOverlayPrevButtonCallsGoToPreviousStep()
 
 void TestExerciseEngine::testOverlayNextButtonCallsAdvanceStep()
 {
+    Settings::setExerciseProgress(QLatin1String(kExerciseFixtureId), 0);
+
     QTemporaryDir dir;
     QVERIFY(dir.isValid());
     const QString path = writeExerciseFixture(dir); // observe steps: Next is enabled
@@ -904,6 +914,8 @@ void TestExerciseEngine::testOverlayCloseButtonEmitsCloseRequested()
 
 void TestExerciseEngine::testOverlayOnRetranslatedUpdatesTextsFromCurrentEngineState()
 {
+    Settings::setExerciseProgress(QLatin1String(kExerciseFixtureId), 0);
+
     QTemporaryDir dir;
     QVERIFY(dir.isValid());
     const QString path = writeExerciseFixture(dir);
