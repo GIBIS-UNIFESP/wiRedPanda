@@ -73,22 +73,29 @@ void TestWorkspace::testAutosaveTriggersOnCircuitChange()
 
 void TestWorkspace::testAutosaveSkippedWhenClean()
 {
+    // WorkSpace::autosave() explicitly checks undoStack->isClean(): when clean, it deletes any
+    // leftover autosave file/Settings entry instead of writing a new one. Drive the undo stack
+    // back to clean (via undo(), which itself calls setCircuitUpdateRequired() and so restarts
+    // the debounce timer) and verify the previously-written autosave entry gets removed.
+    QTemporaryDir tempDir;
+    QVERIFY2(tempDir.isValid(), "Temporary directory creation failed");
+
+    Settings::setAutosaveFiles({});
+
     WorkSpace workspace;
     Scene *scene = workspace.scene();
+    auto *undoStack = scene->undoStack();
 
-    // Undo stack starts clean
-    QVERIFY2(scene->undoStack()->isClean(), "Undo stack should be in clean state");
-
-    // Add element
     auto *andGate = ElementFactory::buildElement(ElementType::And);
-    scene->addItem(andGate);
+    undoStack->push(new AddItemsCommand({andGate}, scene));
+    workspace.flushPendingAutosave();
+    QVERIFY2(!Settings::autosaveFiles().isEmpty(), "Precondition: adding the element must have written an autosave entry");
 
-    // Mark as clean
-    scene->undoStack()->setClean();
-    QVERIFY2(scene->undoStack()->isClean(), "Undo stack should be in clean state");
+    undoStack->undo();
+    QVERIFY2(undoStack->isClean(), "Undo stack should be back in clean state after undo()");
+    workspace.flushPendingAutosave();
 
-    // Further circuit changes shouldn't trigger autosave while clean
-    QVERIFY2(scene->undoStack()->isClean(), "Undo stack should be in clean state");
+    QVERIFY2(Settings::autosaveFiles().isEmpty(), "A clean undo stack must have its autosave entry removed, not skipped silently while stale");
 }
 
 void TestWorkspace::testAutosaveUpdatesSettings()
@@ -143,6 +150,9 @@ void TestWorkspace::testAutosaveAfterElementAdd()
 
 void TestWorkspace::testAutosaveAfterElementModify()
 {
+    // A bare QUndoCommand's no-op redo() never calls Scene::setCircuitUpdateRequired() (only
+    // real commands do -- see testAutosaveTriggersOnCircuitChange's regression note), so a
+    // real modification command (RotateCommand) is needed to actually exercise autosave.
     QTemporaryDir tempDir;
     QVERIFY2(tempDir.isValid(), "Temporary directory creation failed");
 
@@ -150,18 +160,22 @@ void TestWorkspace::testAutosaveAfterElementModify()
     Scene *scene = workspace.scene();
     auto *undoStack = scene->undoStack();
 
-    // Start clean
-    undoStack->setClean();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
+    undoStack->push(new AddItemsCommand({led}, scene));
+    workspace.flushPendingAutosave();
 
-    // Make circuit dirty via modification command
-    undoStack->push(new QUndoCommand("Modify element"));
+    Settings::setAutosaveFiles({});
+    undoStack->push(new RotateCommand({led}, 90, scene));
+    workspace.flushPendingAutosave();
 
-    // Verify undo stack reflects the change
     QVERIFY2(!undoStack->isClean(), "Undo stack should be dirty after circuit change");
+    QVERIFY2(!Settings::autosaveFiles().isEmpty(), "Modifying an element should trigger autosave and update settings");
 }
 
 void TestWorkspace::testAutosaveAfterElementDelete()
 {
+    // Same bare-QUndoCommand gap as testAutosaveAfterElementModify -- use a real
+    // DeleteItemsCommand so autosave is actually exercised.
     QTemporaryDir tempDir;
     QVERIFY2(tempDir.isValid(), "Temporary directory creation failed");
 
@@ -169,15 +183,16 @@ void TestWorkspace::testAutosaveAfterElementDelete()
     Scene *scene = workspace.scene();
     auto *undoStack = scene->undoStack();
 
-    // Start clean
-    undoStack->setClean();
-    QVERIFY2(undoStack->isClean(), "Undo stack should be in clean state");
+    auto *led = ElementFactory::buildElement(ElementType::Led);
+    undoStack->push(new AddItemsCommand({led}, scene));
+    workspace.flushPendingAutosave();
 
-    // Make circuit dirty via delete command
-    undoStack->push(new QUndoCommand("Delete element"));
+    Settings::setAutosaveFiles({});
+    undoStack->push(new DeleteItemsCommand({led}, scene));
+    workspace.flushPendingAutosave();
 
-    // Should trigger undo stack change
     QVERIFY2(!undoStack->isClean(), "Undo stack should be dirty after circuit change");
+    QVERIFY2(!Settings::autosaveFiles().isEmpty(), "Deleting an element should trigger autosave and update settings");
 }
 
 void TestWorkspace::testAutosaveSignalEmitted()
