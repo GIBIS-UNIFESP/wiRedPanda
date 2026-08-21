@@ -516,18 +516,15 @@ void TestClock::testGenericProperties()
 {
     Clock clock;
 
-    // Generic properties should return frequency in Hz format
+    // Generic properties should return frequency in Hz format. genericProperties() is exactly
+    // QString::number(frequency()) + " Hz" -- assert the exact string, not a loose
+    // single-digit substring check that would pass for many wrong formatted values.
     clock.setFrequency(1.0);
-    QString props1 = clock.genericProperties();
-    QVERIFY(props1.contains("Hz"));
-    QVERIFY(props1.contains("1"));
+    QCOMPARE(clock.genericProperties(), QString("1 Hz"));
 
     clock.setFrequency(5.0);
-    QString props2 = clock.genericProperties();
-    QVERIFY(props2.contains("Hz"));
-    QVERIFY(props2.contains("5"));
+    QCOMPARE(clock.genericProperties(), QString("5 Hz"));
 
     clock.setFrequency(0.5);
-    QString props3 = clock.genericProperties();
-    QVERIFY(props3.contains("Hz"));
+    QCOMPARE(clock.genericProperties(), QString("0.5 Hz"));
 }
