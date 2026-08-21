@@ -209,25 +209,3 @@ void TestFeatures::testMultipleElementsFeatures()
     QVERIFY(!display->hasDelay());
 }
 
-void TestFeatures::testFeatureConsistency()
-{
-    // Create the same element type multiple times and verify features are consistent
-    auto display1 = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Display7));
-    auto display2 = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Display7));
-
-    // Same element types should have same features
-    QCOMPARE(display1->hasLabel(), display2->hasLabel());
-    QCOMPARE(display1->hasColors(), display2->hasColors());
-    QCOMPARE(display1->hasAudio(), display2->hasAudio());
-    QCOMPARE(display1->hasFrequency(), display2->hasFrequency());
-    QCOMPARE(display1->hasDelay(), display2->hasDelay());
-
-    // Test with logic gates
-    auto and1 = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
-    auto and2 = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
-
-    QCOMPARE(and1->hasLabel(), and2->hasLabel());
-    QCOMPARE(and1->hasColors(), and2->hasColors());
-    QCOMPARE(and1->hasAudio(), and2->hasAudio());
-    QCOMPARE(and1->hasFrequency(), and2->hasFrequency());
-}

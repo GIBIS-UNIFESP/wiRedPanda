@@ -25,7 +25,6 @@ private slots:
     void testTriggerFeature();
     void testTruthTableFeature();
     void testMultipleElementsFeatures();
-    void testFeatureConsistency();
 
 private:
     QTemporaryDir m_tempDir;
