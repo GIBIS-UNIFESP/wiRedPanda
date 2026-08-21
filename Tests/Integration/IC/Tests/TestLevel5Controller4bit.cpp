@@ -129,9 +129,7 @@ void TestLevel5Controller4Bit::testController4Bit()
     auto &f = *s_level5Controller4bit;
 
     setMultiBitInput(f.opcodeInputs, opcode);
-    for (int i = 0; i < 20; ++i) {
-        f.sim->update();
-    }
+    f.sim->update();
 
     int controlValue = readMultiBitOutput(QVector<GraphicElement *>(f.ctrlOutputs.begin(), f.ctrlOutputs.end()), 0);
 
