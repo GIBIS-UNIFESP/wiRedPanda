@@ -60,3 +60,27 @@ void TestFileHandlerSecurity::testExportImageClampsExcessivePadding()
     QVERIFY(image.width() <= CircuitExporter::kMaxImageDimension);
     QVERIFY(image.height() <= CircuitExporter::kMaxImageDimension);
 }
+
+void TestFileHandlerSecurity::testExportImageClampsNegativePadding()
+{
+    // FileHandler.cpp clamps padding via std::clamp(..., 0, kMaxExportPadding), already
+    // flooring negative values at 0 today -- regression coverage for that floor, since no
+    // test exercised a negative value at all.
+    MainWindow window;
+    window.currentTab()->scene()->addItem(new InputSwitch());
+
+    FileHandler handler(&window, nullptr);
+
+    QTemporaryDir tmpDir;
+    QVERIFY(tmpDir.isValid());
+    const QString path = tmpDir.path() + "/negative_padding.png";
+
+    const QJsonObject params{{"filename", path}, {"format", "png"}, {"padding", -1000}};
+    const QJsonObject response = handler.handleCommand("export_image", params, {});
+    QVERIFY2(response.contains("result"), qPrintable(QJsonDocument(response).toJson()));
+
+    QImage image(path);
+    QVERIFY(!image.isNull());
+    QVERIFY(image.width() <= CircuitExporter::kMaxImageDimension);
+    QVERIFY(image.height() <= CircuitExporter::kMaxImageDimension);
+}
