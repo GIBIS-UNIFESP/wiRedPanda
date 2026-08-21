@@ -365,6 +365,9 @@ struct ScopedStdinRedirect {
     {
         std::fflush(stdin);
         FILE *f = testUtilsFopen(qPrintable(path), "r");
+        if (!f) {
+            qFatal("ScopedStdinRedirect: failed to open '%s'", qPrintable(path));
+        }
         testUtilsDup2Fd(testUtilsFilenoFd(f), 0);
         std::fclose(f);
         std::clearerr(stdin);
@@ -393,6 +396,9 @@ struct ScopedStdoutCapture {
     {
         std::fflush(stdout);
         FILE *f = testUtilsFopen(qPrintable(path), "w");
+        if (!f) {
+            qFatal("ScopedStdoutCapture: failed to open '%s'", qPrintable(path));
+        }
         testUtilsDup2Fd(testUtilsFilenoFd(f), 1);
         std::fclose(f);
     }
