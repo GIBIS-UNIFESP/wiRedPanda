@@ -2453,6 +2453,9 @@ void TestMainWindowGui::testFlipVertically()
 
 void TestMainWindowGui::testCloseLastTab()
 {
+    // WorkspaceManager::closeTab() has no "keep at least one tab open" logic of its own --
+    // it just removes the tab -- so closing the only tab must actually reach 0, not silently
+    // leave it at 1 (or some other count) while the assertion only checked window visibility.
     std::unique_ptr<MainWindow> window(createMW());
     auto *tabs = findTabs(window.get());
     QCOMPARE(tabs->count(), 1);
@@ -2460,7 +2463,7 @@ void TestMainWindowGui::testCloseLastTab()
     // Closing the last tab should not crash
     tabs->tabCloseRequested(0);
 
-    // Tab count may reach 0 — window remains valid and operational
+    QCOMPARE(tabs->count(), 0);
     QVERIFY(window->isVisible());
 }
 
