@@ -77,7 +77,7 @@ private slots:
     void testMultiGateChainSerialization();
     void testExtremelyLongLabels();
     void testStreamPositionValidation();
-    void testConnectionWithDeletedPorts();
+    void testConnectionSurvivesSaveLoadRoundTrip();
     void testMalformedConnectionData();
     void testMalformedEmbeddedICsRegistryRejected();
 

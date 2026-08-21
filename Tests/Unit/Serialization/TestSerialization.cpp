@@ -1360,9 +1360,15 @@ void TestSerialization::testStreamPositionValidation()
     }
 }
 
-void TestSerialization::testConnectionWithDeletedPorts()
+void TestSerialization::testConnectionSurvivesSaveLoadRoundTrip()
 {
-    // Test loading circuit where connections reference deleted ports
+    // Deleting a port that has a live connection (GraphicElement::setInputSize() shrinking
+    // below the wired index) deletes the connection along with it -- InputPort/OutputPort's
+    // destructors drain their owned connections -- so a save/load round trip can never observe
+    // a connection referencing a port that no longer exists via the production API; that
+    // scenario is only reachable via a hand-crafted malformed file, already covered by
+    // testMalformedConnectionData(). This is instead a lighter 2-element smoke test that a
+    // single connection's wiring, not just its element count, survives a round trip.
     WorkSpace workspace1;
     Scene *scene = workspace1.scene();
 
@@ -1389,10 +1395,16 @@ void TestSerialization::testConnectionWithDeletedPorts()
     WorkSpace workspace2;
     try {
         loadFromMemory(workspace2, data);
-        // If load succeeds, connections should be preserved
-        // Verify at least 2 elements loaded
         QCOMPARE(workspace2.scene()->elements().size(), 2);
-        QVERIFY2(workspace2.scene() != nullptr, "Scene should be valid after loading connections");
+
+        GraphicElement *loadedAnd = nullptr, *loadedOr = nullptr;
+        for (auto *elm : workspace2.scene()->elements()) {
+            if (elm->elementType() == ElementType::And) { loadedAnd = elm; }
+            if (elm->elementType() == ElementType::Or)  { loadedOr = elm; }
+        }
+        QVERIFY2(loadedAnd && loadedOr, "Both the And and Or gates must be reloaded");
+        QVERIFY2(loadedAnd->outputPort(0)->isConnected(loadedOr->inputPort(0)),
+                 "The connection between the And output and the Or input must survive the round trip");
     } catch (const std::exception &e) {
         // Acceptable if connection loading fails
         QVERIFY2(!QString(e.what()).isEmpty(), "Exception should explain the connection issue");
