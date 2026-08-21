@@ -136,7 +136,10 @@ private slots:
     void testCloseEventPromptsAndCanBeCancelled();
     void testCloseEventClosesDirectlyWhenNotEdited();
     void testResizeEventRepositionsExerciseOverlay();
-    void testTrivialAccessors();
+    void testWidgetAccessors();
+    void testTriggerCombinationalFillsAllInputPatterns();
+    void testInputRowLooksUpByLabel();
+    void testSnapshotReturnsRunValues();
     void testCheckSaveDiscardAndSaveButtons();
     void testActionSetClockWaveNoSelectionThrowsUserFacingError();
     void testActionSetClockWaveDialogRejectedLeavesGridUnchanged();
