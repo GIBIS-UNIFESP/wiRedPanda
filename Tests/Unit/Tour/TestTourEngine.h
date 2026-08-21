@@ -33,6 +33,7 @@ private slots:
     void testLoadFromResourceMissingIdOrTitleFails();
     void testLoadFromResourceEmptyStepsArrayFails();
     void testStepWithoutKeyUsesRawTitleAndBodyDirectly();
+    void testStepTargetAndClickFieldsParsedFromJson();
     void testCurrentStepDataBeforeLoadReturnsEmptyStep();
     void testRetranslateReloadFailureDeactivatesEngine();
 

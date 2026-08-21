@@ -374,6 +374,26 @@ void TestTourEngine::testStepWithoutKeyUsesRawTitleAndBodyDirectly()
     QCOMPARE(engine.currentStepData().body, QStringLiteral("Raw body text"));
 }
 
+void TestTourEngine::testStepTargetAndClickFieldsParsedFromJson()
+{
+    // fillTourStepFields() also reads "target" (a spotlight-target key) and "click" (a list of
+    // widget/action IDs to activate on step enter) -- exercise both through a real
+    // loadFromResource() call rather than only the title/body fields.
+    const char *const tourJson = R"({
+        "id": "target-click-tour",
+        "title": "Target Click",
+        "steps": [ { "title": "x", "body": "y", "target": "canvas", "click": ["fileMenu", "newAction"] } ]
+    })";
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = writeJsonFile(dir, "target_click.json", tourJson);
+
+    TourEngine engine;
+    QVERIFY(engine.loadFromResource(path));
+    QCOMPARE(engine.currentStepData().target, QStringLiteral("canvas"));
+    QCOMPARE(engine.currentStepData().click, QStringList({"fileMenu", "newAction"}));
+}
+
 void TestTourEngine::testCurrentStepDataBeforeLoadReturnsEmptyStep()
 {
     TourEngine engine;
