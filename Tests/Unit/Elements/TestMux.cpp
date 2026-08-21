@@ -21,10 +21,33 @@ void TestMux::testMuxInputSize()
 
 void TestMux::testMuxSelection()
 {
+    // Default Mux: inputSize()==3 -> 2 data inputs (0,1) + 1 select line (2). Drive the two
+    // data inputs to different values so a wrong/fixed select->data mapping is observable,
+    // then confirm the output actually tracks whichever data input the select line addresses.
     WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    auto *data0 = new InputSwitch;
+    auto *data1 = new InputSwitch;
+    auto *sel = new InputSwitch;
     auto *mux = new Mux;
-    workspace.scene()->addItem(mux);
-    QVERIFY(mux->inputSize() > 0);
+    builder.add(data0, data1, sel, mux);
+    builder.connect(data0, 0, mux, 0);
+    builder.connect(data1, 0, mux, 1);
+    builder.connect(sel, 0, mux, 2);
+
+    auto *simulation = builder.initSimulation();
+
+    data0->setOn(false);
+    data1->setOn(true);
+
+    sel->setOn(false); // select=0 -> data0
+    simulation->update();
+    QCOMPARE(mux->outputValue(), Status::Inactive);
+
+    sel->setOn(true); // select=1 -> data1
+    simulation->update();
+    QCOMPARE(mux->outputValue(), Status::Active);
 }
 
 void TestMux::testMuxPainting()
