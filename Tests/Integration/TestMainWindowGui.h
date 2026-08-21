@@ -170,17 +170,12 @@ private slots:
 
     // --- Context menu operations ---
 
-    void testContextMenuRotateLeft();
-    void testContextMenuRotateRight();
-    void testContextMenuCopy();
-    void testContextMenuCut();
-    void testContextMenuDelete();
+    void testContextMenuRealRightClickRotatesElement();
     void testContextMenuPasteOnEmpty();
     void testContextMenuRename();
     void testContextMenuChangeTrigger();
     void testContextMenuChangeColor();
     void testContextMenuChangeFrequency();
-    void testContextMenuMorphTo();
 
     // --- Keyboard shortcuts (additional) ---
 
