@@ -7,7 +7,10 @@
 #include <QGraphicsSceneEvent>
 #include <QMimeData>
 
+#include "App/Core/DragDropPayload.h"
 #include "App/Core/MimeTypes.h"
+#include "App/Element/ElementFactory.h"
+#include "App/Element/ElementLabel.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
@@ -124,4 +127,102 @@ void TestSceneDropHandler::testHandleCloneDragAcceptsLegacyMimeFormat()
     handler.handleCloneDrag(&event);
 
     QCOMPARE(scene->elements().size(), countBefore + 1);
+}
+
+void TestSceneDropHandler::testHandleNewElementDropAddsElementAtScenePosition()
+{
+    // Real palette-drag payload via ElementLabel::mimeData() -- the actual production
+    // producer of this wire format (offset, elementType, icFileName, isEmbedded, ...).
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    SceneDropHandler handler(scene);
+
+    const qsizetype countBefore = scene->elements().size();
+
+    const QPixmap pixmap = ElementFactory::pixmap(ElementType::And);
+    ElementLabel label(pixmap, ElementType::And, "");
+    auto mimeData = std::unique_ptr<QMimeData>(label.mimeData());
+
+    // Decode the payload's real offset from the same bytes handleNewElementDrop() will read,
+    // rather than recomputing it independently -- ElementLabel stores the pixmap in a QLabel,
+    // whose reported rect() isn't guaranteed to exactly match a freshly-fetched pixmap's rect().
+    QDataStream offsetStream(mimeData->data(MimeType::DragDrop));
+    Serialization::readPandaHeader(offsetStream);
+    const DragDropPayload payload = readDragDropPayload(offsetStream);
+
+    QGraphicsSceneDragDropEvent event(QEvent::GraphicsSceneDrop);
+    event.setMimeData(mimeData.get());
+    const QPointF dropScenePos(200, 200);
+    event.setScenePos(dropScenePos);
+
+    handler.handleNewElementDrop(&event);
+
+
+    QCOMPARE(scene->elements().size(), countBefore + 1);
+
+    GraphicElement *added = nullptr;
+    for (auto *elm : scene->elements()) {
+        if (elm->elementType() == ElementType::And) {
+            added = elm;
+        }
+    }
+    QVERIFY2(added, "handleNewElementDrop() must add a new And element from the payload");
+    QVERIFY2(added->isSelected(), "The newly dropped element must end up selected");
+    // setPos() here runs after the element is already in the scene, so
+    // GraphicElement::itemChange()'s 8px half-grid snap applies to the raw computed position.
+    const QPointF rawPos = dropScenePos - payload.offset;
+    const QPointF snappedPos(qRound(rawPos.x() / 8.0) * 8, qRound(rawPos.y() / 8.0) * 8);
+    QCOMPARE(added->pos(), snappedPos);
+}
+
+void TestSceneDropHandler::testAddFromMimeDataAddsElementAtGivenScenePos()
+{
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    SceneDropHandler handler(scene);
+
+    const qsizetype countBefore = scene->elements().size();
+
+    const QPixmap pixmap = ElementFactory::pixmap(ElementType::Or);
+    ElementLabel label(pixmap, ElementType::Or, "");
+    QMimeData *mimeData = label.mimeData(); // addFromMimeData() takes ownership (deleteLater)
+
+    const QPointF targetPos(96, 96); // grid-aligned, no snap surprise
+    handler.addFromMimeData(mimeData, targetPos);
+
+    QCOMPARE(scene->elements().size(), countBefore + 1);
+
+    GraphicElement *added = nullptr;
+    for (auto *elm : scene->elements()) {
+        if (elm->elementType() == ElementType::Or) {
+            added = elm;
+        }
+    }
+    QVERIFY2(added, "addFromMimeData() must add a new Or element from the payload");
+    QVERIFY2(added->isSelected(), "The newly added element must end up selected");
+    QCOMPARE(added->pos(), targetPos);
+}
+
+void TestSceneDropHandler::testAddFromMimeDataKeepsDefaultPositionWhenScenePosOmitted()
+{
+    // With no scenePos argument, the element keeps whatever default position
+    // ElementFactory::buildElement() gives it (the scene origin), rather than being moved.
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    SceneDropHandler handler(scene);
+
+    const QPixmap pixmap = ElementFactory::pixmap(ElementType::Not);
+    ElementLabel label(pixmap, ElementType::Not, "");
+    QMimeData *mimeData = label.mimeData();
+
+    handler.addFromMimeData(mimeData);
+
+    GraphicElement *added = nullptr;
+    for (auto *elm : scene->elements()) {
+        if (elm->elementType() == ElementType::Not) {
+            added = elm;
+        }
+    }
+    QVERIFY2(added, "addFromMimeData() must add a new Not element from the payload");
+    QCOMPARE(added->pos(), QPointF(0, 0));
 }
