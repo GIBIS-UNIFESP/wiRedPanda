@@ -3175,7 +3175,8 @@ void TestICInline::testCopyPasteEmbeddedICRoundTrip()
 
 void TestICInline::testFlipRotateEmbeddedIC()
 {
-    // Flip and rotate should preserve embedded state through undo/redo.
+    // Flip and rotate should preserve embedded state through undo/redo. FlipCommand's axis
+    // parameter: 0 = horizontal flip, 1 = vertical flip (App/Scene/Commands.h).
 
     WorkSpace ws;
     ws.scene()->setContextDir(m_fixtureDir);
@@ -3190,22 +3191,35 @@ void TestICInline::testFlipRotateEmbeddedIC()
     QVERIFY(ic->isEmbedded());
     QCOMPARE(ic->rotation(), 0.0);
 
-    // Flip horizontally
+    // Flip vertically (axis=1)
     ws.scene()->undoStack()->push(new FlipCommand({ic}, 1, ws.scene()));
 
-    auto *flipped = dynamic_cast<IC *>(ws.scene()->itemById(icId));
-    QVERIFY(flipped);
-    QVERIFY(flipped->isEmbedded());
-    QCOMPARE(flipped->blobName(), QString("flip_test"));
+    auto *flippedV = dynamic_cast<IC *>(ws.scene()->itemById(icId));
+    QVERIFY(flippedV);
+    QVERIFY(flippedV->isEmbedded());
+    QCOMPARE(flippedV->blobName(), QString("flip_test"));
+    QVERIFY2(flippedV->isFlippedY(), "Vertical flip (axis=1) must set isFlippedY()");
 
-    // Rotate
-    ws.scene()->undoStack()->push(new FlipCommand({flipped}, 0, ws.scene()));
+    // Flip horizontally (axis=0)
+    ws.scene()->undoStack()->push(new FlipCommand({flippedV}, 0, ws.scene()));
+
+    auto *flippedH = dynamic_cast<IC *>(ws.scene()->itemById(icId));
+    QVERIFY(flippedH);
+    QVERIFY(flippedH->isEmbedded());
+    QVERIFY2(flippedH->isFlippedX(), "Horizontal flip (axis=0) must set isFlippedX()");
+
+    // Rotate 90 degrees clockwise -- neither flip above touches rotation(), so it must still
+    // be 0 here before the real RotateCommand runs.
+    QCOMPARE(flippedH->rotation(), 0.0);
+    ws.scene()->undoStack()->push(new RotateCommand({flippedH}, 90, ws.scene()));
 
     auto *rotated = dynamic_cast<IC *>(ws.scene()->itemById(icId));
     QVERIFY(rotated);
     QVERIFY(rotated->isEmbedded());
+    QCOMPARE(rotated->rotation(), 90.0);
 
-    // Undo both
+    // Undo all three
+    ws.scene()->undoStack()->undo();
     ws.scene()->undoStack()->undo();
     ws.scene()->undoStack()->undo();
 
@@ -3214,8 +3228,12 @@ void TestICInline::testFlipRotateEmbeddedIC()
     QVERIFY(restored->isEmbedded());
     QCOMPARE(restored->blobName(), QString("flip_test"));
     QVERIFY(restored->inputSize() > 0);
+    QCOMPARE(restored->rotation(), 0.0);
+    QVERIFY(!restored->isFlippedX());
+    QVERIFY(!restored->isFlippedY());
 
-    // Redo both
+    // Redo all three
+    ws.scene()->undoStack()->redo();
     ws.scene()->undoStack()->redo();
     ws.scene()->undoStack()->redo();
 
@@ -3223,6 +3241,9 @@ void TestICInline::testFlipRotateEmbeddedIC()
     QVERIFY(redone);
     QVERIFY(redone->isEmbedded());
     QCOMPARE(redone->blobName(), QString("flip_test"));
+    QCOMPARE(redone->rotation(), 90.0);
+    QVERIFY(redone->isFlippedX());
+    QVERIFY(redone->isFlippedY());
 }
 
 // ===========================================================================
