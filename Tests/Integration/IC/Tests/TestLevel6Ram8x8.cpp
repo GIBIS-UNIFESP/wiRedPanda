@@ -200,3 +200,56 @@ void TestLevel6RAM8X8::testRAMReset()
     f.sim->update();
     QCOMPARE(f.readDataOut(), 0x00);
 }
+
+// testRAM8x8 always writes with WriteEnable=1 -- never verifies that a clock edge with
+// WriteEnable=0 leaves the address's stored word untouched.
+void TestLevel6RAM8X8::testWriteEnableGating()
+{
+    auto &f = *s_level6Ram8x8;
+
+    // Write a known value to address 2.
+    setMultiBitInput(f.addressInputs, 0x02);
+    setMultiBitInput(f.dataInInputs, 0x5A);
+    f.we->setOn(true);
+    f.sim->update();
+    clockCycle(f.sim, f.clk);
+    f.we->setOn(false);
+    f.sim->update();
+    QCOMPARE(f.readDataOut(), 0x5A);
+
+    // Attempt to overwrite with WriteEnable low: the clock edge must not commit it.
+    setMultiBitInput(f.dataInInputs, 0xC3);
+    f.sim->update();
+    clockCycle(f.sim, f.clk);
+    f.sim->update();
+    QCOMPARE(f.readDataOut(), 0x5A);
+}
+
+// No test in this file ever writes to more than one address, so a bug aliasing all 8 words to
+// a single storage cell would go unnoticed.
+void TestLevel6RAM8X8::testAddressIsolation()
+{
+    auto &f = *s_level6Ram8x8;
+
+    auto writeAt = [&](int addr, int data) {
+        setMultiBitInput(f.addressInputs, addr);
+        setMultiBitInput(f.dataInInputs, data);
+        f.we->setOn(true);
+        f.sim->update();
+        clockCycle(f.sim, f.clk);
+        f.we->setOn(false);
+        f.sim->update();
+    };
+    auto readAt = [&](int addr) {
+        setMultiBitInput(f.addressInputs, addr);
+        f.sim->update();
+        return f.readDataOut();
+    };
+
+    writeAt(0x01, 0x11);
+    writeAt(0x06, 0x66);
+
+    // Each address holds its own word, and writing one didn't disturb the other.
+    QCOMPARE(readAt(0x01), 0x11);
+    QCOMPARE(readAt(0x06), 0x66);
+}
