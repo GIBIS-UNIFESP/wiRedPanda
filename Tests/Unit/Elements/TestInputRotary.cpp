@@ -67,28 +67,6 @@ void TestInputRotary::testNextPortWrapping()
     QCOMPARE(rotary->outputValue(), 0);
 }
 
-void TestInputRotary::testPreviousPortWrapping()
-{
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::InputRotary));
-    auto *rotary = dynamic_cast<InputRotary *>(elem.get());
-    QVERIFY(rotary != nullptr);
-
-    const int numPorts = rotary->outputSize();
-
-    // Move forward to port 1
-    rotary->setOn();
-    QCOMPARE(rotary->outputValue(), 1);
-
-    // Move back (by advancing from 1, it goes to 2, so test differently)
-    // Set to last port manually
-    rotary->setOn(true, numPorts - 1);
-    QCOMPARE(rotary->outputValue(), numPorts - 1);
-
-    // Next should wrap to 0
-    rotary->setOn();
-    QCOMPARE(rotary->outputValue(), 0);
-}
-
 void TestInputRotary::testSetPortDirect()
 {
     auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::InputRotary));
