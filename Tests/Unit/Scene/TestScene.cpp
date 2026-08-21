@@ -43,6 +43,7 @@
 #include "App/Scene/ICRegistry.h"
 #include "App/Scene/InlineLabelEditor.h"
 #include "App/Scene/Scene.h"
+#include "App/Scene/SceneDropHandler.h"
 #include "App/Scene/Workspace.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
@@ -2602,16 +2603,19 @@ void TestScene::testDragEnterEventFallsBackForUnsupportedFormat()
     QMimeData mimeData;
     mimeData.setData("text/plain", QByteArray("hello"));
 
+    // Confirm this mimeData actually drives Scene::dragEnterEvent() into the QGraphicsScene
+    // base-class fallback branch (App/Scene/Scene.cpp), rather than the early-return
+    // acceptProposedAction() branch above. This is the stable, wiRedPanda-owned contract;
+    // QGraphicsScene's own base-class dropAction() resolution afterwards is an undocumented
+    // Qt implementation detail that has been observed to differ between Qt point releases
+    // (e.g. 6.8.3 vs 6.9.3), so it isn't asserted here.
+    QVERIFY(!SceneDropHandler::isSupportedDropFormat(&mimeData));
+    QVERIFY(Scene::droppedPandaFile(&mimeData).isEmpty());
+
     QGraphicsSceneDragDropEvent event(QEvent::GraphicsSceneDragEnter);
     event.setMimeData(&mimeData);
     event.setProposedAction(Qt::CopyAction);
     scene->dragEnterEvent(&event);
-
-    // QGraphicsScene::dragEnterEvent()'s base implementation never narrows dropAction() to a
-    // single action -- confirmed empirically it stays at the multi-flag default, unlike the
-    // acceptProposedAction() branch above.
-    QVERIFY2(event.dropAction() != Qt::CopyAction,
-              "Falling back to the base class must not narrow dropAction() the way acceptProposedAction() does");
 }
 
 void TestScene::testDragMoveEventAcceptsSupportedFormat()
