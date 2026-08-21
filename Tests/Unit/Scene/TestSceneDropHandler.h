@@ -16,4 +16,7 @@ private slots:
     void testIsSupportedDropFormatRejectsUnrecognizedMimeType();
     void testHandleCloneDragClonesSelectionAtOffsetPosition();
     void testHandleCloneDragAcceptsLegacyMimeFormat();
+    void testHandleNewElementDropAddsElementAtScenePosition();
+    void testAddFromMimeDataAddsElementAtGivenScenePos();
+    void testAddFromMimeDataKeepsDefaultPositionWhenScenePosOmitted();
 };
