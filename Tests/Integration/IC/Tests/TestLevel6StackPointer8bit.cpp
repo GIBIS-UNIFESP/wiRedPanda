@@ -205,3 +205,46 @@ void TestLevel6StackPointer8Bit::testStackPointerReset()
     clockCycle(f.sim, f.clk);
     QCOMPARE(readSP(), 0xFF);
 }
+
+// testStackPointerPushPop only exercises Push/Pop away from the 0x00/0xFF
+// boundary. As an 8-bit register, the stack pointer must wrap: Push at 0x00
+// must underflow to 0xFF, and Pop at 0xFF must overflow to 0x00.
+void TestLevel6StackPointer8Bit::testStackPointerPushPopWraparound()
+{
+    auto &f = *s_level6StackPtr8bit;
+
+    // Load SP = 0x00, then Push: must wrap down to 0xFF.
+    f.clk->setOn(false);
+    f.reset->setOn(false);
+    f.push->setOn(false);
+    f.pop->setOn(false);
+    f.load->setOn(true);
+    for (int i = 0; i < 8; ++i) {
+        f.loadVal[i]->setOn((0x00 >> i) & 1);
+    }
+    f.sim->update();
+    clockCycle(f.sim, f.clk);
+    QCOMPARE(readSP(), 0x00);
+
+    f.load->setOn(false);
+    f.push->setOn(true);
+    f.sim->update();
+    clockCycle(f.sim, f.clk);
+    QCOMPARE(readSP(), 0xFF);
+
+    // Load SP = 0xFF, then Pop: must wrap up to 0x00.
+    f.push->setOn(false);
+    f.load->setOn(true);
+    for (int i = 0; i < 8; ++i) {
+        f.loadVal[i]->setOn((0xFF >> i) & 1);
+    }
+    f.sim->update();
+    clockCycle(f.sim, f.clk);
+    QCOMPARE(readSP(), 0xFF);
+
+    f.load->setOn(false);
+    f.pop->setOn(true);
+    f.sim->update();
+    clockCycle(f.sim, f.clk);
+    QCOMPARE(readSP(), 0x00);
+}
