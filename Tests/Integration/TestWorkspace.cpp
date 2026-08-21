@@ -7,6 +7,7 @@
 #include <QFileInfo>
 #include <QSaveFile>
 #include <QSignalSpy>
+#include <QStandardPaths>
 #include <QTemporaryDir>
 #include <QTemporaryFile>
 
@@ -291,11 +292,15 @@ void TestWorkspace::testAutosaveFileCreatedInAppData()
     QStringList autosaves = Settings::autosaveFiles();
     QVERIFY2(!autosaves.isEmpty(), "Circuit change should produce an autosave entry");
 
-    // For new (unsaved) project, autosave should be in AppData/autosaves directory
+    // For new (unsaved) project, autosave should be in AppData/autosaves directory (matching
+    // WorkSpace::setAutosaveFileName()'s own path construction) -- every autosave entry ends
+    // with .panda regardless of directory, so that half alone can't distinguish a correct
+    // AppData path from a wrong one.
+    const QString appDataAutosaveDir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/autosaves";
     for (const QString &autosave : std::as_const(autosaves)) {
         QVERIFY2(!autosave.isEmpty(), "Autosave entry should not be empty");
-        QVERIFY2(autosave.contains("autosaves") || autosave.contains(".panda"),
-                 qPrintable(QString("Autosave path invalid: %1").arg(autosave)));
+        QVERIFY2(QFileInfo(autosave).absolutePath() == QFileInfo(appDataAutosaveDir).absoluteFilePath(),
+                 qPrintable(QString("Autosave path should be under the AppData autosaves directory: %1").arg(autosave)));
     }
 }
 
