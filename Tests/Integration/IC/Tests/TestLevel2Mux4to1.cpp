@@ -90,7 +90,6 @@ void TestLevel2MUX4To1::testMultiplexer4to1_data()
     QTest::newRow("select_2") << 2;
     QTest::newRow("select_3") << 3;
     QTest::newRow("sequential") << -1;
-    QTest::newRow("pattern_propagation") << -2;
 }
 
 void TestLevel2MUX4To1::testMultiplexer4to1()
@@ -107,7 +106,7 @@ void TestLevel2MUX4To1::testMultiplexer4to1()
     f.selectBit1->setOff();
     f.sim->update();
 
-    if (selectValue == -1 || selectValue == -2) {
+    if (selectValue == -1) {
         for (int s = 0; s < 4; ++s) {
             f.selectBit0->setOn((s >> 0) & 1);
             f.selectBit1->setOn((s >> 1) & 1);
