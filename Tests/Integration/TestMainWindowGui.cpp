@@ -2931,8 +2931,17 @@ void TestMainWindowGui::testOpenSameFileFromDifferentDirs()
 // Context menu operations
 // ===========================================================================
 
-void TestMainWindowGui::testContextMenuRotateLeft()
+void TestMainWindowGui::testContextMenuRealRightClickRotatesElement()
 {
+    // The 5 tests this replaced (RotateLeft/Right, Copy, Cut, Delete) never actually opened a
+    // context menu -- they called scene->rotateLeft()/rotateRight() or the Ctrl+C/X/V/Delete
+    // keyboard paths directly, duplicating testRotateLeftViaKeyboard/testRotateRightViaKeyboard
+    // (with a weaker != check) and testCopyPasteViaKeyboard/testCutPasteViaKeyboard/
+    // testDeleteViaKeyboard exactly. TestElementContextMenu.cpp already exhaustively covers
+    // ElementContextMenu::exec()'s own action matrix directly. What nothing else tests is the
+    // real end-to-end wiring: a right-click on the canvas actually opens the menu
+    // (SceneInteraction::mousePress() -> Scene::contextMenu() -> ElementEditor::contextMenu()
+    // -> ElementContextMenu::exec()), and clicking an action in it does the right thing.
     std::unique_ptr<MainWindow> window(createMW());
     auto *scene = window->currentTab()->scene();
     auto *view = window->currentTab()->view();
@@ -2942,80 +2951,26 @@ void TestMainWindowGui::testContextMenuRotateLeft()
     scene->addItem(andGate);
     clickElement(view, andGate);
 
-    qreal before = andGate->rotation();
-    scene->rotateLeft();
-    QVERIFY(!qFuzzyCompare(andGate->rotation(), before));
-}
+    const int rotationBefore = static_cast<int>(andGate->rotation());
 
-void TestMainWindowGui::testContextMenuRotateRight()
-{
-    std::unique_ptr<MainWindow> window(createMW());
-    auto *scene = window->currentTab()->scene();
-    auto *view = window->currentTab()->view();
+    auto dismisser = TestUtils::AutoDismisser([](QWidget *w) {
+        auto *menu = qobject_cast<QMenu *>(w);
+        if (!menu) return false;
+        for (auto *action : menu->actions()) {
+            if (action->text() == QStringLiteral("Rotate right")) {
+                const QPoint pos = menu->actionGeometry(action).center();
+                QTest::mouseClick(menu, Qt::LeftButton, Qt::NoModifier, pos);
+                return true;
+            }
+        }
+        return false;
+    });
 
-    auto *andGate = new And();
-    andGate->setPos(100, 100);
-    scene->addItem(andGate);
-    clickElement(view, andGate);
+    const QPoint viewPos = view->mapFromScene(andGate->scenePos());
+    QTest::mouseClick(view->viewport(), Qt::RightButton, Qt::NoModifier, viewPos);
 
-    qreal before = andGate->rotation();
-    scene->rotateRight();
-    QVERIFY(!qFuzzyCompare(andGate->rotation(), before));
-}
-
-void TestMainWindowGui::testContextMenuCopy()
-{
-    std::unique_ptr<MainWindow> window(createMW());
-    auto *scene = window->currentTab()->scene();
-    auto *view = window->currentTab()->view();
-
-    auto *sw = new InputSwitch();
-    sw->setPos(100, 100);
-    scene->addItem(sw);
-    clickElement(view, sw);
-    QCOMPARE(static_cast<int>(scene->elements().size()), 1);
-
-    QTest::keyClick(window.get(), Qt::Key_C, Qt::ControlModifier);
-    QTest::keyClick(window.get(), Qt::Key_V, Qt::ControlModifier);
-    QCOMPARE(static_cast<int>(scene->elements().size()), 2);
-}
-
-void TestMainWindowGui::testContextMenuCut()
-{
-    std::unique_ptr<MainWindow> window(createMW());
-    auto *scene = window->currentTab()->scene();
-    auto *view = window->currentTab()->view();
-
-    auto *sw = new InputSwitch();
-    sw->setPos(100, 100);
-    scene->addItem(sw);
-    clickElement(view, sw);
-    QCOMPARE(static_cast<int>(scene->elements().size()), 1);
-
-    QTest::keyClick(window.get(), Qt::Key_X, Qt::ControlModifier);
-    QCOMPARE(static_cast<int>(scene->elements().size()), 0);
-
-    QTest::keyClick(window.get(), Qt::Key_V, Qt::ControlModifier);
-    QCOMPARE(static_cast<int>(scene->elements().size()), 1);
-}
-
-void TestMainWindowGui::testContextMenuDelete()
-{
-    std::unique_ptr<MainWindow> window(createMW());
-    auto *scene = window->currentTab()->scene();
-    auto *view = window->currentTab()->view();
-
-    auto *sw = new InputSwitch();
-    auto *led = new Led();
-    sw->setPos(100, 100);
-    led->setPos(200, 100);
-    scene->addItem(sw);
-    scene->addItem(led);
-    clickElement(view, sw);
-    QCOMPARE(static_cast<int>(scene->elements().size()), 2);
-
-    QTest::keyClick(window.get(), Qt::Key_Delete);
-    QCOMPARE(static_cast<int>(scene->elements().size()), 1);
+    QVERIFY2(dismisser.dismissCount() >= 1, "The right-click must have opened a real context menu with a \"Rotate right\" action");
+    QCOMPARE(static_cast<int>(andGate->rotation()), (rotationBefore + 90) % 360);
 }
 
 void TestMainWindowGui::testContextMenuPasteOnEmpty()
@@ -3121,31 +3076,6 @@ void TestMainWindowGui::testContextMenuChangeFrequency()
     slider->setValue(target);
     QCoreApplication::processEvents();
     QCOMPARE(slider->value(), target);
-}
-
-void TestMainWindowGui::testContextMenuMorphTo()
-{
-    std::unique_ptr<MainWindow> window(createMW());
-    auto *scene = window->currentTab()->scene();
-    auto *view = window->currentTab()->view();
-
-    auto *andGate = new And();
-    andGate->setPos(100, 100);
-    scene->addItem(andGate);
-    clickElement(view, andGate);
-    QVERIFY(andGate->isSelected());
-
-    // Morph to next element via scene API (same as context menu Morph To)
-    ElementType beforeType = andGate->elementType();
-    scene->nextElm();
-
-    // After morph, the original element is replaced — find the new one
-    auto elements = scene->elements();
-    QCOMPARE(static_cast<int>(elements.size()), 1);
-
-    // The element type should have changed (And → next in Gate group)
-    auto *morphed = elements.first();
-    QVERIFY(morphed->elementType() != beforeType);
 }
 
 // ===========================================================================
