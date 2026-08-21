@@ -34,23 +34,15 @@ void TestGeometry::testPixmapCenter()
 
 void TestGeometry::testBoundingRectNoPortsCalculation()
 {
-    // Create an element
-    auto andGate = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
-    QVERIFY(andGate != nullptr);
+    // Line genuinely has zero ports (unlike And, which always has 2 inputs + 1 output).
+    // GraphicElement::boundingRect() is portsBoundingRect().united(pixmap().rect()); with no
+    // ports, portsBoundingRect() is null, so the result must be exactly the pixmap rect.
+    auto line = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Line));
+    QVERIFY(line != nullptr);
+    QVERIFY(line->inputs().isEmpty());
+    QVERIFY(line->outputs().isEmpty());
 
-    // Clear all ports by setting input/output size to 0 (if supported)
-    // Most elements have fixed ports, so we'll just verify with existing ports
-
-    // Get bounding rect
-    QRectF boundingRect = andGate->boundingRect();
-
-    // Should contain the pixmap (0, 0, 64, 64)
-    QVERIFY(boundingRect.contains(0, 0));
-    QVERIFY(boundingRect.contains(64, 64));
-
-    // Should have reasonable dimensions
-    QVERIFY(boundingRect.width() >= 64.0);
-    QVERIFY(boundingRect.height() >= 64.0);
+    QCOMPARE(line->boundingRect(), QRectF(0, 0, 64, 64));
 }
 
 void TestGeometry::testBoundingRectWithPorts()
@@ -79,23 +71,17 @@ void TestGeometry::testBoundingRectWithPorts()
 
 void TestGeometry::testInputPortPositionSinglePort()
 {
-    // Create an OR gate (2 input ports by default)
-    auto orGate = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Or));
-    QVERIFY(orGate != nullptr);
+    // Not is a genuine single-input element (Or defaults to 2 inputs).
+    auto notGate = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Not));
+    QVERIFY(notGate != nullptr);
 
-    // Get input ports
-    const auto &inputs = orGate->inputs();
-    QVERIFY(!inputs.isEmpty());
+    const auto &inputs = notGate->inputs();
+    QCOMPARE(inputs.size(), 1);
 
-    // Check first input port position
-    // Input ports should be at x=0
+    // A single input port should be at x=0, centered at y=32.
     QPointF pos0 = inputs[0]->pos();
     QCOMPARE(pos0.x(), 0.0);
-
-    // With 2 input ports, they should be at y=24 and y=40 (symmetric around y=32)
-    // But with a single port, it should be at y=32
-    // Let's verify they're not too far from the center
-    QVERIFY(pos0.y() >= 16.0 && pos0.y() <= 48.0);
+    QCOMPARE(pos0.y(), 32.0);
 }
 
 void TestGeometry::testInputPortPositionMultiplePorts()
@@ -134,8 +120,8 @@ void TestGeometry::testOutputPortPositionSinglePort()
     QPointF pos0 = outputs[0]->pos();
     QCOMPARE(pos0.x(), 64.0);
 
-    // With single port, should be centered at y=32
-    QVERIFY(pos0.y() >= 16.0 && pos0.y() <= 48.0);
+    // With a single port, it should be exactly centered at y=32.
+    QCOMPARE(pos0.y(), 32.0);
 }
 
 void TestGeometry::testOutputPortPositionMultiplePorts()
@@ -170,20 +156,13 @@ void TestGeometry::testPortCenteringAroundY32()
     const auto &inputs = andGate->inputs();
     QVERIFY(inputs.size() == 4);
 
-    // With 4 ports centered around y=32:
-    // step = 8
-    // y = 32 - (4 * 8) + 8 = 8
-    // ports at: 8, 24, 40, 56
-    // average should be around 32
-
-    double ySum = 0;
-    for (auto *port : inputs) {
-        ySum += port->pos().y();
-    }
-    double yAverage = ySum / static_cast<double>(inputs.size());
-
-    // Average should be close to 32 (center)
-    QVERIFY(yAverage >= 30.0 && yAverage <= 34.0);
+    // With 4 ports centered around y=32: step = 8, y = 32 - (4 * 8) + 8 = 8, so ports land at
+    // 8, 24, 40, 56. Assert each individual position -- an average-only check is insensitive
+    // to any symmetric-but-wrong per-port spacing (e.g. swapped port 0/3).
+    QCOMPARE(inputs[0]->pos().y(), 8.0);
+    QCOMPARE(inputs[1]->pos().y(), 24.0);
+    QCOMPARE(inputs[2]->pos().y(), 40.0);
+    QCOMPARE(inputs[3]->pos().y(), 56.0);
 }
 
 void TestGeometry::testPortSpacingCalculation()
