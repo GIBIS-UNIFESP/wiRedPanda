@@ -1440,22 +1440,37 @@ void TestMainWindowGui::testChangeSkin()
 
 void TestMainWindowGui::testDefaultSkin()
 {
+    // Give the element a real custom appearance first, so clicking "Default" has something to
+    // actually revert -- otherwise there's nothing observable to distinguish "reverted" from
+    // "never touched at all".
+    QTemporaryDir sourceDir;
+    QVERIFY(sourceDir.isValid());
+    const QString customImagePath = sourceDir.filePath("custom_and.svg");
+    QVERIFY(QFile::copy(":/Components/Input/switchOff.svg", customImagePath));
+
     WorkSpace workspace;
     ElementEditor editor;
     editor.setScene(workspace.scene());
 
     auto *andGate = new And();
     workspace.scene()->addItem(andGate);
+    andGate->setAppearance(false, customImagePath);
     andGate->setSelected(true);
     QCoreApplication::processEvents();
+
+    QPoint centerBefore;
+    const QImage customAppearance = TestUtils::renderElementForComparison(workspace.scene(), andGate, centerBefore);
 
     auto *defaultButton = editor.findChild<QPushButton *>("pushButtonDefaultAppearance");
     QVERIFY2(defaultButton, "pushButtonDefaultAppearance not found");
 
     QTest::mouseClick(defaultButton, Qt::LeftButton);
+    QCoreApplication::processEvents();
 
-    // Verify element still valid and skin was reverted
     QVERIFY(andGate->isSelected());
+    QPoint centerAfter;
+    const QImage defaultAppearance = TestUtils::renderElementForComparison(workspace.scene(), andGate, centerAfter);
+    QVERIFY2(customAppearance != defaultAppearance, "Clicking \"Default\" must actually revert the element's custom appearance");
 }
 
 void TestMainWindowGui::testChangeDelay()
