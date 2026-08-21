@@ -249,4 +249,19 @@ void TestCPURegisters::testSingleGatedRegister()
     // Verify results
     QCOMPARE(readValue, 0x42);   // First write should succeed
     QCOMPARE(readValue2, 0x42);  // Second write should NOT happen
+
+    // Test 3: Write yet another value with decoderOut HIGH but WriteEnable LOW -- the register
+    // must require BOTH gates, not just decoderOut, so this must also not write.
+    for (int i = 0; i < 8; i++) {
+        writeData[i]->setOn((0x77 >> i) & 1);
+    }
+    decoderOut->setOn(true);
+    writeEnable->setOn(false);
+    sim->update();
+    TestUtils::clockCycle(sim, clock);
+    sim->update();
+    QVector<GraphicElement *> readVec3;
+    for (int i = 0; i < 8; i++) readVec3.append(readOut[i]);
+    int readValue3 = readMultiBitOutput(readVec3);
+    QCOMPARE(readValue3, 0x42);  // Third write should NOT happen
 }
