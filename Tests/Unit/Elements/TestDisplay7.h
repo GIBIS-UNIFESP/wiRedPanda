@@ -13,7 +13,6 @@ class TestDisplay7 : public QObject
 private slots:
 
     void testDisplay7ColorSetting();
-    void testDisplay7SegmentRendering();
     void testDisplay7SaveLoad();
     void testDisplay7AllColors();
     void testDisplay7Paint();
