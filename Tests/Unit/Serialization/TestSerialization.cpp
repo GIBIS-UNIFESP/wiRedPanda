@@ -947,10 +947,12 @@ void TestSerialization::testInvalidElementTypeInStream()
 
     QByteArray data = saveToMemory(workspace1);
 
-    // Corrupt the element type in the stream (replace valid type with invalid)
-    // This tests robustness to corrupted data
+    // NOT surgical field corruption: WorkSpace::save() qCompress()es the whole
+    // metadata+elements+connections payload (FormatRev::current has hasCompressedPayload()),
+    // and the header written before it is only a handful of bytes, so byte offsets 20-23 land
+    // inside the compressed blob -- this flips arbitrary compressed bytes, not the element-type
+    // field specifically. Still a legitimate robustness/fuzz-style check either way.
     if (data.size() > 20) {
-        // Modify bytes in the middle (where element type data would be)
         data[20] = static_cast<char>(0xFF);
         data[21] = static_cast<char>(0xFF);
         data[22] = static_cast<char>(0xFF);
@@ -961,9 +963,11 @@ void TestSerialization::testInvalidElementTypeInStream()
     WorkSpace workspace2;
     try {
         loadFromMemory(workspace2, data);
-        // If load succeeds despite corruption, at least verify it didn't crash
-        // and the workspace is in some valid state
-        QVERIFY2(workspace2.scene() != nullptr, "Scene should exist after load");
+        // If load succeeds despite the corruption (qUncompress()/parsing happened to tolerate
+        // it), it must not silently produce a wrong partial load -- either genuinely empty or
+        // a real And element, never something in between.
+        QVERIFY2(workspace2.scene()->elements().isEmpty() || workspace2.scene()->elements().size() == 1,
+                 "A load that survives corruption must not leave a partially-loaded workspace");
     } catch (const Pandaception &e) {
         // Expected: corrupted data causes exception
         QVERIFY2(!QString(e.what()).isEmpty(), "Pandaception should have a meaningful message");
