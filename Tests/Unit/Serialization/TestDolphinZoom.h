@@ -14,4 +14,10 @@ private slots:
 
     void testFitScreenNoOpOnEmptyModel();
     void testFitScreenNoOpOnDegenerateViewportGeometry();
+
+    void testZoomInWidensColumnsButNotRows();
+    void testZoomOutReturnsColumnsToBaselineWidth();
+    void testCanZoomInFalseAtMaxLevel();
+    void testCanZoomOutFalseAtBaseline();
+    void testResetRestoresLevelAndScaleToBaseline();
 };
