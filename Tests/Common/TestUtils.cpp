@@ -270,9 +270,15 @@ AutoDismisser AutoDismisser::clickMessageBoxButton(const QString &text)
         if (!msgBox) {
             return false;
         }
+        // Qt mnemonic-decorates some standard buttons (e.g. "&Yes", "N&o to All"):
+        // strip the marker on both sides so callers can pass the plain label.
+        QString target = text;
+        target.remove(u'&');
         const auto buttons = msgBox->buttons();
         for (auto *btn : buttons) {
-            if (btn->text() == text) {
+            QString btnText = btn->text();
+            btnText.remove(u'&');
+            if (btnText == target) {
                 btn->click();
                 return true;
             }
