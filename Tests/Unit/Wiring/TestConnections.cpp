@@ -13,6 +13,7 @@
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Not.h"
 #include "App/Element/GraphicElements/Or.h"
+#include "App/Scene/ConnectionManager.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/Wiring/Connection.h"
@@ -130,57 +131,73 @@ void TestConnections::testValidOutputToInput()
 
 void TestConnections::testRejectOutputToOutput()
 {
+    // Real application-level rejection, through the same interactive flow the UI uses:
+    // dragging a wire from an output and dropping it on another output.
     WorkSpace workspace;
     auto *scene = workspace.scene();
 
     auto *and1 = new And();
     auto *and2 = new And();
+    and2->setPos(150, 0);
     scene->addItem(and1);
     scene->addItem(and2);
 
-    // Verify port type checking (output cannot be cast to input)
-    auto conn = std::make_unique<Connection>();
-    conn->setStartPort(and1->outputPort());
+    auto *manager = scene->connectionManager();
+    manager->startFromOutput(and1->outputPort());
+    QVERIFY(manager->hasEditedConnection());
 
-    Port *outputAsPort = and2->outputPort();
-    auto *asInput = dynamic_cast<InputPort *>(outputAsPort);
-    QVERIFY(asInput == nullptr);  // Cannot cast output to input
+    manager->tryComplete(and2->outputPort()->scenePos());
+
+    QVERIFY2(manager->hasEditedConnection(), "dropping on another output must be rejected -- wire stays in progress");
+    // and1's own output has the in-progress wire attached (its start end); the rejection is
+    // that the drop target, and2's output, never received the other end.
+    QCOMPARE(and2->outputPort()->connections().size(), 0);
 }
 
 void TestConnections::testRejectInputToInput()
 {
+    // Symmetric case: dragging a wire from an input and dropping it on another input.
     WorkSpace workspace;
     auto *scene = workspace.scene();
 
     auto *and1 = new And();
     auto *and2 = new And();
+    and2->setPos(150, 0);
     scene->addItem(and1);
     scene->addItem(and2);
 
-    auto conn = std::make_unique<Connection>();
-    conn->setEndPort(and1->inputPort(0));
+    auto *manager = scene->connectionManager();
+    manager->startFromInput(and1->inputPort(0));
+    QVERIFY(manager->hasEditedConnection());
 
-    // Verify port type checking (input cannot be cast to output)
-    Port *inputAsPort = and2->inputPort(0);
-    auto *asOutput = dynamic_cast<OutputPort *>(inputAsPort);
-    QVERIFY(asOutput == nullptr);
+    manager->tryComplete(and2->inputPort(0)->scenePos());
+
+    QVERIFY2(manager->hasEditedConnection(), "dropping on another input must be rejected -- wire stays in progress");
+    // and1's own input has the in-progress wire attached (its end); the rejection is that the
+    // drop target, and2's input, never received the other end.
+    QCOMPARE(and2->inputPort(0)->connections().size(), 0);
 }
 
 void TestConnections::testRejectSelfConnection()
 {
+    // Real application-level rejection: ConnectionManager::isConnectionAllowed()/
+    // connectionRejectionReason() is the actual gate tryComplete() consults.
     WorkSpace workspace;
     auto *scene = workspace.scene();
 
     auto *andGate = new And();
     scene->addItem(andGate);
 
-    // Verify elements are the same - would be rejected by Scene::makeConnection
-    QVERIFY(andGate->outputPort()->graphicElement() == andGate);
-    QVERIFY(andGate->inputPort(0)->graphicElement() == andGate);
+    QVERIFY2(!ConnectionManager::isConnectionAllowed(andGate->outputPort(), andGate->inputPort(0)),
+              "an element must not be allowed to connect to itself");
+    QVERIFY2(!ConnectionManager::connectionRejectionReason(andGate->outputPort(), andGate->inputPort(0)).isEmpty(),
+              "the rejection must come with an explanatory reason");
 }
 
 void TestConnections::testRejectDuplicateConnection()
 {
+    // Real application-level rejection: once two ports are wired, ConnectionManager's own
+    // gate must refuse to allow the same pair a second time.
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
@@ -188,14 +205,16 @@ void TestConnections::testRejectDuplicateConnection()
     And andGate;
 
     builder.add(&sw, &andGate);
-    builder.connect(&sw, 0, &andGate, 0);  // First connection
+    builder.connect(&sw, 0, &andGate, 0);
 
-    // Verify isConnected() returns true
     auto *output = sw.outputPort();
     auto *input = andGate.inputPort(0);
-
     QVERIFY(output->isConnected(input));
-    QVERIFY(input->isConnected(output));
+
+    QVERIFY2(!ConnectionManager::isConnectionAllowed(output, input),
+              "a port pair that is already connected must not be allowed to connect again");
+    QVERIFY2(!ConnectionManager::connectionRejectionReason(output, input).isEmpty(),
+              "the rejection must come with an explanatory reason");
 }
 
 // ============================================================================
