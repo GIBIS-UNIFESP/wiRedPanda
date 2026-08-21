@@ -1194,6 +1194,10 @@ void TestCommands::testFlipCommandWithEmptyItemsIsNoOp()
 
     FlipCommand cmd({}, 0, scene);
     QVERIFY2(cmd.text().isEmpty(), "The constructor must return before setText() for an empty selection");
+    // redo()/undo() must both be safe no-ops on an empty selection, matching the sibling
+    // no-op tests above (UpdateCommand/UpdateBlobCommand).
+    cmd.redo();
+    cmd.undo();
 }
 
 void TestCommands::testSplitCommandRedoThrowsWhenEndPortIsNull()
