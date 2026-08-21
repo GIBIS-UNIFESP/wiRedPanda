@@ -23,10 +23,32 @@ void TestDemux::testDemuxOutputSize()
 
 void TestDemux::testDemuxRouting()
 {
+    // Default Demux: outputSize()==2 -> input 0 = data, input 1 = the single select line.
+    // Drive data Active and confirm it actually reaches only the selected output, with the
+    // other output tracking Inactive, for both select values.
     WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    auto *data = new InputSwitch;
+    auto *sel = new InputSwitch;
     auto *demux = new Demux;
-    workspace.scene()->addItem(demux);
-    QVERIFY(demux->inputSize() > 0);
+    builder.add(data, sel, demux);
+    builder.connect(data, 0, demux, 0);
+    builder.connect(sel, 0, demux, 1);
+
+    auto *simulation = builder.initSimulation();
+
+    data->setOn(true);
+
+    sel->setOn(false); // select=0 -> output 0
+    simulation->update();
+    QCOMPARE(demux->outputValue(0), Status::Active);
+    QCOMPARE(demux->outputValue(1), Status::Inactive);
+
+    sel->setOn(true); // select=1 -> output 1
+    simulation->update();
+    QCOMPARE(demux->outputValue(0), Status::Inactive);
+    QCOMPARE(demux->outputValue(1), Status::Active);
 }
 
 void TestDemux::testDemuxPainting()
