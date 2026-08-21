@@ -1210,13 +1210,14 @@ void TestSerialization::testMismatchedElementCount()
         stream << 1;    // output size
     }
 
-    // Try to load - should detect mismatch
+    // Try to load - should detect the mismatch between the claimed count (5) and the 2
+    // elements actually present in the stream, rather than reading past the end or
+    // fabricating elements from garbage data.
     WorkSpace workspace;
     try {
-        QDataStream readStream(data);
-        QVersionNumber version = Serialization::readPandaHeader(readStream);
-        // Stream should handle count mismatch gracefully - verify header was read
-        QVERIFY2(version.majorVersion() >= 0, "Header should be readable even with count mismatch");
+        loadFromMemory(workspace, data);
+        QVERIFY2(workspace.scene()->elements().size() <= 2,
+                 "A load that survives a count mismatch must not exceed the elements actually present");
     } catch (const std::exception &e) {
         // Acceptable to fail on count mismatch
         QVERIFY2(!QString(e.what()).isEmpty(), "Exception should explain the count mismatch");
