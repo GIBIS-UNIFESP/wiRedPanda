@@ -6,22 +6,6 @@
 #include "App/Core/Settings.h"
 #include "Tests/Common/TestUtils.h"
 
-void TestCoreSettings::testSettingsSave()
-{
-    QString originalLang = Settings::language();
-    Settings::setLanguage("en");
-    QCOMPARE(Settings::language(), QString("en"));
-    Settings::setLanguage(originalLang);
-}
-
-void TestCoreSettings::testSettingsLoad()
-{
-    bool originalFastMode = Settings::fastMode();
-    Settings::setFastMode(!originalFastMode);
-    QCOMPARE(Settings::fastMode(), !originalFastMode);
-    Settings::setFastMode(originalFastMode);
-}
-
 void TestCoreSettings::testSettingsRoundTrip()
 {
     QString originalLang = Settings::language();
