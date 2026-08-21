@@ -1124,7 +1124,12 @@ void TestScene::testShowGatesToggle()
 
     // Toggle gates visibility
     scene->showGates(false);
+    QVERIFY(!andGate->isVisible());
+    QVERIFY(!orGate->isVisible());
+
     scene->showGates(true);
+    QVERIFY(andGate->isVisible());
+    QVERIFY(orGate->isVisible());
 
     // Gates should still exist in scene
     QCOMPARE(scene->elements().size(), 2);
@@ -1150,7 +1155,10 @@ void TestScene::testShowWiresToggle()
 
     // Toggle wire visibility
     scene->showWires(false);
+    QVERIFY(!conn->isVisible());
+
     scene->showWires(true);
+    QVERIFY(conn->isVisible());
 
     // Elements and connections should still exist
     QCOMPARE(scene->elements().size(), 2);
@@ -1165,9 +1173,11 @@ void TestScene::testGateVisibilityStateTracking()
 
     // Hide gates
     scene->showGates(false);
+    QVERIFY(!gate->isVisible());
 
     // Show gates
     scene->showGates(true);
+    QVERIFY(gate->isVisible());
 
     // Gate should remain in scene
     QCOMPARE(scene->elements().size(), 1);
@@ -1192,9 +1202,11 @@ void TestScene::testWireVisibilityStateTracking()
 
     // Hide wires
     scene->showWires(false);
+    QVERIFY(!conn->isVisible());
 
     // Show wires
     scene->showWires(true);
+    QVERIFY(conn->isVisible());
 
     // Connection should remain
     QCOMPARE(scene->elements().size(), 2);
@@ -1205,17 +1217,26 @@ void TestScene::testShowGatesWithMultipleElements()
     auto scene = std::make_unique<Scene>();
 
     // Add multiple gates
+    QVector<GraphicElement *> gates;
     for (int i = 0; i < 5; ++i) {
         auto *gate = ElementFactory::buildElement(ElementType::And);
         gate->setPos(i * 100, 0);
         scene->addItem(gate);
+        gates.append(gate);
     }
 
     QCOMPARE(scene->elements().size(), 5);
 
     // Toggle visibility
     scene->showGates(false);
+    for (auto *gate : gates) {
+        QVERIFY(!gate->isVisible());
+    }
+
     scene->showGates(true);
+    for (auto *gate : gates) {
+        QVERIFY(gate->isVisible());
+    }
 
     // All gates should remain
     QCOMPARE(scene->elements().size(), 5);
@@ -1250,7 +1271,12 @@ void TestScene::testShowWiresWithMultipleConnections()
 
     // Toggle wire visibility
     scene->showWires(false);
+    QVERIFY(!conn1->isVisible());
+    QVERIFY(!conn2->isVisible());
+
     scene->showWires(true);
+    QVERIFY(conn1->isVisible());
+    QVERIFY(conn2->isVisible());
 
     // All elements should remain
     QCOMPARE(scene->elements().size(), 3);
