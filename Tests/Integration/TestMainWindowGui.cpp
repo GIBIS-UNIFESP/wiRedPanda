@@ -896,18 +896,20 @@ void TestMainWindowGui::testFlipHorizontallyViaKeyboard()
     andGate->setPos(100, 100);
     scene->addItem(andGate);
     int id = andGate->id();
-    double rotBefore = andGate->rotation();
+    QVERIFY(!andGate->isFlippedX());
 
     clickElement(view, andGate);
     QTest::keyClick(window.get(), Qt::Key_H, Qt::ControlModifier);
 
     auto *flipped = dynamic_cast<GraphicElement *>(scene->itemById(id));
     QVERIFY(flipped);
+    QVERIFY2(flipped->isFlippedX(), "Ctrl+H must flip the element horizontally");
+
     // Flip is recorded in the undo stack — verify undo restores original state
     QTest::keyClick(window.get(), Qt::Key_Z, Qt::ControlModifier);
     auto *unflipped = dynamic_cast<GraphicElement *>(scene->itemById(id));
     QVERIFY(unflipped);
-    QCOMPARE(unflipped->rotation(), rotBefore);
+    QVERIFY2(!unflipped->isFlippedX(), "Undo must restore the pre-flip state");
 }
 
 void TestMainWindowGui::testMuteViaKeyboard()
@@ -927,20 +929,28 @@ void TestMainWindowGui::testMuteViaKeyboard()
 
 void TestMainWindowGui::testPropertyCycleSecondary()
 {
+    // An And gate has no secondary property (PropertyShortcutHandler::adjustSecondaryProperty()'s
+    // switch is a no-op for it), so it could never exercise an actual property change here.
+    // Led does: its color cycles on the secondary shortcut.
     std::unique_ptr<MainWindow> window(createMW());
     auto *scene = window->currentTab()->scene();
     auto *view = window->currentTab()->view();
 
-    auto *andGate = new And();
-    andGate->setPos(100, 100);
-    scene->addItem(andGate);
+    auto *led = new Led();
+    led->setPos(100, 100);
+    scene->addItem(led);
 
-    clickElement(view, andGate);
+    clickElement(view, led);
+
+    const QString colorBefore = led->color();
+    const QString expectedNext = led->nextColor();
 
     QTest::keyClick(window.get(), Qt::Key_BraceRight);
+    QCOMPARE(led->color(), expectedNext);
+    QVERIFY2(led->color() != colorBefore, "Cycling the secondary property forward must change the LED's color");
+
     QTest::keyClick(window.get(), Qt::Key_BraceLeft);
-    // Effect is element-type dependent; for AND gate verify element still valid
-    QVERIFY(andGate->isSelected());
+    QCOMPARE(led->color(), colorBefore);
 }
 
 // ===========================================================================
