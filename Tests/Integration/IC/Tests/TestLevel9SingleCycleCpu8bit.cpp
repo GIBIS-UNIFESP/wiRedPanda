@@ -204,6 +204,13 @@ void TestLevel9SingleCycleCPU8Bit::cleanupTestCase()
 
 void TestLevel9SingleCycleCPU8Bit::cleanup()
 {
+    // Reset simulation state between tests, matching every sibling IC test file's cleanup() --
+    // without this, tests are implicitly order-dependent on whatever state the previous test
+    // left the CPU in (registers, PC, flags).
+    if (s_cpu && s_cpu->sim) {
+        s_cpu->sim->restart();
+        s_cpu->sim->update();
+    }
 }
 
 void TestLevel9SingleCycleCPU8Bit::testCPUStructure()
