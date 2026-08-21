@@ -423,13 +423,42 @@ void TestLevel5RegisterFile4X4::testMemoryTiming_data()
     QTest::newRow("read_order_interleaved") << 21;
 }
 
+namespace {
+// Named to match testMemoryTiming_data()'s newRow() tags 1:1, so the dispatch below reads as
+// "case Xxx" rather than an opaque positional integer.
+enum MemoryTimingScenario {
+    kImmediateRead = 0,
+    kSettleRead = 1,
+    kRapidWrites = 2,
+    kRapidReads = 3,
+    kAddressChangeMid = 4,
+    kWeGlitch = 5,
+    kSetupViolation = 6,
+    kHoldViolation = 7,
+    kMultiCycleHold = 8,
+    kLongSequence = 9,
+    kConcurrentWriteRead = 10,
+    kWeSetupViolation = 11,
+    kWeHoldViolation = 12,
+    kDataSetupViolation = 13,
+    kMultiRegisterRetention = 14,
+    kBitpattern0x55 = 15,
+    kBitpattern0xAA = 16,
+    kBitpatternSingleBit = 17,
+    kStress1000Ops = 18,
+    kReadOrderSequential = 19,
+    kReadOrderReverse = 20,
+    kReadOrderInterleaved = 21,
+};
+} // namespace
+
 void TestLevel5RegisterFile4X4::testMemoryTiming()
 {
     QFETCH(int, timingTest);
 
     auto &f = *s_level5RegFile4x4;
 
-    if (timingTest == 0) {
+    if (timingTest == kImmediateRead) {
         f.writeAddr[0]->setOn(false);
         f.writeAddr[1]->setOn(false);
         for (int bit = 0; bit < 4; ++bit) {
@@ -454,7 +483,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
             }
         }
         QCOMPARE(readValue, 5);
-    } else if (timingTest == 1) {
+    } else if (timingTest == kSettleRead) {
         f.writeAddr[0]->setOn(false);
         f.writeAddr[1]->setOn(false);
         for (int bit = 0; bit < 4; ++bit) {
@@ -479,7 +508,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
             }
         }
         QCOMPARE(readValue, 10);
-    } else if (timingTest == 2) {
+    } else if (timingTest == kRapidWrites) {
         int values[4] = {3, 6, 12, 9};
         for (int regIdx = 0; regIdx < 4; ++regIdx) {
             f.writeAddr[0]->setOn((regIdx >> 0) & 1);
@@ -512,7 +541,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
             }
             QCOMPARE(readValue, values[regIdx]);
         }
-    } else if (timingTest == 3) {
+    } else if (timingTest == kRapidReads) {
         f.writeAddr[0]->setOn(false);
         f.writeAddr[1]->setOn(false);
         for (int bit = 0; bit < 4; ++bit) {
@@ -557,7 +586,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
 
         QCOMPARE(val0, 0xA);
         QCOMPARE(val1, 0x5);
-    } else if (timingTest == 4) {
+    } else if (timingTest == kAddressChangeMid) {
         f.sim->update();
 
         f.writeAddr[0]->setOn(false);
@@ -589,7 +618,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
             }
         }
         QCOMPARE(readValue, 7);
-    } else if (timingTest == 5) {
+    } else if (timingTest == kWeGlitch) {
         f.sim->update();
 
         f.writeAddr[0]->setOn(false);
@@ -624,7 +653,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
             }
         }
         QCOMPARE(readValue, 12);
-    } else if (timingTest == 6) {
+    } else if (timingTest == kSetupViolation) {
         f.sim->update();
 
         f.writeAddr[0]->setOn(false);
@@ -654,7 +683,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
             }
         }
         QVERIFY((readValue == 4) || (readValue == 0));
-    } else if (timingTest == 7) {
+    } else if (timingTest == kHoldViolation) {
         f.sim->update();
 
         f.writeAddr[0]->setOn(false);
@@ -686,7 +715,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
             }
         }
         QCOMPARE(readValue, 8);
-    } else if (timingTest == 8) {
+    } else if (timingTest == kMultiCycleHold) {
         f.writeAddr[0]->setOn(false);
         f.writeAddr[1]->setOn(false);
         for (int bit = 0; bit < 4; ++bit) {
@@ -716,7 +745,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
             }
         }
         QCOMPARE(readValue, 15);
-    } else if (timingTest == 9) {
+    } else if (timingTest == kLongSequence) {
         f.sim->update();
 
         for (int op = 0; op < 100; ++op) {
@@ -751,7 +780,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
             }
         }
         QCOMPARE(readValue, 0);
-    } else if (timingTest == 10) {
+    } else if (timingTest == kConcurrentWriteRead) {
         f.sim->update();
 
         f.writeAddr[0]->setOn(false);
@@ -809,7 +838,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
             }
         }
         QCOMPARE(readVal1, 7);
-    } else if (timingTest == 11) {
+    } else if (timingTest == kWeSetupViolation) {
         f.sim->update();
 
         f.writeAddr[0]->setOn(false);
@@ -839,7 +868,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
             }
         }
         QVERIFY((readValue == 6) || (readValue == 0));
-    } else if (timingTest == 12) {
+    } else if (timingTest == kWeHoldViolation) {
         f.sim->update();
 
         f.writeAddr[0]->setOn(false);
@@ -868,7 +897,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
             }
         }
         QCOMPARE(readValue, 9);
-    } else if (timingTest == 13) {
+    } else if (timingTest == kDataSetupViolation) {
         f.sim->update();
 
         f.writeAddr[0]->setOn(false);
@@ -904,7 +933,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
             }
         }
         QVERIFY((readValue == 5) || (readValue == 13));
-    } else if (timingTest == 14) {
+    } else if (timingTest == kMultiRegisterRetention) {
         f.sim->update();
 
         int testValues[4] = {5, 10, 15, 7};
@@ -940,7 +969,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
             }
             QCOMPARE(readValue, testValues[reg]);
         }
-    } else if (timingTest == 15) {
+    } else if (timingTest == kBitpattern0x55) {
         f.sim->update();
 
         for (int reg = 0; reg < 4; ++reg) {
@@ -974,7 +1003,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
             }
             QCOMPARE(readValue, 0x5);
         }
-    } else if (timingTest == 16) {
+    } else if (timingTest == kBitpattern0xAA) {
         f.sim->update();
 
         for (int reg = 0; reg < 4; ++reg) {
@@ -1008,7 +1037,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
             }
             QCOMPARE(readValue, 0xA);
         }
-    } else if (timingTest == 17) {
+    } else if (timingTest == kBitpatternSingleBit) {
         f.sim->update();
 
         int bitPatterns[4] = {0x1, 0x2, 0x4, 0x8};
@@ -1044,7 +1073,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
             }
             QCOMPARE(readValue, bitPatterns[reg]);
         }
-    } else if (timingTest == 18) {
+    } else if (timingTest == kStress1000Ops) {
         f.sim->update();
 
         for (int op = 0; op < 1000; ++op) {
@@ -1079,7 +1108,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
             }
         }
         QCOMPARE(readValue, 12);
-    } else if (timingTest >= 19 && timingTest <= 21) {
+    } else if (timingTest >= kReadOrderSequential && timingTest <= kReadOrderInterleaved) {
         f.sim->update();
 
         int testVals[4] = {1, 2, 4, 8};
@@ -1103,9 +1132,9 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
 
         // Different read orders based on test number
         int readOrder[4];
-        if (timingTest == 19) {
+        if (timingTest == kReadOrderSequential) {
             readOrder[0] = 0; readOrder[1] = 1; readOrder[2] = 2; readOrder[3] = 3;
-        } else if (timingTest == 20) {
+        } else if (timingTest == kReadOrderReverse) {
             readOrder[0] = 3; readOrder[1] = 2; readOrder[2] = 1; readOrder[3] = 0;
         } else {
             readOrder[0] = 0; readOrder[1] = 2; readOrder[2] = 1; readOrder[3] = 3;
