@@ -679,13 +679,15 @@ void TestScene::testFlipHorizontal()
     andGate->setSelected(true);
 
     int elementCountBefore = static_cast<int>(scene->elements().size());
+    QVERIFY(!andGate->isFlippedX());
 
     // Flip horizontally - should complete without errors
     scene->flipHorizontally();
 
-    // Verify element still exists (not deleted)
+    // Verify element still exists (not deleted), and was actually flipped.
     int elementCountAfter = static_cast<int>(scene->elements().size());
     QCOMPARE(elementCountAfter, elementCountBefore);
+    QVERIFY(andGate->isFlippedX());
 }
 
 void TestScene::testFlipVertically()
@@ -701,13 +703,15 @@ void TestScene::testFlipVertically()
     andGate->setSelected(true);
 
     int elementCountBefore = static_cast<int>(scene->elements().size());
+    QVERIFY(!andGate->isFlippedY());
 
     // Flip vertically - should complete without errors
     scene->flipVertically();
 
-    // Verify element still exists (not deleted)
+    // Verify element still exists (not deleted), and was actually flipped.
     int elementCountAfter = static_cast<int>(scene->elements().size());
     QCOMPARE(elementCountAfter, elementCountBefore);
+    QVERIFY(andGate->isFlippedY());
 }
 
 void TestScene::testRotateWithConnections()
