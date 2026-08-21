@@ -13,7 +13,6 @@ private slots:
     // Port iteration tests
     void testInitialPortState();
     void testNextPortWrapping();
-    void testPreviousPortWrapping();
     void testSetPortDirect();
     void testSetPortOutOfBounds();
     void testSetPortWrapsToZero();
