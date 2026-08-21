@@ -29,6 +29,7 @@ private slots:
     void testAdvanceStepReachesEndMarksCompletedAndEmits();
     void testLoadFromResourceMissingFileFails();
     void testLoadFromResourceInvalidJsonFails();
+    void testLoadFromResourceMissingIdOrTitleFails_data();
     void testLoadFromResourceMissingIdOrTitleFails();
     void testLoadFromResourceEmptyStepsArrayFails();
     void testStepWithoutKeyUsesRawTitleAndBodyDirectly();

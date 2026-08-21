@@ -310,15 +310,30 @@ void TestTourEngine::testLoadFromResourceInvalidJsonFails()
     QVERIFY(!engine.loadFromResource(path));
 }
 
-void TestTourEngine::testLoadFromResourceMissingIdOrTitleFails()
+void TestTourEngine::testLoadFromResourceMissingIdOrTitleFails_data()
 {
-    const char *const tourJson = R"({
+    QTest::addColumn<QString>("jsonText");
+    QTest::addColumn<QString>("fileName");
+
+    QTest::newRow("missing id") << QStringLiteral(R"({
         "title": "No Id Here",
         "steps": [ { "title": "x", "body": "y" } ]
-    })";
+    })") << QStringLiteral("no_id.json");
+
+    QTest::newRow("missing title") << QStringLiteral(R"({
+        "id": "no-title-here",
+        "steps": [ { "title": "x", "body": "y" } ]
+    })") << QStringLiteral("no_title.json");
+}
+
+void TestTourEngine::testLoadFromResourceMissingIdOrTitleFails()
+{
+    QFETCH(QString, jsonText);
+    QFETCH(QString, fileName);
+
     QTemporaryDir dir;
     QVERIFY(dir.isValid());
-    const QString path = writeJsonFile(dir, "no_id.json", tourJson);
+    const QString path = writeJsonFile(dir, fileName, jsonText.toUtf8().constData());
 
     TourEngine engine;
     QVERIFY(!engine.loadFromResource(path));
