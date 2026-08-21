@@ -384,9 +384,6 @@ void TestLevel6Register8Bit::test8BitRegisterEdgeCases() {
     f.sim->update();
 
     f.writeEnable->setOn(true);
-    int pass_count = 0;
-    int total_scenarios = 0;
-
     // SCENARIO 1: Reset During Normal Operation
     QVector<InputSwitch *> data_vec(f.data, f.data + 8);
     setMultiBitInput(data_vec, CPUTestUtils::PATTERN_ALTERNATING_1);
@@ -401,16 +398,12 @@ void TestLevel6Register8Bit::test8BitRegisterEdgeCases() {
     int q_value = CPUTestUtils::get8BitValue(f.q);
 
     QCOMPARE(q_value, CPUTestUtils::PATTERN_ALTERNATING_1);
-    pass_count++;
-    total_scenarios++;
 
     f.reset->setOn(true);
     f.sim->update();
 
     q_value = CPUTestUtils::get8BitValue(f.q);
     QCOMPARE(q_value, CPUTestUtils::PATTERN_ALL_ZEROS);
-    pass_count++;
-    total_scenarios++;
 
     // SCENARIO 2: Reset Recovery and New Write
     f.reset->setOn(false);
@@ -418,8 +411,6 @@ void TestLevel6Register8Bit::test8BitRegisterEdgeCases() {
 
     q_value = CPUTestUtils::get8BitValue(f.q);
     QCOMPARE(q_value, CPUTestUtils::PATTERN_ALL_ZEROS);
-    pass_count++;
-    total_scenarios++;
 
     setMultiBitInput(data_vec, CPUTestUtils::PATTERN_ALTERNATING_2);
     f.sim->update();
@@ -433,8 +424,6 @@ void TestLevel6Register8Bit::test8BitRegisterEdgeCases() {
     q_value = CPUTestUtils::get8BitValue(f.q);
 
     QCOMPARE(q_value, CPUTestUtils::PATTERN_ALTERNATING_2);
-    pass_count++;
-    total_scenarios++;
 
     // SCENARIO 3: Write Blocked By Reset
     f.reset->setOn(true);
@@ -442,8 +431,6 @@ void TestLevel6Register8Bit::test8BitRegisterEdgeCases() {
 
     q_value = CPUTestUtils::get8BitValue(f.q);
     QCOMPARE(q_value, CPUTestUtils::PATTERN_ALL_ZEROS);
-    pass_count++;
-    total_scenarios++;
 
     f.writeEnable->setOn(true);
     setMultiBitInput(data_vec, 0xCC);
@@ -458,8 +445,6 @@ void TestLevel6Register8Bit::test8BitRegisterEdgeCases() {
     q_value = CPUTestUtils::get8BitValue(f.q);
 
     QCOMPARE(q_value, CPUTestUtils::PATTERN_ALL_ZEROS);
-    pass_count++;
-    total_scenarios++;
 
     f.reset->setOn(false);
     f.sim->update();
@@ -473,8 +458,6 @@ void TestLevel6Register8Bit::test8BitRegisterEdgeCases() {
     q_value = CPUTestUtils::get8BitValue(f.q);
 
     QCOMPARE(q_value, 0xCC);
-    pass_count++;
-    total_scenarios++;
 
     // SCENARIO 4: Hold Operation (WriteEnable=false)
     setMultiBitInput(data_vec, 0x77);
@@ -490,8 +473,6 @@ void TestLevel6Register8Bit::test8BitRegisterEdgeCases() {
     q_value = CPUTestUtils::get8BitValue(f.q);
 
     QCOMPARE(q_value, 0x77);
-    pass_count++;
-    total_scenarios++;
 
     f.writeEnable->setOn(false);
     f.sim->update();
@@ -505,10 +486,6 @@ void TestLevel6Register8Bit::test8BitRegisterEdgeCases() {
     q_value = CPUTestUtils::get8BitValue(f.q);
 
     QCOMPARE(q_value, 0x77);
-    pass_count++;
-    total_scenarios++;
-
-    QCOMPARE(pass_count, total_scenarios);
 }
 
 void TestLevel6Register8Bit::test8BitRegisterStructure() {
