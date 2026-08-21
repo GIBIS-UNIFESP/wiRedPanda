@@ -1960,8 +1960,9 @@ void TestICInline::testOnChildICBlobSavedNonEmbeddedTarget()
 
 void TestICInline::testOnChildICBlobSavedCorruptBlob()
 {
-    // onChildICBlobSaved with corrupt blob data should either throw (leaving
-    // the IC unchanged) or produce ICs with 0 ports (undoable).
+    // onChildICBlobSaved() rolls back and re-throws when any target's loadFromBlob() fails
+    // (WorkSpace::onChildICBlobSaved()'s catch(...) block) -- confirmed empirically, unparseable
+    // bytes like this always throw, deterministically, never falling through to push a command.
 
     QByteArray andBlob = readFile(m_fixtureDir + "/simple_and.panda");
     QVERIFY(!andBlob.isEmpty());
@@ -1988,26 +1989,18 @@ void TestICInline::testOnChildICBlobSavedCorruptBlob()
         threw = true;
     }
 
-    if (threw) {
-        // Exception path: IC should be unchanged, no command pushed
-        QCOMPARE(ws.scene()->undoStack()->index(), stackIndex);
-        auto *restored = dynamic_cast<IC *>(ws.scene()->itemById(icId));
-        QVERIFY(restored);
-        QCOMPARE(restored->inputSize(), origInputs);
-    } else {
-        // Graceful degradation: IC has 0 ports, undo restores
-        ws.scene()->undoStack()->undo();
-        auto *restored = dynamic_cast<IC *>(ws.scene()->itemById(icId));
-        QVERIFY(restored);
-        QCOMPARE(restored->inputSize(), origInputs);
-        QCOMPARE(restored->blobName(), QString("my_ic"));
-    }
+    QVERIFY2(threw, "Corrupt blob data must throw, not silently degrade to a 0-port IC");
+    QCOMPARE(ws.scene()->undoStack()->index(), stackIndex);
+    auto *restored = dynamic_cast<IC *>(ws.scene()->itemById(icId));
+    QVERIFY(restored);
+    QCOMPARE(restored->inputSize(), origInputs);
+    QCOMPARE(restored->blobName(), QString("my_ic"));
 }
 
 void TestICInline::testOnChildICBlobSavedCorruptBlobMultiTarget()
 {
-    // With 3 same-blobName ICs and corrupt blob, either throws (no change)
-    // or all get degraded state. Undo restores all either way.
+    // Same deterministic throw-and-rollback behavior as testOnChildICBlobSavedCorruptBlob,
+    // confirmed to hold across all 3 same-blobName targets, not just a single IC.
 
     QByteArray andBlob = readFile(m_fixtureDir + "/simple_and.panda");
     QVERIFY(!andBlob.isEmpty());
@@ -2039,13 +2032,11 @@ void TestICInline::testOnChildICBlobSavedCorruptBlobMultiTarget()
         threw = true;
     }
 
-    if (threw) {
-        QCOMPARE(ws.scene()->undoStack()->index(), stackIndex);
-    } else {
-        ws.scene()->undoStack()->undo();
-    }
+    QVERIFY2(threw, "Corrupt blob data must throw, not silently degrade to 0-port ICs");
+    QCOMPARE(ws.scene()->undoStack()->index(), stackIndex);
 
-    // After undo (or no-change on throw), all 3 should be restored
+    // No rollback needed (the throw means the registry/elements were already rolled back
+    // internally) -- all 3 should already be untouched.
     for (int i = 0; i < 3; ++i) {
         auto *ic = dynamic_cast<IC *>(ws.scene()->itemById(ids.at(i)));
         QVERIFY2(ic, qPrintable(QString("IC %1 not found").arg(i)));
