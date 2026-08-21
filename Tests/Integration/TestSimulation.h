@@ -3,7 +3,12 @@
 
 #pragma once
 
+#include <functional>
+
 #include <QObject>
+#include <QString>
+#include <QTest>
+#include <QVector>
 
 class TestSimulation : public QObject
 {
@@ -64,4 +69,26 @@ private slots:
     void testUnconnectedRequiredInputGraceful();
     void testPartiallyConnectedCircuitIsolation();
     void testDanglingConnectionGraceful();
+
+private:
+    // Shared by the five determinism tests above, which differ only in what circuit they
+    // build and what property they extract: calls `runOnce` `numRuns` times (each call builds
+    // its own fresh circuit and returns a vector of some deterministic, comparable property)
+    // and verifies every run matches the first.
+    template <typename T>
+    void verifyDeterministicAcrossRuns(int numRuns, const QString &label, const std::function<QVector<T>()> &runOnce)
+    {
+        QVector<QVector<T>> runs;
+        for (int run = 0; run < numRuns; ++run) {
+            runs.append(runOnce());
+        }
+        for (int run = 1; run < numRuns; ++run) {
+            QCOMPARE(runs[run].size(), runs[0].size());
+            for (int i = 0; i < runs[0].size(); ++i) {
+                if (runs[run][i] != runs[0][i]) {
+                    QFAIL(qPrintable(QString("%1 mismatch at run %2, position %3").arg(label).arg(run).arg(i)));
+                }
+            }
+        }
+    }
 };
