@@ -144,6 +144,37 @@ void TestLevel9MemoryStage16Bit::testMemoryStage()
     QCOMPARE(f.readDataOut(), expectedOut);
 }
 
+// Same MemRead+MemWrite-both-asserted gap as the 8-bit memory stage test
+// (TestLevel8MemoryStage::testMemReadAndWriteBothAsserted) -- confirmed empirically to behave
+// the same way here: MemRead always wins on DataOut (reflects RAM's current content), and a
+// same-cycle MemWrite updates that address on the clock edge, so DataOut reads the old value
+// before the edge and the just-written value after it.
+void TestLevel9MemoryStage16Bit::testMemReadAndWriteBothAsserted()
+{
+    auto &f = *s_level9MemoryStage16bit;
+
+    // Pre-populate address 0x05 with a known, distinct value via a normal write.
+    setMultiBitInput(f.addressInputs, 0x05);
+    setMultiBitInput(f.datainInputs, 0x7777);
+    setMultiBitInput(f.resultInputs, 0x0000);
+    f.memread->setOn(false);
+    f.memwrite->setOn(true);
+    f.sim->update();
+    clockCycle(f.sim, f.clk);
+    f.memwrite->setOn(false);
+    f.sim->update();
+
+    // Now assert both MemRead and MemWrite at the same address, with a DIFFERENT DataIn.
+    setMultiBitInput(f.datainInputs, 0x3333);
+    f.memread->setOn(true);
+    f.memwrite->setOn(true);
+    f.sim->update();
+    QCOMPARE(f.readDataOut(), 0x7777);
+
+    clockCycle(f.sim, f.clk);
+    QCOMPARE(f.readDataOut(), 0x3333);
+}
+
 void TestLevel9MemoryStage16Bit::testMemoryStageStructure()
 {
     auto &f = *s_level9MemoryStage16bit;
