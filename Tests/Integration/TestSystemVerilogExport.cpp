@@ -114,11 +114,12 @@ static constexpr int kDiffSteps = 48;
 
 void TestSystemVerilogExport::initTestCase()
 {
-#ifndef Q_OS_LINUX
-    QSKIP("SystemVerilog export tests require iverilog/yosys/verilator (Linux only)");
-#else
+    // Most tests in this class (testWirelessNodeGeneration, testWirelessOrphanedRxCodegen,
+    // testEmbeddedICLabelWithNewlineDoesNotInjectCode) only check generated SystemVerilog text
+    // content -- no external tool required. Only testSystemVerilogExportHelper()'s ~70+ callers
+    // actually invoke iverilog/yosys/verilator, so the Linux/tool requirement is gated there
+    // instead of skipping this entire class up front.
     TestUtils::setupTestEnvironment();
-#endif
 }
 
 void TestSystemVerilogExport::cleanupTestCase()
@@ -188,6 +189,19 @@ void TestSystemVerilogExport::testWirelessNodeGeneration()
     QRegularExpression outputLow(R"(assign\s+\w+\s*=\s*1'b0;)");
     QVERIFY2(!outputLow.match(outputCode).hasMatch(),
              "Wireless Rx node should not result in 1'b0 in the LED output assignment");
+
+    // Ruling out 1'b0 alone doesn't prove the wireless link resolved correctly -- it would
+    // also pass for e.g. a stray constant or an unrelated signal. Positively confirm the LED's
+    // assignment actually references the InputSwitch's own declared signal name.
+    QRegularExpression inputDecl(R"(input\s+(\w+)[,;])");
+    const auto inputMatch = inputDecl.match(content);
+    QVERIFY2(inputMatch.hasMatch(), "Generated SV should declare the InputSwitch as a module input");
+    const QString switchSignal = inputMatch.captured(1);
+
+    QRegularExpression outputAssignsFromSwitch(QRegularExpression::escape(QStringLiteral("assign")) +
+        R"(\s+\w+\s*=\s*)" + QRegularExpression::escape(switchSignal) + ";");
+    QVERIFY2(outputAssignsFromSwitch.match(outputCode).hasMatch(),
+             qPrintable(QString("Wireless Rx node's LED output must be assigned directly from the InputSwitch signal '%1'").arg(switchSignal)));
 }
 
 void TestSystemVerilogExport::testWirelessOrphanedRxCodegen()
@@ -373,6 +387,10 @@ bool TestSystemVerilogExport::validateWithTestbench(const QString &verilogFile,
 
 void TestSystemVerilogExport::testSystemVerilogExportHelper(const QString &icFile)
 {
+#ifndef Q_OS_LINUX
+    QSKIP("SystemVerilog export tests require iverilog/yosys/verilator (Linux only)");
+#endif
+
     // Create workspace and circuit builder
     std::unique_ptr<WorkSpace> workspace = TestUtils::createWorkspace();
     QVERIFY(workspace != nullptr);
