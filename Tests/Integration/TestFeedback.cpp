@@ -211,20 +211,47 @@ void TestFeedback::testIterationCountVerification()
 
 void TestFeedback::testConvergenceSpeedVariation()
 {
-    // Different circuits should converge in different numbers of iterations
+    // Different circuits should converge in different numbers of iterations. Use
+    // Simulation::iterativeSettle() directly with a rising iteration budget to find each
+    // circuit's actual minimal convergence count, and compare them.
     std::unique_ptr<Scene> scene1(createSRLatchFromNAND());      // Should converge quickly (2-3 iterations)
-    std::unique_ptr<Scene> scene2(createRingOscillator());        // 4-state logic converges at Unknown
+    std::unique_ptr<Scene> scene2(createRingOscillator());        // odd inverter count -- may not converge at all
 
     QVERIFY2(scene1 != nullptr, "Failed to create first scene");
     QVERIFY2(scene2 != nullptr, "Failed to create second scene");
 
+    // A real Simulation::update() first, to run through initialize() so each element's
+    // internal sim-value arrays are sized and wired to their predecessors -- calling
+    // updateLogic() (via iterativeSettle() below) on a never-initialized element crashes.
     Simulation sim1(scene1.get());
-    Simulation sim2(scene2.get());
-
     sim1.update();
-    verifyStableState(scene1.get());
-
+    Simulation sim2(scene2.get());
+    QTest::ignoreMessage(QtDebugMsg, QRegularExpression(".*converge.*"));
     sim2.update();
+
+    auto minConvergenceIterations = [](Scene *scene) -> int {
+        const auto elements = scene->elements();
+        for (int n = 1; n <= Simulation::kMaxSettleIterations; ++n) {
+            // resetSimState() restarts every output at its power-on default, so each attempt
+            // below measures convergence from the same blank slate (the arrays themselves
+            // stay sized/wired from the sim.update() call above).
+            for (auto *elem : elements) {
+                elem->resetSimState();
+            }
+            if (Simulation::iterativeSettle(elements, n)) {
+                return n;
+            }
+        }
+        return -1; // did not converge within the budget
+    };
+
+    const int srLatchIterations = minConvergenceIterations(scene1.get());
+    const int ringOscillatorIterations = minConvergenceIterations(scene2.get());
+
+    // Empirically: the SR latch converges in 2 iterations; the odd-length ring oscillator
+    // does not converge within the kMaxSettleIterations budget at all (-1).
+    QCOMPARE(srLatchIterations, 2);
+    QCOMPARE(ringOscillatorIterations, -1);
 }
 
 // ============================================================
