@@ -782,8 +782,14 @@ void TestWorkspace::testAutosaveDeletedOnExplicitSave()
 
 void TestWorkspace::testAutosaveRemovedFromSettingsOnSave()
 {
+    // scene->addItem() alone never dirties the undo stack (only real commands do), and a loose
+    // <= comparison on the count would pass even if no autosave existed on either side of the
+    // save -- neither actually exercises "removed on save". Push a real command and flush
+    // first so there is a genuine tracked autosave entry to remove.
     QTemporaryDir tempDir;
     QVERIFY2(tempDir.isValid(), "Temporary directory creation failed");
+
+    Settings::setAutosaveFiles({});
 
     QString saveFile = tempDir.filePath("test.panda");
 
@@ -791,21 +797,19 @@ void TestWorkspace::testAutosaveRemovedFromSettingsOnSave()
     Scene *scene = workspace.scene();
 
     auto *led = ElementFactory::buildElement(ElementType::Led);
-    scene->addItem(led);
+    scene->undoStack()->push(new AddItemsCommand({led}, scene));
+    workspace.flushPendingAutosave();
 
-    // Get initial autosave list
     QStringList autosavesBefore = Settings::autosaveFiles();
-    int countBefore = static_cast<int>(autosavesBefore.size());
+    QVERIFY2(!autosavesBefore.isEmpty(), "Precondition: dirtying the project must have written an autosave entry");
+    const QString trackedAutosave = autosavesBefore.first();
 
     try {
-        // Save the file
         workspace.save(saveFile);
 
-        // Get autosave list after save
         QStringList autosavesAfter = Settings::autosaveFiles();
-
-        // Autosave count should be same or less after explicit save
-        QVERIFY2(autosavesAfter.size() <= countBefore, "Autosave count should not increase when autosave is disabled");
+        QVERIFY2(!autosavesAfter.contains(trackedAutosave),
+                 "The previously-tracked autosave entry must be removed after an explicit save");
     } catch (const Pandaception &e) {
         QFAIL(qPrintable(QString("Failed to save file: %1").arg(e.what())));
     }
