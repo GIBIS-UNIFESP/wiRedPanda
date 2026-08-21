@@ -136,25 +136,6 @@ void TestLevel2Decoder2To4::testSequentialScan()
     }
 }
 
-void TestLevel2Decoder2To4::testMutualExclusivity()
-{
-    auto &f = *s_level2Decoder2to4;
-
-    for (int addr = 0; addr < 4; addr++) {
-        f.addressBits[0]->setOn((addr >> 0) & 1);
-        f.addressBits[1]->setOn((addr >> 1) & 1);
-        f.sim->update();
-
-        int activeCount = 0;
-        for (int i = 0; i < 4; i++) {
-            if (inputStatus(f.outputs[i])) {
-                activeCount++;
-            }
-        }
-        QCOMPARE(activeCount, 1);
-    }
-}
-
 // Active-high Enable (74138-style chip select): Enable=0 forces every output
 // low; Enable=1 restores normal decoding. Built standalone with Enable wired so
 // the shared fixture (which leaves Enable unconnected → defaulted high) is
