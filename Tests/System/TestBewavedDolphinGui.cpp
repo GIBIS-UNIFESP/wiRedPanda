@@ -677,13 +677,17 @@ void TestBewavedDolphinGui::testCutWithSelection()
     QCOMPARE(model->index(0, 5).data().toInt(), 1);
 }
 
+// A real save-then-load round trip. saveToTxt() (used elsewhere in this file) writes a
+// human-readable truth-table dump that DolphinFile::load() cannot parse back (only
+// ".dolphin"/".csv" are supported) -- so a genuine round trip must go through
+// DolphinFile::save()/BewavedDolphin::load() instead.
 void TestBewavedDolphinGui::testSaveAndLoadWaveform()
 {
-    const QString txtPath = m_tempDir.filePath("test_waveform.txt");
+    const QString csvPath = m_tempDir.filePath("test_waveform.csv");
 
     auto ws = createAndCircuit();
 
-    // Create waveform with known pattern and save via public saveToTxt
+    // Create waveform with a known pattern and save it via the real persistence path.
     {
         std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
         dolphin->setLength(4, false);
@@ -691,29 +695,25 @@ void TestBewavedDolphinGui::testSaveAndLoadWaveform()
         dolphin->setCellValue(0, 1, 0);
         dolphin->setCellValue(0, 2, 1);
         dolphin->setCellValue(0, 3, 0);
-        dolphin->run();
 
-        QFile file(txtPath);
-        QVERIFY(file.open(QIODevice::WriteOnly | QIODevice::Text));
-        QTextStream stream(&file);
-        dolphin->saveToTxt(stream);
-        stream.flush();
-        file.close();
+        DolphinFile::save(*dolphin->m_model, csvPath, dolphin->m_inputPorts);
     }
 
-    QVERIFY(QFile::exists(txtPath));
-    QVERIFY(QFileInfo(txtPath).size() > 0);
+    QVERIFY(QFile::exists(csvPath));
+    QVERIFY(QFileInfo(csvPath).size() > 0);
 
-    // Verify the saved text file has correct structure
-    QFile readFile(txtPath);
-    QVERIFY(readFile.open(QIODevice::ReadOnly | QIODevice::Text));
-    QString content = readFile.readAll();
-    readFile.close();
+    // Load into a fresh dolphin and verify the saved pattern actually comes back.
+    std::unique_ptr<BewavedDolphin> loaded(createDolphin(ws.get()));
+    loaded->load(csvPath);
 
-    QStringList lines = content.split('\n', Qt::SkipEmptyParts);
-    QVERIFY2(lines.size() >= 3, "Should have at least 3 lines (2 inputs + 1 output)");
+    auto *model = loaded->model();
+    QVERIFY(model);
+    QCOMPARE(model->index(0, 0).data().toInt(), 1);
+    QCOMPARE(model->index(0, 1).data().toInt(), 0);
+    QCOMPARE(model->index(0, 2).data().toInt(), 1);
+    QCOMPARE(model->index(0, 3).data().toInt(), 0);
 
-    QFile::remove(txtPath);
+    QFile::remove(csvPath);
 }
 
 void TestBewavedDolphinGui::testExportToPdf()
