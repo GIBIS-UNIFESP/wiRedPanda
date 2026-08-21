@@ -112,6 +112,8 @@ inline QDragMoveEvent makeDragMoveEvent(QPoint pos, Qt::DropActions actions, con
 #endif
 
 #include "App/Core/Common.h"
+#include "App/Core/Settings.h"
+#include "App/Core/ThemeManager.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -455,6 +457,34 @@ struct ScopedTinyFsizeLimit {
     }
 };
 #endif
+
+/**
+ * @brief Saves Settings::language() on construction and restores it on destruction (including
+ * on an early return from a failed QVERIFY/QCOMPARE mid-test), instead of a plain trailing
+ * restore statement that a failed assertion between the mutation and the restore would skip --
+ * Settings is process-wide and not reset between tests, so a skipped restore leaks into every
+ * later test in the run.
+ */
+struct ScopedSettingsLanguage {
+    QString original = Settings::language();
+
+    ~ScopedSettingsLanguage()
+    {
+        Settings::setLanguage(original);
+    }
+};
+
+/**
+ * @brief Same idea as ScopedSettingsLanguage, for ThemeManager::theme().
+ */
+struct ScopedThemeOverride {
+    Theme original = ThemeManager::theme();
+
+    ~ScopedThemeOverride()
+    {
+        ThemeManager::setTheme(original);
+    }
+};
 
 /**
  * @brief Renders @a elm's scene footprint into an image; @a centerOut receives the centre of
