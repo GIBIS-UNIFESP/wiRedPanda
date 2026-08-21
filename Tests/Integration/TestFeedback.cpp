@@ -260,10 +260,14 @@ void TestFeedback::testConvergenceSpeedVariation()
 
 void TestFeedback::testRingOscillatorWarningAfterMaxIterations()
 {
+    // The odd-length ring oscillator never converges within kMaxSettleIterations (confirmed
+    // by testConvergenceSpeedVariation) -- Simulation::update() must log a debug warning about
+    // it. QTest::ignoreMessage() fails the test if the message never appears.
     std::unique_ptr<Scene> scene(createRingOscillator());
     QVERIFY2(scene != nullptr, "Failed to create feedback circuit");
 
     Simulation sim(scene.get());
+    QTest::ignoreMessage(QtDebugMsg, QRegularExpression(".*did not converge after 10 iterations.*"));
     sim.update();
 }
 
