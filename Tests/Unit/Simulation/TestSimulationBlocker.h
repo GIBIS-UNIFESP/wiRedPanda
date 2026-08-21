@@ -22,6 +22,7 @@ private slots:
     void testRAIIPatternStopsSimulation();
     void testRAIIPatternRestartsSimulation();
     void testNestedSimulationBlockers();
+    void testBlockerOnAlreadyStoppedSimulationDoesNotStartIt();
 
 private:
     // Helper functions

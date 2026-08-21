@@ -103,6 +103,29 @@ void TestSimulationBlocker::testNestedSimulationBlockers()
     // Note: Do NOT delete scene here - Simulation owns it and will delete it
 }
 
+void TestSimulationBlocker::testBlockerOnAlreadyStoppedSimulationDoesNotStartIt()
+{
+    // The branch testRAIIPatternStopsSimulation/RestartsSimulation never exercise standalone:
+    // SimulationBlocker's constructor only flags for restart if the simulation was actually
+    // running. A simulation that was never started (or intentionally left stopped) must stay
+    // stopped once the blocker goes out of scope, not be started as a side effect.
+    auto *scene = createSimpleCircuit();
+    QVERIFY(scene != nullptr);
+
+    Simulation sim(scene);  // Simulation takes ownership of scene
+    QVERIFY(!sim.isRunning());
+
+    {
+        SimulationBlocker blocker(&sim);
+        QVERIFY(!sim.isRunning());
+    }
+
+    QVERIFY2(!sim.isRunning(),
+             "A blocker constructed on an already-stopped simulation must not start it on destruction");
+
+    // Note: Do NOT delete scene here - Simulation owns it and will delete it
+}
+
 // ============================================================
 // Helper Functions
 // ============================================================
