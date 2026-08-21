@@ -55,6 +55,7 @@ private slots:
     void testHandleSetElementPropertiesChangesAppearance();
     void testHandleSetElementPropertiesChangesAppearanceAtIndex();
     void testHandleSetElementPropertiesChangesWirelessModeAndSeversConnections();
+    void testHandleSetElementPropertiesRxModeSeversInputConnection();
     void testHandleSetElementPropertiesAcceptsWirelessModeNoneForRealNode();
     void testHandleSetElementPropertiesRejectsInvalidWirelessMode();
     void testHandleSetElementPropertiesIgnoresWirelessModeForNonNode();

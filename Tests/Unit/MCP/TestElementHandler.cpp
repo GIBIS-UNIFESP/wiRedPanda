@@ -549,6 +549,34 @@ void TestElementHandler::testHandleSetElementPropertiesChangesWirelessModeAndSev
     QCOMPARE(node->outputPort()->connections().size(), 0);
 }
 
+void TestElementHandler::testHandleSetElementPropertiesRxModeSeversInputConnection()
+{
+    // The other half of the ternary this file's Tx test exercises: Rx mode means the Node
+    // receives wirelessly, so a wired connection on its now-redundant *input* port must be
+    // severed (mirrors the Tx test, which severs the output port instead).
+    MainWindow window;
+    ElementHandler handler(&window, nullptr);
+    auto *scene = window.currentTab()->scene();
+
+    const int nodeId = createElement(handler, "Node");
+    auto *node = dynamic_cast<Node *>(elementById(window, nodeId));
+    QVERIFY(node);
+
+    const int swId = createElement(handler, "InputSwitch", 100, 100);
+    auto *sw = elementById(window, swId);
+
+    auto connection = std::make_unique<Connection>();
+    connection->setStartPort(sw->outputPort());
+    connection->setEndPort(node->inputPort());
+    scene->receiveCommand(new AddItemsCommand({connection.release()}, scene));
+    QCOMPARE(node->inputPort()->connections().size(), 1);
+
+    const QJsonObject response = handler.handleCommand("set_element_properties", {{"element_id", nodeId}, {"wireless_mode", 2}}, 1);
+    QVERIFY2(response.contains("result"), qPrintable(QJsonDocument(response).toJson()));
+    QCOMPARE(node->wirelessMode(), WirelessMode::Rx);
+    QCOMPARE(node->inputPort()->connections().size(), 0);
+}
+
 void TestElementHandler::testHandleSetElementPropertiesAcceptsWirelessModeNoneForRealNode()
 {
     MainWindow window;
