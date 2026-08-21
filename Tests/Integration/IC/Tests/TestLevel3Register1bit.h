@@ -14,7 +14,12 @@ private slots:
     void cleanup();
 
     // Functional Tests
-    void test1BitRegister();
+    void testRegisterAsyncReset();
+    void testRegisterWriteOne();
+    void testRegisterHoldWhenWriteDisabled();
+    void testRegisterWriteZero();
+    void testRegisterResetOverridesWrite();
+    void testRegisterWriteAfterResetReleased();
 
     // Structure Tests
     void test1BitRegisterStructure();
