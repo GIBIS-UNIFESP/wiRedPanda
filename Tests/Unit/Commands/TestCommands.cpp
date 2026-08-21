@@ -492,12 +492,35 @@ void TestCommands::testConnectionPreservation()
     QCOMPARE(scene->elements().size(), 4);
     QCOMPARE(TestUtils::countConnections(scene), 3);
 
-    // Verify connections are properly connected
+    // Verify connections are properly connected: not just non-null endpoints (which a
+    // cross-wired restore would still satisfy), but the actual expected topology -- both
+    // switches landing on distinct AND input ports, and the AND output landing on the LED.
     const auto restoredConnections = TestUtils::sceneConnections(scene);
+    QSet<int> andInputPortsWired;
+    int andToLedConnections = 0;
     for (auto *conn : std::as_const(restoredConnections)) {
-        QVERIFY2(conn->startPort() != nullptr, "Connection missing start port after undo");
-        QVERIFY2(conn->endPort() != nullptr, "Connection missing end port after undo");
+        auto *startPort = conn->startPort();
+        auto *endPort = conn->endPort();
+        QVERIFY2(startPort != nullptr, "Connection missing start port after undo");
+        QVERIFY2(endPort != nullptr, "Connection missing end port after undo");
+
+        auto *startElm = startPort->graphicElement();
+        auto *endElm = endPort->graphicElement();
+        QVERIFY(startElm);
+        QVERIFY(endElm);
+
+        if (startElm->elementType() == ElementType::InputSwitch) {
+            QCOMPARE(endElm->elementType(), ElementType::And);
+            andInputPortsWired.insert(endPort->index());
+        } else if (startElm->elementType() == ElementType::And) {
+            QCOMPARE(endElm->elementType(), ElementType::Led);
+            ++andToLedConnections;
+        } else {
+            QFAIL("Unexpected connection start element type after undo");
+        }
     }
+    QCOMPARE(andInputPortsWired, QSet<int>({0, 1}));
+    QCOMPARE(andToLedConnections, 1);
 }
 
 void TestCommands::testUndoEmptyStack()
