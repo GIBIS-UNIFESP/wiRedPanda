@@ -6,13 +6,16 @@
 #include <memory>
 
 #include <QApplication>
+#include <QDataStream>
 #include <QMimeData>
 #include <QMouseEvent>
+#include <QPoint>
 #include <QSignalSpy>
 #include <QTest>
 
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementLabel.h"
+#include "App/IO/Serialization.h"
 #include "Tests/Common/TestUtils.h"
 
 // ============================================================================
@@ -180,22 +183,55 @@ void TestElementLabel::testMimeDataContent()
     auto data = std::unique_ptr<QMimeData>(label.mimeData());
     QVERIFY(data != nullptr);
 
-    // MIME data should contain valid serialized information
+    // Decode the actual serialized fields (ElementLabel::mimeData(): header, offset,
+    // elementType, icFileName, isEmbedded, embedded-name-or-empty) instead of only checking
+    // the payload isn't empty.
     QByteArray mimeBytes = data->data("application/x-wiredpanda-dragdrop");
     QVERIFY(mimeBytes.size() > 0);
+
+    QDataStream stream(mimeBytes);
+    Serialization::readPandaHeader(stream);
+    QPoint offset;
+    ElementType elementType;
+    QString icFileName;
+    bool isEmbedded = true;
+    QString embeddedName;
+    stream >> offset >> elementType >> icFileName >> isEmbedded >> embeddedName;
+
+    QCOMPARE(stream.status(), QDataStream::Ok);
+    QCOMPARE(elementType, ElementType::Nand);
+    QVERIFY(icFileName.isEmpty());
+    QVERIFY(!isEmbedded);
+    QVERIFY(embeddedName.isEmpty());
 }
 
 void TestElementLabel::testMimeDataWithIC()
 {
     QPixmap pixmap = ElementFactory::pixmap(ElementType::IC);
-    ElementLabel label(pixmap, ElementType::IC, "custom_ic.panda");
+    ElementLabel label(pixmap, ElementType::IC, "custom_ic.panda", nullptr, true);
 
     auto data = std::unique_ptr<QMimeData>(label.mimeData());
     QVERIFY(data != nullptr);
 
-    // Should contain the IC file information
+    // Should contain the IC file information -- decode and check the actual fields,
+    // including the embedded-name field, which only carries a value when isEmbedded is true.
     QByteArray mimeBytes = data->data("application/x-wiredpanda-dragdrop");
     QVERIFY(mimeBytes.size() > 0);
+
+    QDataStream stream(mimeBytes);
+    Serialization::readPandaHeader(stream);
+    QPoint offset;
+    ElementType elementType;
+    QString icFileName;
+    bool isEmbedded = false;
+    QString embeddedName;
+    stream >> offset >> elementType >> icFileName >> isEmbedded >> embeddedName;
+
+    QCOMPARE(stream.status(), QDataStream::Ok);
+    QCOMPARE(elementType, ElementType::IC);
+    QCOMPARE(icFileName, QString("custom_ic.panda"));
+    QVERIFY(isEmbedded);
+    QCOMPARE(embeddedName, QString("custom_ic.panda"));
 }
 
 void TestElementLabel::testMousePressThenSmallMoveDoesNotStartDrag()
