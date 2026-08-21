@@ -3,6 +3,8 @@
 
 #include "Tests/Unit/Serialization/TestSerialization.h"
 
+#include <cmath>
+
 #include <QDataStream>
 #include <QFile>
 #include <QFileDevice>
@@ -1343,8 +1345,15 @@ void TestSerialization::testStreamPositionValidation()
     WorkSpace workspace3;
     try {
         loadFromMemory(workspace3, badData);
-        // If load succeeds, verify the scene is valid
-        QVERIFY2(workspace3.scene() != nullptr, "Scene should be valid after loading extreme positions");
+        // If load succeeds, it must not have fabricated elements, and the extreme position
+        // it was fed must not have decayed into a NaN/Inf coordinate.
+        QVERIFY2(workspace3.scene()->elements().size() <= 1,
+                 "A load that survives an extreme position must not fabricate elements");
+        if (!workspace3.scene()->elements().isEmpty()) {
+            const QPointF pos = workspace3.scene()->elements().first()->pos();
+            QVERIFY2(std::isfinite(pos.x()) && std::isfinite(pos.y()),
+                     "Loaded element position must remain finite even for extreme input values");
+        }
     } catch (const std::exception &e) {
         // Exception is acceptable for extreme values
         QVERIFY2(!QString(e.what()).isEmpty(), "Exception should explain why extreme positions failed");
