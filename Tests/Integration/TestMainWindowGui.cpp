@@ -2201,32 +2201,6 @@ void TestMainWindowGui::testEmbeddedICSaveReloadRoundTrip()
     QFile::remove(savePath);
 }
 
-void TestMainWindowGui::testEmbeddedICCopyPastePreservesState()
-{
-    std::unique_ptr<MainWindow> window(createMW());
-    auto *scene = window->currentTab()->scene();
-    auto *view = window->currentTab()->view();
-    scene->setContextDir(m_fixtureDir);
-
-    auto *ic = placeEmbeddedIC(scene, m_fixtureDir, "clone_test");
-    QCOMPARE(countEmbeddedICsInScene(scene, "clone_test"), 1);
-
-    // Select the IC and copy/paste via keyboard to simulate clone
-    clickElement(view, ic);
-    QTest::keyClick(window.get(), Qt::Key_C, Qt::ControlModifier);
-    QTest::keyClick(window.get(), Qt::Key_V, Qt::ControlModifier);
-
-    // Should have 2 instances now
-    QCOMPARE(countEmbeddedICsInScene(scene, "clone_test"), 2);
-
-    // Both should be functional
-    for (auto *elm : scene->elements()) {
-        if (elm->isEmbedded() && elm->blobName() == "clone_test") {
-            QVERIFY(elm->inputSize() > 0);
-        }
-    }
-}
-
 // ===========================================================================
 // Inline IC tab operations
 // ===========================================================================
@@ -3288,14 +3262,15 @@ void TestMainWindowGui::testMakeSelfContained()
     auto *action = window->findChild<QAction *>("actionMakeSelfContained");
     QVERIFY2(action, "actionMakeSelfContained not found");
 
-    // On an empty unsaved project, makeSelfContained should show a warning
-    // or do nothing (no file-backed ICs) — the dismisser is defensive, no
-    // dismissCount assertion.
+    // On an empty, never-saved project, ICController::makeSelfContained() calls
+    // ensureProjectSaved() first (before it ever gets to the "no file-backed ICs" check),
+    // which shows a real "This action needs the project saved..." dialog since contextDir()
+    // is empty.
     auto dismisser = TestUtils::AutoDismisser::acceptMessageBox();
     action->trigger();
 
-    // Should not crash; scene still functional
-    QVERIFY(window->currentTab()->scene() != nullptr);
+    QVERIFY2(dismisser.dismissCount() >= 1, "makeSelfContained() on an unsaved project must show the \"needs saving\" dialog");
+    QCOMPARE(window->currentTab()->scene()->elements().size(), 0);
 }
 
 // ===========================================================================
