@@ -4,7 +4,7 @@
 <context>
     <name>AddItemsCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="283"/>
+        <location filename="../../Scene/Commands.cpp" line="285"/>
         <source>Add %1 elements</source>
         <translation>%1個の要素を追加</translation>
     </message>
@@ -25,7 +25,7 @@
 <context>
     <name>Application</name>
     <message>
-        <location filename="../../Core/Application.cpp" line="146"/>
+        <location filename="../../Core/Application.cpp" line="150"/>
         <source>Error!</source>
         <translation>エラー！</translation>
     </message>
@@ -38,22 +38,22 @@
         <translation>ファイルを書き込み用に開けませんでした: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="764"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="782"/>
         <source>Element type not supported: %1</source>
         <translation>エレメントタイプはサポートされていません: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="987"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="1011"/>
         <source>Output variable not mapped for TruthTable: %1</source>
         <translation>真理値表の出力変数がマッピングされていません: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="1067"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="1091"/>
         <source>This circuit needs %1 I/O pins, but the largest supported board (%2) provides only %3. Reduce the number of inputs and outputs, or split the circuit.</source>
         <translation>この回路には%1個のI/Oピンが必要ですが、サポートされている最大のボード(%2)は%3個しか提供しません。入力と出力の数を減らすか、回路を分割してください。</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="1265"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="1303"/>
         <source>Could not open testbench file: %1</source>
         <translation>テストベンチファイルを開けませんでした: %1</translation>
     </message>
@@ -130,7 +130,7 @@
         <translation>組み合わせ回路</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="993"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1006"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="268"/>
         <source>Export to PDF</source>
         <translation>PDFへエクスポート</translation>
@@ -261,14 +261,14 @@
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="59"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="127"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="865"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="931"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="871"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="944"/>
         <source>beWavedDolphin Simulator</source>
         <translation>beWavedDolphin シミュレーター</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="392"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="879"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="890"/>
         <source>wiRedPanda - beWavedDolphin</source>
         <translation>wiRedPanda - beWavedDolphin</translation>
     </message>
@@ -278,79 +278,79 @@
         <translation>終了前にシミュレーションを保存しますか？</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="838"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="839"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="912"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="844"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="845"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="925"/>
         <source>CSV files</source>
         <translation>CSVファイル</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="838"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="839"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="912"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="844"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="845"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="925"/>
         <source>Dolphin files</source>
         <translation>Dolphinファイル</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="838"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="839"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="912"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="844"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="845"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="925"/>
         <source>All supported files</source>
         <translation>サポートされているすべてのファイル</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="880"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="891"/>
         <source>Do you want to link this beWavedDolphin file to your current wiRedPanda file and save it?</source>
         <translation>このbeWavedDolphinファイルを現在のwiRedPandaファイルにリンクして保存しますか？</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="975"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="988"/>
         <source>PNG files</source>
         <translation>PNGファイル</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="993"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1006"/>
         <source>PDF files</source>
         <translation>PDFファイル</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1012"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1025"/>
         <source>&lt;p&gt;beWavedDolphin is a waveform simulator for wiRedPanda, developed by the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;beWavedDolphin は wiRedPanda 用の波形シミュレータで、サンパウロ連邦大学が学生の論理回路学習を支援するために開発しました。&lt;/p&gt;&lt;p&gt;ソフトウェアバージョン: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;制作者:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin は現在 Prof. Fábio Cappabianco, Ph.D. とその学生によって管理されています。&lt;/p&gt;&lt;p&gt; バグを見つけた場合や新機能をリクエストしたい場合は、GitHub ページでご報告ください。&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;ウェブサイトをご覧ください！&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="845"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="851"/>
         <source>Save File as...</source>
         <translation>ファイルを名前を付けて保存...</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="826"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="866"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="832"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="872"/>
         <source>Saved file successfully.</source>
         <translation>ファイルを正常に保存しました。</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="480"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="482"/>
         <source>Cannot export: the circuit this waveform was built from has changed.</source>
         <translation>エクスポートできません: この波形が構築された回路が変更されました。</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="601"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="607"/>
         <source>No cells selected.</source>
         <translation>セルが選択されていません。</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="911"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="924"/>
         <source>Open File</source>
         <translation>ファイルを開く</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="920"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="933"/>
         <source>File loaded successfully.</source>
         <translation>ファイルを正常に読み込みました。</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="975"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="988"/>
         <source>Export to Image</source>
         <translation>画像へエクスポート</translation>
     </message>
@@ -376,12 +376,12 @@
 <context>
     <name>ChangePortSizeCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="964"/>
+        <location filename="../../Scene/Commands.cpp" line="966"/>
         <source>Change input size to %1</source>
         <translation>入力サイズを%1に変更</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="965"/>
+        <location filename="../../Scene/Commands.cpp" line="967"/>
         <source>Change output size to %1</source>
         <translation>出力サイズを%1に変更</translation>
     </message>
@@ -471,7 +471,7 @@
         <translation>オフセット %1 で接続マップの読み取り中にストリームエラーが発生しました</translation>
     </message>
     <message>
-        <location filename="../../Wiring/ConnectionSerializer.cpp" line="51"/>
+        <location filename="../../Wiring/ConnectionSerializer.cpp" line="50"/>
         <source>Stream error reading connection port IDs at offset %1</source>
         <translation>オフセット %1 で接続ポートIDの読み取り中にストリームエラーが発生しました</translation>
     </message>
@@ -505,7 +505,7 @@
 <context>
     <name>DeleteItemsCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="309"/>
+        <location filename="../../Scene/Commands.cpp" line="311"/>
         <source>Delete %1 elements</source>
         <translation>%1個の要素を削除</translation>
     </message>
@@ -1035,41 +1035,41 @@
         <translation>紫</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="655"/>
+        <location filename="../../UI/ElementEditor.cpp" line="659"/>
         <source>Duplicate Wireless Channel</source>
         <translation>ワイヤレスチャンネルの重複</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="656"/>
+        <location filename="../../UI/ElementEditor.cpp" line="660"/>
         <source>A Tx node with label &quot;%1&quot; already exists.
 Each wireless channel must have a unique label.</source>
         <translation>ラベル &quot;%1&quot; の Tx ノードは既に存在します。
 各ワイヤレスチャンネルには固有のラベルが必要です。</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="713"/>
+        <location filename="../../UI/ElementEditor.cpp" line="717"/>
         <source>Change wireless mode</source>
         <translation>ワイヤレスモードを変更</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="746"/>
+        <location filename="../../UI/ElementEditor.cpp" line="750"/>
         <source>Duplicate IC Name</source>
         <translation>重複したICの名前</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="747"/>
+        <location filename="../../UI/ElementEditor.cpp" line="751"/>
         <source>An embedded IC named &quot;%1&quot; already exists.
 Choose a different name.</source>
         <translation>&quot;%1&quot;という名前の埋め込みICはすでに存在します。
 別の名前を選択してください。</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="955"/>
+        <location filename="../../UI/ElementEditor.cpp" line="959"/>
         <source>Select any audio</source>
         <translation>音声を選択</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="956"/>
+        <location filename="../../UI/ElementEditor.cpp" line="960"/>
         <source>Audio</source>
         <translation>オーディオ</translation>
     </message>
@@ -1089,36 +1089,36 @@ Choose a different name.</source>
         <translation>白</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="150"/>
+        <location filename="../../UI/ElementEditor.h" line="151"/>
         <source>&lt;Many sounds&gt;</source>
         <translation>&lt;複数の音声&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="151"/>
+        <location filename="../../UI/ElementEditor.h" line="152"/>
         <source>&lt;Many colors&gt;</source>
         <translation>&lt;複数の色&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="152"/>
         <location filename="../../UI/ElementEditor.h" line="153"/>
         <location filename="../../UI/ElementEditor.h" line="154"/>
-        <location filename="../../UI/ElementEditor.h" line="156"/>
+        <location filename="../../UI/ElementEditor.h" line="155"/>
         <location filename="../../UI/ElementEditor.h" line="157"/>
+        <location filename="../../UI/ElementEditor.h" line="158"/>
         <source>&lt;Many values&gt;</source>
         <translation>&lt;複数の値&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="155"/>
+        <location filename="../../UI/ElementEditor.h" line="156"/>
         <source>&lt;Many labels&gt;</source>
         <translation>&lt;複数のラベル&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="159"/>
+        <location filename="../../UI/ElementEditor.h" line="160"/>
         <source>&lt;Many modes&gt;</source>
         <translation>&lt;複数のモード&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="158"/>
+        <location filename="../../UI/ElementEditor.h" line="159"/>
         <source>&lt;Many triggers&gt;</source>
         <translation>&lt;複数のトリガー&gt;</translation>
     </message>
@@ -1341,60 +1341,60 @@ Choose a different name.</source>
     <name>ExerciseOverlay</name>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="58"/>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="219"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="193"/>
         <source>Exit</source>
         <translation>終了</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="59"/>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="220"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="194"/>
         <source>Close exercise</source>
         <translation>演習を閉じる</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="61"/>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="81"/>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="193"/>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="221"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="167"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="195"/>
         <source>Hint</source>
         <translation>ヒント</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="63"/>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="222"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="196"/>
         <source>← Back</source>
         <translation>← 戻る</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="65"/>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="245"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="219"/>
         <source>Next →</source>
         <translation>次へ →</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="81"/>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="221"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="195"/>
         <source>Hide hint</source>
         <translation>ヒントを隠す</translation>
     </message>
     <message>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="186"/>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="214"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="160"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="188"/>
         <source>Step %1 of %2</source>
         <translation>ステップ %1 / %2</translation>
     </message>
     <message>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="231"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="205"/>
         <source>Exercise complete! Well done.</source>
         <translation>演習完了！よくできました。</translation>
     </message>
     <message>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="235"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="209"/>
         <source>Close</source>
         <translation>閉じる</translation>
     </message>
     <message>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="245"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="219"/>
         <source>Finish</source>
         <translation>終了</translation>
     </message>
@@ -1474,7 +1474,7 @@ Choose a different name.</source>
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="905"/>
+        <location filename="../../Scene/Commands.cpp" line="907"/>
         <source>Flip %1 elements in axis %2</source>
         <translation>%1個の要素を%2軸で反転</translation>
     </message>
@@ -1510,42 +1510,42 @@ Choose a different name.</source>
         <translation>位置 %1 で要素プロパティの読み取り中にストリームエラーが発生しました</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="406"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="410"/>
         <source>Stream error reading appearances at position %1</source>
         <translation>位置 %1 で外観の読み取り中にストリームエラーが発生しました</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="414"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="418"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
         <translation>外観インデックス %1 が範囲外です（サイズ=%2）— ストリームが破損している可能性があります</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="460"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="464"/>
         <source>Non-finite element position — stream may be corrupt</source>
         <translation>要素の位置が非有限です — ストリームが破損している可能性があります</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="478"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="482"/>
         <source>Non-finite element rotation — stream may be corrupt</source>
         <translation>要素の回転が非有限です — ストリームが破損している可能性があります</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="538"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="542"/>
         <source>Refusing old-format input port list with implausible count %1 (max %2)</source>
         <translation>不自然な数 %1 の旧形式入力ポートリストを拒否しました（最大 %2）</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="572"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="576"/>
         <source>Refusing old-format output port list with implausible count %1 (max %2)</source>
         <translation>不自然な数 %1 の旧形式出力ポートリストを拒否しました（最大 %2）</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="637"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="641"/>
         <source>Refusing old-format appearance list with implausible count %1 (max %2)</source>
         <translation>不自然な数 %1 の旧形式外観リストを拒否しました（最大 %2）</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="666"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="670"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
         <translation>外観名「%3」の外観インデックス %1 が範囲外です（サイズ=%2）— ストリームが破損している可能性があります</translation>
     </message>
@@ -1787,12 +1787,12 @@ Save it now?</source>
         <translation>IC移行: 書き込み用にファイルを開けません: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICLoader.cpp" line="247"/>
+        <location filename="../../Element/ICLoader.cpp" line="250"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
         <translation>IC移行: 再保存されたファイルの確定に失敗しました: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICLoader.cpp" line="310"/>
+        <location filename="../../Element/ICLoader.cpp" line="313"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
         <translation>ICのネスト深度制限（%1）を超えました — blobが悪意を持って作成された可能性があります</translation>
     </message>
@@ -1800,17 +1800,17 @@ Save it now?</source>
 <context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="276"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="280"/>
         <source>Could not open file: %1</source>
         <translation>ファイルを開けませんでした: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="280"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="287"/>
         <source>Could not save file: %1</source>
         <translation>ファイルを保存できませんでした: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="343"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="350"/>
         <source>Embedded IC dependency chain exceeds the maximum nesting depth (%1) while resolving &apos;%2&apos;</source>
         <translation>&apos;%2&apos;を解決中に、埋め込みICの依存関係チェーンが最大ネスト深度(%1)を超えました</translation>
     </message>
@@ -1918,22 +1918,22 @@ Save it now?</source>
         <translation>LED</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="249"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="252"/>
         <source>Port %1=%2</source>
         <translation>ポート %1=%2</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="256"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="259"/>
         <source>Off</source>
         <translation>オフ</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="257"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="260"/>
         <source>On</source>
         <translation>オン</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="280"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="285"/>
         <source>Default</source>
         <translation>デフォルト</translation>
     </message>
@@ -2375,7 +2375,7 @@ Save it now?</source>
         <translation>フルスクリーン(&amp;U)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1308"/>
+        <location filename="../../UI/MainWindow.cpp" line="1289"/>
         <location filename="../../UI/MainWindowUI.cpp" line="841"/>
         <source>Mute</source>
         <translation>ミュート</translation>
@@ -2401,23 +2401,23 @@ Save it now?</source>
         <translation>シミュレーションを再起動します。</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="639"/>
+        <location filename="../../UI/MainWindow.cpp" line="638"/>
         <location filename="../../UI/MainWindowUI.cpp" line="852"/>
         <source>Shortcuts and Tips</source>
         <translation>ショートカットとティップス</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="843"/>
+        <location filename="../../UI/MainWindow.cpp" line="842"/>
         <source>%1[*] — wiRedPanda %2</source>
         <translation>%1[*] — wiRedPanda %2</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1001"/>
+        <location filename="../../UI/MainWindow.cpp" line="1000"/>
         <source>New Project</source>
         <translation>新しいプロジェクト</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="508"/>
+        <location filename="../../UI/MainWindow.cpp" line="507"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2436,62 +2436,62 @@ wiRedPanda %1 は現在のプロジェクトと同じディレクトリにある
 IC や外観にアクセスしたり、beWavedDolphin シミュレーションを実行する前に、新しいプロジェクトを保存する必要があります。</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="285"/>
+        <location filename="../../UI/MainWindow.cpp" line="284"/>
         <source>Error</source>
         <translation>エラー</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="314"/>
+        <location filename="../../UI/MainWindow.cpp" line="313"/>
         <source>Open My Exercises Folder</source>
         <translation>演習フォルダーを開く</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="315"/>
+        <location filename="../../UI/MainWindow.cpp" line="314"/>
         <source>Could not create or access a folder for custom exercises.</source>
         <translation>カスタム演習用のフォルダーを作成またはアクセスできませんでした。</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="325"/>
+        <location filename="../../UI/MainWindow.cpp" line="324"/>
         <source>Open My Tours Folder</source>
         <translation>ツアーフォルダーを開く</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="326"/>
+        <location filename="../../UI/MainWindow.cpp" line="325"/>
         <source>Could not create or access a folder for custom tours.</source>
         <translation>カスタムツアー用のフォルダーを作成またはアクセスできませんでした。</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="568"/>
+        <location filename="../../UI/MainWindow.cpp" line="567"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPandaは、サンパウロ連邦大学の学生が論理回路の学習を支援するために開発したソフトウェアです。&lt;/p&gt;&lt;p&gt;ソフトウェアバージョン: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;作者:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPandaは現在、Fábio Cappabianco教授（Ph.D.）、João Pedro M. Oliveira、Matheus R. Esteves、Maycon A. Santanaによって保守されています。&lt;/p&gt;&lt;p&gt; バグを見つけた場合や新機能をリクエストしたい場合は、GitHubページで報告してください。&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;私たちのウェブサイトをご覧ください！&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="592"/>
+        <location filename="../../UI/MainWindow.cpp" line="591"/>
         <source>Redo</source>
         <translation>やり直し</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="593"/>
+        <location filename="../../UI/MainWindow.cpp" line="592"/>
         <source>Undo</source>
         <translation>元に戻す</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="618"/>
+        <location filename="../../UI/MainWindow.cpp" line="617"/>
         <source>&lt;h1&gt;Keyboard Shortcuts&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;Element Property Navigation&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : Previous / next primary property &lt;/li&gt;&lt;li&gt; { / } : Previous / next secondary property &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : Morph to previous / next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Double-click a wire to create a node &lt;/li&gt;&lt;li&gt; Drag an element from the left panel onto the canvas to add it &lt;/li&gt;&lt;li&gt; Nudge the selection with the arrow keys (hold Shift for larger steps) &lt;/li&gt;&lt;li&gt; Drop a .panda file onto the canvas to open it &lt;/li&gt;&lt;/ul&gt;</source>
         <translation>&lt;h1&gt;キーボードショートカット&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;要素プロパティのナビゲーション&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : 前 / 次のプライマリプロパティ &lt;/li&gt;&lt;li&gt; { / } : 前 / 次のセカンダリプロパティ &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : 前 / 次の要素にモーフ &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;一般的なヒント&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; 配線をダブルクリックしてノードを作成 &lt;/li&gt;&lt;li&gt; 左パネルから要素をキャンバスにドラッグして追加 &lt;/li&gt;&lt;li&gt; 矢印キーで選択範囲を移動(大きなステップにはShiftを押したまま) &lt;/li&gt;&lt;li&gt; .pandaファイルをキャンバスにドロップして開く &lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="669"/>
+        <location filename="../../UI/MainWindow.cpp" line="668"/>
         <source>Are you sure?</source>
         <translation>よろしいですか？</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="668"/>
+        <location filename="../../UI/MainWindow.cpp" line="667"/>
         <source>Exit</source>
         <translation>終了</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1308"/>
+        <location filename="../../UI/MainWindow.cpp" line="1289"/>
         <source>Unmute</source>
         <translation>ミュート解除</translation>
     </message>
@@ -2517,7 +2517,7 @@ IC や外観にアクセスしたり、beWavedDolphin シミュレーション�
 <context>
     <name>MorphCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="705"/>
+        <location filename="../../Scene/Commands.cpp" line="707"/>
         <source>Morph %1 elements to %2</source>
         <translation>%1個の要素を%2に変形</translation>
     </message>
@@ -2525,7 +2525,7 @@ IC や外観にアクセスしたり、beWavedDolphin シミュレーション�
 <context>
     <name>MoveCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="402"/>
+        <location filename="../../Scene/Commands.cpp" line="404"/>
         <source>Move elements</source>
         <translation>要素を移動</translation>
     </message>
@@ -2735,7 +2735,7 @@ IC や外観にアクセスしたり、beWavedDolphin シミュレーション�
 <context>
     <name>RegisterBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1126"/>
+        <location filename="../../Scene/Commands.cpp" line="1128"/>
         <source>Register blob &quot;%1&quot;</source>
         <translation>ブロブ &quot;%1&quot; を登録</translation>
     </message>
@@ -2743,7 +2743,7 @@ IC や外観にアクセスしたり、beWavedDolphin シミュレーション�
 <context>
     <name>RemoveBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1149"/>
+        <location filename="../../Scene/Commands.cpp" line="1151"/>
         <source>Remove blob &quot;%1&quot;</source>
         <translation>blob &quot;%1&quot; を削除</translation>
     </message>
@@ -2751,7 +2751,7 @@ IC や外観にアクセスしたり、beWavedDolphin シミュレーション�
 <context>
     <name>RenameBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1170"/>
+        <location filename="../../Scene/Commands.cpp" line="1172"/>
         <source>Rename IC &quot;%1&quot; to &quot;%2&quot;</source>
         <translation>IC &quot;%1&quot; の名前を &quot;%2&quot; に変更</translation>
     </message>
@@ -2759,7 +2759,7 @@ IC や外観にアクセスしたり、beWavedDolphin シミュレーション�
 <context>
     <name>RotateCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="334"/>
+        <location filename="../../Scene/Commands.cpp" line="336"/>
         <source>Rotate %1 degrees</source>
         <translation>%1度回転</translation>
     </message>
@@ -2887,32 +2887,32 @@ IC や外観にアクセスしたり、beWavedDolphin シミュレーション�
         <translation>位置 %1 で要素の読み込み中にストリームエラー: ステータス %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="649"/>
+        <location filename="../../IO/Serialization.cpp" line="655"/>
         <source>Stream error loading connection at position %1: status %2</source>
         <translation>位置 %1 で接続の読み込み中にストリームエラー: ステータス %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="656"/>
+        <location filename="../../IO/Serialization.cpp" line="663"/>
         <source>Invalid type. Data is possibly corrupted.</source>
         <translation>無効なタイプです。データが破損している可能性があります。</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="709"/>
+        <location filename="../../IO/Serialization.cpp" line="716"/>
         <source>Failed to create versioned backup: %1</source>
         <translation>バージョン管理されたバックアップの作成に失敗しました: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="738"/>
+        <location filename="../../IO/Serialization.cpp" line="745"/>
         <source>Stream error reading preamble: status %1</source>
         <translation>プリアンブルの読み取り中にストリームエラーが発生しました: 状態 %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="797"/>
+        <location filename="../../IO/Serialization.cpp" line="809"/>
         <source>Panda file dependency chain exceeds the maximum nesting depth (%1) while copying &apos;%2&apos;</source>
         <translation>&apos;%2&apos;をコピー中に、Pandaファイルの依存関係チェーンが最大ネスト深度(%1)を超えました</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="816"/>
+        <location filename="../../IO/Serialization.cpp" line="828"/>
         <source>Error copying file: %1</source>
         <translation>ファイルのコピー中にエラーが発生しました: %1</translation>
     </message>
@@ -2928,32 +2928,32 @@ IC や外観にアクセスしたり、beWavedDolphin シミュレーション�
 <context>
     <name>SplitCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="578"/>
+        <location filename="../../Scene/Commands.cpp" line="580"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
         <translation>SplitCommandコンストラクタの接続ポートが無効です</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="584"/>
+        <location filename="../../Scene/Commands.cpp" line="586"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
         <translation>SplitCommandコンストラクタのグラフィック要素が無効です</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="607"/>
+        <location filename="../../Scene/Commands.cpp" line="609"/>
         <source>Wire split</source>
         <translation>配線分割</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="623"/>
+        <location filename="../../Scene/Commands.cpp" line="625"/>
         <source>Error trying to redo %1</source>
         <translation>%1のやり直し中にエラーが発生しました</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="646"/>
+        <location filename="../../Scene/Commands.cpp" line="630"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
         <translation>エラー：SplitCommand::redo()でendPortがnullです</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="675"/>
+        <location filename="../../Scene/Commands.cpp" line="677"/>
         <source>Error trying to undo %1</source>
         <translation>%1の元に戻す中にエラーが発生しました</translation>
     </message>
@@ -2966,12 +2966,12 @@ IC や外観にアクセスしたり、beWavedDolphin シミュレーション�
         <translation>書き込み用にファイルを開けませんでした: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1259"/>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1295"/>
         <source>Output variable not mapped for TruthTable: %1</source>
         <translation>真理値表の出力変数がマッピングされていません: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1308"/>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1353"/>
         <source>Element type not supported: %1</source>
         <translation>エレメントタイプはサポートされていません: %1</translation>
     </message>
@@ -3010,17 +3010,17 @@ IC や外観にアクセスしたり、beWavedDolphin シミュレーション�
 <context>
     <name>ToggleTruthTableOutputCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1059"/>
+        <location filename="../../Scene/Commands.cpp" line="1061"/>
         <source>Toggle TruthTable Output at position: %1</source>
         <translation>位置%1の真理値表出力を切り替え</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1068"/>
+        <location filename="../../Scene/Commands.cpp" line="1070"/>
         <source>Could not find truthtable element!</source>
         <translation>真理値表要素が見つかりません！</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1075"/>
+        <location filename="../../Scene/Commands.cpp" line="1077"/>
         <source>TruthTable toggle position out of range: %1</source>
         <translation>真理値表の切り替え位置が範囲外です: %1</translation>
     </message>
@@ -3029,38 +3029,38 @@ IC や外観にアクセスしたり、beWavedDolphin シミュレーション�
     <name>TourOverlay</name>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="86"/>
-        <location filename="../../Tour/TourOverlay.cpp" line="240"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="208"/>
         <source>Exit</source>
         <translation>終了</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="87"/>
-        <location filename="../../Tour/TourOverlay.cpp" line="241"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="209"/>
         <source>Stop the tour</source>
         <translation>ツアーを停止</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="89"/>
-        <location filename="../../Tour/TourOverlay.cpp" line="242"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="210"/>
         <source>← Back</source>
         <translation>← 戻る</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="91"/>
-        <location filename="../../Tour/TourOverlay.cpp" line="212"/>
-        <location filename="../../Tour/TourOverlay.cpp" line="238"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="180"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="206"/>
         <source>Next →</source>
         <translation>次へ →</translation>
     </message>
     <message>
-        <location filename="../../Tour/TourOverlay.cpp" line="207"/>
-        <location filename="../../Tour/TourOverlay.cpp" line="235"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="175"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="203"/>
         <source>Step %1 of %2</source>
         <translation>ステップ %1 / %2</translation>
     </message>
     <message>
-        <location filename="../../Tour/TourOverlay.cpp" line="212"/>
-        <location filename="../../Tour/TourOverlay.cpp" line="238"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="180"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="206"/>
         <source>Finish</source>
         <translation>終了</translation>
     </message>
@@ -3094,7 +3094,7 @@ IC や外観にアクセスしたり、beWavedDolphin シミュレーション�
 <context>
     <name>UpdateBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1203"/>
+        <location filename="../../Scene/Commands.cpp" line="1205"/>
         <source>Update %1 IC blobs</source>
         <translation>%1 個の IC ブロブを更新</translation>
     </message>
@@ -3102,7 +3102,7 @@ IC や外観にアクセスしたり、beWavedDolphin シミュレーション�
 <context>
     <name>UpdateCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="457"/>
+        <location filename="../../Scene/Commands.cpp" line="459"/>
         <source>Update %1 elements</source>
         <translation>%1個の要素を更新</translation>
     </message>
@@ -3135,55 +3135,55 @@ IC や外観にアクセスしたり、beWavedDolphin シミュレーション�
         <translation>ダウンロード</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="100"/>
+        <location filename="../../UI/UpdateController.cpp" line="105"/>
         <source>Downloading wiRedPanda %1…</source>
         <translation>wiRedPanda %1 をダウンロード中…</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="100"/>
+        <location filename="../../UI/UpdateController.cpp" line="105"/>
         <source>Cancel</source>
         <translation>キャンセル</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="101"/>
+        <location filename="../../UI/UpdateController.cpp" line="106"/>
         <source>Downloading Update</source>
         <translation>アップデートのダウンロード</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="137"/>
-        <location filename="../../UI/UpdateController.cpp" line="145"/>
-        <location filename="../../UI/UpdateController.cpp" line="151"/>
+        <location filename="../../UI/UpdateController.cpp" line="142"/>
+        <location filename="../../UI/UpdateController.cpp" line="150"/>
+        <location filename="../../UI/UpdateController.cpp" line="156"/>
         <source>Download Failed</source>
         <translation>ダウンロード失敗</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="137"/>
+        <location filename="../../UI/UpdateController.cpp" line="142"/>
         <source>Could not download the update:
 %1</source>
         <translation>アップデートをダウンロードできませんでした:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="145"/>
+        <location filename="../../UI/UpdateController.cpp" line="150"/>
         <source>Could not save the file:
 %1</source>
         <translation>ファイルを保存できませんでした:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="151"/>
+        <location filename="../../UI/UpdateController.cpp" line="156"/>
         <source>Could not write the file:
 %1</source>
         <translation>ファイルを書き込めませんでした:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="158"/>
+        <location filename="../../UI/UpdateController.cpp" line="163"/>
         <source>Download Complete</source>
         <translation>ダウンロード完了</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="159"/>
+        <location filename="../../UI/UpdateController.cpp" line="164"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
         <translation>wiRedPanda のダウンロード先:
@@ -3219,22 +3219,22 @@ Please update wiRedPanda to save changes to this file.</source>
         <translation>ファイルのオープンエラー: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="392"/>
+        <location filename="../../Scene/Workspace.cpp" line="397"/>
         <source>Could not save file: %1</source>
         <translation>ファイルを保存できませんでした: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="475"/>
+        <location filename="../../Scene/Workspace.cpp" line="480"/>
         <source>This file does not exist: %1</source>
         <translation>このファイルは存在しません: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="484"/>
+        <location filename="../../Scene/Workspace.cpp" line="489"/>
         <source>Could not open file: %1</source>
         <translation>ファイルを開けませんでした: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="532"/>
+        <location filename="../../Scene/Workspace.cpp" line="537"/>
         <source>This file was saved with a newer file format (version %1).
 Your version supports file format %2.
 
@@ -3247,34 +3247,34 @@ Please update wiRedPanda to edit and save this file.</source>
 このファイルを編集・保存するには、wiRedPanda を更新してください。</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="537"/>
+        <location filename="../../Scene/Workspace.cpp" line="542"/>
         <source>Newer version file.</source>
         <translation>新しいバージョンのファイル。</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="540"/>
+        <location filename="../../Scene/Workspace.cpp" line="545"/>
         <source>This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).
 A backup of the original file has been created with name: %3</source>
         <translation>このファイルは古い形式（バージョン %1）です。現在の形式（バージョン %2）に自動的にアップグレードされます。
 元のファイルのバックアップが次の名前で作成されました: %3</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="543"/>
+        <location filename="../../Scene/Workspace.cpp" line="548"/>
         <source>File upgraded.</source>
         <translation>ファイルがアップグレードされました。</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="713"/>
+        <location filename="../../Scene/Workspace.cpp" line="718"/>
         <source>Error opening autosave file: %1</source>
         <translation>自動保存ファイルのオープンエラー: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="721"/>
+        <location filename="../../Scene/Workspace.cpp" line="729"/>
         <source>Could not commit autosave file: %1</source>
         <translation>自動保存ファイルを確定できませんでした: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="889"/>
+        <location filename="../../Scene/Workspace.cpp" line="897"/>
         <source>Remove embedded IC &quot;%1&quot;</source>
         <translation>埋め込み IC &quot;%1&quot; を削除</translation>
     </message>

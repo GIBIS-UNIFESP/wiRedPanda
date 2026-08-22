@@ -4,7 +4,7 @@
 <context>
     <name>AddItemsCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="283"/>
+        <location filename="../../Scene/Commands.cpp" line="285"/>
         <source>Add %1 elements</source>
         <translation>Lisää %1 elementtiä</translation>
     </message>
@@ -25,7 +25,7 @@
 <context>
     <name>Application</name>
     <message>
-        <location filename="../../Core/Application.cpp" line="146"/>
+        <location filename="../../Core/Application.cpp" line="150"/>
         <source>Error!</source>
         <translation>Virhe!</translation>
     </message>
@@ -38,22 +38,22 @@
         <translation>Tiedostoa ei voitu avata kirjoittamista varten: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="764"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="782"/>
         <source>Element type not supported: %1</source>
         <translation>Elementtityyppiä ei tueta: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="987"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="1011"/>
         <source>Output variable not mapped for TruthTable: %1</source>
         <translation>Lähtömuuttujaa ei ole yhdistetty totuustauluun: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="1067"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="1091"/>
         <source>This circuit needs %1 I/O pins, but the largest supported board (%2) provides only %3. Reduce the number of inputs and outputs, or split the circuit.</source>
         <translation>Tämä piiri tarvitsee %1 I/O-nastaa, mutta suurin tuettu kortti (%2) tarjoaa vain %3. Vähennä tulojen ja lähtöjen määrää tai jaa piiri osiin.</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="1265"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="1303"/>
         <source>Could not open testbench file: %1</source>
         <translation>Testipenkitiedostoa ei voitu avata: %1</translation>
     </message>
@@ -130,7 +130,7 @@
         <translation>Kombinaatiologiikka</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="993"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1006"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="268"/>
         <source>Export to PDF</source>
         <translation>Vie PDF:ksi</translation>
@@ -261,14 +261,14 @@
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="59"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="127"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="865"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="931"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="871"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="944"/>
         <source>beWavedDolphin Simulator</source>
         <translation>beWavedDolphin simulaattori</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="392"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="879"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="890"/>
         <source>wiRedPanda - beWavedDolphin</source>
         <translation>wiRedPanda - beWavedDolphin</translation>
     </message>
@@ -278,79 +278,79 @@
         <translation>Tallenna simulaatio ennen sulkemista?</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="838"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="839"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="912"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="844"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="845"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="925"/>
         <source>CSV files</source>
         <translation>CSV-tiedostot</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="838"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="839"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="912"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="844"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="845"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="925"/>
         <source>Dolphin files</source>
         <translation>Dolphin-tiedostot</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="838"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="839"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="912"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="844"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="845"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="925"/>
         <source>All supported files</source>
         <translation>Kaikki tuetut tiedostot</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="880"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="891"/>
         <source>Do you want to link this beWavedDolphin file to your current wiRedPanda file and save it?</source>
         <translation>Haluatko linkittää tämän beWavedDolphin-tiedoston nykyiseen wiRedPanda-tiedostoosi ja tallentaa sen?</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="975"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="988"/>
         <source>PNG files</source>
         <translation>PNG-tiedostot</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="993"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1006"/>
         <source>PDF files</source>
         <translation>PDF-tiedostot</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1012"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1025"/>
         <source>&lt;p&gt;beWavedDolphin is a waveform simulator for wiRedPanda, developed by the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;beWavedDolphin on aaltomuotosimulaattori wiRedPandalle, São Paulon liittovaltion yliopiston kehittämä auttamaan opiskelijoita oppimaan logiikkapiireistä.&lt;/p&gt;&lt;p&gt;Ohjelmistoversio: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Tekijät:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphinia ylläpitävät tällä hetkellä Prof. Fábio Cappabianco, Ph.D. ja hänen opiskelijansa.&lt;/p&gt;&lt;p&gt; Ilmoita virheistä tai pyydä uusia ominaisuuksia GitHub-sivullamme.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Vieraile verkkosivuillamme!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="845"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="851"/>
         <source>Save File as...</source>
         <translation>Tallenna tiedosto nimellä...</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="826"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="866"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="832"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="872"/>
         <source>Saved file successfully.</source>
         <translation>Tiedosto tallennettu onnistuneesti.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="480"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="482"/>
         <source>Cannot export: the circuit this waveform was built from has changed.</source>
         <translation>Vientiä ei voi tehdä: piiri, josta tämä aaltomuoto rakennettiin, on muuttunut.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="601"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="607"/>
         <source>No cells selected.</source>
         <translation>Ei valittuja soluja.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="911"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="924"/>
         <source>Open File</source>
         <translation>Avaa tiedosto</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="920"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="933"/>
         <source>File loaded successfully.</source>
         <translation>Tiedosto ladattu onnistuneesti.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="975"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="988"/>
         <source>Export to Image</source>
         <translation>Vie kuvaksi</translation>
     </message>
@@ -376,12 +376,12 @@
 <context>
     <name>ChangePortSizeCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="964"/>
+        <location filename="../../Scene/Commands.cpp" line="966"/>
         <source>Change input size to %1</source>
         <translation>Vaihda sisääntulon koko arvoon %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="965"/>
+        <location filename="../../Scene/Commands.cpp" line="967"/>
         <source>Change output size to %1</source>
         <translation>Vaihda ulostulon koko arvoon %1</translation>
     </message>
@@ -471,7 +471,7 @@
         <translation>Tietovirran virhe luettaessa yhteyskarttaa siirtymässä %1</translation>
     </message>
     <message>
-        <location filename="../../Wiring/ConnectionSerializer.cpp" line="51"/>
+        <location filename="../../Wiring/ConnectionSerializer.cpp" line="50"/>
         <source>Stream error reading connection port IDs at offset %1</source>
         <translation>Tietovirran virhe luettaessa liitäntäporttien tunnisteita siirtymässä %1</translation>
     </message>
@@ -505,7 +505,7 @@
 <context>
     <name>DeleteItemsCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="309"/>
+        <location filename="../../Scene/Commands.cpp" line="311"/>
         <source>Delete %1 elements</source>
         <translation>Poista %1 elementtiä</translation>
     </message>
@@ -1035,41 +1035,41 @@
         <translation>Violetti</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="655"/>
+        <location filename="../../UI/ElementEditor.cpp" line="659"/>
         <source>Duplicate Wireless Channel</source>
         <translation>Langaton kanava on jo käytössä</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="656"/>
+        <location filename="../../UI/ElementEditor.cpp" line="660"/>
         <source>A Tx node with label &quot;%1&quot; already exists.
 Each wireless channel must have a unique label.</source>
         <translation>Tx-solmu tunnisteella &quot;%1&quot; on jo olemassa.
 Jokaisella langattomalla kanavalla on oltava yksilöllinen tunniste.</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="713"/>
+        <location filename="../../UI/ElementEditor.cpp" line="717"/>
         <source>Change wireless mode</source>
         <translation>Vaihda langatonta tilaa</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="746"/>
+        <location filename="../../UI/ElementEditor.cpp" line="750"/>
         <source>Duplicate IC Name</source>
         <translation>Kaksoiskappale IC-nimestä</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="747"/>
+        <location filename="../../UI/ElementEditor.cpp" line="751"/>
         <source>An embedded IC named &quot;%1&quot; already exists.
 Choose a different name.</source>
         <translation>Upotettu IC nimeltä &quot;%1&quot; on jo olemassa.
 Valitse toinen nimi.</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="955"/>
+        <location filename="../../UI/ElementEditor.cpp" line="959"/>
         <source>Select any audio</source>
         <translation>Valitse mikä tahansa ääni</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="956"/>
+        <location filename="../../UI/ElementEditor.cpp" line="960"/>
         <source>Audio</source>
         <translation>Ääni</translation>
     </message>
@@ -1089,36 +1089,36 @@ Valitse toinen nimi.</translation>
         <translation>Valkoinen</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="150"/>
+        <location filename="../../UI/ElementEditor.h" line="151"/>
         <source>&lt;Many sounds&gt;</source>
         <translation>&lt;Monta ääntä&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="151"/>
+        <location filename="../../UI/ElementEditor.h" line="152"/>
         <source>&lt;Many colors&gt;</source>
         <translation>&lt;Monta väriä&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="152"/>
         <location filename="../../UI/ElementEditor.h" line="153"/>
         <location filename="../../UI/ElementEditor.h" line="154"/>
-        <location filename="../../UI/ElementEditor.h" line="156"/>
+        <location filename="../../UI/ElementEditor.h" line="155"/>
         <location filename="../../UI/ElementEditor.h" line="157"/>
+        <location filename="../../UI/ElementEditor.h" line="158"/>
         <source>&lt;Many values&gt;</source>
         <translation>&lt;Monta arvoa&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="155"/>
+        <location filename="../../UI/ElementEditor.h" line="156"/>
         <source>&lt;Many labels&gt;</source>
         <translation>&lt;Monta tarraa&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="159"/>
+        <location filename="../../UI/ElementEditor.h" line="160"/>
         <source>&lt;Many modes&gt;</source>
         <translation>&lt;Monta tilaa&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="158"/>
+        <location filename="../../UI/ElementEditor.h" line="159"/>
         <source>&lt;Many triggers&gt;</source>
         <translation>&lt;Monta laukaisinta&gt;</translation>
     </message>
@@ -1341,60 +1341,60 @@ Valitse toinen nimi.</translation>
     <name>ExerciseOverlay</name>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="58"/>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="219"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="193"/>
         <source>Exit</source>
         <translation>Poistu</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="59"/>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="220"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="194"/>
         <source>Close exercise</source>
         <translation>Sulje harjoitus</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="61"/>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="81"/>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="193"/>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="221"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="167"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="195"/>
         <source>Hint</source>
         <translation>Vihje</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="63"/>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="222"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="196"/>
         <source>← Back</source>
         <translation>← Takaisin</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="65"/>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="245"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="219"/>
         <source>Next →</source>
         <translation>Seuraava →</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="81"/>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="221"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="195"/>
         <source>Hide hint</source>
         <translation>Piilota vihje</translation>
     </message>
     <message>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="186"/>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="214"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="160"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="188"/>
         <source>Step %1 of %2</source>
         <translation>Vaihe %1/%2</translation>
     </message>
     <message>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="231"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="205"/>
         <source>Exercise complete! Well done.</source>
         <translation>Harjoitus suoritettu! Hienoa työtä.</translation>
     </message>
     <message>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="235"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="209"/>
         <source>Close</source>
         <translation>Sulje</translation>
     </message>
     <message>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="245"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="219"/>
         <source>Finish</source>
         <translation>Lopeta</translation>
     </message>
@@ -1474,7 +1474,7 @@ Valitse toinen nimi.</translation>
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="905"/>
+        <location filename="../../Scene/Commands.cpp" line="907"/>
         <source>Flip %1 elements in axis %2</source>
         <translation>Käännä %1 elementtiä akselilla %2</translation>
     </message>
@@ -1510,42 +1510,42 @@ Valitse toinen nimi.</translation>
         <translation>Tietovirran virhe luettaessa elementin ominaisuuksia sijainnissa %1</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="406"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="410"/>
         <source>Stream error reading appearances at position %1</source>
         <translation>Tietovirran virhe luettaessa ulkoasuja sijainnissa %1</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="414"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="418"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
         <translation>Ulkoasun indeksi %1 on sallitun alueen ulkopuolella (koko=%2) — tietovirta saattaa olla vioittunut</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="460"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="464"/>
         <source>Non-finite element position — stream may be corrupt</source>
         <translation>Ei-äärellinen elementin sijainti — tietovirta saattaa olla vioittunut</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="478"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="482"/>
         <source>Non-finite element rotation — stream may be corrupt</source>
         <translation>Ei-äärellinen elementin kierto — tietovirta saattaa olla vioittunut</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="538"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="542"/>
         <source>Refusing old-format input port list with implausible count %1 (max %2)</source>
         <translation>Kieltäydytään vanhan muodon tuloporttiluettelosta, jonka määrä %1 on epäuskottava (maks. %2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="572"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="576"/>
         <source>Refusing old-format output port list with implausible count %1 (max %2)</source>
         <translation>Kieltäydytään vanhan muodon lähtöporttiluettelosta, jonka määrä %1 on epäuskottava (maks. %2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="637"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="641"/>
         <source>Refusing old-format appearance list with implausible count %1 (max %2)</source>
         <translation>Kieltäydytään vanhan muodon ulkoasuluettelosta, jonka määrä %1 on epäuskottava (maks. %2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="666"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="670"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
         <translation>Ulkoasun indeksi %1 on sallitun alueen ulkopuolella (koko=%2) ulkoasun nimelle ”%3” — tietovirta saattaa olla vioittunut</translation>
     </message>
@@ -1787,12 +1787,12 @@ Tallennetaanko nyt?</translation>
         <translation>IC-migraatio: tiedostoa ei voida avata kirjoitusta varten: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICLoader.cpp" line="247"/>
+        <location filename="../../Element/ICLoader.cpp" line="250"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
         <translation>IC-migraatio: uudelleentallennettua tiedostoa ei voitu vahvistaa: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICLoader.cpp" line="310"/>
+        <location filename="../../Element/ICLoader.cpp" line="313"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
         <translation>IC-sisäkkäisyyden syvyysraja (%1) ylitettiin — blob saattaa olla haitallisesti laadittu</translation>
     </message>
@@ -1800,17 +1800,17 @@ Tallennetaanko nyt?</translation>
 <context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="276"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="280"/>
         <source>Could not open file: %1</source>
         <translation>Tiedostoa ei voitu avata: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="280"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="287"/>
         <source>Could not save file: %1</source>
         <translation>Tiedostoa ei voitu tallentaa: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="343"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="350"/>
         <source>Embedded IC dependency chain exceeds the maximum nesting depth (%1) while resolving &apos;%2&apos;</source>
         <translation>Upotettujen IC:iden riippuvuusketju ylittää suurimman sallitun sisäkkäisyyssyvyyden (%1) ratkaistaessa &apos;%2&apos;</translation>
     </message>
@@ -1918,22 +1918,22 @@ Tallennetaanko nyt?</translation>
         <translation>LED</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="249"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="252"/>
         <source>Port %1=%2</source>
         <translation>Liitin %1=%2</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="256"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="259"/>
         <source>Off</source>
         <translation>Pois</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="257"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="260"/>
         <source>On</source>
         <translation>Päällä</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="280"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="285"/>
         <source>Default</source>
         <translation>Oletus</translation>
     </message>
@@ -2360,7 +2360,7 @@ Tallennetaanko nyt?</translation>
         <translation>&amp;Opastukset</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1308"/>
+        <location filename="../../UI/MainWindow.cpp" line="1289"/>
         <location filename="../../UI/MainWindowUI.cpp" line="841"/>
         <source>Mute</source>
         <translation>Vaimenna</translation>
@@ -2391,7 +2391,7 @@ Tallennetaanko nyt?</translation>
         <translation>Taustasimulatio</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="639"/>
+        <location filename="../../UI/MainWindow.cpp" line="638"/>
         <location filename="../../UI/MainWindowUI.cpp" line="852"/>
         <source>Shortcuts and Tips</source>
         <translation>Pikanäppäimet ja vinkit</translation>
@@ -2407,12 +2407,12 @@ Tallennetaanko nyt?</translation>
         <translation>Ilmoita käännösvirheistä tai auta parantamaan käännöksiä Weblatessa</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1001"/>
+        <location filename="../../UI/MainWindow.cpp" line="1000"/>
         <source>New Project</source>
         <translation>Uusi projekti</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="508"/>
+        <location filename="../../UI/MainWindow.cpp" line="507"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2431,67 +2431,67 @@ wiRedPanda %1 listaa automaattisesti kaikki muut .panda-tiedostot nykyisen proje
 Uudet projektit on tallennettava ennen IC:iden ja ulkoasujen käyttöä tai beWavedDolphin-simulaatioiden suorittamista.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="669"/>
+        <location filename="../../UI/MainWindow.cpp" line="668"/>
         <source>Are you sure?</source>
         <translation>Oletko varma?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="285"/>
+        <location filename="../../UI/MainWindow.cpp" line="284"/>
         <source>Error</source>
         <translation>Virhe</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="314"/>
+        <location filename="../../UI/MainWindow.cpp" line="313"/>
         <source>Open My Exercises Folder</source>
         <translation>Avaa Harjoituskansioni</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="315"/>
+        <location filename="../../UI/MainWindow.cpp" line="314"/>
         <source>Could not create or access a folder for custom exercises.</source>
         <translation>Kansiota mukautetuille harjoituksille ei voitu luoda tai avata.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="325"/>
+        <location filename="../../UI/MainWindow.cpp" line="324"/>
         <source>Open My Tours Folder</source>
         <translation>Avaa Kierroskansioni</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="326"/>
+        <location filename="../../UI/MainWindow.cpp" line="325"/>
         <source>Could not create or access a folder for custom tours.</source>
         <translation>Kansiota mukautetuille kierroksille ei voitu luoda tai avata.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="568"/>
+        <location filename="../../UI/MainWindow.cpp" line="567"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda on São Paulon liittovaltion yliopiston opiskelijoiden kehittämä ohjelmisto, joka auttaa opiskelijoita oppimaan logiikkapiireistä.&lt;/p&gt;&lt;p&gt;Ohjelmistoversio: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Tekijät:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPandaa ylläpitävät tällä hetkellä prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves ja Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Ilmoita ongelmasta GitHub-sivullamme, jos löydät virheen tai haluat pyytää uutta ominaisuutta.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Käy verkkosivuillamme!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="592"/>
+        <location filename="../../UI/MainWindow.cpp" line="591"/>
         <source>Redo</source>
         <translation>Tee uudelleen</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="593"/>
+        <location filename="../../UI/MainWindow.cpp" line="592"/>
         <source>Undo</source>
         <translation>Kumoa</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="618"/>
+        <location filename="../../UI/MainWindow.cpp" line="617"/>
         <source>&lt;h1&gt;Keyboard Shortcuts&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;Element Property Navigation&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : Previous / next primary property &lt;/li&gt;&lt;li&gt; { / } : Previous / next secondary property &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : Morph to previous / next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Double-click a wire to create a node &lt;/li&gt;&lt;li&gt; Drag an element from the left panel onto the canvas to add it &lt;/li&gt;&lt;li&gt; Nudge the selection with the arrow keys (hold Shift for larger steps) &lt;/li&gt;&lt;li&gt; Drop a .panda file onto the canvas to open it &lt;/li&gt;&lt;/ul&gt;</source>
         <translation>&lt;h1&gt;Pikanäppäimet&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;Elementin Ominaisuuksien Navigointi&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : Edellinen / seuraava ensisijainen ominaisuus &lt;/li&gt;&lt;li&gt; { / } : Edellinen / seuraava toissijainen ominaisuus &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : Muunna edelliseksi / seuraavaksi elementiksi &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Yleisiä Vinkkejä&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Kaksoisnapsauta johtoa luodaksesi solmun &lt;/li&gt;&lt;li&gt; Vedä elementti vasemmasta paneelista piirtoalueelle lisätäksesi sen &lt;/li&gt;&lt;li&gt; Siirrä valintaa nuolinäppäimillä (pidä Vaihto pohjassa suurempia askelia varten) &lt;/li&gt;&lt;li&gt; Pudota .panda-tiedosto piirtoalueelle avataksesi sen &lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="668"/>
+        <location filename="../../UI/MainWindow.cpp" line="667"/>
         <source>Exit</source>
         <translation>Poistu</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="843"/>
+        <location filename="../../UI/MainWindow.cpp" line="842"/>
         <source>%1[*] — wiRedPanda %2</source>
         <translation>%1[*] — wiRedPanda %2</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1308"/>
+        <location filename="../../UI/MainWindow.cpp" line="1289"/>
         <source>Unmute</source>
         <translation>Poista vaimennus</translation>
     </message>
@@ -2517,7 +2517,7 @@ Uudet projektit on tallennettava ennen IC:iden ja ulkoasujen käyttöä tai beWa
 <context>
     <name>MorphCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="705"/>
+        <location filename="../../Scene/Commands.cpp" line="707"/>
         <source>Morph %1 elements to %2</source>
         <translation>Muunna %1 elementtiä muotoon %2</translation>
     </message>
@@ -2525,7 +2525,7 @@ Uudet projektit on tallennettava ennen IC:iden ja ulkoasujen käyttöä tai beWa
 <context>
     <name>MoveCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="402"/>
+        <location filename="../../Scene/Commands.cpp" line="404"/>
         <source>Move elements</source>
         <translation>Siirrä elementtejä</translation>
     </message>
@@ -2735,7 +2735,7 @@ Uudet projektit on tallennettava ennen IC:iden ja ulkoasujen käyttöä tai beWa
 <context>
     <name>RegisterBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1126"/>
+        <location filename="../../Scene/Commands.cpp" line="1128"/>
         <source>Register blob &quot;%1&quot;</source>
         <translation>Rekisteröi blob &quot;%1&quot;</translation>
     </message>
@@ -2743,7 +2743,7 @@ Uudet projektit on tallennettava ennen IC:iden ja ulkoasujen käyttöä tai beWa
 <context>
     <name>RemoveBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1149"/>
+        <location filename="../../Scene/Commands.cpp" line="1151"/>
         <source>Remove blob &quot;%1&quot;</source>
         <translation>Poista blob &quot;%1&quot;</translation>
     </message>
@@ -2751,7 +2751,7 @@ Uudet projektit on tallennettava ennen IC:iden ja ulkoasujen käyttöä tai beWa
 <context>
     <name>RenameBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1170"/>
+        <location filename="../../Scene/Commands.cpp" line="1172"/>
         <source>Rename IC &quot;%1&quot; to &quot;%2&quot;</source>
         <translation>Nimeä IC &quot;%1&quot; uudelleen nimeksi &quot;%2&quot;</translation>
     </message>
@@ -2759,7 +2759,7 @@ Uudet projektit on tallennettava ennen IC:iden ja ulkoasujen käyttöä tai beWa
 <context>
     <name>RotateCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="334"/>
+        <location filename="../../Scene/Commands.cpp" line="336"/>
         <source>Rotate %1 degrees</source>
         <translation>Kierrä %1 astetta</translation>
     </message>
@@ -2887,32 +2887,32 @@ Uudet projektit on tallennettava ennen IC:iden ja ulkoasujen käyttöä tai beWa
         <translation>Virtavirhe ladattaessa elementtiä kohdassa %1: tila %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="649"/>
+        <location filename="../../IO/Serialization.cpp" line="655"/>
         <source>Stream error loading connection at position %1: status %2</source>
         <translation>Virtavirhe ladattaessa yhteyttä kohdassa %1: tila %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="656"/>
+        <location filename="../../IO/Serialization.cpp" line="663"/>
         <source>Invalid type. Data is possibly corrupted.</source>
         <translation>Virheellinen tyyppi. Tiedot saattavat olla vioittuneita.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="709"/>
+        <location filename="../../IO/Serialization.cpp" line="716"/>
         <source>Failed to create versioned backup: %1</source>
         <translation>Versioidun varmuuskopion luominen epäonnistui: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="738"/>
+        <location filename="../../IO/Serialization.cpp" line="745"/>
         <source>Stream error reading preamble: status %1</source>
         <translation>Tietovirran virhe luettaessa alkuosaa: tila %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="797"/>
+        <location filename="../../IO/Serialization.cpp" line="809"/>
         <source>Panda file dependency chain exceeds the maximum nesting depth (%1) while copying &apos;%2&apos;</source>
         <translation>Panda-tiedoston riippuvuusketju ylittää suurimman sallitun sisäkkäisyyssyvyyden (%1) kopioitaessa &apos;%2&apos;</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="816"/>
+        <location filename="../../IO/Serialization.cpp" line="828"/>
         <source>Error copying file: %1</source>
         <translation>Virhe tiedoston kopioinnissa: %1</translation>
     </message>
@@ -2928,32 +2928,32 @@ Uudet projektit on tallennettava ennen IC:iden ja ulkoasujen käyttöä tai beWa
 <context>
     <name>SplitCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="578"/>
+        <location filename="../../Scene/Commands.cpp" line="580"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
         <translation>Virheelliset yhteysportit SplitCommand-konstruktorissa</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="584"/>
+        <location filename="../../Scene/Commands.cpp" line="586"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
         <translation>Virheelliset graafiset elementit SplitCommand-konstruktorissa</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="607"/>
+        <location filename="../../Scene/Commands.cpp" line="609"/>
         <source>Wire split</source>
         <translation>Johdon jako</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="623"/>
+        <location filename="../../Scene/Commands.cpp" line="625"/>
         <source>Error trying to redo %1</source>
         <translation>Virhe yritettäessä tehdä uudelleen %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="646"/>
+        <location filename="../../Scene/Commands.cpp" line="630"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
         <translation>Virhe: endPort on null SplitCommand::redo()-funktiossa</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="675"/>
+        <location filename="../../Scene/Commands.cpp" line="677"/>
         <source>Error trying to undo %1</source>
         <translation>Virhe yritettäessä perua %1</translation>
     </message>
@@ -2966,12 +2966,12 @@ Uudet projektit on tallennettava ennen IC:iden ja ulkoasujen käyttöä tai beWa
         <translation>Tiedostoa ei voitu avata kirjoitusta varten: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1259"/>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1295"/>
         <source>Output variable not mapped for TruthTable: %1</source>
         <translation>Lähtömuuttujaa ei ole yhdistetty totuustauluun: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1308"/>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1353"/>
         <source>Element type not supported: %1</source>
         <translation>Elementtityyppiä ei tueta: %1</translation>
     </message>
@@ -3010,17 +3010,17 @@ Uudet projektit on tallennettava ennen IC:iden ja ulkoasujen käyttöä tai beWa
 <context>
     <name>ToggleTruthTableOutputCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1059"/>
+        <location filename="../../Scene/Commands.cpp" line="1061"/>
         <source>Toggle TruthTable Output at position: %1</source>
         <translation>Vaihda totuustaulun ulostulo paikassa: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1068"/>
+        <location filename="../../Scene/Commands.cpp" line="1070"/>
         <source>Could not find truthtable element!</source>
         <translation>Totuustauluelementtiä ei löytynyt!</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1075"/>
+        <location filename="../../Scene/Commands.cpp" line="1077"/>
         <source>TruthTable toggle position out of range: %1</source>
         <translation>Totuustaulun vaihtoasema on sallitun alueen ulkopuolella: %1</translation>
     </message>
@@ -3029,38 +3029,38 @@ Uudet projektit on tallennettava ennen IC:iden ja ulkoasujen käyttöä tai beWa
     <name>TourOverlay</name>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="86"/>
-        <location filename="../../Tour/TourOverlay.cpp" line="240"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="208"/>
         <source>Exit</source>
         <translation>Poistu</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="87"/>
-        <location filename="../../Tour/TourOverlay.cpp" line="241"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="209"/>
         <source>Stop the tour</source>
         <translation>Lopeta opastus</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="89"/>
-        <location filename="../../Tour/TourOverlay.cpp" line="242"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="210"/>
         <source>← Back</source>
         <translation>← Takaisin</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="91"/>
-        <location filename="../../Tour/TourOverlay.cpp" line="212"/>
-        <location filename="../../Tour/TourOverlay.cpp" line="238"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="180"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="206"/>
         <source>Next →</source>
         <translation>Seuraava →</translation>
     </message>
     <message>
-        <location filename="../../Tour/TourOverlay.cpp" line="207"/>
-        <location filename="../../Tour/TourOverlay.cpp" line="235"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="175"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="203"/>
         <source>Step %1 of %2</source>
         <translation>Vaihe %1/%2</translation>
     </message>
     <message>
-        <location filename="../../Tour/TourOverlay.cpp" line="212"/>
-        <location filename="../../Tour/TourOverlay.cpp" line="238"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="180"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="206"/>
         <source>Finish</source>
         <translation>Lopeta</translation>
     </message>
@@ -3094,7 +3094,7 @@ Uudet projektit on tallennettava ennen IC:iden ja ulkoasujen käyttöä tai beWa
 <context>
     <name>UpdateBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1203"/>
+        <location filename="../../Scene/Commands.cpp" line="1205"/>
         <source>Update %1 IC blobs</source>
         <translation>Päivitä %1 IC-blobit</translation>
     </message>
@@ -3102,7 +3102,7 @@ Uudet projektit on tallennettava ennen IC:iden ja ulkoasujen käyttöä tai beWa
 <context>
     <name>UpdateCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="457"/>
+        <location filename="../../Scene/Commands.cpp" line="459"/>
         <source>Update %1 elements</source>
         <translation>Päivitä %1 elementtiä</translation>
     </message>
@@ -3135,55 +3135,55 @@ Uudet projektit on tallennettava ennen IC:iden ja ulkoasujen käyttöä tai beWa
         <translation>Lataa</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="100"/>
+        <location filename="../../UI/UpdateController.cpp" line="105"/>
         <source>Downloading wiRedPanda %1…</source>
         <translation>Ladataan wiRedPanda %1…</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="100"/>
+        <location filename="../../UI/UpdateController.cpp" line="105"/>
         <source>Cancel</source>
         <translation>Peruuta</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="101"/>
+        <location filename="../../UI/UpdateController.cpp" line="106"/>
         <source>Downloading Update</source>
         <translation>Ladataan päivitystä</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="137"/>
-        <location filename="../../UI/UpdateController.cpp" line="145"/>
-        <location filename="../../UI/UpdateController.cpp" line="151"/>
+        <location filename="../../UI/UpdateController.cpp" line="142"/>
+        <location filename="../../UI/UpdateController.cpp" line="150"/>
+        <location filename="../../UI/UpdateController.cpp" line="156"/>
         <source>Download Failed</source>
         <translation>Lataus epäonnistui</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="137"/>
+        <location filename="../../UI/UpdateController.cpp" line="142"/>
         <source>Could not download the update:
 %1</source>
         <translation>Päivityksen lataaminen epäonnistui:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="145"/>
+        <location filename="../../UI/UpdateController.cpp" line="150"/>
         <source>Could not save the file:
 %1</source>
         <translation>Tiedoston tallentaminen epäonnistui:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="151"/>
+        <location filename="../../UI/UpdateController.cpp" line="156"/>
         <source>Could not write the file:
 %1</source>
         <translation>Tiedostoa ei voitu kirjoittaa:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="158"/>
+        <location filename="../../UI/UpdateController.cpp" line="163"/>
         <source>Download Complete</source>
         <translation>Lataus valmis</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="159"/>
+        <location filename="../../UI/UpdateController.cpp" line="164"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
         <translation>wiRedPanda on ladattu kohteeseen:
@@ -3219,22 +3219,22 @@ Päivitä wiRedPanda tallentaaksesi muutokset tähän tiedostoon.</translation>
         <translation>Virhe avattaessa tiedostoa: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="392"/>
+        <location filename="../../Scene/Workspace.cpp" line="397"/>
         <source>Could not save file: %1</source>
         <translation>Tiedostoa ei voitu tallentaa: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="475"/>
+        <location filename="../../Scene/Workspace.cpp" line="480"/>
         <source>This file does not exist: %1</source>
         <translation>Tätä tiedostoa ei ole olemassa: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="484"/>
+        <location filename="../../Scene/Workspace.cpp" line="489"/>
         <source>Could not open file: %1</source>
         <translation>Tiedostoa ei voitu avata: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="532"/>
+        <location filename="../../Scene/Workspace.cpp" line="537"/>
         <source>This file was saved with a newer file format (version %1).
 Your version supports file format %2.
 
@@ -3247,34 +3247,34 @@ Tiedosto avataan, mutta tallentaminen on estetty.
 Päivitä wiRedPanda muokataksesi ja tallentaaksesi tämän tiedoston.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="537"/>
+        <location filename="../../Scene/Workspace.cpp" line="542"/>
         <source>Newer version file.</source>
         <translation>Uudemman version tiedosto.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="540"/>
+        <location filename="../../Scene/Workspace.cpp" line="545"/>
         <source>This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).
 A backup of the original file has been created with name: %3</source>
         <translation>Tämä tiedosto on vanhemmassa muodossa (versio %1) ja päivitetään automaattisesti nykyiseen muotoon (versio %2).
 Alkuperäisen tiedoston varmuuskopio on luotu nimellä: %3</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="543"/>
+        <location filename="../../Scene/Workspace.cpp" line="548"/>
         <source>File upgraded.</source>
         <translation>Tiedosto päivitetty.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="713"/>
+        <location filename="../../Scene/Workspace.cpp" line="718"/>
         <source>Error opening autosave file: %1</source>
         <translation>Virhe avattaessa automaattitallennustiedostoa: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="721"/>
+        <location filename="../../Scene/Workspace.cpp" line="729"/>
         <source>Could not commit autosave file: %1</source>
         <translation>Automaattisen tallennuksen tiedostoa ei voitu vahvistaa: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="889"/>
+        <location filename="../../Scene/Workspace.cpp" line="897"/>
         <source>Remove embedded IC &quot;%1&quot;</source>
         <translation>Poista upotettu IC &quot;%1&quot;</translation>
     </message>

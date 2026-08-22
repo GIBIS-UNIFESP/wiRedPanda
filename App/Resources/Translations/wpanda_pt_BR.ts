@@ -4,7 +4,7 @@
 <context>
     <name>AddItemsCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="283"/>
+        <location filename="../../Scene/Commands.cpp" line="285"/>
         <source>Add %1 elements</source>
         <translation>Adicionar %1 elementos</translation>
     </message>
@@ -25,7 +25,7 @@
 <context>
     <name>Application</name>
     <message>
-        <location filename="../../Core/Application.cpp" line="146"/>
+        <location filename="../../Core/Application.cpp" line="150"/>
         <source>Error!</source>
         <translation>Erro!</translation>
     </message>
@@ -38,22 +38,22 @@
         <translation>Não foi possível abrir o arquivo para escrita: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="764"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="782"/>
         <source>Element type not supported: %1</source>
         <translation>Tipo de elemento não suportado: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="987"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="1011"/>
         <source>Output variable not mapped for TruthTable: %1</source>
         <translation>Variável de saída não mapeada para a tabela verdade: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="1067"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="1091"/>
         <source>This circuit needs %1 I/O pins, but the largest supported board (%2) provides only %3. Reduce the number of inputs and outputs, or split the circuit.</source>
         <translation>Este circuito precisa de %1 pinos de E/S, mas a maior placa suportada (%2) fornece apenas %3. Reduza o número de entradas e saídas, ou divida o circuito.</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="1265"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="1303"/>
         <source>Could not open testbench file: %1</source>
         <translation>Não foi possível abrir o arquivo de bancada de teste: %1</translation>
     </message>
@@ -130,7 +130,7 @@
         <translation>Combinacional</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="993"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1006"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="268"/>
         <source>Export to PDF</source>
         <translation>Exportar para PDF</translation>
@@ -264,69 +264,69 @@
         <translation>Salvar a simulação antes de sair?</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="880"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="891"/>
         <source>Do you want to link this beWavedDolphin file to your current wiRedPanda file and save it?</source>
         <translation>Deseja vincular este arquivo beWavedDolphin ao seu arquivo wiRedPanda atual e salvá-lo?</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="845"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="851"/>
         <source>Save File as...</source>
         <translation>Salvar arquivo como...</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="826"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="866"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="832"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="872"/>
         <source>Saved file successfully.</source>
         <translation>Arquivo salvo com sucesso.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="480"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="482"/>
         <source>Cannot export: the circuit this waveform was built from has changed.</source>
         <translation>Não é possível exportar: o circuito a partir do qual esta forma de onda foi construída foi alterado.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="601"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="607"/>
         <source>No cells selected.</source>
         <translation>Nenhuma célula selecionada.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="838"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="839"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="912"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="844"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="845"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="925"/>
         <source>CSV files</source>
         <translation>Arquivos CSV</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="838"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="839"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="912"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="844"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="845"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="925"/>
         <source>Dolphin files</source>
         <translation>Arquivos Dolphin</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="838"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="839"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="912"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="844"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="845"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="925"/>
         <source>All supported files</source>
         <translation>Todos os arquivos suportados</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="911"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="924"/>
         <source>Open File</source>
         <translation>Abrir arquivo</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="975"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="988"/>
         <source>PNG files</source>
         <translation>Arquivos PNG</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="993"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1006"/>
         <source>PDF files</source>
         <translation>Arquivos PDF</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="920"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="933"/>
         <source>File loaded successfully.</source>
         <translation>Arquivo carregado com sucesso.</translation>
     </message>
@@ -336,26 +336,26 @@
         <translation>O arquivo &quot;%1&quot; não existe!</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="975"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="988"/>
         <source>Export to Image</source>
         <translation>Exportar para Imagem</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1012"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1025"/>
         <source>&lt;p&gt;beWavedDolphin is a waveform simulator for wiRedPanda, developed by the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;beWavedDolphin é um simulador de formas de onda para o wiRedPanda, desenvolvido pela Universidade Federal de São Paulo para ajudar os estudantes a aprender sobre circuitos lógicos.&lt;/p&gt;&lt;p&gt;Versão do software: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Criadores:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; O beWavedDolphin é atualmente mantido pelo Prof. Fábio Cappabianco, Ph.D. e seus estudantes.&lt;/p&gt;&lt;p&gt; Por favor, envie um relatório em nossa página do GitHub se encontrar um bug ou quiser solicitar uma nova funcionalidade.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visite nosso site!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="59"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="127"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="865"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="931"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="871"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="944"/>
         <source>beWavedDolphin Simulator</source>
         <translation>Simulador beWavedDolphin</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="392"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="879"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="890"/>
         <source>wiRedPanda - beWavedDolphin</source>
         <translation>wiRedPanda - beWavedDolphin</translation>
     </message>
@@ -376,12 +376,12 @@
 <context>
     <name>ChangePortSizeCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="964"/>
+        <location filename="../../Scene/Commands.cpp" line="966"/>
         <source>Change input size to %1</source>
         <translation>Alterar tamanho de entrada para %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="965"/>
+        <location filename="../../Scene/Commands.cpp" line="967"/>
         <source>Change output size to %1</source>
         <translation>Alterar tamanho de saída para %1</translation>
     </message>
@@ -471,7 +471,7 @@
         <translation>Erro de fluxo ao ler o mapa de conexões no deslocamento %1</translation>
     </message>
     <message>
-        <location filename="../../Wiring/ConnectionSerializer.cpp" line="51"/>
+        <location filename="../../Wiring/ConnectionSerializer.cpp" line="50"/>
         <source>Stream error reading connection port IDs at offset %1</source>
         <translation>Erro de fluxo ao ler os IDs das portas de conexão no deslocamento %1</translation>
     </message>
@@ -505,7 +505,7 @@
 <context>
     <name>DeleteItemsCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="309"/>
+        <location filename="../../Scene/Commands.cpp" line="311"/>
         <source>Delete %1 elements</source>
         <translation>Excluir %1 elementos</translation>
     </message>
@@ -843,41 +843,41 @@
         <translation>Roxo</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="655"/>
+        <location filename="../../UI/ElementEditor.cpp" line="659"/>
         <source>Duplicate Wireless Channel</source>
         <translation>Canal sem fio duplicado</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="656"/>
+        <location filename="../../UI/ElementEditor.cpp" line="660"/>
         <source>A Tx node with label &quot;%1&quot; already exists.
 Each wireless channel must have a unique label.</source>
         <translation>Um nó Tx com o rótulo &quot;%1&quot; já existe.
 Cada canal sem fio deve ter um rótulo único.</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="713"/>
+        <location filename="../../UI/ElementEditor.cpp" line="717"/>
         <source>Change wireless mode</source>
         <translation>Alterar modo sem fio</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="746"/>
+        <location filename="../../UI/ElementEditor.cpp" line="750"/>
         <source>Duplicate IC Name</source>
         <translation>Nome de CI duplicado</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="747"/>
+        <location filename="../../UI/ElementEditor.cpp" line="751"/>
         <source>An embedded IC named &quot;%1&quot; already exists.
 Choose a different name.</source>
         <translation>Já existe um CI incorporado chamado &quot;%1&quot;.
 Escolha um nome diferente.</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="955"/>
+        <location filename="../../UI/ElementEditor.cpp" line="959"/>
         <source>Select any audio</source>
         <translation>Selecione qualquer áudio</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="956"/>
+        <location filename="../../UI/ElementEditor.cpp" line="960"/>
         <source>Audio</source>
         <translation>Áudio</translation>
     </message>
@@ -897,31 +897,31 @@ Escolha um nome diferente.</translation>
         <translation>Cor:</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="155"/>
+        <location filename="../../UI/ElementEditor.h" line="156"/>
         <source>&lt;Many labels&gt;</source>
         <translation>&lt;Vários rótulos&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="151"/>
+        <location filename="../../UI/ElementEditor.h" line="152"/>
         <source>&lt;Many colors&gt;</source>
         <translation>&lt;Várias cores&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="152"/>
         <location filename="../../UI/ElementEditor.h" line="153"/>
         <location filename="../../UI/ElementEditor.h" line="154"/>
-        <location filename="../../UI/ElementEditor.h" line="156"/>
+        <location filename="../../UI/ElementEditor.h" line="155"/>
         <location filename="../../UI/ElementEditor.h" line="157"/>
+        <location filename="../../UI/ElementEditor.h" line="158"/>
         <source>&lt;Many values&gt;</source>
         <translation>&lt;Vários valores&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="159"/>
+        <location filename="../../UI/ElementEditor.h" line="160"/>
         <source>&lt;Many modes&gt;</source>
         <translation>&lt;Muitos modos&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="158"/>
+        <location filename="../../UI/ElementEditor.h" line="159"/>
         <source>&lt;Many triggers&gt;</source>
         <translation>&lt;Vários gatilhos&gt;</translation>
     </message>
@@ -1113,7 +1113,7 @@ Escolha um nome diferente.</translation>
         <translation>Deslocamento de fase em relação ao clock de controle, como uma fração do seu período.</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="150"/>
+        <location filename="../../UI/ElementEditor.h" line="151"/>
         <source>&lt;Many sounds&gt;</source>
         <translation>&lt;Muitos sons&gt;</translation>
     </message>
@@ -1341,60 +1341,60 @@ Escolha um nome diferente.</translation>
     <name>ExerciseOverlay</name>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="58"/>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="219"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="193"/>
         <source>Exit</source>
         <translation>Sair</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="59"/>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="220"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="194"/>
         <source>Close exercise</source>
         <translation>Fechar exercício</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="61"/>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="81"/>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="193"/>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="221"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="167"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="195"/>
         <source>Hint</source>
         <translation>Dica</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="63"/>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="222"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="196"/>
         <source>← Back</source>
         <translation>← Voltar</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="65"/>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="245"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="219"/>
         <source>Next →</source>
         <translation>Avançar →</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="81"/>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="221"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="195"/>
         <source>Hide hint</source>
         <translation>Ocultar dica</translation>
     </message>
     <message>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="186"/>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="214"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="160"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="188"/>
         <source>Step %1 of %2</source>
         <translation>Etapa %1 de %2</translation>
     </message>
     <message>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="231"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="205"/>
         <source>Exercise complete! Well done.</source>
         <translation>Exercício concluído! Muito bem.</translation>
     </message>
     <message>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="235"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="209"/>
         <source>Close</source>
         <translation>Fechar</translation>
     </message>
     <message>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="245"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="219"/>
         <source>Finish</source>
         <translation>Concluir</translation>
     </message>
@@ -1474,7 +1474,7 @@ Escolha um nome diferente.</translation>
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="905"/>
+        <location filename="../../Scene/Commands.cpp" line="907"/>
         <source>Flip %1 elements in axis %2</source>
         <translation>Inverter %1 elementos no eixo %2</translation>
     </message>
@@ -1510,42 +1510,42 @@ Escolha um nome diferente.</translation>
         <translation>Erro de fluxo ao ler as propriedades do elemento na posição %1</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="406"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="410"/>
         <source>Stream error reading appearances at position %1</source>
         <translation>Erro de fluxo ao ler as aparências na posição %1</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="414"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="418"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
         <translation>Índice de aparência %1 fora do intervalo (tamanho=%2) — o fluxo pode estar corrompido</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="460"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="464"/>
         <source>Non-finite element position — stream may be corrupt</source>
         <translation>Posição de elemento não finita — o fluxo pode estar corrompido</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="478"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="482"/>
         <source>Non-finite element rotation — stream may be corrupt</source>
         <translation>Rotação de elemento não finita — o fluxo pode estar corrompido</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="538"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="542"/>
         <source>Refusing old-format input port list with implausible count %1 (max %2)</source>
         <translation>Lista de portas de entrada em formato antigo recusada com contagem implausível %1 (máx. %2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="572"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="576"/>
         <source>Refusing old-format output port list with implausible count %1 (max %2)</source>
         <translation>Lista de portas de saída em formato antigo recusada com contagem implausível %1 (máx. %2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="637"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="641"/>
         <source>Refusing old-format appearance list with implausible count %1 (max %2)</source>
         <translation>Lista de aparências em formato antigo recusada com contagem implausível %1 (máx. %2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="666"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="670"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
         <translation>Índice de aparência %1 fora do intervalo (tamanho=%2) para o nome de aparência &quot;%3&quot; — o fluxo pode estar corrompido</translation>
     </message>
@@ -1787,12 +1787,12 @@ Salvar agora?</translation>
         <translation>Migração de CI: não é possível abrir o arquivo para gravação: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICLoader.cpp" line="247"/>
+        <location filename="../../Element/ICLoader.cpp" line="250"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
         <translation>Migração de CI: falha ao confirmar o arquivo regravado: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICLoader.cpp" line="310"/>
+        <location filename="../../Element/ICLoader.cpp" line="313"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
         <translation>Limite de profundidade de aninhamento de CI (%1) excedido — o blob pode ter sido criado com intenção maliciosa</translation>
     </message>
@@ -1800,17 +1800,17 @@ Salvar agora?</translation>
 <context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="276"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="280"/>
         <source>Could not open file: %1</source>
         <translation>Não foi possível abrir arquivo: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="280"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="287"/>
         <source>Could not save file: %1</source>
         <translation>Não foi possível salvar arquivo: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="343"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="350"/>
         <source>Embedded IC dependency chain exceeds the maximum nesting depth (%1) while resolving &apos;%2&apos;</source>
         <translation>A cadeia de dependências de CI incorporados excede a profundidade máxima de aninhamento (%1) ao resolver &apos;%2&apos;</translation>
     </message>
@@ -1918,22 +1918,22 @@ Salvar agora?</translation>
         <translation>LED</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="249"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="252"/>
         <source>Port %1=%2</source>
         <translation>Pino %1=%2</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="256"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="259"/>
         <source>Off</source>
         <translation>Desligado</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="257"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="260"/>
         <source>On</source>
         <translation>Ligado</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="280"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="285"/>
         <source>Default</source>
         <translation>Padrão</translation>
     </message>
@@ -2078,32 +2078,32 @@ Salvar agora?</translation>
         <translation>&amp;Sair</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="285"/>
+        <location filename="../../UI/MainWindow.cpp" line="284"/>
         <source>Error</source>
         <translation>Erro</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="314"/>
+        <location filename="../../UI/MainWindow.cpp" line="313"/>
         <source>Open My Exercises Folder</source>
         <translation>Abrir Minha Pasta de Exercícios</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="315"/>
+        <location filename="../../UI/MainWindow.cpp" line="314"/>
         <source>Could not create or access a folder for custom exercises.</source>
         <translation>Não foi possível criar ou acessar uma pasta para exercícios personalizados.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="325"/>
+        <location filename="../../UI/MainWindow.cpp" line="324"/>
         <source>Open My Tours Folder</source>
         <translation>Abrir Minha Pasta de Tours</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="326"/>
+        <location filename="../../UI/MainWindow.cpp" line="325"/>
         <source>Could not create or access a folder for custom tours.</source>
         <translation>Não foi possível criar ou acessar uma pasta para tours personalizados.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="508"/>
+        <location filename="../../UI/MainWindow.cpp" line="507"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2122,32 +2122,32 @@ wiRedPanda %1 listará automaticamente todos os outros arquivos .panda no mesmo 
 Você precisa salvar novos projetos antes de acessar CIs e aparências ou executar simulações beWavedDolphin.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="568"/>
+        <location filename="../../UI/MainWindow.cpp" line="567"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda é um software desenvolvido por estudantes da Universidade Federal de São Paulo para ajudar estudantes a aprender sobre circuitos lógicos.&lt;/p&gt;&lt;p&gt;Versão do software: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Criadores:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; O wiRedPanda é atualmente mantido pelo Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves e Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Por favor, registre um relato em nossa página do GitHub se encontrar um bug ou quiser solicitar um novo recurso.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visite nosso site!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="592"/>
+        <location filename="../../UI/MainWindow.cpp" line="591"/>
         <source>Redo</source>
         <translation>Refazer</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="593"/>
+        <location filename="../../UI/MainWindow.cpp" line="592"/>
         <source>Undo</source>
         <translation>Desfazer</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="618"/>
+        <location filename="../../UI/MainWindow.cpp" line="617"/>
         <source>&lt;h1&gt;Keyboard Shortcuts&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;Element Property Navigation&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : Previous / next primary property &lt;/li&gt;&lt;li&gt; { / } : Previous / next secondary property &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : Morph to previous / next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Double-click a wire to create a node &lt;/li&gt;&lt;li&gt; Drag an element from the left panel onto the canvas to add it &lt;/li&gt;&lt;li&gt; Nudge the selection with the arrow keys (hold Shift for larger steps) &lt;/li&gt;&lt;li&gt; Drop a .panda file onto the canvas to open it &lt;/li&gt;&lt;/ul&gt;</source>
         <translation>&lt;h1&gt;Atalhos de Teclado&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;Navegação de Propriedades do Elemento&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : Propriedade principal anterior / seguinte &lt;/li&gt;&lt;li&gt; { / } : Propriedade secundária anterior / seguinte &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : Transformar no elemento anterior / seguinte &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Dicas Gerais&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Dê um duplo clique em um fio para criar um nó &lt;/li&gt;&lt;li&gt; Arraste um elemento do painel esquerdo para a tela para adicioná-lo &lt;/li&gt;&lt;li&gt; Mova a seleção com as teclas de seta (segure Shift para passos maiores) &lt;/li&gt;&lt;li&gt; Solte um arquivo .panda na tela para abri-lo &lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="843"/>
+        <location filename="../../UI/MainWindow.cpp" line="842"/>
         <source>%1[*] — wiRedPanda %2</source>
         <translation>%1[*] — wiRedPanda %2</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="668"/>
+        <location filename="../../UI/MainWindow.cpp" line="667"/>
         <source>Exit</source>
         <translation>Sair</translation>
     </message>
@@ -2373,7 +2373,7 @@ Você precisa salvar novos projetos antes de acessar CIs e aparências ou execut
         <translation>Simulação em segundo plano</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="639"/>
+        <location filename="../../UI/MainWindow.cpp" line="638"/>
         <location filename="../../UI/MainWindowUI.cpp" line="852"/>
         <source>Shortcuts and Tips</source>
         <translation>Atalhos e Dicas</translation>
@@ -2389,7 +2389,7 @@ Você precisa salvar novos projetos antes de acessar CIs e aparências ou execut
         <translation>Reportar erros de tradução ou ajudar a melhorar traduções no Weblate</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1308"/>
+        <location filename="../../UI/MainWindow.cpp" line="1289"/>
         <location filename="../../UI/MainWindowUI.cpp" line="841"/>
         <source>Mute</source>
         <translation>Silenciar</translation>
@@ -2476,12 +2476,12 @@ Você precisa salvar novos projetos antes de acessar CIs e aparências ou execut
         <translation>Circuitos Integrados</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1308"/>
+        <location filename="../../UI/MainWindow.cpp" line="1289"/>
         <source>Unmute</source>
         <translation>Ativar som</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1001"/>
+        <location filename="../../UI/MainWindow.cpp" line="1000"/>
         <source>New Project</source>
         <translation>Novo Projeto</translation>
     </message>
@@ -2491,7 +2491,7 @@ Você precisa salvar novos projetos antes de acessar CIs e aparências ou execut
         <translation>Sobre esta versão</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="669"/>
+        <location filename="../../UI/MainWindow.cpp" line="668"/>
         <source>Are you sure?</source>
         <translation>Tem certeza?</translation>
     </message>
@@ -2517,7 +2517,7 @@ Você precisa salvar novos projetos antes de acessar CIs e aparências ou execut
 <context>
     <name>MorphCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="705"/>
+        <location filename="../../Scene/Commands.cpp" line="707"/>
         <source>Morph %1 elements to %2</source>
         <translation>Transformar %1 elementos em %2</translation>
     </message>
@@ -2525,7 +2525,7 @@ Você precisa salvar novos projetos antes de acessar CIs e aparências ou execut
 <context>
     <name>MoveCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="402"/>
+        <location filename="../../Scene/Commands.cpp" line="404"/>
         <source>Move elements</source>
         <translation>Mover elementos</translation>
     </message>
@@ -2735,7 +2735,7 @@ Você precisa salvar novos projetos antes de acessar CIs e aparências ou execut
 <context>
     <name>RegisterBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1126"/>
+        <location filename="../../Scene/Commands.cpp" line="1128"/>
         <source>Register blob &quot;%1&quot;</source>
         <translation>Registrar blob &quot;%1&quot;</translation>
     </message>
@@ -2743,7 +2743,7 @@ Você precisa salvar novos projetos antes de acessar CIs e aparências ou execut
 <context>
     <name>RemoveBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1149"/>
+        <location filename="../../Scene/Commands.cpp" line="1151"/>
         <source>Remove blob &quot;%1&quot;</source>
         <translation>Remover blob &quot;%1&quot;</translation>
     </message>
@@ -2751,7 +2751,7 @@ Você precisa salvar novos projetos antes de acessar CIs e aparências ou execut
 <context>
     <name>RenameBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1170"/>
+        <location filename="../../Scene/Commands.cpp" line="1172"/>
         <source>Rename IC &quot;%1&quot; to &quot;%2&quot;</source>
         <translation>Renomear CI &quot;%1&quot; para &quot;%2&quot;</translation>
     </message>
@@ -2759,7 +2759,7 @@ Você precisa salvar novos projetos antes de acessar CIs e aparências ou execut
 <context>
     <name>RotateCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="334"/>
+        <location filename="../../Scene/Commands.cpp" line="336"/>
         <source>Rotate %1 degrees</source>
         <translation>Girar %1 graus</translation>
     </message>
@@ -2887,32 +2887,32 @@ Você precisa salvar novos projetos antes de acessar CIs e aparências ou execut
         <translation>Erro de fluxo ao carregar elemento na posição %1: status %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="649"/>
+        <location filename="../../IO/Serialization.cpp" line="655"/>
         <source>Stream error loading connection at position %1: status %2</source>
         <translation>Erro de fluxo ao carregar conexão na posição %1: status %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="656"/>
+        <location filename="../../IO/Serialization.cpp" line="663"/>
         <source>Invalid type. Data is possibly corrupted.</source>
         <translation>Tipo inválido. Os dados possivelmente estão corrompidos.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="709"/>
+        <location filename="../../IO/Serialization.cpp" line="716"/>
         <source>Failed to create versioned backup: %1</source>
         <translation>Falha ao criar backup versionado: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="738"/>
+        <location filename="../../IO/Serialization.cpp" line="745"/>
         <source>Stream error reading preamble: status %1</source>
         <translation>Erro de fluxo ao ler o preâmbulo: status %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="797"/>
+        <location filename="../../IO/Serialization.cpp" line="809"/>
         <source>Panda file dependency chain exceeds the maximum nesting depth (%1) while copying &apos;%2&apos;</source>
         <translation>A cadeia de dependências do arquivo Panda excede a profundidade máxima de aninhamento (%1) ao copiar &apos;%2&apos;</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="816"/>
+        <location filename="../../IO/Serialization.cpp" line="828"/>
         <source>Error copying file: %1</source>
         <translation>Erro ao copiar o arquivo: %1</translation>
     </message>
@@ -2928,32 +2928,32 @@ Você precisa salvar novos projetos antes de acessar CIs e aparências ou execut
 <context>
     <name>SplitCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="578"/>
+        <location filename="../../Scene/Commands.cpp" line="580"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
         <translation>Portas de conexão inválidas no construtor SplitCommand</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="584"/>
+        <location filename="../../Scene/Commands.cpp" line="586"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
         <translation>Elementos gráficos inválidos no construtor SplitCommand</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="607"/>
+        <location filename="../../Scene/Commands.cpp" line="609"/>
         <source>Wire split</source>
         <translation>Fio dividido</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="623"/>
+        <location filename="../../Scene/Commands.cpp" line="625"/>
         <source>Error trying to redo %1</source>
         <translation>Erro ao tentar refazer %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="646"/>
+        <location filename="../../Scene/Commands.cpp" line="630"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
         <translation>Erro: endPort é null em SplitCommand::redo()</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="675"/>
+        <location filename="../../Scene/Commands.cpp" line="677"/>
         <source>Error trying to undo %1</source>
         <translation>Erro ao tentar desfazer %1</translation>
     </message>
@@ -2966,12 +2966,12 @@ Você precisa salvar novos projetos antes de acessar CIs e aparências ou execut
         <translation>Não foi possível abrir o arquivo para gravação: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1259"/>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1295"/>
         <source>Output variable not mapped for TruthTable: %1</source>
         <translation>Variável de saída não mapeada para a tabela verdade: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1308"/>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1353"/>
         <source>Element type not supported: %1</source>
         <translation>Tipo de elemento não suportado: %1</translation>
     </message>
@@ -3010,17 +3010,17 @@ Você precisa salvar novos projetos antes de acessar CIs e aparências ou execut
 <context>
     <name>ToggleTruthTableOutputCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1059"/>
+        <location filename="../../Scene/Commands.cpp" line="1061"/>
         <source>Toggle TruthTable Output at position: %1</source>
         <translation>Alternar saída da TabelaVerdade na posição: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1068"/>
+        <location filename="../../Scene/Commands.cpp" line="1070"/>
         <source>Could not find truthtable element!</source>
         <translation>Não foi possível encontrar elemento de tabela verdade!</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1075"/>
+        <location filename="../../Scene/Commands.cpp" line="1077"/>
         <source>TruthTable toggle position out of range: %1</source>
         <translation>Posição de alternância da tabela verdade fora do intervalo: %1</translation>
     </message>
@@ -3029,38 +3029,38 @@ Você precisa salvar novos projetos antes de acessar CIs e aparências ou execut
     <name>TourOverlay</name>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="86"/>
-        <location filename="../../Tour/TourOverlay.cpp" line="240"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="208"/>
         <source>Exit</source>
         <translation>Sair</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="87"/>
-        <location filename="../../Tour/TourOverlay.cpp" line="241"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="209"/>
         <source>Stop the tour</source>
         <translation>Parar o tour</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="89"/>
-        <location filename="../../Tour/TourOverlay.cpp" line="242"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="210"/>
         <source>← Back</source>
         <translation>← Voltar</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="91"/>
-        <location filename="../../Tour/TourOverlay.cpp" line="212"/>
-        <location filename="../../Tour/TourOverlay.cpp" line="238"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="180"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="206"/>
         <source>Next →</source>
         <translation>Avançar →</translation>
     </message>
     <message>
-        <location filename="../../Tour/TourOverlay.cpp" line="207"/>
-        <location filename="../../Tour/TourOverlay.cpp" line="235"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="175"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="203"/>
         <source>Step %1 of %2</source>
         <translation>Etapa %1 de %2</translation>
     </message>
     <message>
-        <location filename="../../Tour/TourOverlay.cpp" line="212"/>
-        <location filename="../../Tour/TourOverlay.cpp" line="238"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="180"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="206"/>
         <source>Finish</source>
         <translation>Concluir</translation>
     </message>
@@ -3094,7 +3094,7 @@ Você precisa salvar novos projetos antes de acessar CIs e aparências ou execut
 <context>
     <name>UpdateBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1203"/>
+        <location filename="../../Scene/Commands.cpp" line="1205"/>
         <source>Update %1 IC blobs</source>
         <translation>Atualizar %1 blobs de CI</translation>
     </message>
@@ -3102,7 +3102,7 @@ Você precisa salvar novos projetos antes de acessar CIs e aparências ou execut
 <context>
     <name>UpdateCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="457"/>
+        <location filename="../../Scene/Commands.cpp" line="459"/>
         <source>Update %1 elements</source>
         <translation>Atualizar %1 elementos</translation>
     </message>
@@ -3135,55 +3135,55 @@ Você precisa salvar novos projetos antes de acessar CIs e aparências ou execut
         <translation>Baixar</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="100"/>
+        <location filename="../../UI/UpdateController.cpp" line="105"/>
         <source>Downloading wiRedPanda %1…</source>
         <translation>Baixando wiRedPanda %1…</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="100"/>
+        <location filename="../../UI/UpdateController.cpp" line="105"/>
         <source>Cancel</source>
         <translation>Cancelar</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="101"/>
+        <location filename="../../UI/UpdateController.cpp" line="106"/>
         <source>Downloading Update</source>
         <translation>Baixando atualização</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="137"/>
-        <location filename="../../UI/UpdateController.cpp" line="145"/>
-        <location filename="../../UI/UpdateController.cpp" line="151"/>
+        <location filename="../../UI/UpdateController.cpp" line="142"/>
+        <location filename="../../UI/UpdateController.cpp" line="150"/>
+        <location filename="../../UI/UpdateController.cpp" line="156"/>
         <source>Download Failed</source>
         <translation>Falha no download</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="137"/>
+        <location filename="../../UI/UpdateController.cpp" line="142"/>
         <source>Could not download the update:
 %1</source>
         <translation>Não foi possível baixar a atualização:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="145"/>
+        <location filename="../../UI/UpdateController.cpp" line="150"/>
         <source>Could not save the file:
 %1</source>
         <translation>Não foi possível salvar o arquivo:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="151"/>
+        <location filename="../../UI/UpdateController.cpp" line="156"/>
         <source>Could not write the file:
 %1</source>
         <translation>Não foi possível gravar o arquivo:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="158"/>
+        <location filename="../../UI/UpdateController.cpp" line="163"/>
         <source>Download Complete</source>
         <translation>Download concluído</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="159"/>
+        <location filename="../../UI/UpdateController.cpp" line="164"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
         <translation>wiRedPanda foi baixado para:
@@ -3219,22 +3219,22 @@ Por favor, atualize o wiRedPanda para salvar alterações neste arquivo.</transl
         <translation>Erro ao abrir arquivo: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="392"/>
+        <location filename="../../Scene/Workspace.cpp" line="397"/>
         <source>Could not save file: %1</source>
         <translation>Não foi possível salvar arquivo: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="475"/>
+        <location filename="../../Scene/Workspace.cpp" line="480"/>
         <source>This file does not exist: %1</source>
         <translation>Este arquivo não existe: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="484"/>
+        <location filename="../../Scene/Workspace.cpp" line="489"/>
         <source>Could not open file: %1</source>
         <translation>Não foi possível abrir arquivo: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="532"/>
+        <location filename="../../Scene/Workspace.cpp" line="537"/>
         <source>This file was saved with a newer file format (version %1).
 Your version supports file format %2.
 
@@ -3247,34 +3247,34 @@ O arquivo será aberto mas o salvamento está bloqueado.
 Por favor, atualize o wiRedPanda para editar e salvar este arquivo.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="537"/>
+        <location filename="../../Scene/Workspace.cpp" line="542"/>
         <source>Newer version file.</source>
         <translation>Arquivo de versão mais nova.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="540"/>
+        <location filename="../../Scene/Workspace.cpp" line="545"/>
         <source>This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).
 A backup of the original file has been created with name: %3</source>
         <translation>Este arquivo está em um formato antigo (versão %1) e será automaticamente atualizado para o formato atual (versão %2).
 Um backup do arquivo original foi criado com o nome: %3</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="543"/>
+        <location filename="../../Scene/Workspace.cpp" line="548"/>
         <source>File upgraded.</source>
         <translation>Arquivo atualizado.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="713"/>
+        <location filename="../../Scene/Workspace.cpp" line="718"/>
         <source>Error opening autosave file: %1</source>
         <translation>Erro ao abrir arquivo de salvamento automático: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="721"/>
+        <location filename="../../Scene/Workspace.cpp" line="729"/>
         <source>Could not commit autosave file: %1</source>
         <translation>Não foi possível efetivar o arquivo de salvamento automático: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="889"/>
+        <location filename="../../Scene/Workspace.cpp" line="897"/>
         <source>Remove embedded IC &quot;%1&quot;</source>
         <translation>Remover IC embutido &quot;%1&quot;</translation>
     </message>

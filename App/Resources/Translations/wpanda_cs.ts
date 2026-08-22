@@ -4,7 +4,7 @@
 <context>
     <name>AddItemsCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="283"/>
+        <location filename="../../Scene/Commands.cpp" line="285"/>
         <source>Add %1 elements</source>
         <translation>Přidat %1 prvků</translation>
     </message>
@@ -25,7 +25,7 @@
 <context>
     <name>Application</name>
     <message>
-        <location filename="../../Core/Application.cpp" line="146"/>
+        <location filename="../../Core/Application.cpp" line="150"/>
         <source>Error!</source>
         <translation>Chyba!</translation>
     </message>
@@ -38,22 +38,22 @@
         <translation>Soubor nelze otevřít pro zápis: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="764"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="782"/>
         <source>Element type not supported: %1</source>
         <translation>Typ prvku není podporován: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="987"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="1011"/>
         <source>Output variable not mapped for TruthTable: %1</source>
         <translation>Výstupní proměnná není mapována pro pravdivostní tabulku: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="1067"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="1091"/>
         <source>This circuit needs %1 I/O pins, but the largest supported board (%2) provides only %3. Reduce the number of inputs and outputs, or split the circuit.</source>
         <translation>Tento obvod potřebuje %1 vstupně/výstupních pinů, ale největší podporovaná deska (%2) poskytuje pouze %3. Snižte počet vstupů a výstupů, nebo obvod rozdělte.</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="1265"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="1303"/>
         <source>Could not open testbench file: %1</source>
         <translation>Testovací soubor nelze otevřít: %1</translation>
     </message>
@@ -130,7 +130,7 @@
         <translation>Kombinační</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="993"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1006"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="268"/>
         <source>Export to PDF</source>
         <translation>Exportovat do PDF</translation>
@@ -261,14 +261,14 @@
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="59"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="127"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="865"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="931"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="871"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="944"/>
         <source>beWavedDolphin Simulator</source>
         <translation>beWavedDolphin Simulátor</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="392"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="879"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="890"/>
         <source>wiRedPanda - beWavedDolphin</source>
         <translation>wiRedPanda - beWavedDolphin</translation>
     </message>
@@ -278,79 +278,79 @@
         <translation>Uložit simulaci před zavřením?</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="838"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="839"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="912"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="844"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="845"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="925"/>
         <source>CSV files</source>
         <translation>Soubory CSV</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="838"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="839"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="912"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="844"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="845"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="925"/>
         <source>Dolphin files</source>
         <translation>Soubory Dolphin</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="838"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="839"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="912"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="844"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="845"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="925"/>
         <source>All supported files</source>
         <translation>Všechny podporované soubory</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="880"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="891"/>
         <source>Do you want to link this beWavedDolphin file to your current wiRedPanda file and save it?</source>
         <translation>Chcete propojit tento beWavedDolphin soubor s vaším současným wiRedPanda souborem a uložit ho?</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="975"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="988"/>
         <source>PNG files</source>
         <translation>Soubory PNG</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="993"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1006"/>
         <source>PDF files</source>
         <translation>Soubory PDF</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1012"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1025"/>
         <source>&lt;p&gt;beWavedDolphin is a waveform simulator for wiRedPanda, developed by the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;beWavedDolphin je simulátor průběhů pro wiRedPanda, vyvinutý Federální univerzitou v São Paulu, aby pomohl studentům učit se o logických obvodech.&lt;/p&gt;&lt;p&gt;Verze softwaru: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Tvůrci:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin je momentálně spravován Prof. Fábio Cappabianco, Ph.D. a jeho studenty.&lt;/p&gt;&lt;p&gt; Pokud najdete chybu nebo chcete požádat o novou funkci, nahlaste to prosím na naší stránce GitHub.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Navštivte naše stránky!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="845"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="851"/>
         <source>Save File as...</source>
         <translation>Uložit soubor jako...</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="826"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="866"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="832"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="872"/>
         <source>Saved file successfully.</source>
         <translation>Soubor byl úspěšně uložen.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="480"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="482"/>
         <source>Cannot export: the circuit this waveform was built from has changed.</source>
         <translation>Export není možný: obvod, ze kterého byl tento průběh vytvořen, se změnil.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="601"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="607"/>
         <source>No cells selected.</source>
         <translation>Nejsou vybrány žádné buňky.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="911"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="924"/>
         <source>Open File</source>
         <translation>Otevřít soubor</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="920"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="933"/>
         <source>File loaded successfully.</source>
         <translation>Soubor byl úspěšně načten.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="975"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="988"/>
         <source>Export to Image</source>
         <translation>Exportovat do obrázku</translation>
     </message>
@@ -376,12 +376,12 @@
 <context>
     <name>ChangePortSizeCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="964"/>
+        <location filename="../../Scene/Commands.cpp" line="966"/>
         <source>Change input size to %1</source>
         <translation>Změnit velikost vstupu na %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="965"/>
+        <location filename="../../Scene/Commands.cpp" line="967"/>
         <source>Change output size to %1</source>
         <translation>Změnit velikost výstupu na %1</translation>
     </message>
@@ -471,7 +471,7 @@
         <translation>Chyba datového proudu při čtení mapy spojení na pozici %1</translation>
     </message>
     <message>
-        <location filename="../../Wiring/ConnectionSerializer.cpp" line="51"/>
+        <location filename="../../Wiring/ConnectionSerializer.cpp" line="50"/>
         <source>Stream error reading connection port IDs at offset %1</source>
         <translation>Chyba datového proudu při čtení ID portů spojení na pozici %1</translation>
     </message>
@@ -505,7 +505,7 @@
 <context>
     <name>DeleteItemsCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="309"/>
+        <location filename="../../Scene/Commands.cpp" line="311"/>
         <source>Delete %1 elements</source>
         <translation>Smazat %1 prvků</translation>
     </message>
@@ -1035,41 +1035,41 @@
         <translation>Fialová</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="655"/>
+        <location filename="../../UI/ElementEditor.cpp" line="659"/>
         <source>Duplicate Wireless Channel</source>
         <translation>Duplicitní bezdrátový kanál</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="656"/>
+        <location filename="../../UI/ElementEditor.cpp" line="660"/>
         <source>A Tx node with label &quot;%1&quot; already exists.
 Each wireless channel must have a unique label.</source>
         <translation>Uzel Tx s popiskem &quot;%1&quot; již existuje.
 Každý bezdrátový kanál musí mít jedinečný popisek.</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="713"/>
+        <location filename="../../UI/ElementEditor.cpp" line="717"/>
         <source>Change wireless mode</source>
         <translation>Změnit bezdrátový režim</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="746"/>
+        <location filename="../../UI/ElementEditor.cpp" line="750"/>
         <source>Duplicate IC Name</source>
         <translation>Duplicitní název IO</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="747"/>
+        <location filename="../../UI/ElementEditor.cpp" line="751"/>
         <source>An embedded IC named &quot;%1&quot; already exists.
 Choose a different name.</source>
         <translation>Vložený IO s názvem &quot;%1&quot; již existuje.
 Zvolte jiný název.</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="955"/>
+        <location filename="../../UI/ElementEditor.cpp" line="959"/>
         <source>Select any audio</source>
         <translation>Vyberte jakékoli audio</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="956"/>
+        <location filename="../../UI/ElementEditor.cpp" line="960"/>
         <source>Audio</source>
         <translation>Zvuk</translation>
     </message>
@@ -1089,36 +1089,36 @@ Zvolte jiný název.</translation>
         <translation>Bílá</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="150"/>
+        <location filename="../../UI/ElementEditor.h" line="151"/>
         <source>&lt;Many sounds&gt;</source>
         <translation>&lt;Mnoho zvuků&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="151"/>
+        <location filename="../../UI/ElementEditor.h" line="152"/>
         <source>&lt;Many colors&gt;</source>
         <translation>&lt;Mnoho barev&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="152"/>
         <location filename="../../UI/ElementEditor.h" line="153"/>
         <location filename="../../UI/ElementEditor.h" line="154"/>
-        <location filename="../../UI/ElementEditor.h" line="156"/>
+        <location filename="../../UI/ElementEditor.h" line="155"/>
         <location filename="../../UI/ElementEditor.h" line="157"/>
+        <location filename="../../UI/ElementEditor.h" line="158"/>
         <source>&lt;Many values&gt;</source>
         <translation>&lt;Mnoho hodnot&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="155"/>
+        <location filename="../../UI/ElementEditor.h" line="156"/>
         <source>&lt;Many labels&gt;</source>
         <translation>&lt;Mnoho popisek&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="159"/>
+        <location filename="../../UI/ElementEditor.h" line="160"/>
         <source>&lt;Many modes&gt;</source>
         <translation>&lt;Mnoho režimů&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="158"/>
+        <location filename="../../UI/ElementEditor.h" line="159"/>
         <source>&lt;Many triggers&gt;</source>
         <translation>&lt;Mnoho spouštěčů&gt;</translation>
     </message>
@@ -1341,60 +1341,60 @@ Zvolte jiný název.</translation>
     <name>ExerciseOverlay</name>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="58"/>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="219"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="193"/>
         <source>Exit</source>
         <translation>Ukončit</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="59"/>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="220"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="194"/>
         <source>Close exercise</source>
         <translation>Zavřít cvičení</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="61"/>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="81"/>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="193"/>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="221"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="167"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="195"/>
         <source>Hint</source>
         <translation>Nápověda</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="63"/>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="222"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="196"/>
         <source>← Back</source>
         <translation>← Zpět</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="65"/>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="245"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="219"/>
         <source>Next →</source>
         <translation>Další →</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="81"/>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="221"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="195"/>
         <source>Hide hint</source>
         <translation>Skrýt nápovědu</translation>
     </message>
     <message>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="186"/>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="214"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="160"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="188"/>
         <source>Step %1 of %2</source>
         <translation>Krok %1 z %2</translation>
     </message>
     <message>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="231"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="205"/>
         <source>Exercise complete! Well done.</source>
         <translation>Cvičení dokončeno! Výborně.</translation>
     </message>
     <message>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="235"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="209"/>
         <source>Close</source>
         <translation>Zavřít</translation>
     </message>
     <message>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="245"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="219"/>
         <source>Finish</source>
         <translation>Dokončit</translation>
     </message>
@@ -1474,7 +1474,7 @@ Zvolte jiný název.</translation>
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="905"/>
+        <location filename="../../Scene/Commands.cpp" line="907"/>
         <source>Flip %1 elements in axis %2</source>
         <translation>Převrátit %1 prvků podle osy %2</translation>
     </message>
@@ -1510,42 +1510,42 @@ Zvolte jiný název.</translation>
         <translation>Chyba datového proudu při čtení vlastností prvku na pozici %1</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="406"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="410"/>
         <source>Stream error reading appearances at position %1</source>
         <translation>Chyba datového proudu při čtení vzhledů na pozici %1</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="414"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="418"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
         <translation>Index vzhledu %1 mimo rozsah (velikost=%2) — datový proud může být poškozen</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="460"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="464"/>
         <source>Non-finite element position — stream may be corrupt</source>
         <translation>Nekonečná pozice prvku — datový proud může být poškozen</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="478"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="482"/>
         <source>Non-finite element rotation — stream may be corrupt</source>
         <translation>Nekonečná rotace prvku — datový proud může být poškozen</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="538"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="542"/>
         <source>Refusing old-format input port list with implausible count %1 (max %2)</source>
         <translation>Odmítnut seznam vstupních portů ve starém formátu s nevěrohodným počtem %1 (max. %2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="572"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="576"/>
         <source>Refusing old-format output port list with implausible count %1 (max %2)</source>
         <translation>Odmítnut seznam výstupních portů ve starém formátu s nevěrohodným počtem %1 (max. %2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="637"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="641"/>
         <source>Refusing old-format appearance list with implausible count %1 (max %2)</source>
         <translation>Odmítnut seznam vzhledů ve starém formátu s nevěrohodným počtem %1 (max. %2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="666"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="670"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
         <translation>Index vzhledu %1 mimo rozsah (velikost=%2) pro název vzhledu „%3“ — datový proud může být poškozen</translation>
     </message>
@@ -1787,12 +1787,12 @@ Uložit nyní?</translation>
         <translation>Migrace IO: nelze otevřít soubor pro zápis: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICLoader.cpp" line="247"/>
+        <location filename="../../Element/ICLoader.cpp" line="250"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
         <translation>Migrace IO: nepodařilo se potvrdit znovu uložený soubor: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICLoader.cpp" line="310"/>
+        <location filename="../../Element/ICLoader.cpp" line="313"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
         <translation>Překročen limit hloubky vnoření IO (%1) — blob může být záměrně poškozený</translation>
     </message>
@@ -1800,17 +1800,17 @@ Uložit nyní?</translation>
 <context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="276"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="280"/>
         <source>Could not open file: %1</source>
         <translation>Nelze otevřít soubor: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="280"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="287"/>
         <source>Could not save file: %1</source>
         <translation>Nelze uložit soubor: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="343"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="350"/>
         <source>Embedded IC dependency chain exceeds the maximum nesting depth (%1) while resolving &apos;%2&apos;</source>
         <translation>Řetězec závislostí vložených IO překračuje maximální hloubku vnoření (%1) při řešení &apos;%2&apos;</translation>
     </message>
@@ -1918,22 +1918,22 @@ Uložit nyní?</translation>
         <translation>LED</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="249"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="252"/>
         <source>Port %1=%2</source>
         <translation>Port %1=%2</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="256"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="259"/>
         <source>Off</source>
         <translation>Vyp.</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="257"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="260"/>
         <source>On</source>
         <translation>Zap.</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="280"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="285"/>
         <source>Default</source>
         <translation>Výchozí</translation>
     </message>
@@ -2360,7 +2360,7 @@ Uložit nyní?</translation>
         <translation>&amp;Prohlídky</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1308"/>
+        <location filename="../../UI/MainWindow.cpp" line="1289"/>
         <location filename="../../UI/MainWindowUI.cpp" line="841"/>
         <source>Mute</source>
         <translation>Ztlumit</translation>
@@ -2391,7 +2391,7 @@ Uložit nyní?</translation>
         <translation>Simulace na pozadí</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="639"/>
+        <location filename="../../UI/MainWindow.cpp" line="638"/>
         <location filename="../../UI/MainWindowUI.cpp" line="852"/>
         <source>Shortcuts and Tips</source>
         <translation>Klávesové zkratky a tipy</translation>
@@ -2407,12 +2407,12 @@ Uložit nyní?</translation>
         <translation>Nahlašte chyby překladu nebo pomozte vylepšit překlady na Weblate</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1001"/>
+        <location filename="../../UI/MainWindow.cpp" line="1000"/>
         <source>New Project</source>
         <translation>Nový projekt</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="508"/>
+        <location filename="../../UI/MainWindow.cpp" line="507"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2431,67 +2431,67 @@ wiRedPanda %1 automaticky zobrazí všechny ostatní soubory .panda ve stejné s
 Nové projekty musíte uložit před přístupem k IC a vzhledům nebo spuštěním simulací beWavedDolphin.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="669"/>
+        <location filename="../../UI/MainWindow.cpp" line="668"/>
         <source>Are you sure?</source>
         <translation>Jste si jisti?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="285"/>
+        <location filename="../../UI/MainWindow.cpp" line="284"/>
         <source>Error</source>
         <translation>Chyba</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="314"/>
+        <location filename="../../UI/MainWindow.cpp" line="313"/>
         <source>Open My Exercises Folder</source>
         <translation>Otevřít složku Moje cvičení</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="315"/>
+        <location filename="../../UI/MainWindow.cpp" line="314"/>
         <source>Could not create or access a folder for custom exercises.</source>
         <translation>Nepodařilo se vytvořit ani otevřít složku pro vlastní cvičení.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="325"/>
+        <location filename="../../UI/MainWindow.cpp" line="324"/>
         <source>Open My Tours Folder</source>
         <translation>Otevřít složku Moje prohlídky</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="326"/>
+        <location filename="../../UI/MainWindow.cpp" line="325"/>
         <source>Could not create or access a folder for custom tours.</source>
         <translation>Nepodařilo se vytvořit ani otevřít složku pro vlastní prohlídky.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="568"/>
+        <location filename="../../UI/MainWindow.cpp" line="567"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda je software vyvinutý studenty Federální univerzity v São Paulu, který má studentům pomoci naučit se logickým obvodům.&lt;/p&gt;&lt;p&gt;Verze softwaru: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Tvůrci:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda v současnosti spravují prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves a Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Pokud najdete chybu nebo chcete navrhnout novou funkci, nahlaste to prosím na naší stránce GitHub.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Navštivte naše webové stránky!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="592"/>
+        <location filename="../../UI/MainWindow.cpp" line="591"/>
         <source>Redo</source>
         <translation>Opakovat</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="593"/>
+        <location filename="../../UI/MainWindow.cpp" line="592"/>
         <source>Undo</source>
         <translation>Zpět</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="618"/>
+        <location filename="../../UI/MainWindow.cpp" line="617"/>
         <source>&lt;h1&gt;Keyboard Shortcuts&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;Element Property Navigation&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : Previous / next primary property &lt;/li&gt;&lt;li&gt; { / } : Previous / next secondary property &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : Morph to previous / next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Double-click a wire to create a node &lt;/li&gt;&lt;li&gt; Drag an element from the left panel onto the canvas to add it &lt;/li&gt;&lt;li&gt; Nudge the selection with the arrow keys (hold Shift for larger steps) &lt;/li&gt;&lt;li&gt; Drop a .panda file onto the canvas to open it &lt;/li&gt;&lt;/ul&gt;</source>
         <translation>&lt;h1&gt;Klávesové zkratky&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;Navigace ve vlastnostech prvku&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : Předchozí / další primární vlastnost &lt;/li&gt;&lt;li&gt; { / } : Předchozí / další sekundární vlastnost &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : Transformovat na předchozí / další prvek &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Obecné tipy&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Dvojklikem na vodič vytvoříte uzel &lt;/li&gt;&lt;li&gt; Přetáhněte prvek z levého panelu na plátno, abyste jej přidali &lt;/li&gt;&lt;li&gt; Posouvejte výběr klávesami se šipkami (podržte Shift pro větší kroky) &lt;/li&gt;&lt;li&gt; Přetáhněte soubor .panda na plátno, abyste jej otevřeli &lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="668"/>
+        <location filename="../../UI/MainWindow.cpp" line="667"/>
         <source>Exit</source>
         <translation>Ukončit</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="843"/>
+        <location filename="../../UI/MainWindow.cpp" line="842"/>
         <source>%1[*] — wiRedPanda %2</source>
         <translation>%1[*] — wiRedPanda %2</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1308"/>
+        <location filename="../../UI/MainWindow.cpp" line="1289"/>
         <source>Unmute</source>
         <translation>Zapnout zvuk</translation>
     </message>
@@ -2517,7 +2517,7 @@ Nové projekty musíte uložit před přístupem k IC a vzhledům nebo spuštěn
 <context>
     <name>MorphCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="705"/>
+        <location filename="../../Scene/Commands.cpp" line="707"/>
         <source>Morph %1 elements to %2</source>
         <translation>Transformovat %1 prvků na %2</translation>
     </message>
@@ -2525,7 +2525,7 @@ Nové projekty musíte uložit před přístupem k IC a vzhledům nebo spuštěn
 <context>
     <name>MoveCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="402"/>
+        <location filename="../../Scene/Commands.cpp" line="404"/>
         <source>Move elements</source>
         <translation>Přesunout prvky</translation>
     </message>
@@ -2735,7 +2735,7 @@ Nové projekty musíte uložit před přístupem k IC a vzhledům nebo spuštěn
 <context>
     <name>RegisterBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1126"/>
+        <location filename="../../Scene/Commands.cpp" line="1128"/>
         <source>Register blob &quot;%1&quot;</source>
         <translation>Registrovat blob &quot;%1&quot;</translation>
     </message>
@@ -2743,7 +2743,7 @@ Nové projekty musíte uložit před přístupem k IC a vzhledům nebo spuštěn
 <context>
     <name>RemoveBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1149"/>
+        <location filename="../../Scene/Commands.cpp" line="1151"/>
         <source>Remove blob &quot;%1&quot;</source>
         <translation>Odebrat blob „%1“</translation>
     </message>
@@ -2751,7 +2751,7 @@ Nové projekty musíte uložit před přístupem k IC a vzhledům nebo spuštěn
 <context>
     <name>RenameBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1170"/>
+        <location filename="../../Scene/Commands.cpp" line="1172"/>
         <source>Rename IC &quot;%1&quot; to &quot;%2&quot;</source>
         <translation>Přejmenovat IO &quot;%1&quot; na &quot;%2&quot;</translation>
     </message>
@@ -2759,7 +2759,7 @@ Nové projekty musíte uložit před přístupem k IC a vzhledům nebo spuštěn
 <context>
     <name>RotateCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="334"/>
+        <location filename="../../Scene/Commands.cpp" line="336"/>
         <source>Rotate %1 degrees</source>
         <translation>Otočit o %1 stupňů</translation>
     </message>
@@ -2887,32 +2887,32 @@ Nové projekty musíte uložit před přístupem k IC a vzhledům nebo spuštěn
         <translation>Chyba proudu při načítání prvku na pozici %1: stav %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="649"/>
+        <location filename="../../IO/Serialization.cpp" line="655"/>
         <source>Stream error loading connection at position %1: status %2</source>
         <translation>Chyba proudu při načítání spojení na pozici %1: stav %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="656"/>
+        <location filename="../../IO/Serialization.cpp" line="663"/>
         <source>Invalid type. Data is possibly corrupted.</source>
         <translation>Neplatný typ. Data jsou možná poškozená.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="709"/>
+        <location filename="../../IO/Serialization.cpp" line="716"/>
         <source>Failed to create versioned backup: %1</source>
         <translation>Nepodařilo se vytvořit verzovanou zálohu: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="738"/>
+        <location filename="../../IO/Serialization.cpp" line="745"/>
         <source>Stream error reading preamble: status %1</source>
         <translation>Chyba datového proudu při čtení preambule: stav %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="797"/>
+        <location filename="../../IO/Serialization.cpp" line="809"/>
         <source>Panda file dependency chain exceeds the maximum nesting depth (%1) while copying &apos;%2&apos;</source>
         <translation>Řetězec závislostí souboru Panda překračuje maximální hloubku vnoření (%1) při kopírování &apos;%2&apos;</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="816"/>
+        <location filename="../../IO/Serialization.cpp" line="828"/>
         <source>Error copying file: %1</source>
         <translation>Chyba při kopírování souboru: %1</translation>
     </message>
@@ -2928,32 +2928,32 @@ Nové projekty musíte uložit před přístupem k IC a vzhledům nebo spuštěn
 <context>
     <name>SplitCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="578"/>
+        <location filename="../../Scene/Commands.cpp" line="580"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
         <translation>Neplatné spojovavcí porty v konstruktoru SplitCommand</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="584"/>
+        <location filename="../../Scene/Commands.cpp" line="586"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
         <translation>Neplatné grafické prvky v konstruktoru SplitCommand</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="607"/>
+        <location filename="../../Scene/Commands.cpp" line="609"/>
         <source>Wire split</source>
         <translation>Rozdělení vodiče</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="623"/>
+        <location filename="../../Scene/Commands.cpp" line="625"/>
         <source>Error trying to redo %1</source>
         <translation>Chyba při pokusu o opakování %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="646"/>
+        <location filename="../../Scene/Commands.cpp" line="630"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
         <translation>Chyba: endPort je null v SplitCommand::redo()</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="675"/>
+        <location filename="../../Scene/Commands.cpp" line="677"/>
         <source>Error trying to undo %1</source>
         <translation>Chyba při pokusu o vrácení %1</translation>
     </message>
@@ -2966,12 +2966,12 @@ Nové projekty musíte uložit před přístupem k IC a vzhledům nebo spuštěn
         <translation>Nepodařilo se otevřít soubor pro zápis: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1259"/>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1295"/>
         <source>Output variable not mapped for TruthTable: %1</source>
         <translation>Výstupní proměnná není mapována pro pravdivostní tabulku: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1308"/>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1353"/>
         <source>Element type not supported: %1</source>
         <translation>Typ prvku není podporován: %1</translation>
     </message>
@@ -3010,17 +3010,17 @@ Nové projekty musíte uložit před přístupem k IC a vzhledům nebo spuštěn
 <context>
     <name>ToggleTruthTableOutputCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1059"/>
+        <location filename="../../Scene/Commands.cpp" line="1061"/>
         <source>Toggle TruthTable Output at position: %1</source>
         <translation>Přepnout výstup pravdivostní tabulky na pozici: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1068"/>
+        <location filename="../../Scene/Commands.cpp" line="1070"/>
         <source>Could not find truthtable element!</source>
         <translation>Nelze najít prvek pravdivostní tabulky!</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1075"/>
+        <location filename="../../Scene/Commands.cpp" line="1077"/>
         <source>TruthTable toggle position out of range: %1</source>
         <translation>Pozice přepnutí tabulky pravdivosti mimo rozsah: %1</translation>
     </message>
@@ -3029,38 +3029,38 @@ Nové projekty musíte uložit před přístupem k IC a vzhledům nebo spuštěn
     <name>TourOverlay</name>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="86"/>
-        <location filename="../../Tour/TourOverlay.cpp" line="240"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="208"/>
         <source>Exit</source>
         <translation>Ukončit</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="87"/>
-        <location filename="../../Tour/TourOverlay.cpp" line="241"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="209"/>
         <source>Stop the tour</source>
         <translation>Zastavit prohlídku</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="89"/>
-        <location filename="../../Tour/TourOverlay.cpp" line="242"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="210"/>
         <source>← Back</source>
         <translation>← Zpět</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="91"/>
-        <location filename="../../Tour/TourOverlay.cpp" line="212"/>
-        <location filename="../../Tour/TourOverlay.cpp" line="238"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="180"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="206"/>
         <source>Next →</source>
         <translation>Další →</translation>
     </message>
     <message>
-        <location filename="../../Tour/TourOverlay.cpp" line="207"/>
-        <location filename="../../Tour/TourOverlay.cpp" line="235"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="175"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="203"/>
         <source>Step %1 of %2</source>
         <translation>Krok %1 z %2</translation>
     </message>
     <message>
-        <location filename="../../Tour/TourOverlay.cpp" line="212"/>
-        <location filename="../../Tour/TourOverlay.cpp" line="238"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="180"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="206"/>
         <source>Finish</source>
         <translation>Dokončit</translation>
     </message>
@@ -3094,7 +3094,7 @@ Nové projekty musíte uložit před přístupem k IC a vzhledům nebo spuštěn
 <context>
     <name>UpdateBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1203"/>
+        <location filename="../../Scene/Commands.cpp" line="1205"/>
         <source>Update %1 IC blobs</source>
         <translation>Aktualizovat %1 IC blobů</translation>
     </message>
@@ -3102,7 +3102,7 @@ Nové projekty musíte uložit před přístupem k IC a vzhledům nebo spuštěn
 <context>
     <name>UpdateCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="457"/>
+        <location filename="../../Scene/Commands.cpp" line="459"/>
         <source>Update %1 elements</source>
         <translation>Aktualizovat %1 prvků</translation>
     </message>
@@ -3135,55 +3135,55 @@ Nové projekty musíte uložit před přístupem k IC a vzhledům nebo spuštěn
         <translation>Stáhnout</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="100"/>
+        <location filename="../../UI/UpdateController.cpp" line="105"/>
         <source>Downloading wiRedPanda %1…</source>
         <translation>Stahování wiRedPanda %1…</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="100"/>
+        <location filename="../../UI/UpdateController.cpp" line="105"/>
         <source>Cancel</source>
         <translation>Zrušit</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="101"/>
+        <location filename="../../UI/UpdateController.cpp" line="106"/>
         <source>Downloading Update</source>
         <translation>Stahování aktualizace</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="137"/>
-        <location filename="../../UI/UpdateController.cpp" line="145"/>
-        <location filename="../../UI/UpdateController.cpp" line="151"/>
+        <location filename="../../UI/UpdateController.cpp" line="142"/>
+        <location filename="../../UI/UpdateController.cpp" line="150"/>
+        <location filename="../../UI/UpdateController.cpp" line="156"/>
         <source>Download Failed</source>
         <translation>Stahování selhalo</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="137"/>
+        <location filename="../../UI/UpdateController.cpp" line="142"/>
         <source>Could not download the update:
 %1</source>
         <translation>Nepodařilo se stáhnout aktualizaci:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="145"/>
+        <location filename="../../UI/UpdateController.cpp" line="150"/>
         <source>Could not save the file:
 %1</source>
         <translation>Nepodařilo se uložit soubor:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="151"/>
+        <location filename="../../UI/UpdateController.cpp" line="156"/>
         <source>Could not write the file:
 %1</source>
         <translation>Nepodařilo se zapsat soubor:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="158"/>
+        <location filename="../../UI/UpdateController.cpp" line="163"/>
         <source>Download Complete</source>
         <translation>Stahování dokončeno</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="159"/>
+        <location filename="../../UI/UpdateController.cpp" line="164"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
         <translation>wiRedPanda bylo staženo do:
@@ -3219,22 +3219,22 @@ Pro uložení změn v tomto souboru prosím aktualizujte wiRedPanda.</translatio
         <translation>Chyba při otevírání souboru: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="392"/>
+        <location filename="../../Scene/Workspace.cpp" line="397"/>
         <source>Could not save file: %1</source>
         <translation>Nelze uložit soubor: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="475"/>
+        <location filename="../../Scene/Workspace.cpp" line="480"/>
         <source>This file does not exist: %1</source>
         <translation>Tento soubor neexistuje: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="484"/>
+        <location filename="../../Scene/Workspace.cpp" line="489"/>
         <source>Could not open file: %1</source>
         <translation>Nelze otevřít soubor: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="532"/>
+        <location filename="../../Scene/Workspace.cpp" line="537"/>
         <source>This file was saved with a newer file format (version %1).
 Your version supports file format %2.
 
@@ -3247,34 +3247,34 @@ Soubor bude otevřen, ale ukládání je zablokováno.
 Pro úpravu a uložení tohoto souboru prosím aktualizujte wiRedPanda.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="537"/>
+        <location filename="../../Scene/Workspace.cpp" line="542"/>
         <source>Newer version file.</source>
         <translation>Soubor novější verze.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="540"/>
+        <location filename="../../Scene/Workspace.cpp" line="545"/>
         <source>This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).
 A backup of the original file has been created with name: %3</source>
         <translation>Tento soubor je ve starším formátu (verze %1) a bude automaticky aktualizován na současný formát (verze %2).
 Záloha původního souboru byla vytvořena s názvem: %3</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="543"/>
+        <location filename="../../Scene/Workspace.cpp" line="548"/>
         <source>File upgraded.</source>
         <translation>Soubor byl aktualizován.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="713"/>
+        <location filename="../../Scene/Workspace.cpp" line="718"/>
         <source>Error opening autosave file: %1</source>
         <translation>Chyba při otevírání souboru automatického uložení: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="721"/>
+        <location filename="../../Scene/Workspace.cpp" line="729"/>
         <source>Could not commit autosave file: %1</source>
         <translation>Nelze potvrdit soubor automatického uložení: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="889"/>
+        <location filename="../../Scene/Workspace.cpp" line="897"/>
         <source>Remove embedded IC &quot;%1&quot;</source>
         <translation>Odebrat vložený IC „%1“</translation>
     </message>

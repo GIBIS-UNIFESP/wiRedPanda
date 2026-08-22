@@ -4,7 +4,7 @@
 <context>
     <name>AddItemsCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="283"/>
+        <location filename="../../Scene/Commands.cpp" line="285"/>
         <source>Add %1 elements</source>
         <translation>הוסף %1 רכיבים</translation>
     </message>
@@ -25,7 +25,7 @@
 <context>
     <name>Application</name>
     <message>
-        <location filename="../../Core/Application.cpp" line="146"/>
+        <location filename="../../Core/Application.cpp" line="150"/>
         <source>Error!</source>
         <translation>שגיאה!</translation>
     </message>
@@ -38,22 +38,22 @@
         <translation>לא ניתן לפתוח את הקובץ לכתיבה: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="764"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="782"/>
         <source>Element type not supported: %1</source>
         <translation>סוג רכיב לא נתמך: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="987"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="1011"/>
         <source>Output variable not mapped for TruthTable: %1</source>
         <translation>משתנה פלט לא ממופה לטבלת אמת: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="1067"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="1091"/>
         <source>This circuit needs %1 I/O pins, but the largest supported board (%2) provides only %3. Reduce the number of inputs and outputs, or split the circuit.</source>
         <translation>המעגל הזה זקוק ל-%1 פינים I/O, אך הלוח הנתמך הגדול ביותר (%2) מספק רק %3. הפחת את מספר הכניסות והיציאות, או פצל את המעגל.</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="1265"/>
+        <location filename="../../CodeGen/ArduinoCodeGen.cpp" line="1303"/>
         <source>Could not open testbench file: %1</source>
         <translation>לא ניתן לפתוח את קובץ ספסל הבדיקה: %1</translation>
     </message>
@@ -130,7 +130,7 @@
         <translation>קומבינטורי</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="993"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1006"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="268"/>
         <source>Export to PDF</source>
         <translation>ייצא ל-PDF</translation>
@@ -261,14 +261,14 @@
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="59"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="127"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="865"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="931"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="871"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="944"/>
         <source>beWavedDolphin Simulator</source>
         <translation>סימולטור beWavedDolphin</translation>
     </message>
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="392"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="879"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="890"/>
         <source>wiRedPanda - beWavedDolphin</source>
         <translation>wiRedPanda - beWavedDolphin</translation>
     </message>
@@ -278,79 +278,79 @@
         <translation>שמור סימולציה לפני סגירה?</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="838"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="839"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="912"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="844"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="845"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="925"/>
         <source>CSV files</source>
         <translation>קבצי CSV</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="838"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="839"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="912"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="844"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="845"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="925"/>
         <source>Dolphin files</source>
         <translation>קבצי Dolphin</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="838"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="839"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="912"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="844"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="845"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="925"/>
         <source>All supported files</source>
         <translation>כל הקבצים הנתמכים</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="880"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="891"/>
         <source>Do you want to link this beWavedDolphin file to your current wiRedPanda file and save it?</source>
         <translation>האם ברצונך לקשר את קובץ beWavedDolphin זה לקובץ wiRedPanda הנוכחי שלך ולשמור אותו?</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="975"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="988"/>
         <source>PNG files</source>
         <translation>קבצי PNG</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="993"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1006"/>
         <source>PDF files</source>
         <translation>קבצי PDF</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1012"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1025"/>
         <source>&lt;p&gt;beWavedDolphin is a waveform simulator for wiRedPanda, developed by the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;beWavedDolphin הוא סימולטור צורות גל עבור wiRedPanda, שפותח באוניברסיטה הפדרלית של סאו פאולו כדי לעזור לסטודנטים ללמוד על מעגלים לוגיים.&lt;/p&gt;&lt;p&gt;גרסת התוכנה: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;יוצרים:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin מתוחזק כיום על ידי Prof. Fábio Cappabianco, Ph.D. והסטודנטים שלו.&lt;/p&gt;&lt;p&gt; אנא דווחו בעמוד ה-GitHub שלנו אם מצאתם באג או רוצים לבקש תכונה חדשה.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;בקרו באתר שלנו!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="845"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="851"/>
         <source>Save File as...</source>
         <translation>שמור קובץ בשם...</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="826"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="866"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="832"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="872"/>
         <source>Saved file successfully.</source>
         <translation>קובץ נשמר בהצלחה.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="480"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="482"/>
         <source>Cannot export: the circuit this waveform was built from has changed.</source>
         <translation>לא ניתן לייצא: המעגל שממנו נבנתה צורת גל זו השתנה.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="601"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="607"/>
         <source>No cells selected.</source>
         <translation>לא נבחרו תאים.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="911"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="924"/>
         <source>Open File</source>
         <translation>פתח קובץ</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="920"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="933"/>
         <source>File loaded successfully.</source>
         <translation>קובץ נטען בהצלחה.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="975"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="988"/>
         <source>Export to Image</source>
         <translation>ייצא לתמונה</translation>
     </message>
@@ -376,12 +376,12 @@
 <context>
     <name>ChangePortSizeCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="964"/>
+        <location filename="../../Scene/Commands.cpp" line="966"/>
         <source>Change input size to %1</source>
         <translation>שנה גודל כניסה ל-%1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="965"/>
+        <location filename="../../Scene/Commands.cpp" line="967"/>
         <source>Change output size to %1</source>
         <translation>שנה גודל יציאה ל-%1</translation>
     </message>
@@ -471,7 +471,7 @@
         <translation>שגיאת זרם בקריאת מפת החיבורים בהיסט %1</translation>
     </message>
     <message>
-        <location filename="../../Wiring/ConnectionSerializer.cpp" line="51"/>
+        <location filename="../../Wiring/ConnectionSerializer.cpp" line="50"/>
         <source>Stream error reading connection port IDs at offset %1</source>
         <translation>שגיאת זרם בקריאת מזהי יציאות החיבור בהיסט %1</translation>
     </message>
@@ -505,7 +505,7 @@
 <context>
     <name>DeleteItemsCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="309"/>
+        <location filename="../../Scene/Commands.cpp" line="311"/>
         <source>Delete %1 elements</source>
         <translation>מחק %1 רכיבים</translation>
     </message>
@@ -1035,41 +1035,41 @@
         <translation>סגול</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="655"/>
+        <location filename="../../UI/ElementEditor.cpp" line="659"/>
         <source>Duplicate Wireless Channel</source>
         <translation>ערוץ אלחוטי כפול</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="656"/>
+        <location filename="../../UI/ElementEditor.cpp" line="660"/>
         <source>A Tx node with label &quot;%1&quot; already exists.
 Each wireless channel must have a unique label.</source>
         <translation>צומת Tx עם התווית &quot;%1&quot; כבר קיים.
 לכל ערוץ אלחוטי חייבת להיות תווית ייחודית.</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="713"/>
+        <location filename="../../UI/ElementEditor.cpp" line="717"/>
         <source>Change wireless mode</source>
         <translation>שנה מצב אלחוטי</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="746"/>
+        <location filename="../../UI/ElementEditor.cpp" line="750"/>
         <source>Duplicate IC Name</source>
         <translation>שם מעגל שלם כפול</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="747"/>
+        <location filename="../../UI/ElementEditor.cpp" line="751"/>
         <source>An embedded IC named &quot;%1&quot; already exists.
 Choose a different name.</source>
         <translation>כבר קיים מעגל שלם מוטמע בשם &quot;%1&quot;.
 בחר שם אחר.</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="955"/>
+        <location filename="../../UI/ElementEditor.cpp" line="959"/>
         <source>Select any audio</source>
         <translation>בחר קובץ שמע</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.cpp" line="956"/>
+        <location filename="../../UI/ElementEditor.cpp" line="960"/>
         <source>Audio</source>
         <translation>שמע</translation>
     </message>
@@ -1089,36 +1089,36 @@ Choose a different name.</source>
         <translation>לבן</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="150"/>
+        <location filename="../../UI/ElementEditor.h" line="151"/>
         <source>&lt;Many sounds&gt;</source>
         <translation>&lt;צלילים רבים&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="151"/>
+        <location filename="../../UI/ElementEditor.h" line="152"/>
         <source>&lt;Many colors&gt;</source>
         <translation>&lt;צבעים רבים&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="152"/>
         <location filename="../../UI/ElementEditor.h" line="153"/>
         <location filename="../../UI/ElementEditor.h" line="154"/>
-        <location filename="../../UI/ElementEditor.h" line="156"/>
+        <location filename="../../UI/ElementEditor.h" line="155"/>
         <location filename="../../UI/ElementEditor.h" line="157"/>
+        <location filename="../../UI/ElementEditor.h" line="158"/>
         <source>&lt;Many values&gt;</source>
         <translation>&lt;ערכים רבים&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="155"/>
+        <location filename="../../UI/ElementEditor.h" line="156"/>
         <source>&lt;Many labels&gt;</source>
         <translation>&lt;תוויות רבות&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="159"/>
+        <location filename="../../UI/ElementEditor.h" line="160"/>
         <source>&lt;Many modes&gt;</source>
         <translation>&lt;מצבים רבים&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/ElementEditor.h" line="158"/>
+        <location filename="../../UI/ElementEditor.h" line="159"/>
         <source>&lt;Many triggers&gt;</source>
         <translation>&lt;מפעילים רבים&gt;</translation>
     </message>
@@ -1341,60 +1341,60 @@ Choose a different name.</source>
     <name>ExerciseOverlay</name>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="58"/>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="219"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="193"/>
         <source>Exit</source>
         <translation>יציאה</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="59"/>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="220"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="194"/>
         <source>Close exercise</source>
         <translation>סגור תרגיל</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="61"/>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="81"/>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="193"/>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="221"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="167"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="195"/>
         <source>Hint</source>
         <translation>רמז</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="63"/>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="222"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="196"/>
         <source>← Back</source>
         <translation>← הקודם</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="65"/>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="245"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="219"/>
         <source>Next →</source>
         <translation>הבא →</translation>
     </message>
     <message>
         <location filename="../../Exercise/ExerciseOverlay.cpp" line="81"/>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="221"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="195"/>
         <source>Hide hint</source>
         <translation>הסתר רמז</translation>
     </message>
     <message>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="186"/>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="214"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="160"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="188"/>
         <source>Step %1 of %2</source>
         <translation>שלב %1 מתוך %2</translation>
     </message>
     <message>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="231"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="205"/>
         <source>Exercise complete! Well done.</source>
         <translation>התרגיל הושלם! כל הכבוד.</translation>
     </message>
     <message>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="235"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="209"/>
         <source>Close</source>
         <translation>סגור</translation>
     </message>
     <message>
-        <location filename="../../Exercise/ExerciseOverlay.cpp" line="245"/>
+        <location filename="../../Exercise/ExerciseOverlay.cpp" line="219"/>
         <source>Finish</source>
         <translation>סיים</translation>
     </message>
@@ -1474,7 +1474,7 @@ Choose a different name.</source>
 <context>
     <name>FlipCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="905"/>
+        <location filename="../../Scene/Commands.cpp" line="907"/>
         <source>Flip %1 elements in axis %2</source>
         <translation>הפוך %1 רכיבים בציר %2</translation>
     </message>
@@ -1510,42 +1510,42 @@ Choose a different name.</source>
         <translation>שגיאת זרם בקריאת מאפייני האלמנט במיקום %1</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="406"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="410"/>
         <source>Stream error reading appearances at position %1</source>
         <translation>שגיאת זרם בקריאת מראות במיקום %1</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="414"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="418"/>
         <source>Appearance index %1 out of range (size=%2) — stream may be corrupt</source>
         <translation>אינדקס מראה %1 מחוץ לטווח (גודל=%2) — ייתכן שהזרם פגום</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="460"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="464"/>
         <source>Non-finite element position — stream may be corrupt</source>
         <translation>מיקום אלמנט לא סופי — ייתכן שהזרם פגום</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="478"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="482"/>
         <source>Non-finite element rotation — stream may be corrupt</source>
         <translation>סיבוב אלמנט לא סופי — ייתכן שהזרם פגום</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="538"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="542"/>
         <source>Refusing old-format input port list with implausible count %1 (max %2)</source>
         <translation>סירוב לרשימת יציאות קלט בפורמט ישן עם מספר בלתי סביר %1 (מקסימום %2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="572"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="576"/>
         <source>Refusing old-format output port list with implausible count %1 (max %2)</source>
         <translation>סירוב לרשימת יציאות פלט בפורמט ישן עם מספר בלתי סביר %1 (מקסימום %2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="637"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="641"/>
         <source>Refusing old-format appearance list with implausible count %1 (max %2)</source>
         <translation>סירוב לרשימת מראות בפורמט ישן עם מספר בלתי סביר %1 (מקסימום %2)</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElementSerializer.cpp" line="666"/>
+        <location filename="../../Element/GraphicElementSerializer.cpp" line="670"/>
         <source>Appearance index %1 out of range (size=%2) for appearance name &quot;%3&quot; — stream may be corrupt</source>
         <translation>אינדקס מראה %1 מחוץ לטווח (גודל=%2) עבור שם המראה &quot;%3&quot; — ייתכן שהזרם פגום</translation>
     </message>
@@ -1787,12 +1787,12 @@ Save it now?</source>
         <translation>העברת מעגל שלם: לא ניתן לפתוח את הקובץ לכתיבה: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICLoader.cpp" line="247"/>
+        <location filename="../../Element/ICLoader.cpp" line="250"/>
         <source>IC migration: failed to commit re-saved file: %1</source>
         <translation>העברת מעגל שלם: אישור הקובץ שנשמר מחדש נכשל: %1</translation>
     </message>
     <message>
-        <location filename="../../Element/ICLoader.cpp" line="310"/>
+        <location filename="../../Element/ICLoader.cpp" line="313"/>
         <source>IC nesting depth limit (%1) exceeded — blob may be maliciously crafted</source>
         <translation>חריגה ממגבלת עומק הקינון של מעגל שלם (%1) — ייתכן שה-blob נוצר בזדון</translation>
     </message>
@@ -1800,17 +1800,17 @@ Save it now?</source>
 <context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="276"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="280"/>
         <source>Could not open file: %1</source>
         <translation>לא ניתן לפתוח קובץ: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="280"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="287"/>
         <source>Could not save file: %1</source>
         <translation>לא ניתן לשמור קובץ: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="343"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="350"/>
         <source>Embedded IC dependency chain exceeds the maximum nesting depth (%1) while resolving &apos;%2&apos;</source>
         <translation>שרשרת התלויות של מעגלים שלמים מוטמעים חורגת מעומק הקינון המרבי (%1) בעת פתרון &apos;%2&apos;</translation>
     </message>
@@ -1918,22 +1918,22 @@ Save it now?</source>
         <translation>LED</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="249"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="252"/>
         <source>Port %1=%2</source>
         <translation>יציאה %1=%2</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="256"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="259"/>
         <source>Off</source>
         <translation>כבוי</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="257"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="260"/>
         <source>On</source>
         <translation>דלוק</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Led.cpp" line="280"/>
+        <location filename="../../Element/GraphicElements/Led.cpp" line="285"/>
         <source>Default</source>
         <translation>ברירת מחדל</translation>
     </message>
@@ -2360,7 +2360,7 @@ Save it now?</source>
         <translation>&amp;סיורים</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1308"/>
+        <location filename="../../UI/MainWindow.cpp" line="1289"/>
         <location filename="../../UI/MainWindowUI.cpp" line="841"/>
         <source>Mute</source>
         <translation>השתק</translation>
@@ -2391,7 +2391,7 @@ Save it now?</source>
         <translation>סימולציה ברקע</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="639"/>
+        <location filename="../../UI/MainWindow.cpp" line="638"/>
         <location filename="../../UI/MainWindowUI.cpp" line="852"/>
         <source>Shortcuts and Tips</source>
         <translation>קיצורי דרך וטיפים</translation>
@@ -2407,12 +2407,12 @@ Save it now?</source>
         <translation>דווח על שגיאות תרגום או עזור לשפר תרגומים ב-Weblate</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1001"/>
+        <location filename="../../UI/MainWindow.cpp" line="1000"/>
         <source>New Project</source>
         <translation>פרויקט חדש</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="508"/>
+        <location filename="../../UI/MainWindow.cpp" line="507"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2431,67 +2431,67 @@ wiRedPanda %1 יציג אוטומטית את כל קבצי ה-.panda האחרי�
 עליכם לשמור פרויקטים חדשים לפני גישה ל-IC ומראות או הפעלת סימולציות beWavedDolphin.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="669"/>
+        <location filename="../../UI/MainWindow.cpp" line="668"/>
         <source>Are you sure?</source>
         <translation>האם אתה בטוח?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="285"/>
+        <location filename="../../UI/MainWindow.cpp" line="284"/>
         <source>Error</source>
         <translation>שגיאה</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="314"/>
+        <location filename="../../UI/MainWindow.cpp" line="313"/>
         <source>Open My Exercises Folder</source>
         <translation>פתח את תיקיית התרגילים שלי</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="315"/>
+        <location filename="../../UI/MainWindow.cpp" line="314"/>
         <source>Could not create or access a folder for custom exercises.</source>
         <translation>לא ניתן היה ליצור או לגשת לתיקייה לתרגילים מותאמים אישית.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="325"/>
+        <location filename="../../UI/MainWindow.cpp" line="324"/>
         <source>Open My Tours Folder</source>
         <translation>פתח את תיקיית הסיורים שלי</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="326"/>
+        <location filename="../../UI/MainWindow.cpp" line="325"/>
         <source>Could not create or access a folder for custom tours.</source>
         <translation>לא ניתן היה ליצור או לגשת לתיקייה לסיורים מותאמים אישית.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="568"/>
+        <location filename="../../UI/MainWindow.cpp" line="567"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda היא תוכנה שפותחה על ידי סטודנטים מהאוניברסיטה הפדרלית של סאו פאולו כדי לעזור לתלמידים ללמוד על מעגלים לוגיים.&lt;/p&gt;&lt;p&gt;גרסת התוכנה: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;יוצרים:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda מתוחזקת כיום על ידי פרופ&apos; Fábio Cappabianco, Ph.D.,‏ João Pedro M. Oliveira,‏ Matheus R. Esteves ו-Maycon A. Santana.&lt;/p&gt;&lt;p&gt; נא לדווח בעמוד ה-GitHub שלנו אם מצאתם באג או שברצונכם לבקש תכונה חדשה.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;בקרו באתר שלנו!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="592"/>
+        <location filename="../../UI/MainWindow.cpp" line="591"/>
         <source>Redo</source>
         <translation>בצע שוב</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="593"/>
+        <location filename="../../UI/MainWindow.cpp" line="592"/>
         <source>Undo</source>
         <translation>בטל</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="618"/>
+        <location filename="../../UI/MainWindow.cpp" line="617"/>
         <source>&lt;h1&gt;Keyboard Shortcuts&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;Element Property Navigation&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : Previous / next primary property &lt;/li&gt;&lt;li&gt; { / } : Previous / next secondary property &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : Morph to previous / next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Double-click a wire to create a node &lt;/li&gt;&lt;li&gt; Drag an element from the left panel onto the canvas to add it &lt;/li&gt;&lt;li&gt; Nudge the selection with the arrow keys (hold Shift for larger steps) &lt;/li&gt;&lt;li&gt; Drop a .panda file onto the canvas to open it &lt;/li&gt;&lt;/ul&gt;</source>
         <translation>&lt;h1&gt;קיצורי מקלדת&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;ניווט במאפייני רכיב&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : מאפיין ראשי קודם / הבא &lt;/li&gt;&lt;li&gt; { / } : מאפיין משני קודם / הבא &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : הפוך לרכיב הקודם / הבא &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;טיפים כלליים&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; לחץ פעמיים על חוט כדי ליצור צומת &lt;/li&gt;&lt;li&gt; גרור רכיב מהלוח השמאלי אל הקנבס כדי להוסיף אותו &lt;/li&gt;&lt;li&gt; הזז את הבחירה עם מקשי החצים (החזק Shift לצעדים גדולים יותר) &lt;/li&gt;&lt;li&gt; השלך קובץ ‎.panda על הקנבס כדי לפתוח אותו &lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="668"/>
+        <location filename="../../UI/MainWindow.cpp" line="667"/>
         <source>Exit</source>
         <translation>יציאה</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="843"/>
+        <location filename="../../UI/MainWindow.cpp" line="842"/>
         <source>%1[*] — wiRedPanda %2</source>
         <translation>%1[*] — wiRedPanda %2</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1308"/>
+        <location filename="../../UI/MainWindow.cpp" line="1289"/>
         <source>Unmute</source>
         <translation>בטל השתקה</translation>
     </message>
@@ -2517,7 +2517,7 @@ wiRedPanda %1 יציג אוטומטית את כל קבצי ה-.panda האחרי�
 <context>
     <name>MorphCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="705"/>
+        <location filename="../../Scene/Commands.cpp" line="707"/>
         <source>Morph %1 elements to %2</source>
         <translation>הפוך %1 רכיבים ל-%2</translation>
     </message>
@@ -2525,7 +2525,7 @@ wiRedPanda %1 יציג אוטומטית את כל קבצי ה-.panda האחרי�
 <context>
     <name>MoveCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="402"/>
+        <location filename="../../Scene/Commands.cpp" line="404"/>
         <source>Move elements</source>
         <translation>הזז רכיבים</translation>
     </message>
@@ -2735,7 +2735,7 @@ wiRedPanda %1 יציג אוטומטית את כל קבצי ה-.panda האחרי�
 <context>
     <name>RegisterBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1126"/>
+        <location filename="../../Scene/Commands.cpp" line="1128"/>
         <source>Register blob &quot;%1&quot;</source>
         <translation>רשום blob &quot;%1&quot;</translation>
     </message>
@@ -2743,7 +2743,7 @@ wiRedPanda %1 יציג אוטומטית את כל קבצי ה-.panda האחרי�
 <context>
     <name>RemoveBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1149"/>
+        <location filename="../../Scene/Commands.cpp" line="1151"/>
         <source>Remove blob &quot;%1&quot;</source>
         <translation>הסר blob &quot;%1&quot;</translation>
     </message>
@@ -2751,7 +2751,7 @@ wiRedPanda %1 יציג אוטומטית את כל קבצי ה-.panda האחרי�
 <context>
     <name>RenameBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1170"/>
+        <location filename="../../Scene/Commands.cpp" line="1172"/>
         <source>Rename IC &quot;%1&quot; to &quot;%2&quot;</source>
         <translation>שנה שם מעגל שלם &quot;%1&quot; ל-&quot;%2&quot;</translation>
     </message>
@@ -2759,7 +2759,7 @@ wiRedPanda %1 יציג אוטומטית את כל קבצי ה-.panda האחרי�
 <context>
     <name>RotateCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="334"/>
+        <location filename="../../Scene/Commands.cpp" line="336"/>
         <source>Rotate %1 degrees</source>
         <translation>סובב %1 מעלות</translation>
     </message>
@@ -2887,32 +2887,32 @@ wiRedPanda %1 יציג אוטומטית את כל קבצי ה-.panda האחרי�
         <translation>שגיאת זרם בטעינת רכיב במיקום %1: מצב %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="649"/>
+        <location filename="../../IO/Serialization.cpp" line="655"/>
         <source>Stream error loading connection at position %1: status %2</source>
         <translation>שגיאת זרם בטעינת חיבור במיקום %1: מצב %2</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="656"/>
+        <location filename="../../IO/Serialization.cpp" line="663"/>
         <source>Invalid type. Data is possibly corrupted.</source>
         <translation>סוג לא תקין. הנתונים עלולים להיות פגומים.</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="709"/>
+        <location filename="../../IO/Serialization.cpp" line="716"/>
         <source>Failed to create versioned backup: %1</source>
         <translation>יצירת גיבוי מגרסה נכשלה: %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="738"/>
+        <location filename="../../IO/Serialization.cpp" line="745"/>
         <source>Stream error reading preamble: status %1</source>
         <translation>שגיאת זרם בקריאת הפתיח: מצב %1</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="797"/>
+        <location filename="../../IO/Serialization.cpp" line="809"/>
         <source>Panda file dependency chain exceeds the maximum nesting depth (%1) while copying &apos;%2&apos;</source>
         <translation>שרשרת התלויות של קובץ Panda חורגת מעומק הקינון המרבי (%1) בעת העתקת &apos;%2&apos;</translation>
     </message>
     <message>
-        <location filename="../../IO/Serialization.cpp" line="816"/>
+        <location filename="../../IO/Serialization.cpp" line="828"/>
         <source>Error copying file: %1</source>
         <translation>שגיאה בהעתקת הקובץ: %1</translation>
     </message>
@@ -2928,32 +2928,32 @@ wiRedPanda %1 יציג אוטומטית את כל קבצי ה-.panda האחרי�
 <context>
     <name>SplitCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="578"/>
+        <location filename="../../Scene/Commands.cpp" line="580"/>
         <source>Invalid connection ports in SplitCommand constructor</source>
         <translation>פורטי חיבור לא תקינים בבנאי SplitCommand</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="584"/>
+        <location filename="../../Scene/Commands.cpp" line="586"/>
         <source>Invalid graphic elements in SplitCommand constructor</source>
         <translation>אלמנטים גרפיים לא תקינים בבנאי SplitCommand</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="607"/>
+        <location filename="../../Scene/Commands.cpp" line="609"/>
         <source>Wire split</source>
         <translation>פיצול חוט</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="623"/>
+        <location filename="../../Scene/Commands.cpp" line="625"/>
         <source>Error trying to redo %1</source>
         <translation>שגיאה בניסיון לבצע שוב %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="646"/>
+        <location filename="../../Scene/Commands.cpp" line="630"/>
         <source>Error: endPort is null in SplitCommand::redo()</source>
         <translation>שגיאה: endPort הוא null ב-SplitCommand::redo()</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="675"/>
+        <location filename="../../Scene/Commands.cpp" line="677"/>
         <source>Error trying to undo %1</source>
         <translation>שגיאה בניסיון לבטל %1</translation>
     </message>
@@ -2966,12 +2966,12 @@ wiRedPanda %1 יציג אוטומטית את כל קבצי ה-.panda האחרי�
         <translation>לא ניתן היה לפתוח את הקובץ לכתיבה: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1259"/>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1295"/>
         <source>Output variable not mapped for TruthTable: %1</source>
         <translation>משתנה פלט לא ממופה לטבלת אמת: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1308"/>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1353"/>
         <source>Element type not supported: %1</source>
         <translation>סוג רכיב לא נתמך: %1</translation>
     </message>
@@ -3010,17 +3010,17 @@ wiRedPanda %1 יציג אוטומטית את כל קבצי ה-.panda האחרי�
 <context>
     <name>ToggleTruthTableOutputCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1059"/>
+        <location filename="../../Scene/Commands.cpp" line="1061"/>
         <source>Toggle TruthTable Output at position: %1</source>
         <translation>הפעל/כבה פלט טבלת אמת במיקום: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1068"/>
+        <location filename="../../Scene/Commands.cpp" line="1070"/>
         <source>Could not find truthtable element!</source>
         <translation>לא ניתן למצוא רכיב טבלת אמת!</translation>
     </message>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1075"/>
+        <location filename="../../Scene/Commands.cpp" line="1077"/>
         <source>TruthTable toggle position out of range: %1</source>
         <translation>מיקום מיתוג טבלת האמת מחוץ לטווח: %1</translation>
     </message>
@@ -3029,38 +3029,38 @@ wiRedPanda %1 יציג אוטומטית את כל קבצי ה-.panda האחרי�
     <name>TourOverlay</name>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="86"/>
-        <location filename="../../Tour/TourOverlay.cpp" line="240"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="208"/>
         <source>Exit</source>
         <translation>יציאה</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="87"/>
-        <location filename="../../Tour/TourOverlay.cpp" line="241"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="209"/>
         <source>Stop the tour</source>
         <translation>עצור את הסיור</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="89"/>
-        <location filename="../../Tour/TourOverlay.cpp" line="242"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="210"/>
         <source>← Back</source>
         <translation>← הקודם</translation>
     </message>
     <message>
         <location filename="../../Tour/TourOverlay.cpp" line="91"/>
-        <location filename="../../Tour/TourOverlay.cpp" line="212"/>
-        <location filename="../../Tour/TourOverlay.cpp" line="238"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="180"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="206"/>
         <source>Next →</source>
         <translation>הבא →</translation>
     </message>
     <message>
-        <location filename="../../Tour/TourOverlay.cpp" line="207"/>
-        <location filename="../../Tour/TourOverlay.cpp" line="235"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="175"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="203"/>
         <source>Step %1 of %2</source>
         <translation>שלב %1 מתוך %2</translation>
     </message>
     <message>
-        <location filename="../../Tour/TourOverlay.cpp" line="212"/>
-        <location filename="../../Tour/TourOverlay.cpp" line="238"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="180"/>
+        <location filename="../../Tour/TourOverlay.cpp" line="206"/>
         <source>Finish</source>
         <translation>סיים</translation>
     </message>
@@ -3094,7 +3094,7 @@ wiRedPanda %1 יציג אוטומטית את כל קבצי ה-.panda האחרי�
 <context>
     <name>UpdateBlobCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="1203"/>
+        <location filename="../../Scene/Commands.cpp" line="1205"/>
         <source>Update %1 IC blobs</source>
         <translation>עדכון %1 IC blobs</translation>
     </message>
@@ -3102,7 +3102,7 @@ wiRedPanda %1 יציג אוטומטית את כל קבצי ה-.panda האחרי�
 <context>
     <name>UpdateCommand</name>
     <message>
-        <location filename="../../Scene/Commands.cpp" line="457"/>
+        <location filename="../../Scene/Commands.cpp" line="459"/>
         <source>Update %1 elements</source>
         <translation>עדכן %1 רכיבים</translation>
     </message>
@@ -3135,55 +3135,55 @@ wiRedPanda %1 יציג אוטומטית את כל קבצי ה-.panda האחרי�
         <translation>הורדה</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="100"/>
+        <location filename="../../UI/UpdateController.cpp" line="105"/>
         <source>Downloading wiRedPanda %1…</source>
         <translation>מוריד את wiRedPanda %1…</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="100"/>
+        <location filename="../../UI/UpdateController.cpp" line="105"/>
         <source>Cancel</source>
         <translation>ביטול</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="101"/>
+        <location filename="../../UI/UpdateController.cpp" line="106"/>
         <source>Downloading Update</source>
         <translation>מוריד עדכון</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="137"/>
-        <location filename="../../UI/UpdateController.cpp" line="145"/>
-        <location filename="../../UI/UpdateController.cpp" line="151"/>
+        <location filename="../../UI/UpdateController.cpp" line="142"/>
+        <location filename="../../UI/UpdateController.cpp" line="150"/>
+        <location filename="../../UI/UpdateController.cpp" line="156"/>
         <source>Download Failed</source>
         <translation>ההורדה נכשלה</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="137"/>
+        <location filename="../../UI/UpdateController.cpp" line="142"/>
         <source>Could not download the update:
 %1</source>
         <translation>לא ניתן להוריד את העדכון:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="145"/>
+        <location filename="../../UI/UpdateController.cpp" line="150"/>
         <source>Could not save the file:
 %1</source>
         <translation>לא ניתן לשמור את הקובץ:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="151"/>
+        <location filename="../../UI/UpdateController.cpp" line="156"/>
         <source>Could not write the file:
 %1</source>
         <translation>לא ניתן היה לכתוב את הקובץ:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="158"/>
+        <location filename="../../UI/UpdateController.cpp" line="163"/>
         <source>Download Complete</source>
         <translation>ההורדה הושלמה</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="159"/>
+        <location filename="../../UI/UpdateController.cpp" line="164"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
         <translation>wiRedPanda הורד אל:
@@ -3219,22 +3219,22 @@ Please update wiRedPanda to save changes to this file.</source>
         <translation>שגיאה בפתיחת קובץ: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="392"/>
+        <location filename="../../Scene/Workspace.cpp" line="397"/>
         <source>Could not save file: %1</source>
         <translation>לא ניתן לשמור קובץ: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="475"/>
+        <location filename="../../Scene/Workspace.cpp" line="480"/>
         <source>This file does not exist: %1</source>
         <translation>קובץ זה לא קיים: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="484"/>
+        <location filename="../../Scene/Workspace.cpp" line="489"/>
         <source>Could not open file: %1</source>
         <translation>לא ניתן לפתוח קובץ: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="532"/>
+        <location filename="../../Scene/Workspace.cpp" line="537"/>
         <source>This file was saved with a newer file format (version %1).
 Your version supports file format %2.
 
@@ -3247,34 +3247,34 @@ Please update wiRedPanda to edit and save this file.</source>
 אנא עדכן את wiRedPanda כדי לערוך ולשמור קובץ זה.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="537"/>
+        <location filename="../../Scene/Workspace.cpp" line="542"/>
         <source>Newer version file.</source>
         <translation>קובץ גרסה חדשה יותר.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="540"/>
+        <location filename="../../Scene/Workspace.cpp" line="545"/>
         <source>This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).
 A backup of the original file has been created with name: %3</source>
         <translation>קובץ זה בפורמט ישן (גרסה %1) וישודרג אוטומטית לפורמט הנוכחי (גרסה %2).
 גיבוי של הקובץ המקורי נוצר בשם: %3</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="543"/>
+        <location filename="../../Scene/Workspace.cpp" line="548"/>
         <source>File upgraded.</source>
         <translation>הקובץ שודרג.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="713"/>
+        <location filename="../../Scene/Workspace.cpp" line="718"/>
         <source>Error opening autosave file: %1</source>
         <translation>שגיאה בפתיחת קובץ שמירה אוטומטית: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="721"/>
+        <location filename="../../Scene/Workspace.cpp" line="729"/>
         <source>Could not commit autosave file: %1</source>
         <translation>לא ניתן לאשר את קובץ השמירה האוטומטית: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="889"/>
+        <location filename="../../Scene/Workspace.cpp" line="897"/>
         <source>Remove embedded IC &quot;%1&quot;</source>
         <translation>הסר IC משובץ &quot;%1&quot;</translation>
     </message>
