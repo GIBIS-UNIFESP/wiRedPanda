@@ -1346,6 +1346,17 @@ void MainWindow::on_actionShowMinimap_triggered(const bool checked)
     });
 }
 
+// Handles the "Set Background Image" action for the currently active editor tab.
+//
+// Workflow overview:
+// 1) Resolve the current tab/scene and return early when there is no active tab.
+// 2) Build and present a modal configuration dialog for background image options.
+// 3) Initialize dialog controls from the current scene/background state.
+// 4) If accepted, validate user input and apply the selected background settings.
+// 5) Persist/update related runtime state so the UI reflects the new background.
+//
+// This slot is intentionally wrapped in Application::guardedSlot to keep failures
+// isolated from the event loop and preserve UI responsiveness.
 void MainWindow::on_actionSetBackgroundImage_triggered()
 {
     Application::guardedSlot(this, [this] {
