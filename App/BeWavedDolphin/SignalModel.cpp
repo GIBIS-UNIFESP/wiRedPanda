@@ -3,6 +3,8 @@
 
 #include "App/BeWavedDolphin/SignalModel.h"
 
+#include "App/Core/Common.h"
+
 SignalModel::SignalModel(const int rows, const int columns, QObject *parent)
     : QStandardItemModel(rows, columns, parent)
 {
@@ -17,7 +19,21 @@ Qt::ItemFlags SignalModel::flags(const QModelIndex &index) const
 
 void SignalModel::setValue(const int row, const int col, const int value)
 {
-    setData(index(row, col), value, Qt::DisplayRole);
+    // Input rows are two-state by definition: WaveformSimulator::sweep() reads them as
+    // `value(row, col) != 0`, so anything that is not 0 or 1 drives the input HIGH. Output rows
+    // legitimately hold four-state Status (Unknown and Error have their own waveform segments
+    // and export characters), and copying one of those cells into an input row is a
+    // plain copy/paste away -- DolphinClipboard::paste() bounds the row and column but not the
+    // value, and documents the clipboard as untrusted. Clamp here rather than in paste() so all
+    // three writers (paste, file load, setCellValue) inherit it, and warn the way
+    // DolphinSerializer already does when it clamps a non-binary cell on load.
+    int stored = value;
+    if (isInputRow(row) && value != 0 && value != 1) {
+        qCWarning(zero) << "SignalModel: non-binary value" << value << "written to input row"
+                        << row << "column" << col << "- clamped";
+        stored = (value == 1) ? 1 : 0;
+    }
+    setData(index(row, col), stored, Qt::DisplayRole);
 }
 
 int SignalModel::value(const int row, const int col) const

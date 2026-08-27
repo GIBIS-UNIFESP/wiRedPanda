@@ -13,6 +13,7 @@
 
 #include "App/BeWavedDolphin/DolphinClipboard.h"
 #include "App/BeWavedDolphin/SignalModel.h"
+#include "App/Core/Enums.h"
 #include "App/IO/Serialization.h"
 
 void TestDolphinClipboard::testPasteRoundTrip()
@@ -124,4 +125,39 @@ void TestDolphinClipboard::testPasteFromClipboardReturnsFalseWhenEmpty()
 
     QVERIFY(!DolphinClipboard::pasteFromClipboard(target, ranges));
     QCOMPARE(target.value(0, 0), 0); // unchanged
+}
+
+void TestDolphinClipboard::testPasteClampsInputRowValues()
+{
+    SignalModel model(4, 6);
+    model.setInputRows(2);                 // rows 0-1 inputs, rows 2-3 outputs
+    for (int r = 0; r < 4; ++r) {
+        for (int c = 0; c < 6; ++c) {
+            model.setValue(r, c, 0);
+        }
+    }
+
+    // A swept Unknown and a swept Error, exactly as WaveformSimulator::sweep() writes them.
+    model.setValue(3, 1, static_cast<int>(Status::Unknown));
+    model.setValue(3, 2, static_cast<int>(Status::Error));
+    QCOMPARE(model.value(3, 1), -1);
+    QCOMPARE(model.value(3, 2), 2);
+
+    // Copy those two output cells and paste them onto an input row.
+    const QItemSelection copyRange(model.index(3, 1), model.index(3, 2));
+    DolphinClipboard::copyToClipboard(model, copyRange);
+    const QItemSelection pasteRange(model.index(0, 0), model.index(0, 0));
+    QVERIFY(DolphinClipboard::pasteFromClipboard(model, pasteRange));
+
+    for (int col = 0; col <= 1; ++col) {
+        const int landed = model.value(0, col);
+        QVERIFY2(landed == 0 || landed == 1,
+                 qPrintable(QString("input cell (0,%1) holds %2; input rows must be two-state, "
+                                    "or the sweep's `value != 0` reads a non-definite cell HIGH")
+                                .arg(col).arg(landed)));
+    }
+
+    // Output rows must still accept four-state, or the waveform loses its Unknown/Error display.
+    model.setValue(2, 0, static_cast<int>(Status::Unknown));
+    QCOMPARE(model.value(2, 0), -1);
 }

@@ -9,6 +9,7 @@
 #include <QAction>
 #include <QApplication>
 #include <QClipboard>
+#include <QComboBox>
 #include <QDialog>
 #include <QDir>
 #include <QFile>
@@ -23,6 +24,7 @@
 #include <QSet>
 #include <QSpinBox>
 #include <QStandardItemModel>
+#include <QStatusBar>
 #include <QTableView>
 #include <QTest>
 #include <QTextStream>
@@ -79,6 +81,65 @@ static std::unique_ptr<WorkSpace> createAndCircuit()
     builder.connect(andGate, 0, led, 0);
 
     return ws;
+}
+
+/// Creates a single-inverter circuit (input → NOT → output) and returns the workspace.
+/// The NOT carries the 5 ns type default, so temporal sweeps lag it by whole columns.
+static std::unique_ptr<WorkSpace> createNotCircuit()
+{
+    auto ws = std::make_unique<WorkSpace>();
+    auto *scene = ws->scene();
+
+    auto *sw = new InputSwitch();
+    auto *notGate = new Not();
+    auto *led = new Led();
+
+    scene->addItem(sw);
+    scene->addItem(notGate);
+    scene->addItem(led);
+
+    CircuitBuilder builder(scene);
+    builder.connect(sw, 0, notGate, 0);
+    builder.connect(notGate, 0, led, 0);
+
+    return ws;
+}
+
+/// Creates a two-inverter chain (input → NOT → NOT → output): 5 + 5 ns, so its temporal
+/// lag must exceed a single inverter's.
+static std::unique_ptr<WorkSpace> createDoubleNotCircuit()
+{
+    auto ws = std::make_unique<WorkSpace>();
+    auto *scene = ws->scene();
+
+    auto *sw = new InputSwitch();
+    auto *not1 = new Not();
+    auto *not2 = new Not();
+    auto *led = new Led();
+
+    scene->addItem(sw);
+    scene->addItem(not1);
+    scene->addItem(not2);
+    scene->addItem(led);
+
+    CircuitBuilder builder(scene);
+    builder.connect(sw, 0, not1, 0);
+    builder.connect(not1, 0, not2, 0);
+    builder.connect(not2, 0, led, 0);
+
+    return ws;
+}
+
+/// Returns the first column where \a row's value differs from its column-0 value, or -1.
+static int firstOutputTransitionColumn(const SignalModel *model, int row)
+{
+    const int initial = model->value(row, 0);
+    for (int col = 1; col < model->columnCount(); ++col) {
+        if (model->value(row, col) != initial) {
+            return col;
+        }
+    }
+    return -1;
 }
 
 /// Creates a BewavedDolphin on the given workspace's scene with a blank waveform.
@@ -260,6 +321,58 @@ void TestBewavedDolphinGui::testRunLeavesLiveSequentialStateUnchanged()
              "driven high before the sweep and must still be high after it");
 }
 
+void TestBewavedDolphinGui::testTemporalRunLeavesLiveSequentialStateUnchanged()
+{
+    // The sweep is supposed to be a read-only question about the circuit. It resets every element
+    // to power-on defaults on entry (so its own results are reproducible) but only puts the INPUT
+    // port levels back afterwards, so everything else -- flip-flop state above all -- is left
+    // wherever the last swept column happened to leave it.
+    WorkSpace ws;
+    auto *scene = ws.scene();
+    auto *data = new InputSwitch();
+    auto *clk = new InputSwitch();
+    auto *dff = new DFlipFlop();
+    auto *led = new Led();
+    scene->addItem(data);
+    scene->addItem(clk);
+    scene->addItem(dff);
+    scene->addItem(led);
+    CircuitBuilder builder(scene);
+    builder.connect(data, 0, dff, 0); // Data
+    builder.connect(clk, 0, dff, 1);  // Clock
+    builder.connect(dff, 0, led, 0);  // Q
+
+    auto *sim = scene->simulation();
+    QVERIFY(sim->initialize());
+
+    // Clock a 1 into the flip-flop, live.
+    data->setOn(true);
+    clk->setOn(false);
+    sim->update();
+    clk->setOn(true); // rising edge
+    sim->update();
+    sim->update();
+    QCOMPARE(dff->outputValue(0), Status::Active); // precondition: Q is live-high
+
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(&ws));
+    dolphin->setLength(8, false);
+    // Drive the clock row so it RISES in the final column. Without an input change there the
+    // flip-flop is never evaluated in the last column, no deferred-commit window is left open,
+    // and the restore succeeds for the wrong reason -- the first version of this test passed
+    // that way. The data row is held high so the edge has something to capture.
+    dolphin->setCellValue(0, 7, 1);                       // data high at the last column
+    for (int col = 0; col < 7; ++col) { dolphin->setCellValue(1, col, 0); }
+    dolphin->setCellValue(1, 7, 1);                       // clock rises in the last column
+    // 1 ns per column against the flip-flop's 20 ns delay, so the publish that edge schedules
+    // lands beyond the swept window and the element is still mid-window when the sweep restores.
+    dolphin->setTemporalMode(true, 1);
+    dolphin->run();
+
+    QVERIFY2(dff->outputValue(0) == Status::Active,
+             "a TEMPORAL sweep must not leave its own last column in the live circuit: the "
+             "flip-flop was driven high before the sweep and must still be high after it");
+}
+
 void TestBewavedDolphinGui::testRunResetsICInternalSequentialState()
 {
     // The sweep's pre-run reset must reach inside ICs. Walking only scene-level elements would
@@ -385,6 +498,132 @@ void TestBewavedDolphinGui::testCombinationalMode()
     // Column 0 = input0=0, input1=0 → AND = 0
     int zeroResult = model->index(outputRow, 0).data().toInt();
     QCOMPARE(zeroResult, 0);
+}
+
+// ===========================================================================
+// Temporal (propagation-delay) mode
+// ===========================================================================
+
+void TestBewavedDolphinGui::testTemporalModeShowsPropagationLag()
+{
+    auto ws = createNotCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+    const auto *model = dolphin->model();
+    const int outputRow = static_cast<int>(dolphin->inputElements().size()); // first row after the inputs
+
+    // A wide input pulse: low until riseCol, high from there on — held well past the NOT's 5 ns
+    // delay so the edge is not inertially absorbed.
+    const int riseCol = 8;
+    for (int col = 0; col < model->columnCount(); ++col) {
+        dolphin->setCellValue(0, col, col >= riseCol ? 1 : 0);
+    }
+
+    // Functional (zero delay): the NOT's output flips in the very column the input rises.
+    dolphin->setTemporalMode(false);
+    dolphin->run();
+    const int functionalCol = firstOutputTransitionColumn(model, outputRow);
+    QCOMPARE(functionalCol, riseCol);
+
+    // Temporal at 1 ns/column: the 5 ns delay pushes the transition several columns later.
+    dolphin->setTemporalMode(true, 1);
+    dolphin->run();
+    const int temporalCol = firstOutputTransitionColumn(model, outputRow);
+
+    QVERIFY2(temporalCol > functionalCol,
+             qPrintable(QString("Temporal output did not lag (functional %1, temporal %2)")
+                            .arg(functionalCol).arg(temporalCol)));
+    const int lag = temporalCol - functionalCol;
+    QVERIFY2(lag >= 3 && lag <= 7,
+             qPrintable(QString("Unexpected lag of %1 columns (expected ~5 for a 5 ns NOT)").arg(lag)));
+}
+
+void TestBewavedDolphinGui::testTemporalModeCumulativeChainLag()
+{
+    auto ws = createDoubleNotCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+    const auto *model = dolphin->model();
+    const int outputRow = static_cast<int>(dolphin->inputElements().size());
+
+    const int riseCol = 6;
+    for (int col = 0; col < model->columnCount(); ++col) {
+        dolphin->setCellValue(0, col, col >= riseCol ? 1 : 0);
+    }
+
+    // Functional: zero delay, so the double negation follows the input in its own column.
+    dolphin->setTemporalMode(false);
+    dolphin->run();
+    const int functionalCol = firstOutputTransitionColumn(model, outputRow);
+    QCOMPARE(functionalCol, riseCol);
+
+    // Temporal: the two inverters accumulate 5 + 5 ns, clearly more than one gate's worth.
+    dolphin->setTemporalMode(true, 1);
+    dolphin->run();
+    const int chainCol = firstOutputTransitionColumn(model, outputRow);
+    const int chainLag = chainCol - functionalCol;
+
+    QVERIFY2(chainLag >= 8 && chainLag <= 13,
+             qPrintable(QString("Unexpected chain lag of %1 columns (expected ~10 for two 5 ns NOTs)")
+                            .arg(chainLag)));
+}
+
+void TestBewavedDolphinGui::testNonTemporalSweepIgnoresLiveTemporalMode()
+{
+    auto ws = createNotCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+    const auto *model = dolphin->model();
+    const int outputRow = static_cast<int>(dolphin->inputElements().size());
+
+    // The dolphin shares its scene's Simulation. Leave that simulation in temporal mode, as
+    // another consumer might: a sweep the user asked to be functional must not inherit it,
+    // or a delayed chain would ripple one column per stage in a zero-delay sweep.
+    auto *simulation = ws->scene()->simulation();
+    simulation->setTimePerTick(4);
+
+    const int riseCol = 5;
+    for (int col = 0; col < model->columnCount(); ++col) {
+        dolphin->setCellValue(0, col, col >= riseCol ? 1 : 0);
+    }
+
+    dolphin->setTemporalMode(false);
+    dolphin->run();
+
+    QCOMPARE(firstOutputTransitionColumn(model, outputRow), riseCol);
+    QCOMPARE(simulation->timePerTick(), SimTime{4}); // the live window is handed back untouched
+}
+
+void TestBewavedDolphinGui::testSweepModeControlsLiveInStatusBar()
+{
+    auto ws = createNotCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+
+    auto *comboSweepMode = dolphin->findChild<QComboBox *>("comboSweepMode");
+    auto *comboTimeResolution = dolphin->findChild<QComboBox *>("comboTimeResolution");
+    auto *statusBar = dolphin->findChild<QStatusBar *>("statusbar");
+    QVERIFY(comboSweepMode && comboTimeResolution && statusBar);
+
+    // Placement is the point of this test: on the toolbar these would be culled into the
+    // overflow popup as soon as the waveform window got narrow.
+    QCOMPARE(comboSweepMode->parentWidget(), statusBar);
+    QCOMPARE(comboTimeResolution->parentWidget(), statusBar);
+
+    // Functional by default; the resolution is inert there and stays hidden.
+    QCOMPARE(comboSweepMode->currentIndex(), 0);
+    QVERIFY(!comboSweepMode->isHidden());
+    QVERIFY(comboTimeResolution->isHidden());
+
+    // Driving the combo switches the sweep and reveals the resolution.
+    comboSweepMode->setCurrentIndex(1);
+    QVERIFY(!comboTimeResolution->isHidden());
+
+    // setTemporalMode() is the shared entry point (the MCP server uses it), so the controls
+    // must follow it too — including the resolution it was given.
+    dolphin->setTemporalMode(true, 5);
+    QCOMPARE(comboSweepMode->currentIndex(), 1);
+    QCOMPARE(comboTimeResolution->currentData().toULongLong(), 5ULL);
+
+    dolphin->setTemporalMode(false);
+    QCOMPARE(comboSweepMode->currentIndex(), 0);
+    QVERIFY(comboTimeResolution->isHidden());
 }
 
 // ===========================================================================

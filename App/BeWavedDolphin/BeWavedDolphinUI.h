@@ -9,6 +9,7 @@
 
 // Specific Qt includes instead of monolithic QtWidgets
 #include <QAction>
+#include <QComboBox>
 #include <QMainWindow>
 #include <QMenu>
 #include <QMenuBar>
@@ -80,6 +81,14 @@ public:
     QAction *actionZoomOut = nullptr;
     QAction *actionFitScreen = nullptr;
     QAction *actionResetZoom = nullptr;
+
+    // --- Temporal (propagation-delay) simulation ---
+
+    // Hosted in the status bar, not the toolbar: settings rather than tools, and the toolbar
+    // culls its tail into an overflow popup when the window is narrow.
+
+    QComboBox *comboSweepMode = nullptr;       ///< Functional / Temporal sweep selector.
+    QComboBox *comboTimeResolution = nullptr;  ///< Sim-time (ns) per column (temporal only).
 
     // --- Actions: About Menu ---
 

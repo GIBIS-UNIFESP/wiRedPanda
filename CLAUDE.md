@@ -175,6 +175,23 @@ Advanced development features supported:
   sequential ~15-20 ns; sources/sinks/nodes/ICs 0). `Simulation::initialize()` seeds
   `m_delays` from it; `setElementDelay()` overrides at runtime.
 
+### BeWavedDolphin temporal mode
+
+The waveform editor's column sweep renders delays directly, independently of the main
+window's mode (a sweep never inherits the live window). Its own status bar carries the same
+**Functional / Temporal** selector, plus a ns/column resolution shown only while temporal;
+together they make `run()` bracket its sweep in
+`Simulation::beginTimedRun()`/`endTimedRun()`, so each column advances that much sim-time
+and a gate's propagation delay renders as **column-lag** — an output transition appears
+`≈ delay / ns-per-column` columns after its cause. The bracket is unconditional: a
+non-temporal sweep runs at 0 ns/tick rather than inheriting whatever window the shared
+`Simulation` was left in. Mode and resolution are session-only view settings — the
+`.dolphin` format stores inputs only, and outputs are always recomputed on load.
+
+Because the model is *inertial*, a pulse narrower than a gate's delay is absorbed
+entirely: at a resolution fine enough to show lag, an input row toggling every column
+drives its outputs flat. That is correct behavior, and the toggle says so in the status bar.
+
 ### Timing Characteristics
 
 - **Clock Elements**: real-time, wall-clock driven (independent of sim mode).

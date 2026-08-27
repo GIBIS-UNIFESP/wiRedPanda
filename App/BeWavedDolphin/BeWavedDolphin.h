@@ -21,6 +21,7 @@
 #include "App/BeWavedDolphin/SignalDelegate.h"
 #include "App/BeWavedDolphin/SignalModel.h"
 #include "App/Scene/Scene.h"
+#include "App/Simulation/SimTime.h"
 
 class DolphinHost;
 class DolphinZoom;
@@ -106,6 +107,14 @@ public:
 
     /// Runs the simulation for all input combinations and fills output rows.
     void run();
+
+    /**
+     * \brief Sets the sweep mode (used by the status-bar selector, the MCP server and tests).
+     * \param on           \c true to sweep with per-element propagation delays.
+     * \param nsPerColumn  Sim-time advanced per column; 0 keeps the current resolution.
+     * \details Syncs the status-bar controls but does not re-run — the caller runs when ready.
+     */
+    void setTemporalMode(bool on, SimTime nsPerColumn = 0);
 
     /**
      * \brief Sets the number of time-step columns.
@@ -236,6 +245,8 @@ private:
     void on_actionSetTo1_triggered();            ///< Sets all selected input cells to 1.
     void on_actionShowNumbers_triggered();       ///< Switches the display to numeric mode.
     void on_actionShowWaveforms_triggered();     ///< Switches the display to waveform mode.
+    void on_comboSweepMode_changed(int index);   ///< Switches functional/temporal sweep and re-runs.
+    void on_comboTimeResolution_changed();       ///< Changes ns-per-column and re-runs (temporal mode).
     void on_actionZoomIn_triggered();            ///< Increases the waveform zoom level.
     void on_actionZoomOut_triggered();           ///< Decreases the waveform zoom level.
     void on_tableView_cellDoubleClicked();       ///< Toggles the double-clicked input cell value.
@@ -267,4 +278,6 @@ private:
     QVector<DolphinModelBuilder::Row> m_rows;
     int m_length                   = 32;              ///< Number of simulation time-step columns.
     ExerciseOverlay *m_exerciseOverlay = nullptr;     ///< Non-owning; repositioned on resize.
+    bool m_temporal                = false;           ///< True ⇒ sweep with per-element propagation delays.
+    SimTime m_nsPerColumn          = 2;               ///< Sim-time advanced per column in temporal mode.
 };

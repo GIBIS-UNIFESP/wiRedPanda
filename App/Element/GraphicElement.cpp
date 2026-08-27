@@ -795,6 +795,15 @@ void GraphicElement::saveSimState(QVector<Status> &out) const
 
 void GraphicElement::restoreSimState(const QVector<Status> &in, int &cursor)
 {
+    // Close any deferred-commit window first, mirroring what ElementSimState::reset() does and
+    // for the same reason. setOutputValue() routes into the staging buffer while a window is
+    // open, so restoring into one silently fails to reach outputValue() -- and in temporal mode
+    // elements are routinely mid-window when a sweep ends: one evaluated in the last column
+    // schedules its publish past that column's targetTime, and endTimedRun() then drops the
+    // event. The window is NOT guaranteed to be closed by the time a sweep ends: reset() clears
+    // the flag, but it runs at sweep ENTRY and says nothing about the state at exit.
+    m_sim.discardDeferredCommit();
+
     for (int i = 0; i < static_cast<int>(m_sim.outputSize()); ++i) {
         if (cursor >= in.size()) {
             return; // LCOV_EXCL_LINE -- save/restore are always paired over the same element set

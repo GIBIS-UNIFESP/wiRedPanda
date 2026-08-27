@@ -30,15 +30,41 @@ private slots:
     void testSetLengthChangesColumns();
     void testCombinationalMode();
 
+    // --- Temporal (propagation-delay) mode ---
+
+    /// In temporal mode a gate's output transition lags its cause by the gate delay, rendered as
+    /// column-lag; functional mode shows the transition in the same column (zero delay).
+    void testTemporalModeShowsPropagationLag();
+    /// Cumulative delay: a NOT→NOT chain lags more than a single NOT, proving delays compose.
+    void testTemporalModeCumulativeChainLag();
+    /// A NON-temporal sweep stays genuinely functional (same-column transitions) even when the
+    /// shared Simulation was left in temporal mode — run() must not inherit the live tick
+    /// window — and that window is restored afterwards.
+    void testNonTemporalSweepIgnoresLiveTemporalMode();
+
+    /// The sweep-mode and resolution selectors live in the status bar, which never culls its
+    /// contents, rather than on the toolbar, whose tail vanishes into an overflow popup on a
+    /// narrow window. The resolution shows only while temporal, and the controls track
+    /// setTemporalMode() so the MCP entry point and the UI can't drift apart.
+    void testSweepModeControlsLiveInStatusBar();
+
+    /// The sweep's pre-run reset must reach sequential elements nested inside ICs (the flat
+    /// netlist simulates them directly) — a flip-flop's live-run state must not leak into a
+    /// sweep that promises power-on reproducibility.
+    void testRunResetsICInternalSequentialState();
+
     /// A sweep must be state-neutral for the LIVE circuit. sweep() resets every element on entry,
     /// so restoring only the input port levels on exit would leave the canvas holding whatever the
     /// last column produced -- a read-only-looking create_waveform mutating the user's circuit.
     /// Sequential state is where that shows: a flip-flop driven high live comes back low.
     void testRunLeavesLiveSequentialStateUnchanged();
-    /// The sweep's pre-run reset must reach sequential elements nested inside ICs (the flat
-    /// netlist simulates them directly) — a flip-flop's live-run state must not leak into a
-    /// sweep that promises power-on reproducibility.
-    void testRunResetsICInternalSequentialState();
+
+    /// The same neutrality contract in TEMPORAL mode, where it does not hold. An element
+    /// evaluated in the last swept column schedules its publish past that column's
+    /// targetTime, so it is still inside an open deferred-commit window when the scope guard
+    /// restores -- and restoreSimState() writes through setOutputValue(), which routes into
+    /// the staging buffer while a window is open. The restore never reaches outputValue().
+    void testTemporalRunLeavesLiveSequentialStateUnchanged();
 
     // --- File I/O ---
 

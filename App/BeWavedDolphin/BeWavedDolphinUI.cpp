@@ -97,6 +97,26 @@ void BewavedDolphinUi::setupUi(QMainWindow *BewavedDolphin)
     actionSetLength->setObjectName("actionSetLength");
     actionSetLength->setIcon(QIcon(":/Interface/Dolphin/range.svg"));
 
+    // Sweep mode and its resolution live in the STATUS BAR, not the toolbar: they are settings
+    // rather than tools, and the toolbar culls its tail into an overflow popup on a narrow
+    // window. Same wording as the main window's own selector, so the two read alike.
+    comboSweepMode = new QComboBox(BewavedDolphin);
+    comboSweepMode->setObjectName("comboSweepMode");
+    comboSweepMode->addItem(QString(), 0); // Functional — index 0
+    comboSweepMode->addItem(QString(), 1); // Temporal — index 1
+    comboSweepMode->setCurrentIndex(0);
+
+    comboTimeResolution = new QComboBox(BewavedDolphin);
+    comboTimeResolution->setObjectName("comboTimeResolution");
+    // Sim-time advanced per waveform column. Small values (relative to the 5-20 ns gate
+    // delays) make a single gate's delay span several visible columns.
+    comboTimeResolution->addItem("1 ns/col", 1);
+    comboTimeResolution->addItem("2 ns/col", 2);
+    comboTimeResolution->addItem("5 ns/col", 5);
+    comboTimeResolution->addItem("10 ns/col", 10);
+    comboTimeResolution->setCurrentIndex(1); // 2 ns/col
+    comboTimeResolution->setVisible(false); // shown only in temporal mode
+
     actionAboutQt = new QAction(BewavedDolphin);
     actionAboutQt->setObjectName("actionAboutQt");
     actionAboutQt->setIcon(QIcon(":/Interface/Toolbar/helpQt.svg"));
@@ -206,6 +226,9 @@ void BewavedDolphinUi::setupUi(QMainWindow *BewavedDolphin)
     mainToolBar->addAction(actionSetLength);
     mainToolBar->addSeparator();
     mainToolBar->addAction(actionExit);
+
+    statusbar->addPermanentWidget(comboSweepMode);
+    statusbar->addPermanentWidget(comboTimeResolution);
     menubar->addAction(menuFile->menuAction());
     menubar->addAction(menuEdit->menuAction());
     menubar->addAction(menuView->menuAction());
@@ -294,6 +317,15 @@ void BewavedDolphinUi::retranslateUi(QMainWindow *BewavedDolphin)
     actionExportToPng->setShortcut(QStringLiteral("Ctrl+Shift+P"));
     actionSetLength->setText(QCoreApplication::translate("BewavedDolphin", "Set Length"));
     actionSetLength->setShortcut(QStringLiteral("Alt+L"));
+    comboSweepMode->setItemText(0, QCoreApplication::translate("BewavedDolphin", "Functional"));
+    comboSweepMode->setItemText(1, QCoreApplication::translate("BewavedDolphin", "Temporal"));
+    comboSweepMode->setToolTip(QCoreApplication::translate("BewavedDolphin",
+        "Sweep mode. Functional is zero-delay: every column settles completely. Temporal "
+        "simulates per-element propagation delays, so outputs lag their cause by whole columns "
+        "— hold a signal steady for at least its gate delay to see the effect, since narrower "
+        "pulses are absorbed. A view setting; it is not saved with the file."));
+    comboTimeResolution->setToolTip(QCoreApplication::translate("BewavedDolphin",
+        "Simulation time advanced per waveform column (temporal mode)."));
     actionAboutQt->setText(QCoreApplication::translate("BewavedDolphin", "About Qt"));
     actionAboutQt->setShortcut(QStringLiteral("Ctrl+Shift+H"));
     actionZoomIn->setText(QCoreApplication::translate("BewavedDolphin", "Zoom In"));
