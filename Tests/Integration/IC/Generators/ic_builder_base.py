@@ -189,6 +189,20 @@ class ICBuilderBase:
             return None
         return ElementHandle(element_id, response.result.get("width", 64.0), response.result.get("height", 64.0))
 
+    async def set_propagation_delay(self, element_id: int, ns: int) -> bool:
+        """Set a per-element inertial propagation delay (ns) for temporal simulation.
+
+        Only meaningful on gates and sequential elements; the server ignores it on element
+        types that have no propagation delay. Returns True on success.
+        """
+        response = await self.mcp.send_command(
+            "set_element_properties", {"element_id": element_id, "propagation_delay": ns}
+        )
+        if not response.success:
+            self.log_error(f"set propagation_delay={ns} on element {element_id}", response.error)
+            return False
+        return True
+
     async def instantiate_ic(self, component: str, x: float, y: float, label: str = "") -> "int | None":
         """Instantiate an IC component by bare name (e.g. "level1_d_flip_flop").
 

@@ -12,11 +12,15 @@
 #include <QtTest>
 
 #include "App/Core/Enums.h"
+#include "App/Element/GraphicElementInput.h"
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/DFlipFlop.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Not.h"
+#include "App/IO/Serialization.h"
 #include "App/Scene/Commands.h"
+#include "App/Scene/Scene.h"
+#include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
 #include "Tests/Common/TestUtils.h"
 
@@ -482,8 +486,187 @@ void TestUnifiedTimed::testTimedRunZeroWindowIgnoresLiveTemporalMode()
 }
 
 // ===========================================================================
+// Shipped temporal example circuits
+// ===========================================================================
+
+namespace {
+
+/// Loads Examples/<name>.panda into \a workspace. Returns false (with a message) on failure.
+bool loadExample(WorkSpace &workspace, const QString &name, QString &error)
+{
+    const QFileInfo fileInfo(QDir(TestUtils::examplesDir()).filePath(name));
+    if (!fileInfo.exists()) {
+        error = QString("Example %1 not found at %2").arg(name, fileInfo.absoluteFilePath());
+        return false;
+    }
+
+    QFile pandaFile(fileInfo.absoluteFilePath());
+    if (!pandaFile.open(QIODevice::ReadOnly)) {
+        error = QString("Could not open %1").arg(fileInfo.absoluteFilePath());
+        return false;
+    }
+
+    QDataStream stream(&pandaFile);
+    const QVersionNumber version = Serialization::readPandaHeader(stream);
+    workspace.load(stream, version, fileInfo.absolutePath());
+    return true;
+}
+
+/// Returns the first element in \a scene whose label is \a label, or nullptr.
+GraphicElement *elementByLabel(Scene *scene, const QString &label)
+{
+    const auto elements = scene->elements();
+    const auto it = std::find_if(elements.cbegin(), elements.cend(),
+                                 [&label](GraphicElement *elm) { return elm && elm->label() == label; });
+    return it == elements.cend() ? nullptr : *it;
+}
+
+/// Drives \a ticks updates and records every value \a element's output port 0 takes, with the
+/// sim time it took it.
+QVector<QPair<SimTime, Status>> sampleOutput(Simulation *simulation, GraphicElement *element, int ticks)
+{
+    QVector<QPair<SimTime, Status>> samples;
+    samples.append({simulation->currentTime(), element->outputValue(0)});
+    for (int tick = 0; tick < ticks; ++tick) {
+        simulation->update();
+        const Status current = element->outputValue(0);
+        if (current != samples.last().second) {
+            samples.append({simulation->currentTime(), current});
+        }
+    }
+    return samples;
+}
+
+} // namespace
+
+void TestUnifiedTimed::testExampleRingOscillator()
+{
+    WorkSpace workspace;
+    QString error;
+    QVERIFY2(loadExample(workspace, "temporal_ring_oscillator.panda", error), qPrintable(error));
+
+    auto *n1 = elementByLabel(workspace.scene(), "n1");
+    QVERIFY2(n1 && n1->elementType() == ElementType::Not, "ring inverter n1 missing from the example");
+
+    auto *simulation = workspace.scene()->simulation();
+    QVERIFY(simulation->initialize());
+
+    // Functional mode: a 3-inverter ring has no stable value, so the engine canonicalizes the
+    // feedback region to Unknown rather than freezing an arbitrary phase. That is the example's
+    // teaching point — it looks "dead" until swept with delays.
+    simulation->update();
+    QCOMPARE(n1->outputValue(0), Status::Unknown);
+
+    // Temporal mode: the loop resolves over time instead, toggling every 3 x 5 ns. Reset every
+    // element to power-on defaults first, exactly as WaveformSimulator::sweep() does before a
+    // BeWavedDolphin run — without it the ring stays stuck on the Unknown the functional pass
+    // just canonicalized it to, since NOT(Unknown) = Unknown is itself a fixed point.
+    for (auto *element : workspace.scene()->elements()) {
+        if (element && element->type() == GraphicElement::Type) {
+            element->resetSimState();
+        }
+    }
+    simulation->beginTimedRun(1);
+    const auto samples = sampleOutput(simulation, n1, 120);
+    simulation->endTimedRun(0);
+
+    const bool sawUnknown = std::any_of(samples.cbegin(), samples.cend(),
+                                        [](const auto &s) { return s.second == Status::Unknown; });
+    QVERIFY2(!sawUnknown, "the temporal ring went Unknown — it hit the oscillation cap instead of oscillating");
+    QVERIFY2(samples.size() >= 4,
+             qPrintable(QString("Expected the ring to toggle repeatedly, saw %1 distinct values")
+                            .arg(samples.size())));
+}
+
+void TestUnifiedTimed::testExampleStaticHazard()
+{
+    WorkSpace workspace;
+    QString error;
+    QVERIFY2(loadExample(workspace, "temporal_static_hazard.panda", error), qPrintable(error));
+
+    auto *switchA = elementByLabel(workspace.scene(), "A");
+    auto *notGate = elementByLabel(workspace.scene(), "NOT_A");
+    auto *orGate = elementByLabel(workspace.scene(), "F");
+    QVERIFY2(switchA && notGate && orGate, "static-hazard elements missing from the example");
+
+    // The tuned overrides must survive the .panda round-trip, or the hazard never appears.
+    QCOMPARE(notGate->propagationDelay(), SimTime{10});
+    QCOMPARE(orGate->propagationDelay(), SimTime{3});
+
+    auto *input = dynamic_cast<GraphicElementInput *>(switchA);
+    QVERIFY(input);
+
+    auto *simulation = workspace.scene()->simulation();
+    QVERIFY(simulation->initialize());
+
+    input->setOn(true);
+    simulation->update();
+    QCOMPARE(orGate->outputValue(0), Status::Active); // F = A OR NOT A is 1 in steady state
+
+    // Drop A: the direct branch falls at once while the inverted branch is still 10 ns behind,
+    // so F dips before recovering — invisible in functional mode, where F is a tautology.
+    simulation->beginTimedRun(1);
+    simulation->update();
+    input->setOn(false);
+    const auto samples = sampleOutput(simulation, orGate, 60);
+    simulation->endTimedRun(0);
+
+    const bool sawLow = std::any_of(samples.cbegin(), samples.cend(),
+                                    [](const auto &s) { return s.second == Status::Inactive; });
+    QVERIFY2(sawLow, "the static-1 hazard glitch never appeared on F");
+    QCOMPARE(orGate->outputValue(0), Status::Active); // and it settles back to 1
+}
+
+void TestUnifiedTimed::testExampleGateDelayChain()
+{
+    WorkSpace workspace;
+    QString error;
+    QVERIFY2(loadExample(workspace, "temporal_gate_delay_chain.panda", error), qPrintable(error));
+
+    auto *switchA = elementByLabel(workspace.scene(), "A");
+    auto *n1 = elementByLabel(workspace.scene(), "n1");
+    auto *n4 = elementByLabel(workspace.scene(), "n4");
+    QVERIFY2(switchA && n1 && n4, "gate-delay-chain elements missing from the example");
+
+    auto *input = dynamic_cast<GraphicElementInput *>(switchA);
+    QVERIFY(input);
+
+    auto *simulation = workspace.scene()->simulation();
+    QVERIFY(simulation->initialize());
+
+    input->setOn(false);
+    simulation->update();
+
+    simulation->beginTimedRun(1);
+    simulation->update();
+    input->setOn(true);
+
+    // Walk the timeline once, noting when the first and last taps flip.
+    SimTime firstTapChangedAt = SIM_TIME_UNSET;
+    SimTime lastTapChangedAt = SIM_TIME_UNSET;
+    const Status n1Initial = n1->outputValue(0);
+    const Status n4Initial = n4->outputValue(0);
+    for (int tick = 0; tick < 80; ++tick) {
+        simulation->update();
+        if (firstTapChangedAt == SIM_TIME_UNSET && n1->outputValue(0) != n1Initial) {
+            firstTapChangedAt = simulation->currentTime();
+        }
+        if (lastTapChangedAt == SIM_TIME_UNSET && n4->outputValue(0) != n4Initial) {
+            lastTapChangedAt = simulation->currentTime();
+        }
+    }
+    simulation->endTimedRun(0);
+
+    QVERIFY2(firstTapChangedAt != SIM_TIME_UNSET && lastTapChangedAt != SIM_TIME_UNSET,
+             "the chain's taps never changed");
+    QVERIFY2(lastTapChangedAt > firstTapChangedAt,
+             qPrintable(QString("stage 4 must lag stage 1 (stage 1 at %1, stage 4 at %2)")
+                            .arg(firstTapChangedAt).arg(lastTapChangedAt)));
+}
+
+// ===========================================================================
 // Metamorphic properties — acceptance criteria for publish-side delay
-// ============================================================================
+// ===========================================================================
 
 namespace {
 
@@ -947,6 +1130,43 @@ void TestUnifiedTimed::testShiftRegisterShiftsOneStagePerEdgeFromPowerOn()
     QVERIFY2(ff2->outputValue(0) == Status::Inactive,
              "stage 2 must sample stage 1's PRE-edge output: the seed pass has to hold Memory "
              "elements back and commit them together, exactly as the drain does");
+}
+
+void TestUnifiedTimed::testTemporalTickIsBoundedRegardlessOfWindow()
+{
+    WorkSpace workspace;
+    QString error;
+    QVERIFY2(loadExample(workspace, "temporal_ring_oscillator.panda", error), qPrintable(error));
+
+    auto *simulation = workspace.scene()->simulation();
+
+    // Re-initialize AFTER choosing the window. A functional pass canonicalises this ring to
+    // Unknown, and NOT(Unknown) is itself a fixed point, so measuring a tick after one would
+    // time a circuit that is no longer oscillating -- and pass in tens of milliseconds against
+    // a bound meant for the oscillating case.
+    simulation->setTimePerTick(1'000'000);   // the default speed setting
+    QVERIFY(simulation->initialize());
+    const SimTime before = simulation->currentTime();
+
+    QElapsedTimer timer;
+    timer.start();
+    simulation->update();
+    const qint64 ms = timer.elapsed();
+
+    QVERIFY2(ms < 150,
+             qPrintable(QString("one update() at 1,000,000 ns/tick took %1 ms; a tick's work must "
+                                "be bounded rather than scaling with the window").arg(ms)));
+
+    // Sim-time advances by AT MOST the window: a budgeted tick stops where the drain actually
+    // got to, so the clock stays honest about how far the circuit has been simulated.
+    QVERIFY2(simulation->currentTime() <= before + 1'000'000,
+             "a budgeted tick must not claim more sim-time than it drained");
+
+    // And a small window is unaffected -- the budget must not throttle ordinary stepping.
+    simulation->setTimePerTick(1);
+    for (int i = 0; i < 50; ++i) {
+        simulation->update();
+    }
 }
 
 void TestUnifiedTimed::testPropertyLagScalesWithTheDelay_data()

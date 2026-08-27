@@ -44,10 +44,30 @@ private slots:
     /// left in temporal mode — a functional sweep must never inherit someone else's window.
     void testTimedRunZeroWindowIgnoresLiveTemporalMode();
 
+    // --- Shipped temporal example circuits ---
+
+    /// Examples/temporal_ring_oscillator.panda: Unknown in functional mode (no stable value),
+    /// oscillating under delay without tripping the oscillation cap.
+    void testExampleRingOscillator();
+
+    /// One tick's work must not scale without bound with the sim-time window. The drain was
+    /// limited only by targetTime, so event count grew linearly with m_timePerTick -- and the
+    /// speed selector DEFAULTS to 1x (1,000,000 ns/tick). Measured on the shipped ring
+    /// oscillator before the fix: 9 us at 1 ns/tick, 182 us at 100, 5,099 us at 10,000 and
+    /// 541,461 us at 1,000,000 -- half a second of blocking work per 1 ms timer tick.
+    void testTemporalTickIsBoundedRegardlessOfWindow();
     void testPropertyLagScalesWithTheDelay_data();
     void testPropertyLagScalesWithTheDelay();
     void testPropertyBothModesReachTheSameSteadyState_data();
     void testPropertyBothModesReachTheSameSteadyState();
+
+    /// Examples/temporal_static_hazard.panda: the tuned delays survive the .panda round-trip,
+    /// and F = A OR NOT A dips low after A falls — a static-1 hazard only delays can produce.
+    void testExampleStaticHazard();
+
+    /// Examples/temporal_gate_delay_chain.panda: an edge marches down the chain, so the last
+    /// tap changes strictly later than the first.
+    void testExampleGateDelayChain();
 
     // --- Metamorphic properties ---
     // Each pins a RELATIONSHIP that no fixed-parameter test can see: how a result must change
