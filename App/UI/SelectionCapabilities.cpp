@@ -21,6 +21,7 @@ SelectionCapabilities computeCapabilities(const QList<GraphicElement *> &element
     // Start all flags true; AND-reduce over the selection below.
     c.hasAudioBox = c.hasAudio = c.hasColors = c.hasDelay = c.hasElements = true;
     c.hasFrequency = c.hasLabel = c.hasOnlyInputs = c.hasLatchedValue = c.hasWirelessMode = c.hasTrigger = c.hasTruthTable = c.hasVolume = true;
+    c.hasPropagationDelay = c.hasSamePropagationDelay = true;
     c.canChangeAppearance = c.canMorph = true;
     c.isFileBacked = c.isEmbedded = (firstElement->elementType() == ElementType::IC);
     c.hasSameAudio = c.hasSameColors = c.hasSameDelay = c.hasSameFrequency = c.hasSameVolume = true;
@@ -43,6 +44,7 @@ SelectionCapabilities computeCapabilities(const QList<GraphicElement *> &element
         c.hasAudioBox   &= elm->hasAudioBox();
         c.hasFrequency  &= elm->hasFrequency();
         c.hasDelay      &= elm->hasDelay();
+        c.hasPropagationDelay &= elm->hasPropagationDelay();
         c.minimumInputs  = (std::max)(c.minimumInputs,  elm->minInputSize());
         c.maximumInputs  = (std::min)(c.maximumInputs,  elm->maxInputSize());
         c.minimumOutputs = (std::max)(c.minimumOutputs, elm->minOutputSize());
@@ -55,6 +57,7 @@ SelectionCapabilities computeCapabilities(const QList<GraphicElement *> &element
         c.hasSameColors     &= (elm->color()    == firstElement->color());
         c.hasSameFrequency  &= qFuzzyCompare(elm->frequency(), firstElement->frequency());
         c.hasSameDelay      &= qFuzzyCompare(elm->delay(),     firstElement->delay());
+        c.hasSamePropagationDelay &= (elm->propagationDelay() == firstElement->propagationDelay());
         c.hasSameInputSize  &= (elm->inputSize()  == firstElement->inputSize());
         c.hasSameOutputSize &= (elm->outputSize() == firstElement->outputSize());
         c.maxCurrentOutputSize = (std::min)(c.maxCurrentOutputSize, elm->outputSize());

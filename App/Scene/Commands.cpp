@@ -528,6 +528,18 @@ void UpdateCommand::refreshRuntimeState()
     // every Clock's phase from scratch and disrupt a running simulation over an unrelated
     // edit. setPropertyUpdateRequired() refreshes visuals/dirty-state only.
     m_scene->setPropertyUpdateRequired();
+
+    // One cache a property edit CAN invalidate is the engine's per-element propagation-delay
+    // map, and it is seeded only by Simulation::initialize() — which the property-only path
+    // above deliberately never re-runs. Push the edited value straight in, or an edited delay
+    // would not reach the engine (a BeWavedDolphin sweep only calls resetEventTracking() and
+    // update(), neither of which rebuilds) until some unrelated topology change happened to
+    // force a rebuild. Runs on undo() and redo() alike, so both directions stay in sync.
+    for (auto *elm : elements()) {
+        if (elm->hasPropagationDelay()) {
+            m_scene->simulation()->setElementDelay(elm, elm->propagationDelay());
+        }
+    }
 }
 
 void UpdateCommand::loadData(QByteArray &itemData)
@@ -836,6 +848,13 @@ void MorphCommand::transferConnections(const QList<GraphicElement *> &from, cons
 
         if (newElm->hasDelay() && oldElm->hasDelay()) {
             newElm->setDelay(oldElm->delay()); // LCOV_EXCL_LINE — Clock is the only element type with hasDelay=true, so no two distinct types can both satisfy this check.
+        }
+
+        // Carry a propagation-delay OVERRIDE across the morph (AND→OR would otherwise silently
+        // revert a hand-tuned 40 ns to the new type's default). Gated on the override existing,
+        // so morphing an untouched element never materializes one from the old type's default.
+        if (newElm->hasPropagationDelay() && oldElm->hasPropagationDelayOverride()) {
+            newElm->setPropagationDelay(oldElm->propagationDelay());
         }
 
         // --- Migrate existing wires to the new element's ports ---

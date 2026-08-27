@@ -72,4 +72,20 @@ private slots:
     void testAudioBoxGuardsNonAudioBoxSelection();
     void testAudioBoxCancelledDialogIsNoOp();
     void testAudioBoxSetsAudioAndUpdatesLabel();
+
+    // --- Propagation delay (temporal simulation) ---
+
+    /// The Timing group box AND the Prop. delay field must both be shown for a gate. Gating the
+    /// box on hasFrequency||hasDelay alone is true only for Clock/Buzzer, and would hide the
+    /// field for every element type that actually has a propagation delay.
+    void testPropagationDelayFieldVisibleForGate();
+    /// Elements without a propagation delay (an LED) keep the field hidden.
+    void testPropagationDelayFieldHiddenWithoutDelay();
+    /// Editing the spin box writes an override, and entering the type default clears it again.
+    void testPropagationDelayRoundTripAndDefaultClearsOverride();
+    /// A mixed selection shows the -1 "many values" sentinel and leaves both elements untouched.
+    void testPropagationDelayMixedSelectionIsNoOp();
+    /// The edited delay must reach the running engine without a topology rebuild, and undo
+    /// must put the old one back.
+    void testPropagationDelayReachesEngineAndUndoRestores();
 };

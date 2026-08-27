@@ -10,12 +10,14 @@
 #include <QComboBox>
 #include <QDoubleSpinBox>
 #include <QFile>
+#include <QGroupBox>
 #include <QLabel>
 #include <QLineEdit>
 #include <QMenu>
 #include <QPixmap>
 #include <QSignalSpy>
 #include <QSlider>
+#include <QSpinBox>
 #include <QTableWidget>
 #include <QTemporaryDir>
 #include <QToolButton>
@@ -30,10 +32,12 @@
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Mux.h"
 #include "App/Element/GraphicElements/Node.h"
+#include "App/Element/GraphicElements/Not.h"
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/IC.h"
 #include "App/Scene/ICRegistry.h"
 #include "App/Scene/Workspace.h"
+#include "App/Simulation/Simulation.h"
 #include "App/UI/ElementEditor.h"
 #include "App/Wiring/Connection.h"
 #include "Tests/Common/ICTestHelpers.h"
@@ -1219,4 +1223,160 @@ void TestElementEditor::testAudioBoxSetsAudioAndUpdatesLabel()
     auto *lineEdit = editor.findChild<QLineEdit *>("lineCurrentAudioBox");
     QVERIFY(lineEdit);
     QCOMPARE(lineEdit->text(), QFileInfo(audioPath).fileName());
+}
+
+// ===========================================================================
+// Propagation delay (temporal simulation)
+// ===========================================================================
+
+void TestElementEditor::testPropagationDelayFieldVisibleForGate()
+{
+    WorkSpace workspace;
+    auto *andGate = new And;
+    workspace.scene()->addItem(andGate);
+
+    ElementEditor editor(&workspace);
+    editor.setScene(workspace.scene());
+    workspace.scene()->clearSelection();
+    andGate->setSelected(true);
+
+    // isHidden() rather than isVisible(): the editor is never shown in these tests, so
+    // isVisible() would be false regardless of the widget's own flag.
+    auto *groupBoxTiming = editor.findChild<QGroupBox *>("groupBoxTiming");
+    auto *spinBox = editor.findChild<QSpinBox *>("spinBoxPropagationDelay");
+    auto *label = editor.findChild<QLabel *>("labelPropagationDelay");
+    QVERIFY(groupBoxTiming && spinBox && label);
+
+    QVERIFY2(!groupBoxTiming->isHidden(),
+             "the Timing box must open for a gate — it has a propagation delay even though it "
+             "has neither a clock frequency nor a phase delay");
+    QVERIFY2(!spinBox->isHidden(), "the Prop. delay field must be shown for a gate");
+    QVERIFY2(!label->isHidden(), "the Prop. delay label must be shown for a gate");
+    QCOMPARE(spinBox->value(), static_cast<int>(andGate->propagationDelay())); // the AND default, 10 ns
+}
+
+void TestElementEditor::testPropagationDelayFieldHiddenWithoutDelay()
+{
+    WorkSpace workspace;
+    auto *led = new Led;
+    workspace.scene()->addItem(led);
+
+    ElementEditor editor(&workspace);
+    editor.setScene(workspace.scene());
+    workspace.scene()->clearSelection();
+    led->setSelected(true);
+
+    auto *spinBox = editor.findChild<QSpinBox *>("spinBoxPropagationDelay");
+    QVERIFY(spinBox);
+    QVERIFY2(spinBox->isHidden(), "an LED has no propagation delay, so the field must stay hidden");
+}
+
+void TestElementEditor::testPropagationDelayRoundTripAndDefaultClearsOverride()
+{
+    WorkSpace workspace;
+    auto *notGate = new Not;
+    workspace.scene()->addItem(notGate);
+
+    ElementEditor editor(&workspace);
+    editor.setScene(workspace.scene());
+    workspace.scene()->clearSelection();
+    notGate->setSelected(true);
+
+    auto *spinBox = editor.findChild<QSpinBox *>("spinBoxPropagationDelay");
+    QVERIFY(spinBox);
+    QVERIFY2(!notGate->hasPropagationDelayOverride(), "Precondition: a fresh NOT follows the type default");
+
+    spinBox->setValue(40);
+    QCOMPARE(notGate->propagationDelay(), SimTime{40});
+    QVERIFY(notGate->hasPropagationDelayOverride());
+
+    // 0 ns is a real value (forced zero delay), not a "cleared" state.
+    spinBox->setValue(0);
+    QCOMPARE(notGate->propagationDelay(), SimTime{0});
+    QVERIFY(notGate->hasPropagationDelayOverride());
+
+    // Typing the type default means "follow the default" — otherwise the override could never
+    // be cleared from a spin box whose whole range is valid delays.
+    spinBox->setValue(static_cast<int>(GraphicElement::defaultPropagationDelay(ElementType::Not)));
+    QVERIFY2(!notGate->hasPropagationDelayOverride(),
+             "entering the type default must clear the override, not pin an equal value");
+    QCOMPARE(notGate->propagationDelay(), GraphicElement::defaultPropagationDelay(ElementType::Not));
+}
+
+void TestElementEditor::testPropagationDelayMixedSelectionIsNoOp()
+{
+    WorkSpace workspace;
+    auto *notGate = new Not;
+    auto *andGate = new And;
+    workspace.scene()->addItem(notGate);
+    workspace.scene()->addItem(andGate);
+
+    ElementEditor editor(&workspace);
+    editor.setScene(workspace.scene());
+    workspace.scene()->clearSelection();
+    notGate->setSelected(true);
+    andGate->setSelected(true);
+
+    auto *spinBox = editor.findChild<QSpinBox *>("spinBoxPropagationDelay");
+    QVERIFY(spinBox);
+
+    // NOT (5 ns) and AND (10 ns) disagree, so the field shows its own -1 sentinel.
+    QCOMPARE(spinBox->value(), -1);
+    QCOMPARE(spinBox->minimum(), -1);
+    QVERIFY(!spinBox->specialValueText().isEmpty());
+
+    // Applying with the sentinel in place must leave both elements exactly as they were.
+    editor.apply();
+    QVERIFY(!notGate->hasPropagationDelayOverride());
+    QVERIFY(!andGate->hasPropagationDelayOverride());
+    QCOMPARE(notGate->propagationDelay(), SimTime{5});
+    QCOMPARE(andGate->propagationDelay(), SimTime{10});
+}
+
+void TestElementEditor::testPropagationDelayReachesEngineAndUndoRestores()
+{
+    // A property-only edit deliberately does NOT re-initialize the simulation, and the engine's
+    // delay map is seeded only there — so the edit has to be pushed into the running engine or
+    // it silently never takes effect.
+    WorkSpace workspace;
+    auto *sw = new InputSwitch;
+    auto *notGate = new Not;
+    workspace.scene()->addItem(sw);
+    workspace.scene()->addItem(notGate);
+    CircuitBuilder builder(workspace.scene());
+    builder.connect(sw, 0, notGate, 0);
+
+    auto *simulation = workspace.scene()->simulation();
+    simulation->initialize(); // seeds m_delays from the type defaults (NOT = 5)
+    sw->setOn(false);
+    simulation->update();
+    QCOMPARE(notGate->outputValue(0), Status::Active);
+
+    ElementEditor editor(&workspace);
+    editor.setScene(workspace.scene());
+    workspace.scene()->clearSelection();
+    notGate->setSelected(true);
+
+    auto *spinBox = editor.findChild<QSpinBox *>("spinBoxPropagationDelay");
+    QVERIFY(spinBox);
+    spinBox->setValue(20); // pushes an UpdateCommand, with no topology rebuild behind it
+
+    // Run the engine on a 1-unit timeline: the NOT must now hold for the EDITED 20 units.
+    simulation->setTimePerTick(1);
+    sw->setOn(true);
+    for (int tick = 0; tick < 10; ++tick) {
+        simulation->update();
+        QVERIFY2(notGate->outputValue(0) == Status::Active,
+                 qPrintable(QString("NOT flipped at t=%1, i.e. still on the 5 ns default — the "
+                                    "edited delay never reached the engine").arg(simulation->currentTime())));
+    }
+    for (int tick = 0; tick < 15; ++tick) {
+        simulation->update();
+    }
+    QCOMPARE(notGate->outputValue(0), Status::Inactive);
+
+    // Undo restores the previous delay, and refreshRuntimeState() runs on undo too.
+    workspace.scene()->undoStack()->undo();
+    QVERIFY2(!notGate->hasPropagationDelayOverride(), "undo must restore the un-overridden delay");
+    QCOMPARE(notGate->propagationDelay(), SimTime{5});
 }
