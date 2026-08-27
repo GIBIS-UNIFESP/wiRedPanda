@@ -249,6 +249,12 @@ class CreateWaveformCommand(MCPCommand):
                 'such as "Bus[0]" -- the same labels the response reports.'
             ),
         )
+        temporal: bool | None = Field(
+            default=None, description="Sweep with per-element propagation delays (outputs lag by whole columns)"
+        )
+        ns_per_column: Annotated[int, Field(ge=1, le=1_000_000)] | None = Field(
+            default=None, description="Simulation time (ns) advanced per waveform column; temporal mode only"
+        )
 
         model_config = ConfigDict(extra="forbid")
 
@@ -349,6 +355,9 @@ class SetElementPropertiesCommand(MCPCommand):
         frequency: Annotated[float, Field(ge=0)] | None = None
         rotation: float | None = Field(default=None)
         delay: Annotated[float, Field(ge=0)] | None = None
+        propagation_delay: Annotated[int, Field(ge=0, le=1_000_000)] | None = Field(
+            default=None, description="Inertial gate delay (ns) used by the temporal simulation engine"
+        )
         trigger: str | None = Field(default=None, description="Keyboard shortcut for input elements")
         audio: str | None = Field(default=None)
         locked: bool | None = Field(default=None, description="Lock state for input elements")
@@ -399,6 +408,9 @@ class UpdateElementCommand(MCPCommand):
         color: str | None = Field(default=None)
         frequency: Annotated[float, Field(ge=0)] | None = None
         rotation: float | None = Field(default=None)
+        propagation_delay: Annotated[int, Field(ge=0, le=1_000_000)] | None = Field(
+            default=None, description="Inertial gate delay (ns) used by the temporal simulation engine"
+        )
 
         model_config = ConfigDict(extra="forbid")
 

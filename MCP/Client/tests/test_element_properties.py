@@ -30,6 +30,7 @@ class ElementPropertiesTests(MCPTestBase):
             self.test_appearance_property,
             self.test_appearance_index_property,
             self.test_list_elements_extended,
+            self.test_propagation_delay_property,
         ]
 
     async def test_delay_property(self) -> bool:
@@ -275,3 +276,59 @@ class ElementPropertiesTests(MCPTestBase):
             self.infrastructure.output.success("list_elements extended fields present")
 
         return all_passed
+
+    async def test_propagation_delay_property(self) -> bool:
+        """Test the per-element propagation delay used by the temporal simulation engine."""
+        print("\n=== Propagation Delay Property Test ===")
+        self.set_test_context("test_propagation_delay_property")
+
+        await self.send_command("new_circuit", {})
+
+        not_resp = await self.send_command("create_element", {"type": "Not", "x": 100.0, "y": 100.0})
+        if not not_resp.success or not not_resp.result:
+            print("Failed to create Not")
+            return False
+        not_id = not_resp.result["element_id"]
+
+        # A fresh NOT reports its type default (5 ns) and no override.
+        resp = await self.send_command("list_elements", {})
+        if not resp.success or not resp.result:
+            print(f"Failed to list elements: {resp.error}")
+            return False
+        elements = [e for e in resp.result.get("elements", []) if e.get("element_id") == not_id]
+        if not elements:
+            print("Created Not missing from list_elements")
+            return False
+        if elements[0].get("propagation_delay") != 5:
+            print(f"Expected the 5 ns NOT default, got {elements[0].get('propagation_delay')}")
+            return False
+        if elements[0].get("propagation_delay_override") is not False:
+            print("A fresh element must not report an override")
+            return False
+
+        # Override it, then read it back through list_elements.
+        resp = await self.send_command("set_element_properties", {"element_id": not_id, "propagation_delay": 40})
+        if not resp.success:
+            print(f"Failed to set propagation_delay: {resp.error}")
+            return False
+
+        resp = await self.send_command("list_elements", {})
+        if not resp.success or not resp.result:
+            print(f"Failed to list elements: {resp.error}")
+            return False
+        elements = [e for e in resp.result.get("elements", []) if e.get("element_id") == not_id]
+        if not elements or elements[0].get("propagation_delay") != 40:
+            print(f"propagation_delay did not round-trip: {elements}")
+            return False
+        if elements[0].get("propagation_delay_override") is not True:
+            print("An explicitly set delay must report propagation_delay_override")
+            return False
+
+        # Out of range must be rejected outright rather than silently ignored by the setter.
+        resp = await self.send_command("set_element_properties", {"element_id": not_id, "propagation_delay": 2_000_000})
+        if resp.success:
+            print("An out-of-range propagation_delay was accepted")
+            return False
+
+        self.infrastructure.output.success("propagation_delay property works")
+        return True

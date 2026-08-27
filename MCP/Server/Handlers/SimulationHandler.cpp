@@ -96,6 +96,14 @@ QJsonObject SimulationHandler::handleCreateWaveform(const QJsonObject &params, c
         return createErrorResponse(QString("Duration must be between 1 and %1").arg(SignalModel::kMaxColumns), requestId, JsonRpcError::ValidationError);
     }
 
+    // Temporal sweep: each column advances ns_per_column of sim-time, so per-element
+    // propagation delays render as column-lag instead of settling within the column.
+    const bool temporal = params.value("temporal").toBool(false);
+    const qint64 nsPerColumn = params.contains("ns_per_column") ? params.value("ns_per_column").toInteger() : 2;
+    if (temporal && (nsPerColumn <= 0 || nsPerColumn > 1'000'000)) {
+        return createErrorResponse("ns_per_column must be between 1 and 1000000", requestId, JsonRpcError::ValidationError);
+    }
+
     return tryCommand([&]() -> QJsonObject { // LCOV_EXCL_LINE -- pattern 45: gcov misattributes this multi-line lambda-taking call's entry; the lambda body below is genuinely covered
         if (m_persistentDolphin) {
             m_persistentDolphin->deleteLater();
@@ -103,6 +111,12 @@ QJsonObject SimulationHandler::handleCreateWaveform(const QJsonObject &params, c
         }
         m_persistentDolphin = new BewavedDolphin(scene, false, m_mainWindow, m_mainWindow);
         BewavedDolphin *bewavedDolphin = m_persistentDolphin;
+
+        // Set the sweep mode BEFORE prepare(): its loadNewTable() already runs one sweep, so
+        // configuring afterwards would sweep functionally and then sweep again below.
+        if (temporal) {
+            bewavedDolphin->setTemporalMode(true, static_cast<SimTime>(nsPerColumn));
+        }
 
         bewavedDolphin->prepare("");
 

@@ -43,6 +43,7 @@ class WaveformAnalysisTests(MCPTestBase):
             self.test_waveform_not_gate_analysis,
             self.test_waveform_dlatch_sequential_behavior,
             self.test_waveform_export_formats,
+            self.test_waveform_temporal_mode_lag,
         ]
 
     # ==================== TEST METHODS ====================
@@ -727,3 +728,57 @@ class WaveformAnalysisTests(MCPTestBase):
             print("❌ Failed to create waveform export test circuit")
 
         return all_passed
+
+    @beartype
+    async def test_waveform_temporal_mode_lag(self) -> bool:
+        """A temporal sweep must show the NOT's propagation delay as column-lag."""
+        print("\n=== Temporal Waveform Mode Test ===")
+        self.set_test_context("test_waveform_temporal_mode_lag")
+
+        mapping = await self.create_circuit_from_spec(BASIC_NOT_CIRCUIT)
+        if len(mapping) != 3:
+            print("Failed to build the NOT circuit")
+            return False
+
+        # A wide pulse: low for the first half, high for the second, held far longer than the
+        # 5 ns gate delay so the edge is not inertially absorbed.
+        rise_col = 8
+        duration = 32
+        pattern = [0 if col < rise_col else 1 for col in range(duration)]
+
+        def first_transition(values: list[int]) -> int:
+            return next((i for i, v in enumerate(values) if v != values[0]), -1)
+
+        async def sweep(params: dict) -> list[int]:
+            resp = await self.send_command("create_waveform", params)
+            if not await self.assert_success(resp, f"create_waveform {params}"):
+                return []
+            result = await self.get_response_result(resp)
+            waveform_data = result.get("waveform_data", {}) if result else {}
+            outputs = {out["label"]: out["values"] for out in waveform_data.get("outputs", [])}
+            return outputs.get("OUTPUT", [])
+
+        base_params: dict = {"duration": duration, "input_patterns": {"INPUT": pattern}}
+
+        functional = await sweep(dict(base_params))
+        temporal = await sweep({**base_params, "temporal": True, "ns_per_column": 1})
+        if not functional or not temporal:
+            return False
+
+        functional_col = first_transition(functional)
+        temporal_col = first_transition(temporal)
+        if functional_col != rise_col:
+            print(f"Functional sweep should transition in the rise column, got {functional_col}")
+            return False
+        if not 3 <= temporal_col - functional_col <= 7:
+            print(f"Expected ~5 columns of lag for a 5 ns NOT, got {temporal_col - functional_col}")
+            return False
+
+        # An out-of-range resolution must be rejected rather than silently clamped.
+        resp = await self.send_command("create_waveform", {**base_params, "temporal": True, "ns_per_column": 0})
+        if resp.success:
+            print("ns_per_column=0 was accepted")
+            return False
+
+        self.infrastructure.output.success("temporal create_waveform shows propagation lag")
+        return True

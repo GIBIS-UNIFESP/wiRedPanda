@@ -137,6 +137,16 @@
           "minimum": -1,
           "maximum": 1
         },
+        "propagation_delay": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000000,
+          "description": "Inertial propagation delay (ns) used by the temporal simulation engine"
+        },
+        "propagation_delay_override": {
+          "type": "boolean",
+          "description": "True when this element carries a per-element delay override rather than its type default"
+        },
         "trigger": {
           "type": "string"
         },
@@ -1292,6 +1302,18 @@
                     },
                     "description": "Array of 0/1 values for this input signal"
                   }
+                },
+                "temporal": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "Sweep with per-element propagation delays, so outputs lag their cause by whole columns"
+                },
+                "ns_per_column": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 1000000,
+                  "default": 2,
+                  "description": "Simulation time (ns) advanced per waveform column; temporal mode only"
                 }
               },
               "additionalProperties": false
@@ -1635,6 +1657,12 @@
                   "type": "number",
                   "minimum": 0
                 },
+                "propagation_delay": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 1000000,
+                  "description": "Inertial propagation delay (ns) used by the temporal simulation engine"
+                },
                 "rotation": {
                   "type": "number"
                 },
@@ -1830,6 +1858,12 @@
                 "frequency": {
                   "type": "number",
                   "description": "Clock frequency"
+                },
+                "propagation_delay": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 1000000,
+                  "description": "Inertial propagation delay (ns) used by the temporal simulation engine"
                 },
                 "rotation": {
                   "type": "number",

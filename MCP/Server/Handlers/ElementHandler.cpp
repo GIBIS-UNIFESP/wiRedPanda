@@ -215,6 +215,10 @@ QJsonObject ElementHandler::handleListElements(const QJsonObject &, const QJsonV
         if (element->hasDelay()) {
             elementObj["delay"] = element->delay();
         }
+        if (element->hasPropagationDelay()) {
+            elementObj["propagation_delay"] = static_cast<double>(element->propagationDelay());
+            elementObj["propagation_delay_override"] = element->hasPropagationDelayOverride();
+        }
         if (element->hasTrigger()) {
             elementObj["trigger"] = element->trigger().toString();
         }
@@ -378,6 +382,25 @@ QJsonObject ElementHandler::handleSetElementProperties(const QJsonObject &params
         newProperties["frequency"] = newFreq;
 
         element->setFrequency(newFreq);
+    }
+
+    // Inertial propagation delay (ns) for temporal simulation. Distinct from "delay" above,
+    // which is the Clock phase delay; this is the per-element gate delay the event-driven
+    // engine applies in temporal mode.
+    if (params.contains("propagation_delay") && element->hasPropagationDelay()) {
+        // Enforce the bound server-side as well as in the schema: setPropagationDelay() ignores
+        // out-of-range values silently, so without this the response would report success with
+        // the unapplied value in new_properties, and push a no-op undo entry.
+        const auto raw = params.value("propagation_delay").toInteger();
+        if (raw < 0 || raw > 1'000'000) {
+            return createErrorResponse("propagation_delay out of range (0..1000000 ns)",
+                                       requestId, JsonRpcError::ValidationError);
+        }
+
+        oldProperties["propagation_delay"] = static_cast<double>(element->propagationDelay());
+        newProperties["propagation_delay"] = static_cast<double>(raw);
+
+        element->setPropagationDelay(static_cast<SimTime>(raw));
     }
 
     if (params.contains("rotation")) {
