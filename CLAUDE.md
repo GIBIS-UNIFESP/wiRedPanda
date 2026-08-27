@@ -175,6 +175,24 @@ Advanced development features supported:
   sequential ~15-20 ns; sources/sinks/nodes/ICs 0). `Simulation::initialize()` seeds
   `m_delays` from it; `setElementDelay()` overrides at runtime.
 
+### Selecting the simulation mode
+
+The **status bar** carries a **Functional / Temporal** selector. It lives there rather than
+on the toolbar deliberately: the toolbar is for tools, and it culls its tail into an
+overflow popup on a narrow window — where a control governing how the whole simulation
+behaves must never end up. It sets the current tab's per-tick sim-time window: Functional
+pins it at 0 (zero-delay), Temporal applies the speed shown beside it — ns of sim-time per
+1 ms tick — and reveals a running sim-time readout (both hidden while functional, where they
+would be inert). Switching modes RE-SETTLES the circuit rather than only swapping the window:
+a feedback loop canonicalized to `Unknown` in functional mode would otherwise stay stuck
+there, since `NOT(Unknown)` is itself a fixed point. The selection is applied to whichever tab
+becomes current, so the status bar never describes a simulation other than the one on
+screen.
+
+Gate delays are 5-20 ns, far below one tick at any speed, so on the canvas they are only
+perceptible at the slow end (1-100 ns/tick, where a delay spans whole ticks). The waveform
+editor below is what renders them directly.
+
 ### BeWavedDolphin temporal mode
 
 The waveform editor's column sweep renders delays directly, independently of the main

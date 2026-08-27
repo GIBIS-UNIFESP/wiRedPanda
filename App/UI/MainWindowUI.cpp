@@ -653,6 +653,39 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     mainToolBar->addAction(actionPlay);
     mainToolBar->addAction(actionRestart);
     mainToolBar->addAction(actionWaveform);
+
+    // Simulation mode lives in the STATUS BAR, not the toolbar: the toolbar is for tools, and
+    // anything added there is culled into the overflow popup on a narrow window — unacceptable
+    // for a control that changes how the whole simulation behaves. The status bar never
+    // overflows, and it is already where the current state of the view is reported.
+    comboSimMode = new QComboBox(MainWindow);
+    comboSimMode->setObjectName("comboSimMode");
+    comboSimMode->addItem(QString(), 0); // Functional — index 0
+    comboSimMode->addItem(QString(), 1); // Temporal — index 1
+    comboSimMode->setCurrentIndex(0);
+    statusBar->addPermanentWidget(comboSimMode);
+
+    comboSimSpeed = new QComboBox(MainWindow);
+    comboSimSpeed->setObjectName("comboSimSpeed");
+    // ns of sim-time advanced per 1 ms tick, so 1x = wall-clock. Gate delays are 5-20 ns, far
+    // below one tick at any speed here: the slow end is what lets a propagation delay span
+    // several ticks and become visible on the canvas at all.
+    comboSimSpeed->addItem("0.000001x", 1);
+    comboSimSpeed->addItem("0.00001x",  10);
+    comboSimSpeed->addItem("0.0001x",   100);
+    comboSimSpeed->addItem("0.001x",    1'000);
+    comboSimSpeed->addItem("0.01x",     10'000);
+    comboSimSpeed->addItem("0.1x",      100'000);
+    comboSimSpeed->addItem("1x",        1'000'000);
+    comboSimSpeed->setCurrentIndex(6); // 1x
+    comboSimSpeed->setVisible(false); // shown only in temporal mode
+    statusBar->addPermanentWidget(comboSimSpeed);
+
+    labelSimTime = new QLabel(MainWindow);
+    labelSimTime->setObjectName("labelSimTime");
+    labelSimTime->setMinimumWidth(100);
+    labelSimTime->setVisible(false); // shown only in temporal mode
+    statusBar->addPermanentWidget(labelSimTime);
     menuBar->addAction(menuFile->menuAction());
     menuBar->addAction(menuEdit->menuAction());
     menuBar->addAction(menuView->menuAction());
@@ -820,6 +853,17 @@ void MainWindowUi::retranslateUi()
     actionSystemTheme->setText(QCoreApplication::translate("MainWindow", "&System"));
     actionLightTheme->setText(QCoreApplication::translate("MainWindow", "&Light"));
     actionDarkTheme->setText(QCoreApplication::translate("MainWindow", "&Dark"));
+    comboSimMode->setItemText(0, QCoreApplication::translate("MainWindow", "Functional"));
+    comboSimMode->setItemText(1, QCoreApplication::translate("MainWindow", "Temporal"));
+    comboSimMode->setToolTip(QCoreApplication::translate("MainWindow",
+        "Simulation mode. Functional is zero-delay: every gate settles instantly. Temporal "
+        "applies each element's propagation delay, advancing simulation time by the selected "
+        "speed on every tick."));
+    comboSimSpeed->setToolTip(QCoreApplication::translate("MainWindow",
+        "Simulation time advanced per tick, relative to wall-clock. Gate delays are only "
+        "perceptible on the canvas at the slow end; the waveform editor's Temporal mode shows "
+        "them directly."));
+    labelSimTime->setText(QCoreApplication::translate("MainWindow", "0 ns"));
     actionWaveform->setText(QCoreApplication::translate("MainWindow", "&Waveform"));
     actionWaveform->setShortcut(QStringLiteral("Ctrl+W"));
     actionExportToImage->setText(QCoreApplication::translate("MainWindow", "Export to &Image"));

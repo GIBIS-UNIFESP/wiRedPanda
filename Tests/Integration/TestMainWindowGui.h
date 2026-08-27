@@ -234,6 +234,13 @@ private slots:
     void testActionsAreNoOpsWithNoCurrentTab();
     void testAlignDistributeFlipZoomToFitActionsWithTab();
     void testExerciseOverlayDetachesAndReattachesAcrossTabSwitch();
+
+    /// A tab switch must not re-settle a tab whose simulation mode is unchanged.
+    /// applySimModeToTab() ends in an unconditional initialize(), which resetClock()s every
+    /// clock HIGH and forces a whole-network re-seed -- undoing the phase/level preservation
+    /// SceneUiBinder::bind() just performed via Simulation::start(), and injecting a spurious
+    /// rising edge into every clocked circuit on the arriving tab.
+    void testTabSwitchDoesNotResettleWhenModeUnchanged();
     void testExportWrapperMethodsDelegateToController();
     void testRetranslateUiHandlesInlineIcAndElementsAndEngines();
     void testPopulateLanguageMenuSwitchesLanguage();
@@ -246,6 +253,16 @@ private slots:
     void testStartExerciseDrivesClickTargetsAndOverlayParenting();
     void testExerciseCloseRequestedDetachesOverlayFromOpenBewavedDolphin();
     void testStartTourDrivesClickTargetsAndOverlayParenting();
+
+    // --- Simulation mode selector ---
+
+    /// The toolbar's Functional/Temporal selector drives the current tab's tick window, and
+    /// the speed and time readout are shown only while temporal.
+    void testSimModeSelectorDrivesTickWindow();
+    /// Switching to Temporal must RE-SETTLE, not just swap the window: a ring oscillator
+    /// canonicalized to Unknown in functional mode would otherwise stay stuck (NOT(Unknown)
+    /// is a fixed point) instead of starting to oscillate.
+    void testSimModeSwitchResettlesStuckFeedbackCircuit();
 
 private:
     QTemporaryDir m_tempDir;

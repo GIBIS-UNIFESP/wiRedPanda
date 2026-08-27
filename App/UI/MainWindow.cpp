@@ -133,6 +133,13 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     qCDebug(zero) << "Setting connections";
     setupConnections();
 
+    // Refresh the status bar's sim-time readout independently of the 1 ms simulation tick: the
+    // label only needs to be legible, not exact, and repainting it every tick would be pure
+    // overhead. The slot returns immediately while the readout is hidden (functional mode).
+    m_simTimeTimer.setInterval(100);
+    connect(&m_simTimeTimer, &QTimer::timeout, this, &MainWindow::updateSimTimeLabel);
+    m_simTimeTimer.start();
+
     qCDebug(zero) << "Checking playing simulation.";
     // Start simulation running by default so the circuit is live on open.
     m_ui->actionPlay->setChecked(true);
@@ -397,6 +404,8 @@ void MainWindow::setupConnections()
     connect(m_ui->actionSelectAll,             &QAction::triggered,       this,                &MainWindow::on_actionSelectAll_triggered);
     connect(m_ui->actionShortcutsAndTips,      &QAction::triggered,       this,                &MainWindow::on_actionShortcuts_and_Tips_triggered);
     connect(m_ui->actionWaveform,              &QAction::triggered,       this,                &MainWindow::on_actionWaveform_triggered);
+    connect(m_ui->comboSimMode,  &QComboBox::currentIndexChanged, this, &MainWindow::on_comboSimMode_currentIndexChanged);
+    connect(m_ui->comboSimSpeed, &QComboBox::currentIndexChanged, this, &MainWindow::on_comboSimSpeed_currentIndexChanged);
     connect(m_ui->actionWires,                 &QAction::triggered,       this,                &MainWindow::on_actionWires_triggered);
     connect(m_ui->actionZoomIn,                &QAction::triggered,       this,                &MainWindow::on_actionZoomIn_triggered);
     connect(m_ui->actionZoomOut,               &QAction::triggered,       this,                &MainWindow::on_actionZoomOut_triggered);
@@ -829,6 +838,11 @@ void MainWindow::onCurrentTabChanged(WorkSpace *newTab)
     setICButtonsVisible(!newTab->isInlineIC());
     refreshICButtonsEnabled();
 
+    // The mode/speed controls are global chrome but the tick window they set lives on each
+    // tab's own Simulation, so push the current selection onto the arriving tab — otherwise
+    // the toolbar would describe a simulation other than the one on screen.
+    applySimModeToTab(newTab);
+
     // Re-attach exercise overlay to the arriving tab
     if (m_exerciseEngine && m_exerciseEngine->isActive() && m_exerciseOverlay) {
         m_exerciseEngine->setScene(newTab->scene());
@@ -1097,6 +1111,98 @@ void MainWindow::on_actionFastMode_triggered(const bool checked)
         sentryBreadcrumb("ui", QStringLiteral("Fast mode: %1").arg(checked));
         setFastMode(checked);
         Settings::setFastMode(checked);
+    });
+}
+
+namespace {
+
+/// Human-readable sim time for the status-bar readout: switch unit as soon as the next one
+/// reaches 1.0, so it reads "5.00 us" rather than "5000 ns".
+QString formatSimTime(const SimTime ns)
+{
+    if (ns >= 1'000'000'000) {
+        return QString::number(static_cast<double>(ns) / 1'000'000'000.0, 'f', 2) + " s";
+    }
+    if (ns >= 1'000'000) {
+        return QString::number(static_cast<double>(ns) / 1'000'000.0, 'f', 2) + " ms";
+    }
+    if (ns >= 1'000) {
+        return QString::number(static_cast<double>(ns) / 1'000.0, 'f', 2) + QString::fromUtf8(" \xC2\xB5s");
+    }
+    return QString::number(ns) + " ns";
+}
+
+} // namespace
+
+void MainWindow::applySimModeToTab(WorkSpace *tab)
+{
+    if (!tab) {
+        return;
+    }
+
+    const bool temporal = (m_ui->comboSimMode->currentIndex() == 1);
+    const SimTime nsPerTick =
+        temporal ? m_ui->comboSimSpeed->currentData().toULongLong() : SimTime{0};
+
+    // Nothing to apply and nothing to re-settle when the window is already what this tab is
+    // running. onCurrentTabChanged() calls this on EVERY tab switch, so without the guard the
+    // re-settle below fires on a switch that changes nothing — and initialize() resetClock()s
+    // every clock HIGH, undoing the phase-and-level preservation SceneUiBinder::bind() just
+    // performed through Simulation::start(), and injecting a spurious rising edge
+    // into every clocked circuit on the arriving tab.
+    if (tab->simulation()->timePerTick() == nsPerTick) {
+        return;
+    }
+
+    tab->simulation()->setTimePerTick(nsPerTick);
+
+    // Re-settle under the new mode. Without this the switch only swaps the tick window, so a
+    // feedback circuit canonicalized to Unknown in functional mode stays stuck there when
+    // switched to temporal — NOT(Unknown) is itself a fixed point. initialize() resets every
+    // element and forces a fresh seed, so e.g. a ring oscillator starts oscillating the moment
+    // Temporal is selected.
+    if (!tab->simulation()->initialize()) {
+        tab->simulation()->restart();
+    }
+}
+
+void MainWindow::on_comboSimMode_currentIndexChanged(const int index)
+{
+    Application::guardedSlot(this, [this, index] {
+        const bool temporal = (index == 1);
+        sentryBreadcrumb("ui", QStringLiteral("Simulation mode: %1").arg(temporal ? "temporal" : "functional"));
+
+        // Speed and the time readout are meaningless while the sim clock never advances.
+        m_ui->comboSimSpeed->setVisible(temporal);
+        m_ui->labelSimTime->setVisible(temporal);
+        m_ui->labelSimTime->setText(formatSimTime(0));
+
+        applySimModeToTab(currentTab());
+    });
+}
+
+void MainWindow::on_comboSimSpeed_currentIndexChanged(const int index)
+{
+    Application::guardedSlot(this, [this, index] {
+        auto *tab = currentTab();
+        if (!tab || m_ui->comboSimMode->currentIndex() != 1) {
+            return; // functional mode pins the window at 0 regardless of the speed shown
+        }
+
+        tab->simulation()->setTimePerTick(m_ui->comboSimSpeed->itemData(index).toULongLong());
+    });
+}
+
+void MainWindow::updateSimTimeLabel()
+{
+    Application::guardedSlot(this, [this] {
+        // Gate on the mode, not the label's visibility: a widget reports itself invisible
+        // whenever an ancestor is, which says nothing about whether the readout is wanted.
+        if (!currentTab() || m_ui->comboSimMode->currentIndex() != 1) {
+            return;
+        }
+
+        m_ui->labelSimTime->setText(formatSimTime(currentTab()->simulation()->currentTime()));
     });
 }
 

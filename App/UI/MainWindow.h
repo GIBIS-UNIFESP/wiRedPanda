@@ -14,6 +14,7 @@
 #include <QDir>
 #include <QMainWindow>
 #include <QPointer>
+#include <QTimer>
 
 #include "App/BeWavedDolphin/DolphinHost.h"
 #include "App/UI/MainWindowHost.h"
@@ -267,6 +268,19 @@ private:
     void on_actionZoomIn_triggered() const;
     void on_actionZoomOut_triggered() const;
 
+    // --- Simulation mode (temporal / propagation-delay) ---
+
+    /// Switches the current tab's simulation between functional (zero-delay) and temporal
+    /// (propagation-delay) mode by setting the per-tick sim-time window.
+    void on_comboSimMode_currentIndexChanged(int index);
+    /// Applies the selected playback speed (sim-time advanced per tick) in temporal mode.
+    void on_comboSimSpeed_currentIndexChanged(int index);
+    /// Refreshes the status-bar simulation-time readout from the current tab's sim clock.
+    void updateSimTimeLabel();
+    /// Applies the status bar's selected mode/speed to \a tab, so the controls never describe a
+    /// simulation other than the one on screen.
+    void applySimModeToTab(WorkSpace *tab);
+
 #ifdef Q_OS_WASM
     /// Emscripten beforeunload callback — saves window geometry before the browser tab closes.
     static const char *onBeforeUnload(int eventType, const void *reserved, void *userData);
@@ -343,6 +357,8 @@ private:
     /// field before emitting the signal), so this is tracked separately. QPointer since the
     /// previous tab may already be mid-close (deleteLater) by the time it's read.
     QPointer<WorkSpace> m_previousTab;
+
+    QTimer m_simTimeTimer; ///< Periodic refresh for the status-bar simulation-time readout.
 
     /// Shared IC-hover preview, parented to this MainWindow.
     /// QPointer so accesses during teardown are safe regardless of child-destruction order.

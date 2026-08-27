@@ -6,6 +6,7 @@
 #include <QAction>
 #include <QApplication>
 #include <QClipboard>
+#include <QComboBox>
 #include <QDesktopServices>
 #include <QFile>
 #include <QKeySequence>
@@ -26,7 +27,6 @@
 #include <QTemporaryDir>
 #include <QTest>
 #include <QTimer>
-#include <QToolBar>
 #include <QTranslator>
 #include <QWheelEvent>
 
@@ -4494,3 +4494,120 @@ void TestMainWindowGui::testStartTourDrivesClickTargetsAndOverlayParenting()
 }
 
 #include "TestMainWindowGui.moc"
+
+// ===========================================================================
+// Simulation mode selector
+// ===========================================================================
+
+void TestMainWindowGui::testSimModeSelectorDrivesTickWindow()
+{
+    std::unique_ptr<MainWindow> window(createMW());
+
+    auto *comboSimMode = window->findChild<QComboBox *>("comboSimMode");
+    auto *comboSimSpeed = window->findChild<QComboBox *>("comboSimSpeed");
+    auto *labelSimTime = window->findChild<QLabel *>("labelSimTime");
+    QVERIFY(comboSimMode && comboSimSpeed && labelSimTime);
+
+    // All three live in the status bar, which never culls its contents — unlike the toolbar,
+    // whose tail is parked in an overflow popup on a narrow window. Assert with isHidden()
+    // rather than isVisible(), which also depends on the ancestor chain being mapped.
+    auto *statusBar = window->findChild<QStatusBar *>("statusBar");
+    QVERIFY(statusBar);
+    QCOMPARE(comboSimMode->parentWidget(), statusBar);
+    QCOMPARE(comboSimSpeed->parentWidget(), statusBar);
+    QCOMPARE(labelSimTime->parentWidget(), statusBar);
+
+    auto *simulation = window->currentTab()->simulation();
+
+    // Functional is the default: the sim clock never advances, so speed and the time readout
+    // would be meaningless and stay hidden. The mode selector itself is always available.
+    QCOMPARE(comboSimMode->currentIndex(), 0);
+    QCOMPARE(simulation->timePerTick(), SimTime{0});
+    QVERIFY(!comboSimMode->isHidden());
+    QVERIFY(comboSimSpeed->isHidden());
+    QVERIFY(labelSimTime->isHidden());
+
+    // Temporal applies the selected speed as the per-tick window and reveals both controls.
+    comboSimMode->setCurrentIndex(1);
+    QCOMPARE(simulation->timePerTick(), comboSimSpeed->currentData().toULongLong());
+    QVERIFY(!comboSimSpeed->isHidden());
+    QVERIFY(!labelSimTime->isHidden());
+
+    // A speed change re-applies immediately.
+    comboSimSpeed->setCurrentIndex(0); // the slowest entry: 1 ns per tick
+    QCOMPARE(simulation->timePerTick(), SimTime{1});
+
+    // Back to functional: the window is pinned at 0 again and the extra controls go away.
+    comboSimMode->setCurrentIndex(0);
+    QCOMPARE(simulation->timePerTick(), SimTime{0});
+    QVERIFY(comboSimSpeed->isHidden());
+    QVERIFY(labelSimTime->isHidden());
+
+    // A speed change while functional must not resurrect a non-zero window.
+    comboSimSpeed->setCurrentIndex(3);
+    QCOMPARE(simulation->timePerTick(), SimTime{0});
+}
+
+void TestMainWindowGui::testSimModeSwitchResettlesStuckFeedbackCircuit()
+{
+    std::unique_ptr<MainWindow> window(createMW());
+    window->loadPandaFile(QDir(TestUtils::examplesDir()).filePath("temporal_ring_oscillator.panda"));
+
+    auto *simulation = window->currentTab()->simulation();
+    auto *scene = window->currentTab()->scene();
+
+    const auto elements = scene->elements();
+    const auto it = std::find_if(elements.cbegin(), elements.cend(),
+                                 [](GraphicElement *elm) { return elm && elm->label() == "n1"; });
+    QVERIFY2(it != elements.cend(), "ring inverter n1 missing from the example");
+    auto *n1 = *it;
+
+    // Functional mode has no stable value for a 3-inverter ring, so the engine canonicalizes
+    // the loop to Unknown.
+    simulation->update();
+    QCOMPARE(n1->outputValue(0), Status::Unknown);
+
+    // Switching to Temporal must re-settle rather than merely swap the tick window: NOT(Unknown)
+    // is a fixed point, so without the re-settle the ring would stay stuck at Unknown forever
+    // and the example would look broken in the very mode that is supposed to animate it.
+    auto *comboSimMode = window->findChild<QComboBox *>("comboSimMode");
+    QVERIFY(comboSimMode);
+    comboSimMode->setCurrentIndex(1);
+
+    bool sawKnownValue = false;
+    for (int tick = 0; tick < 200 && !sawKnownValue; ++tick) {
+        simulation->update();
+        sawKnownValue = (n1->outputValue(0) != Status::Unknown);
+    }
+    QVERIFY2(sawKnownValue, "the ring stayed Unknown after switching to Temporal — the mode "
+                            "change swapped the tick window without re-settling");
+}
+
+void TestMainWindowGui::testTabSwitchDoesNotResettleWhenModeUnchanged()
+{
+    std::unique_ptr<MainWindow> window(createMW());
+    auto *tabs = findTabs(window.get());
+    QVERIFY(tabs);
+
+    auto *scene = window->currentTab()->scene();
+    auto *clk = new Clock();
+    scene->addItem(clk);
+    auto *sim = window->currentTab()->simulation();
+    QVERIFY(sim->initialize());
+
+    // Put the clock LOW -- the state a mid-period tab switch would find it in.
+    clk->setOn(false, 0);
+    QVERIFY(!clk->isOn(0));
+
+    auto *newTabAction = window->findChild<QAction *>("actionNew");
+    QVERIFY(newTabAction);
+    newTabAction->trigger();
+    QCOMPARE(tabs->count(), 2);
+
+    tabs->setCurrentIndex(1);   // leave tab 0
+    tabs->setCurrentIndex(0);   // come back -- mode never changed
+
+    QVERIFY2(!clk->isOn(0),
+             "a tab switch that changes no simulation mode must not re-settle the arriving tab: "
+             "initialize() forces every clock HIGH, injecting a spurious rising edge");
+}

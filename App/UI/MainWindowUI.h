@@ -23,6 +23,7 @@
 #include <QScrollArea>
 #include <QSpacerItem>
 #include <QPushButton>
+#include <QComboBox>
 #include <QLabel>
 #include <QLineEdit>
 #include <QToolBar>
@@ -227,6 +228,15 @@ public:
 
     QToolBar *mainToolBar = nullptr;
     QStatusBar *statusBar = nullptr;
+
+    // --- Simulation mode (temporal / propagation-delay) controls ---
+
+    // Hosted in the status bar rather than the toolbar: these are settings and a readout, not
+    // tools, and the toolbar culls its tail into an overflow popup when the window is narrow.
+
+    QComboBox *comboSimMode = nullptr;   ///< Functional / Temporal selector.
+    QComboBox *comboSimSpeed = nullptr;  ///< Sim-time advanced per 1 ms tick (temporal only).
+    QLabel *labelSimTime = nullptr;      ///< Current simulation time readout (temporal only).
 
     // --- Menu Bar & Menus ---
 
