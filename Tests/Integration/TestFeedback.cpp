@@ -1095,6 +1095,29 @@ void TestFeedback::testTwoIndependentOscillatorsBothCanonicalize()
     }
 }
 
+void TestFeedback::testZeroDelayLoopTripsInTemporalMode()
+{
+    // defaultPropagationDelay() is 0 for sources, sinks, nodes and ICs, and any element's delay
+    // can be overridden to 0, so a zero-delay loop puts every event on one timestamp and
+    // oscillates there exactly as in functional mode. This test's own claim is that the cap
+    // TRIPS at all under a temporal window -- canonicalisation completeness belongs to
+    // testCanonicalizationReachesEveryElementOfTheRegion.
+    std::unique_ptr<Scene> scene(new Scene());
+    const auto ring = addInverterRing(scene.get(), 3);
+    for (auto *inverter : ring) {
+        inverter->setPropagationDelay(0);
+    }
+
+    Simulation sim(scene.get());
+    QSignalSpy warnings(&sim, &Simulation::simulationWarning);
+    sim.beginTimedRun(10); // temporal: 10 ns of sim-time per tick
+    sim.update();
+    sim.endTimedRun(0);
+
+    QVERIFY2(!warnings.isEmpty(),
+             "a zero-delay feedback loop must trip the non-convergence cap in temporal mode too");
+}
+
 void TestFeedback::testReconvergentFanInDoesNotTripCap()
 {
     // The false-positive guard. A straight chain is useless here: each element evaluates about

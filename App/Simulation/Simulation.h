@@ -131,6 +131,29 @@ public:
     /// events spread across future timestamps by per-element propagation delay.
     void setTimePerTick(SimTime ns) { m_timePerTick = ns; }
 
+    /// Sim-time advanced per update() tick (0 ⇒ functional). Lets a caller snapshot the
+    /// current mode before a timed sweep and restore it afterwards.
+    SimTime timePerTick() const { return m_timePerTick; }
+
+    /**
+     * \brief Begins a deterministic timed run advancing \a nsPerTick of sim-time per update().
+     * \details Sets the per-tick window, restarts sim-time at 0, drops any queued events, and
+     * forces the next update() to re-seed the whole network from the current element state
+     * rather than relying on incremental change tracking carried over from the live run.
+     * Pair with endTimedRun() so the live simulation resumes cleanly. Used by callers that
+     * drive update() manually over a fixed timeline (e.g. the BeWavedDolphin column sweep).
+     */
+    void beginTimedRun(SimTime nsPerTick);
+
+    /**
+     * \brief Ends a timed run started by beginTimedRun(), restoring the window to \a restoreTo.
+     * \details Drops any events still queued past the swept window and restores the live sim
+     * clock. The queue clear is not bookkeeping: those events carry future timestamps, and
+     * once the window is back to 0 the drain's `nextTime() <= targetTime` can never hold
+     * again, so they would linger — holding element pointers — until the next restart().
+     */
+    void endTimedRun(SimTime restoreTo);
+
     /// Sets the propagation delay (sim-time units) for \a element. 0 ⇒ zero-delay.
     /// Ignored for element types that are delay-free by design (default 0: sources, sinks,
     /// Nodes, ICs), so the map cannot hold a delay the UI and MCP both refuse to set --
@@ -366,6 +389,7 @@ private:
     EventQueue m_eventQueue;                          ///< Time-ordered pending re-evaluations.
     SimTime m_currentTime = 0;                        ///< Current sim time (advances in temporal mode).
     SimTime m_timePerTick = 0;                        ///< 0 ⇒ functional; >0 ⇒ temporal window per tick.
+    SimTime m_liveTimeBeforeTimedRun = 0;             ///< Live sim clock captured by beginTimedRun().
     QHash<const GraphicElement *, SimTime> m_delays;  ///< Per-element propagation delay (default 0).
     /// Supersession stamps for pending Publish events, keyed by element. Cleared by restart():
     /// a freed element's address can be reused, and a stale stamp would silently drop the new

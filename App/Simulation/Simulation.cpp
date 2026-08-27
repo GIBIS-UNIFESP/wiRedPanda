@@ -74,6 +74,33 @@ void Simulation::resetEventTracking()
     m_currentTime = 0;
 }
 
+void Simulation::beginTimedRun(const SimTime nsPerTick)
+{
+    // Start a clean timed timeline: each update() now advances nsPerTick of sim-time. Reset the
+    // clock and drop any pending events so column 0 starts at t = 0, and force a full re-seed so
+    // the first update() settles the whole network from the current input state rather than
+    // relying on schedule-on-change bookkeeping carried over from the live run.
+    m_liveTimeBeforeTimedRun = m_currentTime;
+    m_timePerTick = nsPerTick;
+    m_currentTime = 0;
+    m_eventQueue.clear();
+    m_eventInitDone = false;
+    m_atFixedPoint = false;  // a forced re-seed must not be skipped as "idle"
+}
+
+void Simulation::endTimedRun(const SimTime restoreTo)
+{
+    // Leave no timed state behind. Events scheduled past the swept window carry future
+    // timestamps; with the window back at 0, targetTime == m_currentTime on every later tick, so
+    // the drain's `nextTime() <= targetTime` would never hold for them again — they would linger
+    // in the queue, holding raw element pointers, until the next restart() cleared it.
+    m_timePerTick = restoreTo;
+    m_eventQueue.clear();
+    m_eventInitDone = false;
+    m_atFixedPoint = false;  // a forced re-seed must not be skipped as "idle"
+    m_currentTime = m_liveTimeBeforeTimedRun;
+}
+
 void Simulation::update()
 {
     // Lazily build the simulation layer on the first tick after a restart so

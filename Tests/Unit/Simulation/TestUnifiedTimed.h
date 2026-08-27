@@ -35,6 +35,15 @@ private slots:
     /// draining one afterwards would dereference freed memory.
     void testStructuralEditDropsPendingEvents();
 
+    /// A beginTimedRun()/endTimedRun() bracket runs the enclosed manual update() loop on its
+    /// own delayed timeline (the BeWavedDolphin sweep's contract) and hands the live session
+    /// back its own tick window afterwards.
+    void testTimedRunBracketDelaysInsideAndRestoresAfter();
+
+    /// A bracket opened at 0 ns/tick settles within the tick even when the live session was
+    /// left in temporal mode — a functional sweep must never inherit someone else's window.
+    void testTimedRunZeroWindowIgnoresLiveTemporalMode();
+
     void testPropertyLagScalesWithTheDelay_data();
     void testPropertyLagScalesWithTheDelay();
     void testPropertyBothModesReachTheSameSteadyState_data();
@@ -54,6 +63,16 @@ private slots:
     /// because an argument from the event comparator predicted the opposite and was wrong.
     void testPropertyPulseExactlyEqualToDelayPropagates_data();
     void testPropertyPulseExactlyEqualToDelayPropagates();
+
+    /// The seed's first documented promise: it settles the whole network AT the current instant
+    /// rather than spreading power-on settling over max-path-delay. Pinned here because
+    /// processEvents() documents the choice but nothing else would notice a later switch to
+    /// event-driven power-on settling.
+    void testSeedSettlesWholeNetworkAtPowerOnEvenInTemporalMode();
+
+    /// The seed's second promise: because power-on settling happens at the instant in BOTH
+    /// modes, what a flip-flop captures at power-on must not depend on the simulation mode.
+    void testPowerOnCaptureIsModeIndependent();
 
     /// The power-on / re-seed pass must use the same NON-BLOCKING semantics as the drain.
     /// Settling every element inline in priority order -- Memory included -- would let stage 2

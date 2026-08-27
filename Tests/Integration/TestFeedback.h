@@ -87,6 +87,12 @@ private slots:
     /// many, which nothing else exercises.
     void testTwoIndependentOscillatorsBothCanonicalize();
 
+    /// Temporal mode is not immune: sources, sinks, nodes and ICs default to 0 ns, so a loop of
+    /// zero-delay elements puts every event on one timestamp and trips like the functional case.
+    /// Asserts the TRIP (its own claim), not canonicalisation completeness, which
+    /// testCanonicalizationReachesEveryElementOfTheRegion already owns.
+    void testZeroDelayLoopTripsInTemporalMode();
+
     /// The cap must not false-positive on legitimate multi-wave settling. A straight chain is
     /// useless for this -- each element evaluates about once. Reconvergent fan-in is the shape
     /// that makes one element re-evaluate many times at a single timestamp.

@@ -401,9 +401,89 @@ void TestUnifiedTimed::testStructuralEditDropsPendingEvents()
     QCOMPARE(keep->outputValue(0), Status::Inactive); // NOT(1), reseeded and settled
 }
 
+void TestUnifiedTimed::testTimedRunBracketDelaysInsideAndRestoresAfter()
+{
+    // The BeWavedDolphin sweep's contract: open a bracket, drive update() once per column, and
+    // hand the live session back exactly the tick window it had. Inside the bracket a 5-unit
+    // NOT must lag its input by 5 columns; outside it, the live window is whatever it was.
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+    auto *sw = new InputSwitch();
+    auto *notGate = new Not();
+    builder.add(sw, notGate);
+    builder.connect(sw, 0, notGate, 0);
+    Simulation *sim = builder.initSimulation();
+
+    sw->setOn(false);
+    sim->update(); // live (functional) baseline: NOT(0) = 1
+
+    sim->setElementDelay(notGate, 5);
+    sim->beginTimedRun(1); // 1 unit of sim-time per "column"
+    QCOMPARE(sim->currentTime(), SimTime{0});
+
+    sim->update(); // column 0: whole-network re-seed; the tick closes at t = 1
+    QCOMPARE(notGate->outputValue(0), Status::Active);
+    QCOMPARE(sim->currentTime(), SimTime{1});
+
+    // The input rises before the next column, so the engine observes it at t = 1 and schedules
+    // the NOT for t = 1 + 5. Four more columns must not be enough.
+    sw->setOn(true);
+    for (int column = 1; column <= 4; ++column) {
+        sim->update();
+        QVERIFY2(notGate->outputValue(0) == Status::Active,
+                 qPrintable(QString("NOT fell early, at column %1 (t=%2)")
+                                .arg(column).arg(sim->currentTime())));
+    }
+
+    sim->update(); // this column reaches t = 6, the scheduled instant
+    QCOMPARE(sim->currentTime(), SimTime{6});
+    QCOMPARE(notGate->outputValue(0), Status::Inactive);
+
+    // Closing the bracket restores the live window: the next update() settles in-tick again.
+    sim->endTimedRun(0);
+    QCOMPARE(sim->timePerTick(), SimTime{0});
+    sw->setOn(false);
+    sim->update();
+    QCOMPARE(notGate->outputValue(0), Status::Active); // zero-delay again, no lag
+}
+
+void TestUnifiedTimed::testTimedRunZeroWindowIgnoresLiveTemporalMode()
+{
+    // A functional sweep must run at 0 ns/tick rather than inherit whatever window the live
+    // session left behind — otherwise a chain would ripple one column per stage in a sweep the
+    // user explicitly asked to be zero-delay.
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+    auto *sw = new InputSwitch();
+    auto *not1 = new Not();
+    auto *not2 = new Not();
+    builder.add(sw, not1, not2);
+    builder.connect(sw, 0, not1, 0);
+    builder.connect(not1, 0, not2, 0);
+    Simulation *sim = builder.initSimulation();
+
+    sim->setElementDelay(not1, 5);
+    sim->setElementDelay(not2, 5);
+    sim->setTimePerTick(1); // the live session is temporal
+    sw->setOn(false);
+    sim->update();
+
+    const SimTime liveWindow = sim->timePerTick();
+    sim->beginTimedRun(0); // the sweep asks for functional
+    sim->update();         // re-seed: the whole chain settles at this instant
+    sw->setOn(true);
+    sim->update();         // one tick is enough — both gates are zero-delay here
+    QCOMPARE(not1->outputValue(0), Status::Inactive);
+    QCOMPARE(not2->outputValue(0), Status::Active);
+    QCOMPARE(sim->currentTime(), SimTime{0}); // a 0-window bracket never advances sim time
+
+    sim->endTimedRun(liveWindow);
+    QCOMPARE(sim->timePerTick(), liveWindow);
+}
+
 // ===========================================================================
-// Metamorphic properties — acceptance criteria for the kernel redesign
-// ===========================================================================
+// Metamorphic properties — acceptance criteria for publish-side delay
+// ============================================================================
 
 namespace {
 
@@ -533,6 +613,110 @@ void TestUnifiedTimed::testPropertyPulseExactlyEqualToDelayPropagates()
     QVERIFY2(!transitions.isEmpty(),
              "a pulse exactly as wide as the gate delay must propagate: inertial delay absorbs "
              "pulses strictly NARROWER than the delay, not equal to it");
+}
+
+void TestUnifiedTimed::testSeedSettlesWholeNetworkAtPowerOnEvenInTemporalMode()
+{
+    // Two 20 ns inverters in series, driven high. If power-on settling were spread across
+    // propagation delays -- the other defensible choice -- then one 1 ns tick after power-on
+    // would have moved nothing past the first stage. The seed instead evaluates every element
+    // once, in topological order, at the current instant, so the whole chain is already settled.
+    //
+    // The expected value must DIFFER from the power-on default, or the test cannot tell "settled"
+    // from "has not moved yet". NOT(NOT(1)) = 1, against a default of Inactive. THREE inverters
+    // would settle to Inactive -- exactly the default -- and would pass even with the seed
+    // replaced by event-driven power-on settling.
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+    auto *sw = new InputSwitch();
+    auto *n1 = new Not();
+    auto *n2 = new Not();
+    builder.add(sw, n1, n2);
+    builder.connect(sw, 0, n1, 0);
+    builder.connect(n1, 0, n2, 0);
+    Simulation *sim = builder.initSimulation();
+
+    sw->setOn(true);
+    sim->update();
+    const QVector<GraphicElement *> chain{n1, n2};
+    for (auto *elm : chain) {
+        sim->setElementDelay(elm, 20);
+    }
+
+    // Power-on: clear every element back to its defaults and force a full re-seed, then advance
+    // a single 1 ns tick -- far less than one gate delay.
+    for (auto *element : workspace.scene()->elements()) {
+        if (element && element->type() == GraphicElement::Type) {
+            element->resetSimState();
+        }
+    }
+    sim->resetEventTracking();
+    sim->beginTimedRun(1);
+    sim->update();
+
+    QVERIFY2(n2->outputValue(0) == Status::Active,
+             qPrintable(QString("after one 1 ns tick the far end of a 2 x 20 ns chain must already "
+                                "be settled to Active (power-on settles at the instant, not over "
+                                "max-path-delay); got %1")
+                            .arg(static_cast<int>(n2->outputValue(0)))));
+    sim->endTimedRun(0);
+}
+
+void TestUnifiedTimed::testPowerOnCaptureIsModeIndependent()
+{
+    // A flip-flop whose clock is already high at power-on sees its first evaluation as a rising
+    // edge (m_simLastClk starts Inactive) and captures D. Because the seed settles at the instant
+    // in both modes, WHAT it captures must not depend on the mode -- only when it becomes
+    // visible. This is the interaction the seed semantics left unverified.
+    const auto powerOnCapture = [](const SimTime window) {
+        WorkSpace workspace;
+        CircuitBuilder builder(workspace.scene());
+        auto *din = new InputSwitch();
+        auto *clk = new InputSwitch();
+        auto *ff = new DFlipFlop();
+        builder.add(din, clk, ff);
+        builder.connect(din, 0, ff, 0);
+        builder.connect(clk, 0, ff, 1);
+        Simulation *sim = builder.initSimulation();
+
+        // Both high BEFORE the network is ever settled: this is the power-on condition.
+        din->setOn(true);
+        clk->setOn(true);
+        for (auto *element : workspace.scene()->elements()) {
+            if (element && element->type() == GraphicElement::Type) {
+                element->resetSimState();
+            }
+        }
+        sim->resetEventTracking();
+
+        if (window > 0) {
+            sim->setElementDelay(ff, 20);
+            sim->beginTimedRun(window);
+        }
+        // Enough ticks for a temporal run to publish its capture; a functional run settles on
+        // the first.
+        for (int t = 0; t < 40; ++t) {
+            sim->update();
+        }
+        const Status q = ff->outputValue(0);
+        if (window > 0) {
+            sim->endTimedRun(0);
+        }
+        return q;
+    };
+
+    const Status functional = powerOnCapture(0);
+    const Status temporal = powerOnCapture(5);
+
+    QVERIFY2(functional == Status::Active,
+             qPrintable(QString("precondition: a clock already high at power-on is a rising edge, "
+                                "so D=1 must be captured; got %1")
+                            .arg(static_cast<int>(functional))));
+    QVERIFY2(temporal == functional,
+             qPrintable(QString("power-on capture must not depend on the simulation mode: "
+                                "functional=%1 temporal=%2")
+                            .arg(static_cast<int>(functional))
+                            .arg(static_cast<int>(temporal))));
 }
 
 void TestUnifiedTimed::testPropertyCaptureInvariantUnderDataArrival()

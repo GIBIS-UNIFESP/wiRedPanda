@@ -30,6 +30,12 @@ private slots:
     /// source change must not recompute. Pinned as a state-machine assertion rather than left
     /// to the flush assertions, which pass whether or not the skip happens.
     void testIdleTicksAreSkippedOnceAtFixedPoint();
+    /// Anything that forces a re-seed must clear the fixed-point flag, or the re-seed itself is
+    /// skipped as "idle" and the network never settles. Clearing the queue and m_eventInitDone
+    /// without the flag is enough to lose the first timed tick, which collapses every temporal
+    /// delay measurement built on it.
+    void testForcedReseedClearsFixedPointFlag();
+
     /// restart() documents that "any future cached state added to Simulation must be cleared
     /// above" and asserts it. Every pointer-keyed container is checked BY NAME here --
     /// m_simFeedbackComponent and m_simFeedbackComponents hold raw GraphicElement* vectors that
@@ -62,4 +68,8 @@ private slots:
     /// A SimulationBlocker pause/resume cycle (every UpdateCommand redo/undo, including a
     /// plain InputSwitch click) must not force clocks HIGH or restart their phase.
     void testBlockerCyclePreservesClockLevel();
+
+    /// beginTimedRun() restarts the timeline and forces a re-seed; endTimedRun() restores the
+    /// previous window and the live clock, and drops events left queued past the swept window.
+    void testTimedRunBracketResetsAndRestores();
 };

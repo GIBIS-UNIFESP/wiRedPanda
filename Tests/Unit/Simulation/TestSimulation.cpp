@@ -306,6 +306,42 @@ void TestSimulationUnit::testIdleTicksAreSkippedOnceAtFixedPoint()
     QVERIFY2(sim.m_visualsDirty, "a tick that really drained owes a visual flush");
 }
 
+void TestSimulationUnit::testForcedReseedClearsFixedPointFlag()
+{
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *sw = new InputSwitch();
+    auto *led = new Led();
+    scene->addItem(sw);
+    scene->addItem(led);
+    CircuitBuilder builder(scene);
+    builder.connect(sw, 0, led, 0);
+
+    Simulation sim(scene);
+    sw->setOn(true);
+    sim.update();
+    QVERIFY(sim.m_atFixedPoint);
+
+    // Each of these forces a full re-seed (m_eventInitDone = false) and must therefore also
+    // drop the fixed-point conclusion -- otherwise the very tick that is supposed to re-settle
+    // the network is skipped as idle, and m_eventInitDone stays false forever.
+    sim.resetEventTracking();
+    QVERIFY2(!sim.m_atFixedPoint, "resetEventTracking() must clear the fixed-point flag");
+
+    sim.update();
+    QVERIFY(sim.m_atFixedPoint);
+    sim.beginTimedRun(1);
+    QVERIFY2(!sim.m_atFixedPoint, "beginTimedRun() must clear the fixed-point flag");
+
+    sim.update();
+    QVERIFY2(sim.m_eventInitDone, "the first timed update() must actually seed the network");
+    sim.endTimedRun(0);
+    QVERIFY2(!sim.m_atFixedPoint, "endTimedRun() must clear the fixed-point flag");
+
+    sim.restart();
+    QVERIFY2(!sim.m_atFixedPoint, "restart() must clear the fixed-point flag");
+}
+
 void TestSimulationUnit::testUpdateFlushesPendingVisualsOnLaterIdleTick()
 {
     // The visual throttle only engages when Application::interactiveMode is true (forced
@@ -387,6 +423,54 @@ void TestSimulationUnit::testBlockerCyclePreservesClockLevel()
              "resume after a SimulationBlocker cycle forced the clock HIGH mid-LOW-phase");
 
     sim->stop();
+}
+
+void TestSimulationUnit::testTimedRunBracketResetsAndRestores()
+{
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *sw = new InputSwitch();
+    auto *notGate = new Not();
+    scene->addItem(sw);
+    scene->addItem(notGate);
+    CircuitBuilder builder(scene);
+    builder.connect(sw, 0, notGate, 0);
+    Simulation *sim = builder.initSimulation();
+
+    // Put the "live" session on its own temporal timeline so the restore below is observable:
+    // with a 3-unit window the clock advances 3 per update().
+    sim->setTimePerTick(3);
+    sim->update();
+    sim->update();
+    const SimTime liveTime = sim->currentTime();
+    QCOMPARE(liveTime, SimTime{6});
+
+    // --- begin: fresh timeline, empty queue, full re-seed pending ---
+    sim->beginTimedRun(1);
+    QCOMPARE(sim->m_timePerTick, SimTime{1});
+    QCOMPARE(sim->currentTime(), SimTime{0});
+    QVERIFY2(sim->m_eventQueue.empty(), "beginTimedRun() must drop events from the live run");
+    QVERIFY2(!sim->m_eventInitDone, "beginTimedRun() must force a whole-network re-seed");
+
+    sim->update();
+    QVERIFY2(sim->m_eventInitDone, "the first timed update() must seed the network");
+    QCOMPARE(sim->currentTime(), SimTime{1});
+
+    // A delay far beyond the tick window leaves an event pending past the swept timeline —
+    // exactly what endTimedRun() has to clear.
+    sim->setElementDelay(notGate, 500);
+    sw->setOn(true);
+    sim->update();
+    QVERIFY2(!sim->m_eventQueue.empty(), "Precondition: an event must still be queued past the window");
+
+    // --- end: previous window and live clock restored, nothing left queued ---
+    sim->endTimedRun(3);
+    QCOMPARE(sim->m_timePerTick, SimTime{3});
+    QCOMPARE(sim->currentTime(), liveTime);
+    QVERIFY2(sim->m_eventQueue.empty(),
+             "endTimedRun() must drop events queued past the swept window — with the window "
+             "restored they could never come due again, and would pin element pointers");
+    QVERIFY2(!sim->m_eventInitDone, "endTimedRun() must force the live run to re-seed");
 }
 
 void TestSimulationUnit::testRestartClearsEveryPointerKeyedContainer()
