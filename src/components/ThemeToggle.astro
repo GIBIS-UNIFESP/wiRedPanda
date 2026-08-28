@@ -1,64 +1,76 @@
 ---
+import { Icon } from 'astro-icon/components';
 import { getLocaleFromUrl, useTranslations } from '../i18n';
 
 const locale = getLocaleFromUrl(Astro.url);
 const t = useTranslations(locale);
 ---
 
+{
+  /*
+  Both icons are always rendered and CSS picks one off the `dark` class that
+  Base.astro's inline script sets before first paint, so the correct icon is
+  right on the very first frame. Choosing it in the script below instead would
+  paint the wrong one and visibly swap it after hydration.
+
+  `flex` is load-bearing, not cosmetic: an inline element wrapping only an
+  <Icon> gets fragmented into several line boxes by the whitespace text nodes
+  around it, and the keyboard focus ring is drawn around their union -- see
+  6adaf78b3, which fixed exactly that on the GitHub nav link.
+*/
+}
 <button
   type="button"
   class="theme-switch"
   aria-label={t('theme.toggle')}
   role="switch"
   aria-checked="false"
+  ><Icon name="moon" class="theme-icon theme-icon-moon" /><Icon
+    name="sun"
+    class="theme-icon theme-icon-sun"
+  /></button
 >
-  <span class="theme-switch-track">
-    <span class="theme-switch-knob"></span>
-  </span>
-</button>
 
 <style>
   .theme-switch {
-    position: relative;
-    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
     background: none;
     border: none;
-    padding: 2px;
-    display: flex;
-    align-items: center;
+    cursor: pointer;
+    color: var(--color-gray-500, #6b7280);
+    transition: color 0.2s ease;
   }
 
-  .theme-switch-track {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 44px;
-    height: 24px;
-    border-radius: 9999px;
-    background-color: #d1d5db;
-    padding: 0 4px;
-    transition: background-color 0.25s ease;
+  .theme-switch:hover {
+    color: var(--color-gray-900, #111827);
   }
 
-  :global(.dark) .theme-switch-track {
-    background-color: #374151;
+  :global(.dark) .theme-switch {
+    color: var(--color-gray-300, #d1d5db);
   }
 
-  .theme-switch-knob {
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 20px;
-    height: 20px;
-    border-radius: 9999px;
-    background-color: white;
-    box-shadow: 0 1px 3px rgb(0 0 0 / 20%);
-    transition: transform 0.25s ease;
+  :global(.dark) .theme-switch:hover {
+    color: #fff;
   }
 
-  :global(.dark) .theme-switch-knob {
-    transform: translateX(20px);
+  .theme-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  /* Light: offer the moon (switch to dark). Dark: offer the sun. */
+  .theme-icon-sun {
+    display: none;
+  }
+
+  :global(.dark) .theme-icon-moon {
+    display: none;
+  }
+
+  :global(.dark) .theme-icon-sun {
+    display: block;
   }
 </style>
 
