@@ -12,6 +12,7 @@
 #include "App/Simulation/Simulation.h"
 #include "App/Simulation/SimulationBlocker.h"
 #include "App/Simulation/SimulationThrottleDisabler.h"
+#include "App/Wiring/Port.h"
 
 WaveformSimulator::WaveformSimulator(Scene *externalScene, Simulation *simulation)
     : m_externalScene(externalScene)
@@ -45,7 +46,22 @@ void WaveformSimulator::restoreInputs(const QVector<GraphicElementInput *> &inpu
     int portIndex = 0;
     for (auto *input : std::as_const(inputs)) {
         for (int port = 0; port < input->outputSize(); ++port) {
-            const bool oldValue = static_cast<bool>(saved.at(portIndex++));
+            const Status savedStatus = saved.at(portIndex++);
+
+            // A captured Status is four-state, and setOn() only speaks two: Status::Unknown is
+            // -1 and Status::Error is 2, so `static_cast<bool>` would make BOTH true and restore
+            // an undefined port ON -- a sweep turning an undriven input into a driven-high one in
+            // the live circuit. Put a non-definite capture back on the port directly, which is
+            // exactly what captureInputs() read, and leave the element's own on/off state alone:
+            // it was never meaningfully on or off.
+            if (savedStatus != Status::Active && savedStatus != Status::Inactive) {
+                if (auto *outPort = input->outputPort(port)) {
+                    outPort->setStatus(savedStatus);
+                }
+                continue;
+            }
+
+            const bool oldValue = (savedStatus == Status::Active);
             if (input->outputSize() > 1) {
                 // Multi-port inputs (e.g. InputRotary) are one-hot: selecting any port
                 // deselects the others, so calling setOn() for every port in sequence would

@@ -13,4 +13,10 @@ class TestDolphinExporter : public QObject
 private slots:
 
     void testExportToPdfThrowsWhenPrinterCannotOpen();
+
+    /// writeTruthTableText() writes cells with NO separator, so every cell must be exactly one
+    /// character. A raw Status::Unknown (-1) prints as two and silently shifts the column count,
+    /// making the row unparseable -- routinely reachable, since oscillating regions canonicalise
+    /// to Unknown and propagate it to their readers.
+    void testTruthTableTextWritesOneCharacterPerThreeStateCell();
 };

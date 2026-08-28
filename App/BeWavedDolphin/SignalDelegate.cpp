@@ -7,12 +7,17 @@
 #include <QStyleOptionViewItem>
 
 #include "App/BeWavedDolphin/SignalModel.h"
+#include "App/Core/Enums.h"
 
 namespace
 {
 // Waveform colors: green for output rows, blue for input rows.
 const QColor kOutputColor(0, 128, 0);        ///< #008000
 const QColor kInputColor(0x75, 0x8e, 0xff);  ///< #758eff
+/// Four-state colours, matching the canvas's wire vocabulary (ThemeManager::m_connectionUnknown
+/// / m_connectionError) so the same signal reads the same way in both views.
+const QColor kUnknownColor(0x9e, 0x9e, 0x9e); ///< grey -- undefined
+const QColor kErrorColor(0xd3, 0x2f, 0x2f);   ///< red  -- conflicting drivers
 
 // Geometry, as fractions of the cell, decoded from the original 100x30 SVGs.
 constexpr double kLineThickness = 4.0 / 30.0;   ///< Horizontal plateau line thickness.
@@ -35,6 +40,18 @@ void SignalDelegate::setPlotType(const PlotType plotType)
 
 WaveSegment SignalDelegate::segmentFor(const int value, const bool hasPrev, const int prevValue)
 {
+    // Cells carry a four-state Status, not a bit: Unknown is -1 and Error is 2. Treating the
+    // cell as "0 is low, everything else is high" would draw an undefined signal as a confident
+    // logic HIGH, while the canvas renders that same signal as a distinct grey wire
+    // (Connection.cpp / theme.m_connectionUnknown). Give them their own segments so the two views
+    // agree -- routinely reachable, since the engine canonicalises oscillating regions to Unknown
+    // and propagates it to every reader.
+    if (value == static_cast<int>(Status::Unknown)) {
+        return WaveSegment::Unknown;
+    }
+    if (value == static_cast<int>(Status::Error)) {
+        return WaveSegment::Error;
+    }
     if (value == 0) {
         return (hasPrev && (prevValue == 1)) ? WaveSegment::Falling : WaveSegment::Low;
     }
@@ -44,14 +61,29 @@ WaveSegment SignalDelegate::segmentFor(const int value, const bool hasPrev, cons
 
 void SignalDelegate::drawWaveform(QPainter *painter, const QRectF &cell, const WaveSegment seg, const bool isInput) const
 {
-    const QColor color = isInput ? kInputColor : kOutputColor;
-    QColor bandColor = color;
-    bandColor.setAlpha(128); // 50% opacity translucent fill
-
     const double x = cell.x();
     const double y = cell.y();
     const double w = cell.width();
     const double h = cell.height();
+
+    // Undefined and conflicting signals get their own rendering rather than being folded into a
+    // plateau: a mid-level bar in the same vocabulary the canvas uses for wires -- grey for
+    // Unknown, red for Error (see Connection.cpp / ThemeManager's m_connectionUnknown and
+    // m_connectionError). Deliberately NOT a high or low plateau: the whole point is that the
+    // value is neither.
+    if ((seg == WaveSegment::Unknown) || (seg == WaveSegment::Error)) {
+        const QColor stateColor = (seg == WaveSegment::Unknown) ? kUnknownColor : kErrorColor;
+        QColor stateBand = stateColor;
+        stateBand.setAlpha(64);
+        painter->fillRect(QRectF(x, y, w, h), stateBand);
+        const double midTop = ((kHighTop + kLowTop) / 2.0) * h;
+        painter->fillRect(QRectF(x, y + midTop, w, kLineThickness * h), stateColor);
+        return;
+    }
+
+    const QColor color = isInput ? kInputColor : kOutputColor;
+    QColor bandColor = color;
+    bandColor.setAlpha(128); // 50% opacity translucent fill
 
     // High plateau for High/Rising, low plateau for Low/Falling.
     const bool high = (seg == WaveSegment::High) || (seg == WaveSegment::Rising);
