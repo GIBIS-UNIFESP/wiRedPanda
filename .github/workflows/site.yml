@@ -63,10 +63,21 @@ jobs:
       - name: Copy API docs to site
         run: cp -r docs/html public/api
 
-      - name: Build and upload
-        uses: withastro/action@b7d53628f8b666036b0238aadb0b984a2a489f26 # v6
+      - name: Restore Astro cache
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
         with:
-          node-version: 24
+          path: node_modules/.astro
+          key: astro-cache-${{ runner.os }}-${{ github.sha }}
+          restore-keys: astro-cache-${{ runner.os }}-
+
+      - name: Build
+        run: npm run build
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5
+        with:
+          path: dist/
+          include-hidden-files: true
 
   deploy:
     needs: build
