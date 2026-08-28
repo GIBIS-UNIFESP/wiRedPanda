@@ -24,7 +24,6 @@ class SignalModel : public QStandardItemModel
 public:
     /**
      * \brief Constructs the model.
-     * \param inputs  Number of input signal rows (stored for reference).
      * \param rows    Total number of signal rows.
      * \param columns Number of time-step columns.
      * \param parent  Optional parent object.

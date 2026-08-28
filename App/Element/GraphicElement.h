@@ -97,6 +97,7 @@ public:
 
     /**
      * \brief Loads the graphic element through a binary data stream.
+     * \param stream Binary stream positioned at this element's serialized data.
      * \param context carries portMap, version, contextDir and optional copy-operation state.
      */
     virtual void load(QDataStream &stream, SerializationContext &context);
