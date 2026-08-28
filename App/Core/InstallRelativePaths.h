@@ -31,6 +31,14 @@ public:
     /// filesystem, and finally a bare-category CWD fallback for development.
     static QStringList candidates(const QString &category);
 
+    /// True if \a directory is one of the candidates() entries for \a category, compared by
+    /// canonical path so ".."-relative and CWD-relative candidates match correctly. Used to
+    /// recognise bundled/installed content directories that must not be written into even when
+    /// the filesystem would permit it (a dev checkout's Examples/ is writable, an installed
+    /// one usually isn't). Read-only — creates nothing; a directory that doesn't exist is
+    /// never a candidate.
+    static bool isCandidate(const QString &category, const QString &directory);
+
     /// Returns the first candidate() entry that already exists on disk, or "" if none do.
     /// Read-only — creates nothing.
     static QString resolve(const QString &category);

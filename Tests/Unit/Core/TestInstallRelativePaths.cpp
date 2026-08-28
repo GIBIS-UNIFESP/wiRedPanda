@@ -69,3 +69,68 @@ void TestInstallRelativePaths::testResolveFindsCwdFallbackCandidate()
 
     QCOMPARE(resolved, category);
 }
+
+void TestInstallRelativePaths::testIsCandidateMatchesCwdFallbackByCanonicalPath()
+{
+    QTemporaryDir cwdDir;
+    QVERIFY(cwdDir.isValid());
+
+    const QString category = QStringLiteral("InstallRelativePathsTestIsCandidate");
+    QVERIFY(QDir(cwdDir.path()).mkpath(category));
+
+    const QString previousCwd = QDir::currentPath();
+    QVERIFY(QDir::setCurrent(cwdDir.path()));
+
+    // The bare-category CWD fallback is a *relative* candidate; isCandidate() is given the
+    // absolute path a caller would actually hold, so this only passes via canonicalisation.
+    const bool matched = InstallRelativePaths::isCandidate(category, QDir(cwdDir.path()).absoluteFilePath(category));
+
+    QVERIFY(QDir::setCurrent(previousCwd));
+
+    QVERIFY(matched);
+}
+
+void TestInstallRelativePaths::testIsCandidateMatchesEquivalentPathSpellings()
+{
+    QTemporaryDir cwdDir;
+    QVERIFY(cwdDir.isValid());
+
+    const QString category = QStringLiteral("InstallRelativePathsTestSpellings");
+    QVERIFY(QDir(cwdDir.path()).mkpath(category));
+
+    const QString previousCwd = QDir::currentPath();
+    QVERIFY(QDir::setCurrent(cwdDir.path()));
+
+    const QString base = QDir(cwdDir.path()).absoluteFilePath(category);
+    const bool trailingDot = InstallRelativePaths::isCandidate(category, base + QStringLiteral("/."));
+    const bool parentRoundTrip = InstallRelativePaths::isCandidate(category, base + QStringLiteral("/../") + category);
+
+    QVERIFY(QDir::setCurrent(previousCwd));
+
+    QVERIFY(trailingDot);
+    QVERIFY(parentRoundTrip);
+}
+
+void TestInstallRelativePaths::testIsCandidateRejectsUnrelatedMissingAndEmptyDirs()
+{
+    QTemporaryDir cwdDir;
+    QVERIFY(cwdDir.isValid());
+
+    const QString category = QStringLiteral("InstallRelativePathsTestReject");
+    QVERIFY(QDir(cwdDir.path()).mkpath(category));
+    const QString unrelated = QStringLiteral("SomewhereElse");
+    QVERIFY(QDir(cwdDir.path()).mkpath(unrelated));
+
+    const QString previousCwd = QDir::currentPath();
+    QVERIFY(QDir::setCurrent(cwdDir.path()));
+
+    const bool unrelatedDir = InstallRelativePaths::isCandidate(category, QDir(cwdDir.path()).absoluteFilePath(unrelated));
+    const bool missingDir = InstallRelativePaths::isCandidate(category, QDir(cwdDir.path()).absoluteFilePath(QStringLiteral("NoSuchDir")));
+    const bool emptyPath = InstallRelativePaths::isCandidate(category, QString());
+
+    QVERIFY(QDir::setCurrent(previousCwd));
+
+    QVERIFY(!unrelatedDir);
+    QVERIFY(!missingDir);
+    QVERIFY(!emptyPath);
+}
