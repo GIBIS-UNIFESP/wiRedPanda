@@ -17,6 +17,7 @@
 #include <QUndoStack>
 
 #include "App/BeWavedDolphin/BeWavedDolphinUI.h"
+#include "App/BeWavedDolphin/DolphinModelBuilder.h"
 #include "App/BeWavedDolphin/SignalDelegate.h"
 #include "App/BeWavedDolphin/SignalModel.h"
 #include "App/Scene/Scene.h"
@@ -260,6 +261,10 @@ private:
     const bool m_askConnection;                       ///< If true, closing consults checkSave()'s save-changes prompt.
     int m_clockPeriod              = 0;               ///< Period used by "Set Clock Wave" (0 = auto).
     int m_inputPorts               = 0;               ///< Number of input ports in the circuit.
+    /// The table's row layout, one entry per row: element, port, side and per-port label.
+    /// Single source of truth shared with the sweep and the snapshot API; see
+    /// DolphinModelBuilder::Row.
+    QVector<DolphinModelBuilder::Row> m_rows;
     int m_length                   = 32;              ///< Number of simulation time-step columns.
     ExerciseOverlay *m_exerciseOverlay = nullptr;     ///< Non-owning; repositioned on resize.
 };

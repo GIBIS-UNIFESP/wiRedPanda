@@ -140,6 +140,10 @@ private slots:
     void testTriggerCombinationalFillsAllInputPatterns();
     void testInputRowLooksUpByLabel();
     void testSnapshotReturnsRunValues();
+    /// snapshot() must agree with the model row-for-row, in order, including per-port labels.
+    /// The table is laid out one row per PORT, so indexing per ELEMENT anywhere makes a
+    /// multi-port element report confidently wrong values under correct-looking labels.
+    void testSnapshotMatchesModelRowsForMultiPortElements();
     void testCheckSaveDiscardAndSaveButtons();
     void testActionSetClockWaveNoSelectionThrowsUserFacingError();
     void testActionSetClockWaveDialogRejectedLeavesGridUnchanged();

@@ -11,6 +11,7 @@
 
 #include <QVector>
 
+#include "App/BeWavedDolphin/DolphinModelBuilder.h"
 #include "App/Core/Enums.h"
 
 class GraphicElement;
@@ -46,19 +47,18 @@ public:
 
     /**
      * \brief Runs the simulation across \a columns time steps.
-     * \param inputs      Input elements, in row order.
-     * \param outputs     Output elements, in row order.
-     * \param inputPorts  Number of input rows (offset of the first output row).
+     * \param rows        The table's row layout, in display order (DolphinModelBuilder::Row).
      * \param columns     Number of time-step columns to sweep.
      * \param readInput   Returns the input bit at (row, col) from the waveform model.
      * \param writeOutput Stores the computed output bit at (row, col) into the model.
      *
-     * \details Resets every element's sequential state before sweeping. Does not restore
-     * inputs — the caller pairs this with restoreInputs().
+     * \details Takes the row descriptors rather than the element vectors plus a row offset:
+     * a row's index, its element and its port all come from one place, so the sweep cannot
+     * drift out of step with the snapshot API (see DolphinModelBuilder::Row).
+     * Resets every element's sequential state before sweeping. Does not restore inputs — the
+     * caller pairs this with restoreInputs().
      */
-    void sweep(const QVector<GraphicElementInput *> &inputs,
-               const QVector<GraphicElement *> &outputs,
-               int inputPorts, int columns,
+    void sweep(const QVector<DolphinModelBuilder::Row> &rows, int columns,
                const std::function<bool(int row, int col)> &readInput,
                const std::function<void(int row, int col, int value)> &writeOutput) const;
 

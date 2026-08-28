@@ -179,6 +179,7 @@ void BewavedDolphin::prepare(const QString &fileName)
     m_inputs     = tableSignals.inputs;
     m_outputs    = tableSignals.outputs;
     m_inputPorts = tableSignals.inputPorts;
+    m_rows       = tableSignals.rows;
 
     qCDebug(zero) << "Loading initial data into the table.";
     loadNewTable(tableSignals.inputLabels, tableSignals.outputLabels);
@@ -299,7 +300,7 @@ void BewavedDolphin::run()
     {
         SignalModel::BulkEditGuard guard(*m_model);
         m_simDriver->sweep(
-            m_inputs, m_outputs, m_inputPorts, m_model->columnCount(),
+            m_rows, m_model->columnCount(),
             [this](int row, int col) { return m_model->value(row, col) != 0; },
             [this](int row, int col, int value) { m_model->setValue(row, col, value); });
     }
@@ -414,8 +415,12 @@ void BewavedDolphin::setCellValue(const int row, const int col, const int value)
 
 int BewavedDolphin::inputRow(const QString &label) const
 {
-    for (int row = 0; row < m_inputs.size(); ++row) {
-        if (m_inputs.at(row)->label() == label) {
+    // Indexes m_rows, not m_inputs: a multi-port input occupies one row PER PORT, so an
+    // element index is not a row index. Matches the per-port row label ("Bus[0]"), which is
+    // also what the table header and snapshot() report, so all three agree on one name.
+    for (int row = 0; row < m_rows.size(); ++row) {
+        const auto &descriptor = m_rows.at(row);
+        if (descriptor.kind == DolphinModelBuilder::RowKind::Input && descriptor.label == label) {
             return row;
         }
     }
@@ -426,27 +431,27 @@ int BewavedDolphin::inputRow(const QString &label) const
 BewavedDolphin::WaveformSnapshot BewavedDolphin::snapshot(const int duration) const
 {
     // Read the computed waveform into a plain DTO so automation consumers (the MCP server)
-    // need neither the live model nor the element vectors. Input rows come first; output
-    // rows follow at the m_inputs.size() offset (mirroring the table's row layout).
+    // need neither the live model nor the element vectors.
+    //
+    // Walks m_rows, which IS the table's row layout, rather than re-deriving it from the
+    // element vectors: a row is one PORT, so an element index is not a row index, and the
+    // first output row is at the input PORT count rather than at m_inputs.size().
     WaveformSnapshot result;
 
-    for (int row = 0; row < m_inputs.size(); ++row) {
+    for (int row = 0; row < m_rows.size(); ++row) {
+        const auto &descriptor = m_rows.at(row);
+
         Signal signal;
-        signal.label = m_inputs.at(row)->label();
+        signal.label = descriptor.label;
         for (int col = 0; col < duration; ++col) {
             signal.values.append(m_model->value(row, col));
         }
-        result.inputs.append(signal);
-    }
 
-    for (int row = 0; row < m_outputs.size(); ++row) {
-        Signal signal;
-        signal.label = m_outputs.at(row)->label();
-        const int outputRowIndex = static_cast<int>(m_inputs.size()) + row;
-        for (int col = 0; col < duration; ++col) {
-            signal.values.append(m_model->value(outputRowIndex, col));
+        if (descriptor.kind == DolphinModelBuilder::RowKind::Input) {
+            result.inputs.append(signal);
+        } else {
+            result.outputs.append(signal);
         }
-        result.outputs.append(signal);
     }
 
     return result;
@@ -507,7 +512,7 @@ void BewavedDolphin::saveToTxt(QTextStream &stream)
     {
         SignalModel::BulkEditGuard guard(truthTable);
         m_simDriver->sweep(
-            m_inputs, m_outputs, m_inputPorts, columns,
+            m_rows, columns,
             [&truthTable](int row, int col) { return truthTable.value(row, col) != 0; },
             [&truthTable](int row, int col, int value) { truthTable.setValue(row, col, value); });
     }
