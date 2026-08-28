@@ -100,6 +100,10 @@ private:
 
     /// Returns "1'b1" or "1'b0" for Active/Inactive status values.
     static QString highLow(Status val);
+
+    /// Four-state literal for a value that must stay undefined (1'bx for Unknown/Error).
+    /// Contrast highLow(), which is deliberately power-on-safe.
+    static QString fourState(Status val);
     /// Strips characters that are illegal in SystemVerilog identifiers.
     static QString removeForbiddenChars(const QString &input);
     /// Returns \c true if \a expr is already a simple identifier (no operators).

@@ -64,7 +64,26 @@ SystemVerilogCodeGen::SystemVerilogCodeGen(const QString &fileName, const QVecto
 
 QString SystemVerilogCodeGen::highLow(const Status val)
 {
+    // POWER-ON-SAFE, deliberately two-state: a non-definite status becomes 1'b0. This mirrors
+    // ElementSimState::reset(), which coerces an Unknown power-on default to Inactive, so the
+    // generated module starts where the engine starts -- which is what the iverilog differential
+    // compares. It is also what keeps a seeded feedback `reg` from x-locking instead of settling.
+    // For a value that must stay undefined, use fourState() below.
     return (val == Status::Active) ? "1'b1" : "1'b0";
+}
+
+QString SystemVerilogCodeGen::fourState(const Status val)
+{
+    // SystemVerilog is four-state, so unlike every other place a Status meets something narrower,
+    // nothing here forces a collapse. Used where Unknown genuinely means "nothing drives this" --
+    // an unconnected input's default, whose Unknown the engine propagates as Unknown (only
+    // reset() coerces, and only at power-on). Emitting 1'b0 there would export a disconnected
+    // input as a confident logic 0.
+    switch (val) {
+    case Status::Active:   return "1'b1";
+    case Status::Inactive: return "1'b0";
+    default:               return "1'bx"; // Unknown and Error alike are "not a known level"
+    }
 }
 
 // [QUALITY-14] Ensures result is a valid SystemVerilog identifier (starts with letter/underscore, non-empty)
@@ -121,11 +140,11 @@ QString SystemVerilogCodeGen::otherPortNameImpl(Port *port, QSet<Port *> &visite
                 return otherPortNameImpl(txInputPort, visited);
             }
         }
-        return highLow(port->defaultValue());
+        return fourState(port->defaultValue());
     }
 
     auto *otherPort = port->connections().constFirst()->otherPort(port);
-    if (!otherPort) return highLow(port->defaultValue());
+    if (!otherPort) return fourState(port->defaultValue());
 
     // Cycle detection: if we've already visited the connected port, don't inline.
     // Unreachable given this app's wiring model: every Connection joins one
@@ -149,7 +168,7 @@ QString SystemVerilogCodeGen::otherPortNameImpl(Port *port, QSet<Port *> &visite
     // into a Connection — a connected port's graphicElement() is never null.
     if (!elm) {
         QString mapped = m_varMap.value(otherPort); // LCOV_EXCL_LINE
-        return mapped.isEmpty() ? highLow(port->defaultValue()) : mapped; // LCOV_EXCL_LINE
+        return mapped.isEmpty() ? fourState(port->defaultValue()) : mapped; // LCOV_EXCL_LINE
     } // LCOV_EXCL_LINE
 
     // Check m_varMap first — if a wire/variable was declared for this port, use it
@@ -1467,7 +1486,7 @@ void SystemVerilogCodeGen::loop()
         // Unreachable: otherPortName() never returns an empty string (see its own
         // documented exclusions above).
         if (expr.isEmpty()) {
-            expr = highLow(pin.m_port->defaultValue()); // LCOV_EXCL_LINE
+            expr = fourState(pin.m_port->defaultValue()); // LCOV_EXCL_LINE
         }
         m_stream << QString("assign %1 = %2;").arg(pin.m_varName, expr) << Qt::endl;
     }
