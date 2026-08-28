@@ -44,6 +44,10 @@ public:
 
     /// Resets Q/~Q outputs and edge-detection state to power-on defaults.
     void resetSimState() override;
+    /// \reimp Adds the edge-detection history to the base class's output values.
+    void saveSimState(QVector<Status> &out) const override;
+    /// \reimp
+    void restoreSimState(const QVector<Status> &in, int &cursor) override;
 private:
     Status m_simLastClk = Status::Inactive;
     Status m_simLastValue = Status::Active;

@@ -117,3 +117,19 @@ void DFlipFlop::resetSimState()
     m_simLastClk   = Status::Inactive;
     m_simLastValue = Status::Active;
 }
+
+void DFlipFlop::saveSimState(QVector<Status> &out) const
+{
+    // Mirrors resetSimState(): the outputs via the base, then the edge-detection history, in a
+    // fixed order that restoreSimState() reads back identically.
+    GraphicElement::saveSimState(out);
+    out.append(m_simLastClk);
+    out.append(m_simLastValue);
+}
+
+void DFlipFlop::restoreSimState(const QVector<Status> &in, int &cursor)
+{
+    GraphicElement::restoreSimState(in, cursor);
+    if (cursor < in.size()) { m_simLastClk = in.at(cursor++); }
+    if (cursor < in.size()) { m_simLastValue = in.at(cursor++); }
+}

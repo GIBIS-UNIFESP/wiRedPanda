@@ -5,6 +5,8 @@
 
 #include <utility>
 
+#include <QScopeGuard>
+
 #include "App/Core/Common.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElementInput.h"
@@ -88,6 +90,27 @@ void WaveformSimulator::sweep(const QVector<DolphinModelBuilder::Row> &rows, con
     // update() call. Without this, output port statuses are stale for most columns and the
     // waveform shows incorrect values.
     SimulationThrottleDisabler throttleDisabler(m_simulation);
+
+    // Snapshot the live circuit before the reset below, and put it back on the way out. The
+    // sweep resets everything so its own results are reproducible, but it is a read-only
+    // QUESTION about the circuit -- without this the canvas would be left holding whatever the
+    // last column produced, so a read-only-looking create_waveform would mutate the user's
+    // flip-flops. Symmetrical with the reset, and it covers the state resetSimState() clears:
+    // outputs plus each sequential element's edge-detection history, recursing through ICs.
+    QVector<Status> liveState;
+    for (auto *elm : m_externalScene->elements()) {
+        if (elm && elm->type() == GraphicElement::Type) {
+            elm->saveSimState(liveState);
+        }
+    }
+    auto restoreLiveState = qScopeGuard([this, &liveState] {
+        int cursor = 0;
+        for (auto *elm : m_externalScene->elements()) {
+            if (elm && elm->type() == GraphicElement::Type) {
+                elm->restoreSimState(liveState, cursor);
+            }
+        }
+    });
 
     // Reset every element's sequential state (Q/~Q outputs, edge-detection variables) to
     // power-on defaults before the sweep so results are reproducible regardless of any
