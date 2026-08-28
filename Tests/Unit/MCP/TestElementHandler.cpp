@@ -379,6 +379,70 @@ void TestElementHandler::testHandleSetElementPropertiesRejectsPortSizeParams()
     QCOMPARE(response["error"].toObject()["code"].toInt(), JsonRpcError::ValidationError);
 }
 
+void TestElementHandler::testHandleSetElementPropertiesRejectsUnsupportedProperty()
+{
+    MainWindow window;
+    ElementHandler handler(&window, nullptr);
+    // An And gate is not a Node, so it has no wireless mode.
+    const int id = createElement(handler, "And");
+
+    const QJsonObject response = handler.handleCommand("set_element_properties", {{"element_id", id}, {"wireless_mode", 1}}, 1);
+    QVERIFY2(response.contains("error"), qPrintable(QJsonDocument(response).toJson()));
+    QCOMPARE(response["error"].toObject()["code"].toInt(), JsonRpcError::ValidationError);
+    QVERIFY2(response["error"].toObject()["message"].toString().contains(QStringLiteral("wireless_mode")),
+             "the error must name the property that could not be applied");
+}
+
+void TestElementHandler::testHandleSetElementPropertiesRejectsPropagationDelayOnIC()
+{
+    MainWindow window;
+    ElementHandler handler(&window, nullptr);
+    const int id = createElement(handler, "IC");
+
+    const QJsonObject response = handler.handleCommand("set_element_properties", {{"element_id", id}, {"propagation_delay", 40}}, 1);
+    QVERIFY2(response.contains("error"), qPrintable(QJsonDocument(response).toJson()));
+    QCOMPARE(response["error"].toObject()["code"].toInt(), JsonRpcError::ValidationError);
+    QVERIFY2(response["error"].toObject()["message"].toString().contains(QStringLiteral("propagation_delay")),
+             "the error must name the property that could not be applied");
+}
+
+void TestElementHandler::testHandleSetElementPropertiesRejectionAppliesNothing()
+{
+    MainWindow window;
+    ElementHandler handler(&window, nullptr);
+    const int id = createElement(handler, "And");
+    const QString originalLabel = elementById(window, id)->label();
+
+    // "label" is supported and would apply; "wireless_mode" is not. The whole call must fail
+    // and leave the element untouched, rather than applying the half it can.
+    const QJsonObject response = handler.handleCommand(
+        "set_element_properties", {{"element_id", id}, {"label", "ShouldNotStick"}, {"wireless_mode", 1}}, 1);
+
+    QVERIFY2(response.contains("error"), qPrintable(QJsonDocument(response).toJson()));
+    QCOMPARE(elementById(window, id)->label(), originalLabel);
+}
+
+void TestElementHandler::testHandleSetElementPropertiesRejectsAppearanceIndexWithoutAppearance()
+{
+    MainWindow window;
+    ElementHandler handler(&window, nullptr);
+    const int id = createElement(handler, "Led"); // an element that CAN change appearance
+
+    // Alone, appearance_index cannot take effect: setAppearanceAt() needs the path that only
+    // "appearance" supplies.
+    const QJsonObject alone = handler.handleCommand(
+        "set_element_properties", {{"element_id", id}, {"appearance_index", 1}}, 1);
+    QVERIFY2(alone.contains("error"), qPrintable(QJsonDocument(alone).toJson()));
+    QVERIFY2(alone["error"].toObject()["message"].toString().contains(QStringLiteral("appearance_index")),
+             "the error must name the property that could not be applied");
+
+    // Together with "appearance" it is meaningful and must still be accepted.
+    const QJsonObject together = handler.handleCommand(
+        "set_element_properties",
+        {{"element_id", id}, {"appearance", ":/Components/Output/Led/RedLed.svg"}, {"appearance_index", 1}}, 1);
+    QVERIFY2(together.contains("result"), qPrintable(QJsonDocument(together).toJson()));
+}
+
 void TestElementHandler::testGetOutputValueReportsFourStateStatus()
 {
     MainWindow window;
@@ -645,17 +709,6 @@ void TestElementHandler::testHandleSetElementPropertiesRejectsInvalidWirelessMod
     const QJsonObject response = handler.handleCommand("set_element_properties", {{"element_id", nodeId}, {"wireless_mode", 99}}, 1);
     QVERIFY2(response.contains("error"), qPrintable(QJsonDocument(response).toJson()));
     QCOMPARE(response["error"].toObject()["code"].toInt(), JsonRpcError::ValidationError);
-}
-
-void TestElementHandler::testHandleSetElementPropertiesIgnoresWirelessModeForNonNode()
-{
-    MainWindow window;
-    ElementHandler handler(&window, nullptr);
-    const int id = createElement(handler, "And");
-
-    const QJsonObject response = handler.handleCommand("set_element_properties", {{"element_id", id}, {"wireless_mode", 1}}, 1);
-    QVERIFY2(response.contains("result"), qPrintable(QJsonDocument(response).toJson()));
-    QVERIFY(!response["result"].toObject()["new_properties"].toObject().contains("wireless_mode"));
 }
 
 void TestElementHandler::testHandleSetElementPropertiesPushesUndoableCommand()

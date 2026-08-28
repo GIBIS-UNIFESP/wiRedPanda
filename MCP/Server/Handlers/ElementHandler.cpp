@@ -336,6 +336,51 @@ QJsonObject ElementHandler::handleSetElementProperties(const QJsonObject &params
                                    requestId, JsonRpcError::ValidationError);
     }
 
+    // A property write that cannot take effect must not report success. Every property branch
+    // below is gated on a per-element capability (hasColors(), hasPropagationDelay(), a Node
+    // cast, ...); skipping an unsupported write in silence would still carry success=true, with
+    // the property simply absent from old_properties/new_properties, and a caller could not
+    // tell "applied" from "ignored" except by diffing the response against its own request.
+    //
+    // propagation_delay on an IC container is the sharpest case: ICs are flattened into the
+    // netlist and their internal primitives carry the delays, so the property is meaningless on
+    // the container.
+    //
+    // Checked here, before any mutation, so a rejected call leaves the element untouched
+    // rather than partially applied.
+    {
+        const QVector<QPair<QString, bool>> capabilities = {
+            {QStringLiteral("color"), element->hasColors()},
+            {QStringLiteral("frequency"), element->hasFrequency()},
+            {QStringLiteral("propagation_delay"), element->hasPropagationDelay()},
+            {QStringLiteral("delay"), element->hasDelay()},
+            {QStringLiteral("trigger"), element->hasTrigger()},
+            {QStringLiteral("audio"), element->hasAudio()},
+            {QStringLiteral("volume"), element->hasVolume()},
+            {QStringLiteral("appearance"), element->canChangeAppearance()},
+            // appearance_index is read only inside the "appearance" branch below
+            // (setAppearanceAt() needs the path), so on its own it can never take effect --
+            // which is exactly the silent success this check exists to prevent.
+            {QStringLiteral("appearance_index"),
+             element->canChangeAppearance() && params.contains(QStringLiteral("appearance"))},
+            {QStringLiteral("locked"), qobject_cast<GraphicElementInput *>(element) != nullptr},
+            {QStringLiteral("wireless_mode"), qobject_cast<Node *>(element) != nullptr},
+        };
+
+        QStringList unsupported;
+        for (const auto &[key, isSupported] : capabilities) {
+            if (params.contains(key) && !isSupported) {
+                unsupported << key;
+            }
+        }
+        if (!unsupported.isEmpty()) {
+            return createErrorResponse(
+                QStringLiteral("Element type '%1' does not support: %2")
+                    .arg(ElementFactory::typeToText(element->elementType()), unsupported.join(QStringLiteral(", "))),
+                requestId, JsonRpcError::ValidationError);
+        }
+    }
+
     // Snapshot current state before any mutation so UpdateCommand can restore it on undo.
     QByteArray oldData;
     {

@@ -42,6 +42,21 @@ private slots:
     void testHandleSetElementPropertiesRejectsMissingElementId();
     void testHandleSetElementPropertiesRejectsUnknownElement();
     void testHandleSetElementPropertiesRejectsPortSizeParams();
+    /// A property write that cannot take effect must not report success. Skipping one silently
+    /// leaves success=true with the property simply absent from new_properties --
+    /// indistinguishable from a real write unless the caller diffs the response against its own
+    /// request.
+    void testHandleSetElementPropertiesRejectsUnsupportedProperty();
+    /// The sharpest case: ICs are flattened and their internal primitives carry the delays, so
+    /// propagation_delay is meaningless on the container.
+    void testHandleSetElementPropertiesRejectsPropagationDelayOnIC();
+    /// A rejected call must leave the element completely untouched -- the capability check
+    /// runs before any mutation, so a supported property in the same request is NOT applied.
+    void testHandleSetElementPropertiesRejectionAppliesNothing();
+    /// appearance_index needs the capability pre-check too: it is read only inside the
+    /// "appearance" branch, so passing it alone can never take effect -- exactly the silent
+    /// success the check exists to prevent.
+    void testHandleSetElementPropertiesRejectsAppearanceIndexWithoutAppearance();
     /// get_output_value's `value` is a bool, so unknown and error are indistinguishable from
     /// logic low -- while create_waveform reports the same state as a raw -1, leaving one server
     /// describing the same signal two different ways. An explicit `status` field resolves it.
@@ -62,7 +77,6 @@ private slots:
     void testHandleSetElementPropertiesRxModeSeversInputConnection();
     void testHandleSetElementPropertiesAcceptsWirelessModeNoneForRealNode();
     void testHandleSetElementPropertiesRejectsInvalidWirelessMode();
-    void testHandleSetElementPropertiesIgnoresWirelessModeForNonNode();
     void testHandleSetElementPropertiesPushesUndoableCommand();
 
     void testHandleSetInputValueRejectsMissingParams();

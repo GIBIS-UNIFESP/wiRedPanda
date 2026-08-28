@@ -27,7 +27,7 @@ class WirelessNodeTests(MCPTestBase):
             self.test_set_wireless_mode_none,
             self.test_set_wireless_mode_tx,
             self.test_set_wireless_mode_rx,
-            self.test_wireless_mode_on_non_node_ignored,
+            self.test_wireless_mode_on_non_node_rejected,
             self.test_wireless_mode_invalid_value,
             self.test_wireless_signal_propagation,
         ]
@@ -108,27 +108,23 @@ class WirelessNodeTests(MCPTestBase):
         return True
 
     @beartype
-    async def test_wireless_mode_on_non_node_ignored(self) -> bool:
-        """wireless_mode on a non-Node element (e.g. And gate) is silently ignored"""
-        print("\n=== Wireless Mode Ignored on Non-Node Test ===")
+    async def test_wireless_mode_on_non_node_rejected(self) -> bool:
+        """wireless_mode on a non-Node element (e.g. And gate) is rejected, not silently ignored
+
+        A property write that cannot take effect must not report success, or callers cannot tell
+        "applied" from "ignored" without diffing the response against their own request.
+        """
+        print("\n=== Wireless Mode Rejected on Non-Node Test ===")
 
         and_id = await self.create_element_checked("And", 400, 100, "Create And gate")
         if and_id is None:
             return False
 
-        # The server silently skips wireless_mode for elements where hasWirelessMode() == false
         resp = await self.send_command("set_element_properties", {"element_id": and_id, "wireless_mode": 1})
-        result = await self.assert_success_and_get_result(resp, "Set wireless_mode on And (should be ignored)")
-        if result is None:
+        if not await self.assert_failure(resp, "wireless_mode on And should be rejected"):
             return False
 
-        # wireless_mode should NOT appear in the response properties
-        new_props = result.get("new_properties", {})
-        if "wireless_mode" in new_props:
-            print(f"  FAIL: wireless_mode appeared in And gate response: {new_props}")
-            return False
-
-        print("  PASS: wireless_mode silently ignored on non-Node element")
+        print("  PASS: wireless_mode rejected on non-Node element")
         return True
 
     @beartype

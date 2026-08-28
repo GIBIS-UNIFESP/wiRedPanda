@@ -356,7 +356,12 @@ class SetElementPropertiesCommand(MCPCommand):
         rotation: float | None = Field(default=None)
         delay: Annotated[float, Field(ge=0)] | None = None
         propagation_delay: Annotated[int, Field(ge=0, le=1_000_000)] | None = Field(
-            default=None, description="Inertial gate delay (ns) used by the temporal simulation engine"
+            default=None,
+            description=(
+                "Inertial gate delay (ns) used by the temporal simulation engine. Rejected on "
+                "element types that have no delay of their own -- notably an IC container, "
+                "whose flattened internal primitives carry the delays instead."
+            ),
         )
         trigger: str | None = Field(default=None, description="Keyboard shortcut for input elements")
         audio: str | None = Field(default=None)

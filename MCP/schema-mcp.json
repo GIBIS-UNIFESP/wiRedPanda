@@ -1631,7 +1631,7 @@
         },
         "set_element_properties": {
           "type": "object",
-          "description": "Set various properties of an element",
+          "description": "Set various properties of an element. Each property applies only to element types that support it; requesting one the element does not support (e.g. propagation_delay on an IC container, whose flattened internal primitives carry the delays instead, or wireless_mode on a non-Node) is rejected with a validation error rather than silently skipped. The call is all-or-nothing: nothing is applied when any requested property is unsupported.",
           "properties": {
             "jsonrpc": {
               "type": "string",
