@@ -51,6 +51,10 @@ WARNINGS               = YES
 WARN_IF_UNDOCUMENTED   = NO
 WARN_IF_DOC_ERROR      = YES
 WARN_NO_PARAMDOC       = NO
+# FAIL_ON_WARNINGS rather than YES: YES aborts at the first warning, so a
+# contributor fixes one and immediately hits the next. This reports them all,
+# then exits non-zero.
+WARN_AS_ERROR          = FAIL_ON_WARNINGS
 WARN_FORMAT            = "$file:$line: $text"
 WARN_LOGFILE           =
 
