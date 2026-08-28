@@ -57,6 +57,13 @@ private:
     bool validateArduinoSyntax(const QString &content);
 
 private slots:
+    /// Compiles the GENERATED SKETCH and drives it, comparing against the engine on the same
+    /// circuit. A ripple counter is the shape that exposes a tick-model divergence: the sketch
+    /// can advance one stage per tick where the engine advances the whole chain. Only running
+    /// the sketch catches that -- emitted text that implements the wrong tick model still reads
+    /// as correct.
+    void testGeneratedSketchMatchesEngineOnRippleCounter();
+
     void initTestCase();
     void cleanupTestCase();
 
