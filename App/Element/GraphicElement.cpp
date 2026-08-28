@@ -737,6 +737,23 @@ void GraphicElement::resetSimState()
     m_sim.reset(m_ports.outputs());
 }
 
+void GraphicElement::saveSimState(QVector<Status> &out) const
+{
+    for (int i = 0; i < static_cast<int>(m_sim.outputSize()); ++i) {
+        out.append(m_sim.outputValue(i));
+    }
+}
+
+void GraphicElement::restoreSimState(const QVector<Status> &in, int &cursor)
+{
+    for (int i = 0; i < static_cast<int>(m_sim.outputSize()); ++i) {
+        if (cursor >= in.size()) {
+            return; // LCOV_EXCL_LINE -- save/restore are always paired over the same element set
+        }
+        m_sim.setOutputValue(i, in.at(cursor++));
+    }
+}
+
 void GraphicElement::connectPredecessor(const int inputIndex, GraphicElement *source, const int outputPort)
 {
     m_sim.connectPredecessor(inputIndex, source, outputPort);

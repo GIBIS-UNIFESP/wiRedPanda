@@ -215,6 +215,48 @@ void TestBewavedDolphinGui::testRunSimulationFillsOutputs()
     QCOMPARE(outputAt0, 0);
 }
 
+void TestBewavedDolphinGui::testRunLeavesLiveSequentialStateUnchanged()
+{
+    // The sweep is a read-only question about the circuit. It resets every element to power-on
+    // defaults on entry so its own results are reproducible, so it must put ALL of that state
+    // back on exit -- restoring only the INPUT port levels would leave everything else,
+    // flip-flop state above all, wherever the last swept column happened to leave it.
+    WorkSpace ws;
+    auto *scene = ws.scene();
+    auto *data = new InputSwitch();
+    auto *clk = new InputSwitch();
+    auto *dff = new DFlipFlop();
+    auto *led = new Led();
+    scene->addItem(data);
+    scene->addItem(clk);
+    scene->addItem(dff);
+    scene->addItem(led);
+    CircuitBuilder builder(scene);
+    builder.connect(data, 0, dff, 0); // Data
+    builder.connect(clk, 0, dff, 1);  // Clock
+    builder.connect(dff, 0, led, 0);  // Q
+
+    auto *sim = scene->simulation();
+    QVERIFY(sim->initialize());
+
+    // Clock a 1 into the flip-flop, live.
+    data->setOn(true);
+    clk->setOn(false);
+    sim->update();
+    clk->setOn(true); // rising edge
+    sim->update();
+    sim->update();
+    QCOMPARE(dff->outputValue(0), Status::Active); // precondition: Q is live-high
+
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(&ws));
+    dolphin->setLength(8, false);
+    dolphin->run();
+
+    QVERIFY2(dff->outputValue(0) == Status::Active,
+             "a sweep must not leave its own last column in the live circuit: the flip-flop was "
+             "driven high before the sweep and must still be high after it");
+}
+
 void TestBewavedDolphinGui::testSetLengthChangesColumns()
 {
     auto ws = createAndCircuit();

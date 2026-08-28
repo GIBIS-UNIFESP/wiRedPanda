@@ -30,6 +30,12 @@ private slots:
     void testSetLengthChangesColumns();
     void testCombinationalMode();
 
+    /// A sweep must be state-neutral for the LIVE circuit. sweep() resets every element on entry,
+    /// so restoring only the input port levels on exit would leave the canvas holding whatever the
+    /// last column produced -- a read-only-looking create_waveform mutating the user's circuit.
+    /// Sequential state is where that shows: a flip-flop driven high live comes back low.
+    void testRunLeavesLiveSequentialStateUnchanged();
+
     // --- File I/O ---
 
     void testExportToPng();

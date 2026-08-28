@@ -398,6 +398,21 @@ public:
      */
     virtual void resettleCombinational() { updateLogic(); }
 
+    /**
+     * \brief Appends this element's full simulation state to \a out.
+     * \details The exact counterpart of resetSimState(): whatever a subclass clears there, it
+     * must save here and put back in restoreSimState(). The base handles the output values;
+     * sequential elements add their edge-detection history, and IC recurses into its internals.
+     * Used to make a BeWavedDolphin sweep state-neutral for the live circuit -- the sweep resets
+     * everything so its own results are reproducible, and must hand the user's circuit back
+     * exactly as it found it.
+     */
+    virtual void saveSimState(QVector<Status> &out) const;
+
+    /// Restores what saveSimState() wrote, reading from \a in at \a cursor and advancing it.
+    /// The read order must mirror the write order exactly.
+    virtual void restoreSimState(const QVector<Status> &in, int &cursor);
+
     /// Returns the four-state signal value on simulation output port \a index.
     inline Status outputValue(const int index = 0) const { return m_sim.outputValue(index); }
 

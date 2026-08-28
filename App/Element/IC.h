@@ -117,6 +117,11 @@ public:
     /// Builds the internal simulation graph (connection graph + sort) for direct simulation.
     void initializeSimulation();
 
+    /// \reimp Saves/restores every internal primitive's state too (recursively through nested
+    /// ICs), so a BeWavedDolphin sweep hands the live circuit back exactly as it found it.
+    void saveSimState(QVector<Status> &out) const override;
+    void restoreSimState(const QVector<Status> &in, int &cursor) override;
+
     /// \reimp
     QRectF boundingRect() const override;
     /// \reimp

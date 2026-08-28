@@ -356,6 +356,28 @@ void IC::resettleCombinational()
     ICSimulation::resettle(*this);
 }
 
+void IC::saveSimState(QVector<Status> &out) const
+{
+    // Same reason resetSimState() recurses: the IC is only structure, but its internal
+    // primitives are simulated directly by the flat netlist and hold the sequential state.
+    GraphicElement::saveSimState(out);
+    for (auto *internal : std::as_const(m_internalElements)) {
+        if (internal) {
+            internal->saveSimState(out);
+        }
+    }
+}
+
+void IC::restoreSimState(const QVector<Status> &in, int &cursor)
+{
+    GraphicElement::restoreSimState(in, cursor);
+    for (auto *internal : std::as_const(m_internalElements)) {
+        if (internal) {
+            internal->restoreSimState(in, cursor);
+        }
+    }
+}
+
 void IC::refresh()
 {
 }
