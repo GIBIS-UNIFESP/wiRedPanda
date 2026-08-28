@@ -1,5 +1,13 @@
 @import 'tailwindcss';
 
+/* The Doxygen trees below carry no Tailwind classes and never load this bundle -- the
+   generated API-docs pages link only doxygen*.css/tabs.css/navtree.css -- so scanning
+   them only emits dead CSS. docs/, master-src/ and public/api/ are covered by
+   .gitignore, which Tailwind's source detection honours; doxygen-awesome-css is a
+   tracked submodule, so it needs an explicit exclusion. */
+@source not '../../doxygen-awesome-css';
+@source not '../../public/api';
+
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
