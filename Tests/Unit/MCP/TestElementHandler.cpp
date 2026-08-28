@@ -379,6 +379,38 @@ void TestElementHandler::testHandleSetElementPropertiesRejectsPortSizeParams()
     QCOMPARE(response["error"].toObject()["code"].toInt(), JsonRpcError::ValidationError);
 }
 
+void TestElementHandler::testGetOutputValueReportsFourStateStatus()
+{
+    MainWindow window;
+    ElementHandler handler(&window, nullptr);
+    const int id = createElement(handler, "And");
+    auto *element = elementById(window, id);
+    QVERIFY(element);
+
+    const auto statusFor = [&handler, id](int) {
+        const QJsonObject response =
+            handler.handleCommand("get_output_value", {{"element_id", id}, {"port", 0}}, 1);
+        return response["result"].toObject();
+    };
+
+    element->outputPort(0)->setStatus(Status::Active);
+    QCOMPARE(statusFor(0)["status"].toString(), QStringLiteral("high"));
+    QCOMPARE(statusFor(0)["value"].toBool(), true);
+
+    element->outputPort(0)->setStatus(Status::Inactive);
+    QCOMPARE(statusFor(0)["status"].toString(), QStringLiteral("low"));
+
+    // The cases `value` alone cannot express: both report false, indistinguishable from a
+    // genuine logic low.
+    element->outputPort(0)->setStatus(Status::Unknown);
+    QCOMPARE(statusFor(0)["status"].toString(), QStringLiteral("unknown"));
+    QCOMPARE(statusFor(0)["value"].toBool(), false);
+
+    element->outputPort(0)->setStatus(Status::Error);
+    QCOMPARE(statusFor(0)["status"].toString(), QStringLiteral("error"));
+    QCOMPARE(statusFor(0)["value"].toBool(), false);
+}
+
 void TestElementHandler::testHandleSetElementPropertiesChangesLabel()
 {
     MainWindow window;

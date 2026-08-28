@@ -2359,11 +2359,18 @@
                   "type": "object",
                   "properties": {
                     "value": {
-                      "type": "boolean"
+                      "type": "boolean",
+                      "description": "Lossy convenience: true only for logic high, so unknown and error are indistinguishable from low. Prefer `status`."
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": ["low", "high", "unknown", "error"],
+                      "description": "Four-state port status. The engine produces `unknown` routinely: an oscillating region is canonicalised to it and propagated to every reader."
                     }
                   },
                   "required": [
-                    "value"
+                    "value",
+                    "status"
                   ],
                   "additionalProperties": false
                 }

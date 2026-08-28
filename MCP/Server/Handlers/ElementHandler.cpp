@@ -296,6 +296,24 @@ QJsonObject ElementHandler::handleMoveElement(const QJsonObject &params, const Q
     return createSuccessResponse(result, requestId);
 }
 
+namespace {
+
+/// Four-state name for a port status. `value` stays a bool for compatibility, but it cannot
+/// distinguish Unknown or Error from logic 0 -- and the engine produces Unknown routinely, since
+/// an oscillating region is canonicalised to it and propagated to every reader. Matches the
+/// vocabulary the canvas already uses for wires (grey unknown, red error).
+QString statusName(const Status status)
+{
+    switch (status) {
+    case Status::Active:   return QStringLiteral("high");
+    case Status::Inactive: return QStringLiteral("low");
+    case Status::Error:    return QStringLiteral("error");
+    default:               return QStringLiteral("unknown");
+    }
+}
+
+} // namespace
+
 QJsonObject ElementHandler::handleSetElementProperties(const QJsonObject &params, const QJsonValue &requestId)
 {
     if (!validateParameters(params, {"element_id"})) {
@@ -573,12 +591,14 @@ QJsonObject ElementHandler::handleGetOutputValue(const QJsonObject &params, cons
             }
             InputPort *inPort = element->inputPort(portIndex);
             result["value"] = inPort ? (inPort->status() == Status::Active) : false;
+            result["status"] = statusName(inPort ? inPort->status() : Status::Unknown);
         } else {
             if (!validatePortRange(element, portIndex, true, "port", errorMsg)) {
                 return createErrorResponse(errorMsg, requestId, JsonRpcError::ValidationError);
             }
             OutputPort *outPort = element->outputPort(portIndex);
             result["value"] = outPort ? (outPort->status() == Status::Active) : false;
+            result["status"] = statusName(outPort ? outPort->status() : Status::Unknown);
         }
     }
 

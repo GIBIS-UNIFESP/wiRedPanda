@@ -152,7 +152,13 @@ class SetInputValueCommand(MCPCommand):
 
 
 class GetOutputValueCommand(MCPCommand):
-    """Model for get_output_value command"""
+    """Model for get_output_value command.
+
+    The response carries both ``value`` (bool, true only for logic high) and ``status``
+    (``low``/``high``/``unknown``/``error``). ``value`` is a lossy convenience -- it cannot tell
+    unknown or error apart from logic low -- and the engine produces unknown routinely, since an
+    oscillating region is canonicalised to it and propagated to every reader. Prefer ``status``.
+    """
 
     class Parameters(BaseModel):
         element_id: Annotated[int, Field(gt=0)]

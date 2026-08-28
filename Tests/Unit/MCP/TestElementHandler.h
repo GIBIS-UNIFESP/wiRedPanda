@@ -42,6 +42,10 @@ private slots:
     void testHandleSetElementPropertiesRejectsMissingElementId();
     void testHandleSetElementPropertiesRejectsUnknownElement();
     void testHandleSetElementPropertiesRejectsPortSizeParams();
+    /// get_output_value's `value` is a bool, so unknown and error are indistinguishable from
+    /// logic low -- while create_waveform reports the same state as a raw -1, leaving one server
+    /// describing the same signal two different ways. An explicit `status` field resolves it.
+    void testGetOutputValueReportsFourStateStatus();
     void testHandleSetElementPropertiesChangesLabel();
     void testHandleSetElementPropertiesChangesColorWhenSupported();
     void testHandleSetElementPropertiesChangesFrequencyWhenSupported();
