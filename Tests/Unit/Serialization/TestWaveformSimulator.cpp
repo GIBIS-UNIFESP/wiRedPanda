@@ -7,6 +7,7 @@
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Wiring/Port.h"
+#include "Tests/Common/TestUtils.h"
 
 void TestWaveformSimulator::testCaptureAndRestoreSinglePortInputs()
 {
@@ -50,4 +51,29 @@ void TestWaveformSimulator::testCaptureAndRestoreMultiPortInput()
     for (int port = 0; port < rotary.outputSize(); ++port) {
         QCOMPARE(rotary.outputPort(port)->status(), saved.at(port));
     }
+}
+
+void TestWaveformSimulator::testRestorePreservesNonDefiniteStatus()
+{
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+    auto *sw = new InputSwitch();
+    builder.add(sw);
+
+    // A port that has never been driven reads Unknown -- the state captureInputs() would see for
+    // an input added but not yet simulated.
+    sw->outputPort(0)->setStatus(Status::Unknown);
+
+    const QVector<GraphicElementInput *> inputs{sw};
+    const auto saved = WaveformSimulator::captureInputs(inputs, 1);
+    QCOMPARE(saved.size(), 1);
+    QCOMPARE(saved.at(0), Status::Unknown);
+
+    // Whatever the sweep left behind:
+    sw->setOn(true);
+    QCOMPARE(sw->outputPort(0)->status(), Status::Active);
+
+    WaveformSimulator::restoreInputs(inputs, saved);
+    QVERIFY2(sw->outputPort(0)->status() == Status::Unknown,
+             "an undefined input port must be restored undefined, not driven HIGH");
 }

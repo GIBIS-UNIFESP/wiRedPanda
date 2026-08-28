@@ -19,10 +19,12 @@ enum class PlotType {
 
 /// Identifies which waveform segment a Line-mode cell draws.
 enum class WaveSegment {
-    Low,     ///< Logic-low plateau (signal stays at 0).
-    High,    ///< Logic-high plateau (signal stays at 1).
-    Rising,  ///< Low → high transition (high plateau + leading edge).
-    Falling  ///< High → low transition (low plateau + leading edge).
+    Low,      ///< Logic-low plateau (signal stays at 0).
+    High,     ///< Logic-high plateau (signal stays at 1).
+    Rising,   ///< Low → high transition (high plateau + leading edge).
+    Falling,  ///< High → low transition (low plateau + leading edge).
+    Unknown,  ///< Undefined (Status::Unknown): drawn mid-level in the canvas's "unknown" grey.
+    Error     ///< Conflicting drivers (Status::Error): drawn mid-level in the canvas's red.
 };
 
 /**

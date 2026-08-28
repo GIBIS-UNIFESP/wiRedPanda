@@ -14,6 +14,7 @@
 #include "App/BeWavedDolphin/SignalDelegate.h"
 #include "App/BeWavedDolphin/SignalModel.h"
 #include "App/Core/Common.h"
+#include "App/Core/Enums.h"
 
 namespace {
 constexpr int kExportCellWidth  = 50;  ///< Per-column pixel width for PNG/PDF export.
@@ -76,12 +77,23 @@ void exportToPdf(const SignalModel *model, const PlotType plotType, const QStrin
     painter.end();
 }
 
+/// One character per cell. The format writes cells with no separator, so every value must be
+/// exactly one character wide -- a raw Status::Unknown (-1) would print as two and silently shift
+/// the column count, making the row unparseable. 'x' and 'E' follow the usual HDL convention for
+/// undefined and conflicting.
+static QChar cellChar(const int value)
+{
+    if (value == static_cast<int>(Status::Unknown)) { return QLatin1Char('x'); }
+    if (value == static_cast<int>(Status::Error))   { return QLatin1Char('E'); }
+    return (value == 0) ? QLatin1Char('0') : QLatin1Char('1');
+}
+
 void writeTruthTableText(QTextStream &out, const SignalModel *model, const int inputRowCount)
 {
     // Write input rows first, then output rows, each followed by its signal label.
     for (int row = 0; row < inputRowCount; ++row) {
         for (int col = 0; col < model->columnCount(); ++col) {
-            out << model->value(row, col);
+            out << cellChar(model->value(row, col));
         }
 
         const auto *header = model->verticalHeaderItem(row);
@@ -92,7 +104,7 @@ void writeTruthTableText(QTextStream &out, const SignalModel *model, const int i
 
     for (int row = inputRowCount; row < model->rowCount(); ++row) {
         for (int col = 0; col < model->columnCount(); ++col) {
-            out << model->value(row, col);
+            out << cellChar(model->value(row, col));
         }
 
         const auto *header = model->verticalHeaderItem(row);
