@@ -25,6 +25,7 @@ QString TestArduino::s_cliCachePath;
 #include "App/Core/Enums.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
+#include "App/Element/GraphicElementInput.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
@@ -2913,4 +2914,155 @@ void TestArduino::testSimavrFunctionalSimulation()
     c1.reset();
     c2.reset();
     qDeleteAll(elements);
+}
+
+namespace {
+
+/// Arduino API shims sufficient to compile a generated sketch on the host. The sketch is plain
+/// C++ over `bool` globals; only the pin calls and the elapsedMillis type come from the board.
+constexpr auto kArduinoStubs = R"CPP(
+#include <cstdio>
+#define HIGH true
+#define LOW  false
+#define INPUT 0
+#define OUTPUT 1
+using pin_t = int;
+static const pin_t A0 = 14, A1 = 15, A2 = 16, A3 = 17, A4 = 18, A5 = 19;
+static bool g_clockPin = false;
+inline void pinMode(pin_t, int) {}
+inline bool digitalRead(pin_t) { return g_clockPin; }
+inline void digitalWrite(pin_t, bool) {}
+)CPP";
+
+constexpr auto kElapsedMillisStub = R"CPP(
+#pragma once
+struct elapsedMillis {
+    unsigned long v = 0;
+    operator unsigned long() const { return v; }
+    elapsedMillis &operator=(unsigned long x) { v = x; return *this; }
+};
+)CPP";
+
+} // namespace
+
+void TestArduino::testGeneratedSketchMatchesEngineOnRippleCounter()
+{
+#ifndef Q_OS_LINUX
+    QSKIP("the sketch differential needs a host C++ compiler (Linux only)");
+#endif
+    if (QStandardPaths::findExecutable("g++").isEmpty()) {
+        QSKIP("g++ not available");
+    }
+
+    // A ripple counter: the external clock drives FF1, and FF1.Q clocks FF2. This is the shape
+    // where a single sample/commit per tick diverges from the engine, which advances the whole
+    // chain within one update().
+    std::unique_ptr<WorkSpace> workspace = TestUtils::createWorkspace();
+    auto *scene = workspace->scene();
+    auto *clk = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *ff1 = ElementFactory::buildElement(ElementType::DFlipFlop);
+    auto *ff2 = ElementFactory::buildElement(ElementType::DFlipFlop);
+    auto *led1 = ElementFactory::buildElement(ElementType::Led);
+    auto *led2 = ElementFactory::buildElement(ElementType::Led);
+    for (auto *e : QVector<GraphicElement *>{clk, ff1, ff2, led1, led2}) { scene->addItem(e); }
+    clk->setPos(0, 0); ff1->setPos(120, 0); ff2->setPos(260, 0);
+    led1->setPos(400, 0); led2->setPos(400, 80);
+    clk->setLabel("CLK");
+
+    const auto wire = [scene](GraphicElement *a, int ap, GraphicElement *b, int bp) {
+        auto *c = new Connection();
+        scene->addItem(c);
+        c->setStartPort(a->outputPort(ap));
+        c->setEndPort(b->inputPort(bp));
+    };
+    wire(clk, 0, ff1, 1);    // external clock -> FF1.CLK
+    wire(ff1, 1, ff1, 0);    // FF1.~Q -> FF1.D (toggle)
+    wire(ff1, 0, ff2, 1);    // FF1.Q  -> FF2.CLK (the ripple)
+    wire(ff2, 1, ff2, 0);    // FF2.~Q -> FF2.D (toggle)
+    wire(ff1, 0, led1, 0);
+    wire(ff2, 0, led2, 0);
+
+    // --- Engine reference ---
+    auto *sim = scene->simulation();
+    QVERIFY(sim->initialize());
+    auto *clkIn = qobject_cast<GraphicElementInput *>(clk);
+    clkIn->setOn(false, 0);
+    sim->update();
+    QStringList engineTrace;
+    for (int edge = 0; edge < 4; ++edge) {
+        clkIn->setOn(true, 0);
+        sim->update();
+        engineTrace << QString("%1%2").arg(static_cast<int>(ff1->outputValue(0)))
+                                      .arg(static_cast<int>(ff2->outputValue(0)));
+        clkIn->setOn(false, 0);
+        sim->update();
+        engineTrace << QString("%1%2").arg(static_cast<int>(ff1->outputValue(0)))
+                                      .arg(static_cast<int>(ff2->outputValue(0)));
+    }
+
+    // --- Export, compile, drive ---
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString inoPath = dir.filePath("sketch.ino");
+    QVector<GraphicElement *> elements = scene->elements();
+    ArduinoCodeGen generator(inoPath, elements);
+    generator.generate();
+    QVERIFY(QFile::exists(inoPath));
+
+    const auto writeFile = [](const QString &path, const QString &text) {
+        QFile f(path);
+        if (!f.open(QIODevice::WriteOnly | QIODevice::Text)) { return false; }
+        QTextStream(&f) << text;
+        return true;
+    };
+    QVERIFY(writeFile(dir.filePath("elapsedMillis.h"), QString::fromUtf8(kElapsedMillisStub)));
+
+    QString harness = QString::fromUtf8(kArduinoStubs);
+    harness += "#include \"sketch.ino\"\n";
+    harness += R"CPP(
+int main()
+{
+    setup();
+    g_clockPin = false;
+    loop();
+    for (int edge = 0; edge < 4; ++edge) {
+        g_clockPin = true;  loop(); printf("%d%d ", FF1 ? 1 : 0, FF2 ? 1 : 0);
+        g_clockPin = false; loop(); printf("%d%d ", FF1 ? 1 : 0, FF2 ? 1 : 0);
+    }
+    return 0;
+}
+)CPP";
+    // Generated variable names are derived from element ids. Rather than widen the codegen's
+    // public surface for a test, read them back out of the emitted output writes -- led1 is
+    // wired to FF1.Q and led2 to FF2.Q, and loop() writes them in that order.
+    QFile inoFile(inoPath);
+    QVERIFY(inoFile.open(QIODevice::ReadOnly | QIODevice::Text));
+    const QString ino = QString::fromUtf8(inoFile.readAll());
+    inoFile.close();
+    const QRegularExpression writeRe(QStringLiteral(R"(digitalWrite\(\s*\w+\s*,\s*(\w+)\s*\))"));
+    QStringList outputVars;
+    auto it = writeRe.globalMatch(ino);
+    while (it.hasNext()) { outputVars << it.next().captured(1); }
+    QVERIFY2(outputVars.size() == 2,
+             qPrintable(QString("expected two output writes in the sketch, found %1").arg(outputVars.size())));
+    const QString q1 = outputVars.at(0);
+    const QString q2 = outputVars.at(1);
+    harness.replace("FF1", q1).replace("FF2", q2);
+    QVERIFY(writeFile(dir.filePath("harness.cpp"), harness));
+
+    QProcess compile;
+    compile.setWorkingDirectory(dir.path());
+    compile.start("g++", {"-std=c++17", "-I.", "-o", "harness", "harness.cpp"});
+    QVERIFY2(compile.waitForFinished(60000), "g++ timed out");
+    QVERIFY2(compile.exitCode() == 0,
+             qPrintable("generated sketch did not compile:\n"
+                        + QString::fromUtf8(compile.readAllStandardError())));
+
+    QProcess run;
+    run.setWorkingDirectory(dir.path());
+    run.start(dir.filePath("harness"), {});
+    QVERIFY2(run.waitForFinished(30000), "harness timed out");
+    const QString sketchTrace = QString::fromUtf8(run.readAllStandardOutput()).trimmed();
+
+    QCOMPARE(sketchTrace, engineTrace.join(' '));
 }
