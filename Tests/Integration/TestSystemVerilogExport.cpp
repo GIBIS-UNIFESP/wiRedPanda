@@ -1307,3 +1307,135 @@ void TestSystemVerilogExport::testTopLevelFeedbackLatchHoldsStateInExport()
              qPrintable(QString("the exported top-level latch does not hold state:\n%1\n--- sv ---\n%2")
                             .arg(out, sv)));
 }
+
+void TestSystemVerilogExport::testGatedClockExportMatchesTheEngine()
+{
+#ifndef Q_OS_LINUX
+    QSKIP("SystemVerilog export tests require iverilog (Linux only)");
+#endif
+    if (QStandardPaths::findExecutable("iverilog").isEmpty()
+        || QStandardPaths::findExecutable("vvp").isEmpty()) {
+        QSKIP("iverilog/vvp not available");
+    }
+
+    // Top-level D flip-flop whose clock is AND(a, b) -- a gated clock, inlined because
+    // top-level gates are not declared.
+    std::unique_ptr<WorkSpace> workspace = TestUtils::createWorkspace();
+    auto *scene = workspace->scene();
+    CircuitBuilder builder(scene);
+
+    auto *swA = new InputSwitch();
+    auto *swB = new InputSwitch();
+    auto *swD = new InputSwitch();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
+    auto *ff = ElementFactory::buildElement(ElementType::DFlipFlop);
+    auto *led = new Led();
+    builder.add(swA, swB, swD, andGate, ff, led);
+    swA->setLabel("CKA");
+    swB->setLabel("CKB");
+    swD->setLabel("DIN");
+
+    builder.connect(swA, 0, andGate, 0);
+    builder.connect(swB, 0, andGate, 1);
+    builder.connect(swD, 0, ff, 0);        // Data
+    builder.connect(andGate, 0, ff, 1);    // gated clock
+    builder.connect(ff, 0, led, 0);
+
+    Simulation *sim = builder.initSimulation();
+    QVERIFY(sim != nullptr);
+
+    // Engine oracle: a/b/d per step, Q sampled after settling.
+    struct Step { bool a, b, d; };
+    const QVector<Step> steps{
+        {false, false, true},  {true, false, true},  {true, true, true},   // gate opens -> capture 1
+        {true, false, true},   {false, false, false}, {true, true, false}, // gate opens -> capture 0
+        {false, false, false}, {true, true, true},                          // opens again -> capture 1
+    };
+    QVector<int> expected;
+    for (const auto &s : steps) {
+        swA->setOn(s.a);
+        swB->setOn(s.b);
+        swD->setOn(s.d);
+        sim->update();
+        sim->update();
+        expected.append(ff->outputValue(0) == Status::Active ? 1 : 0);
+    }
+
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString svPath = dir.filePath("gated_clock.sv");
+    QVector<GraphicElement *> elements = scene->elements();
+    SystemVerilogCodeGen generator(svPath, elements);
+    generator.generate();
+
+    QFile svFile(svPath);
+    QVERIFY(svFile.open(QIODevice::ReadOnly | QIODevice::Text));
+    const QString sv = QString::fromUtf8(svFile.readAll());
+    svFile.close();
+
+    const QRegularExpression inRe(QStringLiteral(R"(input\s+(\w+))"));
+    const QRegularExpression outRe(QStringLiteral(R"(output\s+(\w+))"));
+    QStringList ins;
+    auto it = inRe.globalMatch(sv);
+    while (it.hasNext()) { ins << it.next().captured(1); }
+    const auto outMatch = outRe.match(sv);
+    QVERIFY2(ins.size() == 3 && outMatch.hasMatch(), qPrintable("unexpected interface:\n" + sv));
+    const QString q = outMatch.captured(1);
+
+    // Assert the PREMISE, or this test silently stops exercising the thing it is named for:
+    // ensureSimpleSignal() is applied to preset/clear but not to clk, and top-level gates are
+    // inlined, so the gate expression should land in the event control verbatim.
+    const QRegularExpression posedgeRe(QStringLiteral(R"(always @\(posedge ([^\)]*\)?[^\)]*)\))"));
+    const auto posedge = posedgeRe.match(sv);
+    QVERIFY2(posedge.hasMatch(), qPrintable("no posedge event control found:\n" + sv));
+    QVERIFY2(posedge.captured(1).contains('&'),
+             qPrintable(QString("premise gone: the gated clock is no longer inlined into the event "
+                                "control, so this test would no longer exercise it -> %1")
+                            .arg(posedge.captured(0))));
+
+    QString tb;
+    QTextStream ts(&tb);
+    ts << "`timescale 1ns/1ps\nmodule tb;\n";
+    for (const QString &n : ins) { ts << "    reg " << n << ";\n"; }
+    ts << "    wire " << q << ";\n    integer errors = 0;\n";
+    ts << "    gated_clock dut(";
+    QStringList conns;
+    for (const QString &n : ins) { conns << QString(".%1(%1)").arg(n); }
+    conns << QString(".%1(%1)").arg(q);
+    ts << conns.join(", ") << ");\n";
+    ts << "    initial begin\n";
+    // ins are declared in element order: CKA, CKB, DIN
+    for (int i = 0; i < steps.size(); ++i) {
+        ts << "        " << ins.at(0) << " = " << (steps.at(i).a ? 1 : 0) << "; "
+           << ins.at(1) << " = " << (steps.at(i).b ? 1 : 0) << "; "
+           << ins.at(2) << " = " << (steps.at(i).d ? 1 : 0) << "; #10;\n";
+        ts << "        if (" << q << " !== 1'b" << expected.at(i) << ") begin errors = errors + 1;"
+           << " $display(\"FAIL step " << i << ": got %b want " << expected.at(i) << "\", " << q << "); end\n";
+    }
+    ts << "        if (errors == 0) $display(\"PASS\"); else $display(\"FAILED %0d\", errors);\n";
+    ts << "        $finish;\n    end\nendmodule\n";
+    ts.flush();
+
+    const QString tbPath = dir.filePath("tb.sv");
+    QFile tbFile(tbPath);
+    QVERIFY(tbFile.open(QIODevice::WriteOnly | QIODevice::Text));
+    QTextStream(&tbFile) << tb;
+    tbFile.close();
+
+    const QString simOut = dir.filePath("sim.out");
+    QProcess compile;
+    compile.setProcessChannelMode(QProcess::MergedChannels);
+    compile.start("iverilog", {"-g2012", "-o", simOut, tbPath, svPath});
+    QVERIFY2(compile.waitForFinished(30000), "iverilog timed out");
+    QVERIFY2(compile.exitCode() == 0,
+             qPrintable(QString("gated-clock export did not compile:\n%1\n--- sv ---\n%2")
+                            .arg(QString::fromUtf8(compile.readAll()), sv)));
+
+    QProcess run;
+    run.start(simOut, {});
+    QVERIFY2(run.waitForFinished(30000), "vvp timed out");
+    const QString out = QString::fromUtf8(run.readAllStandardOutput());
+    QVERIFY2(out.contains("PASS") && !out.contains("FAIL"),
+             qPrintable(QString("gated-clock export diverges from the engine:\n%1\n--- sv ---\n%2")
+                            .arg(out, sv)));
+}

@@ -18,6 +18,12 @@ private slots:
     /// removed. Behavioural, not textual: the exported module must HOLD STATE.
     void testTopLevelFeedbackLatchHoldsStateInExport();
 
+    /// emitSequentialBlock() runs ensureSimpleSignal() on preset/clear but passes clk into the
+    /// event control untouched. At top level gates are inlined, so a GATED clock arrives as a
+    /// raw expression: always @(posedge (a & b)). That is legal Verilog-2001, so the question
+    /// this answers is whether it actually MISBEHAVES. Differential against the engine.
+    void testGatedClockExportMatchesTheEngine();
+
     void initTestCase();
     void cleanupTestCase();
 

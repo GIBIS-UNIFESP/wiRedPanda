@@ -908,6 +908,17 @@ void SystemVerilogCodeGen::emitSequentialBlock(
     QString prst = hasPrst ? ensureSimpleSignal(rawPrst) : rawPrst;
     QString clr = hasClr ? ensureSimpleSignal(rawClr) : rawClr;
 
+    // `clk` is deliberately NOT wrapped, despite the comment above naming the same hazard.
+    // Top-level gates are inlined, so a gated clock reaches the event control as an expression:
+    //     always @(posedge (input_switch1_cka & input_switch2_ckb))
+    // That was suspected of being the cause behind the recorded gated-clock export divergence,
+    // and it is not. Measured: the construct is legal Verilog-2001, iverilog simulates it in
+    // agreement with the engine over a nine-step differential, and Verilator 5.032 lints it
+    // clean under -Wall. testGatedClockExportMatchesTheEngine() pins that, and asserts the
+    // expression really does reach the event control so it cannot quietly stop testing this.
+    // Wrapping clk would churn every sequential golden for no measured behavioural gain; if a
+    // stricter downstream tool ever rejects it, ensureSimpleSignal(clk) is the one-line answer.
+
     m_stream << "    //" << typeName << Qt::endl;
 
     // Generate sensitivity list
