@@ -10,6 +10,14 @@ class TestSystemVerilogExport : public QObject
     Q_OBJECT
 
 private slots:
+    /// The only top-level (non-IC) circuit in the differential; every .panda fixture exercises
+    /// generateSingleICModule(), which is where findFeedbackElements() runs and where the set is
+    /// cleared again before top-level declaration. Without top-level detection a canvas-drawn
+    /// feedback circuit is not recognised as a loop, and otherPortNameImpl()'s cycle guard folds
+    /// the feedback edge to 1'b0 -- exporting a latch as combinational logic with the memory
+    /// removed. Behavioural, not textual: the exported module must HOLD STATE.
+    void testTopLevelFeedbackLatchHoldsStateInExport();
+
     void initTestCase();
     void cleanupTestCase();
 
