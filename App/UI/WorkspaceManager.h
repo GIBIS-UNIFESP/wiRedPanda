@@ -38,6 +38,7 @@ class WorkspaceManager : public QObject
 public:
     /// \param tab The tab widget whose contents this manager owns (non-owning).
     /// \param host Application context for status/palette/dialog-parent/IC-button feedback.
+    /// \param parent Optional QObject parent.
     WorkspaceManager(QTabWidget *tab, MainWindowHost &host, QObject *parent = nullptr);
 
     // --- Accessors (MainWindow's DolphinHost/MainWindowHost delegate here) ---

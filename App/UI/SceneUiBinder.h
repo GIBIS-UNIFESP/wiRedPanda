@@ -45,6 +45,7 @@ public:
     /// \param palette Element palette (embedded-IC list reflects the active scene).
     /// \param previewPopup Shared IC hover-preview popup, driven off the bound scene's IC signals.
     /// \param shortcutParent Widget that parents the scene-property shortcuts (the window).
+    /// \param parent Optional QObject parent.
     SceneUiBinder(MainWindowUi *ui, ElementPalette *palette, ICPreviewPopup *previewPopup, QWidget *shortcutParent, QObject *parent = nullptr);
 
     /// Connects \a tab's scene/view/simulation to the chrome and syncs action state.

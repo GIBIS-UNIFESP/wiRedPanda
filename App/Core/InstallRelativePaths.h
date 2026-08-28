@@ -27,7 +27,7 @@ public:
     /// Builds the ordered list of candidate directories for \a category, relative to
     /// QCoreApplication::applicationDirPath(): Windows/dev builds, macOS app bundle
     /// Resources, Linux AppImage (via $APPDIR), Linux native FHS install
-    /// (share/wiredpanda/<category> next to a bin/ install), WASM's virtual
+    /// (share/wiredpanda/\<category\> next to a bin/ install), WASM's virtual
     /// filesystem, and finally a bare-category CWD fallback for development.
     static QStringList candidates(const QString &category);
 

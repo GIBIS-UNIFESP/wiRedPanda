@@ -48,6 +48,8 @@ public:
     /**
      * \brief Snapshots each predecessor's output into the input cache, reading \a inputPorts
      * for unconnected-input defaults and multi-driver conflict detection.
+     * \param inputPorts Input ports, read for unconnected-input defaults and multi-driver
+     * conflict detection.
      * \param allowUnknown When true, only a truly unconnected Unknown input fails (combinational
      * domination rules can still short-circuit); when false any Unknown/Error fails.
      * \return true if simulation can proceed; false (all outputs set Unknown) otherwise.

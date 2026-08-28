@@ -34,6 +34,8 @@ public:
     /// passes its own lower kDefaultVolume instead.
     static constexpr float kDefaultVolume = 0.5f;
 
+    /// \param type Concrete audio element type, forwarded to the GraphicElement base.
+    /// \param parent Optional parent item.
     /// \param initialVolume lets a subclass set its own volume default in one write --
     /// a derived class cannot member-initialize a base's field, and a ctor-body
     /// assignment would write m_volume twice per construction.

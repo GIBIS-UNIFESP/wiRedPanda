@@ -42,7 +42,7 @@ struct ExerciseTourResourceEntry {
  *
  * Step text inside the JSON never passes through tr() (lupdate can't see JSON), so
  * translations instead live in a separate, Weblate-managed catalog at
- * :/i18n/ExerciseTour/<lang>.json; translate() looks strings up there, falling back to the
+ * :/i18n/ExerciseTour/\<lang\>.json; translate() looks strings up there, falling back to the
  * JSON's own English text when no translation is installed or found — which is also the
  * correct, automatic behavior for user-added content that will never have a catalog entry.
  */
