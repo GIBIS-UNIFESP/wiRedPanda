@@ -1,6 +1,6 @@
 {
   "extends": "astro/tsconfigs/strictest",
-  "exclude": ["public", "dist"],
+  "exclude": ["public", "dist", "docs", "master-src"],
   "compilerOptions": {
     "noPropertyAccessFromIndexSignature": true
   }

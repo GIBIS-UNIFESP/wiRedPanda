@@ -6,6 +6,7 @@
     "dev": "NODE_OPTIONS='--disable-warning=DEP0205' astro dev",
     "build": "NODE_OPTIONS='--disable-warning=DEP0205' astro build",
     "preview": "NODE_OPTIONS='--disable-warning=DEP0205' astro preview",
+    "docs": "bash scripts/build-docs.sh",
     "check": "NODE_OPTIONS='--disable-warning=DEP0205' astro check",
     "test": "vitest run",
     "test:watch": "vitest",
