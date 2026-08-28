@@ -14,6 +14,7 @@
 
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
+#include "App/Core/InstallRelativePaths.h"
 #include "App/Core/SentryHelpers.h"
 #include "App/Core/Settings.h"
 #include "App/Element/GraphicElement.h"
@@ -669,18 +670,28 @@ void WorkSpace::autosave()
 
     qCDebug(three) << "Undo is !clean. Must set autosave file.";
 
-    // Choose the directory to write into, mirroring the pre-existing policy:
-    // unsaved projects go to the global autosaves dir, saved projects go next
-    // to their .panda file unless that directory is read-only.
+    // Choose the directory to write into: unsaved projects go to the global
+    // autosaves dir, saved projects go next
+    // to their .panda file unless that directory is read-only OR is the bundled
+    // Examples directory. Writing beside the file is deliberate (an autosave stays
+    // with the project it protects), but the bundled examples are shipped content,
+    // not the user's project: an installed copy is usually read-only and already
+    // took the fallback, while a dev checkout's Examples/ is writable and would
+    // otherwise accumulate hidden .<name>.<uuid>.panda files that .gitignore
+    // explicitly un-ignores. Recovery reads absolute paths out of
+    // Settings::autosaveFiles(), so relocating the file changes nothing for it.
     QDir path;
+    const QString globalAutosaves =
+        QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/autosaves";
     if (m_fileInfo.fileName().isEmpty()) {
-        path.setPath(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/autosaves");
+        path.setPath(globalAutosaves);
     } else {
-        const QFileInfo dirInfo(m_fileInfo.absolutePath());
-        if (dirInfo.isWritable()) {
-            path.setPath(m_fileInfo.absolutePath());
+        const QString projectDir = m_fileInfo.absolutePath();
+        const QFileInfo dirInfo(projectDir);
+        if (dirInfo.isWritable() && !InstallRelativePaths::isCandidate(QStringLiteral("Examples"), projectDir)) {
+            path.setPath(projectDir);
         } else {
-            path.setPath(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/autosaves");
+            path.setPath(globalAutosaves);
         }
     }
     if (!path.exists()) {

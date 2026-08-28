@@ -39,6 +39,11 @@ private slots:
     void testAutosaveSkipsNewerVersionFile();
     void testAutosaveRemovesFileWhenUndoStackIsClean();
     void testAutosaveFallsBackToAppDataWhenProjectDirIsReadOnly();
+    /// An autosave must never be written into the bundled Examples directory: .gitignore
+    /// explicitly un-ignores it, so a hidden .<name>.<uuid>.panda beside an opened example
+    /// becomes a tracked file. An installed Examples/ is usually read-only and takes the
+    /// fallback above; a dev checkout's is writable, so read-only-ness is not the test.
+    void testAutosaveFallsBackToAppDataForBundledExamplesDir();
     void testAutosaveRemovesPreviousFileWhenProjectDirChanges();
     void testAutosaveThrowsWhenFileCannotBeOpened();
     void testAutosaveThrowsWhenCommitFails();

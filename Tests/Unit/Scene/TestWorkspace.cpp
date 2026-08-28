@@ -4,6 +4,7 @@
 #include "Tests/Unit/Scene/TestWorkspace.h"
 
 #include <QDataStream>
+#include <QDir>
 #include <QFile>
 #include <QFileDevice>
 #include <QLayout>
@@ -566,6 +567,41 @@ void TestWorkspaceUnit::testAutosaveFallsBackToAppDataWhenProjectDirIsReadOnly()
     QFile::setPermissions(dir.path(), QFileDevice::ReadOwner | QFileDevice::WriteOwner | QFileDevice::ExeOwner);
     QFile::remove(workspace.m_autosaveFileName);
 #endif
+}
+
+void TestWorkspaceUnit::testAutosaveFallsBackToAppDataForBundledExamplesDir()
+{
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    QVERIFY(QDir(dir.path()).mkpath(QStringLiteral("Examples")));
+    const QString examplesDir = QDir(dir.path()).absoluteFilePath(QStringLiteral("Examples"));
+
+    // Deliberately left WRITABLE: this is the dev-checkout shape, where the read-only
+    // check passes, so writability is not what keeps the autosave out.
+    QVERIFY(QFileInfo(examplesDir).isWritable());
+
+    WorkSpace workspace;
+    workspace.m_fileInfo = QFileInfo(examplesDir + QStringLiteral("/counter.panda"));
+    auto *gate = new And();
+    workspace.scene()->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{gate}, workspace.scene()));
+    QVERIFY(!workspace.scene()->undoStack()->isClean());
+
+    // Make that directory the bare-category CWD candidate, which is how a dev checkout's
+    // Examples/ is actually reached.
+    const QString previousCwd = QDir::currentPath();
+    QVERIFY(QDir::setCurrent(dir.path()));
+    workspace.autosave();
+    QVERIFY(QDir::setCurrent(previousCwd));
+
+    QVERIFY2(!workspace.m_autosaveFileName.isEmpty(),
+             "autosave() must still protect the work -- the file is relocated, not skipped");
+    QVERIFY2(!workspace.m_autosaveFileName.startsWith(examplesDir),
+             "must not write an autosave into the bundled Examples directory");
+    QVERIFY(QFile::exists(workspace.m_autosaveFileName));
+    QVERIFY2(QDir(examplesDir).entryList(QDir::Files | QDir::Hidden).isEmpty(),
+             "the bundled Examples directory must be left completely untouched");
+
+    QFile::remove(workspace.m_autosaveFileName);
 }
 
 void TestWorkspaceUnit::testAutosaveRemovesPreviousFileWhenProjectDirChanges()

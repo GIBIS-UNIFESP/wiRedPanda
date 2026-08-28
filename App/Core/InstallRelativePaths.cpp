@@ -28,6 +28,28 @@ QStringList InstallRelativePaths::candidates(const QString &category)
     return result;
 }
 
+bool InstallRelativePaths::isCandidate(const QString &category, const QString &directory)
+{
+    // canonicalPath() resolves "..", symlinks and CWD-relative entries to one comparable
+    // form, and returns "" for a path that doesn't exist -- which is also the right answer
+    // here, since a directory that isn't there can't be the bundled content directory.
+    const QString target = QDir(directory).canonicalPath();
+    if (target.isEmpty()) {
+        return false;
+    }
+
+    const auto candidateDirs = candidates(category);
+    for (const QString &candidate : candidateDirs) {
+        if (candidate.isEmpty()) {
+            continue;
+        }
+        if (QDir(candidate).canonicalPath() == target) {
+            return true;
+        }
+    }
+    return false;
+}
+
 QString InstallRelativePaths::resolve(const QString &category)
 {
     for (const QString &candidate : candidates(category)) {

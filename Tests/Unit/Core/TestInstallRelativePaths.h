@@ -17,4 +17,13 @@ private slots:
 
     void testResolveReturnsEmptyWhenNoCandidateExists();
     void testResolveFindsCwdFallbackCandidate();
+
+    /// isCandidate() recognises the bundled content directory so callers can refuse to write
+    /// into it even where the filesystem allows it (a dev checkout's Examples/ is writable).
+    void testIsCandidateMatchesCwdFallbackByCanonicalPath();
+    /// Matching is by canonical path, so an equivalent spelling of the same directory
+    /// (trailing "/.", a ".." round trip) still matches -- a plain string compare would not.
+    void testIsCandidateMatchesEquivalentPathSpellings();
+    /// A directory that isn't a candidate, doesn't exist, or is empty is never a match.
+    void testIsCandidateRejectsUnrelatedMissingAndEmptyDirs();
 };
