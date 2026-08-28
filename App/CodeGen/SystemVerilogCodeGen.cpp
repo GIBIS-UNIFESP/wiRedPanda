@@ -564,6 +564,17 @@ void SystemVerilogCodeGen::generate()
 
     generateICModules();
 
+    // Feedback detection for the TOP-LEVEL netlist. generateSingleICModule() sets
+    // m_feedbackElements for the IC it is emitting and clears it again on the way out, so
+    // without this the set would be empty by the time declareAuxVariables() runs and no
+    // top-level element could be recognised as a loop member. A feedback circuit drawn directly
+    // on the canvas -- a cross-coupled NAND latch, say -- would then be emitted as plain `wire`
+    // + `assign`, and otherPortNameImpl()'s cycle guard would substitute 1'b0 for the feedback
+    // edge, since top-level gates are inlined and have no m_varMap entry. That is worse than an
+    // x-locking comb loop: a silently constant-folded expression with the memory removed, which
+    // simulates cleanly and computes the wrong function.
+    m_feedbackElements = findFeedbackElements(m_elements);
+
     // Top-level module
     m_stream << "module " << m_fileName << " (" << Qt::endl;
     // Declare input and output pins
@@ -718,7 +729,15 @@ void SystemVerilogCodeGen::declareAuxVariablesRec(const QVector<GraphicElement *
             // Skip wire declarations for top-level logic gates (their expressions
             // are inlined). Inside IC modules (m_generatingICModule), declare wires so that
             // feedback loops produce proper circular assign references instead of 1'b0.
-            if (!m_generatingICModule &&
+            //
+            // A top-level FEEDBACK member is the exception, for exactly the reason that comment
+            // gives. Inlining walks otherPortNameImpl(), whose cycle guard returns 1'b0 when the
+            // revisited port has no m_varMap entry -- and skipping the declaration is what would
+            // leave it without one, yielding not an x-locking comb loop but a silently
+            // constant-folded expression: a canvas-drawn cross-coupled NAND latch with its memory
+            // removed. Declaring it lets the seeded `reg` + `always @(*)` path below treat it the
+            // same way an IC-internal loop is already treated.
+            if (!m_generatingICModule && !m_feedbackElements.contains(elm) &&
                 (type == ElementType::And ||
                  type == ElementType::Or ||
                  type == ElementType::Nand ||
@@ -995,10 +1014,16 @@ void SystemVerilogCodeGen::assignVariablesRec(const QVector<GraphicElement *> &e
             elm->elementType() == ElementType::Node) {
 
             QString expr = generateLogicExpression(elm);
+            const bool isFeedback = m_feedbackElements.contains(elm);
             for (auto *port : elm->outputs()) {
                 QString existingVar = m_varMap.value(port);
-                if (!existingVar.isEmpty() && m_generatingICModule) {
-                    const bool isFeedback = m_feedbackElements.contains(elm);
+                // Emit an assignment whenever this port actually HAS a declared variable --
+                // inside an IC module, or at top level when the element is a feedback member and
+                // declareAuxVariablesRec() therefore gave it a seeded reg. Gating on
+                // m_generatingICModule alone would send top-level feedback gates down the inline
+                // branch below, overwriting the declared name with an expression and leaving the
+                // reg at its seed forever.
+                if (!existingVar.isEmpty() && (m_generatingICModule || isFeedback)) {
                     if (isFeedback) {
                         // Cross-coupled feedback node: drive the seeded `reg`
                         // combinationally so the loop settles (vs. a comb-loop

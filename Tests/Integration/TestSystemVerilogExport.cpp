@@ -9,6 +9,7 @@
 #include <QFileInfo>
 #include <QProcess>
 #include <QRandomGenerator>
+#include <QStandardPaths>
 #include <QTemporaryFile>
 #include <QTextStream>
 
@@ -1192,4 +1193,117 @@ void TestSystemVerilogExport::testSystemVerilogExportRegisterFile32x16()
 void TestSystemVerilogExport::testSystemVerilogExportSingleCycleCpu8Bit()
 {
     testSystemVerilogExportHelper("level9_single_cycle_cpu_8bit.panda");
+}
+
+void TestSystemVerilogExport::testTopLevelFeedbackLatchHoldsStateInExport()
+{
+#ifndef Q_OS_LINUX
+    QSKIP("SystemVerilog export tests require iverilog (Linux only)");
+#endif
+    if (QStandardPaths::findExecutable("iverilog").isEmpty()
+        || QStandardPaths::findExecutable("vvp").isEmpty()) {
+        QSKIP("iverilog/vvp not available");
+    }
+
+    // A cross-coupled NAND SR latch drawn at TOP LEVEL -- no IC anywhere in the scene.
+    // Active-low: nS=0 sets, nR=0 resets, both high holds.
+    std::unique_ptr<WorkSpace> workspace = TestUtils::createWorkspace();
+    auto *scene = workspace->scene();
+    CircuitBuilder builder(scene);
+
+    auto *swS = new InputSwitch();
+    auto *swR = new InputSwitch();
+    auto *nandQ = ElementFactory::buildElement(ElementType::Nand);
+    auto *nandQBar = ElementFactory::buildElement(ElementType::Nand);
+    auto *led = new Led();
+    builder.add(swS, swR, nandQ, nandQBar, led);
+    swS->setLabel("NS");
+    swR->setLabel("NR");
+
+    builder.connect(swS, 0, nandQ, 0);        // nS -> NAND_Q
+    builder.connect(nandQBar, 0, nandQ, 1);   // ~Q -> NAND_Q   (feedback)
+    builder.connect(swR, 0, nandQBar, 1);     // nR -> NAND_QBAR
+    builder.connect(nandQ, 0, nandQBar, 0);   //  Q -> NAND_QBAR (feedback)
+    builder.connect(nandQ, 0, led, 0);
+
+    Simulation *sim = builder.initSimulation();
+    QVERIFY(sim != nullptr);
+    QVERIFY2(sim->isInFeedbackLoop(nandQ), "precondition: the engine must see this as a loop");
+
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString svPath = dir.filePath("toplevel_latch.sv");
+    QVector<GraphicElement *> elements = scene->elements();
+    SystemVerilogCodeGen generator(svPath, elements);
+    generator.generate();
+    QVERIFY(QFile::exists(svPath));
+
+    QFile svFile(svPath);
+    QVERIFY(svFile.open(QIODevice::ReadOnly | QIODevice::Text));
+    const QString sv = QString::fromUtf8(svFile.readAll());
+    svFile.close();
+
+    // Resolve the generated port names from the module header rather than guessing.
+    const QRegularExpression inRe(QStringLiteral(R"(input\s+(\w+))"));
+    const QRegularExpression outRe(QStringLiteral(R"(output\s+(\w+))"));
+    QStringList inputs;
+    auto it = inRe.globalMatch(sv);
+    while (it.hasNext()) { inputs << it.next().captured(1); }
+    const auto outMatch = outRe.match(sv);
+    QVERIFY2(inputs.size() == 2 && outMatch.hasMatch(),
+             qPrintable(QString("unexpected module interface:\n%1").arg(sv)));
+    const QString nS = inputs.at(0);
+    const QString nR = inputs.at(1);
+    const QString q = outMatch.captured(1);
+
+    // Drive the latch: set, hold, reset, hold. The hold steps are the whole point -- a module
+    // whose feedback was folded to a constant has no memory and cannot pass them.
+    QString tb;
+    QTextStream ts(&tb);
+    ts << "`timescale 1ns/1ps\n"
+       << "module tb;\n"
+       << "    reg " << nS << ", " << nR << ";\n"
+       << "    wire " << q << ";\n"
+       << "    integer errors = 0;\n"
+       << "    toplevel_latch dut(." << nS << "(" << nS << "), ." << nR << "(" << nR << "), ."
+       << q << "(" << q << "));\n"
+       << "    task chk(input exp, input [63:0] tag);\n"
+       << "        begin if (" << q << " !== exp) begin errors = errors + 1;"
+       << " $display(\"FAIL %0s: got %b want %b\", tag, " << q << ", exp); end end\n"
+       << "    endtask\n"
+       << "    initial begin\n"
+       << "        " << nS << " = 1; " << nR << " = 1; #5;\n"
+       << "        " << nS << " = 0; " << nR << " = 1; #5; chk(1'b1, \"set\");\n"
+       << "        " << nS << " = 1; " << nR << " = 1; #5; chk(1'b1, \"hold1\");\n"
+       << "        " << nS << " = 1; " << nR << " = 0; #5; chk(1'b0, \"reset\");\n"
+       << "        " << nS << " = 1; " << nR << " = 1; #5; chk(1'b0, \"hold0\");\n"
+       << "        if (errors == 0) $display(\"PASS\"); else $display(\"FAILED %0d\", errors);\n"
+       << "        $finish;\n"
+       << "    end\n"
+       << "endmodule\n";
+    ts.flush();
+
+    const QString tbPath = dir.filePath("tb.sv");
+    QFile tbFile(tbPath);
+    QVERIFY(tbFile.open(QIODevice::WriteOnly | QIODevice::Text));
+    QTextStream(&tbFile) << tb;
+    tbFile.close();
+
+    const QString simOut = dir.filePath("sim.out");
+    QProcess compile;
+    compile.setProcessChannelMode(QProcess::MergedChannels);
+    compile.start("iverilog", {"-g2012", "-o", simOut, tbPath, svPath});
+    QVERIFY2(compile.waitForFinished(30000), "iverilog timed out");
+    QVERIFY2(compile.exitCode() == 0,
+             qPrintable(QString("generated top-level module did not compile:\n%1\n--- sv ---\n%2")
+                            .arg(QString::fromUtf8(compile.readAll()), sv)));
+
+    QProcess run;
+    run.start(simOut, {});
+    QVERIFY2(run.waitForFinished(30000), "vvp timed out");
+    const QString out = QString::fromUtf8(run.readAllStandardOutput());
+
+    QVERIFY2(out.contains("PASS") && !out.contains("FAIL"),
+             qPrintable(QString("the exported top-level latch does not hold state:\n%1\n--- sv ---\n%2")
+                            .arg(out, sv)));
 }
