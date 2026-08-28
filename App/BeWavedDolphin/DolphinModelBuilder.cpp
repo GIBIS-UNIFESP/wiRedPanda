@@ -17,13 +17,13 @@ namespace DolphinModelBuilder {
 
 namespace {
 
-/// Builds per-port row labels for \a elements: the element's label (or its translated type
-/// name when blank), suffixed with "[port]" when the element exposes more than one port.
+/// Appends one Row per PORT of each element in \a elements to \a rows, labelling each with
+/// the element's label (or its translated type name when blank), suffixed with "[port]" when
+/// the element exposes more than one port. This is the only place the table's row layout is
+/// decided; the sweep, the snapshot API and the header labels all read the result.
 template <typename Elements, typename PortCount>
-QStringList buildLabels(const Elements &elements, const PortCount &portCount)
+void appendRows(QVector<Row> &rows, const Elements &elements, const RowKind kind, const PortCount &portCount)
 {
-    QStringList labels;
-
     for (auto *elm : elements) {
         QString label = elm->label();
 
@@ -35,16 +35,23 @@ QStringList buildLabels(const Elements &elements, const PortCount &portCount)
         const int ports = portCount(elm);
         for (int port = 0; port < ports; ++port) {
             // Multi-port elements (e.g. bus inputs, multi-bit displays) get indexed labels
-            if (ports > 1) {
-                labels.append(label + "[" + QString::number(port) + "]");
-            } else {
-                labels.append(label);
-            }
+            const QString rowLabel = (ports > 1) ? label + "[" + QString::number(port) + "]" : label;
+            rows.append(Row{elm, port, kind, rowLabel});
         }
     }
+} // LCOV_EXCL_LINE -- compiler-generated cleanup for an exception path appendRows() never takes (both template instantiations)
 
+/// Projects the labels of every \a kind row out of \a rows, preserving order.
+QStringList labelsOf(const QVector<Row> &rows, const RowKind kind)
+{
+    QStringList labels;
+    for (const auto &row : rows) {
+        if (row.kind == kind) {
+            labels.append(row.label);
+        }
+    }
     return labels;
-} // LCOV_EXCL_LINE -- compiler-generated QStringList cleanup for an exception path buildLabels() never takes (both template instantiations)
+} // LCOV_EXCL_LINE -- compiler-generated QStringList cleanup for an exception path labelsOf() never takes
 
 } // namespace
 
@@ -69,8 +76,6 @@ Signals collect(Scene *scene)
 
         if (elm->elementGroup() == ElementGroup::Input) {
             result.inputs.append(qobject_cast<GraphicElementInput *>(elm));
-            // Multi-bit inputs (e.g. rotary encoder) contribute multiple port rows
-            result.inputPorts += elm->outputSize();
         }
 
         if (elm->elementGroup() == ElementGroup::Output) {
@@ -100,8 +105,16 @@ Signals collect(Scene *scene)
         throw PANDACEPTION_WITH_CONTEXT("BewavedDolphin", "The circuit has no output elements. Add at least one output (e.g. LED or Display) to generate a waveform.");
     }
 
-    result.inputLabels  = buildLabels(result.inputs,  [](const GraphicElementInput *e) { return e->outputSize(); });
-    result.outputLabels = buildLabels(result.outputs, [](const GraphicElement *e) { return e->inputSize(); });
+    // Rows first -- they are the source of truth; the label lists are projections of them.
+    appendRows(result.rows, result.inputs,  RowKind::Input,  [](const GraphicElementInput *e) { return e->outputSize(); });
+    appendRows(result.rows, result.outputs, RowKind::Output, [](const GraphicElement *e) { return e->inputSize(); });
+
+    result.inputLabels  = labelsOf(result.rows, RowKind::Input);
+    result.outputLabels = labelsOf(result.rows, RowKind::Output);
+    // Derived, not accumulated separately: the input rows ARE inputLabels, so counting ports in
+    // the collection loop would be a second computation of the same quantity by different code --
+    // the duplication this row layout exists to remove.
+    result.inputPorts   = static_cast<int>(result.inputLabels.size());
 
     return result;
 }

@@ -34,6 +34,9 @@
 #include "App/BeWavedDolphin/DolphinZoom.h"
 #include "App/Core/Application.h"
 #include "App/Element/GraphicElements/And.h"
+#include "App/Element/GraphicElements/DFlipFlop.h"
+#include "App/Element/GraphicElements/Display7.h"
+#include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Exercise/ExerciseEngine.h"
@@ -1696,15 +1699,96 @@ void TestBewavedDolphinGui::testTriggerCombinationalFillsAllInputPatterns()
 void TestBewavedDolphinGui::testInputRowLooksUpByLabel()
 {
     auto ws = createAndCircuit();
-    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
 
     // createAndCircuit()'s InputSwitches don't get distinct default labels, so give them one
-    // each here to make inputRow()'s label lookup unambiguous.
-    dolphin->inputElements().first()->setLabel("swA");
-    dolphin->inputElements().last()->setLabel("swB");
+    // each to make inputRow()'s label lookup unambiguous. Labelled BEFORE the waveform is
+    // built: inputRow() matches the row's own label, which -- like the table's header text
+    // and snapshot()'s signal labels -- is captured when the table is prepared. Matching the
+    // element's live label instead would let inputRow() resolve a name the header and the
+    // snapshot don't show -- the class of disagreement this row layout exists to stop.
+    auto inputs = ws->scene()->elements();
+    std::stable_sort(inputs.begin(), inputs.end(), [](auto *a, auto *b) { return a->pos().x() < b->pos().x(); });
+    int labelled = 0;
+    for (auto *elm : inputs) {
+        if (elm->elementGroup() == ElementGroup::Input) {
+            elm->setLabel(labelled == 0 ? "swA" : "swB");
+            if (++labelled == 2) {
+                break;
+            }
+        }
+    }
+    QCOMPARE(labelled, 2);
+
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+
     QCOMPARE(dolphin->inputRow("swA"), 0);
     QCOMPARE(dolphin->inputRow("swB"), 1);
     QCOMPARE(dolphin->inputRow("no such signal"), -1);
+}
+
+void TestBewavedDolphinGui::testSnapshotMatchesModelRowsForMultiPortElements()
+{
+    // A circuit with BOTH a multi-port input (InputRotary) and a multi-port output
+    // (Display7): an element index and a row index differ on each side of the table.
+    auto ws = std::make_unique<WorkSpace>();
+    auto *scene = ws->scene();
+
+    auto *rotary = new InputRotary();
+    auto *sw = new InputSwitch();
+    auto *display = new Display7();
+    scene->addItem(rotary);
+    scene->addItem(sw);
+    scene->addItem(display);
+    rotary->setLabel("ROT");
+    sw->setLabel("EN");
+    display->setLabel("DISP");
+
+    CircuitBuilder builder(scene);
+    builder.connect(rotary, 0, display, 0);
+    builder.connect(sw, 0, display, 1);
+
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+    dolphin->setLength(4, false);
+    dolphin->run();
+
+    const auto *model = dolphin->model();
+    QVERIFY(model);
+
+    const auto snap = dolphin->snapshot(4);
+    const int totalSignals = static_cast<int>(snap.inputs.size() + snap.outputs.size());
+
+    // One signal per table ROW -- not one per element.
+    QCOMPARE(totalSignals, model->rowCount());
+    QVERIFY2(snap.inputs.size() > rotary->outputSize() - 1,
+             "a multi-port input must contribute one signal per port, not one per element");
+    QCOMPARE(static_cast<int>(snap.inputs.size()), model->inputRows());
+
+    // Row-for-row agreement with the model: same order, same per-port labels, same values.
+    QList<BewavedDolphin::Signal> allSignals = snap.inputs;
+    allSignals.append(snap.outputs);
+    for (int row = 0; row < model->rowCount(); ++row) {
+        const QString headerLabel = model->headerData(row, Qt::Vertical).toString();
+        QCOMPARE(allSignals.at(row).label, headerLabel);
+        for (int col = 0; col < 4; ++col) {
+            QCOMPARE(allSignals.at(row).values.at(col), model->value(row, col));
+        }
+    }
+
+    // Per-port labels must actually disambiguate: no two rows share a name.
+    QSet<QString> seenLabels;
+    for (const auto &signal : allSignals) {
+        QVERIFY2(!seenLabels.contains(signal.label),
+                 qPrintable(QStringLiteral("duplicate row label: %1").arg(signal.label)));
+        seenLabels.insert(signal.label);
+    }
+
+    // inputRow() indexes the same rows, and can now address a port beyond the first.
+    // Inputs are label-sorted, so "EN" precedes the rotary's ports.
+    QCOMPARE(dolphin->inputRow(QStringLiteral("EN")), 0);
+    QCOMPARE(dolphin->inputRow(QStringLiteral("ROT[0]")), 1);
+    QCOMPARE(dolphin->inputRow(QStringLiteral("ROT[1]")), 2);
+    // The bare element label addresses nothing: every row of a multi-port element is indexed.
+    QCOMPARE(dolphin->inputRow(QStringLiteral("ROT")), -1);
 }
 
 void TestBewavedDolphinGui::testSnapshotReturnsRunValues()

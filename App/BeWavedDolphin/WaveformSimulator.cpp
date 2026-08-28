@@ -61,9 +61,7 @@ void WaveformSimulator::restoreInputs(const QVector<GraphicElementInput *> &inpu
     }
 }
 
-void WaveformSimulator::sweep(const QVector<GraphicElementInput *> &inputs,
-                              const QVector<GraphicElement *> &outputs,
-                              const int inputPorts, const int columns,
+void WaveformSimulator::sweep(const QVector<DolphinModelBuilder::Row> &rows, const int columns,
                               const std::function<bool(int row, int col)> &readInput,
                               const std::function<void(int row, int col, int value)> &writeOutput) const
 {
@@ -86,14 +84,21 @@ void WaveformSimulator::sweep(const QVector<GraphicElementInput *> &inputs,
     }
 
     // --- Step through each time column and compute circuit outputs ---
+    // A row's index IS its position in `rows`, so the input rows and the output rows are
+    // walked by the same index the model and snapshot() use; there is no separately-computed
+    // offset that could disagree with them.
     for (int column = 0; column < columns; ++column) {
-        qCDebug(four) << "Itr: " << column << ", inputs: " << inputs.size();
-        int row = 0;
+        qCDebug(four) << "Itr: " << column << ", rows: " << rows.size();
 
-        for (auto *input : std::as_const(inputs)) {
-            for (int port = 0; port < input->outputSize(); ++port) {
-                // Each input applies the cell value its own way (e.g. a rotary ignores lows).
-                input->setWaveformValue(readInput(row++, column), port);
+        for (int row = 0; row < rows.size(); ++row) {
+            const auto &descriptor = rows.at(row);
+            if (descriptor.kind != DolphinModelBuilder::RowKind::Input) {
+                continue;
+            }
+            // Each input applies the cell value its own way (e.g. a rotary ignores lows).
+            auto *input = qobject_cast<GraphicElementInput *>(descriptor.element);
+            if (input) {
+                input->setWaveformValue(readInput(row, column), descriptor.port);
             }
         }
 
@@ -102,14 +107,13 @@ void WaveformSimulator::sweep(const QVector<GraphicElementInput *> &inputs,
 
         // Write computed output port states back into the model's output rows
         qCDebug(four) << "Setting the computed output values to the waveform results.";
-        row = inputPorts;
-
-        for (auto *output : std::as_const(outputs)) {
-            for (int port = 0; port < output->inputSize(); ++port) {
-                const int value = static_cast<int>(output->inputPort(port)->status());
-                writeOutput(row, column, value);
-                ++row;
+        for (int row = 0; row < rows.size(); ++row) {
+            const auto &descriptor = rows.at(row);
+            if (descriptor.kind != DolphinModelBuilder::RowKind::Output || !descriptor.element) {
+                continue;
             }
+            const int value = static_cast<int>(descriptor.element->inputPort(descriptor.port)->status());
+            writeOutput(row, column, value);
         }
     }
 }

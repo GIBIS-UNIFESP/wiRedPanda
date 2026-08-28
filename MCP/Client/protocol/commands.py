@@ -236,7 +236,12 @@ class CreateWaveformCommand(MCPCommand):
             default=64, description="Number of simulation steps"
         )
         input_patterns: dict[str, list[Annotated[int, Field(ge=0, le=1)]]] | None = Field(
-            default=None, description="Input patterns for specific input elements"
+            default=None,
+            description=(
+                "Input patterns keyed by per-PORT signal label. A single-port element uses its "
+                'plain label; a multi-port element (e.g. a rotary input) uses "Name[port]", '
+                'such as "Bus[0]" -- the same labels the response reports.'
+            ),
         )
 
         model_config = ConfigDict(extra="forbid")

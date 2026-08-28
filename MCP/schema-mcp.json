@@ -1261,7 +1261,7 @@
         },
         "create_waveform": {
           "type": "object",
-          "description": "Create waveform analysis for the current circuit",
+          "description": "Create waveform analysis for the current circuit. Signals are reported one per PORT, not one per element: a multi-port element (a rotary input, a 7-segment display) contributes one signal per port, labelled \"Name[port]\". input_patterns keys and the labels in the response both use that per-port form, so a multi-port element is addressed by \"Name[0]\" rather than by its bare label.",
           "properties": {
             "jsonrpc": {
               "type": "string",
@@ -1282,7 +1282,7 @@
                 },
                 "input_patterns": {
                   "type": "object",
-                  "description": "Input patterns for specific input elements",
+                  "description": "Input patterns keyed by per-port signal label. Single-port elements use their plain label; a multi-port element uses \"Name[port]\" (e.g. \"Bus[0]\").",
                   "additionalProperties": {
                     "type": "array",
                     "items": {
