@@ -491,14 +491,31 @@ if(EMSCRIPTEN)
     )
 endif()
 
-# Copy JSON schema to executable directory after build
-add_custom_command(TARGET wiredpanda POST_BUILD
+# Copy the JSON schema next to the executables, keyed on the schema itself.
+#
+# DEPENDS on the source rather than POST_BUILD on each target: a POST_BUILD command runs only
+# when that target relinks, so editing ONLY the schema would leave a stale copy beside the
+# executable and the MCP server validating against the old contract -- which presents as a
+# baffling "additional property is invalid" error naming a property the checked-in schema
+# plainly allows. Keyed this way, the copy reruns whenever the schema changes and never
+# otherwise.
+# The destination must be $<TARGET_FILE_DIR:wiredpanda>, not the binary directory: with
+# MACOSX_BUNDLE the executable lives in wiredpanda.app/Contents/MacOS/, and MCPProcessor
+# resolves the schema from QCoreApplication::applicationDirPath(). A target generator
+# expression cannot appear in OUTPUT (the path must resolve without a target), so the
+# destination is formed in COMMAND and a stamp file carries the up-to-date check. Naming the
+# target in COMMAND also orders this after the link, so the bundle directory exists.
+add_custom_command(
+    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/schema-mcp.stamp
     COMMAND ${CMAKE_COMMAND} -E copy
         ${CMAKE_SOURCE_DIR}/MCP/schema-mcp.json
         $<TARGET_FILE_DIR:wiredpanda>/schema-mcp.json
-    COMMENT "Copying JSON schema to executable directory"
+    COMMAND ${CMAKE_COMMAND} -E touch ${CMAKE_CURRENT_BINARY_DIR}/schema-mcp.stamp
+    DEPENDS ${CMAKE_SOURCE_DIR}/MCP/schema-mcp.json
+    COMMENT "Copying JSON schema next to the wiredpanda executable"
     VERBATIM
 )
+add_custom_target(copy_mcp_schema ALL DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/schema-mcp.stamp)
 
 # Copy WASM support files and patch the HTML shell
 if(EMSCRIPTEN)
@@ -678,14 +695,18 @@ target_compile_definitions(test_wiredpanda PRIVATE
 # Copy JSON schema to the test executable's own directory too -- MCPProcessor locates it via
 # QCoreApplication::applicationDirPath(), and the copy above (attached to the `wiredpanda`
 # target) lands inside wiredpanda.app/Contents/MacOS/ on macOS (MACOSX_BUNDLE ON), nowhere near
-# test_wiredpanda's own (non-bundle) output directory.
-add_custom_command(TARGET test_wiredpanda POST_BUILD
+# test_wiredpanda's own (non-bundle) output directory. Keyed on the schema for the same reason.
+add_custom_command(
+    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/schema-mcp-tests.stamp
     COMMAND ${CMAKE_COMMAND} -E copy
         ${CMAKE_SOURCE_DIR}/MCP/schema-mcp.json
         $<TARGET_FILE_DIR:test_wiredpanda>/schema-mcp.json
-    COMMENT "Copying JSON schema to test executable directory"
+    COMMAND ${CMAKE_COMMAND} -E touch ${CMAKE_CURRENT_BINARY_DIR}/schema-mcp-tests.stamp
+    DEPENDS ${CMAKE_SOURCE_DIR}/MCP/schema-mcp.json
+    COMMENT "Copying JSON schema next to the test executable"
     VERBATIM
 )
+add_custom_target(copy_mcp_schema_tests ALL DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/schema-mcp-tests.stamp)
 
 if(ENABLE_PCH)
     target_precompile_headers(test_wiredpanda REUSE_FROM wiredpanda_lib)
