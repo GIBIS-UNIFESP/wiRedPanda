@@ -3105,3 +3105,66 @@ int main()
 
     QCOMPARE(sketchTrace, engineTrace.join(' '));
 }
+
+void TestArduino::testWirelessOverrideExportsTheWirelessDriver()
+{
+    std::unique_ptr<WorkSpace> workspace = TestUtils::createWorkspace();
+    auto *scene = workspace->scene();
+    CircuitBuilder builder(scene);
+
+    auto *swPhys = new InputSwitch();
+    auto *swWl = new InputSwitch();
+    auto *tx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *rx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *led = new Led();
+    QVERIFY(tx && rx);
+    swPhys->setLabel("PHYS");
+    swWl->setLabel("WIRELESS");
+    tx->setLabel("CH");
+    tx->setWirelessMode(WirelessMode::Tx);
+    rx->setLabel("CH");
+    rx->setWirelessMode(WirelessMode::Rx);
+
+    builder.add(swPhys, swWl, tx, rx, led);
+    builder.connect(swPhys, 0, rx, 0);   // physical wire into the Rx, overridden by wireless
+    builder.connect(swWl, 0, tx, 0);
+    builder.connect(rx, 0, led, 0);
+    QVERIFY(builder.initSimulation() != nullptr);
+
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString inoPath = dir.filePath("wireless.ino");
+    QVector<GraphicElement *> elements = scene->elements();
+    ArduinoCodeGen generator(inoPath, elements);
+    generator.generate();
+
+    QFile f(inoPath);
+    QVERIFY(f.open(QIODevice::ReadOnly | QIODevice::Text));
+    const QString ino = QString::fromUtf8(f.readAll());
+    f.close();
+
+    // The LED write is the whole circuit; it must be driven by the WIRELESS switch's pin value.
+    const QRegularExpression writeRe(QStringLiteral(R"(digitalWrite\(\s*\w+\s*,\s*([^\)]+)\))"));
+    const auto m = writeRe.match(ino);
+    QVERIFY2(m.hasMatch(), qPrintable("no output write found:\n" + ino));
+    const QString driver = m.captured(1);
+
+    // The LED is driven from the Rx node's aux variable rather than an inlined expression, so
+    // follow one link: whatever assigns that variable is what the Rx actually reads.
+    // Anchored to the start of a line so it matches the assignment in computeLogic() and not
+    // the `bool <driver> = LOW;` declaration.
+    const QRegularExpression assignRe(
+        QStringLiteral(R"(^\s*%1\s*=\s*([^;]+);)").arg(QRegularExpression::escape(driver.trimmed())),
+        QRegularExpression::MultilineOption);
+    const auto assign = assignRe.match(ino);
+    QVERIFY2(assign.hasMatch(),
+             qPrintable(QString("no assignment to the LED driver '%1' found:\n%2").arg(driver, ino)));
+    const QString rhs = assign.captured(1);
+
+    QVERIFY2(rhs.contains("wireless", Qt::CaseInsensitive),
+             qPrintable(QString("the Rx node is assigned from '%1'; wireless overrides the physical "
+                                "wire, so it must follow the WIRELESS switch\n--- ino ---\n%2")
+                            .arg(rhs, ino)));
+    QVERIFY2(!rhs.contains("phys", Qt::CaseInsensitive),
+             qPrintable(QString("the Rx node still reads the overridden physical wire: %1").arg(rhs)));
+}

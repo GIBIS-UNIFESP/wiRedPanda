@@ -24,6 +24,14 @@ private slots:
     /// this answers is whether it actually MISBEHAVES. Differential against the engine.
     void testGatedClockExportMatchesTheEngine();
 
+    /// connectWirelessElements() repoints an Rx node's predecessor at its matching Tx, so a
+    /// physical wire into that Rx is dead -- testWirelessOverridesPhysicalWire pins that for the
+    /// engine. Both exporters reach their wireless resolution only inside
+    /// `if (port->connections().isEmpty())`, so an Rx that ALSO carries a physical wire falls
+    /// through and inlines the physical driver: the exported design computes a different
+    /// function than the simulator, on a supported and tested configuration.
+    void testWirelessOverrideExportsTheWirelessDriver();
+
     void initTestCase();
     void cleanupTestCase();
 

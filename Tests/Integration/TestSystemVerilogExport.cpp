@@ -1439,3 +1439,115 @@ void TestSystemVerilogExport::testGatedClockExportMatchesTheEngine()
              qPrintable(QString("gated-clock export diverges from the engine:\n%1\n--- sv ---\n%2")
                             .arg(out, sv)));
 }
+
+void TestSystemVerilogExport::testWirelessOverrideExportsTheWirelessDriver()
+{
+#ifndef Q_OS_LINUX
+    QSKIP("SystemVerilog export tests require iverilog (Linux only)");
+#endif
+    if (QStandardPaths::findExecutable("iverilog").isEmpty()
+        || QStandardPaths::findExecutable("vvp").isEmpty()) {
+        QSKIP("iverilog/vvp not available");
+    }
+
+    std::unique_ptr<WorkSpace> workspace = TestUtils::createWorkspace();
+    auto *scene = workspace->scene();
+    CircuitBuilder builder(scene);
+
+    auto *swPhys = new InputSwitch();
+    auto *swWl = new InputSwitch();
+    auto *tx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *rx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *led = new Led();
+    QVERIFY(tx && rx);
+    swPhys->setLabel("PHYS");
+    swWl->setLabel("WIRELESS");
+    tx->setLabel("CH");
+    tx->setWirelessMode(WirelessMode::Tx);
+    rx->setLabel("CH");
+    rx->setWirelessMode(WirelessMode::Rx);
+
+    builder.add(swPhys, swWl, tx, rx, led);
+    builder.connect(swPhys, 0, rx, 0);   // physical wire INTO the Rx -- overridden by wireless
+    builder.connect(swWl, 0, tx, 0);     // drives the transmitter
+    builder.connect(rx, 0, led, 0);
+
+    Simulation *sim = builder.initSimulation();
+    QVERIFY(sim != nullptr);
+
+    // Engine reference over all four input combinations.
+    QVector<int> expected;
+    const QVector<QPair<bool, bool>> vectors{{false, false}, {true, false}, {false, true}, {true, true}};
+    for (const auto &v : vectors) {
+        swPhys->setOn(v.first);
+        swWl->setOn(v.second);
+        sim->update();
+        sim->update();
+        expected.append(static_cast<int>(led->inputPort(0)->status()) == 1 ? 1 : 0);
+    }
+    QVERIFY2(expected == QVector<int>({0, 0, 1, 1}),
+             "precondition: the engine must follow the WIRELESS switch, not the physical one");
+
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString svPath = dir.filePath("wireless_override.sv");
+    QVector<GraphicElement *> elements = scene->elements();
+    SystemVerilogCodeGen generator(svPath, elements);
+    generator.generate();
+
+    QFile svFile(svPath);
+    QVERIFY(svFile.open(QIODevice::ReadOnly | QIODevice::Text));
+    const QString sv = QString::fromUtf8(svFile.readAll());
+    svFile.close();
+
+    const QRegularExpression inRe(QStringLiteral(R"(input\s+(\w+))"));
+    const QRegularExpression outRe(QStringLiteral(R"(output\s+(\w+))"));
+    QStringList ins;
+    auto it = inRe.globalMatch(sv);
+    while (it.hasNext()) { ins << it.next().captured(1); }
+    const auto outMatch = outRe.match(sv);
+    QVERIFY2(ins.size() == 2 && outMatch.hasMatch(), qPrintable("unexpected interface:\n" + sv));
+    const QString q = outMatch.captured(1);
+    // Element order puts PHYS first, WIRELESS second.
+    const QString phys = ins.at(0);
+    const QString wl = ins.at(1);
+
+    QString tb;
+    QTextStream ts(&tb);
+    ts << "`timescale 1ns/1ps\nmodule tb;\n"
+       << "    reg " << phys << ", " << wl << ";\n    wire " << q << ";\n    integer errors = 0;\n"
+       << "    wireless_override dut(." << phys << "(" << phys << "), ." << wl << "(" << wl
+       << "), ." << q << "(" << q << "));\n    initial begin\n";
+    for (int i = 0; i < vectors.size(); ++i) {
+        ts << "        " << phys << " = " << (vectors.at(i).first ? 1 : 0) << "; "
+           << wl << " = " << (vectors.at(i).second ? 1 : 0) << "; #10;\n"
+           << "        if (" << q << " !== 1'b" << expected.at(i) << ") begin errors = errors + 1;"
+           << " $display(\"FAIL vec " << i << ": got %b want " << expected.at(i) << "\", " << q << "); end\n";
+    }
+    ts << "        if (errors == 0) $display(\"PASS\"); else $display(\"FAILED %0d\", errors);\n"
+       << "        $finish;\n    end\nendmodule\n";
+    ts.flush();
+
+    const QString tbPath = dir.filePath("tb.sv");
+    QFile tbFile(tbPath);
+    QVERIFY(tbFile.open(QIODevice::WriteOnly | QIODevice::Text));
+    QTextStream(&tbFile) << tb;
+    tbFile.close();
+
+    const QString simOut = dir.filePath("sim.out");
+    QProcess compile;
+    compile.setProcessChannelMode(QProcess::MergedChannels);
+    compile.start("iverilog", {"-g2012", "-o", simOut, tbPath, svPath});
+    QVERIFY2(compile.waitForFinished(30000), "iverilog timed out");
+    QVERIFY2(compile.exitCode() == 0,
+             qPrintable(QString("export did not compile:\n%1\n--- sv ---\n%2")
+                            .arg(QString::fromUtf8(compile.readAll()), sv)));
+
+    QProcess run;
+    run.start(simOut, {});
+    QVERIFY2(run.waitForFinished(30000), "vvp timed out");
+    const QString out = QString::fromUtf8(run.readAllStandardOutput());
+    QVERIFY2(out.contains("PASS") && !out.contains("FAIL"),
+             qPrintable(QString("the export follows the overridden PHYSICAL wire:\n%1\n--- sv ---\n%2")
+                            .arg(out, sv)));
+}

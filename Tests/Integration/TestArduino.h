@@ -70,6 +70,11 @@ private slots:
     /// as correct.
     void testGeneratedSketchMatchesEngineOnRippleCounter();
 
+    /// The Arduino half of the same rule: otherPortNameImpl() reaches its wireless resolution
+    /// only when the port has no connections, so an Rx that also carries a physical wire would
+    /// be exported following the wire the engine discarded.
+    void testWirelessOverrideExportsTheWirelessDriver();
+
     void initTestCase();
     void cleanupTestCase();
 

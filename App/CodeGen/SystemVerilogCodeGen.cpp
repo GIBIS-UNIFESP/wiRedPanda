@@ -129,6 +129,22 @@ QString SystemVerilogCodeGen::otherPortNameImpl(Port *port, QSet<Port *> &visite
         return mapped.isEmpty() ? "1'b0" : mapped;
     }
 
+    // An Rx whose physical wire wireless has already overridden: connectWirelessElements()
+    // repointed its predecessor at the matching Tx, so that wire is dead and the engine never
+    // reads it again. The resolution below is reached only when the port has NO connections, so
+    // without this an Rx that also carries a wire falls through to the connection walk and
+    // inlines the physical driver -- exporting a different function than the simulator, on a
+    // configuration testWirelessOverridesPhysicalWire explicitly supports. Handled here; every
+    // other path is unchanged.
+    if (!port->connections().isEmpty()) {
+        auto *rxElm = port->graphicElement();
+        if (rxElm && rxElm->wirelessMode() == WirelessMode::Rx && !rxElm->label().isEmpty()) {
+            if (auto *txPort = m_txInputPorts.value(rxElm->label(), nullptr)) {
+                return otherPortNameImpl(txPort, visited);
+            }
+        }
+    }
+
     if (port->connections().isEmpty()) {
         QString mapped = m_varMap.value(port);
         if (!mapped.isEmpty()) return mapped;
