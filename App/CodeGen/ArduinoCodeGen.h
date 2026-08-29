@@ -106,6 +106,11 @@ private:
 
     /// Returns "HIGH" or "LOW" for Active/Inactive status values.
     static QString highLow(Status val);
+
+    /// Emits a header comment and a log warning naming every unconnected input whose default is
+    /// non-definite. Arduino cannot represent Unknown or Error, so highLow() collapses them to
+    /// LOW; this makes that loss visible in the artifact instead of silent.
+    void reportNonDefiniteDefaults();
     /// Strips characters that are illegal in C++ identifiers.
     static QString removeForbiddenChars(const QString &input);
     /// Returns \c true if \a name collides with an Arduino built-in identifier.

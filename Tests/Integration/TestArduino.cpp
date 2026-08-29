@@ -3168,3 +3168,59 @@ void TestArduino::testWirelessOverrideExportsTheWirelessDriver()
     QVERIFY2(!rhs.contains("phys", Qt::CaseInsensitive),
              qPrintable(QString("the Rx node still reads the overridden physical wire: %1").arg(rhs)));
 }
+
+void TestArduino::testNonDefiniteDefaultsAreReportedInTheSketch()
+{
+    std::unique_ptr<WorkSpace> workspace = TestUtils::createWorkspace();
+    auto *scene = workspace->scene();
+    CircuitBuilder builder(scene);
+
+    // A NOT gate whose input is left unconnected: defaultValue() is Unknown, and the engine
+    // treats that as genuinely undefined.
+    auto *inv = ElementFactory::buildElement(ElementType::Not);
+    auto *led = new Led();
+    inv->setLabel("DANGLING");
+    builder.add(inv, led);
+    builder.connect(inv, 0, led, 0);
+    QVERIFY(builder.initSimulation() != nullptr);
+    QCOMPARE(inv->inputPort(0)->defaultValue(), Status::Unknown);
+
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString inoPath = dir.filePath("lossy.ino");
+    QVector<GraphicElement *> elements = scene->elements();
+    ArduinoCodeGen generator(inoPath, elements);
+    generator.generate();
+
+    QFile f(inoPath);
+    QVERIFY(f.open(QIODevice::ReadOnly | QIODevice::Text));
+    const QString ino = QString::fromUtf8(f.readAll());
+    f.close();
+
+    QVERIFY2(ino.contains("WARNING: this sketch is not a faithful translation"),
+             qPrintable("the sketch does not disclose the two-state collapse:\n" + ino));
+    QVERIFY2(ino.contains("DANGLING"),
+             qPrintable("the disclosure must name the offending port:\n" + ino));
+
+    // A fully-driven circuit must NOT carry the warning, or it becomes noise nobody reads.
+    std::unique_ptr<WorkSpace> clean = TestUtils::createWorkspace();
+    CircuitBuilder cleanBuilder(clean->scene());
+    auto *sw = new InputSwitch();
+    auto *inv2 = ElementFactory::buildElement(ElementType::Not);
+    auto *led2 = new Led();
+    cleanBuilder.add(sw, inv2, led2);
+    cleanBuilder.connect(sw, 0, inv2, 0);
+    cleanBuilder.connect(inv2, 0, led2, 0);
+    QVERIFY(cleanBuilder.initSimulation() != nullptr);
+
+    const QString cleanPath = dir.filePath("clean.ino");
+    QVector<GraphicElement *> cleanElements = clean->scene()->elements();
+    ArduinoCodeGen cleanGen(cleanPath, cleanElements);
+    cleanGen.generate();
+    QFile cf(cleanPath);
+    QVERIFY(cf.open(QIODevice::ReadOnly | QIODevice::Text));
+    const QString cleanIno = QString::fromUtf8(cf.readAll());
+    cf.close();
+    QVERIFY2(!cleanIno.contains("WARNING:"),
+             qPrintable("a fully-driven circuit must export without the disclosure:\n" + cleanIno));
+}

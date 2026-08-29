@@ -75,6 +75,12 @@ private slots:
     /// be exported following the wire the engine discarded.
     void testWirelessOverrideExportsTheWirelessDriver();
 
+    /// Arduino stores signals in bool, so highLow() collapses Unknown and Error to LOW and
+    /// there is no fourState() equivalent to reach for -- an unconnected IC input, undefined in
+    /// the simulator, exports as a confident LOW. The loss cannot be removed; it must stop being
+    /// silent, the way DolphinSerializer clamps a non-binary cell AND warns.
+    void testNonDefiniteDefaultsAreReportedInTheSketch();
+
     void initTestCase();
     void cleanupTestCase();
 

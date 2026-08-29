@@ -34,7 +34,60 @@ ArduinoCodeGen::ArduinoCodeGen(const QString &fileName, const QVector<GraphicEle
 
 QString ArduinoCodeGen::highLow(const Status val)
 {
+    // Two-state BY NECESSITY, not by oversight. A sketch stores signals in `bool`, so there is
+    // no Arduino equivalent of SystemVerilog's 1'bx and nothing sensible for fourState() to
+    // return -- the SystemVerilog backend could add a third state here and this one cannot.
+    // Unknown and Error therefore both become LOW, which is the safe power-on reading.
+    //
+    // The loss is real, and without disclosure it is silent: an IC input left disconnected has
+    // defaultValue() == Unknown and exports as a confident LOW. reportNonDefiniteDefaults()
+    // names every such port in the sketch header and in the log, so the sketch is known-lossy
+    // rather than quietly wrong -- the same treatment DolphinSerializer gives a non-binary cell
+    // when it clamps one on load.
     return (val == Status::Active) ? "HIGH" : "LOW";
+}
+
+void ArduinoCodeGen::reportNonDefiniteDefaults()
+{
+    QStringList lossy;
+    for (auto *elm : std::as_const(m_elements)) {
+        if (!elm) {
+            continue;
+        }
+        for (int i = 0; i < elm->inputSize(); ++i) {
+            auto *port = elm->inputPort(i);
+            if (!port || !port->connections().isEmpty()) {
+                continue;   // a driven input never falls back to its default
+            }
+            const Status def = port->defaultValue();
+            if (def == Status::Active || def == Status::Inactive) {
+                continue;
+            }
+            const QString label = elm->label().isEmpty()
+                                      ? ElementFactory::typeToText(elm->elementType())
+                                      : elm->label();
+            lossy << QString("%1 input %2 (%3)")
+                         .arg(label)
+                         .arg(i)
+                         .arg(def == Status::Error ? "conflicting" : "undefined");
+        }
+    }
+    if (lossy.isEmpty()) {
+        return;
+    }
+    qCWarning(zero) << "ArduinoCodeGen: non-definite input defaults exported as LOW:"
+                    << lossy.join(", ");
+    m_stream << "//" << Qt::endl;
+    m_stream << "// WARNING: this sketch is not a faithful translation of the circuit." << Qt::endl;
+    m_stream << "// Arduino stores signals in bool and cannot represent an undefined value, so"
+             << Qt::endl;
+    m_stream << "// the following unconnected inputs -- undefined in the simulator -- are exported"
+             << Qt::endl;
+    m_stream << "// as a definite LOW:" << Qt::endl;
+    for (const QString &entry : std::as_const(lossy)) {
+        m_stream << "//   - " << entry << Qt::endl;
+    }
+    m_stream << "//" << Qt::endl;
 }
 
 QString ArduinoCodeGen::removeForbiddenChars(const QString &input)
@@ -188,6 +241,7 @@ void ArduinoCodeGen::generate()
         m_stream << "//" << Qt::endl;
         m_stream << QString("// Target Board: %1").arg(m_selectedBoard.name) << Qt::endl;
         m_stream << QString("// Pin Usage: %1/%2 pins").arg(totalRequiredPins).arg(m_selectedBoard.maxPins()) << Qt::endl;
+        reportNonDefiniteDefaults();
         m_stream << "//" << Qt::endl;
         m_stream << Qt::endl
                  << Qt::endl;
