@@ -8,9 +8,8 @@
 #include <QFileDevice>
 #include <QLayout>
 #include <QResizeEvent>
-#include <QTemporaryDir>
-
 #include <QSignalSpy>
+#include <QTemporaryDir>
 
 #include "App/Core/Application.h"
 #include "App/Core/Settings.h"

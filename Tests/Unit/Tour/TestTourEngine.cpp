@@ -6,12 +6,11 @@
 #include <QApplication>
 #include <QFile>
 #include <QFont>
-#include <QSignalSpy>
-#include <QTemporaryDir>
-
 #include <QLabel>
 #include <QPushButton>
 #include <QResizeEvent>
+#include <QSignalSpy>
+#include <QTemporaryDir>
 
 #include "App/Core/Settings.h"
 #include "App/Core/ThemeManager.h"

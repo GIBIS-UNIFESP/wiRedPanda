@@ -12,11 +12,11 @@
 
 #include "App/Core/Common.h"
 #include "App/Element/GraphicElement.h"
-#include "App/Element/GraphicElementSerializer.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Line.h"
+#include "App/Element/GraphicElementSerializer.h"
 #include "App/Element/IC.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/Workspace.h"

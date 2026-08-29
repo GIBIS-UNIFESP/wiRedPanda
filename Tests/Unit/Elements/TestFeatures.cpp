@@ -208,4 +208,3 @@ void TestFeatures::testMultipleElementsFeatures()
     QVERIFY(!display->hasFrequency());
     QVERIFY(!display->hasDelay());
 }
-

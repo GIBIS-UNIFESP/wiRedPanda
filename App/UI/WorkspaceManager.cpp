@@ -3,12 +3,12 @@
 
 #include "App/UI/WorkspaceManager.h"
 
+#include <QEvent>
 #include <QFile>
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QPushButton>
-#include <QEvent>
 #include <QMouseEvent>
+#include <QPushButton>
 #include <QTabBar>
 #include <QTabWidget>
 #include <QUndoStack>

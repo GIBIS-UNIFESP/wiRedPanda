@@ -3,10 +3,10 @@
 
 #include "Tests/Unit/Ui/TestUpdateController.h"
 
+#include <QCheckBox>
 #include <QDesktopServices>
 #include <QDialog>
 #include <QDialogButtonBox>
-#include <QCheckBox>
 #include <QDir>
 #include <QFile>
 #include <QMessageBox>

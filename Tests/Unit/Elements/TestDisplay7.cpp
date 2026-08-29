@@ -3,12 +3,11 @@
 
 #include "Tests/Unit/Elements/TestDisplay7.h"
 
+#include <QKeySequence>
 #include <QPainter>
 #include <QPixmap>
-#include <QStyleOptionGraphicsItem>
-
-#include <QKeySequence>
 #include <QPointF>
+#include <QStyleOptionGraphicsItem>
 
 #include "App/Element/GraphicElements/Display7.h"
 #include "App/IO/SerializationContext.h"

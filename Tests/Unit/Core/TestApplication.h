@@ -12,7 +12,6 @@ class TestApplication : public QObject
 
 private slots:
 
-
     // Regression: C10 — sentry deny-list filters known-noise patterns
     void testIsSentryDenyMessageMatchesClusterD();
     void testIsSentryDenyMessageDoesNotFilterUnknown();

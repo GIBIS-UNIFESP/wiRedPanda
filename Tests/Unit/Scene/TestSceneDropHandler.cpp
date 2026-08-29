@@ -157,7 +157,6 @@ void TestSceneDropHandler::testHandleNewElementDropAddsElementAtScenePosition()
 
     handler.handleNewElementDrop(&event);
 
-
     QCOMPARE(scene->elements().size(), countBefore + 1);
 
     GraphicElement *added = nullptr;
