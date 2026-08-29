@@ -169,32 +169,28 @@ jobs:
       if: runner.os == 'Linux' && failure()
       run: ./Scripts/ci_linux_core_analyze.sh build-release/test_wiredpanda "$RUNNER_TEMP/cores" crash-diagnostics
 
-    # Trial runs of the gui suite off-Linux, non-blocking while they build a
+    # Trial run of the gui suite off-Linux, non-blocking while it builds a
     # track record (promote to blocking once proven stable; see the polling
-    # AutoDismisser test hardening that unblocked this). macOS pins the
-    # offscreen platform: the historical hang class was native-cocoa modal
-    # activation timing. Windows tries the native platform first — its
-    # runners already run the widget-creating non-gui suite natively and
-    # green. Separate steps on purpose: a ternary env expression could set
-    # QT_QPA_PLATFORM to "" (set-but-empty), which makes Qt load no platform.
+    # AutoDismisser test hardening that unblocked this). Offscreen on both:
+    # the historical macOS hang class was native-cocoa modal activation
+    # timing, and Windows turned out to have the same shape against a real
+    # window manager — TestMainWindowGui calls createMW() at 145 sites, so it
+    # shows that many top-level windows in one process, and it stalled 4 of 10
+    # native runs on QTEST_FUNCTION_TIMEOUT, at a different test function each
+    # time, while the same binary on the same runner passed 5 of 5 offscreen.
+    # The non-gui suite stays native: it creates widgets, but not a window per
+    # test. One step rather than one per OS, now that both want the same
+    # literal value — the pitfall that forced them apart was a ternary env
+    # expression evaluating to "" (set-but-empty), which makes Qt load no
+    # platform at all.
     - name: Test (GUI, offscreen, trial)
-      id: test-gui-macos-trial
-      if: runner.os == 'macOS'
+      id: test-gui-trial
+      if: runner.os != 'Linux'
       timeout-minutes: 10
       continue-on-error: true
       env:
         QT_FORCE_STDERR_LOGGING: 1
         QT_QPA_PLATFORM: offscreen
-      run: |
-        ctest --preset release -V -L gui -FS non_gui_complete
-
-    - name: Test (GUI, native, trial)
-      id: test-gui-windows-trial
-      if: runner.os == 'Windows'
-      timeout-minutes: 10
-      continue-on-error: true
-      env:
-        QT_FORCE_STDERR_LOGGING: 1
       run: |
         ctest --preset release -V -L gui -FS non_gui_complete
 
@@ -219,10 +215,10 @@ jobs:
         fi
 
     - name: Upload build artifacts on failure
-      # continue-on-error on the two GUI-trial steps means their failure alone
-      # doesn't make failure() true -- check those steps' own outcomes too, or a
+      # continue-on-error on the GUI-trial step means its failure alone doesn't
+      # make failure() true -- check that step's own outcome too, or a
       # GUI-trial-only crash's diagnostics would never get uploaded.
-      if: failure() || steps.test-gui-macos-trial.outcome == 'failure' || steps.test-gui-windows-trial.outcome == 'failure'
+      if: failure() || steps.test-gui-trial.outcome == 'failure'
       uses: actions/upload-artifact@v7
       with:
         name: build-logs-${{ matrix.os }}-${{ matrix.qt }}${{ contains(matrix.cmake_args, 'ENABLE_UNITY=OFF') && '-no-unity' || contains(matrix.cmake_args, 'BATCH_SIZE=1000') && '-mega-unity' || '' }}
