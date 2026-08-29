@@ -28,7 +28,16 @@ Simulation::Simulation(SimulationHost *host, QObject *parent)
     // 1ms tick drives the simulation at ~1000 steps/second — fast enough for
     // human perception while keeping CPU load predictable.
     m_timer.setInterval(1ms);
-    connect(&m_timer, &QTimer::timeout, this, &Simulation::update);
+    // Guarded at the CONNECTION, not inside update(): update() is also public API called
+    // directly (BeWavedDolphin's sweep, MCP, tests), and those callers must keep seeing an
+    // exception rather than a silently swallowed tick. Only the timer-driven invocation
+    // crosses Qt's signal-slot dispatch, which is where throwing is undefined behaviour --
+    // on macOS the unwinder reaches std::terminate mid-stack and Application::notify's
+    // backstop never runs (see Application::guardedSlot). update() runs arbitrary
+    // updateLogic() code 1000x/s, so it is exactly the kind of body that doc means.
+    connect(&m_timer, &QTimer::timeout, this, [this] {
+        Application::guardedSlot(this, [this] { update(); });
+    });
 
     // Derive the visual refresh interval from the monitor's refresh rate so
     // we match the display without wasting repaints.  Falls back to 60 Hz.
