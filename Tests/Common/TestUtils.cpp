@@ -6,6 +6,7 @@
 #include <limits>
 
 #include <QAbstractButton>
+#include <QCoreApplication>
 #include <QGraphicsScene>
 #include <QPainter>
 #include <QRandomGenerator>
@@ -58,6 +59,16 @@ void setupTestEnvironment()
     // ~/.local/share/GIBIS-UNIFESP/wiRedPanda — confirmed accumulating thousands of
     // leaked autosave files and stray test-category folders across real test runs.
     QStandardPaths::setTestModeEnabled(true);
+
+    // Force Qt's own dialog widgets everywhere. The AutoDismisser infrastructure drives
+    // dialogs by qobject_cast-ing shown widgets -- QMessageBox here, QFileDialog in the
+    // file-dialog tests -- which only works when Qt draws them itself. On Windows the platform's native file
+    // dialog opens instead, no Qt widget is ever shown, the dismisser never fires, and the
+    // test sits until QTEST_FUNCTION_TIMEOUT turns into a qFatal -- the whole class then
+    // aborts, so the functions after it never run either. Linux passes today only because
+    // the offscreen platform has no native dialogs to prefer; this states the requirement
+    // rather than inheriting it from the QPA plugin.
+    QCoreApplication::setAttribute(Qt::AA_DontUseNativeDialogs);
 
     Comment::setVerbosity(-1);
     Application::interactiveMode = false;   // Suppress UI dialogs in tests
