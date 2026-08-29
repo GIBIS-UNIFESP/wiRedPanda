@@ -2450,8 +2450,10 @@
                               },
                               "values": {
                                 "type": "array",
+                                "description": "Per-column logic values for this input row. Input rows are two-state: SignalModel::setValue() clamps anything else to 0/1 and warns.",
                                 "items": {
-                                  "type": "integer"
+                                  "type": "integer",
+                                  "enum": [0, 1]
                                 }
                               }
                             },
@@ -2476,8 +2478,10 @@
                               },
                               "values": {
                                 "type": "array",
+                                "description": "Per-column four-state logic values for this output row: -1 unknown, 0 low, 1 high, 2 error -- the same states get_output_value names in its `status` field.",
                                 "items": {
-                                  "type": "integer"
+                                  "type": "integer",
+                                  "enum": [-1, 0, 1, 2]
                                 }
                               }
                             },
