@@ -12,7 +12,9 @@
 #include <QTemporaryDir>
 #include <QTest>
 
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputButton.h"
+#include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/Scene.h"
@@ -715,4 +717,39 @@ void TestInputElements::testAppearanceReloadsAfterFileModified()
     QVERIFY2(firstSize != secondSize,
              "A fresh element loading the same path after the file changed on disk must not "
              "reuse another element's stale cached pixmap");
+}
+
+void TestInputElements::testRotarySelectionIsResetAndRestoredWithSimState()
+{
+    auto *rotary = qobject_cast<InputRotary *>(ElementFactory::buildElement(ElementType::InputRotary));
+    QVERIFY(rotary != nullptr);
+    rotary->setOutputSize(4);
+    rotary->initSimulationVectors(rotary->inputSize(), rotary->outputSize());
+
+    rotary->setOn(true, 2);                 // as a user click would
+    // A live tick is what puts the selection into the SIMULATION outputs; setOn() only writes
+    // m_currentPort and the port statuses. sweep() snapshots after the simulation has been
+    // running, so this mirrors the real ordering rather than saving an empty state.
+    rotary->updateOutputs();
+    QVERIFY(rotary->isOn(2));
+    QVERIFY(!rotary->isOn(0));
+
+    // Snapshot / reset / restore, exactly the order WaveformSimulator::sweep() uses.
+    QVector<Status> saved;
+    rotary->saveSimState(saved);
+
+    rotary->resetSimState();
+    QVERIFY2(rotary->isOn(0),
+             "the sweep's reset must return the rotary to its power-on position, or every run "
+             "inherits the live one");
+    QVERIFY(!rotary->isOn(2));
+
+    int cursor = 0;
+    rotary->restoreSimState(saved, cursor);
+    QVERIFY2(rotary->isOn(2),
+             "and the restore must put the live selection back, or a sweep leaves the canvas "
+             "rotated to wherever its last column landed");
+    QVERIFY(!rotary->isOn(0));
+
+    delete rotary;
 }

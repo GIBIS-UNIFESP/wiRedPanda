@@ -52,6 +52,17 @@ public:
      */
     void setOn(const bool value, const int port = 0) override;
 
+    /// \reimp Also returns the selection to port 0. m_currentPort is the rotary's own
+    /// simulation state -- isOn() reads it and updateOutputs() republishes it every tick -- so
+    /// without this a BeWavedDolphin sweep inherits whatever position the user last left on the
+    /// canvas, and its "reset for reproducibility" pass has no effect on this element.
+    void resetSimState() override;
+
+    /// \reimp Recovers the selection from the restored one-hot outputs. The base class already
+    /// saves and restores those; what it cannot know is that they are republished from
+    /// m_currentPort on the next tick, which would overwrite them.
+    void restoreSimState(const QVector<Status> &in, int &cursor) override;
+
     /// \reimp A rotary selects exactly one active port, so a low cell is implicit: only a
     /// high \a value writes (selecting \a port); a low one is a no-op.
     void setWaveformValue(const bool value, const int port = 0) override;

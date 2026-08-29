@@ -268,6 +268,29 @@ void InputRotary::setOn(const bool value, const int port)
     }
 }
 
+void InputRotary::resetSimState()
+{
+    GraphicElement::resetSimState();
+    m_currentPort = 0;
+}
+
+void InputRotary::restoreSimState(const QVector<Status> &in, int &cursor)
+{
+    GraphicElement::restoreSimState(in, cursor);
+
+    // The base restores the one-hot output values, but isOn() answers from m_currentPort and
+    // GraphicElementInput::updateOutputs() pushes that onto the outputs on the very next tick --
+    // so without this the restore is undone before anything reads it. Derive the selection back
+    // out of the outputs rather than smuggling an int through a QVector<Status>, whose enum has
+    // no fixed underlying type and no room for a port index.
+    for (int i = 0; i < outputSize(); ++i) {
+        if (GraphicElement::outputValue(i) == Status::Active) {
+            m_currentPort = i;
+            break;
+        }
+    }
+}
+
 void InputRotary::setWaveformValue(const bool value, const int port)
 {
     // Only a high cell selects this port; a low cell is implicit (writing it would wrongly
