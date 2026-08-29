@@ -81,11 +81,15 @@ QList<GraphicElement *> ICRegistry::findICsByFile(const QString &fileName) const
 
 void ICRegistry::onFileChanged(const QString &filePath)
 {
-    // Guarded because this is a queued slot that deliberately rethrows below: an escaping
-    // exception crosses Qt's signal-slot dispatch, where Application::notify's catch is
-    // structurally unreachable on macOS -- the unwinder reaches std::terminate mid-stack.
-    // Deleting a watched IC file therefore killed the application there instead of
-    // reporting the load error, while Linux caught the same throw and carried on.
+    // Guarded because this is a queued slot that deliberately rethrows below, so an escaping
+    // exception crosses Qt's signal-slot dispatch -- where the upstream catch in
+    // Application::notify cannot be relied on. On macOS it is structurally unreachable (Qt's
+    // Exception Safety documentation, and QTBUG-15197): the unwinder reaches std::terminate
+    // mid-stack before any upstream frame runs. Debian's own buildd reproduces the same abort
+    // natively on armhf, hppa and sparc64 with Qt 6.10.2 (issue #525) -- no emulation
+    // involved -- while amd64 catches the same throw and carries on. Only the behaviour is
+    // established off amd64, not the mechanism. Deleting a watched IC file therefore
+    // terminated the application on those platforms instead of reporting the load error.
     Application::guardedSlot(this, [this, &filePath] {
         qCDebug(zero) << "IC file changed:" << filePath;
 

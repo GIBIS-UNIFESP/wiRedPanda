@@ -416,7 +416,8 @@ void MainWindow::setupConnections()
     connect(m_ui->pushButtonRemoveIC,          &QPushButton::clicked,     m_icController,      &ICController::showRemoveICHint);
     // Guarded here rather than inside removeICFile(): a failed moveToTrash() must keep
     // throwing to direct callers, which TestICController pins, while an exception crossing
-    // signal-slot dispatch must not reach notify()'s catch -- unreachable on macOS.
+    // signal-slot dispatch must not depend on notify()'s catch, which is unreachable on
+    // macOS and does not catch on Debian's armhf, hppa or sparc64 either (issue #525).
     connect(m_ui->pushButtonRemoveIC, &TrashButton::removeICFile, m_icController,
         [this](const QString &icFileName) {
             Application::guardedSlot(m_icController, [this, &icFileName] {
