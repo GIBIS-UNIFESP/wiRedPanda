@@ -4,6 +4,7 @@
 #include "App/Simulation/SimulationBlocker.h"
 
 #include "App/Core/Common.h"
+#include "App/Core/SentryHelpers.h"
 #include "App/Simulation/Simulation.h"
 
 SimulationBlocker::SimulationBlocker(Simulation *simulation)
@@ -16,6 +17,13 @@ SimulationBlocker::SimulationBlocker(Simulation *simulation)
     if (m_simulation->isRunning()) {
         m_restart = true;
         m_simulation->stop();
+
+        // Only when a blocker genuinely stops a running simulation, and only on the way
+        // in. The WIREDPANDA-H2 trail showed the stop/start rhythm around a crash was the
+        // most informative signal it had, but a crumb per construction -- most of which
+        // are no-ops on an already-stopped simulation, and both ends of every scope --
+        // would bury that signal in the 100-entry buffer instead of preserving it.
+        sentryBreadcrumb("simulation", QStringLiteral("Blocked (was running)"));
     }
 }
 

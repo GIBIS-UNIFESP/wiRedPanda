@@ -710,8 +710,16 @@ bool WorkspaceManager::closeTab(const int tabIndex)
 
     qCDebug(zero) << "Deleting tab.";
     m_currentTab->deleteLater();
-    sentryBreadcrumb("ui", QStringLiteral("Tab closed"));
     m_tab->removeTab(tabIndex);
+
+    // Deliberately after removeTab so the remaining count is accurate, and deliberately
+    // explicit that the delete is deferred: the WorkSpace -- and the simulation timer it
+    // owns by value -- outlives this call until the event loop runs. That gap was the
+    // leading theory for the WIREDPANDA-H2 paint-path crash variants, and a bare
+    // "Tab closed" crumb could not distinguish it.
+    sentryBreadcrumb("ui", QStringLiteral("Tab closed: index %1, %2 still open, delete deferred")
+                               .arg(tabIndex)
+                               .arg(m_tab->count()));
 
     qCDebug(zero) << "Closed tab " << tabIndex << ", #tabs: " << m_tab->count() << ", current tab: " << m_tabIndex;
 

@@ -12,6 +12,7 @@
 
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
+#include "App/Core/SentryHelpers.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
@@ -103,6 +104,16 @@ void ICRegistry::onFileChanged(const QString &filePath)
 
         // Reload all IC instances referencing this file
         const auto targets = findICsByFile(filePath);
+
+        // Whether a changed file was IC-referenced by another open tab -- and how many
+        // instances that put through a reload -- was the central unanswered question of the
+        // WIREDPANDA-H2 investigation, which had to infer it from surrounding crumbs. Record
+        // it directly. Only the basename goes out: filePath is absolute and carries the
+        // user's home directory.
+        sentryBreadcrumb("ic", QStringLiteral("IC file changed: %1, %2 instance(s) reloading")
+                                   .arg(QFileInfo(filePath).fileName())
+                                   .arg(targets.size()));
+
         if (targets.isEmpty()) {
             emit definitionChanged(filePath);
             return;
