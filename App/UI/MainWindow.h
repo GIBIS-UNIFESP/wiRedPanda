@@ -333,6 +333,10 @@ private:
     QPointer<TourOverlay> m_tourOverlay;
 
     QPointer<BewavedDolphin> m_bwd;
+    /// Severed in ~MainWindow. The waveform window is a child of this one, so its destroyed()
+    /// is emitted from QObjectPrivate::deleteChildren() inside ~QWidget -- by which point
+    /// ~MainWindow's body has run and the slot's captured `this` is only a QWidget.
+    QMetaObject::Connection m_bwdDestroyed;
 
     /// The tab being left, captured for onCurrentTabChanged(): by the time that slot runs,
     /// currentTab() already reflects the arriving tab (WorkspaceManager updates its current-tab

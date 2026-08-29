@@ -450,6 +450,11 @@ MainWindow::~MainWindow()
 {
     // Tear down the active tab's chrome wiring before child objects are destroyed.
     m_binder->unbind();
+
+    // Same ordering concern, one level deeper: the waveform window is a child, so ~QWidget
+    // deletes it and its destroyed() reaches the slot below with this object already torn
+    // down to its QWidget base. Sever it here, while the derived object is still whole.
+    disconnect(m_bwdDestroyed);
 }
 
 void MainWindow::createNewTab()
@@ -1103,7 +1108,7 @@ void MainWindow::on_actionWaveform_triggered()
         auto *bwd = new BewavedDolphin(currentTab()->scene(), true, this, this);
         bwd->createWaveform(currentTab()->dolphinFileName());
         m_bwd = bwd;
-        connect(bwd, &QObject::destroyed, this, [this] {
+        m_bwdDestroyed = connect(bwd, &QObject::destroyed, this, [this] {
             if (m_exerciseOverlay && m_exerciseEngine && m_exerciseEngine->isActive()) {
                 m_exerciseOverlay->hide();
                 m_exerciseOverlay->setParent(nullptr);
