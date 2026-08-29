@@ -42,6 +42,10 @@ private slots:
     /// canonicalizeOscillation() dereferences -- so the next container added fails here rather
     /// than silently outliving a rebuild.
     void testRestartClearsEveryPointerKeyedContainer();
+    /// initialize() can bail out early after already clearing the topology vectors, so it must
+    /// leave exactly what restart() leaves -- never m_initialized standing beside containers
+    /// describing the previous circuit.
+    void testFailedInitializeLeavesNoStaleTopology();
     void testEvaluationCapGrowsAlongEveryCrossComponentEdge();
 
     /// An IC's externally visible value must be correct as soon as the drain settles, not when

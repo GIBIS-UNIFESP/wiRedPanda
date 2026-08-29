@@ -307,12 +307,24 @@ void Simulation::updatePort(InputPort *port)
 
 void Simulation::restart()
 {
+    invalidateTopology();
+    m_currentTime = 0;
+}
+
+void Simulation::invalidateTopology()
+{
     // Invalidate the cached topology. Clearing the flag alone is not
     // enough: update() iterates m_sortedElements/m_clocks/m_inputs/m_outputs
     // before a re-initialize can run (for instance when Application::notify()
     // spins a QMessageBox nested event loop), and any entry that refers to an
     // element we've already freed faults on its vtable read. Drop every
     // reference so the next tick's initialize() can rebuild them cleanly.
+    //
+    // Shared with initialize()'s prologue. Clearing a strict SUBSET there would leave the rest
+    // standing whenever it bailed out early (a scene emptied down to its border rectangle):
+    // m_initialized true beside emptied vectors, contradicting the invariant update()'s
+    // Q_ASSERT(m_initialized) documents, with every pointer-keyed container still describing
+    // the previous circuit. One clearing point, one rule.
     m_initialized = false;
     m_sortedElements.clear();
     m_clocks.clear();
@@ -336,7 +348,6 @@ void Simulation::restart()
     m_simFeedbackComponent.clear();
     m_simFeedbackComponents.clear();
     m_simEvalCaps.clear();
-    m_currentTime = 0;
     // Postcondition: any cached state added to Simulation must be cleared above. This assert
     // documents the invariant and trips immediately if a new container is forgotten.
     Q_ASSERT(!m_initialized);
@@ -857,20 +868,16 @@ bool Simulation::initialize()
     // Rebuild all categorised lists from scratch so stale pointers from
     // a previous circuit state don't linger after undo/redo or file load.
     m_convergenceWarned = false;
-    m_atFixedPoint = false;  // the rebuilt netlist must settle once before any tick is skipped
     m_eventInitDone = false; // first processEvents() after (re)init seeds the whole network
-    // Same invariant restart() documents: topology-derived state must not outlive a
-    // rebuild. Pending events are stale twice over — SimEvent::target raw pointers (a
+    // Drop every topology-derived container, including the ones this function rebuilds only
+    // near its end -- so an early return (no elements) cannot leave the previous circuit's
+    // state standing. Pending events are stale twice over — SimEvent::target raw pointers (a
     // structural command may have freed the element: delete, morph, split-undo) and
     // priorities baked from the OLD m_simPriorities at schedule time. In temporal mode
     // pending cross-tick events are routine, so without this clear the next drain pops
     // an event for a freed element (use-after-free). The full-network seed that
     // m_eventInitDone=false forces makes the dropped events redundant anyway.
-    m_eventQueue.clear();
-    m_clocks.clear();
-    m_outputs.clear();
-    m_inputs.clear();
-    m_sortedElements.clear();
+    invalidateTopology();
 
     QVector<GraphicElement *> elements;
     auto items = m_host->simulationItems();
@@ -967,7 +974,6 @@ bool Simulation::initialize()
     QVector<GraphicElement *> flatElements;
     collectFlatElements(elements, flatElements);
 
-    m_icOutputMirror.clear();
     spliceICBoundaries(elements);
 
     // Seed each flat element's propagation delay for the temporal engine. This is the baseline;
@@ -980,7 +986,6 @@ bool Simulation::initialize()
     // resolved value ungated would let a hand-edited .panda inject a delay the engine honours
     // and no UI reveals. Read through the same predicate the writers use, so there is one rule
     // rather than a split.
-    m_delays.clear();
     for (auto *elm : std::as_const(flatElements)) {
         m_delays[elm] = elm->hasPropagationDelay() ? elm->propagationDelay() : SimTime{0};
     }

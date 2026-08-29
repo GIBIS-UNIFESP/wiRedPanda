@@ -198,6 +198,12 @@ private:
     static void updatePort(InputPort *port);
     static void updatePort(OutputPort *port);
 
+    /// Drops every topology-derived container -- the categorised element vectors, the successor
+    /// graph, the IC output mirror, the event queue and every pointer-keyed cache -- and clears
+    /// m_initialized. Shared by restart() and initialize()'s prologue so a rebuild that bails
+    /// out early cannot leave the previous circuit's state standing beside a set flag.
+    void invalidateTopology();
+
     /// Recursively collects every primitive (non-IC) element, descending through ICs, into \a out.
     /// IC boundary Nodes are primitives and are included; IC container nodes are not.
     static void collectFlatElements(const QVector<GraphicElement *> &elements,

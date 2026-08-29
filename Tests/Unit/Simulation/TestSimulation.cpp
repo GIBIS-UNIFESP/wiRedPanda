@@ -3,6 +3,8 @@
 
 #include "Tests/Unit/Simulation/TestSimulation.h"
 
+#include <memory>
+
 #include <QDir>
 #include <QElapsedTimer>
 #include <QFileInfo>
@@ -514,6 +516,58 @@ void TestSimulationUnit::testRestartClearsEveryPointerKeyedContainer()
     QVERIFY(sim.m_simFeedbackNodes.isEmpty());
     QVERIFY(sim.m_delays.isEmpty());
     QVERIFY(sim.m_publishGeneration.isEmpty());
+}
+
+void TestSimulationUnit::testFailedInitializeLeavesNoStaleTopology()
+{
+    // initialize() clears the topology vectors as its first act and can then bail out early
+    // (a scene holding only the border rectangle, or no elements at all). Clearing only some of
+    // them would leave m_initialized true beside containers still populated from the PREVIOUS
+    // circuit, while update()'s Q_ASSERT(m_initialized) documents the opposite invariant: the
+    // flag standing means the vectors describe the current scene. A failed rebuild must
+    // therefore leave exactly what restart() leaves.
+    //
+    // Driven through the stub host rather than by emptying a real Scene, so the second
+    // initialize() sees a different item list without any element actually being destroyed --
+    // the containers under test are keyed by those very pointers, and reading a freed one to
+    // decide whether it "survived" would be undefined behaviour.
+    auto n1 = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Nand));
+    auto n2 = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Nand));
+    auto feed1 = std::make_unique<Connection>();
+    auto feed2 = std::make_unique<Connection>();
+    feed1->setStartPort(n1->outputPort(0));
+    feed1->setEndPort(n2->inputPort(0));
+    feed2->setStartPort(n2->outputPort(0));
+    feed2->setEndPort(n1->inputPort(1));   // cross-coupled latch: the component containers fill
+
+    StubSimulationHost host;
+    host.m_items = {n1.get(), n2.get()};
+
+    Simulation sim(&host);
+    QVERIFY(sim.initialize());
+    QVERIFY2(!sim.m_simFeedbackComponents.isEmpty(), "precondition: a cycle must be detected");
+    QVERIFY(!sim.m_simPriorities.isEmpty());
+    QVERIFY(!sim.m_delays.isEmpty());
+    QVERIFY(!sim.m_successorGraph.isEmpty());
+
+    host.m_items = {};
+    QVERIFY2(!sim.initialize(), "precondition: a host with no elements must fail to initialize");
+
+    QVERIFY2(!sim.m_initialized, "a failed initialize() must not leave the initialized flag standing");
+    QVERIFY2(sim.m_simFeedbackComponents.isEmpty(), "m_simFeedbackComponents must not survive a failed initialize()");
+    QVERIFY2(sim.m_simFeedbackComponent.isEmpty(), "m_simFeedbackComponent must not survive a failed initialize()");
+    QVERIFY2(sim.m_simEvalCaps.isEmpty(), "m_simEvalCaps must not survive a failed initialize()");
+    QVERIFY2(sim.m_simPriorities.isEmpty(), "m_simPriorities must not survive a failed initialize()");
+    QVERIFY2(sim.m_delays.isEmpty(), "m_delays must not survive a failed initialize()");
+    QVERIFY(sim.m_publishGeneration.isEmpty());
+    QVERIFY2(sim.m_successorGraph.isEmpty(), "m_successorGraph must not survive a failed initialize()");
+    QVERIFY(sim.m_icOutputMirror.isEmpty());
+
+    // Detach the ports before the connections and elements go out of scope.
+    feed1->setStartPort(nullptr);
+    feed1->setEndPort(nullptr);
+    feed2->setStartPort(nullptr);
+    feed2->setEndPort(nullptr);
 }
 
 void TestSimulationUnit::testEvaluationCapGrowsAlongEveryCrossComponentEdge()
