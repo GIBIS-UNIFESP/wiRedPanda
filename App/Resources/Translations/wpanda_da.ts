@@ -1661,67 +1661,67 @@ Save it now?</source>
 Gem nu?</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="222"/>
-        <location filename="../../UI/ICController.cpp" line="281"/>
-        <location filename="../../UI/ICController.cpp" line="377"/>
-        <location filename="../../UI/ICController.cpp" line="417"/>
+        <location filename="../../UI/ICController.cpp" line="223"/>
+        <location filename="../../UI/ICController.cpp" line="286"/>
+        <location filename="../../UI/ICController.cpp" line="386"/>
+        <location filename="../../UI/ICController.cpp" line="428"/>
         <source>Error</source>
         <translation>Fejl</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="222"/>
-        <location filename="../../UI/ICController.cpp" line="281"/>
-        <location filename="../../UI/ICController.cpp" line="377"/>
+        <location filename="../../UI/ICController.cpp" line="223"/>
+        <location filename="../../UI/ICController.cpp" line="286"/>
+        <location filename="../../UI/ICController.cpp" line="386"/>
         <source>Could not read IC file: %1</source>
         <translation>Kunne ikke læse IC-filen: %1</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="230"/>
-        <location filename="../../UI/ICController.cpp" line="299"/>
+        <location filename="../../UI/ICController.cpp" line="231"/>
+        <location filename="../../UI/ICController.cpp" line="304"/>
         <source>IC embedded successfully.</source>
         <translation>IC blev indlejret.</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="249"/>
-        <location filename="../../UI/ICController.cpp" line="322"/>
+        <location filename="../../UI/ICController.cpp" line="252"/>
+        <location filename="../../UI/ICController.cpp" line="329"/>
         <source>Extract IC to file...</source>
         <translation>Udpak IC til fil...</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="249"/>
-        <location filename="../../UI/ICController.cpp" line="322"/>
-        <location filename="../../UI/ICController.cpp" line="410"/>
+        <location filename="../../UI/ICController.cpp" line="252"/>
+        <location filename="../../UI/ICController.cpp" line="329"/>
+        <location filename="../../UI/ICController.cpp" line="421"/>
         <source>Panda files</source>
         <translation>Panda-filer</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="262"/>
-        <location filename="../../UI/ICController.cpp" line="335"/>
+        <location filename="../../UI/ICController.cpp" line="265"/>
+        <location filename="../../UI/ICController.cpp" line="342"/>
         <source>IC extracted to %1</source>
         <translation>IC udpakket til %1</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="365"/>
+        <location filename="../../UI/ICController.cpp" line="374"/>
         <source>No file-based ICs to embed.</source>
         <translation>Ingen filbaserede IC&apos;er at indlejre.</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="398"/>
+        <location filename="../../UI/ICController.cpp" line="407"/>
         <source>Embedded %1 IC(s). Circuit is now self-contained.</source>
         <translation>%1 IC(&apos;er) indlejret. Kredsløbet er nu selvstændigt.</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="400"/>
+        <location filename="../../UI/ICController.cpp" line="409"/>
         <source>Embedded %1 IC(s); some file-based ICs remain.</source>
         <translation>%1 IC indlejret; nogle filbaserede IC er stadig tilbage.</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="410"/>
+        <location filename="../../UI/ICController.cpp" line="421"/>
         <source>Select IC file to embed</source>
         <translation>Vælg IC-fil til indlejring</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="417"/>
+        <location filename="../../UI/ICController.cpp" line="428"/>
         <source>Could not read file: %1</source>
         <translation>Kunne ikke læse filen: %1</translation>
     </message>
@@ -1800,17 +1800,17 @@ Gem nu?</translation>
 <context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="280"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="288"/>
         <source>Could not open file: %1</source>
         <translation>Kunne ikke åbne fil: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="287"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="295"/>
         <source>Could not save file: %1</source>
         <translation>Kunne ikke gemme fil: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="350"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="358"/>
         <source>Embedded IC dependency chain exceeds the maximum nesting depth (%1) while resolving &apos;%2&apos;</source>
         <translation>Afhængighedskæden for indlejrede IC overstiger den maksimale indlejringsdybde (%1) ved løsning af &apos;%2&apos;</translation>
     </message>
@@ -2360,7 +2360,7 @@ Gem nu?</translation>
         <translation>&amp;Rundvisninger</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1289"/>
+        <location filename="../../UI/MainWindow.cpp" line="1302"/>
         <location filename="../../UI/MainWindowUI.cpp" line="841"/>
         <source>Mute</source>
         <translation>Lyd fra</translation>
@@ -2391,7 +2391,7 @@ Gem nu?</translation>
         <translation>Baggrunds-simulation</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="638"/>
+        <location filename="../../UI/MainWindow.cpp" line="651"/>
         <location filename="../../UI/MainWindowUI.cpp" line="852"/>
         <source>Shortcuts and Tips</source>
         <translation>Genveje og tips</translation>
@@ -2407,12 +2407,12 @@ Gem nu?</translation>
         <translation>Rapporter oversættelsesfejl eller hjælp med at forbedre oversættelser på Weblate</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1000"/>
+        <location filename="../../UI/MainWindow.cpp" line="1013"/>
         <source>New Project</source>
         <translation>Nyt projekt</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="507"/>
+        <location filename="../../UI/MainWindow.cpp" line="520"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2431,7 +2431,7 @@ wiRedPanda %1 vil automatisk liste alle andre .panda-filer i samme mappe som det
 Du skal gemme nye projekter før du kan tilgå IC&apos;er og udseender eller køre beWavedDolphin-simuleringer.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="668"/>
+        <location filename="../../UI/MainWindow.cpp" line="681"/>
         <source>Are you sure?</source>
         <translation>Er du sikker?</translation>
     </message>
@@ -2461,37 +2461,37 @@ Du skal gemme nye projekter før du kan tilgå IC&apos;er og udseender eller kø
         <translation>Kunne ikke oprette eller tilgå en mappe til brugerdefinerede rundvisninger.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="567"/>
+        <location filename="../../UI/MainWindow.cpp" line="580"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda er software udviklet af studerende fra Federal University of São Paulo for at hjælpe studerende med at lære om logiske kredsløb.&lt;/p&gt;&lt;p&gt;Softwareversion: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Skabere:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda vedligeholdes i øjeblikket af Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves og Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Indsend venligst en rapport på vores GitHub-side, hvis du finder en fejl eller ønsker at anmode om en ny funktion.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Besøg vores hjemmeside!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="591"/>
+        <location filename="../../UI/MainWindow.cpp" line="604"/>
         <source>Redo</source>
         <translation>Gentag</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="592"/>
+        <location filename="../../UI/MainWindow.cpp" line="605"/>
         <source>Undo</source>
         <translation>Fortryd</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="617"/>
+        <location filename="../../UI/MainWindow.cpp" line="630"/>
         <source>&lt;h1&gt;Keyboard Shortcuts&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;Element Property Navigation&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : Previous / next primary property &lt;/li&gt;&lt;li&gt; { / } : Previous / next secondary property &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : Morph to previous / next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Double-click a wire to create a node &lt;/li&gt;&lt;li&gt; Drag an element from the left panel onto the canvas to add it &lt;/li&gt;&lt;li&gt; Nudge the selection with the arrow keys (hold Shift for larger steps) &lt;/li&gt;&lt;li&gt; Drop a .panda file onto the canvas to open it &lt;/li&gt;&lt;/ul&gt;</source>
         <translation>&lt;h1&gt;Tastaturgenveje&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;Navigation af Elementegenskaber&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : Forrige / næste primære egenskab &lt;/li&gt;&lt;li&gt; { / } : Forrige / næste sekundære egenskab &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : Omform til forrige / næste element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Generelle Tips&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Dobbeltklik på en ledning for at oprette en knude &lt;/li&gt;&lt;li&gt; Træk et element fra venstrepanelet til tegnefladen for at tilføje det &lt;/li&gt;&lt;li&gt; Flyt markeringen med piletasterne (hold Shift nede for større trin) &lt;/li&gt;&lt;li&gt; Slip en .panda-fil på tegnefladen for at åbne den &lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="667"/>
+        <location filename="../../UI/MainWindow.cpp" line="680"/>
         <source>Exit</source>
         <translation>Afslut</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="842"/>
+        <location filename="../../UI/MainWindow.cpp" line="855"/>
         <source>%1[*] — wiRedPanda %2</source>
         <translation>%1[*] — wiRedPanda %2</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1289"/>
+        <location filename="../../UI/MainWindow.cpp" line="1302"/>
         <source>Unmute</source>
         <translation>Lyd til</translation>
     </message>
@@ -2626,7 +2626,7 @@ Du skal gemme nye projekter før du kan tilgå IC&apos;er og udseender eller kø
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="229"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="237"/>
         <source>Add embedded IC</source>
         <translation>Tilføj indlejret IC</translation>
     </message>
@@ -3110,80 +3110,80 @@ Du skal gemme nye projekter før du kan tilgå IC&apos;er og udseender eller kø
 <context>
     <name>UpdateController</name>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="49"/>
+        <location filename="../../UI/UpdateController.cpp" line="50"/>
         <source>Update Available</source>
         <translation>Opdatering tilgængelig</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="57"/>
+        <location filename="../../UI/UpdateController.cpp" line="58"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Click &lt;b&gt;Download&lt;/b&gt; to save the new version to your computer.</source>
         <translation>&lt;b&gt;wiRedPanda %1 er tilgængelig.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Du kører i øjeblikket version %2.&lt;br&gt;Klik på &lt;b&gt;Download&lt;/b&gt; for at gemme den nye version.</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="60"/>
+        <location filename="../../UI/UpdateController.cpp" line="61"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Visit the release page to download the new version.</source>
         <translation>&lt;b&gt;wiRedPanda %1 er tilgængelig.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Du kører i øjeblikket version %2.&lt;br&gt;Besøg udgivelsessiden for at downloade den nye version.</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="69"/>
+        <location filename="../../UI/UpdateController.cpp" line="70"/>
         <source>Don&apos;t notify me about this version again</source>
         <translation>Giv mig ikke besked om denne version igen</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="73"/>
+        <location filename="../../UI/UpdateController.cpp" line="74"/>
         <source>Download</source>
         <translation>Download</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="105"/>
+        <location filename="../../UI/UpdateController.cpp" line="115"/>
         <source>Downloading wiRedPanda %1…</source>
         <translation>Downloader wiRedPanda %1…</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="105"/>
+        <location filename="../../UI/UpdateController.cpp" line="115"/>
         <source>Cancel</source>
         <translation>Annuller</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="106"/>
+        <location filename="../../UI/UpdateController.cpp" line="116"/>
         <source>Downloading Update</source>
         <translation>Downloader opdatering</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="142"/>
-        <location filename="../../UI/UpdateController.cpp" line="150"/>
-        <location filename="../../UI/UpdateController.cpp" line="156"/>
+        <location filename="../../UI/UpdateController.cpp" line="168"/>
+        <location filename="../../UI/UpdateController.cpp" line="176"/>
+        <location filename="../../UI/UpdateController.cpp" line="182"/>
         <source>Download Failed</source>
         <translation>Download fejlede</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="142"/>
+        <location filename="../../UI/UpdateController.cpp" line="168"/>
         <source>Could not download the update:
 %1</source>
         <translation>Kunne ikke downloade opdateringen:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="150"/>
+        <location filename="../../UI/UpdateController.cpp" line="176"/>
         <source>Could not save the file:
 %1</source>
         <translation>Kunne ikke gemme filen:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="156"/>
+        <location filename="../../UI/UpdateController.cpp" line="182"/>
         <source>Could not write the file:
 %1</source>
         <translation>Kunne ikke skrive filen:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="163"/>
+        <location filename="../../UI/UpdateController.cpp" line="189"/>
         <source>Download Complete</source>
         <translation>Download fuldført</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="164"/>
+        <location filename="../../UI/UpdateController.cpp" line="190"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
         <translation>wiRedPanda er downloadet til:

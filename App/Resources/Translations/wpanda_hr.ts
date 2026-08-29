@@ -1661,67 +1661,67 @@ Save it now?</source>
 Spremiti sada?</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="222"/>
-        <location filename="../../UI/ICController.cpp" line="281"/>
-        <location filename="../../UI/ICController.cpp" line="377"/>
-        <location filename="../../UI/ICController.cpp" line="417"/>
+        <location filename="../../UI/ICController.cpp" line="223"/>
+        <location filename="../../UI/ICController.cpp" line="286"/>
+        <location filename="../../UI/ICController.cpp" line="386"/>
+        <location filename="../../UI/ICController.cpp" line="428"/>
         <source>Error</source>
         <translation>Greška</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="222"/>
-        <location filename="../../UI/ICController.cpp" line="281"/>
-        <location filename="../../UI/ICController.cpp" line="377"/>
+        <location filename="../../UI/ICController.cpp" line="223"/>
+        <location filename="../../UI/ICController.cpp" line="286"/>
+        <location filename="../../UI/ICController.cpp" line="386"/>
         <source>Could not read IC file: %1</source>
         <translation>IC datoteka se ne može pročitati: %1</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="230"/>
-        <location filename="../../UI/ICController.cpp" line="299"/>
+        <location filename="../../UI/ICController.cpp" line="231"/>
+        <location filename="../../UI/ICController.cpp" line="304"/>
         <source>IC embedded successfully.</source>
         <translation>IC je uspješno ugrađen.</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="249"/>
-        <location filename="../../UI/ICController.cpp" line="322"/>
+        <location filename="../../UI/ICController.cpp" line="252"/>
+        <location filename="../../UI/ICController.cpp" line="329"/>
         <source>Extract IC to file...</source>
         <translation>Izdvoji IC u datoteku...</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="249"/>
-        <location filename="../../UI/ICController.cpp" line="322"/>
-        <location filename="../../UI/ICController.cpp" line="410"/>
+        <location filename="../../UI/ICController.cpp" line="252"/>
+        <location filename="../../UI/ICController.cpp" line="329"/>
+        <location filename="../../UI/ICController.cpp" line="421"/>
         <source>Panda files</source>
         <translation>Panda datoteke</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="262"/>
-        <location filename="../../UI/ICController.cpp" line="335"/>
+        <location filename="../../UI/ICController.cpp" line="265"/>
+        <location filename="../../UI/ICController.cpp" line="342"/>
         <source>IC extracted to %1</source>
         <translation>IC izdvojen u %1</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="365"/>
+        <location filename="../../UI/ICController.cpp" line="374"/>
         <source>No file-based ICs to embed.</source>
         <translation>Nema IC-ova temeljenih na datotekama za ugradnju.</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="398"/>
+        <location filename="../../UI/ICController.cpp" line="407"/>
         <source>Embedded %1 IC(s). Circuit is now self-contained.</source>
         <translation>Ugrađeno %1 IC-ova. Sklop je sada samostalan.</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="400"/>
+        <location filename="../../UI/ICController.cpp" line="409"/>
         <source>Embedded %1 IC(s); some file-based ICs remain.</source>
         <translation>Ugrađeno %1 IC-a; neki IC-i temeljeni na datotekama i dalje ostaju.</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="410"/>
+        <location filename="../../UI/ICController.cpp" line="421"/>
         <source>Select IC file to embed</source>
         <translation>Odaberite IC datoteku za ugradnju</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="417"/>
+        <location filename="../../UI/ICController.cpp" line="428"/>
         <source>Could not read file: %1</source>
         <translation>Datoteka se ne može pročitati: %1</translation>
     </message>
@@ -1800,17 +1800,17 @@ Spremiti sada?</translation>
 <context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="280"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="288"/>
         <source>Could not open file: %1</source>
         <translation>Nije moguće otvoriti datoteku: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="287"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="295"/>
         <source>Could not save file: %1</source>
         <translation>Nije moguće spremiti datoteku: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="350"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="358"/>
         <source>Embedded IC dependency chain exceeds the maximum nesting depth (%1) while resolving &apos;%2&apos;</source>
         <translation>Lanac ovisnosti ugrađenih IC-a prelazi maksimalnu dubinu ugniježđenja (%1) pri razrješavanju &apos;%2&apos;</translation>
     </message>
@@ -2360,7 +2360,7 @@ Spremiti sada?</translation>
         <translation>&amp;Obilasci</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1289"/>
+        <location filename="../../UI/MainWindow.cpp" line="1302"/>
         <location filename="../../UI/MainWindowUI.cpp" line="841"/>
         <source>Mute</source>
         <translation>Utišaj</translation>
@@ -2391,7 +2391,7 @@ Spremiti sada?</translation>
         <translation>Simulacija u pozadini</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="638"/>
+        <location filename="../../UI/MainWindow.cpp" line="651"/>
         <location filename="../../UI/MainWindowUI.cpp" line="852"/>
         <source>Shortcuts and Tips</source>
         <translation>Prečaci i savjeti</translation>
@@ -2407,12 +2407,12 @@ Spremiti sada?</translation>
         <translation>Prijavite greške prijevoda ili pomognite poboljšati prijevode na Weblate</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1000"/>
+        <location filename="../../UI/MainWindow.cpp" line="1013"/>
         <source>New Project</source>
         <translation>Novi projekt</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="507"/>
+        <location filename="../../UI/MainWindow.cpp" line="520"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2431,7 +2431,7 @@ wiRedPanda %1 automatski će prikazati sve ostale .panda datoteke u istom direkt
 Morate spremiti nove projekte prije pristupa IC-ovima i izgledima ili pokretanja beWavedDolphin simulacija.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="668"/>
+        <location filename="../../UI/MainWindow.cpp" line="681"/>
         <source>Are you sure?</source>
         <translation>Jeste li sigurni?</translation>
     </message>
@@ -2461,37 +2461,37 @@ Morate spremiti nove projekte prije pristupa IC-ovima i izgledima ili pokretanja
         <translation>Nije moguće stvoriti ili pristupiti mapi za prilagođene obilaske.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="567"/>
+        <location filename="../../UI/MainWindow.cpp" line="580"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda je softver koji su razvili studenti Saveznog sveučilišta u São Paulu kako bi pomogli učenicima da nauče o logičkim krugovima.&lt;/p&gt;&lt;p&gt;Verzija softvera: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Autori:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda trenutno održavaju prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves i Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Molimo prijavite problem na našoj GitHub stranici ako pronađete grešku ili želite zatražiti novu značajku.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Posjetite našu web stranicu!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="591"/>
+        <location filename="../../UI/MainWindow.cpp" line="604"/>
         <source>Redo</source>
         <translation>Ponovi</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="592"/>
+        <location filename="../../UI/MainWindow.cpp" line="605"/>
         <source>Undo</source>
         <translation>Poništi</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="617"/>
+        <location filename="../../UI/MainWindow.cpp" line="630"/>
         <source>&lt;h1&gt;Keyboard Shortcuts&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;Element Property Navigation&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : Previous / next primary property &lt;/li&gt;&lt;li&gt; { / } : Previous / next secondary property &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : Morph to previous / next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Double-click a wire to create a node &lt;/li&gt;&lt;li&gt; Drag an element from the left panel onto the canvas to add it &lt;/li&gt;&lt;li&gt; Nudge the selection with the arrow keys (hold Shift for larger steps) &lt;/li&gt;&lt;li&gt; Drop a .panda file onto the canvas to open it &lt;/li&gt;&lt;/ul&gt;</source>
         <translation>&lt;h1&gt;Tipkovnički Prečaci&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;Navigacija Svojstvima Elementa&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : Prethodno / sljedeće primarno svojstvo &lt;/li&gt;&lt;li&gt; { / } : Prethodno / sljedeće sekundarno svojstvo &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : Preobrazi u prethodni / sljedeći element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Opći Savjeti&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Dvaput kliknite na žicu da biste stvorili čvor &lt;/li&gt;&lt;li&gt; Povucite element s lijevog panela na platno da biste ga dodali &lt;/li&gt;&lt;li&gt; Pomičite odabir tipkama sa strelicama (držite Shift za veće korake) &lt;/li&gt;&lt;li&gt; Ispustite .panda datoteku na platno da biste je otvorili &lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="667"/>
+        <location filename="../../UI/MainWindow.cpp" line="680"/>
         <source>Exit</source>
         <translation>Izlaz</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="842"/>
+        <location filename="../../UI/MainWindow.cpp" line="855"/>
         <source>%1[*] — wiRedPanda %2</source>
         <translation>%1[*] — wiRedPanda %2</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1289"/>
+        <location filename="../../UI/MainWindow.cpp" line="1302"/>
         <source>Unmute</source>
         <translation>Uključi zvuk</translation>
     </message>
@@ -2626,7 +2626,7 @@ Morate spremiti nove projekte prije pristupa IC-ovima i izgledima ili pokretanja
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="229"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="237"/>
         <source>Add embedded IC</source>
         <translation>Dodaj ugrađeni IC</translation>
     </message>
@@ -3110,80 +3110,80 @@ Morate spremiti nove projekte prije pristupa IC-ovima i izgledima ili pokretanja
 <context>
     <name>UpdateController</name>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="49"/>
+        <location filename="../../UI/UpdateController.cpp" line="50"/>
         <source>Update Available</source>
         <translation>Ažuriranje dostupno</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="57"/>
+        <location filename="../../UI/UpdateController.cpp" line="58"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Click &lt;b&gt;Download&lt;/b&gt; to save the new version to your computer.</source>
         <translation>&lt;b&gt;wiRedPanda %1 je dostupan.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Trenutno koristite verziju %2.&lt;br&gt;Kliknite &lt;b&gt;Preuzmi&lt;/b&gt; za spremanje nove verzije.</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="60"/>
+        <location filename="../../UI/UpdateController.cpp" line="61"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Visit the release page to download the new version.</source>
         <translation>&lt;b&gt;wiRedPanda %1 je dostupan.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Trenutno koristite verziju %2.&lt;br&gt;Posjetite stranicu izdanja za preuzimanje nove verzije.</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="69"/>
+        <location filename="../../UI/UpdateController.cpp" line="70"/>
         <source>Don&apos;t notify me about this version again</source>
         <translation>Ne obavještavaj me o ovoj verziji ponovno</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="73"/>
+        <location filename="../../UI/UpdateController.cpp" line="74"/>
         <source>Download</source>
         <translation>Preuzmi</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="105"/>
+        <location filename="../../UI/UpdateController.cpp" line="115"/>
         <source>Downloading wiRedPanda %1…</source>
         <translation>Preuzimanje wiRedPanda %1…</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="105"/>
+        <location filename="../../UI/UpdateController.cpp" line="115"/>
         <source>Cancel</source>
         <translation>Odustani</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="106"/>
+        <location filename="../../UI/UpdateController.cpp" line="116"/>
         <source>Downloading Update</source>
         <translation>Preuzimanje ažuriranja</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="142"/>
-        <location filename="../../UI/UpdateController.cpp" line="150"/>
-        <location filename="../../UI/UpdateController.cpp" line="156"/>
+        <location filename="../../UI/UpdateController.cpp" line="168"/>
+        <location filename="../../UI/UpdateController.cpp" line="176"/>
+        <location filename="../../UI/UpdateController.cpp" line="182"/>
         <source>Download Failed</source>
         <translation>Preuzimanje neuspješno</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="142"/>
+        <location filename="../../UI/UpdateController.cpp" line="168"/>
         <source>Could not download the update:
 %1</source>
         <translation>Nije moguće preuzeti ažuriranje:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="150"/>
+        <location filename="../../UI/UpdateController.cpp" line="176"/>
         <source>Could not save the file:
 %1</source>
         <translation>Nije moguće spremiti datoteku:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="156"/>
+        <location filename="../../UI/UpdateController.cpp" line="182"/>
         <source>Could not write the file:
 %1</source>
         <translation>Nije moguće zapisati datoteku:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="163"/>
+        <location filename="../../UI/UpdateController.cpp" line="189"/>
         <source>Download Complete</source>
         <translation>Preuzimanje završeno</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="164"/>
+        <location filename="../../UI/UpdateController.cpp" line="190"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
         <translation>wiRedPanda je preuzet u:

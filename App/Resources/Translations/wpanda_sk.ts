@@ -1661,67 +1661,67 @@ Save it now?</source>
 Uložiť teraz?</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="222"/>
-        <location filename="../../UI/ICController.cpp" line="281"/>
-        <location filename="../../UI/ICController.cpp" line="377"/>
-        <location filename="../../UI/ICController.cpp" line="417"/>
+        <location filename="../../UI/ICController.cpp" line="223"/>
+        <location filename="../../UI/ICController.cpp" line="286"/>
+        <location filename="../../UI/ICController.cpp" line="386"/>
+        <location filename="../../UI/ICController.cpp" line="428"/>
         <source>Error</source>
         <translation>Chyba</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="222"/>
-        <location filename="../../UI/ICController.cpp" line="281"/>
-        <location filename="../../UI/ICController.cpp" line="377"/>
+        <location filename="../../UI/ICController.cpp" line="223"/>
+        <location filename="../../UI/ICController.cpp" line="286"/>
+        <location filename="../../UI/ICController.cpp" line="386"/>
         <source>Could not read IC file: %1</source>
         <translation>Súbor IC sa nepodarilo prečítať: %1</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="230"/>
-        <location filename="../../UI/ICController.cpp" line="299"/>
+        <location filename="../../UI/ICController.cpp" line="231"/>
+        <location filename="../../UI/ICController.cpp" line="304"/>
         <source>IC embedded successfully.</source>
         <translation>IC bol úspešne vložený.</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="249"/>
-        <location filename="../../UI/ICController.cpp" line="322"/>
+        <location filename="../../UI/ICController.cpp" line="252"/>
+        <location filename="../../UI/ICController.cpp" line="329"/>
         <source>Extract IC to file...</source>
         <translation>Extrahovať IC do súboru...</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="249"/>
-        <location filename="../../UI/ICController.cpp" line="322"/>
-        <location filename="../../UI/ICController.cpp" line="410"/>
+        <location filename="../../UI/ICController.cpp" line="252"/>
+        <location filename="../../UI/ICController.cpp" line="329"/>
+        <location filename="../../UI/ICController.cpp" line="421"/>
         <source>Panda files</source>
         <translation>Súbory Panda</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="262"/>
-        <location filename="../../UI/ICController.cpp" line="335"/>
+        <location filename="../../UI/ICController.cpp" line="265"/>
+        <location filename="../../UI/ICController.cpp" line="342"/>
         <source>IC extracted to %1</source>
         <translation>IC extrahovaný do %1</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="365"/>
+        <location filename="../../UI/ICController.cpp" line="374"/>
         <source>No file-based ICs to embed.</source>
         <translation>Žiadne IC založené na súboroch na vloženie.</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="398"/>
+        <location filename="../../UI/ICController.cpp" line="407"/>
         <source>Embedded %1 IC(s). Circuit is now self-contained.</source>
         <translation>Vložených %1 IC. Obvod je teraz sebestačný.</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="400"/>
+        <location filename="../../UI/ICController.cpp" line="409"/>
         <source>Embedded %1 IC(s); some file-based ICs remain.</source>
         <translation>Vložené %1 IC; niektoré súborové IC stále zostávajú.</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="410"/>
+        <location filename="../../UI/ICController.cpp" line="421"/>
         <source>Select IC file to embed</source>
         <translation>Vyberte súbor IC na vloženie</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="417"/>
+        <location filename="../../UI/ICController.cpp" line="428"/>
         <source>Could not read file: %1</source>
         <translation>Súbor sa nepodarilo prečítať: %1</translation>
     </message>
@@ -1800,17 +1800,17 @@ Uložiť teraz?</translation>
 <context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="280"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="288"/>
         <source>Could not open file: %1</source>
         <translation>Nepodarilo sa otvoriť súbor: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="287"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="295"/>
         <source>Could not save file: %1</source>
         <translation>Nepodarilo sa uložiť súbor: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="350"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="358"/>
         <source>Embedded IC dependency chain exceeds the maximum nesting depth (%1) while resolving &apos;%2&apos;</source>
         <translation>Reťazec závislostí vložených IC prekračuje maximálnu hĺbku vnorenia (%1) pri riešení &apos;%2&apos;</translation>
     </message>
@@ -2360,7 +2360,7 @@ Uložiť teraz?</translation>
         <translation>&amp;Prehliadky</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1289"/>
+        <location filename="../../UI/MainWindow.cpp" line="1302"/>
         <location filename="../../UI/MainWindowUI.cpp" line="841"/>
         <source>Mute</source>
         <translation>Stíšiť</translation>
@@ -2391,7 +2391,7 @@ Uložiť teraz?</translation>
         <translation>Simulácia na pozadí</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="638"/>
+        <location filename="../../UI/MainWindow.cpp" line="651"/>
         <location filename="../../UI/MainWindowUI.cpp" line="852"/>
         <source>Shortcuts and Tips</source>
         <translation>Klávesové skratky a tipy</translation>
@@ -2407,12 +2407,12 @@ Uložiť teraz?</translation>
         <translation>Nahlásenie chýb prekladu alebo pomoc pri zlepšovaní prekladov na Weblate</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1000"/>
+        <location filename="../../UI/MainWindow.cpp" line="1013"/>
         <source>New Project</source>
         <translation>Nový projekt</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="507"/>
+        <location filename="../../UI/MainWindow.cpp" line="520"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2431,7 +2431,7 @@ wiRedPanda %1 automaticky zobrazí všetky ostatné súbory .panda v tom istom p
 Nové projekty musíte uložiť pred prístupom k IO a vzhľadom alebo spustením simulácií beWavedDolphin.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="668"/>
+        <location filename="../../UI/MainWindow.cpp" line="681"/>
         <source>Are you sure?</source>
         <translation>Ste si istí?</translation>
     </message>
@@ -2461,37 +2461,37 @@ Nové projekty musíte uložiť pred prístupom k IO a vzhľadom alebo spustení
         <translation>Nepodarilo sa vytvoriť ani otvoriť priečinok pre vlastné prehliadky.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="567"/>
+        <location filename="../../UI/MainWindow.cpp" line="580"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda je softvér vyvinutý študentmi Federálnej univerzity v São Paule, ktorý má študentom pomôcť naučiť sa o logických obvodoch.&lt;/p&gt;&lt;p&gt;Verzia softvéru: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Tvorcovia:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda momentálne spravujú prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves a Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Ak nájdete chybu alebo chcete navrhnúť novú funkciu, nahláste to prosím na našej stránke GitHub.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Navštívte našu webovú stránku!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="591"/>
+        <location filename="../../UI/MainWindow.cpp" line="604"/>
         <source>Redo</source>
         <translation>Znovu</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="592"/>
+        <location filename="../../UI/MainWindow.cpp" line="605"/>
         <source>Undo</source>
         <translation>Späť</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="617"/>
+        <location filename="../../UI/MainWindow.cpp" line="630"/>
         <source>&lt;h1&gt;Keyboard Shortcuts&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;Element Property Navigation&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : Previous / next primary property &lt;/li&gt;&lt;li&gt; { / } : Previous / next secondary property &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : Morph to previous / next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Double-click a wire to create a node &lt;/li&gt;&lt;li&gt; Drag an element from the left panel onto the canvas to add it &lt;/li&gt;&lt;li&gt; Nudge the selection with the arrow keys (hold Shift for larger steps) &lt;/li&gt;&lt;li&gt; Drop a .panda file onto the canvas to open it &lt;/li&gt;&lt;/ul&gt;</source>
         <translation>&lt;h1&gt;Klávesové skratky&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;Navigácia vo vlastnostiach prvku&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : Predchádzajúca / ďalšia primárna vlastnosť &lt;/li&gt;&lt;li&gt; { / } : Predchádzajúca / ďalšia sekundárna vlastnosť &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : Transformovať na predchádzajúci / ďalší prvok &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Všeobecné tipy&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Dvojklikom na vodič vytvoríte uzol &lt;/li&gt;&lt;li&gt; Presuňte prvok z ľavého panela na plátno, aby ste ho pridali &lt;/li&gt;&lt;li&gt; Posúvajte výber klávesmi so šípkami (podržte Shift pre väčšie kroky) &lt;/li&gt;&lt;li&gt; Presuňte súbor .panda na plátno, aby ste ho otvorili &lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="667"/>
+        <location filename="../../UI/MainWindow.cpp" line="680"/>
         <source>Exit</source>
         <translation>Ukončiť</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="842"/>
+        <location filename="../../UI/MainWindow.cpp" line="855"/>
         <source>%1[*] — wiRedPanda %2</source>
         <translation>%1[*] — wiRedPanda %2</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1289"/>
+        <location filename="../../UI/MainWindow.cpp" line="1302"/>
         <source>Unmute</source>
         <translation>Zapnúť zvuk</translation>
     </message>
@@ -2626,7 +2626,7 @@ Nové projekty musíte uložiť pred prístupom k IO a vzhľadom alebo spustení
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="229"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="237"/>
         <source>Add embedded IC</source>
         <translation>Pridať vložený IC</translation>
     </message>
@@ -3110,80 +3110,80 @@ Nové projekty musíte uložiť pred prístupom k IO a vzhľadom alebo spustení
 <context>
     <name>UpdateController</name>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="49"/>
+        <location filename="../../UI/UpdateController.cpp" line="50"/>
         <source>Update Available</source>
         <translation>K dispozícii je aktualizácia</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="57"/>
+        <location filename="../../UI/UpdateController.cpp" line="58"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Click &lt;b&gt;Download&lt;/b&gt; to save the new version to your computer.</source>
         <translation>&lt;b&gt;wiRedPanda %1 je k dispozícii.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Momentálne používate verziu %2.&lt;br&gt;Kliknite na &lt;b&gt;Stiahnuť&lt;/b&gt; pre uloženie novej verzie.</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="60"/>
+        <location filename="../../UI/UpdateController.cpp" line="61"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Visit the release page to download the new version.</source>
         <translation>&lt;b&gt;wiRedPanda %1 je k dispozícii.&lt;/b&gt;&lt;br&gt;&lt;br&gt;Aktuálne používate verziu %2.&lt;br&gt;Navštívte stránku vydaní a stiahnite novú verziu.</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="69"/>
+        <location filename="../../UI/UpdateController.cpp" line="70"/>
         <source>Don&apos;t notify me about this version again</source>
         <translation>Neupozorňovať ma na túto verziu znova</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="73"/>
+        <location filename="../../UI/UpdateController.cpp" line="74"/>
         <source>Download</source>
         <translation>Stiahnuť</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="105"/>
+        <location filename="../../UI/UpdateController.cpp" line="115"/>
         <source>Downloading wiRedPanda %1…</source>
         <translation>Sťahovanie wiRedPanda %1…</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="105"/>
+        <location filename="../../UI/UpdateController.cpp" line="115"/>
         <source>Cancel</source>
         <translation>Zrušiť</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="106"/>
+        <location filename="../../UI/UpdateController.cpp" line="116"/>
         <source>Downloading Update</source>
         <translation>Sťahovanie aktualizácie</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="142"/>
-        <location filename="../../UI/UpdateController.cpp" line="150"/>
-        <location filename="../../UI/UpdateController.cpp" line="156"/>
+        <location filename="../../UI/UpdateController.cpp" line="168"/>
+        <location filename="../../UI/UpdateController.cpp" line="176"/>
+        <location filename="../../UI/UpdateController.cpp" line="182"/>
         <source>Download Failed</source>
         <translation>Sťahovanie zlyhalo</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="142"/>
+        <location filename="../../UI/UpdateController.cpp" line="168"/>
         <source>Could not download the update:
 %1</source>
         <translation>Nepodarilo sa stiahnuť aktualizáciu:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="150"/>
+        <location filename="../../UI/UpdateController.cpp" line="176"/>
         <source>Could not save the file:
 %1</source>
         <translation>Nepodarilo sa uložiť súbor:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="156"/>
+        <location filename="../../UI/UpdateController.cpp" line="182"/>
         <source>Could not write the file:
 %1</source>
         <translation>Nepodarilo sa zapísať súbor:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="163"/>
+        <location filename="../../UI/UpdateController.cpp" line="189"/>
         <source>Download Complete</source>
         <translation>Sťahovanie dokončené</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="164"/>
+        <location filename="../../UI/UpdateController.cpp" line="190"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
         <translation>wiRedPanda bolo stiahnuté do:

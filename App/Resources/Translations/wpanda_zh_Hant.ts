@@ -1661,67 +1661,67 @@ Save it now?</source>
 是否立即儲存?</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="222"/>
-        <location filename="../../UI/ICController.cpp" line="281"/>
-        <location filename="../../UI/ICController.cpp" line="377"/>
-        <location filename="../../UI/ICController.cpp" line="417"/>
+        <location filename="../../UI/ICController.cpp" line="223"/>
+        <location filename="../../UI/ICController.cpp" line="286"/>
+        <location filename="../../UI/ICController.cpp" line="386"/>
+        <location filename="../../UI/ICController.cpp" line="428"/>
         <source>Error</source>
         <translation>錯誤</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="222"/>
-        <location filename="../../UI/ICController.cpp" line="281"/>
-        <location filename="../../UI/ICController.cpp" line="377"/>
+        <location filename="../../UI/ICController.cpp" line="223"/>
+        <location filename="../../UI/ICController.cpp" line="286"/>
+        <location filename="../../UI/ICController.cpp" line="386"/>
         <source>Could not read IC file: %1</source>
         <translation>無法讀取 IC 檔案: %1</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="230"/>
-        <location filename="../../UI/ICController.cpp" line="299"/>
+        <location filename="../../UI/ICController.cpp" line="231"/>
+        <location filename="../../UI/ICController.cpp" line="304"/>
         <source>IC embedded successfully.</source>
         <translation>IC 嵌入成功。</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="249"/>
-        <location filename="../../UI/ICController.cpp" line="322"/>
+        <location filename="../../UI/ICController.cpp" line="252"/>
+        <location filename="../../UI/ICController.cpp" line="329"/>
         <source>Extract IC to file...</source>
         <translation>擷取 IC 到檔案...</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="249"/>
-        <location filename="../../UI/ICController.cpp" line="322"/>
-        <location filename="../../UI/ICController.cpp" line="410"/>
+        <location filename="../../UI/ICController.cpp" line="252"/>
+        <location filename="../../UI/ICController.cpp" line="329"/>
+        <location filename="../../UI/ICController.cpp" line="421"/>
         <source>Panda files</source>
         <translation>Panda 檔案</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="262"/>
-        <location filename="../../UI/ICController.cpp" line="335"/>
+        <location filename="../../UI/ICController.cpp" line="265"/>
+        <location filename="../../UI/ICController.cpp" line="342"/>
         <source>IC extracted to %1</source>
         <translation>IC 已擷取到 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="365"/>
+        <location filename="../../UI/ICController.cpp" line="374"/>
         <source>No file-based ICs to embed.</source>
         <translation>沒有基於檔案的 IC 可嵌入。</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="398"/>
+        <location filename="../../UI/ICController.cpp" line="407"/>
         <source>Embedded %1 IC(s). Circuit is now self-contained.</source>
         <translation>已嵌入 %1 個 IC。電路現在是自包含的。</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="400"/>
+        <location filename="../../UI/ICController.cpp" line="409"/>
         <source>Embedded %1 IC(s); some file-based ICs remain.</source>
         <translation>已內嵌 %1 個 IC;仍有一些以檔案為基礎的 IC 保留。</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="410"/>
+        <location filename="../../UI/ICController.cpp" line="421"/>
         <source>Select IC file to embed</source>
         <translation>選擇要嵌入的 IC 檔案</translation>
     </message>
     <message>
-        <location filename="../../UI/ICController.cpp" line="417"/>
+        <location filename="../../UI/ICController.cpp" line="428"/>
         <source>Could not read file: %1</source>
         <translation>無法讀取檔案: %1</translation>
     </message>
@@ -1800,17 +1800,17 @@ Save it now?</source>
 <context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="280"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="288"/>
         <source>Could not open file: %1</source>
         <translation>無法開啟檔案：%1</translation>
     </message>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="287"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="295"/>
         <source>Could not save file: %1</source>
         <translation>無法儲存檔案：%1</translation>
     </message>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="350"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="358"/>
         <source>Embedded IC dependency chain exceeds the maximum nesting depth (%1) while resolving &apos;%2&apos;</source>
         <translation>解析 &apos;%2&apos; 時,內嵌 IC 相依鏈超出了最大巢狀深度(%1)</translation>
     </message>
@@ -2360,7 +2360,7 @@ Save it now?</source>
         <translation>導覽(&amp;T)</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1289"/>
+        <location filename="../../UI/MainWindow.cpp" line="1302"/>
         <location filename="../../UI/MainWindowUI.cpp" line="841"/>
         <source>Mute</source>
         <translation>靜音</translation>
@@ -2391,7 +2391,7 @@ Save it now?</source>
         <translation>背景模擬</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="638"/>
+        <location filename="../../UI/MainWindow.cpp" line="651"/>
         <location filename="../../UI/MainWindowUI.cpp" line="852"/>
         <source>Shortcuts and Tips</source>
         <translation>快捷鍵與提示</translation>
@@ -2407,12 +2407,12 @@ Save it now?</source>
         <translation>報告翻譯錯誤或協助改善 Weblate 上的翻譯</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1000"/>
+        <location filename="../../UI/MainWindow.cpp" line="1013"/>
         <source>New Project</source>
         <translation>新專案</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="507"/>
+        <location filename="../../UI/MainWindow.cpp" line="520"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2431,7 +2431,7 @@ wiRedPanda %1 將自動列出與目前專案位於同一目錄中的所有其他
 在存取 IC 和外觀或執行 beWavedDolphin 模擬之前，您需要先儲存新專案。</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="668"/>
+        <location filename="../../UI/MainWindow.cpp" line="681"/>
         <source>Are you sure?</source>
         <translation>您確定嗎？</translation>
     </message>
@@ -2461,37 +2461,37 @@ wiRedPanda %1 將自動列出與目前專案位於同一目錄中的所有其他
         <translation>無法建立或存取自訂導覽的資料夾。</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="567"/>
+        <location filename="../../UI/MainWindow.cpp" line="580"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda 是由聖保羅聯邦大學的學生所開發的軟體，旨在幫助學生學習邏輯電路。&lt;/p&gt;&lt;p&gt;軟體版本：%1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;創作者：&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda 目前由 Fábio Cappabianco 教授（博士）、João Pedro M. Oliveira、Matheus R. Esteves 和 Maycon A. Santana 維護。&lt;/p&gt;&lt;p&gt; 如果您發現錯誤或想要請求新功能，請在我們的 GitHub 頁面提交報告。&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;造訪我們的網站！&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="591"/>
+        <location filename="../../UI/MainWindow.cpp" line="604"/>
         <source>Redo</source>
         <translation>重做</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="592"/>
+        <location filename="../../UI/MainWindow.cpp" line="605"/>
         <source>Undo</source>
         <translation>復原</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="617"/>
+        <location filename="../../UI/MainWindow.cpp" line="630"/>
         <source>&lt;h1&gt;Keyboard Shortcuts&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;Element Property Navigation&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : Previous / next primary property &lt;/li&gt;&lt;li&gt; { / } : Previous / next secondary property &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : Morph to previous / next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Double-click a wire to create a node &lt;/li&gt;&lt;li&gt; Drag an element from the left panel onto the canvas to add it &lt;/li&gt;&lt;li&gt; Nudge the selection with the arrow keys (hold Shift for larger steps) &lt;/li&gt;&lt;li&gt; Drop a .panda file onto the canvas to open it &lt;/li&gt;&lt;/ul&gt;</source>
         <translation>&lt;h1&gt;鍵盤快速鍵&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;元件屬性導覽&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : 上一個 / 下一個主要屬性 &lt;/li&gt;&lt;li&gt; { / } : 上一個 / 下一個次要屬性 &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : 變形為上一個 / 下一個元件 &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;一般提示&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; 按兩下導線以建立節點 &lt;/li&gt;&lt;li&gt; 將元件從左側面板拖曳到畫布以新增它 &lt;/li&gt;&lt;li&gt; 使用方向鍵移動選取範圍(按住 Shift 可加大步幅) &lt;/li&gt;&lt;li&gt; 將 .panda 檔案拖放到畫布上以開啟它 &lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="667"/>
+        <location filename="../../UI/MainWindow.cpp" line="680"/>
         <source>Exit</source>
         <translation>結束</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="842"/>
+        <location filename="../../UI/MainWindow.cpp" line="855"/>
         <source>%1[*] — wiRedPanda %2</source>
         <translation>%1[*] — wiRedPanda %2</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1289"/>
+        <location filename="../../UI/MainWindow.cpp" line="1302"/>
         <source>Unmute</source>
         <translation>取消靜音</translation>
     </message>
@@ -2626,7 +2626,7 @@ wiRedPanda %1 將自動列出與目前專案位於同一目錄中的所有其他
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="229"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="237"/>
         <source>Add embedded IC</source>
         <translation>新增嵌入式 IC</translation>
     </message>
@@ -3110,80 +3110,80 @@ wiRedPanda %1 將自動列出與目前專案位於同一目錄中的所有其他
 <context>
     <name>UpdateController</name>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="49"/>
+        <location filename="../../UI/UpdateController.cpp" line="50"/>
         <source>Update Available</source>
         <translation>有可用更新</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="57"/>
+        <location filename="../../UI/UpdateController.cpp" line="58"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Click &lt;b&gt;Download&lt;/b&gt; to save the new version to your computer.</source>
         <translation>&lt;b&gt;wiRedPanda %1 已可用。&lt;/b&gt;&lt;br&gt;&lt;br&gt;您目前正在執行版本 %2。&lt;br&gt;按一下&lt;b&gt;下載&lt;/b&gt;以儲存新版本。</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="60"/>
+        <location filename="../../UI/UpdateController.cpp" line="61"/>
         <source>&lt;b&gt;wiRedPanda %1 is available.&lt;/b&gt;&lt;br&gt;&lt;br&gt;You are currently running version %2.&lt;br&gt;Visit the release page to download the new version.</source>
         <translation>&lt;b&gt;wiRedPanda %1 現已推出。&lt;/b&gt;&lt;br&gt;&lt;br&gt;您目前執行的是版本 %2。&lt;br&gt;請造訪發佈頁面下載新版本。</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="69"/>
+        <location filename="../../UI/UpdateController.cpp" line="70"/>
         <source>Don&apos;t notify me about this version again</source>
         <translation>不再通知我關於此版本的更新</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="73"/>
+        <location filename="../../UI/UpdateController.cpp" line="74"/>
         <source>Download</source>
         <translation>下載</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="105"/>
+        <location filename="../../UI/UpdateController.cpp" line="115"/>
         <source>Downloading wiRedPanda %1…</source>
         <translation>正在下載 wiRedPanda %1…</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="105"/>
+        <location filename="../../UI/UpdateController.cpp" line="115"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="106"/>
+        <location filename="../../UI/UpdateController.cpp" line="116"/>
         <source>Downloading Update</source>
         <translation>正在下載更新</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="142"/>
-        <location filename="../../UI/UpdateController.cpp" line="150"/>
-        <location filename="../../UI/UpdateController.cpp" line="156"/>
+        <location filename="../../UI/UpdateController.cpp" line="168"/>
+        <location filename="../../UI/UpdateController.cpp" line="176"/>
+        <location filename="../../UI/UpdateController.cpp" line="182"/>
         <source>Download Failed</source>
         <translation>下載失敗</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="142"/>
+        <location filename="../../UI/UpdateController.cpp" line="168"/>
         <source>Could not download the update:
 %1</source>
         <translation>無法下載更新:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="150"/>
+        <location filename="../../UI/UpdateController.cpp" line="176"/>
         <source>Could not save the file:
 %1</source>
         <translation>無法儲存檔案:
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="156"/>
+        <location filename="../../UI/UpdateController.cpp" line="182"/>
         <source>Could not write the file:
 %1</source>
         <translation>無法寫入檔案：
 %1</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="163"/>
+        <location filename="../../UI/UpdateController.cpp" line="189"/>
         <source>Download Complete</source>
         <translation>下載完成</translation>
     </message>
     <message>
-        <location filename="../../UI/UpdateController.cpp" line="164"/>
+        <location filename="../../UI/UpdateController.cpp" line="190"/>
         <source>wiRedPanda has been downloaded to:
 %1</source>
         <translation>wiRedPanda 已下載至:
