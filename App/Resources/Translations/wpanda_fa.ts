@@ -1800,17 +1800,17 @@ Save it now?</source>
 <context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="288"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="292"/>
         <source>Could not open file: %1</source>
         <translation>امکان باز کردن فایل وجود ندارد: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="295"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="299"/>
         <source>Could not save file: %1</source>
         <translation>امکان ذخیره فایل وجود ندارد: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="358"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="362"/>
         <source>Embedded IC dependency chain exceeds the maximum nesting depth (%1) while resolving &apos;%2&apos;</source>
         <translation>زنجیره وابستگی IC‌های تعبیه‌شده از حداکثر عمق تودرتویی (%1) هنگام حل &apos;%2&apos; فراتر می‌رود</translation>
     </message>
@@ -2360,7 +2360,7 @@ Save it now?</source>
         <translation>&amp;تورها</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1302"/>
+        <location filename="../../UI/MainWindow.cpp" line="1303"/>
         <location filename="../../UI/MainWindowUI.cpp" line="841"/>
         <source>Mute</source>
         <translation>بی‌صدا</translation>
@@ -2391,7 +2391,7 @@ Save it now?</source>
         <translation>شبیه‌سازی پس‌زمینه</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="651"/>
+        <location filename="../../UI/MainWindow.cpp" line="652"/>
         <location filename="../../UI/MainWindowUI.cpp" line="852"/>
         <source>Shortcuts and Tips</source>
         <translation>میانبرها و نکات</translation>
@@ -2407,12 +2407,12 @@ Save it now?</source>
         <translation>خطاهای ترجمه را گزارش دهید یا در بهبود ترجمه‌ها در Weblate کمک کنید</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1013"/>
+        <location filename="../../UI/MainWindow.cpp" line="1014"/>
         <source>New Project</source>
         <translation>پروژه جدید</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="520"/>
+        <location filename="../../UI/MainWindow.cpp" line="521"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2431,7 +2431,7 @@ wiRedPanda %1 به طور خودکار تمام فایل‌های .panda دیگ�
 باید پروژه‌های جدید را قبل از دسترسی به IC و ظاهر یا اجرای شبیه‌سازی beWavedDolphin ذخیره کنید.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="681"/>
+        <location filename="../../UI/MainWindow.cpp" line="682"/>
         <source>Are you sure?</source>
         <translation>آیا مطمئن هستید؟</translation>
     </message>
@@ -2461,37 +2461,37 @@ wiRedPanda %1 به طور خودکار تمام فایل‌های .panda دیگ�
         <translation>امکان ایجاد یا دسترسی به پوشه‌ای برای گشت‌های سفارشی وجود نداشت.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="580"/>
+        <location filename="../../UI/MainWindow.cpp" line="581"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda نرم‌افزاری است که توسط دانشجویان دانشگاه فدرال سائوپائولو توسعه یافته تا به دانش‌آموزان در یادگیری مدارهای منطقی کمک کند.&lt;/p&gt;&lt;p&gt;نسخه نرم‌افزار: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;سازندگان:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; در حال حاضر wiRedPanda توسط پروفسور Fábio Cappabianco (دکترا)، João Pedro M. Oliveira، Matheus R. Esteves و Maycon A. Santana نگهداری می‌شود.&lt;/p&gt;&lt;p&gt; لطفاً اگر اشکالی پیدا کردید یا می‌خواهید ویژگی جدیدی درخواست کنید، در صفحه گیت‌هاب ما گزارش دهید.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;از وب‌سایت ما دیدن کنید!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="604"/>
+        <location filename="../../UI/MainWindow.cpp" line="605"/>
         <source>Redo</source>
         <translation>انجام مجدد</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="605"/>
+        <location filename="../../UI/MainWindow.cpp" line="606"/>
         <source>Undo</source>
         <translation>برگردان</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="630"/>
+        <location filename="../../UI/MainWindow.cpp" line="631"/>
         <source>&lt;h1&gt;Keyboard Shortcuts&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;Element Property Navigation&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : Previous / next primary property &lt;/li&gt;&lt;li&gt; { / } : Previous / next secondary property &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : Morph to previous / next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Double-click a wire to create a node &lt;/li&gt;&lt;li&gt; Drag an element from the left panel onto the canvas to add it &lt;/li&gt;&lt;li&gt; Nudge the selection with the arrow keys (hold Shift for larger steps) &lt;/li&gt;&lt;li&gt; Drop a .panda file onto the canvas to open it &lt;/li&gt;&lt;/ul&gt;</source>
         <translation>&lt;h1&gt;میان‌برهای صفحه‌کلید&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;پیمایش ویژگی‌های عنصر&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : ویژگی اصلی قبلی / بعدی &lt;/li&gt;&lt;li&gt; { / } : ویژگی فرعی قبلی / بعدی &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : تبدیل به عنصر قبلی / بعدی &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;نکات کلی&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; برای ایجاد یک گره، روی یک سیم دوبار کلیک کنید &lt;/li&gt;&lt;li&gt; یک عنصر را از پانل چپ به بوم بکشید تا اضافه شود &lt;/li&gt;&lt;li&gt; انتخاب را با کلیدهای جهت‌دار جابه‌جا کنید (Shift را برای گام‌های بزرگ‌تر نگه دارید) &lt;/li&gt;&lt;li&gt; یک فایل ‎.panda‎ را روی بوم رها کنید تا باز شود &lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="680"/>
+        <location filename="../../UI/MainWindow.cpp" line="681"/>
         <source>Exit</source>
         <translation>خروج</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="855"/>
+        <location filename="../../UI/MainWindow.cpp" line="856"/>
         <source>%1[*] — wiRedPanda %2</source>
         <translation>%1[*] — wiRedPanda %2</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1302"/>
+        <location filename="../../UI/MainWindow.cpp" line="1303"/>
         <source>Unmute</source>
         <translation>برگرداندن صدا</translation>
     </message>
@@ -2626,7 +2626,7 @@ wiRedPanda %1 به طور خودکار تمام فایل‌های .panda دیگ�
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="237"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="241"/>
         <source>Add embedded IC</source>
         <translation>افزودن IC جاسازی‌شده</translation>
     </message>

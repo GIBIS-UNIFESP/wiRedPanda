@@ -1800,17 +1800,17 @@ Simpan sekarang?</translation>
 <context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="288"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="292"/>
         <source>Could not open file: %1</source>
         <translation>Tidak dapat membuka fail: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="295"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="299"/>
         <source>Could not save file: %1</source>
         <translation>Tidak dapat menyimpan fail: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="358"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="362"/>
         <source>Embedded IC dependency chain exceeds the maximum nesting depth (%1) while resolving &apos;%2&apos;</source>
         <translation>Rantaian kebergantungan IC terbenam melebihi kedalaman sarangan maksimum (%1) semasa menyelesaikan &apos;%2&apos;</translation>
     </message>
@@ -2360,7 +2360,7 @@ Simpan sekarang?</translation>
         <translation>&amp;Lawatan</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1302"/>
+        <location filename="../../UI/MainWindow.cpp" line="1303"/>
         <location filename="../../UI/MainWindowUI.cpp" line="841"/>
         <source>Mute</source>
         <translation>Bisu</translation>
@@ -2391,7 +2391,7 @@ Simpan sekarang?</translation>
         <translation>Simulasi Latar Belakang</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="651"/>
+        <location filename="../../UI/MainWindow.cpp" line="652"/>
         <location filename="../../UI/MainWindowUI.cpp" line="852"/>
         <source>Shortcuts and Tips</source>
         <translation>Pintasan dan Petua</translation>
@@ -2407,12 +2407,12 @@ Simpan sekarang?</translation>
         <translation>Laporkan ralat terjemahan atau bantu menambah baik terjemahan di Weblate</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1013"/>
+        <location filename="../../UI/MainWindow.cpp" line="1014"/>
         <source>New Project</source>
         <translation>Projek Baru</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="520"/>
+        <location filename="../../UI/MainWindow.cpp" line="521"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2431,7 +2431,7 @@ wiRedPanda %1 akan menyenaraikan secara automatik semua fail .panda lain yang te
 Anda perlu menyimpan projek baharu sebelum mengakses IC dan penampilan, atau menjalankan simulasi beWavedDolphin.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="681"/>
+        <location filename="../../UI/MainWindow.cpp" line="682"/>
         <source>Are you sure?</source>
         <translation>Adakah anda pasti?</translation>
     </message>
@@ -2461,37 +2461,37 @@ Anda perlu menyimpan projek baharu sebelum mengakses IC dan penampilan, atau men
         <translation>Tidak dapat mencipta atau mengakses folder untuk lawatan tersuai.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="580"/>
+        <location filename="../../UI/MainWindow.cpp" line="581"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda ialah perisian yang dibangunkan oleh pelajar Universiti Persekutuan São Paulo untuk membantu pelajar belajar tentang litar logik.&lt;/p&gt;&lt;p&gt;Versi perisian: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Pencipta:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda kini diselenggara oleh Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves dan Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Sila failkan laporan di halaman GitHub kami jika anda menemui pepijat atau ingin meminta ciri baharu.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Lawati laman web kami!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="604"/>
+        <location filename="../../UI/MainWindow.cpp" line="605"/>
         <source>Redo</source>
         <translation>Buat semula</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="605"/>
+        <location filename="../../UI/MainWindow.cpp" line="606"/>
         <source>Undo</source>
         <translation>Buat asal</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="630"/>
+        <location filename="../../UI/MainWindow.cpp" line="631"/>
         <source>&lt;h1&gt;Keyboard Shortcuts&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;Element Property Navigation&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : Previous / next primary property &lt;/li&gt;&lt;li&gt; { / } : Previous / next secondary property &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : Morph to previous / next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Double-click a wire to create a node &lt;/li&gt;&lt;li&gt; Drag an element from the left panel onto the canvas to add it &lt;/li&gt;&lt;li&gt; Nudge the selection with the arrow keys (hold Shift for larger steps) &lt;/li&gt;&lt;li&gt; Drop a .panda file onto the canvas to open it &lt;/li&gt;&lt;/ul&gt;</source>
         <translation>&lt;h1&gt;Pintasan Papan Kekunci&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;Navigasi Sifat Elemen&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : Sifat utama sebelum / seterusnya &lt;/li&gt;&lt;li&gt; { / } : Sifat kedua sebelum / seterusnya &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : Ubah menjadi elemen sebelum / seterusnya &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Petua Umum&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Klik dua kali pada wayar untuk mencipta nod &lt;/li&gt;&lt;li&gt; Seret elemen dari panel kiri ke kanvas untuk menambahkannya &lt;/li&gt;&lt;li&gt; Gerakkan pilihan dengan kekunci anak panah (tahan Shift untuk langkah yang lebih besar) &lt;/li&gt;&lt;li&gt; Lepaskan fail .panda pada kanvas untuk membukanya &lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="680"/>
+        <location filename="../../UI/MainWindow.cpp" line="681"/>
         <source>Exit</source>
         <translation>Keluar</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="855"/>
+        <location filename="../../UI/MainWindow.cpp" line="856"/>
         <source>%1[*] — wiRedPanda %2</source>
         <translation>%1[*] — wiRedPanda %2</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1302"/>
+        <location filename="../../UI/MainWindow.cpp" line="1303"/>
         <source>Unmute</source>
         <translation>Nyahbisu</translation>
     </message>
@@ -2626,7 +2626,7 @@ Anda perlu menyimpan projek baharu sebelum mengakses IC dan penampilan, atau men
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="237"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="241"/>
         <source>Add embedded IC</source>
         <translation>Tambah IC terbenam</translation>
     </message>

@@ -1800,17 +1800,17 @@ Save it now?</source>
 <context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="288"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="292"/>
         <source>Could not open file: %1</source>
         <translation>Dosya açılamadı: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="295"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="299"/>
         <source>Could not save file: %1</source>
         <translation>Dosya kaydedilemedi: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="358"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="362"/>
         <source>Embedded IC dependency chain exceeds the maximum nesting depth (%1) while resolving &apos;%2&apos;</source>
         <translation>Gömülü IC bağımlılık zinciri, &apos;%2&apos; çözülürken maksimum iç içe geçme derinliğini (%1) aşıyor</translation>
     </message>
@@ -2375,7 +2375,7 @@ Save it now?</source>
         <translation>T&amp;am ekran</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1302"/>
+        <location filename="../../UI/MainWindow.cpp" line="1303"/>
         <location filename="../../UI/MainWindowUI.cpp" line="841"/>
         <source>Mute</source>
         <translation>Sessiz</translation>
@@ -2401,23 +2401,23 @@ Save it now?</source>
         <translation>Simülasyonu yeniden başlat.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="651"/>
+        <location filename="../../UI/MainWindow.cpp" line="652"/>
         <location filename="../../UI/MainWindowUI.cpp" line="852"/>
         <source>Shortcuts and Tips</source>
         <translation>Kısayollar ve İpuçları</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="855"/>
+        <location filename="../../UI/MainWindow.cpp" line="856"/>
         <source>%1[*] — wiRedPanda %2</source>
         <translation>%1[*] — wiRedPanda %2</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1013"/>
+        <location filename="../../UI/MainWindow.cpp" line="1014"/>
         <source>New Project</source>
         <translation>Yeni Proje</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="520"/>
+        <location filename="../../UI/MainWindow.cpp" line="521"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2461,37 +2461,37 @@ IC&apos;lere ve görünümlere erişmeden veya beWavedDolphin simülasyonların�
         <translation>Özel turlar için bir klasör oluşturulamadı veya erişilemedi.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="580"/>
+        <location filename="../../UI/MainWindow.cpp" line="581"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda, öğrencilerin lojik devreleri öğrenmesine yardımcı olmak için São Paulo Federal Üniversitesi öğrencileri tarafından geliştirilen bir yazılımdır.&lt;/p&gt;&lt;p&gt;Yazılım sürümü: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Yaratıcılar:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda şu anda Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves ve Maycon A. Santana tarafından sürdürülmektedir.&lt;/p&gt;&lt;p&gt; Bir hata bulursanız veya yeni bir özellik talep etmek isterseniz lütfen GitHub sayfamızda bir rapor gönderin.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Web sitemizi ziyaret edin!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="604"/>
+        <location filename="../../UI/MainWindow.cpp" line="605"/>
         <source>Redo</source>
         <translation>Yinele</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="605"/>
+        <location filename="../../UI/MainWindow.cpp" line="606"/>
         <source>Undo</source>
         <translation>Geri al</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="630"/>
+        <location filename="../../UI/MainWindow.cpp" line="631"/>
         <source>&lt;h1&gt;Keyboard Shortcuts&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;Element Property Navigation&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : Previous / next primary property &lt;/li&gt;&lt;li&gt; { / } : Previous / next secondary property &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : Morph to previous / next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Double-click a wire to create a node &lt;/li&gt;&lt;li&gt; Drag an element from the left panel onto the canvas to add it &lt;/li&gt;&lt;li&gt; Nudge the selection with the arrow keys (hold Shift for larger steps) &lt;/li&gt;&lt;li&gt; Drop a .panda file onto the canvas to open it &lt;/li&gt;&lt;/ul&gt;</source>
         <translation>&lt;h1&gt;Klavye Kısayolları&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;Eleman Özelliği Gezinme&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : Önceki / sonraki birincil özellik &lt;/li&gt;&lt;li&gt; { / } : Önceki / sonraki ikincil özellik &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : Önceki / sonraki elemana dönüştür &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Genel İpuçları&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Bir düğüm oluşturmak için bir kabloya çift tıklayın &lt;/li&gt;&lt;li&gt; Eklemek için sol panelden bir elemanı tuvale sürükleyin &lt;/li&gt;&lt;li&gt; Seçimi ok tuşlarıyla kaydırın (daha büyük adımlar için Shift&apos;e basılı tutun) &lt;/li&gt;&lt;li&gt; Açmak için tuvale bir .panda dosyası bırakın &lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="681"/>
+        <location filename="../../UI/MainWindow.cpp" line="682"/>
         <source>Are you sure?</source>
         <translation>Emin misiniz?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="680"/>
+        <location filename="../../UI/MainWindow.cpp" line="681"/>
         <source>Exit</source>
         <translation>Çıkış</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1302"/>
+        <location filename="../../UI/MainWindow.cpp" line="1303"/>
         <source>Unmute</source>
         <translation>Sesi aç</translation>
     </message>
@@ -2626,7 +2626,7 @@ IC&apos;lere ve görünümlere erişmeden veya beWavedDolphin simülasyonların�
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="237"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="241"/>
         <source>Add embedded IC</source>
         <translation>Gömülü IC ekle</translation>
     </message>

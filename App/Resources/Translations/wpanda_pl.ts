@@ -1800,17 +1800,17 @@ Zapisać teraz?</translation>
 <context>
     <name>ICRegistry</name>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="288"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="292"/>
         <source>Could not open file: %1</source>
         <translation>Nie można otworzyć pliku: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="295"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="299"/>
         <source>Could not save file: %1</source>
         <translation>Nie można zapisać pliku: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="358"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="362"/>
         <source>Embedded IC dependency chain exceeds the maximum nesting depth (%1) while resolving &apos;%2&apos;</source>
         <translation>Łańcuch zależności osadzonych IC przekracza maksymalną głębokość zagnieżdżenia (%1) podczas rozwiązywania &apos;%2&apos;</translation>
     </message>
@@ -2375,7 +2375,7 @@ Zapisać teraz?</translation>
         <translation>Pe&amp;łny ekran</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1302"/>
+        <location filename="../../UI/MainWindow.cpp" line="1303"/>
         <location filename="../../UI/MainWindowUI.cpp" line="841"/>
         <source>Mute</source>
         <translation>Wycisz</translation>
@@ -2401,23 +2401,23 @@ Zapisać teraz?</translation>
         <translation>Uruchom ponownie symulację.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="651"/>
+        <location filename="../../UI/MainWindow.cpp" line="652"/>
         <location filename="../../UI/MainWindowUI.cpp" line="852"/>
         <source>Shortcuts and Tips</source>
         <translation>Skróty i porady</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="855"/>
+        <location filename="../../UI/MainWindow.cpp" line="856"/>
         <source>%1[*] — wiRedPanda %2</source>
         <translation>%1[*] — wiRedPanda %2</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1013"/>
+        <location filename="../../UI/MainWindow.cpp" line="1014"/>
         <source>New Project</source>
         <translation>Nowy projekt</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="520"/>
+        <location filename="../../UI/MainWindow.cpp" line="521"/>
         <source>wiRedPanda %1
 
 This version includes automatic migration of older project files.
@@ -2461,37 +2461,37 @@ Musisz zapisać nowe projekty przed uzyskaniem dostępu do IC i wyglądów lub u
         <translation>Nie można utworzyć ani otworzyć folderu dla niestandardowych wycieczek.</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="580"/>
+        <location filename="../../UI/MainWindow.cpp" line="581"/>
         <source>&lt;p&gt;wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;wiRedPanda to oprogramowanie stworzone przez studentów Federalnego Uniwersytetu w São Paulo, aby pomóc uczniom poznać obwody logiczne.&lt;/p&gt;&lt;p&gt;Wersja oprogramowania: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Twórcy:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Davi Morales &lt;/li&gt;&lt;li&gt; Lucas Lellis &lt;/li&gt;&lt;li&gt; Rodrigo Torres &lt;/li&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; wiRedPanda jest obecnie utrzymywana przez prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveirę, Matheusa R. Estevesa i Maycona A. Santanę.&lt;/p&gt;&lt;p&gt; Zgłoś błąd lub propozycję nowej funkcji na naszej stronie GitHub.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Odwiedź naszą stronę!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="604"/>
+        <location filename="../../UI/MainWindow.cpp" line="605"/>
         <source>Redo</source>
         <translation>Ponów</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="605"/>
+        <location filename="../../UI/MainWindow.cpp" line="606"/>
         <source>Undo</source>
         <translation>Cofnij</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="630"/>
+        <location filename="../../UI/MainWindow.cpp" line="631"/>
         <source>&lt;h1&gt;Keyboard Shortcuts&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;Element Property Navigation&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : Previous / next primary property &lt;/li&gt;&lt;li&gt; { / } : Previous / next secondary property &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : Morph to previous / next element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;General Tips&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Double-click a wire to create a node &lt;/li&gt;&lt;li&gt; Drag an element from the left panel onto the canvas to add it &lt;/li&gt;&lt;li&gt; Nudge the selection with the arrow keys (hold Shift for larger steps) &lt;/li&gt;&lt;li&gt; Drop a .panda file onto the canvas to open it &lt;/li&gt;&lt;/ul&gt;</source>
         <translation>&lt;h1&gt;Skróty klawiszowe&lt;/h1&gt;&lt;table&gt;%1&lt;/table&gt;&lt;h1&gt;Nawigacja po właściwościach elementu&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; [ / ] : Poprzednia / następna właściwość podstawowa &lt;/li&gt;&lt;li&gt; { / } : Poprzednia / następna właściwość dodatkowa &lt;/li&gt;&lt;li&gt; &amp;lt; / &amp;gt; : Przekształć w poprzedni / następny element &lt;/li&gt;&lt;/ul&gt;&lt;h1&gt;Ogólne wskazówki&lt;/h1&gt;&lt;ul style=&quot;list-style:none;&quot;&gt;&lt;li&gt; Kliknij dwukrotnie na przewodzie, aby utworzyć węzeł &lt;/li&gt;&lt;li&gt; Przeciągnij element z lewego panelu na płótno, aby go dodać &lt;/li&gt;&lt;li&gt; Przesuwaj zaznaczenie klawiszami strzałek (przytrzymaj Shift, aby zwiększyć krok) &lt;/li&gt;&lt;li&gt; Upuść plik .panda na płótnie, aby go otworzyć &lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="681"/>
+        <location filename="../../UI/MainWindow.cpp" line="682"/>
         <source>Are you sure?</source>
         <translation>Czy jesteś pewny?</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="680"/>
+        <location filename="../../UI/MainWindow.cpp" line="681"/>
         <source>Exit</source>
         <translation>Wyjdź</translation>
     </message>
     <message>
-        <location filename="../../UI/MainWindow.cpp" line="1302"/>
+        <location filename="../../UI/MainWindow.cpp" line="1303"/>
         <source>Unmute</source>
         <translation>Włącz dźwięk</translation>
     </message>
@@ -2626,7 +2626,7 @@ Musisz zapisać nowe projekty przed uzyskaniem dostępu do IC i wyglądów lub u
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../../Scene/ICRegistry.cpp" line="237"/>
+        <location filename="../../Scene/ICRegistry.cpp" line="241"/>
         <source>Add embedded IC</source>
         <translation>Dodaj wbudowany IC</translation>
     </message>
