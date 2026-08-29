@@ -414,7 +414,15 @@ void MainWindow::setupConnections()
     });
     connect(m_ui->pushButtonAddIC,             &QPushButton::clicked,     m_icController,      &ICController::addICFromFile);
     connect(m_ui->pushButtonRemoveIC,          &QPushButton::clicked,     m_icController,      &ICController::showRemoveICHint);
-    connect(m_ui->pushButtonRemoveIC,          &TrashButton::removeICFile,m_icController,      &ICController::removeICFile);
+    // Guarded here rather than inside removeICFile(): a failed moveToTrash() must keep
+    // throwing to direct callers, which TestICController pins, while an exception crossing
+    // signal-slot dispatch must not reach notify()'s catch -- unreachable on macOS.
+    connect(m_ui->pushButtonRemoveIC, &TrashButton::removeICFile, m_icController,
+        [this](const QString &icFileName) {
+            Application::guardedSlot(m_icController, [this, &icFileName] {
+                m_icController->removeICFile(icFileName);
+            });
+        });
     connect(m_ui->pushButtonMakeSelfContained, &QPushButton::clicked,     m_icController,      &ICController::makeSelfContained);
     connect(m_ui->actionMakeSelfContained,     &QAction::triggered,       m_icController,      &ICController::makeSelfContained);
 

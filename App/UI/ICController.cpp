@@ -199,242 +199,256 @@ bool ICController::ensureProjectSaved(Scene *scene)
 
 void ICController::embedSelectedIC()
 {
-    sentryBreadcrumb("ic", QStringLiteral("Embed IC"));
-    auto *firstIC = selectedIC();
-    if (!firstIC || firstIC->file().isEmpty()) {
-        return;
-    }
-
-    auto *scene = m_host.currentTab()->scene();
-
-    if (!ensureProjectSaved(scene)) {
-        return;
-    }
-    const QString contextDir = scene->contextDir();
-
-    QString blobName = resolveUniqueBlobName(QFileInfo(firstIC->file()).baseName(), scene);
-    if (blobName.isEmpty()) {
-        return;
-    }
-
-    QFile file(QDir(contextDir).absoluteFilePath(firstIC->file()));
-    if (!file.open(QIODevice::ReadOnly)) {
-        QMessageBox::warning(m_host.widget(), tr("Error"), tr("Could not read IC file: %1").arg(file.errorString()));
-        return;
-    }
-    QByteArray fileBytes = file.readAll();
-    file.close();
-
-    scene->icRegistry()->embedICsByFile(firstIC->file(), fileBytes, blobName);
-    m_host.palette()->updateEmbeddedICList(scene);
-    m_host.showStatusMessage(tr("IC embedded successfully."), 4000);
-}
-
-void ICController::extractSelectedIC()
-{
-    sentryBreadcrumb("ic", QStringLiteral("Extract IC"));
-    auto *firstIC = selectedIC();
-    if (!firstIC || !firstIC->isEmbedded()) {
-        return;
-    }
-
-    auto *scene = m_host.currentTab()->scene();
-    const QString blobName = firstIC->blobName();
-    if (!ensureProjectSaved(scene)) {
-        return;
-    }
-    const QString contextDir = scene->contextDir();
-
-    const QString suggestion = QDir(contextDir).absoluteFilePath(blobName + ".panda");
-    QString fileName = FileDialogs::provider()->getSaveFileName(m_host.widget(), tr("Extract IC to file..."), suggestion, tr("Panda files") + " (*.panda)").fileName;
-
-    if (fileName.isEmpty()) {
-        return;
-    }
-
-    if (!fileName.endsWith(".panda")) {
-        fileName.append(".panda");
-    }
-
-    scene->icRegistry()->extractToFile(blobName, fileName);
-    m_host.palette()->updateICList(m_host.icListFile());
-    m_host.palette()->updateEmbeddedICList(scene);
-    m_host.showStatusMessage(tr("IC extracted to %1").arg(fileName), 4000);
-}
-
-void ICController::embedICByFile(const QString &fileName)
-{
-    auto *tab = m_host.currentTab();
-    if (!tab) {
-        return;
-    }
-
-    auto *scene = tab->scene();
-    if (!ensureProjectSaved(scene)) {
-        return;
-    }
-    const QString contextDir = scene->contextDir();
-
-    const QString absolutePath = QDir(contextDir).absoluteFilePath(fileName);
-    QFile file(absolutePath);
-    if (!file.open(QIODevice::ReadOnly)) {
-        QMessageBox::warning(m_host.widget(), tr("Error"), tr("Could not read IC file: %1").arg(file.errorString()));
-        return;
-    }
-    QByteArray fileBytes = file.readAll();
-    file.close();
-
-    QString blobName = resolveUniqueBlobName(QFileInfo(absolutePath).baseName(), scene);
-    if (blobName.isEmpty()) {
-        return;
-    }
-
-    auto *reg = scene->icRegistry();
-    if (reg->embedICsByFile(absolutePath, fileBytes, blobName) == 0) {
-        // No existing instances — register the blob only; don't add to scene.
-        scene->receiveCommand(new RegisterBlobCommand(blobName, fileBytes, scene));
-    }
-
-    m_host.palette()->updateEmbeddedICList(scene);
-    m_host.showStatusMessage(tr("IC embedded successfully."), 4000);
-}
-
-void ICController::extractICByBlobName(const QString &blobName)
-{
-    auto *tab = m_host.currentTab();
-    if (!tab) {
-        return;
-    }
-
-    auto *scene = tab->scene();
-    if (!ensureProjectSaved(scene)) {
-        return;
-    }
-    const QString contextDir = scene->contextDir();
-
-    // Find any embedded IC with this blobName to get the blob data
-    auto *reg = scene->icRegistry();
-    if (!reg->hasBlob(blobName)) {
-        return;
-    }
-
-    const QString suggestion = QDir(contextDir).absoluteFilePath(blobName + ".panda");
-    QString fileName = FileDialogs::provider()->getSaveFileName(m_host.widget(), tr("Extract IC to file..."), suggestion, tr("Panda files") + " (*.panda)").fileName;
-
-    if (fileName.isEmpty()) {
-        return;
-    }
-
-    if (!fileName.endsWith(".panda")) {
-        fileName.append(".panda");
-    }
-
-    reg->extractToFile(blobName, fileName);
-    m_host.palette()->updateICList(m_host.icListFile());
-    m_host.palette()->updateEmbeddedICList(scene);
-    m_host.showStatusMessage(tr("IC extracted to %1").arg(fileName), 4000);
-}
-
-void ICController::makeSelfContained()
-{
-    sentryBreadcrumb("ic", QStringLiteral("Make self-contained"));
-    auto *tab = m_host.currentTab();
-    if (!tab) {
-        return;
-    }
-
-    auto *scene = tab->scene();
-    if (!ensureProjectSaved(scene)) {
-        return;
-    }
-    const QString contextDir = scene->contextDir();
-
-    // Collect unique file paths from all file-backed ICs
-    QStringList uniqueFiles;
-    for (auto *elm : scene->elements()) {
-        if (elm->elementType() != ElementType::IC || elm->isEmbedded()) {
-            continue;
+    Application::guardedSlot(this, [this] {
+        sentryBreadcrumb("ic", QStringLiteral("Embed IC"));
+        auto *firstIC = selectedIC();
+        if (!firstIC || firstIC->file().isEmpty()) {
+            return;
         }
-        const QString icFile = static_cast<IC *>(elm)->file();
-        if (!icFile.isEmpty() && !uniqueFiles.contains(icFile)) {
-            uniqueFiles.append(icFile);
+
+        auto *scene = m_host.currentTab()->scene();
+
+        if (!ensureProjectSaved(scene)) {
+            return;
         }
-    }
+        const QString contextDir = scene->contextDir();
 
-    if (uniqueFiles.isEmpty()) {
-        m_host.showStatusMessage(tr("No file-based ICs to embed."), 4000);
-        return;
-    }
+        QString blobName = resolveUniqueBlobName(QFileInfo(firstIC->file()).baseName(), scene);
+        if (blobName.isEmpty()) {
+            return;
+        }
 
-    int totalEmbedded = 0;
-    bool completed = true;
-    auto *reg = scene->icRegistry();
-
-    for (const QString &icFile : std::as_const(uniqueFiles)) {
-        const QString fullPath = QDir(contextDir).absoluteFilePath(icFile);
-        QFile file(fullPath);
+        QFile file(QDir(contextDir).absoluteFilePath(firstIC->file()));
         if (!file.open(QIODevice::ReadOnly)) {
             QMessageBox::warning(m_host.widget(), tr("Error"), tr("Could not read IC file: %1").arg(file.errorString()));
-            completed = false;
-            break;
+            return;
         }
         QByteArray fileBytes = file.readAll();
         file.close();
 
-        QString blobName = resolveUniqueBlobName(QFileInfo(icFile).baseName(), scene);
-        if (blobName.isEmpty()) {
-            completed = false;
-            break; // User cancelled
+        scene->icRegistry()->embedICsByFile(firstIC->file(), fileBytes, blobName);
+        m_host.palette()->updateEmbeddedICList(scene);
+        m_host.showStatusMessage(tr("IC embedded successfully."), 4000);
+    });
+}
+
+void ICController::extractSelectedIC()
+{
+    Application::guardedSlot(this, [this] {
+        sentryBreadcrumb("ic", QStringLiteral("Extract IC"));
+        auto *firstIC = selectedIC();
+        if (!firstIC || !firstIC->isEmbedded()) {
+            return;
         }
 
-        totalEmbedded += reg->embedICsByFile(fullPath, fileBytes, blobName);
-    }
+        auto *scene = m_host.currentTab()->scene();
+        const QString blobName = firstIC->blobName();
+        if (!ensureProjectSaved(scene)) {
+            return;
+        }
+        const QString contextDir = scene->contextDir();
 
-    m_host.palette()->updateEmbeddedICList(scene);
-    // Only claim the circuit is self-contained when every file-based IC was embedded. On a
-    // read error or a cancelled prompt the loop breaks early, so report the partial result
-    // honestly (or stay quiet if nothing was embedded — the error/cancel already spoke).
-    if (completed) {
-        m_host.showStatusMessage(tr("Embedded %1 IC(s). Circuit is now self-contained.").arg(totalEmbedded), 4000);
-    } else if (totalEmbedded > 0) {
-        m_host.showStatusMessage(tr("Embedded %1 IC(s); some file-based ICs remain.").arg(totalEmbedded), 4000);
-    }
+        const QString suggestion = QDir(contextDir).absoluteFilePath(blobName + ".panda");
+        QString fileName = FileDialogs::provider()->getSaveFileName(m_host.widget(), tr("Extract IC to file..."), suggestion, tr("Panda files") + " (*.panda)").fileName;
+
+        if (fileName.isEmpty()) {
+            return;
+        }
+
+        if (!fileName.endsWith(".panda")) {
+            fileName.append(".panda");
+        }
+
+        scene->icRegistry()->extractToFile(blobName, fileName);
+        m_host.palette()->updateICList(m_host.icListFile());
+        m_host.palette()->updateEmbeddedICList(scene);
+        m_host.showStatusMessage(tr("IC extracted to %1").arg(fileName), 4000);
+    });
+}
+
+void ICController::embedICByFile(const QString &fileName)
+{
+    Application::guardedSlot(this, [this, &fileName] {
+        auto *tab = m_host.currentTab();
+        if (!tab) {
+            return;
+        }
+
+        auto *scene = tab->scene();
+        if (!ensureProjectSaved(scene)) {
+            return;
+        }
+        const QString contextDir = scene->contextDir();
+
+        const QString absolutePath = QDir(contextDir).absoluteFilePath(fileName);
+        QFile file(absolutePath);
+        if (!file.open(QIODevice::ReadOnly)) {
+            QMessageBox::warning(m_host.widget(), tr("Error"), tr("Could not read IC file: %1").arg(file.errorString()));
+            return;
+        }
+        QByteArray fileBytes = file.readAll();
+        file.close();
+
+        QString blobName = resolveUniqueBlobName(QFileInfo(absolutePath).baseName(), scene);
+        if (blobName.isEmpty()) {
+            return;
+        }
+
+        auto *reg = scene->icRegistry();
+        if (reg->embedICsByFile(absolutePath, fileBytes, blobName) == 0) {
+            // No existing instances — register the blob only; don't add to scene.
+            scene->receiveCommand(new RegisterBlobCommand(blobName, fileBytes, scene));
+        }
+
+        m_host.palette()->updateEmbeddedICList(scene);
+        m_host.showStatusMessage(tr("IC embedded successfully."), 4000);
+    });
+}
+
+void ICController::extractICByBlobName(const QString &blobName)
+{
+    Application::guardedSlot(this, [this, &blobName] {
+        auto *tab = m_host.currentTab();
+        if (!tab) {
+            return;
+        }
+
+        auto *scene = tab->scene();
+        if (!ensureProjectSaved(scene)) {
+            return;
+        }
+        const QString contextDir = scene->contextDir();
+
+        // Find any embedded IC with this blobName to get the blob data
+        auto *reg = scene->icRegistry();
+        if (!reg->hasBlob(blobName)) {
+            return;
+        }
+
+        const QString suggestion = QDir(contextDir).absoluteFilePath(blobName + ".panda");
+        QString fileName = FileDialogs::provider()->getSaveFileName(m_host.widget(), tr("Extract IC to file..."), suggestion, tr("Panda files") + " (*.panda)").fileName;
+
+        if (fileName.isEmpty()) {
+            return;
+        }
+
+        if (!fileName.endsWith(".panda")) {
+            fileName.append(".panda");
+        }
+
+        reg->extractToFile(blobName, fileName);
+        m_host.palette()->updateICList(m_host.icListFile());
+        m_host.palette()->updateEmbeddedICList(scene);
+        m_host.showStatusMessage(tr("IC extracted to %1").arg(fileName), 4000);
+    });
+}
+
+void ICController::makeSelfContained()
+{
+    Application::guardedSlot(this, [this] {
+        sentryBreadcrumb("ic", QStringLiteral("Make self-contained"));
+        auto *tab = m_host.currentTab();
+        if (!tab) {
+            return;
+        }
+
+        auto *scene = tab->scene();
+        if (!ensureProjectSaved(scene)) {
+            return;
+        }
+        const QString contextDir = scene->contextDir();
+
+        // Collect unique file paths from all file-backed ICs
+        QStringList uniqueFiles;
+        for (auto *elm : scene->elements()) {
+            if (elm->elementType() != ElementType::IC || elm->isEmbedded()) {
+                continue;
+            }
+            const QString icFile = static_cast<IC *>(elm)->file();
+            if (!icFile.isEmpty() && !uniqueFiles.contains(icFile)) {
+                uniqueFiles.append(icFile);
+            }
+        }
+
+        if (uniqueFiles.isEmpty()) {
+            m_host.showStatusMessage(tr("No file-based ICs to embed."), 4000);
+            return;
+        }
+
+        int totalEmbedded = 0;
+        bool completed = true;
+        auto *reg = scene->icRegistry();
+
+        for (const QString &icFile : std::as_const(uniqueFiles)) {
+            const QString fullPath = QDir(contextDir).absoluteFilePath(icFile);
+            QFile file(fullPath);
+            if (!file.open(QIODevice::ReadOnly)) {
+                QMessageBox::warning(m_host.widget(), tr("Error"), tr("Could not read IC file: %1").arg(file.errorString()));
+                completed = false;
+                break;
+            }
+            QByteArray fileBytes = file.readAll();
+            file.close();
+
+            QString blobName = resolveUniqueBlobName(QFileInfo(icFile).baseName(), scene);
+            if (blobName.isEmpty()) {
+                completed = false;
+                break; // User cancelled
+            }
+
+            totalEmbedded += reg->embedICsByFile(fullPath, fileBytes, blobName);
+        }
+
+        m_host.palette()->updateEmbeddedICList(scene);
+        // Only claim the circuit is self-contained when every file-based IC was embedded. On a
+        // read error or a cancelled prompt the loop breaks early, so report the partial result
+        // honestly (or stay quiet if nothing was embedded — the error/cancel already spoke).
+        if (completed) {
+            m_host.showStatusMessage(tr("Embedded %1 IC(s). Circuit is now self-contained.").arg(totalEmbedded), 4000);
+        } else if (totalEmbedded > 0) {
+            m_host.showStatusMessage(tr("Embedded %1 IC(s); some file-based ICs remain.").arg(totalEmbedded), 4000);
+        }
+    });
 }
 
 void ICController::addEmbeddedICFromFile()
 {
-    auto *tab = m_host.currentTab();
-    if (!tab) {
-        return;
-    }
-    QString fileName = FileDialogs::provider()->getOpenFileName(m_host.widget(), tr("Select IC file to embed"), m_host.currentDir().absolutePath(), tr("Panda files") + " (*.panda)");
-    if (fileName.isEmpty()) {
-        return;
-    }
+    Application::guardedSlot(this, [this] {
+        auto *tab = m_host.currentTab();
+        if (!tab) {
+            return;
+        }
+        QString fileName = FileDialogs::provider()->getOpenFileName(m_host.widget(), tr("Select IC file to embed"), m_host.currentDir().absolutePath(), tr("Panda files") + " (*.panda)");
+        if (fileName.isEmpty()) {
+            return;
+        }
 
-    QFile file(fileName);
-    if (!file.open(QIODevice::ReadOnly)) {
-        QMessageBox::warning(m_host.widget(), tr("Error"), tr("Could not read file: %1").arg(file.errorString()));
-        return;
-    }
-    QByteArray fileBytes = file.readAll();
-    file.close();
+        QFile file(fileName);
+        if (!file.open(QIODevice::ReadOnly)) {
+            QMessageBox::warning(m_host.widget(), tr("Error"), tr("Could not read file: %1").arg(file.errorString()));
+            return;
+        }
+        QByteArray fileBytes = file.readAll();
+        file.close();
 
-    auto *scene = tab->scene();
-    QString blobName = resolveUniqueBlobName(QFileInfo(fileName).baseName(), scene);
-    if (blobName.isEmpty()) {
-        return;
-    }
+        auto *scene = tab->scene();
+        QString blobName = resolveUniqueBlobName(QFileInfo(fileName).baseName(), scene);
+        if (blobName.isEmpty()) {
+            return;
+        }
 
-    scene->receiveCommand(new RegisterBlobCommand(blobName, fileBytes, scene));
-    m_host.palette()->updateEmbeddedICList(scene);
+        scene->receiveCommand(new RegisterBlobCommand(blobName, fileBytes, scene));
+        m_host.palette()->updateEmbeddedICList(scene);
+    });
 }
 
 void ICController::removeEmbeddedIC(const QString &blobName)
 {
-    auto *tab = m_host.currentTab();
-    if (tab) {
-        tab->removeEmbeddedIC(blobName);
-        m_host.palette()->updateEmbeddedICList(tab->scene());
-    }
+    Application::guardedSlot(this, [this, &blobName] {
+        auto *tab = m_host.currentTab();
+        if (tab) {
+            tab->removeEmbeddedIC(blobName);
+            m_host.palette()->updateEmbeddedICList(tab->scene());
+        }
+    });
 }
