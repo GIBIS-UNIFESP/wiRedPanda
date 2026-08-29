@@ -1342,8 +1342,14 @@ void MainWindow::on_actionCrashReporting_triggered(const bool checked)
         // Opting out drops the anonymous id too: keeping it would leave a stable
         // identifier on disk for a user who has just asked not to be reported on.
         // A later opt-in mints a fresh one, which is the intended behaviour.
+        //
+        // It also drops the circuit attachment immediately. Gating sentryAttachCircuit()
+        // only stops *future* attachments; one registered earlier in this session would
+        // otherwise still be read and uploaded at crash time, which is exactly what the
+        // user just declined.
         if (!checked) {
             Settings::setSentryUserId(QString());
+            sentryDetachCircuit();
         }
     });
 }

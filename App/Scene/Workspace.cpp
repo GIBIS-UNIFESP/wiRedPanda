@@ -120,6 +120,7 @@ WorkSpace::~WorkSpace()
         QStringList autosaves = Settings::autosaveFiles();
         autosaves.removeAll(m_autosaveFileName);
         Settings::setAutosaveFiles(autosaves);
+        sentryDetachCircuit(m_autosaveFileName);
         QFile::remove(m_autosaveFileName);
         m_autosaveFileName.clear();
     }
@@ -413,6 +414,7 @@ WorkSpace::SaveOutcome WorkSpace::save(const QString &fileName)
         QStringList autosaves = Settings::autosaveFiles();
         autosaves.removeAll(m_autosaveFileName);
         Settings::setAutosaveFiles(autosaves);
+        sentryDetachCircuit(m_autosaveFileName);
         QFile::remove(m_autosaveFileName);
         m_autosaveFileName.clear();
         qCDebug(zero) << "All auto save file names after removing autosave: " << autosaves;
@@ -661,6 +663,7 @@ void WorkSpace::autosave()
         if (!m_autosaveFileName.isEmpty()) {
             autosaves.removeAll(m_autosaveFileName);
             Settings::setAutosaveFiles(autosaves);
+            sentryDetachCircuit(m_autosaveFileName);
             QFile::remove(m_autosaveFileName);
             m_autosaveFileName.clear();
         }
@@ -705,6 +708,7 @@ void WorkSpace::autosave()
     const QString prefix = m_fileInfo.fileName().isEmpty() ? QStringLiteral(".") : "." + m_fileInfo.baseName() + ".";
     if (!m_autosaveFileName.isEmpty() && QFileInfo(m_autosaveFileName).absolutePath() != path.absolutePath()) {
         autosaves.removeAll(m_autosaveFileName);
+        sentryDetachCircuit(m_autosaveFileName);
         QFile::remove(m_autosaveFileName);
         m_autosaveFileName.clear();
     }
@@ -742,6 +746,12 @@ void WorkSpace::autosave()
 
     autosaves.append(m_autosaveFileName);
     Settings::setAutosaveFiles(autosaves);
+
+    // Attach only after a successful commit, so a crash report never references a file
+    // that failed to write or is half-written. The path is absolute (built via
+    // QDir::absoluteFilePath above), which matters because the SDK resolves a relative
+    // attachment path against the working directory at crash time.
+    sentryAttachCircuit(m_autosaveFileName);
 
     qCDebug(three) << "All auto save file names after adding autosave: " << autosaves;
 
