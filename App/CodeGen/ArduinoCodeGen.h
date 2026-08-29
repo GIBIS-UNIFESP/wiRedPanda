@@ -78,6 +78,18 @@ class ArduinoCodeGen
     Q_DECLARE_TR_FUNCTIONS(ArduinoCodeGen)
 
 public:
+    /**
+     * \brief Iteration bound for the settle loops in the GENERATED sketch.
+     *
+     * \details Purely a code-generation constant: the sketch converges its logic by
+     * re-running computeLogic() until nothing changes, and this caps that loop so a
+     * circuit that cannot converge still leaves loop().  It has no engine consumer --
+     * the event-driven engine propagates commits as ordinary events and has no settle
+     * loop to bound -- which is why it lives here rather than on Simulation, where it
+     * would read as a shared engine/codegen bound it is not.
+     */
+    static constexpr int kMaxSettleIterations = 10;
+
     // --- Lifecycle ---
 
     /**

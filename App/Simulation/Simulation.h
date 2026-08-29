@@ -48,9 +48,6 @@ class Simulation : public QObject
     friend class TestSimulationUnit;
 
 public:
-    /// Iteration bound for the settle loops emitted into a generated Arduino sketch.
-    static constexpr int kMaxSettleIterations = 10;
-
     // --- Lifecycle ---
 
     /**

@@ -11,6 +11,7 @@
 
 #include "App/CodeGen/CodeGenUtils.h"
 #include "App/Core/Common.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/Buzzer.h"
 #include "App/Element/GraphicElements/Clock.h"
@@ -18,7 +19,6 @@
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Scene.h"
-#include "App/Simulation/Simulation.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
 
@@ -680,13 +680,13 @@ void ArduinoCodeGen::emitTickDriver()
     // was drawn in. Edge detection updates its stored clock level inside the sampling guard, so
     // a repeat pass sees no edge on a held clock and only genuinely-changed clocks re-fire.
     if (m_hasSequential) {
-        m_stream << "    for (int p = 0; p < " << Simulation::kMaxSettleIterations << "; p++) {" << Qt::endl;
+        m_stream << "    for (int p = 0; p < " << kMaxSettleIterations << "; p++) {" << Qt::endl;
         m_stream << "        g_sample = true;" << Qt::endl;
-        m_stream << "        for (int s = 0; s < " << Simulation::kMaxSettleIterations << "; s++) { computeLogic(); }" << Qt::endl;
+        m_stream << "        for (int s = 0; s < " << kMaxSettleIterations << "; s++) { computeLogic(); }" << Qt::endl;
         m_stream << "        if (!commitFlipFlops()) { break; }" << Qt::endl;
         m_stream << "    }" << Qt::endl;
         m_stream << "    g_sample = false;" << Qt::endl;
-        m_stream << "    for (int s = 0; s < " << Simulation::kMaxSettleIterations << "; s++) { computeLogic(); }" << Qt::endl;
+        m_stream << "    for (int s = 0; s < " << kMaxSettleIterations << "; s++) { computeLogic(); }" << Qt::endl;
     } else {
         m_stream << "    computeLogic();" << Qt::endl;
     }
@@ -1485,22 +1485,20 @@ void ArduinoCodeGen::generateTestbench(const QString &tbFileName, const QVector<
         // non-blocking commit: settle while flip-flops sample into _next (reading
         // pre-edge state), commit all at once, then re-settle so combinational
         // outputs reflect the new state. Combinational/gate-built circuits just
-        // settle to a fixed point, bounded by Simulation::kMaxSettleIterations. The engine has
-        // no iterative settle of its own -- it propagates commits as ordinary events -- so this
-        // bound governs the generated loop only, which does settle iteratively.
+        // settle to a fixed point, bounded by kMaxSettleIterations.
         if (m_hasSequential) {
-            m_stream << "        for (int p = 0; p < " << Simulation::kMaxSettleIterations
+            m_stream << "        for (int p = 0; p < " << kMaxSettleIterations
                      << "; p++) {" << Qt::endl;
             m_stream << "            g_sample = true;" << Qt::endl;
-            m_stream << "            for (int s = 0; s < " << Simulation::kMaxSettleIterations
+            m_stream << "            for (int s = 0; s < " << kMaxSettleIterations
                      << "; s++) { computeLogic(); }" << Qt::endl;
             m_stream << "            if (!commitFlipFlops()) { break; }" << Qt::endl;
             m_stream << "        }" << Qt::endl;
             m_stream << "        g_sample = false;" << Qt::endl;
-            m_stream << "        for (int s = 0; s < " << Simulation::kMaxSettleIterations
+            m_stream << "        for (int s = 0; s < " << kMaxSettleIterations
                      << "; s++) { computeLogic(); }" << Qt::endl;
         } else {
-            m_stream << "        for (int s = 0; s < " << Simulation::kMaxSettleIterations
+            m_stream << "        for (int s = 0; s < " << kMaxSettleIterations
                      << "; s++) { computeLogic(); }" << Qt::endl;
         }
         m_stream << "        bool pass = true;" << Qt::endl;
