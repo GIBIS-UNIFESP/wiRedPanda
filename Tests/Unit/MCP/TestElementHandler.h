@@ -14,6 +14,12 @@ class TestElementHandler : public QObject
     Q_OBJECT
 
 private slots:
+    /// One tick is a full settle only in FUNCTIONAL mode. In temporal mode a tick advances
+    /// m_timePerTick of sim-time, so a 20 ns gate has not propagated and an immediately
+    /// following get_output_value would read a pre-settle value -- reported with a confident
+    /// typed status rather than a bare boolean.
+    void testSetInputValueSettlesInTemporalMode();
+
     void testSetElementPropertiesAcceptsNegativeClockDelay();
     void testSetElementPropertiesRejectsClockDelayOutOfRange();
 

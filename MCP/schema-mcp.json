@@ -3138,7 +3138,10 @@
         "set_input_value_response": {
           "allOf": [
             { "$ref": "#/definitions/CommandResponse" },
-            { "properties": { "result": { "type": "object", "additionalProperties": false } } }
+            { "properties": { "result": { "type": "object", "additionalProperties": false, "properties": {
+              "settled": { "type": "boolean", "description": "True if the circuit reached a fixed point before the tick budget ran out; a free-running clock or an unresolved oscillation leaves it false." },
+              "ticks": { "type": "integer", "description": "Simulation ticks driven while settling. 1 in functional mode; in temporal mode, however many were needed for propagation delays to elapse." }
+            } } } }
           ]
         },
         "simulation_control_response": {

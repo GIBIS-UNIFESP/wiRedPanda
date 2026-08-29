@@ -1293,3 +1293,49 @@ void TestElementHandler::testHandleCommandRejectsUnknownCommand()
     QVERIFY2(response.contains("error"), qPrintable(QJsonDocument(response).toJson()));
     QCOMPARE(response["error"].toObject()["code"].toInt(), JsonRpcError::MethodNotFound);
 }
+
+void TestElementHandler::testSetInputValueSettlesInTemporalMode()
+{
+    MainWindow window;
+    ElementHandler handler(&window, nullptr);
+
+    auto *scene = window.currentTab()->scene();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *inv = ElementFactory::buildElement(ElementType::Not);
+    scene->addItem(sw);
+    scene->addItem(inv);
+    sw->setPos(0, 0);
+    inv->setPos(100, 0);
+    auto *c = new Connection();
+    scene->addItem(c);
+    c->setStartPort(sw->outputPort(0));
+    c->setEndPort(inv->inputPort(0));
+
+    auto *sim = scene->simulation();
+    QVERIFY(sim->initialize());
+    qobject_cast<GraphicElementInput *>(sw)->setOn(true, 0);
+    sim->update();
+    QCOMPARE(inv->outputValue(0), Status::Inactive);   // NOT(1)
+
+    // Put the live simulation in temporal mode with a delay far wider than one tick, exactly as
+    // the status-bar selector does. One update() cannot possibly propagate this.
+    sim->setElementDelay(inv, 20);
+    sim->setTimePerTick(1);
+
+    const QJsonObject setResp =
+        handler.handleCommand("set_input_value", {{"element_id", sw->id()}, {"value", false}}, {});
+    QVERIFY2(setResp.contains("result"), qPrintable(QJsonDocument(setResp).toJson()));
+    const QJsonObject setResult = setResp.value("result").toObject();
+    QVERIFY2(setResult.value("settled").toBool(),
+             "the handler must present a settled circuit, not a circuit one tick into a 20 ns delay");
+    QVERIFY2(setResult.value("ticks").toInt() > 1,
+             "reaching a fixed point through a 20 ns delay at 1 ns/tick must take several ticks");
+
+    // The engine, and therefore any following get_output_value, now reads the settled value.
+    QCOMPARE(inv->outputValue(0), Status::Active);     // NOT(0)
+    const QJsonObject getResp =
+        handler.handleCommand("get_output_value", {{"element_id", inv->id()}}, {});
+    const QJsonObject getResult = getResp.value("result").toObject();
+    QCOMPARE(getResult.value("value").toBool(), true);
+    QCOMPARE(getResult.value("status").toString(), QStringLiteral("high"));
+}

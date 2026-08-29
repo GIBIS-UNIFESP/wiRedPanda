@@ -613,10 +613,32 @@ QJsonObject ElementHandler::handleSetInputValue(const QJsonObject &params, const
     if (inputElement) {
         inputElement->setOn(value);
 
+        // Drive the circuit to a settled state rather than ticking once. A single update() is a
+        // full settle only in FUNCTIONAL mode, where every event lands at the current instant;
+        // in temporal mode it advances m_timePerTick of sim-time, so a 20 ns gate has not
+        // propagated yet and a get_output_value immediately afterwards reads a pre-settle value.
+        // The reply carries a typed status, so a stale answer arrives labelled "low" rather
+        // than as a bare boolean a client might have been suspicious of.
+        //
+        // Bounded, because a settled state is not always reachable -- a canonicalised oscillator
+        // aside, a free-running Clock is driven by wall time and never settles. The outcome is
+        // reported rather than assumed.
+        int ticks = 0;
+        bool settled = false;
         Scene *scene = currentScene();
         if (scene && scene->simulation()) {
-            scene->simulation()->update();
+            auto *simulation = scene->simulation();
+            constexpr int kMaxSettleTicks = 256;
+            for (; ticks < kMaxSettleTicks; ++ticks) {
+                simulation->update();
+                if (simulation->isAtFixedPoint()) {
+                    settled = true;
+                    ++ticks;
+                    break;
+                }
+            }
         }
+        return createSuccessResponse(QJsonObject{{"settled", settled}, {"ticks", ticks}}, requestId);
     } else {
         return createErrorResponse("Element is not an input element", requestId, JsonRpcError::ValidationError);
     }
