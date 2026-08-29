@@ -49,13 +49,31 @@ struct ElementInfo<TruthTable> {
     }();
 };
 
+namespace {
+
+/// Rows in a full table: the row index is the inputs read MSB-first, so an element wired to the
+/// maximum number of inputs addresses 2^maxInputSize of them.
+constexpr qsizetype kTruthTableRows = qsizetype{1} << ElementInfo<TruthTable>::constraints.maxInputSize;
+
+/// Bits in m_key: one per (output column, row). updateLogic() indexes kTruthTableRows * output
+/// + row, so the largest index it can form is exactly this minus one -- the array has ZERO
+/// slack, and derived constants are what keep that true if the port limits ever move.
+constexpr qsizetype kTruthTableKeyBits = kTruthTableRows * ElementInfo<TruthTable>::constraints.maxOutputSize;
+
+static_assert(kTruthTableKeyBits == 2048,
+              "The .panda format stores this QBitArray verbatim and setkey() resizes every loaded "
+              "key to it, so the size is part of the file format. Raising maxInputSize or "
+              "maxOutputSize silently changes what is written and what older files decode to -- "
+              "handle it as a format change, not a constant edit.");
+
+} // namespace
+
 TruthTable::TruthTable(QGraphicsItem *parent)
     : GraphicElement(ElementType::TruthTable, parent)
 {
-    // 2048 bits = 256 rows × 8 output columns (max: 8 inputs × 8 outputs).
-    // Laid out as [row0_out0, row0_out1, ..., row0_out7, row1_out0, ...].
+    // Laid out as [out0_row0..out0_rowN, out1_row0..out1_rowN, ...].
     // All outputs default to 0 (all-false table).
-    m_key.resize(2048);
+    m_key.resize(kTruthTableKeyBits);
     m_key.fill(0);
     TruthTable::updatePortsProperties();
 }
@@ -221,11 +239,11 @@ QBitArray &TruthTable::key()
 void TruthTable::setkey(const QBitArray &key)
 {
     m_key = key;
-    // updateLogic() indexes the key at 256*output + row (up to bit 2047) and
-    // ToggleTruthTableOutputCommand toggles bits in place, so the key must
-    // hold exactly 2048 bits regardless of what a (possibly corrupt or
-    // crafted) .panda file supplied — resize pads with zeros or truncates.
-    m_key.resize(2048);
+    // updateLogic() indexes the key at kTruthTableRows*output + row (up to the last bit) and
+    // ToggleTruthTableOutputCommand toggles bits in place, so the key must hold exactly
+    // kTruthTableKeyBits bits regardless of what a (possibly corrupt or crafted) .panda file
+    // supplied — resize pads with zeros or truncates.
+    m_key.resize(kTruthTableKeyBits);
 }
 
 void TruthTable::save(QDataStream &stream, SerializationOptions options) const
@@ -275,7 +293,7 @@ void TruthTable::updateLogic()
     }
 
     for (int i = 0; i < outputSize(); ++i) {
-        const bool result = m_key.at(static_cast<qsizetype>(256 * i) + static_cast<qsizetype>(pos));
+        const bool result = m_key.at(kTruthTableRows * i + static_cast<qsizetype>(pos));
         setOutputValue(i, result);
     }
 }
