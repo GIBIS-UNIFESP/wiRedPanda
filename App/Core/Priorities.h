@@ -114,10 +114,29 @@ QVector<QVector<T *>> findFeedbackComponents(
 }
 
 /**
+ * \brief Flattens a cyclic-component partition into one membership set.
+ *
+ * \param components  Partition as returned by findFeedbackComponents().
+ * \return Set of all nodes that are part of at least one cycle.
+ */
+template<typename T>
+QSet<T *> flattenFeedbackComponents(const QVector<QVector<T *>> &components)
+{
+    QSet<T *> feedbackNodes;
+    for (const auto &component : components) {
+        for (auto *node : component) {
+            feedbackNodes.insert(node);
+        }
+    }
+    return feedbackNodes;
+}
+
+/**
  * \brief Finds all nodes that participate in feedback loops (cycles).
  *
- * The flattened view of findFeedbackComponents(): every node of every cyclic
- * component, in one set.  Use this when only membership matters.
+ * The flattened view of findFeedbackComponents().  Use this when only membership
+ * matters AND the partition is not needed: it runs Tarjan's algorithm.  A caller
+ * that already holds the partition should flatten it directly instead.
  *
  * \param elements    All nodes to process.
  * \param successors  Adjacency list (node -> its successors).
@@ -128,14 +147,7 @@ QSet<T *> findFeedbackNodes(
     const QVector<T *> &elements,
     const QHash<T *, QVector<T *>> &successors)
 {
-    QSet<T *> feedbackNodes;
-    const auto components = findFeedbackComponents(elements, successors);
-    for (const auto &component : components) {
-        for (auto *node : component) {
-            feedbackNodes.insert(node);
-        }
-    }
-    return feedbackNodes;
+    return flattenFeedbackComponents(findFeedbackComponents(elements, successors));
 }
 
 namespace PrioritiesInternal {
@@ -252,17 +264,22 @@ void legacyCalculatePriorities(
  * the legacy order is what the gate-built latch circuits settle correctly
  * under.
  *
- * \param elements       All nodes to process.
- * \param successors     Adjacency list (node -> its successors).
- * \param outPriorities  Output map filled with computed priorities.
+ * \param elements            All nodes to process.
+ * \param successors          Adjacency list (node -> its successors).
+ * \param outPriorities       Output map filled with computed priorities.
+ * \param feedbackComponents  The cyclic-component partition of the same graph, as returned by
+ *                            findFeedbackComponents().  Passed in rather than recomputed so a
+ *                            caller that already needs the partition runs Tarjan once instead
+ *                            of once per analysis; only its emptiness is read here.
  */
 template<typename T>
 void calculatePriorities(
     const QVector<T *> &elements,
     const QHash<T *, QVector<T *>> &successors,
-    QHash<T *, int> &outPriorities)
+    QHash<T *, int> &outPriorities,
+    const QVector<QVector<T *>> &feedbackComponents)
 {
-    if (!findFeedbackNodes(elements, successors).isEmpty()) {
+    if (!feedbackComponents.isEmpty()) {
         PrioritiesInternal::legacyCalculatePriorities(elements, successors, outPriorities);
         return;
     }
@@ -317,4 +334,18 @@ void calculatePriorities(
             stack.pop();
         }
     }
+}
+
+/**
+ * \brief Convenience form for callers that do not otherwise need the cyclic-component
+ * partition: runs findFeedbackComponents() and forwards to the overload above.
+ */
+template<typename T>
+void calculatePriorities(
+    const QVector<T *> &elements,
+    const QHash<T *, QVector<T *>> &successors,
+    QHash<T *, int> &outPriorities)
+{
+    calculatePriorities(elements, successors, outPriorities,
+                        findFeedbackComponents(elements, successors));
 }

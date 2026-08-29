@@ -180,6 +180,10 @@ public:
         QVector<GraphicElement *> sorted;                ///< Elements in priority order (highest first).
         QHash<GraphicElement *, int> priorities;          ///< Priority per element.
         QSet<GraphicElement *> feedbackNodes;             ///< Elements in feedback loops.
+        /// The cyclic components as a PARTITION (the flattened view of which is feedbackNodes).
+        /// Carried out of the sort so the single Tarjan pass it already runs serves every
+        /// consumer, rather than each recomputing it over the same graph.
+        QVector<QVector<GraphicElement *>> feedbackComponents;
     };
 
     /// Topologically sorts elements using the successor graph, detects feedback loops.

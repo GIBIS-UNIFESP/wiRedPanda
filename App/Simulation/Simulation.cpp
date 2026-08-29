@@ -1103,8 +1103,13 @@ Simulation::SortResult Simulation::topologicalSort(
     SortResult result;
 
     QVector<GraphicElement *> rawPtrs(elements);
-    calculatePriorities(rawPtrs, successors, result.priorities);
-    result.feedbackNodes = findFeedbackNodes(rawPtrs, successors);
+    // One Tarjan pass feeds all three consumers. Priorities only need to know WHETHER the
+    // graph has a cycle (that decides the legacy vs DAG walk), the feedback-node set is the
+    // partition flattened, and sortSimElements() needs the partition itself -- rather than each
+    // running its own findFeedbackComponents() over the identical graph.
+    result.feedbackComponents = findFeedbackComponents(rawPtrs, successors);
+    calculatePriorities(rawPtrs, successors, result.priorities, result.feedbackComponents);
+    result.feedbackNodes = flattenFeedbackComponents(result.feedbackComponents);
 
     result.sorted = elements;
     std::stable_sort(result.sorted.begin(), result.sorted.end(),
@@ -1305,7 +1310,6 @@ void Simulation::sortSimElements(const QVector<GraphicElement *> &elements)
         }
     }
     m_successorGraph = successors; // persist for the event-driven engine (processEvents)
-    QVector<GraphicElement *> rawElements(elements);
     const auto result = topologicalSort(elements, successors);
 
     m_simPriorities.clear();
@@ -1319,7 +1323,7 @@ void Simulation::sortSimElements(const QVector<GraphicElement *> &elements)
 
     // The cyclic components as a partition, not just a membership set: canonicalising an
     // oscillating region must leave every other cycle in the circuit alone.
-    m_simFeedbackComponents = findFeedbackComponents(rawElements, successors);
+    m_simFeedbackComponents = result.feedbackComponents;
     m_simFeedbackComponent.clear();
     for (int id = 0; id < m_simFeedbackComponents.size(); ++id) {
         for (auto *member : std::as_const(m_simFeedbackComponents.at(id))) {
