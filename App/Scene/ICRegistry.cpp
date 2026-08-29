@@ -10,6 +10,7 @@
 #include <QSaveFile>
 #include <QThread>
 
+#include "App/Core/Application.h"
 #include "App/Core/Common.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/IC.h"
@@ -80,43 +81,50 @@ QList<GraphicElement *> ICRegistry::findICsByFile(const QString &fileName) const
 
 void ICRegistry::onFileChanged(const QString &filePath)
 {
-    qCDebug(zero) << "IC file changed:" << filePath;
+    // Guarded because this is a queued slot that deliberately rethrows below: an escaping
+    // exception crosses Qt's signal-slot dispatch, where Application::notify's catch is
+    // structurally unreachable on macOS -- the unwinder reaches std::terminate mid-stack.
+    // Deleting a watched IC file therefore killed the application there instead of
+    // reporting the load error, while Linux caught the same throw and carried on.
+    Application::guardedSlot(this, [this, &filePath] {
+        qCDebug(zero) << "IC file changed:" << filePath;
 
-    // Invalidate the cached definition so it's rebuilt on next access
-    invalidate(filePath);
+        // Invalidate the cached definition so it's rebuilt on next access
+        invalidate(filePath);
 
-    // Re-add the watch (some OS remove it after a file change event)
-    if (!m_fileWatcher.files().contains(filePath) && QFileInfo::exists(filePath)) {
-        m_fileWatcher.addPath(filePath);
-    }
+        // Re-add the watch (some OS remove it after a file change event)
+        if (!m_fileWatcher.files().contains(filePath) && QFileInfo::exists(filePath)) {
+            m_fileWatcher.addPath(filePath);
+        }
 
-    // Reload all IC instances referencing this file
-    const auto targets = findICsByFile(filePath);
-    if (targets.isEmpty()) {
-        emit definitionChanged(filePath);
-        return;
-    }
+        // Reload all IC instances referencing this file
+        const auto targets = findICsByFile(filePath);
+        if (targets.isEmpty()) {
+            emit definitionChanged(filePath);
+            return;
+        }
 
-    // Capture pre-reload state so the undo command can restore both the
-    // ICs' element data and the scene wires that touch their ports.
-    // Without this the wires get cascade-deleted by setInputSize/setOutputSize
-    // inside loadFile and Cluster D throws on the next undo lookup.
-    const auto connections = UpdateBlobCommand::captureConnections(targets);
-    const QByteArray oldData = captureSnapshot(targets);
+        // Capture pre-reload state so the undo command can restore both the
+        // ICs' element data and the scene wires that touch their ports.
+        // Without this the wires get cascade-deleted by setInputSize/setOutputSize
+        // inside loadFile and Cluster D throws on the next undo lookup.
+        const auto connections = UpdateBlobCommand::captureConnections(targets);
+        const QByteArray oldData = captureSnapshot(targets);
 
-    try {
-        reloadTargetsAtomically(targets, oldData, [&](IC *ic) { ic->loadFile(filePath); });
-    } catch (...) {
+        try {
+            reloadTargetsAtomically(targets, oldData, [&](IC *ic) { ic->loadFile(filePath); });
+        } catch (...) {
+            m_scene->setCircuitUpdateRequired();
+            emit definitionChanged(filePath);
+            throw;
+        }
         m_scene->setCircuitUpdateRequired();
+
+        auto *cmd = new UpdateBlobCommand(targets, oldData, connections, m_scene);
+        m_scene->undoStack()->push(cmd);
+
         emit definitionChanged(filePath);
-        throw;
-    }
-    m_scene->setCircuitUpdateRequired();
-
-    auto *cmd = new UpdateBlobCommand(targets, oldData, connections, m_scene);
-    m_scene->undoStack()->push(cmd);
-
-    emit definitionChanged(filePath);
+    });
 }
 
 // --- Embedded IC blob storage ---
