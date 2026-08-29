@@ -145,19 +145,15 @@ QString ArduinoCodeGen::otherPortNameImpl(Port *port, QSet<Port *> &visited)
         return mapped.isEmpty() ? "LOW" : mapped; // LCOV_EXCL_LINE
     } // LCOV_EXCL_LINE
 
-    // An Rx whose physical wire wireless has already overridden: connectWirelessElements()
-    // repointed its predecessor at the matching Tx, so that wire is dead and the engine never
-    // reads it again. The resolution below is reached only when the port has NO connections, so
-    // without this an Rx that also carries a wire falls through to the connection walk and
-    // inlines the physical driver -- exporting a different function than the simulator, on a
-    // configuration testWirelessOverridesPhysicalWire explicitly supports. Handled here; every
-    // other path is unchanged.
+    // Wireless overrides physical: an Rx reads its Tx even when a wire also lands on it,
+    // because connectWirelessElements() repointed the Rx's predecessor at the Tx and the engine
+    // never reads that wire again. Checked BEFORE the connection walk, which would otherwise
+    // inline the dead physical driver and export a different function than the simulator.
+    // Scene::wirelessDriverFor() is the one statement of the rule: spelled out separately in
+    // each generator, the wire-plus-wireless case is what both got wrong.
     if (!port->connections().isEmpty()) {
-        auto *rxElm = port->graphicElement();
-        if (rxElm && rxElm->wirelessMode() == WirelessMode::Rx && !rxElm->label().isEmpty()) {
-            if (auto *txPort = m_txInputPorts.value(rxElm->label(), nullptr)) {
-                return otherPortNameImpl(txPort, visited);
-            }
+        if (auto *txPort = Scene::wirelessDriverFor(port, m_txInputPorts)) {
+            return otherPortNameImpl(txPort, visited);
         }
     }
 
@@ -168,12 +164,8 @@ QString ArduinoCodeGen::otherPortNameImpl(Port *port, QSet<Port *> &visited)
             return mapped;
         }
         // Wireless Rx: resolve via the Tx node's input (what drives the transmitter)
-        auto *elm = port->graphicElement();
-        if (elm && elm->wirelessMode() == WirelessMode::Rx && !elm->label().isEmpty()) {
-            auto *txInputPort = m_txInputPorts.value(elm->label(), nullptr);
-            if (txInputPort) {
-                return otherPortNameImpl(txInputPort, visited);
-            }
+        if (auto *txInputPort = Scene::wirelessDriverFor(port, m_txInputPorts)) {
+            return otherPortNameImpl(txInputPort, visited);
         }
         return highLow(port->defaultValue());
     }

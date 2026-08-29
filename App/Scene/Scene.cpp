@@ -409,6 +409,15 @@ QHash<QString, InputPort *> Scene::wirelessTxInputPorts(const QVector<GraphicEle
     return txMap;
 } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned QHash<QString, InputPort *>, never reached after the return above.
 
+InputPort *Scene::wirelessDriverFor(const Port *port, const QHash<QString, InputPort *> &txInputPorts)
+{
+    auto *elm = port ? port->graphicElement() : nullptr;
+    if (!elm || elm->wirelessMode() != WirelessMode::Rx || elm->label().isEmpty()) {
+        return nullptr;
+    }
+    return txInputPorts.value(elm->label(), nullptr);
+}
+
 const QVector<Connection *> Scene::connections() const
 {
     const auto items_ = items();

@@ -199,6 +199,10 @@ public:
     /// paths (key triggers, mute) that don't care about evaluation order.
     const QVector<GraphicElement *> unsortedElements() const;
     /// Returns \a elements sorted in topological dependency order (inputs first).
+    /// Follows physical Connections only: a wireless Tx→Rx pair is NOT an edge here, unlike
+    /// Simulation's own graph. That is tolerable because the consumers inline an Rx through
+    /// Scene::wirelessDriverFor() rather than depending on the Rx being emitted after its Tx,
+    /// and the Arduino sketch settles iteratively; it is not a graph the simulation may use.
     static QVector<GraphicElement *> sortByTopology(QVector<GraphicElement *> elements);
     /**
      * \brief Returns a map from wireless channel label to the Tx node's input port.
@@ -207,6 +211,18 @@ public:
      * to resolve Rx node signals without duplicating the wireless scan.
      */
     static QHash<QString, InputPort *> wirelessTxInputPorts(const QVector<GraphicElement *> &elements);
+    /**
+     * \brief Returns the Tx input port that drives \a port over the air, or \c nullptr.
+     * \details The single statement of "wireless overrides physical": a labelled Rx node reads
+     * its matching Tx's input REGARDLESS of any wire also landing on it, because
+     * Simulation::connectWirelessElements() repoints the Rx's simulation predecessor at the Tx
+     * and the engine never reads that wire again. Both code generators consult this rather than
+     * re-deriving the rule: derived separately, both got an Rx that also carries a wire wrong
+     * and exported a different function than the simulator.
+     * \param port          The input port being resolved.
+     * \param txInputPorts  The map from wirelessTxInputPorts().
+     */
+    static InputPort *wirelessDriverFor(const Port *port, const QHash<QString, InputPort *> &txInputPorts);
     /// Returns all visible (non-hidden) graphic elements in the scene.
     const QVector<GraphicElement *> visibleElements() const;
 
