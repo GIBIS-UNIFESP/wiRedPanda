@@ -47,6 +47,9 @@ private slots:
     /// describing the previous circuit.
     void testFailedInitializeLeavesNoStaleTopology();
     void testEvaluationCapGrowsAlongEveryCrossComponentEdge();
+    /// The guard's destructor must restore the throttle state it found, not enable it: an inner
+    /// guard would otherwise turn the throttle back on inside an outer guard's scope.
+    void testNestedThrottleDisablersRestoreRatherThanEnable();
 
     /// An IC's externally visible value must be correct as soon as the drain settles, not when
     /// the visual throttle next fires. mirrorICOutputValues() is the only thing that writes

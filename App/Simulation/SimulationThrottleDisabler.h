@@ -27,7 +27,7 @@ class Simulation;
  *     for (int col = 0; col < length; ++col) {
  *         simulation->update(); // always runs all 4 phases
  *     }
- * } // throttle re-enabled here
+ * } // throttle restored here
  * \endcode
  */
 class SimulationThrottleDisabler
@@ -36,11 +36,13 @@ public:
     /// Disables the visual refresh throttle on \a simulation.
     explicit SimulationThrottleDisabler(Simulation *simulation);
 
-    /// Re-enables the visual refresh throttle.
+    /// Restores the throttle to the state the constructor found (NOT unconditionally on, so
+    /// nesting works).
     ~SimulationThrottleDisabler();
 
 private:
     Q_DISABLE_COPY(SimulationThrottleDisabler)
 
     Simulation *m_simulation; ///< The guarded simulation instance.
+    bool m_wasEnabled;        ///< Throttle state at construction, restored by the destructor.
 };

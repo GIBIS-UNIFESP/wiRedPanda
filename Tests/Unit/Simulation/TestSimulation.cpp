@@ -24,6 +24,7 @@
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
 #include "App/Simulation/SimulationBlocker.h"
+#include "App/Simulation/SimulationThrottleDisabler.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
 #include "Tests/Common/TestUtils.h"
@@ -637,6 +638,31 @@ void TestSimulationUnit::testEvaluationCapGrowsAlongEveryCrossComponentEdge()
     QVERIFY2(checked > 100,
              qPrintable(QStringLiteral("precondition: too few cross-component edges to be "
                                        "meaningful (%1)").arg(checked)));
+}
+
+void TestSimulationUnit::testNestedThrottleDisablersRestoreRatherThanEnable()
+{
+    // SimulationThrottleDisabler is an RAII guard, so its destructor must RESTORE what it
+    // found rather than enable the throttle. Enabling unconditionally would let an inner guard
+    // turn the throttle back on inside an outer guard's scope -- the sweep that outer guard is
+    // protecting would silently resume skipping phases 3-4, and read stale port values.
+    WorkSpace workspace;
+    auto &sim = *workspace.scene()->simulation();
+    QVERIFY2(sim.isVisualThrottleEnabled(), "precondition: the throttle is on by default");
+
+    {
+        SimulationThrottleDisabler outer(&sim);
+        QVERIFY(!sim.isVisualThrottleEnabled());
+        {
+            SimulationThrottleDisabler inner(&sim);
+            QVERIFY(!sim.isVisualThrottleEnabled());
+        }
+        QVERIFY2(!sim.isVisualThrottleEnabled(),
+                 "an inner guard's destructor must restore what it found, not enable the throttle "
+                 "inside the outer guard's scope");
+    }
+
+    QVERIFY2(sim.isVisualThrottleEnabled(), "the outermost guard restores the original state");
 }
 
 void TestSimulationUnit::testIcOutputValueIsFreshBeforeTheVisualPush()

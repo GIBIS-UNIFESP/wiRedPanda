@@ -8,6 +8,7 @@
 
 SimulationThrottleDisabler::SimulationThrottleDisabler(Simulation *simulation)
     : m_simulation(simulation)
+    , m_wasEnabled(simulation->isVisualThrottleEnabled())
 {
     qCDebug(zero) << "Disabling visual throttle.";
     m_simulation->setVisualThrottleEnabled(false);
@@ -15,6 +16,9 @@ SimulationThrottleDisabler::SimulationThrottleDisabler(Simulation *simulation)
 
 SimulationThrottleDisabler::~SimulationThrottleDisabler()
 {
-    qCDebug(zero) << "Re-enabling visual throttle.";
-    m_simulation->setVisualThrottleEnabled(true);
+    // RESTORE, do not enable. Setting true unconditionally makes an inner guard undo an outer
+    // one: the throttle would come back on inside a scope built to keep it off, and the sweep
+    // that scope protects would resume skipping the port-status phases and read stale values.
+    qCDebug(zero) << "Restoring visual throttle to" << m_wasEnabled;
+    m_simulation->setVisualThrottleEnabled(m_wasEnabled);
 }

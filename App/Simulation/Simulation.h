@@ -112,6 +112,10 @@ public:
     /// \sa SimulationThrottleDisabler
     void setVisualThrottleEnabled(bool enabled);
 
+    /// Returns \c true while the visual refresh throttle is in effect. Exists so a guard can
+    /// RESTORE what it found rather than assume the throttle was on. \sa SimulationThrottleDisabler
+    bool isVisualThrottleEnabled() const { return m_visualThrottleEnabled; }
+
     /// Invalidates the event-driven engine's incremental "what changed since last tick"
     /// tracking without rebuilding the topology (unlike restart(), which also drops the
     /// cached graph). Call this after resetting elements' simulation state directly (e.g.
