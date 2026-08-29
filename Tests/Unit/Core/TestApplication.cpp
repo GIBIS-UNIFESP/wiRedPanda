@@ -140,3 +140,50 @@ void TestApplication::testIsSentryDenyMessageDoesNotFilterUnknown()
     QVERIFY(!Application::isSentryDenyMessage("Couldn't load pixmap: foo.svg"));
     QVERIFY(!Application::isSentryDenyMessage("Save file first."));
 }
+
+void TestApplication::testScrubbedMessageReducesPathsToBasenames()
+{
+    // The real throw messages that leak today, verbatim from their call sites.
+    QCOMPARE(Application::scrubbedMessage("/home/torres/Documents/lab1.panda not found."),
+             QString("lab1.panda not found."));
+    QCOMPARE(Application::scrubbedMessage("This file does not exist: /home/torres/x.panda"),
+             QString("This file does not exist: x.panda"));
+
+    // Windows, both separators — this is the case that carries the user's real
+    // name, so it matters most.
+    QCOMPARE(Application::scrubbedMessage(R"(Could not open file for writing: C:\Users\Rodrigo\c.panda)"),
+             QString("Could not open file for writing: c.panda"));
+    QCOMPARE(Application::scrubbedMessage("Could not open file for writing: C:/Users/Rodrigo/c.panda"),
+             QString("Could not open file for writing: c.panda"));
+
+    // More than one path in a single message.
+    QCOMPARE(Application::scrubbedMessage("Copy /home/a/one.panda to /home/b/two.panda"),
+             QString("Copy one.panda to two.panda"));
+
+    // A quoted path keeps its quotes; only the path inside is reduced.
+    QCOMPARE(Application::scrubbedMessage(R"(File "/home/torres/w.dolphin" does not exist!)"),
+             QString(R"(File "w.dolphin" does not exist!)"));
+}
+
+void TestApplication::testScrubbedMessageLeavesOrdinaryTextAlone()
+{
+    // Over-matching would mangle ordinary sentences, so the anchors matter as
+    // much as the matching does.
+    QCOMPARE(Application::scrubbedMessage(""), QString(""));
+    QCOMPARE(Application::scrubbedMessage("Save file first."), QString("Save file first."));
+    QCOMPARE(Application::scrubbedMessage("Use the input and/or the output"),
+             QString("Use the input and/or the output"));
+    QCOMPARE(Application::scrubbedMessage("Ratio is 1/2 of the total"),
+             QString("Ratio is 1/2 of the total"));
+
+    // A URL is not a filesystem path and must survive intact.
+    QCOMPARE(Application::scrubbedMessage("See https://wiredpanda.org/docs for help"),
+             QString("See https://wiredpanda.org/docs for help"));
+
+    // A relative path has no home directory in it, so there is nothing to strip.
+    QCOMPARE(Application::scrubbedMessage("Couldn't load pixmap: foo.svg"),
+             QString("Couldn't load pixmap: foo.svg"));
+
+    // Degenerate input must not be deleted and leave a mangled sentence.
+    QCOMPARE(Application::scrubbedMessage("Root is / here"), QString("Root is / here"));
+}

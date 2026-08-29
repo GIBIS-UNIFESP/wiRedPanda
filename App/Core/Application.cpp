@@ -9,6 +9,7 @@
 #include <QFontDatabase>
 #include <QMessageBox>
 #include <QMutex>
+#include <QRegularExpression>
 
 #include "App/Core/Common.h"
 
@@ -74,6 +75,43 @@ bool Application::isSentryDenyMessage(const QString &message)
         }
     }
     return false;
+}
+
+QString Application::scrubbedMessage(const QString &message)
+{
+    // Two alternatives, both anchored so ordinary text is left alone:
+    //   - a Windows drive path ("C:\Users\...", "C:/Users/..."), and
+    //   - a POSIX absolute path ("/home/...").
+    // The POSIX branch additionally refuses a preceding ':' or '/' so that a
+    // URL survives whole — ':' rejects the first slash of "https://" and '/'
+    // rejects the second, which would otherwise restart the match mid-URL and
+    // yield "https:/docs". Both branches refuse a preceding word character so
+    // "and/or" and "1/2" survive untouched.
+    static const QRegularExpression pathPattern(QStringLiteral(
+        R"((?<![A-Za-z0-9_])[A-Za-z]:[\\/][^\s"'<>|]*|(?<![A-Za-z0-9_:/])/[^\s"'<>|]*)"));
+
+    QString result;
+    result.reserve(message.size());
+
+    qsizetype copiedTo = 0;
+    auto matches = pathPattern.globalMatch(message);
+
+    while (matches.hasNext()) {
+        const QRegularExpressionMatch match = matches.next();
+        result.append(QStringView{message}.mid(copiedTo, match.capturedStart() - copiedTo));
+
+        const QString path = match.captured();
+        const qsizetype separator = std::max(path.lastIndexOf(QLatin1Char('/')),
+                                             path.lastIndexOf(QLatin1Char('\\')));
+
+        // A path that is nothing but separators has no basename to keep; leave
+        // it as-is rather than deleting it and mangling the sentence.
+        result.append(separator >= 0 && separator + 1 < path.size() ? path.mid(separator + 1) : path);
+        copiedTo = match.capturedEnd();
+    }
+
+    result.append(QStringView{message}.mid(copiedTo));
+    return result;
 }
 
 Application::Application(int &argc, char **argv)
@@ -162,8 +200,10 @@ void Application::handleException(const ExceptionInfo &info, const QObject *cont
     sentry_value_t event_ = sentry_value_new_event();
     sentry_value_set_by_key(event_, "level", sentry_value_new_string("warning"));
 
+    // The dialog above shows the user their own full path; only the basename
+    // is allowed to leave the machine.
     sentry_value_t exc = sentry_value_new_exception(
-        "Exception", info.englishMessage.toStdString().c_str());
+        "Exception", scrubbedMessage(info.englishMessage).toStdString().c_str());
 
     sentry_value_t mechanism = sentry_value_new_object();
     sentry_value_set_by_key(mechanism, "type", sentry_value_new_string("generic"));

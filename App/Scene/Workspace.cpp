@@ -248,7 +248,7 @@ QFileInfo WorkSpace::fileInfo() const
 
 WorkSpace::SaveOutcome WorkSpace::save(const QString &fileName)
 {
-    sentryBreadcrumb("file", QStringLiteral("Save: %1").arg(fileName));
+    sentryBreadcrumb("file", Application::scrubbedMessage(QStringLiteral("Save: %1").arg(fileName)));
 
     // The user save supersedes any pending autosave; cancel it so the timer
     // doesn't fire after we've removed the autosave file and re-create it.
@@ -472,7 +472,7 @@ void WorkSpace::save(QDataStream &stream)
 
 void WorkSpace::load(const QString &fileName)
 {
-    sentryBreadcrumb("file", QStringLiteral("Load: %1").arg(fileName));
+    sentryBreadcrumb("file", Application::scrubbedMessage(QStringLiteral("Load: %1").arg(fileName)));
 
     QFile file(fileName);
 

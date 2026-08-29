@@ -97,6 +97,13 @@ public:
     /// HAVE_SENTRY) so the deny-list policy is unit-testable.
     static bool isSentryDenyMessage(const QString &message);
 
+    /// Replaces every absolute path in \a message with its final component.
+    /// Throw messages interpolate absoluteFilePath() results, which carry the
+    /// user's home-directory name — their real name on Windows — so only the
+    /// basename may leave the machine. Always compiled (independent of
+    /// HAVE_SENTRY) so the scrubbing policy is unit-testable.
+    static QString scrubbedMessage(const QString &message);
+
     // --- Exception handling ---
 
     /**

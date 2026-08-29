@@ -16,6 +16,11 @@ private slots:
     void testIsSentryDenyMessageMatchesClusterD();
     void testIsSentryDenyMessageDoesNotFilterUnknown();
 
+    // Absolute paths must never reach Sentry — they carry the user's home
+    // directory, which on Windows is their real name.
+    void testScrubbedMessageReducesPathsToBasenames();
+    void testScrubbedMessageLeavesOrdinaryTextAlone();
+
     void testMakeExceptionInfoWithPandaception();
     void testMakeExceptionInfoWithPlainStdException();
     void testHandleExceptionInteractiveShowsDialog();
