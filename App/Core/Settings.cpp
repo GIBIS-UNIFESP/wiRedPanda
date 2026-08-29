@@ -137,6 +137,31 @@ void Settings::setUpdateChecksDisabled(bool disabled)
     setValue("updateChecksDisabled", disabled);
 }
 
+// Crash reporting
+bool Settings::crashReportingEnabled()
+{
+    // An absent key must read as ENABLED. value().toBool() would return false for the
+    // entire existing installed base -- none of whom have this key -- and silently turn
+    // crash reporting off on upgrade. Same shape as labelsUnderIcons() above.
+    const QVariant saved = value("crashReporting/enabled");
+    return saved.isValid() ? saved.toBool() : true;
+}
+
+void Settings::setCrashReportingEnabled(bool enabled)
+{
+    setValue("crashReporting/enabled", enabled);
+}
+
+QString Settings::sentryUserId()
+{
+    return value("crashReporting/userId").toString();
+}
+
+void Settings::setSentryUserId(const QString &id)
+{
+    setValue("crashReporting/userId", id);
+}
+
 // Language
 
 QString Settings::language()

@@ -81,6 +81,19 @@ public:
     static bool updateChecksDisabled();
     static void setUpdateChecksDisabled(bool disabled);
 
+    // Crash reporting
+    /// Whether anonymous crash reports may be sent. Defaults to TRUE when the key is
+    /// absent, which is deliberate and load-bearing: every existing installation has no
+    /// such key, so returning false for a missing key would silently switch reporting off
+    /// for the entire installed base on upgrade.
+    static bool crashReportingEnabled();
+    static void setCrashReportingEnabled(bool enabled);
+    /// Anonymous per-installation id sent with crash reports so Sentry can count affected
+    /// users without identifying them. Empty until first generated, and cleared whenever
+    /// crash reporting is switched off.
+    static QString sentryUserId();
+    static void setSentryUserId(const QString &id);
+
     // Exercise progress
     static QStringList completedExercises();
     static void        setCompletedExercises(const QStringList &ids);

@@ -181,6 +181,9 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     actionCheckForUpdates = new QAction(MainWindow);
     actionCheckForUpdates->setObjectName("actionCheckForUpdates");
     actionCheckForUpdates->setCheckable(true);
+    actionCrashReporting = new QAction(MainWindow);
+    actionCrashReporting->setObjectName("actionCrashReporting");
+    actionCrashReporting->setCheckable(true);
     actionShowMinimap = new QAction(MainWindow);
     actionShowMinimap->setObjectName("actionShowMinimap");
     actionShowMinimap->setCheckable(true);
@@ -714,6 +717,7 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     menuHelp->addAction(actionShortcutsAndTips);
     menuHelp->addSeparator();
     menuHelp->addAction(actionCheckForUpdates);
+    menuHelp->addAction(actionCrashReporting);
     menuHelp->addSeparator();
     menuHelp->addAction(actionReportTranslationError);
     menuView->addAction(actionZoomIn);
@@ -846,6 +850,7 @@ void MainWindowUi::retranslateUi()
     actionShowMinimap->setText(QCoreApplication::translate("MainWindow", "Show Minimap"));
     actionAboutThisVersion->setText(QCoreApplication::translate("MainWindow", "About this version"));
     actionCheckForUpdates->setText(QCoreApplication::translate("MainWindow", "Check for updates automatically"));
+    actionCrashReporting->setText(QCoreApplication::translate("MainWindow", "Send anonymous crash reports"));
     actionRestart->setText(QCoreApplication::translate("MainWindow", "&Restart"));
     actionRestart->setToolTip(QCoreApplication::translate("MainWindow", "Restart simulation."));
     actionBackground_Simulation->setText(QCoreApplication::translate("MainWindow", "Background Simulation"));

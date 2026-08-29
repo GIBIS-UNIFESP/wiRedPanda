@@ -15,4 +15,6 @@ private slots:
     void testSettingsRoundTrip();
     void testThemeSystemUpperBoundRoundTrip();
     void testHideV4WarningFalseRemovesKey();
+    void testCrashReportingDefaultsToEnabledWhenKeyAbsent();
+    void testCrashReportingRoundTrip();
 };

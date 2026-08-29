@@ -18,12 +18,12 @@
 
 #ifdef HAVE_SENTRY
 #include <QScopeGuard>
-#include <QSettings>
 #include <QUuid>
 #endif
 
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
+#include "App/Core/Settings.h"
 #include "App/Core/ThemeManager.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Scene/Workspace.h"
@@ -79,43 +79,58 @@ void portalQuietMessageHandler(QtMsgType type, const QMessageLogContext &context
 int main(int argc, char *argv[])
 {
 #ifdef HAVE_SENTRY
+    // Honour the user's opt-out before anything is initialised: with reporting off we
+    // never call sentry_init(), so no crash handler is installed, no crashpad_handler
+    // process is spawned, and nothing can be queued for upload. Settings passes its
+    // organisation and application explicitly, so it resolves the right file even here,
+    // before QApplication exists.
+    const bool crashReportingEnabled = Settings::crashReportingEnabled();
+
     // Sentry must be initialised before QApplication so that crashes during Qt
     // startup are captured; sentry_close() is called via qScopeGuard at process exit
     // to flush any queued events even if the app exits via an exception or exit().
-    sentry_options_t *options = sentry_options_new();
-    sentry_options_set_dsn(options, "https://719a4881adf6e678b198bf9aad6b4500@o4508704323469312.ingest.us.sentry.io/4508704326352896");
+    if (crashReportingEnabled) {
+        sentry_options_t *options = sentry_options_new();
+        sentry_options_set_dsn(options, "https://719a4881adf6e678b198bf9aad6b4500@o4508704323469312.ingest.us.sentry.io/4508704326352896");
 
-    // Use an absolute path so the crash database is always in the same place
-    // regardless of the working directory the app was launched from.
-    const auto dbPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/sentry-native";
-    sentry_options_set_database_path(options, dbPath.toStdString().c_str());
+        // Use an absolute path so the crash database is always in the same place
+        // regardless of the working directory the app was launched from.
+        const auto dbPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/sentry-native";
+        sentry_options_set_database_path(options, dbPath.toStdString().c_str());
 
-    sentry_options_set_release(options, "wiredpanda@" APP_VERSION);
-    sentry_options_set_debug(options, 0);
+        sentry_options_set_release(options, "wiredpanda@" APP_VERSION);
+        sentry_options_set_debug(options, 0);
 
 #ifdef QT_DEBUG
-    sentry_options_set_environment(options, "development");
+        sentry_options_set_environment(options, "development");
 #else
-    sentry_options_set_environment(options, "production");
+        sentry_options_set_environment(options, "production");
 #endif
 
-    sentry_init(options);
+        sentry_init(options);
 
-    // Anonymous user identification — persisted across sessions via QSettings
-    // so Sentry can count unique affected users and correlate issues.
-    auto userId = QSettings().value("sentry/userId").toString();
-    if (userId.isEmpty()) {
-        userId = QUuid::createUuid().toString(QUuid::WithoutBraces);
-        QSettings().setValue("sentry/userId", userId);
+        // Anonymous user identification, persisted so Sentry can count unique affected
+        // users without identifying them. This lives in Settings rather than a bare
+        // QSettings(): the default constructor resolves organisation and application from
+        // QCoreApplication, which does not exist yet here, so the id used to land in an
+        // unnamespaced "Unknown Organization.conf" shared with any other Qt application
+        // that made the same mistake -- invisible to Settings::fileName() and impossible
+        // to clear from inside the app.
+        auto userId = Settings::sentryUserId();
+        if (userId.isEmpty()) {
+            userId = QUuid::createUuid().toString(QUuid::WithoutBraces);
+            Settings::setSentryUserId(userId);
+        }
+        sentry_value_t user = sentry_value_new_object();
+        sentry_value_set_by_key(user, "id", sentry_value_new_string(userId.toStdString().c_str()));
+        sentry_set_user(user);
+
+        // Custom tags for filtering and triage
+        sentry_set_tag("qt.version", QT_VERSION_STR);
     }
-    sentry_value_t user = sentry_value_new_object();
-    sentry_value_set_by_key(user, "id", sentry_value_new_string(userId.toStdString().c_str()));
-    sentry_set_user(user);
 
-    // Custom tags for filtering and triage
-    sentry_set_tag("qt.version", QT_VERSION_STR);
-
-    // Make sure everything flushes
+    // Make sure everything flushes. Unconditional: closing an SDK that was never
+    // initialised logs a warning and returns, so this needs no opt-out branch.
     auto sentryClose = qScopeGuard([] { sentry_close(); });
 #endif
 

@@ -222,6 +222,7 @@ void MainWindow::setupTheme()
     // Restore IC hover-preview visibility from previous session.
     m_ui->actionICPreview->setChecked(!Settings::icPreviewDisabled());
     m_ui->actionCheckForUpdates->setChecked(!Settings::updateChecksDisabled());
+    m_ui->actionCrashReporting->setChecked(Settings::crashReportingEnabled());
 }
 
 void MainWindow::setupRecentFiles()
@@ -369,6 +370,7 @@ void MainWindow::setupConnections()
     connect(m_ui->actionLabelsUnderIcons,      &QAction::triggered,       this,                &MainWindow::on_actionLabelsUnderIcons_triggered);
     connect(m_ui->actionICPreview,             &QAction::triggered,       this,                &MainWindow::on_actionICPreview_triggered);
     connect(m_ui->actionCheckForUpdates,       &QAction::triggered,       this,                &MainWindow::on_actionCheckForUpdates_triggered);
+    connect(m_ui->actionCrashReporting,        &QAction::triggered,       this,                &MainWindow::on_actionCrashReporting_triggered);
     connect(m_ui->actionShowMinimap,           &QAction::triggered,       this,                &MainWindow::on_actionShowMinimap_triggered);
     connect(m_ui->actionLightTheme,            &QAction::triggered,       this,                &MainWindow::on_actionLightTheme_triggered);
     connect(m_ui->actionMute,                  &QAction::triggered,       this,                &MainWindow::on_actionMute_triggered);
@@ -1326,6 +1328,23 @@ void MainWindow::on_actionCheckForUpdates_triggered(const bool checked)
     Application::guardedSlot(this, [checked] {
         sentryBreadcrumb("ui", QStringLiteral("Auto update checks: %1").arg(checked));
         Settings::setUpdateChecksDisabled(!checked);
+    });
+}
+
+void MainWindow::on_actionCrashReporting_triggered(const bool checked)
+{
+    Application::guardedSlot(this, [checked] {
+        // Record the crumb while reporting is still on, so a session that opts out
+        // still carries the reason its trail stops here.
+        sentryBreadcrumb("ui", QStringLiteral("Crash reporting: %1").arg(checked));
+        Settings::setCrashReportingEnabled(checked);
+
+        // Opting out drops the anonymous id too: keeping it would leave a stable
+        // identifier on disk for a user who has just asked not to be reported on.
+        // A later opt-in mints a fresh one, which is the intended behaviour.
+        if (!checked) {
+            Settings::setSentryUserId(QString());
+        }
     });
 }
 

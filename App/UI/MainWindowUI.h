@@ -100,6 +100,7 @@ public:
     QAction *actionLabelsUnderIcons = nullptr;
     QAction *actionICPreview = nullptr;
     QAction *actionCheckForUpdates = nullptr;
+    QAction *actionCrashReporting = nullptr;
     QAction *actionShowMinimap = nullptr;
     QAction *actionLightTheme = nullptr;
     QAction *actionDarkTheme = nullptr;

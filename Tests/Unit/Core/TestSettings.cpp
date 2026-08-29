@@ -60,3 +60,51 @@ void TestCoreSettings::testHideV4WarningFalseRemovesKey()
     QVERIFY2(!appSettings.contains("hideV4Warning"),
              "setHideV4Warning(false) must remove the key, not store a falsy value");
 }
+
+void TestCoreSettings::testCrashReportingDefaultsToEnabledWhenKeyAbsent()
+{
+    // The upgrade case, and the one that would do real damage: every existing
+    // installation has no crashReporting/enabled key. A plain value().toBool() returns
+    // false for a missing key, which would silently switch crash reporting off for the
+    // entire installed base the moment they upgraded. An absent key must read as ENABLED.
+    const bool original = Settings::crashReportingEnabled();
+
+    // Store an explicit false FIRST. Without this the test would be vacuous on a machine
+    // where the key never existed: remove() would be a no-op and the assertion below
+    // would pass without exercising the default at all. Starting from a stored false
+    // means only a genuinely absent key can produce true.
+    Settings::setCrashReportingEnabled(false);
+    QCOMPARE(Settings::crashReportingEnabled(), false);
+
+    QSettings appSettings(Settings::fileName(), QSettings::IniFormat);
+    appSettings.remove("crashReporting/enabled");
+    appSettings.sync();
+
+    QVERIFY2(Settings::crashReportingEnabled(),
+             "crash reporting must default to ENABLED when the key is absent, or every "
+             "existing install silently stops reporting on upgrade");
+
+    Settings::setCrashReportingEnabled(original);
+}
+
+void TestCoreSettings::testCrashReportingRoundTrip()
+{
+    const bool originalEnabled = Settings::crashReportingEnabled();
+    const QString originalId = Settings::sentryUserId();
+
+    Settings::setCrashReportingEnabled(false);
+    QCOMPARE(Settings::crashReportingEnabled(), false);
+    Settings::setCrashReportingEnabled(true);
+    QCOMPARE(Settings::crashReportingEnabled(), true);
+
+    // The anonymous id lives alongside the toggle rather than in a bare QSettings(),
+    // whose default constructor resolves its organisation from QCoreApplication and so
+    // used to strand the id in an unnamespaced "Unknown Organization.conf".
+    Settings::setSentryUserId("test-id-1234");
+    QCOMPARE(Settings::sentryUserId(), QString("test-id-1234"));
+    Settings::setSentryUserId(QString());
+    QVERIFY(Settings::sentryUserId().isEmpty());
+
+    Settings::setCrashReportingEnabled(originalEnabled);
+    Settings::setSentryUserId(originalId);
+}
