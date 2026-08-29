@@ -3,6 +3,7 @@
 
 #include "Tests/Unit/Ui/TestElementContextMenu.h"
 
+#include <QAction>
 #include <QClipboard>
 #include <QComboBox>
 #include <QMenu>
@@ -40,11 +41,33 @@ namespace {
 // when run after another exec()+click in the same test; a leading mouseMove to prime QMenu's
 // own hover/current-action tracking made it reliable in every ordering tried).
 // Also handles one-level-nested actions (e.g. the "Change color to..."/"Morph to..."
-// submenus): a submenu only becomes its own visible top-level widget once opened, which
-// normally only happens on real mouse hover -- hover the parent action (not a manual popup()
+// submenus): a submenu only becomes its own visible top-level widget once opened, so the
+// parent action is activated and Key_Right sent, and a later poll (the submenu is now
+// independently visible) finds and clicks the actual target inside it. Not a manual popup()
 // call, which opens the submenu as its own widget but leaves exec()'s internal state unaware
-// of it) so a later poll (the submenu is now independently visible) can find and click the
-// actual target inside it.
+// of it; and not a hover, which waits on the platform's own popup timing -- synthetic mouse
+// moves do not drive it on Windows, where the submenu then never opens at all.
+/// Finds an action by text in this menu or any submenu, without opening the submenus.
+/// Hovering a parent action to reveal its submenu depends on the platform's popup timing,
+/// which synthetic mouse events do not drive on Windows -- the submenu never opens, the
+/// action is never found, and the test sits until QTEST_FUNCTION_TIMEOUT turns into a
+/// qFatal. Walking the action tree asks the same question (is the entry there?) without
+/// asking the window manager to agree.
+QAction *findMenuActionRecursive(QMenu *menu, const QString &actionText)
+{
+    for (auto *action : menu->actions()) {
+        if (action->text() == actionText) {
+            return action;
+        }
+        if (auto *submenu = action->menu()) {
+            if (auto *found = findMenuActionRecursive(submenu, actionText)) {
+                return found;
+            }
+        }
+    }
+    return nullptr;
+}
+
 TestUtils::AutoDismisser dismisserForContextMenuAction(const QString &actionText)
 {
     return TestUtils::AutoDismisser([actionText](QWidget *w) {
@@ -57,9 +80,22 @@ TestUtils::AutoDismisser dismisserForContextMenuAction(const QString &actionText
                 QTest::mouseClick(menu, Qt::LeftButton, Qt::NoModifier, pos);
                 return true;
             }
-            if (action->menu()) {
-                QTest::mouseMove(menu, menu->actionGeometry(action).center());
+        }
+        // Open the submenu that holds the target so this dismisser runs again with the
+        // submenu as its own shown widget, and the click above dispatches it through
+        // QMenu's normal machinery -- which is what makes menu.exec() return the action.
+        // Key_Right rather than a hover: QMenu opens the submenu itself on that key,
+        // whereas hovering waits on the platform's popup timing, and synthetic mouse
+        // moves do not drive it on Windows -- the submenu never opens and the test sits
+        // until QTEST_FUNCTION_TIMEOUT becomes a qFatal.
+        for (auto *action : menu->actions()) {
+            auto *submenu = action->menu();
+            if (!submenu || !findMenuActionRecursive(submenu, actionText)) {
+                continue;
             }
+            menu->setActiveAction(action);
+            QTest::keyClick(menu, Qt::Key_Right);
+            break;
         }
         return false;
     });
