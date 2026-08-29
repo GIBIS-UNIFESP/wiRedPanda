@@ -130,7 +130,7 @@
         <translation>Combinațional</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1006"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1011"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="268"/>
         <source>Export to PDF</source>
         <translation>Exportă în PDF</translation>
@@ -261,96 +261,96 @@
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="59"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="127"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="871"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="944"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="876"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="949"/>
         <source>beWavedDolphin Simulator</source>
         <translation>Simulator beWavedDolphin</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="392"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="890"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="393"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="895"/>
         <source>wiRedPanda - beWavedDolphin</source>
         <translation>wiRedPanda - beWavedDolphin</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="393"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="394"/>
         <source>Save simulation before closing?</source>
         <translation>Salvează simulația înainte de închidere?</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="844"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="845"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="925"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="849"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="850"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="930"/>
         <source>CSV files</source>
         <translation>Fișiere CSV</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="844"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="845"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="925"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="849"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="850"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="930"/>
         <source>Dolphin files</source>
         <translation>Fișiere Dolphin</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="844"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="845"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="925"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="849"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="850"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="930"/>
         <source>All supported files</source>
         <translation>Toate fișierele acceptate</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="891"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="896"/>
         <source>Do you want to link this beWavedDolphin file to your current wiRedPanda file and save it?</source>
         <translation>Vrei să asociezi acest fișier beWavedDolphin cu fișierul tău curent wiRedPanda și să-l salvezi?</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="988"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="993"/>
         <source>PNG files</source>
         <translation>Fișiere PNG</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1006"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1011"/>
         <source>PDF files</source>
         <translation>Fișiere PDF</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1025"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1030"/>
         <source>&lt;p&gt;beWavedDolphin is a waveform simulator for wiRedPanda, developed by the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;beWavedDolphin este un simulator de forme de undă pentru wiRedPanda, dezvoltat de Universitatea Federală din São Paulo pentru a ajuta studenții să învețe despre circuitele logice.&lt;/p&gt;&lt;p&gt;Versiunea software: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creatori:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin este întreținut în prezent de Prof. Fábio Cappabianco, Ph.D. și studenții săi.&lt;/p&gt;&lt;p&gt; Vă rugăm să trimiteți un raport pe pagina noastră GitHub dacă găsiți un bug sau doriți să solicitați o funcție nouă.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Vizitați site-ul nostru!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="851"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="856"/>
         <source>Save File as...</source>
         <translation>Salvează fișierul ca...</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="832"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="872"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="837"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="877"/>
         <source>Saved file successfully.</source>
         <translation>Fișier salvat cu succes.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="482"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="487"/>
         <source>Cannot export: the circuit this waveform was built from has changed.</source>
         <translation>Nu se poate exporta: circuitul din care a fost construită această formă de undă s-a schimbat.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="607"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="612"/>
         <source>No cells selected.</source>
         <translation>Nicio celulă selectată.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="924"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="929"/>
         <source>Open File</source>
         <translation>Deschide fișier</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="933"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="938"/>
         <source>File loaded successfully.</source>
         <translation>Fișier încărcat cu succes.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="988"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="993"/>
         <source>Export to Image</source>
         <translation>Exportă în imagine</translation>
     </message>
@@ -402,12 +402,12 @@
         <translation>Ceas</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Clock.cpp" line="241"/>
+        <location filename="../../Element/GraphicElements/Clock.cpp" line="251"/>
         <source>Low</source>
         <translation>Scăzut</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Clock.cpp" line="241"/>
+        <location filename="../../Element/GraphicElements/Clock.cpp" line="251"/>
         <source>High</source>
         <translation>Ridicat</translation>
     </message>
@@ -2920,7 +2920,7 @@ Trebuie să salvați proiectele noi înainte de a accesa IC-uri și aspecte sau 
 <context>
     <name>Simulation</name>
     <message>
-        <location filename="../../Simulation/Simulation.cpp" line="372"/>
+        <location filename="../../Simulation/Simulation.cpp" line="404"/>
         <source>Warning: feedback circuit did not converge — the circuit may be oscillating.</source>
         <translation>Avertisment: circuitul de feedback nu a convergat — circuitul poate oscila.</translation>
     </message>
@@ -2966,12 +2966,12 @@ Trebuie să salvați proiectele noi înainte de a accesa IC-uri și aspecte sau 
         <translation>Nu s-a putut deschide fișierul pentru scriere: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1295"/>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1339"/>
         <source>Output variable not mapped for TruthTable: %1</source>
         <translation>Variabila de ieșire nu este mapată pentru tabelul de adevăr: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1353"/>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1397"/>
         <source>Element type not supported: %1</source>
         <translation>Tip de element nesuportat: %1</translation>
     </message>
@@ -3193,7 +3193,7 @@ Trebuie să salvați proiectele noi înainte de a accesa IC-uri și aspecte sau 
 <context>
     <name>WorkSpace</name>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="258"/>
+        <location filename="../../Scene/Workspace.cpp" line="259"/>
         <source>This file was saved with a newer file format (version %1).
 Your wiRedPanda version (%2) supports file format %3.
 
@@ -3204,37 +3204,37 @@ Versiunea dvs. de wiRedPanda (%2) acceptă formatul de fișier %3.
 Vă rugăm să actualizați wiRedPanda pentru a salva modificările în acest fișier.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="262"/>
+        <location filename="../../Scene/Workspace.cpp" line="263"/>
         <source>Cannot save.</source>
         <translation>Nu se poate salva.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="292"/>
+        <location filename="../../Scene/Workspace.cpp" line="293"/>
         <source>Cannot save: sub-circuit &quot;%1&quot; could not be read to embed it.</source>
         <translation>Nu se poate salva: subcircuitul &quot;%1&quot; nu a putut fi citit pentru a-l încorpora.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="373"/>
+        <location filename="../../Scene/Workspace.cpp" line="374"/>
         <source>Error opening file: %1</source>
         <translation>Eroare la deschiderea fișierului: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="397"/>
+        <location filename="../../Scene/Workspace.cpp" line="398"/>
         <source>Could not save file: %1</source>
         <translation>Nu s-a putut salva fișierul: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="480"/>
+        <location filename="../../Scene/Workspace.cpp" line="481"/>
         <source>This file does not exist: %1</source>
         <translation>Acest fișier nu există: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="489"/>
+        <location filename="../../Scene/Workspace.cpp" line="490"/>
         <source>Could not open file: %1</source>
         <translation>Nu s-a putut deschide fișierul: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="537"/>
+        <location filename="../../Scene/Workspace.cpp" line="538"/>
         <source>This file was saved with a newer file format (version %1).
 Your version supports file format %2.
 
@@ -3247,34 +3247,34 @@ Fișierul va fi deschis, dar salvarea este blocată.
 Vă rugăm să actualizați wiRedPanda pentru a edita și salva acest fișier.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="542"/>
+        <location filename="../../Scene/Workspace.cpp" line="543"/>
         <source>Newer version file.</source>
         <translation>Fișier de versiune mai nouă.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="545"/>
+        <location filename="../../Scene/Workspace.cpp" line="546"/>
         <source>This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).
 A backup of the original file has been created with name: %3</source>
         <translation>Acest fișier este într-un format mai vechi (versiunea %1) și va fi actualizat automat la formatul curent (versiunea %2).
 O copie de siguranță a fișierului original a fost creată cu numele: %3</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="548"/>
+        <location filename="../../Scene/Workspace.cpp" line="549"/>
         <source>File upgraded.</source>
         <translation>Fișierul a fost actualizat.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="718"/>
+        <location filename="../../Scene/Workspace.cpp" line="729"/>
         <source>Error opening autosave file: %1</source>
         <translation>Eroare la deschiderea fișierului de salvare automată: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="729"/>
+        <location filename="../../Scene/Workspace.cpp" line="740"/>
         <source>Could not commit autosave file: %1</source>
         <translation>Nu s-a putut finaliza fișierul de salvare automată: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="897"/>
+        <location filename="../../Scene/Workspace.cpp" line="908"/>
         <source>Remove embedded IC &quot;%1&quot;</source>
         <translation>Elimină CI-ul încorporat „%1”</translation>
     </message>

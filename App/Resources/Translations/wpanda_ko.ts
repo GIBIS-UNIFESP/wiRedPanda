@@ -130,7 +130,7 @@
         <translation>조합 논리</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1006"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1011"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="268"/>
         <source>Export to PDF</source>
         <translation>PDF로 내보내기</translation>
@@ -261,96 +261,96 @@
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="59"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="127"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="871"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="944"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="876"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="949"/>
         <source>beWavedDolphin Simulator</source>
         <translation>beWavedDolphin 시뮤레이터</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="392"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="890"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="393"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="895"/>
         <source>wiRedPanda - beWavedDolphin</source>
         <translation>wiRedPanda - beWavedDolphin</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="393"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="394"/>
         <source>Save simulation before closing?</source>
         <translation>종료하기 전에 시뮬레이션을 저장하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="844"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="845"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="925"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="849"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="850"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="930"/>
         <source>CSV files</source>
         <translation>CSV 파일</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="844"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="845"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="925"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="849"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="850"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="930"/>
         <source>Dolphin files</source>
         <translation>Dolphin 파일</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="844"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="845"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="925"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="849"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="850"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="930"/>
         <source>All supported files</source>
         <translation>지원되는 모든 파일</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="891"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="896"/>
         <source>Do you want to link this beWavedDolphin file to your current wiRedPanda file and save it?</source>
         <translation>이 beWavedDolphin 파일을 현재 wiRedPanda 파일에 연결하여 저장하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="988"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="993"/>
         <source>PNG files</source>
         <translation>PNG 파일</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1006"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1011"/>
         <source>PDF files</source>
         <translation>PDF 파일</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1025"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1030"/>
         <source>&lt;p&gt;beWavedDolphin is a waveform simulator for wiRedPanda, developed by the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;beWavedDolphin은 wiRedPanda용 파형 시뮬레이터로, 상파울루 연방 대학교에서 학생들의 논리 회로 학습을 돕기 위해 개발했습니다.&lt;/p&gt;&lt;p&gt;소프트웨어 버전: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;제작자:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin은 현재 Prof. Fábio Cappabianco, Ph.D.와 그의 학생들이 관리하고 있습니다.&lt;/p&gt;&lt;p&gt; 버그를 발견하거나 새로운 기능을 요청하려면 GitHub 페이지에 보고해 주세요.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;웹사이트를 방문하세요!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="851"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="856"/>
         <source>Save File as...</source>
         <translation>다른 이름으로 저장...</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="832"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="872"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="837"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="877"/>
         <source>Saved file successfully.</source>
         <translation>파일이 성공적으로 저장되었습니다.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="482"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="487"/>
         <source>Cannot export: the circuit this waveform was built from has changed.</source>
         <translation>내보낼 수 없습니다: 이 파형이 만들어진 회로가 변경되었습니다.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="607"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="612"/>
         <source>No cells selected.</source>
         <translation>선택된 셀이 없습니다.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="924"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="929"/>
         <source>Open File</source>
         <translation>파일 열기</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="933"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="938"/>
         <source>File loaded successfully.</source>
         <translation>파일이 성공적으로 로드되었습니다.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="988"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="993"/>
         <source>Export to Image</source>
         <translation>이미지로 내보내기</translation>
     </message>
@@ -402,12 +402,12 @@
         <translation>클록</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Clock.cpp" line="241"/>
+        <location filename="../../Element/GraphicElements/Clock.cpp" line="251"/>
         <source>Low</source>
         <translation>로우</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Clock.cpp" line="241"/>
+        <location filename="../../Element/GraphicElements/Clock.cpp" line="251"/>
         <source>High</source>
         <translation>하이</translation>
     </message>
@@ -2920,7 +2920,7 @@ IC와 외관에 접근하거나 beWavedDolphin 시뮬레이션을 실행하기 �
 <context>
     <name>Simulation</name>
     <message>
-        <location filename="../../Simulation/Simulation.cpp" line="372"/>
+        <location filename="../../Simulation/Simulation.cpp" line="404"/>
         <source>Warning: feedback circuit did not converge — the circuit may be oscillating.</source>
         <translation>경고: 피드백 회로가 수렴하지 않았습니다 — 회로가 진동하고 있을 수 있습니다.</translation>
     </message>
@@ -2966,12 +2966,12 @@ IC와 외관에 접근하거나 beWavedDolphin 시뮬레이션을 실행하기 �
         <translation>쓰기 위해 파일을 열 수 없습니다: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1295"/>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1339"/>
         <source>Output variable not mapped for TruthTable: %1</source>
         <translation>진리표에 출력 변수가 매핑되지 않았습니다: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1353"/>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1397"/>
         <source>Element type not supported: %1</source>
         <translation>지원되지 않는 요소 유형: %1</translation>
     </message>
@@ -3193,7 +3193,7 @@ IC와 외관에 접근하거나 beWavedDolphin 시뮬레이션을 실행하기 �
 <context>
     <name>WorkSpace</name>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="258"/>
+        <location filename="../../Scene/Workspace.cpp" line="259"/>
         <source>This file was saved with a newer file format (version %1).
 Your wiRedPanda version (%2) supports file format %3.
 
@@ -3204,37 +3204,37 @@ Please update wiRedPanda to save changes to this file.</source>
 이 파일의 변경 사항을 저장하려면 wiRedPanda를 업데이트하십시오.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="262"/>
+        <location filename="../../Scene/Workspace.cpp" line="263"/>
         <source>Cannot save.</source>
         <translation>저장할 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="292"/>
+        <location filename="../../Scene/Workspace.cpp" line="293"/>
         <source>Cannot save: sub-circuit &quot;%1&quot; could not be read to embed it.</source>
         <translation>저장할 수 없습니다: 하위 회로 &quot;%1&quot;을(를) 내장하기 위해 읽을 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="373"/>
+        <location filename="../../Scene/Workspace.cpp" line="374"/>
         <source>Error opening file: %1</source>
         <translation>파일 열기 오류: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="397"/>
+        <location filename="../../Scene/Workspace.cpp" line="398"/>
         <source>Could not save file: %1</source>
         <translation>파일을 저장할 수 없습니다: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="480"/>
+        <location filename="../../Scene/Workspace.cpp" line="481"/>
         <source>This file does not exist: %1</source>
         <translation>이 파일은 존재하지 않습니다: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="489"/>
+        <location filename="../../Scene/Workspace.cpp" line="490"/>
         <source>Could not open file: %1</source>
         <translation>파일을 열 수 없습니다: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="537"/>
+        <location filename="../../Scene/Workspace.cpp" line="538"/>
         <source>This file was saved with a newer file format (version %1).
 Your version supports file format %2.
 
@@ -3247,34 +3247,34 @@ Please update wiRedPanda to edit and save this file.</source>
 이 파일을 편집하고 저장하려면 wiRedPanda를 업데이트하십시오.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="542"/>
+        <location filename="../../Scene/Workspace.cpp" line="543"/>
         <source>Newer version file.</source>
         <translation>더 새로운 버전 파일입니다.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="545"/>
+        <location filename="../../Scene/Workspace.cpp" line="546"/>
         <source>This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).
 A backup of the original file has been created with name: %3</source>
         <translation>이 파일은 이전 형식(버전 %1)이며 현재 형식(버전 %2)으로 자동 업그레이드됩니다.
 원본 파일의 백업이 다음 이름으로 생성되었습니다: %3</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="548"/>
+        <location filename="../../Scene/Workspace.cpp" line="549"/>
         <source>File upgraded.</source>
         <translation>파일이 업그레이드되었습니다.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="718"/>
+        <location filename="../../Scene/Workspace.cpp" line="729"/>
         <source>Error opening autosave file: %1</source>
         <translation>자동 저장 파일 열기 오류: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="729"/>
+        <location filename="../../Scene/Workspace.cpp" line="740"/>
         <source>Could not commit autosave file: %1</source>
         <translation>자동 저장 파일을 확정할 수 없습니다: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="897"/>
+        <location filename="../../Scene/Workspace.cpp" line="908"/>
         <source>Remove embedded IC &quot;%1&quot;</source>
         <translation>내장된 IC &quot;%1&quot; 제거</translation>
     </message>
