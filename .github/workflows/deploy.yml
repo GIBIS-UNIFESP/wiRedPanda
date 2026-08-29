@@ -87,9 +87,12 @@ jobs:
 
     - name: Install Sentry CLI
       run: |
+        # Pinned rather than resolved from releases/latest: a release build must not
+        # change behaviour because a new CLI shipped that morning.
+        SENTRY_CLI_VERSION=3.7.0
+
         if [ "$RUNNER_OS" == "Windows" ]; then
-          LATEST_VERSION=$(curl -s https://api.github.com/repos/getsentry/sentry-cli/releases/latest | jq -r .tag_name)
-          curl -LO "https://github.com/getsentry/sentry-cli/releases/download/$LATEST_VERSION/sentry-cli-Windows-x86_64.exe"
+          curl -LO "https://github.com/getsentry/sentry-cli/releases/download/$SENTRY_CLI_VERSION/sentry-cli-Windows-x86_64.exe"
           mv sentry-cli-Windows-x86_64.exe sentry-cli.exe
 
           ACTUAL_VERSION=$(./sentry-cli.exe -V 2>&1 | tr -d '\r')
@@ -99,7 +102,9 @@ jobs:
             exit 1
           fi
         else
-          curl -sL https://sentry.io/get-cli/ | bash
+          # get-cli reads SENTRY_CLI_VERSION from the environment (VERSION=${SENTRY_CLI_VERSION:-latest}),
+          # so it has to be exported into the piped shell rather than left as a local.
+          curl -sL https://sentry.io/get-cli/ | SENTRY_CLI_VERSION="$SENTRY_CLI_VERSION" bash
         fi
       shell: bash
 
@@ -123,7 +128,7 @@ jobs:
     - name: Compile Ubuntu Sentry SDK
       if: runner.os == 'Linux'
       run: |
-        git clone --recursive https://github.com/getsentry/sentry-native.git
+        git clone --recursive --branch 0.16.4 --depth 1 https://github.com/getsentry/sentry-native.git
         cmake -S sentry-native -B sentry-native/build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSENTRY_BACKEND=crashpad -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON
         cmake --build sentry-native/build
         cmake --install sentry-native/build --prefix thirdparty/sentry
@@ -450,6 +455,11 @@ jobs:
         sentry-cli debug-files upload --include-sources -p wiredpanda build-sentry-crashpad/
         sentry-cli debug-files upload --include-sources -p wiredpanda $QT_ROOT_DIR
         sentry-cli releases set-commits --auto "wiredpanda@$VERSION" --log-level=debug
+        sentry-cli releases finalize "wiredpanda@$VERSION"
+        # Deploy is recorded once, from this job only. releases new/set-commits/finalize
+        # are idempotent across the three platform jobs, but each `deploys new` would
+        # add another entry for the same release.
+        sentry-cli deploys new --release "wiredpanda@$VERSION" -e production
 
     - name: Publish Ubuntu
       uses: softprops/action-gh-release@3d0d9888cb7fd7b750713d6e236d1fcb99157228 # v3.0.2
@@ -469,7 +479,7 @@ jobs:
     - name: Compile Windows Sentry SDK
       if: runner.os == 'Windows'
       run: |
-        git clone --recursive https://github.com/getsentry/sentry-native.git
+        git clone --recursive --branch 0.16.4 --depth 1 https://github.com/getsentry/sentry-native.git
         cmake -S sentry-native -B sentry-native/build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSENTRY_BACKEND=crashpad -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON
         cmake --build sentry-native/build
         cmake --install sentry-native/build --prefix thirdparty/sentry
@@ -648,6 +658,7 @@ jobs:
         ./sentry-cli.exe debug-files upload --include-sources -p wiredpanda build-sentry-crashpad/
         ./sentry-cli.exe debug-files upload --include-sources -p wiredpanda $env:QT_ROOT_DIR
         ./sentry-cli.exe releases set-commits --auto wiredpanda@$env:VERSION --log-level=debug
+        ./sentry-cli.exe releases finalize wiredpanda@$env:VERSION
 
     - name: Publish Windows
       if: runner.os == 'Windows' && github.event_name == 'release'
@@ -661,7 +672,7 @@ jobs:
     - name: Compile macOS Sentry SDK
       if: runner.os == 'macOS'
       run: |
-        git clone --recursive https://github.com/getsentry/sentry-native.git
+        git clone --recursive --branch 0.16.4 --depth 1 https://github.com/getsentry/sentry-native.git
         cmake -S sentry-native -B sentry-native/build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSENTRY_BACKEND=breakpad -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64" -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON
         cmake --build sentry-native/build
         cmake --install sentry-native/build --prefix thirdparty/sentry
@@ -955,6 +966,7 @@ jobs:
         sentry-cli debug-files upload --include-sources -p wiredpanda build-sentry-breakpad/
         sentry-cli debug-files upload --include-sources -p wiredpanda $QT_ROOT_DIR
         sentry-cli releases set-commits --auto "wiredpanda@$VERSION" --log-level=debug
+        sentry-cli releases finalize "wiredpanda@$VERSION"
 
     - name: Publish macOS
       if: runner.os == 'macOS' && github.event_name == 'release'
