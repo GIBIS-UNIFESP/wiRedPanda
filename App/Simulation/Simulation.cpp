@@ -341,7 +341,6 @@ void Simulation::invalidateTopology()
     // bails early), a freed element's reused address could inherit a stale priority or
     // feedback-node marking through schedule()/isInFeedbackLoop().
     m_simPriorities.clear();
-    m_simFeedbackNodes.clear();
     // Same hazard, and the two component containers must go TOGETHER: canonicalizeOscillation()
     // indexes m_simFeedbackComponents with an id read out of m_simFeedbackComponent, so clearing
     // one alone turns a graceful "not in any cycle" decline into an out-of-bounds .at().
@@ -354,7 +353,7 @@ void Simulation::invalidateTopology()
     Q_ASSERT(m_sortedElements.isEmpty()
           && m_clocks.isEmpty() && m_inputs.isEmpty() && m_outputs.isEmpty()
           && m_successorGraph.isEmpty() && m_icOutputMirror.isEmpty()
-          && m_simPriorities.isEmpty() && m_simFeedbackNodes.isEmpty()
+          && m_simPriorities.isEmpty()
           && m_simFeedbackComponent.isEmpty() && m_simFeedbackComponents.isEmpty()
           && m_simEvalCaps.isEmpty());
 }
@@ -366,7 +365,10 @@ bool Simulation::isRunning()
 
 bool Simulation::isInFeedbackLoop(const GraphicElement *element) const
 {
-    return m_simFeedbackNodes.contains(element);
+    // Answered from the component partition rather than a parallel membership set: being IN
+    // some cyclic component is exactly what "is in a feedback loop" means, and two containers
+    // holding the same fact can only ever drift apart.
+    return m_simFeedbackComponent.contains(element);
 }
 
 void Simulation::stop()
@@ -1109,7 +1111,6 @@ Simulation::SortResult Simulation::topologicalSort(
     // running its own findFeedbackComponents() over the identical graph.
     result.feedbackComponents = findFeedbackComponents(rawPtrs, successors);
     calculatePriorities(rawPtrs, successors, result.priorities, result.feedbackComponents);
-    result.feedbackNodes = flattenFeedbackComponents(result.feedbackComponents);
 
     result.sorted = elements;
     std::stable_sort(result.sorted.begin(), result.sorted.end(),
@@ -1313,12 +1314,8 @@ void Simulation::sortSimElements(const QVector<GraphicElement *> &elements)
     const auto result = topologicalSort(elements, successors);
 
     m_simPriorities.clear();
-    m_simFeedbackNodes.clear();
     for (auto *elm : std::as_const(elements)) {
         m_simPriorities[elm] = result.priorities.value(elm, -1);
-        if (result.feedbackNodes.contains(elm)) {
-            m_simFeedbackNodes.insert(elm);
-        }
     }
 
     // The cyclic components as a partition, not just a membership set: canonicalising an

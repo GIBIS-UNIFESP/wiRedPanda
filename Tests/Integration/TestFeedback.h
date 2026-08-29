@@ -78,8 +78,8 @@ private slots:
     void testOscillationUnknownReachesDownstreamReader();
 
     /// Canonicalisation must be scoped to the strongly connected component that is actually
-    /// oscillating. Working from a flat set of every element in any cycle would drag an
-    /// unrelated, settled SR latch to Unknown along with the oscillating ring.
+    /// oscillating. Working from a flat set of every element in any cycle would not distinguish
+    /// them, so one oscillating ring would drag an unrelated, settled SR latch to Unknown.
     void testOscillationDoesNotCanonicalizeUnrelatedFeedbackRegion();
 
     /// Two independent oscillators must BOTH canonicalise, and the drain must still terminate --

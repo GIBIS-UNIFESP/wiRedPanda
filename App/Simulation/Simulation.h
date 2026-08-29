@@ -179,10 +179,9 @@ public:
     struct SortResult {
         QVector<GraphicElement *> sorted;                ///< Elements in priority order (highest first).
         QHash<GraphicElement *, int> priorities;          ///< Priority per element.
-        QSet<GraphicElement *> feedbackNodes;             ///< Elements in feedback loops.
-        /// The cyclic components as a PARTITION (the flattened view of which is feedbackNodes).
-        /// Carried out of the sort so the single Tarjan pass it already runs serves every
-        /// consumer, rather than each recomputing it over the same graph.
+        /// The cyclic components as a PARTITION -- every element of every inner vector is in a
+        /// feedback loop. Carried out of the sort so the single Tarjan pass it already runs
+        /// serves every consumer, rather than each recomputing it over the same graph.
         QVector<QVector<GraphicElement *>> feedbackComponents;
     };
 
@@ -366,7 +365,6 @@ private:
 
     QVector<GraphicElement *> m_sortedElements;
     QHash<const GraphicElement *, int> m_simPriorities;
-    QSet<const GraphicElement *> m_simFeedbackNodes;
     /// Which cyclic component each feedback element belongs to (-1 / absent = none). Lets an
     /// oscillating region be canonicalised on its own instead of dragging every other cycle in
     /// the circuit down with it.

@@ -513,7 +513,6 @@ void TestSimulationUnit::testRestartClearsEveryPointerKeyedContainer()
     QVERIFY2(sim.m_simFeedbackComponent.isEmpty(), "m_simFeedbackComponent must not survive restart()");
     QVERIFY2(sim.m_simEvalCaps.isEmpty(), "m_simEvalCaps must not survive restart()");
     QVERIFY(sim.m_simPriorities.isEmpty());
-    QVERIFY(sim.m_simFeedbackNodes.isEmpty());
     QVERIFY(sim.m_delays.isEmpty());
     QVERIFY(sim.m_publishGeneration.isEmpty());
 }

@@ -1039,8 +1039,8 @@ void TestFeedback::testOscillationDoesNotCanonicalizeUnrelatedFeedbackRegion()
 {
     // Two independent feedback regions: a 3-inverter ring that oscillates, and a NAND SR latch
     // that settles perfectly well on its own (testSRLatchFromNANDConvergence is the control that
-    // proves it settles WITHOUT the ring present). Canonicalising from a flat set of every
-    // element in ANY cycle would drag the latch along with the ring.
+    // proves it settles WITHOUT the ring present). Treating feedback as one flat set of every
+    // element in ANY cycle would drag the latch along when canonicalising "the feedback region".
     std::unique_ptr<Scene> scene(createSRLatchFromNAND());
     InputSwitch *switchS = nullptr;
     InputSwitch *switchR = nullptr;

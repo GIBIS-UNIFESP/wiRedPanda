@@ -2170,7 +2170,7 @@ bool TestArduino::isCombinationalCircuit(const QVector<GraphicElement *> &elemen
     // invalidly applied to them.
     const auto txMap = Simulation::buildTxMap(elements);
     const auto successors = Simulation::buildSuccessorGraph(elements, txMap);
-    return Simulation::topologicalSort(elements, successors).feedbackNodes.isEmpty();
+    return Simulation::topologicalSort(elements, successors).feedbackComponents.isEmpty();
 }
 
 // ============================================================================
