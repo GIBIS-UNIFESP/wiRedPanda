@@ -336,6 +336,11 @@ public:
     /// Pushes \a cmd onto the undo stack (immediately executes its redo()).
     void receiveCommand(QUndoCommand *cmd);
 
+    /// Refreshes the Sentry "circuit" context (element/IC counts, simulation mode and
+    /// running state) so a crash report describes what was on screen. Throttled: see the
+    /// implementation for why an eager recount per command would be O(N^2).
+    void updateSentryCircuitContext();
+
     // --- Simulation ---
 
     /// Returns the simulation engine associated with this scene.
@@ -538,6 +543,7 @@ private:
     QTimer m_wireAaIdleTimer;
     QElapsedTimer m_wireFlipTimer;
     QElapsedTimer m_wirePassTimer;
+    QElapsedTimer m_sentryContextTimer; ///< Throttles the Sentry circuit-context recount.
 
     /// Idle-timer target: restores if the activity window truly elapsed, else re-arms.
     void checkWireIdleRestore();

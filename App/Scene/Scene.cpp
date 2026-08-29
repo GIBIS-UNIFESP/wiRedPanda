@@ -517,10 +517,37 @@ Port *Scene::portAt(const QPointF pos) const
     return nearby;
 }
 
+void Scene::updateSentryCircuitContext()
+{
+    // Commands are NOT reliably user-paced. MCP-driven construction and multi-element
+    // paste push one command per element, so recounting eagerly here would turn an
+    // N-element build into O(N^2) -- the same trap setCircuitUpdateRequired() documents
+    // above, and the reason this is throttled rather than exact. Crash context only has
+    // to be roughly current to be useful for triage.
+    static constexpr qint64 minimumIntervalMs = 1000;
+    if (m_sentryContextTimer.isValid() && m_sentryContextTimer.elapsed() < minimumIntervalMs) {
+        return;
+    }
+    m_sentryContextTimer.restart();
+
+    // unsortedElements(), never elements(): the latter runs a full topological sort.
+    const auto elements_ = unsortedElements();
+
+    int icCount = 0;
+    for (const auto *element : elements_) {
+        if (element->elementType() == ElementType::IC) {
+            ++icCount;
+        }
+    }
+
+    sentryCircuitContext(static_cast<int>(elements_.size()), icCount, m_simulation.isRunning());
+}
+
 void Scene::receiveCommand(QUndoCommand *cmd)
 {
     sentryBreadcrumb("command", QStringLiteral("Command: %1").arg(cmd->text()));
     m_undoStack.push(cmd);
+    updateSentryCircuitContext();
     update();
 }
 

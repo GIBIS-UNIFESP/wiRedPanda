@@ -720,6 +720,7 @@ bool WorkspaceManager::closeTab(const int tabIndex)
     sentryBreadcrumb("ui", QStringLiteral("Tab closed: index %1, %2 still open, delete deferred")
                                .arg(tabIndex)
                                .arg(m_tab->count()));
+    sentryWorkspaceContext(m_tab->count(), m_tab->currentIndex());
 
     qCDebug(zero) << "Closed tab " << tabIndex << ", #tabs: " << m_tab->count() << ", current tab: " << m_tabIndex;
 
@@ -729,6 +730,7 @@ bool WorkspaceManager::closeTab(const int tabIndex)
 void WorkspaceManager::onCurrentIndexChanged(int newIndex)
 {
     sentryBreadcrumb("ui", QStringLiteral("Tab changed to index %1").arg(newIndex));
+    sentryWorkspaceContext(m_tab->count(), newIndex);
     m_tabIndex = newIndex;
     m_currentTab = (newIndex == -1) ? nullptr : qobject_cast<WorkSpace *>(m_tab->currentWidget());
     qCDebug(zero) << "Selecting tab: " << newIndex;
