@@ -15,6 +15,7 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QNetworkRequest>
+#include <QPointer>
 #include <QProgressDialog>
 #include <QPushButton>
 #include <QSslError>
@@ -102,9 +103,22 @@ void UpdateController::downloadUpdate(const QString &latestVersion, const QUrl &
     QDir().mkpath(downloadDir);
     const QString savePath = QDir(downloadDir).filePath(fileName);
 
+    // The progress dialog below is not window-modal, so the main window stays interactive and
+    // Check for Updates can be triggered again mid-download. Raise the existing download
+    // rather than starting a second one onto the same path.
+    if (m_progressDialog) {
+        m_progressDialog->raise();
+        m_progressDialog->activateWindow();
+        return;
+    }
+
     auto *progress = new QProgressDialog(tr("Downloading wiRedPanda %1…").arg(latestVersion), tr("Cancel"), 0, 100, m_parent);
     progress->setWindowTitle(tr("Downloading Update"));
-    progress->setWindowModality(Qt::WindowModal);
+    // Deliberately NOT window-modal. QProgressDialog::setValue() calls processEvents() when the
+    // dialog is modal, so driving it from downloadProgress re-enters the event loop: that nested
+    // pump delivers finished(), which tears this dialog down, and setValue() then resumes on its
+    // own freed QProgressBar. Cancel still works -- it is a button on this dialog, not something
+    // modality provides.
     progress->setMinimumDuration(0);
     progress->setValue(0);
 
@@ -125,17 +139,29 @@ void UpdateController::downloadUpdate(const QString &latestVersion, const QUrl &
     request.setTransferTimeout(60000);
     QNetworkReply *reply = network->get(request);
 
-    connect(reply, &QNetworkReply::downloadProgress, progress, [progress](qint64 received, qint64 total) {
-        if (total > 0) {
-            progress->setValue(static_cast<int>(received * 100 / total));
-        }
-    });
+    // Belt and braces around the non-modality above: the connection is severed the moment the
+    // download finishes, and the dialog is reached through a QPointer so a delivery after its
+    // destruction is skipped rather than fatal. Neither is sufficient on its own -- a guard
+    // cannot help once the object dies inside the very setValue() call the guard permitted,
+    // which is exactly what modality caused.
+    const QPointer<QProgressDialog> progressGuard(progress);
+    m_progressDialog = progress;
+    const QMetaObject::Connection progressConnection =
+        connect(reply, &QNetworkReply::downloadProgress, progress, [progressGuard](qint64 received, qint64 total) {
+            if (total > 0 && progressGuard) {
+                progressGuard->setValue(static_cast<int>(received * 100 / total));
+            }
+        });
 
     connect(progress, &QProgressDialog::canceled, reply, &QNetworkReply::abort);
 
-    connect(reply, &QNetworkReply::finished, this, [this, reply, progress, savePath] {
-        progress->close();
-        progress->deleteLater();
+    connect(reply, &QNetworkReply::finished, this, [this, reply, progressGuard, progressConnection, savePath] {
+        // Before the dialog goes away, and before any modal box below opens a nested loop.
+        disconnect(progressConnection);
+        if (progressGuard) {
+            progressGuard->close();
+            progressGuard->deleteLater();
+        }
 
         if (reply->error() != QNetworkReply::NoError) {
             if (reply->error() != QNetworkReply::OperationCanceledError) {
