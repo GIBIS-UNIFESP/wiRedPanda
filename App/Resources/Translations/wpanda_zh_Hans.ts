@@ -130,7 +130,7 @@
         <translation>组合逻辑</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1006"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1011"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="268"/>
         <source>Export to PDF</source>
         <translation>导出为PDF</translation>
@@ -261,96 +261,96 @@
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="59"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="127"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="871"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="944"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="876"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="949"/>
         <source>beWavedDolphin Simulator</source>
         <translation>beWavedDolphin 仿真器</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="392"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="890"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="393"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="895"/>
         <source>wiRedPanda - beWavedDolphin</source>
         <translation>wiRedPanda - beWavedDolphin</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="393"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="394"/>
         <source>Save simulation before closing?</source>
         <translation>关闭前保存仿真？</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="844"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="845"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="925"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="849"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="850"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="930"/>
         <source>CSV files</source>
         <translation>CSV 文件</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="844"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="845"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="925"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="849"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="850"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="930"/>
         <source>Dolphin files</source>
         <translation>Dolphin 文件</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="844"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="845"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="925"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="849"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="850"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="930"/>
         <source>All supported files</source>
         <translation>所有支持的文件</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="891"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="896"/>
         <source>Do you want to link this beWavedDolphin file to your current wiRedPanda file and save it?</source>
         <translation>您要将此 beWavedDolphin 文件链接到当前的 wiRedPanda 文件并保存吗？</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="988"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="993"/>
         <source>PNG files</source>
         <translation>PNG 文件</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1006"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1011"/>
         <source>PDF files</source>
         <translation>PDF 文件</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1025"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1030"/>
         <source>&lt;p&gt;beWavedDolphin is a waveform simulator for wiRedPanda, developed by the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;beWavedDolphin 是 wiRedPanda 的波形模拟器，由圣保罗联邦大学开发，旨在帮助学生学习逻辑电路。&lt;/p&gt;&lt;p&gt;软件版本: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;创建者:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin 目前由 Prof. Fábio Cappabianco, Ph.D. 及其学生维护。&lt;/p&gt;&lt;p&gt; 如果您发现错误或想要请求新功能，请在我们的 GitHub 页面上提交报告。&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;访问我们的网站！&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="851"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="856"/>
         <source>Save File as...</source>
         <translation>文件另存为...</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="832"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="872"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="837"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="877"/>
         <source>Saved file successfully.</source>
         <translation>文件保存成功。</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="482"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="487"/>
         <source>Cannot export: the circuit this waveform was built from has changed.</source>
         <translation>无法导出:此波形所依据的电路已发生更改。</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="607"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="612"/>
         <source>No cells selected.</source>
         <translation>未选择单元格。</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="924"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="929"/>
         <source>Open File</source>
         <translation>打开文件</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="933"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="938"/>
         <source>File loaded successfully.</source>
         <translation>文件加载成功。</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="988"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="993"/>
         <source>Export to Image</source>
         <translation>导出为图像</translation>
     </message>
@@ -402,12 +402,12 @@
         <translation>时钟</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Clock.cpp" line="241"/>
+        <location filename="../../Element/GraphicElements/Clock.cpp" line="251"/>
         <source>Low</source>
         <translation>低</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Clock.cpp" line="241"/>
+        <location filename="../../Element/GraphicElements/Clock.cpp" line="251"/>
         <source>High</source>
         <translation>高</translation>
     </message>
@@ -2920,7 +2920,7 @@ wiRedPanda %1 将自动列出与当前项目位于同一目录中的所有其他
 <context>
     <name>Simulation</name>
     <message>
-        <location filename="../../Simulation/Simulation.cpp" line="372"/>
+        <location filename="../../Simulation/Simulation.cpp" line="404"/>
         <source>Warning: feedback circuit did not converge — the circuit may be oscillating.</source>
         <translation>警告: 反馈电路未收敛 — 电路可能在振荡。</translation>
     </message>
@@ -2966,12 +2966,12 @@ wiRedPanda %1 将自动列出与当前项目位于同一目录中的所有其他
         <translation>无法打开文件进行写入：%1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1295"/>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1339"/>
         <source>Output variable not mapped for TruthTable: %1</source>
         <translation>真值表的输出变量未映射: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1353"/>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1397"/>
         <source>Element type not supported: %1</source>
         <translation>不支持的元件类型：%1</translation>
     </message>
@@ -3193,7 +3193,7 @@ wiRedPanda %1 将自动列出与当前项目位于同一目录中的所有其他
 <context>
     <name>WorkSpace</name>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="258"/>
+        <location filename="../../Scene/Workspace.cpp" line="259"/>
         <source>This file was saved with a newer file format (version %1).
 Your wiRedPanda version (%2) supports file format %3.
 
@@ -3204,37 +3204,37 @@ Please update wiRedPanda to save changes to this file.</source>
 请更新 wiRedPanda 以保存对此文件的更改。</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="262"/>
+        <location filename="../../Scene/Workspace.cpp" line="263"/>
         <source>Cannot save.</source>
         <translation>无法保存。</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="292"/>
+        <location filename="../../Scene/Workspace.cpp" line="293"/>
         <source>Cannot save: sub-circuit &quot;%1&quot; could not be read to embed it.</source>
         <translation>无法保存:无法读取子电路 &quot;%1&quot; 以嵌入它。</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="373"/>
+        <location filename="../../Scene/Workspace.cpp" line="374"/>
         <source>Error opening file: %1</source>
         <translation>打开文件时出错：%1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="397"/>
+        <location filename="../../Scene/Workspace.cpp" line="398"/>
         <source>Could not save file: %1</source>
         <translation>无法保存文件：%1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="480"/>
+        <location filename="../../Scene/Workspace.cpp" line="481"/>
         <source>This file does not exist: %1</source>
         <translation>此文件不存在：%1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="489"/>
+        <location filename="../../Scene/Workspace.cpp" line="490"/>
         <source>Could not open file: %1</source>
         <translation>无法打开文件：%1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="537"/>
+        <location filename="../../Scene/Workspace.cpp" line="538"/>
         <source>This file was saved with a newer file format (version %1).
 Your version supports file format %2.
 
@@ -3247,34 +3247,34 @@ Please update wiRedPanda to edit and save this file.</source>
 请更新 wiRedPanda 以编辑和保存此文件。</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="542"/>
+        <location filename="../../Scene/Workspace.cpp" line="543"/>
         <source>Newer version file.</source>
         <translation>较新版本文件。</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="545"/>
+        <location filename="../../Scene/Workspace.cpp" line="546"/>
         <source>This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).
 A backup of the original file has been created with name: %3</source>
         <translation>此文件为旧格式（版本 %1），将自动升级为当前格式（版本 %2）。
 原始文件的备份已创建，名称为: %3</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="548"/>
+        <location filename="../../Scene/Workspace.cpp" line="549"/>
         <source>File upgraded.</source>
         <translation>文件已升级。</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="718"/>
+        <location filename="../../Scene/Workspace.cpp" line="729"/>
         <source>Error opening autosave file: %1</source>
         <translation>打开自动保存文件时出错：%1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="729"/>
+        <location filename="../../Scene/Workspace.cpp" line="740"/>
         <source>Could not commit autosave file: %1</source>
         <translation>无法提交自动保存文件：%1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="897"/>
+        <location filename="../../Scene/Workspace.cpp" line="908"/>
         <source>Remove embedded IC &quot;%1&quot;</source>
         <translation>移除嵌入的 IC &quot;%1&quot;</translation>
     </message>

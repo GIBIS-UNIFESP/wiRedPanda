@@ -130,7 +130,7 @@
         <translation>Kombinasional</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1006"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1011"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphinUI.cpp" line="268"/>
         <source>Export to PDF</source>
         <translation>Ekspor ke PDF</translation>
@@ -261,96 +261,96 @@
     <message>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="59"/>
         <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="127"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="871"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="944"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="876"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="949"/>
         <source>beWavedDolphin Simulator</source>
         <translation>Simulator beWavedDolphin</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="392"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="890"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="393"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="895"/>
         <source>wiRedPanda - beWavedDolphin</source>
         <translation>wiRedPanda - beWavedDolphin</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="393"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="394"/>
         <source>Save simulation before closing?</source>
         <translation>Simpan simulasi sebelum menutup?</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="844"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="845"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="925"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="849"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="850"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="930"/>
         <source>CSV files</source>
         <translation>File CSV</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="844"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="845"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="925"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="849"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="850"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="930"/>
         <source>Dolphin files</source>
         <translation>File Dolphin</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="844"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="845"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="925"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="849"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="850"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="930"/>
         <source>All supported files</source>
         <translation>Semua file yang didukung</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="891"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="896"/>
         <source>Do you want to link this beWavedDolphin file to your current wiRedPanda file and save it?</source>
         <translation>Apakah Anda ingin menghubungkan berkas beWavedDolphin ini ke berkas wiRedPanda Anda saat ini dan menyimpannya?</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="988"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="993"/>
         <source>PNG files</source>
         <translation>File PNG</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1006"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1011"/>
         <source>PDF files</source>
         <translation>File PDF</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1025"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="1030"/>
         <source>&lt;p&gt;beWavedDolphin is a waveform simulator for wiRedPanda, developed by the Federal University of São Paulo to help students learn about logic circuits.&lt;/p&gt;&lt;p&gt;Software version: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Creators:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students.&lt;/p&gt;&lt;p&gt; Please file a report at our GitHub page if you find a bug or want to request a new feature.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Visit our website!&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;beWavedDolphin adalah simulator bentuk gelombang untuk wiRedPanda, dikembangkan oleh Universitas Federal São Paulo untuk membantu mahasiswa belajar tentang sirkuit logika.&lt;/p&gt;&lt;p&gt;Versi perangkat lunak: %1&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Pembuat:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt; Prof. Fábio Cappabianco, Ph.D. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt; beWavedDolphin saat ini dikelola oleh Prof. Fábio Cappabianco, Ph.D. dan mahasiswanya.&lt;/p&gt;&lt;p&gt; Silakan laporkan di halaman GitHub kami jika Anda menemukan bug atau ingin meminta fitur baru.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://gibis-unifesp.github.io/wiRedPanda/&quot;&gt;Kunjungi situs web kami!&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="851"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="856"/>
         <source>Save File as...</source>
         <translation>Simpan Berkas sebagai...</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="832"/>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="872"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="837"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="877"/>
         <source>Saved file successfully.</source>
         <translation>Berkas berhasil disimpan.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="482"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="487"/>
         <source>Cannot export: the circuit this waveform was built from has changed.</source>
         <translation>Tidak dapat mengekspor: sirkuit tempat bentuk gelombang ini dibuat telah berubah.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="607"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="612"/>
         <source>No cells selected.</source>
         <translation>Tidak ada sel yang dipilih.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="924"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="929"/>
         <source>Open File</source>
         <translation>Buka Berkas</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="933"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="938"/>
         <source>File loaded successfully.</source>
         <translation>Berkas berhasil dimuat.</translation>
     </message>
     <message>
-        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="988"/>
+        <location filename="../../BeWavedDolphin/BeWavedDolphin.cpp" line="993"/>
         <source>Export to Image</source>
         <translation>Ekspor ke Gambar</translation>
     </message>
@@ -402,12 +402,12 @@
         <translation>Jam</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Clock.cpp" line="241"/>
+        <location filename="../../Element/GraphicElements/Clock.cpp" line="251"/>
         <source>Low</source>
         <translation>Rendah</translation>
     </message>
     <message>
-        <location filename="../../Element/GraphicElements/Clock.cpp" line="241"/>
+        <location filename="../../Element/GraphicElements/Clock.cpp" line="251"/>
         <source>High</source>
         <translation>Tinggi</translation>
     </message>
@@ -2920,7 +2920,7 @@ Anda harus menyimpan proyek baru sebelum mengakses IC dan tampilan, atau menjala
 <context>
     <name>Simulation</name>
     <message>
-        <location filename="../../Simulation/Simulation.cpp" line="372"/>
+        <location filename="../../Simulation/Simulation.cpp" line="404"/>
         <source>Warning: feedback circuit did not converge — the circuit may be oscillating.</source>
         <translation>Peringatan: sirkuit umpan balik tidak konvergen — sirkuit mungkin berosilasi.</translation>
     </message>
@@ -2966,12 +2966,12 @@ Anda harus menyimpan proyek baru sebelum mengakses IC dan tampilan, atau menjala
         <translation>Tidak dapat membuka berkas untuk penulisan: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1295"/>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1339"/>
         <source>Output variable not mapped for TruthTable: %1</source>
         <translation>Variabel output tidak dipetakan untuk TruthTable: %1</translation>
     </message>
     <message>
-        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1353"/>
+        <location filename="../../CodeGen/SystemVerilogCodeGen.cpp" line="1397"/>
         <source>Element type not supported: %1</source>
         <translation>Jenis elemen tidak didukung: %1</translation>
     </message>
@@ -3193,7 +3193,7 @@ Anda harus menyimpan proyek baru sebelum mengakses IC dan tampilan, atau menjala
 <context>
     <name>WorkSpace</name>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="258"/>
+        <location filename="../../Scene/Workspace.cpp" line="259"/>
         <source>This file was saved with a newer file format (version %1).
 Your wiRedPanda version (%2) supports file format %3.
 
@@ -3204,37 +3204,37 @@ Versi wiRedPanda Anda (%2) mendukung format file %3.
 Silakan perbarui wiRedPanda untuk menyimpan perubahan pada file ini.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="262"/>
+        <location filename="../../Scene/Workspace.cpp" line="263"/>
         <source>Cannot save.</source>
         <translation>Tidak dapat menyimpan.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="292"/>
+        <location filename="../../Scene/Workspace.cpp" line="293"/>
         <source>Cannot save: sub-circuit &quot;%1&quot; could not be read to embed it.</source>
         <translation>Tidak dapat menyimpan: subsirkuit &quot;%1&quot; tidak dapat dibaca untuk menanamkannya.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="373"/>
+        <location filename="../../Scene/Workspace.cpp" line="374"/>
         <source>Error opening file: %1</source>
         <translation>Kesalahan membuka berkas: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="397"/>
+        <location filename="../../Scene/Workspace.cpp" line="398"/>
         <source>Could not save file: %1</source>
         <translation>Tidak dapat menyimpan berkas: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="480"/>
+        <location filename="../../Scene/Workspace.cpp" line="481"/>
         <source>This file does not exist: %1</source>
         <translation>Berkas ini tidak ada: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="489"/>
+        <location filename="../../Scene/Workspace.cpp" line="490"/>
         <source>Could not open file: %1</source>
         <translation>Tidak dapat membuka berkas: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="537"/>
+        <location filename="../../Scene/Workspace.cpp" line="538"/>
         <source>This file was saved with a newer file format (version %1).
 Your version supports file format %2.
 
@@ -3247,34 +3247,34 @@ File akan dibuka tetapi penyimpanan diblokir.
 Silakan perbarui wiRedPanda untuk mengedit dan menyimpan file ini.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="542"/>
+        <location filename="../../Scene/Workspace.cpp" line="543"/>
         <source>Newer version file.</source>
         <translation>Berkas versi lebih baru.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="545"/>
+        <location filename="../../Scene/Workspace.cpp" line="546"/>
         <source>This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).
 A backup of the original file has been created with name: %3</source>
         <translation>Berkas ini dalam format lama (versi %1) dan akan ditingkatkan secara otomatis ke format saat ini (versi %2).
 Cadangan berkas asli telah dibuat dengan nama: %3</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="548"/>
+        <location filename="../../Scene/Workspace.cpp" line="549"/>
         <source>File upgraded.</source>
         <translation>Berkas telah ditingkatkan.</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="718"/>
+        <location filename="../../Scene/Workspace.cpp" line="729"/>
         <source>Error opening autosave file: %1</source>
         <translation>Kesalahan membuka berkas simpan otomatis: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="729"/>
+        <location filename="../../Scene/Workspace.cpp" line="740"/>
         <source>Could not commit autosave file: %1</source>
         <translation>Tidak dapat menetapkan berkas simpan otomatis: %1</translation>
     </message>
     <message>
-        <location filename="../../Scene/Workspace.cpp" line="897"/>
+        <location filename="../../Scene/Workspace.cpp" line="908"/>
         <source>Remove embedded IC &quot;%1&quot;</source>
         <translation>Hapus IC tertanam &quot;%1&quot;</translation>
     </message>
