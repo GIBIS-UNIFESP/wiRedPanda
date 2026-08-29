@@ -49,6 +49,4 @@ public:
     void restoreSimState(const QVector<Status> &in, int &cursor) override;
 private:
     Status m_simLastClk = Status::Inactive;
-    Status m_simLastJ = Status::Active;
-    Status m_simLastK = Status::Active;
 };

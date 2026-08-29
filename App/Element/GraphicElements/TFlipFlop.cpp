@@ -92,7 +92,13 @@ void TFlipFlop::updateLogic()
     const Status clr = simInputs().at(3);
 
     if (clk == Status::Active && m_simLastClk == Status::Inactive) {
-        if (m_simLastValue == Status::Active) {
+        // Read the control inputs LIVE at the edge, exactly as DFlipFlop does. Latching the
+        // previous evaluation's values is both unnecessary and wrong under the three-region
+        // drain: Memory elements are held out of the active region, so nothing they read has
+        // published yet -- live IS the pre-edge value. "The previous evaluation" is not a
+        // defined instant in an event-driven engine: it is whenever this element last happened
+        // to be woken.
+        if (T == Status::Active) {
             q0 = (q0 == Status::Active) ? Status::Inactive : Status::Active;
             q1 = (q1 == Status::Active) ? Status::Inactive : Status::Active;
         }
@@ -103,7 +109,6 @@ void TFlipFlop::updateLogic()
         q1 = (clr == Status::Inactive) ? Status::Active : Status::Inactive;
     }
     m_simLastClk = clk;
-    m_simLastValue = T;
     setOutputValue(0, q0);
     setOutputValue(1, q1);
 }
@@ -111,8 +116,7 @@ void TFlipFlop::updateLogic()
 void TFlipFlop::resetSimState()
 {
     GraphicElement::resetSimState();
-    m_simLastClk   = Status::Inactive;
-    m_simLastValue = Status::Active;
+    m_simLastClk = Status::Inactive;
 }
 
 void TFlipFlop::saveSimState(QVector<Status> &out) const
@@ -121,12 +125,10 @@ void TFlipFlop::saveSimState(QVector<Status> &out) const
     // fixed order that restoreSimState() reads back identically.
     GraphicElement::saveSimState(out);
     out.append(m_simLastClk);
-    out.append(m_simLastValue);
 }
 
 void TFlipFlop::restoreSimState(const QVector<Status> &in, int &cursor)
 {
     GraphicElement::restoreSimState(in, cursor);
     if (cursor < in.size()) { m_simLastClk = in.at(cursor++); }
-    if (cursor < in.size()) { m_simLastValue = in.at(cursor++); }
 }

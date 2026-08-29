@@ -98,12 +98,18 @@ void SRFlipFlop::updateLogic()
     const Status clr = simInputs().at(4);
 
     if (clk == Status::Active && m_simLastClk == Status::Inactive) {
-        if (m_simLastS == Status::Active && m_simLastR == Status::Active) {
+        // Read the control inputs LIVE at the edge, exactly as DFlipFlop does. Latching the
+        // previous evaluation's values is both unnecessary and wrong under the three-region
+        // drain: Memory elements are held out of the active region, so nothing they read has
+        // published yet -- live IS the pre-edge value. "The previous evaluation" is not a
+        // defined instant in an event-driven engine: it is whenever this element last happened
+        // to be woken.
+        if (s == Status::Active && r == Status::Active) {
             q0 = Status::Active;
             q1 = Status::Active;
-        } else if (m_simLastS != m_simLastR) {
-            q0 = m_simLastS;
-            q1 = m_simLastR;
+        } else if (s != r) {
+            q0 = s;
+            q1 = r;
         }
     }
 
@@ -112,8 +118,6 @@ void SRFlipFlop::updateLogic()
         q1 = (clr == Status::Inactive) ? Status::Active : Status::Inactive;
     }
     m_simLastClk = clk;
-    m_simLastS = s;
-    m_simLastR = r;
     setOutputValue(0, q0);
     setOutputValue(1, q1);
 }
@@ -122,8 +126,6 @@ void SRFlipFlop::resetSimState()
 {
     GraphicElement::resetSimState();
     m_simLastClk = Status::Inactive;
-    m_simLastS   = Status::Inactive;
-    m_simLastR   = Status::Inactive;
 }
 
 void SRFlipFlop::saveSimState(QVector<Status> &out) const
@@ -132,14 +134,10 @@ void SRFlipFlop::saveSimState(QVector<Status> &out) const
     // fixed order that restoreSimState() reads back identically.
     GraphicElement::saveSimState(out);
     out.append(m_simLastClk);
-    out.append(m_simLastS);
-    out.append(m_simLastR);
 }
 
 void SRFlipFlop::restoreSimState(const QVector<Status> &in, int &cursor)
 {
     GraphicElement::restoreSimState(in, cursor);
     if (cursor < in.size()) { m_simLastClk = in.at(cursor++); }
-    if (cursor < in.size()) { m_simLastS = in.at(cursor++); }
-    if (cursor < in.size()) { m_simLastR = in.at(cursor++); }
 }

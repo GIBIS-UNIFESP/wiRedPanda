@@ -3,6 +3,7 @@
 
 #include "Tests/Unit/Elements/TestSequentialLogic.h"
 
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/DFlipFlop.h"
 #include "App/Element/GraphicElements/DLatch.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
@@ -570,4 +571,50 @@ void TestSequentialLogic::testSequentialElementsUpdateTheme()
     QVERIFY(!srlatch.appearancePreviewPixmap(0, previewSize).isNull());
     srlatch.updateTheme();
     QVERIFY(!srlatch.appearancePreviewPixmap(0, previewSize).isNull());
+}
+
+void TestSequentialLogic::testFlipFlopFamilyAgreesOnControlInputSampling()
+{
+    // A JK wired as a D-type (J = X, K = ~X) must capture what a real D flip-flop fed X
+    // captures, when X and the clock move in the SAME tick.
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+    auto *x = new InputSwitch();
+    auto *clk = new InputSwitch();
+    auto *inv = ElementFactory::buildElement(ElementType::Not);
+    auto *jk = new JKFlipFlop();
+    auto *d = new DFlipFlop();
+    builder.add(x, clk, inv, jk, d);
+
+    builder.connect(x, 0, inv, 0);
+    builder.connect(x, 0, jk, 0);      // J = X
+    builder.connect(clk, 0, jk, 1);    // CLK
+    builder.connect(inv, 0, jk, 2);    // K = ~X
+    builder.connect(x, 0, d, 0);       // D = X
+    builder.connect(clk, 0, d, 1);     // same CLK
+
+    Simulation *sim = builder.initSimulation();
+
+    // Settle low, both flip-flops holding 0.
+    x->setOn(false);
+    clk->setOn(false);
+    sim->update();
+    sim->update();
+    QCOMPARE(jk->outputValue(0), Status::Inactive);
+    QCOMPARE(d->outputValue(0), Status::Inactive);
+
+    // X and CLK rise together: the JK's J/K and the D's D all change in the same tick as the
+    // edge. Phase separation means both read pre-edge inputs; the two must agree.
+    x->setOn(true);
+    clk->setOn(true);
+    sim->update();
+    sim->update();
+
+    QVERIFY2(jk->outputValue(0) == d->outputValue(0),
+             qPrintable(QString("a JK wired as a D captured %1 while a D flip-flop captured %2 "
+                                "from the same stimulus: the family must sample control inputs "
+                                "the same way")
+                            .arg(static_cast<int>(jk->outputValue(0)))
+                            .arg(static_cast<int>(d->outputValue(0)))));
+    QCOMPARE(jk->outputValue(0), Status::Active);
 }

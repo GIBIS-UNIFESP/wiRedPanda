@@ -10,6 +10,14 @@ class TestSequentialLogic : public QObject
     Q_OBJECT
 
 private slots:
+    /// All four flip-flops must sample their control inputs the same way: LIVE at the edge.
+    /// Under the three-region drain, live IS the pre-edge value -- Memory elements are held out
+    /// of the active region, so nothing they read has published yet. Latching the PREVIOUS
+    /// evaluation's value in any one of them would make the family disagree with itself, and
+    /// "the previous evaluation" is not a defined instant in an event-driven engine anyway; it
+    /// is whenever the element last happened to be woken.
+    void testFlipFlopFamilyAgreesOnControlInputSampling();
+
     // Port count and type verification
     void testDFlipFlop();
     void testDLatch();

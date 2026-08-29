@@ -94,11 +94,11 @@ void DFlipFlop::updateLogic()
     const Status clr = simInputs().at(3);
 
     if (clk == Status::Active && m_simLastClk == Status::Inactive) {
-        // Sample D LIVE at the edge. Latching m_simLastValue — D as of the previous evaluation —
-        // is unnecessary here: under publish-side delay the element runs AT the edge and its
-        // result is not visible until it publishes, so the pre-edge value is guaranteed by phase
-        // separation rather than by hoarding a copy. Reading a stale D would just capture the
-        // wrong bit.
+        // Sample D LIVE at the edge. Latching the previous evaluation's D is unnecessary here:
+        // under publish-side delay the element runs AT the edge and its result is not visible
+        // until it publishes, so the pre-edge value is guaranteed by phase separation rather
+        // than by hoarding a copy. Reading a stale D would just capture the wrong bit. JK, T and
+        // SR sample the same way -- the whole family agrees.
         q0 = D;
         q1 = (D == Status::Active) ? Status::Inactive : Status::Active;
     }
@@ -108,7 +108,6 @@ void DFlipFlop::updateLogic()
         q1 = (clr == Status::Inactive) ? Status::Active : Status::Inactive;
     }
     m_simLastClk = clk;
-    m_simLastValue = D;
     setOutputValue(0, q0);
     setOutputValue(1, q1);
 }
@@ -119,8 +118,7 @@ void DFlipFlop::resetSimState()
     // edge-detection variables so column 0 of the next sweep is treated as
     // a fresh start (no phantom rising edge from a prior run).
     GraphicElement::resetSimState();
-    m_simLastClk   = Status::Inactive;
-    m_simLastValue = Status::Active;
+    m_simLastClk = Status::Inactive;
 }
 
 void DFlipFlop::saveSimState(QVector<Status> &out) const
@@ -129,12 +127,10 @@ void DFlipFlop::saveSimState(QVector<Status> &out) const
     // fixed order that restoreSimState() reads back identically.
     GraphicElement::saveSimState(out);
     out.append(m_simLastClk);
-    out.append(m_simLastValue);
 }
 
 void DFlipFlop::restoreSimState(const QVector<Status> &in, int &cursor)
 {
     GraphicElement::restoreSimState(in, cursor);
     if (cursor < in.size()) { m_simLastClk = in.at(cursor++); }
-    if (cursor < in.size()) { m_simLastValue = in.at(cursor++); }
 }

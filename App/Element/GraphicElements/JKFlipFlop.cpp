@@ -99,12 +99,18 @@ void JKFlipFlop::updateLogic()
     const Status clr = simInputs().at(4);
 
     if (clk == Status::Active && m_simLastClk == Status::Inactive) {
-        if (m_simLastJ == Status::Active && m_simLastK == Status::Active) {
+        // Read the control inputs LIVE at the edge, exactly as DFlipFlop does. Latching the
+        // previous evaluation's values is both unnecessary and wrong under the three-region
+        // drain: Memory elements are held out of the active region, so nothing they read has
+        // published yet -- live IS the pre-edge value. "The previous evaluation" is not a
+        // defined instant in an event-driven engine: it is whenever this element last happened
+        // to be woken.
+        if (j == Status::Active && k == Status::Active) {
             std::swap(q0, q1);
-        } else if (m_simLastJ == Status::Active) {
+        } else if (j == Status::Active) {
             q0 = Status::Active;
             q1 = Status::Inactive;
-        } else if (m_simLastK == Status::Active) {
+        } else if (k == Status::Active) {
             q0 = Status::Inactive;
             q1 = Status::Active;
         }
@@ -115,8 +121,6 @@ void JKFlipFlop::updateLogic()
         q1 = (clr == Status::Inactive) ? Status::Active : Status::Inactive;
     }
     m_simLastClk = clk;
-    m_simLastJ = j;
-    m_simLastK = k;
     setOutputValue(0, q0);
     setOutputValue(1, q1);
 }
@@ -125,8 +129,6 @@ void JKFlipFlop::resetSimState()
 {
     GraphicElement::resetSimState();
     m_simLastClk = Status::Inactive;
-    m_simLastJ   = Status::Active;
-    m_simLastK   = Status::Active;
 }
 
 void JKFlipFlop::saveSimState(QVector<Status> &out) const
@@ -135,14 +137,10 @@ void JKFlipFlop::saveSimState(QVector<Status> &out) const
     // fixed order that restoreSimState() reads back identically.
     GraphicElement::saveSimState(out);
     out.append(m_simLastClk);
-    out.append(m_simLastJ);
-    out.append(m_simLastK);
 }
 
 void JKFlipFlop::restoreSimState(const QVector<Status> &in, int &cursor)
 {
     GraphicElement::restoreSimState(in, cursor);
     if (cursor < in.size()) { m_simLastClk = in.at(cursor++); }
-    if (cursor < in.size()) { m_simLastJ = in.at(cursor++); }
-    if (cursor < in.size()) { m_simLastK = in.at(cursor++); }
 }
