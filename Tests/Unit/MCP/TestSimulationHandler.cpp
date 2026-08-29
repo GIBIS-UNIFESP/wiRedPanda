@@ -3,6 +3,8 @@
 
 #include "Tests/Unit/MCP/TestSimulationHandler.h"
 
+#include <QCoreApplication>
+#include <QDir>
 #include <QFile>
 #include <QFileInfo>
 #include <QJsonArray>
@@ -15,12 +17,15 @@
 #include "App/BeWavedDolphin/SignalModel.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
+#include "App/Element/GraphicElements/Not.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
 #include "App/UI/MainWindow.h"
+#include "App/Wiring/Connection.h"
 #include "MCP/Server/Core/JsonRpcError.h"
+#include "MCP/Server/Core/MCPValidator.h"
 #include "MCP/Server/Handlers/SimulationHandler.h"
 
 namespace {
@@ -228,6 +233,59 @@ void TestSimulationHandler::testCreateWaveformReplacesExistingDolphin()
 
     QVERIFY(handler.handleCommand("create_waveform", {{"duration", 4}}, 1).contains("result"));
     QVERIFY2(handler.m_persistentDolphin != firstDolphin, "a second create_waveform call must replace the previous instance, not reuse or leak it");
+}
+
+void TestSimulationHandler::testCreateWaveformResponseValidatesAgainstTheSchema()
+{
+    // The schema constrains a waveform row's per-column values to the four-state vocabulary
+    // (output rows) and to 0/1 (input rows). MCPProcessor validates its own responses before
+    // sending, so if a real sweep could produce anything outside that vocabulary, the
+    // constraint would turn a working call into an internal error.
+    //
+    // The circuit is a self-feeding NOT: the engine canonicalises an oscillating region to
+    // Unknown, so the LED reading it reports -1. An UNDRIVEN LED would not do -- its input
+    // port falls back to a defaultValue() of Inactive and reports a plain 0, which would leave
+    // this guard unable to distinguish a correct vocabulary from a two-state one.
+    MainWindow window;
+    SimulationHandler handler(&window, nullptr);
+    Scene *scene = window.currentTab()->scene();
+
+    auto *sw = new InputSwitch();
+    sw->setLabel("sw1");
+    auto *notGate = new Not();
+    auto *led = new Led();
+    scene->receiveCommand(new AddItemsCommand({sw, notGate, led}, scene));
+
+    auto *loop = new Connection();
+    scene->addItem(loop);
+    loop->setStartPort(notGate->outputPort(0));
+    loop->setEndPort(notGate->inputPort(0));
+
+    auto *tap = new Connection();
+    scene->addItem(tap);
+    tap->setStartPort(notGate->outputPort(0));
+    tap->setEndPort(led->inputPort(0));
+
+    const QJsonObject response = handler.handleCommand("create_waveform", {{"duration", 4}}, 1);
+    QVERIFY2(response.contains("result"), qPrintable(QJsonDocument(response).toJson()));
+
+    QStringList seen;
+    const QJsonObject waveformData = response["result"].toObject()["waveform_data"].toObject();
+    for (const QJsonValue &row : waveformData["outputs"].toArray()) {
+        for (const QJsonValue &value : row.toObject()["values"].toArray()) {
+            seen.append(QString::number(value.toInt()));
+        }
+    }
+    // Precondition: without a non-binary value in the sweep this guard proves only that 0
+    // validates, which every two-state schema would also allow.
+    QVERIFY2(seen.contains(QStringLiteral("-1")),
+             qPrintable("precondition: the sweep must produce an unknown output; seen: " + seen.join(", ")));
+
+    MCPValidator validator(QDir(QCoreApplication::applicationDirPath()).absoluteFilePath("schema-mcp.json"));
+    QVERIFY(validator.isSchemaLoaded());
+    const ValidationResult outcome = validator.validateResponse(response, "create_waveform");
+    QVERIFY2(outcome.isValid, qPrintable(outcome.errorMessage + " -- output values seen: " + seen.join(", ")));
+    QCOMPARE(outcome.schemaUsed, QStringLiteral("create_waveform_response"));
 }
 
 void TestSimulationHandler::testExportWaveformRejectsMissingParams()

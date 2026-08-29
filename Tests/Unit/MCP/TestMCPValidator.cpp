@@ -6,6 +6,7 @@
 #include <QCoreApplication>
 #include <QDir>
 #include <QFile>
+#include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QTemporaryFile>
@@ -288,6 +289,55 @@ void TestMCPValidator::testValidateResponseRejectsMissingCommandResponseDefiniti
 
     QVERIFY(!result.isValid);
     QCOMPARE(result.errorMessage, QStringLiteral("CommandResponse schema not found in definitions"));
+}
+
+namespace {
+
+// A create_waveform response carrying one input row and one output row, each with the given
+// per-column values. Every other field the schema requires is present, so the only thing a
+// rejection can be about is the values themselves.
+QJsonObject waveformResponse(const QJsonArray &inputValues, const QJsonArray &outputValues)
+{
+    const QJsonObject waveformData{
+        {"duration", inputValues.size()},
+        {"inputs", QJsonArray{QJsonObject{{"label", "sw1"}, {"type", "input"}, {"values", inputValues}}}},
+        {"outputs", QJsonArray{QJsonObject{{"label", "led1"}, {"type", "output"}, {"values", outputValues}}}},
+    };
+    const QJsonObject result{
+        {"actual_duration", inputValues.size()},
+        {"requested_duration", inputValues.size()},
+        {"message", "Waveform created and analyzed successfully"},
+        {"status", "ready"},
+        {"waveform_data", waveformData},
+    };
+    return QJsonObject{{"jsonrpc", "2.0"}, {"result", result}, {"id", 1}};
+}
+
+} // namespace
+
+void TestMCPValidator::testCreateWaveformResponseConstrainsSignalValuesToTheFourStateVocabulary()
+{
+    // create_waveform's per-column values are `static_cast<int>(Status)` for output rows
+    // (WaveformSimulator::sweep()) and the 0/1 SignalModel::setValue() clamps input rows to.
+    // A bare {"type": "integer"} would leave the encoding a client must decode -- notably that
+    // -1 means unknown and 2 means error, the same states get_output_value names -- undocumented
+    // and unenforced. MCPProcessor validates its own responses before sending, so constraining
+    // the vocabulary turns an out-of-band value into a loud internal error rather than an
+    // undocumented integer on the wire.
+    MCPValidator validator(realSchemaPath());
+
+    const ValidationResult fourState = validator.validateResponse(
+        waveformResponse({0, 1, 0, 1}, {-1, 0, 1, 2}), "create_waveform");
+    QVERIFY2(fourState.isValid, qPrintable(fourState.errorMessage));
+    QCOMPARE(fourState.schemaUsed, QStringLiteral("create_waveform_response"));
+
+    const ValidationResult outOfVocabulary = validator.validateResponse(
+        waveformResponse({0, 1}, {0, 7}), "create_waveform");
+    QVERIFY2(!outOfVocabulary.isValid, "an output value outside the four-state vocabulary must be rejected");
+
+    const ValidationResult nonBinaryInput = validator.validateResponse(
+        waveformResponse({0, -1}, {0, 1}), "create_waveform");
+    QVERIFY2(!nonBinaryInput.isValid, "input rows are clamped to 0/1, so a non-binary input value must be rejected");
 }
 
 void TestMCPValidator::testFindCommandSchemaReturnsNullForUnknownCommand()

@@ -30,6 +30,7 @@ private slots:
     void testValidateResponseUsesSpecificSchemaWhenAvailable();
     void testValidateResponseQJsonOverloadCatchesMalformedInput();
     void testValidateResponseRejectsMissingCommandResponseDefinition();
+    void testCreateWaveformResponseConstrainsSignalValuesToTheFourStateVocabulary();
 
     void testFindCommandSchemaReturnsNullForUnknownCommand();
     void testFindResponseSchemaReturnsNullForUnknownCommand();

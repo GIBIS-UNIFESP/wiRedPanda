@@ -25,6 +25,7 @@ private slots:
     void testCreateWaveformRejectsPatternLengthMismatch();
     void testCreateWaveformRejectsInvalidPatternValue();
     void testCreateWaveformReplacesExistingDolphin();
+    void testCreateWaveformResponseValidatesAgainstTheSchema();
 
     void testExportWaveformRejectsMissingParams();
     void testExportWaveformRejectsInvalidFormat();
