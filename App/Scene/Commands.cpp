@@ -1069,8 +1069,8 @@ void ToggleTruthTableOutputCommand::redo()
 
     if (!truthtable) throw PANDACEPTION("Could not find truthtable element!");
 
-    // The key holds exactly 2048 bits (256 rows × 8 outputs); toggleBit on
-    // any other position is an out-of-bounds write. This command is the model
+    // The key holds a fixed number of bits, derived from the element's port limits in
+    // TruthTable.cpp; toggleBit outside it is an out-of-bounds write. This command is the model
     // boundary shared by the UI and the MCP server, and undo() == redo(), so
     // the bound is enforced here regardless of caller.
     if (m_pos < 0 || m_pos >= truthtable->key().size()) {
