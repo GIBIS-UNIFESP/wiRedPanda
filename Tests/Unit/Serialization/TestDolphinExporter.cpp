@@ -79,3 +79,33 @@ void TestDolphinExporter::testTruthTableTextWritesOneCharacterPerThreeStateCell(
     }
     QVERIFY2(sawRow, "precondition: the export must contain at least one labelled data row");
 }
+
+void TestDolphinExporter::testCsvTextKeepsFourStateIntsOnOutputRows()
+{
+    // The two exporters in this file encode a non-definite cell differently, and that is
+    // deliberate rather than an oversight: writeTruthTableText() has no separator between
+    // cells, so it must spend exactly one character and writes x/E; csvText() is
+    // comma-separated and keeps the raw four-state Status int, which is the encoding a
+    // consuming script wants and the one create_waveform declares over MCP. Pin both, so a
+    // future "make these consistent" pass has to confront the reason.
+    SignalModel model(2, 2);
+    model.setInputRows(1);
+    model.setValue(0, 0, 1);
+    model.setValue(0, 1, 0);
+    model.setValue(1, 0, static_cast<int>(Status::Unknown));
+    model.setValue(1, 1, static_cast<int>(Status::Error));
+
+    const QString csv = DolphinExporter::csvText(&model);
+    const auto lines = csv.split(QLatin1Char('\n'), Qt::SkipEmptyParts);
+    QCOMPARE(lines.size(), 3);                       // header + one line per row
+    QCOMPARE(lines.at(0), QStringLiteral("2,2,"));
+    QCOMPARE(lines.at(1), QStringLiteral("1,0,"));   // input row: two-state (SignalModel clamps writes)
+    QCOMPARE(lines.at(2), QStringLiteral("-1,2,"));  // output row: raw four-state
+
+    QString truthTable;
+    QTextStream out(&truthTable);
+    DolphinExporter::writeTruthTableText(out, &model, 1);
+    out.flush();
+    QVERIFY2(truthTable.contains(QStringLiteral("xE")),
+             qPrintable(QStringLiteral("the truth-table sibling must still spend one character per cell: %1").arg(truthTable)));
+}

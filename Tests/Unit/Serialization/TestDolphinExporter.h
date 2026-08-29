@@ -19,4 +19,9 @@ private slots:
     /// making the row unparseable -- routinely reachable, since oscillating regions canonicalise
     /// to Unknown and propagate it to their readers.
     void testTruthTableTextWritesOneCharacterPerThreeStateCell();
+    /// csvText() is comma-separated, so it keeps the raw four-state Status ints (-1 unknown,
+    /// 2 error) -- the encoding create_waveform declares over MCP -- where its separator-less
+    /// sibling must spend exactly one character. Both are pinned so a "make these consistent"
+    /// pass has to confront the reason they differ.
+    void testCsvTextKeepsFourStateIntsOnOutputRows();
 };

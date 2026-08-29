@@ -486,7 +486,10 @@ void BewavedDolphin::print()
         return;
     }
     // Outputs in the same CSV format used by loadFromTerminal() / the CSV save path,
-    // allowing round-trip scripted use without a GUI.
+    // allowing round-trip scripted use without a GUI. Only the input rows round-trip:
+    // parseTerminal() reads back at most one row per input port and the sweep recomputes
+    // every output, which is why the output rows may carry four-state values the header
+    // format never has to parse.
     QTextStream(stdout) << DolphinExporter::csvText(m_model);
 }
 

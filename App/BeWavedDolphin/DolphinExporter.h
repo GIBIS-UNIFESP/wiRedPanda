@@ -41,7 +41,9 @@ void exportToPdf(const SignalModel *model, PlotType plotType, const QString &fil
 void writeTruthTableText(QTextStream &out, const SignalModel *model, int inputRowCount);
 
 /// Returns \a model encoded in the CSV-ish "rows,cols," + comma-separated values format
-/// used by the terminal (print) path.
+/// used by the terminal (print) path. Output cells carry raw four-state Status ints
+/// (-1 unknown, 2 error), unlike writeTruthTableText()'s single-character `x`/`E` -- see the
+/// definition for why the two siblings differ.
 QString csvText(const SignalModel *model);
 
 } // namespace DolphinExporter

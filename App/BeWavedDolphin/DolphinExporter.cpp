@@ -115,6 +115,14 @@ void writeTruthTableText(QTextStream &out, const SignalModel *model, const int i
 QString csvText(const SignalModel *model)
 {
     // CSV-ish format: "rows,cols," header line, then one comma-separated line per row.
+    //
+    // Deliberately NOT cellChar(): this format separates cells with commas, so a two-character
+    // -1 costs it nothing, where the truth-table format above has no separator and would become
+    // unparseable. Output rows therefore carry the raw four-state Status ints (-1 unknown,
+    // 2 error) -- the same encoding create_waveform declares over MCP -- which is what a script
+    // consuming this wants. Input rows can only ever be 0/1: SignalModel::setValue() clamps
+    // them. Nothing is lost on the round trip either, because parseTerminal() reads back only
+    // as many rows as there are input ports and recomputes every output.
     QString text;
     QTextStream out(&text);
 
