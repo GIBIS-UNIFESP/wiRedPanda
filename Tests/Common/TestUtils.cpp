@@ -28,10 +28,22 @@ namespace TestUtils {
 
 void setupTestEnvironment()
 {
-#ifdef Q_OS_LINUX
+#if defined(Q_OS_UNIX) && !defined(Q_OS_MACOS) && !defined(Q_OS_WASM)
     // Default to headless, but never clobber an explicit choice — CI workflows
     // and developers set QT_QPA_PLATFORM to pick the platform per-OS (e.g.
     // xcb to exercise native window-activation timing locally).
+    //
+    // Q_OS_UNIX rather than Q_OS_LINUX: GNU/Hurd is not Linux (Qt defines
+    // Q_OS_HURD for __GNU__), so it was left running the gui suite against a
+    // real platform plugin, and Debian's hurd-amd64 and hurd-i386 builds fail
+    // there on exactly the test that stalled on Windows before that lane was
+    // pinned offscreen. macOS keeps its current behaviour, where CI pins the
+    // platform explicitly instead. Q_OS_WASM is excluded too -- Qt's own
+    // qsystemdetection.h leaves it under Q_OS_UNIX (only Q_OS_WIN #undefs it),
+    // and Emscripten has no offscreen platform plugin to select. Currently
+    // moot (wasm.yml builds only the `wiredpanda` target, never
+    // `test_wiredpanda`), but nothing should depend on that CI detail to stay
+    // correct if a wasm test target is ever added.
     if (!qEnvironmentVariableIsSet("QT_QPA_PLATFORM")) {
         qputenv("QT_QPA_PLATFORM", "offscreen");
     }
