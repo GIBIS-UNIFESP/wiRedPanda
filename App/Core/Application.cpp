@@ -77,6 +77,38 @@ bool Application::isSentryDenyMessage(const QString &message)
     return false;
 }
 
+QString Application::fingerprintFor(const QString &file, int line)
+{
+    if (file.isEmpty()) {
+        return {};
+    }
+
+    // __FILE__ expands to an ABSOLUTE path -- CMake hands the compiler absolute source
+    // paths -- so the raw value differs per build machine: a runner path on Linux CI,
+    // a D:\a\... path on Windows CI, a developer's home directory locally. Grouping on
+    // that would split one throw site into a separate issue per platform, which is
+    // exactly the fragmentation this fingerprint exists to prevent. It would also ship
+    // the builder's directory layout. Reduce it to a repo-relative path instead, which
+    // is identical everywhere the file is compiled.
+    QString path = file;
+    path.replace(QLatin1Char('\\'), QLatin1Char('/'));
+
+    qsizetype root = -1;
+    for (const auto *marker : {"/App/", "/Tests/", "/MCP/"}) {
+        root = std::max(root, path.lastIndexOf(QLatin1String(marker)));
+    }
+
+    if (root >= 0) {
+        path = path.mid(root + 1);
+    } else if (const qsizetype slash = path.lastIndexOf(QLatin1Char('/')); slash >= 0) {
+        // Built from a layout we don't recognise: the basename alone is still stable
+        // across machines, which is what matters for grouping.
+        path = path.mid(slash + 1);
+    }
+
+    return QStringLiteral("%1:%2").arg(path).arg(line);
+}
+
 QString Application::scrubbedMessage(const QString &message)
 {
     // Two alternatives, both anchored so ordinary text is left alone:
@@ -205,20 +237,41 @@ void Application::handleException(const ExceptionInfo &info, const QObject *cont
     sentry_value_t exc = sentry_value_new_exception(
         "Exception", scrubbedMessage(info.englishMessage).toStdString().c_str());
 
+    // Repo-relative "App/Path/File.cpp:123". Empty for a plain std::exception.
+    const QString throwSite = fingerprintFor(info.file, info.line);
+
     sentry_value_t mechanism = sentry_value_new_object();
     sentry_value_set_by_key(mechanism, "type", sentry_value_new_string("generic"));
     sentry_value_set_by_key(mechanism, "handled", sentry_value_new_bool(1));
-    if (!info.file.isEmpty()) {
+    if (!throwSite.isEmpty()) {
         // Include the throw-site location so Sentry shows where the
         // exception originated rather than the catch block.
         sentry_value_set_by_key(mechanism, "description",
-            sentry_value_new_string(
-                QStringLiteral("%1:%2").arg(info.file).arg(info.line).toStdString().c_str()));
+            sentry_value_new_string(throwSite.toStdString().c_str()));
     }
     sentry_value_set_by_key(exc, "mechanism", mechanism);
 
     sentry_value_set_stacktrace(exc, NULL, 0);
     sentry_event_add_exception(event_, exc);
-    sentry_capture_event(event_);
+
+    // Group by throw site, not by catch site. sentry_value_set_stacktrace() above
+    // unwinds from inside handleException, so the frames Sentry would otherwise group on
+    // describe where the exception was CAUGHT -- every throw funnelling through
+    // Application::notify looks alike, while one throw site whose message interpolates a
+    // varying path splits into many issues.
+    //
+    // The fingerprint goes on a one-shot LOCAL scope rather than through
+    // sentry_set_fingerprint(), which mutates the global scope and is sticky: it would
+    // then be applied to every later event in the process, including crash minidumps,
+    // merging unrelated crashes into this exception's group. The local scope is applied
+    // first and the global scope second, so user, tags and contexts still arrive, and
+    // breadcrumbs are merged rather than overwritten.
+    sentry_scope_t *scope = sentry_local_scope_new();
+    const QByteArray fingerprint = throwSite.toUtf8();
+    if (!throwSite.isEmpty()) {
+        sentry_scope_set_fingerprint(scope, fingerprint.constData(), nullptr);
+    }
+    // Takes ownership of the scope and frees it.
+    sentry_scope_capture_event(scope, event_);
 #endif
 }

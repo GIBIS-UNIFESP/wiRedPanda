@@ -187,3 +187,51 @@ void TestApplication::testScrubbedMessageLeavesOrdinaryTextAlone()
     // Degenerate input must not be deleted and leave a mangled sentence.
     QCOMPARE(Application::scrubbedMessage("Root is / here"), QString("Root is / here"));
 }
+
+void TestApplication::testFingerprintForIsRepoRelative()
+{
+    QCOMPARE(Application::fingerprintFor("/home/torres/wiredpanda/App/Element/ICLoader.cpp", 95),
+             QString("App/Element/ICLoader.cpp:95"));
+    QCOMPARE(Application::fingerprintFor("/build/x/Tests/Unit/Core/TestApplication.cpp", 7),
+             QString("Tests/Unit/Core/TestApplication.cpp:7"));
+    QCOMPARE(Application::fingerprintFor("/src/MCP/Server/Core/MCPProcessor.cpp", 12),
+             QString("MCP/Server/Core/MCPProcessor.cpp:12"));
+
+    // An unrecognised layout still has to yield something machine-independent.
+    QCOMPARE(Application::fingerprintFor("/opt/weird/Standalone.cpp", 3),
+             QString("Standalone.cpp:3"));
+
+    // The real value in this build is absolute, so the guard must actually fire here.
+    const QString real = Application::fingerprintFor(__FILE__, 42);
+    QCOMPARE(real, QString("Tests/Unit/Core/TestApplication.cpp:42"));
+}
+
+void TestApplication::testFingerprintForIsStableAcrossBuildMachines()
+{
+    // The property the fingerprint exists for. __FILE__ is absolute -- CMake passes
+    // absolute source paths -- so the same throw site compiled on Linux CI, Windows CI
+    // and a developer's laptop carries three different strings. If any of that leaked
+    // into the key, one throw site would become one Sentry issue per platform, which is
+    // precisely the fragmentation this is meant to remove.
+    const QString linuxCi = Application::fingerprintFor(
+        "/home/runner/work/wiRedPanda/wiRedPanda/App/Scene/Workspace.cpp", 481);
+    const QString windowsCi = Application::fingerprintFor(
+        R"(D:\a\wiRedPanda\wiRedPanda\App\Scene\Workspace.cpp)", 481);
+    const QString devLaptop = Application::fingerprintFor(
+        "/home/torres/wiredpanda-sentry/App/Scene/Workspace.cpp", 481);
+
+    QCOMPARE(linuxCi, QString("App/Scene/Workspace.cpp:481"));
+    QCOMPARE(windowsCi, linuxCi);
+    QCOMPARE(devLaptop, linuxCi);
+
+    // A different line in the same file is a different throw site, and must not merge.
+    QVERIFY(Application::fingerprintFor("/x/App/Scene/Workspace.cpp", 482) != linuxCi);
+}
+
+void TestApplication::testFingerprintForIsEmptyWithoutAThrowSite()
+{
+    // A plain std::exception carries no file/line. The caller must then leave Sentry's
+    // default grouping alone rather than fingerprinting everything onto ":0".
+    QVERIFY(Application::fingerprintFor(QString(), 0).isEmpty());
+    QVERIFY(Application::fingerprintFor("", 123).isEmpty());
+}

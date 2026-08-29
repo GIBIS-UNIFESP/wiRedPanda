@@ -21,6 +21,12 @@ private slots:
     void testScrubbedMessageReducesPathsToBasenames();
     void testScrubbedMessageLeavesOrdinaryTextAlone();
 
+    // Handled exceptions must group by throw site, and that key must be identical on
+    // every build machine or one throw site becomes one issue per platform.
+    void testFingerprintForIsRepoRelative();
+    void testFingerprintForIsStableAcrossBuildMachines();
+    void testFingerprintForIsEmptyWithoutAThrowSite();
+
     void testMakeExceptionInfoWithPandaception();
     void testMakeExceptionInfoWithPlainStdException();
     void testHandleExceptionInteractiveShowsDialog();

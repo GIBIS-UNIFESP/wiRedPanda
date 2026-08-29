@@ -97,6 +97,13 @@ public:
     /// HAVE_SENTRY) so the deny-list policy is unit-testable.
     static bool isSentryDenyMessage(const QString &message);
 
+    /// Returns a stable "App/Path/File.cpp:123" label for a throw site, used both as the
+    /// Sentry grouping fingerprint and as the mechanism description. Empty when \a file is
+    /// empty (a plain std::exception carries no throw site), in which case the caller must
+    /// leave Sentry's default grouping alone. Always compiled (independent of HAVE_SENTRY)
+    /// so the grouping policy is unit-testable.
+    static QString fingerprintFor(const QString &file, int line);
+
     /// Replaces every absolute path in \a message with its final component.
     /// Throw messages interpolate absoluteFilePath() results, which carry the
     /// user's home-directory name — their real name on Windows — so only the
