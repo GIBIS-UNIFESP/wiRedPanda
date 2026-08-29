@@ -8,9 +8,11 @@
 #pragma once
 
 #include <QObject>
+#include <QPointer>
 #include <QString>
 #include <QUrl>
 
+class QProgressDialog;
 class QWidget;
 
 /**
@@ -43,4 +45,10 @@ private:
     void downloadUpdate(const QString &latestVersion, const QUrl &url);
 
     QWidget *m_parent = nullptr;
+
+    /// The in-flight download's progress dialog, if any. Tracked because that dialog is no
+    /// longer window-modal (see downloadUpdate), so the main window stays interactive and a
+    /// second Check for Updates could otherwise start a concurrent download writing the same
+    /// file. QPointer: the dialog deletes itself when the download ends.
+    QPointer<QProgressDialog> m_progressDialog;
 };
