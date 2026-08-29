@@ -8,6 +8,7 @@
 #include <QClipboard>
 #include <QDesktopServices>
 #include <QFile>
+#include <QKeySequence>
 #include <QLabel>
 #include <QLineEdit>
 #include <QMenu>
@@ -1320,12 +1321,23 @@ void TestMainWindowGui::testShortcutsDialog()
     // The help body is generated from the live actions, so it must cover the real key
     // bindings (not the old hand-maintained subset) and pick up newly added actions.
     const QString html = window->shortcutsHelpHtml();
-    QVERIFY(html.contains("Copy") && html.contains("Ctrl+C"));
-    QVERIFY(html.contains("Paste") && html.contains("Ctrl+V"));
-    QVERIFY(html.contains("Ctrl+A")); // Select All — was missing from the old list
-    QVERIFY(html.contains("Undo") && html.contains("Ctrl+Z")); // injected per-scene action
+    // shortcutsHelpHtml() renders chords with QKeySequence::NativeText, deliberately: the
+    // dialog shows the user their own platform's keys, which on macOS means ⌘C rather than
+    // Ctrl+C. Build the expectations through the same conversion instead of pinning one
+    // platform's spelling, or this asserts that macOS is wrong for being macOS.
+    const auto chord = [](const char *portable) {
+        const QString rendered = QKeySequence(QString::fromLatin1(portable)).toString(QKeySequence::NativeText).toHtmlEscaped();
+        // Without this the test can go quietly vacuous: QString::contains("") is always true,
+        // so a parse failure would turn every assertion below into a no-op that still passes.
+        [&] { QVERIFY(!rendered.isEmpty()); }();
+        return rendered;
+    };
+    QVERIFY(html.contains("Copy") && html.contains(chord("Ctrl+C")));
+    QVERIFY(html.contains("Paste") && html.contains(chord("Ctrl+V")));
+    QVERIFY(html.contains(chord("Ctrl+A"))); // Select All — was missing from the old list
+    QVERIFY(html.contains("Undo") && html.contains(chord("Ctrl+Z"))); // injected per-scene action
     QVERIFY(html.contains("Redo"));
-    QVERIFY(html.contains("Ctrl+Shift+F")); // Zoom to Fit — appears automatically
+    QVERIFY(html.contains(chord("Ctrl+Shift+F"))); // Zoom to Fit — appears automatically
     QVERIFY(html.contains("Morph")); // curated property-navigation section
     QVERIFY(html.contains("arrow keys")); // curated tips section
     // The old hand-written "beWaveDolphin" typo is gone — the label now comes from the action.
