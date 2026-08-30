@@ -98,6 +98,28 @@ jobs:
             echo "Downloaded Sentry CLI binary is invalid!" >&2
             exit 1
           fi
+        elif [ "$RUNNER_OS" == "Linux" ]; then
+          # Official sentry-cli releases link an unpatched symbolic-debuginfo whose ELF loader
+          # never applies relocations to debug sections in unlinked .o files: every
+          # DW_FORM_line_strp/strp offset silently reads back as the section's own zero
+          # placeholder, which `debug-files upload --include-sources` can resolve into a
+          # directory instead of a file and hard-error on ("Is a directory"). Fix submitted
+          # upstream as https://github.com/getsentry/symbolic/pull/1060; until it ships in a
+          # release, build sentry-cli 3.7.0 from source with that same fix patched in from a
+          # pinned branch (kept in sync with the upstream PR) instead of downloading the binary.
+          git clone --depth 1 --branch 3.7.0 https://github.com/getsentry/sentry-cli.git /tmp/sentry-cli-src
+          {
+            echo ''
+            echo '[patch.crates-io]'
+            echo 'symbolic = { git = "https://github.com/darktorres/symbolic", branch = "ci-fix-13.8.0-apply-elf-relocations" }'
+            echo 'symbolic-common = { git = "https://github.com/darktorres/symbolic", branch = "ci-fix-13.8.0-apply-elf-relocations" }'
+            echo 'symbolic-debuginfo = { git = "https://github.com/darktorres/symbolic", branch = "ci-fix-13.8.0-apply-elf-relocations" }'
+            echo 'symbolic-il2cpp = { git = "https://github.com/darktorres/symbolic", branch = "ci-fix-13.8.0-apply-elf-relocations" }'
+            echo 'symbolic-ppdb = { git = "https://github.com/darktorres/symbolic", branch = "ci-fix-13.8.0-apply-elf-relocations" }'
+            echo 'symbolic-symcache = { git = "https://github.com/darktorres/symbolic", branch = "ci-fix-13.8.0-apply-elf-relocations" }'
+          } >> /tmp/sentry-cli-src/Cargo.toml
+          cargo build --release --manifest-path /tmp/sentry-cli-src/Cargo.toml --bin sentry-cli
+          sudo install -m 755 /tmp/sentry-cli-src/target/release/sentry-cli /usr/local/bin/sentry-cli
         else
           curl -sL https://sentry.io/get-cli/ | bash
         fi
