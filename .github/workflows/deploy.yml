@@ -136,7 +136,7 @@ jobs:
         arch: ${{ matrix.qt_arch }}
 
     - name: ccache
-      uses: hendrikmuhs/ccache-action@9e72c68cf32eb51fa30568928aca57ff79155270 # main
+      uses: hendrikmuhs/ccache-action@f09c25b45002a07be2955cbe52e8cee55643f89d # main
       with:
         key: ${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.qt }}
 
