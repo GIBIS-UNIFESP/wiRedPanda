@@ -534,12 +534,18 @@ jobs:
     # SignPath's product-version metadata restriction validates against the PE
     # resource actually embedded in the binary (CMakeLists.txt's `project()`
     # VERSION), not env.VERSION -- which is the release tag or an arbitrary
-    # workflow_dispatch string and can diverge from it (e.g. dry runs).
+    # workflow_dispatch string and can diverge from it (e.g. dry runs). PE
+    # VERSIONINFO resources are always 4-part (Major.Minor.Patch.Build); CMake's
+    # 3-part VERSION ("5.2.2") is padded to "5.2.2.0" in the compiled resource.
     - name: Extract CMake project version for SignPath
       if: runner.os == 'Windows'
       run: |
         $line = Select-String -Path build-sentry-crashpad/CMakeCache.txt -Pattern '^CMAKE_PROJECT_VERSION:STATIC=(.+)$'
         $cmakeVersion = $line.Matches[0].Groups[1].Value
+        $parts = $cmakeVersion.Split('.').Count
+        if ($parts -lt 4) {
+          $cmakeVersion = $cmakeVersion + ('.0' * (4 - $parts))
+        }
         echo "SIGNPATH_PRODUCT_VERSION=$cmakeVersion" >> $env:GITHUB_ENV
 
     # SignPath OSS review is still pending (release-signing certificate CSR not
