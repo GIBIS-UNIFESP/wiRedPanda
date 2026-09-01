@@ -531,6 +531,17 @@ jobs:
         cd wiredpanda-$env:VERSION
         windeployqt --compiler-runtime wiredpanda.exe
 
+    # SignPath's product-version metadata restriction validates against the PE
+    # resource actually embedded in the binary (CMakeLists.txt's `project()`
+    # VERSION), not env.VERSION -- which is the release tag or an arbitrary
+    # workflow_dispatch string and can diverge from it (e.g. dry runs).
+    - name: Extract CMake project version for SignPath
+      if: runner.os == 'Windows'
+      run: |
+        $line = Select-String -Path build-sentry-crashpad/CMakeCache.txt -Pattern '^CMAKE_PROJECT_VERSION:STATIC=(.+)$'
+        $cmakeVersion = $line.Matches[0].Groups[1].Value
+        echo "SIGNPATH_PRODUCT_VERSION=$cmakeVersion" >> $env:GITHUB_ENV
+
     # SignPath OSS review is still pending (release-signing certificate CSR not
     # yet issued); submits to test-signing so SignPath has real CI-originated,
     # origin-verified signing requests to review. Switch signing-policy-slug to
@@ -558,7 +569,7 @@ jobs:
         wait-for-completion: true
         output-artifact-directory: 'signed-windows-${{ matrix.arch }}'
         parameters: |
-          version: "${{ env.VERSION }}"
+          version: "${{ env.SIGNPATH_PRODUCT_VERSION }}"
 
     - name: Replace executable with SignPath-signed copy
       if: runner.os == 'Windows'
