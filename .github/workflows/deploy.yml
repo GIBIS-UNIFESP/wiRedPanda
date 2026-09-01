@@ -531,8 +531,44 @@ jobs:
         cd wiredpanda-$env:VERSION
         windeployqt --compiler-runtime wiredpanda.exe
 
-        # Create the ZIP from the clean directory
-        cd ..
+    # SignPath OSS review is still pending (release-signing certificate CSR not
+    # yet issued); submits to test-signing so SignPath has real CI-originated,
+    # origin-verified signing requests to review. Switch signing-policy-slug to
+    # release-signing once that certificate is issued.
+    - name: Upload unsigned executable for SignPath
+      id: upload-unsigned-windows-exe
+      if: runner.os == 'Windows'
+      uses: actions/upload-artifact@v7
+      with:
+        name: wiredpanda-exe-unsigned-${{ matrix.arch }}
+        path: build-sentry-crashpad/wiredpanda-${{ env.VERSION }}/wiredpanda.exe
+        archive: false
+
+    - name: Submit Windows executable to SignPath
+      id: signpath
+      if: runner.os == 'Windows'
+      uses: signpath/github-action-submit-signing-request@v2
+      with:
+        api-token: '${{ secrets.SIGNPATH_API_TOKEN }}'
+        organization-id: '493bc2f8-9f95-4a29-9f98-26ccf63d34bd'
+        project-slug: 'wiRedPanda_'
+        signing-policy-slug: 'test-signing'
+        github-artifact-id: '${{ steps.upload-unsigned-windows-exe.outputs.artifact-id }}'
+        skip-decompress: true
+        wait-for-completion: true
+        output-artifact-directory: 'signed-windows-${{ matrix.arch }}'
+        parameters: |
+          version: "${{ env.VERSION }}"
+
+    - name: Replace executable with SignPath-signed copy
+      if: runner.os == 'Windows'
+      run: |
+        Copy-Item -Force signed-windows-${{ matrix.arch }}/wiredpanda.exe build-sentry-crashpad/wiredpanda-$env:VERSION/wiredpanda.exe
+
+    - name: Package Windows
+      if: runner.os == 'Windows'
+      run: |
+        cd build-sentry-crashpad
         # x86_64 gets a digit ("64") right after "Windows-" instead of a letter-led token like
         # arm64's -- see the matching Linux comment above for the full reasoning. Reconstructed
         # identically in the validate step below since it's not passed between steps.
