@@ -17,7 +17,7 @@
 
 #include "App/IO/SerializationContext.h"
 
-class QGraphicsItem;
+class ItemWithId;
 class Port;
 
 /**
@@ -41,15 +41,16 @@ public:
      * \param options No default -- every caller must state whether this builds a
      *        genuine .panda file or an in-session snapshot; see SerializationPurpose.
      */
-    static void serialize(const QList<QGraphicsItem *> &items, QDataStream &stream, SerializationOptions options);
+    static void serialize(const QList<ItemWithId *> &items, QDataStream &stream, SerializationOptions options);
 
     /**
      * \brief Deserializes items from \a stream until the stream is exhausted.
      * \param stream Source data stream.
      * \param context Per-load context (portMap, version, contextDir).
-     * \return List of deserialized QGraphicsItems ready to be added to a scene.
+     * \return List of deserialized items (GraphicElement/Connection), ready for a caller
+     *         to take ownership of and register with whatever registry it uses.
      */
-    static QList<QGraphicsItem *> deserialize(QDataStream &stream, SerializationContext &context);
+    static QList<ItemWithId *> deserialize(QDataStream &stream, SerializationContext &context);
 
     // --- View Serialization ---
 

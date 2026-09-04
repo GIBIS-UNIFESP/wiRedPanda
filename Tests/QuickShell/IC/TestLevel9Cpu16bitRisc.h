@@ -1,0 +1,34 @@
+// Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+#pragma once
+
+#include <QObject>
+#include <QTest>
+
+class TestLevel9CPU16BitRISC : public QObject
+{
+    Q_OBJECT
+
+private slots:
+    void initTestCase();
+    void cleanupTestCase();
+    void cleanup();
+
+    void testCPUStructure();
+    void testCPUExecution_data();
+    void testCPUExecution();
+    void testCPUReset();
+    void testPCDoesNotDriftDuringProgramming();
+    void testInstrWordVisible();
+    void testOpCodeInValidRange();
+    void testResultRegisterReadable();
+    void testInstrOpCodeFieldConsistency();
+    void testCPUComputesOnDecodedFields_data();
+    void testCPUComputesOnDecodedFields();
+
+    void testISA_Store();
+    void testISA_Load();
+    void testLoadWritesBackToRegister();
+    void testStoreDoesNotWriteBackToRegister();
+};

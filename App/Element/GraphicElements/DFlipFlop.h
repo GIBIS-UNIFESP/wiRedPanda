@@ -25,7 +25,7 @@ public:
     // --- Lifecycle ---
 
     /// Constructs the element with optional \a parent.
-    explicit DFlipFlop(QGraphicsItem *parent = nullptr);
+    explicit DFlipFlop(QObject *parent = nullptr);
 
     // --- Visual ---
 

@@ -13,14 +13,7 @@
 #include "App/Element/GraphicElement.h"
 #include "App/Wiring/Connection.h"
 
-Port::Port(QGraphicsItem *parent)
-    : QGraphicsPathItem(parent)
-{
-    // ItemSendsScenePositionChanges triggers itemChange(ItemScenePositionHasChanged)
-    // which keeps connected wires redrawn when the parent element moves
-    setFlag(QGraphicsItem::ItemSendsScenePositionChanges);
-    setCacheMode(QGraphicsItem::DeviceCoordinateCache);
-}
+Port::Port() = default;
 
 QPainterPath Port::shape() const
 {
@@ -34,24 +27,38 @@ QPainterPath Port::shape() const
 
 QRectF Port::boundingRect() const
 {
-    // The default QGraphicsPathItem bound is pen-exact (zero slack beyond the stroke), which
-    // gives DeviceCoordinateCache's device-pixel tile no room to antialias the edge -- at high
-    // zoom the pen's edge gets a hard clip instead of a soft fade. 1 local unit of margin (the
-    // port glyph is only ~10 units across) fixes that without perceptibly growing the glyph.
-    return QGraphicsPathItem::boundingRect().adjusted(-1, -1, 1, 1);
+    // The glyph path's exact bound leaves no slack beyond the stroke, which gives a rendering
+    // host's own device-pixel cache no room to antialias the edge -- at high zoom the pen's
+    // edge gets a hard clip instead of a soft fade. 1 local unit of margin (the port glyph is
+    // only ~10 units across) fixes that without perceptibly growing the glyph.
+    return m_path.boundingRect().adjusted(-1, -1, 1, 1);
 }
 
-void Port::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void Port::paint(QPainter *painter) const
 {
-    Q_UNUSED(option)
-    Q_UNUSED(widget)
+    if (!m_visible) {
+        return;
+    }
 
-    // Mirrors QGraphicsPathItem's default paint exactly, except the pen comes from
-    // m_currentPen (see updateTheme()) instead of the item's own, real pen() -- the brush
-    // is unaffected, still the item's real (and cheap to update) brush().
+    painter->save();
     painter->setPen(m_currentPen);
-    painter->setBrush(brush());
-    painter->drawPath(path());
+    painter->setBrush(m_brush);
+    painter->drawPath(m_path);
+    painter->restore();
+}
+
+QPointF Port::scenePos() const
+{
+    return m_graphicElement->pointToScene(mapToOwnerLocal(QPointF()));
+}
+
+void Port::setPos(const QPointF &pos)
+{
+    m_pos = pos;
+
+    // Keep attached wires in sync -- mirrors what the old
+    // itemChange(ItemScenePositionHasChanged) override did automatically.
+    updateConnections();
 }
 
 const QList<Connection *> &Port::connections() const
@@ -71,7 +78,12 @@ void Port::attachConnection(Connection *conn)
         m_connections.append(conn);
     }
 
-    updateConnections();
+    // Not updateConnections(): attaching a wire never moves this port or any of its already-
+    // correctly-positioned siblings (the new connection gets its own position directly from
+    // Connection::setStartPort()/setEndPort(), which read this port's scenePos() themselves) --
+    // only the status/validity tail is relevant here. Reprocessing every sibling's position on
+    // every attach made a high-fanout net's sequential load O(fanout^2) instead of O(fanout).
+    revalidateStatus();
 }
 
 void Port::detachConnection(Connection *conn)
@@ -88,7 +100,9 @@ void Port::detachConnection(Connection *conn)
         conn->setEndPort(nullptr);
     }
 
-    updateConnections();
+    // See attachConnection()'s identical reasoning: detaching a wire doesn't move this port or
+    // its remaining siblings either.
+    revalidateStatus();
 }
 
 bool Port::isConnected(Port *otherPort)
@@ -104,6 +118,11 @@ void Port::updateConnections()
         conn->updatePosFromPorts();
     }
 
+    revalidateStatus();
+}
+
+void Port::revalidateStatus()
+{
     // A port that violates its validity constraints (e.g. required but unconnected,
     // or multi-driver) must show Error so the wiring problem is clearly visible
     if (!isValid()) {
@@ -124,15 +143,6 @@ void Port::updateConnections()
     if (isInput() && m_connections.size() == 1) {
         setStatus(m_connections.constFirst()->status());
     }
-}
-
-QVariant Port::itemChange(GraphicsItemChange change, const QVariant &value)
-{
-    if (change == ItemScenePositionHasChanged) {
-        updateConnections();
-    }
-
-    return QGraphicsPathItem::itemChange(change, value);
 }
 
 int Port::index() const
@@ -201,8 +211,10 @@ void Port::setRequired(const bool required)
     m_required = required;
 
     // Requiredness feeds isValid(): re-derive the displayed status so a port
-    // marked optional recovers from Error and a newly required one shows it
-    updateConnections();
+    // marked optional recovers from Error and a newly required one shows it -- doesn't move
+    // this port or any sibling, so revalidateStatus() alone (not the full updateConnections())
+    // is correct here too.
+    revalidateStatus();
 }
 
 void Port::setGraphicElement(GraphicElement *graphicElement)
@@ -224,34 +236,36 @@ void Port::updateTheme()
 {
     const auto &theme = ThemeManager::attributes();
 
+    // Precomputed once here (theme colours only change with the theme), not rebuilt on every
+    // status change -- assigning a QColor directly to a QPen/QBrush member goes through
+    // QPen::operator=(QColor)/the implicit QColor->QBrush conversion, both of which
+    // unconditionally detach and reconstruct: a real cost on a circuit with thousands of ports.
+    m_unknownStatusPen  = QPen(theme.m_portUnknownPen);
+    m_inactiveStatusPen = QPen(theme.m_portInactivePen);
+    m_activeStatusPen   = QPen(theme.m_portActivePen);
+    m_errorStatusPen    = QPen(theme.m_portErrorPen);
+    m_unknownStatusBrush  = QBrush(theme.m_portUnknownBrush);
+    m_inactiveStatusBrush = QBrush(theme.m_portInactiveBrush);
+    m_activeStatusBrush   = QBrush(theme.m_portActiveBrush);
+    m_errorStatusBrush    = QBrush(theme.m_portErrorBrush);
+
+    applyStatusStyle();
+}
+
+void Port::applyStatusStyle()
+{
     // m_currentPen (drawn by paint()) is set directly instead of going through the item's
     // own setPen() -- boundingRect() pads a pen-exact bound (see its own comment) but all
-    // four status pens below share the same implicit default width (theme.m_port*Pen are
-    // bare QColor, converted to QPen here), so the value never actually changes and the
-    // real setPen() would only pay for an unneeded BSP-tree re-index (prepareGeometryChange()).
-    // shape() already uses a fixed hit-area independent of pen width, so unlike Connection
-    // there's no hit-testing reason to ever fall back to the item's real pen either.
+    // four status pens share the same implicit default width, so the value never actually
+    // changes and the real setPen() would only pay for an unneeded BSP-tree re-index
+    // (prepareGeometryChange()). shape() already uses a fixed hit-area independent of pen
+    // width, so unlike Connection there's no hit-testing reason to ever fall back to the
+    // item's real pen either.
     switch (m_status) {
-    case Status::Unknown: {
-        m_currentPen = theme.m_portUnknownPen;
-        setCurrentBrush(theme.m_portUnknownBrush);
-        break;
-    }
-    case Status::Inactive: {
-        m_currentPen = theme.m_portInactivePen;
-        setCurrentBrush(theme.m_portInactiveBrush);
-        break;
-    }
-    case Status::Active: {
-        m_currentPen = theme.m_portActivePen;
-        setCurrentBrush(theme.m_portActiveBrush);
-        break;
-    }
-    case Status::Error: {
-        m_currentPen = theme.m_portErrorPen;
-        setCurrentBrush(theme.m_portErrorBrush);
-        break;
-    }
+    case Status::Unknown:  m_currentPen = m_unknownStatusPen;  setCurrentBrush(m_unknownStatusBrush);  break;
+    case Status::Inactive: m_currentPen = m_inactiveStatusPen; setCurrentBrush(m_inactiveStatusBrush); break;
+    case Status::Active:   m_currentPen = m_activeStatusPen;   setCurrentBrush(m_activeStatusBrush);   break;
+    case Status::Error:    m_currentPen = m_errorStatusPen;    setCurrentBrush(m_errorStatusBrush);    break;
     }
 
     update();
@@ -267,17 +281,14 @@ void Port::drainConnections(bool isInput)
         } else {
             conn->setStartPort(nullptr);
         }
-        // No Scene::removeItem call needed: ItemWithId self-unregisters from its
-        // SceneItemRegistry in its own destructor, on any destruction path -- including
-        // this one, where Qt's ~QGraphicsItem cascade dispatches to the non-virtual
-        // QGraphicsScene::removeItem and would otherwise skip our override, leaving a
-        // stale itemById entry pointing at freed memory (the WIREDPANDA-HC family).
+        // No registry-removal call needed here: ItemWithId self-unregisters from its
+        // SceneItemRegistry in its own destructor, reached normally by this plain delete.
         delete conn;
     }
 }
 
-InputPort::InputPort(QGraphicsItem *parent)
-    : Port(parent)
+InputPort::InputPort()
+    : Port()
 {
     // Circle: neutral connection point — the signal terminates here
     QPainterPath path;
@@ -313,9 +324,19 @@ void InputPort::setStatus(const Status status)
     // If the port is invalid due to multiple drivers (bus conflict), emit Error so the
     // user sees a clear red signal instead of a silent gray Unknown.
     // Required-but-unconnected ports also become Error to make missing connections visible.
+    const Status oldStatus = m_status;
     m_status = InputPort::isValid() ? status : Status::Error;
 
-    updateTheme();
+    // Compares the *final* value, not just the requested one: isValid()'s Error override above
+    // can leave m_status unchanged even past the guard (e.g. status was already Error and stays
+    // Error) -- only mark the owning element render-dirty on a real change.
+    if (m_status != oldStatus) {
+        if (auto *element = graphicElement()) {
+            element->markRenderDirty();
+        }
+    }
+
+    applyStatusStyle();
 }
 
 bool InputPort::isInput() const
@@ -335,8 +356,8 @@ bool InputPort::isValid() const
     return m_connections.isEmpty() ? !isRequired() : (m_connections.size() == 1);
 }
 
-OutputPort::OutputPort(QGraphicsItem *parent)
-    : Port(parent)
+OutputPort::OutputPort()
+    : Port()
 {
     // Right-pointing triangle: tip toward the wire, indicating signal flows outward
     QPainterPath path;
@@ -365,7 +386,10 @@ void OutputPort::setStatus(const Status status)
     }
 
     m_status = status;
-    updateTheme();
+    if (auto *element = graphicElement()) {
+        element->markRenderDirty();
+    }
+    applyStatusStyle();
 
     // Fan-out: broadcast the new signal status to every wire leaving this output port;
     // each wire in turn propagates it to the input port at its far end

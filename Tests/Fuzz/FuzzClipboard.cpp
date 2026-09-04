@@ -7,17 +7,17 @@
  * Three phases:
  *
  *   1. BlobRegistry / BlobRegistryV2 MIME slot deserialization.
- *   2. WorkSpace::load from the clipboard panda stream.
- *   3. Clipboard round-trip: load workspace from fuzz bytes, select all
- *      elements, call ClipboardManager::copy() (serializes to clipboard),
- *      then ClipboardManager::paste() (deserializes back) — exercises the
- *      full clipboard serialize/deserialize path including IC blob collection.
+ *   2. QuickWorkSpace::load() from the clipboard panda stream.
+ *   3. Clipboard round-trip: load a workspace from fuzz bytes, select all
+ *      elements, call CanvasItem::copyAction() (serializes to clipboard),
+ *      then pasteAction() (deserializes back) — exercises the full clipboard
+ *      serialize/deserialize path including IC blob collection.
  */
 
 #include <cstddef>
 #include <cstdint>
 
-#include <QApplication>
+#include <QGuiApplication>
 #include <QByteArray>
 #include <QClipboard>
 #include <QCoreApplication>
@@ -34,13 +34,12 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
 #include "App/IO/Serialization.h"
-#include "App/Scene/ClipboardManager.h"
-#include "App/Scene/Scene.h"
-#include "App/Scene/Workspace.h"
+#include "App/QuickShell/Canvas/CanvasItem.h"
+#include "App/QuickShell/Chrome/QuickWorkSpace.h"
 
 namespace {
 
-QApplication *g_app  = nullptr;
+QGuiApplication *g_app  = nullptr;
 int  g_argc = 0;
 char **g_argv = nullptr;
 
@@ -63,14 +62,14 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
 
     g_argc = *argc;
     g_argv = *argv;
-    g_app  = new QApplication(g_argc, g_argv);
+    g_app  = new QGuiApplication(g_argc, g_argv);
 
     // Build a minimal IC blob (InputSwitch + Led) for the registry entry.
     {
         auto *sw  = ElementFactory::buildElement(ElementType::InputSwitch);
         auto *led = ElementFactory::buildElement(ElementType::Led);
         sw->setId(1);  led->setId(2);
-        QList<QGraphicsItem *> items;
+        QList<ItemWithId *> items;
         items.append(sw);  items.append(led);
 
         QByteArray icBlob;
@@ -154,7 +153,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
             return 0;
         }
 
-        WorkSpace workspace;
+        QuickWorkSpace workspace;
         try {
             workspace.load(stream, version, /*contextDir=*/QString());
         } catch (...) {}
@@ -174,29 +173,27 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
             return 0;
         }
 
-        WorkSpace ws2;
+        QuickWorkSpace ws2;
         try {
             ws2.load(stream2, ver2, /*contextDir=*/QString());
         } catch (...) {
             return 0;
         }
 
-        // Select all loaded elements so copy() has something to serialize.
-        ws2.scene()->selectAll();
+        // Select all loaded elements so copyAction() has something to serialize.
+        ws2.canvas()->selectAll();
 
-        // copy() → serialize selected items + collect IC blobs to clipboard.
-        // paste() → deserialize the clipboard panda stream back into a scene.
-        ClipboardManager cm(ws2.scene());
+        // copyAction() → serialize selected items + collect IC blobs to clipboard.
+        // pasteAction() → deserialize the clipboard panda stream back into the canvas.
+        // Both live directly on CanvasItem (no separate ClipboardManager on this side).
+        try { ws2.canvas()->copyAction(); } catch (...) {}
+        try { ws2.canvas()->pasteAction(); } catch (...) {}
 
-        // copy(): serializes selected items + IC blobs to clipboard (non-destructive).
-        try { cm.copy(); } catch (...) {}
-        try { cm.paste(); } catch (...) {}
-
-        // cut(): serializes + DELETES selected items — distinct from copy() because
-        // it calls serializeAndDelete which removes elements from the scene.
-        // Re-select all first (paste() may have changed selection state).
-        ws2.scene()->selectAll();
-        try { cm.cut(); } catch (...) {}
+        // cutAction(): serializes + DELETES selected items — distinct from copyAction()
+        // because it also removes the elements from the canvas. Re-select all first
+        // (pasteAction() may have changed selection state).
+        ws2.canvas()->selectAll();
+        try { ws2.canvas()->cutAction(); } catch (...) {}
     }
 
     return 0;

@@ -15,7 +15,6 @@
 #include "App/Element/GraphicElement.h"
 #include "App/IO/SerializationContext.h"
 
-class QGraphicsSceneHoverEvent;
 class Connection;
 
 /**
@@ -45,7 +44,7 @@ class IC : public GraphicElement
 
 public:
     /// Constructs an IC element without loading a file.
-    explicit IC(QGraphicsItem *parent = nullptr);
+    explicit IC(QObject *parent = nullptr);
 
     ~IC() override;
 
@@ -125,7 +124,7 @@ public:
     /// \reimp
     QRectF boundingRect() const override;
     /// \reimp
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+    void paint(QPainter *painter) override;
     /// \reimp
     void refresh() override;
 
@@ -145,17 +144,21 @@ protected:
     // --- Event handlers ---
 
     /// \reimp Opens the IC sub-circuit for editing on double-click.
-    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
+    void handleDoubleClick() override;
 
-    /// \reimp Schedules a floating preview of the internal circuit after a short hover delay.
-    void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
+public:
+    /// Schedules a floating preview of the internal circuit after a short hover delay.
+    /// \a localPos is in this IC's own local coordinates, \a screenPos in global screen
+    /// coordinates -- called by a rendering/interaction host once it detects the cursor
+    /// entering this element's hit area.
+    void handleHoverEnter(const QPointF &localPos, const QPoint &screenPos);
 
-    /// \reimp Updates the pending preview position so the popup appears near
-    /// the current cursor when the show delay elapses, not at the entry point.
-    void hoverMoveEvent(QGraphicsSceneHoverEvent *event) override;
+    /// Updates the pending preview position so the popup appears near the current cursor
+    /// when the show delay elapses, not at the entry point.
+    void handleHoverMove(const QPointF &localPos, const QPoint &screenPos);
 
-    /// \reimp Dismisses the floating preview with a short delay.
-    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
+    /// Dismisses the floating preview with a short delay.
+    void handleHoverLeave();
 
 private:
     Q_DISABLE_COPY_MOVE(IC)

@@ -3,7 +3,6 @@
 
 #include "App/Element/GraphicElements/TruthTable.h"
 
-#include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QSvgRenderer>
 
@@ -68,7 +67,7 @@ static_assert(kTruthTableKeyBits == 2048,
 
 } // namespace
 
-TruthTable::TruthTable(QGraphicsItem *parent)
+TruthTable::TruthTable(QObject *parent)
     : GraphicElement(ElementType::TruthTable, parent)
 {
     // Laid out as [out0_row0..out0_rowN, out1_row0..out1_rowN, ...].
@@ -94,12 +93,6 @@ void TruthTable::updatePortsProperties()
 
         for (auto *port : inputs()) {
 
-            // Unreachable: rotatesGraphic() reads from this type's compile-time metadata,
-            // which TruthTable's ElementInfo never overrides away from the default (true).
-            if (!rotatesGraphic()) { // LCOV_EXCL_LINE
-                port->setRotation(0); // LCOV_EXCL_LINE
-            } // LCOV_EXCL_LINE
-
             port->setPos(0, y);
 
             y += step * 2;
@@ -117,11 +110,6 @@ void TruthTable::updatePortsProperties()
         int y = 32 - (static_cast<int>(outputs().size()) * step) + step;
 
         for (auto *port : outputs()) {
-
-            // Unreachable for the same reason as the input-port loop above.
-            if (!rotatesGraphic()) { // LCOV_EXCL_LINE
-                port->setRotation(0); // LCOV_EXCL_LINE
-            } // LCOV_EXCL_LINE
 
             port->setPos(64, y);
 
@@ -207,11 +195,8 @@ void TruthTable::drawBody(QPainter *painter)
     painter->restore();
 }
 
-void TruthTable::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void TruthTable::paint(QPainter *painter)
 {
-    Q_UNUSED(widget)
-    Q_UNUSED(option)
-
     if (isSelected()) {
         painter->save();
         painter->setBrush(m_appearance.selectionBrush());
@@ -225,9 +210,8 @@ void TruthTable::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
     drawBody(painter);
 }
 
-void TruthTable::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
+void TruthTable::handleDoubleClick()
 {
-    event->accept();
     emit requestOpenTruthTableEditor();
 }
 

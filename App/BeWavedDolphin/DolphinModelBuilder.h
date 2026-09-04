@@ -12,7 +12,6 @@
 
 class GraphicElement;
 class GraphicElementInput;
-class Scene;
 
 /**
  * \namespace DolphinModelBuilder
@@ -58,9 +57,11 @@ struct Signals {
     QVector<Row> rows;
 };
 
-/// Gathers \a scene's input/output elements, stable-sorts them by label, validates the
-/// circuit, and builds the per-port row labels. Throws (Pandaception) on an empty circuit
-/// or one missing inputs or outputs.
-Signals collect(Scene *scene);
+/// Gathers \a elements' (a circuit's full element list -- Scene::elements()/CanvasItem::
+/// elements()) input/output elements, stable-sorts them by label, validates the circuit, and
+/// builds the per-port row labels. Throws (Pandaception) on an empty circuit or one missing
+/// inputs or outputs. Takes the element list directly, not a Scene*, so this works unmodified
+/// for both apps -- the only thing this ever needed from a Scene was elements().
+Signals collect(const QVector<GraphicElement *> &elements);
 
 } // namespace DolphinModelBuilder

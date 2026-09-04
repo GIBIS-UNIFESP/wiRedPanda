@@ -43,7 +43,7 @@ struct ElementInfo<Mux> {
     }();
 };
 
-Mux::Mux(QGraphicsItem *parent)
+Mux::Mux(QObject *parent)
     : GraphicElement(ElementType::Mux, parent)
 {
     Mux::updatePortsProperties();
@@ -144,11 +144,8 @@ void Mux::drawBody(QPainter *painter)
     painter->restore();
 }
 
-void Mux::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void Mux::paint(QPainter *painter)
 {
-    Q_UNUSED(widget)
-    Q_UNUSED(option)
-
     if (isSelected()) {
         painter->save();
         painter->setBrush(m_appearance.selectionBrush());

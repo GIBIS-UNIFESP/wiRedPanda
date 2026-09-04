@@ -24,7 +24,7 @@ public:
     // --- Lifecycle ---
 
     /// Constructs the element with optional \a parent.
-    explicit TruthTable(QGraphicsItem *parent = nullptr);
+    explicit TruthTable(QObject *parent = nullptr);
 
     // --- Key Access ---
 
@@ -38,12 +38,12 @@ public:
     /// \reimp
     QRectF boundingRect() const override;
     /// \reimp
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+    void paint(QPainter *painter) override;
     /// Forces a repaint of the element.
     void update();
 
     /// \reimp — opens the truth table editor on double-click.
-    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
+    void handleDoubleClick() override;
 
 signals:
     /// Emitted on double-click to request opening the truth table editor.

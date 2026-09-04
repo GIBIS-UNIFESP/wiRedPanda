@@ -7,11 +7,11 @@
 
 #pragma once
 
+#include <functional>
+
 #include <QColor>
 #include <QObject>
 #include <QPalette>
-
-#include "App/Core/Application.h"
 
 /// Enumeration of available application themes.
 enum class Theme { Light, Dark, System };
@@ -45,6 +45,13 @@ public:
     // --- Members: Label Colors ---
 
     QColor m_graphicElementLabelColor;
+
+    // --- Members: Minimap Colors ---
+
+    /// Flat fill color for CanvasItem::paintElementsSimplifiedInto()'s per-element rects -- the
+    /// large-circuit minimap thumbnail fallback that skips each element's real appearance/label
+    /// (see that method's own doc comment for why).
+    QColor m_minimapElementBrush;
 
     // --- Members: Connection Colors ---
 
@@ -115,6 +122,14 @@ public:
     /// Returns the effective theme (Light or Dark), resolving System to the OS preference.
     static Theme effectiveTheme();
 
+    /// Hook a Widgets-only host uses to apply a QApplication-level QPalette/style sheet
+    /// whenever the effective theme changes -- this class has no notion of QApplication/
+    /// QPalette-as-applied-state itself (ThemeAttributes only holds resolved *color values*,
+    /// consumed directly by the domain-layer paint() methods). Defaults to a no-op, so a
+    /// non-Widgets host (or a unit test) simply doesn't get any app-wide styling applied.
+    using WidgetsStylingApplier = std::function<void(Theme effectiveTheme)>;
+    static void setWidgetsStylingApplier(WidgetsStylingApplier applier);
+
 signals:
     // --- Signals ---
 
@@ -137,4 +152,6 @@ private:
 
     Theme m_theme = Theme::System;
     ThemeAttributes m_attributes;
+
+    static WidgetsStylingApplier s_widgetsStylingApplier;
 };

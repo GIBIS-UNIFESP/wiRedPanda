@@ -19,7 +19,7 @@
 #include "App/Element/IC.h"
 
 class GraphicElement;
-class QGraphicsItem;
+class ItemWithId;
 
 /**
  * \class ICLoader
@@ -50,7 +50,7 @@ public:
 private:
     static void loadFileDirectly(IC &ic, const QFileInfo &fileInfo);
     /// Re-saves \a fileInfo in the current format. Pure: touches only its parameters, no IC state.
-    static void migrateFile(const QFileInfo &fileInfo, const QList<QGraphicsItem *> &items,
+    static void migrateFile(const QFileInfo &fileInfo, const QList<ItemWithId *> &items,
                              const QVersionNumber &version, const QMap<QString, QByteArray> &fileRegistry);
     static void deserializeAndLoad(IC &ic, const QByteArray &bytes, const QString &contextDir);
 
@@ -58,7 +58,7 @@ private:
     /// deleting boundary Input/Output elements after their ports are proxied. Removes
     /// each pointer from \a items as ownership transfers so the caller's qScopeGuard
     /// only deletes still-owned items on throw (no double-free).
-    static void processLoadedItems(IC &ic, QList<QGraphicsItem *> &items);
+    static void processLoadedItems(IC &ic, QList<ItemWithId *> &items);
     static void loadBoundaryElement(IC &ic, GraphicElement *elm, bool isInput);
     static void loadBoundaryPorts(IC &ic, bool isInput, const QVector<QString> &labels);
 };

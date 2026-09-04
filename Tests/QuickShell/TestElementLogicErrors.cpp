@@ -1,0 +1,380 @@
+// Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+#include "Tests/QuickShell/TestElementLogicErrors.h"
+
+#include <QtTest>
+
+#include "App/Element/GraphicElements/And.h"
+#include "App/Element/GraphicElements/DFlipFlop.h"
+#include "App/Element/GraphicElements/InputVCC.h"
+#include "App/Element/GraphicElements/Nor.h"
+#include "App/Element/GraphicElements/Not.h"
+#include "App/Element/GraphicElements/Or.h"
+#include "App/Element/GraphicElements/Xnor.h"
+#include "Tests/QuickShell/IC/QuickTestUtils.h"
+
+using QuickTestUtils::initSrc;
+using QuickTestUtils::initElm;
+
+// ============================================================
+// Robustness Tests — Error Conditions and Boundary Behavior
+// ============================================================
+
+void TestElementLogicErrors::testNullPredecessor()
+{
+    And andGate;
+    InputVcc input;
+    initElm(andGate); initSrc(input);
+    andGate.connectPredecessor(0, &input, 0);
+
+    input.setOutputValue(true);
+    andGate.updateLogic();
+    QCOMPARE(andGate.outputValue(), Status::Unknown);
+
+    input.setOutputValue(false);
+    andGate.updateLogic();
+    QCOMPARE(andGate.outputValue(), Status::Unknown);
+
+    Or orGate;
+    initElm(orGate);
+    orGate.connectPredecessor(0, &input, 0);
+
+    input.setOutputValue(true);
+    orGate.updateLogic();
+    QCOMPARE(orGate.outputValue(), Status::Unknown);
+
+    input.setOutputValue(false);
+    orGate.updateLogic();
+    QCOMPARE(orGate.outputValue(), Status::Unknown);
+}
+
+void TestElementLogicErrors::testDisconnectedInput()
+{
+    And andGate;
+    initElm(andGate);
+    andGate.updateLogic();
+    QCOMPARE(andGate.outputValue(), Status::Unknown);
+
+    Or orGate;
+    initElm(orGate);
+    orGate.updateLogic();
+    QCOMPARE(orGate.outputValue(), Status::Unknown);
+
+    Not notGate;
+    initElm(notGate);
+    notGate.updateLogic();
+    QCOMPARE(notGate.outputValue(), Status::Unknown);
+
+    Nor norGate;
+    initElm(norGate);
+    norGate.updateLogic();
+    QCOMPARE(norGate.outputValue(), Status::Unknown);
+
+    Xnor xnorGate;
+    initElm(xnorGate);
+    xnorGate.updateLogic();
+    QCOMPARE(xnorGate.outputValue(), Status::Unknown);
+}
+
+void TestElementLogicErrors::testMultipleConnectionsSamePort()
+{
+    And gate;
+    InputVcc first, second, other;
+    initElm(gate); initSrc(first); initSrc(second); initSrc(other);
+
+    gate.connectPredecessor(0, &first, 0);
+    gate.connectPredecessor(1, &other, 0);
+    gate.connectPredecessor(0, &second, 0);  // overwrites port 0
+
+    first.setOutputValue(true);
+    second.setOutputValue(false);
+    other.setOutputValue(true);
+
+    gate.updateLogic();
+    QCOMPARE(gate.outputValue(), Status::Inactive);
+
+    second.setOutputValue(true);
+    gate.updateLogic();
+    QCOMPARE(gate.outputValue(), Status::Active);
+
+    first.setOutputValue(false);
+    gate.updateLogic();
+    QCOMPARE(gate.outputValue(), Status::Active);
+}
+
+void TestElementLogicErrors::testRapidStateChanges()
+{
+    And andGate;
+    InputVcc input1, input2;
+    initElm(andGate); initSrc(input1); initSrc(input2);
+
+    andGate.connectPredecessor(0, &input1, 0);
+    andGate.connectPredecessor(1, &input2, 0);
+
+    for (int i = 0; i < 1000; ++i) {
+        input1.setOutputValue(i % 2 == 0);
+        input2.setOutputValue(i % 3 == 0);
+        andGate.updateLogic();
+        bool expected = (i % 2 == 0) && (i % 3 == 0);
+        QCOMPARE(andGate.outputValue(), expected ? Status::Active : Status::Inactive);
+    }
+}
+
+void TestElementLogicErrors::testUnconnectedGate()
+{
+    And gate;
+    initElm(gate);
+    gate.updateLogic();
+    QCOMPARE(gate.outputValue(), Status::Unknown);
+
+    Not notGate;
+    initElm(notGate);
+    notGate.updateLogic();
+    QCOMPARE(notGate.outputValue(), Status::Unknown);
+}
+
+void TestElementLogicErrors::testDeepCascading()
+{
+    InputVcc in1, in2, in3, in4;
+    And stage1, stage2, stage3;
+    initSrc(in1); initSrc(in2); initSrc(in3); initSrc(in4);
+    initElm(stage1); initElm(stage2); initElm(stage3);
+
+    stage1.connectPredecessor(0, &in1, 0);
+    stage1.connectPredecessor(1, &in2, 0);
+    stage2.connectPredecessor(0, &stage1, 0);
+    stage2.connectPredecessor(1, &in3, 0);
+    stage3.connectPredecessor(0, &stage2, 0);
+    stage3.connectPredecessor(1, &in4, 0);
+
+    in1.setOutputValue(true);
+    in2.setOutputValue(true);
+    in3.setOutputValue(true);
+    in4.setOutputValue(true);
+    stage1.updateLogic();
+    stage2.updateLogic();
+    stage3.updateLogic();
+    QCOMPARE(stage3.outputValue(), Status::Active);
+
+    in1.setOutputValue(false);
+    stage1.updateLogic();
+    stage2.updateLogic();
+    stage3.updateLogic();
+    QCOMPARE(stage1.outputValue(), Status::Inactive);
+    QCOMPARE(stage2.outputValue(), Status::Inactive);
+    QCOMPARE(stage3.outputValue(), Status::Inactive);
+
+    in1.setOutputValue(true);
+    in3.setOutputValue(false);
+    stage1.updateLogic();
+    stage2.updateLogic();
+    stage3.updateLogic();
+    QCOMPARE(stage1.outputValue(), Status::Active);
+    QCOMPARE(stage2.outputValue(), Status::Inactive);
+    QCOMPARE(stage3.outputValue(), Status::Inactive);
+}
+
+void TestElementLogicErrors::testInvalidOutputPortIndex()
+{
+    And andGate;
+    Or orGate;
+    orGate.setInputSize(3);
+    Not notGate;
+    initElm(andGate); initElm(orGate); initElm(notGate);
+
+    QCOMPARE(andGate.simOutputSize(), 1);
+    QCOMPARE(orGate.simOutputSize(), 1);
+    QCOMPARE(notGate.simOutputSize(), 1);
+
+    QCOMPARE(andGate.outputValue(0), Status::Inactive);
+    QCOMPARE(orGate.outputValue(0), Status::Inactive);
+    QCOMPARE(notGate.outputValue(0), Status::Inactive);
+
+    // Multi-output source
+    InputVcc input;
+    input.initSimulationVectors(0, 4);
+    input.setOutputValue(0, Status::Active);
+    QCOMPARE(input.simOutputSize(), 4);
+    QCOMPARE(input.outputValue(0), Status::Active);
+    QCOMPARE(input.outputValue(3), Status::Inactive);
+
+    input.setOutputValue(1, true);
+    input.setOutputValue(3, true);
+    QCOMPARE(input.outputValue(0), Status::Active);
+    QCOMPARE(input.outputValue(1), Status::Active);
+    QCOMPARE(input.outputValue(2), Status::Inactive);
+    QCOMPARE(input.outputValue(3), Status::Active);
+}
+
+void TestElementLogicErrors::testSelfLoopOscillation()
+{
+    Not notGate;
+    initElm(notGate);
+    notGate.connectPredecessor(0, &notGate, 0);
+
+    QCOMPARE(notGate.outputValue(), Status::Inactive);
+
+    notGate.updateLogic();
+    QCOMPARE(notGate.outputValue(), Status::Active);
+
+    notGate.updateLogic();
+    QCOMPARE(notGate.outputValue(), Status::Inactive);
+
+    notGate.updateLogic();
+    QCOMPARE(notGate.outputValue(), Status::Active);
+}
+
+void TestElementLogicErrors::testGateWithZeroInputs()
+{
+    And andGate;
+    andGate.setInputSize(0);
+    andGate.initSimulationVectors(0, 1);
+    andGate.updateLogic();
+    QCOMPARE(andGate.outputValue(), Status::Active);
+
+    Or orGate;
+    orGate.setInputSize(0);
+    orGate.initSimulationVectors(0, 1);
+    orGate.updateLogic();
+    QCOMPARE(orGate.outputValue(), Status::Inactive);
+}
+
+void TestElementLogicErrors::testConnectPredecessorOutOfBoundsIsNoOp()
+{
+    And andGate; // 2 inputs
+    initElm(andGate);
+
+    // An index past the connection vector must be silently ignored, not crash.
+    InputVcc input;
+    initSrc(input);
+    andGate.connectPredecessor(5, &input, 0);
+
+    // The real (in-bounds) inputs are unaffected: both still read as unconnected (Unknown).
+    andGate.updateLogic();
+    QCOMPARE(andGate.outputValue(), Status::Unknown);
+}
+
+void TestElementLogicErrors::testResetSimStateWithMoreSimOutputsThanPorts()
+{
+    // ElementSimState::reset()'s per-slot default lookup indexes outputPorts (the element's
+    // real output ports) but iterates m_outputs (the simulation-vector size set by
+    // initSimulationVectors()) -- these can momentarily disagree (setOutputSize() alone
+    // doesn't resync simulation vectors; only initSimulationVectors() does, normally called
+    // by Simulation::initialize()). Inflate m_outputs past the real port count directly to
+    // exercise the "no matching real port" fallback deterministically.
+    And andGate;
+    initElm(andGate);
+    andGate.initSimulationVectors(andGate.inputSize(), andGate.outputSize() + 2);
+    QCOMPARE(andGate.simOutputSize(), 3);
+
+    andGate.resetSimState();
+
+    // Slot 0 has a real port to read a default from; slots 1-2 don't and fall back to Inactive.
+    QCOMPARE(andGate.outputValue(0), Status::Inactive);
+    QCOMPARE(andGate.outputValue(1), Status::Inactive);
+    QCOMPARE(andGate.outputValue(2), Status::Inactive);
+}
+
+void TestElementLogicErrors::testInvalidPropagatesChain()
+{
+    And andGate;
+    Not notGate;
+    InputVcc input;
+    initElm(andGate); initElm(notGate); initSrc(input);
+
+    andGate.connectPredecessor(0, &input, 0);
+    // port 1 is left null → AND will produce Unknown
+    notGate.connectPredecessor(0, &andGate, 0);
+
+    input.setOutputValue(true);
+    andGate.updateLogic();
+    QCOMPARE(andGate.outputValue(), Status::Unknown);
+
+    notGate.updateLogic();
+    QCOMPARE(notGate.outputValue(), Status::Unknown);
+
+    input.setOutputValue(false);
+    andGate.updateLogic();
+    QCOMPARE(andGate.outputValue(), Status::Unknown);
+
+    notGate.updateLogic();
+    QCOMPARE(notGate.outputValue(), Status::Unknown);
+}
+
+void TestElementLogicErrors::testBoolOverloadMapsToStatus()
+{
+    InputVcc src;
+    src.initSimulationVectors(0, 2);
+
+    src.setOutputValue(true);
+    QCOMPARE(src.outputValue(0), Status::Active);
+
+    src.setOutputValue(false);
+    QCOMPARE(src.outputValue(0), Status::Inactive);
+
+    src.setOutputValue(1, true);
+    QCOMPARE(src.outputValue(1), Status::Active);
+
+    src.setOutputValue(1, false);
+    QCOMPARE(src.outputValue(1), Status::Inactive);
+
+    QVERIFY(src.outputValue(0) != Status::Unknown);
+    QVERIFY(src.outputValue(1) != Status::Unknown);
+}
+
+void TestElementLogicErrors::testFlipFlopNoSpuriousEdgeAfterInvalidInputs()
+{
+    // Regression test (F12): when simUpdateInputs() failed, the flip-flops
+    // kept m_simLastClk from before the invalid period. If the clock rose
+    // *while* inputs were invalid, recovery saw clk=Active with a stale
+    // lastClk=Inactive and fabricated a rising edge, latching stale data.
+    DFlipFlop dff;
+    InputVcc d, clk, prst, clr;
+    initElm(dff);
+    initSrc(d);
+    initSrc(clk);
+    initSrc(prst);
+    initSrc(clr);
+    dff.connectPredecessor(0, &d, 0);    // Data
+    dff.connectPredecessor(1, &clk, 0);  // Clock
+    dff.connectPredecessor(2, &prst, 0); // ~Preset (active low)
+    dff.connectPredecessor(3, &clr, 0);  // ~Clear  (active low)
+    prst.setOutputValue(true);
+    clr.setOutputValue(true);
+
+    // Latch Q=1 with a genuine rising edge (D is sampled from the previous tick).
+    d.setOutputValue(true);
+    clk.setOutputValue(false);
+    dff.updateLogic();
+    clk.setOutputValue(true);
+    dff.updateLogic();
+    QCOMPARE(dff.outputValue(0), Status::Active);
+
+    // Park the clock low with D=0.
+    clk.setOutputValue(false);
+    d.setOutputValue(false);
+    dff.updateLogic();
+
+    // Inputs go invalid, and the clock rises during the invalid period.
+    // (Outputs are clobbered to Unknown by design while inputs are invalid.)
+    d.setOutputValue(Status::Unknown);
+    dff.updateLogic();
+    clk.setOutputValue(true);
+    dff.updateLogic();
+
+    // Recovery with the clock already high: no edge was observed, so the
+    // output stays honestly Unknown. The old code fabricated a rising edge
+    // here (stale lastClk=Inactive) and latched the stale data as a definite
+    // — and wrong — Inactive.
+    d.setOutputValue(false);
+    dff.updateLogic();
+    QCOMPARE(dff.outputValue(0), Status::Unknown);
+
+    // A genuine edge afterwards latches the current data again.
+    clk.setOutputValue(false);
+    dff.updateLogic();
+    clk.setOutputValue(true);
+    dff.updateLogic();
+    QCOMPARE(dff.outputValue(0), Status::Inactive);
+}

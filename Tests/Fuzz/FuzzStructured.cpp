@@ -23,7 +23,7 @@
 #include <cstdint>
 #include <fuzzer/FuzzedDataProvider.h>
 
-#include <QApplication>
+#include <QGuiApplication>
 #include <QBitArray>
 #include <QByteArray>
 #include <QCoreApplication>
@@ -46,15 +46,16 @@
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/VersionInfo.h"
-#include "App/Scene/Scene.h"
-#include "App/Scene/Workspace.h"
+#include "App/QuickShell/Canvas/CanvasItem.h"
+#include "App/QuickShell/Chrome/QuickWorkSpace.h"
+#include "App/Wiring/Connection.h"
 #include "App/Simulation/Simulation.h"
 #include "App/Simulation/SimulationThrottleDisabler.h"
 #include "App/Versions.h"
 
 namespace {
 
-QApplication *g_app  = nullptr;
+QGuiApplication *g_app  = nullptr;
 int  g_argc = 0;
 char **g_argv = nullptr;
 
@@ -366,7 +367,7 @@ QByteArray buildPanda(FuzzedDataProvider &fdp)
 
     const int elemCount = fdp.ConsumeIntegralInRange<int>(0, 8);
     for (int e = 0; e < elemCount; ++e) {
-        s << static_cast<int>(QGraphicsItem::UserType + 3); // GraphicElement::Type
+        s << static_cast<int>(GraphicElement::Type);
 
         const auto etype = kElementTypes[
             fdp.ConsumeIntegralInRange<size_t>(0, std::size(kElementTypes) - 1)];
@@ -383,7 +384,7 @@ QByteArray buildPanda(FuzzedDataProvider &fdp)
     // Valid connections exercise setStartPort/setEndPort and updatePosFromPorts.
     const int connCount = fdp.ConsumeIntegralInRange<int>(0, 4);
     for (int c = 0; c < connCount; ++c) {
-        s << static_cast<int>(QGraphicsItem::UserType + 2); // Connection::Type
+        s << static_cast<int>(Connection::Type);
 
         // Prefer valid port IDs when available; fall back to fuzz-controlled.
         const bool useValidIds = fdp.ConsumeBool()
@@ -426,7 +427,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
 
     g_argc = *argc;
     g_argv = *argv;
-    g_app  = new QApplication(g_argc, g_argv);
+    g_app  = new QGuiApplication(g_argc, g_argv);
 
     // Build a valid IC blob using actual elements so IC::loadBoundaryElement is
     // exercised when FuzzStructured generates IC elements.  ElementFactory works
@@ -441,7 +442,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
         sw->setId(1);
         led->setId(2);
 
-        QList<QGraphicsItem *> items;
+        QList<ItemWithId *> items;
         items.append(sw);
         items.append(led);
 
@@ -487,7 +488,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
         auto *ic = static_cast<IC *>(ElementFactory::buildElement(ElementType::IC));
         ic->setId(1);
         ic->setBlobName("fuzz_ic.panda");
-        QList<QGraphicsItem *> icList;
+        QList<ItemWithId *> icList;
         icList.append(ic);
         Serialization::serialize(icList, ns, {.purpose = SerializationPurpose::PortableFile});
         qDeleteAll(icList);
@@ -540,7 +541,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
         return 0;
     }
 
-    WorkSpace workspace;
+    QuickWorkSpace workspace;
     try {
         workspace.load(stream, version, QString());
     } catch (...) {}
@@ -553,7 +554,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
     // 67–73) runs on the next update().  A manual update() call is used instead
     // of waiting for the real timer (which would require QEventLoop processing
     // and unpredictable tick counts).  stop() then halts the timer.
-    auto *sim = workspace.scene()->simulation();
+    auto *sim = workspace.canvas()->simulation();
     sim->start();   // exercises Simulation::start(), makes m_timer.isActive() true
     sim->update();  // exercises clock-update branch + full simulation loop
     sim->stop();    // exercises Simulation::stop()

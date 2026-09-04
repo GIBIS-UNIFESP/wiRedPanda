@@ -24,7 +24,7 @@ public:
     // --- Lifecycle ---
 
     /// Constructs the element with optional \a parent.
-    explicit DLatch(QGraphicsItem *parent = nullptr);
+    explicit DLatch(QObject *parent = nullptr);
 
     // --- Visual ---
 

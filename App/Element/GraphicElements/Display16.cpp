@@ -65,7 +65,7 @@ struct ElementInfo<Display16> {
     }();
 };
 
-Display16::Display16(QGraphicsItem *parent)
+Display16::Display16(QObject *parent)
     : GraphicElement(ElementType::Display16, parent)
 {
     a1 = Display7::cachedSegmentRenderers(m_appearance.defaultAppearances().at(1));
@@ -129,11 +129,11 @@ void Display16::updatePortsProperties()
     rotatePorts();
 }
 
-void Display16::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void Display16::paint(QPainter *painter)
 {
     // Base class draws the off-state background; active segments are overlaid as vector
     // renders on top, crisp at any zoom.
-    GraphicElement::paint(painter, option, widget);
+    GraphicElement::paint(painter);
 
     const QRectF body(0, 0, 64, 64);
     if (inputPort( 0)->status() == Status::Active) { g1.at(m_colorNumber)->render(painter, body); }

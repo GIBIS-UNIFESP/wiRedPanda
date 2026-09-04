@@ -43,7 +43,7 @@ public:
     // --- Lifecycle ---
 
     /// Constructs the element with optional \a parent.
-    explicit Clock(QGraphicsItem *parent = nullptr);
+    explicit Clock(QObject *parent = nullptr);
 
     // --- State Queries ---
 
@@ -84,6 +84,13 @@ public:
     void shiftClock(std::chrono::steady_clock::duration pause);
     /// Advances the clock state based on elapsed time since \a globalTime.
     void updateClock(std::chrono::steady_clock::time_point globalTime);
+    /// Returns the wall-clock instant this clock will next need updateClock() to run (one
+    /// half-period past its last edge), or time_point::max() while locked -- lets Simulation
+    /// schedule its timer to fire exactly then instead of polling at a fixed interval.
+    [[nodiscard]] std::chrono::steady_clock::time_point nextDeadline() const
+    {
+        return isLocked() ? std::chrono::steady_clock::time_point::max() : m_startTime + m_interval;
+    }
 
     // --- Visual ---
 

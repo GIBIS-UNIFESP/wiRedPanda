@@ -21,5 +21,5 @@ class Line : public GraphicElement
 
 public:
     /// Constructs a Line element.
-    explicit Line(QGraphicsItem *parent = nullptr);
+    explicit Line(QObject *parent = nullptr);
 };

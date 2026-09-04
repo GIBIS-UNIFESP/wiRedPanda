@@ -163,7 +163,7 @@ jobs:
       if: runner.os == 'Linux'
       timeout-minutes: 10
       run: |
-        ctest --preset sentry-crashpad -V -LE gui
+        ctest --preset sentry-crashpad -V
 
     - name: go-appimage
       if: runner.os == 'Linux'
@@ -509,7 +509,7 @@ jobs:
       if: runner.os == 'Windows'
       timeout-minutes: 10
       run: |
-        ctest --preset sentry-crashpad -V -LE gui
+        ctest --preset sentry-crashpad -V
 
     - name: windeployqt
       if: runner.os == 'Windows'
@@ -712,7 +712,7 @@ jobs:
       if: runner.os == 'macOS'
       timeout-minutes: 10
       run: |
-        ctest --preset sentry-breakpad -V -LE gui
+        ctest --preset sentry-breakpad -V
 
     - name: macdeployqt
       if: runner.os == 'macOS'

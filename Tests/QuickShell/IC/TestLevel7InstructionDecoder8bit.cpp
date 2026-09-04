@@ -1,0 +1,173 @@
+// Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+#include "Tests/QuickShell/IC/TestLevel7InstructionDecoder8bit.h"
+
+#include <QMap>
+
+#include "App/Element/GraphicElements/InputSwitch.h"
+#include "App/Element/GraphicElements/Led.h"
+#include "App/Element/IC.h"
+#include "Tests/QuickShell/IC/CpuTestUtils.h"
+#include "Tests/QuickShell/IC/QuickTestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+
+using QuickTestUtils::inputStatus;
+using QuickTestUtils::setMultiBitInput;
+using CPUTestUtils::loadBuildingBlockIC;
+
+struct InstrDecoder8bitFixture {
+    std::unique_ptr<QuickCircuitBuilder> builder;
+    IC *ic = nullptr;
+    QVector<InputSwitch *> instrInputs;
+    QMap<int, Led *> opOutputs;
+    Simulation *sim = nullptr;
+
+    bool build()
+    {
+        builder = std::make_unique<QuickCircuitBuilder>();
+
+        ic = loadBuildingBlockIC("level7_instruction_decoder_8bit.panda");
+        builder->addOwnedElement(ic);
+
+        for (int i = 0; i < 8; i++) {
+            auto *sw = new InputSwitch();
+            builder->addOwnedElement(sw);
+            sw->setLabel(QString("instr[%1]").arg(i));
+            instrInputs.append(sw);
+        }
+
+        // Connect all instruction inputs to decoder
+        for (int i = 0; i < 8; i++) {
+            builder->connect(instrInputs[i], 0, ic, QString("instr[%1]").arg(i));
+        }
+
+        // Connect every one of the 256 output lines — testInstructionDecoder8BitOneHot()
+        // sweeps all of them, not just the handful of named rows in _data().
+        for (int idx = 0; idx < 256; idx++) {
+            auto *led = new Led();
+            builder->addOwnedElement(led);
+            led->setLabel(QString("op[%1]").arg(idx));
+            builder->connect(ic, QString("op[%1]").arg(idx), led, 0);
+            opOutputs[idx] = led;
+        }
+
+        sim = builder->initSimulation();
+        sim->update();
+        return true;
+    }
+};
+
+static std::unique_ptr<InstrDecoder8bitFixture> s_level7InstrDec8bit;
+
+void TestLevel7InstructionDecoder8Bit::initTestCase()
+{
+    s_level7InstrDec8bit = std::make_unique<InstrDecoder8bitFixture>();
+    QVERIFY(s_level7InstrDec8bit->build());
+}
+
+void TestLevel7InstructionDecoder8Bit::cleanupTestCase()
+{
+    s_level7InstrDec8bit.reset();
+}
+
+void TestLevel7InstructionDecoder8Bit::cleanup()
+{
+    if (s_level7InstrDec8bit && s_level7InstrDec8bit->sim) {
+        s_level7InstrDec8bit->sim->restart();
+        s_level7InstrDec8bit->sim->update();
+    }
+}
+
+void TestLevel7InstructionDecoder8Bit::testInstructionDecoder8Bit_data()
+{
+    QTest::addColumn<int>("instructionCode");
+    QTest::addColumn<int>("expectedOutputLine");
+
+    QTest::newRow("instr 0x00 (all zeros)") << 0x00 << 0;
+    QTest::newRow("instr 0xFF (all ones)") << 0xFF << 255;
+
+    QTest::newRow("instr 0x01 (bit 0)") << 0x01 << 1;
+    QTest::newRow("instr 0x02 (bit 1)") << 0x02 << 2;
+    QTest::newRow("instr 0x04 (bit 2)") << 0x04 << 4;
+    QTest::newRow("instr 0x08 (bit 3)") << 0x08 << 8;
+    QTest::newRow("instr 0x10 (bit 4)") << 0x10 << 16;
+    QTest::newRow("instr 0x20 (bit 5)") << 0x20 << 32;
+    QTest::newRow("instr 0x40 (bit 6)") << 0x40 << 64;
+    QTest::newRow("instr 0x80 (bit 7)") << 0x80 << 128;
+
+    QTest::newRow("instr 0x42 (0x40 | 0x02)") << 0x42 << 66;
+    QTest::newRow("instr 0x81 (0x80 | 0x01)") << 0x81 << 129;
+    QTest::newRow("instr 0xAA (alternating 1s)") << 0xAA << 170;
+    QTest::newRow("instr 0x55 (alternating 0s)") << 0x55 << 85;
+
+    QTest::newRow("instr 0x80 (128)") << 0x80 << 128;
+    QTest::newRow("instr 0x7F (127)") << 0x7F << 127;
+    QTest::newRow("instr 0xF0 (240)") << 0xF0 << 240;
+    QTest::newRow("instr 0x0F (15)") << 0x0F << 15;
+}
+
+void TestLevel7InstructionDecoder8Bit::testInstructionDecoder8Bit()
+{
+    QFETCH(int, instructionCode);
+    QFETCH(int, expectedOutputLine);
+
+    auto &f = *s_level7InstrDec8bit;
+
+    setMultiBitInput(f.instrInputs, instructionCode);
+    f.sim->update();
+
+    // Check the indices we have connected
+    QSet<int> testIndices;
+    testIndices.insert(0);
+    testIndices.insert(127);
+    testIndices.insert(128);
+    testIndices.insert(255);
+    testIndices.insert(expectedOutputLine);
+
+    for (int opIndex : std::as_const(testIndices)) {
+        if (!f.opOutputs.contains(opIndex)) {
+            continue;
+        }
+        bool isActive = inputStatus(f.opOutputs[opIndex], 0);
+
+        if (opIndex == expectedOutputLine) {
+            QVERIFY2(isActive, qPrintable(QString("Expected op[%1] to be active for instruction 0x%2")
+                .arg(opIndex).arg(instructionCode, 0, 16)));
+        } else {
+            QVERIFY2(!isActive, qPrintable(QString("Expected op[%1] to be inactive for instruction 0x%2")
+                .arg(opIndex).arg(instructionCode, 0, 16)));
+        }
+    }
+}
+
+void TestLevel7InstructionDecoder8Bit::testInstructionDecoder8BitStructure()
+{
+    auto &f = *s_level7InstrDec8bit;
+
+    QVERIFY(f.ic != nullptr);
+
+    QCOMPARE(f.ic->inputSize(), 8);
+    QCOMPARE(f.ic->outputSize(), 256);
+}
+
+// Exactly one op[] line fires per instruction code, and it is line number ==
+// instructionCode (one-hot decode: two level2_decoder_4to16 plus 256 AND
+// gates combining the high/low nibble decodes). The named-row test above
+// only ever samples a handful of the 256 output lines against a small
+// sentinel watch-set; this sweeps every code against every line.
+void TestLevel7InstructionDecoder8Bit::testInstructionDecoder8BitOneHot()
+{
+    auto &f = *s_level7InstrDec8bit;
+
+    for (int code = 0; code < 256; ++code) {
+        setMultiBitInput(f.instrInputs, code);
+        f.sim->update();
+
+        for (int line = 0; line < 256; ++line) {
+            QVERIFY2(inputStatus(f.opOutputs[line]) == (line == code),
+                qPrintable(QString("instr 0x%1: op[%2] should be %3")
+                    .arg(code, 2, 16, QChar('0')).arg(line).arg(line == code ? "active" : "inactive")));
+        }
+    }
+}

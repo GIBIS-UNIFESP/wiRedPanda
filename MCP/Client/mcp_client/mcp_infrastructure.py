@@ -47,6 +47,12 @@ class MCPInfrastructure:
         self.output = MCPOutput(verbose=verbose)
         self._request_id_counter = 1
         self._stderr_drain_task: asyncio.Task | None = None
+        # Rolling tail of the process's own stderr, kept regardless of --verbose: when a
+        # command fails because the process died mid-test (broken pipe / connection lost /
+        # unexpected exit), this is the only place the real crash reason (a Qt warning, an
+        # assertion, a native crash message) could have gone -- otherwise it's silently
+        # discarded and every such failure just reports "Connection lost" with no cause.
+        self._stderr_tail: list[str] = []
 
     @beartype
     async def start_mcp(self) -> bool:
@@ -122,9 +128,17 @@ class MCPInfrastructure:
             await asyncio.sleep(0.1)  # Give process a moment to start
 
             if self.process.returncode is not None:
-                # Process exited immediately
+                # Process exited immediately -- drain whatever it wrote before the pipes are
+                # torn down, since this is the only diagnostic evidence for *why* it exited.
                 return_code = self.process.returncode
+                stdout_data, stderr_data = b"", b""
+                with contextlib.suppress(Exception):
+                    stdout_data, stderr_data = await self.process.communicate()
                 print(f"❌ MCP process exited immediately with code {return_code}")
+                if stderr_data:
+                    print(f"   stderr:\n{stderr_data.decode(errors='replace')}")
+                if stdout_data:
+                    print(f"   stdout:\n{stdout_data.decode(errors='replace')}")
                 print("   This usually indicates:")
                 print("   - Missing Qt libraries (try: export QT_QPA_PLATFORM=offscreen)")
                 print("   - Missing DISPLAY on Linux (try: export DISPLAY=:0)")
@@ -149,6 +163,13 @@ class MCPInfrastructure:
             return False
 
     @beartype
+    def _format_stderr_tail(self) -> str:
+        """Formats the most recent process stderr lines as a suffix for an error message."""
+        if not self._stderr_tail:
+            return ""
+        return " | stderr: " + " | ".join(self._stderr_tail[-10:])
+
+    @beartype
     async def _drain_stderr(self) -> None:
         """Background task: continuously drain stderr to prevent buffer deadlock.
 
@@ -171,10 +192,13 @@ class MCPInfrastructure:
                         # EOF reached
                         break
 
-                    # Optionally display debug output
                     line = line_bytes.decode("utf-8", errors="replace").strip()
-                    if line and self.verbose:
-                        print(f"[DEBUG] {line}")
+                    if line:
+                        self._stderr_tail.append(line)
+                        del self._stderr_tail[:-50]  # keep only the most recent lines
+                        # Optionally display debug output
+                        if self.verbose:
+                            print(f"[DEBUG] {line}")
 
                 except asyncio.TimeoutError:
                     # Timeout is normal - just continue waiting
@@ -347,7 +371,7 @@ class MCPInfrastructure:
             await self.process.stdin.drain()
         except (BrokenPipeError, OSError) as e:
             # Process has crashed or pipe is broken
-            return create_error_response(f"Process communication failed: {e}", request_id)
+            return create_error_response(f"Process communication failed: {e}{self._format_stderr_tail()}", request_id)
 
         # Read response with timeout and debug message filtering
         response_line = await self._read_json_response_with_timeout(timeout)
@@ -356,7 +380,8 @@ class MCPInfrastructure:
             if self.process.returncode is not None:
                 return_code = self.process.returncode
                 return create_error_response(
-                    f"MCP process exited with code {return_code} before responding", request_id
+                    f"MCP process exited with code {return_code} before responding{self._format_stderr_tail()}",
+                    request_id,
                 )
             return create_error_response(f"No response for command '{command}'", request_id)
 

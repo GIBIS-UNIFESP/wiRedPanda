@@ -30,10 +30,10 @@ public:
     static constexpr float kDefaultVolume = 0.35f;
 
     /// Constructs a Buzzer element (default: 1047 Hz / C6).
-    explicit Buzzer(QGraphicsItem *parent = nullptr);
+    explicit Buzzer(QObject *parent = nullptr);
 
     /// Copy-constructs by delegating to the parent item constructor.
-    Buzzer(const Buzzer &other) : Buzzer(other.parentItem()) {}
+    Buzzer(const Buzzer &other) : Buzzer(other.parent()) {}
 
     // --- State Queries ---
 

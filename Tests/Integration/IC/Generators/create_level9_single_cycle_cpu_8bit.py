@@ -17,8 +17,8 @@ Inputs:
   Clock (synchronization signal)
   Reset (initialize program counter to 0 — must be held asserted for the whole
          instruction-memory programming window, not just pulsed before it: PCInc/
-         InstrLoad are unconditionally tied to Vcc, so every clock pulse used to
-         write a word would otherwise also advance the fetch PC. Reset's async
+         InstrLoad are unconditionally tied to Vcc, so every clock pulse that
+         writes a word would otherwise also advance the fetch PC. Reset's async
          override on the PC/instruction register is what prevents that drift —
          the same mechanism level9_multi_cycle_cpu_8bit documents for its own
          phase counter, applied directly here since there's no phase counter)
@@ -265,14 +265,13 @@ class CPU8BitSingleCycleBuilder(ICBuilderBase):
             return False
 
         # Clock to the clocked stages (decode/execute are combinational and
-        # no longer expose a Clock port — F33)
+        # have no Clock port)
         if not await self.connect(clock_id, memory_id, target_port_label="Clock"):
             return False
         if not await self.connect(clock_id, regfile_id, target_port_label="Clock"):
             return False
 
-        # Reset clears the data memory too (F54 — the memory stage's Reset
-        # used to be dead; the CPU now drives it)
+        # Reset clears the data memory too
         if not await self.connect(reset_id, memory_id, target_port_label="Reset"):
             return False
 

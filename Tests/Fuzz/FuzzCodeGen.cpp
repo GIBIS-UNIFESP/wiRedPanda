@@ -25,7 +25,7 @@
 #include <cstddef>
 #include <cstdint>
 
-#include <QApplication>
+#include <QGuiApplication>
 #include <QByteArray>
 #include <QCoreApplication>
 #include <QDataStream>
@@ -43,12 +43,12 @@
 #include "App/Element/GraphicElement.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
-#include "App/Scene/Scene.h"
-#include "App/Scene/Workspace.h"
+#include "App/QuickShell/Canvas/CanvasItem.h"
+#include "App/QuickShell/Chrome/QuickWorkSpace.h"
 
 namespace {
 
-QApplication *g_app  = nullptr;
+QGuiApplication *g_app  = nullptr;
 int  g_argc = 0;
 char **g_argv = nullptr;
 
@@ -56,7 +56,7 @@ char **g_argv = nullptr;
 // Built in LLVMFuzzerInitialize so the IC has fully loaded internalElements,
 // which exercises ArduinoCodeGen::declareAuxVariablesRec() and
 // SystemVerilogCodeGen::generateICModules() — dark without embedded ICs.
-WorkSpace *g_icWorkspace = nullptr;
+QuickWorkSpace *g_icWorkspace = nullptr;
 
 void runCodeGen(const QVector<GraphicElement *> &elements)
 {
@@ -123,7 +123,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
 
     g_argc = *argc;
     g_argv = *argv;
-    g_app  = new QApplication(g_argc, g_argv);
+    g_app  = new QGuiApplication(g_argc, g_argv);
 
     // Build two IC blobs: combinational (And gate) and sequential (DFlipFlop).
     // Embedding both exercises IC module generation AND detectSequentialICType.
@@ -134,7 +134,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
         auto *dff  = ElementFactory::buildElement(ElementType::DFlipFlop);
         auto *led  = ElementFactory::buildElement(ElementType::Led);
         sw->setId(1);  andG->setId(2);  dff->setId(3);  led->setId(4);
-        QList<QGraphicsItem *> inner;
+        QList<ItemWithId *> inner;
         inner.append(sw);  inner.append(andG);  inner.append(dff);  inner.append(led);
 
         QByteArray icBlob;
@@ -168,7 +168,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
             meta.insert("embeddedICs", QVariant(regBytes));
             s << meta;
             // IC element: discriminator + ElementType + base map + port lists + secondary map
-            s << static_cast<int>(65539);         // GraphicElement::Type
+            s << static_cast<int>(GraphicElement::Type);
             s << static_cast<quint64>(22);         // ElementType::IC
             QMap<QString, QVariant> base;
             base.insert("pos", QVariant::fromValue(QPointF(100.0, 100.0)));
@@ -181,7 +181,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
             s << icMap;
         }
 
-        g_icWorkspace = new WorkSpace();
+        g_icWorkspace = new QuickWorkSpace();
         QDataStream stream(outerPanda);
         QVersionNumber ver;
         try {
@@ -213,7 +213,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
     // header check guarantees codegen coverage on every run regardless of whether
     // the fuzz input is a valid panda file.
     if (g_icWorkspace) {
-        runCodeGen(g_icWorkspace->scene()->elements());
+        runCodeGen(g_icWorkspace->canvas()->elements());
     }
 
     // Load the panda file exactly as fuzz_deserialize does.  The seed corpus
@@ -230,14 +230,14 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
         return 0;
     }
 
-    WorkSpace workspace;
+    QuickWorkSpace workspace;
     try {
         workspace.load(stream, version, /*contextDir=*/QString());
     } catch (...) {
         return 0;
     }
 
-    runCodeGen(workspace.scene()->elements());
+    runCodeGen(workspace.canvas()->elements());
 
     return 0;
 }

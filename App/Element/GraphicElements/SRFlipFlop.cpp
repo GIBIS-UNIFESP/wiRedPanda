@@ -37,7 +37,7 @@ struct ElementInfo<SRFlipFlop> {
     }();
 };
 
-SRFlipFlop::SRFlipFlop(QGraphicsItem *parent)
+SRFlipFlop::SRFlipFlop(QObject *parent)
     : GraphicElement(ElementType::SRFlipFlop, parent)
 {
     // Call the most-derived override explicitly to guarantee correct port positions

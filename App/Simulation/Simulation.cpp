@@ -5,7 +5,6 @@
 
 #include <algorithm>
 
-#include <QGraphicsView>
 #include <QGuiApplication>
 #include <QScreen>
 
@@ -25,9 +24,11 @@ Simulation::Simulation(SimulationHost *host, QObject *parent)
     : QObject(parent)
     , m_host(host)
 {
-    // 1ms tick drives the simulation at ~1000 steps/second — fast enough for
-    // human perception while keeping CPU load predictable.
-    m_timer.setInterval(1ms);
+    // Retargeted to the next clock deadline after every real update() (see
+    // rescheduleTimer()) rather than a fixed interval -- single-shot so each firing
+    // represents exactly the one wake it was armed for; update() re-arms it before
+    // returning.
+    m_timer.setSingleShot(true);
     // Guarded at the CONNECTION, not inside update(): update() is also public API called
     // directly (BeWavedDolphin's sweep, MCP, tests), and those callers must keep seeing an
     // exception rather than a silently swallowed tick. Only the timer-driven invocation
@@ -66,10 +67,9 @@ void Simulation::update()
         return;
     }
 
-    // Bug 5 invariant: the H2 cluster fix established that m_initialized=true
-    // implies the topology vectors reflect the current scene. Any future change
-    // that touches m_initialized without rebuilding the vectors trips here in
-    // debug/asan/ubsan builds — much earlier than a tick-time crash.
+    // Invariant: m_initialized=true implies the topology vectors reflect the current
+    // scene. Any future change that touches m_initialized without rebuilding the
+    // vectors trips here in debug/asan/ubsan builds — much earlier than a tick-time crash.
     Q_ASSERT(m_initialized);
 
     // Snapshot the topology vectors before iterating: if restart() is invoked
@@ -85,8 +85,12 @@ void Simulation::update()
     const auto outputs = m_outputs;
 
     // Clock elements are the only truly time-driven components; all other logic
-    // is combinational and responds immediately to their values.
-    if (m_timer.isActive()) {
+    // is combinational and responds immediately to their values. Gated on m_running, not
+    // the timer's own (now-variable, retargeted) active state: a manual/test-driven update()
+    // call (start() never called) must not advance real Clocks by wall-clock time, exactly as
+    // before -- only now m_running is the explicit flag that means it, since m_timer.isActive()
+    // can be false at this exact instant even while genuinely running.
+    if (m_running) {
         const auto globalTime = std::chrono::steady_clock::now();
 
         for (auto *clock : clocks) {
@@ -137,7 +141,9 @@ void Simulation::update()
         if (visualsDue && m_visualsDirty) {
             pushVisualStatuses(elements, outputs);
             m_visualsDirty = false;
+            emit visualStateChanged();
         }
+        rescheduleTimer();
         return;
     }
 
@@ -228,7 +234,10 @@ void Simulation::update()
     if (visualsDue) {
         pushVisualStatuses(elements, outputs);
         m_visualsDirty = false;
+        emit visualStateChanged();
     }
+
+    rescheduleTimer();
 }
 
 void Simulation::pushVisualStatuses(const QVector<GraphicElement *> &elements, const QVector<GraphicElement *> &outputs)
@@ -264,7 +273,7 @@ void Simulation::updatePort(OutputPort *port)
     }
 
     auto *element = port->graphicElement();
-    if (!element) { // LCOV_EXCL_LINE — every Port has a non-null owner set unconditionally by ElementPorts::addPort() at construction (the "port always has an owner" invariant established throughout this sweep).
+    if (!element) { // LCOV_EXCL_LINE — every Port has a non-null owner, set unconditionally by ElementPorts::addPort() at construction; this branch is unreachable.
         port->setStatus(Status::Unknown); // LCOV_EXCL_LINE — see above.
         return; // LCOV_EXCL_LINE — see above.
     }
@@ -309,17 +318,24 @@ void Simulation::restart()
     m_clocks.clear();
     m_inputs.clear();
     m_outputs.clear();
-    // Bug 4 postcondition: any future cached state added to Simulation must be
-    // cleared above. This assert documents the invariant for future maintainers
-    // and trips immediately if a new vector is forgotten.
+    // Postcondition: any future cached state added to Simulation must be cleared
+    // above. This assert documents the invariant and trips immediately if a new
+    // vector is forgotten.
     Q_ASSERT(!m_initialized);
     Q_ASSERT(m_sortedElements.isEmpty() && m_sequentialElements.isEmpty()
           && m_clocks.isEmpty() && m_inputs.isEmpty() && m_outputs.isEmpty());
+
+    // The edit that triggered this may have added the first Clock to a previously
+    // clockless (and so timer-stopped) circuit, sped up what was the soonest deadline, or
+    // simply need one immediate sweep regardless of clocks (e.g. a new gate wired between
+    // two already-driven elements) -- wakeSoon() covers all three uniformly. A no-op while
+    // stopped.
+    wakeSoon();
 }
 
 bool Simulation::isRunning()
 {
-    return m_timer.isActive();
+    return m_running;
 }
 
 bool Simulation::isInFeedbackLoop(const GraphicElement *element) const
@@ -330,11 +346,18 @@ bool Simulation::isInFeedbackLoop(const GraphicElement *element) const
 void Simulation::stop()
 {
     // Record when the pause began (only when actually running) so start() can shift the
-    // clocks' phase reference by the pause duration instead of resetting them.
-    if (m_timer.isActive()) {
+    // clocks' phase reference by the pause duration instead of resetting them. m_running, not
+    // m_timer.isActive(): the timer can be legitimately idle between deadlines (or fully
+    // stopped, with no clocks at all) while the simulation is still genuinely running, and
+    // m_timer.isActive() being false at this exact instant must not be mistaken for "wasn't
+    // running" -- that would skip recording the pause and make the next start() incorrectly
+    // resetClock() instead of shiftClock(), reintroducing the spurious-edge bug m_hasPausedAt
+    // exists to prevent.
+    if (m_running) {
         m_pausedAt = std::chrono::steady_clock::now();
         m_hasPausedAt = true;
     }
+    m_running = false;
     m_timer.stop();
     if (m_host) {
         m_host->setMuted(true);
@@ -375,11 +398,50 @@ void Simulation::start()
         }
     }
 
-    m_timer.start();
+    m_running = true;
+    rescheduleTimer();
     if (m_host) {
         m_host->setMuted(m_userMuted);
     }
     qCDebug(zero) << "Simulation started.";
+}
+
+void Simulation::wakeSoon()
+{
+    if (!m_running) {
+        return;
+    }
+    // Safe to call unconditionally, even if a wake is already imminent: restarting an
+    // already-about-to-fire single-shot timer with the same near-zero delay doesn't
+    // meaningfully delay anything, and is far simpler than comparing against whatever is
+    // currently scheduled.
+    m_timer.start(0ms);
+}
+
+void Simulation::rescheduleTimer()
+{
+    if (!m_running) {
+        return;
+    }
+
+    auto nextWake = std::chrono::steady_clock::time_point::max();
+    for (const auto *clock : std::as_const(m_clocks)) {
+        if (clock) {
+            nextWake = (std::min)(nextWake, clock->nextDeadline());
+        }
+    }
+
+    if (nextWake == std::chrono::steady_clock::time_point::max()) {
+        // Nothing left to wait for (no clocks, or all locked) -- the only remaining triggers
+        // are wakeSoon() (restart()/interactive input), which arm the timer explicitly when
+        // needed.
+        m_timer.stop();
+        return;
+    }
+
+    const auto now = std::chrono::steady_clock::now();
+    const auto delay = (std::max)(std::chrono::duration_cast<std::chrono::milliseconds>(nextWake - now), 1ms);
+    m_timer.start(delay);
 }
 
 void Simulation::setUserMuted(const bool muted)
@@ -425,25 +487,27 @@ bool Simulation::initialize()
     auto items = m_host->simulationItems();
 
     // Sort items by position coordinates for consistent ordering between runs.
-    // QGraphicsScene::items() returns items in an unspecified Z/stacking order;
-    // stabilising on (Y, X) gives deterministic wire-update sequences across
-    // sessions and makes test results reproducible.
-    std::stable_sort(items.begin(), items.end(), [](const auto &a, const auto &b) {
+    // The host's own item storage has no defined order; stabilising on (Y, X) gives
+    // deterministic wire-update sequences across sessions and makes test results
+    // reproducible. Only GraphicElement has a real position -- a SimulationHost is free to
+    // include non-element items too (Scene::simulationItems() does), so a non-element item
+    // sorts as if at the origin instead of being excluded.
+    auto positionOf = [](ItemWithId *item) {
+        auto *elm = dynamic_cast<GraphicElement *>(item);
+        return elm ? elm->pos() : QPointF();
+    };
+    std::stable_sort(items.begin(), items.end(), [&positionOf](const auto &a, const auto &b) {
         if (!a || !b) {
             return a != nullptr;
         }
+        const QPointF posA = positionOf(a);
+        const QPointF posB = positionOf(b);
         // Sort by Y coordinate first, then X coordinate for consistent 2D ordering
-        if (qFuzzyCompare(a->y(), b->y())) {
-            return a->x() < b->x();
+        if (qFuzzyCompare(posA.y(), posB.y())) {
+            return posA.x() < posB.x();
         }
-        return a->y() < b->y();
+        return posA.y() < posB.y();
     });
-
-    // A scene with only one item is the scene border/background rectangle;
-    // there is no circuit yet, so building a simulation graph would be pointless.
-    if (items.size() == 1) {
-        return false;
-    }
 
     qCDebug(two) << "GENERATING SIMULATION LAYER.";
 
@@ -454,11 +518,7 @@ bool Simulation::initialize()
             continue;
         }
 
-        if (item->type() == GraphicElement::Type) {
-            auto *element = qgraphicsitem_cast<GraphicElement *>(item);
-            if (!element) { // LCOV_EXCL_LINE — item->type() == GraphicElement::Type is GraphicElement's own hardcoded type() override, so the cast can never fail for an item reporting exactly that type.
-                continue; // LCOV_EXCL_LINE — see above.
-            }
+        if (auto *element = dynamic_cast<GraphicElement *>(item)) {
             elements.append(element);
 
             if (element->elementType() == ElementType::Clock) {
@@ -574,7 +634,7 @@ QHash<QString, GraphicElement *> Simulation::buildTxMap(const QVector<GraphicEle
         }
     }
     return txMap;
-} // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned QHash<QString, GraphicElement *>, never reached after the return above.
+} // LCOV_EXCL_LINE — compiler-generated cleanup for the returned QHash<QString, GraphicElement *>, never reached after the return above.
 
 QHash<GraphicElement *, QVector<GraphicElement *>> Simulation::buildSuccessorGraph(
     const QVector<GraphicElement *> &elements,
@@ -616,7 +676,7 @@ QHash<GraphicElement *, QVector<GraphicElement *>> Simulation::buildSuccessorGra
     }
 
     return successors;
-} // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned QHash<GraphicElement *, QVector<GraphicElement *>>, never reached after the return above.
+} // LCOV_EXCL_LINE — compiler-generated cleanup for the returned QHash<GraphicElement *, QVector<GraphicElement *>>, never reached after the return above.
 
 Simulation::SortResult Simulation::topologicalSort(
     const QVector<GraphicElement *> &elements,

@@ -1,0 +1,23 @@
+// Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+#pragma once
+
+#include <QObject>
+#include <QTest>
+
+class TestLevel4BinaryCounter4Bit : public QObject
+{
+    Q_OBJECT
+
+private slots:
+    void initTestCase();
+    void cleanupTestCase();
+    void cleanup();
+
+    void testBinaryCounter_data();
+    void testBinaryCounter();
+    void testClear();
+    void testCountEnable();
+    void testParallelLoad();
+};

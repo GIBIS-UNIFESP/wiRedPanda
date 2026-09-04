@@ -134,7 +134,7 @@ class PriorityEncoder8to3Builder(ICBuilderBase):
         # or_chain[5] = 3-input OR(data[7], data[6], data[5])
         # or_chain[4] = 4-input OR(data[7], data[6], data[5], data[4])
         # ... down to OR(data[7..1]), which feeds inhibit0. An OR of all
-        # eight bits is never needed (F58: it used to be built and left dead).
+        # eight bits is not needed for the inhibit cascade.
         for i in range(5, 0, -1):
             num_inputs = 8 - i  # Number of data inputs to OR together
 
@@ -325,8 +325,7 @@ class PriorityEncoder8to3Builder(ICBuilderBase):
         await self.log("  Created output encoding logic")
 
         # "Any input active" = OR(data[0..7]) — drives the group-select (valid)
-        # and the EO cascade output. F99 re-introduces the 8-wide OR that F58
-        # dropped as dead; here it has a real use.
+        # and the EO cascade output.
         valid_or = await self.create_element(
             "Or", addr_or_final_x, output_base_y + (7 * VERTICAL_STAGE_SPACING), "valid_or"
         )

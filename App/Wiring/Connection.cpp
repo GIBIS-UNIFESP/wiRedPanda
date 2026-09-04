@@ -6,30 +6,18 @@
 
 #include "App/Wiring/Connection.h"
 
-#include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QPainterPath>
 #include <QPen>
 #include <QPolygonF>
-#include <QStyleOptionGraphicsItem>
 
 #include "App/Core/Application.h"
 #include "App/Core/ThemeManager.h"
-#include "App/Scene/Scene.h"
 #include "App/Wiring/ConnectionSerializer.h"
 #include "App/Wiring/Port.h"
 
-Connection::Connection(QGraphicsItem *parent)
-    : QGraphicsPathItem(parent)
+Connection::Connection()
 {
-    setFlag(QGraphicsItem::ItemIsSelectable);
-    // Deliberately NOT DeviceCoordinateCache (the default NoCache stays): a wire is a thin
-    // stroke crossing a huge, mostly-empty bounding box, so a device-cache tile costs a
-    // bbox-sized pixmap clear + blend on every status colour change -- vastly more than just
-    // re-stroking the path -- and multi-MB tiles for long wires thrash the global QPixmapCache.
-    // Draw wires behind elements so port dots and element bodies always render on top
-    setZValue(-1);
-
     // m_status starts at Status::Unknown; updateTheme() applies its pen via
     // applyStatusPen(). The wire colour is updated once both ports are attached.
     updateTheme();
@@ -206,12 +194,6 @@ void Connection::setStatus(const Status status)
 
     m_status = status;
 
-    // Feed idle detection for adaptive wire antialiasing: a stream of status changes IS
-    // the simulation repaint storm, and it stops exactly when the simulation does.
-    if (auto *scene_ = qobject_cast<Scene *>(scene())) {
-        scene_->noteWireActivity();
-    }
-
     applyStatusPen();
 
     // Propagate to the destination port so its fill colour also reflects the signal state
@@ -222,14 +204,16 @@ void Connection::setStatus(const Status status)
 
 void Connection::applyStatusPen()
 {
-    // Error wires are drawn thicker (5 px) to draw attention to the problem;
-    // other wires are thinner (3 px) to reduce visual clutter during simulation.
-    // Unknown (undriven) wires use a distinct gray from Error (red).
+    // The 4 pens themselves are rebuilt only in updateTheme() (colours only change with the
+    // theme); picking one here is a cheap implicitly-shared QPen copy, not a fresh QPen/QBrush
+    // heap allocation -- profiling clocked_8000.panda showed the old per-call
+    // "m_statusPen = QPen(color, width)" construction (and its QBrush::init/detach churn)
+    // as a real, avoidable cost on a circuit whose wires change status every tick.
     switch (m_status) {
-    case Status::Unknown:  m_statusPen = QPen(m_unknownColor,  3); break;
-    case Status::Inactive: m_statusPen = QPen(m_inactiveColor, 3); break;
-    case Status::Active:   m_statusPen = QPen(m_activeColor,   3); break;
-    case Status::Error:    m_statusPen = QPen(m_errorColor,    5); break;
+    case Status::Unknown:  m_statusPen = m_unknownStatusPen;  break;
+    case Status::Inactive: m_statusPen = m_inactiveStatusPen; break;
+    case Status::Active:   m_statusPen = m_activeStatusPen;   break;
+    case Status::Error:    m_statusPen = m_errorStatusPen;    break;
     }
 
     // paint() draws with m_statusPen, not the item's own pen() -- boundingRect() is a fixed
@@ -257,6 +241,15 @@ void Connection::updateTheme()
     m_errorColor = theme.m_connectionError;
     m_selectedColor = theme.m_connectionSelected;
 
+    // Error wires are drawn thicker (5 px) to draw attention to the problem; other wires are
+    // thinner (3 px) to reduce visual clutter during simulation. Unknown (undriven) wires use
+    // a distinct gray from Error (red). Rebuilt here (once per theme change) rather than in
+    // applyStatusPen() (once per status change) -- see that method's own comment.
+    m_unknownStatusPen  = QPen(m_unknownColor,  3);
+    m_inactiveStatusPen = QPen(m_inactiveColor, 3);
+    m_activeStatusPen   = QPen(m_activeColor,   3);
+    m_errorStatusPen    = QPen(m_errorColor,    5);
+
     // Re-derive the pen from the refreshed palette; without this the wire keeps
     // the previous theme's colour until its status next changes
     applyStatusPen();
@@ -264,20 +257,8 @@ void Connection::updateTheme()
     update();
 }
 
-void Connection::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void Connection::paint(QPainter *painter) const
 {
-    Q_UNUSED(widget)
-    Q_UNUSED(option)
-
-    // Adaptive quality (see Scene's wire-antialiasing accessors): while measured paint
-    // passes are too slow for interactivity, drop this wire's antialiasing -- never force
-    // it on, so a global choice like Fast Mode still wins. The painter state is
-    // saved/restored around each item's paint by QGraphicsView (the DontSavePainterState
-    // optimization flag is not set), so the hint can't leak into other items.
-    if (auto *scene_ = qobject_cast<Scene *>(scene()); scene_ && !scene_->wireAntialiasingEnabled()) {
-        painter->setRenderHint(QPainter::Antialiasing, false);
-    }
-
     // Highlight is drawn as a wider blue halo beneath the normal wire, so users can
     // easily see which wires belong to a selected element
     if (m_highLight) {
@@ -293,21 +274,20 @@ void Connection::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
     painter->drawPath(path());
 }
 
-QVariant Connection::itemChange(GraphicsItemChange change, const QVariant &value)
+void Connection::setSelected(bool selected)
 {
-    // When the wire is selected/deselected, visually highlight both endpoint ports
-    // so the user can see which element pins are connected by this wire
-    if (change == ItemSelectedChange) {
-        if (value.toBool()) {
-            if (startPort()) startPort()->hoverEnter();
-            if (endPort()) endPort()->hoverEnter();
-        } else {
-            if (startPort()) startPort()->hoverLeave();
-            if (endPort()) endPort()->hoverLeave();
-        }
-    }
+    m_selected = selected;
 
-    return QGraphicsPathItem::itemChange(change, value);
+    // When the wire is selected/deselected, visually highlight both endpoint ports
+    // so the user can see which element pins are connected by this wire -- mirrors what
+    // the old itemChange(ItemSelectedChange) override did automatically.
+    if (selected) {
+        if (startPort()) startPort()->hoverEnter();
+        if (endPort()) endPort()->hoverEnter();
+    } else {
+        if (startPort()) startPort()->hoverLeave();
+        if (endPort()) endPort()->hoverLeave();
+    }
 }
 
 bool Connection::highLight()
@@ -355,17 +335,4 @@ QPainterPath Connection::shape() const
     }
 
     return m_cachedShape;
-}
-
-bool Connection::sceneEvent(QEvent *event)
-{
-    // Swallow Ctrl+click so the scene can use Ctrl+click for multi-selection without
-    // the wire consuming the event and blocking the rubber-band/deselect behaviour
-    if (auto mouseEvent = dynamic_cast<QGraphicsSceneMouseEvent *>(event)) {
-        if (mouseEvent->modifiers().testFlag(Qt::ControlModifier)) {
-            return true;
-        }
-    }
-
-    return QGraphicsPathItem::sceneEvent(event);
 }

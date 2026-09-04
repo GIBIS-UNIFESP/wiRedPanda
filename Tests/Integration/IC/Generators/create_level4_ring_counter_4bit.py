@@ -107,8 +107,13 @@ class RingCounterBuilder(ICBuilderBase):
         # bit index (FF3 to hold_mux3 was the worst case).
         # level2_mux_2to1's rotated side label reaches well past its own body
         # when stacked -- a flat 1x VERTICAL_STAGE_SPACING isn't enough
-        # clearance between hold_mux/load_mux/FF, so this column uses 2x.
-        bit_x_base = input_x + HORIZONTAL_GATE_SPACING
+        # clearance between hold_mux/load_mux/FF, so this column uses 2x. A
+        # flat 1x HORIZONTAL_GATE_SPACING from the input column isn't enough
+        # clearance either: hold_mux0's row (y_hold=100.0) lands almost
+        # exactly level with CountEnable's own row, so CountEnable's label --
+        # drawn to its right -- clipped hold_mux0's left edge; 1.5x pushes
+        # the whole bit column clear of it.
+        bit_x_base = input_x + 1.5 * HORIZONTAL_GATE_SPACING
         bit_row_step = 2 * VERTICAL_STAGE_SPACING
         y_hold = 100.0
         y_load = y_hold + bit_row_step

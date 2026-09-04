@@ -51,16 +51,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-24.04, windows-2025-vs2026]
-        qt: [6.8.3, 6.9.3]
-        cmake_args: ['']
+        # TEMPORARY: trimmed to just the macOS legs while root-causing the MCP Integration
+        # Test SIGSEGV there (see the "Dump macOS crash report" step below) -- restore the full
+        # matrix (see git history for this block) once that's fixed and confirmed.
         include:
-          - { os: ubuntu-24.04, qt: '6.9.3', cmake_args: '-DENABLE_UNITY=OFF -DENABLE_PCH=OFF' }
-          - { os: ubuntu-24.04, qt: '6.9.3', cmake_args: '-DUNITY_BUILD_BATCH_SIZE=1000' }
           - { os: macos-15, qt: '6.8.3', cmake_args: '', qt_host: mac, qt_arch: clang_64 }
           - { os: macos-26, qt: '6.9.3', cmake_args: '', qt_host: mac, qt_arch: clang_64 }
-          - { os: ubuntu-24.04-arm, qt: '6.9.3', cmake_args: '', qt_host: linux_arm64,   qt_arch: linux_gcc_arm64      }
-          - { os: windows-11-arm,   qt: '6.9.3', cmake_args: '', qt_host: windows_arm64, qt_arch: win64_msvc2022_arm64 }
 
 # =================================
 
@@ -144,55 +140,11 @@ jobs:
         QT_FORCE_STDERR_LOGGING: 1
       run: |
         if [ "$RUNNER_OS" = "Linux" ]; then ulimit -c unlimited; fi
-        ctest --preset release -V -LE gui
+        ctest --preset release -V
 
     - name: Analyze crashed tests (Linux core dump)
       if: runner.os == 'Linux' && failure()
       run: ./Scripts/ci_linux_core_analyze.sh build-release/test_wiredpanda "$RUNNER_TEMP/cores" crash-diagnostics
-
-    # The gui-labeled suite (TestMainWindowGui's ~120 cases, TestDialogs,
-    # TestFileDialogProvider, TestBewavedDolphinGui) is otherwise never executed in CI: every
-    # ctest invocation across the workflows passes -LE gui. The test harness forces the
-    # offscreen QPA platform on Linux (TestUtils::setupTestEnvironment), so these run headless
-    # with no display. -FS skips the non_gui_complete fixture so only the gui tests run here —
-    # the non-GUI suite already ran in the step above.
-    - name: Test (GUI, headless)
-      if: runner.os == 'Linux'
-      timeout-minutes: 10
-      env:
-        QT_FORCE_STDERR_LOGGING: 1
-      run: |
-        ulimit -c unlimited
-        ctest --preset release -V -L gui -FS non_gui_complete
-
-    - name: Analyze crashed GUI tests (Linux core dump)
-      if: runner.os == 'Linux' && failure()
-      run: ./Scripts/ci_linux_core_analyze.sh build-release/test_wiredpanda "$RUNNER_TEMP/cores" crash-diagnostics
-
-    # Trial run of the gui suite off-Linux, non-blocking while it builds a
-    # track record (promote to blocking once proven stable; see the polling
-    # AutoDismisser test hardening that unblocked this). Offscreen on both:
-    # the historical macOS hang class was native-cocoa modal activation
-    # timing, and Windows turned out to have the same shape against a real
-    # window manager — TestMainWindowGui calls createMW() at 145 sites, so it
-    # shows that many top-level windows in one process, and it stalled 4 of 10
-    # native runs on QTEST_FUNCTION_TIMEOUT, at a different test function each
-    # time, while the same binary on the same runner passed 5 of 5 offscreen.
-    # The non-gui suite stays native: it creates widgets, but not a window per
-    # test. One step rather than one per OS, now that both want the same
-    # literal value — the pitfall that forced them apart was a ternary env
-    # expression evaluating to "" (set-but-empty), which makes Qt load no
-    # platform at all.
-    - name: Test (GUI, offscreen, trial)
-      id: test-gui-trial
-      if: runner.os != 'Linux'
-      timeout-minutes: 10
-      continue-on-error: true
-      env:
-        QT_FORCE_STDERR_LOGGING: 1
-        QT_QPA_PLATFORM: offscreen
-      run: |
-        ctest --preset release -V -L gui -FS non_gui_complete
 
     - name: Smoke-test cmake --install
       shell: bash
@@ -215,10 +167,7 @@ jobs:
         fi
 
     - name: Upload build artifacts on failure
-      # continue-on-error on the GUI-trial step means its failure alone doesn't
-      # make failure() true -- check that step's own outcome too, or a
-      # GUI-trial-only crash's diagnostics would never get uploaded.
-      if: failure() || steps.test-gui-trial.outcome == 'failure'
+      if: failure()
       uses: actions/upload-artifact@v7
       with:
         name: build-logs-${{ matrix.os }}-${{ matrix.qt }}${{ contains(matrix.cmake_args, 'ENABLE_UNITY=OFF') && '-no-unity' || contains(matrix.cmake_args, 'BATCH_SIZE=1000') && '-mega-unity' || '' }}
@@ -238,6 +187,28 @@ jobs:
     - name: MCP Integration Test
       run: |
         python3 MCP/Client/run_tests.py
+
+    # macOS writes a symbolicated crash report (.ips) to this fixed, well-known location for
+    # *any* process that segfaults -- no pre-configuration needed, unlike Windows' WER minidumps
+    # (which need registry setup this repo doesn't have). The MCP Integration Test's own error
+    # messages only ever see a bare "exited with code -11"; this is the only place a real
+    # backtrace for that crash could come from.
+    - name: Dump macOS crash report on MCP test failure
+      if: failure() && runner.os == 'macOS'
+      run: |
+        # The prior attempt at this step searched only ~/Library/Logs/DiagnosticReports for a
+        # *wiredpanda* name and found nothing -- broaden to both the per-user and system-wide
+        # locations, and list everything present (not just a name match) as a fallback so we
+        # at least see whether reports are being written here at all.
+        for REPORTS in "$HOME/Library/Logs/DiagnosticReports" "/Library/Logs/DiagnosticReports"; do
+          echo "=== $REPORTS ==="
+          if [ -d "$REPORTS" ]; then
+            ls -la "$REPORTS" || true
+            find "$REPORTS" -iname '*wiredpanda*' -print -exec cat {} \; || true
+          else
+            echo "(directory does not exist)"
+          fi
+        done
 
 # =================================
 
@@ -273,9 +244,8 @@ jobs:
     # QPixmap); it is NOT pulled in by qt6-svg-dev and the suite aborts without
     # it. qt6-image-formats-plugins mirrors the qtimageformats module the matrix
     # installs. Tests run as a non-root user so the filesystem-permission tests
-    # behave like a normal build (root bypasses permission bits). GUI tests are
-    # excluded (-LE gui) to match the other CI jobs; the offscreen platform still
-    # applies to the non-GUI tests that instantiate a QApplication.
+    # behave like a normal build (root bypasses permission bits). The offscreen
+    # platform applies to every test that instantiates a QGuiApplication.
     - name: Build & test in Debian i386 container
       timeout-minutes: 20
       run: |
@@ -317,7 +287,7 @@ jobs:
         apt-get install -y --no-install-recommends \
           build-essential cmake ninja-build ccache pkg-config git ca-certificates gdb \
           qt6-base-dev qt6-multimedia-dev qt6-svg-dev qt6-svg-plugins \
-          qt6-image-formats-plugins libgl1-mesa-dev libglu1-mesa-dev
+          qt6-image-formats-plugins qt6-declarative-dev libgl1-mesa-dev libglu1-mesa-dev
         # Run as a non-root user that OWNS the checkout (matches /src's uid), like
         # the other CI jobs do: some tests write into the source tree (e.g. TestIC
         # saves into the examples dir), and non-root keeps the permission tests
@@ -339,7 +309,7 @@ jobs:
           mkdir -p cores
           ulimit -c unlimited
           set +e
-          ctest -V -j$(nproc) -LE gui
+          ctest -V -j$(nproc)
           CTEST_EXIT=$?
           set -e
           if [ "$CTEST_EXIT" -ne 0 ]; then

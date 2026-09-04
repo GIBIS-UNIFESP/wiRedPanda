@@ -8,9 +8,15 @@
 #include "App/Core/Settings.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
-#include "App/Scene/Scene.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
+
+// setScene() lives in ExerciseEngineScene.cpp instead of here: it's the only method that
+// touches Scene.h (QGraphicsScene-based, Widgets-only), so keeping it out of this file lets
+// this file compile into the portable, Widgets-free SOURCES list -- letting wiredpanda
+// (which links no Qt Widgets at all) link every other ExerciseEngine method directly, the same
+// way QuickExerciseEngineBinding.cpp's setCanvas() already does. See ExerciseEngineScene.cpp's
+// own doc comment for the split's full rationale.
 
 namespace {
 
@@ -65,15 +71,9 @@ bool ExerciseEngine::loadFromResource(const QString &resourcePath)
     return m_core.loadFromResource(resourcePath);
 }
 
-void ExerciseEngine::setScene(Scene *scene)
+QVector<GraphicElement *> ExerciseEngine::currentElements() const
 {
-    if (m_scene) {
-        disconnect(m_scene, &Scene::circuitHasChanged, this, &ExerciseEngine::onCircuitChanged);
-    }
-    m_scene = scene;
-    if (m_scene && m_core.isActive()) {
-        connect(m_scene, &Scene::circuitHasChanged, this, &ExerciseEngine::onCircuitChanged);
-    }
+    return m_elementsFn ? m_elementsFn() : QVector<GraphicElement *>{};
 }
 
 const ExerciseStep &ExerciseEngine::currentStepData() const
@@ -86,8 +86,8 @@ void ExerciseEngine::start()
     if (!m_core.start()) {
         return;
     }
-    if (m_scene) {
-        connect(m_scene, &Scene::circuitHasChanged, this, &ExerciseEngine::onCircuitChanged);
+    if (m_connectFn) {
+        m_connectFn();
     }
     emitCurrentStep();
 }
@@ -97,8 +97,8 @@ void ExerciseEngine::stop()
     if (!m_core.stop()) {
         return;
     }
-    if (m_scene) {
-        disconnect(m_scene, &Scene::circuitHasChanged, this, &ExerciseEngine::onCircuitChanged);
+    if (m_disconnectFn) {
+        m_disconnectFn();
     }
     emit exerciseStopped();
 }
@@ -145,7 +145,7 @@ void ExerciseEngine::onCircuitChanged()
 
 bool ExerciseEngine::validateCurrentStep() const
 {
-    if (!m_core.isActive() || m_core.totalSteps() == 0 || !m_scene) {
+    if (!m_core.isActive() || m_core.totalSteps() == 0 || !m_elementsFn) {
         return false;
     }
     const ExerciseStep &step = m_core.currentStepData();
@@ -165,7 +165,7 @@ bool ExerciseEngine::validateElements(const QVector<ExerciseElementRequirement> 
         return true;
     }
 
-    const QVector<GraphicElement *> elements = m_scene->elements();
+    const QVector<GraphicElement *> elements = currentElements();
 
     for (const ExerciseElementRequirement &req : reqs) {
         const ElementType required = ElementFactory::textToType(req.typeName);
@@ -193,7 +193,7 @@ bool ExerciseEngine::validateConnections(const QVector<ExerciseConnectionRequire
         return true;
     }
 
-    const QVector<GraphicElement *> elements = m_scene->elements();
+    const QVector<GraphicElement *> elements = currentElements();
 
     for (const ExerciseConnectionRequirement &req : reqs) {
         const ElementType toType   = ElementFactory::textToType(req.toTypeName);
@@ -235,8 +235,8 @@ void ExerciseEngine::emitCurrentStep()
 void ExerciseEngine::markCompleted()
 {
     m_core.markCompleted();
-    if (m_scene) {
-        disconnect(m_scene, &Scene::circuitHasChanged, this, &ExerciseEngine::onCircuitChanged);
+    if (m_disconnectFn) {
+        m_disconnectFn();
     }
     emit exerciseCompleted();
 }

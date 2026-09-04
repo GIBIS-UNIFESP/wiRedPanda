@@ -8,7 +8,6 @@
 #include <limits>
 #include <utility>
 
-#include <QApplication>
 #include <QBitArray>
 #include <QDir>
 #include <QFile>
@@ -23,10 +22,12 @@
 #include <QVarLengthArray>
 
 #include "App/Core/Common.h"
+#include "App/Core/ItemWithId.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
 #include "App/IO/VersionInfo.h"
 #include "App/Wiring/Connection.h"
+#include "App/Wiring/Port.h"
 
 namespace {
 
@@ -500,7 +501,7 @@ void Serialization::readDolphinHeader(QDataStream &stream)
     stream.readRawData(raw.data(), static_cast<int>(consumedLen));
 }
 
-void Serialization::serialize(const QList<QGraphicsItem *> &items, QDataStream &stream, SerializationOptions options)
+void Serialization::serialize(const QList<ItemWithId *> &items, QDataStream &stream, SerializationOptions options)
 {
     // Port serial IDs are computed from the element ID via Port::makeSerialId()
     // (used by both GraphicElementSerializer::save() and ConnectionSerializer::save()).
@@ -518,14 +519,14 @@ void Serialization::serialize(const QList<QGraphicsItem *> &items, QDataStream &
     QList<std::pair<GraphicElement *, int>> savedIds;
     int localId = 0;
     for (auto *item : items) {
-        if (auto *ge = qgraphicsitem_cast<GraphicElement *>(item)) {
+        if (auto *ge = dynamic_cast<GraphicElement *>(item)) {
             if (ge->id() > localId) {
                 localId = ge->id();
             }
         }
     }
     for (auto *item : items) {
-        if (auto *ge = qgraphicsitem_cast<GraphicElement *>(item)) {
+        if (auto *ge = dynamic_cast<GraphicElement *>(item)) {
             if (ge->id() <= 0) {
                 savedIds.append({ge, ge->id()});
                 ge->setId(++localId);
@@ -548,7 +549,7 @@ void Serialization::serialize(const QList<QGraphicsItem *> &items, QDataStream &
     // Serialize all graphic elements (gates, inputs, outputs, ICs)
     // Type tag written here at serialization layer for symmetry with deserialize()
     for (auto *item : items) {
-        if (auto *element = qgraphicsitem_cast<GraphicElement *>(item)) {
+        if (auto *element = dynamic_cast<GraphicElement *>(item)) {
             stream << static_cast<int>(GraphicElement::Type);
             stream << element->elementType();
             element->save(stream, options);
@@ -558,14 +559,14 @@ void Serialization::serialize(const QList<QGraphicsItem *> &items, QDataStream &
     // Serialize all connections (wires)
     // Type tag written here at serialization layer for symmetry with deserialize()
     for (auto *item : items) {
-        if (auto *connection = qgraphicsitem_cast<Connection *>(item)) {
+        if (auto *connection = dynamic_cast<Connection *>(item)) {
             stream << static_cast<int>(Connection::Type);
             connection->save(stream);
         }
     }
 }
 
-QList<QGraphicsItem *> Serialization::deserialize(QDataStream &stream, SerializationContext &context)
+QList<ItemWithId *> Serialization::deserialize(QDataStream &stream, SerializationContext &context)
 {
     // portMap maps the raw pointer value (quint64) that was stored at save time to
     // the newly allocated Port object at load time.  Raw pointer values are used
@@ -575,7 +576,7 @@ QList<QGraphicsItem *> Serialization::deserialize(QDataStream &stream, Serializa
     // When portMap is empty (top-level file load), Connection::load() falls back
     // to directly casting the stored integer back to a pointer — only safe during
     // the same process session (e.g., clipboard paste with in-process copy/paste).
-    QList<QGraphicsItem *> itemList;
+    QList<ItemWithId *> itemList;
     // Exception safety: if any throw escapes the loop, the guard cleans up every
     // item already constructed.  Callers expect ownership transfer on success only —
     // dismissing the guard at the end of the happy path hands the items to them.
@@ -590,7 +591,7 @@ QList<QGraphicsItem *> Serialization::deserialize(QDataStream &stream, Serializa
     // harness against malformed .panda input that triggers a mid-loop throw.
     auto cleanupGuard = qScopeGuard([&itemList]() {
         for (qsizetype i = 0; i < itemList.size(); ++i) {
-            if (itemList[i] && itemList[i]->type() == Connection::Type) {
+            if (dynamic_cast<Connection *>(itemList[i])) {
                 delete itemList[i];
                 itemList[i] = nullptr;
             }
@@ -782,16 +783,14 @@ void Serialization::serializeBlobRegistry(const QMap<QString, QByteArray> &blobs
 }
 
 QString Serialization::typeName(const int type) {
-    // These offsets must stay in sync with the ::Type enum constants defined in
-    // Port, Connection, and GraphicElement (all use QGraphicsItem::UserType + N)
     // LCOV_EXCL_START — recurring pattern 12: this static local's one-time construction
     // (first call across the whole test binary) happens inside a compiler-generated guard
     // check that gcov doesn't attribute back to these initializer-list source lines, even
     // though they demonstrably run (typeName() correctly maps every entry below).
     static const QHash<int, QString> typeMap = {
-        { QGraphicsItem::UserType + 1, "Port" },
-        { QGraphicsItem::UserType + 2, "Connection" },
-        { QGraphicsItem::UserType + 3, "GraphicElement" },
+        { Port::Type, "Port" },
+        { Connection::Type, "Connection" },
+        { GraphicElement::Type, "GraphicElement" },
     };
     // LCOV_EXCL_STOP
 

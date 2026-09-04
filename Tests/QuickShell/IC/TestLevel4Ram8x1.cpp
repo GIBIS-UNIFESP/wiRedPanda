@@ -1,0 +1,220 @@
+// Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+#include "Tests/QuickShell/IC/TestLevel4Ram8x1.h"
+
+#include "App/Element/GraphicElements/InputSwitch.h"
+#include "App/Element/GraphicElements/Led.h"
+#include "App/Element/IC.h"
+#include "Tests/QuickShell/IC/CpuTestUtils.h"
+#include "Tests/QuickShell/IC/QuickTestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+
+using QuickTestUtils::inputStatus;
+using CPUTestUtils::loadBuildingBlockIC;
+
+struct Ram8x1Fixture {
+    std::unique_ptr<QuickCircuitBuilder> builder;
+    IC *ramIC = nullptr;
+    InputSwitch *addressBits[3] = {};
+    InputSwitch *dataIn = nullptr;
+    InputSwitch *writeEnable = nullptr;
+    InputSwitch *clock = nullptr;
+    InputSwitch *reset = nullptr;
+    Led *dataOut = nullptr;
+    Simulation *sim = nullptr;
+
+    bool build()
+    {
+        builder = std::make_unique<QuickCircuitBuilder>();
+
+        for (int i = 0; i < 3; ++i) {
+            addressBits[i] = new InputSwitch();
+            builder->addOwnedElement(addressBits[i]);
+        }
+        dataIn = new InputSwitch();
+        writeEnable = new InputSwitch();
+        clock = new InputSwitch();
+        reset = new InputSwitch();
+        dataOut = new Led();
+        builder->addOwned(dataIn, writeEnable, clock, reset, dataOut);
+
+        ramIC = loadBuildingBlockIC("level4_ram_8x1.panda");
+        builder->addOwnedElement(ramIC);
+
+        for (int i = 0; i < 3; ++i) {
+            builder->connect(addressBits[i], 0, ramIC, QString("Address[%1]").arg(i));
+        }
+        builder->connect(dataIn, 0, ramIC, "DataIn");
+        builder->connect(writeEnable, 0, ramIC, "WriteEnable");
+        builder->connect(clock, 0, ramIC, "Clock");
+        builder->connect(reset, 0, ramIC, "Reset");
+        builder->connect(ramIC, "DataOut", dataOut, 0);
+
+        reset->setOn(false);  // async clear inactive by default
+
+        sim = builder->initSimulation();
+        sim->update();
+        return true;
+    }
+
+    void setAddress(int addr)
+    {
+        for (int i = 0; i < 3; ++i) {
+            addressBits[i]->setOn((addr >> i) & 1);
+        }
+    }
+
+    void writeData(bool value, int addr)
+    {
+        setAddress(addr);
+        dataIn->setOn(value);
+        writeEnable->setOn(true);
+        sim->update();
+        QuickTestUtils::clockCycle(sim, clock);
+        writeEnable->setOn(false);
+        sim->update();
+    }
+
+    bool readData(int addr)
+    {
+        setAddress(addr);
+        sim->update();
+        return inputStatus(dataOut);
+    }
+};
+
+static std::unique_ptr<Ram8x1Fixture> s_level4Ram8x1;
+
+void TestLevel4RAM8X1::initTestCase()
+{
+    s_level4Ram8x1 = std::make_unique<Ram8x1Fixture>();
+    QVERIFY(s_level4Ram8x1->build());
+}
+
+void TestLevel4RAM8X1::cleanupTestCase()
+{
+    s_level4Ram8x1.reset();
+}
+
+void TestLevel4RAM8X1::cleanup()
+{
+    if (s_level4Ram8x1 && s_level4Ram8x1->sim) {
+        s_level4Ram8x1->sim->restart();
+        s_level4Ram8x1->sim->update();
+    }
+}
+
+void TestLevel4RAM8X1::testRamArray_data()
+{
+    QTest::addColumn<int>("address");
+    QTest::addColumn<bool>("dataToWrite");
+
+    for (int i = 0; i < 8; i++) {
+        QTest::newRow(qPrintable(QString("write_addr%1_1").arg(i))) << i << true;
+    }
+}
+
+void TestLevel4RAM8X1::testRamArray()
+{
+    QFETCH(int, address);
+    QFETCH(bool, dataToWrite);
+
+    auto &f = *s_level4Ram8x1;
+
+    f.writeData(dataToWrite, address);
+    QCOMPARE(f.readData(address), dataToWrite);
+}
+
+void TestLevel4RAM8X1::testPatternTest()
+{
+    auto &f = *s_level4Ram8x1;
+    const bool pattern[8] = {true, false, true, false, true, false, true, false};
+
+    for (int testAddr = 0; testAddr < 8; ++testAddr) {
+        f.writeData(pattern[testAddr], testAddr);
+        QCOMPARE(f.readData(testAddr), pattern[testAddr]);
+    }
+}
+
+void TestLevel4RAM8X1::testWeGating()
+{
+    auto &f = *s_level4Ram8x1;
+
+    f.setAddress(3);
+    f.dataIn->setOn(true);
+    f.writeEnable->setOn(false);  // WE disabled
+    QuickTestUtils::clockCycle(f.sim, f.clock);
+    f.sim->update();
+
+    QCOMPARE(inputStatus(f.dataOut), false);
+}
+
+void TestLevel4RAM8X1::testHoldBehavior()
+{
+    auto &f = *s_level4Ram8x1;
+
+    // Write 1 to address 5
+    f.writeData(true, 5);
+    QCOMPARE(f.readData(5), true);
+
+    // Try to overwrite with WE=0
+    f.setAddress(5);
+    f.dataIn->setOn(false);
+    f.writeEnable->setOn(false);
+    QuickTestUtils::clockCycle(f.sim, f.clock);
+    f.sim->update();
+
+    QCOMPARE(inputStatus(f.dataOut), true);  // Should still hold 1
+}
+
+// Writing two different addresses must not corrupt each other's stored value.
+void TestLevel4RAM8X1::testIsolation()
+{
+    auto &f = *s_level4Ram8x1;
+
+    f.writeData(true, 0);
+    f.writeData(false, 7);
+
+    QCOMPARE(f.readData(0), true);
+    QCOMPARE(f.readData(7), false);
+}
+
+// Writing the same address repeatedly must have each write take effect.
+void TestLevel4RAM8X1::testSequentialWrite()
+{
+    auto &f = *s_level4Ram8x1;
+    const bool writeSequence[] = {true, false, true, false};
+
+    for (int writeIdx = 0; writeIdx < 4; ++writeIdx) {
+        f.writeData(writeSequence[writeIdx], 0);
+        QCOMPARE(inputStatus(f.dataOut), writeSequence[writeIdx]);
+    }
+}
+
+// Async Reset (F54): asserting Reset clears every cell to 0 without a clock
+// edge, and writes resume normally once Reset is released.
+void TestLevel4RAM8X1::testReset()
+{
+    auto &f = *s_level4Ram8x1;
+
+    // Fill all 8 cells with 1
+    for (int addr = 0; addr < 8; ++addr) {
+        f.writeData(true, addr);
+        QCOMPARE(f.readData(addr), true);
+    }
+
+    // Assert Reset (active-high): all cells forced to 0 asynchronously
+    f.reset->setOn(true);
+    f.sim->update();
+    for (int addr = 0; addr < 8; ++addr) {
+        QCOMPARE(f.readData(addr), false);
+    }
+
+    // Release Reset: the array accepts writes again
+    f.reset->setOn(false);
+    f.sim->update();
+    f.writeData(true, 6);
+    QCOMPARE(f.readData(6), true);
+    QCOMPARE(f.readData(2), false);  // other cells stayed cleared
+}

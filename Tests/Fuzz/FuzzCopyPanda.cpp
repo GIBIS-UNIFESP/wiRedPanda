@@ -14,9 +14,8 @@
  *     copyPandaFile is distinct.
  *
  *   - copyPandaFile(): recursively copies a .panda file and its file-backed IC
- *     dependencies (also copying the file itself and the peek-based
- *     plausibility pre-check, both formerly duplicated in the now-removed
- *     FileUtils::copyPandaDeps()).  The recursion guard (QSet<QString>) and
+ *     dependencies, including the file copy itself and a peek-based
+ *     plausibility pre-check.  The recursion guard (QSet<QString>) and
  *     the "fileBackedICs" metadata key parsing are completely dark without an
  *     explicit caller.
  *
@@ -32,7 +31,7 @@
 #include <cstddef>
 #include <cstdint>
 
-#include <QApplication>
+#include <QGuiApplication>
 #include <QByteArray>
 #include <QCoreApplication>
 #include <QDataStream>
@@ -54,7 +53,7 @@
 
 namespace {
 
-QApplication *g_app  = nullptr;
+QGuiApplication *g_app  = nullptr;
 int  g_argc = 0;
 char **g_argv = nullptr;
 
@@ -95,7 +94,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
 
     g_argc = *argc;
     g_argv = *argv;
-    g_app  = new QApplication(g_argc, g_argv);
+    g_app  = new QGuiApplication(g_argc, g_argv);
 
     return 0;
 }

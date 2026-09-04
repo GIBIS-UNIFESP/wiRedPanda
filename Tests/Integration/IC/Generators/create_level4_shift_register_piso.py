@@ -50,8 +50,7 @@ class ShiftRegisterPISOBuilder(ICBuilderBase):
 
         # Position hierarchy. Control/data switches each get a full
         # VERTICAL_STAGE_SPACING slot (order-preserving: Clock < Load <
-        # D0-D3) -- they used to be packed 40-50px apart, well under the
-        # ~64px element height.
+        # D0-D3), clearing the ~64px element height.
         input_x = 50.0
         input_y_clk = 50.0
         input_y_load = input_y_clk + VERTICAL_STAGE_SPACING
@@ -62,17 +61,17 @@ class ShiftRegisterPISOBuilder(ICBuilderBase):
         load_gate_y_base = input_y_load
         shift_gate_x = input_x + (2 * HORIZONTAL_GATE_SPACING)
         # shift_gate_y_base is computed below, after BusMux_Load is
-        # instantiated -- it must clear BusMux_Load's real measured height,
-        # not a flat 30px offset (both are 74x114+ embedded ICs).
+        # instantiated -- it must clear BusMux_Load's real measured height
+        # (both are 74x114+ embedded ICs).
         select_gate_x = input_x + (3 * HORIZONTAL_GATE_SPACING)
         select_gate_y_base = input_y_load + 15.0
         dff_x = input_x + (4 * HORIZONTAL_GATE_SPACING)
         dff_y_base = input_y_load
         sout_x = input_x + (5 * HORIZONTAL_GATE_SPACING)
         sout_y = input_y_load
-        # 100px was too tight for the rotated IC labels stacked in this column
-        # (mux_sel0-3, then Vcc) -- their rotated text reaches well past a
-        # single row, so use a full 2x spacing unit between rows instead.
+        # The rotated IC labels stacked in this column (mux_sel0-3, then Vcc)
+        # reach well past a single row, so use a full 2x spacing unit between
+        # rows.
         bit_spacing = 2 * VERTICAL_STAGE_SPACING
 
         # Create input controls
@@ -113,7 +112,7 @@ class ShiftRegisterPISOBuilder(ICBuilderBase):
 
         # Instantiate load path Bus Mux 4-bit IC. Measured with its real size
         # since BusMux_Shift stacks directly below it and must clear its
-        # actual height (74x114+), not a flat 30px offset.
+        # actual height (74x114+).
         load_mux_handle = await self.instantiate_ic_with_size(
             "level4_bus_mux_4bit", load_gate_x, load_gate_y_base, "BusMux_Load"
         )
@@ -197,7 +196,7 @@ class ShiftRegisterPISOBuilder(ICBuilderBase):
                 return False
 
             # Connect In1[i] to shiftIn[i]: Q[i+1] for i<3; the MSB shifts in
-            # an explicit constant 0 (F34 — was an implicit unconnected default)
+            # an explicit constant 0.
             if i < 3:
                 if not await self.connect(
                     dff_ids[i + 1], shift_mux_ic_id, source_port_label="Q", target_port_label=f"In1[{i}]"

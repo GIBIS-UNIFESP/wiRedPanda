@@ -11,7 +11,6 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElementInput.h"
-#include "App/Scene/Scene.h"
 
 namespace DolphinModelBuilder {
 
@@ -55,11 +54,9 @@ QStringList labelsOf(const QVector<Row> &rows, const RowKind kind)
 
 } // namespace
 
-Signals collect(Scene *scene)
+Signals collect(const QVector<GraphicElement *> &elements)
 {
     Signals result;
-
-    const auto elements = scene->elements();
 
     if (elements.isEmpty()) {
         throw PANDACEPTION_WITH_CONTEXT("BewavedDolphin", "The circuit is empty. Add input and output elements to generate a waveform.");

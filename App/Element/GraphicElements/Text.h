@@ -8,6 +8,7 @@
 #pragma once
 
 #include "App/Element/GraphicElement.h"
+#include "App/Element/GraphicElementLabel.h"
 
 /**
  * \class Text
@@ -22,7 +23,7 @@ class Text : public GraphicElement
 
 public:
     /// Constructs a Text element.
-    explicit Text(QGraphicsItem *parent = nullptr);
+    explicit Text(QObject *parent = nullptr);
 
     /// Returns a bounding rect that includes the label text, not just the pixmap.
     QRectF boundingRect() const override;
@@ -30,11 +31,18 @@ public:
     /// Refreshes the empty-state hint's color alongside the base label/port theming.
     void updateTheme() override;
 
+    /// Returns the empty-state hint label itself -- lets a rendering host draw it via the
+    /// same pos()+transform()+paint() composition used for the real label (see
+    /// GraphicElement::labelItem()'s identical rationale).
+    GraphicElementLabel *emptyHintItem() { return &m_emptyHint; }
+    /// \overload
+    const GraphicElementLabel *emptyHintItem() const { return &m_emptyHint; }
+
 protected:
     /// Shows a faint "double-click to add text" hint whenever the label is empty, since an
     /// empty Text element is otherwise a fully transparent, near-invisible placeholder.
     void labelContentChanged() override;
 
 private:
-    QGraphicsSimpleTextItem *m_emptyHint = new QGraphicsSimpleTextItem(this);
+    GraphicElementLabel m_emptyHint{this};
 };

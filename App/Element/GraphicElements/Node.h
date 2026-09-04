@@ -7,9 +7,10 @@
 
 #pragma once
 
-#include "App/Element/GraphicElement.h"
+#include <QPixmap>
+#include <QPointF>
 
-class QGraphicsPixmapItem;
+#include "App/Element/GraphicElement.h"
 
 /**
  * \class Node
@@ -28,12 +29,15 @@ public:
     // --- Lifecycle ---
 
     /// Constructs the element with optional \a parent.
-    explicit Node(QGraphicsItem *parent = nullptr);
+    explicit Node(QObject *parent = nullptr);
 
     // --- Visual ---
 
     /// Recalculates port positions for the current port count.
     void updatePortsProperties() override;
+
+    /// \reimp Draws the base pixmap, then the wireless-channel indicator glyph if active.
+    void paint(QPainter *painter) override;
 
     /// Copies the single input value to the single output (pass-through).
     void updateLogic() override;
@@ -64,6 +68,17 @@ private:
     void updateWirelessColor(Status status);
 
     WirelessMode m_wirelessMode = WirelessMode::None;
-    QGraphicsPixmapItem *m_wirelessIndicator = nullptr;
+
+    /// The small channel-indicator glyph (fan of arcs), drawn by paint() in this element's own
+    /// local frame (GraphicElement does not parent Qt Graphics View children). Its own local
+    /// origin lands at the pixmap's dot (see renderWirelessPixmap()'s SVG), so
+    /// m_wirelessIndicatorPos is exactly where that dot should land in Node's local frame -- Tx
+    /// draws it unflipped, Rx horizontally flipped (arcs open the opposite way), never rotated,
+    /// so a plain flip flag is enough; no need for the general per-glyph QTransform machinery
+    /// Port/GraphicElementLabel use.
+    QPixmap m_wirelessIndicatorPixmap;
+    QPointF m_wirelessIndicatorPos;
+    bool m_wirelessIndicatorFlipped = false;
+    bool m_wirelessIndicatorVisible = false;
     QColor m_wirelessColor;
 };

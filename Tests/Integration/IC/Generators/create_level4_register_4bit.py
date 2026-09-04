@@ -15,7 +15,7 @@ Circuit Architecture:
 - 4× DFlipFlop elements: State storage
 - Clock input: Shared by all flip-flops
 - Reset input: inverted into the flip-flops' ~Clear (async, the
-  level3_register_1bit pattern — F52)
+  level3_register_1bit pattern)
 
 Register Behavior:
 - When Reset=1: Q forced to 0 asynchronously (overrides load)
@@ -28,8 +28,8 @@ Internal Structure:
 - Select: EN controls which path (0=hold, 1=load)
 - Output: Mux Out[0-3] → FF D inputs
 
-This refactoring eliminates manual gate logic (NOT, AND, OR) by using the
-composite bus_mux_4bit IC, demonstrating proper IC composition hierarchy.
+Uses the composite bus_mux_4bit IC instead of manual gate logic (NOT, AND,
+OR), demonstrating proper IC composition hierarchy.
 
 Usage:
     python create_level4_register_4bit.py
@@ -54,8 +54,7 @@ class RegisterBuilder(ICBuilderBase):
 
         # Create input controls. Each control/data switch gets its own full
         # VERTICAL_STAGE_SPACING slot (order-preserving: Clock < Enable <
-        # Reset < D0-D3) -- Reset used to sit only half a slot below Enable,
-        # which overlapped both Enable and D0.
+        # Reset < D0-D3).
         input_x = 50.0
         clk_id = await self.create_element("InputSwitch", input_x, 100.0, "Clock")
         if clk_id is None:
@@ -82,11 +81,10 @@ class RegisterBuilder(ICBuilderBase):
             await self.log(f"  ✓ Created input D{i} (id={d_id})")
 
         # NOT gates (EN/Reset inversion) share a column between the input
-        # switches and the BusMux IC -- previously NOT_EN was created at the
-        # exact same position as BusMux_LoadHold itself.
+        # switches and the BusMux IC.
         not_x = input_x + HORIZONTAL_GATE_SPACING
 
-        # Instantiate 4-bit Bus Multiplexer IC (replaces manual AND/OR gates).
+        # Instantiate 4-bit Bus Multiplexer IC (used instead of manual AND/OR gates).
         # Measured with its real size (72x64+, wider than a stock element) so
         # dff_x can clear its actual footprint instead of a flat constant.
         mux_x = not_x + HORIZONTAL_GATE_SPACING
@@ -130,8 +128,8 @@ class RegisterBuilder(ICBuilderBase):
                 return False
 
         # ========== Async reset: Reset (active HIGH) -> NOT -> ~Clear ==========
-        # The level3_register_1bit pattern (F52). Lives in the shared NOT
-        # column (not_x), aligned with Reset's own row.
+        # The level3_register_1bit pattern. Lives in the shared NOT column
+        # (not_x), aligned with Reset's own row.
         not_reset_id = await self.create_element("Not", not_x, 100.0 + (2 * VERTICAL_STAGE_SPACING), "NOT_Reset")
         if not_reset_id is None:
             return False
@@ -165,8 +163,7 @@ class RegisterBuilder(ICBuilderBase):
         # Bus mux logic: Sel=0 → In0 (load), Sel=1 → In1 (hold)
         # We need: EN=1 → load, EN=0 → hold
         # So we invert EN: Sel = NOT(EN). Lives in the shared NOT column
-        # (not_x), aligned with Enable's own row -- previously it sat exactly
-        # where BusMux_LoadHold is instantiated.
+        # (not_x), aligned with Enable's own row.
         not_gate_id = await self.create_element("Not", not_x, 100.0 + VERTICAL_STAGE_SPACING, "NOT_EN")
         if not_gate_id is None:
             return False

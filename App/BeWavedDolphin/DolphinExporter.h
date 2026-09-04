@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "App/BeWavedDolphin/SignalDelegate.h"
+#include "App/BeWavedDolphin/WaveSegment.h"
 
 class QPixmap;
 class QString;

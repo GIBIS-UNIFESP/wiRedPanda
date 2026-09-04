@@ -1,0 +1,173 @@
+// Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+/** \file
+ * \brief QuickWorkspaceManager: CanvasItem-side port of App/UI/WorkspaceManager.h.
+ */
+
+#pragma once
+
+#include <memory>
+#include <vector>
+
+#include <QDir>
+#include <QFileInfo>
+#include <QObject>
+#include <QString>
+
+#include "App/QuickShell/Chrome/DialogProvider.h"
+#include "App/QuickShell/Chrome/QuickMainWindowHost.h"
+
+class QuickWorkSpace;
+
+/**
+ * \class QuickWorkspaceManager
+ * \brief Owns the document/tab model: the current tab, tab creation/closing/switching, and
+ * the file open/save/reload/autosave workflow. CanvasItem-side port of WorkspaceManager.
+ *
+ * \details Copy-and-adapt port (same precedent as CanvasCommands/CanvasICRegistry/
+ * QuickWorkSpace), not a modification of the production WorkspaceManager. The real
+ * adaptation here isn't the file-operation logic (that ports close to unchanged) -- it's that
+ * WorkspaceManager is built directly out of a QTabWidget (constructor takes one, every method
+ * calls straight through to `m_tab->count()`/`widget(i)`/`addTab()`/`setCurrentIndex()`/...),
+ * not just parented by one. This class replaces that with a plain ordered
+ * `std::vector<std::unique_ptr<QuickWorkSpace>>` plus a current index -- no QTabWidget-shaped
+ * dependency to satisfy, and a tab's display title is computed on demand (tabTitle()) from
+ * the QuickWorkSpace's own state rather than tracked as separately-mutable QTabWidget text
+ * that has to be kept in sync by hand. `std::vector` rather than QVector/QList: Qt's
+ * containers require copy-constructible elements even for the COW detach() path never
+ * actually hit at runtime, which a `unique_ptr` can't satisfy.
+ *
+ * Takes a QuickMainWindowHost (implemented by QuickAppController, matching
+ * QuickICController/QuickExportController's identical constructor shape) for status-bar
+ * messages and IC-button visibility -- palette refresh (`palette()->updateICList()`/
+ * `updateEmbeddedICList()`) is also reachable through it (`host().palette()`) but not yet
+ * wired at every call site; those remaining ones are marked with a comment, not silently
+ * dropped.
+ */
+class QuickWorkspaceManager : public QObject
+{
+    Q_OBJECT
+
+public:
+    explicit QuickWorkspaceManager(QuickMainWindowHost &host, QObject *parent = nullptr);
+
+    // --- Tab list access (no QTabWidget to lean on, see this class's doc comment) ---
+
+    [[nodiscard]] int count() const { return static_cast<int>(m_tabs.size()); }
+    [[nodiscard]] QuickWorkSpace *tabAt(int index) const;
+    [[nodiscard]] int indexOf(QuickWorkSpace *tab) const;
+    [[nodiscard]] int currentIndex() const { return m_currentIndex; }
+    /// Switches the current tab and emits currentTabChanged(). Mirrors what setting
+    /// QTabWidget::currentIndex used to trigger via onCurrentIndexChanged().
+    void setCurrentIndex(int index);
+    /// Moves the tab at \a from to sit at \a to, shifting the tabs in between -- the
+    /// underlying operation behind tab->setMovable(true) (MainWindowUI.cpp), which Qt Widgets
+    /// gets for free from QTabBar's own built-in drag handling; this class has no QTabWidget
+    /// to lean on for that (see this class's own doc comment), so the reorder itself needs a
+    /// real method here for Main.qml's drag gesture to call. No-op for an out-of-range index or
+    /// from == to. m_currentTab itself never changes (whichever tab was active stays active);
+    /// only its index may, so this always re-derives m_currentIndex from m_currentTab's new
+    /// position rather than tracking the shift by hand.
+    void moveTab(int from, int to);
+
+    // --- Accessors (mirror WorkspaceManager's MainWindowHost-delegate surface) ---
+
+    [[nodiscard]] QuickWorkSpace *currentTab() const { return m_currentTab; }
+    [[nodiscard]] QFileInfo currentFile() const;
+    /// Display title for \a tab (file name, numbered placeholder, or "[blob]" for an inline
+    /// IC tab), without the unsaved "*" marker. Mirrors WorkspaceManager::displayName(), but
+    /// callable for any tab (not just the current one) since there's no QTabWidget tab-text
+    /// cache to read instead.
+    [[nodiscard]] QString tabTitle(QuickWorkSpace *tab) const;
+    [[nodiscard]] QString currentTabName() const;
+    [[nodiscard]] QDir currentDir() const;
+    [[nodiscard]] QFileInfo icListFile() const;
+    [[nodiscard]] QString dolphinFileName() const;
+    void setDolphinFileName(const QString &fileName);
+
+    // --- Headless operations (mirror WorkspaceManager's, called by CLI batch/MCP/tests) ---
+
+    void createNewTab();
+    void loadPandaFile(const QString &fileName);
+    void openICInTab(const QString &blobName, int icElementId, const QByteArray &blob);
+    void save(const QString &fileName = {});
+    void loadAutosaveFiles();
+
+    [[nodiscard]] bool hasModifiedFiles();
+    bool closeFiles();
+    /// Asks "save before closing?"; \a multiple offers Yes-to-all/No-to-all too. Mirrors
+    /// WorkspaceManager::confirmSave(), returning DialogButton instead of a raw
+    /// QMessageBox::StandardButton int.
+    DialogButton confirmSave(bool multiple);
+
+    /// Removes the tab at \a tabIndex immediately, without prompting to save even if modified.
+    /// Mirrors FileHandler::handleCloseCircuit()'s original QTabWidget-direct-manipulation
+    /// bypass of WorkspaceManager's own interactive confirmSave() path: MCP mode is
+    /// non-interactive, and a save-confirmation dialog would otherwise block forever with no
+    /// user to answer it. Used only by QuickFileHandler's close_circuit MCP command --
+    /// interactive callers (the tab bar's own close affordance, once it exists) should use
+    /// closeTab() instead.
+    void removeTabWithoutPrompt(int tabIndex);
+
+public slots:
+    /// Closes the tab at \a tabIndex (prompting to save if needed). Returns false if cancelled.
+    bool closeTab(int tabIndex);
+
+    // Interactive file-menu handlers (each guards its own body, mirroring WorkspaceManager's).
+    void newTab();
+    void openFile();
+    void saveFile();
+    void saveFileAs();
+    void reloadFile();
+
+    /// Updates recent-files/tooltip bookkeeping for the workspace that emitted fileChanged.
+    /// Mirrors WorkspaceManager::setCurrentFile() (name collision with QuickWorkSpace's own
+    /// private setCurrentFile() is fine, different classes/signatures).
+    void onTabFileChanged(const QFileInfo &fileInfo);
+
+    /// Retitles any open inline-IC tab tracking \a oldName to \a newName, following a
+    /// CanvasICRegistry::blobRenamed signal -- otherwise an already-open sub-circuit tab keeps
+    /// showing the pre-rename name indefinitely (it was only ever set once, at tab creation).
+    /// Mirrors WorkspaceManager::onBlobRenamed().
+    void onBlobRenamed(const QString &oldName, const QString &newName);
+
+signals:
+    /// Emitted when the active tab changes (or becomes null); a later sub-step's chrome
+    /// rebinds itself here, the same way SceneUiBinder does off WorkspaceManager's signal.
+    void currentTabChanged(QuickWorkSpace *tab);
+    /// Emitted when a file-backed tab is (re)named, to feed a future RecentFiles list.
+    void recentFileAdded(const QString &filePath);
+    /// Emitted when the current tab's title or modified state changes.
+    void titleChanged();
+    /// Emitted whenever the tab list itself changes shape (added/removed/reordered) -- no
+    /// QTabWidget to derive this from automatically, so it's explicit. A later sub-step's QML
+    /// tab bar rebuilds its view off this.
+    void tabsChanged();
+
+private:
+    /// Shared tail of closeTab()/removeTabWithoutPrompt(): erases the tab at \a tabIndex and
+    /// re-establishes m_currentTab/m_currentIndex consistency, emitting currentTabChanged()/
+    /// tabsChanged() as needed.
+    void removeTabAt(int tabIndex);
+
+    [[nodiscard]] int closeTabAnyway();
+    [[nodiscard]] int findTabWithFile(const QString &fileName) const;
+    [[nodiscard]] QString nextUntitledTitle() const;
+    /// Warns and offers to switch tabs if \a fileName is already open in another tab. Returns
+    /// true if a conflict was found (and shown), false if the save should proceed. Simplified
+    /// from WorkspaceManager's version: the real one offers a "Switch to Tab" action button
+    /// alongside Ok; DialogProvider's choice() has no room for a custom-labeled button yet
+    /// (a small, deliberately deferred UX gap -- the conflict is still correctly detected and
+    /// blocked, just without the one-click convenience switch).
+    bool warnIfOpenInAnotherTab(const QString &fileName);
+    /// Resolves \a fileName into a non-empty, ".panda"-suffixed absolute path for the current
+    /// tab, prompting via a Save-As dialog if the tab has no path of its own yet. Returns an
+    /// empty string if there's nothing to resolve to and the user cancels the dialog.
+    QString promptSavePath(const QString &fileName);
+
+    QuickMainWindowHost &m_host;
+    std::vector<std::unique_ptr<QuickWorkSpace>> m_tabs;
+    QuickWorkSpace *m_currentTab = nullptr;
+    int m_currentIndex = -1;
+};

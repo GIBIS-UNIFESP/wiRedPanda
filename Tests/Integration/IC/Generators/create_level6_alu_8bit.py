@@ -14,8 +14,8 @@ Inputs:
   CarryIn (ADD chain carry-in; defaults 0 when unconnected)
   SubCarryIn (SUB chain carry-in; defaults 1 — the two's-complement +1 —
               when unconnected, so standalone SUB works; chain it for 16-bit)
-  ShrIn (SHR bit-7 fill; defaults 0 — chain the neighbor's A[0] for 16-bit; F61)
-  ShlIn (SHL bit-0 fill; defaults 0 — chain the neighbor's A[7] for 16-bit; F61)
+  ShrIn (SHR bit-7 fill; defaults 0 — chain the neighbor's A[0] for 16-bit)
+  ShlIn (SHL bit-0 fill; defaults 0 — chain the neighbor's A[7] for 16-bit)
 
 Operations (OpCode mapping):
   000: ADD (A + B)
@@ -69,8 +69,7 @@ class ALU8BitBuilder(ICBuilderBase):
         input_b_x_start = 50.0
         input_op_x = input_a_x_start + (8 * HORIZONTAL_GATE_SPACING) + HORIZONTAL_GATE_SPACING
         input_a_y = 100.0
-        # A full stage below input_a_y -- the old 120.0 was only 20px below the
-        # A[] row (same x formula as A[]), so A[i] and B[i] overlapped pairwise.
+        # A full stage below input_a_y (same x formula as A[]).
         input_b_y = input_a_y + VERTICAL_STAGE_SPACING
         op_y = 100.0
 
@@ -109,9 +108,7 @@ class ALU8BitBuilder(ICBuilderBase):
         # Instantiate two 4-bit ALU ICs for operations 0-3. The OpCode[] row
         # above occupies input_op_x + {0,1,2}*HORIZONTAL_GATE_SPACING (3
         # slots), so the next stage must clear the full row, not just one
-        # column past it -- the old "+ 1 *"/"+ 2 *" base aliased onto
-        # OpCode[1]/OpCode[2]'s own x (and, transitively, onto ShrIn/ShlIn's
-        # x further below, which used those same absolute columns).
+        # column past it.
         alu_low_x = input_op_x + 3 * HORIZONTAL_GATE_SPACING
         alu_high_x = alu_low_x + HORIZONTAL_GATE_SPACING
         alu_y = 250.0
@@ -135,7 +132,7 @@ class ALU8BitBuilder(ICBuilderBase):
                 if not await self.connect(src, tgt_alu, target_port_label=f"B[{i}]"):
                     return False
 
-        # Carry-in ports (F26): exposed as boundary inputs so two 8-bit ALUs
+        # Carry-in ports: exposed as boundary inputs so two 8-bit ALUs
         # can be chained into a 16-bit one. The saved switch state is the
         # default for unconnected IC inputs, so standalone behavior is
         # unchanged: CarryIn defaults off (0) and SubCarryIn defaults ON (the
@@ -173,8 +170,8 @@ class ALU8BitBuilder(ICBuilderBase):
             return False
         await self.log("  ✓ Connected ADD and SUB carry chains between 4-bit ALUs")
 
-        # Note: level4_ripple_alu_4bit no longer takes operation inputs - it outputs all 4 operations simultaneously
-        # Operations are selected by level3_alu_selector_5way based on OpCode
+        # level4_ripple_alu_4bit has no operation-select input; it outputs all 4 operations
+        # simultaneously. Operations are selected by level3_alu_selector_5way based on OpCode.
 
         # Create XOR gates for operation 4 (XOR = A ^ B)
         xor_results = []
@@ -209,14 +206,10 @@ class ALU8BitBuilder(ICBuilderBase):
 
         # Note: AND and OR operations are already provided by level4_ripple_alu_4bit
 
-        # Shift taps (F31: these two lists were name-swapped; the op-decode
-        # select was swapped the same way, so behavior was already correct —
-        # the names now state what each list holds).
-        # Boundary fill ports (F61): the fills used to be internal GND
-        # constants, so 16-bit SHL/SHR lost the bit crossing the byte
-        # boundary. Exposed as saved-off input switches (the F26 carry-port
-        # mechanism): standalone behavior is unchanged (fill = 0), and a
-        # 16-bit ALU chains them from its own operand bits.
+        # Boundary fill ports: exposed as saved-off input switches, the same
+        # mechanism as the carry-in ports above. Standalone behavior is
+        # unchanged (fill = 0), and a 16-bit ALU chains them from its own
+        # operand bits.
 
         # SHR (A >> 1): Result[i] = A[i+1], top bit fills from ShrIn.
         shrin_id = await self.create_element(
@@ -251,9 +244,8 @@ class ALU8BitBuilder(ICBuilderBase):
 
         await self.log("  ✓ Created shift left taps (A << 1, fill = ShlIn)")
 
-        # Need to extend selector to 8-way instead of 5-way
-        # For now, create additional mux layer to handle operations 5-7
-        # Create selectors to choose between 5-way output and additional operations (NOT, SHL, SHR)
+        # An additional mux layer selects operations 5-7 (NOT, SHL, SHR) on top of
+        # the 5-way selector's output for operations 0-4.
 
         # Instantiate level3_alu_selector_5way per bit to select from 5 operations (0-4)
         # bit_col_step is wider than the standard HORIZONTAL_GATE_SPACING: this
@@ -325,15 +317,12 @@ class ALU8BitBuilder(ICBuilderBase):
         await self.log("  ✓ Instantiated 8 5-way selectors for operations 0-4")
 
         # Final selection happens in the Mux1/Mux2/Mux3 cascade below.
-        # (F26: a dead "Mux8way" layer used to sit here — 8 muxes with data
-        # wired but no select and no consumer.)
         # Selector5way's rotated IC label reaches down past its own real
         # height (learned above, not a flat 64px guess), so the gap to the
         # row below is real-height-based, not a flat VERTICAL_STAGE_SPACING.
         # The rotated label's reach also varies with the platform's font
-        # metrics (a few extra px were observed on Windows CI), so add real
-        # margin on top of the measured height rather than relying on the
-        # bare VERTICAL_STAGE_SPACING gap.
+        # metrics, so add real margin on top of the measured height rather
+        # than relying on the bare VERTICAL_STAGE_SPACING gap.
         mux_8way_y = selector_y + max(selector_heights) + VERTICAL_STAGE_SPACING + 40
 
         # For operations 0-4: Use the 5way selector
@@ -346,11 +335,9 @@ class ALU8BitBuilder(ICBuilderBase):
         # Op6: OpCode[2] AND OpCode[1] AND NOT(OpCode[0]) (detects 110)
         # Op7: OpCode[2] AND OpCode[1] AND OpCode[0] (detects 111)
         #
-        # This 2-column x 3-row block used to sit at selector_x/selector_x +
-        # HORIZONTAL_GATE_SPACING -- directly inside the Selector5way[]/mux
+        # This 2-column x 3-row block sits a full row past the Selector5way[]/mux
         # cascade's own 8-wide column range (selector_x .. selector_x + 7 *
-        # bit_col_step), so it aliased onto Selector5way[0]/[1] and
-        # the Mux1/Mux2 cascade below. Move it a full row past that range.
+        # bit_col_step) to avoid overlapping it.
         decoder_x = selector_x + 9 * bit_col_step
 
         # "NOT_OpCode0"/"NOT_OpCode1" render wider (~113px) than the standard
@@ -451,10 +438,7 @@ class ALU8BitBuilder(ICBuilderBase):
         # Create cascade of muxes to select from 8 operations.
         #
         # Each of Mux1/Mux2/Mux3/Op6_OR_Op7 is its own full 8-wide row (one
-        # per bit i), each row a full VERTICAL_STAGE_SPACING below the last --
-        # the old layout instead offset each type by a small x delta
-        # (-2/0/+1/+2 columns) at the SAME y, so e.g. Mux3_Final[i] and
-        # Mux1_5way_NOT[i+3] landed on the same column and collided.
+        # per bit i), each row a full VERTICAL_STAGE_SPACING below the last.
         mux1_row_y = mux_8way_y
         mux2_row_y = mux1_row_y + VERTICAL_STAGE_SPACING
         mux3_row_y = mux2_row_y + VERTICAL_STAGE_SPACING
@@ -554,10 +538,9 @@ class ALU8BitBuilder(ICBuilderBase):
 
         # Create Zero flag (1 if all Result bits are 0)
         # NOR all result outputs together. Placed a full stage below the
-        # Result[] row (which now lives at led_row_y, well past the old
-        # "selector_y + 2 * VERTICAL_STAGE_SPACING" that used to alias onto it).
-        # Zero_NOR sits at the same x as Result[0] -- Result[0]'s label reaches
-        # past a flat 1x gap, so this needs 1.5x instead.
+        # Result[] row (led_row_y). Zero_NOR sits at the same x as Result[0]
+        # -- Result[0]'s label reaches past a flat 1x gap, so this needs 1.5x
+        # instead.
         flags_row_y = led_row_y + 1.5 * VERTICAL_STAGE_SPACING
         zero_nor_id = await self.create_element("Nor", selector_x, flags_row_y, "Zero_NOR")
         if zero_nor_id is None:
@@ -569,9 +552,8 @@ class ALU8BitBuilder(ICBuilderBase):
             self.log_error(f"Failed to set input_size=8 for Zero NOR: {set_size.error}")
             return False
 
-        # Connect the FINAL per-bit results to the NOR (F26: this used to tap
-        # the 5-way selector outputs, so for NOT/SHL/SHR the flag reflected
-        # A XOR B instead of the actual result).
+        # Connect the FINAL per-bit results (not the 5-way selector outputs) to
+        # the NOR, so the flag reflects the actual selected result for every op.
         for i in range(8):
             if not await self.connect(final_result_muxes[i], zero_nor_id, source_port_label="Out", target_port=i):
                 return False
@@ -597,7 +579,7 @@ class ALU8BitBuilder(ICBuilderBase):
         await self.log(f"  ✓ Created Negative LED (id={negative_led_id})")
 
         await self.log("  🔍 Connecting final Result[7] to Negative LED")
-        # F26: tap the final result bit, not the 5-way selector output.
+        # Tap the final result bit, not the 5-way selector output.
         if not await self.connect(final_result_muxes[7], negative_led_id, source_port_label="Out"):
             return False
 
@@ -618,7 +600,7 @@ class ALU8BitBuilder(ICBuilderBase):
 
         await self.log("  ✓ Created Carry flag")
 
-        # SubCarryOut (F26): exposes the SUB chain's carry so two 8-bit ALUs
+        # SubCarryOut exposes the SUB chain's carry so two 8-bit ALUs
         # can be cascaded into a 16-bit subtractor.
         subcarry_led_id = await self.create_element(
             "Led", selector_x + (4 * HORIZONTAL_GATE_SPACING), flags_row_y, "SubCarryOut"

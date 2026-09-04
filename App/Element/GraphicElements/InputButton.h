@@ -24,7 +24,7 @@ public:
     // --- Lifecycle ---
 
     /// Constructs the element with optional \a parent.
-    explicit InputButton(QGraphicsItem *parent = nullptr);
+    explicit InputButton(QObject *parent = nullptr);
 
     // --- State Queries ---
 
@@ -56,7 +56,7 @@ protected:
     // --- Event handlers ---
 
     /// \reimp
-    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+    void handleClick() override;
     /// \reimp
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
+    void handleRelease() override;
 };

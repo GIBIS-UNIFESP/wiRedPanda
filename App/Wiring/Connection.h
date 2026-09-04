@@ -14,8 +14,10 @@
 
 #pragma once
 
-#include <QGraphicsPathItem>
+#include <QPainterPath>
 #include <QPen>
+#include <QPointF>
+#include <QRectF>
 
 #include "App/Core/Enums.h"
 #include "App/Core/ItemWithId.h"
@@ -24,6 +26,7 @@ struct SerializationContext;
 class InputPort;
 class OutputPort;
 class Port;
+class QPainter;
 
 /**
  * \class Connection
@@ -33,15 +36,21 @@ class Port;
  * ports.  It is coloured according to its logical status (active/inactive/unknown/selected)
  * and can be highlighted when the cursor hovers over it.  Connections are serializable
  * and participate in the undo/redo system.
+ *
+ * \details path()/pen()/isSelected() below are plain members and methods this class implements
+ * itself. Drawing order (wires behind elements) and adaptive antialiasing are a rendering
+ * host's concern, not something this class enforces on itself via setZValue()/scene() lookups.
  */
-class Connection : public QGraphicsPathItem, public ItemWithId
+class Connection : public ItemWithId
 {
 public:
-    enum { Type = QGraphicsItem::UserType + 2 }; ///< Custom QGraphicsItem type discriminator.
-    int type() const override { return Type; }
+    /// File-format type tag; the literal value must never change (see
+    /// GraphicElement::Type's identical note).
+    static constexpr int Type = 65536 + 2;
+    int type() const { return Type; }
 
     /// Constructs an unconnected wire.
-    explicit Connection(QGraphicsItem *parent = nullptr);
+    explicit Connection();
     ~Connection() override;
 
     // --- Port / Endpoint Access ---
@@ -79,13 +88,14 @@ public:
 
     // --- Geometric properties ---
 
-    /// \reimp
-    QRectF boundingRect() const override;
-    /// \reimp Cached, flattened stroke of the wire path -- the QGraphicsPathItem default
-    /// re-strokes the Bézier on every call and keeps its cubics, making every shape-exact
-    /// hit test (clicks, rubber-band selection) pay for stroking plus recursive curve
-    /// subdivision. Invalidated when the path or the real pen width changes.
-    QPainterPath shape() const override;
+    /// Expands beyond the path's tight bounding box by 10 px on all sides so a thick
+    /// selection outline / highlight halo is fully covered during repaints.
+    QRectF boundingRect() const;
+    /// Cached, flattened stroke of the wire path -- re-stroking the Bézier on every call
+    /// (keeping its cubics) would make every shape-exact hit test (clicks, rubber-band
+    /// selection) pay for stroking plus recursive curve subdivision. Invalidated when the
+    /// path or pen width changes.
+    QPainterPath shape() const;
     /// Returns the current angle of the bezier midpoint in radians.
     double angle();
     /// Recomputes the bezier control points from the current start/end positions.
@@ -94,10 +104,30 @@ public:
     /// Moves the wire endpoints to match the current port positions.
     void updatePosFromPorts();
 
+    /// Returns the wire's current Bézier path, in world/canvas coordinates (start/end
+    /// positions already come from Port::scenePos()).
+    QPainterPath path() const { return m_path; }
+
+    /// Returns the pen paint() would use as the item's own real pen -- distinct from
+    /// statusPen() -- kept for shape()'s stroke-tolerance calculation.
+    QPen pen() const { return m_pen; }
+    /// Sets the item's own real pen.
+    void setPen(const QPen &pen) { m_pen = pen; }
+
+    /// Returns \c true if this connection is currently selected.
+    bool isSelected() const { return m_selected; }
+    /// Sets the selection state and highlights/un-highlights both endpoint ports to match.
+    void setSelected(bool selected);
+
+    /// No-op placeholder for a rendering host's own repaint scheduling -- see
+    /// GraphicElement::update()'s identical note.
+    void update() {}
+
     // --- Visual rendering ---
 
-    /// \reimp
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+    /// Draws the wire at its own world/canvas position (path() is already in that frame,
+    /// unlike GraphicElement::paint()/Port::paint() which draw at local (0,0)).
+    void paint(QPainter *painter) const;
 
     /// Refreshes wire colours from the current ThemeManager palette.
     void updateTheme();
@@ -110,12 +140,8 @@ public:
     void save(QDataStream &stream) const;
 
 protected:
-    // --- Qt event overrides ---
-
-    /// \reimp
-    QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
-    /// \reimp
-    bool sceneEvent(QEvent *event) override;
+    /// Sets the item's own real path (see path()).
+    void setPath(const QPainterPath &path) { m_path = path; }
 
 private:
     friend class TestConnection;
@@ -136,6 +162,14 @@ private:
     QColor m_errorColor;
     QColor m_selectedColor;
 
+    /// Pens for each status value, precomputed once per updateTheme() call rather than
+    /// reconstructed (and its QBrush heap-allocated) on every single setStatus() --
+    /// see applyStatusPen()'s own comment for why this matters on a large circuit.
+    QPen m_unknownStatusPen;
+    QPen m_inactiveStatusPen;
+    QPen m_activeStatusPen;
+    QPen m_errorStatusPen;
+
     // --- Members: Ports & positions ---
 
     OutputPort *m_startPort = nullptr;
@@ -147,13 +181,16 @@ private:
 
     Status m_status = Status::Unknown;
     bool m_highLight = false;
+    bool m_selected = false;
 
-    /// Pen paint() actually draws with, kept separate from the item's own QGraphicsPathItem
-    /// pen -- see applyStatusPen() for why (avoids an unneeded BSP-tree re-index on every
-    /// status colour change).
+    /// Pen paint() actually draws with, kept separate from the item's own real pen() -- see
+    /// applyStatusPen() for why (avoids recomputing anything on every status colour change).
     QPen m_statusPen;
 
-    /// Backing cache for shape(); mutable since the override is const.
+    QPainterPath m_path;
+    QPen m_pen;
+
+    /// Backing cache for shape(); mutable since the method is const.
     mutable QPainterPath m_cachedShape;
     mutable bool m_shapeDirty = true;
 };

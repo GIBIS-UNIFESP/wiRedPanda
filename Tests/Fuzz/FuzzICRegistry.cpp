@@ -38,7 +38,7 @@
 #include <cstdint>
 #include <fuzzer/FuzzedDataProvider.h>
 
-#include <QApplication>
+#include <QGuiApplication>
 #include <QByteArray>
 #include <QCoreApplication>
 #include <QDataStream>
@@ -55,13 +55,13 @@
 #include "App/Element/GraphicElement.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
-#include "App/Scene/ICRegistry.h"
-#include "App/Scene/Scene.h"
-#include "App/Scene/Workspace.h"
+#include "App/QuickShell/Canvas/CanvasICRegistry.h"
+#include "App/QuickShell/Canvas/CanvasItem.h"
+#include "App/QuickShell/Chrome/QuickWorkSpace.h"
 
 namespace {
 
-QApplication *g_app  = nullptr;
+QGuiApplication *g_app  = nullptr;
 int  g_argc = 0;
 char **g_argv = nullptr;
 
@@ -106,9 +106,9 @@ QByteArray buildBlobMetadataPanda(const QString &blobName, const QByteArray &blo
 
 // Path A: direct ICRegistry API + initEmbeddedIC
 void exerciseRegistryDirect(const QString &blobName, const QByteArray &blobBytes,
-                             WorkSpace &ws)
+                             QuickWorkSpace &ws)
 {
-    ICRegistry *reg = ws.scene()->icRegistry();
+    CanvasICRegistry *reg = ws.canvas()->icRegistry();
 
     // Register fuzz bytes as the blob (exercises error paths in loadFromBlob).
     // Also register the valid blob under a different name so initEmbeddedIC
@@ -149,8 +149,9 @@ void exerciseRegistryDirect(const QString &blobName, const QByteArray &blobBytes
     // registerBlob — wraps blob in a self-contained panda (walks nested blobs)
     try { reg->registerBlob(blobName + "_reg", blobBytes); } catch (...) {}
 
-    // clearBlobs — removes all blobs
-    reg->clearBlobs();
+    // clearBlobs — removes all blobs (no single-call equivalent on CanvasICRegistry;
+    // blobMapRef() is the same direct-map-access seam ICRegistry::clearBlobs() itself uses)
+    reg->blobMapRef().clear();
 
     // removeBlob (no-op after clearBlobs, but exercises the path)
     try { reg->removeBlob(blobName + "_renamed"); } catch (...) {}
@@ -158,7 +159,7 @@ void exerciseRegistryDirect(const QString &blobName, const QByteArray &blobBytes
 
 // Path B: WorkSpace::load with embedded blob in metadata
 void exerciseViaLoad(const QString &blobName, const QByteArray &blobBytes,
-                     WorkSpace &ws)
+                     QuickWorkSpace &ws)
 {
     const QByteArray panda = buildBlobMetadataPanda(blobName, blobBytes);
     QDataStream stream(panda);
@@ -187,7 +188,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
 
     g_argc = *argc;
     g_argv = *argv;
-    g_app  = new QApplication(g_argc, g_argv);
+    g_app  = new QGuiApplication(g_argc, g_argv);
 
     // Build a valid blob so initEmbeddedIC can succeed and exercise the full
     // IC::processLoadedItems → loadBoundaryElement path.
@@ -196,7 +197,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
         auto *led = ElementFactory::buildElement(ElementType::Led);
         sw->setId(1);
         led->setId(2);
-        QList<QGraphicsItem *> items;
+        QList<ItemWithId *> items;
         items.append(sw);
         items.append(led);
 
@@ -245,12 +246,12 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
     // = 0x57 = 87, falling only in the via-load branch) also covers the direct
     // registry API.  Use `path` to vary which sub-operations are exercised within
     // exerciseRegistryDirect (e.g. whether to also call exerciseViaLoad after).
-    WorkSpace ws;
+    QuickWorkSpace ws;
     exerciseRegistryDirect(blobName, blobBytes, ws);
 
     if (path < 170) {
         // Also exercise the load-path blob registration
-        WorkSpace ws2;
+        QuickWorkSpace ws2;
         exerciseViaLoad(blobName, blobBytes, ws2);
     }
 

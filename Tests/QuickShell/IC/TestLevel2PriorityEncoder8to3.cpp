@@ -1,0 +1,170 @@
+// Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+#include "Tests/QuickShell/IC/TestLevel2PriorityEncoder8to3.h"
+
+#include "App/Element/GraphicElements/InputSwitch.h"
+#include "App/Element/GraphicElements/Led.h"
+#include "App/Element/IC.h"
+#include "Tests/QuickShell/IC/CpuTestUtils.h"
+#include "Tests/QuickShell/IC/QuickTestUtils.h"
+#include "Tests/QuickShell/QuickCircuitBuilder.h"
+
+using QuickTestUtils::inputStatus;
+using CPUTestUtils::loadBuildingBlockIC;
+
+struct PriorityEncoder8to3Fixture {
+    std::unique_ptr<QuickCircuitBuilder> builder;
+    IC *ic = nullptr;
+    InputSwitch *inputs[8] = {};
+    InputSwitch *ei = nullptr;
+    Led *outLeds[3] = {};
+    Led *validLed = nullptr;
+    Led *eoLed = nullptr;
+    Simulation *sim = nullptr;
+
+    bool build()
+    {
+        builder = std::make_unique<QuickCircuitBuilder>();
+
+        for (int i = 0; i < 8; ++i) {
+            inputs[i] = new InputSwitch();
+            builder->addOwnedElement(inputs[i]);
+        }
+        ei = new InputSwitch();
+        builder->addOwnedElement(ei);
+        for (int i = 0; i < 3; ++i) {
+            outLeds[i] = new Led();
+            builder->addOwnedElement(outLeds[i]);
+        }
+        validLed = new Led();
+        eoLed = new Led();
+        builder->addOwned(validLed, eoLed);
+
+        ic = loadBuildingBlockIC("level2_priority_encoder_8to3.panda");
+        builder->addOwnedElement(ic);
+
+        for (int i = 0; i < 8; ++i) {
+            builder->connect(inputs[i], 0, ic, QString("data[%1]").arg(i));
+        }
+        builder->connect(ei, 0, ic, "EI");
+        for (int i = 0; i < 3; ++i) {
+            builder->connect(ic, QString("addr[%1]").arg(i), outLeds[i], 0);
+        }
+        builder->connect(ic, "valid", validLed, 0);
+        builder->connect(ic, "EO", eoLed, 0);
+
+        sim = builder->initSimulation();
+        sim->update();
+        return true;
+    }
+};
+
+static std::unique_ptr<PriorityEncoder8to3Fixture> s_level2PriorityEncoder8to3;
+
+void TestLevel2PriorityEncoder8To3::initTestCase()
+{
+    s_level2PriorityEncoder8to3 = std::make_unique<PriorityEncoder8to3Fixture>();
+    QVERIFY(s_level2PriorityEncoder8to3->build());
+}
+
+void TestLevel2PriorityEncoder8To3::cleanupTestCase()
+{
+    s_level2PriorityEncoder8to3.reset();
+}
+
+void TestLevel2PriorityEncoder8To3::cleanup()
+{
+    if (s_level2PriorityEncoder8to3 && s_level2PriorityEncoder8to3->sim) {
+        s_level2PriorityEncoder8to3->sim->restart();
+        s_level2PriorityEncoder8to3->sim->update();
+    }
+}
+
+void TestLevel2PriorityEncoder8To3::test8to3PriorityEncoder_data()
+{
+    QTest::addColumn<int>("inputMask");        // Which input lines are asserted (bit i = I_i)
+    QTest::addColumn<int>("expectedOutput");   // Expected 3-bit output (0-7)
+
+    // Test all single-input cases: Output encodes the index of the asserted input
+    QTest::newRow("I0 alone") << (1 << 0) << 0;
+    QTest::newRow("I1 alone") << (1 << 1) << 1;
+    QTest::newRow("I2 alone") << (1 << 2) << 2;
+    QTest::newRow("I3 alone") << (1 << 3) << 3;
+    QTest::newRow("I4 alone") << (1 << 4) << 4;
+    QTest::newRow("I5 alone") << (1 << 5) << 5;
+    QTest::newRow("I6 alone") << (1 << 6) << 6;
+    QTest::newRow("I7 alone") << (1 << 7) << 7;
+
+    // Test multiple inputs - highest priority (largest index) wins
+    QTest::newRow("I0+I1: I1 wins") << 0b00000011 << 1;
+    QTest::newRow("I0+I2: I2 wins") << 0b00000101 << 2;
+    QTest::newRow("I0+I3: I3 wins") << 0b00001001 << 3;
+    QTest::newRow("I0+I4: I4 wins") << 0b00010001 << 4;
+    QTest::newRow("I2+I5: I5 wins") << 0b00100100 << 5;
+    QTest::newRow("I0-I3: I3 wins") << 0b00001111 << 3;
+    QTest::newRow("I4-I7: I7 wins") << 0b11110000 << 7;
+    QTest::newRow("all set: I7 wins") << 0b11111111 << 7;
+}
+
+void TestLevel2PriorityEncoder8To3::test8to3PriorityEncoder()
+{
+    QFETCH(int, inputMask);
+    QFETCH(int, expectedOutput);
+
+    auto &f = *s_level2PriorityEncoder8to3;
+
+    f.ei->setOn(true);   // enable for standalone operation
+    for (int i = 0; i < 8; ++i) {
+        f.inputs[i]->setOn((inputMask >> i) & 1);
+    }
+    f.sim->update();
+
+    bool bit0 = inputStatus(f.outLeds[0]);
+    bool bit1 = inputStatus(f.outLeds[1]);
+    bool bit2 = inputStatus(f.outLeds[2]);
+
+    int actualOutput = (static_cast<int>(bit2) << 2) | (static_cast<int>(bit1) << 1) | static_cast<int>(bit0);
+
+    QCOMPARE(actualOutput, expectedOutput);
+}
+
+// 74148 EI/EO semantics: EI disables all outputs; EO = EI AND no-input-active
+// (it propagates the enable to the next, lower-priority encoder in a chain).
+void TestLevel2PriorityEncoder8To3::testEnableInputOutput()
+{
+    auto &f = *s_level2PriorityEncoder8to3;
+
+    auto readAddr = [&] {
+        return (static_cast<int>(inputStatus(f.outLeds[2])) << 2)
+             | (static_cast<int>(inputStatus(f.outLeds[1])) << 1)
+             | static_cast<int>(inputStatus(f.outLeds[0]));
+    };
+
+    // Disabled (EI=0): every output forced inactive regardless of data.
+    f.ei->setOn(false);
+    for (int i = 0; i < 8; ++i) {
+        f.inputs[i]->setOn(true);
+    }
+    f.sim->update();
+    QCOMPARE(readAddr(), 0);
+    QVERIFY(!inputStatus(f.validLed));
+    QVERIFY(!inputStatus(f.eoLed));   // EO inactive while disabled
+
+    // Enabled, no input active: valid=0, EO=1 (pass enable down the chain).
+    f.ei->setOn(true);
+    for (int i = 0; i < 8; ++i) {
+        f.inputs[i]->setOn(false);
+    }
+    f.sim->update();
+    QCOMPARE(readAddr(), 0);
+    QVERIFY(!inputStatus(f.validLed));
+    QVERIFY(inputStatus(f.eoLed));    // EO asserts: nothing here, enable the next stage
+
+    // Enabled, an input active: valid=1, EO=0 (this stage claimed the request).
+    f.inputs[5]->setOn(true);
+    f.sim->update();
+    QCOMPARE(readAddr(), 5);
+    QVERIFY(inputStatus(f.validLed));
+    QVERIFY(!inputStatus(f.eoLed));
+}

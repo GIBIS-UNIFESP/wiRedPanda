@@ -311,9 +311,9 @@ void ElementAppearance::setPixmap(const QString &pixmapPath)
         m_owner->invalidateRenderCache();
     }
 
-    // The transform origin must be updated whenever the pixmap changes so that
-    // rotation and scale operations remain centred on the new image
-    m_owner->setTransformOriginPoint(pixmapCenter());
+    // No transform-origin property to update any more: GraphicElement::rotateFlipTransform()
+    // reads pixmapCenter() fresh every time, so rotation/flip automatically stays centred on
+    // whatever the current pixmap is.
     m_owner->update();
 
     m_currentPixmapPath = pixmapPath;
@@ -346,9 +346,9 @@ void ElementAppearance::setRenderPixmap(const QPixmap &pixmap)
     if (m_pixmap.size() != previousSize) {
         m_owner->invalidateRenderCache();
     }
-    // The owner's body is drawn from this footprint, so rotation must pivot on its centre —
-    // the base-pixmap flow gets the same guarantee from setPixmap().
-    m_owner->setTransformOriginPoint(pixmapCenter());
+    // The owner's body is drawn from this footprint; rotation pivots on its centre via
+    // GraphicElement::rotateFlipTransform() reading pixmapCenter() fresh each time -- same
+    // guarantee the base-pixmap flow gets from setPixmap(), no separate origin to set here.
 }
 
 void ElementAppearance::applyOrientation()
@@ -488,8 +488,8 @@ void ElementAppearance::render(QPainter *painter, const QRectF &boundingRect, co
         m_svgRenderer->render(painter, QRectF(QPointF(0, 0), QSizeF(m_svgRenderer->defaultSize())));
         painter->restore();
     } else {
-        // Pixmap origin is always (0,0) in item coordinates; the transform origin
-        // (centre of the pixmap) is set separately via setTransformOriginPoint().
+        // Pixmap origin is always (0,0) in local coordinates; the rotation/flip pivot
+        // (centre of the pixmap) is computed fresh by GraphicElement::rotateFlipTransform().
         painter->drawPixmap(QPoint(0, 0), m_pixmap);
     }
 }

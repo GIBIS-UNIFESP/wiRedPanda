@@ -7,6 +7,27 @@
 #include "App/Element/GraphicElement.h"
 #include "App/Wiring/Port.h"
 
+ElementPorts::~ElementPorts()
+{
+    // Empty the member vectors *before* deleting anything: a port's destructor drains its
+    // connections, which can re-enter GraphicElement::portsBoundingRect() (detaching a
+    // connection recomputes the connection's path, which reads both endpoints' scenePos(),
+    // which calls back into the owning element's boundingRect()) -- and portsBoundingRect()
+    // iterates inputs()/outputs(), i.e. these very vectors. Deleting in place (qDeleteAll(m_inputPorts)
+    // then qDeleteAll(m_outputPorts), each left populated with now-dangling pointers until the
+    // whole call returns) lets that reentrant portsBoundingRect() dereference an
+    // already-freed port -- a real heap-use-after-free, ASan-confirmed. Swapping each vector
+    // to empty first means any such reentrant call sees no ports at all instead of dangling
+    // ones; the resulting empty-rect answer is harmless since nothing durable depends on a
+    // mid-teardown geometry query.
+    QVector<InputPort *> inputs;
+    inputs.swap(m_inputPorts);
+    QVector<OutputPort *> outputs;
+    outputs.swap(m_outputPorts);
+    qDeleteAll(inputs);
+    qDeleteAll(outputs);
+}
+
 InputPort *ElementPorts::inputPort(const int index) const
 {
     if (index < 0 || index >= m_inputPorts.size()) {
@@ -23,14 +44,6 @@ OutputPort *ElementPorts::outputPort(const int index) const
     return m_outputPorts.at(index);
 }
 
-QVector<Port *> ElementPorts::allPorts() const
-{
-    QVector<Port *> result;
-    result.reserve(m_inputPorts.size() + m_outputPorts.size());
-    for (auto *p : m_inputPorts)  { result.append(p); }
-    for (auto *p : m_outputPorts) { result.append(p); }
-    return result;
-} // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned QVector<Port *>, never reached after the return above.
 
 void ElementPorts::setInputs(const QVector<InputPort *> &inputs)
 {
@@ -58,18 +71,18 @@ void ElementPorts::addPort(const QString &name, const bool isOutput)
     Port *port = nullptr;
 
     if (isOutput) {
-        m_outputPorts.push_back(new OutputPort(m_owner));
+        m_outputPorts.push_back(new OutputPort());
         port = m_outputPorts.constLast();
         port->setIndex(outputSize() - 1);
     } else {
-        m_inputPorts.push_back(new InputPort(m_owner));
+        m_inputPorts.push_back(new InputPort());
         port = m_inputPorts.constLast();
         port->setIndex(inputSize() - 1);
     }
 
     port->setGraphicElement(m_owner);
     port->setName(name);
-    port->show();
+    port->setVisible(true);
 }
 
 void ElementPorts::resizeInputs(const int size)

@@ -95,16 +95,22 @@ class ClockGatedDecoderBuilder(ICBuilderBase):
         gating_gates_x = decoder_gates_x + max(
             HORIZONTAL_GATE_SPACING * 1.5, decoder_handle.width + HORIZONTAL_GATE_SPACING
         )
+        # A flat HORIZONTAL_GATE_SPACING between columns of this 4-wide grid isn't quite
+        # enough clearance for "output_andN"'s label (font metrics put it just over the
+        # edge where "gating_andN" -- the same length -- happens to clear): widen every
+        # column/stage step in this section so gating_and/output_and/the LEDs all stay
+        # aligned under each other while getting the extra margin.
+        wide_row_step = 1.5 * HORIZONTAL_GATE_SPACING
         # Each stage below is a 4-wide row (i % 4), so the next stage must clear
         # the full row footprint, not just a single column.
-        output_gates_x = gating_gates_x + 4 * HORIZONTAL_GATE_SPACING
-        output_x = output_gates_x + 4 * HORIZONTAL_GATE_SPACING
+        output_gates_x = gating_gates_x + 4 * wide_row_step
+        output_x = output_gates_x + 4 * wide_row_step
 
         gating_gates = []
         for i in range(8):
             gating_id = await self.create_element(
                 "And",
-                gating_gates_x + (i % 4) * HORIZONTAL_GATE_SPACING,
+                gating_gates_x + (i % 4) * wide_row_step,
                 addr_y + (i // 4) * VERTICAL_STAGE_SPACING,
                 f"gating_and{i}",
             )
@@ -127,7 +133,7 @@ class ClockGatedDecoderBuilder(ICBuilderBase):
         for i in range(8):
             output_id = await self.create_element(
                 "And",
-                output_gates_x + (i % 4) * HORIZONTAL_GATE_SPACING,
+                output_gates_x + (i % 4) * wide_row_step,
                 addr_y + (i // 4) * VERTICAL_STAGE_SPACING,
                 f"output_and{i}",
             )
@@ -150,7 +156,7 @@ class ClockGatedDecoderBuilder(ICBuilderBase):
         for i in range(8):
             led_id = await self.create_element(
                 "Led",
-                output_x + (i % 4) * HORIZONTAL_GATE_SPACING,
+                output_x + (i % 4) * wide_row_step,
                 addr_y + (i // 4) * VERTICAL_STAGE_SPACING,
                 f"out{i}",
             )

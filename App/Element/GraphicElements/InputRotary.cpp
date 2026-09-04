@@ -3,7 +3,6 @@
 
 #include "App/Element/GraphicElements/InputRotary.h"
 
-#include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QSvgRenderer>
 
@@ -48,7 +47,7 @@ struct ElementInfo<InputRotary> {
     }();
 };
 
-InputRotary::InputRotary(QGraphicsItem *parent)
+InputRotary::InputRotary(QObject *parent)
     : GraphicElementInput(ElementType::InputRotary, parent)
 {
     m_rotary = m_appearance.defaultAppearances().at(0);
@@ -188,9 +187,9 @@ static QSvgRenderer &rotaryArrowRenderer()
     return renderer;
 }
 
-void InputRotary::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void InputRotary::paint(QPainter *painter)
 {
-    GraphicElement::paint(painter, option, widget);
+    GraphicElement::paint(painter);
 
     // Draw a small position mark for every output port, evenly spaced around the dial.
     // The active port also gets the arrow overlay drawn on top.
@@ -300,14 +299,11 @@ void InputRotary::setWaveformValue(const bool value, const int port)
     }
 }
 
-void InputRotary::mousePressEvent(QGraphicsSceneMouseEvent *event)
+void InputRotary::handleClick()
 {
-    if (!m_locked && (event->button() == Qt::LeftButton)) {
+    if (!m_locked) {
         setOn(true, (m_currentPort + 1) % outputSize());
-        event->accept();
     }
-
-    QGraphicsItem::mousePressEvent(event);
 }
 
 void InputRotary::save(QDataStream &stream, SerializationOptions options) const

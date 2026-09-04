@@ -27,7 +27,7 @@ class GraphicElementInput : public GraphicElement
 public:
     // --- Lifecycle ---
 
-    explicit GraphicElementInput(ElementType type, QGraphicsItem *parent = nullptr)
+    explicit GraphicElementInput(ElementType type, QObject *parent = nullptr)
         : GraphicElement(type, parent) {}
     ~GraphicElementInput() override = default; // LCOV_EXCL_LINE — gcov attributes no hit to an inline `= default` destructor's own line even though every subclass instance destroyed exercises it (see App/Core/ContextDirProvider.h for the same pattern).
 

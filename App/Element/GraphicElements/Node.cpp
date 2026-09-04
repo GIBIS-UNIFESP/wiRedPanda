@@ -3,7 +3,6 @@
 
 #include "App/Element/GraphicElements/Node.h"
 
-#include <QGraphicsPixmapItem>
 #include <QPainter>
 #include <QSvgRenderer>
 
@@ -51,7 +50,7 @@ struct ElementInfo<Node> {
 
 // Node is a wire junction / fan-out point: 1 input, 1 output (1:1 pass-through).
 // Its sole logical role is to create a named connection split on the canvas.
-Node::Node(QGraphicsItem *parent)
+Node::Node(QObject *parent)
     : GraphicElement(ElementType::Node, parent)
 {
     // A node's input is required (cannot be left unconnected) because its sole
@@ -137,38 +136,52 @@ void Node::setWirelessMode(WirelessMode mode)
     outputPort()->setVisible(mode != WirelessMode::Tx);
 
     if (mode == WirelessMode::None) {
-        if (m_wirelessIndicator) {
-            m_wirelessIndicator->setVisible(false);
-        }
+        m_wirelessIndicatorVisible = false;
         m_wirelessColor = QColor();
         return;
     }
 
-    // Create the indicator on first use; render with the Unknown-state color
+    // Create the indicator pixmap on first use; render with the Unknown-state color
     // so it matches undriven wires.  updateLogic() will repaint it with the
     // live signal color once the simulation runs.
-    if (!m_wirelessIndicator) {
+    if (m_wirelessIndicatorPixmap.isNull()) {
         const auto color = ThemeManager::attributes().m_connectionUnknown;
-        m_wirelessIndicator = new QGraphicsPixmapItem(renderWirelessPixmap(color), this);
-        m_wirelessIndicator->setZValue(1);
+        m_wirelessIndicatorPixmap = renderWirelessPixmap(color);
         m_wirelessColor = color;
     }
 
-    m_wirelessIndicator->setVisible(true);
+    m_wirelessIndicatorVisible = true;
 
     if (mode == WirelessMode::Tx) {
         // Above the output port (x=32, y=16). The dot in the 20×20 pixmap is at
-        // local (≈2, ≈18); setPos(30, -6) places the dot at node (32, 12) — just
+        // local (≈2, ≈18); pos(30, -6) places the dot at node (32, 12) — just
         // above the port — with arcs fanning upper-right.
-        m_wirelessIndicator->setPos(30, -6);
-        m_wirelessIndicator->setTransform(QTransform());
+        m_wirelessIndicatorPos = QPointF(30, -6);
+        m_wirelessIndicatorFlipped = false;
     } else {
         // Above the input port (x=0, y=16), mirrored so arcs open upper-left.
-        // With scale(-1,1): parent_x = setPos.x - local_x, so setPos.x=2 puts the
-        // dot at node (0, 12) — just above the port.
-        m_wirelessIndicator->setPos(2, -6);
-        m_wirelessIndicator->setTransform(QTransform().scale(-1, 1));
+        // Flipped horizontally about its own local origin (the dot), so pos.x=2 still
+        // puts the dot at node (2, -6) -- just the arcs' fan direction reverses.
+        m_wirelessIndicatorPos = QPointF(2, -6);
+        m_wirelessIndicatorFlipped = true;
     }
+}
+
+void Node::paint(QPainter *painter)
+{
+    GraphicElement::paint(painter);
+
+    if (!m_wirelessIndicatorVisible) {
+        return;
+    }
+
+    painter->save();
+    painter->translate(m_wirelessIndicatorPos);
+    if (m_wirelessIndicatorFlipped) {
+        painter->scale(-1, 1);
+    }
+    painter->drawPixmap(0, 0, m_wirelessIndicatorPixmap);
+    painter->restore();
 }
 
 // --- Serialization ---
@@ -205,7 +218,7 @@ void Node::load(QDataStream &stream, SerializationContext &context)
 
 void Node::updateWirelessColor(Status status)
 {
-    if (m_wirelessMode == WirelessMode::None || !m_wirelessIndicator) {
+    if (m_wirelessMode == WirelessMode::None || m_wirelessIndicatorPixmap.isNull()) {
         return;
     }
 
@@ -222,5 +235,5 @@ void Node::updateWirelessColor(Status status)
         return;
     }
     m_wirelessColor = color;
-    m_wirelessIndicator->setPixmap(renderWirelessPixmap(color));
+    m_wirelessIndicatorPixmap = renderWirelessPixmap(color);
 }

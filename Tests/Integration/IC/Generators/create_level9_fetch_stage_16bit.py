@@ -6,10 +6,7 @@
 Create 16-bit Fetch Stage IC
 
 Implements the fetch stage for the 16-bit RISC CPU, mirroring the
-level8_fetch_stage architecture (F53: this stage used to have a dead
-InstrLoad input and no instruction register, no programming interface, and
-its decoded fields were emitted MSB-first against the project-wide
-LSB-first convention).
+level8_fetch_stage architecture.
 
 Inputs:
   Clock (synchronization signal)
@@ -170,9 +167,7 @@ class FetchStage16bitBuilder(ICBuilderBase):
 
         await self.log("  ✓ Created control signals")
 
-        # ---- Create programming interface inputs (F53: previously absent —
-        # the instruction memory could never be loaded, so the field-decode
-        # tests were vacuous) ----
+        # ---- Create programming interface inputs ----
         prog_addr_inputs = []
         for i in range(8):
             elem_id = await self.create_element(
@@ -184,8 +179,8 @@ class FetchStage16bitBuilder(ICBuilderBase):
 
         # ProgData[10..15]'s two-digit index makes the label long enough to
         # reach into its neighbor at a standard 1x step on platforms that
-        # render the label a bit wider than the default Linux font (observed
-        # on Windows CI), so this row gets extra clearance.
+        # render the label a bit wider than the default Linux font, so this
+        # row gets extra clearance.
         prog_data_col_spacing = HORIZONTAL_GATE_SPACING + 32
         prog_data_inputs = []
         for i in range(16):
@@ -274,8 +269,7 @@ class FetchStage16bitBuilder(ICBuilderBase):
 
         await self.log("  ✓ Instantiated and wired instruction memory interfaces")
 
-        # ---- Instruction Register: 2× level6_register_8bit (F53: InstrLoad
-        # used to be a dead input — there was no IR to load) ----
+        # ---- Instruction Register: 2× level6_register_8bit ----
         for ir_id, mem_id in ((ir_low_id, instr_mem_low_id), (ir_high_id, instr_mem_high_id)):
             for i in range(8):
                 if not await self.connect(
@@ -355,8 +349,7 @@ class FetchStage16bitBuilder(ICBuilderBase):
         await self.log("  ✓ Created PC outputs")
 
         # ---- Create Instruction Decode Outputs (registered, LSB-first) ----
-        # F53: these used to be emitted MSB-first (OpCode[0]=Instruction[15]),
-        # against the project-wide index-0-is-LSB convention (the 8-bit IR
+        # Follows the project-wide index-0-is-LSB convention (the 8-bit IR
         # maps OpCode[0]=Q[3], the field LSB).
         # OpCode[i]  = Instruction[11+i]
         # DestReg[i] = Instruction[6+i]

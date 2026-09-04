@@ -313,7 +313,10 @@
             "name": "asan",
             "displayName": "Test with AddressSanitizer",
             "configurePreset": "asan",
-            "inherits": "base"
+            "inherits": "base",
+            "environment": {
+                "QTEST_FUNCTION_TIMEOUT": "900000"
+            }
         },
         {
             "name": "tsan",

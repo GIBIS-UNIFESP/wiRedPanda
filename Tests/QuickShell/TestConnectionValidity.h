@@ -1,0 +1,33 @@
+// Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+#pragma once
+
+#include <QObject>
+#include <QTest>
+
+class TestConnectionValidity : public QObject
+{
+    Q_OBJECT
+
+private slots:
+    // Connection Validity Tests (8 tests)
+    void testConnectionStatusValid();
+    void testConnectionStatusInvalid();
+    void testPortDeletionDeletesConnection();
+    void testMultipleConnectionsStatus();
+    void testPortValidityWithConnections();
+    void testInputPortWithMultipleConnections();
+    void testOutputPortWithMultipleConnections();
+
+    // Construction-time validity styling
+    void testPortValidityStyleAtCreation();
+
+    // Wireless connection guard (5 tests)
+    void testIsConnectionAllowedRejectsRxPort();
+    void testIsConnectionAllowedRejectsTxOutputPort();
+    void testIsConnectionAllowedPermitsNonePort();
+    void testIsConnectionAllowedPermitsTxInputPort();
+    void testIsConnectionAllowedPermitsRxOutputPort();
+    void testConnectionRejectionReasonMessages();
+};

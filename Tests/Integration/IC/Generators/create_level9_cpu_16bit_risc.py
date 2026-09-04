@@ -6,9 +6,7 @@
 Create 16-bit RISC CPU IC
 
 Implements a 16-bit single-cycle CPU with a real register file and real
-Load/Store data memory (previously this IC only wired Fetch+ALU and left
-DestReg as a raw zero-extended ALU operand -- the "RISC Characteristics"
-below were aspirational until this revision):
+Load/Store data memory:
 - 16-bit instruction word with 5-bit opcode
 - 16-bit ALU with full arithmetic/logic operations
 - 32 x 16-bit register file, addressed by the full 5-bit DestReg field
@@ -21,12 +19,12 @@ Inputs:
   Clock (synchronization signal)
   Reset (initialize program counter to 0 — must be held asserted for the whole
          instruction-memory programming window, not just pulsed before it: PCInc/
-         InstrLoad are unconditionally tied to Vcc, so every clock pulse used to
-         write a word would otherwise also advance the fetch PC. Reset's async
+         InstrLoad are unconditionally tied to Vcc, so every clock pulse that
+         writes a word would otherwise also advance the fetch PC. Reset's async
          override on the PC/instruction register is what prevents that drift —
          the same mechanism level9_multi_cycle_cpu_8bit documents for its own
          phase counter, applied directly here since there's no phase counter)
-  ProgAddr[0..7] (instruction memory programming address — F53)
+  ProgAddr[0..7] (instruction memory programming address)
   ProgData[0..15] (16-bit instruction word to program)
   ProgWrite (instruction memory write enable)
   RegProgAddr[0..4] (register file programming address)
@@ -45,9 +43,8 @@ Outputs:
 
 16-bit Instruction Format:
   Bits [15:11] = OpCode (5 bits): low 3 bits select the ALU op; the two
-                 previously-dead high bits now select instruction class via
-                 level8_decode_stage's existing MemRead/MemWrite derivation —
-                 00=ALU, 10=Load, 11=Store
+                 high bits select instruction class via level8_decode_stage's
+                 existing MemRead/MemWrite derivation — 00=ALU, 10=Load, 11=Store
   Bits [10:6]  = DestReg (5 bits): register file address, used as BOTH the
                  read operand and the write-back destination (Rd = op(Rd,
                  imm) for ALU ops; Rd = Mem[imm] for Load; Mem[imm] = Rd for
@@ -64,7 +61,7 @@ Outputs:
 Architecture:
   - 16-bit Fetch stage with programming port and instruction register
     (InstrLoad held high; the CPU decodes from RawInstr for zero-delay
-    single-cycle execution, the level9_single_cycle pattern — F53)
+    single-cycle execution, the level9_single_cycle pattern)
   - level8_decode_stage (reused verbatim — it's pure combinational logic on a
     5-bit OpCode with no data-width dependency) turns the live/RawInstr-
     derived OpCode into ALUOp[0..2]/MemRead/MemWrite. Its own RegWrite output
@@ -89,7 +86,7 @@ Architecture:
     between load data and ALU result); WriteEnable = (NOT(MemWrite) AND NOT
     ProgWrite AND NOT Reset) OR RegProgWrite, gated the same way the 8-bit
     CPUs gate their own register file write enable
-  - PCLoad/PCData tied to explicit GND (no jumps; F34 convention)
+  - PCLoad/PCData tied to explicit GND (no jumps; explicit-tie-off convention)
 
 RISC Characteristics:
   - Load/Store architecture (data memory is only reachable via Load/Store,
@@ -282,8 +279,8 @@ class CPU16BitRISCBuilder(ICBuilderBase):
 
         # ProgData[10..15]'s two-digit index makes the label long enough to
         # reach into its neighbor at a standard 1x step on platforms that
-        # render the label a bit wider than the default Linux font (observed
-        # on Windows CI), so this row gets extra clearance.
+        # render the label a bit wider than the default Linux font, so this
+        # row gets extra clearance.
         prog_data_col_spacing = HORIZONTAL_GATE_SPACING + 32
         y_prog_data = y_prog + VERTICAL_STAGE_SPACING
         prog_data_inputs = []
@@ -335,10 +332,10 @@ class CPU16BitRISCBuilder(ICBuilderBase):
 
         # ================= Connections ================= #
 
-        # ---- Fetch stage: Clock/Reset/control signals (unchanged from the
-        # prior revision — PCInc/InstrLoad stay tied to Vcc; the PC-drift-
-        # during-programming behavior this implies is handled by holding
-        # Reset throughout programming, see the docstring above) ----
+        # ---- Fetch stage: Clock/Reset/control signals (PCInc/InstrLoad stay
+        # tied to Vcc; the PC-drift-during-programming behavior this implies
+        # is handled by holding Reset throughout programming, see the
+        # docstring above) ----
         if not await self.connect(clock_id, fetch_id, target_port_label="Clock"):
             return False
         if not await self.connect(reset_id, fetch_id, target_port_label="Reset"):
@@ -395,15 +392,15 @@ class CPU16BitRISCBuilder(ICBuilderBase):
 
         await self.log("  ✓ Wired DestReg to register file read port")
 
-        # ---- ALU operands (F26, F53): OperandA = zero-extended SrcBits
-        # (RawInstr[0..5]); OperandB = Reg[DestReg] (full 16 bits, the
-        # register file's read port) ----
+        # ---- ALU operands: OperandA = zero-extended SrcBits (RawInstr[0..5]);
+        # OperandB = Reg[DestReg] (full 16 bits, the register file's read
+        # port) ----
         for i in range(6):
             if not await self.connect(
                 fetch_id, alu_id, source_port_label=f"RawInstr[{i}]", target_port_label=f"OperandA[{i}]"
             ):
                 return False
-        # F34 explicit-tie-off convention: the high 10 bits of the zero-extension
+        # Explicit-tie-off convention: the high 10 bits of the zero-extension
         # aren't a natural side effect of leaving them unconnected.
         for i in range(6, 16):
             if not await self.connect(gnd_id, alu_id, target_port_label=f"OperandA[{i}]"):
@@ -417,7 +414,7 @@ class CPU16BitRISCBuilder(ICBuilderBase):
         await self.log("  ✓ Wired RawInstr SrcBits and Reg[DestReg] to ALU operands")
 
         # ---- Memory stage: Address = zero-extended SrcBits[0..2] (aliased
-        # modulo 8, F34 explicit-tie-off convention on the unused high bits),
+        # modulo 8, explicit-tie-off convention on the unused high bits),
         # DataIn = Reg[DestReg] (Store writes the register back to memory),
         # Result passthrough = ALU Result, MemRead/MemWrite from Decode ----
         for i in range(3):

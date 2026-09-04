@@ -31,10 +31,12 @@ public:
     static constexpr const char *kDefaultAudioPath = ":/Components/Output/Audio/wiredpanda.wav";
 
     /// Constructs an AudioBox element.
-    explicit AudioBox(QGraphicsItem *parent = nullptr);
+    explicit AudioBox(QObject *parent = nullptr);
 
-    /// Copy-constructs by delegating to the parent item constructor.
-    AudioBox(const AudioBox &other) : AudioBox(other.parentItem()) {}
+    /// Copy-constructs by delegating to the parent constructor -- deliberately not a real
+    /// deep copy (see AudioElementTestHelpers::testCopyConstructor(): the checked invariant
+    /// is "produces a valid, independent, default-state instance", not "copies audio state").
+    AudioBox(const AudioBox &other) : AudioBox(other.parent()) {}
 
     // --- State Queries ---
 

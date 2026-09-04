@@ -61,9 +61,9 @@ public:
 
     /// Removes \a item's mapping if it is still the one on file, identity-checked so a
     /// reused id that a new item has since claimed is never evicted. Called from
-    /// ItemWithId's own destructor -- this is the structural fix for the WIREDPANDA-HC
-    /// stale-registry-entry bug family, working on ANY destruction path, not just the
-    /// ones that happen to route through unregisterItem()/forgetItemId() explicitly.
+    /// ItemWithId's own destructor, so a stale registry entry can never survive item
+    /// destruction on ANY destruction path, not just the ones that happen to route through
+    /// unregisterItem()/forgetItemId() explicitly.
     void forget(ItemWithId *item);
 
 private:

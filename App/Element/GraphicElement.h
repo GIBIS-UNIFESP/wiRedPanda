@@ -11,9 +11,13 @@
 #include <utility>
 
 #include <QBitArray>
-#include <QGraphicsItem>
 #include <QKeySequence>
 #include <QList>
+#include <QObject>
+#include <QPointF>
+#include <QRectF>
+#include <QString>
+#include <QTransform>
 
 #include "App/Core/Enums.h"
 #include "App/Core/ItemWithId.h"
@@ -22,6 +26,7 @@
 #include "App/Element/ElementOrientation.h"
 #include "App/Element/ElementPorts.h"
 #include "App/Element/ElementSimState.h"
+#include "App/Element/GraphicElementLabel.h"
 #include "App/Element/PropertyDescriptor.h"
 
 struct SerializationContext;
@@ -32,53 +37,63 @@ class InputPort;
 class OutputPort;
 class Port;
 class QPainter;
-class QStyleOptionGraphicsItem;
 class QSvgRenderer;
-class QWidget;
 
 /**
  * \class GraphicElement
  * \brief Abstract base class for all graphical circuit elements in wiRedPanda.
  *
- * \details Combines a QGraphicsObject (visual representation on the scene) with
- * ItemWithId (stable numeric identity) to form the common interface that every
- * circuit element must implement.  Concrete subclasses cover gates, flip-flops,
+ * \details Combines a plain QObject (for signals, and qobject_cast-based RTTI where
+ * needed) with ItemWithId (stable numeric identity) to form the common interface that
+ * every circuit element must implement. Concrete subclasses cover gates, flip-flops,
  * I/O elements, integrated circuits, and all other element types.
+ *
+ * \details This class has no Qt Widgets/Graphics-View dependency at all.
+ * pos()/isSelected()/boundingRect()/sceneBoundingRect() below are plain members and
+ * methods this class implements itself, not inherited Qt Graphics View machinery — a
+ * rendering/interaction host (e.g. a Qt Quick canvas item) is expected to hold real,
+ * unmodified instances of this class directly and drive painting/hit-testing/selection
+ * through this plain interface.
  *
  * Responsibilities handled here:
  * - Port management (input and output Port children).
  * - Pixmap / appearance rendering with default and user-defined appearances.
  * - Serialization to / from a versioned QDataStream (save/load).
- * - Grid-snapping and wire-update callbacks via itemChange().
+ * - Keeping attached wires in sync whenever position/rotation/flip changes.
  * - Label and keyboard-trigger display.
  * - Theme-aware selection highlight painting.
  * - Polymorphic hooks for clock frequency, audio, color, and truth-table
  *   features that only a subset of elements support.
  */
-class GraphicElement : public QGraphicsObject, public ItemWithId
+class GraphicElement : public QObject, public ItemWithId
 {
     Q_OBJECT
 public:
     // --- Type Info ---
 
-    enum { Type = QGraphicsItem::UserType + 3 };
+    /// File-format type tag Serialization::serialize()/deserialize() writes/reads to
+    /// discriminate a GraphicElement from a Connection in the flat item stream. The
+    /// literal value must never change — existing .panda files on disk encode this
+    /// exact integer.
+    static constexpr int Type = 65536 + 3;
 
     /// Returns the custom type identifier for this item.
-    int type() const override { return Type; }
+    int type() const { return Type; }
 
     // --- Lifecycle ---
 
     /// Constructs a graphic element of the given \a type, fetching all properties from the metadata registry.
-    explicit GraphicElement(ElementType type, QGraphicsItem *parent = nullptr);
+    explicit GraphicElement(ElementType type, QObject *parent = nullptr);
 
     /// Out-of-line so the unique_ptr to the forward-declared QSvgRenderer can be destroyed.
     ~GraphicElement() override;
 
 signals:
-    /// Emitted on double-click for a labelable element (hasLabel()) whose type doesn't already
-    /// claim double-click for something else (IC/TruthTable override mouseDoubleClickEvent()
-    /// directly and this signal never fires for them). The owning Scene listens and drives the
-    /// actual inline edit widget -- see InlineLabelEditor.
+    /// Emitted from handleDoubleClick() for a labelable element (hasLabel()) whose type doesn't
+    /// already claim double-click for something else (IC/TruthTable override
+    /// handleDoubleClick() directly and this signal never fires for them). Whatever
+    /// rendering/interaction host detects the double-click and calls handleDoubleClick() is
+    /// expected to listen and drive the actual inline edit widget.
     void inlineEditRequested(GraphicElement *element);
 
 public:
@@ -150,9 +165,6 @@ public:
     /// Returns a const reference to the vector of all output ports.
     const QVector<OutputPort *> &outputs() const;
 
-    /// Returns a combined list of all input and output ports as Port pointers.
-    QVector<Port *> allPorts() const;
-
     /// Returns the current number of input ports.
     int inputSize() const;
 
@@ -187,10 +199,24 @@ public:
     /// Returns \c true if this element type supports a user-editable label.
     bool hasLabel() const;
 
-    /// Returns the label child item's bounding rect in scene coordinates -- used to position the
+    /// Returns the label's bounding rect in scene coordinates -- used to position the
     /// inline rename editor over the visible label. Empty when the label has no text yet (a
     /// caller should fall back to the element's own sceneBoundingRect() in that case).
     QRectF labelSceneBoundingRect() const;
+
+    /// Returns the label's bounding rect in this element's own local coordinates -- used by
+    /// Text::boundingRect() to make sure wide label text (which can extend well past the
+    /// nominal pixmap box) is actually covered by the element's hit/selection area.
+    QRectF labelLocalBoundingRect() const;
+
+    /// Returns the label collaborator itself -- its pos()/transform() already carry
+    /// updateLabelOrientation()'s rotation-compensation, and its font()/brush()/text()/
+    /// isVisible() are kept live by updateLabel()/updateTheme(). Lets a rendering host draw
+    /// the real label via the same pos()+transform() composition + real paint() call used
+    /// for every other element/port, rather than duplicating this class's own positioning logic.
+    GraphicElementLabel *labelItem() { return &m_label; }
+    /// \overload
+    const GraphicElementLabel *labelItem() const { return &m_label; }
 
     // --- Embedded IC ---
 
@@ -316,6 +342,13 @@ public:
     /// Loads and applies the appearance at position \a index in the appearance list.
     void setPixmap(const int index);
 
+    /// Returns a cheap, stable identity for the currently displayed pixmap's content
+    /// (QPixmap::cacheKey() -- shared by any other QPixmap holding the same data, changes
+    /// whenever the displayed pixmap actually changes). Used by the Qt Quick canvas's
+    /// offscreen-render texture atlas to build a per-appearance cache key without reaching
+    /// into ElementAppearance's private path-tracking state.
+    qint64 appearanceCacheKey() const { return m_appearance.pixmap().cacheKey(); }
+
     // --- Truth Table ---
 
     /// Returns \c true if this element type has an editable truth table.
@@ -357,13 +390,57 @@ public:
     /// Sets the vertical mirror state and updates the item transform.
     void setFlippedY(bool flipped);
 
+    // --- Position & Selection ---
+
+    /// Returns the element's position in world/canvas coordinates -- there is no separate
+    /// parent-item frame (see class doc comment), so this IS its "scene" position.
+    QPointF pos() const { return m_pos; }
+
+    /// Sets the world/canvas position and keeps every attached wire in sync. Deliberately does
+    /// no grid-snapping: the domain layer has no opinion on what a given interaction (mouse
+    /// drag, keyboard nudge, undo/redo) should snap to -- a rendering/interaction host decides
+    /// that policy itself before calling this.
+    void setPos(const QPointF &pos);
+    /// \overload
+    void setPos(qreal x, qreal y) { setPos(QPointF(x, y)); }
+
+    /// Offsets the current position by (\a dx, \a dy), keeping wires in sync.
+    void moveBy(qreal dx, qreal dy) { setPos(m_pos.x() + dx, m_pos.y() + dy); }
+
+    /// Returns \c true if the element is currently selected.
+    bool isSelected() const { return m_selected; }
+
+    /// Sets the selection state and highlights/un-highlights every attached wire to match.
+    void setSelected(bool selected);
+
     // --- Geometric Properties ---
 
     /// Returns the centre point of the element's pixmap in local coordinates.
     QPointF pixmapCenter() const;
 
-    /// Returns the bounding rectangle of this element in local coordinates.
-    QRectF boundingRect() const override;
+    /// Returns the bounding rectangle of this element in local (unrotated) coordinates.
+    virtual QRectF boundingRect() const;
+
+    /// Maps a point from this element's local coordinates into world/canvas coordinates.
+    /// For a rotatesGraphic() element this rotates about pixmapCenter() by rotation() degrees,
+    /// then flips about pixmapCenter(), then translates by pos() -- in that order (rotate,
+    /// then flip), matching real QGraphicsItem/QTransform composition: getting this order
+    /// backwards produces positions that are close but wrong once both a non-zero rotation and
+    /// a flip are active. For a non-rotatable element this element itself never rotates/flips,
+    /// so it is just pos() + point -- Port::scenePos() has its own, separate per-port formula
+    /// for that case (each port carries its own rotation+flip about its own pivot instead).
+    QPointF pointToScene(const QPointF &localPoint) const;
+
+    /// The rotate-then-flip part of pointToScene(), about pixmapCenter(), without the final
+    /// translation by pos(). Used by updateLabelOrientation() to compute where the label's own
+    /// pos() must be so that, once subject to this same composition as a side effect of being
+    /// drawn in the owner's frame, it lands back at a fixed, upright position.
+    QTransform rotateFlipTransform() const;
+
+    /// Returns boundingRect() mapped through pointToScene() -- the world/canvas-space extent.
+    /// Mirrors QGraphicsItem::sceneBoundingRect(), which align/distribute/selection-rect logic
+    /// depends on.
+    QRectF sceneBoundingRect() const;
 
     // --- State Queries ---
 
@@ -449,10 +526,28 @@ public:
     /// normal change-detecting path so visuals refresh correctly.
     void commitDeferredOutputs() { m_sim.commitDeferredOutputs(); }
 
+    /// True if any of this element's ports (input or output) changed status since the flag
+    /// was last cleared -- CanvasItem::updatePaintNode()'s render cache uses this instead of
+    /// re-reading every port's live status every repaint. Deliberately separate from
+    /// outputChanged()/clearOutputChanged() above: that pair is Simulation's own internal
+    /// settling-detection flag, cleared on its own schedule for unrelated reasons -- sharing it
+    /// here would silently break either that logic or this one, whichever's clear happened to
+    /// run first.
+    [[nodiscard]] bool isRenderDirty() const { return m_portStatusDirty; }
+
+    /// Clears the render-dirty flag after CanvasItem has rebuilt this element's cached
+    /// appearance to reflect the change(s) that set it.
+    void clearRenderDirty() { m_portStatusDirty = false; }
+
+    /// Marks this element render-dirty -- called from InputPort::setStatus()/
+    /// OutputPort::setStatus() (only after their own "did the final value actually change"
+    /// check), never directly by application code.
+    void markRenderDirty() { m_portStatusDirty = true; }
+
     /// Allocates simulation I/O vectors with \a inputs inputs and \a outputs outputs.
     void initSimulationVectors(const int inputCount, const int outputCount);
 
-    /// Polymorphic interface for drag-drop initialization (replaces elementType() == IC checks).
+    /// Polymorphic interface for drag-drop initialization.
     virtual void loadFromDrop(const QString &fileName, const QString &contextDir);
 
     // --- Virtual Methods ---
@@ -463,24 +558,50 @@ public:
     /// Forces a visual refresh of the element's pixmap and ports.
     virtual void refresh();
 
-    // --- Qt Graphics & Display ---
+    // --- Rendering & Display ---
 
     /**
-     * \brief Paints the element onto the scene.
+     * \brief Paints the element at local (0,0).
      * \details Draws a rounded selection rectangle when the item is selected,
-     * then draws the current pixmap at the item origin.
-     * \param painter Painter provided by the graphics view framework.
-     * \param option  Style options (unused).
-     * \param widget  Target widget (unused).
+     * then draws the current pixmap at the item origin. The caller (rendering host) is
+     * responsible for translating/transforming the painter to this element's own
+     * placement (pointToScene()-equivalent) first.
+     * \param painter Painter to draw with.
      */
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+    virtual void paint(QPainter *painter);
 
     /**
-     * \brief Updates the translated display name, tooltip, and port object name after a locale change.
+     * \brief Updates the translated display name and tooltip after a locale change.
      * \details Queries ElementFactory for the new translated name and propagates
      * it to setPortName() and setToolTip().
      */
     void retranslate();
+
+    /// Returns the tooltip text (the translated element name).
+    QString toolTip() const { return m_toolTip; }
+    /// Sets the tooltip text.
+    void setToolTip(const QString &toolTip) { m_toolTip = toolTip; }
+
+    /// Called whenever a double-click on this element is detected by a rendering/interaction
+    /// host. Base emits inlineEditRequested() for labelable elements; IC and TruthTable
+    /// override this to open a sub-circuit tab / the truth-table editor instead. Virtual so a
+    /// host can dispatch on the concrete element type without needing to know it.
+    virtual void handleDoubleClick();
+
+    /// Called whenever a left-click press on this element is detected by a rendering/
+    /// interaction host. Base is a no-op; InputButton/InputRotary/InputSwitch override it to
+    /// drive their own click-to-activate behavior. Mirrors handleDoubleClick()'s dispatch
+    /// rationale. Undo-command integration for a click-driven toggle (InputSwitch's own case)
+    /// is deliberately NOT reimplemented here -- it needs a real command stack, which doesn't
+    /// exist until CanvasItem's own commands land; a host wiring this up before then gets the
+    /// domain-level toggle but not undo/modified-flag tracking, and that gap must be closed
+    /// then, not silently left unaddressed.
+    virtual void handleClick() {}
+
+    /// Called whenever a left-click release on this element is detected by a rendering/
+    /// interaction host. Base is a no-op; InputButton overrides it to end its momentary
+    /// activation.
+    virtual void handleRelease() {}
 
     // --- Setters (Port & Logic Configuration) ---
 
@@ -507,6 +628,11 @@ public:
     /// Updates the element's visual theme according to the current dark/light palette.
     virtual void updateTheme();
 
+    /// No-op placeholder for a rendering host's own repaint scheduling. Kept so existing call
+    /// sites (e.g. after a theme change) don't need to change once a rendering host exists to
+    /// drive its own repaints independently.
+    void update() {}
+
 protected:
     // --- Graphics & Rendering ---
 
@@ -514,10 +640,10 @@ protected:
     QPixmap pixmap() const;
 
     /**
-     * \brief Returns the bounding rectangle that encompasses all child ports.
-     * \details Iterates over childItems(), mapping each Port's bounding rect
-     * into the element's local coordinate space.
-     * \return Combined bounding QRectF of all port children.
+     * \brief Returns the bounding rectangle that encompasses all ports.
+     * \details Iterates over inputs()/outputs(), mapping each port's own boundingRect()
+     * into the element's local coordinate space via Port::mapToOwnerLocal().
+     * \return Combined bounding QRectF of all ports.
      */
     QRectF portsBoundingRect() const;
 
@@ -541,39 +667,6 @@ protected:
     /// commit). Base is a no-op; Text overrides it to toggle its empty-state hint.
     virtual void labelContentChanged() {}
 
-    // --- Qt Event Handling ---
-
-    /**
-     * \brief Handles item state changes such as position, rotation, and selection.
-     * \details Three change types are intercepted:
-     * - ItemPositionChange: snaps the new position to half the scene grid size.
-     * - ItemScenePositionHasChanged / ItemRotationHasChanged / ItemTransformHasChanged:
-     *   calls updateConnections() on all ports to redraw attached wires.
-     * - ItemSelectedHasChanged: toggles connection highlight via highlight().
-     * \param change The type of change that occurred.
-     * \param value  The new value associated with the change.
-     * \return The (possibly modified) value to use, or the base class result.
-     */
-    QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
-
-    /**
-     * \brief Requests inline label editing on double-click.
-     * \details Only fires for hasLabel() elements; other types fall through to the base
-     * Qt behavior unchanged. IC and TruthTable override this method themselves (to open a
-     * sub-circuit / the truth-table editor instead), so this base implementation is never
-     * reached for them -- ordinary virtual dispatch, no elementType() check needed here.
-     */
-    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
-
-    /**
-     * \brief Intercepts mouse-press and mouse-release events to handle Ctrl+click.
-     * \details When Ctrl is held during a mouse press or release, the event is
-     * consumed here and not forwarded, preventing accidental multi-selection.
-     * \param event The scene event to inspect.
-     * \return true if the event was consumed; otherwise the base class result.
-     */
-    bool sceneEvent(QEvent *event) override;
-
     // --- Capability Setters ---
 
     /// Sets whether this element type supports color selection.
@@ -593,20 +686,17 @@ protected:
     /// Sets the minimum number of output ports to \a minOutputSize.
     void setMinOutputSize(const int minOutputSize);
 
-    /// Owns the input/output port vectors and their creation/resize lifecycle; this element
-    /// forwards its port-access interface here.  See ElementPorts.
-    ElementPorts m_ports{this};
-
     /// Owns the pixmap/SVG appearance, the appearance list, and selection-highlight colors;
     /// this element forwards its rendering and appearance interface here.  See ElementAppearance.
     ElementAppearance m_appearance{this};
 
-    QGraphicsSimpleTextItem *m_label = new QGraphicsSimpleTextItem(this); ///< Child text item that displays the label and optional trigger shortcut.
+    GraphicElementLabel m_label{this}; ///< Displays the label and optional trigger shortcut.
     QPointF m_labelAnchor; ///< The label's intended anchor point in the element's un-rotated local frame; see setLabelAnchor().
 
     // --- Members: Metadata ---
 
     QString m_titleText;      ///< Translated title text shown in UI panels (from metadata).
+    QString m_toolTip;        ///< Tooltip text (the translated element name); see toolTip()/setToolTip().
     QString m_translatedName; ///< Translated element name used as tooltip and port object name.
 
     // --- Direct Simulation Helpers ---
@@ -618,7 +708,7 @@ protected:
      * Unknown and the method returns \c false so that sequential elements
      * (flip-flops, latches) can skip computation with incomplete data.
      * Unconnected inputs (null predecessor) use the corresponding port's
-     * defaultStatus(), replacing the old global GND/VCC approach.
+     * defaultStatus().
      *
      * \return \c true if all inputs are Active or Inactive (simulation can proceed).
      */
@@ -654,18 +744,15 @@ private:
     /// see ElementAppearance::setPixmap()/setRenderPixmap().
     friend class ElementAppearance;
 
-    /// Calls the protected sceneEvent() directly to test its Ctrl+click swallow deterministically:
-    /// a real QTest::mousePress(..., Qt::ControlModifier, ...) depends on the platform's actual
-    /// keyboard-modifier state reaching the synthesized QGraphicsSceneMouseEvent, which this
-    /// sandbox's offscreen/X11 setup does not reproduce reliably.
-    friend class TestGraphicElement;
+    /// No-op placeholder for a rendering host's own per-element cache invalidation. Kept so
+    /// ElementAppearance's call sites (a pixmap-size change needs to invalidate whatever cache a
+    /// host is keeping) don't need to change once a rendering host exists to actually hook this.
+    void invalidateRenderCache() {}
 
-    /// Drops and re-enables the item's DeviceCoordinateCache so the next paint re-renders the
-    /// whole item. DeviceCoordinateCache invalidates incrementally and keeps the previously
-    /// cached device tile when the displayed pixmap swaps to a different size (e.g. a small
-    /// built-in SVG replaced by a large custom raster), which would leave a stale image of the
-    /// old appearance behind the new one. Call only on an actual size change.
-    void invalidateRenderCache();
+    /// No-op placeholder for a rendering host's own geometry-change notification. Kept so
+    /// ElementAppearance's/setPortSize()'s call sites don't need to change once a rendering host
+    /// exists to actually hook this.
+    void prepareGeometryChange() {}
 
     // --- Port Management Helpers ---
 
@@ -704,6 +791,11 @@ private:
     /// forwards its direct-simulation interface here.  See ElementSimState.
     ElementSimState m_sim;
 
+    /// Backs isRenderDirty()/clearRenderDirty()/markRenderDirty() -- starts true so a brand
+    /// new element's first repaint always rebuilds (redundant with CanvasItem's own "no cache
+    /// entry yet" bootstrapping, but a harmless, cheap belt-and-suspenders default either way).
+    bool m_portStatusDirty = true;
+
     // --- Members: Trigger & Label ---
 
     QKeySequence m_trigger;
@@ -713,11 +805,27 @@ private:
 
     bool m_hasColors = false;
     bool m_selected = false;
+    QPointF m_pos; ///< World/canvas position; see pos()/setPos().
 
     /// Owns the rotation angle and flip flags, and the transform math that applies them to
     /// the item and its ports; this element forwards its orientation interface here.
     /// See ElementOrientation.
     ElementOrientation m_orientation{this};
+
+    /// Owns the input/output port vectors and their creation/resize lifecycle; this element
+    /// forwards its port-access interface here.  See ElementPorts.
+    ///
+    /// Declared (and therefore destructed) *after* every other collaborator above:
+    /// ~ElementPorts() deletes each Port, whose own destructor drains its attached
+    /// Connections -- detaching one re-triggers Connection::updatePosFromPorts(), which reads
+    /// both endpoints' scenePos(), which calls back into this same owning element's
+    /// boundingRect()/pixmapCenter()/rotateFlipTransform(). Those need m_appearance and
+    /// m_orientation to still be alive; declaring m_ports last means it destructs *first*,
+    /// while they still are. Getting this backwards is a real, ASan-confirmed
+    /// heap-use-after-free / stale-read hazard, not a hypothetical one: an element with a live
+    /// connection at destruction time (routine in the CPU test suite; rare in hand-written unit
+    /// tests) reliably hits it.
+    ElementPorts m_ports{this};
 
     // --- Members: Port Size Constraints ---
 

@@ -92,6 +92,26 @@ void Settings::setDolphinGeometry(const QByteArray &geometry)
     setValue("beWavedDolphin/geometry", geometry);
 }
 
+QRect Settings::quickWindowGeometry()
+{
+    return value("QuickMainWindow/geometry").toRect();
+}
+
+void Settings::setQuickWindowGeometry(const QRect &geometry)
+{
+    setValue("QuickMainWindow/geometry", geometry);
+}
+
+QRect Settings::quickDolphinGeometry()
+{
+    return value("QuickBeWavedDolphin/geometry").toRect();
+}
+
+void Settings::setQuickDolphinGeometry(const QRect &geometry)
+{
+    setValue("QuickBeWavedDolphin/geometry", geometry);
+}
+
 // UI preferences
 
 bool Settings::fastMode()

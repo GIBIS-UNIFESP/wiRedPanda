@@ -28,7 +28,7 @@
 #include <cstdint>
 #include <fuzzer/FuzzedDataProvider.h>
 
-#include <QApplication>
+#include <QGuiApplication>
 #include <QByteArray>
 #include <QCoreApplication>
 #include <QDataStream>
@@ -45,14 +45,14 @@
 #include "App/Core/Enums.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/VersionInfo.h"
-#include "App/Scene/Scene.h"
-#include "App/Scene/Workspace.h"
+#include "App/QuickShell/Canvas/CanvasItem.h"
+#include "App/QuickShell/Chrome/QuickWorkSpace.h"
 #include "App/Simulation/Simulation.h"
 #include "App/Versions.h"
 
 namespace {
 
-QApplication *g_app  = nullptr;
+QGuiApplication *g_app  = nullptr;
 int  g_argc = 0;
 char **g_argv = nullptr;
 
@@ -322,7 +322,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
 
     g_argc = *argc;
     g_argv = *argv;
-    g_app  = new QApplication(g_argc, g_argv);
+    g_app  = new QGuiApplication(g_argc, g_argv);
 
     return 0;
 }
@@ -350,7 +350,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
         return 0;
     }
 
-    WorkSpace workspace;
+    QuickWorkSpace workspace;
     try {
         // Pass a real contextDir so that relative appearance paths in loadPixmapAppearanceName
         // take the "contextDir + "/" + name" branch (line 577 of GraphicElementSerializer.cpp),
@@ -362,7 +362,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
     // Run simulation ticks.  Old-format files commonly contain Clock elements
     // (added in V1.1), so start() + update() exercises Clock::updateClock which
     // was dark in all other harnesses.
-    auto *sim = workspace.scene()->simulation();
+    auto *sim = workspace.canvas()->simulation();
     sim->start();
     sim->update();
     sim->stop();

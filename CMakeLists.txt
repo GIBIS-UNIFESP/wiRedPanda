@@ -34,13 +34,34 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
 if(EMSCRIPTEN)
-    find_package(Qt6 6.9 REQUIRED COMPONENTS Core Gui Network PrintSupport Multimedia Widgets Svg Test)
+    find_package(Qt6 6.9 REQUIRED COMPONENTS Core Gui Network PrintSupport Multimedia Widgets Svg Test Quick QuickControls2 QuickDialogs2 Qml)
 else()
-    find_package(Qt6 6.2 REQUIRED COMPONENTS Core Gui Network PrintSupport Multimedia Widgets Svg Test)
+    find_package(Qt6 6.2 REQUIRED COMPONENTS Core Gui Network PrintSupport Multimedia Widgets Svg Test Quick QuickControls2 QuickDialogs2 Qml)
 endif()
 
 set(QT_VERSION_MAJOR 6)
-set(QT_LIBS Qt6::Core Qt6::Gui Qt6::Network Qt6::PrintSupport Qt6::Multimedia Qt6::Widgets Qt6::Svg Qt6::Test)
+# wiredpanda_lib's own portable subset -- deliberately no Qt6::Widgets/PrintSupport/Test, so
+# nothing that links wiredpanda_lib (including the Quick app) transitively depends on them.
+# The wiredpanda/test_wiredpanda targets each link only the additional Qt modules they
+# individually need (e.g. PrintSupport for CanvasItem::exportToPdf(), Qt6::Test for the
+# test binary).
+set(QT_LIBS Qt6::Core Qt6::Gui Qt6::Network Qt6::Multimedia Qt6::Svg)
+
+# Qt Quick/QML/QuickControls2: kept separate from QT_LIBS deliberately -- only the
+# wiredpanda target (see the "QUICK SHELL" section below) needs the Quick stack.
+# QuickDialogs2 backs Chrome/QuickDialogProvider's confirm/notice dialogs via QtQuick.Dialogs'
+# MessageDialog -- the QMessageBox/QInputDialog equivalent for the new UI.
+set(QUICK_LIBS Qt6::Quick Qt6::QuickControls2 Qt6::QuickDialogs2 Qt6::Qml)
+
+# QML modules default to the ":/qt/qml/" resource prefix as of this policy (introduced in
+# Qt 6.5) -- set it explicitly to silence qt_add_qml_module's dev warning. Guarded per this
+# project's usual version-gated-feature pattern since the project's own floor is Qt 6.2.
+if(Qt6_VERSION VERSION_GREATER_EQUAL "6.5.0")
+    qt_policy(SET QTP0001 NEW)
+endif()
+if(Qt6_VERSION VERSION_GREATER_EQUAL "6.8.0")
+    qt_policy(SET QTP0004 NEW)
+endif()
 
 add_compile_definitions(
     APP_VERSION="${PROJECT_VERSION}"
@@ -81,7 +102,13 @@ else()
 endif()
 
 if(MSVC)
-    add_compile_options(/W4 /WX /external:W0 /permissive-)
+    # /wd4702 ("unreachable code"): a known false positive from Qt's own qmetatype.h/qvariant.h
+    # template machinery under MSVC's optimizer (/O2, used by the release/debug presets alike) --
+    # not our code, and not scopable to one file the way the GCC-15 null-deref false positive
+    # (App/QuickShell/CMakeLists.txt) is: it surfaces from different qmlcache-generated
+    # translation units depending on which QVariant/QMetaType template instantiations that QML
+    # file's generated code happens to touch.
+    add_compile_options(/W4 /WX /wd4702 /external:W0 /permissive-)
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     add_compile_options(
         -Wall -Wextra -Wpedantic -Werror
@@ -221,7 +248,7 @@ endif()
 # WIREDPANDA_USE_SYSTEM_JSON=ON to link against the libraries provided by the
 # system instead (e.g. Debian's nlohmann-json3-dev and
 # nlohmann-json-schema-validator-dev). This is required by distribution build
-# environments that forbid network access during the build. See issue #404.
+# environments that forbid network access during the build.
 option(WIREDPANDA_USE_SYSTEM_JSON "Use system nlohmann/json and json-schema-validator instead of fetching them" OFF)
 
 if(WIREDPANDA_USE_SYSTEM_JSON)
@@ -426,22 +453,207 @@ if (SENTRY_INCLUDE_DIR)
     target_link_libraries(wiredpanda_lib PUBLIC sentry)
 endif()
 
-# ========= APP ===================================
+# ========= QUICK TESTS ===================================
+# Portable domain test suite: no Qt Widgets/PrintSupport, no Scene, nothing but
+# wiredpanda_lib + Qt Test. This is the project's sole test suite.
 
-# Use qt_add_executable for WASM builds as recommended by Qt docs
-if(EMSCRIPTEN)
-    qt_add_executable(wiredpanda App/Main.cpp)
-else()
-    add_executable(wiredpanda App/Main.cpp)
+enable_testing()
+
+add_executable(test_wiredpanda ${TEST_WIREDPANDA_SOURCES} ${TEST_WIREDPANDA_HEADERS})
+link_wiredpanda_whole_archive(test_wiredpanda)
+target_link_libraries(test_wiredpanda PRIVATE wiredpanda_resources Qt6::Test)
+target_compile_definitions(test_wiredpanda PRIVATE
+    CURRENTDIR=${CMAKE_CURRENT_SOURCE_DIR}/Tests
+)
+if(ENABLE_PCH)
+    # Fully portable target, same subset pch.h already covers -- safe to reuse rather than
+    # paying for a second precompilation pass.
+    target_precompile_headers(test_wiredpanda REUSE_FROM wiredpanda_lib)
 endif()
-link_wiredpanda_whole_archive(wiredpanda)
-target_link_libraries(wiredpanda PRIVATE wiredpanda_resources)
 
-# Compile .ts → .qm and embed as Qt resources at :/i18n/wpanda_<lang>.qm.
-# On Qt 6.9+ MERGE_QT_TRANSLATIONS also bakes qtbase / Widgets / Gui /
-# Multimedia / Svg catalogs into the same .qm files so Qt-owned dialogs
-# (file picker, message boxes) translate too and RTL flips for ar/he/fa
-# via the embedded QT_LAYOUT_DIRECTION string.  No filesystem deployment.
+add_test(NAME TestCodeGenUtils COMMAND test_wiredpanda TestCodeGenUtils WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestCommon COMMAND test_wiredpanda TestCommon WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestComponents COMMAND test_wiredpanda TestComponents WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestConnection COMMAND test_wiredpanda TestConnection WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestConnectionSerialization COMMAND test_wiredpanda TestConnectionSerialization WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestConnectionValidity COMMAND test_wiredpanda TestConnectionValidity WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestConnections COMMAND test_wiredpanda TestConnections WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestDanglingPointer COMMAND test_wiredpanda TestDanglingPointer WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestDemux COMMAND test_wiredpanda TestDemux WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestDisplay COMMAND test_wiredpanda TestDisplay WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestDisplay7 COMMAND test_wiredpanda TestDisplay7 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestDisplays COMMAND test_wiredpanda TestDisplays WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestDragDropPayload COMMAND test_wiredpanda TestDragDropPayload WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestElementAppearance COMMAND test_wiredpanda TestElementAppearance WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestElementFactory COMMAND test_wiredpanda TestElementFactory WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestElementLogic COMMAND test_wiredpanda TestElementLogic WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestElementLogicErrors COMMAND test_wiredpanda TestElementLogicErrors WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestElementProperties COMMAND test_wiredpanda TestElementProperties WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestEnums COMMAND test_wiredpanda TestEnums WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestExerciseTourResources COMMAND test_wiredpanda TestExerciseTourResources WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestExternalFilePath COMMAND test_wiredpanda TestExternalFilePath WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestSceneConnections COMMAND test_wiredpanda TestSceneConnections WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestFeatures COMMAND test_wiredpanda TestFeatures WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestFeedback COMMAND test_wiredpanda TestFeedback WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestFiles COMMAND test_wiredpanda TestFiles WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestGeometry COMMAND test_wiredpanda TestGeometry WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestGraphicElement COMMAND test_wiredpanda TestGraphicElement WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestGraphicElementSerializer COMMAND test_wiredpanda TestGraphicElementSerializer WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestGraphicelementAdvanced COMMAND test_wiredpanda TestGraphicelementAdvanced WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestICInline COMMAND test_wiredpanda TestICInline WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestICUnit COMMAND test_wiredpanda TestICUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestIcons COMMAND test_wiredpanda TestIcons WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestInstallRelativePaths COMMAND test_wiredpanda TestInstallRelativePaths WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestInputElements COMMAND test_wiredpanda TestInputElements WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestInputRotary COMMAND test_wiredpanda TestInputRotary WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLanguageManager COMMAND test_wiredpanda TestLanguageManager WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLogicGates COMMAND test_wiredpanda TestLogicGates WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestMUXDEMUXComprehensive COMMAND test_wiredpanda TestMUXDEMUXComprehensive WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestMultiplexing COMMAND test_wiredpanda TestMultiplexing WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestMux COMMAND test_wiredpanda TestMux WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestNodeLogic COMMAND test_wiredpanda TestNodeLogic WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestNotifyCatch COMMAND test_wiredpanda TestNotifyCatch WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestSerialization COMMAND test_wiredpanda TestSerialization WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestSimulation COMMAND test_wiredpanda TestSimulation WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestSimulationBlocker COMMAND test_wiredpanda TestSimulationBlocker WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestSimulationUnit COMMAND test_wiredpanda TestSimulationUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestStatusOps COMMAND test_wiredpanda TestStatusOps WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestSystemVerilogCodeGenUnit COMMAND test_wiredpanda TestSystemVerilogCodeGenUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestSystemVerilogExport COMMAND test_wiredpanda TestSystemVerilogExport WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestTextureAtlas COMMAND test_wiredpanda TestTextureAtlas WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestThemeHandler COMMAND test_wiredpanda TestThemeHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestTourEngine COMMAND test_wiredpanda TestTourEngine WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestTruthTable COMMAND test_wiredpanda TestTruthTable WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestWirelessNode COMMAND test_wiredpanda TestWirelessNode WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestCPUProgramCounter COMMAND test_wiredpanda TestCPUProgramCounter WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestCPUAlu COMMAND test_wiredpanda TestCPUAlu WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestCPUBranch COMMAND test_wiredpanda TestCPUBranch WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestCPUControlUnit COMMAND test_wiredpanda TestCPUControlUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestCPUDecoders COMMAND test_wiredpanda TestCPUDecoders WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestCPUInstructionExecute COMMAND test_wiredpanda TestCPUInstructionExecute WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestCPUInstructionFetch COMMAND test_wiredpanda TestCPUInstructionFetch WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestCPUIntegration COMMAND test_wiredpanda TestCPUIntegration WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestCPUMemoryInterface COMMAND test_wiredpanda TestCPUMemoryInterface WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestCPURegisterBank COMMAND test_wiredpanda TestCPURegisterBank WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestCPURegisters COMMAND test_wiredpanda TestCPURegisters WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestDecoder8To256 COMMAND test_wiredpanda TestDecoder8To256 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestICFixtureLayout COMMAND test_wiredpanda TestICFixtureLayout WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel1DFlipFlop COMMAND test_wiredpanda TestLevel1DFlipFlop WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel1DLatch COMMAND test_wiredpanda TestLevel1DLatch WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel1JKFlipFlop COMMAND test_wiredpanda TestLevel1JKFlipFlop WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel1SRLatch COMMAND test_wiredpanda TestLevel1SRLatch WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel2Decoder2To4 COMMAND test_wiredpanda TestLevel2Decoder2To4 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel2Decoder3To8 COMMAND test_wiredpanda TestLevel2Decoder3To8 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel2Decoder4To16 COMMAND test_wiredpanda TestLevel2Decoder4To16 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel2Decoder5To32 COMMAND test_wiredpanda TestLevel2Decoder5To32 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel2FullAdder1Bit COMMAND test_wiredpanda TestLevel2FullAdder1Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel2HalfAdder COMMAND test_wiredpanda TestLevel2HalfAdder WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel2MUX2To1 COMMAND test_wiredpanda TestLevel2MUX2To1 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel2MUX4To1 COMMAND test_wiredpanda TestLevel2MUX4To1 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel2MUX8To1 COMMAND test_wiredpanda TestLevel2MUX8To1 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel2ParityChecker COMMAND test_wiredpanda TestLevel2ParityChecker WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel2ParityGenerator COMMAND test_wiredpanda TestLevel2ParityGenerator WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel2PriorityEncoder8To3 COMMAND test_wiredpanda TestLevel2PriorityEncoder8To3 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel2PriorityMUX3To1 COMMAND test_wiredpanda TestLevel2PriorityMUX3To1 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel3ALUSelector5Way COMMAND test_wiredpanda TestLevel3ALUSelector5Way WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel3BCD7SegmentDecoder COMMAND test_wiredpanda TestLevel3BCD7SegmentDecoder WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel3Comparator4Bit COMMAND test_wiredpanda TestLevel3Comparator4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel3Comparator4BitEquality COMMAND test_wiredpanda TestLevel3Comparator4BitEquality WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel3Register1Bit COMMAND test_wiredpanda TestLevel3Register1Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel4BinaryCounter4Bit COMMAND test_wiredpanda TestLevel4BinaryCounter4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel4BusMUX4Bit COMMAND test_wiredpanda TestLevel4BusMUX4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel4BusMUX8Bit COMMAND test_wiredpanda TestLevel4BusMUX8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel4Comparator4Bit COMMAND test_wiredpanda TestLevel4Comparator4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel4JohnsonCounter4Bit COMMAND test_wiredpanda TestLevel4JohnsonCounter4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel4RAM4X1 COMMAND test_wiredpanda TestLevel4RAM4X1 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel4RAM8X1 COMMAND test_wiredpanda TestLevel4RAM8X1 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel4Register4Bit COMMAND test_wiredpanda TestLevel4Register4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel4RingCounter4Bit COMMAND test_wiredpanda TestLevel4RingCounter4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel4RippleAdder4Bit COMMAND test_wiredpanda TestLevel4RippleAdder4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel4RippleALU4Bit COMMAND test_wiredpanda TestLevel4RippleALU4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel4ShiftRegisterPISO COMMAND test_wiredpanda TestLevel4ShiftRegisterPISO WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel4ShiftRegisterSIPO COMMAND test_wiredpanda TestLevel4ShiftRegisterSIPO WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel5BarrelRotator COMMAND test_wiredpanda TestLevel5BarrelRotator WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel5BarrelShifter4Bit COMMAND test_wiredpanda TestLevel5BarrelShifter4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel5ClockGatedDecoder COMMAND test_wiredpanda TestLevel5ClockGatedDecoder WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel5Controller4Bit COMMAND test_wiredpanda TestLevel5Controller4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel5InstructionDecoder4Bit COMMAND test_wiredpanda TestLevel5InstructionDecoder4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel5LoadableCounter4Bit COMMAND test_wiredpanda TestLevel5LoadableCounter4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel5ModuloCounter4Bit COMMAND test_wiredpanda TestLevel5ModuloCounter4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel5ProgramCounter4Bit COMMAND test_wiredpanda TestLevel5ProgramCounter4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel5RegisterFile4X4 COMMAND test_wiredpanda TestLevel5RegisterFile4X4 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel5RegisterFile8X8 COMMAND test_wiredpanda TestLevel5RegisterFile8X8 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel5UpDownCounter4Bit COMMAND test_wiredpanda TestLevel5UpDownCounter4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel6ALU8Bit COMMAND test_wiredpanda TestLevel6ALU8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel6ProgramCounter8BitArithmetic COMMAND test_wiredpanda TestLevel6ProgramCounter8BitArithmetic WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel6RAM8X8 COMMAND test_wiredpanda TestLevel6RAM8X8 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel6Register8Bit COMMAND test_wiredpanda TestLevel6Register8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel6RegisterFile8X8 COMMAND test_wiredpanda TestLevel6RegisterFile8X8 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel6RippleAdder8Bit COMMAND test_wiredpanda TestLevel6RippleAdder8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel6StackMemoryInterface COMMAND test_wiredpanda TestLevel6StackMemoryInterface WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel6StackPointer8Bit COMMAND test_wiredpanda TestLevel6StackPointer8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel7ALU16Bit COMMAND test_wiredpanda TestLevel7ALU16Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel7CPUProgramCounter8Bit COMMAND test_wiredpanda TestLevel7CPUProgramCounter8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel7DataForwardingUnit COMMAND test_wiredpanda TestLevel7DataForwardingUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel7ExecutionDatapath COMMAND test_wiredpanda TestLevel7ExecutionDatapath WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel7FlagRegister COMMAND test_wiredpanda TestLevel7FlagRegister WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel7InstructionDecoder8Bit COMMAND test_wiredpanda TestLevel7InstructionDecoder8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel7InstructionMemoryInterface COMMAND test_wiredpanda TestLevel7InstructionMemoryInterface WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel7InstructionRegister8Bit COMMAND test_wiredpanda TestLevel7InstructionRegister8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel8DecodeStage COMMAND test_wiredpanda TestLevel8DecodeStage WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel8ExecuteStage COMMAND test_wiredpanda TestLevel8ExecuteStage WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel8FetchStage COMMAND test_wiredpanda TestLevel8FetchStage WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel8MemoryStage COMMAND test_wiredpanda TestLevel8MemoryStage WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel9CPU16BitRISC COMMAND test_wiredpanda TestLevel9CPU16BitRISC WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel9FetchStage16Bit COMMAND test_wiredpanda TestLevel9FetchStage16Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel9MemoryStage16Bit COMMAND test_wiredpanda TestLevel9MemoryStage16Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel9MultiCycleCPU8Bit COMMAND test_wiredpanda TestLevel9MultiCycleCPU8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel9RegisterFile32X16 COMMAND test_wiredpanda TestLevel9RegisterFile32X16 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLevel9SingleCycleCPU8Bit COMMAND test_wiredpanda TestLevel9SingleCycleCPU8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestMemorySettlingTime COMMAND test_wiredpanda TestMemorySettlingTime WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestRAMCell1Bit COMMAND test_wiredpanda TestRAMCell1Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestSequential COMMAND test_wiredpanda TestSequential WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestArduino COMMAND test_wiredpanda TestArduino WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestArduinoCodeGenUnit COMMAND test_wiredpanda TestArduinoCodeGenUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestAudioBox COMMAND test_wiredpanda TestAudioBox WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestBuzzer COMMAND test_wiredpanda TestBuzzer WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestClock COMMAND test_wiredpanda TestClock WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestClocksAdvanced COMMAND test_wiredpanda TestClocksAdvanced WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestPort COMMAND test_wiredpanda TestPort WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestPriorities COMMAND test_wiredpanda TestPriorities WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestSelectionCapabilities COMMAND test_wiredpanda TestSelectionCapabilities WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestCanvasCommands COMMAND test_wiredpanda TestCanvasCommands WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestCanvasEmbeddedIC COMMAND test_wiredpanda TestCanvasEmbeddedIC WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestCanvasInlineIC COMMAND test_wiredpanda TestCanvasInlineIC WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestCanvasItemInteraction COMMAND test_wiredpanda TestCanvasItemInteraction WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestCanvasItemSmoke COMMAND test_wiredpanda TestCanvasItemSmoke WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestQuickAppController COMMAND test_wiredpanda TestQuickAppController WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestQuickBaseHandler COMMAND test_wiredpanda TestQuickBaseHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestQuickCanvasZoom COMMAND test_wiredpanda TestQuickCanvasZoom WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestQuickConnectionHandler COMMAND test_wiredpanda TestQuickConnectionHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestQuickDialogProvider COMMAND test_wiredpanda TestQuickDialogProvider WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestQuickDolphinController COMMAND test_wiredpanda TestQuickDolphinController WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestQuickElementEditor COMMAND test_wiredpanda TestQuickElementEditor WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestQuickElementHandler COMMAND test_wiredpanda TestQuickElementHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestQuickElementPalette COMMAND test_wiredpanda TestQuickElementPalette WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestQuickExerciseController COMMAND test_wiredpanda TestQuickExerciseController WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestQuickFileHandlerSecurity COMMAND test_wiredpanda TestQuickFileHandlerSecurity WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestQuickHistoryHandler COMMAND test_wiredpanda TestQuickHistoryHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestQuickICHandler COMMAND test_wiredpanda TestQuickICHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestQuickICHandlerSecurity COMMAND test_wiredpanda TestQuickICHandlerSecurity WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestQuickICPreview COMMAND test_wiredpanda TestQuickICPreview WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestQuickMinimap COMMAND test_wiredpanda TestQuickMinimap WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestQuickSimulationHandler COMMAND test_wiredpanda TestQuickSimulationHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestQuickTourController COMMAND test_wiredpanda TestQuickTourController WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestQuickUpdateController COMMAND test_wiredpanda TestQuickUpdateController WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestQuickWorkSpace COMMAND test_wiredpanda TestQuickWorkSpace WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+
+# ========= QUICK SHELL ===================================
+# The real Qt Quick UI -- the project's only UI/app target. Own CMakeLists.txt so
+# qt_add_qml_module's QML file aliasing is relative to App/QuickShell/ itself, not the repo root.
+add_subdirectory(App/QuickShell)
+
+# Compile .ts -> .qm and embed as :/i18n/wpanda_<lang>.qm for wiredpanda.
 if(Qt6LinguistTools_FOUND)
     set(_merge_qt_translations)
     if(Qt6_VERSION VERSION_GREATER_EQUAL "6.9.0")
@@ -484,243 +696,9 @@ if(Qt6LinguistTools_FOUND)
     endif()
 endif()
 
-# Preload example files into Emscripten's virtual filesystem
-if(EMSCRIPTEN)
-    target_link_options(wiredpanda PRIVATE
-        "SHELL:--preload-file ${CMAKE_SOURCE_DIR}/Examples@/Examples"
-    )
-endif()
+# ========= FUZZERS ===================================
 
-# Copy the JSON schema next to the executables, keyed on the schema itself.
-#
-# DEPENDS on the source rather than POST_BUILD on each target: a POST_BUILD command runs only
-# when that target relinks, so editing ONLY the schema would leave a stale copy beside the
-# executable and the MCP server validating against the old contract -- which presents as a
-# baffling "additional property is invalid" error naming a property the checked-in schema
-# plainly allows. Keyed this way, the copy reruns whenever the schema changes and never
-# otherwise.
-# The destination must be $<TARGET_FILE_DIR:wiredpanda>, not the binary directory: with
-# MACOSX_BUNDLE the executable lives in wiredpanda.app/Contents/MacOS/, and MCPProcessor
-# resolves the schema from QCoreApplication::applicationDirPath(). A target generator
-# expression cannot appear in OUTPUT (the path must resolve without a target), so the
-# destination is formed in COMMAND and a stamp file carries the up-to-date check. Naming the
-# target in COMMAND also orders this after the link, so the bundle directory exists.
-add_custom_command(
-    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/schema-mcp.stamp
-    COMMAND ${CMAKE_COMMAND} -E copy
-        ${CMAKE_SOURCE_DIR}/MCP/schema-mcp.json
-        $<TARGET_FILE_DIR:wiredpanda>/schema-mcp.json
-    COMMAND ${CMAKE_COMMAND} -E touch ${CMAKE_CURRENT_BINARY_DIR}/schema-mcp.stamp
-    DEPENDS ${CMAKE_SOURCE_DIR}/MCP/schema-mcp.json
-    COMMENT "Copying JSON schema next to the wiredpanda executable"
-    VERBATIM
-)
-add_custom_target(copy_mcp_schema ALL DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/schema-mcp.stamp)
-
-# Copy WASM support files and patch the HTML shell
-if(EMSCRIPTEN)
-    set(WASM_RES_DIR "${CMAKE_SOURCE_DIR}/App/Resources/Wasm")
-    add_custom_command(TARGET wiredpanda POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy
-            "${WASM_RES_DIR}/coi-serviceworker.min.js"
-            "$<TARGET_FILE_DIR:wiredpanda>/coi-serviceworker.min.js"
-        COMMAND ${CMAKE_COMMAND} -E copy
-            "${WASM_RES_DIR}/favicon.ico"
-            "$<TARGET_FILE_DIR:wiredpanda>/favicon.ico"
-        COMMAND ${CMAKE_COMMAND} -E copy
-            "$<TARGET_FILE_DIR:wiredpanda>/wiredpanda.html"
-            "$<TARGET_FILE_DIR:wiredpanda>/index.html"
-        COMMAND ${CMAKE_COMMAND}
-            -DHTML_FILE=$<TARGET_FILE_DIR:wiredpanda>/index.html
-            -P "${WASM_RES_DIR}/patch_wasm_html.cmake"
-        COMMENT "Copying WASM support files and patching index.html"
-        VERBATIM
-    )
-endif()
-
-# Run windeployqt on Windows to copy Qt dependencies (DLLs, plugins).
-# --no-translations: Qt translations are now embedded in the binary via
-# qt_add_translations(MERGE_QT_TRANSLATIONS), so no separate translations
-# directory is needed in the deploy folder.
-if(WIN32)
-    find_program(WINDEPLOYQT_EXECUTABLE windeployqt HINTS ${Qt${QT_VERSION_MAJOR}_DIR}/../../../bin)
-
-    if(WINDEPLOYQT_EXECUTABLE)
-        add_custom_command(TARGET wiredpanda POST_BUILD
-            COMMAND ${WINDEPLOYQT_EXECUTABLE} --verbose 2 --no-translations --no-system-d3d-compiler --no-opengl-sw --no-compiler-runtime $<TARGET_FILE:wiredpanda>
-            COMMENT "Deploying Qt libraries with windeployqt"
-            VERBATIM
-        )
-    else()
-        message(WARNING "windeployqt not found - Qt libraries will not be automatically deployed")
-    endif()
-endif()
-
-if(ENABLE_PCH)
-    target_precompile_headers(wiredpanda REUSE_FROM wiredpanda_lib)
-endif()
-
-# Windows VERSIONINFO is configured from the template on every platform so
-# template breakage surfaces in any CI run, not just Windows builds. The
-# target's VERSION property does not emit VERSIONINFO — the .rc is what
-# Explorer, installers, and crash-report symbolication read.
-configure_file(
-    "${CMAKE_SOURCE_DIR}/App/Resources/Windows/wpanda.rc.in"
-    "${CMAKE_BINARY_DIR}/wpanda.rc"
-    @ONLY
-)
-
-if(WIN32)
-    set(WINDOWS_APP_NAME "wiRedPanda - Logic Circuit Simulator")
-
-    set_target_properties(wiredpanda PROPERTIES
-        WIN32_EXECUTABLE ON
-        RUNTIME_OUTPUT_NAME wiredpanda
-        # Enhanced Windows metadata
-        VERSION "${PROJECT_VERSION}"
-        DESCRIPTION "wiRedPanda - Logic Circuit Simulator"
-        COMPANY_NAME GIBIS-UNIFESP
-        FILE_DESCRIPTION "wiRedPanda - Logic Circuit Simulator"
-        LEGAL_COPYRIGHT "GIBIS-UNIFESP and the wiRedPanda contributors"
-        ORIGINAL_FILENAME wiredpanda.exe
-        PRODUCT_NAME "wiRedPanda - Logic Circuit Simulator"
-    )
-
-    target_sources(wiredpanda PRIVATE "${CMAKE_BINARY_DIR}/wpanda.rc")
-endif()
-
-if(APPLE)
-    # Configure and embed Info.plist (replaces @PROJECT_VERSION@ with actual version).
-    # Setting MACOSX_BUNDLE makes install(TARGETS ... BUNDLE DESTINATION .) produce a
-    # real .app bundle instead of a bare executable.
-    configure_file(
-        App/Resources/macOS/Info.plist.in
-        ${CMAKE_CURRENT_BINARY_DIR}/Info.plist
-        @ONLY
-    )
-    set_target_properties(wiredpanda PROPERTIES
-        MACOSX_BUNDLE ON
-        MACOSX_BUNDLE_INFO_PLIST "${CMAKE_CURRENT_BINARY_DIR}/Info.plist"
-    )
-endif()
-
-# ========= INSTALLATION =============================
-
-# Install executable
-install(TARGETS wiredpanda
-    RUNTIME DESTINATION bin
-    BUNDLE DESTINATION .
-)
-
-# Install example circuits (found at runtime via InstallRelativePaths::resolve("Examples")).
-# Destination is platform-specific: it must match InstallRelativePaths.cpp's own candidate
-# list for each OS (Windows only ever looks next to the executable; macOS looks inside the
-# bundle's Contents/Resources; Linux looks under share/wiredpanda/ via the AppImage/native-FHS
-# candidates).
-if(WIN32)
-    install(DIRECTORY Examples/
-        DESTINATION bin/Examples
-        COMPONENT examples
-    )
-elseif(APPLE)
-    install(DIRECTORY Examples/
-        DESTINATION "$<TARGET_BUNDLE_DIR_NAME:wiredpanda>/Contents/Resources/Examples"
-        COMPONENT examples
-    )
-else()
-    install(DIRECTORY Examples/
-        DESTINATION share/wiredpanda/Examples
-        COMPONENT examples
-    )
-endif()
-
-# Linux-only desktop integration: .desktop entry, icons, and shared-mime-info definition.
-# Meaningless on Windows/macOS (no FreeDesktop menu/icon-theme/mime system there).
-if(LINUX)
-    # Configure and install .desktop file (replaces @VERSION@ with actual version)
-    configure_file(
-        App/Resources/Freedesktop/wiredpanda.desktop
-        ${CMAKE_CURRENT_BINARY_DIR}/wiredpanda.desktop
-        @ONLY
-    )
-    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/wiredpanda.desktop
-        DESTINATION share/applications
-        COMPONENT desktop
-    )
-
-    # Install icons in standard FreeDesktop Icon Theme hierarchy
-    set(ICON_SIZES 26x26 32x32 48x48 64x64 128x128)
-    foreach(SIZE ${ICON_SIZES})
-        install(FILES App/Resources/Assets/Icons/${SIZE}/wpanda.png
-            DESTINATION share/icons/hicolor/${SIZE}/apps
-            RENAME wpanda.png
-            COMPONENT icons
-        )
-    endforeach()
-
-    # Install shared-mime-info definition for .panda/application/x-wiredpanda
-    install(FILES App/Resources/Freedesktop/wiredpanda-mime.xml
-        DESTINATION share/mime/packages
-        RENAME wiredpanda.xml
-        COMPONENT mime
-    )
-endif()
-
-# ========= TESTS ===================================
-
-# Add CTest support
-enable_testing()
-
-# Test utilities library (shared helpers for all tests)
-add_library(test_utils STATIC ${TEST_UTILS_SOURCES} ${TEST_UTILS_HEADERS})
-# Headers only: every test executable whole-archives wiredpanda_lib itself
-# (link_wiredpanda_whole_archive), so re-linking it here would put the archive on
-# the link line a second time and, with a different link feature, collide with
-# WHOLE_ARCHIVE on CMake < 3.29 ("already occurred with feature WHOLE_ARCHIVE").
-# $<COMPILE_ONLY> propagates wiredpanda_lib's include/define/feature usage
-# requirements without adding it to the link.
-target_link_libraries(test_utils PUBLIC "$<COMPILE_ONLY:wiredpanda_lib>")
-target_compile_definitions(test_utils PRIVATE CURRENTDIR=${CMAKE_CURRENT_SOURCE_DIR}/Tests)
-
-# ---- Single consolidated test executable ----
-# All test classes in one binary; CTest registers per-class entries.
-# Usage: ./build/test_wiredpanda ClassName [functionName]
-add_executable(test_wiredpanda ${TEST_WIREDPANDA_SOURCES} ${TEST_WIREDPANDA_HEADERS})
-link_wiredpanda_whole_archive(test_wiredpanda)
-target_link_libraries(test_wiredpanda PRIVATE test_utils wiredpanda_resources)
-target_compile_definitions(test_wiredpanda PRIVATE
-    CURRENTDIR=${CMAKE_CURRENT_SOURCE_DIR}/Tests
-)
-
-# Copy JSON schema to the test executable's own directory too -- MCPProcessor locates it via
-# QCoreApplication::applicationDirPath(), and the copy above (attached to the `wiredpanda`
-# target) lands inside wiredpanda.app/Contents/MacOS/ on macOS (MACOSX_BUNDLE ON), nowhere near
-# test_wiredpanda's own (non-bundle) output directory. Keyed on the schema for the same reason.
-add_custom_command(
-    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/schema-mcp-tests.stamp
-    COMMAND ${CMAKE_COMMAND} -E copy
-        ${CMAKE_SOURCE_DIR}/MCP/schema-mcp.json
-        $<TARGET_FILE_DIR:test_wiredpanda>/schema-mcp.json
-    COMMAND ${CMAKE_COMMAND} -E touch ${CMAKE_CURRENT_BINARY_DIR}/schema-mcp-tests.stamp
-    DEPENDS ${CMAKE_SOURCE_DIR}/MCP/schema-mcp.json
-    COMMENT "Copying JSON schema next to the test executable"
-    VERBATIM
-)
-add_custom_target(copy_mcp_schema_tests ALL DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/schema-mcp-tests.stamp)
-
-if(ENABLE_PCH)
-    target_precompile_headers(test_wiredpanda REUSE_FROM wiredpanda_lib)
-endif()
-
-if(ENABLE_UNITY)
-    message(STATUS "Unity builds enabled for test executable (batch size: ${UNITY_BUILD_BATCH_SIZE})")
-    set_target_properties(test_wiredpanda PROPERTIES
-        UNITY_BUILD ON
-        UNITY_BUILD_BATCH_SIZE ${UNITY_BUILD_BATCH_SIZE}
-    )
-endif()
-
-# ---- libFuzzer harness for the .panda deserializer ----
+# ---- libFuzzer harnesses ----
 # Clang-only.  Driven by `-fsanitize=fuzzer` plus ASan + UBSan.  Built only
 # when ENABLE_FUZZER=ON (see the `fuzzer` CMake preset).  Not registered as a
 # CTest target — libFuzzer drives its own input loop.
@@ -743,428 +721,58 @@ if(ENABLE_FUZZER)
         set_target_properties(${target} PROPERTIES UNITY_BUILD OFF)
     endmacro()
 
-    # Harness 1: raw .panda file (full WorkSpace::load path) + custom mutator
-    add_fuzzer_harness(fuzz_deserialize Tests/Fuzz/FuzzDeserialize.cpp)
+    # Same as add_fuzzer_harness(), plus QUICK_SHELL_SOURCES compiled directly into the
+    # target -- mirrors test_wiredpanda's own target_sources(test_wiredpanda PRIVATE
+    # ${QUICK_SHELL_SOURCES}) call in App/QuickShell/CMakeLists.txt. For harnesses that drive
+    # CanvasItem/QuickWorkSpace/CanvasCommands/CanvasICRegistry directly -- none of that is
+    # part of the portable wiredpanda_lib link_wiredpanda_whole_archive() above already pulls
+    # in, since it's compiled straight into the wiredpanda/test_wiredpanda executables rather
+    # than a shared library (see that file's own doc comment on why).
+    macro(add_quick_fuzzer_harness target source)
+        add_fuzzer_harness(${target} ${source})
+        target_sources(${target} PRIVATE ${QUICK_SHELL_SOURCES})
+        target_include_directories(${target} PRIVATE App/QuickShell/Canvas App/QuickShell/Chrome App/QuickShell/Dolphin)
+        target_link_libraries(${target} PRIVATE ${QUICK_LIBS} Qt6::PrintSupport)
+    endmacro()
+
+    # Harness 1: raw .panda file (full QuickWorkSpace::load path) + custom mutator
+    add_quick_fuzzer_harness(fuzz_deserialize Tests/Fuzz/FuzzDeserialize.cpp)
 
     # Harness 2: IC blob (IC::deserializeAndLoad directly, skipping outer wrapper)
     add_fuzzer_harness(fuzz_ic_blob Tests/Fuzz/FuzzICBlob.cpp)
 
     # Harness 3: structure-aware (FuzzedDataProvider builds valid .panda structure)
-    add_fuzzer_harness(fuzz_structured Tests/Fuzz/FuzzStructured.cpp)
+    add_quick_fuzzer_harness(fuzz_structured Tests/Fuzz/FuzzStructured.cpp)
 
     # Harness 4: beWavedDolphin waveform format (.dolphin files)
     add_fuzzer_harness(fuzz_waveform Tests/Fuzz/FuzzWaveform.cpp)
 
     # Harness 5: clipboard paste (BlobRegistry MIME + panda clipboard stream)
-    add_fuzzer_harness(fuzz_clipboard Tests/Fuzz/FuzzClipboard.cpp)
+    add_quick_fuzzer_harness(fuzz_clipboard Tests/Fuzz/FuzzClipboard.cpp)
 
     # Harness 6: pre-4.1 flat binary format (GraphicElement::loadOldFormat)
-    add_fuzzer_harness(fuzz_old_format Tests/Fuzz/FuzzOldFormat.cpp)
+    add_quick_fuzzer_harness(fuzz_old_format Tests/Fuzz/FuzzOldFormat.cpp)
 
-    # Harness 7: ICRegistry blob management (setBlob, initEmbeddedIC, etc.)
-    add_fuzzer_harness(fuzz_ic_registry Tests/Fuzz/FuzzICRegistry.cpp)
+    # Harness 7: CanvasICRegistry blob management (setBlob, initEmbeddedIC, etc.)
+    add_quick_fuzzer_harness(fuzz_ic_registry Tests/Fuzz/FuzzICRegistry.cpp)
 
     # Harness 8: Code generation (Arduino + SystemVerilog exporters, 0% coverage)
-    add_fuzzer_harness(fuzz_codegen Tests/Fuzz/FuzzCodeGen.cpp)
+    add_quick_fuzzer_harness(fuzz_codegen Tests/Fuzz/FuzzCodeGen.cpp)
 
     # Harness 9: Save/load round-trip (exercises Serialization::serialize + element save())
-    add_fuzzer_harness(fuzz_round_trip Tests/Fuzz/FuzzRoundTrip.cpp)
+    add_quick_fuzzer_harness(fuzz_round_trip Tests/Fuzz/FuzzRoundTrip.cpp)
 
     # Harness 10: File-backed IC loading (IC::loadFromFile / IC::loadFileDirectly)
-    add_fuzzer_harness(fuzz_ic_file Tests/Fuzz/FuzzICFile.cpp)
+    add_quick_fuzzer_harness(fuzz_ic_file Tests/Fuzz/FuzzICFile.cpp)
 
     # Harness 11: Serialization::copyPandaFile() and readPreamble() (Save As path)
     add_fuzzer_harness(fuzz_copy_panda Tests/Fuzz/FuzzCopyPanda.cpp)
 
-    # Harness 12: Undo/redo command system (Commands.cpp — entirely dark without this)
-    add_fuzzer_harness(fuzz_undo Tests/Fuzz/FuzzUndo.cpp)
+    # Harness 12: Undo/redo command system (CanvasCommands.cpp — entirely dark without this)
+    add_quick_fuzzer_harness(fuzz_undo Tests/Fuzz/FuzzUndo.cpp)
 
     message(STATUS "Fuzzer harnesses enabled: fuzz_deserialize fuzz_ic_blob fuzz_structured fuzz_waveform fuzz_clipboard fuzz_old_format fuzz_ic_registry fuzz_codegen fuzz_round_trip fuzz_ic_file fuzz_copy_panda fuzz_undo")
 endif()
-
-add_test(NAME TestArduino COMMAND test_wiredpanda TestArduino WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestAudioBox COMMAND test_wiredpanda TestAudioBox WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestBewavedDolphinGui COMMAND test_wiredpanda TestBewavedDolphinGui WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestBuzzer COMMAND test_wiredpanda TestBuzzer WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestCPUAlu COMMAND test_wiredpanda TestCPUAlu WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestCPUBranch COMMAND test_wiredpanda TestCPUBranch WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestCPUControlUnit COMMAND test_wiredpanda TestCPUControlUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestCPUDecoders COMMAND test_wiredpanda TestCPUDecoders WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestCPUInstructionExecute COMMAND test_wiredpanda TestCPUInstructionExecute WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestCPUInstructionFetch COMMAND test_wiredpanda TestCPUInstructionFetch WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestCPUIntegration COMMAND test_wiredpanda TestCPUIntegration WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestCPUMemoryInterface COMMAND test_wiredpanda TestCPUMemoryInterface WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestCPUProgramCounter COMMAND test_wiredpanda TestCPUProgramCounter WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestCPURegisterBank COMMAND test_wiredpanda TestCPURegisterBank WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestCPURegisters COMMAND test_wiredpanda TestCPURegisters WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestClock COMMAND test_wiredpanda TestClock WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestClocksAdvanced COMMAND test_wiredpanda TestClocksAdvanced WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestCommands COMMAND test_wiredpanda TestCommands WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestCommon COMMAND test_wiredpanda TestCommon WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestComponents COMMAND test_wiredpanda TestComponents WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestConnectionSerialization COMMAND test_wiredpanda TestConnectionSerialization WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestConnectionValidity COMMAND test_wiredpanda TestConnectionValidity WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestConnections COMMAND test_wiredpanda TestConnections WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestDecoder8To256 COMMAND test_wiredpanda TestDecoder8To256 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestDialogs COMMAND test_wiredpanda TestDialogs WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestDisplays COMMAND test_wiredpanda TestDisplays WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestElementAppearance COMMAND test_wiredpanda TestElementAppearance WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestElementFactory COMMAND test_wiredpanda TestElementFactory WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestBaseHandler COMMAND test_wiredpanda TestBaseHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestConnectionHandler COMMAND test_wiredpanda TestConnectionHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestElementHandler COMMAND test_wiredpanda TestElementHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestElementLabel COMMAND test_wiredpanda TestElementLabel WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestElementLogic COMMAND test_wiredpanda TestElementLogic WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestElementLogicErrors COMMAND test_wiredpanda TestElementLogicErrors WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestElementProperties COMMAND test_wiredpanda TestElementProperties WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestEnums COMMAND test_wiredpanda TestEnums WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestFeatures COMMAND test_wiredpanda TestFeatures WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestFeedback COMMAND test_wiredpanda TestFeedback WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestFileDialogProvider COMMAND test_wiredpanda TestFileDialogProvider WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestFileHandler COMMAND test_wiredpanda TestFileHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestFileHandlerSecurity COMMAND test_wiredpanda TestFileHandlerSecurity WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestFiles COMMAND test_wiredpanda TestFiles WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestGeometry COMMAND test_wiredpanda TestGeometry WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestGraphicElementSerializer COMMAND test_wiredpanda TestGraphicElementSerializer WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestGraphicelementAdvanced COMMAND test_wiredpanda TestGraphicelementAdvanced WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestIC COMMAND test_wiredpanda TestIC WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestICFixtureLayout COMMAND test_wiredpanda TestICFixtureLayout WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestHistoryHandler COMMAND test_wiredpanda TestHistoryHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestICHandler COMMAND test_wiredpanda TestICHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestICHandlerSecurity COMMAND test_wiredpanda TestICHandlerSecurity WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestMCPProcessor COMMAND test_wiredpanda TestMCPProcessor WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestMCPValidator COMMAND test_wiredpanda TestMCPValidator WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestServerInfoHandler COMMAND test_wiredpanda TestServerInfoHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestSimulationHandler COMMAND test_wiredpanda TestSimulationHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestThemeHandler COMMAND test_wiredpanda TestThemeHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestICInline COMMAND test_wiredpanda TestICInline WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestIcons COMMAND test_wiredpanda TestIcons WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestInputElements COMMAND test_wiredpanda TestInputElements WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestInputRotary COMMAND test_wiredpanda TestInputRotary WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLED COMMAND test_wiredpanda TestLED WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestMainWindowGui COMMAND test_wiredpanda TestMainWindowGui WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestMinimapWidget COMMAND test_wiredpanda TestMinimapWidget WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel1DFlipFlop COMMAND test_wiredpanda TestLevel1DFlipFlop WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel1DLatch COMMAND test_wiredpanda TestLevel1DLatch WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel1JKFlipFlop COMMAND test_wiredpanda TestLevel1JKFlipFlop WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel1SRLatch COMMAND test_wiredpanda TestLevel1SRLatch WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel2Decoder2To4 COMMAND test_wiredpanda TestLevel2Decoder2To4 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel2Decoder3To8 COMMAND test_wiredpanda TestLevel2Decoder3To8 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel2Decoder4To16 COMMAND test_wiredpanda TestLevel2Decoder4To16 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel2Decoder5To32 COMMAND test_wiredpanda TestLevel2Decoder5To32 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel2FullAdder1Bit COMMAND test_wiredpanda TestLevel2FullAdder1Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel2HalfAdder COMMAND test_wiredpanda TestLevel2HalfAdder WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel2MUX2To1 COMMAND test_wiredpanda TestLevel2MUX2To1 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel2MUX4To1 COMMAND test_wiredpanda TestLevel2MUX4To1 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel2MUX8To1 COMMAND test_wiredpanda TestLevel2MUX8To1 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel2ParityChecker COMMAND test_wiredpanda TestLevel2ParityChecker WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel2ParityGenerator COMMAND test_wiredpanda TestLevel2ParityGenerator WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel2PriorityEncoder8To3 COMMAND test_wiredpanda TestLevel2PriorityEncoder8To3 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel2PriorityMUX3To1 COMMAND test_wiredpanda TestLevel2PriorityMUX3To1 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel3ALUSelector5Way COMMAND test_wiredpanda TestLevel3ALUSelector5Way WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel3BCD7SegmentDecoder COMMAND test_wiredpanda TestLevel3BCD7SegmentDecoder WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel3Comparator4Bit COMMAND test_wiredpanda TestLevel3Comparator4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel3Comparator4BitEquality COMMAND test_wiredpanda TestLevel3Comparator4BitEquality WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel3Register1Bit COMMAND test_wiredpanda TestLevel3Register1Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel4BinaryCounter4Bit COMMAND test_wiredpanda TestLevel4BinaryCounter4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel4BusMUX4Bit COMMAND test_wiredpanda TestLevel4BusMUX4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel4BusMUX8Bit COMMAND test_wiredpanda TestLevel4BusMUX8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel4Comparator4Bit COMMAND test_wiredpanda TestLevel4Comparator4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel4JohnsonCounter4Bit COMMAND test_wiredpanda TestLevel4JohnsonCounter4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel4RAM4X1 COMMAND test_wiredpanda TestLevel4RAM4X1 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel4RAM8X1 COMMAND test_wiredpanda TestLevel4RAM8X1 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel4Register4Bit COMMAND test_wiredpanda TestLevel4Register4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel4RingCounter4Bit COMMAND test_wiredpanda TestLevel4RingCounter4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel4RippleALU4Bit COMMAND test_wiredpanda TestLevel4RippleALU4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel4RippleAdder4Bit COMMAND test_wiredpanda TestLevel4RippleAdder4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel4ShiftRegisterPISO COMMAND test_wiredpanda TestLevel4ShiftRegisterPISO WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel4ShiftRegisterSIPO COMMAND test_wiredpanda TestLevel4ShiftRegisterSIPO WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel5BarrelRotator COMMAND test_wiredpanda TestLevel5BarrelRotator WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel5BarrelShifter4Bit COMMAND test_wiredpanda TestLevel5BarrelShifter4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel5ClockGatedDecoder COMMAND test_wiredpanda TestLevel5ClockGatedDecoder WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel5Controller4Bit COMMAND test_wiredpanda TestLevel5Controller4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel5InstructionDecoder4Bit COMMAND test_wiredpanda TestLevel5InstructionDecoder4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel5LoadableCounter4Bit COMMAND test_wiredpanda TestLevel5LoadableCounter4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel5ModuloCounter4Bit COMMAND test_wiredpanda TestLevel5ModuloCounter4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel5ProgramCounter4Bit COMMAND test_wiredpanda TestLevel5ProgramCounter4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel5RegisterFile4X4 COMMAND test_wiredpanda TestLevel5RegisterFile4X4 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel5RegisterFile8X8 COMMAND test_wiredpanda TestLevel5RegisterFile8X8 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel5UpDownCounter4Bit COMMAND test_wiredpanda TestLevel5UpDownCounter4Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel6ALU8Bit COMMAND test_wiredpanda TestLevel6ALU8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel6ProgramCounter8BitArithmetic COMMAND test_wiredpanda TestLevel6ProgramCounter8BitArithmetic WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel6RAM8X8 COMMAND test_wiredpanda TestLevel6RAM8X8 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel6Register8Bit COMMAND test_wiredpanda TestLevel6Register8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel6RegisterFile8X8 COMMAND test_wiredpanda TestLevel6RegisterFile8X8 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel6RippleAdder8Bit COMMAND test_wiredpanda TestLevel6RippleAdder8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel6StackMemoryInterface COMMAND test_wiredpanda TestLevel6StackMemoryInterface WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel6StackPointer8Bit COMMAND test_wiredpanda TestLevel6StackPointer8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel7ALU16Bit COMMAND test_wiredpanda TestLevel7ALU16Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel7CPUProgramCounter8Bit COMMAND test_wiredpanda TestLevel7CPUProgramCounter8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel7DataForwardingUnit COMMAND test_wiredpanda TestLevel7DataForwardingUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel7ExecutionDatapath COMMAND test_wiredpanda TestLevel7ExecutionDatapath WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel7FlagRegister COMMAND test_wiredpanda TestLevel7FlagRegister WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel7InstructionDecoder8Bit COMMAND test_wiredpanda TestLevel7InstructionDecoder8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel7InstructionMemoryInterface COMMAND test_wiredpanda TestLevel7InstructionMemoryInterface WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel7InstructionRegister8Bit COMMAND test_wiredpanda TestLevel7InstructionRegister8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel8DecodeStage COMMAND test_wiredpanda TestLevel8DecodeStage WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel8ExecuteStage COMMAND test_wiredpanda TestLevel8ExecuteStage WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel8FetchStage COMMAND test_wiredpanda TestLevel8FetchStage WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel8MemoryStage COMMAND test_wiredpanda TestLevel8MemoryStage WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel9CPU16BitRISC COMMAND test_wiredpanda TestLevel9CPU16BitRISC WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel9FetchStage16Bit COMMAND test_wiredpanda TestLevel9FetchStage16Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel9MemoryStage16Bit COMMAND test_wiredpanda TestLevel9MemoryStage16Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel9MultiCycleCPU8Bit COMMAND test_wiredpanda TestLevel9MultiCycleCPU8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel9RegisterFile32X16 COMMAND test_wiredpanda TestLevel9RegisterFile32X16 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLevel9SingleCycleCPU8Bit COMMAND test_wiredpanda TestLevel9SingleCycleCPU8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLogicGates COMMAND test_wiredpanda TestLogicGates WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestMemorySettlingTime COMMAND test_wiredpanda TestMemorySettlingTime WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestMUXDEMUXComprehensive COMMAND test_wiredpanda TestMUXDEMUXComprehensive WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestMultiplexing COMMAND test_wiredpanda TestMultiplexing WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestNodeLogic COMMAND test_wiredpanda TestNodeLogic WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestNotifyCatch COMMAND test_wiredpanda TestNotifyCatch WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestPriorities COMMAND test_wiredpanda TestPriorities WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestRAMCell1Bit COMMAND test_wiredpanda TestRAMCell1Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestRecentFiles COMMAND test_wiredpanda TestRecentFiles WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestScene COMMAND test_wiredpanda TestScene WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestSceneConnections COMMAND test_wiredpanda TestSceneConnections WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestSceneDropHandler COMMAND test_wiredpanda TestSceneDropHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestSceneState COMMAND test_wiredpanda TestSceneState WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestSceneUndoredo COMMAND test_wiredpanda TestSceneUndoredo WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestSequential COMMAND test_wiredpanda TestSequential WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestSequentialLogic COMMAND test_wiredpanda TestSequentialLogic WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestSerialization COMMAND test_wiredpanda TestSerialization WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestSettings COMMAND test_wiredpanda TestSettings WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestSignalDelegate COMMAND test_wiredpanda TestSignalDelegate WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestSimulation COMMAND test_wiredpanda TestSimulation WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestSimulationBlocker COMMAND test_wiredpanda TestSimulationBlocker WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestStatusOps COMMAND test_wiredpanda TestStatusOps WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestSystemVerilogExport COMMAND test_wiredpanda TestSystemVerilogExport WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestThemeManager COMMAND test_wiredpanda TestThemeManager WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestTruthTable COMMAND test_wiredpanda TestTruthTable WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestWaveform COMMAND test_wiredpanda TestWaveform WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestWaveformSimulator COMMAND test_wiredpanda TestWaveformSimulator WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestWirelessNode COMMAND test_wiredpanda TestWirelessNode WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestWorkspace COMMAND test_wiredpanda TestWorkspace WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestWorkspaceFileops COMMAND test_wiredpanda TestWorkspaceFileops WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestWorkspaceUnit COMMAND test_wiredpanda TestWorkspaceUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-
-# New unit tests from coverage improvement plan
-add_test(NAME TestApplication COMMAND test_wiredpanda TestApplication WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestArduinoCodeGenUnit COMMAND test_wiredpanda TestArduinoCodeGenUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestCircuitExporter COMMAND test_wiredpanda TestCircuitExporter WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestCodeGenUtils COMMAND test_wiredpanda TestCodeGenUtils WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestConnection COMMAND test_wiredpanda TestConnection WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestConnectionManager COMMAND test_wiredpanda TestConnectionManager WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestCoreSettings COMMAND test_wiredpanda TestCoreSettings WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestDemux COMMAND test_wiredpanda TestDemux WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestDisplay COMMAND test_wiredpanda TestDisplay WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestDisplay7 COMMAND test_wiredpanda TestDisplay7 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestDolphinClipboard COMMAND test_wiredpanda TestDolphinClipboard WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestDolphinEdits COMMAND test_wiredpanda TestDolphinEdits WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestDolphinExporter COMMAND test_wiredpanda TestDolphinExporter WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestDolphinFile COMMAND test_wiredpanda TestDolphinFile WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestDolphinModelBuilder COMMAND test_wiredpanda TestDolphinModelBuilder WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestDolphinSerializer COMMAND test_wiredpanda TestDolphinSerializer WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestDolphinZoom COMMAND test_wiredpanda TestDolphinZoom WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestDragDropPayload COMMAND test_wiredpanda TestDragDropPayload WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestElementContextMenu COMMAND test_wiredpanda TestElementContextMenu WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestElementEditor COMMAND test_wiredpanda TestElementEditor WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestElementPalette COMMAND test_wiredpanda TestElementPalette WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestElementTabNavigator COMMAND test_wiredpanda TestElementTabNavigator WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestExportController COMMAND test_wiredpanda TestExportController WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestFileDialogProviderUnit COMMAND test_wiredpanda TestFileDialogProviderUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestFileUtils COMMAND test_wiredpanda TestFileUtils WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestGraphicElement COMMAND test_wiredpanda TestGraphicElement WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestGraphicsView COMMAND test_wiredpanda TestGraphicsView WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestICDropZone COMMAND test_wiredpanda TestICDropZone WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestICController COMMAND test_wiredpanda TestICController WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestICRegistry COMMAND test_wiredpanda TestICRegistry WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestICUnit COMMAND test_wiredpanda TestICUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLabeledSlider COMMAND test_wiredpanda TestLabeledSlider WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestLanguageManager COMMAND test_wiredpanda TestLanguageManager WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestMux COMMAND test_wiredpanda TestMux WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestPort COMMAND test_wiredpanda TestPort WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestPropertyShortcutHandler COMMAND test_wiredpanda TestPropertyShortcutHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestRecentFilesUnit COMMAND test_wiredpanda TestRecentFilesUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestSceneUiBinder COMMAND test_wiredpanda TestSceneUiBinder WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestSelectionCapabilities COMMAND test_wiredpanda TestSelectionCapabilities WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestSimulationUnit COMMAND test_wiredpanda TestSimulationUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestDanglingPointer COMMAND test_wiredpanda TestDanglingPointer WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestSystemVerilogCodeGenUnit COMMAND test_wiredpanda TestSystemVerilogCodeGenUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestTrashButton COMMAND test_wiredpanda TestTrashButton WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestUpdateController COMMAND test_wiredpanda TestUpdateController WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestWorkspaceManager COMMAND test_wiredpanda TestWorkspaceManager WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestExerciseTourResources COMMAND test_wiredpanda TestExerciseTourResources WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestExternalFilePath COMMAND test_wiredpanda TestExternalFilePath WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestInstallRelativePaths COMMAND test_wiredpanda TestInstallRelativePaths WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestExerciseEngine COMMAND test_wiredpanda TestExerciseEngine WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestTourEngine COMMAND test_wiredpanda TestTourEngine WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-add_test(NAME TestUpdateChecker COMMAND test_wiredpanda TestUpdateChecker WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-
-# ============================================================================
-# Test Properties: Labels and Timeouts
-# ============================================================================
-# Labels: unit (fast unit tests), integration (system/IC tests)
-
-# CPU Tests - Integration category (high complexity)
-foreach(TEST TestCPUAlu TestCPUBranch TestCPUControlUnit TestCPUDecoders 
-        TestCPUInstructionExecute TestCPUInstructionFetch TestCPUIntegration 
-        TestCPUMemoryInterface TestCPUProgramCounter TestCPURegisterBank TestCPURegisters)
-    set_tests_properties(${TEST} PROPERTIES LABELS "integration")
-endforeach()
-
-# Level Tests - Integration category (IC-level hierarchical tests)
-foreach(TEST TestLevel1DFlipFlop TestLevel1DLatch TestLevel1JKFlipFlop TestLevel1SRLatch 
-        TestLevel2Decoder2To4 TestLevel2Decoder3To8 TestLevel2Decoder4To16 TestLevel2Decoder5To32
-        TestLevel2FullAdder1Bit TestLevel2HalfAdder TestLevel2MUX2To1 TestLevel2MUX4To1
-        TestLevel2MUX8To1 TestLevel2ParityChecker TestLevel2ParityGenerator 
-        TestLevel2PriorityEncoder8To3 TestLevel2PriorityMUX3To1 TestLevel3ALUSelector5Way 
-        TestLevel3BCD7SegmentDecoder TestLevel3Comparator4Bit TestLevel3Comparator4BitEquality 
-        TestLevel3Register1Bit TestLevel4BinaryCounter4Bit TestLevel4BusMUX4Bit 
-        TestLevel4BusMUX8Bit TestLevel4Comparator4Bit TestLevel4JohnsonCounter4Bit 
-        TestLevel4RAM4X1 TestLevel4RAM8X1 TestLevel4Register4Bit TestLevel4RingCounter4Bit 
-        TestLevel4RippleAdder4Bit TestLevel4RippleALU4Bit TestLevel4ShiftRegisterPISO 
-        TestLevel4ShiftRegisterSIPO TestLevel5BarrelRotator TestLevel5BarrelShifter4Bit 
-        TestLevel5ClockGatedDecoder TestLevel5Controller4Bit TestLevel5InstructionDecoder4Bit 
-        TestLevel5LoadableCounter4Bit TestLevel5ModuloCounter4Bit TestLevel5ProgramCounter4Bit 
-        TestLevel5RegisterFile4X4 TestLevel5RegisterFile8X8 TestLevel5UpDownCounter4Bit 
-        TestLevel6ALU8Bit TestLevel6ProgramCounter8BitArithmetic TestLevel6RAM8X8 
-        TestLevel6Register8Bit TestLevel6RegisterFile8X8 TestLevel6RippleAdder8Bit 
-        TestLevel6StackMemoryInterface TestLevel6StackPointer8Bit TestLevel7ALU16Bit 
-        TestLevel7CPUProgramCounter8Bit TestLevel7DataForwardingUnit TestLevel7ExecutionDatapath 
-        TestLevel7FlagRegister TestLevel7InstructionDecoder8Bit 
-        TestLevel7InstructionMemoryInterface TestLevel7InstructionRegister8Bit 
-        TestLevel8DecodeStage TestLevel8ExecuteStage TestLevel8FetchStage TestLevel8MemoryStage 
-        TestLevel9CPU16BitRISC TestLevel9FetchStage16Bit TestLevel9MemoryStage16Bit
-        TestLevel9MultiCycleCPU8Bit TestLevel9RegisterFile32X16 TestLevel9SingleCycleCPU8Bit)
-    set_tests_properties(${TEST} PROPERTIES LABELS "integration")
-endforeach()
-
-# IC-specific deep tests - Integration category
-foreach(TEST TestDecoder8To256 TestMemorySettlingTime TestMUXDEMUXComprehensive TestRAMCell1Bit 
-        TestSequential)
-    set_tests_properties(${TEST} PROPERTIES LABELS "integration")
-endforeach()
-
-# File and Simulation Tests - Integration category
-foreach(TEST TestArduino TestFeedback TestFiles TestIC TestICInline
-        TestSimulation TestSystemVerilogExport TestWorkspace TestWorkspaceFileops)
-    set_tests_properties(${TEST} PROPERTIES LABELS "integration")
-endforeach()
-
-# Element and Component Unit Tests - Unit category
-foreach(TEST TestBewavedDolphinGui TestAudioBox TestBuzzer TestClock TestClocksAdvanced TestComponents TestDisplays
-        TestElementAppearance TestElementLabel TestElementProperties TestFeatures TestGeometry
-        TestGraphicElementSerializer TestGraphicelementAdvanced TestIcons TestInputElements TestInputRotary TestLED
-        TestLogicGates TestMultiplexing TestSequentialLogic TestTruthTable TestWaveform
-        TestWirelessNode)
-    set_tests_properties(${TEST} PROPERTIES LABELS "unit")
-endforeach()
-
-# Factory and Core Element Tests - Unit category
-foreach(TEST TestElementFactory TestElementLogic TestElementLogicErrors TestNodeLogic
-        TestStatusOps)
-    set_tests_properties(${TEST} PROPERTIES LABELS "unit")
-endforeach()
-
-# Connection and Scene Tests - Integration category
-foreach(TEST TestConnections TestConnectionSerialization TestConnectionValidity TestScene 
-        TestSceneConnections TestSceneState TestSceneUndoredo)
-    set_tests_properties(${TEST} PROPERTIES LABELS "integration")
-endforeach()
-
-# Tests that touch the system clipboard must not run in parallel (Windows OLE contention).
-set_tests_properties(TestScene TestSceneUndoredo TestICInline TestDolphinClipboard PROPERTIES RESOURCE_LOCK clipboard)
-
-# Serialization and Command Tests - Integration category
-foreach(TEST TestSerialization TestSimulationBlocker)
-    set_tests_properties(${TEST} PROPERTIES LABELS "integration")
-endforeach()
-
-# Dangling-pointer regression tests (WIREDPANDA-H2 cluster). These are
-# designed to fail on the current tree and to pass once the corresponding
-# fixes in App/Element/IC.{h,cpp} and App/Simulation/Simulation.{h,cpp}
-# land. See .claude/SENTRY_CRASH_ANALYSIS_WIREDPANDA-H2.md.
-set_tests_properties(TestDanglingPointer PROPERTIES LABELS "unit;regression")
-
-# Core Functionality Tests - Unit category
-foreach(TEST TestCommands TestCommon TestEnums TestNotifyCatch TestPriorities TestRecentFiles TestSettings
-        TestThemeManager)
-    set_tests_properties(${TEST} PROPERTIES LABELS "unit")
-endforeach()
-
-# GUI tests run sequentially after all other tests complete
-set(GUI_TESTS TestDialogs TestFileDialogProvider TestFileDialogProviderUnit TestMainWindowGui TestBewavedDolphinGui TestUpdateController TestElementContextMenu)
-set(ALL_TESTS
-    TestCPUAlu TestCPUBranch TestCPUControlUnit TestCPUDecoders
-    TestCPUInstructionExecute TestCPUInstructionFetch TestCPUIntegration
-    TestCPUMemoryInterface TestCPUProgramCounter TestCPURegisterBank TestCPURegisters
-    TestLevel1DFlipFlop TestLevel1DLatch TestLevel1JKFlipFlop TestLevel1SRLatch
-    TestLevel2Decoder2To4 TestLevel2Decoder3To8 TestLevel2Decoder4To16 TestLevel2Decoder5To32
-    TestLevel2FullAdder1Bit TestLevel2HalfAdder TestLevel2MUX2To1 TestLevel2MUX4To1
-    TestLevel2MUX8To1 TestLevel2ParityChecker TestLevel2ParityGenerator
-    TestLevel2PriorityEncoder8To3 TestLevel2PriorityMUX3To1
-    TestLevel3ALUSelector5Way TestLevel3BCD7SegmentDecoder TestLevel3Comparator4Bit
-    TestLevel3Comparator4BitEquality TestLevel3Register1Bit
-    TestLevel4BinaryCounter4Bit TestLevel4BusMUX4Bit TestLevel4BusMUX8Bit
-    TestLevel4Comparator4Bit TestLevel4JohnsonCounter4Bit TestLevel4RAM4X1
-    TestLevel4RAM8X1 TestLevel4Register4Bit TestLevel4RingCounter4Bit
-    TestLevel4RippleALU4Bit TestLevel4RippleAdder4Bit TestLevel4ShiftRegisterPISO
-    TestLevel4ShiftRegisterSIPO
-    TestLevel5BarrelRotator TestLevel5BarrelShifter4Bit TestLevel5ClockGatedDecoder
-    TestLevel5Controller4Bit TestLevel5InstructionDecoder4Bit TestLevel5LoadableCounter4Bit
-    TestLevel5ModuloCounter4Bit TestLevel5ProgramCounter4Bit TestLevel5RegisterFile4X4
-    TestLevel5RegisterFile8X8 TestLevel6StackMemoryInterface TestLevel5UpDownCounter4Bit
-    TestLevel6ALU8Bit TestLevel6ProgramCounter8BitArithmetic TestLevel6RAM8X8
-    TestLevel6Register8Bit TestLevel6RegisterFile8X8 TestLevel6RippleAdder8Bit
-    TestLevel6StackPointer8Bit
-    TestLevel7ALU16Bit TestLevel7CPUProgramCounter8Bit TestLevel7DataForwardingUnit
-    TestLevel7ExecutionDatapath TestLevel7FlagRegister TestLevel7InstructionDecoder8Bit
-    TestLevel7InstructionMemoryInterface TestLevel7InstructionRegister8Bit
-    TestLevel8DecodeStage TestLevel8ExecuteStage TestLevel8FetchStage TestLevel8MemoryStage
-    TestLevel9CPU16BitRISC TestLevel9FetchStage16Bit TestLevel9MemoryStage16Bit
-    TestLevel9MultiCycleCPU8Bit TestLevel9RegisterFile32X16 TestLevel9SingleCycleCPU8Bit
-    TestDecoder8To256 TestMemorySettlingTime TestRAMCell1Bit TestSequential
-    TestMUXDEMUXComprehensive
-    TestArduino TestFeedback TestFiles TestIC TestICInline
-    TestSimulation TestSystemVerilogExport TestWorkspace TestWorkspaceFileops
-    TestIcons TestWaveform TestAudioBox TestBuzzer TestClock TestClocksAdvanced
-    TestComponents TestDisplays TestElementAppearance TestElementLabel TestElementProperties TestFeatures
-    TestGeometry TestGraphicElementSerializer TestGraphicelementAdvanced TestInputElements TestInputRotary TestLED
-    TestLogicGates TestMultiplexing TestSequentialLogic TestTruthTable TestWirelessNode
-    TestElementFactory TestElementLogic TestElementLogicErrors TestNodeLogic TestStatusOps
-    TestConnectionSerialization TestConnectionValidity TestConnections TestScene
-    TestSceneConnections TestSceneState TestSceneUndoredo
-    TestSerialization TestSimulationBlocker
-    TestDanglingPointer
-    TestCommands TestCommon TestEnums TestNotifyCatch TestPriorities TestRecentFiles TestSettings TestThemeManager
-    TestApplication TestCoreSettings TestDragDropPayload TestExerciseTourResources
-    TestExternalFilePath TestInstallRelativePaths TestUpdateChecker
-    TestArduinoCodeGenUnit TestCodeGenUtils TestSystemVerilogCodeGenUnit
-    TestCircuitExporter TestElementEditor TestElementPalette
-    TestElementTabNavigator TestExportController TestICController TestICDropZone TestLabeledSlider
-    TestLanguageManager TestMinimapWidget TestSceneUiBinder TestSelectionCapabilities
-    TestTrashButton TestWorkspaceManager
-    TestConnection TestConnectionManager TestGraphicsView TestPropertyShortcutHandler TestPort TestSceneDropHandler
-    TestDemux TestDisplay TestDisplay7 TestGraphicElement TestICRegistry TestICUnit TestMux
-    TestDolphinClipboard TestDolphinEdits TestDolphinExporter TestDolphinFile TestDolphinModelBuilder
-    TestDolphinSerializer TestDolphinZoom TestSignalDelegate TestWaveformSimulator TestFileUtils TestRecentFilesUnit
-    TestFileHandlerSecurity TestICHandlerSecurity TestMCPProcessor TestMCPValidator TestElementHandler TestBaseHandler TestThemeHandler TestHistoryHandler TestServerInfoHandler TestConnectionHandler TestSimulationHandler TestFileHandler TestICHandler
-    TestExerciseEngine TestTourEngine
-    TestSimulationUnit TestWorkspaceUnit
-    TestICFixtureLayout)
-foreach(TEST ${ALL_TESTS})
-    set_tests_properties(${TEST} PROPERTIES FIXTURES_SETUP "non_gui_complete")
-endforeach()
-foreach(TEST ${GUI_TESTS})
-    # QTEST_FUNCTION_TIMEOUT: a hung dialog exec() costs 60s instead of Qt
-    # Test's default 5-minute watchdog — the historical GUI-flake failure mode.
-    set_tests_properties(${TEST} PROPERTIES
-        LABELS "gui"
-        FIXTURES_REQUIRED "non_gui_complete"
-        RESOURCE_LOCK "gui_display"
-        ENVIRONMENT "QTEST_FUNCTION_TIMEOUT=60000")
-endforeach()
 
 # ========= DOCUMENTATION ===================================
 

@@ -19,7 +19,7 @@ class Nor : public GraphicElement
 
 public:
     /// Constructs a Nor gate element with default 2 inputs.
-    explicit Nor(QGraphicsItem *parent = nullptr);
+    explicit Nor(QObject *parent = nullptr);
 
     /// Sets output to the logical NOR of all inputs.
     void updateLogic() override;

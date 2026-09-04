@@ -19,18 +19,20 @@ struct FileDialogResult
 
 /// Abstract interface for file dialog operations.
 ///
-/// Production code uses the global accessor FileDialogs::provider() which
-/// returns a RealFileDialogProvider by default.  Tests swap in a stub via
-/// FileDialogs::setProvider().
+/// Production code uses the global accessor FileDialogs::provider(); each concrete UI is
+/// responsible for registering its own real provider via FileDialogs::setProvider() at
+/// startup before anything calls provider() -- Widgets' MainWindow.cpp registers a
+/// RealFileDialogProvider, Quick's Main.cpp registers a QuickDialogProvider (see
+/// App/QuickShell/Chrome/QuickDialogProvider.h). Tests swap in a stub via setProvider() too.
 class FileDialogProvider
 {
 public:
     // Same D0/D2 ABI-variant gap as App/Wiring/Port.h's destructor: FileDialogProvider is
     // abstract (getOpenFileName()/getSaveFileName() are pure virtual), so it can never be the
     // most-derived type of a real object -- its own vtable "deleting destructor" (D0) slot is
-    // dead by construction. Every real instance (the static s_realProvider, or a test's
-    // stack-local stub passed by address to FileDialogs::setProvider()) is destroyed via normal
-    // scope/static-storage teardown, never `delete`d through this base pointer.
+    // dead by construction. Every real instance (a concrete UI's registered provider, or a
+    // test's stack-local stub passed by address to FileDialogs::setProvider()) is destroyed
+    // via normal scope/static-storage teardown, never `delete`d through this base pointer.
     virtual ~FileDialogProvider() = default; // LCOV_EXCL_LINE
 
     /// Shows an "Open File" dialog and returns the selected file path.
@@ -58,10 +60,11 @@ public:
 /// Global accessor for the current FileDialogProvider.
 namespace FileDialogs {
 
-/// Returns the active provider.  Never null.
+/// Returns the active provider. Asserts if none has been registered yet -- see
+/// FileDialogProvider's doc comment.
 FileDialogProvider *provider();
 
-/// Replaces the active provider.  Pass nullptr to restore the default.
+/// Replaces the active provider. Pass nullptr to clear it.
 /// Returns the previous provider (for RAII restoration in tests).
 FileDialogProvider *setProvider(FileDialogProvider *newProvider);
 

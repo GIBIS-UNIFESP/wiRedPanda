@@ -157,9 +157,13 @@ class UpDownCounter4BitBuilder(ICBuilderBase):
                 return False
             dec_borrow_and_ids.append(and_id)
 
-        # NOT borrow gates for XOR decomposition
+        # NOT borrow gates for XOR decomposition. "dec_not_borrowN" is one character
+        # longer than "inc_not_carryN" (which clears a flat step just fine) -- enough
+        # to clip "dec_borrowN"'s own label at a plain HORIZONTAL_GATE_SPACING step,
+        # so this transition needs the same wide_column_step used elsewhere in this
+        # file for exactly this class of long-label clearance issue.
         dec_not_borrow_ids = []
-        dec_not_borrow_x = dec_borrow_x + HORIZONTAL_GATE_SPACING
+        dec_not_borrow_x = dec_borrow_x + wide_column_step
         for i in range(3):
             not_id = await self.create_element(
                 "Not", dec_not_borrow_x, 100.0 + (i * VERTICAL_STAGE_SPACING), f"dec_not_borrow{i}"

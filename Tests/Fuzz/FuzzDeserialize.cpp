@@ -6,10 +6,11 @@
  *
  * Drives the same code path as File > Open: header read, embedded-IC blob
  * registry parsing, the element/connection stream loop in
- * Serialization::deserialize(), and the Scene::addItem() side effects that
- * follow.  Run under ASan + UBSan to catch the H2/HC family of bugs on inputs
- * no human would hand-write.  See Tests/Fuzz/README.md for build and run
- * instructions.
+ * Serialization::deserialize(), and the CanvasItem::addItem() side effects
+ * that follow (via QuickWorkSpace::load(), the CanvasItem-side port of the
+ * now-removed Widgets-only WorkSpace::load()).  Run under ASan + UBSan to
+ * catch the H2/HC family of bugs on inputs no human would hand-write.  See
+ * Tests/Fuzz/README.md for build and run instructions.
  *
  * Custom mutator (LLVMFuzzerCustomMutator):
  *   libFuzzer's default byte-level mutations are too coarse for the .panda
@@ -38,11 +39,11 @@
 #include <cstring>
 #include <random>
 
-#include <QApplication>
 #include <QByteArray>
 #include <QCoreApplication>
 #include <QDataStream>
 #include <QEvent>
+#include <QGuiApplication>
 #include <QScopeGuard>
 #include <QString>
 #include <QVersionNumber>
@@ -50,13 +51,13 @@
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
 #include "App/IO/Serialization.h"
-#include "App/Scene/Scene.h"
-#include "App/Scene/Workspace.h"
+#include "App/QuickShell/Canvas/CanvasItem.h"
+#include "App/QuickShell/Chrome/QuickWorkSpace.h"
 #include "App/Simulation/Simulation.h"
 
 namespace {
 
-QApplication *g_app = nullptr;
+QGuiApplication *g_app = nullptr;
 int  g_fuzzer_argc = 0;
 char **g_fuzzer_argv = nullptr;
 
@@ -374,7 +375,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
 
     g_fuzzer_argc = *argc;
     g_fuzzer_argv = *argv;
-    g_app = new QApplication(g_fuzzer_argc, g_fuzzer_argv);
+    g_app = new QGuiApplication(g_fuzzer_argc, g_fuzzer_argv);
 
     buildElemTypePatches();
 
@@ -404,12 +405,12 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
         return 0;
     }
 
-    WorkSpace workspace;
+    QuickWorkSpace workspace;
     try {
         workspace.load(stream, version, /*contextDir=*/QString());
     } catch (...) {}
 
-    workspace.scene()->simulation()->update();
+    workspace.canvas()->simulation()->update();
 
     return 0;
 }

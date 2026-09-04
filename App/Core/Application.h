@@ -2,17 +2,16 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 /** \file
- * \brief Custom QApplication subclass with exception handling and main-window access.
+ * \brief Framework-agnostic application-wide state and exception handling.
  */
 
 #pragma once
 
 #include <exception>
+#include <functional>
 #include <utility>
 
-#include <QApplication>
-#include <QMetaObject>
-#include <QPointer>
+#include <QObject>
 #include <QString>
 
 /**
@@ -28,7 +27,7 @@
  */
 struct ExceptionInfo
 {
-    QString what;            ///< The translated message for QMessageBox display.
+    QString what;            ///< The translated message for the exception presenter.
     QString englishMessage;  ///< English message for Sentry; equals `what` for non-Pandaception types.
     QString file;            ///< Throw-site file when the exception is a Pandaception, else empty.
     int line = 0;            ///< Throw-site line when the exception is a Pandaception, else 0.
@@ -36,48 +35,36 @@ struct ExceptionInfo
 
 /**
  * \class Application
- * \brief Custom QApplication that wraps event dispatch with exception handling.
+ * \brief Framework-agnostic, purely static application state: the interactive/rendering/
+ * migration mode flags every layer reads, and centralised exception reporting.
  *
- * \details Overrides notify() to catch Pandaception and std::exception objects
- * thrown during event processing and display appropriate error dialogs.
+ * \details Not a QApplication subclass: this class has no notion of QWidget/QMessageBox/event
+ * dispatch at all, so a plain Widgets-free domain/test process (or a Qt Quick host) can use it
+ * without pulling in Qt Widgets. A real QApplication (WidgetsApplication, Widgets-only) or an
+ * equivalent Quick host is expected to override notify() itself for the defence-in-depth
+ * exception catch, and to register its own presenter via setExceptionPresenter() so
+ * handleException() has a way to actually show the message to the user.
  */
-class Application : public QApplication
+class Application
 {
-    Q_OBJECT
-
     friend class TestApplication;
+    /// notify()-style event-dispatch overrides live on the concrete host (WidgetsApplication is
+    /// Widgets' own QApplication subclass; a Quick host would have its own), not here -- they
+    /// need makeExceptionInfo() to build the handleException() call this class's own
+    /// guardedSlot() makes internally.
+    friend class WidgetsApplication;
 
 public:
-    /**
-     * \brief Constructs the application with command-line arguments.
-     * \param argc Argument count (passed by reference as required by QApplication).
-     * \param argv Argument vector.
-     */
-    Application(int &argc, char **argv);
-
-    /**
-     * \brief Returns the application instance cast to Application*.
-     * \return Pointer to the Application instance, or nullptr if not available.
-     */
-    static Application *instance();
-
-    /// Destructor.
-    // Same D0/D2 ABI-variant gap as App/Wiring/Port.h's destructor, for a different reason:
-    // every real Application is a stack-local value in main()/runTestSuite() (single instance,
-    // one per process), destroyed via normal scope-exit at process end -- never `delete`d
-    // through any pointer. Grepped every Application::instance() use in the repo: all read-only
-    // (setPalette/font/installTranslator/removeTranslator), none ever delete it, so this class's
-    // own D0 (deleting destructor) never runs; only the direct D1 (complete-object) path does.
-    ~Application() override = default; // LCOV_EXCL_LINE
-
-    // --- Event Handling ---
-
-    /// \reimp Dispatches \a event to \a receiver, catching and reporting exceptions.
-    bool notify(QObject *receiver, QEvent *event) override;
+    /// Registers the bundled font used by element SVG labels (flip-flop / latch pin letters
+    /// and the inverted-output overline glyph) so they render identically on every platform.
+    /// Portable (QFontDatabase is a Qt Gui, not Qt Widgets, facility) since GraphicElement's
+    /// SVG rendering is shared by every host — each host's own startup calls this once, before
+    /// any GraphicElement pixmap is built and cached.
+    static void registerBundledFonts();
 
     /// When false, suppresses informational dialogs (e.g. version-mismatch warnings).
-    /// Stays false in BOTH MCP modes: an automated session can't dismiss a
-    /// QMessageBox. Visual concerns are governed by renderingEnabled instead.
+    /// Stays false in BOTH MCP modes: an automated session can't dismiss a dialog.
+    /// Visual concerns are governed by renderingEnabled instead.
     inline static bool interactiveMode = true;
 
     /// When false, skips wire-geometry construction (Connection::updatePath)
@@ -89,7 +76,7 @@ public:
 
     /// When true, old-format files are automatically backed up and re-saved in the current
     /// format on load. Independent of interactiveMode so tests can enable migration
-    /// without triggering any QMessageBox dialogs.
+    /// without triggering any user-facing dialog.
     inline static bool migrationEnabled = true;
 
     /// Returns true if \a message matches any deny pattern that should be
@@ -99,11 +86,20 @@ public:
 
     // --- Exception handling ---
 
+    /// Shows \a message to the user via whatever presenter setExceptionPresenter()
+    /// registered (a no-op if none has been). \a context is the same receiver hint
+    /// handleException() received, forwarded unchanged.
+    using ExceptionPresenter = std::function<void(const QString &message, const QObject *context)>;
+    /// Registers the presenter used to actually display an exception's message. Call once
+    /// at startup; WidgetsApplication registers a QMessageBox-based one, a Quick host would
+    /// register its own Dialogs-based one.
+    static void setExceptionPresenter(ExceptionPresenter presenter);
+
     /**
-     * \brief Centralised exception-reporting handler used by both
-     *        `Application::notify` (defence-in-depth on Linux/Windows) and
+     * \brief Centralised exception-reporting handler used by both a host's own
+     *        `notify()` override (defence-in-depth on Linux/Windows) and
      *        `Application::guardedSlot` (the macOS-correct catch-in-slot path).
-     * \details Shows a QMessageBox::critical when interactiveMode is true, and
+     * \details Calls the registered presenter when interactiveMode is true, and
      * forwards the event to Sentry as a `handled:1` warning when sentry is
      * compiled in.  Safe to call from a deferred QMetaObject::invokeMethod
      * callback (the exception has finished unwinding by then).
@@ -120,12 +116,11 @@ public:
      * unwinder reliably triggers `std::terminate` mid-stack and no upstream
      * `catch` runs.  guardedSlot keeps the catch frame inside the slot itself
      * (below any Qt-internal frame) so the unwinder never crosses a structure
-     * that aborts.  Reporting was originally deferred to the next event-loop
-     * iteration via a queued `invokeMethod`, but that hangs on macOS — the
-     * modal `QMessageBox::exec()` deep inside the queued dispatch never
-     * returns (see the catch block below and `.claude/SENTRY_TRIAGE.md` §A25).
-     * `handleException` is called directly instead, using a non-modal
-     * `show()` so it returns immediately even when interactive.
+     * that aborts.  `handleException` is called directly (not deferred to the
+     * next event-loop iteration via a queued `invokeMethod`), using a
+     * non-modal presenter so it returns immediately even when interactive:
+     * deferring it hangs on macOS, where the modal presenter deep inside the
+     * queued dispatch never returns (see the catch block below).
      *
      * \tparam Body  Invocable callable with no arguments returning anything.
      * \param context  Non-owning pointer used as the receiver hint passed to
@@ -139,20 +134,20 @@ public:
         try {
             std::forward<Body>(body)();
         } catch (const std::exception &e) {
-            // Synchronous report: tested deferred (Qt::QueuedConnection) on
-            // macOS and the modal QMessageBox::exec() deep inside the queued
-            // dispatch hangs (run 25285325668 — 300 s timeout).  The catch
-            // here is below the noexcept boundary so std::terminate is not
-            // triggered; the modal dialog runs in the slot's frame and
-            // returns cleanly before the slot exits.
+            // Synchronous report avoids a macOS hang: a deferred report
+            // (Qt::QueuedConnection) leaves the modal presenter stuck deep
+            // inside the queued dispatch.  The catch here is below the
+            // noexcept boundary so std::terminate is not triggered; the
+            // presenter runs in the slot's frame and returns cleanly before
+            // the slot exits.
             handleException(makeExceptionInfo(e), context);
         }
     }
 
 private:
-    Q_DISABLE_COPY(Application)
-
     /// Extracts user-facing and Sentry-side details from a std::exception,
     /// recovering Pandaception-specific fields when applicable.
     static ExceptionInfo makeExceptionInfo(const std::exception &e);
+
+    static ExceptionPresenter s_exceptionPresenter;
 };

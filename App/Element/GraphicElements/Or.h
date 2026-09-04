@@ -19,7 +19,7 @@ class Or : public GraphicElement
 
 public:
     /// Constructs an Or gate element with default 2 inputs.
-    explicit Or(QGraphicsItem *parent = nullptr);
+    explicit Or(QObject *parent = nullptr);
 
     /// Sets output to the logical OR of all inputs.
     void updateLogic() override;

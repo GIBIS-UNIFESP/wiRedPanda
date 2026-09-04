@@ -9,7 +9,7 @@
 
 #include <QList>
 
-class QGraphicsItem;
+class ItemWithId;
 
 /**
  * \class SimulationHost
@@ -21,8 +21,8 @@ class SimulationHost
 public:
     virtual ~SimulationHost() = default; // LCOV_EXCL_LINE -- inlined at every derived-class destruction site, not separately attributed
 
-    /// Returns every item currently in the host scene.
-    virtual QList<QGraphicsItem *> simulationItems() const = 0;
+    /// Returns every item (elements and connections) currently in the host scene.
+    virtual QList<ItemWithId *> simulationItems() const = 0;
 
     /// Mutes or unmutes audio-producing elements in the host scene.
     virtual void setMuted(bool muted) = 0;

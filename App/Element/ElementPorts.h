@@ -24,7 +24,8 @@ class OutputPort;
  * ElementOrientation collaborators. Storage and port creation live here; the owning element
  * keeps the polymorphic geometry layout (updatePortsProperties() is virtual and orientation-
  * coupled) and the min/max size policy, driving this type's resize primitives through it.
- * New ports are parented to the owner element so Qt's scene graph cleans them up with it.
+ * New ports are plain heap objects (no Qt parent/child ownership any more) -- this class's own
+ * destructor deletes them.
  */
 class ElementPorts
 {
@@ -34,6 +35,12 @@ public:
         : m_owner(owner)
     {
     }
+
+    /// Deletes every owned port. Ports are plain heap objects now (see addPort()) -- nothing
+    /// else deletes them for the steady-state destruction case (resizeInputs()/resizeOutputs()
+    /// already qDeleteAll() the ports they trim away, but that leaves the ports still in the
+    /// vectors at the time the owning GraphicElement itself is destroyed).
+    ~ElementPorts();
 
     // --- Read access ---
 
@@ -55,9 +62,6 @@ public:
     /// Returns the current number of output ports.
     int outputSize() const { return static_cast<int>(m_outputPorts.size()); }
 
-    /// Returns a combined list of all input and output ports as Port pointers.
-    QVector<Port *> allPorts() const;
-
     // --- Mutation ---
 
     /// Replaces the input port vector with \a inputs, re-indexing each port to its new vector
@@ -65,7 +69,8 @@ public:
     /// remap, which permutes the vector and relies on this to keep save()/load() consistent).
     void setInputs(const QVector<InputPort *> &inputs);
 
-    /// Appends a new port (parented to the owner) with \a name; \a isOutput selects direction.
+    /// Appends a new port (owned by this store, see ~ElementPorts()) with \a name; \a isOutput
+    /// selects direction.
     void addPort(const QString &name, bool isOutput);
 
     /// Appends a new input port with optional \a name.

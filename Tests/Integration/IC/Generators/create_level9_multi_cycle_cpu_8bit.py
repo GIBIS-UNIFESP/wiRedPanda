@@ -295,7 +295,7 @@ class CPU8BitMultiCycleBuilder(ICBuilderBase):
         await self.log("  ✓ Created phase-decode enables (Phase0, Phase3)")
 
         # ---- All clocked stages run on the main clock (no gated clocks) ----
-        # Decode/execute are combinational (no Clock port — F33). Fetch only
+        # Decode/execute are combinational (no Clock port). Fetch only
         # latches/increments when its enables are high (Phase 0); memory only
         # writes when MemWrite is high (gated by Phase 3 below); the register file
         # writes only when its Write_Enable is high.
@@ -320,8 +320,8 @@ class CPU8BitMultiCycleBuilder(ICBuilderBase):
         if not await self.connect(reset_id, fetch_id, target_port_label="Reset"):
             return False
 
-        # Reset clears the data memory too (F54 — the memory stage's Reset
-        # used to be dead; the CPU now drives it)
+        # Reset clears the data memory too: the CPU drives the memory stage's
+        # Reset input.
         if not await self.connect(reset_id, memory_id, target_port_label="Reset"):
             return False
 
@@ -356,10 +356,10 @@ class CPU8BitMultiCycleBuilder(ICBuilderBase):
         if not await self.connect(decode_id, memory_id, source_port_label="MemRead", target_port_label="MemRead"):
             return False
 
-        # MemWrite is gated by Phase 3: the memory stage runs on the main clock
-        # now, so the phase restriction moves from the clock to the write enable
-        # — the data memory only writes during the memory phase. (MemRead stays
-        # ungated: reads are combinational and select the output mux every cycle.)
+        # MemWrite is gated by Phase 3: the memory stage runs on the main clock,
+        # so the write enable (not the clock) restricts writes to the memory
+        # phase. (MemRead stays ungated: reads are combinational and select the
+        # output mux every cycle.)
         if not await self.connect(decode_id, memwrite_gate_id, source_port_label="MemWrite", target_port=0):
             return False
         if not await self.connect(phase3_id, memwrite_gate_id, target_port=1):
@@ -371,10 +371,10 @@ class CPU8BitMultiCycleBuilder(ICBuilderBase):
 
         # ---- Connect fetch stage control enables ----
         # PCInc and InstrLoad are gated by Phase 0: the fetch stage runs on the
-        # main clock, so it advances the PC and latches the instruction register
-        # only during the fetch phase (clock-enable, replacing the old gated
-        # clock). During programming the test holds Reset, which clears the fetch
-        # PC/IR regardless of these enables.
+        # main clock, so a clock-enable lets it advance the PC and latch the
+        # instruction register only during the fetch phase. During programming
+        # the test holds Reset, which clears the fetch PC/IR regardless of
+        # these enables.
         if not await self.connect(phase0_id, fetch_id, target_port_label="PCInc"):
             return False
         if not await self.connect(phase0_id, fetch_id, target_port_label="InstrLoad"):
@@ -397,7 +397,7 @@ class CPU8BitMultiCycleBuilder(ICBuilderBase):
             if not await self.connect(prog_data_inputs[i], fetch_id, target_port_label=f"ProgData[{i}]"):
                 return False
 
-        # ---- Register file datapath (F26: previously unconnected) ----
+        # ---- Register file datapath ----
         # Accumulator model: OperandA reads R0, OperandB reads
         # Register[Instruction[2:0]], results write back to R0. The operand
         # address comes from the REGISTERED instruction (not RawInstr): in the
@@ -508,7 +508,7 @@ class CPU8BitMultiCycleBuilder(ICBuilderBase):
 
         # ---- Connect cycle counter feedback (simple ripple) ----
         # FF0 toggles each cycle: reuse the existing NotQ0 gate from the
-        # clock gating (a duplicate "NotQ0" used to be created here).
+        # phase-decode logic above rather than creating a duplicate.
         if not await self.connect(not_q0_id, counter_ids[0], target_port_label="Data"):
             return False
 

@@ -9,11 +9,11 @@
 
 #include "App/CodeGen/CodeGenUtils.h"
 #include "App/Core/Common.h"
+#include "App/Element/ElementGraphUtils.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/IC.h"
-#include "App/Scene/Scene.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
 
@@ -535,7 +535,7 @@ void SystemVerilogCodeGen::generateSingleICModule(ICModuleInfo &info)
 
 void SystemVerilogCodeGen::generate()
 {
-    m_txInputPorts = Scene::wirelessTxInputPorts(m_elements);
+    m_txInputPorts = wirelessTxInputPorts(m_elements);
 
     m_stream << "// ==================================================================== //" << Qt::endl;
     m_stream << "// ======= This code was generated automatically by wiRedPanda ======== //" << Qt::endl;
@@ -621,9 +621,8 @@ void SystemVerilogCodeGen::declareInputs()
             baseName = removeForbiddenChars(baseName);
 
             // One module input per output port. Button/Switch/Clock have a
-            // single port and keep their unsuffixed name; a rotary (F23)
-            // contributes one one-hot input per position — previously its
-            // ports got undriven aux wires and the module floated.
+            // single port and keep their unsuffixed name; a rotary
+            // contributes one one-hot input per position.
             for (int port = 0; port < elm->outputSize(); ++port) {
                 QString varName = (elm->outputSize() > 1) ? QString("%1_%2").arg(baseName).arg(port) : baseName;
 
@@ -1325,9 +1324,9 @@ void SystemVerilogCodeGen::assignVariablesRec(const QVector<GraphicElement *> &e
 
                 QString indexCalculation = bitExpressions.join("");
 
-                // One always block per output (F19): output k reads key bits 256*k + row.
-                // Emitting per-output keeps the single-output text byte-identical to the
-                // historical form.
+                // One always block per output: output k reads key bits 256*k + row.
+                // Emitting per-output keeps the single-output case's generated text
+                // unchanged from the plain (non-multi-output) form.
                 for (int out = 0; out < elm->outputSize(); ++out) {
                     QString outputVarName = m_varMap.value(elm->outputPort(out));
                     // Unreachable: declareAuxVariablesRec()'s TruthTable case (see above)

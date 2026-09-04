@@ -19,7 +19,7 @@
 #include <cstddef>
 #include <cstdint>
 
-#include <QApplication>
+#include <QGuiApplication>
 #include <QByteArray>
 #include <QCoreApplication>
 #include <QDataStream>
@@ -38,11 +38,11 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
 #include "App/IO/Serialization.h"
-#include "App/Scene/Workspace.h"
+#include "App/QuickShell/Chrome/QuickWorkSpace.h"
 
 namespace {
 
-QApplication *g_app  = nullptr;
+QGuiApplication *g_app  = nullptr;
 int  g_argc = 0;
 char **g_argv = nullptr;
 
@@ -76,7 +76,7 @@ QByteArray buildOuterPanda(const QString &icFileName)
     //   [1] base map (pos, rotation, label)
     //   [2] port lists × 3 (each: quint32 count=0)
     //   [3] IC secondary map with "name" key → triggers file-backed load path
-    s << static_cast<int>(65539);              // GraphicElement::Type discriminator
+    s << static_cast<int>(GraphicElement::Type);
     s << static_cast<quint64>(22);             // ElementType::IC
 
     // [1] Base map (GraphicElement::loadNewFormat reads pos/rotation/label/etc.)
@@ -112,7 +112,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
 
     g_argc = *argc;
     g_argv = *argv;
-    g_app  = new QApplication(g_argc, g_argv);
+    g_app  = new QGuiApplication(g_argc, g_argv);
 
     // Build a valid IC blob (InputSwitch + Led) for the success path of
     // IC::loadFileDirectly → processLoadedItems → loadBoundaryElement.
@@ -120,7 +120,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
         auto *sw  = ElementFactory::buildElement(ElementType::InputSwitch);
         auto *led = ElementFactory::buildElement(ElementType::Led);
         sw->setId(1);  led->setId(2);
-        QList<QGraphicsItem *> items;
+        QList<ItemWithId *> items;
         items.append(sw);  items.append(led);
 
         g_validICBytes.clear();
@@ -176,7 +176,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
         return 0;
     }
 
-    WorkSpace ws;
+    QuickWorkSpace ws;
     try {
         ws.load(stream, version, contextDir); // contextDir → IC::loadFromFile uses it
     } catch (...) {}

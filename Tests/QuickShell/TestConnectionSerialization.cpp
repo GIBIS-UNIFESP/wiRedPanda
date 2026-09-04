@@ -1,0 +1,527 @@
+// Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+#include "Tests/QuickShell/TestConnectionSerialization.h"
+
+#include <memory>
+
+#include <QDataStream>
+#include <QTest>
+
+#include "App/Core/Common.h"
+#include "App/Element/GraphicElements/And.h"
+#include "App/Element/GraphicElements/InputSwitch.h"
+#include "App/Element/GraphicElements/Led.h"
+#include "App/Element/GraphicElements/Or.h"
+#include "App/IO/SerializationContext.h"
+#include "App/QuickShell/Canvas/CanvasItem.h"
+#include "App/Versions.h"
+#include "App/Wiring/Connection.h"
+#include "App/Wiring/Port.h"
+
+void TestConnectionSerialization::initTestCase()
+{
+    // Initialize test environment
+}
+
+// ============================================================================
+// Port Reference Restoration Tests (5 tests)
+// ============================================================================
+
+void TestConnectionSerialization::testLoadWithEmptyPortMapDirectRestore()
+{
+    // Test loading connection with empty port map yields no connection
+    // With the serial ID system, ports must be registered in portMap to be found
+
+    CanvasItem canvas(nullptr, /*buildDemo=*/false);
+
+    // Create source elements
+    auto *andGate = new And();
+    auto *orGate = new Or();
+    canvas.addItem(andGate);
+    canvas.addItem(orGate);
+
+    // Get port pointers (these will be saved)
+    auto *outputPort = andGate->outputPort();
+    auto *inputPort = orGate->inputPort(0);
+
+    // Create and save connection
+    auto conn1 = std::make_unique<Connection>();
+    conn1->setStartPort(outputPort);
+    conn1->setEndPort(inputPort);
+
+    QByteArray data;
+    QDataStream saveStream(&data, QIODevice::WriteOnly);
+    conn1->save(saveStream);
+
+    // Create new connection and load with empty port map
+    auto conn2 = std::make_unique<Connection>();
+    QDataStream loadStream(data);
+    QHash<quint64, Port *> emptyPortMap;
+
+    SerializationContext context = {emptyPortMap, FormatRev::current, SerializationPurpose::PortableFile, QString()};
+    conn2->load(loadStream, context);
+
+    QVERIFY(conn2->startPort() == nullptr);
+    QVERIFY(conn2->endPort() == nullptr);
+}
+
+void TestConnectionSerialization::testLoadWithPortMapIndirectRestore()
+{
+    // Test loading connection with port map (mapping-based restoration)
+    // This is the proper way to load connections with new element instances
+
+    CanvasItem canvas(nullptr, /*buildDemo=*/false);
+
+    // Create original elements and connection
+    auto *andGate1 = new And();
+    auto *orGate1 = new Or();
+    canvas.addItem(andGate1);
+    canvas.addItem(orGate1);
+
+    auto *outputPort1 = andGate1->outputPort();
+    auto *inputPort1 = orGate1->inputPort(0);
+
+    auto conn1 = std::make_unique<Connection>();
+    conn1->setStartPort(outputPort1);
+    conn1->setEndPort(inputPort1);
+
+    // Save connection
+    QByteArray data;
+    QDataStream saveStream(&data, QIODevice::WriteOnly);
+    conn1->save(saveStream);
+
+    // Calculate serial IDs for fresh ports (see Port::makeSerialId())
+    // For inputs: (elementId << 16) | portIndex
+    // For outputs: (elementId << 16) | (inputCount + portIndex)
+    quint64 origOutputSerial = static_cast<quint64>(andGate1->id()) << 16 | static_cast<quint64>(andGate1->inputSize());
+    quint64 origInputSerial = static_cast<quint64>(orGate1->id()) << 16 | 0;
+
+    // Create new elements (simulating new circuit load)
+    auto *andGate2 = new And();
+    auto *orGate2 = new Or();
+    canvas.addItem(andGate2);
+    canvas.addItem(orGate2);
+
+    auto *outputPort2 = andGate2->outputPort();
+    auto *inputPort2 = orGate2->inputPort(0);
+
+    // Create port map (original -> new, using serial IDs as keys)
+    QHash<quint64, Port *> portMap;
+    portMap[origOutputSerial] = outputPort2;
+    portMap[origInputSerial] = inputPort2;
+
+    // Create new connection and load with port map
+    auto conn2 = std::make_unique<Connection>();
+    QDataStream loadStream(data);
+    SerializationContext context = {portMap, FormatRev::current, SerializationPurpose::PortableFile, QString()};
+    conn2->load(loadStream, context);
+
+    // Verify ports were correctly mapped
+    QCOMPARE(conn2->startPort(), dynamic_cast<OutputPort *>(outputPort2));
+    QCOMPARE(conn2->endPort(), dynamic_cast<InputPort *>(inputPort2));
+}
+
+void TestConnectionSerialization::testLoadInvalidPortReferencesHandled()
+{
+    // Test loading connection with missing port references
+    // When portMap doesn't contain a saved port pointer, load() returns early
+    // without setting any ports, resulting in a connection with both ports null
+
+    CanvasItem canvas(nullptr, /*buildDemo=*/false);
+
+    auto *andGate = new And();
+    canvas.addItem(andGate);
+
+    auto *outputPort = andGate->outputPort();
+
+    // Create connection with one valid port
+    auto conn1 = std::make_unique<Connection>();
+    conn1->setStartPort(outputPort);
+
+    QByteArray data;
+    QDataStream saveStream(&data, QIODevice::WriteOnly);
+    conn1->save(saveStream);
+
+    // Create port map with missing port (endPort was null, saves as 0). Keyed by the port's
+    // real serial ID (Port::makeSerialId(), the same format save()/load() actually use) --
+    // a raw pointer address would never match what load() looks up, silently making this
+    // "known port" entry unreachable regardless of the bug this test is meant to catch.
+    QHash<quint64, Port *> portMap;
+    portMap[Port::makeSerialId(static_cast<quint64>(andGate->id()), outputPort->globalIndex())] = outputPort;
+    // Missing the second port on purpose (0 is not in portMap)
+
+    // Load with incomplete port map
+    auto conn2 = std::make_unique<Connection>();
+    QDataStream loadStream(data);
+    SerializationContext context = {portMap, FormatRev::current, SerializationPurpose::PortableFile, QString()};
+    conn2->load(loadStream, context);
+
+    // With missing port reference, load() returns early, both ports remain null
+    // Verify connection is in valid state (no partial connections)
+    QVERIFY(conn2->startPort() == nullptr);
+    QVERIFY(conn2->endPort() == nullptr);
+}
+
+void TestConnectionSerialization::testLoadPortTypeResolution()
+{
+    // Test that load() correctly determines port types (input vs output)
+    // even if ports are presented in either order
+
+    CanvasItem canvas(nullptr, /*buildDemo=*/false);
+
+    auto *sw = new InputSwitch();
+    auto *led = new Led();
+    canvas.addItem(sw);
+    canvas.addItem(led);
+
+    auto *outputPort = sw->outputPort();
+    auto *inputPort = led->inputPort();
+
+    // Create connection
+    auto conn1 = std::make_unique<Connection>();
+    conn1->setStartPort(outputPort);
+    conn1->setEndPort(inputPort);
+
+    // Verify initial setup
+    QVERIFY(conn1->startPort() == outputPort);
+    QVERIFY(conn1->endPort() == inputPort);
+
+    // Calculate serial IDs (see Port::makeSerialId())
+    quint64 outSerial = static_cast<quint64>(sw->id()) << 16 | static_cast<quint64>(sw->inputSize());
+    quint64 inSerial = static_cast<quint64>(led->id()) << 16 | 0;
+
+    // Save connection
+    QByteArray data;
+    QDataStream saveStream(&data, QIODevice::WriteOnly);
+    conn1->save(saveStream);
+
+    // Create port map (using calculated serial IDs)
+    QHash<quint64, Port *> portMap;
+    portMap[outSerial] = outputPort;
+    portMap[inSerial] = inputPort;
+
+    // Load connection
+    auto conn2 = std::make_unique<Connection>();
+    QDataStream loadStream(data);
+    SerializationContext context = {portMap, FormatRev::current, SerializationPurpose::PortableFile, QString()};
+    conn2->load(loadStream, context);
+
+    // Verify ports are correctly identified despite being loaded from stream
+    QCOMPARE(conn2->startPort(), dynamic_cast<OutputPort *>(outputPort));
+    QCOMPARE(conn2->endPort(), dynamic_cast<InputPort *>(inputPort));
+}
+
+void TestConnectionSerialization::testLoadMultipleConnectionsOnSamePorts()
+{
+    // Test that port map correctly handles multiple connections on same ports
+    // (Only one connection per input port allowed, but output can have multiple)
+
+    CanvasItem canvas(nullptr, /*buildDemo=*/false);
+
+    auto *sw1 = new InputSwitch();
+    auto *sw2 = new InputSwitch();
+    auto *andGate = new And();
+    canvas.addItem(sw1);
+    canvas.addItem(sw2);
+    canvas.addItem(andGate);
+
+    // Connect both switches to AND gate inputs
+    auto conn1 = std::make_unique<Connection>();
+    conn1->setStartPort(sw1->outputPort());
+    conn1->setEndPort(andGate->inputPort(0));
+
+    auto conn2 = std::make_unique<Connection>();
+    conn2->setStartPort(sw2->outputPort());
+    conn2->setEndPort(andGate->inputPort(1));
+
+    // Calculate serial IDs for all ports (see Port::makeSerialId())
+    quint64 sw1OutSerial = static_cast<quint64>(sw1->id()) << 16 | static_cast<quint64>(sw1->inputSize());
+    quint64 sw2OutSerial = static_cast<quint64>(sw2->id()) << 16 | static_cast<quint64>(sw2->inputSize());
+    quint64 andIn0Serial = static_cast<quint64>(andGate->id()) << 16 | 0;
+    quint64 andIn1Serial = static_cast<quint64>(andGate->id()) << 16 | 1;
+
+    // Save both connections
+    QByteArray data1, data2;
+    {
+        QDataStream s(&data1, QIODevice::WriteOnly);
+        conn1->save(s);
+    }
+    {
+        QDataStream s(&data2, QIODevice::WriteOnly);
+        conn2->save(s);
+    }
+
+    // Create port map (using calculated serial IDs)
+    QHash<quint64, Port *> portMap;
+    portMap[sw1OutSerial] = sw1->outputPort();
+    portMap[sw2OutSerial] = sw2->outputPort();
+    portMap[andIn0Serial] = andGate->inputPort(0);
+    portMap[andIn1Serial] = andGate->inputPort(1);
+
+    // Load both connections
+    SerializationContext context = {portMap, FormatRev::current, SerializationPurpose::PortableFile, QString()};
+
+    auto loadedConn1 = std::make_unique<Connection>();
+    {
+        QDataStream s(data1);
+        loadedConn1->load(s, context);
+    }
+
+    auto loadedConn2 = std::make_unique<Connection>();
+    {
+        QDataStream s(data2);
+        loadedConn2->load(s, context);
+    }
+
+    // Verify connections are on correct ports
+    QCOMPARE(loadedConn1->endPort(), andGate->inputPort(0));
+    QCOMPARE(loadedConn2->endPort(), andGate->inputPort(1));
+}
+
+// ============================================================================
+// Serialization Round-Trip Tests (3 tests)
+// ============================================================================
+
+void TestConnectionSerialization::testSaveLoadRoundTripPreservesPorts()
+{
+    // Test that saving and loading a connection preserves port connectivity
+
+    CanvasItem canvas(nullptr, /*buildDemo=*/false);
+
+    auto *andGate = new And();
+    auto *orGate = new Or();
+    canvas.addItem(andGate);
+    canvas.addItem(orGate);
+
+    // Create connection
+    auto conn1 = std::make_unique<Connection>();
+    auto *outputPort = andGate->outputPort();
+    auto *inputPort = orGate->inputPort(0);
+
+    conn1->setStartPort(outputPort);
+    conn1->setEndPort(inputPort);
+
+    // Verify initial state
+    QCOMPARE(conn1->startPort(), outputPort);
+    QCOMPARE(conn1->endPort(), inputPort);
+    QVERIFY(outputPort->connections().contains(conn1.get()));
+    QVERIFY(inputPort->connections().contains(conn1.get()));
+
+    // Calculate serial IDs (see Port::makeSerialId())
+    quint64 andOutSerial = static_cast<quint64>(andGate->id()) << 16 | static_cast<quint64>(andGate->inputSize());
+    quint64 orInSerial = static_cast<quint64>(orGate->id()) << 16 | 0;
+
+    // Save
+    QByteArray data;
+    {
+        QDataStream s(&data, QIODevice::WriteOnly);
+        conn1->save(s);
+    }
+
+    // Load with port map
+    QHash<quint64, Port *> portMap;
+    portMap[andOutSerial] = outputPort;
+    portMap[orInSerial] = inputPort;
+
+    SerializationContext context = {portMap, FormatRev::current, SerializationPurpose::PortableFile, QString()};
+
+    auto conn2 = std::make_unique<Connection>();
+    {
+        QDataStream s(data);
+        conn2->load(s, context);
+    }
+
+    // Verify ports match
+    QCOMPARE(conn2->startPort(), conn1->startPort());
+    QCOMPARE(conn2->endPort(), conn1->endPort());
+}
+
+void TestConnectionSerialization::testSaveLoadPreservesConnectionStatus()
+{
+    // Test that connection status is preserved through save/load cycle
+
+    CanvasItem canvas(nullptr, /*buildDemo=*/false);
+
+    auto *sw = new InputSwitch();
+    auto *led = new Led();
+    canvas.addItem(sw);
+    canvas.addItem(led);
+
+    // Create valid connection
+    auto conn1 = std::make_unique<Connection>();
+    conn1->setStartPort(sw->outputPort());
+    conn1->setEndPort(led->inputPort());
+
+    // Set initial status
+    conn1->setStatus(Status::Active);
+    QCOMPARE(conn1->status(), Status::Active);
+
+    // Calculate serial IDs (see Port::makeSerialId())
+    quint64 swOutSerial = static_cast<quint64>(sw->id()) << 16 | static_cast<quint64>(sw->inputSize());
+    quint64 ledInSerial = static_cast<quint64>(led->id()) << 16 | 0;
+
+    // Save
+    QByteArray data;
+    {
+        QDataStream s(&data, QIODevice::WriteOnly);
+        conn1->save(s);
+    }
+
+    // Load
+    QHash<quint64, Port *> portMap;
+    portMap[swOutSerial] = sw->outputPort();
+    portMap[ledInSerial] = led->inputPort();
+
+    SerializationContext context = {portMap, FormatRev::current, SerializationPurpose::PortableFile, QString()};
+
+    auto conn2 = std::make_unique<Connection>();
+    {
+        QDataStream s(data);
+        conn2->load(s, context);
+    }
+
+    // Status should be synced from start port
+    QCOMPARE(conn2->status(), sw->outputPort()->status());
+}
+
+void TestConnectionSerialization::testSaveLoadWithStatusPropagation()
+{
+    // Test that connection status propagates through a chain on load()
+    // Chain: sw -> and1 -> and2
+
+    CanvasItem canvas(nullptr, /*buildDemo=*/false);
+
+    auto *sw = new InputSwitch();
+    auto *and1 = new And();
+    auto *and2 = new And();
+    canvas.addItem(sw);
+    canvas.addItem(and1);
+    canvas.addItem(and2);
+
+    // sw -> and1 -> and2 chain
+    auto conn1 = std::make_unique<Connection>();
+    conn1->setStartPort(sw->outputPort());
+    conn1->setEndPort(and1->inputPort(0));
+
+    auto conn2 = std::make_unique<Connection>();
+    conn2->setStartPort(and1->outputPort());
+    conn2->setEndPort(and2->inputPort(0));
+
+    // Turn on switch to make output Active
+    sw->setOn();
+    QCOMPARE(sw->outputPort()->status(), Status::Active);
+
+    // Calculate serial IDs for all ports (see Port::makeSerialId())
+    quint64 swOutSerial = static_cast<quint64>(sw->id()) << 16 | static_cast<quint64>(sw->inputSize());
+    quint64 and1In0Serial = static_cast<quint64>(and1->id()) << 16 | 0;
+    quint64 and1OutSerial = static_cast<quint64>(and1->id()) << 16 | static_cast<quint64>(and1->inputSize());
+    quint64 and2In0Serial = static_cast<quint64>(and2->id()) << 16 | 0;
+
+    // Save both connections
+    QByteArray data1, data2;
+    {
+        QDataStream s(&data1, QIODevice::WriteOnly);
+        conn1->save(s);
+    }
+    {
+        QDataStream s(&data2, QIODevice::WriteOnly);
+        conn2->save(s);
+    }
+
+    // Create port map
+    QHash<quint64, Port *> portMap;
+    portMap[swOutSerial] = sw->outputPort();
+    portMap[and1In0Serial] = and1->inputPort(0);
+    portMap[and1OutSerial] = and1->outputPort();
+    portMap[and2In0Serial] = and2->inputPort(0);
+
+    // Load connections
+    SerializationContext context = {portMap, FormatRev::current, SerializationPurpose::PortableFile, QString()};
+
+    auto loadedConn1 = std::make_unique<Connection>();
+    {
+        QDataStream s(data1);
+        loadedConn1->load(s, context);
+    }
+
+    auto loadedConn2 = std::make_unique<Connection>();
+    {
+        QDataStream s(data2);
+        loadedConn2->load(s, context);
+    }
+
+    // Verify connections are properly established
+    QCOMPARE(loadedConn1->startPort(), sw->outputPort());
+    QCOMPARE(loadedConn1->endPort(), and1->inputPort(0));
+    QCOMPARE(loadedConn2->startPort(), and1->outputPort());
+    QCOMPARE(loadedConn2->endPort(), and2->inputPort(0));
+
+    // Verify status propagates: loadedConn1 syncs with sw output, loadedConn2 syncs with and1 output
+    QCOMPARE(loadedConn1->status(), sw->outputPort()->status());
+    QCOMPARE(loadedConn1->status(), Status::Active);
+    QCOMPARE(loadedConn2->status(), and1->outputPort()->status());
+}
+
+// ============================================================================
+// Malformed-stream error paths (2 tests)
+// ============================================================================
+
+void TestConnectionSerialization::testLoadThrowsOnTruncatedQMapStream()
+{
+    // hasConnectionQMap(current) is true, so load() takes the QMap-based branch.
+    // A bare declared count (no bytes behind it) trips readBoundedMetadata()'s own
+    // implausible-count guard, which throws *its* own exception -- not the one under test
+    // here. To reach the genuine truncated-*entry* path instead (mirrors
+    // TestGraphicElementSerializer::testReadPortListEntryReadFailureThrows()'s identical
+    // recipe): the count and key must both read successfully (comfortably over the 9-byte-
+    // per-entry plausibility minimum), with nothing left for the value, so
+    // readBoundedVariant() falls back to a plain `stream >> v` that fails silently (bad
+    // status, no throw of its own) rather than reading a full value.
+    QByteArray data;
+    {
+        QDataStream stream(&data, QIODevice::WriteOnly);
+        stream << quint32(1);        // metadata map count: 1 key/value pair
+        stream << QString("key12");  // a real key, comfortably over the 9-byte-per-entry minimum
+        // No value bytes follow.
+    }
+
+    QHash<quint64, Port *> portMap;
+    SerializationContext context = {portMap, FormatRev::current, SerializationPurpose::PortableFile, QString()};
+
+    Connection connection;
+    QDataStream loadStream(data);
+
+    bool threw = false;
+    try {
+        connection.load(loadStream, context);
+    } catch (const Pandaception &) {
+        threw = true;
+    }
+    QVERIFY2(threw, "a truncated connection metadata map must be reported, not silently accepted");
+}
+
+void TestConnectionSerialization::testLoadThrowsOnTruncatedLegacyIdStream()
+{
+    // Before V_4_7, load() reads two raw quint64 port IDs directly; writing only the first
+    // makes the second read run past the end of the stream.
+    QByteArray data;
+    {
+        QDataStream stream(&data, QIODevice::WriteOnly);
+        stream << quint64(42);
+    }
+
+    QHash<quint64, Port *> portMap;
+    SerializationContext context = {portMap, Versions::V_4_6, SerializationPurpose::PortableFile, QString()};
+
+    Connection connection;
+    QDataStream loadStream(data);
+
+    bool threw = false;
+    try {
+        connection.load(loadStream, context);
+    } catch (const Pandaception &) {
+        threw = true;
+    }
+    QVERIFY2(threw, "a truncated legacy connection ID pair must be reported, not silently accepted");
+}

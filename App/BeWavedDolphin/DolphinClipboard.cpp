@@ -5,9 +5,9 @@
 
 #include <algorithm>
 
-#include <QApplication>
 #include <QClipboard>
 #include <QDataStream>
+#include <QGuiApplication>
 #include <QItemSelection>
 #include <QMimeData>
 
@@ -108,12 +108,12 @@ void copyToClipboard(const SignalModel &model, const QItemSelection &ranges)
 
     auto *mimeData = new QMimeData();
     mimeData->setData(kWaveformMimeType, itemData);
-    QApplication::clipboard()->setMimeData(mimeData);
+    QGuiApplication::clipboard()->setMimeData(mimeData);
 }
 
 bool pasteFromClipboard(SignalModel &model, const QItemSelection &ranges)
 {
-    const auto *mimeData = QApplication::clipboard()->mimeData();
+    const auto *mimeData = QGuiApplication::clipboard()->mimeData();
     QByteArray itemData;
 
     // Support both the legacy MIME type and the current one, so files or clipboard

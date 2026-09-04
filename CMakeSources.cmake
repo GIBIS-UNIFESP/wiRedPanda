@@ -1,16 +1,13 @@
 set(SOURCES
-    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/BeWavedDolphin.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/BeWavedDolphinUI.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinClipboard.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinCommands.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinEdits.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinExporter.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinExporterText.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinFile.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinModelBuilder.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinZoom.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/Serializer.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/SignalDelegate.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/SignalModel.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/WaveSegment.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/WaveformSimulator.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/CodeGen/ArduinoCodeGen.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/CodeGen/SystemVerilogCodeGen.cpp
@@ -26,13 +23,14 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/UpdateChecker.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementAppearance.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementFactory.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementLabel.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementGraphUtils.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementMetadata.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementOrientation.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementPorts.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementSimState.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElement.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElementInput.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElementLabel.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/And.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/AudioBox.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/AudioOutputElement.cpp
@@ -68,75 +66,31 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElementSerializer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/IC.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICLoader.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICPreviewPopup.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICRenderer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICSimulation.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseEngine.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseOverlay.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/RecentFiles.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/Serialization.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/ClipboardManager.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Commands.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/ConnectionManager.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/GraphicsView.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/ICRegistry.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/InlineLabelEditor.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/PortHoverLabel.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/PropertyShortcutHandler.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Scene.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/SceneDropHandler.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/SceneInteraction.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/SceneItemRegistry.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/VisibilityManager.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Workspace.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/Simulation.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationBlocker.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationThrottleDisabler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourEngine.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourOverlay.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/CircuitExporter.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialog.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialogUI.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementContextMenu.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementEditor.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementEditorUI.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementPalette.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementTabNavigator.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ExportController.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/FileDialogProvider.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ICController.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ICDropZone.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/LabeledSlider.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/FileDialogProviderRegistry.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/LanguageManager.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/LengthDialog.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/LengthDialogUI.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindow.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindowUI.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/MinimapWidget.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/SceneUiBinder.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/SelectionCapabilities.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/TrashButton.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/UpdateController.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/WorkspaceManager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Wiring/Connection.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Wiring/ConnectionSerializer.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Wiring/ConnectionValidity.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Wiring/Port.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Core/MCPProcessor.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Core/MCPStdinReader.cpp
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Core/MCPValidator.cpp
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/BaseHandler.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ConnectionHandler.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ElementHandler.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/FileHandler.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/HistoryHandler.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ICHandler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ServerInfoHandler.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/SimulationHandler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ThemeHandler.cpp
 )
 
 set(HEADERS
-    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/BeWavedDolphin.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/BeWavedDolphinUI.h
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinClipboard.h
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinCommands.h
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinEdits.h
@@ -144,10 +98,9 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinFile.h
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinHost.h
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinModelBuilder.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinZoom.h
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/Serializer.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/SignalDelegate.h
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/SignalModel.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/WaveSegment.h
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/WaveformSimulator.h
     ${CMAKE_CURRENT_LIST_DIR}/App/CodeGen/ArduinoCodeGen.h
     ${CMAKE_CURRENT_LIST_DIR}/App/CodeGen/CodeGenUtils.h
@@ -172,14 +125,15 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/UpdateChecker.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementAppearance.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementFactory.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementGraphUtils.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementInfo.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementLabel.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementMetadata.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementOrientation.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementPorts.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementSimState.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElement.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElementInput.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElementLabel.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/And.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/AudioBox.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/AudioOutputElement.h
@@ -216,12 +170,10 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElementSerializer.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/IC.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICLoader.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICPreviewPopup.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICRenderer.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICSimulation.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/PropertyDescriptor.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseEngine.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseOverlay.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseStep.h
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/ExternalFilePath.h
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/FileUtils.h
@@ -229,66 +181,24 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/Serialization.h
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/SerializationContext.h
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/VersionInfo.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/ClipboardManager.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Commands.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/ConnectionManager.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/GraphicsView.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/ICRegistry.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/InlineLabelEditor.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/PortHoverLabel.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/PropertyShortcutHandler.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Scene.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/SceneDropHandler.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/SceneInteraction.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/SceneItemRegistry.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/VisibilityManager.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Workspace.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/Simulation.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationBlocker.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationThrottleDisabler.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourEngine.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourOverlay.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourStep.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/CircuitExporter.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialog.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialogUI.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementContextMenu.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementEditor.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementEditorUI.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementPalette.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementTabNavigator.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ExportController.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/FileDialogProvider.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ICController.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ICDropZone.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/LabeledSlider.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/LanguageManager.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/LengthDialog.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/LengthDialogUI.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindow.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindowHost.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindowUI.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/MinimapWidget.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/SceneUiBinder.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/SelectionCapabilities.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/TrashButton.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/UpdateController.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/WorkspaceManager.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Versions.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Wiring/Connection.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Wiring/ConnectionSerializer.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Wiring/ConnectionValidity.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Wiring/Port.h
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Core/JsonRpcError.h
-    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Core/MCPProcessor.h
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Core/MCPValidator.h
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/BaseHandler.h
-    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ConnectionHandler.h
-    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ElementHandler.h
-    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/FileHandler.h
-    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/HistoryHandler.h
-    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ICHandler.h
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ServerInfoHandler.h
-    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/SimulationHandler.h
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ThemeHandler.h
 )
 
@@ -309,458 +219,375 @@ if(EMSCRIPTEN)
     )
 endif()
 
-set(TEST_UTILS_SOURCES
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/TestUtils.cpp
-)
-
-set(TEST_UTILS_HEADERS
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/ICTestHelpers.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/StubFileDialogProvider.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/StubMainWindowHost.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/TestUtils.h
-)
-
+# The only test suite left in the tree (no Qt Widgets/PrintSupport/Test-framework-only
+# headers, no Scene) since the legacy wiredpanda/test_wiredpanda Widgets app and its test suite
+# were removed -- see the qtquick-rewrite-v2 progress file for the phase plan this completed.
 set(TEST_WIREDPANDA_SOURCES
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPUAlu.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPUBranch.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPUControlUnit.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPUDecoders.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPUInstructionExecute.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPUInstructionFetch.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPUIntegration.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPUMemoryInterface.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPUProgramCounter.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPURegisterBank.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPURegisters.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestICFixtureLayout.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel1DFlipFlop.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel1DLatch.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel1JkFlipFlop.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel1SrLatch.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2Decoder2to4.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2Decoder3to8.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2Decoder4to16.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2Decoder5to32.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2FullAdder1bit.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2HalfAdder.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2Mux2to1.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2Mux4to1.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2Mux8to1.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2ParityChecker.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2ParityGenerator.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2PriorityEncoder8to3.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2PriorityMux3to1.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel3AluSelector5way.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel3Bcd7segmentDecoder.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel3Comparator4bit.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel3Comparator4bitEquality.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel3Register1bit.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel4BinaryCounter4bit.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel4BusMux4bit.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel4BusMux8bit.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel4Comparator4bit.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel4JohnsonCounter4bit.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel4Ram4x1.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel4Ram8x1.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel4Register4bit.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel4RingCounter4bit.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel4RippleAdder4bit.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel4RippleAlu4bit.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel4ShiftRegisterPiso.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel4ShiftRegisterSipo.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel5BarrelRotator.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel5BarrelShifter4bit.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel5ClockGatedDecoder.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel5Controller4bit.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel5InstructionDecoder4bit.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel5LoadableCounter4bit.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel5ModuloCounter4bit.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel5ProgramCounter4bit.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel5RegisterFile4x4.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel5RegisterFile8x8.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel5UpDownCounter4bit.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel6Alu8bit.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel6ProgramCounter8bitArithmetic.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel6Ram8x8.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel6Register8bit.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel6RegisterFile8x8.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel6RippleAdder8bit.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel6StackMemoryInterface.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel6StackPointer8bit.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel7Alu16bit.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel7CpuProgramCounter8bit.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel7DataForwardingUnit.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel7ExecutionDatapath.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel7FlagRegister.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel7InstructionDecoder8bit.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel7InstructionMemoryInterface.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel7InstructionRegister8bit.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel8DecodeStage.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel8ExecuteStage.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel8FetchStage.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel8MemoryStage.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel9Cpu16bitRisc.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel9FetchStage16bit.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel9MemoryStage16bit.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel9MultiCycleCpu8bit.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel9RegisterFile32x16.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel9SingleCycleCpu8bit.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestsWithoutPanda/TestDecoder8to256.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestsWithoutPanda/TestMemorySettlingTime.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestsWithoutPanda/TestRamCell1bit.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestsWithoutPanda/TestSequential.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/Logic/TestMuxDemuxComprehensive.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestArduino.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestFeedback.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestFileDialogProvider.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestFiles.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestIc.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestICInline.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestMainWindowGui.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestSimulation.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestSystemVerilogExport.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestWorkspace.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestWorkspaceFileops.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Resources/TestIcons.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Runners/TestWiredpanda.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/System/TestBewavedDolphinGui.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/System/TestWaveform.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/CodeGen/TestArduinoCodeGenUnit.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/CodeGen/TestCodeGenUtils.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/CodeGen/TestSystemVerilogCodeGenUnit.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Commands/TestCommands.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestCommon.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestEnums.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestPriorities.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestRecentFiles.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestSettings.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestThemeManager.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestApplication.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestDragDropPayload.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestExerciseTourResources.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestExternalFilePath.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestInstallRelativePaths.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestNotifyCatch.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestSettings.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestUpdateChecker.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestAudioBox.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestBuzzer.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestClock.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestClocksAdvanced.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestComponents.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestDemux.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestDisplay.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestDisplay7.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestDisplays.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementAppearance.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementLabel.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementProperties.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestFeatures.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestGeometry.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestGraphicElement.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestGraphicElementSerializer.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestGraphicelementAdvanced.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestIC.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestICRegistry.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestInputElements.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestInputRotary.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestLed.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestLogicGates.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestMultiplexing.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestMux.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestSequentialLogic.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestTruthTable.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestWirelessNode.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Exercise/TestExerciseEngine.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Factory/TestElementFactory.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestElementLogic.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestElementLogicErrors.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestNodeLogic.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestStatusOps.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestBaseHandler.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestConnectionHandler.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestElementHandler.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestFileHandler.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestFileHandlerSecurity.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestHistoryHandler.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestICHandler.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestICHandlerSecurity.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestMCPProcessor.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestMCPValidator.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestServerInfoHandler.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestSimulationHandler.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestThemeHandler.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestConnectionManager.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestConnectionValidity.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestGraphicsView.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestPropertyShortcutHandler.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestScene.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestSceneConnections.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestSceneDropHandler.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestSceneState.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestSceneUndoredo.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestWorkspace.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinClipboard.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinEdits.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinExporter.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinFile.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinModelBuilder.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinSerializer.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinZoom.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestFileUtils.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestRecentFiles.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestSerialization.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestSignalDelegate.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestWaveformSimulator.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestDanglingPointer.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestSimulation.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestSimulationBlocker.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Tour/TestTourEngine.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestCircuitExporter.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestDialogs.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestElementContextMenu.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestElementEditor.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestElementPalette.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestElementTabNavigator.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestExportController.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestFileDialogProvider.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestICController.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestICDropZone.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestLabeledSlider.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestLanguageManager.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestMinimapWidget.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestSceneUiBinder.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestSelectionCapabilities.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestTrashButton.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestUpdateController.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestWorkspaceManager.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Wiring/TestConnection.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Wiring/TestConnections.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Wiring/TestConnectionSerialization.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Wiring/TestPort.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/QuickCircuitBuilder.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/Runners/TestWiredpandaQuick.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestCPUAlu.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestCPUBranch.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestCPUControlUnit.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestCPUDecoders.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestCPUInstructionExecute.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestCPUInstructionFetch.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestCPUIntegration.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestCPUMemoryInterface.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestCPUProgramCounter.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestCPURegisterBank.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestCPURegisters.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestDecoder8to256.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestICFixtureLayout.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel1DFlipFlop.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel1DLatch.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel1JkFlipFlop.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel1SrLatch.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel2Decoder2to4.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel2Decoder3to8.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel2Decoder4to16.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel2Decoder5to32.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel2FullAdder1bit.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel2HalfAdder.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel2Mux2to1.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel2Mux4to1.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel2Mux8to1.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel2ParityChecker.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel2ParityGenerator.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel2PriorityEncoder8to3.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel2PriorityMux3to1.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel3AluSelector5way.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel3Bcd7segmentDecoder.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel3Comparator4bit.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel3Comparator4bitEquality.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel3Register1bit.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel4BinaryCounter4bit.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel4BusMux4bit.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel4BusMux8bit.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel4Comparator4bit.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel4JohnsonCounter4bit.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel4Ram4x1.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel4Ram8x1.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel4Register4bit.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel4RingCounter4bit.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel4RippleAdder4bit.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel4RippleAlu4bit.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel4ShiftRegisterPiso.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel4ShiftRegisterSipo.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel5BarrelRotator.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel5BarrelShifter4bit.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel5ClockGatedDecoder.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel5Controller4bit.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel5InstructionDecoder4bit.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel5LoadableCounter4bit.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel5ModuloCounter4bit.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel5ProgramCounter4bit.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel5RegisterFile4x4.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel5RegisterFile8x8.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel5UpDownCounter4bit.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel6Alu8bit.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel6ProgramCounter8bitArithmetic.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel6Ram8x8.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel6Register8bit.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel6RegisterFile8x8.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel6RippleAdder8bit.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel6StackMemoryInterface.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel6StackPointer8bit.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel7Alu16bit.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel7CpuProgramCounter8bit.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel7DataForwardingUnit.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel7ExecutionDatapath.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel7FlagRegister.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel7InstructionDecoder8bit.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel7InstructionMemoryInterface.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel7InstructionRegister8bit.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel8DecodeStage.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel8ExecuteStage.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel8FetchStage.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel8MemoryStage.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel9Cpu16bitRisc.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel9FetchStage16bit.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel9MemoryStage16bit.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel9MultiCycleCpu8bit.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel9RegisterFile32x16.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel9SingleCycleCpu8bit.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestMemorySettlingTime.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestRamCell1bit.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestSequential.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestArduino.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestArduinoCodeGenUnit.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestAudioBox.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestBuzzer.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestCanvasCommands.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestCanvasEmbeddedIC.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestCanvasInlineIC.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestCanvasItemInteraction.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestCanvasItemSmoke.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestClock.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestClocksAdvanced.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestCodeGenUtils.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestCommon.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestComponents.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestConnection.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestConnectionSerialization.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestConnectionValidity.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestConnections.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestDanglingPointer.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestDemux.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestDisplay.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestDisplay7.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestDisplays.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestDragDropPayload.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestElementAppearance.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestElementFactory.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestElementLogic.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestElementLogicErrors.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestElementProperties.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestEnums.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestExerciseTourResources.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestExternalFilePath.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestFeatures.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestFeedback.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestFiles.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestGeometry.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestGraphicElement.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestGraphicElementSerializer.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestGraphicelementAdvanced.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestICInline.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestICUnit.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestIcons.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestInstallRelativePaths.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestInputElements.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestInputRotary.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestLanguageManager.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestLogicGates.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestMultiplexing.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestMux.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestMuxDemuxComprehensive.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestNodeLogic.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestNotifyCatch.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestPort.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestPriorities.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestQuickAppController.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestQuickBaseHandler.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestQuickCanvasZoom.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestQuickConnectionHandler.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestQuickDialogProvider.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestQuickDolphinController.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestQuickElementEditor.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestQuickElementHandler.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestQuickElementPalette.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestQuickExerciseController.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestQuickFileHandlerSecurity.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestQuickHistoryHandler.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestQuickICHandler.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestQuickICHandlerSecurity.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestQuickICPreview.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestQuickMinimap.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestQuickSimulationHandler.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestQuickTourController.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestQuickUpdateController.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestQuickWorkSpace.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestSceneConnections.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestSelectionCapabilities.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestSerialization.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestSimulation.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestSimulationBlocker.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestSimulationUnit.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestStatusOps.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestSystemVerilogCodeGenUnit.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestSystemVerilogExport.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestTextureAtlas.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestThemeHandler.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestTourEngine.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestTruthTable.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestWirelessNode.cpp
 )
 
 set(TEST_WIREDPANDA_HEADERS
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/Cpu8bitIsa.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/CpuCommon.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/CpuHelpers.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPUAlu.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPUBranch.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPUControlUnit.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPUDecoders.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPUInstructionExecute.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPUInstructionFetch.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPUIntegration.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPUMemoryInterface.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPUProgramCounter.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPURegisterBank.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/Cpu/TestCPURegisters.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/CpuTestUtils.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestICFixtureLayout.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel1DFlipFlop.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel1DLatch.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel1JkFlipFlop.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel1SrLatch.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2Decoder2to4.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2Decoder3to8.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2Decoder4to16.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2Decoder5to32.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2FullAdder1bit.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2HalfAdder.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2Mux2to1.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2Mux4to1.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2Mux8to1.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2ParityChecker.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2ParityGenerator.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2PriorityEncoder8to3.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel2PriorityMux3to1.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel3AluSelector5way.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel3Bcd7segmentDecoder.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel3Comparator4bit.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel3Comparator4bitEquality.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel3Register1bit.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel4BinaryCounter4bit.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel4BusMux4bit.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel4BusMux8bit.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel4Comparator4bit.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel4JohnsonCounter4bit.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel4Ram4x1.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel4Ram8x1.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel4Register4bit.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel4RingCounter4bit.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel4RippleAdder4bit.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel4RippleAlu4bit.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel4ShiftRegisterPiso.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel4ShiftRegisterSipo.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel5BarrelRotator.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel5BarrelShifter4bit.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel5ClockGatedDecoder.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel5Controller4bit.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel5InstructionDecoder4bit.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel5LoadableCounter4bit.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel5ModuloCounter4bit.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel5ProgramCounter4bit.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel5RegisterFile4x4.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel5RegisterFile8x8.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel5UpDownCounter4bit.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel6Alu8bit.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel6ProgramCounter8bitArithmetic.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel6Ram8x8.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel6Register8bit.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel6RegisterFile8x8.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel6RippleAdder8bit.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel6StackMemoryInterface.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel6StackPointer8bit.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel7Alu16bit.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel7CpuProgramCounter8bit.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel7DataForwardingUnit.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel7ExecutionDatapath.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel7FlagRegister.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel7InstructionDecoder8bit.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel7InstructionMemoryInterface.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel7InstructionRegister8bit.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel8DecodeStage.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel8ExecuteStage.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel8FetchStage.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel8MemoryStage.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel9Cpu16bitRisc.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel9FetchStage16bit.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel9MemoryStage16bit.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel9MultiCycleCpu8bit.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel9RegisterFile32x16.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestLevel9SingleCycleCpu8bit.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestsWithoutPanda/TestDecoder8to256.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestsWithoutPanda/TestMemorySettlingTime.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestsWithoutPanda/TestRamCell1bit.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestsWithoutPanda/TestSequential.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/Logic/TestMuxDemuxComprehensive.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestArduino.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestFeedback.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestFileDialogProvider.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestFiles.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestIc.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestICInline.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestMainWindowGui.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestSimulation.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestSystemVerilogExport.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestWorkspace.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestWorkspaceFileops.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Resources/TestIcons.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Runners/RunnerUtils.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/System/TestBewavedDolphinGui.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/System/TestWaveform.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/CodeGen/TestArduinoCodeGenUnit.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/CodeGen/TestCodeGenUtils.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/CodeGen/TestSystemVerilogCodeGenUnit.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Commands/TestCommands.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestCommon.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestEnums.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestPriorities.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestRecentFiles.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestSettings.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestThemeManager.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestApplication.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestDragDropPayload.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestExerciseTourResources.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestExternalFilePath.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestInstallRelativePaths.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestNotifyCatch.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestSettings.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestUpdateChecker.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestAudioBox.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestAudioElementHelpers.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestBuzzer.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestClock.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestClocksAdvanced.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestComponents.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestDemux.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestDisplay.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestDisplay7.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestDisplays.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementAppearance.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementLabel.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementProperties.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestFeatures.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestGeometry.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestGraphicElement.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestGraphicElementSerializer.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestGraphicelementAdvanced.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestIC.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestICRegistry.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestInputElements.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestInputRotary.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestLed.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestLogicGates.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestMultiplexing.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestMux.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestSequentialLogic.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestTruthTable.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestWirelessNode.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Exercise/TestExerciseEngine.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Factory/TestElementFactory.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestElementLogic.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestElementLogicErrors.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestNodeLogic.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestStatusOps.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestBaseHandler.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestConnectionHandler.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestElementHandler.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestFileHandler.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestFileHandlerSecurity.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestHistoryHandler.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestICHandler.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestICHandlerSecurity.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestMCPProcessor.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestMCPValidator.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestServerInfoHandler.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestSimulationHandler.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestThemeHandler.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestConnectionManager.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestConnectionValidity.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestGraphicsView.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestPropertyShortcutHandler.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestScene.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestSceneConnections.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestSceneDropHandler.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestSceneState.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestSceneUndoredo.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestWorkspace.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinClipboard.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinEdits.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinExporter.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinFile.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinModelBuilder.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinSerializer.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestDolphinZoom.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestFileUtils.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestRecentFiles.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestSerialization.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestSignalDelegate.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestWaveformSimulator.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestDanglingPointer.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestSimulation.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestSimulationBlocker.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Tour/TestTourEngine.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestCircuitExporter.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestDialogs.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestElementContextMenu.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestElementEditor.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestElementPalette.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestElementTabNavigator.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestExportController.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestFileDialogProvider.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestICController.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestICDropZone.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestLabeledSlider.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestLanguageManager.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestMinimapWidget.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestSceneUiBinder.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestSelectionCapabilities.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestTrashButton.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestUpdateController.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestWorkspaceManager.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Wiring/TestConnection.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Wiring/TestConnections.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Wiring/TestConnectionSerialization.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Wiring/TestPort.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/StubFileDialogProvider.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/QuickCircuitBuilder.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestAudioElementHelpers.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/Runners/QuickRunnerUtils.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/Cpu8bitIsa.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/CpuCommon.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/CpuHelpers.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/CpuTestUtils.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/QuickTestUtils.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestCPUAlu.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestCPUBranch.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestCPUControlUnit.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestCPUDecoders.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestCPUInstructionExecute.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestCPUInstructionFetch.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestCPUIntegration.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestCPUMemoryInterface.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestCPUProgramCounter.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestCPURegisterBank.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestCPURegisters.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestDecoder8to256.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestICFixtureLayout.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel1DFlipFlop.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel1DLatch.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel1JkFlipFlop.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel1SrLatch.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel2Decoder2to4.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel2Decoder3to8.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel2Decoder4to16.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel2Decoder5to32.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel2FullAdder1bit.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel2HalfAdder.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel2Mux2to1.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel2Mux4to1.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel2Mux8to1.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel2ParityChecker.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel2ParityGenerator.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel2PriorityEncoder8to3.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel2PriorityMux3to1.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel3AluSelector5way.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel3Bcd7segmentDecoder.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel3Comparator4bit.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel3Comparator4bitEquality.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel3Register1bit.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel4BinaryCounter4bit.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel4BusMux4bit.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel4BusMux8bit.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel4Comparator4bit.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel4JohnsonCounter4bit.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel4Ram4x1.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel4Ram8x1.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel4Register4bit.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel4RingCounter4bit.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel4RippleAdder4bit.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel4RippleAlu4bit.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel4ShiftRegisterPiso.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel4ShiftRegisterSipo.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel5BarrelRotator.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel5BarrelShifter4bit.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel5ClockGatedDecoder.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel5Controller4bit.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel5InstructionDecoder4bit.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel5LoadableCounter4bit.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel5ModuloCounter4bit.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel5ProgramCounter4bit.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel5RegisterFile4x4.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel5RegisterFile8x8.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel5UpDownCounter4bit.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel6Alu8bit.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel6ProgramCounter8bitArithmetic.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel6Ram8x8.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel6Register8bit.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel6RegisterFile8x8.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel6RippleAdder8bit.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel6StackMemoryInterface.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel6StackPointer8bit.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel7Alu16bit.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel7CpuProgramCounter8bit.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel7DataForwardingUnit.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel7ExecutionDatapath.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel7FlagRegister.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel7InstructionDecoder8bit.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel7InstructionMemoryInterface.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel7InstructionRegister8bit.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel8DecodeStage.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel8ExecuteStage.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel8FetchStage.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel8MemoryStage.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel9Cpu16bitRisc.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel9FetchStage16bit.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel9MemoryStage16bit.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel9MultiCycleCpu8bit.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel9RegisterFile32x16.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestLevel9SingleCycleCpu8bit.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestMemorySettlingTime.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestRamCell1bit.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/IC/TestSequential.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestArduino.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestArduinoCodeGenUnit.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestAudioBox.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestBuzzer.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestCanvasCommands.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestCanvasEmbeddedIC.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestCanvasInlineIC.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestCanvasItemInteraction.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestCanvasItemSmoke.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestClock.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestClocksAdvanced.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestCodeGenUtils.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestCommon.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestComponents.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestConnection.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestConnectionSerialization.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestConnectionValidity.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestConnections.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestDanglingPointer.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestDemux.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestDisplay.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestDisplay7.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestDisplays.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestDragDropPayload.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestElementAppearance.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestElementFactory.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestElementLogic.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestElementLogicErrors.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestElementProperties.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestEnums.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestExerciseTourResources.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestExternalFilePath.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestFeatures.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestFeedback.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestFiles.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestGeometry.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestGraphicElement.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestGraphicElementSerializer.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestGraphicelementAdvanced.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestICInline.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestICUnit.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestIcons.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestInstallRelativePaths.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestInputElements.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestInputRotary.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestLanguageManager.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestLogicGates.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestMultiplexing.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestMux.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestMuxDemuxComprehensive.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestNodeLogic.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestNotifyCatch.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestPort.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestPriorities.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestQuickAppController.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestQuickBaseHandler.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestQuickCanvasZoom.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestQuickConnectionHandler.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestQuickDialogProvider.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestQuickDolphinController.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestQuickElementEditor.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestQuickElementHandler.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestQuickElementPalette.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestQuickExerciseController.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestQuickFileHandlerSecurity.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestQuickHistoryHandler.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestQuickICHandler.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestQuickICHandlerSecurity.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestQuickICPreview.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestQuickMinimap.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestQuickSimulationHandler.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestQuickTourController.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestQuickUpdateController.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestQuickWorkSpace.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestSceneConnections.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestSelectionCapabilities.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestSerialization.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestSimulation.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestSimulationBlocker.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestSimulationUnit.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestStatusOps.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestSystemVerilogCodeGenUnit.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestSystemVerilogExport.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestTextureAtlas.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestThemeHandler.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestTourEngine.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestTruthTable.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/QuickShell/TestWirelessNode.h
 )
+

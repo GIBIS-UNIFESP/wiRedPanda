@@ -4,11 +4,18 @@
 #include "App/Core/ThemeManager.h"
 
 #include <QCoreApplication>
-#include <QFont>
+#include <QGuiApplication>
 #include <QStyleHints>
 #include <QThread>
 
 #include "App/Core/Settings.h"
+
+ThemeManager::WidgetsStylingApplier ThemeManager::s_widgetsStylingApplier;
+
+void ThemeManager::setWidgetsStylingApplier(WidgetsStylingApplier applier)
+{
+    s_widgetsStylingApplier = std::move(applier);
+}
 
 ThemeManager::ThemeManager(QObject *parent)
     : QObject(parent)
@@ -110,7 +117,7 @@ void ThemeManager::setTheme(const Theme theme)
     // value until the event loop runs. Flushing here replicates the fix that Qt 6.10.0
     // added directly inside requestColorScheme().
     if (theme == Theme::System) {
-        if (auto *app = Application::instance()) {
+        if (auto *app = qGuiApp) {
             app->styleHints()->setColorScheme(Qt::ColorScheme::Unknown);
             // Flush the pending QWindowSystemInterface::handleThemeChange() event so
             // QStyleHintsPrivate::m_colorScheme is updated before we call resolveSystemTheme().
@@ -133,7 +140,7 @@ void ThemeManager::setTheme(const Theme theme)
     // leave it there. Re-setting it to Dark/Light would break runtime OS theme-change
     // detection (QGtk3Theme::colorScheme() would return the explicit value, ignoring
     // any subsequent OS toggle).
-    if (auto *app = Application::instance()) {
+    if (auto *app = qGuiApp) {
         switch (theme) {
         case Theme::Light:  app->styleHints()->setColorScheme(Qt::ColorScheme::Light);  break;
         case Theme::Dark:   app->styleHints()->setColorScheme(Qt::ColorScheme::Dark);   break;
@@ -155,6 +162,11 @@ void ThemeManager::setTheme(const Theme theme)
     instance().m_theme = theme;
     // Persist so the selected theme is restored on next application launch
     Settings::setTheme(theme);
+
+    if (s_widgetsStylingApplier) {
+        s_widgetsStylingApplier(effective);
+    }
+
     // Notify all connected widgets (scene, view, etc.) to repaint with the new palette
     emit instance().themeChanged();
 }
@@ -176,36 +188,12 @@ void ThemeAttributes::setTheme(const Theme theme)
 
         m_graphicElementLabelColor = QColor(Qt::black);
 
+        m_minimapElementBrush = QColor(120, 120, 120); // mid-gray; contrasts with the warm off-white background
+
         m_connectionUnknown = QColor(140, 140, 140);    // neutral gray — "nothing is driving this"
         m_connectionInactive = QColor(Qt::darkGreen);
         m_connectionActive = QColor(Qt::green);
         m_connectionSelected = m_selectionPen;
-
-#ifndef Q_OS_MAC
-        // Build light palette from scratch, independent of the current system
-        // theme state. This ensures Light theme works correctly even when the
-        // system is in dark mode.
-        QPalette lightPalette;
-        lightPalette.setColor(QPalette::Window, Qt::white);
-        lightPalette.setColor(QPalette::WindowText, Qt::black);
-        lightPalette.setColor(QPalette::Base, Qt::white);
-        lightPalette.setColor(QPalette::AlternateBase, QColor(233, 231, 227)); // light grey for alternating rows
-        lightPalette.setColor(QPalette::ToolTipBase, Qt::white);
-        lightPalette.setColor(QPalette::ToolTipText, Qt::black);
-        lightPalette.setColor(QPalette::Text, Qt::black);
-        lightPalette.setColor(QPalette::Button, Qt::white);
-        lightPalette.setColor(QPalette::ButtonText, Qt::black);
-        lightPalette.setColor(QPalette::BrightText, Qt::red);
-        lightPalette.setColor(QPalette::Link, QColor(0, 0, 255));
-        lightPalette.setColor(QPalette::Highlight, QColor(0, 120, 215)); // light blue selection
-        lightPalette.setColor(QPalette::Disabled, QPalette::ButtonText, QColor(128, 128, 128));
-        lightPalette.setColor(QPalette::Disabled, QPalette::Base, QColor(240, 240, 240));
-        lightPalette.setColor(QPalette::Disabled, QPalette::WindowText, QColor(128, 128, 128));
-
-        if (Application::instance()) {
-            Application::instance()->setPalette(lightPalette);
-        }
-#endif
 
         break;
     }
@@ -220,43 +208,12 @@ void ThemeAttributes::setTheme(const Theme theme)
 
         m_graphicElementLabelColor = QColor(Qt::white);
 
+        m_minimapElementBrush = QColor(150, 155, 165); // light-blue-grey; contrasts with the dark blue-grey background
+
         m_connectionUnknown = QColor(160, 160, 160, 255);    // light gray — "nothing is driving this"
         m_connectionInactive = QColor(65, 150, 130, 255);  // muted teal; visible on dark background without competing with active wires
         m_connectionActive = QColor(115, 255, 220, 255);    // bright cyan-green; clearly distinguishes an asserted wire
         m_connectionSelected = m_selectionPen;
-
-#ifndef Q_OS_MAC
-        // macOS handles dark mode at the OS level; manually overriding the
-        // palette there causes visual glitches, so the block is skipped.
-        QPalette darkPalette;
-        // A standard Qt dark palette recipe: 53/53/53 for surfaces, 25/25/25 for
-        // input fields (darker so they stand out from the surrounding surface).
-        // 120/120/120 is used for disabled roles — roughly mid-grey, readable but
-        // clearly de-emphasised compared to the full-white active text.
-        darkPalette.setColor(QPalette::Window, QColor(53, 53, 53));
-        darkPalette.setColor(QPalette::WindowText, Qt::white);
-        darkPalette.setColor(QPalette::Base, QColor(25, 25, 25));       // input field / list background
-        darkPalette.setColor(QPalette::AlternateBase, QColor(53, 53, 53));
-        darkPalette.setColor(QPalette::ToolTipBase, Qt::white);
-        darkPalette.setColor(QPalette::ToolTipText, Qt::white);
-        darkPalette.setColor(QPalette::Text, Qt::white);
-        darkPalette.setColor(QPalette::Button, QColor(53, 53, 53));
-        darkPalette.setColor(QPalette::ButtonText, Qt::white);
-        darkPalette.setColor(QPalette::BrightText, Qt::red);             // used by some styles for error text
-        darkPalette.setColor(QPalette::Link, QColor(42, 130, 218));      // blue link colour matching Highlight
-
-        darkPalette.setColor(QPalette::Highlight, QColor(42, 130, 218)); // selection highlight (mid-blue)
-
-        // Disabled widgets use a uniform mid-grey to signal unavailability without
-        // disappearing entirely (white on dark would be too low-contrast)
-        darkPalette.setColor(QPalette::Disabled, QPalette::ButtonText, QColor(120, 120, 120));
-        darkPalette.setColor(QPalette::Disabled, QPalette::Base, QColor(120, 120, 120));
-        darkPalette.setColor(QPalette::Disabled, QPalette::WindowText, QColor(120, 120, 120));
-
-        if (Application::instance()) {
-            Application::instance()->setPalette(darkPalette);
-        }
-#endif
 
         break;
     }
@@ -266,25 +223,6 @@ void ThemeAttributes::setTheme(const Theme theme)
         setTheme(Theme::Light);
         break;
     }
-
-#ifndef Q_OS_MAC
-    // Force a consistent tooltip style on both themes; without this, Windows/Linux
-    // style sheets would show platform-default tooltips that are illegible on dark
-    // backgrounds.  The #2a82da background matches QPalette::Highlight above.
-    //
-    // Toolbar button labels are shrunk here too, relative to the app's default font size.
-    // This has to live in the same setStyleSheet() call rather than a one-off setFont() on
-    // the toolbar/buttons: applying (or re-applying) an app-wide style sheet re-polishes
-    // every widget, which silently resets any font set directly via QWidget::setFont() --
-    // and setTheme() re-runs this on every theme switch, including the async system
-    // colour-scheme change QStyleHints::colorSchemeChanged delivers a moment after startup.
-    if (Application::instance()) {
-        const qreal toolBarFontPt = Application::instance()->font().pointSizeF() * 0.75;
-        Application::instance()->setStyleSheet(
-            QStringLiteral("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid white; }"
-                           "QToolBar QToolButton { font-size: %1pt; }").arg(toolBarFontPt));
-    }
-#endif
 
     // Port brushes mirror the wire colours for consistency so users can visually
     // correlate a wire's colour with the port it connects to.

@@ -64,11 +64,9 @@ class BinaryCounter4BitBuilder(ICBuilderBase):
             return False
 
         # Single vertical column for all control + data switches (all at
-        # input_x). Order matches this IC's current port order -- derived from
-        # a Y-position sort of the old (broken, 20-40px-apart) coordinates:
-        # Reset, Load, CountEnable, Data[0], Clock, Data[1], Data[2], Data[3] --
-        # preserved here (just with real VERTICAL_STAGE_SPACING clearance) so
-        # any embedder referencing ports by index doesn't silently break.
+        # input_x), in port order: Reset, Load, CountEnable, Data[0], Clock,
+        # Data[1], Data[2], Data[3] -- any embedder referencing ports by
+        # index depends on this order.
         input_x = 50.0
         clear_id = await self.create_element("InputSwitch", input_x, 0.0, "Reset")
         if clear_id is None:
@@ -88,8 +86,7 @@ class BinaryCounter4BitBuilder(ICBuilderBase):
 
         data_in_ids = []
         for i in range(4):
-            # Data[0] sits between CountEnable and Clock, Data[1-3] after Clock,
-            # matching the pre-fix Y-sort order.
+            # Data[0] sits between CountEnable and Clock, Data[1-3] after Clock.
             row = 3 if i == 0 else 4 + i
             d_id = await self.create_element("InputSwitch", input_x, row * VERTICAL_STAGE_SPACING, f"Data[{i}]")
             if d_id is None:
@@ -145,9 +142,8 @@ class BinaryCounter4BitBuilder(ICBuilderBase):
             not_carry_ids.append(not_id)
 
         # Create XOR AND gates (stage 4) — bits 1-3 only: bit 0 is a plain
-        # NOT(Q0) with no XOR decomposition (F59: the bit-0 gates used to be
-        # created and left dead). Index 0 stays as a placeholder so the
-        # wiring below can keep addressing gates by bit number.
+        # NOT(Q0) with no XOR decomposition. Index 0 stays as a placeholder so
+        # the wiring below can keep addressing gates by bit number.
         xor_and_ids: list = [None]
         xor_and_x = not_carry_x + HORIZONTAL_GATE_SPACING
         for i in range(1, 4):
@@ -176,8 +172,7 @@ class BinaryCounter4BitBuilder(ICBuilderBase):
         # Instantiate level1_d_flip_flop ICs (stage 6)
         # dff_x is 3 gate-spacings past xor_or_x (not 1) to leave room for the
         # hold_mux/load_mux columns below -- level2_mux_2to1's real rendered
-        # width doesn't fit in the fractional 0.5x/0.75x gaps those used to use,
-        # so FF0's left edge overlapped hold_mux0/load_mux0.
+        # width doesn't fit in a smaller gap.
         dff_ids = []
         dff_x = xor_or_x + (3 * HORIZONTAL_GATE_SPACING)
         for i in range(4):

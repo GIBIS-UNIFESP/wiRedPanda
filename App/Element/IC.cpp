@@ -6,9 +6,7 @@
 #include <algorithm>
 
 #include <QFileInfo>
-#include <QGraphicsSceneMouseEvent>
 #include <QPainter>
-#include <QStyleOptionGraphicsItem>
 
 #include "App/Core/Common.h"
 #include "App/Element/ElementFactory.h"
@@ -50,15 +48,12 @@ struct ElementInfo<IC> {
     }();
 };
 
-IC::IC(QGraphicsItem *parent)
+IC::IC(QObject *parent)
     : GraphicElement(ElementType::IC, parent)
 {
     // ICs display their label vertically alongside the chip body, matching the physical
     // convention of reading IC labels along the side of a physical DIP package
-    m_label->setRotation(90);
-
-    // Enable hover events so the preview popup can be shown/hidden
-    setAcceptHoverEvents(true);
+    m_label.setRotation(90);
 }
 
 IC::~IC()
@@ -261,11 +256,10 @@ IC::PortMetadata IC::buildPortMetadata(const QVector<GraphicElement *> &elements
     return ICLoader::buildPortMetadata(elements);
 }
 
-void IC::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
+void IC::handleDoubleClick()
 {
     // Hide the preview popup immediately on double-click so it doesn't overlap the sub-circuit tab
     emit previewCancelRequested(this);
-    event->accept();
     emit requestOpenSubCircuit(id(), m_blobName, m_file);
 }
 
@@ -281,27 +275,27 @@ QString IC::displayName() const
 
 bool IC::isCursorOverPort(const QPointF &localPos) const
 {
-    const auto ports = allPorts();
-    return std::any_of(ports.cbegin(), ports.cend(), [&](const Port *port) {
-        return port->contains(mapToItem(port, localPos));
-    });
+    const auto overPort = [&](const Port *port) { return port->contains(localPos); };
+    return std::any_of(inputs().cbegin(), inputs().cend(), overPort)
+        || std::any_of(outputs().cbegin(), outputs().cend(), overPort);
 }
 
-void IC::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
+void IC::handleHoverEnter(const QPointF &localPos, const QPoint &screenPos)
 {
-    // The preview belongs to the IC body only — the ports are child items that
-    // don't consume hover events, so the IC also receives them over the pins.
-    if (isCursorOverPort(event->pos())) {
+    // The preview belongs to the IC body only — a rendering host is expected to route hover
+    // to whichever port the cursor is actually over instead of here, but check anyway in
+    // case it just forwards every hover over this element's hit area.
+    if (isCursorOverPort(localPos)) {
         emit previewHideRequested();
         return;
     }
 
-    emit previewRequested(this, event->screenPos());
+    emit previewRequested(this, screenPos);
 }
 
-void IC::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
+void IC::handleHoverMove(const QPointF &localPos, const QPoint &screenPos)
 {
-    if (isCursorOverPort(event->pos())) {
+    if (isCursorOverPort(localPos)) {
         emit previewHideRequested();
         return;
     }
@@ -310,12 +304,11 @@ void IC::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
     // re-arm the show when the cursor returns from a port within the same hover.
     // (The "already active" vs. "needs re-arming" distinction is made by whoever
     // drives the popup off this signal — see SceneUiBinder.)
-    emit previewMoved(this, event->screenPos());
+    emit previewMoved(this, screenPos);
 }
 
-void IC::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
+void IC::handleHoverLeave()
 {
-    Q_UNUSED(event)
     emit previewHideRequested();
 }
 
@@ -324,11 +317,8 @@ QRectF IC::boundingRect() const
     return renderBodyBounds();
 }
 
-void IC::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void IC::paint(QPainter *painter)
 {
-    Q_UNUSED(widget)
-    Q_UNUSED(option)
-
     if (isSelected()) {
         painter->save();
         painter->setBrush(m_appearance.selectionBrush());

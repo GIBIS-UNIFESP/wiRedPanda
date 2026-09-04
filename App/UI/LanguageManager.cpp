@@ -3,6 +3,7 @@
 
 #include "App/UI/LanguageManager.h"
 
+#include <QCoreApplication>
 #include <QDir>
 #include <QLocale>
 #include <QResource>
@@ -12,7 +13,6 @@
 #include <QFontDatabase>
 #endif
 
-#include "App/Core/Application.h"
 #include "App/Core/Settings.h"
 
 #ifdef Q_OS_WASM
@@ -47,8 +47,8 @@ LanguageManager::LanguageManager(QObject *parent)
 
 LanguageManager::~LanguageManager()
 {
-    // Remove translator from Application::instance() before it is deleted by the QObject parent tree.
-    Application::instance()->removeTranslator(m_translator);
+    // Remove translator from qApp before it is deleted by the QObject parent tree.
+    qApp->removeTranslator(m_translator);
 }
 
 void LanguageManager::loadTranslation(const QString &language)
@@ -62,7 +62,7 @@ void LanguageManager::loadTranslation(const QString &language)
     // Always recreate the translator rather than re-loading; Qt does not
     // guarantee that calling load() on an existing translator re-emits
     // languageChanged.
-    Application::instance()->removeTranslator(m_translator);
+    qApp->removeTranslator(m_translator);
     delete m_translator;
     m_translator = nullptr;
 
@@ -82,7 +82,7 @@ void LanguageManager::loadTranslation(const QString &language)
     if (QResource(qmFile).isValid()) { // LCOV_EXCL_LINE — qt_add_translations() embeds wpanda_*.qm only into the production "wiredpanda" executable target (CMakeLists.txt), by design, not into test_wiredpanda, so this is never true in the test binary; see .claude/COVERAGE_100_PLAN.md pattern 37.
         m_translator = new QTranslator(this); // LCOV_EXCL_LINE — see above.
 
-        if (!m_translator->load(qmFile) || !Application::instance()->installTranslator(m_translator)) { // LCOV_EXCL_LINE — see above.
+        if (!m_translator->load(qmFile) || !qApp->installTranslator(m_translator)) { // LCOV_EXCL_LINE — see above.
             qWarning() << "Failed to load translation for" << language << ", falling back to English"; // LCOV_EXCL_LINE — see above.
             delete m_translator; // LCOV_EXCL_LINE — see above.
             m_translator = nullptr; // LCOV_EXCL_LINE — see above.

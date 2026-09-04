@@ -34,7 +34,7 @@
 #include <cstdint>
 #include <fuzzer/FuzzedDataProvider.h>
 
-#include <QApplication>
+#include <QGuiApplication>
 #include <QByteArray>
 #include <QCoreApplication>
 #include <QDataStream>
@@ -55,14 +55,14 @@
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/IO/Serialization.h"
-#include "App/Scene/Commands.h"
-#include "App/Scene/Scene.h"
-#include "App/Scene/Workspace.h"
+#include "App/QuickShell/Canvas/CanvasCommands.h"
+#include "App/QuickShell/Canvas/CanvasItem.h"
+#include "App/QuickShell/Chrome/QuickWorkSpace.h"
 #include "App/Wiring/Connection.h"
 
 namespace {
 
-QApplication *g_app  = nullptr;
+QGuiApplication *g_app  = nullptr;
 int  g_argc = 0;
 char **g_argv = nullptr;
 
@@ -91,13 +91,13 @@ constexpr ElementType kAddTypes[] = {
     ElementType::Clock,
 };
 
-void applyRandomCommands(Scene *scene, FuzzedDataProvider &fdp)
+void applyRandomCommands(CanvasItem *canvas, FuzzedDataProvider &fdp)
 {
     QUndoStack stack;
 
     const int numOps = fdp.ConsumeIntegralInRange<int>(1, 6);
     for (int op = 0; op < numOps; ++op) {
-        const auto elems = scene->elements();
+        const auto elems = canvas->elements();
 
         // After all existing elements have been deleted, only AddItemsCommand makes sense
         if (elems.isEmpty() && op > 0) break;
@@ -110,7 +110,7 @@ void applyRandomCommands(Scene *scene, FuzzedDataProvider &fdp)
                 0, std::size(kAddTypes) - 1)];
             auto *elm = ElementFactory::buildElement(type);
             try {
-                stack.push(new AddItemsCommand({elm}, scene));
+                stack.push(new CanvasAddItemsCommand({elm}, canvas));
             } catch (...) {
                 delete elm;
             }
@@ -121,8 +121,8 @@ void applyRandomCommands(Scene *scene, FuzzedDataProvider &fdp)
             const int idx = fdp.ConsumeIntegralInRange<int>(
                 0, static_cast<int>(elems.size()) - 1);
             try {
-                stack.push(new DeleteItemsCommand(
-                    {static_cast<QGraphicsItem *>(elems.at(idx))}, scene));
+                stack.push(new CanvasDeleteItemsCommand(
+                    {static_cast<ItemWithId *>(elems.at(idx))}, canvas));
             } catch (...) {}
             break;
         }
@@ -130,7 +130,7 @@ void applyRandomCommands(Scene *scene, FuzzedDataProvider &fdp)
             if (elems.isEmpty()) break;
             const int angle = fdp.ConsumeBool() ? 90 : -90;
             try {
-                stack.push(new RotateCommand(elems, angle, scene));
+                stack.push(new CanvasRotateCommand(elems, angle, canvas));
             } catch (...) {}
             break;
         }
@@ -141,7 +141,7 @@ void applyRandomCommands(Scene *scene, FuzzedDataProvider &fdp)
                 oldPositions << e->pos();
             }
             try {
-                stack.push(new MoveCommand(elems, oldPositions, scene));
+                stack.push(new CanvasMoveCommand(elems, oldPositions, canvas));
             } catch (...) {}
             break;
         }
@@ -149,7 +149,7 @@ void applyRandomCommands(Scene *scene, FuzzedDataProvider &fdp)
             if (elems.isEmpty()) break;
             const int axis = fdp.ConsumeBool() ? 1 : 0;
             try {
-                stack.push(new FlipCommand(elems, axis, scene));
+                stack.push(new CanvasFlipCommand(elems, axis, canvas));
             } catch (...) {}
             break;
         }
@@ -160,7 +160,7 @@ void applyRandomCommands(Scene *scene, FuzzedDataProvider &fdp)
             const auto newType = kMorphTargets[fdp.ConsumeIntegralInRange<size_t>(
                 0, std::size(kMorphTargets) - 1)];
             try {
-                stack.push(new MorphCommand({elems.at(idx)}, newType, scene));
+                stack.push(new CanvasMorphCommand({elems.at(idx)}, newType, canvas));
             } catch (...) {}
             break;
         }
@@ -171,22 +171,39 @@ void applyRandomCommands(Scene *scene, FuzzedDataProvider &fdp)
             const int newSize = fdp.ConsumeIntegralInRange<int>(1, 4);
             const bool isInput = fdp.ConsumeBool();
             try {
-                stack.push(new ChangePortSizeCommand({elems.at(idx)}, newSize, scene, isInput));
+                stack.push(new CanvasChangePortSizeCommand({elems.at(idx)}, newSize, canvas, isInput));
             } catch (...) {}
             break;
         }
         case 7: { // RegisterBlobCommand
             const QString blobName = QString("fuzz_blob_%1.panda").arg(op);
+            // QUndoStack::push() calls cmd->redo() *before* taking ownership of cmd (confirmed
+            // against Qt's own qundostack.cpp) -- CanvasRegisterBlobCommand::redo() calls
+            // CanvasICRegistry::registerBlob(), whose makeBlobSelfContained() step can throw on
+            // malformed nested-blob data (a real, LeakSanitizer-confirmed leak once this harness
+            // first became buildable, not a hypothetical). This constructor is a plain
+            // member-initializer with no side effects, so cmd is still solely owned here if
+            // redo() throws -- unlike case 0's AddItemsCommand, whose constructor already hands
+            // its element to the canvas before push() ever runs.
+            auto *cmd = new CanvasRegisterBlobCommand(blobName, g_icBlob, canvas);
             try {
-                stack.push(new RegisterBlobCommand(blobName, g_icBlob, scene));
-            } catch (...) {}
+                stack.push(cmd);
+            } catch (...) {
+                delete cmd;
+            }
             break;
         }
         case 8: { // RemoveBlobCommand
             const QString blobName = QString("fuzz_blob_%1.panda").arg(op > 0 ? op - 1 : 0);
+            // Same push()-calls-redo()-before-taking-ownership hazard as case 7 above; this
+            // constructor is also just member-initializers (including a plain blob() read), so
+            // the same catch-and-delete is safe here too.
+            auto *cmd = new CanvasRemoveBlobCommand(blobName, canvas);
             try {
-                stack.push(new RemoveBlobCommand(blobName, scene));
-            } catch (...) {}
+                stack.push(cmd);
+            } catch (...) {
+                delete cmd;
+            }
             break;
         }
         case 9: { // UpdateCommand — captures current element state as "old data", then
@@ -205,7 +222,7 @@ void applyRandomCommands(Scene *scene, FuzzedDataProvider &fdp)
                 for (auto *e : elems) e->save(s, {.purpose = SerializationPurpose::InMemorySnapshot});
             }
             try {
-                stack.push(new UpdateCommand(elems, oldData, scene));
+                stack.push(new CanvasUpdateCommand(elems, oldData, canvas));
             } catch (...) {}
             break;
         }
@@ -220,7 +237,7 @@ void applyRandomCommands(Scene *scene, FuzzedDataProvider &fdp)
             if (!tt) break;
             const int pos = fdp.ConsumeIntegralInRange<int>(0, 3);
             try {
-                stack.push(new ToggleTruthTableOutputCommand(tt, pos, scene));
+                stack.push(new CanvasToggleTruthTableOutputCommand(tt, pos, canvas));
             } catch (...) {}
             break;
         }
@@ -230,18 +247,16 @@ void applyRandomCommands(Scene *scene, FuzzedDataProvider &fdp)
             // undo/redo) can free or replace Connection objects, which would otherwise leave
             // a dangling pointer that a scene()-only guard can't detect (use-after-free).
             Connection *conn = nullptr;
-            for (auto *item : scene->items()) {
-                if (auto *c = qgraphicsitem_cast<Connection *>(item)) {
-                    conn = c;
-                    break;
-                }
+            for (auto *c : canvas->connections()) {
+                conn = c;
+                break;
             }
             if (!conn) break;
             const QPointF midPos(
                 fdp.ConsumeFloatingPointInRange<double>(-200.0, 200.0),
                 fdp.ConsumeFloatingPointInRange<double>(-200.0, 200.0));
             try {
-                stack.push(new SplitCommand(conn, midPos, scene));
+                stack.push(new CanvasSplitCommand(conn, midPos, canvas));
             } catch (...) {}
             break;
         }
@@ -289,7 +304,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
 
     g_argc = *argc;
     g_argv = *argv;
-    g_app  = new QApplication(g_argc, g_argv);
+    g_app  = new QGuiApplication(g_argc, g_argv);
 
     // Build a valid IC blob for RegisterBlobCommand tests.
     {
@@ -297,7 +312,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
         auto *led = ElementFactory::buildElement(ElementType::Led);
         sw->setId(1);
         led->setId(2);
-        QList<QGraphicsItem *> items;
+        QList<ItemWithId *> items;
         items.append(sw);
         items.append(led);
 
@@ -322,7 +337,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
         auto *led  = ElementFactory::buildElement(ElementType::Led);
         andG->setId(1);  sw1->setId(2);  sw2->setId(3);  led->setId(4);
 
-        QList<QGraphicsItem *> items;
+        QList<ItemWithId *> items;
         items.append(andG);  items.append(sw1);
         items.append(sw2);   items.append(led);
 
@@ -346,7 +361,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
         {
             constexpr quint64 sw1Out0 = (quint64(2) << 16) | 0;  // sw1 output port 0
             constexpr quint64 andIn0  = (quint64(1) << 16) | 0;  // andG input port 0
-            s << static_cast<int>(QGraphicsItem::UserType + 2);   // Connection::Type
+            s << static_cast<int>(Connection::Type);
             QMap<QString, QVariant> connMap;
             connMap.insert("startPortId", QVariant::fromValue(sw1Out0));
             connMap.insert("endPortId",   QVariant::fromValue(andIn0));
@@ -383,7 +398,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
     const size_t cmdStart  = pandaSize;
     const size_t cmdSize   = size - cmdStart;
 
-    WorkSpace ws;
+    QuickWorkSpace ws;
 
     if (usePrebuild) {
         // Load pre-built workspace (guaranteed to have 4 elements)
@@ -413,7 +428,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
 
     if (cmdSize == 0) return 0;
     FuzzedDataProvider fdp(data + cmdStart, cmdSize);
-    applyRandomCommands(ws.scene(), fdp);
+    applyRandomCommands(ws.canvas(), fdp);
 
     return 0;
 }

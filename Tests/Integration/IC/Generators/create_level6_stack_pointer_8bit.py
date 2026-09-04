@@ -71,7 +71,6 @@ class StackPointer8BitBuilder(ICBuilderBase):
         ctrl_x = input_x + HORIZONTAL_GATE_SPACING + 32
         control_signals = {}
 
-        # (F26: the dangling "Enable" input was removed — nothing consumed it.)
         for ctrl_name in ["Clock", "Load", "Push", "Pop", "Reset"]:
             element_id = await self.create_element(
                 "InputSwitch", ctrl_x, 100.0 + len(control_signals) * VERTICAL_STAGE_SPACING, ctrl_name
@@ -104,21 +103,17 @@ class StackPointer8BitBuilder(ICBuilderBase):
         # it doesn't have to share x-space with anything else either.
         hold_x = ff_x + 8 * HORIZONTAL_GATE_SPACING
 
-        # mux_x computed here (unchanged value: previously derived as
-        # vcc_x + HORIZONTAL_GATE_SPACING, i.e. hold_x + 9 steps) so the Vcc[]
-        # block below can align to each PriorityMux[i]'s own column.
+        # mux_x is hold_x + 9 steps so the Vcc[] block below can align to
+        # each PriorityMux[i]'s own column.
         mux_x = hold_x + 9 * HORIZONTAL_GATE_SPACING
 
         # Create constant high (InputVcc) for reset to 0xFF. Each Vcc[i] sits
         # directly above the PriorityMux[i] it feeds (same X as the mux row,
-        # one stage above its Y=200.0) instead of the old vertical COLUMN at a
-        # single fixed X -- that packed all 8 into one column spanning
-        # 100..828, so Vcc[7] was 628px below the mux row it connects to,
-        # forcing a long diagonal. Sharing each mux's own column (with Vcc
-        # above, never below, so its plain label can't run into the mux's own
-        # downward-rotated IC label) turns that into a short near-vertical
-        # wire. InputVcc is ElementGroup::StaticInput, not Input, so it's an
-        # internal element -- this can't affect the IC's exported port order.
+        # one stage above its Y=200.0), giving a short, near-vertical wire --
+        # with Vcc above, never below, so its plain label can't run into the
+        # mux's own downward-rotated IC label. InputVcc is
+        # ElementGroup::StaticInput, not Input, so it's an internal element --
+        # this can't affect the IC's exported port order.
         vcc_inputs = []
         for i in range(8):
             element_id = await self.create_element(
@@ -152,9 +147,7 @@ class StackPointer8BitBuilder(ICBuilderBase):
                 return False
             sp_outputs.append(element_id)
 
-        # ========== ±1 OPERAND AND HOLD LOGIC (F26) ==========
-        # The adder previously computed SP + 0 (its B operand was fully
-        # unconnected) and Push/Pop were dangling. Now:
+        # ========== ±1 OPERAND AND HOLD LOGIC ==========
         #   B = 0x01 when Pop  (SP + 1)
         #   B = 0xFF when Push (SP - 1 in two's complement)
         # so B[0] = Push OR Pop and B[1..7] = Push. When neither is active,
@@ -175,8 +168,8 @@ class StackPointer8BitBuilder(ICBuilderBase):
 
         # Per-bit hold mux: Sum when Push|Pop, otherwise hold Q. Uses its own
         # reserved hold_x block (see above) with full HORIZONTAL_GATE_SPACING
-        # steps -- the old "i * 40.0" was well under a mux's ~64px width, so
-        # consecutive hold_mux[] instances overlapped each other.
+        # steps so consecutive hold_mux[] instances (each ~64px wide) don't
+        # overlap.
         hold_muxes = []
         for i in range(8):
             mux_id = await self.create_element("Mux", hold_x + (i * HORIZONTAL_GATE_SPACING), 350.0, f"hold_mux[{i}]")

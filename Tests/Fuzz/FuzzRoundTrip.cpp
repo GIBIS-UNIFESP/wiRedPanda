@@ -22,7 +22,7 @@
 #include <cstddef>
 #include <cstdint>
 
-#include <QApplication>
+#include <QGuiApplication>
 #include <QByteArray>
 #include <QCoreApplication>
 #include <QDataStream>
@@ -36,14 +36,15 @@
 #include "App/Core/Enums.h"
 #include "App/Element/GraphicElement.h"
 #include "App/IO/Serialization.h"
-#include "App/Scene/ICRegistry.h"
-#include "App/Scene/Scene.h"
-#include "App/Scene/Workspace.h"
+#include "App/QuickShell/Canvas/CanvasICRegistry.h"
+#include "App/QuickShell/Canvas/CanvasItem.h"
+#include "App/QuickShell/Chrome/QuickWorkSpace.h"
 #include "App/Simulation/Simulation.h"
+#include "App/Wiring/Connection.h"
 
 namespace {
 
-QApplication *g_app  = nullptr;
+QGuiApplication *g_app  = nullptr;
 int  g_argc = 0;
 char **g_argv = nullptr;
 
@@ -61,7 +62,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
 
     g_argc = *argc;
     g_argv = *argv;
-    g_app  = new QApplication(g_argc, g_argv);
+    g_app  = new QGuiApplication(g_argc, g_argv);
 
     return 0;
 }
@@ -90,7 +91,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
         return 0;
     }
 
-    WorkSpace ws1;
+    QuickWorkSpace ws1;
     try {
         ws1.load(stream, version, /*contextDir=*/QString());
     } catch (...) {
@@ -99,14 +100,14 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
 
     // Run two simulation ticks on ws1 to exercise Simulation::update() paths
     // (topologicalSort, iterative settling, connection/output port updates).
-    ws1.scene()->simulation()->update();
-    ws1.scene()->simulation()->update();
+    ws1.canvas()->simulation()->update();
+    ws1.canvas()->simulation()->update();
 
     // --- Phase 2: serialize the loaded scene ---
     QByteArray saved;
     {
         // Metadata + elements are buffered and compressed as one payload, exactly
-        // like WorkSpace::save() -- writePandaHeader() now stamps FormatRev::current
+        // like WorkSpace::save() -- writePandaHeader() stamps FormatRev::current
         // (Rev100+), so the reload in Phase 3 expects a compressed payload behind it.
         QByteArray payload;
         QDataStream payloadStream(&payload, QIODevice::WriteOnly);
@@ -118,12 +119,16 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
         QMap<QString, QVariant> meta;
         meta.insert("dolphinFileName", QVariant(QString()));
         const QMap<QString, QByteArray> &blobs =
-            ws1.scene()->icRegistry()->blobMap();
+            ws1.canvas()->icRegistry()->blobMapRef();
         Serialization::serializeBlobRegistry(blobs, meta);
         payloadStream << meta;
 
-        // Collect all items from the scene
-        const auto items = ws1.scene()->items();
+        // Collect all items from the canvas -- CanvasItem keeps elements and
+        // connections in two separate vectors (unlike QGraphicsScene::items()'s
+        // single mixed list), so build the combined list serialize() expects.
+        QList<ItemWithId *> items;
+        for (auto *elm : ws1.canvas()->elements()) items.append(elm);
+        for (auto *conn : ws1.canvas()->connections()) items.append(conn);
         Serialization::serialize(items, payloadStream, {.purpose = SerializationPurpose::PortableFile});
 
         QDataStream out(&saved, QIODevice::WriteOnly);
@@ -142,7 +147,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
         return 0;
     }
 
-    WorkSpace ws2;
+    QuickWorkSpace ws2;
     try {
         ws2.load(stream2, version2, /*contextDir=*/QString());
     } catch (...) {
@@ -153,8 +158,8 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
     // Any asymmetry — count mismatch or type substitution — is a serialization bug.
     // Connections are excluded (element-only check) because dangling connections
     // are intentionally dropped during clean-up.
-    const auto elems1 = ws1.scene()->elements();
-    const auto elems2 = ws2.scene()->elements();
+    const auto elems1 = ws1.canvas()->elements();
+    const auto elems2 = ws2.canvas()->elements();
 
     if (elems1.isEmpty()) return 0;
 

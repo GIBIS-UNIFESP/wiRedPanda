@@ -19,7 +19,7 @@
 #include <cstdint>
 #include <fuzzer/FuzzedDataProvider.h>
 
-#include <QApplication>
+#include <QGuiApplication>
 #include <QByteArray>
 #include <QCoreApplication>
 #include <QDataStream>
@@ -41,7 +41,7 @@
 
 namespace {
 
-QApplication *g_app  = nullptr;
+QGuiApplication *g_app  = nullptr;
 int  g_argc = 0;
 char **g_argv = nullptr;
 
@@ -55,7 +55,7 @@ QByteArray buildStructuredICBlob(FuzzedDataProvider &fdp)
     const int numInputs  = fdp.ConsumeIntegralInRange<int>(1, 3);
     const int numOutputs = fdp.ConsumeIntegralInRange<int>(1, 2);
 
-    QList<QGraphicsItem *> items;
+    QList<ItemWithId *> items;
     int nextId = 1;
 
     for (int i = 0; i < numInputs; ++i) {
@@ -97,7 +97,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
 
     g_argc = *argc;
     g_argv = *argv;
-    g_app  = new QApplication(g_argc, g_argv);
+    g_app  = new QGuiApplication(g_argc, g_argv);
 
     return 0;
 }

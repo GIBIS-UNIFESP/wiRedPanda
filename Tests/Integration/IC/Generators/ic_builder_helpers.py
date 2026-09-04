@@ -5,8 +5,7 @@
 """
 Shared parametrised IC builder classes.
 
-Each class replaces a set of near-identical generator files; the entry-point
-files become thin wrappers that pass different constructor arguments.
+Entry-point files are thin wrappers that pass different constructor arguments.
 """
 
 from dataclasses import dataclass
@@ -66,9 +65,9 @@ class DecoderBuilder(ICBuilderBase):
         # Active-high Enable, defaulted HIGH: every decoded output is ANDed with
         # Enable, so Enable=0 forces all outputs to 0 (74138-style chip select).
         # Defaulting it high means a decoder embedded WITHOUT an explicit Enable
-        # connection behaves exactly as before — both the engine (internal switch
+        # connection still sees Enable=1 -- both the engine (internal switch
         # holds its saved value) and the SV/Arduino export (an unconnected IC
-        # input resolves to the port's default value) see Enable=1.
+        # input resolves to the port's default value) resolve it that way.
         #
         # Enable's Y must stay below every addr[] row (so it keeps its rank as
         # the last boundary input when ports are sorted by Y then X -- other,
@@ -169,12 +168,10 @@ class RegisterFileBuilder(ICBuilderBase):
         # sees literal string constants in the generator script it's analyzing, per
         # extract_dependencies()'s own docstring convention: "Dependencies are always
         # written as plain string literals naming another component") can see this
-        # builder's write-decoder dependency. Every other generator already follows
-        # that convention; this used to be the one exception, invisible to the
-        # scanner regardless of which file the f-string lived in. Cross-checked
-        # against the computed name so a typo'd/mismatched literal fails loudly
-        # instead of silently wiring up the wrong decoder. Validated before
-        # super().__init__() so this specific error surfaces first.
+        # builder's write-decoder dependency. Cross-checked against the computed
+        # name so a typo'd/mismatched literal fails loudly instead of silently
+        # wiring up the wrong decoder. Validated before super().__init__() so this
+        # specific error surfaces first.
         expected_decoder_name = f"level2_decoder_{address_bits}to{num_registers}"
         if decoder_name != expected_decoder_name:
             raise ValueError(
@@ -207,9 +204,8 @@ class RegisterFileBuilder(ICBuilderBase):
         which the caller needs to space consecutive bits' trees apart.
 
         For num_registers<=8 (every existing caller) this produces exactly one
-        8-or-fewer-input Mux -- byte-identical to the flat single-mux design
-        this replaces. It only branches into multiple levels for a register
-        file wider than 8 entries (e.g. the 32-entry file this was built for).
+        8-or-fewer-input Mux. It only branches into multiple levels for a
+        register file wider than 8 entries.
         """
         level = 0
         total_span = 0.0
@@ -260,7 +256,7 @@ class RegisterFileBuilder(ICBuilderBase):
         data_width = self.data_width
         address_bits = self.address_bits
         display = f"Register File {num_registers}×{data_width}"
-        # F32: the level-5 and level-6 8×8 register-file fixtures are the same
+        # The level-5 and level-6 8×8 register-file fixtures are the same
         # circuit — only the output filename's level prefix differs.
         output_name = f"level{self.level}_register_file_{num_registers}x{data_width}"
         decoder_name = self.decoder_name
@@ -1453,12 +1449,12 @@ class MuxNto1Builder(ICBuilderBase):
 
         # Active-high Enable, defaulted HIGH: the mux output is ANDed with Enable,
         # so Enable=0 forces the output low (74153-style strobe). Defaulting it
-        # high means a mux embedded WITHOUT an explicit Enable connection behaves
-        # exactly as before — both the engine and the SV/Arduino export resolve an
+        # high means a mux embedded WITHOUT an explicit Enable connection still
+        # sees Enable=1 -- both the engine and the SV/Arduino export resolve an
         # unconnected Enable to its high default.
         # Enable sits on Sel[]'s row (still ranked after every Sel[i] by X, so
         # port order is unchanged) but aligned above en_and for a short, straight
-        # wire down instead of the old far-right corner past the whole Mux.
+        # wire down.
         en_and_x = mux_x + HORIZONTAL_GATE_SPACING
         enable_id = await self.create_element("InputSwitch", en_and_x, select_row_y, "Enable")
         if enable_id is None:
@@ -1565,7 +1561,7 @@ class ParityBuilder(ICBuilderBase):
 
         # Cascade input (74180-style): XOR a chained parity bit from a less-
         # significant block into this block's parity. Tied low (the default) it
-        # is a no-op, so a single block behaves exactly as before; to build a
+        # is a no-op, so a single block's parity is unaffected; to build a
         # wider parity tree, feed another block's parity output in here.
         cascade_in = await self.create_element(
             "InputSwitch", input_x, 100.0 + width * VERTICAL_STAGE_SPACING, "CascadeIn"

@@ -19,7 +19,7 @@ class Xnor : public GraphicElement
 
 public:
     /// Constructs an Xnor gate element with default 2 inputs.
-    explicit Xnor(QGraphicsItem *parent = nullptr);
+    explicit Xnor(QObject *parent = nullptr);
 
     /// Sets output to the logical XNOR of all inputs.
     void updateLogic() override;

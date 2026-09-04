@@ -23,7 +23,9 @@
 #     it's launched with --instr-atstart=no (near-native speed until toggled) and
 #     callgrind_control -i on/off starts/stops instrumentation around the window.
 #
-# Builds against build-relwithdebinfo/wiredpanda (cmake --preset relwithdebinfo).
+# Builds against build-relwithdebinfo/wiredpanda (cmake --preset relwithdebinfo) by default;
+# override BINARY in the environment to profile a different built target against the same
+# fixture with identical methodology.
 # Output is written under Scripts/profiling-out/, not to stdout.
 
 set -euo pipefail
@@ -35,7 +37,7 @@ SECONDS_TO_RUN="${3:-}"
 OFFSCREEN="${4:-}"
 SETTLE_SECONDS="${5:-10}"
 
-BINARY="build-relwithdebinfo/wiredpanda"
+BINARY="${BINARY:-build-relwithdebinfo/wiredpanda}"
 OUT_DIR="Scripts/profiling-out"
 
 if [[ ! -x "$BINARY" ]]; then
@@ -55,7 +57,10 @@ if [[ -n "$OFFSCREEN" ]]; then
     ENV_ARGS+=(env QT_QPA_PLATFORM=offscreen)
 fi
 
-STAMP="$(basename "$PANDA_FILE" .panda)_$$"
+# Includes the binary's own basename so two different binaries (e.g. debug vs. release builds,
+# or a build predating some change under test) profiled against the same fixture never produce
+# ambiguously-named output files.
+STAMP="$(basename "$BINARY")_$(basename "$PANDA_FILE" .panda)_$$"
 
 case "$TOOL" in
     callgrind)
