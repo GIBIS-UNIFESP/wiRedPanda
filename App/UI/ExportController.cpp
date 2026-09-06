@@ -6,26 +6,70 @@
 #include <QDesktopServices>
 #include <QDir>
 #include <QLoggingCategory>
+#include <QMessageBox>
 #include <QUrl>
 
 #include "App/BeWavedDolphin/BeWavedDolphin.h"
 #include "App/CodeGen/ArduinoCodeGen.h"
 #include "App/CodeGen/SystemVerilogCodeGen.h"
 #include "App/Core/Application.h"
+#include "App/Core/Settings.h"
+#include "App/Core/ThemeManager.h"
 #include "App/Core/Common.h"
 #include "App/Core/SentryHelpers.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/SimulationBlocker.h"
 #include "App/UI/CircuitExporter.h"
+#include "App/UI/CircuitRecorder.h"
+#include "App/UI/CircuitRecorderDialog.h"
 #include "App/UI/FileDialogProvider.h"
 #include "App/UI/MainWindowHost.h"
+#include "App/UI/RecordingOverlay.h"
 
 ExportController::ExportController(MainWindowHost &host, QObject *parent)
     : QObject(parent)
     , m_host(host)
+    , m_recorder(std::make_unique<CircuitRecorder>(this))
 {
+    connect(m_recorder.get(), &CircuitRecorder::recordingStarted, this, [this] {
+        m_host.showStatusMessage(tr("Recording simulation..."), 0);
+        auto *tab = m_host.currentTab();
+        if (tab && tab->recordingOverlay()) {
+            auto *overlay = tab->recordingOverlay();
+            overlay->updateStatus(0, 0.0);
+            overlay->adjustSize();
+            overlay->move(tab->width() - overlay->width() - 20, 16);
+            overlay->show();
+            overlay->raise();
+            connect(overlay, &RecordingOverlay::stopRequested, m_recorder.get(), &CircuitRecorder::stopRecording, Qt::UniqueConnection);
+        }
+    });
+    connect(m_recorder.get(), &CircuitRecorder::recordingStopped, this, [this](const QString &filePath) {
+        m_host.showStatusMessage(tr("Recording saved to %1").arg(filePath), 4000);
+        auto *tab = m_host.currentTab();
+        if (tab && tab->recordingOverlay()) {
+            tab->recordingOverlay()->hide();
+        }
+    });
+    connect(m_recorder.get(), &CircuitRecorder::frameRecorded, this, [this](int frameCount, double duration) {
+        m_host.showStatusMessage(tr("Recording: %1s (%2 frames)").arg(QString::number(duration, 'f', 1)).arg(frameCount), 0);
+        auto *tab = m_host.currentTab();
+        if (tab && tab->recordingOverlay()) {
+            tab->recordingOverlay()->updateStatus(frameCount, duration);
+        }
+    });
+    connect(m_recorder.get(), &CircuitRecorder::recordingError, this, [this](const QString &error) {
+        m_host.showStatusMessage(tr("Recording error: %1").arg(error), 6000);
+        auto *tab = m_host.currentTab();
+        if (tab && tab->recordingOverlay()) {
+            tab->recordingOverlay()->hide();
+        }
+        QMessageBox::warning(m_host.widget(), tr("Recording Error"), error);
+    });
 }
+
+ExportController::~ExportController() = default;
 
 void ExportController::exportToArduino(QString fileName)
 {
@@ -209,4 +253,58 @@ void ExportController::exportImageDialog()
         m_host.showStatusMessage(tr("Exported file successfully."), 4000);
         QDesktopServices::openUrl(QUrl::fromLocalFile(pngFile));
     });
+}
+
+CircuitRecorder *ExportController::recorder()
+{
+    return m_recorder.get();
+}
+
+void ExportController::recordSimulationDialog()
+{
+    Application::guardedSlot(this, [this] {
+        sentryBreadcrumb("export", QStringLiteral("Record Simulation Dialog"));
+        auto *tab = m_host.currentTab();
+        if (!tab) {
+            return;
+        }
+
+        if (m_recorder->isRecording()) {
+            m_recorder->stopRecording();
+            return;
+        }
+
+        CircuitRecorderDialog dialog(m_host.widget());
+        auto defaultConfig = m_recorder->configuration();
+        if (!tab->dolphinFileName().isEmpty()) {
+            QString dir = tab->scene()->contextDir();
+            if (dir.isEmpty()) {
+                dir = tab->fileInfo().dir().absolutePath();
+            }
+            defaultConfig.dolphinFilePath = QDir(dir).absoluteFilePath(tab->dolphinFileName());
+        }
+        dialog.setConfiguration(defaultConfig);
+
+        if (dialog.exec() == QDialog::Accepted) {
+            auto config = dialog.configuration();
+            Settings::setLastRecordingPath(config.filePath);
+            m_recorder->startRecording(tab->scene(), tab->view(), config);
+        }
+    });
+}
+
+void ExportController::toggleRecording()
+{
+    if (m_recorder->isRecording()) {
+        stopRecording();
+    } else {
+        recordSimulationDialog();
+    }
+}
+
+void ExportController::stopRecording()
+{
+    if (m_recorder->isRecording()) {
+        m_recorder->stopRecording();
+    }
 }
