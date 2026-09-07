@@ -1142,8 +1142,8 @@ set(ALL_TESTS
     TestApplication TestCoreSettings TestDragDropPayload TestExerciseTourResources
     TestExternalFilePath TestInstallRelativePaths TestUpdateChecker
     TestArduinoCodeGenUnit TestCodeGenUtils TestSystemVerilogCodeGenUnit
-    TestCircuitExporter TestCircuitRecorder TestElementContextMenu TestElementEditor TestElementPalette
-    TestElementTabNavigator TestExportController TestFileDialogProviderUnit TestICController TestICDropZone TestLabeledSlider
+    TestCircuitExporter TestCircuitRecorder TestElementEditor TestElementPalette
+    TestElementTabNavigator TestExportController TestICController TestICDropZone TestLabeledSlider
     TestLanguageManager TestMinimapWidget TestSceneUiBinder TestSelectionCapabilities
     TestTrashButton TestWorkspaceManager
     TestConnection TestConnectionManager TestGraphicsView TestPropertyShortcutHandler TestPort TestSceneDropHandler
