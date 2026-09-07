@@ -182,7 +182,13 @@ bool CircuitRecorder::recordDolphinWaveform()
         return false;
     }
 
-    auto dolphinSignals = DolphinModelBuilder::collect(m_scene);
+    DolphinModelBuilder::Signals dolphinSignals;
+    try {
+        dolphinSignals = DolphinModelBuilder::collect(m_scene);
+    } catch (const std::exception &e) {
+        emit recordingError(tr("Failed to collect circuit elements for Dolphin recording: %1").arg(e.what()));
+        return false;
+    }
     auto inputs = dolphinSignals.inputs;
     int totalInputPorts = dolphinSignals.inputPorts;
 
@@ -368,11 +374,11 @@ bool CircuitRecorder::initFFmpegProcess()
 
 void CircuitRecorder::captureFrame()
 {
-    if (m_state != State::Recording || !m_scene) {
+    if (m_state != State::Recording || !m_scene || m_isCapturing) {
         return;
     }
 
-    QCoreApplication::processEvents();
+    m_isCapturing = true;
 
     QRectF sourceRect = determineSourceRect();
     QImage image(m_frameWidth, m_frameHeight, QImage::Format_RGBA8888);
@@ -399,6 +405,7 @@ void CircuitRecorder::captureFrame()
     }
 
     m_frameCount++;
+    m_isCapturing = false;
     emit frameRecorded(m_frameCount, elapsedSeconds());
 }
 

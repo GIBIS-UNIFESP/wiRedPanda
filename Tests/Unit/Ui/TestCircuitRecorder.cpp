@@ -9,12 +9,24 @@
 #include <QSignalSpy>
 #include <QTest>
 
+#include "App/Core/Application.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Scene/GraphicsView.h"
 #include "App/Scene/Scene.h"
 #include "App/UI/CircuitRecorder.h"
 #include "App/UI/CircuitRecorderDialog.h"
+
+void TestCircuitRecorder::initTestCase()
+{
+    m_prevRendering = Application::renderingEnabled;
+    Application::renderingEnabled = true;
+}
+
+void TestCircuitRecorder::cleanupTestCase()
+{
+    Application::renderingEnabled = m_prevRendering;
+}
 
 void TestCircuitRecorder::testInitialState()
 {

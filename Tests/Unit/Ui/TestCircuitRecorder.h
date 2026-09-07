@@ -10,10 +10,15 @@ class TestCircuitRecorder : public QObject
     Q_OBJECT
 
 private slots:
+    void initTestCase();
+    void cleanupTestCase();
     void testInitialState();
     void testConfigurationClamping();
     void testFFmpegAvailability();
     void testGifRecordingStartStop();
     void testDialogConfiguration();
     void testDolphinWaveformRecording();
+
+private:
+    bool m_prevRendering = false;
 };

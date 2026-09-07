@@ -60,15 +60,13 @@ static inline void GifWriteString(const char* str, FILE* f)
     }
 }
 
-// Structure to hold a color palette tree node
+// Structure to hold a color palette
 typedef struct {
     uint32_t bitDepth;
     uint8_t r[256];
     uint8_t g[256];
     uint8_t b[256];
     uint8_t k[256];
-    // Tree data
-    int32_t tree[256][256];
 } GifPalette;
 
 // Helper to calculate color distance
@@ -103,9 +101,19 @@ static inline void GifMakePalette(const uint8_t* image, uint32_t width, uint32_t
 
     uint32_t palCount = seedCount;
 
+    typedef struct {
+        uint32_t bin;
+        uint32_t count;
+    } BinCount;
+
     // Build 5-bit per channel histogram (32768 bins)
-    static uint32_t counts[32768];
-    memset(counts, 0, sizeof(counts));
+    uint32_t* counts = static_cast<uint32_t*>(calloc(32768, sizeof(uint32_t)));
+    BinCount* activeBins = static_cast<BinCount*>(malloc(2048 * sizeof(BinCount)));
+    if (!counts || !activeBins) {
+        free(counts);
+        free(activeBins);
+        return;
+    }
 
     uint32_t totalPixels = width * height;
     for (uint32_t i = 0; i < totalPixels; ++i) {
@@ -116,14 +124,7 @@ static inline void GifMakePalette(const uint8_t* image, uint32_t width, uint32_t
         counts[bin]++;
     }
 
-    typedef struct {
-        uint32_t bin;
-        uint32_t count;
-    } BinCount;
-
-    static BinCount activeBins[2048];
     uint32_t activeCount = 0;
-
     for (uint32_t b = 0; b < 32768; ++b) {
         if (counts[b] > 0) {
             if (activeCount < 2048) {
@@ -168,6 +169,9 @@ static inline void GifMakePalette(const uint8_t* image, uint32_t width, uint32_t
             palCount++;
         }
     }
+
+    free(counts);
+    free(activeBins);
 
     // Fill remaining slots with white
     for (uint32_t i = palCount; i < numColors; ++i) {
@@ -243,9 +247,10 @@ static inline void GifWriteLZW(FILE* f, const uint8_t* pixels, uint32_t numPixel
     uint32_t nextCode = eofCode + 1;
     uint32_t codeLen = static_cast<uint32_t>(minCodeLen) + 1;
 
-    // Dictionary hash table
-    int32_t dict[4096][256];
-    memset(dict, -1, sizeof(dict));
+    // Dictionary hash table (allocated on heap to avoid 4MB stack overflow)
+    int32_t (*dict)[256] = static_cast<int32_t(*)[256]>(malloc(4096 * 256 * sizeof(int32_t)));
+    if (!dict) return;
+    memset(dict, -1, 4096 * 256 * sizeof(int32_t));
 
     GifWriteCode(&buf, f, clearCode, codeLen, &accum, &accumBits);
 
@@ -258,6 +263,7 @@ static inline void GifWriteLZW(FILE* f, const uint8_t* pixels, uint32_t numPixel
         }
         GifWriteChunk(&buf, f);
         fputc(0, f);
+        free(dict);
         return;
     }
 
@@ -288,7 +294,7 @@ static inline void GifWriteLZW(FILE* f, const uint8_t* pixels, uint32_t numPixel
             else
             {
                 GifWriteCode(&buf, f, clearCode, codeLen, &accum, &accumBits);
-                memset(dict, -1, sizeof(dict));
+                memset(dict, -1, 4096 * 256 * sizeof(int32_t));
                 nextCode = eofCode + 1;
                 codeLen = static_cast<uint32_t>(minCodeLen) + 1;
             }
@@ -306,6 +312,7 @@ static inline void GifWriteLZW(FILE* f, const uint8_t* pixels, uint32_t numPixel
     }
     GifWriteChunk(&buf, f);
     fputc(0, f); // Block terminator
+    free(dict);
 }
 
 // Initialize GIF file output

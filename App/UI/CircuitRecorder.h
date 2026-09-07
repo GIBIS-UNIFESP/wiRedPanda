@@ -133,6 +133,7 @@ private:
     // GIF Encoder State
     std::unique_ptr<GifWriter> m_gifWriter;
     bool m_gifInitialized = false;
+    bool m_isCapturing = false;
 
     // FFmpeg Process State
     QProcess m_ffmpegProcess;
