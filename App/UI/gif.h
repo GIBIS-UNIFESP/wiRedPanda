@@ -12,6 +12,12 @@
 #pragma GCC diagnostic ignored "-Wsign-conversion"
 #pragma GCC diagnostic ignored "-Wdouble-promotion"
 #pragma GCC diagnostic ignored "-Wcast-align"
+#elif defined(_MSC_VER)
+#pragma warning(push)
+#pragma warning(disable: 4996) // 'fopen': This function or variable may be unsafe
+#pragma warning(disable: 4244) // conversion, possible loss of data
+#pragma warning(disable: 4267) // conversion from 'size_t'
+#pragma warning(disable: 4100) // unreferenced formal parameter
 #endif
 
 
@@ -306,8 +312,12 @@ static inline void GifWriteLZW(FILE* f, const uint8_t* pixels, uint32_t numPixel
 static inline bool GifBegin(GifWriter* writer, const char* filename, uint32_t width, uint32_t height, uint32_t delay, int32_t bitDepth, bool dither)
 {
     static_cast<void>(dither);
+#if defined(_MSC_VER)
+    if (fopen_s(&writer->f, filename, "wb") != 0) return false;
+#else
     writer->f = fopen(filename, "wb");
     if (!writer->f) return false;
+#endif
 
     writer->firstFrame = true;
     writer->oldImage = NULL;
@@ -428,6 +438,8 @@ static inline bool GifEnd(GifWriter* writer)
 
 #if defined(__GNUC__) || defined(__clang__)
 #pragma GCC diagnostic pop
+#elif defined(_MSC_VER)
+#pragma warning(pop)
 #endif
 
 #endif // GIF_H
