@@ -17,7 +17,7 @@
 #include <QString>
 #include <QTimer>
 
-#include "App/UI/gif.h"
+struct GifWriter;
 
 class Scene;
 class GraphicsView;
@@ -131,7 +131,7 @@ private:
     int m_frameHeight = 0;
 
     // GIF Encoder State
-    GifWriter m_gifWriter;
+    std::unique_ptr<GifWriter> m_gifWriter;
     bool m_gifInitialized = false;
 
     // FFmpeg Process State

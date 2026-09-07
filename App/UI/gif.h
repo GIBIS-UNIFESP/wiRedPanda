@@ -5,6 +5,16 @@
 #ifndef GIF_H
 #define GIF_H
 
+#if defined(__GNUC__) || defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wold-style-cast"
+#pragma GCC diagnostic ignored "-Wconversion"
+#pragma GCC diagnostic ignored "-Wsign-conversion"
+#pragma GCC diagnostic ignored "-Wdouble-promotion"
+#pragma GCC diagnostic ignored "-Wcast-align"
+#endif
+
+
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
@@ -16,7 +26,7 @@ extern "C" {
 #endif
 
 // Simple struct to represent a GIF image writer
-typedef struct {
+typedef struct GifWriter {
     FILE* f;
     uint8_t* oldImage;
     bool firstFrame;
@@ -31,8 +41,8 @@ static inline void GifWriteByte(uint8_t b, FILE* f)
 // Output a word to the GIF file (little endian)
 static inline void GifWriteWord(uint16_t w, FILE* f)
 {
-    fputc((uint8_t)(w & 0xff), f);
-    fputc((uint8_t)((w >> 8) & 0xff), f);
+    fputc(static_cast<uint8_t>(w & 0xff), f);
+    fputc(static_cast<uint8_t>((w >> 8) & 0xff), f);
 }
 
 // Write string to GIF file
@@ -40,7 +50,7 @@ static inline void GifWriteString(const char* str, FILE* f)
 {
     while (*str)
     {
-        fputc((uint8_t)*str++, f);
+        fputc(static_cast<uint8_t>(*str++), f);
     }
 }
 
@@ -58,16 +68,16 @@ typedef struct {
 // Helper to calculate color distance
 static inline int32_t GifColorDist(uint8_t r1, uint8_t g1, uint8_t b1, uint8_t r2, uint8_t g2, uint8_t b2)
 {
-    int32_t dr = (int32_t)r1 - (int32_t)r2;
-    int32_t dg = (int32_t)g1 - (int32_t)g2;
-    int32_t db = (int32_t)b1 - (int32_t)b2;
+    int32_t dr = static_cast<int32_t>(r1) - static_cast<int32_t>(r2);
+    int32_t dg = static_cast<int32_t>(g1) - static_cast<int32_t>(g2);
+    int32_t db = static_cast<int32_t>(b1) - static_cast<int32_t>(b2);
     return dr * dr + dg * dg + db * db;
 }
 
 // Build color palette for a 32-bit RGBA image
 static inline void GifMakePalette(const uint8_t* image, uint32_t width, uint32_t height, int32_t bitDepth, GifPalette* pPal)
 {
-    pPal->bitDepth = (uint32_t)bitDepth;
+    pPal->bitDepth = static_cast<uint32_t>(bitDepth);
     uint32_t numColors = 1u << bitDepth;
 
     // Seed default essential circuit & LED colors into palette
@@ -77,7 +87,7 @@ static inline void GifMakePalette(const uint8_t* image, uint32_t width, uint32_t
         {255, 128, 0},   {128, 128, 128}, {200, 200, 200}, {128, 0, 0},
         {0, 128, 0},     {0, 0, 128},     {70, 130, 180},  {220, 20, 60}
     };
-    uint32_t seedCount = (uint32_t)(sizeof(defaultSeed) / sizeof(defaultSeed[0]));
+    uint32_t seedCount = static_cast<uint32_t>(sizeof(defaultSeed) / sizeof(defaultSeed[0]));
 
     for (uint32_t i = 0; i < seedCount && i < numColors; ++i) {
         pPal->r[i] = defaultSeed[i][0];
@@ -96,7 +106,7 @@ static inline void GifMakePalette(const uint8_t* image, uint32_t width, uint32_t
         uint8_t r = image[i * 4 + 0];
         uint8_t g = image[i * 4 + 1];
         uint8_t b = image[i * 4 + 2];
-        uint32_t bin = (uint32_t)(((r >> 3) << 10) | ((g >> 3) << 5) | (b >> 3));
+        uint32_t bin = static_cast<uint32_t>(((r >> 3) << 10) | ((g >> 3) << 5) | (b >> 3));
         counts[bin]++;
     }
 
@@ -132,9 +142,9 @@ static inline void GifMakePalette(const uint8_t* image, uint32_t width, uint32_t
     // Add active colors to palette if not already represented
     for (uint32_t i = 0; i < activeCount && palCount < numColors; ++i) {
         uint32_t bin = activeBins[i].bin;
-        uint8_t r = (uint8_t)(((bin >> 10) & 0x1f) << 3);
-        uint8_t g = (uint8_t)(((bin >> 5) & 0x1f) << 3);
-        uint8_t b = (uint8_t)((bin & 0x1f) << 3);
+        uint8_t r = static_cast<uint8_t>(((bin >> 10) & 0x1f) << 3);
+        uint8_t g = static_cast<uint8_t>(((bin >> 5) & 0x1f) << 3);
+        uint8_t b = static_cast<uint8_t>((bin & 0x1f) << 3);
 
         bool exists = false;
         for (uint32_t k = 0; k < palCount; ++k) {
@@ -174,7 +184,7 @@ static inline uint8_t GifGetNearestColor(const GifPalette* pPal, uint8_t r, uint
         if (dist < bestDist)
         {
             bestDist = dist;
-            bestIdx = (uint8_t)i;
+            bestIdx = static_cast<uint8_t>(i);
             if (dist == 0) break;
         }
     }
@@ -190,7 +200,7 @@ typedef struct {
 static inline void GifWriteChunk(GifBuffer* buf, FILE* f)
 {     if (buf->chunkIndex > 0)
     {
-        fputc((uint8_t)buf->chunkIndex, f);
+        fputc(static_cast<uint8_t>(buf->chunkIndex), f);
         fwrite(buf->chunk, 1, buf->chunkIndex, f);
         buf->chunkIndex = 0;
     }
@@ -203,7 +213,7 @@ static inline void GifWriteCode(GifBuffer* buf, FILE* f, uint32_t code, uint32_t
 
     while (*pAccumBits >= 8)
     {
-        buf->chunk[buf->chunkIndex++] = (uint8_t)(*pAccum & 0xff);
+        buf->chunk[buf->chunkIndex++] = static_cast<uint8_t>(*pAccum & 0xff);
         if (buf->chunkIndex == 255)
         {
             GifWriteChunk(buf, f);
@@ -225,7 +235,7 @@ static inline void GifWriteLZW(FILE* f, const uint8_t* pixels, uint32_t numPixel
     uint32_t clearCode = 1u << minCodeLen;
     uint32_t eofCode = clearCode + 1;
     uint32_t nextCode = eofCode + 1;
-    uint32_t codeLen = (uint32_t)minCodeLen + 1;
+    uint32_t codeLen = static_cast<uint32_t>(minCodeLen) + 1;
 
     // Dictionary hash table
     int32_t dict[4096][256];
@@ -238,7 +248,7 @@ static inline void GifWriteLZW(FILE* f, const uint8_t* pixels, uint32_t numPixel
         GifWriteCode(&buf, f, eofCode, codeLen, &accum, &accumBits);
         if (accumBits > 0)
         {
-            buf.chunk[buf.chunkIndex++] = (uint8_t)(accum & 0xff);
+            buf.chunk[buf.chunkIndex++] = static_cast<uint8_t>(accum & 0xff);
         }
         GifWriteChunk(&buf, f);
         fputc(0, f);
@@ -254,7 +264,7 @@ static inline void GifWriteLZW(FILE* f, const uint8_t* pixels, uint32_t numPixel
 
         if (match >= 0)
         {
-            curCode = (uint32_t)match;
+            curCode = static_cast<uint32_t>(match);
         }
         else
         {
@@ -262,7 +272,7 @@ static inline void GifWriteLZW(FILE* f, const uint8_t* pixels, uint32_t numPixel
 
             if (nextCode < 4096)
             {
-                dict[curCode][pixel] = (int32_t)nextCode;
+                dict[curCode][pixel] = static_cast<int32_t>(nextCode);
                 nextCode++;
                 if (nextCode > (1u << codeLen) && codeLen < 12)
                 {
@@ -274,7 +284,7 @@ static inline void GifWriteLZW(FILE* f, const uint8_t* pixels, uint32_t numPixel
                 GifWriteCode(&buf, f, clearCode, codeLen, &accum, &accumBits);
                 memset(dict, -1, sizeof(dict));
                 nextCode = eofCode + 1;
-                codeLen = (uint32_t)minCodeLen + 1;
+                codeLen = static_cast<uint32_t>(minCodeLen) + 1;
             }
 
             curCode = pixel;
@@ -286,7 +296,7 @@ static inline void GifWriteLZW(FILE* f, const uint8_t* pixels, uint32_t numPixel
 
     if (accumBits > 0)
     {
-        buf.chunk[buf.chunkIndex++] = (uint8_t)(accum & 0xff);
+        buf.chunk[buf.chunkIndex++] = static_cast<uint8_t>(accum & 0xff);
     }
     GifWriteChunk(&buf, f);
     fputc(0, f); // Block terminator
@@ -295,7 +305,7 @@ static inline void GifWriteLZW(FILE* f, const uint8_t* pixels, uint32_t numPixel
 // Initialize GIF file output
 static inline bool GifBegin(GifWriter* writer, const char* filename, uint32_t width, uint32_t height, uint32_t delay, int32_t bitDepth, bool dither)
 {
-    (void)dither;
+    static_cast<void>(dither);
     writer->f = fopen(filename, "wb");
     if (!writer->f) return false;
 
@@ -306,9 +316,9 @@ static inline bool GifBegin(GifWriter* writer, const char* filename, uint32_t wi
     GifWriteString("GIF89a", writer->f);
 
     // Screen Descriptor
-    GifWriteWord((uint16_t)width, writer->f);
-    GifWriteWord((uint16_t)height, writer->f);
-    GifWriteByte(0xf0 | (uint8_t)(bitDepth - 1), writer->f); // Global color table flag + size
+    GifWriteWord(static_cast<uint16_t>(width), writer->f);
+    GifWriteWord(static_cast<uint16_t>(height), writer->f);
+    GifWriteByte(static_cast<uint8_t>(0xf0 | (bitDepth - 1)), writer->f); // Global color table flag + size
     GifWriteByte(0, writer->f); // Background color index
     GifWriteByte(0, writer->f); // Pixel aspect ratio
 
@@ -331,14 +341,14 @@ static inline bool GifBegin(GifWriter* writer, const char* filename, uint32_t wi
     GifWriteWord(0, writer->f);    // Infinite loop count
     GifWriteByte(0, writer->f);    // Block terminator
 
-    (void)delay;
+    static_cast<void>(delay);
     return true;
 }
 
 // Write a single RGBA frame to the GIF file
 static inline bool GifWriteFrame(GifWriter* writer, const uint8_t* image, uint32_t width, uint32_t height, uint32_t delay, int32_t bitDepth, bool dither)
 {
-    (void)dither;
+    static_cast<void>(dither);
     if (!writer || !writer->f) return false;
 
     // Graphic Control Extension
@@ -346,7 +356,7 @@ static inline bool GifWriteFrame(GifWriter* writer, const uint8_t* image, uint32
     GifWriteByte(0xf9, writer->f); // Graphic Control Label
     GifWriteByte(4, writer->f);    // Block size
     GifWriteByte(0x04, writer->f); // Disposal method (001: do not dispose)
-    GifWriteWord((uint16_t)delay, writer->f); // Delay time in hundredths of a second
+    GifWriteWord(static_cast<uint16_t>(delay), writer->f); // Delay time in hundredths of a second
     GifWriteByte(0, writer->f);    // Transparent color index
     GifWriteByte(0, writer->f);    // Block terminator
 
@@ -354,14 +364,14 @@ static inline bool GifWriteFrame(GifWriter* writer, const uint8_t* image, uint32
     GifWriteByte(0x2c, writer->f); // Image separator
     GifWriteWord(0, writer->f);    // Image left position
     GifWriteWord(0, writer->f);    // Image top position
-    GifWriteWord((uint16_t)width, writer->f);
-    GifWriteWord((uint16_t)height, writer->f);
+    GifWriteWord(static_cast<uint16_t>(width), writer->f);
+    GifWriteWord(static_cast<uint16_t>(height), writer->f);
 
     GifPalette pal;
     GifMakePalette(image, width, height, bitDepth, &pal);
 
     // Local Color Table Flag
-    GifWriteByte(0x80 | (uint8_t)(bitDepth - 1), writer->f);
+    GifWriteByte(static_cast<uint8_t>(0x80 | (bitDepth - 1)), writer->f);
 
     // Write Local Color Table
     uint32_t numColors = 1u << bitDepth;
@@ -374,7 +384,7 @@ static inline bool GifWriteFrame(GifWriter* writer, const uint8_t* image, uint32
 
     // Convert RGBA image to palette index array
     uint32_t totalPixels = width * height;
-    uint8_t* indexedPixels = (uint8_t*)malloc(totalPixels);
+    uint8_t* indexedPixels = static_cast<uint8_t*>(malloc(totalPixels));
     if (!indexedPixels) return false;
 
     for (uint32_t i = 0; i < totalPixels; ++i)
@@ -387,7 +397,7 @@ static inline bool GifWriteFrame(GifWriter* writer, const uint8_t* image, uint32
 
     // Write LZW Minimum Code Size
     int32_t minCodeLen = bitDepth < 2 ? 2 : bitDepth;
-    GifWriteByte((uint8_t)minCodeLen, writer->f);
+    GifWriteByte(static_cast<uint8_t>(minCodeLen), writer->f);
 
     // Write LZWCompressed image data
     GifWriteLZW(writer->f, indexedPixels, totalPixels, minCodeLen);
@@ -414,6 +424,10 @@ static inline bool GifEnd(GifWriter* writer)
 
 #ifdef __cplusplus
 }
+#endif
+
+#if defined(__GNUC__) || defined(__clang__)
+#pragma GCC diagnostic pop
 #endif
 
 #endif // GIF_H

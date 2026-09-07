@@ -29,10 +29,20 @@
 #include "App/Simulation/SimulationBlocker.h"
 #include "App/Simulation/SimulationThrottleDisabler.h"
 
+#if defined(__GNUC__) || defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wold-style-cast"
+#pragma GCC diagnostic ignored "-Wconversion"
+#pragma GCC diagnostic ignored "-Wsign-conversion"
+#endif
+#include "App/UI/gif.h"
+#if defined(__GNUC__) || defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
+
 CircuitRecorder::CircuitRecorder(QObject *parent)
     : QObject(parent)
 {
-    memset(&m_gifWriter, 0, sizeof(m_gifWriter));
     connect(&m_timer, &QTimer::timeout, this, &CircuitRecorder::captureFrame);
 }
 
@@ -273,9 +283,9 @@ bool CircuitRecorder::recordDolphinWaveform()
         m_scene->render(&painter, QRectF(0, 0, m_frameWidth, m_frameHeight), sourceRect);
         painter.end();
 
-        if (m_config.format == Format::GIF && m_gifInitialized) {
+        if (m_config.format == Format::GIF && m_gifInitialized && m_gifWriter) {
             uint32_t stepDelayCentiseconds = static_cast<uint32_t>(std::max(1, static_cast<int>(std::round(m_config.stepDurationSeconds * 100.0))));
-            GifWriteFrame(&m_gifWriter, image.constBits(),
+            GifWriteFrame(m_gifWriter.get(), image.constBits(),
                           static_cast<uint32_t>(m_frameWidth), static_cast<uint32_t>(m_frameHeight),
                           stepDelayCentiseconds, 8, false);
 
@@ -303,10 +313,12 @@ bool CircuitRecorder::recordDolphinWaveform()
 
 bool CircuitRecorder::initGifEncoder()
 {
+    m_gifWriter = std::make_unique<GifWriter>();
     uint32_t delayCentiseconds = static_cast<uint32_t>((100 + m_config.fps / 2) / m_config.fps);
-    if (!GifBegin(&m_gifWriter, m_config.filePath.toUtf8().constData(),
+    if (!GifBegin(m_gifWriter.get(), m_config.filePath.toUtf8().constData(),
                   static_cast<uint32_t>(m_frameWidth), static_cast<uint32_t>(m_frameHeight),
                   delayCentiseconds, 8, false)) {
+        m_gifWriter.reset();
         emit recordingError(tr("Could not create GIF output file: %1").arg(m_config.filePath));
         return false;
     }
@@ -373,8 +385,8 @@ void CircuitRecorder::captureFrame()
 
     uint32_t delayCentiseconds = static_cast<uint32_t>(std::max<qint64>(1, (deltaMs + 5) / 10));
 
-    if (m_config.format == Format::GIF && m_gifInitialized) {
-        GifWriteFrame(&m_gifWriter, image.constBits(),
+    if (m_config.format == Format::GIF && m_gifInitialized && m_gifWriter) {
+        GifWriteFrame(m_gifWriter.get(), image.constBits(),
                       static_cast<uint32_t>(m_frameWidth), static_cast<uint32_t>(m_frameHeight),
                       delayCentiseconds, 8, false);
     } else if (m_ffmpegProcess.isOpen()) {
@@ -420,10 +432,10 @@ void CircuitRecorder::cleanupEncoder()
 {
     m_throttleDisabler.reset();
 
-    if (m_gifInitialized) {
-        GifEnd(&m_gifWriter);
+    if (m_gifInitialized && m_gifWriter) {
+        GifEnd(m_gifWriter.get());
+        m_gifWriter.reset();
         m_gifInitialized = false;
-        memset(&m_gifWriter, 0, sizeof(m_gifWriter));
     }
 
     if (m_ffmpegProcess.state() != QProcess::NotRunning) {

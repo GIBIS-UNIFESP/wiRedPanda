@@ -171,9 +171,8 @@ void CircuitRecorderDialog::accept()
     QDialog::accept();
 }
 
-void CircuitRecorderDialog::onModeChanged(int index)
+void CircuitRecorderDialog::onModeChanged(int /*index*/)
 {
-    (void)index;
     auto mode = static_cast<CircuitRecorder::SimulationMode>(m_modeCombo->currentData().toInt());
     m_dolphinContainer->setVisible(mode == CircuitRecorder::SimulationMode::DolphinWaveform);
     adjustSize();
