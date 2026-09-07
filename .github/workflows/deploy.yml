@@ -474,7 +474,7 @@ jobs:
         sentry-cli releases set-commits --auto "wiredpanda@$VERSION" --log-level=debug
 
     - name: Publish Ubuntu
-      uses: softprops/action-gh-release@3d0d9888cb7fd7b750713d6e236d1fcb99157228 # v3.0.2
+      uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
       if: runner.os == 'Linux' && github.event_name == 'release'
       with:
         fail_on_unmatched_files: true
@@ -673,7 +673,7 @@ jobs:
 
     - name: Publish Windows
       if: runner.os == 'Windows' && github.event_name == 'release'
-      uses: softprops/action-gh-release@3d0d9888cb7fd7b750713d6e236d1fcb99157228 # v3.0.2
+      uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
       with:
         fail_on_unmatched_files: true
         files: 'build-sentry-crashpad/*.zip'
@@ -980,7 +980,7 @@ jobs:
 
     - name: Publish macOS
       if: runner.os == 'macOS' && github.event_name == 'release'
-      uses: softprops/action-gh-release@3d0d9888cb7fd7b750713d6e236d1fcb99157228 # v3.0.2
+      uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
       with:
         fail_on_unmatched_files: true
         files: 'build-sentry-breakpad/*.dmg'
