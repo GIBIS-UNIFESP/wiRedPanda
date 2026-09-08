@@ -41,11 +41,6 @@ private slots:
 private:
     void setupUI();
 
-    /// Grants TestCircuitRecorder read-only access to m_blinkTimer for
-    /// regressionBlinkTimerNeverStopsAfterHide() -- same pattern as
-    /// Workspace.h's `friend class TestWorkspaceUnit`.
-    friend class TestCircuitRecorder;
-
     QLabel *m_redDotLabel = nullptr;
     QLabel *m_timeLabel = nullptr;
     QPushButton *m_stopButton = nullptr;
