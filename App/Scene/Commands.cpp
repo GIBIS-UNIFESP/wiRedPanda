@@ -300,6 +300,11 @@ void AddItemsCommand::redo()
     qCDebug(zero) << text();
     SimulationBlocker blocker(m_scene->simulation());
     CommandUtils::loadItems(m_scene, m_itemData, m_ids, m_otherIds);
+    // Ensure the scene reflects newly-loaded items immediately so callers
+    // (tests or direct initialize() callers) see a consistent topology.
+    m_scene->update();
+    m_scene->resizeScene();
+    QCoreApplication::processEvents();
     m_scene->setCircuitUpdateRequired();
 }
 
@@ -316,6 +321,11 @@ void DeleteItemsCommand::undo()
     qCDebug(zero) << text();
     SimulationBlocker blocker(m_scene->simulation());
     CommandUtils::loadItems(m_scene, m_itemData, m_ids, m_otherIds);
+    // Ensure the scene reflects the restored items immediately so simulation
+    // initialization (called by tests) sees the correct topology.
+    m_scene->update();
+    m_scene->resizeScene();
+    QCoreApplication::processEvents();
     m_scene->setCircuitUpdateRequired();
 }
 

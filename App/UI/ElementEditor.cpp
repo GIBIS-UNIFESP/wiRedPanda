@@ -13,6 +13,7 @@
 #include <QMessageBox>
 #include <QSize>
 #include <QToolButton>
+#include <QPushButton>
 
 #include "App/Core/Common.h"
 #include "App/Core/SentryHelpers.h"
@@ -22,6 +23,7 @@
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Element/GraphicElements/TruthTable.h"
+#include "App/CodeGen/BooleanMinimizer.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
@@ -76,6 +78,11 @@ ElementEditor::ElementEditor(QWidget *parent)
     m_table = new QTableWidget(this);
     tableLayout->addWidget(m_table);
     m_tableBox->setLayout(tableLayout);
+
+    // Generate button below the table to create a gate-level circuit from the truth table
+    auto *generateBtn = new QPushButton(tr("Generate Circuit"), m_tableBox);
+    tableLayout->addWidget(generateBtn, 1, 0);
+    connect(generateBtn, &QPushButton::clicked, this, &ElementEditor::generateCircuitFromTruthTable);
 
     connect(m_table,                      &QTableWidget::cellDoubleClicked,                 this, &ElementEditor::setTruthTableProposition);
     connect(m_ui->checkBoxLocked,         &QCheckBox::clicked,                              this, &ElementEditor::inputLocked);
@@ -913,6 +920,246 @@ void ElementEditor::truthTable()
     }
 
     m_tableBox->show();
+}
+
+void ElementEditor::generateCircuitFromTruthTable()
+{
+    sentryBreadcrumb("ui", QStringLiteral("Generate circuit from truth table"));
+    if (!m_caps.hasTruthTable || m_elements.size() != 1 || !m_scene) return;
+
+    auto *tt = qobject_cast<TruthTable *>(m_elements[0]);
+    if (!tt) return;
+
+    const int nInputs = tt->inputSize();
+    const int nOutputs = tt->outputSize();
+    const int rows = 1 << nInputs;
+
+    // Capture wiring context: sources feeding each truth-table input, and destinations
+    // driven by each truth-table output so we can reconnect generated logic in place.
+    QVector<OutputPort *> inputSources(nInputs, nullptr);
+    QVector<QList<InputPort *>> outputDests(nOutputs);
+
+    // Collect new scene items (switches, gates, connections) to add together.
+    QList<QGraphicsItem *> newItems;
+
+    for (int i = 0; i < nInputs; ++i) {
+        const auto conns = tt->inputPort(i)->connections();
+        if (!conns.isEmpty()) {
+            // pick the first driving connection's start port
+            inputSources[i] = conns.first()->startPort();
+        }
+    }
+
+    // Create input switches to drive the generated circuit inputs. These make the
+    // generated circuit self-contained and easy to test.
+    QList<GraphicElement *> inputSwitches;
+    for (int i = 0; i < nInputs; ++i) {
+        auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
+        // place switches to the left of the truth table, spaced vertically
+        const qreal xOff = -120.0;
+        const qreal yOff = (i - (nInputs - 1) / 2.0) * 40.0;
+        sw->setPos(tt->pos() + QPointF(xOff, yOff));
+        // label with A, B, C... for clarity
+        const QChar labelChar = QChar::fromLatin1(static_cast<char>('A' + i));
+        sw->setLabel(QString(labelChar));
+        inputSwitches.append(sw);
+        // Use the switch's output as the driver for generated logic
+        if (sw->outputPort(0)) inputSources[i] = sw->outputPort(0);
+    }
+    // Add switches to the list of new items so they are created together with gates
+    for (auto *s : inputSwitches) newItems.append(s);
+
+    for (int z = 0; z < nOutputs; ++z) {
+        const auto conns = tt->outputPort(z)->connections();
+        for (auto *c : conns) {
+            // store the destination input port (endPort)
+            if (c->endPort()) outputDests[z].append(c->endPort());
+        }
+    }
+
+    // For each output, minimize and build simple gate tree (supports |, &, ! and ^ for two-input XOR)
+    for (int z = 0; z < nOutputs; ++z) {
+        QVector<int> outputs(rows);
+        const auto key = tt->key();
+        for (int r = 0; r < rows; ++r) {
+            outputs[r] = key.at(256 * z + r) ? 1 : 0;
+        }
+
+        const auto terms = BooleanMinimizer::minimize({}, outputs, nInputs, 1);
+        const QString expr = terms.join(QStringLiteral(" | "));
+
+        if (expr.contains('^')) {
+            // support simple A ^ B pattern
+            auto *xorGate = ElementFactory::buildElement(ElementType::Xor);
+            xorGate->setInputSize(2);
+            xorGate->setPos(tt->pos() + QPointF(80 + 60 * z, 0));
+            newItems.append(xorGate);
+
+            // connect inputs A and B
+            const QChar a = expr.at(0);
+            const QChar b = expr.at(4);
+            int ai = a.toLatin1() - 'A';
+            int bi = b.toLatin1() - 'A';
+            if (ai >= 0 && ai < nInputs && inputSources[ai]) {
+                auto *conn = new Connection();
+                conn->setStartPort(inputSources[ai]);
+                conn->setEndPort(xorGate->inputPort(0));
+                newItems.append(conn);
+            }
+            if (bi >= 0 && bi < nInputs && inputSources[bi]) {
+                auto *conn = new Connection();
+                conn->setStartPort(inputSources[bi]);
+                conn->setEndPort(xorGate->inputPort(1));
+                newItems.append(conn);
+            }
+
+            // wire xor output to recorded destinations
+            for (auto *dest : outputDests[z]) {
+                auto *conn = new Connection();
+                conn->setStartPort(xorGate->outputPort(0));
+                conn->setEndPort(dest);
+                newItems.append(conn);
+            }
+            continue;
+        }
+
+        // Split OR terms
+        const QStringList orTerms = expr.split(" | ", Qt::SkipEmptyParts);
+        QList<GraphicElement *> termGates;
+
+        for (int ti = 0; ti < orTerms.size(); ++ti) {
+            const QString term = orTerms[ti].trimmed();
+            QStringList literals = term.split(" & ", Qt::SkipEmptyParts);
+
+            GraphicElement *termGate = nullptr;
+            if (literals.size() == 1) {
+                // single literal: possibly negated — use NOT if needed or attach source directly
+                const QString lit = literals.first().trimmed();
+                const bool neg = lit.startsWith('!');
+                const QChar var = neg ? lit.at(1) : lit.at(0);
+                const int idx = var.toLatin1() - 'A';
+                OutputPort *src = (idx >= 0 && idx < nInputs) ? inputSources[idx] : nullptr;
+
+                if (neg) {
+                    auto *notGate = ElementFactory::buildElement(ElementType::Not);
+                    notGate->setPos(tt->pos() + QPointF(40 + 60 * z + 30 * ti, 0));
+                    newItems.append(notGate);
+                    termGate = notGate;
+                    if (src) {
+                        auto *conn = new Connection();
+                        conn->setStartPort(src);
+                        conn->setEndPort(notGate->inputPort(0));
+                        newItems.append(conn);
+                    }
+                } else {
+                    // no gate needed; we'll connect source directly later by creating a trivial passthrough
+                    // represent direct source by nullptr and handle below
+                    termGate = nullptr;
+                }
+            } else {
+                // multiple literals: create an AND gate
+                auto *andGate = ElementFactory::buildElement(ElementType::And);
+                andGate->setInputSize(static_cast<int>(literals.size()));
+                andGate->setPos(tt->pos() + QPointF(40 + 60 * z + 30 * ti, 0));
+                newItems.append(andGate);
+                termGate = andGate;
+
+                // connect each literal to the AND inputs
+                for (int li = 0; li < literals.size(); ++li) {
+                    const QString lit = literals[li].trimmed();
+                    const bool neg = lit.startsWith('!');
+                    const QChar var = neg ? lit.at(1) : lit.at(0);
+                    const int idx = var.toLatin1() - 'A';
+                    OutputPort *src = (idx >= 0 && idx < nInputs) ? inputSources[idx] : nullptr;
+
+                    if (neg) {
+                        auto *notGate = ElementFactory::buildElement(ElementType::Not);
+                        notGate->setPos(andGate->pos() + QPointF(0, 20 + li * 10));
+                        newItems.append(notGate);
+                        if (src) {
+                            auto *conn = new Connection();
+                            conn->setStartPort(src);
+                            conn->setEndPort(notGate->inputPort(0));
+                            newItems.append(conn);
+                        }
+                        auto *conn2 = new Connection();
+                        conn2->setStartPort(notGate->outputPort(0));
+                        conn2->setEndPort(andGate->inputPort(li));
+                        newItems.append(conn2);
+                    } else {
+                        if (src) {
+                            auto *conn = new Connection();
+                            conn->setStartPort(src);
+                            conn->setEndPort(andGate->inputPort(li));
+                            newItems.append(conn);
+                        }
+                    }
+                }
+            }
+
+            // if termGate exists (AND or NOT), we will connect its output to an OR later
+            termGates.append(termGate);
+        }
+
+        // If multiple term gates, create OR to combine them
+        GraphicElement *outDriver = nullptr;
+        if (termGates.size() == 1) {
+            outDriver = termGates.first();
+        } else if (termGates.size() > 1) {
+            auto *orGate = ElementFactory::buildElement(ElementType::Or);
+            orGate->setInputSize(static_cast<int>(termGates.size()));
+            orGate->setPos(tt->pos() + QPointF(80 + 60 * z, 0));
+            newItems.append(orGate);
+            // connect each term gate output to OR inputs
+            for (int i = 0; i < termGates.size(); ++i) {
+                if (!termGates[i]) continue; // literal-only term: no gate created
+                auto *conn = new Connection();
+                conn->setStartPort(termGates[i]->outputPort(0));
+                conn->setEndPort(orGate->inputPort(i));
+                newItems.append(conn);
+            }
+            outDriver = orGate;
+        }
+
+        // For literal-only terms (no intermediate gate) we must directly connect the source to destinations
+        if (termGates.isEmpty()) continue;
+
+        // Wire output to destinations
+        if (outDriver) {
+            for (auto *dest : outputDests[z]) {
+                auto *conn = new Connection();
+                conn->setStartPort(outDriver->outputPort(0));
+                conn->setEndPort(dest);
+                newItems.append(conn);
+            }
+        } else {
+            // handle the case where terms were direct sources (no gates created)
+            for (const QString &term : orTerms) {
+                const QString lit = term.trimmed();
+                const bool neg = lit.startsWith('!');
+                const QChar var = neg ? lit.at(1) : lit.at(0);
+                const int idx = var.toLatin1() - 'A';
+                OutputPort *src = (idx >= 0 && idx < nInputs) ? inputSources[idx] : nullptr;
+                if (!src) continue;
+                for (auto *dest : outputDests[z]) {
+                    auto *conn = new Connection();
+                    conn->setStartPort(src);
+                    conn->setEndPort(dest);
+                    newItems.append(conn);
+                }
+            }
+        }
+    }
+
+    // Perform replacement: delete truth table and add new items in a single macro so undo is coherent.
+    m_scene->undoStack()->beginMacro(tr("Generate circuit from truth table"));
+    m_scene->receiveCommand(new DeleteItemsCommand({tt}, m_scene));
+    if (!newItems.isEmpty()) {
+        m_scene->receiveCommand(new AddItemsCommand(newItems, m_scene));
+    }
+    m_scene->undoStack()->endMacro();
+
+    m_scene->setCircuitUpdateRequired();
 }
 
 void ElementEditor::setTruthTableProposition(const int row, const int column)

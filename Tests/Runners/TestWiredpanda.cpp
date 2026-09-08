@@ -169,6 +169,7 @@
 // unit/factory
 #include "Tests/Unit/Factory/TestElementFactory.h"
 // unit/logic
+#include "Tests/Unit/Logic/TestBooleanMinimizer.h"
 #include "Tests/Unit/Logic/TestElementLogic.h"
 #include "Tests/Unit/Logic/TestElementLogicErrors.h"
 #include "Tests/Unit/Logic/TestNodeLogic.h"
@@ -400,6 +401,7 @@ int main(int argc, char **argv)
         {"TestTruthTable", []() -> QObject * { return new TestTruthTable; }},
         {"TestICRegistry", []() -> QObject * { return new TestICRegistry; }},
         {"TestElementFactory", []() -> QObject * { return new TestElementFactory; }},
+        {"TestBooleanMinimizer", []() -> QObject * { return new TestBooleanMinimizer; }},
         {"TestElementLogic", []() -> QObject * { return new TestElementLogic; }},
         {"TestElementLogicErrors", []() -> QObject * { return new TestElementLogicErrors; }},
         {"TestNodeLogic", []() -> QObject * { return new TestNodeLogic; }},

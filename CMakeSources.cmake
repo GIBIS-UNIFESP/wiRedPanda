@@ -13,6 +13,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/SignalModel.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/WaveformSimulator.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/CodeGen/ArduinoCodeGen.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/CodeGen/BooleanMinimizer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/CodeGen/SystemVerilogCodeGen.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Application.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Common.cpp
@@ -150,6 +151,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/SignalModel.h
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/WaveformSimulator.h
     ${CMAKE_CURRENT_LIST_DIR}/App/CodeGen/ArduinoCodeGen.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/CodeGen/BooleanMinimizer.h
     ${CMAKE_CURRENT_LIST_DIR}/App/CodeGen/CodeGenUtils.h
     ${CMAKE_CURRENT_LIST_DIR}/App/CodeGen/SystemVerilogCodeGen.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Application.h
@@ -473,6 +475,7 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestWirelessNode.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Exercise/TestExerciseEngine.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Factory/TestElementFactory.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestBooleanMinimizer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestElementLogic.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestElementLogicErrors.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestNodeLogic.cpp
@@ -698,6 +701,7 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestWirelessNode.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Exercise/TestExerciseEngine.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Factory/TestElementFactory.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestBooleanMinimizer.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestElementLogic.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestElementLogicErrors.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Logic/TestNodeLogic.h

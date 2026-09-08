@@ -68,6 +68,8 @@ public:
     void audioBox();
     /// Opens the truth table editor for the selected element(s).
     void truthTable();
+    /// Generates a gate-level circuit from the truth table for the selected element.
+    void generateCircuitFromTruthTable();
     /// Applies the chosen appearance to the selected element(s).
     void updateElementAppearance();
 
