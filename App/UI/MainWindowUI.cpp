@@ -141,6 +141,10 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     actionExportToImage->setObjectName("actionExportToImage");
     actionExportToImage->setIcon(QIcon(":/Interface/Toolbar/png.svg"));
 
+    actionRecordSimulation = new QAction(MainWindow);
+    actionRecordSimulation->setObjectName("actionRecordSimulation");
+    actionRecordSimulation->setIcon(QIcon(":/Interface/Toolbar/vividfrog_icon.svg"));
+
     actionMakeSelfContained = new QAction(MainWindow);
     actionMakeSelfContained->setObjectName("actionMakeSelfContained");
     actionFlipHorizontally = new QAction(MainWindow);
@@ -653,6 +657,7 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     mainToolBar->addAction(actionPlay);
     mainToolBar->addAction(actionRestart);
     mainToolBar->addAction(actionWaveform);
+    mainToolBar->addAction(actionRecordSimulation);
     menuBar->addAction(menuFile->menuAction());
     menuBar->addAction(menuEdit->menuAction());
     menuBar->addAction(menuView->menuAction());
@@ -675,6 +680,7 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     menuFile->addAction(actionExportToSystemVerilog);
     menuFile->addAction(actionExportToPdf);
     menuFile->addAction(actionExportToImage);
+    menuFile->addAction(actionRecordSimulation);
     menuFile->addSeparator();
     menuFile->addAction(actionMakeSelfContained);
     menuFile->addSeparator();
@@ -824,6 +830,8 @@ void MainWindowUi::retranslateUi()
     actionWaveform->setShortcut(QStringLiteral("Ctrl+W"));
     actionExportToImage->setText(QCoreApplication::translate("MainWindow", "Export to &Image"));
     actionExportToImage->setShortcut(QStringLiteral("Ctrl+E"));
+    actionRecordSimulation->setText(QCoreApplication::translate("MainWindow", "&viVIDFrog..."));
+    actionRecordSimulation->setToolTip(QCoreApplication::translate("MainWindow", "viVIDFrog Video & GIF Simulation Recorder"));
     actionMakeSelfContained->setText(QCoreApplication::translate("MainWindow", "Make file self-contained"));
     actionFlipHorizontally->setText(QCoreApplication::translate("MainWindow", "&Flip horizontally"));
     actionFlipHorizontally->setShortcut(QStringLiteral("Ctrl+H"));

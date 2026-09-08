@@ -155,6 +155,9 @@ public:
     /// Pass nullptr to detach. Does not take ownership.
     void setExerciseOverlay(ExerciseOverlay *overlay);
 
+    /// Returns the recording overlay badge widget.
+    class RecordingOverlay *recordingOverlay();
+
 protected:
     void resizeEvent(QResizeEvent *event) override;
     void showEvent(QShowEvent *event) override;
@@ -220,4 +223,7 @@ private:
 
     // Exercise overlay — non-owning pointer
     ExerciseOverlay *m_exerciseOverlay = nullptr;
+
+    // Recording overlay
+    class RecordingOverlay *m_recordingOverlay = nullptr;
 };
