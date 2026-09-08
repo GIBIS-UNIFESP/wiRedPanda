@@ -950,15 +950,23 @@ void ElementEditor::generateCircuitFromTruthTable()
         }
     }
 
+    // Layout spacing constants for generated items
+    const qreal inputX = tt->pos().x() - 220.0;
+    const qreal centerY = tt->pos().y();
+    const qreal inputSpacingY = 110.0;
+    const qreal outputSpacingX = 260.0;
+    const qreal termSpacingX = 140.0;
+    const qreal termSpacingY = 180.0;
+
     // Create input switches to drive the generated circuit inputs. These make the
     // generated circuit self-contained and easy to test.
     QList<GraphicElement *> inputSwitches;
+    const double midInputs = (static_cast<double>(nInputs) - 1.0) / 2.0;
     for (int i = 0; i < nInputs; ++i) {
         auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
         // place switches to the left of the truth table, spaced vertically
-        const qreal xOff = -120.0;
-        const qreal yOff = (i - (nInputs - 1) / 2.0) * 40.0;
-        sw->setPos(tt->pos() + QPointF(xOff, yOff));
+        const qreal y = centerY + (static_cast<double>(i) - midInputs) * inputSpacingY;
+        sw->setPos(QPointF(inputX, y));
         // label with A, B, C... for clarity
         const QChar labelChar = QChar::fromLatin1(static_cast<char>('A' + i));
         sw->setLabel(QString(labelChar));
@@ -988,11 +996,27 @@ void ElementEditor::generateCircuitFromTruthTable()
         const auto terms = BooleanMinimizer::minimize({}, outputs, nInputs, 1);
         const QString expr = terms.join(QStringLiteral(" | "));
 
+        // Base position for this output's generated subcircuit
+        const qreal baseX = tt->pos().x() + 120.0 + z * outputSpacingX;
+        // Stagger outputs vertically so gates that share the same column
+        // across different outputs do not overlap too closely.
+        const double midOutputs = (static_cast<double>(nOutputs) - 1.0) / 2.0;
+        // Use full term spacing between output columns to avoid close stacking
+        const qreal outputColumnOffsetY = termSpacingY;
+        const qreal baseY = centerY + (static_cast<double>(z) - midOutputs) * outputColumnOffsetY;
+
+        // Precompute column X positions for gate depths:
+        // depth 1: single-bit NOTs and negations feeding ANDs
+        // depth 2: AND / XOR
+        // depth 3: OR (combining terms)
+        const qreal colXDepth1 = baseX - termSpacingX;
+        const qreal colXDepth2 = baseX;
+
         if (expr.contains('^')) {
             // support simple A ^ B pattern
             auto *xorGate = ElementFactory::buildElement(ElementType::Xor);
             xorGate->setInputSize(2);
-            xorGate->setPos(tt->pos() + QPointF(80 + 60 * z, 0));
+            xorGate->setPos(QPointF(colXDepth2, baseY));
             newItems.append(xorGate);
 
             // connect inputs A and B
@@ -1023,15 +1047,22 @@ void ElementEditor::generateCircuitFromTruthTable()
             continue;
         }
 
-        // Split OR terms
+        // Split OR terms and build a scalable OR tree if needed.
         const QStringList orTerms = expr.split(" | ", Qt::SkipEmptyParts);
-        QList<GraphicElement *> termGates;
 
+        // For each term we record the created gate (if any) and the output port
+        // that represents the term's value (either the gate's output port or a direct input source).
+        QList<GraphicElement *> termGates;
+        QVector<OutputPort *> termSources;
+
+        const double midOr = (static_cast<double>(orTerms.size()) - 1.0) / 2.0;
         for (int ti = 0; ti < orTerms.size(); ++ti) {
             const QString term = orTerms[ti].trimmed();
             QStringList literals = term.split(" & ", Qt::SkipEmptyParts);
 
             GraphicElement *termGate = nullptr;
+            OutputPort *termSrc = nullptr;
+
             if (literals.size() == 1) {
                 // single literal: possibly negated — use NOT if needed or attach source directly
                 const QString lit = literals.first().trimmed();
@@ -1042,7 +1073,8 @@ void ElementEditor::generateCircuitFromTruthTable()
 
                 if (neg) {
                     auto *notGate = ElementFactory::buildElement(ElementType::Not);
-                    notGate->setPos(tt->pos() + QPointF(40 + 60 * z + 30 * ti, 0));
+                    const qreal ty = baseY + (static_cast<double>(ti) - midOr) * termSpacingY;
+                    notGate->setPos(QPointF(colXDepth1, ty));
                     newItems.append(notGate);
                     termGate = notGate;
                     if (src) {
@@ -1051,16 +1083,18 @@ void ElementEditor::generateCircuitFromTruthTable()
                         conn->setEndPort(notGate->inputPort(0));
                         newItems.append(conn);
                     }
+                    termSrc = (notGate->outputPort(0));
                 } else {
-                    // no gate needed; we'll connect source directly later by creating a trivial passthrough
-                    // represent direct source by nullptr and handle below
+                    // direct source
                     termGate = nullptr;
+                    termSrc = src;
                 }
             } else {
                 // multiple literals: create an AND gate
                 auto *andGate = ElementFactory::buildElement(ElementType::And);
                 andGate->setInputSize(static_cast<int>(literals.size()));
-                andGate->setPos(tt->pos() + QPointF(40 + 60 * z + 30 * ti, 0));
+                const qreal aty = baseY + (static_cast<double>(ti) - midOr) * termSpacingY;
+                andGate->setPos(QPointF(colXDepth2, aty));
                 newItems.append(andGate);
                 termGate = andGate;
 
@@ -1074,7 +1108,9 @@ void ElementEditor::generateCircuitFromTruthTable()
 
                     if (neg) {
                         auto *notGate = ElementFactory::buildElement(ElementType::Not);
-                        notGate->setPos(andGate->pos() + QPointF(0, 20 + li * 10));
+                        const double litMid = (static_cast<double>(literals.size()) - 1.0) / 2.0;
+                        const qreal notY = aty + (static_cast<double>(li) - litMid) * 20.0;
+                        notGate->setPos(QPointF(colXDepth1, notY));
                         newItems.append(notGate);
                         if (src) {
                             auto *conn = new Connection();
@@ -1095,59 +1131,99 @@ void ElementEditor::generateCircuitFromTruthTable()
                         }
                     }
                 }
+                termSrc = andGate->outputPort(0);
             }
 
-            // if termGate exists (AND or NOT), we will connect its output to an OR later
             termGates.append(termGate);
+            termSources.append(termSrc);
         }
 
-        // If multiple term gates, create OR to combine them
-        GraphicElement *outDriver = nullptr;
-        if (termGates.size() == 1) {
-            outDriver = termGates.first();
-        } else if (termGates.size() > 1) {
+        // If there are no term sources, skip this output
+        QVector<OutputPort *> inputsForOr;
+        for (auto *p : termSources) if (p) inputsForOr.append(p);
+        if (inputsForOr.isEmpty()) continue;
+
+        // Build OR tree to handle arbitrarily many inputs by cascading OR gates.
+        const int OR_MAX = 8; // matches Or::maxInputSize
+        QVector<OutputPort *> currentInputs = inputsForOr;
+        QVector<GraphicElement *> createdOrs;
+        int depthIndex = 1; // first OR level placed at colXDepth3
+        while (currentInputs.size() > OR_MAX) {
+            QVector<OutputPort *> nextLevelInputs;
+            const qsizetype nGroups = (currentInputs.size() + OR_MAX - 1) / OR_MAX;
+            for (qsizetype g = 0; g < nGroups; ++g) {
+                const qsizetype start = g * OR_MAX;
+                const qsizetype rem = currentInputs.size() - start;
+                const int len = static_cast<int>(rem < OR_MAX ? rem : OR_MAX);
+                auto *orGate = ElementFactory::buildElement(ElementType::Or);
+                orGate->setInputSize(len);
+                const qreal gx = baseX + termSpacingX * static_cast<qreal>(depthIndex);
+                const qreal gy = baseY + (static_cast<double>(g) - (static_cast<double>(nGroups)-1.0)/2.0) * termSpacingY;
+                orGate->setPos(QPointF(gx, gy));
+                newItems.append(orGate);
+
+                for (int k = 0; k < len; ++k) {
+                    auto *srcPort = currentInputs[start + k];
+                    if (!srcPort) continue;
+                    auto *conn = new Connection();
+                    conn->setStartPort(srcPort);
+                    conn->setEndPort(orGate->inputPort(k));
+                    newItems.append(conn);
+                }
+                nextLevelInputs.append(orGate->outputPort(0));
+                createdOrs.append(orGate);
+            }
+            currentInputs = nextLevelInputs;
+            ++depthIndex;
+        }
+
+        // Final OR (or single source) — place at next depth column
+        OutputPort *rootPort = nullptr;
+        if (currentInputs.size() == 1) {
+            rootPort = currentInputs.first();
+            // If we created ORs, adjust root X to the final OR column for LED placement
+        } else {
             auto *orGate = ElementFactory::buildElement(ElementType::Or);
-            orGate->setInputSize(static_cast<int>(termGates.size()));
-            orGate->setPos(tt->pos() + QPointF(80 + 60 * z, 0));
+            orGate->setInputSize(static_cast<int>(currentInputs.size()));
+            const qreal gx = baseX + termSpacingX * static_cast<qreal>(depthIndex);
+            orGate->setPos(QPointF(gx, baseY));
             newItems.append(orGate);
-            // connect each term gate output to OR inputs
-            for (int i = 0; i < termGates.size(); ++i) {
-                if (!termGates[i]) continue; // literal-only term: no gate created
+            for (int i = 0; i < currentInputs.size(); ++i) {
+                if (!currentInputs[i]) continue;
                 auto *conn = new Connection();
-                conn->setStartPort(termGates[i]->outputPort(0));
+                conn->setStartPort(currentInputs[i]);
                 conn->setEndPort(orGate->inputPort(i));
                 newItems.append(conn);
             }
-            outDriver = orGate;
+            rootPort = orGate->outputPort(0);
+            createdOrs.append(orGate);
+            ++depthIndex;
         }
 
-        // For literal-only terms (no intermediate gate) we must directly connect the source to destinations
-        if (termGates.isEmpty()) continue;
+        if (!rootPort) continue;
 
-        // Wire output to destinations
-        if (outDriver) {
-            for (auto *dest : outputDests[z]) {
-                auto *conn = new Connection();
-                conn->setStartPort(outDriver->outputPort(0));
-                conn->setEndPort(dest);
-                newItems.append(conn);
-            }
-        } else {
-            // handle the case where terms were direct sources (no gates created)
-            for (const QString &term : orTerms) {
-                const QString lit = term.trimmed();
-                const bool neg = lit.startsWith('!');
-                const QChar var = neg ? lit.at(1) : lit.at(0);
-                const int idx = var.toLatin1() - 'A';
-                OutputPort *src = (idx >= 0 && idx < nInputs) ? inputSources[idx] : nullptr;
-                if (!src) continue;
-                for (auto *dest : outputDests[z]) {
-                    auto *conn = new Connection();
-                    conn->setStartPort(src);
-                    conn->setEndPort(dest);
-                    newItems.append(conn);
-                }
-            }
+        // Create an LED to display this output's final value. Place it to the right
+        // of the final OR column.
+        auto *led = ElementFactory::buildElement(ElementType::Led);
+        led->setInputSize(1);
+        const qreal ledX = baseX + termSpacingX * static_cast<qreal>(depthIndex + 0);
+        led->setPos(QPointF(ledX, baseY));
+        newItems.append(led);
+
+        // Connect root to LED input
+        if (led->inputPort(0)) {
+            auto *lconn = new Connection();
+            lconn->setStartPort(rootPort);
+            lconn->setEndPort(led->inputPort(0));
+            newItems.append(lconn);
+        }
+
+        // Also preserve original destinations (wire root to them)
+        for (auto *dest : outputDests[z]) {
+            auto *conn = new Connection();
+            conn->setStartPort(rootPort);
+            conn->setEndPort(dest);
+            newItems.append(conn);
         }
     }
 
