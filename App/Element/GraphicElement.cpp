@@ -19,6 +19,7 @@
 #include <QStyleOptionGraphicsItem>
 #include <QSvgRenderer>
 #include <QThread>
+#include <QPolygonF>
 
 #include "App/Core/Common.h"
 #include "App/Core/Constants.h"
@@ -71,7 +72,7 @@ GraphicElement::GraphicElement(ElementType type, QGraphicsItem *parent)
     setLabelAnchor(QPointF(0, 64));
 
     setPortName(m_translatedName);
-    setToolTip(m_translatedName);
+    updateToolTip();
 
     qCDebug(four) << "Including input and output ports.";
     GraphicElement::setInputSize(static_cast<int>(metadata.minInputSize));
@@ -203,6 +204,33 @@ void GraphicElement::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
     Q_UNUSED(option)
 
     m_appearance.render(painter, boundingRect(), isSelected());
+
+    // Draw warning / error overlays after the normal rendering so they stay visible.
+    if (hasWarnings() || hasErrors()) {
+        painter->save();
+
+        const QRectF body = renderBodyBounds();
+        const ThemeAttributes theme = ThemeManager::attributes();
+
+        QColor borderColor = hasErrors() ? theme.m_connectionError : QColor(255, 204, 0);
+        QPen pen(borderColor, 3, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+        painter->setPen(pen);
+        painter->setBrush(Qt::NoBrush);
+        painter->drawRoundedRect(body, 4, 4);
+
+        // Small triangular icon in the top-right corner
+        QPointF p1(body.right() - 14, body.top() + 6);
+        QPointF p2(body.right() - 6, body.top() + 6);
+        QPointF p3(body.right() - 10, body.top() + 14);
+        QPolygonF triangle;
+        triangle << p1 << p2 << p3;
+
+        painter->setBrush(borderColor);
+        painter->setPen(Qt::NoPen);
+        painter->drawPolygon(triangle);
+
+        painter->restore();
+    }
 }
 
 void GraphicElement::invalidateRenderCache()
@@ -551,6 +579,12 @@ bool GraphicElement::isValid()
         }
     }
 
+    // Element-level validity is handled by ports which attach per-port warnings.
+    if (valid) {
+        // Clear any stale warnings the ports may have previously attached.
+        clearWarnings();
+    }
+
     return valid;
 }
 
@@ -824,7 +858,58 @@ void GraphicElement::retranslate()
     m_translatedName = ElementFactory::translatedName(m_elementType);
 
     setPortName(m_translatedName);
-    setToolTip(m_translatedName);
+    updateToolTip();
+}
+
+void GraphicElement::addWarning(const QString &msg, GraphicElement::WarningSeverity sev)
+{
+    if (msg.isEmpty()) return;
+
+    if (!m_warnings.contains(msg)) {
+        m_warnings.append(msg);
+    }
+    if (sev == GraphicElement::WarningSeverity::Error) {
+        m_warningSeverity = GraphicElement::WarningSeverity::Error;
+    } else if ((sev == GraphicElement::WarningSeverity::Warning) && (m_warningSeverity != GraphicElement::WarningSeverity::Error)) {
+        m_warningSeverity = GraphicElement::WarningSeverity::Warning;
+    }
+
+    updateToolTip();
+    update();
+    emit warningsChanged(this);
+}
+
+void GraphicElement::clearWarnings()
+{
+    m_warnings.clear();
+    m_warningSeverity = GraphicElement::WarningSeverity::None;
+    updateToolTip();
+    update();
+    emit warningsChanged(this);
+}
+
+bool GraphicElement::hasWarnings() const
+{
+    return !m_warnings.isEmpty();
+}
+
+bool GraphicElement::hasErrors() const
+{
+    return m_warningSeverity == GraphicElement::WarningSeverity::Error;
+}
+
+QStringList GraphicElement::warnings() const
+{
+    return m_warnings;
+}
+
+void GraphicElement::updateToolTip()
+{
+    QString tip = m_translatedName;
+    if (!m_warnings.isEmpty()) {
+        tip += "\n\n" + m_warnings.join('\n');
+    }
+    setToolTip(tip);
 }
 
 void GraphicElement::loadFromDrop(const QString &fileName, const QString &contextDir)

@@ -140,6 +140,13 @@ void ConnectionManager::tryComplete(const QPointF &scenePos)
     } else {
         // Explain why the wire vanished instead of dropping it silently.
         m_scene->showStatusMessage(rejection);
+        // Mark warnings on the involved elements so they display on the canvas.
+        if (auto *sElm = startPort->graphicElement()) {
+            sElm->addWarning(rejection, GraphicElement::WarningSeverity::Warning);
+        }
+        if (auto *eElm = endPort->graphicElement()) {
+            eElm->addWarning(rejection, GraphicElement::WarningSeverity::Warning);
+        }
         deleteEditedConnection();
     }
 }
@@ -258,6 +265,16 @@ QString ConnectionManager::connectionRejectionReason(OutputPort *startPort, Inpu
     }
     if (startPort->graphicElement() == endPort->graphicElement()) {
         return tr("Can't connect an element to itself.");
+    }
+    // Simple compatibility rule: audio-capable elements should only connect to other
+    // audio-capable elements. This is intentionally conservative and easily
+    // extended to a richer port-type system later.
+    if (auto *sElm = startPort->graphicElement()) {
+        if (auto *eElm = endPort->graphicElement()) {
+            if (sElm->hasAudio() != eElm->hasAudio()) {
+                return tr("Incompatible port types (audio vs logic).");
+            }
+        }
     }
     if (startPort->isConnected(endPort)) {
         return tr("These ports are already connected.");

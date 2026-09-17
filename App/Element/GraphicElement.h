@@ -59,6 +59,25 @@ class GraphicElement : public QGraphicsObject, public ItemWithId
 {
     Q_OBJECT
 public:
+    // --- Warning State ---
+    enum class WarningSeverity { None = 0, Warning = 1, Error = 2 };
+
+    /// Adds a warning or error message to this element. The highest-severity
+    /// message is tracked for rendering (Error > Warning).
+    void addWarning(const QString &msg, WarningSeverity sev = WarningSeverity::Warning);
+
+    /// Clears all warnings and errors from this element.
+    void clearWarnings();
+
+    /// Returns true if any warning messages (including errors) are present.
+    bool hasWarnings() const;
+
+    /// Returns true if any error-level messages are present.
+    bool hasErrors() const;
+
+    /// Returns the raw list of warning strings.
+    QStringList warnings() const;
+
     // --- Type Info ---
 
     enum { Type = QGraphicsItem::UserType + 3 };
@@ -80,6 +99,8 @@ signals:
     /// directly and this signal never fires for them). The owning Scene listens and drives the
     /// actual inline edit widget -- see InlineLabelEditor.
     void inlineEditRequested(GraphicElement *element);
+    /// Emitted whenever this element's warnings change (added/cleared).
+    void warningsChanged(GraphicElement *element);
 
 public:
     // --- External file dependencies ---
@@ -507,6 +528,9 @@ public:
     /// Updates the element's visual theme according to the current dark/light palette.
     virtual void updateTheme();
 
+    /// Rebuilds the item's tooltip from the translated name and any warnings.
+    void updateToolTip();
+
 protected:
     // --- Graphics & Rendering ---
 
@@ -718,6 +742,10 @@ private:
     /// the item and its ports; this element forwards its orientation interface here.
     /// See ElementOrientation.
     ElementOrientation m_orientation{this};
+
+    // --- Warning State ---
+    QStringList m_warnings;                     ///< List of warning/error messages for this element
+    WarningSeverity m_warningSeverity = WarningSeverity::None; ///< Highest-severity message present
 
     // --- Members: Port Size Constraints ---
 

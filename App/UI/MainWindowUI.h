@@ -222,6 +222,8 @@ public:
     // --- Element Editor Panel ---
 
     ElementEditor *elementEditor = nullptr;
+    // Panel showing current element warnings and a global warning log.
+    class WarningsPanel *warningsPanel = nullptr;
 
     // --- Toolbars & Status ---
 
