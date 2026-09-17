@@ -9,7 +9,6 @@
 class QTextEdit;
 class QListWidget;
 class QLabel;
-class QPushButton;
 class GraphicElement;
 class Scene;
 
@@ -17,7 +16,7 @@ class WarningsPanel : public QWidget
 {
     Q_OBJECT
 public:
-    explicit WarningsPanel(QWidget *parent = nullptr);
+    explicit WarningsPanel(QWidget *parent = nullptr, bool errorsOnly = false);
 
     void setScene(Scene *scene);
     void showElementWarnings(GraphicElement *element);
@@ -29,9 +28,10 @@ signals:
 
 private:
     QLabel *m_header;
+    QLabel *m_count;
     QListWidget *m_currentWarnings;
-    QPushButton *m_errorsToggle;
     QListWidget *m_errors;
     QTextEdit *m_log;
     Scene *m_scene = nullptr;
+    bool m_errorsOnly = false;
 };

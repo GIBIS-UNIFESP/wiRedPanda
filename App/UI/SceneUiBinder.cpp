@@ -135,9 +135,10 @@ void SceneUiBinder::bind(WorkSpace *tab)
     m_ui->elementEditor->setScene(scene);
 
     // Wire the warnings panel if present: show current selection warnings and log new warnings.
-    if (m_ui->warningsPanel) {
+    if (m_ui->warningsPanel && m_ui->errorPanel) {
         m_ui->warningsPanel->setScene(scene);
-        connect(m_ui->warningsPanel, &WarningsPanel::errorElementActivated, this, [this, scene](GraphicElement *element) {
+        m_ui->errorPanel->setScene(scene);
+        connect(m_ui->errorPanel, &WarningsPanel::errorElementActivated, this, [this, scene](GraphicElement *element) {
             if (!m_bound || m_bound->scene() != scene || !element || element->scene() != scene) {
                 return;
             }
@@ -178,7 +179,7 @@ void SceneUiBinder::bind(WorkSpace *tab)
                 if (elm->isSelected()) {
                     m_ui->warningsPanel->showElementWarnings(elm);
                 }
-                m_ui->warningsPanel->refreshErrorList();
+                m_ui->errorPanel->refreshErrorList();
             });
         }
 
@@ -196,10 +197,10 @@ void SceneUiBinder::bind(WorkSpace *tab)
                     if (elm->isSelected()) {
                         m_ui->warningsPanel->showElementWarnings(elm);
                     }
-                    m_ui->warningsPanel->refreshErrorList();
+                    m_ui->errorPanel->refreshErrorList();
                 });
             }
-            m_ui->warningsPanel->refreshErrorList();
+            m_ui->errorPanel->refreshErrorList();
         });
     }
 
@@ -311,8 +312,9 @@ void SceneUiBinder::unbind()
     disconnect(scene,                 &Scene::showStatusMessageRequested, this, nullptr);
 
     if (m_ui->warningsPanel) {
-        disconnect(m_ui->warningsPanel, &WarningsPanel::errorElementActivated, this, nullptr);
+        disconnect(m_ui->errorPanel, &WarningsPanel::errorElementActivated, this, nullptr);
         m_ui->warningsPanel->setScene(nullptr);
+        m_ui->errorPanel->setScene(nullptr);
         for (auto *elm : scene->elements()) {
             disconnect(elm, &GraphicElement::warningsChanged, this, nullptr);
         }

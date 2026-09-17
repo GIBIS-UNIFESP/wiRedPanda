@@ -101,6 +101,7 @@ public:
     QAction *actionICPreview = nullptr;
     QAction *actionCheckForUpdates = nullptr;
     QAction *actionShowMinimap = nullptr;
+    QAction *actionShowWarnings = nullptr;
     QAction *actionLightTheme = nullptr;
     QAction *actionDarkTheme = nullptr;
     QAction *actionSystemTheme = nullptr;
@@ -224,6 +225,8 @@ public:
     ElementEditor *elementEditor = nullptr;
     // Panel showing current element warnings and a global warning log.
     class WarningsPanel *warningsPanel = nullptr;
+    // Right-side panel listing elements with current errors.
+    class WarningsPanel *errorPanel = nullptr;
 
     // --- Toolbars & Status ---
 
