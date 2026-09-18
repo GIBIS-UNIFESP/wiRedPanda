@@ -138,7 +138,14 @@ void SceneUiBinder::bind(WorkSpace *tab)
     if (m_ui->warningsPanel && m_ui->errorPanel) {
         m_ui->warningsPanel->setScene(scene);
         m_ui->errorPanel->setScene(scene);
-        connect(m_ui->errorPanel, &WarningsPanel::errorElementActivated, this, [this, scene](GraphicElement *element) {
+        // Moving an element changes the circuit state without changing its warning signal.
+        // Refresh the summary independently so it stays current from the first tab onward.
+        connect(scene, &Scene::circuitHasChanged, this, [this, scene] {
+            if (m_bound && m_bound->scene() == scene) {
+                m_ui->errorPanel->refreshWarningsList();
+            }
+        });
+        connect(m_ui->errorPanel, &WarningsPanel::warningElementActivated, this, [this, scene](GraphicElement *element) {
             if (!m_bound || m_bound->scene() != scene || !element || element->scene() != scene) {
                 return;
             }
@@ -167,19 +174,15 @@ void SceneUiBinder::bind(WorkSpace *tab)
             m_ui->warningsPanel->showElementWarnings(nullptr);
         });
 
-        // Subscribe to existing elements' warningsChanged to log entries and update panel when selected.
+        // Subscribe to warning changes so both the selected detail list and summary list stay current.
         const auto elements = scene->elements();
         for (auto *elm : elements) {
             connect(elm, &GraphicElement::warningsChanged, this, [this, elm] {
-                const auto list = elm->warnings();
-                for (const auto &w : list) {
-                    m_ui->warningsPanel->addLogEntry(elm->objectName() + ": " + w);
-                }
                 // If this element is selected, refresh shown warnings
                 if (elm->isSelected()) {
                     m_ui->warningsPanel->showElementWarnings(elm);
                 }
-                m_ui->errorPanel->refreshErrorList();
+                m_ui->errorPanel->refreshWarningsList();
             });
         }
 
@@ -190,17 +193,12 @@ void SceneUiBinder::bind(WorkSpace *tab)
             for (auto *elm : newElements) {
                 disconnect(elm, &GraphicElement::warningsChanged, this, nullptr);
                 connect(elm, &GraphicElement::warningsChanged, this, [this, elm] {
-                    const auto list = elm->warnings();
-                    for (const auto &w : list) {
-                        m_ui->warningsPanel->addLogEntry(elm->objectName() + ": " + w);
-                    }
                     if (elm->isSelected()) {
                         m_ui->warningsPanel->showElementWarnings(elm);
                     }
-                    m_ui->errorPanel->refreshErrorList();
+                    m_ui->errorPanel->refreshWarningsList();
                 });
             }
-            m_ui->errorPanel->refreshErrorList();
         });
     }
 
@@ -312,7 +310,7 @@ void SceneUiBinder::unbind()
     disconnect(scene,                 &Scene::showStatusMessageRequested, this, nullptr);
 
     if (m_ui->warningsPanel) {
-        disconnect(m_ui->errorPanel, &WarningsPanel::errorElementActivated, this, nullptr);
+        disconnect(m_ui->errorPanel, &WarningsPanel::warningElementActivated, this, nullptr);
         m_ui->warningsPanel->setScene(nullptr);
         m_ui->errorPanel->setScene(nullptr);
         for (auto *elm : scene->elements()) {

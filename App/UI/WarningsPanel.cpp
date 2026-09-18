@@ -7,17 +7,15 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QListWidget>
-#include <QTextEdit>
 #include <QVBoxLayout>
-#include <QDateTime>
 #include <QVariant>
 
 #include "App/Scene/Scene.h"
 #include "App/Element/GraphicElement.h"
 
-WarningsPanel::WarningsPanel(QWidget *parent, const bool errorsOnly)
+WarningsPanel::WarningsPanel(QWidget *parent, const bool summaryOnly)
     : QWidget(parent)
-    , m_errorsOnly(errorsOnly)
+    , m_summaryOnly(summaryOnly)
 {
     auto *lay = new QVBoxLayout(this);
     lay->setContentsMargins(8, 8, 8, 8);
@@ -43,35 +41,46 @@ WarningsPanel::WarningsPanel(QWidget *parent, const bool errorsOnly)
     headerLayout->addStretch();
     lay->addLayout(headerLayout);
 
+    m_description = new QLabel(summaryOnly
+        ? tr("Components with active warnings")
+        : tr("Messages for the selected component"), this);
+    m_description->setObjectName(QStringLiteral("warningsDescription"));
+    m_description->setStyleSheet(QStringLiteral("color: palette(mid);"));
+    m_description->setWordWrap(true);
+    lay->addWidget(m_description);
+
     m_currentWarnings = new QListWidget(this);
     m_currentWarnings->setSelectionMode(QAbstractItemView::NoSelection);
     m_currentWarnings->setMaximumHeight(100);
     m_currentWarnings->setFrameShape(QFrame::NoFrame);
     lay->addWidget(m_currentWarnings);
 
-    m_errors = new QListWidget(this);
-    m_errors->setObjectName(QStringLiteral("errorsList"));
-    m_errors->setSelectionMode(QAbstractItemView::SingleSelection);
-    m_errors->setFrameShape(QFrame::NoFrame);
-    m_errors->setAlternatingRowColors(true);
-    m_errors->setUniformItemSizes(true);
-    m_errors->setSpacing(2);
-    lay->addWidget(m_errors);
+    m_warnings = new QListWidget(this);
+    m_warnings->setObjectName(QStringLiteral("warningsList"));
+    m_warnings->setSelectionMode(QAbstractItemView::SingleSelection);
+    m_warnings->setFrameShape(QFrame::NoFrame);
+    m_warnings->setAlternatingRowColors(true);
+    m_warnings->setUniformItemSizes(true);
+    m_warnings->setSpacing(2);
+    lay->addWidget(m_warnings);
 
-    connect(m_errors, &QListWidget::itemClicked, this, [this](QListWidgetItem *item) {
+    m_emptyState = new QLabel(tr("No warnings"), this);
+    m_emptyState->setAlignment(Qt::AlignCenter);
+    m_emptyState->setStyleSheet(QStringLiteral("color: palette(mid); padding: 16px;"));
+    lay->addWidget(m_emptyState);
+
+    connect(m_warnings, &QListWidget::itemClicked, this, [this](QListWidgetItem *item) {
         const auto address = item->data(Qt::UserRole).value<quintptr>();
-        emit errorElementActivated(reinterpret_cast<GraphicElement *>(address));
+        emit warningElementActivated(reinterpret_cast<GraphicElement *>(address));
     });
 
-    m_log = new QTextEdit(this);
-    m_log->setReadOnly(true);
-    lay->addWidget(m_log, 1);
-
-    if (m_errorsOnly) {
+    if (m_summaryOnly) {
         m_currentWarnings->hide();
-        m_log->hide();
     } else {
-        m_errors->hide();
+        m_header->hide();
+        m_description->hide();
+        m_warnings->hide();
+        m_emptyState->hide();
         m_count->hide();
     }
 }
@@ -79,29 +88,39 @@ WarningsPanel::WarningsPanel(QWidget *parent, const bool errorsOnly)
 void WarningsPanel::setScene(Scene *scene)
 {
     m_scene = scene;
-    refreshErrorList();
+    refreshWarningsList();
 }
 
 void WarningsPanel::showElementWarnings(GraphicElement *element)
 {
     m_currentWarnings->clear();
-    if (!element) return;
+    if (!element) {
+        m_header->hide();
+        m_description->hide();
+        m_currentWarnings->hide();
+        return;
+    }
+
+    m_header->show();
+    m_description->show();
+    m_currentWarnings->show();
     const auto warnings = element->warnings();
     for (const auto &w : warnings) {
         m_currentWarnings->addItem(w);
     }
 }
 
-void WarningsPanel::refreshErrorList()
+void WarningsPanel::refreshWarningsList()
 {
-    m_errors->clear();
+    m_warnings->clear();
     if (!m_scene) {
         m_count->setText(QStringLiteral("0"));
+        m_emptyState->show();
         return;
     }
 
     for (auto *element : m_scene->elements()) {
-        if (!element->hasErrors()) {
+        if (!element->hasWarnings()) {
             continue;
         }
 
@@ -110,13 +129,9 @@ void WarningsPanel::refreshErrorList()
             : element->objectName();
         auto *item = new QListWidgetItem(title);
         item->setData(Qt::UserRole, QVariant::fromValue<quintptr>(reinterpret_cast<quintptr>(element)));
-        m_errors->addItem(item);
+        item->setToolTip(element->warnings().join(QStringLiteral("\n")));
+        m_warnings->addItem(item);
     }
-    m_count->setText(QString::number(m_errors->count()));
-}
-
-void WarningsPanel::addLogEntry(const QString &entry)
-{
-    const QString time = QLocale::system().toString(QDateTime::currentDateTime(), QLocale::ShortFormat);
-    m_log->append(time + " — " + entry);
+    m_count->setText(QString::number(m_warnings->count()));
+    m_emptyState->setVisible(m_warnings->count() == 0);
 }

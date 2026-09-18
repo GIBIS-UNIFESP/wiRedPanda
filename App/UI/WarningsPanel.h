@@ -6,7 +6,6 @@
 #include <QWidget>
 #include <QString>
 
-class QTextEdit;
 class QListWidget;
 class QLabel;
 class GraphicElement;
@@ -16,22 +15,22 @@ class WarningsPanel : public QWidget
 {
     Q_OBJECT
 public:
-    explicit WarningsPanel(QWidget *parent = nullptr, bool errorsOnly = false);
+    explicit WarningsPanel(QWidget *parent = nullptr, bool summaryOnly = false);
 
     void setScene(Scene *scene);
     void showElementWarnings(GraphicElement *element);
-    void refreshErrorList();
-    void addLogEntry(const QString &entry);
+    void refreshWarningsList();
 
 signals:
-    void errorElementActivated(GraphicElement *element);
+    void warningElementActivated(GraphicElement *element);
 
 private:
     QLabel *m_header;
+    QLabel *m_description;
     QLabel *m_count;
+    QLabel *m_emptyState;
     QListWidget *m_currentWarnings;
-    QListWidget *m_errors;
-    QTextEdit *m_log;
+    QListWidget *m_warnings;
     Scene *m_scene = nullptr;
-    bool m_errorsOnly = false;
+    bool m_summaryOnly = false;
 };
