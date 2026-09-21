@@ -158,7 +158,7 @@ jobs:
     # workflow files, not what this gate is for - it's scoped to schema/expression
     # validity (e.g. the secrets-in-if: class of bug this gate was added to catch).
     - name: actionlint
-      uses: reviewdog/action-actionlint@d290e336d5a743810aef4404f757dc862276d2ae # v1.73.4
+      uses: reviewdog/action-actionlint@320fcdd9c860767cf17fab3b20e22e739d5d02b8 # v1.76.0
       with:
         fail_level: error
         reporter: local
