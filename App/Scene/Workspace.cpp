@@ -359,6 +359,13 @@ WorkSpace::SaveOutcome WorkSpace::save(const QString &fileName)
         FileUtils::copyToDir(resolved, newContextDir);
     }
 
+    // Copy a scene background image alongside the project, mirroring the appearance-file
+    // dependency handling above so a saved file remains self-contained.
+    if (!m_scene.backgroundImagePath().isEmpty()) {
+        const QFileInfo backgroundInfo(m_scene.backgroundImagePath());
+        FileUtils::copyToDir(backgroundInfo.absoluteFilePath(), newContextDir);
+    }
+
     // QSaveFile writes to a temp file and commits atomically, preventing data loss
     // if the process is interrupted during a write
     QSaveFile saveFile(fileName_);
@@ -429,6 +436,10 @@ void WorkSpace::save(QDataStream &stream)
 
     if (!m_dolphinFileName.isEmpty()) {
         metadata["dolphinFileName"] = m_dolphinFileName;
+    }
+
+    if (!m_scene.backgroundImagePath().isEmpty()) {
+        metadata["backgroundImage"] = QFileInfo(m_scene.backgroundImagePath()).fileName();
     }
 
     // Extract port metadata from Input/Output elements in the scene,
@@ -572,6 +583,12 @@ void WorkSpace::load(QDataStream &stream, const QVersionNumber &version, const Q
         }
     }
     qCDebug(zero) << "Dolphin name: " << m_dolphinFileName;
+
+    if (!metadata.value("backgroundImage").toString().isEmpty()) {
+        const QString relativePath = metadata.value("backgroundImage").toString();
+        const QString resolvedPath = QDir(contextDir).absoluteFilePath(relativePath);
+        m_scene.setBackgroundImage(resolvedPath);
+    }
 
     QMap<QString, QByteArray> blobRegistry = Serialization::deserializeBlobRegistry(metadata, version);
 
