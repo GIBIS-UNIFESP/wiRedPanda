@@ -68,6 +68,10 @@ public:
     static QStringList autosaveFiles();
     static void setAutosaveFiles(const QStringList &files);
 
+    // Circuit recorder
+    static QString lastRecordingPath();
+    static void setLastRecordingPath(const QString &path);
+
     // V4 format warning suppression
     static bool hideV4Warning();
     static void setHideV4Warning(bool hide);
