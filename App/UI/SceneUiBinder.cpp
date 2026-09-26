@@ -14,6 +14,7 @@
 #include "App/Core/Common.h"
 #include "App/Element/IC.h"
 #include "App/Element/ICPreviewPopup.h"
+#include "App/Element/GraphicElement.h"
 #include "App/Scene/GraphicsView.h"
 #include "App/Scene/ICRegistry.h"
 #include "App/Scene/Scene.h"
@@ -22,6 +23,7 @@
 #include "App/UI/ElementEditor.h"
 #include "App/UI/ElementPalette.h"
 #include "App/UI/MainWindowUI.h"
+#include "App/UI/WarningsPanel.h"
 
 SceneUiBinder::SceneUiBinder(MainWindowUi *ui, ElementPalette *palette, ICPreviewPopup *previewPopup, QWidget *shortcutParent, QObject *parent)
     : QObject(parent)
@@ -132,6 +134,74 @@ void SceneUiBinder::bind(WorkSpace *tab)
     qCDebug(zero) << "Connecting current tab to element editor menu in UI.";
     m_ui->elementEditor->setScene(scene);
 
+    // Wire the warnings panel if present: show current selection warnings and log new warnings.
+    if (m_ui->warningsPanel && m_ui->errorPanel) {
+        m_ui->warningsPanel->setScene(scene);
+        m_ui->errorPanel->setScene(scene);
+        // Moving an element changes the circuit state without changing its warning signal.
+        // Refresh the summary independently so it stays current from the first tab onward.
+        connect(scene, &Scene::circuitHasChanged, this, [this, scene] {
+            if (m_bound && m_bound->scene() == scene) {
+                m_ui->errorPanel->refreshWarningsList();
+            }
+        });
+        connect(m_ui->errorPanel, &WarningsPanel::warningElementActivated, this, [this, scene](GraphicElement *element) {
+            if (!m_bound || m_bound->scene() != scene || !element || element->scene() != scene) {
+                return;
+            }
+            scene->clearSelection();
+            element->setSelected(true);
+            m_bound->view()->centerOn(element);
+            m_ui->warningsPanel->showElementWarnings(element);
+        });
+        // Update when selection changes
+        connect(scene, &QGraphicsScene::selectionChanged, this, [this, scene] {
+            const auto sel = scene->selectedItems();
+            if (sel.size() == 1) {
+                QGraphicsItem *item = sel.first();
+                // Walk up to find GraphicElement
+                QGraphicsItem *cur = item;
+                while (cur && cur->type() != GraphicElement::Type) {
+                    cur = cur->parentItem();
+                }
+                if (cur && cur->type() == GraphicElement::Type) {
+                    auto *elm = static_cast<GraphicElement *>(cur);
+                    m_ui->warningsPanel->showElementWarnings(elm);
+                    return;
+                }
+            }
+            // No selection or multiple selection: clear current warnings list
+            m_ui->warningsPanel->showElementWarnings(nullptr);
+        });
+
+        // Subscribe to warning changes so both the selected detail list and summary list stay current.
+        const auto elements = scene->elements();
+        for (auto *elm : elements) {
+            connect(elm, &GraphicElement::warningsChanged, this, [this, elm] {
+                // If this element is selected, refresh shown warnings
+                if (elm->isSelected()) {
+                    m_ui->warningsPanel->showElementWarnings(elm);
+                }
+                m_ui->errorPanel->refreshWarningsList();
+            });
+        }
+
+        // Reconnect when the circuit changes (new elements added/removed)
+        connect(scene, &Scene::circuitHasChanged, this, [this, scene] {
+            // Re-subscribe all elements while removing the previous handlers first.
+            const auto newElements = scene->elements();
+            for (auto *elm : newElements) {
+                disconnect(elm, &GraphicElement::warningsChanged, this, nullptr);
+                connect(elm, &GraphicElement::warningsChanged, this, [this, elm] {
+                    if (elm->isSelected()) {
+                        m_ui->warningsPanel->showElementWarnings(elm);
+                    }
+                    m_ui->errorPanel->refreshWarningsList();
+                });
+            }
+        });
+    }
+
     connect(tab->view(),       &GraphicsView::zoomChanged,     this, &SceneUiBinder::syncZoomActions);
     connect(tab->view(),       &GraphicsView::zoomChanged,     this, &SceneUiBinder::updateStatusInfo);
     connect(scene,             &QGraphicsScene::selectionChanged, this, &SceneUiBinder::updateStatusInfo);
@@ -238,6 +308,17 @@ void SceneUiBinder::unbind()
     disconnect(scene,                 &Scene::circuitHasChanged,      this, &SceneUiBinder::updateStatusInfo);
     disconnect(m_bound->simulation(), &Simulation::simulationWarning, this, nullptr);
     disconnect(scene,                 &Scene::showStatusMessageRequested, this, nullptr);
+
+    if (m_ui->warningsPanel) {
+        disconnect(m_ui->errorPanel, &WarningsPanel::warningElementActivated, this, nullptr);
+        m_ui->warningsPanel->setScene(nullptr);
+        m_ui->errorPanel->setScene(nullptr);
+        for (auto *elm : scene->elements()) {
+            disconnect(elm, &GraphicElement::warningsChanged, this, nullptr);
+        }
+        disconnect(scene, &QGraphicsScene::selectionChanged, this, nullptr);
+        disconnect(scene, &Scene::circuitHasChanged, this, nullptr);
+    }
 
     qCDebug(zero) << "Disconnecting scene shortcuts from previous tab.";
     disconnect(m_prevMainPropShortcut,  nullptr, scene, nullptr);

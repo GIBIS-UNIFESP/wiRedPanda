@@ -64,6 +64,7 @@
 #include "App/UI/MainWindowUI.h"
 #include "App/UI/SceneUiBinder.h"
 #include "App/UI/UpdateController.h"
+#include "App/UI/WarningsPanel.h"
 #include "App/UI/WorkspaceManager.h"
 #include "App/Versions.h"
 #include "App/Wiring/Connection.h"
@@ -370,6 +371,7 @@ void MainWindow::setupConnections()
     connect(m_ui->actionICPreview,             &QAction::triggered,       this,                &MainWindow::on_actionICPreview_triggered);
     connect(m_ui->actionCheckForUpdates,       &QAction::triggered,       this,                &MainWindow::on_actionCheckForUpdates_triggered);
     connect(m_ui->actionShowMinimap,           &QAction::triggered,       this,                &MainWindow::on_actionShowMinimap_triggered);
+    connect(m_ui->actionShowWarnings,           &QAction::toggled,         m_ui->errorPanel,     &QWidget::setVisible);
     connect(m_ui->actionLightTheme,            &QAction::triggered,       this,                &MainWindow::on_actionLightTheme_triggered);
     connect(m_ui->actionMute,                  &QAction::triggered,       this,                &MainWindow::on_actionMute_triggered);
     connect(m_ui->actionNew,                   &QAction::triggered,       m_workspaceManager,  &WorkspaceManager::newTab);

@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "App/UI/MainWindowUI.h"
+#include "App/UI/WarningsPanel.h"
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QMetaObject>
@@ -184,6 +185,10 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     actionShowMinimap = new QAction(MainWindow);
     actionShowMinimap->setObjectName("actionShowMinimap");
     actionShowMinimap->setCheckable(true);
+    actionShowWarnings = new QAction(MainWindow);
+    actionShowWarnings->setObjectName("actionShowWarnings");
+    actionShowWarnings->setCheckable(true);
+    actionShowWarnings->setChecked(true);
     actionAboutThisVersion = new QAction(MainWindow);
     actionAboutThisVersion->setObjectName("actionAboutThisVersion");
     actionRestart = new QAction(MainWindow);
@@ -206,7 +211,8 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     gridLayout_8->setContentsMargins(11, 11, 11, 11);
     gridLayout_8->setObjectName("gridLayout_8");
     // --- Main horizontal splitter ---
-    // Left child = component palette + element editor; right child = canvas tabs.
+    // Left child = component palette + element editor; middle = canvas tabs;
+    // right child = live warnings and errors.
     splitter = new QSplitter(centralWidget);
     splitter->setObjectName("splitter");
     QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
@@ -545,6 +551,12 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
 
     gridLayout->addWidget(elementEditor, 2, 0, 1, 3);
 
+    warningsPanel = new WarningsPanel(leftPannel);
+    warningsPanel->setObjectName("warningsPanel");
+    QSizePolicy wp(QSizePolicy::Preferred, QSizePolicy::Expanding);
+    warningsPanel->setSizePolicy(wp);
+    gridLayout->addWidget(warningsPanel, 3, 0, 1, 3);
+
     label = new QLabel(leftPannel);
     label->setObjectName("label");
     QSizePolicy sizePolicy5(QSizePolicy::Fixed, QSizePolicy::Preferred);
@@ -583,6 +595,13 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     tab->setTabsClosable(true);
     tab->setMovable(true); // let users drag tabs to reorder them
     splitter->addWidget(tab);
+
+    errorPanel = new WarningsPanel(splitter, true);
+    errorPanel->setObjectName("errorPanel");
+    errorPanel->setSizePolicy(wp);
+    errorPanel->setMinimumWidth(260);
+    errorPanel->setMaximumWidth(420);
+    splitter->addWidget(errorPanel);
 
     gridLayout_8->addWidget(splitter, 0, 0, 1, 1);
 
@@ -726,6 +745,7 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     menuView->addSeparator();
     menuView->addAction(actionFastMode);
     menuView->addAction(actionShowMinimap);
+    menuView->addAction(actionShowWarnings);
     menuView->addSeparator();
     menuView->addAction(menuTheme->menuAction());
     menuView->addAction(actionFullscreen);
@@ -844,6 +864,7 @@ void MainWindowUi::retranslateUi()
     actionLabelsUnderIcons->setText(QCoreApplication::translate("MainWindow", "Labels under icons"));
     actionICPreview->setText(QCoreApplication::translate("MainWindow", "Show IC Preview"));
     actionShowMinimap->setText(QCoreApplication::translate("MainWindow", "Show Minimap"));
+    actionShowWarnings->setText(QCoreApplication::translate("MainWindow", "Show Warnings"));
     actionAboutThisVersion->setText(QCoreApplication::translate("MainWindow", "About this version"));
     actionCheckForUpdates->setText(QCoreApplication::translate("MainWindow", "Check for updates automatically"));
     actionRestart->setText(QCoreApplication::translate("MainWindow", "&Restart"));
