@@ -112,11 +112,23 @@ void Port::updateConnections()
         // Add a specific, localised warning on the owning element so it highlights.
         if (m_graphicElement) {
             if (m_connections.size() > 1) {
-                m_graphicElement->addWarning(QObject::tr("Multiple connections to input port %1").arg(m_name), GraphicElement::WarningSeverity::Error);
+                m_graphicElement->addWarning(
+                    QObject::tr("Multiple connections to input port %1").arg(m_name),
+                    GraphicElement::WarningSeverity::Error,
+                    QObject::tr("This input accepts one connection. Remove the extra wire and connect only one signal source."),
+                    m_name);
             } else if (m_connections.isEmpty() && isRequired()) {
-                m_graphicElement->addWarning(QObject::tr("Unconnected required input port %1").arg(m_name), GraphicElement::WarningSeverity::Error);
+                m_graphicElement->addWarning(
+                    QObject::tr("Unconnected required input port %1").arg(m_name),
+                    GraphicElement::WarningSeverity::Error,
+                    QObject::tr("This required input has no signal source. Connect it to an output or another valid source."),
+                    m_name);
             } else {
-                m_graphicElement->addWarning(QObject::tr("Invalid connection on port %1").arg(m_name), GraphicElement::WarningSeverity::Error);
+                m_graphicElement->addWarning(
+                    QObject::tr("Invalid connection on port %1").arg(m_name),
+                    GraphicElement::WarningSeverity::Error,
+                    QObject::tr("The connection on this input is not valid. Check the wire and the element at its other end."),
+                    m_name);
             }
         }
         return;

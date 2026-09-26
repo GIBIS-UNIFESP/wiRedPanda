@@ -861,12 +861,19 @@ void GraphicElement::retranslate()
     updateToolTip();
 }
 
-void GraphicElement::addWarning(const QString &msg, GraphicElement::WarningSeverity sev)
+void GraphicElement::addWarning(const QString &msg, GraphicElement::WarningSeverity sev,
+                                const QString &details, const QString &pinName)
 {
     if (msg.isEmpty()) return;
 
     if (!m_warnings.contains(msg)) {
         m_warnings.append(msg);
+    }
+    if (!details.isEmpty()) {
+        m_warningDetails.insert(msg, details);
+    }
+    if (!pinName.isEmpty()) {
+        m_warningPinNames.insert(msg, pinName);
     }
     if (sev == GraphicElement::WarningSeverity::Error) {
         m_warningSeverity = GraphicElement::WarningSeverity::Error;
@@ -882,6 +889,8 @@ void GraphicElement::addWarning(const QString &msg, GraphicElement::WarningSever
 void GraphicElement::clearWarnings()
 {
     m_warnings.clear();
+        m_warningDetails.clear();
+        m_warningPinNames.clear();
     m_warningSeverity = GraphicElement::WarningSeverity::None;
     updateToolTip();
     update();
@@ -901,6 +910,16 @@ bool GraphicElement::hasErrors() const
 QStringList GraphicElement::warnings() const
 {
     return m_warnings;
+}
+
+QString GraphicElement::warningDetails(const QString &msg) const
+{
+    return m_warningDetails.value(msg);
+}
+
+QString GraphicElement::warningPinName(const QString &msg) const
+{
+    return m_warningPinNames.value(msg);
 }
 
 void GraphicElement::updateToolTip()

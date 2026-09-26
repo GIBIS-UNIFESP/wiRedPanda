@@ -51,8 +51,10 @@ WarningsPanel::WarningsPanel(QWidget *parent, const bool summaryOnly)
 
     m_currentWarnings = new QListWidget(this);
     m_currentWarnings->setSelectionMode(QAbstractItemView::NoSelection);
-    m_currentWarnings->setMaximumHeight(100);
     m_currentWarnings->setFrameShape(QFrame::NoFrame);
+    m_currentWarnings->setWordWrap(true);
+    m_currentWarnings->setUniformItemSizes(false);
+    m_currentWarnings->setSpacing(6);
     lay->addWidget(m_currentWarnings);
 
     m_warnings = new QListWidget(this);
@@ -105,8 +107,17 @@ void WarningsPanel::showElementWarnings(GraphicElement *element)
     m_description->show();
     m_currentWarnings->show();
     const auto warnings = element->warnings();
-    for (const auto &w : warnings) {
-        m_currentWarnings->addItem(w);
+    for (const auto &warning : element->warnings()) {
+        QString detail = warning;
+        const QString explanation = element->warningDetails(warning);
+        if (!explanation.isEmpty()) {
+            detail += QStringLiteral("\n\n") + explanation;
+        }
+        const QString pinName = element->warningPinName(warning);
+        if (!pinName.isEmpty()) {
+            detail += QStringLiteral("\n\n") + tr("Affected pin: %1").arg(pinName);
+        }
+        m_currentWarnings->addItem(detail);
     }
 }
 

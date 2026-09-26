@@ -64,7 +64,8 @@ public:
 
     /// Adds a warning or error message to this element. The highest-severity
     /// message is tracked for rendering (Error > Warning).
-    void addWarning(const QString &msg, WarningSeverity sev = WarningSeverity::Warning);
+    void addWarning(const QString &msg, WarningSeverity sev = WarningSeverity::Warning,
+                    const QString &details = {}, const QString &pinName = {});
 
     /// Clears all warnings and errors from this element.
     void clearWarnings();
@@ -77,6 +78,10 @@ public:
 
     /// Returns the raw list of warning strings.
     QStringList warnings() const;
+    /// Returns optional explanatory text associated with a warning.
+    QString warningDetails(const QString &msg) const;
+    /// Returns the optional pin name associated with a warning.
+    QString warningPinName(const QString &msg) const;
 
     // --- Type Info ---
 
@@ -745,6 +750,8 @@ private:
 
     // --- Warning State ---
     QStringList m_warnings;                     ///< List of warning/error messages for this element
+        QHash<QString, QString> m_warningDetails;   ///< Additional explanation keyed by warning message
+        QHash<QString, QString> m_warningPinNames;  ///< Related pin name keyed by warning message
     WarningSeverity m_warningSeverity = WarningSeverity::None; ///< Highest-severity message present
 
     // --- Members: Port Size Constraints ---
