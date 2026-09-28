@@ -262,6 +262,7 @@ private:
     void on_actionSelectAll_triggered();
     void on_actionShortcuts_and_Tips_triggered();
     void on_actionShowMinimap_triggered(const bool checked);
+    void on_actionSetBackgroundImage_triggered();
     void on_actionWaveform_triggered();
     void on_actionWires_triggered(const bool checked);
     void on_actionZoomIn_triggered() const;
