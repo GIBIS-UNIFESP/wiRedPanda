@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="128" height="128" version="1.1" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Circular clip so nothing spills outside the blue badge -->
+    <clipPath id="circleBadgeClip">
+      <circle cx="64" cy="64" r="52" />
+    </clipPath>
+  </defs>
+
+  <!-- Outer White Border Ring -->
+  <circle cx="64" cy="64" r="61" fill="#ffffff" />
+
+  <!-- Inside Clipped Badge Content -->
+  <g clip-path="url(#circleBadgeClip)">
+    <!-- Vivid Blue Circular Background -->
+    <circle cx="64" cy="64" r="52" fill="#2ca7f4" />
+
+    <!-- === FROG MASCOT === -->
+    <!-- Left & Right Eye Bumps and Head Lobes -->
+    <circle cx="44" cy="39" r="16.5" fill="#3f9f52" />
+    <circle cx="84" cy="39" r="16.5" fill="#3f9f52" />
+    <!-- Cheeks lobes -->
+    <circle cx="36" cy="56" r="12" fill="#3f9f52" />
+    <circle cx="92" cy="56" r="12" fill="#3f9f52" />
+    <!-- Head Center Fill -->
+    <path d="M 36,44 C 36,36 92,36 92,44 C 98,54 94,68 84,72 C 72,76 56,76 44,72 C 34,68 30,54 36,44 Z" fill="#3f9f52" />
+
+    <!-- Left Eye -->
+    <circle cx="44" cy="39" r="10.5" fill="#ffffff" />
+    <circle cx="44" cy="39" r="8.2" fill="#1a221d" />
+    <circle cx="41" cy="36" r="3.4" fill="#ffffff" />
+    <circle cx="47" cy="42" r="1.4" fill="#ffffff" />
+
+    <!-- Right Eye -->
+    <circle cx="84" cy="39" r="10.5" fill="#ffffff" />
+    <circle cx="84" cy="39" r="8.2" fill="#1a221d" />
+    <circle cx="81" cy="36" r="3.4" fill="#ffffff" />
+    <circle cx="87" cy="42" r="1.4" fill="#ffffff" />
+
+    <!-- Frog Nostrils -->
+    <circle cx="59.5" cy="57" r="1.8" fill="#2b703a" />
+    <circle cx="68.5" cy="57" r="1.8" fill="#2b703a" />
+
+    <!-- Cheek Spot on Right -->
+    <circle cx="88" cy="64" r="3.6" fill="#e3dddd" />
+
+    <!-- === CAMERA IN FOREGROUND === -->
+    <!-- Top Flash / Viewfinder Bump -->
+    <rect x="54" y="61" width="20" height="11" rx="3.5" fill="#364152" />
+    <!-- Top Left Dial Button -->
+    <rect x="39" y="63" width="13" height="9" rx="2.5" fill="#364152" />
+
+    <!-- Main Camera Body -->
+    <rect x="28" y="68" width="72" height="46" rx="8" fill="#242832" />
+
+    <!-- Red Recording Tally Dot -->
+    <circle cx="38.5" cy="76.5" r="3.8" fill="#fe5252" />
+
+    <!-- Camera Lens Structure -->
+    <!-- Outer Dark Rim -->
+    <circle cx="64" cy="91" r="20" fill="#181c22" />
+    <!-- Middle Bezel -->
+    <circle cx="64" cy="91" r="16.5" fill="#2d3644" />
+    <!-- Inner Dark Shadow Ring -->
+    <circle cx="64" cy="91" r="13" fill="#0d1b1b" />
+    <!-- Blue Camera Lens Glass -->
+    <circle cx="64" cy="91" r="10.5" fill="#1a84f1" />
+    <!-- White Specular Highlight Reflection -->
+    <circle cx="60.5" cy="87.5" r="3.2" fill="#ffffff" />
+  </g>
+</svg>
