@@ -1014,6 +1014,111 @@ void TestMainWindowGui::testInlineLabelEditEscapeCancels()
     QCOMPARE(scene->undoStack()->count(), 0);
 }
 
+void TestMainWindowGui::testInlineLabelEditArrowKeysStayInEditor()
+{
+    // Arrow keys nudge the selection on the canvas; typed into the inline label editor they
+    // must only move its text cursor, even though the element being edited is selected.
+    std::unique_ptr<MainWindow> window(createMW());
+    window->resize(1000, 700);
+    QVERIFY(QTest::qWaitForWindowExposed(window.get()));
+    auto *scene = window->currentTab()->scene();
+    auto *view = window->currentTab()->view();
+
+    auto *led = new Led();
+    led->setLabel("Label");
+    led->setPos(100, 100);
+    scene->addItem(led);
+
+    QLineEdit *editor = openInlineLabelEditor(view, led);
+    QVERIFY(editor);
+    QVERIFY(led->isSelected());
+    editor->setCursorPosition(3);
+    const QPointF posBefore = led->pos();
+
+    QTest::keyClick(QApplication::focusWidget(), Qt::Key_Left);
+    QCOMPARE(editor->cursorPosition(), 2);
+    QTest::keyClick(QApplication::focusWidget(), Qt::Key_Right, Qt::ShiftModifier);
+    QCOMPARE(editor->selectedText(), QString("b"));
+    QTest::keyClick(QApplication::focusWidget(), Qt::Key_Up);
+    QTest::keyClick(QApplication::focusWidget(), Qt::Key_Down);
+
+    QCOMPARE(led->pos(), posBefore);
+    QCOMPARE(scene->undoStack()->count(), 0);
+
+    // Once the editor is gone, the same keys nudge the selection again.
+    QTest::keyClick(QApplication::focusWidget(), Qt::Key_Escape);
+    QCoreApplication::sendPostedEvents(nullptr, QEvent::DeferredDelete);
+    QVERIFY(!findInlineLabelEditor(scene));
+    QTest::keyClick(QApplication::focusWidget(), Qt::Key_Left);
+    QVERIFY(led->pos().x() < posBefore.x());
+    QCOMPARE(scene->undoStack()->count(), 1);
+}
+
+void TestMainWindowGui::testInlineLabelEditTypingDoesNotFireTriggers()
+{
+    // Letters typed into the inline label editor are label text, not input trigger keys.
+    std::unique_ptr<MainWindow> window(createMW());
+    window->resize(1000, 700);
+    QVERIFY(QTest::qWaitForWindowExposed(window.get()));
+    auto *scene = window->currentTab()->scene();
+    auto *view = window->currentTab()->view();
+
+    auto *led = new Led();
+    led->setLabel("Label");
+    led->setPos(100, 100);
+    scene->addItem(led);
+    auto *inputSwitch = new InputSwitch();
+    inputSwitch->setTrigger(QKeySequence(Qt::Key_A));
+    inputSwitch->setPos(400, 100);
+    scene->addItem(inputSwitch);
+    auto *button = new InputButton();
+    button->setTrigger(QKeySequence(Qt::Key_B));
+    button->setPos(400, 250);
+    scene->addItem(button);
+    const bool switchBefore = inputSwitch->isOn();
+
+    QLineEdit *editor = openInlineLabelEditor(view, led);
+    QVERIFY(editor);
+
+    QTest::keyClick(QApplication::focusWidget(), Qt::Key_A);
+    QTest::keyPress(QApplication::focusWidget(), Qt::Key_B);
+    QVERIFY2(!button->isOn(), "A trigger key typed into the editor must not press its button");
+    QTest::keyRelease(QApplication::focusWidget(), Qt::Key_B);
+
+    QCOMPARE(editor->text(), QString("ab"));
+    QVERIFY2(inputSwitch->isOn() == switchBefore, "A trigger key typed into the editor must not toggle its switch");
+    QVERIFY(!button->isOn());
+}
+
+void TestMainWindowGui::testTriggerHeldIntoInlineLabelEditStillReleases()
+{
+    // A button pressed by its trigger key before the inline label editor opened must still
+    // release when that key comes up while the editor has focus.
+    std::unique_ptr<MainWindow> window(createMW());
+    window->resize(1000, 700);
+    QVERIFY(QTest::qWaitForWindowExposed(window.get()));
+    auto *scene = window->currentTab()->scene();
+    auto *view = window->currentTab()->view();
+
+    auto *led = new Led();
+    led->setLabel("Label");
+    led->setPos(100, 100);
+    scene->addItem(led);
+    auto *button = new InputButton();
+    button->setTrigger(QKeySequence(Qt::Key_B));
+    button->setPos(400, 100);
+    scene->addItem(button);
+
+    clickScene(view, QPointF(400, 400));
+    QCOMPARE(QApplication::focusWidget(), view);
+    QTest::keyPress(view, Qt::Key_B);
+    QVERIFY(button->isOn());
+
+    QVERIFY(openInlineLabelEditor(view, led));
+    QTest::keyRelease(QApplication::focusWidget(), Qt::Key_B);
+    QVERIFY2(!button->isOn(), "Releasing the trigger key must release the button it pressed");
+}
+
 void TestMainWindowGui::testDestroyWindowDuringInlineLabelEdit()
 {
     // Destroying a still-visible window takes focus from an open inline label edit, which
