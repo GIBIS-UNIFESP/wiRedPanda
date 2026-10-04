@@ -74,6 +74,7 @@ private slots:
     void testInlineLabelEditArrowKeysStayInEditor();
     void testInlineLabelEditTypingDoesNotFireTriggers();
     void testTriggerHeldIntoInlineLabelEditStillReleases();
+    void testInlineLabelEditSpaceDoesNotPan();
     void testDestroyWindowDuringInlineLabelEdit();
 
     // --- Element manipulation via mouse ---

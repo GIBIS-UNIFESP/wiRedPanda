@@ -1119,6 +1119,52 @@ void TestMainWindowGui::testTriggerHeldIntoInlineLabelEditStillReleases()
     QVERIFY2(!button->isOn(), "Releasing the trigger key must release the button it pressed");
 }
 
+void TestMainWindowGui::testInlineLabelEditSpaceDoesNotPan()
+{
+    // Holding Space turns mouse moves into panning; typed into the inline label editor it is
+    // just a space, and moving the mouse while it's held must not scroll the canvas.
+    std::unique_ptr<MainWindow> window(createMW());
+    window->resize(1000, 700);
+    QVERIFY(QTest::qWaitForWindowExposed(window.get()));
+    auto *scene = window->currentTab()->scene();
+    auto *view = window->currentTab()->view();
+
+    // Spread elements far apart so the view has a scroll range a pan would show up in.
+    auto *farGate = new And();
+    farGate->setPos(4000, 3000);
+    scene->addItem(farGate);
+    auto *nearGate = new And();
+    nearGate->setPos(-4000, -3000);
+    scene->addItem(nearGate);
+    auto *led = new Led();
+    led->setLabel("Label");
+    led->setPos(100, 100);
+    scene->addItem(led);
+    scene->resizeScene(); // as a drop or paste does after adding elements
+    QApplication::processEvents();
+    QVERIFY2(view->horizontalScrollBar()->maximum() > view->horizontalScrollBar()->minimum(),
+             "Precondition: view must have a horizontal scroll range to pan");
+    view->centerOn(led);
+
+    QLineEdit *editor = openInlineLabelEditor(view, led);
+    QVERIFY(editor);
+    const QPoint scrollBefore(view->horizontalScrollBar()->value(), view->verticalScrollBar()->value());
+
+    QTest::keyPress(QApplication::focusWidget(), Qt::Key_Space);
+    const QPoint start = view->viewport()->rect().center();
+    for (int i = 1; i <= 5; ++i) {
+        const QPoint pos = start + (QPoint(20, 10) * i);
+        QMouseEvent move(QEvent::MouseMove, pos, view->viewport()->mapToGlobal(pos),
+                         Qt::NoButton, Qt::NoButton, Qt::NoModifier);
+        QApplication::sendEvent(view->viewport(), &move);
+    }
+    QTest::keyRelease(QApplication::focusWidget(), Qt::Key_Space);
+
+    const QPoint scrollAfter(view->horizontalScrollBar()->value(), view->verticalScrollBar()->value());
+    QCOMPARE(scrollAfter, scrollBefore);
+    QCOMPARE(editor->text(), QString(" "));
+}
+
 void TestMainWindowGui::testDestroyWindowDuringInlineLabelEdit()
 {
     // Destroying a still-visible window takes focus from an open inline label edit, which
