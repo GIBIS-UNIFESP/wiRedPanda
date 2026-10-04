@@ -71,6 +71,7 @@ private slots:
     void testMuteViaKeyboard();
     void testPropertyCycleSecondary();
     void testInlineLabelEditEscapeCancels();
+    void testDestroyWindowDuringInlineLabelEdit();
 
     // --- Element manipulation via mouse ---
 

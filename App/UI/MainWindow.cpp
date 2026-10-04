@@ -457,6 +457,11 @@ void MainWindow::connectSceneAction(QAction *action, void (Scene::*method)())
 
 MainWindow::~MainWindow()
 {
+    // ~QWidget closes a window that is still visible, and taking focus away commits an open
+    // inline label edit, whose undo-stack signals reach this object's slots. Hide it now,
+    // while this object is still whole, so that commit doesn't run from ~QWidget.
+    hide();
+
     // Tear down the active tab's chrome wiring before child objects are destroyed.
     m_binder->unbind();
 

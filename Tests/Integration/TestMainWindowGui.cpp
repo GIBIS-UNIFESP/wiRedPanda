@@ -137,6 +137,31 @@ static void clickScene(GraphicsView *view, QPointF scenePos)
     QTest::mouseClick(view->viewport(), Qt::LeftButton, Qt::NoModifier, viewPos);
 }
 
+/// Finds the QLineEdit hosted by the scene's inline label editor, if one is open.
+static QLineEdit *findInlineLabelEditor(QGraphicsScene *scene)
+{
+    for (auto *item : scene->items()) {
+        if (auto *proxy = qgraphicsitem_cast<QGraphicsProxyWidget *>(item)) {
+            if (auto *lineEdit = qobject_cast<QLineEdit *>(proxy->widget())) {
+                return lineEdit;
+            }
+        }
+    }
+    return nullptr;
+}
+
+/// Opens the inline label editor on an element with a real double-click: a click, then the
+/// double-click event and its release (QTest::mouseDClick alone sends only the
+/// MouseButtonDblClick event, so the element would never be selected by the first click).
+static QLineEdit *openInlineLabelEditor(GraphicsView *view, GraphicElement *elm)
+{
+    const QPoint viewPos = view->mapFromScene(elm->sceneBoundingRect().center());
+    QTest::mouseClick(view->viewport(), Qt::LeftButton, Qt::NoModifier, viewPos);
+    QTest::mouseDClick(view->viewport(), Qt::LeftButton, Qt::NoModifier, viewPos);
+    QTest::mouseRelease(view->viewport(), Qt::LeftButton, Qt::NoModifier, viewPos);
+    return findInlineLabelEditor(view->scene());
+}
+
 /// Sends a mouse drag from startScene to endScene in incremental steps.
 static void dragElement(GraphicsView *view, QPointF startScene, QPointF endScene, int steps = 5)
 {
@@ -970,24 +995,7 @@ void TestMainWindowGui::testInlineLabelEditEscapeCancels()
     led->setPos(100, 100);
     scene->addItem(led);
 
-    const auto inlineEditor = [scene]() -> QLineEdit * {
-        for (auto *item : scene->items()) {
-            if (auto *proxy = qgraphicsitem_cast<QGraphicsProxyWidget *>(item)) {
-                if (auto *lineEdit = qobject_cast<QLineEdit *>(proxy->widget())) {
-                    return lineEdit;
-                }
-            }
-        }
-        return nullptr;
-    };
-
-    // A real double-click: a click, then the double-click event and its release
-    // (QTest::mouseDClick alone sends only the MouseButtonDblClick event).
-    const QPoint ledPos = view->mapFromScene(led->sceneBoundingRect().center());
-    QTest::mouseClick(view->viewport(), Qt::LeftButton, Qt::NoModifier, ledPos);
-    QTest::mouseDClick(view->viewport(), Qt::LeftButton, Qt::NoModifier, ledPos);
-    QTest::mouseRelease(view->viewport(), Qt::LeftButton, Qt::NoModifier, ledPos);
-    QLineEdit *editor = inlineEditor();
+    QLineEdit *editor = openInlineLabelEditor(view, led);
     QVERIFY2(editor, "Double-clicking a labelled element must open the inline editor");
     QVERIFY(editor->hasFocus());
     QVERIFY(led->isSelected());
@@ -997,13 +1005,36 @@ void TestMainWindowGui::testInlineLabelEditEscapeCancels()
     QTest::keyClick(QApplication::focusWidget(), Qt::Key_Escape);
     QCoreApplication::sendPostedEvents(nullptr, QEvent::DeferredDelete);
 
-    QVERIFY2(!inlineEditor(), "Escape must close the inline editor");
+    QVERIFY2(!findInlineLabelEditor(scene), "Escape must close the inline editor");
     QVERIFY2(led->isSelected(), "Escape cancels the edit; it must not also clear the selection");
 
     // Clicking away afterwards must not commit the discarded text either.
     clickScene(view, QPointF(400, 400));
     QCOMPARE(led->label(), QString("Original"));
     QCOMPARE(scene->undoStack()->count(), 0);
+}
+
+void TestMainWindowGui::testDestroyWindowDuringInlineLabelEdit()
+{
+    // Destroying a still-visible window takes focus from an open inline label edit, which
+    // commits it; the undo stack's signals then reach MainWindow slots, so they must run
+    // while the window is still whole rather than from ~QWidget.
+    std::unique_ptr<MainWindow> window(createMW());
+    window->resize(1000, 700);
+    QVERIFY(QTest::qWaitForWindowExposed(window.get()));
+    auto *scene = window->currentTab()->scene();
+    auto *view = window->currentTab()->view();
+
+    auto *led = new Led();
+    led->setLabel("Original");
+    led->setPos(100, 100);
+    scene->addItem(led);
+
+    QLineEdit *editor = openInlineLabelEditor(view, led);
+    QVERIFY(editor);
+    editor->setText("Renamed");
+
+    window.reset();
 }
 
 // ===========================================================================
