@@ -1420,6 +1420,51 @@ void TestScene::testInlineLabelEditorEmptyLabelUsesElementBoundingRectFallback()
     QCOMPARE(proxy->pos(), elm->sceneBoundingRect().topLeft());
 }
 
+void TestScene::testInlineLabelEditorClosesWhenTargetDeleted()
+{
+    // WIREDPANDA-MQ: deleting the element under edit must close its editor, so neither a
+    // later commit() (focus-out) nor the next start() reaches the freed element.
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *elmA = new InputSwitch;
+    elmA->setLabel("Label A");
+    scene->addItem(elmA);
+    auto *elmB = new InputSwitch;
+    elmB->setLabel("Label B");
+    elmB->setPos(200, 0);
+    scene->addItem(elmB);
+
+    const auto inlineEditors = [scene] {
+        QList<QLineEdit *> lineEdits;
+        for (auto *item : scene->items()) {
+            if (auto *proxy = qgraphicsitem_cast<QGraphicsProxyWidget *>(item)) {
+                if (auto *lineEdit = qobject_cast<QLineEdit *>(proxy->widget())) {
+                    lineEdits << lineEdit;
+                }
+            }
+        }
+        return lineEdits;
+    };
+
+    InlineLabelEditor editor(scene);
+    editor.start(elmB);
+    QCOMPARE(inlineEditors().size(), 1);
+
+    elmB->setSelected(true);
+    scene->deleteAction();
+    QCoreApplication::sendPostedEvents(nullptr, QEvent::DeferredDelete);
+
+    QVERIFY2(inlineEditors().isEmpty(), "The editor must close together with the element it edits");
+
+    editor.commit();
+    editor.start(elmA);
+
+    const auto lineEdits = inlineEditors();
+    QCOMPARE(lineEdits.size(), 1);
+    QCOMPARE(lineEdits.constFirst()->text(), QString("Label A"));
+    QCOMPARE(scene->undoStack()->count(), 1); // only the Delete; no rename was pushed
+}
+
 void TestScene::testCutWithNoSelectionClearsClipboard()
 {
     QApplication::clipboard()->setText("something");

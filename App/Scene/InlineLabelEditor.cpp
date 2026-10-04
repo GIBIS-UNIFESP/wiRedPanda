@@ -49,7 +49,10 @@ InlineLabelEditor::InlineLabelEditor(Scene *scene)
 {
 }
 
-InlineLabelEditor::~InlineLabelEditor() = default;
+InlineLabelEditor::~InlineLabelEditor()
+{
+    QObject::disconnect(m_targetDestroyed);
+}
 
 void InlineLabelEditor::start(GraphicElement *element)
 {
@@ -72,6 +75,7 @@ void InlineLabelEditor::start(GraphicElement *element)
 
     QObject::connect(lineEdit, &QLineEdit::returnPressed, lineEdit, [this] { commit(); });
     QObject::connect(lineEdit, &QLineEdit::editingFinished, lineEdit, [this] { commit(); });
+    m_targetDestroyed = QObject::connect(element, &QObject::destroyed, lineEdit, [this] { cancel(); });
 
     m_proxy = m_scene->addWidget(lineEdit);
     m_proxy->setZValue(1000); // above every element/wire on the canvas
@@ -117,6 +121,7 @@ void InlineLabelEditor::cancel()
 
 void InlineLabelEditor::close()
 {
+    QObject::disconnect(m_targetDestroyed);
     m_target = nullptr;
     if (m_proxy) {
         m_proxy->deleteLater();
