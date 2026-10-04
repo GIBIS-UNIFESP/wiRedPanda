@@ -70,6 +70,7 @@ private slots:
     void testFlipHorizontallyViaKeyboard();
     void testMuteViaKeyboard();
     void testPropertyCycleSecondary();
+    void testInlineLabelEditEscapeCancels();
 
     // --- Element manipulation via mouse ---
 

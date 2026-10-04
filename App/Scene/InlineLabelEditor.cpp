@@ -28,6 +28,18 @@ public:
     }
 
 protected:
+    bool event(QEvent *event) override
+    {
+        // QLineEdit leaves Escape unclaimed, so a window shortcut bound to it (MainWindow's
+        // Clear Selection) would take it before keyPressEvent() below ever saw it.
+        if ((event->type() == QEvent::ShortcutOverride) && (static_cast<QKeyEvent *>(event)->key() == Qt::Key_Escape)) {
+            event->accept();
+            return true;
+        }
+
+        return QLineEdit::event(event);
+    }
+
     void keyPressEvent(QKeyEvent *event) override
     {
         if (event->key() == Qt::Key_Escape) {

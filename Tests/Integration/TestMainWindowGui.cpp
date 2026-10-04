@@ -8,6 +8,7 @@
 #include <QClipboard>
 #include <QDesktopServices>
 #include <QFile>
+#include <QGraphicsProxyWidget>
 #include <QKeySequence>
 #include <QLabel>
 #include <QLineEdit>
@@ -952,6 +953,57 @@ void TestMainWindowGui::testPropertyCycleSecondary()
 
     QTest::keyClick(window.get(), Qt::Key_BraceLeft);
     QCOMPARE(led->color(), colorBefore);
+}
+
+void TestMainWindowGui::testInlineLabelEditEscapeCancels()
+{
+    // MainWindow binds Esc to Clear Selection; while a label is being edited inline, Escape
+    // must still reach the editor and cancel the edit instead of firing that shortcut.
+    std::unique_ptr<MainWindow> window(createMW());
+    window->resize(1000, 700);
+    QVERIFY(QTest::qWaitForWindowExposed(window.get()));
+    auto *scene = window->currentTab()->scene();
+    auto *view = window->currentTab()->view();
+
+    auto *led = new Led();
+    led->setLabel("Original");
+    led->setPos(100, 100);
+    scene->addItem(led);
+
+    const auto inlineEditor = [scene]() -> QLineEdit * {
+        for (auto *item : scene->items()) {
+            if (auto *proxy = qgraphicsitem_cast<QGraphicsProxyWidget *>(item)) {
+                if (auto *lineEdit = qobject_cast<QLineEdit *>(proxy->widget())) {
+                    return lineEdit;
+                }
+            }
+        }
+        return nullptr;
+    };
+
+    // A real double-click: a click, then the double-click event and its release
+    // (QTest::mouseDClick alone sends only the MouseButtonDblClick event).
+    const QPoint ledPos = view->mapFromScene(led->sceneBoundingRect().center());
+    QTest::mouseClick(view->viewport(), Qt::LeftButton, Qt::NoModifier, ledPos);
+    QTest::mouseDClick(view->viewport(), Qt::LeftButton, Qt::NoModifier, ledPos);
+    QTest::mouseRelease(view->viewport(), Qt::LeftButton, Qt::NoModifier, ledPos);
+    QLineEdit *editor = inlineEditor();
+    QVERIFY2(editor, "Double-clicking a labelled element must open the inline editor");
+    QVERIFY(editor->hasFocus());
+    QVERIFY(led->isSelected());
+    editor->setText("Should not stick");
+
+    // Deliver Escape the way the platform does: to the application's focus widget (the view).
+    QTest::keyClick(QApplication::focusWidget(), Qt::Key_Escape);
+    QCoreApplication::sendPostedEvents(nullptr, QEvent::DeferredDelete);
+
+    QVERIFY2(!inlineEditor(), "Escape must close the inline editor");
+    QVERIFY2(led->isSelected(), "Escape cancels the edit; it must not also clear the selection");
+
+    // Clicking away afterwards must not commit the discarded text either.
+    clickScene(view, QPointF(400, 400));
+    QCOMPARE(led->label(), QString("Original"));
+    QCOMPARE(scene->undoStack()->count(), 0);
 }
 
 // ===========================================================================
