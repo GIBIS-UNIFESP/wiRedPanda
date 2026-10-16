@@ -35,6 +35,7 @@
 #include "App/Scene/Commands.h"
 #include "App/Scene/GraphicsView.h"
 #include "App/Wiring/Connection.h"
+#include <QToolTip>
 
 namespace {
 // Adaptive wire antialiasing constants (see the Scene.h accessor block for the design).
@@ -1375,6 +1376,25 @@ void Scene::helpEvent(QGraphicsSceneHelpEvent *event)
     if (auto *port = portAt(event->scenePos())) {
         m_connectionManager.showHoverLabels(port);
         return;
+    }
+
+    // If hovering over an element with warnings, show the warnings in a native tooltip
+    // so they appear as a small boxed popup like other tooltips.
+    if (auto *item = itemAt(event->scenePos())) {
+        // The hit item may be a child (label, port proxy, etc.). Walk up the
+        // parent chain to locate the owning GraphicElement, if any.
+        QGraphicsItem *cur = item;
+        while (cur && cur->type() != GraphicElement::Type) {
+            cur = cur->parentItem();
+        }
+        if (cur && cur->type() == GraphicElement::Type) {
+            auto *elm = static_cast<GraphicElement *>(cur);
+            if (elm->hasWarnings()) {
+                const QString txt = elm->warnings().join('\n');
+                QToolTip::showText(event->screenPos(), txt);
+                return;
+            }
+        }
     }
 
     QGraphicsScene::helpEvent(event);
