@@ -88,7 +88,10 @@ void MinimapWidget::paintEvent(QPaintEvent * /*event*/)
         m_cache.fill(palette().window().color());
         QPainter pixmapPainter(&m_cache);
         pixmapPainter.setRenderHint(QPainter::Antialiasing, false);
+        const bool backgroundRenderingWasEnabled = m_scene->backgroundRenderingEnabled();
+        m_scene->setBackgroundRenderingEnabled(false);
         m_scene->render(&pixmapPainter, QRectF(0, 0, usedW, usedH), srcUsed, Qt::KeepAspectRatio);
+        m_scene->setBackgroundRenderingEnabled(backgroundRenderingWasEnabled);
         m_cacheDirty = false;
         m_cacheSrc = srcUsed;
     }

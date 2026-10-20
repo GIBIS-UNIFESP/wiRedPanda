@@ -18,6 +18,7 @@ private slots:
     void testZoomToFit();
     void testFastMode();
     void testDragModeToggle();
+    void testBackgroundImageFillsViewport();
     void testAccessibleNameSet(); // #14 accessibility sweep
 
     // Middle-button drag panning: press starts the pan, release ends it.
