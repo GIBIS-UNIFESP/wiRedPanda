@@ -1149,6 +1149,60 @@ void TestElementEditor::testSetTruthTablePropositionTogglesOutputBit()
     QCOMPARE(editor.m_table->item(row, outputColumn)->text(), (!bitBefore) ? QStringLiteral("1") : QStringLiteral("0"));
 }
 
+void TestElementEditor::testGenerateXorCircuitConnectsOutputToLed()
+{
+    WorkSpace workspace;
+    auto *tt = new TruthTable();
+    tt->key().setBit(1);
+    tt->key().setBit(2);
+    workspace.scene()->addItem(tt);
+
+    ElementEditor editor(&workspace);
+    editor.setScene(workspace.scene());
+    tt->setSelected(true);
+    editor.generateCircuitFromTruthTable();
+
+    GraphicElement *xorGate = nullptr;
+    Led *led = nullptr;
+    for (auto *element : workspace.scene()->elements()) {
+        if (element->elementType() == ElementType::Xor) xorGate = element;
+        if (element->elementType() == ElementType::Led) led = qobject_cast<Led *>(element);
+    }
+
+    QVERIFY(xorGate);
+    QVERIFY(led);
+    QVERIFY(xorGate->isAutomaticallyGenerated());
+    QVERIFY(led->isAutomaticallyGenerated());
+    QVERIFY(!led->inputPort(0)->connections().isEmpty());
+    QCOMPARE(led->inputPort(0)->connections().constFirst()->startPort()->graphicElement(), xorGate);
+}
+
+void TestElementEditor::testGenerateConstantLowCircuitConnectsOutputToLed()
+{
+    WorkSpace workspace;
+    auto *tt = new TruthTable();
+    workspace.scene()->addItem(tt);
+
+    ElementEditor editor(&workspace);
+    editor.setScene(workspace.scene());
+    tt->setSelected(true);
+    editor.generateCircuitFromTruthTable();
+
+    Led *led = nullptr;
+    GraphicElement *ground = nullptr;
+    for (auto *element : workspace.scene()->elements()) {
+        if (element->elementType() == ElementType::Led) led = qobject_cast<Led *>(element);
+        if (element->elementType() == ElementType::InputGnd) ground = element;
+    }
+
+    QVERIFY(led);
+    QVERIFY(ground);
+    QVERIFY(led->isAutomaticallyGenerated());
+    QVERIFY(ground->isAutomaticallyGenerated());
+    QVERIFY(!led->inputPort(0)->connections().isEmpty());
+    QCOMPARE(led->inputPort(0)->connections().constFirst()->startPort()->graphicElement(), ground);
+}
+
 void TestElementEditor::testAudioBoxGuardsNonAudioBoxSelection()
 {
     WorkSpace workspace;

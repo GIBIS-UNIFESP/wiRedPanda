@@ -68,6 +68,8 @@ private slots:
 
     void testTruthTablePopulatesTableAndShows();
     void testSetTruthTablePropositionTogglesOutputBit();
+    void testGenerateXorCircuitConnectsOutputToLed();
+    void testGenerateConstantLowCircuitConnectsOutputToLed();
 
     void testAudioBoxGuardsNonAudioBoxSelection();
     void testAudioBoxCancelledDialogIsNoOp();

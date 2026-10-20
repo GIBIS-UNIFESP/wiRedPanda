@@ -80,6 +80,24 @@ void TestGraphicElementSerializer::testRemovePortFromMapErasesMatchingEntries()
     QCOMPARE(portMap.value(2), other);
 }
 
+void TestGraphicElementSerializer::testAutomaticallyGeneratedFlagRoundTrips()
+{
+    And original;
+    original.setAutomaticallyGenerated(true);
+
+    QByteArray data;
+    QDataStream writeStream(&data, QIODevice::WriteOnly);
+    original.save(writeStream, {.purpose = SerializationPurpose::PortableFile});
+
+    And restored;
+    QHash<quint64, Port *> portMap;
+    SerializationContext context = {portMap, FormatRev::current, SerializationPurpose::PortableFile};
+    QDataStream readStream(data);
+    restored.load(readStream, context);
+
+    QVERIFY(restored.isAutomaticallyGenerated());
+}
+
 void TestGraphicElementSerializer::testLoadOldFormatDrainsUnusedPriorityField()
 {
     // hasUnusedPriority() is V_4_0_1-only (removed in 4.1's QMap format); no version both old-format

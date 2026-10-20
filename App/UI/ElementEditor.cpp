@@ -1012,6 +1012,27 @@ void ElementEditor::generateCircuitFromTruthTable()
         const qreal colXDepth1 = baseX - termSpacingX;
         const qreal colXDepth2 = baseX;
 
+        const auto connectOutput = [&](OutputPort *rootPort, const qreal ledX) {
+            if (!rootPort) return;
+
+            auto *led = ElementFactory::buildElement(ElementType::Led);
+            led->setInputSize(1);
+            led->setPos(QPointF(ledX, baseY));
+            newItems.append(led);
+
+            auto *ledConnection = new Connection();
+            ledConnection->setStartPort(rootPort);
+            ledConnection->setEndPort(led->inputPort(0));
+            newItems.append(ledConnection);
+
+            for (auto *dest : outputDests[z]) {
+                auto *conn = new Connection();
+                conn->setStartPort(rootPort);
+                conn->setEndPort(dest);
+                newItems.append(conn);
+            }
+        };
+
         if (expr.contains('^')) {
             // support simple A ^ B pattern
             auto *xorGate = ElementFactory::buildElement(ElementType::Xor);
@@ -1037,13 +1058,7 @@ void ElementEditor::generateCircuitFromTruthTable()
                 newItems.append(conn);
             }
 
-            // wire xor output to recorded destinations
-            for (auto *dest : outputDests[z]) {
-                auto *conn = new Connection();
-                conn->setStartPort(xorGate->outputPort(0));
-                conn->setEndPort(dest);
-                newItems.append(conn);
-            }
+            connectOutput(xorGate->outputPort(0), baseX + termSpacingX);
             continue;
         }
 
@@ -1138,10 +1153,16 @@ void ElementEditor::generateCircuitFromTruthTable()
             termSources.append(termSrc);
         }
 
-        // If there are no term sources, skip this output
+        // An empty expression represents constant LOW; drive its LED from ground.
         QVector<OutputPort *> inputsForOr;
         for (auto *p : termSources) if (p) inputsForOr.append(p);
-        if (inputsForOr.isEmpty()) continue;
+        if (inputsForOr.isEmpty()) {
+            auto *ground = ElementFactory::buildElement(ElementType::InputGnd);
+            ground->setPos(QPointF(baseX, baseY));
+            newItems.append(ground);
+            connectOutput(ground->outputPort(0), baseX + termSpacingX);
+            continue;
+        }
 
         // Build OR tree to handle arbitrarily many inputs by cascading OR gates.
         const int OR_MAX = 8; // matches Or::maxInputSize
@@ -1202,28 +1223,12 @@ void ElementEditor::generateCircuitFromTruthTable()
 
         if (!rootPort) continue;
 
-        // Create an LED to display this output's final value. Place it to the right
-        // of the final OR column.
-        auto *led = ElementFactory::buildElement(ElementType::Led);
-        led->setInputSize(1);
-        const qreal ledX = baseX + termSpacingX * static_cast<qreal>(depthIndex + 0);
-        led->setPos(QPointF(ledX, baseY));
-        newItems.append(led);
+        connectOutput(rootPort, baseX + termSpacingX * static_cast<qreal>(depthIndex));
+    }
 
-        // Connect root to LED input
-        if (led->inputPort(0)) {
-            auto *lconn = new Connection();
-            lconn->setStartPort(rootPort);
-            lconn->setEndPort(led->inputPort(0));
-            newItems.append(lconn);
-        }
-
-        // Also preserve original destinations (wire root to them)
-        for (auto *dest : outputDests[z]) {
-            auto *conn = new Connection();
-            conn->setStartPort(rootPort);
-            conn->setEndPort(dest);
-            newItems.append(conn);
+    for (auto *item : std::as_const(newItems)) {
+        if (auto *element = dynamic_cast<GraphicElement *>(item)) {
+            element->setAutomaticallyGenerated(true);
         }
     }
 

@@ -17,6 +17,9 @@ private slots:
     // removePortFromMap()
     void testRemovePortFromMapErasesMatchingEntries();
 
+    // element properties
+    void testAutomaticallyGeneratedFlagRoundTrips();
+
     // loadOldFormat()'s pre-4.0.1 unused-priority field
     void testLoadOldFormatDrainsUnusedPriorityField();
 

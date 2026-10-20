@@ -121,6 +121,9 @@ void GraphicElementSerializer::save(const GraphicElement &element, QDataStream &
     if (!slim || !element.trigger().isEmpty()) {
         map.insert("trigger", element.trigger());
     }
+    if (!slim || element.isAutomaticallyGenerated()) {
+        map.insert("automaticallyGenerated", element.isAutomaticallyGenerated());
+    }
     if (element.isFlippedX()) { map.insert("flippedX", true); }
     if (element.isFlippedY()) { map.insert("flippedY", true); }
     stream << map;
@@ -213,6 +216,8 @@ void GraphicElementSerializer::load(GraphicElement &element, QDataStream &stream
 {
     qCDebug(four) << "Loading element. Type: " << element.objectName();
 
+    element.setAutomaticallyGenerated(false);
+
     // Files before 4.1 used a flat sequential binary format; 4.1+ use a keyed QMap
     // format that tolerates fields being added or reordered in future versions.
     (!VersionInfo::hasQMapFormat(context.version)) ? loadOldFormat(element, stream, context) : loadNewFormat(element, stream, context);
@@ -288,6 +293,7 @@ void GraphicElementSerializer::loadNewFormat(GraphicElement &element, QDataStrea
         element.setTrigger(map.value("trigger").toString());
     }
 
+    element.setAutomaticallyGenerated(map.value("automaticallyGenerated", false).toBool());
     element.m_orientation.setFlippedXRaw(map.value("flippedX", false).toBool());
     element.m_orientation.setFlippedYRaw(map.value("flippedY", false).toBool());
 

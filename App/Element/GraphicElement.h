@@ -136,6 +136,11 @@ public:
     /// Returns the type identifier for this element.
     ElementType elementType() const;
 
+    /// Returns whether this element was generated automatically from a truth table.
+    bool isAutomaticallyGenerated() const { return m_automaticallyGenerated; }
+    /// Sets whether this element was generated automatically from a truth table.
+    void setAutomaticallyGenerated(const bool generated) { m_automaticallyGenerated = generated; }
+
     // --- Port Access ---
 
     /// Returns the input port at \a index (default 0).
@@ -692,6 +697,7 @@ private:
 
     ElementGroup m_elementGroup = ElementGroup::Unknown;
     ElementType m_elementType = ElementType::Unknown;
+    bool m_automaticallyGenerated = false;
 
     /// Cached reference to this type's compile-time metadata (registry entry is a long-lived
     /// singleton). Backs the hasAudio()/hasTrigger()/rotatesGraphic()/... facades, replacing a
