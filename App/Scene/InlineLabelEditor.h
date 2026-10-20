@@ -7,6 +7,9 @@
 
 #pragma once
 
+#include <QMetaObject>
+#include <QPointer>
+
 class GraphicElement;
 class QGraphicsProxyWidget;
 class Scene;
@@ -18,7 +21,8 @@ class Scene;
  *
  * \details Follows the SceneDropHandler/ConnectionManager pattern: holds a back-reference to
  * the owning Scene and delegates the undo command back to it. Only one inline edit is ever
- * active at a time; starting a new one commits whatever was already in progress.
+ * active at a time; starting a new one commits whatever was already in progress. Deleting
+ * the element under edit closes its editor without committing.
  */
 class InlineLabelEditor
 {
@@ -40,6 +44,11 @@ private:
     void close();
 
     Scene *m_scene;
-    GraphicElement *m_target = nullptr;
+    /// Elements are deleted outright (Delete, Cut, undoing their Add...), possibly while
+    /// their editor is still open, so the target must never be held as a raw pointer.
+    QPointer<GraphicElement> m_target;
     QGraphicsProxyWidget *m_proxy = nullptr;
+    /// Closes the editor when m_target is destroyed. Severed by close() and by the destructor,
+    /// which runs before the owning Scene deletes its items.
+    QMetaObject::Connection m_targetDestroyed;
 };
