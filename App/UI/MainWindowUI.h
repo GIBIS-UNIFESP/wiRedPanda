@@ -117,6 +117,7 @@ public:
     QAction *actionExportToSystemVerilog = nullptr;
     QAction *actionExportToPdf = nullptr;
     QAction *actionExportToImage = nullptr;
+    QAction *actionRecordSimulation = nullptr;
     QAction *actionMakeSelfContained = nullptr;
 
     // Help / about actions
