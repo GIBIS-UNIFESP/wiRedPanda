@@ -154,7 +154,16 @@ void ElementEditor::contextMenu(QPoint screenPos, QGraphicsItem *itemAtMouse)
             }
         },
         [this] { emit embedSubcircuitRequested(); },
-        [this] { emit extractToFileRequested(); }
+        [this] { emit extractToFileRequested(); },
+        [this] {
+            if (!m_scene || m_elements.isEmpty()) return;
+            m_scene->icRegistry()->createICFromSelection(m_elements);
+        },
+        [this] {
+            if (!m_scene || m_elements.size() != 1) return;
+            auto *ic = qobject_cast<IC *>(m_elements.constFirst());
+            if (ic) m_scene->icRegistry()->flattenIC(ic);
+        }
     );
 }
 

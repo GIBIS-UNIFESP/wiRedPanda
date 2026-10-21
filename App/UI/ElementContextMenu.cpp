@@ -41,7 +41,9 @@ void ElementContextMenu::exec(QPoint screenPos,
                               const std::function<void()> &onFrequencyFocus,
                               const std::function<void()> &onEditSubcircuit,
                               const std::function<void()> &onEmbedSubcircuit,
-                              const std::function<void()> &onExtractToFile)
+                              const std::function<void()> &onExtractToFile,
+                              const std::function<void()> &onCreateIC,
+                              const std::function<void()> &onFlattenIC)
 {
     QMenu menu;
     const QString changeAppearanceText(QObject::tr("Change appearance to ..."));
@@ -55,6 +57,8 @@ void ElementContextMenu::exec(QPoint screenPos,
     const QString rotateLeftText(QObject::tr("Rotate left"));
     const QString rotateRightText(QObject::tr("Rotate right"));
     const QString triggerText(QObject::tr("Change trigger"));
+    const QString createIcText(QObject::tr("Create IC from Selection"));
+    const QString flattenIcText(QObject::tr("Flatten IC"));
 
     if (caps.hasLabel) {
         menu.addAction(QIcon(QPixmap(":/Interface/Toolbar/rename.svg")), renameText)->setData(renameText);
@@ -180,6 +184,16 @@ void ElementContextMenu::exec(QPoint screenPos,
     if (onExtractToFile && caps.isEmbedded) {
         menu.addAction(extractToFileText)->setData(extractToFileText);
     }
+    if (onCreateIC && !elements.isEmpty()) {
+        menu.addAction(createIcText)->setData(createIcText);
+    }
+    if (onFlattenIC) {
+        auto *hitElement = qgraphicsitem_cast<GraphicElement *>(itemAtMouse);
+        if (hitElement && hitElement->elementType() == ElementType::IC
+            && elements.size() == 1 && elements.constFirst() == hitElement) {
+            menu.addAction(flattenIcText)->setData(flattenIcText);
+        }
+    }
 
     menu.addSeparator();
 
@@ -210,6 +224,8 @@ void ElementContextMenu::exec(QPoint screenPos,
     if (actionData == editSubcircuitText)  { onEditSubcircuit(); return; }
     if (actionData == embedSubcircuitText) { onEmbedSubcircuit(); return; }
     if (actionData == extractToFileText)   { onExtractToFile(); return; }
+    if (actionData == createIcText)        { onCreateIC(); return; }
+    if (actionData == flattenIcText)       { onFlattenIC(); return; }
 
     if (actionData == rotateLeftText) {
         sendCommand(new RotateCommand(elements, -90.0, scene));

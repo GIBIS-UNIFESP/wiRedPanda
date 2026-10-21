@@ -176,6 +176,42 @@ void TestElementContextMenu::testICSubcircuitAction()
     QVERIFY(!embeddedCaps.isFileBacked);
 }
 
+void TestElementContextMenu::testCreateICAndFlattenActionsDispatch()
+{
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *andGate = new And();
+    auto *ic = new IC();
+    scene->receiveCommand(new AddItemsCommand({andGate, ic}, scene));
+
+    QWidget parent;
+    auto *colorCombo = makeColorCombo(&parent);
+    bool createCalled = false;
+    andGate->setSelected(true);
+    {
+        const auto caps = computeCapabilities({andGate});
+        auto dismisser = dismisserForContextMenuAction(QStringLiteral("Create IC from Selection"));
+        ElementContextMenu::exec(QPoint(0, 0), andGate, caps, {andGate}, colorCombo, scene,
+            [scene](QUndoCommand *cmd) { scene->receiveCommand(cmd); },
+            [] {}, [] {}, [] {}, [] {}, [] {}, {}, {}, {},
+            [&createCalled] { createCalled = true; }, [] {});
+    }
+    QVERIFY(createCalled);
+
+    scene->clearSelection();
+    ic->setSelected(true);
+    bool flattenCalled = false;
+    {
+        const auto caps = computeCapabilities({ic});
+        auto dismisser = dismisserForContextMenuAction(QStringLiteral("Flatten IC"));
+        ElementContextMenu::exec(QPoint(0, 0), ic, caps, {ic}, colorCombo, scene,
+            [scene](QUndoCommand *cmd) { scene->receiveCommand(cmd); },
+            [] {}, [] {}, [] {}, [] {}, [] {}, {}, {}, {},
+            [] {}, [&flattenCalled] { flattenCalled = true; });
+    }
+    QVERIFY(flattenCalled);
+}
+
 void TestElementContextMenu::testDismissWithoutChoosingIsNoOp()
 {
     WorkSpace workspace;

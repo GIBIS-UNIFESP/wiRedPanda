@@ -62,6 +62,10 @@ public:
     // --- Type Info ---
 
     enum { Type = QGraphicsItem::UserType + 3 };
+    /// QGraphicsItem data role for distinguishing generated IC interface elements from
+    /// user-selected input/output elements. A valid true value marks a synthetic boundary;
+    /// false explicitly marks an element as user-authored. The value is persisted in IC blobs.
+    static constexpr int GeneratedICBoundaryDataRole = 0x1000;
 
     /// Returns the custom type identifier for this item.
     int type() const override { return Type; }

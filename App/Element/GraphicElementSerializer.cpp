@@ -115,6 +115,11 @@ void GraphicElementSerializer::save(const GraphicElement &element, QDataStream &
     if (!slim || !element.label().isEmpty()) {
         map.insert("label", element.label());
     }
+    // Portable files carry this only when the element was explicitly classified for an IC
+    // boundary; snapshots always include it so undo/redo restores the classification exactly.
+    if (!slim || element.data(GraphicElement::GeneratedICBoundaryDataRole).isValid()) {
+        map.insert("generatedICBoundary", element.data(GraphicElement::GeneratedICBoundaryDataRole).toBool());
+    }
     // min/max port sizes are class metadata, not per-instance state.
     // No longer written; old files that contain these keys are harmlessly
     // ignored on load (the QMap is read as a whole, unused keys are skipped).
@@ -277,6 +282,11 @@ void GraphicElementSerializer::loadNewFormat(GraphicElement &element, QDataStrea
 
     if (map.contains("label")) {
         element.setLabel(map.value("label").toString());
+    }
+    if (map.contains("generatedICBoundary")) {
+        // Do not invent a default for older files: flattening uses legacy labels when no
+        // explicit generated/user-authored classification was saved.
+        element.setData(GraphicElement::GeneratedICBoundaryDataRole, map.value("generatedICBoundary").toBool());
     }
 
     // min/max port sizes are class metadata — ignore any stale saved values.

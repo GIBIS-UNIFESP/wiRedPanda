@@ -16,6 +16,8 @@ private slots:
     void testRotateRightAction();
     void testMorphMenuAction();
     void testICSubcircuitAction();
+    // Verifies the IC actions are present and dispatch their supplied callbacks.
+    void testCreateICAndFlattenActionsDispatch();
 
     // Real ElementContextMenu::exec() menu-driving tests
     void testDismissWithoutChoosingIsNoOp();

@@ -83,6 +83,18 @@ public:
     /// Creates a new embedded IC from file bytes, registers the blob, and pushes an undo command.
     IC *createEmbeddedIC(const QString &blobName, const QByteArray &fileBytes, const QString &contextDir);
 
+    /// Replaces \a elements with an embedded IC in one undoable operation.
+    /// Connections crossing the selection become IC pins; selected input/output elements
+    /// themselves provide pins, while generated boundary elements are added for other crossings.
+    /// Throws if the selection is empty, contains duplicates, or includes an element outside this scene.
+    IC *createICFromSelection(const QList<GraphicElement *> &elements);
+
+    /// Replaces \a ic with its sub-circuit elements and reconnects all external wires in one undoable operation.
+    /// Restores the definition's layout relative to the IC's current position, removes only generated
+    /// interface elements, and preserves user-authored input/output elements in the flattened circuit.
+    /// Throws if \a ic is not in this scene or its definition cannot be loaded or resolved.
+    void flattenIC(IC *ic);
+
     /// Converts all file-backed IC elements referencing \a fileName to embedded ICs using \a blobName.
     int embedICsByFile(const QString &fileName, const QByteArray &fileBytes,
                        const QString &blobName);

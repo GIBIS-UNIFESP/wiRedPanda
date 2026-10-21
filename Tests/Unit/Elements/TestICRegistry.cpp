@@ -3,18 +3,23 @@
 
 #include "Tests/Unit/Elements/TestICRegistry.h"
 
+#include <algorithm>
+
 #include <QDataStream>
 #include <QFile>
 #include <QRectF>
 #include <QSignalSpy>
 #include <QTemporaryDir>
 
+#include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
+#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/Scene/ICRegistry.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
+#include "App/Wiring/Connection.h"
 #include "Tests/Common/TestUtils.h"
 
 namespace {
@@ -269,6 +274,254 @@ void TestICRegistry::testCreateEmbeddedICRegistersBlobAndAddsElement()
     scene->undoStack()->undo();
     QVERIFY(!scene->elements().contains(ic));
     QVERIFY(!registry->hasBlob("leaf_embedded"));
+}
+
+void TestICRegistry::testCreateICFromSelectionAndFlattenRestoreWiring()
+{
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    auto *source = new InputSwitch();
+    auto *gate = new And();
+    auto *sink = new Led();
+    source->setPos(QPointF(-240, 0));
+    gate->setPos(QPointF(0, 0));
+    sink->setPos(QPointF(240, 0));
+    scene->addItem(source);
+    scene->addItem(gate);
+    scene->addItem(sink);
+
+    auto *incoming = new Connection();
+    incoming->setStartPort(source->outputPort(0));
+    incoming->setEndPort(gate->inputPort(0));
+    scene->addItem(incoming);
+    auto *outgoing = new Connection();
+    outgoing->setStartPort(gate->outputPort(0));
+    outgoing->setEndPort(sink->inputPort(0));
+    scene->addItem(outgoing);
+
+    auto *registry = scene->icRegistry();
+    IC *ic = registry->createICFromSelection({gate});
+    QVERIFY(registry->hasBlob(ic->blobName()));
+    QCOMPARE(ic->inputSize(), 1);
+    QCOMPARE(ic->outputSize(), 1);
+    QCOMPARE(ic->inputPort(0)->connections().size(), 1);
+    QCOMPARE(ic->inputPort(0)->connections().constFirst()->startPort()->graphicElement(), source);
+    QCOMPARE(ic->outputPort(0)->connections().size(), 1);
+    QCOMPARE(ic->outputPort(0)->connections().constFirst()->endPort()->graphicElement(), sink);
+
+    auto elements = scene->elements();
+    QVERIFY(std::none_of(elements.cbegin(), elements.cend(),
+                         [](GraphicElement *element) { return element->elementType() == ElementType::And; }));
+
+    scene->undoStack()->undo();
+    QVERIFY(!registry->hasBlob(QStringLiteral("IC")));
+    elements = scene->elements();
+    auto *restoredGate = qobject_cast<And *>(elements.constFirst());
+    for (auto *element : elements) {
+        if (element->elementType() == ElementType::And) restoredGate = qobject_cast<And *>(element);
+    }
+    QVERIFY(restoredGate);
+    QCOMPARE(restoredGate->inputPort(0)->connections().size(), 1);
+    QCOMPARE(restoredGate->outputPort(0)->connections().size(), 1);
+
+    scene->undoStack()->redo();
+    IC *restoredIc = nullptr;
+    for (auto *element : scene->elements()) {
+        if (auto *candidate = qobject_cast<IC *>(element)) restoredIc = candidate;
+    }
+    QVERIFY(restoredIc);
+    registry->flattenIC(restoredIc);
+    elements = scene->elements();
+    And *flattenedGate = nullptr;
+    for (auto *element : elements) {
+        if (auto *candidate = qobject_cast<And *>(element)) flattenedGate = candidate;
+    }
+    QVERIFY(flattenedGate);
+    QCOMPARE(flattenedGate->inputPort(0)->connections().size(), 1);
+    QCOMPARE(flattenedGate->inputPort(0)->connections().constFirst()->startPort()->graphicElement(), source);
+    const auto gateOutputs = flattenedGate->outputPort(0)->connections();
+    QCOMPARE(gateOutputs.size(), 1);
+    QVERIFY(std::any_of(gateOutputs.cbegin(), gateOutputs.cend(),
+                        [sink](Connection *connection) { return connection->endPort() == sink->inputPort(0); }));
+    QCOMPARE(sink->inputPort(0)->connections().size(), 1);
+    QCOMPARE(std::count_if(elements.cbegin(), elements.cend(), [](GraphicElement *element) {
+        return element->elementType() == ElementType::Led;
+    }), 1);
+    QVERIFY(!registry->hasBlob(QStringLiteral("IC")));
+
+    scene->undoStack()->undo();
+    elements = scene->elements();
+    QVERIFY(std::any_of(elements.cbegin(), elements.cend(),
+                        [](GraphicElement *element) { return element->elementType() == ElementType::IC; }));
+}
+
+void TestICRegistry::testCreateICFromSelectionIncludesSelectedInputAndOutput()
+{
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    auto *source = new InputSwitch();
+    auto *gate = new And();
+    auto *sink = new Led();
+    auto *outsideSource = new InputSwitch();
+    auto *outsideSink = new Led();
+    source->setLabel(QStringLiteral("selected source"));
+    sink->setLabel(QStringLiteral("selected sink"));
+    source->setPos(QPointF(-240, 0));
+    gate->setPos(QPointF(0, 0));
+    sink->setPos(QPointF(240, 0));
+    outsideSource->setPos(QPointF(-480, 120));
+    outsideSink->setPos(QPointF(480, 120));
+    scene->addItem(source);
+    scene->addItem(gate);
+    scene->addItem(sink);
+    scene->addItem(outsideSource);
+    scene->addItem(outsideSink);
+    const QPointF originalSourcePos = source->pos();
+    const QPointF originalGatePos = gate->pos();
+    const QPointF originalSinkPos = sink->pos();
+    const QPointF originalOutsideSourcePos = outsideSource->pos();
+    const QPointF originalOutsideSinkPos = outsideSink->pos();
+
+    auto *inputConnection = new Connection();
+    inputConnection->setStartPort(source->outputPort(0));
+    inputConnection->setEndPort(gate->inputPort(0));
+    scene->addItem(inputConnection);
+    auto *outputConnection = new Connection();
+    outputConnection->setStartPort(gate->outputPort(0));
+    outputConnection->setEndPort(sink->inputPort(0));
+    scene->addItem(outputConnection);
+    auto *crossingInput = new Connection();
+    crossingInput->setStartPort(outsideSource->outputPort(0));
+    crossingInput->setEndPort(gate->inputPort(1));
+    scene->addItem(crossingInput);
+    auto *crossingOutput = new Connection();
+    crossingOutput->setStartPort(gate->outputPort(0));
+    crossingOutput->setEndPort(outsideSink->inputPort(0));
+    scene->addItem(crossingOutput);
+
+    IC *ic = scene->icRegistry()->createICFromSelection({source, gate, sink});
+    const QPointF oldICPos = ic->pos();
+    ic->setPos(oldICPos + QPointF(160, 80));
+    const QPointF translation = ic->pos() - oldICPos;
+    QCOMPARE(ic->inputSize(), 2);
+    QCOMPARE(ic->outputSize(), 2);
+    QCOMPARE(ic->inputPort(0)->connections().size(), 1);
+    QCOMPARE(ic->inputPort(0)->connections().constFirst()->startPort()->graphicElement(), outsideSource);
+    QCOMPARE(ic->inputPort(1)->connections().size(), 0);
+    QCOMPARE(ic->outputPort(0)->connections().size(), 0);
+    QCOMPARE(ic->outputPort(1)->connections().size(), 1);
+    QCOMPARE(ic->outputPort(1)->connections().constFirst()->endPort()->graphicElement(), outsideSink);
+    QCOMPARE(scene->elements().size(), 3);
+    QVERIFY(scene->elements().contains(ic));
+
+    scene->icRegistry()->flattenIC(ic);
+    const auto flattenedElements = scene->elements();
+    And *flattenedGate = nullptr;
+    GraphicElement *flattenedSource = nullptr;
+    GraphicElement *flattenedSink = nullptr;
+    bool selectedInputRestored = false;
+    bool selectedOutputRestored = false;
+    for (auto *element : flattenedElements) {
+        if (auto *candidate = qobject_cast<And *>(element)) flattenedGate = candidate;
+        if (element->label() == QStringLiteral("selected source")) flattenedSource = element;
+        if (element->label() == QStringLiteral("selected sink")) flattenedSink = element;
+        selectedInputRestored |= element == flattenedSource;
+        selectedOutputRestored |= element == flattenedSink;
+    }
+    QVERIFY(flattenedGate);
+    QVERIFY(flattenedSource);
+    QVERIFY(flattenedSink);
+    QVERIFY(selectedInputRestored);
+    QVERIFY(selectedOutputRestored);
+    QCOMPARE(flattenedSource->pos(), originalSourcePos + translation);
+    QCOMPARE(flattenedGate->pos(), originalGatePos + translation);
+    QCOMPARE(flattenedSink->pos(), originalSinkPos + translation);
+    QCOMPARE(outsideSource->pos(), originalOutsideSourcePos);
+    QCOMPARE(outsideSink->pos(), originalOutsideSinkPos);
+    QCOMPARE(flattenedGate->inputPort(0)->connections().size(), 1);
+    QCOMPARE(flattenedGate->inputPort(0)->connections().constFirst()->startPort()->graphicElement()->label(),
+             QStringLiteral("selected source"));
+    QCOMPARE(flattenedGate->inputPort(1)->connections().size(), 1);
+    QCOMPARE(flattenedGate->inputPort(1)->connections().constFirst()->startPort()->graphicElement(), outsideSource);
+    const auto flattenedOutputs = flattenedGate->outputPort(0)->connections();
+    QVERIFY(std::any_of(flattenedOutputs.cbegin(), flattenedOutputs.cend(),
+                        [](Connection *connection) {
+                            return connection->endPort()->graphicElement()->label() == QStringLiteral("selected sink");
+                        }));
+    QVERIFY(std::any_of(flattenedOutputs.cbegin(), flattenedOutputs.cend(),
+                        [outsideSink](Connection *connection) { return connection->endPort() == outsideSink->inputPort(0); }));
+}
+
+void TestICRegistry::testFlattenICWithoutBoundaryElements()
+{
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    auto *gate = new And();
+    scene->addItem(gate);
+
+    IC *ic = scene->icRegistry()->createICFromSelection({gate});
+    QCOMPARE(ic->inputSize(), 0);
+    QCOMPARE(ic->outputSize(), 0);
+
+    scene->icRegistry()->flattenIC(ic);
+    const auto elements = scene->elements();
+    QCOMPARE(elements.size(), 1);
+    QVERIFY(qobject_cast<And *>(elements.constFirst()));
+}
+
+void TestICRegistry::testCreateICFromSelectionSpacesBoundaryElements()
+{
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    auto *gate = new And();
+    gate->setInputSize(3);
+    scene->addItem(gate);
+
+    for (int i = 0; i < gate->inputSize(); ++i) {
+        auto *source = new InputSwitch();
+        source->setPos(QPointF(-320, static_cast<qreal>(i) * 96.0));
+        scene->addItem(source);
+
+        auto *connection = new Connection();
+        connection->setStartPort(source->outputPort(0));
+        connection->setEndPort(gate->inputPort(i));
+        scene->addItem(connection);
+    }
+
+    auto *secondGate = new And();
+    secondGate->setPos(QPointF(160, 0));
+    scene->addItem(secondGate);
+
+    auto *sink = new Led();
+    sink->setPos(QPointF(320, 0));
+    scene->addItem(sink);
+
+    auto *outgoing = new Connection();
+    outgoing->setStartPort(gate->outputPort(0));
+    outgoing->setEndPort(sink->inputPort(0));
+    scene->addItem(outgoing);
+
+    auto *secondSink = new Led();
+    secondSink->setPos(QPointF(480, 0));
+    scene->addItem(secondSink);
+
+    auto *secondOutgoing = new Connection();
+    secondOutgoing->setStartPort(secondGate->outputPort(0));
+    secondOutgoing->setEndPort(secondSink->inputPort(0));
+    scene->addItem(secondOutgoing);
+
+    IC *ic = scene->icRegistry()->createICFromSelection({gate, secondGate});
+    QCOMPARE(ic->inputSize(), 3);
+    QCOMPARE(ic->outputSize(), 2);
+
+    const auto &internalElements = ic->internalElements();
+    for (qsizetype i = 0; i < internalElements.size(); ++i) {
+        const QRectF first = internalElements[i]->boundingRect().translated(internalElements[i]->pos());
+        for (qsizetype j = i + 1; j < internalElements.size(); ++j) {
+            const QRectF second = internalElements[j]->boundingRect().translated(internalElements[j]->pos());
+            QVERIFY2(!first.intersects(second), "Generated IC elements overlap.");
+        }
+    }
 }
 
 void TestICRegistry::testEmbedICsByFileRollsBackOnLoadFailure()
