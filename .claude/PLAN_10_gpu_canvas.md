@@ -12,19 +12,19 @@ with an environment override chooses the backend; Automatic, the default everywh
 probe finds a hardware adapter. CI checks the mirror on `QRhi`'s Null backend in every job and compares parity renders
 with the CPU backend on Mesa and on Metal.
 
-- **Depends on:** plans 1 to 9, the Qt floor's pull request and the model-cost round, landed, since the plans run one
+- **Depends on:** plans 1 to 9, the Qt floor's plan and the model-cost round, landed, since the plans run one
   at a time, in their order (the plans' rules, §1): plan 9 (the render target and the `RenderBackend` interface,
   the view whose viewport is the backend's widget and its `viewportReplaced`, the overlay state as data, the document
   listener, the sprite key and cache with the rule for fractional pixel ratios, the ports holding their slots in the
   core, and the CPU backend as the fallback and the parity reference); the model-cost round (the model as it leaves
   it, with the listener's events settled for the mirror, MC.11, and the probe's selection and move phases); plan 6
   (the interface through which the renderers read the core's status arrays, P6.D1, and the runner's changed slots);
-  the Qt floor's pull request, since `QRhiWidget` first appeared in Qt 6.7; plan 3 (the appearance key and the
+  the Qt floor's plan, since `QRhiWidget` first appeared in Qt 6.7; plan 3 (the appearance key and the
   presenters its sprites draw from); plan 1 (the wire-pixel goldens, the CPU reference its parity renders build on,
   and the probe that times a load and its first frames).
 - **Lands before:** nothing; it is the last in the order.
-- **Branch and ledger:** its own branch from `master`, started once the model-cost round has landed, landing in slices
-  (the plans' rules, §3). `LEDGER_10_gpu_canvas.md` has a row for every step, check and open question below.
+- **Branch and ledger:** `10-gpu-canvas`, from `09a-model-cost` once the model-cost round has landed, in slices (the
+  plans' rules, §1 and §3). `LEDGER_10_gpu_canvas.md` has a row for every step, check and open question below.
 - **Rules every plan shares** are the plans' rules (`PLAN_rules.md`) and `CLAUDE.md`'s "Building and testing". This
   file states plan 10's own: all `QRhi` use stays in the GPU target, so a source change in a later Qt minor release is
   fixed in one place; the mirror changes only from the model's change notifications, and no per-frame pass walks every
@@ -140,7 +140,7 @@ Qt 6.6 with limited compatibility guarantees (no source or binary promise; break
 used by linking `Qt::GuiPrivate` and including `<rhi/qrhi.h>`; `QRhiWidget` exists since 6.7. The private headers come
 in `qt6-base-private-dev` (Debian, Ubuntu) and `qt6-qtbase-private-devel` (Fedora); aqt and Arch's `qt6-base` include
 them. The release's AppImage already bundles the xcb GL integrations and the Wayland graphics integration, and
-`windeployqt` deploys the Direct3D compiler. The Qt floor's pull request, outside the ten plans, raises the minimum to
+`windeployqt` deploys the Direct3D compiler. The Qt floor's plan, outside the ten plans, raises the minimum to
 6.8 right after plan 2, the oldest Qt CI already builds; this plan starts on that floor.
 
 GitHub closed the request for GPU access on its hosted runners as impossible by their design
@@ -364,7 +364,7 @@ user's choice between workable options).
 - **P10.D7. The renderer draws the selection;** a picture's key leaves it out, so one sprite serves a selected and an
   unselected element. Basis: tested on the branch (every body state by orientation by theme: one key per drawing and
   one drawing per key); the user's ruling of 2026-10-03/04.
-- **P10.D8. Qt 6.8 for the whole project,** raised by its own pull request before this plan (`QRhiWidget` needs 6.7);
+- **P10.D8. Qt 6.8 for the whole project,** raised by its own plan before this one (`QRhiWidget` needs 6.7);
   users of distributions with an older Qt install it with the documented aqt recipe. Basis: read (Qt 6.8 or later
   ships in Debian 13, Ubuntu 25.04 and later, Fedora, Alpine and Arch; Ubuntu 22.04 and 24.04 and Debian 12 ship
   6.4.2 or older; no maintained distribution ships 6.7, whose support Qt ended in March 2025); the user's rulings of
@@ -427,5 +427,5 @@ and the floor as the branch raised it. A hash is its branch's, kept read-only.
 | A `QRhiWidget` as a scroll area's viewport beside scroll bars and a label, and a raster baseline | `spike/gpu-scene`: `853865204` |
 | The Qt Quick canvas's two caches (56.9% to 31.5% of a core) | `qtquick-rewrite`: `6e688df50` |
 | The Qt Quick canvas's blind 16 ms repaint poll removed | `qtquick-rewrite`: `ba187e9d4` |
-| The Qt floor raised to 6.7 on the branch, its documents and CI, which the 6.8 floor's pull request follows | `gpu-canvas`: `c4b545131` |
+| The Qt floor raised to 6.7 on the branch, its documents and CI, which the 6.8 floor's plan follows | `gpu-canvas`: `c4b545131` |
 | Metal on the hosted macOS runners | GitHub Actions run 39637751948 |

@@ -7,7 +7,7 @@ at the display rate; the reset source as a whole element type; and the switch, w
 engine to the runner and deletes that engine, every changed golden named by plan 5's list. Temporal mode runs in the
 core and the runner, and the application offers it with plan 7.
 
-- **Depends on:** plans 1 to 5 and the Qt floor's pull request, landed, since the plans run one at a time, in their
+- **Depends on:** plans 1 to 5 and the Qt floor's plan, landed, since the plans run one at a time, in their
   order (the plans' rules, §1): plan 5 (the spec, the reference simulator, the oracles, the random circuits, the
   spec's traces and the list of differences from `master`); plan 3 (each descriptor's kernel and an input type's
   source level, and the include check of the model's direction, which this plan extends to the runner); plan 4 (one
@@ -16,8 +16,8 @@ core and the runner, and the application offers it with plan 7.
 - **Lands before:** plan 7, which offers temporal mode in the application; then plan 8, whose exporters move onto this
   plan's netlist builder and compare with its core, and which lands before any release that follows this plan's
   switch; then plan 9, which starts from a `master` holding the core.
-- **Branch and ledger:** its own branch from `master`, started once plan 5 has landed, landing in slices (the plans'
-  rules, §3).
+- **Branch and ledger:** `06-core`, from `05-semantics` once plan 5 has landed, in slices (the plans' rules, §1 and
+  §3).
   `LEDGER_06_core.md` has a row for every step, check and open question below.
 - **Rules every plan shares** are the plans' rules (`PLAN_rules.md`) and `CLAUDE.md`'s "Building and testing". This
   file states plan 6's own: the core implements plan 5's spec and nothing else, so a question about a rule goes to the
@@ -280,9 +280,9 @@ in the random circuits (P5.27). In functional mode it is Active through the powe
 (the second tick, or a settle that runs the power-on instant); in temporal mode Active for its width, its release an
 instant of its own, run by a tick or a settle. A reset that survives a rebuild keeps its state; one a rebuild adds reads
 Inactive at once. On the branch its icon was the VCC's, since the palette did not offer it yet; here its picture is
-drawn for it and shown to the user before its slice lands (P6.31). It lands no later than the switch, whose examples
-use it. Pitfalls from the branch: a settle must run a reset's release when it falls due, in both engines; and the reset
-source has a row in every element golden.
+drawn for it and shown to the user before its slice is finished (P6.31). It lands no later than the switch, whose
+examples use it. Pitfalls from the branch: a settle must run a reset's release when it falls due, in both engines; and
+the reset source has a row in every element golden.
 
 ### 2.11 The runner
 
@@ -539,7 +539,7 @@ user's choice between workable options).
   more than 500 memory nodes) are timed on the core, and if one instant alone stalls the application, a lower budget
   goes into the spec first.
 - **What the user sees new** (P6.31): the reset source's picture and icon, and how a display or an LED draws a
-  non-level, shown to the user before their slices land.
+  non-level, shown to the user before their slices are finished.
 - **No release between this plan's switch and plan 8's landing** (P6.32), plan 7 landing in between: until plan 8
   lands, the exporters follow the Tx and read `master`'s order and Unknown, where the simulator reads Error and its own
   rules; a release in between would ship that disagreement. Closed when plan 8 lands.

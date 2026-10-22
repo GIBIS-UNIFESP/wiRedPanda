@@ -6,13 +6,13 @@ pins and the file header alike, never saved in the interface language; and the u
 IC file restoring the old definition, which the document keeps as a copy, so a save and a reopen keep it. The
 additions to what a document holds extend the current format; nothing replaces it.
 
-- **Depends on:** plans 1 to 3 and the Qt floor's pull request, landed, since the plans run one at a time, in their
+- **Depends on:** plans 1 to 3 and the Qt floor's plan, landed, since the plans run one at a time, in their
   order (the plans' rules, §1): plan 1's goldens, the payload goldens above all, where a format change shows first;
   plan 3's one element class, with the descriptors and the untranslated source names an IC's pins read.
 - **Lands before:** plan 5, whose reference simulator reads its definitions, then plan 6, whose netlist builder
   compiles each IC definition once.
-- **Branch and ledger:** its own branch from `master`, started once plan 3 has landed, landing in slices (the plans'
-  rules, §3).
+- **Branch and ledger:** `04-ics-and-format`, from `03-element-types` once plan 3 has landed, in slices (the plans'
+  rules, §1 and §3).
   `LEDGER_04_ics_and_format.md` has a row for every step, check and open question below.
 - **Rules every plan shares** are the plans' rules (`PLAN_rules.md`) and `CLAUDE.md`'s "Building and testing"; the
   format rule is the plans' rules' §2: older files read as before, a file the application writes reads back and saves

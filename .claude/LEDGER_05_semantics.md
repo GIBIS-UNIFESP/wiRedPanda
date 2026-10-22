@@ -7,7 +7,7 @@ sub-ID of the item it belongs to (`P5.6a`, `P5.6b`, ...) and a line in the log. 
 (committed), `blocked` (on what, in the notes) or `dropped` (why, with the user's decision). The Commits column lists
 every commit of the item. Every status change gets a dated line in the log.
 
-**Branch:** its own, from `master`, once plan 4 has landed; not created yet.
+**Branch:** `05-semantics`, from `04-ics-and-format` once plan 4 has landed; not created yet.
 
 **Open decisions:** none (P5.25 decided on 2026-10-21: the spec takes the covering rule, P5.D21).
 

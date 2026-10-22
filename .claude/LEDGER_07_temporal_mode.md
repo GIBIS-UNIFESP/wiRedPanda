@@ -8,7 +8,7 @@ sub-ID of the item it belongs to (`P7.5a`, `P7.5b`, ...) and a line in the log. 
 (committed), `blocked` (on what, in the notes) or `dropped` (why, with the user's decision). The Commits column lists
 every commit of the item. Every status change gets a dated line in the log.
 
-**Branch:** its own, from `master`, once plan 6 has landed; not created yet.
+**Branch:** `07-temporal-mode`, from `06-core` once plan 6 has landed; not created yet.
 
 **Open decisions:** none yet; P7.15 needs the user once the selectors and BeWavedDolphin's controls are drawn.
 
@@ -31,7 +31,7 @@ fail.
 | P7.12 | The developer guide, `CLAUDE.md`, the READMEs and the MCP text (§2.6, §2.8) | todo | | |
 | P7.13 | The manual pass (§2.9) | todo | | Its findings in the log |
 | P7.14 | The Python client reads the bounds from the schema file (§6) | todo | | Or keeps a copy that a test compares with the schema |
-| P7.15 | What the user sees new: the selectors, the readout, BeWavedDolphin's controls and its sweep mode (§6) | todo | | Shown to the user before their slices land |
+| P7.15 | What the user sees new: the selectors, the readout, BeWavedDolphin's controls and its sweep mode (§6) | todo | | Shown to the user before their slices are finished |
 | P7.16 | The slowest speeds show a delay on the canvas at the display rate: two presets slower than `temporal-engine`'s (P7.D5, §6) | todo | | Decided 2026-10-21 by arithmetic (P7.D5); watched by hand on the gate delay chain and the ring at each preset: the slower two step visibly; a test reads the presets, the slowest 1 ns per 100 ms |
 
 ## Log

@@ -7,7 +7,7 @@ sub-ID of the item it belongs to (`P9.4a`, `P9.4b`, ...) and a line in the log. 
 (committed), `blocked` (on what, in the notes) or `dropped` (why, with the user's decision). The Commits column lists
 every commit of the item. Every status change gets a dated line in the log.
 
-**Branch:** its own, from `master`, once plan 8 has landed; not created yet.
+**Branch:** `09-editor`, from `08-export` once plan 8 has landed; not created yet.
 
 **Open decisions:** none yet; P9.13's probe settles the sprite rule (P9.D11), and P9.28 needs the user once the ports
 and labels above overlapping elements, and any redrawn glows, can be shown.

@@ -7,7 +7,7 @@ sub-ID of the item it belongs to (`P8.4a`, `P8.4b`, ...) and a line in the log. 
 (committed), `blocked` (on what, in the notes) or `dropped` (why, with the user's decision). The Commits column lists
 every commit of the item. Every status change gets a dated line in the log.
 
-**Branch:** its own, from `master`, once plan 7 has landed; not created yet.
+**Branch:** `08-export`, from `07-temporal-mode` once plan 7 has landed; not created yet.
 
 **Open decisions:** none yet; P8.16 (yosys and verilator in CI) is settled here once P8.17 has measured the run time.
 

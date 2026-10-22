@@ -7,7 +7,7 @@ speed, waveform resolution and input changes that settle; and the temporal examp
 Arduino export's note on the delays it drops in temporal mode is plan 8's, among its exporter notes, since plan 8
 lands after this plan. Temporal mode is offered only once plan 5's exact oracle with delays agrees with the reference.
 
-- **Depends on:** plans 1 to 6 and the Qt floor's pull request, landed, since the plans run one at a time, in their
+- **Depends on:** plans 1 to 6 and the Qt floor's plan, landed, since the plans run one at a time, in their
   order (the plans' rules, §1): plan 6 (the core's temporal mode; the runner's mode, speed and simulated time per
   tab; the settle; the sweep guard; each logic type's delay in its descriptor); plan 5 (its exact oracle with delays,
   P5.13, agreeing with the reference, and the covering rule it decides, P5.25); plan 3 (the parameter schema and store,
@@ -17,8 +17,8 @@ lands after this plan. Temporal mode is offered only once plan 5's exact oracle 
 - **Lands before:** plan 8, whose temporal SystemVerilog export reads each element's delay from the netlist, and whose
   exporter notes include the Arduino export's note on the delays it drops in a temporal tab. No release comes between
   plan 6's switch and plan 8's landing (plan 6's P6.32), so none offers temporal mode without that note.
-- **Branch and ledger:** its own branch from `master`, started once plan 6 has landed, landing in slices (the plans'
-  rules, §3).
+- **Branch and ledger:** `07-temporal-mode`, from `06-core` once plan 6 has landed, in slices (the plans' rules, §1
+  and §3).
   `LEDGER_07_temporal_mode.md` has a row for every step, check and open question below.
 - **Rules every plan shares** are the plans' rules (`PLAN_rules.md`) and `CLAUDE.md`'s "Building and testing", the
   format's among them: the document format is extended, never broken. This file states plan 7's own: temporal mode
@@ -193,9 +193,9 @@ release notes name what users see: the selectors, the delay, BeWavedDolphin's te
 
 ### 2.9 The manual pass
 
-Before its last slice lands, a pass by hand over what this plan changes: simulation in both modes at several speeds and
-per tab, a mode switch in the middle of a run, a temporal sweep during a live temporal run, the delay field on a
-selection, the three examples, and the readout across tabs.
+Before its last slice is finished, a pass by hand over what this plan changes: simulation in both modes at several
+speeds and per tab, a mode switch in the middle of a run, a temporal sweep during a live temporal run, the delay field
+on a selection, the three examples, and the readout across tabs.
 
 ## 3. Pitfalls
 
@@ -259,7 +259,7 @@ user's choice between workable options).
   `temporal-engine` the delay's bound lived in the client too. Checked by a test that changes the schema's bound and
   sees the client follow, or the client keeps a copy and a test compares it with the schema.
 - **What the user sees new** (P7.15): the selectors' place and labels, the readout, BeWavedDolphin's controls and its
-  sweep mode starting at the tab's, shown to the user before their slices land.
+  sweep mode starting at the tab's, shown to the user before their slices are finished.
 - **Whether the slowest speed shows a delay on the canvas** (P7.16): decided by arithmetic, two slower presets
   (P7.D5). The gate delay chain and the ring are still watched at each preset, by hand, to confirm that the slower two
   step visibly and the faster ones do not stall.

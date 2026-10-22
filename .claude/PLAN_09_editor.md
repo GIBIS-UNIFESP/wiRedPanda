@@ -9,7 +9,7 @@ editing session, with a controller taking the interaction; adds a new view whose
 widget, and a CPU backend with painters, a sprite cache and an export mode; and then deletes the old view and scene,
 after which the element is a plain class. It draws what `master` draws, and plan 1's goldens pin it on both views.
 
-- **Depends on:** plans 1 to 8 and the Qt floor's pull request, landed, since the plans run one at a time, in their
+- **Depends on:** plans 1 to 8 and the Qt floor's plan, landed, since the plans run one at a time, in their
   order (the plans' rules, §1): plan 3 (one element class with its descriptors, the presenters, the appearance key,
   the element painter, the outline and decorations, and the include check of the model's direction, which this plan
   extends to six layers); plan 6 (the core, with its suspend count in the model, which the document takes, and the
@@ -22,8 +22,8 @@ after which the element is a plain class. It draws what `master` draws, and plan
   wire).
 - **Lands before:** the model-cost round, which works on the new model; then plan 10, whose GPU renderer is a second
   backend behind this plan's render interface, set as the view's viewport, on the model as the round leaves it.
-- **Branch and ledger:** its own branch from `master`, started once plan 8 has landed, landing in slices (the plans'
-  rules, §3). `LEDGER_09_editor.md` has a row for every step, check and open question below.
+- **Branch and ledger:** `09-editor`, from `08-export` once plan 8 has landed, in slices (the plans' rules, §1 and
+  §3). `LEDGER_09_editor.md` has a row for every step, check and open question below.
 - **Rules every plan shares** are the plans' rules (`PLAN_rules.md`) and `CLAUDE.md`'s "Building and testing". This
   file states plan 9's own: every behaviour Qt carries for items today is implemented in the editor before the flag or
   base class that carries it goes; a replacement runs beside what it replaces until plan 1's goldens pass on both; a
@@ -510,7 +510,7 @@ user's choice between workable options).
 - **Whether today's `master` still pays Qt's BSP index rebuild after a load** (P9.27), as the July 2026 profile found:
   plan 1's probe answers it, and the plain-object layers and the deleted scene are measured against it (P9.25).
 - **What the user sees new** (P9.28): ports and labels above every element where elements overlap, and the redrawn
-  glows if the probe leads to them, shown to the user before their slices land.
+  glows if the probe leads to them, shown to the user before their slices are finished.
 - **The model's notification path for plan 10** (P9.29): whether the listener's events (element, wire, port, label,
   theme, bulk scopes) are enough for a GPU mirror with stable slots and dirty ranges, checked against plan 10's mirror
   before this plan's listener is final.

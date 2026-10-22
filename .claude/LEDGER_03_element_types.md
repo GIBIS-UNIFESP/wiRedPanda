@@ -8,7 +8,7 @@ sub-ID of the item it belongs to (`P3.13a`, `P3.13b`, ...) and a line in the log
 (committed), `blocked` (on what, in the notes) or `dropped` (why, with the user's decision). The Commits column lists
 every commit of the item. Every status change gets a dated line in the log.
 
-**Branch:** its own, from `master`, once the Qt floor's pull request has landed, after plans 1 and 2; not created yet.
+**Branch:** `03-element-types`, from `02a-qt-floor` once the Qt floor's plan has landed; not created yet.
 
 **Open decisions:** none.
 

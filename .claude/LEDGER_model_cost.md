@@ -7,7 +7,7 @@ sub-ID of the item it belongs to (`MC.4a`, `MC.4b`, ...) and a line in the log. 
 (committed), `blocked` (on what, in the notes) or `dropped` (why, with the user's decision). The Commits column lists
 every commit of the item. Every status change gets a dated line in the log.
 
-**Branch:** its own, from `master`, once plan 9 has landed; not created yet.
+**Branch:** `09a-model-cost`, from `09-editor` once plan 9 has landed; not created yet.
 
 **Open decisions:** none yet; MC.11 is settled with plan 10's P10.19 if an optimisation changes the listener's events.
 

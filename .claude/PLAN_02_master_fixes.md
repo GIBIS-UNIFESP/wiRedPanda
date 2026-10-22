@@ -1,15 +1,16 @@
 # Plan 2: fixes to `master`
 
-Every defect the branch found that exists on `master`, each fixed on `master` in a small pull request of its own,
-with a test that fails on `master` first and every line of plan 1's goldens it changes named by this cause. Users get
-each fix as soon as it is ready, and a plan that later rewrites the fixed code keeps the fix, pinned by its test, so
-the rewrite preserves behaviour. A defect whose fix is itself another plan's decision is that plan's: a change to the
-document format (plan 4) or the new simulation semantics (plan 6's switch); §8 lists them.
+Every defect the branch found that exists on `master`, each fixed in a small commit of its own on plan 2's branch,
+with a test that fails on `master`'s code first and every line of plan 1's goldens it changes named by this cause. A
+plan that later rewrites the fixed code keeps the fix, pinned by its test, so the rewrite preserves behaviour. A
+defect whose fix is itself another plan's decision is that plan's: a change to the document format (plan 4) or the new
+simulation semantics (plan 6's switch); §8 lists them.
 
 - **Depends on:** plan 1, landed. The plans run one at a time, in their order (the plans' rules, §1), so every fix
   has all of plan 1's goldens and helpers; §9 names the rows each rests on.
-- **Lands:** fix by fix, each its own pull request. The Qt 6.8 floor's pull request follows this plan, then plan 3.
-- **Branch and ledger:** its own branch from `master`, each fix a slice of its own (the plans' rules, §3).
+- **Lands before:** the Qt 6.8 floor's plan, then plan 3.
+- **Branch and ledger:** `02-master-fixes`, from `01-characterization` once plan 1 has landed, each fix a slice of its
+  own (the plans' rules, §1 and §3).
   `LEDGER_02_master_fixes.md` has a row for every fix, check and open question below, and a new row for every defect
   found on `master` later.
 - **Rules every plan shares** are the plans' rules (`PLAN_rules.md`) and `CLAUDE.md`'s "Building and testing"; this
@@ -434,7 +435,7 @@ says what changed.
 Each ends with its basis: measured or tested (a run backs it), read (the code, with nothing run), or a ruling (the
 user's choice between workable options).
 
-- **P2.D1. Every defect verified on `master` is plan 2's**, one small pull request each, on all of plan 1's goldens,
+- **P2.D1. Every defect verified on `master` is plan 2's**, one small commit each, on all of plan 1's goldens,
   unless its fix is another plan's decision (§8); the plan that later rewrites the code keeps the fix. Basis: the
   user's rulings of 2026-10-21 (this rule, and the plans run one at a time, plan 2 starting once plan 1 has landed).
 - **P2.D2. An open S, R or T reads Inactive**, as the code's comments say and as the Arduino export reads an open
@@ -468,10 +469,10 @@ user's choice between workable options).
   right after plan 2).
 - **P2.D10. The fuzz harnesses run on the user's machine, overnight, not in CI.** The fuzzer preset (libFuzzer with
   ASan and UBSan) is built there and the harnesses run through `Tests/Fuzz/run-unattended.sh`. A slice that adds or
-  changes a harness (this plan's §2.1 and §2.2, plan 3's round trip, plan 4's IC files, plan 6's lockstep fuzzer) lands
-  after the user's overnight run of it; a crash becomes a row of the plan whose code it reaches, its input kept under
-  `Tests/Fuzz/regressions/`. CI's workflows keep ignoring `Tests/Fuzz/`. Basis: the user's ruling of 2026-10-21 ("i
-  dont think its necessary/useful to run fuzzer in CI. i can run it overnight on my pc").
+  changes a harness (this plan's §2.1 and §2.2, plan 3's round trip, plan 4's IC files, plan 6's lockstep fuzzer) is
+  finished after the user's overnight run of it; a crash becomes a row of the plan whose code it reaches, its input
+  kept under `Tests/Fuzz/regressions/`. CI's workflows keep ignoring `Tests/Fuzz/`. Basis: the user's ruling of
+  2026-10-21 ("i dont think its necessary/useful to run fuzzer in CI. i can run it overnight on my pc").
 
 ## 11. Risks
 
@@ -481,7 +482,7 @@ user's choice between workable options).
 | A fix changes behaviour users or files rely on: an open S, R or T, port counts a file holds, latch outcomes | Each change named by its cause in the golden diff and the release notes; no release wrote the refused port counts; the walk measured first |
 | A fix in code a later plan rewrites is lost in the rewrite | Each fix's test stays; the rewriting plan lists the fixes it keeps (§13) |
 | A test of a fix cannot fail | Each shown to fail on `master` first; a later fix that makes an older test vacuous (§5.1) reworks it |
-| The fuzz fixes cannot be checked without running the fuzzers, which are clang builds | The user runs them overnight before the slice lands (P2.D10) |
+| The fuzz fixes cannot be checked without running the fuzzers, which are clang builds | The user runs them overnight before the slice is finished (P2.D10) |
 
 ## 12. Claims to check and open questions
 
@@ -506,7 +507,7 @@ user's choice between workable options).
 - **Plan 6** keeps the clocks across a rebuild and a connected input on its wire; its condensation replaces the walk.
 - **Plan 8** keeps the truth tables' regs, the untranslated names and the Tx resolution, then refuses two drivers.
 - **Plan 9** keeps the wheel zoom, the topmost hit and the empty-scene error.
-- **The Qt 6.8 floor's pull request** follows this plan.
+- **The Qt 6.8 floor's plan** follows this plan.
 
 ## 14. The branch's fixes, as evidence
 

@@ -8,7 +8,7 @@ sub-ID of the item it belongs to (`P10.7a`, `P10.7b`, ...) and a line in the log
 (committed), `blocked` (on what, in the notes) or `dropped` (why, with the user's decision). The Commits column lists
 every commit of the item. Every status change gets a dated line in the log.
 
-**Branch:** its own, from `master`, once the model-cost round has landed; not created yet.
+**Branch:** `10-gpu-canvas`, from `09a-model-cost` once the model-cost round has landed; not created yet.
 
 **Open decisions:** none yet; P10.22 (what fast mode does on the GPU) is settled once P10.17 has measured the budgets,
 and P10.25 needs the user before Automatic picks the GPU.

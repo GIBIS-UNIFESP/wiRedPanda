@@ -1,19 +1,19 @@
 # The Qt 6.8 floor
 
-The project's minimum Qt goes from 6.2 to 6.8, for every build, in one small pull request of its own. `QRhiWidget`,
+The project's minimum Qt goes from 6.2 to 6.8, for every build, in one small commit of its own. `QRhiWidget`,
 which plan 10's GPU canvas draws in, first appeared in Qt 6.7, and the user kept one floor for the whole project rather
 than one for GPU builds only; the floor is 6.8, not 6.7, since no maintained distribution ships 6.7, Qt's support for
-6.7 has ended, and 6.8 is a long-term-support release that CI already builds as its oldest Qt. The pull request raises
+6.7 has ended, and 6.8 is a long-term-support release that CI already builds as its oldest Qt. The commit raises
 the number CMake asks for, removes the code that exists only for Qt older than 6.8, says 6.8 in every document that
 names a minimum, and makes the documented way to install Qt on an older distribution work. It adds no CI build: the
 6.8.3 jobs and the i386 job's 6.8.2 already test the floor. It comes right after plan 2.
 
 - **Depends on:** plan 2, landed, since the plans run one at a time, in their order (the plans' rules, §1); and plan
-  1's translatable-strings target (plan 1's §3.13), whose Qt 6.7 condition this pull request removes.
-- **Lands before:** plan 3. The order is 1, 2, this pull request, 3 to 9, the model-cost round, then 10; plan 10 needs
+  1's translatable-strings target (plan 1's §3.13), whose Qt 6.7 condition this commit removes.
+- **Lands before:** plan 3. The order is 1, 2, this floor, 3 to 9, the model-cost round, then 10; plan 10 needs
   the floor for `QRhiWidget`.
-- **Branch and ledger:** its own branch from `master`, started once plan 2 has landed; one pull request, a slice of one
-  commit (§4). `LEDGER_qt_floor.md` has a row for every step, check and open question below.
+- **Branch and ledger:** `02a-qt-floor`, from `02-master-fixes` once plan 2 has landed; one slice of one commit (§4).
+  `LEDGER_qt_floor.md` has a row for every step, check and open question below.
 - **Rules every plan shares** are the plans' rules (`PLAN_rules.md`) and `CLAUDE.md`'s "Building and testing". This
   file states the floor's own: the floor is one number, so every place that names a minimum Qt says 6.8, and every
   guard for an older Qt goes, in the same commit; and an install recipe the documents give is run as written in CI, so
@@ -104,10 +104,11 @@ build, so it has to work as written.
   sanitizers, the translation workflow, the WebAssembly build and the release all use 6.9.3. So the floor is built and
   tested on Linux, Windows and macOS (6.8.3) and on i386 (6.8.2) already.
 - `fresh-deps.yml` builds from clean distribution images with what the documents say, weekly, on demand, and on every
-  pull request that changes the build documents, `CONTRIBUTING.md`, the developer guide, `CMakeLists.txt`,
-  `CMakePresets.json` or itself: its `distro` job runs `BUILD.md`'s apt line on `ubuntu:24.04` and `debian:trixie`,
-  and its `minimum-cmake` job builds on `ubuntu:24.04`'s apt Qt with CMake pinned to 3.27. Ubuntu 24.04's apt Qt is
-  6.4.2, so with the floor both of its runs there stop at `find_package`. Nothing runs the aqt recipe.
+  pull request to `master` (never on a push to a branch) that changes the build documents, `CONTRIBUTING.md`, the
+  developer guide, `CMakeLists.txt`, `CMakePresets.json` or itself: its `distro` job runs `BUILD.md`'s apt line on
+  `ubuntu:24.04` and `debian:trixie`, and its `minimum-cmake` job builds on `ubuntu:24.04`'s apt Qt with CMake pinned
+  to 3.27. Ubuntu 24.04's apt Qt is 6.4.2, so with the floor both of its runs there stop at `find_package`. Nothing
+  runs the aqt recipe.
 
 ### 1.7 Distributions and Qt's support
 
@@ -118,7 +119,7 @@ install Qt with the aqt recipe, as they would under a 6.7 floor. Qt's standard s
 6.8 is a long-term-support release, supported until 2029-10-08. The released AppImage, ZIP and DMG bundle their Qt
 (6.9.3), so users of the releases are not affected.
 
-## 2. What the pull request changes
+## 2. What the commit changes
 
 The branch raised the floor to 6.7 in one commit (`c4b545131`), and ran each CI job's steps in local containers; the
 recipe, the documents' structure and the fresh distro jobs below are its work, with 6.8 for 6.7 and the 6.8 guards
@@ -150,7 +151,7 @@ linguist tools are found.
   Debian 12 and Ubuntu 22.04 and 24.04 ship an older Qt and use the aqt recipe; the apt section is headed "Debian 13+
   and Ubuntu 25.04+". The developer guide's apt section takes the same heading and the same sentence, and
   `CONTRIBUTING.md`'s comment names the same releases and points older ones to `BUILD.md`.
-- Release notes are written at the release, not in this pull request; the `.ts` catalogs are untouched, since no
+- Release notes are written at the release, not in this commit; the `.ts` catalogs are untouched, since no
   translatable string changes.
 
 ### 2.4 The aqt recipe
@@ -197,8 +198,10 @@ them.
 
 ## 4. Steps
 
-One pull request of one commit: the floor is one number, and each part needs the others (CI's apt jobs on
-`ubuntu:24.04` fail once CMake asks for 6.8; the guards are dead only once it does).
+One commit: the floor is one number, and each part needs the others (CI's apt jobs on `ubuntu:24.04` fail once CMake
+asks for 6.8; the guards are dead only once it does). Since a push never runs the fresh distro workflow, it is started
+by hand on the pushed branch (`gh workflow run fresh-deps.yml --ref 02a-qt-floor`), and the plan lands only on its
+green run as well as the push's.
 
 | Row | Step | Slice |
 |---|---|---|
@@ -244,7 +247,7 @@ user's choice between workable options).
 |---|---|
 | A user of Ubuntu 22.04 or 24.04, or Debian 12, can no longer build with the apt line | `BUILD.md` names those releases and sends them to the aqt recipe, which CI runs as written |
 | A user on a distribution with Qt 6.7 can no longer build from source | None is maintained (§1.7); the aqt recipe works there too |
-| The recipe rots: a package renamed or dropped | The fresh distro workflow runs it weekly and on every pull request that changes the documents |
+| The recipe rots: a package renamed or dropped | The fresh distro workflow runs it weekly and on every pull request to `master` that changes the documents |
 | A later change drops CI's last 6.8 build, leaving the floor untested | The matrix's comment names the floor's entries (§2.5) |
 
 ## 8. What other plans take from it

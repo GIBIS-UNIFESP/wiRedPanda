@@ -7,7 +7,7 @@ sub-ID of the item it belongs to (`QF.4a`, `QF.4b`, ...) and a line in the log. 
 (committed), `blocked` (on what, in the notes) or `dropped` (why, with the user's decision). The Commits column lists
 every commit of the item. Every status change gets a dated line in the log.
 
-**Branch:** its own, from `master`, once plan 2 has landed; not created yet. One pull request.
+**Branch:** `02a-qt-floor`, from `02-master-fixes` once plan 2 has landed; not created yet. One slice of one commit.
 
 **Open decisions:** none.
 
@@ -17,7 +17,7 @@ Each row's notes say how its check is shown to fail; "as on the branch" marks a 
 |---|---|---|---|---|
 | QF.1 | CMake: `find_package` asks for 6.8, WebAssembly keeps 6.9; the `lupdate` options and plan 1's translatable-strings target no longer wait for 6.7 (§2.1) | todo | | Shown to fail: configuring against Ubuntu 24.04's apt Qt (6.4.2) stops at `find_package`, naming the version |
 | QF.2 | The dead guards: `Common.h`'s `qCDebug` override, `ThemeManager`'s palette-lightness guess and its comments, its three 6.8 blocks made unconditional, the colour-scheme tests' and the macOS palette tests' skips, `QVERIFY_THROWS` (37 uses to `QVERIFY_THROWS_EXCEPTION`), `LanguageManager.cpp`'s comment, the developer guide's two passages (§2.2) | todo | | Shown to fail: with the `colorSchemeChanged` connection removed, the colour-scheme test that expects a reaction fails; a `QVERIFY_THROWS_EXCEPTION` whose expression throws nothing fails its test |
-| QF.3 | The documents: Qt 6.8 in the READMEs, the build documents, the developer guide and the dev container's README, in three languages; which releases have it and which use the aqt recipe (§2.3) | todo | | Checked by the fresh distro workflow, which runs on the pull request since it changes the documents (QF.5) |
+| QF.3 | The documents: Qt 6.8 in the READMEs, the build documents, the developer guide and the dev container's README, in three languages; which releases have it and which use the aqt recipe (§2.3) | todo | | Checked by the fresh distro workflow, started by hand on the pushed branch, since a push never runs it (QF.5, §4) |
 | QF.4 | The aqt recipe: a compiler, Qt Multimedia and Qt Image Formats, the plugins' run-time libraries, no `libxcb-xinerama0` (§2.4) | todo | | Shown to fail: the recipe as on `master`, in a bare Ubuntu 24.04 container, fails to configure, Qt Multimedia missing (as on the branch); the `ldd` check fails with one of the plugins' libraries left out of the recipe |
 | QF.5 | CI: the matrix's comment naming the floor's 6.8 entries; the fresh distro jobs on Debian trixie and Ubuntu 26.04; the aqt job with its `ldd` check; the minimum CMake on Debian trixie (§2.5) | todo | | Shown to fail: the fresh distro workflow's old `ubuntu:24.04` apt job, run locally against the raised floor, stops at `find_package` |
 | QF.6 | Which of the 11 test files include `TestUtils.h` only for `QVERIFY_THROWS`: four on the branch, checked on `master` by compiling each alone without the include (§6) | todo | | Shown to fail: a file that uses another helper fails to compile without the include |

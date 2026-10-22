@@ -9,7 +9,8 @@ gets the next free row. Status: `todo`, `doing`, `done` (committed), `blocked` (
 (why, with the user's decision). The Commits column lists every commit of the item. Every status change gets a dated
 line in the log.
 
-**Branch:** its own, from `master`, once plan 1 has landed; not created yet. Each fix is its own pull request.
+**Branch:** `02-master-fixes`, from `01-characterization` once plan 1 has landed; not created yet. Each fix is a slice
+of its own.
 
 **Open decisions:** P2.36 may wait on the user, once measured. P2.37 is settled (P2.D10).
 
@@ -18,7 +19,7 @@ Each row's notes say how its test is shown to fail; "as on the branch" marks a b
 | ID | Item | Status | Commits | Notes |
 |---|---|---|---|---|
 | P2.1 | Fuzz seeds written behind the header as a compressed payload; a seed check in each seeded harness, the first header read inside a `try` (§2.1) | todo | | Shown to fail: a seed with no elements, one with an unknown header and an empty one each stop the harness with its own message (as on the branch). Lands after the user's overnight run of the harnesses (P2.D10) |
-| P2.2 | `ENABLE_FUZZER` instruments the whole project for coverage (§2.2) | todo | | Shown: one harness's edge count before and after (154 against 27,474 on the branch). Lands after the user's overnight run of the harnesses (P2.D10) |
+| P2.2 | `ENABLE_FUZZER` instruments the whole project for coverage (§2.2) | todo | | Shown: one harness's edge count before and after (154 against 27,474 on the branch). Finished after the user's overnight run of the harnesses (P2.D10) |
 | P2.3 | BeWavedDolphin's text export splits its rows by port (§2.3) | todo | | Shown to fail: the split row with an input element of several ports, on `master` |
 | P2.4 | The Python MCP client takes clock delays in [-1, 1] (§2.4) | todo | | Shown to fail: a negative delay refused on `master`. ruff, pyright and mypy pass |
 | P2.5 | A save whose write fails is not committed, through one helper for the five saves (§2.5) | todo | | Shown to fail: the failed commit over an existing file, on a local Qt 6.7.3 build with the check removed (as on the branch). Right on every Qt; plan 2's while `master` declares 6.2 (P2.D9) |

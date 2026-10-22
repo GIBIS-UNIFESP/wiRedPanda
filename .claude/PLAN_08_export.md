@@ -7,7 +7,7 @@ functional and has each exporter say where its output differs from what the appl
 against the simulator on every run, in CI, with a differential whose oracle cannot pass by checking nothing. External
 corpora run through the same differential for development.
 
-- **Depends on:** plans 1 to 7 and the Qt floor's pull request, landed, since the plans run one at a time, in their
+- **Depends on:** plans 1 to 7 and the Qt floor's plan, landed, since the plans run one at a time, in their
   order (the plans' rules, §1): plan 6 (the netlist builder, with its order, its wireless resolution, its compiled
   definitions and its list of undriven inputs; and the core, which the differential compares with, in lockstep with
   plan 5's reference); plan 7 (each element's delay, which the temporal SystemVerilog export reads and the Arduino
@@ -17,8 +17,8 @@ corpora run through the same differential for development.
   exporters following the Tx into an Rx); plan 1's text goldens and translation tests.
 - **Lands before:** plan 9, and any release that follows plan 6's switch: from the switch until this plan lands, the
   exports and the simulation follow different rules. The IC instances' internal elements go as its last step (§2.11).
-- **Branch and ledger:** its own branch from `master`, started once plan 7 has landed, landing in slices (the plans'
-  rules, §3). `LEDGER_08_export.md` has a row for every step, check and open question below.
+- **Branch and ledger:** `08-export`, from `07-temporal-mode` once plan 7 has landed, in slices (the plans' rules, §1
+  and §3). `LEDGER_08_export.md` has a row for every step, check and open question below.
 - **Rules every plan shares** are the plans' rules (`PLAN_rules.md`) and `CLAUDE.md`'s "Building and testing". This
   file states plan 8's own: an export reads the circuit only through the builder; a divergence between an export and
   the simulator is either fixed or explained, and an explanation that no longer occurs fails; a check counts once it

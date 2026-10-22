@@ -8,7 +8,7 @@ sub-ID of the item it belongs to (`P4.4a`, `P4.4b`, ...) and a line in the log. 
 (committed), `blocked` (on what, in the notes) or `dropped` (why, with the user's decision). The Commits column lists
 every commit of the item. Every status change gets a dated line in the log.
 
-**Branch:** its own, from `master`, once plan 3 has landed; not created yet.
+**Branch:** `04-ics-and-format`, from `03-element-types` once plan 3 has landed; not created yet.
 
 **Open decisions:** none.
 

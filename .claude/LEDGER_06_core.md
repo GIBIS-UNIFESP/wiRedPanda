@@ -7,7 +7,7 @@ sub-ID of the item it belongs to (`P6.6a`, `P6.6b`, ...) and a line in the log. 
 (committed), `blocked` (on what, in the notes) or `dropped` (why, with the user's decision). The Commits column lists
 every commit of the item. Every status change gets a dated line in the log.
 
-**Branch:** its own, from `master`, once plan 5 has landed; not created yet.
+**Branch:** `06-core`, from `05-semantics` once plan 5 has landed; not created yet.
 
 **Open decisions:** none yet; P6.31 needs the user once its pictures are drawn, and P6.30 if a single instant needs a
 lower round budget.
@@ -46,7 +46,7 @@ Each row's notes say how its check is shown to fail; "as on the branch" marks a 
 | P6.28 | The measurement after the plan (§2.16) | todo | | Tick, rebuild, status gather and memory on the named fixtures, both modes, against `master`'s engine; sampling linear in the flip-flops on one clock |
 | P6.29 | Whether an IC's first reload in a scene always brings another definition (§6) | todo | | With plan 4's P4.9: what the core's node ranges do across it |
 | P6.30 | A tick's bound: one deadline for both modes (P6.D11); the worst single instants timed (§6) | todo | | Shown to fail: a functional tick on the ring of latches with pulsing inputs that runs past its deadline; a running time that runs ahead of a core behind it (the backlog grows); a lower round budget, if one instant stalls, goes into the spec first, and to the user |
-| P6.31 | What the user sees new: the reset source's picture and icon, a display's and an LED's non-level (§6) | todo | | Shown to the user before their slices land |
+| P6.31 | What the user sees new: the reset source's picture and icon, a display's and an LED's non-level (§6) | todo | | Shown to the user before their slices are finished |
 | P6.32 | No release between this plan's switch and plan 8's landing, plan 7 landing in between (§6) | todo | | Closed when plan 8 lands |
 
 ## Log

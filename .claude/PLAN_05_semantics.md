@@ -6,7 +6,7 @@ on random circuits, ICs included, and on every step of every shipped walk; and t
 each difference from `master`'s engine named by its cause, for plan 6's switch to match. It is documentation and test
 code only: the application keeps `master`'s engine until plan 6.
 
-- **Depends on:** plans 1 to 4 and the Qt floor's pull request, landed, since the plans run one at a time, in their
+- **Depends on:** plans 1 to 4 and the Qt floor's plan, landed, since the plans run one at a time, in their
   order (the plans' rules, §1): plan 1's simulation traces (every logic type, the six fixtures, the 73 IC components
   and the two perf circuits) and its test readers, which return a port's `Status`, so a test tells a non-level from 0;
   plan 2's fixes, which `master`'s traces hold before this plan starts; plan 3's one element class, whose descriptors,
@@ -15,8 +15,8 @@ code only: the application keeps `master`'s engine until plan 6.
 - **Lands before:** plan 6, whose core implements the spec and is checked against the reference and the oracles; then
   plan 7, which offers temporal mode once the exact oracle with delays agrees with the reference; and plan 8, whose
   differential compares the exports with plan 6's core, which runs in lockstep with the reference.
-- **Branch and ledger:** its own branch from `master`, started once plan 4 has landed, landing in slices (the plans'
-  rules, §3).
+- **Branch and ledger:** `05-semantics`, from `04-ics-and-format` once plan 4 has landed, in slices (the plans'
+  rules, §1 and §3).
   `LEDGER_05_semantics.md` has a row for every step, check and open question below.
 - **Rules every plan shares** are the plans' rules (`PLAN_rules.md`) and `CLAUDE.md`'s "Building and testing"; their
   first principle, ground truth first, is this plan's subject. This file states plan 5's own: the spec comes before the

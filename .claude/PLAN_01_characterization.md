@@ -9,7 +9,7 @@ item registry keeps, instead of a sort of the circuit.
 - **Depends on:** nothing. It is the first plan to land, after the branch that holds the plan files.
 - **Lands before:** every other plan. The plans run one at a time, in their order (the plans' rules, §1), so plan 2
   starts once plan 1 has landed, its fixes on all of plan 1's goldens.
-- **Branch and ledger:** its own branch from `master`, landing in slices (the plans' rules, §3).
+- **Branch and ledger:** `01-characterization`, from `00-plans`, in slices (the plans' rules, §1 and §3).
   `LEDGER_01_characterization.md` has a row for every step, open question and unchecked claim below.
 - **Rules every plan shares** (slices, each commit correct from its first line, validation on the relwithdebinfo
   preset, ASan, UBSan and clang left to CI, the rules for new tests) are the plans' rules (`PLAN_rules.md`), and how
@@ -20,7 +20,7 @@ item registry keeps, instead of a sort of the circuit.
 
 - **Generated on the unchanged base.** On `gpu-canvas`, goldens added after later changes had landed were generated
   with those changes in place, so they pinned the changed behaviour, and a gate had to regenerate them on the base and
-  compare. Plan 1 lands on `master` before any other plan, so every golden is `master`'s.
+  compare. Plan 1 runs on `master`'s code before any other plan changes it, so every golden is `master`'s.
 - **Every check shown to fail.** Each golden and check is broken on purpose once (an order reversed, a render skipped,
   a type removed from a list, a fixed defect put back) and must fail, then pass on the code. On the branch several
   goldens passed while pinning nothing; each case is under its golden below. The break is made locally and not
@@ -46,7 +46,7 @@ item registry keeps, instead of a sort of the circuit.
 - The tests compile under the flags CI's Apple clang build uses: no `QWARN`, and no `float` passed where a `qreal` is
   expected (`-Wdouble-promotion`); nothing checks clang locally.
 - `master`'s CI builds Qt 6.8.3 and 6.9.3 on x86-64 and ARM64, and Debian's 6.8.2 on i386, so these goldens run on
-  the 6.8 floor that the Qt floor's pull request, right after plan 2, declares; no CI job runs an older Qt.
+  the 6.8 floor that the Qt floor's plan, right after plan 2, declares; no CI job runs an older Qt.
 - Each new test class is registered in the four places `CLAUDE.md`'s "Building and testing" names, and carries CTest
   labels that match what it does.
 
@@ -220,10 +220,10 @@ A CMake target with `update_translations`' options (including `-tr-function-alia
 (`master`'s minimum is 6.2 until the Qt floor), extracts the (context, source) pairs (618 on the branch) to
 `build/translatable_strings.ts`, and a test compares them with a golden. Nothing but building that target refreshes the
 extraction: it is outside `all`, and as a build dependency it would run on every build, having no outputs. So the test
-skips until the target exists, and every check before a slice lands, and CI, builds it before the suite. CI builds it
-on one job (Linux x86-64, Qt 6.9.3, the Qt the translation workflow refreshes catalogs with); extraction does not
-depend on the platform. A change that adds or removes strings builds the target and updates the golden in the same
-commit.
+skips until the target exists, and every check before a slice is finished, and CI, builds it before the suite. CI
+builds it on one job (Linux x86-64, Qt 6.9.3, the Qt the translation workflow refreshes catalogs with); extraction
+does not depend on the platform. A change that adds or removes strings builds the target and updates the golden in the
+same commit.
 
 ### 3.14 File format
 
@@ -254,7 +254,7 @@ behind one clock), the combinational one (rows of 18 And, Or and Xor gates, each
 columns of a file-backed four-gate IC under one clock and one switch, the IC found relative to the fixture), every
 position on the 8-pixel grid MCP snaps to. It exits with status 1 and a message on any failure, and writes the same
 bytes from an unoptimized and an optimized build (the binary is chosen by `WIREDPANDA_EXE`; on the branch, the debug and
-the release builds wrote byte-identical files); before its slice lands it is run against the debug and the
+the release builds wrote byte-identical files); before its slice is finished it is run against the debug and the
 relwithdebinfo builds, the preset every check uses, and the files compared. The small sizes (clocked 2,000,
 combinational 1,000, IC-heavy 2,000) are committed in a linted directory; the large ones (clocked 8,000, combinational
 20,000) are written outside the repository, in the format `master` writes. The profiling directory beside the
@@ -304,7 +304,7 @@ is shown to fail with its fast path removed.
 
 ## 5. Steps and slices
 
-Each step is a ledger row; a slice is a pull request of the branch's oldest finished steps (the plans' rules, §3).
+Each step is a ledger row; a slice is a stretch of steps checked as one, then pushed (the plans' rules, §3).
 
 | Row | Step | Slice |
 |---|---|---|
@@ -336,10 +336,10 @@ The checks of §8 are rows too (P1.21 to P1.23).
 Each ends with its basis: measured or tested (a run backs it), read (the code, with nothing run), or a ruling (the
 user's choice between workable options).
 
-- **P1.D1. Goldens of `master`, each shown to fail.** Every golden is generated on `master` before any other plan
-  lands, and every check is broken on purpose once and must fail. Basis: the user's ruling of 2026-10-04 that the
-  characterization tests and tools of the `perf/load-hotspots` prototype are recreated on `master` first, by intent;
-  the branch's evidence (§1).
+- **P1.D1. Goldens of `master`, each shown to fail.** Every golden is generated on `master`'s code before any other
+  plan changes it, and every check is broken on purpose once and must fail. Basis: the user's ruling of 2026-10-04
+  that the characterization tests and tools of the `perf/load-hotspots` prototype are recreated on `master` first, by
+  intent; the branch's evidence (§1).
 - **P1.D2. Pictures recorded by what they are, not by pixels.** The scene snapshot records each picture by size,
   source and oriented variant. CI tests x86-64, ARM64 and i386 with Qt 6.8.3, 6.9.3 and the distributions' Qt; the
   twelve memory-element pictures draw Noto Sans text that FreeType, Core Text and DirectWrite rasterize differently; and
@@ -372,8 +372,8 @@ user's choice between workable options).
 ## 8. Claims to check and open questions
 
 - **The wire-pixel bound on CI's renderers.** Each channel within 2 and no pixel more was measured on the development
-  machine only. Plan 1's pull request runs the wire-pixel goldens on CI's machines; a failure there widens the bound,
-  with the CI evidence named (P1.21).
+  machine only. The push of plan 1's branch runs the wire-pixel goldens on CI's machines; a failure there widens the
+  bound, with the CI evidence named (P1.21).
 - **Gestures under the offscreen platform.** Whether `QDrag::exec()`, the clipboard and the zoom-to-selection bounds
   behave under the offscreen platform as on a desktop, and the hit grid's run time, were left open on the branch. Plan 1
   closes or records each (P1.22).
