@@ -1,0 +1,13 @@
+wire W4 z=-1.0000
+wire W5 z=-1.0000
+rectangle 0.0000,0.0000 0.0000,0.0000 z=0.0000
+E1 InputSwitch z=0.0000
+label of E1 z=0.0000
+port 1.o0 z=0.0000
+E2 Not z=0.0000
+label of E2 z=0.0000 hidden
+port 2.i0 z=0.0000
+port 2.o0 z=0.0000
+E3 Led z=0.0000
+label of E3 z=0.0000
+port 3.i0 z=0.0000

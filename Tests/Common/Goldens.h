@@ -12,6 +12,7 @@
 #include <memory>
 
 #include <QByteArray>
+#include <QColor>
 #include <QEvent>
 #include <QList>
 #include <QPointF>
@@ -207,6 +208,16 @@ private:
     const bool m_previous = Application::renderingEnabled;
 };
 
+/**
+ * \brief How far two renders of the same pixels may differ in each channel: coverage is portable fixed-point, but
+ * blending rounds differently along different paint paths and per-SIMD variant. Two paths on one machine differ by up
+ * to 2; CI's renderers differ from the development machine's by up to 3 (i386 by 3 on 354 pixels of one wire image).
+ */
+inline constexpr int kPixelChannelTolerance = 3;
+
+/// The largest difference between \a a and \a b in any one channel, alpha included.
+int channelDifference(QRgb a, QRgb b);
+
 /// What a dump writes for a type it should cover but cannot create; the golden then fails.
 inline constexpr char kNoCreator[] = "NO CREATOR";
 
@@ -247,4 +258,7 @@ public:
      * label is placed by fixed anchors, never by its text's size, so this does not depend on fonts.
      */
     static QTransform labelSceneTransform(const GraphicElement *element);
+
+    /// The child item that draws \a element's label, so a dump of the scene's items can name it.
+    static const QGraphicsItem *label(const GraphicElement *element);
 };

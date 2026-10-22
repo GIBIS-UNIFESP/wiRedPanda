@@ -4,6 +4,7 @@
 #include "Tests/Common/Goldens.h"
 
 #include <algorithm>
+#include <cstdlib>
 
 #include <QDataStream>
 #include <QDir>
@@ -272,6 +273,12 @@ void ScenePointer::send(const QEvent::Type type, const QPointF &pos, const Qt::M
     QCoreApplication::sendEvent(m_scene, &event);
 }
 
+int channelDifference(const QRgb a, const QRgb b)
+{
+    return std::max({std::abs(qRed(a) - qRed(b)), std::abs(qGreen(a) - qGreen(b)), std::abs(qBlue(a) - qBlue(b)),
+                     std::abs(qAlpha(a) - qAlpha(b))});
+}
+
 bool leftOutOfDumps(const ElementType type)
 {
     return (type == ElementType::IC) || (type == ElementType::JKLatch) || (type == ElementType::Unknown);
@@ -316,6 +323,11 @@ QString SnapshotAccess::pixmapIdentity(const GraphicElement *element)
     const QString source = path.startsWith(':') ? path : QFileInfo(path).fileName();
     const bool oriented = appearance.m_pixmap.cacheKey() != appearance.m_basePixmap.cacheKey();
     return QString::number(size.width()) + 'x' + QString::number(size.height()) + ':' + source + (oriented ? ":oriented" : "");
+}
+
+const QGraphicsItem *SnapshotAccess::label(const GraphicElement *element)
+{
+    return element->m_label;
 }
 
 QTransform SnapshotAccess::labelSceneTransform(const GraphicElement *element)
