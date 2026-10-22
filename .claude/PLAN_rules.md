@@ -13,26 +13,37 @@ below, each recreated from `master` by intent, and kept the branch as evidence.
 
 ## 1. The plans and their order
 
-| Order | Plan | File |
-|---|---|---|
-| 1 | Characterization on `master` | `PLAN_01_characterization.md` |
-| 2 | Fixes to `master` | `PLAN_02_master_fixes.md` |
-| 3 | The Qt 6.8 floor's pull request | `PLAN_qt_floor.md` |
-| 4 | Element types as data | `PLAN_03_element_types.md` |
-| 5 | ICs and the document format | `PLAN_04_ics_and_format.md` |
-| 6 | Simulation semantics and its oracles | `PLAN_05_semantics.md` |
-| 7 | The simulation core | `PLAN_06_core.md` |
-| 8 | Temporal mode in the application | `PLAN_07_temporal_mode.md` |
-| 9 | Export fidelity | `PLAN_08_export.md` |
-| 10 | Editor architecture | `PLAN_09_editor.md` |
-| 11 | The model-cost round | `PLAN_model_cost.md` |
-| 12 | GPU canvas | `PLAN_10_gpu_canvas.md` |
+| Order | Plan | File | Branch |
+|---|---|---|---|
+| 1 | Characterization on `master` | `PLAN_01_characterization.md` | `01-characterization` |
+| 2 | Fixes to `master` | `PLAN_02_master_fixes.md` | `02-master-fixes` |
+| 3 | The Qt 6.8 floor | `PLAN_qt_floor.md` | `02a-qt-floor` |
+| 4 | Element types as data | `PLAN_03_element_types.md` | `03-element-types` |
+| 5 | ICs and the document format | `PLAN_04_ics_and_format.md` | `04-ics-and-format` |
+| 6 | Simulation semantics and its oracles | `PLAN_05_semantics.md` | `05-semantics` |
+| 7 | The simulation core | `PLAN_06_core.md` | `06-core` |
+| 8 | Temporal mode in the application | `PLAN_07_temporal_mode.md` | `07-temporal-mode` |
+| 9 | Export fidelity | `PLAN_08_export.md` | `08-export` |
+| 10 | Editor architecture | `PLAN_09_editor.md` | `09-editor` |
+| 11 | The model-cost round | `PLAN_model_cost.md` | `09a-model-cost` |
+| 12 | GPU canvas | `PLAN_10_gpu_canvas.md` | `10-gpu-canvas` |
 
 Each has a ledger beside it (`LEDGER_<same suffix>.md`). The plans run one at a time, in this order, each starting once
 the one before it has landed; no plan runs beside another, so no plan carries a rule for whichever of two lands first
-(the user, 2026-10-21: "we arent going to run plans in parallel. we are going to follow the order"). On the branch,
-rendering, the editor, the element model, the simulation, temporal mode, both exporters and the file format shared one
-branch and one order of phases, so an open question in one area held up the rest, and none of it reached `master`.
+(the user, 2026-10-21: "we arent going to run plans in parallel. we are going to follow the order").
+
+The branches stack, and nothing is merged into `master` (the user, 2026-10-21: "we arent going to merge anything to
+master. we are going to do plan 1 on a branch then after it completes we will create a new branch from it and do plan
+2 and so on"). `00-plans`, from `master`, holds these files; each plan's branch starts from the branch before it in
+the table once that plan is finished, `01-characterization` from `00-plans`. A plan **lands** when its branch is
+finished: every row done or dropped, every commit checked (§3). "`master`" in the plans names the code the stack starts
+from, `master` as `00-plans` branched from it, whose behaviour plan 1 pins; a later plan builds on the branches before
+it. The branch names carry their plan's number, the floor and the round a letter after the plan they follow, so the
+branches sort in their order.
+
+On `gpu-canvas`, rendering, the editor, the element model, the simulation, temporal mode, both exporters and the file
+format shared one branch and one order of phases, so an open question in one area held up the rest, and no part of it
+was ever finished.
 
 ## 2. Principles
 
@@ -51,8 +62,8 @@ branch and one order of phases, so an open question in one area held up the rest
   code did not bear out; the restart's first draft repeated four claims that were wrong when checked (a commit count,
   six defects said to be on `master` that were the branch's own, a count of affected types, and a count taken on the
   branch instead of `master`).
-- **Small and landed.** A plan's work reaches `master` in slices that each leave the application working; nothing waits
-  on a branch for weeks.
+- **One concern at a time, finished.** Each plan holds one concern and is finished before the next starts, each of its
+  commits leaving the application working.
 - **Nothing in prose only.** An open item, a user choice or an unchecked claim written anywhere gets a ledger row in the
   same change, and every commit is listed in its row. On 2026-10-20 an audit of the branch's ledger gave 19 items the
   row they lacked and found 41 code commits that no row listed.
@@ -92,37 +103,40 @@ branch and one order of phases, so an open question in one area held up the rest
   unchecked claim, written in the change that finds it; a task found along the way gets the next free sub-ID of its item
   (`P1.4a`) and a log line. A row's status is `todo`, `doing`, `done` (committed), `blocked` (on what, in its notes) or
   `dropped` (why, with the user's decision); every commit is listed in its row; every status change gets a dated line
-  in the ledger's log. The plan is implemented on its own branch from `master`, and it lands before the next plan
-  starts.
-- **Slices.** A plan lands in slices: each slice is a pull request of the branch's oldest finished commits, small enough
-  for rebase-merge, the only merge the repository allows (well under 100 commits: in June 2026 GitHub refused to rebase
-  a pull request of 114, though it was up to date), and leaves the application building and working. After each slice
-  lands, the branch is rebased onto `master`.
-- **Each commit correct from its first line; nothing landed is rewritten.** A fix to a commit of a slice that has not
-  landed is folded into that commit, with the user's approval, by an autosquash rebase. A fixup folds only if everything
-  its added lines use exists at its target: a name lookup is not proof, a build at the target is. On the branch a
-  squash folded a check that used `values` into a function whose scope has no `values` but whose class has `values()`,
-  so the lookup passed and 21 commits did not compile; and hand-resolved conflicts left a brace as `>}` and a blank
-  line that a fix had removed, which no conflict marker showed. So after the fold the tip's tree is compared with a
-  backup branch's. A fix to code already on `master`, or one unrelated to the slice, is a commit of its own, placed
-  before the change that needs it.
-- **Checked before it lands.** Before a slice lands, after its last fold, every commit in it that changes code is built
-  on the relwithdebinfo preset with its suite run, and its changed sources are compiled alone, outside their unity batch
-  and without the precompiled header (`CLAUDE.md`, "Building and testing"). The pull request then runs CI, which covers
-  Qt 6.8 and 6.9, the sanitizers and Apple clang. On the branch each phase was written without building it and built
-  at its gate, which then found what the writing had missed: a debug gate passed a null dereference that GCC reports
-  only at `-O2`, Qt 6.7.3's defects showed only once a gate ran it, and includes that a unity batch or the precompiled
-  header supplied stayed hidden until a change shifted the batches.
+  in the ledger's log. The plan is implemented on its own branch (§1), started from the branch before it once that
+  plan has landed.
+- **Slices.** A plan's steps are grouped in slices, its ledger naming each step's: a slice is a stretch of commits that
+  leaves the application building and working, checked as one before the next slice starts. The plan's branch is
+  pushed after each slice, which runs the build, Sanitizers, docs and lint workflows (each runs on a push to any branch
+  but `master`, for the paths it watches). CodeQL, coverage and the fresh distro workflow run only on `master`, on pull
+  requests to it or on a schedule, so a push never runs them; a plan that needs the fresh distro workflow starts it
+  on its branch by hand (`gh workflow run fresh-deps.yml --ref <branch>`).
+- **Each commit correct from its first line; nothing landed is rewritten.** A fix to a commit of the plan in progress
+  is folded into that commit, with the user's approval, by an autosquash rebase of that plan's branch. A fixup folds
+  only if everything its added lines use exists at its target: a name lookup is not proof, a build at the target is.
+  On `gpu-canvas` a squash folded a check that used `values` into a function whose scope has no `values` but whose
+  class has `values()`, so the lookup passed and 21 commits did not compile; and hand-resolved conflicts left a brace
+  as `>}` and a blank line that a fix had removed, which no conflict marker showed. So after the fold the tip's tree is
+  compared with a backup branch's. A plan that has landed is never rewritten, since the branches after it are built on
+  it: a fix to its code, or to code from `master`, is a commit of its own on the plan in progress, placed before the
+  change that needs it.
+- **Checked before it lands.** Before a slice is finished, after its last fold, every commit in it that changes code is
+  built on the relwithdebinfo preset with its suite run, and its changed sources are compiled alone, outside their
+  unity batch and without the precompiled header (`CLAUDE.md`, "Building and testing"). The push then runs CI, which
+  covers Qt 6.8 and 6.9, the sanitizers and Apple clang, and a plan lands only on a green run. On `gpu-canvas` each
+  phase was written without building it and built at its gate, which then found what the writing had missed: a debug
+  gate passed a null dereference that GCC reports only at `-O2`, Qt 6.7.3's defects showed only once a gate ran it, and
+  includes that a unity batch or the precompiled header supplied stayed hidden until a change shifted the batches.
 - **The user's standing rulings.** No clang checking at all: ASan, UBSan and clang are left to CI (its Sanitizers
   workflow and its macOS jobs' Apple clang build). Validation runs on the relwithdebinfo preset. Callgrind and
-  performance baselines stay out of the checks before a slice lands; performance is measured on the named fixtures
-  after a plan lands. The fuzz harnesses run on the user's machine, overnight, not in CI, and a slice that adds or
-  changes a harness lands after that run.
+  performance baselines stay out of the checks before a slice is finished; performance is measured on the named
+  fixtures after a plan lands. The fuzz harnesses run on the user's machine, overnight, not in CI, and a slice that
+  adds or changes a harness is finished after that run.
 - **Rules for every new test.** No absolute wall-time bounds (ratios or counts instead); CTest labels that match what
   the test does; no history or defect IDs in comments; the tests of the model, presentation, controller, mirror,
   simulation core and CPU backend run under ASan and UBSan in CI.
-- **Not carried from the branch:** squashing a long branch's fixes into earlier commits at phase gates, checked only at
-  the tip; one order for all the work; and everything about landing `gpu-canvas` itself.
+- **Not carried from `gpu-canvas`:** squashing a long branch's fixes into earlier commits at phase gates, checked only
+  at the tip; one order for all the work; and everything about landing `gpu-canvas` itself.
 
 ## 4. Kept as evidence
 
