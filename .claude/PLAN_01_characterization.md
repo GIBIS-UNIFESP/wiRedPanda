@@ -57,10 +57,12 @@ failed its CI (§4.6).
 ### 3.1 Scene snapshot
 
 Every circuit in `Examples`, the IC components, `Tests/Fixtures` and the perf fixtures is loaded and dumped: elements by
-id, each port with its position in the element and in the scene, and the wires reached through their ports. The dump
-does not use the `QGraphicsItem` API of ports and wires, so it survives plan 9 taking them out of the item tree. The
-picture each element shows is recorded by size, source and whether an oriented variant replaces the base picture, not
-by pixels (P1.D2). A second test fails on a golden whose circuit is gone.
+id, each port with its position in the element and in the scene, and the wires reached through their ports, never
+through the scene's items. Of a port's and a wire's `QGraphicsItem` API the dumps read only a port's `pos()` and
+`scenePos()` and, for §3.2, a wire's `path()`; when plan 9 takes ports and wires out of the item tree it keeps
+accessors with those meanings, so the goldens hold (§9). The picture each element shows is recorded by size, source
+and whether an oriented variant replaces the base picture, not by pixels (P1.D2). A second test fails on a golden whose
+circuit is gone.
 
 ### 3.2 Wire geometry after an edit
 
@@ -139,10 +141,10 @@ Plan 5 names every difference from these traces by its cause.
 
 ### 3.6 Labels
 
-Each label's scene transform for every labelled type and orientation: fifteen types show a label (seven of them rotate
-their graphic), plus the IC. Label anchors are fixed points, never text widths, so the transform is font-free; the truth
-table's and the IC's anchors follow their bodies, so those run at their fewest and most ports, with each orientation
-applied both before and after the count. The 17 label-less types are listed as such, not skipped.
+Each label's scene transform for every labelled type and orientation: fourteen types show a label (six of them rotate
+their graphic), plus the IC. Label anchors are fixed points, never text widths, so the transform is font-free; the
+truth table's and the IC's anchors follow their bodies, so those run at their fewest and most ports, with each
+orientation applied both before and after the count. The 17 label-less types are listed as such, not skipped.
 
 ### 3.7 Wire pixels
 
@@ -412,7 +414,9 @@ user's choice between workable options).
 - **Plan 5:** the traces, each difference from them named by its cause; the test readers.
 - **Plan 6:** the traces at the switch; the probe for the performance measured after it lands.
 - **Plan 8:** the generated-code goldens.
-- **Plan 9:** the pointer, wire-geometry, stacking, view and wire-pixel goldens, run on the old and the new view.
+- **Plan 9:** the pointer, wire-geometry, stacking, view and wire-pixel goldens, run on the old and the new view; the
+  dumps read a port's `pos()` and `scenePos()` and a wire's `path()`, which plan 9 keeps with those meanings when ports
+  and wires leave the item tree.
 - **Plan 10:** the wire-pixel goldens as the CPU reference its parity renders compare with.
 
 ## 10. The branch's goldens, as evidence
