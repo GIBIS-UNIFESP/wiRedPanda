@@ -923,6 +923,7 @@ add_test(NAME TestMUXDEMUXComprehensive COMMAND test_wiredpanda TestMUXDEMUXComp
 add_test(NAME TestMultiplexing COMMAND test_wiredpanda TestMultiplexing WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestNodeLogic COMMAND test_wiredpanda TestNodeLogic WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestNotifyCatch COMMAND test_wiredpanda TestNotifyCatch WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestPointerSnapshot COMMAND test_wiredpanda TestPointerSnapshot WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestPortLayoutSnapshot COMMAND test_wiredpanda TestPortLayoutSnapshot WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestPriorities COMMAND test_wiredpanda TestPriorities WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestRAMCell1Bit COMMAND test_wiredpanda TestRAMCell1Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -1052,7 +1053,7 @@ endforeach()
 
 # File and Simulation Tests - Integration category
 foreach(TEST TestArduino TestFeedback TestFiles TestIC TestICInline
-        TestLabelSnapshot TestPortLayoutSnapshot TestSceneSnapshot TestSimulation TestSystemVerilogExport TestWorkspace TestWorkspaceFileops)
+        TestLabelSnapshot TestPointerSnapshot TestPortLayoutSnapshot TestSceneSnapshot TestSimulation TestSystemVerilogExport TestWorkspace TestWorkspaceFileops)
     set_tests_properties(${TEST} PROPERTIES LABELS "integration")
 endforeach()
 
@@ -1078,7 +1079,10 @@ foreach(TEST TestConnections TestConnectionSerialization TestConnectionValidity 
 endforeach()
 
 # Tests that touch the system clipboard must not run in parallel (Windows OLE contention).
-set_tests_properties(TestScene TestSceneUndoredo TestICInline TestDolphinClipboard PROPERTIES RESOURCE_LOCK clipboard)
+set_tests_properties(TestScene TestSceneUndoredo TestICInline TestDolphinClipboard TestPointerSnapshot PROPERTIES RESOURCE_LOCK clipboard)
+# A Ctrl press on an element starts a clone-drag, and on the native Windows platform QDrag::exec() waits for a physical
+# mouse move before anything can end it; offscreen it returns at once, as on Linux, where the suite is offscreen.
+set_tests_properties(TestPointerSnapshot PROPERTIES ENVIRONMENT "QT_QPA_PLATFORM=offscreen")
 
 # Serialization and Command Tests - Integration category
 foreach(TEST TestSerialization TestSimulationBlocker)
@@ -1131,7 +1135,7 @@ set(ALL_TESTS
     TestDecoder8To256 TestMemorySettlingTime TestRAMCell1Bit TestSequential
     TestMUXDEMUXComprehensive
     TestArduino TestFeedback TestFiles TestIC TestICInline
-    TestLabelSnapshot TestPortLayoutSnapshot TestSceneSnapshot TestSimulation TestSystemVerilogExport TestWorkspace TestWorkspaceFileops
+    TestLabelSnapshot TestPointerSnapshot TestPortLayoutSnapshot TestSceneSnapshot TestSimulation TestSystemVerilogExport TestWorkspace TestWorkspaceFileops
     TestIcons TestWaveform TestAudioBox TestBuzzer TestClock TestClocksAdvanced
     TestComponents TestDisplays TestElementAppearance TestElementLabel TestElementProperties TestFeatures
     TestGeometry TestGraphicElementSerializer TestGraphicelementAdvanced TestInputElements TestInputRotary TestLED

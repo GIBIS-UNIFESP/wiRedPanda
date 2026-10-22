@@ -8,15 +8,19 @@
 #include <QDataStream>
 #include <QDir>
 #include <QDirIterator>
+#include <QDrag>
 #include <QFile>
 #include <QFileInfo>
+#include <QGraphicsSceneMouseEvent>
 #include <QGraphicsSimpleTextItem>
 #include <QMetaEnum>
 #include <QTest>
+#include <QTimer>
 #include <QVariant>
 
 #include "App/Element/GraphicElement.h"
 #include "App/IO/Serialization.h"
+#include "App/Scene/GraphicsView.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -214,6 +218,58 @@ QVector<GraphicElement *> elementsById(const Scene *scene)
         return a->id() < b->id();
     });
     return elements;
+}
+
+void ScenePointer::press(const QPointF &pos, const Qt::KeyboardModifiers modifiers, const Qt::MouseButton button)
+{
+    m_held |= button;
+    send(QEvent::GraphicsSceneMousePress, pos, button, modifiers);
+}
+
+void ScenePointer::move(const QPointF &pos, const Qt::KeyboardModifiers modifiers)
+{
+    send(QEvent::GraphicsSceneMouseMove, pos, Qt::NoButton, modifiers);
+}
+
+void ScenePointer::release(const QPointF &pos, const Qt::KeyboardModifiers modifiers, const Qt::MouseButton button)
+{
+    m_held &= ~button;
+    send(QEvent::GraphicsSceneMouseRelease, pos, button, modifiers);
+}
+
+void ScenePointer::click(const QPointF &pos, const Qt::KeyboardModifiers modifiers, const Qt::MouseButton button)
+{
+    press(pos, modifiers, button);
+    release(pos, modifiers, button);
+}
+
+void ScenePointer::drag(const QPointF &from, const QPointF &to)
+{
+    press(from);
+    move((from + to) / 2.0);
+    move(to);
+    release(to);
+}
+
+void ScenePointer::send(const QEvent::Type type, const QPointF &pos, const Qt::MouseButton button,
+                        const Qt::KeyboardModifiers modifiers)
+{
+    QGraphicsSceneMouseEvent event(type);
+    event.setScenePos(pos);
+    event.setButton(button);
+    event.setButtons(m_held);
+    event.setModifiers(modifiers);
+    if (auto *view = m_scene->view()) {
+        event.setWidget(view->viewport());
+        event.setScreenPos(view->viewport()->mapToGlobal(view->mapFromScene(pos)));
+    }
+    // A Ctrl press on a selected element starts a clone-drag. Under offscreen QDrag::exec() returns at once; on xcb it
+    // runs an event loop until a physical button changes or the drag is cancelled. The timer fires only inside such a
+    // loop, and cancels the drag. On Windows it waits for a physical mouse move first, in a loop that runs no Qt timer.
+    QTimer cancelDrag;
+    cancelDrag.callOnTimeout(&QDrag::cancel);
+    cancelDrag.start(0);
+    QCoreApplication::sendEvent(m_scene, &event);
 }
 
 bool leftOutOfDumps(const ElementType type)
