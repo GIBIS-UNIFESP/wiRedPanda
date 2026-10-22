@@ -4,7 +4,9 @@
 #include "Tests/Unit/Elements/TestICRegistry.h"
 
 #include <QDataStream>
+#include <QDateTime>
 #include <QFile>
+#include <QFileInfo>
 #include <QRectF>
 #include <QSignalSpy>
 #include <QTemporaryDir>
@@ -131,7 +133,14 @@ void TestICRegistry::testICFileWatcher()
     // takes the "no targets" path and emits definitionChanged() synchronously after
     // invalidating, which QSignalSpy::wait() below robustly waits for.
     QSignalSpy definitionChangedSpy(registry, &ICRegistry::definitionChanged);
+    const QDateTime firstWrite = QFileInfo(path).lastModified();
     writeChainedPandaFile(path, QStringLiteral("second_dep"));
+    // Qt's Windows watcher compares the modification time, never the size, so a rewrite within one tick of the first
+    // write would be no change there; the rewrite is given a later time.
+    QFile rewritten(path);
+    QVERIFY(rewritten.open(QIODevice::ReadWrite));
+    QVERIFY(rewritten.setFileTime(firstWrite.addSecs(2), QFileDevice::FileModificationTime));
+    rewritten.close();
     QVERIFY(definitionChangedSpy.wait());
 
     QVERIFY(file.open(QIODevice::ReadOnly));
