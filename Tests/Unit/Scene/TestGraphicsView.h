@@ -12,6 +12,10 @@ class TestGraphicsView : public QObject
 
 private slots:
 
+    // The zoom ladder, fit, centring, scrolling into view and the wheel zoom, the scroll position in every row, compared
+    // with Tests/Integration/GraphicsView/behaviours.txt.
+    void testViewBehavioursMatchGolden();
+
     void testZoomMinimumLimit();
     void testZoomMaximumLimit();
     void testResetZoom();

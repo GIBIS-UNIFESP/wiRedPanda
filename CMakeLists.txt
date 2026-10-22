@@ -1081,7 +1081,7 @@ foreach(TEST TestConnections TestConnectionSerialization TestConnectionValidity 
 endforeach()
 
 # Tests that touch the system clipboard must not run in parallel (Windows OLE contention).
-set_tests_properties(TestScene TestSceneUndoredo TestICInline TestDolphinClipboard TestPointerSnapshot PROPERTIES RESOURCE_LOCK clipboard)
+set_tests_properties(TestScene TestSceneUndoredo TestICInline TestDolphinClipboard TestPointerSnapshot TestSceneSnapshot PROPERTIES RESOURCE_LOCK clipboard)
 # A Ctrl press on an element starts a clone-drag, and on the native Windows platform QDrag::exec() waits for a physical
 # mouse move before anything can end it; offscreen it returns at once, as on Linux, where the suite is offscreen.
 set_tests_properties(TestPointerSnapshot PROPERTIES ENVIRONMENT "QT_QPA_PLATFORM=offscreen")

@@ -14,6 +14,10 @@
  * items. The goldens are in Tests/Integration/SceneSnapshot, one subdirectory per input directory. Each fixture is also
  * edited once by each edit and its wires' paths dumped, in Tests/Integration/WireGeometry. The pictures' paths name the
  * theme, so the class runs on the Light theme rather than on whatever the platform's System theme is.
+ *
+ * Each snapping path (the aligns, distributes, rotations, flips, a move, two nudges, a drag, a drop from the palette and
+ * a paste) acts on four elements off the grid and is undone and redone, the elements' places after each step in
+ * Tests/Integration/SnapPaths. Paste reads the system clipboard, so the class holds the clipboard resource lock.
  */
 class TestSceneSnapshot : public QObject
 {
@@ -27,6 +31,9 @@ private slots:
     void testEveryGoldenHasACircuit();
     void testWireGeometryAfterEdit_data();
     void testWireGeometryAfterEdit();
+    void testSnapPathsMatchGolden_data();
+    void testSnapPathsMatchGolden();
+    void testEverySnapPathGoldenHasAPath();
 
 private:
     Theme m_previousTheme = Theme::System;
