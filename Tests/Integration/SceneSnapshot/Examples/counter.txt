@@ -1,0 +1,39 @@
+E id=1 type=Clock pos=96.0000,368.0000 rot=0.0000 flipX=0 flipY=0 label="" in=0 out=1 pix=64x64::/Components/Input/clock0.svg
+  P out idx=0 name="" pos=64.0000,32.0000 scene=160.0000,400.0000 default=Unknown required=1 status=Inactive wires=1
+E id=2 type=Led pos=240.0000,256.0000 rot=-90.0000 flipX=0 flipY=0 label="" in=1 out=0 pix=64x64::/Components/Output/Led/LedOff.svg
+  P in idx=0 name="1" pos=0.0000,32.0000 scene=272.0000,320.0000 default=Inactive required=0 status=Active wires=1
+E id=3 type=Led pos=352.0000,256.0000 rot=-90.0000 flipX=0 flipY=0 label="" in=1 out=0 pix=64x64::/Components/Output/Led/LedOff.svg
+  P in idx=0 name="1" pos=0.0000,32.0000 scene=384.0000,320.0000 default=Inactive required=0 status=Active wires=1
+E id=4 type=Led pos=464.0000,256.0000 rot=-90.0000 flipX=0 flipY=0 label="" in=1 out=0 pix=64x64::/Components/Output/Led/LedOff.svg
+  P in idx=0 name="1" pos=0.0000,32.0000 scene=496.0000,320.0000 default=Inactive required=0 status=Active wires=1
+E id=5 type=JKFlipFlop pos=240.0000,368.0000 rot=0.0000 flipX=0 flipY=0 label="" in=5 out=2 pix=64x64::/Components/Memory/Light/JK-flipflop.svg
+  P in idx=0 name="J" pos=0.0000,16.0000 scene=240.0000,384.0000 default=Active required=0 status=Active wires=0
+  P in idx=1 name="Clock" pos=0.0000,32.0000 scene=240.0000,400.0000 default=Unknown required=1 status=Inactive wires=1
+  P in idx=2 name="K" pos=0.0000,48.0000 scene=240.0000,416.0000 default=Active required=0 status=Active wires=0
+  P in idx=3 name="~Preset" pos=32.0000,0.0000 scene=272.0000,368.0000 default=Active required=0 status=Active wires=0
+  P in idx=4 name="~Clear" pos=32.0000,64.0000 scene=272.0000,432.0000 default=Active required=0 status=Active wires=0
+  P out idx=0 name="Q" pos=64.0000,16.0000 scene=304.0000,384.0000 default=Inactive required=1 status=Inactive wires=1
+  P out idx=1 name="~Q" pos=64.0000,48.0000 scene=304.0000,416.0000 default=Active required=1 status=Active wires=1
+E id=6 type=JKFlipFlop pos=352.0000,368.0000 rot=0.0000 flipX=0 flipY=0 label="" in=5 out=2 pix=64x64::/Components/Memory/Light/JK-flipflop.svg
+  P in idx=0 name="J" pos=0.0000,16.0000 scene=352.0000,384.0000 default=Active required=0 status=Active wires=0
+  P in idx=1 name="Clock" pos=0.0000,32.0000 scene=352.0000,400.0000 default=Unknown required=1 status=Inactive wires=1
+  P in idx=2 name="K" pos=0.0000,48.0000 scene=352.0000,416.0000 default=Active required=0 status=Active wires=0
+  P in idx=3 name="~Preset" pos=32.0000,0.0000 scene=384.0000,368.0000 default=Active required=0 status=Active wires=0
+  P in idx=4 name="~Clear" pos=32.0000,64.0000 scene=384.0000,432.0000 default=Active required=0 status=Active wires=0
+  P out idx=0 name="Q" pos=64.0000,16.0000 scene=416.0000,384.0000 default=Inactive required=1 status=Inactive wires=1
+  P out idx=1 name="~Q" pos=64.0000,48.0000 scene=416.0000,416.0000 default=Active required=1 status=Active wires=1
+E id=7 type=JKFlipFlop pos=464.0000,368.0000 rot=0.0000 flipX=0 flipY=0 label="" in=5 out=2 pix=64x64::/Components/Memory/Light/JK-flipflop.svg
+  P in idx=0 name="J" pos=0.0000,16.0000 scene=464.0000,384.0000 default=Active required=0 status=Active wires=0
+  P in idx=1 name="Clock" pos=0.0000,32.0000 scene=464.0000,400.0000 default=Unknown required=1 status=Inactive wires=1
+  P in idx=2 name="K" pos=0.0000,48.0000 scene=464.0000,416.0000 default=Active required=0 status=Active wires=0
+  P in idx=3 name="~Preset" pos=32.0000,0.0000 scene=496.0000,368.0000 default=Active required=0 status=Active wires=0
+  P in idx=4 name="~Clear" pos=32.0000,64.0000 scene=496.0000,432.0000 default=Active required=0 status=Active wires=0
+  P out idx=0 name="Q" pos=64.0000,16.0000 scene=528.0000,384.0000 default=Inactive required=1 status=Inactive wires=0
+  P out idx=1 name="~Q" pos=64.0000,48.0000 scene=528.0000,416.0000 default=Active required=1 status=Active wires=1
+W 1:0 -> 5:1 status=Inactive
+W 5:5 -> 6:1 status=Inactive
+W 5:6 -> 4:0 status=Active
+W 6:5 -> 7:1 status=Inactive
+W 6:6 -> 3:0 status=Active
+W 7:6 -> 2:0 status=Active
+COUNTS elements=7 ports=25 wires=6

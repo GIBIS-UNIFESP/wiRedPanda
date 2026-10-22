@@ -1,0 +1,78 @@
+E id=1 type=Buzzer pos=720.0000,352.0000 rot=0.0000 flipX=0 flipY=0 label="G6" in=1 out=0 pix=68x68::/Components/Output/Buzzer/BuzzerOff.svg
+  P in idx=0 name="" pos=0.0000,32.0000 scene=720.0000,384.0000 default=Unknown required=1 status=Unknown wires=1
+E id=2 type=IC pos=192.0000,80.0000 rot=0.0000 flipX=0 flipY=0 label="JKFLIPFLOP" in=5 out=2 pix=footprint
+  P in idx=0 name="-Preset" pos=0.0000,0.0000 scene=192.0000,80.0000 default=Active required=0 status=Active wires=0
+  P in idx=1 name="J" pos=0.0000,16.0000 scene=192.0000,96.0000 default=Inactive required=0 status=Inactive wires=0
+  P in idx=2 name="C" pos=0.0000,32.0000 scene=192.0000,112.0000 default=Error required=1 status=Inactive wires=1
+  P in idx=3 name="K" pos=0.0000,48.0000 scene=192.0000,128.0000 default=Active required=0 status=Active wires=0
+  P in idx=4 name="-Clear" pos=0.0000,64.0000 scene=192.0000,144.0000 default=Active required=0 status=Active wires=0
+  P out idx=0 name="Q" pos=64.0000,24.0000 scene=256.0000,104.0000 default=Unknown required=1 status=Unknown wires=1
+  P out idx=1 name="¬Q" pos=64.0000,40.0000 scene=256.0000,120.0000 default=Unknown required=1 status=Unknown wires=0
+E id=3 type=JKFlipFlop pos=400.0000,80.0000 rot=0.0000 flipX=0 flipY=0 label="" in=5 out=2 pix=64x64::/Components/Memory/Light/JK-flipflop.svg
+  P in idx=0 name="J" pos=0.0000,16.0000 scene=400.0000,96.0000 default=Active required=0 status=Active wires=0
+  P in idx=1 name="Clock" pos=0.0000,32.0000 scene=400.0000,112.0000 default=Unknown required=1 status=Inactive wires=1
+  P in idx=2 name="K" pos=0.0000,48.0000 scene=400.0000,128.0000 default=Active required=0 status=Active wires=0
+  P in idx=3 name="~Preset" pos=32.0000,0.0000 scene=432.0000,80.0000 default=Active required=0 status=Active wires=0
+  P in idx=4 name="~Clear" pos=32.0000,64.0000 scene=432.0000,144.0000 default=Active required=0 status=Active wires=0
+  P out idx=0 name="Q" pos=64.0000,16.0000 scene=464.0000,96.0000 default=Inactive required=1 status=Inactive wires=1
+  P out idx=1 name="~Q" pos=64.0000,48.0000 scene=464.0000,128.0000 default=Active required=1 status=Active wires=1
+E id=4 type=JKFlipFlop pos=304.0000,80.0000 rot=0.0000 flipX=0 flipY=0 label="" in=5 out=2 pix=64x64::/Components/Memory/Light/JK-flipflop.svg
+  P in idx=0 name="J" pos=0.0000,16.0000 scene=304.0000,96.0000 default=Active required=0 status=Active wires=0
+  P in idx=1 name="Clock" pos=0.0000,32.0000 scene=304.0000,112.0000 default=Unknown required=1 status=Unknown wires=1
+  P in idx=2 name="K" pos=0.0000,48.0000 scene=304.0000,128.0000 default=Active required=0 status=Active wires=0
+  P in idx=3 name="~Preset" pos=32.0000,0.0000 scene=336.0000,80.0000 default=Active required=0 status=Active wires=0
+  P in idx=4 name="~Clear" pos=32.0000,64.0000 scene=336.0000,144.0000 default=Active required=0 status=Active wires=0
+  P out idx=0 name="Q" pos=64.0000,16.0000 scene=368.0000,96.0000 default=Inactive required=1 status=Inactive wires=1
+  P out idx=1 name="~Q" pos=64.0000,48.0000 scene=368.0000,128.0000 default=Active required=1 status=Active wires=1
+E id=5 type=JKFlipFlop pos=496.0000,80.0000 rot=0.0000 flipX=0 flipY=0 label="" in=5 out=2 pix=64x64::/Components/Memory/Light/JK-flipflop.svg
+  P in idx=0 name="J" pos=0.0000,16.0000 scene=496.0000,96.0000 default=Active required=0 status=Active wires=0
+  P in idx=1 name="Clock" pos=0.0000,32.0000 scene=496.0000,112.0000 default=Unknown required=1 status=Inactive wires=1
+  P in idx=2 name="K" pos=0.0000,48.0000 scene=496.0000,128.0000 default=Active required=0 status=Active wires=0
+  P in idx=3 name="~Preset" pos=32.0000,0.0000 scene=528.0000,80.0000 default=Active required=0 status=Active wires=0
+  P in idx=4 name="~Clear" pos=32.0000,64.0000 scene=528.0000,144.0000 default=Active required=0 status=Active wires=0
+  P out idx=0 name="Q" pos=64.0000,16.0000 scene=560.0000,96.0000 default=Inactive required=1 status=Inactive wires=0
+  P out idx=1 name="~Q" pos=64.0000,48.0000 scene=560.0000,128.0000 default=Active required=1 status=Active wires=1
+E id=6 type=Buzzer pos=720.0000,288.0000 rot=0.0000 flipX=0 flipY=0 label="F6" in=1 out=0 pix=68x68::/Components/Output/Buzzer/BuzzerOff.svg
+  P in idx=0 name="" pos=0.0000,32.0000 scene=720.0000,320.0000 default=Unknown required=1 status=Unknown wires=1
+E id=7 type=Buzzer pos=720.0000,160.0000 rot=0.0000 flipX=0 flipY=0 label="D6" in=1 out=0 pix=68x68::/Components/Output/Buzzer/BuzzerOff.svg
+  P in idx=0 name="" pos=0.0000,32.0000 scene=720.0000,192.0000 default=Unknown required=1 status=Unknown wires=1
+E id=8 type=Buzzer pos=720.0000,480.0000 rot=0.0000 flipX=0 flipY=0 label="B7" in=1 out=0 pix=68x68::/Components/Output/Buzzer/BuzzerOff.svg
+  P in idx=0 name="" pos=0.0000,32.0000 scene=720.0000,512.0000 default=Unknown required=1 status=Unknown wires=1
+E id=9 type=Buzzer pos=720.0000,96.0000 rot=0.0000 flipX=0 flipY=0 label="C6" in=1 out=0 pix=68x68::/Components/Output/Buzzer/BuzzerOff.svg
+  P in idx=0 name="" pos=0.0000,32.0000 scene=720.0000,128.0000 default=Unknown required=1 status=Unknown wires=1
+E id=10 type=Clock pos=32.0000,80.0000 rot=0.0000 flipX=0 flipY=0 label="" in=0 out=1 pix=64x64::/Components/Input/clock0.svg
+  P out idx=0 name="" pos=64.0000,32.0000 scene=96.0000,112.0000 default=Unknown required=1 status=Inactive wires=1
+E id=11 type=Buzzer pos=720.0000,416.0000 rot=0.0000 flipX=0 flipY=0 label="A7" in=1 out=0 pix=68x68::/Components/Output/Buzzer/BuzzerOff.svg
+  P in idx=0 name="" pos=0.0000,32.0000 scene=720.0000,448.0000 default=Unknown required=1 status=Unknown wires=1
+E id=12 type=IC pos=576.0000,272.0000 rot=0.0000 flipX=0 flipY=0 label="DECODER" in=3 out=8 pix=footprint
+  P in idx=0 name="InputSwitch" pos=0.0000,16.0000 scene=576.0000,288.0000 default=Inactive required=0 status=Active wires=1
+  P in idx=1 name="InputSwitch" pos=0.0000,32.0000 scene=576.0000,304.0000 default=Inactive required=0 status=Active wires=1
+  P in idx=2 name="InputSwitch" pos=0.0000,48.0000 scene=576.0000,320.0000 default=Inactive required=0 status=Active wires=1
+  P out idx=0 name="Led" pos=64.0000,-24.0000 scene=640.0000,248.0000 default=Unknown required=1 status=Unknown wires=1
+  P out idx=1 name="Led" pos=64.0000,-8.0000 scene=640.0000,264.0000 default=Unknown required=1 status=Unknown wires=1
+  P out idx=2 name="Led" pos=64.0000,8.0000 scene=640.0000,280.0000 default=Unknown required=1 status=Unknown wires=1
+  P out idx=3 name="Led" pos=64.0000,24.0000 scene=640.0000,296.0000 default=Unknown required=1 status=Unknown wires=1
+  P out idx=4 name="Led" pos=64.0000,40.0000 scene=640.0000,312.0000 default=Unknown required=1 status=Unknown wires=1
+  P out idx=5 name="Led" pos=64.0000,56.0000 scene=640.0000,328.0000 default=Unknown required=1 status=Unknown wires=1
+  P out idx=6 name="Led" pos=64.0000,72.0000 scene=640.0000,344.0000 default=Unknown required=1 status=Unknown wires=1
+  P out idx=7 name="Led" pos=64.0000,88.0000 scene=640.0000,360.0000 default=Unknown required=1 status=Unknown wires=1
+E id=13 type=Buzzer pos=720.0000,224.0000 rot=0.0000 flipX=0 flipY=0 label="E6" in=1 out=0 pix=68x68::/Components/Output/Buzzer/BuzzerOff.svg
+  P in idx=0 name="" pos=0.0000,32.0000 scene=720.0000,256.0000 default=Unknown required=1 status=Unknown wires=1
+E id=14 type=Buzzer pos=720.0000,544.0000 rot=0.0000 flipX=0 flipY=0 label="C7" in=1 out=0 pix=68x68::/Components/Output/Buzzer/BuzzerOff.svg
+  P in idx=0 name="" pos=0.0000,32.0000 scene=720.0000,576.0000 default=Unknown required=1 status=Unknown wires=1
+W 2:5 -> 4:1 status=Unknown
+W 3:5 -> 5:1 status=Inactive
+W 3:6 -> 12:1 status=Active
+W 4:5 -> 3:1 status=Inactive
+W 4:6 -> 12:2 status=Active
+W 5:6 -> 12:0 status=Active
+W 10:0 -> 2:2 status=Inactive
+W 12:3 -> 9:0 status=Unknown
+W 12:4 -> 7:0 status=Unknown
+W 12:5 -> 13:0 status=Unknown
+W 12:6 -> 6:0 status=Unknown
+W 12:7 -> 1:0 status=Unknown
+W 12:8 -> 11:0 status=Unknown
+W 12:9 -> 8:0 status=Unknown
+W 12:10 -> 14:0 status=Unknown
+COUNTS elements=14 ports=48 wires=15

@@ -1,0 +1,23 @@
+E id=1 type=InputSwitch pos=50.0000,100.0000 rot=0.0000 flipX=0 flipY=0 label="S" in=0 out=1 pix=64x64::/Components/Input/switchOff.svg
+  P out idx=0 name="" pos=64.0000,32.0000 scene=114.0000,132.0000 default=Unknown required=1 status=Inactive wires=1
+E id=2 type=InputSwitch pos=50.0000,204.0000 rot=0.0000 flipX=0 flipY=0 label="R" in=0 out=1 pix=64x64::/Components/Input/switchOff.svg
+  P out idx=0 name="" pos=64.0000,32.0000 scene=114.0000,236.0000 default=Unknown required=1 status=Inactive wires=1
+E id=3 type=Nor pos=154.0000,100.0000 rot=0.0000 flipX=0 flipY=0 label="nor_q" in=2 out=1 pix=64x64::/Components/Logic/nor.svg
+  P in idx=0 name="" pos=0.0000,24.0000 scene=154.0000,124.0000 default=Unknown required=1 status=Inactive wires=1
+  P in idx=1 name="" pos=0.0000,40.0000 scene=154.0000,140.0000 default=Unknown required=1 status=Unknown wires=1
+  P out idx=0 name="" pos=64.0000,32.0000 scene=218.0000,132.0000 default=Unknown required=1 status=Unknown wires=2
+E id=4 type=Nor pos=154.0000,204.0000 rot=0.0000 flipX=0 flipY=0 label="nor_qbar" in=2 out=1 pix=64x64::/Components/Logic/nor.svg
+  P in idx=0 name="" pos=0.0000,24.0000 scene=154.0000,228.0000 default=Unknown required=1 status=Inactive wires=1
+  P in idx=1 name="" pos=0.0000,40.0000 scene=154.0000,244.0000 default=Unknown required=1 status=Unknown wires=1
+  P out idx=0 name="" pos=64.0000,32.0000 scene=218.0000,236.0000 default=Unknown required=1 status=Unknown wires=2
+E id=5 type=Led pos=258.0000,100.0000 rot=0.0000 flipX=0 flipY=0 label="Q" in=1 out=0 pix=64x64::/Components/Output/Led/LedOff.svg
+  P in idx=0 name="1" pos=0.0000,32.0000 scene=258.0000,132.0000 default=Inactive required=0 status=Unknown wires=1
+E id=6 type=Led pos=258.0000,204.0000 rot=0.0000 flipX=0 flipY=0 label="Q_bar" in=1 out=0 pix=64x64::/Components/Output/Led/LedOff.svg
+  P in idx=0 name="1" pos=0.0000,32.0000 scene=258.0000,236.0000 default=Inactive required=0 status=Unknown wires=1
+W 1:0 -> 4:0 status=Inactive
+W 2:0 -> 3:0 status=Inactive
+W 3:2 -> 4:1 status=Unknown
+W 3:2 -> 5:0 status=Unknown
+W 4:2 -> 3:1 status=Unknown
+W 4:2 -> 6:0 status=Unknown
+COUNTS elements=6 ports=10 wires=6

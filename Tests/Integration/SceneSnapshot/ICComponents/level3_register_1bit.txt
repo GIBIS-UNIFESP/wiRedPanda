@@ -1,0 +1,44 @@
+E id=1 type=InputSwitch pos=50.0000,100.0000 rot=0.0000 flipX=0 flipY=0 label="Data" in=0 out=1 pix=64x64::/Components/Input/switchOff.svg
+  P out idx=0 name="" pos=64.0000,32.0000 scene=114.0000,132.0000 default=Unknown required=1 status=Inactive wires=1
+E id=2 type=InputSwitch pos=50.0000,204.0000 rot=0.0000 flipX=0 flipY=0 label="Clock" in=0 out=1 pix=64x64::/Components/Input/switchOff.svg
+  P out idx=0 name="" pos=64.0000,32.0000 scene=114.0000,236.0000 default=Unknown required=1 status=Inactive wires=1
+E id=3 type=InputSwitch pos=50.0000,308.0000 rot=0.0000 flipX=0 flipY=0 label="WriteEnable" in=0 out=1 pix=64x64::/Components/Input/switchOff.svg
+  P out idx=0 name="" pos=64.0000,32.0000 scene=114.0000,340.0000 default=Unknown required=1 status=Inactive wires=1
+E id=4 type=InputSwitch pos=50.0000,412.0000 rot=0.0000 flipX=0 flipY=0 label="Reset" in=0 out=1 pix=64x64::/Components/Input/switchOff.svg
+  P out idx=0 name="" pos=64.0000,32.0000 scene=114.0000,444.0000 default=Unknown required=1 status=Inactive wires=1
+E id=5 type=Not pos=154.0000,412.0000 rot=0.0000 flipX=0 flipY=0 label="not_reset" in=1 out=1 pix=64x64::/Components/Logic/not.svg
+  P in idx=0 name="" pos=0.0000,32.0000 scene=154.0000,444.0000 default=Unknown required=1 status=Inactive wires=1
+  P out idx=0 name="" pos=64.0000,32.0000 scene=218.0000,444.0000 default=Unknown required=1 status=Unknown wires=1
+E id=6 type=Not pos=154.0000,204.0000 rot=0.0000 flipX=0 flipY=0 label="not_writenable" in=1 out=1 pix=64x64::/Components/Logic/not.svg
+  P in idx=0 name="" pos=0.0000,32.0000 scene=154.0000,236.0000 default=Unknown required=1 status=Inactive wires=1
+  P out idx=0 name="" pos=64.0000,32.0000 scene=218.0000,236.0000 default=Unknown required=1 status=Unknown wires=1
+E id=7 type=Mux pos=310.0000,204.0000 rot=0.0000 flipX=0 flipY=0 label="write_mux" in=3 out=1 pix=footprint
+  P in idx=0 name="In0" pos=16.0000,24.0000 scene=326.0000,228.0000 default=Unknown required=1 status=Inactive wires=1
+  P in idx=1 name="In1" pos=16.0000,40.0000 scene=326.0000,244.0000 default=Unknown required=1 status=Inactive wires=1
+  P in idx=2 name="S0" pos=32.0000,56.0000 scene=342.0000,260.0000 default=Unknown required=1 status=Unknown wires=1
+  P out idx=0 name="Out" pos=48.0000,32.0000 scene=358.0000,236.0000 default=Unknown required=1 status=Unknown wires=1
+E id=8 type=DFlipFlop pos=414.0000,204.0000 rot=0.0000 flipX=0 flipY=0 label="dflipflop" in=4 out=2 pix=64x64::/Components/Memory/Light/D-flipflop.svg
+  P in idx=0 name="Data" pos=0.0000,16.0000 scene=414.0000,220.0000 default=Unknown required=1 status=Unknown wires=1
+  P in idx=1 name="Clock" pos=0.0000,48.0000 scene=414.0000,252.0000 default=Unknown required=1 status=Inactive wires=1
+  P in idx=2 name="~Preset" pos=32.0000,0.0000 scene=446.0000,204.0000 default=Active required=0 status=Active wires=1
+  P in idx=3 name="~Clear" pos=32.0000,64.0000 scene=446.0000,268.0000 default=Active required=0 status=Unknown wires=1
+  P out idx=0 name="Q" pos=64.0000,16.0000 scene=478.0000,220.0000 default=Inactive required=1 status=Inactive wires=2
+  P out idx=1 name="~Q" pos=64.0000,48.0000 scene=478.0000,252.0000 default=Active required=1 status=Active wires=1
+E id=9 type=InputVcc pos=310.0000,308.0000 rot=0.0000 flipX=0 flipY=0 label="Vcc" in=0 out=1 pix=64x64::/Components/Input/1.svg
+  P out idx=0 name="" pos=64.0000,32.0000 scene=374.0000,340.0000 default=Active required=1 status=Active wires=1
+E id=10 type=Led pos=518.0000,100.0000 rot=0.0000 flipX=0 flipY=0 label="Q" in=1 out=0 pix=64x64::/Components/Output/Led/LedOff.svg
+  P in idx=0 name="1" pos=0.0000,32.0000 scene=518.0000,132.0000 default=Inactive required=0 status=Inactive wires=1
+E id=11 type=Led pos=518.0000,308.0000 rot=0.0000 flipX=0 flipY=0 label="NotQ" in=1 out=0 pix=64x64::/Components/Output/Led/LedOff.svg
+  P in idx=0 name="1" pos=0.0000,32.0000 scene=518.0000,340.0000 default=Inactive required=0 status=Active wires=1
+W 1:0 -> 7:0 status=Inactive
+W 2:0 -> 8:1 status=Inactive
+W 3:0 -> 6:0 status=Inactive
+W 4:0 -> 5:0 status=Inactive
+W 5:1 -> 8:3 status=Unknown
+W 6:1 -> 7:2 status=Unknown
+W 7:3 -> 8:0 status=Unknown
+W 8:4 -> 7:1 status=Inactive
+W 8:4 -> 10:0 status=Inactive
+W 8:5 -> 11:0 status=Active
+W 9:0 -> 8:2 status=Active
+COUNTS elements=11 ports=21 wires=11

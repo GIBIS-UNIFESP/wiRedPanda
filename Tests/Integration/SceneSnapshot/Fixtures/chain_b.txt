@@ -1,0 +1,18 @@
+E id=1 type=InputSwitch pos=96.0000,96.0000 rot=0.0000 flipX=0 flipY=0 label="B_A" in=0 out=1 pix=64x64::/Components/Input/switchOff.svg
+  P out idx=0 name="" pos=64.0000,32.0000 scene=160.0000,128.0000 default=Unknown required=1 status=Inactive wires=1
+E id=2 type=InputSwitch pos=96.0000,192.0000 rot=0.0000 flipX=0 flipY=0 label="B_B" in=0 out=1 pix=64x64::/Components/Input/switchOff.svg
+  P out idx=0 name="" pos=64.0000,32.0000 scene=160.0000,224.0000 default=Unknown required=1 status=Inactive wires=1
+E id=3 type=And pos=224.0000,144.0000 rot=0.0000 flipX=0 flipY=0 label="" in=2 out=1 pix=64x64::/Components/Logic/and.svg
+  P in idx=0 name="" pos=0.0000,24.0000 scene=224.0000,168.0000 default=Unknown required=1 status=Inactive wires=1
+  P in idx=1 name="" pos=0.0000,40.0000 scene=224.0000,184.0000 default=Unknown required=1 status=Inactive wires=1
+  P out idx=0 name="" pos=64.0000,32.0000 scene=288.0000,176.0000 default=Unknown required=1 status=Unknown wires=1
+E id=4 type=IC pos=368.0000,144.0000 rot=0.0000 flipX=0 flipY=0 label="chain_c" in=1 out=1 pix=footprint
+  P in idx=0 name="C_IN" pos=0.0000,32.0000 scene=368.0000,176.0000 default=Inactive required=0 status=Unknown wires=1
+  P out idx=0 name="C_OUT" pos=64.0000,32.0000 scene=432.0000,176.0000 default=Unknown required=1 status=Unknown wires=1
+E id=5 type=Led pos=512.0000,144.0000 rot=0.0000 flipX=0 flipY=0 label="B_OUT" in=1 out=0 pix=64x64::/Components/Output/Led/LedOff.svg
+  P in idx=0 name="1" pos=0.0000,32.0000 scene=512.0000,176.0000 default=Inactive required=0 status=Unknown wires=1
+W 1:0 -> 3:0 status=Inactive
+W 2:0 -> 3:1 status=Inactive
+W 3:2 -> 4:0 status=Unknown
+W 4:1 -> 5:0 status=Unknown
+COUNTS elements=5 ports=8 wires=4

@@ -1,0 +1,13 @@
+E id=1 type=InputSwitch pos=0.0000,0.0000 rot=0.0000 flipX=0 flipY=0 label="in" in=0 out=1 pix=64x64::/Components/Input/switchOff.svg
+  P out idx=0 name="" pos=64.0000,32.0000 scene=64.0000,32.0000 default=Unknown required=1 status=Inactive wires=1
+E id=2 type=Node pos=100.0000,0.0000 rot=0.0000 flipX=0 flipY=0 label="W" in=1 out=1 pix=32x32::/Components/Logic/node.svg
+  P in idx=0 name="" pos=0.0000,16.0000 scene=100.0000,16.0000 default=Unknown required=1 status=Inactive wires=1
+  P out idx=0 name="" pos=32.0000,16.0000 scene=132.0000,16.0000 default=Unknown required=1 status=Unknown wires=0
+E id=3 type=Node pos=200.0000,0.0000 rot=0.0000 flipX=0 flipY=0 label="W" in=1 out=1 pix=32x32::/Components/Logic/node.svg
+  P in idx=0 name="" pos=0.0000,16.0000 scene=200.0000,16.0000 default=Unknown required=0 status=Unknown wires=0
+  P out idx=0 name="" pos=32.0000,16.0000 scene=232.0000,16.0000 default=Unknown required=1 status=Unknown wires=1
+E id=4 type=Led pos=300.0000,0.0000 rot=0.0000 flipX=0 flipY=0 label="out" in=1 out=0 pix=64x64::/Components/Output/Led/LedOff.svg
+  P in idx=0 name="1" pos=0.0000,32.0000 scene=300.0000,32.0000 default=Inactive required=0 status=Unknown wires=1
+W 1:0 -> 2:0 status=Inactive
+W 3:1 -> 4:0 status=Unknown
+COUNTS elements=4 ports=6 wires=2

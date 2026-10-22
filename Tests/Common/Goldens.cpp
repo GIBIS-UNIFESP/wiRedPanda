@@ -5,6 +5,7 @@
 
 #include <algorithm>
 
+#include <QDataStream>
 #include <QDir>
 #include <QDirIterator>
 #include <QFile>
@@ -14,7 +15,9 @@
 #include <QVariant>
 
 #include "App/Element/GraphicElement.h"
+#include "App/IO/Serialization.h"
 #include "App/Scene/Scene.h"
+#include "App/Scene/Workspace.h"
 
 namespace TestUtils {
 
@@ -98,7 +101,7 @@ QString compareWithGoldenBytes(const QString &goldenPath, const QByteArray &actu
         .arg(goldenPath, QString::number(actual.size()), QString::number(expected.size()), QString::number(offset));
 }
 
-void addFileRows(const QString &directory, const QStringList &nameFilters, const bool recursive)
+void addFileRows(const QString &directory, const QStringList &nameFilters, const bool recursive, const QString &tagPrefix)
 {
     const QDir dir(directory);
     if (!dir.exists()) {
@@ -114,7 +117,7 @@ void addFileRows(const QString &directory, const QStringList &nameFilters, const
     }
     relativePaths.sort();
     for (const QString &relativePath : std::as_const(relativePaths)) {
-        QTest::newRow(qPrintable(relativePath)) << dir.filePath(relativePath);
+        QTest::newRow(qPrintable(tagPrefix + relativePath)) << dir.filePath(relativePath);
     }
 }
 
@@ -125,6 +128,15 @@ QString requireInputFile(const QString &path)
         return QString("Input missing or not a readable file: %1").arg(path);
     }
     return {};
+}
+
+void loadCircuit(WorkSpace &workspace, const QString &path)
+{
+    QFile file(path);
+    QVERIFY2(file.open(QIODevice::ReadOnly), qPrintable(path + ": " + file.errorString()));
+    QDataStream stream(&file);
+    const QVersionNumber version = Serialization::readPandaHeader(stream);
+    workspace.load(stream, version, QFileInfo(path).absolutePath());
 }
 
 QString snapshotNumber(const qreal value)

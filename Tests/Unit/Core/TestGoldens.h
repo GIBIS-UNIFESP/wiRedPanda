@@ -18,6 +18,7 @@ private slots:
     void testRegenerationSwitchCountsWhenEmpty();
     void testFileRows_data();
     void testFileRows();
+    void testLoadCircuit();
     void testPrinters();
     void testOrientations();
     void testElementsById();
