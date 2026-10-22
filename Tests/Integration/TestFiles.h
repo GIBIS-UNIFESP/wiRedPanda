@@ -14,4 +14,6 @@ private slots:
     void testFiles();
     void testBackwardCompatibility_data();
     void testBackwardCompatibility();
+    void testSavedPayload_data();
+    void testSavedPayload();
 };

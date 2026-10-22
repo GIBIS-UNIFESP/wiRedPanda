@@ -3,12 +3,15 @@
 
 #include "Tests/Integration/TestFiles.h"
 
+#include <QBuffer>
+#include <QDataStream>
 #include <QDir>
 #include <QTemporaryFile>
 
 #include "App/IO/Serialization.h"
 #include "App/Scene/Workspace.h"
 #include "App/Wiring/Connection.h"
+#include "Tests/Common/Goldens.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestFiles::testFiles_data()
@@ -176,4 +179,54 @@ void TestFiles::testBackwardCompatibility()
         QString errorMsg = QString::fromUtf8(e.what());
         QFAIL(qPrintable(QString("Failed to load %1: %2").arg(fileInfo.fileName(), errorMsg)));
     }
+}
+
+void TestFiles::testSavedPayload_data()
+{
+    // The rows are "<group>/<file>.panda", the backward-compatibility files with their version directory.
+    QTest::addColumn<QString>("path");
+    const QString testsDir(QUOTE(CURRENTDIR));
+    TestUtils::addFileRows(TestUtils::examplesDir(), {"*.panda"}, false, "Examples/");
+    TestUtils::addFileRows(TestUtils::cpuComponentsDir(), {"*.panda"}, false, "ICComponents/");
+    TestUtils::addFileRows(testsDir + "/Fixtures/", {"*.panda"}, false, "Fixtures/");
+    TestUtils::addFileRows(testsDir + "/Fixtures/Perf/", {"*.panda"}, false, "Perf/");
+    TestUtils::addFileRows(TestUtils::backwardCompatibilityDir(), {"*.panda"}, true, "BackwardCompatibility/");
+}
+
+void TestFiles::testSavedPayload()
+{
+    // Each file is loaded and saved again as the application saves a file: the header, then the compressed payload.
+    // The compressed bytes depend on the zlib Qt was built with, so the payload is compared decompressed, and the
+    // header apart, with a golden of its own.
+    QFETCH(QString, path);
+    const QString missing = TestUtils::requireInputFile(path);
+    QVERIFY2(missing.isEmpty(), qPrintable(missing));
+
+    WorkSpace workspace;
+    TestUtils::loadCircuit(workspace, path);
+    if (QTest::currentTestFailed()) {
+        return;
+    }
+
+    QBuffer saved;
+    QVERIFY(saved.open(QIODevice::WriteOnly));
+    QDataStream saveStream(&saved);
+    Serialization::writePandaHeader(saveStream);
+    workspace.save(saveStream);
+    saved.close();
+
+    QVERIFY(saved.open(QIODevice::ReadOnly));
+    QDataStream readStream(&saved);
+    const QVersionNumber savedVersion = Serialization::readPandaHeader(readStream);
+    const QByteArray header = saved.data().left(static_cast<int>(saved.pos()));
+    const QByteArray payload = Serialization::readPayload(readStream, savedVersion);
+    QVERIFY2(!payload.isEmpty(), qPrintable("Saved payload empty for " + path));
+
+    const QString goldenDir = QString(QUOTE(CURRENTDIR)) + "/Integration/SavedPayload/";
+    const QString headerMismatch = TestUtils::compareWithGoldenBytes(goldenDir + "header.bin", header);
+    QVERIFY2(headerMismatch.isEmpty(), qPrintable(headerMismatch));
+    const QString row(QTest::currentDataTag());
+    const QString golden = goldenDir + row.chopped(QStringLiteral(".panda").size()) + ".payload";
+    const QString payloadMismatch = TestUtils::compareWithGoldenBytes(golden, payload);
+    QVERIFY2(payloadMismatch.isEmpty(), qPrintable(payloadMismatch));
 }
