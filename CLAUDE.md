@@ -112,9 +112,13 @@ What no single change owns: the pitfalls of building and testing this code base,
   and one using a Qt class only the precompiled header includes, must both fail. CI also builds without unity (the
   sanitizer presets) and with one large unity batch.
 - GCC passes test code that clang rejects under `-Werror`: `QWARN` (`QTest::qWarn`, deprecated since Qt 6.3; GCC does
-  not warn inside a system header's macro expansion) and a `float` passed as a `qreal` argument (clang's
-  `-Wdouble-promotion`). CI's macOS jobs build the tests with Apple clang; nothing checks clang locally, and ASan and
+  not warn inside a system header's macro expansion), a `float` passed as a `qreal` argument (clang's
+  `-Wdouble-promotion`), and a lambda init-capture named after the structured binding it copies (`[inputs = inputs]`,
+  clang's `-Wshadow`). CI's macOS jobs build the tests with Apple clang; nothing checks clang locally, and ASan and
   UBSan are left to CI's Sanitizers workflow.
+- CI's Debian i386 job has a 32-bit `qsizetype`, so a `qint64` such as `QIODevice::pos()` passed where a `qsizetype` is
+  taken narrows (`-Wconversion`), while a `static_cast<qsizetype>` is a useless cast on 64-bit Qt 6.9, where
+  `qsizetype` is `qint64`: a value known to be small is cast to `int`.
 - The libFuzzer build sees includes the GCC build hides, such as a header using `QPointF` and `QTransform` without
   including them.
 - Build all targets before running the suite: the test target alone leaves out the one that copies the MCP schema, and
@@ -122,6 +126,10 @@ What no single change owns: the pitfalls of building and testing this code base,
 - Long runs (sweeps, oracles, timings) use an optimized build, one case per core, never a debug build.
 - CI runs pylint over `Scripts/`, `Tests/Fixtures/` and the IC generators; the MCP client is checked with ruff, pyright
   and mypy, which are run before pushing a change to it.
+- `Scripts/fix_style.py` runs over the C++ sources before every push: it orders the includes (the related header, then
+  the standard library, then Qt and third parties, then the project's, each group sorted without regard to case),
+  collapses runs of blank lines, and ends each file with one newline. It rewrites files in place and has no `--help`
+  (an unknown option still runs it), so its changes are read before they are kept.
 
 ### Translatable strings
 
