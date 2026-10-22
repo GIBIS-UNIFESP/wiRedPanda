@@ -202,4 +202,10 @@ public:
      * to fit the ports; "null" when there is no picture.
      */
     static QString pixmapIdentity(const GraphicElement *element);
+
+    /**
+     * \brief The scene transform of \a element's label: where its origin sits and how its glyphs are turned. The
+     * label is placed by fixed anchors, never by its text's size, so this does not depend on fonts.
+     */
+    static QTransform labelSceneTransform(const GraphicElement *element);
 };

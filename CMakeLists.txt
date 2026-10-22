@@ -916,6 +916,7 @@ add_test(NAME TestLevel9MemoryStage16Bit COMMAND test_wiredpanda TestLevel9Memor
 add_test(NAME TestLevel9MultiCycleCPU8Bit COMMAND test_wiredpanda TestLevel9MultiCycleCPU8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel9RegisterFile32X16 COMMAND test_wiredpanda TestLevel9RegisterFile32X16 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLevel9SingleCycleCPU8Bit COMMAND test_wiredpanda TestLevel9SingleCycleCPU8Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestLabelSnapshot COMMAND test_wiredpanda TestLabelSnapshot WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLogicGates COMMAND test_wiredpanda TestLogicGates WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestMemorySettlingTime COMMAND test_wiredpanda TestMemorySettlingTime WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestMUXDEMUXComprehensive COMMAND test_wiredpanda TestMUXDEMUXComprehensive WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -1051,7 +1052,7 @@ endforeach()
 
 # File and Simulation Tests - Integration category
 foreach(TEST TestArduino TestFeedback TestFiles TestIC TestICInline
-        TestPortLayoutSnapshot TestSceneSnapshot TestSimulation TestSystemVerilogExport TestWorkspace TestWorkspaceFileops)
+        TestLabelSnapshot TestPortLayoutSnapshot TestSceneSnapshot TestSimulation TestSystemVerilogExport TestWorkspace TestWorkspaceFileops)
     set_tests_properties(${TEST} PROPERTIES LABELS "integration")
 endforeach()
 
@@ -1130,7 +1131,7 @@ set(ALL_TESTS
     TestDecoder8To256 TestMemorySettlingTime TestRAMCell1Bit TestSequential
     TestMUXDEMUXComprehensive
     TestArduino TestFeedback TestFiles TestIC TestICInline
-    TestPortLayoutSnapshot TestSceneSnapshot TestSimulation TestSystemVerilogExport TestWorkspace TestWorkspaceFileops
+    TestLabelSnapshot TestPortLayoutSnapshot TestSceneSnapshot TestSimulation TestSystemVerilogExport TestWorkspace TestWorkspaceFileops
     TestIcons TestWaveform TestAudioBox TestBuzzer TestClock TestClocksAdvanced
     TestComponents TestDisplays TestElementAppearance TestElementLabel TestElementProperties TestFeatures
     TestGeometry TestGraphicElementSerializer TestGraphicelementAdvanced TestInputElements TestInputRotary TestLED
