@@ -3,6 +3,9 @@
 
 #include "Tests/Unit/Core/TestGoldens.h"
 
+#include <memory>
+#include <utility>
+
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
@@ -10,10 +13,12 @@
 #include <QSet>
 #include <QTemporaryDir>
 #include <QTest>
+#include <QTransform>
 
 #include "App/Core/Application.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/And.h"
+#include "App/Element/GraphicElements/Demux.h"
 #include "App/Element/GraphicElements/DFlipFlop.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
@@ -223,6 +228,8 @@ void TestGoldens::testPrinters()
     QCOMPARE(TestUtils::snapshotNumber(-0.00001), QString("0.0000"));
     QCOMPARE(TestUtils::snapshotNumber(-2.25), QString("-2.2500"));
     QCOMPARE(TestUtils::snapshotPoint(QPointF(-0.0, 32)), QString("0.0000,32.0000"));
+    QCOMPARE(TestUtils::snapshotTransform(QTransform(0, 1, -1, -0.0, 2.5, -8)),
+             QString("0.0000,1.0000,-1.0000,0.0000,2.5000,-8.0000"));
     QCOMPARE(TestUtils::snapshotQuoted(" a\"b\\c\nd\te "), QString(R"(" a\"b\\c\nd\te ")"));
     QCOMPARE(TestUtils::snapshotStatus(Status::Unknown), QString("Unknown"));
     QCOMPARE(TestUtils::snapshotStatus(Status::Inactive), QString("Inactive"));
@@ -284,6 +291,42 @@ void TestGoldens::testScopedRendering()
         QCOMPARE(Application::renderingEnabled, before);
     }
     Application::renderingEnabled = original;
+}
+
+void TestGoldens::testPortCountsAndOrientationPasses()
+{
+    // A Demux's inputs follow its outputs, so only its output count is set; other elements take both.
+    And gate;
+    TestUtils::applyPortCounts(&gate, 3, 1);
+    QCOMPARE(gate.inputSize(), 3);
+    Demux demux;
+    TestUtils::applyPortCounts(&demux, 7, 4);
+    QCOMPARE(demux.outputSize(), 4);
+    QCOMPARE(demux.inputSize(), 3);
+
+    // One line per orientation under the header, then the summary: the same text when the order changes nothing, and
+    // the differing descriptions after the other text when it does.
+    WorkSpace workspace;
+    const TestUtils::ElementBuilder build = [](Scene *scene) {
+        auto element = std::make_unique<And>();
+        scene->addItem(element.get());
+        return std::unique_ptr<GraphicElement>(std::move(element));
+    };
+    const auto rotation = [](const GraphicElement *element) {
+        return TestUtils::snapshotNumber(element->rotation());
+    };
+    const auto same = TestUtils::describeInOrientations(workspace.scene(), "header", build, [](GraphicElement *) {},
+                                                        rotation, "same", "different");
+    QCOMPARE(same.size(), 18);
+    QCOMPARE(same.first(), QString("header"));
+    QCOMPARE(same.last(), QString("same"));
+
+    // A port pass that undoes the rotation makes every oriented-first description differ but the unrotated ones.
+    const auto different = TestUtils::describeInOrientations(workspace.scene(), "header", build,
+                                                             [](GraphicElement *element) { element->setRotation(0); },
+                                                             rotation, "same", "different");
+    QCOMPARE(different.size(), 1 + 16 + 1 + 12);
+    QCOMPARE(different.at(17), QString("different"));
 }
 
 void TestGoldens::testLeftOutTypes()

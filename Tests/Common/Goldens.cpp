@@ -18,6 +18,7 @@
 #include "App/IO/Serialization.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
+#include "Tests/Common/TestUtils.h"
 
 namespace TestUtils {
 
@@ -150,6 +151,13 @@ QString snapshotPoint(const QPointF &point)
     return snapshotNumber(point.x()) + ',' + snapshotNumber(point.y());
 }
 
+QString snapshotTransform(const QTransform &transform)
+{
+    return QStringList({snapshotNumber(transform.m11()), snapshotNumber(transform.m12()), snapshotNumber(transform.m21()),
+                        snapshotNumber(transform.m22()), snapshotNumber(transform.dx()), snapshotNumber(transform.dy())})
+        .join(',');
+}
+
 QString snapshotQuoted(const QString &text)
 {
     QString escaped = text;
@@ -190,6 +198,14 @@ void orient(GraphicElement *element, const Orientation &orientation)
     element->setFlippedY(orientation.flipY);
 }
 
+void applyPortCounts(GraphicElement *element, const int inputs, const int outputs)
+{
+    element->setOutputSize(outputs);
+    if ((inputs >= 0) && (element->elementType() != ElementType::Demux)) {
+        element->setInputSize(inputs);
+    }
+}
+
 QVector<GraphicElement *> elementsById(const Scene *scene)
 {
     QVector<GraphicElement *> elements = scene->unsortedElements();
@@ -218,6 +234,11 @@ QList<ElementType> dumpedTypes()
         return snapshotType(a) < snapshotType(b);
     });
     return types;
+}
+
+QString fullAdderIcFile()
+{
+    return cpuComponentsDir() + "level2_full_adder_1bit.panda";
 }
 
 } // namespace TestUtils

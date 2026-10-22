@@ -8,18 +8,22 @@
 
 #pragma once
 
+#include <functional>
+#include <memory>
+
 #include <QByteArray>
 #include <QList>
 #include <QPointF>
 #include <QString>
 #include <QStringList>
+#include <QTransform>
 #include <QVector>
 
 #include "App/Core/Application.h"
 #include "App/Core/Enums.h"
+#include "App/Element/GraphicElement.h"
+#include "App/Scene/Scene.h"
 
-class GraphicElement;
-class Scene;
 class WorkSpace;
 
 namespace TestUtils {
@@ -71,6 +75,9 @@ QString snapshotNumber(qreal value);
 /// Formats \a point as "x,y", each coordinate as snapshotNumber() writes it.
 QString snapshotPoint(const QPointF &point);
 
+/// Formats \a transform as "m11,m12,m21,m22,dx,dy", each as snapshotNumber() writes it.
+QString snapshotTransform(const QTransform &transform);
+
 /// Quotes \a text, escaped so it stays on one line and keeps its leading and trailing spaces.
 QString snapshotQuoted(const QString &text);
 
@@ -95,6 +102,52 @@ QString snapshotOrientation(const Orientation &orientation);
 
 /// Applies \a orientation to \a element.
 void orient(GraphicElement *element, const Orientation &orientation);
+
+/// Sets the output count of \a element, and its input count unless \a inputs is negative or the element is a Demux,
+/// whose inputs follow its outputs.
+void applyPortCounts(GraphicElement *element, int inputs, int outputs);
+
+/// Creates an element in \a scene before it is given its ports; the caller owns it.
+using ElementBuilder = std::function<std::unique_ptr<GraphicElement>(Scene *scene)>;
+
+/**
+ * \brief Describes one configuration in the sixteen orientations: in each, an element built by \a build is given its
+ * ports by \a applyPorts and then oriented, and \a describe's result is listed under \a header; a second element is
+ * oriented first and then given its ports, and its description is listed after \a differentText only where it differs
+ * from the first's, or \a sameText alone where none does. \a describe returns a QString or a QStringList.
+ */
+template <typename Describe>
+QStringList describeInOrientations(Scene *scene, const QString &header, const ElementBuilder &build,
+                                   const std::function<void(GraphicElement *)> &applyPorts, Describe describe,
+                                   const QString &sameText, const QString &differentText)
+{
+    QStringList lines{header};
+    QStringList otherOrder;
+    for (const auto &orientation : orientations()) {
+        const auto portsFirst = build(scene);
+        applyPorts(portsFirst.get());
+        orient(portsFirst.get(), orientation);
+        const auto portsFirstText = describe(portsFirst.get());
+        scene->removeItem(portsFirst.get());
+        lines << portsFirstText;
+
+        const auto orientedFirst = build(scene);
+        orient(orientedFirst.get(), orientation);
+        applyPorts(orientedFirst.get());
+        const auto orientedFirstText = describe(orientedFirst.get());
+        scene->removeItem(orientedFirst.get());
+        if (orientedFirstText != portsFirstText) {
+            otherOrder << orientedFirstText;
+        }
+    }
+
+    if (otherOrder.isEmpty()) {
+        lines << sameText;
+    } else {
+        lines << differentText << otherOrder;
+    }
+    return lines;
+}
 
 /// Returns the elements of \a scene in ascending id order.
 QVector<GraphicElement *> elementsById(const Scene *scene);
@@ -127,6 +180,10 @@ bool leftOutOfDumps(ElementType type);
 
 /// Every element type the dumps cover, that is, every type not leftOutOfDumps(), in the order its name sorts.
 QList<ElementType> dumpedTypes();
+
+/// The IC the port layout and label goldens build, the 1-bit full adder: an IC lays out its ports and places its label
+/// from its definition rather than from its type.
+QString fullAdderIcFile();
 
 } // namespace TestUtils
 
