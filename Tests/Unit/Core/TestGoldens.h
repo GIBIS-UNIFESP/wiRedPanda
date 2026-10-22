@@ -13,6 +13,7 @@ class TestGoldens : public QObject
 private slots:
     void testTextGoldenMatchesOrNamesTheLine();
     void testByteGoldenMatchesOrNamesTheOffset();
+    void testImageGoldenMatchesWithinTheTolerance();
     void testMissingGoldenFails();
     void testRegenerationWritesOverAnExistingGolden();
     void testRegenerationSwitchCountsWhenEmpty();

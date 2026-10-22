@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <cstdlib>
 
+#include <QBuffer>
 #include <QDataStream>
 #include <QDir>
 #include <QDirIterator>
@@ -277,6 +278,59 @@ int channelDifference(const QRgb a, const QRgb b)
 {
     return std::max({std::abs(qRed(a) - qRed(b)), std::abs(qGreen(a) - qGreen(b)), std::abs(qBlue(a) - qBlue(b)),
                      std::abs(qAlpha(a) - qAlpha(b))});
+}
+
+QString compareWithGoldenImage(const QString &goldenPath, const QImage &image)
+{
+    if (regeneratingGoldens()) {
+        QByteArray png;
+        QBuffer buffer(&png);
+        if (!buffer.open(QIODevice::WriteOnly) || !image.save(&buffer, "PNG")) {
+            return QString("Could not encode %1 as PNG").arg(goldenPath);
+        }
+        return writeGolden(goldenPath, png);
+    }
+
+    QByteArray bytes;
+    if (const QString error = readGolden(goldenPath, bytes); !error.isEmpty()) {
+        return error;
+    }
+    const QImage golden = QImage::fromData(bytes, "PNG").convertToFormat(QImage::Format_ARGB32_Premultiplied);
+    if (golden.isNull()) {
+        return QString("%1 is not a PNG image").arg(goldenPath);
+    }
+    const QImage actual = image.convertToFormat(QImage::Format_ARGB32_Premultiplied);
+    if (actual.size() != golden.size()) {
+        return QString("%1 is %2x%3, the image %4x%5")
+            .arg(goldenPath, QString::number(golden.width()), QString::number(golden.height()),
+                 QString::number(actual.width()), QString::number(actual.height()));
+    }
+
+    qsizetype differing = 0;
+    int worst = 0;
+    QPoint first;
+    for (int y = 0; y < actual.height(); ++y) {
+        for (int x = 0; x < actual.width(); ++x) {
+            const int difference = channelDifference(actual.pixel(x, y), golden.pixel(x, y));
+            if (difference <= kPixelChannelTolerance) {
+                continue;
+            }
+            if (differing == 0) {
+                first = QPoint(x, y);
+            }
+            ++differing;
+            worst = std::max(worst, difference);
+        }
+    }
+    if (differing == 0) {
+        return {};
+    }
+
+    const QString actualPath = QDir::temp().filePath(QFileInfo(goldenPath).completeBaseName() + ".actual.png");
+    actual.save(actualPath, "PNG");
+    return QString("%1 differs: %2 pixels by more than %3, at most %4, the first at %5,%6; this run's image is %7")
+        .arg(goldenPath, QString::number(differing), QString::number(kPixelChannelTolerance), QString::number(worst),
+             QString::number(first.x()), QString::number(first.y()), actualPath);
 }
 
 bool leftOutOfDumps(const ElementType type)

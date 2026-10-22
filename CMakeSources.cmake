@@ -426,6 +426,7 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestSimulation.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestStackingSnapshot.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestSystemVerilogExport.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestWirePixelSnapshot.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestWorkspace.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestWorkspaceFileops.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Resources/TestIcons.cpp
@@ -656,6 +657,7 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestSimulation.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestStackingSnapshot.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestSystemVerilogExport.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestWirePixelSnapshot.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestWorkspace.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestWorkspaceFileops.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Resources/TestIcons.h

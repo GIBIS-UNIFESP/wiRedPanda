@@ -111,6 +111,7 @@
 #include "Tests/Integration/TestSimulation.h"
 #include "Tests/Integration/TestStackingSnapshot.h"
 #include "Tests/Integration/TestSystemVerilogExport.h"
+#include "Tests/Integration/TestWirePixelSnapshot.h"
 #include "Tests/Integration/TestWorkspace.h"
 #include "Tests/Integration/TestWorkspaceFileops.h"
 // resources
@@ -354,6 +355,7 @@ int main(int argc, char **argv)
         {"TestSimulation", []() -> QObject * { return new TestSimulation; }},
         {"TestStackingSnapshot", []() -> QObject * { return new TestStackingSnapshot; }},
         {"TestSystemVerilogExport", []() -> QObject * { return new TestSystemVerilogExport; }},
+        {"TestWirePixelSnapshot", []() -> QObject * { return new TestWirePixelSnapshot; }},
         {"TestWorkspace", []() -> QObject * { return new TestWorkspace; }},
         {"TestWorkspaceFileops", []() -> QObject * { return new TestWorkspaceFileops; }},
         {"TestIcons", []() -> QObject * { return new TestIcons; }},
