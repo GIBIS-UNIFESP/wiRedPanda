@@ -1,0 +1,4 @@
+E id=3 type=IC pos=304.0000,144.0000 rot=0.0000 flipX=1 flipY=0 in=2 out=1
+  P in idx=0 name="B_A" pos=0.0000,24.0000 scene=368.0000,168.0000 default=Inactive required=0 status=Inactive wires=1
+  P in idx=1 name="B_B" pos=0.0000,40.0000 scene=368.0000,184.0000 default=Inactive required=0 status=Inactive wires=1
+  P out idx=0 name="B_OUT" pos=64.0000,32.0000 scene=304.0000,176.0000 default=Unknown required=1 status=Unknown wires=1

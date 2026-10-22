@@ -271,6 +271,21 @@ void TestGoldens::testElementsById()
     QCOMPARE(elements.at(2), gate);
 }
 
+void TestGoldens::testScopedRendering()
+{
+    // The switch is on inside the scope and back to what it was after, whichever value that was.
+    const bool original = Application::renderingEnabled;
+    for (const bool before : {false, true}) {
+        Application::renderingEnabled = before;
+        {
+            const TestUtils::ScopedRendering rendering;
+            QVERIFY(Application::renderingEnabled);
+        }
+        QCOMPARE(Application::renderingEnabled, before);
+    }
+    Application::renderingEnabled = original;
+}
+
 void TestGoldens::testLeftOutTypes()
 {
     // The types the dumps leave out are named in one list. JKLatch and Unknown have no creator; an IC has one, but a

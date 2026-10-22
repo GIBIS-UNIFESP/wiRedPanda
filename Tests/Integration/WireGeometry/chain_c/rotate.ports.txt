@@ -1,0 +1,2 @@
+E id=1 type=InputSwitch pos=96.0000,144.0000 rot=90.0000 flipX=0 flipY=0 in=0 out=1
+  P out idx=0 name="" pos=64.0000,32.0000 scene=128.0000,208.0000 default=Unknown required=1 status=Inactive wires=1
