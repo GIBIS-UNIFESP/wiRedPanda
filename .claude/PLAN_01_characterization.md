@@ -40,7 +40,8 @@ item registry keeps, instead of a sort of the circuit.
   ways) the same way in every dump.
 - Element internals are read through a test-only friend class, not a production accessor.
 - A type without a creator is written as `NO CREATOR` and fails its golden; the types left out on purpose are named in
-  one list (IC, JKLatch and Unknown, which have no creator), where a silent skip had hidden types on the branch.
+  one list (IC, whose bare element has no file, so ICs are dumped through the circuits that hold them; JKLatch and
+  Unknown, which have no creator), where a silent skip had hidden types on the branch.
 - Comments say what a golden pins and how, and claim no coverage a test lacks (one on the branch said paste was pinned
   where it was not), with no ledger rows, defect IDs or history.
 - The tests compile under the flags CI's Apple clang build uses: no `QWARN`, and no `float` passed where a `qreal` is
