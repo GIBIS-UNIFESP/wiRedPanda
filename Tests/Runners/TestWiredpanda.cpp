@@ -131,6 +131,7 @@
 #include "Tests/Unit/Core/TestDragDropPayload.h"
 #include "Tests/Unit/Core/TestExerciseTourResources.h"
 #include "Tests/Unit/Core/TestExternalFilePath.h"
+#include "Tests/Unit/Core/TestGoldens.h"
 #include "Tests/Unit/Core/TestInstallRelativePaths.h"
 #include "Tests/Unit/Core/TestNotifyCatch.h"
 #include "Tests/Unit/Core/TestSettings.h"
@@ -361,6 +362,7 @@ int main(int argc, char **argv)
         {"TestCoreSettings", []() -> QObject * { return new TestCoreSettings; }},
         {"TestExerciseTourResources", []() -> QObject * { return new TestExerciseTourResources; }},
         {"TestExternalFilePath", []() -> QObject * { return new TestExternalFilePath; }},
+        {"TestGoldens", []() -> QObject * { return new TestGoldens; }},
         {"TestInstallRelativePaths", []() -> QObject * { return new TestInstallRelativePaths; }},
         {"TestExerciseEngine", []() -> QObject * { return new TestExerciseEngine; }},
         {"TestUpdateChecker", []() -> QObject * { return new TestUpdateChecker; }},

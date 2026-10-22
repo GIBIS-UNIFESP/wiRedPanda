@@ -124,6 +124,9 @@ public:
     QColor selectionPen() const { return m_selectionPen; }
 
 private:
+    /// Reads the displayed picture for the characterization goldens; see Tests/Common/Goldens.h.
+    friend class SnapshotAccess;
+
     /// Rebuilds m_svgRenderer from the resolved SVG path and the owner's orientation, or clears
     /// it for non-SVG (raster) appearances.
     void rebuildSvgRenderer();

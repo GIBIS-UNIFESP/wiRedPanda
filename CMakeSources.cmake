@@ -310,10 +310,12 @@ if(EMSCRIPTEN)
 endif()
 
 set(TEST_UTILS_SOURCES
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/Goldens.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/TestUtils.cpp
 )
 
 set(TEST_UTILS_HEADERS
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/Goldens.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/ICTestHelpers.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/StubFileDialogProvider.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/StubMainWindowHost.h
@@ -439,6 +441,7 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestDragDropPayload.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestExerciseTourResources.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestExternalFilePath.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestGoldens.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestInstallRelativePaths.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestNotifyCatch.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestSettings.cpp
@@ -663,6 +666,7 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestDragDropPayload.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestExerciseTourResources.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestExternalFilePath.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestGoldens.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestInstallRelativePaths.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestNotifyCatch.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestSettings.h

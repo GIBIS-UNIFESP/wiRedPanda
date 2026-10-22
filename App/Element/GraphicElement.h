@@ -660,6 +660,10 @@ private:
     /// sandbox's offscreen/X11 setup does not reproduce reliably.
     friend class TestGraphicElement;
 
+    /// Reads the displayed picture for the characterization goldens, so no production accessor
+    /// exists only for tests; see Tests/Common/Goldens.h.
+    friend class SnapshotAccess;
+
     /// Drops and re-enables the item's DeviceCoordinateCache so the next paint re-renders the
     /// whole item. DeviceCoordinateCache invalidates incrementally and keeps the previously
     /// cached device tile when the displayed pixmap swaps to a different size (e.g. a small

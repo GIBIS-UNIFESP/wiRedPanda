@@ -996,6 +996,7 @@ add_test(NAME TestUpdateController COMMAND test_wiredpanda TestUpdateController 
 add_test(NAME TestWorkspaceManager COMMAND test_wiredpanda TestWorkspaceManager WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestExerciseTourResources COMMAND test_wiredpanda TestExerciseTourResources WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestExternalFilePath COMMAND test_wiredpanda TestExternalFilePath WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestGoldens COMMAND test_wiredpanda TestGoldens WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestInstallRelativePaths COMMAND test_wiredpanda TestInstallRelativePaths WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestExerciseEngine COMMAND test_wiredpanda TestExerciseEngine WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestTourEngine COMMAND test_wiredpanda TestTourEngine WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -1088,7 +1089,7 @@ endforeach()
 set_tests_properties(TestDanglingPointer PROPERTIES LABELS "unit;regression")
 
 # Core Functionality Tests - Unit category
-foreach(TEST TestCommands TestCommon TestEnums TestNotifyCatch TestPriorities TestRecentFiles TestSettings
+foreach(TEST TestCommands TestCommon TestEnums TestGoldens TestNotifyCatch TestPriorities TestRecentFiles TestSettings
         TestThemeManager)
     set_tests_properties(${TEST} PROPERTIES LABELS "unit")
 endforeach()
@@ -1139,7 +1140,7 @@ set(ALL_TESTS
     TestDanglingPointer
     TestCommands TestCommon TestEnums TestNotifyCatch TestPriorities TestRecentFiles TestSettings TestThemeManager
     TestApplication TestCoreSettings TestDragDropPayload TestExerciseTourResources
-    TestExternalFilePath TestInstallRelativePaths TestUpdateChecker
+    TestExternalFilePath TestGoldens TestInstallRelativePaths TestUpdateChecker
     TestArduinoCodeGenUnit TestCodeGenUtils TestSystemVerilogCodeGenUnit
     TestCircuitExporter TestElementEditor TestElementPalette
     TestElementTabNavigator TestExportController TestICController TestICDropZone TestLabeledSlider

@@ -1,0 +1,229 @@
+// Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+#include "Tests/Common/Goldens.h"
+
+#include <algorithm>
+
+#include <QDir>
+#include <QDirIterator>
+#include <QFile>
+#include <QFileInfo>
+#include <QMetaEnum>
+#include <QTest>
+#include <QVariant>
+
+#include "App/Element/GraphicElement.h"
+#include "App/Scene/Scene.h"
+
+namespace TestUtils {
+
+namespace {
+
+/// Writes \a bytes to \a goldenPath, creating its directory; returns an empty string, or why the write failed.
+QString writeGolden(const QString &goldenPath, const QByteArray &bytes)
+{
+    QDir().mkpath(QFileInfo(goldenPath).absolutePath());
+    QFile out(goldenPath);
+    if (!out.open(QIODevice::WriteOnly | QIODevice::Truncate) || (out.write(bytes) != bytes.size())) {
+        return QString("Could not write %1: %2").arg(goldenPath, out.errorString());
+    }
+    return {};
+}
+
+/// Reads the golden at \a goldenPath into \a bytes; returns an empty string, or a message naming the missing file.
+QString readGolden(const QString &goldenPath, QByteArray &bytes)
+{
+    QFile golden(goldenPath);
+    if (!golden.open(QIODevice::ReadOnly)) {
+        return QString("Golden file missing: %1; run with GENERATE_EXPECTED_SNAPSHOTS=1 to write it").arg(goldenPath);
+    }
+    bytes = golden.readAll();
+    return {};
+}
+
+} // namespace
+
+bool regeneratingGoldens()
+{
+    return qEnvironmentVariableIsSet("GENERATE_EXPECTED_SNAPSHOTS");
+}
+
+QString compareWithGolden(const QString &goldenPath, const QString &actual)
+{
+    if (regeneratingGoldens()) {
+        return writeGolden(goldenPath, actual.toUtf8());
+    }
+
+    QByteArray bytes;
+    if (const QString error = readGolden(goldenPath, bytes); !error.isEmpty()) {
+        return error;
+    }
+    const QString expected = QString::fromUtf8(bytes);
+    if (actual == expected) {
+        return {};
+    }
+
+    const QStringList expectedLines = expected.split('\n');
+    const QStringList actualLines = actual.split('\n');
+    qsizetype line = 0;
+    while ((line < expectedLines.size()) && (line < actualLines.size()) && (expectedLines.at(line) == actualLines.at(line))) {
+        ++line;
+    }
+    const QString endOfFile("<end of file>");
+    return QString("%1 differs at line %2:\n  expected: %3\n  actual:   %4")
+        .arg(goldenPath, QString::number(line + 1), expectedLines.value(line, endOfFile), actualLines.value(line, endOfFile));
+}
+
+QString compareWithGoldenBytes(const QString &goldenPath, const QByteArray &actual)
+{
+    if (regeneratingGoldens()) {
+        return writeGolden(goldenPath, actual);
+    }
+
+    QByteArray expected;
+    if (const QString error = readGolden(goldenPath, expected); !error.isEmpty()) {
+        return error;
+    }
+    if (actual == expected) {
+        return {};
+    }
+
+    const qsizetype common = std::min(actual.size(), expected.size());
+    qsizetype offset = 0;
+    while ((offset < common) && (actual.at(offset) == expected.at(offset))) {
+        ++offset;
+    }
+    return QString("%1 differs: %2 bytes, expected %3 bytes; first difference at byte %4")
+        .arg(goldenPath, QString::number(actual.size()), QString::number(expected.size()), QString::number(offset));
+}
+
+void addFileRows(const QString &directory, const QStringList &nameFilters, const bool recursive)
+{
+    const QDir dir(directory);
+    if (!dir.exists()) {
+        QTest::newRow(qPrintable("missing directory " + directory)) << directory;
+        return;
+    }
+
+    QStringList relativePaths;
+    QDirIterator it(directory, nameFilters, QDir::Files,
+                    recursive ? QDirIterator::Subdirectories : QDirIterator::NoIteratorFlags);
+    while (it.hasNext()) {
+        relativePaths.append(dir.relativeFilePath(it.next()));
+    }
+    relativePaths.sort();
+    for (const QString &relativePath : std::as_const(relativePaths)) {
+        QTest::newRow(qPrintable(relativePath)) << dir.filePath(relativePath);
+    }
+}
+
+QString requireInputFile(const QString &path)
+{
+    const QFileInfo info(path);
+    if (!info.isFile() || !info.isReadable()) {
+        return QString("Input missing or not a readable file: %1").arg(path);
+    }
+    return {};
+}
+
+QString snapshotNumber(const qreal value)
+{
+    const QString text = QString::number(value, 'f', 4);
+    return (text == QLatin1String("-0.0000")) ? QString("0.0000") : text;
+}
+
+QString snapshotPoint(const QPointF &point)
+{
+    return snapshotNumber(point.x()) + ',' + snapshotNumber(point.y());
+}
+
+QString snapshotQuoted(const QString &text)
+{
+    QString escaped = text;
+    escaped.replace('\\', "\\\\").replace('"', "\\\"").replace('\n', "\\n").replace('\r', "\\r").replace('\t', "\\t");
+    return '"' + escaped + '"';
+}
+
+QString snapshotStatus(const Status status)
+{
+    return QVariant::fromValue(status).toString();
+}
+
+QString snapshotType(const ElementType type)
+{
+    return QVariant::fromValue(type).toString();
+}
+
+QList<Orientation> orientations()
+{
+    QList<Orientation> list;
+    for (const int rotation : {0, 90, 180, 270}) {
+        for (const int flips : {0, 1, 2, 3}) {
+            list.append({rotation, (flips & 1) != 0, (flips & 2) != 0});
+        }
+    }
+    return list;
+}
+
+QString snapshotOrientation(const Orientation &orientation)
+{
+    return 'r' + QString::number(orientation.rotation) + (orientation.flipX ? "x" : "") + (orientation.flipY ? "y" : "");
+}
+
+void orient(GraphicElement *element, const Orientation &orientation)
+{
+    element->setRotation(orientation.rotation);
+    element->setFlippedX(orientation.flipX);
+    element->setFlippedY(orientation.flipY);
+}
+
+QVector<GraphicElement *> elementsById(const Scene *scene)
+{
+    QVector<GraphicElement *> elements = scene->unsortedElements();
+    std::sort(elements.begin(), elements.end(), [](const GraphicElement *a, const GraphicElement *b) {
+        return a->id() < b->id();
+    });
+    return elements;
+}
+
+bool leftOutOfDumps(const ElementType type)
+{
+    return (type == ElementType::IC) || (type == ElementType::JKLatch) || (type == ElementType::Unknown);
+}
+
+QList<ElementType> dumpedTypes()
+{
+    const QMetaEnum metaEnum = QMetaEnum::fromType<ElementType>();
+    QList<ElementType> types;
+    for (int i = 0; i < metaEnum.keyCount(); ++i) {
+        const auto type = static_cast<ElementType>(metaEnum.value(i));
+        if (!leftOutOfDumps(type)) {
+            types.append(type);
+        }
+    }
+    std::sort(types.begin(), types.end(), [](const ElementType a, const ElementType b) {
+        return snapshotType(a) < snapshotType(b);
+    });
+    return types;
+}
+
+} // namespace TestUtils
+
+QString SnapshotAccess::pixmapIdentity(const GraphicElement *element)
+{
+    const ElementAppearance &appearance = element->m_appearance;
+    if (appearance.m_hasCustomRenderPixmap) {
+        return "footprint";
+    }
+    if (appearance.m_pixmap.isNull()) {
+        return "null";
+    }
+
+    const QSize size = appearance.m_pixmap.size();
+    // A file on disk keeps only its name: its directory is wherever the checkout is.
+    const QString &path = appearance.m_resolvedPixmapPath;
+    const QString source = path.startsWith(':') ? path : QFileInfo(path).fileName();
+    const bool oriented = appearance.m_pixmap.cacheKey() != appearance.m_basePixmap.cacheKey();
+    return QString::number(size.width()) + 'x' + QString::number(size.height()) + ':' + source + (oriented ? ":oriented" : "");
+}
