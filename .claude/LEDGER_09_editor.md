@@ -45,7 +45,10 @@ Each row's notes say how its check is shown to fail; "as on the branch" marks a 
 | P9.27 | Whether today's `master` still pays Qt's BSP index rebuild after a load (§6) | todo | | Plan 1's probe |
 | P9.28 | What the user sees new (§6) | todo | | Needs the user: ports and labels above overlapping elements; any redrawn glows |
 | P9.29 | Whether the listener's events are enough for plan 10's mirror (§6) | todo | | Checked against plan 10's mirror before the listener is final |
+| P9.30 | Keep a port's `pos()` and `scenePos()` and a wire's `path()`, with their meanings, when ports and wires leave the item tree | todo | | Plan 1's scene-snapshot, wire-geometry and port-layout goldens read them (plan 1, §3.1 and §9); found 2026-10-22 on `01-characterization` |
 
 ## Log
 
 - 2026-10-21: the plan file and this ledger written on `gpu-canvas`, every row `todo`.
+- 2026-10-22: P9.30 added from plan 1's slice 2: plan 1's dumps read a port's `pos()` and `scenePos()` and a wire's
+  `path()`, which this plan keeps when ports and wires leave the item tree.
