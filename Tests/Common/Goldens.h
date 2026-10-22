@@ -12,6 +12,7 @@
 #include <memory>
 
 #include <QByteArray>
+#include <QEvent>
 #include <QList>
 #include <QPointF>
 #include <QString>
@@ -151,6 +152,44 @@ QStringList describeInOrientations(Scene *scene, const QString &header, const El
 
 /// Returns the elements of \a scene in ascending id order.
 QVector<GraphicElement *> elementsById(const Scene *scene);
+
+/**
+ * \brief Sends the scene mouse events a view sends for a pointer: each carries the scene position, the button, the
+ * buttons held, which Qt's item drag and the scene's wiring gestures read, and the modifiers, and, under a view, its
+ * viewport and the screen position, which the context menu reads. The scene itself records where each button went
+ * down for the item that grabs the pointer. A drag an event starts is cancelled where Qt's timers run during it, as on
+ * xcb, where QDrag::exec() would otherwise wait for a physical button; not on Windows, where it first waits for a
+ * physical mouse move in a loop that runs no Qt timer.
+ */
+class ScenePointer
+{
+public:
+    explicit ScenePointer(Scene *scene)
+        : m_scene(scene)
+    {
+    }
+
+    void press(const QPointF &pos, Qt::KeyboardModifiers modifiers = Qt::NoModifier,
+               Qt::MouseButton button = Qt::LeftButton);
+
+    /// A move with the held buttons: none while a wire follows the pointer after a click on a port.
+    void move(const QPointF &pos, Qt::KeyboardModifiers modifiers = Qt::NoModifier);
+
+    void release(const QPointF &pos, Qt::KeyboardModifiers modifiers = Qt::NoModifier,
+                 Qt::MouseButton button = Qt::LeftButton);
+
+    void click(const QPointF &pos, Qt::KeyboardModifiers modifiers = Qt::NoModifier,
+               Qt::MouseButton button = Qt::LeftButton);
+
+    /// A press, moves halfway and to \a to, and a release there.
+    void drag(const QPointF &from, const QPointF &to);
+
+private:
+    void send(QEvent::Type type, const QPointF &pos, Qt::MouseButton button, Qt::KeyboardModifiers modifiers);
+
+    Scene *m_scene;
+    Qt::MouseButtons m_held = Qt::NoButton;
+};
 
 /**
  * \brief Turns Application::renderingEnabled on for its lifetime, then restores it. The suite runs with it off, and

@@ -14,6 +14,7 @@
 #include <QTemporaryDir>
 #include <QTest>
 #include <QTransform>
+#include <QUndoStack>
 
 #include "App/Core/Application.h"
 #include "App/Element/ElementFactory.h"
@@ -292,6 +293,29 @@ void TestGoldens::testScopedRendering()
         QCOMPARE(Application::renderingEnabled, before);
     }
     Application::renderingEnabled = original;
+}
+
+void TestGoldens::testScenePointer()
+{
+    // A drag carries the press position, so Qt moves the element by the pointer's distance, and the scene pushes one
+    // move command; a click without movement selects the element alone.
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *gate = new And();
+    scene->addItem(gate);
+    auto *other = new And();
+    other->setPos(256, 0);
+    scene->addItem(other);
+    other->setSelected(true);
+
+    TestUtils::ScenePointer pointer(scene);
+    const QPointF start = gate->pos() + QPointF(32, 32);
+    pointer.drag(start, start + QPointF(64, 32));
+    QCOMPARE(gate->pos(), QPointF(64, 32));
+    QCOMPARE(scene->undoStack()->count(), 1);
+
+    pointer.click(other->pos() + QPointF(32, 32));
+    QCOMPARE(scene->selectedItems(), QList<QGraphicsItem *>{other});
 }
 
 void TestGoldens::testPortCountsAndOrientationPasses()

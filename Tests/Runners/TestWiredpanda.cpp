@@ -105,6 +105,7 @@
 #include "Tests/Integration/TestICInline.h"
 #include "Tests/Integration/TestLabelSnapshot.h"
 #include "Tests/Integration/TestMainWindowGui.h"
+#include "Tests/Integration/TestPointerSnapshot.h"
 #include "Tests/Integration/TestPortLayoutSnapshot.h"
 #include "Tests/Integration/TestSceneSnapshot.h"
 #include "Tests/Integration/TestSimulation.h"
@@ -346,6 +347,7 @@ int main(int argc, char **argv)
         {"TestICInline", []() -> QObject * { return new TestICInline; }},
         {"TestMainWindowGui", []() -> QObject * { return new TestMainWindowGui; }},
         {"TestLabelSnapshot", []() -> QObject * { return new TestLabelSnapshot; }},
+        {"TestPointerSnapshot", []() -> QObject * { return new TestPointerSnapshot; }},
         {"TestPortLayoutSnapshot", []() -> QObject * { return new TestPortLayoutSnapshot; }},
         {"TestSceneSnapshot", []() -> QObject * { return new TestSceneSnapshot; }},
         {"TestSimulation", []() -> QObject * { return new TestSimulation; }},
