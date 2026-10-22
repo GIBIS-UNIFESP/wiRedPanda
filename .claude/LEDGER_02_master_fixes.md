@@ -55,6 +55,8 @@ Each row's notes say how its test is shown to fail; "as on the branch" marks a b
 | P2.35 | What a snapshot restore does on `master` with a custom picture that no longer loads (§12) | todo | | Checked before P2.16 |
 | P2.36 | The priority walk's fix against plan 1's traces (§5.3) | todo | | With no trace changed, P2.27 lands; with traces changed, the user decides between the fix with each change named and leaving the walk to plan 6's switch |
 | P2.37 | When the fuzz harnesses run (§12) | done | | Settled by the user, 2026-10-21: on the user's machine, overnight, through `Tests/Fuzz/run-unattended.sh`, not in CI (P2.D10). A decision, with nothing to commit; a slice that adds or changes a harness lands after the user's run of it |
+| P2.38 | Destroying a closed 8,000-element circuit takes about 32 s, against 11 s to load it | todo | | Found by plan 1's fixture generator, 2026-10-21, on `01-characterization` at `2f73c4f28`, whose application is `master`'s with plan 1's element count (relwithdebinfo): over MCP, `load_circuit` of `clocked_8000.panda` 11.38 s, `close_circuit` 0.28 s, then `new_circuit` 31.79 s, since the closed tab is destroyed when the next command reaches the event loop; a second close and new 0.10 s. Not yet profiled: where the time goes (instruction counts under callgrind, `CLAUDE.md`'s "Profiling") decides whether it is a defect with a fix here or a cost plan 6 or 9 removes |
+| P2.39 | The MCP client reads responses with asyncio's default 64 KiB line limit, so a longer response fails as no response and desynchronizes the commands after it | todo | | Found 2026-10-21 by plan 1's check of the large fixtures: `list_elements` on the 20,000-element circuit failed after about 1 s with "Separator is not found, and chunk exceed the limit", printed only as `[ERROR] Failed to read stdout`, then reported "No response" though its timeout was 900 s; the next `load_circuit` failed at once. `MCPInfrastructure.start_mcp()` starts the process without a `limit`, and `_read_json_response_with_timeout()` turns any exception into no response. With the limit raised the same lists return 20,000 elements and 37,000 wires. Shown to fail: a test reading a response longer than 64 KiB |
 
 ## Log
 
@@ -65,3 +67,9 @@ Each row's notes say how its test is shown to fail; "as on the branch" marks a b
 - 2026-10-21: the Qt floor raised to 6.8 at the user's ruling ("go with 6.8"). P2.5 and P2.6 stay plan 2's but no
   longer gate the floor, which adds no 6.7.3 build: each fix is right on every Qt, and `master` declares 6.2 until the
   floor (P2.D9); P2.34 records whether 6.8.2 and 6.8.3 show the defects.
+- 2026-10-21: P2.38 added, found on `01-characterization` while generating plan 1's large fixtures: the command after
+  closing an 8,000-element circuit waits about 32 s for the circuit's destruction.
+- 2026-10-21: P2.39 added, found while checking that plan 1's large fixtures load: the MCP client cannot read a
+  response longer than 64 KiB.
+- 2026-10-22: the stack rebased onto `master`'s `8f59a74aa` at the user's request; P2.38 cites the new commit, and says
+  it was measured on `01-characterization`, not `master`.
