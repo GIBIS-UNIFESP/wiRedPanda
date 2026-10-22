@@ -949,6 +949,7 @@ add_test(NAME TestTruthTable COMMAND test_wiredpanda TestTruthTable WORKING_DIRE
 add_test(NAME TestWaveform COMMAND test_wiredpanda TestWaveform WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestWaveformSimulator COMMAND test_wiredpanda TestWaveformSimulator WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestWirelessNode COMMAND test_wiredpanda TestWirelessNode WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestWirePixelSnapshot COMMAND test_wiredpanda TestWirePixelSnapshot WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestWorkspace COMMAND test_wiredpanda TestWorkspace WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestWorkspaceFileops COMMAND test_wiredpanda TestWorkspaceFileops WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestWorkspaceUnit COMMAND test_wiredpanda TestWorkspaceUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -1054,7 +1055,7 @@ endforeach()
 
 # File and Simulation Tests - Integration category
 foreach(TEST TestArduino TestFeedback TestFiles TestIC TestICInline
-        TestLabelSnapshot TestPointerSnapshot TestPortLayoutSnapshot TestSceneSnapshot TestSimulation TestStackingSnapshot TestSystemVerilogExport TestWorkspace TestWorkspaceFileops)
+        TestLabelSnapshot TestPointerSnapshot TestPortLayoutSnapshot TestSceneSnapshot TestSimulation TestStackingSnapshot TestSystemVerilogExport TestWirePixelSnapshot TestWorkspace TestWorkspaceFileops)
     set_tests_properties(${TEST} PROPERTIES LABELS "integration")
 endforeach()
 
@@ -1136,7 +1137,7 @@ set(ALL_TESTS
     TestDecoder8To256 TestMemorySettlingTime TestRAMCell1Bit TestSequential
     TestMUXDEMUXComprehensive
     TestArduino TestFeedback TestFiles TestIC TestICInline
-    TestLabelSnapshot TestPointerSnapshot TestPortLayoutSnapshot TestSceneSnapshot TestSimulation TestStackingSnapshot TestSystemVerilogExport TestWorkspace TestWorkspaceFileops
+    TestLabelSnapshot TestPointerSnapshot TestPortLayoutSnapshot TestSceneSnapshot TestSimulation TestStackingSnapshot TestSystemVerilogExport TestWirePixelSnapshot TestWorkspace TestWorkspaceFileops
     TestIcons TestWaveform TestAudioBox TestBuzzer TestClock TestClocksAdvanced
     TestComponents TestDisplays TestElementAppearance TestElementLabel TestElementProperties TestFeatures
     TestGeometry TestGraphicElementSerializer TestGraphicelementAdvanced TestInputElements TestInputRotary TestLED

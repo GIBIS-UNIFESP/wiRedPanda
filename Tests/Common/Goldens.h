@@ -14,6 +14,7 @@
 #include <QByteArray>
 #include <QColor>
 #include <QEvent>
+#include <QImage>
 #include <QList>
 #include <QPointF>
 #include <QString>
@@ -217,6 +218,16 @@ inline constexpr int kPixelChannelTolerance = 3;
 
 /// The largest difference between \a a and \a b in any one channel, alpha included.
 int channelDifference(QRgb a, QRgb b);
+
+/**
+ * \brief Compares \a image with the PNG golden at \a goldenPath, each channel of each pixel within
+ * kPixelChannelTolerance, or writes it there as compareWithGolden() does when regeneratingGoldens().
+ * \details Both images are compared as premultiplied ARGB32. An image that differs is also saved in the temporary
+ * directory, named after the golden with ".actual.png", for inspection.
+ * \return An empty string on a match or a write; otherwise the file and both sizes, or the file, how many pixels differ
+ * by more than the tolerance, the largest such difference and the first such pixel.
+ */
+QString compareWithGoldenImage(const QString &goldenPath, const QImage &image);
 
 /// What a dump writes for a type it should cover but cannot create; the golden then fails.
 inline constexpr char kNoCreator[] = "NO CREATOR";

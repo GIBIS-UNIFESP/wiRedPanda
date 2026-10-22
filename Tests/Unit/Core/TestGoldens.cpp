@@ -10,6 +10,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QGraphicsSimpleTextItem>
+#include <QImage>
 #include <QMetaEnum>
 #include <QSet>
 #include <QTemporaryDir>
@@ -116,6 +117,46 @@ void TestGoldens::testByteGoldenMatchesOrNamesTheOffset()
     QVERIFY2(difference.contains("first difference at byte 2"), qPrintable(difference));
 }
 
+void TestGoldens::testImageGoldenMatchesWithinTheTolerance()
+{
+    QVERIFY(!TestUtils::regeneratingGoldens());
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString golden = dir.filePath("picture.png");
+    QImage image(4, 3, QImage::Format_ARGB32_Premultiplied);
+    image.fill(qRgb(100, 150, 200));
+    QVERIFY(image.save(golden, "PNG"));
+
+    QCOMPARE(TestUtils::compareWithGoldenImage(golden, image), QString());
+    // Another format of the same pixels matches.
+    QCOMPARE(TestUtils::compareWithGoldenImage(golden, image.convertToFormat(QImage::Format_RGB32)), QString());
+
+    // A channel off by the tolerance still matches; one step more fails, naming the pixel and the difference.
+    QImage changed = image;
+    constexpr int tolerance = TestUtils::kPixelChannelTolerance;
+    changed.setPixel(1, 2, qRgb(100, 150, 200 + tolerance));
+    QCOMPARE(TestUtils::compareWithGoldenImage(golden, changed), QString());
+    changed.setPixel(1, 2, qRgb(100, 150, 200 + tolerance + 1));
+    changed.setPixel(3, 2, qRgb(110, 150, 200));
+    const QString difference = TestUtils::compareWithGoldenImage(golden, changed);
+    QVERIFY2(difference.contains(golden), qPrintable(difference));
+    QVERIFY2(difference.contains(QString("2 pixels by more than %1, at most 10, the first at 1,2").arg(tolerance)),
+             qPrintable(difference));
+    const QString actualPath = QDir::temp().filePath("picture.actual.png");
+    QVERIFY2(difference.contains(actualPath), qPrintable(difference));
+    QCOMPARE(QImage(actualPath).convertToFormat(QImage::Format_ARGB32_Premultiplied), changed);
+    QFile::remove(actualPath);
+
+    const QString size = TestUtils::compareWithGoldenImage(golden, image.copy(0, 0, 4, 2));
+    QVERIFY2(size.contains("is 4x3, the image 4x2"), qPrintable(size));
+
+    // A golden that is not a PNG fails rather than comparing as an empty image.
+    const QString notImage = dir.filePath("text.png");
+    QVERIFY(writeGoldenFixture(notImage, "not a picture"));
+    const QString unreadable = TestUtils::compareWithGoldenImage(notImage, image);
+    QVERIFY2(unreadable.contains("is not a PNG image"), qPrintable(unreadable));
+}
+
 void TestGoldens::testMissingGoldenFails()
 {
     // A missing golden fails rather than being written, in both forms, and names the file.
@@ -128,25 +169,36 @@ void TestGoldens::testMissingGoldenFails()
     QVERIFY2(text.contains("missing") && text.contains(golden), qPrintable(text));
     const QString bytes = TestUtils::compareWithGoldenBytes(golden, "anything");
     QVERIFY2(bytes.contains("missing") && bytes.contains(golden), qPrintable(bytes));
+    const QString image = TestUtils::compareWithGoldenImage(golden, QImage(2, 2, QImage::Format_ARGB32_Premultiplied));
+    QVERIFY2(image.contains("missing") && image.contains(golden), qPrintable(image));
     QVERIFY(!QFile::exists(golden));
 }
 
 void TestGoldens::testRegenerationWritesOverAnExistingGolden()
 {
-    // Under the switch both forms write the golden even when one exists, creating its directory when it is new.
+    // Under the switch every form writes the golden even when one exists, creating its directory when it is new.
     QTemporaryDir dir;
     QVERIFY(dir.isValid());
     const QString textGolden = dir.filePath("dump.txt");
     const QString byteGolden = dir.filePath("payload.bin");
+    const QString imageGolden = dir.filePath("picture.png");
     const QString newGolden = dir.filePath("new/directory/dump.txt");
+    const QString newImageGolden = dir.filePath("new/pictures/picture.png");
     QVERIFY(writeGoldenFixture(textGolden, "old\n"));
     QVERIFY(writeGoldenFixture(byteGolden, "old bytes"));
+    QImage oldImage(2, 2, QImage::Format_ARGB32_Premultiplied);
+    oldImage.fill(Qt::black);
+    QVERIFY(oldImage.save(imageGolden, "PNG"));
+    QImage newImage(2, 2, QImage::Format_ARGB32_Premultiplied);
+    newImage.fill(Qt::white);
 
     {
         const ScopedRegeneration regeneration("1");
         QCOMPARE(TestUtils::compareWithGolden(textGolden, "new\n"), QString());
         QCOMPARE(TestUtils::compareWithGoldenBytes(byteGolden, "new bytes"), QString());
+        QCOMPARE(TestUtils::compareWithGoldenImage(imageGolden, newImage), QString());
         QCOMPARE(TestUtils::compareWithGolden(newGolden, "created\n"), QString());
+        QCOMPARE(TestUtils::compareWithGoldenImage(newImageGolden, newImage), QString());
     }
 
     QCOMPARE(readGoldenFixture(textGolden), QByteArray("new\n"));
@@ -154,6 +206,8 @@ void TestGoldens::testRegenerationWritesOverAnExistingGolden()
     QCOMPARE(readGoldenFixture(newGolden), QByteArray("created\n"));
     QCOMPARE(TestUtils::compareWithGolden(textGolden, "new\n"), QString());
     QCOMPARE(TestUtils::compareWithGoldenBytes(byteGolden, "new bytes"), QString());
+    QCOMPARE(TestUtils::compareWithGoldenImage(imageGolden, newImage), QString());
+    QCOMPARE(TestUtils::compareWithGoldenImage(newImageGolden, newImage), QString());
 }
 
 void TestGoldens::testRegenerationSwitchCountsWhenEmpty()
