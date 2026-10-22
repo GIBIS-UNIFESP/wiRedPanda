@@ -22,6 +22,7 @@ private slots:
     void testPrinters();
     void testOrientations();
     void testElementsById();
+    void testScopedRendering();
     void testLeftOutTypes();
     void testPixmapIdentity();
 };

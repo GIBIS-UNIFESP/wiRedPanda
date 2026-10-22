@@ -9,10 +9,12 @@
 
 #include <QDir>
 #include <QFileInfo>
+#include <QPainterPath>
 #include <QSet>
 #include <QTest>
 
 #include "App/Element/GraphicElement.h"
+#include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/Wiring/Connection.h"
@@ -111,6 +113,97 @@ QString dumpScene(const Scene *scene)
     return lines.join('\n') + '\n';
 }
 
+/// The wires sorted by their ends, each with its ends' positions and every element of its path, in scene coordinates.
+QString dumpWireGeometry(const Scene *scene)
+{
+    QSet<const Connection *> connections;
+    for (const auto *element : TestUtils::elementsById(scene)) {
+        for (const auto *port : element->allPorts()) {
+            for (const auto *connection : port->connections()) {
+                connections.insert(connection);
+            }
+        }
+    }
+
+    QList<std::tuple<int, int, int, int, const Connection *>> wires;
+    wires.reserve(connections.size());
+    for (const auto *connection : std::as_const(connections)) {
+        const auto [startElement, startPort] = wireEnd(connection->startPort());
+        const auto [endElement, endPort] = wireEnd(connection->endPort());
+        wires.emplaceBack(startElement, startPort, endElement, endPort, connection);
+    }
+    std::sort(wires.begin(), wires.end(), [](const auto &a, const auto &b) {
+        return std::tie(std::get<0>(a), std::get<1>(a), std::get<2>(a), std::get<3>(a))
+             < std::tie(std::get<0>(b), std::get<1>(b), std::get<2>(b), std::get<3>(b));
+    });
+
+    QStringList lines;
+    for (const auto &[startElement, startPort, endElement, endPort, connection] : std::as_const(wires)) {
+        lines << QString("W %1:%2 -> %3:%4 start=%5 end=%6")
+                     .arg(QString::number(startElement), QString::number(startPort), QString::number(endElement),
+                          QString::number(endPort), TestUtils::snapshotPoint(connection->startPort()->scenePos()),
+                          TestUtils::snapshotPoint(connection->endPort()->scenePos()));
+        const QPainterPath path = connection->path();
+        for (int i = 0; i < path.elementCount(); ++i) {
+            const QPainterPath::Element pathElement = path.elementAt(i);
+            lines << QString("  %1 %2").arg(QString::number(static_cast<int>(pathElement.type)),
+                                             TestUtils::snapshotPoint(QPointF(pathElement.x, pathElement.y)));
+        }
+    }
+    return lines.join('\n') + '\n';
+}
+
+/// The edited element's place, orientation and port counts, then each of its ports, so an edit that moves a port or
+/// changes the count shows even where no wire moves with it.
+QString dumpEditedElement(const GraphicElement *element)
+{
+    QStringList lines;
+    lines << QString("E id=%1 type=%2 pos=%3 rot=%4 flipX=%5 flipY=%6 in=%7 out=%8")
+                 .arg(QString::number(element->id()), TestUtils::snapshotType(element->elementType()),
+                      TestUtils::snapshotPoint(element->pos()), TestUtils::snapshotNumber(element->rotation()),
+                      QString::number(element->isFlippedX()), QString::number(element->isFlippedY()),
+                      QString::number(element->inputSize()), QString::number(element->outputSize()));
+    for (const auto *port : element->allPorts()) {
+        lines << portLine(port);
+    }
+    return lines.join('\n') + '\n';
+}
+
+bool hasWire(const GraphicElement *element)
+{
+    const auto ports = element->allPorts();
+    return std::any_of(ports.cbegin(), ports.cend(), [](const Port *port) { return !port->connections().isEmpty(); });
+}
+
+/// The lowest-id element with a wire attached that \a accepts, or null.
+template <typename Predicate>
+GraphicElement *firstWired(const Scene *scene, Predicate accepts)
+{
+    for (auto *element : TestUtils::elementsById(scene)) {
+        if (hasWire(element) && accepts(element)) {
+            return element;
+        }
+    }
+    return nullptr;
+}
+
+/// The element an edit acts on. "move", "rotate", "flip" and "portcount" take the lowest-id wired element, in every
+/// fixture an InputSwitch: its graphic does not rotate (its port is re-routed instead) and it has no inputs to add, so
+/// "portcount" pins that the change does nothing to it. "resize" takes the lowest-id wired element whose inputs can
+/// grow, and "rotate-body" and "flip-body" the lowest-id wired element whose graphic rotates.
+GraphicElement *editTarget(const Scene *scene, const QString &edit)
+{
+    if (edit == "resize") {
+        return firstWired(scene, [](const GraphicElement *element) {
+            return element->maxInputSize() > element->inputSize();
+        });
+    }
+    if (edit.endsWith("-body")) {
+        return firstWired(scene, [](const GraphicElement *element) { return element->rotatesGraphic(); });
+    }
+    return firstWired(scene, [](const GraphicElement *) { return true; });
+}
+
 } // namespace
 
 void TestSceneSnapshot::initTestCase()
@@ -173,4 +266,66 @@ void TestSceneSnapshot::testEveryGoldenHasACircuit()
             QVERIFY2(QFileInfo::exists(circuit), qPrintable(golden.filePath() + " has no circuit " + circuit));
         }
     }
+}
+
+void TestSceneSnapshot::testWireGeometryAfterEdit_data()
+{
+    QTest::addColumn<QString>("path");
+    QTest::addColumn<QString>("edit");
+
+    const QString fixturesDir = QString(QUOTE(CURRENTDIR)) + "/Fixtures/";
+    const auto files = QDir(fixturesDir).entryInfoList({"*.panda"}, QDir::Files, QDir::Name);
+    if (files.isEmpty()) {
+        // One row that fails, naming the directory, rather than no rows at all.
+        QTest::newRow(qPrintable("missing fixtures " + fixturesDir)) << fixturesDir << QString();
+    }
+    for (const auto &file : files) {
+        for (const char *edit : {"move", "rotate", "flip", "portcount", "resize", "rotate-body", "flip-body"}) {
+            QTest::newRow(qPrintable(file.completeBaseName() + '/' + edit)) << file.absoluteFilePath() << QString(edit);
+        }
+    }
+}
+
+void TestSceneSnapshot::testWireGeometryAfterEdit()
+{
+    QFETCH(QString, path);
+    QFETCH(QString, edit);
+    const QString missing = TestUtils::requireInputFile(path);
+    QVERIFY2(missing.isEmpty(), qPrintable(missing));
+
+    // With rendering off, as the suite runs, a wire builds no path, so the switch is on from before the load.
+    const TestUtils::ScopedRendering rendering;
+    WorkSpace workspace;
+    TestUtils::loadCircuit(workspace, path);
+    if (QTest::currentTestFailed()) {
+        return;
+    }
+
+    Scene *scene = workspace.scene();
+    GraphicElement *target = editTarget(scene, edit);
+    QVERIFY2(target, qPrintable(path + " has no element for " + edit));
+
+    // Each edit goes through the entry point the application uses: a command, or the scene's action on the selection.
+    if (edit == "move") {
+        const QPointF oldPosition = target->pos();
+        target->setPos(oldPosition + QPointF(40, 20));
+        scene->receiveCommand(new MoveCommand({target}, {oldPosition}, scene));
+    } else if ((edit == "portcount") || (edit == "resize")) {
+        scene->receiveCommand(new ChangePortSizeCommand({target}, target->inputSize() + 1, scene, true));
+    } else {
+        scene->clearSelection();
+        target->setSelected(true);
+        if (edit.startsWith("rotate")) {
+            scene->rotateRight();
+        } else {
+            scene->flipHorizontally();
+        }
+    }
+
+    // The row is "<fixture>/<edit>": the wires in "<row>.txt", the edited element in "<row>.ports.txt".
+    const QString golden = QString(QUOTE(CURRENTDIR)) + "/Integration/WireGeometry/" + QTest::currentDataTag();
+    const QString wireMismatch = TestUtils::compareWithGolden(golden + ".txt", dumpWireGeometry(scene));
+    QVERIFY2(wireMismatch.isEmpty(), qPrintable(wireMismatch));
+    const QString portMismatch = TestUtils::compareWithGolden(golden + ".ports.txt", dumpEditedElement(target));
+    QVERIFY2(portMismatch.isEmpty(), qPrintable(portMismatch));
 }

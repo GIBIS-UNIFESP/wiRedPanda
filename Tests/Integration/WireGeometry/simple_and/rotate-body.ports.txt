@@ -1,0 +1,4 @@
+E id=3 type=And pos=256.0000,144.0000 rot=90.0000 flipX=0 flipY=0 in=2 out=1
+  P in idx=0 name="" pos=0.0000,24.0000 scene=296.0000,144.0000 default=Unknown required=1 status=Inactive wires=1
+  P in idx=1 name="" pos=0.0000,40.0000 scene=280.0000,144.0000 default=Unknown required=1 status=Inactive wires=1
+  P out idx=0 name="" pos=64.0000,32.0000 scene=288.0000,208.0000 default=Unknown required=1 status=Unknown wires=1

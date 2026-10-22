@@ -15,6 +15,7 @@
 #include <QStringList>
 #include <QVector>
 
+#include "App/Core/Application.h"
 #include "App/Core/Enums.h"
 
 class GraphicElement;
@@ -97,6 +98,22 @@ void orient(GraphicElement *element, const Orientation &orientation);
 
 /// Returns the elements of \a scene in ascending id order.
 QVector<GraphicElement *> elementsById(const Scene *scene);
+
+/**
+ * \brief Turns Application::renderingEnabled on for its lifetime, then restores it. The suite runs with it off, and
+ * then a wire builds no path, so a golden of wire paths holds one from before the circuit is loaded.
+ */
+class ScopedRendering
+{
+public:
+    ScopedRendering() { Application::renderingEnabled = true; }
+    ~ScopedRendering() { Application::renderingEnabled = m_previous; }
+    ScopedRendering(const ScopedRendering &) = delete;
+    ScopedRendering &operator=(const ScopedRendering &) = delete;
+
+private:
+    const bool m_previous = Application::renderingEnabled;
+};
 
 /// What a dump writes for a type it should cover but cannot create; the golden then fails.
 inline constexpr char kNoCreator[] = "NO CREATOR";
