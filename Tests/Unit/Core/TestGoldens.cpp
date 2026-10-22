@@ -11,6 +11,7 @@
 #include <QTemporaryDir>
 #include <QTest>
 
+#include "App/Core/Application.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/DFlipFlop.h"
@@ -163,22 +164,56 @@ void TestGoldens::testFileRows_data()
 {
     QTest::addColumn<QString>("path");
     TestUtils::addFileRows(TestUtils::examplesDir(), {"*.panda"});
+    TestUtils::addFileRows(TestUtils::backwardCompatibilityDir(), {"*.panda"}, true, "compat/");
     TestUtils::addFileRows(missingDirectory(), {"*.panda"});
 }
 
 void TestGoldens::testFileRows()
 {
-    // Each example is a row of its own; the missing directory is one row, which fails, naming the directory.
+    // Each example is a row of its own; the backward-compatibility files, found in their version subdirectories, are
+    // rows named by the prefix and their relative path; the missing directory is one row, which fails, naming it.
     QFETCH(QString, path);
     const QString error = TestUtils::requireInputFile(path);
+    const QString tag(QTest::currentDataTag());
     if (path == missingDirectory()) {
-        QCOMPARE(QString(QTest::currentDataTag()), "missing directory " + missingDirectory());
+        QCOMPARE(tag, "missing directory " + missingDirectory());
         QVERIFY2(error.contains(missingDirectory()), qPrintable(error));
+    } else if (tag.startsWith("compat/")) {
+        QVERIFY2(error.isEmpty(), qPrintable(error));
+        const QString relative = QDir(TestUtils::backwardCompatibilityDir()).relativeFilePath(path);
+        QVERIFY2(relative.contains('/'), qPrintable(relative));
+        QCOMPARE(tag, "compat/" + relative);
     } else {
         QVERIFY2(error.isEmpty(), qPrintable(error));
         QVERIFY(path.endsWith(".panda"));
         QCOMPARE(QString(QTest::currentDataTag()), QFileInfo(path).fileName());
     }
+}
+
+void TestGoldens::testLoadCircuit()
+{
+    // A file in an older format loads in full, and nothing is written beside it: no backup, no re-save, even with
+    // migration on.
+    const QString source = TestUtils::backwardCompatibilityDir() + "v1.8-beta/input.panda";
+    QFile original(source);
+    QVERIFY2(original.open(QIODevice::ReadOnly), qPrintable(source));
+    const QByteArray bytes = original.readAll();
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString copy = dir.filePath("input.panda");
+    QVERIFY(QFile::copy(source, copy));
+
+    const bool migration = Application::migrationEnabled;
+    Application::migrationEnabled = true;
+    WorkSpace workspace;
+    TestUtils::loadCircuit(workspace, copy);
+    Application::migrationEnabled = migration;
+
+    QVERIFY(!TestUtils::elementsById(workspace.scene()).isEmpty());
+    QCOMPARE(QDir(dir.path()).entryList(QDir::Files), QStringList{"input.panda"});
+    QFile reread(copy);
+    QVERIFY(reread.open(QIODevice::ReadOnly));
+    QCOMPARE(reread.readAll(), bytes);
 }
 
 void TestGoldens::testPrinters()

@@ -1,0 +1,67 @@
+E id=1 type=InputSwitch pos=50.0000,100.0000 rot=0.0000 flipX=0 flipY=0 label="In0[0]" in=0 out=1 pix=64x64::/Components/Input/switchOff.svg
+  P out idx=0 name="" pos=64.0000,32.0000 scene=114.0000,132.0000 default=Unknown required=1 status=Inactive wires=1
+E id=2 type=InputSwitch pos=154.0000,100.0000 rot=0.0000 flipX=0 flipY=0 label="In0[1]" in=0 out=1 pix=64x64::/Components/Input/switchOff.svg
+  P out idx=0 name="" pos=64.0000,32.0000 scene=218.0000,132.0000 default=Unknown required=1 status=Inactive wires=1
+E id=3 type=InputSwitch pos=258.0000,100.0000 rot=0.0000 flipX=0 flipY=0 label="In0[2]" in=0 out=1 pix=64x64::/Components/Input/switchOff.svg
+  P out idx=0 name="" pos=64.0000,32.0000 scene=322.0000,132.0000 default=Unknown required=1 status=Inactive wires=1
+E id=4 type=InputSwitch pos=362.0000,100.0000 rot=0.0000 flipX=0 flipY=0 label="In0[3]" in=0 out=1 pix=64x64::/Components/Input/switchOff.svg
+  P out idx=0 name="" pos=64.0000,32.0000 scene=426.0000,132.0000 default=Unknown required=1 status=Inactive wires=1
+E id=5 type=InputSwitch pos=50.0000,204.0000 rot=0.0000 flipX=0 flipY=0 label="In1[0]" in=0 out=1 pix=64x64::/Components/Input/switchOff.svg
+  P out idx=0 name="" pos=64.0000,32.0000 scene=114.0000,236.0000 default=Unknown required=1 status=Inactive wires=1
+E id=6 type=InputSwitch pos=154.0000,204.0000 rot=0.0000 flipX=0 flipY=0 label="In1[1]" in=0 out=1 pix=64x64::/Components/Input/switchOff.svg
+  P out idx=0 name="" pos=64.0000,32.0000 scene=218.0000,236.0000 default=Unknown required=1 status=Inactive wires=1
+E id=7 type=InputSwitch pos=258.0000,204.0000 rot=0.0000 flipX=0 flipY=0 label="In1[2]" in=0 out=1 pix=64x64::/Components/Input/switchOff.svg
+  P out idx=0 name="" pos=64.0000,32.0000 scene=322.0000,236.0000 default=Unknown required=1 status=Inactive wires=1
+E id=8 type=InputSwitch pos=362.0000,204.0000 rot=0.0000 flipX=0 flipY=0 label="In1[3]" in=0 out=1 pix=64x64::/Components/Input/switchOff.svg
+  P out idx=0 name="" pos=64.0000,32.0000 scene=426.0000,236.0000 default=Unknown required=1 status=Inactive wires=1
+E id=9 type=InputSwitch pos=466.0000,308.0000 rot=0.0000 flipX=0 flipY=0 label="Sel" in=0 out=1 pix=64x64::/Components/Input/switchOff.svg
+  P out idx=0 name="" pos=64.0000,32.0000 scene=530.0000,340.0000 default=Unknown required=1 status=Inactive wires=4
+E id=10 type=IC pos=568.0000,208.0000 rot=0.0000 flipX=0 flipY=0 label="Mux[0]" in=4 out=1 pix=footprint
+  P in idx=0 name="Data[0]" pos=0.0000,8.0000 scene=568.0000,216.0000 default=Inactive required=0 status=Inactive wires=1
+  P in idx=1 name="Data[1]" pos=0.0000,24.0000 scene=568.0000,232.0000 default=Inactive required=0 status=Inactive wires=1
+  P in idx=2 name="Sel[0]" pos=0.0000,40.0000 scene=568.0000,248.0000 default=Inactive required=0 status=Inactive wires=1
+  P in idx=3 name="Enable" pos=0.0000,56.0000 scene=568.0000,264.0000 default=Active required=0 status=Active wires=0
+  P out idx=0 name="Output" pos=64.0000,32.0000 scene=632.0000,240.0000 default=Unknown required=1 status=Unknown wires=1
+E id=11 type=IC pos=672.0000,208.0000 rot=0.0000 flipX=0 flipY=0 label="Mux[1]" in=4 out=1 pix=footprint
+  P in idx=0 name="Data[0]" pos=0.0000,8.0000 scene=672.0000,216.0000 default=Inactive required=0 status=Inactive wires=1
+  P in idx=1 name="Data[1]" pos=0.0000,24.0000 scene=672.0000,232.0000 default=Inactive required=0 status=Inactive wires=1
+  P in idx=2 name="Sel[0]" pos=0.0000,40.0000 scene=672.0000,248.0000 default=Inactive required=0 status=Inactive wires=1
+  P in idx=3 name="Enable" pos=0.0000,56.0000 scene=672.0000,264.0000 default=Active required=0 status=Active wires=0
+  P out idx=0 name="Output" pos=64.0000,32.0000 scene=736.0000,240.0000 default=Unknown required=1 status=Unknown wires=1
+E id=12 type=IC pos=776.0000,208.0000 rot=0.0000 flipX=0 flipY=0 label="Mux[2]" in=4 out=1 pix=footprint
+  P in idx=0 name="Data[0]" pos=0.0000,8.0000 scene=776.0000,216.0000 default=Inactive required=0 status=Inactive wires=1
+  P in idx=1 name="Data[1]" pos=0.0000,24.0000 scene=776.0000,232.0000 default=Inactive required=0 status=Inactive wires=1
+  P in idx=2 name="Sel[0]" pos=0.0000,40.0000 scene=776.0000,248.0000 default=Inactive required=0 status=Inactive wires=1
+  P in idx=3 name="Enable" pos=0.0000,56.0000 scene=776.0000,264.0000 default=Active required=0 status=Active wires=0
+  P out idx=0 name="Output" pos=64.0000,32.0000 scene=840.0000,240.0000 default=Unknown required=1 status=Unknown wires=1
+E id=13 type=IC pos=880.0000,208.0000 rot=0.0000 flipX=0 flipY=0 label="Mux[3]" in=4 out=1 pix=footprint
+  P in idx=0 name="Data[0]" pos=0.0000,8.0000 scene=880.0000,216.0000 default=Inactive required=0 status=Inactive wires=1
+  P in idx=1 name="Data[1]" pos=0.0000,24.0000 scene=880.0000,232.0000 default=Inactive required=0 status=Inactive wires=1
+  P in idx=2 name="Sel[0]" pos=0.0000,40.0000 scene=880.0000,248.0000 default=Inactive required=0 status=Inactive wires=1
+  P in idx=3 name="Enable" pos=0.0000,56.0000 scene=880.0000,264.0000 default=Active required=0 status=Active wires=0
+  P out idx=0 name="Output" pos=64.0000,32.0000 scene=944.0000,240.0000 default=Unknown required=1 status=Unknown wires=1
+E id=14 type=Led pos=1090.0000,204.0000 rot=0.0000 flipX=0 flipY=0 label="Out[0]" in=1 out=0 pix=64x64::/Components/Output/Led/LedOff.svg
+  P in idx=0 name="1" pos=0.0000,32.0000 scene=1090.0000,236.0000 default=Inactive required=0 status=Unknown wires=1
+E id=15 type=Led pos=1194.0000,204.0000 rot=0.0000 flipX=0 flipY=0 label="Out[1]" in=1 out=0 pix=64x64::/Components/Output/Led/LedOff.svg
+  P in idx=0 name="1" pos=0.0000,32.0000 scene=1194.0000,236.0000 default=Inactive required=0 status=Unknown wires=1
+E id=16 type=Led pos=1298.0000,204.0000 rot=0.0000 flipX=0 flipY=0 label="Out[2]" in=1 out=0 pix=64x64::/Components/Output/Led/LedOff.svg
+  P in idx=0 name="1" pos=0.0000,32.0000 scene=1298.0000,236.0000 default=Inactive required=0 status=Unknown wires=1
+E id=17 type=Led pos=1402.0000,204.0000 rot=0.0000 flipX=0 flipY=0 label="Out[3]" in=1 out=0 pix=64x64::/Components/Output/Led/LedOff.svg
+  P in idx=0 name="1" pos=0.0000,32.0000 scene=1402.0000,236.0000 default=Inactive required=0 status=Unknown wires=1
+W 1:0 -> 10:0 status=Inactive
+W 2:0 -> 11:0 status=Inactive
+W 3:0 -> 12:0 status=Inactive
+W 4:0 -> 13:0 status=Inactive
+W 5:0 -> 10:1 status=Inactive
+W 6:0 -> 11:1 status=Inactive
+W 7:0 -> 12:1 status=Inactive
+W 8:0 -> 13:1 status=Inactive
+W 9:0 -> 10:2 status=Inactive
+W 9:0 -> 11:2 status=Inactive
+W 9:0 -> 12:2 status=Inactive
+W 9:0 -> 13:2 status=Inactive
+W 10:4 -> 14:0 status=Unknown
+W 11:4 -> 15:0 status=Unknown
+W 12:4 -> 16:0 status=Unknown
+W 13:4 -> 17:0 status=Unknown
+COUNTS elements=17 ports=33 wires=16

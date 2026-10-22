@@ -104,6 +104,7 @@
 #include "Tests/Integration/TestIc.h"
 #include "Tests/Integration/TestICInline.h"
 #include "Tests/Integration/TestMainWindowGui.h"
+#include "Tests/Integration/TestSceneSnapshot.h"
 #include "Tests/Integration/TestSimulation.h"
 #include "Tests/Integration/TestSystemVerilogExport.h"
 #include "Tests/Integration/TestWorkspace.h"
@@ -342,6 +343,7 @@ int main(int argc, char **argv)
         {"TestIC", []() -> QObject * { return new TestIC; }},
         {"TestICInline", []() -> QObject * { return new TestICInline; }},
         {"TestMainWindowGui", []() -> QObject * { return new TestMainWindowGui; }},
+        {"TestSceneSnapshot", []() -> QObject * { return new TestSceneSnapshot; }},
         {"TestSimulation", []() -> QObject * { return new TestSimulation; }},
         {"TestSystemVerilogExport", []() -> QObject * { return new TestSystemVerilogExport; }},
         {"TestWorkspace", []() -> QObject * { return new TestWorkspace; }},

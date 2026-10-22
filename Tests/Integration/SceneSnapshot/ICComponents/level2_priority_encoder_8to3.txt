@@ -1,0 +1,276 @@
+E id=1 type=InputSwitch pos=50.0000,100.0000 rot=0.0000 flipX=0 flipY=0 label="data[0]" in=0 out=1 pix=64x64::/Components/Input/switchOff.svg
+  P out idx=0 name="" pos=64.0000,32.0000 scene=114.0000,132.0000 default=Unknown required=1 status=Inactive wires=2
+E id=2 type=InputSwitch pos=50.0000,204.0000 rot=0.0000 flipX=0 flipY=0 label="data[1]" in=0 out=1 pix=64x64::/Components/Input/switchOff.svg
+  P out idx=0 name="" pos=64.0000,32.0000 scene=114.0000,236.0000 default=Unknown required=1 status=Inactive wires=3
+E id=3 type=InputSwitch pos=50.0000,308.0000 rot=0.0000 flipX=0 flipY=0 label="data[2]" in=0 out=1 pix=64x64::/Components/Input/switchOff.svg
+  P out idx=0 name="" pos=64.0000,32.0000 scene=114.0000,340.0000 default=Unknown required=1 status=Inactive wires=4
+E id=4 type=InputSwitch pos=50.0000,412.0000 rot=0.0000 flipX=0 flipY=0 label="data[3]" in=0 out=1 pix=64x64::/Components/Input/switchOff.svg
+  P out idx=0 name="" pos=64.0000,32.0000 scene=114.0000,444.0000 default=Unknown required=1 status=Inactive wires=5
+E id=5 type=InputSwitch pos=50.0000,516.0000 rot=0.0000 flipX=0 flipY=0 label="data[4]" in=0 out=1 pix=64x64::/Components/Input/switchOff.svg
+  P out idx=0 name="" pos=64.0000,32.0000 scene=114.0000,548.0000 default=Unknown required=1 status=Inactive wires=6
+E id=6 type=InputSwitch pos=50.0000,620.0000 rot=0.0000 flipX=0 flipY=0 label="data[5]" in=0 out=1 pix=64x64::/Components/Input/switchOff.svg
+  P out idx=0 name="" pos=64.0000,32.0000 scene=114.0000,652.0000 default=Unknown required=1 status=Inactive wires=7
+E id=7 type=InputSwitch pos=50.0000,724.0000 rot=0.0000 flipX=0 flipY=0 label="data[6]" in=0 out=1 pix=64x64::/Components/Input/switchOff.svg
+  P out idx=0 name="" pos=64.0000,32.0000 scene=114.0000,756.0000 default=Unknown required=1 status=Inactive wires=8
+E id=8 type=InputSwitch pos=50.0000,828.0000 rot=0.0000 flipX=0 flipY=0 label="data[7]" in=0 out=1 pix=64x64::/Components/Input/switchOff.svg
+  P out idx=0 name="" pos=64.0000,32.0000 scene=114.0000,860.0000 default=Unknown required=1 status=Inactive wires=11
+E id=9 type=InputSwitch pos=50.0000,932.0000 rot=0.0000 flipX=0 flipY=0 label="EI" in=0 out=1 pix=64x64::/Components/Input/switchOn.svg
+  P out idx=0 name="" pos=64.0000,32.0000 scene=114.0000,964.0000 default=Unknown required=1 status=Active wires=5
+E id=10 type=Not pos=154.0000,204.0000 rot=0.0000 flipX=0 flipY=0 label="inhibit6" in=1 out=1 pix=64x64::/Components/Logic/not.svg
+  P in idx=0 name="" pos=0.0000,32.0000 scene=154.0000,236.0000 default=Unknown required=1 status=Inactive wires=1
+  P out idx=0 name="" pos=64.0000,32.0000 scene=218.0000,236.0000 default=Unknown required=1 status=Unknown wires=1
+E id=11 type=Or pos=258.0000,256.0000 rot=0.0000 flipX=0 flipY=0 label="or_76" in=2 out=1 pix=64x64::/Components/Logic/or.svg
+  P in idx=0 name="" pos=0.0000,24.0000 scene=258.0000,280.0000 default=Unknown required=1 status=Inactive wires=1
+  P in idx=1 name="" pos=0.0000,40.0000 scene=258.0000,296.0000 default=Unknown required=1 status=Inactive wires=1
+  P out idx=0 name="" pos=64.0000,32.0000 scene=322.0000,288.0000 default=Unknown required=1 status=Unknown wires=1
+E id=12 type=Or pos=258.0000,360.0000 rot=0.0000 flipX=0 flipY=0 label="or_7_to_5" in=3 out=1 pix=64x64::/Components/Logic/or.svg
+  P in idx=0 name="" pos=0.0000,16.0000 scene=258.0000,376.0000 default=Unknown required=1 status=Inactive wires=1
+  P in idx=1 name="" pos=0.0000,32.0000 scene=258.0000,392.0000 default=Unknown required=1 status=Inactive wires=1
+  P in idx=2 name="" pos=0.0000,48.0000 scene=258.0000,408.0000 default=Unknown required=1 status=Inactive wires=1
+  P out idx=0 name="" pos=64.0000,32.0000 scene=322.0000,392.0000 default=Unknown required=1 status=Unknown wires=1
+E id=13 type=Or pos=258.0000,464.0000 rot=0.0000 flipX=0 flipY=0 label="or_7_to_4" in=4 out=1 pix=64x64::/Components/Logic/or.svg
+  P in idx=0 name="" pos=0.0000,8.0000 scene=258.0000,472.0000 default=Unknown required=1 status=Inactive wires=1
+  P in idx=1 name="" pos=0.0000,24.0000 scene=258.0000,488.0000 default=Unknown required=1 status=Inactive wires=1
+  P in idx=2 name="" pos=0.0000,40.0000 scene=258.0000,504.0000 default=Unknown required=1 status=Inactive wires=1
+  P in idx=3 name="" pos=0.0000,56.0000 scene=258.0000,520.0000 default=Unknown required=1 status=Inactive wires=1
+  P out idx=0 name="" pos=64.0000,32.0000 scene=322.0000,496.0000 default=Unknown required=1 status=Unknown wires=1
+E id=14 type=Or pos=258.0000,568.0000 rot=0.0000 flipX=0 flipY=0 label="or_7_to_3" in=5 out=1 pix=64x64::/Components/Logic/or.svg
+  P in idx=0 name="" pos=0.0000,0.0000 scene=258.0000,568.0000 default=Unknown required=1 status=Inactive wires=1
+  P in idx=1 name="" pos=0.0000,16.0000 scene=258.0000,584.0000 default=Unknown required=1 status=Inactive wires=1
+  P in idx=2 name="" pos=0.0000,32.0000 scene=258.0000,600.0000 default=Unknown required=1 status=Inactive wires=1
+  P in idx=3 name="" pos=0.0000,48.0000 scene=258.0000,616.0000 default=Unknown required=1 status=Inactive wires=1
+  P in idx=4 name="" pos=0.0000,64.0000 scene=258.0000,632.0000 default=Unknown required=1 status=Inactive wires=1
+  P out idx=0 name="" pos=64.0000,32.0000 scene=322.0000,600.0000 default=Unknown required=1 status=Unknown wires=1
+E id=15 type=Or pos=258.0000,672.0000 rot=0.0000 flipX=0 flipY=0 label="or_7_to_2" in=6 out=1 pix=64x64::/Components/Logic/or.svg
+  P in idx=0 name="" pos=0.0000,-8.0000 scene=258.0000,664.0000 default=Unknown required=1 status=Inactive wires=1
+  P in idx=1 name="" pos=0.0000,8.0000 scene=258.0000,680.0000 default=Unknown required=1 status=Inactive wires=1
+  P in idx=2 name="" pos=0.0000,24.0000 scene=258.0000,696.0000 default=Unknown required=1 status=Inactive wires=1
+  P in idx=3 name="" pos=0.0000,40.0000 scene=258.0000,712.0000 default=Unknown required=1 status=Inactive wires=1
+  P in idx=4 name="" pos=0.0000,56.0000 scene=258.0000,728.0000 default=Unknown required=1 status=Inactive wires=1
+  P in idx=5 name="" pos=0.0000,72.0000 scene=258.0000,744.0000 default=Unknown required=1 status=Inactive wires=1
+  P out idx=0 name="" pos=64.0000,32.0000 scene=322.0000,704.0000 default=Unknown required=1 status=Unknown wires=1
+E id=16 type=Or pos=258.0000,802.0000 rot=0.0000 flipX=0 flipY=0 label="or_7_to_1" in=7 out=1 pix=64x64::/Components/Logic/or.svg
+  P in idx=0 name="" pos=0.0000,-16.0000 scene=258.0000,786.0000 default=Unknown required=1 status=Inactive wires=1
+  P in idx=1 name="" pos=0.0000,0.0000 scene=258.0000,802.0000 default=Unknown required=1 status=Inactive wires=1
+  P in idx=2 name="" pos=0.0000,16.0000 scene=258.0000,818.0000 default=Unknown required=1 status=Inactive wires=1
+  P in idx=3 name="" pos=0.0000,32.0000 scene=258.0000,834.0000 default=Unknown required=1 status=Inactive wires=1
+  P in idx=4 name="" pos=0.0000,48.0000 scene=258.0000,850.0000 default=Unknown required=1 status=Inactive wires=1
+  P in idx=5 name="" pos=0.0000,64.0000 scene=258.0000,866.0000 default=Unknown required=1 status=Inactive wires=1
+  P in idx=6 name="" pos=0.0000,80.0000 scene=258.0000,882.0000 default=Unknown required=1 status=Inactive wires=1
+  P out idx=0 name="" pos=64.0000,32.0000 scene=322.0000,834.0000 default=Unknown required=1 status=Unknown wires=1
+E id=17 type=Not pos=362.0000,204.0000 rot=0.0000 flipX=0 flipY=0 label="inhibit5" in=1 out=1 pix=64x64::/Components/Logic/not.svg
+  P in idx=0 name="" pos=0.0000,32.0000 scene=362.0000,236.0000 default=Unknown required=1 status=Unknown wires=1
+  P out idx=0 name="" pos=64.0000,32.0000 scene=426.0000,236.0000 default=Unknown required=1 status=Unknown wires=1
+E id=18 type=Not pos=362.0000,308.0000 rot=0.0000 flipX=0 flipY=0 label="inhibit4" in=1 out=1 pix=64x64::/Components/Logic/not.svg
+  P in idx=0 name="" pos=0.0000,32.0000 scene=362.0000,340.0000 default=Unknown required=1 status=Unknown wires=1
+  P out idx=0 name="" pos=64.0000,32.0000 scene=426.0000,340.0000 default=Unknown required=1 status=Unknown wires=1
+E id=19 type=Not pos=362.0000,412.0000 rot=0.0000 flipX=0 flipY=0 label="inhibit3" in=1 out=1 pix=64x64::/Components/Logic/not.svg
+  P in idx=0 name="" pos=0.0000,32.0000 scene=362.0000,444.0000 default=Unknown required=1 status=Unknown wires=1
+  P out idx=0 name="" pos=64.0000,32.0000 scene=426.0000,444.0000 default=Unknown required=1 status=Unknown wires=1
+E id=20 type=Not pos=362.0000,516.0000 rot=0.0000 flipX=0 flipY=0 label="inhibit2" in=1 out=1 pix=64x64::/Components/Logic/not.svg
+  P in idx=0 name="" pos=0.0000,32.0000 scene=362.0000,548.0000 default=Unknown required=1 status=Unknown wires=1
+  P out idx=0 name="" pos=64.0000,32.0000 scene=426.0000,548.0000 default=Unknown required=1 status=Unknown wires=1
+E id=21 type=Not pos=362.0000,620.0000 rot=0.0000 flipX=0 flipY=0 label="inhibit1" in=1 out=1 pix=64x64::/Components/Logic/not.svg
+  P in idx=0 name="" pos=0.0000,32.0000 scene=362.0000,652.0000 default=Unknown required=1 status=Unknown wires=1
+  P out idx=0 name="" pos=64.0000,32.0000 scene=426.0000,652.0000 default=Unknown required=1 status=Unknown wires=1
+E id=22 type=Not pos=362.0000,724.0000 rot=0.0000 flipX=0 flipY=0 label="inhibit0" in=1 out=1 pix=64x64::/Components/Logic/not.svg
+  P in idx=0 name="" pos=0.0000,32.0000 scene=362.0000,756.0000 default=Unknown required=1 status=Unknown wires=1
+  P out idx=0 name="" pos=64.0000,32.0000 scene=426.0000,756.0000 default=Unknown required=1 status=Unknown wires=1
+E id=23 type=And pos=466.0000,204.0000 rot=0.0000 flipX=0 flipY=0 label="sel6" in=2 out=1 pix=64x64::/Components/Logic/and.svg
+  P in idx=0 name="" pos=0.0000,24.0000 scene=466.0000,228.0000 default=Unknown required=1 status=Inactive wires=1
+  P in idx=1 name="" pos=0.0000,40.0000 scene=466.0000,244.0000 default=Unknown required=1 status=Unknown wires=1
+  P out idx=0 name="" pos=64.0000,32.0000 scene=530.0000,236.0000 default=Unknown required=1 status=Unknown wires=2
+E id=24 type=And pos=466.0000,308.0000 rot=0.0000 flipX=0 flipY=0 label="sel5" in=2 out=1 pix=64x64::/Components/Logic/and.svg
+  P in idx=0 name="" pos=0.0000,24.0000 scene=466.0000,332.0000 default=Unknown required=1 status=Inactive wires=1
+  P in idx=1 name="" pos=0.0000,40.0000 scene=466.0000,348.0000 default=Unknown required=1 status=Unknown wires=1
+  P out idx=0 name="" pos=64.0000,32.0000 scene=530.0000,340.0000 default=Unknown required=1 status=Unknown wires=2
+E id=25 type=And pos=466.0000,412.0000 rot=0.0000 flipX=0 flipY=0 label="sel4" in=2 out=1 pix=64x64::/Components/Logic/and.svg
+  P in idx=0 name="" pos=0.0000,24.0000 scene=466.0000,436.0000 default=Unknown required=1 status=Inactive wires=1
+  P in idx=1 name="" pos=0.0000,40.0000 scene=466.0000,452.0000 default=Unknown required=1 status=Unknown wires=1
+  P out idx=0 name="" pos=64.0000,32.0000 scene=530.0000,444.0000 default=Unknown required=1 status=Unknown wires=1
+E id=26 type=And pos=466.0000,516.0000 rot=0.0000 flipX=0 flipY=0 label="sel3" in=2 out=1 pix=64x64::/Components/Logic/and.svg
+  P in idx=0 name="" pos=0.0000,24.0000 scene=466.0000,540.0000 default=Unknown required=1 status=Inactive wires=1
+  P in idx=1 name="" pos=0.0000,40.0000 scene=466.0000,556.0000 default=Unknown required=1 status=Unknown wires=1
+  P out idx=0 name="" pos=64.0000,32.0000 scene=530.0000,548.0000 default=Unknown required=1 status=Unknown wires=2
+E id=27 type=And pos=466.0000,620.0000 rot=0.0000 flipX=0 flipY=0 label="sel2" in=2 out=1 pix=64x64::/Components/Logic/and.svg
+  P in idx=0 name="" pos=0.0000,24.0000 scene=466.0000,644.0000 default=Unknown required=1 status=Inactive wires=1
+  P in idx=1 name="" pos=0.0000,40.0000 scene=466.0000,660.0000 default=Unknown required=1 status=Unknown wires=1
+  P out idx=0 name="" pos=64.0000,32.0000 scene=530.0000,652.0000 default=Unknown required=1 status=Unknown wires=1
+E id=28 type=And pos=466.0000,724.0000 rot=0.0000 flipX=0 flipY=0 label="sel1" in=2 out=1 pix=64x64::/Components/Logic/and.svg
+  P in idx=0 name="" pos=0.0000,24.0000 scene=466.0000,748.0000 default=Unknown required=1 status=Inactive wires=1
+  P in idx=1 name="" pos=0.0000,40.0000 scene=466.0000,764.0000 default=Unknown required=1 status=Unknown wires=1
+  P out idx=0 name="" pos=64.0000,32.0000 scene=530.0000,756.0000 default=Unknown required=1 status=Unknown wires=1
+E id=29 type=And pos=466.0000,828.0000 rot=0.0000 flipX=0 flipY=0 label="sel0" in=2 out=1 pix=64x64::/Components/Logic/and.svg
+  P in idx=0 name="" pos=0.0000,24.0000 scene=466.0000,852.0000 default=Unknown required=1 status=Inactive wires=1
+  P in idx=1 name="" pos=0.0000,40.0000 scene=466.0000,868.0000 default=Unknown required=1 status=Unknown wires=1
+  P out idx=0 name="" pos=64.0000,32.0000 scene=530.0000,860.0000 default=Unknown required=1 status=Unknown wires=0
+E id=30 type=Or pos=570.0000,256.0000 rot=0.0000 flipX=0 flipY=0 label="addr2" in=2 out=1 pix=64x64::/Components/Logic/or.svg
+  P in idx=0 name="" pos=0.0000,24.0000 scene=570.0000,280.0000 default=Unknown required=1 status=Unknown wires=1
+  P in idx=1 name="" pos=0.0000,40.0000 scene=570.0000,296.0000 default=Unknown required=1 status=Unknown wires=1
+  P out idx=0 name="" pos=64.0000,32.0000 scene=634.0000,288.0000 default=Unknown required=1 status=Unknown wires=1
+E id=31 type=Or pos=570.0000,412.0000 rot=0.0000 flipX=0 flipY=0 label="or_addr2_56" in=2 out=1 pix=64x64::/Components/Logic/or.svg
+  P in idx=0 name="" pos=0.0000,24.0000 scene=570.0000,436.0000 default=Unknown required=1 status=Unknown wires=1
+  P in idx=1 name="" pos=0.0000,40.0000 scene=570.0000,452.0000 default=Unknown required=1 status=Inactive wires=1
+  P out idx=0 name="" pos=64.0000,32.0000 scene=634.0000,444.0000 default=Unknown required=1 status=Unknown wires=1
+E id=32 type=Or pos=706.0000,334.0000 rot=0.0000 flipX=0 flipY=0 label="addr2_final" in=2 out=1 pix=64x64::/Components/Logic/or.svg
+  P in idx=0 name="" pos=0.0000,24.0000 scene=706.0000,358.0000 default=Unknown required=1 status=Unknown wires=1
+  P in idx=1 name="" pos=0.0000,40.0000 scene=706.0000,374.0000 default=Unknown required=1 status=Unknown wires=1
+  P out idx=0 name="" pos=64.0000,32.0000 scene=770.0000,366.0000 default=Unknown required=1 status=Unknown wires=1
+E id=33 type=Or pos=570.0000,568.0000 rot=0.0000 flipX=0 flipY=0 label="or_addr1_23" in=2 out=1 pix=64x64::/Components/Logic/or.svg
+  P in idx=0 name="" pos=0.0000,24.0000 scene=570.0000,592.0000 default=Unknown required=1 status=Unknown wires=1
+  P in idx=1 name="" pos=0.0000,40.0000 scene=570.0000,608.0000 default=Unknown required=1 status=Unknown wires=1
+  P out idx=0 name="" pos=64.0000,32.0000 scene=634.0000,600.0000 default=Unknown required=1 status=Unknown wires=1
+E id=34 type=Or pos=570.0000,672.0000 rot=0.0000 flipX=0 flipY=0 label="or_addr1_67" in=2 out=1 pix=64x64::/Components/Logic/or.svg
+  P in idx=0 name="" pos=0.0000,24.0000 scene=570.0000,696.0000 default=Unknown required=1 status=Unknown wires=1
+  P in idx=1 name="" pos=0.0000,40.0000 scene=570.0000,712.0000 default=Unknown required=1 status=Inactive wires=1
+  P out idx=0 name="" pos=64.0000,32.0000 scene=634.0000,704.0000 default=Unknown required=1 status=Unknown wires=1
+E id=35 type=Or pos=706.0000,573.2000 rot=0.0000 flipX=0 flipY=0 label="addr1_final" in=2 out=1 pix=64x64::/Components/Logic/or.svg
+  P in idx=0 name="" pos=0.0000,24.0000 scene=706.0000,597.2000 default=Unknown required=1 status=Unknown wires=1
+  P in idx=1 name="" pos=0.0000,40.0000 scene=706.0000,613.2000 default=Unknown required=1 status=Unknown wires=1
+  P out idx=0 name="" pos=64.0000,32.0000 scene=770.0000,605.2000 default=Unknown required=1 status=Unknown wires=1
+E id=36 type=Or pos=570.0000,776.0000 rot=0.0000 flipX=0 flipY=0 label="or_addr0_13" in=2 out=1 pix=64x64::/Components/Logic/or.svg
+  P in idx=0 name="" pos=0.0000,24.0000 scene=570.0000,800.0000 default=Unknown required=1 status=Unknown wires=1
+  P in idx=1 name="" pos=0.0000,40.0000 scene=570.0000,816.0000 default=Unknown required=1 status=Unknown wires=1
+  P out idx=0 name="" pos=64.0000,32.0000 scene=634.0000,808.0000 default=Unknown required=1 status=Unknown wires=1
+E id=37 type=Or pos=570.0000,880.0000 rot=0.0000 flipX=0 flipY=0 label="or_addr0_57" in=2 out=1 pix=64x64::/Components/Logic/or.svg
+  P in idx=0 name="" pos=0.0000,24.0000 scene=570.0000,904.0000 default=Unknown required=1 status=Unknown wires=1
+  P in idx=1 name="" pos=0.0000,40.0000 scene=570.0000,920.0000 default=Unknown required=1 status=Inactive wires=1
+  P out idx=0 name="" pos=64.0000,32.0000 scene=634.0000,912.0000 default=Unknown required=1 status=Unknown wires=1
+E id=38 type=Or pos=706.0000,781.2000 rot=0.0000 flipX=0 flipY=0 label="addr0_final" in=2 out=1 pix=64x64::/Components/Logic/or.svg
+  P in idx=0 name="" pos=0.0000,24.0000 scene=706.0000,805.2000 default=Unknown required=1 status=Unknown wires=1
+  P in idx=1 name="" pos=0.0000,40.0000 scene=706.0000,821.2000 default=Unknown required=1 status=Unknown wires=1
+  P out idx=0 name="" pos=64.0000,32.0000 scene=770.0000,813.2000 default=Unknown required=1 status=Unknown wires=1
+E id=39 type=Or pos=706.0000,984.0000 rot=0.0000 flipX=0 flipY=0 label="valid_or" in=8 out=1 pix=64x64::/Components/Logic/or.svg
+  P in idx=0 name="" pos=0.0000,-24.0000 scene=706.0000,960.0000 default=Unknown required=1 status=Inactive wires=1
+  P in idx=1 name="" pos=0.0000,-8.0000 scene=706.0000,976.0000 default=Unknown required=1 status=Inactive wires=1
+  P in idx=2 name="" pos=0.0000,8.0000 scene=706.0000,992.0000 default=Unknown required=1 status=Inactive wires=1
+  P in idx=3 name="" pos=0.0000,24.0000 scene=706.0000,1008.0000 default=Unknown required=1 status=Inactive wires=1
+  P in idx=4 name="" pos=0.0000,40.0000 scene=706.0000,1024.0000 default=Unknown required=1 status=Inactive wires=1
+  P in idx=5 name="" pos=0.0000,56.0000 scene=706.0000,1040.0000 default=Unknown required=1 status=Inactive wires=1
+  P in idx=6 name="" pos=0.0000,72.0000 scene=706.0000,1056.0000 default=Unknown required=1 status=Inactive wires=1
+  P in idx=7 name="" pos=0.0000,88.0000 scene=706.0000,1072.0000 default=Unknown required=1 status=Inactive wires=1
+  P out idx=0 name="" pos=64.0000,32.0000 scene=770.0000,1016.0000 default=Unknown required=1 status=Unknown wires=2
+E id=40 type=And pos=810.0000,256.0000 rot=0.0000 flipX=0 flipY=0 label="addr0_en" in=2 out=1 pix=64x64::/Components/Logic/and.svg
+  P in idx=0 name="" pos=0.0000,24.0000 scene=810.0000,280.0000 default=Unknown required=1 status=Unknown wires=1
+  P in idx=1 name="" pos=0.0000,40.0000 scene=810.0000,296.0000 default=Unknown required=1 status=Active wires=1
+  P out idx=0 name="" pos=64.0000,32.0000 scene=874.0000,288.0000 default=Unknown required=1 status=Unknown wires=1
+E id=41 type=And pos=810.0000,360.0000 rot=0.0000 flipX=0 flipY=0 label="addr1_en" in=2 out=1 pix=64x64::/Components/Logic/and.svg
+  P in idx=0 name="" pos=0.0000,24.0000 scene=810.0000,384.0000 default=Unknown required=1 status=Unknown wires=1
+  P in idx=1 name="" pos=0.0000,40.0000 scene=810.0000,400.0000 default=Unknown required=1 status=Active wires=1
+  P out idx=0 name="" pos=64.0000,32.0000 scene=874.0000,392.0000 default=Unknown required=1 status=Unknown wires=1
+E id=42 type=And pos=810.0000,464.0000 rot=0.0000 flipX=0 flipY=0 label="addr2_en" in=2 out=1 pix=64x64::/Components/Logic/and.svg
+  P in idx=0 name="" pos=0.0000,24.0000 scene=810.0000,488.0000 default=Unknown required=1 status=Unknown wires=1
+  P in idx=1 name="" pos=0.0000,40.0000 scene=810.0000,504.0000 default=Unknown required=1 status=Active wires=1
+  P out idx=0 name="" pos=64.0000,32.0000 scene=874.0000,496.0000 default=Unknown required=1 status=Unknown wires=1
+E id=43 type=And pos=810.0000,568.0000 rot=0.0000 flipX=0 flipY=0 label="valid_en" in=2 out=1 pix=64x64::/Components/Logic/and.svg
+  P in idx=0 name="" pos=0.0000,24.0000 scene=810.0000,592.0000 default=Unknown required=1 status=Unknown wires=1
+  P in idx=1 name="" pos=0.0000,40.0000 scene=810.0000,608.0000 default=Unknown required=1 status=Active wires=1
+  P out idx=0 name="" pos=64.0000,32.0000 scene=874.0000,600.0000 default=Unknown required=1 status=Unknown wires=1
+E id=44 type=Not pos=810.0000,672.0000 rot=0.0000 flipX=0 flipY=0 label="not_any_active" in=1 out=1 pix=64x64::/Components/Logic/not.svg
+  P in idx=0 name="" pos=0.0000,32.0000 scene=810.0000,704.0000 default=Unknown required=1 status=Unknown wires=1
+  P out idx=0 name="" pos=64.0000,32.0000 scene=874.0000,704.0000 default=Unknown required=1 status=Unknown wires=1
+E id=45 type=And pos=810.0000,776.0000 rot=0.0000 flipX=0 flipY=0 label="eo" in=2 out=1 pix=64x64::/Components/Logic/and.svg
+  P in idx=0 name="" pos=0.0000,24.0000 scene=810.0000,800.0000 default=Unknown required=1 status=Active wires=1
+  P in idx=1 name="" pos=0.0000,40.0000 scene=810.0000,816.0000 default=Unknown required=1 status=Unknown wires=1
+  P out idx=0 name="" pos=64.0000,32.0000 scene=874.0000,808.0000 default=Unknown required=1 status=Unknown wires=1
+E id=46 type=Led pos=914.0000,256.0000 rot=0.0000 flipX=0 flipY=0 label="addr[0]" in=1 out=0 pix=64x64::/Components/Output/Led/LedOff.svg
+  P in idx=0 name="1" pos=0.0000,32.0000 scene=914.0000,288.0000 default=Inactive required=0 status=Unknown wires=1
+E id=47 type=Led pos=914.0000,360.0000 rot=0.0000 flipX=0 flipY=0 label="addr[1]" in=1 out=0 pix=64x64::/Components/Output/Led/LedOff.svg
+  P in idx=0 name="1" pos=0.0000,32.0000 scene=914.0000,392.0000 default=Inactive required=0 status=Unknown wires=1
+E id=48 type=Led pos=914.0000,464.0000 rot=0.0000 flipX=0 flipY=0 label="addr[2]" in=1 out=0 pix=64x64::/Components/Output/Led/LedOff.svg
+  P in idx=0 name="1" pos=0.0000,32.0000 scene=914.0000,496.0000 default=Inactive required=0 status=Unknown wires=1
+E id=49 type=Led pos=914.0000,568.0000 rot=0.0000 flipX=0 flipY=0 label="valid" in=1 out=0 pix=64x64::/Components/Output/Led/LedOff.svg
+  P in idx=0 name="1" pos=0.0000,32.0000 scene=914.0000,600.0000 default=Inactive required=0 status=Unknown wires=1
+E id=50 type=Led pos=966.0000,672.0000 rot=0.0000 flipX=0 flipY=0 label="EO" in=1 out=0 pix=64x64::/Components/Output/Led/LedOff.svg
+  P in idx=0 name="1" pos=0.0000,32.0000 scene=966.0000,704.0000 default=Inactive required=0 status=Unknown wires=1
+W 1:0 -> 29:0 status=Inactive
+W 1:0 -> 39:0 status=Inactive
+W 2:0 -> 16:6 status=Inactive
+W 2:0 -> 28:0 status=Inactive
+W 2:0 -> 39:1 status=Inactive
+W 3:0 -> 15:5 status=Inactive
+W 3:0 -> 16:5 status=Inactive
+W 3:0 -> 27:0 status=Inactive
+W 3:0 -> 39:2 status=Inactive
+W 4:0 -> 14:4 status=Inactive
+W 4:0 -> 15:4 status=Inactive
+W 4:0 -> 16:4 status=Inactive
+W 4:0 -> 26:0 status=Inactive
+W 4:0 -> 39:3 status=Inactive
+W 5:0 -> 13:3 status=Inactive
+W 5:0 -> 14:3 status=Inactive
+W 5:0 -> 15:3 status=Inactive
+W 5:0 -> 16:3 status=Inactive
+W 5:0 -> 25:0 status=Inactive
+W 5:0 -> 39:4 status=Inactive
+W 6:0 -> 12:2 status=Inactive
+W 6:0 -> 13:2 status=Inactive
+W 6:0 -> 14:2 status=Inactive
+W 6:0 -> 15:2 status=Inactive
+W 6:0 -> 16:2 status=Inactive
+W 6:0 -> 24:0 status=Inactive
+W 6:0 -> 39:5 status=Inactive
+W 7:0 -> 11:1 status=Inactive
+W 7:0 -> 12:1 status=Inactive
+W 7:0 -> 13:1 status=Inactive
+W 7:0 -> 14:1 status=Inactive
+W 7:0 -> 15:1 status=Inactive
+W 7:0 -> 16:1 status=Inactive
+W 7:0 -> 23:0 status=Inactive
+W 7:0 -> 39:6 status=Inactive
+W 8:0 -> 10:0 status=Inactive
+W 8:0 -> 11:0 status=Inactive
+W 8:0 -> 12:0 status=Inactive
+W 8:0 -> 13:0 status=Inactive
+W 8:0 -> 14:0 status=Inactive
+W 8:0 -> 15:0 status=Inactive
+W 8:0 -> 16:0 status=Inactive
+W 8:0 -> 31:1 status=Inactive
+W 8:0 -> 34:1 status=Inactive
+W 8:0 -> 37:1 status=Inactive
+W 8:0 -> 39:7 status=Inactive
+W 9:0 -> 40:1 status=Active
+W 9:0 -> 41:1 status=Active
+W 9:0 -> 42:1 status=Active
+W 9:0 -> 43:1 status=Active
+W 9:0 -> 45:0 status=Active
+W 10:1 -> 23:1 status=Unknown
+W 11:2 -> 17:0 status=Unknown
+W 12:3 -> 18:0 status=Unknown
+W 13:4 -> 19:0 status=Unknown
+W 14:5 -> 20:0 status=Unknown
+W 15:6 -> 21:0 status=Unknown
+W 16:7 -> 22:0 status=Unknown
+W 17:1 -> 24:1 status=Unknown
+W 18:1 -> 25:1 status=Unknown
+W 19:1 -> 26:1 status=Unknown
+W 20:1 -> 27:1 status=Unknown
+W 21:1 -> 28:1 status=Unknown
+W 22:1 -> 29:1 status=Unknown
+W 23:2 -> 31:0 status=Unknown
+W 23:2 -> 34:0 status=Unknown
+W 24:2 -> 30:1 status=Unknown
+W 24:2 -> 37:0 status=Unknown
+W 25:2 -> 30:0 status=Unknown
+W 26:2 -> 33:1 status=Unknown
+W 26:2 -> 36:1 status=Unknown
+W 27:2 -> 33:0 status=Unknown
+W 28:2 -> 36:0 status=Unknown
+W 30:2 -> 32:0 status=Unknown
+W 31:2 -> 32:1 status=Unknown
+W 32:2 -> 42:0 status=Unknown
+W 33:2 -> 35:0 status=Unknown
+W 34:2 -> 35:1 status=Unknown
+W 35:2 -> 41:0 status=Unknown
+W 36:2 -> 38:0 status=Unknown
+W 37:2 -> 38:1 status=Unknown
+W 38:2 -> 40:0 status=Unknown
+W 39:8 -> 43:0 status=Unknown
+W 39:8 -> 44:0 status=Unknown
+W 40:2 -> 46:0 status=Unknown
+W 41:2 -> 47:0 status=Unknown
+W 42:2 -> 48:0 status=Unknown
+W 43:2 -> 49:0 status=Unknown
+W 44:1 -> 45:1 status=Unknown
+W 45:2 -> 50:0 status=Unknown
+COUNTS elements=50 ports=135 wires=90

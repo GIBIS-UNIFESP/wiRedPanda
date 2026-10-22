@@ -19,6 +19,7 @@
 
 class GraphicElement;
 class Scene;
+class WorkSpace;
 
 namespace TestUtils {
 
@@ -44,15 +45,24 @@ QString compareWithGolden(const QString &goldenPath, const QString &actual);
 QString compareWithGoldenBytes(const QString &goldenPath, const QByteArray &actual);
 
 /**
- * \brief Adds a QTest data row per file in \a directory matching \a nameFilters, named by its path relative to
- * \a directory, in name order, its "path" column holding the file's path; the caller has added that column.
+ * \brief Adds a QTest data row per file in \a directory matching \a nameFilters, named by \a tagPrefix followed by its
+ * path relative to \a directory, in name order, its "path" column holding the file's path; the caller has added that
+ * column. The prefix keeps the rows of several directories apart.
  * \details A missing directory adds one row instead, named after the directory, whose path is the directory, so
  * requireInputFile() fails it rather than the directory's files silently going untested.
  */
-void addFileRows(const QString &directory, const QStringList &nameFilters, bool recursive = false);
+void addFileRows(const QString &directory, const QStringList &nameFilters, bool recursive = false,
+                 const QString &tagPrefix = {});
 
 /// Returns an empty string when \a path is a readable file, or a message naming it otherwise.
 QString requireInputFile(const QString &path);
+
+/**
+ * \brief Loads the circuit at \a path into \a workspace as WorkSpace::load(QString) does, but without that function's
+ * backup and re-save of a file in an older format, which would write beside the inputs.
+ * \details A file that cannot be opened fails the running test; the caller checks QTest::currentTestFailed().
+ */
+void loadCircuit(WorkSpace &workspace, const QString &path);
 
 /// Formats \a value with four decimals, negative zero as zero, so a sign left by a rotation or flip is no difference.
 QString snapshotNumber(qreal value);

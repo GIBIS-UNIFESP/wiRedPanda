@@ -1,0 +1,37 @@
+E id=1 type=IC pos=592.0000,336.0000 rot=0.0000 flipX=0 flipY=0 label="DLATCH" in=2 out=2 pix=footprint
+  P in idx=0 name="D" pos=0.0000,24.0000 scene=592.0000,360.0000 default=Inactive required=0 status=Unknown wires=1
+  P in idx=1 name="CLK" pos=0.0000,40.0000 scene=592.0000,376.0000 default=Error required=1 status=Unknown wires=1
+  P out idx=0 name="Q" pos=64.0000,24.0000 scene=656.0000,360.0000 default=Unknown required=1 status=Unknown wires=1
+  P out idx=1 name="¬Q" pos=64.0000,40.0000 scene=656.0000,376.0000 default=Unknown required=1 status=Unknown wires=1
+E id=2 type=Clock pos=96.0000,544.0000 rot=0.0000 flipX=0 flipY=0 label="CLK" in=0 out=1 pix=64x64::/Components/Input/clock0.svg
+  P out idx=0 name="" pos=64.0000,32.0000 scene=160.0000,576.0000 default=Unknown required=1 status=Inactive wires=2
+E id=3 type=IC pos=408.0000,336.0000 rot=0.0000 flipX=0 flipY=0 label="DLATCH" in=2 out=2 pix=footprint
+  P in idx=0 name="D" pos=0.0000,24.0000 scene=408.0000,360.0000 default=Inactive required=0 status=Inactive wires=1
+  P in idx=1 name="CLK" pos=0.0000,40.0000 scene=408.0000,376.0000 default=Error required=1 status=Unknown wires=1
+  P out idx=0 name="Q" pos=64.0000,24.0000 scene=472.0000,360.0000 default=Unknown required=1 status=Unknown wires=1
+  P out idx=1 name="¬Q" pos=64.0000,40.0000 scene=472.0000,376.0000 default=Unknown required=1 status=Unknown wires=0
+E id=4 type=Led pos=784.0000,376.0000 rot=90.0000 flipX=0 flipY=0 label="¬Q" in=1 out=0 pix=64x64::/Components/Output/Led/LedOff.svg
+  P in idx=0 name="1" pos=0.0000,32.0000 scene=816.0000,376.0000 default=Inactive required=0 status=Unknown wires=1
+E id=5 type=Not pos=408.0000,544.0000 rot=0.0000 flipX=0 flipY=0 label="" in=1 out=1 pix=64x64::/Components/Logic/not.svg
+  P in idx=0 name="" pos=0.0000,32.0000 scene=408.0000,576.0000 default=Unknown required=1 status=Inactive wires=1
+  P out idx=0 name="" pos=64.0000,32.0000 scene=472.0000,576.0000 default=Unknown required=1 status=Unknown wires=1
+E id=6 type=Led pos=784.0000,296.0000 rot=-90.0000 flipX=0 flipY=0 label="Q" in=1 out=0 pix=64x64::/Components/Output/Led/LedOff.svg
+  P in idx=0 name="1" pos=0.0000,32.0000 scene=816.0000,360.0000 default=Inactive required=0 status=Unknown wires=1
+E id=7 type=InputButton pos=96.0000,328.0000 rot=0.0000 flipX=0 flipY=0 label="D" in=0 out=1 pix=64x64::/Components/Input/buttonOff.svg
+  P out idx=0 name="" pos=64.0000,32.0000 scene=160.0000,360.0000 default=Unknown required=1 status=Inactive wires=1
+E id=8 type=Node pos=576.0000,544.0000 rot=270.0000 flipX=0 flipY=0 label="" in=1 out=1 pix=32x32::/Components/Logic/node.svg
+  P in idx=0 name="" pos=0.0000,16.0000 scene=592.0000,576.0000 default=Unknown required=1 status=Unknown wires=1
+  P out idx=0 name="" pos=32.0000,16.0000 scene=592.0000,544.0000 default=Unknown required=1 status=Unknown wires=1
+E id=9 type=Node pos=160.0000,360.0000 rot=0.0000 flipX=0 flipY=0 label="" in=1 out=1 pix=32x32::/Components/Logic/node.svg
+  P in idx=0 name="" pos=0.0000,16.0000 scene=160.0000,376.0000 default=Unknown required=1 status=Inactive wires=1
+  P out idx=0 name="" pos=32.0000,16.0000 scene=192.0000,376.0000 default=Unknown required=1 status=Unknown wires=1
+W 1:2 -> 6:0 status=Unknown
+W 1:3 -> 4:0 status=Unknown
+W 2:0 -> 5:0 status=Inactive
+W 2:0 -> 9:0 status=Inactive
+W 3:2 -> 1:0 status=Unknown
+W 5:1 -> 8:0 status=Unknown
+W 7:0 -> 3:0 status=Inactive
+W 8:1 -> 1:1 status=Unknown
+W 9:1 -> 3:1 status=Unknown
+COUNTS elements=9 ports=18 wires=9
