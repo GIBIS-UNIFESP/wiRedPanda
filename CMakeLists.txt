@@ -941,6 +941,7 @@ add_test(NAME TestSettings COMMAND test_wiredpanda TestSettings WORKING_DIRECTOR
 add_test(NAME TestSignalDelegate COMMAND test_wiredpanda TestSignalDelegate WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSimulation COMMAND test_wiredpanda TestSimulation WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSimulationBlocker COMMAND test_wiredpanda TestSimulationBlocker WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestStackingSnapshot COMMAND test_wiredpanda TestStackingSnapshot WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestStatusOps COMMAND test_wiredpanda TestStatusOps WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSystemVerilogExport COMMAND test_wiredpanda TestSystemVerilogExport WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestThemeManager COMMAND test_wiredpanda TestThemeManager WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -1053,7 +1054,7 @@ endforeach()
 
 # File and Simulation Tests - Integration category
 foreach(TEST TestArduino TestFeedback TestFiles TestIC TestICInline
-        TestLabelSnapshot TestPointerSnapshot TestPortLayoutSnapshot TestSceneSnapshot TestSimulation TestSystemVerilogExport TestWorkspace TestWorkspaceFileops)
+        TestLabelSnapshot TestPointerSnapshot TestPortLayoutSnapshot TestSceneSnapshot TestSimulation TestStackingSnapshot TestSystemVerilogExport TestWorkspace TestWorkspaceFileops)
     set_tests_properties(${TEST} PROPERTIES LABELS "integration")
 endforeach()
 
@@ -1135,7 +1136,7 @@ set(ALL_TESTS
     TestDecoder8To256 TestMemorySettlingTime TestRAMCell1Bit TestSequential
     TestMUXDEMUXComprehensive
     TestArduino TestFeedback TestFiles TestIC TestICInline
-    TestLabelSnapshot TestPointerSnapshot TestPortLayoutSnapshot TestSceneSnapshot TestSimulation TestSystemVerilogExport TestWorkspace TestWorkspaceFileops
+    TestLabelSnapshot TestPointerSnapshot TestPortLayoutSnapshot TestSceneSnapshot TestSimulation TestStackingSnapshot TestSystemVerilogExport TestWorkspace TestWorkspaceFileops
     TestIcons TestWaveform TestAudioBox TestBuzzer TestClock TestClocksAdvanced
     TestComponents TestDisplays TestElementAppearance TestElementLabel TestElementProperties TestFeatures
     TestGeometry TestGraphicElementSerializer TestGraphicelementAdvanced TestInputElements TestInputRotary TestLED

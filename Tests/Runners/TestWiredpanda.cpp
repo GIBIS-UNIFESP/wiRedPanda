@@ -109,6 +109,7 @@
 #include "Tests/Integration/TestPortLayoutSnapshot.h"
 #include "Tests/Integration/TestSceneSnapshot.h"
 #include "Tests/Integration/TestSimulation.h"
+#include "Tests/Integration/TestStackingSnapshot.h"
 #include "Tests/Integration/TestSystemVerilogExport.h"
 #include "Tests/Integration/TestWorkspace.h"
 #include "Tests/Integration/TestWorkspaceFileops.h"
@@ -351,6 +352,7 @@ int main(int argc, char **argv)
         {"TestPortLayoutSnapshot", []() -> QObject * { return new TestPortLayoutSnapshot; }},
         {"TestSceneSnapshot", []() -> QObject * { return new TestSceneSnapshot; }},
         {"TestSimulation", []() -> QObject * { return new TestSimulation; }},
+        {"TestStackingSnapshot", []() -> QObject * { return new TestStackingSnapshot; }},
         {"TestSystemVerilogExport", []() -> QObject * { return new TestSystemVerilogExport; }},
         {"TestWorkspace", []() -> QObject * { return new TestWorkspace; }},
         {"TestWorkspaceFileops", []() -> QObject * { return new TestWorkspaceFileops; }},

@@ -23,6 +23,7 @@ private slots:
     void testOrientations();
     void testElementsById();
     void testScopedRendering();
+    void testChannelDifference();
     void testScenePointer();
     void testPortCountsAndOrientationPasses();
     void testLeftOutTypes();

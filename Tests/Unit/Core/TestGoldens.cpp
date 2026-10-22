@@ -9,6 +9,7 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QGraphicsSimpleTextItem>
 #include <QMetaEnum>
 #include <QSet>
 #include <QTemporaryDir>
@@ -295,6 +296,15 @@ void TestGoldens::testScopedRendering()
     Application::renderingEnabled = original;
 }
 
+void TestGoldens::testChannelDifference()
+{
+    // The largest of the four channels' differences, whichever channel and sign it has.
+    QCOMPARE(TestUtils::channelDifference(qRgba(10, 20, 30, 255), qRgba(10, 20, 30, 255)), 0);
+    QCOMPARE(TestUtils::channelDifference(qRgba(10, 20, 30, 255), qRgba(12, 19, 30, 255)), 2);
+    QCOMPARE(TestUtils::channelDifference(qRgba(10, 20, 30, 255), qRgba(10, 20, 27, 255)), 3);
+    QCOMPARE(TestUtils::channelDifference(qRgba(10, 20, 30, 250), qRgba(10, 20, 30, 255)), 5);
+}
+
 void TestGoldens::testScenePointer()
 {
     // A drag carries the press position, so Qt moves the element by the pointer's distance, and the scene pushes one
@@ -412,4 +422,10 @@ void TestGoldens::testLabelSceneTransform()
     QCOMPARE(moved.dx() - before.dx(), 24.0);
     QCOMPARE(moved.dy() - before.dy(), 8.0);
     QCOMPARE(moved.m11(), 1.0);
+
+    // The label item is the element's text child showing its label.
+    const auto *label = dynamic_cast<const QGraphicsSimpleTextItem *>(SnapshotAccess::label(node));
+    QVERIFY(label);
+    QCOMPARE(label->parentItem(), node);
+    QCOMPARE(label->text(), QString("Label"));
 }
