@@ -8,6 +8,7 @@
 #pragma once
 
 #include <QHash>
+#include <QSet>
 
 class ItemWithId;
 
@@ -23,6 +24,10 @@ class ItemWithId;
 class SceneItemRegistry
 {
 public:
+    /// What a registered item is, given when it is registered, since an item being
+    /// destroyed can no longer report it.
+    enum class ItemKind { Element, Other };
+
     /// Nulls the registry back-pointer on every item still mapped, so a later cascade-delete
     /// (e.g. Qt's ~QGraphicsScene teardown of remaining items, which runs after this
     /// registry -- a Scene member -- has already been destroyed) can't call back into a
@@ -34,6 +39,10 @@ public:
 
     /// Returns \c true if an item is registered under \a id.
     [[nodiscard]] bool contains(int id) const;
+
+    /// Returns how many registered items are elements: the scene's element count, kept as
+    /// items are registered, unregistered and destroyed.
+    [[nodiscard]] qsizetype elementCount() const;
 
     /// Returns the highest id assigned so far.
     int lastId() const;
@@ -48,13 +57,15 @@ public:
     void updateItemId(ItemWithId *item, int newId);
 
     /// Removes the mapping for \a id, clearing the mapped item's registry back-pointer
-    /// if one is still found. Safe unconditionally: the RAII self-unregistration in
-    /// ItemWithId's destructor guarantees this registry never holds an entry pointing
-    /// at an already-destroyed item, so whatever is found here (if anything) is live.
+    /// if one is still found, unless it is an element: an element stays in elementCount(),
+    /// only its id is forgotten, and its destruction still takes it out. Safe
+    /// unconditionally: the RAII self-unregistration in ItemWithId's destructor guarantees
+    /// this registry never holds an entry pointing at an already-destroyed item, so
+    /// whatever is found here (if anything) is live.
     void forgetItemId(int id);
 
-    /// Registers \a item under its current id.
-    void registerItem(ItemWithId *item);
+    /// Registers \a item under its current id; an item of \a kind Element is counted by elementCount().
+    void registerItem(ItemWithId *item, ItemKind kind);
 
     /// Removes \a item's mapping from the registry.
     void unregisterItem(ItemWithId *item);
@@ -68,5 +79,8 @@ public:
 
 private:
     QHash<int, ItemWithId *> m_elementRegistry;
+    /// The registered elements, by identity rather than id, so an id collision or a
+    /// forgotten id cannot drop one from the count.
+    QSet<ItemWithId *> m_countedElements;
     int m_lastId = 0;
 };

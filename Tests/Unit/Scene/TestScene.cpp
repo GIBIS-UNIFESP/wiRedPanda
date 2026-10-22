@@ -3,6 +3,7 @@
 
 #include "Tests/Unit/Scene/TestScene.h"
 
+#include <algorithm>
 #include <cmath>
 #include <memory>
 
@@ -39,6 +40,7 @@
 #include "App/Element/GraphicElements/Or.h"
 #include "App/IO/Serialization.h"
 #include "App/Scene/ClipboardManager.h"
+#include "App/Scene/Commands.h"
 #include "App/Scene/GraphicsView.h"
 #include "App/Scene/ICRegistry.h"
 #include "App/Scene/InlineLabelEditor.h"
@@ -2798,4 +2800,112 @@ void TestScene::testHelpEventFallsBackForNonPortItem()
 
     QVERIFY(event.isAccepted());
     QVERIFY2(!scene->portAt(event.scenePos()), "Precondition: no port must be under the event's scene position");
+}
+
+void TestScene::testElementCountAgreesAfterEveryMutation()
+{
+    // The status bar shows elementCount(), which the item registry keeps so the status bar never sorts the circuit.
+    // After each path that adds or removes an element, the count must equal a walk of the scene. A debug build also
+    // asserts this on every walk; this test checks it in every build.
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    const auto agrees = [scene] {
+        return scene->elementCount() == scene->elements().size();
+    };
+    QCOMPARE(scene->elementCount(), 0);
+
+    auto *sw = new InputSwitch();
+    auto *led = new Led();
+    scene->addItem(sw);
+    scene->addItem(led);
+    QCOMPARE(scene->elementCount(), 2);
+    QVERIFY2(agrees(), "after adding two elements");
+
+    auto *gate = new And();
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{gate}, scene));
+    QCOMPARE(scene->elementCount(), 3);
+    QVERIFY2(agrees(), "after adding a gate through a command");
+
+    auto *conn = new Connection();
+    conn->setStartPort(sw->outputPort());
+    conn->setEndPort(led->inputPort());
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{conn}, scene));
+    QCOMPARE(scene->elementCount(), 3);
+    QVERIFY2(agrees(), "after adding a wire through a command");
+
+    gate->setSelected(true);
+    scene->deleteAction();
+    QCOMPARE(scene->elementCount(), 2);
+    QVERIFY2(agrees(), "after deleting the gate");
+    scene->undoStack()->undo();
+    QCOMPARE(scene->elementCount(), 3);
+    QVERIFY2(agrees(), "after undoing the delete");
+    scene->undoStack()->redo();
+    QCOMPARE(scene->elementCount(), 2);
+    QVERIFY2(agrees(), "after redoing the delete");
+
+    scene->clearSelection();
+    sw->setSelected(true);
+    scene->copyAction();
+    QVERIFY2(agrees(), "after copy");
+    scene->cutAction();
+    QCOMPARE(scene->elementCount(), 1);
+    QVERIFY2(agrees(), "after cut");
+    scene->pasteAction();
+    QCOMPARE(scene->elementCount(), 2);
+    QVERIFY2(agrees(), "after paste");
+
+    scene->selectAll();
+    scene->duplicateAction();
+    QCOMPARE(scene->elementCount(), 4);
+    QVERIFY2(agrees(), "after duplicate");
+    scene->selectAll();
+    scene->rotateRight();
+    QVERIFY2(agrees(), "after rotating");
+
+    auto *removed = new Led();
+    scene->addItem(removed);
+    scene->removeItem(removed);
+    QVERIFY2(agrees(), "after removing an element");
+    delete removed;
+    QVERIFY2(agrees(), "after deleting a removed element");
+
+    auto *destroyed = new Led();
+    scene->addItem(destroyed);
+    delete destroyed;
+    QCOMPARE(scene->elementCount(), 4);
+    QVERIFY2(agrees(), "after destroying an element still in the scene");
+
+    scene->forgetItemId(led->id());
+    QCOMPARE(scene->elementCount(), 4);
+    QVERIFY2(agrees(), "after forgetting an element's id");
+
+    // A loaded file: each IC counts once, and the circuit inside it not at all.
+    WorkSpace loaded;
+    loaded.load(TestUtils::examplesDir() + "nested.panda");
+    const auto elements = loaded.scene()->elements();
+    QVERIFY(std::any_of(elements.cbegin(), elements.cend(), [](const auto *elm) {
+        return elm->elementType() == ElementType::IC;
+    }));
+    QCOMPARE(loaded.scene()->elementCount(), elements.size());
+}
+
+void TestScene::testElementCountKeepsAForgottenElement()
+{
+    // Forgetting an element's id leaves the element in the scene, so it stays in the count; destroying it afterwards
+    // still takes it out.
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *sw = new InputSwitch();
+    auto *led = new Led();
+    scene->addItem(sw);
+    scene->addItem(led);
+
+    scene->forgetItemId(sw->id());
+    QCOMPARE(scene->elementCount(), 2);
+    QCOMPARE(scene->elementCount(), scene->elements().size());
+
+    delete sw;
+    QCOMPARE(scene->elementCount(), 1);
+    QCOMPARE(scene->elementCount(), scene->elements().size());
 }

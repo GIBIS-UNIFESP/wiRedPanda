@@ -174,4 +174,6 @@ private slots:
     void testEventFilterRemapsShiftClickToCtrlClick();
     void testHelpEventShowsPortHoverLabelsOverPort();
     void testHelpEventFallsBackForNonPortItem();
+    void testElementCountAgreesAfterEveryMutation();
+    void testElementCountKeepsAForgottenElement();
 };

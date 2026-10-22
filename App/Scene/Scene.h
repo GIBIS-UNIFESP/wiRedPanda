@@ -190,6 +190,8 @@ public:
     const QList<GraphicElement *> selectedElements() const;
     /// Returns all graphic elements in the scene.
     const QVector<GraphicElement *> elements() const;
+    /// Returns how many graphic elements the scene holds, as elements().size() would, without walking the items.
+    qsizetype elementCount() const;
     /// Returns all graphic elements within \a rect.
     const QVector<GraphicElement *> elements(const QRectF &rect) const;
     /// Returns the path of the first local `.panda` file in \a mimeData's URL list (the file
@@ -466,8 +468,8 @@ private:
     void rotate(const int angle);
     void setDots(const QPen &dots);
 
-    /// Registers \a item's current ID in the scene registry. Called by addItem().
-    void registerItem(ItemWithId *item);
+    /// Registers \a item's current ID in the scene registry, as an item of \a kind. Called by addItem().
+    void registerItem(ItemWithId *item, SceneItemRegistry::ItemKind kind);
     /// Removes \a item's ID from the scene registry. Called by removeItem().
     void unregisterItem(ItemWithId *item);
 

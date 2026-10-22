@@ -130,7 +130,9 @@ void Scene::addItem(QGraphicsItem *item)
             // Pre-assigned item (restored by updateItemId for undo/redo): preserve it
             setLastId(iwid->id());
         }
-        registerItem(iwid);
+        // The element test is unsortedElements()'s, so elementCount() equals elements().size().
+        registerItem(iwid, (item->type() == GraphicElement::Type) ? SceneItemRegistry::ItemKind::Element
+                                                                   : SceneItemRegistry::ItemKind::Other);
     }
 
     // Register element-type-specific hooks
@@ -203,9 +205,9 @@ void Scene::forgetItemId(const int id)
     m_itemRegistry.forgetItemId(id);
 }
 
-void Scene::registerItem(ItemWithId *item)
+void Scene::registerItem(ItemWithId *item, const SceneItemRegistry::ItemKind kind)
 {
-    m_itemRegistry.registerItem(item);
+    m_itemRegistry.registerItem(item, kind);
 }
 
 void Scene::unregisterItem(ItemWithId *item)
@@ -338,6 +340,11 @@ const QVector<GraphicElement *> Scene::elements() const
     return sortByTopology(unsortedElements());
 }
 
+qsizetype Scene::elementCount() const
+{
+    return m_itemRegistry.elementCount();
+}
+
 const QVector<GraphicElement *> Scene::unsortedElements() const
 {
     const auto items_ = items();
@@ -350,6 +357,9 @@ const QVector<GraphicElement *> Scene::unsortedElements() const
         }
     }
 
+    // elementCount() is kept by the registry, so a debug build checks that the two agree on every walk; a release
+    // build does not, since the walk is what elementCount() exists to avoid.
+    Q_ASSERT(m_itemRegistry.elementCount() == elements_.size());
     return elements_;
 }
 

@@ -56,7 +56,7 @@ void SceneUiBinder::updateStatusInfo()
     auto *scene = m_bound->scene();
     const int zoomPct = qRound(m_bound->view()->transform().m11() * 100.0);
     const int selected = static_cast<int>(scene->selectedElements().size());
-    const int total = static_cast<int>(scene->elements().size());
+    const int total = static_cast<int>(scene->elementCount());
     m_statusInfo->setText(tr("Zoom: %1%    Selected: %2 / %3").arg(zoomPct).arg(selected).arg(total));
 }
 

@@ -19,6 +19,11 @@ bool SceneItemRegistry::contains(const int id) const
     return m_elementRegistry.contains(id);
 }
 
+qsizetype SceneItemRegistry::elementCount() const
+{
+    return m_countedElements.size();
+}
+
 int SceneItemRegistry::lastId() const
 {
     return m_lastId;
@@ -44,13 +49,14 @@ void SceneItemRegistry::updateItemId(ItemWithId *item, const int newId)
 
 void SceneItemRegistry::forgetItemId(const int id)
 {
-    if (auto *item = m_elementRegistry.value(id, nullptr)) {
+    // A counted element keeps its back-pointer, so its destruction still takes it out of the count.
+    if (auto *item = m_elementRegistry.value(id, nullptr); item && !m_countedElements.contains(item)) {
         item->setRegistry(nullptr);
     }
     m_elementRegistry.remove(id);
 }
 
-void SceneItemRegistry::registerItem(ItemWithId *item)
+void SceneItemRegistry::registerItem(ItemWithId *item, const ItemKind kind)
 {
     if (!item) { // LCOV_EXCL_LINE — Scene::addItem() is the sole caller and only invokes this inside its own `if (auto *iwid = dynamic_cast<...>(item))` block, already non-null.
         return; // LCOV_EXCL_LINE
@@ -60,6 +66,9 @@ void SceneItemRegistry::registerItem(ItemWithId *item)
     Q_ASSERT(!m_elementRegistry.contains(item->id())
           || m_elementRegistry.value(item->id()) == item);
     m_elementRegistry[item->id()] = item;
+    if (kind == ItemKind::Element) {
+        m_countedElements.insert(item);
+    }
     item->setRegistry(this);
 }
 
@@ -69,6 +78,7 @@ void SceneItemRegistry::unregisterItem(ItemWithId *item)
         return; // LCOV_EXCL_LINE
     }
     m_elementRegistry.remove(item->id());
+    m_countedElements.remove(item);
     item->setRegistry(nullptr);
     // HC postcondition: after unregister, the registry must not still resolve this id
     Q_ASSERT(!m_elementRegistry.contains(item->id()));
@@ -84,11 +94,16 @@ void SceneItemRegistry::forget(ItemWithId *item)
     if (m_elementRegistry.value(item->id()) == item) {
         m_elementRegistry.remove(item->id());
     }
+    // The item is being destroyed, so it leaves the count whatever its id maps to.
+    m_countedElements.remove(item);
 }
 
 SceneItemRegistry::~SceneItemRegistry()
 {
     for (auto *item : std::as_const(m_elementRegistry)) {
+        item->setRegistry(nullptr);
+    }
+    for (auto *item : std::as_const(m_countedElements)) {
         item->setRegistry(nullptr);
     }
 }
