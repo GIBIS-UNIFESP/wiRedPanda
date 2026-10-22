@@ -88,6 +88,99 @@ Advanced development features supported:
 - This target passes `-tr-function-alias tr+=PANDACEPTION` so strings wrapped in the `PANDACEPTION()` macro are correctly extracted. Using any other invocation silently discards those strings.
 - **Exercise/Tour content translations**: Exercise/Tour step text (`App/Resources/Exercises/*.json`, `App/Resources/Tours/*.json`) never passes through `tr()` — it's JSON, so `lupdate` can't see it. It goes through a *separate* Weblate "JSON file" component and a generated catalog, `App/Resources/Translations/ExerciseTour/en.json` (`Scripts/generate_exercise_tour_catalog.py`). Regenerating it is wired into the same `update_translations` target above — still one command. See "Exercise/Tour Content" below.
 
+## Building and testing
+
+What no single change owns: the pitfalls of building and testing this code base, and how to avoid each.
+
+### Builds
+
+- A debug build hides GCC's optimization-only diagnostics, so checks build the relwithdebinfo preset; CI builds release
+  at `-O3 -Werror` with a strict GNU warning set (`-Wconversion`, `-Wold-style-cast`, `-Wuseless-cast`, `-Wshadow`,
+  `-Wnull-dereference`, …). What GCC 15 at `-O2` raises, with the fix each needs:
+  - `-Wnull-dereference` after `qgraphicsitem_cast` following a type test: cast in the condition,
+    `if (auto *x = qgraphicsitem_cast<T *>(item))`; and on a conversion to a second base, which is null-checked: a
+    comparator on the class's own type.
+  - `-Wuseless-cast` on a cast of a `qsizetype` to itself; `-Wshadow` between a loop variable and an `if` initializer.
+  - `-Werror=stringop-overflow` on `QVector<int>(count, -1)` when `count` may be negative: use `std::max(0, count)`.
+    GCC reports it at the Qt header's line, so a pragma cannot target it.
+  - `-Werror=sign-conversion` when casting `reserve()` sizes: cast to `std::size_t`.
+- Unity builds put 8 sources in one translation unit, so names in anonymous namespaces and file-scope statics collide
+  across neighbours: scan each batch, or put helpers in named namespaces. Adding a source shifts later batches, which
+  can hide or reveal a missing include, and each target's precompiled header also supplies includes a source lacks.
+  So a changed source is compiled alone: its flags from `compile_commands.json`, minus the unity batch and the
+  `-include …/cmake_pch.hxx`, with `-fsyntax-only`. The check's negative controls, a source missing a project include
+  and one using a Qt class only the precompiled header includes, must both fail. CI also builds without unity (the
+  sanitizer presets) and with one large unity batch.
+- GCC passes test code that clang rejects under `-Werror`: `QWARN` (`QTest::qWarn`, deprecated since Qt 6.3; GCC does
+  not warn inside a system header's macro expansion) and a `float` passed as a `qreal` argument (clang's
+  `-Wdouble-promotion`). CI's macOS jobs build the tests with Apple clang; nothing checks clang locally, and ASan and
+  UBSan are left to CI's Sanitizers workflow.
+- The libFuzzer build sees includes the GCC build hides, such as a header using `QPointF` and `QTransform` without
+  including them.
+- Build all targets before running the suite: the test target alone leaves out the one that copies the MCP schema, and
+  twelve tests fail.
+- Long runs (sweeps, oracles, timings) use an optimized build, one case per core, never a debug build.
+- CI runs pylint over `Scripts/`, `Tests/Fixtures/` and the IC generators; the MCP client is checked with ruff, pyright
+  and mypy, which are run before pushing a change to it.
+
+### Translatable strings
+
+The translatable-strings golden compares `build/translatable_strings.ts`, which only its own target refreshes, so a
+change that adds or removes `tr()` strings builds that target and updates the golden in the same commit; a build that
+skips it compares a stale catalog and passes. A class that moves or is renamed keeps its strings' translation context,
+or every language silently falls back to English. The `.ts` catalogs themselves are refreshed at release, not
+mid-branch.
+
+### Tests
+
+- A new QTest class is registered in four places, each of which fails silently when missed: the source list in
+  `CMakeSources.cmake` (sorted); the runner's include and registry entry in `Tests/Runners/TestWiredpanda.cpp` (without
+  it the class does not exist for `test_wiredpanda`); an `add_test` line and the label list in `CMakeLists.txt` (without
+  the label, `ctest -L` skips it); and the `ALL_TESTS` list, whose fixture makes the GUI tests wait for every other
+  test.
+- Every new check is broken on purpose once (an order reversed, a render skipped, a fixed defect put back) and must
+  fail before it is trusted.
+- Suite defaults: `Application::renderingEnabled` is off, so wires have no paths; tests start on the System theme; the
+  first simulation update after a structural edit rebuilds the simulation and sets every clock HIGH, so a test of a
+  fast path builds first; an InputSwitch does not rotate its graphic; `qHash` is seeded per process, so seeds use
+  FNV-1a; two random draws in one expression need an explicit order; fonts differ per platform (Noto, DejaVu and
+  Liberation Sans all pass, or the font-dependent value is masked); `QDrag::exec()` cannot be driven, so drops are sent
+  as events; clipboard tests hold the `clipboard` resource lock.
+- `InputSwitch::setOff()` and the no-argument `setOn()` both toggle, by design (a switch toggles its latched state);
+  only `setOn(bool)` sets a level. A test that "clears" a switch with `setOff()` turns an off switch on.
+- Goldens regenerate when `GENERATE_EXPECTED_SNAPSHOTS` is set, even to an empty value, so nothing that runs the suite
+  may export it.
+- QtTest's watchdog aborts a slot after 300 s and its stack dump can hang the process; long slots run with
+  `QTEST_FUNCTION_TIMEOUT` raised and `QTEST_DISABLE_STACK_DUMP=1`. QTest drops every message after 2,000 warnings, so
+  a log that is counted needs `-maxwarnings 0`, and a check for "Maximum amount of warnings exceeded".
+- Tests of loops and oscillators have timeouts, so a mutant that makes a ring run forever fails instead of hanging.
+- A test class's name can differ from its file's (`TestLevel6Alu8bit.cpp` holds `TestLevel6ALU8Bit`), and
+  `test_wiredpanda` takes the class name. Fixture `.panda` files are read at run time, so changing one needs no rebuild;
+  a test source does.
+- No absolute wall-time bounds in tests (ratios or counts instead), and CTest labels that match what the test does.
+
+### Fuzzing
+
+The `fuzzer` preset is libFuzzer with ASan and UBSan. Only each harness's own source gets `-fsanitize=fuzzer-no-link`,
+so libFuzzer sees the harness's edges alone (154 edges in three minutes, against 27,474 with the libraries
+instrumented); coverage feedback needs the flag on the whole project. A new harness is registered in both fuzzer
+presets, the unattended-run script and the coverage report, with its own corpus directory; each seeded harness checks
+its seed at start-up and runs once with `-runs=1` as a smoke test; `Tests/lsan_suppressions.txt` silences leaks in
+`libfontconfig` and `libexpat`. No CI job runs the harnesses, and CI's Sanitizers workflow ignores changes under
+`Tests/Fuzz/`: they run overnight on a developer's machine, through `Tests/Fuzz/run-unattended.sh`, and a change that
+adds or changes a harness lands after that run.
+
+### Profiling
+
+Instruction counts under callgrind on a relwithdebinfo build, through `Scripts/profile_load.sh`; rendering
+compared by CPU profile, not frames per second; GPU frames timed by blocking on the presented frame; high-frequency
+events counted with `perf` or counters, not debugger breakpoints. Wall-clock and CPU numbers on a virtual machine vary
+12 to 54% from run to run, so a single run proves nothing: runs are interleaved in pairs and only a direction that holds
+across all of them is reported, or instructions are counted instead. A running application's CPU share is measured on
+a settled process, attached after the load has finished (`perf stat -e task-clock -p`), since `ps`'s CPU figure is an
+average since launch that keeps falling for a minute or more as the start-up cost dilutes, and two programs are compared
+over matched settle windows.
+
 ## Project Structure
 
 - Main project file: `CMakeLists.txt`
