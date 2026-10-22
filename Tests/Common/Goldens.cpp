@@ -10,6 +10,7 @@
 #include <QDirIterator>
 #include <QFile>
 #include <QFileInfo>
+#include <QGraphicsSimpleTextItem>
 #include <QMetaEnum>
 #include <QTest>
 #include <QVariant>
@@ -259,4 +260,9 @@ QString SnapshotAccess::pixmapIdentity(const GraphicElement *element)
     const QString source = path.startsWith(':') ? path : QFileInfo(path).fileName();
     const bool oriented = appearance.m_pixmap.cacheKey() != appearance.m_basePixmap.cacheKey();
     return QString::number(size.width()) + 'x' + QString::number(size.height()) + ':' + source + (oriented ? ":oriented" : "");
+}
+
+QTransform SnapshotAccess::labelSceneTransform(const GraphicElement *element)
+{
+    return element->m_label->sceneTransform();
 }

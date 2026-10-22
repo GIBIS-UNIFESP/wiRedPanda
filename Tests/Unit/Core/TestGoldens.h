@@ -26,4 +26,5 @@ private slots:
     void testPortCountsAndOrientationPasses();
     void testLeftOutTypes();
     void testPixmapIdentity();
+    void testLabelSceneTransform();
 };

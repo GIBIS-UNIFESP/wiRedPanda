@@ -23,6 +23,7 @@
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Mux.h"
+#include "App/Element/GraphicElements/Node.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/Goldens.h"
@@ -372,4 +373,19 @@ void TestGoldens::testPixmapIdentity()
 
     Mux mux;
     QCOMPARE(SnapshotAccess::pixmapIdentity(&mux), QString("footprint"));
+}
+
+void TestGoldens::testLabelSceneTransform()
+{
+    // The label's scene transform moves with its element and turns with a rotating one.
+    WorkSpace workspace;
+    auto *node = new Node();
+    workspace.scene()->addItem(node);
+    node->setLabel("Label");
+    const QTransform before = SnapshotAccess::labelSceneTransform(node);
+    node->setPos(node->pos() + QPointF(24, 8));
+    const QTransform moved = SnapshotAccess::labelSceneTransform(node);
+    QCOMPARE(moved.dx() - before.dx(), 24.0);
+    QCOMPARE(moved.dy() - before.dy(), 8.0);
+    QCOMPARE(moved.m11(), 1.0);
 }

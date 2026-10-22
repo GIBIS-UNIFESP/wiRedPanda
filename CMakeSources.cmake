@@ -418,6 +418,7 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestFiles.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestIc.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestICInline.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestLabelSnapshot.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestMainWindowGui.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestPortLayoutSnapshot.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestSceneSnapshot.cpp
@@ -645,6 +646,7 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestFiles.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestIc.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestICInline.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestLabelSnapshot.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestMainWindowGui.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestPortLayoutSnapshot.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestSceneSnapshot.h
