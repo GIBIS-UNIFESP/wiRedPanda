@@ -109,6 +109,7 @@
 #include "Tests/Integration/TestPortLayoutSnapshot.h"
 #include "Tests/Integration/TestSceneSnapshot.h"
 #include "Tests/Integration/TestSimulation.h"
+#include "Tests/Integration/TestSimulationTraceSnapshot.h"
 #include "Tests/Integration/TestStackingSnapshot.h"
 #include "Tests/Integration/TestSystemVerilogExport.h"
 #include "Tests/Integration/TestWirePixelSnapshot.h"
@@ -353,6 +354,7 @@ int main(int argc, char **argv)
         {"TestPortLayoutSnapshot", []() -> QObject * { return new TestPortLayoutSnapshot; }},
         {"TestSceneSnapshot", []() -> QObject * { return new TestSceneSnapshot; }},
         {"TestSimulation", []() -> QObject * { return new TestSimulation; }},
+        {"TestSimulationTraceSnapshot", []() -> QObject * { return new TestSimulationTraceSnapshot; }},
         {"TestStackingSnapshot", []() -> QObject * { return new TestStackingSnapshot; }},
         {"TestSystemVerilogExport", []() -> QObject * { return new TestSystemVerilogExport; }},
         {"TestWirePixelSnapshot", []() -> QObject * { return new TestWirePixelSnapshot; }},
