@@ -1,0 +1,45 @@
+// ==================================================================== //
+// ======= This code was generated automatically by wiRedPanda ======== //
+// ==================================================================== //
+//
+// Target Board: Arduino UNO R3/R4
+// Pin Usage: 3/18 pins
+//
+
+
+#include <elapsedMillis.h>
+/* ========= Inputs ========== */
+const int input_switch1 = A0;
+const int input_switch2 = A1;
+
+/* ========= Outputs ========== */
+const int led1_1 = A2;
+
+/* ====== Aux. Variables ====== */
+bool input_switch1_val = LOW;
+bool input_switch2_val = LOW;
+bool aux_and_2 = LOW;
+
+void setup() {
+    pinMode(input_switch1, INPUT);
+    pinMode(input_switch2, INPUT);
+    pinMode(led1_1, OUTPUT);
+}
+
+void computeLogic() {
+    // Assigning aux variables. //
+    aux_and_2 = input_switch1_val && input_switch2_val;
+}
+
+void loop() {
+    // Reading input data //.
+    input_switch1_val = digitalRead(input_switch1);
+    input_switch2_val = digitalRead(input_switch2);
+
+    // Updating clocks. //
+
+    computeLogic();
+
+    // Writing output data. //
+    digitalWrite(led1_1, aux_and_2);
+}

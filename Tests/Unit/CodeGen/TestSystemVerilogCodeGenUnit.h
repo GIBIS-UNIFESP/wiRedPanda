@@ -13,6 +13,7 @@ class TestSystemVerilogCodeGenUnit : public QObject
 private slots:
 
     void testAndGateCircuit();
+    void testModuleUnderTranslationMatchesGolden();
     void testOrNotCircuit();
     void testMultiGateChain();
     void testMuxCircuit();

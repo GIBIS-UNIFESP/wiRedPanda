@@ -1,0 +1,49 @@
+// ==================================================================== //
+// ======= This code was generated automatically by wiRedPanda ======== //
+// ==================================================================== //
+
+
+module display14 (
+/* ========= Inputs ========== */
+input input_switch1,
+input input_switch2,
+
+/* ========= Outputs ========== */
+output _14_segment_display3_g1_middle_left_horizontal,
+output _14_segment_display3_f_upper_left_vertical,
+output _14_segment_display3_e_lower_left_vertical,
+output _14_segment_display3_d_bottom,
+output _14_segment_display3_a_top,
+output _14_segment_display3_b_upper_right_vertical,
+output _14_segment_display3_dp_dot,
+output _14_segment_display3_c_lower_right_vertical,
+output _14_segment_display3_g2_middle_right_horizontal,
+output _14_segment_display3_h_upper_left_diagonal,
+output _14_segment_display3_j_upper_center_vertical,
+output _14_segment_display3_k_upper_right_diagonal,
+output _14_segment_display3_l_lower_right_diagonal,
+output _14_segment_display3_m_lower_center_vertical,
+output _14_segment_display3_n_lower_left_diagonal
+);
+/* ====== Aux. Variables ====== */
+
+
+// Assigning aux variables. //
+
+// Writing output data. //
+assign _14_segment_display3_g1_middle_left_horizontal = input_switch1;
+assign _14_segment_display3_f_upper_left_vertical = input_switch2;
+assign _14_segment_display3_e_lower_left_vertical = 1'b0;
+assign _14_segment_display3_d_bottom = 1'b0;
+assign _14_segment_display3_a_top = 1'b0;
+assign _14_segment_display3_b_upper_right_vertical = 1'b0;
+assign _14_segment_display3_dp_dot = 1'b0;
+assign _14_segment_display3_c_lower_right_vertical = 1'b0;
+assign _14_segment_display3_g2_middle_right_horizontal = 1'b0;
+assign _14_segment_display3_h_upper_left_diagonal = 1'b0;
+assign _14_segment_display3_j_upper_center_vertical = 1'b0;
+assign _14_segment_display3_k_upper_right_diagonal = 1'b0;
+assign _14_segment_display3_l_lower_right_diagonal = 1'b0;
+assign _14_segment_display3_m_lower_center_vertical = 1'b0;
+assign _14_segment_display3_n_lower_left_diagonal = 1'b0;
+endmodule

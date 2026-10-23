@@ -13,6 +13,7 @@ class TestArduinoCodeGenUnit : public QObject
 private slots:
 
     void testAndGateCircuit();
+    void testSketchUnderTranslationMatchesGolden();
     void testMultiGateCircuit();
     void testMuxCircuit();
     void testDemuxCircuit();

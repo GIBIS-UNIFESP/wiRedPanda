@@ -3,6 +3,10 @@
 
 #include "Tests/Unit/CodeGen/TestArduinoCodeGenUnit.h"
 
+#include <functional>
+#include <utility>
+
+#include <QCoreApplication>
 #include <QRegularExpression>
 #include <QTemporaryDir>
 
@@ -11,6 +15,9 @@
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/Demux.h"
 #include "App/Element/GraphicElements/DFlipFlop.h"
+#include "App/Element/GraphicElements/Display14.h"
+#include "App/Element/GraphicElements/Display16.h"
+#include "App/Element/GraphicElements/Display7.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/InputVCC.h"
@@ -25,6 +32,7 @@
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
+#include "Tests/Common/Goldens.h"
 #include "Tests/Common/TestUtils.h"
 
 namespace {
@@ -488,4 +496,80 @@ void TestArduinoCodeGenUnit::testDemuxWithFourOutputsUsesTwoSelectLines()
     // Two select lines means the select expression combines two bits via " << 1)".
     QVERIFY2(content.contains(" << 1)"), qPrintable(content));
     QVERIFY(content.contains("} else if (("));
+}
+
+namespace ArduinoTranslatedSketch {
+
+/// The sketch for the circuit \a build adds, generated with whatever translator is installed.
+QString generate(const std::function<void(CircuitBuilder &)> &build)
+{
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+    build(builder);
+
+    QTemporaryDir dir;
+    const QString path = dir.path() + "/sketch.ino";
+    ArduinoCodeGen codegen(path, arduinoSceneElements(workspace.scene()));
+    codegen.generate();
+
+    QFile file(path);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        return {};
+    }
+    return QString::fromUtf8(file.readAll());
+}
+
+/// An And gate driving an Led from two switches.
+void andGate(CircuitBuilder &builder)
+{
+    auto *sw1 = new InputSwitch;
+    auto *sw2 = new InputSwitch;
+    auto *gate = new And;
+    auto *led = new Led;
+    builder.add(sw1, sw2, gate, led);
+    builder.connect(sw1, 0, gate, 0);
+    builder.connect(sw2, 0, gate, 1);
+    builder.connect(gate, 0, led, 0);
+}
+
+/// A segment display with two of its segments driven by switches: its port names are translated strings.
+template <typename Display>
+void display(CircuitBuilder &builder)
+{
+    auto *sw1 = new InputSwitch;
+    auto *sw2 = new InputSwitch;
+    auto *shown = new Display;
+    builder.add(sw1, sw2, shown);
+    builder.connect(sw1, 0, shown, 0);
+    builder.connect(sw2, 0, shown, 1);
+}
+
+} // namespace ArduinoTranslatedSketch
+
+void TestArduinoCodeGenUnit::testSketchUnderTranslationMatchesGolden()
+{
+    // Each sketch generated in English and under a translator that tags every string, both pinned: on master the
+    // second carries the tag in element type and segment names, which a sketch should not follow.
+    const QList<std::pair<QString, std::function<void(CircuitBuilder &)>>> circuits{
+        {"and_gate", ArduinoTranslatedSketch::andGate},
+        {"display7", ArduinoTranslatedSketch::display<Display7>},
+        {"display14", ArduinoTranslatedSketch::display<Display14>},
+        {"display16", ArduinoTranslatedSketch::display<Display16>},
+    };
+    const QString goldens = QString(QUOTE(CURRENTDIR)) + "/Integration/Translated/";
+    for (const auto &[name, build] : circuits) {
+        const QString english = ArduinoTranslatedSketch::generate(build);
+        QVERIFY2(!english.isEmpty(), qPrintable(name));
+
+        TestUtils::TagEveryStringTranslator tagging;
+        QCoreApplication::installTranslator(&tagging);
+        const QString translated = ArduinoTranslatedSketch::generate(build);
+        QCoreApplication::removeTranslator(&tagging);
+        QVERIFY2(!translated.isEmpty(), qPrintable(name));
+
+        const QString englishMismatch = TestUtils::compareWithGolden(goldens + name + ".ino.txt", english);
+        QVERIFY2(englishMismatch.isEmpty(), qPrintable(englishMismatch));
+        const QString translatedMismatch = TestUtils::compareWithGolden(goldens + name + ".tr.ino.txt", translated);
+        QVERIFY2(translatedMismatch.isEmpty(), qPrintable(translatedMismatch));
+    }
 }
