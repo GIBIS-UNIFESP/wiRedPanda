@@ -36,7 +36,7 @@ The branches stack, and nothing is merged into `master` (the user, 2026-10-21: "
 master. we are going to do plan 1 on a branch then after it completes we will create a new branch from it and do plan
 2 and so on"). `00-plans`, from `master`, holds these files; each plan's branch starts from the branch before it in
 the table once that plan is finished, `01-characterization` from `00-plans`. A plan **lands** when its branch is
-finished: every row done or dropped, every commit checked (§3). "`master`" in the plans names the code the stack starts
+finished: every row done or dropped, every slice checked (§3). "`master`" in the plans names the code the stack starts
 from, `master` as `00-plans` branched from it, whose behaviour plan 1 pins; a later plan builds on the branches before
 it. The branch names carry their plan's number, the floor and the round a letter after the plan they follow, so the
 branches sort in their order.
@@ -112,17 +112,17 @@ was ever finished.
   requests to it or on a schedule, so a push never runs them; a plan that needs the fresh distro workflow starts it
   on its branch by hand (`gh workflow run fresh-deps.yml --ref <branch>`).
 - **Each commit correct from its first line; nothing landed is rewritten.** A fix to a commit of the plan in progress
-  is folded into that commit, with the user's approval, by an autosquash rebase of that plan's branch. A fixup folds
-  only if everything its added lines use exists at its target: a name lookup is not proof, a build at the target is.
-  On `gpu-canvas` a squash folded a check that used `values` into a function whose scope has no `values` but whose
-  class has `values()`, so the lookup passed and 21 commits did not compile; and hand-resolved conflicts left a brace
-  as `>}` and a blank line that a fix had removed, which no conflict marker showed. So after the fold the tip's tree is
-  compared with a backup branch's. A plan that has landed is never rewritten, since the branches after it are built on
-  it: a fix to its code, or to code from `master`, is a commit of its own on the plan in progress, placed before the
-  change that needs it.
-- **Checked before it lands.** Before a slice is finished, after its last fold, every commit in it that changes code is
-  built on the relwithdebinfo preset with its suite run, and its changed sources are compiled alone, outside their
-  unity batch and without the precompiled header (`CLAUDE.md`, "Building and testing"). The push then runs CI, which
+  is folded into that commit, whenever needed and without asking (the user's word of 2026-10-23), by an autosquash
+  rebase of that plan's branch; the commits it rewrites are not built one by one (the user's word of 2026-10-23). On
+  `gpu-canvas` hand-resolved conflicts left a brace as `>}` and a blank line that a fix had removed, which no conflict
+  marker showed. So after the fold the tip's tree is compared with a backup branch's, and the backup is then deleted
+  without asking (the user's word of 2026-10-23). A plan that has landed is never rewritten, since the branches after
+  it are built on it: a fix to its code, or to code from `master`, is a commit of its own on the plan in progress,
+  placed before the change that needs it.
+- **Checked before it lands.** Before a slice is finished, after its last fold, its tip is built on the relwithdebinfo
+  preset with the whole suite run, and the sources the slice changed are compiled alone, outside their unity batch and
+  without the precompiled header (`CLAUDE.md`, "Building and testing"). The commits before the tip are not checked one
+  by one (the user's word of 2026-10-23). The push then runs CI, which
   covers Qt 6.8 and 6.9, the sanitizers and Apple clang, and a plan lands only on a green run. On `gpu-canvas` each
   phase was written without building it and built at its gate, which then found what the writing had missed: a debug
   gate passed a null dereference that GCC reports only at `-O2`, Qt 6.7.3's defects showed only once a gate ran it, and
