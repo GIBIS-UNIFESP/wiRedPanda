@@ -34,6 +34,7 @@ private slots:
     void testSnapPathsMatchGolden_data();
     void testSnapPathsMatchGolden();
     void testEverySnapPathGoldenHasAPath();
+    void testPropertyKindsMatchGolden();
 
 private:
     Theme m_previousTheme = Theme::System;

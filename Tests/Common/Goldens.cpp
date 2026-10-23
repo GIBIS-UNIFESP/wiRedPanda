@@ -183,6 +183,24 @@ QString snapshotType(const ElementType type)
     return QVariant::fromValue(type).toString();
 }
 
+QString snapshotPropertyKind(const PropertyDescriptor::Type type)
+{
+    switch (type) {
+    case PropertyDescriptor::Type::Label:                return "Label";
+    case PropertyDescriptor::Type::Color:                return "Color";
+    case PropertyDescriptor::Type::Frequency:            return "Frequency";
+    case PropertyDescriptor::Type::Delay:                return "Delay";
+    case PropertyDescriptor::Type::Audio:                return "Audio";
+    case PropertyDescriptor::Type::AudioBox:             return "AudioBox";
+    case PropertyDescriptor::Type::Trigger:              return "Trigger";
+    case PropertyDescriptor::Type::TruthTable:           return "TruthTable";
+    case PropertyDescriptor::Type::Appearance:           return "Appearance";
+    case PropertyDescriptor::Type::Volume:               return "Volume";
+    case PropertyDescriptor::Type::WirelessModeSelector: return "WirelessModeSelector";
+    }
+    return "Unknown";
+}
+
 QList<Orientation> orientations()
 {
     QList<Orientation> list;

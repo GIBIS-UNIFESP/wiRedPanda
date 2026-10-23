@@ -590,3 +590,25 @@ void TestSceneSnapshot::testEverySnapPathGoldenHasAPath()
     expected.sort();
     QCOMPARE(QDir(snapPathsGoldensDir()).entryList(QDir::Files, QDir::Name), expected);
 }
+
+void TestSceneSnapshot::testPropertyKindsMatchGolden()
+{
+    // Every creatable type with the property kinds its element offers the editor, in the order it lists them.
+    QStringList lines;
+    for (const ElementType type : TestUtils::dumpedTypes()) {
+        if (!ElementFactory::hasCreator(type)) {
+            lines << QString("%1 %2").arg(QLatin1String(TestUtils::kNoCreator), TestUtils::snapshotType(type));
+            continue;
+        }
+        const std::unique_ptr<GraphicElement> element(ElementFactory::buildElement(type));
+        QStringList kinds;
+        for (const auto &property : element->editableProperties()) {
+            kinds << TestUtils::snapshotPropertyKind(property.type);
+        }
+        lines << QString("T %1 props=%2").arg(TestUtils::snapshotType(type), kinds.join(','));
+    }
+
+    const QString golden = QString(QUOTE(CURRENTDIR)) + "/Integration/Properties/types.txt";
+    const QString mismatch = TestUtils::compareWithGolden(golden, lines.join('\n') + '\n');
+    QVERIFY2(mismatch.isEmpty(), qPrintable(mismatch));
+}
