@@ -316,7 +316,7 @@ is shown to fail with its fast path removed.
 
 ### 4.6 Fixes to `master` made on this branch
 
-Two defects of `master` failed this branch's CI, so each was fixed here by a commit of its own placed before the
+Three defects of `master` failed this branch's CI, so each was fixed here by a commit of its own placed before the
 goldens, which therefore show none of them (P1.D7):
 
 - **CI's MCP Integration Test (P1.30).** `install-qt-action` v4.4.1 puts its own Python, 3.14 or later, first on the
@@ -325,6 +325,10 @@ goldens, which therefore show none of them (P1.D7):
 - **The IC file watcher test on Windows (P1.31).** The test rewrites the watched file at once, and Qt's Windows watcher
   compares owner, group, permissions and the last-modified time, never the size, so a rewrite within one timestamp
   tick is no change; `windows-11-arm` failed it in 2 of 4 runs. The rewrite gets a later modification time.
+- **The editor's volume (P1.32).** The element editor set its volume slider to the volume times 100 truncated, and on
+  32-bit x86, whose x87 unit keeps the product in extended precision, the buzzer's default 0.35 showed as 34, failing
+  the editor-writes golden on CI's `debian-i386` job; in float arithmetic 0.53 and 0.59 do the same on every
+  platform. The slider takes the product rounded, and a test reads back every percent from 0 to 100.
 
 ## 5. Steps and slices
 
@@ -354,6 +358,7 @@ Each step is a ledger row; a slice is a stretch of steps checked as one, then pu
 | P1.20 | The two fast-path tests made able to fail (§4.5) | 5 |
 | P1.30 | CI's Python tooling on 3.14 (§4.6) | 1 |
 | P1.31 | The IC file watcher test's rewrite on Windows (§4.6) | 1 |
+| P1.32 | The editor's volume, rounded (§4.6) | 4 |
 
 The checks of §8 are rows too (P1.21 to P1.23); the fixes of §4.6 are numbered after the ledger's other rows, each in
 the slice whose CI it opened or whose push it came with.
@@ -387,7 +392,7 @@ user's choice between workable options).
   `master` is plan 2's, and that the plans run one at a time, plan 2 starting once plan 1 has landed.
 - **P1.D7. A fix made on this branch is plan 1's.** A `master` defect that fails this branch's CI is fixed here, before
   the goldens, by a commit of its own, and is plan 1's row; every other defect is plan 2's (P1.D6). Basis: the user's
-  choices of 2026-10-22 (P1.30, P1.31).
+  choices of 2026-10-22 (P1.30, P1.31) and 2026-10-23 (P1.32).
 
 ## 7. Risks
 
