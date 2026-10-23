@@ -27,7 +27,10 @@ Each row's notes say how its check is shown to fail; "as on the branch" marks a 
 | P4.9 | Whether an IC's first reload in a scene always brings another definition (§5) | todo | | Checked here by counting definitions across a first reload; plan 6 checks it for its node ranges |
 | P4.10 | The cost of keying a file's definition by its bytes, on the IC-heavy fixture's load (2,000 instances of one file) (§5) | todo | | Measured before P4.2 lands, under callgrind with plan 1's probe; should the profile show the key, it goes back to path, time and size, with the two blind spots stated in the code |
 | P4.11 | The hand-over of §2.7: the internal elements, the IC's own serialization and the definitions' move into the document's registry, done by plan 8's last step | todo | | Carried by plan 8 (P8.15); closed here when that step lands |
+| P4.12 | The pin order saved in every file as the boundary elements' ids, migrated from positions before any snap; every element snapped on load; landing together (§2.9, P4.D5) | todo | | Added 2026-10-22 from plan 2's snapping rule (P2.42), which leaves the load exact. Shown to fail: the saved order ignored swaps two pins closer than half the grid; the migration taken after the snap swaps them too. P1.14's pin orders unchanged |
 
 ## Log
 
 - 2026-10-21: the plan file and this ledger written on `gpu-canvas`, every row `todo`.
+- 2026-10-22: P4.12 added with P4.D5, at the user's ruling: an IC's pin order saved in the format and every element
+  snapped on load, together, after plan 2 makes setting a position exact and every edit snap (P2.42).

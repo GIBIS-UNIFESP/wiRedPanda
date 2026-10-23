@@ -214,6 +214,29 @@ is required, reads Unknown. On the branch that removed the loader's copies of th
 goldens (a connected clock pin's default from Error to Unknown). Plan 4's definitions keep the input elements' levels
 that rule reads.
 
+### 2.9 An IC's pin order saved, and every element snapped on load
+
+On `master` an IC's pins are ordered by the positions of the input and output elements inside its circuit
+(`ICLoader.cpp:27`, `comparePorts`: by y, then x, stably), and a load keeps every position exact, on the grid or not.
+Releases before 4.0 saved arbitrary positions, and 4,271 of the 4,504 elements of the 73 IC components are off the
+grid. Plan 2 makes setting a position exact and every edit snap (its P2.42), and leaves snapping on load here, since
+snapping two close rows of pins to one row can swap them: measured, snapping on load reorders the pins of 0 of the 85
+off-grid files among the 410 loaded, while a control that collapses every row reorders 82 of 82, so the order is
+safe today only by the files' luck.
+
+Every file saves the order of its pins, inputs and outputs, as a list of the boundary elements' ids, an extension of
+the current format (P4.D4); a file without it gets the order from its positions as loaded, before any snap, exactly as
+`master` computes it. Then every element is snapped on load, in every file. The two land together, so no load ever
+snaps an element whose position still decides an order. Adding a pin puts it in the order by its position among the
+others, as `master` would; the order is otherwise changed only by an edit that moves a pin, which reorders it by
+position as today. Snapping only files of the current version was rejected: a file from an older release is saved in
+the current version on its first save and would snap on the next load, so it postpones the same change by one save.
+
+Tests: a file of an older release whose two pins differ by less than half the grid in y keeps its pin order, and its
+elements land on the grid; a file saved by this plan keeps a pin order its positions contradict; the 73 components'
+pin orders (plan 1's P1.14 golden) are unchanged. Shown to fail with the saved order ignored (the close pins swap) and
+with the migration taken after the snap.
+
 ## 3. Steps and slices
 
 | Row | Step | Slice |
@@ -224,6 +247,7 @@ that rule reads.
 | P4.4 | Pin names from the circuit; the header in file order; no pin name saved in the interface language (§2.4) | 3 |
 | P4.5 | The reload's undo restores the definition in memory (§2.5) | 4 |
 | P4.6 | The document's copies of file-backed definitions, with their hash, and the four cases on open (§2.6) | 4 |
+| P4.12 | The pin order saved in every file, migrated from positions; every element snapped on load (§2.9) | 3 |
 | P4.7 | The developer guide's IC and format sections; the release notes' list of format changes | 4 |
 
 The checks and the hand-over of §2.7 and §5 are rows too (P4.8 to P4.11).
@@ -250,6 +274,10 @@ user's choice between workable options).
   of the current format, never a new one (the earlier prototype's new format is not adopted). Basis: the user's
   rulings of 2026-10-20 (each addition to a document an extension) and 2026-10-21 (this plan, and the format rule
   stated once for every plan).
+- **P4.D5. An IC's pin order is saved, and every element is snapped on load, landing together** (§2.9). Basis:
+  measured on `01-characterization` (the off-grid elements; the pin orders under a snap and its control); the user's
+  rulings of 2026-10-22 (every operation on the grid; the recommendation over snapping only files of the current
+  version).
 
 ## 5. Claims to check and open questions
 
