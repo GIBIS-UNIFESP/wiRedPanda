@@ -1,0 +1,8 @@
+preview null=0 ink=1 inputs=5 outputs=2
+in 0: E1 InputSwitch port 0 "J"
+in 1: E2 InputSwitch port 0 "K"
+in 2: E3 InputSwitch port 0 "Clock"
+in 3: E4 InputSwitch port 0 "Preset"
+in 4: E5 InputSwitch port 0 "Clear"
+out 0: E23 Led port 0 "Q"
+out 1: E24 Led port 0 "Q_bar"

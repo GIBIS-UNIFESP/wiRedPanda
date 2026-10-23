@@ -1,0 +1,9 @@
+preview null=0 ink=1 inputs=7 outputs=1
+in 0: E1 InputSwitch port 0 "Address[0]"
+in 1: E2 InputSwitch port 0 "Address[1]"
+in 2: E3 InputSwitch port 0 "Address[2]"
+in 3: E4 InputSwitch port 0 "DataIn"
+in 4: E6 InputSwitch port 0 "WriteEnable"
+in 5: E7 InputSwitch port 0 "Clock"
+in 6: E8 InputSwitch port 0 "Reset"
+out 0: E35 Led port 0 "DataOut"

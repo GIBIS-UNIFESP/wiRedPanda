@@ -1,0 +1,11 @@
+preview null=0 ink=1 inputs=9 outputs=1
+in 0: E1 InputSwitch port 0 "data[0]"
+in 1: E2 InputSwitch port 0 "data[1]"
+in 2: E3 InputSwitch port 0 "data[2]"
+in 3: E4 InputSwitch port 0 "data[3]"
+in 4: E5 InputSwitch port 0 "data[4]"
+in 5: E6 InputSwitch port 0 "data[5]"
+in 6: E7 InputSwitch port 0 "data[6]"
+in 7: E8 InputSwitch port 0 "data[7]"
+in 8: E16 InputSwitch port 0 "CascadeIn"
+out 0: E18 Led port 0 "parity"

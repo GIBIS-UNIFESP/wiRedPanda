@@ -1,0 +1,3 @@
+preview null=0 ink=1 inputs=1 outputs=1
+in 0: E1 InputSwitch port 0 "in"
+out 0: E4 Led port 0 "out"

@@ -21,6 +21,7 @@
 #include <QVariant>
 
 #include "App/Element/GraphicElement.h"
+#include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/Scene/GraphicsView.h"
 #include "App/Scene/Scene.h"
@@ -311,7 +312,12 @@ QString compareWithGoldenImage(const QString &goldenPath, const QImage &image)
     QPoint first;
     for (int y = 0; y < actual.height(); ++y) {
         for (int x = 0; x < actual.width(); ++x) {
-            const int difference = channelDifference(actual.pixel(x, y), golden.pixel(x, y));
+            const QRgb actualPixel = actual.pixel(x, y);
+            const QRgb goldenPixel = golden.pixel(x, y);
+            if ((actualPixel == kMaskColour) || (goldenPixel == kMaskColour)) {
+                continue;
+            }
+            const int difference = channelDifference(actualPixel, goldenPixel);
             if (difference <= kPixelChannelTolerance) {
                 continue;
             }
@@ -387,4 +393,10 @@ const QGraphicsItem *SnapshotAccess::label(const GraphicElement *element)
 QTransform SnapshotAccess::labelSceneTransform(const GraphicElement *element)
 {
     return element->m_label->sceneTransform();
+}
+
+QVector<const Port *> SnapshotAccess::icPinPorts(const IC *ic, const bool inputs)
+{
+    const auto &ports = inputs ? ic->m_internalInputs : ic->m_internalOutputs;
+    return QVector<const Port *>(ports.cbegin(), ports.cend());
 }

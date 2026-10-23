@@ -1,0 +1,6 @@
+preview null=0 ink=1 inputs=4 outputs=1
+in 0: E1 InputSwitch port 0 "Data[0]"
+in 1: E2 InputSwitch port 0 "Data[1]"
+in 2: E3 InputSwitch port 0 "Sel[0]"
+in 3: E5 InputSwitch port 0 "Enable"
+out 0: E7 Led port 0 "Output"

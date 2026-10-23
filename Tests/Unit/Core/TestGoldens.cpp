@@ -157,6 +157,30 @@ void TestGoldens::testImageGoldenMatchesWithinTheTolerance()
     QVERIFY2(unreadable.contains("is not a PNG image"), qPrintable(unreadable));
 }
 
+void TestGoldens::testImageGoldenSkipsMaskedPixels()
+{
+    QVERIFY(!TestUtils::regeneratingGoldens());
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString golden = dir.filePath("masked.png");
+    QImage image(4, 3, QImage::Format_ARGB32_Premultiplied);
+    image.fill(qRgb(100, 150, 200));
+    image.setPixel(0, 0, TestUtils::kMaskColour);
+    QVERIFY(image.save(golden, "PNG"));
+
+    // A pixel masked in the golden or in the image is not compared, whatever the other side holds there.
+    QImage changed = image;
+    changed.setPixel(0, 0, qRgb(0, 0, 0));
+    changed.setPixel(2, 1, TestUtils::kMaskColour);
+    QCOMPARE(TestUtils::compareWithGoldenImage(golden, changed), QString());
+
+    // Any other pixel still is.
+    changed.setPixel(3, 2, qRgb(0, 0, 0));
+    const QString difference = TestUtils::compareWithGoldenImage(golden, changed);
+    QVERIFY2(difference.contains("1 pixels by more than"), qPrintable(difference));
+    QFile::remove(QDir::temp().filePath("masked.actual.png"));
+}
+
 void TestGoldens::testMissingGoldenFails()
 {
     // A missing golden fails rather than being written, in both forms, and names the file.

@@ -1,0 +1,12 @@
+preview null=0 ink=1 inputs=4 outputs=7
+in 0: E1 InputSwitch port 0 "BCD[0]"
+in 1: E2 InputSwitch port 0 "BCD[1]"
+in 2: E3 InputSwitch port 0 "BCD[2]"
+in 3: E4 InputSwitch port 0 "BCD[3]"
+out 0: E5 Led port 0 "segment_a"
+out 1: E6 Led port 0 "segment_b"
+out 2: E7 Led port 0 "segment_c"
+out 3: E8 Led port 0 "segment_d"
+out 4: E9 Led port 0 "segment_e"
+out 5: E10 Led port 0 "segment_f"
+out 6: E11 Led port 0 "segment_g"

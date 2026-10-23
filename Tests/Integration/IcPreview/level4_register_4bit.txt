@@ -1,0 +1,12 @@
+preview null=0 ink=1 inputs=7 outputs=4
+in 0: E1 InputSwitch port 0 "Clock"
+in 1: E2 InputSwitch port 0 "Enable"
+in 2: E3 InputSwitch port 0 "Reset"
+in 3: E4 InputSwitch port 0 "D0"
+in 4: E5 InputSwitch port 0 "D1"
+in 5: E6 InputSwitch port 0 "D2"
+in 6: E7 InputSwitch port 0 "D3"
+out 0: E13 Led port 0 "Q0"
+out 1: E14 Led port 0 "Q1"
+out 2: E15 Led port 0 "Q2"
+out 3: E16 Led port 0 "Q3"

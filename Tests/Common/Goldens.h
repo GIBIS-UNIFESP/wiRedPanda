@@ -27,6 +27,8 @@
 #include "App/Element/GraphicElement.h"
 #include "App/Scene/Scene.h"
 
+class IC;
+class Port;
 class WorkSpace;
 
 namespace TestUtils {
@@ -220,10 +222,17 @@ inline constexpr int kPixelChannelTolerance = 3;
 int channelDifference(QRgb a, QRgb b);
 
 /**
+ * \brief The colour a test paints over what compareWithGoldenImage() must not compare, such as text, whose glyphs each
+ * platform's font engine draws its own way.
+ */
+inline constexpr QRgb kMaskColour = 0xffff00ff;
+
+/**
  * \brief Compares \a image with the PNG golden at \a goldenPath, each channel of each pixel within
  * kPixelChannelTolerance, or writes it there as compareWithGolden() does when regeneratingGoldens().
- * \details Both images are compared as premultiplied ARGB32. An image that differs is also saved in the temporary
- * directory, named after the golden with ".actual.png", for inspection.
+ * \details Both images are compared as premultiplied ARGB32, a pixel that is kMaskColour in either one skipped, since
+ * a mask may fall a pixel apart on another platform. An image that differs is also saved in the temporary directory,
+ * named after the golden with ".actual.png", for inspection.
  * \return An empty string on a match or a write; otherwise the file and both sizes, or the file, how many pixels differ
  * by more than the tolerance, the largest such difference and the first such pixel.
  */
@@ -272,4 +281,8 @@ public:
 
     /// The child item that draws \a element's label, so a dump of the scene's items can name it.
     static const QGraphicsItem *label(const GraphicElement *element);
+
+    /// The ports of \a ic's inner input elements behind its input pins, or, when \a inputs is false, of its inner
+    /// output elements behind its output pins, in the pins' order.
+    static QVector<const Port *> icPinPorts(const IC *ic, bool inputs);
 };

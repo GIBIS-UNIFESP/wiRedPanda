@@ -103,6 +103,7 @@
 #include "Tests/Integration/TestFiles.h"
 #include "Tests/Integration/TestIc.h"
 #include "Tests/Integration/TestICInline.h"
+#include "Tests/Integration/TestIcPreviewSnapshot.h"
 #include "Tests/Integration/TestLabelSnapshot.h"
 #include "Tests/Integration/TestMainWindowGui.h"
 #include "Tests/Integration/TestPointerSnapshot.h"
@@ -348,6 +349,7 @@ int main(int argc, char **argv)
         {"TestFiles", []() -> QObject * { return new TestFiles; }},
         {"TestIC", []() -> QObject * { return new TestIC; }},
         {"TestICInline", []() -> QObject * { return new TestICInline; }},
+        {"TestIcPreviewSnapshot", []() -> QObject * { return new TestIcPreviewSnapshot; }},
         {"TestMainWindowGui", []() -> QObject * { return new TestMainWindowGui; }},
         {"TestLabelSnapshot", []() -> QObject * { return new TestLabelSnapshot; }},
         {"TestPointerSnapshot", []() -> QObject * { return new TestPointerSnapshot; }},

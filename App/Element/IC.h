@@ -42,6 +42,8 @@ class IC : public GraphicElement
     friend class ICLoader;
     friend class ICRenderer;
     friend class ICSimulation;
+    /// Reads the inner ports behind the IC's pins for the characterization goldens.
+    friend class SnapshotAccess;
 
 public:
     /// Constructs an IC element without loading a file.
