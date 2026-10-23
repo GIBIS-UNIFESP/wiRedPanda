@@ -1,0 +1,10 @@
+preview null=0 ink=1 inputs=8 outputs=1
+in 0: E1 InputSwitch port 0 "A[0]"
+in 1: E2 InputSwitch port 0 "A[1]"
+in 2: E3 InputSwitch port 0 "A[2]"
+in 3: E4 InputSwitch port 0 "A[3]"
+in 4: E5 InputSwitch port 0 "B[0]"
+in 5: E6 InputSwitch port 0 "B[1]"
+in 6: E7 InputSwitch port 0 "B[2]"
+in 7: E8 InputSwitch port 0 "B[3]"
+out 0: E14 Led port 0 "Equal"

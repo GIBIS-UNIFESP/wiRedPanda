@@ -1,0 +1,13 @@
+preview null=0 ink=1 inputs=8 outputs=4
+in 0: E1 InputSwitch port 0 "Load"
+in 1: E2 InputSwitch port 0 "CountEnable"
+in 2: E3 InputSwitch port 0 "Clock"
+in 3: E4 InputSwitch port 0 "Data[0]"
+in 4: E5 InputSwitch port 0 "Data[1]"
+in 5: E6 InputSwitch port 0 "Init"
+in 6: E7 InputSwitch port 0 "Data[2]"
+in 7: E8 InputSwitch port 0 "Data[3]"
+out 0: E23 Led port 0 "Q0"
+out 1: E24 Led port 0 "Q1"
+out 2: E25 Led port 0 "Q2"
+out 3: E26 Led port 0 "Q3"

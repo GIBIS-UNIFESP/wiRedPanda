@@ -839,6 +839,7 @@ add_test(NAME TestSimulationHandler COMMAND test_wiredpanda TestSimulationHandle
 add_test(NAME TestThemeHandler COMMAND test_wiredpanda TestThemeHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestICInline COMMAND test_wiredpanda TestICInline WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestIcons COMMAND test_wiredpanda TestIcons WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestIcPreviewSnapshot COMMAND test_wiredpanda TestIcPreviewSnapshot WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestInputElements COMMAND test_wiredpanda TestInputElements WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestInputRotary COMMAND test_wiredpanda TestInputRotary WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLED COMMAND test_wiredpanda TestLED WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -1055,7 +1056,7 @@ foreach(TEST TestDecoder8To256 TestMemorySettlingTime TestMUXDEMUXComprehensive 
 endforeach()
 
 # File and Simulation Tests - Integration category
-foreach(TEST TestArduino TestFeedback TestFiles TestIC TestICInline
+foreach(TEST TestArduino TestFeedback TestFiles TestIC TestICInline TestIcPreviewSnapshot
         TestLabelSnapshot TestPointerSnapshot TestPortLayoutSnapshot TestSceneSnapshot TestSimulation TestSimulationTraceSnapshot TestStackingSnapshot TestSystemVerilogExport TestWirePixelSnapshot TestWorkspace TestWorkspaceFileops)
     set_tests_properties(${TEST} PROPERTIES LABELS "integration")
 endforeach()
@@ -1137,7 +1138,7 @@ set(ALL_TESTS
     TestLevel9MultiCycleCPU8Bit TestLevel9RegisterFile32X16 TestLevel9SingleCycleCPU8Bit
     TestDecoder8To256 TestMemorySettlingTime TestRAMCell1Bit TestSequential
     TestMUXDEMUXComprehensive
-    TestArduino TestFeedback TestFiles TestIC TestICInline
+    TestArduino TestFeedback TestFiles TestIC TestICInline TestIcPreviewSnapshot
     TestLabelSnapshot TestPointerSnapshot TestPortLayoutSnapshot TestSceneSnapshot TestSimulation TestSimulationTraceSnapshot TestStackingSnapshot TestSystemVerilogExport TestWirePixelSnapshot TestWorkspace TestWorkspaceFileops
     TestIcons TestWaveform TestAudioBox TestBuzzer TestClock TestClocksAdvanced
     TestComponents TestDisplays TestElementAppearance TestElementLabel TestElementProperties TestFeatures

@@ -14,6 +14,7 @@ private slots:
     void testTextGoldenMatchesOrNamesTheLine();
     void testByteGoldenMatchesOrNamesTheOffset();
     void testImageGoldenMatchesWithinTheTolerance();
+    void testImageGoldenSkipsMaskedPixels();
     void testMissingGoldenFails();
     void testRegenerationWritesOverAnExistingGolden();
     void testRegenerationSwitchCountsWhenEmpty();

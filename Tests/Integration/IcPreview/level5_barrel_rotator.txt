@@ -1,0 +1,12 @@
+preview null=0 ink=1 inputs=7 outputs=4
+in 0: E1 InputSwitch port 0 "Data[0]"
+in 1: E2 InputSwitch port 0 "Data[1]"
+in 2: E3 InputSwitch port 0 "Data[2]"
+in 3: E4 InputSwitch port 0 "Data[3]"
+in 4: E5 InputSwitch port 0 "Rotate_Amount[0]"
+in 5: E6 InputSwitch port 0 "Rotate_Amount[1]"
+in 6: E7 InputSwitch port 0 "Direction"
+out 0: E13 Led port 0 "Result[0]"
+out 1: E14 Led port 0 "Result[1]"
+out 2: E15 Led port 0 "Result[2]"
+out 3: E16 Led port 0 "Result[3]"

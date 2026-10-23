@@ -1,0 +1,11 @@
+preview null=0 ink=1 inputs=5 outputs=5
+in 0: E1 InputSwitch port 0 "Clock"
+in 1: E2 InputSwitch port 0 "Modulo[0]"
+in 2: E3 InputSwitch port 0 "Modulo[1]"
+in 3: E4 InputSwitch port 0 "Modulo[2]"
+in 4: E5 InputSwitch port 0 "Modulo[3]"
+out 0: E38 Led port 0 "Q[0]"
+out 1: E39 Led port 0 "Q[1]"
+out 2: E40 Led port 0 "Q[2]"
+out 3: E41 Led port 0 "Q[3]"
+out 4: E42 Led port 0 "Overflow"

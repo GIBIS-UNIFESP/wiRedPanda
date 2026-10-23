@@ -1,0 +1,5 @@
+preview null=0 ink=1 inputs=2 outputs=2
+in 0: E1 InputSwitch port 0 "A"
+in 1: E2 InputSwitch port 0 "B"
+out 0: E5 Led port 0 "Sum"
+out 1: E6 Led port 0 "Carry"

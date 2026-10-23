@@ -1,0 +1,11 @@
+preview null=0 ink=1 inputs=6 outputs=4
+in 0: E1 InputSwitch port 0 "FlagIn[0]_Zero"
+in 1: E2 InputSwitch port 0 "FlagIn[1]_Sign"
+in 2: E3 InputSwitch port 0 "FlagIn[2]_Carry"
+in 3: E4 InputSwitch port 0 "FlagIn[3]_Overflow"
+in 4: E5 InputSwitch port 0 "Load"
+in 5: E6 InputSwitch port 0 "Clock"
+out 0: E16 Led port 0 "FlagOut[0]_Zero"
+out 1: E17 Led port 0 "FlagOut[1]_Sign"
+out 2: E18 Led port 0 "FlagOut[2]_Carry"
+out 3: E19 Led port 0 "FlagOut[3]_Overflow"
