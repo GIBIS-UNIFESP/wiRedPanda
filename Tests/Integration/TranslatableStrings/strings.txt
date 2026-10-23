@@ -1,0 +1,618 @@
+AddItemsCommand	Add %1 elements
+And	AND
+And	And
+Application	Error!
+ArduinoCodeGen	Could not open file for writing: %1
+ArduinoCodeGen	Could not open testbench file: %1
+ArduinoCodeGen	Element type not supported: %1
+ArduinoCodeGen	Output variable not mapped for TruthTable: %1
+ArduinoCodeGen	This circuit needs %1 I/O pins, but the largest supported board (%2) provides only %3. Reduce the number of inputs and outputs, or split the circuit.
+AudioBox	Audio Box
+AudioBox	Couldn't load audio: %1 (%2)
+AudioBox	File does not exist
+AudioBox	File is not readable
+BewavedDolphin	<p>beWavedDolphin is a waveform simulator for wiRedPanda, developed by the Federal University of São Paulo to help students learn about logic circuits.</p><p>Software version: %1</p><p><strong>Creators:</strong></p><ul><li> Prof. Fábio Cappabianco, Ph.D. </li></ul><p> beWavedDolphin is currently maintained by Prof. Fábio Cappabianco, Ph.D. and his students.</p><p> Please file a report at our GitHub page if you find a bug or want to request a new feature.</p><p><a href="http://gibis-unifesp.github.io/wiRedPanda/">Visit our website!</a></p>
+BewavedDolphin	About
+BewavedDolphin	About Qt
+BewavedDolphin	All supported files
+BewavedDolphin	AutoCrop
+BewavedDolphin	CSV files
+BewavedDolphin	Cannot export: the circuit this waveform was built from has changed.
+BewavedDolphin	Clear
+BewavedDolphin	Combinational
+BewavedDolphin	Copy
+BewavedDolphin	Cut
+BewavedDolphin	Do you want to link this beWavedDolphin file to your current wiRedPanda file and save it?
+BewavedDolphin	Dolphin files
+BewavedDolphin	Edit
+BewavedDolphin	Exit
+BewavedDolphin	Export to Image
+BewavedDolphin	Export to PDF
+BewavedDolphin	Export to PNG
+BewavedDolphin	File
+BewavedDolphin	File "%1" does not exist!
+BewavedDolphin	File loaded successfully.
+BewavedDolphin	Fit to screen
+BewavedDolphin	Help
+BewavedDolphin	Invert
+BewavedDolphin	Load
+BewavedDolphin	Merge
+BewavedDolphin	No cells selected.
+BewavedDolphin	Open File
+BewavedDolphin	PDF files
+BewavedDolphin	PNG files
+BewavedDolphin	Paste
+BewavedDolphin	Redo
+BewavedDolphin	Reset Zoom
+BewavedDolphin	Save
+BewavedDolphin	Save As...
+BewavedDolphin	Save File as...
+BewavedDolphin	Save simulation before closing?
+BewavedDolphin	Saved file successfully.
+BewavedDolphin	Set Length
+BewavedDolphin	Set clock period
+BewavedDolphin	Set to 0
+BewavedDolphin	Set to 1
+BewavedDolphin	Show Numbers
+BewavedDolphin	Show Waveforms
+BewavedDolphin	Split
+BewavedDolphin	Undo
+BewavedDolphin	View
+BewavedDolphin	Zoom In
+BewavedDolphin	Zoom Out
+BewavedDolphin	beWavedDolphin Simulator
+BewavedDolphin	toolBar
+BewavedDolphin	wiRedPanda - beWavedDolphin
+Buzzer	BUZZER
+Buzzer	Buzzer
+ChangePortSizeCommand	Change input size to %1
+ChangePortSizeCommand	Change output size to %1
+ClipboardManager	Paste
+Clock	CLOCK SIGNAL
+Clock	Clock
+Clock	High
+Clock	Low
+ClockDialog	Clock
+ClockDialog	Clock Period
+ClockDialog	Clock Period Selection
+ConnectionManager	Can't connect an element to itself.
+ConnectionManager	These ports are already connected.
+ConnectionManager	This connection is not allowed.
+ConnectionManager	This element receives wirelessly — no input wire needed.
+ConnectionManager	This element transmits wirelessly — no output wire needed.
+ConnectionSerializer	Stream error reading connection map at offset %1
+ConnectionSerializer	Stream error reading connection port IDs at offset %1
+DFlipFlop	D-FLIP-FLOP
+DFlipFlop	D-Flip-Flop
+DLatch	D-LATCH
+DLatch	D-Latch
+DeleteItemsCommand	Delete %1 elements
+Demux	DEMULTIPLEXER
+Demux	Demux
+Display14	14-SEGMENT DISPLAY
+Display14	14-Segment Display
+Display14	bottom
+Display14	dot
+Display14	lower center vertical
+Display14	lower left diagonal
+Display14	lower left vertical
+Display14	lower right diagonal
+Display14	lower right vertical
+Display14	middle left horizontal
+Display14	middle right horizontal
+Display14	top
+Display14	upper center vertical
+Display14	upper left diagonal
+Display14	upper left vertical
+Display14	upper right diagonal
+Display14	upper right vertical
+Display16	16-SEGMENT DISPLAY
+Display16	16-Segment Display
+Display16	bottom left horizontal
+Display16	bottom right horizontal
+Display16	dot
+Display16	lower center vertical
+Display16	lower left diagonal
+Display16	lower left vertical
+Display16	lower right diagonal
+Display16	lower right vertical
+Display16	middle left horizontal
+Display16	middle right horizontal
+Display16	top left horizontal
+Display16	top right horizontal
+Display16	upper center vertical
+Display16	upper left diagonal
+Display16	upper left vertical
+Display16	upper right diagonal
+Display16	upper right vertical
+Display7	7-SEGMENT DISPLAY
+Display7	7-Segment Display
+Display7	bottom
+Display7	dot
+Display7	lower left
+Display7	lower right
+Display7	middle
+Display7	top
+Display7	upper left
+Display7	upper right
+ElementAppearance	Couldn't load pixmap: %1 (%2)
+ElementAppearance	File does not exist
+ElementAppearance	File is not readable
+ElementAppearance	Unknown reason
+ElementEditor	 Hz
+ElementEditor	<Many colors>
+ElementEditor	<Many labels>
+ElementEditor	<Many modes>
+ElementEditor	<Many sounds>
+ElementEditor	<Many triggers>
+ElementEditor	<Many values>
+ElementEditor	A Tx node with label "%1" already exists.\nEach wireless channel must have a unique label.
+ElementEditor	A6
+ElementEditor	An embedded IC named "%1" already exists.\nChoose a different name.
+ElementEditor	Appearance
+ElementEditor	Appearance for:
+ElementEditor	Audio
+ElementEditor	B6
+ElementEditor	Blue
+ElementEditor	C6
+ElementEditor	C7
+ElementEditor	Change appearance
+ElementEditor	Change appearance to ...
+ElementEditor	Change wireless mode
+ElementEditor	Choose audio file
+ElementEditor	Color:
+ElementEditor	D6
+ElementEditor	Default
+ElementEditor	Delay:
+ElementEditor	Duplicate IC Name
+ElementEditor	Duplicate Wireless Channel
+ElementEditor	E6
+ElementEditor	Edit Truth Table
+ElementEditor	Element Editor
+ElementEditor	F6
+ElementEditor	Frequency:
+ElementEditor	G6
+ElementEditor	Green
+ElementEditor	IC Name:
+ElementEditor	Identity
+ElementEditor	Images
+ElementEditor	Inputs:
+ElementEditor	Interaction
+ElementEditor	Keyboard key that toggles this element during simulation.
+ElementEditor	Label:
+ElementEditor	Locked:
+ElementEditor	Nodes with the same label connect wirelessly — Transmit sends its input, Receive outputs it.
+ElementEditor	None
+ElementEditor	Open File
+ElementEditor	Outputs:
+ElementEditor	Phase offset from the driving clock, as a fraction of its period.
+ElementEditor	Ports
+ElementEditor	Prevent this element from being toggled by clicking it during simulation.
+ElementEditor	Purple
+ElementEditor	Receive (Rx)
+ElementEditor	Red
+ElementEditor	Select any audio
+ElementEditor	Sound
+ElementEditor	Sound file:
+ElementEditor	The value this input element outputs.
+ElementEditor	Timing
+ElementEditor	Tone:
+ElementEditor	Transmit (Tx)
+ElementEditor	Trigger:
+ElementEditor	Truth Table
+ElementEditor	Value:
+ElementEditor	Volume:
+ElementEditor	White
+ElementEditor	Wireless:
+ElementFactory	14-segment alphanumeric display.
+ElementFactory	16-segment alphanumeric display.
+ElementFactory	7-segment display for a single digit.
+ElementFactory	AND gate: output is HIGH only when every input is HIGH.
+ElementFactory	Audio box: plays an audio file while its input is HIGH.
+ElementFactory	Buzzer: plays a tone while its input is HIGH.
+ElementFactory	Clock: a square wave at a configurable frequency.
+ElementFactory	Constant logic HIGH (1) source.
+ElementFactory	Constant logic LOW (0) source.
+ElementFactory	D flip-flop: stores D on the active clock edge.
+ElementFactory	D latch: stores the D input while Enable is HIGH.
+ElementFactory	Demultiplexer: routes the input to the selected output.
+ElementFactory	JK flip-flop: set, reset or toggle on the active clock edge.
+ElementFactory	LED: lights up while its input is HIGH.
+ElementFactory	Line: a decorative annotation on the canvas.
+ElementFactory	MULTIPLE TYPES
+ElementFactory	Multiplexer: routes the selected input to the output.
+ElementFactory	NAND gate: LOW only when every input is HIGH.
+ElementFactory	NOR gate: HIGH only when every input is LOW.
+ElementFactory	NOT gate: inverts its input.
+ElementFactory	Node: a wire junction / branch point.
+ElementFactory	OR gate: output is HIGH when any input is HIGH.
+ElementFactory	Push button: outputs HIGH only while pressed.
+ElementFactory	Rotary switch with several selectable positions.
+ElementFactory	SR latch: a Set/Reset storage element.
+ElementFactory	T flip-flop: toggles on the active clock edge when T is HIGH.
+ElementFactory	Text: a free-text annotation on the canvas.
+ElementFactory	Toggle switch: click to flip between 0 and 1.
+ElementFactory	Truth table: custom logic you define, output by output.
+ElementFactory	Unknown
+ElementFactory	Unknown element type: %1
+ElementFactory	Unknown type: %1
+ElementFactory	XNOR gate: HIGH when the inputs match.
+ElementFactory	XOR gate: HIGH when an odd number of inputs are HIGH.
+ElementLabel	Drag or double-click to add.
+ElementLabel	Embedded IC: %1
+ElementLabel	IC from file: %1
+ElementPalette	Element palette
+ElementPalette	Elements grouped by category. Drag one onto the canvas, or double-click to add it to the active circuit.
+ElementPalette	Search elements
+ElementPalette	Type to filter the palette by element name. Press Enter to add the first match to the circuit.
+ExerciseOverlay	Close
+ExerciseOverlay	Close exercise
+ExerciseOverlay	Exercise complete! Well done.
+ExerciseOverlay	Exit
+ExerciseOverlay	Finish
+ExerciseOverlay	Hide hint
+ExerciseOverlay	Hint
+ExerciseOverlay	Next →
+ExerciseOverlay	Step %1 of %2
+ExerciseOverlay	← Back
+ExportController	Arduino code successfully generated.
+ExportController	Arduino file
+ExportController	Export to Image
+ExportController	Export to PDF
+ExportController	Exported file successfully.
+ExportController	Generate Arduino Code
+ExportController	Generate SystemVerilog Code
+ExportController	Missing file name.
+ExportController	PDF files
+ExportController	PNG files
+ExportController	SystemVerilog code successfully generated.
+ExportController	SystemVerilog file
+ExportController	The .panda file is empty.
+FlipCommand	Flip %1 elements in axis %2
+GraphicElement	Default
+GraphicElementSerializer	Appearance index %1 out of range (size=%2) for appearance name "%3" — stream may be corrupt
+GraphicElementSerializer	Appearance index %1 out of range (size=%2) — stream may be corrupt
+GraphicElementSerializer	Non-finite element position — stream may be corrupt
+GraphicElementSerializer	Non-finite element rotation — stream may be corrupt
+GraphicElementSerializer	Refusing old-format appearance list with implausible count %1 (max %2)
+GraphicElementSerializer	Refusing old-format input port list with implausible count %1 (max %2)
+GraphicElementSerializer	Refusing old-format output port list with implausible count %1 (max %2)
+GraphicElementSerializer	Refusing to read %1 with implausible count %2 (max %3)
+GraphicElementSerializer	Stream error reading %1 count at position %2
+GraphicElementSerializer	Stream error reading %1 entry %2 at position %3
+GraphicElementSerializer	Stream error reading appearances at position %1
+GraphicElementSerializer	Stream error reading element properties at position %1
+GraphicsView	Circuit canvas
+GraphicsView	The circuit canvas. Drag elements here from the palette to build a circuit, drag between ports to wire them together, and drag a selection to move it.
+IC	IC
+IC	IC load: no IC name present in serialized data
+IC	INTEGRATED CIRCUIT
+ICController	A different file named "%1" already exists in the project folder.
+ICController	An embedded IC named "%1" already exists.\nSuggested name:
+ICController	Could not read IC file: %1
+ICController	Could not read file: %1
+ICController	Drag here to remove.
+ICController	Embedded %1 IC(s). Circuit is now self-contained.
+ICController	Embedded %1 IC(s); some file-based ICs remain.
+ICController	Error
+ICController	Error moving file to trash: %1
+ICController	Extract IC to file...
+ICController	File name conflict
+ICController	IC embedded successfully.
+ICController	IC extracted to %1
+ICController	Info
+ICController	Keep Existing
+ICController	Name Collision
+ICController	No file-based ICs to embed.
+ICController	Open File
+ICController	Panda
+ICController	Panda files
+ICController	Replace
+ICController	Save required
+ICController	Select IC file to embed
+ICController	Selected files (and their dependencies) will be copied to the current project folder.
+ICController	This action needs the project saved to a file first, so IC paths can be resolved.\n\nSave it now?
+ICDropZone	Drop a file-based IC here to embed it directly in the circuit.
+ICDropZone	Drop an embedded IC here to extract it to its own file.
+ICDropZone	Drop here to embed this IC in the circuit
+ICDropZone	Drop here to extract this IC to a file
+ICDropZone	Embedded IC drop zone
+ICDropZone	File-based IC drop zone
+ICLoader	%1 not found.
+ICLoader	Circular IC reference detected: %1
+ICLoader	Error opening file: %1
+ICLoader	IC migration: cannot open file for writing: %1
+ICLoader	IC migration: failed to commit re-saved file: %1
+ICLoader	IC nesting depth limit (%1) exceeded while loading %2
+ICLoader	IC nesting depth limit (%1) exceeded — blob may be maliciously crafted
+ICRegistry	Could not open file: %1
+ICRegistry	Could not save file: %1
+ICRegistry	Embedded IC dependency chain exceeds the maximum nesting depth (%1) while resolving '%2'
+InputButton	PUSH BUTTON
+InputButton	Pressed
+InputButton	Push Button
+InputButton	Released
+InputGnd	GND
+InputGnd	GROUND
+InputRotary	ROTARY SWITCH
+InputRotary	Rotary Switch
+InputSwitch	INPUT SWITCH
+InputSwitch	Input Switch
+InputSwitch	Off
+InputSwitch	On
+InputVcc	VCC
+JKFlipFlop	JK-FLIP-FLOP
+JKFlipFlop	JK-Flip-Flop
+Led	Default
+Led	LED
+Led	Off
+Led	On
+Led	Port %1=%2
+LengthDialog	Simulation Length
+LengthDialog	Simulation Length Selection
+Line	LINE
+Line	Line
+MainWindow	%1[*] — wiRedPanda %2
+MainWindow	&About
+MainWindow	&Copy
+MainWindow	&Dark
+MainWindow	&Delete
+MainWindow	&Edit
+MainWindow	&Exercises
+MainWindow	&Exit
+MainWindow	&Fast Mode
+MainWindow	&File
+MainWindow	&Flip horizontally
+MainWindow	&Gates
+MainWindow	&Help
+MainWindow	&Language
+MainWindow	&Learn
+MainWindow	&Light
+MainWindow	&New
+MainWindow	&Open...
+MainWindow	&Paste
+MainWindow	&Play/Pause
+MainWindow	&Recent files:
+MainWindow	&Rename
+MainWindow	&Reset Zoom
+MainWindow	&Restart
+MainWindow	&Save
+MainWindow	&Select all
+MainWindow	&System
+MainWindow	&Theme
+MainWindow	&Tours
+MainWindow	&View
+MainWindow	&Waveform
+MainWindow	&Wires
+MainWindow	<h1>Keyboard Shortcuts</h1><table>%1</table><h1>Element Property Navigation</h1><ul style="list-style:none;"><li> [ / ] : Previous / next primary property </li><li> { / } : Previous / next secondary property </li><li> &lt; / &gt; : Morph to previous / next element </li></ul><h1>General Tips</h1><ul style="list-style:none;"><li> Double-click a wire to create a node </li><li> Drag an element from the left panel onto the canvas to add it </li><li> Nudge the selection with the arrow keys (hold Shift for larger steps) </li><li> Drop a .panda file onto the canvas to open it </li></ul>
+MainWindow	<p>wiRedPanda is software developed by students of the Federal University of São Paulo to help students learn about logic circuits.</p><p>Software version: %1</p><p><strong>Creators:</strong></p><ul><li> Davi Morales </li><li> Lucas Lellis </li><li> Rodrigo Torres </li><li> Prof. Fábio Cappabianco, Ph.D. </li></ul><p> wiRedPanda is currently maintained by Prof. Fábio Cappabianco, Ph.D., João Pedro M. Oliveira, Matheus R. Esteves and Maycon A. Santana.</p><p> Please file a report at our GitHub page if you find a bug or want to request a new feature.</p><p><a href="https://gibis-unifesp.github.io/wiRedPanda/">Visit our website!</a></p>
+MainWindow	About &Qt
+MainWindow	About this version
+MainWindow	Add IC files
+MainWindow	Align &Bottom
+MainWindow	Align &Left
+MainWindow	Align &Right
+MainWindow	Align &Top
+MainWindow	Align &Vertical Centers
+MainWindow	Align Horizontal &Centers
+MainWindow	Are you sure?
+MainWindow	Background Simulation
+MainWindow	Cha&nge Trigger
+MainWindow	Check for updates automatically
+MainWindow	Cl&ear selection
+MainWindow	Combinational
+MainWindow	Could not create or access a folder for custom exercises.
+MainWindow	Could not create or access a folder for custom tours.
+MainWindow	Cu&t
+MainWindow	Distribute &Horizontally
+MainWindow	Distribute Verti&cally
+MainWindow	Dupli&cate
+MainWindow	E&xport to Arduino
+MainWindow	Embed IC
+MainWindow	Embedded ICs
+MainWindow	Error
+MainWindow	Examples
+MainWindow	Exit
+MainWindow	Export to &Image
+MainWindow	Export to &PDF
+MainWindow	Export to &SystemVerilog
+MainWindow	F&ullscreen
+MainWindow	File-based ICs
+MainWindow	Flip &vertically
+MainWindow	Gates
+MainWindow	Inputs/Outputs
+MainWindow	Integrated Circuits
+MainWindow	Labels under icons
+MainWindow	Make file self-contained
+MainWindow	Memory
+MainWindow	Miscellaneous
+MainWindow	Mute
+MainWindow	Mute/unmute circuit buzzers
+MainWindow	New Project
+MainWindow	Open
+MainWindow	Open My Exercises Folder
+MainWindow	Open My Tours Folder
+MainWindow	Play or Pause simulation.
+MainWindow	R&otate right
+MainWindow	Re&load File
+MainWindow	Redo
+MainWindow	Remove IC
+MainWindow	Report Translation Error
+MainWindow	Report translation errors or help improve translations on Weblate
+MainWindow	Restart simulation.
+MainWindow	Rotate &left
+MainWindow	Save &As...
+MainWindow	Search:
+MainWindow	Shortcuts and Tips
+MainWindow	Show IC Preview
+MainWindow	Show Minimap
+MainWindow	Sim&ulation
+MainWindow	Undo
+MainWindow	Unmute
+MainWindow	Zoom &in
+MainWindow	Zoom &out
+MainWindow	Zoom to &Fit
+MainWindow	Zoom to fit the whole circuit (or the selection)
+MainWindow	wiRedPanda %1\n\nThis version includes automatic migration of older project files.\nWhen you open a project file older than the current version, it will be automatically upgraded to the current format and a versioned backup will be created.\n\nTo open projects containing ICs (or boxes), appearances, and/or beWavedDolphin simulations, their files must be in the same directory as the main project file.\nwiRedPanda %1 will automatically list all other .panda files located in the same directory as the current project as ICs in the editor tab.\nYou have to save new projects before accessing ICs and appearances, or running beWavedDolphin simulations.
+MinimapWidget	A miniature overview of the whole circuit. Click or drag inside it to jump the main canvas to that location.
+MinimapWidget	Circuit minimap
+MinimapWidget	Mini-map: click or drag to navigate
+MorphCommand	Morph %1 elements to %2
+MoveCommand	Move elements
+Mux	MULTIPLEXER
+Mux	Mux
+Nand	NAND
+Nand	Nand
+Node	NODE
+Node	Node
+Nor	NOR
+Nor	Nor
+Not	NOT
+Not	Not
+Or	OR
+Or	Or
+PropertyShortcutHandler	Cycle element properties
+PropertyShortcutHandler	Morph elements
+QCoreApplication	Add embedded IC
+QObject	Change appearance to ...
+QObject	Change color to...
+QObject	Change frequency
+QObject	Change trigger
+QObject	Copy
+QObject	Cut
+QObject	Delete
+QObject	Edit sub-circuit
+QObject	Edit waveform
+QObject	Embed sub-circuit
+QObject	Error!
+QObject	Extract to file
+QObject	Flip horizontally
+QObject	Flip vertically
+QObject	Morph to...
+QObject	Rename
+QObject	Restore default appearance
+QObject	Rotate left
+QObject	Rotate right
+RegisterBlobCommand	Register blob "%1"
+RemoveBlobCommand	Remove blob "%1"
+RenameBlobCommand	Rename IC "%1" to "%2"
+RotateCommand	Rotate %1 degrees
+SRFlipFlop	SR-FLIP-FLOP
+SRFlipFlop	SR-Flip-Flop
+SRLatch	SR-LATCH
+SRLatch	SR-Latch
+Scene	&Redo
+Scene	&Undo
+Scene	Paste
+Scene	Select all
+SceneUiBinder	Mute
+SceneUiBinder	Unmute
+SceneUiBinder	Zoom: %1%    Selected: %2 / %3
+Serialization	Blob map count %1 implausible given remaining stream bytes
+Serialization	Error copying file: %1
+Serialization	Failed to create versioned backup: %1
+Serialization	Invalid file format.
+Serialization	Invalid legacy file header: %1
+Serialization	Invalid type. Data is possibly corrupted.
+Serialization	Metadata map count %1 implausible given remaining stream bytes
+Serialization	Panda file dependency chain exceeds the maximum nesting depth (%1) while copying '%2'
+Serialization	Stream error loading connection at position %1: status %2
+Serialization	Stream error loading element at position %1: status %2
+Serialization	Stream error reading blob map count
+Serialization	Stream error reading element type at position %1: status %2
+Serialization	Stream error reading metadata map count
+Serialization	Stream error reading preamble: status %1
+Serialization	Stream error reading type tag at position %1: status %2
+Simulation	Warning: feedback circuit did not converge — the circuit may be oscillating.
+SplitCommand	Error trying to redo %1
+SplitCommand	Error trying to undo %1
+SplitCommand	Error: endPort is null in SplitCommand::redo()
+SplitCommand	Invalid connection ports in SplitCommand constructor
+SplitCommand	Invalid graphic elements in SplitCommand constructor
+SplitCommand	Wire split
+SystemVerilogCodeGen	Could not open file for writing: %1
+SystemVerilogCodeGen	Element type not supported: %1
+SystemVerilogCodeGen	Output variable not mapped for TruthTable: %1
+TFlipFlop	T-FLIP-FLOP
+TFlipFlop	T-Flip-Flop
+Text	Double-click to add text
+Text	TEXT
+Text	Text
+ToggleTruthTableOutputCommand	Could not find truthtable element!
+ToggleTruthTableOutputCommand	Toggle TruthTable Output at position: %1
+ToggleTruthTableOutputCommand	TruthTable toggle position out of range: %1
+TourOverlay	Exit
+TourOverlay	Finish
+TourOverlay	Next →
+TourOverlay	Step %1 of %2
+TourOverlay	Stop the tour
+TourOverlay	← Back
+TrashButton	Remove all "%1" instances from the circuit?
+TrashButton	Remove this IC? Its file will be moved to the system trash and its instances deleted from the circuit.
+TruthTable	TRUTH TABLE
+TruthTable	Truth Table
+UpdateBlobCommand	Update %1 IC blobs
+UpdateCommand	Update %1 elements
+UpdateController	<b>wiRedPanda %1 is available.</b><br><br>You are currently running version %2.<br>Click <b>Download</b> to save the new version to your computer.
+UpdateController	<b>wiRedPanda %1 is available.</b><br><br>You are currently running version %2.<br>Visit the release page to download the new version.
+UpdateController	Cancel
+UpdateController	Could not download the update:\n%1
+UpdateController	Could not save the file:\n%1
+UpdateController	Could not write the file:\n%1
+UpdateController	Don't notify me about this version again
+UpdateController	Download
+UpdateController	Download Complete
+UpdateController	Download Failed
+UpdateController	Downloading Update
+UpdateController	Downloading wiRedPanda %1…
+UpdateController	Update Available
+UpdateController	wiRedPanda has been downloaded to:\n%1
+WorkSpace	Cannot save.
+WorkSpace	Cannot save: sub-circuit "%1" could not be read to embed it.
+WorkSpace	Could not commit autosave file: %1
+WorkSpace	Could not open file: %1
+WorkSpace	Could not save file: %1
+WorkSpace	Error opening autosave file: %1
+WorkSpace	Error opening file: %1
+WorkSpace	File upgraded.
+WorkSpace	Newer version file.
+WorkSpace	Remove embedded IC "%1"
+WorkSpace	This file does not exist: %1
+WorkSpace	This file is in an older format (version %1) and will be automatically upgraded to the current format (version %2).\nA backup of the original file has been created with name: %3
+WorkSpace	This file was saved with a newer file format (version %1).\nYour version supports file format %2.\n\nThe file will be opened but saving is blocked.\nPlease update wiRedPanda to edit and save this file.
+WorkSpace	This file was saved with a newer file format (version %1).\nYour wiRedPanda version (%2) supports file format %3.\n\nPlease update wiRedPanda to save changes to this file.
+WorkspaceManager	 (recovered)
+WorkspaceManager	 has been modified.\nDo you want to save your changes?
+WorkspaceManager	Error
+WorkspaceManager	Error!
+WorkspaceManager	File Conflict
+WorkspaceManager	File loaded successfully.
+WorkspaceManager	File not saved. Close tab anyway?
+WorkspaceManager	File saved successfully.
+WorkspaceManager	New Project
+WorkspaceManager	New Project %1
+WorkspaceManager	Open File
+WorkspaceManager	Panda files
+WorkspaceManager	Save File
+WorkspaceManager	Save File (original location is read-only)
+WorkspaceManager	Save File as ...
+WorkspaceManager	Switch to Tab
+WorkspaceManager	The file "%1" is already open in another tab.
+Xnor	XNOR
+Xnor	Xnor
+Xor	XOR
+Xor	Xor
+main	Circuit file to open.
+main	Error: 
+main	Error: Circuit contains Truth Table elements.
+main	Error: no input circuit file given.
+main	Exports circuit to <arduino-file>.
+main	Exports circuit to waveform text file, reading input from terminal.
+main	Exports circuit to waveform text file.
+main	Run MCP mode with a visible GUI window.
+main	Run in MCP (Model Context Protocol) mode for programmatic control.
+main	Verbosity level 0 to 5, disabled by default.
+main	When used with -c/--terminal, block execution if the circuit contains Truth Tables.
+main	arduino file
+main	verbosity level
+main	waveform input text file

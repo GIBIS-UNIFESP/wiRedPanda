@@ -140,6 +140,13 @@ jobs:
         cmake --preset release ${{ matrix.cmake_args }}
         cmake --build --preset release
 
+    # TestLanguageManager's translatable-strings golden compares what this target extracts, and skips when it has not
+    # run. The extraction does not depend on the platform, so one job runs it, on the Qt that translate.yml refreshes
+    # the catalogs with.
+    - name: Extract translatable strings
+      if: runner.os == 'Linux' && runner.arch == 'X64' && matrix.qt == '6.9.3' && matrix.cmake_args == ''
+      run: cmake --build --preset release --target translatable_strings_lupdate
+
     - name: Test
       timeout-minutes: 10
       shell: bash
