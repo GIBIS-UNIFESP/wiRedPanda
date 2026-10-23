@@ -13,7 +13,7 @@ line in the log.
 of its own.
 
 **Open decisions:** P2.36 may wait on the user, once measured. P2.37 is settled (P2.D10). P2.40 waits on the user:
-the redundant call removed here or left for plan 9.
+the redundant call removed here or left for plan 9. P2.41 waits on the user: whether plan 2 fixes the paste's id order.
 
 Each row's notes say how its test is shown to fail; "as on the branch" marks a break `gpu-canvas` ran and saw fail.
 
@@ -59,6 +59,7 @@ Each row's notes say how its test is shown to fail; "as on the branch" marks a b
 | P2.38 | Destroying a closed 8,000-element circuit takes about 32 s, against 11 s to load it | todo | | Found by plan 1's fixture generator, 2026-10-21, on `01-characterization` at `2f73c4f28`, whose application is `master`'s with plan 1's element count (relwithdebinfo): over MCP, `load_circuit` of `clocked_8000.panda` 11.38 s, `close_circuit` 0.28 s, then `new_circuit` 31.79 s, since the closed tab is destroyed when the next command reaches the event loop; a second close and new 0.10 s. Not yet profiled: where the time goes (instruction counts under callgrind, `CLAUDE.md`'s "Profiling") decides whether it is a defect with a fix here or a cost plan 6 or 9 removes |
 | P2.39 | The MCP client reads responses with asyncio's default 64 KiB line limit, so a longer response fails as no response and desynchronizes the commands after it | todo | | Found 2026-10-21 by plan 1's check of the large fixtures: `list_elements` on the 20,000-element circuit failed after about 1 s with "Separator is not found, and chunk exceed the limit", printed only as `[ERROR] Failed to read stdout`, then reported "No response" though its timeout was 900 s; the next `load_circuit` failed at once. `MCPInfrastructure.start_mcp()` starts the process without a `limit`, and `_read_json_response_with_timeout()` turns any exception into no response. With the limit raised the same lists return 20,000 elements and 37,000 wires. Shown to fail: a test reading a response longer than 64 KiB |
 | P2.40 | `ElementOrientation::orientPort()` ends with `port->updateConnections()`, which re-routes nothing: removing it fails no golden, since another path re-routes the wire | todo | | Found 2026-10-22 by plan 1's wire-geometry golden (P1.5) on `01-characterization`. Not a defect: a redundant call. Removed here, with the goldens unchanged, or left for plan 9's editor rework; the user decides |
+| P2.41 | A paste numbers its copies in `QGraphicsScene::selectedItems()` order, which follows the per-process hash seed, so the same copy and paste gives the copies different ids from run to run | todo | | Found 2026-10-22 by plan 1's snapping-path golden (P1.12) on `01-characterization`: the paste row's ids differed between runs while every copy's place stayed the same. A fix serializes the selection in a fixed order (by id, as the dumps do); shown to fail by a test that pastes several elements and expects their ids in their sources' order, run in several processes. The user decides whether plan 2 takes it |
 
 ## Log
 
@@ -77,3 +78,6 @@ Each row's notes say how its test is shown to fail; "as on the branch" marks a b
   it was measured on `01-characterization`, not `master`.
 - 2026-10-22: P2.40 added, found by plan 1's wire-geometry golden: a redundant `updateConnections()` call in
   `ElementOrientation::orientPort()`.
+- 2026-10-22: P2.41 added, found by plan 1's snapping-path golden: a paste's ids follow the hash seed. P2.31's golden,
+  the view golden's wheel rows, has four rows on `01-characterization` (two on the branch); a fix of the wheel zoom
+  changes those rows and no other.
