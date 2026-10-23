@@ -48,6 +48,8 @@ Tests/
 │   ├── TestSimulation.cpp    # Core simulation engine tests
 │   ├── TestWorkspace.cpp     # Workspace and scene management
 │   └── TestWorkspaceFileops.cpp # Workspace file operations
+├── Perf/                     # Performance probe
+│   └── TestPerfProbe.cpp     # Phases Scripts/profile_probe.sh counts under callgrind
 ├── Unit/                     # Component-level unit tests
 │   ├── CodeGen/               # Code generation tests
 │   ├── Commands/             # Undo/Redo command tests
@@ -296,6 +298,15 @@ Unit tests validate individual components:
 - **TestSimulation**: Core simulator behavior with various circuits
 - **TestWorkspace**: Workspace state management
 - **TestWorkspaceFileops**: File operations and persistence
+
+### Performance Probe
+
+- **TestPerfProbe** (label `perf`): one test function per phase (load, load then frames, an idle tick, add a wire, undo
+  it, move an element, delete one, frames, a pan, and the wires' lengths), each phase's work in its own never-inlined
+  function. It skips unless `WIREDPANDA_PERF_PROBE` is set, which only `Scripts/profile_probe.sh` sets; when it runs,
+  each phase works on `Tests/Fixtures/Perf/clocked_2000.panda`, or on the circuit in `PROBE_FILE`.
+  `Scripts/profile_probe.sh <phase|all|extents> [file.panda]` runs each phase under callgrind on the relwithdebinfo
+  build and prints its instruction count.
 
 ### Backward Compatibility Tests
 
