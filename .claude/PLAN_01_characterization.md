@@ -188,10 +188,10 @@ zoom pivots on the centre and is not part of the defect.
 ### 3.10 IC previews
 
 Every component's port counts and whether its preview has ink (73 rows; two components have no preview, null at 0×0),
-each component's pins in order (the inner element's id, its port index and its label), which plan 2's regeneration of the
-components on the grid and plan 4's saved pin order must leave unchanged,
-and one preview's pixels: `level2_mux_8to1`, one of the three components whose labels stay inside the preview's
-bounds, with wires drawn and labels masked, within the pixel tolerance. Three traps:
+each component's pins in order (the inner element's id, its port index and its label), which plan 2's regeneration of
+the components on the grid and plan 4's saved pin order must leave unchanged, and one preview's pixels:
+`level2_mux_8to1`, one of the three components whose labels stay inside the preview's bounds, with wires drawn and
+labels masked, within the pixel tolerance. Three traps:
 
 - preview sizes follow the label font in 70 of 73 components (mapping "Sans Serif" to DejaVu Sans failed 65 rows, to
   Liberation Sans 48), so no size is pinned;
@@ -227,15 +227,16 @@ the translator are checked in both generators.
 
 ### 3.13 Translatable strings
 
-A CMake target with `update_translations`' options (including `-tr-function-alias tr+=PANDACEPTION`),
-`NO_GLOBAL_TARGET`, defined inside `Qt6LinguistTools_FOUND` and, as `master` sets those options, only on Qt 6.7 or later
-(`master`'s minimum is 6.2 until the Qt floor), extracts the (context, source) pairs (618 on the branch) to
-`build/translatable_strings.ts`, and a test compares them with a golden. Nothing but building that target refreshes the
-extraction: it is outside `all`, and as a build dependency it would run on every build, having no outputs. So the test
-skips until the target exists, and every check before a slice is finished, and CI, builds it before the suite. CI
-builds it on one job (Linux x86-64, Qt 6.9.3, the Qt the translation workflow refreshes catalogs with); extraction
-does not depend on the platform. A change that adds or removes strings builds the target and updates the golden in the
-same commit.
+A CMake target with `update_translations`' options (including `-tr-function-alias tr+=PANDACEPTION`) and its source
+targets, collected as it collects them, at the end of the top-level directory (naming `wiredpanda` and `wiredpanda_lib`
+alone would miss a string in any other target), `NO_GLOBAL_TARGET`, defined inside `Qt6LinguistTools_FOUND` and, as
+`master` sets those options, only on Qt 6.7 or later (`master`'s minimum is 6.2 until the Qt floor), extracts the
+(context, source) pairs (618 on the branch) to `build/translatable_strings.ts`, and a test compares them with a golden.
+Nothing but building that target refreshes the extraction: it is outside `all`, and as a build dependency it would run
+on every build, having no outputs. So the test skips until the target exists, and every check before a slice is
+finished, and CI, builds it before the suite. CI builds it on one job (Linux x86-64, Qt 6.9.3, the Qt the translation
+workflow refreshes catalogs with); extraction does not depend on the platform. A change that adds or removes strings
+builds the target and updates the golden in the same commit.
 
 ### 3.14 File format
 
