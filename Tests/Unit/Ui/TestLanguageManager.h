@@ -25,4 +25,5 @@ private slots:
     void testLoadTranslationForNonEnglishLanguageWithoutEmbeddedResource();
     void testFlagIconReturnsMappedIconForKnownLanguage();
     void testFlagIconFallsBackToDefaultForUnknownLanguage();
+    void testTranslatableStringsMatchGolden();
 };

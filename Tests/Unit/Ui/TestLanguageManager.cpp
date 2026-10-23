@@ -3,14 +3,18 @@
 
 #include "Tests/Unit/Ui/TestLanguageManager.h"
 
+#include <QCoreApplication>
 #include <QDir>
 #include <QFile>
 #include <QLibraryInfo>
+#include <QSet>
 #include <QSignalSpy>
 #include <QTranslator>
+#include <QXmlStreamReader>
 
 #include "App/Core/Settings.h"
 #include "App/UI/LanguageManager.h"
+#include "Tests/Common/Goldens.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestLanguageManager::testAvailableLanguages()
@@ -144,4 +148,41 @@ void TestLanguageManager::testFlagIconFallsBackToDefaultForUnknownLanguage()
 {
     LanguageManager manager;
     QCOMPARE(manager.flagIcon("zz"), QStringLiteral(":/Interface/Locale/default.svg"));
+}
+
+void TestLanguageManager::testTranslatableStringsMatchGolden()
+{
+    // Every (context, source) pair the translatable_strings_lupdate target extracts into the build directory, sorted
+    // and unique. The target is not built by default, so the test skips until it has run; the checks before a slice
+    // is finished and one CI job build it before the suite.
+    const QString catalog = QCoreApplication::applicationDirPath() + "/translatable_strings.ts";
+    if (!QFile::exists(catalog)) {
+        QSKIP("translatable_strings.ts is missing: build the translatable_strings_lupdate target first");
+    }
+
+    QFile file(catalog);
+    QVERIFY2(file.open(QIODevice::ReadOnly), qPrintable(QString("Could not open %1").arg(catalog)));
+
+    QSet<QString> pairs;
+    QString context;
+    QXmlStreamReader xml(&file);
+    while (!xml.atEnd()) {
+        xml.readNext();
+        if (!xml.isStartElement()) {
+            continue;
+        }
+        if (xml.name() == QLatin1String("name")) {
+            context = xml.readElementText();
+        } else if (xml.name() == QLatin1String("source")) {
+            // A source may span lines; they are escaped so each pair stays on one line of the golden.
+            pairs.insert(context + '\t' + xml.readElementText().replace('\n', QLatin1String("\\n")));
+        }
+    }
+    QVERIFY2(!xml.hasError(), qPrintable(xml.errorString()));
+
+    QStringList lines(pairs.cbegin(), pairs.cend());
+    lines.sort();
+    const QString golden = QString(QUOTE(CURRENTDIR)) + "/Integration/TranslatableStrings/strings.txt";
+    const QString mismatch = TestUtils::compareWithGolden(golden, lines.join('\n') + '\n');
+    QVERIFY2(mismatch.isEmpty(), qPrintable(mismatch));
 }

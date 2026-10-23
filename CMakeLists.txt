@@ -462,6 +462,26 @@ if(Qt6LinguistTools_FOUND)
         ${_lupdate_opts}
     )
 
+    # The translatable-strings golden (Tests/Unit/Ui/TestLanguageManager) compares every (context, source) pair
+    # update_translations extracts, written to the build directory with the same options and no global target, so
+    # update_translations and the committed catalogs are unchanged. Only building this target refreshes the file: it
+    # is outside all, and as a dependency it would run on every build, having no outputs. It collects its source
+    # targets at the end of the top-level directory, as qt_add_translations collects update_translations', so both
+    # read the same sources.
+    if(Qt6_VERSION VERSION_GREATER_EQUAL "6.7.0")
+        function(add_translatable_strings_lupdate)
+            qt_collect_translation_source_targets(source_targets)
+            qt_add_lupdate(
+                SOURCE_TARGETS ${source_targets}
+                TS_FILES ${CMAKE_BINARY_DIR}/translatable_strings.ts
+                LUPDATE_TARGET translatable_strings_lupdate
+                NO_GLOBAL_TARGET
+                OPTIONS -tr-function-alias tr+=PANDACEPTION -extensions cpp,h,ui -no-obsolete
+            )
+        endfunction()
+        cmake_language(DEFER DIRECTORY "${PROJECT_SOURCE_DIR}" CALL add_translatable_strings_lupdate)
+    endif()
+
     # Regenerate the Weblate-managed Exercise/Tour content catalog (App/Resources/Translations/
     # ExerciseTour/en.json) as part of the same command used for .ts sources, so contributors
     # still only need to remember one target. A separate custom target because lupdate can't
