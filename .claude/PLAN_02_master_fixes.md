@@ -275,6 +275,16 @@ it give way to the one place every load ends at, which clears it once and marks 
 loaded keeps its translated type name. Test: an IC loaded from a file and one from a blob keep no tooltip after a
 retranslation; an unloaded one keeps its type name. The other three defects in this code are plan 4's (§8).
 
+### 4.2 Embed and extract act on whichever element comes first
+
+`ICController::selectedIC()` takes the first of the selected elements, in Qt's set order (§7.4), and answers nothing
+unless that one is an IC. With an IC and a gate selected, Embed IC and Extract to file act in one run and do nothing in
+another; with two ICs from different files, which one is embedded varies from run to run, and the other never is. Fix:
+Embed acts on every distinct file among the selected file-backed ICs, Extract on every distinct blob among the
+selected embedded ICs, each as one undo step (one save dialog per extracted blob); a selection without an IC does
+nothing. Tests: two ICs from two files and a gate, embedded in one step and undone in one; the same for extraction;
+a gate alone changes nothing.
+
 ## 5. In code plan 6 rewrites
 
 ### 5.1 Every rebuild of the simulation gives every flip-flop a rising edge
@@ -359,8 +369,8 @@ under the cursor at the viewport's centre instead of under the cursor. Measured:
 from (-192, -142) to (-307.2, -227.2), where the centre that keeps it is (32, 26); the scroll clamp at the scene rect
 makes the error larger near the edges. Fix: centre the pre-zoom point back under the cursor at the new scale. Tests:
 the point under the cursor stays under it; a wheel zoom from each viewport corner near the scene's edge keeps the view
-inside the scene rect. Golden: the view golden's wheel rows (two on the branch). Keyboard zoom pivots on the centre
-and stays so.
+inside the scene rect. Golden: the view golden's four wheel rows (two on the branch), no other. Keyboard zoom pivots
+on the centre and stays so.
 
 ### 7.2 The hit test answers the bottom item
 
@@ -377,6 +387,51 @@ rows where items overlap.
 Its "Scene is empty" error is unreachable: the rubber band is always counted in Qt's bounds. Fix: the export reads
 the circuit's bounds, the union of the elements' and the wires'. Test: an empty circuit gets the error.
 
+### 7.4 What acts on a selection follows the hash seed
+
+`QGraphicsScene::selectedItems()` returns its items from a `QSet`, so their order follows the per-process hash seed and
+the items' addresses. Found by plan 1's snapping-path golden (P1.12): the same copy and paste gives the copies other
+ids in another run, each copy in the same place. The same order reaches every caller that walks the selection: copy,
+cut and duplicate (`ClipboardManager` serializes in it, so the paste's ids follow it), the clone drag, the delete and
+its undo, distribute (its `std::sort` is unstable, so ties fall in it), `ICController`'s first selected IC and the
+element editor's first element. Fix: the scene's selection accessors return the elements in id order, which P2.43
+makes the stacking order too, and every caller in the application uses them, never Qt's; distribute sorts with
+`std::stable_sort`. Test: in one process, about fifty selected elements copied and pasted, deleted and undone, and
+distributed with ties, each compared with the order by id; shown to fail with the accessors' sort removed, since fifty
+items in a set are out of id order in every run. Golden: plan 1's paste row then prints the copies' real ids instead
+of "new" (P1.12).
+
+### 7.5 One rule for where an element goes
+
+`GraphicElement::itemChange()` snaps a position to half the grid (8) only while the element is in a scene, so whether a
+position snaps depends on whether it is set before or after `addItem()`. Load, the MCP's `create_element` and a morph's
+transfer set it before and keep it exact; a paste, `instantiate_ic` and a rotate's constructor set it after and snap.
+An element off the grid exists: releases before 4.0 saved arbitrary positions (279.333, 311.5), and 4,271 of the 4,504
+elements of the 73 IC components are off it, written by the MCP generators. Undo restores through `setPos()`, so an
+off-grid element moved, rotated or flipped comes back snapped, not where it was: the undo does not restore. Fix: one
+snapping helper; setting a position is always exact, so a load, a deserialization, an undo and a redo put an element
+where it was; `SceneInteraction` owns the element drag, and every edit snaps explicitly where it decides a place: Qt's
+drag, the nudge (`Scene.cpp:1250`), align and distribute (`:937`), the rotate's constructor and redo
+(`Commands.cpp:341`, `:387`), the flip (`:948`), the palette drop (`SceneDropHandler.cpp:85`), the clone drop (`:117`),
+the add without a drag (`:165`), paste and duplicate (`ClipboardManager.cpp:323`), the split's node (`:648`, its step of
+16 named), and the MCP's `create_element` (`ElementHandler.cpp:122`), `move_element` (`:273`) and `instantiate_ic`
+(`ICHandler.cpp:213`). The move, rotate and flip commands restore exactly; the morph's is guarded by a test. The 73
+components are regenerated on the grid by their generators, each component's pins in the same order. Tests: an off-grid
+file from an older release through move, rotate, flip and morph with undo and redo, each restored exactly; `setPos()`
+does not snap. Golden: plan 1's snapping-path rows of the undos from off-grid starts (P1.12), no other. Snapping on load
+is plan 4's (§8), since it can reorder an IC's pins.
+
+### 7.6 An undo puts a restored element on top
+
+Elements stack in id order in all 27 loaded circuits; a load assigns ids in file order, which is the stacking order. An
+element restored with its old id (a delete's or a cut's undo, a morph and its undo) is added last and so drawn on top
+of every element, though its id places it below. Fix: one rule in `Scene::addItem()`'s branch for a preassigned id puts
+the element back at its place in the stacking order, before the first element with a larger id. `stackBefore()` costs a
+walk of the siblings (`qgraphicsitem.cpp:4675`), so the undo of a large delete on the 8,000-element circuit is measured
+under callgrind, and restored in one batch if it grows quadratically. Tests: the undo of a delete, a cut and a morph,
+each of the bottom of three overlapping elements, puts it back at the bottom; a delete of a thousand elements and its
+undo give the order before. Golden: plan 1's order after the undo (P1.10).
+
 ## 8. Not plan 2's
 
 Each of these exists on `master`, and its fix is another plan's decision:
@@ -384,6 +439,10 @@ Each of these exists on `master`, and its fix is another plan's decision:
 - **Undoing an IC's reload after its file changed restores nothing** (the undo reloads the file), **IC pin names are
   saved in the interface language**, and **an IC's pin names and its file header's are built by two rules**: each fix
   changes the format, so each is plan 4's.
+- **An element loaded off the grid stays off it.** Snapping on load is plan 4's, together with the order of an IC's
+  pins saved in the format: today the pins are ordered by their inner elements' positions, and snapping collapses two
+  close rows into one, which can swap two pins (measured: 0 of the 85 off-grid files reorder, while a control that
+  collapses every row reorders 82 of 82). §7.5 keeps every loaded position exact until then.
 - **A clock above 500 Hz runs slow**, and **the tick engine contradicts itself on invalid inputs**: the new semantics',
   with plan 6's switch; plan 5 lists both among its differences from `master`.
 - **Two drivers on one net**: under plan 5's rules they read Error, and plan 8's exporters refuse such a net; until
@@ -426,6 +485,10 @@ Each of these exists on `master`, and its fix is another plan's decision:
 | P2.31 | The wheel zoom (§7.1) | P1.12 | the wheel rows |
 | P2.32 | The hit test's topmost item (§7.2) | P1.9 | the overlapping rows of the hit grid |
 | P2.33 | MCP's empty-scene error (§7.3) | the helpers only | none (no golden exports an empty circuit) |
+| P2.41 | The selection in id order (§7.4) | P1.12 | the paste row's ids |
+| P2.42 | One rule for where an element goes (§7.5) | P1.10, P1.12, P1.14 | the undo rows from off-grid starts; the components' positions, pins unchanged |
+| P2.43 | A restored element's stacking place (§7.6) | P1.10 | the order after a delete's and a morph's undo |
+| P2.44 | Embed and extract on every selected IC (§4.2) | the helpers only | none expected |
 
 "None expected" means the branch saw no golden change, or the fix touches nothing a golden prints; the fix's commit
 says what changed.
@@ -473,6 +536,18 @@ user's choice between workable options).
   finished after the user's overnight run of it; a crash becomes a row of the plan whose code it reaches, its input
   kept under `Tests/Fuzz/regressions/`. CI's workflows keep ignoring `Tests/Fuzz/`. Basis: the user's ruling of
   2026-10-21 ("i dont think its necessary/useful to run fuzzer in CI. i can run it overnight on my pc").
+- **P2.D11. Everything that acts on a selection acts in id order**, through the scene's accessors, never Qt's set
+  order (§7.4). Basis: measured on `01-characterization` (the paste's ids differ between runs); the user's ruling of
+  2026-10-22 ("for pasted ids we need to make that deterministic").
+- **P2.D12. Setting a position is exact; an edit snaps where it decides a place** (§7.5). An undo then restores, and
+  every edit snaps, wherever it sets the position. Snapping on load waits for plan 4's saved pin order: making only
+  files of the current version snap was rejected, since a file from an older release is saved in the current version
+  on its first save and would snap on the next load. Basis: read on `master` and measured (the off-grid elements, the
+  pin orders); the user's rulings of 2026-10-22 ("it makes no sense to have part of elements operations be
+  grid-snapped and part not"; the recommendation adopted).
+- **P2.D13. A restored element goes back to its stacking place** (§7.6), by one rule where an element with a
+  preassigned id is added. Basis: measured on `01-characterization` (P1.10's golden puts it on top); the user's
+  adoption of the recommendation, 2026-10-22.
 
 ## 11. Risks
 
@@ -501,12 +576,14 @@ user's choice between workable options).
   each descriptor; the undoable AudioBox, trigger and input operations; no appearance where none is drawn; the themed
   pictures; the morph's undo; the property command, moved onto the schema; the Tx rule and MCP's validation, held once
   in the schema; the lock's tooltip; the display's bounds; the IC's turning centre; the Text's hint.
-- **Plan 4** keeps the IC's tooltip, and fixes the three defects of §8 that change the format.
+- **Plan 4** keeps the IC's tooltip and the embed and extract on every selected IC, fixes the three defects of §8
+  that change the format, and adds the saved pin order with snapping on load.
 - **Plan 5** lists `master`'s Rx override, the slow clock and the tick engine's contradiction among its differences
   from `master`.
 - **Plan 6** keeps the clocks across a rebuild and a connected input on its wire; its condensation replaces the walk.
 - **Plan 8** keeps the truth tables' regs, the untranslated names and the Tx resolution, then refuses two drivers.
-- **Plan 9** keeps the wheel zoom, the topmost hit and the empty-scene error.
+- **Plan 9** keeps the wheel zoom, the topmost hit, the empty-scene error, the selection in id order, the snapping
+  rule with its exact undo, and the restored stacking place.
 - **The Qt 6.8 floor's plan** follows this plan.
 
 ## 14. The branch's fixes, as evidence

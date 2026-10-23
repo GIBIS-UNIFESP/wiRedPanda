@@ -162,14 +162,20 @@ A render of three overlapping elements with their ports and labels is not a stac
 paint opaque overlaps, so on the branch some reorders changed no pixel while others did (changing one element's z
 changed 1,007). Z-order goldens name every item (elements, ports, labels, wires, wireless indicators, the selection
 rectangle) of all 27 example and fixture circuits, and one more pins the order after undoing the delete, and the morph,
-of the bottom of three overlapping elements (on `master` the undo puts the restored element on top). The render itself
-is compared with Qt's own render of the scene, grid dots excluded. The branch never pinned the rubber band or a wire
-being routed across overlapping elements, which need a view and the pending-wire state; plan 1 adds them.
+of the bottom of three overlapping elements (on `master` the undo puts the restored element on top), and after the morph
+itself, before its undo, where the morphed element is re-added with its id too (plan 2's P2.43 changes these rows).
+The render itself is compared with Qt's own render of the scene, grid dots excluded. The branch never pinned the rubber
+band or a wire being routed across overlapping elements, which need a view and the pending-wire state; plan 1 adds
+them.
 
 ### 3.9 Snapping and the view
 
 Align (six edges and centres), distribute, rotate, flip, move and nudge, each with its undo and redo; drag, drop and
-paste through the real gestures. The zoom ladder in both directions, zoom to fit, `centerOn`, `ensureVisible`, the wheel
+paste through the real gestures. Every other site that decides a position has a row too: duplicate, the clone drop
+(Ctrl-drag, sent as events), the add without a drag, the split's node, and the MCP's `create_element`, `move_element`
+and `instantiate_ic` (through their handlers, as `TestElementHandler` drives them), each from an off-grid start where
+one exists, since an element placed before it joins the scene keeps an off-grid position and an undo then comes back
+snapped (plan 2's P2.42). The zoom ladder in both directions, zoom to fit, `centerOn`, `ensureVisible`, the wheel
 zoom's recentring, and the scroll position, with its rounding, in every row.
 
 The wheel zoom is a `master` defect the golden pins as it is, for plan 2. In `GraphicsView::wheelEvent`, `zoomIn()`
@@ -182,6 +188,8 @@ zoom pivots on the centre and is not part of the defect.
 ### 3.10 IC previews
 
 Every component's port counts and whether its preview has ink (73 rows; two components have no preview, null at 0×0),
+each component's pins in order (the inner element's id, its port index and its label), which plan 2's regeneration of the
+components on the grid and plan 4's saved pin order must leave unchanged,
 and one preview's pixels: `level2_mux_8to1`, one of the three components whose labels stay inside the preview's
 bounds, with wires drawn and labels masked, within the pixel tolerance. Three traps:
 
