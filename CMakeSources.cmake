@@ -431,6 +431,7 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestWirePixelSnapshot.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestWorkspace.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestWorkspaceFileops.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Perf/TestPerfProbe.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Resources/TestIcons.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Runners/TestWiredpanda.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/System/TestBewavedDolphinGui.cpp
@@ -664,6 +665,7 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestWirePixelSnapshot.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestWorkspace.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestWorkspaceFileops.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Perf/TestPerfProbe.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Resources/TestIcons.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Runners/RunnerUtils.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/System/TestBewavedDolphinGui.h

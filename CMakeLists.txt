@@ -944,6 +944,7 @@ add_test(NAME TestMUXDEMUXComprehensive COMMAND test_wiredpanda TestMUXDEMUXComp
 add_test(NAME TestMultiplexing COMMAND test_wiredpanda TestMultiplexing WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestNodeLogic COMMAND test_wiredpanda TestNodeLogic WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestNotifyCatch COMMAND test_wiredpanda TestNotifyCatch WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestPerfProbe COMMAND test_wiredpanda TestPerfProbe WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestPointerSnapshot COMMAND test_wiredpanda TestPointerSnapshot WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestPortLayoutSnapshot COMMAND test_wiredpanda TestPortLayoutSnapshot WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestPriorities COMMAND test_wiredpanda TestPriorities WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -1119,6 +1120,10 @@ endforeach()
 # land. See .claude/SENTRY_CRASH_ANALYSIS_WIREDPANDA-H2.md.
 set_tests_properties(TestDanglingPointer PROPERTIES LABELS "unit;regression")
 
+# Performance probe: skipped unless WIREDPANDA_PERF_PROBE is set; Scripts/profile_probe.sh measures its phases under
+# callgrind
+set_tests_properties(TestPerfProbe PROPERTIES LABELS "perf")
+
 # Core Functionality Tests - Unit category
 foreach(TEST TestCommands TestCommon TestEnums TestGoldens TestNotifyCatch TestPriorities TestRecentFiles TestSettings
         TestThemeManager)
@@ -1184,7 +1189,7 @@ set(ALL_TESTS
     TestFileHandlerSecurity TestICHandlerSecurity TestMCPProcessor TestMCPValidator TestElementHandler TestBaseHandler TestThemeHandler TestHistoryHandler TestServerInfoHandler TestConnectionHandler TestSimulationHandler TestFileHandler TestICHandler
     TestExerciseEngine TestTourEngine
     TestSimulationUnit TestWorkspaceUnit
-    TestICFixtureLayout)
+    TestICFixtureLayout TestPerfProbe)
 foreach(TEST ${ALL_TESTS})
     set_tests_properties(${TEST} PROPERTIES FIXTURES_SETUP "non_gui_complete")
 endforeach()
