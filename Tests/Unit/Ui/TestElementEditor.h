@@ -49,6 +49,7 @@ private slots:
     void testApplyCapabilitiesMixedLockStateShowsPartiallyChecked();
 
     void testApplyVolumeProperty();
+    void testVolumeShownAsNearestPercent();
     void testApplyWirelessModeChangeSeversExistingConnection();
 
     void testBlobNameEditingFinishedIgnoresUnchangedOrEmpty();

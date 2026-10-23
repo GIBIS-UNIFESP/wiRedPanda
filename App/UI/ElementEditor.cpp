@@ -356,7 +356,7 @@ void ElementEditor::applyCapabilitiesToUi()
     /* Volume */
     setSection(c.hasVolume, m_ui->labelVolume, m_ui->sliderVolume);
     if (c.hasVolume && c.hasSameVolume) {
-        m_ui->sliderVolume->setValue(static_cast<int>(firstElement->volume() * 100.0f));
+        m_ui->sliderVolume->setValue(qRound(firstElement->volume() * 100.0f));
     }
 
     /* Frequency */

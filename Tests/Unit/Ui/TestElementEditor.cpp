@@ -820,6 +820,27 @@ void TestElementEditor::testApplyVolumeProperty()
     QCOMPARE(audiobox->volume(), 0.8f);
 }
 
+void TestElementEditor::testVolumeShownAsNearestPercent()
+{
+    WorkSpace workspace;
+    auto *audiobox = new AudioBox();
+    workspace.scene()->addItem(audiobox);
+
+    ElementEditor editor(&workspace);
+    editor.setScene(workspace.scene());
+    auto *slider = editor.findChild<QSlider *>("sliderVolume");
+    QVERIFY(slider);
+
+    // A volume of k / 100 times 100 lands just below k for some k (0.53 and 0.59 in float arithmetic, 0.35 among many
+    // more in x87's extended precision), which truncation would show as k - 1.
+    for (int percent = 0; percent <= 100; ++percent) {
+        workspace.scene()->clearSelection();
+        audiobox->setVolume(static_cast<float>(percent) / 100.0f);
+        audiobox->setSelected(true);
+        QCOMPARE(slider->value(), percent);
+    }
+}
+
 void TestElementEditor::testApplyWirelessModeChangeSeversExistingConnection()
 {
     WorkSpace workspace;
