@@ -1,0 +1,35 @@
+// ==================================================================== //
+// ======= This code was generated automatically by wiRedPanda ======== //
+// ==================================================================== //
+
+
+module display7 (
+/* ========= Inputs ========== */
+input tr_input_switch1,
+input tr_input_switch2,
+
+/* ========= Outputs ========== */
+output tr_7_segment_display3_g_tr_middle,
+output tr_7_segment_display3_f_tr_upper_left,
+output tr_7_segment_display3_e_tr_lower_left,
+output tr_7_segment_display3_d_tr_bottom,
+output tr_7_segment_display3_a_tr_top,
+output tr_7_segment_display3_b_tr_upper_right,
+output tr_7_segment_display3_dp_tr_dot,
+output tr_7_segment_display3_c_tr_lower_right
+);
+/* ====== Aux. Variables ====== */
+
+
+// Assigning aux variables. //
+
+// Writing output data. //
+assign tr_7_segment_display3_g_tr_middle = tr_input_switch1;
+assign tr_7_segment_display3_f_tr_upper_left = tr_input_switch2;
+assign tr_7_segment_display3_e_tr_lower_left = 1'b0;
+assign tr_7_segment_display3_d_tr_bottom = 1'b0;
+assign tr_7_segment_display3_a_tr_top = 1'b0;
+assign tr_7_segment_display3_b_tr_upper_right = 1'b0;
+assign tr_7_segment_display3_dp_tr_dot = 1'b0;
+assign tr_7_segment_display3_c_tr_lower_right = 1'b0;
+endmodule

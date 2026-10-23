@@ -1,0 +1,35 @@
+// ==================================================================== //
+// ======= This code was generated automatically by wiRedPanda ======== //
+// ==================================================================== //
+
+
+module display7 (
+/* ========= Inputs ========== */
+input input_switch1,
+input input_switch2,
+
+/* ========= Outputs ========== */
+output _7_segment_display3_g_middle,
+output _7_segment_display3_f_upper_left,
+output _7_segment_display3_e_lower_left,
+output _7_segment_display3_d_bottom,
+output _7_segment_display3_a_top,
+output _7_segment_display3_b_upper_right,
+output _7_segment_display3_dp_dot,
+output _7_segment_display3_c_lower_right
+);
+/* ====== Aux. Variables ====== */
+
+
+// Assigning aux variables. //
+
+// Writing output data. //
+assign _7_segment_display3_g_middle = input_switch1;
+assign _7_segment_display3_f_upper_left = input_switch2;
+assign _7_segment_display3_e_lower_left = 1'b0;
+assign _7_segment_display3_d_bottom = 1'b0;
+assign _7_segment_display3_a_top = 1'b0;
+assign _7_segment_display3_b_upper_right = 1'b0;
+assign _7_segment_display3_dp_dot = 1'b0;
+assign _7_segment_display3_c_lower_right = 1'b0;
+endmodule

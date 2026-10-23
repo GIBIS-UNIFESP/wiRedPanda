@@ -1,0 +1,85 @@
+// ==================================================================== //
+// ======= This code was generated automatically by wiRedPanda ======== //
+// ==================================================================== //
+//
+// Target Board: Arduino UNO R3/R4
+// Pin Usage: 17/18 pins
+//
+
+
+#include <elapsedMillis.h>
+/* ========= Inputs ========== */
+const int input_switch1 = A0;
+const int input_switch2 = A1;
+
+/* ========= Outputs ========== */
+const int _14_segment_display1_g1_middle_left_horizontal = A2;
+const int _14_segment_display1_f_upper_left_vertical = A3;
+const int _14_segment_display1_e_lower_left_vertical = A4;
+const int _14_segment_display1_d_bottom = A5;
+const int _14_segment_display1_a_top = 2;
+const int _14_segment_display1_b_upper_right_vertical = 3;
+const int _14_segment_display1_dp_dot = 4;
+const int _14_segment_display1_c_lower_right_vertical = 5;
+const int _14_segment_display1_g2_middle_right_horizontal = 6;
+const int _14_segment_display1_h_upper_left_diagonal = 7;
+const int _14_segment_display1_j_upper_center_vertical = 8;
+const int _14_segment_display1_k_upper_right_diagonal = 9;
+const int _14_segment_display1_l_lower_right_diagonal = 10;
+const int _14_segment_display1_m_lower_center_vertical = 11;
+const int _14_segment_display1_n_lower_left_diagonal = 12;
+
+/* ====== Aux. Variables ====== */
+bool input_switch1_val = LOW;
+bool input_switch2_val = LOW;
+
+void setup() {
+    pinMode(input_switch1, INPUT);
+    pinMode(input_switch2, INPUT);
+    pinMode(_14_segment_display1_g1_middle_left_horizontal, OUTPUT);
+    pinMode(_14_segment_display1_f_upper_left_vertical, OUTPUT);
+    pinMode(_14_segment_display1_e_lower_left_vertical, OUTPUT);
+    pinMode(_14_segment_display1_d_bottom, OUTPUT);
+    pinMode(_14_segment_display1_a_top, OUTPUT);
+    pinMode(_14_segment_display1_b_upper_right_vertical, OUTPUT);
+    pinMode(_14_segment_display1_dp_dot, OUTPUT);
+    pinMode(_14_segment_display1_c_lower_right_vertical, OUTPUT);
+    pinMode(_14_segment_display1_g2_middle_right_horizontal, OUTPUT);
+    pinMode(_14_segment_display1_h_upper_left_diagonal, OUTPUT);
+    pinMode(_14_segment_display1_j_upper_center_vertical, OUTPUT);
+    pinMode(_14_segment_display1_k_upper_right_diagonal, OUTPUT);
+    pinMode(_14_segment_display1_l_lower_right_diagonal, OUTPUT);
+    pinMode(_14_segment_display1_m_lower_center_vertical, OUTPUT);
+    pinMode(_14_segment_display1_n_lower_left_diagonal, OUTPUT);
+}
+
+void computeLogic() {
+    // Assigning aux variables. //
+}
+
+void loop() {
+    // Reading input data //.
+    input_switch1_val = digitalRead(input_switch1);
+    input_switch2_val = digitalRead(input_switch2);
+
+    // Updating clocks. //
+
+    computeLogic();
+
+    // Writing output data. //
+    digitalWrite(_14_segment_display1_g1_middle_left_horizontal, input_switch1_val);
+    digitalWrite(_14_segment_display1_f_upper_left_vertical, input_switch2_val);
+    digitalWrite(_14_segment_display1_e_lower_left_vertical, LOW);
+    digitalWrite(_14_segment_display1_d_bottom, LOW);
+    digitalWrite(_14_segment_display1_a_top, LOW);
+    digitalWrite(_14_segment_display1_b_upper_right_vertical, LOW);
+    digitalWrite(_14_segment_display1_dp_dot, LOW);
+    digitalWrite(_14_segment_display1_c_lower_right_vertical, LOW);
+    digitalWrite(_14_segment_display1_g2_middle_right_horizontal, LOW);
+    digitalWrite(_14_segment_display1_h_upper_left_diagonal, LOW);
+    digitalWrite(_14_segment_display1_j_upper_center_vertical, LOW);
+    digitalWrite(_14_segment_display1_k_upper_right_diagonal, LOW);
+    digitalWrite(_14_segment_display1_l_lower_right_diagonal, LOW);
+    digitalWrite(_14_segment_display1_m_lower_center_vertical, LOW);
+    digitalWrite(_14_segment_display1_n_lower_left_diagonal, LOW);
+}

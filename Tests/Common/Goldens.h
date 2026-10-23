@@ -20,6 +20,7 @@
 #include <QString>
 #include <QStringList>
 #include <QTransform>
+#include <QTranslator>
 #include <QVector>
 
 #include "App/Core/Application.h"
@@ -157,6 +158,25 @@ QStringList describeInOrientations(Scene *scene, const QString &header, const El
     }
     return lines;
 }
+
+/**
+ * \brief Replaces every translatable string with a tag, as an interface in another language shows its strings. The tag
+ * carries letters, since the code generators keep only an identifier's letters, digits and underscores: a tag of
+ * brackets alone would vanish from identifiers and hide a translated name leaking into one.
+ */
+class TagEveryStringTranslator : public QTranslator
+{
+public:
+    QString translate(const char *context, const char *sourceText, const char *disambiguation, int n) const override
+    {
+        Q_UNUSED(context)
+        Q_UNUSED(disambiguation)
+        Q_UNUSED(n)
+        return QString("[tr %1]").arg(QString::fromUtf8(sourceText));
+    }
+
+    bool isEmpty() const override { return false; }
+};
 
 /// Returns the elements of \a scene in ascending id order.
 QVector<GraphicElement *> elementsById(const Scene *scene);
