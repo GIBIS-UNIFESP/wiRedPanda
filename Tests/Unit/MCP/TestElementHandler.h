@@ -121,4 +121,6 @@ private slots:
     void testHandleMorphElementMorphsRealElement();
 
     void testHandleCommandRejectsUnknownCommand();
+
+    void testResponsesMatchGolden();
 };

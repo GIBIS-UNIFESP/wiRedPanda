@@ -25,6 +25,7 @@
 #include "App/Core/Application.h"
 #include "App/Core/Enums.h"
 #include "App/Element/GraphicElement.h"
+#include "App/Element/PropertyDescriptor.h"
 #include "App/Scene/Scene.h"
 
 class IC;
@@ -91,6 +92,9 @@ QString snapshotStatus(Status status);
 
 /// Names \a type as its enumerator is spelled.
 QString snapshotType(ElementType type);
+
+/// Names the editable property kind \a type as its enumerator is spelled.
+QString snapshotPropertyKind(PropertyDescriptor::Type type);
 
 /// A quarter turn and the two flips the goldens cross.
 struct Orientation {

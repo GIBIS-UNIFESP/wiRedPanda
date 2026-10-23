@@ -23,6 +23,8 @@
 #include "App/Wiring/Port.h"
 #include "MCP/Server/Core/JsonRpcError.h"
 #include "MCP/Server/Handlers/ElementHandler.h"
+#include "Tests/Common/Goldens.h"
+#include "Tests/Common/TestUtils.h"
 
 namespace {
 
@@ -43,6 +45,28 @@ int createElement(ElementHandler &handler, const QString &type, double x = 0, do
 GraphicElement *elementById(MainWindow &window, int id)
 {
     return dynamic_cast<GraphicElement *>(window.currentTab()->scene()->itemById(id));
+}
+
+// `value` with every width and height replaced by "font", for a golden that holds a Text element: its size is its
+// text's, which follows the font.
+QJsonValue maskFontSizes(const QJsonValue &value)
+{
+    if (value.isArray()) {
+        QJsonArray array;
+        for (const auto &item : value.toArray()) {
+            array.append(maskFontSizes(item));
+        }
+        return array;
+    }
+    if (!value.isObject()) {
+        return value;
+    }
+    QJsonObject object = value.toObject();
+    for (auto it = object.begin(); it != object.end(); ++it) {
+        const bool size = (it.key() == QLatin1String("width")) || (it.key() == QLatin1String("height"));
+        it.value() = size ? QJsonValue("font") : maskFontSizes(it.value());
+    }
+    return object;
 }
 
 } // namespace
@@ -1239,4 +1263,59 @@ void TestElementHandler::testHandleCommandRejectsUnknownCommand()
     const QJsonObject response = handler.handleCommand("totally_made_up", {}, 1);
     QVERIFY2(response.contains("error"), qPrintable(QJsonDocument(response).toJson()));
     QCOMPARE(response["error"].toObject()["code"].toInt(), JsonRpcError::MethodNotFound);
+}
+
+void TestElementHandler::testResponsesMatchGolden()
+{
+    // Every creatable type, alone in a new tab so its id is always 1: what each element command responds, result or
+    // error, in a fixed order that ends with a write of every property and the element's deletion. morph_element and
+    // update_element are left out, since they echo their parameters. A Text element's size is its text's, which
+    // follows the font, so the golden holds its sizes masked.
+    MainWindow window;
+    ElementHandler handler(&window, nullptr);
+
+    QStringList lines;
+    for (const ElementType type : TestUtils::dumpedTypes()) {
+        const QString typeName = TestUtils::snapshotType(type);
+        if (!ElementFactory::hasCreator(type)) {
+            lines << QString("%1 %2").arg(QLatin1String(TestUtils::kNoCreator), typeName);
+            continue;
+        }
+        window.createNewTab();
+        const auto send = [&](const QString &command, const QJsonObject &params) {
+            const QJsonObject response = handler.handleCommand(command, params, {});
+            const bool failed = response.contains("error");
+            const QJsonValue raw = response[failed ? "error" : "result"];
+            const QJsonObject body = ((type == ElementType::Text) ? maskFontSizes(raw) : raw).toObject();
+            lines << QString("T %1 %2 %3=%4")
+                         .arg(typeName, command, failed ? "error" : "result",
+                              QString::fromUtf8(QJsonDocument(body).toJson(QJsonDocument::Compact)));
+            return response;
+        };
+
+        const int id = send("create_element", {{"type", ElementFactory::typeToText(type)}, {"x", 0}, {"y", 0}})["result"]
+                           .toObject()["element_id"]
+                           .toInt();
+        QCOMPARE(id, 1);
+        const GraphicElement *element = elementById(window, id);
+        QVERIFY(element);
+        send("list_elements", {});
+        send("get_output_value", {{"element_id", id}});
+        send("set_input_value", {{"element_id", id}, {"value", true}});
+        send("get_output_value", {{"element_id", id}});
+        send("rotate_element", {{"element_id", id}, {"angle", 90}});
+        send("flip_element", {{"element_id", id}, {"axis", 0}});
+        send("change_input_size", {{"element_id", id}, {"size", element->inputSize() + 1}});
+        send("change_output_size", {{"element_id", id}, {"size", element->outputSize() + 1}});
+        send("toggle_truth_table_output", {{"element_id", id}, {"position", 0}});
+        send("list_elements", {});
+        send("set_element_properties", {{"element_id", id}, {"label", "Edited"}, {"color", "Green"}, {"frequency", 2},
+                                        {"delay", 0.25}, {"trigger", "Q"}, {"volume", 0.75}, {"locked", true},
+                                        {"appearance", ""}, {"wireless_mode", 1}, {"rotation", 180}});
+        send("delete_element", {{"element_id", id}});
+    }
+
+    const QString golden = QString(QUOTE(CURRENTDIR)) + "/Integration/Properties/mcp_responses.txt";
+    const QString mismatch = TestUtils::compareWithGolden(golden, lines.join('\n') + '\n');
+    QVERIFY2(mismatch.isEmpty(), qPrintable(mismatch));
 }
