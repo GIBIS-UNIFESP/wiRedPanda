@@ -834,7 +834,11 @@ void ElementEditor::inputLocked(const bool value)
 void ElementEditor::triggerChanged(const QString &cmd)
 {
     sentryBreadcrumb("ui", QStringLiteral("Trigger key: %1").arg(cmd));
-    m_ui->lineEditTrigger->setText(cmd.toUpper());
+    if (const QString upper = cmd.toUpper(); upper != cmd) {
+        // Setting the uppercased text emits textChanged again, and that call applies it
+        m_ui->lineEditTrigger->setText(upper);
+        return;
+    }
     apply();
 }
 

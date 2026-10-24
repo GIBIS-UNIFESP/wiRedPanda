@@ -74,6 +74,7 @@ private slots:
     void testAudioBoxCancelledDialogIsNoOp();
     void testAudioBoxSetsAudioAndUpdatesLabel();
     void testAudioBoxChangeIsUndoable();
+    void testLowercaseTriggerPushesOneCommand();
 
     void testWritesMatchGolden();
 };

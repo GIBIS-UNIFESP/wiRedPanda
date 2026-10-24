@@ -11,6 +11,7 @@
 #include <QComboBox>
 #include <QDoubleSpinBox>
 #include <QFile>
+#include <QKeySequence>
 #include <QLabel>
 #include <QLineEdit>
 #include <QMenu>
@@ -19,6 +20,7 @@
 #include <QSlider>
 #include <QTableWidget>
 #include <QTemporaryDir>
+#include <QTest>
 #include <QToolButton>
 #include <QUndoStack>
 #include <QVariant>
@@ -1309,6 +1311,32 @@ void TestElementEditor::testAudioBoxChangeIsUndoable()
     QCOMPARE(audiobox->audio(), audioBefore);
     undoStack->redo();
     QCOMPARE(audiobox->audio(), audioPath);
+}
+
+void TestElementEditor::testLowercaseTriggerPushesOneCommand()
+{
+    // The field uppercases a typed letter, which changes its text again: the edit is still one undo step
+    WorkSpace workspace;
+    auto *inputSwitch = new InputSwitch();
+    workspace.scene()->addItem(inputSwitch);
+
+    ElementEditor editor(&workspace);
+    editor.setScene(workspace.scene());
+    workspace.scene()->clearSelection();
+    inputSwitch->setSelected(true);
+
+    auto *lineEdit = editor.findChild<QLineEdit *>("lineEditTrigger");
+    QVERIFY(lineEdit);
+    QUndoStack *undoStack = workspace.scene()->undoStack();
+    const int commandsBefore = undoStack->count();
+    QTest::keyClicks(lineEdit, "q");
+
+    QCOMPARE(lineEdit->text(), QString("Q"));
+    QCOMPARE(inputSwitch->trigger(), QKeySequence("Q"));
+    QCOMPARE(undoStack->count(), commandsBefore + 1);
+
+    undoStack->undo();
+    QCOMPARE(inputSwitch->trigger(), QKeySequence());
 }
 
 void TestElementEditor::testWritesMatchGolden()
