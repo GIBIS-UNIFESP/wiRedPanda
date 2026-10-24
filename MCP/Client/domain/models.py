@@ -19,8 +19,8 @@ class ElementInfo(BaseModel):
 
     element_id: Annotated[int, Field(gt=0)]
     type: ElementType
-    x: Annotated[float, Field(ge=-2147483648, le=2147483647)]
-    y: Annotated[float, Field(ge=-2147483648, le=2147483647)]
+    x: float
+    y: float
     label: str | None = None
     width: float | None = None
     height: float | None = None
@@ -62,8 +62,8 @@ class ElementSpec(BaseModel):
 
     id: str
     type: ElementType
-    x: Annotated[float, Field(ge=-2147483648, le=2147483647)]
-    y: Annotated[float, Field(ge=-2147483648, le=2147483647)]
+    x: float
+    y: float
     label: str | None = None
 
     @field_validator("id")
@@ -84,9 +84,9 @@ class ConnectionSpec(BaseModel):
 
     source: str
     target: str
-    source_port: Annotated[int | None, Field(ge=0, le=63)] = None
+    source_port: Annotated[int | None, Field(ge=0)] = None
     source_port_label: Annotated[str | None, Field(min_length=1)] = None
-    target_port: Annotated[int | None, Field(ge=0, le=63)] = None
+    target_port: Annotated[int | None, Field(ge=0)] = None
     target_port_label: Annotated[str | None, Field(min_length=1)] = None
 
     @model_validator(mode="after")

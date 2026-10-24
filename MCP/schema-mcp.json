@@ -984,6 +984,7 @@
               "properties": {
                 "filename": {
                   "type": "string",
+                  "minLength": 1,
                   "pattern": ".*\\.panda$"
                 }
               },
@@ -1543,7 +1544,7 @@
             "params": {
               "type": "object",
               "properties": {
-                "blob_name": { "type": "string", "description": "Blob name of the embedded IC to extract" },
+                "blob_name": { "type": "string", "minLength": 1, "description": "Blob name of the embedded IC to extract" },
                 "file_name": { "type": "string", "description": "Optional output file path" },
                 "overwrite": { "type": "boolean", "description": "Overwrite existing file", "default": false }
               },
@@ -1626,46 +1627,54 @@
                   "minimum": 1
                 },
                 "label": {
-                  "type": "string"
+                  "type": "string",
+                  "description": "Element label"
                 },
                 "color": {
-                  "type": "string"
+                  "type": "string",
+                  "description": "Element color"
                 },
                 "frequency": {
                   "type": "number",
-                  "minimum": 0
+                  "exclusiveMinimum": 0,
+                  "description": "Clock frequency in Hz"
                 },
                 "rotation": {
-                  "type": "number"
+                  "type": "number",
+                  "description": "Rotation in degrees"
                 },
                 "delay": {
                   "type": "number",
+                  "description": "Phase delay as fraction of period (Clock elements)",
                   "minimum": -1,
                   "maximum": 1
                 },
                 "trigger": {
                   "type": "string",
-                  "description": "Keyboard shortcut for input elements"
+                  "description": "Keyboard shortcut for input elements (e.g. 'A', 'Space')"
                 },
                 "audio": {
-                  "type": "string"
+                  "type": "string",
+                  "description": "Audio file path (AudioBox) or note name (Buzzer)"
                 },
                 "locked": {
                   "type": "boolean",
-                  "description": "Lock state for input elements"
+                  "description": "Lock input element to prevent user interaction"
                 },
                 "volume": {
                   "type": "number",
-                  "description": "Volume for audio elements"
+                  "minimum": 0,
+                  "maximum": 1,
+                  "description": "Volume level 0.0-1.0 (AudioBox, Buzzer)"
                 },
                 "appearance": {
                   "type": "string",
-                  "description": "Appearance path or 'default' for elements that support custom appearances"
+                  "description": "Custom appearance image path (empty string restores default)"
                 },
                 "appearance_index": {
                   "type": "integer",
                   "minimum": 0,
-                  "description": "State index for multi-state element appearances"
+                  "description": "Appearance slot index for multi-state elements (e.g. LED states). Use with 'appearance' parameter."
                 },
                 "wireless_mode": {
                   "type": "integer",
@@ -1829,7 +1838,8 @@
                 },
                 "frequency": {
                   "type": "number",
-                  "description": "Clock frequency"
+                  "exclusiveMinimum": 0,
+                  "description": "Clock frequency in Hz"
                 },
                 "rotation": {
                   "type": "number",
@@ -1867,8 +1877,17 @@
                   "type": "integer",
                   "minimum": 0,
                   "description": "Appearance slot index for multi-state elements (e.g. LED states). Use with 'appearance' parameter."
+                },
+                "wireless_mode": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 2,
+                  "description": "Wireless routing mode: 0=None, 1=Tx, 2=Rx (Node elements only)"
                 }
               },
+              "required": [
+                "element_id"
+              ],
               "additionalProperties": false
             },
             "id": {
