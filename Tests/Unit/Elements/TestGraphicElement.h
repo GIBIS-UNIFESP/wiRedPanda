@@ -46,6 +46,9 @@ private slots:
     void testBaseSettersAreNoOpsForUnsupportedProperties();
     void testBlobNameDefaultsToEmptyForNonIcElement();
 
+    // Mux, Demux and TruthTable draw their bodies in code
+    void testBodiesDrawnInCodeOfferNoAppearance();
+
     // retranslate()'s translated-name/tooltip/port-name refresh
     void testRetranslateUpdatesTranslatedNameToolTipAndPortName();
 };

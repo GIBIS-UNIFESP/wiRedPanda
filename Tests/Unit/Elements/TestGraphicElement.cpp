@@ -3,9 +3,12 @@
 
 #include "Tests/Unit/Elements/TestGraphicElement.h"
 
+#include <memory>
+
 #include <QGraphicsProxyWidget>
 #include <QGraphicsSceneMouseEvent>
 #include <QLineEdit>
+#include <QMetaEnum>
 #include <QPainter>
 #include <QPixmap>
 #include <QStyleOptionGraphicsItem>
@@ -23,6 +26,7 @@
 #include "App/Scene/Workspace.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
+#include "Tests/Common/Goldens.h"
 #include "Tests/Common/TestUtils.h"
 
 namespace {
@@ -326,6 +330,26 @@ void TestGraphicElement::testBlobNameDefaultsToEmptyForNonIcElement()
 {
     And gate;
     QVERIFY(gate.blobName().isEmpty());
+}
+
+void TestGraphicElement::testBodiesDrawnInCodeOfferNoAppearance()
+{
+    // A body drawn in code is sized by its ports and never shows a custom appearance, so its type offers none
+    QStringList drawnInCode;
+    const QMetaEnum types = QMetaEnum::fromType<ElementType>();
+    for (int i = 0; i < types.keyCount(); ++i) {
+        const auto type = static_cast<ElementType>(types.value(i));
+        if ((type == ElementType::Unknown) || !ElementFactory::hasCreator(type)) {
+            continue;
+        }
+        const std::unique_ptr<GraphicElement> element(ElementFactory::buildElement(type));
+        if (SnapshotAccess::pixmapIdentity(element.get()) == "footprint") {
+            drawnInCode << ElementFactory::typeToText(type);
+            QVERIFY2(!element->canChangeAppearance(), qPrintable(ElementFactory::typeToText(type)));
+        }
+    }
+    drawnInCode.sort();
+    QCOMPARE(drawnInCode, QStringList({"Demux", "Mux", "TruthTable"}));
 }
 
 void TestGraphicElement::testRetranslateUpdatesTranslatedNameToolTipAndPortName()

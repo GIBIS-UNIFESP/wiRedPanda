@@ -25,7 +25,6 @@ struct ElementInfo<TruthTable> {
         .maxInputSize = 8,
         .minOutputSize = 1,
         .maxOutputSize = 8,
-        .canChangeAppearance = true,
         .hasLabel = true,
         .hasTruthTable = true,
     };

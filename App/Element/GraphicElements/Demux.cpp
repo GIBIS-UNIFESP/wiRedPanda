@@ -22,7 +22,6 @@ struct ElementInfo<Demux> {
         .maxInputSize = 4,
         .minOutputSize = 2,
         .maxOutputSize = 8,
-        .canChangeAppearance = true,
     };
     static_assert(validate(constraints));
 

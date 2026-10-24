@@ -21,7 +21,6 @@ struct ElementInfo<Mux> {
         .maxInputSize = 11,
         .minOutputSize = 1,
         .maxOutputSize = 1,
-        .canChangeAppearance = true,
     };
     static_assert(validate(constraints));
 
