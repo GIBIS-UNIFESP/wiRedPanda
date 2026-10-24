@@ -310,6 +310,13 @@ again; `GraphicElement::retranslate()`, which the main window runs on every elem
 virtual. Reproduced first: a Text made in one language shows its hint in another after a switch. Fix: the Text
 retranslates its hint, through a virtual `retranslate()`, which §4.1 needs too.
 
+### 3.16 The trigger field shows its "many triggers" placeholder uppercased
+
+Found with §3.4: the trigger field uppercases whatever text it gets, so when a selection's elements have different
+triggers, the placeholder the editor fills in ("<Many triggers>", translated) shows as "<MANY TRIGGERS>". Fix: the
+field uppercases a typed key, not its placeholder. Test: a selection of two switches with different triggers shows the
+placeholder as the editor sets it, and pushes nothing; it fails on `master`.
+
 ## 4. In code plan 4 rewrites
 
 ### 4.1 An IC's tooltip comes back after a language change
@@ -544,6 +551,7 @@ Each of these exists on `master`, and its fix is another plan's decision:
 | P2.21 | A display's small picture (§3.13) | P1.4 | as the reproduction shows |
 | P2.22 | A flipped IC reopened (§3.14) | P1.6, P1.8 | as the reproduction shows |
 | P2.23 | An empty Text's hint (§3.15) | the helpers only | none expected |
+| P2.49 | The trigger placeholder's case (§3.16) | the helpers only | none expected |
 | P2.24 | An IC's tooltip (§4.1) | the helpers only | none expected |
 | P2.25 | The rebuild's edge (§5.1) | P1.13, P1.20 | plan 1's fast-path test, reworked |
 | P2.26 | A connected input keeps its wire (§5.2) | P1.5 | none expected (unchanged on the branch) |
@@ -645,7 +653,8 @@ user's choice between workable options).
 - **Plan 3** keeps §3's fixes as it rebuilds the element types: the open-input defaults and the maximum port counts in
   each descriptor; the undoable AudioBox, trigger and input operations; no appearance where none is drawn; the themed
   pictures; the morph's undo; the property command, moved onto the schema; the Tx rule and MCP's validation, held once
-  in the schema; the lock's tooltip; the display's bounds; the IC's turning centre; the Text's hint.
+  in the schema; the lock's tooltip; the display's bounds; the IC's turning centre; the Text's hint; the trigger
+  placeholder's case.
 - **Plan 4** keeps the IC's tooltip and the embed and extract on every selected IC, fixes the three defects of §8
   that change the format, and adds the saved pin order with snapping on load.
 - **Plan 5** lists `master`'s Rx override, the slow clock and the tick engine's contradiction among its differences
