@@ -322,6 +322,24 @@ triggers, the placeholder the editor fills in ("<Many triggers>", translated) sh
 field uppercases a typed key, not its placeholder. Test: a selection of two switches with different triggers shows the
 placeholder as the editor sets it, and pushes nothing; it fails on `master`.
 
+### 3.17 A custom picture that no longer loads
+
+On `master` a picture that does not load (its file gone, or not an image) throws from wherever it is applied: a
+switch's toggle or a key, the simulation's refresh, an undo or redo through `QUndoStack`, the property editor's picker.
+On Linux the throw reaches `Application::notify()`; on macOS it cannot pass Qt's frames and ends the application
+(§12). The element draws the type's first default meanwhile, whatever the slot: a switch turned on draws its off
+picture. Brought in from plan 3's rule (P3.D6), as a fix to `master` (P2.50): the slot shows its own default and keeps
+its path, and the change, refresh or restore goes on, so an undo steps the stack. Opening a file still reports it,
+once the element's state has picked the picture it shows (a switch saved on reports its on picture), and the open
+fails as on `master`. The picker refuses a file that does not load before anything changes, with a warning: the
+element would draw its default and keep the path. MCP's `set_element_properties` no longer throws on such a picture
+but applies it; §3.11 refuses it.
+
+Tests: a missing and an undecodable picture each show the slot's default; a morph's undo and a snapshot's undo with
+the picture gone step the stack and show the default; the picker's two paths (the states' grid and the whole element)
+change nothing; opening a file with the picture gone reports it. Each fails on `master` but the last, which holds
+`master`'s report.
+
 ## 4. In code plan 4 rewrites
 
 ### 4.1 An IC's tooltip comes back after a language change
@@ -557,6 +575,7 @@ Each of these exists on `master`, and its fix is another plan's decision:
 | P2.22 | A flipped IC reopened (§3.14) | P1.6, P1.8 | as the reproduction shows |
 | P2.23 | An empty Text's hint (§3.15) | the helpers only | none expected |
 | P2.49 | The trigger placeholder's case (§3.16) | the helpers only | none expected |
+| P2.50 | A picture that no longer loads (§3.17) | P1.10 | the strings golden's two picker strings |
 | P2.24 | An IC's tooltip (§4.1) | the helpers only | none expected |
 | P2.25 | The rebuild's edge (§5.1) | P1.13, P1.20 | plan 1's fast-path test, reworked |
 | P2.26 | A connected input keeps its wire (§5.2) | P1.5 | none expected (unchanged on the branch) |
@@ -656,8 +675,8 @@ user's choice between workable options).
   command again, which then passes (a failed path is not loaded twice) and steps. In the application on Linux the
   throw reaches `Application::notify()`, which reports it; on macOS it cannot pass `QUndoStack`'s frames and ends the
   application (seen on CI through P2.16's test, P2.50). A restore whose picture is the one already drawn does not
-  load it and does not throw. Plan 3 settles the rule (P3.D6: the slot shows its default and the restore goes on),
-  which also steps the stack; whether plan 2 brings it in now, for macOS, is the user's choice (P2.50).
+  load it and does not throw. Plan 3's rule (P3.D6: the slot shows its default and the restore goes on), which also
+  steps the stack, is brought into plan 2 by the user's choice, 2026-10-24, as §3.17 (P2.50).
 - **The priority walk's fix against plan 1's traces** (§5.3): measured first; with traces changed, the user decides
   (P2.36).
 - **When the fuzz harnesses run** (P2.37): settled by the user, on the user's machine overnight, not in CI (P2.D10).
@@ -668,8 +687,7 @@ user's choice between workable options).
   each descriptor; the undoable AudioBox, trigger and input operations; no appearance where none is drawn; the themed
   pictures; the morph's undo; the property command, moved onto the schema; the Tx rule and MCP's validation, held once
   in the schema; the lock's tooltip; the display's bounds; the IC's turning centre; the Text's hint; the trigger
-  placeholder's case. Its rule for a custom picture that no longer loads (P3.D6) also ends `master`'s undo that throws
-  without stepping the stack (§12).
+  placeholder's case; a custom picture that no longer loads showing its slot's default (§3.17, plan 3's P3.D6).
 - **Plan 4** keeps the IC's tooltip and the embed and extract on every selected IC, fixes the three defects of §8
   that change the format, and adds the saved pin order with snapping on load.
 - **Plan 5** lists `master`'s Rx override, the slow clock and the tick engine's contradiction among its differences

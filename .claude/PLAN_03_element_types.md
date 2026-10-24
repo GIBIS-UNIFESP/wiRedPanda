@@ -415,8 +415,9 @@ unlit display goldens. Plan 9's sprites are keyed by it.
 ### 3.11 Pictures that change or fail
 
 - A custom picture that no longer loads shows its slot's default and the restore goes on, in a state change and in a
-  snapshot's restore alike; opening a file still reports it (P3.D6). On the branch a slot whose file failed showed the
-  other state's default, nothing reported it, and undoing a morph whose picture was gone threw and leaked.
+  snapshot's restore alike; opening a file still reports it (P3.D6). Plan 2 brings it to `master` (its §3.17), and
+  plan 3 keeps it. On the branch a slot whose file failed showed the other state's default, nothing reported it, and
+  undoing a morph whose picture was gone threw and leaked.
 - A new or failed version of a picture file is the picture of every element showing that path, so each of them
   measures it again and its bounds follow the picture it draws; on the branch only the element that loaded it was
   measured. A slot with no default of its own shows the type's first default.
