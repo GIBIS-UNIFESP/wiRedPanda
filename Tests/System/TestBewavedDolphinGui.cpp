@@ -688,6 +688,45 @@ void TestBewavedDolphinGui::testSaveToTxtOutput()
     QVERIFY(lines[2].startsWith("0001"));
 }
 
+void TestBewavedDolphinGui::testSaveToTxtSplitsAfterTheLastInputPort()
+{
+    // One input element with two ports: the blank line between inputs and outputs follows
+    // the input rows, one per port, not the count of input elements.
+    auto ws = std::make_unique<WorkSpace>();
+    auto *scene = ws->scene();
+
+    auto *rotary = new InputRotary();
+    auto *led = new Led();
+    scene->addItem(rotary);
+    scene->addItem(led);
+    rotary->setLabel("ROT");
+    led->setLabel("OUT");
+    QCOMPARE(rotary->outputSize(), 2);
+
+    CircuitBuilder builder(scene);
+    builder.connect(rotary, 1, led, 0);
+
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+    const auto *model = dolphin->model();
+    QCOMPARE(model->inputRows(), 2);
+    QCOMPARE(model->rowCount(), 3);
+
+    QString output;
+    QTextStream stream(&output);
+    dolphin->saveToTxt(stream);
+    stream.flush();
+
+    const QStringList lines = output.split('\n');
+    QCOMPARE(lines.size(), 5); // two input rows, the blank line, one output row, the final newline
+    for (int row = 0; row < 2; ++row) {
+        const QString header = model->headerData(row, Qt::Vertical).toString();
+        QVERIFY2(lines.at(row).endsWith(QStringLiteral(" : \"%1\"").arg(header)), qPrintable(lines.at(row)));
+    }
+    QCOMPARE(lines.at(2), QString());
+    QVERIFY2(lines.at(3).endsWith(" : \"OUT\""), qPrintable(lines.at(3)));
+    QCOMPARE(lines.at(4), QString());
+}
+
 // ===========================================================================
 // Missing coverage
 // ===========================================================================

@@ -518,7 +518,7 @@ void BewavedDolphin::saveToTxt(QTextStream &stream)
     }
     WaveformSimulator::restoreInputs(m_inputs, m_oldInputValues);
 
-    DolphinExporter::writeTruthTableText(stream, &truthTable, static_cast<int>(m_inputs.size()));
+    DolphinExporter::writeTruthTableText(stream, &truthTable, m_inputPorts);
 }
 
 bool BewavedDolphin::exportToPng(const QString &filename)

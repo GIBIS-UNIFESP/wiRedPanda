@@ -68,6 +68,7 @@ private slots:
     // --- Text output ---
 
     void testSaveToTxtOutput();
+    void testSaveToTxtSplitsAfterTheLastInputPort();
 
     // --- Missing coverage ---
 
