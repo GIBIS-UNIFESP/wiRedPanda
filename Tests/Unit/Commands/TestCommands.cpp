@@ -956,7 +956,12 @@ void TestCommands::testUpdateCommandPreservesClockPhase()
     auto *andGate = new And();
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{clock, andGate}, scene));
 
-    // AddItemsCommand's structural reinit already ran resetClock(), forcing the clock HIGH.
+    // Locked, the clock does not follow wall time, so only a rebuild's resetClock() moves it.
+    clock->setLocked(true);
+    // The first update after a structural edit rebuilds the simulation, forcing the clock HIGH.
+    auto *sim = scene->simulation();
+    sim->update();
+    QCOMPARE(clock->isOn(), true);
     // Force it LOW to give an unambiguous signal: only a resetClock() call would flip it back.
     clock->setOn(false);
     QCOMPARE(clock->isOn(), false);
@@ -969,6 +974,7 @@ void TestCommands::testUpdateCommandPreservesClockPhase()
     andGate->setLabel("Renamed"); // unrelated, non-structural property edit
     scene->receiveCommand(new UpdateCommand(QList<GraphicElement *>{andGate}, oldData, scene));
 
+    sim->update(); // a rebuild requested by the command would run here
     QCOMPARE(clock->isOn(), false);
 }
 
@@ -1032,6 +1038,10 @@ void TestCommands::testUpdateCommandNonWirelessNodeEditKeepsFastPath()
     auto *node = new Node(); // plain junction, WirelessMode::None
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{clock, node}, scene));
 
+    clock->setLocked(true); // only a rebuild's resetClock() moves it, not wall time
+    auto *sim = scene->simulation();
+    sim->update(); // the structural edit's rebuild, forcing the clock HIGH
+    QCOMPARE(clock->isOn(), true);
     clock->setOn(false); // unambiguous signal: only a resetClock() would flip it back HIGH
     QCOMPARE(clock->isOn(), false);
 
@@ -1042,6 +1052,7 @@ void TestCommands::testUpdateCommandNonWirelessNodeEditKeepsFastPath()
     node->setLabel("junction-42"); // decorative label on a None-mode node — not a channel
     scene->receiveCommand(new UpdateCommand(QList<GraphicElement *>{node}, oldData, scene));
 
+    sim->update(); // a rebuild requested by the command would run here
     QCOMPARE(clock->isOn(), false); // no Simulation::initialize(), no resetClock()
 }
 
