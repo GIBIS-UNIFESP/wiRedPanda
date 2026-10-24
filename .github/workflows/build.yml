@@ -88,7 +88,6 @@ jobs:
 
     - name: Install Python Dependencies
       run: |
-        pip install --upgrade pip
         pip install -r MCP/Client/requirements.txt
 
     - name: Work around flaky packages.microsoft.com apt mirror

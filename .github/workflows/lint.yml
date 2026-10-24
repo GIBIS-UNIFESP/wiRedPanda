@@ -61,7 +61,6 @@ jobs:
 
     - name: Install Python Dependencies
       run: |
-        pip install --upgrade pip
         pip install -r requirements.txt
 
     # Lint steps run sequentially with default fail-fast: the first failure
@@ -114,7 +113,6 @@ jobs:
 
     - name: Install Python Dependencies
       run: |
-        pip install --upgrade pip
         pip install -r MCP/Client/requirements.txt
 
     - name: ruff check
