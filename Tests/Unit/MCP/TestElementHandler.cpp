@@ -3,6 +3,8 @@
 
 #include "Tests/Unit/MCP/TestElementHandler.h"
 
+#include <QCoreApplication>
+#include <QDir>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -22,6 +24,7 @@
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
 #include "MCP/Server/Core/JsonRpcError.h"
+#include "MCP/Server/Core/MCPValidator.h"
 #include "MCP/Server/Handlers/ElementHandler.h"
 #include "Tests/Common/Goldens.h"
 #include "Tests/Common/TestUtils.h"
@@ -784,6 +787,46 @@ void TestElementHandler::testHandleGetOutputValueReturnsInputElementValue()
     QCOMPARE(response["result"].toObject()["value"].toBool(), true);
 }
 
+void TestElementHandler::testHandleGetOutputValueOfAnInputReportsEachPortsStatus()
+{
+    MainWindow window;
+    ElementHandler handler(&window, nullptr);
+    MCPValidator validator(QDir(QCoreApplication::applicationDirPath()).absoluteFilePath("schema-mcp.json"));
+    QVERIFY(validator.isSchemaLoaded());
+
+    const auto read = [&handler](int id, int port) {
+        return handler.handleCommand("get_output_value", {{"element_id", id}, {"port", port}}, 1);
+    };
+
+    const int switchId = createElement(handler, "InputSwitch");
+    auto *inputSwitch = dynamic_cast<GraphicElementInput *>(elementById(window, switchId));
+    QVERIFY(inputSwitch);
+    inputSwitch->setOn(false);
+    QJsonObject response = read(switchId, 0);
+    ValidationResult valid = validator.validateResponse(response, "get_output_value");
+    QVERIFY2(valid.isValid, qPrintable(valid.errorMessage));
+    QCOMPARE(response["result"].toObject()["status"].toString(), QStringLiteral("low"));
+
+    inputSwitch->setOn(true);
+    response = read(switchId, 0);
+    QCOMPARE(response["result"].toObject()["status"].toString(), QStringLiteral("high"));
+    QCOMPARE(response["result"].toObject()["value"].toBool(), true);
+
+    // A rotary is on at one port only: each port reads its own state
+    const int rotaryId = createElement(handler, "InputRotary");
+    auto *rotary = dynamic_cast<GraphicElementInput *>(elementById(window, rotaryId));
+    QVERIFY(rotary);
+    rotary->setOn(true, 1);
+    response = read(rotaryId, 1);
+    valid = validator.validateResponse(response, "get_output_value");
+    QVERIFY2(valid.isValid, qPrintable(valid.errorMessage));
+    QCOMPARE(response["result"].toObject()["status"].toString(), QStringLiteral("high"));
+    QCOMPARE(read(rotaryId, 0)["result"].toObject()["status"].toString(), QStringLiteral("low"));
+
+    const QJsonObject outOfRange = handler.handleCommand("get_output_value", {{"element_id", rotaryId}, {"port", 2}}, 1);
+    QCOMPARE(outOfRange["error"].toObject()["code"].toInt(), JsonRpcError::ValidationError);
+}
+
 void TestElementHandler::testHandleGetOutputValueReturnsGenericElementValue()
 {
     MainWindow window;
@@ -1270,11 +1313,15 @@ void TestElementHandler::testResponsesMatchGolden()
     // Every creatable type, alone in a new tab so its id is always 1: what each element command responds, result or
     // error, in a fixed order that ends with a write of every property and the element's deletion. morph_element and
     // update_element are left out, since they echo their parameters. A Text element's size is its text's, which
-    // follows the font, so the golden holds its sizes masked.
+    // follows the font, so the golden holds its sizes masked. Each response must also pass the schema, as the server
+    // checks every response before sending it.
     MainWindow window;
     ElementHandler handler(&window, nullptr);
+    MCPValidator validator(QDir(QCoreApplication::applicationDirPath()).absoluteFilePath("schema-mcp.json"));
+    QVERIFY(validator.isSchemaLoaded());
 
     QStringList lines;
+    QStringList invalid;
     for (const ElementType type : TestUtils::dumpedTypes()) {
         const QString typeName = TestUtils::snapshotType(type);
         if (!ElementFactory::hasCreator(type)) {
@@ -1283,7 +1330,11 @@ void TestElementHandler::testResponsesMatchGolden()
         }
         window.createNewTab();
         const auto send = [&](const QString &command, const QJsonObject &params) {
-            const QJsonObject response = handler.handleCommand(command, params, {});
+            const QJsonObject response = handler.handleCommand(command, params, 1);
+            const ValidationResult valid = validator.validateResponse(response, command);
+            if (!valid.isValid) {
+                invalid << QString("%1 %2: %3").arg(typeName, command, valid.errorMessage.trimmed());
+            }
             const bool failed = response.contains("error");
             const QJsonValue raw = response[failed ? "error" : "result"];
             const QJsonObject body = ((type == ElementType::Text) ? maskFontSizes(raw) : raw).toObject();
@@ -1314,6 +1365,8 @@ void TestElementHandler::testResponsesMatchGolden()
                                         {"appearance", ""}, {"wireless_mode", 1}, {"rotation", 180}});
         send("delete_element", {{"element_id", id}});
     }
+
+    QVERIFY2(invalid.isEmpty(), qPrintable(invalid.join('\n')));
 
     const QString golden = QString(QUOTE(CURRENTDIR)) + "/Integration/Properties/mcp_responses.txt";
     const QString mismatch = TestUtils::compareWithGolden(golden, lines.join('\n') + '\n');
