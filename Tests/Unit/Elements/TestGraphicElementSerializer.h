@@ -11,6 +11,8 @@ class TestGraphicElementSerializer : public QObject
 
 private slots:
     // readPortList() truncated-stream guards
+    void testLoadRefusesPortCountsAboveTheTypeMaximum();
+    void testLoadRefusesDemuxInputsItsOutputsDoNotNeed();
     void testReadPortListCountReadFailureThrows();
     void testReadPortListEntryReadFailureThrows();
 

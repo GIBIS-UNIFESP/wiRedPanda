@@ -87,6 +87,7 @@ DFlipFlop	D-Flip-Flop
 DLatch	D-LATCH
 DLatch	D-Latch
 DeleteItemsCommand	Delete %1 elements
+Demux	%1 with %2 input ports for %3 outputs, where it has %4 — stream may be corrupt
 Demux	DEMULTIPLEXER
 Demux	Demux
 Display14	14-SEGMENT DISPLAY
@@ -270,6 +271,8 @@ ExportController	SystemVerilog file
 ExportController	The .panda file is empty.
 FlipCommand	Flip %1 elements in axis %2
 GraphicElement	Default
+GraphicElementSerializer	%1 with %2 input ports, above its maximum of %3 — stream may be corrupt
+GraphicElementSerializer	%1 with %2 output ports, above its maximum of %3 — stream may be corrupt
 GraphicElementSerializer	Appearance index %1 out of range (size=%2) for appearance name "%3" — stream may be corrupt
 GraphicElementSerializer	Appearance index %1 out of range (size=%2) — stream may be corrupt
 GraphicElementSerializer	Non-finite element position — stream may be corrupt

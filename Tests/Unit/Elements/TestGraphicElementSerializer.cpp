@@ -13,9 +13,11 @@
 #include "App/Core/Common.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/And.h"
+#include "App/Element/GraphicElements/Demux.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Line.h"
+#include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/GraphicElementSerializer.h"
 #include "App/Element/IC.h"
 #include "App/IO/SerializationContext.h"
@@ -23,6 +25,66 @@
 #include "App/Versions.h"
 #include "App/Wiring/Port.h"
 #include "Tests/Common/TestUtils.h"
+
+namespace TestGraphicElementSerializerHelpers {
+
+/// Loads \a element from a current-format stream listing \a inputs and \a outputs unnamed ports; false if refused.
+bool loadsWithPorts(GraphicElement &element, const int inputs, const int outputs)
+{
+    QByteArray data;
+    QDataStream writeStream(&data, QIODevice::WriteOnly);
+    writeStream << quint32(0); // properties map: empty
+    for (const int count : {inputs, outputs}) {
+        writeStream << quint32(count);
+        for (int i = 0; i < count; ++i) {
+            writeStream << quint32(0); // each port entry is an (empty) metadata map
+        }
+    }
+    writeStream << quint32(0); // appearances: none
+    writeStream << quint32(0); // a truth table's own map: empty; other types leave it unread
+
+    QHash<quint64, Port *> portMap;
+    SerializationContext context = {portMap, FormatRev::current, SerializationPurpose::PortableFile};
+    QDataStream readStream(data);
+    try {
+        element.load(readStream, context);
+    } catch (const Pandaception &) {
+        return false;
+    }
+    return true;
+}
+
+} // namespace TestGraphicElementSerializerHelpers
+
+using TestGraphicElementSerializerHelpers::loadsWithPorts;
+
+void TestGraphicElementSerializer::testLoadRefusesPortCountsAboveTheTypeMaximum()
+{
+    // A truth table's key holds exactly its maximum rows and columns, so one port more reads past it when simulated
+    TruthTable atMaximum;
+    QVERIFY(loadsWithPorts(atMaximum, atMaximum.maxInputSize(), atMaximum.maxOutputSize()));
+    QCOMPARE(atMaximum.inputSize(), 8);
+    QCOMPARE(atMaximum.outputSize(), 8);
+
+    TruthTable oneInputMore;
+    QVERIFY(!loadsWithPorts(oneInputMore, oneInputMore.maxInputSize() + 1, oneInputMore.maxOutputSize()));
+    TruthTable oneOutputMore;
+    QVERIFY(!loadsWithPorts(oneOutputMore, oneOutputMore.maxInputSize(), oneOutputMore.maxOutputSize() + 1));
+}
+
+void TestGraphicElementSerializer::testLoadRefusesDemuxInputsItsOutputsDoNotNeed()
+{
+    // A Demux has its data input and the select lines its outputs need: 2 inputs for 2 outputs, 3 for 4, 4 for 8
+    Demux eightOutputs;
+    QVERIFY(loadsWithPorts(eightOutputs, 4, 8));
+    Demux fourOutputs;
+    QVERIFY(loadsWithPorts(fourOutputs, 3, 4));
+
+    Demux missingSelectLines;
+    QVERIFY(!loadsWithPorts(missingSelectLines, 2, 8));
+    Demux surplusInputs;
+    QVERIFY(!loadsWithPorts(surplusInputs, 4, 2));
+}
 
 void TestGraphicElementSerializer::testReadPortListCountReadFailureThrows()
 {

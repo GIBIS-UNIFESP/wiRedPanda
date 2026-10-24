@@ -43,6 +43,11 @@ public:
     /// Routes the data input to the output selected by the select lines.
     void updateLogic() override;
 
+    // --- Serialization ---
+
+    /// \reimp Refuses inputs other than the data input and the select lines the outputs need.
+    void load(QDataStream &stream, SerializationContext &context) override;
+
 private:
     void generatePixmap();
 
