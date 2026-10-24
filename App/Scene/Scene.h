@@ -80,6 +80,11 @@ public:
     /// see resizeScene()'s isDraggingElement() branch.
     [[nodiscard]] QRectF cachedItemsBoundingRect() const;
 
+    /// The bounds of the circuit: its elements' and wires', with their children (labels, ports). The scene's
+    /// interface items are not circuit: the rubber band, which keeps its last rectangle while hidden, and the port
+    /// hover labels. Empty when the circuit is.
+    [[nodiscard]] QRectF circuitBoundingRect() const;
+
     // --- Adaptive wire antialiasing ---
     //
     // Antialiased wire strokes cost ~5x the raster time of plain ones, and on a large clocked

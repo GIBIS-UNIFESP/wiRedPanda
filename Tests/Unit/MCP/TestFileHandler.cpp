@@ -20,6 +20,7 @@
 #include "App/UI/MainWindow.h"
 #include "MCP/Server/Core/JsonRpcError.h"
 #include "MCP/Server/Handlers/FileHandler.h"
+#include "Tests/Common/Goldens.h"
 
 namespace {
 
@@ -241,6 +242,30 @@ void TestFileHandler::testHandleExportImageRejectsNoScene()
     const QJsonObject response = handler.handleCommand("export_image", {{"filename", "x.png"}, {"format", "png"}}, 1);
     QVERIFY2(response.contains("error"), qPrintable(QJsonDocument(response).toJson()));
     QCOMPARE(response["error"].toObject()["code"].toInt(), JsonRpcError::SceneNotAvailable);
+}
+
+void TestFileHandler::testHandleExportImageRejectsEmptyCircuit()
+{
+    MainWindow window;
+    FileHandler handler(&window, nullptr);
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const auto expectRefused = [&handler](const QString &path) {
+        const QJsonObject response = handler.handleCommand("export_image", {{"filename", path}, {"format", "png"}}, 1);
+        QVERIFY2(response.contains("error"), qPrintable(QJsonDocument(response).toJson()));
+        QCOMPARE(response["error"].toObject()["code"].toInt(), JsonRpcError::OperationFailed);
+        QVERIFY(!QFile::exists(path));
+    };
+
+    // The rubber-band selection item is in the scene from the start, empty at the origin; it is not circuit
+    expectRefused(dir.filePath("new.png"));
+
+    // A rubber band dragged over empty space leaves its rectangle on the hidden selection item
+    TestUtils::ScenePointer pointer(window.currentTab()->scene());
+    pointer.press(QPointF(100, 100));
+    pointer.move(QPointF(300, 250));
+    pointer.release(QPointF(300, 250));
+    expectRefused(dir.filePath("dragged.png"));
 }
 
 void TestFileHandler::testHandleExportImageRejectsUnsupportedFormat()

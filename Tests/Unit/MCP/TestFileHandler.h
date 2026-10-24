@@ -34,6 +34,7 @@ private slots:
     void testHandleExportImageRejectsMissingParams();
     void testHandleExportImageRejectsEmptyFilenameOrFormat();
     void testHandleExportImageRejectsNoScene();
+    void testHandleExportImageRejectsEmptyCircuit();
     void testHandleExportImageRejectsUnsupportedFormat();
     void testHandleExportImageExportsRealPng();
     void testHandleExportImageExportsRealSvg();
