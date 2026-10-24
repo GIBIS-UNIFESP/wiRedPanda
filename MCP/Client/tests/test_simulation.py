@@ -48,7 +48,7 @@ class SimulationTests(MCPTestBase):
 
         # Early return if element creation failed
         if not input_id or not output_id:
-            print("❌ Failed to create required elements for simulation test")
+            self.report_failure("Failed to create required elements for simulation test")
 
             return all_passed
 

@@ -67,7 +67,7 @@ class WaveformAnalysisTests(MCPTestBase):
         mapping = await self.create_circuit_from_spec(waveform_circuit)
 
         if len(mapping) != 2:
-            print("❌ Waveform circuit creation failed")
+            self.report_failure("Waveform circuit creation failed")
             print("   Expected: Basic input-output circuit for waveform testing")
             print("   Analysis: Circuit construction for waveform generation failed")
             return all_passed
@@ -207,7 +207,7 @@ class WaveformAnalysisTests(MCPTestBase):
 
         # Early return if insufficient waveform data
         if len(waveform_data) < 8:
-            print("❌ Insufficient waveform data collected for timing analysis")
+            self.report_failure("Insufficient waveform data collected for timing analysis")
             print("   Expected: At least 8 time steps for correlation analysis")
             print("   Analysis: Waveform timing data collection failed")
 
@@ -228,21 +228,11 @@ class WaveformAnalysisTests(MCPTestBase):
 
         correlation_percentage = (input_output_correlation / len(waveform_data)) * 100
 
-        # Exact correlation validation - expect >=90% for proper timing
-        expected_min_correlation = 90.0
-        if timing_correct and correlation_percentage == expected_min_correlation:
-            print(f"📋 Waveform timing correlation at threshold: {correlation_percentage:.1f}%")
-            print("📋 BewavedDolphin-style waveform validation at minimum acceptable level")
-        elif timing_correct and correlation_percentage > expected_min_correlation:
+        # The LED is wired straight to the input, so with zero-delay logic it follows the input at every step
+        if timing_correct:
             self.infrastructure.output.success(f"✅ Waveform timing correlation: {correlation_percentage:.1f}%")
         else:
-            print(
-                f"❌ Waveform timing correlation: {correlation_percentage:.1f}% "
-                f"(expected ≥{expected_min_correlation:.1f}%)"
-            )
-            print("❌ Input-output correlation test failed")
-            print("   Expected: Output should follow input with high correlation")
-            print("   Analysis: Signal propagation issue detected")
+            self.report_failure(f"Output followed the input at {correlation_percentage:.1f}% of steps, not all")
 
         return all_passed
 
@@ -355,11 +345,11 @@ class WaveformAnalysisTests(MCPTestBase):
                     print("   Analysis: Pattern recognition challenges detected")
                     print("   Impact: Complex waveform patterns may be unreliable")
             else:
-                print("❌ Insufficient pattern data for recognition analysis")
+                self.report_failure("Insufficient pattern data for recognition analysis")
                 print("   Expected: At least 6 data points for pattern analysis")
                 print("   Analysis: Pattern data collection incomplete")
         else:
-            print("❌ Pattern recognition circuit creation failed")
+            self.report_failure("Pattern recognition circuit creation failed")
             print("   Expected: Basic circuit for pattern recognition testing")
             print("   Analysis: Circuit setup for pattern recognition failed")
 
@@ -470,11 +460,11 @@ class WaveformAnalysisTests(MCPTestBase):
                         print("   Analysis: Complex waveform generation affected by propagation issues")
                         print("   Impact: Multi-signal timing diagrams unreliable")
             else:
-                print("❌ Multi-signal waveform test incomplete")
+                self.report_failure("Multi-signal waveform test incomplete")
                 print("   Expected: Complete truth table waveform data")
                 print("   Analysis: Multi-signal waveform data collection failed")
         else:
-            print("❌ Multi-signal circuit creation failed")
+            self.report_failure("Multi-signal circuit creation failed")
             print("   Expected: Complex circuit for multi-signal waveform testing")
             print("   Analysis: Multi-signal circuit construction failed")
 
@@ -551,7 +541,7 @@ class WaveformAnalysisTests(MCPTestBase):
                     self.test_results.errors.append("test_waveform_not_gate_analysis: No waveform data returned")
             # Note: assert_success already handles failure cases
         else:
-            print("❌ Failed to create NOT gate waveform analysis circuit")
+            self.report_failure("Failed to create NOT gate waveform analysis circuit")
 
         return all_passed
 
@@ -651,7 +641,7 @@ class WaveformAnalysisTests(MCPTestBase):
                     )
             # Note: assert_success already handles failure cases
         else:
-            print("❌ Failed to create D-latch waveform analysis circuit")
+            self.report_failure("Failed to create D-latch waveform analysis circuit")
 
         return all_passed
 
@@ -724,6 +714,6 @@ class WaveformAnalysisTests(MCPTestBase):
             else:
                 self.test_results.errors.append("test_waveform_export_formats: Waveform generation failed")
         else:
-            print("❌ Failed to create waveform export test circuit")
+            self.report_failure("Failed to create waveform export test circuit")
 
         return all_passed

@@ -585,7 +585,7 @@ class SequentialTests(MCPTestBase):
                 print("   Expected: Reset should clear states effectively across cycles")
                 print("   Impact: System reset reliability issues")
         else:
-            print("❌ No reset cycles detected in timing test")
+            self.report_failure("No reset cycles detected in timing test")
             print("   Analysis: Reset timing test configuration error")
 
         return all_passed

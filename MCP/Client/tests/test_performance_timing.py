@@ -52,10 +52,10 @@ class PerformanceTimingTests(MCPTestBase):
         new_circuit_time = time.time() - start_time
         all_passed &= await self.assert_success(resp, "Performance: new_circuit timing")
 
-        # Performance timing validation - expect sub-second performance
+        # Slower than a second is recorded as a limitation: a wall-time bound is monitored, not enforced
         expected_max_time = 1.0
         if new_circuit_time > expected_max_time:
-            print(f"❌ Slow new_circuit: {new_circuit_time:.3f}s (expected ≤{expected_max_time:.1f}s)")
+            self.record_limitation(f"Slow new_circuit: {new_circuit_time:.3f}s (expected ≤{expected_max_time:.1f}s)")
         else:
             self.infrastructure.output.success(f"✅ Fast new_circuit: {new_circuit_time:.3f}s")
 
@@ -91,11 +91,11 @@ class PerformanceTimingTests(MCPTestBase):
         avg_create_time = sum(element_times) / len(element_times)
         max_create_time = max(element_times)
 
-        # Performance timing validation - expect sub-500ms performance
+        # Slower than 500 ms is recorded as a limitation: a wall-time bound is monitored, not enforced
         expected_max_create_time = 0.5
         if max_create_time > expected_max_create_time:
-            print(
-                f"❌ Slow element creation: max {max_create_time:.3f}s, avg {avg_create_time:.3f}s "
+            self.record_limitation(
+                f"Slow element creation: max {max_create_time:.3f}s, avg {avg_create_time:.3f}s "
                 f"(expected ≤{expected_max_create_time:.1f}s)"
             )
         else:
@@ -127,10 +127,10 @@ class PerformanceTimingTests(MCPTestBase):
         list_time = time.time() - start_time
         all_passed &= await self.assert_success(resp, "Performance: list_elements timing")
 
-        # Performance timing validation - expect sub-200ms performance
+        # Slower than 200 ms is recorded as a limitation: a wall-time bound is monitored, not enforced
         expected_max_list_time = 0.2
         if list_time > expected_max_list_time:
-            print(f"❌ Slow list_elements: {list_time:.3f}s (expected ≤{expected_max_list_time:.1f}s)")
+            self.record_limitation(f"Slow list_elements: {list_time:.3f}s (expected ≤{expected_max_list_time:.1f}s)")
         else:
             self.infrastructure.output.success(f"✅ Fast list_elements: {list_time:.3f}s")
 
@@ -156,10 +156,12 @@ class PerformanceTimingTests(MCPTestBase):
         sim_start_time = time.time() - start_time
         all_passed &= await self.assert_success(resp, "Performance: simulation start timing")
 
-        # Performance timing validation - expect sub-500ms performance
+        # Slower than 500 ms is recorded as a limitation: a wall-time bound is monitored, not enforced
         expected_max_sim_time = 0.5
         if sim_start_time > expected_max_sim_time:
-            print(f"❌ Slow simulation start: {sim_start_time:.3f}s (expected ≤{expected_max_sim_time:.1f}s)")
+            self.record_limitation(
+                f"Slow simulation start: {sim_start_time:.3f}s (expected ≤{expected_max_sim_time:.1f}s)"
+            )
         else:
             self.infrastructure.output.success(f"✅ Fast simulation start: {sim_start_time:.3f}s")
 
@@ -189,7 +191,7 @@ class PerformanceTimingTests(MCPTestBase):
             rapid_time = time.time() - start_time
             rapid_fire_times.append(rapid_time)
             if not resp.success:
-                print(f"❌ Rapid fire command {i} failed")
+                self.report_failure(f"Rapid fire command {i} failed")
                 break
         else:
             avg_rapid_time = sum(rapid_fire_times) / len(rapid_fire_times)
