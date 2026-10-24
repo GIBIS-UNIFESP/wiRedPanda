@@ -393,6 +393,10 @@ python MCP/Client/examples/simple_circuit.py
 cd MCP/Client
 pip install -r requirements.txt
 
+# After changing a dependency in requirements.in, regenerate the lock, which pins
+# every package CI installs on every platform
+uv pip compile requirements.in --universal --python-version 3.14 -o requirements.txt
+
 # Run linting and type checking
 pylint *.py
 ```

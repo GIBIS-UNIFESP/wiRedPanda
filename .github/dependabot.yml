@@ -25,3 +25,29 @@ updates:
         update-types:
           - "minor"
           - "patch"
+
+  # The MCP client's Python tooling: requirements.in declares it, requirements.txt is the lock compiled from it with
+  # `uv pip compile`, which this ecosystem reruns
+  - package-ecosystem: "uv"
+    directory: "/MCP/Client"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "ci"
+      prefix-development: "ci"
+      include: "scope"
+    reviewers:
+      - "darktorres"
+    labels:
+      - "dependencies"
+      - "python"
+    groups:
+      python-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"

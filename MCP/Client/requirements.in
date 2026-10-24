@@ -1,0 +1,26 @@
+# Core formatters and linters
+ruff>=0.1.0,<0.16.0      # Fast Python linter + formatter + import sorter (replaces black, isort, and flake8)
+                         # <0.16.0: that release (2026-07-23) expanded ruff's default rule set from 59 to
+                         # 413 rules; since ruff.toml's extend-select ADDS to the defaults rather than
+                         # replacing them, the new default set brought in whole rule categories (BLE, S,
+                         # EXE, PYI, TC, DTZ, PIE) never selected here, on top of the deliberately curated
+                         # list -- confirmed via ruff's own changelog, not a real code-quality regression.
+pylint>=3.0.0            # Static analysis and linting
+mypy>=1.5.0              # Static type checker
+pyright>=1.1.300         # Microsoft's Python type checker
+pyrefly>=0.30.0          # Python refactoring tool
+vulture>=2.9.1           # Dead code finder
+deptry>=0.23.0           # Detect unused / missing / transitive dependencies
+import-linter>=2.0       # Enforce architectural layering (no domain → protocol, etc.)
+
+# Type checking and validation
+beartype>=0.15.0         # Runtime type checking
+pydantic>=2.4.0          # Data validation using Python type annotations
+jsonschema>=4.17.0       # JSON Schema validation
+
+# Type stubs for mypy
+types-jsonschema>=4.25.1 # Type stubs for jsonschema
+types-psutil>=7.0.0      # Type stubs for psutil
+
+# Testing and process monitoring
+psutil>=5.9.0            # System and process utilities (used in mcp_test_suite.py)

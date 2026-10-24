@@ -5,9 +5,12 @@
 # Override deptry's default exclude (which silently skips tests/) so checks
 # against test files (where psutil is imported, for example) work correctly.
 exclude = ["venv", "\\.venv", "\\.direnv", "\\.git", "setup\\.py"]
+# The declared dependencies, not requirements.txt: that is the lock compiled
+# from them, every transitive dependency included.
+requirements_files = ["requirements.in"]
 
 [tool.deptry.per_rule_ignores]
-# DEP002: declared in requirements.txt but never `import`ed. Each of these is
+# DEP002: declared in requirements.in but never `import`ed. Each of these is
 # either a dev CLI tool (no source `import` ever), or a typing-stub package
 # consumed implicitly by mypy / pyright at type-check time.
 DEP002 = [
