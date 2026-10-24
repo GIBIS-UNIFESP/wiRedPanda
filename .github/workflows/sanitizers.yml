@@ -55,7 +55,7 @@ jobs:
       matrix:
         sanitizer: [asan, ubsan]
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     name: Ubuntu Qt6.9.3 (${{ matrix.sanitizer }})
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
 
@@ -93,7 +93,7 @@ jobs:
     # of this). A hard crash under a sanitizer is rare (the sanitizer runtime
     # usually intercepts the underlying bug first), but when one does slip
     # through as a real SIGSEGV/SIGABRT, this is the only path to a backtrace.
-    # gdb is not preinstalled on GitHub's ubuntu-latest image (confirmed against
+    # gdb is not preinstalled on GitHub's ubuntu-24.04 image (confirmed against
     # actions/runner-images' own Ubuntu2404-Readme.md).
     - name: Configure core dumps
       run: |
