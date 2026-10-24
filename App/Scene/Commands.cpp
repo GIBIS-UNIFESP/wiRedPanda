@@ -5,6 +5,8 @@
 
 #include <algorithm>
 #include <cmath>
+#include <memory>
+#include <vector>
 
 #include <QCoreApplication>
 #include <QIODevice>
@@ -709,7 +711,7 @@ MorphCommand::MorphCommand(const QList<GraphicElement *> &elements, ElementType 
 
 void MorphCommand::restoreDeletedConnections(const QList<DeletedConnectionInfo> &deleted)
 {
-    // By this point transferConnections has already placed the restored elements in the
+    // By this point replaceElements has already placed the restored elements in the
     // scene under their original IDs, so itemById() resolves correctly.
     for (const auto &info : deleted) {
         auto *morphedElm = dynamic_cast<GraphicElement *>(m_scene->itemById(info.morphedElementId));
@@ -735,7 +737,7 @@ void MorphCommand::restoreDeletedConnections(const QList<DeletedConnectionInfo> 
 
 void MorphCommand::undo()
 {
-    // transferConnections() deletes the current elements; a sim tick on
+    // replaceElements() deletes the current elements; a sim tick on
     // the torn state between delete and setCircuitUpdateRequired() faults.
     SimulationBlocker blocker(m_scene->simulation());
 
@@ -743,12 +745,28 @@ void MorphCommand::undo()
     decltype(newElms) oldElms;
     oldElms.reserve(m_ids.size());
 
+    // The originals come back whole, from what redo() saved: what the new type does not share (a delay, a lock, a
+    // picture, inputs it cannot have) is not lost
+    QDataStream stream(&m_originals, QIODevice::ReadOnly);
+    const QVersionNumber version = Serialization::readPandaHeader(stream);
+    QHash<quint64, Port *> portMap;
+    auto context = m_scene->deserializationContext(portMap, version, SerializationPurpose::InMemorySnapshot);
+
+    // The rebuilt originals belong to this function until replaceElements() takes them into the scene, so a load that
+    // throws frees the ones already rebuilt and leaves the scene as it was
+    std::vector<std::unique_ptr<GraphicElement>> rebuilt;
+    rebuilt.reserve(static_cast<std::size_t>(m_ids.size()));
     for (int i = 0; i < m_ids.size(); ++i) {
-        oldElms << ElementFactory::buildElement(m_types.at(i));
+        rebuilt.emplace_back(ElementFactory::buildElement(m_types.at(i)));
+        rebuilt.back()->load(stream, context);
+        oldElms << rebuilt.back().get();
     }
 
     m_deletedConnectionsOnUndo.clear();
-    transferConnections(newElms, oldElms, &m_deletedConnectionsOnUndo);
+    replaceElements(newElms, oldElms, &m_deletedConnectionsOnUndo);
+    for (auto &elm : rebuilt) {
+        elm.release(); // the scene owns them now
+    }
 
     // Restore connections that were deleted when the last redo() morphed to a smaller element.
     restoreDeletedConnections(m_deletedConnections);
@@ -764,12 +782,25 @@ void MorphCommand::redo()
     decltype(oldElms) newElms;
     newElms.reserve(m_ids.size());
 
+    m_originals.clear();
+    QDataStream stream(&m_originals, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(stream);
+
+    // As in undo(): owned until replaceElements() takes them into the scene
+    std::vector<std::unique_ptr<GraphicElement>> rebuilt;
+    rebuilt.reserve(static_cast<std::size_t>(m_ids.size()));
     for (int i = 0; i < m_ids.size(); ++i) {
-        newElms << ElementFactory::buildElement(m_newType);
+        oldElms.at(i)->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
+        rebuilt.emplace_back(ElementFactory::buildElement(m_newType));
+        copyProperties(oldElms.at(i), rebuilt.back().get());
+        newElms << rebuilt.back().get();
     }
 
     m_deletedConnections.clear();
-    transferConnections(oldElms, newElms, &m_deletedConnections);
+    replaceElements(oldElms, newElms, &m_deletedConnections);
+    for (auto &elm : rebuilt) {
+        elm.release(); // the scene owns them now
+    }
 
     // Restore connections that were deleted when the last undo() reverted to a smaller
     // original type — symmetric with undo()'s restoration above, so a connection added
@@ -779,64 +810,67 @@ void MorphCommand::redo()
     m_scene->setCircuitUpdateRequired();
 }
 
-void MorphCommand::transferConnections(const QList<GraphicElement *> &from, const QList<GraphicElement *> &to,
-                                       QList<DeletedConnectionInfo> *deleted)
+void MorphCommand::copyProperties(const GraphicElement *oldElm, GraphicElement *newElm)
+{
+    newElm->setInputSize(oldElm->inputSize());
+    newElm->setPos(oldElm->pos());
+
+    // Not↔Node morphs need a 16px position adjustment because the two element
+    // types have different pixmap sizes and their visual centers differ by that amount
+    if ((oldElm->elementType() == ElementType::Not) && (newElm->elementType() == ElementType::Node)) {
+        newElm->moveBy(16, 16);
+    }
+
+    if ((oldElm->elementType() == ElementType::Node) && (newElm->elementType() == ElementType::Not)) {
+        newElm->moveBy(-16, -16);
+    }
+
+    // Copy over all compatible properties; each is guarded by capability checks
+    // so that mismatched element types are silently skipped
+    if (newElm->rotatesGraphic() && oldElm->rotatesGraphic()) {
+        newElm->setRotation(oldElm->rotation());
+    }
+
+    if (newElm->hasLabel() && oldElm->hasLabel()) {
+        newElm->setLabel(oldElm->label());
+    }
+
+    if (newElm->hasColors() && oldElm->hasColors()) {
+        newElm->setColor(oldElm->color());
+    }
+
+    if (newElm->hasFrequency() && oldElm->hasFrequency()) {
+        newElm->setFrequency(oldElm->frequency());
+    }
+
+    if (newElm->hasTrigger() && oldElm->hasTrigger()) {
+        newElm->setTrigger(oldElm->trigger());
+    }
+
+    // Mirror state is a base property of every element (not type-specific), so it is
+    // always carried over — otherwise morphing a flipped element silently un-flips it.
+    newElm->setFlippedX(oldElm->isFlippedX());
+    newElm->setFlippedY(oldElm->isFlippedY());
+
+    if (newElm->hasAudio() && oldElm->hasAudio()) {
+        newElm->setAudio(oldElm->audio()); // LCOV_EXCL_LINE — no element type currently sets hasAudio=true in its ElementInfo, so this can never be true for any oldElm/newElm pair.
+    }
+
+    if (newElm->hasVolume() && oldElm->hasVolume()) {
+        newElm->setVolume(oldElm->volume());
+    }
+
+    if (newElm->hasDelay() && oldElm->hasDelay()) {
+        newElm->setDelay(oldElm->delay()); // LCOV_EXCL_LINE — Clock is the only element type with hasDelay=true, so no two distinct types can both satisfy this check.
+    }
+}
+
+void MorphCommand::replaceElements(const QList<GraphicElement *> &from, const QList<GraphicElement *> &to,
+                                   QList<DeletedConnectionInfo> *deleted)
 {
     for (int elm = 0; elm < from.size(); ++elm) {
         auto *oldElm = from.at(elm);
         auto *newElm = to.at(elm);
-
-        newElm->setInputSize(oldElm->inputSize());
-        newElm->setPos(oldElm->pos());
-
-        // Not↔Node morphs need a 16px position adjustment because the two element
-        // types have different pixmap sizes and their visual centers differ by that amount
-        if ((oldElm->elementType() == ElementType::Not) && (newElm->elementType() == ElementType::Node)) {
-            newElm->moveBy(16, 16);
-        }
-
-        if ((oldElm->elementType() == ElementType::Node) && (newElm->elementType() == ElementType::Not)) {
-            newElm->moveBy(-16, -16);
-        }
-
-        // Copy over all compatible properties; each is guarded by capability checks
-        // so that mismatched element types are silently skipped
-        if (newElm->rotatesGraphic() && oldElm->rotatesGraphic()) {
-            newElm->setRotation(oldElm->rotation());
-        }
-
-        if (newElm->hasLabel() && oldElm->hasLabel()) {
-            newElm->setLabel(oldElm->label());
-        }
-
-        if (newElm->hasColors() && oldElm->hasColors()) {
-            newElm->setColor(oldElm->color());
-        }
-
-        if (newElm->hasFrequency() && oldElm->hasFrequency()) {
-            newElm->setFrequency(oldElm->frequency());
-        }
-
-        if (newElm->hasTrigger() && oldElm->hasTrigger()) {
-            newElm->setTrigger(oldElm->trigger());
-        }
-
-        // Mirror state is a base property of every element (not type-specific), so it is
-        // always carried over — otherwise morphing a flipped element silently un-flips it.
-        newElm->setFlippedX(oldElm->isFlippedX());
-        newElm->setFlippedY(oldElm->isFlippedY());
-
-        if (newElm->hasAudio() && oldElm->hasAudio()) {
-            newElm->setAudio(oldElm->audio()); // LCOV_EXCL_LINE — no element type currently sets hasAudio=true in its ElementInfo, so this can never be true for any oldElm/newElm pair.
-        }
-
-        if (newElm->hasVolume() && oldElm->hasVolume()) {
-            newElm->setVolume(oldElm->volume());
-        }
-
-        if (newElm->hasDelay() && oldElm->hasDelay()) {
-            newElm->setDelay(oldElm->delay()); // LCOV_EXCL_LINE — Clock is the only element type with hasDelay=true, so no two distinct types can both satisfy this check.
-        }
 
         // --- Migrate existing wires to the new element's ports ---
         // The while loop drains the connection list; setEndPort/setStartPort calls

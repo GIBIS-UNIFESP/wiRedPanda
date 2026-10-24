@@ -60,6 +60,10 @@ private slots:
     void testMorphPreservesFrequency();
     void testMorphDropsAndRestoresOutputConnection();
     void testMorphUndoSkipsRestoringConnectionToDeletedPeer();
+    // Undo restores the elements a morph replaced as they were
+    void testMorphUndoRestoresWhatTheNewTypeLacks();
+    void testMorphUndoRestoresInputsTheNewTypeCannotHave();
+    void testMorphUndoWithAPictureThatIsGoneChangesNothing();
 
     // Empty-target no-ops
     void testUpdateCommandWithNoElementsIsNoOp();

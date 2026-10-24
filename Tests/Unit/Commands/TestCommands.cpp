@@ -4,7 +4,9 @@
 #include "Tests/Unit/Commands/TestCommands.h"
 
 #include <QImage>
+#include <QTemporaryDir>
 
+#include "App/Core/Common.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/AudioBox.h"
@@ -15,6 +17,7 @@
 #include "App/Element/GraphicElements/DLatch.h"
 #include "App/Element/GraphicElements/InputButton.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
+#include "App/Element/GraphicElements/InputVCC.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Element/GraphicElements/Not.h"
@@ -1421,4 +1424,104 @@ void TestCommands::testElementsCommandElementsThrowsWhenItemMissing()
         threw = true;
     }
     QVERIFY2(threw, "ElementsCommand::elements() must throw when a tracked element can no longer be found");
+}
+
+void TestCommands::testMorphUndoRestoresWhatTheNewTypeLacks()
+{
+    // A switch has no frequency or delay, and a morph does not carry the lock: undo brings the clock back as it was
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+
+    auto *clock = new Clock();
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{clock}, scene));
+    clock->setFrequency(5.0);
+    clock->setDelay(0.25);
+    clock->setLocked(true);
+    clock->setLabel("clk");
+    const int id = clock->id();
+
+    scene->receiveCommand(new MorphCommand({clock}, ElementType::InputSwitch, scene));
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene->itemById(id))->elementType(), ElementType::InputSwitch);
+
+    scene->undoStack()->undo();
+    auto *restored = dynamic_cast<Clock *>(scene->itemById(id));
+    QVERIFY(restored);
+    QCOMPARE(restored->frequency(), 5.0);
+    QCOMPARE(restored->delay(), 0.25);
+    QVERIFY(restored->isLocked());
+    QCOMPARE(restored->label(), QString("clk"));
+
+    // Redo morphs the restored clock again
+    scene->undoStack()->redo();
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene->itemById(id))->elementType(), ElementType::InputSwitch);
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene->itemById(id))->label(), QString("clk"));
+}
+
+void TestCommands::testMorphUndoRestoresInputsTheNewTypeCannotHave()
+{
+    // A Not has one input: morphing a four-input And drops three wires, and undo restores the four inputs with them
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+
+    auto *andGate = new And();
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{andGate}, scene));
+    andGate->setInputSize(4);
+    for (int i = 0; i < 4; ++i) {
+        auto *vcc = new InputVcc();
+        vcc->setPos(-128, i * 64);
+        scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{vcc}, scene));
+        auto *conn = new Connection();
+        conn->setStartPort(vcc->outputPort());
+        conn->setEndPort(andGate->inputPort(i));
+        scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{conn}, scene));
+    }
+    const int id = andGate->id();
+
+    scene->receiveCommand(new MorphCommand({andGate}, ElementType::Not, scene));
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene->itemById(id))->inputSize(), 1);
+
+    scene->undoStack()->undo();
+    auto *restored = dynamic_cast<GraphicElement *>(scene->itemById(id));
+    QVERIFY(restored);
+    QCOMPARE(restored->elementType(), ElementType::And);
+    QCOMPARE(restored->inputSize(), 4);
+    for (int i = 0; i < 4; ++i) {
+        QCOMPARE(restored->inputPort(i)->connections().size(), 1);
+    }
+}
+
+void TestCommands::testMorphUndoWithAPictureThatIsGoneChangesNothing()
+{
+    // Undo loads the saved switch, whose custom picture no longer loads: the load throws (master's rule for any
+    // restore, §12 of plan 2) before the scene changes, so the morphed element stays and nothing rebuilt is kept. The
+    // command is called directly: an exception cannot pass through QUndoStack's frames on macOS, where it terminates
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString png = dir.filePath("custom.png");
+    QImage red(64, 64, QImage::Format_ARGB32);
+    red.fill(Qt::red);
+    QVERIFY(red.save(png));
+
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *inputSwitch = new InputSwitch();
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{inputSwitch}, scene));
+    inputSwitch->setAppearance(false, png);
+    const int id = inputSwitch->id();
+
+    MorphCommand morph({inputSwitch}, ElementType::InputButton, scene);
+    morph.redo();
+    QVERIFY(QFile::rename(png, png + ".gone"));
+
+    QVERIFY_THROWS_EXCEPTION(Pandaception, morph.undo());
+    QCOMPARE(scene->elements().size(), 1);
+    QCOMPARE(dynamic_cast<GraphicElement *>(scene->itemById(id))->elementType(), ElementType::InputButton);
+
+    // With the picture back, the undo restores the switch with it
+    QVERIFY(QFile::rename(png + ".gone", png));
+    morph.undo();
+    auto *restored = dynamic_cast<GraphicElement *>(scene->itemById(id));
+    QCOMPARE(restored->elementType(), ElementType::InputSwitch);
+    QCOMPARE(restored->externalFiles(), QStringList{png});
+    QCOMPARE(scene->elements().size(), 1);
 }
