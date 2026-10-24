@@ -73,6 +73,7 @@ private slots:
     void testHandleGetOutputValueRejectsMissingParams();
     void testHandleGetOutputValueRejectsUnknownElement();
     void testHandleGetOutputValueReturnsInputElementValue();
+    void testHandleGetOutputValueOfAnInputReportsEachPortsStatus();
     void testHandleGetOutputValueReturnsGenericElementValue();
     void testHandleGetOutputValueReturnsOutputGroupValue();
     void testHandleGetOutputValueRejectsInvalidPort();
