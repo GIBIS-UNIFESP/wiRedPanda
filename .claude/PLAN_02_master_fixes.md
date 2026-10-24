@@ -110,6 +110,34 @@ through the same function; the branch never compiled it on Windows, and CI's Win
 The comment by its `LCOV_EXCL` marker gives the wrong reason: the deleting destructor never runs because no bare
 `ItemWithId` exists, not because nothing deletes through a base pointer. A comment-only change, with no build or test.
 
+### 2.9 The Python MCP client's models disagree with the server's schema
+
+Found while fixing §2.4, by comparing every command model of the client with `MCP/schema-mcp.json`, field by field
+and bound by bound: `update_element` lacks seven fields the schema and the server take (`delay`, `trigger`, `audio`,
+`locked`, `volume`, `appearance`, `appearance_index`), so the client refuses them; `get_output_value` lacks the
+optional `port`; `create_waveform` has an `elements` field the schema does not; `export_image`'s padding has no
+maximum, where the schema's is 2000. Each is checked against the server before its fix. Fix: each model follows the
+schema. Test: one that compares every model with the schema, as that comparison did, shown to fail on `master`.
+
+### 2.10 `get_output_value` on an input answers an error
+
+The schema requires a `status` in `get_output_value`'s result, and the server checks every response against it before
+sending; an input element's read set only its value, so reading any switch, button, rotary or clock answered an
+internal validation error. It also ignored the port, reading a rotary's port 0 whatever was asked. Fix: an input reads
+the state of the port asked for, range-checked, as high or low. Tests: plan 1's MCP responses golden also checks each
+response against the schema (on `master` only the inputs' reads fail it); an input's read per port. Golden: the eight
+reads of the four input types gain their status.
+
+### 2.11 The MCP client suite passes with failed checks
+
+A check helper records a failure in the suite's error list and returns false; a test that drops the result passes,
+and the suite reports no failure: CI's run of the commit plan 1 landed on printed §2.10's error, then "Failed: 0".
+The dropped results: four `assert_success` calls on a simulation's start in the sequential tests (which then return
+`all_passed`, still true, when the start fails), four `verify_output_value` calls in the simulation and workflow
+tests, and a connection's `assert_success` in the circuit builder. Fix: a test whose checks recorded a failure fails,
+whatever it returns, which covers the builder's; and each test uses its checks' results. Shown to fail with §2.10's
+fix removed, by the workflow test's result and, with that result dropped again, by its checks alone.
+
 ## 3. In code plan 3 rewrites
 
 ### 3.1 SR and T flip-flops ignore every input while one input is open
@@ -460,6 +488,9 @@ Each of these exists on `master`, and its fix is another plan's decision:
 | P2.6 | The buzzer's teardown on Qt 6.7.3 (§2.6) | the helpers only | none |
 | P2.7 | An MCP client closing the connection (§2.7) | the helpers only | none |
 | P2.8 | `ItemWithId`'s comment (§2.8) | the helpers only | none |
+| P2.45 | The client's models and the schema (§2.9) | the helpers only | none |
+| P2.46 | An input's `get_output_value` (§2.10) | P1.15 | the eight input reads of MCP's responses |
+| P2.47 | The client suite's dropped checks (§2.11) | the helpers only | none |
 | P2.9 | SR and T defaults (§3.1) | P1.4, P1.6, P1.13 | port layout, one scene snapshot, any trace with S, R or T open |
 | P2.10 | The loader's port counts (§3.2) | P1.8, P1.17 | the strings golden's three messages |
 | P2.11 | The AudioBox's undo (§3.3) | P1.15 | one editor-writes row |
