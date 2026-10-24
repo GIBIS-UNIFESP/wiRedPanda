@@ -39,8 +39,8 @@ void TestTruthTable::testConstructorInitialization()
     // Verify has truth table flag
     QVERIFY(truthTable.hasTruthTable());
 
-    // Verify can change appearance
-    QVERIFY(truthTable.canChangeAppearance());
+    // Its body is drawn in code, sized by its ports, so it offers no custom appearance
+    QVERIFY(!truthTable.canChangeAppearance());
 
     // Verify has label
     QVERIFY(truthTable.hasLabel());
