@@ -296,10 +296,10 @@ public:
      */
     explicit MorphCommand(const QList<GraphicElement *> &elements, ElementType type, Scene *scene, QUndoCommand *parent = nullptr);
 
-    /// Replaces elements with instances of the new type.
+    /// Replaces elements with instances of the new type, which take what the types share.
     void redo() override;
 
-    /// Restores the original element types.
+    /// Restores the original elements as they were before redo() morphed them.
     void undo() override;
 
 private:
@@ -315,12 +315,17 @@ private:
         int otherPortIndex;   ///< Port index on the other element.
     };
 
+    /// Gives \a newElm what it shares with \a oldElm, the element it replaces: its place, inputs, label, trigger,
+    /// flips, and the parameters both types have.
+    static void copyProperties(const GraphicElement *oldElm, GraphicElement *newElm);
+
     /**
-     * \brief Transfers wires from \a from to \a to, swapping element references.
+     * \brief Puts each element of \a to in the place of the one of \a from at its index: its wires, its ID and its
+     * place in the scene; deletes the elements of \a from.
      * \param deleted If non-null, records connections that were deleted (port beyond new element's range).
      */
-    void transferConnections(const QList<GraphicElement *> &from, const QList<GraphicElement *> &to,
-                             QList<DeletedConnectionInfo> *deleted = nullptr);
+    void replaceElements(const QList<GraphicElement *> &from, const QList<GraphicElement *> &to,
+                         QList<DeletedConnectionInfo> *deleted = nullptr);
 
     /**
      * \brief Transfers wires on all ports of one direction between two elements.
@@ -340,6 +345,7 @@ private:
     // --- Members ---
     ElementType m_newType;
     QList<ElementType> m_types;
+    QByteArray m_originals; ///< The original elements, saved by the last redo() before it morphed them; undo() loads them.
     QList<DeletedConnectionInfo> m_deletedConnections; ///< Connections deleted during the last redo(); restored on the next undo().
     QList<DeletedConnectionInfo> m_deletedConnectionsOnUndo; ///< Connections deleted during the last undo(); restored on the next redo().
 };
