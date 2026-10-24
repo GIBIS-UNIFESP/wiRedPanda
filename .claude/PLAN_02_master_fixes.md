@@ -202,7 +202,8 @@ Their bodies are drawn in code (Mux and Demux since they became variable-sized),
 pushed but never shown. Fix: stop offering it in the editor, the context menu and MCP, as the IC does, since a body
 sized by its ports cannot take a fixed picture; loading a file that holds one still accepts it, since loading does not
 read the flag (P2.D3). Test: the types whose bodies are drawn in code offer no appearance, and it fails naming Mux when
-its flag is put back. Goldens: the three types' appearance entries in the property-kinds golden.
+its flag is put back. Goldens: the three types' appearance entries in the property-kinds golden, their appearance rows
+in the editor writes, and their appearance fields in MCP's property responses.
 
 ### 3.6 Most input operations are not undoable
 
@@ -540,7 +541,7 @@ Each of these exists on `master`, and its fix is another plan's decision:
 | P2.10 | The loader's port counts (§3.2) | P1.8, P1.17 | the strings golden's three messages |
 | P2.11 | The AudioBox's undo (§3.3) | P1.15 | one editor-writes row |
 | P2.12 | The lowercase trigger (§3.4) | P1.15 | three editor-writes rows |
-| P2.13 | No appearance where none is drawn (§3.5) | P1.15 | three types' property kinds |
+| P2.13 | No appearance where none is drawn (§3.5) | P1.15 | three types' property kinds, editor writes and MCP responses |
 | P2.14 | Input operations undoable (§3.6) | P1.9 (the press path it wraps) | none expected |
 | P2.15 | Themed memory pictures (§3.7) | P1.4 | none expected |
 | P2.16 | A morph's undo (§3.8) | P1.10 | the order after a morph's undo, if it moves |
