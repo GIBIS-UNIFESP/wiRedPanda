@@ -29,7 +29,7 @@ class ElementInfo(BaseModel):
     rotation: Annotated[float, Field(ge=-360, le=360)] | None = None
     color: str | None = None
     frequency: Annotated[float, Field(ge=0)] | None = None
-    delay: Annotated[float, Field(ge=0)] | None = None
+    delay: Annotated[float, Field(ge=-1, le=1)] | None = None
     trigger: str | None = None
     audio: str | None = None
     volume: float | None = None
