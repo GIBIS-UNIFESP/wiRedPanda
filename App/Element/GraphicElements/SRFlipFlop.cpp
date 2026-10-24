@@ -66,6 +66,8 @@ void SRFlipFlop::updatePortsProperties()
     inputPort(3)->setRequired(false);
     inputPort(4)->setRequired(false);
 
+    inputPort(0)->setDefaultStatus(Status::Inactive);
+    inputPort(2)->setDefaultStatus(Status::Inactive);
     inputPort(3)->setDefaultStatus(Status::Active);
     inputPort(4)->setDefaultStatus(Status::Active);
 

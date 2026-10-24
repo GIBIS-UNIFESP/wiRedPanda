@@ -62,6 +62,7 @@ void TFlipFlop::updatePortsProperties()
     inputPort(2)->setRequired(false);
     inputPort(3)->setRequired(false);
 
+    inputPort(0)->setDefaultStatus(Status::Inactive);
     inputPort(2)->setDefaultStatus(Status::Active);
     inputPort(3)->setDefaultStatus(Status::Active);
 

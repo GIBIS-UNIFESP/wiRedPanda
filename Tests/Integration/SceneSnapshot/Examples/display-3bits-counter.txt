@@ -36,21 +36,21 @@ E id=8 type=IC pos=544.0000,416.0000 rot=0.0000 flipX=0 flipY=0 label="DISPLAY-3
   P out idx=6 name="Display7 DP (dot)" pos=64.0000,72.0000 scene=608.0000,488.0000 default=Unknown required=1 status=Unknown wires=0
   P out idx=7 name="Display7 C (lower right)" pos=64.0000,88.0000 scene=608.0000,504.0000 default=Unknown required=1 status=Unknown wires=1
 E id=9 type=TFlipFlop pos=176.0000,320.0000 rot=0.0000 flipX=0 flipY=0 label="" in=4 out=2 pix=64x64::/Components/Memory/Light/T-flipflop.svg
-  P in idx=0 name="T" pos=0.0000,16.0000 scene=176.0000,336.0000 default=Unknown required=0 status=Inactive wires=1
+  P in idx=0 name="T" pos=0.0000,16.0000 scene=176.0000,336.0000 default=Inactive required=0 status=Inactive wires=1
   P in idx=1 name="Clock" pos=0.0000,48.0000 scene=176.0000,368.0000 default=Unknown required=1 status=Unknown wires=1
   P in idx=2 name="~Preset" pos=32.0000,0.0000 scene=208.0000,320.0000 default=Active required=0 status=Active wires=0
   P in idx=3 name="~Clear" pos=32.0000,64.0000 scene=208.0000,384.0000 default=Active required=0 status=Active wires=0
   P out idx=0 name="Q" pos=64.0000,16.0000 scene=240.0000,336.0000 default=Inactive required=1 status=Inactive wires=0
   P out idx=1 name="~Q" pos=64.0000,48.0000 scene=240.0000,368.0000 default=Active required=1 status=Active wires=2
 E id=10 type=TFlipFlop pos=288.0000,320.0000 rot=0.0000 flipX=0 flipY=0 label="" in=4 out=2 pix=64x64::/Components/Memory/Light/T-flipflop.svg
-  P in idx=0 name="T" pos=0.0000,16.0000 scene=288.0000,336.0000 default=Unknown required=0 status=Unknown wires=1
+  P in idx=0 name="T" pos=0.0000,16.0000 scene=288.0000,336.0000 default=Inactive required=0 status=Unknown wires=1
   P in idx=1 name="Clock" pos=0.0000,48.0000 scene=288.0000,368.0000 default=Unknown required=1 status=Active wires=1
   P in idx=2 name="~Preset" pos=32.0000,0.0000 scene=320.0000,320.0000 default=Active required=0 status=Active wires=0
   P in idx=3 name="~Clear" pos=32.0000,64.0000 scene=320.0000,384.0000 default=Active required=0 status=Active wires=0
   P out idx=0 name="Q" pos=64.0000,16.0000 scene=352.0000,336.0000 default=Inactive required=1 status=Inactive wires=0
   P out idx=1 name="~Q" pos=64.0000,48.0000 scene=352.0000,368.0000 default=Active required=1 status=Active wires=2
 E id=11 type=TFlipFlop pos=400.0000,320.0000 rot=0.0000 flipX=0 flipY=0 label="" in=4 out=2 pix=64x64::/Components/Memory/Light/T-flipflop.svg
-  P in idx=0 name="T" pos=0.0000,16.0000 scene=400.0000,336.0000 default=Unknown required=0 status=Unknown wires=1
+  P in idx=0 name="T" pos=0.0000,16.0000 scene=400.0000,336.0000 default=Inactive required=0 status=Unknown wires=1
   P in idx=1 name="Clock" pos=0.0000,48.0000 scene=400.0000,368.0000 default=Unknown required=1 status=Active wires=1
   P in idx=2 name="~Preset" pos=32.0000,0.0000 scene=432.0000,320.0000 default=Active required=0 status=Active wires=0
   P in idx=3 name="~Clear" pos=32.0000,64.0000 scene=432.0000,384.0000 default=Active required=0 status=Active wires=0

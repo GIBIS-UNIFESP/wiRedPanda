@@ -363,6 +363,85 @@ void TestSequentialLogic::testTFlipFlopBehavior()
     QCOMPARE(TestUtils::inputStatus(&ledNQ), Status::Active);
 }
 
+void TestSequentialLogic::testSRFlipFlopWithOneOfSAndROpen()
+{
+    // An open S or R reads Inactive: the flip-flop sets with R open, and presets and resets with S open
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    InputSwitch swClk, swS, swR, swPreset;
+    SRFlipFlop setOnly, resetOnly;
+    Led ledSet, ledReset;
+
+    builder.add(&swClk, &swS, &swR, &swPreset, &setOnly, &resetOnly, &ledSet, &ledReset);
+    builder.connect(&swS, 0, &setOnly, 0);        // S; R open
+    builder.connect(&swClk, 0, &setOnly, 1);
+    builder.connect(&setOnly, 0, &ledSet, 0);
+    builder.connect(&swClk, 0, &resetOnly, 1);    // S open
+    builder.connect(&swR, 0, &resetOnly, 2);      // R
+    builder.connect(&swPreset, 0, &resetOnly, 3); // ~Preset
+    builder.connect(&resetOnly, 0, &ledReset, 0);
+
+    swPreset.setOn(true);
+    auto *sim = builder.initSimulation();
+    sim->update();
+    QCOMPARE(TestUtils::inputStatus(&ledSet), Status::Inactive);
+    QCOMPARE(TestUtils::inputStatus(&ledReset), Status::Inactive);
+
+    swS.setOn(true);
+    sim->update();
+    TestUtils::clockCycle(sim, &swClk);
+    QCOMPARE(TestUtils::inputStatus(&ledSet), Status::Active);
+
+    swPreset.setOn(false);
+    sim->update();
+    QCOMPARE(TestUtils::inputStatus(&ledReset), Status::Active);
+    swPreset.setOn(true);
+    sim->update();
+    QCOMPARE(TestUtils::inputStatus(&ledReset), Status::Active);
+
+    swR.setOn(true);
+    sim->update();
+    TestUtils::clockCycle(sim, &swClk);
+    QCOMPARE(TestUtils::inputStatus(&ledReset), Status::Inactive);
+}
+
+void TestSequentialLogic::testTFlipFlopWithTOpen()
+{
+    // An open T reads Inactive: the flip-flop presets, holds on a clock edge and clears
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    InputSwitch swClk, swPreset, swClear;
+    TFlipFlop tff;
+    Led ledQ;
+
+    builder.add(&swClk, &swPreset, &swClear, &tff, &ledQ);
+    builder.connect(&swClk, 0, &tff, 1);    // T open
+    builder.connect(&swPreset, 0, &tff, 2); // ~Preset
+    builder.connect(&swClear, 0, &tff, 3);  // ~Clear
+    builder.connect(&tff, 0, &ledQ, 0);
+
+    swPreset.setOn(true);
+    swClear.setOn(true);
+    auto *sim = builder.initSimulation();
+    sim->update();
+    QCOMPARE(TestUtils::inputStatus(&ledQ), Status::Inactive);
+
+    swPreset.setOn(false);
+    sim->update();
+    QCOMPARE(TestUtils::inputStatus(&ledQ), Status::Active);
+    swPreset.setOn(true);
+    sim->update();
+
+    TestUtils::clockCycle(sim, &swClk);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), Status::Active);
+
+    swClear.setOn(false);
+    sim->update();
+    QCOMPARE(TestUtils::inputStatus(&ledQ), Status::Inactive);
+}
+
 // ============================================================================
 // resetSimState() Tests
 // ============================================================================
