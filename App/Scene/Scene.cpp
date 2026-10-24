@@ -325,7 +325,7 @@ void Scene::setPropertyUpdateRequired()
     update();
 
     m_autosaveRequired = true;
-    m_itemsBoundingRectDirty = true;
+    m_circuitBoundingRectDirty = true;
 }
 
 const QVector<GraphicElement *> Scene::visibleElements() const
@@ -534,21 +534,21 @@ void Scene::receiveCommand(QUndoCommand *cmd)
     update();
 }
 
-QRectF Scene::cachedItemsBoundingRect() const
+QRectF Scene::cachedCircuitBoundingRect() const
 {
     // A live drag needs the item bounds to track the dragged element's currently-changing
     // position (see resizeScene()'s isDraggingElement() branch) -- a cached value would
     // stop the scene rect from expanding to follow it mid-drag.
     if (m_interaction.isDraggingElement()) {
-        return itemsBoundingRect();
+        return circuitBoundingRect();
     }
 
-    if (m_itemsBoundingRectDirty) {
-        m_cachedItemsBoundingRect = itemsBoundingRect();
-        m_itemsBoundingRectDirty = false;
+    if (m_circuitBoundingRectDirty) {
+        m_cachedCircuitBoundingRect = circuitBoundingRect();
+        m_circuitBoundingRectDirty = false;
     }
 
-    return m_cachedItemsBoundingRect;
+    return m_cachedCircuitBoundingRect;
 }
 
 QRectF Scene::circuitBoundingRect() const
@@ -659,7 +659,7 @@ QRectF quantizeOutward(const QRectF &rect)
 
 void Scene::resizeScene()
 {
-    const auto bounds = cachedItemsBoundingRect();
+    const auto bounds = cachedCircuitBoundingRect();
 
     if (m_interaction.isDraggingElement()) {
         // While dragging, only expand the scene rect (union with current rect).
@@ -688,7 +688,9 @@ void Scene::resizeScene()
             setSceneRect(quantizeOutward(tightRect));
             view->horizontalScrollBar()->setValue(hVal);
             view->verticalScrollBar()->setValue(vVal);
-        } else {
+        } else if (!tightRect.isNull()) {
+            // An empty circuit has no bounds: a null rect would hand the scene rect back to Qt, which grows it over
+            // every item
             setSceneRect(quantizeOutward(tightRect));
         }
     }

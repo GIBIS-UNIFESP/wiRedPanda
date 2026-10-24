@@ -74,7 +74,7 @@ void MinimapWidget::paintEvent(QPaintEvent * /*event*/)
 
     QRectF srcUsed;
     double scale = 1.0, dx = 0.0, dy = 0.0, usedW = 0.0, usedH = 0.0;
-    if (!computeTransform(srcUsed, scale, dx, dy, usedW, usedH)) // LCOV_EXCL_LINE — unreachable with m_scene non-null (guarded above): a real Scene's permanent, always-added rubber-band selection-rect item keeps computeTransform()'s own union non-empty (see its comment), so it can only ever return false for a null m_scene, which is already excluded by this function's earlier guard.
+    if (!computeTransform(srcUsed, scale, dx, dy, usedW, usedH)) // LCOV_EXCL_LINE — unreachable with m_scene non-null (guarded above): computeTransform()'s union holds the scene rect, which is never empty (see its comment).
         return; // LCOV_EXCL_LINE — see above.
 
     const qreal dpr = this->devicePixelRatioF();
@@ -188,21 +188,21 @@ bool MinimapWidget::computeTransform(QRectF &srcOut, double &scaleOut, double &d
     if (!m_scene)
         return false;
 
-    // The minimap maps the whole navigable canvas, not the tight item box: fitting
-    // itemsBoundingRect() alone would zoom a single small element to fill the widget.
+    // The minimap maps the whole navigable canvas, not the tight circuit box: fitting
+    // the circuit's bounds alone would zoom a single small element to fill the widget.
     //   - sceneRect() is the navigable area once the user has interacted (stable under scroll).
-    //   - itemsBoundingRect() is a defensive superset so an item momentarily outside the scene
+    //   - the circuit's bounds are a defensive superset so an item momentarily outside the scene
     //     rect stays visible.
     //   - the visible viewport region is the decisive term: right after a file loads, sceneRect()
-    //     is set to the tight item box (see WorkSpace load), so without this the minimap would
+    //     is set to the tight circuit box (see WorkSpace load), so without this the minimap would
     //     stay zoomed. Including it guarantees the minimap is never more zoomed-in than the view.
-    // Scene always contains a permanent (near-zero) rubber-band selection-rect item, so
-    // itemsBoundingRect() never reports invalid/empty here in practice -- the final early return
-    // exists only as a defensive guard for a Scene that isn't fully constructed the usual way.
-    QRectF src = m_scene->sceneRect().united(m_scene->cachedItemsBoundingRect());
+    // The scene rect is never empty: a workspace starts it at its view's rect and keeps it through the load of an empty
+    // circuit, and a scene whose rect was never set gets Qt's, which holds every item, the rubber band among them -- the
+    // final early return exists only as a defensive guard.
+    QRectF src = m_scene->sceneRect().united(m_scene->cachedCircuitBoundingRect());
     if (m_view && m_view->viewport())
         src = src.united(m_view->mapToScene(m_view->viewport()->rect()).boundingRect());
-    if (!src.isValid() || src.isEmpty()) // LCOV_EXCL_LINE — unreachable in practice: a real Scene always contains a permanent, non-empty rubber-band selection-rect item (see comment above), so this union is never invalid/empty for any Scene constructed the normal way.
+    if (!src.isValid() || src.isEmpty()) // LCOV_EXCL_LINE — unreachable in practice: the scene rect is never empty (see the comment above).
         return false; // LCOV_EXCL_LINE — see above.
 
     const double w = static_cast<double>(width());
@@ -319,10 +319,10 @@ void MinimapWidget::applyResize(const QPoint &globalPos)
     QRect geom = oldGeom;
 
     // Keep the widget's own aspect ratio stable while resizing -- based on the scene's
-    // content, same fallback chain as computeTransform() (itemsBoundingRect, then
-    // sceneRect), so a resize while empty/degenerate still has a sane 1:1 ratio.
+    // content, the circuit's bounds, then sceneRect, so a resize while empty/degenerate
+    // still has a sane 1:1 ratio.
     const auto sceneAspectRatio = [this]() -> double {
-        QRectF src = m_scene ? m_scene->cachedItemsBoundingRect() : QRectF();
+        QRectF src = m_scene ? m_scene->cachedCircuitBoundingRect() : QRectF();
         if (!src.isValid() || src.isEmpty())
             src = m_scene ? m_scene->sceneRect() : QRectF();
         if (!src.isValid() || src.width() <= 0.0 || src.height() <= 0.0)

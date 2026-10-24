@@ -139,7 +139,7 @@ void showCircuitCorner(GraphicsView *view, const Scene *scene)
 {
     view->resetZoom();
     const QSize viewport = view->viewport()->size();
-    view->centerOn(scene->cachedItemsBoundingRect().topLeft() + QPointF(viewport.width() / 2.0, viewport.height() / 2.0));
+    view->centerOn(scene->cachedCircuitBoundingRect().topLeft() + QPointF(viewport.width() / 2.0, viewport.height() / 2.0));
 }
 
 /// Three frames at 1:1, then three of the whole circuit zoomed to fit.

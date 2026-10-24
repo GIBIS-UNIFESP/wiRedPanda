@@ -41,6 +41,7 @@
 #include "App/IO/Serialization.h"
 #include "App/Scene/ClipboardManager.h"
 #include "App/Scene/Commands.h"
+#include "App/Scene/ConnectionManager.h"
 #include "App/Scene/GraphicsView.h"
 #include "App/Scene/ICRegistry.h"
 #include "App/Scene/InlineLabelEditor.h"
@@ -49,6 +50,7 @@
 #include "App/Scene/Workspace.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
+#include "Tests/Common/Goldens.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestScene::initTestCase()
@@ -2131,6 +2133,57 @@ void TestScene::testPortAtFindsPortsOnly()
 
     // Empty canvas.
     QVERIFY(!scene->portAt(QPointF(-500, -500)));
+}
+
+void TestScene::testResizeSceneIgnoresARubberBandOutsideTheCircuit()
+{
+    // The rubber-band selection item stays in the scene, hidden, with its last rectangle: it is not circuit, so
+    // neither the circuit's bounds nor the scene rect reach it
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
+    andGate->setPos(100, 100);
+    scene->addItem(andGate);
+
+    TestUtils::ScenePointer pointer(scene);
+    pointer.press(QPointF(3000, 3000));
+    pointer.move(QPointF(3200, 3200));
+    pointer.release(QPointF(3200, 3200));
+    QCOMPARE(scene->circuitBoundingRect(), andGate->mapRectToScene(andGate->boundingRect() | andGate->childrenBoundingRect()));
+
+    scene->setPropertyUpdateRequired();
+    scene->resizeScene();
+    QVERIFY2(!scene->sceneRect().contains(QPointF(3100, 3100)),
+             qPrintable(QString("scene rect %1,%2 %3x%4")
+                            .arg(scene->sceneRect().x()).arg(scene->sceneRect().y())
+                            .arg(scene->sceneRect().width()).arg(scene->sceneRect().height())));
+}
+
+void TestScene::testCircuitBoundsLeaveOutAPortsHoverLabel()
+{
+    // A hovered port's label is drawn beside its element, in the scene but not circuit
+    Scene scene;
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
+    andGate->setPos(100, 100);
+    scene.addItem(andGate);
+    const QRectF circuit = scene.circuitBoundingRect();
+    QCOMPARE(circuit, andGate->mapRectToScene(andGate->boundingRect() | andGate->childrenBoundingRect()));
+
+    andGate->outputPort(0)->setName("out"); // an unnamed port shows no label
+    const QRectF everyItemBefore = scene.itemsBoundingRect();
+    scene.connectionManager()->showHoverLabels(andGate->outputPort(0));
+    QVERIFY2(!everyItemBefore.contains(scene.itemsBoundingRect()), "the label must reach past the scene's items for this test to see it");
+    QCOMPARE(scene.circuitBoundingRect(), circuit);
+}
+
+void TestScene::testResizeSceneWithoutAViewKeepsTheSceneRectOfAnEmptyCircuit()
+{
+    // With no view, an empty circuit leaves nothing to fit, and a null scene rect would hand it back to Qt
+    Scene scene;
+    const QRectF rect(-256, -256, 512, 512);
+    scene.setSceneRect(rect);
+    scene.resizeScene();
+    QCOMPARE(scene.sceneRect(), rect);
 }
 
 void TestScene::testResizeSceneQuantizesSceneRect()

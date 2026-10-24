@@ -21,7 +21,7 @@ namespace CircuitExporter {
 // Add a 64 px margin so elements at the scene boundary are not clipped.
 static QRectF paddedBoundingRect(Scene *scene)
 {
-    return scene->itemsBoundingRect().adjusted(-64, -64, 64, 64);
+    return scene->circuitBoundingRect().adjusted(-64, -64, 64, 64);
 }
 
 void renderToPdf(Scene *scene, const QString &filePath)

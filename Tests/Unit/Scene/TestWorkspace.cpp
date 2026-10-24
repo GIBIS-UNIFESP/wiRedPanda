@@ -500,6 +500,32 @@ void TestWorkspaceUnit::testLoadInfoForOlderVersionFile()
     QCOMPARE(dismisser.dismissCount(), 1);
 }
 
+void TestWorkspaceUnit::testLoadOfAnEmptyCircuitKeepsTheSceneRect()
+{
+    // An empty circuit has no bounds; a null scene rect would hand it back to Qt, which grows it over every item
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("empty.panda");
+    {
+        WorkSpace empty;
+        QCOMPARE(static_cast<int>(empty.save(path)), static_cast<int>(WorkSpace::SaveOutcome::Saved));
+    }
+
+    WorkSpace fromFile;
+    const QRectF initial = fromFile.scene()->sceneRect();
+    QVERIFY(!initial.isNull());
+    fromFile.load(path);
+    QCOMPARE(fromFile.scene()->sceneRect(), initial);
+
+    QFile file(path);
+    QVERIFY(file.open(QIODevice::ReadOnly));
+    WorkSpace parent;
+    WorkSpace fromBlob;
+    QCOMPARE(fromBlob.scene()->sceneRect(), initial);
+    fromBlob.loadFromBlob(file.readAll(), &parent, 1, QString());
+    QCOMPARE(fromBlob.scene()->sceneRect(), initial);
+}
+
 void TestWorkspaceUnit::testAutosaveSkipsInlineICTabs()
 {
     WorkSpace workspace;

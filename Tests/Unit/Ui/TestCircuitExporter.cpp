@@ -11,6 +11,7 @@
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Scene/Workspace.h"
 #include "App/UI/CircuitExporter.h"
+#include "Tests/Common/Goldens.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestCircuitExporter::testExporterCreation()
@@ -25,6 +26,25 @@ void TestCircuitExporter::testExporterCreation()
 
     QVERIFY2(QFile::exists(path), "renderToImage() must have written the output file");
     QVERIFY2(QFileInfo(path).size() > 0, "the written PNG must not be empty");
+}
+
+void TestCircuitExporter::testRenderToImageIgnoresARubberBandOutsideTheCircuit()
+{
+    // The rubber-band selection item stays in the scene, hidden, with its last rectangle: it is not circuit
+    WorkSpace workspace;
+    auto *inputSwitch = new InputSwitch();
+    workspace.scene()->addItem(inputSwitch);
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    CircuitExporter::renderToImage(workspace.scene(), dir.filePath("before.png"));
+
+    TestUtils::ScenePointer pointer(workspace.scene());
+    pointer.press(QPointF(3000, 3000));
+    pointer.move(QPointF(3200, 3200));
+    pointer.release(QPointF(3200, 3200));
+    CircuitExporter::renderToImage(workspace.scene(), dir.filePath("after.png"));
+
+    QCOMPARE(QImage(dir.filePath("after.png")).size(), QImage(dir.filePath("before.png")).size());
 }
 
 void TestCircuitExporter::testRenderToImageThrowsOnInvalidPath()
