@@ -7,15 +7,16 @@ service; appearance slots saved by key. Every saved file stays byte-identical ex
 It comes early because the simulation core, the exporters, MCP and the editor all read element types, so none of them
 is written twice. It is data-driven design, not data-oriented: the data-oriented layout is plan 6's.
 
-- **Depends on:** plans 1 and 2 and the Qt floor's plan, landed, since the plans run one at a time, in their
-  order (the plans' rules, §1): plan 1's goldens; plan 2's fixes in this code (its §3), which plan 3 keeps, each
-  test green; and the Qt 6.8 floor, on which every supported Qt renders the pictures' blur filters alike.
+- **Depends on:** plans 1 and 2, the Qt floor's and the exception boundaries' plans, landed, since the plans run one
+  at a time, in their order (the plans' rules, §1): plan 1's goldens; plan 2's fixes in this code (its §3), which
+  plan 3 keeps, each test green; the Qt 6.8 floor, on which every supported Qt renders the pictures' blur filters
+  alike; and the exception boundaries' rule, so nothing Qt calls back into throws, and their fixes in this code.
 - **Lands before:** plan 4, which follows it and builds on the one element class; plan 5, whose spec and reference
   read the descriptors; plan 6, whose kernels each descriptor names; and plan 9, which takes the one element class
   and its presenters.
-- **Branch and ledger:** `03-element-types`, from `02a-qt-floor` once the Qt floor's plan has landed, in slices (the
-  plans' rules, §1 and §3).
-  `LEDGER_03_element_types.md` has a row for every step, check and open question below.
+- **Branch and ledger:** `03-element-types`, from `02b-exception-boundaries` once the exception boundaries' plan has
+  landed, in slices (the plans' rules, §1 and §3). `LEDGER_03_element_types.md` has a row for every step, check and open
+  question below.
 - **Rules every plan shares** are the plans' rules (`PLAN_rules.md`) and `CLAUDE.md`'s "Building and testing"; this
   file states plan 3's own. Its decisions are numbered P3.D1 on.
 

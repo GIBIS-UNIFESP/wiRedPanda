@@ -12,14 +12,14 @@ with an environment override chooses the backend; Automatic, the default everywh
 probe finds a hardware adapter. CI checks the mirror on `QRhi`'s Null backend in every job and compares parity renders
 with the CPU backend on Mesa and on Metal.
 
-- **Depends on:** plans 1 to 9, the Qt floor's plan and the model-cost round, landed, since the plans run one
-  at a time, in their order (the plans' rules, §1): plan 9 (the render target and the `RenderBackend` interface,
-  the view whose viewport is the backend's widget and its `viewportReplaced`, the overlay state as data, the document
-  listener, the sprite key and cache with the rule for fractional pixel ratios, the ports holding their slots in the
-  core, and the CPU backend as the fallback and the parity reference); the model-cost round (the model as it leaves
-  it, with the listener's events settled for the mirror, MC.11, and the probe's selection and move phases); plan 6
-  (the interface through which the renderers read the core's status arrays, P6.D1, and the runner's changed slots);
-  the Qt floor's plan, since `QRhiWidget` first appeared in Qt 6.7; plan 3 (the appearance key and the
+- **Depends on:** plans 1 to 9, the Qt floor's and the exception boundaries' plans and the model-cost round,
+  landed, since the plans run one at a time, in their order (the plans' rules, §1): plan 9 (the render target and
+  the `RenderBackend` interface, the view whose viewport is the backend's widget and its `viewportReplaced`, the overlay
+  state as data, the document listener, the sprite key and cache with the rule for fractional pixel ratios, the ports
+  holding their slots in the core, and the CPU backend as the fallback and the parity reference); the model-cost round
+  (the model as it leaves it, with the listener's events settled for the mirror, MC.11, and the probe's selection and
+  move phases); plan 6 (the interface through which the renderers read the core's status arrays, P6.D1, and the runner's
+  changed slots); the Qt floor's plan, since `QRhiWidget` first appeared in Qt 6.7; plan 3 (the appearance key and the
   presenters its sprites draw from); plan 1 (the wire-pixel goldens, the CPU reference its parity renders build on,
   and the probe that times a load and its first frames).
 - **Lands before:** nothing; it is the last in the order.

@@ -10,8 +10,8 @@ names a minimum, and makes the documented way to install Qt on an older distribu
 
 - **Depends on:** plan 2, landed, since the plans run one at a time, in their order (the plans' rules, §1); and plan
   1's translatable-strings target (plan 1's §3.13), whose Qt 6.7 condition this commit removes.
-- **Lands before:** plan 3. The order is 1, 2, this floor, 3 to 9, the model-cost round, then 10; plan 10 needs
-  the floor for `QRhiWidget`.
+- **Lands before:** the exception boundaries' plan, then plan 3. The order is 1, 2, this floor, the exception
+  boundaries, 3 to 9, the model-cost round, then 10; plan 10 needs the floor for `QRhiWidget`.
 - **Branch and ledger:** `02a-qt-floor`, from `02-master-fixes` once plan 2 has landed; one slice of one commit (§4).
   `LEDGER_qt_floor.md` has a row for every step, check and open question below.
 - **Rules every plan shares** are the plans' rules (`PLAN_rules.md`) and `CLAUDE.md`'s "Building and testing". This
@@ -252,8 +252,8 @@ user's choice between workable options).
 
 ## 8. What other plans take from it
 
-- **Plans 3 to 10:** a floor CI already tests, so no plan meets a Qt older than 6.8: the blur filters render alike on
-  every supported Qt, and plan 3's body goldens need no masks for an older one.
+- **The exception boundaries and plans 3 to 10:** a floor CI already tests, so no plan meets a Qt older than 6.8:
+  the blur filters render alike on every supported Qt, and plan 3's body goldens need no masks for an older one.
 - **Plan 10:** `QRhiWidget` on every build. `QRhi` is used through `Qt::GuiPrivate` and `<rhi/qrhi.h>`; its private
   headers come in `qt6-base-private-dev` (Debian, Ubuntu) and `qt6-qtbase-private-devel` (Fedora), and aqt and Arch's
   `qt6-base` include them, so the apt lines that gain the private headers are plan 10's change, when it first uses

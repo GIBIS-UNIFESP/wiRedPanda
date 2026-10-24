@@ -6,8 +6,9 @@ pins and the file header alike, never saved in the interface language; and the u
 IC file restoring the old definition, which the document keeps as a copy, so a save and a reopen keep it. The
 additions to what a document holds extend the current format; nothing replaces it.
 
-- **Depends on:** plans 1 to 3 and the Qt floor's plan, landed, since the plans run one at a time, in their
-  order (the plans' rules, §1): plan 1's goldens, the payload goldens above all, where a format change shows first;
+- **Depends on:** plans 1 to 3, the Qt floor's and the exception boundaries' plans, landed, since the plans run one
+  at a time, in their order (the plans' rules, §1): plan 1's goldens, the payload goldens above all, where a format
+  change shows first;
   plan 3's one element class, with the descriptors and the untranslated source names an IC's pins read.
 - **Lands before:** plan 5, whose reference simulator reads its definitions, then plan 6, whose netlist builder
   compiles each IC definition once.

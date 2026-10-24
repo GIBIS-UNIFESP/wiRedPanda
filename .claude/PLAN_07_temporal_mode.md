@@ -7,13 +7,13 @@ speed, waveform resolution and input changes that settle; and the temporal examp
 Arduino export's note on the delays it drops in temporal mode is plan 8's, among its exporter notes, since plan 8
 lands after this plan. Temporal mode is offered only once plan 5's exact oracle with delays agrees with the reference.
 
-- **Depends on:** plans 1 to 6 and the Qt floor's plan, landed, since the plans run one at a time, in their
-  order (the plans' rules, §1): plan 6 (the core's temporal mode; the runner's mode, speed and simulated time per
-  tab; the settle; the sweep guard; each logic type's delay in its descriptor); plan 5 (its exact oracle with delays,
-  P5.13, agreeing with the reference, and the covering rule it decides, P5.25); plan 3 (the parameter schema and store,
-  the property command on the schema, the editor's fields from the schema); plan 2's fixes this plan's code builds on
-  (one undo entry per edit, a morph's lossless undo, MCP validating every value before changing anything, the Python
-  client's clock delay bounds, BeWavedDolphin's text export with its rows by port).
+- **Depends on:** plans 1 to 6, the Qt floor's and the exception boundaries' plans, landed, since the plans run one
+  at a time, in their order (the plans' rules, §1): plan 6 (the core's temporal mode; the runner's mode, speed and
+  simulated time per tab; the settle; the sweep guard; each logic type's delay in its descriptor); plan 5 (its exact
+  oracle with delays, P5.13, agreeing with the reference, and the covering rule it decides, P5.25); plan 3 (the
+  parameter schema and store, the property command on the schema, the editor's fields from the schema); plan 2's fixes
+  this plan's code builds on (one undo entry per edit, a morph's lossless undo, MCP validating every value before
+  changing anything, the Python client's clock delay bounds, BeWavedDolphin's text export with its rows by port).
 - **Lands before:** plan 8, whose temporal SystemVerilog export reads each element's delay from the netlist, and whose
   exporter notes include the Arduino export's note on the delays it drops in a temporal tab. No release comes between
   plan 6's switch and plan 8's landing (plan 6's P6.32), so none offers temporal mode without that note.
