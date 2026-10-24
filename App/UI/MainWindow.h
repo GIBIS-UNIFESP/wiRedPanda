@@ -61,6 +61,12 @@ public:
     /// Shows the window and initializes child widget state.
     void show();
 
+    /**
+     * \brief Records that the MCP client has closed the connection, so this window closes without the exit question.
+     * \details Nobody is left to answer that question. Tabs with unsaved changes still get their save prompts.
+     */
+    void markClientDisconnected();
+
     // --- Tab Management ---
 
     /// Creates a new empty circuit tab.
@@ -323,6 +329,9 @@ private:
     ICController     *m_icController      = nullptr;
     SceneUiBinder    *m_binder            = nullptr;
     WorkspaceManager *m_workspaceManager  = nullptr;
+
+    /// Set once the MCP client has closed the connection; see markClientDisconnected().
+    bool m_clientDisconnected = false;
 
     ExerciseEngine  *m_exerciseEngine  = nullptr;
     ExerciseOverlay *m_exerciseOverlay = nullptr;

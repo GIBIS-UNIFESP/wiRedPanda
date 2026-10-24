@@ -105,6 +105,8 @@ private:
 
     void processCommand(const QString &line);
     void sendResponse(const QJsonObject &response);
+    /// The client is gone: marks the main window disconnected, then quits the application.
+    void quitApplication();
 
     MainWindow *m_mainWindow;
     std::unique_ptr<MCPValidator> m_validator;
