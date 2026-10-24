@@ -8,6 +8,7 @@
 #pragma once
 
 #include <memory>
+#include <optional>
 #include <utility>
 
 #include <QDialog>
@@ -15,7 +16,7 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
-#include "App/Element/PropertyDescriptor.h"
+#include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
 #include "App/UI/ElementEditorUI.h"
 #include "App/UI/SelectionCapabilities.h"
@@ -103,14 +104,40 @@ private:
 
     // --- Helpers ---
 
-    /// Pushes undo commands for all pending property changes to the selected elements.
-    void apply();
+    /// Returns whether a field's change reaches the selection: it is not empty, the editor is enabled (not being
+    /// filled) and it has a scene.
+    [[nodiscard]] bool editable() const;
+    /**
+     * \brief Sets \a property of the selection to \a value, as one undo step (SetPropertyCommand).
+     * \details When \a merges, later changes of the field are part of the step until the edit session ends
+     * (endEditSession()); otherwise the step stands alone.
+     */
+    void setProperty(ElementProperty property, const QVariant &value, bool merges);
+    /// Ends the edit session: a field's next change is an undo step of its own.
+    void endEditSession();
+    /// Returns whether giving the selected nodes \a label or \a mode (each when set; otherwise each node's own) would
+    /// give two Tx nodes one channel, after warning so.
+    bool refusesTxChannel(const std::optional<QString> &label, std::optional<WirelessMode> mode);
+    /// Gives the selection the default appearance, or \a fileName's, as one undo step restoring its saved state.
+    void applyAppearance(bool defaultAppearance, const QString &fileName);
     /// Shows or hides editor widgets based on the combined capabilities of the selection.
     void applyCapabilitiesToUi();
-    /// Applies a single property \a type from the UI controls to \a elm.
-    void applyProperty(GraphicElement *elm, PropertyDescriptor::Type type);
     /// Restores the default appearance on the selected elements.
     void defaultAppearance();
+    /// Slot: the user changed the label field.
+    void labelChanged(const QString &label);
+    /// Slot: the user picked a colour.
+    void colorChanged();
+    /// Slot: the user picked a sound.
+    void audioChanged();
+    /// Slot: the user changed the frequency field.
+    void frequencyChanged(double frequency);
+    /// Slot: the user moved the delay slider to \a eighths of the period.
+    void delayChanged(int eighths);
+    /// Slot: the user moved the volume slider to \a percent.
+    void volumeChanged(int percent);
+    /// Slot: the user picked a wireless mode.
+    void wirelessModeChanged(int index);
     /// Rebuilds the per-state appearance icon tile grid for the given \a states.
     void rebuildAppearanceStateTiles(const QList<std::pair<int, QString>> &states);
     /// Slot: the user changed the desired input count via the input spin box.
@@ -141,11 +168,7 @@ private:
     ElementTabNavigator *m_tabNavigator = nullptr; ///< Tab-order navigator for focused element cycling.
     QList<GraphicElement *> m_elements;          ///< Currently selected elements being edited.
     SelectionCapabilities m_caps;                ///< Merged capability flags of the current selection.
-
-    // Appearance state
-    QString m_appearanceName;              ///< File path of the active custom appearance, if any.
-    bool m_isDefaultAppearance  = true;    ///< True when the built-in default appearance is active.
-    bool m_isUpdatingAppearance = false;   ///< Guard flag to suppress recursive appearance-change signals.
+    int m_editSession = 0;                       ///< The edit session whose steps merge (SetPropertyCommand).
 
     // Placeholder strings for multi-selection display
     QString m_manyAudios   = tr("<Many sounds>");

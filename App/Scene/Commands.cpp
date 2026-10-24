@@ -6,15 +6,20 @@
 #include <algorithm>
 #include <cmath>
 #include <memory>
+#include <utility>
 #include <vector>
 
 #include <QCoreApplication>
 #include <QIODevice>
+#include <QKeySequence>
 
 #include "App/Core/Common.h"
 #include "App/Core/Constants.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
+#include "App/Element/GraphicElementInput.h"
+#include "App/Element/GraphicElements/InputRotary.h"
+#include "App/Element/GraphicElements/Node.h"
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
@@ -550,6 +555,182 @@ void UpdateCommand::loadData(QByteArray &itemData)
         elm->load(stream, context);
         elm->setSelected(true);
     }
+}
+
+namespace SetPropertyCommandHelpers {
+
+/// The id under which SetPropertyCommands of a session merge.
+constexpr int mergeId = 1;
+
+} // namespace SetPropertyCommandHelpers
+
+bool SetPropertyCommand::appliesTo(const GraphicElement &element, const ElementProperty property)
+{
+    const auto *input = qobject_cast<const GraphicElementInput *>(&element);
+    switch (property) {
+    case ElementProperty::Label:        return element.hasLabel();
+    case ElementProperty::Color:        return element.hasColors();
+    case ElementProperty::Frequency:    return element.hasFrequency();
+    case ElementProperty::Delay:        return element.hasDelay();
+    case ElementProperty::Volume:       return element.hasVolume();
+    case ElementProperty::Audio:        return element.hasAudio();
+    case ElementProperty::Trigger:      return element.hasTrigger();
+    case ElementProperty::Wireless:     return element.hasWirelessMode() && (qobject_cast<const Node *>(&element) != nullptr);
+    case ElementProperty::Locked:       return input != nullptr;
+    case ElementProperty::Value:        return (input != nullptr) && (element.elementType() != ElementType::InputButton);
+    }
+    return false;
+}
+
+QVariant SetPropertyCommand::read(const GraphicElement &element, const ElementProperty property)
+{
+    switch (property) {
+    case ElementProperty::Label:        return element.label();
+    case ElementProperty::Color:        return element.color();
+    case ElementProperty::Frequency:    return element.frequency();
+    case ElementProperty::Delay:        return element.delay();
+    case ElementProperty::Volume:       return element.volume();
+    case ElementProperty::Audio:        return element.audio();
+    case ElementProperty::Trigger:      return element.trigger().toString();
+    case ElementProperty::Wireless:     return static_cast<int>(element.wirelessMode());
+    case ElementProperty::Locked:
+        if (const auto *input = qobject_cast<const GraphicElementInput *>(&element)) {
+            return input->isLocked();
+        }
+        return {};
+    case ElementProperty::Value:
+        if (const auto *input = qobject_cast<const GraphicElementInput *>(&element)) {
+            return input->outputValue();
+        }
+        return {};
+    }
+    return {};
+}
+
+void SetPropertyCommand::write(GraphicElement &element, const ElementProperty property, const QVariant &value)
+{
+    switch (property) {
+    case ElementProperty::Label:        element.setLabel(value.toString()); return;
+    case ElementProperty::Color:        element.setColor(value.toString()); return;
+    case ElementProperty::Frequency:    element.setFrequency(value.toDouble()); return;
+    case ElementProperty::Delay:        element.setDelay(value.toDouble()); return;
+    case ElementProperty::Volume:       element.setVolume(value.toFloat()); return;
+    case ElementProperty::Audio:        element.setAudio(value.toString()); return;
+    case ElementProperty::Trigger:      element.setTrigger(QKeySequence(value.toString())); return;
+    case ElementProperty::Wireless:
+        if (auto *node = qobject_cast<Node *>(&element)) {
+            node->setWirelessMode(static_cast<WirelessMode>(value.toInt()));
+        }
+        return;
+    case ElementProperty::Locked:
+        if (auto *input = qobject_cast<GraphicElementInput *>(&element)) {
+            input->setLocked(value.toBool());
+        }
+        return;
+    case ElementProperty::Value:
+        // A rotary switch's value is the output it selects; any other input's is its level
+        if (auto *rotary = qobject_cast<InputRotary *>(&element)) {
+            rotary->setOn(true, value.toInt());
+        } else if (auto *input = qobject_cast<GraphicElementInput *>(&element)) {
+            input->setOn(value.toInt() != 0);
+        }
+        return;
+    }
+}
+
+SetPropertyCommand *SetPropertyCommand::apply(const QList<GraphicElement *> &elements, const ElementProperty property,
+                                              const QVariant &value, Scene *scene, const int session)
+{
+    QList<GraphicElement *> reached;
+    QVariantList before;
+    QVariantList after;
+    for (auto *element : elements) {
+        if (!appliesTo(*element, property)) {
+            continue;
+        }
+        reached.append(element);
+        before.append(read(*element, property));
+        write(*element, property, value);
+        after.append(read(*element, property));
+    }
+
+    // Every element the edit reached stays in the command, one whose value did not change included, so each step of an
+    // edit session names the same elements and the steps merge. An edit that changed nothing pushes nothing.
+    return (before != after) ? new SetPropertyCommand(reached, property, before, after, scene, session) : nullptr;
+}
+
+SetPropertyCommand::SetPropertyCommand(const QList<GraphicElement *> &elements, const ElementProperty property,
+                                       const QVariantList &before, const QVariantList &after, Scene *scene,
+                                       const int session)
+    : ElementsCommand(elements, scene)
+    , m_property(property)
+    , m_before(before)
+    , m_after(after)
+    , m_session(session)
+{
+    // A node's mode is its wireless channel's direction and its label the channel's name; a label change of a node
+    // with no mode moves no channel.
+    m_wirelessTopologyChange = (property == ElementProperty::Wireless)
+        || ((property == ElementProperty::Label)
+            && std::any_of(elements.cbegin(), elements.cend(), [](const GraphicElement *element) {
+                   return element->hasWirelessMode() && (element->wirelessMode() != WirelessMode::None);
+               }));
+
+    setText(QCoreApplication::translate("UpdateCommand", "Update %1 elements").arg(elements.size()));
+}
+
+void SetPropertyCommand::redo()
+{
+    qCDebug(zero) << text();
+    write(true);
+}
+
+void SetPropertyCommand::undo()
+{
+    qCDebug(zero) << text();
+    write(false);
+}
+
+void SetPropertyCommand::write(const bool after)
+{
+    SimulationBlocker blocker(m_scene->simulation());
+    const auto elements = this->elements();
+    if (!std::exchange(m_firstRedo, false)) {
+        const QVariantList &values = after ? m_after : m_before;
+        for (qsizetype i = 0; i < elements.size(); ++i) {
+            write(*elements.at(i), m_property, values.at(i));
+        }
+    }
+    for (auto *element : elements) {
+        element->setSelected(true);
+    }
+
+    // A wireless channel lives in the simulation's topology, which only a rebuild reads; any other property is no
+    // change of the topology, and a rebuild would restart every clock's phase.
+    if (m_wirelessTopologyChange) {
+        m_scene->setCircuitUpdateRequired();
+    } else {
+        m_scene->setPropertyUpdateRequired();
+    }
+}
+
+int SetPropertyCommand::id() const
+{
+    return (m_session < 0) ? -1 : SetPropertyCommandHelpers::mergeId;
+}
+
+bool SetPropertyCommand::mergeWith(const QUndoCommand *other)
+{
+    // Only a SetPropertyCommand has its merge id
+    const auto *next = static_cast<const SetPropertyCommand *>(other);
+    if ((next->m_session != m_session) || (next->m_property != m_property) || (next->m_ids != m_ids)) {
+        return false;
+    }
+
+    m_after = next->m_after;
+    m_wirelessTopologyChange = m_wirelessTopologyChange || next->m_wirelessTopologyChange;
+    setObsolete(m_after == m_before);
+    return true;
 }
 
 SplitCommand::SplitCommand(Connection *conn, QPointF mousePos, Scene *scene, QUndoCommand *parent)

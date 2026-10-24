@@ -16,6 +16,7 @@
 #include "App/Element/GraphicElements/Display7.h"
 #include "App/Element/GraphicElements/DLatch.h"
 #include "App/Element/GraphicElements/InputButton.h"
+#include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/InputVCC.h"
 #include "App/Element/GraphicElements/Led.h"
@@ -1524,4 +1525,245 @@ void TestCommands::testMorphUndoWithAPictureThatIsGoneChangesNothing()
     QCOMPARE(restored->elementType(), ElementType::InputSwitch);
     QCOMPARE(restored->externalFiles(), QStringList{png});
     QCOMPARE(scene->elements().size(), 1);
+}
+
+void TestCommands::testSetPropertyCommandUndoesEachElementsValue()
+{
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *red = new Led();
+    auto *green = new Led();
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{red, green}, scene));
+    red->setColor("Red");
+    green->setColor("Green");
+
+    auto *command = SetPropertyCommand::apply({red, green}, ElementProperty::Color, QString("Blue"), scene);
+    QVERIFY(command != nullptr);
+    QCOMPARE(red->color(), QString("Blue"));
+    QCOMPARE(green->color(), QString("Blue"));
+    scene->receiveCommand(command);
+    QCOMPARE(command->text(), QString("Update 2 elements"));
+
+    scene->undoStack()->undo();
+    QCOMPARE(red->color(), QString("Red"));
+    QCOMPARE(green->color(), QString("Green"));
+    scene->undoStack()->redo();
+    QCOMPARE(red->color(), QString("Blue"));
+    QCOMPARE(green->color(), QString("Blue"));
+}
+
+void TestCommands::testSetPropertyCommandNamesEveryElementThatHasTheProperty()
+{
+    // A gate has no label and is left out; a switch that already has the value stays in, so every step of an edit
+    // session names the same elements. An edit that changes no value is no command.
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *gate = new And();
+    auto *named = new InputSwitch();
+    auto *other = new InputSwitch();
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{gate, named, other}, scene));
+    named->setLabel("x");
+
+    QCOMPARE(SetPropertyCommand::apply({gate, named}, ElementProperty::Label, QString("x"), scene), nullptr);
+    QCOMPARE(gate->label(), QString());
+
+    auto *command = SetPropertyCommand::apply({gate, named, other}, ElementProperty::Label, QString("x"), scene);
+    QVERIFY(command != nullptr);
+    QCOMPARE(gate->label(), QString());
+    QCOMPARE(other->label(), QString("x"));
+    scene->receiveCommand(command);
+    QCOMPARE(command->text(), QString("Update 2 elements"));
+
+    scene->undoStack()->undo();
+    QCOMPARE(named->label(), QString("x"));
+    QCOMPARE(other->label(), QString());
+}
+
+void TestCommands::testSetPropertyCommandSetsAnInputsLockAndValue()
+{
+    // A rotary switch's value is the output it selects, a switch's its level
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *inputSwitch = new InputSwitch();
+    auto *rotary = new InputRotary();
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{inputSwitch, rotary}, scene));
+    rotary->setOutputSize(4);
+
+    scene->receiveCommand(SetPropertyCommand::apply({inputSwitch, rotary}, ElementProperty::Value, 2, scene));
+    QVERIFY(inputSwitch->isOn());
+    QCOMPARE(rotary->outputValue(), 2);
+    scene->receiveCommand(SetPropertyCommand::apply({inputSwitch, rotary}, ElementProperty::Locked, true, scene));
+    QVERIFY(inputSwitch->isLocked());
+    QVERIFY(rotary->isLocked());
+
+    scene->undoStack()->undo();
+    QVERIFY(!inputSwitch->isLocked());
+    QVERIFY(!rotary->isLocked());
+    scene->undoStack()->undo();
+    QVERIFY(!inputSwitch->isOn());
+    QCOMPARE(rotary->outputValue(), 0);
+}
+
+void TestCommands::testSetPropertyCommandFirstRedoLeavesTheValues()
+{
+    // apply() set the values; pushing the command writes nothing again
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *input = new InputSwitch();
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{input}, scene));
+
+    auto *command = SetPropertyCommand::apply({input}, ElementProperty::Label, QString("a"), scene);
+    QVERIFY(command != nullptr);
+    input->setLabel("changed meanwhile");
+    scene->receiveCommand(command);
+    QCOMPARE(input->label(), QString("changed meanwhile"));
+
+    scene->undoStack()->undo();
+    QCOMPARE(input->label(), QString());
+    scene->undoStack()->redo();
+    QCOMPARE(input->label(), QString("a"));
+}
+
+void TestCommands::testSetPropertyCommandMergesASession()
+{
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *undoStack = scene->undoStack();
+    auto *input = new InputSwitch();
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{input}, scene));
+    input->setLabel("start");
+    const int commands = undoStack->count();
+
+    const auto push = [&](const QString &text, const int session) {
+        scene->receiveCommand(SetPropertyCommand::apply({input}, ElementProperty::Label, text, scene, session));
+    };
+    push("a", 7);
+    push("ab", 7);
+    push("abc", 7);
+    QCOMPARE(undoStack->count(), commands + 1);
+
+    // Another session, and no session, start a step of their own
+    push("abcd", 8);
+    QCOMPARE(undoStack->count(), commands + 2);
+    push("x", -1);
+    push("xy", -1);
+    QCOMPARE(undoStack->count(), commands + 4);
+
+    undoStack->undo();
+    undoStack->undo();
+    undoStack->undo();
+    QCOMPARE(input->label(), QString("abc"));
+    undoStack->undo();
+    QCOMPARE(input->label(), QString("start"));
+    undoStack->redo();
+    QCOMPARE(input->label(), QString("abc"));
+}
+
+void TestCommands::testSetPropertyCommandMergedBackIsNoStep()
+{
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *undoStack = scene->undoStack();
+    auto *clock = new Clock();
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{clock}, scene));
+    const double frequency = clock->frequency();
+    const int commands = undoStack->count();
+
+    scene->receiveCommand(SetPropertyCommand::apply({clock}, ElementProperty::Frequency, frequency + 1.0, scene, 3));
+    QCOMPARE(undoStack->count(), commands + 1);
+    scene->receiveCommand(SetPropertyCommand::apply({clock}, ElementProperty::Frequency, frequency, scene, 3));
+    QCOMPARE(undoStack->count(), commands);
+    QCOMPARE(clock->frequency(), frequency);
+}
+
+void TestCommands::testSetPropertyCommandMergesOnlyTheSameChanges()
+{
+    // One session's edits of another property, or of other elements, are steps of their own
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *undoStack = scene->undoStack();
+    auto *first = new Clock();
+    auto *second = new Clock();
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{first, second}, scene));
+    const int commands = undoStack->count();
+
+    scene->receiveCommand(SetPropertyCommand::apply({first}, ElementProperty::Frequency, 2.0, scene, 5));
+    scene->receiveCommand(SetPropertyCommand::apply({first}, ElementProperty::Label, QString("c"), scene, 5));
+    QCOMPARE(undoStack->count(), commands + 2);
+    scene->receiveCommand(SetPropertyCommand::apply({second}, ElementProperty::Label, QString("s"), scene, 5));
+    QCOMPARE(undoStack->count(), commands + 3);
+    scene->receiveCommand(SetPropertyCommand::apply({first, second}, ElementProperty::Label, QString("d"), scene, 5));
+    QCOMPARE(undoStack->count(), commands + 4);
+    scene->receiveCommand(SetPropertyCommand::apply({second}, ElementProperty::Label, QString("e"), scene, 5));
+    QCOMPARE(undoStack->count(), commands + 5);
+
+    undoStack->undo();
+    QCOMPARE(second->label(), QString("d"));
+    undoStack->undo();
+    QCOMPARE(first->label(), QString("c"));
+    QCOMPARE(second->label(), QString("s"));
+    undoStack->undo();
+    QCOMPARE(first->label(), QString("c"));
+    QCOMPARE(second->label(), QString());
+    undoStack->undo();
+    QCOMPARE(first->label(), QString());
+    QCOMPARE(first->frequency(), 2.0);
+}
+
+void TestCommands::testSetPropertyCommandRxLabelRewiresChannel()
+{
+    // An Rx's label is its channel, which the simulation resolves only as it is rebuilt
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    CircuitBuilder builder(scene);
+    auto *swA = new InputSwitch();
+    auto *swB = new InputSwitch();
+    auto *txA = new Node();
+    auto *txB = new Node();
+    auto *rx = new Node();
+    builder.add(swA, swB, txA, txB, rx);
+    txA->setLabel("A");
+    txA->setWirelessMode(WirelessMode::Tx);
+    txB->setLabel("B");
+    txB->setWirelessMode(WirelessMode::Tx);
+    rx->setLabel("A");
+    rx->setWirelessMode(WirelessMode::Rx);
+    builder.connect(swA, 0, txA, 0);
+    builder.connect(swB, 0, txB, 0);
+    auto *sim = builder.initSimulation();
+
+    swA->setOn(true);
+    swB->setOn(false);
+    sim->update();
+    QCOMPARE(rx->outputValue(0), Status::Active);
+
+    scene->receiveCommand(SetPropertyCommand::apply({rx}, ElementProperty::Label, QString("B"), scene));
+    sim->update();
+    QCOMPARE(rx->outputValue(0), Status::Inactive);
+
+    scene->undoStack()->undo();
+    sim->update();
+    QCOMPARE(rx->outputValue(0), Status::Active);
+}
+
+void TestCommands::testSetPropertyCommandNonWirelessLabelKeepsClockPhase()
+{
+    // A label of a node with no mode names no channel: no rebuild, which would restart the clock HIGH
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *clock = new Clock();
+    auto *node = new Node();
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{clock, node}, scene));
+    clock->setLocked(true); // only a rebuild's resetClock() moves it, not wall time
+    auto *sim = scene->simulation();
+    sim->update(); // the structural edit's rebuild, forcing the clock HIGH
+    QCOMPARE(clock->isOn(), true);
+    clock->setOn(false);
+
+    scene->receiveCommand(SetPropertyCommand::apply({node}, ElementProperty::Label, QString("junction"), scene));
+    sim->update();
+    QCOMPARE(clock->isOn(), false);
+    scene->undoStack()->undo();
+    sim->update();
+    QCOMPARE(clock->isOn(), false);
 }

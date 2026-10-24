@@ -8,6 +8,7 @@
 #pragma once
 
 #include <QCoreApplication>
+#include <QVariant>
 
 #include "App/Element/GraphicElement.h"
 #include "App/Scene/Scene.h"
@@ -239,6 +240,81 @@ private:
     /// (m_oldData, m_newData) pair is immutable, so undo()/redo() flip between the same two
     /// states forever) — computing it around loadData() instead would miss the FIRST redo(),
     /// whose load is a no-op because the caller mutated the elements before pushing.
+    bool m_wirelessTopologyChange = false;
+};
+
+/// A property of an element that a SetPropertyCommand sets, through the element's own setter.
+enum class ElementProperty {
+    Label,
+    Color,
+    Frequency,
+    Delay,
+    Volume,
+    Audio,
+    Trigger,        ///< Held as the key sequence's text.
+    Wireless,       ///< A node's wireless mode; held as the WirelessMode's integer.
+    Locked,         ///< An input's.
+    Value,          ///< An input's output value: a rotary switch's position, any other input's level.
+};
+
+/**
+ * \class SetPropertyCommand
+ * \brief Undo command that sets one property of elements (ElementProperty), holding each one's value before and after.
+ *
+ * \details Undo and redo write those values and nothing else of the elements. A command pushed in an edit session
+ * merges into the one on top of the stack from the same session when both set the same property of the same
+ * elements, so a field typed into or a slider dragged is one undo step; a merge back to the values before is no step.
+ */
+class SetPropertyCommand : public ElementsCommand
+{
+public:
+    /**
+     * \brief Sets \a property of each of \a elements that has it to \a value, as the element takes it, and returns the
+     * command that holds the change, to push; null when no value changed.
+     * \details Every element that has the property stays in the command, one whose value did not change included, so
+     * the commands of an edit session name the same elements and merge. \a session is the edit session, a number
+     * the caller chooses: commands of one session merge; -1 is none.
+     */
+    [[nodiscard]] static SetPropertyCommand *apply(const QList<GraphicElement *> &elements, ElementProperty property,
+                                                   const QVariant &value, Scene *scene, int session = -1);
+
+    /// Returns whether \a element has \a property.
+    static bool appliesTo(const GraphicElement &element, ElementProperty property);
+
+    /// Sets the values after; the first redo(), as the command is pushed, finds them set.
+    void redo() override;
+
+    /// Sets the values before.
+    void undo() override;
+
+    /// Returns the merge id, or -1 for a command of no session.
+    int id() const override;
+
+    /// Takes the values after from \a other when it is of the same session and sets the same property of the same
+    /// elements; with every value back to its value before, the command is obsolete.
+    bool mergeWith(const QUndoCommand *other) override;
+
+private:
+    SetPropertyCommand(const QList<GraphicElement *> &elements, ElementProperty property, const QVariantList &before,
+                       const QVariantList &after, Scene *scene, int session);
+
+    /// Returns the value of \a property of \a element.
+    static QVariant read(const GraphicElement &element, ElementProperty property);
+
+    /// Sets \a property of \a element to \a value.
+    static void write(GraphicElement &element, ElementProperty property, const QVariant &value);
+
+    /// Sets each element's value before or after, then selects the elements and reports the change to the scene.
+    void write(bool after);
+
+    ElementProperty m_property;
+    QVariantList m_before;    ///< One for each of elements(), in order.
+    QVariantList m_after;     ///< One for each of elements(), in order.
+    int m_session = -1;       ///< The edit session, or -1.
+    bool m_firstRedo = true;  ///< apply() set the values after, so the first redo() leaves them.
+
+    /// Whether the change moves a wireless channel (a node's mode, or the label of a Tx or Rx node), which the
+    /// simulation reads only as it is rebuilt.
     bool m_wirelessTopologyChange = false;
 };
 

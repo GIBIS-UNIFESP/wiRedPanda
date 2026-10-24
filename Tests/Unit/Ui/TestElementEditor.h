@@ -77,5 +77,18 @@ private slots:
     void testLowercaseTriggerPushesOneCommand();
     void testManyTriggersPlaceholderKeepsItsCase();
 
+    // Each field sets its own property; a typed field or a dragged slider is one undo step until left or released
+    void testTypingALabelIsOneUndoStep();
+    void testDraggingASliderIsOneUndoStep();
+    void testTypingAFrequencyIsOneUndoStep();
+    void testEachComboPickIsAnUndoStep();
+    void testANewSelectionStartsAnUndoStep();
+    void testUndoRestoresTheLock();
+    void testUndoRestoresTheValueOfAnInput();
+    void testEditingAFieldLeavesTheOthers();
+    void testMixedDelaysDragIsOneStep();
+    void testMixedLabelsTypingIsOneStep();
+    void testDestroyingTheEditorWithAFocusedField();
+
     void testWritesMatchGolden();
 };

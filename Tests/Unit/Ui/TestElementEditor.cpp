@@ -28,6 +28,7 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/AudioBox.h"
+#include "App/Element/GraphicElements/Buzzer.h"
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/Demux.h"
 #include "App/Element/GraphicElements/InputRotary.h"
@@ -501,14 +502,21 @@ void TestElementEditor::testContextMenuAppearanceRevertSetsDefaultAppearance()
     workspace.scene()->clearSelection();
     andGate->setSelected(true);
 
-    // Pretend a custom appearance is active so the revert has a real transition to make.
-    editor.m_isDefaultAppearance = false;
+    // A custom appearance is active so the revert has a real transition to make.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString imagePath = dir.filePath("custom.png");
+    QPixmap image(4, 4);
+    image.fill(Qt::red);
+    QVERIFY(image.save(imagePath, "PNG"));
+    andGate->setAppearance(false, imagePath);
+    QCOMPARE(andGate->externalFiles(), QStringList{imagePath});
 
     auto dismisser = dismisserForMenuAction(QStringLiteral("Restore default appearance"));
     editor.contextMenu(QPoint(0, 0), nullptr);
 
     QVERIFY2(dismisser.dismissCount() >= 1, "the \"Restore default appearance\" action must have been found in the menu");
-    QVERIFY(editor.m_isDefaultAppearance);
+    QVERIFY(andGate->externalFiles().isEmpty());
 }
 
 void TestElementEditor::testContextMenuEditSubcircuitEmitsForEmbeddedIC()
@@ -617,11 +625,13 @@ void TestElementEditor::testUpdateElementAppearanceCancelledDialogIsNoOp()
 
     ScopedFileDialogStub dialogStub;
     dialogStub.stub.openResult = QString();
+    const int commands = workspace.scene()->undoStack()->count();
 
     editor.updateElementAppearance();
 
     QCOMPARE(dialogStub.stub.openCallCount, 1);
-    QVERIFY(!editor.m_isUpdatingAppearance);
+    QCOMPARE(workspace.scene()->undoStack()->count(), commands);
+    QVERIFY(andGate->externalFiles().isEmpty());
 }
 
 void TestElementEditor::testUpdateElementAppearanceViaTileGridUpdatesSelectedStateOnly()
@@ -698,8 +708,8 @@ void TestElementEditor::testUpdateElementAppearanceFallbackAppliesToAllSelected(
 
     editor.updateElementAppearance();
 
-    QVERIFY(!editor.m_isDefaultAppearance);
-    QCOMPARE(undoStack->count(), countBefore + 1); // apply() pushed an UpdateCommand
+    QCOMPARE(andGate->externalFiles(), QStringList{imagePath});
+    QCOMPARE(undoStack->count(), countBefore + 1); // applyAppearance() pushed an UpdateCommand
 }
 
 void TestElementEditor::testApplyCapabilitiesMixedWirelessModeShowsPlaceholder()
@@ -895,12 +905,17 @@ void TestElementEditor::testApplyWirelessModeChangeSeversExistingConnection()
 
     auto *combo = editor.findChild<QComboBox *>("comboBoxWirelessMode");
     QVERIFY(combo);
-    combo->setCurrentIndex(static_cast<int>(WirelessMode::Tx)); // fires apply() via currentIndexChanged
+    combo->setCurrentIndex(static_cast<int>(WirelessMode::Tx)); // fires wirelessModeChanged()
 
     QCOMPARE(node->wirelessMode(), WirelessMode::Tx);
-    // setWirelessMode() hides the port but doesn't delete the connection itself; apply()'s
+    // setWirelessMode() hides the port but doesn't delete the connection itself; wirelessModeChanged()'s
     // wireless-disconnect loop + DeleteItemsCommand macro must have removed it from the scene.
     QVERIFY(!workspace.scene()->items().contains(conn));
+
+    // The mode and the wire it severed are one undo step
+    workspace.scene()->undoStack()->undo();
+    QCOMPARE(node->wirelessMode(), WirelessMode::None);
+    QCOMPARE(TestUtils::sceneConnections(workspace.scene()).size(), 1);
 }
 
 void TestElementEditor::testBlobNameEditingFinishedIgnoresUnchangedOrEmpty()
@@ -1477,4 +1492,311 @@ void TestElementEditor::testWritesMatchGolden()
     const QString golden = QString(QUOTE(CURRENTDIR)) + "/Integration/Properties/writes.txt";
     const QString mismatch = TestUtils::compareWithGolden(golden, lines.join('\n') + '\n');
     QVERIFY2(mismatch.isEmpty(), qPrintable(mismatch));
+}
+
+void TestElementEditor::testTypingALabelIsOneUndoStep()
+{
+    WorkSpace workspace;
+    auto *input = new InputSwitch();
+    workspace.scene()->addItem(input);
+    ElementEditor editor(&workspace);
+    editor.setScene(workspace.scene());
+    workspace.scene()->clearSelection();
+    input->setSelected(true);
+    auto *undoStack = workspace.scene()->undoStack();
+    const int commands = undoStack->count();
+
+    auto *lineEdit = editor.findChild<QLineEdit *>("lineEditElementLabel");
+    lineEdit->setText("a");
+    lineEdit->setText("ab");
+    lineEdit->setText("abc");
+    QCOMPARE(input->label(), QString("abc"));
+    QCOMPARE(undoStack->count(), commands + 1);
+
+    // Leaving the field ends the edit: what is typed next is a step of its own
+    emit lineEdit->editingFinished();
+    lineEdit->setText("abcd");
+    QCOMPARE(undoStack->count(), commands + 2);
+
+    undoStack->undo();
+    QCOMPARE(input->label(), QString("abc"));
+    undoStack->undo();
+    QCOMPARE(input->label(), QString());
+}
+
+void TestElementEditor::testDraggingASliderIsOneUndoStep()
+{
+    WorkSpace workspace;
+    auto *clock = new Clock();
+    workspace.scene()->addItem(clock);
+    ElementEditor editor(&workspace);
+    editor.setScene(workspace.scene());
+    workspace.scene()->clearSelection();
+    clock->setSelected(true);
+    auto *undoStack = workspace.scene()->undoStack();
+    const int commands = undoStack->count();
+
+    auto *slider = editor.findChild<QSlider *>("sliderDelay");
+    slider->setValue(1);
+    slider->setValue(2);
+    slider->setValue(3);
+    QCOMPARE(clock->delay(), 3 / 8.0);
+    QCOMPARE(undoStack->count(), commands + 1);
+
+    // Releasing the slider ends the drag
+    emit slider->sliderReleased();
+    slider->setValue(4);
+    QCOMPARE(undoStack->count(), commands + 2);
+
+    undoStack->undo();
+    QCOMPARE(clock->delay(), 3 / 8.0);
+    undoStack->undo();
+    QCOMPARE(clock->delay(), 0.0);
+}
+
+void TestElementEditor::testTypingAFrequencyIsOneUndoStep()
+{
+    WorkSpace workspace;
+    auto *clock = new Clock();
+    workspace.scene()->addItem(clock);
+    ElementEditor editor(&workspace);
+    editor.setScene(workspace.scene());
+    workspace.scene()->clearSelection();
+    clock->setSelected(true);
+    const double frequency = clock->frequency();
+    auto *undoStack = workspace.scene()->undoStack();
+    const int commands = undoStack->count();
+
+    auto *spinBox = editor.findChild<QDoubleSpinBox *>("doubleSpinBoxFrequency");
+    spinBox->setValue(2.0);
+    spinBox->setValue(25.0);
+    QCOMPARE(undoStack->count(), commands + 1);
+    emit spinBox->editingFinished();
+    spinBox->setValue(3.0);
+    QCOMPARE(undoStack->count(), commands + 2);
+
+    undoStack->undo();
+    QCOMPARE(clock->frequency(), 25.0);
+    undoStack->undo();
+    QCOMPARE(clock->frequency(), frequency);
+}
+
+void TestElementEditor::testEachComboPickIsAnUndoStep()
+{
+    WorkSpace workspace;
+    auto *led = new Led();
+    workspace.scene()->addItem(led);
+    ElementEditor editor(&workspace);
+    editor.setScene(workspace.scene());
+    workspace.scene()->clearSelection();
+    led->setSelected(true);
+    const QString colour = led->color();
+    auto *undoStack = workspace.scene()->undoStack();
+    const int commands = undoStack->count();
+
+    auto *combo = editor.findChild<QComboBox *>("comboBoxColor");
+    combo->setCurrentIndex(combo->findData("Blue"));
+    combo->setCurrentIndex(combo->findData("Green"));
+    QCOMPARE(led->color(), QString("Green"));
+    QCOMPARE(undoStack->count(), commands + 2);
+
+    undoStack->undo();
+    QCOMPARE(led->color(), QString("Blue"));
+    undoStack->undo();
+    QCOMPARE(led->color(), colour);
+}
+
+void TestElementEditor::testANewSelectionStartsAnUndoStep()
+{
+    WorkSpace workspace;
+    auto *first = new InputSwitch();
+    auto *second = new InputSwitch();
+    workspace.scene()->addItem(first);
+    workspace.scene()->addItem(second);
+    ElementEditor editor(&workspace);
+    editor.setScene(workspace.scene());
+    workspace.scene()->clearSelection();
+    first->setSelected(true);
+    auto *undoStack = workspace.scene()->undoStack();
+    const int commands = undoStack->count();
+
+    auto *lineEdit = editor.findChild<QLineEdit *>("lineEditElementLabel");
+    lineEdit->setText("a");
+    first->setSelected(false);
+    second->setSelected(true);
+    second->setSelected(false);
+    first->setSelected(true);
+    lineEdit->setText("ab");
+    QCOMPARE(undoStack->count(), commands + 2);
+}
+
+void TestElementEditor::testUndoRestoresTheLock()
+{
+    WorkSpace workspace;
+    auto *input = new InputSwitch();
+    workspace.scene()->addItem(input);
+    ElementEditor editor(&workspace);
+    editor.setScene(workspace.scene());
+    workspace.scene()->clearSelection();
+    input->setSelected(true);
+
+    editor.findChild<QCheckBox *>("checkBoxLocked")->click();
+    QVERIFY(input->isLocked());
+    workspace.scene()->undoStack()->undo();
+    QVERIFY(!input->isLocked());
+    workspace.scene()->undoStack()->redo();
+    QVERIFY(input->isLocked());
+}
+
+void TestElementEditor::testUndoRestoresTheValueOfAnInput()
+{
+    WorkSpace workspace;
+    auto *input = new InputSwitch();
+    auto *rotary = new InputRotary();
+    workspace.scene()->addItem(input);
+    workspace.scene()->addItem(rotary);
+    rotary->setOutputSize(4);
+    ElementEditor editor(&workspace);
+    editor.setScene(workspace.scene());
+    workspace.scene()->clearSelection();
+    input->setSelected(true);
+    rotary->setSelected(true);
+
+    auto *combo = editor.findChild<QComboBox *>("comboBoxValue");
+    combo->setCurrentText("1");
+    QVERIFY(input->isOn());
+    QCOMPARE(rotary->outputValue(), 1);
+
+    workspace.scene()->undoStack()->undo();
+    QVERIFY(!input->isOn());
+    QCOMPARE(rotary->outputValue(), 0);
+    workspace.scene()->undoStack()->redo();
+    QVERIFY(input->isOn());
+    QCOMPARE(rotary->outputValue(), 1);
+}
+
+void TestElementEditor::testEditingAFieldLeavesTheOthers()
+{
+    // The selection's delays and volumes differ, so their fields show no value; a label typed in leaves them
+    WorkSpace workspace;
+    auto *early = new Clock();
+    auto *late = new Clock();
+    early->setDelay(-0.25);
+    late->setDelay(0.25);
+    auto *quiet = new Buzzer();
+    auto *loud = new Buzzer();
+    quiet->setVolume(0.2f);
+    loud->setVolume(0.8f);
+    for (auto *element : QList<GraphicElement *>{early, late, quiet, loud}) {
+        workspace.scene()->addItem(element);
+    }
+    ElementEditor editor(&workspace);
+    editor.setScene(workspace.scene());
+
+    workspace.scene()->clearSelection();
+    early->setSelected(true);
+    late->setSelected(true);
+    editor.findChild<QLineEdit *>("lineEditElementLabel")->setText("clocks");
+    QCOMPARE(early->label(), QString("clocks"));
+    QCOMPARE(early->delay(), -0.25);
+    QCOMPARE(late->delay(), 0.25);
+
+    workspace.scene()->clearSelection();
+    quiet->setSelected(true);
+    loud->setSelected(true);
+    editor.findChild<QLineEdit *>("lineEditElementLabel")->setText("buzzers");
+    QCOMPARE(quiet->label(), QString("buzzers"));
+    QCOMPARE(quiet->volume(), 0.2f);
+    QCOMPARE(loud->volume(), 0.8f);
+}
+
+void TestElementEditor::testMixedDelaysDragIsOneStep()
+{
+    // A drag over two clocks with different delays is one undo step: every step of it names both clocks
+    WorkSpace workspace;
+    auto *early = new Clock();
+    auto *late = new Clock();
+    late->setDelay(0.125);
+    workspace.scene()->addItem(early);
+    workspace.scene()->addItem(late);
+    ElementEditor editor(&workspace);
+    editor.setScene(workspace.scene());
+    workspace.scene()->clearSelection();
+    early->setSelected(true);
+    late->setSelected(true);
+    auto *undoStack = workspace.scene()->undoStack();
+    auto *slider = editor.findChild<QSlider *>("sliderDelay");
+    QVERIFY(slider);
+    QCOMPARE(slider->value(), 0);
+    const int before = undoStack->count();
+
+    slider->setValue(1);
+    slider->setValue(2);
+    emit slider->sliderReleased();
+    QCOMPARE(early->delay(), 0.25);
+    QCOMPARE(late->delay(), 0.25);
+    QCOMPARE(undoStack->count() - before, 1);
+
+    undoStack->undo();
+    QCOMPARE(early->delay(), 0.0);
+    QCOMPARE(late->delay(), 0.125);
+}
+
+void TestElementEditor::testMixedLabelsTypingIsOneStep()
+{
+    // Typing into the label field of two switches whose labels differ is one undo step
+    WorkSpace workspace;
+    auto *first = new InputSwitch();
+    auto *second = new InputSwitch();
+    first->setLabel("a");
+    second->setLabel("b");
+    workspace.scene()->addItem(first);
+    workspace.scene()->addItem(second);
+    ElementEditor editor(&workspace);
+    editor.setScene(workspace.scene());
+    workspace.scene()->clearSelection();
+    first->setSelected(true);
+    second->setSelected(true);
+    auto *undoStack = workspace.scene()->undoStack();
+    auto *lineEdit = editor.findChild<QLineEdit *>("lineEditElementLabel");
+    QVERIFY(lineEdit);
+    const int before = undoStack->count();
+
+    lineEdit->setText("a");
+    lineEdit->setText("ab");
+    QCOMPARE(first->label(), QString("ab"));
+    QCOMPARE(second->label(), QString("ab"));
+    QCOMPARE(undoStack->count() - before, 1);
+
+    undoStack->undo();
+    QCOMPARE(first->label(), QString("a"));
+    QCOMPARE(second->label(), QString("b"));
+}
+
+void TestElementEditor::testDestroyingTheEditorWithAFocusedField()
+{
+    // A visible editor window closes as it is destroyed, after its own part is gone, and its focused field reports
+    // that it was left: a slot of the editor called then asserts in a debug build (Qt's check that the receiver is
+    // still of its type)
+    WorkSpace workspace;
+    auto *input = new InputSwitch();
+    workspace.scene()->addItem(input);
+    auto *editor = new ElementEditor();
+    editor->setScene(workspace.scene());
+    workspace.scene()->clearSelection();
+    input->setSelected(true);
+    QVERIFY(editor->isWindow());
+    // Active as Qt sees it: macOS's windowing does not activate a test's window
+    showAndActivate(editor);
+    QCOMPARE(QApplication::activeWindow(), editor);
+
+    auto *lineEdit = editor->findChild<QLineEdit *>("lineEditElementLabel");
+    lineEdit->setFocus();
+    QVERIFY(lineEdit->hasFocus());
+    QTest::keyClicks(lineEdit, "x");
+    QSignalSpy finished(lineEdit, &QLineEdit::editingFinished);
+
+    delete editor;
+    QCOMPARE(finished.count(), 1);
+    QCOMPARE(input->label(), QString("x"));
 }
