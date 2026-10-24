@@ -75,7 +75,7 @@ struct RippleAdder8bitFixture {
         return true;
     }
 
-    int readSum()
+    TestUtils::Bits readSum()
     {
         QVector<GraphicElement *> sum_vec;
         for (int i = 0; i < 8; i++) {
@@ -84,10 +84,9 @@ struct RippleAdder8bitFixture {
         return readMultiBitOutput(sum_vec, 0);
     }
 
-    int readCarryOut()
+    Status readCarryOut()
     {
-        auto port = carryOut->inputPort(0);
-        return (port && port->status() == Status::Active) ? 1 : 0;
+        return TestUtils::inputStatus(carryOut);
     }
 };
 
@@ -156,11 +155,11 @@ void TestLevel6RippleAdder8Bit::test8BitAdder() {
 
         f.sim->update();
 
-        int sum_actual = f.readSum();
-        int cout_actual = f.readCarryOut();
+        const TestUtils::Bits sum_actual = f.readSum();
+        const Status cout_actual = f.readCarryOut();
 
         QCOMPARE(sum_actual, testCase.sum_expected);
-        QCOMPARE(cout_actual, testCase.cout_expected);
+        QCOMPARE(cout_actual, TestUtils::level(testCase.cout_expected != 0));
     }
 }
 

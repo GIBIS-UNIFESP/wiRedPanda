@@ -112,8 +112,8 @@ void TestLevel2FullAdder1Bit::testFullAdder()
     f.carryIn->setOn(inputCin);
     f.sim->update();
 
-    QCOMPARE(inputStatus(f.sum), expectedSum);
-    QCOMPARE(inputStatus(f.carryOut), expectedCout);
+    QCOMPARE(inputStatus(f.sum), TestUtils::level(expectedSum));
+    QCOMPARE(inputStatus(f.carryOut), TestUtils::level(expectedCout));
 }
 
 // ============================================================

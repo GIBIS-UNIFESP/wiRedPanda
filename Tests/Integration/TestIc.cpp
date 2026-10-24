@@ -356,33 +356,34 @@ void TestIC::testICStatusPropagation()
 
     // IC input port 0 is "-Preset" (active-low, async): switch OFF drives it Inactive/low,
     // asserting preset and forcing Q high; switch ON drives it Active/high, deasserting
-    // preset. With the clock (C) left unconnected (defaultValue, never edges), Q tracks
-    // -Preset directly -- confirmed empirically: off->true, on->false, off->true.
+    // preset. The clock (C) and the other inputs are left unconnected: the IC's clock pin is
+    // required, and an unconnected one holds Error, which reaches Q once -Preset is released
+    // (plan 5 reads that pin as Unknown, P5.D17). Measured: off->Active, on->Error, off->Active.
 
     // Test 1: Set switch OFF (preset asserted) -- Q must be forced high.
     inputSwitch.setOn(false);
     sim->update();
-    bool ledStateWhenSwitchOff = TestUtils::inputStatus(&outputLed);
-    QVERIFY2(ledStateWhenSwitchOff, "Asserting -Preset (switch off) must force the Q output high");
+    const Status ledStateWhenSwitchOff = TestUtils::inputStatus(&outputLed);
+    QVERIFY2(ledStateWhenSwitchOff == Status::Active, "Asserting -Preset (switch off) must force the Q output high");
 
     // Test 2: Set switch ON (preset deasserted) -- Q must actually change, not just hold.
     inputSwitch.setOn(true);
     sim->update();
-    QVERIFY2(!TestUtils::inputStatus(&outputLed), "Deasserting -Preset must change Q, not leave it stuck at the forced value");
+    QVERIFY2(TestUtils::inputStatus(&outputLed) == Status::Error, "Deasserting -Preset must hand Q to the open clock pin's Error, not leave it stuck at the forced value");
 
     // Test 3: Toggle back to OFF (preset re-asserted) -- Q must be forced high again.
     inputSwitch.setOn(false);
     sim->update();
-    bool ledStateSecondOff = TestUtils::inputStatus(&outputLed);
-    QVERIFY2(ledStateSecondOff, "Re-asserting -Preset must force Q high again");
+    const Status ledStateSecondOff = TestUtils::inputStatus(&outputLed);
+    QVERIFY2(ledStateSecondOff == Status::Active, "Re-asserting -Preset must force Q high again");
     QCOMPARE(ledStateSecondOff, ledStateWhenSwitchOff);
 
     // Test 4: With only 1 of 5 IC inputs connected, the IC produces deterministic
     // outputs from its internal master-slave flip-flop circuitry. The exact values
     // depend on the IC's internal gate-level behavior with 4-state domination rules.
     // Verify outputs are stable across repeated updates (no oscillation).
-    const bool q0 = TestUtils::outputStatus(ic, 0);
-    const bool q1 = TestUtils::outputStatus(ic, 1);
+    const Status q0 = TestUtils::outputStatus(ic, 0);
+    const Status q1 = TestUtils::outputStatus(ic, 1);
     sim->update();
     QCOMPARE(TestUtils::outputStatus(ic, 0), q0);
     QCOMPARE(TestUtils::outputStatus(ic, 1), q1);
@@ -449,14 +450,19 @@ void TestIC::testICDefaultValues()
     }
 
     // All unconnected optional ports should have default status
+    int checked = 0;
     for (int i = 0; i < ic->inputSize(); ++i) {
         auto *port = ic->inputPort(i);
         if (port->connections().empty() && !port->isRequired()) {
             // Port should have a defined default status (Inactive or Active)
             const auto status = port->status();
-            QVERIFY2(status != Status::Unknown, "Port status should be valid");
+            QVERIFY2((status == Status::Inactive) || (status == Status::Active),
+                     qPrintable(QString("Optional input %1 holds %2, not a level").arg(i).arg(TestUtils::statusText(status))));
+            ++checked;
         }
     }
+    // -Preset, J, K and -Clear; the clock is required
+    QCOMPARE(checked, 4);
 }
 
 // Error Handling Tests

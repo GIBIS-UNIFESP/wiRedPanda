@@ -107,5 +107,5 @@ void TestLevel3Comparator4BitEquality::testComparator4BitEquality()
     }
     f.sim->update();
 
-    QCOMPARE(inputStatus(f.ledEqual), expectedEqual);
+    QCOMPARE(inputStatus(f.ledEqual), TestUtils::level(expectedEqual));
 }

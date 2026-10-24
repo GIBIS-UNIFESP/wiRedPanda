@@ -133,9 +133,9 @@ void TestLevel4Comparator4Bit::testComparator4Bit()
     }
     f.sim->update();
 
-    QCOMPARE(inputStatus(f.ledGreater), expectedGreater);
-    QCOMPARE(inputStatus(f.ledEqual), expectedEqual);
-    QCOMPARE(inputStatus(f.ledLess), expectedLess);
+    QCOMPARE(inputStatus(f.ledGreater), TestUtils::level(expectedGreater));
+    QCOMPARE(inputStatus(f.ledEqual), TestUtils::level(expectedEqual));
+    QCOMPARE(inputStatus(f.ledLess), TestUtils::level(expectedLess));
 }
 
 // 74LS85 cascade behaviour (same as the level-3 fixture): equal nibbles defer
@@ -156,26 +156,31 @@ void TestLevel4Comparator4Bit::testComparator4BitCascade()
         f.swLtIn->setOn(lt);
     };
 
+    // The three outputs as bits: Greater, Equal, Less from bit 0.
+    const auto outputs = [&f] {
+        return TestUtils::readMultiBitOutput(QVector<GraphicElement *>({f.ledGreater, f.ledEqual, f.ledLess}));
+    };
+
     setAB(0xA, 0xA);                    // equal nibbles
     setCascade(true, false, false);
     f.sim->update();
-    QVERIFY(inputStatus(f.ledGreater) && !inputStatus(f.ledEqual) && !inputStatus(f.ledLess));
+    QCOMPARE(outputs(), 0b001);
 
     setCascade(false, true, false);
     f.sim->update();
-    QVERIFY(!inputStatus(f.ledGreater) && inputStatus(f.ledEqual) && !inputStatus(f.ledLess));
+    QCOMPARE(outputs(), 0b010);
 
     setCascade(false, false, true);
     f.sim->update();
-    QVERIFY(!inputStatus(f.ledGreater) && !inputStatus(f.ledEqual) && inputStatus(f.ledLess));
+    QCOMPARE(outputs(), 0b100);
 
     setAB(0xC, 0x3);                    // A > B locally; cascade says less — ignored
     setCascade(false, false, true);
     f.sim->update();
-    QVERIFY(inputStatus(f.ledGreater) && !inputStatus(f.ledEqual) && !inputStatus(f.ledLess));
+    QCOMPARE(outputs(), 0b001);
 
     setAB(0x3, 0xC);                    // A < B locally; cascade says greater — ignored
     setCascade(true, false, false);
     f.sim->update();
-    QVERIFY(!inputStatus(f.ledGreater) && !inputStatus(f.ledEqual) && inputStatus(f.ledLess));
+    QCOMPARE(outputs(), 0b100);
 }

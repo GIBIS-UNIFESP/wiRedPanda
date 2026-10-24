@@ -60,7 +60,7 @@ struct FlagRegisterFixture {
         return true;
     }
 
-    int readFlags()
+    TestUtils::Bits readFlags()
     {
         return readMultiBitOutput(QVector<GraphicElement *>(flagOutputs.begin(), flagOutputs.end()), 0);
     }
@@ -117,7 +117,7 @@ void TestLevel7FlagRegister::testFlagRegister()
     clockCycle(f.sim, f.clk);
     f.sim->update();
 
-    int flagOutput = f.readFlags();
+    const TestUtils::Bits flagOutput = f.readFlags();
     QCOMPARE(flagOutput, expectedFlagOutput);
 
     // Test hold path: disable load and verify flags don't change
@@ -131,11 +131,11 @@ void TestLevel7FlagRegister::testFlagRegister()
         clockCycle(f.sim, f.clk);
         f.sim->update();
 
-        int heldFlagOutput = f.readFlags();
+        const TestUtils::Bits heldFlagOutput = f.readFlags();
         QVERIFY2(heldFlagOutput == expectedFlagOutput,
-                 qPrintable(QString("Hold path failed at iteration %1: flags changed when load=0 (got 0x%2, expected 0x%3)")
+                 qPrintable(QString("Hold path failed at iteration %1: flags changed when load=0 (got %2, expected 0x%3)")
                      .arg(i + 1)
-                     .arg(heldFlagOutput, 2, 16, QChar('0'))
+                     .arg(heldFlagOutput.text())
                      .arg(expectedFlagOutput, 2, 16, QChar('0'))));
     }
 }

@@ -332,7 +332,12 @@ Provides the test environment setup and common helpers:
 - `setupTestEnvironment()`: Initialize Qt, graphics system, and global properties
 - `configureApp()`: Configure application metadata
 - `createWorkspace()`: Create isolated test workspace
-- `inputStatus()` / `outputStatus()`: Retrieve a port's input/output status
+- `inputStatus()` / `outputStatus()`: Return the `Status` a port holds (Inactive, Active, Unknown or Error), so a
+  test expecting 0 fails on Unknown or Error instead of reading it as 0; `level(bool)` turns an expected level into
+  the `Status` it is compared with, and `statusText()` prints one as `0`, `1`, `U` or `E`
+- `readMultiBitOutput()`: Read several ports as `Bits`, which keep each bit's `Status`. `Bits` equal a number only
+  when every bit is a level, print most significant bit first (`"01U1"`), and `value()` fails the running test on a
+  bit that is not a level. A test that reads a port directly treats a non-level as a failure, never as 0
 
 ### CpuTestUtils (Integration/IC/Tests/CpuTestUtils.h/cpp)
 

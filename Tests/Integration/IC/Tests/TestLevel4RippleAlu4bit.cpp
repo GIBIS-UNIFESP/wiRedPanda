@@ -81,15 +81,9 @@ struct RippleAlu4bitFixture {
         sim->update();
     }
 
-    int readLanes(Led *const *leds) const
+    TestUtils::Bits readLanes(Led *const *leds) const
     {
-        int value = 0;
-        for (int i = 0; i < 4; ++i) {
-            if (inputStatus(leds[i])) {
-                value |= (1 << i);
-            }
-        }
-        return value;
+        return TestUtils::readMultiBitOutput(QVector<Led *>(leds, leds + 4));
     }
 };
 
@@ -280,11 +274,11 @@ void TestLevel4RippleALU4Bit::testAluResultAndCarry()
     QCOMPARE(f.readLanes(lanes), expectedResult & 0x0F);
 
     // CarryOut: unsigned overflow of A + B + CarryIn(0) past 4 bits.
-    QCOMPARE(inputStatus(f.ledCarryOut), inputA + inputB > 0x0F);
+    QCOMPARE(inputStatus(f.ledCarryOut), TestUtils::level(inputA + inputB > 0x0F));
 
     // SubCarryOut: carry out of A + ~B + SubCarryIn(1) — HIGH exactly when the
     // subtraction does NOT borrow (A >= B), the 74181-style borrow convention.
-    QCOMPARE(inputStatus(f.ledSubCarryOut), inputA >= inputB);
+    QCOMPARE(inputStatus(f.ledSubCarryOut), TestUtils::level(inputA >= inputB));
 }
 
 void TestLevel4RippleALU4Bit::testCarryInAndSubCarryInVariations_data()
@@ -339,7 +333,7 @@ void TestLevel4RippleALU4Bit::testCarryInAndSubCarryInVariations()
     f.sim->update();
 
     QCOMPARE(f.readLanes(f.ledAdd), expectedAdd);
-    QCOMPARE(inputStatus(f.ledCarryOut), expectedCarryOut);
+    QCOMPARE(inputStatus(f.ledCarryOut), TestUtils::level(expectedCarryOut));
     QCOMPARE(f.readLanes(f.ledSub), expectedSub);
-    QCOMPARE(inputStatus(f.ledSubCarryOut), expectedSubCarryOut);
+    QCOMPARE(inputStatus(f.ledSubCarryOut), TestUtils::level(expectedSubCarryOut));
 }

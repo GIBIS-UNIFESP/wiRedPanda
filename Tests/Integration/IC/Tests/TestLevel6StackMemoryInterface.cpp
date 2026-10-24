@@ -13,7 +13,6 @@
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
-using TestUtils::inputStatus;
 using TestUtils::clockCycle;
 using CPUTestUtils::loadBuildingBlockIC;
 
@@ -82,26 +81,14 @@ struct StackMemoryInterfaceFixture {
         return true;
     }
 
-    int readSP()
+    TestUtils::Bits readSP()
     {
-        int v = 0;
-        for (int i = 0; i < 8; ++i) {
-            if (TestUtils::inputStatus(spOut[i])) {
-                v |= (1 << i);
-            }
-        }
-        return v;
+        return TestUtils::readMultiBitOutput(spOut);
     }
 
-    int readDataOut()
+    TestUtils::Bits readDataOut()
     {
-        int v = 0;
-        for (int i = 0; i < 8; ++i) {
-            if (TestUtils::inputStatus(dataOutLeds[i])) {
-                v |= (1 << i);
-            }
-        }
-        return v;
+        return TestUtils::readMultiBitOutput(dataOutLeds);
     }
 
     void pulse(InputSwitch *ctrl)
@@ -198,15 +185,10 @@ void TestLevel6StackMemoryInterface::testStackMemoryInterface()
     clockCycle(f.sim, f.clk);
 
     // Read the final address
-    int finalAddress = 0;
-    for (int i = 0; i < 8; ++i) {
-        if (inputStatus(f.finalAddrLeds[i])) {
-            finalAddress |= (1 << i);
-        }
-    }
+    const TestUtils::Bits finalAddress = TestUtils::readMultiBitOutput(f.finalAddrLeds);
 
     int expectedAddress = useStackPointer ? 0xFF : externalAddress;
-    QCOMPARE(finalAddress & 0xFF, expectedAddress & 0xFF);
+    QCOMPARE(finalAddress, expectedAddress & 0xFF);
 }
 
 // End-to-end stack semantics through this IC: push decrements SP, a write lands

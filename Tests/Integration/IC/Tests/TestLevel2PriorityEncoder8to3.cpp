@@ -122,13 +122,7 @@ void TestLevel2PriorityEncoder8To3::test8to3PriorityEncoder()
     }
     f.sim->update();
 
-    bool bit0 = inputStatus(f.outLeds[0]);
-    bool bit1 = inputStatus(f.outLeds[1]);
-    bool bit2 = inputStatus(f.outLeds[2]);
-
-    int actualOutput = (static_cast<int>(bit2) << 2) | (static_cast<int>(bit1) << 1) | static_cast<int>(bit0);
-
-    QCOMPARE(actualOutput, expectedOutput);
+    QCOMPARE(TestUtils::readMultiBitOutput(f.outLeds), expectedOutput);
 }
 
 // 74148 EI/EO semantics: EI disables all outputs; EO = EI AND no-input-active
@@ -138,9 +132,7 @@ void TestLevel2PriorityEncoder8To3::testEnableInputOutput()
     auto &f = *s_level2PriorityEncoder8to3;
 
     auto readAddr = [&] {
-        return (static_cast<int>(inputStatus(f.outLeds[2])) << 2)
-             | (static_cast<int>(inputStatus(f.outLeds[1])) << 1)
-             | static_cast<int>(inputStatus(f.outLeds[0]));
+        return TestUtils::readMultiBitOutput(f.outLeds);
     };
 
     // Disabled (EI=0): every output forced inactive regardless of data.
@@ -150,8 +142,8 @@ void TestLevel2PriorityEncoder8To3::testEnableInputOutput()
     }
     f.sim->update();
     QCOMPARE(readAddr(), 0);
-    QVERIFY(!inputStatus(f.validLed));
-    QVERIFY(!inputStatus(f.eoLed));   // EO inactive while disabled
+    QCOMPARE(inputStatus(f.validLed), Status::Inactive);
+    QCOMPARE(inputStatus(f.eoLed), Status::Inactive);   // EO inactive while disabled
 
     // Enabled, no input active: valid=0, EO=1 (pass enable down the chain).
     f.ei->setOn(true);
@@ -160,13 +152,13 @@ void TestLevel2PriorityEncoder8To3::testEnableInputOutput()
     }
     f.sim->update();
     QCOMPARE(readAddr(), 0);
-    QVERIFY(!inputStatus(f.validLed));
-    QVERIFY(inputStatus(f.eoLed));    // EO asserts: nothing here, enable the next stage
+    QCOMPARE(inputStatus(f.validLed), Status::Inactive);
+    QCOMPARE(inputStatus(f.eoLed), Status::Active);    // EO asserts: nothing here, enable the next stage
 
     // Enabled, an input active: valid=1, EO=0 (this stage claimed the request).
     f.inputs[5]->setOn(true);
     f.sim->update();
     QCOMPARE(readAddr(), 5);
-    QVERIFY(inputStatus(f.validLed));
-    QVERIFY(!inputStatus(f.eoLed));
+    QCOMPARE(inputStatus(f.validLed), Status::Active);
+    QCOMPARE(inputStatus(f.eoLed), Status::Inactive);
 }

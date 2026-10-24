@@ -96,10 +96,10 @@ struct Cpu16bitRiscFixture {
         return true;
     }
 
-    int readPC() { return readMultiBitOutput(QVector<GraphicElement *>(pcLeds.begin(), pcLeds.end()), 0); }
-    int readResult() { return readMultiBitOutput(QVector<GraphicElement *>(resultLeds.begin(), resultLeds.end()), 0); }
-    int readInstr() { return readMultiBitOutput(QVector<GraphicElement *>(instrLeds.begin(), instrLeds.end()), 0); }
-    int readOpCode() { return readMultiBitOutput(QVector<GraphicElement *>(opcodeLeds.begin(), opcodeLeds.end()), 0); }
+    TestUtils::Bits readPC() { return readMultiBitOutput(QVector<GraphicElement *>(pcLeds.begin(), pcLeds.end()), 0); }
+    TestUtils::Bits readResult() { return readMultiBitOutput(QVector<GraphicElement *>(resultLeds.begin(), resultLeds.end()), 0); }
+    TestUtils::Bits readInstr() { return readMultiBitOutput(QVector<GraphicElement *>(instrLeds.begin(), instrLeds.end()), 0); }
+    TestUtils::Bits readOpCode() { return readMultiBitOutput(QVector<GraphicElement *>(opcodeLeds.begin(), opcodeLeds.end()), 0); }
 
     void resetCpu()
     {
@@ -319,8 +319,8 @@ void TestLevel9CPU16BitRISC::testInstrOpCodeFieldConsistency()
     for (int cycle = 0; cycle < 5; ++cycle) {
         clockCycle(f.sim, f.clk);
 
-        int instrWord = f.readInstr();
-        int opcode = f.readOpCode();
+        int instrWord = f.readInstr().value();
+        const TestUtils::Bits opcode = f.readOpCode();
 
         int expectedOpCode = (instrWord >> 11) & 0x1F;
         QCOMPARE(opcode, expectedOpCode);

@@ -129,16 +129,8 @@ void TestLevel5ClockGatedDecoder::testClockGatedDecoder()
             }
             f.sim->update();
 
-            int activeCount = 0;
-            int activeOutput = -1;
-            for (int i = 0; i < 8; i++) {
-                if (inputStatus(f.outputs[i])) {
-                    activeCount++;
-                    activeOutput = i;
-                }
-            }
-            QCOMPARE(activeCount, 1);
-            QCOMPARE(activeOutput, addr);
+            // One-hot: only the addressed output is Active, every other one Inactive.
+            QCOMPARE(TestUtils::readMultiBitOutput(f.outputs), 1 << addr);
         }
     } else {
         for (int i = 0; i < 3; ++i) {
@@ -156,11 +148,11 @@ void TestLevel5ClockGatedDecoder::testClockGatedDecoder()
         if (clockEnable) {
             for (int i = 0; i < 8; i++) {
                 bool expectedState = (i == expectedActiveOutput);
-                QCOMPARE(inputStatus(f.outputs[i]), expectedState);
+                QCOMPARE(inputStatus(f.outputs[i]), TestUtils::level(expectedState));
             }
         } else {
             for (int i = 0; i < 8; i++) {
-                QCOMPARE(inputStatus(f.outputs[i]), false);
+                QCOMPARE(inputStatus(f.outputs[i]), Status::Inactive);
             }
         }
     }
@@ -183,13 +175,13 @@ void TestLevel5ClockGatedDecoder::testWriteEnableGating()
     f.writeEnable->setOn(false);
     f.sim->update();
     for (int i = 0; i < 8; i++) {
-        QCOMPARE(inputStatus(f.outputs[i]), false);
+        QCOMPARE(inputStatus(f.outputs[i]), Status::Inactive);
     }
 
     // writeEnable=1: output 5 active (one-hot decode restored)
     f.writeEnable->setOn(true);
     f.sim->update();
     for (int i = 0; i < 8; i++) {
-        QCOMPARE(inputStatus(f.outputs[i]), i == 5);
+        QCOMPARE(inputStatus(f.outputs[i]), TestUtils::level(i == 5));
     }
 }

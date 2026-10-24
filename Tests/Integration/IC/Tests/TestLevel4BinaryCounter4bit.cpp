@@ -72,11 +72,11 @@ struct BinaryCounter4bitFixture {
         }
     }
 
-    int readCount()
+    TestUtils::Bits readCount()
     {
         return readMultiBitOutput(QVector<GraphicElement *>({
             counterOut[0], counterOut[1], counterOut[2], counterOut[3]
-        })) & 0xF;
+        }));
     }
 
     void asyncClear()

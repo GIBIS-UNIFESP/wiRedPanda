@@ -110,7 +110,7 @@ void TestLevel2Decoder2To4::testAddressDecoder2to4()
 
     for (int i = 0; i < 4; i++) {
         bool expectedState = (i == expectedActiveOutput);
-        QCOMPARE(inputStatus(f.outputs[i]), expectedState);
+        QCOMPARE(inputStatus(f.outputs[i]), TestUtils::level(expectedState));
     }
 }
 
@@ -123,16 +123,8 @@ void TestLevel2Decoder2To4::testSequentialScan()
         f.addressBits[1]->setOn((addr >> 1) & 1);
         f.sim->update();
 
-        int activeCount = 0;
-        int activeOutput = -1;
-        for (int i = 0; i < 4; i++) {
-            if (inputStatus(f.outputs[i])) {
-                activeCount++;
-                activeOutput = i;
-            }
-        }
-        QCOMPARE(activeCount, 1);
-        QCOMPARE(activeOutput, addr);
+        // One-hot: only the addressed output is Active, every other one Inactive.
+        QCOMPARE(TestUtils::readMultiBitOutput(f.outputs), 1 << addr);
     }
 }
 
@@ -171,13 +163,13 @@ void TestLevel2Decoder2To4::testEnableGating()
     en->setOn(false);
     sim->update();
     for (auto *o : outs) {
-        QVERIFY(!inputStatus(o));
+        QCOMPARE(inputStatus(o), Status::Inactive);
     }
 
     // Enable high → output 2 active, the rest low.
     en->setOn(true);
     sim->update();
     for (int i = 0; i < 4; ++i) {
-        QCOMPARE(inputStatus(outs[i]), i == 2);
+        QCOMPARE(inputStatus(outs[i]), TestUtils::level(i == 2));
     }
 }

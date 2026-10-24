@@ -54,13 +54,9 @@ struct RippleAdder4bitFixture {
         return true;
     }
 
-    int readSum()
+    TestUtils::Bits readSum()
     {
-        int result = 0;
-        for (int i = 0; i < 4; ++i) {
-            result |= (inputStatus(ledSum[i]) ? 1 : 0) << i;
-        }
-        return result;
+        return TestUtils::readMultiBitOutput(ledSum);
     }
 };
 
@@ -123,7 +119,7 @@ void TestLevel4RippleAdder4Bit::testAdder4Bit()
     f.sim->update();
 
     QCOMPARE(f.readSum(), expectedSum);
-    QCOMPARE(inputStatus(f.ledCarryOut), expectedCarryOut);
+    QCOMPARE(inputStatus(f.ledCarryOut), TestUtils::level(expectedCarryOut));
 }
 
 // testAdder4Bit always drives CarryIn=0, so a stuck CarryIn wire would go
@@ -160,5 +156,5 @@ void TestLevel4RippleAdder4Bit::testAdder4BitWithCarryIn()
     f.sim->update();
 
     QCOMPARE(f.readSum(), expectedSum);
-    QCOMPARE(inputStatus(f.ledCarryOut), expectedCarryOut);
+    QCOMPARE(inputStatus(f.ledCarryOut), TestUtils::level(expectedCarryOut));
 }

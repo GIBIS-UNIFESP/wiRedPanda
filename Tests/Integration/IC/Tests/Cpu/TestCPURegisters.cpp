@@ -61,10 +61,10 @@ void TestCPURegisters::testFlagRegister()
     flagWrite->setOn(false);
     sim->update();
     // Verify outputs
-    bool zeroResult = TestUtils::inputStatus(zeroOut, 0);
-    bool negativeResult = TestUtils::inputStatus(negativeOut, 0);
-    QCOMPARE(zeroResult, expectedZero);
-    QCOMPARE(negativeResult, expectedNegative);
+    const Status zeroResult = TestUtils::inputStatus(zeroOut, 0);
+    const Status negativeResult = TestUtils::inputStatus(negativeOut, 0);
+    QCOMPARE(zeroResult, TestUtils::level(expectedZero));
+    QCOMPARE(negativeResult, TestUtils::level(expectedNegative));
 }
 
 void TestCPURegisters::testFlagRegister_data()
@@ -109,8 +109,8 @@ void TestCPURegisters::testFlagRegisterPersistence()
     sim->update();
     TestUtils::clockCycle(sim, clock);
     sim->update();
-    QCOMPARE(TestUtils::inputStatus(zeroOut, 0), true);
-    QCOMPARE(TestUtils::inputStatus(negativeOut, 0), false);
+    QCOMPARE(TestUtils::inputStatus(zeroOut, 0), Status::Active);
+    QCOMPARE(TestUtils::inputStatus(negativeOut, 0), Status::Inactive);
 
     // Disable write, present the opposite inputs, and clock several times.
     flagWrite->setOn(false);
@@ -122,8 +122,8 @@ void TestCPURegisters::testFlagRegisterPersistence()
         sim->update();
     }
     // Stored state must be retained, not overwritten by the new inputs.
-    QCOMPARE(TestUtils::inputStatus(zeroOut, 0), true);
-    QCOMPARE(TestUtils::inputStatus(negativeOut, 0), false);
+    QCOMPARE(TestUtils::inputStatus(zeroOut, 0), Status::Active);
+    QCOMPARE(TestUtils::inputStatus(negativeOut, 0), Status::Inactive);
 }
 
 void TestCPURegisters::testInstructionRegister()
@@ -183,7 +183,7 @@ void TestCPURegisters::testInstructionRegister()
         sim->update();
     }
     sim->update();
-    int result = readMultiBitOutput(ir);
+    const TestUtils::Bits result = readMultiBitOutput(ir);
     QCOMPARE(result, expectedIR);
 }
 
@@ -232,7 +232,7 @@ void TestCPURegisters::testSingleGatedRegister()
     sim->update();
     QVector<GraphicElement *> readVec1;
     for (int i = 0; i < 8; i++) readVec1.append(readOut[i]);
-    int readValue = readMultiBitOutput(readVec1);
+    const TestUtils::Bits readValue = readMultiBitOutput(readVec1);
     // Test 2: Write different value when decoderOut is LOW (should NOT write)
     for (int i = 0; i < 8; i++) {
         writeData[i]->setOn((0x55 >> i) & 1);
@@ -245,7 +245,7 @@ void TestCPURegisters::testSingleGatedRegister()
     sim->update();
     QVector<GraphicElement *> readVec2;
     for (int i = 0; i < 8; i++) readVec2.append(readOut[i]);
-    int readValue2 = readMultiBitOutput(readVec2);
+    const TestUtils::Bits readValue2 = readMultiBitOutput(readVec2);
     // Verify results
     QCOMPARE(readValue, 0x42);   // First write should succeed
     QCOMPARE(readValue2, 0x42);  // Second write should NOT happen
@@ -262,6 +262,6 @@ void TestCPURegisters::testSingleGatedRegister()
     sim->update();
     QVector<GraphicElement *> readVec3;
     for (int i = 0; i < 8; i++) readVec3.append(readOut[i]);
-    int readValue3 = readMultiBitOutput(readVec3);
+    const TestUtils::Bits readValue3 = readMultiBitOutput(readVec3);
     QCOMPARE(readValue3, 0x42);  // Third write should NOT happen
 }

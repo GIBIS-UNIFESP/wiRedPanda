@@ -91,12 +91,12 @@ struct ProgramCounter8bitArithFixture {
         return true;
     }
 
-    int readPC()
+    TestUtils::Bits readPC()
     {
         return readMultiBitOutput(QVector<GraphicElement *>(pcOutputs.begin(), pcOutputs.end()), 0);
     }
 
-    int readPCPlus1()
+    TestUtils::Bits readPCPlus1()
     {
         return readMultiBitOutput(QVector<GraphicElement *>(pcPlus1Outputs.begin(), pcPlus1Outputs.end()), 0);
     }

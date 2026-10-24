@@ -128,9 +128,9 @@ void TestLevel3Comparator4Bit::testComparator4Bit()
     }
     f.sim->update();
 
-    QCOMPARE(inputStatus(f.ledGreater), expectedGreater);
-    QCOMPARE(inputStatus(f.ledEqual), expectedEqual);
-    QCOMPARE(inputStatus(f.ledLess), expectedLess);
+    QCOMPARE(inputStatus(f.ledGreater), TestUtils::level(expectedGreater));
+    QCOMPARE(inputStatus(f.ledEqual), TestUtils::level(expectedEqual));
+    QCOMPARE(inputStatus(f.ledLess), TestUtils::level(expectedLess));
 }
 
 // 74LS85 cascade behaviour: when the two nibbles are EQUAL the result follows
@@ -157,34 +157,34 @@ void TestLevel3Comparator4Bit::testComparator4BitCascade()
     setAB(5, 5);
     setCascade(true, false, false);   // lower stage said A>B
     f.sim->update();
-    QVERIFY(inputStatus(f.ledGreater));
-    QVERIFY(!inputStatus(f.ledEqual));
-    QVERIFY(!inputStatus(f.ledLess));
+    QCOMPARE(inputStatus(f.ledGreater), Status::Active);
+    QCOMPARE(inputStatus(f.ledEqual), Status::Inactive);
+    QCOMPARE(inputStatus(f.ledLess), Status::Inactive);
 
     setCascade(false, true, false);   // lower stage said A==B
     f.sim->update();
-    QVERIFY(!inputStatus(f.ledGreater));
-    QVERIFY(inputStatus(f.ledEqual));
-    QVERIFY(!inputStatus(f.ledLess));
+    QCOMPARE(inputStatus(f.ledGreater), Status::Inactive);
+    QCOMPARE(inputStatus(f.ledEqual), Status::Active);
+    QCOMPARE(inputStatus(f.ledLess), Status::Inactive);
 
     setCascade(false, false, true);   // lower stage said A<B
     f.sim->update();
-    QVERIFY(!inputStatus(f.ledGreater));
-    QVERIFY(!inputStatus(f.ledEqual));
-    QVERIFY(inputStatus(f.ledLess));
+    QCOMPARE(inputStatus(f.ledGreater), Status::Inactive);
+    QCOMPARE(inputStatus(f.ledEqual), Status::Inactive);
+    QCOMPARE(inputStatus(f.ledLess), Status::Active);
 
     // Unequal nibbles: local comparison wins regardless of the cascade inputs.
     setAB(9, 4);                       // A > B locally
     setCascade(false, false, true);    // lower stage says A<B — must be ignored
     f.sim->update();
-    QVERIFY(inputStatus(f.ledGreater));
-    QVERIFY(!inputStatus(f.ledEqual));
-    QVERIFY(!inputStatus(f.ledLess));
+    QCOMPARE(inputStatus(f.ledGreater), Status::Active);
+    QCOMPARE(inputStatus(f.ledEqual), Status::Inactive);
+    QCOMPARE(inputStatus(f.ledLess), Status::Inactive);
 
     setAB(4, 9);                       // A < B locally
     setCascade(true, false, false);    // lower stage says A>B — must be ignored
     f.sim->update();
-    QVERIFY(!inputStatus(f.ledGreater));
-    QVERIFY(!inputStatus(f.ledEqual));
-    QVERIFY(inputStatus(f.ledLess));
+    QCOMPARE(inputStatus(f.ledGreater), Status::Inactive);
+    QCOMPARE(inputStatus(f.ledEqual), Status::Inactive);
+    QCOMPARE(inputStatus(f.ledLess), Status::Active);
 }

@@ -113,8 +113,8 @@ void TestLevel2MUX4To1::testMultiplexer4to1()
             f.sim->update();
 
             bool expectedInput = f.inputs[s]->isOn();
-            bool actualOutput = inputStatus(f.output);
-            QCOMPARE(actualOutput, expectedInput);
+            const Status actualOutput = inputStatus(f.output);
+            QCOMPARE(actualOutput, TestUtils::level(expectedInput));
         }
     } else {
         f.selectBit0->setOn((selectValue >> 0) & 1);
@@ -122,8 +122,8 @@ void TestLevel2MUX4To1::testMultiplexer4to1()
         f.sim->update();
 
         bool expectedInput = f.inputs[selectValue]->isOn();
-        bool actualOutput = inputStatus(f.output);
-        QCOMPARE(actualOutput, expectedInput);
+        const Status actualOutput = inputStatus(f.output);
+        QCOMPARE(actualOutput, TestUtils::level(expectedInput));
     }
 }
 
@@ -165,10 +165,10 @@ void TestLevel2MUX4To1::testEnableGating()
     s1->setOn(true);
     en->setOn(false);
     sim->update();
-    QVERIFY(!inputStatus(out));
+    QCOMPARE(inputStatus(out), Status::Inactive);
 
     // Enable high → output follows the selected Data[2]=1.
     en->setOn(true);
     sim->update();
-    QVERIFY(inputStatus(out));
+    QCOMPARE(inputStatus(out), Status::Active);
 }

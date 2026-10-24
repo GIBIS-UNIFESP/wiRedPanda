@@ -2251,6 +2251,7 @@ QVector<ArduinoCodeGen::TestVector> TestArduino::generateTruthTable(
     const int combos = 1 << N;
     QVector<ArduinoCodeGen::TestVector> table;
     table.reserve(combos);
+    bool nonLevelReported = false;
 
     for (int i = 0; i < combos; ++i) {
         for (int j = 0; j < N; ++j) {
@@ -2269,7 +2270,15 @@ QVector<ArduinoCodeGen::TestVector> TestArduino::generateTruthTable(
         }
         entry.outputs.resize(outputs.size());
         for (int k = 0; k < outputs.size(); ++k) {
-            entry.outputs[k] = outputs[k].elm->simInputs().at(outputs[k].portIndex) == Status::Active;
+            // The sketch is checked against a level, so an Unknown or Error output is the engine's, not a 0.
+            const Status status = outputs[k].elm->simInputs().at(outputs[k].portIndex);
+            if ((status != Status::Active) && (status != Status::Inactive) && !nonLevelReported) {
+                nonLevelReported = true;
+                QTest::qFail(qPrintable(QString("the engine's output %1 is not a level for input combination %2")
+                                            .arg(outputs[k].elm->objectName()).arg(i)),
+                             __FILE__, __LINE__);
+            }
+            entry.outputs[k] = (status == Status::Active);
         }
         table.append(entry);
     }
@@ -2676,6 +2685,8 @@ void TestArduino::testArduinoSequentialMultiCycleCpu8Bit()
     QVERIFY(sim != nullptr);
 
     QVector<ArduinoCodeGen::TestVector> vectors;
+    // The sketch is checked against a level, so an Unknown or Error output is the engine's, not a 0.
+    QString nonLevelOutput;
     auto step = [&](bool clkOn, bool rstOn) {
         clk->setOn(clkOn);
         rst->setOn(rstOn);
@@ -2689,7 +2700,11 @@ void TestArduino::testArduinoSequentialMultiCycleCpu8Bit()
         }
         v.outputs.reserve(scanOutputs.size());
         for (auto *led : std::as_const(scanOutputs)) {
-            v.outputs.append(led->inputPort(0)->status() == Status::Active);
+            const Status status = TestUtils::inputStatus(led);
+            if ((status != Status::Active) && (status != Status::Inactive) && nonLevelOutput.isEmpty()) {
+                nonLevelOutput = led->objectName();
+            }
+            v.outputs.append(status == Status::Active);
         }
         vectors.append(v);
     };
@@ -2700,6 +2715,7 @@ void TestArduino::testArduinoSequentialMultiCycleCpu8Bit()
         step(true, false);
         step(false, false);
     }
+    QVERIFY2(nonLevelOutput.isEmpty(), qPrintable(QString("the engine's output %1 is not a level").arg(nonLevelOutput)));
 
     QTemporaryDir tempDir;
     QVERIFY(tempDir.isValid());

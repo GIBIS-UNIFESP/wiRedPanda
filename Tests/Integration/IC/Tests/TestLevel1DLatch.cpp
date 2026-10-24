@@ -94,36 +94,36 @@ void TestLevel1DLatch::testDLatchSequential()
     f.dataIn->setOn(false);
     f.enableIn->setOn(true);
     f.sim->update();
-    QCOMPARE(inputStatus(f.ledQ), false);     // Q follows D=0
-    QCOMPARE(inputStatus(f.ledQBar), true);   // Q_bar is the complement
+    QCOMPARE(inputStatus(f.ledQ), Status::Inactive);     // Q follows D=0
+    QCOMPARE(inputStatus(f.ledQBar), Status::Active);   // Q_bar is the complement
 
     // Step 2: Enable=1, D=1 -> Q should follow D (Q=1)
     f.dataIn->setOn(true);
     f.sim->update();
-    QCOMPARE(inputStatus(f.ledQ), true);      // Q follows D=1
-    QCOMPARE(inputStatus(f.ledQBar), false);
+    QCOMPARE(inputStatus(f.ledQ), Status::Active);      // Q follows D=1
+    QCOMPARE(inputStatus(f.ledQBar), Status::Inactive);
 
     // Step 3: Enable=0, D=1 -> Q should hold (Q=1, even though D=1)
     f.enableIn->setOn(false);
     f.sim->update();
-    QCOMPARE(inputStatus(f.ledQ), true);      // Q held at 1
-    QCOMPARE(inputStatus(f.ledQBar), false);
+    QCOMPARE(inputStatus(f.ledQ), Status::Active);      // Q held at 1
+    QCOMPARE(inputStatus(f.ledQBar), Status::Inactive);
 
     // Step 4: Enable=0, D=0 -> Q should still hold previous (Q=1)
     f.dataIn->setOn(false);
     f.sim->update();
-    QCOMPARE(inputStatus(f.ledQ), true);      // Q still held at 1
-    QCOMPARE(inputStatus(f.ledQBar), false);
+    QCOMPARE(inputStatus(f.ledQ), Status::Active);      // Q still held at 1
+    QCOMPARE(inputStatus(f.ledQBar), Status::Inactive);
 
     // Step 5: Enable=1 again -> Q should follow D (Q=0)
     f.enableIn->setOn(true);
     f.sim->update();
-    QCOMPARE(inputStatus(f.ledQ), false);     // Q follows D=0
-    QCOMPARE(inputStatus(f.ledQBar), true);
+    QCOMPARE(inputStatus(f.ledQ), Status::Inactive);     // Q follows D=0
+    QCOMPARE(inputStatus(f.ledQBar), Status::Active);
 
     // Step 6: Enable=0 -> Q should hold (Q=0)
     f.enableIn->setOn(false);
     f.sim->update();
-    QCOMPARE(inputStatus(f.ledQ), false);     // Q held at 0
-    QCOMPARE(inputStatus(f.ledQBar), true);
+    QCOMPARE(inputStatus(f.ledQ), Status::Inactive);     // Q held at 0
+    QCOMPARE(inputStatus(f.ledQBar), Status::Active);
 }

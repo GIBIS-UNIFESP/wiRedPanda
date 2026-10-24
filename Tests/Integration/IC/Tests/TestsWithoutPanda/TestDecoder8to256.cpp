@@ -103,14 +103,9 @@ void TestDecoder8To256::test8to256Decoder()
     for (int address : addresses) {
         f.setAddress(address);
 
-        // Verify one-hot property: exactly one output active at the correct address
-        int activeCount = 0;
+        // Verify one-hot property: the addressed output Active, every other one Inactive
         for (int i = 0; i < 256; ++i) {
-            if (inputStatus(&f.ledOut[i])) {
-                ++activeCount;
-                QCOMPARE(i, address);
-            }
+            QCOMPARE(inputStatus(&f.ledOut[i]), TestUtils::level(i == address));
         }
-        QCOMPARE(activeCount, 1);
     }
 }

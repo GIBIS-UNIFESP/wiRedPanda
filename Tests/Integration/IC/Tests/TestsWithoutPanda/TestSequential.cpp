@@ -20,6 +20,18 @@ using TestUtils::inputStatus;
 using TestUtils::readMultiBitOutput;
 using TestUtils::setMultiBitInput;
 
+namespace TestSequentialHelpers {
+
+/// True when Q and Q_not are opposite levels.
+bool complementary(Status q, Status qNot)
+{
+    return ((q == Status::Active) && (qNot == Status::Inactive)) || ((q == Status::Inactive) && (qNot == Status::Active));
+}
+
+} // namespace TestSequentialHelpers
+
+using TestSequentialHelpers::complementary;
+
 /**
  * @brief Build a simple 2-state FSM circuit (D flip-flop with trigger)
  *
@@ -167,7 +179,7 @@ void TestSequential::testRegisterAsyncClear()
     // Verify the register actually captured the loaded value before clearing -- otherwise a
     // broken load path (e.g. a disconnected D input) would go unnoticed, since every row
     // asserts 0 after CLEAR regardless of what was loaded.
-    int resultAfterLoad = readMultiBitOutput(QVector<GraphicElement *>({
+    const TestUtils::Bits resultAfterLoad = readMultiBitOutput(QVector<GraphicElement *>({
         &dataOut[0], &dataOut[1], &dataOut[2], &dataOut[3]
     }));
     QCOMPARE(resultAfterLoad, initialValue);
@@ -177,7 +189,7 @@ void TestSequential::testRegisterAsyncClear()
     simulation->update();  // No clock, just settle
 
     // Read output - should be 0000
-    int resultAfterClear = readMultiBitOutput(QVector<GraphicElement *>({
+    const TestUtils::Bits resultAfterClear = readMultiBitOutput(QVector<GraphicElement *>({
         &dataOut[0], &dataOut[1], &dataOut[2], &dataOut[3]
     }));
     QCOMPARE(resultAfterClear, 0x0);
@@ -188,7 +200,7 @@ void TestSequential::testRegisterAsyncClear()
         simulation->update();  // Settle without clock
 
         // Verify state still holds at 0
-        int resultAfterRelease = readMultiBitOutput(QVector<GraphicElement *>({
+        const TestUtils::Bits resultAfterRelease = readMultiBitOutput(QVector<GraphicElement *>({
             &dataOut[0], &dataOut[1], &dataOut[2], &dataOut[3]
         }));
         QCOMPARE(resultAfterRelease, 0x0);
@@ -317,17 +329,17 @@ void TestSequential::testCounterAsyncReset()
     }
 
     // Verify we reached target count
-    int beforeClear = readMultiBitOutput(QVector<GraphicElement *>({
+    const TestUtils::Bits beforeClear = readMultiBitOutput(QVector<GraphicElement *>({
         &counterOut[0], &counterOut[1], &counterOut[2], &counterOut[3]
     }));
-    QCOMPARE(beforeClear & 0xF, targetCount & 0xF);
+    QCOMPARE(beforeClear, targetCount & 0xF);
 
     // Assert CLEAR
     clear.setOn(false);  // CLEAR = LOW (active)
     simulation->update();
 
     // Verify immediate reset to 0 (no clock edge needed)
-    int afterClear = readMultiBitOutput(QVector<GraphicElement *>({
+    const TestUtils::Bits afterClear = readMultiBitOutput(QVector<GraphicElement *>({
         &counterOut[0], &counterOut[1], &counterOut[2], &counterOut[3]
     }));
     QCOMPARE(afterClear, 0x0);
@@ -341,10 +353,10 @@ void TestSequential::testCounterAsyncReset()
         clockCycle(simulation, &clk);
 
         // Should have counted to 1
-        int afterContinue = readMultiBitOutput(QVector<GraphicElement *>({
+        const TestUtils::Bits afterContinue = readMultiBitOutput(QVector<GraphicElement *>({
             &counterOut[0], &counterOut[1], &counterOut[2], &counterOut[3]
         }));
-        QCOMPARE(afterContinue & 0xF, 0x1);
+        QCOMPARE(afterContinue, 0x1);
     } else if (resetAction == 2) {
         // Release and reset again
         clear.setOn(true);  // CLEAR = HIGH (inactive)
@@ -360,7 +372,7 @@ void TestSequential::testCounterAsyncReset()
         simulation->update();
 
         // Should be 0 again
-        int finalValue = readMultiBitOutput(QVector<GraphicElement *>({
+        const TestUtils::Bits finalValue = readMultiBitOutput(QVector<GraphicElement *>({
             &counterOut[0], &counterOut[1], &counterOut[2], &counterOut[3]
         }));
         QCOMPARE(finalValue, 0x0);
@@ -432,7 +444,7 @@ void TestSequential::testShiftRegisterAsyncClear()
         clockCycle(simulation, &clk);
     }
 
-    int beforeClear = readMultiBitOutput(QVector<GraphicElement *>({
+    const TestUtils::Bits beforeClear = readMultiBitOutput(QVector<GraphicElement *>({
         &dataOut[0], &dataOut[1], &dataOut[2], &dataOut[3]
     }));
     // Only the first 2 bits of shiftInSequence were actually shifted in (shiftCount above),
@@ -449,7 +461,7 @@ void TestSequential::testShiftRegisterAsyncClear()
     simulation->update();
 
     // Verify all stages cleared
-    int afterClear = readMultiBitOutput(QVector<GraphicElement *>({
+    const TestUtils::Bits afterClear = readMultiBitOutput(QVector<GraphicElement *>({
         &dataOut[0], &dataOut[1], &dataOut[2], &dataOut[3]
     }));
     QCOMPARE(afterClear, 0x0);
@@ -468,13 +480,13 @@ void TestSequential::testShiftRegisterAsyncClear()
         }
 
         // Verify we can shift data normally after clear release
-        int afterRelease = readMultiBitOutput(QVector<GraphicElement *>({
+        const TestUtils::Bits afterRelease = readMultiBitOutput(QVector<GraphicElement *>({
             &dataOut[0], &dataOut[1], &dataOut[2], &dataOut[3]
         }));
         // Should have some non-zero value after continuing to shift
         // (exact value depends on what we shifted, but not 0)
         QVERIFY2(afterRelease != 0,
-            qPrintable(QString("Shift register should contain data after clear release, got %1").arg(afterRelease)));
+            qPrintable(QString("Shift register should contain data after clear release, got %1").arg(afterRelease.text())));
     }
 }
 
@@ -519,16 +531,17 @@ void TestSequential::testSimpleStateMachine()
     buildSimple2StateFsm(workspace.get(), triggerSwitch, clockSwitch, stateLed, stateNotLed, stateFf, simulation);
 
     // CRITICAL FIX #1: Verify initial state is IDLE (Q=0)
-    int initialQ = inputStatus(stateLed);
-    int initialQnot = inputStatus(stateNotLed);
+    const Status initialQ = inputStatus(stateLed);
+    const Status initialQnot = inputStatus(stateNotLed);
 
-    if (initialQ != 0) {
-        QFAIL(qPrintable(QString("Initial state not IDLE! Q=%1 (expected 0)").arg(initialQ)));
+    if (initialQ != Status::Inactive) {
+        QFAIL(qPrintable(QString("Initial state not IDLE! Q=%1 (expected 0)").arg(TestUtils::statusText(initialQ))));
     }
 
     // Verify Q_not is complement
-    if (initialQ != (initialQnot == 0 ? 1 : 0)) {
-        QFAIL(qPrintable(QString("Q and Q_not not complementary! Q=%1, Q_not=%2").arg(initialQ).arg(initialQnot)));
+    if (!complementary(initialQ, initialQnot)) {
+        QFAIL(qPrintable(QString("Q and Q_not not complementary! Q=%1, Q_not=%2")
+                             .arg(TestUtils::statusText(initialQ), TestUtils::statusText(initialQnot))));
     }
 
     for (int step = 0; step < triggerSequence.size(); ++step) {
@@ -536,14 +549,16 @@ void TestSequential::testSimpleStateMachine()
         // edge completes).
         advanceFsm(simulation, triggerSwitch, clockSwitch, triggerSequence[step]);
 
-        int q = inputStatus(stateLed);
-        int qnot = inputStatus(stateNotLed);
+        const Status q = inputStatus(stateLed);
+        const Status qnot = inputStatus(stateNotLed);
 
-        QVERIFY2(q == (expectedStateSequence[step] ? 1 : 0),
-                 qPrintable(QString("Step %1: Q=%2, expected %3").arg(step).arg(q).arg(expectedStateSequence[step] ? 1 : 0)));
+        QVERIFY2(q == TestUtils::level(expectedStateSequence[step]),
+                 qPrintable(QString("Step %1: Q=%2, expected %3")
+                                .arg(step).arg(TestUtils::statusText(q)).arg(expectedStateSequence[step] ? 1 : 0)));
 
-        if (q != (qnot == 0 ? 1 : 0)) {
-            QFAIL(qPrintable(QString("Step %1: Q and Q_not not complementary! Q=%2, Q_not=%3").arg(step).arg(q).arg(qnot)));
+        if (!complementary(q, qnot)) {
+            QFAIL(qPrintable(QString("Step %1: Q and Q_not not complementary! Q=%2, Q_not=%3")
+                                 .arg(step).arg(TestUtils::statusText(q), TestUtils::statusText(qnot))));
         }
     }
 }
@@ -584,10 +599,10 @@ void TestSequential::testFsmStateTransitions()
     buildSimple2StateFsm(workspace.get(), triggerSwitch, clockSwitch, stateLed, stateNotLed, stateFf, simulation);
 
     // CRITICAL FIX #2: Verify initial state is IDLE (Q=0)
-    int initialQ = inputStatus(stateLed);
+    const Status initialQ = inputStatus(stateLed);
 
-    if (initialQ != 0) {
-        QFAIL(qPrintable(QString("Initial state not IDLE! Q=%1 (expected 0)").arg(initialQ)));
+    if (initialQ != Status::Inactive) {
+        QFAIL(qPrintable(QString("Initial state not IDLE! Q=%1 (expected 0)").arg(TestUtils::statusText(initialQ))));
     }
 
     // Pattern for transitions: alternate between trigger=1 and trigger=0
@@ -608,11 +623,12 @@ void TestSequential::testFsmStateTransitions()
         simulation->update();
 
         // FIX: Don't QCOMPARE here - collect violations instead
-        int readBefore = inputStatus(stateLed);
+        const Status readBefore = inputStatus(stateLed);
 
-        if (readBefore != static_cast<int>(currentState)) {
+        if (readBefore != TestUtils::level(currentState)) {
             preClockViolations++;
-            violationDetails.append(QString("Step %1 pre-clock: Q=%2, expected %3").arg(t).arg(readBefore).arg(currentState));
+            violationDetails.append(QString("Step %1 pre-clock: Q=%2, expected %3")
+                .arg(t).arg(TestUtils::statusText(readBefore)).arg(currentState));
         }
 
         if (t < transitionCount) {
@@ -622,12 +638,12 @@ void TestSequential::testFsmStateTransitions()
 
             // After clock, state should be what was on D (trigger input)
             bool newState = triggers[t];
-            int readState = inputStatus(stateLed);
+            const Status readState = inputStatus(stateLed);
 
-            if (readState != static_cast<int>(newState)) {
+            if (readState != TestUtils::level(newState)) {
                 postClockViolations++;
                 violationDetails.append(QString("Step %1 post-clock: Q=%2, expected %3 (trigger=%4)")
-                    .arg(t).arg(readState).arg(newState).arg(triggers[t]));
+                    .arg(t).arg(TestUtils::statusText(readState)).arg(newState).arg(triggers[t]));
             }
 
             currentState = newState;
@@ -671,16 +687,17 @@ void TestSequential::testFsmTimingEdgeCases()
     buildSimple2StateFsm(workspace.get(), triggerSwitch, clockSwitch, stateLed, stateNotLed, stateFf, simulation);
 
     // CRITICAL FIX #2: Verify initial state is IDLE (Q=0)
-    int initialQ = inputStatus(stateLed);
-    int initialQnot = inputStatus(stateNotLed);
+    const Status initialQ = inputStatus(stateLed);
+    const Status initialQnot = inputStatus(stateNotLed);
 
-    if (initialQ != 0) {
-        QFAIL(qPrintable(QString("Initial state not IDLE! Q=%1 (expected 0)").arg(initialQ)));
+    if (initialQ != Status::Inactive) {
+        QFAIL(qPrintable(QString("Initial state not IDLE! Q=%1 (expected 0)").arg(TestUtils::statusText(initialQ))));
     }
 
     // Verify Q_not is complement
-    if (initialQ != (initialQnot == 0 ? 1 : 0)) {
-        QFAIL(qPrintable(QString("Q and Q_not not complementary! Q=%1, Q_not=%2").arg(initialQ).arg(initialQnot)));
+    if (!complementary(initialQ, initialQnot)) {
+        QFAIL(qPrintable(QString("Q and Q_not not complementary! Q=%1, Q_not=%2")
+                             .arg(TestUtils::statusText(initialQ), TestUtils::statusText(initialQnot))));
     }
 
     bool currentState = false;
@@ -696,12 +713,12 @@ void TestSequential::testFsmTimingEdgeCases()
         // Setup phase: Allow D input to stabilize before clock
         simulation->update();
 
-        int readBefore = inputStatus(stateLed);
+        const Status readBefore = inputStatus(stateLed);
 
-        if (readBefore != static_cast<int>(currentState)) {
+        if (readBefore != TestUtils::level(currentState)) {
             preClockViolations++;
             violationDetails.append(QString("Cycle %1 pre-clock: Q=%2, expected %3 (trigger=%4)")
-                .arg(i).arg(readBefore).arg(currentState).arg(triggerValue));
+                .arg(i).arg(TestUtils::statusText(readBefore)).arg(currentState).arg(triggerValue));
         }
 
         // Complete clock pulse
@@ -711,12 +728,12 @@ void TestSequential::testFsmTimingEdgeCases()
         simulation->update();
 
         bool newState = triggerValue;
-        int readAfter = inputStatus(stateLed);
+        const Status readAfter = inputStatus(stateLed);
 
-        if (readAfter != static_cast<int>(newState)) {
+        if (readAfter != TestUtils::level(newState)) {
             postClockViolations++;
             violationDetails.append(QString("Cycle %1 post-clock: Q=%2, expected %3 (trigger=%4)")
-                .arg(i).arg(readAfter).arg(newState).arg(triggerValue));
+                .arg(i).arg(TestUtils::statusText(readAfter)).arg(newState).arg(triggerValue));
         }
 
         currentState = newState;
@@ -761,24 +778,23 @@ void TestSequential::testFsmExtendedSequences()
     buildSimple2StateFsm(workspace.get(), triggerSwitch, clockSwitch, stateLed, stateNotLed, stateFf, simulation);
 
     // CRITICAL FIX #2: Verify initial state is IDLE (Q=0)
-    int initialQ = inputStatus(stateLed);
-    int initialQnot = inputStatus(stateNotLed);
+    const Status initialQ = inputStatus(stateLed);
+    const Status initialQnot = inputStatus(stateNotLed);
 
-    if (initialQ != 0) {
-        QFAIL(qPrintable(QString("Initial state not IDLE! Q=%1 (expected 0)").arg(initialQ)));
+    if (initialQ != Status::Inactive) {
+        QFAIL(qPrintable(QString("Initial state not IDLE! Q=%1 (expected 0)").arg(TestUtils::statusText(initialQ))));
     }
 
     // Verify Q_not is complement
-    if (initialQ != (initialQnot == 0 ? 1 : 0)) {
-        QFAIL(qPrintable(QString("Q and Q_not not complementary! Q=%1, Q_not=%2").arg(initialQ).arg(initialQnot)));
+    if (!complementary(initialQ, initialQnot)) {
+        QFAIL(qPrintable(QString("Q and Q_not not complementary! Q=%1, Q_not=%2")
+                             .arg(TestUtils::statusText(initialQ), TestUtils::statusText(initialQnot))));
     }
 
     bool currentState = false;
     int preClockViolations = 0;
     int postClockViolations = 0;
     QStringList violationDetails;
-    QVector<int> stateTrace;
-    stateTrace.append(currentState);
 
     for (int cycle = 0; cycle < triggerSequence.size(); ++cycle) {
         bool triggerValue = triggerSequence[cycle];
@@ -788,12 +804,12 @@ void TestSequential::testFsmExtendedSequences()
         // Setup phase: Allow D input to stabilize before clock
         simulation->update();
 
-        int readBefore = inputStatus(stateLed);
+        const Status readBefore = inputStatus(stateLed);
 
-        if (readBefore != static_cast<int>(currentState)) {
+        if (readBefore != TestUtils::level(currentState)) {
             preClockViolations++;
             violationDetails.append(QString("Cycle %1 pre-clock: Q=%2, expected %3 (trigger=%4)")
-                .arg(cycle).arg(readBefore).arg(currentState).arg(triggerValue));
+                .arg(cycle).arg(TestUtils::statusText(readBefore)).arg(currentState).arg(triggerValue));
         }
 
         // Complete clock pulse
@@ -804,15 +820,14 @@ void TestSequential::testFsmExtendedSequences()
 
         // Expected next state: what's on trigger (captured on rising edge)
         bool expectedNextState = triggerValue;
-        int readAfter = inputStatus(stateLed);
+        const Status readAfter = inputStatus(stateLed);
 
-        if (readAfter != static_cast<int>(expectedNextState)) {
+        if (readAfter != TestUtils::level(expectedNextState)) {
             postClockViolations++;
             violationDetails.append(QString("Cycle %1 post-clock: Q=%2, expected %3 (trigger=%4)")
-                .arg(cycle).arg(readAfter).arg(expectedNextState).arg(triggerValue));
+                .arg(cycle).arg(TestUtils::statusText(readAfter)).arg(expectedNextState).arg(triggerValue));
         }
 
-        stateTrace.append(readAfter);
         currentState = expectedNextState;
     }
 
@@ -858,10 +873,10 @@ void TestSequential::testFsmQnotComplementarity()
     QStringList violationDetails;
 
     // Verify initial state
-    int Q = inputStatus(stateLed);
-    int Qnot = inputStatus(stateNotLed);
+    Status Q = inputStatus(stateLed);
+    Status Qnot = inputStatus(stateNotLed);
 
-    if (Q != (Qnot == 0 ? 1 : 0)) {
+    if (!complementary(Q, Qnot)) {
         complementViolations++;
         violationDetails.append("Initial state: Q_not not complement of Q");
     }
@@ -881,10 +896,10 @@ void TestSequential::testFsmQnotComplementarity()
         Q = inputStatus(stateLed);
         Qnot = inputStatus(stateNotLed);
 
-        if (Q != (Qnot == 0 ? 1 : 0)) {
+        if (!complementary(Q, Qnot)) {
             complementViolations++;
             violationDetails.append(QString("Cycle %1: Q=%2, Q_not=%3 (not complementary)")
-                .arg(cycle).arg(Q).arg(Qnot));
+                .arg(cycle).arg(TestUtils::statusText(Q), TestUtils::statusText(Qnot)));
         }
     }
 
@@ -920,14 +935,13 @@ void TestSequential::testFsmLongSequenceStability()
     buildSimple2StateFsm(workspace.get(), triggerSwitch, clockSwitch, stateLed, stateNotLed, stateFf, simulation);
 
     // Verify initial state
-    int initialQ = inputStatus(stateLed);
-    if (initialQ != 0) {
-        QFAIL(qPrintable(QString("Initial state not IDLE! Q=%1").arg(initialQ)));
+    const Status initialQ = inputStatus(stateLed);
+    if (initialQ != Status::Inactive) {
+        QFAIL(qPrintable(QString("Initial state not IDLE! Q=%1").arg(TestUtils::statusText(initialQ))));
     }
 
     int stateErrors = 0;
     int complementErrors = 0;
-    QVector<int> stateCheckpoints;
 
     // Run alternating pattern for cycleCount cycles
     for (int cycle = 0; cycle < cycleCount; ++cycle) {
@@ -941,9 +955,9 @@ void TestSequential::testFsmLongSequenceStability()
         clockCycle(simulation, clockSwitch);
         simulation->update();
 
-        int Q = inputStatus(stateLed);
-        int Qnot = inputStatus(stateNotLed);
-        int expectedQ = triggerValue;
+        const Status Q = inputStatus(stateLed);
+        const Status Qnot = inputStatus(stateNotLed);
+        const Status expectedQ = TestUtils::level(triggerValue);
 
         // Check state correctness
         if (Q != expectedQ) {
@@ -951,11 +965,8 @@ void TestSequential::testFsmLongSequenceStability()
         }
 
         // Check complementarity every 10 cycles
-        if (cycle % 10 == 0) {
-            if (Q != (Qnot == 0 ? 1 : 0)) {
-                complementErrors++;
-            }
-            stateCheckpoints.append(Q);
+        if ((cycle % 10 == 0) && !complementary(Q, Qnot)) {
+            complementErrors++;
         }
     }
 
@@ -991,28 +1002,28 @@ void TestSequential::testFsmStateLock()
     clockCycle(simulation, clockSwitch);
     simulation->update();
 
-    int Q_after_set = inputStatus(stateLed);
-    QCOMPARE(Q_after_set, 1);
+    const Status Q_after_set = inputStatus(stateLed);
+    QCOMPARE(Q_after_set, Status::Active);
 
     triggerSwitch->setOn(false);
     simulation->update();
 
     // NO CLOCK - just settle
-    int Q_before_clock = inputStatus(stateLed);
-    QCOMPARE(Q_before_clock, 1);  // Q locked at 1 because we haven't clocked yet
+    const Status Q_before_clock = inputStatus(stateLed);
+    QCOMPARE(Q_before_clock, Status::Active);  // Q locked at 1 because we haven't clocked yet
 
     // Complete clock pulse
     clockCycle(simulation, clockSwitch);
     simulation->update();
 
-    int Q_after_clock = inputStatus(stateLed);
-    QCOMPARE(Q_after_clock, 0);
+    const Status Q_after_clock = inputStatus(stateLed);
+    QCOMPARE(Q_after_clock, Status::Inactive);
 
     triggerSwitch->setOn(true);  // Change trigger back to 1
     simulation->update();
 
-    int Q_no_clock = inputStatus(stateLed);
-    QCOMPARE(Q_no_clock, 0);  // Q still locked at 0
+    const Status Q_no_clock = inputStatus(stateLed);
+    QCOMPARE(Q_no_clock, Status::Inactive);  // Q still locked at 0
 }
 
 // ============================================================
@@ -1056,8 +1067,8 @@ void TestSequential::testFsmRapidClockNoSettle()
         // Complete clock pulse (minimal settle)
         clockCycle(simulation, clockSwitch);
 
-        int Q = inputStatus(stateLed);
-        int expectedQ = triggerValue;
+        const Status Q = inputStatus(stateLed);
+        const Status expectedQ = TestUtils::level(triggerValue);
 
         if (Q != expectedQ) {
             stateErrors++;
@@ -1101,8 +1112,8 @@ void TestSequential::testFsmTriggerDuringClock()
     triggerSwitch->setOn(initialTrigger);
     simulation->update();
 
-    int Q_before_clock = inputStatus(stateLed);
-    QCOMPARE(Q_before_clock, 0);
+    const Status Q_before_clock = inputStatus(stateLed);
+    QCOMPARE(Q_before_clock, Status::Inactive);
 
     // Rising edge - captures trigger value at this moment
     clockToggle(simulation, clockSwitch);  // LOW -> HIGH
@@ -1115,12 +1126,12 @@ void TestSequential::testFsmTriggerDuringClock()
     clockToggle(simulation, clockSwitch);  // HIGH -> LOW
     simulation->update();
 
-    int Q_after_clock = inputStatus(stateLed);
+    const Status Q_after_clock = inputStatus(stateLed);
 
     // The Q should have captured initialTrigger on the rising edge,
     // NOT the triggerDuringClock (which changed during/after rising edge)
 
-    QCOMPARE(Q_after_clock, initialTrigger);
+    QCOMPARE(Q_after_clock, TestUtils::level(initialTrigger));
 }
 
 // ============================================================
@@ -1163,16 +1174,16 @@ void TestSequential::testFsmLongTermStability()
         clockCycle(simulation, clockSwitch);
         simulation->update();
 
-        int Q = inputStatus(stateLed);
-        int Qnot = inputStatus(stateNotLed);
-        int expectedQ = triggerValue;
+        const Status Q = inputStatus(stateLed);
+        const Status Qnot = inputStatus(stateNotLed);
+        const Status expectedQ = TestUtils::level(triggerValue);
 
         if (Q != expectedQ) {
             stateErrors++;
         }
 
         // Check complement every 50 cycles
-        if (cycle % 50 == 0 && Q != (Qnot == 0 ? 1 : 0)) {
+        if (cycle % 50 == 0 && !complementary(Q, Qnot)) {
             complementErrors++;
         }
     }
@@ -1230,7 +1241,10 @@ void TestSequential::testTFlipFlopToggle()
     simulation->update();
 
     // Read initial Q state (should be inactive/0 by default)
-    bool initialQ = inputStatus(&ledQ);
+    const Status initialQ = inputStatus(&ledQ);
+    QVERIFY2((initialQ == Status::Active) || (initialQ == Status::Inactive),
+             qPrintable(QString("Initial Q=%1 is not a level").arg(TestUtils::statusText(initialQ))));
+    const bool initialLevel = (initialQ == Status::Active);
 
     // Set T input value and stabilize
     tSwitch.setOn(tInput);
@@ -1239,19 +1253,19 @@ void TestSequential::testTFlipFlopToggle()
     // Apply clock pulse (rising edge triggers state change)
     clockCycle(simulation, &clockSwitch);
 
-    bool qAfterClock = inputStatus(&ledQ);
-    bool qNotAfterClock = inputStatus(&ledQnot);
+    const Status qAfterClock = inputStatus(&ledQ);
+    const Status qNotAfterClock = inputStatus(&ledQnot);
 
     if (expectedToggle) {
         // T=1: Q should toggle from initial state
-        QCOMPARE(qAfterClock, !initialQ);
+        QCOMPARE(qAfterClock, TestUtils::level(!initialLevel));
         // Verify Q_not is complement
-        QCOMPARE(qNotAfterClock, initialQ);
+        QCOMPARE(qNotAfterClock, TestUtils::level(initialLevel));
     } else {
         // T=0: Q should hold initial state
-        QCOMPARE(qAfterClock, initialQ);
+        QCOMPARE(qAfterClock, TestUtils::level(initialLevel));
         // Verify Q_not is complement
-        QCOMPARE(qNotAfterClock, !initialQ);
+        QCOMPARE(qNotAfterClock, TestUtils::level(!initialLevel));
     }
 }
 
@@ -1319,11 +1333,11 @@ void TestSequential::testSRFlipFlopSetReset()
     // Clock pulse to latch the state
     clockCycle(simulation, &clockSwitch);
 
-    bool qResult = inputStatus(&ledQ);
-    bool qNotResult = inputStatus(&ledQnot);
+    const Status qResult = inputStatus(&ledQ);
+    const Status qNotResult = inputStatus(&ledQnot);
 
     // Verify result
-    QCOMPARE(qResult, expectedQ);
+    QCOMPARE(qResult, TestUtils::level(expectedQ));
     // Verify complementary output
-    QCOMPARE(qNotResult, !expectedQ);
+    QCOMPARE(qNotResult, TestUtils::level(!expectedQ));
 }

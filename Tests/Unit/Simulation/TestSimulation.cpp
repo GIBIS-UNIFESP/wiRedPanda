@@ -81,7 +81,7 @@ void TestSimulationUnit::testAddRemoveClockDuringSimulation()
     // The pre-existing path must keep propagating correctly with the clock in place.
     sw->setOn(true);
     sim->update();
-    QCOMPARE(TestUtils::inputStatus(led), true);
+    QCOMPARE(TestUtils::inputStatus(led), Status::Active);
 
     // Remove the Clock (connection first, mirroring scene deletion order)
     // while the simulation is still running.
@@ -96,10 +96,10 @@ void TestSimulationUnit::testAddRemoveClockDuringSimulation()
     QVERIFY(sim->isRunning());
     sw->setOn(false);
     sim->update();
-    QCOMPARE(TestUtils::inputStatus(led), false);
+    QCOMPARE(TestUtils::inputStatus(led), Status::Inactive);
     sw->setOn(true);
     sim->update();
-    QCOMPARE(TestUtils::inputStatus(led), true);
+    QCOMPARE(TestUtils::inputStatus(led), Status::Active);
 }
 
 void TestSimulationUnit::testElementRemovalMidSimulation()
@@ -126,7 +126,7 @@ void TestSimulationUnit::testElementRemovalMidSimulation()
     QVERIFY(sim->isRunning());
     sw->setOn(true);
     sim->update();
-    QCOMPARE(TestUtils::inputStatus(andGate), true);
+    QCOMPARE(TestUtils::inputStatus(andGate), Status::Active);
 
     // Remove the AND gate mid-run (connections first, then the element).
     scene->removeItem(connIn);
@@ -146,10 +146,10 @@ void TestSimulationUnit::testElementRemovalMidSimulation()
     QVERIFY(directConn != nullptr);
     scene->setCircuitUpdateRequired();
     sim->update();
-    QCOMPARE(TestUtils::inputStatus(led), true);
+    QCOMPARE(TestUtils::inputStatus(led), Status::Active);
     sw->setOn(false);
     sim->update();
-    QCOMPARE(TestUtils::inputStatus(led), false);
+    QCOMPARE(TestUtils::inputStatus(led), Status::Inactive);
 }
 
 void TestSimulationUnit::testSimulationStartStopNoBreadcrumbsB22()

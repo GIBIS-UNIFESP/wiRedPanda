@@ -154,14 +154,9 @@ void TestLevel7ALU16Bit::testALU16Bit()
 
     f.sim->update();
 
-    int actualResult = 0;
-    for (int i = 0; i < 16; ++i) {
-        if (inputStatus(f.resultOut[i])) {
-            actualResult |= (1 << i);
-        }
-    }
+    const TestUtils::Bits actualResult = TestUtils::readMultiBitOutput(f.resultOut);
 
-    QCOMPARE(actualResult & 0xFFFF, expectedResult & 0xFFFF);
+    QCOMPARE(actualResult, expectedResult & 0xFFFF);
 }
 
 void TestLevel7ALU16Bit::testFlags16Bit_data()
@@ -212,9 +207,9 @@ void TestLevel7ALU16Bit::testFlags16Bit()
 
     f.sim->update();
 
-    QCOMPARE(inputStatus(f.zeroFlag), expectedZero);
-    QCOMPARE(inputStatus(f.signFlag), expectedSign);
-    QCOMPARE(inputStatus(f.carryFlag), expectedCarry);
+    QCOMPARE(inputStatus(f.zeroFlag), TestUtils::level(expectedZero));
+    QCOMPARE(inputStatus(f.signFlag), TestUtils::level(expectedSign));
+    QCOMPARE(inputStatus(f.carryFlag), TestUtils::level(expectedCarry));
 }
 
 void TestLevel7ALU16Bit::testInputPortIsolation_data()
@@ -243,12 +238,7 @@ void TestLevel7ALU16Bit::testInputPortIsolation()
 
     f.sim->update();
 
-    int result = 0;
-    for (int i = 0; i < 16; ++i) {
-        if (inputStatus(f.resultOut[i])) {
-            result |= (1 << i);
-        }
-    }
+    const TestUtils::Bits result = TestUtils::readMultiBitOutput(f.resultOut);
 
     QCOMPARE(result, 1 << bitPosition);
 }
@@ -280,6 +270,6 @@ void TestLevel7ALU16Bit::testOutputPortIsolation()
     f.sim->update();
 
     for (int i = 0; i < 16; ++i) {
-        QCOMPARE(inputStatus(f.resultOut[i]), i == bitPosition);
+        QCOMPARE(inputStatus(f.resultOut[i]), TestUtils::level(i == bitPosition));
     }
 }

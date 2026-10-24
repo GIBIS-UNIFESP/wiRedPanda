@@ -81,8 +81,8 @@ void TestLevel3Register1Bit::testRegisterAsyncReset()
     f.reset->setOn(true);
     f.sim->update();
 
-    QCOMPARE(TestUtils::inputStatus(f.q), false);
-    QCOMPARE(TestUtils::inputStatus(f.notQ), true);
+    QCOMPARE(TestUtils::inputStatus(f.q), Status::Inactive);
+    QCOMPARE(TestUtils::inputStatus(f.notQ), Status::Active);
 }
 
 void TestLevel3Register1Bit::testRegisterWriteOne()
@@ -96,8 +96,8 @@ void TestLevel3Register1Bit::testRegisterWriteOne()
 
     clockCycle(f.sim, f.clock);
 
-    QCOMPARE(TestUtils::inputStatus(f.q), 1);
-    QCOMPARE(TestUtils::inputStatus(f.notQ), 0);
+    QCOMPARE(TestUtils::inputStatus(f.q), Status::Active);
+    QCOMPARE(TestUtils::inputStatus(f.notQ), Status::Inactive);
 }
 
 void TestLevel3Register1Bit::testRegisterHoldWhenWriteDisabled()
@@ -110,19 +110,19 @@ void TestLevel3Register1Bit::testRegisterHoldWhenWriteDisabled()
     f.writeEnable->setOn(true);
     f.sim->update();
     clockCycle(f.sim, f.clock);
-    QCOMPARE(TestUtils::inputStatus(f.q), 1);
+    QCOMPARE(TestUtils::inputStatus(f.q), Status::Active);
 
     // Change data to 0 with WriteEnable disabled: the register must not update.
     f.data->setOn(false);
     f.writeEnable->setOn(false);
     f.sim->update();
-    QCOMPARE(TestUtils::inputStatus(f.q), 1);
-    QCOMPARE(TestUtils::inputStatus(f.notQ), 0);
+    QCOMPARE(TestUtils::inputStatus(f.q), Status::Active);
+    QCOMPARE(TestUtils::inputStatus(f.notQ), Status::Inactive);
 
     // A clock edge with WriteEnable still disabled must also not update.
     clockCycle(f.sim, f.clock);
-    QCOMPARE(TestUtils::inputStatus(f.q), 1);
-    QCOMPARE(TestUtils::inputStatus(f.notQ), 0);
+    QCOMPARE(TestUtils::inputStatus(f.q), Status::Active);
+    QCOMPARE(TestUtils::inputStatus(f.notQ), Status::Inactive);
 }
 
 void TestLevel3Register1Bit::testRegisterWriteZero()
@@ -135,15 +135,15 @@ void TestLevel3Register1Bit::testRegisterWriteZero()
     f.writeEnable->setOn(true);
     f.sim->update();
     clockCycle(f.sim, f.clock);
-    QCOMPARE(TestUtils::inputStatus(f.q), 1);
+    QCOMPARE(TestUtils::inputStatus(f.q), Status::Active);
 
     f.data->setOn(false);
     f.writeEnable->setOn(true);
     f.sim->update();
     clockCycle(f.sim, f.clock);
 
-    QCOMPARE(TestUtils::inputStatus(f.q), 0);
-    QCOMPARE(TestUtils::inputStatus(f.notQ), 1);
+    QCOMPARE(TestUtils::inputStatus(f.q), Status::Inactive);
+    QCOMPARE(TestUtils::inputStatus(f.notQ), Status::Active);
 }
 
 void TestLevel3Register1Bit::testRegisterResetOverridesWrite()
@@ -156,7 +156,7 @@ void TestLevel3Register1Bit::testRegisterResetOverridesWrite()
     f.writeEnable->setOn(true);
     f.sim->update();
     clockCycle(f.sim, f.clock);
-    QCOMPARE(TestUtils::inputStatus(f.q), 1);
+    QCOMPARE(TestUtils::inputStatus(f.q), Status::Active);
 
     // Assert Reset while Data/WriteEnable still request a write: Reset wins, async.
     f.data->setOn(true);
@@ -164,8 +164,8 @@ void TestLevel3Register1Bit::testRegisterResetOverridesWrite()
     f.reset->setOn(true);
     f.sim->update();
 
-    QCOMPARE(TestUtils::inputStatus(f.q), 0);
-    QCOMPARE(TestUtils::inputStatus(f.notQ), 1);
+    QCOMPARE(TestUtils::inputStatus(f.q), Status::Inactive);
+    QCOMPARE(TestUtils::inputStatus(f.notQ), Status::Active);
 }
 
 void TestLevel3Register1Bit::testRegisterWriteAfterResetReleased()
@@ -190,7 +190,7 @@ void TestLevel3Register1Bit::testRegisterWriteAfterResetReleased()
     }
     clockCycle(f.sim, f.clock);
 
-    QCOMPARE(TestUtils::inputStatus(f.q), 1);
+    QCOMPARE(TestUtils::inputStatus(f.q), Status::Active);
 }
 
 /**

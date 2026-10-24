@@ -108,26 +108,26 @@ void TestSequentialLogic::testDFlipFlopBehavior()
     sim->update();
 
     // Initial state: Q=0, ~Q=1
-    QCOMPARE(TestUtils::inputStatus(&ledQ), false);
-    QCOMPARE(TestUtils::inputStatus(&ledNQ), true);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), Status::Inactive);
+    QCOMPARE(TestUtils::inputStatus(&ledNQ), Status::Active);
 
     // D=1: capture into m_lastValue, then rising edge → Q=1
     swD.setOn(true);
     sim->update();
     TestUtils::clockCycle(sim, &swClk);
-    QCOMPARE(TestUtils::inputStatus(&ledQ), true);
-    QCOMPARE(TestUtils::inputStatus(&ledNQ), false);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), Status::Active);
+    QCOMPARE(TestUtils::inputStatus(&ledNQ), Status::Inactive);
 
     // Hold: D→0, no clock → Q stays 1
     swD.setOn(false);
     sim->update();
-    QCOMPARE(TestUtils::inputStatus(&ledQ), true);
-    QCOMPARE(TestUtils::inputStatus(&ledNQ), false);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), Status::Active);
+    QCOMPARE(TestUtils::inputStatus(&ledNQ), Status::Inactive);
 
     // Clock with D=0 → Q=0
     TestUtils::clockCycle(sim, &swClk);
-    QCOMPARE(TestUtils::inputStatus(&ledQ), false);
-    QCOMPARE(TestUtils::inputStatus(&ledNQ), true);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), Status::Inactive);
+    QCOMPARE(TestUtils::inputStatus(&ledNQ), Status::Active);
 }
 
 void TestSequentialLogic::testDLatchBehavior()
@@ -149,28 +149,28 @@ void TestSequentialLogic::testDLatchBehavior()
     sim->update();
 
     // Initial state: Q=0, ~Q=1
-    QCOMPARE(TestUtils::inputStatus(&ledQ), false);
-    QCOMPARE(TestUtils::inputStatus(&ledNQ), true);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), Status::Inactive);
+    QCOMPARE(TestUtils::inputStatus(&ledNQ), Status::Active);
 
     // Enable=1, D=1: transparent → Q=1
     swEnable.setOn(true);
     swD.setOn(true);
     sim->update();
-    QCOMPARE(TestUtils::inputStatus(&ledQ), true);
-    QCOMPARE(TestUtils::inputStatus(&ledNQ), false);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), Status::Active);
+    QCOMPARE(TestUtils::inputStatus(&ledNQ), Status::Inactive);
 
     // Enable=0, D→0: latched → Q stays 1
     swEnable.setOn(false);
     swD.setOn(false);
     sim->update();
-    QCOMPARE(TestUtils::inputStatus(&ledQ), true);
-    QCOMPARE(TestUtils::inputStatus(&ledNQ), false);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), Status::Active);
+    QCOMPARE(TestUtils::inputStatus(&ledNQ), Status::Inactive);
 
     // Enable=1, D=0: transparent again → Q=0
     swEnable.setOn(true);
     sim->update();
-    QCOMPARE(TestUtils::inputStatus(&ledQ), false);
-    QCOMPARE(TestUtils::inputStatus(&ledNQ), true);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), Status::Inactive);
+    QCOMPARE(TestUtils::inputStatus(&ledNQ), Status::Active);
 }
 
 void TestSequentialLogic::testJKFlipFlopBehavior()
@@ -193,37 +193,37 @@ void TestSequentialLogic::testJKFlipFlopBehavior()
     sim->update();
 
     // Initial state: Q=0, ~Q=1
-    QCOMPARE(TestUtils::inputStatus(&ledQ), false);
-    QCOMPARE(TestUtils::inputStatus(&ledNQ), true);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), Status::Inactive);
+    QCOMPARE(TestUtils::inputStatus(&ledNQ), Status::Active);
 
     // J=1, K=0: Set → Q=1
     swJ.setOn(true);
     swK.setOn(false);
     sim->update();
     TestUtils::clockCycle(sim, &swClk);
-    QCOMPARE(TestUtils::inputStatus(&ledQ), true);
-    QCOMPARE(TestUtils::inputStatus(&ledNQ), false);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), Status::Active);
+    QCOMPARE(TestUtils::inputStatus(&ledNQ), Status::Inactive);
 
     // J=0, K=1: Reset → Q=0
     swJ.setOn(false);
     swK.setOn(true);
     sim->update();
     TestUtils::clockCycle(sim, &swClk);
-    QCOMPARE(TestUtils::inputStatus(&ledQ), false);
-    QCOMPARE(TestUtils::inputStatus(&ledNQ), true);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), Status::Inactive);
+    QCOMPARE(TestUtils::inputStatus(&ledNQ), Status::Active);
 
     // J=1, K=1: Toggle → Q=1
     swJ.setOn(true);
     swK.setOn(true);
     sim->update();
     TestUtils::clockCycle(sim, &swClk);
-    QCOMPARE(TestUtils::inputStatus(&ledQ), true);
-    QCOMPARE(TestUtils::inputStatus(&ledNQ), false);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), Status::Active);
+    QCOMPARE(TestUtils::inputStatus(&ledNQ), Status::Inactive);
 
     // J=1, K=1: Toggle again → Q=0
     TestUtils::clockCycle(sim, &swClk);
-    QCOMPARE(TestUtils::inputStatus(&ledQ), false);
-    QCOMPARE(TestUtils::inputStatus(&ledNQ), true);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), Status::Inactive);
+    QCOMPARE(TestUtils::inputStatus(&ledNQ), Status::Active);
 }
 
 void TestSequentialLogic::testSRFlipFlopBehavior()
@@ -246,31 +246,31 @@ void TestSequentialLogic::testSRFlipFlopBehavior()
     sim->update();
 
     // Initial state: Q=0, ~Q=1
-    QCOMPARE(TestUtils::inputStatus(&ledQ), false);
-    QCOMPARE(TestUtils::inputStatus(&ledNQ), true);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), Status::Inactive);
+    QCOMPARE(TestUtils::inputStatus(&ledNQ), Status::Active);
 
     // S=1, R=0: Set → Q=1
     swS.setOn(true);
     swR.setOn(false);
     sim->update();
     TestUtils::clockCycle(sim, &swClk);
-    QCOMPARE(TestUtils::inputStatus(&ledQ), true);
-    QCOMPARE(TestUtils::inputStatus(&ledNQ), false);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), Status::Active);
+    QCOMPARE(TestUtils::inputStatus(&ledNQ), Status::Inactive);
 
     // S=0, R=0: Hold → Q stays 1
     swS.setOn(false);
     swR.setOn(false);
     sim->update();
     TestUtils::clockCycle(sim, &swClk);
-    QCOMPARE(TestUtils::inputStatus(&ledQ), true);
-    QCOMPARE(TestUtils::inputStatus(&ledNQ), false);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), Status::Active);
+    QCOMPARE(TestUtils::inputStatus(&ledNQ), Status::Inactive);
 
     // S=0, R=1: Reset → Q=0
     swR.setOn(true);
     sim->update();
     TestUtils::clockCycle(sim, &swClk);
-    QCOMPARE(TestUtils::inputStatus(&ledQ), false);
-    QCOMPARE(TestUtils::inputStatus(&ledNQ), true);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), Status::Inactive);
+    QCOMPARE(TestUtils::inputStatus(&ledNQ), Status::Active);
 }
 
 void TestSequentialLogic::testSRLatchBehavior()
@@ -292,33 +292,33 @@ void TestSequentialLogic::testSRLatchBehavior()
     sim->update();
 
     // Initial state: Q=0, ~Q=1
-    QCOMPARE(TestUtils::inputStatus(&ledQ), false);
-    QCOMPARE(TestUtils::inputStatus(&ledNQ), true);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), Status::Inactive);
+    QCOMPARE(TestUtils::inputStatus(&ledNQ), Status::Active);
 
     // S=1, R=0: Set → Q=1
     swS.setOn(true);
     swR.setOn(false);
     sim->update();
-    QCOMPARE(TestUtils::inputStatus(&ledQ), true);
-    QCOMPARE(TestUtils::inputStatus(&ledNQ), false);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), Status::Active);
+    QCOMPARE(TestUtils::inputStatus(&ledNQ), Status::Inactive);
 
     // S=0, R=0: Hold → Q stays 1
     swS.setOn(false);
     sim->update();
-    QCOMPARE(TestUtils::inputStatus(&ledQ), true);
-    QCOMPARE(TestUtils::inputStatus(&ledNQ), false);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), Status::Active);
+    QCOMPARE(TestUtils::inputStatus(&ledNQ), Status::Inactive);
 
     // S=0, R=1: Reset → Q=0
     swR.setOn(true);
     sim->update();
-    QCOMPARE(TestUtils::inputStatus(&ledQ), false);
-    QCOMPARE(TestUtils::inputStatus(&ledNQ), true);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), Status::Inactive);
+    QCOMPARE(TestUtils::inputStatus(&ledNQ), Status::Active);
 
     // S=1, R=1: Invalid state → Q=0, ~Q=0
     swS.setOn(true);
     sim->update();
-    QCOMPARE(TestUtils::inputStatus(&ledQ), false);
-    QCOMPARE(TestUtils::inputStatus(&ledNQ), false);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), Status::Inactive);
+    QCOMPARE(TestUtils::inputStatus(&ledNQ), Status::Inactive);
 }
 
 void TestSequentialLogic::testTFlipFlopBehavior()
@@ -340,27 +340,27 @@ void TestSequentialLogic::testTFlipFlopBehavior()
     sim->update();
 
     // Initial state: Q=0, ~Q=1
-    QCOMPARE(TestUtils::inputStatus(&ledQ), false);
-    QCOMPARE(TestUtils::inputStatus(&ledNQ), true);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), Status::Inactive);
+    QCOMPARE(TestUtils::inputStatus(&ledNQ), Status::Active);
 
     // T=0: clock pulse → no toggle (hold)
     swT.setOn(false);
     sim->update();
     TestUtils::clockCycle(sim, &swClk);
-    QCOMPARE(TestUtils::inputStatus(&ledQ), false);
-    QCOMPARE(TestUtils::inputStatus(&ledNQ), true);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), Status::Inactive);
+    QCOMPARE(TestUtils::inputStatus(&ledNQ), Status::Active);
 
     // T=1: clock pulse → toggle Q=0→1
     swT.setOn(true);
     sim->update();
     TestUtils::clockCycle(sim, &swClk);
-    QCOMPARE(TestUtils::inputStatus(&ledQ), true);
-    QCOMPARE(TestUtils::inputStatus(&ledNQ), false);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), Status::Active);
+    QCOMPARE(TestUtils::inputStatus(&ledNQ), Status::Inactive);
 
     // T=1: clock pulse → toggle Q=1→0
     TestUtils::clockCycle(sim, &swClk);
-    QCOMPARE(TestUtils::inputStatus(&ledQ), false);
-    QCOMPARE(TestUtils::inputStatus(&ledNQ), true);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), Status::Inactive);
+    QCOMPARE(TestUtils::inputStatus(&ledNQ), Status::Active);
 }
 
 // ============================================================================
@@ -400,20 +400,20 @@ void TestSequentialLogic::testDFlipFlopResetSimState()
     swD.setOn(true);
     sim->update();
     TestUtils::clockCycle(sim, &swClk);
-    QCOMPARE(TestUtils::inputStatus(&ledQ), true);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), Status::Active);
 
     dff.resetSimState();
     swD.setOn(false); // wakes the simulation's idle-tick skip, as a real sweep column would
     sim->update();
-    QCOMPARE(TestUtils::inputStatus(&ledQ), false);
-    QCOMPARE(TestUtils::inputStatus(&ledNQ), true);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), Status::Inactive);
+    QCOMPARE(TestUtils::inputStatus(&ledNQ), Status::Active);
 
     // A fresh rising edge with D=1 must still set Q=1 correctly after the reset.
     swD.setOn(true);
     sim->update();
     TestUtils::clockCycle(sim, &swClk);
-    QCOMPARE(TestUtils::inputStatus(&ledQ), true);
-    QCOMPARE(TestUtils::inputStatus(&ledNQ), false);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), Status::Active);
+    QCOMPARE(TestUtils::inputStatus(&ledNQ), Status::Inactive);
 }
 
 void TestSequentialLogic::testJKFlipFlopResetSimState()
@@ -439,20 +439,20 @@ void TestSequentialLogic::testJKFlipFlopResetSimState()
     swK.setOn(false);
     sim->update();
     TestUtils::clockCycle(sim, &swClk);
-    QCOMPARE(TestUtils::inputStatus(&ledQ), true);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), Status::Active);
 
     jkff.resetSimState();
     swJ.setOn(false); // wakes the simulation's idle-tick skip, as a real sweep column would
     sim->update();
-    QCOMPARE(TestUtils::inputStatus(&ledQ), false);
-    QCOMPARE(TestUtils::inputStatus(&ledNQ), true);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), Status::Inactive);
+    QCOMPARE(TestUtils::inputStatus(&ledNQ), Status::Active);
 
     // A fresh rising edge with J=1,K=0 must still Set correctly after the reset.
     swJ.setOn(true);
     sim->update();
     TestUtils::clockCycle(sim, &swClk);
-    QCOMPARE(TestUtils::inputStatus(&ledQ), true);
-    QCOMPARE(TestUtils::inputStatus(&ledNQ), false);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), Status::Active);
+    QCOMPARE(TestUtils::inputStatus(&ledNQ), Status::Inactive);
 }
 
 void TestSequentialLogic::testSRFlipFlopResetSimState()
@@ -478,20 +478,20 @@ void TestSequentialLogic::testSRFlipFlopResetSimState()
     swR.setOn(false);
     sim->update();
     TestUtils::clockCycle(sim, &swClk);
-    QCOMPARE(TestUtils::inputStatus(&ledQ), true);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), Status::Active);
 
     srff.resetSimState();
     swS.setOn(false); // wakes the simulation's idle-tick skip, as a real sweep column would
     sim->update();
-    QCOMPARE(TestUtils::inputStatus(&ledQ), false);
-    QCOMPARE(TestUtils::inputStatus(&ledNQ), true);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), Status::Inactive);
+    QCOMPARE(TestUtils::inputStatus(&ledNQ), Status::Active);
 
     // A fresh rising edge with S=1,R=0 must still Set correctly after the reset.
     swS.setOn(true);
     sim->update();
     TestUtils::clockCycle(sim, &swClk);
-    QCOMPARE(TestUtils::inputStatus(&ledQ), true);
-    QCOMPARE(TestUtils::inputStatus(&ledNQ), false);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), Status::Active);
+    QCOMPARE(TestUtils::inputStatus(&ledNQ), Status::Inactive);
 }
 
 void TestSequentialLogic::testTFlipFlopResetSimState()
@@ -515,20 +515,20 @@ void TestSequentialLogic::testTFlipFlopResetSimState()
     swT.setOn(true);
     sim->update();
     TestUtils::clockCycle(sim, &swClk);
-    QCOMPARE(TestUtils::inputStatus(&ledQ), true);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), Status::Active);
 
     tff.resetSimState();
     swT.setOn(false); // wakes the simulation's idle-tick skip, as a real sweep column would
     sim->update();
-    QCOMPARE(TestUtils::inputStatus(&ledQ), false);
-    QCOMPARE(TestUtils::inputStatus(&ledNQ), true);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), Status::Inactive);
+    QCOMPARE(TestUtils::inputStatus(&ledNQ), Status::Active);
 
     // A fresh rising edge with T=1 must still toggle correctly after the reset.
     swT.setOn(true);
     sim->update();
     TestUtils::clockCycle(sim, &swClk);
-    QCOMPARE(TestUtils::inputStatus(&ledQ), true);
-    QCOMPARE(TestUtils::inputStatus(&ledNQ), false);
+    QCOMPARE(TestUtils::inputStatus(&ledQ), Status::Active);
+    QCOMPARE(TestUtils::inputStatus(&ledNQ), Status::Inactive);
 }
 
 // ============================================================================

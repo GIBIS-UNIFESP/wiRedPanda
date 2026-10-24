@@ -102,9 +102,9 @@ void TestLevel2Decoder5To32::test5to32Decoder()
     f.sim->update();
 
     for (int i = 0; i < 32; ++i) {
-        bool actual = inputStatus(f.ledOut[i]);
+        const Status actual = inputStatus(f.ledOut[i]);
         bool expected = (i == expectedActive);
-        QCOMPARE(actual, expected);
+        QCOMPARE(actual, TestUtils::level(expected));
     }
 }
 
@@ -147,13 +147,13 @@ void TestLevel2Decoder5To32::testEnableGating()
     en->setOn(false);
     sim->update();
     for (auto *o : outs) {
-        QVERIFY(!inputStatus(o));
+        QCOMPARE(inputStatus(o), Status::Inactive);
     }
 
     // Enable high → output 20 active, the rest low.
     en->setOn(true);
     sim->update();
     for (int i = 0; i < 32; ++i) {
-        QCOMPARE(inputStatus(outs[i]), i == 20);
+        QCOMPARE(inputStatus(outs[i]), TestUtils::level(i == 20));
     }
 }

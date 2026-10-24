@@ -120,8 +120,8 @@ void TestLevel4ShiftRegisterPISO::testShiftRegisterPISO()
     f.sim->update();
 
     for (int bitPos = 0; bitPos < expectedSerialOutput.size(); ++bitPos) {
-        bool currentBit = inputStatus(f.serialOut);
-        QCOMPARE(currentBit, expectedSerialOutput[bitPos]);
+        const Status currentBit = inputStatus(f.serialOut);
+        QCOMPARE(currentBit, TestUtils::level(expectedSerialOutput[bitPos]));
         clockCycle(f.sim, f.clk);
     }
 }

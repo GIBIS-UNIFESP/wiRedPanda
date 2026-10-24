@@ -105,7 +105,7 @@ void TestLevel2MUX8To1::testMultiplexer8to1()
     f.sim->update();
 
     bool expectedOutput = f.inputs[selectValue]->isOn();
-    QCOMPARE(inputStatus(f.output), expectedOutput);
+    QCOMPARE(inputStatus(f.output), TestUtils::level(expectedOutput));
 }
 
 // Active-high Enable (74153-style strobe): Enable=0 forces the output low;
@@ -151,10 +151,10 @@ void TestLevel2MUX8To1::testEnableGating()
     }
     en->setOn(false);
     sim->update();
-    QVERIFY(!inputStatus(out));
+    QCOMPARE(inputStatus(out), Status::Inactive);
 
     // Enable high → output follows the selected Data[5]=1.
     en->setOn(true);
     sim->update();
-    QVERIFY(inputStatus(out));
+    QCOMPARE(inputStatus(out), Status::Active);
 }

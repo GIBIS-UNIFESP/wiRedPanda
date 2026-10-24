@@ -127,7 +127,7 @@ void TestLevel6Register8Bit::testRegisterWriteAndHoldWhenDisabled() {
 
     clockCycle(f.sim, f.clock);
 
-    int write_val = CPUTestUtils::get8BitValue(f.q);
+    const TestUtils::Bits write_val = CPUTestUtils::get8BitValue(f.q);
     QCOMPARE(write_val, CPUTestUtils::PATTERN_ALTERNATING_1);
 
     // Hold value when WriteEnable=0
@@ -185,7 +185,7 @@ void TestLevel6Register8Bit::testRegisterWriteAllOnesAndHoldAfter() {
         f.sim->update();
     }
     clockCycle(f.sim, f.clock);
-    int q_after_ff = CPUTestUtils::get8BitValue(f.q);
+    const TestUtils::Bits q_after_ff = CPUTestUtils::get8BitValue(f.q);
     QCOMPARE(q_after_ff, CPUTestUtils::PATTERN_ALL_ONES);
 
     // Hold after known good state
@@ -194,7 +194,7 @@ void TestLevel6Register8Bit::testRegisterWriteAllOnesAndHoldAfter() {
 
     f.writeEnable->setOn(false);
     f.sim->update();
-    int q_after_hold_settle = CPUTestUtils::get8BitValue(f.q);
+    const TestUtils::Bits q_after_hold_settle = CPUTestUtils::get8BitValue(f.q);
 
     QCOMPARE(q_after_hold_settle, q_after_ff);
 }
@@ -216,7 +216,7 @@ void TestLevel6Register8Bit::testRegisterIndividualBitMapping() {
         f.sim->update();
     }
     clockCycle(f.sim, f.clock);
-    int q_after_0x01 = CPUTestUtils::get8BitValue(f.q);
+    const TestUtils::Bits q_after_0x01 = CPUTestUtils::get8BitValue(f.q);
     QCOMPARE(q_after_0x01, 0x01);
 
     setMultiBitInput(test_data, 0x02);
@@ -226,7 +226,7 @@ void TestLevel6Register8Bit::testRegisterIndividualBitMapping() {
         f.sim->update();
     }
     clockCycle(f.sim, f.clock);
-    int q_after_0x02 = CPUTestUtils::get8BitValue(f.q);
+    const TestUtils::Bits q_after_0x02 = CPUTestUtils::get8BitValue(f.q);
     QCOMPARE(q_after_0x02, 0x02);
 
     setMultiBitInput(test_data, 0x80);
@@ -236,7 +236,7 @@ void TestLevel6Register8Bit::testRegisterIndividualBitMapping() {
         f.sim->update();
     }
     clockCycle(f.sim, f.clock);
-    int q_after_0x80 = CPUTestUtils::get8BitValue(f.q);
+    const TestUtils::Bits q_after_0x80 = CPUTestUtils::get8BitValue(f.q);
     QCOMPARE(q_after_0x80, 0x80);
 }
 
@@ -278,11 +278,11 @@ void TestLevel6Register8Bit::testRegisterMidRangeValues() {
         }
 
         clockCycle(f.sim, f.clock);
-        int q_value = CPUTestUtils::get8BitValue(f.q);
+        const TestUtils::Bits q_value = CPUTestUtils::get8BitValue(f.q);
 
         QVERIFY2(q_value == testValue,
                  qPrintable(QString("Write mismatch for %1: expected %2, got %3")
-                                .arg(midRangeValues[i].description).arg(testValue).arg(q_value)));
+                                .arg(midRangeValues[i].description).arg(testValue).arg(q_value.text())));
 
         f.writeEnable->setOn(false);
         f.sim->update();
@@ -293,11 +293,11 @@ void TestLevel6Register8Bit::testRegisterMidRangeValues() {
         }
 
         clockCycle(f.sim, f.clock);
-        int q_hold_value = CPUTestUtils::get8BitValue(f.q);
+        const TestUtils::Bits q_hold_value = CPUTestUtils::get8BitValue(f.q);
 
         QVERIFY2(q_hold_value == testValue,
                  qPrintable(QString("Hold mismatch for %1: expected %2, got %3")
-                                .arg(midRangeValues[i].description).arg(testValue).arg(q_hold_value)));
+                                .arg(midRangeValues[i].description).arg(testValue).arg(q_hold_value.text())));
     }
 }
 
@@ -359,7 +359,7 @@ void TestLevel6Register8Bit::test8BitRegisterSequential() {
         }
 
         clockCycle(f.sim, f.clock);
-        int q_value = CPUTestUtils::get8BitValue(f.q);
+        const TestUtils::Bits q_value = CPUTestUtils::get8BitValue(f.q);
 
         if (q_value == testValue) {
             pass_count++;
@@ -395,7 +395,7 @@ void TestLevel6Register8Bit::test8BitRegisterEdgeCases() {
     }
 
     clockCycle(f.sim, f.clock);
-    int q_value = CPUTestUtils::get8BitValue(f.q);
+    TestUtils::Bits q_value = CPUTestUtils::get8BitValue(f.q);
 
     QCOMPARE(q_value, CPUTestUtils::PATTERN_ALTERNATING_1);
 

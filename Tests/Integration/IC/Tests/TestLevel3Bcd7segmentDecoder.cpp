@@ -128,19 +128,14 @@ void TestLevel3BCD7SegmentDecoder::testBCD7SegmentDecoder()
     }
     f.sim->update();
 
-    int actualSegmentPattern = 0;
-    for (int i = 0; i < 7; ++i) {
-        if (inputStatus(f.segmentOutputs[i])) {
-            actualSegmentPattern |= (1 << i);
-        }
-    }
+    const TestUtils::Bits actualSegmentPattern = TestUtils::readMultiBitOutput(f.segmentOutputs);
 
     // Every row (valid digits 0-9 and invalid codes 10-15 alike) now has a real, exact
     // expected pattern -- see the invalid-code rows' comment above for why 0x00 is provably
     // correct for this circuit, not a placeholder.
     QVERIFY2(actualSegmentPattern == expectedSegmentPattern,
-             qPrintable(QString("BCD %1: expected 0x%2, got 0x%3")
+             qPrintable(QString("BCD %1: expected 0x%2, got %3")
                  .arg(bcdValue)
                  .arg(expectedSegmentPattern, 2, 16, QChar('0'))
-                 .arg(actualSegmentPattern, 2, 16, QChar('0'))));
+                 .arg(actualSegmentPattern.text())));
 }

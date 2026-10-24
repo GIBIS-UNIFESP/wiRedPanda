@@ -128,12 +128,5 @@ void TestLevel5BarrelRotator::testBarrelRotator()
     f.directionInput->setOn(direction);
     f.sim->update();
 
-    int actualResult = 0;
-    for (int i = 0; i < 4; ++i) {
-        if (inputStatus(f.resultOutputs[i])) {
-            actualResult |= (1 << i);
-        }
-    }
-
-    QCOMPARE(actualResult & 0xF, expectedResult & 0xF);
+    QCOMPARE(TestUtils::readMultiBitOutput(f.resultOutputs), expectedResult & 0xF);
 }

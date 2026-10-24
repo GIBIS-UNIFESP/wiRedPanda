@@ -52,11 +52,11 @@ struct UpDownCounter4bitFixture {
         return true;
     }
 
-    int readValue()
+    TestUtils::Bits readValue()
     {
         return readMultiBitOutput(QVector<GraphicElement *>({
             counterOut[0], counterOut[1], counterOut[2], counterOut[3]
-        })) & 0xF;
+        }));
     }
 
     void initializeToValue(int targetValue)

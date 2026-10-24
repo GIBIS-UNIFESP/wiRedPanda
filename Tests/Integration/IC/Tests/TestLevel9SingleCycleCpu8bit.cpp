@@ -178,11 +178,11 @@ struct CPUFixture {
         sim->update();
     }
 
-    int readPC() { return readMultiBitOutput(QVector<GraphicElement *>(pcLeds.begin(), pcLeds.end()), 0); }
-    int readResult() { return readMultiBitOutput(QVector<GraphicElement *>(resultLeds.begin(), resultLeds.end()), 0); }
-    int readInstruction() { return readMultiBitOutput(QVector<GraphicElement *>(instrLeds.begin(), instrLeds.end()), 0); }
-    bool readZero() { return inputStatus(zeroLed); }
-    bool readSign() { return inputStatus(signLed); }
+    TestUtils::Bits readPC() { return readMultiBitOutput(QVector<GraphicElement *>(pcLeds.begin(), pcLeds.end()), 0); }
+    TestUtils::Bits readResult() { return readMultiBitOutput(QVector<GraphicElement *>(resultLeds.begin(), resultLeds.end()), 0); }
+    TestUtils::Bits readInstruction() { return readMultiBitOutput(QVector<GraphicElement *>(instrLeds.begin(), instrLeds.end()), 0); }
+    Status readZero() { return inputStatus(zeroLed); }
+    Status readSign() { return inputStatus(signLed); }
 };
 
 static std::unique_ptr<CPUFixture> s_cpu;
@@ -233,7 +233,7 @@ void TestLevel9SingleCycleCPU8Bit::testCPUReset()
     for (int i = 0; i < 3; ++i) {
         clockCycle(f.sim, f.clk);
     }
-    QVERIFY(f.readPC() > 0);
+    QVERIFY(f.readPC().value() > 0);
 
     // Reset mid-execution
     f.resetCPU();
@@ -313,8 +313,8 @@ static void runALUTest(int aluOp)
 
     // 5. Verify (read before clockCycle — single-cycle result is live on the ALU output)
     QCOMPARE(f.readResult(), expectedResult);
-    QCOMPARE(f.readZero(), expectedZero);
-    QCOMPARE(f.readSign(), expectedSign);
+    QCOMPARE(f.readZero(), TestUtils::level(expectedZero));
+    QCOMPARE(f.readSign(), TestUtils::level(expectedSign));
 }
 
 // ---------------------------------------------------------------------------
@@ -528,7 +528,7 @@ void TestLevel9SingleCycleCPU8Bit::testZeroFlag()
     f.programInstruction(0, encodeInstruction(aluOp, 1));
     f.run();
 
-    QCOMPARE(f.readZero(), expectedZero);
+    QCOMPARE(f.readZero(), TestUtils::level(expectedZero));
 }
 
 // ---------------------------------------------------------------------------
@@ -565,7 +565,7 @@ void TestLevel9SingleCycleCPU8Bit::testSignFlag()
     f.programInstruction(0, encodeInstruction(aluOp, 1));
     f.run();
 
-    QCOMPARE(f.readSign(), expectedSign);
+    QCOMPARE(f.readSign(), TestUtils::level(expectedSign));
 }
 
 // ---------------------------------------------------------------------------
@@ -634,7 +634,7 @@ void TestLevel9SingleCycleCPU8Bit::testHighRegisterOperand()
 
         QVERIFY2(f.readResult() == (0x10 + operandB),
             qPrintable(QString("ADD R%1: expected 0x%2, got 0x%3")
-                .arg(reg).arg(0x10 + operandB, 0, 16).arg(f.readResult(), 0, 16)));
+                .arg(reg).arg(0x10 + operandB, 0, 16).arg(f.readResult().text())));
     }
 }
 
@@ -704,14 +704,14 @@ void TestLevel9SingleCycleCPU8Bit::testISA_LOAD()
     f.programInstruction(0, encodeLoad(0));
     f.run();
     QCOMPARE(f.readResult(), 0x00);
-    QCOMPARE(f.readZero(), true);
+    QCOMPARE(f.readZero(), Status::Active);
 
     // LOAD from address 7 (also empty)
     f.beginProgramming();
     f.programInstruction(0, encodeLoad(7));
     f.run();
     QCOMPARE(f.readResult(), 0x00);
-    QCOMPARE(f.readZero(), true);
+    QCOMPARE(f.readZero(), Status::Active);
 }
 
 // ---------------------------------------------------------------------------

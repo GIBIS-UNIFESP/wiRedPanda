@@ -65,7 +65,7 @@ struct DataForwardingUnitFixture {
         return true;
     }
 
-    int readOutput()
+    TestUtils::Bits readOutput()
     {
         return readMultiBitOutput(QVector<GraphicElement *>(outputLeds.begin(), outputLeds.end()), 0);
     }

@@ -100,7 +100,7 @@ void TestCPUProgramCounter::testProgramCounter()
         sim->update();
     }
     sim->update();
-    int result = readMultiBitOutput(pcBits);
+    const TestUtils::Bits result = readMultiBitOutput(pcBits);
     QCOMPARE(result, expectedResult);
 }
 
@@ -161,7 +161,7 @@ void TestCPUProgramCounter::testProgramCounterPriority()
     TestUtils::clockCycle(sim, clock);
     sim->update();
     // Read result and verify priority
-    int result = readMultiBitOutput(pcBits);
+    const TestUtils::Bits result = readMultiBitOutput(pcBits);
     QCOMPARE(result, expectedResult);
 }
 

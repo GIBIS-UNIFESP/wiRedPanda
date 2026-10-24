@@ -803,7 +803,7 @@ void TestICInline::testEmbedSimulatesCorrectly()
         swA.setOn(truthTable[i][0]);
         swB.setOn(truthTable[i][1]);
         sim->update();
-        QCOMPARE(TestUtils::inputStatus(&led), expectedAND[i]);
+        QCOMPARE(TestUtils::inputStatus(&led), TestUtils::level(expectedAND[i]));
     }
 }
 
@@ -843,7 +843,7 @@ void TestICInline::testEmbedSimulatesMultiLevel()
         swA.setOn(truthTable[i][0]);
         swB.setOn(truthTable[i][1]);
         sim->update();
-        QCOMPARE(TestUtils::inputStatus(&led), expectedNAND[i]);
+        QCOMPARE(TestUtils::inputStatus(&led), TestUtils::level(expectedNAND[i]));
     }
 }
 
@@ -2866,7 +2866,7 @@ void TestICInline::testSetInlineDataRollbackSimulationWorks()
     swA.setOn(true);
     swB.setOn(true);
     sim->update();
-    QVERIFY(TestUtils::inputStatus(&led));
+    QCOMPARE(TestUtils::inputStatus(&led), Status::Active);
 }
 
 void TestICInline::testSetInlineDataRollbackFromEmbedded()

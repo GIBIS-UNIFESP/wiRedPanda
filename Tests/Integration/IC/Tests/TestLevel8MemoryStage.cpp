@@ -68,7 +68,7 @@ struct MemoryStageFixture {
         return true;
     }
 
-    int readDataOut()
+    TestUtils::Bits readDataOut()
     {
         return readMultiBitOutput(QVector<GraphicElement *>(dataoutLeds.begin(), dataoutLeds.end()), 0);
     }
@@ -239,7 +239,7 @@ void TestLevel8MemoryStage::testMultiAddressStorage()
         setMultiBitInput(f.addressInputs, addr);
         f.memread->setOn(true);
         f.sim->update();
-        int v = f.readDataOut();
+        const TestUtils::Bits v = f.readDataOut();
         f.memread->setOn(false);
         f.sim->update();
         return v;

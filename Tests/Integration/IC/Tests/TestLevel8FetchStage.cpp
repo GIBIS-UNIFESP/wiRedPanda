@@ -144,22 +144,16 @@ struct FetchStageFixture {
         sim->update();
     }
 
-    static int readBits(Led *const *leds, int n)
+    static TestUtils::Bits readBits(Led *const *leds, int n)
     {
-        int v = 0;
-        for (int i = 0; i < n; ++i) {
-            if (inputStatus(leds[i])) {
-                v |= (1 << i);
-            }
-        }
-        return v;
+        return readMultiBitOutput(QVector<Led *>(leds, leds + n));
     }
 
-    int readPC() { return readBits(pc, 8); }
-    int readInstr() { return readBits(instr, 8); }
-    int readRaw() { return readBits(raw, 8); }
-    int readOpCode() { return readBits(opcode, 5); }
-    int readRegAddr() { return readBits(regAddr, 3); }
+    TestUtils::Bits readPC() { return readBits(pc, 8); }
+    TestUtils::Bits readInstr() { return readBits(instr, 8); }
+    TestUtils::Bits readRaw() { return readBits(raw, 8); }
+    TestUtils::Bits readOpCode() { return readBits(opcode, 5); }
+    TestUtils::Bits readRegAddr() { return readBits(regAddr, 3); }
 };
 
 static std::unique_ptr<FetchStageFixture> s_level8FetchStage;
@@ -309,8 +303,8 @@ void TestLevel8FetchStage::testFetchStage()
     sim->update();
 
     // Read outputs
-    int pc = readMultiBitOutput(QVector<GraphicElement *>(pc_leds.begin(), pc_leds.end()), 0);
-    int instr = readMultiBitOutput(QVector<GraphicElement *>(instr_leds.begin(), instr_leds.end()), 0);
+    const TestUtils::Bits pc = readMultiBitOutput(QVector<GraphicElement *>(pc_leds.begin(), pc_leds.end()), 0);
+    const TestUtils::Bits instr = readMultiBitOutput(QVector<GraphicElement *>(instr_leds.begin(), instr_leds.end()), 0);
 
     // Verify
     QCOMPARE(pc, expectedPC);

@@ -63,11 +63,11 @@ struct ModuloCounter4bitFixture {
         clockCycle(sim, clk);
     }
 
-    int readValue()
+    TestUtils::Bits readValue()
     {
         return readMultiBitOutput(QVector<GraphicElement *>({
             counterOut[0], counterOut[1], counterOut[2], counterOut[3]
-        })) & 0xF;
+        }));
     }
 };
 
@@ -144,10 +144,10 @@ void TestLevel5ModuloCounter4Bit::testOverflow()
 
     bool sawTerminalCount = false;
     for (int step = 0; step < 12; ++step) {
-        const int q = f.readValue();
-        const bool overflow = inputStatus(f.overflowOut);
-        QCOMPARE(overflow, q == modulo - 1);
-        sawTerminalCount = sawTerminalCount || overflow;
+        const TestUtils::Bits q = f.readValue();
+        const Status overflow = inputStatus(f.overflowOut);
+        QCOMPARE(overflow, TestUtils::level(q == modulo - 1));
+        sawTerminalCount = sawTerminalCount || (overflow == Status::Active);
         clockCycle(f.sim, f.clk);
     }
     // Sanity: across two periods the terminal-count pulse must have occurred.

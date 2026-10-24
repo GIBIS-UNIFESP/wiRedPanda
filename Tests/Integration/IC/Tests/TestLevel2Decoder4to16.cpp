@@ -102,9 +102,9 @@ void TestLevel2Decoder4To16::test4to16Decoder()
     f.sim->update();
 
     for (int i = 0; i < 16; ++i) {
-        bool actual = inputStatus(f.ledOut[i]);
+        const Status actual = inputStatus(f.ledOut[i]);
         bool expected = (i == expectedActive);
-        QCOMPARE(actual, expected);
+        QCOMPARE(actual, TestUtils::level(expected));
     }
 }
 
@@ -135,17 +135,8 @@ void TestLevel2Decoder4To16::test4to16DecoderMaxAddress()
     }
     f.sim->update();
 
-    int activeCount = 0;
-    int activeIndex = -1;
-    for (int i = 0; i < 16; ++i) {
-        if (inputStatus(f.ledOut[i])) {
-            activeCount++;
-            activeIndex = i;
-        }
-    }
-
-    QCOMPARE(activeCount, 1);
-    QCOMPARE(activeIndex, expectedOutput);
+    // One-hot: only the expected output is Active, every other one Inactive.
+    QCOMPARE(TestUtils::readMultiBitOutput(f.ledOut), 1 << expectedOutput);
 }
 
 // Active-high Enable (74138-style chip select): Enable=0 forces every output
@@ -187,13 +178,13 @@ void TestLevel2Decoder4To16::testEnableGating()
     en->setOn(false);
     sim->update();
     for (auto *o : outs) {
-        QVERIFY(!inputStatus(o));
+        QCOMPARE(inputStatus(o), Status::Inactive);
     }
 
     // Enable high → output 10 active, the rest low.
     en->setOn(true);
     sim->update();
     for (int i = 0; i < 16; ++i) {
-        QCOMPARE(inputStatus(outs[i]), i == 10);
+        QCOMPARE(inputStatus(outs[i]), TestUtils::level(i == 10));
     }
 }

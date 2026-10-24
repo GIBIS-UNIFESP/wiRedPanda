@@ -80,8 +80,8 @@ void TestCPUBranch::testBranchCondition()
         zeroFlag->setOn(test.zero);
         negativeFlag->setOn(test.negative);
         sim->update();
-        bool result = TestUtils::inputStatus(pcLoad, 0);
-        QCOMPARE(result, test.expected);
+        const Status result = TestUtils::inputStatus(pcLoad, 0);
+        QCOMPARE(result, TestUtils::level(test.expected));
     }
 }
 
@@ -168,34 +168,28 @@ void TestCPUBranch::testBranchIntegration()
     flag_write->setOn(false);
     // Verify flags were stored correctly
     sim_flags->update();
-    QCOMPARE(inputStatus(flag_zero_out, 0), zeroFlag);
-    QCOMPARE(inputStatus(flag_negative_out, 0), negativeFlag);
+    QCOMPARE(inputStatus(flag_zero_out, 0), TestUtils::level(zeroFlag));
+    QCOMPARE(inputStatus(flag_negative_out, 0), TestUtils::level(negativeFlag));
     // === Set Opcode on Decoder ===
     for (int i = 0; i < 4; i++) {
         opcode_bits[i]->setOn((opcode >> i) & 1);
     }
     sim_decoder->update();
     // Verify decoder output (one-hot encoding)
-    int decoder_value = 0;
-    for (int i = 0; i < 16; i++) {
-        if (inputStatus(decoder_out[i], 0)) {
-            decoder_value |= (1 << i);
-        }
-    }
-    QCOMPARE(decoder_value, 1 << opcode);
+    QCOMPARE(readMultiBitOutput(decoder_out), 1 << opcode);
     // === Connect Decoder Output and Flags to Branch Evaluator ===
-    // (Manual wiring since separate simulations)
-    branch_decoder_jmp->setOn(inputStatus(decoder_out[ISA_JMP], 0));
-    branch_decoder_beq->setOn(inputStatus(decoder_out[ISA_BEQ], 0));
-    branch_decoder_bne->setOn(inputStatus(decoder_out[ISA_BNE], 0));
-    branch_decoder_blt->setOn(inputStatus(decoder_out[ISA_BLT], 0));
-    branch_decoder_bge->setOn(inputStatus(decoder_out[ISA_BGE], 0));
-    branch_zero_flag->setOn(inputStatus(flag_zero_out, 0));
-    branch_negative_flag->setOn(inputStatus(flag_negative_out, 0));
+    // (Manual wiring since separate simulations; every output forwarded was checked to be a level above)
+    branch_decoder_jmp->setOn(inputStatus(decoder_out[ISA_JMP], 0) == Status::Active);
+    branch_decoder_beq->setOn(inputStatus(decoder_out[ISA_BEQ], 0) == Status::Active);
+    branch_decoder_bne->setOn(inputStatus(decoder_out[ISA_BNE], 0) == Status::Active);
+    branch_decoder_blt->setOn(inputStatus(decoder_out[ISA_BLT], 0) == Status::Active);
+    branch_decoder_bge->setOn(inputStatus(decoder_out[ISA_BGE], 0) == Status::Active);
+    branch_zero_flag->setOn(inputStatus(flag_zero_out, 0) == Status::Active);
+    branch_negative_flag->setOn(inputStatus(flag_negative_out, 0) == Status::Active);
     sim_branch->update();
     // === Verify Branch Decision ===
-    bool branchTaken = inputStatus(branch_pc_load, 0);
-    QCOMPARE(branchTaken, shouldBranch);
+    const Status branchTaken = inputStatus(branch_pc_load, 0);
+    QCOMPARE(branchTaken, TestUtils::level(shouldBranch));
     // === Execute Branch if Taken ===
     if (shouldBranch) {
         // Load target address into PC
@@ -208,7 +202,7 @@ void TestCPUBranch::testBranchIntegration()
         sim_pc->update();
         pc_load->setOn(false);
         // Verify PC loaded branch target
-        int pc_value = readMultiBitOutput(pc_out);
+        const TestUtils::Bits pc_value = readMultiBitOutput(pc_out);
         QCOMPARE(pc_value, targetAddr);
     } else {
         // No branch - just increment PC
@@ -217,7 +211,7 @@ void TestCPUBranch::testBranchIntegration()
         clockCycle(sim_pc, pc_clock);  // Complete clock cycle (HIGH->settle->LOW->settle)
         sim_pc->update();
         // Verify PC incremented (from 0 to 1)
-        int pc_value = readMultiBitOutput(pc_out);
+        const TestUtils::Bits pc_value = readMultiBitOutput(pc_out);
         QCOMPARE(pc_value, 1);
     }
 }
