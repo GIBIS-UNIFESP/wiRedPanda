@@ -59,11 +59,15 @@ public:
     /// Returns true if at least one default appearance is available.
     bool hasDefaultAppearances() const { return !m_defaultAppearances.isEmpty(); }
 
-    /// Loads and applies the appearance at position \a index in the active list.
+    /**
+     * \brief Loads and applies the appearance at position \a index in the active list.
+     * \details A picture that does not load (its file gone, or not an image) shows the slot's default in its place and
+     * the slot keeps its path: a state change or an undo goes on. Opening a file reports it (reportFailedPicture()).
+     */
     void setPixmap(const int index);
 
-    /// Loads and applies the pixmap located at \a pixmapPath.
-    void setPixmap(const QString &pixmapPath);
+    /// Throws a Pandaception naming the picture last applied and why, when it did not load and its default is shown.
+    void reportFailedPicture() const;
 
     /// Returns a scaled-down preview of the appearance at \a index, without mutating the
     /// element's live displayed pixmap. Returns a null pixmap for an out-of-range index.
@@ -149,6 +153,7 @@ private:
     QString m_pixmapPath;         ///< Resource/file path of the default pixmap (from metadata).
     QString m_currentPixmapPath;  ///< Path last requested via setPixmap() (change guard).
     QString m_resolvedPixmapPath; ///< Resolved path of m_basePixmap; used to build orientation variants.
+    QString m_failedPixmapPath;   ///< The picture last applied when it did not load, else empty.
 
     QStringList m_defaultAppearances;     ///< Built-in appearance paths (resource files).
     QStringList m_alternativeAppearances; ///< Active appearance paths (user paths override defaults).

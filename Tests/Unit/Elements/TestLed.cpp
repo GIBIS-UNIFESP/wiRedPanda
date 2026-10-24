@@ -17,6 +17,7 @@
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
+#include "Tests/Common/Goldens.h"
 #include "Tests/Common/TestUtils.h"
 
 // ============================================================================
@@ -564,41 +565,14 @@ void TestLED::testSetAppearanceWithAbsolutePathNoContextDir()
     QVERIFY2(!threw, "setAppearance should resolve an existing absolute path directly even with no contextDir");
 }
 
-void TestLED::testSetAppearanceWithNonExistentFileThrows()
+void TestLED::testSetAppearanceWithNonExistentFileShowsTheDefault()
 {
     Led led;
+    led.setAppearance(false, "/tmp/nonexistent_custom_led_98765.png");
 
-    bool threw = false;
-    try {
-        led.setAppearance(false, "/tmp/nonexistent_custom_led_98765.png");
-    } catch (const Pandaception &) {
-        threw = true;
-    }
-
-    QVERIFY2(threw, "setAppearance should throw when the absolute path does not exist");
-}
-
-void TestLED::testSetAppearanceRepeatedFailureThrowsOnce()
-{
-    Led led;
-    const QString badPath = "/tmp/nonexistent_custom_led_98765.png";
-
-    bool threwFirst = false;
-    try {
-        led.setAppearance(false, badPath);
-    } catch (const Pandaception &) {
-        threwFirst = true;
-    }
-
-    bool threwSecond = false;
-    try {
-        led.setAppearance(false, badPath);
-    } catch (const Pandaception &) {
-        threwSecond = true;
-    }
-
-    QVERIFY2(threwFirst, "the first attempt at a broken path should throw");
-    QVERIFY2(!threwSecond, "repeating the exact same broken path should not re-throw");
+    const Led fresh;
+    QCOMPARE(SnapshotAccess::pixmapIdentity(&led), SnapshotAccess::pixmapIdentity(&fresh));
+    QCOMPARE(led.externalFiles(), QStringList{"/tmp/nonexistent_custom_led_98765.png"});
 }
 
 void TestLED::testSetAppearanceWithoutSavedProjectLoadsPixmap()

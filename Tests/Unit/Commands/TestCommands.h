@@ -63,7 +63,8 @@ private slots:
     // Undo restores the elements a morph replaced as they were
     void testMorphUndoRestoresWhatTheNewTypeLacks();
     void testMorphUndoRestoresInputsTheNewTypeCannotHave();
-    void testMorphUndoWithAPictureThatIsGoneChangesNothing();
+    void testMorphUndoWithAPictureThatIsGoneShowsTheDefault();
+    void testUndoWithAPictureThatIsGoneShowsTheDefault();
 
     // SetPropertyCommand: one property of elements, its values before and after, merged within an edit session
     void testSetPropertyCommandUndoesEachElementsValue();

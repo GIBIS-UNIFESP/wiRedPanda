@@ -71,6 +71,8 @@ private slots:
 
     // Regression: custom LED appearance survives a never-before-saved project's first save
     void testFirstSaveCopiesExternalAppearanceFile();
+    // Opening a file reports a custom picture that does not load
+    void testOpeningAFileWithAPictureThatIsGoneReportsIt();
 
 private:
     QTemporaryDir m_tempDir;

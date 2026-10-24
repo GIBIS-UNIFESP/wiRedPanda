@@ -116,9 +116,9 @@ void GraphicElement::setPixmap(const int index)
     m_appearance.setPixmap(index);
 }
 
-void GraphicElement::setPixmap(const QString &pixmapPath)
+void GraphicElement::reportFailedPicture() const
 {
-    m_appearance.setPixmap(pixmapPath);
+    m_appearance.reportFailedPicture();
 }
 
 const QVector<OutputPort *> &GraphicElement::outputs() const

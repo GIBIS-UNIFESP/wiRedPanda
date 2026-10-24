@@ -40,6 +40,8 @@ private slots:
     void testUpdateElementAppearanceCancelledDialogIsNoOp();
     void testUpdateElementAppearanceViaTileGridUpdatesSelectedStateOnly();
     void testUpdateElementAppearanceFallbackAppliesToAllSelected();
+    void testPickingAPictureThatDoesNotLoadChangesNothing();
+    void testPickingAPictureThatDoesNotLoadForAStateChangesNothing();
 
     void testApplyCapabilitiesMixedWirelessModeShowsPlaceholder();
     void testApplyCapabilitiesMixedFrequencyShowsPlaceholder();

@@ -310,11 +310,11 @@ public:
     /// Returns a small preview pixmap for the appearance at \a index (see appearanceStates()).
     QPixmap appearancePreviewPixmap(const int index, const QSize &size) const;
 
-    /// Loads and applies the pixmap located at \a pixmapPath.
-    void setPixmap(const QString &pixmapPath);
-
-    /// Loads and applies the appearance at position \a index in the appearance list.
+    /// Loads and applies the appearance at position \a index in the appearance list (see ElementAppearance::setPixmap()).
     void setPixmap(const int index);
+
+    /// Throws a Pandaception when the picture shown last did not load (see ElementAppearance::reportFailedPicture()).
+    void reportFailedPicture() const;
 
     // --- Truth Table ---
 

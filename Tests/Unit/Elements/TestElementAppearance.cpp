@@ -10,9 +10,9 @@
 #include <QTemporaryFile>
 #include <QTest>
 
-#include "App/Core/Common.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
+#include "Tests/Common/Goldens.h"
 #include "Tests/Common/TestUtils.h"
 
 namespace {
@@ -95,39 +95,36 @@ void TestElementAppearance::testRenderRasterAppearance()
     QVERIFY2(TestUtils::pixmapHasInk(canvas), "paint() must draw the raster (non-SVG) appearance");
 }
 
-void TestElementAppearance::testSetPixmapNonExistentFileThrows()
+void TestElementAppearance::testMissingPictureShowsItsSlotsDefault()
 {
+    // The switch turns on with a custom on picture that does not exist: it draws the on default, not the off one, and
+    // the slot keeps its path
     InputSwitch sw;
+    sw.setAppearanceAt(1, "/nonexistent/directory/nope.svg");
+    sw.setOn(true);
 
-    bool threw = false;
-    try {
-        sw.setAppearanceAt(0, "/nonexistent/directory/nope.svg");
-    } catch (const Pandaception &e) {
-        threw = true;
-        QVERIFY(QString::fromUtf8(e.what()).contains("does not exist"));
-    }
-    QVERIFY2(threw, "setAppearanceAt() with a nonexistent path must throw");
+    InputSwitch fresh;
+    fresh.setOn(true);
+    QCOMPARE(SnapshotAccess::pixmapIdentity(&sw), SnapshotAccess::pixmapIdentity(&fresh));
+    QCOMPARE(sw.externalFiles(), QStringList{"/nonexistent/directory/nope.svg"});
 }
 
-void TestElementAppearance::testSetPixmapUnreadableFileThrows()
+void TestElementAppearance::testUndecodablePictureShowsItsSlotsDefault()
 {
-    InputSwitch sw;
-
-    // A real, readable, existing file whose content QPixmap::load() can't parse as any known
-    // image format -- exists() and isReadable() are both true, so the failure reason falls
-    // through to "Unknown reason" rather than either of the other two branches.
+    // A real, readable file whose content QPixmap::load() cannot decode
     QTemporaryFile tempFile("XXXXXX.png");
     QVERIFY(tempFile.open());
     tempFile.write("this is not a valid image file at all");
     tempFile.close();
 
-    bool threw = false;
-    try {
-        sw.setAppearanceAt(0, tempFile.fileName());
-    } catch (const Pandaception &) {
-        threw = true;
-    }
-    QVERIFY2(threw, "setAppearanceAt() with unparseable image content must throw");
+    InputSwitch sw;
+    sw.setOn(true);
+    sw.setAppearanceAt(1, tempFile.fileName());
+
+    InputSwitch fresh;
+    fresh.setOn(true);
+    QCOMPARE(SnapshotAccess::pixmapIdentity(&sw), SnapshotAccess::pixmapIdentity(&fresh));
+    QCOMPARE(sw.externalFiles(), QStringList{tempFile.fileName()});
 }
 
 void TestElementAppearance::testRotatedMalformedSvgFallsBackToBasePixmap()

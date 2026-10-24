@@ -63,7 +63,7 @@ private slots:
     // Path resolution (mechanics tested directly in Tests/Unit/Core/TestExternalFilePath.cpp;
     // these confirm InputSwitch/appearance handling itself is wired to it correctly)
     void testAppearanceWithSameOsAbsolutePath();
-    void testAppearanceWithNonExistentFileFallback();
+    void testAppearanceWithNonExistentFileShowsTheDefault();
     void testAppearanceReloadsAfterFileModified();
     void testLoadResolvesAppearanceBareFilenameAgainstContextDir();
     void testLoadResolvesAppearanceForeignPathViaBareFilenameFallback();

@@ -631,6 +631,12 @@ QList<QGraphicsItem *> Serialization::deserialize(QDataStream &stream, Serializa
                                    stream.device()->pos(), static_cast<int>(stream.status()));
             }
 
+            // A file reports a picture that does not load, once the element's state has picked the one it shows; a
+            // snapshot's restore shows the slot's default and goes on
+            if (context.purpose == SerializationPurpose::PortableFile) {
+                elm->reportFailedPicture();
+            }
+
             break;
         }
 

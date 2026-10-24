@@ -141,6 +141,7 @@ ElementAppearance	File does not exist
 ElementAppearance	File is not readable
 ElementAppearance	Unknown reason
 ElementEditor	 Hz
+ElementEditor	"%1" could not be loaded as a picture.
 ElementEditor	<Many colors>
 ElementEditor	<Many labels>
 ElementEditor	<Many modes>
@@ -179,6 +180,7 @@ ElementEditor	Identity
 ElementEditor	Images
 ElementEditor	Inputs:
 ElementEditor	Interaction
+ElementEditor	Invalid Picture
 ElementEditor	Keyboard key that toggles this element during simulation.
 ElementEditor	Label:
 ElementEditor	Locked:
