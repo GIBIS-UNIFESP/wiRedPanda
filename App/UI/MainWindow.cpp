@@ -674,17 +674,22 @@ void MainWindow::closeEvent(QCloseEvent *event)
     // If nothing is modified, ask once before exiting so the user can't
     // accidentally quit with a keyboard shortcut.  If there are unsaved changes,
     // delegate to closeFiles() which prompts per-tab.
+    // Once an MCP client has closed the connection, nobody is left to answer the question.
     if (!m_workspaceManager->hasModifiedFiles()) {
-        auto reply =
-            QMessageBox::question(
-                this,
-                tr("Exit") + " " + QApplication::applicationName(),
-                tr("Are you sure?"),
-                QMessageBox::Cancel | QMessageBox::Yes,
-                QMessageBox::Yes);
-
-        if (reply == QMessageBox::Yes) {
+        if (m_clientDisconnected) {
             closeWindow = true;
+        } else {
+            auto reply =
+                QMessageBox::question(
+                    this,
+                    tr("Exit") + " " + QApplication::applicationName(),
+                    tr("Are you sure?"),
+                    QMessageBox::Cancel | QMessageBox::Yes,
+                    QMessageBox::Yes);
+
+            if (reply == QMessageBox::Yes) {
+                closeWindow = true;
+            }
         }
     } else if (m_workspaceManager->closeFiles()) {
         closeWindow = true;
@@ -697,6 +702,11 @@ void MainWindow::closeEvent(QCloseEvent *event)
     } else {
         event->ignore();
     }
+}
+
+void MainWindow::markClientDisconnected()
+{
+    m_clientDisconnected = true;
 }
 
 void MainWindow::updateSettings()

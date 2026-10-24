@@ -3,11 +3,16 @@
 
 #include "Tests/Unit/MCP/TestMCPProcessor.h"
 
+#include <functional>
+
+#include <QCoreApplication>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QMessageBox>
 #include <QSocketNotifier>
 #include <QTemporaryDir>
 #include <QTest>
+#include <QTimer>
 
 #include "App/UI/MainWindow.h"
 #include "MCP/Server/Core/JsonRpcError.h"
@@ -65,6 +70,26 @@ struct ScopedStdinPipe {
         testUtilsCloseFd(savedFd);
     }
 };
+
+// QCoreApplication::quit() does nothing outside the application's own exec(), so a test of what quitting does runs it:
+// \a step runs inside it, and exec() returns 0 when quitting ends it, 1 once \a done holds, or 2 from the guard against
+// a quit that never ends it
+int execUntil(const std::function<void()> &step, const std::function<bool()> &done)
+{
+    QTimer::singleShot(0, step);
+    QTimer poll;
+    QObject::connect(&poll, &QTimer::timeout, [&done] {
+        if (done()) {
+            QCoreApplication::exit(1);
+        }
+    });
+    poll.start(10);
+    QTimer guard;
+    guard.setSingleShot(true);
+    QObject::connect(&guard, &QTimer::timeout, [] { QCoreApplication::exit(2); });
+    guard.start(30000);
+    return QCoreApplication::exec();
+}
 
 } // namespace
 
@@ -272,6 +297,45 @@ void TestMCPProcessor::testOnStdinReadableQuitsOnEof()
     pipe.closeWriteEnd(); // the client closed its end -- a real EOF
 
     QVERIFY(TestUtils::waitFor([&] { return !processor.m_stdinNotifier->isEnabled(); }));
+}
+
+void TestMCPProcessor::testClientClosingTheConnectionKeepsTheSavePromptOfAModifiedTab()
+{
+    // Unsaved work still gets its prompt when the client goes: the prompt is cancelled, so the window stays
+    ScopedStdinPipe pipe;
+    MainWindow window;
+    window.show();
+    MCPProcessor processor(&window);
+    processor.startProcessing();
+
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    {
+        TestUtils::ScopedStdoutCapture capture(dir.filePath("stdout.txt"));
+        sendLine(processor, QStringLiteral(R"({"jsonrpc":"2.0","method":"create_element","params":{"type":"And","x":0,"y":0},"id":1})"));
+        QVERIFY2(capture.json().contains("result"), qPrintable(QJsonDocument(capture.json()).toJson()));
+    }
+
+    auto dismisser = TestUtils::AutoDismisser::answerMessageBox(QMessageBox::Cancel);
+    QCOMPARE(execUntil([&pipe] { pipe.closeWriteEnd(); }, [&dismisser] { return dismisser.dismissCount() > 0; }), 1);
+    QCOMPARE(dismisser.dismissCount(), 1);
+    QVERIFY(window.isVisible());
+}
+
+void TestMCPProcessor::testClientClosingTheConnectionClosesACleanWindowWithoutAsking()
+{
+    // The client's end of stdin closes, the processor quits, and a window with nothing to save closes: nobody is left
+    // to answer an exit question, so none is asked
+    ScopedStdinPipe pipe;
+    MainWindow window;
+    window.show();
+    MCPProcessor processor(&window);
+    processor.startProcessing();
+
+    auto dismisser = TestUtils::AutoDismisser::answerMessageBox(QMessageBox::Cancel);
+    QCOMPARE(execUntil([&pipe] { pipe.closeWriteEnd(); }, [&dismisser] { return dismisser.dismissCount() > 0; }), 0);
+    QCOMPARE(dismisser.dismissCount(), 0);
+    QVERIFY(!window.isVisible());
 }
 #endif
 

@@ -31,6 +31,8 @@ private slots:
     void testStartStopProcessingTogglesNotifier();
     void testOnStdinReadableDispatchesRealData();
     void testOnStdinReadableQuitsOnEof();
+    void testClientClosingTheConnectionKeepsTheSavePromptOfAModifiedTab();
+    void testClientClosingTheConnectionClosesACleanWindowWithoutAsking();
 #endif
 
     void testHeapAllocationDeletesCleanly();

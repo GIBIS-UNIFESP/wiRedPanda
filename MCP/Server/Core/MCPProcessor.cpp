@@ -156,7 +156,7 @@ void MCPProcessor::startProcessing()
     m_stdinReader = new StdinReader(this);
     connect(m_stdinReader, &StdinReader::dataReceived, this, &MCPProcessor::processIncomingData);
     // EOF (client closed stdin) ends the thread — shut the processor down too.
-    connect(m_stdinReader, &StdinReader::finished, qApp, &QCoreApplication::quit);
+    connect(m_stdinReader, &StdinReader::finished, this, &MCPProcessor::quitApplication);
     m_stdinReader->start();
 #else
     // Event-driven, no thread: watch stdin in the main event loop. The fd is
@@ -189,6 +189,14 @@ void MCPProcessor::stopProcessing()
 #endif
 }
 
+void MCPProcessor::quitApplication()
+{
+    if (m_mainWindow) {
+        m_mainWindow->markClientDisconnected();
+    }
+    QCoreApplication::quit();
+}
+
 #ifndef Q_OS_WIN
 void MCPProcessor::onStdinReadable()
 {
@@ -208,7 +216,7 @@ void MCPProcessor::onStdinReadable()
         if (bytesRead == 0) {
             // EOF: the client closed stdin — shut the processor down cleanly.
             m_stdinNotifier->setEnabled(false);
-            QCoreApplication::quit();
+            quitApplication();
             return;
         }
 
@@ -225,7 +233,7 @@ void MCPProcessor::onStdinReadable()
         }
         // Unrecoverable read error: stop watching and quit.
         m_stdinNotifier->setEnabled(false);
-        QCoreApplication::quit();
+        quitApplication();
         return;
     }
 }
