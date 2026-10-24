@@ -653,10 +653,11 @@ user's choice between workable options).
   the missing file, then the picture's load draws the type's first default (read: whatever the slot) and throws out
   of the command's `undo()` or `redo()`, past its refresh of the runtime state. The undo stack's index does not move,
   so the element shows the restored state while the stack has not stepped: the next undo or redo applies the same
-  command again, which then passes (a failed path is not loaded twice) and steps. In the application the throw
-  reaches `Application::notify()`, which reports it. A restore whose picture is the one already drawn does not load
-  it and does not throw. Plan 3 settles the rule (P3.D6: the slot shows its default and the restore goes on), which
-  also steps the stack.
+  command again, which then passes (a failed path is not loaded twice) and steps. In the application on Linux the
+  throw reaches `Application::notify()`, which reports it; on macOS it cannot pass `QUndoStack`'s frames and ends the
+  application (seen on CI through P2.16's test, P2.50). A restore whose picture is the one already drawn does not
+  load it and does not throw. Plan 3 settles the rule (P3.D6: the slot shows its default and the restore goes on),
+  which also steps the stack; whether plan 2 brings it in now, for macOS, is the user's choice (P2.50).
 - **The priority walk's fix against plan 1's traces** (§5.3): measured first; with traces changed, the user decides
   (P2.36).
 - **When the fuzz harnesses run** (P2.37): settled by the user, on the user's machine overnight, not in CI (P2.D10).
