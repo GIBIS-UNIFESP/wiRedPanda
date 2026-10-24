@@ -124,10 +124,7 @@ class WaveformAnalysisTests(MCPTestBase):
             self.infrastructure.output.success("✅ Basic waveform generation capability confirmed")
             print("   Circuit supports input/output waveform operations")
         else:
-            print("📋 Waveform generation capability limited")
-            print("   Expected: Reliable input/output waveform operations")
-            print("   Analysis: Basic waveform circuit operations inconsistent")
-            print("   Impact: BewavedDolphin-style waveform generation affected")
+            self.report_failure("The output did not follow the input pattern")
             all_passed = False
 
         return all_passed
@@ -304,46 +301,12 @@ class WaveformAnalysisTests(MCPTestBase):
             if len(pattern_data) >= 6:
                 print("\n--- Pattern Recognition Analysis ---")
 
-                # Test input pattern detection (alternating values)
-                for i in range(1, len(pattern_data)):
-                    if pattern_data[i]["input"] == pattern_data[i - 1]["input"]:
-                        # For alternating pattern, consecutive values should differ
-                        # If they're the same, pattern detection logic might be needed
-                        pass
-
-                # Test propagation delay patterns
-                propagation_delays = []
-                for i, data in enumerate(pattern_data):
-                    # In ideal systems, there might be 1 cycle delay
-                    # Here we test immediate propagation
-                    if data["input"] != data["output"]:
-                        propagation_delays.append(i)
-
-                # Analyze propagation characteristics
-                if len(propagation_delays) == 0:
-                    self.infrastructure.output.success("✅ Zero propagation delay detected (ideal for educational use)")
-                    print("   Analysis: Immediate signal propagation confirmed")
-                    print("   Pattern: Input changes reflected instantly in output")
+                # Zero-delay logic: the output follows the input at every step
+                mismatches = [i for i, data in enumerate(pattern_data) if data["input"] != data["output"]]
+                if not mismatches:
+                    self.infrastructure.output.success("✅ The output follows the input at every step")
                 else:
-                    print(f"📋 Propagation delays detected at {len(propagation_delays)} time steps")
-                    print("   Analysis: May indicate timing simulation complexity")
-                    print(f"   Pattern: Delays at steps {propagation_delays}")
-                    print("   Impact: Waveform timing diagrams show realistic delays")
-
-                # Test pattern consistency
-                pattern_consistency = 0
-                for data in pattern_data:
-                    if data["input"] == data["output"]:
-                        pattern_consistency += 1
-
-                consistency_rate = (pattern_consistency / len(pattern_data)) * 100
-                if consistency_rate >= 80.0:
-                    self.infrastructure.output.success(f"✅ Pattern recognition consistency: {consistency_rate:.1f}%")
-                    print("   Analysis: Waveform pattern recognition reliable")
-                else:
-                    print(f"📋 Pattern recognition consistency: {consistency_rate:.1f}%")
-                    print("   Analysis: Pattern recognition challenges detected")
-                    print("   Impact: Complex waveform patterns may be unreliable")
+                    self.report_failure(f"The output differed from the input at steps {mismatches}")
             else:
                 self.report_failure("Insufficient pattern data for recognition analysis")
                 print("   Expected: At least 6 data points for pattern analysis")
@@ -443,7 +406,6 @@ class WaveformAnalysisTests(MCPTestBase):
 
                 and_accuracy = (and_correct / len(multi_waveform_data)) * 100
                 or_accuracy = (or_correct / len(multi_waveform_data)) * 100
-                overall_accuracy = (and_correct + or_correct) / (2 * len(multi_waveform_data)) * 100
 
                 if all_correct:
                     self.infrastructure.output.success("✅ Multi-signal waveform generation validation passed")
@@ -451,14 +413,9 @@ class WaveformAnalysisTests(MCPTestBase):
                     print(f"   OR gate accuracy: {or_accuracy:.1f}%")
                     print("   Analysis: Complex waveform timing diagrams reliable")
                 else:
-                    print(f"📋 Multi-signal waveform accuracy: {overall_accuracy:.1f}%")
-                    print(f"   AND gate accuracy: {and_accuracy:.1f}%")
-                    print(f"   OR gate accuracy: {or_accuracy:.1f}%")
-                    if overall_accuracy >= 75.0:
-                        print("   Analysis: Complex waveform generation mostly reliable")
-                    else:
-                        print("   Analysis: Complex waveform generation affected by propagation issues")
-                        print("   Impact: Multi-signal timing diagrams unreliable")
+                    self.report_failure(
+                        f"Multi-signal waveform wrong: AND {and_accuracy:.1f}%, OR {or_accuracy:.1f}% of steps correct"
+                    )
             else:
                 self.report_failure("Multi-signal waveform test incomplete")
                 print("   Expected: Complete truth table waveform data")

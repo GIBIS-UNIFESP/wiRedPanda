@@ -65,14 +65,6 @@ class LogicGateTests(MCPTestBase):
         validation_result = await self.validate_truth_table(inputs, outputs, truth_table, gate_name)
         if validation_result:
             self.infrastructure.output.success(f"✅ {gate_name} truth table validation passed")
-            # Note: validate_truth_table() already handles counting
-        else:
-            print(f"📋 {gate_name} truth table exposes propagation limitation")
-            print(f"   Expected: Standard Boolean {gate_name} logic")
-            print("   Analysis: Signal propagation fails through multi-gate circuits")
-            print("   Impact: Critical - affects all digital logic education")
-            print("   Documentation: See .claude/WIREDPANDA_LIMITATIONS.md #1")
-            # Note: validate_truth_table() already handles counting
 
         return validation_result
 
