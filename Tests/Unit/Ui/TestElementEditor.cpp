@@ -1339,6 +1339,32 @@ void TestElementEditor::testLowercaseTriggerPushesOneCommand()
     QCOMPARE(inputSwitch->trigger(), QKeySequence());
 }
 
+void TestElementEditor::testManyTriggersPlaceholderKeepsItsCase()
+{
+    // The field uppercases a typed key; the placeholder it shows for a selection of different triggers is not one
+    WorkSpace workspace;
+    auto *switchA = new InputSwitch();
+    auto *switchB = new InputSwitch();
+    switchA->setTrigger(QKeySequence("A"));
+    switchB->setTrigger(QKeySequence("B"));
+    workspace.scene()->addItem(switchA);
+    workspace.scene()->addItem(switchB);
+
+    ElementEditor editor(&workspace);
+    editor.setScene(workspace.scene());
+    QUndoStack *undoStack = workspace.scene()->undoStack();
+    const int commandsBefore = undoStack->count();
+    switchA->setSelected(true);
+    switchB->setSelected(true);
+
+    auto *lineEdit = editor.findChild<QLineEdit *>("lineEditTrigger");
+    QVERIFY(lineEdit);
+    QCOMPARE(lineEdit->text(), editor.m_manyTriggers);
+    QCOMPARE(undoStack->count(), commandsBefore);
+    QCOMPARE(switchA->trigger(), QKeySequence("A"));
+    QCOMPARE(switchB->trigger(), QKeySequence("B"));
+}
+
 void TestElementEditor::testWritesMatchGolden()
 {
     // Each property kind every creatable type offers, written once through the editor's own widget or dialog: the
