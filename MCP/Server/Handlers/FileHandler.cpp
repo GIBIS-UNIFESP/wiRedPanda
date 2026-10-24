@@ -210,13 +210,9 @@ QJsonObject FileHandler::handleExportImage(const QJsonObject &params, const QJso
     }
 
     return tryCommand([&]() -> QJsonObject { // LCOV_EXCL_LINE -- pattern 45: gcov misattributes this multi-line lambda-taking call's entry; the lambda body below is genuinely covered
-        QRectF sceneRect = scene->itemsBoundingRect();
-        // Unreachable: a real Scene always contains a permanent, non-empty rubber-band
-        // selection-rect item (SceneInteraction's m_selectionRect, unconditionally added),
-        // so itemsBoundingRect() is never empty for any Scene constructed the normal way
-        // (same invariant as MinimapWidget.cpp's identical finding).
+        QRectF sceneRect = scene->circuitBoundingRect();
         if (sceneRect.isEmpty()) {
-            return createErrorResponse("Scene is empty - nothing to export", requestId, JsonRpcError::OperationFailed); // LCOV_EXCL_LINE
+            return createErrorResponse("Scene is empty - nothing to export", requestId, JsonRpcError::OperationFailed);
         }
 
         sceneRect.adjust(-padding, -padding, padding, padding);

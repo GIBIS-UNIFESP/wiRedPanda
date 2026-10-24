@@ -551,6 +551,21 @@ QRectF Scene::cachedItemsBoundingRect() const
     return m_cachedItemsBoundingRect;
 }
 
+QRectF Scene::circuitBoundingRect() const
+{
+    QRectF bounds;
+    const auto unite = [&bounds](const QGraphicsItem *item) {
+        bounds |= item->sceneBoundingRect() | item->mapRectToScene(item->childrenBoundingRect());
+    };
+    for (const auto *element : elements()) {
+        unite(element);
+    }
+    for (const auto *connection : connections()) {
+        unite(connection);
+    }
+    return bounds;
+}
+
 bool Scene::wireAntialiasingEnabled() const
 {
     return m_wireAntialiasing;
