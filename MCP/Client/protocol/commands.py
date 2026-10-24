@@ -7,7 +7,7 @@ These classes define the structure and validation rules for all available comman
 """
 
 import math
-from typing import Annotated
+from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
@@ -49,8 +49,8 @@ class CreateElementCommand(MCPCommand):
 
     class Parameters(BaseModel):
         type: ElementType = Field(description="Type of element to create")
-        x: Annotated[float, Field(ge=-2147483648, le=2147483647, description="X coordinate")]
-        y: Annotated[float, Field(ge=-2147483648, le=2147483647, description="Y coordinate")]
+        x: Annotated[float, Field(description="X coordinate")]
+        y: Annotated[float, Field(description="Y coordinate")]
         label: str | None = Field(default=None, description="Element label")
 
         @field_validator("label")
@@ -97,10 +97,10 @@ class ConnectElementsCommand(MCPCommand):
 
     class Parameters(BaseModel):
         source_id: Annotated[int, Field(gt=0, description="Source element ID")]
-        source_port: Annotated[int | None, Field(ge=0, le=63, description="Source output port index")] = None
+        source_port: Annotated[int | None, Field(ge=0, description="Source output port index")] = None
         source_port_label: Annotated[str | None, Field(min_length=1, description="Source output port label")] = None
         target_id: Annotated[int, Field(gt=0, description="Target element ID")]
-        target_port: Annotated[int | None, Field(ge=0, le=63, description="Target input port index")] = None
+        target_port: Annotated[int | None, Field(ge=0, description="Target input port index")] = None
         target_port_label: Annotated[str | None, Field(min_length=1, description="Target input port label")] = None
 
         @model_validator(mode="after")
@@ -162,6 +162,7 @@ class GetOutputValueCommand(MCPCommand):
 
     class Parameters(BaseModel):
         element_id: Annotated[int, Field(gt=0)]
+        port: Annotated[int, Field(ge=0, description="Output port index (default 0)")] | None = None
 
         model_config = ConfigDict(extra="forbid")
 
@@ -224,7 +225,7 @@ class ExportImageCommand(MCPCommand):
     class Parameters(BaseModel):
         filename: Annotated[str, Field(min_length=1)]
         format: ImageExportFormat = Field(description="Export format")
-        padding: Annotated[int, Field(ge=0, description="Padding in pixels")] | None = 20
+        padding: Annotated[int, Field(ge=0, le=2000, description="Padding in pixels")] | None = 20
 
         model_config = ConfigDict(extra="forbid")
 
@@ -235,9 +236,6 @@ class CreateWaveformCommand(MCPCommand):
     """Model for create_waveform command"""
 
     class Parameters(BaseModel):
-        elements: list[Annotated[int, Field(gt=0)]] | None = Field(
-            default=None, description="Optional list of element IDs to analyze"
-        )
         duration: Annotated[int, Field(ge=1, le=1024)] | None = Field(
             default=64, description="Number of simulation steps"
         )
@@ -284,8 +282,8 @@ class InstantiateIcCommand(MCPCommand):
 
     class Parameters(BaseModel):
         ic_name: Annotated[str, Field(min_length=1)]
-        x: Annotated[float, Field(ge=-2147483648, le=2147483647, description="X coordinate")]
-        y: Annotated[float, Field(ge=-2147483648, le=2147483647, description="Y coordinate")]
+        x: Annotated[float, Field(description="X coordinate")]
+        y: Annotated[float, Field(description="Y coordinate")]
         label: str | None = Field(default=None, description="Optional instance label")
         inline: bool | None = Field(default=False, description="Create as embedded IC")
         blob_name: str | None = Field(default=None, description="Custom blob name for inline mode")
@@ -331,8 +329,8 @@ class MoveElementCommand(MCPCommand):
 
     class Parameters(BaseModel):
         element_id: Annotated[int, Field(gt=0)]
-        x: Annotated[float, Field(ge=-2147483648, le=2147483647, description="New X coordinate")]
-        y: Annotated[float, Field(ge=-2147483648, le=2147483647, description="New Y coordinate")]
+        x: Annotated[float, Field(description="New X coordinate")]
+        y: Annotated[float, Field(description="New Y coordinate")]
 
         model_config = ConfigDict(extra="forbid")
 
@@ -346,14 +344,14 @@ class SetElementPropertiesCommand(MCPCommand):
         element_id: Annotated[int, Field(gt=0)]
         label: str | None = Field(default=None)
         color: str | None = Field(default=None)
-        frequency: Annotated[float, Field(ge=0)] | None = None
+        frequency: Annotated[float, Field(gt=0)] | None = None
         rotation: float | None = Field(default=None)
         delay: Annotated[float, Field(ge=-1, le=1)] | None = None
         trigger: str | None = Field(default=None, description="Keyboard shortcut for input elements")
         audio: str | None = Field(default=None)
         locked: bool | None = Field(default=None, description="Lock state for input elements")
-        volume: float | None = Field(default=None, description="Volume for audio elements")
-        appearance: str | None = Field(default=None, description="Appearance path or 'default'")
+        volume: Annotated[float, Field(ge=0, le=1, description="Volume for audio elements")] | None = None
+        appearance: str | None = Field(default=None, description="Appearance path, or an empty string for the default")
         appearance_index: Annotated[int, Field(ge=0)] | None = Field(
             default=None, description="State index for multi-state element appearances"
         )
@@ -391,18 +389,9 @@ class FlipElementCommand(MCPCommand):
 
 
 class UpdateElementCommand(MCPCommand):
-    """Model for update_element command"""
+    """Model for update_element command, a wrapper for set_element_properties that takes the same parameters"""
 
-    class Parameters(BaseModel):
-        element_id: Annotated[int, Field(gt=0)]
-        label: str | None = Field(default=None)
-        color: str | None = Field(default=None)
-        frequency: Annotated[float, Field(ge=0)] | None = None
-        rotation: float | None = Field(default=None)
-
-        model_config = ConfigDict(extra="forbid")
-
-    params: Parameters
+    params: SetElementPropertiesCommand.Parameters
 
 
 class ChangeInputSizeCommand(MCPCommand):
@@ -449,7 +438,7 @@ class MorphElementCommand(MCPCommand):
 
     class Parameters(BaseModel):
         element_ids: list[Annotated[int, Field(gt=0)]] = Field(min_length=1, description="Element IDs to morph")
-        target_type: str = Field(min_length=1, description="Target element type")
+        target_type: ElementType = Field(description="Target element type")
 
         model_config = ConfigDict(extra="forbid")
 
@@ -494,3 +483,65 @@ class GetServerInfoCommand(MCPCommand):
     """Model for get_server_info command"""
 
     params: EmptyParameters = Field(default_factory=EmptyParameters)
+
+
+class ExportArduinoCommand(MCPCommand):
+    """Model for export_arduino command"""
+
+    class Parameters(BaseModel):
+        filename: Annotated[str, Field(min_length=1)]
+
+        model_config = ConfigDict(extra="forbid")
+
+    params: Parameters
+
+
+class ExportSystemverilogCommand(MCPCommand):
+    """Model for export_systemverilog command"""
+
+    class Parameters(BaseModel):
+        filename: Annotated[str, Field(min_length=1)]
+
+        model_config = ConfigDict(extra="forbid")
+
+    params: Parameters
+
+
+class GetThemeCommand(MCPCommand):
+    """Model for get_theme command"""
+
+    params: EmptyParameters = Field(default_factory=EmptyParameters)
+
+
+class SetThemeCommand(MCPCommand):
+    """Model for set_theme command"""
+
+    class Parameters(BaseModel):
+        theme: Literal["light", "dark", "system"] = Field(description="Theme to set")
+
+        model_config = ConfigDict(extra="forbid")
+
+    params: Parameters
+
+
+class GetEffectiveThemeCommand(MCPCommand):
+    """Model for get_effective_theme command"""
+
+    params: EmptyParameters = Field(default_factory=EmptyParameters)
+
+
+class ListCommandsCommand(MCPCommand):
+    """Model for list_commands command"""
+
+    params: EmptyParameters = Field(default_factory=EmptyParameters)
+
+
+class DescribeCommandCommand(MCPCommand):
+    """Model for describe_command command"""
+
+    class Parameters(BaseModel):
+        name: Annotated[str, Field(min_length=1, description="Method name to describe")]
+
+        model_config = ConfigDict(extra="forbid")
+
+    params: Parameters
