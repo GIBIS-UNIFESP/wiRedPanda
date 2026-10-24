@@ -176,7 +176,7 @@ class FileOperationTests(MCPTestBase):
 
         # Early return if not enough elements created for meaningful connections
         if len(created_elements) < 3:
-            print(f"❌ Insufficient elements created for load test: {len(created_elements)}/3")
+            self.report_failure(f"Insufficient elements created for load test: {len(created_elements)}/3")
 
             return all_passed
 
@@ -239,8 +239,9 @@ class FileOperationTests(MCPTestBase):
                     )
                     # Note: assert_success already incremented counters
                 else:
-                    print(f"❌ Element count mismatch: expected {len(test_elements)}, got {len(loaded_elements)}")
-                    # Note: This is additional validation, but assert_success already handled the counting
+                    self.report_failure(
+                        f"Element count mismatch: expected {len(test_elements)}, got {len(loaded_elements)}"
+                    )
 
         # Clean up temporary file
         try:

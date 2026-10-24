@@ -98,6 +98,6 @@ class IntegrationWorkflowTests(MCPTestBase):
                 )
                 print("❌ .panda extension incorrectly rejected")
             else:
-                print(f"❌ File save failed for unexpected reason (not extension): {error_msg}")
+                self.report_failure(f"File save failed for unexpected reason (not extension): {error_msg}")
 
         return all_passed

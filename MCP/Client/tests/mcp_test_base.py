@@ -51,6 +51,7 @@ class MCPTestBase(ABC):
         """
         # Store runner reference - this provides access to all MCP functionality
         self._runner = runner
+        self._current_test = ""
 
         # Expose commonly used properties for convenience
         self.test_results = runner.test_results
@@ -106,14 +107,19 @@ class MCPTestBase(ABC):
         """Set test context for image export"""
         self._runner.set_test_context(test_name)
 
-    def record_limitation(self, test_name: str, message: str) -> None:
-        """Record a documented engine limitation (monitored, not enforced).
+    def record_limitation(self, message: str) -> None:
+        """Record a documented limitation of the running test (monitored, not enforced).
 
-        Soft-assert sites that print a limitation diagnostic and still pass
-        must also call this so the orchestrator summary reports the case
-        under its own LIMITATION status instead of folding it into PASS (F30).
+        A site that prints a limitation and still passes calls this, so the orchestrator's summary lists it under
+        LIMITATIONS instead of folding it into PASS.
         """
-        self.test_results.known_issues.append(f"{test_name}: {message}")
+        print(f"📋 {message}")
+        self.test_results.known_issues.append(f"{self._current_test}: {message}")
+
+    def report_failure(self, message: str) -> None:
+        """Print a failed check and record it, which fails the running test whatever it returns"""
+        print(f"❌ {message}")
+        self.test_results.errors.append(f"{self._current_test}: {message}")
 
     async def cleanup_circuit(self, test_name: str) -> bool:
         """Cleanup circuit after test completion"""
@@ -220,7 +226,7 @@ class MCPTestBase(ABC):
         elif "already exists" in str(resp.error):
             self.infrastructure.output.success(f"✅ create_ic handled existing file: {resp.error}")
         else:
-            print(f"❌ create_ic failed: {resp.error}")
+            self.report_failure(f"create_ic failed: {resp.error}")
         return resp
 
     async def setup_basic_ic_circuit(self) -> tuple[int, int, int] | None:
@@ -313,6 +319,7 @@ class MCPTestBase(ABC):
             bool: True if test passed, False if failed
         """
         test_name = test_method.__name__
+        self._current_test = test_name
 
         # Debug: Check tab count before test
         tab_count_resp = await self._runner.send_command("get_tab_count", {}, timeout=5.0)
