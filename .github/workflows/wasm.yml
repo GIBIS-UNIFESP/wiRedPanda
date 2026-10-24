@@ -45,7 +45,7 @@ jobs:
         # no extra aqt module is required ("qttools" isn't a valid aqt
         # module for Qt 6 — LinguistTools is part of the base install).
         cache: true
-        aqtversion: ==3.*
+        aqtversion: ==3.3.0
 
     - name: Setup Qt for WASM
       uses: jurplel/install-qt-action@a9c63c7c123f3069cff414e7e482d95dfa9d8125 # v4.4.1
@@ -56,6 +56,7 @@ jobs:
         arch: wasm_multithread
         modules: qtmultimedia qtimageformats
         cache: true
+        aqtversion: ==3.3.0
 
     - name: Setup emscripten
       run: |

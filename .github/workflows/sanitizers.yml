@@ -80,7 +80,7 @@ jobs:
       with:
         version: 6.9.3
         cache: true
-        aqtversion: ==3.*
+        aqtversion: ==3.3.0
         modules: qtmultimedia qtimageformats
 
     - name: ccache

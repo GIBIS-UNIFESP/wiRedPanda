@@ -100,7 +100,7 @@ jobs:
       with:
         version: ${{ matrix.qt }}
         cache: true
-        aqtversion: ==3.*
+        aqtversion: ==3.3.0
         modules: qtmultimedia qtimageformats
         host: ${{ matrix.qt_host }}
         arch: ${{ matrix.qt_arch }}
