@@ -334,6 +334,8 @@ class MCPTestBase(ABC):
         test_exception = None
         teardown_success = False
         final_result = False
+        # A check that fails records an error, which fails the test even when the test drops the check's result
+        errors_before = len(self._runner.test_results.errors)
 
         try:
             try:
@@ -368,8 +370,9 @@ class MCPTestBase(ABC):
                             f"({before_test_count} → {after_test_count})"
                         )
 
-            # Determine final result considering both test and teardown
-            final_result = test_result and teardown_success
+            # Determine final result considering the test, its checks and teardown
+            check_failed = len(self._runner.test_results.errors) > errors_before
+            final_result = test_result and teardown_success and not check_failed
 
             # Update counters based on final result
             self._runner.test_results.total += 1
@@ -388,6 +391,8 @@ class MCPTestBase(ABC):
                 elif not teardown_success:
                     self._runner.test_results.errors.append(f"{test_name}: Teardown failed - resource cleanup error")
                     print(f"🔴 {test_name} FAILED (teardown cleanup failed)")
+                else:
+                    print(f"🔴 {test_name} FAILED (a check failed)")
 
         return final_result
 

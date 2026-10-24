@@ -90,14 +90,16 @@ class SimulationTests(MCPTestBase):
         if all_passed:
             # Allow time for propagation
             await asyncio.sleep(0.1)
-            await self.verify_output_value(output_id, True, "Propagation test: input=True -> output=True")
+            all_passed &= await self.verify_output_value(output_id, True, "Propagation test: input=True -> output=True")
 
             # Set input to False and check if output follows
             resp = await self.send_command("set_input_value", {"element_id": input_id, "value": False})
             all_passed &= await self.assert_success(resp, "Set input value to False for propagation test")
             if all_passed:
                 await asyncio.sleep(0.1)
-                await self.verify_output_value(output_id, False, "Propagation test: input=False -> output=False")
+                all_passed &= await self.verify_output_value(
+                    output_id, False, "Propagation test: input=False -> output=False"
+                )
 
         # Test simulation stop/restart
         resp = await self.send_command("simulation_control", {"action": "stop"})
@@ -231,7 +233,7 @@ class SimulationTests(MCPTestBase):
                     await asyncio.sleep(0.1)
                     # Verify output propagation
                     expected_value = bool(test["expected"])
-                    await self.verify_output_value(
+                    all_passed &= await self.verify_output_value(
                         output_id, expected_value, f"Propagation test: {test['description']}"
                     )
 

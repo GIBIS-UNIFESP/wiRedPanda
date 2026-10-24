@@ -82,7 +82,7 @@ class SequentialTests(MCPTestBase):
 
         # Start simulation for multi-clock testing
         resp = await self.send_command("simulation_control", {"action": "start"})
-        await self.assert_success(resp, "Start multi-clock simulation")
+        all_passed &= await self.assert_success(resp, "Start multi-clock simulation")
 
         # Early return if simulation failed to start
         if not resp.success:
@@ -212,7 +212,7 @@ class SequentialTests(MCPTestBase):
         self.infrastructure.output.success("✅ Setup clock gating circuit")
 
         resp = await self.send_command("simulation_control", {"action": "start"})
-        await self.assert_success(resp, "Start clock gating simulation")
+        all_passed &= await self.assert_success(resp, "Start clock gating simulation")
 
         # Early return if simulation failed to start
         if not resp.success:
@@ -320,7 +320,7 @@ class SequentialTests(MCPTestBase):
         self.infrastructure.output.success("✅ Setup power-on reset circuit")
 
         resp = await self.send_command("simulation_control", {"action": "start"})
-        await self.assert_success(resp, "Start POR simulation")
+        all_passed &= await self.assert_success(resp, "Start POR simulation")
 
         # Early return if POR simulation failed to start
         if not resp.success:
@@ -507,7 +507,7 @@ class SequentialTests(MCPTestBase):
         self.infrastructure.output.success("✅ Setup reset timing test circuit")
 
         resp = await self.send_command("simulation_control", {"action": "start"})
-        await self.assert_success(resp, "Start reset timing simulation")
+        all_passed &= await self.assert_success(resp, "Start reset timing simulation")
 
         # Early return if reset timing simulation failed to start
         if not resp.success:
