@@ -60,13 +60,10 @@ class IntegrationWorkflowTests(MCPTestBase):
         all_passed &= await self.assert_success(resp, "Set input to True")
 
         # Verify input value was set correctly
-        await self.verify_output_value(input_id, True, "Verify input value set to True")
+        all_passed &= await self.verify_output_value(input_id, True, "Verify input value set to True")
 
-        # Test propagation (expected to fail due to known issue)
         await asyncio.sleep(0.1)  # Allow time for propagation
-        if not await self.verify_output_value(output_id, True, "Verify output follows input (True)"):
-            # This is expected to fail due to known propagation issue
-            pass
+        all_passed &= await self.verify_output_value(output_id, True, "Verify output follows input (True)")
 
         return all_passed
 
