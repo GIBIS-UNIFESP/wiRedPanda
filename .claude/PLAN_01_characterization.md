@@ -5,7 +5,7 @@ measure with. Every later plan names each golden it changes, with the cause, so 
 alters a picture, a hit result, a trace or a file's bytes fails a golden instead of reaching users. Plan 1 changes the
 application in one place, which the fixture generator needs: the status bar's element count comes from a count the
 item registry keeps, instead of a sort of the circuit. Before its goldens, it also fixes the `master` defects that
-failed its CI (§4.6).
+failed its CI and pins CI's versions (§4.6).
 
 - **Depends on:** nothing. It is the first plan to land, after the branch that holds the plan files.
 - **Lands before:** every other plan. The plans run one at a time, in their order (the plans' rules, §1), so plan 2
@@ -317,8 +317,8 @@ is shown to fail with its fast path removed.
 
 ### 4.6 Fixes to `master` made on this branch
 
-Three defects of `master` failed this branch's CI, so each was fixed here by a commit of its own placed before the
-goldens, which therefore show none of them (P1.D7):
+Three defects of `master` failed this branch's CI, and CI's unpinned versions were pinned at the user's word, so each
+was fixed here by a commit of its own placed before the goldens, which therefore show none of them (P1.D7):
 
 - **CI's MCP Integration Test (P1.30).** `install-qt-action` v4.4.1 puts its own Python, 3.14 or later, first on the
   `PATH` after `build.yml` installed the MCP client's requirements into 3.12, so every Linux and macOS job failed
@@ -330,6 +330,14 @@ goldens, which therefore show none of them (P1.D7):
   32-bit x86, whose x87 unit keeps the product in extended precision, the buzzer's default 0.35 showed as 34, failing
   the editor-writes golden on CI's `debian-i386` job; in float arithmetic 0.53 and 0.59 do the same on every
   platform. The slider takes the product rounded, and a test reads back every percent from 0 to 100.
+- **The sanitizer jobs' runner (P1.33).** The ASan and UBSan jobs ran on `ubuntu-latest`, the only unpinned runner in
+  CI, so a move of that label would change their compiler and libraries while every other job stays put. They run on
+  `ubuntu-24.04`, which the label resolved to, so nothing changes now.
+- **The rest of CI's versions (P1.34 to P1.39).** The MCP client's Python tooling installs from a lock compiled from
+  its declared ranges for every platform, which deptry and dependabot read through `requirements.in`; every action is
+  pinned by commit with its release named; the Qt installer takes aqtinstall 3.3.0; the release's sentry-cli and
+  appimagetool are pinned and checked by digest, and its patched crates taken at a commit; emsdk is cloned at the
+  release it installs; and pip is the one Python 3.14 brings.
 
 ## 5. Steps and slices
 
@@ -360,6 +368,13 @@ Each step is a ledger row; a slice is a stretch of steps checked as one, then pu
 | P1.30 | CI's Python tooling on 3.14 (§4.6) | 1 |
 | P1.31 | The IC file watcher test's rewrite on Windows (§4.6) | 1 |
 | P1.32 | The editor's volume, rounded (§4.6) | 4 |
+| P1.33 | The sanitizer jobs' runner pinned (§4.6) | 5 |
+| P1.34 | The MCP client's Python tooling locked (§4.6) | 5 |
+| P1.35 | Every action pinned by commit (§4.6) | 5 |
+| P1.36 | The Qt installer pinned (§4.6) | 5 |
+| P1.37 | The release's tools pinned and checked by digest (§4.6) | 5 |
+| P1.38 | emsdk cloned at its release (§4.6) | 5 |
+| P1.39 | pip as Python ships it (§4.6) | 5 |
 
 The checks of §8 are rows too (P1.21 to P1.23); the fixes of §4.6 are numbered after the ledger's other rows, each in
 the slice whose CI it opened or whose push it came with.
@@ -391,9 +406,11 @@ user's choice between workable options).
   AudioBox's audio file, the lowercase trigger key, the appearance Mux, Demux and the truth table offer but never draw,
   and translated names in generated code. Basis: the user's rulings of 2026-10-21 that every defect verified on
   `master` is plan 2's, and that the plans run one at a time, plan 2 starting once plan 1 has landed.
-- **P1.D7. A fix made on this branch is plan 1's.** A `master` defect that fails this branch's CI is fixed here, before
-  the goldens, by a commit of its own, and is plan 1's row; every other defect is plan 2's (P1.D6). Basis: the user's
-  choices of 2026-10-22 (P1.30, P1.31) and 2026-10-23 (P1.32).
+- **P1.D7. A fix made on this branch is plan 1's.** A `master` defect that fails this branch's CI, or that the user asks
+  to fix at once, is fixed here, before the goldens, by a commit of its own, and is plan 1's row; every other defect is
+  plan 2's (P1.D6). Basis: the user's choices of 2026-10-22 (P1.30, P1.31) and 2026-10-23 (P1.32), their words of
+  2026-10-24 ("pin it now", "pin all of them"), and their ruling of 2026-10-24 that what was done in or before plan 1 is
+  not plan 2's.
 
 ## 7. Risks
 
