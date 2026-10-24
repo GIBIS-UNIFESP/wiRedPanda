@@ -110,14 +110,24 @@ through the same function; the branch never compiled it on Windows, and CI's Win
 The comment by its `LCOV_EXCL` marker gives the wrong reason: the deleting destructor never runs because no bare
 `ItemWithId` exists, not because nothing deletes through a base pointer. A comment-only change, with no build or test.
 
-### 2.9 The Python MCP client's models disagree with the server's schema
+### 2.9 The Python MCP client's models and the schema disagree with the server
 
 Found while fixing §2.4, by comparing every command model of the client with `MCP/schema-mcp.json`, field by field
-and bound by bound: `update_element` lacks seven fields the schema and the server take (`delay`, `trigger`, `audio`,
-`locked`, `volume`, `appearance`, `appearance_index`), so the client refuses them; `get_output_value` lacks the
-optional `port`; `create_waveform` has an `elements` field the schema does not; `export_image`'s padding has no
-maximum, where the schema's is 2000. Each is checked against the server before its fix. Fix: each model follows the
-schema. Test: one that compares every model with the schema, as that comparison did, shown to fail on `master`.
+and bound by bound. The client has no model for seven commands the server takes (`export_arduino`,
+`export_systemverilog`, `get_theme`, `set_theme`, `get_effective_theme`, `list_commands`, `describe_command`), so
+it refuses to send them; `update_element`, a wrapper for `set_element_properties`, lacks seven of its fields, so the
+client refuses them; `get_output_value` lacks the optional `port`; `create_waveform` has an `elements` field the
+server does not take; `export_image`'s padding has no maximum, where the server clamps at 2000; a connection's ports
+stop at 63, though an element has up to 256; positions are bounded at ±2³¹ where the server takes any finite number;
+and `morph_element` takes any string as its type, where the schema lists the types. Each was checked against the
+server, and the schema itself disagrees with the server in places: the two property commands' parameters differ
+(frequency's minimum 0 where the server refuses 0, a volume unbounded in one and [0, 1] in the other, `update_element`
+without `wireless_mode` or a required `element_id`), and `extract_ic`'s `blob_name` and `save_circuit`'s filename
+may be empty where the server refuses an empty one. Fix: the schema follows the server, the two property commands
+taking equal parameters; every client model follows the schema, `update_element` taking `set_element_properties`'
+parameters, the commands' models in one map the client parses by. Test: every schema command has a model in that map,
+with the same fields, required fields, numeric bounds, minimum lengths and enumerated values; shown to fail by a field,
+a bound, a command and an enumeration removed in turn.
 
 ### 2.10 `get_output_value` on an input answers an error
 
@@ -137,6 +147,14 @@ The dropped results: four `assert_success` calls on a simulation's start in the 
 tests, and a connection's `assert_success` in the circuit builder. Fix: a test whose checks recorded a failure fails,
 whatever it returns, which covers the builder's; and each test uses its checks' results. Shown to fail with §2.10's
 fix removed, by the workflow test's result and, with that result dropped again, by its checks alone.
+
+Two more forms of the same defect (P2.47a, P2.47b). A test that prints a failure ("❌") and goes on, with no result
+and no recorded error: a scan of every such print found 45 candidates. Each real one fails its test. The performance
+tests' wall-time and memory thresholds print one too, and enforcing them would put absolute wall-time bounds in
+tests, so each becomes a recorded limitation. And the suite's limitations ("📋", monitored, not enforced) are never
+recorded: `record_limitation()` is called nowhere, though 38 sites print one and pass, and at least one hides a test
+that cannot pass, a clock-gating test that never toggles its master clock and so reads its flip-flop low. Each site is
+a real limitation of the engine, recorded; a defect of the test, fixed; or a failure, counted.
 
 ## 3. In code plan 3 rewrites
 
@@ -491,6 +509,8 @@ Each of these exists on `master`, and its fix is another plan's decision:
 | P2.45 | The client's models and the schema (§2.9) | the helpers only | none |
 | P2.46 | An input's `get_output_value` (§2.10) | P1.15 | the eight input reads of MCP's responses |
 | P2.47 | The client suite's dropped checks (§2.11) | the helpers only | none |
+| P2.47a | The client suite's printed failures (§2.11) | the helpers only | none |
+| P2.47b | The client suite's limitations (§2.11) | the helpers only | none |
 | P2.9 | SR and T defaults (§3.1) | P1.4, P1.6, P1.13 | port layout, one scene snapshot, any trace with S, R or T open |
 | P2.10 | The loader's port counts (§3.2) | P1.8, P1.17 | the strings golden's three messages |
 | P2.11 | The AudioBox's undo (§3.3) | P1.15 | one editor-writes row |
