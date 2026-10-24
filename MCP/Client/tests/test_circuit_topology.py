@@ -172,7 +172,7 @@ class CircuitTopologyTests(MCPTestBase):
 
                 propagation_success_rate = (correct_propagations / total_tests * 100) if total_tests > 0 else 0
 
-                print("📋 Large circuit performance metrics:")
+                print("Large circuit performance metrics:")
                 print(f"   Circuit creation time: {creation_time:.2f}s")
                 print(f"   Elements successfully created: {len(element_mapping)}/102")
                 print(
@@ -181,42 +181,28 @@ class CircuitTopologyTests(MCPTestBase):
                 )
                 print(f"   Average propagation time: {avg_propagation_time:.3f}s")
 
-                # Performance thresholds
-                # Exact creation timing validation - expect <=5.0s for 100-element circuit
+                # Wall-time bounds are monitored, not enforced: a slower run is recorded as a limitation
                 expected_max_creation_time = 5.0
-                if creation_time == expected_max_creation_time:
-                    print(f"📋 Circuit creation timing at threshold: {creation_time:.2f}s")
-                elif creation_time > expected_max_creation_time:
-                    print(
-                        f"📋 Circuit creation performance limitation: {creation_time:.2f}s "
-                        f"(expected ≤{expected_max_creation_time:.1f}s) for 100-element circuit"
+                if creation_time > expected_max_creation_time:
+                    self.record_limitation(
+                        f"Circuit creation {creation_time:.2f}s (expected ≤{expected_max_creation_time:.1f}s)"
                     )
-                else:
-                    self.infrastructure.output.success(f"✅ Circuit creation timing good: {creation_time:.2f}s")
-
-                # Exact propagation timing validation - expect <=1.0s average
                 expected_max_avg_propagation = 1.0
-                if avg_propagation_time == expected_max_avg_propagation:
-                    print(f"📋 Signal propagation timing at threshold: {avg_propagation_time:.3f}s average")
-                elif avg_propagation_time > expected_max_avg_propagation:
-                    print(
-                        f"📋 Signal propagation performance limitation: {avg_propagation_time:.3f}s average "
+                if avg_propagation_time > expected_max_avg_propagation:
+                    self.record_limitation(
+                        f"Signal propagation {avg_propagation_time:.3f}s average "
                         f"(expected ≤{expected_max_avg_propagation:.1f}s)"
                     )
 
-                # Exact propagation success validation - expect 100% success rate
-                expected_propagation_success = 100.0
-                if propagation_success_rate == expected_propagation_success:
+                # Every input must reach the end of the chain
+                if correct_propagations == total_tests:
                     self.infrastructure.output.success(
                         f"✅ Large circuit propagation: {propagation_success_rate:.1f}% success rate"
                     )
-                elif propagation_success_rate < expected_propagation_success:
-                    print(
-                        f"📋 Large circuit propagation limitation: {propagation_success_rate:.1f}% success rate "
-                        f"(expected {expected_propagation_success:.1f}%)"
+                else:
+                    self.report_failure(
+                        f"Large circuit propagation correct for {correct_propagations} of {total_tests} inputs"
                     )
-                    print("   Analysis: Complex logic chains fail due to fundamental propagation issues")
-                    print("   Impact: Large-scale digital systems unreliable")
 
                 return all_passed
 
@@ -303,15 +289,14 @@ class CircuitTopologyTests(MCPTestBase):
                     total_outputs = len(fanout_results)
                     fanout_success = (correct_outputs / total_outputs * 100) if total_outputs > 0 else 0
 
-                    status = "✅" if fanout_success >= 95 else "❌"
+                    status = "✅" if correct_outputs == total_outputs else "❌"
                     print(
                         f"  {status} Fan-out test (input={test_input}): "
                         f"{correct_outputs}/{total_outputs} outputs correct ({fanout_success:.1f}%)"
                     )
 
-                    # Track if this iteration failed
-                    expected_min_fanout_success = 95.0
-                    if fanout_success < expected_min_fanout_success:
+                    # Every fan-out branch follows the input
+                    if correct_outputs != total_outputs:
                         all_tests_passed = False
 
                 # Overall test result after both iterations
@@ -319,7 +304,7 @@ class CircuitTopologyTests(MCPTestBase):
                     self.infrastructure.output.success("✅ Success")
 
                 else:
-                    print("📋 High fan-out circuit test had limitations")
+                    self.report_failure("A fan-out branch did not follow its input")
 
             else:
                 self.report_failure("Fan-out simulation failed to start")
@@ -365,13 +350,8 @@ class CircuitTopologyTests(MCPTestBase):
             self.infrastructure.output.success("✅ Success")
             return all_passed
 
-        print("📋 Half Adder truth table exposes propagation limitation")
-        print("   Expected: Sum=A⊕B, Carry=A∧B (fundamental arithmetic)")
-        print("   Analysis: 6-element circuit propagation failure")
-        print("   Impact: Severe - blocks all arithmetic circuit design")
-        print("   Documentation: See .claude/WIREDPANDA_LIMITATIONS.md #1")
-
-        return all_passed
+        self.report_failure("Half Adder truth table wrong: Sum must be A XOR B and Carry A AND B")
+        return False
 
     @beartype
     async def test_large_circuit_performance(self) -> bool:

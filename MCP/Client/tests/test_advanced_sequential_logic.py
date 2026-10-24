@@ -109,15 +109,6 @@ class AdvancedSequentialLogicTests(MCPTestBase):
         all_passed &= validation_result
         if validation_result:
             self.infrastructure.output.success("✅ SR Latch state table validation passed")
-            # Note: validate_sequential_state_table() method already handles counting
-        else:
-            print("📋 SR Latch exposes sequential circuit limitation")
-            print("   Expected: Cross-coupled feedback and memory behavior")
-            print("   Analysis: Sequential state transitions fail")
-            print("   Impact: Critical - sequential logic education impossible")
-            print("   Documentation: See .claude/WIREDPANDA_LIMITATIONS.md #2")
-            self.test_results.known_issues.append("Test: R Latch: Sequential state transitions fail")
-            # Note: validate_sequential_state_table() method already handles counting
 
         return all_passed
 
@@ -144,13 +135,8 @@ class AdvancedSequentialLogicTests(MCPTestBase):
         )
 
         if not resp.success:
-            print("📋 D Flip-Flop element not available")
-            print("   Expected: Native DFlipFlop element support")
-            print("   Analysis: Missing fundamental sequential element")
-            print("   Impact: Severe - core sequential logic unavailable")
-            print("   Status: Element availability limitation")
-            all_passed = False  # Element not available counts as test failure
-            return all_passed
+            self.report_failure(f"D Flip-Flop element not created: {resp.error}")
+            return False
 
         # Use native DFlipFlop element
         dff_circuit = D_FLIP_FLOP_CIRCUIT
@@ -204,13 +190,6 @@ class AdvancedSequentialLogicTests(MCPTestBase):
         )
         all_passed &= validation_result
         if not validation_result:
-            print("📋 D Flip-Flop exposes sequential circuit limitation")
-            print("   Expected: Edge-triggered memory behavior")
-            print("   Analysis: Sequential state transitions fail")
-            print("   Impact: Critical - sequential logic education impossible")
-            print("   Documentation: See .claude/WIREDPANDA_LIMITATIONS.md #3")
-            self.test_results.known_issues.append("Test:  Flip-Flop: Sequential state transitions fail")
-            # Note: validate_sequential_state_table() method already handles counting
             return all_passed
 
         self.infrastructure.output.success("✅ D Flip-Flop state table validation passed")
@@ -340,7 +319,7 @@ class AdvancedSequentialLogicTests(MCPTestBase):
         total_tests = len(jk_test_results)
         pass_rate = (passed_tests / total_tests * 100) if total_tests > 0 else 0
 
-        print(f"📋 JK flip-flop test results: {passed_tests}/{total_tests} passed ({pass_rate:.1f}%)")
+        print(f"JK flip-flop test results: {passed_tests}/{total_tests} passed ({pass_rate:.1f}%)")
 
         # Exact JK flip-flop validation - expect 100% pass rate
         expected_pass_rate = 100.0
@@ -348,12 +327,9 @@ class AdvancedSequentialLogicTests(MCPTestBase):
             self.infrastructure.output.success(f"✅ JK flip-flop validation: {pass_rate:.1f}% pass rate")
             all_passed &= True
         elif pass_rate < expected_pass_rate:
-            print(
-                f"📋 JK flip-flop limitation detected: {pass_rate:.1f}% pass rate (expected {expected_pass_rate:.1f}%)"
+            self.report_failure(
+                f"JK flip-flop states failed: {[r['description'] for r in jk_test_results if not r['passed']]}"
             )
-            print("   Analysis: JK flip-flop state transitions not working correctly")
-            print("   Impact: Advanced sequential logic elements unreliable")
-            print(f"   Failed states: {[r['description'] for r in jk_test_results if not r['passed']]}")
             all_passed = False
         else:
             print("❌ JK flip-flop validation failed")
@@ -595,7 +571,7 @@ class AdvancedSequentialLogicTests(MCPTestBase):
                         expected_q = False
 
                     timing_correct = final_q == expected_q
-                    status = "✅" if timing_correct else "📋"
+                    status = "✅" if timing_correct else "❌"
 
                     print(f"    {status} Initial Q={initial_q}, Final Q={final_q} (expected Q={expected_q})")
                     if not timing_correct:
@@ -617,7 +593,7 @@ class AdvancedSequentialLogicTests(MCPTestBase):
                 total_timing = len(timing_tests)
                 timing_accuracy = (correct_timing / total_timing * 100) if total_timing > 0 else 0
 
-                print(f"📋 Educational model consistency: {timing_accuracy:.1f}% ({correct_timing}/{total_timing})")
+                print(f"Educational model consistency: {timing_accuracy:.1f}% ({correct_timing}/{total_timing})")
 
                 # Educational Model: Expect 100% accuracy with zero-delay abstraction
                 expected_timing_accuracy = 100.0
@@ -628,14 +604,8 @@ class AdvancedSequentialLogicTests(MCPTestBase):
                     print("   ✅ Zero-delay model correctly abstracts timing complexity for education")
                     all_passed &= True
                 elif timing_accuracy < expected_timing_accuracy:
-                    print(
-                        f"📋 Educational model inconsistency: {timing_accuracy:.1f}% accuracy "
-                        f"(expected {expected_timing_accuracy:.1f}%)"
-                    )
-                    print("   Analysis: Edge-triggered behavior not consistent")
-                    print("   Impact: Educational model should be predictable")
                     failed_scenarios = [test["scenario"] for test in timing_tests if not test["correct"]]
-                    print(f"   Inconsistent scenarios: {failed_scenarios}")
+                    self.report_failure(f"Edge-triggered capture wrong in: {failed_scenarios}")
                     all_passed = False
                 else:
                     print("❌ Educational timing model validation failed")
@@ -739,45 +709,25 @@ class AdvancedSequentialLogicTests(MCPTestBase):
                 max_prop_time = max(propagation_times)
                 logic_success_rate = sum(logic_correctness) / len(logic_correctness) * 100
 
-                print("📋 Critical path metrics:")
+                print("Critical path metrics:")
                 print(f"   Average propagation time: {avg_prop_time:.3f}s")
                 print(f"   Maximum propagation time: {max_prop_time:.3f}s")
                 print(f"   Logic correctness: {logic_success_rate:.1f}%")
 
-                # Timing thresholds for critical path
-                # Communication overhead timing validation - expect <=0.15s for 4-gate path + MCP round-trips
-                # Note: This measures MCP command execution time, not pure logic propagation delay
+                # The time is MCP round trips, not logic delay: slower than 0.15 s is recorded as a limitation,
+                # since a wall-time bound is monitored, not enforced
                 expected_max_critical_path_time = 0.15
-                if avg_prop_time == expected_max_critical_path_time:
-                    print(f"📋 Critical path timing at threshold: {avg_prop_time:.3f}s average")
-                elif avg_prop_time > expected_max_critical_path_time:
-                    print(
-                        f"📋 Critical path timing limitation: {avg_prop_time:.3f}s average "
-                        f"(expected ≤{expected_max_critical_path_time:.1f}s) for 4-gate path + MCP overhead"
+                if avg_prop_time > expected_max_critical_path_time:
+                    self.record_limitation(
+                        f"Critical path round trips {avg_prop_time:.3f}s average "
+                        f"(expected ≤{expected_max_critical_path_time:.2f}s)"
                     )
-                else:
-                    self.infrastructure.output.success(f"✅ Critical path timing good: {avg_prop_time:.3f}s average")
 
-                # Exact logic success validation - expect 100% success rate
-                expected_logic_success = 100.0
-                if logic_success_rate == expected_logic_success:
-                    self.infrastructure.output.success(
-                        f"✅ Critical path logic: {logic_success_rate:.1f}% success rate"
-                    )
-                elif logic_success_rate < expected_logic_success:
-                    print(
-                        f"📋 Critical path logic limitation: {logic_success_rate:.1f}% success rate "
-                        f"(expected {expected_logic_success:.1f}%)"
-                    )
-                    print("   Analysis: Multi-gate paths not computing correct Boolean functions")
-                    print("   Impact: Complex logic circuits produce wrong results")
-
-                # Check if both timing and logic meet exact requirements
-                if avg_prop_time <= expected_max_critical_path_time and logic_success_rate == expected_logic_success:
+                # Every vector must compute NOT((A AND B) OR (B AND C))
+                if all(logic_correctness):
                     self.infrastructure.output.success("✅ Critical path validation passed")
-                    all_passed &= True
                 else:
-                    print("❌ Critical path validation failed")
+                    self.report_failure(f"Critical path logic correct for {logic_success_rate:.1f}% of vectors")
                     all_passed = False
 
         else:
