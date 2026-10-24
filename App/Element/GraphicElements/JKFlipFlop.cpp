@@ -76,13 +76,6 @@ void JKFlipFlop::updatePortsProperties()
     outputPort(1)->setDefaultStatus(Status::Active);
 }
 
-void JKFlipFlop::updateTheme()
-{
-    // Reload the pixmap before delegating to the base class (see SRFlipFlop.cpp).
-    setPixmap(pixmapPath());
-    GraphicElement::updateTheme();
-}
-
 void JKFlipFlop::updateLogic()
 {
     if (!simUpdateInputs()) {

@@ -36,9 +36,6 @@ public:
     /// Updates port names for this flip-flop.
     void updatePortsProperties() override;
 
-    /// Refreshes the pixmap when the application theme changes.
-    void updateTheme() override;
-
     /// Updates output state on each rising clock edge.
     void updateLogic() override;
     /// Resets Q/~Q outputs and edge-detection state to power-on defaults.

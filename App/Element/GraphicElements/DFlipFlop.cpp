@@ -70,13 +70,6 @@ void DFlipFlop::updatePortsProperties()
     outputPort(1)->setDefaultStatus(Status::Active);
 }
 
-void DFlipFlop::updateTheme()
-{
-    // Reload the pixmap before delegating to the base class (see SRFlipFlop.cpp).
-    setPixmap(pixmapPath());
-    GraphicElement::updateTheme();
-}
-
 void DFlipFlop::updateLogic()
 {
     if (!simUpdateInputs()) {

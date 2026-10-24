@@ -76,14 +76,6 @@ void SRFlipFlop::updatePortsProperties()
     outputPort(1)->setDefaultStatus(Status::Active);
 }
 
-void SRFlipFlop::updateTheme()
-{
-    // Reload the pixmap before delegating to the base class so the correct
-    // theme-specific SVG is used before ports and colours are updated.
-    setPixmap(pixmapPath());
-    GraphicElement::updateTheme();
-}
-
 void SRFlipFlop::updateLogic()
 {
     if (!simUpdateInputs()) {

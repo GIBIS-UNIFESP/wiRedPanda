@@ -59,13 +59,6 @@ void DLatch::updatePortsProperties()
     outputPort(1)->setDefaultStatus(Status::Active);
 }
 
-void DLatch::updateTheme()
-{
-    // Reload the pixmap before delegating to the base class (see SRFlipFlop.cpp).
-    setPixmap(pixmapPath());
-    GraphicElement::updateTheme();
-}
-
 void DLatch::updateLogic()
 {
     if (!simUpdateInputs()) {
