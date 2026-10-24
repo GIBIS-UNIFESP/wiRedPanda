@@ -11,10 +11,15 @@ Tests for command parameter validation including:
 MCP test implementation
 """
 
+import json
 from collections.abc import Awaitable, Callable
-from typing import Any
+from enum import Enum
+from pathlib import Path
+from typing import Any, Literal, get_args, get_origin
 
 from beartype import beartype
+
+from protocol.helpers import COMMAND_MODELS
 
 # Import base infrastructure
 from tests.mcp_test_base import MCPTestBase
@@ -29,6 +34,7 @@ class ParameterValidationTests(MCPTestBase):
         return [
             self.test_missing_parameter_validation,
             self.test_missing_command_coverage,
+            self.test_command_models_match_schema,
         ]
 
     # ==================== TEST METHODS ====================
@@ -156,3 +162,133 @@ class ParameterValidationTests(MCPTestBase):
         print("   • test_element_management_commands()")
 
         return all_passed
+
+    @beartype
+    async def test_command_models_match_schema(self) -> bool:
+        """Every command the schema declares has a model taking its parameters, with the same bounds and lengths"""
+        print("\n=== Command Models Match Schema ===")
+
+        schema_path = Path(__file__).resolve().parents[2] / "schema-mcp.json"
+        with open(schema_path, encoding="utf-8") as schema_file:
+            schema = json.load(schema_file)
+        commands = schema["properties"]["commands"]["properties"]
+
+        mismatches: list[str] = [f"{name}: not in the schema" for name in sorted(set(COMMAND_MODELS) - set(commands))]
+        for name, command in commands.items():
+            model = COMMAND_MODELS.get(name)
+            if model is None:
+                mismatches.append(f"{name}: no command model")
+                continue
+            schema_params = command["properties"].get("params", {})
+            schema_fields: dict[str, Any] = schema_params.get("properties", {})
+            fields = getattr(model.model_fields["params"].annotation, "model_fields", {})
+
+            if set(fields) != set(schema_fields):
+                mismatches.append(
+                    f"{name}: fields only in the model {sorted(set(fields) - set(schema_fields))}, "
+                    f"only in the schema {sorted(set(schema_fields) - set(fields))}"
+                )
+            required = {field for field, info in fields.items() if info.is_required()}
+            if required != set(schema_params.get("required", [])):
+                mismatches.append(f"{name}: required {sorted(required)}, schema {schema_params.get('required', [])}")
+            for field in set(fields) & set(schema_fields):
+                model_bounds = _model_bounds(fields[field])
+                expected = _schema_bounds(schema_fields[field])
+                if model_bounds != expected:
+                    mismatches.append(f"{name}.{field}: bounds {model_bounds}, schema {expected}")
+                model_values = _model_values(fields[field])
+                expected_values = _schema_values(schema_fields[field], schema["definitions"])
+                if model_values != expected_values:
+                    mismatches.append(f"{name}.{field}: values {model_values}, schema {expected_values}")
+
+        for mismatch in mismatches:
+            print(f"❌ {mismatch}")
+        if mismatches:
+            self.test_results.errors.append(f"test_command_models_match_schema: {len(mismatches)} mismatches")
+            return False
+        self.infrastructure.output.success(f"✅ {len(commands)} command models match the schema")
+        return True
+
+
+Bounds = tuple[float | None, bool, float | None, bool, int | None]
+
+
+def _inclusive(bounds: Bounds, integer: bool) -> Bounds:
+    """An integer's exclusive bound as the inclusive one next to it, so gt=0 and minimum 1 compare equal"""
+    low, low_exclusive, high, high_exclusive, min_length = bounds
+    if integer and low is not None and low_exclusive:
+        low, low_exclusive = low + 1, False
+    if integer and high is not None and high_exclusive:
+        high, high_exclusive = high - 1, False
+    return low, low_exclusive, high, high_exclusive, min_length
+
+
+def _model_bounds(info: Any) -> Bounds:
+    """A field's bounds, from its own metadata or the Annotated type inside its Optional; for a list, its items'"""
+    metadata = list(info.metadata)
+    annotation = info.annotation
+    for arg in (annotation, *get_args(annotation)):
+        if get_origin(arg) is list:
+            arg = get_args(arg)[0]
+        if hasattr(arg, "__metadata__"):
+            for item in arg.__metadata__:
+                metadata.extend(getattr(item, "metadata", [item]))
+    low: float | None = None
+    high: float | None = None
+    min_length: int | None = None
+    low_exclusive = high_exclusive = False
+    for item in metadata:
+        if getattr(item, "ge", None) is not None:
+            low = float(item.ge)
+        if getattr(item, "gt", None) is not None:
+            low, low_exclusive = float(item.gt), True
+        if getattr(item, "le", None) is not None:
+            high = float(item.le)
+        if getattr(item, "lt", None) is not None:
+            high, high_exclusive = float(item.lt), True
+        if getattr(item, "min_length", None) is not None:
+            min_length = int(item.min_length)
+    integer = int in (annotation, *get_args(annotation)) or any(
+        get_origin(arg) is list or int in get_args(arg) for arg in (annotation, *get_args(annotation))
+    )
+    return _inclusive((low, low_exclusive, high, high_exclusive, min_length), integer)
+
+
+def _model_values(info: Any) -> frozenset[Any] | None:
+    """The values a field takes when it is an enumeration or a literal, else None"""
+    for arg in (info.annotation, *get_args(info.annotation)):
+        if isinstance(arg, type) and issubclass(arg, Enum):
+            return frozenset(member.value for member in arg)
+        if get_origin(arg) is Literal:
+            return frozenset(get_args(arg))
+    return None
+
+
+def _schema_values(field: dict[str, Any], definitions: dict[str, Any]) -> frozenset[Any] | None:
+    """The values a string field takes when the schema enumerates them, directly or through a definition"""
+    if "$ref" in field:
+        field = definitions[field["$ref"].rsplit("/", 1)[-1]]
+    if field.get("type") == "string" and "enum" in field:
+        return frozenset(field["enum"])
+    return None
+
+
+def _schema_bounds(field: dict[str, Any]) -> Bounds:
+    """A schema field's bounds; an integer enum of consecutive values as its range; for an array, its items'"""
+    min_length = field.get("minItems", field.get("minLength"))
+    if field.get("type") == "array":
+        field = field.get("items", {})
+    if field.get("type") == "integer" and "enum" in field:
+        values = sorted(field["enum"])
+        if values == list(range(values[0], values[-1] + 1)):
+            return float(values[0]), False, float(values[-1]), False, min_length
+    low = field.get("exclusiveMinimum", field.get("minimum"))
+    high = field.get("exclusiveMaximum", field.get("maximum"))
+    bounds: Bounds = (
+        None if low is None else float(low),
+        "exclusiveMinimum" in field,
+        None if high is None else float(high),
+        "exclusiveMaximum" in field,
+        min_length,
+    )
+    return _inclusive(bounds, field.get("type") == "integer")
