@@ -57,6 +57,23 @@ class ElementPropertiesTests(MCPTestBase):
             print(f"Delay not set correctly: {new_props}")
             return False
 
+        # A negative delay advances the clock; the server takes [-1, 1], and so must the client
+        resp = await self.send_command("set_element_properties", {"element_id": clk_id, "delay": -0.25})
+        if not resp.success:
+            print(f"Failed to set a negative delay: {resp.error}")
+            return False
+        new_props = resp.result.get("new_properties", {}) if resp.result else {}
+        if abs(new_props.get("delay", 1) + 0.25) > 0.001:
+            print(f"Negative delay not set correctly: {new_props}")
+            return False
+
+        # Outside [-1, 1] the client refuses the request before sending it
+        for delay in (-1.5, 1.5):
+            resp = await self.send_command("set_element_properties", {"element_id": clk_id, "delay": delay})
+            if resp.success or "Command validation failed" not in str(resp.error):
+                print(f"Delay {delay} not refused by the client: {resp.error}")
+                return False
+
         self.infrastructure.output.success("delay property works")
         return True
 
