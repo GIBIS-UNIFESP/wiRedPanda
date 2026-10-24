@@ -210,11 +210,15 @@ in the editor writes, and their appearance fields in MCP's property responses.
 Only `InputSwitch`'s mouse toggle pushes an update command, from the element itself, which reaches the scene and the
 commands; the rotary's click and the switch's and rotary's trigger keys change saved state with no command, and since
 the undo stack's clean state is the document's modified flag, the file is not even marked modified. Fix: the scene
-records an operation: it snapshots the elements a press, a double-click or a trigger key goes to, runs the operation
-and pushes one update command for those whose saved state changed, restoring the selection the command's first
-`redo()` sets (a trigger key selects nothing); a push button's press is transient and not recorded. `InputSwitch` then
-no longer includes the scene or the commands. Tests: a switch's and a rotary's click; a trigger key over two switches
-and a rotary; a button not recorded.
+records an operation: it snapshots the elements a press or a trigger key goes to, runs the operation and pushes one
+update command for those whose saved state changed, restoring the selection the command's first `redo()` sets (a
+trigger key selects nothing); a push button's press is transient and not recorded. A press's elements are those Qt may
+give it to: the item holding the mouse and the items under the pointer, found as Qt's `itemsAtPosition()` finds them
+(through the view's transform), each standing for its element. A double-click is not recorded: every input has a
+label, so a double-click opens the label's editor and changes nothing saved; nor is a trigger key's release, which
+only releases a button. `InputSwitch` then no longer includes the scene or the commands. Tests: a switch's and a
+rotary's click; a rotary's click through a zoomed view; a left press going to the switch holding the mouse; a trigger
+key over two switches and a rotary; a button not recorded.
 
 ### 3.7 Themed memory pictures go stale after a theme switch
 
