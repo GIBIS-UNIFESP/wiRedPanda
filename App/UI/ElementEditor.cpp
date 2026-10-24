@@ -834,7 +834,8 @@ void ElementEditor::inputLocked(const bool value)
 void ElementEditor::triggerChanged(const QString &cmd)
 {
     sentryBreadcrumb("ui", QStringLiteral("Trigger key: %1").arg(cmd));
-    if (const QString upper = cmd.toUpper(); upper != cmd) {
+    // A typed key is uppercased; the placeholder for a selection of different triggers is shown as it is
+    if (const QString upper = cmd.toUpper(); (cmd != m_manyTriggers) && (upper != cmd)) {
         // Setting the uppercased text emits textChanged again, and that call applies it
         m_ui->lineEditTrigger->setText(upper);
         return;
