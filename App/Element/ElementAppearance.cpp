@@ -247,11 +247,8 @@ QPointF ElementAppearance::pixmapCenter() const
 
 void ElementAppearance::setPixmap(const int index)
 {
-    setPixmap(m_usingDefaultAppearance ? m_defaultAppearances.at(index) : m_alternativeAppearances.at(index));
-}
+    const QString pixmapPath = m_usingDefaultAppearance ? m_defaultAppearances.at(index) : m_alternativeAppearances.at(index);
 
-void ElementAppearance::setPixmap(const QString &pixmapPath)
-{
     // Skip if unchanged to avoid redundant loads and cache invalidation
     if (pixmapPath.isEmpty() || (pixmapPath == m_currentPixmapPath)) {
         return;
@@ -272,29 +269,21 @@ void ElementAppearance::setPixmap(const QString &pixmapPath)
     // time a path reaches here it's either a resource reference or already directly
     // usable (a fresh absolute path from a file picker, or an already-resolved one
     // read back from a saved project). Nothing left to do here but load it.
-    const QString path = pixmapPath;
+    QString path = pixmapPath;
+    m_failedPixmapPath.clear();
 
     // QPixmap::load() already caches internally via the shared QPixmapCache, keyed on
     // path + mtime + size (see MainWindow's setCacheLimit() call for the app-wide budget) — a
     // wrapper cache of our own here would be both redundant and, keyed on the bare path alone,
     // staler than what load() already gives us for free.
     if (!m_basePixmap.load(path)) {
-        const QFileInfo info(path);
-        const QString reason = !info.exists()
-                                   ? tr("File does not exist")
-                                   : !info.isReadable()
-                                         ? tr("File is not readable")
-                                         : tr("Unknown reason");
-
-        // Load the default appearance so the element remains renderable before the exception unwinds
-        m_basePixmap.load(m_defaultAppearances.constFirst());
-        m_pixmap = m_basePixmap;
-        // Remember this exact request failed so a later call with the same broken path (e.g.
-        // every simulation tick's refresh()) is skipped by the guard above instead of
-        // re-attempting the load and re-throwing — each distinct failure surfaces once.
-        m_currentPixmapPath = pixmapPath;
+        // Nothing here may throw: a state change runs inside Qt's event handlers and an undo inside QUndoStack, which
+        // an exception cannot pass on macOS. The slot's default is shown; the guard above keeps every later
+        // refresh() from loading the same broken path again.
         qCDebug(zero) << "Problem loading pixmapPath: " << path;
-        throw PANDACEPTION("Couldn't load pixmap: %1 (%2)", path, reason);
+        m_failedPixmapPath = path;
+        path = m_defaultAppearances.at(index);
+        m_basePixmap.load(path);
     }
 
     m_resolvedPixmapPath = path;
@@ -317,6 +306,21 @@ void ElementAppearance::setPixmap(const QString &pixmapPath)
     m_owner->update();
 
     m_currentPixmapPath = pixmapPath;
+}
+
+void ElementAppearance::reportFailedPicture() const
+{
+    if (m_failedPixmapPath.isEmpty()) {
+        return;
+    }
+
+    const QFileInfo info(m_failedPixmapPath);
+    const QString reason = !info.exists()
+                               ? tr("File does not exist")
+                               : !info.isReadable()
+                                     ? tr("File is not readable")
+                                     : tr("Unknown reason");
+    throw PANDACEPTION("Couldn't load pixmap: %1 (%2)", m_failedPixmapPath, reason);
 }
 
 QPixmap ElementAppearance::previewPixmapAt(const int index, const QSize &size) const

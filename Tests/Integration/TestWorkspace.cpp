@@ -1186,3 +1186,33 @@ void TestWorkspace::testFirstSaveCopiesExternalAppearanceFile()
         QFAIL(qPrintable(QString("Reloading the saved project should not throw: %1").arg(e.what())));
     }
 }
+
+void TestWorkspace::testOpeningAFileWithAPictureThatIsGoneReportsIt()
+{
+    // An undo shows the slot's default in place of a picture that is gone, but opening a file reports it
+    QTemporaryDir projectDir;
+    QVERIFY(projectDir.isValid());
+    const QString imagePath = projectDir.filePath("custom_led.svg");
+    QVERIFY(QFile::copy(":/Components/Output/Led/WhiteLed.svg", imagePath));
+    // The copy keeps the resource's read-only permissions, and Windows does not remove a read-only file
+    QVERIFY(QFile::setPermissions(imagePath, QFileDevice::ReadOwner | QFileDevice::WriteOwner));
+    const QString saveFile = projectDir.filePath("circuit.panda");
+
+    {
+        WorkSpace workspace;
+        auto *led = ElementFactory::buildElement(ElementType::Led);
+        workspace.scene()->addItem(led);
+        led->setAppearance(false, imagePath);
+        workspace.save(saveFile);
+    }
+    QVERIFY(QFile::remove(imagePath));
+
+    WorkSpace reloaded;
+    QString message;
+    try {
+        reloaded.load(saveFile);
+    } catch (const Pandaception &e) {
+        message = QString::fromUtf8(e.what());
+    }
+    QVERIFY2(message.contains("custom_led.svg") && message.contains("does not exist"), qPrintable(message));
+}

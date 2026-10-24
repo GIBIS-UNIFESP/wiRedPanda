@@ -712,6 +712,80 @@ void TestElementEditor::testUpdateElementAppearanceFallbackAppliesToAllSelected(
     QCOMPARE(undoStack->count(), countBefore + 1); // applyAppearance() pushed an UpdateCommand
 }
 
+void TestElementEditor::testPickingAPictureThatDoesNotLoadChangesNothing()
+{
+    // A picked file that does not decode is reported, and neither the element nor the undo stack changes
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString imagePath = dir.filePath("broken.png");
+    QFile broken(imagePath);
+    QVERIFY(broken.open(QIODevice::WriteOnly));
+    broken.write("this is not a valid image file at all");
+    broken.close();
+
+    WorkSpace workspace;
+    auto *andGate = new And();
+    workspace.scene()->addItem(andGate);
+
+    ElementEditor editor(&workspace);
+    editor.setScene(workspace.scene());
+    workspace.scene()->clearSelection();
+    andGate->setSelected(true);
+
+    ScopedFileDialogStub dialogStub;
+    dialogStub.stub.openResult = imagePath;
+    auto *undoStack = workspace.scene()->undoStack();
+    const int countBefore = undoStack->count();
+
+    auto dismisser = TestUtils::AutoDismisser::acceptMessageBox();
+    editor.updateElementAppearance();
+
+    QCOMPARE(dismisser.dismissCount(), 1);
+    QVERIFY(andGate->externalFiles().isEmpty());
+    QCOMPARE(undoStack->count(), countBefore);
+}
+
+void TestElementEditor::testPickingAPictureThatDoesNotLoadForAStateChangesNothing()
+{
+    // The same through the appearance states' grid, which sets one state's picture
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString imagePath = dir.filePath("broken.png");
+    QFile broken(imagePath);
+    QVERIFY(broken.open(QIODevice::WriteOnly));
+    broken.write("this is not a valid image file at all");
+    broken.close();
+
+    WorkSpace workspace;
+    auto *led = new Led();
+    workspace.scene()->addItem(led);
+
+    ElementEditor editor(&workspace);
+    editor.setScene(workspace.scene());
+    workspace.scene()->clearSelection();
+    led->setSelected(true);
+    showAndActivate(&editor);
+
+    auto *statesWidget = editor.findChild<QWidget *>("widgetAppearanceStates");
+    QVERIFY(statesWidget);
+    QVERIFY(statesWidget->isVisible());
+    const auto tiles = statesWidget->findChildren<QToolButton *>();
+    QVERIFY(tiles.size() > 1);
+    tiles.at(1)->click();
+
+    ScopedFileDialogStub dialogStub;
+    dialogStub.stub.openResult = imagePath;
+    auto *undoStack = workspace.scene()->undoStack();
+    const int countBefore = undoStack->count();
+
+    auto dismisser = TestUtils::AutoDismisser::acceptMessageBox();
+    editor.updateElementAppearance();
+
+    QCOMPARE(dismisser.dismissCount(), 1);
+    QVERIFY(led->externalFiles().isEmpty());
+    QCOMPARE(undoStack->count(), countBefore);
+}
+
 void TestElementEditor::testApplyCapabilitiesMixedWirelessModeShowsPlaceholder()
 {
     WorkSpace workspace;

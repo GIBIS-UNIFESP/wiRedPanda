@@ -11,6 +11,7 @@
 #include <QIcon>
 #include <QImageReader>
 #include <QMessageBox>
+#include <QPixmap>
 #include <QSize>
 #include <QToolButton>
 
@@ -229,6 +230,13 @@ void ElementEditor::updateElementAppearance()
     }
 
     qCDebug(zero) << "File name: " << fileName;
+
+    // An element shows its default in place of a picture that does not load, so one is refused here, where it was
+    // picked, before anything changes
+    if (QPixmap(fileName).isNull()) {
+        QMessageBox::warning(this, tr("Invalid Picture"), tr("\"%1\" could not be loaded as a picture.").arg(fileName));
+        return;
+    }
 
     // If a specific appearance state is selected in the tile grid, use setAppearanceAt()
     // to target that index directly instead of relying on the element's current state.

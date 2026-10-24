@@ -21,9 +21,9 @@ private slots:
     // Rendering a raster (non-SVG) appearance
     void testRenderRasterAppearance();
 
-    // setPixmap() failure paths
-    void testSetPixmapNonExistentFileThrows();
-    void testSetPixmapUnreadableFileThrows();
+    // A picture that does not load shows its slot's default
+    void testMissingPictureShowsItsSlotsDefault();
+    void testUndecodablePictureShowsItsSlotsDefault();
 
     // orientSvgTextNodes()/orientedSvgPixmap()/sharedSvgRenderer() failure paths
     void testRotatedMalformedSvgFallsBackToBasePixmap();

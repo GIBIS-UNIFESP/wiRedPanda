@@ -6,7 +6,6 @@
 #include <QImage>
 #include <QTemporaryDir>
 
-#include "App/Core/Common.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/AudioBox.h"
@@ -30,6 +29,7 @@
 #include "App/Scene/Scene.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
+#include "Tests/Common/Goldens.h"
 #include "Tests/Common/TestUtils.h"
 
 namespace {
@@ -1491,11 +1491,10 @@ void TestCommands::testMorphUndoRestoresInputsTheNewTypeCannotHave()
     }
 }
 
-void TestCommands::testMorphUndoWithAPictureThatIsGoneChangesNothing()
+void TestCommands::testMorphUndoWithAPictureThatIsGoneShowsTheDefault()
 {
-    // Undo loads the saved switch, whose custom picture no longer loads: the load throws (master's rule for any
-    // restore, §12 of plan 2) before the scene changes, so the morphed element stays and nothing rebuilt is kept. The
-    // command is called directly: an exception cannot pass through QUndoStack's frames on macOS, where it terminates
+    // Undo restores the saved switch, whose custom picture no longer loads: the switch comes back drawing its slot's
+    // default, keeps the path, and the stack steps
     QTemporaryDir dir;
     QVERIFY(dir.isValid());
     const QString png = dir.filePath("custom.png");
@@ -1510,21 +1509,53 @@ void TestCommands::testMorphUndoWithAPictureThatIsGoneChangesNothing()
     inputSwitch->setAppearance(false, png);
     const int id = inputSwitch->id();
 
-    MorphCommand morph({inputSwitch}, ElementType::InputButton, scene);
-    morph.redo();
-    QVERIFY(QFile::rename(png, png + ".gone"));
+    scene->receiveCommand(new MorphCommand({inputSwitch}, ElementType::InputButton, scene));
+    QVERIFY(QFile::remove(png));
 
-    QVERIFY_THROWS_EXCEPTION(Pandaception, morph.undo());
+    scene->undoStack()->undo();
+    QCOMPARE(scene->undoStack()->index(), 1);
     QCOMPARE(scene->elements().size(), 1);
-    QCOMPARE(dynamic_cast<GraphicElement *>(scene->itemById(id))->elementType(), ElementType::InputButton);
-
-    // With the picture back, the undo restores the switch with it
-    QVERIFY(QFile::rename(png + ".gone", png));
-    morph.undo();
     auto *restored = dynamic_cast<GraphicElement *>(scene->itemById(id));
     QCOMPARE(restored->elementType(), ElementType::InputSwitch);
     QCOMPARE(restored->externalFiles(), QStringList{png});
-    QCOMPARE(scene->elements().size(), 1);
+    const InputSwitch fresh;
+    QCOMPARE(SnapshotAccess::pixmapIdentity(restored), SnapshotAccess::pixmapIdentity(&fresh));
+}
+
+void TestCommands::testUndoWithAPictureThatIsGoneShowsTheDefault()
+{
+    // A reset to the default picture is undone after the custom picture's file is gone: the undo restores the path,
+    // the switch draws its slot's default, and the stack steps; the redo steps back
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString png = dir.filePath("custom.png");
+    QImage red(64, 64, QImage::Format_ARGB32);
+    red.fill(Qt::red);
+    QVERIFY(red.save(png));
+
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *inputSwitch = new InputSwitch();
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{inputSwitch}, scene));
+    inputSwitch->setAppearance(false, png);
+
+    QByteArray oldData;
+    QDataStream stream(&oldData, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(stream);
+    inputSwitch->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
+    inputSwitch->setAppearance(true, {});
+    scene->receiveCommand(new UpdateCommand({inputSwitch}, oldData, scene));
+    QVERIFY(QFile::remove(png));
+
+    scene->undoStack()->undo();
+    QCOMPARE(scene->undoStack()->index(), 1);
+    QCOMPARE(inputSwitch->externalFiles(), QStringList{png});
+    const InputSwitch fresh;
+    QCOMPARE(SnapshotAccess::pixmapIdentity(inputSwitch), SnapshotAccess::pixmapIdentity(&fresh));
+
+    scene->undoStack()->redo();
+    QCOMPARE(scene->undoStack()->index(), 2);
+    QVERIFY(inputSwitch->externalFiles().isEmpty());
 }
 
 void TestCommands::testSetPropertyCommandUndoesEachElementsValue()

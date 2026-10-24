@@ -21,6 +21,7 @@
 #include "App/Scene/GraphicsView.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
+#include "Tests/Common/Goldens.h"
 #include "Tests/Common/TestUtils.h"
 
 // ============================================================================
@@ -586,18 +587,13 @@ void TestInputElements::testAppearanceWithSameOsAbsolutePath()
     QVERIFY2(!threw, "setAppearance should accept a direct, existing absolute path");
 }
 
-void TestInputElements::testAppearanceWithNonExistentFileFallback()
+void TestInputElements::testAppearanceWithNonExistentFileShowsTheDefault()
 {
     InputSwitch inputSwitch;
+    inputSwitch.setAppearance(false, "/some/empty/directory/nonexistent_appearance_12345.svg");
 
-    bool threw = false;
-    try {
-        inputSwitch.setAppearance(false, "/some/empty/directory/nonexistent_appearance_12345.svg");
-    } catch (const Pandaception &) {
-        threw = true;
-    }
-
-    QVERIFY2(threw, "setAppearance should throw when the given path does not exist");
+    const InputSwitch fresh;
+    QCOMPARE(SnapshotAccess::pixmapIdentity(&inputSwitch), SnapshotAccess::pixmapIdentity(&fresh));
 }
 
 void TestInputElements::testLoadResolvesAppearanceBareFilenameAgainstContextDir()
