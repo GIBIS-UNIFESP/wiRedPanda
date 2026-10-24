@@ -42,12 +42,12 @@ from nothing. Fix: serialize into a buffer and write it with `Serialization::wri
 Structured also needs its two IC blobs; the hand-built streams of v5.1 and older stay raw, as their versions require.
 
 A seed check runs in each seeded harness's `LLVMFuzzerInitialize` (six harnesses; ICBlob builds its blob per input and
-has no fixed seed): the header, the decompression and the metadata must decode, and the circuit must load into a
-scratch workspace with at least one element, or the harness aborts naming itself and the reason. `readPandaHeader()`
-throws on an unrecognized header instead of returning a null version, so the check's first header read sits inside a
-`try`: on the branch it first did not, and an empty seed ended the harness through `std::terminate` without naming it.
-Each check is shown to fail by a seed that fails it (no elements, an unknown header, an empty seed), and each harness
-runs once on its seeds (`-runs=1`) as a start-up check. The harnesses run on the user's machine, overnight, through
+has no fixed seed): the header, the decompression and the metadata must decode, and the circuit must load into a scratch
+workspace with at least one element, or the harness aborts naming itself and the reason. `readPandaHeader()` throws on
+an unrecognized header instead of returning a null version, so the check's first header read sits inside a `try`: on the
+branch it first did not, and an empty seed ended the harness through `std::terminate` without naming it. Each check is
+shown to fail by a seed that fails it (no elements, an unknown header, an empty seed), and each harness runs once on its
+seeds (`-runs=1`) as a start-up check. The harnesses run on the user's machine, overnight, through
 `Tests/Fuzz/run-unattended.sh`, not in CI (P2.D10).
 
 ### 2.2 The fuzzers get no coverage feedback from the code under test
@@ -448,7 +448,7 @@ Each of these exists on `master`, and its fix is another plan's decision:
 - **Two drivers on one net**: under plan 5's rules they read Error, and plan 8's exporters refuse such a net; until
   then §6.3's exporters follow the Tx.
 
-## 9. Pull requests and the goldens each touches
+## 9. The fixes and the goldens each touches
 
 | ID | Fix | Plan 1's rows it rests on | Goldens it changes |
 |---|---|---|---|
