@@ -84,7 +84,7 @@ struct CpuPC8bitFixture {
         return true;
     }
 
-    int readAddress()
+    TestUtils::Bits readAddress()
     {
         return readMultiBitOutput(QVector<GraphicElement *>(addressOutputs.begin(), addressOutputs.end()), 0);
     }

@@ -104,28 +104,16 @@ struct RegFile8x8Fixture {
         sim->update();
     }
 
-    int readReg(int addr)
+    TestUtils::Bits readReg(int addr)
     {
         setReadAddr(addr);
         sim->update();
-        int value = 0;
-        for (int bit = 0; bit < 8; ++bit) {
-            if (inputStatus(readData[bit])) {
-                value |= (1 << bit);
-            }
-        }
-        return value;
+        return TestUtils::readMultiBitOutput(readData);
     }
 
-    int readPort2()
+    TestUtils::Bits readPort2()
     {
-        int value = 0;
-        for (int bit = 0; bit < 8; ++bit) {
-            if (inputStatus(readData2[bit])) {
-                value |= (1 << bit);
-            }
-        }
-        return value;
+        return TestUtils::readMultiBitOutput(readData2);
     }
 };
 

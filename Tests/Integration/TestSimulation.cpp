@@ -75,16 +75,16 @@ void TestSimulation::testAndGatePropagation()
 
     // Test AND truth table through simulation
     sw1.setOn(false); sw2.setOn(false); simulation->update();
-    QCOMPARE(inputStatus(&led), false);
+    QCOMPARE(inputStatus(&led), Status::Inactive);
 
     sw1.setOn(false); sw2.setOn(true); simulation->update();
-    QCOMPARE(inputStatus(&led), false);
+    QCOMPARE(inputStatus(&led), Status::Inactive);
 
     sw1.setOn(true); sw2.setOn(false); simulation->update();
-    QCOMPARE(inputStatus(&led), false);
+    QCOMPARE(inputStatus(&led), Status::Inactive);
 
     sw1.setOn(true); sw2.setOn(true); simulation->update();
-    QCOMPARE(inputStatus(&led), true);
+    QCOMPARE(inputStatus(&led), Status::Active);
 }
 
 void TestSimulation::testOrGatePropagation()
@@ -104,16 +104,16 @@ void TestSimulation::testOrGatePropagation()
     auto *simulation = builder.initSimulation();
 
     sw1.setOn(false); sw2.setOn(false); simulation->update();
-    QCOMPARE(inputStatus(&led), false);
+    QCOMPARE(inputStatus(&led), Status::Inactive);
 
     sw1.setOn(false); sw2.setOn(true); simulation->update();
-    QCOMPARE(inputStatus(&led), true);
+    QCOMPARE(inputStatus(&led), Status::Active);
 
     sw1.setOn(true); sw2.setOn(false); simulation->update();
-    QCOMPARE(inputStatus(&led), true);
+    QCOMPARE(inputStatus(&led), Status::Active);
 
     sw1.setOn(true); sw2.setOn(true); simulation->update();
-    QCOMPARE(inputStatus(&led), true);
+    QCOMPARE(inputStatus(&led), Status::Active);
 }
 
 void TestSimulation::testNotGatePropagation()
@@ -132,10 +132,10 @@ void TestSimulation::testNotGatePropagation()
     auto *simulation = builder.initSimulation();
 
     sw.setOn(false); simulation->update();
-    QCOMPARE(inputStatus(&led), true);
+    QCOMPARE(inputStatus(&led), Status::Active);
 
     sw.setOn(true); simulation->update();
-    QCOMPARE(inputStatus(&led), false);
+    QCOMPARE(inputStatus(&led), Status::Inactive);
 }
 
 void TestSimulation::testNandGatePropagation()
@@ -155,16 +155,16 @@ void TestSimulation::testNandGatePropagation()
     auto *simulation = builder.initSimulation();
 
     sw1.setOn(false); sw2.setOn(false); simulation->update();
-    QCOMPARE(inputStatus(&led), true);
+    QCOMPARE(inputStatus(&led), Status::Active);
 
     sw1.setOn(false); sw2.setOn(true); simulation->update();
-    QCOMPARE(inputStatus(&led), true);
+    QCOMPARE(inputStatus(&led), Status::Active);
 
     sw1.setOn(true); sw2.setOn(false); simulation->update();
-    QCOMPARE(inputStatus(&led), true);
+    QCOMPARE(inputStatus(&led), Status::Active);
 
     sw1.setOn(true); sw2.setOn(true); simulation->update();
-    QCOMPARE(inputStatus(&led), false);
+    QCOMPARE(inputStatus(&led), Status::Inactive);
 }
 
 void TestSimulation::testNorGatePropagation()
@@ -184,16 +184,16 @@ void TestSimulation::testNorGatePropagation()
     auto *simulation = builder.initSimulation();
 
     sw1.setOn(false); sw2.setOn(false); simulation->update();
-    QCOMPARE(inputStatus(&led), true);
+    QCOMPARE(inputStatus(&led), Status::Active);
 
     sw1.setOn(false); sw2.setOn(true); simulation->update();
-    QCOMPARE(inputStatus(&led), false);
+    QCOMPARE(inputStatus(&led), Status::Inactive);
 
     sw1.setOn(true); sw2.setOn(false); simulation->update();
-    QCOMPARE(inputStatus(&led), false);
+    QCOMPARE(inputStatus(&led), Status::Inactive);
 
     sw1.setOn(true); sw2.setOn(true); simulation->update();
-    QCOMPARE(inputStatus(&led), false);
+    QCOMPARE(inputStatus(&led), Status::Inactive);
 }
 
 void TestSimulation::testXorGatePropagation()
@@ -213,16 +213,16 @@ void TestSimulation::testXorGatePropagation()
     auto *simulation = builder.initSimulation();
 
     sw1.setOn(false); sw2.setOn(false); simulation->update();
-    QCOMPARE(inputStatus(&led), false);
+    QCOMPARE(inputStatus(&led), Status::Inactive);
 
     sw1.setOn(false); sw2.setOn(true); simulation->update();
-    QCOMPARE(inputStatus(&led), true);
+    QCOMPARE(inputStatus(&led), Status::Active);
 
     sw1.setOn(true); sw2.setOn(false); simulation->update();
-    QCOMPARE(inputStatus(&led), true);
+    QCOMPARE(inputStatus(&led), Status::Active);
 
     sw1.setOn(true); sw2.setOn(true); simulation->update();
-    QCOMPARE(inputStatus(&led), false);
+    QCOMPARE(inputStatus(&led), Status::Inactive);
 }
 
 void TestSimulation::testCascadedGates()
@@ -247,19 +247,19 @@ void TestSimulation::testCascadedGates()
 
     // (0 AND 0) OR 0 = 0
     swA.setOn(false); swB.setOn(false); swC.setOn(false); simulation->update();
-    QCOMPARE(inputStatus(&led), false);
+    QCOMPARE(inputStatus(&led), Status::Inactive);
 
     // (0 AND 0) OR 1 = 1
     swA.setOn(false); swB.setOn(false); swC.setOn(true); simulation->update();
-    QCOMPARE(inputStatus(&led), true);
+    QCOMPARE(inputStatus(&led), Status::Active);
 
     // (1 AND 1) OR 0 = 1
     swA.setOn(true); swB.setOn(true); swC.setOn(false); simulation->update();
-    QCOMPARE(inputStatus(&led), true);
+    QCOMPARE(inputStatus(&led), Status::Active);
 
     // (1 AND 0) OR 0 = 0
     swA.setOn(true); swB.setOn(false); swC.setOn(false); simulation->update();
-    QCOMPARE(inputStatus(&led), false);
+    QCOMPARE(inputStatus(&led), Status::Inactive);
 }
 
 void TestSimulation::testMultiCycleStability()
@@ -282,12 +282,12 @@ void TestSimulation::testMultiCycleStability()
     sw1.setOn();
     sw2.setOn();
     simulation->update();
-    QCOMPARE(inputStatus(&led), true);
+    QCOMPARE(inputStatus(&led), Status::Active);
 
     // Change input and run multiple cycles
     sw1.setOff();
     simulation->update();
-    QCOMPARE(inputStatus(&led), false);
+    QCOMPARE(inputStatus(&led), Status::Inactive);
 }
 
 void TestSimulation::testSimulationInitialization()
@@ -503,8 +503,14 @@ void TestSimulation::testSimulationOutputReproducibility()
 
             simulation.update();
 
-            // Record LED output (check if input port is active)
-            bool ledOutput = (led.inputPort()->status() == Status::Active);
+            // Record LED output; a non-level is a failure, not a 0
+            const Status ledStatus = TestUtils::inputStatus(&led);
+            if ((ledStatus != Status::Active) && (ledStatus != Status::Inactive)) {
+                QTest::qFail(qPrintable(QString("AND gate output at step %1 is not a level: %2")
+                    .arg(step).arg(TestUtils::statusText(ledStatus))), __FILE__, __LINE__);
+                return {};
+            }
+            const bool ledOutput = (ledStatus == Status::Active);
             outputs.append(ledOutput);
 
             // Verify AND gate logic. Not QCOMPARE: this lambda returns QVector<bool>, and
@@ -692,6 +698,13 @@ void TestSimulation::testCircuitWithFeedbackLoops()
 
         // Test deterministic feedback behavior
         QVector<bool> outputs;
+        // A non-level Q is recorded as a failure, not a 0
+        bool qIsLevel = true;
+        auto readQ = [&] {
+            const Status status = TestUtils::inputStatus(&qLed);
+            qIsLevel = qIsLevel && ((status == Status::Active) || (status == Status::Inactive));
+            return status == Status::Active;
+        };
 
         // Test sequence for NAND SR latch (active-low inputs)
         // Initial state: both inputs high (inactive)
@@ -703,25 +716,29 @@ void TestSimulation::testCircuitWithFeedbackLoops()
         setBtn.setOn(true);
         resetBtn.setOn(false);  // Active reset
         simulation.update();
-        outputs.append(qLed.inputPort()->status() == Status::Active);  // Should be false after reset
+        outputs.append(readQ());  // Should be false after reset
 
         // Set: pull set low (active), release reset
         setBtn.setOn(false);  // Active set
         resetBtn.setOn(true);
         simulation.update();
-        outputs.append(qLed.inputPort()->status() == Status::Active);  // Should be true after set
+        outputs.append(readQ());  // Should be true after set
 
         // Hold: both inputs high (inactive) - latch should hold state
         setBtn.setOn(true);
         resetBtn.setOn(true);
         simulation.update();
-        outputs.append(qLed.inputPort()->status() == Status::Active);  // Should still be true
+        outputs.append(readQ());  // Should still be true
 
         // Reset again: pull reset low
         setBtn.setOn(true);
         resetBtn.setOn(false);  // Active reset
         simulation.update();
-        outputs.append(qLed.inputPort()->status() == Status::Active);  // Should be false again
+        outputs.append(readQ());  // Should be false again
+        if (!qIsLevel) {
+            QTest::qFail("SR latch Q is not a level", __FILE__, __LINE__);
+            return {};
+        }
 
         if (firstRunOutputs.isEmpty()) {
             firstRunOutputs = outputs;
@@ -729,7 +746,8 @@ void TestSimulation::testCircuitWithFeedbackLoops()
         return outputs;
     });
 
-    // Verify expected NAND SR latch behavior
+    // Verify expected NAND SR latch behavior; a failed run records no outputs
+    QVERIFY2(firstRunOutputs.size() == 4, "the SR latch runs recorded no outputs");
     QVERIFY2(!firstRunOutputs[0], "SR Latch should be reset at state 0");
     QVERIFY2(firstRunOutputs[1], "SR Latch should be set at state 1");
     QVERIFY2(firstRunOutputs[2], "SR Latch should hold at state 2");
@@ -764,13 +782,13 @@ void TestSimulation::testWirelessTxRxPropagation()
     auto *sim = builder.initSimulation();
 
     sw.setOn(false); sim->update();
-    QCOMPARE(inputStatus(&led), false);
+    QCOMPARE(inputStatus(&led), Status::Inactive);
 
     sw.setOn(true); sim->update();
-    QCOMPARE(inputStatus(&led), true);
+    QCOMPARE(inputStatus(&led), Status::Active);
 
     sw.setOn(false); sim->update();
-    QCOMPARE(inputStatus(&led), false);
+    QCOMPARE(inputStatus(&led), Status::Inactive);
 }
 
 void TestSimulation::testWirelessMultiRxFanOut()
@@ -802,21 +820,21 @@ void TestSimulation::testWirelessMultiRxFanOut()
     auto *sim = builder.initSimulation();
 
     sw.setOn(false); sim->update();
-    QCOMPARE(inputStatus(&led1), false);
-    QCOMPARE(inputStatus(&led2), false);
+    QCOMPARE(inputStatus(&led1), Status::Inactive);
+    QCOMPARE(inputStatus(&led2), Status::Inactive);
 
     sw.setOn(true); sim->update();
-    QCOMPARE(inputStatus(&led1), true);
-    QCOMPARE(inputStatus(&led2), true);
+    QCOMPARE(inputStatus(&led1), Status::Active);
+    QCOMPARE(inputStatus(&led2), Status::Active);
 
     sw.setOn(false); sim->update();
-    QCOMPARE(inputStatus(&led1), false);
-    QCOMPARE(inputStatus(&led2), false);
+    QCOMPARE(inputStatus(&led1), Status::Inactive);
+    QCOMPARE(inputStatus(&led2), Status::Inactive);
 }
 
 void TestSimulation::testWirelessOrphanedRx()
 {
-    // An Rx node with no matching Tx should output its default (Inactive) status.
+    // An Rx node with no matching Tx has nothing driving it, so it outputs Unknown.
     // Circuit: Rx("ORPHAN") → LED  (no Tx with label "ORPHAN" exists)
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
@@ -833,11 +851,11 @@ void TestSimulation::testWirelessOrphanedRx()
     auto *sim = builder.initSimulation();
 
     sim->update();
-    QCOMPARE(inputStatus(&led), false);
+    QCOMPARE(inputStatus(&led), Status::Unknown);
 
     // Multiple updates must remain stable.
     sim->update();
-    QCOMPARE(inputStatus(&led), false);
+    QCOMPARE(inputStatus(&led), Status::Unknown);
 }
 
 void TestSimulation::testWirelessInsideIC()
@@ -883,13 +901,13 @@ void TestSimulation::testWirelessInsideIC()
     auto *sim = builder.initSimulation();
 
     outerSw.setOn(false); sim->update();
-    QCOMPARE(inputStatus(&outerLed), false);
+    QCOMPARE(inputStatus(&outerLed), Status::Inactive);
 
     outerSw.setOn(true); sim->update();
-    QCOMPARE(inputStatus(&outerLed), true);
+    QCOMPARE(inputStatus(&outerLed), Status::Active);
 
     outerSw.setOn(false); sim->update();
-    QCOMPARE(inputStatus(&outerLed), false);
+    QCOMPARE(inputStatus(&outerLed), Status::Inactive);
 }
 
 // ============================================================================
@@ -927,22 +945,23 @@ void TestSimulation::testWirelessDuplicateTxIgnored()
 
     // Both ON → LED must be ON regardless of which Tx won.
     sw1.setOn(true); sw2.setOn(true); sim->update();
-    QCOMPARE(inputStatus(&led), true);
+    QCOMPARE(inputStatus(&led), Status::Active);
 
     // Both OFF → LED must be OFF.
     sw1.setOn(false); sw2.setOn(false); sim->update();
-    QCOMPARE(inputStatus(&led), false);
+    QCOMPARE(inputStatus(&led), Status::Inactive);
 
     // Exactly one Tx controls the Rx. Determine which one won and verify
     // the other is indeed ignored.
     sw1.setOn(true); sw2.setOn(false); sim->update();
-    const bool sw1Controls = inputStatus(&led);
+    const Status sw1Controls = inputStatus(&led);
 
     sw1.setOn(false); sw2.setOn(true); sim->update();
-    const bool sw2Controls = inputStatus(&led);
+    const Status sw2Controls = inputStatus(&led);
 
     // Exactly one switch must control the LED, not both.
-    QVERIFY2(sw1Controls != sw2Controls,
+    QVERIFY2(((sw1Controls == Status::Active) && (sw2Controls == Status::Inactive))
+                 || ((sw1Controls == Status::Inactive) && (sw2Controls == Status::Active)),
              "Exactly one Tx must win — both or neither controlling the LED indicates a bug");
 
     // Verify determinism: repeat and check the same result.
@@ -973,12 +992,12 @@ void TestSimulation::testWirelessEmptyLabelIgnored()
 
     auto *sim = builder.initSimulation();
 
-    // Empty labels are skipped — Rx has no Tx match, LED stays inactive.
+    // Empty labels are skipped — Rx has no Tx match, so the LED reads Unknown whatever the switch.
     sw.setOn(true); sim->update();
-    QCOMPARE(inputStatus(&led), false);
+    QCOMPARE(inputStatus(&led), Status::Unknown);
 
     sw.setOn(false); sim->update();
-    QCOMPARE(inputStatus(&led), false);
+    QCOMPARE(inputStatus(&led), Status::Unknown);
 }
 
 void TestSimulation::testWirelessLabelMismatchIsolation()
@@ -1005,10 +1024,10 @@ void TestSimulation::testWirelessLabelMismatchIsolation()
     auto *sim = builder.initSimulation();
 
     sw.setOn(true); sim->update();
-    QCOMPARE(inputStatus(&led), false);
+    QCOMPARE(inputStatus(&led), Status::Unknown);
 
     sw.setOn(false); sim->update();
-    QCOMPARE(inputStatus(&led), false);
+    QCOMPARE(inputStatus(&led), Status::Unknown);
 }
 
 void TestSimulation::testWirelessMultipleIndependentChannels()
@@ -1041,29 +1060,29 @@ void TestSimulation::testWirelessMultipleIndependentChannels()
 
     // Both off
     sw1.setOn(false); sw2.setOn(false); sim->update();
-    QCOMPARE(inputStatus(&led1), false);
-    QCOMPARE(inputStatus(&led2), false);
+    QCOMPARE(inputStatus(&led1), Status::Inactive);
+    QCOMPARE(inputStatus(&led2), Status::Inactive);
 
     // CH_A on, CH_B off — only led1 should light up
     sw1.setOn(true); sw2.setOn(false); sim->update();
-    QCOMPARE(inputStatus(&led1), true);
-    QCOMPARE(inputStatus(&led2), false);
+    QCOMPARE(inputStatus(&led1), Status::Active);
+    QCOMPARE(inputStatus(&led2), Status::Inactive);
 
     // CH_A off, CH_B on — only led2 should light up
     sw1.setOn(false); sw2.setOn(true); sim->update();
-    QCOMPARE(inputStatus(&led1), false);
-    QCOMPARE(inputStatus(&led2), true);
+    QCOMPARE(inputStatus(&led1), Status::Inactive);
+    QCOMPARE(inputStatus(&led2), Status::Active);
 
     // Both on
     sw1.setOn(true); sw2.setOn(true); sim->update();
-    QCOMPARE(inputStatus(&led1), true);
-    QCOMPARE(inputStatus(&led2), true);
+    QCOMPARE(inputStatus(&led1), Status::Active);
+    QCOMPARE(inputStatus(&led2), Status::Active);
 }
 
 void TestSimulation::testWirelessTxUnconnectedInput()
 {
-    // A Tx node with no physical wire on its input port propagates Unknown.
-    // The Rx must stay inactive (Unknown → false).
+    // A Tx node with no physical wire on its input port propagates Unknown,
+    // and the Rx carries that Unknown to the LED.
     // Circuit: Tx("OPEN") (unconnected input) ... Rx("OPEN") → LED
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
@@ -1084,11 +1103,11 @@ void TestSimulation::testWirelessTxUnconnectedInput()
     auto *sim = builder.initSimulation();
 
     sim->update();
-    QCOMPARE(inputStatus(&led), false);
+    QCOMPARE(inputStatus(&led), Status::Unknown);
 
     // Must remain stable across updates.
     sim->update();
-    QCOMPARE(inputStatus(&led), false);
+    QCOMPARE(inputStatus(&led), Status::Unknown);
 }
 
 void TestSimulation::testWirelessLabelCaseSensitive()
@@ -1115,10 +1134,10 @@ void TestSimulation::testWirelessLabelCaseSensitive()
     auto *sim = builder.initSimulation();
 
     sw.setOn(true); sim->update();
-    QCOMPARE(inputStatus(&led), false);
+    QCOMPARE(inputStatus(&led), Status::Unknown);
 
     sw.setOn(false); sim->update();
-    QCOMPARE(inputStatus(&led), false);
+    QCOMPARE(inputStatus(&led), Status::Unknown);
 }
 
 void TestSimulation::testWirelessNoneModeNodeDoesNotInterfere()
@@ -1148,10 +1167,10 @@ void TestSimulation::testWirelessNoneModeNodeDoesNotInterfere()
     auto *sim = builder.initSimulation();
 
     sw.setOn(true); sim->update();
-    QCOMPARE(inputStatus(&led), true);
+    QCOMPARE(inputStatus(&led), Status::Active);
 
     sw.setOn(false); sim->update();
-    QCOMPARE(inputStatus(&led), false);
+    QCOMPARE(inputStatus(&led), Status::Inactive);
 }
 
 void TestSimulation::testWirelessLabelSetAfterMode()
@@ -1179,10 +1198,10 @@ void TestSimulation::testWirelessLabelSetAfterMode()
     auto *sim = builder.initSimulation();
 
     sw.setOn(true); sim->update();
-    QCOMPARE(inputStatus(&led), true);
+    QCOMPARE(inputStatus(&led), Status::Active);
 
     sw.setOn(false); sim->update();
-    QCOMPARE(inputStatus(&led), false);
+    QCOMPARE(inputStatus(&led), Status::Inactive);
 }
 
 void TestSimulation::testWirelessCascadeThroughWire()
@@ -1212,10 +1231,10 @@ void TestSimulation::testWirelessCascadeThroughWire()
     auto *sim = builder.initSimulation();
 
     sw.setOn(true); sim->update();
-    QCOMPARE(inputStatus(&led), true);
+    QCOMPARE(inputStatus(&led), Status::Active);
 
     sw.setOn(false); sim->update();
-    QCOMPARE(inputStatus(&led), false);
+    QCOMPARE(inputStatus(&led), Status::Inactive);
 }
 
 void TestSimulation::testWirelessRxFeedsCombinationalLogic()
@@ -1245,19 +1264,19 @@ void TestSimulation::testWirelessRxFeedsCombinationalLogic()
 
     // 0 AND 0 = 0
     sw1.setOn(false); sw2.setOn(false); sim->update();
-    QCOMPARE(inputStatus(&led), false);
+    QCOMPARE(inputStatus(&led), Status::Inactive);
 
     // 1 AND 0 = 0
     sw1.setOn(true); sw2.setOn(false); sim->update();
-    QCOMPARE(inputStatus(&led), false);
+    QCOMPARE(inputStatus(&led), Status::Inactive);
 
     // 0 AND 1 = 0
     sw1.setOn(false); sw2.setOn(true); sim->update();
-    QCOMPARE(inputStatus(&led), false);
+    QCOMPARE(inputStatus(&led), Status::Inactive);
 
     // 1 AND 1 = 1
     sw1.setOn(true); sw2.setOn(true); sim->update();
-    QCOMPARE(inputStatus(&led), true);
+    QCOMPARE(inputStatus(&led), Status::Active);
 }
 
 void TestSimulation::testWirelessOrphanedTxDoesNotCrash()
@@ -1287,10 +1306,10 @@ void TestSimulation::testWirelessOrphanedTxDoesNotCrash()
 
     // Independent circuit must still work.
     sw2.setOn(true); sw3.setOn(true); sim->update();
-    QCOMPARE(inputStatus(&led), true);
+    QCOMPARE(inputStatus(&led), Status::Active);
 
     sw2.setOn(false); sim->update();
-    QCOMPARE(inputStatus(&led), false);
+    QCOMPARE(inputStatus(&led), Status::Inactive);
 }
 
 void TestSimulation::testWirelessOrphanedRxWithPhysicalWire()
@@ -1316,10 +1335,10 @@ void TestSimulation::testWirelessOrphanedRxWithPhysicalWire()
     auto *sim = builder.initSimulation();
 
     sw.setOn(true); sim->update();
-    QCOMPARE(inputStatus(&led), true);
+    QCOMPARE(inputStatus(&led), Status::Active);
 
     sw.setOn(false); sim->update();
-    QCOMPARE(inputStatus(&led), false);
+    QCOMPARE(inputStatus(&led), Status::Inactive);
 }
 
 void TestSimulation::testWirelessOverridesPhysicalWire()
@@ -1349,11 +1368,11 @@ void TestSimulation::testWirelessOverridesPhysicalWire()
 
     // Wireless ON, physical OFF → LED should be ON (wireless takes precedence).
     swWireless.setOn(true); swPhys.setOn(false); sim->update();
-    QCOMPARE(inputStatus(&led), true);
+    QCOMPARE(inputStatus(&led), Status::Active);
 
     // Wireless OFF, physical ON → LED should be OFF (wireless takes precedence).
     swWireless.setOn(false); swPhys.setOn(true); sim->update();
-    QCOMPARE(inputStatus(&led), false);
+    QCOMPARE(inputStatus(&led), Status::Inactive);
 }
 
 void TestSimulation::testWirelessFeedbackLoop()
@@ -1391,11 +1410,11 @@ void TestSimulation::testWirelessFeedbackLoop()
     // sw=OFF: AND output is 0 regardless of feedback → Tx broadcasts 0 →
     // Rx receives 0 → NOT outputs 1 → LED=ON, AND(0,1)=0 → stable.
     sw.setOn(false); sim->update();
-    QCOMPARE(inputStatus(&led), true);
+    QCOMPARE(inputStatus(&led), Status::Active);
 
     // Must remain stable across updates.
     sim->update();
-    QCOMPARE(inputStatus(&led), true);
+    QCOMPARE(inputStatus(&led), Status::Active);
 }
 
 void TestSimulation::testWirelessUnicodeLabels()
@@ -1420,10 +1439,10 @@ void TestSimulation::testWirelessUnicodeLabels()
     auto *sim = builder.initSimulation();
 
     sw.setOn(true); sim->update();
-    QCOMPARE(inputStatus(&led), true);
+    QCOMPARE(inputStatus(&led), Status::Active);
 
     sw.setOn(false); sim->update();
-    QCOMPARE(inputStatus(&led), false);
+    QCOMPARE(inputStatus(&led), Status::Inactive);
 }
 
 // ============================================================================
@@ -1433,7 +1452,7 @@ void TestSimulation::testWirelessUnicodeLabels()
 void TestSimulation::testUnconnectedRequiredInputGraceful()
 {
     // An AND gate with no inputs connected is invalid in the logic layer.
-    // The simulation must not crash, and the downstream LED must stay inactive
+    // The simulation must not crash, and the downstream LED reads Unknown
     // (the unknown element and its successors receive Status::Unknown).
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
@@ -1448,12 +1467,11 @@ void TestSimulation::testUnconnectedRequiredInputGraceful()
     sim->update();
 
     // AND gate logic is unknown (required inputs unconnected); cascade propagates Unknown to LED.
-    // LED input port receives Status::Unknown → inputStatus returns false.
-    QCOMPARE(inputStatus(&led), false);
+    QCOMPARE(inputStatus(&led), Status::Unknown);
 
     // A second update must also be stable (no crash, no state change).
     sim->update();
-    QCOMPARE(inputStatus(&led), false);
+    QCOMPARE(inputStatus(&led), Status::Unknown);
 }
 
 void TestSimulation::testPartiallyConnectedCircuitIsolation()
@@ -1478,15 +1496,15 @@ void TestSimulation::testPartiallyConnectedCircuitIsolation()
 
     // Working circuit: 0 AND 0 = 0
     sw1.setOn(false); sw2.setOn(false); sim->update();
-    QCOMPARE(inputStatus(&led), false);
+    QCOMPARE(inputStatus(&led), Status::Inactive);
 
     // Working circuit: 1 AND 1 = 1 — isolated AND gate must not interfere
     sw1.setOn(true); sw2.setOn(true); sim->update();
-    QCOMPARE(inputStatus(&led), true);
+    QCOMPARE(inputStatus(&led), Status::Active);
 
     // Working circuit: 1 AND 0 = 0
     sw2.setOn(false); sim->update();
-    QCOMPARE(inputStatus(&led), false);
+    QCOMPARE(inputStatus(&led), Status::Inactive);
 }
 
 void TestSimulation::testDanglingConnectionGraceful()
@@ -1512,10 +1530,10 @@ void TestSimulation::testDanglingConnectionGraceful()
     sim->update();
 
     // AND gate has one dangling connection (no predecessor) and one unconnected input:
-    // logic is unknown → LED input stays inactive.
-    QCOMPARE(inputStatus(&led), false);
+    // logic is unknown → the LED reads Unknown.
+    QCOMPARE(inputStatus(&led), Status::Unknown);
 
     // A second update must also be stable.
     sim->update();
-    QCOMPARE(inputStatus(&led), false);
+    QCOMPARE(inputStatus(&led), Status::Unknown);
 }

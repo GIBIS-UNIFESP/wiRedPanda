@@ -102,7 +102,7 @@ struct Alu8bitFixture {
         }
     }
 
-    int readResult()
+    TestUtils::Bits readResult()
     {
         return readMultiBitOutput(QVector<GraphicElement *>(resultOutputs.begin(), resultOutputs.end()), 0);
     }
@@ -143,20 +143,20 @@ void TestLevel6ALU8Bit::testALU8Bit() {
     f.setOpCode(2);
     f.sim->update();
 
-    int result_and = f.readResult();
+    const TestUtils::Bits result_and = f.readResult();
     QCOMPARE(result_and, CPUTestUtils::PATTERN_ALL_ZEROS);
 
     // Test 2: OR operation (OpCode = 011 = 3)
     f.setOpCode(3);
     f.sim->update();
 
-    int result_or = f.readResult();
+    const TestUtils::Bits result_or = f.readResult();
     QCOMPARE(result_or, CPUTestUtils::PATTERN_ALL_ONES);
 
     // Test 3: XOR operation (OpCode = 100 = 4)
     f.setOpCode(4);
     f.sim->update();
-    int result_xor = f.readResult();
+    const TestUtils::Bits result_xor = f.readResult();
     QCOMPARE(result_xor, CPUTestUtils::PATTERN_ALL_ONES);
 
     // Test 4: NOT operation (OpCode = 101 = 5, NOT A)
@@ -164,7 +164,7 @@ void TestLevel6ALU8Bit::testALU8Bit() {
     setMultiBitInput(f.bInputs, 0x00);
     f.setOpCode(5);
     f.sim->update();
-    int result_not = f.readResult();
+    const TestUtils::Bits result_not = f.readResult();
     QCOMPARE(result_not, 0x55);
 
     // Test 5: Shift Left operation (OpCode = 110 = 6, A << 1)
@@ -172,7 +172,7 @@ void TestLevel6ALU8Bit::testALU8Bit() {
     setMultiBitInput(f.bInputs, 0x00);
     f.setOpCode(6);
     f.sim->update();
-    int result_shl = f.readResult();
+    const TestUtils::Bits result_shl = f.readResult();
     QCOMPARE(result_shl, 0x84);
 
     // Test 6: Shift Right operation (OpCode = 111 = 7, A >> 1)
@@ -180,7 +180,7 @@ void TestLevel6ALU8Bit::testALU8Bit() {
     setMultiBitInput(f.bInputs, 0x00);
     f.setOpCode(7);
     f.sim->update();
-    int result_shr = f.readResult();
+    const TestUtils::Bits result_shr = f.readResult();
     QCOMPARE(result_shr, 0x42);
 }
 
@@ -226,7 +226,7 @@ void TestLevel6ALU8Bit::testALU8BitInputPortIsolation()
 
     f.sim->update();
 
-    int result = f.readResult();
+    const TestUtils::Bits result = f.readResult();
     int expected = (1 << bitPosition);
 
     QCOMPARE(result, expected);
@@ -261,10 +261,10 @@ void TestLevel6ALU8Bit::testALU8BitOutputPortIsolation()
 
     // Verify only the tested bit has the expected value
     for (int i = 0; i < 8; i++) {
-        bool bit_result = inputStatus(f.resultOutputs[i], 0);
+        const Status bit_result = inputStatus(f.resultOutputs[i], 0);
         bool expected = (i == bitPosition);
 
-        QCOMPARE(bit_result, expected);
+        QCOMPARE(bit_result, TestUtils::level(expected));
     }
 }
 
@@ -316,9 +316,9 @@ void TestLevel6ALU8Bit::testArithmetic()
     f.sim->update();
 
     QCOMPARE(f.readResult(), expectedResult);
-    QCOMPARE(inputStatus(f.zeroFlag), expectedZero);
-    QCOMPARE(inputStatus(f.negativeFlag), expectedNegative);
+    QCOMPARE(inputStatus(f.zeroFlag), TestUtils::level(expectedZero));
+    QCOMPARE(inputStatus(f.negativeFlag), TestUtils::level(expectedNegative));
     if (expectedCarry >= 0) {
-        QCOMPARE(inputStatus(f.carryFlag), expectedCarry != 0);
+        QCOMPARE(inputStatus(f.carryFlag), TestUtils::level(expectedCarry != 0));
     }
 }

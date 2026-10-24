@@ -14,7 +14,6 @@
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
 using TestUtils::clockCycle;
-using TestUtils::inputStatus;
 using CPUTestUtils::loadBuildingBlockIC;
 
 struct StackPointer8bitFixture {
@@ -69,16 +68,9 @@ struct StackPointer8bitFixture {
 
 static std::unique_ptr<StackPointer8bitFixture> s_level6StackPtr8bit;
 
-static int readSP()
+static TestUtils::Bits readSP()
 {
-    auto &f = *s_level6StackPtr8bit;
-    int value = 0;
-    for (int i = 0; i < 8; ++i) {
-        if (inputStatus(f.sp[i])) {
-            value |= (1 << i);
-        }
-    }
-    return value;
+    return TestUtils::readMultiBitOutput(s_level6StackPtr8bit->sp);
 }
 
 void TestLevel6StackPointer8Bit::initTestCase()

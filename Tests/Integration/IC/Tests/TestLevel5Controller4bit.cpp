@@ -131,7 +131,7 @@ void TestLevel5Controller4Bit::testController4Bit()
     setMultiBitInput(f.opcodeInputs, opcode);
     f.sim->update();
 
-    int controlValue = readMultiBitOutput(QVector<GraphicElement *>(f.ctrlOutputs.begin(), f.ctrlOutputs.end()), 0);
+    const TestUtils::Bits controlValue = readMultiBitOutput(QVector<GraphicElement *>(f.ctrlOutputs.begin(), f.ctrlOutputs.end()), 0);
 
     // Verify decoding logic:
     // ctrl[1:0] = opcode[1:0] (ALU operation selection)
@@ -147,10 +147,11 @@ void TestLevel5Controller4Bit::testController4Bit()
     QCOMPARE(controlValue, expectedAll);
 
     // Verify individual control bits
-    QCOMPARE((controlValue >> 0) & 1, expectedCtrl0);  // ctrl[0]
-    QCOMPARE((controlValue >> 1) & 1, expectedCtrl1);  // ctrl[1]
-    QCOMPARE((controlValue >> 2) & 1, expectedCtrl2);  // ctrl[2]
-    QCOMPARE((controlValue >> 3) & 1, expectedCtrl3);  // ctrl[3]
+    const int controlBits = controlValue.value();
+    QCOMPARE((controlBits >> 0) & 1, expectedCtrl0);  // ctrl[0]
+    QCOMPARE((controlBits >> 1) & 1, expectedCtrl1);  // ctrl[1]
+    QCOMPARE((controlBits >> 2) & 1, expectedCtrl2);  // ctrl[2]
+    QCOMPARE((controlBits >> 3) & 1, expectedCtrl3);  // ctrl[3]
 }
 
 void TestLevel5Controller4Bit::testControllerStructure()

@@ -56,10 +56,10 @@ constexpr int PATTERN_ODD_BITS = 0xAA;
  * Converts the array to a QVector and reads the output.
  *
  * \param leds C-style array of 8 LED pointers
- * \return 8-bit value (0-255) from the LED array
+ * \return The LEDs' bits, equal to an 8-bit value (0-255) only when every one is a level
  */
 template<size_t N>
-inline int get8BitValue(Led* (&leds)[N]) {
+inline TestUtils::Bits get8BitValue(Led* (&leds)[N]) {
     QVector<GraphicElement *> elements;
     for (size_t i = 0; i < N; ++i) {
         elements.append(leds[i]);

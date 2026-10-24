@@ -126,12 +126,5 @@ void TestLevel5BarrelShifter4Bit::testBarrelShifter()
     f.swDir->setOn(shiftRight);
     f.sim->update();
 
-    int result = 0;
-    for (int i = 0; i < 4; ++i) {
-        if (inputStatus(f.ledOut[i])) {
-            result |= (1 << i);
-        }
-    }
-
-    QCOMPARE(result & 0xF, expectedResult & 0xF);
+    QCOMPARE(TestUtils::readMultiBitOutput(f.ledOut), expectedResult & 0xF);
 }

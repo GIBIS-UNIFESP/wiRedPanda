@@ -51,13 +51,12 @@ void TestCPUIntegration::testProgramCounterIncrement()
     // Increment PC for execution
     pc_inc->setOn(true);
     sim_pc->update();
-    int pc_value = 0;
     // Clock the PC (programLength + 1) times and read the final value
     for (int cycle = 0; cycle <= programLength; cycle++) {
         clockCycle(sim_pc, pc_clock);  // Complete clock cycle (HIGH->settle->LOW->settle)
         sim_pc->update();
-        pc_value = readMultiBitOutput(pc_out);
     }
+    const TestUtils::Bits pc_value = readMultiBitOutput(pc_out);
     // Verify: PC should have incremented exactly once per cycle
     // Loop runs from 0 to programLength (inclusive), so programLength+1 increments
     int expectedPC = programLength + 1;

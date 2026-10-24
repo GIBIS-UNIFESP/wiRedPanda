@@ -123,7 +123,7 @@ void TestLevel2PriorityMUX3To1::testPriorityMux3to1()
 
     f.sim->update();
 
-    bool result = inputStatus(f.output, 0);
+    const Status result = inputStatus(f.output, 0);
 
-    QCOMPARE(result, static_cast<bool>(expected));
+    QCOMPARE(result, TestUtils::level(expected != 0));
 }

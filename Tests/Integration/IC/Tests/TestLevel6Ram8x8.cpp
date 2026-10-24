@@ -89,7 +89,7 @@ struct Ram8x8Fixture {
         return true;
     }
 
-    int readDataOut()
+    TestUtils::Bits readDataOut()
     {
         return readMultiBitOutput(QVector<GraphicElement *>(dataOutOutputs.begin(), dataOutOutputs.end()), 0);
     }
@@ -158,7 +158,7 @@ void TestLevel6RAM8X8::testRAM8x8()
     f.we->setOn(false);
     f.sim->update();
 
-    int readData = f.readDataOut();
+    const TestUtils::Bits readData = f.readDataOut();
 
     QCOMPARE(readData, expectedReadData);
 }

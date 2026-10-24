@@ -514,7 +514,7 @@ void TestMainWindowGui::testRestartSimulation()
     auto *sim = builder.initSimulation();
     sw->setOn(true);
     sim->update();
-    QCOMPARE(TestUtils::inputStatus(led), true);
+    QCOMPARE(TestUtils::inputStatus(led), Status::Active);
 
     auto *action = window->findChild<QAction *>("actionRestart");
     QVERIFY2(action, "actionRestart not found");
@@ -1701,12 +1701,12 @@ void TestMainWindowGui::testEmbeddedICSimulationAfterDeleteUndo()
     swA->setOn(false);
     swB->setOn(false);
     sim->update();
-    bool outputOff = TestUtils::inputStatus(led);
+    const Status outputOff = TestUtils::inputStatus(led);
 
     // Also test with inputs ON to verify IC is actually processing signals
     swA->setOn(true);
     sim->update();
-    bool outputOn = TestUtils::inputStatus(led);
+    const Status outputOn = TestUtils::inputStatus(led);
 
     // Delete IC, undo, re-simulate
     clickElement(view, ic);
@@ -2657,7 +2657,7 @@ void TestMainWindowGui::testWireCreationViaMouse()
     auto *sim = builder.initSimulation();
     sw->setOn(true);
     sim->update();
-    QCOMPARE(TestUtils::inputStatus(led), true);
+    QCOMPARE(TestUtils::inputStatus(led), Status::Active);
 }
 
 void TestMainWindowGui::testRubberBandSelection()
@@ -2779,7 +2779,7 @@ void TestMainWindowGui::testToggleInputDuringSimulation()
     sim->update();
 
     // LED should be off initially
-    QCOMPARE(TestUtils::inputStatus(led), false);
+    QCOMPARE(TestUtils::inputStatus(led), Status::Inactive);
 
     // Click the switch to toggle it
     clickElement(view, sw);
@@ -2789,7 +2789,7 @@ void TestMainWindowGui::testToggleInputDuringSimulation()
 
     // After toggling, LED state depends on whether click toggles the switch.
     // InputSwitch toggles on click, so LED should now be on.
-    QCOMPARE(TestUtils::inputStatus(led), true);
+    QCOMPARE(TestUtils::inputStatus(led), Status::Active);
 }
 
 void TestMainWindowGui::testInputButtonMomentary()
@@ -2810,17 +2810,17 @@ void TestMainWindowGui::testInputButtonMomentary()
     sim->update();
 
     // Button is off initially
-    QCOMPARE(TestUtils::inputStatus(led), false);
+    QCOMPARE(TestUtils::inputStatus(led), Status::Inactive);
 
     // Simulate key press (button has default trigger key)
     button->setOn(true);
     sim->update();
-    QCOMPARE(TestUtils::inputStatus(led), true);
+    QCOMPARE(TestUtils::inputStatus(led), Status::Active);
 
     // Release — button is momentary, should return to 0
     button->setOn(false);
     sim->update();
-    QCOMPARE(TestUtils::inputStatus(led), false);
+    QCOMPARE(TestUtils::inputStatus(led), Status::Inactive);
 }
 
 void TestMainWindowGui::testInputButtonMousePressReleaseIsMomentary()
@@ -2844,18 +2844,18 @@ void TestMainWindowGui::testInputButtonMousePressReleaseIsMomentary()
     auto *sim = builder.initSimulation();
     sim->update();
 
-    QCOMPARE(TestUtils::inputStatus(led), false);
+    QCOMPARE(TestUtils::inputStatus(led), Status::Inactive);
 
     const QPoint viewPos = view->mapFromScene(button->scenePos());
     QTest::mousePress(view->viewport(), Qt::LeftButton, Qt::NoModifier, viewPos);
     sim->update();
     QVERIFY2(button->isOn(), "InputButton must go ON while the mouse button is held down");
-    QCOMPARE(TestUtils::inputStatus(led), true);
+    QCOMPARE(TestUtils::inputStatus(led), Status::Active);
 
     QTest::mouseRelease(view->viewport(), Qt::LeftButton, Qt::NoModifier, viewPos);
     sim->update();
     QVERIFY2(!button->isOn(), "InputButton must return OFF as soon as the mouse button is released");
-    QCOMPARE(TestUtils::inputStatus(led), false);
+    QCOMPARE(TestUtils::inputStatus(led), Status::Inactive);
 }
 
 void TestMainWindowGui::testRapidSimulationToggle()

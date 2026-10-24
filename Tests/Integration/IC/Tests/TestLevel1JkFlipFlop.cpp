@@ -81,8 +81,8 @@ struct JkFlipFlopFixture {
         sim->update();
     }
 
-    bool q() { return inputStatus(ledQ); }
-    bool qBar() { return inputStatus(ledQBar); }
+    Status q() { return inputStatus(ledQ); }
+    Status qBar() { return inputStatus(ledQBar); }
 
     void resetToKnownState()
     {
@@ -124,32 +124,32 @@ void TestLevel1JKFlipFlop::testResetAndSet()
     f.jIn->setOn(false);
     f.kIn->setOn(true);
     f.clockPulse();
-    QCOMPARE(f.q(), false);
-    QCOMPARE(f.qBar(), true);
+    QCOMPARE(f.q(), Status::Inactive);
+    QCOMPARE(f.qBar(), Status::Active);
 
     // Confirm Q stays 0 on another reset pulse
     f.clockPulse();
-    QCOMPARE(f.q(), false);
-    QCOMPARE(f.qBar(), true);
+    QCOMPARE(f.q(), Status::Inactive);
+    QCOMPARE(f.qBar(), Status::Active);
 
     // Set: J=1, K=0 -> Q=1
     f.jIn->setOn(true);
     f.kIn->setOn(false);
     f.clockPulse();
-    QCOMPARE(f.q(), true);
-    QCOMPARE(f.qBar(), false);
+    QCOMPARE(f.q(), Status::Active);
+    QCOMPARE(f.qBar(), Status::Inactive);
 
     // Confirm Q stays 1 on another set pulse
     f.clockPulse();
-    QCOMPARE(f.q(), true);
-    QCOMPARE(f.qBar(), false);
+    QCOMPARE(f.q(), Status::Active);
+    QCOMPARE(f.qBar(), Status::Inactive);
 
     // Reset again: J=0, K=1 -> Q=0
     f.jIn->setOn(false);
     f.kIn->setOn(true);
     f.clockPulse();
-    QCOMPARE(f.q(), false);
-    QCOMPARE(f.qBar(), true);
+    QCOMPARE(f.q(), Status::Inactive);
+    QCOMPARE(f.qBar(), Status::Active);
 }
 
 void TestLevel1JKFlipFlop::testHold()
@@ -161,27 +161,27 @@ void TestLevel1JKFlipFlop::testHold()
     f.jIn->setOn(false);
     f.kIn->setOn(true);
     f.clockPulse();
-    QCOMPARE(f.q(), false);
+    QCOMPARE(f.q(), Status::Inactive);
 
     // Hold: J=0, K=0 -> Q stays 0
     f.jIn->setOn(false);
     f.kIn->setOn(false);
     f.clockPulse();
-    QCOMPARE(f.q(), false);
-    QCOMPARE(f.qBar(), true);
+    QCOMPARE(f.q(), Status::Inactive);
+    QCOMPARE(f.qBar(), Status::Active);
 
     // Set to Q=1
     f.jIn->setOn(true);
     f.kIn->setOn(false);
     f.clockPulse();
-    QCOMPARE(f.q(), true);
+    QCOMPARE(f.q(), Status::Active);
 
     // Hold: J=0, K=0 -> Q stays 1
     f.jIn->setOn(false);
     f.kIn->setOn(false);
     f.clockPulse();
-    QCOMPARE(f.q(), true);
-    QCOMPARE(f.qBar(), false);
+    QCOMPARE(f.q(), Status::Active);
+    QCOMPARE(f.qBar(), Status::Inactive);
 }
 
 void TestLevel1JKFlipFlop::testToggle()
@@ -193,24 +193,24 @@ void TestLevel1JKFlipFlop::testToggle()
     f.jIn->setOn(false);
     f.kIn->setOn(true);
     f.clockPulse();
-    QCOMPARE(f.q(), false);
+    QCOMPARE(f.q(), Status::Inactive);
 
     // Toggle: J=1, K=1 -> Q flips to 1
     f.jIn->setOn(true);
     f.kIn->setOn(true);
     f.clockPulse();
-    QCOMPARE(f.q(), true);
-    QCOMPARE(f.qBar(), false);
+    QCOMPARE(f.q(), Status::Active);
+    QCOMPARE(f.qBar(), Status::Inactive);
 
     // Toggle again: J=1, K=1 -> Q flips back to 0
     f.clockPulse();
-    QCOMPARE(f.q(), false);
-    QCOMPARE(f.qBar(), true);
+    QCOMPARE(f.q(), Status::Inactive);
+    QCOMPARE(f.qBar(), Status::Active);
 
     // Toggle once more: Q=1
     f.clockPulse();
-    QCOMPARE(f.q(), true);
-    QCOMPARE(f.qBar(), false);
+    QCOMPARE(f.q(), Status::Active);
+    QCOMPARE(f.qBar(), Status::Inactive);
 }
 
 // Q must not change while the clock is held high, even if J/K flip during
@@ -226,33 +226,33 @@ void TestLevel1JKFlipFlop::testHoldDuringClockHigh()
     f.jIn->setOn(false);
     f.kIn->setOn(true);
     f.clockPulse();
-    QCOMPARE(f.q(), false);
+    QCOMPARE(f.q(), Status::Inactive);
 
     // Raise the clock with J=1, K=0: the master samples, but Q holds
     f.jIn->setOn(true);
     f.kIn->setOn(false);
     f.clockIn->setOn(true);
     f.sim->update();
-    QCOMPARE(f.q(), false);
-    QCOMPARE(f.qBar(), true);
+    QCOMPARE(f.q(), Status::Inactive);
+    QCOMPARE(f.qBar(), Status::Active);
 
     // Flip J/K mid-high-phase: Q must still hold (output only moves on the
     // falling edge; the master may catch pulses — textbook MS behavior)
     f.jIn->setOn(false);
     f.kIn->setOn(true);
     f.sim->update();
-    QCOMPARE(f.q(), false);
+    QCOMPARE(f.q(), Status::Inactive);
 
     f.jIn->setOn(true);
     f.kIn->setOn(false);
     f.sim->update();
-    QCOMPARE(f.q(), false);
+    QCOMPARE(f.q(), Status::Inactive);
 
     // Falling edge: the set command present during the high phase lands
     f.clockIn->setOn(false);
     f.sim->update();
-    QCOMPARE(f.q(), true);
-    QCOMPARE(f.qBar(), false);
+    QCOMPARE(f.q(), Status::Active);
+    QCOMPARE(f.qBar(), Status::Inactive);
 }
 
 void TestLevel1JKFlipFlop::testAsyncPreset()
@@ -264,18 +264,18 @@ void TestLevel1JKFlipFlop::testAsyncPreset()
     f.jIn->setOn(false);
     f.kIn->setOn(true);
     f.clockPulse();
-    QCOMPARE(f.q(), false);
+    QCOMPARE(f.q(), Status::Inactive);
 
     // Async preset: Preset=0 -> Q forced to 1 without clock
     f.presetIn->setOn(false);
     f.sim->update();
-    QCOMPARE(f.q(), true);
-    QCOMPARE(f.qBar(), false);
+    QCOMPARE(f.q(), Status::Active);
+    QCOMPARE(f.qBar(), Status::Inactive);
 
     // Release preset: Q should hold at 1
     f.presetIn->setOn(true);
     f.sim->update();
-    QCOMPARE(f.q(), true);
+    QCOMPARE(f.q(), Status::Active);
 }
 
 void TestLevel1JKFlipFlop::testAsyncClear()
@@ -287,24 +287,24 @@ void TestLevel1JKFlipFlop::testAsyncClear()
     f.jIn->setOn(false);
     f.kIn->setOn(true);
     f.clockPulse();
-    QCOMPARE(f.q(), false);
+    QCOMPARE(f.q(), Status::Inactive);
 
     // Now set: Q=1
     f.jIn->setOn(true);
     f.kIn->setOn(false);
     f.clockPulse();
-    QCOMPARE(f.q(), true);
+    QCOMPARE(f.q(), Status::Active);
 
     // Async clear: Clear=0 -> Q forced to 0 without clock
     f.clearIn->setOn(false);
     f.sim->update();
-    QCOMPARE(f.q(), false);
-    QCOMPARE(f.qBar(), true);
+    QCOMPARE(f.q(), Status::Inactive);
+    QCOMPARE(f.qBar(), Status::Active);
 
     // Release clear: Q should hold at 0
     f.clearIn->setOn(true);
     f.sim->update();
-    QCOMPARE(f.q(), false);
+    QCOMPARE(f.q(), Status::Inactive);
 }
 
 void TestLevel1JKFlipFlop::testPresetClearOverrideClock()
@@ -319,20 +319,20 @@ void TestLevel1JKFlipFlop::testPresetClearOverrideClock()
     // But assert Clear=0 -> Q forced to 0 regardless
     f.clearIn->setOn(false);
     f.clockPulse();
-    QCOMPARE(f.q(), false);
-    QCOMPARE(f.qBar(), true);
+    QCOMPARE(f.q(), Status::Inactive);
+    QCOMPARE(f.qBar(), Status::Active);
 
     // Release clear, assert Preset=0 -> Q forced to 1
     f.clearIn->setOn(true);
     f.presetIn->setOn(false);
     f.sim->update();
-    QCOMPARE(f.q(), true);
-    QCOMPARE(f.qBar(), false);
+    QCOMPARE(f.q(), Status::Active);
+    QCOMPARE(f.qBar(), Status::Inactive);
 
     // Release preset, normal operation resumes
     f.presetIn->setOn(true);
     f.sim->update();
-    QCOMPARE(f.q(), true);
+    QCOMPARE(f.q(), Status::Active);
 }
 
 // Async Preset/Clear asserted *while the clock is held HIGH*, then carried
@@ -352,51 +352,51 @@ void TestLevel1JKFlipFlop::testAsyncPresetClearUnderClockHigh()
     f.kIn->setOn(false);
     f.clockIn->setOn(true);
     f.sim->update();
-    QCOMPARE(f.q(), false);
+    QCOMPARE(f.q(), Status::Inactive);
 
     // Assert Preset while Clock=1 -> Q forced to 1 immediately
     f.presetIn->setOn(false);
     f.sim->update();
-    QCOMPARE(f.q(), true);
-    QCOMPARE(f.qBar(), false);
+    QCOMPARE(f.q(), Status::Active);
+    QCOMPARE(f.qBar(), Status::Inactive);
 
     // Release Preset, Clock still HIGH -> Q holds 1 (slave locked)
     f.presetIn->setOn(true);
     f.sim->update();
-    QCOMPARE(f.q(), true);
+    QCOMPARE(f.q(), Status::Active);
 
     // Falling edge with J=K=0: the master was preset too, so the transfer
     // keeps Q=1 (a slave-only force would let a stale master corrupt Q here)
     f.clockIn->setOn(false);
     f.sim->update();
-    QCOMPARE(f.q(), true);
-    QCOMPARE(f.qBar(), false);
+    QCOMPARE(f.q(), Status::Active);
+    QCOMPARE(f.qBar(), Status::Inactive);
 
     // Symmetric Clear branch: set Q=1, hold Clock HIGH, clear, ride the edge
     f.jIn->setOn(true);
     f.kIn->setOn(false);
     f.clockPulse();
-    QCOMPARE(f.q(), true);
+    QCOMPARE(f.q(), Status::Active);
 
     f.jIn->setOn(false);
     f.kIn->setOn(false);
     f.clockIn->setOn(true);
     f.sim->update();
-    QCOMPARE(f.q(), true);
+    QCOMPARE(f.q(), Status::Active);
 
     f.clearIn->setOn(false);
     f.sim->update();
-    QCOMPARE(f.q(), false);
-    QCOMPARE(f.qBar(), true);
+    QCOMPARE(f.q(), Status::Inactive);
+    QCOMPARE(f.qBar(), Status::Active);
 
     f.clearIn->setOn(true);
     f.sim->update();
-    QCOMPARE(f.q(), false);
+    QCOMPARE(f.q(), Status::Inactive);
 
     f.clockIn->setOn(false);
     f.sim->update();
-    QCOMPARE(f.q(), false);
-    QCOMPARE(f.qBar(), true);
+    QCOMPARE(f.q(), Status::Inactive);
+    QCOMPARE(f.qBar(), Status::Active);
 }
 
 // Preset AND Clear asserted simultaneously — the documented "don't" input.
@@ -414,22 +414,22 @@ void TestLevel1JKFlipFlop::testPresetClearBothAsserted()
     f.presetIn->setOn(false);
     f.clearIn->setOn(false);
     f.sim->update();
-    QCOMPARE(f.q(), false);
-    QCOMPARE(f.qBar(), false);
+    QCOMPARE(f.q(), Status::Inactive);
+    QCOMPARE(f.qBar(), Status::Inactive);
 
     // Release Clear (Preset still asserted): Preset wins -> Q=1
     f.clearIn->setOn(true);
     f.sim->update();
-    QCOMPARE(f.q(), true);
-    QCOMPARE(f.qBar(), false);
+    QCOMPARE(f.q(), Status::Active);
+    QCOMPARE(f.qBar(), Status::Inactive);
 
     // Re-assert both, then release Preset: Clear wins -> Q=0
     f.clearIn->setOn(false);
     f.sim->update();
-    QCOMPARE(f.q(), false);
-    QCOMPARE(f.qBar(), false);
+    QCOMPARE(f.q(), Status::Inactive);
+    QCOMPARE(f.qBar(), Status::Inactive);
     f.presetIn->setOn(true);
     f.sim->update();
-    QCOMPARE(f.q(), false);
-    QCOMPARE(f.qBar(), true);
+    QCOMPARE(f.q(), Status::Inactive);
+    QCOMPARE(f.qBar(), Status::Active);
 }

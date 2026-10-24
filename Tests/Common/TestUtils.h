@@ -3,9 +3,12 @@
 
 #pragma once
 
+#include <cstddef>
 #include <cstdio>
 #include <functional>
+#include <iterator>
 #include <memory>
+#include <utility>
 
 #include <QtGlobal> // defines Q_OS_WIN, needed before the platform check just below
 
@@ -182,20 +185,72 @@ QString arduinoExpectedDir();
 QString systemVerilogExpectedDir();
 
 /**
- * @brief Helper to get input status as bool
+ * @brief What an element's input port holds
  * @param elm Element to check
  * @param port Port index (default 0)
- * @return true if port status is Active
+ * @return The port's status: a level, or Unknown or Error, which a test expecting 0 must not pass on
  */
-bool inputStatus(GraphicElement *elm, int port = 0);
+Status inputStatus(GraphicElement *elm, int port = 0);
 
 /**
- * @brief Helper to get output status as bool
+ * @brief What an element's output port holds
  * @param elm Element to check
  * @param port Port index (default 0)
- * @return true if port status is Active
+ * @return The port's status: a level, or Unknown or Error, which a test expecting 0 must not pass on
  */
-bool outputStatus(GraphicElement *elm, int port = 0);
+Status outputStatus(GraphicElement *elm, int port = 0);
+
+/// The level a test expects: Active for \a on, Inactive otherwise.
+inline Status level(const bool on)
+{
+    return on ? Status::Active : Status::Inactive;
+}
+
+/// \a status as a message prints it: 0 and 1 for the levels, U for Unknown and E for Error.
+QString statusText(Status status);
+
+/**
+ * @brief What a row of ports holds, bit 0 first: a number only when every bit is a level.
+ *
+ * Compares equal to a number only when every bit is Active or Inactive and the bits spell it, so a test expecting 0
+ * fails on an Unknown or Error bit; a failed comparison prints the bits, most significant first (`01U1`).
+ */
+class Bits
+{
+public:
+    explicit Bits(QVector<Status> statuses)
+        : m_statuses(std::move(statuses))
+    {
+    }
+
+    /// The bits' statuses, bit 0 first.
+    const QVector<Status> &statuses() const { return m_statuses; }
+
+    /// Whether every bit is Active or Inactive.
+    bool isLevel() const;
+
+    /// The number the bits spell; a bit that is not a level fails the running test, and the value is then -1.
+    int value() const;
+
+    /// The bits, most significant first: 0 and 1 for the levels, U for Unknown and E for Error.
+    QString text() const;
+
+    friend bool operator==(const Bits &bits, const int number)
+    {
+        return bits.isLevel() && (bits.spelled() == number);
+    }
+
+    /// The same statuses bit by bit, as a reading compared with an earlier one.
+    friend bool operator==(const Bits &a, const Bits &b) { return a.m_statuses == b.m_statuses; }
+
+private:
+    int spelled() const;
+
+    QVector<Status> m_statuses;
+};
+
+/// QTest's printer for Bits, found by argument-dependent lookup.
+char *toString(const Bits &bits);
 
 /**
  * @brief Count the number of connections in a scene
@@ -226,28 +281,33 @@ void setMultiBitInput(const QVector<InputSwitch *> &inputs, int value);
 /**
  * @brief Read multiple output bits from graphic elements
  *
- * Reads bit values from multiple elements' input ports and combines into
- * a single integer. Useful for reading results from multi-bit outputs.
+ * Reads what each element's input port holds, bit 0 first.
  * Example: readMultiBitOutput({led0, led1, led2, led3}, 0) reads 4 bits
- *   Result bit pattern: led3|led2|led1|led0 (MSB to LSB)
+ *   Bit pattern: led3|led2|led1|led0 (MSB to LSB)
  *
  * @param elements Vector of GraphicElement pointers in bit order (index 0 = LSB)
  * @param port Input port index to read from each element (default 0)
- * @return Combined integer value from all bits
+ * @return The bits, equal to a number only when every one is a level
  */
 template<typename T>
-inline int readMultiBitOutput(const QVector<T *> &elements, int port = 0)
+inline Bits readMultiBitOutput(const QVector<T *> &elements, int port = 0)
 {
-    int result = 0;
+    QVector<Status> statuses;
+    statuses.reserve(elements.size());
     for (int i = 0; i < elements.size(); ++i) {
         if (!elements[i]) {
             qFatal("FATAL ERROR in readMultiBitOutput(): Element at index %d is nullptr", i);
         }
-        if (inputStatus(static_cast<GraphicElement *>(elements[i]), port)) {
-            result |= (1 << i);
-        }
+        statuses << inputStatus(static_cast<GraphicElement *>(elements[i]), port);
     }
-    return result;
+    return Bits(std::move(statuses));
+}
+
+/// readMultiBitOutput() over a C array of elements, bit 0 first.
+template<typename T, std::size_t N>
+inline Bits readMultiBitOutput(T *const (&elements)[N], int port = 0)
+{
+    return readMultiBitOutput(QVector<T *>(std::begin(elements), std::end(elements)), port);
 }
 
 /**

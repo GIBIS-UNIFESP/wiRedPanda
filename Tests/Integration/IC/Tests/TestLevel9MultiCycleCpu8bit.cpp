@@ -95,10 +95,10 @@ struct MultiCycleCpu8bitFixture {
         return true;
     }
 
-    int readPC() { return readMultiBitOutput(QVector<GraphicElement *>(pcLeds.begin(), pcLeds.end()), 0); }
-    int readResult() { return readMultiBitOutput(QVector<GraphicElement *>(resultLeds.begin(), resultLeds.end()), 0); }
-    int readCounter() { return readMultiBitOutput(QVector<GraphicElement *>(counterLeds.begin(), counterLeds.end()), 0); }
-    int readInstr() { return readMultiBitOutput(QVector<GraphicElement *>(instrLeds.begin(), instrLeds.end()), 0); }
+    TestUtils::Bits readPC() { return readMultiBitOutput(QVector<GraphicElement *>(pcLeds.begin(), pcLeds.end()), 0); }
+    TestUtils::Bits readResult() { return readMultiBitOutput(QVector<GraphicElement *>(resultLeds.begin(), resultLeds.end()), 0); }
+    TestUtils::Bits readCounter() { return readMultiBitOutput(QVector<GraphicElement *>(counterLeds.begin(), counterLeds.end()), 0); }
+    TestUtils::Bits readInstr() { return readMultiBitOutput(QVector<GraphicElement *>(instrLeds.begin(), instrLeds.end()), 0); }
 
     void resetCpu()
     {
@@ -298,11 +298,11 @@ void TestLevel9MultiCycleCPU8Bit::testInstructionStabilityAcrossPipelineStages()
     // Latch the instruction in the fetch phase, then hold it across decode/
     // execute/memory phases of the same instruction.
     clockCycle(f.sim, f.clk);
-    int instrFetched = f.readInstr();
+    const TestUtils::Bits instrFetched = f.readInstr();
 
     for (int stage = 1; stage < 4; ++stage) {
         QCOMPARE(f.readCounter(), stage);
-        int instrStage = f.readInstr();
+        const TestUtils::Bits instrStage = f.readInstr();
         QCOMPARE(instrStage, instrFetched);
         clockCycle(f.sim, f.clk);
     }
@@ -376,7 +376,7 @@ void TestLevel9MultiCycleCPU8Bit::testHighRegisterOperand()
         clockCycle(f.sim, f.clk);   // latch IR; ALU result combinational
         QVERIFY2(f.readResult() == (0x10 + operandB),
             qPrintable(QString("ADD R%1: expected 0x%2, got 0x%3")
-                .arg(reg).arg(0x10 + operandB, 0, 16).arg(f.readResult(), 0, 16)));
+                .arg(reg).arg(0x10 + operandB, 0, 16).arg(f.readResult().text())));
     }
 }
 

@@ -664,10 +664,16 @@ void TestSystemVerilogExport::testSystemVerilogExportHelper(const QString &icFil
             QVector<TestVector> testVectors;
             testVectors.reserve(numPatterns);
 
+            // The export is checked against a level, so an Unknown or Error output is the engine's, not a 0.
+            QString nonLevelOutput;
             auto collectOutputBits = [&]() {
                 QVector<int> bits(numOutputs);
                 for (int o = 0; o < numOutputs; ++o) {
-                    bits[o] = TestUtils::inputStatus(leds[o], 0) ? 1 : 0;
+                    const Status status = TestUtils::inputStatus(leds[o], 0);
+                    if ((status != Status::Active) && (status != Status::Inactive) && nonLevelOutput.isEmpty()) {
+                        nonLevelOutput = leds[o]->objectName();
+                    }
+                    bits[o] = (status == Status::Active) ? 1 : 0;
                 }
                 return bits;
             };
@@ -703,6 +709,8 @@ void TestSystemVerilogExport::testSystemVerilogExportHelper(const QString &icFil
                     collectVector(bits);
                 }
             }
+            QVERIFY2(nonLevelOutput.isEmpty(),
+                     qPrintable(QString("the engine's output %1 is not a level").arg(nonLevelOutput)));
 
             if (!testVectors.isEmpty()) {
                 QString tbPath = debugDir.filePath(icInfo.baseName() + "_tb.sv");

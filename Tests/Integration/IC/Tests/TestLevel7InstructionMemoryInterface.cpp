@@ -60,7 +60,7 @@ struct InstructionMemoryInterfaceFixture {
         return true;
     }
 
-    int readAt(int address)
+    TestUtils::Bits readAt(int address)
     {
         setMultiBitInput(addressInputs, address);
         sim->update();

@@ -65,7 +65,7 @@ struct ExecutionDatapathFixture {
         return true;
     }
 
-    int readResult()
+    TestUtils::Bits readResult()
     {
         return readMultiBitOutput(QVector<GraphicElement *>(resultLeds.begin(), resultLeds.end()), 0);
     }
@@ -145,13 +145,13 @@ void TestLevel7ExecutionDatapath::testExecutionDatapath()
     setMultiBitInput(f.opcodeInputs, opCode);
     f.sim->update();
 
-    int result = f.readResult();
-    bool zero = inputStatus(f.zeroLed, 0);
-    bool sign = inputStatus(f.signLed, 0);
+    const TestUtils::Bits result = f.readResult();
+    const Status zero = inputStatus(f.zeroLed, 0);
+    const Status sign = inputStatus(f.signLed, 0);
 
     QCOMPARE(result, expectedResult);
-    QCOMPARE(zero, expectedZero);
-    QCOMPARE(sign, expectedSign);
+    QCOMPARE(zero, TestUtils::level(expectedZero));
+    QCOMPARE(sign, TestUtils::level(expectedSign));
 }
 
 void TestLevel7ExecutionDatapath::testInputPortIsolation_data()
@@ -206,7 +206,7 @@ void TestLevel7ExecutionDatapath::testOutputPortIsolation()
     f.sim->update();
 
     for (int i = 0; i < 8; ++i) {
-        QCOMPARE(inputStatus(f.resultLeds[i], 0), i == bitPosition);
+        QCOMPARE(inputStatus(f.resultLeds[i], 0), TestUtils::level(i == bitPosition));
     }
 }
 

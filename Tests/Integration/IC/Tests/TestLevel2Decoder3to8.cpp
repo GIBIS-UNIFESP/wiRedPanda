@@ -105,7 +105,7 @@ void TestLevel2Decoder3To8::test3to8Decoder()
 
     for (int i = 0; i < 8; ++i) {
         bool expected = (i == expectedActive);
-        QCOMPARE(inputStatus(f.ledOut[i]), expected);
+        QCOMPARE(inputStatus(f.ledOut[i]), TestUtils::level(expected));
     }
 }
 
@@ -148,13 +148,13 @@ void TestLevel2Decoder3To8::testEnableGating()
     en->setOn(false);
     sim->update();
     for (auto *o : outs) {
-        QVERIFY(!inputStatus(o));
+        QCOMPARE(inputStatus(o), Status::Inactive);
     }
 
     // Enable high → output 5 active, the rest low.
     en->setOn(true);
     sim->update();
     for (int i = 0; i < 8; ++i) {
-        QCOMPARE(inputStatus(outs[i]), i == 5);
+        QCOMPARE(inputStatus(outs[i]), TestUtils::level(i == 5));
     }
 }

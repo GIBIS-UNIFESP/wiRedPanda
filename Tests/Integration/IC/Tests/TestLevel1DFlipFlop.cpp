@@ -99,50 +99,50 @@ void TestLevel1DFlipFlop::testDFlipFlopSequential()
     f.sim->update();
     f.clockIn->setOn(false);
     f.sim->update();
-    QCOMPARE(inputStatus(f.ledQ), false);     // Q=0 after reset pulse
-    QCOMPARE(inputStatus(f.ledQBar), true);   // Q_bar is the complement
+    QCOMPARE(inputStatus(f.ledQ), Status::Inactive);     // Q=0 after reset pulse
+    QCOMPARE(inputStatus(f.ledQBar), Status::Active);   // Q_bar is the complement
 
     // Step 2: Set D=1 while Clock=0 -> Q should not change yet
     f.dataIn->setOn(true);
     f.sim->update();
-    QCOMPARE(inputStatus(f.ledQ), false);     // Q still 0 (clock low)
-    QCOMPARE(inputStatus(f.ledQBar), true);
+    QCOMPARE(inputStatus(f.ledQ), Status::Inactive);     // Q still 0 (clock low)
+    QCOMPARE(inputStatus(f.ledQBar), Status::Active);
 
     // Step 3: Pulse clock high -> Q should capture D=1
     f.clockIn->setOn(true);
     f.sim->update();
-    QCOMPARE(inputStatus(f.ledQ), true);      // Q=1 after clock rising edge
-    QCOMPARE(inputStatus(f.ledQBar), false);
+    QCOMPARE(inputStatus(f.ledQ), Status::Active);      // Q=1 after clock rising edge
+    QCOMPARE(inputStatus(f.ledQBar), Status::Inactive);
 
     // Step 4: Set D=0 while Clock=1 -> Q should hold at 1
     f.dataIn->setOn(false);
     f.sim->update();
-    QCOMPARE(inputStatus(f.ledQ), true);      // Q held at 1 (clock still high)
-    QCOMPARE(inputStatus(f.ledQBar), false);
+    QCOMPARE(inputStatus(f.ledQ), Status::Active);      // Q held at 1 (clock still high)
+    QCOMPARE(inputStatus(f.ledQBar), Status::Inactive);
 
     // Step 5: Clock goes low -> Q should still hold at 1
     f.clockIn->setOn(false);
     f.sim->update();
-    QCOMPARE(inputStatus(f.ledQ), true);      // Q held at 1
-    QCOMPARE(inputStatus(f.ledQBar), false);
+    QCOMPARE(inputStatus(f.ledQ), Status::Active);      // Q held at 1
+    QCOMPARE(inputStatus(f.ledQBar), Status::Inactive);
 
     // Step 6: D=0 while Clock=0 -> no change yet
     // (already set in step 4)
     f.sim->update();
-    QCOMPARE(inputStatus(f.ledQ), true);      // Q still 1
-    QCOMPARE(inputStatus(f.ledQBar), false);
+    QCOMPARE(inputStatus(f.ledQ), Status::Active);      // Q still 1
+    QCOMPARE(inputStatus(f.ledQBar), Status::Inactive);
 
     // Step 7: Clock rises again -> Q captures D=0
     f.clockIn->setOn(true);
     f.sim->update();
-    QCOMPARE(inputStatus(f.ledQ), false);     // Q=0 after clock rising edge
-    QCOMPARE(inputStatus(f.ledQBar), true);
+    QCOMPARE(inputStatus(f.ledQ), Status::Inactive);     // Q=0 after clock rising edge
+    QCOMPARE(inputStatus(f.ledQBar), Status::Active);
 
     // Step 8: Clock low -> Q holds at 0
     f.clockIn->setOn(false);
     f.sim->update();
-    QCOMPARE(inputStatus(f.ledQ), false);     // Q held at 0
-    QCOMPARE(inputStatus(f.ledQBar), true);
+    QCOMPARE(inputStatus(f.ledQ), Status::Inactive);     // Q held at 0
+    QCOMPARE(inputStatus(f.ledQBar), Status::Active);
 }
 
 // Async Preset/Clear must override a clock edge that would otherwise capture the
@@ -159,25 +159,25 @@ void TestLevel1DFlipFlop::testPresetClearOverrideClock()
     f.sim->update();
     f.clockIn->setOn(false);
     f.sim->update();
-    QCOMPARE(inputStatus(f.ledQ), false);
+    QCOMPARE(inputStatus(f.ledQ), Status::Inactive);
 
     // D=1 would set Q=1 on the rising edge, but assert Clear=0: Q stays forced 0.
     f.dataIn->setOn(true);
     f.clearIn->setOn(false);
     f.clockIn->setOn(true);
     f.sim->update();
-    QCOMPARE(inputStatus(f.ledQ), false);
-    QCOMPARE(inputStatus(f.ledQBar), true);
+    QCOMPARE(inputStatus(f.ledQ), Status::Inactive);
+    QCOMPARE(inputStatus(f.ledQBar), Status::Active);
     f.clockIn->setOn(false);
     f.sim->update();
-    QCOMPARE(inputStatus(f.ledQ), false);
+    QCOMPARE(inputStatus(f.ledQ), Status::Inactive);
 
     // Release Clear, assert Preset=0: Q forced to 1 regardless of D=1/clock.
     f.clearIn->setOn(true);
     f.presetIn->setOn(false);
     f.sim->update();
-    QCOMPARE(inputStatus(f.ledQ), true);
-    QCOMPARE(inputStatus(f.ledQBar), false);
+    QCOMPARE(inputStatus(f.ledQ), Status::Active);
+    QCOMPARE(inputStatus(f.ledQBar), Status::Inactive);
 
     // Release Preset, D=0: a rising edge now captures D normally (Q=0).
     // The master samples D while Clock=LOW, so settle the low phase before the edge.
@@ -187,8 +187,8 @@ void TestLevel1DFlipFlop::testPresetClearOverrideClock()
     f.sim->update();
     f.clockIn->setOn(true);
     f.sim->update();
-    QCOMPARE(inputStatus(f.ledQ), false);
-    QCOMPARE(inputStatus(f.ledQBar), true);
+    QCOMPARE(inputStatus(f.ledQ), Status::Inactive);
+    QCOMPARE(inputStatus(f.ledQBar), Status::Active);
 }
 
 // Async Preset/Clear must override the data path even while Clock=1 with the
@@ -207,20 +207,20 @@ void TestLevel1DFlipFlop::testAsyncPresetClearUnderClockHigh()
     f.sim->update();
     f.clockIn->setOn(true);
     f.sim->update();
-    QCOMPARE(inputStatus(f.ledQ), false);
+    QCOMPARE(inputStatus(f.ledQ), Status::Inactive);
 
     // Assert Preset (active LOW) while Clock=1: Q must be forced to 1
     f.presetIn->setOn(false);
     f.sim->update();
-    QCOMPARE(inputStatus(f.ledQ), true);
-    QCOMPARE(inputStatus(f.ledQBar), false);
+    QCOMPARE(inputStatus(f.ledQ), Status::Active);
+    QCOMPARE(inputStatus(f.ledQBar), Status::Inactive);
 
     // Release Preset with Clock still HIGH: Q must hold at 1 (the master was
     // forced too, so the open slave keeps transferring 1)
     f.presetIn->setOn(true);
     f.sim->update();
-    QCOMPARE(inputStatus(f.ledQ), true);
-    QCOMPARE(inputStatus(f.ledQBar), false);
+    QCOMPARE(inputStatus(f.ledQ), Status::Active);
+    QCOMPARE(inputStatus(f.ledQBar), Status::Inactive);
 
     // Symmetric: establish Q=1 with the master holding 1, Clock HIGH
     f.dataIn->setOn(true);
@@ -228,19 +228,19 @@ void TestLevel1DFlipFlop::testAsyncPresetClearUnderClockHigh()
     f.sim->update();
     f.clockIn->setOn(true);
     f.sim->update();
-    QCOMPARE(inputStatus(f.ledQ), true);
+    QCOMPARE(inputStatus(f.ledQ), Status::Active);
 
     // Assert Clear (active LOW) while Clock=1: Q must be forced to 0
     f.clearIn->setOn(false);
     f.sim->update();
-    QCOMPARE(inputStatus(f.ledQ), false);
-    QCOMPARE(inputStatus(f.ledQBar), true);
+    QCOMPARE(inputStatus(f.ledQ), Status::Inactive);
+    QCOMPARE(inputStatus(f.ledQBar), Status::Active);
 
     // Release Clear with Clock still HIGH: Q must hold at 0
     f.clearIn->setOn(true);
     f.sim->update();
-    QCOMPARE(inputStatus(f.ledQ), false);
-    QCOMPARE(inputStatus(f.ledQBar), true);
+    QCOMPARE(inputStatus(f.ledQ), Status::Inactive);
+    QCOMPARE(inputStatus(f.ledQBar), Status::Active);
 }
 
 // Asserting Preset AND Clear simultaneously is the documented "don't" input. It
@@ -258,22 +258,22 @@ void TestLevel1DFlipFlop::testPresetClearBothAsserted()
     f.presetIn->setOn(false);
     f.clearIn->setOn(false);
     f.sim->update();
-    QCOMPARE(inputStatus(f.ledQ), false);     // both forced low
-    QCOMPARE(inputStatus(f.ledQBar), false);
+    QCOMPARE(inputStatus(f.ledQ), Status::Inactive);     // both forced low
+    QCOMPARE(inputStatus(f.ledQBar), Status::Inactive);
 
     // Release Clear (Preset still asserted): Preset wins -> Q=1
     f.clearIn->setOn(true);
     f.sim->update();
-    QCOMPARE(inputStatus(f.ledQ), true);
-    QCOMPARE(inputStatus(f.ledQBar), false);
+    QCOMPARE(inputStatus(f.ledQ), Status::Active);
+    QCOMPARE(inputStatus(f.ledQBar), Status::Inactive);
 
     // Re-assert both, then release Preset: Clear wins -> Q=0
     f.clearIn->setOn(false);
     f.sim->update();
-    QCOMPARE(inputStatus(f.ledQ), false);
-    QCOMPARE(inputStatus(f.ledQBar), false);
+    QCOMPARE(inputStatus(f.ledQ), Status::Inactive);
+    QCOMPARE(inputStatus(f.ledQBar), Status::Inactive);
     f.presetIn->setOn(true);
     f.sim->update();
-    QCOMPARE(inputStatus(f.ledQ), false);
-    QCOMPARE(inputStatus(f.ledQBar), true);
+    QCOMPARE(inputStatus(f.ledQ), Status::Inactive);
+    QCOMPARE(inputStatus(f.ledQBar), Status::Active);
 }

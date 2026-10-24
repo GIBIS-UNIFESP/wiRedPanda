@@ -65,14 +65,14 @@ void TestCPUInstructionExecute::testInstructionExecute()
     // Settle circuit
     sim->update();
     // Read actual result
-    int execResult = readMultiBitOutput(result);
+    const TestUtils::Bits execResult = readMultiBitOutput(result);
     QCOMPARE(execResult, expectedResult);
 
     // The flag outputs are wired but were never asserted -- verify them too.
-    QCOMPARE(TestUtils::inputStatus(zeroFlag), expectedZero);
-    QCOMPARE(TestUtils::inputStatus(signFlag), expectedSign);
-    QCOMPARE(TestUtils::inputStatus(carryFlag), expectedCarry);
-    QCOMPARE(TestUtils::inputStatus(overflowFlag), expectedOverflow);
+    QCOMPARE(TestUtils::inputStatus(zeroFlag), TestUtils::level(expectedZero));
+    QCOMPARE(TestUtils::inputStatus(signFlag), TestUtils::level(expectedSign));
+    QCOMPARE(TestUtils::inputStatus(carryFlag), TestUtils::level(expectedCarry));
+    QCOMPARE(TestUtils::inputStatus(overflowFlag), TestUtils::level(expectedOverflow));
 }
 
 void TestCPUInstructionExecute::testInstructionExecute_data()

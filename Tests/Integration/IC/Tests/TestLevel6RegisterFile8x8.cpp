@@ -13,7 +13,6 @@
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
-using TestUtils::inputStatus;
 using TestUtils::clockCycle;
 using CPUTestUtils::loadBuildingBlockIC;
 
@@ -89,19 +88,13 @@ struct RegFile6_8x8Fixture {
         sim->update();
     }
 
-    int readPort1(int addr)
+    TestUtils::Bits readPort1(int addr)
     {
         for (int i = 0; i < 3; ++i) {
             readAddr1In[i]->setOn((addr >> i) & 1);
         }
         sim->update();
-        int v = 0;
-        for (int i = 0; i < 8; ++i) {
-            if (inputStatus(readData1[i])) {
-                v |= (1 << i);
-            }
-        }
-        return v;
+        return TestUtils::readMultiBitOutput(readData1);
     }
 };
 
@@ -184,15 +177,8 @@ void TestLevel6RegisterFile8X8::testRegisterFile()
     f.sim->update();
 
     // Read outputs from both ports
-    int readValue1 = 0, readValue2 = 0;
-    for (int i = 0; i < 8; ++i) {
-        if (inputStatus(f.readData1[i])) {
-            readValue1 |= (1 << i);
-        }
-        if (inputStatus(f.readData2[i])) {
-            readValue2 |= (1 << i);
-        }
-    }
+    const TestUtils::Bits readValue1 = TestUtils::readMultiBitOutput(f.readData1);
+    const TestUtils::Bits readValue2 = TestUtils::readMultiBitOutput(f.readData2);
 
     QCOMPARE(readValue1, readValue2);
     QCOMPARE(readValue1, testData);
@@ -252,15 +238,8 @@ void TestLevel6RegisterFile8X8::testDualReadPortsDifferentAddresses()
     }
     f.sim->update();
 
-    int readValue1 = 0, readValue2 = 0;
-    for (int i = 0; i < 8; ++i) {
-        if (inputStatus(f.readData1[i])) {
-            readValue1 |= (1 << i);
-        }
-        if (inputStatus(f.readData2[i])) {
-            readValue2 |= (1 << i);
-        }
-    }
+    const TestUtils::Bits readValue1 = TestUtils::readMultiBitOutput(f.readData1);
+    const TestUtils::Bits readValue2 = TestUtils::readMultiBitOutput(f.readData2);
 
     QCOMPARE(readValue1, 0x33);
     QCOMPARE(readValue2, 0x44);

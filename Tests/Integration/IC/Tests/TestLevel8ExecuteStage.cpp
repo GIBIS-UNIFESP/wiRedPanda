@@ -64,7 +64,7 @@ struct ExecuteStageFixture {
         return true;
     }
 
-    int readResult()
+    TestUtils::Bits readResult()
     {
         return readMultiBitOutput(QVector<GraphicElement *>(resultLeds.begin(), resultLeds.end()), 0);
     }
@@ -150,8 +150,8 @@ void TestLevel8ExecuteStage::testExecuteStage()
     f.sim->update();
 
     QCOMPARE(f.readResult(), expectedResult);
-    QCOMPARE(inputStatus(f.zeroLed), expectedZero);
-    QCOMPARE(inputStatus(f.signLed), expectedSign);
+    QCOMPARE(inputStatus(f.zeroLed), TestUtils::level(expectedZero));
+    QCOMPARE(inputStatus(f.signLed), TestUtils::level(expectedSign));
 }
 
 void TestLevel8ExecuteStage::testInputPortIsolation_data()
@@ -206,7 +206,7 @@ void TestLevel8ExecuteStage::testOutputPortIsolation()
     f.sim->update();
 
     for (int i = 0; i < 8; ++i) {
-        QCOMPARE(inputStatus(f.resultLeds[i]), i == bitPosition);
+        QCOMPARE(inputStatus(f.resultLeds[i]), TestUtils::level(i == bitPosition));
     }
 }
 

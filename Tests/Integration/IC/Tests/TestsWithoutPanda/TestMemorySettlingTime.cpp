@@ -162,11 +162,11 @@ void buildCascadedDecoder6bit(WorkSpace* workspace,
 // Helper: one-hot check
 // ============================================================
 
-/// Returns true iff exactly outputs[activeAddr] is high among the 64 outputs.
+/// Returns true iff outputs[activeAddr] is Active and the other 63 outputs are Inactive.
 static bool isOneHot(Led *outputs, int activeAddr)
 {
     for (int i = 0; i < 64; ++i) {
-        if (inputStatus(&outputs[i]) != (i == activeAddr)) {
+        if (inputStatus(&outputs[i]) != TestUtils::level(i == activeAddr)) {
             return false;
         }
     }

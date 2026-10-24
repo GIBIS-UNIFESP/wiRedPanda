@@ -66,7 +66,7 @@ struct DecodeStageFixture {
         return true;
     }
 
-    int readALUOp()
+    TestUtils::Bits readALUOp()
     {
         return readMultiBitOutput(QVector<GraphicElement *>(aluopLeds.begin(), aluopLeds.end()), 0);
     }
@@ -135,9 +135,9 @@ void TestLevel8DecodeStage::testDecodeStage()
     f.sim->update();
 
     QCOMPARE(f.readALUOp(), expectedALUOp);
-    QCOMPARE(inputStatus(f.regwriteLed), expectedRegWrite);
-    QCOMPARE(inputStatus(f.memreadLed), expectedMemRead);
-    QCOMPARE(inputStatus(f.memwriteLed), expectedMemWrite);
+    QCOMPARE(inputStatus(f.regwriteLed), TestUtils::level(expectedRegWrite));
+    QCOMPARE(inputStatus(f.memreadLed), TestUtils::level(expectedMemRead));
+    QCOMPARE(inputStatus(f.memwriteLed), TestUtils::level(expectedMemWrite));
 }
 
 void TestLevel8DecodeStage::testDecodeStageStructure()
@@ -164,7 +164,7 @@ void TestLevel8DecodeStage::testInstrDecodedLinesOneHot()
         f.sim->update();
 
         for (int line = 0; line < 32; ++line) {
-            QVERIFY2(inputStatus(f.decodedLineLeds[line]) == (line == opcode),
+            QVERIFY2(inputStatus(f.decodedLineLeds[line]) == TestUtils::level(line == opcode),
                 qPrintable(QString("opcode %1: line %2 should be %3")
                     .arg(opcode).arg(line).arg(line == opcode ? "active" : "inactive")));
         }

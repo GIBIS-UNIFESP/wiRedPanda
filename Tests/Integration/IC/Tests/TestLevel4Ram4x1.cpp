@@ -78,7 +78,7 @@ struct Ram4x1Fixture {
         sim->update();
     }
 
-    bool readData(int addr)
+    Status readData(int addr)
     {
         setAddress(addr);
         sim->update();
@@ -136,7 +136,7 @@ void TestLevel4RAM4X1::testRamArray4x4()
     auto &f = *s_level4Ram4x1;
 
     f.writeData(dataToWrite, address);
-    QCOMPARE(f.readData(address), dataToWrite);
+    QCOMPARE(f.readData(address), TestUtils::level(dataToWrite));
 }
 
 void TestLevel4RAM4X1::testPatternTest()
@@ -146,7 +146,7 @@ void TestLevel4RAM4X1::testPatternTest()
 
     for (int testAddr = 0; testAddr < 4; ++testAddr) {
         f.writeData(pattern[testAddr], testAddr);
-        QCOMPARE(f.readData(testAddr), pattern[testAddr]);
+        QCOMPARE(f.readData(testAddr), TestUtils::level(pattern[testAddr]));
     }
 }
 
@@ -160,7 +160,7 @@ void TestLevel4RAM4X1::testWeGating()
     TestUtils::clockCycle(f.sim, f.clock);
     f.sim->update();
 
-    QCOMPARE(inputStatus(f.dataOut), false);
+    QCOMPARE(inputStatus(f.dataOut), Status::Inactive);
 }
 
 void TestLevel4RAM4X1::testHoldBehavior()
@@ -169,7 +169,7 @@ void TestLevel4RAM4X1::testHoldBehavior()
 
     // Write 1 to address 2
     f.writeData(true, 2);
-    QCOMPARE(f.readData(2), true);
+    QCOMPARE(f.readData(2), Status::Active);
 
     // Try to overwrite with WE=0
     f.setAddress(2);
@@ -178,7 +178,7 @@ void TestLevel4RAM4X1::testHoldBehavior()
     TestUtils::clockCycle(f.sim, f.clock);
     f.sim->update();
 
-    QCOMPARE(inputStatus(f.dataOut), true);  // Should still hold 1
+    QCOMPARE(inputStatus(f.dataOut), Status::Active);  // Should still hold 1
 }
 
 void TestLevel4RAM4X1::testIsolation()
@@ -188,8 +188,8 @@ void TestLevel4RAM4X1::testIsolation()
     f.writeData(true, 0);
     f.writeData(false, 1);
 
-    QCOMPARE(f.readData(0), true);
-    QCOMPARE(f.readData(1), false);
+    QCOMPARE(f.readData(0), Status::Active);
+    QCOMPARE(f.readData(1), Status::Inactive);
 }
 
 void TestLevel4RAM4X1::testSequentialWrite()
@@ -199,7 +199,7 @@ void TestLevel4RAM4X1::testSequentialWrite()
 
     for (int writeIdx = 0; writeIdx < 4; ++writeIdx) {
         f.writeData(writeSequence[writeIdx], 0);
-        QCOMPARE(inputStatus(f.dataOut), writeSequence[writeIdx]);
+        QCOMPARE(inputStatus(f.dataOut), TestUtils::level(writeSequence[writeIdx]));
     }
 }
 
@@ -212,20 +212,20 @@ void TestLevel4RAM4X1::testReset()
     // Fill all 4 cells with 1
     for (int addr = 0; addr < 4; ++addr) {
         f.writeData(true, addr);
-        QCOMPARE(f.readData(addr), true);
+        QCOMPARE(f.readData(addr), Status::Active);
     }
 
     // Assert Reset (active-high): all cells forced to 0 asynchronously
     f.reset->setOn(true);
     f.sim->update();
     for (int addr = 0; addr < 4; ++addr) {
-        QCOMPARE(f.readData(addr), false);
+        QCOMPARE(f.readData(addr), Status::Inactive);
     }
 
     // Release Reset: the array accepts writes again
     f.reset->setOn(false);
     f.sim->update();
     f.writeData(true, 2);
-    QCOMPARE(f.readData(2), true);
-    QCOMPARE(f.readData(0), false);  // other cells stayed cleared
+    QCOMPARE(f.readData(2), Status::Active);
+    QCOMPARE(f.readData(0), Status::Inactive);  // other cells stayed cleared
 }

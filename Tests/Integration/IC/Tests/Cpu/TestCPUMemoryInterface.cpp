@@ -56,7 +56,7 @@ static void writeAndVerify(int address, int dataToWrite, bool doWrite, int expec
     for (int i = 0; i < 8; i++) {
         dataOutVec.append(dataOut[i]);
     }
-    int result = readMultiBitOutput(dataOutVec);
+    const TestUtils::Bits result = readMultiBitOutput(dataOutVec);
     QCOMPARE(result, expectedData);
 }
 

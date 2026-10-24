@@ -132,13 +132,13 @@ void TestLevel7InstructionDecoder8Bit::testInstructionDecoder8Bit()
         if (!f.opOutputs.contains(opIndex)) {
             continue;
         }
-        bool isActive = inputStatus(f.opOutputs[opIndex], 0);
+        const Status status = inputStatus(f.opOutputs[opIndex], 0);
 
         if (opIndex == expectedOutputLine) {
-            QVERIFY2(isActive, qPrintable(QString("Expected op[%1] to be active for instruction 0x%2")
+            QVERIFY2(status == Status::Active, qPrintable(QString("Expected op[%1] to be active for instruction 0x%2")
                 .arg(opIndex).arg(instructionCode, 0, 16)));
         } else {
-            QVERIFY2(!isActive, qPrintable(QString("Expected op[%1] to be inactive for instruction 0x%2")
+            QVERIFY2(status == Status::Inactive, qPrintable(QString("Expected op[%1] to be inactive for instruction 0x%2")
                 .arg(opIndex).arg(instructionCode, 0, 16)));
         }
     }
@@ -168,7 +168,7 @@ void TestLevel7InstructionDecoder8Bit::testInstructionDecoder8BitOneHot()
         f.sim->update();
 
         for (int line = 0; line < 256; ++line) {
-            QVERIFY2(inputStatus(f.opOutputs[line]) == (line == code),
+            QVERIFY2(inputStatus(f.opOutputs[line]) == TestUtils::level(line == code),
                 qPrintable(QString("instr 0x%1: op[%2] should be %3")
                     .arg(code, 2, 16, QChar('0')).arg(line).arg(line == code ? "active" : "inactive")));
         }

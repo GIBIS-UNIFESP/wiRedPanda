@@ -62,7 +62,7 @@ struct RegFile32x16Fixture {
         return true;
     }
 
-    int readData() { return readMultiBitOutput(QVector<GraphicElement *>(readData1.begin(), readData1.end())); }
+    TestUtils::Bits readData() { return readMultiBitOutput(QVector<GraphicElement *>(readData1.begin(), readData1.end())); }
 
     void writeAt(int addr, int value)
     {
@@ -75,7 +75,7 @@ struct RegFile32x16Fixture {
         sim->update();
     }
 
-    int readAt(int addr)
+    TestUtils::Bits readAt(int addr)
     {
         setMultiBitInput(readAddr1, addr);
         sim->update();

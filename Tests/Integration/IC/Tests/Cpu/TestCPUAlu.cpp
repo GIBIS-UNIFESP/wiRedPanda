@@ -61,7 +61,7 @@ void TestCPUAlu::testALU8bit()
     // Settle circuit
     sim->update();
     // Read actual result
-    int resultValue = readMultiBitOutput(result);
+    const TestUtils::Bits resultValue = readMultiBitOutput(result);
     QCOMPARE(resultValue, expectedResult);
 }
 
@@ -101,25 +101,25 @@ void TestCPUAlu::testALU8bitFlags()
     // Settle circuit
     sim->update();
     // Read actual result
-    int resultValue = readMultiBitOutput(result);
+    const TestUtils::Bits resultValue = readMultiBitOutput(result);
     QCOMPARE(resultValue, expectedResult);
 
     // Verify flags are set correctly based on the result
-    bool zeroFlagSet = TestUtils::inputStatus(zeroFlag);
-    bool signFlagSet = TestUtils::inputStatus(signFlag);
-    bool carryFlagSet = TestUtils::inputStatus(carryFlag);
-    bool overflowFlagSet = TestUtils::inputStatus(overflowFlag);
+    const Status zeroFlagSet = TestUtils::inputStatus(zeroFlag);
+    const Status signFlagSet = TestUtils::inputStatus(signFlag);
+    const Status carryFlagSet = TestUtils::inputStatus(carryFlag);
+    const Status overflowFlagSet = TestUtils::inputStatus(overflowFlag);
 
     // Sign flag should be set (1) if result has sign bit set (bit 7)
     // In 8-bit signed, values 128-255 are negative
     bool expectedSignFlag = ((expectedResult & 0x80) != 0);
-    QCOMPARE(signFlagSet, expectedSignFlag);
+    QCOMPARE(signFlagSet, TestUtils::level(expectedSignFlag));
 
     bool expectedZeroFlag = (expectedResult == 0);
-    QCOMPARE(zeroFlagSet, expectedZeroFlag);
+    QCOMPARE(zeroFlagSet, TestUtils::level(expectedZeroFlag));
 
-    QCOMPARE(carryFlagSet, expectedCarry);
-    QCOMPARE(overflowFlagSet, expectedOverflow);
+    QCOMPARE(carryFlagSet, TestUtils::level(expectedCarry));
+    QCOMPARE(overflowFlagSet, TestUtils::level(expectedOverflow));
 }
 
 void TestCPUAlu::testALU8bitFlags_data()

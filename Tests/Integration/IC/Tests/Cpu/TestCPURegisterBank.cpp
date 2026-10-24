@@ -79,8 +79,8 @@ void TestCPURegisterBank::testRegisterBank()
         readAVec.append(readDataA[i]);
         readBVec.append(readDataB[i]);
     }
-    int readA = readMultiBitOutput(readAVec);
-    int readB = readMultiBitOutput(readBVec);
+    const TestUtils::Bits readA = readMultiBitOutput(readAVec);
+    const TestUtils::Bits readB = readMultiBitOutput(readBVec);
     QCOMPARE(readA, expectedReadA);
     QCOMPARE(readB, expectedReadB);
 }

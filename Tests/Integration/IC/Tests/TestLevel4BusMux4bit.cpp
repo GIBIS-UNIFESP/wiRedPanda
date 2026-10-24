@@ -110,7 +110,7 @@ void TestLevel4BusMUX4Bit::testBusMux4Bit()
     f.sel->setOn(select);
     f.sim->update();
 
-    int result = readMultiBitOutput(QVector<GraphicElement *>({f.out[0], f.out[1], f.out[2], f.out[3]}));
+    const TestUtils::Bits result = readMultiBitOutput(QVector<GraphicElement *>({f.out[0], f.out[1], f.out[2], f.out[3]}));
 
     QCOMPARE(result, expectedOutput);
 }

@@ -13,7 +13,6 @@
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
 
-using TestUtils::inputStatus;
 using TestUtils::clockCycle;
 using CPUTestUtils::loadBuildingBlockIC;
 
@@ -104,28 +103,16 @@ struct RegFile4x4Fixture {
         sim->update();
     }
 
-    int readReg(int addr)
+    TestUtils::Bits readReg(int addr)
     {
         setReadAddr(addr);
         sim->update();
-        int value = 0;
-        for (int bit = 0; bit < 4; ++bit) {
-            if (inputStatus(readData[bit])) {
-                value |= (1 << bit);
-            }
-        }
-        return value;
+        return TestUtils::readMultiBitOutput(readData);
     }
 
-    int readPort2()
+    TestUtils::Bits readPort2()
     {
-        int value = 0;
-        for (int bit = 0; bit < 4; ++bit) {
-            if (inputStatus(readData2[bit])) {
-                value |= (1 << bit);
-            }
-        }
-        return value;
+        return TestUtils::readMultiBitOutput(readData2);
     }
 };
 
@@ -278,12 +265,7 @@ void TestLevel5RegisterFile4X4::testRegisterFile4x4_debug_readmux()
             f.readAddr[1]->setOn((regIdx >> 1) & 1);
             f.sim->update();
 
-            int writtenValue = 0;
-            for (int bit = 0; bit < 4; ++bit) {
-                if (inputStatus(f.readData[bit])) {
-                    writtenValue |= (1 << bit);
-                }
-            }
+            const TestUtils::Bits writtenValue = TestUtils::readMultiBitOutput(f.readData);
             QCOMPARE(writtenValue, pattern[regIdx]);
         }
     }
@@ -295,11 +277,7 @@ void TestLevel5RegisterFile4X4::testRegisterFile4x4_debug_readmux()
     f.sim->update();
 
     // Read the data
-    int readValue = 0;
-    for (int bit = 0; bit < 4; ++bit) {
-        bool bitValue = inputStatus(f.readData[bit]);
-        readValue |= (bitValue ? (1 << bit) : 0);
-    }
+    const TestUtils::Bits readValue = TestUtils::readMultiBitOutput(f.readData);
 
     QCOMPARE(readValue, expectedReadData);
 }
@@ -355,11 +333,7 @@ void TestLevel5RegisterFile4X4::testRegisterFile4x4_debug_readaddr()
 
     f.sim->update();
 
-    int readValue = 0;
-    for (int bit = 0; bit < 4; ++bit) {
-        bool bitVal = inputStatus(f.readData[bit]);
-        readValue |= (bitVal ? (1 << bit) : 0);
-    }
+    const TestUtils::Bits readValue = TestUtils::readMultiBitOutput(f.readData);
 
     QCOMPARE(readValue, expectedValue);
 }
@@ -476,12 +450,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
         f.readAddr[1]->setOn(false);
         f.sim->update();
 
-        int readValue = 0;
-        for (int bit = 0; bit < 4; ++bit) {
-            if (inputStatus(f.readData[bit])) {
-                readValue |= (1 << bit);
-            }
-        }
+        const TestUtils::Bits readValue = TestUtils::readMultiBitOutput(f.readData);
         QCOMPARE(readValue, 5);
     } else if (timingTest == kSettleRead) {
         f.writeAddr[0]->setOn(false);
@@ -501,12 +470,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
         f.readAddr[1]->setOn(false);
         f.sim->update();
 
-        int readValue = 0;
-        for (int bit = 0; bit < 4; ++bit) {
-            if (inputStatus(f.readData[bit])) {
-                readValue |= (1 << bit);
-            }
-        }
+        const TestUtils::Bits readValue = TestUtils::readMultiBitOutput(f.readData);
         QCOMPARE(readValue, 10);
     } else if (timingTest == kRapidWrites) {
         int values[4] = {3, 6, 12, 9};
@@ -533,12 +497,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
             f.readAddr[1]->setOn((regIdx >> 1) & 1);
             f.sim->update();
 
-            int readValue = 0;
-            for (int bit = 0; bit < 4; ++bit) {
-                if (inputStatus(f.readData[bit])) {
-                    readValue |= (1 << bit);
-                }
-            }
+            const TestUtils::Bits readValue = TestUtils::readMultiBitOutput(f.readData);
             QCOMPARE(readValue, values[regIdx]);
         }
     } else if (timingTest == kRapidReads) {
@@ -571,18 +530,12 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
         f.readAddr[0]->setOn(false);
         f.readAddr[1]->setOn(false);
         f.sim->update();
-        int val0 = 0;
-        for (int bit = 0; bit < 4; ++bit) {
-            if (inputStatus(f.readData[bit])) val0 |= (1 << bit);
-        }
+        const TestUtils::Bits val0 = TestUtils::readMultiBitOutput(f.readData);
 
         f.readAddr[0]->setOn(true);
         f.readAddr[1]->setOn(false);
         f.sim->update();
-        int val1 = 0;
-        for (int bit = 0; bit < 4; ++bit) {
-            if (inputStatus(f.readData[bit])) val1 |= (1 << bit);
-        }
+        const TestUtils::Bits val1 = TestUtils::readMultiBitOutput(f.readData);
 
         QCOMPARE(val0, 0xA);
         QCOMPARE(val1, 0x5);
@@ -611,12 +564,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
         f.readAddr[1]->setOn(false);
         f.sim->update();
 
-        int readValue = 0;
-        for (int bit = 0; bit < 4; ++bit) {
-            if (inputStatus(f.readData[bit])) {
-                readValue |= (1 << bit);
-            }
-        }
+        const TestUtils::Bits readValue = TestUtils::readMultiBitOutput(f.readData);
         QCOMPARE(readValue, 7);
     } else if (timingTest == kWeGlitch) {
         f.sim->update();
@@ -646,12 +594,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
         f.readAddr[1]->setOn(false);
         f.sim->update();
 
-        int readValue = 0;
-        for (int bit = 0; bit < 4; ++bit) {
-            if (inputStatus(f.readData[bit])) {
-                readValue |= (1 << bit);
-            }
-        }
+        const TestUtils::Bits readValue = TestUtils::readMultiBitOutput(f.readData);
         QCOMPARE(readValue, 12);
     } else if (timingTest == kSetupViolation) {
         f.sim->update();
@@ -676,12 +619,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
         f.readAddr[1]->setOn(false);
         f.sim->update();
 
-        int readValue = 0;
-        for (int bit = 0; bit < 4; ++bit) {
-            if (inputStatus(f.readData[bit])) {
-                readValue |= (1 << bit);
-            }
-        }
+        const TestUtils::Bits readValue = TestUtils::readMultiBitOutput(f.readData);
         QVERIFY((readValue == 4) || (readValue == 0));
     } else if (timingTest == kHoldViolation) {
         f.sim->update();
@@ -708,12 +646,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
         f.readAddr[1]->setOn(false);
         f.sim->update();
 
-        int readValue = 0;
-        for (int bit = 0; bit < 4; ++bit) {
-            if (inputStatus(f.readData[bit])) {
-                readValue |= (1 << bit);
-            }
-        }
+        const TestUtils::Bits readValue = TestUtils::readMultiBitOutput(f.readData);
         QCOMPARE(readValue, 8);
     } else if (timingTest == kMultiCycleHold) {
         f.writeAddr[0]->setOn(false);
@@ -738,12 +671,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
         f.readAddr[1]->setOn(false);
         f.sim->update();
 
-        int readValue = 0;
-        for (int bit = 0; bit < 4; ++bit) {
-            if (inputStatus(f.readData[bit])) {
-                readValue |= (1 << bit);
-            }
-        }
+        const TestUtils::Bits readValue = TestUtils::readMultiBitOutput(f.readData);
         QCOMPARE(readValue, 15);
     } else if (timingTest == kLongSequence) {
         f.sim->update();
@@ -773,12 +701,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
         f.readAddr[1]->setOn(false);
         f.sim->update();
 
-        int readValue = 0;
-        for (int bit = 0; bit < 4; ++bit) {
-            if (inputStatus(f.readData[bit])) {
-                readValue |= (1 << bit);
-            }
-        }
+        const TestUtils::Bits readValue = TestUtils::readMultiBitOutput(f.readData);
         QCOMPARE(readValue, 0);
     } else if (timingTest == kConcurrentWriteRead) {
         f.sim->update();
@@ -811,12 +734,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
         f.readAddr[1]->setOn(false);
         f.sim->update();
 
-        int readVal0 = 0;
-        for (int bit = 0; bit < 4; ++bit) {
-            if (inputStatus(f.readData[bit])) {
-                readVal0 |= (1 << bit);
-            }
-        }
+        const TestUtils::Bits readVal0 = TestUtils::readMultiBitOutput(f.readData);
         QCOMPARE(readVal0, 11);
 
         f.clock->setOn(true);
@@ -831,12 +749,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
         f.readAddr[1]->setOn(false);
         f.sim->update();
 
-        int readVal1 = 0;
-        for (int bit = 0; bit < 4; ++bit) {
-            if (inputStatus(f.readData[bit])) {
-                readVal1 |= (1 << bit);
-            }
-        }
+        const TestUtils::Bits readVal1 = TestUtils::readMultiBitOutput(f.readData);
         QCOMPARE(readVal1, 7);
     } else if (timingTest == kWeSetupViolation) {
         f.sim->update();
@@ -861,12 +774,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
         f.readAddr[1]->setOn(false);
         f.sim->update();
 
-        int readValue = 0;
-        for (int bit = 0; bit < 4; ++bit) {
-            if (inputStatus(f.readData[bit])) {
-                readValue |= (1 << bit);
-            }
-        }
+        const TestUtils::Bits readValue = TestUtils::readMultiBitOutput(f.readData);
         QVERIFY((readValue == 6) || (readValue == 0));
     } else if (timingTest == kWeHoldViolation) {
         f.sim->update();
@@ -890,12 +798,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
         f.readAddr[1]->setOn(false);
         f.sim->update();
 
-        int readValue = 0;
-        for (int bit = 0; bit < 4; ++bit) {
-            if (inputStatus(f.readData[bit])) {
-                readValue |= (1 << bit);
-            }
-        }
+        const TestUtils::Bits readValue = TestUtils::readMultiBitOutput(f.readData);
         QCOMPARE(readValue, 9);
     } else if (timingTest == kDataSetupViolation) {
         f.sim->update();
@@ -926,12 +829,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
         f.readAddr[1]->setOn(false);
         f.sim->update();
 
-        int readValue = 0;
-        for (int bit = 0; bit < 4; ++bit) {
-            if (inputStatus(f.readData[bit])) {
-                readValue |= (1 << bit);
-            }
-        }
+        const TestUtils::Bits readValue = TestUtils::readMultiBitOutput(f.readData);
         QVERIFY((readValue == 5) || (readValue == 13));
     } else if (timingTest == kMultiRegisterRetention) {
         f.sim->update();
@@ -961,12 +859,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
             f.readAddr[1]->setOn((reg >> 1) & 1);
             f.sim->update();
 
-            int readValue = 0;
-            for (int bit = 0; bit < 4; ++bit) {
-                if (inputStatus(f.readData[bit])) {
-                    readValue |= (1 << bit);
-                }
-            }
+            const TestUtils::Bits readValue = TestUtils::readMultiBitOutput(f.readData);
             QCOMPARE(readValue, testValues[reg]);
         }
     } else if (timingTest == kBitpattern0x55) {
@@ -995,12 +888,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
             f.readAddr[1]->setOn((reg >> 1) & 1);
             f.sim->update();
 
-            int readValue = 0;
-            for (int bit = 0; bit < 4; ++bit) {
-                if (inputStatus(f.readData[bit])) {
-                    readValue |= (1 << bit);
-                }
-            }
+            const TestUtils::Bits readValue = TestUtils::readMultiBitOutput(f.readData);
             QCOMPARE(readValue, 0x5);
         }
     } else if (timingTest == kBitpattern0xAA) {
@@ -1029,12 +917,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
             f.readAddr[1]->setOn((reg >> 1) & 1);
             f.sim->update();
 
-            int readValue = 0;
-            for (int bit = 0; bit < 4; ++bit) {
-                if (inputStatus(f.readData[bit])) {
-                    readValue |= (1 << bit);
-                }
-            }
+            const TestUtils::Bits readValue = TestUtils::readMultiBitOutput(f.readData);
             QCOMPARE(readValue, 0xA);
         }
     } else if (timingTest == kBitpatternSingleBit) {
@@ -1065,12 +948,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
             f.readAddr[1]->setOn((reg >> 1) & 1);
             f.sim->update();
 
-            int readValue = 0;
-            for (int bit = 0; bit < 4; ++bit) {
-                if (inputStatus(f.readData[bit])) {
-                    readValue |= (1 << bit);
-                }
-            }
+            const TestUtils::Bits readValue = TestUtils::readMultiBitOutput(f.readData);
             QCOMPARE(readValue, bitPatterns[reg]);
         }
     } else if (timingTest == kStress1000Ops) {
@@ -1101,12 +979,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
         f.readAddr[1]->setOn(false);
         f.sim->update();
 
-        int readValue = 0;
-        for (int bit = 0; bit < 4; ++bit) {
-            if (inputStatus(f.readData[bit])) {
-                readValue |= (1 << bit);
-            }
-        }
+        const TestUtils::Bits readValue = TestUtils::readMultiBitOutput(f.readData);
         QCOMPARE(readValue, 12);
     } else if (timingTest >= kReadOrderSequential && timingTest <= kReadOrderInterleaved) {
         f.sim->update();
@@ -1146,12 +1019,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
             f.readAddr[1]->setOn((reg >> 1) & 1);
             f.sim->update();
 
-            int readValue = 0;
-            for (int bit = 0; bit < 4; ++bit) {
-                if (inputStatus(f.readData[bit])) {
-                    readValue |= (1 << bit);
-                }
-            }
+            const TestUtils::Bits readValue = TestUtils::readMultiBitOutput(f.readData);
             QCOMPARE(readValue, testVals[reg]);
         }
     } else {
@@ -1216,12 +1084,7 @@ void TestLevel5RegisterFile4X4::testRegisterFileTimingEdges()
             f.readAddr[1]->setOn((regIdx >> 1) & 1);
             f.sim->update();
 
-            int readValue = 0;
-            for (int bit = 0; bit < 4; ++bit) {
-                if (inputStatus(f.readData[bit])) {
-                    readValue |= (1 << bit);
-                }
-            }
+            const TestUtils::Bits readValue = TestUtils::readMultiBitOutput(f.readData);
 
             int expected = (regIdx == 0) ? 5 : 10;
             QCOMPARE(readValue, expected);
@@ -1249,18 +1112,12 @@ void TestLevel5RegisterFile4X4::testRegisterFileTimingEdges()
         f.readAddr[0]->setOn(false);
         f.readAddr[1]->setOn(false);
         f.sim->update();
-        int val0 = 0;
-        for (int bit = 0; bit < 4; ++bit) {
-            if (inputStatus(f.readData[bit])) val0 |= (1 << bit);
-        }
+        const TestUtils::Bits val0 = TestUtils::readMultiBitOutput(f.readData);
 
         f.readAddr[0]->setOn(true);
         f.readAddr[1]->setOn(false);
         f.sim->update();
-        int val1 = 0;
-        for (int bit = 0; bit < 4; ++bit) {
-            if (inputStatus(f.readData[bit])) val1 |= (1 << bit);
-        }
+        const TestUtils::Bits val1 = TestUtils::readMultiBitOutput(f.readData);
 
         QCOMPARE(val0, 0xA);
         QCOMPARE(val1, 0x5);
@@ -1292,12 +1149,7 @@ void TestLevel5RegisterFile4X4::testRegisterFileTimingEdges()
         f.readAddr[1]->setOn(false);
         f.sim->update();
 
-        int readValue = 0;
-        for (int bit = 0; bit < 4; ++bit) {
-            if (inputStatus(f.readData[bit])) {
-                readValue |= (1 << bit);
-            }
-        }
+        const TestUtils::Bits readValue = TestUtils::readMultiBitOutput(f.readData);
 
         QCOMPARE(readValue, 7);
     } else if (timingTest == 3) {
@@ -1331,12 +1183,7 @@ void TestLevel5RegisterFile4X4::testRegisterFileTimingEdges()
             f.readAddr[0]->setOn(regIdx & 1);
             f.readAddr[1]->setOn((regIdx >> 1) & 1);
             f.sim->update();
-            int readValue = 0;
-            for (int bit = 0; bit < 4; ++bit) {
-                if (inputStatus(f.readData[bit])) {
-                    readValue |= (1 << bit);
-                }
-            }
+            const TestUtils::Bits readValue = TestUtils::readMultiBitOutput(f.readData);
             QCOMPARE(readValue, expectedValues[regIdx]);
         }
     } else if (timingTest == 4) {
@@ -1366,12 +1213,7 @@ void TestLevel5RegisterFile4X4::testRegisterFileTimingEdges()
         f.readAddr[1]->setOn(false);
         f.sim->update();
 
-        int readValue = 0;
-        for (int bit = 0; bit < 4; ++bit) {
-            if (inputStatus(f.readData[bit])) {
-                readValue |= (1 << bit);
-            }
-        }
+        const TestUtils::Bits readValue = TestUtils::readMultiBitOutput(f.readData);
 
         // Empirically (confirmed via this exact sequence, consistent with the
         // address_change_midwrite case above): the write commits using the data that was

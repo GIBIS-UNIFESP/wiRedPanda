@@ -125,7 +125,7 @@ QString systemVerilogExpectedDir()
     return QString(QUOTE(CURRENTDIR)) + "/Integration/SystemVerilog/";
 }
 
-bool inputStatus(GraphicElement *elm, int port)
+Status inputStatus(GraphicElement *elm, int port)
 {
     // Unreachable in any correctly-written test: this guards against a test-author mistake
     // (wrong port index/element), and qFatal() aborts the whole process -- there is no way
@@ -140,10 +140,10 @@ bool inputStatus(GraphicElement *elm, int port)
                "  Use outputStatus() to read output ports, or read downstream elements to verify signal propagation.", // LCOV_EXCL_LINE
                port, qPrintable(elm->objectName()), elm->metaObject()->className()); // LCOV_EXCL_LINE
     } // LCOV_EXCL_LINE
-    return inputPort->status() == Status::Active;
+    return inputPort->status();
 }
 
-bool outputStatus(GraphicElement *elm, int port)
+Status outputStatus(GraphicElement *elm, int port)
 {
     // Unreachable in any correctly-written test: same class as inputStatus()'s guard above.
     auto *outputPort = elm->outputPort(port);
@@ -155,7 +155,59 @@ bool outputStatus(GraphicElement *elm, int port)
                "  Check that the port index is within valid range for this element type", // LCOV_EXCL_LINE
                port, qPrintable(elm->objectName()), elm->metaObject()->className()); // LCOV_EXCL_LINE
     } // LCOV_EXCL_LINE
-    return outputPort->status() == Status::Active;
+    return outputPort->status();
+}
+
+bool Bits::isLevel() const
+{
+    return std::all_of(m_statuses.cbegin(), m_statuses.cend(), [](const Status status) {
+        return (status == Status::Active) || (status == Status::Inactive);
+    });
+}
+
+int Bits::spelled() const
+{
+    int number = 0;
+    for (int bit = 0; bit < m_statuses.size(); ++bit) {
+        if (m_statuses.at(bit) == Status::Active) {
+            number |= (1 << bit);
+        }
+    }
+    return number;
+}
+
+int Bits::value() const
+{
+    if (!isLevel()) {
+        QTest::qFail(qPrintable(QString("the bits %1 are not all levels").arg(text())), __FILE__, __LINE__);
+        return -1;
+    }
+    return spelled();
+}
+
+QString statusText(const Status status)
+{
+    switch (status) {
+    case Status::Inactive: return QStringLiteral("0");
+    case Status::Active:   return QStringLiteral("1");
+    case Status::Unknown:  return QStringLiteral("U");
+    case Status::Error:    return QStringLiteral("E");
+    }
+    return QStringLiteral("?");
+}
+
+QString Bits::text() const
+{
+    QString text;
+    for (auto it = m_statuses.crbegin(); it != m_statuses.crend(); ++it) {
+        text += statusText(*it);
+    }
+    return text;
+}
+
+char *toString(const Bits &bits)
+{
+    return QTest::toString(bits.text());
 }
 
 int countConnections(Scene *scene)
@@ -399,7 +451,13 @@ QVector<DiffStep> generateDifferentialVectors(
         QVector<int> bits;
         bits.reserve(leds.size());
         for (auto *led : leds) {
-            bits.append(inputStatus(led, 0) ? 1 : 0);
+            // The export is checked against a level, so an Unknown or Error output is the engine's, not a 0.
+            const Status status = inputStatus(led, 0);
+            if ((status != Status::Active) && (status != Status::Inactive)) {
+                QTest::qFail(qPrintable(QString("the engine's output %1 is not a level").arg(led->objectName())),
+                             __FILE__, __LINE__);
+            }
+            bits.append((status == Status::Active) ? 1 : 0);
         }
         return bits;
     };

@@ -105,14 +105,14 @@ struct FetchStage16bitFixture {
         return true;
     }
 
-    int readPC()
+    TestUtils::Bits readPC()
     {
         return readMultiBitOutput(QVector<GraphicElement *>({
             pc[0], pc[1], pc[2], pc[3], pc[4], pc[5], pc[6], pc[7]
         }));
     }
 
-    int readInstr()
+    TestUtils::Bits readInstr()
     {
         return readMultiBitOutput(QVector<GraphicElement *>({
             instruction[0], instruction[1], instruction[2], instruction[3],
@@ -122,28 +122,28 @@ struct FetchStage16bitFixture {
         }));
     }
 
-    int readOpCode()
+    TestUtils::Bits readOpCode()
     {
         return readMultiBitOutput(QVector<GraphicElement *>({
             opCode[0], opCode[1], opCode[2], opCode[3], opCode[4]
         }));
     }
 
-    int readDestReg()
+    TestUtils::Bits readDestReg()
     {
         return readMultiBitOutput(QVector<GraphicElement *>({
             destReg[0], destReg[1], destReg[2], destReg[3], destReg[4]
         }));
     }
 
-    int readSrcBits()
+    TestUtils::Bits readSrcBits()
     {
         return readMultiBitOutput(QVector<GraphicElement *>({
             srcBits[0], srcBits[1], srcBits[2], srcBits[3], srcBits[4], srcBits[5]
         }));
     }
 
-    int readRawInstr()
+    TestUtils::Bits readRawInstr()
     {
         return readMultiBitOutput(QVector<GraphicElement *>({
             rawInstr[0], rawInstr[1], rawInstr[2], rawInstr[3],
@@ -394,8 +394,8 @@ void TestLevel9FetchStage16Bit::testSrcBitsMatchInstruction()
     for (int pc_state = 0; pc_state < 5; ++pc_state) {
         clockCycle(f.sim, f.clk);
 
-        int instrWord = f.readInstr();
-        int srcBitsVal = f.readSrcBits();
+        const int instrWord = f.readInstr().value();
+        const TestUtils::Bits srcBitsVal = f.readSrcBits();
 
         // Ground truth: identify which programmed address this instruction word actually came
         // from, rather than re-deriving the expectation from instrWord's own low bits -- that

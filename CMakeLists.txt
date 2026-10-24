@@ -947,6 +947,7 @@ add_test(NAME TestNotifyCatch COMMAND test_wiredpanda TestNotifyCatch WORKING_DI
 add_test(NAME TestPerfProbe COMMAND test_wiredpanda TestPerfProbe WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestPointerSnapshot COMMAND test_wiredpanda TestPointerSnapshot WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestPortLayoutSnapshot COMMAND test_wiredpanda TestPortLayoutSnapshot WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestPortReaders COMMAND test_wiredpanda TestPortReaders WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestPriorities COMMAND test_wiredpanda TestPriorities WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestRAMCell1Bit COMMAND test_wiredpanda TestRAMCell1Bit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestRecentFiles COMMAND test_wiredpanda TestRecentFiles WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -1125,8 +1126,8 @@ set_tests_properties(TestDanglingPointer PROPERTIES LABELS "unit;regression")
 set_tests_properties(TestPerfProbe PROPERTIES LABELS "perf")
 
 # Core Functionality Tests - Unit category
-foreach(TEST TestCommands TestCommon TestEnums TestGoldens TestNotifyCatch TestPriorities TestRecentFiles TestSettings
-        TestThemeManager)
+foreach(TEST TestCommands TestCommon TestEnums TestGoldens TestNotifyCatch TestPortReaders TestPriorities TestRecentFiles
+        TestSettings TestThemeManager)
     set_tests_properties(${TEST} PROPERTIES LABELS "unit")
 endforeach()
 
@@ -1174,7 +1175,8 @@ set(ALL_TESTS
     TestSceneConnections TestSceneState TestSceneUndoredo
     TestSerialization TestSimulationBlocker
     TestDanglingPointer
-    TestCommands TestCommon TestEnums TestNotifyCatch TestPriorities TestRecentFiles TestSettings TestThemeManager
+    TestCommands TestCommon TestEnums TestNotifyCatch TestPortReaders TestPriorities TestRecentFiles TestSettings
+    TestThemeManager
     TestApplication TestCoreSettings TestDragDropPayload TestExerciseTourResources
     TestExternalFilePath TestGoldens TestInstallRelativePaths TestUpdateChecker
     TestArduinoCodeGenUnit TestCodeGenUtils TestSystemVerilogCodeGenUnit

@@ -53,7 +53,7 @@ void TestCPUControlUnit::testControlUnit()
     sim->update();
     reset->setOn(false);
     sim->update();
-    int currentState = readMultiBitOutput(state);
+    TestUtils::Bits currentState = readMultiBitOutput(state);
     // Transition states
     for (int i = 0; i < stateTransitions; i++) {
         TestUtils::clockCycle(sim, clock);  // Complete clock cycle (HIGH→settle→LOW→settle)
@@ -92,33 +92,33 @@ void TestCPUControlUnit::testControlUnitFlagWrite()
     reset->setOn(false);
     sim->update();
     // Verify starting at state 0 (FETCH), flagWrite should be 0
-    int currentState = readMultiBitOutput(state);
+    TestUtils::Bits currentState = readMultiBitOutput(state);
     QCOMPARE(currentState, 0);  // FETCH
-    QCOMPARE(TestUtils::inputStatus(flagWrite, 0), false);
+    QCOMPARE(TestUtils::inputStatus(flagWrite, 0), Status::Inactive);
     // Transition to state 1 (DECODE)
     TestUtils::clockCycle(sim, clock);  // Complete clock cycle (HIGH→settle→LOW→settle)
     sim->update();
     currentState = readMultiBitOutput(state);
     QCOMPARE(currentState, 1);  // DECODE
-    QCOMPARE(TestUtils::inputStatus(flagWrite, 0), false);
+    QCOMPARE(TestUtils::inputStatus(flagWrite, 0), Status::Inactive);
     // Transition to state 2 (EXECUTE) - flagWrite should be asserted
     TestUtils::clockCycle(sim, clock);  // Complete clock cycle (HIGH→settle→LOW→settle)
     sim->update();
     currentState = readMultiBitOutput(state);
     QCOMPARE(currentState, 2);  // EXECUTE
-    QCOMPARE(TestUtils::inputStatus(flagWrite, 0), true);  // FlagWrite asserted!
+    QCOMPARE(TestUtils::inputStatus(flagWrite, 0), Status::Active);  // FlagWrite asserted!
     // Transition to state 3 (WRITEBACK) - flagWrite should be de-asserted
     TestUtils::clockCycle(sim, clock);  // Complete clock cycle (HIGH→settle→LOW→settle)
     sim->update();
     currentState = readMultiBitOutput(state);
     QCOMPARE(currentState, 3);  // WRITEBACK
-    QCOMPARE(TestUtils::inputStatus(flagWrite, 0), false);
+    QCOMPARE(TestUtils::inputStatus(flagWrite, 0), Status::Inactive);
     // Transition to state 4 (HALT) - flagWrite should remain 0
     TestUtils::clockCycle(sim, clock);  // Complete clock cycle (HIGH→settle→LOW→settle)
     sim->update();
     currentState = readMultiBitOutput(state);
     QCOMPARE(currentState, 4);  // HALT
-    QCOMPARE(TestUtils::inputStatus(flagWrite, 0), false);
+    QCOMPARE(TestUtils::inputStatus(flagWrite, 0), Status::Inactive);
 }
 
 void TestCPUControlUnit::testControlUnitSignals()
@@ -154,11 +154,11 @@ void TestCPUControlUnit::testControlUnitSignals()
     for (int s = 0; s < 5; ++s) {
         QCOMPARE(readMultiBitOutput(state), s);
         const Expect &e = expected[s];
-        QCOMPARE(inputStatus(pcInc, 0), e.pcInc != 0);
-        QCOMPARE(inputStatus(irLoad, 0), e.irLoad != 0);
-        QCOMPARE(inputStatus(aluEnable, 0), e.aluEnable != 0);
-        QCOMPARE(inputStatus(regWrite, 0), e.regWrite != 0);
-        QCOMPARE(inputStatus(flagWrite, 0), e.flagWrite != 0);
+        QCOMPARE(inputStatus(pcInc, 0), TestUtils::level(e.pcInc != 0));
+        QCOMPARE(inputStatus(irLoad, 0), TestUtils::level(e.irLoad != 0));
+        QCOMPARE(inputStatus(aluEnable, 0), TestUtils::level(e.aluEnable != 0));
+        QCOMPARE(inputStatus(regWrite, 0), TestUtils::level(e.regWrite != 0));
+        QCOMPARE(inputStatus(flagWrite, 0), TestUtils::level(e.flagWrite != 0));
         clockCycle(sim, clock);
         sim->update();
     }

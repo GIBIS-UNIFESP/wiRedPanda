@@ -51,7 +51,7 @@ void TestCPUDecoders::testDecoder3to8()
         for (int i = 0; i < 8; i++) {
             outputsVec.append(outputs[i]);
         }
-        int activeBits = readMultiBitOutput(outputsVec);
+        const int activeBits = readMultiBitOutput(outputsVec).value();
         // Count active bits
         int activeCount = 0;
         for (int i = 0; i < 8; i++) {
@@ -116,11 +116,5 @@ void TestCPUDecoders::testInstructionDecoder4to16()
     }
     sim->update();
     // Read 16-bit output
-    int result = 0;
-    for (int i = 0; i < 16; i++) {
-        if (TestUtils::inputStatus(decodedOutput[i], 0)) {
-            result |= (1 << i);
-        }
-    }
-    QCOMPARE(result, expectedOneHot);
+    QCOMPARE(readMultiBitOutput(decodedOutput), expectedOneHot);
 }

@@ -74,7 +74,7 @@ void TestCPUInstructionFetch::testInstructionFetch()
     pcInc->setOn(false);
     sim->update();
     // Verify PC has incremented exactly by cyclesPerFetch (with 8-bit wrap)
-    int currentPC = readMultiBitOutput(pcOut);
+    const TestUtils::Bits currentPC = readMultiBitOutput(pcOut);
     int expectedPC = (initialPC + cyclesPerFetch) & 0xFF;
     QCOMPARE(currentPC, expectedPC);
 }

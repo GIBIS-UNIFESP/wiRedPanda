@@ -93,7 +93,7 @@ void TestLevel5InstructionDecoder4Bit::testInstructionDecoder4Bit()
     setMultiBitInput(f.instrInputs, instructionCode);
     f.sim->update();
 
-    int outputValue = readMultiBitOutput(QVector<GraphicElement *>(f.opOutputs.begin(), f.opOutputs.end()), 0);
+    const TestUtils::Bits outputValue = readMultiBitOutput(QVector<GraphicElement *>(f.opOutputs.begin(), f.opOutputs.end()), 0);
 
     int expectedValue = 1 << expectedActiveOutput;
     QCOMPARE(outputValue, expectedValue);
