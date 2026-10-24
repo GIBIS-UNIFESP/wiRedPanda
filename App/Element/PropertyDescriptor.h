@@ -12,12 +12,9 @@
  * \brief Describes one editable property that a GraphicElement exposes in the ElementEditor.
  *
  * \details Each element returns the list of descriptors it supports via
- * GraphicElement::editableProperties(). The ElementEditor uses this list both
- * to decide which UI sections to show (computeCapabilities / applyCapabilitiesToUi)
- * and to dispatch property writes back to the element (apply / applyProperty).
- * Adding a new property type requires only: a new Type enum value, one entry in
- * GraphicElement::editableProperties(), one case in ElementEditor::applyProperty(),
- * and one UI section in applyCapabilitiesToUi(). No other existing code changes.
+ * GraphicElement::editableProperties(), which lists the kinds an element offers.
+ * The ElementEditor shows one field per kind (computeCapabilities / applyCapabilitiesToUi),
+ * and each field sets its own property through SetPropertyCommand (ElementProperty).
  */
 struct PropertyDescriptor {
     /// Identifies which property this descriptor represents.

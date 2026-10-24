@@ -18,8 +18,8 @@
 #include "App/Core/SentryHelpers.h"
 #include "App/Core/ThemeManager.h"
 #include "App/Element/ElementFactory.h"
+#include "App/Element/GraphicElementInput.h"
 #include "App/Element/GraphicElements/AudioBox.h"
-#include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/IC.h"
@@ -79,26 +79,40 @@ ElementEditor::ElementEditor(QWidget *parent)
 
     connect(m_table,                      &QTableWidget::cellDoubleClicked,                 this, &ElementEditor::setTruthTableProposition);
     connect(m_ui->checkBoxLocked,         &QCheckBox::clicked,                              this, &ElementEditor::inputLocked);
-    connect(m_ui->comboBoxAudio,          qOverload<int>(&QComboBox::currentIndexChanged),  this, &ElementEditor::apply);
-    connect(m_ui->comboBoxColor,          qOverload<int>(&QComboBox::currentIndexChanged),  this, &ElementEditor::apply);
     connect(m_ui->comboBoxInputSize,      qOverload<int>(&QComboBox::currentIndexChanged),  this, &ElementEditor::inputIndexChanged);
     connect(m_ui->comboBoxOutputSize,     qOverload<int>(&QComboBox::currentIndexChanged),  this, &ElementEditor::outputIndexChanged);
     connect(m_ui->comboBoxValue,          &QComboBox::currentTextChanged,                   this, &ElementEditor::outputValueChanged);
-    connect(m_ui->sliderDelay,            qOverload<int>(&QSlider::valueChanged),           this, &ElementEditor::apply);
-    connect(m_ui->doubleSpinBoxFrequency, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &ElementEditor::apply);
-    connect(m_ui->sliderVolume,            qOverload<int>(&QSlider::valueChanged),           this, &ElementEditor::apply);
-    connect(m_ui->comboBoxWirelessMode,   qOverload<int>(&QComboBox::currentIndexChanged),  this, &ElementEditor::apply);
-    connect(m_ui->lineEditElementLabel,   &QLineEdit::textChanged,                          this, &ElementEditor::apply);
     connect(m_ui->lineEditTrigger,        &QLineEdit::textChanged,                          this, &ElementEditor::triggerChanged);
     connect(m_ui->lineEditBlobName,       &QLineEdit::editingFinished,                      this, &ElementEditor::blobNameEditingFinished);
     connect(m_ui->pushButtonAudioBox,     &QPushButton::clicked,                            this, &ElementEditor::audioBox);
     connect(m_ui->pushButtonChangeAppearance,   &QPushButton::clicked,                            this, &ElementEditor::updateElementAppearance);
     connect(m_ui->pushButtonDefaultAppearance,  &QPushButton::clicked,                            this, &ElementEditor::defaultAppearance);
     connect(m_ui->pushButtonTruthTable,   &QPushButton::clicked,                            this, &ElementEditor::truthTable);
+
+    // Each field sets its own property of the selection. One typed into or dragged through is one undo step until it
+    // is left or released (endEditSession()).
+    connect(m_ui->lineEditElementLabel,   &QLineEdit::textChanged,                          this, &ElementEditor::labelChanged);
+    connect(m_ui->comboBoxColor,          qOverload<int>(&QComboBox::currentIndexChanged),  this, &ElementEditor::colorChanged);
+    connect(m_ui->comboBoxAudio,          qOverload<int>(&QComboBox::currentIndexChanged),  this, &ElementEditor::audioChanged);
+    connect(m_ui->doubleSpinBoxFrequency, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &ElementEditor::frequencyChanged);
+    connect(m_ui->sliderDelay,            qOverload<int>(&QSlider::valueChanged),           this, &ElementEditor::delayChanged);
+    connect(m_ui->sliderVolume,           qOverload<int>(&QSlider::valueChanged),           this, &ElementEditor::volumeChanged);
+    connect(m_ui->comboBoxWirelessMode,   qOverload<int>(&QComboBox::currentIndexChanged),  this, &ElementEditor::wirelessModeChanged);
+    connect(m_ui->lineEditElementLabel,   &QLineEdit::editingFinished,                      this, &ElementEditor::endEditSession);
+    connect(m_ui->lineEditTrigger,        &QLineEdit::editingFinished,                      this, &ElementEditor::endEditSession);
+    connect(m_ui->doubleSpinBoxFrequency, &QDoubleSpinBox::editingFinished,                 this, &ElementEditor::endEditSession);
+    connect(m_ui->sliderDelay,            &QSlider::sliderReleased,                         this, &ElementEditor::endEditSession);
+    connect(m_ui->sliderVolume,           &QSlider::sliderReleased,                         this, &ElementEditor::endEditSession);
 }
 
 ElementEditor::~ElementEditor()
 {
+    // A focused field reports that it was left (editingFinished) as it is destroyed, after this editor's part of the
+    // object is gone: the fields stop reaching it first
+    const auto fields = findChildren<QWidget *>();
+    for (auto *field : fields) {
+        field->disconnect(this);
+    }
 }
 
 // Helper: set visibility/enabled state of a label+widget pair together.
@@ -140,7 +154,7 @@ void ElementEditor::contextMenu(QPoint screenPos, QGraphicsItem *itemAtMouse)
         [this] { renameAction(); },
         [this] { changeTriggerAction(); },
         [this] { updateElementAppearance(); },
-        [this] { m_isDefaultAppearance = true; m_isUpdatingAppearance = true; apply(); },
+        [this] { applyAppearance(true, {}); },
         [this] { m_ui->doubleSpinBoxFrequency->setFocus(); },
         // IC sub-circuit actions
         [this] {
@@ -251,10 +265,7 @@ void ElementEditor::updateElementAppearance()
         return;
     }
 
-    m_isUpdatingAppearance = true;
-    m_appearanceName = fileName;
-    m_isDefaultAppearance = false;
-    apply();
+    applyAppearance(false, fileName);
 }
 
 void ElementEditor::setScene(Scene *scene)
@@ -309,6 +320,8 @@ void ElementEditor::retranslateUi()
 
 void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
 {
+    // Filling the fields for a selection starts another undo step
+    endEditSession();
     m_elements = elements;
 
     if (elements.isEmpty()) {
@@ -558,171 +571,169 @@ void ElementEditor::selectionChanged()
     setCurrentElements(m_scene->selectedElements());
 }
 
-void ElementEditor::applyProperty(GraphicElement *elm, PropertyDescriptor::Type type)
+bool ElementEditor::editable() const
 {
-    switch (type) {
-    case PropertyDescriptor::Type::Label:
-        if (m_ui->lineEditElementLabel->text() != m_manyLabels) {
-            elm->setLabel(m_ui->lineEditElementLabel->text());
-        }
-        break;
-    case PropertyDescriptor::Type::Color:
-        if (m_ui->comboBoxColor->currentData().isValid()) {
-            elm->setColor(m_ui->comboBoxColor->currentData().toString());
-        }
-        break;
-    case PropertyDescriptor::Type::Frequency:
-        if (m_ui->doubleSpinBoxFrequency->text() != m_manyFreq) {
-            elm->setFrequency(m_ui->doubleSpinBoxFrequency->value());
-        }
-        break;
-    case PropertyDescriptor::Type::Delay: {
-        // Convert slider value (-4 to 4) to phase delay (-0.5 to 0.5 as fraction of period).
-        const double delayFraction = m_ui->sliderDelay->value() / 8.0;
-        elm->setDelay(delayFraction);
-        break;
-    }
-    // LCOV_EXCL_START — no element type currently sets hasAudio=true in its ElementInfo (see
-    // App/Scene/Commands.cpp's identical exclusion), so GraphicElement::editableProperties()
-    // never yields Type::Audio and this case is never dispatched.
-    case PropertyDescriptor::Type::Audio:
-        if (m_ui->comboBoxAudio->currentText() != m_manyAudios) {
-            elm->setAudio(m_ui->comboBoxAudio->currentText());
-        }
-        break;
-    // LCOV_EXCL_STOP
-    case PropertyDescriptor::Type::Trigger:
-        // Force uppercase so the stored key sequence matches Qt's key names and is
-        // compatible across keyboard layouts.
-        if (m_ui->lineEditTrigger->text() != m_manyTriggers && m_ui->lineEditTrigger->text().size() <= 1) {
-            elm->setTrigger(QKeySequence(m_ui->lineEditTrigger->text()));
-        }
-        break;
-    case PropertyDescriptor::Type::Appearance:
-        if (m_isUpdatingAppearance) {
-            elm->setAppearance(m_isDefaultAppearance, m_appearanceName);
-        }
-        break;
-    case PropertyDescriptor::Type::WirelessModeSelector:
-        if (m_ui->comboBoxWirelessMode->currentText() != m_manyWirelessModes) {
-            if (auto *node = qobject_cast<Node *>(elm)) {
-                node->setWirelessMode(static_cast<WirelessMode>(m_ui->comboBoxWirelessMode->currentIndex()));
-            }
-        }
-        break;
-    case PropertyDescriptor::Type::Volume:
-        elm->setVolume(static_cast<float>(m_ui->sliderVolume->value()) / 100.0f);
-        break;
-    case PropertyDescriptor::Type::AudioBox:
-    case PropertyDescriptor::Type::TruthTable:
-        // Managed by their own dialogs (audioBox() / truthTable()); not applied here.
-        break;
-    }
+    // m_scene can be null while m_elements still holds the previous tab's
+    // selection (setScene(nullptr) on tab change).
+    return !m_elements.isEmpty() && isEnabled() && m_scene;
 }
 
-void ElementEditor::apply()
+void ElementEditor::setProperty(const ElementProperty property, const QVariant &value, const bool merges)
 {
+    if (!editable()) {
+        return;
+    }
     sentryBreadcrumb("ui", QStringLiteral("Element properties applied"));
     qCDebug(three) << "Apply.";
 
-    // m_scene can be null while m_elements still holds the previous tab's
-    // selection (setScene(nullptr) on tab change) — applying would dereference
-    // the null scene below.
-    if (m_elements.isEmpty() || !isEnabled() || !m_scene) {
+    if (auto *command = SetPropertyCommand::apply(m_elements, property, value, m_scene, merges ? m_editSession : -1)) {
+        m_scene->receiveCommand(command);
+    }
+}
+
+void ElementEditor::endEditSession()
+{
+    ++m_editSession;
+}
+
+bool ElementEditor::refusesTxChannel(const std::optional<QString> &label, const std::optional<WirelessMode> mode)
+{
+    // A Tx node's label is its channel name — two Tx nodes on the same label
+    // means one silently receives no signal, which is always a user error.
+    if (!m_caps.hasWirelessMode) {
+        return false;
+    }
+
+    for (auto *elm : std::as_const(m_elements)) {
+        auto *node = qobject_cast<Node *>(elm);
+        if (!node) continue;
+
+        const QString candidateLabel = label.value_or(node->label());
+        const WirelessMode candidateMode = mode.value_or(node->wirelessMode());
+
+        if (candidateMode != WirelessMode::Tx || candidateLabel.isEmpty()) continue;
+
+        for (auto *other : m_scene->elements()) {
+            if (other == elm) continue;
+            auto *otherNode = qobject_cast<Node *>(other);
+            if (!otherNode || otherNode->wirelessMode() != WirelessMode::Tx) continue;
+            if (otherNode->label() == candidateLabel) {
+                QMessageBox::warning(this,
+                    tr("Duplicate Wireless Channel"),
+                    tr("A Tx node with label \"%1\" already exists.\n"
+                       "Each wireless channel must have a unique label.").arg(candidateLabel));
+                update();
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+void ElementEditor::labelChanged(const QString &label)
+{
+    if (!editable() || (label == m_manyLabels) || refusesTxChannel(label, std::nullopt)) {
+        return;
+    }
+    setProperty(ElementProperty::Label, label, true);
+}
+
+void ElementEditor::colorChanged()
+{
+    // The item data is the untranslated colour name; the placeholder of a selection with many colours has none
+    const QVariant color = m_ui->comboBoxColor->currentData();
+    if (color.isValid()) {
+        setProperty(ElementProperty::Color, color.toString(), false);
+    }
+}
+
+// LCOV_EXCL_START — no element type currently sets hasAudio=true in its ElementInfo (see
+// App/Scene/Commands.cpp's identical exclusion), so the sound field is never shown.
+void ElementEditor::audioChanged()
+{
+    if (m_ui->comboBoxAudio->currentText() != m_manyAudios) {
+        setProperty(ElementProperty::Audio, m_ui->comboBoxAudio->currentText(), false);
+    }
+}
+// LCOV_EXCL_STOP
+
+void ElementEditor::frequencyChanged(const double frequency)
+{
+    if (m_ui->doubleSpinBoxFrequency->text() != m_manyFreq) {
+        setProperty(ElementProperty::Frequency, frequency, true);
+    }
+}
+
+void ElementEditor::delayChanged(const int eighths)
+{
+    // The slider's -4 to 4 is the phase delay's -0.5 to 0.5 of the period
+    setProperty(ElementProperty::Delay, eighths / 8.0, true);
+}
+
+void ElementEditor::volumeChanged(const int percent)
+{
+    setProperty(ElementProperty::Volume, static_cast<float>(percent) / 100.0f, true);
+}
+
+void ElementEditor::wirelessModeChanged(const int index)
+{
+    if (!editable() || (m_ui->comboBoxWirelessMode->currentText() == m_manyWirelessModes)) {
+        return;
+    }
+    const auto mode = static_cast<WirelessMode>(index);
+    if (refusesTxChannel(std::nullopt, mode)) {
         return;
     }
 
-    // Reject label changes that would create a duplicate wireless Tx channel.
-    // A Tx node's label is its channel name — two Tx nodes on the same label
-    // means one silently receives no signal, which is always a user error.
-    if (m_scene && m_caps.hasWirelessMode) {
-        const QString newLabel = m_ui->lineEditElementLabel->text();
-        const bool labelChanging = (newLabel != m_manyLabels);
-        const WirelessMode newMode = static_cast<WirelessMode>(m_ui->comboBoxWirelessMode->currentIndex());
-        const bool modeChanging = (m_ui->comboBoxWirelessMode->currentText() != m_manyWirelessModes);
-
-        for (auto *elm : std::as_const(m_elements)) {
-            auto *node = qobject_cast<Node *>(elm);
-            if (!node) continue;
-
-            const QString candidateLabel = labelChanging ? newLabel : node->label();
-            const WirelessMode candidateMode = modeChanging ? newMode : node->wirelessMode();
-
-            if (candidateMode != WirelessMode::Tx || candidateLabel.isEmpty()) continue;
-
-            for (auto *other : m_scene->elements()) {
-                if (other == elm) continue;
-                auto *otherNode = qobject_cast<Node *>(other);
-                if (!otherNode || otherNode->wirelessMode() != WirelessMode::Tx) continue;
-                if (otherNode->label() == candidateLabel) {
-                    QMessageBox::warning(this,
-                        tr("Duplicate Wireless Channel"),
-                        tr("A Tx node with label \"%1\" already exists.\n"
-                           "Each wireless channel must have a unique label.").arg(candidateLabel));
-                    update();
-                    return;
-                }
-            }
-        }
-    }
-
-    // Collect connections that will be severed by wireless mode changes.
     // setWirelessMode() hides the replaced port but does not delete connections
     // itself — that is handled here via DeleteItemsCommand so undo can restore them.
     QList<QGraphicsItem *> wirelessConnsToDelete;
-    if (m_scene && m_caps.hasWirelessMode) {
-        const WirelessMode newMode = static_cast<WirelessMode>(m_ui->comboBoxWirelessMode->currentIndex());
-        const bool modeChanging = (m_ui->comboBoxWirelessMode->currentText() != m_manyWirelessModes);
+    for (auto *elm : std::as_const(m_elements)) {
+        auto *node = qobject_cast<Node *>(elm);
+        if (!node) continue;
 
-        if (modeChanging) {
-            for (auto *elm : std::as_const(m_elements)) {
-                auto *node = qobject_cast<Node *>(elm);
-                if (!node) continue;
-
-                Port *port = (newMode == WirelessMode::Rx) ? static_cast<Port *>(node->inputPort())
-                             : (newMode == WirelessMode::Tx) ? static_cast<Port *>(node->outputPort())
-                             : nullptr;
-                if (port) {
-                    for (auto *conn : port->connections()) {
-                        wirelessConnsToDelete.append(static_cast<QGraphicsItem *>(conn));
-                    }
-                }
+        Port *port = (mode == WirelessMode::Rx) ? static_cast<Port *>(node->inputPort())
+                     : (mode == WirelessMode::Tx) ? static_cast<Port *>(node->outputPort())
+                     : nullptr;
+        if (port) {
+            for (auto *conn : port->connections()) {
+                wirelessConnsToDelete.append(static_cast<QGraphicsItem *>(conn));
             }
         }
     }
 
-    // Snapshot current state into oldData before modifying anything.
-    // UpdateCommand uses oldData for undo and captures the post-modification
-    // state internally as newData when it is constructed.
-    QByteArray oldData;
-    QDataStream stream(&oldData, QIODevice::WriteOnly);
-    Serialization::writePandaHeader(stream);
-
-    for (auto *elm : std::as_const(m_elements)) {
-        elm->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
-        for (const auto &prop : elm->editableProperties()) {
-            applyProperty(elm, prop.type);
-        }
-    }
-
-    // Reset the one-shot appearance update flag after applying to all elements.
-    if (m_isUpdatingAppearance) {
-        m_isUpdatingAppearance = false;
-    }
-
-    // When wireless mode changes sever connections, group the property update
-    // and the delete into a single undo macro so both are undone together.
+    // When the mode severs connections, the mode and the delete are one undo step.
     const bool needsMacro = !wirelessConnsToDelete.isEmpty();
     if (needsMacro) {
         m_scene->undoStack()->beginMacro(tr("Change wireless mode"));
     }
 
-    m_scene->receiveCommand(new UpdateCommand(m_elements, oldData, m_scene));
+    setProperty(ElementProperty::Wireless, index, false);
 
     if (needsMacro) {
         m_scene->receiveCommand(new DeleteItemsCommand(wirelessConnsToDelete, m_scene));
         m_scene->undoStack()->endMacro();
     }
+}
+
+void ElementEditor::applyAppearance(const bool defaultAppearance, const QString &fileName)
+{
+    if (!editable()) {
+        return;
+    }
+    sentryBreadcrumb("ui", QStringLiteral("Element properties applied"));
+
+    // An appearance is no property SetPropertyCommand sets: the step restores the elements' saved state
+    QByteArray oldData;
+    QDataStream stream(&oldData, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(stream);
+    for (auto *elm : std::as_const(m_elements)) {
+        elm->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
+        if (elm->canChangeAppearance()) {
+            elm->setAppearance(defaultAppearance, fileName);
+        }
+    }
+    m_scene->receiveCommand(new UpdateCommand(m_elements, oldData, m_scene));
 }
 
 void ElementEditor::blobNameEditingFinished()
@@ -791,44 +802,16 @@ void ElementEditor::outputIndexChanged(const int index)
 
 void ElementEditor::outputValueChanged(const QString &value)
 {
-    if (m_elements.isEmpty() || !isEnabled()) {
-        return;
+    // The placeholder of a selection with many values is no value
+    if (value != m_manyOV) {
+        setProperty(ElementProperty::Value, value.toInt(), false);
     }
-
-    const int newValue = value.toInt();
-
-    for (auto *elm : std::as_const(m_elements)) {
-        if (elm->elementType() == ElementType::InputRotary) {
-            // InputRotary carries a multi-bit integer value; keep it enabled
-            // (first arg true) and update the numeric output.
-            if (auto *input = qobject_cast<InputRotary *>(elm)) {
-                input->setOn(true, newValue);
-            }
-        } else {
-            // Regular binary inputs treat any non-zero value as "on".
-            if (auto *input = qobject_cast<GraphicElementInput *>(elm)) {
-                input->setOn(static_cast<bool>(newValue));
-            }
-        }
-    }
-
-    apply();
 }
 
 void ElementEditor::inputLocked(const bool value)
 {
-    if (m_elements.isEmpty() || !isEnabled()) {
-        return;
-    }
-
-    for (auto *elm : std::as_const(m_elements)) {
-        if (auto *input = qobject_cast<GraphicElementInput *>(elm)) {
-            input->setLocked(value);
-        }
-    }
-
     qCDebug(zero) << "Input locked.";
-    apply();
+    setProperty(ElementProperty::Locked, value, false);
 }
 
 void ElementEditor::triggerChanged(const QString &cmd)
@@ -840,7 +823,9 @@ void ElementEditor::triggerChanged(const QString &cmd)
         m_ui->lineEditTrigger->setText(upper);
         return;
     }
-    apply();
+    if ((cmd != m_manyTriggers) && (cmd.size() <= 1)) {
+        setProperty(ElementProperty::Trigger, cmd, true);
+    }
 }
 
 void ElementEditor::truthTable()
@@ -985,11 +970,7 @@ void ElementEditor::audioBox()
 void ElementEditor::defaultAppearance()
 {
     sentryBreadcrumb("ui", QStringLiteral("Element appearance reset"));
-    // Set flags before calling apply() so apply() sees them during the loop
-    // and passes true/empty to elm->setAppearance() for each selected element.
-    m_isUpdatingAppearance = true;
-    m_isDefaultAppearance = true;
-    apply();
+    applyAppearance(true, {});
 }
 
 void ElementEditor::update()

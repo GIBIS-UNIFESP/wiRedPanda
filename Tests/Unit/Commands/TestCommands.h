@@ -65,6 +65,17 @@ private slots:
     void testMorphUndoRestoresInputsTheNewTypeCannotHave();
     void testMorphUndoWithAPictureThatIsGoneChangesNothing();
 
+    // SetPropertyCommand: one property of elements, its values before and after, merged within an edit session
+    void testSetPropertyCommandUndoesEachElementsValue();
+    void testSetPropertyCommandNamesEveryElementThatHasTheProperty();
+    void testSetPropertyCommandSetsAnInputsLockAndValue();
+    void testSetPropertyCommandFirstRedoLeavesTheValues();
+    void testSetPropertyCommandMergesASession();
+    void testSetPropertyCommandMergedBackIsNoStep();
+    void testSetPropertyCommandMergesOnlyTheSameChanges();
+    void testSetPropertyCommandRxLabelRewiresChannel();
+    void testSetPropertyCommandNonWirelessLabelKeepsClockPhase();
+
     // Empty-target no-ops
     void testUpdateCommandWithNoElementsIsNoOp();
     void testUpdateBlobCommandWithNoElementsIsNoOp();
