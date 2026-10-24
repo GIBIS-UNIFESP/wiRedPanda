@@ -88,8 +88,8 @@ jobs:
     - name: Install Sentry CLI
       run: |
         if [ "$RUNNER_OS" == "Windows" ]; then
-          LATEST_VERSION=$(curl -s https://api.github.com/repos/getsentry/sentry-cli/releases/latest | jq -r .tag_name)
-          curl -LO "https://github.com/getsentry/sentry-cli/releases/download/$LATEST_VERSION/sentry-cli-Windows-x86_64.exe"
+          curl -fLO "https://github.com/getsentry/sentry-cli/releases/download/3.8.2/sentry-cli-Windows-x86_64.exe"
+          echo "50009f23c49d6e9ff7624204c7035855303b49c5e326708ee783c1fdf783ac83  sentry-cli-Windows-x86_64.exe" | sha256sum -c -
           mv sentry-cli-Windows-x86_64.exe sentry-cli.exe
 
           ACTUAL_VERSION=$(./sentry-cli.exe -V 2>&1 | tr -d '\r')
@@ -106,22 +106,25 @@ jobs:
           # directory instead of a file and hard-error on ("Is a directory"). Fix submitted
           # upstream as https://github.com/getsentry/symbolic/pull/1060; until it ships in a
           # release, build sentry-cli 3.7.0 from source with that same fix patched in from a
-          # pinned branch (kept in sync with the upstream PR) instead of downloading the binary.
+          # pinned commit of the branch ci-fix-13.8.0-apply-elf-relocations (kept in sync with
+          # the upstream PR) instead of downloading the binary.
           git clone --depth 1 --branch 3.7.0 https://github.com/getsentry/sentry-cli.git /tmp/sentry-cli-src
           {
             echo ''
             echo '[patch.crates-io]'
-            echo 'symbolic = { git = "https://github.com/darktorres/symbolic", branch = "ci-fix-13.8.0-apply-elf-relocations" }'
-            echo 'symbolic-common = { git = "https://github.com/darktorres/symbolic", branch = "ci-fix-13.8.0-apply-elf-relocations" }'
-            echo 'symbolic-debuginfo = { git = "https://github.com/darktorres/symbolic", branch = "ci-fix-13.8.0-apply-elf-relocations" }'
-            echo 'symbolic-il2cpp = { git = "https://github.com/darktorres/symbolic", branch = "ci-fix-13.8.0-apply-elf-relocations" }'
-            echo 'symbolic-ppdb = { git = "https://github.com/darktorres/symbolic", branch = "ci-fix-13.8.0-apply-elf-relocations" }'
-            echo 'symbolic-symcache = { git = "https://github.com/darktorres/symbolic", branch = "ci-fix-13.8.0-apply-elf-relocations" }'
+            echo 'symbolic = { git = "https://github.com/darktorres/symbolic", rev = "c471d866d6be88bc735a2125940ecb0181806c98" }'
+            echo 'symbolic-common = { git = "https://github.com/darktorres/symbolic", rev = "c471d866d6be88bc735a2125940ecb0181806c98" }'
+            echo 'symbolic-debuginfo = { git = "https://github.com/darktorres/symbolic", rev = "c471d866d6be88bc735a2125940ecb0181806c98" }'
+            echo 'symbolic-il2cpp = { git = "https://github.com/darktorres/symbolic", rev = "c471d866d6be88bc735a2125940ecb0181806c98" }'
+            echo 'symbolic-ppdb = { git = "https://github.com/darktorres/symbolic", rev = "c471d866d6be88bc735a2125940ecb0181806c98" }'
+            echo 'symbolic-symcache = { git = "https://github.com/darktorres/symbolic", rev = "c471d866d6be88bc735a2125940ecb0181806c98" }'
           } >> /tmp/sentry-cli-src/Cargo.toml
           cargo build --release --manifest-path /tmp/sentry-cli-src/Cargo.toml --bin sentry-cli
           sudo install -m 755 /tmp/sentry-cli-src/target/release/sentry-cli /usr/local/bin/sentry-cli
         else
-          curl -sL https://sentry.io/get-cli/ | bash
+          curl -fL -o sentry-cli "https://github.com/getsentry/sentry-cli/releases/download/3.8.2/sentry-cli-Darwin-universal"
+          echo "2d1b118fa46960ba5e8e0cca9a6e197366905776a0ddc5a89c7d05a3908b77db  sentry-cli" | shasum -a 256 -c -
+          sudo install -m 755 sentry-cli /usr/local/bin/sentry-cli
         fi
       shell: bash
 
@@ -190,9 +193,18 @@ jobs:
         cp App/Resources/Assets/Logos/wpanda.svg appimage/usr/share/icons/hicolor/scalable/apps/wpanda.svg
         cp App/Resources/Assets/Logos/wpanda-256x256.png appimage/usr/share/icons/hicolor/256x256/apps/wpanda.png
 
-        wget -q "https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous \
-          -O - | grep "appimagetool-.*-${ARCH_TRIPLE}.AppImage" | head -n 1 | cut -d '"' -f 2)" \
+        # go-appimage publishes only a rolling "continuous" release, replaced by each of its builds, so the tool is
+        # pinned by build number and checked by digest: when that build is replaced, the download fails here, and the
+        # pin moves to the new build with its digest.
+        APPIMAGETOOL_BUILD=951
+        case "$ARCH_TRIPLE" in
+          x86_64)  APPIMAGETOOL_SHA256=7c974f525d5bcde2712dd080e0b079a6c3802113a337f0ab142522dcefbf452d ;;
+          aarch64) APPIMAGETOOL_SHA256=5a5e2f00a866f9fcedc9e74ee7d35c0744bf83e50be8080425df2d81b2dde71e ;;
+          *) echo "No pinned appimagetool for $ARCH_TRIPLE" >&2; exit 1 ;;
+        esac
+        wget -q "https://github.com/probonopd/go-appimage/releases/download/continuous/appimagetool-${APPIMAGETOOL_BUILD}-${ARCH_TRIPLE}.AppImage" \
           -O appimagetool
+        echo "${APPIMAGETOOL_SHA256}  appimagetool" | sha256sum -c -
         chmod +x appimagetool
 
         # Copy all runtime Qt plugin categories before deploy so go-appimage
