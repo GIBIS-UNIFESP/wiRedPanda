@@ -233,7 +233,7 @@ void GraphicsView::zoomToFit()
             target |= item->sceneBoundingRect();
         }
     } else if (auto *scene_ = qobject_cast<Scene *>(scene())) {
-        target = scene_->cachedItemsBoundingRect();
+        target = scene_->cachedCircuitBoundingRect();
     } else {
         target = scene()->itemsBoundingRect();
     }

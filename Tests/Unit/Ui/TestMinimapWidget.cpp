@@ -3,22 +3,42 @@
 
 #include "Tests/Unit/Ui/TestMinimapWidget.h"
 
-#include <QGraphicsRectItem>
 #include <QSignalSpy>
 
 #include "App/Core/ThemeManager.h"
+#include "App/Element/ElementFactory.h"
+#include "App/Element/GraphicElement.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/UI/MinimapWidget.h"
 
+namespace TestMinimapWidgetHelpers {
+
+/// Two elements in opposite corners, so the circuit's bounds, which the minimap frames, are exactly \a bounds.
+void addCircuitSpanning(Scene *scene, const QRectF &bounds)
+{
+    const auto place = [scene](const auto &moveBy) {
+        auto *element = ElementFactory::buildElement(ElementType::And);
+        // Positioned before it joins the scene, where a position snaps to the grid.
+        const QRectF own = element->sceneBoundingRect() | element->mapRectToScene(element->childrenBoundingRect());
+        element->setPos(element->pos() + moveBy(own));
+        scene->addItem(element);
+    };
+    place([&bounds](const QRectF &own) { return bounds.topLeft() - own.topLeft(); });
+    place([&bounds](const QRectF &own) { return bounds.bottomRight() - own.bottomRight(); });
+    QCOMPARE(scene->circuitBoundingRect(), bounds);
+}
+
+} // namespace TestMinimapWidgetHelpers
+
+using TestMinimapWidgetHelpers::addCircuitSpanning;
+
 void TestMinimapWidget::testComputeTransformWideSourceFillsWidget()
 {
     WorkSpace workspace;
-    auto *rectItem = new QGraphicsRectItem(QRectF(0, 0, 400, 100));
-    rectItem->setPen(Qt::NoPen);
-    workspace.scene()->addItem(rectItem);
+    addCircuitSpanning(workspace.scene(), QRectF(0, 0, 400, 100));
 
-    // The minimap source is sceneRect ∪ itemsBoundingRect ∪ the visible viewport. Pin it with a
+    // The minimap source is sceneRect ∪ the circuit's bounds ∪ the visible viewport. Pin it with a
     // wide scene rect large enough to dominate the item and the (small, scale-1) viewport, so the
     // expansion branch under test (source wider than the widget → grow height) is deterministic.
     workspace.scene()->setSceneRect(QRectF(0, 0, 8000, 2000));
@@ -30,7 +50,7 @@ void TestMinimapWidget::testComputeTransformWideSourceFillsWidget()
     QVERIFY(minimap.computeTransform(src, scale, dx, dy, usedW, usedH));
 
     // Pre-expansion union, derived the same way computeTransform() builds it.
-    QRectF unionSrc = workspace.scene()->sceneRect().united(workspace.scene()->itemsBoundingRect());
+    QRectF unionSrc = workspace.scene()->sceneRect().united(workspace.scene()->circuitBoundingRect());
     unionSrc = unionSrc.united(workspace.view()->mapToScene(workspace.view()->viewport()->rect()).boundingRect());
 
     // The source is expanded to the widget's aspect ratio so the scene fills the whole widget:
@@ -50,9 +70,7 @@ void TestMinimapWidget::testComputeTransformWideSourceFillsWidget()
 void TestMinimapWidget::testComputeTransformTallSourceFillsWidget()
 {
     WorkSpace workspace;
-    auto *rectItem = new QGraphicsRectItem(QRectF(0, 0, 100, 400));
-    rectItem->setPen(Qt::NoPen);
-    workspace.scene()->addItem(rectItem);
+    addCircuitSpanning(workspace.scene(), QRectF(0, 0, 100, 400));
 
     // Tall scene rect that dominates the item and viewport (see the wide case): exercises the
     // other expansion branch (source taller than the widget → grow width).
@@ -64,7 +82,7 @@ void TestMinimapWidget::testComputeTransformTallSourceFillsWidget()
     double scale = 0.0, dx = 0.0, dy = 0.0, usedW = 0.0, usedH = 0.0;
     QVERIFY(minimap.computeTransform(src, scale, dx, dy, usedW, usedH));
 
-    QRectF unionSrc = workspace.scene()->sceneRect().united(workspace.scene()->itemsBoundingRect());
+    QRectF unionSrc = workspace.scene()->sceneRect().united(workspace.scene()->circuitBoundingRect());
     unionSrc = unionSrc.united(workspace.view()->mapToScene(workspace.view()->viewport()->rect()).boundingRect());
 
     QVERIFY(qFuzzyIsNull(dx));
@@ -81,8 +99,7 @@ void TestMinimapWidget::testComputeTransformTallSourceFillsWidget()
 void TestMinimapWidget::testComputeTransformNullScene()
 {
     // computeTransform's own `if (!m_scene) return false;` guard -- the one early-return
-    // path actually reachable in practice, since a live Scene always has a valid (if tiny)
-    // itemsBoundingRect() from its permanent selection-rect item.
+    // path actually reachable in practice, since a live Scene's scene rect is never empty.
     MinimapWidget minimap(nullptr, nullptr);
 
     QRectF src;
@@ -93,9 +110,7 @@ void TestMinimapWidget::testComputeTransformNullScene()
 void TestMinimapWidget::testWidgetToSceneTopLeft()
 {
     WorkSpace workspace;
-    auto *rectItem = new QGraphicsRectItem(QRectF(0, 0, 400, 100));
-    rectItem->setPen(Qt::NoPen);
-    workspace.scene()->addItem(rectItem);
+    addCircuitSpanning(workspace.scene(), QRectF(0, 0, 400, 100));
     MinimapWidget minimap(workspace.scene(), workspace.view());
 
     QRectF src;
@@ -108,9 +123,7 @@ void TestMinimapWidget::testWidgetToSceneTopLeft()
 void TestMinimapWidget::testWidgetToSceneCenter()
 {
     WorkSpace workspace;
-    auto *rectItem = new QGraphicsRectItem(QRectF(0, 0, 400, 100));
-    rectItem->setPen(Qt::NoPen);
-    workspace.scene()->addItem(rectItem);
+    addCircuitSpanning(workspace.scene(), QRectF(0, 0, 400, 100));
     MinimapWidget minimap(workspace.scene(), workspace.view());
 
     QRectF src;
@@ -124,9 +137,7 @@ void TestMinimapWidget::testWidgetToSceneCenter()
 void TestMinimapWidget::testWidgetToSceneClampsOutOfBoundsX()
 {
     WorkSpace workspace;
-    auto *rectItem = new QGraphicsRectItem(QRectF(0, 0, 400, 100));
-    rectItem->setPen(Qt::NoPen);
-    workspace.scene()->addItem(rectItem);
+    addCircuitSpanning(workspace.scene(), QRectF(0, 0, 400, 100));
     MinimapWidget minimap(workspace.scene(), workspace.view());
 
     QRectF src;
@@ -182,10 +193,8 @@ void TestMinimapWidget::testResizeModeAtInteriorIsNone()
 void TestMinimapWidget::testApplyResizePreservesAspectRatio()
 {
     WorkSpace workspace;
-    // A 2:1 items bounding rect drives applyResize()'s locked aspect ratio.
-    auto *rectItem = new QGraphicsRectItem(QRectF(0, 0, 400, 200));
-    rectItem->setPen(Qt::NoPen);
-    workspace.scene()->addItem(rectItem);
+    // A 2:1 circuit drives applyResize()'s locked aspect ratio.
+    addCircuitSpanning(workspace.scene(), QRectF(0, 0, 400, 200));
 
     MinimapWidget minimap(workspace.scene(), workspace.view()); // starts at 220x160
     minimap.m_resizeMode = MinimapWidget::ResizeMode::Right;
@@ -200,9 +209,7 @@ void TestMinimapWidget::testApplyResizePreservesAspectRatio()
 void TestMinimapWidget::testApplyResizeClampsToMinimumSize()
 {
     WorkSpace workspace;
-    auto *rectItem = new QGraphicsRectItem(QRectF(0, 0, 400, 200));
-    rectItem->setPen(Qt::NoPen);
-    workspace.scene()->addItem(rectItem);
+    addCircuitSpanning(workspace.scene(), QRectF(0, 0, 400, 200));
 
     MinimapWidget minimap(workspace.scene(), workspace.view());
     minimap.m_resizeMode = MinimapWidget::ResizeMode::Right;
@@ -216,9 +223,7 @@ void TestMinimapWidget::testApplyResizeClampsToMinimumSize()
 void TestMinimapWidget::testApplyResizeFromLeftKeepsRightEdgeFixed()
 {
     WorkSpace workspace;
-    auto *rectItem = new QGraphicsRectItem(QRectF(0, 0, 400, 200));
-    rectItem->setPen(Qt::NoPen);
-    workspace.scene()->addItem(rectItem);
+    addCircuitSpanning(workspace.scene(), QRectF(0, 0, 400, 200));
 
     MinimapWidget minimap(workspace.scene(), workspace.view());
     const QRect oldGeom = minimap.geometry();
@@ -238,9 +243,7 @@ void TestMinimapWidget::testApplyResizeFromLeftKeepsRightEdgeFixed()
 void TestMinimapWidget::testApplyResizeFromTopKeepsBottomEdgeFixed()
 {
     WorkSpace workspace;
-    auto *rectItem = new QGraphicsRectItem(QRectF(0, 0, 400, 200));
-    rectItem->setPen(Qt::NoPen);
-    workspace.scene()->addItem(rectItem);
+    addCircuitSpanning(workspace.scene(), QRectF(0, 0, 400, 200));
 
     MinimapWidget minimap(workspace.scene(), workspace.view());
     const QRect oldGeom = minimap.geometry();
@@ -414,9 +417,7 @@ void TestMinimapWidget::testMousePressElsewhereCentersViewAndStartsDragging()
 {
     WorkSpace workspace;
     workspace.view()->resize(100, 100); // small but non-degenerate viewport to center within
-    auto *rectItem = new QGraphicsRectItem(QRectF(0, 0, 4000, 2000));
-    rectItem->setPen(Qt::NoPen);
-    workspace.scene()->addItem(rectItem);
+    addCircuitSpanning(workspace.scene(), QRectF(0, 0, 4000, 2000));
     workspace.scene()->setSceneRect(QRectF(0, 0, 4000, 2000));
 
     MinimapWidget minimap(workspace.scene(), workspace.view());
@@ -466,9 +467,7 @@ void TestMinimapWidget::testApplyResizeFallsBackToSquareAspectWithNoScene()
 void TestMinimapWidget::testApplyResizeDiagonalHorizontalDominant()
 {
     WorkSpace workspace;
-    auto *rectItem = new QGraphicsRectItem(QRectF(0, 0, 400, 200)); // 2:1 aspect
-    rectItem->setPen(Qt::NoPen);
-    workspace.scene()->addItem(rectItem);
+    addCircuitSpanning(workspace.scene(), QRectF(0, 0, 400, 200)); // 2:1 aspect
 
     MinimapWidget minimap(workspace.scene(), workspace.view());
     minimap.m_resizeMode = MinimapWidget::ResizeMode::BottomRight;
@@ -485,9 +484,7 @@ void TestMinimapWidget::testApplyResizeDiagonalHorizontalDominant()
 void TestMinimapWidget::testApplyResizeDiagonalVerticalDominant()
 {
     WorkSpace workspace;
-    auto *rectItem = new QGraphicsRectItem(QRectF(0, 0, 400, 200)); // 2:1 aspect
-    rectItem->setPen(Qt::NoPen);
-    workspace.scene()->addItem(rectItem);
+    addCircuitSpanning(workspace.scene(), QRectF(0, 0, 400, 200)); // 2:1 aspect
 
     MinimapWidget minimap(workspace.scene(), workspace.view());
     minimap.m_resizeMode = MinimapWidget::ResizeMode::BottomRight;
@@ -512,9 +509,7 @@ void TestMinimapWidget::testApplyResizeAtWidthFloorRederivesHeightFromAspect()
     // 1.3:1 aspect -- close to, but distinct from, the widget's own minimum-size ratio
     // (160x120 = 1.333:1), so a wrong fallback-to-raw-minimum is numerically distinguishable
     // from the correct aspect-derived value (123 vs 120).
-    auto *rectItem = new QGraphicsRectItem(QRectF(0, 0, 130, 100));
-    rectItem->setPen(Qt::NoPen);
-    workspace.scene()->addItem(rectItem);
+    addCircuitSpanning(workspace.scene(), QRectF(0, 0, 130, 100));
 
     MinimapWidget minimap(workspace.scene(), workspace.view());
     minimap.m_resizeMode = MinimapWidget::ResizeMode::Right;
@@ -530,9 +525,7 @@ void TestMinimapWidget::testApplyResizeAtHeightFloorRederivesWidthFromAspect()
     // Symmetric regression test to testApplyResizeAtWidthFloorRederivesHeightFromAspect(),
     // for the height-floor branch.
     WorkSpace workspace;
-    auto *rectItem = new QGraphicsRectItem(QRectF(0, 0, 400, 200)); // 2:1 aspect
-    rectItem->setPen(Qt::NoPen);
-    workspace.scene()->addItem(rectItem);
+    addCircuitSpanning(workspace.scene(), QRectF(0, 0, 400, 200)); // 2:1 aspect
 
     MinimapWidget minimap(workspace.scene(), workspace.view()); // starts at 220x160
     minimap.m_resizeMode = MinimapWidget::ResizeMode::Bottom;
@@ -557,9 +550,7 @@ void TestMinimapWidget::testMoveByIsNoOpWithoutParent()
 void TestMinimapWidget::testMouseMoveWhileResizingAppliesResizeAndInvalidatesCache()
 {
     WorkSpace workspace;
-    auto *rectItem = new QGraphicsRectItem(QRectF(0, 0, 400, 200));
-    rectItem->setPen(Qt::NoPen);
-    workspace.scene()->addItem(rectItem);
+    addCircuitSpanning(workspace.scene(), QRectF(0, 0, 400, 200));
 
     MinimapWidget minimap(workspace.scene(), workspace.view());
     minimap.m_resizing = true;
@@ -622,9 +613,7 @@ void TestMinimapWidget::testMouseMoveWhileDraggingRecentersView()
 {
     WorkSpace workspace;
     workspace.view()->resize(100, 100); // small but non-degenerate viewport to center within
-    auto *rectItem = new QGraphicsRectItem(QRectF(0, 0, 4000, 2000));
-    rectItem->setPen(Qt::NoPen);
-    workspace.scene()->addItem(rectItem);
+    addCircuitSpanning(workspace.scene(), QRectF(0, 0, 4000, 2000));
     workspace.scene()->setSceneRect(QRectF(0, 0, 4000, 2000));
 
     MinimapWidget minimap(workspace.scene(), workspace.view());

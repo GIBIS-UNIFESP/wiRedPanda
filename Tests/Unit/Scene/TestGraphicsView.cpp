@@ -277,6 +277,34 @@ void TestGraphicsView::testWheelEventZoomsOut()
     QVERIFY(view->transform().m11() < scaleBefore);
 }
 
+void TestGraphicsView::testZoomToFitIgnoresARubberBandOutsideTheCircuit()
+{
+    // Fitting after a rubber band dragged far from the circuit, then an edit, gives the zoom fitting gives without
+    // the band: its item stays in the scene, hidden, with its last rectangle, and is not circuit
+    const auto fittedZoom = [](bool dragBand) {
+        WorkSpace workspace;
+        auto *scene = workspace.scene();
+        GraphicsView *view = workspace.view();
+        view->resize(800, 600);
+        auto *inputSwitch = new InputSwitch();
+        scene->addItem(inputSwitch);
+        if (dragBand) {
+            TestUtils::ScenePointer pointer(scene);
+            pointer.press(QPointF(3000, 3000));
+            pointer.move(QPointF(3200, 3200));
+            pointer.release(QPointF(3200, 3200));
+        }
+        auto *led = new Led();
+        led->setPos(64, 0);
+        scene->addItem(led);
+        scene->setPropertyUpdateRequired();
+        view->zoomToFit();
+        return view->transform().m11();
+    };
+
+    QCOMPARE(fittedZoom(true), fittedZoom(false));
+}
+
 void TestGraphicsView::testZoomToFitWithNoSceneIsNoOp()
 {
     GraphicsView view;

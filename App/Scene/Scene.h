@@ -72,13 +72,13 @@ public:
     /// Tightens the scene rect to item bounds while preserving the viewport position.
     void resizeScene();
 
-    /// Returns itemsBoundingRect(), cached and invalidated on structural/positional edits
+    /// Returns circuitBoundingRect(), cached and invalidated on structural/positional edits
     /// (see setPropertyUpdateRequired()) — an O(total items) call this project's zoom/pan/
     /// scroll paths (resizeScene(), MinimapWidget) would otherwise redo on every step even
     /// though panning/zooming never changes which items exist or where they are. Bypasses
     /// the cache during an active element drag, where the live (uncached) value is required:
     /// see resizeScene()'s isDraggingElement() branch.
-    [[nodiscard]] QRectF cachedItemsBoundingRect() const;
+    [[nodiscard]] QRectF cachedCircuitBoundingRect() const;
 
     /// The bounds of the circuit: its elements' and wires', with their children (labels, ports). The scene's
     /// interface items are not circuit: the rubber band, which keeps its last rectangle while hidden, and the port
@@ -528,11 +528,11 @@ private:
     // reapplied lazily in drawBackground() (see its comment) rather than eagerly.
     bool m_visibilityDirty = false;
 
-    // Backing cache for cachedItemsBoundingRect(); mutable since the accessor is const.
+    // Backing cache for cachedCircuitBoundingRect(); mutable since the accessor is const.
     // Set dirty by setPropertyUpdateRequired(), the same chokepoint every structural/
     // positional edit already funnels through.
-    mutable QRectF m_cachedItemsBoundingRect;
-    mutable bool m_itemsBoundingRectDirty = true;
+    mutable QRectF m_cachedCircuitBoundingRect;
+    mutable bool m_circuitBoundingRectDirty = true;
 
     // Adaptive wire antialiasing (see the public accessors' comment): consecutive-pass
     // counters for the debounced degrade and the sustained-headroom restore; the idle

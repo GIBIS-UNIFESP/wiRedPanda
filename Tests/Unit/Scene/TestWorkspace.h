@@ -35,6 +35,7 @@ private slots:
     void testLoadWarnsWhenMigrationTargetIsReadOnly();
     void testLoadWarnsForNewerVersionFile();
     void testLoadInfoForOlderVersionFile();
+    void testLoadOfAnEmptyCircuitKeepsTheSceneRect();
     void testAutosaveSkipsInlineICTabs();
     void testAutosaveSkipsNewerVersionFile();
     void testAutosaveRemovesFileWhenUndoStackIsClean();

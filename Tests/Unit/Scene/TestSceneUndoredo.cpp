@@ -375,7 +375,7 @@ void TestSceneUndoredo::testMidDragDeleteDoesNotCrash()
 
 void TestSceneUndoredo::testResizeSceneFollowsLiveDragBeyondCachedBounds()
 {
-    // Scene::cachedItemsBoundingRect() must bypass its cache during an active drag:
+    // Scene::cachedCircuitBoundingRect() must bypass its cache during an active drag:
     // resizeScene()'s expand-only branch needs the dragged element's live position to
     // grow the scene rect and follow it, not a stale value from before the drag started.
     Scene scene;

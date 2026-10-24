@@ -136,6 +136,9 @@ private slots:
 
     // resizeScene() quantizes the scene rect so small interaction steps yield
     // bit-identical rects -- any changed rect makes Qt's BSP index re-insert every item.
+    void testResizeSceneIgnoresARubberBandOutsideTheCircuit();
+    void testCircuitBoundsLeaveOutAPortsHoverLabel();
+    void testResizeSceneWithoutAViewKeepsTheSceneRectOfAnEmptyCircuit();
     void testResizeSceneQuantizesSceneRect();
 
     // SceneInteraction, driven through Scene's real mouse-event pipeline (it has no public

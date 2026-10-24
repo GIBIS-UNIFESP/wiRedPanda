@@ -601,7 +601,10 @@ void WorkSpace::load(QDataStream &stream, const QVersionNumber &version, const Q
 
     m_scene.setLastId(m_lastId);
 
-    m_scene.setSceneRect(m_scene.itemsBoundingRect());
+    // An empty circuit has no bounds: a null rect would hand the scene rect back to Qt, which grows it over every item
+    if (const auto bounds = m_scene.circuitBoundingRect(); !bounds.isNull()) {
+        m_scene.setSceneRect(bounds);
+    }
 
     qCDebug(zero) << "Finished loading file.";
 }
@@ -804,7 +807,10 @@ void WorkSpace::loadFromBlob(const QByteArray &blob, WorkSpace *parent, int icEl
     }
 
     m_scene.setLastId(m_lastId);
-    m_scene.setSceneRect(m_scene.itemsBoundingRect());
+    // An empty circuit has no bounds: a null rect would hand the scene rect back to Qt, which grows it over every item
+    if (const auto bounds = m_scene.circuitBoundingRect(); !bounds.isNull()) {
+        m_scene.setSceneRect(bounds);
+    }
 
     // Set inline-IC mode after successful deserialization
     m_isInlineIC = true;

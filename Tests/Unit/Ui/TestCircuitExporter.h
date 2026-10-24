@@ -13,6 +13,7 @@ class TestCircuitExporter : public QObject
 private slots:
 
     void testExporterCreation();
+    void testRenderToImageIgnoresARubberBandOutsideTheCircuit();
 
     // Regression: D19 — renderToImage must throw on save failure
     void testRenderToImageThrowsOnInvalidPath();

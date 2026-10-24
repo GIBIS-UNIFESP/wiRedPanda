@@ -34,6 +34,9 @@ private slots:
     // wheelEvent()'s zoom-out branch (zoom-in is covered by TestMainWindowGui).
     void testWheelEventZoomsOut();
 
+    // zoomToFit() fits the circuit, not a rubber band beside it.
+    void testZoomToFitIgnoresARubberBandOutsideTheCircuit();
+
     // zoomToFit()'s remaining branches: no scene, selection-only, non-Scene fallback, empty target.
     void testZoomToFitWithNoSceneIsNoOp();
     void testZoomToFitFitsSelectionOnly();
