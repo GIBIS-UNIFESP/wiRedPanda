@@ -67,6 +67,10 @@ private:
     /// (fuzz-hardening) — see the .cpp for why this must abort load rather than proceed.
     static void validateFiniteAngle(qreal angle);
 
+    /// Rejects a port count above the element type's maximum, which no save writes
+    /// (fuzz-hardening) — see the .cpp for why this must abort load rather than proceed.
+    static void validatePortCounts(const GraphicElement &element);
+
     static void loadPos(GraphicElement &element, QDataStream &stream);
     static void loadRotation(GraphicElement &element, QDataStream &stream, const QVersionNumber &version);
     static void loadLabel(GraphicElement &element, QDataStream &stream, const QVersionNumber &version);

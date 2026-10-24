@@ -7,6 +7,7 @@
 
 #include <QPainter>
 
+#include "App/Core/Common.h"
 #include "App/Core/Constants.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
@@ -229,6 +230,22 @@ void Demux::updateLogic()
 
     for (int i = 0; i < outputSize(); i++) {
         setOutputValue(i, (i == selectValue) ? data : Status::Inactive);
+    }
+}
+
+void Demux::load(QDataStream &stream, SerializationContext &context)
+{
+    GraphicElement::load(stream, context);
+
+    // The loader takes the port lists as the file gives them, and updateLogic() reads every
+    // select line the outputs need; a save always writes exactly those inputs.
+    const int expectedInputs = 1 + calculateSelectLines(outputSize());
+    if (inputSize() != expectedInputs) {
+        throw PANDACEPTION("%1 with %2 input ports for %3 outputs, where it has %4 — stream may be corrupt",
+                           objectName(),
+                           QString::number(inputSize()),
+                           QString::number(outputSize()),
+                           QString::number(expectedInputs));
     }
 }
 

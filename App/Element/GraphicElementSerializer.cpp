@@ -217,6 +217,8 @@ void GraphicElementSerializer::load(GraphicElement &element, QDataStream &stream
     // format that tolerates fields being added or reordered in future versions.
     (!VersionInfo::hasQMapFormat(context.version)) ? loadOldFormat(element, stream, context) : loadNewFormat(element, stream, context);
 
+    validatePortCounts(element);
+
     qCDebug(four) << "Updating port positions.";
     element.updatePortsProperties();
     // Apply the deserialized angle after ports are positioned so any non-rotatable element
@@ -480,6 +482,32 @@ void GraphicElementSerializer::validateFiniteAngle(const qreal angle)
 {
     if (!std::isfinite(angle)) {
         throw PANDACEPTION("Non-finite element rotation — stream may be corrupt");
+    }
+}
+
+/// Rejects a port count above the element type's maximum. The port loaders add every port a
+/// file lists and trim only down to the minimum, while element code indexes its ports within
+/// the bounds: a truth table's key holds exactly the maximum rows and columns, so one more input
+/// reads past it when simulated. An IC is exempt: its bounds and ports come from its definition,
+/// which IC::load() reads after this.
+void GraphicElementSerializer::validatePortCounts(const GraphicElement &element)
+{
+    if (element.elementType() == ElementType::IC) {
+        return;
+    }
+
+    if (element.inputSize() > element.maxInputSize()) {
+        throw PANDACEPTION("%1 with %2 input ports, above its maximum of %3 — stream may be corrupt",
+                           element.objectName(),
+                           QString::number(element.inputSize()),
+                           QString::number(element.maxInputSize()));
+    }
+
+    if (element.outputSize() > element.maxOutputSize()) {
+        throw PANDACEPTION("%1 with %2 output ports, above its maximum of %3 — stream may be corrupt",
+                           element.objectName(),
+                           QString::number(element.outputSize()),
+                           QString::number(element.maxOutputSize()));
     }
 }
 
