@@ -430,8 +430,11 @@ rows where items overlap.
 
 ### 7.3 MCP's image export cannot report an empty scene
 
-Its "Scene is empty" error is unreachable: the rubber band is always counted in Qt's bounds. Fix: the export reads
-the circuit's bounds, the union of the elements' and the wires'. Test: an empty circuit gets the error.
+Its "Scene is empty" error is unreachable: Qt's `itemsBoundingRect()` counts every item in the scene, the rubber band
+among them, which is in the scene from the start, empty at the origin, and stays there between selections, hidden, with
+its last rectangle. Fix:
+`Scene::circuitBoundingRect()`, the union of the elements' and the wires' bounds with their children, which the export
+reads. Test: a new, empty circuit, and the same after a rubber band dragged over it, each get the error and no file.
 
 ### 7.4 What acts on a selection follows the hash seed
 
@@ -477,6 +480,21 @@ walk of the siblings (`qgraphicsitem.cpp:4675`), so the undo of a large delete o
 under callgrind, and restored in one batch if it grows quadratically. Tests: the undo of a delete, a cut and a morph,
 each of the bottom of three overlapping elements, puts it back at the bottom; a delete of a thousand elements and its
 undo give the order before. Golden: plan 1's order after the undo (P1.10).
+
+### 7.7 The scene's bounds count the rubber band
+
+Found with §7.3: every other reader of the scene's bounds read `itemsBoundingRect()` too. The scene's cached bounds
+(the minimap's frame and zoom-to-fit), the scene rect `Workspace` sets after a load and a resize, and the image
+`CircuitExporter` renders all reached the origin, where the band sits, empty, from the start, and grew to take in a
+band dragged far from the circuit. Measured on `master`: a 199×193 image became 3329×3329, the scene rect -256,-256
+3584×3584, and zoom-to-fit went from 3.81 to 0.134. Fix: each reads §7.3's circuit bounds, and the cache is named
+after what it holds. An empty circuit has no bounds, and a null scene rect hands the rect back to Qt, which grows it
+over every item, the band among them: a load of an empty circuit (from a file or a blob) and a resize of a scene with
+no view keep the rect they have. Tests: a rubber band dragged far from a small circuit leaves the rendered image's
+size, the scene rect after a resize and zoom-to-fit's scale as they were, each failing on `master`; an empty circuit's
+loads and a viewless resize keep the scene rect, each failing with its null check removed; a port's hover label, which
+the scene also holds, stays out of the circuit's bounds. Golden: the view golden's fit row and its four last wheel rows,
+which no longer reach the origin.
 
 ## 8. Not plan 2's
 
@@ -539,6 +557,7 @@ Each of these exists on `master`, and its fix is another plan's decision:
 | P2.41 | The selection in id order (§7.4) | P1.12 | the paste row's ids |
 | P2.42 | One rule for where an element goes (§7.5) | P1.10, P1.12, P1.14 | the undo rows from off-grid starts; the components' positions, pins unchanged |
 | P2.43 | A restored element's stacking place (§7.6) | P1.10 | the order after a delete's and a morph's undo |
+| P2.48 | The scene's bounds without the rubber band (§7.7) | P1.12 | the view golden's fit row and four wheel rows |
 | P2.44 | Embed and extract on every selected IC (§4.2) | the helpers only | none expected |
 
 "None expected" means the branch saw no golden change, or the fix touches nothing a golden prints; the fix's commit
@@ -633,8 +652,8 @@ user's choice between workable options).
   from `master`.
 - **Plan 6** keeps the clocks across a rebuild and a connected input on its wire; its condensation replaces the walk.
 - **Plan 8** keeps the truth tables' regs, the untranslated names and the Tx resolution, then refuses two drivers.
-- **Plan 9** keeps the wheel zoom, the topmost hit, the empty-scene error, the selection in id order, the snapping
-  rule with its exact undo, and the restored stacking place.
+- **Plan 9** keeps the wheel zoom, the topmost hit, the empty-scene error, the circuit's bounds, the selection in id
+  order, the snapping rule with its exact undo, and the restored stacking place.
 - **The Qt 6.8 floor's plan** follows this plan.
 
 ## 14. The branch's fixes, as evidence
