@@ -9,8 +9,9 @@ editing session, with a controller taking the interaction; adds a new view whose
 widget, and a CPU backend with painters, a sprite cache and an export mode; and then deletes the old view and scene,
 after which the element is a plain class. It draws what `master` draws, and plan 1's goldens pin it on both views.
 
-- **Depends on:** plans 1 to 8 and the Qt floor's plan, landed, since the plans run one at a time, in their
-  order (the plans' rules, §1): plan 3 (one element class with its descriptors, the presenters, the appearance key,
+- **Depends on:** plans 1 to 8, the Qt floor's and the exception boundaries' plans, landed, since the plans run one
+  at a time, in their order (the plans' rules, §1): plan 3 (one element class with its descriptors, the presenters,
+  the appearance key,
   the element painter, the outline and decorations, and the include check of the model's direction, which this plan
   extends to six layers); plan 6 (the core, with its suspend count in the model, which the document takes, and the
   runner with its changed slots, which the application layer and the renderers take); plan 8 (exporters on the
