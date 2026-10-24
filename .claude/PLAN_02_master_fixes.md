@@ -648,7 +648,15 @@ user's choice between workable options).
   fixes hold on every version; whether the floor's 6.8 shows the defects (`master`'s CI runs these tests on 6.8.3, and
   on Debian's 6.8.2 on i386) is recorded, for the release notes (P2.34).
 - **What a snapshot restore does on `master` with a custom picture that no longer loads.** §3.8's morph undo restores
-  through it, so its behaviour there is checked first, and the undo neither leaks nor crashes (P2.35).
+  through it, so its behaviour there is checked first, and the undo neither leaks nor crashes (P2.35). Checked
+  2026-10-24 on an `InputSwitch`, through undo and redo: the restore loads the whole snapshot, so the element lists
+  the missing file, then the picture's load draws the type's first default (read: whatever the slot) and throws out
+  of the command's `undo()` or `redo()`, past its refresh of the runtime state. The undo stack's index does not move,
+  so the element shows the restored state while the stack has not stepped: the next undo or redo applies the same
+  command again, which then passes (a failed path is not loaded twice) and steps. In the application the throw
+  reaches `Application::notify()`, which reports it. A restore whose picture is the one already drawn does not load
+  it and does not throw. Plan 3 settles the rule (P3.D6: the slot shows its default and the restore goes on), which
+  also steps the stack.
 - **The priority walk's fix against plan 1's traces** (§5.3): measured first; with traces changed, the user decides
   (P2.36).
 - **When the fuzz harnesses run** (P2.37): settled by the user, on the user's machine overnight, not in CI (P2.D10).
@@ -659,7 +667,8 @@ user's choice between workable options).
   each descriptor; the undoable AudioBox, trigger and input operations; no appearance where none is drawn; the themed
   pictures; the morph's undo; the property command, moved onto the schema; the Tx rule and MCP's validation, held once
   in the schema; the lock's tooltip; the display's bounds; the IC's turning centre; the Text's hint; the trigger
-  placeholder's case.
+  placeholder's case. Its rule for a custom picture that no longer loads (P3.D6) also ends `master`'s undo that throws
+  without stepping the stack (§12).
 - **Plan 4** keeps the IC's tooltip and the embed and extract on every selected IC, fixes the three defects of §8
   that change the format, and adds the saved pin order with snapping on load.
 - **Plan 5** lists `master`'s Rx override, the slow clock and the tick engine's contradiction among its differences
