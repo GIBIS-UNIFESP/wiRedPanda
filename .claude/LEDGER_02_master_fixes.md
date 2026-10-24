@@ -9,8 +9,9 @@ gets the next free row. Status: `todo`, `doing`, `done` (committed), `blocked` (
 (why, with the user's decision). The Commits column lists every commit of the item. Every status change gets a dated
 line in the log.
 
-**Branch:** `02-master-fixes`, from `01-characterization` once plan 1 has landed; not created yet. Each fix is a slice
-of its own.
+**Branch:** `02-master-fixes`, from `01-characterization` at `9c7782d2e`, plan 1's landed tip, created 2026-10-24.
+Each fix is a slice of its own: its row is done once its tip is checked (the plans' rules, §3) and CI is green on it,
+and its notes name the CI runs.
 
 **Open decisions:** P2.36 may wait on the user, once measured. P2.37 is settled (P2.D10). P2.40 waits on the user:
 the redundant call removed here or left for plan 9.
@@ -21,7 +22,7 @@ Each row's notes say how its test is shown to fail; "as on the branch" marks a b
 |---|---|---|---|---|
 | P2.1 | Fuzz seeds written behind the header as a compressed payload; a seed check in each seeded harness, the first header read inside a `try` (§2.1) | todo | | Shown to fail: a seed with no elements, one with an unknown header and an empty one each stop the harness with its own message (as on the branch). Lands after the user's overnight run of the harnesses (P2.D10) |
 | P2.2 | `ENABLE_FUZZER` instruments the whole project for coverage (§2.2) | todo | | Shown: one harness's edge count before and after (154 against 27,474 on the branch). Finished after the user's overnight run of the harnesses (P2.D10) |
-| P2.3 | BeWavedDolphin's text export splits its rows by port (§2.3) | todo | | Shown to fail: the split row with an input element of several ports, on `master` |
+| P2.3 | BeWavedDolphin's text export splits its rows by port (§2.3) | doing | `97b447d8d` | Shown to fail: the split row with an input element of several ports, on `master` (`testSaveToTxtSplitsAfterTheLastInputPort`, a rotary of two ports: the blank line came after the first). Tip checked 2026-10-24: suite 227/227 on relwithdebinfo, both sources compiled alone, `fix_style.py` clean. CI pending |
 | P2.4 | The Python MCP client takes clock delays in [-1, 1] (§2.4) | todo | | Shown to fail: a negative delay refused on `master`. ruff, pyright and mypy pass |
 | P2.5 | A save whose write fails is not committed, through one helper for the five saves (§2.5) | todo | | Shown to fail: the failed commit over an existing file, on a local Qt 6.7.3 build with the check removed (as on the branch). Right on every Qt; plan 2's while `master` declares 6.2 (P2.D9) |
 | P2.6 | A buzzer's sink is destroyed before its tone generator (§2.6) | todo | | Shown to fail: `TestBuzzer` on a local Qt 6.7.3 build (as on the branch). Right on every Qt; plan 2's while `master` declares 6.2 (P2.D9) |
@@ -88,3 +89,5 @@ Each row's notes say how its test is shown to fail; "as on the branch" marks a b
   (one rule for where an element goes, P2.D12), P2.43 (a restored element's stacking place, P2.D13) and P2.44 (embed
   and extract on every selected IC) added, each with its plan section. Snapping on load goes to plan 4 (P4.12) with
   the saved pin order. P2.31's golden is the view golden's four wheel rows.
+- 2026-10-24: plan 1 landed; `02-master-fixes` created from `01-characterization` at `9c7782d2e`. P2.3 doing: fixed
+  in `97b447d8d`, its tip checked, CI pending.
