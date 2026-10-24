@@ -963,7 +963,17 @@ void ElementEditor::audioBox()
         return;
     }
 
+    // Snapshot and apply via undo command, as the appearance does
+    QByteArray oldData;
+    {
+        QDataStream stream(&oldData, QIODevice::WriteOnly);
+        Serialization::writePandaHeader(stream);
+        audiobox->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
+    }
     audiobox->setAudio(filePath);
+    if (m_scene) {
+        m_scene->receiveCommand(new UpdateCommand({audiobox}, oldData, m_scene));
+    }
     m_ui->lineCurrentAudioBox->setText(QFileInfo(filePath).fileName());
 }
 

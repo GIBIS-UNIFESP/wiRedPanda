@@ -73,6 +73,7 @@ private slots:
     void testAudioBoxGuardsNonAudioBoxSelection();
     void testAudioBoxCancelledDialogIsNoOp();
     void testAudioBoxSetsAudioAndUpdatesLabel();
+    void testAudioBoxChangeIsUndoable();
 
     void testWritesMatchGolden();
 };
