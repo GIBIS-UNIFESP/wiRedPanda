@@ -9,6 +9,7 @@
 #include <QDir>
 #include <QFile>
 #include <QGraphicsSceneMouseEvent>
+#include <QKeyEvent>
 #include <QTemporaryDir>
 #include <QTest>
 
@@ -17,6 +18,7 @@
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/IO/SerializationContext.h"
+#include "App/Scene/GraphicsView.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -752,4 +754,177 @@ void TestInputElements::testRotarySelectionIsResetAndRestoredWithSimState()
     QVERIFY(!rotary->isOn(0));
 
     delete rotary;
+}
+
+// ============================================================================
+// Input operations as undoable commands
+// ============================================================================
+
+namespace TestInputElementsHelpers {
+
+void sendMouse(Scene &scene, const QEvent::Type type, const GraphicElement &element)
+{
+    QGraphicsSceneMouseEvent event(type);
+    event.setScenePos(element.sceneBoundingRect().center());
+    event.setButton(Qt::LeftButton);
+    event.setButtons((type == QEvent::GraphicsSceneMouseRelease) ? Qt::NoButton : Qt::LeftButton);
+    QCoreApplication::sendEvent(&scene, &event);
+}
+
+void click(Scene &scene, const GraphicElement &element)
+{
+    sendMouse(scene, QEvent::GraphicsSceneMousePress, element);
+    sendMouse(scene, QEvent::GraphicsSceneMouseRelease, element);
+}
+
+void sendKey(Scene &scene, const QEvent::Type type, const Qt::Key key)
+{
+    QKeyEvent event(type, key, Qt::NoModifier);
+    QCoreApplication::sendEvent(&scene, &event);
+}
+
+} // namespace TestInputElementsHelpers
+
+void TestInputElements::testSwitchClickIsOneUndoableCommand()
+{
+    Scene scene;
+    auto *inputSwitch = new InputSwitch;
+    scene.addItem(inputSwitch);
+
+    TestInputElementsHelpers::click(scene, *inputSwitch);
+
+    QVERIFY(inputSwitch->isOn());
+    QCOMPARE(scene.undoStack()->count(), 1);
+    QVERIFY(!scene.undoStack()->isClean());
+
+    scene.undoStack()->undo();
+    QVERIFY(!inputSwitch->isOn());
+    scene.undoStack()->redo();
+    QVERIFY(inputSwitch->isOn());
+}
+
+void TestInputElements::testRotaryClickIsOneUndoableCommand()
+{
+    Scene scene;
+    auto *rotary = new InputRotary;
+    scene.addItem(rotary);
+
+    TestInputElementsHelpers::click(scene, *rotary);
+
+    QCOMPARE(rotary->outputValue(), 1);
+    QCOMPARE(scene.undoStack()->count(), 1);
+    QVERIFY(!scene.undoStack()->isClean());
+
+    scene.undoStack()->undo();
+    QCOMPARE(rotary->outputValue(), 0);
+    scene.undoStack()->redo();
+    QCOMPARE(rotary->outputValue(), 1);
+}
+
+void TestInputElements::testRotaryClickThroughAZoomedViewIsOneUndoableCommand()
+{
+    // Through a view Qt delivers a press to the items under the pointer's pixel, mapped through the view's transform
+    Scene scene;
+    auto *rotary = new InputRotary;
+    rotary->setPos(200, 120);
+    scene.addItem(rotary);
+    GraphicsView view;
+    view.setScene(&scene);
+    view.resize(400, 300);
+    view.zoomIn();
+    view.zoomIn();
+    view.centerOn(rotary);
+
+    const QPoint pixel = view.mapFromScene(rotary->sceneBoundingRect().center());
+    QTest::mouseClick(view.viewport(), Qt::LeftButton, Qt::NoModifier, pixel);
+
+    QCOMPARE(rotary->outputValue(), 1);
+    QCOMPARE(scene.undoStack()->count(), 1);
+    scene.undoStack()->undo();
+    QCOMPARE(rotary->outputValue(), 0);
+}
+
+void TestInputElements::testTriggerKeyIsOneUndoableCommandKeepingTheSelection()
+{
+    Scene scene;
+    auto *first = new InputSwitch;
+    auto *second = new InputSwitch;
+    auto *rotary = new InputRotary;
+    first->setTrigger(QKeySequence(Qt::Key_A));
+    second->setTrigger(QKeySequence(Qt::Key_A));
+    rotary->setTrigger(QKeySequence(Qt::Key_B));
+    second->setPos(0, 128);
+    rotary->setPos(0, 256);
+    scene.addItem(first);
+    scene.addItem(second);
+    scene.addItem(rotary);
+    first->setSelected(true);
+
+    // Both switches with the key toggle as one command, and the selection stays as it was
+    TestInputElementsHelpers::sendKey(scene, QEvent::KeyPress, Qt::Key_A);
+    TestInputElementsHelpers::sendKey(scene, QEvent::KeyRelease, Qt::Key_A);
+    QVERIFY(first->isOn());
+    QVERIFY(second->isOn());
+    QCOMPARE(scene.undoStack()->count(), 1);
+    QVERIFY(first->isSelected());
+    QVERIFY(!second->isSelected());
+
+    TestInputElementsHelpers::sendKey(scene, QEvent::KeyPress, Qt::Key_B);
+    QCOMPARE(rotary->outputValue(), 1);
+    QCOMPARE(scene.undoStack()->count(), 2);
+    QVERIFY(!rotary->isSelected());
+
+    scene.undoStack()->undo();
+    QCOMPARE(rotary->outputValue(), 0);
+    scene.undoStack()->undo();
+    QVERIFY(!first->isOn());
+    QVERIFY(!second->isOn());
+}
+
+void TestInputElements::testButtonPressIsNotRecorded()
+{
+    // A held button is not saved, so pressing it changes nothing a file or an undo holds
+    Scene scene;
+    auto *button = new InputButton;
+    button->setTrigger(QKeySequence(Qt::Key_A));
+    scene.addItem(button);
+
+    TestInputElementsHelpers::sendMouse(scene, QEvent::GraphicsSceneMousePress, *button);
+    QVERIFY(button->isOn());
+    TestInputElementsHelpers::sendMouse(scene, QEvent::GraphicsSceneMouseRelease, *button);
+    QVERIFY(!button->isOn());
+
+    TestInputElementsHelpers::sendKey(scene, QEvent::KeyPress, Qt::Key_A);
+    QVERIFY(button->isOn());
+    TestInputElementsHelpers::sendKey(scene, QEvent::KeyRelease, Qt::Key_A);
+    QVERIFY(!button->isOn());
+
+    QCOMPARE(scene.undoStack()->count(), 0);
+    QVERIFY(scene.undoStack()->isClean());
+}
+
+void TestInputElements::testPressGoingToTheSwitchHoldingTheMouseIsRecorded()
+{
+    // A middle press on a switch makes it hold the mouse, so Qt gives it a left press made away from it, which toggles it
+    Scene scene;
+    auto *inputSwitch = new InputSwitch;
+    scene.addItem(inputSwitch);
+
+    QGraphicsSceneMouseEvent middle(QEvent::GraphicsSceneMousePress);
+    middle.setScenePos(inputSwitch->sceneBoundingRect().center());
+    middle.setButton(Qt::MiddleButton);
+    middle.setButtons(Qt::MiddleButton);
+    QCoreApplication::sendEvent(&scene, &middle);
+    QCOMPARE(scene.mouseGrabberItem(), inputSwitch);
+
+    QGraphicsSceneMouseEvent left(QEvent::GraphicsSceneMousePress);
+    left.setScenePos(inputSwitch->sceneBoundingRect().bottomRight() + QPointF(200, 200));
+    left.setButton(Qt::LeftButton);
+    left.setButtons(Qt::LeftButton | Qt::MiddleButton);
+    QCoreApplication::sendEvent(&scene, &left);
+
+    QVERIFY(inputSwitch->isOn());
+    QCOMPARE(scene.undoStack()->count(), 1);
+    scene.undoStack()->undo();
+    QVERIFY(!inputSwitch->isOn());
 }

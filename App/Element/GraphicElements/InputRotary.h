@@ -92,7 +92,8 @@ public:
 protected:
     // --- Event handlers ---
 
-    /// \reimp
+    /// \reimp Selects the next output on a left press, unless it is locked; the scene records the selection as one
+    /// undoable change (Scene::recordOperation()).
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
 
 private:

@@ -10,9 +10,11 @@
 #include <QDrag>
 #include <QGraphicsSceneDragDropEvent>
 #include <QGraphicsSceneHelpEvent>
+#include <QGraphicsSceneMouseEvent>
 #include <QKeyEvent>
 #include <QMenu>
 #include <QMimeData>
+#include <QPointer>
 #include <QPolygon>
 #include <QScrollBar>
 #include <QUrl>
@@ -532,6 +534,50 @@ void Scene::receiveCommand(QUndoCommand *cmd)
     sentryBreadcrumb("command", QStringLiteral("Command: %1").arg(cmd->text()));
     m_undoStack.push(cmd);
     update();
+}
+
+void Scene::recordOperation(const QList<GraphicElement *> &elements, const std::function<void()> &operation)
+{
+    const auto snapshot = [](const GraphicElement &element) {
+        QByteArray data;
+        QDataStream stream(&data, QIODevice::WriteOnly);
+        element.save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
+        return data;
+    };
+
+    QList<QPointer<GraphicElement>> targets;
+    QList<QByteArray> before;
+    for (auto *element : elements) {
+        targets.append(element);
+        before.append(snapshot(*element));
+    }
+
+    operation();
+
+    QList<GraphicElement *> changed;
+    QList<bool> selected;
+    QByteArray oldData;
+    QDataStream oldStream(&oldData, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(oldStream);
+    for (int i = 0; i < targets.size(); ++i) {
+        GraphicElement *element = targets.at(i);
+        if (!element || (snapshot(*element) == before.at(i))) {
+            continue;
+        }
+        changed.append(element);
+        selected.append(element->isSelected());
+        oldStream.writeRawData(before.at(i).constData(), static_cast<int>(before.at(i).size()));
+    }
+
+    if (changed.isEmpty()) {
+        return;
+    }
+
+    // The command's first redo() reloads its elements and selects them
+    receiveCommand(new UpdateCommand(changed, oldData, this));
+    for (int i = 0; i < changed.size(); ++i) {
+        changed.at(i)->setSelected(selected.at(i));
+    }
 }
 
 QRectF Scene::cachedCircuitBoundingRect() const
@@ -1290,13 +1336,21 @@ void Scene::keyPressEvent(QKeyEvent *event)
 
     // Skip keyboard triggers while Ctrl is held to avoid firing during Ctrl+Z/C/V shortcuts
     if (!(event->modifiers().testFlag(Qt::ControlModifier))) {
+        QList<GraphicElement *> triggered;
+        QList<GraphicElementInput *> inputs;
         for (auto *element : unsortedElements()) {
             if (element->hasTrigger() && !element->trigger().isEmpty() && element->trigger().matches(event->key())) {
                 if (auto *input = qobject_cast<GraphicElementInput *>(element); input && !input->isLocked()) {
-                    input->setOn();
+                    triggered.append(element);
+                    inputs.append(input);
                 }
             }
         }
+        recordOperation(triggered, [&inputs] {
+            for (auto *input : std::as_const(inputs)) {
+                input->setOn();
+            }
+        });
     }
 
     QGraphicsScene::keyPressEvent(event);
@@ -1354,8 +1408,44 @@ bool Scene::eventFilter(QObject *watched, QEvent *event)
 void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     if (!m_interaction.mousePress(event)) {
-        QGraphicsScene::mousePressEvent(event);
+        // What an element does with the press, such as a switch toggling, is one undoable change
+        recordOperation(pressTargets(event), [this, event] { QGraphicsScene::mousePressEvent(event); });
     }
+}
+
+QList<GraphicElement *> Scene::pressTargets(const QGraphicsSceneMouseEvent *event) const
+{
+    // Qt gives a press to the item holding the mouse, else to the first item under the pointer that takes it, found
+    // as QGraphicsScenePrivate::itemsAtPosition() finds them: under the view's pixel at the pointer, or at the exact
+    // point without a view
+    QList<QGraphicsItem *> candidates;
+    if (auto *grabber = mouseGrabberItem()) {
+        candidates.append(grabber);
+    }
+    auto *widget = event->widget();
+    auto *view = widget ? qobject_cast<QGraphicsView *>(widget->parentWidget()) : nullptr;
+    if (!view) {
+        candidates.append(items(event->scenePos(), Qt::IntersectsItemShape, Qt::DescendingOrder, QTransform()));
+    } else {
+        // Qt skips the mapping when the view is not transformed, where the transform is the identity
+        const QRectF pointRect(QPointF(widget->mapFromGlobal(event->screenPos())), QSizeF(1, 1));
+        const QTransform viewTransform = view->viewportTransform();
+        candidates.append(QGraphicsScene::items(viewTransform.inverted().map(pointRect), Qt::IntersectsItemShape, Qt::DescendingOrder, viewTransform));
+    }
+
+    QList<GraphicElement *> targets;
+    for (auto *item : std::as_const(candidates)) {
+        // A port or a label passes a press it ignores on to its element
+        for (; item; item = item->parentItem()) {
+            if (auto *element = qgraphicsitem_cast<GraphicElement *>(item)) {
+                if (!targets.contains(element)) {
+                    targets.append(element);
+                }
+                break;
+            }
+        }
+    }
+    return targets;
 }
 
 void Scene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)

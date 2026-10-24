@@ -55,6 +55,7 @@ public:
 protected:
     // --- Event handlers ---
 
-    /// \reimp
+    /// \reimp Toggles the switch on a left press, unless it is locked; the scene records the toggle as one undoable
+    /// change (Scene::recordOperation()).
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
 };
