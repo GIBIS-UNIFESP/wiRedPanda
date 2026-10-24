@@ -25,6 +25,8 @@ private slots:
     void testSRFlipFlopBehavior();
     void testSRLatchBehavior();
     void testTFlipFlopBehavior();
+    void testSRFlipFlopWithOneOfSAndROpen();
+    void testTFlipFlopWithTOpen();
 
     // resetSimState() tests (only the 4 asynchronous-preset/clear flip-flops override it;
     // DLatch/SRLatch have no edge-detection state to restore)

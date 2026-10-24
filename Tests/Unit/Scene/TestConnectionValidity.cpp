@@ -13,6 +13,7 @@
 #include "App/Scene/ConnectionManager.h"
 #include "App/Scene/Scene.h"
 #include "App/Wiring/Connection.h"
+#include "App/Wiring/Port.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestConnectionValidity::initTestCase()
@@ -216,9 +217,14 @@ void TestConnectionValidity::testPortValidityStyleAtCreation()
     // Ports marked optional after construction recover from the Error override:
     // no configured default reads as undriven, an explicit default as its level.
     auto sr = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::SRFlipFlop));
-    QCOMPARE(sr->inputPort(0)->status(), Status::Unknown); // S: optional, no default
-    QCOMPARE(sr->inputPort(1)->status(), Status::Error);   // Clock: required
-    QCOMPARE(sr->inputPort(3)->status(), Status::Active);  // ~Preset: optional, defaults HIGH
+    QCOMPARE(sr->inputPort(0)->status(), Status::Inactive); // S: optional, defaults LOW
+    QCOMPARE(sr->inputPort(1)->status(), Status::Error);    // Clock: required
+    QCOMPARE(sr->inputPort(3)->status(), Status::Active);   // ~Preset: optional, defaults HIGH
+    // Every element's optional inputs set a default, so a bare port shows the undriven case
+    InputPort port;
+    QCOMPARE(port.status(), Status::Error);
+    port.setRequired(false);
+    QCOMPARE(port.status(), Status::Unknown);
 }
 
 void TestConnectionValidity::testIsConnectionAllowedRejectsRxPort()
