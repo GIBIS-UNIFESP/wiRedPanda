@@ -581,7 +581,13 @@ QJsonObject ElementHandler::handleGetOutputValue(const QJsonObject &params, cons
 
     auto *inputElement = dynamic_cast<GraphicElementInput *>(element);
     if (inputElement) {
-        result["value"] = inputElement->isOn();
+        // An input's own state, which drives its port once the simulation runs
+        if (!validatePortRange(element, portIndex, true, "port", errorMsg)) {
+            return createErrorResponse(errorMsg, requestId, JsonRpcError::ValidationError);
+        }
+        const bool on = inputElement->isOn(portIndex);
+        result["value"] = on;
+        result["status"] = statusName(on ? Status::Active : Status::Inactive);
     } else {
         ElementGroup group = element->elementGroup();
 
