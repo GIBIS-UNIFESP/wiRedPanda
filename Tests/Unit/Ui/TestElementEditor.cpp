@@ -1276,6 +1276,41 @@ void TestElementEditor::testAudioBoxSetsAudioAndUpdatesLabel()
     QCOMPARE(lineEdit->text(), QFileInfo(audioPath).fileName());
 }
 
+void TestElementEditor::testAudioBoxChangeIsUndoable()
+{
+    // The audio file chosen in the editor is one undo step, which undo and redo restore
+    WorkSpace workspace;
+    auto *audiobox = new AudioBox();
+    workspace.scene()->addItem(audiobox);
+
+    ElementEditor editor(&workspace);
+    editor.setScene(workspace.scene());
+    workspace.scene()->clearSelection();
+    audiobox->setSelected(true);
+
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString audioPath = dir.filePath("tone.wav");
+    QFile audioFile(audioPath);
+    QVERIFY(audioFile.open(QIODevice::WriteOnly));
+    audioFile.close();
+
+    ScopedFileDialogStub dialogStub;
+    dialogStub.stub.openResult = audioPath;
+
+    QUndoStack *undoStack = workspace.scene()->undoStack();
+    const int commandsBefore = undoStack->count();
+    const QString audioBefore = audiobox->audio();
+    editor.audioBox();
+    QCOMPARE(audiobox->audio(), audioPath);
+    QCOMPARE(undoStack->count(), commandsBefore + 1);
+
+    undoStack->undo();
+    QCOMPARE(audiobox->audio(), audioBefore);
+    undoStack->redo();
+    QCOMPARE(audiobox->audio(), audioPath);
+}
+
 void TestElementEditor::testWritesMatchGolden()
 {
     // Each property kind every creatable type offers, written once through the editor's own widget or dialog: the

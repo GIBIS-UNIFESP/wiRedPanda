@@ -1,6 +1,6 @@
 T And Appearance wrote="custom.png" before=64x64::/Components/Logic/and.svg after=4x4:custom.png pushed=["Update 1 elements"]
 T AudioBox Label wrote="Edited" before="" after="Edited" pushed=["Update 1 elements"]
-T AudioBox AudioBox wrote="tone.wav" before="wiredpanda.wav" after="tone.wav" pushed=[]
+T AudioBox AudioBox wrote="tone.wav" before="wiredpanda.wav" after="tone.wav" pushed=["Update 1 elements"]
 T AudioBox Volume wrote="51" before=0.5000 after=0.5100 pushed=["Update 1 elements"]
 T AudioBox Appearance wrote="custom.png" before=68x68::/Components/Output/AudioBox/audioboxOff.svg after=4x4:custom.png pushed=["Update 1 elements"]
 T Buzzer Label wrote="Edited" before="" after="Edited" pushed=["Update 1 elements"]
