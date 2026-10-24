@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <functional>
 #include <optional>
 
 #include <QElapsedTimer>
@@ -342,6 +343,13 @@ public:
     QAction *undoAction() const;
     /// Pushes \a cmd onto the undo stack (immediately executes its redo()).
     void receiveCommand(QUndoCommand *cmd);
+    /**
+     * \brief Runs \a operation, a click or a trigger key that goes to \a elements, and records what it changed.
+     * \details The elements whose saved state the operation changed get one UpdateCommand, so the operation can be
+     * undone and the circuit shows it was modified; a change nothing saves (a button held down) is not recorded. The
+     * elements keep the selection the operation left them with.
+     */
+    void recordOperation(const QList<GraphicElement *> &elements, const std::function<void()> &operation);
 
     // --- Simulation ---
 
@@ -464,6 +472,9 @@ private:
     /// If \a event is a plain/Shift arrow key and something is selected, moves the selection by
     /// one grid step (Shift = a larger step) as a single undoable command and returns true.
     bool nudgeSelection(QKeyEvent *event);
+    /// Returns the elements Qt may give the press \a event to, for recordOperation(): the one holding the mouse and
+    /// those under the pointer, found as Qt finds them, each item standing for the element it belongs to.
+    [[nodiscard]] QList<GraphicElement *> pressTargets(const QGraphicsSceneMouseEvent *event) const;
     QList<QGraphicsItem *> itemsAt(const QPointF pos) const;
     const QVector<Connection *> connections() const;
     void checkUpdateRequest();

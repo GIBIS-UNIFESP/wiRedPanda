@@ -46,6 +46,15 @@ private slots:
     void testInputButtonMousePressReleaseWhileLockedDoesNotToggle();
     void testInputButtonAppearanceChange();
 
+    // An operation that changes what the file saves is one undoable command (Scene::recordOperation())
+    void testSwitchClickIsOneUndoableCommand();
+    void testADoubleClickOnAnotherSwitchIsOneUndoableCommand();
+    void testRotaryClickIsOneUndoableCommand();
+    void testRotaryClickThroughAZoomedViewIsOneUndoableCommand();
+    void testPressGoingToTheSwitchHoldingTheMouseIsRecorded();
+    void testTriggerKeyIsOneUndoableCommandKeepingTheSelection();
+    void testButtonPressIsNotRecorded();
+
     // Basic InputButton test (migrated from testelements)
     void testInputButton();
 
