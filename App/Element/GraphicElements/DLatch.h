@@ -36,9 +36,6 @@ public:
     /// Updates port names for this latch.
     void updatePortsProperties() override;
 
-    /// Refreshes the pixmap when the application theme changes.
-    void updateTheme() override;
-
     /// Updates Q based on D and enable level.
     void updateLogic() override;
 };

@@ -37,4 +37,9 @@ private slots:
 
     // updateTheme() reloads the theme-specific pixmap for every sequential element
     void testSequentialElementsUpdateTheme();
+    // Their picture is the theme's: a refresh after a theme switch keeps it, and a custom appearance stays custom
+    void testThemedPictureFollowsTheThemeThroughARefresh();
+    void testThemeSwitchKeepsACustomAppearance();
+    // An undo snapshot taken in one theme restores the current theme's picture, not a custom one
+    void testUndoAfterAThemeSwitchShowsTheCurrentTheme();
 };

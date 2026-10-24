@@ -3,6 +3,17 @@
 
 #include "Tests/Unit/Elements/TestSequentialLogic.h"
 
+#include <functional>
+#include <memory>
+
+#include <QDataStream>
+#include <QImage>
+#include <QPainter>
+#include <QScopeGuard>
+#include <QStyleOptionGraphicsItem>
+#include <QTemporaryDir>
+
+#include "App/Core/ThemeManager.h"
 #include "App/Element/GraphicElements/DFlipFlop.h"
 #include "App/Element/GraphicElements/DLatch.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
@@ -11,6 +22,10 @@
 #include "App/Element/GraphicElements/SRFlipFlop.h"
 #include "App/Element/GraphicElements/SRLatch.h"
 #include "App/Element/GraphicElements/TFlipFlop.h"
+#include "App/IO/Serialization.h"
+#include "App/IO/SerializationContext.h"
+#include "App/Scene/Commands.h"
+#include "App/Scene/Scene.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestSequentialLogic::testDFlipFlop()
@@ -649,4 +664,146 @@ void TestSequentialLogic::testSequentialElementsUpdateTheme()
     QVERIFY(!srlatch.appearancePreviewPixmap(0, previewSize).isNull());
     srlatch.updateTheme();
     QVERIFY(!srlatch.appearancePreviewPixmap(0, previewSize).isNull());
+}
+
+namespace TestSequentialLogicHelpers {
+
+/// What \a element draws, unselected: its picture, as paint() gives it.
+QImage drawn(GraphicElement &element)
+{
+    const bool selected = element.isSelected();
+    element.setSelected(false);
+    QImage image(96, 96, QImage::Format_ARGB32_Premultiplied);
+    image.fill(Qt::transparent);
+    QPainter painter(&image);
+    const QStyleOptionGraphicsItem option;
+    element.paint(&painter, &option, nullptr);
+    painter.end();
+    element.setSelected(selected);
+    return image;
+}
+
+/// Makes each latch and flip-flop, whose picture is the theme's.
+QList<std::function<GraphicElement *()>> themedTypes()
+{
+    return {
+        [] { return new DFlipFlop; }, [] { return new JKFlipFlop; }, [] { return new SRFlipFlop; },
+        [] { return new TFlipFlop; }, [] { return new DLatch; }, [] { return new SRLatch; },
+    };
+}
+
+/// What a new element made by \a make draws in \a theme.
+QImage drawnNew(const std::function<GraphicElement *()> &make, const Theme theme)
+{
+    ThemeManager::setTheme(theme);
+    std::unique_ptr<GraphicElement> element(make());
+    return drawn(*element);
+}
+
+} // namespace TestSequentialLogicHelpers
+
+using TestSequentialLogicHelpers::drawn;
+using TestSequentialLogicHelpers::drawnNew;
+using TestSequentialLogicHelpers::themedTypes;
+
+void TestSequentialLogic::testThemedPictureFollowsTheThemeThroughARefresh()
+{
+    const Theme before = ThemeManager::theme();
+    const auto restore = qScopeGuard([before] { ThemeManager::setTheme(before); });
+
+    for (const auto &make : themedTypes()) {
+        const QImage dark = drawnNew(make, Theme::Dark);
+        ThemeManager::setTheme(Theme::Light);
+        std::unique_ptr<GraphicElement> element(make());
+        const QString name = element->objectName();
+        QVERIFY2(drawn(*element) != dark, qPrintable(name));
+
+        ThemeManager::setTheme(Theme::Dark);
+        element->updateTheme();
+        QVERIFY2(drawn(*element) == dark, qPrintable(name));
+        element->refresh();
+        QVERIFY2(drawn(*element) == dark, qPrintable(name));
+    }
+}
+
+void TestSequentialLogic::testThemeSwitchKeepsACustomAppearance()
+{
+    const Theme before = ThemeManager::theme();
+    const auto restore = qScopeGuard([before] { ThemeManager::setTheme(before); });
+
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString png = dir.filePath("custom.png");
+    QImage red(64, 64, QImage::Format_ARGB32);
+    red.fill(Qt::red);
+    QVERIFY(red.save(png));
+
+    for (const auto &make : themedTypes()) {
+        const QImage dark = drawnNew(make, Theme::Dark);
+        ThemeManager::setTheme(Theme::Light);
+        std::unique_ptr<GraphicElement> element(make());
+        const QString name = element->objectName();
+        element->setAppearance(false, png);
+        const QImage custom = drawn(*element);
+
+        ThemeManager::setTheme(Theme::Dark);
+        element->updateTheme();
+        QVERIFY2(drawn(*element) == custom, qPrintable(name));
+        element->refresh();
+        QVERIFY2(drawn(*element) == custom, qPrintable(name));
+        QCOMPARE(element->externalFiles(), QStringList{png});
+
+        // Back to the built-in appearance, it is the dark one
+        element->setAppearance(true, {});
+        QVERIFY2(drawn(*element) == dark, qPrintable(name));
+    }
+}
+
+void TestSequentialLogic::testUndoAfterAThemeSwitchShowsTheCurrentTheme()
+{
+    const Theme before = ThemeManager::theme();
+    const auto restore = qScopeGuard([before] { ThemeManager::setTheme(before); });
+
+    QList<QImage> dark;
+    for (const auto &make : themedTypes()) {
+        dark.append(drawnNew(make, Theme::Dark));
+    }
+
+    // A label edit of each, recorded while the theme is light
+    ThemeManager::setTheme(Theme::Light);
+    Scene scene;
+    QList<GraphicElement *> elements;
+    QByteArray oldData;
+    QDataStream stream(&oldData, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(stream);
+    for (const auto &make : themedTypes()) {
+        auto *element = make();
+        element->setPos(0, 128 * static_cast<int>(elements.size()));
+        scene.addItem(element);
+        element->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
+        element->setLabel("Q");
+        elements.append(element);
+    }
+    scene.receiveCommand(new UpdateCommand(elements, oldData, &scene));
+
+    ThemeManager::setTheme(Theme::Dark);
+    scene.updateTheme();
+    for (int i = 0; i < elements.size(); ++i) {
+        QVERIFY2(drawn(*elements.at(i)) == dark.at(i), qPrintable(elements.at(i)->objectName()));
+    }
+
+    scene.undoStack()->undo();
+    for (int i = 0; i < elements.size(); ++i) {
+        auto *element = elements.at(i);
+        QCOMPARE(element->label(), QString());
+        QVERIFY2(drawn(*element) == dark.at(i), qPrintable(element->objectName()));
+        QVERIFY2(element->externalFiles().isEmpty(), qPrintable(element->objectName()));
+    }
+
+    scene.undoStack()->redo();
+    for (int i = 0; i < elements.size(); ++i) {
+        auto *element = elements.at(i);
+        QCOMPARE(element->label(), QString("Q"));
+        QVERIFY2(drawn(*element) == dark.at(i), qPrintable(element->objectName()));
+    }
 }

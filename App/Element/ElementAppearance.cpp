@@ -404,6 +404,21 @@ void ElementAppearance::rebuildSvgRenderer()
                                        oriented && m_owner->isFlippedY());
 }
 
+void ElementAppearance::setDefaultPixmapPath(const QString &pixmapPath)
+{
+    if (pixmapPath.isEmpty() || (m_defaultAppearances == QStringList{pixmapPath})) {
+        return;
+    }
+
+    const QString previous = m_defaultAppearances.value(0);
+    m_pixmapPath = pixmapPath;
+    m_defaultAppearances = QStringList{pixmapPath};
+    if (m_alternativeAppearances.value(0) == previous) {
+        m_alternativeAppearances = m_defaultAppearances;
+    }
+    setPixmap(0);
+}
+
 void ElementAppearance::setAppearance(const bool defaultAppearance, const QString &fileName)
 {
     if (defaultAppearance) {

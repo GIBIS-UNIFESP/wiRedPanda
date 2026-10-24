@@ -91,6 +91,14 @@ public:
     /// Returns the active (possibly user-customised) appearance paths.
     const QStringList &alternativeAppearances() const { return m_alternativeAppearances; }
 
+    /**
+     * \brief Makes \a pixmapPath the default appearance of a type with no built-in appearances, which shows its pixmap
+     * path's picture: a path that names the theme's picture changes with the theme.
+     * \details The slot follows it unless it holds a custom appearance, and the picture reloads. Nothing changes when
+     * \a pixmapPath is empty or already the default.
+     */
+    void setDefaultPixmapPath(const QString &pixmapPath);
+
     /// Copies the default appearances over the alternative list (restore-to-default).
     void resetAlternativeToDefault() { m_alternativeAppearances = m_defaultAppearances; }
 

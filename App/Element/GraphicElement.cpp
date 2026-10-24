@@ -518,6 +518,11 @@ void GraphicElement::updateTheme()
     const ThemeAttributes theme = ThemeManager::attributes();
 
     m_label->setBrush(theme.m_graphicElementLabelColor);
+    // A type with no built-in appearances shows its pixmap path's picture, which can be the theme's (the latches and
+    // flip-flops)
+    if (m_metadata.defaultAppearances.isEmpty()) {
+        m_appearance.setDefaultPixmapPath(m_metadata.pixmapPath());
+    }
     m_appearance.applyTheme(theme);
 
     for (auto *input : m_ports.inputs()) {

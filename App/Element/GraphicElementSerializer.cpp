@@ -433,6 +433,14 @@ void GraphicElementSerializer::loadNewFormat(GraphicElement &element, QDataStrea
             continue;
         }
 
+        // A resource path is the slot's built-in appearance, which can be the theme's (the latches and flip-flops): a
+        // snapshot restores the one the type has now, as a file leaves the slot at it, not the one it was taken with
+        if ((context.purpose == SerializationPurpose::InMemorySnapshot) && name.startsWith(":/")) {
+            element.m_appearance.setAlternativeAppearanceAt(index, element.m_appearance.defaultAppearances().value(index, name));
+            ++index;
+            continue;
+        }
+
         if (const auto resolved = ExternalFilePath::forReading(name, context.contextDir, context.purpose)) {
             element.m_appearance.setAlternativeAppearanceAt(index, *resolved);
         }
