@@ -153,10 +153,10 @@ class ParameterValidationTests(MCPTestBase):
                 ics = list_resp.result.get("ics", [])
                 self.infrastructure.output.success(f"✅ list_ics successful: found {len(ics)} ICs")
             else:
-                print(f"❌ list_ics failed: {list_resp.error}")
+                self.report_failure(f"list_ics failed: {list_resp.error}")
 
         except Exception as e:
-            print(f"❌ IC workflow test failed with exception: {e}")
+            self.report_failure(f"IC workflow test failed with exception: {e}")
 
         print("   • test_ic_workflow_commands()")
         print("   • test_element_management_commands()")

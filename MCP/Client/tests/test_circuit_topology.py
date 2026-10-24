@@ -322,7 +322,7 @@ class CircuitTopologyTests(MCPTestBase):
                     print("📋 High fan-out circuit test had limitations")
 
             else:
-                print("❌ Fan-out simulation failed to start")
+                self.report_failure("Fan-out simulation failed to start")
         else:
             print("❌ Fan-out circuit creation failed")
             return False
