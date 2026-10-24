@@ -7,7 +7,7 @@ lists every throw site against it (§3), fixes each one that breaks it with a te
 rule (§5). It comes right after the Qt 6.8 floor, before plan 3.
 
 - **Depends on:** the Qt 6.8 floor, landed, since the plans run one at a time, in their order (the plans' rules, §1);
-  plan 2's P2.50, the first case of the rule, fixed there.
+  plan 2's §3.17 (P2.50), the first case of the rule, fixed there.
 - **Lands before:** plan 3. Plan 3 rebuilds the element types on code where nothing Qt calls back into can throw.
 - **Branch and ledger:** `02b-exception-boundaries`, from `02a-qt-floor` once the floor has landed; a slice per fix
   (§7). `LEDGER_exception_boundaries.md` has a row for every step, fix, check and open question below, and a new row
@@ -34,11 +34,11 @@ Counted 2026-10-24 on `02-master-fixes` (EB.1 recounts on its branch): 123 `thro
 - **A catch inside a command is no answer either.** The stack steps only when `undo()` returns, so a command that
   catches its own failure returns with the scene half restored and the stack stepped past it.
 - **Known cases.** P2.35 and P2.16 found that a snapshot restore whose custom picture no longer loads threw out of
-  `undo()`; plan 2's P2.50 fixed pictures: the slot shows its default, the restore goes on, and opening a file still
-  reports it. Found while fixing it, read, not run: `AudioBox::setAudio()` throws on a missing or unreadable audio file
-  before it changes anything, and a snapshot restore calls it, so an undo that restores an AudioBox whose file is gone
-  throws out of `undo()` (EB.3). `ElementEditor::updateElementAppearance()` was connected to its button without
-  `guardedSlot()`; P2.50 made it refuse a picture that does not load before anything changes.
+  `undo()`; plan 2's §3.17 (P2.50) fixed pictures: the slot shows its default, the restore goes on, and opening a file
+  still reports it. Found while fixing it, read, not run: `AudioBox::setAudio()` throws on a missing or unreadable
+  audio file before it changes anything, and a snapshot restore calls it, so an undo that restores an AudioBox whose
+  file is gone throws out of `undo()` (EB.3). `ElementEditor::updateElementAppearance()` was connected to its button
+  without `guardedSlot()`; P2.50 made it refuse a picture that does not load before anything changes.
 
 ## 2. The rule
 
