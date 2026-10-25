@@ -116,16 +116,17 @@ namespace PrioritiesInternal {
  * \brief Legacy iterative DFS priority calculation, used for cyclic graphs only.
  *
  * Treats any successor that is pending on the explicit stack as a feedback
- * edge and assigns the current node early, from already-computed successors
- * only.  On cycle-free graphs this mis-classifies pending *siblings* as
+ * edge and leaves it out of the current node's priority, which is assigned
+ * from the already-computed successors once every unvisited successor has
+ * been.  On cycle-free graphs this mis-classifies pending *siblings* as
  * feedback and produces iteration-order-dependent priorities (see
  * calculatePriorities below for the correct DAG path).  On cyclic graphs the
  * resulting order is what the simulation's iterative settling and the
  * gate-built latch circuits (SR/JK/D master-slave ICs) were built around:
  * zero-delay latch races have no graph-derivable "correct" evaluation order,
  * and changing the order flips which stable state a latch settles into from
- * an undetermined start.  Keep this path byte-for-byte stable unless the
- * settling semantics are redesigned.
+ * an undetermined start.  A change to this order is measured against the
+ * simulation trace goldens of every example, fixture and IC component first.
  */
 template<typename T>
 void legacyCalculatePriorities(
@@ -163,18 +164,16 @@ void legacyCalculatePriorities(
 
             bool allProcessed = true;
             int maxSuccessorPriority = 0;
-            bool hasFeedbackLoop = false;
 
             const auto it = successors.find(current);
             if (it != successors.end()) {
                 for (auto *successor : *it) {
                     if (!outPriorities.contains(successor)) {
+                        // A successor pending on the stack closes a feedback loop and is left out.
                         if (!inStack.contains(successor)) {
                             stack.push(successor);
                             inStack.insert(successor);
                             allProcessed = false;
-                        } else {
-                            hasFeedbackLoop = true;
                         }
                     } else {
                         maxSuccessorPriority = (std::max)(maxSuccessorPriority, outPriorities.value(successor));
@@ -182,15 +181,17 @@ void legacyCalculatePriorities(
                 }
             }
 
-            // Assign priority when all successors are computed, OR when a
-            // feedback loop is detected.  The early assignment on feedback is
-            // intentional: it gives feedback-loop nodes a *lower* priority
-            // (based only on already-computed successors) so the simulation
-            // processes them *after* their non-cyclic inputs.  Because
-            // GraphicElement::updateLogic() reads live predecessor outputs,
-            // processing feedback nodes late ensures they see fresh values
-            // from the current iteration rather than stale ones.
-            if (allProcessed || hasFeedbackLoop) {
+            // Assign the priority once every successor is computed or closes a
+            // feedback loop. Leaving feedback successors out gives feedback-loop
+            // nodes a *lower* priority (based only on already-computed
+            // successors) so the simulation processes them *after* their
+            // non-cyclic inputs. Because GraphicElement::updateLogic() reads
+            // live predecessor outputs, processing feedback nodes late ensures
+            // they see fresh values from the current iteration rather than
+            // stale ones. A node that pushed a successor waits for it, so the
+            // node assigned is the one on top, and a producer ranks above its
+            // consumer.
+            if (allProcessed) {
                 outPriorities[current] = maxSuccessorPriority + 1;
                 stack.pop();
                 inStack.remove(current);

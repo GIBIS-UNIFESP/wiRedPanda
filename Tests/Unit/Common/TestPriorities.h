@@ -16,6 +16,7 @@ private slots:
     void testPriorityMemoization();
     void testPriorityTransitiveDiamond();
     void testPriorityCycleSharedPriority();
+    void testPriorityNodeWithFeedbackAndUnvisitedSuccessor();
 
     // Feedback Detection Tests (7 tests)
     void testFeedbackNoCycle();
