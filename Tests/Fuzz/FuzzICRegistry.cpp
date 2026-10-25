@@ -28,12 +28,12 @@
  *      whose metadata contains the fuzz blob in `embeddedICs`, so the normal
  *      load path exercises ICRegistry::setBlob in context.
  *
- * Input layout (first byte selects which path to exercise):
- *   0–84  → registry manipulation + initEmbeddedIC
- *   85–169 → WorkSpace::load with embedded blob in metadata
- *   170+  → both paths sequentially
+ * Input layout: a whole .panda file (WPCF magic, a legacy text header, or a leading 0 byte) takes path C, where the
+ * input is an IC's definition (see exerciseDefinition()).  Any other input is split by FuzzedDataProvider into a
+ * blob name and blob bytes, which go through path A, and also path B when the last byte is below 170.
  */
 
+#include <algorithm>
 #include <cstddef>
 #include <cstdint>
 #include <fuzzer/FuzzedDataProvider.h>
@@ -42,11 +42,18 @@
 #include <QByteArray>
 #include <QCoreApplication>
 #include <QDataStream>
+#include <QDir>
 #include <QEvent>
+#include <QFile>
 #include <QIODevice>
 #include <QMap>
+#include <QMetaObject>
 #include <QScopeGuard>
 #include <QString>
+#include <QStringList>
+#include <QTemporaryDir>
+#include <QUndoStack>
+#include <QVariant>
 #include <QVersionNumber>
 
 #include "App/Core/Application.h"
@@ -59,12 +66,16 @@
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Fuzz/FuzzSeed.h"
+#include "Tests/Fuzz/PandaMutator.h"
 
 namespace {
 
 QApplication *g_app  = nullptr;
 int  g_argc = 0;
 char **g_argv = nullptr;
+
+// Where path C writes the definition's file and extracts it to; the scene's context directory.
+QTemporaryDir *g_dir = nullptr;
 
 // Valid IC blob (InputSwitch + Led) built in LLVMFuzzerInitialize.
 // Used to exercise the successful path through ICRegistry::initEmbeddedIC
@@ -174,7 +185,125 @@ void exerciseViaLoad(const QString &blobName, const QByteArray &blobBytes,
     } catch (...) {}
 }
 
+void writeFile(const QString &path, const QByteArray &bytes)
+{
+    QFile file(path);
+    if (file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+        file.write(bytes);
+    }
+}
+
+// Path C: a whole .panda input is an IC's definition, put through what ICController does with one: placed from its
+// file, reloaded when the file changes, embedded, renamed, extracted to a file again and embedded anew, then every
+// step undone and redone.  A blob that nests it and names its file as a file-backed dependency makes
+// makeBlobSelfContained() and renameBlobReference() walk it; the definition cut in half is the file edited into one
+// that no longer loads.
+void exerciseDefinition(const QByteArray &definition)
+{
+    const QString dir = g_dir->path();
+    const QString filePath = g_dir->filePath("def.panda");
+    const QString extractedPath = g_dir->filePath("extracted.panda");
+    const QString unusedPath = g_dir->filePath("unused.panda");
+    const QByteArray broken = definition.left(definition.size() / 2);
+    QFile::remove(extractedPath);
+    writeFile(filePath, definition);
+    writeFile(unusedPath, definition);
+
+    WorkSpace ws;
+    Scene *scene = ws.scene();
+    scene->setContextDir(dir);
+    ICRegistry *reg = scene->icRegistry();
+
+    try { reg->registerBlob("raw", definition); } catch (...) {}
+    {
+        // "inner.panda" is skipped, its base name already embedded; "unreadable.panda" is a directory.
+        QMap<QString, QVariant> meta;
+        meta.insert("dolphinFileName", QVariant(QString()));
+        meta.insert("fileBackedICs", QStringList{"def.panda", "missing.panda", "inner.panda", "unreadable.panda"});
+        Serialization::serializeBlobRegistry({{"inner", definition}}, meta);
+        try { reg->registerBlob("wrapper", FuzzSeed::pandaFile(meta, QList<QGraphicsItem *>())); } catch (...) {}
+    }
+    {
+        // The definition nested 0 to 19 levels deep, past the limit of 16 at the deepest.
+        QByteArray nested = definition;
+        for (qsizetype depth = definition.size() % 20; depth > 0; --depth) {
+            QMap<QString, QVariant> meta;
+            meta.insert("dolphinFileName", QVariant(QString()));
+            Serialization::serializeBlobRegistry({{QString("level%1").arg(depth), nested}}, meta);
+            nested = FuzzSeed::pandaFile(meta, QList<QGraphicsItem *>());
+        }
+        try { reg->registerBlob("nested", nested); } catch (...) {}
+    }
+
+    auto *unplaced = new IC();
+    (void)reg->initEmbeddedIC(unplaced, "missing");
+    delete unplaced;
+
+    // Two instances placed from the file, as from the palette; a definition that does not load stops here.
+    for (int i = 0; i < 2; ++i) {
+        auto *ic = new IC();
+        try {
+            ic->loadFile(filePath, dir);
+        } catch (...) {
+            delete ic;
+            return;
+        }
+        scene->addItem(ic);
+    }
+
+    const auto fileChanged = [reg](const QString &path) {
+        QMetaObject::invokeMethod(reg, "onFileChanged", Qt::DirectConnection, Q_ARG(QString, path));
+    };
+    (void)reg->cachedFileBytes(filePath);
+    (void)reg->cachedFileBytes(g_dir->filePath("missing.panda"));
+    fileChanged(filePath);
+    reg->watchFile(filePath);
+    fileChanged(unusedPath);
+    writeFile(filePath, broken);
+    fileChanged(filePath);
+    writeFile(filePath, definition);
+    fileChanged(filePath);
+    reg->invalidate(filePath);
+
+    const QString blobName = reg->uniqueBlobName("def");
+    try { reg->embedICsByFile(unusedPath, definition, reg->uniqueBlobName("unused")); } catch (...) {}
+    try { reg->embedICsByFile(filePath, broken, reg->uniqueBlobName("broken")); } catch (...) {}
+    try { reg->embedICsByFile(filePath, definition, blobName); } catch (...) {}
+    try { reg->renameBlob(blobName, "raw"); } catch (...) {}
+    try { reg->renameBlob(blobName, "renamed"); } catch (...) {}
+    (void)ICRegistry::captureSnapshot(reg->findICsByBlobName("renamed"));
+    try { reg->extractToFile("renamed", g_dir->filePath("no-such-dir/extracted.panda")); } catch (...) {}
+    try { reg->extractToFile("raw", g_dir->filePath("raw.panda")); } catch (...) {}
+    try { reg->extractToFile("renamed", extractedPath); } catch (...) {}
+    try { reg->createEmbeddedIC(reg->uniqueBlobName("created"), definition, dir); } catch (...) {}
+
+    QUndoStack *undoStack = scene->undoStack();
+    try {
+        while (undoStack->canUndo()) {
+            undoStack->undo();
+        }
+        while (undoStack->canRedo()) {
+            undoStack->redo();
+        }
+    } catch (...) {}
+}
+
+bool isPandaFile(const uint8_t *data, size_t size)
+{
+    const QByteArray head = QByteArray::fromRawData(reinterpret_cast<const char *>(data),
+                                                    static_cast<qsizetype>(std::min<size_t>(size, 10)));
+    return head.startsWith("WPCF") || head.startsWith("WiredPanda") || head.startsWith("WiRedPanda")
+        || (size > 0 && data[0] == 0);
+}
+
 } // namespace
+
+// A whole .panda input takes path C: the shared structure-aware mutator works on a current-format file's decompressed
+// body (Tests/Fuzz/PandaMutator.h)
+extern "C" size_t LLVMFuzzerCustomMutator(uint8_t *Data, size_t Size, size_t MaxSize, unsigned int Seed)
+{
+    return PandaMutator::mutate(Data, Size, MaxSize, Seed);
+}
 
 extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
 {
@@ -189,6 +318,8 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
     g_argc = *argc;
     g_argv = *argv;
     g_app  = new QApplication(g_argc, g_argv);
+    g_dir  = new QTemporaryDir();
+    QDir(g_dir->path()).mkdir("unreadable.panda");
 
     // Build a valid blob so initEmbeddedIC can succeed and exercise the full
     // IC::processLoadedItems → loadBoundaryElement path.
@@ -224,6 +355,16 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
     });
 
     if (size < 4) return 0;
+
+    // Path C loads its input as a circuit about 25 times; a large one spends the run in loading, which
+    // fuzz_deserialize targets, not in the registry.
+    if (isPandaFile(data, size)) {
+        if (size > 16384) {
+            return 0;
+        }
+        exerciseDefinition(QByteArray(reinterpret_cast<const char *>(data), static_cast<qsizetype>(size)));
+        return 0;
+    }
 
     FuzzedDataProvider fdp(data, size);
 
