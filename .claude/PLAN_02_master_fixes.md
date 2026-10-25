@@ -86,7 +86,7 @@ CI has no 6.7.3 job, and the Qt floor that follows this plan (6.8) adds none, so
 on a local 6.7.3 build. Both are right on every Qt (no commit after a failed write; a sink destroyed before its source)
 and land as `master`'s fixes while it still declares Qt 6.2 (P2.D9).
 
-### 2.6 A buzzer's destruction crashes on Qt 6.7.3
+### 2.6 A buzzer's destruction crashes on Qt 6.7.3 and 6.8.3
 
 `~QObject` deletes children in creation order, the `ToneGenerator` before the `QAudioSink`; 6.7.3's sink, as it is
 destroyed, disconnects from its source device, already gone, and crashes (`TestBuzzer::testPlayIdempotency`; gdb shows
@@ -702,7 +702,9 @@ user's choice between workable options).
 
 - **The two Qt 6.7.3 defects on Qt 6.8.** Both were seen on 6.7.3 and neither on 6.9.3; 6.8 was not checked. The
   fixes hold on every version; whether the floor's 6.8 shows the defects (`master`'s CI runs these tests on 6.8.3, and
-  on Debian's 6.8.2 on i386) is recorded, for the release notes (P2.34).
+  on Debian's 6.8.2 on i386) is recorded, for the release notes (P2.34). Checked 2026-10-25 on a local 6.8.3: the
+  failed commit does not show (6.8's `commit()` refuses, 6.8.2's too by its CI job), the buzzer's crash does, in every
+  run, so the floor needs §2.6's fix. CI cannot show the crash: its runners have no audio device, so no sink is made.
 - **What a snapshot restore does on `master` with a custom picture that no longer loads.** §3.8's morph undo restores
   through it, so its behaviour there is checked first, and the undo neither leaks nor crashes (P2.35). Checked
   2026-10-24 on an `InputSwitch`, through undo and redo: the restore loads the whole snapshot, so the element lists
