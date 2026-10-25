@@ -130,6 +130,8 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     /// \reimp
     void refresh() override;
+    /// Keeps a loaded IC's tooltip clear, since the hover preview names it; one with nothing loaded shows its type name.
+    void retranslate() override;
 
     // --- External file dependencies ---
 
@@ -176,6 +178,8 @@ private:
 
     QString m_file;
     QString m_blobName;
+    /// Whether a sub-circuit has been loaded, from a file or a blob.
+    bool m_loaded = false;
     /// Bytes last successfully loaded via loadFromBlob(), so IC::load() can skip re-loading
     /// an embedded sub-circuit whose blob reference and content are both unchanged (a
     /// label-only property edit) instead of always tearing down and rebuilding it.
