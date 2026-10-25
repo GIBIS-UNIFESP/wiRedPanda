@@ -18,6 +18,7 @@
 
 #include "App/Core/Application.h"
 #include "App/Core/Enums.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
@@ -332,6 +333,40 @@ void TestIC::testOrientedICKeepsItsPortsAcrossAReopen()
             }
         }
     }
+}
+
+void TestIC::testLoadedICKeepsNoToolTipAfterARetranslation()
+{
+    // The hover preview names a loaded IC, so it has no tooltip; one with nothing loaded keeps its type name. The main
+    // window retranslates every element through the base class at a language change.
+    const QString icFile = TestUtils::examplesDir() + "dflipflop.panda";
+
+    WorkSpace workspace;
+    auto *fromFile = new IC();
+    workspace.scene()->addItem(fromFile);
+    fromFile->loadFile(icFile, QFileInfo(icFile).absolutePath());
+
+    QFile file(icFile);
+    QVERIFY(file.open(QIODevice::ReadOnly));
+    auto *fromBlob = new IC();
+    workspace.scene()->addItem(fromBlob);
+    fromBlob->loadFromBlob(file.readAll(), QFileInfo(icFile).absolutePath());
+
+    auto *unloaded = new IC();
+    workspace.scene()->addItem(unloaded);
+
+    QVERIFY(fromFile->toolTip().isEmpty());
+    QVERIFY(fromBlob->toolTip().isEmpty());
+    QVERIFY(!unloaded->toolTip().isEmpty());
+
+    for (GraphicElement *element : {static_cast<GraphicElement *>(fromFile), static_cast<GraphicElement *>(fromBlob),
+                                    static_cast<GraphicElement *>(unloaded)}) {
+        element->retranslate();
+    }
+
+    QCOMPARE(fromFile->toolTip(), QString());
+    QCOMPARE(fromBlob->toolTip(), QString());
+    QCOMPARE(unloaded->toolTip(), ElementFactory::translatedName(ElementType::IC));
 }
 
 // Integration Tests

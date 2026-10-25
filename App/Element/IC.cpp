@@ -381,3 +381,11 @@ void IC::restoreSimState(const QVector<Status> &in, int &cursor)
 void IC::refresh()
 {
 }
+
+void IC::retranslate()
+{
+    GraphicElement::retranslate();
+    if (m_loaded) {
+        setToolTip(QString());
+    }
+}

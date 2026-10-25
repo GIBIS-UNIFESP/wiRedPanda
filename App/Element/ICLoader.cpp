@@ -106,10 +106,6 @@ void ICLoader::loadFile(IC &ic, const QString &fileName, const QString &contextD
         if (!cached.isEmpty()) {
             deserializeAndLoad(ic, cached, fileInfo.absolutePath());
             ic.m_file = fileInfo.absoluteFilePath();
-            // No Qt tooltip: the filename is shown in the hover preview popup
-            // (see ICPreviewPopup) so the two don't overlap. Clear the base
-            // class's translated-name tooltip set at construction.
-            ic.setToolTip(QString());
             if (ic.label().isEmpty()) {
                 ic.setLabel(fileInfo.baseName().toUpper());
             }
@@ -124,8 +120,6 @@ void ICLoader::loadFile(IC &ic, const QString &fileName, const QString &contextD
     // without ever leaving m_sortedInternalElements pointing at freed elements.
     loadFileDirectly(ic, fileInfo);
     ic.m_file = fileInfo.absoluteFilePath();
-    // Name is carried by the hover preview popup, not a Qt tooltip — see above.
-    ic.setToolTip(QString());
 
     qCDebug(zero) << "Finished reading IC.";
 }
@@ -305,6 +299,11 @@ void ICLoader::processLoadedItems(IC &ic, QList<QGraphicsItem *> &items)
     ic.setLabelAnchor(QPointF(30, bottom + 5));
 
     ICRenderer::generatePixmap(ic);
+
+    // No Qt tooltip: the hover preview popup (ICPreviewPopup) names a loaded IC, so the two don't overlap. Clear the
+    // base class's translated-name tooltip; IC::retranslate() keeps it clear.
+    ic.setToolTip(QString());
+    ic.m_loaded = true;
 }
 
 void ICLoader::deserializeAndLoad(IC &ic, const QByteArray &bytes, const QString &contextDir)
@@ -362,10 +361,6 @@ void ICLoader::loadFromBlob(IC &ic, const QByteArray &blob, const QString &conte
 
     deserializeAndLoad(ic, blob, contextDir);
     ic.m_file.clear(); // switching to blob-backed, no file association
-
-    // Name is carried by the hover preview popup, not a Qt tooltip; clear the
-    // base class's translated-name tooltip so no bubble fights the preview.
-    ic.setToolTip(QString());
 
     qCDebug(zero) << "Finished loading IC from blob.";
 }
