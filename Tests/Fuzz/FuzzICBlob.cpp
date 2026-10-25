@@ -8,11 +8,12 @@
  *   1. Raw bytes: treat the fuzz input as the raw bytes of an IC blob and
  *      call IC::loadFromBlob() directly (raw mutation path).
  *   2. Structured (25% of inputs with first byte & 0xC0 == 0): use
- *      FuzzedDataProvider to build a structurally valid IC panda with 1-4
- *      boundary elements (InputSwitch as inputs, Led as outputs).  This
- *      guarantees IC::processLoadedItems always sees loadable elements and
- *      exercises the port setup / boundary-element classification path even
- *      when raw mutation hasn't yet discovered the panda format.
+ *      FuzzedDataProvider to build a structurally valid IC panda with 2-5
+ *      boundary elements of every input and display type, nested in embedded
+ *      ICs up to one level past the nesting limit.  This guarantees
+ *      IC::processLoadedItems always sees loadable elements and exercises the
+ *      port setup / boundary-element classification path and the embedded
+ *      sub-circuit lookup even when raw mutation hasn't yet discovered them.
  */
 
 #include <cstddef>
@@ -39,6 +40,7 @@
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "Tests/Fuzz/FuzzSeed.h"
+#include "Tests/Fuzz/PandaMutator.h"
 
 namespace {
 
@@ -46,39 +48,93 @@ QApplication *g_app  = nullptr;
 int  g_argc = 0;
 char **g_argv = nullptr;
 
-// Build a structurally valid IC blob (panda file) with fuzz-controlled
-// element properties.  Boundary elements (InputSwitch, Led) are classified
-// as IC inputs/outputs by IC::processLoadedItems; the harness exercises the
-// full boundary element setup path even on structured (non-mutated) inputs.
-QByteArray buildStructuredICBlob(FuzzedDataProvider &fdp)
+// Boundary elements: IC::processLoadedItems makes one pin of each port of an Input or Output group element, and
+// names the pins of an element with more than one port after its ports (InputRotary's, the displays').
+constexpr ElementType kInputTypes[] = {ElementType::InputSwitch, ElementType::InputButton, ElementType::Clock,
+                                       ElementType::InputRotary};
+constexpr ElementType kOutputTypes[] = {ElementType::Led, ElementType::Display7, ElementType::Display14,
+                                        ElementType::Display16};
+
+// One level of a structurally valid IC blob (a panda file): 1-3 inputs and 1-2 outputs with fuzz-chosen types and
+// labels and, when \a nestedBlob is not empty, an IC element whose sub-circuit is \a nestedBlob, embedded in the
+// file's blob registry under its exact name or under its base name.
+QByteArray buildICLevel(FuzzedDataProvider &fdp, const QByteArray &nestedBlob)
 {
-    // Pick 1-3 InputSwitch (inputs) and 1-2 Led (outputs)
     const int numInputs  = fdp.ConsumeIntegralInRange<int>(1, 3);
     const int numOutputs = fdp.ConsumeIntegralInRange<int>(1, 2);
 
     QList<QGraphicsItem *> items;
     int nextId = 1;
 
-    for (int i = 0; i < numInputs; ++i) {
-        auto *elm = ElementFactory::buildElement(ElementType::InputSwitch);
+    const auto addElement = [&](const ElementType type) {
+        auto *elm = ElementFactory::buildElement(type);
         elm->setId(nextId++);
+        if (elm->maxOutputSize() > elm->minOutputSize()) {
+            elm->setOutputSize(fdp.ConsumeIntegralInRange<int>(elm->minOutputSize(), elm->maxOutputSize()));
+        }
+        if (fdp.ConsumeBool()) {
+            elm->setLabel(fdp.ConsumeBool() ? QString("a") : QString("b"));
+        }
         items.append(elm);
+    };
+    for (int i = 0; i < numInputs; ++i) {
+        addElement(fdp.PickValueInArray(kInputTypes));
     }
     for (int i = 0; i < numOutputs; ++i) {
-        auto *elm = ElementFactory::buildElement(ElementType::Led);
-        elm->setId(nextId++);
-        items.append(elm);
+        addElement(fdp.PickValueInArray(kOutputTypes));
     }
 
     QMap<QString, QVariant> meta;
     meta.insert("dolphinFileName", QVariant(QString()));
-    const QByteArray blob = FuzzSeed::pandaFile(meta, items);
+    const bool byBaseName = fdp.ConsumeBool();
+    if (!nestedBlob.isEmpty()) {
+        Serialization::serializeBlobRegistry({{QString(byBaseName ? "nested" : "nested.panda"), nestedBlob}}, meta);
+    }
+    const QByteArray blob = FuzzSeed::pandaFile(meta, [&](QDataStream &stream) {
+        Serialization::serialize(items, stream, {.purpose = SerializationPurpose::PortableFile});
+        if (nestedBlob.isEmpty()) {
+            return;
+        }
+        // IC element: discriminator + ElementType + base map + port lists + secondary map
+        stream << static_cast<int>(GraphicElement::Type);
+        stream << static_cast<quint64>(ElementType::IC);
+        QMap<QString, QVariant> base;
+        base.insert("pos", QVariant::fromValue(QPointF(0.0, 0.0)));
+        base.insert("rotation", QVariant(0.0));
+        base.insert("label", QVariant(QString()));
+        stream << base;
+        stream << quint32(0) << quint32(0) << quint32(0);
+        QMap<QString, QVariant> icMap;
+        icMap.insert("blobName", QVariant(QString("nested.panda")));
+        stream << icMap;
+    });
     qDeleteAll(items);
 
     return blob;
 }
 
+// A structurally valid IC blob nested 0-17 levels deep: loading one deeper than ICLoader's nesting limit (16)
+// throws, so most draws stay shallow.
+QByteArray buildStructuredICBlob(FuzzedDataProvider &fdp)
+{
+    const int depth = fdp.ConsumeBool() ? fdp.ConsumeIntegralInRange<int>(0, 2) : fdp.ConsumeIntegralInRange<int>(0, 17);
+
+    QByteArray blob;
+    for (int level = 0; level <= depth; ++level) {
+        blob = buildICLevel(fdp, blob);
+    }
+    return blob;
+}
+
 } // namespace
+
+// The raw path's input is a whole .panda file, the IC corpus's all in the current compressed format: the shared
+// structure-aware mutator works on its decompressed body (Tests/Fuzz/PandaMutator.h). Inputs that take the
+// structured path are not WPCF files and get its raw-byte operations.
+extern "C" size_t LLVMFuzzerCustomMutator(uint8_t *Data, size_t Size, size_t MaxSize, unsigned int Seed)
+{
+    return PandaMutator::mutate(Data, Size, MaxSize, Seed);
+}
 
 extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
 {
