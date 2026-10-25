@@ -198,6 +198,15 @@ sets answer membership, the lists keeping their order. Shown by `TestCommands::t
 `fuzz_clipboard`'s coverage rounds pasting a legacy file's element at -5e153). Fix: rounding in floating point. Shown
 by `TestGraphicElement::testSnapToGridKeepsAPositionBeyondIntRange`.
 
+### 2.17 Rendering a selection that reaches past int's range is undefined
+
+A clone-drag image, or any headless render, of elements spanning a finite distance past `int`'s range converted that
+extent to `int` twice before bounding it: `ClipboardManager::buildDragImage()` capped the image's size after rounding
+the extent to whole pixels, and `Scene::drawBackground()` converted the exposed rect's edges before its grid bound
+(P2.62, found by `fuzz_clipboard`'s coverage rounds). Fix: both bound in floating point first. Shown by
+`TestScene::testBuildDragImageClampsAnExtentBeyondIntRange`; `testGridIsNotDrawnBeyondIntRange` pins the grid,
+counting the points a render draws: on master's code GCC's build draws five, at x = 0.
+
 ## 3. In code plan 3 rewrites
 
 ### 3.1 SR and T flip-flops ignore every input while one input is open
@@ -640,6 +649,7 @@ Each of these exists on `master`, and its fix is another plan's decision:
 | P2.58 | No move walks every port (§2.14) | P1.5 | none (the wire-geometry golden keeps the wires following) |
 | P2.60 | Commands deduplicating in linear time (§2.15) | the helpers only | none |
 | P2.61 | Snapping past `int`'s range (§2.16) | the helpers only | none |
+| P2.62 | Rendering past `int`'s range (§2.17) | the helpers only | none |
 | P2.9 | SR and T defaults (§3.1) | P1.4, P1.6, P1.13 | port layout, one scene snapshot, any trace with S, R or T open |
 | P2.10 | The loader's port counts (§3.2) | P1.8, P1.17 | the strings golden's three messages |
 | P2.11 | The AudioBox's undo (§3.3) | P1.15 | one editor-writes row |
