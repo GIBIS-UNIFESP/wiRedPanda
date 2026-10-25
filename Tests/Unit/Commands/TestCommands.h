@@ -98,4 +98,5 @@ private slots:
     void testFindItemsThrowsWhenItemMissing();
     void testLoadItemsThrowsOnCountMismatch();
     void testElementsCommandElementsThrowsWhenItemMissing();
+    void testLoadListGrowsLinearly();
 };
