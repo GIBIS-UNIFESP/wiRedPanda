@@ -168,6 +168,7 @@ ElementEditor	Default
 ElementEditor	Delay:
 ElementEditor	Duplicate IC Name
 ElementEditor	Duplicate Wireless Channel
+ElementEditor	During simulation, a locked element ignores clicks and its trigger key, and a locked clock stops.
 ElementEditor	E6
 ElementEditor	Edit Truth Table
 ElementEditor	Element Editor
@@ -190,7 +191,6 @@ ElementEditor	Open File
 ElementEditor	Outputs:
 ElementEditor	Phase offset from the driving clock, as a fraction of its period.
 ElementEditor	Ports
-ElementEditor	Prevent this element from being toggled by clicking it during simulation.
 ElementEditor	Purple
 ElementEditor	Receive (Rx)
 ElementEditor	Red

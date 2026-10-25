@@ -345,7 +345,7 @@ void ElementEditorUi::retranslateUi(QWidget *ElementEditor)
 
     // Tooltips for controls whose meaning isn't self-evident from the label alone.
     const QString lockedTip = QCoreApplication::translate(
-        "ElementEditor", "Prevent this element from being toggled by clicking it during simulation.");
+        "ElementEditor", "During simulation, a locked element ignores clicks and its trigger key, and a locked clock stops.");
     labelLocked->setToolTip(lockedTip);
     checkBoxLocked->setToolTip(lockedTip);
 
