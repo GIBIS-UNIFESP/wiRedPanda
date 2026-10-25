@@ -17,6 +17,8 @@ from collections.abc import Awaitable, Callable
 
 from beartype import beartype
 
+from mcp_client.mcp_infrastructure import read_line
+
 # Import models - needed for test_invalid_json_handling
 from mcp_client.mcp_models import MCPResponse
 
@@ -35,6 +37,7 @@ class BasicProtocolTests(MCPTestBase):
             self.test_protocol_communication,
             self.test_error_handling,
             self.test_invalid_json_handling,
+            self.test_response_longer_than_the_stream_limit,
         ]
 
     # ==================== TEST METHODS ====================
@@ -162,7 +165,7 @@ class BasicProtocolTests(MCPTestBase):
 
             # Read response with timeout using async methods
             try:
-                response_line_bytes = await asyncio.wait_for(self.process.stdout.readline(), timeout=1.0)
+                response_line_bytes = await asyncio.wait_for(read_line(self.process.stdout), timeout=1.0)
                 response_line = response_line_bytes.decode("utf-8").strip()
             except asyncio.TimeoutError:
                 print("❌ No response to invalid JSON")
@@ -190,3 +193,35 @@ class BasicProtocolTests(MCPTestBase):
             self.infrastructure.output.success("✅ Invalid JSON handling test completed")
 
         return all_passed
+
+    @beartype
+    async def test_response_longer_than_the_stream_limit(self) -> bool:
+        """A response longer than asyncio's 64 KiB line limit is read whole, and the next command gets its own"""
+        print("\n=== Response Longer Than The Stream Limit Test ===")
+
+        resp = await self.send_command("new_circuit", {})
+        if not await self.assert_success(resp, "Long response: new circuit"):
+            return False
+        for i in range(700):
+            if await self.create_element_checked("And", 80 * (i % 35), 80 * (i // 35), "Long response: create") is None:
+                return False
+
+        resp = await self.send_command("list_elements", {})
+        result = await self.assert_success_and_get_result(resp, "Long response: list 700 elements")
+        if result is None:
+            return False
+        if len(result.get("elements", [])) != 700:
+            self.report_failure(f"Long response: listed {len(result.get('elements', []))} elements, not 700")
+            return False
+        if len(json.dumps(result)) <= 64 * 1024:
+            self.report_failure("Long response: the listing is not longer than 64 KiB, so it tests nothing")
+            return False
+
+        resp = await self.send_command("get_tab_count", {})
+        result = await self.assert_success_and_get_result(resp, "Long response: the next command")
+        if result is None or "elements" in result:
+            self.report_failure("Long response: the next command did not get its own response")
+            return False
+
+        self.infrastructure.output.success("✅ Long response read whole, the next command in step")
+        return await self.cleanup_circuit("Long response")
