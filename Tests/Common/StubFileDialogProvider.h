@@ -6,6 +6,8 @@
 
 #pragma once
 
+#include <QList>
+
 #include "App/UI/FileDialogProvider.h"
 
 /// Test stub that returns pre-configured results and captures call parameters.
@@ -15,7 +17,8 @@ public:
     // --- Pre-configured return values (set before calling code-under-test) ---
 
     QString openResult;          ///< Path that getOpenFileName will return.
-    FileDialogResult saveResult; ///< Result that getSaveFileName will return.
+    FileDialogResult saveResult; ///< Result that getSaveFileName will return, once saveResults is empty.
+    QList<FileDialogResult> saveResults; ///< Results getSaveFileName returns in turn, one per call, before saveResult.
 
     // --- Captured parameters (read after calling code-under-test) ---
 
@@ -44,7 +47,7 @@ public:
     {
         lastSaveCall = {caption, dir, filter, parent};
         ++saveCallCount;
-        return saveResult;
+        return saveResults.isEmpty() ? saveResult : saveResults.takeFirst();
     }
 };
 

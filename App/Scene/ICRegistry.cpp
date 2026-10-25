@@ -248,7 +248,7 @@ IC *ICRegistry::createEmbeddedIC(const QString &blobName, const QByteArray &file
 }
 
 int ICRegistry::embedICsByFile(const QString &fileName, const QByteArray &fileBytes,
-                               const QString &blobName)
+                               const QString &blobName, QUndoCommand *parent)
 {
     const auto targets = findICsByFile(fileName);
     if (targets.isEmpty()) {
@@ -274,17 +274,19 @@ int ICRegistry::embedICsByFile(const QString &fileName, const QByteArray &fileBy
         throw;
     }
 
-    auto *cmd = new UpdateBlobCommand(targets, oldData, connections, m_scene);
+    auto *cmd = new UpdateBlobCommand(targets, oldData, connections, m_scene, parent);
     // This blob is newly registered above (registerBlob() at a name these targets weren't
     // already using), not replacing prior content — leave m_oldBlob at its default-empty so
     // undo() removes it rather than restoring bytes that never existed. Explicit rather than
     // relying on the constructor default, unlike every other UpdateBlobCommand call site.
     cmd->setOldBlob(QByteArray());
-    m_scene->undoStack()->push(cmd);
+    if (!parent) {
+        m_scene->undoStack()->push(cmd);
+    }
     return static_cast<int>(targets.size());
 }
 
-int ICRegistry::extractToFile(const QString &blobName, const QString &filePath)
+int ICRegistry::extractToFile(const QString &blobName, const QString &filePath, QUndoCommand *parent)
 {
     // Write blob to disk
     QSaveFile saveFile(filePath);
@@ -314,10 +316,12 @@ int ICRegistry::extractToFile(const QString &blobName, const QString &filePath)
 
     removeBlob(blobName);
 
-    auto *cmd = new UpdateBlobCommand(targets, oldData, connections, m_scene);
+    auto *cmd = new UpdateBlobCommand(targets, oldData, connections, m_scene, parent);
     cmd->setOldBlob(oldBlob);
     cmd->setBlobName(blobName);
-    m_scene->undoStack()->push(cmd);
+    if (!parent) {
+        m_scene->undoStack()->push(cmd);
+    }
     return static_cast<int>(targets.size());
 }
 

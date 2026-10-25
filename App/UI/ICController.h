@@ -7,11 +7,15 @@
 
 #pragma once
 
+#include <functional>
+
+#include <QList>
 #include <QObject>
 #include <QString>
 
 class IC;
 class MainWindowHost;
+class QUndoCommand;
 class Scene;
 
 /**
@@ -41,10 +45,11 @@ public slots:
     /// Deletes \a icFileName from the project directory and any instances of it in the scene.
     void removeICFile(const QString &icFileName);
 
-    /// Embeds the currently selected file-backed IC as a blob in the circuit.
+    /// Embeds every distinct file among the selected file-backed ICs as a blob in the circuit, as one undo step.
     void embedSelectedIC();
 
-    /// Extracts the currently selected embedded IC back out to a .panda file.
+    /// Extracts every distinct blob among the selected embedded ICs to a .panda file, one save dialog each, as one
+    /// undo step.
     void extractSelectedIC();
 
     /// Embeds the file-based IC named \a fileName (drag-and-drop target).
@@ -53,7 +58,7 @@ public slots:
     /// Extracts the embedded IC blob \a blobName to a user-chosen .panda file.
     void extractICByBlobName(const QString &blobName);
 
-    /// Embeds every file-based IC in the circuit so it becomes self-contained.
+    /// Embeds every file-based IC in the circuit so it becomes self-contained, as one undo step.
     void makeSelfContained();
 
     /// Prompts for a .panda file and registers it as an embedded IC blob.
@@ -63,8 +68,12 @@ public slots:
     void removeEmbeddedIC(const QString &blobName);
 
 private:
-    /// Returns the first selected element if it is an IC, else nullptr.
-    IC *selectedIC() const;
+    /// Returns the selected ICs of the current tab, in id order.
+    QList<IC *> selectedICs() const;
+
+    /// Runs \a edits, which make their undo commands children of the command they are given, and pushes that command
+    /// onto \a scene's undo stack as one step named \a text if they made any, also when an edit throws.
+    static void runAsOneStep(Scene *scene, const QString &text, const std::function<void(QUndoCommand *)> &edits);
 
     /// Resolves a non-colliding blob name for \a initialName, prompting on collision.
     QString resolveUniqueBlobName(const QString &initialName, Scene *scene);
