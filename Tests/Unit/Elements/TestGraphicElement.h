@@ -52,4 +52,5 @@ private slots:
 
     // retranslate()'s translated-name/tooltip/port-name refresh
     void testRetranslateUpdatesTranslatedNameToolTipAndPortName();
+    void testSnapToGridKeepsAPositionBeyondIntRange();
 };
