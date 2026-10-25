@@ -57,6 +57,17 @@ files under `Tests/Integration/IC` — the run scripts build it automatically at
 magic header, version tokens, QVariant type IDs, and map keys so mutation
 threads the format's length-prefixed fields.
 
+Six harnesses (`clipboard`, `codegen`, `ic_file`, `ic_registry`, `structured`,
+`undo`) also build circuits of their own at start-up, written by
+`FuzzSeed::pandaFile()` (`FuzzSeed.h`) as `WorkSpace::save()` writes a file.
+Each checks them with `FuzzSeed::requireAccepted()` before fuzzing: a circuit
+whose header, payload or metadata the reader rejects, or that loads with no
+elements, aborts the harness with its name and the reason, since its target
+catches every rejection and the run would otherwise look clean (`ic_blob` builds
+its circuit per input with the same writer, so it has none to check at
+start-up). A smoke test after changing a harness:
+`./build-fuzzer/fuzz_<harness> -runs=1`.
+
 ## Run
 
 Two wrappers cover the common cases; both wire up the corpus, dictionary, RSS

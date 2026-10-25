@@ -58,6 +58,7 @@
 #include "App/Scene/ICRegistry.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
+#include "Tests/Fuzz/FuzzSeed.h"
 
 namespace {
 
@@ -200,14 +201,11 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
         items.append(sw);
         items.append(led);
 
-        g_validBlob.clear();
-        QDataStream s(&g_validBlob, QIODevice::WriteOnly);
-        Serialization::writePandaHeader(s);
         QMap<QString, QVariant> meta;
         meta.insert("dolphinFileName", QVariant(QString()));
-        s << meta;
-        Serialization::serialize(items, s, {.purpose = SerializationPurpose::PortableFile});
+        g_validBlob = FuzzSeed::pandaFile(meta, items);
         qDeleteAll(items);
+        FuzzSeed::requireAccepted(g_validBlob, "fuzz_ic_registry");
     }
 
     return 0;

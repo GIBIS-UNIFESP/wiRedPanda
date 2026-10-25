@@ -39,6 +39,7 @@
 #include "App/Element/GraphicElement.h"
 #include "App/IO/Serialization.h"
 #include "App/Scene/Workspace.h"
+#include "Tests/Fuzz/FuzzSeed.h"
 
 namespace {
 
@@ -123,14 +124,11 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
         QList<QGraphicsItem *> items;
         items.append(sw);  items.append(led);
 
-        g_validICBytes.clear();
-        QDataStream s(&g_validICBytes, QIODevice::WriteOnly);
-        Serialization::writePandaHeader(s);
         QMap<QString, QVariant> meta;
         meta.insert("dolphinFileName", QVariant(QString()));
-        s << meta;
-        Serialization::serialize(items, s, {.purpose = SerializationPurpose::PortableFile});
+        g_validICBytes = FuzzSeed::pandaFile(meta, items);
         qDeleteAll(items);
+        FuzzSeed::requireAccepted(g_validICBytes, "fuzz_ic_file");
     }
 
     return 0;

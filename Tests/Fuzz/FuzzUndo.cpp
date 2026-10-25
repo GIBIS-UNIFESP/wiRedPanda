@@ -59,6 +59,7 @@
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/Wiring/Connection.h"
+#include "Tests/Fuzz/FuzzSeed.h"
 
 namespace {
 
@@ -301,14 +302,11 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
         items.append(sw);
         items.append(led);
 
-        g_icBlob.clear();
-        QDataStream s(&g_icBlob, QIODevice::WriteOnly);
-        Serialization::writePandaHeader(s);
         QMap<QString, QVariant> meta;
         meta.insert("dolphinFileName", QVariant(QString()));
-        s << meta;
-        Serialization::serialize(items, s, {.purpose = SerializationPurpose::PortableFile});
+        g_icBlob = FuzzSeed::pandaFile(meta, items);
         qDeleteAll(items);
+        FuzzSeed::requireAccepted(g_icBlob, "fuzz_undo");
     }
 
     // Build g_validPanda: a wired circuit with And gate + two InputSwitches + Led.
@@ -326,24 +324,19 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
         items.append(andG);  items.append(sw1);
         items.append(sw2);   items.append(led);
 
-        g_validPanda.clear();
-        QDataStream s(&g_validPanda, QIODevice::WriteOnly);
-        Serialization::writePandaHeader(s);
         QMap<QString, QVariant> meta;
         meta.insert("dolphinFileName", QVariant(QString()));
-        s << meta;
-        Serialization::serialize(items, s, {.purpose = SerializationPurpose::PortableFile});
-        qDeleteAll(items);
+        g_validPanda = FuzzSeed::pandaFile(meta, [&items](QDataStream &s) {
+            Serialization::serialize(items, s, {.purpose = SerializationPurpose::PortableFile});
 
-        // Append one Connection (sw1 output → And input0) as raw wire bytes.
-        // Writing it after serialize() ensures the element port serialIds are already
-        // in the stream (portMap is populated by elements before connections are wired).
-        //
-        // Port serialId formula (from GraphicElement::save):
-        //   serialId = (element_id << 16) | portIndex
-        // sw1 (id=2) output0: (2<<16)|0 = 131072
-        // andG (id=1) input0:  (1<<16)|0 = 65536
-        {
+            // Append one Connection (sw1 output → And input0) as raw wire bytes.
+            // Writing it after serialize() ensures the element port serialIds are already
+            // in the stream (portMap is populated by elements before connections are wired).
+            //
+            // Port serialId formula (from GraphicElement::save):
+            //   serialId = (element_id << 16) | portIndex
+            // sw1 (id=2) output0: (2<<16)|0 = 131072
+            // andG (id=1) input0:  (1<<16)|0 = 65536
             constexpr quint64 sw1Out0 = (quint64(2) << 16) | 0;  // sw1 output port 0
             constexpr quint64 andIn0  = (quint64(1) << 16) | 0;  // andG input port 0
             s << static_cast<int>(QGraphicsItem::UserType + 2);   // Connection::Type
@@ -351,7 +344,9 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
             connMap.insert("startPortId", QVariant::fromValue(sw1Out0));
             connMap.insert("endPortId",   QVariant::fromValue(andIn0));
             s << connMap;
-        }
+        });
+        qDeleteAll(items);
+        FuzzSeed::requireAccepted(g_validPanda, "fuzz_undo");
     }
 
     return 0;

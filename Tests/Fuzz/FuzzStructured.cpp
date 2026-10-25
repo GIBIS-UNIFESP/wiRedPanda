@@ -51,6 +51,7 @@
 #include "App/Simulation/Simulation.h"
 #include "App/Simulation/SimulationThrottleDisabler.h"
 #include "App/Versions.h"
+#include "Tests/Fuzz/FuzzSeed.h"
 
 namespace {
 
@@ -432,7 +433,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
     // exercised when FuzzStructured generates IC elements.  ElementFactory works
     // after QApplication is constructed.
     //
-    // The blob is a v5.1 panda containing InputSwitch (id=1, boundary input)
+    // The blob is a current-format panda containing InputSwitch (id=1, boundary input)
     // and Led (id=2, boundary output).  IC::processLoadedItems classifies them
     // as input/output boundaries and calls loadBoundaryElement for each.
     {
@@ -445,17 +446,12 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
         items.append(sw);
         items.append(led);
 
-        g_icBlob.clear();
-        QDataStream s(&g_icBlob, QIODevice::WriteOnly);
-        Serialization::writePandaHeader(s);
-
         QMap<QString, QVariant> meta;
         meta.insert("dolphinFileName", QVariant(QString()));
-        s << meta;
-
-        Serialization::serialize(items, s, {.purpose = SerializationPurpose::PortableFile});
+        g_icBlob = FuzzSeed::pandaFile(meta, items);
 
         qDeleteAll(items);
+        FuzzSeed::requireAccepted(g_icBlob, "fuzz_structured");
     }
 
     // Build g_nestedIcBlob: a panda that itself contains one IC element referencing
@@ -473,14 +469,9 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
             rs << reg;
         }
 
-        g_nestedIcBlob.clear();
-        QDataStream ns(&g_nestedIcBlob, QIODevice::WriteOnly);
-        Serialization::writePandaHeader(ns);
-
         QMap<QString, QVariant> meta;
         meta.insert("dolphinFileName", QVariant(QString()));
         meta.insert("embeddedICs",     QVariant(innerRegBytes));
-        ns << meta;
 
         // One IC element in the nested blob referencing "fuzz_ic.panda" (= g_icBlob).
         // setBlobName() makes isEmbedded() return true → IC::save() writes the blob name.
@@ -489,8 +480,9 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
         ic->setBlobName("fuzz_ic.panda");
         QList<QGraphicsItem *> icList;
         icList.append(ic);
-        Serialization::serialize(icList, ns, {.purpose = SerializationPurpose::PortableFile});
+        g_nestedIcBlob = FuzzSeed::pandaFile(meta, icList);
         qDeleteAll(icList);
+        FuzzSeed::requireAccepted(g_nestedIcBlob, "fuzz_structured");
     }
 
     return 0;

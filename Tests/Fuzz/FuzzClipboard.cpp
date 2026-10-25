@@ -37,6 +37,7 @@
 #include "App/Scene/ClipboardManager.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
+#include "Tests/Fuzz/FuzzSeed.h"
 
 namespace {
 
@@ -73,14 +74,11 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
         QList<QGraphicsItem *> items;
         items.append(sw);  items.append(led);
 
-        QByteArray icBlob;
-        QDataStream s(&icBlob, QIODevice::WriteOnly);
-        Serialization::writePandaHeader(s);
         QMap<QString, QVariant> meta;
         meta.insert("dolphinFileName", QVariant(QString()));
-        s << meta;
-        Serialization::serialize(items, s, {.purpose = SerializationPurpose::PortableFile});
+        const QByteArray icBlob = FuzzSeed::pandaFile(meta, items);
         qDeleteAll(items);
+        FuzzSeed::requireAccepted(icBlob, "fuzz_clipboard");
 
         // Serialise as a blob registry: QMap<QString,QByteArray> in Qt_5_12 format.
         // readBoundedBlobMap reads: quint32 count + count × (QString key + QByteArray val).
