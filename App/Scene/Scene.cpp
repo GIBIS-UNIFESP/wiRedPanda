@@ -478,7 +478,8 @@ const QList<GraphicElement *> Scene::selectedElements() const
 
 QGraphicsItem *Scene::itemAt(const QPointF pos) const
 {
-    auto items_ = items(pos);
+    // Topmost first, as Qt gives a press to the item drawn on top; the exact hits come before the nearby ones
+    auto items_ = items(pos, Qt::IntersectsItemShape, Qt::DescendingOrder);
     // Also check a small surrounding rectangle so port hit-testing works when
     // the cursor is near but not exactly on the port's bounding box
     items_.append(itemsAt(pos));
@@ -512,7 +513,7 @@ QList<QGraphicsItem *> Scene::itemsAt(const QPointF pos) const
     // 9×9 pixel hit area (4px margin around the exact point) compensates for the
     // small visual size of ports and makes them easier to click precisely
     QRectF rect(pos - QPointF(4, 4), QSize(9, 9));
-    return items(rect.normalized());
+    return items(rect.normalized(), Qt::IntersectsItemShape, Qt::DescendingOrder);
 }
 
 Port *Scene::portAt(const QPointF pos) const
@@ -529,11 +530,11 @@ Port *Scene::portAt(const QPointF pos) const
     // box rather than shape-vs-rect -- a difference of at most the ~1 unit of bounding-box
     // padding, well inside the deliberate 4 px slop.
     const QRectF rect(pos - QPointF(4, 4), QSize(9, 9));
-    const auto candidates = items(rect.normalized(), Qt::IntersectsItemBoundingRect);
+    const auto candidates = items(rect.normalized(), Qt::IntersectsItemBoundingRect, Qt::DescendingOrder);
 
     Port *nearby = nullptr;
 
-    for (auto *item : candidates) { // default order: topmost first
+    for (auto *item : candidates) { // topmost first
         if (item->type() != Port::Type) {
             continue;
         }
