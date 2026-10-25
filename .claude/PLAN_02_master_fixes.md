@@ -549,12 +549,16 @@ loads and a viewless resize keep the scene rect, each failing with its null chec
 the scene also holds, stays out of the circuit's bounds. Golden: the view golden's fit row and its four last wheel rows,
 which no longer reach the origin.
 
-### 7.8 A delete's undo is quadratic in a net's fan-out
+### 7.8 Attaching or detaching a wire refreshes every wire on the port
 
-Found while measuring §7.6: half of the undo of deleting all of `clocked_2000.panda` is `Port::updateConnections()`
-called from `Port::attachConnection()`, each wire attached to the clock's output port updating every wire already on
-it, so restoring a net of n wires costs n²/2 wire updates; the same undo of `clocked_8000.panda` takes 44 s. A load
-does not pay it. Fix and its measurement to be planned: first shown on `master`, then callgrind before and after.
+Found while measuring §7.6, and by profiling P2.38: half of the undo of deleting all of `clocked_2000.panda` is
+`Port::updateConnections()` called from `Port::attachConnection()`, and 83% of destroying it the same call from
+`Port::detachConnection()`. Each wire attached to or detached from the clock's output port refreshes every wire on it,
+so a net of n wires costs n²/2 refreshes on a load, a delete's undo and a destruction, though attaching or detaching
+moves neither the port nor the other wires. Fix: attach, detach and `setRequired()` re-derive the port's status only;
+`updateConnections()` stays for a port that moved; the wire's setters build its own geometry. Tests: two hundred wires
+on one output, each refreshed when its own ends are set and never by the others; the setters build the path. The 20 s
+the first command after loading the 8,000-element circuit waits is Qt's BSP index rebuild, plan 9's (P9.27).
 
 ## 8. Not plan 2's
 
