@@ -17,7 +17,7 @@ Twelve harnesses, registered in `CMakeLists.txt` under `if(ENABLE_FUZZER)`:
 | `fuzz_ic_blob`     | `FuzzICBlob.cpp`      | `IC::loadFromBlob` directly (raw bytes + a structured path that builds a valid IC with boundary elements). |
 | `fuzz_structured`  | `FuzzStructured.cpp`  | `deserialize` again, but `FuzzedDataProvider` synthesises valid `.panda` structure so the budget goes to semantic content, not recovering magic bytes. |
 | `fuzz_waveform`    | `FuzzWaveform.cpp`    | beWavedDolphin `.dolphin` files: `readDolphinHeader` + `DolphinSerializer::loadBinary`. |
-| `fuzz_clipboard`   | `FuzzClipboard.cpp`   | Clipboard MIME slots + the copy/paste serialize→deserialize round-trip. |
+| `fuzz_clipboard`   | `FuzzClipboard.cpp`   | A clipboard pasted, undone and redone; a `.panda` file copied, pasted, duplicated and cut. |
 | `fuzz_old_format`  | `FuzzOldFormat.cpp`   | The pre-4.1 flat binary path (`GraphicElement::loadOldFormat`) and its per-version / per-element-type branches. |
 | `fuzz_ic_registry` | `FuzzICRegistry.cpp`  | `ICRegistry` blob lifecycle: `setBlob`/`hasBlob`/`blob`, `initEmbeddedIC`, and `embeddedICs` metadata loading. |
 | `fuzz_codegen`     | `FuzzCodeGen.cpp`     | The Arduino + SystemVerilog exporters (only reachable via `File > Export`), plus `generateTestbench`. |
@@ -67,16 +67,15 @@ type ids and element headers, and mutates a current-format file in its
 decompressed body, writing it back compressed, so mutations reach the reader's
 structure instead of breaking zlib's stream.
 
-Six harnesses (`clipboard`, `codegen`, `ic_file`, `ic_registry`, `structured`,
-`undo`) also build circuits of their own at start-up, written by
-`FuzzSeed::pandaFile()` (`FuzzSeed.h`) as `WorkSpace::save()` writes a file.
-Each checks them with `FuzzSeed::requireAccepted()` before fuzzing: a circuit
-whose header, payload or metadata the reader rejects, or that loads with no
-elements, aborts the harness with its name and the reason, since its target
-catches every rejection and the run would otherwise look clean (`ic_blob` builds
-its circuit per input with the same writer, so it has none to check at
-start-up). A smoke test after changing a harness:
-`./build-fuzzer/fuzz_<harness> -runs=1`.
+Five harnesses (`codegen`, `ic_file`, `ic_registry`, `structured`, `undo`) also
+build circuits of their own at start-up, written by `FuzzSeed::pandaFile()`
+(`FuzzSeed.h`) as `WorkSpace::save()` writes a file. Each checks them with
+`FuzzSeed::requireAccepted()` before fuzzing: a circuit whose header, payload or
+metadata the reader rejects, or that loads with no elements, aborts the harness
+with its name and the reason, since its target catches every rejection and the
+run would otherwise look clean (`ic_blob` builds its circuit per input with the
+same writer, so it has none to check at start-up). A smoke test after changing a
+harness: `./build-fuzzer/fuzz_<harness> -runs=1`.
 
 ## Run
 
@@ -156,6 +155,13 @@ and writes the round's coverage of `App/` per file and per function to
 round's. `llvm-cov show build-fuzzer-coverage/fuzz_<harness>
 -instr-profile=<round>/coverage.profdata <source>` then shows a file's lines
 with their counts.
+
+`fuzz_clipboard` pastes clipboards, which no file in the repository holds: a
+whole `.panda` input is copied and pasted, and with `FUZZ_CLIPBOARD_SEED_DIR`
+set every clipboard it copies is written to that directory in the harness's
+clipboard layout (a flags byte, the blob registry's 2-byte little-endian
+length, the registry, then the items). The first round does this pass over
+the seed corpus itself, so the corpus starts with real clipboards to mutate.
 
 To see which `App/` lines the seed corpus never reaches across all the
 harnesses at once, build the coverage preset (source-based instrumentation,
