@@ -521,9 +521,17 @@ element restored with its old id (a delete's or a cut's undo, a morph and its un
 of every element, though its id places it below. Fix: one rule in `Scene::addItem()`'s branch for a preassigned id puts
 the element back at its place in the stacking order, before the first element with a larger id. `stackBefore()` costs a
 walk of the siblings (`qgraphicsitem.cpp:4675`), so the undo of a large delete on the 8,000-element circuit is measured
-under callgrind, and restored in one batch if it grows quadratically. Tests: the undo of a delete, a cut and a morph,
-each of the bottom of three overlapping elements, puts it back at the bottom; a delete of a thousand elements and its
-undo give the order before. Golden: plan 1's order after the undo (P1.10).
+under callgrind, and restored in one batch if it grows quadratically. Measured: a first version, which probed each id
+above the item and restacked below any item, added 37% to the undo of deleting all of `clocked_2000.panda`, growing
+quadratically. So the rule is per kind (elements and wires each have their own z value, so each stacks among its own
+kind only): the registry keeps each kind's ids in order beside its hash, so the item with the next larger id is found
+in logarithmic time, and a restore adds its items in id order, elements before wires, so each is restacked only below
+an item that stayed. A delete of everything then restacks nothing (0.3%); the worst case, every other element deleted,
+costs `stackBefore()`'s walk for each restored item (28% on the 2,000-element circuit, 14% of the time on the
+8,000-element one), and only Qt's private API reorders siblings in one pass. Tests: the undo of a delete, a cut and a
+morph, each of the bottom of three overlapping elements, puts it back at the bottom; a delete of every third of a
+thousand chained elements, with their wires, and its undo give the order before. Golden: plan 1's order after the
+undo (P1.10).
 
 ### 7.7 The scene's bounds count the rubber band
 
@@ -539,6 +547,13 @@ size, the scene rect after a resize and zoom-to-fit's scale as they were, each f
 loads and a viewless resize keep the scene rect, each failing with its null check removed; a port's hover label, which
 the scene also holds, stays out of the circuit's bounds. Golden: the view golden's fit row and its four last wheel rows,
 which no longer reach the origin.
+
+### 7.8 A delete's undo is quadratic in a net's fan-out
+
+Found while measuring §7.6: half of the undo of deleting all of `clocked_2000.panda` is `Port::updateConnections()`
+called from `Port::attachConnection()`, each wire attached to the clock's output port updating every wire already on
+it, so restoring a net of n wires costs n²/2 wire updates; the same undo of `clocked_8000.panda` takes 44 s. A load
+does not pay it. Fix and its measurement to be planned: first shown on `master`, then callgrind before and after.
 
 ## 8. Not plan 2's
 
@@ -605,6 +620,7 @@ Each of these exists on `master`, and its fix is another plan's decision:
 | P2.42 | One rule for where an element goes (§7.5) | P1.10, P1.12, P1.14 | the undo rows from off-grid starts; the components' positions, pins unchanged |
 | P2.43 | A restored element's stacking place (§7.6) | P1.10 | the order after a delete's and a morph's undo |
 | P2.48 | The scene's bounds without the rubber band (§7.7) | P1.12 | the view golden's fit row and four wheel rows |
+| P2.38, P2.51 | A wire attached or detached refreshes only itself (§7.8) | P1.5, P1.10 | none |
 | P2.44 | Embed and extract on every selected IC (§4.2) | the helpers only | none expected |
 
 "None expected" means the branch saw no golden change, or the fix touches nothing a golden prints; the fix's commit
