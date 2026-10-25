@@ -271,6 +271,9 @@ public:
     /// Sets the clock frequency to \a freq (overridden by clock elements).
     virtual void setFrequency(const double freq);
 
+    /// Returns whether setFrequency() takes \a freq; one it does not take leaves the frequency as it was.
+    virtual bool acceptsFrequency(const double freq) const;
+
     /// Sets the clock phase delay to \a delay (overridden by clock elements).
     virtual void setDelay(const double delay);
 

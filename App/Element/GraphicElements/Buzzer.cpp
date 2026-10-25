@@ -66,14 +66,18 @@ double Buzzer::frequency() const
     return m_frequency;
 }
 
-void Buzzer::setFrequency(double freq)
+bool Buzzer::acceptsFrequency(double freq) const
 {
     // A .panda file (or any other caller) can supply a non-finite or non-positive value;
     // ToneGenerator::readData() casts a NaN-derived sample to qint16, which is undefined
-    // behaviour, and a non-positive frequency has no physical meaning for a buzzer. Reject
-    // it here — the one setter every caller (file load, GUI, MCP, undo/redo) goes through —
-    // mirroring Clock::setFrequency()'s identical guard for the same untrusted-value class.
-    if (!std::isfinite(freq) || freq <= 0.0) {
+    // behaviour, and a non-positive frequency has no physical meaning for a buzzer.
+    return std::isfinite(freq) && (freq > 0.0);
+}
+
+void Buzzer::setFrequency(double freq)
+{
+    // The one setter every caller (file load, GUI, MCP, undo/redo) goes through refuses what acceptsFrequency() does
+    if (!acceptsFrequency(freq)) {
         return;
     }
 

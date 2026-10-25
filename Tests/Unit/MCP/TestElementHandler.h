@@ -62,8 +62,23 @@ private slots:
     void testHandleSetElementPropertiesRxModeSeversInputConnection();
     void testHandleSetElementPropertiesAcceptsWirelessModeNoneForRealNode();
     void testHandleSetElementPropertiesRejectsInvalidWirelessMode();
-    void testHandleSetElementPropertiesIgnoresWirelessModeForNonNode();
+    void testHandleSetElementPropertiesRefusesWirelessModeForNonNode();
     void testHandleSetElementPropertiesPushesUndoableCommand();
+
+    // A request changes nothing unless every value passes; then it is one undo step, its values read back
+    void testSetElementPropertiesRefusesAPropertyTheTypeLacks();
+    void testSetElementPropertiesRefusesAValueOfTheWrongKind();
+    void testSetElementPropertiesRefusesAnInvalidValueBeforeChangingAnything();
+    void testSetElementPropertiesRefusesAFrequencyTheClockCannotTake();
+    void testSetElementPropertiesRefusesAColourTheEditorDoesNotOffer();
+    void testSetElementPropertiesRefusesATriggerTheEditorDoesNotTake();
+    void testSetElementPropertiesRefusesAnAppearanceIndexAlone();
+    void testSetElementPropertiesRefusesAnAppearanceIndexOutOfRange();
+    void testSetElementPropertiesRefusesAPictureThatDoesNotLoad();
+    void testSetElementPropertiesRefusesASecondTxOnALabel();
+    void testSetElementPropertiesPushesNothingWhenNothingChanges();
+    void testSetElementPropertiesIsOneUndoStep();
+    void testSetElementPropertiesReadsBackWhatTheElementTook();
 
     void testHandleSetInputValueRejectsMissingParams();
     void testHandleSetInputValueRejectsUnknownElement();

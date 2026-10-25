@@ -3,8 +3,13 @@
 
 #include "MCP/Server/Handlers/ElementHandler.h"
 
+#include <algorithm>
+#include <cmath>
+
 #include <QIODevice>
 #include <QJsonArray>
+#include <QPixmap>
+#include <QRegularExpression>
 
 #include "App/Core/Common.h"
 #include "App/Core/Constants.h"
@@ -21,6 +26,150 @@
 #include "App/Simulation/Simulation.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
+
+namespace ElementHandlerProperties {
+
+/// The colours the property editor offers, by their untranslated names.
+const QStringList kColors{"White", "Red", "Green", "Blue", "Purple"};
+
+/// Returns the first reason set_element_properties refuses \a params for \a element, or an empty string when every
+/// value passes: the property exists on the type, the value has its kind, lies in its range and is one the type takes,
+/// an appearance index comes with an appearance and names one of the element's states, a picture loads, and no
+/// second Tx would share a label.
+QString refusal(const GraphicElement &element, const QJsonObject &params, const Scene *scene)
+{
+    const auto lacks = [&element](const QString &property) {
+        return QString("Element %1 (%2) has no property '%3'")
+            .arg(QString::number(element.id()), ElementFactory::typeToText(element.elementType()), property);
+    };
+    const auto has = [&element](const ElementProperty property) { return SetPropertyCommand::appliesTo(element, property); };
+    const auto number = [&params](const QString &key) {
+        const QJsonValue value = params.value(key);
+        return value.isDouble() && std::isfinite(value.toDouble());
+    };
+    const auto whole = [&params, &number](const QString &key) {
+        return number(key) && (params.value(key).toDouble() == std::floor(params.value(key).toDouble()));
+    };
+    const auto kind = [](const QString &key, const QString &what) {
+        return QString("Parameter '%1' must be %2").arg(key, what);
+    };
+
+    // Every element takes a label and a rotation, a label shown or not: MCP's callers label gates too
+    if (params.contains("label") && !params.value("label").isString()) {
+        return kind("label", "a string");
+    }
+    if (params.contains("rotation") && !number("rotation")) {
+        return kind("rotation", "a finite number");
+    }
+    if (params.contains("color")) {
+        if (!has(ElementProperty::Color)) {
+            return lacks("color");
+        }
+        if (!params.value("color").isString() || !kColors.contains(params.value("color").toString())) {
+            return kind("color", "one of " + kColors.join(", "));
+        }
+    }
+    if (params.contains("frequency")) {
+        if (!has(ElementProperty::Frequency)) {
+            return lacks("frequency");
+        }
+        if (!number("frequency")) {
+            return kind("frequency", "a finite number");
+        }
+        if (!element.acceptsFrequency(params.value("frequency").toDouble())) {
+            return QString("Parameter 'frequency' %1 is not a frequency this element takes")
+                .arg(params.value("frequency").toDouble());
+        }
+    }
+    if (params.contains("delay")) {
+        if (!has(ElementProperty::Delay)) {
+            return lacks("delay");
+        }
+        if (!number("delay") || (params.value("delay").toDouble() < -1.0) || (params.value("delay").toDouble() > 1.0)) {
+            return kind("delay", "a number in [-1, 1] (fraction of period; negative advances the clock)");
+        }
+    }
+    if (params.contains("trigger")) {
+        if (!has(ElementProperty::Trigger)) {
+            return lacks("trigger");
+        }
+        // The editor's field takes one letter, digit or space, or none
+        static const QRegularExpression editorKey("^[A-Za-z0-9 ]?$");
+        if (!params.value("trigger").isString() || !editorKey.match(params.value("trigger").toString()).hasMatch()) {
+            return kind("trigger", "one letter, digit or space, or empty");
+        }
+    }
+    if (params.contains("audio")) {
+        if (!has(ElementProperty::Audio)) {
+            return lacks("audio");
+        }
+        // LCOV_EXCL_START — no element type has audio (hasAudio()), so the property is refused above
+        if (!params.value("audio").isString()) {
+            return kind("audio", "a string");
+        }
+        // LCOV_EXCL_STOP
+    }
+    if (params.contains("locked")) {
+        if (!has(ElementProperty::Locked)) {
+            return lacks("locked");
+        }
+        if (!params.value("locked").isBool()) {
+            return kind("locked", "a boolean");
+        }
+    }
+    if (params.contains("volume")) {
+        if (!has(ElementProperty::Volume)) {
+            return lacks("volume");
+        }
+        if (!number("volume") || (params.value("volume").toDouble() < 0.0) || (params.value("volume").toDouble() > 1.0)) {
+            return kind("volume", "a number between 0.0 and 1.0");
+        }
+    }
+    if (params.contains("appearance")) {
+        if (!element.canChangeAppearance()) {
+            return lacks("appearance");
+        }
+        if (!params.value("appearance").isString()) {
+            return kind("appearance", "a string");
+        }
+        if (const QString path = params.value("appearance").toString(); !path.isEmpty() && QPixmap(path).isNull()) {
+            return QString("Picture '%1' does not load").arg(path);
+        }
+    }
+    if (params.contains("appearance_index")) {
+        if (!params.contains("appearance")) {
+            return "Parameter 'appearance_index' needs 'appearance'";
+        }
+        const auto states = element.appearanceStates();
+        const bool named = whole("appearance_index") && std::any_of(states.cbegin(), states.cend(), [&params](const auto &state) {
+            return state.first == params.value("appearance_index").toInt();
+        });
+        if (!named) {
+            return kind("appearance_index", "the index of one of the element's appearance states");
+        }
+    }
+    if (params.contains("wireless_mode")) {
+        if (!has(ElementProperty::Wireless)) {
+            return lacks("wireless_mode");
+        }
+        if (!whole("wireless_mode") || (params.value("wireless_mode").toInt() < 0) || (params.value("wireless_mode").toInt() > 2)) {
+            return "Invalid wireless_mode. Must be 0 (None), 1 (Tx), or 2 (Rx)";
+        }
+    }
+
+    // A Tx node's label is its channel, and a channel has one Tx
+    if (element.hasWirelessMode() && scene && (params.contains("label") || params.contains("wireless_mode"))) {
+        const QString label = params.contains("label") ? params.value("label").toString() : element.label();
+        const auto mode = params.contains("wireless_mode") ? static_cast<WirelessMode>(params.value("wireless_mode").toInt())
+                                                           : element.wirelessMode();
+        if (const QString duplicate = scene->duplicateTxLabel({{&element, label, mode}}); !duplicate.isEmpty()) {
+            return QString("A Tx node with label \"%1\" already exists: each wireless channel has one").arg(duplicate);
+        }
+    }
+    return {};
+}
+
+} // namespace ElementHandlerProperties
 
 ElementHandler::ElementHandler(MainWindow *mainWindow, const MCPValidator *validator)
     : BaseHandler(mainWindow, validator)
@@ -332,132 +481,89 @@ QJsonObject ElementHandler::handleSetElementProperties(const QJsonObject &params
                                    requestId, JsonRpcError::ValidationError);
     }
 
-    // Snapshot current state before any mutation so UpdateCommand can restore it on undo.
-    QByteArray oldData;
-    {
-        QDataStream stream(&oldData, QIODevice::WriteOnly);
+    // Every value is checked before any is set, so a refused request changes nothing
+    if (const QString refused = ElementHandlerProperties::refusal(*element, params, currentScene()); !refused.isEmpty()) {
+        return createErrorResponse(refused, requestId, JsonRpcError::ValidationError);
+    }
+
+    const auto snapshot = [element] {
+        QByteArray data;
+        QDataStream stream(&data, QIODevice::WriteOnly);
         Serialization::writePandaHeader(stream);
         element->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
-    }
+        return data;
+    };
+
+    // Snapshot current state before any mutation so UpdateCommand can restore it on undo.
+    const QByteArray oldData = snapshot();
 
     QJsonObject result;
     QJsonObject oldProperties;
     QJsonObject newProperties;
 
+    // Each new value is read back from the element: the value it took
     if (params.contains("label")) {
-        QString oldLabel = element->label();
-        QString newLabel = params.value("label").toString();
-
-        oldProperties["label"] = oldLabel;
-        newProperties["label"] = newLabel;
-
-        element->setLabel(newLabel);
+        oldProperties["label"] = element->label();
+        element->setLabel(params.value("label").toString());
+        newProperties["label"] = element->label();
     }
 
-    if (params.contains("color") && element->hasColors()) {
-        QString oldColor = element->color();
-        QString newColor = params.value("color").toString();
-
-        oldProperties["color"] = oldColor;
-        newProperties["color"] = newColor;
-
-        element->setColor(newColor);
+    if (params.contains("color")) {
+        oldProperties["color"] = element->color();
+        element->setColor(params.value("color").toString());
+        newProperties["color"] = element->color();
     }
 
-    if (params.contains("frequency") && element->hasFrequency()) {
-        if (!validateNumeric(params.value("frequency"), "frequency", errorMsg)) {
-            return createErrorResponse(errorMsg, requestId, JsonRpcError::ValidationError);
-        }
-        double oldFreq = element->frequency();
-        double newFreq = params.value("frequency").toDouble();
-        if (newFreq <= 0) {
-            return createErrorResponse("Parameter 'frequency' must be a positive value", requestId, JsonRpcError::ValidationError);
-        }
-
-        oldProperties["frequency"] = oldFreq;
-        newProperties["frequency"] = newFreq;
-
-        element->setFrequency(newFreq);
+    if (params.contains("frequency")) {
+        oldProperties["frequency"] = element->frequency();
+        element->setFrequency(params.value("frequency").toDouble());
+        newProperties["frequency"] = element->frequency();
     }
 
     if (params.contains("rotation")) {
-        qreal oldRotation = element->rotation();
-        qreal newRotation = params.value("rotation").toDouble();
-
-        oldProperties["rotation"] = oldRotation;
-        newProperties["rotation"] = newRotation;
-
-        element->setRotation(newRotation);
+        oldProperties["rotation"] = element->rotation();
+        element->setRotation(params.value("rotation").toDouble());
+        newProperties["rotation"] = element->rotation();
     }
 
-    if (params.contains("delay") && element->hasDelay()) {
-        if (!validateNumeric(params.value("delay"), "delay", errorMsg)) {
-            return createErrorResponse(errorMsg, requestId, JsonRpcError::ValidationError);
-        }
-        double oldDelay = element->delay();
-        double newDelay = params.value("delay").toDouble();
-        if (newDelay < -1.0 || newDelay > 1.0) {
-            return createErrorResponse("Parameter 'delay' must be in [-1, 1] (fraction of period; negative advances the clock)",
-                                       requestId, JsonRpcError::ValidationError);
-        }
-
-        oldProperties["delay"] = oldDelay;
-        newProperties["delay"] = newDelay;
-
-        element->setDelay(newDelay);
+    if (params.contains("delay")) {
+        oldProperties["delay"] = element->delay();
+        element->setDelay(params.value("delay").toDouble());
+        newProperties["delay"] = element->delay();
     }
 
-    if (params.contains("trigger") && element->hasTrigger()) {
-        QString oldTrigger = element->trigger().toString();
-        QString newTrigger = params.value("trigger").toString();
-
-        oldProperties["trigger"] = oldTrigger;
-        newProperties["trigger"] = newTrigger;
-
-        element->setTrigger(QKeySequence(newTrigger));
+    if (params.contains("trigger")) {
+        // Stored uppercased, as the editor's field stores it
+        oldProperties["trigger"] = element->trigger().toString();
+        element->setTrigger(QKeySequence(params.value("trigger").toString().toUpper()));
+        newProperties["trigger"] = element->trigger().toString();
     }
 
-    // Unreachable body: hasAudio() is always false across every GraphicElement type.
-    if (params.contains("audio") && element->hasAudio()) {
-        QString oldAudio = element->audio(); // LCOV_EXCL_LINE
-        QString newAudio = params.value("audio").toString(); // LCOV_EXCL_LINE
-
-        oldProperties["audio"] = oldAudio; // LCOV_EXCL_LINE
-        newProperties["audio"] = newAudio; // LCOV_EXCL_LINE
-
-        element->setAudio(newAudio); // LCOV_EXCL_LINE
-    } // LCOV_EXCL_LINE
+    // LCOV_EXCL_START — no element type has audio (hasAudio()), so refusal() refuses the property
+    if (params.contains("audio")) {
+        oldProperties["audio"] = element->audio();
+        element->setAudio(params.value("audio").toString());
+        newProperties["audio"] = element->audio();
+    }
+    // LCOV_EXCL_STOP
 
     if (params.contains("locked")) {
-        auto *inputElm = qobject_cast<GraphicElementInput *>(element);
-        if (inputElm) {
-            bool oldLocked = inputElm->isLocked();
-            bool newLocked = params.value("locked").toBool();
-
-            oldProperties["locked"] = oldLocked;
-            newProperties["locked"] = newLocked;
-
-            inputElm->setLocked(newLocked);
+        if (auto *inputElm = qobject_cast<GraphicElementInput *>(element)) {
+            oldProperties["locked"] = inputElm->isLocked();
+            inputElm->setLocked(params.value("locked").toBool());
+            newProperties["locked"] = inputElm->isLocked();
         }
     }
 
-    if (params.contains("volume") && element->hasVolume()) {
-        if (!validateNumeric(params.value("volume"), "volume", errorMsg)) {
-            return createErrorResponse(errorMsg, requestId, JsonRpcError::ValidationError);
-        }
-        float oldVolume = element->volume();
-        float newVolume = static_cast<float>(params.value("volume").toDouble());
-        if (newVolume < 0.0f || newVolume > 1.0f) {
-            return createErrorResponse("Parameter 'volume' must be between 0.0 and 1.0", requestId, JsonRpcError::ValidationError);
-        }
-
-        oldProperties["volume"] = static_cast<double>(oldVolume);
-        newProperties["volume"] = static_cast<double>(newVolume);
-
-        element->setVolume(newVolume);
+    if (params.contains("volume")) {
+        oldProperties["volume"] = static_cast<double>(element->volume());
+        element->setVolume(static_cast<float>(params.value("volume").toDouble()));
+        newProperties["volume"] = static_cast<double>(element->volume());
     }
 
-    if (params.contains("appearance") && element->canChangeAppearance()) {
+    // The appearance has no old value in the response: whether it changed is whether the element's state did
+    bool appearanceChanged = false;
+    if (params.contains("appearance")) {
         QString appearancePath = params.value("appearance").toString();
         bool useDefault = appearancePath.isEmpty();
         int appearanceIndex = params.contains("appearance_index") ? params.value("appearance_index").toInt() : -1;
@@ -465,6 +571,7 @@ QJsonObject ElementHandler::handleSetElementProperties(const QJsonObject &params
         newProperties["appearance"] = appearancePath;
         newProperties["appearance_default"] = useDefault;
 
+        const QByteArray beforeAppearance = snapshot();
         if (appearanceIndex >= 0) {
             // Set appearance for a specific index directly (e.g., LED state)
             element->setAppearanceAt(appearanceIndex, appearancePath);
@@ -472,22 +579,15 @@ QJsonObject ElementHandler::handleSetElementProperties(const QJsonObject &params
         } else {
             element->setAppearance(useDefault, appearancePath);
         }
+        appearanceChanged = (snapshot() != beforeAppearance);
     }
 
-    // Wireless mode is only meaningful for Node elements; non-Nodes are silently ignored.
+    // Wireless mode is only meaningful for Node elements, which refusal() checked.
     QList<QGraphicsItem *> wirelessConnsToDelete;
     if (params.contains("wireless_mode")) {
         if (auto *node = qobject_cast<Node *>(element)) {
-            int modeInt = params.value("wireless_mode").toInt();
-            if (modeInt < 0 || modeInt > 2) {
-                return createErrorResponse("Invalid wireless_mode. Must be 0 (None), 1 (Tx), or 2 (Rx)",
-                                           requestId, JsonRpcError::ValidationError);
-            }
-            auto oldMode = static_cast<int>(node->wirelessMode());
-            auto newMode = static_cast<WirelessMode>(modeInt);
-
-            oldProperties["wireless_mode"] = oldMode;
-            newProperties["wireless_mode"] = modeInt;
+            const auto newMode = static_cast<WirelessMode>(params.value("wireless_mode").toInt());
+            oldProperties["wireless_mode"] = static_cast<int>(node->wirelessMode());
 
             // Collect connections on the port that will be hidden, so they can
             // be deleted in an undo macro (same pattern as ElementEditor::apply).
@@ -501,13 +601,18 @@ QJsonObject ElementHandler::handleSetElementProperties(const QJsonObject &params
             }
 
             node->setWirelessMode(newMode);
+            newProperties["wireless_mode"] = static_cast<int>(node->wirelessMode());
         }
     }
 
-    // Push an undo command so Ctrl+Z in the GUI can revert MCP-applied property changes.
-    // When wireless mode changes sever connections, group the property update and the
-    // delete into a single undo macro so both are undone together.
-    if (!newProperties.isEmpty()) {
+    // Push an undo command so Ctrl+Z in the GUI can revert MCP-applied property changes, unless no value changed (an
+    // empty label set over a null one changes the saved bytes, not the label). When wireless mode changes sever
+    // connections, group the property update and the delete into a single undo macro so both are undone together.
+    QJsonObject compared = newProperties;
+    compared.remove("appearance");
+    compared.remove("appearance_default");
+    compared.remove("appearance_index");
+    if ((compared != oldProperties) || appearanceChanged || !wirelessConnsToDelete.isEmpty()) {
         const bool needsMacro = !wirelessConnsToDelete.isEmpty();
         auto *scene = currentScene();
         if (scene) {

@@ -67,8 +67,10 @@ public:
     // Bring the base setOn(bool, int) overload into scope (hidden by setOn() above).
     using GraphicElementInput::setOn;
 
-    /// Sets the clock output frequency to \a freq Hz.
+    /// Sets the clock output frequency to \a freq Hz, when acceptsFrequency().
     void setFrequency(const double freq) override;
+    /// Returns whether \a freq is finite and non-zero with a half period of at least a microsecond.
+    bool acceptsFrequency(const double freq) const override;
     /// Sets the clock phase delay to \a delay (fraction of period), clamped to [-1, 1].
     /// Negative delays advance the clock (trigger earlier); positive delays delay it.
     void setDelay(const double delay) override;
