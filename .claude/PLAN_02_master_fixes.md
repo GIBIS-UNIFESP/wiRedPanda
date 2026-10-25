@@ -191,6 +191,13 @@ command over 16,000 wired gates spent 236 ms there, four times longer per doubli
 sets answer membership, the lists keeping their order. Shown by `TestCommands::testLoadListGrowsLinearly`, which times
 `loadList()` against a walk of the same items, since the walk's cache misses alone grow faster than n.
 
+### 2.16 Snapping a position past int's range is undefined
+
+`GraphicElement::snapToGrid()`, which every move, paste, drop and alignment runs, rounded to an `int` and multiplied in
+`int`, so a finite position past about 2^31, which a file may hold, was undefined behaviour (P2.61, found by
+`fuzz_clipboard`'s coverage rounds pasting a legacy file's element at -5e153). Fix: rounding in floating point. Shown
+by `TestGraphicElement::testSnapToGridKeepsAPositionBeyondIntRange`.
+
 ## 3. In code plan 3 rewrites
 
 ### 3.1 SR and T flip-flops ignore every input while one input is open
@@ -632,6 +639,7 @@ Each of these exists on `master`, and its fix is another plan's decision:
 | P2.57 | A failed paste's open macro (§2.13) | the helpers only | none |
 | P2.58 | No move walks every port (§2.14) | P1.5 | none (the wire-geometry golden keeps the wires following) |
 | P2.60 | Commands deduplicating in linear time (§2.15) | the helpers only | none |
+| P2.61 | Snapping past `int`'s range (§2.16) | the helpers only | none |
 | P2.9 | SR and T defaults (§3.1) | P1.4, P1.6, P1.13 | port layout, one scene snapshot, any trace with S, R or T open |
 | P2.10 | The loader's port counts (§3.2) | P1.8, P1.17 | the strings golden's three messages |
 | P2.11 | The AudioBox's undo (§3.3) | P1.15 | one editor-writes row |
