@@ -32,6 +32,7 @@ private slots:
     void testGeneratePixmapWithNonFiniteBoundsIsNoOp();
     void testGeneratePreviewPixmapWithNonFiniteBoundsIsNoOp();
     void testGeneratePreviewPixmapWithDegenerateAspectRatioIsEmpty();
+    void testGeneratePreviewPixmapScalesAnExtentBeyondIntRange();
 
     // ICPreviewPopup::executeShow() and showForIC()'s remaining branches
     void testShowForIcNullIcIsNoOp();

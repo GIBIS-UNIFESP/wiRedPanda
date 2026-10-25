@@ -3,6 +3,7 @@
 
 #include "Tests/Unit/Elements/TestIC.h"
 
+#include <cstdlib>
 #include <limits>
 #include <memory>
 
@@ -11,9 +12,11 @@
 #include <QGraphicsSceneEvent>
 #include <QGraphicsSceneMouseEvent>
 #include <QKeySequence>
+#include <QPixmap>
 #include <QPointF>
 #include <QSaveFile>
 #include <QSignalSpy>
+#include <QString>
 #include <QTemporaryDir>
 #include <QVersionNumber>
 
@@ -325,6 +328,27 @@ void TestICUnit::testGeneratePreviewPixmapWithDegenerateAspectRatioIsEmpty()
     ICRenderer::generatePreviewPixmap(ic, items);
 
     QVERIFY(ic.previewPixmap().isNull());
+}
+
+void TestICUnit::testGeneratePreviewPixmapScalesAnExtentBeyondIntRange()
+{
+    // A finite extent past int's range is scaled down before it is rounded to whole pixels, so it fits the popup like
+    // any other, keeping its aspect ratio.
+    IC ic;
+    auto elm1 = std::make_unique<And>();
+    auto elm2 = std::make_unique<And>();
+    elm1->setPos(0, 0);
+    elm2->setPos(2e11, 1e11);
+
+    QList<QGraphicsItem *> items{elm1.get(), elm2.get()};
+    ICRenderer::generatePreviewPixmap(ic, items);
+
+    const QPixmap preview = ic.previewPixmap();
+    QVERIFY2(!preview.isNull(), "an extent past int's range must still scale to a preview");
+    QVERIFY(preview.width() <= ICPreviewPopup::MaxWidth);
+    QVERIFY(preview.height() <= ICPreviewPopup::MaxHeight);
+    QVERIFY2(std::abs(preview.width() - (2 * preview.height())) <= 2,
+             qPrintable(QString("a 2:1 extent made a %1x%2 preview").arg(preview.width()).arg(preview.height())));
 }
 
 void TestICUnit::testShowForIcNullIcIsNoOp()
