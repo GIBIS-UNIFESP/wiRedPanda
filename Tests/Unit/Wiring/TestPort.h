@@ -22,6 +22,7 @@ private slots:
 
     void testNameGetterSetter();
     void testDefaultValueGetterSetter();
+    void testDefaultSetWhileConnectedLeavesTheInputOnItsWire();
     void testIsRequiredGetterSetter();
     void testGlobalIndexForInputVsOutputPort();
     void testMakeSerialIdPacksElementBaseAndGlobalIndex();

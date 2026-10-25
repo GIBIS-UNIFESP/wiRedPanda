@@ -11,6 +11,7 @@
 #include "App/Element/GraphicElements/AudioBox.h"
 #include "App/Element/GraphicElements/Buzzer.h"
 #include "App/Element/GraphicElements/Clock.h"
+#include "App/Element/GraphicElements/DFlipFlop.h"
 #include "App/Element/GraphicElements/Display14.h"
 #include "App/Element/GraphicElements/Display7.h"
 #include "App/Element/GraphicElements/DLatch.h"
@@ -1089,6 +1090,34 @@ void TestCommands::testUpdateCommandNonWirelessNodeEditKeepsFastPath()
 
     sim->update(); // a rebuild requested by the command would run here
     QVERIFY(!probe.rebuilt()); // no Simulation::initialize()
+}
+
+void TestCommands::testUpdateCommandKeepsAWiredPresetOnItsWire()
+{
+    // An in-place reload lays the flip-flop's ports out again, setting their defaults; with the simulation stopped,
+    // nothing pulls the input from its driver until a wire changes, so the wired ~Preset must stay on its wire.
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    CircuitBuilder builder(scene);
+    auto *preset = new InputSwitch();
+    auto *flipFlop = new DFlipFlop();
+    builder.add(preset, flipFlop);
+    builder.connect(preset, 0, flipFlop, 2);
+    auto *sim = builder.initSimulation();
+    preset->setOn(false); // ~Preset asserted
+    sim->update();
+    QCOMPARE(flipFlop->inputPort(2)->status(), Status::Inactive);
+
+    QByteArray oldData;
+    QDataStream stream(&oldData, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(stream);
+    flipFlop->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
+    flipFlop->setLabel("FF");
+    scene->receiveCommand(new UpdateCommand(QList<GraphicElement *>{flipFlop}, oldData, scene));
+    QCOMPARE(flipFlop->inputPort(2)->status(), Status::Inactive);
+
+    scene->undoStack()->undo();
+    QCOMPARE(flipFlop->inputPort(2)->status(), Status::Inactive);
 }
 
 void TestCommands::testToggleTruthTableOutputCommandBounds()
