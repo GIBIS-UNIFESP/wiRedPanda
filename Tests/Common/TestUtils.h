@@ -366,6 +366,31 @@ bool pixmapHasInk(const QPixmap &pixmap);
 bool waitFor(const std::function<bool()> &pred, int timeoutMs = 5000);
 
 /**
+ * \brief Times the calling thread's work, for the tests that compare how long operations take as they grow.
+ * \details The thread's CPU time, not the wall clock: CTest runs more jobs than a runner has cores, so a call longer
+ * than a scheduler time slice is preempted on each try and its wall time takes in other processes' work, while a short
+ * one mostly runs whole, and a ratio of the two read on the wall clock grows with the load. On Windows, whose thread
+ * times tick every 15.6 ms, it counts the thread's cycles instead, so it is read only in ratios.
+ */
+class ThreadCpuTimer
+{
+public:
+    /// Starts timing from now.
+    void start() { m_start = now(); }
+
+    /// Returns the thread's work since start(): nanoseconds, or cycles on Windows (unit()).
+    qint64 elapsed() const { return now() - m_start; }
+
+    /// Returns the unit elapsed() counts in, "ns" or "cycles", for a test's log.
+    static QString unit();
+
+private:
+    static qint64 now();
+
+    qint64 m_start = 0;
+};
+
+/**
  * @brief RAII poller that dismisses modal dialogs/message boxes for as long as it lives.
  *
  * Replaces the one-shot `QTimer::singleShot(0, ...)` + `activeModalWidget()`

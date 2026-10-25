@@ -3,6 +3,8 @@
 
 #include "Tests/Unit/Commands/TestCommands.h"
 
+#include <algorithm>
+#include <limits>
 #include <utility>
 
 #include <QDir>
@@ -1946,4 +1948,83 @@ void TestCommands::testSetPropertyCommandNonWirelessLabelDoesNotRebuild()
     scene->undoStack()->undo();
     sim->update();
     QVERIFY(!probe.rebuilt());
+}
+
+void TestCommands::testLoadListGrowsLinearly()
+{
+    // loadList() is what every add, delete and paste command runs over its items, deduplicating them and checking each
+    // wire's far end against the ids, which must stay linear in the items. Walking thousands of scattered items grows
+    // faster than n by itself, from cache misses, so loadList() is timed against a walk of the same items, ports and
+    // wires that keeps everything: how that ratio grows from 250 elements to 32,000, 0.8 to 1.05 for a linear
+    // loadList() and 11 to 25 for a quadratic one, with eight copies of the test running at once. The sizes are far
+    // apart so that a loaded runner's noise stays well under the quadratic growth. Ratios of the thread's CPU time
+    // (TestUtils::ThreadCpuTimer), each the best of nine runs.
+    struct Times {
+        qint64 loadList = 0;
+        qint64 walk = 0;
+    };
+    const auto bestTimes = [](const int n) {
+        WorkSpace workspace;
+        auto *scene = workspace.scene();
+        GraphicElement *previous = nullptr;
+        for (int i = 0; i < n; ++i) {
+            auto *notGate = ElementFactory::buildElement(ElementType::Not);
+            scene->addItem(notGate);
+            if (previous) {
+                auto *conn = new Connection();
+                conn->setStartPort(previous->outputPort());
+                conn->setEndPort(notGate->inputPort());
+                scene->addItem(conn);
+            }
+            previous = notGate;
+        }
+        const auto items = scene->items();
+
+        Times best{std::numeric_limits<qint64>::max(), std::numeric_limits<qint64>::max()};
+        for (int run = 0; run < 9; ++run) {
+            QList<int> ids;
+            QList<int> otherIds;
+            TestUtils::ThreadCpuTimer timer;
+            timer.start();
+            const auto listed = CommandUtils::loadList(items, ids, otherIds);
+            best.loadList = std::min(best.loadList, timer.elapsed());
+            if (listed.size() != (2 * n) - 1) {
+                return Times{};
+            }
+
+            QList<QGraphicsItem *> walked;
+            QList<int> walkedIds;
+            timer.start();
+            for (auto *item : items) {
+                if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item)) {
+                    walked.append(item);
+                    walkedIds.append(elm->id());
+                    for (auto *port : elm->inputs()) {
+                        for (auto *conn : port->connections()) {
+                            walked.append(conn);
+                        }
+                    }
+                    for (auto *port : elm->outputs()) {
+                        for (auto *conn : port->connections()) {
+                            walked.append(conn);
+                        }
+                    }
+                }
+            }
+            best.walk = std::min(best.walk, timer.elapsed());
+            if (walked.isEmpty() || walkedIds.isEmpty()) {
+                return Times{};
+            }
+        }
+        return best;
+    };
+
+    const Times small = bestTimes(250);
+    const Times large = bestTimes(32000);
+    QVERIFY2((small.loadList > 0) && (large.loadList > 0) && (small.walk > 0) && (large.walk > 0),
+             "loadList() lost or added items");
+    const double growth = (static_cast<double>(large.loadList) / static_cast<double>(large.walk))
+                        / (static_cast<double>(small.loadList) / static_cast<double>(small.walk));
+    QVERIFY2(growth < 4.0, qPrintable(QString("against a walk of the same items, loadList() took %1 times as long "
+                                              "at 128 times the elements").arg(growth)));
 }

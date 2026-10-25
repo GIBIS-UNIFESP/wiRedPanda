@@ -5,6 +5,12 @@
 
 #include <limits>
 
+#ifdef Q_OS_WIN
+#include <windows.h>
+#else
+#include <ctime>
+#endif
+
 #include <QAbstractButton>
 #include <QCoreApplication>
 #include <QGraphicsScene>
@@ -292,6 +298,32 @@ bool pixmapHasInk(const QPixmap &pixmap)
 bool waitFor(const std::function<bool()> &pred, int timeoutMs)
 {
     return QTest::qWaitFor(pred, timeoutMs);
+}
+
+QString ThreadCpuTimer::unit()
+{
+#ifdef Q_OS_WIN
+    return QStringLiteral("cycles");
+#else
+    return QStringLiteral("ns");
+#endif
+}
+
+qint64 ThreadCpuTimer::now()
+{
+#ifdef Q_OS_WIN
+    ULONG64 cycles = 0;
+    QueryThreadCycleTime(GetCurrentThread(), &cycles);
+    return static_cast<qint64>(cycles);
+#else
+    // A system without a clock for each thread gives the process's CPU time, the suite's other threads being idle while
+    // a test times its own
+    timespec time{};
+    if (clock_gettime(CLOCK_THREAD_CPUTIME_ID, &time) != 0) {
+        clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time);
+    }
+    return (static_cast<qint64>(time.tv_sec) * 1000000000) + time.tv_nsec;
+#endif
 }
 
 AutoDismisser::AutoDismisser(std::function<bool(QWidget *)> handler)

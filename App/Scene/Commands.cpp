@@ -12,6 +12,7 @@
 #include <QCoreApplication>
 #include <QIODevice>
 #include <QKeySequence>
+#include <QSet>
 
 #include "App/Core/Common.h"
 #include "App/Core/Constants.h"
@@ -48,13 +49,14 @@ void storeOtherIds(const QList<QGraphicsItem *> &connections, const QList<int> &
     // Track elements on the opposite end of connections that are NOT being deleted.
     // These elements must be re-saved/re-loaded during undo so their port state
     // (connected/disconnected) is correctly restored after the operation.
+    const QSet<int> idSet(ids.cbegin(), ids.cend());
     for (auto *item : connections) {
         if (auto *conn = qgraphicsitem_cast<Connection *>(item)) {
-            if (auto *port1 = conn->startPort(); port1 && port1->graphicElement() && !ids.contains(port1->graphicElement()->id())) {
+            if (auto *port1 = conn->startPort(); port1 && port1->graphicElement() && !idSet.contains(port1->graphicElement()->id())) {
                 otherIds.append(port1->graphicElement()->id());
             }
 
-            if (auto *port2 = conn->endPort(); port2 && port2->graphicElement() && !ids.contains(port2->graphicElement()->id())) {
+            if (auto *port2 = conn->endPort(); port2 && port2->graphicElement() && !idSet.contains(port2->graphicElement()->id())) {
                 otherIds.append(port2->graphicElement()->id());
             }
         }
@@ -63,12 +65,20 @@ void storeOtherIds(const QList<QGraphicsItem *> &connections, const QList<int> &
 
 const QList<QGraphicsItem *> loadList(const QList<QGraphicsItem *> &items, QList<int> &ids, QList<int> &otherIds)
 {
+    // Each list keeps its items' first-seen order; its set answers membership, so a command over n items costs n,
+    // not n squared. Each is sized for the items up front: a large block reallocated as it grows is a fresh one to
+    // fault in on every call, which on macOS costs more than the list's walk
+    QSet<QGraphicsItem *> listed;
+    listed.reserve(items.size());
+
     // --- Collect elements in the operation ---
     QList<QGraphicsItem *> elements;
+    elements.reserve(items.size());
     /* Stores selected graphicElements */
     for (auto *item : items) {
         if (item->type() == GraphicElement::Type) {
-            if (!elements.contains(item)) {
+            if (!listed.contains(item)) {
+                listed.insert(item);
                 elements.append(item);
             }
         }
@@ -83,7 +93,8 @@ const QList<QGraphicsItem *> loadList(const QList<QGraphicsItem *> &items, QList
         if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item)) {
             for (auto *port : elm->inputs()) {
                 for (auto *conn : port->connections()) {
-                    if (!connections.contains(conn)) {
+                    if (!listed.contains(conn)) {
+                        listed.insert(conn);
                         connections.append(conn);
                     }
                 }
@@ -91,7 +102,8 @@ const QList<QGraphicsItem *> loadList(const QList<QGraphicsItem *> &items, QList
 
             for (auto *port : elm->outputs()) {
                 for (auto *conn : port->connections()) {
-                    if (!connections.contains(conn)) {
+                    if (!listed.contains(conn)) {
+                        listed.insert(conn);
                         connections.append(conn);
                     }
                 }
@@ -102,17 +114,20 @@ const QList<QGraphicsItem *> loadList(const QList<QGraphicsItem *> &items, QList
     /* Stores the other wires selected */
     for (auto *item : items) {
         if (item->type() == Connection::Type) {
-            if (!connections.contains(item)) {
+            if (!listed.contains(item)) {
+                listed.insert(item);
                 connections.append(item);
             }
         }
     }
 
+    // The list returned: the elements, then their wires
+    elements.append(connections);
     // Store the ids of all elements listed in items.
-    storeIds(elements + connections, ids);
+    storeIds(elements, ids);
     // Store all elements linked to each connection that will not be deleted.
     storeOtherIds(connections, ids, otherIds);
-    return elements + connections;
+    return elements;
 }
 
 const QList<QGraphicsItem *> findItems(Scene *scene, const QList<int> &ids)
