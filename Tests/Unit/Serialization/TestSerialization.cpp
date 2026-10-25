@@ -548,6 +548,23 @@ void TestSerialization::testNonDefaultValuesRoundTrip()
     QCOMPARE(loadedClock->frequency(), 2.0);
 }
 
+void TestSerialization::testTriggerLoadsAsSaved()
+{
+    // A file can hold a trigger the editor does not take; the save writes the key sequence itself, so the load must
+    // read that back, not its text: Qt::Key_unknown's text is empty, which dropped it on the next load.
+    WorkSpace workspace1;
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
+    sw->setTrigger(QKeySequence(Qt::Key_unknown));
+    workspace1.scene()->addItem(sw);
+    QVERIFY2(!sw->trigger().isEmpty(), "the switch must hold the trigger the file would");
+
+    WorkSpace workspace2;
+    loadFromMemory(workspace2, saveToMemory(workspace1));
+    const auto elements = workspace2.scene()->elements();
+    QCOMPARE(elements.size(), 1);
+    QCOMPARE(elements.constFirst()->trigger(), QKeySequence(Qt::Key_unknown));
+}
+
 void TestSerialization::testDolphinFilenamePreserved()
 {
     // Create workspace and set dolphin filename
