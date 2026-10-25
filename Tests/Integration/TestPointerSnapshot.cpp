@@ -327,8 +327,8 @@ void TestPointerSnapshot::testEveryGoldenHasAFixture()
 void TestPointerSnapshot::testOverlapHitGridMatchesGolden()
 {
     // Three And gates, each added above the last and shifted by less than a port's hit area, so bodies, ports and
-    // the ports' hit areas overlap: where they do, Qt's click lands on the top one, while portAt() and itemAt() walk
-    // the items in ascending stacking order and answer the bottom one.
+    // the ports' hit areas overlap: where they do, Qt's click lands on the top one, and so do portAt() and itemAt(),
+    // an exact hit before a nearby one.
     WorkSpace workspace;
     auto *scene = workspace.scene();
     addElement(scene, ElementType::And, QPointF(0, 0));
@@ -507,11 +507,10 @@ void TestPointerSnapshot::testDragOfUnselectedElementMovesItAlone()
     QCOMPARE(f.scene->undoStack()->count(), 1);
 }
 
-void TestPointerSnapshot::testDragOfTopOverlappingElementPushesNoMove()
+void TestPointerSnapshot::testDragOfTopOverlappingElementIsOneUndoStep()
 {
-    // Pins a master defect for plan 2. Where two elements overlap, Qt's press goes to the top one, which the drag
-    // moves, while the scene's own lookup, itemAt(), answers the bottom one, so the drag snapshots the bottom element,
-    // finds it unmoved on release and pushes no move command: the move cannot be undone.
+    // Where two elements overlap, Qt's press goes to the top one, which the drag moves, and the scene's own lookup,
+    // itemAt(), answers the same one, so the drag records it and its move is one undoable step.
     const TestUtils::ScopedRendering rendering;
     WorkSpace workspace;
     auto *scene = workspace.scene();
@@ -519,7 +518,7 @@ void TestPointerSnapshot::testDragOfTopOverlappingElementPushesNoMove()
     auto *top = addElement(scene, ElementType::And, QPointF(16, 16));
     const QPointF bottomFrom = bottom->pos();
     const QPointF topFrom = top->pos();
-    QCOMPARE(scene->itemAt(QPointF(40, 40)), bottom);
+    QCOMPARE(scene->itemAt(QPointF(40, 40)), top);
 
     TestUtils::ScenePointer pointer(scene);
     const QPointF delta(4 * Constants::gridSize, 0);
@@ -527,7 +526,30 @@ void TestPointerSnapshot::testDragOfTopOverlappingElementPushesNoMove()
 
     QCOMPARE(top->pos(), topFrom + delta);
     QCOMPARE(bottom->pos(), bottomFrom);
-    QCOMPARE(scene->undoStack()->count(), 0);
+    QCOMPARE(scene->undoStack()->count(), 1);
+    scene->undoStack()->undo();
+    QCOMPARE(top->pos(), topFrom);
+    QCOMPARE(bottom->pos(), bottomFrom);
+}
+
+void TestPointerSnapshot::testPortOnTopAnswersWhereTwoAreInReach()
+{
+    // Two gates, the second added above the first and 8 units lower, so their output ports overlap: between them,
+    // where a point is on both ports, the one drawn on top answers; on the bottom port's centre, an exact hit, it
+    // answers before the top port, which is only within reach.
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *bottom = addElement(scene, ElementType::And, QPointF(0, 0));
+    auto *top = addElement(scene, ElementType::And, QPointF(0, 8));
+    Port *bottomPort = bottom->outputPort(0);
+    Port *topPort = top->outputPort(0);
+    QCOMPARE(topPort->scenePos() - bottomPort->scenePos(), QPointF(0, 8));
+
+    const QPointF between = (bottomPort->scenePos() + topPort->scenePos()) / 2.0;
+    QCOMPARE(scene->portAt(between), topPort);
+    QCOMPARE(scene->itemAt(between), topPort);
+    QCOMPARE(scene->portAt(bottomPort->scenePos()), bottomPort);
+    QCOMPARE(scene->itemAt(bottomPort->scenePos()), bottomPort);
 }
 
 void TestPointerSnapshot::testRubberBandSelectsWhatItCovers()

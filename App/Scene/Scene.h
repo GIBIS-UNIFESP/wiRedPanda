@@ -492,6 +492,7 @@ private:
     /// Returns the elements Qt may give the press \a event to, for recordOperation(): the one holding the mouse and
     /// those under the pointer, found as Qt finds them, each item standing for the element it belongs to.
     [[nodiscard]] QList<GraphicElement *> pressTargets(const QGraphicsSceneMouseEvent *event) const;
+    /// Returns the items whose shapes reach within 4 units of \a pos, topmost first.
     QList<QGraphicsItem *> itemsAt(const QPointF pos) const;
     const QVector<Connection *> connections() const;
     void checkUpdateRequest();
