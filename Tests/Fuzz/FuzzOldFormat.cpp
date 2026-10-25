@@ -24,9 +24,11 @@
  * to WorkSpace::load to exercise loadOldFormat and all its version branches.
  */
 
+#include <algorithm>
 #include <cstddef>
 #include <cstdint>
 #include <fuzzer/FuzzedDataProvider.h>
+#include <memory>
 
 #include <QApplication>
 #include <QByteArray>
@@ -43,6 +45,8 @@
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
 #include "App/Core/Enums.h"
+#include "App/Element/ElementFactory.h"
+#include "App/Element/GraphicElement.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/VersionInfo.h"
 #include "App/Scene/Scene.h"
@@ -83,9 +87,11 @@ constexpr VersionSpec kOldVersions[] = {
     {1,2,0},   // hasLabels
     {1,3,0},   // hasPortSizes
     {1,4,0},   // hasSceneRect boundary
+    {1,5,0},
     {1,6,0},   // hasDisplay7Color
     {1,7,0},   // hasDisplay7ExtColor
     {1,9,0},   // hasTrigger
+    {1,91,0},  // a real header's "1.91", minor 91
     {2,0,0},   // gap: hasTrigger but !hasAudio
     {2,4,0},   // hasAudio
     {2,7,0},   // hasAppearanceNames
@@ -140,8 +146,6 @@ void writeOldElement(QDataStream &s, FuzzedDataProvider &fdp,
     // Old-format port entry: quint64 ptr + QString name + int flags.
     // loadInputPort/loadOutputPort always read these three fields.
     // ptr values are registered in context.portMap so connections can wire up.
-    // Port counts match real element minInputSize/minOutputSize so element-specific
-    // code paths (pin remapping, flipflop port ordering) actually execute.
     const auto writePortList = [&](int count, quint64 ptrBase) {
         s << quint64(count);
         for (int i = 0; i < count; ++i) {
@@ -151,35 +155,18 @@ void writeOldElement(QDataStream &s, FuzzedDataProvider &fdp,
         }
     };
 
-    // minInputSize for each element type (from ElementConstraints):
-    const int inCount =
-        (etype == ET::Led  || etype == ET::Buzzer   || etype == ET::AudioBox ||
-         etype == ET::Not  || etype == ET::Node) ? 1 :
-        (etype == ET::And  || etype == ET::Or    || etype == ET::Nand ||
-         etype == ET::Nor  || etype == ET::Xor   || etype == ET::Xnor ||
-         etype == ET::Demux || etype == ET::DLatch || etype == ET::SRLatch) ? 2 :
-        (etype == ET::Mux) ? 3 :
-        (etype == ET::DFlipFlop || etype == ET::TFlipFlop) ? 4 :
-        (etype == ET::JKFlipFlop || etype == ET::SRFlipFlop) ? 5 :
-        (etype == ET::Display7) ? 8 :
-        (etype == ET::Display14) ? 15 :
-        (etype == ET::Display16) ? 17 : 0;
-    writePortList(inCount, basePtr);
-
-    // minOutputSize:
-    const int outCount =
-        (etype == ET::InputSwitch || etype == ET::InputButton ||
-         etype == ET::InputGnd   || etype == ET::InputVcc ||
-         etype == ET::Clock      || etype == ET::Mux ||
-         etype == ET::Node) ? 1 :
-        (etype == ET::And  || etype == ET::Or    || etype == ET::Nand ||
-         etype == ET::Nor  || etype == ET::Xor   || etype == ET::Xnor ||
-         etype == ET::Not) ? 1 :
-        (etype == ET::InputRotary) ? 2 :
-        (etype == ET::DFlipFlop || etype == ET::TFlipFlop || etype == ET::JKFlipFlop ||
-         etype == ET::SRFlipFlop || etype == ET::DLatch   || etype == ET::SRLatch) ? 2 :
-        (etype == ET::Demux) ? 2 : 0;
-    writePortList(outCount, basePtr + 64);
+    // Each port list holds between the type's minimum and maximum ports (at most 8 above the minimum), as old files
+    // did, an AND gate with 3 to 8 inputs among them: more than an element is built with adds ports.
+    // A type the factory no longer builds (JKLatch), which the reader refuses, gets 0 to 4.
+    std::unique_ptr<GraphicElement> built;
+    try {
+        built.reset(ElementFactory::buildElement(etype));
+    } catch (...) {}
+    const auto portCount = [&](const int minimum, const int maximum) {
+        return fdp.ConsumeIntegralInRange<int>(minimum, std::min(maximum, minimum + 8));
+    };
+    writePortList(built ? portCount(built->minInputSize(), built->maxInputSize()) : portCount(0, 4), basePtr);
+    writePortList(built ? portCount(built->minOutputSize(), built->maxOutputSize()) : portCount(0, 4), basePtr + 64);
 
     // appearance names (>=2.7): quint64 count + QString per entry
     // Write 1 entry to exercise loadPixmapAppearanceName (uses bounded string read).
@@ -261,9 +248,16 @@ QByteArray buildOldPanda(FuzzedDataProvider &fdp)
         kOldVersions[fdp.ConsumeIntegralInRange<size_t>(0, std::size(kOldVersions)-1)];
     const QVersionNumber ver(vs.maj, vs.min, vs.patch);
 
-    // WPCF header
-    s.writeRawData("WPCF", 4);
-    s << QList<int>{vs.maj, vs.min};
+    // A file of these versions starts with its app name and version as a string, "WiredPanda 1.7" or "WiRedPanda 4"
+    // (a patch level written only when it has one); the reader also takes the magic and version segments that later
+    // versions write, one in four
+    if (fdp.ConsumeIntegralInRange<int>(0, 3) == 0) {
+        s.writeRawData("WPCF", 4);
+        s << ((vs.patch != 0) ? QList<int>{vs.maj, vs.min, vs.patch} : QList<int>{vs.maj, vs.min});
+    } else {
+        const QString appName = fdp.ConsumeBool() ? QStringLiteral("WiredPanda") : QStringLiteral("WiRedPanda");
+        s << QString("%1 %2").arg(appName, (vs.patch != 0) ? ver.toString() : QString("%1.%2").arg(vs.maj).arg(vs.min));
+    }
 
     // Pre-4.6: dolphinFileName (QString) if hasDolphinFilename
     if (VersionInfo::hasDolphinFilename(ver))
@@ -302,6 +296,18 @@ QByteArray buildOldPanda(FuzzedDataProvider &fdp)
         } else {
             s << fdp.ConsumeIntegral<quint64>();
             s << fdp.ConsumeIntegral<quint64>();
+        }
+    }
+
+    // The generator writes only well-formed files, so one in eight has up to 16 bytes past its header overwritten,
+    // for the reader's refusals of a corrupt stream (a port count above an element's maximum, an appearance index out
+    // of range, a misaligned field)
+    constexpr qsizetype kHeaderBytes = 40;
+    if ((fdp.ConsumeIntegralInRange<int>(0, 7) == 0) && (buf.size() > kHeaderBytes)) {
+        const auto at = fdp.ConsumeIntegralInRange<qsizetype>(kHeaderBytes, buf.size() - 1);
+        const auto bytes = fdp.ConsumeBytes<char>(fdp.ConsumeIntegralInRange<size_t>(1, 16));
+        for (size_t i = 0; (i < bytes.size()) && (at + static_cast<qsizetype>(i) < buf.size()); ++i) {
+            buf[at + static_cast<qsizetype>(i)] = bytes[i];
         }
     }
 
