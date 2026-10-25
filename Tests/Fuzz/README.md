@@ -138,10 +138,22 @@ A harness is improved in rounds, not by long blind runs: a short run of the
 harness grows its corpus, the corpus is replayed through the coverage build,
 the code the harness is meant to reach and does not is read off the report,
 and the harness, its seeds or `panda.dict` are changed to reach it; the
-rounds stop when one adds nothing.
+rounds stop when one adds nothing. With both presets built, one round is:
 
-To see which `App/` lines the corpus never reaches, build the coverage preset
-(source-based instrumentation, no sanitizers) and render an HTML report:
+```bash
+./Tests/Fuzz/coverage-round.sh structured 300   # harness, seconds
+```
+
+It grows the harness's own corpus in `build-fuzzer/rounds/<harness>/corpus`
+and writes the round's coverage of `App/` per file and per function to
+`build-fuzzer/rounds/<harness>/round-<n>/`, printing it next to the previous
+round's. `llvm-cov show build-fuzzer-coverage/fuzz_<harness>
+-instr-profile=<round>/coverage.profdata <source>` then shows a file's lines
+with their counts.
+
+To see which `App/` lines the seed corpus never reaches across all the
+harnesses at once, build the coverage preset (source-based instrumentation,
+no sanitizers) and render an HTML report:
 
 ```bash
 cmake --preset fuzzer-coverage
