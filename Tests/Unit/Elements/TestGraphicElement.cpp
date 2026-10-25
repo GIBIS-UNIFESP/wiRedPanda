@@ -384,3 +384,16 @@ void TestGraphicElement::testRetranslateUpdatesTranslatedNameToolTipAndPortName(
     QCOMPARE(gate.toolTip(), expected);
     QCOMPARE(gate.objectName(), expected);
 }
+
+void TestGraphicElement::testSnapToGridKeepsAPositionBeyondIntRange()
+{
+    // A file may hold any finite position, and every move, paste and drop snaps it: a position past int's range snaps
+    // in floating point, a position on the grid unchanged.
+    const QPointF snapped = GraphicElement::snapToGrid(QPointF(-5e153, 1e10), 8);
+    QCOMPARE(snapped.y(), 1e10);
+    QVERIFY(qFuzzyCompare(snapped.x(), -5e153));
+
+    // Positions within int's range snap as they always have, halves away from zero
+    QCOMPARE(GraphicElement::snapToGrid(QPointF(12, -12), 8), QPointF(16, -16));
+    QCOMPARE(GraphicElement::snapToGrid(QPointF(11.9, -3.9), 8), QPointF(8, 0));
+}
