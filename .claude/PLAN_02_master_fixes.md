@@ -163,6 +163,15 @@ commands. Outside macOS's bundle both executables share a directory, so both rul
 in parallel: a build can stop at "Error copying file" (P2.52, found on CI). Fix: one rule whose commands copy to each
 executable's directory in turn. Shown by two parallel copies of the schema to one destination failing locally.
 
+### 2.13 A failed paste leaves the undo stack in an open macro
+
+`ClipboardManager::paste()` opens a "Paste" undo macro and registers the clipboard's new embedded-IC blobs before it
+reads the items, so a clipboard whose items or blobs do not read throws with the blobs registered and the macro still
+open: every later edit is recorded into it, and undo is lost for the session (P2.57, found by `fuzz_clipboard`'s
+coverage rounds). Fix: paste reads everything first, the blobs made self-contained as registering them would and the
+items read against the registry they will join, and only then records the macro. Shown by
+`TestScene::testPasteOfUnreadableItemsChangesNothing` and `testPasteOfUnreadableBlobChangesNothing`.
+
 ## 3. In code plan 3 rewrites
 
 ### 3.1 SR and T flip-flops ignore every input while one input is open
@@ -601,6 +610,7 @@ Each of these exists on `master`, and its fix is another plan's decision:
 | P2.47a | The client suite's printed failures (§2.11) | the helpers only | none |
 | P2.47b | The client suite's limitations (§2.11) | the helpers only | none |
 | P2.52 | The schema's copy rules (§2.12) | the helpers only | none |
+| P2.57 | A failed paste's open macro (§2.13) | the helpers only | none |
 | P2.9 | SR and T defaults (§3.1) | P1.4, P1.6, P1.13 | port layout, one scene snapshot, any trace with S, R or T open |
 | P2.10 | The loader's port counts (§3.2) | P1.8, P1.17 | the strings golden's three messages |
 | P2.11 | The AudioBox's undo (§3.3) | P1.15 | one editor-writes row |
