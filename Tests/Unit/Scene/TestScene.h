@@ -99,6 +99,9 @@ private slots:
     void testDuplicateNumbersTheCopiesInIdOrder();
     void testDeleteUndoRestoresInIdOrder();
     void testDistributeKeepsTiesInIdOrder();
+    void testUndoRestoresTheBottomElementAtTheBottom_data();
+    void testUndoRestoresTheBottomElementAtTheBottom();
+    void testDeleteUndoKeepsTheStackingOrder();
     void testPasteClipboardLegacyItemFormat();
 
     // ============================================================

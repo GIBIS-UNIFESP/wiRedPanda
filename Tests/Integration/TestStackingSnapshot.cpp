@@ -258,8 +258,8 @@ void TestStackingSnapshot::testOverlapPaintMatchesSceneRender()
 void TestStackingSnapshot::testOrderAfterUndoMatchesGolden()
 {
     // The bottom of three overlapping elements is deleted and the delete undone; in a second scene, so that it starts at
-    // the bottom too, it is morphed and the morph undone. On master the undo, the morph and the morph's undo each add
-    // the element with its old id, on top.
+    // the bottom too, it is morphed and the morph undone. The undo, the morph and the morph's undo each add the element
+    // with its old id, which puts it back at the bottom.
     QString dump;
     {
         WorkSpace workspace;

@@ -222,7 +222,17 @@ const QList<QGraphicsItem *> loadItems(Scene *scene, QByteArray &itemData, const
         }
     }
 
-    addItems(scene, items);
+    // Added in id order, the elements before the wires, so each lands above the restored items of its kind and is
+    // restacked only below an item still in the scene
+    auto ordered = items;
+    const auto key = [](const QGraphicsItem *item) {
+        const auto *itemId = dynamic_cast<const ItemWithId *>(item);
+        return std::pair(item->type() == Connection::Type, itemId ? itemId->id() : -1);
+    };
+    std::stable_sort(ordered.begin(), ordered.end(), [&key](const QGraphicsItem *a, const QGraphicsItem *b) {
+        return key(a) < key(b);
+    });
+    addItems(scene, ordered);
     return items;
 }
 

@@ -513,6 +513,10 @@ private:
     void registerItem(ItemWithId *item, SceneItemRegistry::ItemKind kind);
     /// Removes \a item's ID from the scene registry. Called by removeItem().
     void unregisterItem(ItemWithId *item);
+    /// Puts \a item, of \a kind, at its place in the stacking order, which is id order among the items of its kind (each
+    /// kind has its own z value): below the item of its kind with the next larger \a id, if there is one. Called by
+    /// addItem(); an item given a new id is the largest and stays on top.
+    void restack(QGraphicsItem *item, int id, SceneItemRegistry::ItemKind kind);
 
     // --- Members ---
 
