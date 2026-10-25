@@ -19,7 +19,7 @@ Twelve harnesses, registered in `CMakeLists.txt` under `if(ENABLE_FUZZER)`:
 | `fuzz_waveform`    | `FuzzWaveform.cpp`    | beWavedDolphin `.dolphin` files: `readDolphinHeader` + `DolphinSerializer::loadBinary`. |
 | `fuzz_clipboard`   | `FuzzClipboard.cpp`   | A clipboard pasted, undone and redone; a `.panda` file copied, pasted, duplicated and cut. |
 | `fuzz_old_format`  | `FuzzOldFormat.cpp`   | The pre-4.1 flat binary path (`GraphicElement::loadOldFormat`) and its per-version / per-element-type branches. |
-| `fuzz_ic_registry` | `FuzzICRegistry.cpp`  | `ICRegistry` blob lifecycle: `setBlob`/`hasBlob`/`blob`, `initEmbeddedIC`, and `embeddedICs` metadata loading. |
+| `fuzz_ic_registry` | `FuzzICRegistry.cpp`  | `ICRegistry`: a `.panda` input as an IC's definition, placed from its file, reloaded when the file changes, embedded, renamed, extracted and created, each step undone and redone; other inputs as raw blob bytes through the blob API and `embeddedICs` metadata loading. |
 | `fuzz_codegen`     | `FuzzCodeGen.cpp`     | The Arduino + SystemVerilog exporters (only reachable via `File > Export`), plus `generateTestbench`. |
 | `fuzz_round_trip`  | `FuzzRoundTrip.cpp`   | The save side: `Serialization::serialize` + every element `save()`, then re-loads the output to surface save/load asymmetries. |
 | `fuzz_ic_file`     | `FuzzICFile.cpp`      | File-backed IC loading (`IC::loadFromFile` → `loadFileDirectly`), including cycle detection and old-format migration. |
