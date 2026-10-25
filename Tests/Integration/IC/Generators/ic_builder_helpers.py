@@ -11,7 +11,7 @@ files become thin wrappers that pass different constructor arguments.
 
 from dataclasses import dataclass
 
-from element_spacing import HORIZONTAL_GATE_SPACING, VERTICAL_STAGE_SPACING
+from element_spacing import GRID_SNAP_STEP, HORIZONTAL_GATE_SPACING, VERTICAL_STAGE_SPACING
 from ic_builder_base import IC_COMPONENTS_DIR, ICBuilderBase
 
 
@@ -202,9 +202,10 @@ class RegisterFileBuilder(ICBuilderBase):
         (final_mux_element_id, total_vertical_span) -- the span is level 0's
         real rendered row height (queried via create_element_with_size/
         resize_input, not guessed -- an 11-port Mux is taller than the flat
-        VERTICAL_STAGE_SPACING every other row height in this file assumes)
-        times its number of groups, i.e. how far down this whole tree reaches,
-        which the caller needs to space consecutive bits' trees apart.
+        VERTICAL_STAGE_SPACING every other row height in this file assumes),
+        rounded up to GRID_SNAP_STEP, times its number of groups, i.e. how far
+        down this whole tree reaches, which the caller needs to space
+        consecutive bits' trees apart.
 
         For num_registers<=8 (every existing caller) this produces exactly one
         8-or-fewer-input Mux -- byte-identical to the flat single-mux design
@@ -237,7 +238,8 @@ class RegisterFileBuilder(ICBuilderBase):
                         return None
                     mux_height = resized.height
                 if group_idx == 0:
-                    row_spacing = max(VERTICAL_STAGE_SPACING, mux_height)
+                    # Rows sit flush, so the spacing is rounded up to the snap step to keep snapped rows apart
+                    row_spacing = max(VERTICAL_STAGE_SPACING, -(-mux_height // GRID_SNAP_STEP) * GRID_SNAP_STEP)
                 for i, src_id in enumerate(group):
                     if not await self.connect(src_id, mux_id, target_port_label=f"In{i}"):
                         return None
