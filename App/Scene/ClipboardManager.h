@@ -9,10 +9,13 @@
 
 #include <optional>
 
+#include <QByteArray>
 #include <QCoreApplication>
 #include <QDataStream>
 #include <QList>
+#include <QMap>
 #include <QPointF>
+#include <QString>
 #include <QVersionNumber>
 
 class QGraphicsItem;
@@ -82,11 +85,16 @@ private:
     /// Serializes \a items and then deletes them from the scene.
     void serializeAndDelete(const QList<QGraphicsItem *> &items, QDataStream &stream);
 
-    /// Deserializes from \a stream and adds to the scene. Without \a fixedOffset the new
-    /// items are placed relative to the cursor (paste); with it they are shifted by exactly
-    /// that vector from the originals (duplicate). Returns the items added.
-    QList<QGraphicsItem *> deserializeAndAdd(QDataStream &stream, const QVersionNumber &version,
-                                             std::optional<QPointF> fixedOffset = std::nullopt);
+    /// Reads the selection's centre into \a center and the items after it from \a stream, embedded ICs resolved
+    /// against \a blobRegistry, and returns the items, not yet in the scene. If reading throws, nothing read is kept.
+    QList<QGraphicsItem *> readItems(QDataStream &stream, const QVersionNumber &version,
+                                     QMap<QString, QByteArray> &blobRegistry, QPointF &center);
+
+    /// Adds \a items, read by readItems() with their selection's \a center, to the scene. Without \a fixedOffset the
+    /// new items are placed relative to the cursor (paste); with it they are shifted by exactly that vector from the
+    /// originals (duplicate).
+    void addItems(const QList<QGraphicsItem *> &items, const QPointF &center,
+                  std::optional<QPointF> fixedOffset = std::nullopt);
 
     Scene *m_scene = nullptr;
 };

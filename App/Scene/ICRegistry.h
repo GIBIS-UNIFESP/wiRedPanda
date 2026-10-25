@@ -54,8 +54,12 @@ public:
     QByteArray blob(const QString &name) const;
     /// Stores or replaces the blob \a data under \a name and invalidates the cached definition.
     void setBlob(const QString &name, const QByteArray &data);
-    /// Stores blob \a data under \a name without invalidating the definition cache.
+    /// Stores blob \a data under \a name, made self-contained (selfContainedBlob()), without invalidating the
+    /// definition cache.
     void registerBlob(const QString &name, const QByteArray &data);
+    /// Returns blob \a data, named \a name, with every IC it depends on embedded in it, as registerBlob() stores it,
+    /// without storing it; throws if \a data or a dependency does not read.
+    QByteArray selfContainedBlob(const QString &name, const QByteArray &data);
     /// Removes the blob named \a name from the registry.
     void removeBlob(const QString &name);
     /// Renames a blob from \a oldName to \a newName, updating the cache key.

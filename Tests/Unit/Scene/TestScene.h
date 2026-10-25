@@ -103,6 +103,8 @@ private slots:
     void testUndoRestoresTheBottomElementAtTheBottom();
     void testDeleteUndoKeepsTheStackingOrder();
     void testPasteClipboardLegacyItemFormat();
+    void testPasteOfUnreadableItemsChangesNothing();
+    void testPasteOfUnreadableBlobChangesNothing();
 
     // ============================================================
     // Topological Sort Tests (4 tests)

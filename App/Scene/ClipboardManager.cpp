@@ -152,6 +152,27 @@ void ClipboardManager::paste()
         itemData = mimeData->data(MimeType::Clipboard);
     }
 
+    // Everything is read before anything is recorded, so a clipboard that does not read throws with the scene, its
+    // registry and its undo stack as they were. The new blobs are made self-contained as registering them would, and
+    // the items read against the registry they will join.
+    auto *registry = m_scene->icRegistry();
+    QMap<QString, QByteArray> newBlobs;
+    for (auto it = clipboardBlobs.cbegin(); it != clipboardBlobs.cend(); ++it) {
+        if (!registry->hasBlob(it.key())) {
+            newBlobs[it.key()] = registry->selfContainedBlob(it.key(), it.value());
+        }
+    }
+
+    QList<QGraphicsItem *> items;
+    QPointF center;
+    if (!itemData.isEmpty()) {
+        QMap<QString, QByteArray> blobs = registry->blobMap();
+        blobs.insert(newBlobs);
+        QDataStream stream(&itemData, QIODevice::ReadOnly);
+        const QVersionNumber version = Serialization::readPandaHeader(stream);
+        items = readItems(stream, version, blobs, center);
+    }
+
     // Register any new embedded-IC blobs and add the pasted items as a single undo step —
     // registering the blobs untracked would leave them orphaned in the registry forever after
     // an undo, since AddItemsCommand only knows about scene items, not the blob registry.
@@ -160,19 +181,12 @@ void ClipboardManager::paste()
         m_scene->undoStack()->beginMacro(tr("Paste"));
     }
 
-    if (!clipboardBlobs.isEmpty()) {
-        auto *registry = m_scene->icRegistry();
-        for (auto it = clipboardBlobs.cbegin(); it != clipboardBlobs.cend(); ++it) {
-            if (!registry->hasBlob(it.key())) {
-                m_scene->receiveCommand(new RegisterBlobCommand(it.key(), it.value(), m_scene));
-            }
-        }
+    for (auto it = newBlobs.cbegin(); it != newBlobs.cend(); ++it) {
+        m_scene->receiveCommand(new RegisterBlobCommand(it.key(), it.value(), m_scene));
     }
 
     if (!itemData.isEmpty()) {
-        QDataStream stream(&itemData, QIODevice::ReadOnly);
-        QVersionNumber version = Serialization::readPandaHeader(stream);
-        deserializeAndAdd(stream, version);
+        addItems(items, center);
     }
 
     if (needsMacro) {
@@ -300,32 +314,37 @@ void ClipboardManager::serializeAndDelete(const QList<QGraphicsItem *> &items, Q
     m_scene->deleteAction();
 }
 
-QList<QGraphicsItem *> ClipboardManager::deserializeAndAdd(QDataStream &stream, const QVersionNumber &version,
-                                                          std::optional<QPointF> fixedOffset)
+QList<QGraphicsItem *> ClipboardManager::readItems(QDataStream &stream, const QVersionNumber &version,
+                                                  QMap<QString, QByteArray> &blobRegistry, QPointF &center)
 {
-    m_scene->clearSelection();
-
-    QPointF center; stream >> center;
+    stream >> center;
 
     QHash<quint64, Port *> portMap;
     auto context = m_scene->deserializationContext(portMap, version, SerializationPurpose::InMemorySnapshot);
-    const auto itemList = Serialization::deserialize(stream, context);
+    context.blobRegistry = &blobRegistry;
+    return Serialization::deserialize(stream, context);
+}
+
+void ClipboardManager::addItems(const QList<QGraphicsItem *> &items, const QPointF &center,
+                                std::optional<QPointF> fixedOffset)
+{
+    m_scene->clearSelection();
+
     // Paste: shift elements so their centroid lands at the cursor, then nudge 32 px
     // diagonally so repeated pastes don't completely overlap. Duplicate: shift by exactly
     // fixedOffset from the originals so the copies sit a grid step down-right, in place.
     const QPointF offset = fixedOffset ? *fixedOffset
                                        : (m_scene->mousePos() - center - QPointF(32.0, 32.0));
 
-    m_scene->receiveCommand(new AddItemsCommand(itemList, m_scene));
+    m_scene->receiveCommand(new AddItemsCommand(items, m_scene));
 
-    for (auto *item : itemList) {
+    for (auto *item : items) {
         if (item->type() == GraphicElement::Type) {
             item->setPos(GraphicElement::snapToGrid(item->pos() + offset));
         }
     }
 
     m_scene->resizeScene();
-    return itemList;
 }
 
 void ClipboardManager::duplicate()
@@ -344,8 +363,9 @@ void ClipboardManager::duplicate()
     // (same tab), so — unlike paste — no blob re-registration is needed.
     QDataStream readStream(&itemData, QIODevice::ReadOnly);
     const QVersionNumber version = Serialization::readPandaHeader(readStream);
-    const QPointF step(Constants::gridSize, Constants::gridSize);
-    const auto added = deserializeAndAdd(readStream, version, step);
+    QPointF center;
+    const auto added = readItems(readStream, version, m_scene->icRegistry()->blobMapRef(), center);
+    addItems(added, center, QPointF(Constants::gridSize, Constants::gridSize));
 
     // Make the copies the active selection so they can be moved right away.
     for (auto *item : added) {
