@@ -134,6 +134,12 @@ keeps only the inputs that add coverage for it:
 
 ## Coverage
 
+A harness is improved in rounds, not by long blind runs: a short run of the
+harness grows its corpus, the corpus is replayed through the coverage build,
+the code the harness is meant to reach and does not is read off the report,
+and the harness, its seeds or `panda.dict` are changed to reach it; the
+rounds stop when one adds nothing.
+
 To see which `App/` lines the corpus never reaches, build the coverage preset
 (source-based instrumentation, no sanitizers) and render an HTML report:
 

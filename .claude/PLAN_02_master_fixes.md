@@ -47,8 +47,8 @@ workspace with at least one element, or the harness aborts naming itself and the
 an unrecognized header instead of returning a null version, so the check's first header read sits inside a `try`: on the
 branch it first did not, and an empty seed ended the harness through `std::terminate` without naming it. Each check is
 shown to fail by a seed that fails it (no elements, an unknown header, an empty seed), and each harness runs once on its
-seeds (`-runs=1`) as a start-up check. The harnesses run on the user's machine, overnight, through
-`Tests/Fuzz/run-unattended.sh`, not in CI (P2.D10).
+seeds (`-runs=1`) as a start-up check. The harnesses run on the user's machine in coverage-guided rounds, not in CI
+(P2.D10).
 
 ### 2.2 The fuzzers get no coverage feedback from the code under test
 
@@ -678,12 +678,18 @@ user's choice between workable options).
   write; a sink destroyed before its source device). Whether 6.8 shows either defect is recorded for the release notes
   (P2.34). Basis: the user's rulings of 2026-10-21 (every defect verified on `master` is plan 2's; the floor at 6.8,
   right after plan 2).
-- **P2.D10. The fuzz harnesses run on the user's machine, overnight, not in CI.** The fuzzer preset (libFuzzer with
-  ASan and UBSan) is built there and the harnesses run through `Tests/Fuzz/run-unattended.sh`. A slice that adds or
-  changes a harness (this plan's §2.1 and §2.2, plan 3's round trip, plan 4's IC files, plan 6's lockstep fuzzer) is
-  finished after the user's overnight run of it; a crash becomes a row of the plan whose code it reaches, its input
-  kept under `Tests/Fuzz/regressions/`. CI's workflows keep ignoring `Tests/Fuzz/`. Basis: the user's ruling of
-  2026-10-21 ("i dont think its necessary/useful to run fuzzer in CI. i can run it overnight on my pc").
+- **P2.D10. The fuzz harnesses run on the user's machine, in coverage-guided rounds, not in CI.** The fuzzer preset
+  (libFuzzer with ASan and UBSan) and the `fuzzer-coverage` preset are built there. A round is a short run of one
+  harness (minutes), growing its own corpus, then that corpus replayed through the coverage build and read with
+  `llvm-cov`: the code the harness is meant to reach and does not is listed by file and function, the harness, its
+  seeds or the dictionary are changed to reach it, and the next round runs; rounds stop when one adds no coverage of
+  the harness's targets. A slice that adds or changes a harness (this plan's §2.1 and §2.2, plan 3's round trip, plan
+  4's IC files, plan 6's lockstep fuzzer) is finished after its rounds, their coverage before and after recorded in
+  its row; a long unattended run (`Tests/Fuzz/run-unattended.sh`) stays available for depth and gates nothing. A
+  crash becomes a row of the plan whose code it reaches, its input kept under `Tests/Fuzz/regressions/`. CI's
+  workflows keep ignoring `Tests/Fuzz/`. Basis: the user's rulings of 2026-10-21 ("i dont think its necessary/useful
+  to run fuzzer in CI. i can run it overnight on my pc") and 2026-10-25 (rounds of a small run and its coverage,
+  "instead of doing blind fuzzing runs").
 - **P2.D11. Everything that acts on a selection acts in id order**, through the scene's accessors, never Qt's set
   order (§7.4). Basis: measured on `01-characterization` (the paste's ids differ between runs); the user's ruling of
   2026-10-22 ("for pasted ids we need to make that deterministic").
@@ -705,7 +711,7 @@ user's choice between workable options).
 | A fix changes behaviour users or files rely on: an open S, R or T, port counts a file holds, latch outcomes | Each change named by its cause in the golden diff and the release notes; no release wrote the refused port counts; the walk measured first |
 | A fix in code a later plan rewrites is lost in the rewrite | Each fix's test stays; the rewriting plan lists the fixes it keeps (§13) |
 | A test of a fix cannot fail | Each shown to fail on `master` first; a later fix that makes an older test vacuous (§5.1) reworks it |
-| The fuzz fixes cannot be checked without running the fuzzers, which are clang builds | The user runs them overnight before the slice is finished (P2.D10) |
+| The fuzz fixes cannot be checked without running the fuzzers, which are clang builds | Coverage-guided rounds on the user's machine before the slice is finished (P2.D10) |
 
 ## 12. Claims to check and open questions
 
@@ -727,7 +733,8 @@ user's choice between workable options).
   steps the stack, is brought into plan 2 by the user's choice, 2026-10-24, as §3.17 (P2.50).
 - **The priority walk's fix against plan 1's traces** (§5.3): measured first; with traces changed, the user decides
   (P2.36).
-- **When the fuzz harnesses run** (P2.37): settled by the user, on the user's machine overnight, not in CI (P2.D10).
+- **When the fuzz harnesses run** (P2.37): settled by the user, on the user's machine in coverage-guided rounds, not
+  in CI (P2.D10).
 - **P2.D4's wording** (its row): reworded with P2.18 to say where each writer refuses and that nothing warns of
   duplicates from a file or a paste; the user confirms it.
 
