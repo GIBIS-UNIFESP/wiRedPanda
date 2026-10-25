@@ -28,4 +28,6 @@ private slots:
     // filesHaveSameContent — same-file vs name-collision detection
     void testFilesHaveSameContent();
     void testFilesHaveSameContentUnreadableFileTreatedAsDifferent();
+    void testCommitWhenWrittenReplacesTheTarget();
+    void testCommitWhenWrittenKeepsTheTargetWhenAWriteFails();
 };

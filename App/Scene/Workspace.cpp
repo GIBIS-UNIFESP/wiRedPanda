@@ -386,11 +386,11 @@ WorkSpace::SaveOutcome WorkSpace::save(const QString &fileName)
     Serialization::writePandaHeader(stream);
     save(stream);
 
-    if (!saveFile.commit()) {
+    if (!FileUtils::commitWhenWritten(saveFile)) {
         // Covered: TestWorkspaceUnit::testSaveReturnsReadOnlyTargetWhenCommitFailsInteractive()/
         // testSaveThrowsWhenCommitFailsNonInteractive() force this via RLIMIT_FSIZE
         // (ScopedTinyFsizeLimit) -- Qt defers write() errors, so a failed write() above only
-        // surfaces here, at commit(), as QFileDevice::WriteError (which isReadOnlyFailure()
+        // surfaces here, at the flush before the commit, as QFileDevice::WriteError (which isReadOnlyFailure()
         // treats the same as an open()-time permission failure).
         if (Application::interactiveMode && isReadOnlyFailure(saveFile.error())) {
             return SaveOutcome::ReadOnlyTarget;
@@ -736,10 +736,10 @@ void WorkSpace::autosave()
     Serialization::writePandaHeader(stream);
     save(stream);
 
-    if (!autosaveFile.commit()) {
+    if (!FileUtils::commitWhenWritten(autosaveFile)) {
         // Covered: TestWorkspaceUnit::testAutosaveThrowsWhenCommitFails() forces this via
         // RLIMIT_FSIZE (ScopedTinyFsizeLimit) -- Qt defers write() errors, so a failed
-        // write() above only surfaces here, at commit().
+        // write() above only surfaces here, at the flush before the commit.
         throw PANDACEPTION("Could not commit autosave file: %1", autosaveFile.errorString());
     }
 

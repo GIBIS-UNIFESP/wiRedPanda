@@ -14,6 +14,7 @@
 #include "App/Core/Common.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/IC.h"
+#include "App/IO/FileUtils.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
@@ -294,10 +295,10 @@ int ICRegistry::extractToFile(const QString &blobName, const QString &filePath, 
         throw PANDACEPTION("Could not open file: %1", saveFile.errorString());
     }
     saveFile.write(blob(blobName));
-    if (!saveFile.commit()) {
+    if (!FileUtils::commitWhenWritten(saveFile)) {
         // Covered: TestICRegistry::testExtractToFileThrowsWhenCommitFails() forces this via
         // RLIMIT_FSIZE (ScopedTinyFsizeLimit) -- Qt defers write() errors, so a failed
-        // write() above only surfaces here, at commit().
+        // write() above only surfaces here, at the flush before the commit.
         throw PANDACEPTION("Could not save file: %1", saveFile.errorString());
     }
 
