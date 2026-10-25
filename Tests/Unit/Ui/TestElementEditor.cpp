@@ -1014,6 +1014,7 @@ void TestElementEditor::testRefusesALabelAnotherTxHas()
     QVERIFY(lineEdit);
     auto dismisser = TestUtils::AutoDismisser::acceptMessageBox();
     lineEdit->setText("x");
+    QTest::keyClick(lineEdit, Qt::Key_Return);
 
     QCOMPARE(dismisser.dismissCount(), 1);
     QCOMPARE(second->label(), QString("y"));
@@ -1077,11 +1078,100 @@ void TestElementEditor::testRefusesALabelAnotherTxHasWithANonNodeSelected()
     QVERIFY(lineEdit->isEnabled());
     auto dismisser = TestUtils::AutoDismisser::acceptMessageBox();
     lineEdit->setText("x");
+    QTest::keyClick(lineEdit, Qt::Key_Return);
 
     QCOMPARE(dismisser.dismissCount(), 1);
     QCOMPARE(second->label(), QString("y"));
     QCOMPARE(inputSwitch->label(), QString());
     QCOMPARE(workspace.scene()->undoStack()->count(), commands);
+}
+
+void TestElementEditor::testTypingPastAnotherTxsLabelDoesNotWarn()
+{
+    // "ab" is typed one key at a time and passes through "a", another Tx's channel, on the way
+    WorkSpace workspace;
+    auto *first = new Node();
+    first->setWirelessMode(WirelessMode::Tx);
+    first->setLabel("a");
+    workspace.scene()->addItem(first);
+    auto *second = new Node();
+    second->setWirelessMode(WirelessMode::Tx);
+    second->setLabel("y");
+    workspace.scene()->addItem(second);
+
+    ElementEditor editor(&workspace);
+    editor.setScene(workspace.scene());
+    workspace.scene()->clearSelection();
+    second->setSelected(true);
+
+    auto *lineEdit = editor.findChild<QLineEdit *>("lineEditElementLabel");
+    QVERIFY(lineEdit);
+    auto dismisser = TestUtils::AutoDismisser::acceptMessageBox();
+    lineEdit->selectAll();
+    QTest::keyClicks(lineEdit, "ab");
+
+    QCOMPARE(dismisser.dismissCount(), 0);
+    QCOMPARE(second->label(), QString("ab"));
+}
+
+void TestElementEditor::testFinishingOnAnotherTxsLabelWarnsAndRestoresTheField()
+{
+    // The field is left on another Tx's channel: one warning, the label stays, and the field shows it again
+    WorkSpace workspace;
+    auto *first = new Node();
+    first->setWirelessMode(WirelessMode::Tx);
+    first->setLabel("a");
+    workspace.scene()->addItem(first);
+    auto *second = new Node();
+    second->setWirelessMode(WirelessMode::Tx);
+    second->setLabel("y");
+    workspace.scene()->addItem(second);
+
+    ElementEditor editor(&workspace);
+    editor.setScene(workspace.scene());
+    workspace.scene()->clearSelection();
+    second->setSelected(true);
+    const int commands = workspace.scene()->undoStack()->count();
+
+    auto *lineEdit = editor.findChild<QLineEdit *>("lineEditElementLabel");
+    QVERIFY(lineEdit);
+    auto dismisser = TestUtils::AutoDismisser::acceptMessageBox();
+    lineEdit->selectAll();
+    QTest::keyClicks(lineEdit, "a");
+    QTest::keyClick(lineEdit, Qt::Key_Return);
+
+    QCOMPARE(dismisser.dismissCount(), 1);
+    QCOMPARE(second->label(), QString("y"));
+    QCOMPARE(lineEdit->text(), QString("y"));
+    QCOMPARE(workspace.scene()->undoStack()->count(), commands);
+}
+
+void TestElementEditor::testLeavingTheFieldOnASharedLabelDoesNotWarn()
+{
+    // Two Tx nodes already share a label, as a file or a paste may leave them: leaving the field unedited is no edit
+    WorkSpace workspace;
+    auto *first = new Node();
+    first->setWirelessMode(WirelessMode::Tx);
+    first->setLabel("dup");
+    workspace.scene()->addItem(first);
+    auto *second = new Node();
+    second->setWirelessMode(WirelessMode::Tx);
+    second->setLabel("dup");
+    workspace.scene()->addItem(second);
+
+    ElementEditor editor(&workspace);
+    editor.setScene(workspace.scene());
+    workspace.scene()->clearSelection();
+    second->setSelected(true);
+
+    auto *lineEdit = editor.findChild<QLineEdit *>("lineEditElementLabel");
+    QVERIFY(lineEdit);
+    QCOMPARE(lineEdit->text(), QString("dup"));
+    auto dismisser = TestUtils::AutoDismisser::acceptMessageBox();
+    QTest::keyClick(lineEdit, Qt::Key_Return);
+
+    QCOMPARE(dismisser.dismissCount(), 0);
+    QCOMPARE(second->label(), QString("dup"));
 }
 
 void TestElementEditor::testBlobNameEditingFinishedIgnoresUnchangedOrEmpty()
