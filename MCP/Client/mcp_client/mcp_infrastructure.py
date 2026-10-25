@@ -35,6 +35,27 @@ if sys.platform == "win32" and hasattr(sys.stderr, "reconfigure"):
 _test_process_manager = ProcessManager()
 
 
+@beartype
+async def read_line(stream: asyncio.StreamReader) -> bytes:
+    """
+    Read one line from the stream, however long, with its newline; at EOF, whatever is left.
+
+    StreamReader.readline() fails on a line longer than the stream's limit (64 KiB by default) and leaves the line's
+    remainder in the stream, where the next read takes it for the next response. A response's length is not bounded,
+    so each chunk the limit stops at is taken out and the reading goes on.
+    """
+    chunks: list[bytes] = []
+    while True:
+        try:
+            chunks.append(await stream.readuntil(b"\n"))
+            return b"".join(chunks)
+        except asyncio.LimitOverrunError as error:
+            chunks.append(await stream.readexactly(error.consumed))
+        except asyncio.IncompleteReadError as error:
+            chunks.append(error.partial)
+            return b"".join(chunks)
+
+
 class MCPInfrastructure:
     """Infrastructure methods: Setup, teardown, communication, process management"""
 
@@ -429,7 +450,7 @@ class MCPInfrastructure:
 
             try:
                 # Read line with timeout
-                response_line_bytes = await asyncio.wait_for(self.process.stdout.readline(), timeout=remaining_timeout)
+                response_line_bytes = await asyncio.wait_for(read_line(self.process.stdout), timeout=remaining_timeout)
                 if not response_line_bytes:
                     # EOF reached
                     return None
