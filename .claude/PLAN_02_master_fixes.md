@@ -156,6 +156,13 @@ recorded: `record_limitation()` is called nowhere, though 38 sites print one and
 that cannot pass, a clock-gating test that never toggles its master clock and so reads its flip-flop low. Each site is
 a real limitation of the engine, recorded; a defect of the test, fixed; or a failure, counted.
 
+### 2.12 Two build rules race on the JSON schema's copy
+
+`CMakeLists.txt` copies `MCP/schema-mcp.json` next to `wiredpanda` and next to `test_wiredpanda` in two custom
+commands. Outside macOS's bundle both executables share a directory, so both rules write one file, and Ninja runs them
+in parallel: a build can stop at "Error copying file" (P2.52, found on CI). Fix: one rule whose commands copy to each
+executable's directory in turn. Shown by two parallel copies of the schema to one destination failing locally.
+
 ## 3. In code plan 3 rewrites
 
 ### 3.1 SR and T flip-flops ignore every input while one input is open
@@ -593,6 +600,7 @@ Each of these exists on `master`, and its fix is another plan's decision:
 | P2.47 | The client suite's dropped checks (§2.11) | the helpers only | none |
 | P2.47a | The client suite's printed failures (§2.11) | the helpers only | none |
 | P2.47b | The client suite's limitations (§2.11) | the helpers only | none |
+| P2.52 | The schema's copy rules (§2.12) | the helpers only | none |
 | P2.9 | SR and T defaults (§3.1) | P1.4, P1.6, P1.13 | port layout, one scene snapshot, any trace with S, R or T open |
 | P2.10 | The loader's port counts (§3.2) | P1.8, P1.17 | the strings golden's three messages |
 | P2.11 | The AudioBox's undo (§3.3) | P1.15 | one editor-writes row |
