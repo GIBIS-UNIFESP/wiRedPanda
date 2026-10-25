@@ -17,6 +17,7 @@
 #include <QBrush>
 #include <QGraphicsPathItem>
 #include <QPen>
+#include <QSet>
 
 #include "App/Core/Enums.h"
 
@@ -228,6 +229,8 @@ protected:
     /// so unlike Connection this never needs to fall back to the item's real pen).
     QPen m_currentPen;
     QList<Connection *> m_connections;
+    /// The wires in m_connections, so attaching one finds whether it is already there without searching the list.
+    QSet<Connection *> m_connectionSet;
     QString m_name;
     QString m_sourceName;
     Status m_defaultStatus = Status::Unknown;
