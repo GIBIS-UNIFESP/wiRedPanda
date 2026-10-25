@@ -1546,6 +1546,138 @@ void TestScene::testDuplicateWithNoSelectionIsNoOp()
     QCOMPARE(scene->elements().size(), 1);
 }
 
+namespace TestSceneSelectionHelpers {
+
+/// Fifty And gates, in ten columns of five with every gate of a column at the same x, each labelled with its place in
+/// id order, every one selected: Qt keeps a selection of fifty in a hash set, out of id order in every run.
+QList<GraphicElement *> addSelectedColumns(Scene *scene)
+{
+    QList<GraphicElement *> elements;
+    for (int column = 0; column < 10; ++column) {
+        for (int row = 0; row < 5; ++row) {
+            auto *element = ElementFactory::buildElement(ElementType::And);
+            element->setPos(column * 160, row * 80);
+            element->setLabel("e" + QString::number(elements.size()));
+            scene->addItem(element);
+            element->setSelected(true);
+            elements << element;
+        }
+    }
+    return elements;
+}
+
+/// The ids of \a elements, in their order.
+QList<int> idsOf(const QList<GraphicElement *> &elements)
+{
+    QList<int> ids;
+    for (const auto *element : elements) {
+        ids << element->id();
+    }
+    return ids;
+}
+
+/// \a ids sorted.
+QList<int> sortedIds(QList<int> ids)
+{
+    std::sort(ids.begin(), ids.end());
+    return ids;
+}
+
+} // namespace TestSceneSelectionHelpers
+
+void TestScene::testSelectionAccessorsAnswerInIdOrder()
+{
+    using namespace TestSceneSelectionHelpers;
+    auto scene = std::make_unique<Scene>();
+    const auto elements = addSelectedColumns(scene.get());
+    auto *wire = new Connection();
+    wire->setStartPort(elements.at(1)->outputPort(0));
+    wire->setEndPort(elements.at(0)->inputPort(0));
+    scene->addItem(wire);
+    wire->setSelected(true);
+
+    const QList<int> ids = idsOf(scene->selectedElements());
+    QCOMPARE(ids.size(), 50);
+    QCOMPARE(ids, sortedIds(ids));
+
+    QList<int> itemIds;
+    for (auto *item : scene->selectedItems()) {
+        auto *withId = dynamic_cast<ItemWithId *>(item);
+        QVERIFY(withId);
+        itemIds << withId->id();
+    }
+    QCOMPARE(itemIds.size(), 51);
+    QCOMPARE(itemIds, sortedIds(itemIds));
+}
+
+void TestScene::testDuplicateNumbersTheCopiesInIdOrder()
+{
+    // The copies take new ids in the order the selection is written, which is the originals' id order, so the copy
+    // of each original sits at the same rank among the copies as the original among the originals.
+    using namespace TestSceneSelectionHelpers;
+    auto scene = std::make_unique<Scene>();
+    const auto originals = addSelectedColumns(scene.get());
+
+    scene->clipboardManager()->duplicate();
+
+    QList<GraphicElement *> copies;
+    for (auto *element : TestUtils::elementsById(scene.get())) {
+        if (!originals.contains(element)) {
+            copies << element;
+        }
+    }
+    QCOMPARE(copies.size(), originals.size());
+    for (int i = 0; i < copies.size(); ++i) {
+        QCOMPARE(copies.at(i)->label(), originals.at(i)->label());
+    }
+}
+
+void TestScene::testDeleteUndoRestoresInIdOrder()
+{
+    // The delete keeps the selection in id order, and its undo adds the elements back in that order, so they stack
+    // in id order again.
+    using namespace TestSceneSelectionHelpers;
+    auto scene = std::make_unique<Scene>();
+    addSelectedColumns(scene.get());
+
+    scene->deleteAction();
+    QCOMPARE(scene->elements().size(), 0);
+    scene->undoStack()->undo();
+
+    QList<int> stacked;
+    for (auto *item : scene->items(Qt::AscendingOrder)) {
+        if (item->type() == GraphicElement::Type) {
+            stacked << static_cast<GraphicElement *>(item)->id();
+        }
+    }
+    QCOMPARE(stacked.size(), 50);
+    QCOMPARE(stacked, sortedIds(stacked));
+}
+
+void TestScene::testDistributeKeepsTiesInIdOrder()
+{
+    // Each column's five gates share a left edge; distributing them horizontally gives each tie its place in id order,
+    // so within a column a lower id lands further left.
+    using namespace TestSceneSelectionHelpers;
+    auto scene = std::make_unique<Scene>();
+    const auto elements = addSelectedColumns(scene.get());
+
+    scene->distributeHorizontally();
+
+    for (int column = 0; column < 10; ++column) {
+        for (int row = 1; row < 5; ++row) {
+            const auto *previous = elements.at((column * 5) + row - 1);
+            const auto *element = elements.at((column * 5) + row);
+            QVERIFY2(previous->pos().x() < element->pos().x(),
+                     qPrintable(QString("%1 at x=%2 is not left of %3 at x=%4")
+                                    .arg(previous->label())
+                                    .arg(previous->pos().x())
+                                    .arg(element->label())
+                                    .arg(element->pos().x())));
+        }
+    }
+}
+
 void TestScene::testPasteLegacyUnversionedBlobRegistryFormat()
 {
     // Older app versions wrote only the unversioned BlobRegistry format (no explicit

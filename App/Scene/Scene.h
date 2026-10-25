@@ -193,7 +193,14 @@ public:
     QList<QGraphicsItem *> items(QPointF pos, Qt::ItemSelectionMode mode = Qt::IntersectsItemShape, Qt::SortOrder order = Qt::AscendingOrder, const QTransform &deviceTransform = QTransform()) const;
     /// \reimp
     QList<QGraphicsItem *> items(const QRectF &rect, Qt::ItemSelectionMode mode = Qt::IntersectsItemShape, Qt::SortOrder order = Qt::AscendingOrder, const QTransform &deviceTransform = QTransform()) const;
-    /// Returns the list of currently selected graphic elements.
+    /**
+     * \brief Returns the selected items, elements and wires, in id order.
+     * \details Hides QGraphicsScene::selectedItems(), whose order follows the per-process hash seed and the items'
+     * addresses, so that whatever acts on a selection (copy, delete, distribute, the first selected element) acts the
+     * same in every run.
+     */
+    QList<QGraphicsItem *> selectedItems() const;
+    /// Returns the selected graphic elements, in id order.
     const QList<GraphicElement *> selectedElements() const;
     /// Returns all graphic elements in the scene.
     const QVector<GraphicElement *> elements() const;
