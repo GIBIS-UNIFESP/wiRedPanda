@@ -61,6 +61,17 @@ if [[ -z "$(ls -A "${CORPUS}")" ]]; then
     fi
 fi
 
+# fuzz_codegen builds a circuit from any input that is not a .panda file, which the corpus holds none of: 64 inputs of
+# fixed pseudo-random bytes, none starting with a .panda file's first byte, start that path
+if [[ "${HARNESS}" == "codegen" ]] && [[ -z "$(find "${CORPUS}" -maxdepth 1 -name 'structured-seed-*' -print -quit)" ]]; then
+    for i in $(seq 1 64); do
+        seed="${CORPUS}/structured-seed-${i}"
+        { printf '\001'
+          for j in $(seq 1 12); do printf '%s' "${i}-${j}" | sha256sum | cut -c1-64 | xxd -r -p; done; } > "${seed}"
+        truncate -s $(( 65 + 4 * i )) "${seed}"
+    done
+fi
+
 ROUND=$(( $(find "${ROUNDS}" -maxdepth 1 -name 'round-*' | wc -l) + 1 ))
 OUT="${ROUNDS}/round-${ROUND}"
 PREVIOUS="${ROUNDS}/round-$(( ROUND - 1 ))"
