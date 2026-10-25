@@ -51,9 +51,9 @@ void ElementOrientation::orientPort(Port *port)
     t.rotate(m_angle);
     t.scale(m_flippedX ? -1 : 1, m_flippedY ? -1 : 1);
     t.translate(-origin.x(), -origin.y());
+    // A port in a scene sends ItemScenePositionHasChanged when its transform changes, and
+    // Port::itemChange() re-routes its wires there
     port->setTransform(t);
-
-    port->updateConnections();
 }
 
 void ElementOrientation::setFlippedX(const bool flipped)
