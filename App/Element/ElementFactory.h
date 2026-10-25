@@ -66,6 +66,10 @@ public:
     /// Returns the translated human-readable name for \a type.
     static QString translatedName(const ElementType type);
 
+    /// Returns the name for \a type in its source language, whatever the interface language: generated code names
+    /// its variables from it.
+    static QString untranslatedName(const ElementType type);
+
     /// Returns a short, translated functional description of \a type for palette tooltips
     /// (empty for types without one, e.g. IC).
     static QString description(const ElementType type);

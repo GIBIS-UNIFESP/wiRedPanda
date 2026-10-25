@@ -5,27 +5,27 @@
 
 module display16 (
 /* ========= Inputs ========== */
-input tr_input_switch1,
-input tr_input_switch2,
+input input_switch1,
+input input_switch2,
 
 /* ========= Outputs ========== */
-output tr_16_segment_display3_g1_tr_middle_left_horizontal,
-output tr_16_segment_display3_f_tr_upper_left_vertical,
-output tr_16_segment_display3_e_tr_lower_left_vertical,
-output tr_16_segment_display3_d1_tr_bottom_left_horizontal,
-output tr_16_segment_display3_d2_tr_bottom_right_horizontal,
-output tr_16_segment_display3_a1_tr_top_left_horizontal,
-output tr_16_segment_display3_a2_tr_top_right_horizontal,
-output tr_16_segment_display3_b_tr_upper_right_vertical,
-output tr_16_segment_display3_dp_tr_dot,
-output tr_16_segment_display3_c_tr_lower_right_vertical,
-output tr_16_segment_display3_g2_tr_middle_right_horizontal,
-output tr_16_segment_display3_h_tr_upper_left_diagonal,
-output tr_16_segment_display3_j_tr_upper_center_vertical,
-output tr_16_segment_display3_k_tr_upper_right_diagonal,
-output tr_16_segment_display3_l_tr_lower_right_diagonal,
-output tr_16_segment_display3_m_tr_lower_center_vertical,
-output tr_16_segment_display3_n_tr_lower_left_diagonal
+output _16_segment_display3_g1_middle_left_horizontal,
+output _16_segment_display3_f_upper_left_vertical,
+output _16_segment_display3_e_lower_left_vertical,
+output _16_segment_display3_d1_bottom_left_horizontal,
+output _16_segment_display3_d2_bottom_right_horizontal,
+output _16_segment_display3_a1_top_left_horizontal,
+output _16_segment_display3_a2_top_right_horizontal,
+output _16_segment_display3_b_upper_right_vertical,
+output _16_segment_display3_dp_dot,
+output _16_segment_display3_c_lower_right_vertical,
+output _16_segment_display3_g2_middle_right_horizontal,
+output _16_segment_display3_h_upper_left_diagonal,
+output _16_segment_display3_j_upper_center_vertical,
+output _16_segment_display3_k_upper_right_diagonal,
+output _16_segment_display3_l_lower_right_diagonal,
+output _16_segment_display3_m_lower_center_vertical,
+output _16_segment_display3_n_lower_left_diagonal
 );
 /* ====== Aux. Variables ====== */
 
@@ -33,21 +33,21 @@ output tr_16_segment_display3_n_tr_lower_left_diagonal
 // Assigning aux variables. //
 
 // Writing output data. //
-assign tr_16_segment_display3_g1_tr_middle_left_horizontal = tr_input_switch1;
-assign tr_16_segment_display3_f_tr_upper_left_vertical = tr_input_switch2;
-assign tr_16_segment_display3_e_tr_lower_left_vertical = 1'b0;
-assign tr_16_segment_display3_d1_tr_bottom_left_horizontal = 1'b0;
-assign tr_16_segment_display3_d2_tr_bottom_right_horizontal = 1'b0;
-assign tr_16_segment_display3_a1_tr_top_left_horizontal = 1'b0;
-assign tr_16_segment_display3_a2_tr_top_right_horizontal = 1'b0;
-assign tr_16_segment_display3_b_tr_upper_right_vertical = 1'b0;
-assign tr_16_segment_display3_dp_tr_dot = 1'b0;
-assign tr_16_segment_display3_c_tr_lower_right_vertical = 1'b0;
-assign tr_16_segment_display3_g2_tr_middle_right_horizontal = 1'b0;
-assign tr_16_segment_display3_h_tr_upper_left_diagonal = 1'b0;
-assign tr_16_segment_display3_j_tr_upper_center_vertical = 1'b0;
-assign tr_16_segment_display3_k_tr_upper_right_diagonal = 1'b0;
-assign tr_16_segment_display3_l_tr_lower_right_diagonal = 1'b0;
-assign tr_16_segment_display3_m_tr_lower_center_vertical = 1'b0;
-assign tr_16_segment_display3_n_tr_lower_left_diagonal = 1'b0;
+assign _16_segment_display3_g1_middle_left_horizontal = input_switch1;
+assign _16_segment_display3_f_upper_left_vertical = input_switch2;
+assign _16_segment_display3_e_lower_left_vertical = 1'b0;
+assign _16_segment_display3_d1_bottom_left_horizontal = 1'b0;
+assign _16_segment_display3_d2_bottom_right_horizontal = 1'b0;
+assign _16_segment_display3_a1_top_left_horizontal = 1'b0;
+assign _16_segment_display3_a2_top_right_horizontal = 1'b0;
+assign _16_segment_display3_b_upper_right_vertical = 1'b0;
+assign _16_segment_display3_dp_dot = 1'b0;
+assign _16_segment_display3_c_lower_right_vertical = 1'b0;
+assign _16_segment_display3_g2_middle_right_horizontal = 1'b0;
+assign _16_segment_display3_h_upper_left_diagonal = 1'b0;
+assign _16_segment_display3_j_upper_center_vertical = 1'b0;
+assign _16_segment_display3_k_upper_right_diagonal = 1'b0;
+assign _16_segment_display3_l_lower_right_diagonal = 1'b0;
+assign _16_segment_display3_m_lower_center_vertical = 1'b0;
+assign _16_segment_display3_n_lower_left_diagonal = 1'b0;
 endmodule

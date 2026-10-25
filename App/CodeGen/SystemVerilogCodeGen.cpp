@@ -9,6 +9,7 @@
 
 #include "App/CodeGen/CodeGenUtils.h"
 #include "App/Core/Common.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/TruthTable.h"
@@ -257,7 +258,7 @@ void SystemVerilogCodeGen::collectICTypes(const QVector<GraphicElement *> &eleme
         // Build input port names from IC external port labels
         QSet<QString> usedNames;
         for (int i = 0; i < ic->inputSize(); ++i) {
-            QString portLabel = ic->inputPort(i)->name();
+            QString portLabel = ic->inputPort(i)->sourceName();
             QString portName = removeForbiddenChars(CodeGenUtils::stripAccents(portLabel));
             // Unreachable: buildPortLabels()/ICLoader::loadBoundaryPorts() falls
             // back to the boundary element's class name (e.g. "InputSwitch")
@@ -283,7 +284,7 @@ void SystemVerilogCodeGen::collectICTypes(const QVector<GraphicElement *> &eleme
 
         // Build output port names
         for (int i = 0; i < ic->outputSize(); ++i) {
-            QString portLabel = ic->outputPort(i)->name();
+            QString portLabel = ic->outputPort(i)->sourceName();
             QString portName = removeForbiddenChars(CodeGenUtils::stripAccents(portLabel));
             // Unreachable for the same reason as the input loop above.
             if (portName.isEmpty() || portName == "_unnamed") {
@@ -610,7 +611,7 @@ void SystemVerilogCodeGen::declareInputs()
         const auto type = elm->elementType();
 
         if ((type == ElementType::InputButton) || (type == ElementType::InputSwitch) || (type == ElementType::Clock) || (type == ElementType::InputRotary)) {
-            QString baseName = elm->objectName() + QString::number(counter);
+            QString baseName = ElementFactory::untranslatedName(type) + QString::number(counter);
             const QString label = elm->label();
 
             if (!label.isEmpty()) {
@@ -666,13 +667,13 @@ void SystemVerilogCodeGen::declareOutputs()
             QString label = elm->label();
             for (int i = 0; i < elm->inputs().size(); ++i) {
                 currentOutput++;
-                QString varName = elm->objectName() + QString::number(counter);
+                QString varName = ElementFactory::untranslatedName(elm->elementType()) + QString::number(counter);
                 if (!label.isEmpty()) {
                     varName = QString("%1_%2").arg(varName, label);
                 }
                 Port *port = elm->inputPort(i);
-                if (!port->name().isEmpty()) {
-                    varName = QString("%1_%2").arg(varName, port->name());
+                if (!port->sourceName().isEmpty()) {
+                    varName = QString("%1_%2").arg(varName, port->sourceName());
                 }
                 varName = CodeGenUtils::stripAccents(varName);
                 varName = removeForbiddenChars(varName);
@@ -749,7 +750,7 @@ void SystemVerilogCodeGen::declareAuxVariablesRec(const QVector<GraphicElement *
                 continue;
             }
 
-            QString varName = QString("aux_%1_%2").arg(removeForbiddenChars(CodeGenUtils::stripAccents(elm->objectName()))).arg(m_globalCounter++);
+            QString varName = QString("aux_%1_%2").arg(removeForbiddenChars(CodeGenUtils::stripAccents(ElementFactory::untranslatedName(elm->elementType())))).arg(m_globalCounter++);
             const auto outputs = elm->outputs();
 
             // Track which ports were already pre-mapped (e.g., IC module boundary ports)
@@ -794,8 +795,8 @@ void SystemVerilogCodeGen::declareAuxVariablesRec(const QVector<GraphicElement *
                     QString portName = varName;
                     portName.append(QString("_%1").arg(portCounter++));
 
-                    if (!port->name().isEmpty()) {
-                        portName.append(QString("_%1").arg(removeForbiddenChars(CodeGenUtils::stripAccents(port->name()))));
+                    if (!port->sourceName().isEmpty()) {
+                        portName.append(QString("_%1").arg(removeForbiddenChars(CodeGenUtils::stripAccents(port->sourceName()))));
                     }
 
                     m_varMap[port] = portName;
@@ -1300,7 +1301,7 @@ void SystemVerilogCodeGen::assignVariablesRec(const QVector<GraphicElement *> &e
                     } else if (signalName == "HIGH") {
                         signalName = "1"; // LCOV_EXCL_LINE
                     } else if (signalName.isEmpty()) {
-                        m_stream << "// WARNING: Input " << i << " of TruthTable '" << elm->objectName() << "' appears disconnected. Assuming LOW." << Qt::endl; // LCOV_EXCL_LINE
+                        m_stream << "// WARNING: Input " << i << " of TruthTable '" << ElementFactory::untranslatedName(elm->elementType()) << "' appears disconnected. Assuming LOW." << Qt::endl; // LCOV_EXCL_LINE
                         signalName = "0"; // LCOV_EXCL_LINE
                     }
                     inputSignalNames << signalName;
@@ -1329,7 +1330,7 @@ void SystemVerilogCodeGen::assignVariablesRec(const QVector<GraphicElement *> &e
                         if (out == 0) { // LCOV_EXCL_LINE
                             throw PANDACEPTION("Output variable not mapped for TruthTable: %1", elm->objectName()); // LCOV_EXCL_LINE
                         } // LCOV_EXCL_LINE
-                        m_stream << "// TruthTable '" << elm->objectName() << "' output " << out << " is disconnected — no code emitted." << Qt::endl; // LCOV_EXCL_LINE
+                        m_stream << "// TruthTable '" << ElementFactory::untranslatedName(elm->elementType()) << "' output " << out << " is disconnected — no code emitted." << Qt::endl; // LCOV_EXCL_LINE
                         continue; // LCOV_EXCL_LINE
                     }
 

@@ -163,9 +163,20 @@ QString Port::name() const
     return m_name;
 }
 
+QString Port::sourceName() const
+{
+    return m_sourceName;
+}
+
 void Port::setName(const QString &name)
 {
+    setName(name, name);
+}
+
+void Port::setName(const QString &name, const QString &sourceName)
+{
     m_name = name;
+    m_sourceName = sourceName;
     setToolTip(name);
 }
 

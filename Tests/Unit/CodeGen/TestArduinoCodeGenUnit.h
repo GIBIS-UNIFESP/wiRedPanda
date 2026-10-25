@@ -14,6 +14,7 @@ private slots:
 
     void testAndGateCircuit();
     void testSketchUnderTranslationMatchesGolden();
+    void testSketchDoesNotFollowTheInterfaceLanguage();
     void testMultiGateCircuit();
     void testMuxCircuit();
     void testDemuxCircuit();

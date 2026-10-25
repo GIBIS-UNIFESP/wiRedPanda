@@ -55,6 +55,15 @@ QString ElementFactory::translatedName(const ElementType type)
     return QCoreApplication::translate(meta.trContext, meta.translatedName);
 }
 
+QString ElementFactory::untranslatedName(const ElementType type)
+{
+    if (type == ElementType::Unknown) {
+        return QStringLiteral("Unknown");
+    }
+
+    return QString::fromUtf8(ElementMetadataRegistry::metadata(type).translatedName);
+}
+
 QString ElementFactory::description(const ElementType type)
 {
     switch (type) {

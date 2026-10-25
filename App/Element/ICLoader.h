@@ -60,5 +60,7 @@ private:
     /// only deletes still-owned items on throw (no double-free).
     static void processLoadedItems(IC &ic, QList<QGraphicsItem *> &items);
     static void loadBoundaryElement(IC &ic, GraphicElement *elm, bool isInput);
-    static void loadBoundaryPorts(IC &ic, bool isInput, const QVector<QString> &labels);
+    /// Sizes ic's pins on one side to its boundary ports and names each from \a labels, in the source language from
+    /// \a sourceLabels.
+    static void loadBoundaryPorts(IC &ic, bool isInput, const QVector<QString> &labels, const QVector<QString> &sourceLabels);
 };

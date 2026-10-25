@@ -21,6 +21,10 @@
 #include <QVariant>
 
 #include "App/Element/GraphicElement.h"
+#include "App/Element/GraphicElements/Display14.h"
+#include "App/Element/GraphicElements/Display16.h"
+#include "App/Element/GraphicElements/Display7.h"
+#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/Scene/GraphicsView.h"
@@ -71,7 +75,11 @@ QString compareWithGolden(const QString &goldenPath, const QString &actual)
     if (const QString error = readGolden(goldenPath, bytes); !error.isEmpty()) {
         return error;
     }
-    const QString expected = QString::fromUtf8(bytes);
+    return compareTexts(goldenPath, QString::fromUtf8(bytes), actual);
+}
+
+QString compareTexts(const QString &name, const QString &expected, const QString &actual)
+{
     if (actual == expected) {
         return {};
     }
@@ -84,7 +92,7 @@ QString compareWithGolden(const QString &goldenPath, const QString &actual)
     }
     const QString endOfFile("<end of file>");
     return QString("%1 differs at line %2:\n  expected: %3\n  actual:   %4")
-        .arg(goldenPath, QString::number(line + 1), expectedLines.value(line, endOfFile), actualLines.value(line, endOfFile));
+        .arg(name, QString::number(line + 1), expectedLines.value(line, endOfFile), actualLines.value(line, endOfFile));
 }
 
 QString compareWithGoldenBytes(const QString &goldenPath, const QByteArray &actual)
@@ -381,6 +389,37 @@ QList<ElementType> dumpedTypes()
 QString fullAdderIcFile()
 {
     return cpuComponentsDir() + "level2_full_adder_1bit.panda";
+}
+
+void addSegmentDisplaysAndDisplayIc(CircuitBuilder &builder, const QString &directory)
+{
+    const QString icFile = QDir(directory).filePath("display.panda");
+    {
+        WorkSpace definition;
+        CircuitBuilder inner(definition.scene());
+        auto *segment = new InputSwitch;
+        auto *shown = new Display7;
+        segment->setLabel("Segment");
+        shown->setLabel("Shown");
+        inner.add(segment, shown);
+        inner.connect(segment, 0, shown, 0);
+        definition.save(icFile);
+    }
+
+    auto *ic = new IC;
+    ic->loadFile(icFile, directory);
+    auto *display7 = new Display7;
+    auto *display14 = new Display14;
+    auto *display16 = new Display16;
+    auto *icSegment = new InputSwitch;
+    auto *segment7 = new InputSwitch;
+    auto *segment14 = new InputSwitch;
+    auto *segment16 = new InputSwitch;
+    builder.add(icSegment, segment7, segment14, segment16, ic, display7, display14, display16);
+    builder.connect(icSegment, 0, ic, 0);
+    builder.connect(segment7, 0, display7, 0);
+    builder.connect(segment14, 0, display14, 0);
+    builder.connect(segment16, 0, display16, 0);
 }
 
 } // namespace TestUtils

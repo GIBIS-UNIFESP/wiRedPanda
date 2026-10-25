@@ -219,6 +219,12 @@ void GraphicElement::setPortName(const QString &name)
     setObjectName(name);
 }
 
+void GraphicElement::setDescribedPortName(Port *port, const char *letter, const char *description) const
+{
+    const QString prefix = QString::fromUtf8(letter) + " (";
+    port->setName(prefix + metaObject()->tr(description, nullptr) + ')', prefix + QString::fromUtf8(description) + ')');
+}
+
 void GraphicElement::setRotation(const qreal angle)
 {
     m_orientation.setRotation(angle);

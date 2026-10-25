@@ -9,34 +9,34 @@
 
 #include <elapsedMillis.h>
 /* ========= Inputs ========== */
-const int tr_input_switch1 = A0;
-const int tr_input_switch2 = A1;
+const int input_switch1 = A0;
+const int input_switch2 = A1;
 
 /* ========= Outputs ========== */
-const int tr_7_segment_display1_g_tr_middle = A2;
-const int tr_7_segment_display1_f_tr_upper_left = A3;
-const int tr_7_segment_display1_e_tr_lower_left = A4;
-const int tr_7_segment_display1_d_tr_bottom = A5;
-const int tr_7_segment_display1_a_tr_top = 2;
-const int tr_7_segment_display1_b_tr_upper_right = 3;
-const int tr_7_segment_display1_dp_tr_dot = 4;
-const int tr_7_segment_display1_c_tr_lower_right = 5;
+const int _7_segment_display1_g_middle = A2;
+const int _7_segment_display1_f_upper_left = A3;
+const int _7_segment_display1_e_lower_left = A4;
+const int _7_segment_display1_d_bottom = A5;
+const int _7_segment_display1_a_top = 2;
+const int _7_segment_display1_b_upper_right = 3;
+const int _7_segment_display1_dp_dot = 4;
+const int _7_segment_display1_c_lower_right = 5;
 
 /* ====== Aux. Variables ====== */
-bool tr_input_switch1_val = LOW;
-bool tr_input_switch2_val = LOW;
+bool input_switch1_val = LOW;
+bool input_switch2_val = LOW;
 
 void setup() {
-    pinMode(tr_input_switch1, INPUT);
-    pinMode(tr_input_switch2, INPUT);
-    pinMode(tr_7_segment_display1_g_tr_middle, OUTPUT);
-    pinMode(tr_7_segment_display1_f_tr_upper_left, OUTPUT);
-    pinMode(tr_7_segment_display1_e_tr_lower_left, OUTPUT);
-    pinMode(tr_7_segment_display1_d_tr_bottom, OUTPUT);
-    pinMode(tr_7_segment_display1_a_tr_top, OUTPUT);
-    pinMode(tr_7_segment_display1_b_tr_upper_right, OUTPUT);
-    pinMode(tr_7_segment_display1_dp_tr_dot, OUTPUT);
-    pinMode(tr_7_segment_display1_c_tr_lower_right, OUTPUT);
+    pinMode(input_switch1, INPUT);
+    pinMode(input_switch2, INPUT);
+    pinMode(_7_segment_display1_g_middle, OUTPUT);
+    pinMode(_7_segment_display1_f_upper_left, OUTPUT);
+    pinMode(_7_segment_display1_e_lower_left, OUTPUT);
+    pinMode(_7_segment_display1_d_bottom, OUTPUT);
+    pinMode(_7_segment_display1_a_top, OUTPUT);
+    pinMode(_7_segment_display1_b_upper_right, OUTPUT);
+    pinMode(_7_segment_display1_dp_dot, OUTPUT);
+    pinMode(_7_segment_display1_c_lower_right, OUTPUT);
 }
 
 void computeLogic() {
@@ -45,20 +45,20 @@ void computeLogic() {
 
 void loop() {
     // Reading input data //.
-    tr_input_switch1_val = digitalRead(tr_input_switch1);
-    tr_input_switch2_val = digitalRead(tr_input_switch2);
+    input_switch1_val = digitalRead(input_switch1);
+    input_switch2_val = digitalRead(input_switch2);
 
     // Updating clocks. //
 
     computeLogic();
 
     // Writing output data. //
-    digitalWrite(tr_7_segment_display1_g_tr_middle, tr_input_switch1_val);
-    digitalWrite(tr_7_segment_display1_f_tr_upper_left, tr_input_switch2_val);
-    digitalWrite(tr_7_segment_display1_e_tr_lower_left, LOW);
-    digitalWrite(tr_7_segment_display1_d_tr_bottom, LOW);
-    digitalWrite(tr_7_segment_display1_a_tr_top, LOW);
-    digitalWrite(tr_7_segment_display1_b_tr_upper_right, LOW);
-    digitalWrite(tr_7_segment_display1_dp_tr_dot, LOW);
-    digitalWrite(tr_7_segment_display1_c_tr_lower_right, LOW);
+    digitalWrite(_7_segment_display1_g_middle, input_switch1_val);
+    digitalWrite(_7_segment_display1_f_upper_left, input_switch2_val);
+    digitalWrite(_7_segment_display1_e_lower_left, LOW);
+    digitalWrite(_7_segment_display1_d_bottom, LOW);
+    digitalWrite(_7_segment_display1_a_top, LOW);
+    digitalWrite(_7_segment_display1_b_upper_right, LOW);
+    digitalWrite(_7_segment_display1_dp_dot, LOW);
+    digitalWrite(_7_segment_display1_c_lower_right, LOW);
 }

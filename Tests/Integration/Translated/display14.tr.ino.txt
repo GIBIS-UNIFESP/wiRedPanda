@@ -9,48 +9,48 @@
 
 #include <elapsedMillis.h>
 /* ========= Inputs ========== */
-const int tr_input_switch1 = A0;
-const int tr_input_switch2 = A1;
+const int input_switch1 = A0;
+const int input_switch2 = A1;
 
 /* ========= Outputs ========== */
-const int tr_14_segment_display1_g1_tr_middle_left_horizontal = A2;
-const int tr_14_segment_display1_f_tr_upper_left_vertical = A3;
-const int tr_14_segment_display1_e_tr_lower_left_vertical = A4;
-const int tr_14_segment_display1_d_tr_bottom = A5;
-const int tr_14_segment_display1_a_tr_top = 2;
-const int tr_14_segment_display1_b_tr_upper_right_vertical = 3;
-const int tr_14_segment_display1_dp_tr_dot = 4;
-const int tr_14_segment_display1_c_tr_lower_right_vertical = 5;
-const int tr_14_segment_display1_g2_tr_middle_right_horizontal = 6;
-const int tr_14_segment_display1_h_tr_upper_left_diagonal = 7;
-const int tr_14_segment_display1_j_tr_upper_center_vertical = 8;
-const int tr_14_segment_display1_k_tr_upper_right_diagonal = 9;
-const int tr_14_segment_display1_l_tr_lower_right_diagonal = 10;
-const int tr_14_segment_display1_m_tr_lower_center_vertical = 11;
-const int tr_14_segment_display1_n_tr_lower_left_diagonal = 12;
+const int _14_segment_display1_g1_middle_left_horizontal = A2;
+const int _14_segment_display1_f_upper_left_vertical = A3;
+const int _14_segment_display1_e_lower_left_vertical = A4;
+const int _14_segment_display1_d_bottom = A5;
+const int _14_segment_display1_a_top = 2;
+const int _14_segment_display1_b_upper_right_vertical = 3;
+const int _14_segment_display1_dp_dot = 4;
+const int _14_segment_display1_c_lower_right_vertical = 5;
+const int _14_segment_display1_g2_middle_right_horizontal = 6;
+const int _14_segment_display1_h_upper_left_diagonal = 7;
+const int _14_segment_display1_j_upper_center_vertical = 8;
+const int _14_segment_display1_k_upper_right_diagonal = 9;
+const int _14_segment_display1_l_lower_right_diagonal = 10;
+const int _14_segment_display1_m_lower_center_vertical = 11;
+const int _14_segment_display1_n_lower_left_diagonal = 12;
 
 /* ====== Aux. Variables ====== */
-bool tr_input_switch1_val = LOW;
-bool tr_input_switch2_val = LOW;
+bool input_switch1_val = LOW;
+bool input_switch2_val = LOW;
 
 void setup() {
-    pinMode(tr_input_switch1, INPUT);
-    pinMode(tr_input_switch2, INPUT);
-    pinMode(tr_14_segment_display1_g1_tr_middle_left_horizontal, OUTPUT);
-    pinMode(tr_14_segment_display1_f_tr_upper_left_vertical, OUTPUT);
-    pinMode(tr_14_segment_display1_e_tr_lower_left_vertical, OUTPUT);
-    pinMode(tr_14_segment_display1_d_tr_bottom, OUTPUT);
-    pinMode(tr_14_segment_display1_a_tr_top, OUTPUT);
-    pinMode(tr_14_segment_display1_b_tr_upper_right_vertical, OUTPUT);
-    pinMode(tr_14_segment_display1_dp_tr_dot, OUTPUT);
-    pinMode(tr_14_segment_display1_c_tr_lower_right_vertical, OUTPUT);
-    pinMode(tr_14_segment_display1_g2_tr_middle_right_horizontal, OUTPUT);
-    pinMode(tr_14_segment_display1_h_tr_upper_left_diagonal, OUTPUT);
-    pinMode(tr_14_segment_display1_j_tr_upper_center_vertical, OUTPUT);
-    pinMode(tr_14_segment_display1_k_tr_upper_right_diagonal, OUTPUT);
-    pinMode(tr_14_segment_display1_l_tr_lower_right_diagonal, OUTPUT);
-    pinMode(tr_14_segment_display1_m_tr_lower_center_vertical, OUTPUT);
-    pinMode(tr_14_segment_display1_n_tr_lower_left_diagonal, OUTPUT);
+    pinMode(input_switch1, INPUT);
+    pinMode(input_switch2, INPUT);
+    pinMode(_14_segment_display1_g1_middle_left_horizontal, OUTPUT);
+    pinMode(_14_segment_display1_f_upper_left_vertical, OUTPUT);
+    pinMode(_14_segment_display1_e_lower_left_vertical, OUTPUT);
+    pinMode(_14_segment_display1_d_bottom, OUTPUT);
+    pinMode(_14_segment_display1_a_top, OUTPUT);
+    pinMode(_14_segment_display1_b_upper_right_vertical, OUTPUT);
+    pinMode(_14_segment_display1_dp_dot, OUTPUT);
+    pinMode(_14_segment_display1_c_lower_right_vertical, OUTPUT);
+    pinMode(_14_segment_display1_g2_middle_right_horizontal, OUTPUT);
+    pinMode(_14_segment_display1_h_upper_left_diagonal, OUTPUT);
+    pinMode(_14_segment_display1_j_upper_center_vertical, OUTPUT);
+    pinMode(_14_segment_display1_k_upper_right_diagonal, OUTPUT);
+    pinMode(_14_segment_display1_l_lower_right_diagonal, OUTPUT);
+    pinMode(_14_segment_display1_m_lower_center_vertical, OUTPUT);
+    pinMode(_14_segment_display1_n_lower_left_diagonal, OUTPUT);
 }
 
 void computeLogic() {
@@ -59,27 +59,27 @@ void computeLogic() {
 
 void loop() {
     // Reading input data //.
-    tr_input_switch1_val = digitalRead(tr_input_switch1);
-    tr_input_switch2_val = digitalRead(tr_input_switch2);
+    input_switch1_val = digitalRead(input_switch1);
+    input_switch2_val = digitalRead(input_switch2);
 
     // Updating clocks. //
 
     computeLogic();
 
     // Writing output data. //
-    digitalWrite(tr_14_segment_display1_g1_tr_middle_left_horizontal, tr_input_switch1_val);
-    digitalWrite(tr_14_segment_display1_f_tr_upper_left_vertical, tr_input_switch2_val);
-    digitalWrite(tr_14_segment_display1_e_tr_lower_left_vertical, LOW);
-    digitalWrite(tr_14_segment_display1_d_tr_bottom, LOW);
-    digitalWrite(tr_14_segment_display1_a_tr_top, LOW);
-    digitalWrite(tr_14_segment_display1_b_tr_upper_right_vertical, LOW);
-    digitalWrite(tr_14_segment_display1_dp_tr_dot, LOW);
-    digitalWrite(tr_14_segment_display1_c_tr_lower_right_vertical, LOW);
-    digitalWrite(tr_14_segment_display1_g2_tr_middle_right_horizontal, LOW);
-    digitalWrite(tr_14_segment_display1_h_tr_upper_left_diagonal, LOW);
-    digitalWrite(tr_14_segment_display1_j_tr_upper_center_vertical, LOW);
-    digitalWrite(tr_14_segment_display1_k_tr_upper_right_diagonal, LOW);
-    digitalWrite(tr_14_segment_display1_l_tr_lower_right_diagonal, LOW);
-    digitalWrite(tr_14_segment_display1_m_tr_lower_center_vertical, LOW);
-    digitalWrite(tr_14_segment_display1_n_tr_lower_left_diagonal, LOW);
+    digitalWrite(_14_segment_display1_g1_middle_left_horizontal, input_switch1_val);
+    digitalWrite(_14_segment_display1_f_upper_left_vertical, input_switch2_val);
+    digitalWrite(_14_segment_display1_e_lower_left_vertical, LOW);
+    digitalWrite(_14_segment_display1_d_bottom, LOW);
+    digitalWrite(_14_segment_display1_a_top, LOW);
+    digitalWrite(_14_segment_display1_b_upper_right_vertical, LOW);
+    digitalWrite(_14_segment_display1_dp_dot, LOW);
+    digitalWrite(_14_segment_display1_c_lower_right_vertical, LOW);
+    digitalWrite(_14_segment_display1_g2_middle_right_horizontal, LOW);
+    digitalWrite(_14_segment_display1_h_upper_left_diagonal, LOW);
+    digitalWrite(_14_segment_display1_j_upper_center_vertical, LOW);
+    digitalWrite(_14_segment_display1_k_upper_right_diagonal, LOW);
+    digitalWrite(_14_segment_display1_l_lower_right_diagonal, LOW);
+    digitalWrite(_14_segment_display1_m_lower_center_vertical, LOW);
+    digitalWrite(_14_segment_display1_n_lower_left_diagonal, LOW);
 }
