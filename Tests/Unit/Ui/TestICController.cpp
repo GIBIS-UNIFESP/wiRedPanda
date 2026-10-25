@@ -14,6 +14,7 @@
 #include <QPushButton>
 #include <QSignalSpy>
 #include <QTemporaryDir>
+#include <QUndoStack>
 
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/IC.h"
@@ -295,11 +296,13 @@ void TestICController::testExtractSelectedICNoOpWhenDialogCancelled()
 
     ScopedFileDialogStub dialogStub;
     dialogStub.stub.saveResult.fileName = QString();
+    const int steps = f.tab.scene()->undoStack()->count();
 
     controller.extractSelectedIC();
 
     QCOMPARE(dialogStub.stub.saveCallCount, 1);
     QCOMPARE(f.host.statusMessages.size(), 0);
+    QCOMPARE(f.tab.scene()->undoStack()->count(), steps); // no empty step
 }
 
 void TestICController::testExtractSelectedICSucceeds()
@@ -319,6 +322,113 @@ void TestICController::testExtractSelectedICSucceeds()
 
     QVERIFY2(QFile::exists(pathNoExt + ".panda"), "the .panda extension must have been appended");
     QCOMPARE(f.host.statusMessages.size(), 1);
+}
+
+void TestICController::testEmbedSelectedICEmbedsEveryFileAsOneStep()
+{
+    // A gate, with the lowest id, and three ICs, two from one file and one from another, all selected: both files are
+    // embedded and every IC with them, as one undo step, which one undo takes back.
+    ICControllerFixture f;
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    saveProject(f.tab, f.host, dir);
+    for (const QString &name : {QStringLiteral("a.panda"), QStringLiteral("b.panda")}) {
+        QFile file(dir.filePath(name));
+        QVERIFY(file.open(QIODevice::WriteOnly));
+        file.write(minimalPandaBytes());
+    }
+
+    auto *gate = new And();
+    f.tab.scene()->addItem(gate);
+    gate->setSelected(true);
+    const QList<IC *> ics{selectFileBackedIC(f.tab, QStringLiteral("a.panda")), selectFileBackedIC(f.tab, QStringLiteral("b.panda")),
+                          selectFileBackedIC(f.tab, QStringLiteral("a.panda"))};
+    auto *stack = f.tab.scene()->undoStack();
+    const int steps = stack->count();
+    ICController controller(f.host);
+
+    controller.embedSelectedIC();
+
+    auto *registry = f.tab.scene()->icRegistry();
+    QVERIFY(registry->hasBlob(QStringLiteral("a")));
+    QVERIFY(registry->hasBlob(QStringLiteral("b")));
+    for (const auto *ic : ics) {
+        QVERIFY(ic->isEmbedded());
+    }
+    QCOMPARE(stack->count(), steps + 1);
+
+    stack->undo();
+    QVERIFY(!registry->hasBlob(QStringLiteral("a")));
+    QVERIFY(!registry->hasBlob(QStringLiteral("b")));
+    for (const auto *ic : ics) {
+        QVERIFY(!ic->isEmbedded());
+    }
+}
+
+void TestICController::testExtractSelectedICExtractsEveryBlobAsOneStep()
+{
+    // A gate, with the lowest id, and three embedded ICs, two of one blob and one of another, all selected: each blob
+    // is extracted to the file its own dialog names and every IC follows it, as one undo step, which one undo takes
+    // back.
+    ICControllerFixture f;
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    saveProject(f.tab, f.host, dir);
+
+    auto *gate = new And();
+    f.tab.scene()->addItem(gate);
+    gate->setSelected(true);
+    const QList<IC *> ics{selectEmbeddedIC(f.tab, QStringLiteral("a"), minimalPandaBytes()),
+                          selectEmbeddedIC(f.tab, QStringLiteral("b"), minimalPandaBytes()),
+                          selectEmbeddedIC(f.tab, QStringLiteral("a"), minimalPandaBytes())};
+    auto *stack = f.tab.scene()->undoStack();
+    const int steps = stack->count();
+    ICController controller(f.host);
+
+    ScopedFileDialogStub dialogStub;
+    dialogStub.stub.saveResults = {{dir.filePath("a_out"), {}}, {dir.filePath("b_out"), {}}};
+
+    controller.extractSelectedIC();
+
+    QCOMPARE(dialogStub.stub.saveCallCount, 2);
+    QVERIFY(QFile::exists(dir.filePath("a_out.panda")));
+    QVERIFY(QFile::exists(dir.filePath("b_out.panda")));
+    auto *registry = f.tab.scene()->icRegistry();
+    QVERIFY(!registry->hasBlob(QStringLiteral("a")));
+    QVERIFY(!registry->hasBlob(QStringLiteral("b")));
+    for (const auto *ic : ics) {
+        QVERIFY(!ic->isEmbedded());
+    }
+    QCOMPARE(stack->count(), steps + 1);
+
+    stack->undo();
+    QVERIFY(registry->hasBlob(QStringLiteral("a")));
+    QVERIFY(registry->hasBlob(QStringLiteral("b")));
+    QCOMPARE(ics.at(0)->blobName(), QStringLiteral("a"));
+    QCOMPARE(ics.at(1)->blobName(), QStringLiteral("b"));
+    QCOMPARE(ics.at(2)->blobName(), QStringLiteral("a"));
+}
+
+void TestICController::testEmbedAndExtractWithOnlyAGateSelectedChangeNothing()
+{
+    ICControllerFixture f;
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    saveProject(f.tab, f.host, dir);
+    auto *gate = new And();
+    f.tab.scene()->addItem(gate);
+    gate->setSelected(true);
+    auto *stack = f.tab.scene()->undoStack();
+    const int steps = stack->count();
+    ICController controller(f.host);
+    ScopedFileDialogStub dialogStub;
+
+    controller.embedSelectedIC();
+    controller.extractSelectedIC();
+
+    QCOMPARE(stack->count(), steps);
+    QCOMPARE(dialogStub.stub.saveCallCount, 0);
+    QCOMPARE(f.host.statusMessages.size(), 0);
 }
 
 void TestICController::testEmbedICByFileNoOpWithNoCurrentTab()
@@ -605,6 +715,34 @@ void TestICController::testMakeSelfContainedSucceeds()
     QVERIFY2(f.host.statusMessages.constFirst().message.contains(QStringLiteral("self-contained")),
               "every file-based IC embedded successfully must report full completion");
     QVERIFY(f.tab.scene()->icRegistry()->hasBlob(QStringLiteral("dep")));
+}
+
+void TestICController::testMakeSelfContainedIsOneUndoStep()
+{
+    // Two files, each embedded, as one undo step, which one undo takes back.
+    ICControllerFixture f;
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    saveProject(f.tab, f.host, dir);
+    for (const QString &name : {QStringLiteral("dep1.panda"), QStringLiteral("dep2.panda")}) {
+        QFile file(dir.filePath(name));
+        QVERIFY(file.open(QIODevice::WriteOnly));
+        file.write(minimalPandaBytes());
+    }
+    const QList<IC *> ics{selectFileBackedIC(f.tab, QStringLiteral("dep1.panda")), selectFileBackedIC(f.tab, QStringLiteral("dep2.panda"))};
+    auto *stack = f.tab.scene()->undoStack();
+    const int steps = stack->count();
+    ICController controller(f.host);
+
+    controller.makeSelfContained();
+
+    QCOMPARE(stack->count(), steps + 1);
+    stack->undo();
+    for (const auto *ic : ics) {
+        QVERIFY(!ic->isEmbedded());
+    }
+    QVERIFY(!f.tab.scene()->icRegistry()->hasBlob(QStringLiteral("dep1")));
+    QVERIFY(!f.tab.scene()->icRegistry()->hasBlob(QStringLiteral("dep2")));
 }
 
 void TestICController::testAddEmbeddedICFromFileNoOpWithNoCurrentTab()

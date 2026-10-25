@@ -297,16 +297,19 @@ ICController	An embedded IC named "%1" already exists.\nSuggested name:
 ICController	Could not read IC file: %1
 ICController	Could not read file: %1
 ICController	Drag here to remove.
+ICController	Embed sub-circuit
 ICController	Embedded %1 IC(s). Circuit is now self-contained.
 ICController	Embedded %1 IC(s); some file-based ICs remain.
 ICController	Error
 ICController	Error moving file to trash: %1
 ICController	Extract IC to file...
+ICController	Extract to file
 ICController	File name conflict
 ICController	IC embedded successfully.
 ICController	IC extracted to %1
 ICController	Info
 ICController	Keep Existing
+ICController	Make file self-contained
 ICController	Name Collision
 ICController	No file-based ICs to embed.
 ICController	Open File

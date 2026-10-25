@@ -3,6 +3,9 @@
 
 #include "App/UI/ICController.h"
 
+#include <memory>
+#include <utility>
+
 #include <QByteArray>
 #include <QDir>
 #include <QFile>
@@ -11,6 +14,7 @@
 #include <QLineEdit>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QUndoStack>
 
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
@@ -34,23 +38,38 @@ ICController::ICController(MainWindowHost &host, QObject *parent)
 {
 }
 
-IC *ICController::selectedIC() const
+QList<IC *> ICController::selectedICs() const
 {
     auto *tab = m_host.currentTab();
     if (!tab) {
-        return nullptr;
+        return {};
     }
 
-    const auto selected = tab->scene()->selectedElements();
-    if (selected.isEmpty()) {
-        return nullptr;
+    QList<IC *> ics;
+    for (auto *element : tab->scene()->selectedElements()) {
+        if (element->elementType() == ElementType::IC) {
+            ics << static_cast<IC *>(element);
+        }
     }
+    return ics;
+}
 
-    if (selected.first()->elementType() != ElementType::IC) {
-        return nullptr;
+void ICController::runAsOneStep(Scene *scene, const QString &text, const std::function<void(QUndoCommand *)> &edits)
+{
+    auto group = std::make_unique<QUndoCommand>(text);
+    const auto pushIfAny = [&] {
+        if (group->childCount() > 0) {
+            scene->undoStack()->push(group.release());
+        }
+    };
+    try {
+        edits(group.get());
+    } catch (...) {
+        // The edits made before the throw are applied, so their step is pushed before the error goes on
+        pushIfAny();
+        throw;
     }
-
-    return static_cast<IC *>(selected.first());
+    pushIfAny();
 }
 
 void ICController::addICFromFile()
@@ -201,8 +220,13 @@ void ICController::embedSelectedIC()
 {
     Application::guardedSlot(this, [this] {
         sentryBreadcrumb("ic", QStringLiteral("Embed IC"));
-        auto *firstIC = selectedIC();
-        if (!firstIC || firstIC->file().isEmpty()) {
+        QStringList files;
+        for (auto *ic : selectedICs()) {
+            if (!ic->isEmbedded() && !ic->file().isEmpty() && !files.contains(ic->file())) {
+                files << ic->file();
+            }
+        }
+        if (files.isEmpty()) {
             return;
         }
 
@@ -213,22 +237,44 @@ void ICController::embedSelectedIC()
         }
         const QString contextDir = scene->contextDir();
 
-        QString blobName = resolveUniqueBlobName(QFileInfo(firstIC->file()).baseName(), scene);
-        if (blobName.isEmpty()) {
-            return;
+        // A cancelled name or an unreadable file stops the run; the files embedded before it stay one step
+        int embedded = 0;
+        bool completed = false;
+        const auto refreshPalette = [&] {
+            if (embedded > 0) {
+                m_host.palette()->updateEmbeddedICList(scene);
+            }
+        };
+        const auto embed = [&](QUndoCommand *group) {
+            for (const auto &icFile : std::as_const(files)) {
+                QString blobName = resolveUniqueBlobName(QFileInfo(icFile).baseName(), scene);
+                if (blobName.isEmpty()) {
+                    return;
+                }
+
+                QFile file(QDir(contextDir).absoluteFilePath(icFile));
+                if (!file.open(QIODevice::ReadOnly)) {
+                    QMessageBox::warning(m_host.widget(), tr("Error"), tr("Could not read IC file: %1").arg(file.errorString()));
+                    return;
+                }
+                QByteArray fileBytes = file.readAll();
+                file.close();
+
+                embedded += scene->icRegistry()->embedICsByFile(icFile, fileBytes, blobName, group);
+            }
+            completed = true;
+        };
+        try {
+            runAsOneStep(scene, tr("Embed sub-circuit"), embed);
+        } catch (...) {
+            refreshPalette();
+            throw;
         }
 
-        QFile file(QDir(contextDir).absoluteFilePath(firstIC->file()));
-        if (!file.open(QIODevice::ReadOnly)) {
-            QMessageBox::warning(m_host.widget(), tr("Error"), tr("Could not read IC file: %1").arg(file.errorString()));
-            return;
+        refreshPalette();
+        if (completed) {
+            m_host.showStatusMessage(tr("IC embedded successfully."), 4000);
         }
-        QByteArray fileBytes = file.readAll();
-        file.close();
-
-        scene->icRegistry()->embedICsByFile(firstIC->file(), fileBytes, blobName);
-        m_host.palette()->updateEmbeddedICList(scene);
-        m_host.showStatusMessage(tr("IC embedded successfully."), 4000);
     });
 }
 
@@ -236,33 +282,58 @@ void ICController::extractSelectedIC()
 {
     Application::guardedSlot(this, [this] {
         sentryBreadcrumb("ic", QStringLiteral("Extract IC"));
-        auto *firstIC = selectedIC();
-        if (!firstIC || !firstIC->isEmbedded()) {
+        QStringList blobNames;
+        for (auto *ic : selectedICs()) {
+            if (ic->isEmbedded() && !blobNames.contains(ic->blobName())) {
+                blobNames << ic->blobName();
+            }
+        }
+        if (blobNames.isEmpty()) {
             return;
         }
 
         auto *scene = m_host.currentTab()->scene();
-        const QString blobName = firstIC->blobName();
         if (!ensureProjectSaved(scene)) {
             return;
         }
         const QString contextDir = scene->contextDir();
 
-        const QString suggestion = QDir(contextDir).absoluteFilePath(blobName + ".panda");
-        QString fileName = FileDialogs::provider()->getSaveFileName(m_host.widget(), tr("Extract IC to file..."), suggestion, tr("Panda files") + " (*.panda)").fileName;
+        // A cancelled save dialog stops the run; the blobs extracted before it stay one step
+        QStringList written;
+        const auto refreshPalette = [&] {
+            if (!written.isEmpty()) {
+                m_host.palette()->updateICList(m_host.icListFile());
+                m_host.palette()->updateEmbeddedICList(scene);
+            }
+        };
+        const auto extract = [&](QUndoCommand *group) {
+            for (const auto &blobName : std::as_const(blobNames)) {
+                const QString suggestion = QDir(contextDir).absoluteFilePath(blobName + ".panda");
+                QString fileName = FileDialogs::provider()->getSaveFileName(m_host.widget(), tr("Extract IC to file..."), suggestion, tr("Panda files") + " (*.panda)").fileName;
 
-        if (fileName.isEmpty()) {
-            return;
+                if (fileName.isEmpty()) {
+                    return;
+                }
+
+                if (!fileName.endsWith(".panda")) {
+                    fileName.append(".panda");
+                }
+
+                scene->icRegistry()->extractToFile(blobName, fileName, group);
+                written << fileName;
+            }
+        };
+        try {
+            runAsOneStep(scene, tr("Extract to file"), extract);
+        } catch (...) {
+            refreshPalette();
+            throw;
         }
 
-        if (!fileName.endsWith(".panda")) {
-            fileName.append(".panda");
+        refreshPalette();
+        if (!written.isEmpty()) {
+            m_host.showStatusMessage(tr("IC extracted to %1").arg(written.join(", ")), 4000);
         }
-
-        scene->icRegistry()->extractToFile(blobName, fileName);
-        m_host.palette()->updateICList(m_host.icListFile());
-        m_host.palette()->updateEmbeddedICList(scene);
-        m_host.showStatusMessage(tr("IC extracted to %1").arg(fileName), 4000);
     });
 }
 
@@ -376,27 +447,34 @@ void ICController::makeSelfContained()
         }
 
         int totalEmbedded = 0;
-        bool completed = true;
+        bool completed = false;
         auto *reg = scene->icRegistry();
 
-        for (const QString &icFile : std::as_const(uniqueFiles)) {
-            const QString fullPath = QDir(contextDir).absoluteFilePath(icFile);
-            QFile file(fullPath);
-            if (!file.open(QIODevice::ReadOnly)) {
-                QMessageBox::warning(m_host.widget(), tr("Error"), tr("Could not read IC file: %1").arg(file.errorString()));
-                completed = false;
-                break;
-            }
-            QByteArray fileBytes = file.readAll();
-            file.close();
+        const auto embed = [&](QUndoCommand *group) {
+            for (const QString &icFile : std::as_const(uniqueFiles)) {
+                const QString fullPath = QDir(contextDir).absoluteFilePath(icFile);
+                QFile file(fullPath);
+                if (!file.open(QIODevice::ReadOnly)) {
+                    QMessageBox::warning(m_host.widget(), tr("Error"), tr("Could not read IC file: %1").arg(file.errorString()));
+                    return;
+                }
+                QByteArray fileBytes = file.readAll();
+                file.close();
 
-            QString blobName = resolveUniqueBlobName(QFileInfo(icFile).baseName(), scene);
-            if (blobName.isEmpty()) {
-                completed = false;
-                break; // User cancelled
-            }
+                QString blobName = resolveUniqueBlobName(QFileInfo(icFile).baseName(), scene);
+                if (blobName.isEmpty()) {
+                    return; // User cancelled
+                }
 
-            totalEmbedded += reg->embedICsByFile(fullPath, fileBytes, blobName);
+                totalEmbedded += reg->embedICsByFile(fullPath, fileBytes, blobName, group);
+            }
+            completed = true;
+        };
+        try {
+            runAsOneStep(scene, tr("Make file self-contained"), embed);
+        } catch (...) {
+            m_host.palette()->updateEmbeddedICList(scene);
+            throw;
         }
 
         m_host.palette()->updateEmbeddedICList(scene);

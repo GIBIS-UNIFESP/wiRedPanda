@@ -34,6 +34,9 @@ private slots:
     void testExtractSelectedICNoOpWhenProjectNotSavedAndDeclined();
     void testExtractSelectedICNoOpWhenDialogCancelled();
     void testExtractSelectedICSucceeds();
+    void testEmbedSelectedICEmbedsEveryFileAsOneStep();
+    void testExtractSelectedICExtractsEveryBlobAsOneStep();
+    void testEmbedAndExtractWithOnlyAGateSelectedChangeNothing();
 
     void testEmbedICByFileNoOpWithNoCurrentTab();
     void testEmbedICByFileNoOpWhenProjectNotSavedAndDeclined();
@@ -52,6 +55,7 @@ private slots:
     void testMakeSelfContainedWarnsWhenFileMissing();
     void testMakeSelfContainedReportsPartialCompletionOnCancelledCollision();
     void testMakeSelfContainedSucceeds();
+    void testMakeSelfContainedIsOneUndoStep();
 
     void testAddICFromFileNoOpWhenSaveRequestedButStillUnsaved();
 

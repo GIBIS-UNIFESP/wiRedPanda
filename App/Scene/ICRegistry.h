@@ -16,6 +16,7 @@
 
 class GraphicElement;
 class IC;
+class QUndoCommand;
 class Scene;
 
 /**
@@ -83,12 +84,14 @@ public:
     /// Creates a new embedded IC from file bytes, registers the blob, and pushes an undo command.
     IC *createEmbeddedIC(const QString &blobName, const QByteArray &fileBytes, const QString &contextDir);
 
-    /// Converts all file-backed IC elements referencing \a fileName to embedded ICs using \a blobName.
+    /// Converts all file-backed IC elements referencing \a fileName to embedded ICs using \a blobName. Its undo command
+    /// is pushed, or made a child of \a parent, which the caller pushes as one step with its other children.
     int embedICsByFile(const QString &fileName, const QByteArray &fileBytes,
-                       const QString &blobName);
+                       const QString &blobName, QUndoCommand *parent = nullptr);
 
-    /// Writes the blob to disk and converts all embedded ICs with \a blobName to file-backed.
-    int extractToFile(const QString &blobName, const QString &filePath);
+    /// Writes the blob to disk and converts all embedded ICs with \a blobName to file-backed. Its undo command is
+    /// pushed, or made a child of \a parent, which the caller pushes as one step with its other children.
+    int extractToFile(const QString &blobName, const QString &filePath, QUndoCommand *parent = nullptr);
 
     // --- Serialization helpers ---
 
