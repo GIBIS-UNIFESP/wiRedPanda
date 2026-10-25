@@ -9,7 +9,9 @@
 #include <QFileInfo>
 #include <QProcess>
 #include <QRandomGenerator>
+#include <QRegularExpression>
 #include <QStandardPaths>
+#include <QTemporaryDir>
 #include <QTemporaryFile>
 #include <QTextStream>
 
@@ -18,6 +20,7 @@
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
+#include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
@@ -1201,6 +1204,123 @@ void TestSystemVerilogExport::testSystemVerilogExportRegisterFile32x16()
 void TestSystemVerilogExport::testSystemVerilogExportSingleCycleCpu8Bit()
 {
     testSystemVerilogExportHelper("level9_single_cycle_cpu_8bit.panda");
+}
+
+void TestSystemVerilogExport::testTruthTablesCompileAndSimulate()
+{
+#ifndef Q_OS_LINUX
+    QSKIP("SystemVerilog export tests require iverilog (Linux only)");
+#endif
+    if (QStandardPaths::findExecutable("iverilog").isEmpty()
+        || QStandardPaths::findExecutable("vvp").isEmpty()) {
+        QSKIP("iverilog/vvp not available");
+    }
+
+    // Two truth tables on the same two inputs: one AND, and one with two outputs, OR and XOR.
+    std::unique_ptr<WorkSpace> workspace = TestUtils::createWorkspace();
+    auto *scene = workspace->scene();
+    CircuitBuilder builder(scene);
+    auto *swA = new InputSwitch();
+    auto *swB = new InputSwitch();
+    auto *andTable = new TruthTable();
+    auto *orXorTable = new TruthTable();
+    orXorTable->setOutputSize(2);
+    auto *ledAnd = new Led();
+    auto *ledOr = new Led();
+    auto *ledXor = new Led();
+    builder.add(swA, swB, andTable, orXorTable, ledAnd, ledOr, ledXor);
+    swA->setLabel("A");
+    swB->setLabel("B");
+    ledAnd->setLabel("ANDOUT");
+    ledOr->setLabel("OROUT");
+    ledXor->setLabel("XOROUT");
+    for (auto *table : {andTable, orXorTable}) {
+        builder.connect(swA, 0, table, 0);
+        builder.connect(swB, 0, table, 1);
+    }
+    builder.connect(andTable, 0, ledAnd, 0);
+    builder.connect(orXorTable, 0, ledOr, 0);
+    builder.connect(orXorTable, 1, ledXor, 0);
+    // Row r is the inputs read as a number; output k's rows start at bit 256 * k.
+    andTable->key().setBit(3, true);
+    for (const int row : {1, 2, 3}) {
+        orXorTable->key().setBit(row, true);
+    }
+    for (const int row : {1, 2}) {
+        orXorTable->key().setBit(256 + row, true);
+    }
+
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString svPath = dir.filePath("truth_tables.sv");
+    SystemVerilogCodeGen generator(svPath, scene->elements());
+    generator.generate();
+    QFile svFile(svPath);
+    QVERIFY(svFile.open(QIODevice::ReadOnly | QIODevice::Text));
+    const QString sv = QString::fromUtf8(svFile.readAll());
+    svFile.close();
+
+    // Resolve the generated port names from the module header by the labels they carry.
+    const auto portNamed = [&sv](const QString &direction, const QString &label) {
+        const QRegularExpression re(QString(R"(%1\s+(\w*%2\w*))").arg(direction, label),
+                                    QRegularExpression::CaseInsensitiveOption);
+        return re.match(sv).captured(1);
+    };
+    const QString a = portNamed("input", "A");
+    const QString b = portNamed("input", "B");
+    const QString andOut = portNamed("output", "ANDOUT");
+    const QString orOut = portNamed("output", "OROUT");
+    const QString xorOut = portNamed("output", "XOROUT");
+    QVERIFY2(!a.isEmpty() && !b.isEmpty() && !andOut.isEmpty() && !orOut.isEmpty() && !xorOut.isEmpty(),
+             qPrintable(QString("unexpected module interface:\n%1").arg(sv)));
+
+    QString tb;
+    QTextStream ts(&tb);
+    ts << "`timescale 1ns/1ps\n"
+       << "module tb;\n"
+       << "    reg " << a << ", " << b << ";\n"
+       << "    wire " << andOut << ", " << orOut << ", " << xorOut << ";\n"
+       << "    integer errors = 0;\n"
+       << "    integer row;\n"
+       << "    truth_tables dut(." << a << "(" << a << "), ." << b << "(" << b << "), ." << andOut << "(" << andOut
+       << "), ." << orOut << "(" << orOut << "), ." << xorOut << "(" << xorOut << "));\n"
+       << "    initial begin\n"
+       << "        for (row = 0; row < 4; row = row + 1) begin\n"
+       << "            {" << a << ", " << b << "} = row[1:0]; #5;\n"
+       << "            if (" << andOut << " !== (" << a << " & " << b << ") || " << orOut << " !== (" << a << " | " << b
+       << ") || " << xorOut << " !== (" << a << " ^ " << b << ")) begin\n"
+       << "                errors = errors + 1;\n"
+       << "                $display(\"FAIL row %0d: and %b or %b xor %b\", row, " << andOut << ", " << orOut << ", "
+       << xorOut << ");\n"
+       << "            end\n"
+       << "        end\n"
+       << "        if (errors == 0) $display(\"PASS\"); else $display(\"FAILED %0d\", errors);\n"
+       << "        $finish;\n"
+       << "    end\n"
+       << "endmodule\n";
+    ts.flush();
+
+    const QString tbPath = dir.filePath("tb.sv");
+    QFile tbFile(tbPath);
+    QVERIFY(tbFile.open(QIODevice::WriteOnly | QIODevice::Text));
+    QTextStream(&tbFile) << tb;
+    tbFile.close();
+
+    const QString simOut = dir.filePath("sim.out");
+    QProcess compile;
+    compile.setProcessChannelMode(QProcess::MergedChannels);
+    compile.start("iverilog", {"-g2012", "-o", simOut, tbPath, svPath});
+    QVERIFY2(compile.waitForFinished(30000), "iverilog timed out");
+    QVERIFY2(compile.exitCode() == 0,
+             qPrintable(QString("the exported truth tables did not compile:\n%1\n--- sv ---\n%2")
+                            .arg(QString::fromUtf8(compile.readAll()), sv)));
+
+    QProcess run;
+    run.start(simOut, {});
+    QVERIFY2(run.waitForFinished(30000), "vvp timed out");
+    const QString out = QString::fromUtf8(run.readAllStandardOutput());
+    QVERIFY2(out.contains("PASS") && !out.contains("FAIL"),
+             qPrintable(QString("the exported truth tables compute the wrong rows:\n%1\n--- sv ---\n%2").arg(out, sv)));
 }
 
 void TestSystemVerilogExport::testTopLevelFeedbackLatchHoldsStateInExport()
