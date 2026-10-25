@@ -143,6 +143,10 @@ private:
     QPointF m_startPos;
     QPointF m_endPos;
 
+    /// How many times updatePosFromPorts() ran, read by TestConnection: a redundant refresh changes nothing else that
+    /// can be observed, since it returns early when neither end moved.
+    quint32 m_posRefreshCount = 0;
+
     // --- Members: State ---
 
     Status m_status = Status::Unknown;

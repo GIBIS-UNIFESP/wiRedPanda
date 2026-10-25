@@ -71,7 +71,7 @@ void Port::attachConnection(Connection *conn)
         m_connections.append(conn);
     }
 
-    updateConnections();
+    revalidateStatus();
 }
 
 void Port::detachConnection(Connection *conn)
@@ -88,7 +88,7 @@ void Port::detachConnection(Connection *conn)
         conn->setEndPort(nullptr);
     }
 
-    updateConnections();
+    revalidateStatus();
 }
 
 bool Port::isConnected(Port *otherPort)
@@ -104,6 +104,11 @@ void Port::updateConnections()
         conn->updatePosFromPorts();
     }
 
+    revalidateStatus();
+}
+
+void Port::revalidateStatus()
+{
     // A port that violates its validity constraints (e.g. required but unconnected,
     // or multi-driver) must show Error so the wiring problem is clearly visible
     if (!isValid()) {
@@ -219,7 +224,7 @@ void Port::setRequired(const bool required)
 
     // Requiredness feeds isValid(): re-derive the displayed status so a port
     // marked optional recovers from Error and a newly required one shows it
-    updateConnections();
+    revalidateStatus();
 }
 
 void Port::setGraphicElement(GraphicElement *graphicElement)
@@ -278,7 +283,7 @@ void Port::drainConnections(bool isInput)
 {
     while (!m_connections.isEmpty()) {
         auto *conn = m_connections.constLast();
-        m_connections.removeAll(conn);
+        m_connections.removeLast();
         if (isInput) {
             conn->setEndPort(nullptr);
         } else {
