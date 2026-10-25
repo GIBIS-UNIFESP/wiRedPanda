@@ -35,6 +35,10 @@ public:
     /// Copy-constructs by delegating to the parent item constructor.
     Buzzer(const Buzzer &other) : Buzzer(other.parentItem()) {}
 
+    /// Destroys the sink before its tone generator: QObject deletes children in creation order, the generator first,
+    /// and Qt 6.7's sink touches its source device as it is destroyed.
+    ~Buzzer() override;
+
     // --- State Queries ---
 
     /// Returns the tone frequency in Hz.
