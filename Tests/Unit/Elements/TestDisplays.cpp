@@ -3,9 +3,14 @@
 
 #include "Tests/Unit/Elements/TestDisplays.h"
 
+#include <QImage>
 #include <QKeySequence>
+#include <QPainter>
 #include <QPointF>
+#include <QStyleOptionGraphicsItem>
+#include <QTemporaryDir>
 
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/Display14.h"
 #include "App/Element/GraphicElements/Display16.h"
@@ -413,4 +418,75 @@ void TestDisplays::testDisplay16SaveLoadCurrentFormat()
     display2.load(loadStream, context);
 
     QCOMPARE(display2.color(), QString("Purple"));
+}
+
+void TestDisplays::testLitSegmentsPastACustomPictureStayInTheBounds_data()
+{
+    QTest::addColumn<ElementType>("type");
+    QTest::newRow("Display7") << ElementType::Display7;
+    QTest::newRow("Display14") << ElementType::Display14;
+    QTest::newRow("Display16") << ElementType::Display16;
+}
+
+void TestDisplays::testLitSegmentsPastACustomPictureStayInTheBounds()
+{
+    QFETCH(ElementType, type);
+
+    // A custom picture shorter than the segments' 64x64 box, which the segments are drawn in whatever it is.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("short.png");
+    QImage picture(80, 40, QImage::Format_ARGB32);
+    picture.fill(QColor(40, 120, 200));
+    QVERIFY(picture.save(path, "PNG"));
+
+    WorkSpace workspace;
+    auto *display = ElementFactory::buildElement(type);
+    workspace.scene()->addItem(display);
+    display->setAppearance(false, path);
+    QVERIFY(display->boundingRect().contains(QRectF(0, 0, 80, 40)));
+
+    for (const qreal rotation : {0.0, 90.0, 180.0, 270.0}) {
+        for (const bool flipX : {false, true}) {
+            for (const bool flipY : {false, true}) {
+                display->setRotation(rotation);
+                display->setFlippedX(flipX);
+                display->setFlippedY(flipY);
+                for (int i = 0; i < display->inputSize(); ++i) {
+                    display->inputPort(i)->setStatus(Status::Active);
+                }
+                display->refresh();
+
+                const QRect bounds = display->boundingRect().toAlignedRect();
+                const QRect canvas = bounds.adjusted(-16, -16, 16, 16);
+                QImage image(canvas.size(), QImage::Format_ARGB32_Premultiplied);
+                image.fill(Qt::transparent);
+                QPainter painter(&image);
+                painter.translate(-canvas.topLeft());
+                QStyleOptionGraphicsItem option;
+                display->paint(&painter, &option, nullptr);
+                painter.end();
+
+                // Every pixel it draws is within its bounds, give or take the pixel antialiasing reaches past them,
+                // and the segments are drawn below the picture.
+                const QRect allowed = bounds.adjusted(-1, -1, 1, 1).translated(-canvas.topLeft());
+                bool belowPicture = false;
+                for (int y = 0; y < image.height(); ++y) {
+                    for (int x = 0; x < image.width(); ++x) {
+                        if (qAlpha(image.pixel(x, y)) == 0) {
+                            continue;
+                        }
+                        QVERIFY2(allowed.contains(x, y), qPrintable(QString("rot=%1 flipX=%2 flipY=%3 at %4,%5")
+                                                                        .arg(rotation)
+                                                                        .arg(flipX)
+                                                                        .arg(flipY)
+                                                                        .arg(x + canvas.left())
+                                                                        .arg(y + canvas.top())));
+                        belowPicture = belowPicture || (y + canvas.top() > 44);
+                    }
+                }
+                QVERIFY(belowPicture);
+            }
+        }
+    }
 }

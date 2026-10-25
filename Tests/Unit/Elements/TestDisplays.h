@@ -39,4 +39,8 @@ private slots:
 
     // Current-format (v4.1+ QMap) save/load round trip
     void testDisplay16SaveLoadCurrentFormat();
+
+    // Lit segments past a custom picture smaller than their box
+    void testLitSegmentsPastACustomPictureStayInTheBounds_data();
+    void testLitSegmentsPastACustomPictureStayInTheBounds();
 };

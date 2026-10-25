@@ -55,6 +55,9 @@ public:
 
     // --- Visual ---
 
+    /// The base bounds plus the 64x64 box the lit segments are drawn in, which a custom picture need not cover.
+    QRectF boundingRect() const override;
+
     /// \reimp
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
