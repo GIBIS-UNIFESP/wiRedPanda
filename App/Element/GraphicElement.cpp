@@ -216,7 +216,9 @@ void GraphicElement::invalidateRenderCache()
 
 QPointF GraphicElement::snapToGrid(const QPointF &pos, const int step)
 {
-    return {static_cast<qreal>(qRound(pos.x() / step) * step), static_cast<qreal>(qRound(pos.y() / step) * step)};
+    // Rounded in floating point, halves away from zero as qRound() does: a file may hold any finite position, and one
+    // past int's range has no int grid line
+    return {std::round(pos.x() / step) * step, std::round(pos.y() / step) * step};
 }
 
 void GraphicElement::setPortName(const QString &name)
