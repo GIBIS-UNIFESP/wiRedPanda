@@ -176,8 +176,10 @@ from the harnesses' `-fsanitize=fuzzer` link, so only the harnesses build under 
 registered in both fuzzer presets, the unattended-run script and the coverage report, with its own corpus directory;
 each seeded harness checks its seed at start-up and runs once with `-runs=1` as a smoke test;
 `Tests/lsan_suppressions.txt` silences leaks in `libfontconfig` and `libexpat`. No CI job runs the harnesses, and CI's
-Sanitizers workflow ignores changes under `Tests/Fuzz/`: they run overnight on a developer's machine, through
-`Tests/Fuzz/run-unattended.sh`, and a change that adds or changes a harness lands after that run.
+Sanitizers workflow ignores changes under `Tests/Fuzz/`: they run on a developer's machine in coverage-guided rounds, a
+short run of one harness, then its corpus replayed through the `fuzzer-coverage` build and read with `llvm-cov`, and
+the harness, seeds or dictionary changed to reach what it misses, until a round adds nothing; a change that adds or
+changes a harness lands after its rounds. `Tests/Fuzz/run-unattended.sh` runs long campaigns for depth.
 
 ### Profiling
 

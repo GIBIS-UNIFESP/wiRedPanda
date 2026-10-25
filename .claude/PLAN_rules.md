@@ -131,8 +131,9 @@ was ever finished.
 - **The user's standing rulings.** No clang checking at all: ASan, UBSan and clang are left to CI (its Sanitizers
   workflow and its macOS jobs' Apple clang build). Validation runs on the relwithdebinfo preset. Callgrind and
   performance baselines stay out of the checks before a slice is finished; performance is measured on the named
-  fixtures after a plan lands. The fuzz harnesses run on the user's machine, overnight, not in CI, and a slice that
-  adds or changes a harness is finished after that run.
+  fixtures after a plan lands. The fuzz harnesses run on the user's machine in coverage-guided rounds (a short run,
+  then the corpus's coverage read and the harness changed to reach what it misses), not in CI, and a slice that adds
+  or changes a harness is finished after its rounds.
 - **Rules for every new test.** No absolute wall-time bounds (ratios or counts instead); CTest labels that match what
   the test does; no history or defect IDs in comments; the tests of the model, presentation, controller, mirror,
   simulation core and CPU backend run under ASan and UBSan in CI.
