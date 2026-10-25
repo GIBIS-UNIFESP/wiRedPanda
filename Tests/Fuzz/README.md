@@ -39,7 +39,11 @@ cmake --build --preset fuzzer
 ```
 
 This produces `build-fuzzer/fuzz_*`, each instrumented with libFuzzer +
-AddressSanitizer + UndefinedBehaviorSanitizer.
+AddressSanitizer + UndefinedBehaviorSanitizer. `ENABLE_FUZZER` puts libFuzzer's
+coverage instrumentation (`-fsanitize=fuzzer-no-link`) on every target, so the
+fuzzer is steered by the edges of the code a harness drives, not only the
+harness's own; the callbacks come from each harness's `-fsanitize=fuzzer` link,
+so the fuzzer presets build the harnesses alone.
 
 ## Seed corpus
 

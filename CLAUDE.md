@@ -170,14 +170,14 @@ mid-branch.
 
 ### Fuzzing
 
-The `fuzzer` preset is libFuzzer with ASan and UBSan. Only each harness's own source gets `-fsanitize=fuzzer-no-link`,
-so libFuzzer sees the harness's edges alone (154 edges in three minutes, against 27,474 with the libraries
-instrumented); coverage feedback needs the flag on the whole project. A new harness is registered in both fuzzer
-presets, the unattended-run script and the coverage report, with its own corpus directory; each seeded harness checks
-its seed at start-up and runs once with `-runs=1` as a smoke test; `Tests/lsan_suppressions.txt` silences leaks in
-`libfontconfig` and `libexpat`. No CI job runs the harnesses, and CI's Sanitizers workflow ignores changes under
-`Tests/Fuzz/`: they run overnight on a developer's machine, through `Tests/Fuzz/run-unattended.sh`, and a change that
-adds or changes a harness lands after that run.
+The `fuzzer` preset is libFuzzer with ASan and UBSan. `ENABLE_FUZZER` puts `-fsanitize=fuzzer-no-link` on every
+target, so libFuzzer is steered by the edges of the code a harness drives, not the harness's alone; the callbacks come
+from the harnesses' `-fsanitize=fuzzer` link, so only the harnesses build under the fuzzer presets. A new harness is
+registered in both fuzzer presets, the unattended-run script and the coverage report, with its own corpus directory;
+each seeded harness checks its seed at start-up and runs once with `-runs=1` as a smoke test;
+`Tests/lsan_suppressions.txt` silences leaks in `libfontconfig` and `libexpat`. No CI job runs the harnesses, and CI's
+Sanitizers workflow ignores changes under `Tests/Fuzz/`: they run overnight on a developer's machine, through
+`Tests/Fuzz/run-unattended.sh`, and a change that adds or changes a harness lands after that run.
 
 ### Profiling
 
