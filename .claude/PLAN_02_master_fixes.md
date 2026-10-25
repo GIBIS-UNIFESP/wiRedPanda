@@ -626,6 +626,7 @@ Each of these exists on `master`, and its fix is another plan's decision:
 | P2.43 | A restored element's stacking place (§7.6) | P1.10 | the order after a delete's and a morph's undo |
 | P2.48 | The scene's bounds without the rubber band (§7.7) | P1.12 | the view golden's fit row and four wheel rows |
 | P2.38, P2.51 | A wire attached or detached refreshes only itself (§7.8) | P1.5, P1.10 | none |
+| P2.40 | Orienting a port leaves its wires to the port (its ledger row) | P1.5 | none (the wire-geometry golden unchanged) |
 | P2.44 | Embed and extract on every selected IC (§4.2) | the helpers only | none expected |
 | P2.39 | The MCP client's 64 KiB line limit (its ledger row) | the helpers only | none |
 
