@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <limits>
 
 #include <QClipboard>
 #include <QDrag>
@@ -460,6 +461,24 @@ const QVector<Connection *> Scene::connections() const
     }
 
     return conns;
+}
+
+QList<QGraphicsItem *> Scene::selectedItems() const
+{
+    // Only elements and wires are selectable, and each has an id
+    const auto idOf = [](const QGraphicsItem *item) {
+        if (item->type() == GraphicElement::Type) {
+            return static_cast<const GraphicElement *>(item)->id();
+        }
+        if (item->type() == Connection::Type) {
+            return static_cast<const Connection *>(item)->id();
+        }
+        return std::numeric_limits<int>::max(); // LCOV_EXCL_LINE
+    };
+
+    auto items_ = QGraphicsScene::selectedItems();
+    std::stable_sort(items_.begin(), items_.end(), [&idOf](const QGraphicsItem *a, const QGraphicsItem *b) { return idOf(a) < idOf(b); });
+    return items_;
 }
 
 const QList<GraphicElement *> Scene::selectedElements() const
@@ -1173,7 +1192,8 @@ void Scene::distributeHorizontally()
         return;
     }
 
-    std::sort(elements_.begin(), elements_.end(), [](GraphicElement *a, GraphicElement *b) {
+    // Stable, so elements sharing a left edge keep the selection's id order
+    std::stable_sort(elements_.begin(), elements_.end(), [](GraphicElement *a, GraphicElement *b) {
         return a->sceneBoundingRect().left() < b->sceneBoundingRect().left();
     });
 
@@ -1210,7 +1230,8 @@ void Scene::distributeVertically()
         return;
     }
 
-    std::sort(elements_.begin(), elements_.end(), [](GraphicElement *a, GraphicElement *b) {
+    // Stable, so elements sharing a top edge keep the selection's id order
+    std::stable_sort(elements_.begin(), elements_.end(), [](GraphicElement *a, GraphicElement *b) {
         return a->sceneBoundingRect().top() < b->sceneBoundingRect().top();
     });
 

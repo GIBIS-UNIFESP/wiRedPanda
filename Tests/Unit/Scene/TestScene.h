@@ -93,6 +93,12 @@ private slots:
     void testCloneDragWithNoSelectionIsNoOp();
     void testDuplicateWithNoSelectionIsNoOp();
     void testPasteLegacyUnversionedBlobRegistryFormat();
+
+    // Whatever acts on a selection acts in id order
+    void testSelectionAccessorsAnswerInIdOrder();
+    void testDuplicateNumbersTheCopiesInIdOrder();
+    void testDeleteUndoRestoresInIdOrder();
+    void testDistributeKeepsTiesInIdOrder();
     void testPasteClipboardLegacyItemFormat();
 
     // ============================================================

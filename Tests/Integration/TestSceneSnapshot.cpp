@@ -241,25 +241,21 @@ void snapPathsSetup(Scene *scene)
 /// The elements snapPathsSetup() places.
 constexpr int kSnapPathsElements = 4;
 
-/// Every element's id, type, position, scene bounding rectangle, rotation and flips: the placed elements in id order,
-/// then the ones a path adds, named "new" and in the order of their lines. A paste gives its copies ids in the order of
-/// QGraphicsScene::selectedItems(), which follows the per-process hash seed, so their ids differ from run to run.
+/// Every element's id, type, position, scene bounding rectangle, rotation and flips, in id order: a paste numbers its
+/// copies in the selection's id order.
 QString snapPathsDump(const Scene *scene)
 {
     QStringList lines;
-    QStringList added;
     for (const auto *element : TestUtils::elementsById(scene)) {
         const QRectF rect = element->sceneBoundingRect();
-        const bool placed = element->id() <= kSnapPathsElements;
-        (placed ? lines : added) << QString("%1 %2 pos=%3 rect=%4 %5 rot=%6 flipX=%7 flipY=%8")
-                     .arg(placed ? 'E' + QString::number(element->id()) : QString("new"), TestUtils::snapshotType(element->elementType()),
+        lines << QString("E%1 %2 pos=%3 rect=%4 %5 rot=%6 flipX=%7 flipY=%8")
+                     .arg(QString::number(element->id()), TestUtils::snapshotType(element->elementType()),
                           TestUtils::snapshotPoint(element->pos()), TestUtils::snapshotPoint(rect.topLeft()),
                           TestUtils::snapshotPoint({rect.width(), rect.height()}),
                           TestUtils::snapshotNumber(element->rotation()), QString::number(element->isFlippedX()),
                           QString::number(element->isFlippedY()));
     }
-    added.sort();
-    return (lines + added).join('\n') + '\n';
+    return lines.join('\n') + '\n';
 }
 
 /// Drops a new And from the palette at \a scenePos, carrying what the palette's entry puts in its drag, as the events a
