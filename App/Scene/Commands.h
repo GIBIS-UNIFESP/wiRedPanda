@@ -140,10 +140,10 @@ public:
      */
     explicit RotateCommand(const QList<GraphicElement *> &items, const int angle, Scene *scene, QUndoCommand *parent = nullptr);
 
-    /// Applies the rotation.
+    /// Rotates each element and turns its place about the selection's centre, snapped to the grid.
     void redo() override;
 
-    /// Reverses the rotation.
+    /// Reverses the rotation and puts each element back at its exact place.
     void undo() override;
 
 private:
@@ -477,10 +477,10 @@ public:
      */
     explicit FlipCommand(const QList<GraphicElement *> &items, const int axis, Scene *scene, QUndoCommand *parent = nullptr);
 
-    /// Applies the flip transformation.
+    /// Mirrors each element's place about the selection's axis, snapped to the grid, and toggles its mirror flag.
     void redo() override;
 
-    /// Reverses the flip transformation (involution: flip twice = identity).
+    /// Puts each element back at its exact place and toggles its mirror flag back.
     void undo() override;
 
 private:

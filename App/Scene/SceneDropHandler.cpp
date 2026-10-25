@@ -82,7 +82,7 @@ void SceneDropHandler::handleNewElementDrop(QGraphicsSceneDragDropEvent *event)
     raw->setSelected(true);
 
     qCDebug(zero) << "Adjusting the position of the element.";
-    raw->setPos(pos);
+    raw->setPos(GraphicElement::snapToGrid(pos));
 }
 
 void SceneDropHandler::handleCloneDrag(QGraphicsSceneDragDropEvent *event)
@@ -114,7 +114,7 @@ void SceneDropHandler::handleCloneDrag(QGraphicsSceneDragDropEvent *event)
 
     for (auto *item : itemList) {
         if (item->type() == GraphicElement::Type) {
-            item->setPos((item->pos() + offset));
+            item->setPos(GraphicElement::snapToGrid(item->pos() + offset));
             item->setSelected(true);
         }
     }
@@ -159,9 +159,8 @@ void SceneDropHandler::addFromMimeData(QMimeData *mimeData, std::optional<QPoint
     raw->setSelected(true);
 
     // Add-without-drag (double-click / search): drop it where the caller asked (the view
-    // centre) so it lands in sight instead of at the scene origin. The grid snap in
-    // GraphicElement::itemChange rounds the final position.
+    // centre) so it lands in sight instead of at the scene origin, snapped to the grid.
     if (scenePos) {
-        raw->setPos(*scenePos);
+        raw->setPos(GraphicElement::snapToGrid(*scenePos));
     }
 }

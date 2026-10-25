@@ -899,9 +899,11 @@ void TestInputElements::testButtonPressIsNotRecorded()
     QVERIFY(scene.undoStack()->isClean());
 }
 
-void TestInputElements::testPressGoingToTheSwitchHoldingTheMouseIsRecorded()
+void TestInputElements::testMiddlePressLeavesTheSwitchNotHoldingTheMouse()
 {
-    // A middle press on a switch makes it hold the mouse, so Qt gives it a left press made away from it, which toggles it
+    // Only a left press makes an element hold the mouse (Qt keeps another button's press on an item only when the
+    // item is movable, and the scene drags elements itself), so a left press made away from a switch after a middle
+    // press on it toggles nothing and records nothing
     Scene scene;
     auto *inputSwitch = new InputSwitch;
     scene.addItem(inputSwitch);
@@ -911,7 +913,7 @@ void TestInputElements::testPressGoingToTheSwitchHoldingTheMouseIsRecorded()
     middle.setButton(Qt::MiddleButton);
     middle.setButtons(Qt::MiddleButton);
     QCoreApplication::sendEvent(&scene, &middle);
-    QCOMPARE(scene.mouseGrabberItem(), inputSwitch);
+    QCOMPARE(scene.mouseGrabberItem(), nullptr);
 
     QGraphicsSceneMouseEvent left(QEvent::GraphicsSceneMousePress);
     left.setScenePos(inputSwitch->sceneBoundingRect().bottomRight() + QPointF(200, 200));
@@ -919,8 +921,6 @@ void TestInputElements::testPressGoingToTheSwitchHoldingTheMouseIsRecorded()
     left.setButtons(Qt::LeftButton | Qt::MiddleButton);
     QCoreApplication::sendEvent(&scene, &left);
 
-    QVERIFY(inputSwitch->isOn());
-    QCOMPARE(scene.undoStack()->count(), 1);
-    scene.undoStack()->undo();
     QVERIFY(!inputSwitch->isOn());
+    QCOMPARE(scene.undoStack()->count(), 0);
 }

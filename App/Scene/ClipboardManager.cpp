@@ -320,7 +320,7 @@ QList<QGraphicsItem *> ClipboardManager::deserializeAndAdd(QDataStream &stream, 
 
     for (auto *item : itemList) {
         if (item->type() == GraphicElement::Type) {
-            item->setPos((item->pos() + offset));
+            item->setPos(GraphicElement::snapToGrid(item->pos() + offset));
         }
     }
 

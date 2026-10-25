@@ -40,8 +40,8 @@ public:
     void handleCloneDrag(QGraphicsSceneDragDropEvent *event);
 
     /// Adds a new element from \a mimeData (palette add-without-drag path); takes ownership
-    /// of \a mimeData. If \a scenePos is set, the element is placed there (snapped to the
-    /// grid by the scene); otherwise it keeps its default position.
+    /// of \a mimeData. If \a scenePos is set, the element is placed there, snapped to the
+    /// grid; otherwise it keeps its default position.
     void addFromMimeData(QMimeData *mimeData, std::optional<QPointF> scenePos = std::nullopt);
 
 private:

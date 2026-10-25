@@ -338,9 +338,10 @@ void snapPathsApply(Scene *scene, const QString &operation, MainWindow *window)
 
     auto *first = TestUtils::elementsById(scene).constFirst();
     if (operation == "move") {
-        // The first element alone, by a command as the property editor and MCP push one.
+        // The first element alone, by a command as the property editor and MCP push one, its new place snapped as
+        // theirs is.
         const QPointF oldPosition = first->pos();
-        first->setPos(oldPosition + QPointF(37, 21));
+        first->setPos(GraphicElement::snapToGrid(oldPosition + QPointF(37, 21)));
         scene->receiveCommand(new MoveCommand({first}, {oldPosition}, scene));
     } else if (operation == "nudge-right") {
         // The scene takes an arrow key as a nudge while no item has the keyboard focus, as in the application.
@@ -511,7 +512,7 @@ void TestSceneSnapshot::testWireGeometryAfterEdit()
     // Each edit goes through the entry point the application uses: a command, or the scene's action on the selection.
     if (edit == "move") {
         const QPointF oldPosition = target->pos();
-        target->setPos(oldPosition + QPointF(40, 20));
+        target->setPos(GraphicElement::snapToGrid(oldPosition + QPointF(40, 20)));
         scene->receiveCommand(new MoveCommand({target}, {oldPosition}, scene));
     } else if ((edit == "portcount") || (edit == "resize")) {
         scene->receiveCommand(new ChangePortSizeCommand({target}, target->inputSize() + 1, scene, true));

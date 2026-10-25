@@ -345,8 +345,6 @@ RotateCommand::RotateCommand(const QList<GraphicElement *> &items, const int ang
 
     for (auto *item : items) {
         m_positions.append(item->pos());
-        item->setPos(item->pos());
-
     }
 }
 
@@ -390,8 +388,9 @@ void RotateCommand::redo()
     transform.rotate(m_angle);
     transform.translate(-cx, -cy);
 
+    // The rotated places snap to the grid; undo() puts back the exact ones
     for (auto *elm : elements) {
-        elm->setPos(transform.map(elm->pos()));
+        elm->setPos(GraphicElement::snapToGrid(transform.map(elm->pos())));
         elm->setRotation(elm->rotation() + m_angle);
     }
 
@@ -741,12 +740,8 @@ SplitCommand::SplitCommand(Connection *conn, QPointF mousePos, Scene *scene, QUn
 
     /* Align node to Grid */
     // Subtract pixmapCenter so the node's visual center lands on the mouse click,
-    // then snap to the nearest grid intersection
-    m_nodePos = mousePos - node->pixmapCenter();
-    const int gridSize = Constants::gridSize;
-    qreal xV = qRound(m_nodePos.x() / gridSize) * gridSize;
-    qreal yV = qRound(m_nodePos.y() / gridSize) * gridSize;
-    m_nodePos = QPointF(xV, yV);
+    // then snap to the nearest grid intersection: a whole grid step, coarser than an element's half step
+    m_nodePos = GraphicElement::snapToGrid(mousePos - node->pixmapCenter(), Constants::gridSize);
 
     /* Rotate line according to angle between p1 and p2 */
     // QLineF::angle() is counter-clockwise from the positive X axis (0–360°).
@@ -1144,15 +1139,25 @@ FlipCommand::FlipCommand(const QList<GraphicElement *> &items, const int axis, S
 void FlipCommand::undo()
 {
     qCDebug(zero) << text();
-    // Flip is an involution: applying it twice returns to the original state,
-    // so undo is identical to redo (position formula and +180° rotation cancel out)
-    redo();
+    // The mirror flags toggle back (an involution), and each element returns to its exact place: a mirrored place
+    // snaps to the grid, so mirroring again would not bring an off-grid element back
+    const auto elements = this->elements();
+    for (int i = 0; i < elements.size(); ++i) {
+        auto *elm = elements.at(i);
+        elm->setPos(m_positions.at(i));
+        (m_axis == 0) ? elm->setFlippedX(!elm->isFlippedX())
+                      : elm->setFlippedY(!elm->isFlippedY());
+    }
+
+    m_scene->setAutosaveRequired();
 }
 
 void FlipCommand::redo()
 {
-    for (auto *elm : elements()) {
-        auto pos = elm->pos();
+    const auto elements = this->elements();
+    for (int i = 0; i < elements.size(); ++i) {
+        auto *elm = elements.at(i);
+        auto pos = m_positions.at(i);
 
         // axis == 0: mirror across the vertical axis (flip horizontally)
         // axis == 1: mirror across the horizontal axis (flip vertically)
@@ -1160,12 +1165,12 @@ void FlipCommand::redo()
         (m_axis == 0) ? pos.setX(m_minPos.rx() + (m_maxPos.rx() - pos.rx()))
                       : pos.setY(m_minPos.ry() + (m_maxPos.ry() - pos.ry()));
 
-        elm->setPos(pos);
+        elm->setPos(GraphicElement::snapToGrid(pos));
 
         // Toggle the element's mirror flag for the appropriate axis. Rotatable elements get a
         // true single-axis reflection of the whole item (scale(-1) about the pixmap centre);
         // non-rotatable input/output elements mirror only their ports, keeping the graphic
-        // upright. Toggling is an involution, so undo == redo.
+        // upright. Toggling is an involution, so undo() toggles it back.
         (m_axis == 0) ? elm->setFlippedX(!elm->isFlippedX())
                       : elm->setFlippedY(!elm->isFlippedY());
     }

@@ -3,9 +3,13 @@
 
 #include "Tests/Unit/Commands/TestCommands.h"
 
+#include <utility>
+
+#include <QDir>
 #include <QImage>
 #include <QTemporaryDir>
 
+#include "App/Core/Enums.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/AudioBox.h"
@@ -28,6 +32,7 @@
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
+#include "App/Scene/Workspace.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
 #include "Tests/Common/Goldens.h"
@@ -80,6 +85,31 @@ private:
     Node *m_tx = new Node();
     Node *m_rx = new Node();
 };
+
+/// Whether \a pos lies off the half grid elements snap to.
+bool offGrid(const QPointF &pos)
+{
+    return GraphicElement::snapToGrid(pos) != pos;
+}
+
+/**
+ * \brief Returns the first circuit, in name order, of those an older release (2.3) saved, that holds an element off the
+ * grid which a morph can change, with that element's id; an empty path if none does.
+ */
+std::pair<QString, int> offGridCase()
+{
+    const QDir dir(TestUtils::backwardCompatibilityDir() + "v2.3");
+    for (const QString &name : dir.entryList({"*.panda"}, QDir::Files, QDir::Name)) {
+        WorkSpace workspace;
+        TestUtils::loadCircuit(workspace, dir.filePath(name));
+        for (const auto *element : TestUtils::elementsById(workspace.scene())) {
+            if (offGrid(element->pos()) && (Enums::nextElmType(element->elementType()) != ElementType::Unknown)) {
+                return {dir.filePath(name), element->id()};
+            }
+        }
+    }
+    return {};
+}
 
 } // namespace TestCommandsHelpers
 
@@ -362,7 +392,7 @@ void TestCommands::testFlipNonRotatablePorts()
     // (no item-level transform), paralleling how rotation already repositions these ports.
     auto *button = new InputButton();
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{button}, scene));
-    button->setPos(100, 100);
+    button->setPos(104, 104);
 
     const QPointF portBase = button->outputPort(0)->scenePos();
     const QPointF buttonPos = button->pos();
@@ -370,7 +400,7 @@ void TestCommands::testFlipNonRotatablePorts()
     // Horizontal flip: the right-edge port (x=64) moves to the left edge (x=0).
     scene->receiveCommand(new FlipCommand(QList<GraphicElement *>{button}, 0, scene));
     QVERIFY2(button->transform().isIdentity(), "Non-rotatable element must not get an item flip transform");
-    QCOMPARE(button->pos(), buttonPos); // lone element: the position mirror is a no-op
+    QCOMPARE(button->pos(), buttonPos); // lone element on the grid: the position mirror is a no-op
     const QPointF portFlipped = button->outputPort(0)->scenePos();
     QVERIFY2(portFlipped.x() < portBase.x(), "Horizontal flip must move the output port to the left side");
     QCOMPARE(portFlipped.y(), portBase.y());
@@ -1410,6 +1440,67 @@ void TestCommands::testSplitCommandUndoThrowsWhenUpstreamMissing()
         threw = true;
     }
     QVERIFY2(threw, "SplitCommand::undo() must throw when an upstream item can no longer be found");
+}
+
+void TestCommands::testOffGridElementRestoresExactly_data()
+{
+    QTest::addColumn<QString>("command");
+    QTest::newRow("move") << "move";
+    QTest::newRow("rotate") << "rotate";
+    QTest::newRow("flip") << "flip";
+    QTest::newRow("morph") << "morph";
+}
+
+void TestCommands::testOffGridElementRestoresExactly()
+{
+    // An element an older release saved off the grid: a command that decides its place puts it on the grid, its undo
+    // puts it back exactly where it was, and its redo gives the same place again; a morph keeps the exact place.
+    QFETCH(QString, command);
+    using namespace TestCommandsHelpers;
+    const auto [path, id] = offGridCase();
+    QVERIFY2(!path.isEmpty(), "no circuit of release 2.3 holds a morphable element off the grid");
+
+    WorkSpace workspace;
+    TestUtils::loadCircuit(workspace, path);
+    Scene *scene = workspace.scene();
+    const auto element = [scene, elementId = id] { return dynamic_cast<GraphicElement *>(scene->itemById(elementId)); };
+    QVERIFY(element());
+    const QPointF start = element()->pos();
+    QVERIFY(offGrid(start));
+
+    if (command == "move") {
+        element()->setPos(GraphicElement::snapToGrid(start + QPointF(40, 24)));
+        scene->receiveCommand(new MoveCommand({element()}, {start}, scene));
+    } else if (command == "rotate") {
+        scene->receiveCommand(new RotateCommand({element()}, 90, scene));
+    } else if (command == "flip") {
+        scene->receiveCommand(new FlipCommand({element()}, 0, scene));
+    } else {
+        scene->receiveCommand(new MorphCommand({element()}, Enums::nextElmType(element()->elementType()), scene));
+    }
+
+    QVERIFY(element());
+    const QPointF done = element()->pos();
+    QVERIFY2((command == "morph") ? (done == start) : !offGrid(done),
+             qPrintable(QString("%1 left the element at %2,%3").arg(command).arg(done.x()).arg(done.y())));
+
+    scene->undoStack()->undo();
+    QVERIFY(element());
+    QCOMPARE(element()->pos(), start);
+
+    scene->undoStack()->redo();
+    QVERIFY(element());
+    QCOMPARE(element()->pos(), done);
+}
+
+void TestCommands::testSetPosIsExact()
+{
+    // Setting a position in a scene keeps it as given; only the edits that decide a place snap.
+    WorkSpace workspace;
+    auto *gate = new And();
+    workspace.scene()->addItem(gate);
+    gate->setPos(279.333, 311.5);
+    QCOMPARE(gate->pos(), QPointF(279.333, 311.5));
 }
 
 void TestCommands::testFindItemsThrowsWhenItemMissing()

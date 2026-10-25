@@ -1032,8 +1032,8 @@ void Scene::flipVertically()
 namespace {
 
 /// Snapshots each element's current position, applies \a newPositions (already computed by the
-/// caller), then pushes one MoveCommand for the whole batch -- the same pattern arrow-key
-/// nudging already uses (see Scene::keyPressEvent()).
+/// caller), each snapped to the grid, then pushes one MoveCommand for the whole batch -- the same
+/// pattern arrow-key nudging already uses (see Scene::keyPressEvent()).
 void moveElementsTo(Scene *scene, const QList<GraphicElement *> &elements, const QList<QPointF> &newPositions)
 {
     QList<QPointF> oldPositions;
@@ -1043,7 +1043,7 @@ void moveElementsTo(Scene *scene, const QList<GraphicElement *> &elements, const
     }
 
     for (int i = 0; i < elements.size(); ++i) {
-        elements.at(i)->setPos(newPositions.at(i));
+        elements.at(i)->setPos(GraphicElement::snapToGrid(newPositions.at(i)));
     }
 
     scene->receiveCommand(new MoveCommand(elements, oldPositions, scene));
@@ -1358,7 +1358,7 @@ bool Scene::nudgeSelection(QKeyEvent *event)
         oldPositions.append(elm->pos());
     }
     for (auto *elm : selected) {
-        elm->setPos(elm->pos() + delta);
+        elm->setPos(GraphicElement::snapToGrid(elm->pos() + delta));
     }
 
     receiveCommand(new MoveCommand(selected, oldPositions, this));
