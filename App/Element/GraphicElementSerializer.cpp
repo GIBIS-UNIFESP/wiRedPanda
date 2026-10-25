@@ -11,6 +11,10 @@
 
 #include <cmath>
 
+#include <QKeySequence>
+#include <QMetaType>
+#include <QVariant>
+
 #include "App/Core/Common.h"
 #include "App/Element/GraphicElement.h"
 #include "App/IO/ExternalFilePath.h"
@@ -287,7 +291,11 @@ void GraphicElementSerializer::loadNewFormat(GraphicElement &element, QDataStrea
     // -------------------------------------------
 
     if (map.contains("trigger")) {
-        element.setTrigger(map.value("trigger").toString());
+        // save() writes the key sequence itself: read back through its text, one whose text does not parse back
+        // (Qt::Key_unknown's is empty) would be lost
+        const QVariant trigger = map.value("trigger");
+        element.setTrigger((trigger.metaType() == QMetaType::fromType<QKeySequence>()) ? trigger.value<QKeySequence>()
+                                                                                      : QKeySequence(trigger.toString()));
     }
 
     element.m_orientation.setFlippedXRaw(map.value("flippedX", false).toBool());
