@@ -160,6 +160,26 @@ void TestPriorities::testPriorityCycleSharedPriority()
     QCOMPARE(priorities.value(&a), 3);
 }
 
+void TestPriorities::testPriorityNodeWithFeedbackAndUnvisitedSuccessor()
+{
+    // B ⇄ A → C → D: when the walk reaches A, its successor B is on the stack (feedback) and C is unvisited. A is
+    // assigned only after C, so a producer ranks above its consumer, and the walk pops the node it assigns.
+    int a, b, c, d;
+    QVector<int *> elements = {&b, &a, &c, &d};
+    QHash<int *, QVector<int *>> successors;
+    successors[&b] = {&a};
+    successors[&a] = {&b, &c};
+    successors[&c] = {&d};
+
+    QHash<int *, int> priorities;
+    calculatePriorities(elements, successors, priorities);
+
+    QCOMPARE(priorities.value(&d), 1);
+    QCOMPARE(priorities.value(&c), 2);
+    QCOMPARE(priorities.value(&a), 3);
+    QCOMPARE(priorities.value(&b), 4);
+}
+
 // Feedback Detection Tests
 
 void TestPriorities::testFeedbackNoCycle()
