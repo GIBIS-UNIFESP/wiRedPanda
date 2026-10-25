@@ -124,6 +124,8 @@ private slots:
     // Regression: F4 — paste gate must accept every format paste() reads
     void testClipboardCanPasteMatchesPasteFormats();
     void testBuildDragImageClampsExtremeSelectionExtent();
+    void testBuildDragImageClampsAnExtentBeyondIntRange();
+    void testGridIsNotDrawnBeyondIntRange();
 
     // Regression: WIREDPANDA-KS — port/orientation geometry changes must reindex the scene BSP tree
     void testGeometryChangeKeepsSceneIndexConsistentKS();

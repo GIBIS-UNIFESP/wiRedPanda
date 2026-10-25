@@ -12,6 +12,7 @@
 #include <QLoggingCategory>
 #include <QMimeData>
 #include <QPainter>
+#include <QSizeF>
 
 #include "App/Core/Common.h"
 #include "App/Core/Constants.h"
@@ -204,24 +205,25 @@ bool ClipboardManager::canPaste(const QMimeData *mimeData)
 
 QImage ClipboardManager::buildDragImage(Scene *scene, const QTransform &viewTransform, const QRectF &sourceRect)
 {
-    QSize mappedSize = viewTransform.mapRect(sourceRect).size().toSize();
+    QSizeF mappedSize = viewTransform.mapRect(sourceRect).size();
 
     // Cap the ghost image at a sane maximum dimension. sourceRect derives from selected
     // elements' scene positions (a crafted/corrupted file, or a large paste offset, can place
     // one at an extreme-but-finite coordinate — the same gap CircuitExporter::renderToImage
     // hit), so mappedSize would otherwise be sized proportionally to that distance. Scale down
     // to fit instead of failing outright; the ghost is a transient visual aid, not saved output.
+    // Scaled before it is rounded to whole pixels, since an extent past int's range has no int size.
     if (mappedSize.width() > kMaxDragImageDimension || mappedSize.height() > kMaxDragImageDimension) {
         mappedSize.scale(kMaxDragImageDimension, kMaxDragImageDimension, Qt::KeepAspectRatio);
     }
 
-    QImage image(mappedSize, QImage::Format_ARGB32_Premultiplied);
+    QImage image(mappedSize.toSize(), QImage::Format_ARGB32_Premultiplied);
     image.fill(Qt::transparent);
 
     QPainter painter(&image);
     // Opacity 0 makes the ghost transparent; the drag cursor shape still appears
     painter.setOpacity(0.0);
-    scene->render(&painter, QRectF(QPointF(), mappedSize), sourceRect);
+    scene->render(&painter, QRectF(QPointF(), image.size()), sourceRect);
     painter.end();
 
     return image;

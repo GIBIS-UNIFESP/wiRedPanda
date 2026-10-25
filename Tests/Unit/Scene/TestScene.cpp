@@ -17,6 +17,8 @@
 #include <QLineEdit>
 #include <QMenu>
 #include <QMimeData>
+#include <QPaintDevice>
+#include <QPaintEngine>
 #include <QPainter>
 #include <QScrollBar>
 #include <QSignalSpy>
@@ -2290,6 +2292,103 @@ void TestScene::testBuildDragImageClampsExtremeSelectionExtent()
     QVERIFY(!image.isNull());
     QVERIFY(image.width() <= ClipboardManager::kMaxDragImageDimension);
     QVERIFY(image.height() <= ClipboardManager::kMaxDragImageDimension);
+}
+
+void TestScene::testBuildDragImageClampsAnExtentBeyondIntRange()
+{
+    // An extent past int's range is scaled into the clamp before it is converted to whole pixels, so the drag image is
+    // a clamped one, not a null image.
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+
+    auto *sw1 = new InputSwitch();
+    scene->addItem(sw1);
+    auto *sw2 = new InputSwitch();
+    scene->addItem(sw2);
+    sw2->setPos(1e12, 1e11);
+
+    const QRectF rect = sw1->sceneBoundingRect().united(sw2->sceneBoundingRect()).adjusted(-8, -8, 8, 8);
+    const QImage image = ClipboardManager::buildDragImage(scene, QTransform(), rect);
+
+    QVERIFY(!image.isNull());
+    QCOMPARE(image.width(), ClipboardManager::kMaxDragImageDimension);
+    QVERIFY(image.height() <= ClipboardManager::kMaxDragImageDimension);
+}
+
+namespace TestSceneGridHelpers {
+
+/// A paint engine that draws nothing and counts the points it is given.
+class PointCountingEngine : public QPaintEngine
+{
+public:
+    PointCountingEngine()
+        : QPaintEngine(QPaintEngine::AllFeatures)
+    {
+    }
+
+    bool begin(QPaintDevice *) override { return true; }
+    bool end() override { return true; }
+    void updateState(const QPaintEngineState &) override {}
+    void drawPixmap(const QRectF &, const QPixmap &, const QRectF &) override {}
+    void drawPoints(const QPointF *, int pointCount) override { points += pointCount; }
+    void drawPoints(const QPoint *, int pointCount) override { points += pointCount; }
+    Type type() const override { return QPaintEngine::User; }
+
+    int points = 0;
+};
+
+/// A 64x64 device painted through a PointCountingEngine.
+class PointCountingDevice : public QPaintDevice
+{
+public:
+    QPaintEngine *paintEngine() const override { return &engine; }
+
+    int metric(PaintDeviceMetric which) const override
+    {
+        switch (which) {
+        case PdmWidth:
+        case PdmHeight:
+            return 64;
+        case PdmDepth:
+            return 32;
+        case PdmDpiX:
+        case PdmDpiY:
+        case PdmPhysicalDpiX:
+        case PdmPhysicalDpiY:
+            return 96;
+        case PdmDevicePixelRatioScaled:
+            return static_cast<int>(devicePixelRatioFScale());
+        default:
+            return QPaintDevice::metric(which);
+        }
+    }
+
+    mutable PointCountingEngine engine;
+};
+
+int gridPointsDrawn(Scene *scene, const QRectF &source)
+{
+    PointCountingDevice device;
+    QPainter painter(&device);
+    scene->render(&painter, QRectF(0, 0, 64, 64), source, Qt::IgnoreAspectRatio);
+    painter.end();
+    return device.engine.points;
+}
+
+} // namespace TestSceneGridHelpers
+
+void TestScene::testGridIsNotDrawnBeyondIntRange()
+{
+    // The grid's dots are int points, so drawBackground() bounds the exposed rect in floating point before converting
+    // its edges: a rect reaching past int's range, which a render of a far element exposes, spans far more grid cells
+    // than the bound and draws none. Dots scaled into an image from so far are below a pixel, so the points the render
+    // hands the paint engine are counted instead.
+    using TestSceneGridHelpers::gridPointsDrawn;
+    WorkSpace workspace;
+
+    // The count sees the grid: a 64-unit square holds 5 by 5 of its points.
+    QCOMPARE(gridPointsDrawn(workspace.scene(), QRectF(0, 0, 64, 64)), 25);
+    QCOMPARE(gridPointsDrawn(workspace.scene(), QRectF(-1e12, 0, 2e12, 64)), 0);
 }
 
 void TestScene::testGeometryChangeKeepsSceneIndexConsistentKS()
