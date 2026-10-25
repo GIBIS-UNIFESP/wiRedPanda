@@ -151,11 +151,16 @@ void ICRegistry::setBlob(const QString &name, const QByteArray &data)
 
 void ICRegistry::registerBlob(const QString &name, const QByteArray &data)
 {
+    m_blobs[name] = selfContainedBlob(name, data);
+}
+
+QByteArray ICRegistry::selfContainedBlob(const QString &name, const QByteArray &data)
+{
     QSet<QString> visited;
     QMap<QString, QByteArray> workingBlobs;
     workingBlobs[name] = data;
     makeBlobSelfContained(name, visited, workingBlobs);
-    m_blobs[name] = workingBlobs[name];
+    return workingBlobs[name];
 }
 
 void ICRegistry::removeBlob(const QString &name)

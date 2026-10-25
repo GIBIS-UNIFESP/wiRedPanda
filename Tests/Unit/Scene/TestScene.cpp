@@ -1832,6 +1832,86 @@ void TestScene::testPasteClipboardLegacyItemFormat()
     QCOMPARE(destWorkspace.scene()->elements().first()->elementType(), ElementType::And);
 }
 
+namespace {
+
+// Puts on the clipboard a versioned blob registry holding \a blob as "pasted_blob", and \a items as the item data
+void setClipboardWithBlob(const QByteArray &blob, const QByteArray &items)
+{
+    QMap<QString, QByteArray> blobs;
+    blobs["pasted_blob"] = blob;
+    QByteArray regBytes;
+    QDataStream regStream(&regBytes, QIODevice::WriteOnly);
+    regStream.setVersion(QDataStream::Qt_5_12);
+    regStream << blobs;
+
+    auto *mimeData = new QMimeData;
+    mimeData->setData(MimeType::BlobRegistryV2, regBytes);
+    mimeData->setData(MimeType::Clipboard, items);
+    QApplication::clipboard()->setMimeData(mimeData);
+}
+
+// Pastes into \a scene, which must throw, and checks the paste left the scene as it was: no element, no blob, and an
+// undo stack that records the next edit as a step of its own instead of into a macro the paste left open
+void checkFailedPasteChangesNothing(Scene *scene)
+{
+    QVERIFY_THROWS_EXCEPTION(Pandaception, scene->clipboardManager()->paste());
+
+    QCOMPARE(scene->elements().size(), 0);
+    QVERIFY(!scene->icRegistry()->hasBlob("pasted_blob"));
+    QCOMPARE(scene->undoStack()->count(), 0);
+
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
+    scene->receiveCommand(new AddItemsCommand({andGate}, scene));
+    QCOMPARE(scene->undoStack()->count(), 1);
+    scene->undoStack()->undo();
+    QCOMPARE(scene->elements().size(), 0);
+}
+
+} // namespace
+
+void TestScene::testPasteOfUnreadableItemsChangesNothing()
+{
+    // A clipboard whose blob registers but whose items do not read: the blob was registered, in an undo macro, before
+    // the items were read, so the throw left the blob registered and the macro open, every later edit recorded into it
+    WorkSpace subWorkspace;
+    subWorkspace.scene()->addItem(ElementFactory::buildElement(ElementType::And));
+    QByteArray blob;
+    {
+        QDataStream subStream(&blob, QIODevice::WriteOnly);
+        Serialization::writePandaHeader(subStream);
+        subWorkspace.save(subStream);
+    }
+
+    // A header, the selection's centre, then an element's type tag with nothing after it
+    QByteArray items;
+    {
+        QDataStream itemStream(&items, QIODevice::WriteOnly);
+        Serialization::writePandaHeader(itemStream);
+        itemStream << QPointF() << static_cast<int>(GraphicElement::Type);
+    }
+
+    setClipboardWithBlob(blob, items);
+    WorkSpace workspace;
+    checkFailedPasteChangesNothing(workspace.scene());
+}
+
+void TestScene::testPasteOfUnreadableBlobChangesNothing()
+{
+    // A clipboard whose items read but whose blob does not: registering it threw inside the undo stack's push, with
+    // the macro already open
+    WorkSpace sourceWorkspace;
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
+    sourceWorkspace.scene()->addItem(andGate);
+    andGate->setSelected(true);
+    sourceWorkspace.scene()->clipboardManager()->copy();
+    const QByteArray items = QApplication::clipboard()->mimeData()->data(MimeType::Clipboard);
+    QVERIFY(!items.isEmpty());
+
+    setClipboardWithBlob("not a circuit", items);
+    WorkSpace workspace;
+    checkFailedPasteChangesNothing(workspace.scene());
+}
+
 // ============================================================================
 // Topological Sort Tests (moved from TestCommon)
 // ============================================================================
