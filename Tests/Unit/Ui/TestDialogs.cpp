@@ -265,7 +265,8 @@ void TestDialogs::testElementEditorRejectsDuplicateTxLabel()
 
     f.select(nodeB);
     auto dismisser = TestUtils::AutoDismisser::closeAnyModal();
-    f.changeLabel("CLOCK"); // collision — dialog shown and dismissed
+    f.changeLabel("CLOCK"); // collision — not set while typing
+    emit f.labelEdit->editingFinished(); // leaving the field — dialog shown and dismissed
 
     QVERIFY2(TestUtils::waitFor([&] { return dismisser.dismissCount() >= 1; }),"The duplicate-label rejection dialog must have appeared");
     QCOMPARE(nodeB->label(), QStringLiteral("DATA")); // must be unchanged

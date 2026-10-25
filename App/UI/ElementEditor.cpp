@@ -3,6 +3,7 @@
 
 #include "App/UI/ElementEditor.h"
 
+#include <algorithm>
 #include <cmath>
 
 #include <QDebug>
@@ -99,7 +100,7 @@ ElementEditor::ElementEditor(QWidget *parent)
     connect(m_ui->sliderDelay,            qOverload<int>(&QSlider::valueChanged),           this, &ElementEditor::delayChanged);
     connect(m_ui->sliderVolume,           qOverload<int>(&QSlider::valueChanged),           this, &ElementEditor::volumeChanged);
     connect(m_ui->comboBoxWirelessMode,   qOverload<int>(&QComboBox::currentIndexChanged),  this, &ElementEditor::wirelessModeChanged);
-    connect(m_ui->lineEditElementLabel,   &QLineEdit::editingFinished,                      this, &ElementEditor::endEditSession);
+    connect(m_ui->lineEditElementLabel,   &QLineEdit::editingFinished,                      this, &ElementEditor::labelEditingFinished);
     connect(m_ui->lineEditTrigger,        &QLineEdit::editingFinished,                      this, &ElementEditor::endEditSession);
     connect(m_ui->doubleSpinBoxFrequency, &QDoubleSpinBox::editingFinished,                 this, &ElementEditor::endEditSession);
     connect(m_ui->sliderDelay,            &QSlider::sliderReleased,                         this, &ElementEditor::endEditSession);
@@ -604,7 +605,7 @@ void ElementEditor::endEditSession()
     ++m_editSession;
 }
 
-bool ElementEditor::refusesTxChannel(const std::optional<QString> &label, const std::optional<WirelessMode> mode)
+QString ElementEditor::duplicateTxLabel(const std::optional<QString> &label, const std::optional<WirelessMode> mode) const
 {
     // Every wireless node of the selection, a selection with other elements included, as the edit would leave it
     QList<Scene::WirelessEdit> edits;
@@ -613,25 +614,44 @@ bool ElementEditor::refusesTxChannel(const std::optional<QString> &label, const 
             edits.append({elm, label.value_or(elm->label()), mode.value_or(elm->wirelessMode())});
         }
     }
+    return m_scene->duplicateTxLabel(edits);
+}
 
-    const QString duplicate = m_scene->duplicateTxLabel(edits);
-    if (duplicate.isEmpty()) {
-        return false;
-    }
+void ElementEditor::warnDuplicateTxLabel(const QString &duplicate)
+{
     QMessageBox::warning(this,
         tr("Duplicate Wireless Channel"),
         tr("A Tx node with label \"%1\" already exists.\n"
            "Each wireless channel must have a unique label.").arg(duplicate));
+    // The fields show the values the elements kept
     update();
-    return true;
 }
 
 void ElementEditor::labelChanged(const QString &label)
 {
-    if (!editable() || (label == m_manyLabels) || refusesTxChannel(label, std::nullopt)) {
+    // A label typed one key at a time can pass through another Tx's channel on the way, so a refused one is not set
+    // and the warning waits for the field to be left (labelEditingFinished())
+    if (!editable() || (label == m_manyLabels) || !duplicateTxLabel(label, std::nullopt).isEmpty()) {
         return;
     }
     setProperty(ElementProperty::Label, label, true);
+}
+
+void ElementEditor::labelEditingFinished()
+{
+    // editingFinished also comes from leaving the field unedited: a label the elements already have (two Tx nodes may
+    // share one from a file or a paste) is no edit to refuse
+    if (editable()) {
+        const QString label = m_ui->lineEditElementLabel->text();
+        const QString &first = m_elements.constFirst()->label();
+        const bool same = std::all_of(m_elements.cbegin(), m_elements.cend(),
+                                      [&first](const GraphicElement *elm) { return elm->label() == first; });
+        const bool kept = same ? (label == first) : (label == m_manyLabels);
+        if (const QString duplicate = kept ? QString() : duplicateTxLabel(label, std::nullopt); !duplicate.isEmpty()) {
+            warnDuplicateTxLabel(duplicate);
+        }
+    }
+    endEditSession();
 }
 
 void ElementEditor::colorChanged()
@@ -677,7 +697,8 @@ void ElementEditor::wirelessModeChanged(const int index)
         return;
     }
     const auto mode = static_cast<WirelessMode>(index);
-    if (refusesTxChannel(std::nullopt, mode)) {
+    if (const QString duplicate = duplicateTxLabel(std::nullopt, mode); !duplicate.isEmpty()) {
+        warnDuplicateTxLabel(duplicate);
         return;
     }
 

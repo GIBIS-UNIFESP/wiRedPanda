@@ -115,9 +115,13 @@ private:
     void setProperty(ElementProperty property, const QVariant &value, bool merges);
     /// Ends the edit session: a field's next change is an undo step of its own.
     void endEditSession();
-    /// Returns whether giving the selected nodes \a label or \a mode (each when set; otherwise each node's own) would
-    /// give two Tx nodes one channel (Scene::duplicateTxLabel()), after warning so.
-    bool refusesTxChannel(const std::optional<QString> &label, std::optional<WirelessMode> mode);
+    /// Returns the label that giving the selected nodes \a label or \a mode (each when set; otherwise each node's own)
+    /// would give two Tx nodes (Scene::duplicateTxLabel()), or an empty string.
+    QString duplicateTxLabel(const std::optional<QString> &label, std::optional<WirelessMode> mode) const;
+    /// Warns that two Tx nodes would share the channel \a duplicate, then shows the values the elements kept.
+    void warnDuplicateTxLabel(const QString &duplicate);
+    /// Leaving the label field: warns when its edited text is refused, and ends the edit session.
+    void labelEditingFinished();
     /// Gives the selection the default appearance, or \a fileName's, as one undo step restoring its saved state.
     void applyAppearance(bool defaultAppearance, const QString &fileName);
     /// Shows or hides editor widgets based on the combined capabilities of the selection.

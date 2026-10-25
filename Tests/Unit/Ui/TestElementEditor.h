@@ -58,6 +58,9 @@ private slots:
     void testRefusesALabelAnotherTxHas();
     void testRefusesTwoSelectedNodesBecomingOneTxChannel();
     void testRefusesALabelAnotherTxHasWithANonNodeSelected();
+    void testTypingPastAnotherTxsLabelDoesNotWarn();
+    void testFinishingOnAnotherTxsLabelWarnsAndRestoresTheField();
+    void testLeavingTheFieldOnASharedLabelDoesNotWarn();
 
     void testBlobNameEditingFinishedIgnoresUnchangedOrEmpty();
     void testBlobNameEditingFinishedRejectsCollision();
