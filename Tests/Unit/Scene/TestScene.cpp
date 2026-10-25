@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <cmath>
 #include <memory>
+#include <tuple>
 
 #include <QApplication>
 #include <QClipboard>
@@ -1398,6 +1399,90 @@ void TestScene::testInlineLabelEditorStartWhileEditingCommitsPrevious()
     editor.start(elmB);
 
     QCOMPARE(elmA->label(), QString("Renamed A"));
+}
+
+void TestScene::testDuplicateTxLabel_data()
+{
+    QTest::addColumn<QStringList>("edits"); ///< "<node>:<label>:<mode>", the nodes of testDuplicateTxLabel().
+    QTest::addColumn<QString>("expected");
+
+    QTest::newRow("a node keeps no channel on a Tx's label") << QStringList{"d:a:None"} << QString();
+    QTest::newRow("a receiver takes a Tx's channel") << QStringList{"d:a:Rx"} << QString();
+    QTest::newRow("a node becomes a Tx on a Tx's label") << QStringList{"d:a:Tx"} << QString("a");
+    QTest::newRow("a Tx takes another Tx's label") << QStringList{"a:dup:Tx"} << QString("dup");
+    QTest::newRow("a Tx keeps its own label") << QStringList{"a:a:Tx"} << QString();
+    QTest::newRow("two edited nodes become one channel") << QStringList{"d:z:Tx", "e:z:Tx"} << QString("z");
+    QTest::newRow("two edited Tx nodes take one new label") << QStringList{"a:n:Tx", "b:n:Tx"} << QString("n");
+    QTest::newRow("Tx nodes already sharing a label refuse no other edit") << QStringList{"e:y:Tx"} << QString();
+    QTest::newRow("an empty label is no channel") << QStringList{"d::Tx", "e::Tx"} << QString();
+    QTest::newRow("a Tx leaving its channel frees it") << QStringList{"a:a:None", "d:a:Tx"} << QString();
+}
+
+void TestScene::testDuplicateTxLabel()
+{
+    QFETCH(QStringList, edits);
+    QFETCH(QString, expected);
+
+    // a: a Tx on "a"; b and c: Tx nodes already sharing "dup"; d: a plain node labelled "a"; e: an unlabelled one
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    const QList<std::tuple<QString, QString, WirelessMode>> nodes{
+        {"a", "a", WirelessMode::Tx}, {"b", "dup", WirelessMode::Tx}, {"c", "dup", WirelessMode::Tx},
+        {"d", "a", WirelessMode::None}, {"e", "", WirelessMode::None},
+    };
+    QHash<QString, Node *> byName;
+    for (const auto &[name, label, mode] : nodes) {
+        auto *node = new Node;
+        node->setWirelessMode(mode);
+        node->setLabel(label);
+        scene->addItem(node);
+        byName.insert(name, node);
+    }
+
+    const QHash<QString, WirelessMode> modes{
+        {"None", WirelessMode::None}, {"Tx", WirelessMode::Tx}, {"Rx", WirelessMode::Rx}};
+    QList<Scene::WirelessEdit> wirelessEdits;
+    for (const QString &edit : std::as_const(edits)) {
+        const QStringList parts = edit.split(':');
+        wirelessEdits.append({byName.value(parts.at(0)), parts.at(1), modes.value(parts.at(2))});
+    }
+
+    QCOMPARE(scene->duplicateTxLabel(wirelessEdits), expected);
+}
+
+void TestScene::testInlineLabelEditorRefusesADuplicateTxLabel()
+{
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *first = new Node;
+    first->setWirelessMode(WirelessMode::Tx);
+    first->setLabel("x");
+    scene->addItem(first);
+    auto *second = new Node;
+    second->setWirelessMode(WirelessMode::Tx);
+    second->setLabel("y");
+    second->setPos(100, 0);
+    scene->addItem(second);
+    const int undoCount = scene->undoStack()->count();
+    QSignalSpy messages(scene, &Scene::showStatusMessageRequested);
+
+    InlineLabelEditor editor(scene);
+    editor.start(second);
+    QLineEdit *lineEdit = nullptr;
+    for (auto *item : scene->QGraphicsScene::items()) {
+        if (auto *proxy = qgraphicsitem_cast<QGraphicsProxyWidget *>(item)) {
+            lineEdit = qobject_cast<QLineEdit *>(proxy->widget());
+        }
+    }
+    QVERIFY(lineEdit != nullptr);
+    lineEdit->setText("x");
+    editor.commit();
+
+    // The label stays, nothing is pushed, and the status bar says why
+    QCOMPARE(second->label(), QString("y"));
+    QCOMPARE(scene->undoStack()->count(), undoCount);
+    QCOMPARE(messages.count(), 1);
+    QVERIFY(messages.constFirst().constFirst().toString().contains("\"x\""));
 }
 
 void TestScene::testInlineLabelEditorEmptyLabelUsesElementBoundingRectFallback()

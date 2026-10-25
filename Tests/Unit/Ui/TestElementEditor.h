@@ -54,6 +54,11 @@ private slots:
     void testVolumeShownAsNearestPercent();
     void testApplyWirelessModeChangeSeversExistingConnection();
 
+    // A label or a mode that would give two Tx nodes one channel is refused
+    void testRefusesALabelAnotherTxHas();
+    void testRefusesTwoSelectedNodesBecomingOneTxChannel();
+    void testRefusesALabelAnotherTxHasWithANonNodeSelected();
+
     void testBlobNameEditingFinishedIgnoresUnchangedOrEmpty();
     void testBlobNameEditingFinishedRejectsCollision();
     void testBlobNameEditingFinishedRenamesSuccessfully();

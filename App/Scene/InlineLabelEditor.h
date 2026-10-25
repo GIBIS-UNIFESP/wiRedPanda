@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <QCoreApplication>
+
 class GraphicElement;
 class QGraphicsProxyWidget;
 class Scene;
@@ -22,6 +24,8 @@ class Scene;
  */
 class InlineLabelEditor
 {
+    Q_DECLARE_TR_FUNCTIONS(InlineLabelEditor)
+
 public:
     explicit InlineLabelEditor(Scene *scene);
     ~InlineLabelEditor();
@@ -31,6 +35,8 @@ public:
 
     /// Commits the current edit (if any): pushes an UpdateCommand only if the text actually
     /// changed, then closes the editor. Safe to call when nothing is being edited (no-op).
+    /// A label that would give two Tx nodes one channel is refused (Scene::duplicateTxLabel()),
+    /// with a message in the status bar.
     void commit();
 
     /// Discards the current edit (if any) and closes the editor without changing anything.

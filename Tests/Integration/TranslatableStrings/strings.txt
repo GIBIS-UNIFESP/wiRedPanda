@@ -333,6 +333,7 @@ ICLoader	IC nesting depth limit (%1) exceeded — blob may be maliciously crafte
 ICRegistry	Could not open file: %1
 ICRegistry	Could not save file: %1
 ICRegistry	Embedded IC dependency chain exceeds the maximum nesting depth (%1) while resolving '%2'
+InlineLabelEditor	A Tx node with label "%1" already exists: each wireless channel has one.
 InputButton	PUSH BUTTON
 InputButton	Pressed
 InputButton	Push Button

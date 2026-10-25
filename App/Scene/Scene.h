@@ -21,6 +21,7 @@
 #include <QVersionNumber>
 
 #include "App/Core/ContextDirProvider.h"
+#include "App/Core/Enums.h"
 #include "App/Core/SimulationHost.h"
 #include "App/Scene/ClipboardManager.h"
 #include "App/Scene/ConnectionManager.h"
@@ -215,6 +216,22 @@ public:
      * to resolve Rx node signals without duplicating the wireless scan.
      */
     static QHash<QString, InputPort *> wirelessTxInputPorts(const QVector<GraphicElement *> &elements);
+
+    /// A wireless node's channel as an edit would leave it: its label and its mode.
+    struct WirelessEdit {
+        const GraphicElement *node = nullptr;
+        QString label;
+        WirelessMode mode = WirelessMode::None;
+    };
+
+    /**
+     * \brief Returns the label \a edits would give two Tx nodes of the scene, or an empty string when they would
+     * give none.
+     * \details A Tx node's label is its channel, and a channel has one Tx: every writer of a label or a mode refuses
+     * an edit that leaves an edited node a Tx sharing its label with another, edited or not. Tx nodes that already
+     * share one (from a file or a paste) refuse no edit of other nodes.
+     */
+    QString duplicateTxLabel(const QList<WirelessEdit> &edits) const;
     /// Returns all visible (non-hidden) graphic elements in the scene.
     const QVector<GraphicElement *> visibleElements() const;
 

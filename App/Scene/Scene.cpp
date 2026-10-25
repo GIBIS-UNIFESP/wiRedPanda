@@ -421,6 +421,32 @@ QHash<QString, InputPort *> Scene::wirelessTxInputPorts(const QVector<GraphicEle
     return txMap;
 } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned QHash<QString, InputPort *>, never reached after the return above.
 
+QString Scene::duplicateTxLabel(const QList<WirelessEdit> &edits) const
+{
+    // Each wireless node's channel as the edits leave it
+    QHash<const GraphicElement *, WirelessEdit> after;
+    for (const WirelessEdit &edit : edits) {
+        after.insert(edit.node, edit);
+    }
+    for (auto *element : unsortedElements()) {
+        if (element->hasWirelessMode() && !after.contains(element)) {
+            after.insert(element, {element, element->label(), element->wirelessMode()});
+        }
+    }
+
+    for (const WirelessEdit &edit : edits) {
+        if ((edit.mode != WirelessMode::Tx) || edit.label.isEmpty()) {
+            continue;
+        }
+        for (const WirelessEdit &other : std::as_const(after)) {
+            if ((other.node != edit.node) && (other.mode == WirelessMode::Tx) && (other.label == edit.label)) {
+                return edit.label;
+            }
+        }
+    }
+    return {};
+}
+
 const QVector<Connection *> Scene::connections() const
 {
     const auto items_ = items();
