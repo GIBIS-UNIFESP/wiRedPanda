@@ -351,6 +351,49 @@ void TestICUnit::testGeneratePreviewPixmapScalesAnExtentBeyondIntRange()
              qPrintable(QString("a 2:1 extent made a %1x%2 preview").arg(preview.width()).arg(preview.height())));
 }
 
+void TestICUnit::testOnlyTheLoadedICRendersAPreview()
+{
+    // Only an IC in a scene is hovered, so only the IC a load starts from renders a preview: one inside its circuit is
+    // never shown, and a circuit of thousands of nested ICs held a preview for each (fuzz_ic_file's ic_heavy.panda,
+    // 1.2 GB).
+    QTemporaryDir subDir;
+    QVERIFY(subDir.isValid());
+
+    WorkSpace innerWorkspace;
+    CircuitBuilder innerBuilder(innerWorkspace.scene());
+    InputSwitch innerSw;
+    Led innerLed;
+    innerBuilder.add(&innerSw, &innerLed);
+    innerBuilder.connect(&innerSw, 0, &innerLed, 0);
+    const QString innerPath = subDir.path() + "/preview_inner.panda";
+    QCOMPARE(innerWorkspace.save(innerPath), WorkSpace::SaveOutcome::Saved);
+
+    WorkSpace outerWorkspace;
+    CircuitBuilder outerBuilder(outerWorkspace.scene());
+    InputSwitch outerSw;
+    auto *innerIc = new IC;
+    innerIc->loadFile(innerPath, subDir.path());
+    Led outerLed;
+    outerBuilder.add(&outerSw, innerIc, &outerLed);
+    outerBuilder.connect(&outerSw, 0, innerIc, 0);
+    outerBuilder.connect(innerIc, 0, &outerLed, 0);
+    const QString outerPath = subDir.path() + "/preview_outer.panda";
+    QCOMPARE(outerWorkspace.save(outerPath), WorkSpace::SaveOutcome::Saved);
+
+    IC ic;
+    ic.loadFile(outerPath, subDir.path());
+    QVERIFY2(!ic.previewPixmap().isNull(), "the loaded IC renders its preview");
+
+    int nested = 0;
+    for (auto *elm : ic.internalElements()) {
+        if (auto *nestedIc = qobject_cast<IC *>(elm)) {
+            ++nested;
+            QVERIFY2(nestedIc->previewPixmap().isNull(), "an IC inside the loaded one renders no preview");
+        }
+    }
+    QCOMPARE(nested, 1);
+}
+
 void TestICUnit::testShowForIcNullIcIsNoOp()
 {
     ICPreviewPopup popup;
