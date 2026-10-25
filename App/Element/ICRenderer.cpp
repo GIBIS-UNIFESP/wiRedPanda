@@ -8,6 +8,8 @@
 #include <QGraphicsScene>
 #include <QPainter>
 #include <QScopeGuard>
+#include <QSize>
+#include <QSizeF>
 #include <QStyleOptionGraphicsItem>
 #include <QSvgRenderer>
 
@@ -149,9 +151,11 @@ void ICRenderer::generatePreviewPixmap(IC &ic, const QList<QGraphicsItem *> &ite
         return;
     }
 
-    // Scale to fit within max preview dimensions while preserving aspect ratio
-    QSize targetSize = sourceRect.size().toSize();
-    targetSize.scale(ICPreviewPopup::MaxWidth, ICPreviewPopup::MaxHeight, Qt::KeepAspectRatio);
+    // Scale to fit within max preview dimensions while preserving aspect ratio, in floating point: a finite extent
+    // past int's range is undefined to round to whole pixels before it is scaled down
+    QSizeF scaledSize = sourceRect.size();
+    scaledSize.scale(ICPreviewPopup::MaxWidth, ICPreviewPopup::MaxHeight, Qt::KeepAspectRatio);
+    const QSize targetSize = scaledSize.toSize();
 
     if (targetSize.isEmpty()) {
         ic.m_previewPixmap = QPixmap();
