@@ -153,6 +153,7 @@ public:
 
     /**
      * \brief Sets the status applied when the port has no connection.
+     * \details A connected input keeps its wire's status, and takes the default when the wire goes.
      * \param defaultStatus Default status value.
      */
     void setDefaultStatus(const Status defaultStatus);

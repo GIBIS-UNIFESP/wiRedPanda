@@ -8,6 +8,7 @@
 
 #include "App/Core/ThemeManager.h"
 #include "App/Element/GraphicElements/And.h"
+#include "App/Element/GraphicElements/DFlipFlop.h"
 #include "App/Element/GraphicElements/Display7.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
@@ -85,6 +86,30 @@ void TestPort::testDefaultValueGetterSetter()
 
     port.setDefaultStatus(Status::Active);
     QCOMPARE(port.defaultValue(), Status::Active);
+}
+
+void TestPort::testDefaultSetWhileConnectedLeavesTheInputOnItsWire()
+{
+    // ~Preset is optional with an Active default; its driver reads Inactive.
+    And driver;
+    DFlipFlop flipFlop;
+    flipFlop.setPos(150, 0);
+    auto *preset = flipFlop.inputPort(2);
+    auto conn = std::make_unique<Connection>();
+    conn->setStartPort(driver.outputPort());
+    conn->setEndPort(preset);
+    driver.outputPort()->setStatus(Status::Inactive);
+    QCOMPARE(preset->status(), Status::Inactive);
+
+    // An element sets its ports' defaults each time it lays them out; a connected input stays on its wire.
+    preset->setDefaultStatus(Status::Active);
+    QCOMPARE(preset->defaultValue(), Status::Active);
+    QCOMPARE(preset->status(), Status::Inactive);
+
+    // It takes its default when the wire goes.
+    conn->setEndPort(nullptr);
+    QCOMPARE(preset->status(), Status::Active);
+    conn->setStartPort(nullptr);
 }
 
 void TestPort::testIsRequiredGetterSetter()

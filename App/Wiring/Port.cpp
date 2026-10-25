@@ -172,6 +172,12 @@ void Port::setName(const QString &name)
 void Port::setDefaultStatus(const Status defaultStatus)
 {
     m_defaultStatus = defaultStatus;
+    // A connected input stays on its wire: an element sets its ports' defaults each time it lays them out, and the
+    // simulation pulls an input from its driver only while running. It takes the default when its wire goes
+    // (updateConnections()).
+    if (isInput() && !m_connections.isEmpty()) {
+        return;
+    }
     setStatus(defaultStatus);
 }
 

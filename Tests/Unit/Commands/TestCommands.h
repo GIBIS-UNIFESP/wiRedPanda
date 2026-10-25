@@ -37,6 +37,7 @@ private slots:
     void testUpdateCommand();
     void testUpdateCommandPropertyEditDoesNotRebuild();
     void testUpdateCommandWirelessLabelRewiresChannel();
+    void testUpdateCommandKeepsAWiredPresetOnItsWire();
     void testUpdateCommandNonWirelessNodeEditKeepsFastPath();
 
     // Connection commands
