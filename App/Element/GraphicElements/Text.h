@@ -30,11 +30,17 @@ public:
     /// Refreshes the empty-state hint's color alongside the base label/port theming.
     void updateTheme() override;
 
+    /// Retranslates the empty-state hint alongside the base name and tooltip.
+    void retranslate() override;
+
 protected:
     /// Shows a faint "double-click to add text" hint whenever the label is empty, since an
     /// empty Text element is otherwise a fully transparent, near-invisible placeholder.
     void labelContentChanged() override;
 
 private:
+    /// Sets the empty-state hint's text in the current language.
+    void retranslateHint();
+
     QGraphicsSimpleTextItem *m_emptyHint = new QGraphicsSimpleTextItem(this);
 };
