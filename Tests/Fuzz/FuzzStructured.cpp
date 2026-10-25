@@ -16,12 +16,15 @@
  * of on recovering from broken magic bytes or truncated counts.
  *
  * Coverage target: every element type's load() branch, every VersionInfo
- * predicate branch, metadata map handling, and connection wiring.
+ * predicate branch, metadata map handling, and connection wiring, in every
+ * format from v4.1 to the current one: Rev100's compressed payload and
+ * Rev101's slim elements, whose ports' serialIds derive from the element id.
  */
 
 #include <cstddef>
 #include <cstdint>
 #include <fuzzer/FuzzedDataProvider.h>
+#include <limits>
 
 #include <QApplication>
 #include <QBitArray>
@@ -51,6 +54,7 @@
 #include "App/Simulation/Simulation.h"
 #include "App/Simulation/SimulationThrottleDisabler.h"
 #include "App/Versions.h"
+#include "App/Wiring/Port.h"
 #include "Tests/Fuzz/FuzzSeed.h"
 
 namespace {
@@ -106,13 +110,30 @@ constexpr Enums::ElementType kElementTypes[] = {
     Enums::ElementType::Xor,
 };
 
-// Known-valid file format versions to pick from
-constexpr std::pair<int,int> kVersions[] = {
-    {4,1}, {4,2}, {4,3}, {4,4}, {4,5}, {4,6}, {4,7}, {5,0}, {5,1},
+// Known-valid file format versions to pick from, the current ones included: from Rev100 everything after the header
+// is one compressed payload, and from Rev101 an element may carry an "id" from which its ports' serialIds derive
+const QVersionNumber kVersions[] = {
+    {4, 1}, {4, 2}, {4, 3}, {4, 4}, {4, 5}, {4, 6}, {4, 7}, {5, 0}, {5, 1}, Versions::Rev100, Versions::Rev101,
 };
 
 // Write a QString in Qt_5_12 wire format (quint32 byte-len + UTF-16-BE)
 void writeStr(QDataStream &s, const QString &str) { s << str; }
+
+// A coordinate or angle: usually finite, as FuzzedDataProvider's floating point always is, but now and then NaN or an
+// infinity, which a crafted file can hold and the loader must refuse before the item's geometry uses it. Rare (one in
+// 64), since a refusal ends the whole load and the simulation after it.
+double consumeReal(FuzzedDataProvider &fdp)
+{
+    static constexpr double kNonFinite[] = {
+        std::numeric_limits<double>::quiet_NaN(),
+        std::numeric_limits<double>::infinity(),
+        -std::numeric_limits<double>::infinity(),
+    };
+    if (fdp.ConsumeIntegralInRange<int>(0, 63) == 0) {
+        return kNonFinite[fdp.ConsumeIntegralInRange<size_t>(0, std::size(kNonFinite) - 1)];
+    }
+    return fdp.ConsumeFloatingPoint<double>();
+}
 
 // Returned by writeElementMap — serialIds registered in portMap for this element.
 // Zero means the port list was written with count=0 (no ID registered).
@@ -131,21 +152,31 @@ struct PortIds {
 //                     keys vary by element type (see below)
 //
 // baseId: unique serial-ID base for this element (e.g. elemIndex * 4).
-// Returns the serialIds actually written (0 = none written for that side).
+// elementId: the element's "id" when it is written in Rev101's slim shape.
+// Returns the serialIds actually written or derived (0 = none for that side).
 PortIds writeElementMap(QDataStream &s, FuzzedDataProvider &fdp,
                         Enums::ElementType type, const QVersionNumber &ver,
-                        quint64 baseId)
+                        quint64 baseId, int elementId)
 {
     using ET = Enums::ElementType;
 
+    // Rev101's slim shape: the element carries an "id" and its ports no serialId; the loader derives each port's
+    // serialId from the id and the port's position (Port::makeSerialId()). Rev101 files may hold either shape.
+    const bool slim = VersionInfo::hasSlimPortablePayload(ver) && fdp.ConsumeBool();
+
     // --- [1] Base map (GraphicElement::loadNewFormat reads these) ---
     QMap<QString, QVariant> base;
-    base.insert("pos", QVariant::fromValue(
-        QPointF(fdp.ConsumeFloatingPoint<double>(),
-                fdp.ConsumeFloatingPoint<double>())));
-    base.insert("rotation", QVariant(fdp.ConsumeFloatingPoint<double>()));
-    base.insert("label", QVariant(QString::fromStdString(
-        fdp.ConsumeBytesAsString(fdp.ConsumeIntegralInRange<size_t>(0, 16)))));
+    if (slim) base.insert("id", QVariant(elementId));
+    const double x = consumeReal(fdp);
+    const double y = consumeReal(fdp);
+    base.insert("pos", QVariant::fromValue(QPointF(x, y)));
+    base.insert("rotation", QVariant(consumeReal(fdp)));
+    // Half the labels come from two shared names, so wireless Nodes find a transmitter with their receiver's label
+    static constexpr const char *sharedLabels[] = {"a", "b"};
+    const QString label = fdp.ConsumeBool()
+        ? QString::fromLatin1(sharedLabels[fdp.ConsumeIntegralInRange<size_t>(0, std::size(sharedLabels) - 1)])
+        : QString::fromStdString(fdp.ConsumeBytesAsString(fdp.ConsumeIntegralInRange<size_t>(0, 16)));
+    base.insert("label", QVariant(label));
     if (fdp.ConsumeBool()) {
         const int k1 = fdp.ConsumeIntegral<int>();
         const int k2 = fdp.ConsumeBool() ? fdp.ConsumeIntegral<int>() : 0;
@@ -158,7 +189,7 @@ PortIds writeElementMap(QDataStream &s, FuzzedDataProvider &fdp,
     s << base;
 
     // --- [2] Port lists ---
-    // Write 0 or 1 port for each list.  Each port entry is a minimal QMap
+    // Each port entry is a minimal QMap
     // with a "serialId" key so the port is registered in context.portMap and
     // connections can wire up via portMap.contains(id) → setStartPort/setEndPort.
     //
@@ -175,22 +206,34 @@ PortIds writeElementMap(QDataStream &s, FuzzedDataProvider &fdp,
         && type != ET::Buzzer && type != ET::AudioBox
         && type != ET::Text && type != ET::Line);
 
-    // Write 0–2 ports per list.  Writing >1 port exercises the port-loop body
+    // Write up to 9 ports per list (see the count below).  Writing >1 port exercises the port-loop body
     // and addPort() for elements whose actual port count is less than serialized.
     // First port gets a stable serialId so connections can reference it; extra
-    // ports get unique IDs that won't collide.  Legacy "ptr" key is included
+    // ports get unique IDs that won't collide (1000 + 16 × the first id + the
+    // port's position, apart from every first id).  Legacy "ptr" key is included
     // sometimes to exercise oldPtrToSerialId backward-compat mapping.
-    const auto writePortList = [&](bool canHave, quint64 firstId) -> quint64 {
+    // In the slim shape a port's serialId is derived from its global index: inputs first, then outputs.
+    int lastCount = 0;
+    const auto writePortList = [&](bool canHave, quint64 firstId, int firstGlobalIndex) -> quint64 {
+        lastCount = 0;
         if (!canHave) { s << quint32(0); return 0; }
-        const int count = fdp.ConsumeIntegralInRange<int>(0, 2);
+        // One list in four holds up to 9 ports, past every type's minimum and the Demux's and Mux's larger maxima, so
+        // the loader grows ports, and refuses counts above a maximum or ones that disagree with the outputs; rarely,
+        // since a refusal ends the whole load
+        const int count = (fdp.ConsumeIntegralInRange<int>(0, 3) != 0) ? fdp.ConsumeIntegralInRange<int>(0, 2)
+                                                                        : fdp.ConsumeIntegralInRange<int>(0, 9);
+        lastCount = count;
         s << static_cast<quint32>(count);
         quint64 registeredId = 0;
         for (int p = 0; p < count; ++p) {
-            const quint64 pid = (p == 0) ? firstId : firstId + 200 + static_cast<quint64>(p);
+            const quint64 pid = slim ? Port::makeSerialId(static_cast<quint64>(elementId), firstGlobalIndex + p)
+                                     : (p == 0) ? firstId : 1000 + firstId * 16 + static_cast<quint64>(p);
             QMap<QString, QVariant> pm;
-            pm.insert("serialId", QVariant::fromValue(pid));
-            if (fdp.ConsumeBool())
-                pm.insert("ptr", QVariant::fromValue(pid + 100));
+            if (!slim) {
+                pm.insert("serialId", QVariant::fromValue(pid));
+                if (fdp.ConsumeBool())
+                    pm.insert("ptr", QVariant::fromValue(pid + 100));
+            }
             if (type == ET::IC)
                 pm.insert("name", QVariant(QString("port%1").arg(p)));
             s << pm;
@@ -199,8 +242,8 @@ PortIds writeElementMap(QDataStream &s, FuzzedDataProvider &fdp,
         return registeredId;
     };
 
-    ids.inputId  = writePortList(canHaveInput,  baseId);
-    ids.outputId = writePortList(canHaveOutput, baseId + 1); // canHaveOutput declared above
+    ids.inputId  = writePortList(canHaveInput, baseId, 0);
+    ids.outputId = writePortList(canHaveOutput, baseId + 1, lastCount); // canHaveOutput declared above
 
     // All elements have m_alternativeAppearances.size() >= 1, so count=1 is
     // safe for every type.  Writing a skinName entry exercises the appearance
@@ -231,9 +274,16 @@ PortIds writeElementMap(QDataStream &s, FuzzedDataProvider &fdp,
     if (type == ET::Clock) {
         extra.insert("frequency", QVariant(fdp.ConsumeFloatingPoint<double>()));
         extra.insert("delay",     QVariant(fdp.ConsumeFloatingPoint<double>()));
+        extra.insert("locked",    QVariant(fdp.ConsumeBool()));
         s << extra;
     } else if (type == ET::Buzzer) {
-        extra.insert("frequency", QVariant(fdp.ConsumeFloatingPoint<double>()));
+        // A frequency, or the note name files before it stored, which the loader reads only without one
+        if (fdp.ConsumeBool()) {
+            extra.insert("frequency", QVariant(fdp.ConsumeFloatingPoint<double>()));
+        } else {
+            static constexpr const char *notes[] = {"C6", "D6", "E6", "F6", "G6", "A6", "B6", "C7", "A7", "B7", "H9"};
+            extra.insert("note", QVariant(QString(notes[fdp.ConsumeIntegralInRange<size_t>(0, std::size(notes) - 1)])));
+        }
         extra.insert("volume",    QVariant(fdp.ConsumeFloatingPoint<double>()));
         s << extra;
     } else if (type == ET::AudioBox) {
@@ -250,6 +300,7 @@ PortIds writeElementMap(QDataStream &s, FuzzedDataProvider &fdp,
         s << extra;
     } else if (type == ET::InputRotary) {
         extra.insert("currentPort", QVariant(fdp.ConsumeIntegral<int>()));
+        extra.insert("locked",      QVariant(fdp.ConsumeBool()));
         s << extra;
     } else if (type == ET::Led || type == ET::Display7 ||
                type == ET::Display14 || type == ET::Display16) {
@@ -268,12 +319,17 @@ PortIds writeElementMap(QDataStream &s, FuzzedDataProvider &fdp,
         s << extra;
     } else if (type == ET::IC) {
         // IC::load checks "name" → "fileName" → "blobName" in order.
-        // Rotate through all three keys; also alternate between the flat blob
-        // and the nested blob to exercise 2-level IC loading and the depth guard.
+        // Rotate through all three keys, and through the names IC::load resolves:
+        // the flat blob and the nested one (2-level loading, the depth guard) by
+        // exact name, the flat blob by its base name ("sub/fuzz_ic_base.panda" →
+        // registry key "fuzz_ic_base"), and a name that is no blob, which falls
+        // through to loading a file that does not exist.
         static const char *icKeys[] = {"blobName", "name", "fileName"};
+        static const char *icNames[] = {
+            "fuzz_ic.panda", "fuzz_ic_nested.panda", "sub/fuzz_ic_base.panda", "missing.panda",
+        };
         const char *key = icKeys[fdp.ConsumeIntegralInRange<size_t>(0, 2)];
-        const bool useNested = fdp.ConsumeBool();
-        const QString blobName = useNested ? "fuzz_ic_nested.panda" : "fuzz_ic.panda";
+        const QString blobName = QString::fromLatin1(icNames[fdp.ConsumeIntegralInRange<size_t>(0, 3)]);
         extra.insert(QString::fromLatin1(key), QVariant(blobName));
         s << extra;
     }
@@ -285,16 +341,19 @@ PortIds writeElementMap(QDataStream &s, FuzzedDataProvider &fdp,
 // Synthesise a complete .panda byte stream from fuzz input.
 QByteArray buildPanda(FuzzedDataProvider &fdp)
 {
-    QByteArray buf;
-    QDataStream s(&buf, QIODevice::WriteOnly);
-    s.setVersion(QDataStream::Qt_5_12);
-
     // --- Header ---
-    s.writeRawData("WPCF", 4);
-    const auto &[verMaj, verMin] = kVersions[
+    QByteArray buf;
+    QDataStream header(&buf, QIODevice::WriteOnly);
+    header.setVersion(QDataStream::Qt_5_12);
+    header.writeRawData("WPCF", 4);
+    const QVersionNumber &ver = kVersions[
         fdp.ConsumeIntegralInRange<size_t>(0, std::size(kVersions) - 1)];
-    const QVersionNumber ver(verMaj, verMin);
-    s << QList<int>{verMaj, verMin};
+    header << ver.segments();
+
+    // Everything after the header: written as is, or from Rev100 compressed as one payload
+    QByteArray body;
+    QDataStream s(&body, QIODevice::WriteOnly);
+    s.setVersion(QDataStream::Qt_5_12);
 
     // --- Workspace metadata ---
     // V4.6+: one unified QMap<QString,QVariant> (includes dolphinFileName).
@@ -309,10 +368,12 @@ QByteArray buildPanda(FuzzedDataProvider &fdp)
             regStream.setVersion(QDataStream::Qt_5_12);
             // Include both blobs: the flat IC and the nested IC.
             // Elements can reference either "fuzz_ic.panda" (1-level) or
-            // "fuzz_ic_nested.panda" (2-level, exercises recursion guard).
+            // "fuzz_ic_nested.panda" (2-level, exercises recursion guard),
+            // and the flat one again under a key only a base name matches.
             QMap<QString, QByteArray> blobMap;
             blobMap.insert("fuzz_ic.panda",        g_icBlob);
             blobMap.insert("fuzz_ic_nested.panda", g_nestedIcBlob);
+            blobMap.insert("fuzz_ic_base",         g_icBlob);
             regStream << blobMap;
         }
         QMap<QString, QVariant> meta;
@@ -375,7 +436,7 @@ QByteArray buildPanda(FuzzedDataProvider &fdp)
 
         // baseId: 4 IDs per element (2 used: input = base, output = base+1)
         const quint64 baseId = static_cast<quint64>(e) * 4 + 1; // start at 1, never 0
-        const PortIds ids = writeElementMap(s, fdp, etype, ver, baseId);
+        const PortIds ids = writeElementMap(s, fdp, etype, ver, baseId, e + 1);
         if (ids.outputId) outputIds.append(ids.outputId);
         if (ids.inputId)  inputIds.append(ids.inputId);
     }
@@ -410,6 +471,11 @@ QByteArray buildPanda(FuzzedDataProvider &fdp)
         }
     }
 
+    if (VersionInfo::hasCompressedPayload(ver)) {
+        Serialization::writePayload(header, body);
+    } else {
+        header.writeRawData(body.constData(), static_cast<int>(body.size()));
+    }
     return buf;
 }
 
@@ -433,18 +499,25 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
     // exercised when FuzzStructured generates IC elements.  ElementFactory works
     // after QApplication is constructed.
     //
-    // The blob is a current-format panda containing InputSwitch (id=1, boundary input)
-    // and Led (id=2, boundary output).  IC::processLoadedItems classifies them
-    // as input/output boundaries and calls loadBoundaryElement for each.
+    // The blob is a current-format panda with three boundary inputs (InputSwitch, InputButton, Clock) and two
+    // boundary outputs (Led, Led).  IC::processLoadedItems classifies them and calls loadBoundaryElement for each;
+    // ICLoader orders each side by position (row, then column, then the port's own position when two elements
+    // share a spot) and labels each pin from its element's label and generic properties (the Clock's frequency).
     {
-        auto *sw  = ElementFactory::buildElement(ElementType::InputSwitch);
-        auto *led = ElementFactory::buildElement(ElementType::Led);
-        sw->setId(1);
-        led->setId(2);
+        const auto place = [](ElementType type, int id, QPointF pos, const QString &label) {
+            auto *element = ElementFactory::buildElement(type);
+            element->setId(id);
+            element->setPos(pos);
+            element->setLabel(label);
+            return element;
+        };
 
         QList<QGraphicsItem *> items;
-        items.append(sw);
-        items.append(led);
+        items.append(place(ElementType::InputSwitch, 1, {0, 64}, "a"));
+        items.append(place(ElementType::InputButton, 2, {64, 64}, "b"));
+        items.append(place(ElementType::Clock, 3, {0, 0}, QString()));
+        items.append(place(ElementType::Led, 4, {256, 0}, "y"));
+        items.append(place(ElementType::Led, 5, {256, 0}, "z"));
 
         QMap<QString, QVariant> meta;
         meta.insert("dolphinFileName", QVariant(QString()));
@@ -456,7 +529,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
 
     // Build g_nestedIcBlob: a panda that itself contains one IC element referencing
     // "fuzz_ic.panda" (which is g_icBlob).  This creates a 2-level nesting:
-    //   outer panda → IC("fuzz_ic_nested.panda") → IC("fuzz_ic.panda") → InputSwitch+Led
+    //   outer panda → IC("fuzz_ic_nested.panda") → IC("fuzz_ic.panda") → its boundary elements
     // Exercises IC::deserializeAndLoad recursion guard (depth stays at 2 < 16).
     {
         // Serialise g_icBlob into the nested blob's embeddedICs map
