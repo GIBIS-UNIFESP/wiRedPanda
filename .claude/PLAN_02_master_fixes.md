@@ -500,15 +500,19 @@ elements of the 73 IC components are off it, written by the MCP generators. Undo
 off-grid element moved, rotated or flipped comes back snapped, not where it was: the undo does not restore. Fix: one
 snapping helper; setting a position is always exact, so a load, a deserialization, an undo and a redo put an element
 where it was; `SceneInteraction` owns the element drag, and every edit snaps explicitly where it decides a place: Qt's
-drag, the nudge (`Scene.cpp:1250`), align and distribute (`:937`), the rotate's constructor and redo
-(`Commands.cpp:341`, `:387`), the flip (`:948`), the palette drop (`SceneDropHandler.cpp:85`), the clone drop (`:117`),
-the add without a drag (`:165`), paste and duplicate (`ClipboardManager.cpp:323`), the split's node (`:648`, its step of
-16 named), and the MCP's `create_element` (`ElementHandler.cpp:122`), `move_element` (`:273`) and `instantiate_ic`
-(`ICHandler.cpp:213`). The move, rotate and flip commands restore exactly; the morph's is guarded by a test. The 73
-components are regenerated on the grid by their generators, each component's pins in the same order. Tests: an off-grid
-file from an older release through move, rotate, flip and morph with undo and redo, each restored exactly; `setPos()`
-does not snap. Golden: plan 1's snapping-path rows of the undos from off-grid starts (P1.12), no other. Snapping on load
-is plan 4's (§8), since it can reorder an IC's pins.
+drag, the nudge (`Scene.cpp:1250`), align and distribute (`:937`), the rotate's redo (`Commands.cpp:387`; its
+constructor, `:341`, no longer moves an element), the flip (`:948`), the palette drop (`SceneDropHandler.cpp:85`), the
+clone drop (`:117`), the add without a drag (`:165`), paste and duplicate (`ClipboardManager.cpp:323`), the split's
+node (`:648`, its step of 16 named), and the MCP's `create_element` (`ElementHandler.cpp:122`), `move_element`
+(`:273`) and `instantiate_ic` (`ICHandler.cpp:213`). The move, rotate and flip commands restore exactly; the morph's is
+guarded by a test. The 72 generated components (the 73rd, `wireless_passthrough`, is hand-made) are regenerated on the
+grid by their generators, each component's pins in the same order; the register files' read-mux rows, spaced flush by
+the Mux's measured height, are spaced by a multiple of the snap step, or snapping pulls neighbouring rows into each
+other. Tests: an off-grid file from an older release through move, rotate, flip and morph with undo and redo, each
+restored exactly; `setPos()` does not snap. Goldens: plan 1's snapping-path rows (P1.12) of the undos from off-grid
+starts, and of align, distribute, the rotate's redo and the MCP's `create_element`, which now snap where they did not;
+the regenerated components' saved payloads and scene snapshots, and the 8-to-1 mux's preview. Snapping on load is plan
+4's (§8), since it can reorder an IC's pins.
 
 ### 7.6 An undo puts a restored element on top
 
