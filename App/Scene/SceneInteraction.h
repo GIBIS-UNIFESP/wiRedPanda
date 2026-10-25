@@ -71,6 +71,7 @@ private:
     QElapsedTimer m_timer;
     QPointF m_mousePos;
     QPointF m_selectionStartPoint;
+    QPointF m_dragStartPos; ///< Where the press that may start an element drag landed, in scene coordinates.
 
     /// Per-drag snapshot of (element, original position); QPointer auto-clears if an
     /// element is destroyed mid-drag (e.g. Delete shortcut while dragging).

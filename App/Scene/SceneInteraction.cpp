@@ -82,6 +82,7 @@ bool SceneInteraction::mousePress(QGraphicsSceneMouseEvent *event)
             // Snapshot positions now; MoveCommand compares these against release-time positions.
             // QPointer in m_dragSnapshot lets entries auto-clear if the element is destroyed
             // before release (e.g. Delete shortcut while mid-drag — see WIREDPANDA-H9).
+            m_dragStartPos = m_mousePos;
             m_dragSnapshot.clear();
             m_dragSnapshot.reserve(selectedElements_.size());
 
@@ -138,6 +139,18 @@ bool SceneInteraction::mouseMove(QGraphicsSceneMouseEvent *event)
     // Expand scene rect while dragging so elements can be moved beyond the current boundary,
     // and auto-scroll the viewport to follow the cursor.
     if (m_draggingElement) {
+        // The drag is this handler's, not Qt's (elements are not ItemIsMovable): each selected element, which Qt's
+        // press has settled by now, goes where the pointer's travel takes it from where it was at the press, snapped
+        // to the grid
+        if (event->buttons().testFlag(Qt::LeftButton)) {
+            const QPointF delta = m_mousePos - m_dragStartPos;
+            for (const auto &[element, startPos] : std::as_const(m_dragSnapshot)) {
+                if (element && element->isSelected()) {
+                    element->setPos(GraphicElement::snapToGrid(startPos + delta));
+                }
+            }
+        }
+
         m_scene->resizeScene();
 
         if (m_timer.elapsed() > 50) {

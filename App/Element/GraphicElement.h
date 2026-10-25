@@ -15,6 +15,7 @@
 #include <QKeySequence>
 #include <QList>
 
+#include "App/Core/Constants.h"
 #include "App/Core/Enums.h"
 #include "App/Core/ItemWithId.h"
 #include "App/Element/ElementAppearance.h"
@@ -49,7 +50,7 @@ class QWidget;
  * - Port management (input and output Port children).
  * - Pixmap / appearance rendering with default and user-defined appearances.
  * - Serialization to / from a versioned QDataStream (save/load).
- * - Grid-snapping and wire-update callbacks via itemChange().
+ * - Wire-update callbacks via itemChange(); the grid every placing edit snaps to (snapToGrid()).
  * - Label and keyboard-trigger display.
  * - Theme-aware selection highlight painting.
  * - Polymorphic hooks for clock frequency, audio, color, and truth-table
@@ -371,6 +372,13 @@ public:
 
     // --- Geometric Properties ---
 
+    /**
+     * \brief Returns \a pos rounded to the nearest multiple of \a step, by default half the scene grid.
+     * \details Setting a position is exact, so a load, an undo and a redo put an element where it was; every edit
+     * that decides where an element goes (a drag, a nudge, a drop, a paste, a rotate, a flip...) snaps through this.
+     */
+    static QPointF snapToGrid(const QPointF &pos, int step = Constants::gridSize / 2);
+
     /// Returns the centre point of the element's pixmap in local coordinates.
     QPointF pixmapCenter() const;
 
@@ -559,8 +567,7 @@ protected:
 
     /**
      * \brief Handles item state changes such as position, rotation, and selection.
-     * \details Three change types are intercepted:
-     * - ItemPositionChange: snaps the new position to half the scene grid size.
+     * \details Two change types are intercepted (a position is set exactly; see snapToGrid()):
      * - ItemScenePositionHasChanged / ItemRotationHasChanged / ItemTransformHasChanged:
      *   calls updateConnections() on all ports to redraw attached wires.
      * - ItemSelectedHasChanged: toggles connection highlight via highlight().

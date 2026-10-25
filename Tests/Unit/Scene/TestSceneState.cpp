@@ -760,17 +760,14 @@ void TestSceneState::testElementPropertiesAfterMove()
     elem->setPos(pos1);
     scene.addItem(elem);
 
-    // setPos() here runs BEFORE addItem(), and GraphicElement::itemChange()'s grid-snap only
-    // applies once the item has a scene() -- so this one is exact, unsnapped.
+    // Setting a position is exact, before addItem() and after it alike; the edits that decide a place snap.
     QPointF actualPos1 = elem->pos();
     QCOMPARE(actualPos1, pos1);
 
-    // Move element -- this setPos() runs AFTER addItem(), so it snaps to the 8px half-grid:
-    // 150/8 = 18.75 rounds to 19*8 = 152.
     QPointF pos2(150, 150);
     elem->setPos(pos2);
     QPointF actualPos2 = elem->pos();
-    QCOMPARE(actualPos2, QPointF(152, 152));
+    QCOMPARE(actualPos2, pos2);
 }
 
 void TestSceneState::testConnectionPropertiesAfterElementMove()

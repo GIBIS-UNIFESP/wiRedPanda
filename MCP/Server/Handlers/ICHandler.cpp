@@ -8,7 +8,6 @@
 #include <QFileInfo>
 #include <QJsonArray>
 
-#include "App/Core/Constants.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/Scene/Commands.h"
@@ -153,9 +152,9 @@ QJsonObject ICHandler::handleInstantiateIC(const QJsonObject &params, const QJso
                                    requestId, JsonRpcError::InvalidParams);
     }
 
-    const int snap = Constants::gridSize / 2;
-    int x = qRound(params.value("x").toDouble() / snap) * snap;
-    int y = qRound(params.value("y").toDouble() / snap) * snap;
+    const QPointF pos = GraphicElement::snapToGrid({params.value("x").toDouble(), params.value("y").toDouble()});
+    const int x = qRound(pos.x());
+    const int y = qRound(pos.y());
     QString label = params.value("label").toString(icName);
 
     return tryCommand([&]() -> QJsonObject { // LCOV_EXCL_LINE -- pattern 45: gcov misattributes this multi-line lambda-taking call's entry; the lambda body below is genuinely covered

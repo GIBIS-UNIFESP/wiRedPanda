@@ -87,6 +87,11 @@ private slots:
     void testSplitCommandRedoThrowsWhenEndPortIsNull();
     void testSplitCommandUndoThrowsWhenUpstreamMissing();
 
+    // An undo restores an element off the grid exactly, and setPos() stores what it is given.
+    void testOffGridElementRestoresExactly_data();
+    void testOffGridElementRestoresExactly();
+    void testSetPosIsExact();
+
     // CommandUtils::findItems()/findElements() throw when scene state is corrupted
     // independently of the undo stack (mirrors testSplitCommandRedoThrowsBeforeAllocation's
     // forgetItemId technique).

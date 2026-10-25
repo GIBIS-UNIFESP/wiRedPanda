@@ -51,7 +51,7 @@ private slots:
     void testADoubleClickOnAnotherSwitchIsOneUndoableCommand();
     void testRotaryClickIsOneUndoableCommand();
     void testRotaryClickThroughAZoomedViewIsOneUndoableCommand();
-    void testPressGoingToTheSwitchHoldingTheMouseIsRecorded();
+    void testMiddlePressLeavesTheSwitchNotHoldingTheMouse();
     void testTriggerKeyIsOneUndoableCommandKeepingTheSelection();
     void testButtonPressIsNotRecorded();
 

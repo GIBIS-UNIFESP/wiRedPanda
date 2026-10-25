@@ -228,7 +228,8 @@ void TestElementHandler::testHandleCreateElementCreatesRealElement()
 
     auto *element = elementById(window, id);
     QVERIFY(element);
-    QCOMPARE(element->pos(), QPointF(10, 20));
+    // Placed on the half grid, as every edit that decides a place puts an element
+    QCOMPARE(element->pos(), QPointF(8, 24));
 }
 
 void TestElementHandler::testHandleCreateElementAppliesLabel()

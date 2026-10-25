@@ -57,9 +57,9 @@ GraphicElement::GraphicElement(ElementType type, QGraphicsItem *parent)
     m_minOutputSize = metadata.minOutputSize;
 
     qCDebug(four) << "Setting flags of elements.";
-    // ItemSendsGeometryChanges is required so itemChange() receives ItemPositionChange and
-    // can snap movement to the grid
-    setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable | QGraphicsItem::ItemSendsGeometryChanges);
+    // ItemSendsGeometryChanges is required so itemChange() hears of moves and redraws the wires. Not ItemIsMovable:
+    // SceneInteraction drags elements, snapping each to the grid, while a position set in code stays exact
+    setFlags(QGraphicsItem::ItemIsSelectable | QGraphicsItem::ItemSendsGeometryChanges);
 
     qCDebug(four) << "Setting attributes.";
     m_label->setVisible(metadata.hasLabel);
@@ -214,6 +214,11 @@ void GraphicElement::invalidateRenderCache()
     setCacheMode(QGraphicsItem::DeviceCoordinateCache);
 }
 
+QPointF GraphicElement::snapToGrid(const QPointF &pos, const int step)
+{
+    return {static_cast<qreal>(qRound(pos.x() / step) * step), static_cast<qreal>(qRound(pos.y() / step) * step)};
+}
+
 void GraphicElement::setPortName(const QString &name)
 {
     setObjectName(name);
@@ -334,17 +339,6 @@ QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, co
     // Guard against changes fired during construction before the item is added to a scene
     if (!scene()) {
         return QGraphicsItem::itemChange(change, value);
-    }
-
-    if (change == ItemPositionChange) {
-        qCDebug(four) << "Align to grid.";
-        QPointF newPos = value.toPointF();
-        // Snap to half-grid (8 px steps) so elements always align with each other
-        // and with the port positions computed in updatePortsProperties().
-        const int gridSize = Constants::gridSize / 2;
-        const int xV = qRound(newPos.x() / gridSize) * gridSize;
-        const int yV = qRound(newPos.y() / gridSize) * gridSize;
-        return QPoint(xV, yV);
     }
 
     // Any geometric change (move, rotate, shear) requires redrawing all connected wires
