@@ -223,6 +223,13 @@ dropped by the next load. The editor takes only a letter, a digit or a space, so
 (P2.69, found by `fuzz_round_trip`'s coverage rounds, from an old-format file). Fix: the load reads back the key
 sequence the save wrote, and only another type through its text. Shown by `TestSerialization::testTriggerLoadsAsSaved`.
 
+### 2.20 An IC's preview of a body past int's range is undefined
+
+`ICRenderer::generatePreviewPixmap()` rounded the IC body's extent to whole pixels (`QSizeF::toSize()`) before
+scaling it to the popup's bounds, so a finite extent past `int`'s range was an undefined conversion (P2.71, found by
+`fuzz_ic_file`'s coverage rounds, the class of §2.17). Fix: scaled in floating point first. Shown by
+`TestICUnit::testGeneratePreviewPixmapScalesAnExtentBeyondIntRange`, whose 2:1 extent GCC's build made a square.
+
 ## 3. In code plan 3 rewrites
 
 ### 3.1 SR and T flip-flops ignore every input while one input is open
@@ -668,6 +675,7 @@ Each of these exists on `master`, and its fix is another plan's decision:
 | P2.62 | Rendering past `int`'s range (§2.17) | the helpers only | none |
 | P2.66 | A port's wires in linear time (§2.18) | the helpers only | none |
 | P2.69 | A trigger loaded as saved (§2.19) | the helpers only | none |
+| P2.71 | An IC's preview past `int`'s range (§2.20) | P1.14 | none |
 | P2.9 | SR and T defaults (§3.1) | P1.4, P1.6, P1.13 | port layout, one scene snapshot, any trace with S, R or T open |
 | P2.10 | The loader's port counts (§3.2) | P1.8, P1.17 | the strings golden's three messages |
 | P2.11 | The AudioBox's undo (§3.3) | P1.15 | one editor-writes row |
