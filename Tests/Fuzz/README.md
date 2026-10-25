@@ -20,7 +20,7 @@ Twelve harnesses, registered in `CMakeLists.txt` under `if(ENABLE_FUZZER)`:
 | `fuzz_clipboard`   | `FuzzClipboard.cpp`   | A clipboard pasted, undone and redone; a `.panda` file copied, pasted, duplicated and cut. |
 | `fuzz_old_format`  | `FuzzOldFormat.cpp`   | The pre-4.1 flat binary path (`GraphicElement::loadOldFormat`) and its per-version / per-element-type branches. |
 | `fuzz_ic_registry` | `FuzzICRegistry.cpp`  | `ICRegistry`: a `.panda` input as an IC's definition, placed from its file, reloaded when the file changes, embedded, renamed, extracted and created, each step undone and redone; other inputs as raw blob bytes through the blob API and `embeddedICs` metadata loading. |
-| `fuzz_codegen`     | `FuzzCodeGen.cpp`     | The Arduino + SystemVerilog exporters (only reachable via `File > Export`), plus `generateTestbench`. |
+| `fuzz_codegen`     | `FuzzCodeGen.cpp`     | The Arduino + SystemVerilog exporters (only reachable via `File > Export`), plus `generateTestbench`, on loaded `.panda` files and on circuits other inputs describe (every element type the exporters take, embedded and file-backed ICs). |
 | `fuzz_round_trip`  | `FuzzRoundTrip.cpp`   | The save side: `Serialization::serialize` + every element `save()`, then re-loads the output to surface save/load asymmetries. |
 | `fuzz_ic_file`     | `FuzzICFile.cpp`      | File-backed IC loading (`IC::loadFromFile` → `loadFileDirectly`), including cycle detection and old-format migration. |
 | `fuzz_copy_panda`  | `FuzzCopyPanda.cpp`   | The `Save As` helpers `copyPandaFile` + `readPreamble`, including the `fileBackedICs` recursive copy + cycle guard. |
@@ -162,6 +162,9 @@ set every clipboard it copies is written to that directory in the harness's
 clipboard layout (a flags byte, the blob registry's 2-byte little-endian
 length, the registry, then the items). The first round does this pass over
 the seed corpus itself, so the corpus starts with real clipboards to mutate.
+`fuzz_codegen` builds a circuit from any input that is not a `.panda` file,
+which the seed corpus holds none of, so `coverage-round.sh` adds 64 inputs of
+fixed pseudo-random bytes (`structured-seed-*`) to its corpus.
 
 To see which `App/` lines the seed corpus never reaches across all the
 harnesses at once, build the coverage preset (source-based instrumentation,
