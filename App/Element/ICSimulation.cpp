@@ -9,7 +9,7 @@
 #include "App/Simulation/Simulation.h"
 #include "App/Wiring/Port.h"
 
-void ICSimulation::initialize(IC &ic)
+void ICSimulation::initialize(IC &ic, const bool keepOutputs)
 {
     ic.m_sortedInternalElements.clear();
     ic.m_boundaryInputElements.clear();
@@ -21,7 +21,7 @@ void ICSimulation::initialize(IC &ic)
 
     // Initialize simulation vectors on all internal elements
     for (auto *elm : std::as_const(ic.m_internalElements)) {
-        elm->initSimulationVectors(elm->inputSize(), elm->outputSize());
+        elm->initSimulationVectors(elm->inputSize(), elm->outputSize(), keepOutputs);
     }
 
     // Build connection graph and wire wireless Tx→Rx
@@ -31,7 +31,7 @@ void ICSimulation::initialize(IC &ic)
     // Initialize nested ICs recursively
     for (auto *elm : std::as_const(ic.m_internalElements)) {
         if (elm->elementType() == ElementType::IC) {
-            ICSimulation::initialize(*static_cast<IC *>(elm));
+            ICSimulation::initialize(*static_cast<IC *>(elm), keepOutputs);
         }
     }
 

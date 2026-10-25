@@ -36,8 +36,9 @@ public:
         int sourceOutputIndex = 0;
     };
 
-    /// Allocates the I/O vectors and seeds outputs from \a outputPorts default statuses.
-    void initVectors(int inputCount, int outputCount, const QVector<OutputPort *> &outputPorts);
+    /// Allocates the I/O vectors and seeds outputs from \a outputPorts default statuses, unless \a keepOutputs and the
+    /// output count is unchanged: a rebuild keeps the outputs of an element it keeps.
+    void initVectors(int inputCount, int outputCount, const QVector<OutputPort *> &outputPorts, bool keepOutputs);
 
     /// Resets each output slot to its port's power-on default (Unknown coerced to Inactive).
     void reset(const QVector<OutputPort *> &outputPorts);

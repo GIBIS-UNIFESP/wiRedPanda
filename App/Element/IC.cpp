@@ -341,9 +341,9 @@ void IC::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidge
     ICRenderer::drawBody(*this, painter);
 }
 
-void IC::initializeSimulation()
+void IC::initializeSimulation(const bool keepOutputs)
 {
-    ICSimulation::initialize(*this);
+    ICSimulation::initialize(*this, keepOutputs);
 }
 
 void IC::updateLogic()

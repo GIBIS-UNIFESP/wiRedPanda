@@ -770,9 +770,9 @@ void GraphicElement::connectPredecessor(const int inputIndex, GraphicElement *so
     m_sim.connectPredecessor(inputIndex, source, outputPort);
 }
 
-void GraphicElement::initSimulationVectors(const int inputCount, const int outputCount)
+void GraphicElement::initSimulationVectors(const int inputCount, const int outputCount, const bool keepOutputs)
 {
-    m_sim.initVectors(inputCount, outputCount, m_ports.outputs());
+    m_sim.initVectors(inputCount, outputCount, m_ports.outputs(), keepOutputs);
 }
 
 int GraphicElement::minOutputSize() const
