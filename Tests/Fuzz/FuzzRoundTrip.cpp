@@ -8,15 +8,16 @@
  * element save() methods are entirely dark.  This harness:
  *
  *   1. Loads a panda stream (same as fuzz_deserialize).
- *   2. Calls Serialization::serialize on the loaded scene items — exercises all
- *      element save() overrides, connection save(), and the QMap-format property
- *      serialisation that mirrors the load path.
- *   3. Loads the serialised bytes back into a second WorkSpace — exercises the
- *      load path on output produced by our own code, which surfaces any
- *      save/load asymmetries (fields written but not read, or vice versa).
- *
- * This is the canonical round-trip fuzzer: any crash or difference between the
- * two workspaces on valid input is a bug.
+ *   2. Saves it through WorkSpace::save(), as File > Save writes it — every
+ *      element and connection save(), the blob registry, the pin metadata and
+ *      the file-backed IC list.
+ *   3. Loads the saved bytes back into a second WorkSpace, whose elements must
+ *      keep their count, types and port counts.
+ *   4. Saves that, loads it into a third and saves again: the application's own
+ *      file must save to the same bytes, so a field written but not read back,
+ *      or read into another, traps.  The first save is not compared, since a
+ *      field read from an older format can change form once written in the
+ *      current one.
  */
 
 #include <cstddef>
@@ -40,6 +41,7 @@
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
+#include "Tests/Fuzz/PandaMutator.h"
 
 namespace {
 
@@ -48,6 +50,13 @@ int  g_argc = 0;
 char **g_argv = nullptr;
 
 } // namespace
+
+// The input is a whole .panda file: the shared structure-aware mutator works on a current-format file's decompressed
+// body (Tests/Fuzz/PandaMutator.h)
+extern "C" size_t LLVMFuzzerCustomMutator(uint8_t *Data, size_t Size, size_t MaxSize, unsigned int Seed)
+{
+    return PandaMutator::mutate(Data, Size, MaxSize, Seed);
+}
 
 extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
 {
@@ -102,34 +111,19 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
     ws1.scene()->simulation()->update();
     ws1.scene()->simulation()->update();
 
-    // --- Phase 2: serialize the loaded scene ---
-    QByteArray saved;
-    {
-        // Metadata + elements are buffered and compressed as one payload, exactly
-        // like WorkSpace::save() -- writePandaHeader() now stamps FormatRev::current
-        // (Rev100+), so the reload in Phase 3 expects a compressed payload behind it.
-        QByteArray payload;
-        QDataStream payloadStream(&payload, QIODevice::WriteOnly);
-        payloadStream.setVersion(QDataStream::Qt_5_12);
-
-        // Include the blob registry from the loaded workspace so that
-        // Serialization::serializeBlobRegistry is exercised on circuits
-        // that have embedded ICs.
-        QMap<QString, QVariant> meta;
-        meta.insert("dolphinFileName", QVariant(QString()));
-        const QMap<QString, QByteArray> &blobs =
-            ws1.scene()->icRegistry()->blobMap();
-        Serialization::serializeBlobRegistry(blobs, meta);
-        payloadStream << meta;
-
-        // Collect all items from the scene
-        const auto items = ws1.scene()->items();
-        Serialization::serialize(items, payloadStream, {.purpose = SerializationPurpose::PortableFile});
-
-        QDataStream out(&saved, QIODevice::WriteOnly);
+    // --- Phase 2: save the loaded scene, as File > Save writes it ---
+    const auto save = [](WorkSpace &ws) {
+        QByteArray bytes;
+        QDataStream out(&bytes, QIODevice::WriteOnly);
         Serialization::writePandaHeader(out);
-        Serialization::writePayload(out, payload);
+        ws.save(out);
+        return bytes;
+    };
+    // No file in the corpus names a waveform; half the circuits are given one, as beWavedDolphin's save does
+    if (ws1.dolphinFileName().isEmpty() && ((size % 2) == 1)) {
+        ws1.setDolphinFileName("wave.dolphin");
     }
+    const QByteArray saved = save(ws1);
 
     // --- Phase 3: reload the serialised output ---
     // Any crash here is a save/load asymmetry — the serializer wrote something
@@ -174,6 +168,23 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
                 __builtin_trap(); // port count changed across round-trip
             }
         }
+    }
+
+    // --- Phase 4: a file the application wrote reads back and saves to the same bytes ---
+    // A field the save writes and the load drops, or reads into another, changes the next save. The first save is
+    // not compared with the second: a field read from an older format can take another form once written in the
+    // current one (an old file's empty pin labels come back null), and only then is it the application's own.
+    const QByteArray saved2 = save(ws2);
+    QDataStream stream3(saved2);
+    WorkSpace ws3;
+    try {
+        const QVersionNumber version3 = Serialization::readPandaHeader(stream3);
+        ws3.load(stream3, version3, /*contextDir=*/QString());
+    } catch (...) {
+        __builtin_trap(); // the application's own save does not load
+    }
+    if (save(ws3) != saved2) {
+        __builtin_trap(); // the application's own save changed across a load
     }
 
     return 0;
