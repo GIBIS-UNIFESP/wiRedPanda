@@ -230,6 +230,14 @@ scaling it to the popup's bounds, so a finite extent past `int`'s range was an u
 `fuzz_ic_file`'s coverage rounds, the class of §2.17). Fix: scaled in floating point first. Shown by
 `TestICUnit::testGeneratePreviewPixmapScalesAnExtentBeyondIntRange`, whose 2:1 extent GCC's build made a square.
 
+### 2.21 Every nested IC renders a preview no one can see
+
+`ICLoader::processLoadedItems()` rendered a hover preview (`ICRenderer::generatePreviewPixmap()`, up to 500x350) for
+every IC it loaded, the ICs nested inside another's circuit too, which no scene holds and no hover reaches; a circuit
+of thousands of nested ICs held one for each (P2.72, found as an out-of-memory by `fuzz_ic_file`'s coverage rounds:
+`Tests/Fixtures/Perf/ic_heavy.panda` loaded as an IC peaked at 1.2 GB, 776 MB of it in 7,494 previews). Fix: only the
+IC a load starts from (nesting depth 1) renders one. Shown by `TestICUnit::testOnlyTheLoadedICRendersAPreview`.
+
 ## 3. In code plan 3 rewrites
 
 ### 3.1 SR and T flip-flops ignore every input while one input is open
@@ -676,6 +684,7 @@ Each of these exists on `master`, and its fix is another plan's decision:
 | P2.66 | A port's wires in linear time (§2.18) | the helpers only | none |
 | P2.69 | A trigger loaded as saved (§2.19) | the helpers only | none |
 | P2.71 | An IC's preview past `int`'s range (§2.20) | P1.14 | none |
+| P2.72 | No preview for a nested IC (§2.21) | P1.14 | none |
 | P2.9 | SR and T defaults (§3.1) | P1.4, P1.6, P1.13 | port layout, one scene snapshot, any trace with S, R or T open |
 | P2.10 | The loader's port counts (§3.2) | P1.8, P1.17 | the strings golden's three messages |
 | P2.11 | The AudioBox's undo (§3.3) | P1.15 | one editor-writes row |
