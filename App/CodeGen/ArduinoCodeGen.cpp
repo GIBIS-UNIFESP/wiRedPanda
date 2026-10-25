@@ -11,6 +11,7 @@
 
 #include "App/CodeGen/CodeGenUtils.h"
 #include "App/Core/Common.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/Buzzer.h"
 #include "App/Element/GraphicElements/Clock.h"
@@ -211,7 +212,7 @@ void ArduinoCodeGen::declareInputs()
                 throwPinOverflow();
             }
 
-            QString varName = elm->objectName() + QString::number(counter);
+            QString varName = ElementFactory::untranslatedName(type) + QString::number(counter);
             const QString label = elm->label();
 
             if (!label.isEmpty()) {
@@ -220,7 +221,7 @@ void ArduinoCodeGen::declareInputs()
 
             varName = removeForbiddenChars(varName);
             // Not reachable via any label: varName always has a numeric counter baked in
-            // (objectName()+counter, prepended with '_' by removeForbiddenChars() if that
+            // (the type's name+counter, prepended with '_' by removeForbiddenChars() if that
             // leading char is a digit), so it can never collide exactly with a bare reserved
             // word — kept as a defensive backstop against a future naming-scheme change.
             if (isArduinoReserved(varName)) { // LCOV_EXCL_LINE
@@ -241,9 +242,9 @@ void ArduinoCodeGen::declareInputs()
                 if (m_availablePins.isEmpty()) {
                     throwPinOverflow();
                 }
-                QString varName = elm->objectName() + QString::number(counter) + "_pos" + QString::number(i);
+                QString varName = ElementFactory::untranslatedName(type) + QString::number(counter) + "_pos" + QString::number(i);
                 if (!label.isEmpty()) {
-                    varName = elm->objectName() + QString::number(counter) + "_" + label + "_pos" + QString::number(i);
+                    varName = ElementFactory::untranslatedName(type) + QString::number(counter) + "_" + label + "_pos" + QString::number(i);
                 }
                 varName = removeForbiddenChars(varName);
                 if (isArduinoReserved(varName)) { // LCOV_EXCL_LINE -- see declareInputs()'s identical guard above
@@ -277,13 +278,13 @@ void ArduinoCodeGen::declareOutputs()
                     throwPinOverflow();
                 }
 
-                QString varName = elm->objectName() + QString::number(counter);
+                QString varName = ElementFactory::untranslatedName(elm->elementType()) + QString::number(counter);
                 if (!label.isEmpty()) {
                     varName = QString("%1_%2").arg(varName, label);
                 }
                 Port *port = elm->inputPort(i);
-                if (port && !port->name().isEmpty()) {
-                    varName = QString("%1_%2").arg(varName, port->name());
+                if (port && !port->sourceName().isEmpty()) {
+                    varName = QString("%1_%2").arg(varName, port->sourceName());
                 }
                 varName = removeForbiddenChars(varName);
                 if (isArduinoReserved(varName)) { // LCOV_EXCL_LINE -- see declareInputs()'s identical guard
@@ -319,7 +320,7 @@ void ArduinoCodeGen::declareAuxVariablesRec(const QVector<GraphicElement *> &ele
                 Port *externalPort = ic->outputPort(i);
                 if (externalPort) {
                     QString portVarName = baseVarName;
-                    const QString portName = externalPort->name();
+                    const QString portName = externalPort->sourceName();
                     if (!portName.isEmpty()) {
                         portVarName += "_" + removeForbiddenChars(portName);
                         if (i > 0) { // LCOV_EXCL_LINE -- needs a real multi-output IC fixture; deferred, see .claude/COVERAGE_100_PLAN.md
@@ -361,9 +362,9 @@ void ArduinoCodeGen::declareAuxVariablesRec(const QVector<GraphicElement *> &ele
 
         QString baseVarName;
         if (!icPrefix.isEmpty()) {
-            baseVarName = QString("aux_%1%2_%3").arg(icPrefix, removeForbiddenChars(elm->objectName()), QString::number(counter++));
+            baseVarName = QString("aux_%1%2_%3").arg(icPrefix, removeForbiddenChars(ElementFactory::untranslatedName(elm->elementType())), QString::number(counter++));
         } else {
-            baseVarName = QString("aux_%1_%2").arg(removeForbiddenChars(elm->objectName()), QString::number(counter++));
+            baseVarName = QString("aux_%1_%2").arg(removeForbiddenChars(ElementFactory::untranslatedName(elm->elementType())), QString::number(counter++));
         }
 
         if (outputs.size() == 1) {
@@ -386,8 +387,8 @@ void ArduinoCodeGen::declareAuxVariablesRec(const QVector<GraphicElement *> &ele
             int portCounter = 0;
             for (auto *port : outputs) {
                 QString portName = baseVarName + QString("_%1").arg(portCounter++);
-                if (!port->name().isEmpty()) {
-                    portName += "_" + removeForbiddenChars(port->name());
+                if (!port->sourceName().isEmpty()) {
+                    portName += "_" + removeForbiddenChars(port->sourceName());
                 }
                 m_varMap[port] = portName;
             }
@@ -983,7 +984,7 @@ void ArduinoCodeGen::emitTruthTable(GraphicElement *elm)
             // Not reachable: otherPortName()/otherPortNameImpl() has no return path that
             // yields an empty string — a disconnected input already resolves to "LOW"/"HIGH"
             // via highLow(defaultValue()), never falling through to here.
-            m_stream << "// WARNING: Input " << i << " of TruthTable '" << elm->objectName() << "' appears disconnected. Assuming LOW." << Qt::endl; // LCOV_EXCL_LINE
+            m_stream << "// WARNING: Input " << i << " of TruthTable '" << ElementFactory::untranslatedName(elm->elementType()) << "' appears disconnected. Assuming LOW." << Qt::endl; // LCOV_EXCL_LINE
             signalName = "0"; // LCOV_EXCL_LINE
         }
         inputSignalNames << signalName;
@@ -1010,7 +1011,7 @@ void ArduinoCodeGen::emitTruthTable(GraphicElement *elm)
             if (out == 0) { // LCOV_EXCL_LINE
                 throw PANDACEPTION("Output variable not mapped for TruthTable: %1", elm->objectName()); // LCOV_EXCL_LINE
             } // LCOV_EXCL_LINE
-            m_stream << "// TruthTable '" << elm->objectName() << "' output " << out << " is disconnected — no code emitted." << Qt::endl; // LCOV_EXCL_LINE
+            m_stream << "// TruthTable '" << ElementFactory::untranslatedName(elm->elementType()) << "' output " << out << " is disconnected — no code emitted." << Qt::endl; // LCOV_EXCL_LINE
             continue; // LCOV_EXCL_LINE
         }
 

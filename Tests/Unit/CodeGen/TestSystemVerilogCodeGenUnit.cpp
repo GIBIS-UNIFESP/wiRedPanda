@@ -1062,8 +1062,8 @@ void display(CircuitBuilder &builder)
 
 void TestSystemVerilogCodeGenUnit::testModuleUnderTranslationMatchesGolden()
 {
-    // Each module generated in English and under a translator that tags every string, both pinned: on master the
-    // second carries the tag in element type and segment names, which a module should not follow.
+    // Each module generated in English and under a translator that tags every string, both pinned: the second is the
+    // first, since a module names elements and segments in the source language.
     const QList<std::pair<QString, std::function<void(CircuitBuilder &)>>> circuits{
         {"and_gate", SystemVerilogTranslatedModule::andGate},
         {"display7", SystemVerilogTranslatedModule::display<Display7>},
@@ -1086,4 +1086,28 @@ void TestSystemVerilogCodeGenUnit::testModuleUnderTranslationMatchesGolden()
         const QString translatedMismatch = TestUtils::compareWithGolden(goldens + name + ".tr.sv.txt", translated);
         QVERIFY2(translatedMismatch.isEmpty(), qPrintable(translatedMismatch));
     }
+}
+
+void TestSystemVerilogCodeGenUnit::testModuleDoesNotFollowTheInterfaceLanguage()
+{
+    // Each segment display and an IC holding one, built and exported in English and under a translator that tags
+    // every string: the IC is loaded under each, so its pins take the display's port names in that language.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const auto build = [&dir](CircuitBuilder &builder) { TestUtils::addSegmentDisplaysAndDisplayIc(builder, dir.path()); };
+
+    const QString english = SystemVerilogTranslatedModule::generate("displays.sv", build);
+    // The IC's pin and each display's segment are in the text, so the comparison covers their names.
+    QVERIFY2(english.contains("shown_g_middle"), qPrintable(english));
+    QVERIFY2(english.contains("_7_segment_display6_g_middle"), qPrintable(english));
+    QVERIFY2(english.contains("_14_segment_display7_g1_middle_left_horizontal"), qPrintable(english));
+    QVERIFY2(english.contains("_16_segment_display8_g1_middle_left_horizontal"), qPrintable(english));
+
+    TestUtils::TagEveryStringTranslator tagging;
+    QCoreApplication::installTranslator(&tagging);
+    const QString translated = SystemVerilogTranslatedModule::generate("displays.sv", build);
+    QCoreApplication::removeTranslator(&tagging);
+
+    const QString mismatch = TestUtils::compareTexts("the module under the tagging translator", english, translated);
+    QVERIFY2(mismatch.isEmpty(), qPrintable(mismatch));
 }

@@ -77,6 +77,10 @@ public:
     /// Returns the port's label text.
     QString name() const;
 
+    /// Returns the label in the source language, which generated code names its signals from whatever the interface
+    /// language is: the name itself unless setName() was given another.
+    QString sourceName() const;
+
     /// Returns the default status applied when the port is unconnected.
     Status defaultValue() const { return m_defaultStatus; }
 
@@ -177,6 +181,13 @@ public:
     void setName(const QString &name);
 
     /**
+     * \brief Sets the label text shown next to the port, with the same label in the source language.
+     * \param name Label string as the interface shows it.
+     * \param sourceName \a name in the source language.
+     */
+    void setName(const QString &name, const QString &sourceName);
+
+    /**
      * \brief Marks whether a wire to this port is mandatory.
      * \param required \c true if a connection is required for valid simulation.
      * \note Does not affect the port's default status — call setDefaultStatus() separately.
@@ -215,6 +226,7 @@ protected:
     QPen m_currentPen;
     QList<Connection *> m_connections;
     QString m_name;
+    QString m_sourceName;
     Status m_defaultStatus = Status::Unknown;
     Status m_status = Status::Unknown;
     bool m_required = true;

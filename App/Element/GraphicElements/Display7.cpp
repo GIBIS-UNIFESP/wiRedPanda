@@ -130,14 +130,14 @@ void Display7::updatePortsProperties()
     // Ports on the left side (x=0) correspond to the left segments (G, F, E, D);
     // ports on the right side (x=64) correspond to the right segments and DP (A, B, DP, C).
     // This matches the physical pin layout used by common 7-segment display ICs.
-    if (auto *port = inputPort(0)) { port->setPos( 0,  8); port->setName("G (" +  tr("middle")      + ")"); }
-    if (auto *port = inputPort(1)) { port->setPos( 0, 24); port->setName("F (" +  tr("upper left")  + ")"); }
-    if (auto *port = inputPort(2)) { port->setPos( 0, 40); port->setName("E (" +  tr("lower left")  + ")"); }
-    if (auto *port = inputPort(3)) { port->setPos( 0, 56); port->setName("D (" +  tr("bottom")      + ")"); }
-    if (auto *port = inputPort(4)) { port->setPos(64,  8); port->setName("A (" +  tr("top")         + ")"); }
-    if (auto *port = inputPort(5)) { port->setPos(64, 24); port->setName("B (" +  tr("upper right") + ")"); }
-    if (auto *port = inputPort(6)) { port->setPos(64, 40); port->setName("DP (" + tr("dot")         + ")"); }
-    if (auto *port = inputPort(7)) { port->setPos(64, 56); port->setName("C (" +  tr("lower right") + ")"); }
+    if (auto *port = inputPort(0)) { port->setPos( 0,  8); setDescribedPortName(port, "G",  QT_TR_NOOP("middle")); }
+    if (auto *port = inputPort(1)) { port->setPos( 0, 24); setDescribedPortName(port, "F",  QT_TR_NOOP("upper left")); }
+    if (auto *port = inputPort(2)) { port->setPos( 0, 40); setDescribedPortName(port, "E",  QT_TR_NOOP("lower left")); }
+    if (auto *port = inputPort(3)) { port->setPos( 0, 56); setDescribedPortName(port, "D",  QT_TR_NOOP("bottom")); }
+    if (auto *port = inputPort(4)) { port->setPos(64,  8); setDescribedPortName(port, "A",  QT_TR_NOOP("top")); }
+    if (auto *port = inputPort(5)) { port->setPos(64, 24); setDescribedPortName(port, "B",  QT_TR_NOOP("upper right")); }
+    if (auto *port = inputPort(6)) { port->setPos(64, 40); setDescribedPortName(port, "DP", QT_TR_NOOP("dot")); }
+    if (auto *port = inputPort(7)) { port->setPos(64, 56); setDescribedPortName(port, "C",  QT_TR_NOOP("lower right")); }
 
     for (auto *in : inputs()) {
         // Segments are individually driven; leaving a pin unconnected turns that segment off

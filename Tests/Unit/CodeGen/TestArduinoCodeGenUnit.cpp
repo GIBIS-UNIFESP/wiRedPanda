@@ -548,8 +548,8 @@ void display(CircuitBuilder &builder)
 
 void TestArduinoCodeGenUnit::testSketchUnderTranslationMatchesGolden()
 {
-    // Each sketch generated in English and under a translator that tags every string, both pinned: on master the
-    // second carries the tag in element type and segment names, which a sketch should not follow.
+    // Each sketch generated in English and under a translator that tags every string, both pinned: the second is the
+    // first, since a sketch names elements and segments in the source language.
     const QList<std::pair<QString, std::function<void(CircuitBuilder &)>>> circuits{
         {"and_gate", ArduinoTranslatedSketch::andGate},
         {"display7", ArduinoTranslatedSketch::display<Display7>},
@@ -572,4 +572,28 @@ void TestArduinoCodeGenUnit::testSketchUnderTranslationMatchesGolden()
         const QString translatedMismatch = TestUtils::compareWithGolden(goldens + name + ".tr.ino.txt", translated);
         QVERIFY2(translatedMismatch.isEmpty(), qPrintable(translatedMismatch));
     }
+}
+
+void TestArduinoCodeGenUnit::testSketchDoesNotFollowTheInterfaceLanguage()
+{
+    // Each segment display and an IC holding one, built and exported in English and under a translator that tags
+    // every string: the IC is loaded under each, so its pins take the display's port names in that language.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const auto build = [&dir](CircuitBuilder &builder) { TestUtils::addSegmentDisplaysAndDisplayIc(builder, dir.path()); };
+
+    const QString english = ArduinoTranslatedSketch::generate(build);
+    // The IC's pin and each display's segment are in the text, so the comparison covers their names.
+    QVERIFY2(english.contains("shown_g_middle"), qPrintable(english));
+    QVERIFY2(english.contains("_7_segment_display1_g_middle"), qPrintable(english));
+    QVERIFY2(english.contains("_14_segment_display2_g1_middle_left_horizontal"), qPrintable(english));
+    QVERIFY2(english.contains("_16_segment_display3_g1_middle_left_horizontal"), qPrintable(english));
+
+    TestUtils::TagEveryStringTranslator tagging;
+    QCoreApplication::installTranslator(&tagging);
+    const QString translated = ArduinoTranslatedSketch::generate(build);
+    QCoreApplication::removeTranslator(&tagging);
+
+    const QString mismatch = TestUtils::compareTexts("the sketch under the tagging translator", english, translated);
+    QVERIFY2(mismatch.isEmpty(), qPrintable(mismatch));
 }

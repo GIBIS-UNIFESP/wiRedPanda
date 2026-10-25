@@ -9,37 +9,37 @@
 
 #include <elapsedMillis.h>
 /* ========= Inputs ========== */
-const int tr_input_switch1 = A0;
-const int tr_input_switch2 = A1;
+const int input_switch1 = A0;
+const int input_switch2 = A1;
 
 /* ========= Outputs ========== */
-const int tr_led1_1 = A2;
+const int led1_1 = A2;
 
 /* ====== Aux. Variables ====== */
-bool tr_input_switch1_val = LOW;
-bool tr_input_switch2_val = LOW;
-bool aux_tr_and_2 = LOW;
+bool input_switch1_val = LOW;
+bool input_switch2_val = LOW;
+bool aux_and_2 = LOW;
 
 void setup() {
-    pinMode(tr_input_switch1, INPUT);
-    pinMode(tr_input_switch2, INPUT);
-    pinMode(tr_led1_1, OUTPUT);
+    pinMode(input_switch1, INPUT);
+    pinMode(input_switch2, INPUT);
+    pinMode(led1_1, OUTPUT);
 }
 
 void computeLogic() {
     // Assigning aux variables. //
-    aux_tr_and_2 = tr_input_switch1_val && tr_input_switch2_val;
+    aux_and_2 = input_switch1_val && input_switch2_val;
 }
 
 void loop() {
     // Reading input data //.
-    tr_input_switch1_val = digitalRead(tr_input_switch1);
-    tr_input_switch2_val = digitalRead(tr_input_switch2);
+    input_switch1_val = digitalRead(input_switch1);
+    input_switch2_val = digitalRead(input_switch2);
 
     // Updating clocks. //
 
     computeLogic();
 
     // Writing output data. //
-    digitalWrite(tr_led1_1, aux_tr_and_2);
+    digitalWrite(led1_1, aux_and_2);
 }

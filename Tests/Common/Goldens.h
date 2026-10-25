@@ -29,6 +29,7 @@
 #include "App/Element/PropertyDescriptor.h"
 #include "App/Scene/Scene.h"
 
+class CircuitBuilder;
 class IC;
 class Port;
 class WorkSpace;
@@ -48,6 +49,9 @@ bool regeneratingGoldens();
  * \return An empty string on a match or a write; otherwise the file and the first line that differs, from each side.
  */
 QString compareWithGolden(const QString &goldenPath, const QString &actual);
+
+/// Compares two texts as compareWithGolden() compares a text with its golden, naming them \a name in the message.
+QString compareTexts(const QString &name, const QString &expected, const QString &actual);
 
 /**
  * \brief The byte form of compareWithGolden(): \a actual is compared with the golden file's raw bytes, and written
@@ -278,6 +282,13 @@ QList<ElementType> dumpedTypes();
 /// The IC the port layout and label goldens build, the 1-bit full adder: an IC lays out its ports and places its label
 /// from its definition rather than from its type.
 QString fullAdderIcFile();
+
+/**
+ * \brief Builds one circuit holding each segment display and an IC holding a 7-segment display, each with a segment
+ * driven: the displays' port names are translated strings, and the IC names its pins after the display's ports.
+ * \details The IC's definition is saved to \a directory first.
+ */
+void addSegmentDisplaysAndDisplayIc(CircuitBuilder &builder, const QString &directory);
 
 } // namespace TestUtils
 

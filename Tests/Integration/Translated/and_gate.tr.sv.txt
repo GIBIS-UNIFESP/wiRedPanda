@@ -5,11 +5,11 @@
 
 module and_gate (
 /* ========= Inputs ========== */
-input tr_input_switch1,
-input tr_input_switch2,
+input input_switch1,
+input input_switch2,
 
 /* ========= Outputs ========== */
-output tr_led4_1
+output led4_1
 );
 /* ====== Aux. Variables ====== */
 
@@ -17,5 +17,5 @@ output tr_led4_1
 // Assigning aux variables. //
 
 // Writing output data. //
-assign tr_led4_1 = (tr_input_switch1 & tr_input_switch2);
+assign led4_1 = (input_switch1 & input_switch2);
 endmodule
