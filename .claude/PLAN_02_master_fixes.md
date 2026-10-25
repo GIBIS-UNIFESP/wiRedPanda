@@ -215,6 +215,14 @@ deleting them cost n squared; an IC's reload does all three with the wires of a 
 (P2.66, found by `fuzz_ic_registry`'s coverage rounds). Fix: a set beside the list for membership, the list keeping
 its order and each wire once, so a removal stops where the wire is found. Shown by `TestPort::testFanOutGrowsLinearly`.
 
+### 2.19 A trigger whose text does not parse back is lost on the next load
+
+`GraphicElementSerializer::save()` writes an element's trigger as the key sequence itself, and `loadNewFormat()` read
+it back through its text, so a sequence whose text does not parse back, such as `Qt::Key_unknown`'s (empty), was
+dropped by the next load. The editor takes only a letter, a digit or a space, so only a file holds such a trigger
+(P2.69, found by `fuzz_round_trip`'s coverage rounds, from an old-format file). Fix: the load reads back the key
+sequence the save wrote, and only another type through its text. Shown by `TestSerialization::testTriggerLoadsAsSaved`.
+
 ## 3. In code plan 3 rewrites
 
 ### 3.1 SR and T flip-flops ignore every input while one input is open
@@ -659,6 +667,7 @@ Each of these exists on `master`, and its fix is another plan's decision:
 | P2.61 | Snapping past `int`'s range (§2.16) | the helpers only | none |
 | P2.62 | Rendering past `int`'s range (§2.17) | the helpers only | none |
 | P2.66 | A port's wires in linear time (§2.18) | the helpers only | none |
+| P2.69 | A trigger loaded as saved (§2.19) | the helpers only | none |
 | P2.9 | SR and T defaults (§3.1) | P1.4, P1.6, P1.13 | port layout, one scene snapshot, any trace with S, R or T open |
 | P2.10 | The loader's port counts (§3.2) | P1.8, P1.17 | the strings golden's three messages |
 | P2.11 | The AudioBox's undo (§3.3) | P1.15 | one editor-writes row |
