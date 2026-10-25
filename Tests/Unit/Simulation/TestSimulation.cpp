@@ -13,6 +13,7 @@
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
+#include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
@@ -342,4 +343,30 @@ void TestSimulationUnit::testBlockerCyclePreservesClockLevel()
              "resume after a SimulationBlocker cycle forced the clock HIGH mid-LOW-phase");
 
     sim->stop();
+}
+
+void TestSimulationUnit::testRebuildKeepsClockLevel()
+{
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *clock = new Clock();
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{clock}, scene));
+    auto *sim = scene->simulation();
+    // Locked, the clock does not follow wall time; its first build starts it HIGH.
+    clock->setLocked(true);
+    sim->update();
+    QCOMPARE(clock->isOn(), true);
+    clock->setOn(false);
+
+    // A structural edit elsewhere rebuilds the simulation; the clock keeps its level, and a clock the edit adds starts.
+    auto *added = new Clock();
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{added}, scene));
+    sim->update();
+    QCOMPARE(clock->isOn(), false);
+    QCOMPARE(added->isOn(), true);
+
+    // A restart starts every clock afresh.
+    sim->restart();
+    sim->update();
+    QCOMPARE(clock->isOn(), true);
 }

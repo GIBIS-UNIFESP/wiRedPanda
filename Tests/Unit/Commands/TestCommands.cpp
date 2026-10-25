@@ -42,6 +42,48 @@ struct PixmapProbe : Element {
 };
 } // namespace
 
+namespace TestCommandsHelpers {
+
+/**
+ * \brief Tells whether the simulation rebuilt: a switch, on, drives a Tx node an Rx node listens on. Renaming the Tx
+ * directly, without a command, reroutes nothing until a rebuild reads the channels again, so the Rx still reading the
+ * switch after an edit means no rebuild ran.
+ */
+class RebuildProbe
+{
+public:
+    explicit RebuildProbe(Scene *scene)
+    {
+        CircuitBuilder builder(scene);
+        builder.add(m_source, m_tx, m_rx);
+        m_tx->setLabel("probe");
+        m_tx->setWirelessMode(WirelessMode::Tx);
+        m_rx->setLabel("probe");
+        m_rx->setWirelessMode(WirelessMode::Rx);
+        builder.connect(m_source, 0, m_tx, 0);
+        m_source->setOn(true);
+    }
+
+    /// Renames the Tx once the simulation is built and routes the switch to the Rx; returns whether it does.
+    bool arm()
+    {
+        const bool routed = (m_rx->outputValue(0) == Status::Active);
+        m_tx->setLabel("renamed");
+        return routed;
+    }
+
+    bool rebuilt() const { return m_rx->outputValue(0) != Status::Active; }
+
+private:
+    InputSwitch *m_source = new InputSwitch();
+    Node *m_tx = new Node();
+    Node *m_rx = new Node();
+};
+
+} // namespace TestCommandsHelpers
+
+using TestCommandsHelpers::RebuildProbe;
+
 void TestCommands::testAddItemsCommand()
 {
     WorkSpace workspace;
@@ -947,28 +989,20 @@ void TestCommands::testUpdateCommand()
     QCOMPARE(andGate->label(), newLabel);
 }
 
-void TestCommands::testUpdateCommandPreservesClockPhase()
+void TestCommands::testUpdateCommandPropertyEditDoesNotRebuild()
 {
     // UpdateCommand covers property-only edits (label, color, delay...). It must not force a
-    // full Simulation::initialize(), which calls Clock::resetClock() (forcing every Clock back
-    // to its HIGH power-on phase) for every clock in the scene — collateral damage from editing
-    // something unrelated while a clock is running. Regression for the bug fixed by
-    // Scene::setPropertyUpdateRequired().
+    // full Simulation::initialize(), which rebuilds the whole simulation over an unrelated edit.
+    // Regression for the bug fixed by Scene::setPropertyUpdateRequired().
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    auto *clock = new Clock();
+    RebuildProbe probe(scene);
     auto *andGate = new And();
-    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{clock, andGate}, scene));
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{andGate}, scene));
 
-    // Locked, the clock does not follow wall time, so only a rebuild's resetClock() moves it.
-    clock->setLocked(true);
-    // The first update after a structural edit rebuilds the simulation, forcing the clock HIGH.
     auto *sim = scene->simulation();
-    sim->update();
-    QCOMPARE(clock->isOn(), true);
-    // Force it LOW to give an unambiguous signal: only a resetClock() call would flip it back.
-    clock->setOn(false);
-    QCOMPARE(clock->isOn(), false);
+    sim->update(); // the structural edit's rebuild
+    QVERIFY(probe.arm());
 
     QByteArray oldData;
     QDataStream stream(&oldData, QIODevice::WriteOnly);
@@ -979,7 +1013,7 @@ void TestCommands::testUpdateCommandPreservesClockPhase()
     scene->receiveCommand(new UpdateCommand(QList<GraphicElement *>{andGate}, oldData, scene));
 
     sim->update(); // a rebuild requested by the command would run here
-    QCOMPARE(clock->isOn(), false);
+    QVERIFY(!probe.rebuilt());
 }
 
 void TestCommands::testUpdateCommandWirelessLabelRewiresChannel()
@@ -1034,20 +1068,17 @@ void TestCommands::testUpdateCommandNonWirelessNodeEditKeepsFastPath()
 {
     // The wireless escalation must be precise: editing a NON-wireless property of a
     // selection that merely contains a plain (mode None) Node keeps the property-only fast
-    // path — a blanket "any Node ⇒ rebuild" would reintroduce the clock-phase reset this
-    // command's fast path exists to prevent (see testUpdateCommandPreservesClockPhase).
+    // path — a blanket "any Node ⇒ rebuild" would reintroduce the full rebuild this
+    // command's fast path exists to prevent (see testUpdateCommandPropertyEditDoesNotRebuild).
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    auto *clock = new Clock();
+    RebuildProbe probe(scene);
     auto *node = new Node(); // plain junction, WirelessMode::None
-    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{clock, node}, scene));
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{node}, scene));
 
-    clock->setLocked(true); // only a rebuild's resetClock() moves it, not wall time
     auto *sim = scene->simulation();
-    sim->update(); // the structural edit's rebuild, forcing the clock HIGH
-    QCOMPARE(clock->isOn(), true);
-    clock->setOn(false); // unambiguous signal: only a resetClock() would flip it back HIGH
-    QCOMPARE(clock->isOn(), false);
+    sim->update(); // the structural edit's rebuild
+    QVERIFY(probe.arm());
 
     QByteArray oldData;
     QDataStream stream(&oldData, QIODevice::WriteOnly);
@@ -1057,7 +1088,7 @@ void TestCommands::testUpdateCommandNonWirelessNodeEditKeepsFastPath()
     scene->receiveCommand(new UpdateCommand(QList<GraphicElement *>{node}, oldData, scene));
 
     sim->update(); // a rebuild requested by the command would run here
-    QCOMPARE(clock->isOn(), false); // no Simulation::initialize(), no resetClock()
+    QVERIFY(!probe.rebuilt()); // no Simulation::initialize()
 }
 
 void TestCommands::testToggleTruthTableOutputCommandBounds()
@@ -1777,24 +1808,22 @@ void TestCommands::testSetPropertyCommandRxLabelRewiresChannel()
     QCOMPARE(rx->outputValue(0), Status::Active);
 }
 
-void TestCommands::testSetPropertyCommandNonWirelessLabelKeepsClockPhase()
+void TestCommands::testSetPropertyCommandNonWirelessLabelDoesNotRebuild()
 {
-    // A label of a node with no mode names no channel: no rebuild, which would restart the clock HIGH
+    // A label of a node with no mode names no channel: no rebuild
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    auto *clock = new Clock();
+    RebuildProbe probe(scene);
     auto *node = new Node();
-    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{clock, node}, scene));
-    clock->setLocked(true); // only a rebuild's resetClock() moves it, not wall time
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{node}, scene));
     auto *sim = scene->simulation();
-    sim->update(); // the structural edit's rebuild, forcing the clock HIGH
-    QCOMPARE(clock->isOn(), true);
-    clock->setOn(false);
+    sim->update(); // the structural edit's rebuild
+    QVERIFY(probe.arm());
 
     scene->receiveCommand(SetPropertyCommand::apply({node}, ElementProperty::Label, QString("junction"), scene));
     sim->update();
-    QCOMPARE(clock->isOn(), false);
+    QVERIFY(!probe.rebuilt());
     scene->undoStack()->undo();
     sim->update();
-    QCOMPARE(clock->isOn(), false);
+    QVERIFY(!probe.rebuilt());
 }

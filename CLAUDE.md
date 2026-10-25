@@ -149,8 +149,9 @@ mid-branch.
 - Every new check is broken on purpose once (an order reversed, a render skipped, a fixed defect put back) and must
   fail before it is trusted.
 - Suite defaults: `Application::renderingEnabled` is off, so wires have no paths; tests start on the System theme; the
-  first simulation update after a structural edit rebuilds the simulation and sets every clock HIGH, so a test of a
-  fast path builds first; an InputSwitch does not rotate its graphic; `qHash` is seeded per process, so seeds use
+  first simulation update after a structural edit rebuilds the simulation and starts every new clock HIGH (a rebuild
+  keeps an existing clock's level; `Simulation::restart()` starts them all afresh), so a test of a fast path builds
+  first; an InputSwitch does not rotate its graphic; `qHash` is seeded per process, so seeds use
   FNV-1a; two random draws in one expression need an explicit order; fonts differ per platform (Noto, DejaVu and
   Liberation Sans all pass, or the font-dependent value is masked); `QDrag::exec()` cannot be driven, so drops are sent
   as events; clipboard tests hold the `clipboard` resource lock.

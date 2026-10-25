@@ -228,6 +228,7 @@ void Clock::resetClock(std::chrono::steady_clock::time_point globalTime)
     const auto delayMicroseconds = static_cast<std::chrono::microseconds::rep>(-m_delay * static_cast<double>(fullPeriod.count()));
     m_startTime = globalTime;
     m_startTime -= std::chrono::microseconds(delayMicroseconds);
+    m_hasPhase = true;
 }
 
 void Clock::shiftClock(std::chrono::steady_clock::duration pause)

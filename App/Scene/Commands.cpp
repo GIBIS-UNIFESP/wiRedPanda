@@ -531,9 +531,9 @@ void UpdateCommand::refreshRuntimeState()
     }
 
     // Everything else this command carries is property-only (label, color, ...) — never
-    // topology — so it must not force a full Simulation::initialize(), which would rebuild
-    // every Clock's phase from scratch and disrupt a running simulation over an unrelated
-    // edit. setPropertyUpdateRequired() refreshes visuals/dirty-state only.
+    // topology — so it must not force a full Simulation::initialize(), which rebuilds the
+    // whole simulation over an unrelated edit. setPropertyUpdateRequired() refreshes
+    // visuals/dirty-state only.
     m_scene->setPropertyUpdateRequired();
 }
 
@@ -706,7 +706,7 @@ void SetPropertyCommand::write(const bool after)
     }
 
     // A wireless channel lives in the simulation's topology, which only a rebuild reads; any other property is no
-    // change of the topology, and a rebuild would restart every clock's phase.
+    // change of the topology, and needs no rebuild of the whole simulation.
     if (m_wirelessTopologyChange) {
         m_scene->setCircuitUpdateRequired();
     } else {

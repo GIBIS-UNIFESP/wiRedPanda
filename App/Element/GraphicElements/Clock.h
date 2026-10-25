@@ -79,6 +79,8 @@ public:
 
     /// Resets the clock phase reference to \a globalTime.
     void resetClock(std::chrono::steady_clock::time_point globalTime);
+    /// Returns \c true once resetClock() has given the clock a phase, which a rebuild of the simulation keeps.
+    bool hasPhase() const { return m_hasPhase; }
     /// Shifts the clock phase reference forward by \a pause, preserving the current output
     /// level and the position within the period. Used to resume after a pause: unlike
     /// resetClock(), which forces the output HIGH and restarts the phase, this keeps the
@@ -109,4 +111,5 @@ private:
     /// is the clock epoch).
     std::chrono::microseconds m_interval = halfPeriod(kDefaultFrequency);
     std::chrono::steady_clock::time_point m_startTime;
+    bool m_hasPhase = false;
 };

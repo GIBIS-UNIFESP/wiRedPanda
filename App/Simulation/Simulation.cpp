@@ -72,7 +72,7 @@ void Simulation::update()
     // debug/asan/ubsan builds — much earlier than a tick-time crash.
     Q_ASSERT(m_initialized);
 
-    // Snapshot the topology vectors before iterating: if restart() is invoked
+    // Snapshot the topology vectors before iterating: if invalidate() is invoked
     // reentrantly while this tick is mid-flight, it clears and rebuilds
     // m_clocks/m_inputs/m_sequentialElements/m_sortedElements/m_outputs, which
     // would invalidate any in-flight range-for iterator over the members
@@ -116,7 +116,7 @@ void Simulation::update()
     // fixed point of the deterministic element functions; it can only be left by a
     // clock flip, an input-element change (both flagged through setOutputValue()'s
     // change detection -- user toggles included, they write the same way), or a
-    // structural edit (restart() clears m_atFixedPoint). Everything else recomputes
+    // structural edit (invalidate() clears m_atFixedPoint). Everything else recomputes
     // bit-identical outputs 1000x/s, which on large clocked circuits is almost every
     // tick. The flags are cleared as they are read so one flip triggers one sweep.
     bool sourceChanged = false;
@@ -293,6 +293,12 @@ void Simulation::updatePort(InputPort *port)
 
 void Simulation::restart()
 {
+    m_restartClocks = true;
+    invalidate();
+}
+
+void Simulation::invalidate()
+{
     // Invalidate the cached topology. Clearing the flag alone is not
     // enough: update() iterates m_sortedElements/m_clocks/m_inputs/m_outputs
     // before a re-initialize can run (for instance when Application::notify()
@@ -354,8 +360,8 @@ void Simulation::start()
         // forces the output HIGH and restarts the phase, which would feed a spurious rising
         // edge into every clock-driven circuit on each SimulationBlocker cycle (every
         // UpdateCommand redo/undo, including a plain InputSwitch click). Level and phase
-        // survive any pause/resume; only initialize() (Restart, rebuilds) gives clocks a
-        // fresh HIGH start via resetClock().
+        // survive any pause/resume and any rebuild; only a Restart, or a clock's first
+        // initialize(), gives it a fresh HIGH start via resetClock().
         const auto pause = std::chrono::steady_clock::now() - m_pausedAt;
         for (auto *clock : std::as_const(m_clocks)) {
             if (clock) {
@@ -447,7 +453,11 @@ bool Simulation::initialize()
 
     qCDebug(two) << "GENERATING SIMULATION LAYER.";
 
-    const auto globalTime = std::chrono::steady_clock::now();
+    // A rebuild keeps each existing clock's level and phase, as a resume does, so no flip-flop sees an edge from it;
+    // a Restart starts every clock afresh, and a new clock starts here. While paused, a new clock starts at the pause,
+    // so the resume's shift brings it to the moment the simulation runs again, as a kept clock is.
+    const bool restartClocks = m_restartClocks;
+    const auto globalTime = (m_hasPausedAt && !restartClocks) ? m_pausedAt : std::chrono::steady_clock::now();
 
     for (auto *item : std::as_const(items)) {
         if (!item) {
@@ -465,7 +475,9 @@ bool Simulation::initialize()
                 auto *clock = qobject_cast<Clock *>(element);
                 if (clock) {
                     m_clocks.append(clock);
-                    clock->resetClock(globalTime);
+                    if (restartClocks || !clock->hasPhase()) {
+                        clock->resetClock(globalTime);
+                    }
                 }
             }
 
@@ -484,9 +496,13 @@ bool Simulation::initialize()
 
     qCDebug(zero) << "Elements read: " << elements.size();
 
-    // Every clock was just reset to "now" above, so any pause recorded by stop() is stale —
-    // a later start() must not additionally shift the fresh references by the old pause.
-    m_hasPausedAt = false;
+    // After a Restart every clock was just reset to "now" above, so any pause recorded by stop() is stale —
+    // a later start() must not additionally shift the fresh references by the old pause. After a rebuild the
+    // pause still applies to every clock.
+    if (restartClocks) {
+        m_hasPausedAt = false;
+        m_restartClocks = false;
+    }
 
     if (elements.empty()) {
         return false;

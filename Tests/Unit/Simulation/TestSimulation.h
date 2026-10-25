@@ -31,4 +31,7 @@ private slots:
     /// A SimulationBlocker pause/resume cycle (every UpdateCommand redo/undo, including a
     /// plain InputSwitch click) must not force clocks HIGH or restart their phase.
     void testBlockerCyclePreservesClockLevel();
+
+    /// A rebuild after a structural edit keeps each clock's level and phase; a restart starts them afresh.
+    void testRebuildKeepsClockLevel();
 };

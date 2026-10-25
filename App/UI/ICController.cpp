@@ -148,7 +148,7 @@ void ICController::removeICFile(const QString &icFileName)
 
     if (!toDelete.isEmpty()) {
         tab->scene()->receiveCommand(new DeleteItemsCommand(toDelete, tab->scene()));
-        tab->simulation()->restart();
+        tab->simulation()->invalidate();
     }
 
     m_host.palette()->updateICList(m_host.icListFile());

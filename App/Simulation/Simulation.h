@@ -74,12 +74,17 @@ public:
     /// Returns \c true if the user has explicitly muted audio.
     bool isUserMuted() const;
 
-    /// Invalidates the cached simulation topology: clears m_initialized
+    /// Invalidates the cached simulation topology after a structural edit: clears m_initialized
     /// and the hot-path element/connection vectors so no stale reference
     /// can be dereferenced on subsequent ticks. The next update() call
-    /// re-runs initialize(). The QTimer's run state (running/stopped) is
+    /// re-runs initialize(), which keeps each existing clock's level and phase and starts only
+    /// new ones. The QTimer's run state (running/stopped) is
     /// preserved — callers who also want to pause should use
     /// SimulationBlocker.
+    void invalidate();
+
+    /// Restarts the simulation, as the user's Restart action does: invalidate(), and the next
+    /// initialize() starts every clock afresh.
     void restart();
 
     /// Returns \c true if the simulation timer is currently running.
@@ -165,7 +170,8 @@ private:
     /// When stop() paused a running simulation. start() shifts each clock's phase
     /// reference by the elapsed pause instead of resetting it, so a pause/resume cycle
     /// (SimulationBlocker around every UpdateCommand, or the user's Play toggle) neither
-    /// injects a spurious clock edge nor loses the phase. Invalidated by initialize().
+    /// injects a spurious clock edge nor loses the phase. Invalidated by a restart's initialize(); a rebuild's starts
+    /// new clocks at it, so the resume's shift brings them to the moment the simulation runs again.
     std::chrono::steady_clock::time_point m_pausedAt;
     bool m_hasPausedAt = false;
     QVector<Clock *> m_clocks;
@@ -179,13 +185,15 @@ private:
     // --- Members: State flags ---
 
     bool m_initialized = false;
+    /// Set by restart(): the next initialize() starts every clock afresh, not only new ones.
+    bool m_restartClocks = false;
     bool m_convergenceWarned = false;
     bool m_userMuted = false;
 
     /// \c true after a completed sweep whose settle passes converged: outputs are a fixed
     /// point of the (deterministic) element functions, so a tick where no clock and no
     /// input element changed is a provable no-op and update() skips the sweep entirely.
-    /// Cleared by restart() (structural edits) and by any non-converging settle
+    /// Cleared by invalidate() (structural edits) and by any non-converging settle
     /// (oscillating feedback must keep sweeping).
     bool m_atFixedPoint = false;
 
