@@ -129,6 +129,11 @@ void Display16::updatePortsProperties()
     rotatePorts();
 }
 
+QRectF Display16::boundingRect() const
+{
+    return GraphicElement::boundingRect().united(QRectF(0, 0, 64, 64));
+}
+
 void Display16::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     // Base class draws the off-state background; active segments are overlaid as vector
