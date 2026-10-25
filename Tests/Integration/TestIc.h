@@ -26,8 +26,9 @@ private slots:
     // Logic Generation (1 test)
     void testICLogicGeneration();
 
-    // Serialization (1 test)
+    // Serialization (2 tests)
     void testICSaveLoad();
+    void testOrientedICKeepsItsPortsAcrossAReopen();
 
     // Integration (4 tests)
     void testICInSimulation();

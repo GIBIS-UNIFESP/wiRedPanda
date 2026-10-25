@@ -25,6 +25,10 @@ private slots:
     void testMissingPictureShowsItsSlotsDefault();
     void testUndecodablePictureShowsItsSlotsDefault();
 
+    // A picture of another size moves the centre an orientation turns about
+    void testPictureOfAnotherSizeKeepsPortsWhateverTheOrder_data();
+    void testPictureOfAnotherSizeKeepsPortsWhateverTheOrder();
+
     // orientSvgTextNodes()/orientedSvgPixmap()/sharedSvgRenderer() failure paths
     void testRotatedMalformedSvgFallsBackToBasePixmap();
     void testRotatedMalformedSvgFallsBackToBasePixmapContent();

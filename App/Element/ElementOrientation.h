@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <QPointF>
 #include <QtGlobal>
 
 class GraphicElement;
@@ -63,6 +64,11 @@ public:
      */
     void orientPort(Port *port);
 
+    /// Re-applies the orientation about the pixmap centre after the centre moved (a new or resized pixmap): the flip
+    /// transform for a rotatable element, the ports for a non-rotatable one. Rotation needs nothing, as it turns about
+    /// the item's transform origin, which the appearance moves with the centre. Returns whether the centre had moved.
+    bool recentre();
+
     // --- Raw setters: load-time only, no side effects (caller applies afterwards) ---
 
     /// Sets the angle without re-applying the transform. Load-time only.
@@ -84,9 +90,14 @@ private:
     /// Recomputes the QGraphicsItem transform from the current flip flags.
     void applyFlipTransform();
 
+    /// Sets the QGraphicsItem transform that mirrors a rotatable element about its pixmap centre.
+    void setFlipMatrix();
+
     GraphicElement *m_owner;
 
     qreal m_angle = 0;
     bool m_flippedX = false;
     bool m_flippedY = false;
+    /// The pixmap centre the flip transform or the ports were last oriented about.
+    QPointF m_appliedCentre;
 };

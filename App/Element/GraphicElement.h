@@ -346,6 +346,15 @@ public:
     /// updating the item transform.
     void reapplyAppearanceOrientation() { m_appearance.applyOrientation(); updateLabelOrientation(); }
 
+    /// Re-applies the orientation, and the name label's counter-orientation, about the pixmap centre after the centre
+    /// moved. Public because ElementAppearance (a sibling collaborator) calls it after each pixmap change.
+    void recentreOrientation()
+    {
+        if (m_orientation.recentre()) {
+            updateLabelOrientation();
+        }
+    }
+
     // --- Flip / Mirror ---
 
     /// Returns \c true if this element is mirrored along the X axis (horizontal flip).
