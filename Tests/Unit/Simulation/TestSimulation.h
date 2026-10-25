@@ -33,4 +33,7 @@ private slots:
     void testBlockerCyclePreservesClockLevel();
 
     void testAGivenTimeSourceStepsTheClocks();
+
+    /// A rebuild after a structural edit keeps each clock's level and phase; a restart starts them afresh.
+    void testRebuildKeepsClockLevel();
 };

@@ -308,10 +308,10 @@ void Scene::setCircuitUpdateRequired()
     // circuit construction, multi-element paste/delete) — eagerly rebuilding here on
     // every single one, as this used to do, turned an O(N) circuit build into O(N^2):
     // each element/connection add paid a full topology rebuild over everything already
-    // in the scene. restart() alone is sufficient: it already unconditionally clears
+    // in the scene. invalidate() alone is sufficient: it already unconditionally clears
     // m_initialized, so it stays correct even on the "scene dropped to just the border
     // rect" bail-out case that previously needed the eager initialize() call to detect.
-    m_simulation.restart();
+    m_simulation.invalidate();
 }
 
 void Scene::setPropertyUpdateRequired()
@@ -944,9 +944,9 @@ void Scene::deleteAction()
 
     if (!selectedItems_.isEmpty()) {
         receiveCommand(new DeleteItemsCommand(selectedItems_, this));
-        // No explicit Simulation::restart() needed: DeleteItemsCommand::redo
+        // No explicit Simulation::invalidate() needed: DeleteItemsCommand::redo
         // calls setCircuitUpdateRequired() which already drives a full
-        // initialize()/restart() cycle once the deletion completes.
+        // invalidate()/initialize() cycle once the deletion completes.
     }
 }
 

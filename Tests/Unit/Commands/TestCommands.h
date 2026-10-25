@@ -35,7 +35,7 @@ private slots:
     void testMorphPreservesVolume();
     void testMorphCommandUndoPreservesConnectionAddedWhileMorphed();
     void testUpdateCommand();
-    void testUpdateCommandPreservesClockPhase();
+    void testUpdateCommandPropertyEditDoesNotRebuild();
     void testUpdateCommandWirelessLabelRewiresChannel();
     void testUpdateCommandNonWirelessNodeEditKeepsFastPath();
 
@@ -75,7 +75,7 @@ private slots:
     void testSetPropertyCommandMergedBackIsNoStep();
     void testSetPropertyCommandMergesOnlyTheSameChanges();
     void testSetPropertyCommandRxLabelRewiresChannel();
-    void testSetPropertyCommandNonWirelessLabelKeepsClockPhase();
+    void testSetPropertyCommandNonWirelessLabelDoesNotRebuild();
 
     // Empty-target no-ops
     void testUpdateCommandWithNoElementsIsNoOp();
