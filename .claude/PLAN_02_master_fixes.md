@@ -375,6 +375,13 @@ and no edge. Pitfall: plan 1's fast-path test of a clock's phase (its §4.5) can
 rebuild, since both keep the clock; it observes the rebuild itself instead, and is shown to fail again with the fast
 path removed. Plan 1's traces freeze clocks without the timer and are checked unchanged.
 
+Found while fixing it (P2.25a): with the clocks kept, the flip-flop still loses its Q, since a rebuild re-creates every
+element's simulation vectors (`ElementSimState::initVectors()`), setting each output to its port's default, inside an
+IC too. So any structural edit clears every flip-flop, latch and counter, edge or not. Fix: a rebuild keeps the
+outputs of an element whose output count is unchanged, as plan 5's rebuild rule (its §2.14) has it and as plan 5
+expects plan 2 to have done; a new element, one whose output count changed, and every element on a restart start from
+the defaults. Test: a flip-flop holding Q through a structural edit, at the scene and inside an IC.
+
 ### 5.2 An in-place reload leaves a flip-flop's wired ~Preset and ~Clear at their defaults
 
 `Port::setDefaultStatus()` sets the status of a connected input too, and an element sets its ports' defaults each time
@@ -580,6 +587,7 @@ Each of these exists on `master`, and its fix is another plan's decision:
 | P2.50 | A picture that no longer loads (§3.17) | P1.10 | the strings golden's two picker strings |
 | P2.24 | An IC's tooltip (§4.1) | the helpers only | none expected |
 | P2.25 | The rebuild's edge (§5.1) | P1.13, P1.20 | plan 1's fast-path test, reworked |
+| P2.25a | A rebuild keeps the outputs (§5.1) | P2.25 | none expected |
 | P2.26 | A connected input keeps its wire (§5.2) | P1.5 | none expected (unchanged on the branch) |
 | P2.27 | The priority walk (§5.3) | P1.13 | measured first |
 | P2.28 | SystemVerilog truth tables (§6.1) | the helpers only | none (no golden holds one) |
