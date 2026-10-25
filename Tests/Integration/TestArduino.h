@@ -149,6 +149,7 @@ private slots:
     void testDeeplyNestedElementNaming();
     void testNodeElementGeneration();
     void testWirelessNodeGeneration();
+    void testWirelessRxReachedByAWireFollowsItsTx();
     void testWirelessOrphanedRxCodegen();
     void testEmbeddedICGeneration();
     void testEmbeddedICLabelWithNewlineDoesNotInjectCode();
