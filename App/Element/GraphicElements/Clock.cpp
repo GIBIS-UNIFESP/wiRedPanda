@@ -184,20 +184,19 @@ double Clock::frequency() const
     return m_frequency;
 }
 
+bool Clock::acceptsFrequency(const double freq) const
+{
+    // A frequency so high that the half-period rounds to zero is refused too
+    return std::isfinite(freq) && !qFuzzyIsNull(freq) && (halfPeriod(freq).count() > 0);
+}
+
 void Clock::setFrequency(const double freq)
 {
-    if (!std::isfinite(freq) || qFuzzyIsNull(freq)) {
+    if (!acceptsFrequency(freq)) {
         return;
     }
 
-    const std::chrono::microseconds auxInterval = halfPeriod(freq);
-
-    // Guard against frequencies so high that the half-period rounds to zero
-    if (auxInterval.count() <= 0) {
-        return;
-    }
-
-    m_interval = auxInterval;
+    m_interval = halfPeriod(freq);
     m_frequency = freq;
 }
 

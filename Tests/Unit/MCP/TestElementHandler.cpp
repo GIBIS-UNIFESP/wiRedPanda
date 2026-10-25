@@ -4,6 +4,7 @@
 #include "Tests/Unit/MCP/TestElementHandler.h"
 
 #include <QCoreApplication>
+#include <QDataStream>
 #include <QDir>
 #include <QJsonArray>
 #include <QJsonDocument>
@@ -17,6 +18,8 @@
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Element/GraphicElements/TruthTable.h"
+#include "App/IO/Serialization.h"
+#include "App/IO/SerializationContext.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -73,6 +76,38 @@ QJsonValue maskFontSizes(const QJsonValue &value)
 }
 
 } // namespace
+
+namespace TestElementHandlerHelpers {
+
+// The element's whole state, as an undo snapshot holds it
+QByteArray snapshot(const GraphicElement *element)
+{
+    QByteArray data;
+    QDataStream stream(&data, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(stream);
+    element->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
+    return data;
+}
+
+// Whether set_element_properties with `params` answers a validation error and leaves the element and the undo stack
+// as they were
+bool refuses(MainWindow &window, ElementHandler &handler, const QJsonObject &params)
+{
+    const GraphicElement *element = elementById(window, params["element_id"].toInt());
+    const QByteArray before = snapshot(element);
+    const int commands = window.currentTab()->scene()->undoStack()->count();
+    const QJsonObject response = handler.handleCommand("set_element_properties", params, 1);
+    if (!response.contains("error") || (response["error"].toObject()["code"].toInt() != JsonRpcError::ValidationError)) {
+        qWarning() << "Not refused:" << QJsonDocument(response).toJson(QJsonDocument::Compact);
+        return false;
+    }
+    return (snapshot(element) == before) && (window.currentTab()->scene()->undoStack()->count() == commands);
+}
+
+} // namespace TestElementHandlerHelpers
+
+using TestElementHandlerHelpers::refuses;
+using TestElementHandlerHelpers::snapshot;
 
 void TestElementHandler::testSetElementPropertiesAcceptsNegativeClockDelay()
 {
@@ -456,9 +491,9 @@ void TestElementHandler::testHandleSetElementPropertiesChangesColorWhenSupported
     ElementHandler handler(&window, nullptr);
     const int id = createElement(handler, "Led"); // hasColors
 
-    const QJsonObject response = handler.handleCommand("set_element_properties", {{"element_id", id}, {"color", "blue"}}, 1);
+    const QJsonObject response = handler.handleCommand("set_element_properties", {{"element_id", id}, {"color", "Blue"}}, 1);
     QVERIFY2(response.contains("result"), qPrintable(QJsonDocument(response).toJson()));
-    QCOMPARE(elementById(window, id)->color(), QStringLiteral("blue"));
+    QCOMPARE(elementById(window, id)->color(), QStringLiteral("Blue"));
 }
 
 void TestElementHandler::testHandleSetElementPropertiesChangesFrequencyWhenSupported()
@@ -514,9 +549,11 @@ void TestElementHandler::testHandleSetElementPropertiesChangesTriggerWhenSupport
     ElementHandler handler(&window, nullptr);
     const int id = createElement(handler, "InputSwitch"); // hasTrigger
 
-    const QJsonObject response = handler.handleCommand("set_element_properties", {{"element_id", id}, {"trigger", "Ctrl+K"}}, 1);
+    // A key the editor's field takes, stored uppercased as the field stores it
+    const QJsonObject response = handler.handleCommand("set_element_properties", {{"element_id", id}, {"trigger", "k"}}, 1);
     QVERIFY2(response.contains("result"), qPrintable(QJsonDocument(response).toJson()));
-    QCOMPARE(elementById(window, id)->trigger(), QKeySequence("Ctrl+K"));
+    QCOMPARE(elementById(window, id)->trigger(), QKeySequence("K"));
+    QCOMPARE(response["result"].toObject()["new_properties"].toObject()["trigger"].toString(), QString("K"));
 }
 
 void TestElementHandler::testHandleSetElementPropertiesChangesLockedState()
@@ -674,15 +711,13 @@ void TestElementHandler::testHandleSetElementPropertiesRejectsInvalidWirelessMod
     QCOMPARE(response["error"].toObject()["code"].toInt(), JsonRpcError::ValidationError);
 }
 
-void TestElementHandler::testHandleSetElementPropertiesIgnoresWirelessModeForNonNode()
+void TestElementHandler::testHandleSetElementPropertiesRefusesWirelessModeForNonNode()
 {
     MainWindow window;
     ElementHandler handler(&window, nullptr);
     const int id = createElement(handler, "And");
 
-    const QJsonObject response = handler.handleCommand("set_element_properties", {{"element_id", id}, {"wireless_mode", 1}}, 1);
-    QVERIFY2(response.contains("result"), qPrintable(QJsonDocument(response).toJson()));
-    QVERIFY(!response["result"].toObject()["new_properties"].toObject().contains("wireless_mode"));
+    QVERIFY(refuses(window, handler, {{"element_id", id}, {"wireless_mode", 1}}));
 }
 
 void TestElementHandler::testHandleSetElementPropertiesPushesUndoableCommand()
@@ -699,6 +734,174 @@ void TestElementHandler::testHandleSetElementPropertiesPushesUndoableCommand()
     QVERIFY(scene->undoStack()->canUndo());
     scene->undoStack()->undo();
     QVERIFY(element->label() != QStringLiteral("Changed"));
+}
+
+void TestElementHandler::testSetElementPropertiesRefusesAPropertyTheTypeLacks()
+{
+    // An And has no colour, frequency, delay, volume, trigger, lock or sound to change, and a label sent with one is
+    // not applied either
+    MainWindow window;
+    ElementHandler handler(&window, nullptr);
+    const int id = createElement(handler, "And");
+
+    QVERIFY(refuses(window, handler, {{"element_id", id}, {"label", "L"}, {"color", "Red"}}));
+    QVERIFY(refuses(window, handler, {{"element_id", id}, {"frequency", 2}}));
+    QVERIFY(refuses(window, handler, {{"element_id", id}, {"delay", 0.25}}));
+    QVERIFY(refuses(window, handler, {{"element_id", id}, {"volume", 0.5}}));
+    QVERIFY(refuses(window, handler, {{"element_id", id}, {"trigger", "A"}}));
+    QVERIFY(refuses(window, handler, {{"element_id", id}, {"locked", true}}));
+    QVERIFY(refuses(window, handler, {{"element_id", id}, {"audio", "x.mp3"}}));
+}
+
+void TestElementHandler::testSetElementPropertiesRefusesAValueOfTheWrongKind()
+{
+    MainWindow window;
+    ElementHandler handler(&window, nullptr);
+    const int input = createElement(handler, "InputSwitch");
+    const int node = createElement(handler, "Node", 100, 0);
+
+    QVERIFY(refuses(window, handler, {{"element_id", input}, {"label", 5}}));
+    QVERIFY(refuses(window, handler, {{"element_id", input}, {"locked", "yes"}}));
+    QVERIFY(refuses(window, handler, {{"element_id", input}, {"trigger", 1}}));
+    QVERIFY(refuses(window, handler, {{"element_id", input}, {"rotation", "90"}}));
+    QVERIFY(refuses(window, handler, {{"element_id", node}, {"wireless_mode", "Tx"}}));
+    QVERIFY(refuses(window, handler, {{"element_id", node}, {"wireless_mode", 1.5}}));
+}
+
+void TestElementHandler::testSetElementPropertiesRefusesAnInvalidValueBeforeChangingAnything()
+{
+    // The label comes before the delay, which is out of range: neither is applied, and no step is pushed
+    MainWindow window;
+    ElementHandler handler(&window, nullptr);
+    const int id = createClock(handler);
+
+    QVERIFY(refuses(window, handler, {{"element_id", id}, {"label", "L"}, {"delay", 2}}));
+    QVERIFY(refuses(window, handler, {{"element_id", id}, {"label", "L"}, {"frequency", -1}}));
+    QVERIFY(elementById(window, id)->label().isEmpty());
+}
+
+void TestElementHandler::testSetElementPropertiesRefusesAFrequencyTheClockCannotTake()
+{
+    // A half period under a microsecond: the clock keeps its frequency, so the request is refused, not reported as set
+    MainWindow window;
+    ElementHandler handler(&window, nullptr);
+    const int id = createClock(handler);
+
+    QVERIFY(refuses(window, handler, {{"element_id", id}, {"frequency", 1e7}}));
+}
+
+void TestElementHandler::testSetElementPropertiesRefusesAColourTheEditorDoesNotOffer()
+{
+    MainWindow window;
+    ElementHandler handler(&window, nullptr);
+    const int id = createElement(handler, "Led");
+
+    QVERIFY(refuses(window, handler, {{"element_id", id}, {"color", "Orange"}}));
+    QVERIFY(refuses(window, handler, {{"element_id", id}, {"color", "blue"}}));
+    QVERIFY(refuses(window, handler, {{"element_id", id}, {"color", ""}}));
+}
+
+void TestElementHandler::testSetElementPropertiesRefusesATriggerTheEditorDoesNotTake()
+{
+    // The editor's field takes one letter, digit or space
+    MainWindow window;
+    ElementHandler handler(&window, nullptr);
+    const int id = createElement(handler, "InputSwitch");
+
+    QVERIFY(refuses(window, handler, {{"element_id", id}, {"trigger", "Ctrl+K"}}));
+    QVERIFY(refuses(window, handler, {{"element_id", id}, {"trigger", "AB"}}));
+    QVERIFY(refuses(window, handler, {{"element_id", id}, {"trigger", "%"}}));
+}
+
+void TestElementHandler::testSetElementPropertiesRefusesAnAppearanceIndexAlone()
+{
+    MainWindow window;
+    ElementHandler handler(&window, nullptr);
+    const int id = createElement(handler, "Led");
+
+    QVERIFY(refuses(window, handler, {{"element_id", id}, {"appearance_index", 0}}));
+}
+
+void TestElementHandler::testSetElementPropertiesRefusesAnAppearanceIndexOutOfRange()
+{
+    MainWindow window;
+    ElementHandler handler(&window, nullptr);
+    const int id = createElement(handler, "Led");
+    const QString picture = ":/Components/Output/Led/RedLed.svg";
+
+    QVERIFY(refuses(window, handler, {{"element_id", id}, {"appearance", picture}, {"appearance_index", 99}}));
+    QVERIFY(refuses(window, handler, {{"element_id", id}, {"appearance", picture}, {"appearance_index", -2}}));
+}
+
+void TestElementHandler::testSetElementPropertiesRefusesAPictureThatDoesNotLoad()
+{
+    MainWindow window;
+    ElementHandler handler(&window, nullptr);
+    const int id = createElement(handler, "Led");
+
+    QVERIFY(refuses(window, handler, {{"element_id", id}, {"label", "L"}, {"appearance", "/no/such/picture.png"}}));
+}
+
+void TestElementHandler::testSetElementPropertiesRefusesASecondTxOnALabel()
+{
+    MainWindow window;
+    ElementHandler handler(&window, nullptr);
+    const int first = createElement(handler, "Node");
+    const int second = createElement(handler, "Node", 100, 0);
+    QVERIFY(handler.handleCommand("set_element_properties", {{"element_id", first}, {"label", "x"}, {"wireless_mode", 1}}, 1)
+                .contains("result"));
+    QVERIFY(handler.handleCommand("set_element_properties", {{"element_id", second}, {"label", "y"}, {"wireless_mode", 1}}, 1)
+                .contains("result"));
+
+    QVERIFY(refuses(window, handler, {{"element_id", second}, {"label", "x"}}));
+    QVERIFY(handler.handleCommand("set_element_properties", {{"element_id", second}, {"wireless_mode", 0}}, 1).contains("result"));
+    QVERIFY(handler.handleCommand("set_element_properties", {{"element_id", second}, {"label", "x"}}, 1).contains("result"));
+    QVERIFY(refuses(window, handler, {{"element_id", second}, {"wireless_mode", 1}}));
+}
+
+void TestElementHandler::testSetElementPropertiesPushesNothingWhenNothingChanges()
+{
+    MainWindow window;
+    ElementHandler handler(&window, nullptr);
+    const int id = createElement(handler, "InputSwitch");
+    auto *stack = window.currentTab()->scene()->undoStack();
+    const int commands = stack->count();
+
+    const QJsonObject response = handler.handleCommand("set_element_properties", {{"element_id", id}, {"label", ""}, {"locked", false}}, 1);
+    QVERIFY2(response.contains("result"), qPrintable(QJsonDocument(response).toJson()));
+    QCOMPARE(stack->count(), commands);
+}
+
+void TestElementHandler::testSetElementPropertiesIsOneUndoStep()
+{
+    MainWindow window;
+    ElementHandler handler(&window, nullptr);
+    const int id = createClock(handler);
+    auto *stack = window.currentTab()->scene()->undoStack();
+    const int commands = stack->count();
+    const QByteArray before = snapshot(elementById(window, id));
+
+    const QJsonObject response = handler.handleCommand("set_element_properties",
+        {{"element_id", id}, {"label", "L"}, {"frequency", 4}, {"delay", 0.25}, {"locked", true}}, 1);
+    QVERIFY2(response.contains("result"), qPrintable(QJsonDocument(response).toJson()));
+    QCOMPARE(stack->count(), commands + 1);
+
+    stack->undo();
+    QCOMPARE(snapshot(elementById(window, id)), before);
+}
+
+void TestElementHandler::testSetElementPropertiesReadsBackWhatTheElementTook()
+{
+    // The volume is a float: the response says the value the element holds
+    MainWindow window;
+    ElementHandler handler(&window, nullptr);
+    const int id = createElement(handler, "Buzzer");
+
+    const QJsonObject response = handler.handleCommand("set_element_properties", {{"element_id", id}, {"volume", 0.3}}, 1);
+    QVERIFY2(response.contains("result"), qPrintable(QJsonDocument(response).toJson()));
+    QCOMPARE(response["result"].toObject()["new_properties"].toObject()["volume"].toDouble(),
+             static_cast<double>(elementById(window, id)->volume()));
+    QVERIFY(response["result"].toObject()["new_properties"].toObject()["volume"].toDouble() != 0.3);
 }
 
 // ============================================================================
@@ -1312,9 +1515,9 @@ void TestElementHandler::testResponsesMatchGolden()
 {
     // Every creatable type, alone in a new tab so its id is always 1: what each element command responds, result or
     // error, in a fixed order that ends with a write of every property and the element's deletion. morph_element and
-    // update_element are left out, since they echo their parameters. A Text element's size is its text's, which
-    // follows the font, so the golden holds its sizes masked. Each response must also pass the schema, as the server
-    // checks every response before sending it.
+    // update_element are left out, since they echo their parameters; each property is set by a request of its own. A
+    // Text element's size is its text's, which follows the font, so the golden holds its sizes masked. Each response
+    // must also pass the schema, as the server checks every response before sending it.
     MainWindow window;
     ElementHandler handler(&window, nullptr);
     MCPValidator validator(QDir(QCoreApplication::applicationDirPath()).absoluteFilePath("schema-mcp.json"));
@@ -1360,9 +1563,13 @@ void TestElementHandler::testResponsesMatchGolden()
         send("change_output_size", {{"element_id", id}, {"size", element->outputSize() + 1}});
         send("toggle_truth_table_output", {{"element_id", id}, {"position", 0}});
         send("list_elements", {});
-        send("set_element_properties", {{"element_id", id}, {"label", "Edited"}, {"color", "Green"}, {"frequency", 2},
-                                        {"delay", 0.25}, {"trigger", "Q"}, {"volume", 0.75}, {"locked", true},
-                                        {"appearance", ""}, {"wireless_mode", 1}, {"rotation", 180}});
+        // Each property in its own request, so the golden holds each one's result or refusal for the type
+        const QList<std::pair<QString, QJsonValue>> properties{
+            {"label", "Edited"}, {"color", "Green"}, {"frequency", 2}, {"delay", 0.25}, {"trigger", "Q"},
+            {"volume", 0.75}, {"locked", true}, {"appearance", ""}, {"wireless_mode", 1}, {"rotation", 180}};
+        for (const auto &[property, value] : properties) {
+            send("set_element_properties", {{"element_id", id}, {property, value}});
+        }
         send("delete_element", {{"element_id", id}});
     }
 

@@ -722,6 +722,12 @@ void GraphicElement::setFrequency(const double freq)
     Q_UNUSED(freq)
 }
 
+bool GraphicElement::acceptsFrequency(const double freq) const
+{
+    Q_UNUSED(freq)
+    return false;
+}
+
 double GraphicElement::delay() const
 {
     return 0.0;

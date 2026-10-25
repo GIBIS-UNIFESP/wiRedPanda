@@ -42,8 +42,10 @@ public:
 
     // --- Playback Control ---
 
-    /// Sets the tone frequency in Hz.
+    /// Sets the tone frequency in Hz, when acceptsFrequency().
     void setFrequency(double freq) override;
+    /// Returns whether \a freq is finite and positive.
+    bool acceptsFrequency(double freq) const override;
     /// Sets the tone by note name (e.g. "C6") for backward compatibility.
     void setAudio(const QString &note) override;
 
