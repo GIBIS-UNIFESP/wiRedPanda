@@ -1678,6 +1678,100 @@ void TestScene::testDistributeKeepsTiesInIdOrder()
     }
 }
 
+namespace TestSceneStackingHelpers {
+
+/// The scene's elements and wires in the order Qt stacks them, bottom first, as "E<id>" and "W<id>".
+QStringList stacked(Scene *scene)
+{
+    QStringList names;
+    for (auto *item : scene->QGraphicsScene::items(Qt::AscendingOrder)) {
+        if (item->type() == GraphicElement::Type) {
+            names << 'E' + QString::number(static_cast<GraphicElement *>(item)->id());
+        } else if (item->type() == Connection::Type) {
+            names << 'W' + QString::number(static_cast<Connection *>(item)->id());
+        }
+    }
+    return names;
+}
+
+} // namespace TestSceneStackingHelpers
+
+void TestScene::testUndoRestoresTheBottomElementAtTheBottom_data()
+{
+    QTest::addColumn<QString>("edit");
+    QTest::newRow("delete") << "delete";
+    QTest::newRow("cut") << "cut";
+    QTest::newRow("morph") << "morph";
+}
+
+void TestScene::testUndoRestoresTheBottomElementAtTheBottom()
+{
+    // The bottom of three overlapping elements, deleted, cut or morphed and the edit undone, is back at the bottom,
+    // and a morph's element takes its place too.
+    QFETCH(QString, edit);
+    using namespace TestSceneStackingHelpers;
+    auto scene = std::make_unique<Scene>();
+    QList<GraphicElement *> elements;
+    int x = 24;
+    for (const auto type : {ElementType::And, ElementType::Or, ElementType::Led}) {
+        auto *element = ElementFactory::buildElement(type);
+        element->setPos(x, 24);
+        x += 16;
+        scene->addItem(element);
+        elements << element;
+    }
+    const QStringList before = stacked(scene.get());
+    auto *bottom = elements.constFirst();
+    scene->clearSelection();
+    bottom->setSelected(true);
+
+    if (edit == "delete") {
+        scene->deleteAction();
+    } else if (edit == "cut") {
+        scene->clipboardManager()->cut();
+    } else {
+        scene->receiveCommand(new MorphCommand({bottom}, ElementType::Xor, scene.get()));
+        QCOMPARE(stacked(scene.get()), before);
+    }
+    QCOMPARE(scene->undoStack()->count(), 1);
+
+    scene->undoStack()->undo();
+    QCOMPARE(stacked(scene.get()), before);
+}
+
+void TestScene::testDeleteUndoKeepsTheStackingOrder()
+{
+    // A thousand gates in a chain, every third deleted with its wires and the delete undone: every element and wire is
+    // back at its place among its own kind, each restored one below the ones above it that stayed.
+    using namespace TestSceneStackingHelpers;
+    auto scene = std::make_unique<Scene>();
+    QList<GraphicElement *> gates;
+    for (int i = 0; i < 1000; ++i) {
+        auto *gate = ElementFactory::buildElement(ElementType::And);
+        gate->setPos((i % 40) * 80, (i / 40) * 80);
+        scene->addItem(gate);
+        if (!gates.isEmpty()) {
+            auto *wire = new Connection();
+            wire->setStartPort(gates.constLast()->outputPort(0));
+            wire->setEndPort(gate->inputPort(0));
+            scene->addItem(wire);
+        }
+        gates << gate;
+    }
+    const QStringList before = stacked(scene.get());
+    QCOMPARE(before.size(), 1999);
+
+    scene->clearSelection();
+    for (int i = 0; i < gates.size(); i += 3) {
+        gates.at(i)->setSelected(true);
+    }
+    scene->deleteAction();
+    QCOMPARE(scene->elements().size(), 666);
+
+    scene->undoStack()->undo();
+    QCOMPARE(stacked(scene.get()), before);
+}
+
 void TestScene::testPasteLegacyUnversionedBlobRegistryFormat()
 {
     // Older app versions wrote only the unversioned BlobRegistry format (no explicit

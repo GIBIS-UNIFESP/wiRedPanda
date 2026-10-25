@@ -19,6 +19,22 @@ bool SceneItemRegistry::contains(const int id) const
     return m_elementRegistry.contains(id);
 }
 
+ItemWithId *SceneItemRegistry::nextOfKind(const int id, const ItemKind kind) const
+{
+    const auto &ordered = (kind == ItemKind::Element) ? m_elementsInIdOrder : m_othersInIdOrder;
+    const auto next = ordered.upper_bound(id);
+    return (next == ordered.end()) ? nullptr : next->second;
+}
+
+void SceneItemRegistry::forgetOrder(const int id, const ItemWithId *item)
+{
+    for (auto *ordered : {&m_elementsInIdOrder, &m_othersInIdOrder}) {
+        if (const auto found = ordered->find(id); (found != ordered->end()) && (!item || (found->second == item))) {
+            ordered->erase(found);
+        }
+    }
+}
+
 qsizetype SceneItemRegistry::elementCount() const
 {
     return m_countedElements.size();
@@ -54,6 +70,7 @@ void SceneItemRegistry::forgetItemId(const int id)
         item->setRegistry(nullptr);
     }
     m_elementRegistry.remove(id);
+    forgetOrder(id, nullptr);
 }
 
 void SceneItemRegistry::registerItem(ItemWithId *item, const ItemKind kind)
@@ -66,8 +83,12 @@ void SceneItemRegistry::registerItem(ItemWithId *item, const ItemKind kind)
     Q_ASSERT(!m_elementRegistry.contains(item->id())
           || m_elementRegistry.value(item->id()) == item);
     m_elementRegistry[item->id()] = item;
+    forgetOrder(item->id(), nullptr);
     if (kind == ItemKind::Element) {
         m_countedElements.insert(item);
+        m_elementsInIdOrder[item->id()] = item;
+    } else {
+        m_othersInIdOrder[item->id()] = item;
     }
     item->setRegistry(this);
 }
@@ -78,6 +99,7 @@ void SceneItemRegistry::unregisterItem(ItemWithId *item)
         return; // LCOV_EXCL_LINE
     }
     m_elementRegistry.remove(item->id());
+    forgetOrder(item->id(), item);
     m_countedElements.remove(item);
     item->setRegistry(nullptr);
     // HC postcondition: after unregister, the registry must not still resolve this id
@@ -94,6 +116,7 @@ void SceneItemRegistry::forget(ItemWithId *item)
     if (m_elementRegistry.value(item->id()) == item) {
         m_elementRegistry.remove(item->id());
     }
+    forgetOrder(item->id(), item);
     // The item is being destroyed, so it leaves the count whatever its id maps to.
     m_countedElements.remove(item);
 }

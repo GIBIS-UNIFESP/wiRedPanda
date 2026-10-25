@@ -134,8 +134,10 @@ void Scene::addItem(QGraphicsItem *item)
             setLastId(iwid->id());
         }
         // The element test is unsortedElements()'s, so elementCount() equals elements().size().
-        registerItem(iwid, (item->type() == GraphicElement::Type) ? SceneItemRegistry::ItemKind::Element
-                                                                   : SceneItemRegistry::ItemKind::Other);
+        const auto kind = (item->type() == GraphicElement::Type) ? SceneItemRegistry::ItemKind::Element
+                                                                 : SceneItemRegistry::ItemKind::Other;
+        registerItem(iwid, kind);
+        restack(item, iwid->id(), kind);
     }
 
     // Register element-type-specific hooks
@@ -159,6 +161,16 @@ void Scene::addItem(QGraphicsItem *item)
         } else if (auto *tt = qobject_cast<TruthTable *>(elm)) {
             connect(tt, &TruthTable::requestOpenTruthTableEditor, this, &Scene::openTruthTableRequested);
         }
+    }
+}
+
+void Scene::restack(QGraphicsItem *item, const int id, const SceneItemRegistry::ItemKind kind)
+{
+    if (item->parentItem()) {
+        return;
+    }
+    if (auto *above = dynamic_cast<QGraphicsItem *>(m_itemRegistry.nextOfKind(id, kind)); above && !above->parentItem()) {
+        item->stackBefore(above);
     }
 }
 

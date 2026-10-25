@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <map>
+
 #include <QHash>
 #include <QSet>
 
@@ -39,6 +41,9 @@ public:
 
     /// Returns \c true if an item is registered under \a id.
     [[nodiscard]] bool contains(int id) const;
+
+    /// Returns the item of \a kind registered under the smallest id above \a id, or nullptr.
+    [[nodiscard]] ItemWithId *nextOfKind(int id, ItemKind kind) const;
 
     /// Returns how many registered items are elements: the scene's element count, kept as
     /// items are registered, unregistered and destroyed.
@@ -82,5 +87,11 @@ private:
     /// The registered elements, by identity rather than id, so an id collision or a
     /// forgotten id cannot drop one from the count.
     QSet<ItemWithId *> m_countedElements;
+    /// The registered items of each kind in id order, for nextOfKind().
+    std::map<int, ItemWithId *> m_elementsInIdOrder;
+    std::map<int, ItemWithId *> m_othersInIdOrder;
     int m_lastId = 0;
+
+    /// Removes \a id from the id-ordered maps, if it maps to \a item there, or whatever it maps to when \a item is null.
+    void forgetOrder(int id, const ItemWithId *item);
 };
