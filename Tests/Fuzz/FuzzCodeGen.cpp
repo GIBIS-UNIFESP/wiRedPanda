@@ -45,6 +45,7 @@
 #include "App/IO/Serialization.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
+#include "Tests/Fuzz/FuzzSeed.h"
 
 namespace {
 
@@ -137,16 +138,11 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
         QList<QGraphicsItem *> inner;
         inner.append(sw);  inner.append(andG);  inner.append(dff);  inner.append(led);
 
-        QByteArray icBlob;
-        {
-            QDataStream s(&icBlob, QIODevice::WriteOnly);
-            Serialization::writePandaHeader(s);
-            QMap<QString, QVariant> m;
-            m.insert("dolphinFileName", QVariant(QString()));
-            s << m;
-            Serialization::serialize(inner, s, {.purpose = SerializationPurpose::PortableFile});
-        }
+        QMap<QString, QVariant> innerMeta;
+        innerMeta.insert("dolphinFileName", QVariant(QString()));
+        const QByteArray icBlob = FuzzSeed::pandaFile(innerMeta, inner);
         qDeleteAll(inner);
+        FuzzSeed::requireAccepted(icBlob, "fuzz_codegen");
 
         // Serialize the IC blob into the embeddedICs registry
         QByteArray regBytes;
@@ -159,14 +155,10 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
         }
 
         // Build outer panda: one IC element referencing "sub.panda"
-        QByteArray outerPanda;
-        {
-            QDataStream s(&outerPanda, QIODevice::WriteOnly);
-            Serialization::writePandaHeader(s);
-            QMap<QString, QVariant> meta;
-            meta.insert("dolphinFileName", QVariant(QString()));
-            meta.insert("embeddedICs", QVariant(regBytes));
-            s << meta;
+        QMap<QString, QVariant> meta;
+        meta.insert("dolphinFileName", QVariant(QString()));
+        meta.insert("embeddedICs", QVariant(regBytes));
+        const QByteArray outerPanda = FuzzSeed::pandaFile(meta, [](QDataStream &s) {
             // IC element: discriminator + ElementType + base map + port lists + secondary map
             s << static_cast<int>(65539);         // GraphicElement::Type
             s << static_cast<quint64>(22);         // ElementType::IC
@@ -179,7 +171,8 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
             QMap<QString, QVariant> icMap;
             icMap.insert("blobName", QVariant(QString("sub.panda")));
             s << icMap;
-        }
+        });
+        FuzzSeed::requireAccepted(outerPanda, "fuzz_codegen");
 
         g_icWorkspace = new WorkSpace();
         QDataStream stream(outerPanda);

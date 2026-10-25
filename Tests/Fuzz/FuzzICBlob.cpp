@@ -38,6 +38,7 @@
 #include "App/Element/GraphicElement.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
+#include "Tests/Fuzz/FuzzSeed.h"
 
 namespace {
 
@@ -69,18 +70,12 @@ QByteArray buildStructuredICBlob(FuzzedDataProvider &fdp)
         items.append(elm);
     }
 
-    QByteArray buf;
-    QDataStream s(&buf, QIODevice::WriteOnly);
-    Serialization::writePandaHeader(s);
-
     QMap<QString, QVariant> meta;
     meta.insert("dolphinFileName", QVariant(QString()));
-    s << meta;
-
-    Serialization::serialize(items, s, {.purpose = SerializationPurpose::PortableFile});
+    const QByteArray blob = FuzzSeed::pandaFile(meta, items);
     qDeleteAll(items);
 
-    return buf;
+    return blob;
 }
 
 } // namespace
