@@ -6,8 +6,11 @@
 #include <utility>
 
 #include <QApplication>
+#include <QCursor>
 #include <QGraphicsScene>
 #include <QKeyEvent>
+#include <QLineF>
+#include <QMouseEvent>
 #include <QPainter>
 #include <QResizeEvent>
 #include <QScrollBar>
@@ -24,6 +27,23 @@
 #include "Tests/Common/TestUtils.h"
 
 namespace {
+
+/**
+ * \brief Gives \a view an 800x600 viewport on every platform.
+ * \details Each platform's style draws its own frame and scroll bars, which would take their widths from the viewport.
+ * With neither, the viewport is 800x600 everywhere; the hidden scroll bars still hold the scroll position and its
+ * clamp. A hidden widget defers its resize event to show(), and the view lays out its viewport and its scroll ranges
+ * on that event, so it is sent.
+ */
+void layOutView(GraphicsView *view)
+{
+    view->setFrameShape(QFrame::NoFrame);
+    view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    view->resize(800, 600);
+    QResizeEvent resize(view->size(), QSize());
+    QCoreApplication::sendEvent(view, &resize);
+}
 
 /// The zoom, the scroll bars' positions, the scene point at the viewport's centre, and whether each zoom direction is
 /// open.
@@ -67,16 +87,7 @@ void TestGraphicsView::testViewBehavioursMatchGolden()
         element->setPos(position);
         scene->addItem(element);
     }
-    // Each platform's style draws its own frame and scroll bars, which would take their widths from the viewport. With
-    // neither, the viewport is 800x600 everywhere; the hidden scroll bars still hold the scroll position and its clamp.
-    // A hidden widget defers its resize event to show(), and the view lays out its viewport on that event, so the test
-    // sends it.
-    view->setFrameShape(QFrame::NoFrame);
-    view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    view->resize(800, 600);
-    QResizeEvent resize(view->size(), QSize());
-    QCoreApplication::sendEvent(view, &resize);
+    layOutView(view);
     QCOMPARE(view->viewport()->size(), QSize(800, 600));
 
     QStringList lines{viewLine(view, "initial")};
@@ -100,8 +111,7 @@ void TestGraphicsView::testViewBehavioursMatchGolden()
         lines << viewLine(view, "ensureVisible " + TestUtils::snapshotPoint(target.topLeft()));
     }
 
-    // On master a wheel zoom does not keep the scene point under the cursor: scale() pivots on the viewport's centre,
-    // then centerOn() brings the zoomed point under the cursor to the centre. The rows pin it, for plan 2's fix.
+    // A wheel notch keeps the scene point under the cursor under it, as each row's before and after show.
     view->resetZoom();
     lines << viewLine(view, "reset");
     lines << wheelRows(view, "wheel in", QPoint(120, 90), 120);
@@ -275,6 +285,91 @@ void TestGraphicsView::testWheelEventZoomsOut()
     QApplication::sendEvent(view->viewport(), &wheel);
 
     QVERIFY(view->transform().m11() < scaleBefore);
+}
+
+void TestGraphicsView::testWheelKeepsCursorPoint()
+{
+    // With room to scroll, a wheel zoom in either direction leaves the scene point under the cursor under it, both
+    // with the pointer away, where scale() pivots on the viewport's centre, and with it over the view, where scale()
+    // pivots on the pointer (AnchorUnderMouse).
+    WorkSpace workspace;
+    GraphicsView *view = workspace.view();
+    workspace.scene()->setSceneRect(QRectF(-1e5, -1e5, 2e5, 2e5));
+    layOutView(view);
+    const QPoint cursor(120, 90);
+
+    for (const bool pointerOver : {false, true}) {
+        view->setAttribute(Qt::WA_UnderMouse, pointerOver);
+        if (pointerOver) {
+            QCursor::setPos(view->viewport()->mapToGlobal(cursor));
+            QMouseEvent move(QEvent::MouseMove, QPointF(cursor), view->viewport()->mapToGlobal(QPointF(cursor)), Qt::NoButton,
+                             Qt::NoButton, Qt::NoModifier);
+            QApplication::sendEvent(view->viewport(), &move);
+
+            // The pivot is the pointer's point: a zoom alone keeps it, so the wheel's own correction is what the row
+            // tests.
+            view->resetZoom();
+            view->centerOn(QPointF(0, 0));
+            const QPointF pivot = view->mapToScene(cursor);
+            view->zoomIn();
+            QVERIFY2(QLineF(QPointF(view->mapFromScene(pivot)), QPointF(cursor)).length() < 2.0,
+                     "scale() did not pivot on the pointer");
+        }
+
+        for (const int delta : {120, -120}) {
+            view->resetZoom();
+            view->centerOn(QPointF(0, 0));
+            const QPointF before = view->mapToScene(cursor);
+            QWheelEvent wheel(QPointF(cursor), view->viewport()->mapToGlobal(cursor), QPoint(0, 0), QPoint(0, delta),
+                              Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase, false);
+            QApplication::sendEvent(view->viewport(), &wheel);
+
+            // The scroll bars move in whole pixels, so the point can be off by a pixel in each direction.
+            const QPointF now(view->mapFromScene(before));
+            QVERIFY2(QLineF(now, QPointF(cursor)).length() < 2.0,
+                     qPrintable(QString("pointer over %1, delta %2: the point under the cursor is at %3,%4 px, not at %5,%6 px")
+                                    .arg(pointerOver)
+                                    .arg(delta)
+                                    .arg(now.x())
+                                    .arg(now.y())
+                                    .arg(cursor.x())
+                                    .arg(cursor.y())));
+        }
+    }
+}
+
+void TestGraphicsView::testWheelNearSceneEdgeKeepsViewInsideSceneRect()
+{
+    // A scene rect tight around the circuit lets the view scroll only so far: from each corner of the viewport, a
+    // wheel zoom in either direction leaves the visible area inside the scene rect.
+    WorkSpace workspace;
+    GraphicsView *view = workspace.view();
+    const QRectF sceneRect(-400, -200, 1200, 1000);
+    workspace.scene()->setSceneRect(sceneRect);
+    layOutView(view);
+    const QList<QPoint> corners{QPoint(20, 20), QPoint(780, 20), QPoint(20, 580), QPoint(780, 580)};
+
+    for (const QPoint &cursor : corners) {
+        for (const int delta : {120, -120}) {
+            view->resetZoom();
+            view->centerOn(sceneRect.center());
+            QWheelEvent wheel(QPointF(cursor), view->viewport()->mapToGlobal(cursor), QPoint(0, 0), QPoint(0, delta),
+                              Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase, false);
+            QApplication::sendEvent(view->viewport(), &wheel);
+
+            // Two scene units of slack: a scroll bar moves in whole pixels.
+            const QRectF visible = view->mapToScene(view->viewport()->rect()).boundingRect();
+            QVERIFY2(sceneRect.adjusted(-2, -2, 2, 2).contains(visible),
+                     qPrintable(QString("cursor %1,%2 delta %3: the visible area %4,%5 %6x%7 leaves the scene rect")
+                                    .arg(cursor.x())
+                                    .arg(cursor.y())
+                                    .arg(delta)
+                                    .arg(visible.x())
+                                    .arg(visible.y())
+                                    .arg(visible.width())
+                                    .arg(visible.height())));
+        }
+    }
 }
 
 void TestGraphicsView::testZoomToFitIgnoresARubberBandOutsideTheCircuit()
