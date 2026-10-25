@@ -24,4 +24,6 @@ private slots:
     void testSceneEventSwallowsCtrlClick();
     void testPortAttachConnectionIgnoresNull();
     void testPortConstGraphicElementAccessor();
+    void testAttachAndDetachLeaveSiblingWiresAlone();
+    void testSettingThePortsPlacesTheWire();
 };

@@ -74,7 +74,8 @@ void Connection::setStartPort(OutputPort *port)
     m_startPort = port;
     changePortAttachment(oldPort, port);
     if (port) {
-        setStartPos(port->scenePos());
+        // The wire owns its geometry on (re)connection; attaching to a port refreshes no wire
+        updatePosFromPorts();
         // Inherit the source port's signal status so the wire colour is correct immediately
         setStatus(port->status());
     }
@@ -86,7 +87,7 @@ void Connection::setEndPort(InputPort *port)
     m_endPort = port;
     changePortAttachment(oldPort, port);
     if (port) {
-        setEndPos(port->scenePos());
+        updatePosFromPorts();
         // Push the current wire status into the destination port so it displays correctly
         // even before the next simulation step
         port->setStatus(status());
@@ -95,6 +96,8 @@ void Connection::setEndPort(InputPort *port)
 
 void Connection::updatePosFromPorts()
 {
+    ++m_posRefreshCount;
+
     const QPointF newStartPos = m_startPort ? m_startPort->scenePos() : m_startPos;
     const QPointF newEndPos = m_endPort ? m_endPort->scenePos() : m_endPos;
 

@@ -128,7 +128,8 @@ public:
 
     // --- Connection Management ---
 
-    /// Registers \a conn as a connection attached to this port.
+    /// Registers \a conn as a connection attached to this port and re-derives the port's status. Refreshes no wire's
+    /// geometry: Connection::setStartPort() and setEndPort() own the new wire's.
     void attachConnection(Connection *conn);
 
     /**
@@ -194,7 +195,9 @@ public:
      */
     void setRequired(const bool required);
 
-    /// Triggers a path update on all attached connections.
+    /// Refreshes the geometry of every attached wire and re-derives the port's status, for a port that moved. Attaching,
+    /// detaching and setRequired() only re-derive the status, so they never walk the sibling wires, which on a shared
+    /// net such as a clock would cost the square of its fan-out.
     void updateConnections();
 
 protected:
@@ -234,6 +237,10 @@ protected:
 
 private:
     QBrush currentBrush() const;
+
+    /// Re-derives the displayed status from the connections and requiredness: Error for a port that breaks its validity
+    /// rule, the default value for an unconnected input, the sole wire's status for a validly wired input.
+    void revalidateStatus();
 };
 
 /**

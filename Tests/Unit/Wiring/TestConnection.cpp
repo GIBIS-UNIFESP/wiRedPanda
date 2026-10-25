@@ -4,10 +4,12 @@
 #include "Tests/Unit/Wiring/TestConnection.h"
 
 #include <memory>
+#include <utility>
 
 #include <QGraphicsSceneMouseEvent>
 #include <QImage>
 #include <QPainter>
+#include <QPainterPath>
 #include <QStyleOptionGraphicsItem>
 
 #include "App/Core/Application.h"
@@ -17,6 +19,7 @@
 #include "App/Scene/Workspace.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
+#include "Tests/Common/Goldens.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestConnection::testConnectionPathUpdate()
@@ -260,4 +263,61 @@ void TestConnection::testPortConstGraphicElementAccessor()
     const Port *constPort = andGate->outputPort();
 
     QCOMPARE(constPort->graphicElement(), andGate.get());
+}
+
+void TestConnection::testAttachAndDetachLeaveSiblingWiresAlone()
+{
+    // One output driving two hundred gates, as a clock drives its flip-flops: each wire is refreshed when its own ends
+    // are set, and neither the later wires' attaching nor the other gates' deletion refreshes it again.
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *source = new And();
+    scene->addItem(source);
+    QList<And *> sinks;
+    QList<Connection *> wires;
+    for (int i = 0; i < 200; ++i) {
+        auto *sink = new And();
+        sink->setPos(160, 16 * i);
+        scene->addItem(sink);
+        auto *wire = new Connection();
+        wire->setStartPort(source->outputPort());
+        wire->setEndPort(sink->inputPort(0));
+        scene->addItem(wire);
+        sinks << sink;
+        wires << wire;
+    }
+    for (const auto *wire : std::as_const(wires)) {
+        QVERIFY2(wire->m_posRefreshCount <= 2, qPrintable(QString::number(wire->m_posRefreshCount)));
+    }
+
+    const quint32 lastRefreshes = wires.constLast()->m_posRefreshCount;
+    for (int i = 0; i < 199; ++i) {
+        delete sinks.at(i);
+    }
+    QCOMPARE(source->outputPort()->connections().size(), 1);
+    QCOMPARE(wires.constLast()->m_posRefreshCount, lastRefreshes);
+}
+
+void TestConnection::testSettingThePortsPlacesTheWire()
+{
+    // Setting a wire's ports builds its path between them: attaching to a port refreshes no wire, so the setters are
+    // what places it. Rendering is on, so the wire has a path.
+    const TestUtils::ScopedRendering rendering;
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *source = new And();
+    auto *sink = new And();
+    sink->setPos(160, 48);
+    scene->addItem(source);
+    scene->addItem(sink);
+
+    auto *wire = new Connection();
+    wire->setStartPort(source->outputPort());
+    wire->setEndPort(sink->inputPort(1));
+    scene->addItem(wire);
+
+    const QPainterPath path = wire->path();
+    QVERIFY(!path.isEmpty());
+    QCOMPARE(path.pointAtPercent(0), source->outputPort()->scenePos());
+    QCOMPARE(path.pointAtPercent(1), sink->inputPort(1)->scenePos());
 }

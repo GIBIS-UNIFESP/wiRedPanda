@@ -125,7 +125,7 @@ void Node::setWirelessMode(WirelessMode mode)
     m_wirelessMode = mode;
     // Rx nodes receive their signal wirelessly; no physical wire required on the input port.
     // Tx nodes and plain nodes still need a physical wire driving them.
-    // Guard against a redundant setRequired() call triggering updateConnections()
+    // Guard against a redundant setRequired() call re-deriving the port status
     // and causing a visible status flash until the simulation runs. Skip if unchanged.
     const bool inputRequired = (mode != WirelessMode::Rx);
     if (inputPort()->isRequired() != inputRequired) {
