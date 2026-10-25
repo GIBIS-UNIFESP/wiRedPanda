@@ -179,6 +179,17 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL Clang OR CMAKE_CXX_COMPILER_ID STREQUAL GNU)
     endif()
 endif()
 
+# libFuzzer's coverage instrumentation goes on every target, before any is created, so a harness's fuzzer sees the
+# edges of the code the harness drives and not only the harness's own. The callbacks come from each harness's
+# `-fsanitize=fuzzer` link (add_fuzzer_harness below), so the fuzzer presets build the harnesses alone.
+if(ENABLE_FUZZER)
+    if(NOT CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+        message(FATAL_ERROR "ENABLE_FUZZER=ON requires Clang (got ${CMAKE_CXX_COMPILER_ID}). "
+                            "Re-run cmake with -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang.")
+    endif()
+    add_compile_options(-fsanitize=fuzzer-no-link)
+endif()
+
 find_program(CCACHE_BIN ccache)
 if(CCACHE_BIN)
     set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE_BIN})
@@ -745,20 +756,14 @@ endif()
 # when ENABLE_FUZZER=ON (see the `fuzzer` CMake preset).  Not registered as a
 # CTest target — libFuzzer drives its own input loop.
 if(ENABLE_FUZZER)
-    if(NOT CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-        message(FATAL_ERROR "ENABLE_FUZZER=ON requires Clang (got ${CMAKE_CXX_COMPILER_ID}). "
-                            "Re-run cmake with -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang.")
-    endif()
-
     # Helper macro: apply common fuzzer build settings to a harness target.
     macro(add_fuzzer_harness target source)
         add_executable(${target} ${source})
         link_wiredpanda_whole_archive(${target})
         target_link_libraries(${target} PRIVATE wiredpanda_resources)
         # libFuzzer + ASan + UBSan.  ENABLE_ADDRESS_SANITIZER / ENABLE_UB_SANITIZER
-        # apply globally via the project-level options; we only add the fuzzer
-        # entry-point flag here.
-        target_compile_options(${target} PRIVATE -fsanitize=fuzzer-no-link)
+        # and the coverage instrumentation apply globally via the project-level
+        # options; we only add the fuzzer entry point here.
         target_link_options(${target} PRIVATE -fsanitize=fuzzer)
         set_target_properties(${target} PROPERTIES UNITY_BUILD OFF)
     endmacro()
