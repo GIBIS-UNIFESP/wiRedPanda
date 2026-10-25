@@ -37,6 +37,7 @@ private slots:
     void testImplausibleCompressedSizeRejected();
     void testSlimFormatElidesDefaults();
     void testNonDefaultValuesRoundTrip();
+    void testTriggerLoadsAsSaved();
     void testDolphinFilenamePreserved();
     void testSceneRectPreserved();
 
