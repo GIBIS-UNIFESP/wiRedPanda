@@ -130,17 +130,17 @@ QString SystemVerilogCodeGen::otherPortNameImpl(Port *port, QSet<Port *> &visite
         return mapped.isEmpty() ? "1'b0" : mapped;
     }
 
+    // Wireless Rx: resolve via the Tx node's input (what drives the transmitter), over a wire that also reaches the Rx,
+    // as the simulation does
+    if (auto *elm = port->graphicElement(); elm && elm->wirelessMode() == WirelessMode::Rx && !elm->label().isEmpty()) {
+        if (auto *txInputPort = m_txInputPorts.value(elm->label(), nullptr)) {
+            return otherPortNameImpl(txInputPort, visited);
+        }
+    }
+
     if (port->connections().isEmpty()) {
         QString mapped = m_varMap.value(port);
         if (!mapped.isEmpty()) return mapped;
-        // Wireless Rx: resolve via the Tx node's input (what drives the transmitter)
-        auto *elm = port->graphicElement();
-        if (elm && elm->wirelessMode() == WirelessMode::Rx && !elm->label().isEmpty()) {
-            auto *txInputPort = m_txInputPorts.value(elm->label(), nullptr);
-            if (txInputPort) {
-                return otherPortNameImpl(txInputPort, visited);
-            }
-        }
         return fourState(port->defaultValue());
     }
 

@@ -131,6 +131,56 @@ void TestSystemVerilogExport::cleanupTestCase()
     // Cleanup after all tests
 }
 
+void TestSystemVerilogExport::testWirelessRxReachedByAWireFollowsItsTx()
+{
+    // An Rx node reached both by a wire and by its Tx takes the Tx's signal in the simulation
+    // (TestSimulation::testWirelessOverridesPhysicalWire); the module must assign the same driver.
+    auto wired = std::make_unique<InputSwitch>();
+    wired->setLabel("Wired");
+    auto air = std::make_unique<InputSwitch>();
+    air->setLabel("Air");
+    auto txNode = std::unique_ptr<Node>(qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node)));
+    QVERIFY(txNode);
+    txNode->setLabel("CH");
+    txNode->setWirelessMode(WirelessMode::Tx);
+
+    auto rxNode = std::unique_ptr<Node>(qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node)));
+    QVERIFY(rxNode);
+    rxNode->setLabel("CH");
+    rxNode->setWirelessMode(WirelessMode::Rx);
+
+    auto led = std::make_unique<Led>();
+    led->setLabel("Shown");
+
+    const auto connect = [](OutputPort *start, InputPort *end) {
+        auto connection = std::make_unique<Connection>();
+        connection->setStartPort(start);
+        connection->setEndPort(end);
+        return connection;
+    };
+    const auto airToTx = connect(air->outputPort(0), txNode->inputPort(0));
+    const auto wiredToRx = connect(wired->outputPort(0), rxNode->inputPort(0));
+    const auto rxToLed = connect(rxNode->outputPort(0), led->inputPort(0));
+
+    QVector<GraphicElement *> elements{wired.get(), air.get(), txNode.get(), rxNode.get(), led.get()};
+
+    QTemporaryDir tempDir;
+    QVERIFY(tempDir.isValid());
+    const QString verilogPath = tempDir.filePath("wireless_over_wire.sv");
+    SystemVerilogCodeGen generator(verilogPath, elements);
+    generator.generate();
+
+    QFile file(verilogPath);
+    QVERIFY(file.open(QIODevice::ReadOnly | QIODevice::Text));
+    const QString content = QString::fromUtf8(file.readAll());
+
+    // The LED's assignment reads the Tx's driver, never the wire's.
+    const QRegularExpression ledAssign(R"(assign\s+\w*_shown\w*\s*=\s*(\w+);)");
+    const auto match = ledAssign.match(content);
+    QVERIFY2(match.hasMatch(), qPrintable(content));
+    QVERIFY2(match.captured(1).endsWith("_air"), qPrintable(content));
+}
+
 void TestSystemVerilogExport::testWirelessNodeGeneration()
 {
     // A Tx and Rx node pair on the same channel. In SystemVerilog, node expressions

@@ -24,6 +24,7 @@ private slots:
 
     // Wireless node codegen
     void testWirelessNodeGeneration();
+    void testWirelessRxReachedByAWireFollowsItsTx();
     void testWirelessOrphanedRxCodegen();
     void testEmbeddedICLabelWithNewlineDoesNotInjectCode();
 

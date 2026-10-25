@@ -1750,6 +1750,50 @@ void TestArduino::testWirelessNodeGeneration()
     qDeleteAll(elements);
 }
 
+void TestArduino::testWirelessRxReachedByAWireFollowsItsTx()
+{
+    // An Rx node reached both by a wire and by its Tx takes the Tx's signal in the simulation
+    // (TestSimulation::testWirelessOverridesPhysicalWire); the sketch must read the same driver.
+    auto *wired = new InputSwitch();
+    wired->setLabel("Wired");
+    auto *air = new InputSwitch();
+    air->setLabel("Air");
+    auto *txNode = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    QVERIFY(txNode);
+    txNode->setLabel("CH");
+    txNode->setWirelessMode(WirelessMode::Tx);
+
+    auto *rxNode = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    QVERIFY(rxNode);
+    rxNode->setLabel("CH");
+    rxNode->setWirelessMode(WirelessMode::Rx);
+
+    auto *led = new Led();
+
+    auto airToTx = std::unique_ptr<Connection>(createConnection(air, 0, txNode, 0));
+    QVERIFY(airToTx);
+    auto wiredToRx = std::unique_ptr<Connection>(createConnection(wired, 0, rxNode, 0));
+    QVERIFY(wiredToRx);
+    auto rxToLed = std::unique_ptr<Connection>(createConnection(rxNode, 0, led, 0));
+    QVERIFY(rxToLed);
+
+    QVector<GraphicElement *> elements{wired, air, txNode, rxNode, led};
+    auto code = generateFromElements(elements);
+    QVERIFY2(code.success, "Generation should succeed");
+
+    // The variable the LED is written from is assigned the Tx's driver, never the wire's.
+    const auto write = QRegularExpression(R"(digitalWrite\(led\w*, (\w+)\);)").match(code.content);
+    QVERIFY2(write.hasMatch(), qPrintable(code.content));
+    const auto assignment = QRegularExpression("\\n    " + write.captured(1) + R"( = (\w+);)").match(code.content);
+    QVERIFY2(assignment.hasMatch(), qPrintable(code.content));
+    QVERIFY2(assignment.captured(1).endsWith("_air_val"), qPrintable(code.content));
+
+    airToTx.reset();
+    wiredToRx.reset();
+    rxToLed.reset();
+    qDeleteAll(elements);
+}
+
 void TestArduino::testWirelessOrphanedRxCodegen()
 {
     // An Rx node with no matching Tx must not crash the code generator and
