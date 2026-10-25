@@ -207,6 +207,14 @@ the extent to whole pixels, and `Scene::drawBackground()` converted the exposed 
 `TestScene::testBuildDragImageClampsAnExtentBeyondIntRange`; `testGridIsNotDrawnBeyondIntRange` pins the grid,
 counting the points a render draws: on master's code GCC's build draws five, at x = 0.
 
+### 2.18 A port's wires are attached and detached in time quadratic in its fan-out
+
+`Port::attachConnection()` checked for a duplicate with `QList::contains()` and `detachConnection()` removed with
+`QList::removeAll()`, each scanning the port's whole list, so wiring one output to n inputs, moving those wires and
+deleting them cost n squared; an IC's reload does all three with the wires of a clock or bus fanned out inside it
+(P2.66, found by `fuzz_ic_registry`'s coverage rounds). Fix: a set beside the list for membership, the list keeping
+its order and each wire once, so a removal stops where the wire is found. Shown by `TestPort::testFanOutGrowsLinearly`.
+
 ## 3. In code plan 3 rewrites
 
 ### 3.1 SR and T flip-flops ignore every input while one input is open
@@ -650,6 +658,7 @@ Each of these exists on `master`, and its fix is another plan's decision:
 | P2.60 | Commands deduplicating in linear time (§2.15) | the helpers only | none |
 | P2.61 | Snapping past `int`'s range (§2.16) | the helpers only | none |
 | P2.62 | Rendering past `int`'s range (§2.17) | the helpers only | none |
+| P2.66 | A port's wires in linear time (§2.18) | the helpers only | none |
 | P2.9 | SR and T defaults (§3.1) | P1.4, P1.6, P1.13 | port layout, one scene snapshot, any trace with S, R or T open |
 | P2.10 | The loader's port counts (§3.2) | P1.8, P1.17 | the strings golden's three messages |
 | P2.11 | The AudioBox's undo (§3.3) | P1.15 | one editor-writes row |
