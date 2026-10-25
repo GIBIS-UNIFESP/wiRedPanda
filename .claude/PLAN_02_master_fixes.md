@@ -172,6 +172,17 @@ coverage rounds). Fix: paste reads everything first, the blobs made self-contain
 items read against the registry they will join, and only then records the macro. Shown by
 `TestScene::testPasteOfUnreadableItemsChangesNothing` and `testPasteOfUnreadableBlobChangesNothing`.
 
+### 2.14 Moving an element walks every port in the scene
+
+Each `Port` sets `ItemSendsScenePositionChanges` so its wires follow its element. Qt keeps every item with that flag
+in one list and, on each move of any item with children, calls `isAncestorOf()` on all of them, so moving k elements
+costs k times the scene's port count: pasting 4,000 wired gates took 1.6 s, four times longer per doubling, and drag
+and align grew the same way (P2.58, found by `fuzz_clipboard`'s coverage rounds as a slow unit, the cause counted
+under callgrind). Fix: an element re-routes its wires on its own `ItemPositionHasChanged`, and a port on its own move
+or transform, both through `ItemSendsGeometryChanges`. Shown by `TestScene::testNoItemMakesEveryMoveWalkTheScene`;
+`TestSceneSnapshot::testWireGeometryAfterEdit` keeps the wires following. Undoing the same paste still grows faster
+than the paste, in Qt's per-item removal (P2.59, to be counted).
+
 ## 3. In code plan 3 rewrites
 
 ### 3.1 SR and T flip-flops ignore every input while one input is open
@@ -611,6 +622,7 @@ Each of these exists on `master`, and its fix is another plan's decision:
 | P2.47b | The client suite's limitations (§2.11) | the helpers only | none |
 | P2.52 | The schema's copy rules (§2.12) | the helpers only | none |
 | P2.57 | A failed paste's open macro (§2.13) | the helpers only | none |
+| P2.58 | No move walks every port (§2.14) | P1.5 | none (the wire-geometry golden keeps the wires following) |
 | P2.9 | SR and T defaults (§3.1) | P1.4, P1.6, P1.13 | port layout, one scene snapshot, any trace with S, R or T open |
 | P2.10 | The loader's port counts (§3.2) | P1.8, P1.17 | the strings golden's three messages |
 | P2.11 | The AudioBox's undo (§3.3) | P1.15 | one editor-writes row |
