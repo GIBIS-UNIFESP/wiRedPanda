@@ -568,7 +568,7 @@ protected:
     /**
      * \brief Handles item state changes such as position, rotation, and selection.
      * \details Two change types are intercepted (a position is set exactly; see snapToGrid()):
-     * - ItemScenePositionHasChanged / ItemRotationHasChanged / ItemTransformHasChanged:
+     * - ItemPositionHasChanged / ItemRotationHasChanged / ItemTransformHasChanged:
      *   calls updateConnections() on all ports to redraw attached wires.
      * - ItemSelectedHasChanged: toggles connection highlight via highlight().
      * \param change The type of change that occurred.

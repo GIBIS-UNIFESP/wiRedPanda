@@ -1895,6 +1895,28 @@ void TestScene::testPasteOfUnreadableItemsChangesNothing()
     checkFailedPasteChangesNothing(workspace.scene());
 }
 
+void TestScene::testNoItemMakesEveryMoveWalkTheScene()
+{
+    // Each time an item with children moves, Qt calls isAncestorOf() on every item in the scene that has
+    // ItemSendsScenePositionChanges, so one such item per port would make moving k elements cost k times the scene's
+    // port count. No item sets it: wires follow their element from the element's own ItemPositionHasChanged.
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *notGate = ElementFactory::buildElement(ElementType::Not);
+    scene->addItem(sw);
+    scene->addItem(notGate);
+    auto *conn = new Connection();
+    conn->setStartPort(sw->outputPort());
+    conn->setEndPort(notGate->inputPort());
+    scene->addItem(conn);
+
+    for (auto *item : scene->items()) {
+        QVERIFY2(!(item->flags() & QGraphicsItem::ItemSendsScenePositionChanges),
+                 qPrintable(QString("item of type %1 sends scene position changes").arg(item->type())));
+    }
+}
+
 void TestScene::testPasteOfUnreadableBlobChangesNothing()
 {
     // A clipboard whose items read but whose blob does not: registering it threw inside the undo stack's push, with

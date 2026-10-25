@@ -105,6 +105,7 @@ private slots:
     void testPasteClipboardLegacyItemFormat();
     void testPasteOfUnreadableItemsChangesNothing();
     void testPasteOfUnreadableBlobChangesNothing();
+    void testNoItemMakesEveryMoveWalkTheScene();
 
     // ============================================================
     // Topological Sort Tests (4 tests)
