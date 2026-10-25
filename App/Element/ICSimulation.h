@@ -23,8 +23,9 @@ class IC;
 class ICSimulation
 {
 public:
-    /// Builds the internal simulation graph (connection graph + topological sort) for \a ic.
-    static void initialize(IC &ic);
+    /// Builds the internal simulation graph (connection graph + topological sort) for \a ic, keeping its internal
+    /// elements' outputs if \a keepOutputs (a rebuild; see GraphicElement::initSimulationVectors()).
+    static void initialize(IC &ic, bool keepOutputs);
 
     /// Simulates \a ic's internal circuit and propagates results to its boundary.
     static void update(IC &ic);

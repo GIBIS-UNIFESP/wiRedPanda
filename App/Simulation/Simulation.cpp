@@ -293,7 +293,7 @@ void Simulation::updatePort(InputPort *port)
 
 void Simulation::restart()
 {
-    m_restartClocks = true;
+    m_freshStart = true;
     invalidate();
 }
 
@@ -456,8 +456,8 @@ bool Simulation::initialize()
     // A rebuild keeps each existing clock's level and phase, as a resume does, so no flip-flop sees an edge from it;
     // a Restart starts every clock afresh, and a new clock starts here. While paused, a new clock starts at the pause,
     // so the resume's shift brings it to the moment the simulation runs again, as a kept clock is.
-    const bool restartClocks = m_restartClocks;
-    const auto globalTime = (m_hasPausedAt && !restartClocks) ? m_pausedAt : std::chrono::steady_clock::now();
+    const bool freshStart = m_freshStart;
+    const auto globalTime = (m_hasPausedAt && !freshStart) ? m_pausedAt : std::chrono::steady_clock::now();
 
     for (auto *item : std::as_const(items)) {
         if (!item) {
@@ -475,7 +475,7 @@ bool Simulation::initialize()
                 auto *clock = qobject_cast<Clock *>(element);
                 if (clock) {
                     m_clocks.append(clock);
-                    if (restartClocks || !clock->hasPhase()) {
+                    if (freshStart || !clock->hasPhase()) {
                         clock->resetClock(globalTime);
                     }
                 }
@@ -499,18 +499,19 @@ bool Simulation::initialize()
     // After a Restart every clock was just reset to "now" above, so any pause recorded by stop() is stale —
     // a later start() must not additionally shift the fresh references by the old pause. After a rebuild the
     // pause still applies to every clock.
-    if (restartClocks) {
+    if (freshStart) {
         m_hasPausedAt = false;
-        m_restartClocks = false;
+        m_freshStart = false;
     }
 
     if (elements.empty()) {
         return false;
     }
 
-    // Initialize simulation vectors on all scene-level elements
+    // Initialize simulation vectors on all scene-level elements; a rebuild keeps the outputs of the elements it keeps,
+    // so no flip-flop, latch or counter loses its state to an edit elsewhere, and a restart starts them afresh.
     for (auto *elm : std::as_const(elements)) {
-        elm->initSimulationVectors(elm->inputSize(), elm->outputSize());
+        elm->initSimulationVectors(elm->inputSize(), elm->outputSize(), !freshStart);
     }
 
     // Build connection graph
@@ -520,7 +521,7 @@ bool Simulation::initialize()
     // Initialize IC internal simulation graphs
     for (auto *elm : std::as_const(elements)) {
         if (elm->elementType() == ElementType::IC) {
-            static_cast<IC *>(elm)->initializeSimulation();
+            static_cast<IC *>(elm)->initializeSimulation(!freshStart);
         }
     }
 

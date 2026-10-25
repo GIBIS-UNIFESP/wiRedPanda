@@ -77,14 +77,14 @@ public:
     /// Invalidates the cached simulation topology after a structural edit: clears m_initialized
     /// and the hot-path element/connection vectors so no stale reference
     /// can be dereferenced on subsequent ticks. The next update() call
-    /// re-runs initialize(), which keeps each existing clock's level and phase and starts only
-    /// new ones. The QTimer's run state (running/stopped) is
+    /// re-runs initialize(), which keeps each existing clock's level and phase and each kept
+    /// element's outputs, and starts only new ones. The QTimer's run state (running/stopped) is
     /// preserved — callers who also want to pause should use
     /// SimulationBlocker.
     void invalidate();
 
     /// Restarts the simulation, as the user's Restart action does: invalidate(), and the next
-    /// initialize() starts every clock afresh.
+    /// initialize() starts every clock and every element's outputs afresh.
     void restart();
 
     /// Returns \c true if the simulation timer is currently running.
@@ -185,8 +185,9 @@ private:
     // --- Members: State flags ---
 
     bool m_initialized = false;
-    /// Set by restart(): the next initialize() starts every clock afresh, not only new ones.
-    bool m_restartClocks = false;
+    /// Set by restart(): the next initialize() starts every clock and every element's outputs afresh, not only new
+    /// ones.
+    bool m_freshStart = false;
     bool m_convergenceWarned = false;
     bool m_userMuted = false;
 

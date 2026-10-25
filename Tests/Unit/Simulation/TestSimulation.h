@@ -34,4 +34,8 @@ private slots:
 
     /// A rebuild after a structural edit keeps each clock's level and phase; a restart starts them afresh.
     void testRebuildKeepsClockLevel();
+
+    /// A rebuild keeps the outputs of the elements it keeps, so a flip-flop keeps its Q; a restart starts it afresh.
+    void testRebuildKeepsFlipFlopState_data();
+    void testRebuildKeepsFlipFlopState();
 };

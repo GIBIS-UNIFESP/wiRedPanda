@@ -4,6 +4,7 @@
 #include "Tests/Unit/Simulation/TestSimulation.h"
 
 #include <QElapsedTimer>
+#include <QTemporaryDir>
 
 #include "App/Core/Application.h"
 #include "App/Core/SimulationHost.h"
@@ -11,8 +12,10 @@
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/Clock.h"
+#include "App/Element/GraphicElements/DFlipFlop.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
+#include "App/Element/IC.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -369,4 +372,81 @@ void TestSimulationUnit::testRebuildKeepsClockLevel()
     sim->restart();
     sim->update();
     QCOMPARE(clock->isOn(), true);
+}
+
+void TestSimulationUnit::testRebuildKeepsFlipFlopState_data()
+{
+    QTest::addColumn<bool>("inIC");
+    QTest::newRow("scene") << false;
+    QTest::newRow("inside an IC") << true;
+}
+
+void TestSimulationUnit::testRebuildKeepsFlipFlopState()
+{
+    QFETCH(bool, inIC);
+
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    CircuitBuilder builder(scene);
+    auto *data = new InputSwitch();
+    auto *clock = new InputSwitch();
+    auto *led = new Led();
+    builder.add(data, clock, led);
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    if (inIC) {
+        // A sub-circuit holding the flip-flop element itself: one built from gates settles to a level of its own.
+        const QString icFile = dir.filePath("flipflop.panda");
+        {
+            WorkSpace definition;
+            CircuitBuilder inner(definition.scene());
+            auto *innerData = new InputSwitch();
+            auto *innerClock = new InputSwitch();
+            auto *flipFlop = new DFlipFlop();
+            auto *innerQ = new Led();
+            innerData->setLabel("D");
+            innerClock->setLabel("Clock");
+            innerQ->setLabel("Q");
+            innerClock->setPos(0, 64);
+            inner.add(innerData, innerClock, flipFlop, innerQ);
+            inner.connect(innerData, 0, flipFlop, 0);
+            inner.connect(innerClock, 0, flipFlop, 1);
+            inner.connect(flipFlop, 0, innerQ, 0);
+            definition.save(icFile);
+        }
+        auto *ic = new IC();
+        ic->loadFile(icFile, dir.path());
+        builder.add(ic);
+        builder.connect(data, 0, ic, "D");
+        builder.connect(clock, 0, ic, "Clock");
+        builder.connect(ic, "Q", led, 0);
+    } else {
+        auto *flipFlop = new DFlipFlop();
+        builder.add(flipFlop);
+        builder.connect(data, 0, flipFlop, 0);
+        builder.connect(clock, 0, flipFlop, 1);
+        builder.connect(flipFlop, 0, led, 0);
+    }
+    auto *sim = builder.initSimulation();
+
+    // A rising edge stores D = 1; then the clock falls and D goes to 0.
+    data->setOn(true);
+    clock->setOn(false);
+    sim->update();
+    clock->setOn(true);
+    sim->update();
+    clock->setOn(false);
+    data->setOn(false);
+    sim->update();
+    QCOMPARE(led->inputPort(0)->status(), Status::Active);
+
+    // A structural edit elsewhere rebuilds the simulation, with no edge: the flip-flop keeps its Q.
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{new And()}, scene));
+    sim->update();
+    QCOMPARE(led->inputPort(0)->status(), Status::Active);
+
+    // A restart starts it afresh.
+    sim->restart();
+    sim->update();
+    QCOMPARE(led->inputPort(0)->status(), Status::Inactive);
 }

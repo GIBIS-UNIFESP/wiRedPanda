@@ -29,13 +29,21 @@ void ElementSimState::connectPredecessor(int inputIndex, GraphicElement *source,
     m_connections[inputIndex] = {source, outputPort};
 }
 
-void ElementSimState::initVectors(int inputCount, int outputCount, const QVector<OutputPort *> &outputPorts)
+void ElementSimState::initVectors(int inputCount, int outputCount, const QVector<OutputPort *> &outputPorts,
+                                  bool keepOutputs)
 {
     m_connections.fill({}, inputCount);
     m_inputs.fill(Status::Inactive, inputCount);
+    m_deferCommit = false;
+    // A rebuild keeps a surviving element's outputs, so a flip-flop keeps its Q through a structural edit; a new
+    // element has no outputs yet, so its count differs and it starts from the defaults below.
+    if (keepOutputs && (m_outputs.size() == outputCount)) {
+        m_staged.resize(outputCount);
+        m_outputChanged = false;
+        return;
+    }
     m_outputs.resize(outputCount);
     m_staged.resize(outputCount);
-    m_deferCommit = false;
     // Initialize outputs from port default statuses when they're explicitly set
     // (e.g., flip-flop Q'=Active), otherwise default to Inactive.
     // Using Inactive (not Unknown) ensures gate-level feedback loops can settle.

@@ -461,8 +461,9 @@ public:
     /// normal change-detecting path so visuals refresh correctly.
     void commitDeferredOutputs() { m_sim.commitDeferredOutputs(); }
 
-    /// Allocates simulation I/O vectors with \a inputs inputs and \a outputs outputs.
-    void initSimulationVectors(const int inputCount, const int outputCount);
+    /// Allocates simulation I/O vectors with \a inputCount inputs and \a outputCount outputs, keeping the current
+    /// outputs if \a keepOutputs and their count is unchanged (a rebuild), else starting them from the ports' defaults.
+    void initSimulationVectors(const int inputCount, const int outputCount, const bool keepOutputs = false);
 
     /// Polymorphic interface for drag-drop initialization (replaces elementType() == IC checks).
     virtual void loadFromDrop(const QString &fileName, const QString &contextDir);

@@ -116,8 +116,9 @@ public:
     /// internal flip-flops/latches.
     void resettleCombinational() override;
 
-    /// Builds the internal simulation graph (connection graph + sort) for direct simulation.
-    void initializeSimulation();
+    /// Builds the internal simulation graph (connection graph + sort) for direct simulation, keeping the internal
+    /// elements' outputs if \a keepOutputs (a rebuild).
+    void initializeSimulation(bool keepOutputs = false);
 
     /// \reimp Saves/restores every internal primitive's state too (recursively through nested
     /// ICs), so a BeWavedDolphin sweep hands the live circuit back exactly as it found it.
