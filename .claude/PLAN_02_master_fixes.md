@@ -269,9 +269,11 @@ label edit leaves the other fields; undoing a lock and a value restores them. Ea
 
 The inline label editor accepts any label, and two selected nodes edited into one Tx channel together pass. Fix: one
 rule in the model for every writer (P2.D4): it takes the label and mode each edited node would have and compares every
-edited node with the others as the edits leave them; a refused edit pushes nothing and says why in the status bar.
-Duplicates that come from a file or a paste only warn and refuse no other edit. Tests: the rule's cases, refused and
-allowed; the inline editor's refusal; the property editor's, a node selected with non-nodes included.
+edited node with the others as the edits leave them; a refused edit pushes nothing and says why, the inline editor in
+the status bar, the property editor in its dialog as on `master`. Duplicates that come from a file or a paste refuse no
+other edit; nothing on `master` warns of them, and plan 6's netlist builder does (on the branch it listed each
+duplicated label once). Tests: the rule's cases, refused and allowed; the inline editor's refusal; the property
+editor's, a node selected with non-nodes included.
 
 ### 3.11 MCP's `set_element_properties`
 
@@ -610,8 +612,8 @@ user's choice between workable options).
   its ports cannot take a fixed picture. Loading still accepts one. Basis: tested on the branch; accepted with the
   write-up, 2026-10-21.
 - **P2.D4. One rule against duplicate Tx labels, for every writer**: an edit that would give two Tx nodes one channel
-  is refused wherever a label is set, saying why in the status bar; duplicates from a file or a paste only warn. Plan
-  3's schema keeps the rule. Basis: a defect verified on `master`; the user's ruling of 2026-10-16.
+  is refused wherever a label is set, saying why; duplicates from a file or a paste refuse no other edit. Plan 3's
+  schema keeps the rule. Basis: a defect verified on `master`; the user's ruling of 2026-10-16.
 - **P2.D5. The exporters follow the Tx**, as the simulation does, until plan 5's rules make two drivers read Error and
   plan 8 makes the exporters refuse them. Basis: measured on the base of `temporal-engine`; accepted with the
   write-up, 2026-10-21.
@@ -680,6 +682,8 @@ user's choice between workable options).
 - **The priority walk's fix against plan 1's traces** (§5.3): measured first; with traces changed, the user decides
   (P2.36).
 - **When the fuzz harnesses run** (P2.37): settled by the user, on the user's machine overnight, not in CI (P2.D10).
+- **P2.D4's wording** (its row): reworded with P2.18 to say where each writer refuses and that nothing warns of
+  duplicates from a file or a paste; the user confirms it.
 
 ## 13. What other plans take from plan 2
 
