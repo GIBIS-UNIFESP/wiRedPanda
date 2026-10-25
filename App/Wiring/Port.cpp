@@ -16,9 +16,11 @@
 Port::Port(QGraphicsItem *parent)
     : QGraphicsPathItem(parent)
 {
-    // ItemSendsScenePositionChanges triggers itemChange(ItemScenePositionHasChanged)
-    // which keeps connected wires redrawn when the parent element moves
-    setFlag(QGraphicsItem::ItemSendsScenePositionChanges);
+    // ItemSendsGeometryChanges makes itemChange() hear of the port's own moves and transforms, which re-route its
+    // wires; its element's moves reach the wires through GraphicElement::itemChange(). Not
+    // ItemSendsScenePositionChanges: Qt walks every item with that flag on each move of any item with children, so
+    // one per port made each element's move cost the whole scene's port count.
+    setFlag(QGraphicsItem::ItemSendsGeometryChanges);
     setCacheMode(QGraphicsItem::DeviceCoordinateCache);
 }
 
@@ -133,7 +135,7 @@ void Port::revalidateStatus()
 
 QVariant Port::itemChange(GraphicsItemChange change, const QVariant &value)
 {
-    if (change == ItemScenePositionHasChanged) {
+    if ((change == ItemPositionHasChanged) || (change == ItemTransformHasChanged)) {
         updateConnections();
     }
 

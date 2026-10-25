@@ -341,8 +341,9 @@ QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, co
         return QGraphicsItem::itemChange(change, value);
     }
 
-    // Any geometric change (move, rotate, shear) requires redrawing all connected wires
-    if ((change == ItemScenePositionHasChanged) || (change == ItemRotationHasChanged) || (change == ItemTransformHasChanged)) {
+    // Any geometric change (move, rotate, shear) requires redrawing all connected wires. An element has no parent
+    // item, so its own move is its ports' only scene move.
+    if ((change == ItemPositionHasChanged) || (change == ItemRotationHasChanged) || (change == ItemTransformHasChanged)) {
         qCDebug(four) << "Moves wires.";
         for (auto *port : allPorts()) {
             port->updateConnections();
