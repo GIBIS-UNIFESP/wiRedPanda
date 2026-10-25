@@ -61,6 +61,12 @@ Buzzer::Buzzer(QGraphicsItem *parent)
     }
 }
 
+Buzzer::~Buzzer()
+{
+    delete m_sink;
+    m_sink = nullptr;
+}
+
 double Buzzer::frequency() const
 {
     return m_frequency;
