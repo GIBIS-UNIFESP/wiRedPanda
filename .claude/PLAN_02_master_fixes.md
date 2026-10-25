@@ -360,8 +360,9 @@ unless that one is an IC. With an IC and a gate selected, Embed IC and Extract t
 another; with two ICs from different files, which one is embedded varies from run to run, and the other never is. Fix:
 Embed acts on every distinct file among the selected file-backed ICs, Extract on every distinct blob among the
 selected embedded ICs, each as one undo step (one save dialog per extracted blob); a selection without an IC does
-nothing. Tests: two ICs from two files and a gate, embedded in one step and undone in one; the same for extraction;
-a gate alone changes nothing.
+nothing. Make file self-contained, one user action that pushed a step per file, is one step the same way. Tests: two
+ICs from two files and a gate, embedded in one step and undone in one; the same for extraction and for making the file
+self-contained; a gate alone changes nothing; a cancelled dialog leaves no empty step.
 
 ## 5. In code plan 6 rewrites
 
