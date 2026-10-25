@@ -4,7 +4,14 @@
 #include "Tests/Unit/Wiring/TestPort.h"
 
 #include <algorithm>
+#include <cstddef>
+#include <limits>
 #include <memory>
+#include <utility>
+#include <vector>
+
+#include <QList>
+#include <QString>
 
 #include "App/Core/ThemeManager.h"
 #include "App/Element/GraphicElements/And.h"
@@ -253,4 +260,69 @@ void TestPort::testHoverEnterAndLeaveChangeBrush()
 
     port.hoverLeave();
     QCOMPARE(port.brush(), statusBrush);
+}
+
+void TestPort::testFanOutGrowsLinearly()
+{
+    // Wiring one output to n inputs, moving those wires to a second output and deleting them, what an IC's reload does
+    // with a clock or bus that drives thousands of gates inside it, must stay linear in n. The same wires spread over
+    // n outputs, one each, do the same work with lists of one, so the fan-out is timed against them: how that ratio
+    // grows from 250 wires to 64,000, 0.9 to 2.6 for linear attaching and detaching with eight copies of the test
+    // running at once, and 19 to 44 for a quadratic one. The sizes are far apart so that a loaded runner's noise stays
+    // well under the quadratic growth. Ratios of the thread's CPU time (TestUtils::ThreadCpuTimer), each the best of
+    // nine runs, the fan-out and the spread timed in turn within each run, so that a load which comes and goes falls on
+    // both.
+    const auto timeOnce = [](const int n, const bool fanOut) {
+        const int sourceCount = fanOut ? 1 : n;
+        std::vector<std::unique_ptr<OutputPort>> sources;
+        std::vector<std::unique_ptr<OutputPort>> targets;
+        std::vector<std::unique_ptr<InputPort>> inputs;
+        for (int i = 0; i < sourceCount; ++i) {
+            sources.push_back(std::make_unique<OutputPort>());
+            targets.push_back(std::make_unique<OutputPort>());
+        }
+        for (int i = 0; i < n; ++i) {
+            inputs.push_back(std::make_unique<InputPort>());
+        }
+        QList<Connection *> conns;
+        conns.reserve(n);
+
+        TestUtils::ThreadCpuTimer timer;
+        timer.start();
+        for (int i = 0; i < n; ++i) {
+            auto *conn = new Connection();
+            conn->setStartPort(sources[static_cast<std::size_t>(fanOut ? 0 : i)].get());
+            conn->setEndPort(inputs[static_cast<std::size_t>(i)].get());
+            conns.append(conn);
+        }
+        for (int i = 0; i < n; ++i) {
+            conns[i]->setStartPort(targets[static_cast<std::size_t>(fanOut ? 0 : i)].get());
+        }
+        const bool moved = (targets.front()->connections().size() == (fanOut ? n : 1));
+        qDeleteAll(conns);
+        const qint64 elapsed = timer.elapsed();
+        return (moved && targets.front()->connections().isEmpty()) ? elapsed : qint64(0);
+    };
+    // The best fan-out and the best spread of n wires, timed in turn
+    const auto bestTimes = [&timeOnce](const int n) {
+        std::pair<qint64, qint64> best{std::numeric_limits<qint64>::max(), std::numeric_limits<qint64>::max()};
+        for (int run = 0; run < 9; ++run) {
+            const qint64 fanOut = timeOnce(n, true);
+            const qint64 spread = timeOnce(n, false);
+            if ((fanOut == 0) || (spread == 0)) {
+                return std::pair<qint64, qint64>{0, 0};
+            }
+            best = {std::min(best.first, fanOut), std::min(best.second, spread)};
+        }
+        return best;
+    };
+
+    const auto [smallFanOut, smallSpread] = bestTimes(250);
+    const auto [largeFanOut, largeSpread] = bestTimes(64000);
+    QVERIFY2((smallFanOut > 0) && (largeFanOut > 0) && (smallSpread > 0) && (largeSpread > 0),
+             "a port lost or kept a wire");
+    const double growth = (static_cast<double>(largeFanOut) / static_cast<double>(largeSpread))
+                        / (static_cast<double>(smallFanOut) / static_cast<double>(smallSpread));
+    QVERIFY2(growth < 6.0, qPrintable(QString("against the same wires one per port, one port's wires took %1 times as "
+                                              "long at 256 times the wires").arg(growth)));
 }

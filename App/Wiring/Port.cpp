@@ -69,7 +69,8 @@ void Port::attachConnection(Connection *conn)
 
     // Guard against duplicate entries; Connection::setStartPort/setEndPort call connect()
     // and may be called more than once during IC rewiring
-    if (!m_connections.contains(conn)) {
+    if (!m_connectionSet.contains(conn)) {
+        m_connectionSet.insert(conn);
         m_connections.append(conn);
     }
 
@@ -78,7 +79,11 @@ void Port::attachConnection(Connection *conn)
 
 void Port::detachConnection(Connection *conn)
 {
-    m_connections.removeAll(conn);
+    // The list holds each wire once, so the search stops where it is found: at the front when wires go in the order
+    // they came, as when a circuit's wires are deleted or an IC's boundary wires move to its proxy nodes.
+    if (m_connectionSet.remove(conn)) {
+        m_connections.removeOne(conn);
+    }
 
     // Null out the port reference on the connection so it knows it is detached;
     // this prevents the connection from calling disconnect() again in its destructor
@@ -286,6 +291,7 @@ void Port::drainConnections(bool isInput)
     while (!m_connections.isEmpty()) {
         auto *conn = m_connections.constLast();
         m_connections.removeLast();
+        m_connectionSet.remove(conn);
         if (isInput) {
             conn->setEndPort(nullptr);
         } else {
