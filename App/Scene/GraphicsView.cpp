@@ -164,6 +164,9 @@ void GraphicsView::keyReleaseEvent(QKeyEvent *event)
 void GraphicsView::wheelEvent(QWheelEvent *event)
 {
     const int zoomDirection = event->angleDelta().y();
+    const QPoint cursor = event->position().toPoint();
+    // The scene point under the cursor before the zoom, which stays under it
+    const QPointF pinned = mapToScene(cursor);
     bool zoomed = false;
 
     if (zoomDirection > 0 && canZoomIn()) {
@@ -174,11 +177,13 @@ void GraphicsView::wheelEvent(QWheelEvent *event)
         zoomed = true;
     }
 
-    // AnchorUnderMouse handles the scale transform, but scroll bars may shift after
-    // the scale is applied; centerOn() corrects any residual drift so the scene point
-    // that was under the cursor before the wheel event remains under it afterwards.
+    // scale() pivots on the last mouse move's point while the pointer is over the view (AnchorUnderMouse), else on
+    // the viewport's centre, so the view scrolls by however far the pinned point drifted from the cursor. The scroll
+    // bars clamp it to the scene rect.
     if (zoomed) {
-        centerOn(mapToScene(event->position().toPoint()));
+        const QPointF drift = viewportTransform().map(pinned) - QPointF(cursor);
+        horizontalScrollBar()->setValue(horizontalScrollBar()->value() + qRound(drift.x()));
+        verticalScrollBar()->setValue(verticalScrollBar()->value() + qRound(drift.y()));
     }
 
     event->accept();

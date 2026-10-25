@@ -34,6 +34,10 @@ private slots:
     // wheelEvent()'s zoom-out branch (zoom-in is covered by TestMainWindowGui).
     void testWheelEventZoomsOut();
 
+    // A wheel zoom keeps the scene point under the cursor, and the view inside the scene rect near its edge.
+    void testWheelKeepsCursorPoint();
+    void testWheelNearSceneEdgeKeepsViewInsideSceneRect();
+
     // zoomToFit() fits the circuit, not a rubber band beside it.
     void testZoomToFitIgnoresARubberBandOutsideTheCircuit();
 

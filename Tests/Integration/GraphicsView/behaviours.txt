@@ -29,11 +29,11 @@ centerOn -350.0000,650.0000 m11=0.5120 scroll=-393,33 centre=11.7188,648.4375 ca
 ensureVisible 500.0000,400.0000 m11=0.5120 scroll=-393,33 centre=11.7188,648.4375 canIn=1 canOut=1
 ensureVisible -420.0000,-60.0000 m11=0.5120 scroll=-393,-81 centre=11.7188,425.7813 canIn=1 canOut=1
 reset m11=1.0000 scroll=-386,128 centre=13.0000,427.0000 canIn=1 canOut=1
-wheel in at 120,90 m11=1.2500 scroll=-640,25 centre=-192.8000,259.2000 canIn=1 canOut=1
-  cursor scene before -266.0000,218.0000 after -416.0000,92.0000
-wheel out at 120,90 m11=1.0000 scroll=-768,-210 centre=-369.0000,89.0000 canIn=1 canOut=1
-  cursor scene before -416.0000,92.0000 after -648.0000,-120.0000
-wheel in at 780,580 m11=1.2500 scroll=-510,92 centre=-88.8000,312.8000 canIn=1 canOut=1
-  cursor scene before 12.0000,370.0000 after 216.0000,537.6000
-wheel out at 400,300 m11=1.0000 scroll=-488,14 centre=-89.0000,313.0000 canIn=1 canOut=1
-  cursor scene before -88.0000,313.6000 after -88.0000,314.0000
+wheel in at 120,90 m11=1.2500 scroll=-453,182 centre=-43.2000,384.8000 canIn=1 canOut=1
+  cursor scene before -266.0000,218.0000 after -266.4000,217.6000
+wheel out at 120,90 m11=1.0000 scroll=-386,128 centre=13.0000,427.0000 canIn=1 canOut=1
+  cursor scene before -266.4000,217.6000 after -266.0000,218.0000
+wheel in at 780,580 m11=1.2500 scroll=-287,305 centre=89.6000,483.2000 canIn=1 canOut=1
+  cursor scene before 394.0000,708.0000 after 394.4000,708.0000
+wheel out at 400,300 m11=1.0000 scroll=-310,184 centre=89.0000,483.0000 canIn=1 canOut=1
+  cursor scene before 90.4000,484.0000 after 90.0000,484.0000
