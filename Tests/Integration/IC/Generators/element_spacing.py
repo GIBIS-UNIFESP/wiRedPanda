@@ -9,3 +9,7 @@ HORIZONTAL_GATE_SPACING = 104  # Between logic gate centers horizontally
 
 # Vertical spacing between logic levels
 VERTICAL_STAGE_SPACING = 104  # Between stages of logic (input → gates → output)
+
+# The step every placement snaps a position to (half the scene grid, GraphicElement::snapToGrid()): rows packed flush
+# against a measured size are spaced by a multiple of it, or snapping can pull neighbours into each other
+GRID_SNAP_STEP = 8
