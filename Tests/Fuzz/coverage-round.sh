@@ -55,6 +55,10 @@ if [[ -z "$(ls -A "${CORPUS}")" ]]; then
     elif [[ -d "${ROOT}/${FUZZ_DIR}/seed-corpus" ]]; then
         cp "${ROOT}/${FUZZ_DIR}/seed-corpus/"* "${CORPUS}/"
     fi
+    # fuzz_clipboard pastes clipboards, which no file holds: one pass over the .panda files writes the ones it copies
+    if [[ "${HARNESS}" == "clipboard" ]]; then
+        FUZZ_CLIPBOARD_SEED_DIR="${CORPUS}" "${FUZZ_BIN}" -runs=0 "${CORPUS}" > "${ROUNDS}/clipboard-seeds.log" 2>&1 || true
+    fi
 fi
 
 ROUND=$(( $(find "${ROUNDS}" -maxdepth 1 -name 'round-*' | wc -l) + 1 ))

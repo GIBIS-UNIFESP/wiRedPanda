@@ -4,14 +4,29 @@
 /** \file
  * \brief libFuzzer harness for the clipboard paste/copy deserializer.
  *
- * Three phases:
+ * Two kinds of input:
  *
- *   1. BlobRegistry / BlobRegistryV2 MIME slot deserialization.
- *   2. WorkSpace::load from the clipboard panda stream.
- *   3. Clipboard round-trip: load workspace from fuzz bytes, select all
- *      elements, call ClipboardManager::copy() (serializes to clipboard),
- *      then ClipboardManager::paste() (deserializes back) — exercises the
- *      full clipboard serialize/deserialize path including IC blob collection.
+ *   1. A whole .panda file (it starts with "WPCF", or with the zero byte of a
+ *      legacy header's length): loaded into a workspace,
+ *      every element selected and copied with ClipboardManager::copy(), the
+ *      clipboard pasted into a second workspace, the paste undone and redone,
+ *      the circuit's clone-drag image built, the selection duplicated, and
+ *      everything cut.  Exercises the clipboard's writer, IC blob collection
+ *      included, on circuits from the seed corpus.
+ *   2. Anything else is a clipboard, put on the system clipboard as paste()
+ *      finds one and pasted into an empty workspace, the paste then undone and
+ *      redone:
+ *        byte 0      bit 0 selects the versioned blob registry (BlobRegistryV2)
+ *                    over the legacy one, bit 1 the legacy item format
+ *                    (ClipboardLegacy) over the current one, bit 2 leaves the
+ *                    registry out
+ *        bytes 1-2   the registry's length, little-endian, clamped to the input
+ *        then        the registry, then the items: a .panda header, the
+ *                    selection's centre and the serialized items, uncompressed
+ *
+ * With FUZZ_CLIPBOARD_SEED_DIR set, every clipboard path 1 copies is written
+ * to that directory in path 2's layout, so a run over the seed corpus with
+ * -runs=0 gives path 2 real clipboards to mutate.
  */
 
 #include <cstddef>
@@ -21,23 +36,26 @@
 #include <QByteArray>
 #include <QClipboard>
 #include <QCoreApplication>
+#include <QCryptographicHash>
 #include <QDataStream>
+#include <QDir>
 #include <QEvent>
+#include <QFile>
 #include <QMimeData>
+#include <QRectF>
 #include <QScopeGuard>
 #include <QString>
+#include <QTransform>
+#include <QUndoStack>
 #include <QVersionNumber>
 
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
 #include "App/Core/MimeTypes.h"
-#include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElement.h"
 #include "App/IO/Serialization.h"
 #include "App/Scene/ClipboardManager.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
-#include "Tests/Fuzz/FuzzSeed.h"
 
 namespace {
 
@@ -45,10 +63,94 @@ QApplication *g_app  = nullptr;
 int  g_argc = 0;
 char **g_argv = nullptr;
 
-// Pre-built valid blob registry bytes (Qt_5_12 versioned) containing one entry.
-// Used to exercise the readBoundedBlobMap loop body which requires count >= 1,
-// a condition that raw fuzz bytes rarely satisfy in a small corpus.
-QByteArray g_validBlobRegistry;
+constexpr uint8_t kRegistryV2 = 1;
+constexpr uint8_t kItemsLegacy = 2;
+constexpr uint8_t kNoRegistry = 4;
+
+// Writes the clipboard copy() just set to FUZZ_CLIPBOARD_SEED_DIR, in path 2's layout, named by its hash
+void exportClipboardSeed()
+{
+    const QString dir = qEnvironmentVariable("FUZZ_CLIPBOARD_SEED_DIR");
+    const QMimeData *mimeData = QApplication::clipboard()->mimeData();
+    if (dir.isEmpty() || !mimeData || !mimeData->hasFormat(MimeType::Clipboard)) {
+        return;
+    }
+
+    const QByteArray registry = mimeData->data(MimeType::BlobRegistryV2);
+    if (registry.size() > 0xFFFF) {
+        return;
+    }
+    QByteArray seed;
+    seed.append(static_cast<char>(registry.isEmpty() ? kNoRegistry : kRegistryV2));
+    seed.append(static_cast<char>(registry.size() & 0xFF));
+    seed.append(static_cast<char>((registry.size() >> 8) & 0xFF));
+    seed.append(registry);
+    seed.append(mimeData->data(MimeType::Clipboard));
+
+    QFile file(QDir(dir).filePath(QCryptographicHash::hash(seed, QCryptographicHash::Sha1).toHex().left(16)));
+    if (file.open(QIODevice::WriteOnly)) {
+        file.write(seed);
+    }
+}
+
+void pasteUndoRedo(WorkSpace &workspace)
+{
+    ClipboardManager clipboard(workspace.scene());
+    try { clipboard.paste(); } catch (...) {}
+    auto *undoStack = workspace.scene()->undoStack();
+    try { undoStack->undo(); } catch (...) {}
+    try { undoStack->redo(); } catch (...) {}
+}
+
+void copyPasteCut(const QByteArray &panda)
+{
+    QDataStream stream(panda);
+    QVersionNumber version;
+    WorkSpace source;
+    try {
+        version = Serialization::readPandaHeader(stream);
+        source.load(stream, version, /*contextDir=*/QString());
+    } catch (...) {
+        return;
+    }
+
+    source.scene()->selectAll();
+    ClipboardManager clipboard(source.scene());
+    try { clipboard.copy(); } catch (...) {}
+    exportClipboardSeed();
+
+    WorkSpace target;
+    pasteUndoRedo(target);
+
+    // The clone-drag ghost of the whole circuit: its size is capped however far apart the elements are
+    const QRectF bounds = source.scene()->itemsBoundingRect();
+    try { ClipboardManager::buildDragImage(source.scene(), QTransform(), bounds); } catch (...) {}
+
+    // duplicate() copies the selection in place, through the scene's own blob registry, then the copies are cut:
+    // cut() serializes the selection and then deletes it, unlike copy()
+    try { clipboard.duplicate(); } catch (...) {}
+    source.scene()->selectAll();
+    try { clipboard.cut(); } catch (...) {}
+}
+
+void pasteClipboard(const uint8_t *data, size_t size)
+{
+    const uint8_t flags = data[0];
+    const size_t registrySize = std::min<size_t>(size - 3, data[1] | (static_cast<size_t>(data[2]) << 8));
+    const QByteArray registry(reinterpret_cast<const char *>(data + 3), static_cast<int>(registrySize));
+    const QByteArray items(reinterpret_cast<const char *>(data + 3 + registrySize),
+                           static_cast<int>(size - 3 - registrySize));
+
+    auto *mimeData = new QMimeData;
+    if (!(flags & kNoRegistry)) {
+        mimeData->setData((flags & kRegistryV2) ? MimeType::BlobRegistryV2 : MimeType::BlobRegistry, registry);
+    }
+    mimeData->setData((flags & kItemsLegacy) ? MimeType::ClipboardLegacy : MimeType::Clipboard, items);
+    QApplication::clipboard()->setMimeData(mimeData);
+
+    WorkSpace target;
+    pasteUndoRedo(target);
+}
 
 } // namespace
 
@@ -66,30 +168,6 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
     g_argv = *argv;
     g_app  = new QApplication(g_argc, g_argv);
 
-    // Build a minimal IC blob (InputSwitch + Led) for the registry entry.
-    {
-        auto *sw  = ElementFactory::buildElement(ElementType::InputSwitch);
-        auto *led = ElementFactory::buildElement(ElementType::Led);
-        sw->setId(1);  led->setId(2);
-        QList<QGraphicsItem *> items;
-        items.append(sw);  items.append(led);
-
-        QMap<QString, QVariant> meta;
-        meta.insert("dolphinFileName", QVariant(QString()));
-        const QByteArray icBlob = FuzzSeed::pandaFile(meta, items);
-        qDeleteAll(items);
-        FuzzSeed::requireAccepted(icBlob, "fuzz_clipboard");
-
-        // Serialise as a blob registry: QMap<QString,QByteArray> in Qt_5_12 format.
-        // readBoundedBlobMap reads: quint32 count + count × (QString key + QByteArray val).
-        // This matches QMap<QString,QByteArray>::operator<<(QDataStream&) wire format.
-        QDataStream rs(&g_validBlobRegistry, QIODevice::WriteOnly);
-        rs.setVersion(QDataStream::Qt_5_12);
-        QMap<QString, QByteArray> blobMap;
-        blobMap.insert("fuzz_ic.panda", icBlob);
-        rs << blobMap;
-    }
-
     return 0;
 }
 
@@ -105,97 +183,17 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
         QCoreApplication::processEvents();
     });
 
-    if (size < 2) return 0;
+    if (size < 4) return 0;
 
-    const bool useV2     = data[0] != 0;
-    const size_t split   = std::min<size_t>(256, size / 2);
-    const QByteArray regBytes(reinterpret_cast<const char *>(data + 1),
-                               static_cast<int>(split));
-    const QByteArray pandaBytes(reinterpret_cast<const char *>(data + 1 + split),
-                                 static_cast<int>(size - 1 - split));
-
-    // --- 1. BlobRegistry deserialization ---
-    // Exercises Serialization::readBoundedBlobMap which protects both the
-    // versioned (BlobRegistryV2 / Qt_5_12) and legacy (unversioned) clipboard
-    // blob registry formats against fuzz-controlled OOM.
-    {
-        QByteArray reg(regBytes);
-        QDataStream regStream(&reg, QIODevice::ReadOnly);
-        if (useV2) regStream.setVersion(QDataStream::Qt_5_12);
-        try {
-            Serialization::readBoundedBlobMap(regStream);
-        } catch (...) {}
+    // A legacy .panda file starts with its header string's big-endian length, so with a zero byte; a clipboard's
+    // flags byte is never zero in the seeds path 1 writes
+    const QByteArray input = QByteArray::fromRawData(reinterpret_cast<const char *>(data), static_cast<int>(size));
+    if (input.startsWith("WPCF") || (data[0] == 0)) {
+        copyPasteCut(input);
+    } else {
+        pasteClipboard(data, size);
     }
 
-    // 1b. Valid blob registry path — exercises the readBoundedBlobMap loop body
-    // (lines 296-302 in Serialization.cpp) which requires count >= 1 and a valid
-    // entry.  Random fuzz bytes rarely produce count > 0 at the right stream offset
-    // so this path was dark.  Mixing the valid registry ensures the loop runs.
-    {
-        QDataStream validStream(g_validBlobRegistry);
-        validStream.setVersion(QDataStream::Qt_5_12);
-        try {
-            Serialization::readBoundedBlobMap(validStream);
-        } catch (...) {}
-    }
-
-    // --- 2. Clipboard panda stream deserialization ---
-    // Same path as WorkSpace::load but entered via the clipboard paste route.
-    // Exercises readPandaHeader + deserializeAndAdd (which calls
-    // Serialization::deserialize into a scene).
-    {
-        QDataStream stream(pandaBytes);
-        QVersionNumber version;
-        try {
-            version = Serialization::readPandaHeader(stream);
-        } catch (...) {
-            return 0;
-        }
-
-        WorkSpace workspace;
-        try {
-            workspace.load(stream, version, /*contextDir=*/QString());
-        } catch (...) {}
-    }
-
-    // --- 3. Clipboard round-trip: load → selectAll → copy → paste ---
-    // Exercises ClipboardManager::copy() (serialize to clipboard with blob
-    // collection) and the paste() path reading those serialized bytes back.
-    // ClipboardManager::copy calls Serialization::serialize + IC blob registry
-    // collection, which is dark in all other harnesses.
-    {
-        QDataStream stream2(pandaBytes);
-        QVersionNumber ver2;
-        try {
-            ver2 = Serialization::readPandaHeader(stream2);
-        } catch (...) {
-            return 0;
-        }
-
-        WorkSpace ws2;
-        try {
-            ws2.load(stream2, ver2, /*contextDir=*/QString());
-        } catch (...) {
-            return 0;
-        }
-
-        // Select all loaded elements so copy() has something to serialize.
-        ws2.scene()->selectAll();
-
-        // copy() → serialize selected items + collect IC blobs to clipboard.
-        // paste() → deserialize the clipboard panda stream back into a scene.
-        ClipboardManager cm(ws2.scene());
-
-        // copy(): serializes selected items + IC blobs to clipboard (non-destructive).
-        try { cm.copy(); } catch (...) {}
-        try { cm.paste(); } catch (...) {}
-
-        // cut(): serializes + DELETES selected items — distinct from copy() because
-        // it calls serializeAndDelete which removes elements from the scene.
-        // Re-select all first (paste() may have changed selection state).
-        ws2.scene()->selectAll();
-        try { cm.cut(); } catch (...) {}
-    }
-
+    QApplication::clipboard()->clear();
     return 0;
 }
