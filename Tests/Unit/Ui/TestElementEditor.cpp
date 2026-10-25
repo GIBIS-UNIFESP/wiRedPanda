@@ -992,6 +992,98 @@ void TestElementEditor::testApplyWirelessModeChangeSeversExistingConnection()
     QCOMPARE(TestUtils::sceneConnections(workspace.scene()).size(), 1);
 }
 
+void TestElementEditor::testRefusesALabelAnotherTxHas()
+{
+    WorkSpace workspace;
+    auto *first = new Node();
+    first->setWirelessMode(WirelessMode::Tx);
+    first->setLabel("x");
+    workspace.scene()->addItem(first);
+    auto *second = new Node();
+    second->setWirelessMode(WirelessMode::Tx);
+    second->setLabel("y");
+    workspace.scene()->addItem(second);
+
+    ElementEditor editor(&workspace);
+    editor.setScene(workspace.scene());
+    workspace.scene()->clearSelection();
+    second->setSelected(true);
+    const int commands = workspace.scene()->undoStack()->count();
+
+    auto *lineEdit = editor.findChild<QLineEdit *>("lineEditElementLabel");
+    QVERIFY(lineEdit);
+    auto dismisser = TestUtils::AutoDismisser::acceptMessageBox();
+    lineEdit->setText("x");
+
+    QCOMPARE(dismisser.dismissCount(), 1);
+    QCOMPARE(second->label(), QString("y"));
+    QCOMPARE(workspace.scene()->undoStack()->count(), commands);
+}
+
+void TestElementEditor::testRefusesTwoSelectedNodesBecomingOneTxChannel()
+{
+    // Neither node is a Tx yet, so no Tx in the scene has the label: the two would be the first to share it
+    WorkSpace workspace;
+    auto *first = new Node();
+    auto *second = new Node();
+    first->setLabel("z");
+    second->setLabel("z");
+    workspace.scene()->addItem(first);
+    workspace.scene()->addItem(second);
+
+    ElementEditor editor(&workspace);
+    editor.setScene(workspace.scene());
+    workspace.scene()->clearSelection();
+    first->setSelected(true);
+    second->setSelected(true);
+    const int commands = workspace.scene()->undoStack()->count();
+
+    auto *combo = editor.findChild<QComboBox *>("comboBoxWirelessMode");
+    QVERIFY(combo);
+    auto dismisser = TestUtils::AutoDismisser::acceptMessageBox();
+    combo->setCurrentIndex(static_cast<int>(WirelessMode::Tx));
+
+    QCOMPARE(dismisser.dismissCount(), 1);
+    QCOMPARE(first->wirelessMode(), WirelessMode::None);
+    QCOMPARE(second->wirelessMode(), WirelessMode::None);
+    QCOMPARE(workspace.scene()->undoStack()->count(), commands);
+}
+
+void TestElementEditor::testRefusesALabelAnotherTxHasWithANonNodeSelected()
+{
+    // A switch selected with the Tx hides the wireless field, but the label, which both take, still names the Tx's
+    // channel
+    WorkSpace workspace;
+    auto *first = new Node();
+    first->setWirelessMode(WirelessMode::Tx);
+    first->setLabel("x");
+    workspace.scene()->addItem(first);
+    auto *second = new Node();
+    second->setWirelessMode(WirelessMode::Tx);
+    second->setLabel("y");
+    workspace.scene()->addItem(second);
+    auto *inputSwitch = new InputSwitch();
+    workspace.scene()->addItem(inputSwitch);
+
+    ElementEditor editor(&workspace);
+    editor.setScene(workspace.scene());
+    workspace.scene()->clearSelection();
+    second->setSelected(true);
+    inputSwitch->setSelected(true);
+    const int commands = workspace.scene()->undoStack()->count();
+
+    auto *lineEdit = editor.findChild<QLineEdit *>("lineEditElementLabel");
+    QVERIFY(lineEdit);
+    QVERIFY(lineEdit->isEnabled());
+    auto dismisser = TestUtils::AutoDismisser::acceptMessageBox();
+    lineEdit->setText("x");
+
+    QCOMPARE(dismisser.dismissCount(), 1);
+    QCOMPARE(second->label(), QString("y"));
+    QCOMPARE(inputSwitch->label(), QString());
+    QCOMPARE(workspace.scene()->undoStack()->count(), commands);
+}
+
 void TestElementEditor::testBlobNameEditingFinishedIgnoresUnchangedOrEmpty()
 {
     WorkSpace workspace;

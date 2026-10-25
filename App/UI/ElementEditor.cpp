@@ -606,36 +606,24 @@ void ElementEditor::endEditSession()
 
 bool ElementEditor::refusesTxChannel(const std::optional<QString> &label, const std::optional<WirelessMode> mode)
 {
-    // A Tx node's label is its channel name — two Tx nodes on the same label
-    // means one silently receives no signal, which is always a user error.
-    if (!m_caps.hasWirelessMode) {
-        return false;
-    }
-
+    // Every wireless node of the selection, a selection with other elements included, as the edit would leave it
+    QList<Scene::WirelessEdit> edits;
     for (auto *elm : std::as_const(m_elements)) {
-        auto *node = qobject_cast<Node *>(elm);
-        if (!node) continue;
-
-        const QString candidateLabel = label.value_or(node->label());
-        const WirelessMode candidateMode = mode.value_or(node->wirelessMode());
-
-        if (candidateMode != WirelessMode::Tx || candidateLabel.isEmpty()) continue;
-
-        for (auto *other : m_scene->elements()) {
-            if (other == elm) continue;
-            auto *otherNode = qobject_cast<Node *>(other);
-            if (!otherNode || otherNode->wirelessMode() != WirelessMode::Tx) continue;
-            if (otherNode->label() == candidateLabel) {
-                QMessageBox::warning(this,
-                    tr("Duplicate Wireless Channel"),
-                    tr("A Tx node with label \"%1\" already exists.\n"
-                       "Each wireless channel must have a unique label.").arg(candidateLabel));
-                update();
-                return true;
-            }
+        if (elm->hasWirelessMode()) {
+            edits.append({elm, label.value_or(elm->label()), mode.value_or(elm->wirelessMode())});
         }
     }
-    return false;
+
+    const QString duplicate = m_scene->duplicateTxLabel(edits);
+    if (duplicate.isEmpty()) {
+        return false;
+    }
+    QMessageBox::warning(this,
+        tr("Duplicate Wireless Channel"),
+        tr("A Tx node with label \"%1\" already exists.\n"
+           "Each wireless channel must have a unique label.").arg(duplicate));
+    update();
+    return true;
 }
 
 void ElementEditor::labelChanged(const QString &label)

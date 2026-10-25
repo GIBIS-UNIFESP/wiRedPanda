@@ -116,7 +116,7 @@ private:
     /// Ends the edit session: a field's next change is an undo step of its own.
     void endEditSession();
     /// Returns whether giving the selected nodes \a label or \a mode (each when set; otherwise each node's own) would
-    /// give two Tx nodes one channel, after warning so.
+    /// give two Tx nodes one channel (Scene::duplicateTxLabel()), after warning so.
     bool refusesTxChannel(const std::optional<QString> &label, std::optional<WirelessMode> mode);
     /// Gives the selection the default appearance, or \a fileName's, as one undo step restoring its saved state.
     void applyAppearance(bool defaultAppearance, const QString &fileName);

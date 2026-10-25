@@ -83,6 +83,11 @@ private slots:
     void testInlineLabelEditorStartWhileEditingCommitsPrevious();
     void testInlineLabelEditorEmptyLabelUsesElementBoundingRectFallback();
 
+    // One rule against two Tx nodes on one channel, for every writer of a label or a mode
+    void testDuplicateTxLabel_data();
+    void testDuplicateTxLabel();
+    void testInlineLabelEditorRefusesADuplicateTxLabel();
+
     // ClipboardManager: no-selection no-ops, and legacy clipboard mime-type fallbacks
     void testCutWithNoSelectionClearsClipboard();
     void testCloneDragWithNoSelectionIsNoOp();

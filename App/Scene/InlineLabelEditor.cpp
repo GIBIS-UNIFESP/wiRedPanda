@@ -97,6 +97,16 @@ void InlineLabelEditor::commit()
     auto *lineEdit = qobject_cast<QLineEdit *>(m_proxy->widget());
     const QString newText = lineEdit ? lineEdit->text() : m_target->label();
 
+    if ((newText != m_target->label()) && m_target->hasWirelessMode()) {
+        if (const QString duplicate = m_scene->duplicateTxLabel({{m_target, newText, m_target->wirelessMode()}});
+            !duplicate.isEmpty()) {
+            m_scene->showStatusMessage(tr("A Tx node with label \"%1\" already exists: each wireless channel has one.")
+                                           .arg(duplicate));
+            close();
+            return;
+        }
+    }
+
     if (newText != m_target->label()) {
         QByteArray oldData;
         QDataStream stream(&oldData, QIODevice::WriteOnly);
