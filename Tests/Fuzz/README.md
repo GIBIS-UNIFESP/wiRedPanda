@@ -61,6 +61,12 @@ files under `Tests/Integration/IC` — the run scripts build it automatically at
 magic header, version tokens, QVariant type IDs, and map keys so mutation
 threads the format's length-prefixed fields.
 
+The harnesses whose input is a whole `.panda` file share one structure-aware
+mutator, `PandaMutator::mutate()` (`PandaMutator.h`): it splices known keys,
+type ids and element headers, and mutates a current-format file in its
+decompressed body, writing it back compressed, so mutations reach the reader's
+structure instead of breaking zlib's stream.
+
 Six harnesses (`clipboard`, `codegen`, `ic_file`, `ic_registry`, `structured`,
 `undo`) also build circuits of their own at start-up, written by
 `FuzzSeed::pandaFile()` (`FuzzSeed.h`) as `WorkSpace::save()` writes a file.
