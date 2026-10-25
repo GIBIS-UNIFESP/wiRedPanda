@@ -55,7 +55,7 @@ Text::Text(QGraphicsItem *parent)
     // calls setLabelAnchor() to override it) -- the hint stands in for the label until there's
     // real content to show.
     m_emptyHint->setPos(0, 64);
-    m_emptyHint->setText(tr("Double-click to add text"));
+    retranslateHint();
     updateTheme();
     labelContentChanged(); // a fresh Text starts with an empty label -- show the hint explicitly
                             // rather than relying on QGraphicsSimpleTextItem's default visibility
@@ -77,7 +77,20 @@ void Text::updateTheme()
     m_emptyHint->setBrush(hintColor);
 }
 
+void Text::retranslate()
+{
+    GraphicElement::retranslate();
+    retranslateHint();
+}
+
 void Text::labelContentChanged()
 {
     m_emptyHint->setVisible(label().isEmpty());
+}
+
+void Text::retranslateHint()
+{
+    // The hint's width feeds boundingRect() through childrenBoundingRect().
+    prepareGeometryChange();
+    m_emptyHint->setText(tr("Double-click to add text"));
 }

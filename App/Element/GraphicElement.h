@@ -490,9 +490,10 @@ public:
     /**
      * \brief Updates the translated display name, tooltip, and port object name after a locale change.
      * \details Queries ElementFactory for the new translated name and propagates
-     * it to setPortName() and setToolTip().
+     * it to setPortName() and setToolTip(). An element showing other translated text of its own overrides it, calling
+     * the base first.
      */
-    void retranslate();
+    virtual void retranslate();
 
     // --- Setters (Port & Logic Configuration) ---
 

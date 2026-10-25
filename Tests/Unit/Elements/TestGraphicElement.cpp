@@ -5,12 +5,14 @@
 
 #include <memory>
 
+#include <QCoreApplication>
 #include <QGraphicsProxyWidget>
 #include <QGraphicsSceneMouseEvent>
 #include <QLineEdit>
 #include <QMetaEnum>
 #include <QPainter>
 #include <QPixmap>
+#include <QScopeGuard>
 #include <QStyleOptionGraphicsItem>
 #include <QUndoStack>
 
@@ -244,6 +246,27 @@ void TestGraphicElement::testTextEmptyStateHintTogglesWithLabelContent()
 
     text->setLabel("Second time");
     QVERIFY(!text->m_emptyHint->isVisible());
+}
+
+void TestGraphicElement::testTextEmptyStateHintFollowsALanguageChange()
+{
+    WorkSpace workspace;
+    auto *text = new Text;
+    workspace.scene()->addItem(text);
+    const QString english = text->m_emptyHint->text();
+
+    // The main window retranslates every element through the base class at a language change.
+    GraphicElement *element = text;
+    TestUtils::TagEveryStringTranslator tagging;
+    QCoreApplication::installTranslator(&tagging);
+    auto removeTagging = qScopeGuard([&tagging] { QCoreApplication::removeTranslator(&tagging); });
+    element->retranslate();
+    QCOMPARE(text->m_emptyHint->text(), QString("[tr %1]").arg(english));
+
+    removeTagging.dismiss();
+    QCoreApplication::removeTranslator(&tagging);
+    element->retranslate();
+    QCOMPARE(text->m_emptyHint->text(), english);
 }
 
 void TestGraphicElement::testSceneEventSwallowsCtrlClickPress()
