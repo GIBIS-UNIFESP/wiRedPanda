@@ -825,15 +825,9 @@ void SystemVerilogCodeGen::declareAuxVariablesRec(const QVector<GraphicElement *
                 }
 
                 case ElementType::TruthTable:
-                    if (!outputs.isEmpty()) {
-                        Port *outputPort = outputs.constFirst();
-                        QString ttVarName = QString("%1_output").arg(removeForbiddenChars(elm->objectName()));
-                        m_varMap[outputPort] = ttVarName;
-                        m_stream << QString("reg ") << ttVarName << ";" << Qt::endl;
-
-                        continue;
-                    }
-                    break; // LCOV_EXCL_LINE -- unreachable: TruthTable::minOutputSize() is 1, so outputs is never empty
+                    // Each output is a reg its own always block drives, under the per-element name every output gets.
+                    m_stream << "reg " << varName2 << ";" << Qt::endl;
+                    break;
 
                 case ElementType::Mux:
                 case ElementType::Demux: {
@@ -1326,14 +1320,11 @@ void SystemVerilogCodeGen::assignVariablesRec(const QVector<GraphicElement *> &e
                 QString indexCalculation = bitExpressions.join("");
 
                 // One always block per output (F19): output k reads key bits 256*k + row.
-                // Emitting per-output keeps the single-output text byte-identical to the
-                // historical form.
                 for (int out = 0; out < elm->outputSize(); ++out) {
                     QString outputVarName = m_varMap.value(elm->outputPort(out));
-                    // Unreachable: declareAuxVariablesRec()'s TruthTable case (see above)
-                    // always maps output 0 to a name, and the multi-output pre-population
-                    // pass (also in declareAuxVariablesRec) maps every other output too —
-                    // outputVarName is never empty here.
+                    // Unreachable: declareAuxVariablesRec() maps and declares every output
+                    // of every element under its per-element name, so outputVarName is
+                    // never empty here.
                     if (outputVarName.isEmpty()) {
                         if (out == 0) { // LCOV_EXCL_LINE
                             throw PANDACEPTION("Output variable not mapped for TruthTable: %1", elm->objectName()); // LCOV_EXCL_LINE

@@ -17,6 +17,7 @@ private slots:
     /// the feedback edge to 1'b0 -- exporting a latch as combinational logic with the memory
     /// removed. Behavioural, not textual: the exported module must HOLD STATE.
     void testTopLevelFeedbackLatchHoldsStateInExport();
+    void testTruthTablesCompileAndSimulate();
 
     void initTestCase();
     void cleanupTestCase();
