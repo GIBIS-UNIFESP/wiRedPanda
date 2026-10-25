@@ -420,7 +420,8 @@ their output depends on the interface language. On `master` every port name is a
 (`Display7`: `"G (" + tr("middle") + ")"`, and the 14- and 16-segment displays alike), and an IC's pins are named
 from the sub-circuit's ports they stand for (`buildPortLabels()` in `ICLoader`), so a pin standing for a display's
 port carries its translated name too. Fix (P2.D8): element names from the factory's untranslated name
-(`ElementFactory::typeToText()`); a port holds a name in the source language beside its displayed one, which the
+(`ElementFactory::untranslatedName()`, the source text of the name the interface translates; `typeToText()`, the enum
+key, would rename every element); a port holds a name in the source language beside its displayed one, which the
 three segment displays set from their untranslated text and which is the name itself for every other port; an IC's
 pin takes a source name built as its displayed one is, from the source names of the ports it stands for; and the
 generators name signals from source names, so the English output is unchanged. The file header's pin names stay as
