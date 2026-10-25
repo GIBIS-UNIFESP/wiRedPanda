@@ -258,8 +258,12 @@ void ICLoader::processLoadedItems(IC &ic, QList<QGraphicsItem *> &items)
     // Snapshot the preview now, while the original Input/Output elements (buttons,
     // switches, LEDs, …) are still alive in `items`.  loadBoundaryElement() below
     // replaces each of them with a proxy Node, so a later render would only see
-    // the simulation graph.
-    ICRenderer::generatePreviewPixmap(ic, items);
+    // the simulation graph.  Only the IC a load starts from can be hovered in a
+    // scene; one nested inside it is part of its circuit and never shown, and a
+    // preview for each of thousands of nested ICs held about 100 KB apiece.
+    if (s_icLoadDepth <= 1) {
+        ICRenderer::generatePreviewPixmap(ic, items);
+    }
 
     // Drain items one at a time: as ownership of each transfers (to
     // m_internalConnections/m_internalElements) or the item is deleted
