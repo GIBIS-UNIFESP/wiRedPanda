@@ -42,7 +42,7 @@ Each row's notes say how its check is shown to fail; "as on the branch" marks a 
 | P9.24 | The developer guide and the build documents (§2.15) | todo | | |
 | P9.25 | The CPU backend measured against `master` (§2.15) | todo | | On plan 1's fixtures: a pan, a zoom, a status change, a load's first frames |
 | P9.26 | The manual pass (§2.15) | todo | | |
-| P9.27 | Whether today's `master` still pays Qt's BSP index rebuild after a load (§6) | todo | | Plan 1's probe |
+| P9.27 | Whether today's `master` still pays Qt's BSP index rebuild after a load (§6) | todo | | Plan 1's probe. Measured 2026-10-25 on `02-master-fixes` (P2.38, relwithdebinfo, over MCP): yes. The first command after `load_circuit` of `clocked_8000.panda` waits 20.4 s, 72% of it `QGraphicsSceneBspTree::insertItem()` in `_q_updateIndex()`; `clocked_2000.panda` 0.57 s, `combinational_10000.panda` 0.08 s. Quadratic in the wires spanning the circuit (the clock's), each inserted into a leaf list per leaf its bounding rectangle covers. Unchanged by P2.38's fix |
 | P9.28 | What the user sees new (§6) | todo | | Needs the user: ports and labels above overlapping elements; any redrawn glows |
 | P9.29 | Whether the listener's events are enough for plan 10's mirror (§6) | todo | | Checked against plan 10's mirror before the listener is final |
 | P9.30 | Keep a port's `pos()` and `scenePos()` and a wire's `path()`, with their meanings, when ports and wires leave the item tree | todo | | Plan 1's scene-snapshot, wire-geometry and port-layout goldens read them (plan 1, §3.1 and §9); found 2026-10-22 on `01-characterization` |
@@ -52,3 +52,5 @@ Each row's notes say how its check is shown to fail; "as on the branch" marks a 
 - 2026-10-21: the plan file and this ledger written on `gpu-canvas`, every row `todo`.
 - 2026-10-22: P9.30 added from plan 1's slice 2: plan 1's dumps read a port's `pos()` and `scenePos()` and a wire's
   `path()`, which this plan keeps when ports and wires leave the item tree.
+- 2026-10-25: P9.27 measured by plan 2's P2.38: `master` still pays the BSP index rebuild after a load, 20 s on the
+  8,000-element circuit, quadratic in the wires spanning it.
