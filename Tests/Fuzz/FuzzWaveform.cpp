@@ -84,21 +84,22 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
 
     // Auto-detect format from the first 4 bytes:
     //   0x57505746 = "WPWF" (modern binary waveform magic)
-    //   starts with 'b' + sufficient length → likely "beWavedDolphin" legacy
+    //   a zero first byte → the big-endian byte length (at most 256) of a legacy "beWavedDolphin" header; CSV text
+    //   never starts with one
     //   otherwise → CSV path or structured binary generator
     const quint32 magic = (quint32(data[0]) << 24) | (quint32(data[1]) << 16)
                         | (quint32(data[2]) <<  8) |  quint32(data[3]);
-    const bool looksLikeBinary = (magic == 0x57505746u)
-                               || (data[0] == 'b' && size >= 14);
+    const bool looksLikeBinary = (magic == 0x57505746u) || (data[0] == 0);
 
     const int maxInputPorts = std::max(1, static_cast<int>(data[size - 1]) % 64 + 1);
 
     if (!looksLikeBinary) {
-        // Use the first byte to select between CSV path and structured binary generator.
+        // A control character as the first byte selects the structured binary generator, which CSV text never
+        // starts with, so CSV text starting with any digit or a minus sign reaches loadCSV.
         // The structured generator always produces a valid binary waveform stream,
         // ensuring the inner loops of loadBinary (col-major cell reads) are exercised
         // even when the raw bytes don't happen to start with WPWF.
-        if (data[0] & 1) {
+        if (data[0] < 0x20) {
             // --- Structured binary path: FuzzedDataProvider → valid waveform ---
             FuzzedDataProvider fdp(data + 1, size - 1);
             const int rows = fdp.ConsumeIntegralInRange<int>(0, 8);
@@ -107,7 +108,15 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
             QByteArray buf;
             QDataStream s(&buf, QIODevice::WriteOnly);
             s.setVersion(QDataStream::Qt_5_12);
-            Serialization::writeDolphinHeader(s);
+            if (fdp.ConsumeBool()) {
+                Serialization::writeDolphinHeader(s);
+            } else {
+                // Legacy header: the app name's byte length, then its UTF-16 code units in native order
+                static const QString kAppNames[] = {"beWavedDolphin 1.0", "beWavedDolphin", "wiRedPanda 4.0"};
+                const QString &appName = fdp.PickValueInArray(kAppNames);
+                s << static_cast<quint32>(appName.size() * 2);
+                s.writeRawData(reinterpret_cast<const char *>(appName.utf16()), static_cast<int>(appName.size() * 2));
+            }
             s << static_cast<qint64>(rows) << static_cast<qint64>(cols);
             for (int c = 0; c < cols; ++c) {
                 for (int r = 0; r < rows; ++r) {
