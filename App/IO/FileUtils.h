@@ -6,6 +6,7 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QSaveFile>
 #include <QString>
 
 #include "App/Core/Common.h"
@@ -37,6 +38,17 @@ inline void copyToDir(const QString &srcPath, const QString &destDir)
                                             srcPath, dest, srcFile.errorString());
         }
     }
+}
+
+/// Commits \a file when every write reached it, and returns whether it did. Qt defers a write's failure (a full disk, a
+/// quota) to the flush, and Qt 6.7's commit() replaces the target with the truncated file even then; so a failed flush
+/// or a recorded error leaves the file uncommitted, and its destructor discards it. errorString() says why.
+inline bool commitWhenWritten(QSaveFile &file)
+{
+    if (!file.flush() || (file.error() != QFileDevice::NoError)) {
+        return false;
+    }
+    return file.commit();
 }
 
 /// Returns true if \a a and \a b are the same file on disk or hold identical bytes. Used to

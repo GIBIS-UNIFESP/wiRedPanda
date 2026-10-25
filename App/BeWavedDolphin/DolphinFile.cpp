@@ -11,6 +11,7 @@
 
 #include "App/BeWavedDolphin/SignalModel.h"
 #include "App/Core/Common.h"
+#include "App/IO/FileUtils.h"
 #include "App/IO/Serialization.h"
 
 namespace DolphinFile {
@@ -35,10 +36,10 @@ void save(const SignalModel &model, const QString &fileName, const int inputPort
         DolphinSerializer::saveCSV(file, &model);
     }
 
-    if (!file.commit()) {
+    if (!FileUtils::commitWhenWritten(file)) {
         // Covered: TestDolphinFile::testSaveCommitFailureThrows() forces this via
         // RLIMIT_FSIZE (ScopedTinyFsizeLimit) -- Qt defers write() errors, so a failed
-        // write during saveBinary()/saveCSV() above only surfaces here, at commit().
+        // write during saveBinary()/saveCSV() above only surfaces here, at the flush before the commit.
         throw PANDACEPTION_WITH_CONTEXT("BewavedDolphin", "Error saving file: %1", file.errorString());
     }
 }

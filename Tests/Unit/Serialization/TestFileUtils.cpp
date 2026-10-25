@@ -6,6 +6,7 @@
 #include <QDir>
 #include <QFile>
 #include <QFileDevice>
+#include <QSaveFile>
 #include <QTemporaryDir>
 
 #include "App/IO/FileUtils.h"
@@ -186,5 +187,57 @@ void TestFileUtils::testFilesHaveSameContentUnreadableFileTreatedAsDifferent()
     QVERIFY(!FileUtils::filesHaveSameContent(QFileInfo(readablePath), QFileInfo(unreadablePath)));
 
     QFile::setPermissions(unreadablePath, QFileDevice::ReadOwner | QFileDevice::WriteOwner);
+#endif
+}
+
+void TestFileUtils::testCommitWhenWrittenReplacesTheTarget()
+{
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("target.txt");
+    QFile existing(path);
+    QVERIFY(existing.open(QIODevice::WriteOnly));
+    existing.write("old contents");
+    existing.close();
+
+    QSaveFile file(path);
+    QVERIFY(file.open(QIODevice::WriteOnly));
+    file.write("new contents");
+    QVERIFY(FileUtils::commitWhenWritten(file));
+
+    QFile result(path);
+    QVERIFY(result.open(QIODevice::ReadOnly));
+    QCOMPARE(result.readAll(), QByteArray("new contents"));
+}
+
+void TestFileUtils::testCommitWhenWrittenKeepsTheTargetWhenAWriteFails()
+{
+    // A write past the file size limit fails at the flush; the commit is refused and the target keeps its contents.
+    // Qt 6.7's commit() alone replaced the target with the truncated file.
+#ifdef Q_OS_WIN
+    QSKIP("RLIMIT_FSIZE (used to force a deferred QSaveFile write failure) has no Windows equivalent");
+#else
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("target.txt");
+    QFile existing(path);
+    QVERIFY(existing.open(QIODevice::WriteOnly));
+    existing.write("old contents");
+    existing.close();
+
+    bool committed = true;
+    {
+        TestUtils::ScopedTinyFsizeLimit tinyLimit;
+        QSaveFile file(path);
+        QVERIFY(file.open(QIODevice::WriteOnly));
+        file.write(QByteArray(64, 'x'));
+        committed = FileUtils::commitWhenWritten(file);
+    }
+    QVERIFY(!committed);
+
+    QFile result(path);
+    QVERIFY(result.open(QIODevice::ReadOnly));
+    QCOMPARE(result.readAll(), QByteArray("old contents"));
+    QCOMPARE(QDir(dir.path()).entryList(QDir::Files).size(), 1);
 #endif
 }

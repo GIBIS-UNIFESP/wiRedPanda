@@ -14,6 +14,7 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ICRenderer.h"
 #include "App/IO/ExternalFilePath.h"
+#include "App/IO/FileUtils.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
@@ -244,10 +245,10 @@ void ICLoader::migrateFile(const QFileInfo &fileInfo, const QList<QGraphicsItem 
     QDataStream outStream(&saveFile);
     Serialization::writePandaHeader(outStream);
     Serialization::writePayload(outStream, payload);
-    if (!saveFile.commit()) {
+    if (!FileUtils::commitWhenWritten(saveFile)) {
         // Covered: TestICUnit::testMigrateFileCommitFailureThrows() forces this via
         // RLIMIT_FSIZE (ScopedTinyFsizeLimit) -- Qt defers write() errors, so a failed
-        // write during writePayload() above only surfaces here, at commit().
+        // write during writePayload() above only surfaces here, at the flush before the commit.
         throw PANDACEPTION("IC migration: failed to commit re-saved file: %1", fileInfo.absoluteFilePath());
     }
 }
