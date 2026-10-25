@@ -43,7 +43,8 @@ void ElementOrientation::orientPort(Port *port)
     // pixmapCenter() expressed in the port's local frame. port->pos() is the port's base
     // position — flip and rotation use the transform and never move pos — so this is stable
     // and independent of any transform already on the port (keeps the operation involutive).
-    const QPointF origin = m_owner->pixmapCenter() - port->pos();
+    m_appliedCentre = m_owner->pixmapCenter();
+    const QPointF origin = m_appliedCentre - port->pos();
 
     QTransform t;
     t.translate(origin.x(), origin.y());
@@ -77,16 +78,7 @@ void ElementOrientation::applyFlipTransform()
         return;
     }
 
-    if (!m_flippedX && !m_flippedY) {
-        m_owner->setTransform(QTransform());
-    } else {
-        const auto center = m_owner->pixmapCenter();
-        QTransform t;
-        t.translate(center.x(), center.y());
-        t.scale(m_flippedX ? -1 : 1, m_flippedY ? -1 : 1);
-        t.translate(-center.x(), -center.y());
-        m_owner->setTransform(t);
-    }
+    setFlipMatrix();
 
     // The item transform above mirrors the whole pixmap (and moves the ports). Swap in a pixmap
     // whose baked-in SVG <text> is pre-counter-oriented so the glyphs read upright after the
@@ -94,4 +86,35 @@ void ElementOrientation::applyFlipTransform()
     // non-SVG pixmap.
     m_owner->reapplyAppearanceOrientation();
     m_owner->update();
+}
+
+void ElementOrientation::setFlipMatrix()
+{
+    m_appliedCentre = m_owner->pixmapCenter();
+    if (!m_flippedX && !m_flippedY) {
+        m_owner->setTransform(QTransform());
+    } else {
+        const auto center = m_appliedCentre;
+        QTransform t;
+        t.translate(center.x(), center.y());
+        t.scale(m_flippedX ? -1 : 1, m_flippedY ? -1 : 1);
+        t.translate(-center.x(), -center.y());
+        m_owner->setTransform(t);
+    }
+}
+
+bool ElementOrientation::recentre()
+{
+    // The appearance calls this after every pixmap change, which already re-derived its oriented variant, so only
+    // the geometry about the centre is re-applied here, and only when the centre moved: an element's centre can
+    // follow its ports (an IC, a Mux), which move before its pixmap is regenerated.
+    if (m_owner->pixmapCenter() == m_appliedCentre) {
+        return false;
+    }
+    if (m_owner->rotatesGraphic()) {
+        setFlipMatrix();
+    } else {
+        rotatePorts();
+    }
+    return true;
 }

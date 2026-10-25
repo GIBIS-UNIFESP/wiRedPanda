@@ -3,15 +3,21 @@
 
 #include "Tests/Unit/Elements/TestElementAppearance.h"
 
+#include <memory>
+
 #include <QFile>
+#include <QImage>
 #include <QPainter>
 #include <QPixmap>
 #include <QStyleOptionGraphicsItem>
+#include <QTemporaryDir>
 #include <QTemporaryFile>
 #include <QTest>
 
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
+#include "App/Wiring/Port.h"
 #include "Tests/Common/Goldens.h"
 #include "Tests/Common/TestUtils.h"
 
@@ -125,6 +131,62 @@ void TestElementAppearance::testUndecodablePictureShowsItsSlotsDefault()
     fresh.setOn(true);
     QCOMPARE(SnapshotAccess::pixmapIdentity(&sw), SnapshotAccess::pixmapIdentity(&fresh));
     QCOMPARE(sw.externalFiles(), QStringList{tempFile.fileName()});
+}
+
+void TestElementAppearance::testPictureOfAnotherSizeKeepsPortsWhateverTheOrder_data()
+{
+    // A gate turns its whole item, so a flip is a transform about the centre; an LED keeps its picture upright and
+    // turns only its ports about the centre.
+    QTest::addColumn<ElementType>("type");
+    QTest::newRow("And") << ElementType::And;
+    QTest::newRow("Led") << ElementType::Led;
+}
+
+void TestElementAppearance::testPictureOfAnotherSizeKeepsPortsWhateverTheOrder()
+{
+    QFETCH(ElementType, type);
+
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("wide.png");
+    QImage picture(96, 48, QImage::Format_ARGB32);
+    picture.fill(QColor(40, 120, 200));
+    QVERIFY(picture.save(path, "PNG"));
+
+    const auto portScenePositions = [](const GraphicElement *element) {
+        QStringList positions;
+        for (auto *port : element->allPorts()) {
+            const QPointF pos = port->scenePos();
+            positions << QString("%1,%2").arg(pos.x()).arg(pos.y());
+        }
+        return positions.join(' ');
+    };
+
+    for (const qreal rotation : {0.0, 90.0, 180.0, 270.0}) {
+        for (const bool flipX : {false, true}) {
+            for (const bool flipY : {false, true}) {
+                const std::unique_ptr<GraphicElement> pictureFirst(ElementFactory::buildElement(type));
+                pictureFirst->setAppearance(false, path);
+                pictureFirst->setRotation(rotation);
+                pictureFirst->setFlippedX(flipX);
+                pictureFirst->setFlippedY(flipY);
+
+                const std::unique_ptr<GraphicElement> orientedFirst(ElementFactory::buildElement(type));
+                orientedFirst->setRotation(rotation);
+                orientedFirst->setFlippedX(flipX);
+                orientedFirst->setFlippedY(flipY);
+                orientedFirst->setAppearance(false, path);
+
+                const QString expected = portScenePositions(pictureFirst.get());
+                const QString actual = portScenePositions(orientedFirst.get());
+                QVERIFY2(actual == expected, qPrintable(QString("rot=%1 flipX=%2 flipY=%3\n  picture first:  %4\n  oriented first: %5")
+                                                            .arg(rotation)
+                                                            .arg(flipX)
+                                                            .arg(flipY)
+                                                            .arg(expected, actual)));
+            }
+        }
+    }
 }
 
 void TestElementAppearance::testRotatedMalformedSvgFallsBackToBasePixmap()

@@ -301,8 +301,10 @@ void ElementAppearance::setPixmap(const int index)
     }
 
     // The transform origin must be updated whenever the pixmap changes so that
-    // rotation and scale operations remain centred on the new image
+    // rotation and scale operations remain centred on the new image; a flip, or a
+    // non-rotatable element's oriented ports, are re-applied about it too.
     m_owner->setTransformOriginPoint(pixmapCenter());
+    m_owner->recentreOrientation();
     m_owner->update();
 
     m_currentPixmapPath = pixmapPath;
@@ -353,6 +355,7 @@ void ElementAppearance::setRenderPixmap(const QPixmap &pixmap)
     // The owner's body is drawn from this footprint, so rotation must pivot on its centre —
     // the base-pixmap flow gets the same guarantee from setPixmap().
     m_owner->setTransformOriginPoint(pixmapCenter());
+    m_owner->recentreOrientation();
 }
 
 void ElementAppearance::applyOrientation()

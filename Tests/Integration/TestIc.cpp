@@ -276,6 +276,64 @@ void TestIC::testICSaveLoad()
     }
 }
 
+void TestIC::testOrientedICKeepsItsPortsAcrossAReopen()
+{
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    // The flip-flop and the one it embeds.
+    for (const QString &name : {QString("jkflipflop.panda"), QString("dflipflop.panda")}) {
+        QVERIFY(QFile::copy(TestUtils::examplesDir() + name, dir.filePath(name)));
+    }
+    const QString icFile = dir.filePath("jkflipflop.panda");
+    const QString circuitFile = dir.filePath("circuit.panda");
+
+    const auto portScenePositions = [](const IC *ic) {
+        QStringList positions;
+        for (int i = 0; i < ic->inputSize(); ++i) {
+            const QPointF pos = ic->inputPort(i)->scenePos();
+            positions << QString("i%1=%2,%3").arg(i).arg(pos.x()).arg(pos.y());
+        }
+        for (int i = 0; i < ic->outputSize(); ++i) {
+            const QPointF pos = ic->outputPort(i)->scenePos();
+            positions << QString("o%1=%2,%3").arg(i).arg(pos.x()).arg(pos.y());
+        }
+        return positions.join(' ');
+    };
+
+    for (const qreal rotation : {0.0, 90.0, 180.0, 270.0}) {
+        for (const bool flipX : {false, true}) {
+            for (const bool flipY : {false, true}) {
+                const QString orientation = QString("rot=%1 flipX=%2 flipY=%3").arg(rotation).arg(flipX).arg(flipY);
+
+                WorkSpace saved;
+                auto *ic = new IC();
+                saved.scene()->addItem(ic);
+                ic->loadFile(icFile, dir.path());
+                QVERIFY(ic->inputSize() > 0);
+                ic->setPos(96, 64);
+                ic->setRotation(rotation);
+                ic->setFlippedX(flipX);
+                ic->setFlippedY(flipY);
+                const QString before = portScenePositions(ic);
+                saved.save(circuitFile);
+
+                WorkSpace reopened;
+                reopened.load(circuitFile);
+                const IC *reloaded = nullptr;
+                const auto items = reopened.scene()->items();
+                for (auto *item : items) {
+                    if (auto *found = dynamic_cast<IC *>(item)) {
+                        reloaded = found;
+                    }
+                }
+                QVERIFY2(reloaded, qPrintable(orientation));
+                const QString after = portScenePositions(reloaded);
+                QVERIFY2(after == before, qPrintable(orientation + "\n  saved:    " + before + "\n  reopened: " + after));
+            }
+        }
+    }
+}
+
 // Integration Tests
 
 void TestIC::testICInSimulation()
