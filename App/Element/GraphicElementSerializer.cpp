@@ -217,6 +217,9 @@ void GraphicElementSerializer::load(GraphicElement &element, QDataStream &stream
 {
     qCDebug(four) << "Loading element. Type: " << element.objectName();
 
+    context.loadedInputKeys.clear();
+    context.loadedOutputKeys.clear();
+
     // Files before 4.1 used a flat sequential binary format; 4.1+ use a keyed QMap
     // format that tolerates fields being added or reordered in future versions.
     (!VersionInfo::hasQMapFormat(context.version)) ? loadOldFormat(element, stream, context) : loadNewFormat(element, stream, context);
@@ -353,6 +356,7 @@ void GraphicElementSerializer::loadNewFormat(GraphicElement &element, QDataStrea
         }
 
         context.portMap[serialId] = element.m_ports.inputs().value(port);
+        context.loadedInputKeys.append(serialId);
 
         ++port;
     }
@@ -402,6 +406,7 @@ void GraphicElementSerializer::loadNewFormat(GraphicElement &element, QDataStrea
         }
 
         context.portMap[serialId] = element.m_ports.outputs().value(port);
+        context.loadedOutputKeys.append(serialId);
 
         ++port;
     }
@@ -610,6 +615,7 @@ void GraphicElementSerializer::loadInputPort(GraphicElement &element, QDataStrea
     }
 
     context.portMap[ptr] = element.m_ports.inputs().value(port);
+    context.loadedInputKeys.append(ptr);
 }
 
 void GraphicElementSerializer::loadOutputPorts(GraphicElement &element, QDataStream &stream, SerializationContext &context)
@@ -644,6 +650,7 @@ void GraphicElementSerializer::loadOutputPort(GraphicElement &element, QDataStre
     }
 
     context.portMap[ptr] = element.m_ports.outputs().value(port);
+    context.loadedOutputKeys.append(ptr);
 }
 
 // ========== Surplus port removal ==========

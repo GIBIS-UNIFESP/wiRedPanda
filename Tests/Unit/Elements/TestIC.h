@@ -34,6 +34,7 @@ private slots:
     void testGeneratePreviewPixmapWithDegenerateAspectRatioIsEmpty();
     void testGeneratePreviewPixmapScalesAnExtentBeyondIntRange();
     void testOnlyTheLoadedICRendersAPreview();
+    void testLoadGrowsLinearlyInICs();
 
     // ICPreviewPopup::executeShow() and showForIC()'s remaining branches
     void testShowForIcNullIcIsNoOp();

@@ -103,23 +103,21 @@ void IC::load(QDataStream &stream, SerializationContext &context)
     // registered.  Loading the sub-circuit below destroys and recreates all
     // ports, so we must re-register the new ports under the original keys
     // to keep the outer portMap valid for connection deserialization.
-    // Old format uses ptr values as keys; new format uses serialIds — we
-    // build a reverse map to find each port's key in O(1) instead of scanning.
-    QHash<Port *, quint64> reversePortMap;
-    reversePortMap.reserve(context.portMap.size());
-    for (auto it = context.portMap.constBegin(); it != context.portMap.constEnd(); ++it) {
-        reversePortMap[it.value()] = it.key();
-    }
-
+    // Old format uses ptr values as keys; new format uses serialIds.  The
+    // keys come from the ones GraphicElement::load() just registered, never
+    // from a search of the whole map: it holds every port loaded so far, so a
+    // search per IC would make a load quadratic in the circuit's ICs.  A key
+    // counts while it still names its port (a later port of the same element
+    // listed under the same key takes it over).
     QVector<quint64> savedInputKeys, savedOutputKeys;
-    for (auto *port : inputs()) {
-        if (auto it = reversePortMap.constFind(port); it != reversePortMap.constEnd()) {
-            savedInputKeys.append(it.value());
+    for (int i = 0; i < context.loadedInputKeys.size(); ++i) {
+        if (const quint64 key = context.loadedInputKeys.at(i); (i < inputs().size()) && (context.portMap.value(key) == inputs().at(i))) {
+            savedInputKeys.append(key);
         }
     }
-    for (auto *port : outputs()) {
-        if (auto it = reversePortMap.constFind(port); it != reversePortMap.constEnd()) {
-            savedOutputKeys.append(it.value());
+    for (int i = 0; i < context.loadedOutputKeys.size(); ++i) {
+        if (const quint64 key = context.loadedOutputKeys.at(i); (i < outputs().size()) && (context.portMap.value(key) == outputs().at(i))) {
+            savedOutputKeys.append(key);
         }
     }
 
