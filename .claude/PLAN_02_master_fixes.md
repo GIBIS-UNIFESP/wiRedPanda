@@ -247,6 +247,14 @@ m ports cost n times m (P2.73, found as a timeout by `fuzz_ic_file`'s coverage r
 serialization context, and `IC::load()` takes its keys from that record. Shown by
 `TestICUnit::testLoadGrowsLinearlyInICs`.
 
+### 2.23 An embedded IC that fails to load leaves its undo macro open
+
+`ICRegistry::createEmbeddedIC()`, which the MCP server's `instantiate_ic` calls with whatever file it is given,
+opened an undo macro, then pushed the command that registers the blob and loaded the IC inside it; bytes that did
+not load threw out of the macro, leaving it open, so every later command became a step of it, and the IC leaked
+(P2.76, found reading `fuzz_undo`'s targets). Fix: the blob made self-contained and the IC loaded before the macro
+opens. Shown by `TestICRegistry::testCreateEmbeddedICLeavesNothingWhenItsBlobFailsToLoad`.
+
 ## 3. In code plan 3 rewrites
 
 ### 3.1 SR and T flip-flops ignore every input while one input is open
@@ -695,6 +703,7 @@ Each of these exists on `master`, and its fix is another plan's decision:
 | P2.71 | An IC's preview past `int`'s range (§2.20) | P1.14 | none |
 | P2.72 | No preview for a nested IC (§2.21) | P1.14 | none |
 | P2.73 | An IC's load in linear time (§2.22) | the helpers only | none |
+| P2.76 | An embedded IC that fails to load (§2.23) | the helpers only | none |
 | P2.9 | SR and T defaults (§3.1) | P1.4, P1.6, P1.13 | port layout, one scene snapshot, any trace with S, R or T open |
 | P2.10 | The loader's port counts (§3.2) | P1.8, P1.17 | the strings golden's three messages |
 | P2.11 | The AudioBox's undo (§3.3) | P1.15 | one editor-writes row |
