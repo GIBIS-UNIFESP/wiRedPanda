@@ -41,8 +41,9 @@ a file header that promises a compressed payload, so every seed is rejected at d
 from nothing. Fix: serialize into a buffer and write it with `Serialization::writePayload()` behind the header;
 Structured also needs its two IC blobs; the hand-built streams of v5.1 and older stay raw, as their versions require.
 
-A seed check runs in each seeded harness's `LLVMFuzzerInitialize` (six harnesses; ICBlob builds its blob per input and
-has no fixed seed): the header, the decompression and the metadata must decode, and the circuit must load into a scratch
+A seed check runs in each seeded harness's `LLVMFuzzerInitialize` (four harnesses; ICBlob builds its blob per input and
+has no fixed seed, Clipboard pastes the clipboards its corpus holds, P2.64, and ICFile loads the repository's circuits
+instead, P2.74): the header, the decompression and the metadata must decode, and the circuit must load into a scratch
 workspace with at least one element, or the harness aborts naming itself and the reason. `readPandaHeader()` throws on
 an unrecognized header instead of returning a null version, so the check's first header read sits inside a `try`: on the
 branch it first did not, and an empty seed ended the harness through `std::terminate` without naming it. Each check is
