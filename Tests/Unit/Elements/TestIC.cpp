@@ -3,21 +3,30 @@
 
 #include "Tests/Unit/Elements/TestIC.h"
 
+#include <algorithm>
 #include <cstdlib>
 #include <limits>
 #include <memory>
+#include <vector>
 
+#include <QByteArray>
+#include <QDataStream>
+#include <QElapsedTimer>
 #include <QEnterEvent>
 #include <QFile>
 #include <QGraphicsSceneEvent>
 #include <QGraphicsSceneMouseEvent>
+#include <QHash>
 #include <QKeySequence>
+#include <QList>
+#include <QMap>
 #include <QPixmap>
 #include <QPointF>
 #include <QSaveFile>
 #include <QSignalSpy>
 #include <QString>
 #include <QTemporaryDir>
+#include <QVariant>
 #include <QVersionNumber>
 
 #include "App/Core/Application.h"
@@ -392,6 +401,105 @@ void TestICUnit::testOnlyTheLoadedICRendersAPreview()
         }
     }
     QCOMPARE(nested, 1);
+}
+
+void TestICUnit::testLoadGrowsLinearlyInICs()
+{
+    // IC::load() takes its ports' keys from the load's own record, not from the port map of every port loaded so far,
+    // so a circuit's n ICs among m ports cost n plus m, not n times m. An embedded IC reloaded from its unchanged blob
+    // skips its sub-circuit, leaving IC::load()'s own work, timed against port maps of 250 and 64,000 other ports: 0.4
+    // to 1.7 for a linear load with eight copies of the test running at once, and about 400 for a quadratic one. A
+    // ratio, not times, each the best of nine runs of twenty reloads, the two maps' reloads timed in turn within each
+    // run, so that a load which comes and goes falls on both.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+
+    WorkSpace innerWorkspace;
+    CircuitBuilder innerBuilder(innerWorkspace.scene());
+    InputSwitch innerSw;
+    Led innerLed;
+    innerBuilder.add(&innerSw, &innerLed);
+    innerBuilder.connect(&innerSw, 0, &innerLed, 0);
+    const QString innerPath = dir.path() + "/linear_inner.panda";
+    QCOMPARE(innerWorkspace.save(innerPath), WorkSpace::SaveOutcome::Saved);
+    QFile innerFile(innerPath);
+    QVERIFY(innerFile.open(QIODevice::ReadOnly));
+    QMap<QString, QByteArray> blobRegistry;
+    blobRegistry["linear_inner"] = innerFile.readAll();
+
+    // The IC's element: no properties, one input and one output, no appearances, then its blob's name
+    QByteArray data;
+    QDataStream writeStream(&data, QIODevice::WriteOnly);
+    writeStream << QMap<QString, QVariant>();
+    QMap<QString, QVariant> input;
+    input["serialId"] = QVariant::fromValue<quint64>(1);
+    writeStream << QList<QMap<QString, QVariant>>{input};
+    QMap<QString, QVariant> output;
+    output["serialId"] = QVariant::fromValue<quint64>(2);
+    writeStream << QList<QMap<QString, QVariant>>{output};
+    writeStream << QList<QMap<QString, QVariant>>{};
+    QMap<QString, QVariant> icMap;
+    icMap["name"] = QStringLiteral("linear_inner");
+    writeStream << icMap;
+
+    IC ic;
+    {
+        QHash<quint64, Port *> portMap;
+        SerializationContext context = {portMap, FormatRev::current, SerializationPurpose::PortableFile, dir.path(), {}, 1, &blobRegistry};
+        QDataStream readStream(data);
+        ic.load(readStream, context);
+        QCOMPARE(readStream.status(), QDataStream::Ok);
+    }
+    QCOMPARE(ic.inputSize(), 1);
+    QCOMPARE(ic.outputSize(), 1);
+
+    // A port map of the IC's two keys and n others, and the context that loads into it
+    struct Map {
+        std::vector<std::unique_ptr<InputPort>> otherPorts;
+        QHash<quint64, Port *> portMap;
+        int others = 0;
+    };
+    const auto makeMap = [](const int others) {
+        auto map = std::make_unique<Map>();
+        map->others = others;
+        for (int i = 0; i < others; ++i) {
+            map->otherPorts.push_back(std::make_unique<InputPort>());
+            map->portMap.insert(static_cast<quint64>(1000 + i), map->otherPorts.back().get());
+        }
+        return map;
+    };
+    const auto smallMap = makeMap(250);
+    const auto largeMap = makeMap(64000);
+    // Twenty reloads into the map, or 0 if one lost the IC's keys
+    const auto reloadNs = [&](Map &map) {
+        SerializationContext context = {map.portMap, FormatRev::current, SerializationPurpose::PortableFile, dir.path(), {}, 1, &blobRegistry};
+        QElapsedTimer timer;
+        timer.start();
+        for (int reload = 0; reload < 20; ++reload) {
+            QDataStream readStream(data);
+            ic.load(readStream, context);
+        }
+        const qint64 elapsed = timer.nsecsElapsed();
+        const bool kept = (map.portMap.value(1) == ic.inputs().at(0)) && (map.portMap.value(2) == ic.outputs().at(0))
+                       && (map.portMap.size() == map.others + 2);
+        return kept ? elapsed : qint64{0};
+    };
+
+    qint64 small = std::numeric_limits<qint64>::max();
+    qint64 large = std::numeric_limits<qint64>::max();
+    for (int run = 0; run < 9; ++run) {
+        const qint64 smallRun = reloadNs(*smallMap);
+        const qint64 largeRun = reloadNs(*largeMap);
+        if ((smallRun == 0) || (largeRun == 0)) {
+            small = large = 0;
+            break;
+        }
+        small = std::min(small, smallRun);
+        large = std::min(large, largeRun);
+    }
+    QVERIFY2((small > 0) && (large > 0), "a reload lost its ports' keys");
+    const double growth = static_cast<double>(large) / static_cast<double>(small);
+    QVERIFY2(growth < 10.0, qPrintable(QString("reloading an IC took %1 times as long among 256 times the ports").arg(growth)));
 }
 
 void TestICUnit::testShowForIcNullIcIsNoOp()

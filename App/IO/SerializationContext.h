@@ -8,6 +8,7 @@
 #pragma once
 
 #include <QHash>
+#include <QList>
 #include <QMap>
 #include <QString>
 #include <QVersionNumber>
@@ -69,6 +70,10 @@ struct SerializationContext {
     int nextLocalId = 1;
     /// Blob registry for resolving embedded IC blobNames during deserialization.
     QMap<QString, QByteArray> *blobRegistry = nullptr;
+    /// The keys under which GraphicElement::load() last registered an element's input ports in portMap, in port order,
+    /// so IC::load() finds its own ports' keys without searching the whole map.
+    QList<quint64> loadedInputKeys = {};
+    QList<quint64> loadedOutputKeys = {}; ///< As loadedInputKeys, for the output ports.
 };
 
 /**
