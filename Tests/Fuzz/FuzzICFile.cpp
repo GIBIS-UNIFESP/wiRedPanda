@@ -22,15 +22,11 @@
 
 #include <cstddef>
 #include <cstdint>
-#include <cstdio>
-#include <cstdlib>
 
 #include <QApplication>
 #include <QByteArray>
 #include <QCoreApplication>
 #include <QDataStream>
-#include <QDir>
-#include <QDirIterator>
 #include <QEvent>
 #include <QFile>
 #include <QFileDevice>
@@ -51,6 +47,7 @@
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
+#include "Tests/Fuzz/FuzzCircuitDir.h"
 #include "Tests/Fuzz/PandaMutator.h"
 
 namespace {
@@ -59,25 +56,8 @@ QApplication *g_app  = nullptr;
 int  g_argc = 0;
 char **g_argv = nullptr;
 
-// The context directory: every .panda file of the repository's examples and test circuits, under its base name as
-// references resolve, read-only so a migration cannot rewrite them between inputs; the input is written beside them.
+// The context directory: the repository's circuits (Tests/Fuzz/FuzzCircuitDir.h), the input written beside them
 QTemporaryDir *g_dir = nullptr;
-
-void copyDependencies(const QString &root)
-{
-    // Earlier directories win a base name: the examples and integration circuits are current, the backward
-    // compatibility ones each version's copy
-    for (const char *subdir : {"Examples", "Tests/Integration", "Tests/Fixtures", "Tests/BackwardCompatibility"}) {
-        QDirIterator it(root + "/" + subdir, {"*.panda"}, QDir::Files, QDirIterator::Subdirectories);
-        while (it.hasNext()) {
-            const QFileInfo source(it.next());
-            const QString target = g_dir->filePath(source.fileName());
-            if (!QFileInfo::exists(target) && QFile::copy(source.absoluteFilePath(), target)) {
-                QFile::setPermissions(target, QFileDevice::ReadOwner | QFileDevice::ReadUser);
-            }
-        }
-    }
-}
 
 // Build an outer panda file referencing an IC by filename (not blob name).
 // When loaded, the IC element will have no matching blob in the registry,
@@ -151,14 +131,8 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
     g_argv = *argv;
     g_app  = new QApplication(g_argc, g_argv);
 
-    // The harness binary sits in the build directory, one level below the repository
     g_dir = new QTemporaryDir();
-    copyDependencies(QDir(QCoreApplication::applicationDirPath()).absoluteFilePath(".."));
-    if (QDir(g_dir->path()).entryList({"*.panda"}, QDir::Files).isEmpty()) {
-        std::fprintf(stderr, "fuzz_ic_file: no .panda file found to depend on beside %s\n",
-                     qPrintable(QCoreApplication::applicationDirPath()));
-        std::abort();
-    }
+    FuzzCircuitDir::fill(g_dir->path(), "fuzz_ic_file");
 
     return 0;
 }
