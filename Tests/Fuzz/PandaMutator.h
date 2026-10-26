@@ -354,6 +354,16 @@ inline QByteArray encode(const DecodedInput &input)
     return bytes;
 }
 
+/// Returns whether [data, data + size] starts as a .panda file does: the WPCF magic, a legacy text header, or the
+/// zero high byte of a legacy header's length.
+inline bool isPandaFile(const uint8_t *data, size_t size)
+{
+    const QByteArray head = QByteArray::fromRawData(reinterpret_cast<const char *>(data),
+                                                    static_cast<qsizetype>(std::min<size_t>(size, 10)));
+    return head.startsWith("WPCF") || head.startsWith("WiredPanda") || head.startsWith("WiRedPanda")
+        || (size > 0 && data[0] == 0);
+}
+
 /// Mutates the .panda file in [Data, Data + Size], within MaxSize, as LLVMFuzzerCustomMutator does: a WPCF input in
 /// its decoded body (or switched to another version) and written back, anything else as raw bytes.
 inline size_t mutate(uint8_t *Data, size_t Size, size_t MaxSize, unsigned int Seed)

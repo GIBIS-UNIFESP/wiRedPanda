@@ -24,7 +24,7 @@ Twelve harnesses, registered in `CMakeLists.txt` under `if(ENABLE_FUZZER)`:
 | `fuzz_round_trip`  | `FuzzRoundTrip.cpp`   | The save side: `WorkSpace::save()` and every element `save()`, then a reload, a second save and load: the application's own file must save to the same bytes, which surfaces save/load asymmetries. |
 | `fuzz_ic_file`     | `FuzzICFile.cpp`      | File-backed IC loading (`IC::loadFromFile` → `loadFileDirectly`): a `.panda` input as an IC's file, beside every `.panda` file of the repository's examples and test circuits so the ICs it names resolve, loaded with migration on or off, reloaded through the registry's cache, simulated and saved; including cycle detection and old-format migration. |
 | `fuzz_copy_panda`  | `FuzzCopyPanda.cpp`   | `copyPandaFile` + `readPreamble` and `File > Save As`: a `.panda` input beside the repository's circuits copied into a new folder (read-only for half the inputs) with the files its `fileBackedICs` name, named twice and at the end of chains up to the depth limit, then loaded and saved into that folder. |
-| `fuzz_undo`        | `FuzzUndo.cpp`        | The undo/redo command system (`Commands.cpp`): applies a random command sequence, then winds the stack fully back and forward. |
+| `fuzz_undo`        | `FuzzUndo.cpp`        | The undo/redo command system (`Commands.cpp`): a `.panda` input loaded beside the repository's circuits, or a small built circuit, given a random sequence of the editor's commands on its scene's undo stack (property edits merging in a session, blob registration, renaming, embedding and extraction among them), then the stack wound fully back and forward. |
 
 Each `Fuzz*.cpp` opens with a `\file \brief` block describing its strategy and
 input layout — read that before triaging a finding from it.
@@ -68,8 +68,8 @@ decompressed body, writing it back compressed, so mutations reach the reader's
 structure instead of breaking zlib's stream.
 
 A `.panda` file names its file-backed ICs' files, which resolve against its
-own directory, so an input written alone loads none of them. `fuzz_ic_file`
-and `fuzz_copy_panda` write theirs beside every `.panda` file of the
+own directory, so an input written alone loads none of them. `fuzz_ic_file`,
+`fuzz_copy_panda` and `fuzz_undo` load theirs beside every `.panda` file of the
 repository's examples and test circuits, copied at start-up by
 `FuzzCircuitDir::fill()` (`FuzzCircuitDir.h`).
 
@@ -199,11 +199,13 @@ crash/OOM/leak/timeout under ASan+UBSan).
   abort (UAF/UB). Tests live in `TestSerialization.cpp` (`testFuzzRegression*`)
   and `TestDolphinSerializer.cpp` (`.dolphin` header), run on every sanitizer CI
   lane via `ctest`.
-- **harness-mitigated** — not a memory/correctness bug, so there is no product
-  invariant to pin. `bugJ` is the only one: `TruthTable`'s 2048-bit key makes
-  `UpdateCommand` serialization inherently multi-second, so `FuzzUndo` excludes
-  `TruthTable` from its add/morph types. The reproducer is retained as
-  documentation of why that exclusion exists.
+- **retired** — `bugJ` only: a timeout of `FuzzUndo` on a truth table, for
+  which the harness once left `TruthTable` out of the types it adds, on the
+  ground that its 2048-bit key made `UpdateCommand` serialization take seconds.
+  The harness now adds, edits and toggles truth tables, and the slowest unit
+  of its coverage rounds is 12 s, a large circuit's load. The reproducer was
+  written for the harness's earlier input layout and no longer reaches a truth
+  table (it runs in 2 ms); it is kept as the record of that timeout.
 
 | Reproducer | Class | Status | What it reproduces |
 |------------|-------|--------|--------------------|
@@ -216,7 +218,7 @@ crash/OOM/leak/timeout under ASan+UBSan).
 | `bugG_oom_element_stream_map`       | OOM     | pinned            | unbounded map read in the element stream |
 | `bugH_old_format_v11_elements`      | crash   | pinned            | pre-4.1 v1.1 element parsing |
 | `bugI_old_format_ic_skin_ref`       | crash   | pinned            | pre-4.1 IC skin reference |
-| `bugJ_undo_truthtable_timeout`      | timeout | harness-mitigated | pathological undo/redo on a truth table |
+| `bugJ_undo_truthtable_timeout`      | timeout | retired           | pathological undo/redo on a truth table |
 | `oom_dolphin_filename_large`        | OOM     | pinned            | oversized `.dolphin` filename |
 | `oom_dolphin_header_large_appname`  | OOM     | pinned            | oversized app-name string in the `.dolphin` header |
 | `oom_panda_header_large_appname`    | OOM     | pinned            | oversized app-name string in the `.panda` header |
