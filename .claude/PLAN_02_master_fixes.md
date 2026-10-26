@@ -236,7 +236,8 @@ scaling it to the popup's bounds, so a finite extent past `int`'s range was an u
 every IC it loaded, the ICs nested inside another's circuit too, which no scene holds and no hover reaches; a circuit
 of thousands of nested ICs held one for each (P2.72, found as an out-of-memory by `fuzz_ic_file`'s coverage rounds:
 `Tests/Fixtures/Perf/ic_heavy.panda` loaded as an IC peaked at 1.2 GB, 776 MB of it in 7,494 previews). Fix: only the
-IC a load starts from (nesting depth 1) renders one. Shown by `TestICUnit::testOnlyTheLoadedICRendersAPreview`.
+IC a load starts from (nesting depth 1) renders one. §2.24 replaced that with previews rendered when shown, which
+renders none for a nested IC either; its test, `TestICUnit::testAPreviewRendersOnlyWhenShown`, shows both.
 
 ### 2.22 An IC's load searches every port loaded before it
 
@@ -254,6 +255,17 @@ opened an undo macro, then pushed the command that registers the blob and loaded
 not load threw out of the macro, leaving it open, so every later command became a step of it, and the IC leaked
 (P2.76, found reading `fuzz_undo`'s targets). Fix: the blob made self-contained and the IC loaded before the macro
 opens. Shown by `TestICRegistry::testCreateEmbeddedICLeavesNothingWhenItsBlobFailsToLoad`.
+
+### 2.24 Every IC in a circuit renders a hover preview as it loads
+
+`ICLoader::processLoadedItems()` rendered each IC's hover preview (up to 500x350, 32 bits) as it loaded, though only
+an IC under the cursor shows one, and each instance of one IC rendered its own copy: opening
+`Tests/Fixtures/Perf/ic_heavy.panda`, 2,000 instances of a four-gate IC, took 4.1 s and 1.17 GB, 2,000 previews of
+368 KB (P2.77, found as an out-of-memory by `fuzz_undo`'s coverage rounds). Fix: the preview is rendered when the
+popup first shows it (`IC::preview()`), from the definition the IC loaded read again, its bytes or its file, so the
+original inputs and outputs are drawn rather than the proxy Nodes that replace them; a load only drops the previous
+one. The same file opens in 1.6 s and 206 MB, and a preview renders in 2 ms. Shown by
+`TestICUnit::testAPreviewRendersOnlyWhenShown`; the 77 preview goldens are unchanged.
 
 ## 3. In code plan 3 rewrites
 
@@ -704,6 +716,7 @@ Each of these exists on `master`, and its fix is another plan's decision:
 | P2.72 | No preview for a nested IC (§2.21) | P1.14 | none |
 | P2.73 | An IC's load in linear time (§2.22) | the helpers only | none |
 | P2.76 | An embedded IC that fails to load (§2.23) | the helpers only | none |
+| P2.77 | A preview rendered when shown (§2.24) | P1.14 | none (the 77 preview goldens unchanged) |
 | P2.9 | SR and T defaults (§3.1) | P1.4, P1.6, P1.13 | port layout, one scene snapshot, any trace with S, R or T open |
 | P2.10 | The loader's port counts (§3.2) | P1.8, P1.17 | the strings golden's three messages |
 | P2.11 | The AudioBox's undo (§3.3) | P1.15 | one editor-writes row |
