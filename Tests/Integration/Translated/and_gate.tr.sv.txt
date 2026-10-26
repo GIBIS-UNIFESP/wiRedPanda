@@ -12,10 +12,12 @@ input input_switch2,
 output led4_1
 );
 /* ====== Aux. Variables ====== */
+wire aux_and_1;
 
 
 // Assigning aux variables. //
+assign aux_and_1 = (input_switch1 & input_switch2);
 
 // Writing output data. //
-assign led4_1 = (input_switch1 & input_switch2);
+assign led4_1 = aux_and_1;
 endmodule
