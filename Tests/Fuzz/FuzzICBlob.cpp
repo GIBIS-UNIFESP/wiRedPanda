@@ -14,6 +14,8 @@
  *      IC::processLoadedItems always sees loadable elements and exercises the
  *      port setup / boundary-element classification path and the embedded
  *      sub-circuit lookup even when raw mutation hasn't yet discovered them.
+ *
+ * An IC that loads has its hover preview rendered, as the popup asks for it.
  */
 
 #include <cstddef>
@@ -185,6 +187,8 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
     try {
         ic->loadFromBlob(bytes, /*contextDir=*/QString());
     } catch (...) {}
+    // Its hover preview, rendered as the popup asks for it, from the blob read again; none when the load failed
+    (void)ic->preview();
     delete ic;
     return 0;
 }
