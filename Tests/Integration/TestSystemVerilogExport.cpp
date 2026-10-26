@@ -3,6 +3,7 @@
 
 #include "Tests/Integration/TestSystemVerilogExport.h"
 
+#include <algorithm>
 #include <memory>
 
 #include <QDir>
@@ -116,6 +117,97 @@ static PortRoles detectPortRoles(IC *ic)
 static constexpr quint32 kDiffSeed = 0x5EEDC0DEU;
 static constexpr int kDiffSteps = 48;
 
+// Inputs are stored one bit per switch (not packed into an int):
+// wide ICs (16-bit ALU = 35 inputs, data forwarding unit = 34)
+// exceed the 31 addressable bits of a packed int, so a packed
+// representation silently truncates the vector space. Per-switch
+// bits have no width limit and give uniform coverage on every lane.
+struct CombinationalVector {
+    QVector<int> inputBits;  // per-input bit
+    QVector<int> outputBits; // per-output bit (supports >32 outputs)
+};
+
+// A testbench that drives module \a modName with each vector's inputs, in \a inputPins' order, and checks its outputs,
+// in \a outputPins' order, failing with the count of mismatches
+static QString combinationalTestbench(const QString &modName, const QVector<MappedPinSystemVerilog> &inputPins,
+                                      const QVector<MappedPinSystemVerilog> &outputPins,
+                                      const QVector<CombinationalVector> &testVectors)
+{
+    QString text;
+    QTextStream tb(&text);
+    tb << "`timescale 1ns/1ps\n";
+    tb << "module testbench;\n";
+
+    for (const auto &pin : inputPins) {
+        tb << "    reg " << pin.m_varName << ";\n";
+    }
+    for (const auto &pin : outputPins) {
+        tb << "    wire " << pin.m_varName << ";\n";
+    }
+    tb << "    integer errors;\n\n";
+
+    tb << "    " << modName << " dut (\n";
+    QStringList portConns;
+    for (const auto &pin : inputPins) {
+        portConns << QString("        .%1(%1)").arg(pin.m_varName);
+    }
+    for (const auto &pin : outputPins) {
+        portConns << QString("        .%1(%1)").arg(pin.m_varName);
+    }
+    tb << portConns.join(",\n") << "\n";
+    tb << "    );\n\n";
+
+    tb << "    initial begin\n";
+    tb << "        errors = 0;\n\n";
+
+    for (int v = 0; v < testVectors.size(); ++v) {
+        const auto &tv = testVectors[v];
+
+        tb << "        ";
+        for (int i = 0; i < inputPins.size(); ++i) {
+            const int bit = tv.inputBits.value(i, 0);
+            tb << inputPins[i].m_varName << " = " << bit << "; ";
+        }
+        tb << "#10;\n";
+
+        QStringList checks;
+        for (int o = 0; o < outputPins.size(); ++o) {
+            int bit = tv.outputBits[o];
+            checks << QString("%1 !== 1'b%2").arg(outputPins[o].m_varName).arg(bit);
+        }
+
+        tb << "        if (" << checks.join(" || ") << ") begin\n";
+        tb << "            $display(\"FAIL vec " << v << ": in=%b"
+           << " out=%b\", {";
+
+        QStringList inputNames;
+        for (int i = static_cast<int>(inputPins.size()) - 1; i >= 0; --i) {
+            inputNames << inputPins[i].m_varName;
+        }
+        tb << inputNames.join(", ") << "}, {";
+
+        QStringList outputNames;
+        for (int o = static_cast<int>(outputPins.size()) - 1; o >= 0; --o) {
+            outputNames << outputPins[o].m_varName;
+        }
+        tb << outputNames.join(", ") << "});\n";
+        tb << "            errors = errors + 1;\n";
+        tb << "        end\n\n";
+    }
+
+    tb << "        if (errors == 0)\n";
+    tb << "            $display(\"PASS: %0d vectors\", " << testVectors.size() << ");\n";
+    tb << "        else begin\n";
+    tb << "            $display(\"FAIL: %0d/%0d vectors failed\", errors, " << testVectors.size() << ");\n";
+    tb << "            $finish(1);\n";
+    tb << "        end\n";
+    tb << "        $finish;\n";
+    tb << "    end\n";
+    tb << "endmodule\n";
+    tb.flush();
+    return text;
+}
+
 void TestSystemVerilogExport::initTestCase()
 {
     // Most tests in this class (testWirelessNodeGeneration, testWirelessOrphanedRxCodegen,
@@ -174,18 +266,20 @@ void TestSystemVerilogExport::testWirelessRxReachedByAWireFollowsItsTx()
     QVERIFY(file.open(QIODevice::ReadOnly | QIODevice::Text));
     const QString content = QString::fromUtf8(file.readAll());
 
-    // The LED's assignment reads the Tx's driver, never the wire's.
+    // The LED reads the Rx node's variable, which is assigned the Tx's driver, never the wire's.
     const QRegularExpression ledAssign(R"(assign\s+\w*_shown\w*\s*=\s*(\w+);)");
     const auto match = ledAssign.match(content);
     QVERIFY2(match.hasMatch(), qPrintable(content));
-    QVERIFY2(match.captured(1).endsWith("_air"), qPrintable(content));
+    const auto rxAssign = QRegularExpression(R"(assign\s+)" + QRegularExpression::escape(match.captured(1))
+                                             + R"(\s*=\s*(\w+);)").match(content);
+    QVERIFY2(rxAssign.hasMatch(), qPrintable(content));
+    QVERIFY2(rxAssign.captured(1).endsWith("_air"), qPrintable(content));
 }
 
 void TestSystemVerilogExport::testWirelessNodeGeneration()
 {
-    // A Tx and Rx node pair on the same channel. In SystemVerilog, node expressions
-    // are inlined, so the Rx node's expression should resolve to the InputSwitch
-    // signal rather than the default 1'b0.
+    // A Tx and Rx node pair on the same channel. The Rx node's variable should be assigned the InputSwitch signal
+    // rather than the default 1'b0, and the LED should read it.
     auto sw = std::make_unique<InputSwitch>();
     auto txNode = std::unique_ptr<Node>(qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node)));
     QVERIFY(txNode);
@@ -234,28 +328,31 @@ void TestSystemVerilogExport::testWirelessNodeGeneration()
     QVERIFY2(!content.isEmpty(), "Generated SystemVerilog should not be empty");
 
     // The output assignment section has the format:
-    //   assign <output_var> = <expr>;
-    // With wireless resolution, <expr> should be the InputSwitch signal name, not 1'b0.
+    //   assign <output_var> = <rx_var>;
+    // and the Rx node's own assignment, <rx_var> = <switch signal>.
     const qsizetype outputSection = content.indexOf("// Writing output data. //");
     QVERIFY2(outputSection >= 0, "Generated SV should contain output data section");
     const QString outputCode = content.mid(outputSection);
 
     QRegularExpression outputLow(R"(assign\s+\w+\s*=\s*1'b0;)");
-    QVERIFY2(!outputLow.match(outputCode).hasMatch(),
-             "Wireless Rx node should not result in 1'b0 in the LED output assignment");
+    QVERIFY2(!outputLow.match(content).hasMatch(),
+             "Wireless Rx node should not result in 1'b0 in any assignment");
 
     // Ruling out 1'b0 alone doesn't prove the wireless link resolved correctly -- it would
-    // also pass for e.g. a stray constant or an unrelated signal. Positively confirm the LED's
-    // assignment actually references the InputSwitch's own declared signal name.
+    // also pass for e.g. a stray constant or an unrelated signal. Positively confirm the LED
+    // reads a variable that is assigned the InputSwitch's own declared signal name.
     QRegularExpression inputDecl(R"(input\s+(\w+)[,;])");
     const auto inputMatch = inputDecl.match(content);
     QVERIFY2(inputMatch.hasMatch(), "Generated SV should declare the InputSwitch as a module input");
     const QString switchSignal = inputMatch.captured(1);
 
-    QRegularExpression outputAssignsFromSwitch(QRegularExpression::escape(QStringLiteral("assign")) +
-        R"(\s+\w+\s*=\s*)" + QRegularExpression::escape(switchSignal) + ";");
-    QVERIFY2(outputAssignsFromSwitch.match(outputCode).hasMatch(),
-             qPrintable(QString("Wireless Rx node's LED output must be assigned directly from the InputSwitch signal '%1'").arg(switchSignal)));
+    const auto ledAssign = QRegularExpression(R"(assign\s+\w+\s*=\s*(\w+);)").match(outputCode);
+    QVERIFY2(ledAssign.hasMatch(), qPrintable(content));
+    QRegularExpression rxAssignsFromSwitch(R"(assign\s+)" + QRegularExpression::escape(ledAssign.captured(1))
+                                           + R"(\s*=\s*)" + QRegularExpression::escape(switchSignal) + ";");
+    QVERIFY2(rxAssignsFromSwitch.match(content).hasMatch(),
+             qPrintable(QString("The variable the LED reads must be assigned the InputSwitch signal '%1':\n%2")
+                            .arg(switchSignal, content)));
 }
 
 void TestSystemVerilogExport::testWirelessOrphanedRxCodegen()
@@ -705,16 +802,7 @@ void TestSystemVerilogExport::testSystemVerilogExportHelper(const QString &icFil
                 numPatterns = 258;
             }
 
-            // Inputs are stored one bit per switch (not packed into an int):
-            // wide ICs (16-bit ALU = 35 inputs, data forwarding unit = 34)
-            // exceed the 31 addressable bits of a packed int, so a packed
-            // representation silently truncates the vector space. Per-switch
-            // bits have no width limit and give uniform coverage on every lane.
-            struct TestVector {
-                QVector<int> inputBits;  // per-input bit
-                QVector<int> outputBits; // per-output bit (supports >32 outputs)
-            };
-            QVector<TestVector> testVectors;
+            QVector<CombinationalVector> testVectors;
             testVectors.reserve(numPatterns);
 
             // The export is checked against a level, so an Unknown or Error output is the engine's, not a 0.
@@ -769,76 +857,7 @@ void TestSystemVerilogExport::testSystemVerilogExportHelper(const QString &icFil
                 QString tbPath = debugDir.filePath(icInfo.baseName() + "_tb.sv");
                 QFile tbFile(tbPath);
                 if (tbFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
-                    QTextStream tb(&tbFile);
-                    tb << "`timescale 1ns/1ps\n";
-                    tb << "module testbench;\n";
-
-                    for (const auto &pin : inputPins) {
-                        tb << "    reg " << pin.m_varName << ";\n";
-                    }
-                    for (const auto &pin : outputPins) {
-                        tb << "    wire " << pin.m_varName << ";\n";
-                    }
-                    tb << "    integer errors;\n\n";
-
-                    tb << "    " << modName << " dut (\n";
-                    QStringList portConns;
-                    for (const auto &pin : inputPins) {
-                        portConns << QString("        .%1(%1)").arg(pin.m_varName);
-                    }
-                    for (const auto &pin : outputPins) {
-                        portConns << QString("        .%1(%1)").arg(pin.m_varName);
-                    }
-                    tb << portConns.join(",\n") << "\n";
-                    tb << "    );\n\n";
-
-                    tb << "    initial begin\n";
-                    tb << "        errors = 0;\n\n";
-
-                    for (int v = 0; v < testVectors.size(); ++v) {
-                        const auto &tv = testVectors[v];
-
-                        tb << "        ";
-                        for (int i = 0; i < inputPins.size(); ++i) {
-                            const int bit = tv.inputBits.value(i, 0);
-                            tb << inputPins[i].m_varName << " = " << bit << "; ";
-                        }
-                        tb << "#10;\n";
-
-                        QStringList checks;
-                        for (int o = 0; o < outputPins.size(); ++o) {
-                            int bit = tv.outputBits[o];
-                            checks << QString("%1 !== 1'b%2").arg(outputPins[o].m_varName).arg(bit);
-                        }
-
-                        tb << "        if (" << checks.join(" || ") << ") begin\n";
-                        tb << "            $display(\"FAIL vec " << v << ": in=%b"
-                           << " out=%b\", {";
-
-                        QStringList inputNames;
-                        for (int i = static_cast<int>(inputPins.size()) - 1; i >= 0; --i) {
-                            inputNames << inputPins[i].m_varName;
-                        }
-                        tb << inputNames.join(", ") << "}, {";
-
-                        QStringList outputNames;
-                        for (int o = static_cast<int>(outputPins.size()) - 1; o >= 0; --o) {
-                            outputNames << outputPins[o].m_varName;
-                        }
-                        tb << outputNames.join(", ") << "});\n";
-                        tb << "            errors = errors + 1;\n";
-                        tb << "        end\n\n";
-                    }
-
-                    tb << "        if (errors == 0)\n";
-                    tb << "            $display(\"PASS: %0d vectors\", " << testVectors.size() << ");\n";
-                    tb << "        else begin\n";
-                    tb << "            $display(\"FAIL: %0d/%0d vectors failed\", errors, " << testVectors.size() << ");\n";
-                    tb << "            $finish(1);\n";
-                    tb << "        end\n";
-                    tb << "        $finish;\n";
-                    tb << "    end\n";
-                    tb << "endmodule\n";
+                    tbFile.write(combinationalTestbench(modName, inputPins, outputPins, testVectors).toUtf8());
                     tbFile.close();
 
                     bool tbValid = validateWithTestbench(verilogPath, tbPath);
@@ -875,6 +894,127 @@ void TestSystemVerilogExport::testSystemVerilogExportHelper(const QString &icFil
     }
 
     QFile::remove(verilogPath);
+}
+
+void TestSystemVerilogExport::testSystemVerilogExportFlat_data()
+{
+    QTest::addColumn<QString>("file");
+    for (const char *file : {"level2_decoder_2to4.panda", "level2_decoder_3to8.panda", "level2_decoder_4to16.panda",
+                             "level2_decoder_5to32.panda", "level2_full_adder_1bit.panda", "level2_half_adder.panda",
+                             "level2_mux_2to1.panda", "level2_mux_4to1.panda", "level2_mux_8to1.panda",
+                             "level2_parity_checker.panda", "level2_parity_generator.panda",
+                             "level2_priority_encoder_8to3.panda"}) {
+        QTest::newRow(file) << QString(file);
+    }
+}
+
+void TestSystemVerilogExport::testSystemVerilogExportFlat()
+{
+    // A building block's own circuit exported as the top-level module, its gates at the top level rather than inside
+    // an IC's module, and checked against the engine running the same circuit: its switches are the module's
+    // inputs and its LEDs the outputs, driven and read in the generator's pin order.
+#ifndef Q_OS_LINUX
+    QSKIP("SystemVerilog export tests require iverilog/yosys/verilator (Linux only)");
+#endif
+    QFETCH(QString, file);
+
+    WorkSpace workspace;
+    workspace.load(TestUtils::cpuComponentsDir() + file);
+    const QVector<GraphicElement *> elements = workspace.scene()->elements();
+    const bool hasTopLevelGate = std::any_of(elements.cbegin(), elements.cend(), [](const GraphicElement *elm) {
+        const ElementType type = elm->elementType();
+        return (type == ElementType::And) || (type == ElementType::Or) || (type == ElementType::Not)
+            || (type == ElementType::Nand) || (type == ElementType::Nor) || (type == ElementType::Xor)
+            || (type == ElementType::Xnor);
+    });
+    QVERIFY2(hasTopLevelGate, "the circuit's gates sit at its top level");
+
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString baseName = "flat_" + QFileInfo(file).completeBaseName();
+    const QString verilogPath = dir.filePath(baseName + ".sv");
+    SystemVerilogCodeGen generator(verilogPath, elements);
+    generator.generate();
+
+    QFile generatedFile(verilogPath);
+    QVERIFY(generatedFile.open(QIODevice::ReadOnly | QIODevice::Text));
+    const QString content = QString::fromUtf8(generatedFile.readAll());
+    generatedFile.close();
+
+    const QString expectedPath = TestUtils::systemVerilogExpectedDir() + baseName + ".sv";
+    if (!qEnvironmentVariableIsSet("GENERATE_EXPECTED_SYSTEMVERILOG")) {
+        QFile expectedFile(expectedPath);
+        QVERIFY2(expectedFile.open(QIODevice::ReadOnly | QIODevice::Text),
+                 qPrintable(QString("Reference file missing: %1 — run with GENERATE_EXPECTED_SYSTEMVERILOG=1 to create it")
+                                .arg(expectedPath)));
+        QCOMPARE(content, QString::fromUtf8(expectedFile.readAll()));
+        return;
+    }
+
+    QVERIFY2(validateWithIverilog(verilogPath), qPrintable(verilogPath));
+    QVERIFY2(validateWithYosys(verilogPath), qPrintable(verilogPath));
+    QVERIFY2(validateWithVerilator(verilogPath), qPrintable(verilogPath));
+
+    const auto &inputPins = generator.inputMap();
+    const auto &outputPins = generator.outputMap();
+    QVector<InputSwitch *> switches;
+    for (const auto &pin : inputPins) {
+        auto *sw = qobject_cast<InputSwitch *>(pin.m_elm);
+        QVERIFY2(sw, "every input of a building block is a switch");
+        switches.append(sw);
+    }
+
+    Simulation *sim = workspace.scene()->simulation();
+    sim->initialize();
+    QVector<CombinationalVector> testVectors;
+    QString nonLevelOutput;
+    const auto collectVector = [&](const QVector<int> &bits) {
+        for (int i = 0; i < switches.size(); ++i) {
+            switches[i]->setOn(bits.at(i) != 0);
+        }
+        sim->update();
+        QVector<int> outputBits;
+        for (const auto &pin : outputPins) {
+            const Status status = TestUtils::inputStatus(pin.m_elm, pin.m_portNumber);
+            if ((status != Status::Active) && (status != Status::Inactive) && nonLevelOutput.isEmpty()) {
+                nonLevelOutput = pin.m_varName;
+            }
+            outputBits.append((status == Status::Active) ? 1 : 0);
+        }
+        testVectors.append({bits, outputBits});
+    };
+    const auto numInputs = static_cast<int>(switches.size());
+    if (numInputs <= 12) {
+        for (int v = 0; v < (1 << numInputs); ++v) {
+            QVector<int> bits(numInputs);
+            for (int i = 0; i < numInputs; ++i) {
+                bits[i] = (v >> i) & 1;
+            }
+            collectVector(bits);
+        }
+    } else {
+        QRandomGenerator rng(kDiffSeed);
+        for (int v = 0; v < 258; ++v) {
+            QVector<int> bits(numInputs);
+            for (int i = 0; i < numInputs; ++i) {
+                bits[i] = rng.bounded(2);
+            }
+            collectVector(bits);
+        }
+    }
+    QVERIFY2(nonLevelOutput.isEmpty(), qPrintable(QString("the engine's output %1 is not a level").arg(nonLevelOutput)));
+
+    const QString tbPath = dir.filePath(baseName + "_tb.sv");
+    QFile tbFile(tbPath);
+    QVERIFY(tbFile.open(QIODevice::WriteOnly | QIODevice::Text));
+    tbFile.write(combinationalTestbench(generator.moduleName(), inputPins, outputPins, testVectors).toUtf8());
+    tbFile.close();
+    QVERIFY2(validateWithTestbench(verilogPath, tbPath),
+             qPrintable(QString("the module differs from the engine - DUT: \"%1\" TB: \"%2\"").arg(verilogPath, tbPath)));
+
+    QFile expectedFile(expectedPath);
+    QVERIFY(expectedFile.open(QIODevice::WriteOnly | QIODevice::Text));
+    expectedFile.write(content.toUtf8());
 }
 
 // Level 2 - Combinational circuits

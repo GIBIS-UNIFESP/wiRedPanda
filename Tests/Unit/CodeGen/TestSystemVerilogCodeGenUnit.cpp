@@ -8,6 +8,7 @@
 #include <utility>
 
 #include <QCoreApplication>
+#include <QFileInfo>
 #include <QRegularExpression>
 #include <QTemporaryDir>
 
@@ -576,11 +577,10 @@ void TestSystemVerilogCodeGenUnit::testFlipFlopWithPresetOnlySensitivityList()
     QVERIFY2(content.contains("        if (~"), "Preset body must still be reachable without Clear");
 }
 
-void TestSystemVerilogCodeGenUnit::testAsyncControlWithComplexExpressionCreatesAuxWire()
+void TestSystemVerilogCodeGenUnit::testAsyncControlDrivenByAGateReadsItsVariable()
 {
-    // Preset driven by a NOT gate's inlined "~signal" expression, not a bare
-    // signal name — invalid inside an "always @(... or negedge ...)" event
-    // control, so ensureSimpleSignal() must hoist it into its own wire first.
+    // Preset driven by a NOT gate: an "always @(... or negedge ...)" event control takes an identifier, not an
+    // expression, so the sensitivity list names the variable the gate drives.
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
@@ -609,20 +609,17 @@ void TestSystemVerilogCodeGenUnit::testAsyncControlWithComplexExpressionCreatesA
     QVERIFY(file.open(QIODevice::ReadOnly | QIODevice::Text));
     const QString content = file.readAll();
 
-    QVERIFY2(content.contains(QRegularExpression(R"(wire aux_async_\d+ = ~\S+;)")),
-             "A complex (non-identifier) async-control expression must be hoisted into its own wire");
-    QVERIFY2(content.contains(QRegularExpression(R"(negedge aux_async_\d+)")),
-             "The sensitivity list must reference the hoisted wire, not the raw expression");
+    const QRegularExpressionMatch notAssign = QRegularExpression(R"(assign (aux_not_\d+) = ~\w+;)").match(content);
+    QVERIFY2(notAssign.hasMatch(), qPrintable(content));
+    QVERIFY2(content.contains("negedge " + notAssign.captured(1) + ")"), qPrintable(content));
 }
 
 void TestSystemVerilogCodeGenUnit::testOutOfTopologicalOrderGateResolution()
 {
-    // otherPortNameImpl()'s "otherPort's element is itself an inlineable gate,
-    // recurse to compute its expression" fallback only fires when a downstream
-    // gate is processed before the upstream gate feeding it — i.e. the element
-    // list isn't topologically sorted. The elements vector is built directly
-    // (bypassing Scene/CircuitBuilder, whose iteration order this test should
-    // not depend on) so the order can be set explicitly and reproducibly.
+    // A downstream gate processed before the upstream gate feeding it, the element list not topologically sorted:
+    // it reads the upstream gate's variable, declared before any gate is assigned, so the order does not matter. The
+    // elements vector is built directly (bypassing Scene/CircuitBuilder, whose iteration order this test should not
+    // depend on) so the order can be set explicitly and reproducibly.
     auto sw1 = std::make_unique<InputSwitch>();
     auto sw2 = std::make_unique<InputSwitch>();
     auto andGate = std::make_unique<And>();
@@ -642,8 +639,7 @@ void TestSystemVerilogCodeGenUnit::testOutOfTopologicalOrderGateResolution()
     connect(sw1->outputPort(0), orGate->inputPort(1));
     connect(orGate->outputPort(0), led->inputPort(0));
 
-    // OR (downstream) listed before AND (its upstream driver): when
-    // assignVariablesRec reaches OR, AND has not been inlined into m_varMap yet.
+    // OR (downstream) listed before AND (its upstream driver): when assignVariablesRec reaches OR, AND is not assigned
     QVector<GraphicElement *> elements{sw1.get(), sw2.get(), orGate.get(), andGate.get(), led.get()};
 
     QTemporaryDir dir;
@@ -657,17 +653,15 @@ void TestSystemVerilogCodeGenUnit::testOutOfTopologicalOrderGateResolution()
     QVERIFY(file.open(QIODevice::ReadOnly | QIODevice::Text));
     const QString content = file.readAll();
 
-    const qsizetype outputSection = content.indexOf("// Writing output data. //");
-    QVERIFY(outputSection >= 0);
-    const QString outputCode = content.mid(outputSection);
-
-    // The AND sub-expression must be inlined into the OR's assign, proving the
-    // out-of-order recursive resolution worked instead of silently tying the
-    // unresolved upstream gate off to a constant.
-    QVERIFY2(outputCode.contains("&") && outputCode.contains("|"),
-             "AND sub-expression must be inlined into the OR's assign");
-    QVERIFY2(!outputCode.contains("1'b0"),
-             "Out-of-order gate resolution must not fall back to a tied-off constant");
+    // The OR reads the AND's variable, assigned after it, not a tied-off constant
+    const QRegularExpressionMatch andAssign = QRegularExpression(R"(assign (aux_and_\d+) = \(\w+ & \w+\);)").match(content);
+    QVERIFY2(andAssign.hasMatch(), qPrintable(content));
+    const QRegularExpressionMatch orAssign = QRegularExpression(R"(assign (aux_or_\d+) = \((\w+) \| \w+\);)").match(content);
+    QVERIFY2(orAssign.hasMatch(), qPrintable(content));
+    QCOMPARE(orAssign.captured(2), andAssign.captured(1));
+    QVERIFY2(orAssign.capturedStart() < andAssign.capturedStart(), qPrintable(content));
+    QVERIFY2(content.contains(QRegularExpression("assign \\w+ = " + orAssign.captured(1) + ";")), qPrintable(content));
+    QVERIFY2(!content.contains("1'b0"), qPrintable(content));
 }
 
 void TestSystemVerilogCodeGenUnit::testDeclareInputsWithNoOutputElements()
@@ -854,10 +848,8 @@ void TestSystemVerilogCodeGenUnit::testIcPortNamesEscapeReservedWordsAndDedup()
 
 void TestSystemVerilogCodeGenUnit::testOutOfOrderNodeUpstreamResolution()
 {
-    // otherPortNameImpl()'s inlineable-gate check is a multi-way "||" over 8
-    // element types; the out-of-order AND/OR test above only exercises the
-    // first (And) disjunct via short-circuit. A Node upstream driver forces
-    // evaluation all the way through the chain to its own (last) disjunct.
+    // A Node, the pass-through gate, upstream of a gate processed before it: like the AND/OR test above, the gate
+    // reads the Node's variable, and the Node's is assigned its own driver.
     auto sw1 = std::make_unique<InputSwitch>();
     auto sw2 = std::make_unique<InputSwitch>();
     auto node = std::make_unique<Node>();
@@ -890,24 +882,19 @@ void TestSystemVerilogCodeGenUnit::testOutOfOrderNodeUpstreamResolution()
     QVERIFY(file.open(QIODevice::ReadOnly | QIODevice::Text));
     const QString content = file.readAll();
 
-    const qsizetype outputSection = content.indexOf("// Writing output data. //");
-    QVERIFY(outputSection >= 0);
-    const QString outputCode = content.mid(outputSection);
-
-    QVERIFY2(outputCode.contains("&"),
-             "The Node's pass-through value must still be inlined into the AND expression");
-    QVERIFY2(!outputCode.contains("1'b0"),
-             "Out-of-order Node resolution must not fall back to a tied-off constant");
+    const QRegularExpressionMatch andAssign = QRegularExpression(R"(assign aux_and_\d+ = \((aux_node_\d+) & \w+\);)").match(content);
+    QVERIFY2(andAssign.hasMatch(), qPrintable(content));
+    const QRegularExpressionMatch nodeAssign = QRegularExpression("assign " + andAssign.captured(1) + R"( = (\w+);)").match(content);
+    QVERIFY2(nodeAssign.hasMatch(), qPrintable(content));
+    QVERIFY2(nodeAssign.captured(1).startsWith("input_switch"), qPrintable(content));
+    QVERIFY2(!content.contains("1'b0"), qPrintable(content));
 }
 
-void TestSystemVerilogCodeGenUnit::testWirelessNodeCycleDoesNotInfiniteRecurse()
+void TestSystemVerilogCodeGenUnit::testWirelessNodeCycleReadsEachOthersVariable()
 {
-    // otherPortNameImpl()'s `visited` set exists purely to survive a
-    // combinational cycle without infinite recursion / a stack overflow. Two
-    // Nodes wired directly into each other (no real circuit could be drawn
-    // this way through the UI, but nothing at the codegen level guards
-    // against a malformed/hand-built graph) forces the cycle-detection
-    // branch to actually fire.
+    // A combinational cycle must not recurse without end: two Nodes wired directly into each other (no real circuit
+    // could be drawn this way through the UI, but nothing at the codegen level guards against a malformed/hand-built
+    // graph), each reading the other's variable.
     auto n1 = std::make_unique<Node>();
     auto n2 = std::make_unique<Node>();
     auto led = std::make_unique<Led>();
@@ -948,7 +935,7 @@ void TestSystemVerilogCodeGenUnit::testNandGateCircuit()
 {
     // None of the other tests in this file (or the .panda-based integration
     // fixtures) happen to place a raw Nand element directly, leaving
-    // generateLogicExpressionImpl()'s dedicated Nand case (and its "negate the
+    // generateLogicExpression()'s dedicated Nand case (and its "negate the
     // parenthesized multi-input expression" path) untested.
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
@@ -976,11 +963,9 @@ void TestSystemVerilogCodeGenUnit::testNandGateCircuit()
              "NAND must emit a negated, parenthesized AND expression");
 }
 
-void TestSystemVerilogCodeGenUnit::testDoubleNotCancelsNegation()
+void TestSystemVerilogCodeGenUnit::testNotOfANotReadsItsVariable()
 {
-    // generateLogicExpressionImpl()'s Not case cancels a double negation
-    // (~~x -> x) instead of emitting a redundant double tilde; only a NOT
-    // feeding directly into another NOT exercises that cancellation.
+    // A NOT feeding another NOT: the second negates the first's variable, so no expression carries a double tilde
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
@@ -1003,12 +988,10 @@ void TestSystemVerilogCodeGenUnit::testDoubleNotCancelsNegation()
     QVERIFY(file.open(QIODevice::ReadOnly | QIODevice::Text));
     const QString content = file.readAll();
 
-    const qsizetype outputSection = content.indexOf("// Writing output data. //");
-    QVERIFY(outputSection >= 0);
-    const QString outputCode = content.mid(outputSection);
-
-    QVERIFY2(!outputCode.contains("~~"),
-             "A NOT feeding directly into another NOT must cancel to the bare signal, not double-negate");
+    const QRegularExpressionMatch first = QRegularExpression(R"(assign (aux_not_\d+) = ~input_switch\w*;)").match(content);
+    QVERIFY2(first.hasMatch(), qPrintable(content));
+    QVERIFY2(content.contains(QRegularExpression(R"(assign aux_not_\d+ = ~)" + first.captured(1) + ";")), qPrintable(content));
+    QVERIFY2(!content.contains("~~"), qPrintable(content));
 }
 
 namespace SystemVerilogTranslatedModule {
@@ -1110,4 +1093,37 @@ void TestSystemVerilogCodeGenUnit::testModuleDoesNotFollowTheInterfaceLanguage()
 
     const QString mismatch = TestUtils::compareTexts("the module under the tagging translator", english, translated);
     QVERIFY2(mismatch.isEmpty(), qPrintable(mismatch));
+}
+
+void TestSystemVerilogCodeGenUnit::testModuleGrowsLinearlyWithDepth()
+{
+    // A chain of And gates, each reading the one before on both inputs: a signal that reaches a gate along two paths
+    // is written once, so the module grows with the chain's length, not twofold per gate
+    const auto moduleSize = [](const int depth) {
+        WorkSpace workspace;
+        CircuitBuilder builder(workspace.scene());
+        auto *sw = new InputSwitch;
+        builder.add(sw);
+        GraphicElement *previous = sw;
+        for (int i = 0; i < depth; ++i) {
+            auto *gate = new And;
+            builder.add(gate);
+            builder.connect(previous, 0, gate, 0);
+            builder.connect(previous, 0, gate, 1);
+            previous = gate;
+        }
+        auto *led = new Led;
+        builder.add(led);
+        builder.connect(previous, 0, led, 0);
+
+        QTemporaryDir dir;
+        const QString path = dir.path() + "/chain.sv";
+        SystemVerilogCodeGen codegen(path, sceneElements(workspace.scene()));
+        codegen.generate();
+        return QFileInfo(path).size();
+    };
+
+    const qint64 shallow = moduleSize(8);
+    const qint64 deep = moduleSize(16);
+    QVERIFY2(deep < 4 * shallow, qPrintable(QString("%1 bytes at depth 8, %2 at depth 16").arg(shallow).arg(deep)));
 }

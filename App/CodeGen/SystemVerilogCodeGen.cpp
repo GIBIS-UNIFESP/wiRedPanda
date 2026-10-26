@@ -4,7 +4,6 @@
 #include "App/CodeGen/SystemVerilogCodeGen.h"
 
 #include <QFileInfo>
-#include <QRegularExpression>
 #include <QSet>
 
 #include "App/CodeGen/CodeGenUtils.h"
@@ -93,48 +92,15 @@ QString SystemVerilogCodeGen::removeForbiddenChars(const QString &input)
     return CodeGenUtils::removeForbiddenChars(input);
 }
 
-// [BUG-1] Check whether a string is a simple SystemVerilog identifier (no operators/expressions)
-bool SystemVerilogCodeGen::isSimpleIdentifier(const QString &expr)
-{
-    if (expr.isEmpty()) return false;
-    static QRegularExpression re("^[a-zA-Z_][a-zA-Z0-9_]*$");
-    return re.match(expr).hasMatch();
-}
-
-// [BUG-1] Ensure a signal is usable in a sensitivity list.
-// If the expression is complex (not a simple identifier), creates an intermediate wire.
-QString SystemVerilogCodeGen::ensureSimpleSignal(const QString &expr)
-{
-    if (expr.isEmpty() || expr == "1'b0" || expr == "1'b1") return expr;
-    if (isSimpleIdentifier(expr)) return expr;
-
-    // Create an intermediate wire for the complex expression
-    QString wireName = QString("aux_async_%1").arg(m_globalCounter++);
-    m_stream << "    wire " << wireName << " = " << expr << ";" << Qt::endl;
-    return wireName;
-}
-
 QString SystemVerilogCodeGen::otherPortName(Port *port)
-{
-    QSet<Port *> visited;
-    return otherPortNameImpl(port, visited);
-}
-
-QString SystemVerilogCodeGen::otherPortNameImpl(Port *port, QSet<Port *> &visited)
 {
     if (!port) return "1'b0";
 
-    // Cycle detection: if we've already visited this port, don't inline
-    if (visited.contains(port)) {
-        QString mapped = m_varMap.value(port);
-        return mapped.isEmpty() ? "1'b0" : mapped;
-    }
-
     // Wireless Rx: resolve via the Tx node's input (what drives the transmitter), over a wire that also reaches the Rx,
-    // as the simulation does
+    // as the simulation does. The Tx node is not an Rx, so this takes one step.
     if (auto *elm = port->graphicElement(); elm && elm->wirelessMode() == WirelessMode::Rx && !elm->label().isEmpty()) {
         if (auto *txInputPort = m_txInputPorts.value(elm->label(), nullptr)) {
-            return otherPortNameImpl(txInputPort, visited);
+            return otherPortName(txInputPort);
         }
     }
 
@@ -147,57 +113,14 @@ QString SystemVerilogCodeGen::otherPortNameImpl(Port *port, QSet<Port *> &visite
     auto *otherPort = port->connections().constFirst()->otherPort(port);
     if (!otherPort) return fourState(port->defaultValue());
 
-    // Cycle detection: if we've already visited the connected port, don't inline.
-    // Unreachable given this app's wiring model: every Connection joins one
-    // OutputPort to one InputPort (never same-kind), every otherPortName() call
-    // site starts from an InputPort, and the only recursive re-entry
-    // (generateLogicExpressionImpl's Not/Node cases) also always passes an
-    // InputPort — so `visited` can only ever contain InputPorts, while
-    // `otherPort` here is always an OutputPort. The entry-point check above
-    // (`visited.contains(port)`) is what actually catches every real cycle.
-    if (visited.contains(otherPort)) {
-        QString mapped = m_varMap.value(otherPort); // LCOV_EXCL_LINE
-        return mapped.isEmpty() ? "1'b0" : mapped; // LCOV_EXCL_LINE
-    } // LCOV_EXCL_LINE
-
-    // Mark this port as visited to detect cycles
-    visited.insert(port);
-
-    auto *elm = otherPort->graphicElement();
-    // Unreachable: every Port is bound to its owning GraphicElement via
-    // setGraphicElement() at construction time, before it could ever be wired
-    // into a Connection — a connected port's graphicElement() is never null.
-    if (!elm) {
-        QString mapped = m_varMap.value(otherPort); // LCOV_EXCL_LINE
-        return mapped.isEmpty() ? fourState(port->defaultValue()) : mapped; // LCOV_EXCL_LINE
-    } // LCOV_EXCL_LINE
-
-    // Check m_varMap first — if a wire/variable was declared for this port, use it
-    // directly instead of inlining. This prevents fan-out collision (multiple gates
-    // sharing an upstream output) and enables IC-internal gate wire references.
-    QString mapped = m_varMap.value(otherPort);
-    if (!mapped.isEmpty()) {
-        return mapped;
+    // Every output has a variable before any is read: a module input, an IC's boundary, an IC instance's wire, or
+    // what declareAuxVariablesRec() declares for every other element
+    const QString mapped = m_varMap.value(otherPort);
+    // Unreachable: an output a circuit's wire leaves is one of those
+    if (mapped.isEmpty()) {
+        return "1'b0"; // LCOV_EXCL_LINE
     }
-
-    if (elm->elementType() == ElementType::And ||
-        elm->elementType() == ElementType::Or ||
-        elm->elementType() == ElementType::Nand ||
-        elm->elementType() == ElementType::Nor ||
-        elm->elementType() == ElementType::Xor ||
-        elm->elementType() == ElementType::Xnor ||
-        elm->elementType() == ElementType::Not ||
-        elm->elementType() == ElementType::Node) {
-
-        return generateLogicExpressionImpl(elm, visited);
-    }
-
-    // Unreachable: declareAuxVariablesRec() pre-populates m_varMap for every
-    // element type reaching this point except the 8 gate types checked above —
-    // top-level gates get inlined here instead (by design), and IC-internal
-    // gates are pre-declared as wires (m_generatingICModule branch) — so
-    // `mapped` above is never empty for a non-gate `elm`.
-    return "1'b0"; // LCOV_EXCL_LINE
+    return mapped;
 }
 
 // SystemVerilog reserved words that cannot be used as identifiers.
@@ -425,7 +348,6 @@ void SystemVerilogCodeGen::generateSingleICModule(ICModuleInfo &info)
     m_varMap.clear();
     m_instanceNames.clear();
     m_globalCounter = 1;
-    m_generatingICModule = true;
 
     IC *ic = info.prototypeIC;
 
@@ -531,7 +453,6 @@ void SystemVerilogCodeGen::generateSingleICModule(ICModuleInfo &info)
     m_varMap = savedVarMap;
     m_instanceNames = savedInstanceNames;
     m_globalCounter = savedCounter;
-    m_generatingICModule = false;
 }
 
 void SystemVerilogCodeGen::generate()
@@ -570,10 +491,8 @@ void SystemVerilogCodeGen::generate()
     // without this the set would be empty by the time declareAuxVariables() runs and no
     // top-level element could be recognised as a loop member. A feedback circuit drawn directly
     // on the canvas -- a cross-coupled NAND latch, say -- would then be emitted as plain `wire`
-    // + `assign`, and otherPortNameImpl()'s cycle guard would substitute 1'b0 for the feedback
-    // edge, since top-level gates are inlined and have no m_varMap entry. That is worse than an
-    // x-locking comb loop: a silently constant-folded expression with the memory removed, which
-    // simulates cleanly and computes the wrong function.
+    // + `assign`: a combinational loop that x-locks in simulation and trips Verilator's
+    // UNOPTFLAT, instead of a seeded `reg` that settles.
     m_feedbackElements = findFeedbackElements(m_elements);
 
     // Top-level module
@@ -727,29 +646,9 @@ void SystemVerilogCodeGen::declareAuxVariablesRec(const QVector<GraphicElement *
                 continue;
             }
 
-            // Skip wire declarations for top-level logic gates (their expressions
-            // are inlined). Inside IC modules (m_generatingICModule), declare wires so that
-            // feedback loops produce proper circular assign references instead of 1'b0.
-            //
-            // A top-level FEEDBACK member is the exception, for exactly the reason that comment
-            // gives. Inlining walks otherPortNameImpl(), whose cycle guard returns 1'b0 when the
-            // revisited port has no m_varMap entry -- and skipping the declaration is what would
-            // leave it without one, yielding not an x-locking comb loop but a silently
-            // constant-folded expression: a canvas-drawn cross-coupled NAND latch with its memory
-            // removed. Declaring it lets the seeded `reg` + `always @(*)` path below treat it the
-            // same way an IC-internal loop is already treated.
-            if (!m_generatingICModule && !m_feedbackElements.contains(elm) &&
-                (type == ElementType::And ||
-                 type == ElementType::Or ||
-                 type == ElementType::Nand ||
-                 type == ElementType::Nor ||
-                 type == ElementType::Xor ||
-                 type == ElementType::Xnor ||
-                 type == ElementType::Not ||
-                 type == ElementType::Node)) {
-                continue;
-            }
-
+            // Every other element's outputs get a variable, logic gates' included, at the top level as inside an IC
+            // module: a gate's expression written into each input it drives would be written again for every path
+            // a signal takes to a later gate, doubling at each gate it reaches twice.
             QString varName = QString("aux_%1_%2").arg(removeForbiddenChars(CodeGenUtils::stripAccents(ElementFactory::untranslatedName(elm->elementType())))).arg(m_globalCounter++);
             const auto outputs = elm->outputs();
 
@@ -884,24 +783,19 @@ void SystemVerilogCodeGen::declareAuxVariables()
     m_stream << Qt::endl;
 }
 
-// [QUALITY-11] Shared helper for all edge-triggered flip-flop types.
-// [BUG-1] Uses ensureSimpleSignal() to guarantee valid sensitivity list identifiers.
+// [QUALITY-11] Shared helper for all edge-triggered flip-flop types. The clock, preset and clear are each a constant
+// or the variable of the output driving it (otherPortName()), so an identifier the sensitivity list can name.
 // [BUG-5] Uses ~ (bitwise NOT) consistently instead of ! (logical NOT).
 // [BUG-6] Uses ~(expr) with parentheses for complex expressions.
 void SystemVerilogCodeGen::emitSequentialBlock(
     const QString &typeName,
-    const QString &clk, const QString &rawPrst, const QString &rawClr,
+    const QString &clk, const QString &prst, const QString &clr,
     const std::function<void()> &emitPresetBody,
     const std::function<void()> &emitClearBody,
     const std::function<void()> &emitNormalBody)
 {
-    bool hasPrst = (rawPrst != "1'b1" && rawPrst != "1'b0");
-    bool hasClr = (rawClr != "1'b1" && rawClr != "1'b0");
-
-    // [BUG-1] Ensure signals are simple identifiers for the sensitivity list.
-    // Complex expressions like ~signal are invalid in always @(...) event controls.
-    QString prst = hasPrst ? ensureSimpleSignal(rawPrst) : rawPrst;
-    QString clr = hasClr ? ensureSimpleSignal(rawClr) : rawClr;
+    bool hasPrst = (prst != "1'b1" && prst != "1'b0");
+    bool hasClr = (clr != "1'b1" && clr != "1'b0");
 
     m_stream << "    //" << typeName << Qt::endl;
 
@@ -997,8 +891,7 @@ void SystemVerilogCodeGen::assignVariablesRec(const QVector<GraphicElement *> &e
             continue;
         }
 
-        // Logic gates: propagate expressions directly (top-level) or emit
-        // assign statements (IC module internal, where wires were declared).
+        // Logic gates: each output's declared variable assigned the gate's expression over its inputs' variables
         if (elm->elementType() == ElementType::And ||
             elm->elementType() == ElementType::Or ||
             elm->elementType() == ElementType::Nand ||
@@ -1008,29 +901,17 @@ void SystemVerilogCodeGen::assignVariablesRec(const QVector<GraphicElement *> &e
             elm->elementType() == ElementType::Not ||
             elm->elementType() == ElementType::Node) {
 
-            QString expr = generateLogicExpression(elm);
+            const QString expr = generateLogicExpression(elm);
             const bool isFeedback = m_feedbackElements.contains(elm);
             for (auto *port : elm->outputs()) {
-                QString existingVar = m_varMap.value(port);
-                // Emit an assignment whenever this port actually HAS a declared variable --
-                // inside an IC module, or at top level when the element is a feedback member and
-                // declareAuxVariablesRec() therefore gave it a seeded reg. Gating on
-                // m_generatingICModule alone would send top-level feedback gates down the inline
-                // branch below, overwriting the declared name with an expression and leaving the
-                // reg at its seed forever.
-                if (!existingVar.isEmpty() && (m_generatingICModule || isFeedback)) {
-                    if (isFeedback) {
-                        // Cross-coupled feedback node: drive the seeded `reg`
-                        // combinationally so the loop settles (vs. a comb-loop
-                        // `assign` that x-locks / trips Verilator UNOPTFLAT).
-                        m_stream << "always @(*) " << existingVar << " = " << expr << ";" << Qt::endl;
-                    } else {
-                        // IC module internal: wire was declared, emit assign statement
-                        m_stream << "assign " << existingVar << " = " << expr << ";" << Qt::endl;
-                    }
+                const QString var = m_varMap.value(port);
+                if (isFeedback) {
+                    // Cross-coupled feedback node: drive the seeded `reg`
+                    // combinationally so the loop settles (vs. a comb-loop
+                    // `assign` that x-locks / trips Verilator UNOPTFLAT).
+                    m_stream << "always @(*) " << var << " = " << expr << ";" << Qt::endl;
                 } else {
-                    // Top-level: inline the expression
-                    m_varMap[port] = expr;
+                    m_stream << "assign " << var << " = " << expr << ";" << Qt::endl;
                 }
             }
         }
@@ -1291,11 +1172,11 @@ void SystemVerilogCodeGen::assignVariablesRec(const QVector<GraphicElement *> &e
                     Port *ttInputPort = elm->inputPort(i);
                     QString signalName = otherPortName(ttInputPort);
 
-                    // The bodies below are unreachable: otherPortName()/otherPortNameImpl()
+                    // The bodies below are unreachable: otherPortName()
                     // never returns the literal strings "LOW"/"HIGH" (that's ArduinoCodeGen's
                     // convention; this file's highLow() returns "1'b1"/"1'b0") and never
-                    // returns an empty string (every return path yields a tied-off constant,
-                    // a mapped variable, or a recursively-computed expression).
+                    // returns an empty string (every return path yields a tied-off constant
+                    // or a mapped variable).
                     if (signalName == "LOW") {
                         signalName = "0"; // LCOV_EXCL_LINE
                     } else if (signalName == "HIGH") {
@@ -1395,13 +1276,6 @@ void SystemVerilogCodeGen::assignVariablesRec(const QVector<GraphicElement *> &e
 
 QString SystemVerilogCodeGen::generateLogicExpression(GraphicElement *elm)
 {
-    QSet<Port *> visited;
-    return generateLogicExpressionImpl(elm, visited);
-}
-
-// [BUG-2] Cancels double negations: ~~expr -> expr
-QString SystemVerilogCodeGen::generateLogicExpressionImpl(GraphicElement *elm, QSet<Port *> &visited)
-{
     bool negate = false;
     QString logicOperator;
 
@@ -1412,19 +1286,11 @@ QString SystemVerilogCodeGen::generateLogicExpressionImpl(GraphicElement *elm, Q
     case ElementType::Nor:  logicOperator = "|"; negate = true; break;
     case ElementType::Xor:  logicOperator = "^"; break;
     case ElementType::Xnor: logicOperator = "^"; negate = true; break;
-    case ElementType::Not: {
-        QString inner = otherPortNameImpl(elm->inputPort(0), visited);
-        // [BUG-2] Cancel double negation: ~~x -> x
-        if (inner.startsWith("~")) {
-            return inner.mid(1);
-        }
-        return "~" + inner;
-    }
-    case ElementType::Node: return otherPortNameImpl(elm->inputPort(0), visited);
+    case ElementType::Not:  return "~" + otherPortName(elm->inputPort(0));
+    case ElementType::Node: return otherPortName(elm->inputPort(0));
     // Unreachable: this function is only ever reached for the 8 gate types handled
-    // above/below — its two callers (generateLogicExpression(), used by
-    // assignVariablesRec's top-level-gate branch, and otherPortNameImpl()'s own
-    // gate-type dispatch) both restrict `elm` to exactly that set. ElementType::JKLatch
+    // above/below — its one caller, assignVariablesRec's logic-gate branch, restricts
+    // `elm` to exactly that set. ElementType::JKLatch
     // is unreachable for a different, stronger reason: it's a deprecated enum value with
     // no live GraphicElement implementation at all (ElementFactory::hasCreator(JKLatch)
     // is false), so no real `elm` can ever report it.
@@ -1464,30 +1330,18 @@ QString SystemVerilogCodeGen::generateLogicExpressionImpl(GraphicElement *elm, Q
     // Not/Node return early above) all have minInputSize()==2, so inputs().size()
     // is never 1 here.
     if (elm->inputs().size() == 1) {
-        expr = otherPortNameImpl(elm->inputPort(0), visited); // LCOV_EXCL_LINE
+        expr = otherPortName(elm->inputPort(0)); // LCOV_EXCL_LINE
     } else {
         // Group multiple inputs with parentheses
         expr = "(";
         for (int i = 0; i < elm->inputs().size(); ++i) {
             if (i > 0) expr += " " + logicOperator + " ";
-            expr += otherPortNameImpl(elm->inputPort(i), visited);
+            expr += otherPortName(elm->inputPort(i));
         }
         expr += ")";
     }
 
-    if (negate) {
-        // [BUG-2] Cancel double negation: ~(~expr) -> expr without outer ~
-        // The single-input branch above is dead (see its own comment), so `expr`
-        // always comes from the multi-input "(" ... ")" branch and can never itself
-        // start with "~" — only the "else" (add the negation) is reachable.
-        if (expr.startsWith("~")) {
-            expr = expr.mid(1); // LCOV_EXCL_LINE
-        } else {
-            expr = "~" + expr;
-        }
-    }
-
-    return expr;
+    return negate ? "~" + expr : expr;
 }
 
 void SystemVerilogCodeGen::loop()
