@@ -9,37 +9,49 @@
  * separate and dark: it opens a QFile, reads a panda stream, handles cycle
  * detection, and calls IC::migrateFile on old-format sub-circuits.
  *
- * This harness writes the fuzz bytes to a QTemporaryFile, then loads a
- * workspace panda stream whose IC element's `name` property points to that
- * temp file (relative to its directory).  When the IC element is loaded and
- * the blob registry has no matching entry, the loader falls through to
- * IC::loadFromFile, which exercises the file-backed path end-to-end.
+ * This harness writes the fuzz bytes to a file in a temporary directory that
+ * also holds every .panda file of the repository's examples and test circuits
+ * (read-only), so the IC files the input names resolve, then loads a workspace
+ * panda stream whose IC element's `name` property points to the input's file.
+ * When the IC element is loaded and the blob registry has no matching entry,
+ * the loader falls through to IC::loadFromFile, which exercises the
+ * file-backed path end-to-end; half the inputs load with migration on, as the
+ * application does, half of those from a read-only file.  A circuit that loads
+ * is reloaded through the registry's cache, simulated and saved.
  */
 
 #include <cstddef>
 #include <cstdint>
+#include <cstdio>
+#include <cstdlib>
 
 #include <QApplication>
 #include <QByteArray>
 #include <QCoreApplication>
 #include <QDataStream>
+#include <QDir>
+#include <QDirIterator>
 #include <QEvent>
+#include <QFile>
+#include <QFileDevice>
+#include <QFileInfo>
 #include <QIODevice>
 #include <QMap>
 #include <QPointF>
 #include <QScopeGuard>
 #include <QString>
-#include <QTemporaryFile>
+#include <QTemporaryDir>
 #include <QVariant>
 #include <QVersionNumber>
 
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
-#include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElement.h"
+#include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
+#include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
-#include "Tests/Fuzz/FuzzSeed.h"
+#include "App/Simulation/Simulation.h"
+#include "Tests/Fuzz/PandaMutator.h"
 
 namespace {
 
@@ -47,8 +59,25 @@ QApplication *g_app  = nullptr;
 int  g_argc = 0;
 char **g_argv = nullptr;
 
-// Valid IC panda blob at current version (v5.1) — exercises IC::loadFileDirectly success path.
-QByteArray g_validICBytes;
+// The context directory: every .panda file of the repository's examples and test circuits, under its base name as
+// references resolve, read-only so a migration cannot rewrite them between inputs; the input is written beside them.
+QTemporaryDir *g_dir = nullptr;
+
+void copyDependencies(const QString &root)
+{
+    // Earlier directories win a base name: the examples and integration circuits are current, the backward
+    // compatibility ones each version's copy
+    for (const char *subdir : {"Examples", "Tests/Integration", "Tests/Fixtures", "Tests/BackwardCompatibility"}) {
+        QDirIterator it(root + "/" + subdir, {"*.panda"}, QDir::Files, QDirIterator::Subdirectories);
+        while (it.hasNext()) {
+            const QFileInfo source(it.next());
+            const QString target = g_dir->filePath(source.fileName());
+            if (!QFileInfo::exists(target) && QFile::copy(source.absoluteFilePath(), target)) {
+                QFile::setPermissions(target, QFileDevice::ReadOwner | QFileDevice::ReadUser);
+            }
+        }
+    }
+}
 
 // Build an outer panda file referencing an IC by filename (not blob name).
 // When loaded, the IC element will have no matching blob in the registry,
@@ -101,6 +130,13 @@ QByteArray buildOuterPanda(const QString &icFileName)
 
 } // namespace
 
+// The raw path's input is the IC file itself, a whole .panda file: the shared structure-aware mutator works on a
+// current-format file's decompressed body (Tests/Fuzz/PandaMutator.h)
+extern "C" size_t LLVMFuzzerCustomMutator(uint8_t *Data, size_t Size, size_t MaxSize, unsigned int Seed)
+{
+    return PandaMutator::mutate(Data, Size, MaxSize, Seed);
+}
+
 extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
 {
     qputenv("QT_QPA_PLATFORM", "offscreen");
@@ -115,20 +151,13 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
     g_argv = *argv;
     g_app  = new QApplication(g_argc, g_argv);
 
-    // Build a valid IC blob (InputSwitch + Led) for the success path of
-    // IC::loadFileDirectly → processLoadedItems → loadBoundaryElement.
-    {
-        auto *sw  = ElementFactory::buildElement(ElementType::InputSwitch);
-        auto *led = ElementFactory::buildElement(ElementType::Led);
-        sw->setId(1);  led->setId(2);
-        QList<QGraphicsItem *> items;
-        items.append(sw);  items.append(led);
-
-        QMap<QString, QVariant> meta;
-        meta.insert("dolphinFileName", QVariant(QString()));
-        g_validICBytes = FuzzSeed::pandaFile(meta, items);
-        qDeleteAll(items);
-        FuzzSeed::requireAccepted(g_validICBytes, "fuzz_ic_file");
+    // The harness binary sits in the build directory, one level below the repository
+    g_dir = new QTemporaryDir();
+    copyDependencies(QDir(QCoreApplication::applicationDirPath()).absoluteFilePath(".."));
+    if (QDir(g_dir->path()).entryList({"*.panda"}, QDir::Files).isEmpty()) {
+        std::fprintf(stderr, "fuzz_ic_file: no .panda file found to depend on beside %s\n",
+                     qPrintable(QCoreApplication::applicationDirPath()));
+        std::abort();
     }
 
     return 0;
@@ -148,23 +177,27 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
 
     if (size == 0) return 0;
 
-    // 25% of inputs (top 2 bits of first byte both 0) use a valid IC blob so
-    // IC::loadFileDirectly succeeds and exercises processLoadedItems.
-    // The other 75% use raw fuzz bytes (error-path coverage).
-    const QByteArray fileContent = ((data[0] & 0xC0) == 0)
-        ? g_validICBytes
-        : QByteArray(reinterpret_cast<const char *>(data), static_cast<int>(size));
+    // The input is the IC's file, its references resolving to the dependencies beside it
+    const QString inputPath = g_dir->filePath("fuzz_input.panda");
+    QFile::setPermissions(inputPath, QFileDevice::ReadOwner | QFileDevice::WriteOwner | QFileDevice::ReadUser
+                                         | QFileDevice::WriteUser);
+    {
+        QFile file(inputPath);
+        if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) return 0;
+        file.write(reinterpret_cast<const char *>(data), static_cast<qint64>(size));
+    }
 
-    QTemporaryFile tmp;
-    tmp.setAutoRemove(true);
-    if (!tmp.open()) return 0;
-    tmp.write(fileContent);
-    tmp.flush();
+    // Half the inputs load as the application does, migrating an older file in place (a read-only dependency
+    // refuses its migration, so the dependencies stay as copied). Half of those are read-only themselves, as on a
+    // read-only share: the migration refuses to write, and the load unwinds with every item it parsed still held.
+    Application::migrationEnabled = ((data[size - 1] & 1) != 0);
+    auto restoreMigration = qScopeGuard([] { Application::migrationEnabled = false; });
+    if ((data[size - 1] & 2) != 0) {
+        QFile::setPermissions(inputPath, QFileDevice::ReadOwner | QFileDevice::ReadUser);
+    }
 
-    const QString contextDir = QFileInfo(tmp.fileName()).absolutePath();
-
-    // Build and load the outer panda that references the temp file.
-    const QByteArray outer = buildOuterPanda(QFileInfo(tmp.fileName()).fileName());
+    // Build and load the outer panda that references the input's file.
+    const QByteArray outer = buildOuterPanda(QFileInfo(inputPath).fileName());
     QDataStream stream(outer);
 
     QVersionNumber version;
@@ -176,8 +209,31 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
 
     WorkSpace ws;
     try {
-        ws.load(stream, version, contextDir); // contextDir → IC::loadFromFile uses it
-    } catch (...) {}
+        ws.load(stream, version, g_dir->path()); // contextDir → IC::loadFromFile uses it
+    } catch (...) {
+        return 0;
+    }
+
+    // Reloaded in its scene, as when its file changes: through the registry's cache of the file's bytes. Only a small
+    // one: the reload is a second whole load, and a large circuit's two pass the round's timeout under ASan
+    // (Tests/Fixtures/Perf/ic_heavy.panda, 27 KB, 47 s), spending the run in loading, which the first load covers.
+    if (size <= 16384) {
+        for (auto *elm : ws.scene()->elements()) {
+            if (auto *ic = qobject_cast<IC *>(elm)) {
+                try {
+                    ic->loadFile(inputPath, g_dir->path());
+                } catch (...) {}
+            }
+        }
+    }
+
+    // The loaded IC simulated and saved, as a circuit using it is
+    ws.scene()->simulation()->update();
+    ws.scene()->simulation()->update();
+    QByteArray saved;
+    QDataStream out(&saved, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(out);
+    ws.save(out);
 
     return 0;
 }
