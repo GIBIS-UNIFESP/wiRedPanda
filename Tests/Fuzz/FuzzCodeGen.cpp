@@ -9,7 +9,8 @@
  * the file-load code path that all other harnesses exercise.
  *
  * Strategy: a whole .panda input (WPCF, a legacy text header, or a leading 0
- * byte) is loaded exactly as fuzz_deserialize does, then the resulting scene
+ * byte) is loaded exactly as fuzz_deserialize does, beside the repository's
+ * circuits so the IC files it names resolve, then the resulting scene
  * elements go to both code generators writing to QTemporaryFiles.  Any other
  * input describes a circuit built in the scene (buildCircuit()): elements of
  * every type the generators take, ICs among them, wired from the input.
@@ -60,6 +61,7 @@
 #include "App/Scene/Workspace.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
+#include "Tests/Fuzz/FuzzCircuitDir.h"
 #include "Tests/Fuzz/FuzzSeed.h"
 #include "Tests/Fuzz/PandaMutator.h"
 
@@ -75,6 +77,10 @@ WorkSpace *g_icWorkspace = nullptr;
 
 // Where a structured input's file-backed ICs are written.
 QTemporaryDir *g_dir = nullptr;
+
+// A whole .panda input's context directory: the repository's circuits (Tests/Fuzz/FuzzCircuitDir.h), so the IC files
+// it names load; apart from g_dir, whose files are written.
+QTemporaryDir *g_circuitDir = nullptr;
 
 void runCodeGen(const QVector<GraphicElement *> &elements)
 {
@@ -265,6 +271,8 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
     g_argv = *argv;
     g_app  = new QApplication(g_argc, g_argv);
     g_dir  = new QTemporaryDir();
+    g_circuitDir = new QTemporaryDir();
+    FuzzCircuitDir::fill(g_circuitDir->path(), "fuzz_codegen");
 
     // Build two IC blobs: combinational (And gate) and sequential (DFlipFlop).
     // Embedding both exercises IC module generation AND detectSequentialICType.
@@ -370,7 +378,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
 
     WorkSpace workspace;
     try {
-        workspace.load(stream, version, /*contextDir=*/QString());
+        workspace.load(stream, version, g_circuitDir->path());
     } catch (...) {
         return 0;
     }

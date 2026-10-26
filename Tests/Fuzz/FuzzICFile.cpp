@@ -17,7 +17,8 @@
  * the loader falls through to IC::loadFromFile, which exercises the
  * file-backed path end-to-end; half the inputs load with migration on, as the
  * application does, half of those from a read-only file.  A circuit that loads
- * is reloaded through the registry's cache, simulated and saved.
+ * is reloaded through the registry's cache, its hover preview rendered,
+ * simulated and saved.
  */
 
 #include <cstddef>
@@ -58,6 +59,9 @@ char **g_argv = nullptr;
 
 // The context directory: the repository's circuits (Tests/Fuzz/FuzzCircuitDir.h), the input written beside them
 QTemporaryDir *g_dir = nullptr;
+
+// The largest circuit reloaded and previewed: its three loads stay inside about 10 s under ASan, 1.2 ms an element
+constexpr qsizetype kMaxReloadElements = 2500;
 
 // Build an outer panda file referencing an IC by filename (not blob name).
 // When loaded, the IC element will have no matching blob in the registry,
@@ -188,15 +192,18 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
         return 0;
     }
 
-    // Reloaded in its scene, as when its file changes: through the registry's cache of the file's bytes. Only a small
-    // one: the reload is a second whole load, and a large circuit's two pass the round's timeout under ASan
-    // (Tests/Fixtures/Perf/ic_heavy.panda, 27 KB, 47 s), spending the run in loading, which the first load covers.
-    if (size <= 16384) {
+    // Reloaded in its scene, as when its file changes: through the registry's cache of the file's bytes; then its
+    // hover preview rendered as the popup asks for it, from its file read again. Only a small one: each is another
+    // whole load, and a large circuit's pass the round's timeout under ASan (Tests/Fixtures/Perf/ic_heavy.panda,
+    // 16,002 elements, 47 s for two), spending the run in loading, which the first load covers. Small in the elements
+    // loaded, nested ICs' included, not in bytes: a 5 KB processor loads 6,842.
+    if (FuzzCircuitDir::loadedElementCount(ws.scene()->elements()) <= kMaxReloadElements) {
         for (auto *elm : ws.scene()->elements()) {
             if (auto *ic = qobject_cast<IC *>(elm)) {
                 try {
                     ic->loadFile(inputPath, g_dir->path());
                 } catch (...) {}
+                (void)ic->preview();
             }
         }
     }
