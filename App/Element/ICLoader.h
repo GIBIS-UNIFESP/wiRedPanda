@@ -47,6 +47,10 @@ public:
     /// Scans \a elements for Input/Output groups, sorts by Y/X position, and builds labels.
     static IC::PortMetadata buildPortMetadata(const QVector<GraphicElement *> &elements);
 
+    /// Renders \a ic's hover preview from the definition it loaded last, read again: its bytes, or its file. A
+    /// definition that no longer loads leaves the preview null.
+    static void renderPreview(IC &ic);
+
 private:
     static void loadFileDirectly(IC &ic, const QFileInfo &fileInfo);
     /// Re-saves \a fileInfo in the current format. Pure: touches only its parameters, no IC state.

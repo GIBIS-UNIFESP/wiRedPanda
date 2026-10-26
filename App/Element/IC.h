@@ -87,10 +87,12 @@ public:
     const QVector<Port *> &internalInputs() const { return m_internalInputs; }
     const QVector<Port *> &internalOutputs() const { return m_internalOutputs; }
 
-    /// Returns the cached preview pixmap of the designed circuit.
-    /// The snapshot is taken once during load (before boundary elements are
-    /// substituted with proxy Nodes), so the preview reflects what the user
-    /// actually placed — buttons, switches, LEDs — not the simulation graph.
+    /// Returns the hover preview of the designed circuit, rendering it on the first call after a load from the
+    /// definition the IC loaded, read again, so it shows what the user placed (buttons, switches, LEDs), not the
+    /// proxy Nodes that replace them. Null when the circuit is empty or too large, or its definition no longer loads.
+    const QPixmap &preview();
+
+    /// Returns the preview rendered so far: null until preview() renders it.
     const QPixmap &previewPixmap() const { return m_previewPixmap; }
 
     // --- Port metadata ---
@@ -198,5 +200,9 @@ private:
 
     // --- Members: Hover preview ---
 
-    QPixmap m_previewPixmap;           ///< Snapshot of the designed circuit, rendered at load time.
+    QPixmap m_previewPixmap;           ///< The designed circuit, rendered by preview().
+    bool m_previewRendered = false;    ///< Whether preview() has rendered the circuit loaded last.
+    /// The bytes the circuit loaded last came from, for preview() to read again; empty when it came from m_file.
+    QByteArray m_previewSource;
+    QString m_previewContextDir;       ///< The directory the file-backed ICs it names resolve against.
 };

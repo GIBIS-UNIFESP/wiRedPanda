@@ -111,10 +111,11 @@ void ICPreviewPopup::executeShow()
     }
 
     // The popup carries the IC's name (formerly a separate Qt tooltip) plus the
-    // rendered preview. The pixmap is null when the IC was empty or oversized at
-    // load time, or when generation failed — in that case we still show the name.
+    // rendered preview, rendered on the first show. The pixmap is null when the IC
+    // is empty or oversized, or its definition no longer loads — in that case we
+    // still show the name.
     const QString title = ic->displayName();
-    const QPixmap &preview = ic->previewPixmap();
+    const QPixmap &preview = ic->preview();
 
     if (title.isEmpty() && preview.isNull()) {
         hide();

@@ -359,11 +359,11 @@ void TestICUnit::testGeneratePreviewPixmapScalesAnExtentBeyondIntRange()
              qPrintable(QString("a 2:1 extent made a %1x%2 preview").arg(preview.width()).arg(preview.height())));
 }
 
-void TestICUnit::testOnlyTheLoadedICRendersAPreview()
+void TestICUnit::testAPreviewRendersOnlyWhenShown()
 {
-    // Only an IC in a scene is hovered, so only the IC a load starts from renders a preview: one inside its circuit is
-    // never shown, and a circuit of thousands of nested ICs held a preview for each (fuzz_ic_file's ic_heavy.panda,
-    // 1.2 GB).
+    // A preview is rendered when the popup first shows it, never by a load: an IC nested in another's circuit is never
+    // shown (fuzz_ic_file's ic_heavy.panda loaded as an IC held 7,494 previews, 1.2 GB), and a circuit of thousands of
+    // instances of one IC held a copy for each (ic_heavy.panda opened: 2,000 previews of 368 KB, 4.1 s and 1.17 GB).
     QTemporaryDir subDir;
     QVERIFY(subDir.isValid());
 
@@ -390,16 +390,25 @@ void TestICUnit::testOnlyTheLoadedICRendersAPreview()
 
     IC ic;
     ic.loadFile(outerPath, subDir.path());
-    QVERIFY2(!ic.previewPixmap().isNull(), "the loaded IC renders its preview");
+    QVERIFY2(ic.previewPixmap().isNull(), "a load renders no preview");
 
-    int nested = 0;
+    IC *nestedIc = nullptr;
     for (auto *elm : ic.internalElements()) {
-        if (auto *nestedIc = qobject_cast<IC *>(elm)) {
-            ++nested;
-            QVERIFY2(nestedIc->previewPixmap().isNull(), "an IC inside the loaded one renders no preview");
+        if (auto *candidate = qobject_cast<IC *>(elm)) {
+            QVERIFY2(!nestedIc, "the loaded IC holds one nested IC");
+            nestedIc = candidate;
         }
     }
-    QCOMPARE(nested, 1);
+    QVERIFY(nestedIc);
+    QVERIFY2(nestedIc->previewPixmap().isNull(), "an IC inside the loaded one renders no preview");
+
+    QVERIFY2(!ic.preview().isNull(), "the preview renders when shown");
+    QCOMPARE(ic.previewPixmap().cacheKey(), ic.preview().cacheKey());
+    QVERIFY2(nestedIc->previewPixmap().isNull(), "rendering the loaded IC's preview renders none for its nested IC");
+
+    ic.loadFile(outerPath, subDir.path());
+    QVERIFY2(ic.previewPixmap().isNull(), "a reload drops the preview of the circuit it replaced");
+    QVERIFY(!ic.preview().isNull());
 }
 
 void TestICUnit::testLoadGrowsLinearlyInICs()
@@ -537,7 +546,7 @@ void TestICUnit::testExecuteShowWithNullPendingIcIsNoOp()
 
 void TestICUnit::testExecuteShowWithEmptyTitleAndNullPreviewHides()
 {
-    IC ic; // unloaded: displayName() and previewPixmap() are both empty/null
+    IC ic; // unloaded: displayName() and preview() are both empty/null
     ICPreviewPopup popup;
     popup.showForIC(&ic, QPoint(50, 50)); // sets m_pendingIC without starting/waiting on the timer
 
@@ -562,7 +571,7 @@ void TestICUnit::testExecuteShowWithTitleAndPreviewShowsBoth()
     auto ic = std::make_unique<IC>();
     ic->loadFile(subPath, subDir.path());
     QVERIFY2(!ic->displayName().isEmpty(), "a loaded IC's display name is its file's basename");
-    QVERIFY2(!ic->previewPixmap().isNull(), "loadFile() generates a preview pixmap for a small sub-circuit");
+    QVERIFY2(!ic->preview().isNull(), "a small sub-circuit renders a preview");
 
     ICPreviewPopup popup;
     popup.showForIC(ic.get(), QPoint(50, 50));
@@ -585,7 +594,7 @@ void TestICUnit::testExecuteShowWithTitleButNullPreviewHidesImageOnly()
     auto ic = std::make_unique<IC>();
     ic->loadFile(subPath, subDir.path());
     QVERIFY2(!ic->displayName().isEmpty(), "a loaded IC's display name is its file's basename");
-    QVERIFY2(ic->previewPixmap().isNull(), "an empty sub-circuit must not produce a preview pixmap");
+    QVERIFY2(ic->preview().isNull(), "an empty sub-circuit must not produce a preview pixmap");
 
     ICPreviewPopup popup;
     popup.showForIC(ic.get(), QPoint(50, 50));

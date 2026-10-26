@@ -108,7 +108,7 @@ QString componentDump(const QString &filePath)
         return {};
     }
 
-    const QPixmap &preview = ic->previewPixmap();
+    const QPixmap &preview = ic->preview();
     QStringList lines{QString("preview null=%1 ink=%2 inputs=%3 outputs=%4")
                           .arg(QString::number(preview.isNull()), QString::number(hasInk(preview)),
                                QString::number(ic->inputSize()), QString::number(ic->outputSize()))};
@@ -147,7 +147,7 @@ QImage previewFromBlob(WorkSpace &workspace, const QByteArray &bytes, const QStr
     auto *ic = new IC();
     workspace.scene()->addItem(ic);
     ic->loadFromBlob(bytes, contextDir);
-    return ic->previewPixmap().toImage().convertToFormat(QImage::Format_ARGB32_Premultiplied);
+    return ic->preview().toImage().convertToFormat(QImage::Format_ARGB32_Premultiplied);
 }
 
 } // namespace IcPreviewSnapshot
@@ -199,7 +199,7 @@ void TestIcPreviewSnapshot::testPreviewPixelsMatchGolden()
     auto *ic = new IC();
     icWorkspace.scene()->addItem(ic);
     ic->loadFile(filePath, contextDir);
-    QImage preview = ic->previewPixmap().toImage().convertToFormat(QImage::Format_ARGB32_Premultiplied);
+    QImage preview = ic->preview().toImage().convertToFormat(QImage::Format_ARGB32_Premultiplied);
     QVERIFY(!preview.isNull());
 
     // The circuit as designed, which is what the preview renders, gives where each label falls in it.

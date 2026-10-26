@@ -5,6 +5,10 @@
 
 #include <algorithm>
 
+#include <QDataStream>
+#include <QFile>
+#include <QHash>
+#include <QPixmap>
 #include <QSaveFile>
 #include <QScopeGuard>
 #include <QSet>
@@ -203,6 +207,8 @@ void ICLoader::loadFileDirectly(IC &ic, const QFileInfo &fileInfo)
     // IC's previous internal graph would remain intact.
     ic.resetInternalState();
     processLoadedItems(ic, items);
+    ic.m_previewSource.clear();
+    ic.m_previewContextDir = fileInfo.absolutePath();
 
     if (ic.label().isEmpty()) {
         ic.setLabel(fileInfo.baseName().toUpper());
@@ -255,15 +261,10 @@ void ICLoader::migrateFile(const QFileInfo &fileInfo, const QList<QGraphicsItem 
 
 void ICLoader::processLoadedItems(IC &ic, QList<QGraphicsItem *> &items)
 {
-    // Snapshot the preview now, while the original Input/Output elements (buttons,
-    // switches, LEDs, …) are still alive in `items`.  loadBoundaryElement() below
-    // replaces each of them with a proxy Node, so a later render would only see
-    // the simulation graph.  Only the IC a load starts from can be hovered in a
-    // scene; one nested inside it is part of its circuit and never shown, and a
-    // preview for each of thousands of nested ICs held about 100 KB apiece.
-    if (s_icLoadDepth <= 1) {
-        ICRenderer::generatePreviewPixmap(ic, items);
-    }
+    // The preview is rendered when first shown (IC::preview()), from the definition read again: only a hovered IC
+    // shows one, and a circuit holding thousands of instances of one IC would hold a copy for each
+    ic.m_previewPixmap = QPixmap();
+    ic.m_previewRendered = false;
 
     // Drain items one at a time: as ownership of each transfers (to
     // m_internalConnections/m_internalElements) or the item is deleted
@@ -349,8 +350,8 @@ void ICLoader::deserializeAndLoad(IC &ic, const QByteArray &bytes, const QString
     // loadFileDirectly() (whose migrateFile() call can throw between items being
     // populated and processLoadedItems() draining them), nothing on this path can
     // currently throw in that window: resetInternalState() only asserts already-
-    // guaranteed invariants, and processLoadedItems()'s one step before its drain
-    // loop (generatePreviewPixmap()) has no throwing path of its own. The
+    // guaranteed invariants, and processLoadedItems()'s steps before its drain
+    // loop have no throwing path of their own. The
     // Connection-first deletion order below is therefore unreached today — kept
     // for structural symmetry with loadFileDirectly()'s identical-purpose guard,
     // which genuinely needs it.
@@ -367,6 +368,62 @@ void ICLoader::deserializeAndLoad(IC &ic, const QByteArray &bytes, const QString
     // Parsing succeeded — now clear old state and apply
     ic.resetInternalState();
     processLoadedItems(ic, items);
+    ic.m_previewSource = bytes;
+    ic.m_previewContextDir = contextDir;
+}
+
+void ICLoader::renderPreview(IC &ic)
+{
+    ic.m_previewPixmap = QPixmap();
+    if (!ic.m_loaded) {
+        return;
+    }
+
+    QByteArray bytes = ic.m_previewSource;
+    if (bytes.isEmpty()) {
+        QFile file(ic.m_file);
+        if (!file.open(QIODevice::ReadOnly)) {
+            return;
+        }
+        bytes = file.readAll();
+    }
+
+    // Read as a load reads it, bounded by the same nesting limit: the original Input/Output elements, which the
+    // load replaced with proxy Nodes, are drawn as placed
+    if (s_icLoadDepth >= kMaxICNestingDepth) {
+        return;
+    }
+    ++s_icLoadDepth;
+    const auto depthGuard = qScopeGuard([] { --s_icLoadDepth; });
+
+    QList<QGraphicsItem *> items;
+    // Connections first: deleting an element first would delete its wires through its ports
+    const auto itemsGuard = qScopeGuard([&items] {
+        for (auto *&item : items) {
+            if (item->type() == Connection::Type) {
+                delete item;
+                item = nullptr;
+            }
+        }
+        qDeleteAll(items);
+    });
+    try {
+        QDataStream stream(&bytes, QIODevice::ReadOnly);
+        auto preamble = Serialization::readPreamble(stream);
+        auto blobRegistry = Serialization::deserializeBlobRegistry(preamble.metadata, preamble.version);
+
+        QHash<quint64, Port *> portMap;
+        SerializationContext context = {.portMap = portMap, .version = preamble.version, .purpose = SerializationPurpose::PortableFile, .contextDir = ic.m_previewContextDir};
+        context.blobRegistry = blobRegistry.isEmpty() ? nullptr : &blobRegistry;
+        QDataStream elementsStream(&preamble.remainingPayload, QIODevice::ReadOnly);
+        elementsStream.setVersion(QDataStream::Qt_5_12);
+        items = Serialization::deserialize(elementsStream, context);
+    } catch (const Pandaception &) {
+        // The definition no longer loads (its file changed or went missing): no preview
+        return;
+    }
+
+    ICRenderer::generatePreviewPixmap(ic, items);
 }
 
 void ICLoader::loadFromBlob(IC &ic, const QByteArray &blob, const QString &contextDir)
