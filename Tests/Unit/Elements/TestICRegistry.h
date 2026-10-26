@@ -24,6 +24,7 @@ private slots:
     void testCachedFileBytesReturnsEmptyForMissingFile();
     void testOnFileChangedRewatchesAndEmitsWhenNoTargets();
     void testCreateEmbeddedICRegistersBlobAndAddsElement();
+    void testCreateEmbeddedICLeavesNothingWhenItsBlobFailsToLoad();
 
     // Regression: embedICsByFile()'s reload lambda used to call setBlobName() before
     // loadFromBlob(), so a load failure left the target half-mutated (blobName changed,

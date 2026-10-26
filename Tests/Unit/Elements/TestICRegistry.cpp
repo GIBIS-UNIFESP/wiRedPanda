@@ -3,6 +3,7 @@
 
 #include "Tests/Unit/Elements/TestICRegistry.h"
 
+#include <QByteArray>
 #include <QDataStream>
 #include <QDateTime>
 #include <QFile>
@@ -10,7 +11,9 @@
 #include <QRectF>
 #include <QSignalSpy>
 #include <QTemporaryDir>
+#include <QUndoStack>
 
+#include "App/Core/Common.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
@@ -278,6 +281,38 @@ void TestICRegistry::testCreateEmbeddedICRegistersBlobAndAddsElement()
     scene->undoStack()->undo();
     QVERIFY(!scene->elements().contains(ic));
     QVERIFY(!registry->hasBlob("leaf_embedded"));
+}
+
+void TestICRegistry::testCreateEmbeddedICLeavesNothingWhenItsBlobFailsToLoad()
+{
+    // The MCP server's instantiate_ic embeds whatever file it is given: bytes that do not load throw, and must leave
+    // no blob registered, no step on the undo stack, and the stack able to take the next command as a step of its own.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    ICRegistry *registry = scene->icRegistry();
+    QUndoStack *undoStack = scene->undoStack();
+
+    const QByteArray broken = QByteArrayLiteral("WPCF not a circuit");
+    QVERIFY_THROWS_EXCEPTION(Pandaception, registry->createEmbeddedIC("broken", broken, dir.path()));
+
+    QVERIFY(!registry->hasBlob("broken"));
+    QVERIFY(scene->elements().isEmpty());
+    QCOMPARE(undoStack->count(), 0);
+
+    const QString leafPath = dir.filePath("leaf.panda");
+    saveMinimalCircuit(leafPath);
+    QFile leafFile(leafPath);
+    QVERIFY(leafFile.open(QIODevice::ReadOnly));
+    IC *ic = registry->createEmbeddedIC("leaf", leafFile.readAll(), dir.path());
+    QVERIFY(ic);
+    QCOMPARE(undoStack->count(), 1);
+    QCOMPARE(undoStack->index(), 1);
+    undoStack->undo();
+    QVERIFY(!scene->elements().contains(ic));
+    QVERIFY(!registry->hasBlob("leaf"));
 }
 
 void TestICRegistry::testEmbedICsByFileRollsBackOnLoadFailure()
