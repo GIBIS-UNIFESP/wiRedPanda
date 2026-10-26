@@ -3,6 +3,8 @@
 
 #include "App/Scene/ICRegistry.h"
 
+#include <memory>
+
 #include <QCoreApplication>
 #include <QDataStream>
 #include <QDir>
@@ -241,16 +243,20 @@ QString ICRegistry::uniqueBlobName(const QString &baseName) const
 
 IC *ICRegistry::createEmbeddedIC(const QString &blobName, const QByteArray &fileBytes, const QString &contextDir)
 {
-    auto *ic = new IC();
+    // What can throw runs before the macro opens: the blob made self-contained, as registering it does, and the IC
+    // loaded from it. A throw inside the macro would leave it open, every later command a step of it.
+    (void)selfContainedBlob(blobName, fileBytes);
+    auto ic = std::make_unique<IC>();
+    ic->loadFromBlob(fileBytes, contextDir);
     ic->setBlobName(blobName);
 
     m_scene->undoStack()->beginMacro(QCoreApplication::tr("Add embedded IC"));
     m_scene->receiveCommand(new RegisterBlobCommand(blobName, fileBytes, m_scene));
-    ic->loadFromBlob(fileBytes, contextDir);
-    m_scene->receiveCommand(new AddItemsCommand({ic}, m_scene));
+    auto *added = ic.release();
+    m_scene->receiveCommand(new AddItemsCommand({added}, m_scene));
     m_scene->undoStack()->endMacro();
 
-    return ic;
+    return added;
 }
 
 int ICRegistry::embedICsByFile(const QString &fileName, const QByteArray &fileBytes,
