@@ -4,30 +4,26 @@
 /** \file
  * \brief libFuzzer harness targeting the undo/redo command system (Commands.cpp).
  *
- * Commands.cpp (1190 lines) is entirely dark in all other harnesses because
- * every command is created and pushed by UI handlers that are never exercised
- * headlessly.  This harness:
+ * Every command is created and pushed by a UI handler that no other harness drives. This harness loads a circuit,
+ * pushes a random sequence of commands onto its scene's undo stack, as the editor does, undoing and redoing between
+ * them, then winds the stack fully back and forward again:
  *
- *   1. Loads a known-valid pre-built workspace (AND gate + InputSwitch + Led,
- *      built in LLVMFuzzerInitialize) so that commands always have elements to
- *      operate on.  The entire fuzz input is used as the command FDP.
+ *   - AddItemsCommand          — add an element of a type, a file-backed IC, or an embedded IC (createEmbeddedIC)
+ *   - DeleteItemsCommand       — remove an element
+ *   - RotateCommand, FlipCommand
+ *   - MoveCommand              — move elements, as a drag does
+ *   - MorphCommand             — change elements' type in place
+ *   - ChangePortSizeCommand    — resize the input or output port count
+ *   - UpdateCommand            — an element's state as captured before an edit
+ *   - SetPropertyCommand       — set a property of one element or all, as the element editor does, in or out of an
+ *                                edit session (merging)
+ *   - ToggleTruthTableOutputCommand (on a truth table added first when the circuit holds none), SplitCommand
+ *   - RegisterBlobCommand, RemoveBlobCommand, RenameBlobCommand
+ *   - UpdateBlobCommand        — through ICRegistry: a file-backed IC embedded, an embedded one extracted to a file
  *
- *   2. Also attempts to load a fuzz-controlled panda stream (first half of input)
- *      so that commands can operate on arbitrary element combinations.
- *
- *   3. Uses FuzzedDataProvider to apply a sequence of random undo/redo commands:
- *        - AddItemsCommand       — add a fresh element
- *        - DeleteItemsCommand    — remove an existing element
- *        - RotateCommand         — rotate elements by ±90°
- *        - MoveCommand           — move elements to new positions
- *        - FlipCommand           — flip elements along x or y axis
- *        - MorphCommand          — change element type in-place
- *        - ChangePortSizeCommand — resize input/output port count
- *        - RegisterBlobCommand   — register an IC blob
- *        - RemoveBlobCommand     — remove an IC blob
- *
- *   4. Undo and redo each command, verifying the scene survives both directions.
- *   5. Winds the entire stack back to the initial state and forward again.
+ * A whole .panda input is the circuit, loaded beside the repository's circuits (Tests/Fuzz/FuzzCircuitDir.h) so its
+ * file-backed ICs resolve, and its bytes, read again, choose the commands. Any other input chooses the commands
+ * applied to a small wired circuit built at start-up.
  */
 
 #include <cstddef>
@@ -38,12 +34,16 @@
 #include <QByteArray>
 #include <QCoreApplication>
 #include <QDataStream>
+#include <QDir>
 #include <QEvent>
+#include <QFile>
 #include <QList>
 #include <QMap>
 #include <QPointF>
 #include <QScopeGuard>
 #include <QString>
+#include <QStringList>
+#include <QTemporaryDir>
 #include <QUndoStack>
 #include <QVariant>
 #include <QVersionNumber>
@@ -53,13 +53,18 @@
 #include "App/Core/Enums.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
+#include "App/Element/GraphicElements/AudioBox.h"
 #include "App/Element/GraphicElements/TruthTable.h"
+#include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/Scene/Commands.h"
+#include "App/Scene/ICRegistry.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/Wiring/Connection.h"
+#include "Tests/Fuzz/FuzzCircuitDir.h"
 #include "Tests/Fuzz/FuzzSeed.h"
+#include "Tests/Fuzz/PandaMutator.h"
 
 namespace {
 
@@ -67,12 +72,15 @@ QApplication *g_app  = nullptr;
 int  g_argc = 0;
 char **g_argv = nullptr;
 
-// Valid IC blob (InputSwitch + Led) for RegisterBlobCommand tests.
+// Valid IC blob (InputSwitch + Led) for RegisterBlobCommand and embedded ICs.
 QByteArray g_icBlob;
 
-// Pre-built workspace bytes: And gate + two InputSwitches + Led.
-// Reloaded at the start of each test so commands always have elements to work on.
+// Pre-built workspace bytes: And gate + two InputSwitches + Led, one wire.
 QByteArray g_validPanda;
+
+// The repository's circuits, which a loaded circuit's file-backed ICs name and an added file-backed IC is built from
+QTemporaryDir *g_dir = nullptr;
+QStringList g_icFiles;
 
 // Element types that are safe to morph to (stable port count, no IC dependency)
 constexpr ElementType kMorphTargets[] = {
@@ -80,203 +88,276 @@ constexpr ElementType kMorphTargets[] = {
     ElementType::Nand, ElementType::Nor, ElementType::Xor,
 };
 
-// Element types safe to add in AddItemsCommand.
-// TruthTable is excluded: its 2048-bit key causes expensive multi-second
-// serialization when UpdateCommand captures all scene elements.
+// Element types added by AddItemsCommand, every property SetPropertyCommand sets among them
 constexpr ElementType kAddTypes[] = {
     ElementType::And,
     ElementType::Or,
     ElementType::InputSwitch,
+    ElementType::InputRotary,
     ElementType::Led,
     ElementType::Not,
     ElementType::Clock,
+    ElementType::Node,
+    ElementType::DFlipFlop,
+    ElementType::TruthTable,
+    ElementType::Buzzer,
+    ElementType::AudioBox,
 };
 
-void applyRandomCommands(Scene *scene, FuzzedDataProvider &fdp)
-{
-    QUndoStack stack;
+constexpr ElementProperty kProperties[] = {
+    ElementProperty::Label, ElementProperty::Color, ElementProperty::Frequency, ElementProperty::Delay,
+    ElementProperty::Volume, ElementProperty::Audio, ElementProperty::Trigger, ElementProperty::Wireless,
+    ElementProperty::Locked, ElementProperty::Value,
+};
 
-    const int numOps = fdp.ConsumeIntegralInRange<int>(1, 6);
+// A value of \a property, as the element editor sets one, or one out of its range
+QVariant propertyValue(const ElementProperty property, FuzzedDataProvider &fdp)
+{
+    const int pick = fdp.ConsumeIntegralInRange<int>(0, 3);
+    switch (property) {
+    case ElementProperty::Label:     return QStringList{"", "a", "clk", QString(300, 'x')}.at(pick);
+    case ElementProperty::Color:     return QStringList{"Red", "Green", "White", "Plaid"}.at(pick);
+    case ElementProperty::Frequency: return QList<double>{0.5, 1.0, 50.0, -1.0}.at(pick);
+    case ElementProperty::Delay:     return QList<double>{0.0, 0.25, 0.5, -1.0}.at(pick);
+    case ElementProperty::Volume:    return QList<double>{0.0, 0.5, 1.0, 4.0}.at(pick);
+    case ElementProperty::Audio:     return QStringList{"", "missing.wav", AudioBox::kDefaultAudioPath, "a b"}.at(pick);
+    case ElementProperty::Trigger:   return QStringList{"", "A", "Space", "Ctrl+Shift+F12"}.at(pick);
+    case ElementProperty::Wireless:  return QList<int>{0, 1, 2, 7}.at(pick);
+    case ElementProperty::Locked:    return pick % 2 == 0;
+    case ElementProperty::Value:     return QList<int>{0, 1, 3, -1}.at(pick);
+    }
+    return {};
+}
+
+QList<IC *> icsOf(const QList<GraphicElement *> &elements, const bool embedded)
+{
+    QList<IC *> ics;
+    for (auto *elm : elements) {
+        if (auto *ic = qobject_cast<IC *>(elm); ic && (ic->isEmbedded() == embedded)) {
+            ics.append(ic);
+        }
+    }
+    return ics;
+}
+
+void applyRandomCommands(WorkSpace &workspace, FuzzedDataProvider &fdp, const QString &outDir)
+{
+    Scene *scene = workspace.scene();
+    QUndoStack *stack = scene->undoStack();
+    ICRegistry *registry = scene->icRegistry();
+
+    const int numOps = fdp.ConsumeIntegralInRange<int>(1, 8);
     for (int op = 0; op < numOps; ++op) {
         const auto elems = scene->elements();
+        const auto pickElement = [&]() {
+            return elems.at(fdp.ConsumeIntegralInRange<int>(0, static_cast<int>(elems.size()) - 1));
+        };
 
-        // After all existing elements have been deleted, only AddItemsCommand makes sense
-        if (elems.isEmpty() && op > 0) break;
+        const int action = fdp.ConsumeIntegralInRange<int>(0, 16);
 
-        const int action = fdp.ConsumeIntegralInRange<int>(0, 11);
-
-        switch (action) {
-        case 0: { // AddItemsCommand
-            const auto type = kAddTypes[fdp.ConsumeIntegralInRange<size_t>(
-                0, std::size(kAddTypes) - 1)];
-            auto *elm = ElementFactory::buildElement(type);
-            try {
-                stack.push(new AddItemsCommand({elm}, scene));
-            } catch (...) {
-                delete elm;
-            }
-            break;
-        }
-        case 1: { // DeleteItemsCommand
-            if (elems.isEmpty()) break;
-            const int idx = fdp.ConsumeIntegralInRange<int>(
-                0, static_cast<int>(elems.size()) - 1);
-            try {
-                stack.push(new DeleteItemsCommand(
-                    {static_cast<QGraphicsItem *>(elems.at(idx))}, scene));
-            } catch (...) {}
-            break;
-        }
-        case 2: { // RotateCommand
-            if (elems.isEmpty()) break;
-            const int angle = fdp.ConsumeBool() ? 90 : -90;
-            try {
-                stack.push(new RotateCommand(elems, angle, scene));
-            } catch (...) {}
-            break;
-        }
-        case 3: { // MoveCommand
-            if (elems.isEmpty()) break;
-            QList<QPointF> oldPositions;
-            for (auto *e : elems) {
-                oldPositions << e->pos();
-            }
-            try {
-                stack.push(new MoveCommand(elems, oldPositions, scene));
-            } catch (...) {}
-            break;
-        }
-        case 4: { // FlipCommand (axis 0 = horizontal, 1 = vertical)
-            if (elems.isEmpty()) break;
-            const int axis = fdp.ConsumeBool() ? 1 : 0;
-            try {
-                stack.push(new FlipCommand(elems, axis, scene));
-            } catch (...) {}
-            break;
-        }
-        case 5: { // MorphCommand — changes element type in-place
-            if (elems.isEmpty()) break;
-            const int idx = fdp.ConsumeIntegralInRange<int>(
-                0, static_cast<int>(elems.size()) - 1);
-            const auto newType = kMorphTargets[fdp.ConsumeIntegralInRange<size_t>(
-                0, std::size(kMorphTargets) - 1)];
-            try {
-                stack.push(new MorphCommand({elems.at(idx)}, newType, scene));
-            } catch (...) {}
-            break;
-        }
-        case 6: { // ChangePortSizeCommand
-            if (elems.isEmpty()) break;
-            const int idx = fdp.ConsumeIntegralInRange<int>(
-                0, static_cast<int>(elems.size()) - 1);
-            const int newSize = fdp.ConsumeIntegralInRange<int>(1, 4);
-            const bool isInput = fdp.ConsumeBool();
-            try {
-                stack.push(new ChangePortSizeCommand({elems.at(idx)}, newSize, scene, isInput));
-            } catch (...) {}
-            break;
-        }
-        case 7: { // RegisterBlobCommand
-            const QString blobName = QString("fuzz_blob_%1.panda").arg(op);
-            try {
-                stack.push(new RegisterBlobCommand(blobName, g_icBlob, scene));
-            } catch (...) {}
-            break;
-        }
-        case 8: { // RemoveBlobCommand
-            const QString blobName = QString("fuzz_blob_%1.panda").arg(op > 0 ? op - 1 : 0);
-            try {
-                stack.push(new RemoveBlobCommand(blobName, scene));
-            } catch (...) {}
-            break;
-        }
-        case 9: { // UpdateCommand — captures current element state as "old data", then
-            // creates an UpdateCommand.  Since new == old, undo/redo restores the same
-            // state, but all of UpdateCommand::undo/redo serialisation paths are hit.
-            //
-            // IMPORTANT: must use the same wire format as UpdateCommand::loadData, which
-            // reads header + raw elm->save() per element (NO type discriminators).
-            // CommandUtils::saveItems writes full Serialization::serialize format (WITH
-            // discriminators) which causes format desync on undo.
-            if (elems.isEmpty()) break;
-            QByteArray oldData;
-            {
-                QDataStream s(&oldData, QIODevice::WriteOnly);
-                Serialization::writePandaHeader(s);
-                for (auto *e : elems) e->save(s, {.purpose = SerializationPurpose::InMemorySnapshot});
-            }
-            try {
-                stack.push(new UpdateCommand(elems, oldData, scene));
-            } catch (...) {}
-            break;
-        }
-        case 10: { // ToggleTruthTableOutputCommand — requires a TruthTable element
-            TruthTable *tt = nullptr;
-            for (auto *e : elems) {
-                if (e->elementType() == ElementType::TruthTable) {
-                    tt = static_cast<TruthTable *>(e);
-                    break;
+        try {
+            switch (action) {
+            case 0: { // AddItemsCommand
+                auto *elm = ElementFactory::buildElement(kAddTypes[fdp.ConsumeIntegralInRange<size_t>(
+                    0, std::size(kAddTypes) - 1)]);
+                elm->setPos(fdp.ConsumeIntegralInRange<int>(-20, 20) * 8.0, fdp.ConsumeIntegralInRange<int>(-20, 20) * 8.0);
+                try {
+                    scene->receiveCommand(new AddItemsCommand({elm}, scene));
+                } catch (...) {
+                    delete elm;
                 }
+                break;
             }
-            if (!tt) break;
-            const int pos = fdp.ConsumeIntegralInRange<int>(0, 3);
-            try {
-                stack.push(new ToggleTruthTableOutputCommand(tt, pos, scene));
-            } catch (...) {}
-            break;
-        }
-        case 11: { // SplitCommand — inserts a Node junction into a connection
-            // Re-resolve a live connection from the scene every time instead of caching a
-            // raw pointer across command executions: a prior DeleteItemsCommand (or its
-            // undo/redo) can free or replace Connection objects, which would otherwise leave
-            // a dangling pointer that a scene()-only guard can't detect (use-after-free).
-            Connection *conn = nullptr;
-            for (auto *item : scene->items()) {
-                if (auto *c = qgraphicsitem_cast<Connection *>(item)) {
-                    conn = c;
-                    break;
+            case 1: { // DeleteItemsCommand
+                if (elems.isEmpty()) break;
+                scene->receiveCommand(new DeleteItemsCommand({static_cast<QGraphicsItem *>(pickElement())}, scene));
+                break;
+            }
+            case 2: { // RotateCommand
+                if (elems.isEmpty()) break;
+                scene->receiveCommand(new RotateCommand(elems, fdp.ConsumeBool() ? 90 : -90, scene));
+                break;
+            }
+            case 3: { // MoveCommand: the elements moved, then the command given where they were, as a drag ends
+                if (elems.isEmpty()) break;
+                const QList<GraphicElement *> moved = fdp.ConsumeBool() ? elems : QList<GraphicElement *>{pickElement()};
+                QList<QPointF> oldPositions;
+                const QPointF delta(fdp.ConsumeIntegralInRange<int>(-8, 8) * 8.0, fdp.ConsumeIntegralInRange<int>(-8, 8) * 8.0);
+                for (auto *e : moved) {
+                    oldPositions << e->pos();
+                    e->setPos(e->pos() + delta);
                 }
+                scene->receiveCommand(new MoveCommand(moved, oldPositions, scene));
+                break;
             }
-            if (!conn) break;
-            const QPointF midPos(
-                fdp.ConsumeFloatingPointInRange<double>(-200.0, 200.0),
-                fdp.ConsumeFloatingPointInRange<double>(-200.0, 200.0));
-            try {
-                stack.push(new SplitCommand(conn, midPos, scene));
-            } catch (...) {}
-            break;
-        }
-        default:
-            break;
-        }
+            case 4: { // FlipCommand (axis 0 = horizontal, 1 = vertical)
+                if (elems.isEmpty()) break;
+                scene->receiveCommand(new FlipCommand(elems, fdp.ConsumeBool() ? 1 : 0, scene));
+                break;
+            }
+            case 5: { // MorphCommand
+                if (elems.isEmpty()) break;
+                const auto newType = kMorphTargets[fdp.ConsumeIntegralInRange<size_t>(0, std::size(kMorphTargets) - 1)];
+                scene->receiveCommand(new MorphCommand({pickElement()}, newType, scene));
+                break;
+            }
+            case 6: { // ChangePortSizeCommand
+                if (elems.isEmpty()) break;
+                auto *elm = pickElement();
+                const int newSize = fdp.ConsumeIntegralInRange<int>(1, 8);
+                scene->receiveCommand(new ChangePortSizeCommand({elm}, newSize, scene, fdp.ConsumeBool()));
+                break;
+            }
+            case 7: { // RegisterBlobCommand
+                scene->receiveCommand(new RegisterBlobCommand(registry->uniqueBlobName("fuzz_blob"), g_icBlob, scene));
+                break;
+            }
+            case 8: { // RemoveBlobCommand, as the palette removes an embedded IC: with every IC using it, in one macro
+                const auto names = registry->blobMap().keys();
+                if (names.isEmpty()) break;
+                workspace.removeEmbeddedIC(names.at(fdp.ConsumeIntegralInRange<int>(0, static_cast<int>(names.size()) - 1)));
+                break;
+            }
+            case 9: { // UpdateCommand: the elements' state captured before an edit, then the edit
+                if (elems.isEmpty()) break;
+                const QByteArray oldData = ICRegistry::captureSnapshot(elems);
+                elems.first()->setLabel(QString("edited_%1").arg(op));
+                scene->receiveCommand(new UpdateCommand(elems, oldData, scene));
+                break;
+            }
+            case 10: { // ToggleTruthTableOutputCommand, on a truth table added first when the circuit holds none
+                TruthTable *tt = nullptr;
+                for (auto *e : elems) {
+                    if (e->elementType() == ElementType::TruthTable) {
+                        tt = static_cast<TruthTable *>(e);
+                        break;
+                    }
+                }
+                if (!tt) {
+                    tt = static_cast<TruthTable *>(ElementFactory::buildElement(ElementType::TruthTable));
+                    try {
+                        scene->receiveCommand(new AddItemsCommand({tt}, scene));
+                    } catch (...) {
+                        delete tt;
+                        break;
+                    }
+                }
+                // One past the key, which the command refuses
+                const int pos = fdp.ConsumeIntegralInRange<int>(0, static_cast<int>(tt->key().size()));
+                scene->receiveCommand(new ToggleTruthTableOutputCommand(tt, pos, scene));
+                break;
+            }
+            case 11: { // SplitCommand: re-resolved every time, since a command can free the previous wire
+                Connection *conn = nullptr;
+                for (auto *item : scene->items()) {
+                    if (auto *c = qgraphicsitem_cast<Connection *>(item)) {
+                        conn = c;
+                        break;
+                    }
+                }
+                if (!conn) break;
+                const QPointF midPos(fdp.ConsumeFloatingPointInRange<double>(-200.0, 200.0),
+                                     fdp.ConsumeFloatingPointInRange<double>(-200.0, 200.0));
+                scene->receiveCommand(new SplitCommand(conn, midPos, scene));
+                break;
+            }
+            case 12: { // SetPropertyCommand: one element or every one, in an edit session or not
+                if (elems.isEmpty()) break;
+                const auto property = kProperties[fdp.ConsumeIntegralInRange<size_t>(0, std::size(kProperties) - 1)];
+                const QList<GraphicElement *> targets = fdp.ConsumeBool() ? elems : QList<GraphicElement *>{pickElement()};
+                const int session = fdp.ConsumeBool() ? 1 : -1;
+                // One to three edits in a row, as a field typed into or a slider dragged: in a session they merge
+                const int edits = fdp.ConsumeIntegralInRange<int>(1, 3);
+                for (int edit = 0; edit < edits; ++edit) {
+                    if (auto *command = SetPropertyCommand::apply(targets, property, propertyValue(property, fdp), scene, session)) {
+                        scene->receiveCommand(command);
+                    }
+                }
+                break;
+            }
+            case 13: { // RenameBlobCommand, as the element editor renames an embedded IC's blob
+                const auto names = registry->blobMap().keys();
+                if (names.isEmpty()) break;
+                const QString oldName = names.at(fdp.ConsumeIntegralInRange<int>(0, static_cast<int>(names.size()) - 1));
+                const QString newName = registry->uniqueBlobName(fdp.ConsumeBool() ? QString("renamed") : oldName);
+                scene->receiveCommand(new RenameBlobCommand(oldName, newName, scene));
+                break;
+            }
+            case 14: { // An IC added: file-backed, from one of the repository's circuits, or embedded
+                if (fdp.ConsumeBool() && !g_icFiles.isEmpty()) {
+                    auto *ic = new IC();
+                    try {
+                        ic->loadFile(g_icFiles.at(fdp.ConsumeIntegralInRange<int>(0, static_cast<int>(g_icFiles.size()) - 1)),
+                                     g_dir->path());
+                    } catch (...) {
+                        delete ic;
+                        throw;
+                    }
+                    try {
+                        scene->receiveCommand(new AddItemsCommand({ic}, scene));
+                    } catch (...) {
+                        delete ic;
+                    }
+                } else {
+                    registry->createEmbeddedIC(registry->uniqueBlobName("embedded"), g_icBlob, g_dir->path());
+                }
+                break;
+            }
+            case 15: { // UpdateBlobCommand: a file-backed IC's file embedded in every IC using it
+                const auto ics = icsOf(elems, false);
+                if (ics.isEmpty()) break;
+                const QString file = ics.at(fdp.ConsumeIntegralInRange<int>(0, static_cast<int>(ics.size()) - 1))->file();
+                QFile source(QDir(scene->contextDir()).absoluteFilePath(file));
+                if (!source.open(QIODevice::ReadOnly)) break;
+                registry->embedICsByFile(file, source.readAll(), registry->uniqueBlobName(QFileInfo(file).baseName()));
+                break;
+            }
+            case 16: { // UpdateBlobCommand: an embedded IC's blob extracted to a file, its ICs then using the file
+                const auto ics = icsOf(elems, true);
+                if (ics.isEmpty()) break;
+                const QString blobName = ics.at(fdp.ConsumeIntegralInRange<int>(0, static_cast<int>(ics.size()) - 1))->blobName();
+                registry->extractToFile(blobName, QDir(outDir).filePath(QString("%1_%2.panda").arg(blobName).arg(op)));
+                break;
+            }
+            default:
+                break;
+            }
+        } catch (...) {}
 
         // Randomly undo/redo after each push
-        if (fdp.ConsumeBool() && stack.canUndo()) {
-            try { stack.undo(); } catch (...) {}
+        if (fdp.ConsumeBool() && stack->canUndo()) {
+            try { stack->undo(); } catch (...) {}
         }
-        if (fdp.ConsumeBool() && stack.canRedo()) {
-            try { stack.redo(); } catch (...) {}
+        if (fdp.ConsumeBool() && stack->canRedo()) {
+            try { stack->redo(); } catch (...) {}
         }
     }
 
     // Fully unwind the stack and replay forward to exercise all undo/redo paths.
     // Track the index before/after each undo to break if the stack index doesn't
     // change (indicates a broken command that swallows exceptions and doesn't advance).
-    int prevIdx = stack.index();
-    while (stack.canUndo()) {
-        try { stack.undo(); } catch (...) {}
-        if (stack.index() == prevIdx) break; // stuck: undo didn't advance index
-        prevIdx = stack.index();
+    int prevIdx = stack->index();
+    while (stack->canUndo()) {
+        try { stack->undo(); } catch (...) {}
+        if (stack->index() == prevIdx) break; // stuck: undo didn't advance index
+        prevIdx = stack->index();
     }
-    prevIdx = stack.index();
-    while (stack.canRedo()) {
-        try { stack.redo(); } catch (...) {}
-        if (stack.index() == prevIdx) break;
-        prevIdx = stack.index();
+    prevIdx = stack->index();
+    while (stack->canRedo()) {
+        try { stack->redo(); } catch (...) {}
+        if (stack->index() == prevIdx) break;
+        prevIdx = stack->index();
     }
 }
 
 } // namespace
+
+// A whole .panda input is the circuit: the shared structure-aware mutator works on a current-format file's
+// decompressed body (Tests/Fuzz/PandaMutator.h)
+extern "C" size_t LLVMFuzzerCustomMutator(uint8_t *Data, size_t Size, size_t MaxSize, unsigned int Seed)
+{
+    return PandaMutator::mutate(Data, Size, MaxSize, Seed);
+}
 
 extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
 {
@@ -291,6 +372,15 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
     g_argc = *argc;
     g_argv = *argv;
     g_app  = new QApplication(g_argc, g_argv);
+
+    g_dir = new QTemporaryDir();
+    FuzzCircuitDir::fill(g_dir->path(), "fuzz_undo");
+    // The integration circuits under IC/ are sub-circuits, the ones a project uses as file-backed ICs
+    for (const QString &name : QDir(g_dir->path()).entryList({"*.panda"}, QDir::Files)) {
+        if (QFile::exists(QCoreApplication::applicationDirPath() + "/../Tests/Integration/IC/" + name)) {
+            g_icFiles.append(QDir(g_dir->path()).filePath(name));
+        }
+    }
 
     // Build a valid IC blob for RegisterBlobCommand tests.
     {
@@ -366,49 +456,28 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
 
     if (size < 2) return 0;
 
-    // Use the first byte to decide scene source:
-    //   0–127: use pre-built g_validPanda (guarantees elements to operate on)
-    //   128+:  try to load fuzz input as panda (exercises diverse scene states)
-    const bool usePrebuild = (data[0] < 128);
-
-    // Use the entire fuzz input as the command FDP (after panda portion is consumed).
-    // For the pre-built path, the full input drives commands.
-    // For the fuzz-load path, the first half drives the panda, second half drives commands.
-    const size_t pandaSize = usePrebuild ? 0 : std::min<size_t>(size - 1, size / 2);
-    const size_t cmdStart  = pandaSize;
-    const size_t cmdSize   = size - cmdStart;
+    // A .panda input is the circuit, its own bytes choosing the commands; any other input chooses the commands
+    // applied to the pre-built circuit
+    const bool isPanda = PandaMutator::isPandaFile(data, size);
+    const QByteArray circuit = isPanda ? QByteArray::fromRawData(reinterpret_cast<const char *>(data),
+                                                                 static_cast<qsizetype>(size))
+                                       : g_validPanda;
 
     WorkSpace ws;
-
-    if (usePrebuild) {
-        // Load pre-built workspace (guaranteed to have 4 elements)
-        QDataStream stream(g_validPanda);
-        QVersionNumber ver;
+    {
+        QDataStream stream(circuit);
         try {
-            ver = Serialization::readPandaHeader(stream);
-            ws.load(stream, ver, /*contextDir=*/QString());
-        } catch (...) {
-            return 0; // should never happen with a valid pre-built panda
-        }
-    } else {
-        // Load fuzz-controlled panda
-        const QByteArray buffer = QByteArray::fromRawData(
-            reinterpret_cast<const char *>(data + 1), static_cast<int>(pandaSize));
-        QDataStream stream(buffer);
-        QVersionNumber version;
-        try {
-            version = Serialization::readPandaHeader(stream);
+            const QVersionNumber version = Serialization::readPandaHeader(stream);
+            ws.load(stream, version, g_dir->path());
         } catch (...) {
             return 0;
         }
-        try {
-            ws.load(stream, version, /*contextDir=*/QString());
-        } catch (...) {}
     }
 
-    if (cmdSize == 0) return 0;
-    FuzzedDataProvider fdp(data + cmdStart, cmdSize);
-    applyRandomCommands(ws.scene(), fdp);
+    QTemporaryDir outDir;
+    if (!outDir.isValid()) return 0;
+    FuzzedDataProvider fdp(data, size);
+    applyRandomCommands(ws, fdp, outDir.path());
 
     return 0;
 }
