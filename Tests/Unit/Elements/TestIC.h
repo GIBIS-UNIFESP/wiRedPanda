@@ -33,7 +33,7 @@ private slots:
     void testGeneratePreviewPixmapWithNonFiniteBoundsIsNoOp();
     void testGeneratePreviewPixmapWithDegenerateAspectRatioIsEmpty();
     void testGeneratePreviewPixmapScalesAnExtentBeyondIntRange();
-    void testOnlyTheLoadedICRendersAPreview();
+    void testAPreviewRendersOnlyWhenShown();
     void testLoadGrowsLinearlyInICs();
 
     // ICPreviewPopup::executeShow() and showForIC()'s remaining branches

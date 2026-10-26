@@ -249,6 +249,15 @@ void IC::loadFromBlob(const QByteArray &blob, const QString &contextDir)
     m_loadedBlobSnapshot = blob;
 }
 
+const QPixmap &IC::preview()
+{
+    if (!m_previewRendered) {
+        m_previewRendered = true;
+        ICLoader::renderPreview(*this);
+    }
+    return m_previewPixmap;
+}
+
 void IC::loadFromDrop(const QString &fileName, const QString &contextDir)
 {
     loadFile(fileName, contextDir);
