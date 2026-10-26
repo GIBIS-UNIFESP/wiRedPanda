@@ -238,6 +238,15 @@ of thousands of nested ICs held one for each (P2.72, found as an out-of-memory b
 `Tests/Fixtures/Perf/ic_heavy.panda` loaded as an IC peaked at 1.2 GB, 776 MB of it in 7,494 previews). Fix: only the
 IC a load starts from (nesting depth 1) renders one. Shown by `TestICUnit::testOnlyTheLoadedICRendersAPreview`.
 
+### 2.22 An IC's load searches every port loaded before it
+
+`IC::load()` keeps the keys its ports were registered under across the sub-circuit load that rebuilds them, and found
+them by inverting the whole port map, every port the load had registered so far, once per IC: a circuit of n ICs among
+m ports cost n times m (P2.73, found as a timeout by `fuzz_ic_file`'s coverage rounds, a quarter of
+`ic_heavy.panda`'s load). Fix: `GraphicElement::load()` records the keys it registers, in port order, in the
+serialization context, and `IC::load()` takes its keys from that record. Shown by
+`TestICUnit::testLoadGrowsLinearlyInICs`.
+
 ## 3. In code plan 3 rewrites
 
 ### 3.1 SR and T flip-flops ignore every input while one input is open
@@ -685,6 +694,7 @@ Each of these exists on `master`, and its fix is another plan's decision:
 | P2.69 | A trigger loaded as saved (§2.19) | the helpers only | none |
 | P2.71 | An IC's preview past `int`'s range (§2.20) | P1.14 | none |
 | P2.72 | No preview for a nested IC (§2.21) | P1.14 | none |
+| P2.73 | An IC's load in linear time (§2.22) | the helpers only | none |
 | P2.9 | SR and T defaults (§3.1) | P1.4, P1.6, P1.13 | port layout, one scene snapshot, any trace with S, R or T open |
 | P2.10 | The loader's port counts (§3.2) | P1.8, P1.17 | the strings golden's three messages |
 | P2.11 | The AudioBox's undo (§3.3) | P1.15 | one editor-writes row |
