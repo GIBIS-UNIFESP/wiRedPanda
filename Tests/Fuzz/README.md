@@ -68,10 +68,19 @@ decompressed body, writing it back compressed, so mutations reach the reader's
 structure instead of breaking zlib's stream.
 
 A `.panda` file names its file-backed ICs' files, which resolve against its
-own directory, so an input written alone loads none of them. `fuzz_ic_file`,
-`fuzz_copy_panda` and `fuzz_undo` load theirs beside every `.panda` file of the
+own directory, so an input loaded alone loads none of them: 180 of the seed
+corpus's 410 files name one. Every harness that loads a whole `.panda` input
+(`clipboard`, `codegen`, `copy_panda`, `deserialize`, `ic_file`,
+`ic_registry`, `round_trip`, `undo`) loads it beside every `.panda` file of the
 repository's examples and test circuits, copied at start-up by
-`FuzzCircuitDir::fill()` (`FuzzCircuitDir.h`).
+`FuzzCircuitDir::fill()` (`FuzzCircuitDir.h`); all 410 then load. Some are
+processors whose few kilobytes name thousands of elements through nested ICs,
+and a load costs about 1.2 ms per element under ASan, so a harness that loads
+its input several times in a unit (`clipboard`, `ic_file`'s reload,
+`ic_registry`, `round_trip`) goes on only with a circuit whose
+`FuzzCircuitDir::loadedElementCount()` keeps the unit near 10 s, well inside a
+round's 30 s timeout (`ic_registry`, about 25 loads a unit, near 1.5 s, so
+that reading its corpus does not take the round).
 
 Four harnesses (`codegen`, `ic_registry`, `structured`, `undo`) also build
 circuits of their own at start-up, written by `FuzzSeed::pandaFile()`

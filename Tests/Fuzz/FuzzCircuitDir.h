@@ -7,6 +7,10 @@
  * A .panda file names the files of its file-backed ICs, which resolve against its own directory. An input written
  * alone resolves none, and its load stops at the first; written beside every .panda file of the repository's examples
  * and test circuits, the names those files hold resolve, and so do the names mutations carry over from them.
+ *
+ * Some of those circuits are processors whose few kilobytes name thousands of elements through their nested ICs. A
+ * load costs time linear in the elements it loads, about 1.2 ms each under ASan, so a harness that loads its input
+ * several times in a unit bounds loadedElementCount() to stay well inside the 30 s timeout of a round.
  */
 
 #pragma once
@@ -21,8 +25,24 @@
 #include <QFileDevice>
 #include <QFileInfo>
 #include <QString>
+#include <QVector>
+
+#include "App/Element/GraphicElement.h"
+#include "App/Element/IC.h"
 
 namespace FuzzCircuitDir {
+
+/// The number of \a elements and of the elements every IC among them loaded, nested ICs' included
+inline qsizetype loadedElementCount(const QVector<GraphicElement *> &elements)
+{
+    qsizetype count = elements.size();
+    for (const GraphicElement *element : elements) {
+        if (const auto *ic = qobject_cast<const IC *>(element)) {
+            count += loadedElementCount(ic->internalElements());
+        }
+    }
+    return count;
+}
 
 /// Copies every .panda file of the repository's examples and test circuits into \a dir under its base name, as
 /// references resolve, read-only so a migration cannot rewrite them between inputs; aborts \a harness when it finds
