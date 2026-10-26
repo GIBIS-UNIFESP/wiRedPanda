@@ -22,7 +22,7 @@ Twelve harnesses, registered in `CMakeLists.txt` under `if(ENABLE_FUZZER)`:
 | `fuzz_ic_registry` | `FuzzICRegistry.cpp`  | `ICRegistry`: a `.panda` input as an IC's definition, placed from its file, reloaded when the file changes, embedded, renamed, extracted and created, each step undone and redone; other inputs as raw blob bytes through the blob API and `embeddedICs` metadata loading. |
 | `fuzz_codegen`     | `FuzzCodeGen.cpp`     | The Arduino + SystemVerilog exporters (only reachable via `File > Export`), plus `generateTestbench`, on loaded `.panda` files and on circuits other inputs describe (every element type the exporters take, embedded and file-backed ICs). |
 | `fuzz_round_trip`  | `FuzzRoundTrip.cpp`   | The save side: `WorkSpace::save()` and every element `save()`, then a reload, a second save and load: the application's own file must save to the same bytes, which surfaces save/load asymmetries. |
-| `fuzz_ic_file`     | `FuzzICFile.cpp`      | File-backed IC loading (`IC::loadFromFile` → `loadFileDirectly`), including cycle detection and old-format migration. |
+| `fuzz_ic_file`     | `FuzzICFile.cpp`      | File-backed IC loading (`IC::loadFromFile` → `loadFileDirectly`): a `.panda` input as an IC's file, beside every `.panda` file of the repository's examples and test circuits so the ICs it names resolve, loaded with migration on or off, reloaded through the registry's cache, simulated and saved; including cycle detection and old-format migration. |
 | `fuzz_copy_panda`  | `FuzzCopyPanda.cpp`   | The `Save As` helpers `copyPandaFile` + `readPreamble`, including the `fileBackedICs` recursive copy + cycle guard. |
 | `fuzz_undo`        | `FuzzUndo.cpp`        | The undo/redo command system (`Commands.cpp`): applies a random command sequence, then winds the stack fully back and forward. |
 
@@ -67,8 +67,8 @@ type ids and element headers, and mutates a current-format file in its
 decompressed body, writing it back compressed, so mutations reach the reader's
 structure instead of breaking zlib's stream.
 
-Five harnesses (`codegen`, `ic_file`, `ic_registry`, `structured`, `undo`) also
-build circuits of their own at start-up, written by `FuzzSeed::pandaFile()`
+Four harnesses (`codegen`, `ic_registry`, `structured`, `undo`) also build
+circuits of their own at start-up, written by `FuzzSeed::pandaFile()`
 (`FuzzSeed.h`) as `WorkSpace::save()` writes a file. Each checks them with
 `FuzzSeed::requireAccepted()` before fuzzing: a circuit whose header, payload or
 metadata the reader rejects, or that loads with no elements, aborts the harness
