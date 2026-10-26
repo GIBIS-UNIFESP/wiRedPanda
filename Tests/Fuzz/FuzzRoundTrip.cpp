@@ -7,7 +7,9 @@
  * All other harnesses only fuzz the LOAD side.  Serialization::serialize and the
  * element save() methods are entirely dark.  This harness:
  *
- *   1. Loads a panda stream (same as fuzz_deserialize).
+ *   1. Loads a panda stream (same as fuzz_deserialize), beside the
+ *      repository's circuits so the IC files it names resolve; every load
+ *      below takes the same directory.
  *   2. Saves it through WorkSpace::save(), as File > Save writes it — every
  *      element and connection save(), the blob registry, the pin metadata and
  *      the file-backed IC list.
@@ -30,6 +32,7 @@
 #include <QEvent>
 #include <QList>
 #include <QScopeGuard>
+#include <QTemporaryDir>
 #include <QVersionNumber>
 
 #include "App/Core/Application.h"
@@ -41,6 +44,7 @@
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
+#include "Tests/Fuzz/FuzzCircuitDir.h"
 #include "Tests/Fuzz/PandaMutator.h"
 
 namespace {
@@ -48,6 +52,12 @@ namespace {
 QApplication *g_app  = nullptr;
 int  g_argc = 0;
 char **g_argv = nullptr;
+// The context directory: the repository's circuits (Tests/Fuzz/FuzzCircuitDir.h), so the IC files an input names load
+QTemporaryDir *g_dir = nullptr;
+
+// The circuit is loaded three times and saved three times; one loading more elements than this, nested ICs' included,
+// would take a unit past about 10 s under ASan and is only loaded
+constexpr qsizetype kMaxCircuitElements = 1500;
 
 } // namespace
 
@@ -71,6 +81,9 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
     g_argc = *argc;
     g_argv = *argv;
     g_app  = new QApplication(g_argc, g_argv);
+
+    g_dir = new QTemporaryDir();
+    FuzzCircuitDir::fill(g_dir->path(), "fuzz_round_trip");
 
     return 0;
 }
@@ -101,8 +114,11 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
 
     WorkSpace ws1;
     try {
-        ws1.load(stream, version, /*contextDir=*/QString());
+        ws1.load(stream, version, g_dir->path());
     } catch (...) {
+        return 0;
+    }
+    if (FuzzCircuitDir::loadedElementCount(ws1.scene()->elements()) > kMaxCircuitElements) {
         return 0;
     }
 
@@ -138,7 +154,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
 
     WorkSpace ws2;
     try {
-        ws2.load(stream2, version2, /*contextDir=*/QString());
+        ws2.load(stream2, version2, g_dir->path());
     } catch (...) {
         return 0;
     }
@@ -179,7 +195,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
     WorkSpace ws3;
     try {
         const QVersionNumber version3 = Serialization::readPandaHeader(stream3);
-        ws3.load(stream3, version3, /*contextDir=*/QString());
+        ws3.load(stream3, version3, g_dir->path());
     } catch (...) {
         __builtin_trap(); // the application's own save does not load
     }

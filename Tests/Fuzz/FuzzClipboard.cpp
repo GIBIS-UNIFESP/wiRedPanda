@@ -7,7 +7,8 @@
  * Two kinds of input:
  *
  *   1. A whole .panda file (it starts with "WPCF", or with the zero byte of a
- *      legacy header's length): loaded into a workspace,
+ *      legacy header's length): loaded into a workspace beside the
+ *      repository's circuits, so the IC files it names resolve,
  *      every element selected and copied with ClipboardManager::copy(), the
  *      clipboard pasted into a second workspace, the paste undone and redone,
  *      the circuit's clone-drag image built, the selection duplicated, and
@@ -45,6 +46,7 @@
 #include <QRectF>
 #include <QScopeGuard>
 #include <QString>
+#include <QTemporaryDir>
 #include <QTransform>
 #include <QUndoStack>
 #include <QVersionNumber>
@@ -56,16 +58,23 @@
 #include "App/Scene/ClipboardManager.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
+#include "Tests/Fuzz/FuzzCircuitDir.h"
 
 namespace {
 
 QApplication *g_app  = nullptr;
 int  g_argc = 0;
 char **g_argv = nullptr;
+// The context directory: the repository's circuits (Tests/Fuzz/FuzzCircuitDir.h), so the IC files an input names load
+QTemporaryDir *g_dir = nullptr;
 
 constexpr uint8_t kRegistryV2 = 1;
 constexpr uint8_t kItemsLegacy = 2;
 constexpr uint8_t kNoRegistry = 4;
+
+// A .panda input is loaded, pasted, undone, redone, duplicated and cut, about five loads of its circuit; one loading
+// more elements than this, nested ICs' included, would take a unit past about 10 s under ASan and is only loaded
+constexpr qsizetype kMaxCircuitElements = 1500;
 
 // Writes the clipboard copy() just set to FUZZ_CLIPBOARD_SEED_DIR, in path 2's layout, named by its hash
 void exportClipboardSeed()
@@ -109,8 +118,11 @@ void copyPasteCut(const QByteArray &panda)
     WorkSpace source;
     try {
         version = Serialization::readPandaHeader(stream);
-        source.load(stream, version, /*contextDir=*/QString());
+        source.load(stream, version, g_dir->path());
     } catch (...) {
+        return;
+    }
+    if (FuzzCircuitDir::loadedElementCount(source.scene()->elements()) > kMaxCircuitElements) {
         return;
     }
 
@@ -167,6 +179,9 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
     g_argc = *argc;
     g_argv = *argv;
     g_app  = new QApplication(g_argc, g_argv);
+
+    g_dir = new QTemporaryDir();
+    FuzzCircuitDir::fill(g_dir->path(), "fuzz_clipboard");
 
     return 0;
 }

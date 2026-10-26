@@ -65,6 +65,7 @@
 #include "App/Scene/ICRegistry.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
+#include "Tests/Fuzz/FuzzCircuitDir.h"
 #include "Tests/Fuzz/FuzzSeed.h"
 #include "Tests/Fuzz/PandaMutator.h"
 
@@ -74,8 +75,16 @@ QApplication *g_app  = nullptr;
 int  g_argc = 0;
 char **g_argv = nullptr;
 
-// Where path C writes the definition's file and extracts it to; the scene's context directory.
+// Where path C writes the definition's file and extracts it to; the scene's context directory. It holds the
+// repository's circuits (Tests/Fuzz/FuzzCircuitDir.h), so the IC files the definition names load.
 QTemporaryDir *g_dir = nullptr;
+
+// Path C loads its input as a circuit about 25 times, in time linear in the elements it loads through its nested ICs,
+// about 1.2 ms each under ASan, not in its size: a 1.7 KB file naming an ALU loads 1,781, a 33 KB register file 2,001.
+// A definition loading more than this stops after its first instance, so a unit stays under about 1.5 s and reading a
+// round's corpus takes a few minutes of the round, not all of it. The registry's paths do not depend on the circuit's
+// size, and one load of a large circuit is fuzz_deserialize's target.
+constexpr qsizetype kMaxDefinitionElements = 50;
 
 // Valid IC blob (InputSwitch + Led) built in LLVMFuzzerInitialize.
 // Used to exercise the successful path through ICRegistry::initEmbeddedIC
@@ -239,7 +248,8 @@ void exerciseDefinition(const QByteArray &definition)
     (void)reg->initEmbeddedIC(unplaced, "missing");
     delete unplaced;
 
-    // Two instances placed from the file, as from the palette; a definition that does not load stops here.
+    // Two instances placed from the file, as from the palette; a definition that does not load stops here, and so
+    // does one too large to load about 25 times in a unit.
     for (int i = 0; i < 2; ++i) {
         auto *ic = new IC();
         try {
@@ -249,6 +259,9 @@ void exerciseDefinition(const QByteArray &definition)
             return;
         }
         scene->addItem(ic);
+        if (FuzzCircuitDir::loadedElementCount(ic->internalElements()) > kMaxDefinitionElements) {
+            return;
+        }
     }
 
     const auto fileChanged = [reg](const QString &path) {
@@ -312,6 +325,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
     g_app  = new QApplication(g_argc, g_argv);
     g_dir  = new QTemporaryDir();
     QDir(g_dir->path()).mkdir("unreadable.panda");
+    FuzzCircuitDir::fill(g_dir->path(), "fuzz_ic_registry");
 
     // Build a valid blob so initEmbeddedIC can succeed and exercise the full
     // IC::processLoadedItems → loadBoundaryElement path.
@@ -348,12 +362,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
 
     if (size < 4) return 0;
 
-    // Path C loads its input as a circuit about 25 times; a large one spends the run in loading, which
-    // fuzz_deserialize targets, not in the registry.
     if (PandaMutator::isPandaFile(data, size)) {
-        if (size > 16384) {
-            return 0;
-        }
         exerciseDefinition(QByteArray(reinterpret_cast<const char *>(data), static_cast<qsizetype>(size)));
         return 0;
     }

@@ -7,9 +7,10 @@
  * Drives the same code path as File > Open: header read, embedded-IC blob
  * registry parsing, the element/connection stream loop in
  * Serialization::deserialize(), and the Scene::addItem() side effects that
- * follow.  Run under ASan + UBSan to catch the H2/HC family of bugs on inputs
- * no human would hand-write.  See Tests/Fuzz/README.md for build and run
- * instructions.
+ * follow.  An input loads beside the repository's circuits, so the IC files
+ * it names resolve as they do for a file opened from its folder.  Run under
+ * ASan + UBSan to catch the H2/HC family of bugs on inputs no human would
+ * hand-write.  See Tests/Fuzz/README.md for build and run instructions.
  *
  * Custom mutator (LLVMFuzzerCustomMutator): the structure-aware .panda
  * mutator in PandaMutator.h, which keeps the corpus parseable, the current
@@ -26,6 +27,7 @@
 #include <QEvent>
 #include <QScopeGuard>
 #include <QString>
+#include <QTemporaryDir>
 #include <QVersionNumber>
 
 #include "App/Core/Application.h"
@@ -34,6 +36,7 @@
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
+#include "Tests/Fuzz/FuzzCircuitDir.h"
 #include "Tests/Fuzz/PandaMutator.h"
 
 namespace {
@@ -41,6 +44,8 @@ namespace {
 QApplication *g_app = nullptr;
 int  g_fuzzer_argc = 0;
 char **g_fuzzer_argv = nullptr;
+// The context directory: the repository's circuits (Tests/Fuzz/FuzzCircuitDir.h), so the IC files an input names load
+QTemporaryDir *g_dir = nullptr;
 
 } // namespace
 
@@ -64,6 +69,9 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
     g_fuzzer_argc = *argc;
     g_fuzzer_argv = *argv;
     g_app = new QApplication(g_fuzzer_argc, g_fuzzer_argv);
+
+    g_dir = new QTemporaryDir();
+    FuzzCircuitDir::fill(g_dir->path(), "fuzz_deserialize");
 
     return 0;
 }
@@ -93,7 +101,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
 
     WorkSpace workspace;
     try {
-        workspace.load(stream, version, /*contextDir=*/QString());
+        workspace.load(stream, version, g_dir->path());
     } catch (...) {}
 
     workspace.scene()->simulation()->update();
