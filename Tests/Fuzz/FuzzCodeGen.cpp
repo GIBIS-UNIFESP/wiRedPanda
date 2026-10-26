@@ -242,14 +242,6 @@ void buildCircuit(FuzzedDataProvider &fdp, Scene *scene, const bool withICs)
     }
 }
 
-bool isPandaFile(const uint8_t *data, size_t size)
-{
-    const QByteArray head = QByteArray::fromRawData(reinterpret_cast<const char *>(data),
-                                                    static_cast<qsizetype>(std::min<size_t>(size, 10)));
-    return head.startsWith("WPCF") || head.startsWith("WiredPanda") || head.startsWith("WiRedPanda")
-        || (size > 0 && data[0] == 0);
-}
-
 } // namespace
 
 // The input is a whole .panda file: the shared structure-aware mutator works on a current-format file's decompressed
@@ -354,7 +346,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
         QCoreApplication::processEvents();
     });
 
-    if (!isPandaFile(data, size)) {
+    if (!PandaMutator::isPandaFile(data, size)) {
         FuzzedDataProvider fdp(data, size);
         WorkSpace workspace;
         buildCircuit(fdp, workspace.scene(), true);

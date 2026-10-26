@@ -288,14 +288,6 @@ void exerciseDefinition(const QByteArray &definition)
     } catch (...) {}
 }
 
-bool isPandaFile(const uint8_t *data, size_t size)
-{
-    const QByteArray head = QByteArray::fromRawData(reinterpret_cast<const char *>(data),
-                                                    static_cast<qsizetype>(std::min<size_t>(size, 10)));
-    return head.startsWith("WPCF") || head.startsWith("WiredPanda") || head.startsWith("WiRedPanda")
-        || (size > 0 && data[0] == 0);
-}
-
 } // namespace
 
 // A whole .panda input takes path C: the shared structure-aware mutator works on a current-format file's decompressed
@@ -358,7 +350,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
 
     // Path C loads its input as a circuit about 25 times; a large one spends the run in loading, which
     // fuzz_deserialize targets, not in the registry.
-    if (isPandaFile(data, size)) {
+    if (PandaMutator::isPandaFile(data, size)) {
         if (size > 16384) {
             return 0;
         }
