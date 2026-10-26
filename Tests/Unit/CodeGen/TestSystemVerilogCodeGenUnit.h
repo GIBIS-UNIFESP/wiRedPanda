@@ -32,14 +32,15 @@ private slots:
     void testFlipFlopsNormalClockPath();
     void testFlipFlopsWithPresetAndClearWired();
     void testFlipFlopWithPresetOnlySensitivityList();
-    void testAsyncControlWithComplexExpressionCreatesAuxWire();
+    void testAsyncControlDrivenByAGateReadsItsVariable();
     void testOutOfTopologicalOrderGateResolution();
     void testDeclareInputsWithNoOutputElements();
     void testDeclareOutputsWithLabel();
     void testDemuxWithFourOutputsUsesTwoSelectLines();
     void testIcPortNamesEscapeReservedWordsAndDedup();
     void testOutOfOrderNodeUpstreamResolution();
-    void testWirelessNodeCycleDoesNotInfiniteRecurse();
+    void testWirelessNodeCycleReadsEachOthersVariable();
     void testNandGateCircuit();
-    void testDoubleNotCancelsNegation();
+    void testNotOfANotReadsItsVariable();
+    void testModuleGrowsLinearlyWithDepth();
 };

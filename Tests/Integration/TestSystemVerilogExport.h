@@ -118,6 +118,10 @@ private slots:
     void testSystemVerilogExportRegisterFile32x16();
     void testSystemVerilogExportSingleCycleCpu8Bit();
 
+    // A building block's own circuit as the top-level module, its gates at the top level
+    void testSystemVerilogExportFlat_data();
+    void testSystemVerilogExportFlat();
+
 private:
     /**
      * @brief Test helper for verifying SystemVerilog export with validation tools

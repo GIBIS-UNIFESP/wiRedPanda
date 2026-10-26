@@ -106,17 +106,12 @@ private:
     static QString fourState(Status val);
     /// Strips characters that are illegal in SystemVerilog identifiers.
     static QString removeForbiddenChars(const QString &input);
-    /// Returns \c true if \a expr is already a simple identifier (no operators).
-    static bool isSimpleIdentifier(const QString &expr);
 
     // --- Signal Name Resolution ---
 
-    /// Returns the variable name of the signal driving \a port (resolves through wires and nodes).
+    /// Returns the variable of the output driving \a port, through a wireless Rx to its Tx, or its default value when
+    /// nothing drives it.
     QString otherPortName(Port *port);
-    /// Recursive implementation of otherPortName() with cycle detection via \a visited.
-    QString otherPortNameImpl(Port *port, QSet<Port *> &visited);
-    /// Returns \a expr unchanged if simple, otherwise creates a temporary wire and assigns \a expr to it.
-    QString ensureSimpleSignal(const QString &expr);
 
     // --- Variable / Declaration Emission ---
 
@@ -137,7 +132,7 @@ private:
 
     /// Emits an `always_ff` block for a sequential element with preset/clear/normal branches.
     void emitSequentialBlock(const QString &typeName,
-                             const QString &clk, const QString &rawPrst, const QString &rawClr,
+                             const QString &clk, const QString &prst, const QString &clr,
                              const std::function<void()> &emitPresetBody,
                              const std::function<void()> &emitClearBody,
                              const std::function<void()> &emitNormalBody);
@@ -156,10 +151,9 @@ private:
 
     // --- Combinational Logic ---
 
-    /// Returns the combinational logic expression for \a elm's output.
+    /// Returns the combinational logic expression for \a elm's output, over the variables of the outputs driving its
+    /// inputs.
     QString generateLogicExpression(GraphicElement *elm);
-    /// Recursive implementation of generateLogicExpression() with cycle detection.
-    QString generateLogicExpressionImpl(GraphicElement *elm, QSet<Port *> &visited);
 
     // --- Top-Level Structure ---
 
@@ -179,7 +173,6 @@ private:
     QVector<MappedPinSystemVerilog> m_inputMap; ///< Final input pin mappings (populated by generate()).
     QVector<MappedPinSystemVerilog> m_outputMap; ///< Final output pin mappings (populated by generate()).
     const QVector<GraphicElement *> m_elements; ///< Topologically sorted circuit elements.
-    bool m_generatingICModule = false;         ///< True while emitting an IC sub-module body.
     int m_globalCounter = 1;                   ///< Monotonic counter for unique signal names.
     QSet<GraphicElement *> m_feedbackElements; ///< Internal gates on a combinational feedback loop, for the IC module currently being emitted.
 };
