@@ -181,8 +181,9 @@ costs k times the scene's port count: pasting 4,000 wired gates took 1.6 s, four
 and align grew the same way (P2.58, found by `fuzz_clipboard`'s coverage rounds as a slow unit, the cause counted
 under callgrind). Fix: an element re-routes its wires on its own `ItemPositionHasChanged`, and a port on its own move
 or transform, both through `ItemSendsGeometryChanges`. Shown by `TestScene::testNoItemMakesEveryMoveWalkTheScene`;
-`TestSceneSnapshot::testWireGeometryAfterEdit` keeps the wires following. Undoing the same paste still grows faster
-than the paste, in Qt's per-item removal (P2.59, to be counted).
+`TestSceneSnapshot::testWireGeometryAfterEdit` keeps the wires following. Undoing the same paste grew faster than
+the paste in a probe and is linear in the application: the probe's growth came from items Qt had not indexed yet
+and wires without paths (P2.59, counted; the user rules on dropping it).
 
 ### 2.15 A command over n items deduplicates them in n squared
 
@@ -867,6 +868,8 @@ user's choice between workable options).
   in CI (P2.D10).
 - **P2.D4's wording** (its row): reworded with P2.18 to say where each writer refuses and that nothing warns of
   duplicates from a file or a paste; the user confirms it.
+- **P2.59, a paste's undo** (its row): counted, linear in the application; the user rules on dropping it as no
+  defect.
 
 ## 13. What other plans take from plan 2
 
