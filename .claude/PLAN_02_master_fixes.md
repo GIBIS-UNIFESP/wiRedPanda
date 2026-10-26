@@ -268,6 +268,18 @@ original inputs and outputs are drawn rather than the proxy Nodes that replace t
 one. The same file opens in 1.6 s and 206 MB, and a preview renders in 2 ms. Shown by
 `TestICUnit::testAPreviewRendersOnlyWhenShown`; the 77 preview goldens are unchanged.
 
+### 2.25 SystemVerilog export grows exponentially with a top-level circuit's depth
+
+`SystemVerilogCodeGen` kept a top-level logic gate's output as its expression and wrote it into every input it
+drove, while inside an IC's module each output had a wire and an `assign`; a signal reaching a later gate along two
+paths was written twice, doubling at every such gate: `Tests/Fixtures/Perf/combinational_1000.panda` exported 309 MB
+in 2.2 s with a 1.33 GB peak (P2.79, found as an out-of-memory by `fuzz_codegen` once P2.63 loaded the seed corpus).
+Fix: every gate drives a declared variable at the top level too, read by name; the inlining's recursion and the code
+that only an expression needed go. That file exports 65 KB in 32 ms. Shown by
+`TestSystemVerilogCodeGenUnit::testModuleGrowsLinearlyWithDepth`; `TestSystemVerilogExport::testSystemVerilogExportFlat`
+checks twelve building blocks exported with their gates at the top level against the engine, which no other export
+did.
+
 ## 3. In code plan 3 rewrites
 
 ### 3.1 SR and T flip-flops ignore every input while one input is open
@@ -718,6 +730,8 @@ Each of these exists on `master`, and its fix is another plan's decision:
 | P2.73 | An IC's load in linear time (§2.22) | the helpers only | none |
 | P2.76 | An embedded IC that fails to load (§2.23) | the helpers only | none |
 | P2.77 | A preview rendered when shown (§2.24) | P1.14 | none (the 77 preview goldens unchanged) |
+| P2.79 | A variable for every gate in SystemVerilog (§2.25) | the helpers only | twelve new goldens, the flat exports' (`testSystemVerilogExportFlat`); the translated And's two exports (`and_gate.sv.txt`, `and_gate.tr.sv.txt`), its And through a variable; the 76 others unchanged |
+| P2.39 | The MCP client's 64 KiB line limit (its ledger row) | the helpers only | none |
 | P2.9 | SR and T defaults (§3.1) | P1.4, P1.6, P1.13 | port layout, one scene snapshot, any trace with S, R or T open |
 | P2.10 | The loader's port counts (§3.2) | P1.8, P1.17 | the strings golden's three messages |
 | P2.11 | The AudioBox's undo (§3.3) | P1.15 | one editor-writes row |
@@ -753,7 +767,6 @@ Each of these exists on `master`, and its fix is another plan's decision:
 | P2.38, P2.51 | A wire attached or detached refreshes only itself (§7.8) | P1.5, P1.10 | none |
 | P2.40 | Orienting a port leaves its wires to the port (its ledger row) | P1.5 | none (the wire-geometry golden unchanged) |
 | P2.44 | Embed and extract on every selected IC (§4.2) | the helpers only | none expected |
-| P2.39 | The MCP client's 64 KiB line limit (its ledger row) | the helpers only | none |
 
 "None expected" means the branch saw no golden change, or the fix touches nothing a golden prints; the fix's commit
 says what changed.
