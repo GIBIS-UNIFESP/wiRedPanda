@@ -8,9 +8,10 @@ It comes early because the simulation core, the exporters, MCP and the editor al
 is written twice. It is data-driven design, not data-oriented: the data-oriented layout is plan 6's.
 
 - **Depends on:** plans 1 and 2, the Qt floor's and the exception boundaries' plans, landed, since the plans run one
-  at a time, in their order (the plans' rules, §1): plan 1's goldens; plan 2's fixes in this code (its §3), which
-  plan 3 keeps, each test green; the Qt 6.8 floor, on which every supported Qt renders the pictures' blur filters
-  alike; and the exception boundaries' rule, so nothing Qt calls back into throws, and their fixes in this code.
+  at a time, in their order (the plans' rules, §1): plan 1's goldens; plan 2's fixes in this code (its §3, and its
+  §2.19, a trigger loaded as the key sequence saved), which plan 3 keeps, each test green; the Qt 6.8 floor, on
+  which every supported Qt renders the pictures' blur filters alike; and the exception boundaries' rule, so nothing
+  Qt calls back into throws, and their fixes in this code.
 - **Lands before:** plan 4, which follows it and builds on the one element class; plan 5, whose spec and reference
   read the descriptors; plan 6, whose kernels each descriptor names; and plan 9, which takes the one element class
   and its presenters.

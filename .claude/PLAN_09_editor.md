@@ -20,7 +20,9 @@ after which the element is a plain class. It draws what `master` draws, and plan
   1 (the pointer, wire-geometry, stacking, view and wire-pixel goldens, run on the old and the new view; the probe that
   times a load and its first frames); plan 2's fixes this plan keeps (the wheel zoom that keeps the point under the
   cursor, the hit test that answers the topmost item, MCP's empty-scene error, a connected input that stays on its
-  wire).
+  wire; and its §2.13 to §2.18: a paste that reads everything before its macro opens, no move walking every port,
+  commands deduplicating in linear time, snapping and rendering past `int`'s range computed in floating point, a port's
+  wires attached and detached in time linear in its fan-out).
 - **Lands before:** the model-cost round, which works on the new model; then plan 10, whose GPU renderer is a second
   backend behind this plan's render interface, set as the view's viewport, on the model as the round leaves it.
 - **Branch and ledger:** `09-editor`, from `08-export` once plan 8 has landed, in slices (the plans' rules, §1 and

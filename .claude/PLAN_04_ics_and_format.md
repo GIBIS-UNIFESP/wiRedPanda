@@ -9,7 +9,10 @@ additions to what a document holds extend the current format; nothing replaces i
 - **Depends on:** plans 1 to 3, the Qt floor's and the exception boundaries' plans, landed, since the plans run one
   at a time, in their order (the plans' rules, §1): plan 1's goldens, the payload goldens above all, where a format
   change shows first;
-  plan 3's one element class, with the descriptors and the untranslated source names an IC's pins read.
+  plan 3's one element class, with the descriptors and the untranslated source names an IC's pins read; plan 2's
+  fixes in the loader, registry and preview, which this plan keeps, each test green (its §2.20 to §2.24: a preview
+  scaled before it is rounded and rendered only when shown, an IC's load taking its ports' keys from the load's
+  record, an embedded IC that fails to load leaving no undo macro open).
 - **Lands before:** plan 5, whose reference simulator reads its definitions, then plan 6, whose netlist builder
   compiles each IC definition once.
 - **Branch and ledger:** `04-ics-and-format`, from `03-element-types` once plan 3 has landed, in slices (the plans'
