@@ -13,9 +13,10 @@
 #   fuzz-build-dir      defaults to build-fuzzer          (cmake --preset fuzzer)
 #   coverage-build-dir  defaults to build-fuzzer-coverage (cmake --preset fuzzer-coverage)
 #
-# The corpus lives in <fuzz-build-dir>/rounds/<harness>/corpus and grows from round to round; its first round starts
-# from the corpus run-unattended.sh gives the harness. Round n writes <fuzz-build-dir>/rounds/<harness>/round-<n>/:
-# fuzz.log, files.txt (per file), functions.txt (per function), and any crash, leak, OOM or timeout input.
+# The corpus lives in <fuzz-build-dir>/rounds/<harness>/corpus and grows from round to round; every round adds the
+# repository's circuits as they are now, the seeds run-unattended.sh gives the harness. Round n writes
+# <fuzz-build-dir>/rounds/<harness>/round-<n>/: fuzz.log, files.txt (per file), functions.txt (per function), and any
+# crash, leak, OOM or timeout input.
 set -euo pipefail
 
 HARNESS=${1:?usage: coverage-round.sh <harness> [seconds] [fuzz-build-dir] [coverage-build-dir]}
@@ -45,20 +46,22 @@ for tool in llvm-profdata llvm-cov; do
     fi
 done
 
-# The first round starts from the corpus run-unattended.sh would give this harness
+# Every round starts from the repository's circuits as they are now, the seeds run-unattended.sh would give this
+# harness: rebuilt and copied over the corpus's copies, which share their names, so a regenerated circuit replaces the
+# copy an earlier round seeded
 mkdir -p "${CORPUS}"
-if [[ -z "$(ls -A "${CORPUS}")" ]]; then
-    if [[ "${HARNESS}" == "ic_blob" ]]; then
-        find "${ROOT}/Tests/Integration/IC" -name "*.panda" -exec \
-            sh -c 'cp "$1" "${2}/$(printf "%s" "$1" | sha1sum | cut -c1-12)-$(basename "$1")"' \
-            _ {} "${CORPUS}" \;
-    elif [[ -d "${ROOT}/${FUZZ_DIR}/seed-corpus" ]]; then
-        cp "${ROOT}/${FUZZ_DIR}/seed-corpus/"* "${CORPUS}/"
-    fi
-    # fuzz_clipboard pastes clipboards, which no file holds: one pass over the .panda files writes the ones it copies
-    if [[ "${HARNESS}" == "clipboard" ]]; then
-        FUZZ_CLIPBOARD_SEED_DIR="${CORPUS}" "${FUZZ_BIN}" -runs=0 "${CORPUS}" > "${ROUNDS}/clipboard-seeds.log" 2>&1 || true
-    fi
+SEEDS="${ROOT}/${FUZZ_DIR}/seed-corpus"
+"${SCRIPT_DIR}/build-seed-corpus.sh" "${SEEDS}" > /dev/null
+if [[ "${HARNESS}" == "ic_blob" ]]; then
+    find "${ROOT}/Tests/Integration/IC" -name "*.panda" -exec \
+        sh -c 'cp "$1" "${2}/$(printf "%s" "$1" | sha1sum | cut -c1-12)-$(basename "$1")"' \
+        _ {} "${CORPUS}" \;
+else
+    cp "${SEEDS}/"* "${CORPUS}/"
+fi
+# fuzz_clipboard pastes clipboards, which no file holds: one pass over the seeds writes the ones it copies
+if [[ "${HARNESS}" == "clipboard" ]]; then
+    FUZZ_CLIPBOARD_SEED_DIR="${CORPUS}" "${FUZZ_BIN}" -runs=0 "${SEEDS}" > "${ROUNDS}/clipboard-seeds.log" 2>&1 || true
 fi
 
 # fuzz_codegen builds a circuit from any input that is not a .panda file, which the corpus holds none of: 64 inputs of
