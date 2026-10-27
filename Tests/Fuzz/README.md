@@ -208,6 +208,11 @@ crash/OOM/leak/timeout under ASan+UBSan).
   abort (UAF/UB). Tests live in `TestSerialization.cpp` (`testFuzzRegression*`)
   and `TestDolphinSerializer.cpp` (`.dolphin` header), run on every sanitizer CI
   lane via `ctest`.
+- **harness** — the input is in a harness's own layout (a clipboard, an IC's
+  file), so no test loads it: it is replayed through its harness, failing on
+  the code without the fix and clean with it
+  (`./build-fuzzer/fuzz_<harness> Tests/Fuzz/regressions/<file>`), and the
+  defect is pinned by the unit test named in its row.
 - **retired** — `bugJ` only: a timeout of `FuzzUndo` on a truth table, for
   which the harness once left `TruthTable` out of the types it adds, on the
   ground that its 2048-bit key made `UpdateCommand` serialization take seconds.
@@ -233,3 +238,29 @@ crash/OOM/leak/timeout under ASan+UBSan).
 | `oom_panda_header_large_appname`    | OOM     | pinned            | oversized app-name string in the `.panda` header |
 | `ic_nonfinite_position`             | abort   | pinned            | NaN/inf element position aborts IC preview via `qSaturateRound` assert (`fuzz_ic_file`) |
 | `ic_nonfinite_rotation`             | abort   | pinned            | NaN element rotation aborts IC preview via the same assert (`fuzz_ic_file`) |
+| `clipboard_paste_unreadable_items_leak` | leak | harness | a paste whose items do not read leaves its undo macro open (`fuzz_clipboard`; `TestScene::testPasteOfUnreadableItemsChangesNothing`) |
+| `clipboard_snap_position_beyond_int` | UB     | harness           | snapping a position past `int`'s range (`fuzz_clipboard`; `TestGraphicElement::testSnapToGridKeepsAPositionBeyondIntRange`) |
+| `clipboard_drag_image_extent_beyond_int` | UB | harness           | the clone-drag image of an extent past `int`'s range (`fuzz_clipboard`; `TestScene::testBuildDragImageClampsAnExtentBeyondIntRange`) |
+| `clipboard_grid_beyond_int`         | UB      | harness           | the grid of a render reaching past `int`'s range, the drag image's fix kept (`fuzz_clipboard`; `TestScene::testGridIsNotDrawnBeyondIntRange`) |
+| `ic_file_preview_extent_beyond_int` | UB      | harness           | an IC's preview of a body past `int`'s range (`fuzz_ic_file`; `TestICUnit::testGeneratePreviewPixmapScalesAnExtentBeyondIntRange`) |
+
+Findings with no reproducer kept, each pinned by its unit test alone:
+- The out-of-memory errors, timeouts and slow units of plan 2's coverage rounds
+  (the rows of plan 2's ledger P2.58, P2.60, P2.66, P2.72, P2.73, P2.77 and
+  P2.79), each found on one of the repository's large circuits
+  (`Tests/Fixtures/Perf/clocked_2000.panda`, `ic_heavy.panda`,
+  `combinational_1000.panda`) or a mutation of one. They are thresholds crossed
+  in a round, not failures of one input: libFuzzer's memory limit compares the
+  process's peak since it started. Replayed alone through the current harnesses
+  on the code without each fix, every one stays under the limits, the closest
+  `ic_heavy.panda` through `fuzz_undo` at 1,957 MB against the 2,048 MB limit.
+  Their tests measure the growth itself:
+  `TestScene::testNoItemMakesEveryMoveWalkTheScene`,
+  `TestCommands::testLoadListGrowsLinearly`,
+  `TestPort::testFanOutGrowsLinearly`,
+  `TestICUnit::testAPreviewRendersOnlyWhenShown`,
+  `TestICUnit::testLoadGrowsLinearlyInICs` and
+  `TestSystemVerilogCodeGenUnit::testModuleGrowsLinearlyWithDepth`.
+- The leak of a command whose first `redo()` throws (plan 2b's EB.4):
+  `fuzz_undo` reached it by removing a blob still in use, which the
+  application never does, and no longer does so; its test is EB.4's.
