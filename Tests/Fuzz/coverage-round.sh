@@ -83,11 +83,26 @@ export LSAN_OPTIONS=suppressions="${ROOT}/Tests/lsan_suppressions.txt"
 
 count_inputs() { find "${CORPUS}" -maxdepth 1 -type f | wc -l; }
 
+RSS_LIMIT_MB=2048
+TIMEOUT_SECONDS=30
+
 echo "=== Round ${ROUND} of fuzz_${HARNESS}: fuzzing ${FUZZ_SECONDS} s on $(count_inputs) inputs ==="
 # A finding ends the run early; it is kept in the round's directory and reported below
-"${FUZZ_BIN}" -max_total_time="${FUZZ_SECONDS}" -rss_limit_mb=2048 -timeout=30 \
+"${FUZZ_BIN}" -max_total_time="${FUZZ_SECONDS}" -rss_limit_mb="${RSS_LIMIT_MB}" -timeout="${TIMEOUT_SECONDS}" \
     -dict="${SCRIPT_DIR}/panda.dict" -artifact_prefix="${OUT}/" "${CORPUS}" > "${OUT}/fuzz.log" 2>&1 || true
 grep -E "^#[0-9]+ +DONE|^Done " "${OUT}/fuzz.log" || tail -3 "${OUT}/fuzz.log"
+
+# A round that ends near a limit hides what crosses it in the next: the peak memory of libFuzzer's status lines and
+# the slowest input it reported (it reports those over 10 s), each against its limit, flagged past three quarters
+PEAK_RSS_MB=$(grep -oE 'rss: [0-9]+Mb' "${OUT}/fuzz.log" | grep -oE '[0-9]+' | sort -n | tail -1 || true)
+SLOWEST_SECONDS=$(grep -oE 'Slowest unit: [0-9]+ s' "${OUT}/fuzz.log" | grep -oE '[0-9]+' | sort -n | tail -1 || true)
+echo "Peak memory ${PEAK_RSS_MB:-unknown} MB of ${RSS_LIMIT_MB}; slowest input ${SLOWEST_SECONDS:-under 10} s of ${TIMEOUT_SECONDS}"
+if [[ -n "${PEAK_RSS_MB}" ]] && (( PEAK_RSS_MB * 4 > RSS_LIMIT_MB * 3 )); then
+    echo "WARNING: peak memory past three quarters of the limit"
+fi
+if [[ -n "${SLOWEST_SECONDS}" ]] && (( SLOWEST_SECONDS * 4 > TIMEOUT_SECONDS * 3 )); then
+    echo "WARNING: slowest input past three quarters of the timeout"
+fi
 
 echo "=== Replaying $(count_inputs) inputs through the coverage build ==="
 LLVM_PROFILE_FILE="${OUT}/coverage.profraw" "${COV_BIN}" -runs=0 "${CORPUS}" > "${OUT}/replay.log" 2>&1 || true
