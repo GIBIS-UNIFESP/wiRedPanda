@@ -164,14 +164,17 @@ rounds stop when one adds nothing. With both presets built, one round is:
 ./Tests/Fuzz/coverage-round.sh structured 300   # harness, seconds
 ```
 
-It grows the harness's own corpus in `build-fuzzer/rounds/<harness>/corpus`
-and writes the round's coverage of `App/` per file and per function to
+It grows the harness's own corpus in `build-fuzzer/rounds/<harness>/corpus`,
+which every round reseeds with the repository's circuits as they are now (the
+seed corpus rebuilt and copied over the corpus's copies of the same names, so
+a regenerated circuit replaces its old copy), and writes the round's coverage
+of `App/` per file and per function to
 `build-fuzzer/rounds/<harness>/round-<n>/`, printing it next to the previous
 round's. It prints the round's peak memory and slowest input against the
 limits (2,048 MB, 30 s) and warns past three quarters of either: a harness
-running near a limit hides what crosses it, as `fuzz_codegen`'s rounds at
-up to 2,037 MB hid plan 2's P2.79 until a change to the harness pushed it
-over. `llvm-cov show build-fuzzer-coverage/fuzz_<harness>
+running near a limit hides what crosses it, as `fuzz_codegen`'s rounds at up
+to 2,037 MB hid plan 2's P2.79 until a change to the harness pushed it over.
+`llvm-cov show build-fuzzer-coverage/fuzz_<harness>
 -instr-profile=<round>/coverage.profdata <source>` then shows a file's lines
 with their counts.
 
@@ -179,8 +182,8 @@ with their counts.
 whole `.panda` input is copied and pasted, and with `FUZZ_CLIPBOARD_SEED_DIR`
 set every clipboard it copies is written to that directory in the harness's
 clipboard layout (a flags byte, the blob registry's 2-byte little-endian
-length, the registry, then the items). The first round does this pass over
-the seed corpus itself, so the corpus starts with real clipboards to mutate.
+length, the registry, then the items). Every round does this pass over the
+seed corpus itself, so the corpus holds real clipboards to mutate.
 `fuzz_codegen` builds a circuit from any input that is not a `.panda` file,
 which the seed corpus holds none of, so `coverage-round.sh` adds 64 inputs of
 fixed pseudo-random bytes (`structured-seed-*`) to its corpus.
