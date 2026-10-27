@@ -14,7 +14,8 @@ corpora run through the same differential for development.
   reads and the Arduino export's note names); plan 5 (the spec's start, which the export follows); plan 4 (one shared
   definition per IC, from which the exporters read an instance's circuit); plan 3 (each port's untranslated source
   name); plan 2's exporter fixes, which this plan keeps (truth tables that compile in SystemVerilog, identifiers from
-  untranslated names, both exporters following the Tx into an Rx); plan 1's text goldens and translation tests.
+  untranslated names, both exporters following the Tx into an Rx, every gate a declared variable so a module grows
+  linearly with its circuit's depth); plan 1's text goldens and translation tests.
 - **Lands before:** plan 9, and any release that follows plan 6's switch: from the switch until this plan lands, the
   exports and the simulation follow different rules. The IC instances' internal elements go as its last step (§2.11).
 - **Branch and ledger:** `08-export`, from `07-temporal-mode` once plan 7 has landed, in slices (the plans' rules, §1

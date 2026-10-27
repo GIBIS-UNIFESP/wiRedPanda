@@ -877,15 +877,24 @@ user's choice between workable options).
   each descriptor; the undoable AudioBox, trigger and input operations; no appearance where none is drawn; the themed
   pictures; the morph's undo; the property command, moved onto the schema; the Tx rule and MCP's validation, held once
   in the schema; the lock's tooltip; the display's bounds; the IC's turning centre; the Text's hint; the trigger
-  placeholder's case; a custom picture that no longer loads showing its slot's default (§3.17, plan 3's P3.D6).
+  placeholder's case; a custom picture that no longer loads showing its slot's default (§3.17, plan 3's P3.D6); and,
+  in the serialization it moves into the descriptors, a trigger loaded as the key sequence saved (§2.19).
 - **Plan 4** keeps the IC's tooltip and the embed and extract on every selected IC, fixes the three defects of §8
-  that change the format, and adds the saved pin order with snapping on load.
+  that change the format, and adds the saved pin order with snapping on load. In the loader, registry and preview it
+  rewrites, it keeps §2's fixes there: an IC's preview scaled before it is rounded (§2.20), rendered only when shown
+  (§2.21, §2.24), an IC's load taking its ports' keys from the record the load keeps (§2.22), and an embedded IC that
+  fails to load leaving no undo macro open (§2.23).
 - **Plan 5** lists `master`'s Rx override, the slow clock and the tick engine's contradiction among its differences
   from `master`.
 - **Plan 6** keeps the clocks across a rebuild and a connected input on its wire; its condensation replaces the walk.
-- **Plan 8** keeps the truth tables' regs, the untranslated names and the Tx resolution, then refuses two drivers.
+- **Plan 8** keeps the truth tables' regs, the untranslated names, the Tx resolution and a variable for every gate,
+  the module linear in the circuit's depth (§2.25), then refuses two drivers.
 - **Plan 9** keeps the wheel zoom, the topmost hit, the empty-scene error, the circuit's bounds, the selection in id
-  order, the snapping rule with its exact undo, and the restored stacking place.
+  order, the snapping rule with its exact undo, and the restored stacking place; and §2's fixes in the clipboard,
+  commands, ports and rendering it rewrites: a paste that reads everything before its macro opens (§2.13), no move
+  walking every port (§2.14), commands deduplicating in linear time (§2.15), snapping and rendering past `int`'s range
+  computed in floating point (§2.16, §2.17), and a port's wires attached and detached in time linear in its fan-out
+  (§2.18), each with its test, the timing tests' ratios included.
 - **The Qt 6.8 floor's plan** follows this plan.
 
 ## 14. The branch's fixes, as evidence
