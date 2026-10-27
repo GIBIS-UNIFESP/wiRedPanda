@@ -1248,6 +1248,13 @@ bool Scene::nudgeSelection(QKeyEvent *event)
 
 void Scene::keyPressEvent(QKeyEvent *event)
 {
+    // An item with keyboard focus (the inline label editor) is being typed into: its keys must
+    // reach it alone, not also nudge the selection or fire input triggers.
+    if (focusItem()) {
+        QGraphicsScene::keyPressEvent(event);
+        return;
+    }
+
     // Ignore auto-repeat: holding a trigger key must fire once, not oscillate an InputSwitch
     // (whose keyboard trigger toggles on every press) dozens of times a second.
     if (event->isAutoRepeat()) {
@@ -1284,6 +1291,9 @@ void Scene::keyReleaseEvent(QKeyEvent *event)
         return;
     }
 
+    // Unlike keyPressEvent(), no focus-item guard: a trigger key held down before the inline
+    // label editor took focus must still release its button, and releasing a button that
+    // isn't pressed is a no-op.
     if (!(event->modifiers().testFlag(Qt::ControlModifier))) {
         for (auto *element : unsortedElements()) {
             if (element->hasTrigger() && !element->trigger().isEmpty() && element->trigger().matches(event->key())) {

@@ -8,6 +8,7 @@
 #include <QClipboard>
 #include <QDesktopServices>
 #include <QFile>
+#include <QGraphicsProxyWidget>
 #include <QKeySequence>
 #include <QLabel>
 #include <QLineEdit>
@@ -134,6 +135,31 @@ static void clickScene(GraphicsView *view, QPointF scenePos)
 {
     QPoint viewPos = view->mapFromScene(scenePos);
     QTest::mouseClick(view->viewport(), Qt::LeftButton, Qt::NoModifier, viewPos);
+}
+
+/// Finds the QLineEdit hosted by the scene's inline label editor, if one is open.
+static QLineEdit *findInlineLabelEditor(QGraphicsScene *scene)
+{
+    for (auto *item : scene->items()) {
+        if (auto *proxy = qgraphicsitem_cast<QGraphicsProxyWidget *>(item)) {
+            if (auto *lineEdit = qobject_cast<QLineEdit *>(proxy->widget())) {
+                return lineEdit;
+            }
+        }
+    }
+    return nullptr;
+}
+
+/// Opens the inline label editor on an element with a real double-click: a click, then the
+/// double-click event and its release (QTest::mouseDClick alone sends only the
+/// MouseButtonDblClick event, so the element would never be selected by the first click).
+static QLineEdit *openInlineLabelEditor(GraphicsView *view, GraphicElement *elm)
+{
+    const QPoint viewPos = view->mapFromScene(elm->sceneBoundingRect().center());
+    QTest::mouseClick(view->viewport(), Qt::LeftButton, Qt::NoModifier, viewPos);
+    QTest::mouseDClick(view->viewport(), Qt::LeftButton, Qt::NoModifier, viewPos);
+    QTest::mouseRelease(view->viewport(), Qt::LeftButton, Qt::NoModifier, viewPos);
+    return findInlineLabelEditor(view->scene());
 }
 
 /// Sends a mouse drag from startScene to endScene in incremental steps.
@@ -952,6 +978,214 @@ void TestMainWindowGui::testPropertyCycleSecondary()
 
     QTest::keyClick(window.get(), Qt::Key_BraceLeft);
     QCOMPARE(led->color(), colorBefore);
+}
+
+void TestMainWindowGui::testInlineLabelEditEscapeCancels()
+{
+    // MainWindow binds Esc to Clear Selection; while a label is being edited inline, Escape
+    // must still reach the editor and cancel the edit instead of firing that shortcut.
+    std::unique_ptr<MainWindow> window(createMW());
+    window->resize(1000, 700);
+    QVERIFY(QTest::qWaitForWindowExposed(window.get()));
+    auto *scene = window->currentTab()->scene();
+    auto *view = window->currentTab()->view();
+
+    auto *led = new Led();
+    led->setLabel("Original");
+    led->setPos(100, 100);
+    scene->addItem(led);
+
+    QLineEdit *editor = openInlineLabelEditor(view, led);
+    QVERIFY2(editor, "Double-clicking a labelled element must open the inline editor");
+    QVERIFY(editor->hasFocus());
+    QVERIFY(led->isSelected());
+    editor->setText("Should not stick");
+
+    // Deliver Escape the way the platform does: to the application's focus widget (the view).
+    QTest::keyClick(QApplication::focusWidget(), Qt::Key_Escape);
+    QCoreApplication::sendPostedEvents(nullptr, QEvent::DeferredDelete);
+
+    QVERIFY2(!findInlineLabelEditor(scene), "Escape must close the inline editor");
+    QVERIFY2(led->isSelected(), "Escape cancels the edit; it must not also clear the selection");
+
+    // Clicking away afterwards must not commit the discarded text either.
+    clickScene(view, QPointF(400, 400));
+    QCOMPARE(led->label(), QString("Original"));
+    QCOMPARE(scene->undoStack()->count(), 0);
+}
+
+void TestMainWindowGui::testInlineLabelEditArrowKeysStayInEditor()
+{
+    // Arrow keys nudge the selection on the canvas; typed into the inline label editor they
+    // must only move its text cursor, even though the element being edited is selected.
+    std::unique_ptr<MainWindow> window(createMW());
+    window->resize(1000, 700);
+    QVERIFY(QTest::qWaitForWindowExposed(window.get()));
+    auto *scene = window->currentTab()->scene();
+    auto *view = window->currentTab()->view();
+
+    auto *led = new Led();
+    led->setLabel("Label");
+    led->setPos(100, 100);
+    scene->addItem(led);
+
+    QLineEdit *editor = openInlineLabelEditor(view, led);
+    QVERIFY(editor);
+    QVERIFY(led->isSelected());
+    editor->setCursorPosition(3);
+    const QPointF posBefore = led->pos();
+
+    QTest::keyClick(QApplication::focusWidget(), Qt::Key_Left);
+    QCOMPARE(editor->cursorPosition(), 2);
+    QTest::keyClick(QApplication::focusWidget(), Qt::Key_Right, Qt::ShiftModifier);
+    QCOMPARE(editor->selectedText(), QString("b"));
+    QTest::keyClick(QApplication::focusWidget(), Qt::Key_Up);
+    QTest::keyClick(QApplication::focusWidget(), Qt::Key_Down);
+
+    QCOMPARE(led->pos(), posBefore);
+    QCOMPARE(scene->undoStack()->count(), 0);
+
+    // Once the editor is gone, the same keys nudge the selection again.
+    QTest::keyClick(QApplication::focusWidget(), Qt::Key_Escape);
+    QCoreApplication::sendPostedEvents(nullptr, QEvent::DeferredDelete);
+    QVERIFY(!findInlineLabelEditor(scene));
+    QTest::keyClick(QApplication::focusWidget(), Qt::Key_Left);
+    QVERIFY(led->pos().x() < posBefore.x());
+    QCOMPARE(scene->undoStack()->count(), 1);
+}
+
+void TestMainWindowGui::testInlineLabelEditTypingDoesNotFireTriggers()
+{
+    // Letters typed into the inline label editor are label text, not input trigger keys.
+    std::unique_ptr<MainWindow> window(createMW());
+    window->resize(1000, 700);
+    QVERIFY(QTest::qWaitForWindowExposed(window.get()));
+    auto *scene = window->currentTab()->scene();
+    auto *view = window->currentTab()->view();
+
+    auto *led = new Led();
+    led->setLabel("Label");
+    led->setPos(100, 100);
+    scene->addItem(led);
+    auto *inputSwitch = new InputSwitch();
+    inputSwitch->setTrigger(QKeySequence(Qt::Key_A));
+    inputSwitch->setPos(400, 100);
+    scene->addItem(inputSwitch);
+    auto *button = new InputButton();
+    button->setTrigger(QKeySequence(Qt::Key_B));
+    button->setPos(400, 250);
+    scene->addItem(button);
+    const bool switchBefore = inputSwitch->isOn();
+
+    QLineEdit *editor = openInlineLabelEditor(view, led);
+    QVERIFY(editor);
+
+    QTest::keyClick(QApplication::focusWidget(), Qt::Key_A);
+    QTest::keyPress(QApplication::focusWidget(), Qt::Key_B);
+    QVERIFY2(!button->isOn(), "A trigger key typed into the editor must not press its button");
+    QTest::keyRelease(QApplication::focusWidget(), Qt::Key_B);
+
+    QCOMPARE(editor->text(), QString("ab"));
+    QVERIFY2(inputSwitch->isOn() == switchBefore, "A trigger key typed into the editor must not toggle its switch");
+    QVERIFY(!button->isOn());
+}
+
+void TestMainWindowGui::testTriggerHeldIntoInlineLabelEditStillReleases()
+{
+    // A button pressed by its trigger key before the inline label editor opened must still
+    // release when that key comes up while the editor has focus.
+    std::unique_ptr<MainWindow> window(createMW());
+    window->resize(1000, 700);
+    QVERIFY(QTest::qWaitForWindowExposed(window.get()));
+    auto *scene = window->currentTab()->scene();
+    auto *view = window->currentTab()->view();
+
+    auto *led = new Led();
+    led->setLabel("Label");
+    led->setPos(100, 100);
+    scene->addItem(led);
+    auto *button = new InputButton();
+    button->setTrigger(QKeySequence(Qt::Key_B));
+    button->setPos(400, 100);
+    scene->addItem(button);
+
+    clickScene(view, QPointF(400, 400));
+    QCOMPARE(QApplication::focusWidget(), view);
+    QTest::keyPress(view, Qt::Key_B);
+    QVERIFY(button->isOn());
+
+    QVERIFY(openInlineLabelEditor(view, led));
+    QTest::keyRelease(QApplication::focusWidget(), Qt::Key_B);
+    QVERIFY2(!button->isOn(), "Releasing the trigger key must release the button it pressed");
+}
+
+void TestMainWindowGui::testInlineLabelEditSpaceDoesNotPan()
+{
+    // Holding Space turns mouse moves into panning; typed into the inline label editor it is
+    // just a space, and moving the mouse while it's held must not scroll the canvas.
+    std::unique_ptr<MainWindow> window(createMW());
+    window->resize(1000, 700);
+    QVERIFY(QTest::qWaitForWindowExposed(window.get()));
+    auto *scene = window->currentTab()->scene();
+    auto *view = window->currentTab()->view();
+
+    // Spread elements far apart so the view has a scroll range a pan would show up in.
+    auto *farGate = new And();
+    farGate->setPos(4000, 3000);
+    scene->addItem(farGate);
+    auto *nearGate = new And();
+    nearGate->setPos(-4000, -3000);
+    scene->addItem(nearGate);
+    auto *led = new Led();
+    led->setLabel("Label");
+    led->setPos(100, 100);
+    scene->addItem(led);
+    scene->resizeScene(); // as a drop or paste does after adding elements
+    QApplication::processEvents();
+    QVERIFY2(view->horizontalScrollBar()->maximum() > view->horizontalScrollBar()->minimum(),
+             "Precondition: view must have a horizontal scroll range to pan");
+    view->centerOn(led);
+
+    QLineEdit *editor = openInlineLabelEditor(view, led);
+    QVERIFY(editor);
+    const QPoint scrollBefore(view->horizontalScrollBar()->value(), view->verticalScrollBar()->value());
+
+    QTest::keyPress(QApplication::focusWidget(), Qt::Key_Space);
+    const QPoint start = view->viewport()->rect().center();
+    for (int i = 1; i <= 5; ++i) {
+        const QPoint pos = start + (QPoint(20, 10) * i);
+        QMouseEvent move(QEvent::MouseMove, pos, view->viewport()->mapToGlobal(pos),
+                         Qt::NoButton, Qt::NoButton, Qt::NoModifier);
+        QApplication::sendEvent(view->viewport(), &move);
+    }
+    QTest::keyRelease(QApplication::focusWidget(), Qt::Key_Space);
+
+    const QPoint scrollAfter(view->horizontalScrollBar()->value(), view->verticalScrollBar()->value());
+    QCOMPARE(scrollAfter, scrollBefore);
+    QCOMPARE(editor->text(), QString(" "));
+}
+
+void TestMainWindowGui::testDestroyWindowDuringInlineLabelEdit()
+{
+    // Destroying a still-visible window takes focus from an open inline label edit, which
+    // commits it; the undo stack's signals then reach MainWindow slots, so they must run
+    // while the window is still whole rather than from ~QWidget.
+    std::unique_ptr<MainWindow> window(createMW());
+    window->resize(1000, 700);
+    QVERIFY(QTest::qWaitForWindowExposed(window.get()));
+    auto *scene = window->currentTab()->scene();
+    auto *view = window->currentTab()->view();
+
+    auto *led = new Led();
+    led->setLabel("Original");
+    led->setPos(100, 100);
+    scene->addItem(led);
+
+    QLineEdit *editor = openInlineLabelEditor(view, led);
+    QVERIFY(editor);
+    editor->setText("Renamed");
+
+    window.reset();
 }
 
 // ===========================================================================

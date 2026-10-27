@@ -77,11 +77,12 @@ private slots:
     void testShowWiresTogglesNodeVisibility();
     void testLastIdTracksHighestAssignedId();
 
-    // InlineLabelEditor: null-element guard, commit-previous-on-restart, and the
-    // empty-label bounding-rect fallback
+    // InlineLabelEditor: null-element guard, commit-previous-on-restart, the
+    // empty-label bounding-rect fallback, and the target being deleted mid-edit
     void testInlineLabelEditorStartWithNullElementIsNoOp();
     void testInlineLabelEditorStartWhileEditingCommitsPrevious();
     void testInlineLabelEditorEmptyLabelUsesElementBoundingRectFallback();
+    void testInlineLabelEditorClosesWhenTargetDeleted();
 
     // ClipboardManager: no-selection no-ops, and legacy clipboard mime-type fallbacks
     void testCutWithNoSelectionClearsClipboard();
