@@ -422,6 +422,11 @@ Found by the audit (P2.87): the check, asked on every keystroke, walked the whol
 a gate's label cost 2 ms a key at 2,000 nodes. Fix: an edit that gives no Tx a channel walks nothing, and one that
 does walks the scene once.
 
+Fix of P2.88: every path that brings nodes as they are (a load, a paste, a duplicate, a clone-drag drop, an IC opened
+in its tab) names, sorted, each channel its Tx nodes share with another Tx of the scene, in one scan: in the status
+bar, after a load with the load's message, and in MCP's `load_circuit` answer as `duplicate_tx_labels`. Tests: the
+scene's count of what arrived, and each path reporting a shared channel and saying nothing without one.
+
 ### 3.11 MCP's `set_element_properties`
 
 It applies the label and colour before validating the frequency, clock delay or volume, so an error leaves them
@@ -775,6 +780,7 @@ Each of these exists on `master`, and its fix is another plan's decision:
 | P2.83 | A slider's key steps of their own (§3.9) | P2.17 | none (the property writes golden unchanged) |
 | P2.18 | Duplicate Tx labels (§3.10) | P1.15 | none expected |
 | P2.87 | The duplicate-channel check without a walk (§3.10) | P2.18 | none |
+| P2.88 | Shared channels reported where they arrive (§3.10) | P2.18 | the strings golden's two messages; MCP's `load_circuit` answer |
 | P2.19 | MCP's property setter (§3.11) | P1.15, P1.17 | MCP's responses to refused requests; any new message |
 | P2.20 | The lock's tooltip (§3.12) | P1.17 | one string |
 | P2.21 | A display's small picture (§3.13) | P1.4 | as the reproduction shows |
