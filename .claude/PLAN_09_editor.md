@@ -2,27 +2,28 @@
 
 On `master`, `Scene`, a `QGraphicsScene`, holds the document (items, ICs, simulation, undo, autosave), the editing
 session (selection, hover, view toggles, routing) and the interaction; ports, wires and labels are graphics items; click
-selection and drag live partly in Qt's own item handlers. This plan splits the code into six layers enforced by build
+selection lives partly in Qt's own item handlers. This plan splits the code into six layers enforced by build
 targets; makes ports, wires and labels plain objects drawn and hit-tested by layers over spatial grids; gives the model
 neutral events, neutral queries and one change funnel with a document listener; splits `Scene` into a document and an
 editing session, with a controller taking the interaction; adds a new view whose viewport is the rendering backend's
 widget, and a CPU backend with painters, a sprite cache and an export mode; and then deletes the old view and scene,
 after which the element is a plain class. It draws what `master` draws, and plan 1's goldens pin it on both views.
 
-- **Depends on:** plans 1 to 8, the Qt floor's and the exception boundaries' plans, landed, since the plans run one
-  at a time, in their order (the plans' rules, §1): plan 3 (one element class with its descriptors, the presenters,
-  the appearance key,
-  the element painter, the outline and decorations, and the include check of the model's direction, which this plan
-  extends to six layers); plan 6 (the core, with its suspend count in the model, which the document takes, and the
-  runner with its changed slots, which the application layer and the renderers take); plan 8 (exporters on the
-  netlist builder, which no longer include the scene, and the IC as one element class with no internal elements);
-  plan 4 (the IC preview cache, whose renderer moves to the application here, and the IC registry's file cache); plan
-  1 (the pointer, wire-geometry, stacking, view and wire-pixel goldens, run on the old and the new view; the probe that
+- **Depends on:** plans 1 to 8, the Qt floor's and the exception boundaries' plans, landed, since the plans run one at a
+  time, in their order (the plans' rules, §1): plan 3 (one element class with its descriptors, the presenters, the
+  appearance key, the element painter, the outline and decorations, and the include check of the model's direction,
+  which this plan extends to six layers); plan 6 (the core, with its suspend count in the model, which the document
+  takes, and the runner with its changed slots, which the application layer and the renderers take); plan 8 (exporters
+  on the netlist builder, which no longer include the scene, and the IC as one element class with no internal elements);
+  plan 4 (the IC preview cache, whose renderer moves to the application here, and the IC registry's file cache); plan 1
+  (the pointer, wire-geometry, stacking, view and wire-pixel goldens, run on the old and the new view; the probe that
   times a load and its first frames); plan 2's fixes this plan keeps (the wheel zoom that keeps the point under the
-  cursor, the hit test that answers the topmost item, MCP's empty-scene error, a connected input that stays on its
-  wire; and its §2.13 to §2.18: a paste that reads everything before its macro opens, no move walking every port,
-  commands deduplicating in linear time, snapping and rendering past `int`'s range computed in floating point, a port's
-  wires attached and detached in time linear in its fan-out).
+  cursor, the hit test that answers the topmost item, MCP's empty-scene error, the circuit's bounds without the rubber
+  band, the selection in id order, the snapping rule with its exact undo, the restored stacking place, a wire attached
+  or detached refreshing only itself, a connected input that stays on its wire; and its §2.13 to §2.18: a paste that
+  reads everything before its macro opens, no move walking every port, commands deduplicating in linear time, snapping
+  and rendering past `int`'s range computed in floating point, a port's wires attached and detached in time linear in
+  its fan-out).
 - **Lands before:** the model-cost round, which works on the new model; then plan 10, whose GPU renderer is a second
   backend behind this plan's render interface, set as the view's viewport, on the model as the round leaves it.
 - **Branch and ledger:** `09-editor`, from `08-export` once plan 8 has landed, in slices (the plans' rules, §1 and
@@ -54,43 +55,45 @@ four IC-preview signals and `openTruthTableRequested` to the session or the cont
 
 ### 1.2 Behaviours the new model reproduces exactly
 
-- **Stacking:** elements at equal z, so insertion order, and an element restored by undo goes on top. An element's ports
-  and label are its child items, drawn just after its body, so a later element that overlaps it hides them. Wires sit at
-  z −1 under every element, the wire being routed included; the rubber band, added before any element, draws over the
-  wires and under every element; the port hover chips draw on top (z 1,000), as does the inline label editor.
+- **Stacking:** elements at equal z, so insertion order, and an element restored by undo goes back to its place among
+  the elements, before the first with a larger id, as a wire among the wires (plan 2's P2.43, `Scene::addItem()` for
+  a preassigned id, the registry finding the next id of a kind in logarithmic time). An element's ports and label are
+  its child items, drawn just after its body, so a later element that overlaps it hides them. Wires sit at z −1 under
+  every element, the wire being routed included; the rubber band, added before any element, draws over the wires and
+  under every element; the port hover chips draw on top (z 1,000), as does the inline label editor.
 - **Hit testing** (`Scene::itemAt`): the items under the point plus those in a small rectangle around it; ports first,
   then elements, then any other custom item (wires), each in the order `items()` returns them (ascending, which plan 2
   fixes to answer the topmost).
-- **Grid snap:** `itemChange(ItemPositionChange)` snaps to 8 px only while the element is in a scene, so loaded
-  positions (set before insertion) are kept exactly; rotation moves each element about the group's centroid with
-  `setPos`, which snaps, as do flip, align, distribute, MCP's move and IC placement; MCP's creation sets the position
-  before insertion and keeps it exactly. Undo and redo snap too: the rotation's undo restores the positions it saved
-  before its constructor snapped them, and the move's undo and redo set theirs, so an element loaded or created off the
-  grid comes back on it.
-- **Click selection and drag live in three places.** Qt's default item handlers carry the plain ones: the scene's
+- **Grid snap** (plan 2's P2.42, P2.D12): setting a position is exact, so a load, a deserialization, an undo and a
+  redo put an element where it was, off the grid included; every edit that decides a place snaps through
+  `GraphicElement::snapToGrid()` (8 px, rounded in floating point): the drag, the nudge, align and distribute, the
+  rotate's redo, the flip, the palette and clone drops, the add without a drag, paste and duplicate, the split's node,
+  and MCP's `create_element`, `move_element` and `instantiate_ic`. A load keeps a file's positions until plan 4 snaps
+  on load (its P4.12).
+- **Click selection and drag live in three places.** Qt's default item handlers carry the plain selection: the scene's
   interaction declines element clicks, so `QGraphicsScene` reaches the element; a press on an unselected item selects it
-  alone, a release without movement selects the item alone, a drag moves every selected movable item to its press
-  position plus the pointer delta through `setPos`, and an empty click clears. `Scene::eventFilter` turns Shift into
-  Ctrl, and swallows a Ctrl press on an element or wire to select it and start the clone drag, so a Ctrl press drags a
-  clone, and Shift-click toggles through `SceneInteraction`. The `sceneEvent` overrides of `GraphicElement` and
-  `Connection` swallow every Ctrl press and release, so Qt's handlers never see one and cannot undo the toggle.
+  alone, a release without movement selects the item alone, and an empty click clears. The drag is `SceneInteraction`'s
+  (elements are not `ItemIsMovable` since P2.42): each selected element goes to its place at the press plus the
+  pointer's travel, snapped, and the release pushes one move command. `Scene::eventFilter` turns Shift into Ctrl, and
+  swallows a Ctrl press on an element or wire to select it and start the clone drag, so a Ctrl press drags a clone, and
+  Shift-click toggles through `SceneInteraction`. The `sceneEvent` overrides of `GraphicElement` and `Connection`
+  swallow every Ctrl press and release, so Qt's handlers never see one and cannot undo the toggle.
 - **Routing:** `ConnectionManager::startFromOutput` and `startFromInput` add a half-connected `Connection` to the scene
   while the user drags, which the model, the simulation and autosave then see.
 
 ### 1.3 Where the intended layers are crossed
 
-`ItemWithId` reaches `SceneItemRegistry`; `InputSwitch` reaches `Scene` and `Commands` (its click pushes an
-`UpdateCommand`); `ICLoader` reaches `Scene` (for `ICRegistry`'s bytes) and `Application::migrationEnabled`;
-`Connection` reaches `Scene` (antialiasing) and `Application::renderingEnabled`; both code generators reach `Scene`
-(`wirelessTxInputPorts`, `sortByTopology`) and walk each IC's internal elements; `GraphicElement`, `Port` and
-`ElementAppearance` reach `ThemeManager` (which reads `Application` and `Settings`); `ICRenderer` reaches
-`ICPreviewPopup`, a widget, and `App/Element` holds widgets (`ElementLabel`, `ICPreviewPopup`); `ICRegistry` reaches
-`Scene`, `Commands`, `Simulation`, `SimulationBlocker` and `Application::guardedSlot`; `SimulationBlocker` is used in
-`Commands` (16 times), `ClipboardManager` and `ConnectionManager`; the view is reached from `SceneInteraction`,
-`ConnectionManager` and `ClipboardManager` (the drag image through `QGraphicsScene::render` and the view's transform);
-`RecentFiles` (in `App/IO`) reaches `Settings`; `ArduinoCodeGen` reaches `Simulation`'s settle bound; BeWavedDolphin's
-waveform simulator drives the simulation and each element's simulation-state hooks; `Simulation` reaches
-`Application::guardedSlot` and `interactiveMode` (widgets) and `QGuiApplication::primaryScreen`, and includes an
+`ItemWithId` reaches `SceneItemRegistry`; `ICLoader` reaches `Scene` (for `ICRegistry`'s bytes) and
+`Application::migrationEnabled`; `Connection` reaches `Scene` (antialiasing) and `Application::renderingEnabled`; both
+code generators reach `Scene` (`wirelessTxInputPorts`, `sortByTopology`) and walk each IC's internal elements;
+`GraphicElement`, `Port` and `ElementAppearance` reach `ThemeManager` (which reads `Application` and `Settings`);
+`ICRenderer` reaches `ICPreviewPopup`, a widget, and `App/Element` holds widgets (`ElementLabel`, `ICPreviewPopup`);
+`ICRegistry` reaches `Scene`, `Commands`, `Simulation`, `SimulationBlocker` and `Application::guardedSlot`;
+`SimulationBlocker` is used in `Commands` (16 times), `ClipboardManager` and `ConnectionManager`; the view is reached
+from `SceneInteraction`, `ConnectionManager` and `ClipboardManager` (the drag image through `QGraphicsScene::render` and
+the view's transform); `RecentFiles` (in `App/IO`) reaches `Settings`; `ArduinoCodeGen` reaches `Simulation`'s settle
+bound; BeWavedDolphin's waveform simulator drives the simulation and each element's simulation-state hooks; `Simulation`
+reaches `Application::guardedSlot` and `interactiveMode` (widgets) and `QGuiApplication::primaryScreen`, and includes an
 unused `<QGraphicsView>`; `Serialization.cpp` includes an unused `<QApplication>`; `App/Core` mixes `Application`,
 `ThemeManager`, `UpdateChecker`, `Settings` and `ExerciseTourResources` with model utilities. The source root is a
 global include directory, `wiredpanda_lib` links every Qt module, one precompiled header (`pch.h`, written by
@@ -98,13 +101,14 @@ global include directory, `wiredpanda_lib` links every Qt module, one precompile
 application and the tests, and the module-qualified form (`#include <QtWidgets/QGraphicsItem>`) appears 15 times, in
 five `*UI.cpp` files: a split into targets alone would reject nothing.
 
-The plans before this one remove several of these crossings before it starts. Plan 3's operations leave no input
-including the scene or the commands, its presenters draw in the theme they are handed, and the IC renderer's body
-moves into the IC's footprint presenter; plan 4's file cache ends the loader's reach into `Scene`; plan 6 deletes
-`Simulation`, `SimulationHost` and `SimulationBlocker`, the commands, the clipboard, the wire routing and the IC
-registry holding the model's suspend count instead, and BeWavedDolphin sweeps through the runner instead of each
-element's hooks; plan 8's exporters read the netlist builder, so neither code generator reaches `Scene`, walks an IC's
-internal elements or reads the old engine's settle bound. The rest are this plan's (§2.3).
+The plans before this one remove several of these crossings before it starts. Plan 2 has the scene record an input
+operation as one command, so no input element includes the scene or the commands (its P2.14); plan 3's presenters draw
+in the theme they are handed, and the IC renderer's body moves into the IC's footprint presenter; plan 4's file cache
+ends the loader's reach into `Scene`; plan 6 deletes `Simulation`, `SimulationHost` and `SimulationBlocker`, the
+commands, the clipboard, the wire routing and the IC registry holding the model's suspend count instead, and
+BeWavedDolphin sweeps through the runner instead of each element's hooks; plan 8's exporters read the netlist builder,
+so neither code generator reaches `Scene`, walks an IC's internal elements or reads the old engine's settle bound. The
+rest are this plan's (§2.3).
 
 ### 1.4 The view and its painting
 
@@ -193,9 +197,11 @@ callers hold become ids here (§2.14).
 
 - **Orientation** is one explicit item transform (turn about the pivot, then flip about the centre), not Qt's rotation
   and transform origin (`ElementOrientation` calls `QGraphicsItem::setRotation` on `master`), so the element's branch
-  for `ItemRotationHasChanged`, which nothing sends then, goes. An element sets `ItemSendsScenePositionChanges`, or a
-  plain move stops re-routing its wires once ports are not child items (`master`'s element lists
-  `ItemScenePositionHasChanged` but never receives it: only its ports send scene position changes).
+  for `ItemRotationHasChanged`, which nothing sends then, goes. An element re-routes its wires on its own
+  `ItemPositionHasChanged` and `ItemTransformHasChanged`, through `ItemSendsGeometryChanges` (plan 2's P2.58), so a
+  plain move keeps re-routing them once ports are not child items. Nothing sets `ItemSendsScenePositionChanges`: Qt
+  walks every item with that flag on each move of any item with children, which made moving k elements cost k times
+  the scene's port count while ports carried it (`TestScene::testNoItemMakesEveryMoveWalkTheScene`).
 - **Bounds** come from the registry: the union of elements (with what they draw) and wires; overlays do not count; an
   empty circuit has empty bounds; `setSceneRect(QRectF())` unsets the rect so it grows with the items; a wire being
   routed counts through its attached port; a load leaves the scene rect that `resizeScene` gives, for an empty file
@@ -280,19 +286,19 @@ mitigation.
 highlight derived from the selected elements, hover, the view toggles as a visibility predicate that renderers and hit
 tests read (P9.D3, replacing `VisibilityManager`'s `setVisible`), the wire being routed (P9.D5), the paste offset and
 the status messages. Qt's click-selection and drag handlers move into the interaction code first, beside its Shift
-toggle and clone drag, with the same rules on the session's selection; then `ItemIsSelectable` and `ItemIsMovable` go
-off, the element's `sceneEvent` goes, and its Qt selection API is hidden so its callers move at compile time. Commands
-carry the ids to select after redo and after undo, which the session applies when the undo stack's index changes; a load
-or a bulk event never selects.
+toggle, clone drag and the drag plan 2 moved there, with the same rules on the session's selection; then
+`ItemIsSelectable` goes off (`ItemIsMovable` went with plan 2's P2.42), the element's `sceneEvent` goes, and its Qt
+selection API is hidden so its callers move at compile time. Commands carry the ids to select after redo and after undo,
+which the session applies when the undo stack's index changes; a load or a bulk event never selects.
 
 ### 2.9 The document, and `Scene`'s callers by group
 
 `Document` holds the item registry (iterated in ascending id), `ICRegistry`, plan 6's simulation core and its suspend
 count (which the scene holds until this step), the undo stack, the context directory, the serialization contexts, the
 modified and autosave flags, the bounds and the spatial indices (a curve grid for wires, a point grid for ports, a
-cell grid for elements; the label index belongs to the renderers, since label bounds depend on fonts).
-A stacking sequence, assigned on insertion (file order on load, the
-top on paste and on an undo's restore), reproduces `QGraphicsScene`'s order. Queries replace `QGraphicsScene::items`:
+cell grid for elements; the label index belongs to the renderers, since label bounds depend on fonts). A stacking
+sequence, assigned on insertion (file order on load, the top on paste, and on an undo's restore the place its id gives
+among its kind, P2.D13), reproduces the order plan 2 leaves. Queries replace `QGraphicsScene::items`:
 `hitTest(pos, mask, visible)` with today's priority, slop and wire widths, `itemsIn(rect)`, `itemsIn(path)` (an
 element's rectangle or a wire's shape against the path) and `visibleElements(rect)`. Commands depend on the document
 only. File tags are named constants of the same values (`FileTag::Connection` 65538, `FileTag::Element` 65539),
@@ -311,12 +317,12 @@ the clipboard, with the selection image through an interface the editor declares
 backend's export mode; palette and file drops. The wire being routed is an anchor port and a free end, drawn as an
 overlay; completing it is one command that adds the wire, and detaching an end is a preview until release, then one
 command; the model, the simulation and autosave never see a half-connected wire. Snapping is controller and command
-policy (P9.D6): the controller snaps drag, drop, nudge and paste targets to 8 px; the rotate, flip, align and distribute
-commands, the rotation's undo, the move's undo and redo, and MCP's move and IC placement snap explicitly; loading and
-MCP's creation keep exact positions; `setPos` stores what it is given, and `itemChange`'s snap goes. The overlay state
+policy (P9.D6), as plan 2 left it (P2.D12): the controller snaps drag, drop, nudge and paste targets to 8 px through the
+one snapping helper; the rotate's redo, the flip, align and distribute, and MCP's creation, move and IC placement snap
+explicitly; a load, an undo and a redo restore exact positions, and `setPos` stores what it is given. The overlay state
 the renderers read is data: the selection rectangle, the wire being routed, the hovered port, hover chips, the IC
-preview request and the inline-edit request. `Scene` shrinks to an adapter, and controller tests replace the
-view-driven ones.
+preview request and the inline-edit request. `Scene` shrinks to an adapter, and controller tests replace the view-driven
+ones.
 
 ### 2.11 The new view
 
@@ -483,9 +489,9 @@ user's choice between workable options).
 - **P9.D5. The wire being routed is session state;** the model holds only attached wires, and completing a wire is one
   command. Basis: read on `master` (routing adds a half-connected wire that the model, the simulation and autosave
   see); the user's ruling of 2026-10-03/04.
-- **P9.D6. Snapping is editor and command policy; a position stores exactly.** Basis: read on `master` (the item snaps
-  in its position-change hook only while in a scene, so a loaded position is kept and every other path snaps through
-  `setPos`; the explicit rules give the same positions); the user's ruling of 2026-10-03/04.
+- **P9.D6. Snapping is editor and command policy; a position stores exactly.** Plan 2 made it so on `master`'s scene
+  (P2.42, P2.D12: the position-change hook no longer snaps, every edit that decides a place snaps, an undo restores
+  exactly); the controller keeps that rule. Basis: read on `master`; the user's rulings of 2026-10-03/04 and 2026-10-22.
 - **P9.D7. The old and the new view side by side, then the old deleted.** Basis: the plans' rules (§2: a replacement
   runs beside what it replaces until proven); the user's ruling of 2026-10-03/04.
 - **P9.D8. Ports, wires and labels as plain objects, from the intent of the prototype on `perf/load-hotspots`,** drawn
