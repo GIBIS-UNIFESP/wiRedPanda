@@ -441,25 +441,30 @@ QHash<QString, InputPort *> Scene::wirelessTxInputPorts(const QVector<GraphicEle
 
 QString Scene::duplicateTxLabel(const QList<WirelessEdit> &edits) const
 {
-    // Each wireless node's channel as the edits leave it
-    QHash<const GraphicElement *, WirelessEdit> after;
+    // How many Tx nodes hold each channel the edits give a Tx, the edited nodes as the edits leave them and every other
+    // node as it is: one scan of the scene, whatever the number of edits
+    QHash<QString, int> holders;
+    QSet<const GraphicElement *> edited;
     for (const WirelessEdit &edit : edits) {
-        after.insert(edit.node, edit);
+        edited.insert(edit.node);
+        if ((edit.mode == WirelessMode::Tx) && !edit.label.isEmpty()) {
+            ++holders[edit.label];
+        }
+    }
+    if (holders.isEmpty()) {
+        return {};
     }
     for (auto *element : unsortedElements()) {
-        if (element->hasWirelessMode() && !after.contains(element)) {
-            after.insert(element, {element, element->label(), element->wirelessMode()});
+        if ((element->wirelessMode() == WirelessMode::Tx) && !edited.contains(element)) {
+            if (const auto it = holders.find(element->label()); it != holders.end()) {
+                ++it.value();
+            }
         }
     }
 
     for (const WirelessEdit &edit : edits) {
-        if ((edit.mode != WirelessMode::Tx) || edit.label.isEmpty()) {
-            continue;
-        }
-        for (const WirelessEdit &other : std::as_const(after)) {
-            if ((other.node != edit.node) && (other.mode == WirelessMode::Tx) && (other.label == edit.label)) {
-                return edit.label;
-            }
+        if ((edit.mode == WirelessMode::Tx) && !edit.label.isEmpty() && (holders.value(edit.label) > 1)) {
+            return edit.label;
         }
     }
     return {};
