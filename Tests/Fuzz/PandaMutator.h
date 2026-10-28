@@ -16,14 +16,15 @@
  *   - patch_item_type:    splice a GraphicElement or Connection type discriminator
  *   - patch_element_seq:  splice a whole 12-byte element header (type and ElementType)
  *   - patch_appearance_entry: splice an appearances-list entry with a skinName key
- *   - fallback:           libFuzzer's own mutation (LLVMFuzzerMutate)
+ *   - fallback:           libFuzzer's own mutation (LLVMFuzzerMutate), two of the ten draws
  *
  * A WPCF input whose header and payload decode is mutated in its body, the bytes after the header, decompressed when
  * the version compresses them (Rev100 and later), and written back compressed again: a mutation of the raw bytes
  * would land in zlib's stream and be refused before any structure. For such an input patch_version and patch_header
- * switch it to another version, the current ones included, compressing or decompressing its body to match; the
- * fallback still mutates its raw bytes, so the decompression guards see corrupt streams. Any other input is mutated
- * as raw bytes, which is safe even when it does not parse: the mutator writes into whatever slice it picked.
+ * switch it to another version, the current ones included, compressing or decompressing its body to match; of the
+ * fallback's two draws one mutates the body and one its raw bytes, so the decompression guards see corrupt streams.
+ * Any other input is mutated as raw bytes, which is safe even when it does not parse: the mutator writes into
+ * whatever slice it picked.
  */
 
 #pragma once
@@ -372,14 +373,17 @@ inline size_t mutate(uint8_t *Data, size_t Size, size_t MaxSize, unsigned int Se
         return LLVMFuzzerMutate(Data, Size, MaxSize);
 
     std::mt19937 rng(Seed);
-    const int op = std::uniform_int_distribution<int>(0, 8)(rng);
+    // Ops 0 to 7 are the structure-aware ones; 8 and 9 are libFuzzer's own mutation, of a decoded input's raw bytes
+    // and of its body
+    const int op = std::uniform_int_distribution<int>(0, 9)(rng);
 
     auto decoded = decode(Data, Size);
     if (!decoded) {
         return mutateRaw(Data, Size, MaxSize, rng, op);
     }
-    // The fallback operation mutates even a decoded input's raw bytes, so the header and the compressed stream still
-    // reach the reader corrupt: its decompression and size guards stay fuzzed
+    // Op 8 mutates even a decoded input's raw bytes, so the header and the compressed stream still reach the reader
+    // corrupt: its decompression and size guards stay fuzzed. Op 9 reaches mutateRaw()'s fallback below, libFuzzer's
+    // own mutation of the decompressed body.
     if (op == 8) {
         return LLVMFuzzerMutate(Data, Size, MaxSize);
     }

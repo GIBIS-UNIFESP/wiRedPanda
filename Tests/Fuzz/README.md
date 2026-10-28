@@ -65,7 +65,9 @@ The harnesses whose input is a whole `.panda` file share one structure-aware
 mutator, `PandaMutator::mutate()` (`PandaMutator.h`): it splices known keys,
 type ids and element headers, and mutates a current-format file in its
 decompressed body, writing it back compressed, so mutations reach the reader's
-structure instead of breaking zlib's stream.
+structure instead of breaking zlib's stream. One draw in ten hands that body
+to libFuzzer's own mutation, `panda.dict`'s entries included, and one the
+file's raw bytes, so the decompression guards still see corrupt streams.
 
 A `.panda` file names its file-backed ICs' files, which resolve against its
 own directory, so an input loaded alone loads none of them: 180 of the seed
