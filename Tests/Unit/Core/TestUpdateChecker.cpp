@@ -10,6 +10,7 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QNetworkRequest>
+#include <QRegularExpression>
 #include <QSignalSpy>
 #include <QSslError>
 #include <QSysInfo>
@@ -252,6 +253,10 @@ void TestUpdateChecker::testOnReplyFinishedUnsafeDownloadUrlFallsBackToReleasePa
     // (still JSON-sourced) can be. An unsafe/unexpected download asset URL must still
     // emit updateAvailable (the release page is a safe manual fallback), just with
     // downloadUrl cleared rather than passed through.
+    if (releaseAssetKeyForThisBuild().isEmpty()) {
+        QSKIP("No release asset is published for this build's platform and CPU, so no download URL is read");
+    }
+
     const QByteArray body = R"({
         "version": "99.5.3",
         "linuxX64": "https://evil.example.com/malicious.AppImage",
@@ -266,6 +271,8 @@ void TestUpdateChecker::testOnReplyFinishedUnsafeDownloadUrlFallsBackToReleasePa
 
     UpdateChecker checker;
     QSignalSpy spy(&checker, &UpdateChecker::updateAvailable);
+    QTest::ignoreMessage(QtWarningMsg, QRegularExpression(R"(^UpdateChecker: download URL has unexpected scheme/host, falling back to release page: )"
+                                                          R"(QUrl\("https://evil\.example\.com/malicious\.\w+"\)$)"));
     checker.onReplyFinished(reply);
 
     QCOMPARE(spy.size(), 1);

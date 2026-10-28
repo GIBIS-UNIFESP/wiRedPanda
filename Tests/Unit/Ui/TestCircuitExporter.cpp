@@ -100,6 +100,7 @@ void TestCircuitExporter::testRenderToPdfThrowsOnInvalidPath()
     // file under a directory that doesn't exist.
     WorkSpace workspace;
     const QString path = "/nonexistent/directory/that/does/not/exist/circuit.pdf";
+    QTest::ignoreMessage(QtWarningMsg, "QPainter::begin(): Returned false");
     QVERIFY_THROWS(std::exception, CircuitExporter::renderToPdf(workspace.scene(), path));
 }
 
@@ -109,6 +110,7 @@ void TestCircuitExporter::testRenderScaledImageThrowsOnEmptyPaddedRect()
     // null paint device -- the one other real trigger of renderScaledImage()'s throw, distinct
     // from the file I/O failure covered by the PDF/PNG path tests above.
     WorkSpace workspace;
+    QTest::ignoreMessage(QtWarningMsg, "QPainter::begin: Paint device returned engine == 0, type: 3");
     QVERIFY_THROWS(std::exception, CircuitExporter::renderScaledImage(workspace.scene(), QRectF()));
 }
 

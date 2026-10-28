@@ -30,12 +30,14 @@ void TestDolphinExporter::testExportToPdfThrowsWhenPrinterCannotOpen()
         QPrinter probe(QPrinter::HighResolution);
         probe.setOutputFileName(pdfPath);
         QPainter painter;
+        QTest::ignoreMessage(QtWarningMsg, "QPainter::begin(): Returned false");
         QVERIFY(!painter.begin(&probe));
     }
 
     SignalModel model(1, 2);
     model.setValue(0, 0, 1);
 
+    QTest::ignoreMessage(QtWarningMsg, "QPainter::begin(): Returned false");
     QVERIFY_THROWS(std::exception, DolphinExporter::exportToPdf(&model, PlotType::Line, pdfPath));
 
     QFile::setPermissions(lockedDir.path(),
