@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <limits>
 #include <memory>
 #include <tuple>
 
@@ -1934,6 +1935,84 @@ void TestScene::testPasteOfUnreadableBlobChangesNothing()
     setClipboardWithBlob("not a circuit", items);
     WorkSpace workspace;
     checkFailedPasteChangesNothing(workspace.scene());
+}
+
+void TestScene::testUndoOfAPasteGrowsLinearly()
+{
+    // The undo of a paste removes every pasted item, which must stay linear in them. Pasted as the application pastes,
+    // with rendering on and a shown view painting the paste before the undo, as a user's next action finds it: the
+    // paste fits the scene rect, and the paint polishes and indexes the items. The undo is timed against the paste of
+    // the same chain of wired gates: how that ratio grows from 250 elements to 16,000, 0.9 to 1.45 for a linear undo
+    // with eight copies of the test running at once, and 10 to 15 for an undo that comes before Qt polishes and indexes
+    // the paste. The sizes are far apart so that a loaded runner's noise stays well under that growth. Ratios of the
+    // thread's CPU time (TestUtils::ThreadCpuTimer), each the best of nine runs. The window runs its event loop between
+    // steps, as it would between a user's actions: a window that reads no message for five seconds is hung to Windows,
+    // whose ghost of it then takes the desktop's foreground and refuses every other process a move of the cursor. Nor
+    // does it take the foreground when shown, the desktop being the one the suite's other tests share.
+    const TestUtils::ScopedRendering rendering;
+    struct Times {
+        qint64 paste = 0;
+        qint64 undo = 0;
+    };
+    const auto bestTimes = [](const int n) {
+        WorkSpace source;
+        GraphicElement *previous = nullptr;
+        for (int i = 0; i < n; ++i) {
+            auto *notGate = ElementFactory::buildElement(ElementType::Not);
+            notGate->setPos(64 * (i % 100), 64 * (i / 100));
+            source.scene()->addItem(notGate);
+            if (previous) {
+                auto *conn = new Connection();
+                conn->setStartPort(previous->outputPort());
+                conn->setEndPort(notGate->inputPort());
+                source.scene()->addItem(conn);
+            }
+            previous = notGate;
+        }
+        source.scene()->selectAll();
+        source.scene()->clipboardManager()->copy();
+
+        WorkSpace workspace;
+        auto *scene = workspace.scene();
+        workspace.setAttribute(Qt::WA_ShowWithoutActivating);
+        workspace.show();
+        if (!QTest::qWaitForWindowExposed(&workspace)) {
+            return Times{};
+        }
+        Times best{std::numeric_limits<qint64>::max(), std::numeric_limits<qint64>::max()};
+        for (int run = 0; run < 9; ++run) {
+            TestUtils::ThreadCpuTimer timer;
+            timer.start();
+            scene->clipboardManager()->paste();
+            best.paste = std::min(best.paste, timer.elapsed());
+            if (scene->elements().size() != n) {
+                return Times{};
+            }
+            QCoreApplication::processEvents();
+            workspace.view()->viewport()->repaint();
+            QCoreApplication::processEvents();
+            timer.start();
+            scene->undoStack()->undo();
+            best.undo = std::min(best.undo, timer.elapsed());
+            if (!scene->elements().isEmpty()) {
+                return Times{};
+            }
+            QCoreApplication::processEvents();
+        }
+        return best;
+    };
+
+    // The large size first: the first paste a process times runs cold, on CI's runners up to 2.7 times as long
+    // through every one of its nine runs, which at 250 elements read as the undo's growth. The large size's first
+    // runs are slower too, and the best of nine leaves them out
+    const Times large = bestTimes(16000);
+    const Times small = bestTimes(250);
+    QVERIFY2((small.paste > 0) && (large.paste > 0) && (small.undo > 0) && (large.undo > 0),
+             "the paste or its undo lost or kept items");
+    const double growth = (static_cast<double>(large.undo) / static_cast<double>(large.paste))
+                        / (static_cast<double>(small.undo) / static_cast<double>(small.paste));
+    QVERIFY2(growth < 5.0, qPrintable(QString("against the paste of the same items, its undo took %1 times as long "
+                                              "at 64 times the elements").arg(growth)));
 }
 
 // ============================================================================

@@ -106,6 +106,7 @@ private slots:
     void testPasteOfUnreadableItemsChangesNothing();
     void testPasteOfUnreadableBlobChangesNothing();
     void testNoItemMakesEveryMoveWalkTheScene();
+    void testUndoOfAPasteGrowsLinearly();
 
     // ============================================================
     // Topological Sort Tests (4 tests)
