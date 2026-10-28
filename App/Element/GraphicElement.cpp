@@ -33,7 +33,11 @@
 static const QFont &labelFont()
 {
     static const QFont font = [] {
-        QFont f("Sans Serif");
+        // The platform's own sans-serif family: a family it lacks ("Sans Serif" outside fontconfig) makes Qt build its
+        // whole table of family aliases on the first label
+        QFont hint;
+        hint.setStyleHint(QFont::SansSerif);
+        QFont f(hint.defaultFamily());
         f.setBold(true);
         return f;
     }();
