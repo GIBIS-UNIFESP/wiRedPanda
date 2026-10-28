@@ -198,7 +198,9 @@ sets answer membership, the lists keeping their order. Shown by `TestCommands::t
 `GraphicElement::snapToGrid()`, which every move, paste, drop and alignment runs, rounded to an `int` and multiplied in
 `int`, so a finite position past about 2^31, which a file may hold, was undefined behaviour (P2.61, found by
 `fuzz_clipboard`'s coverage rounds pasting a legacy file's element at -5e153). Fix: rounding in floating point. Shown
-by `TestGraphicElement::testSnapToGridKeepsAPositionBeyondIntRange`.
+by `TestGraphicElement::testSnapToGridKeepsAPositionBeyondIntRange`. Found by the audit (P2.85): rounding in floating
+point keeps the sign of a small negative value, so a coordinate just left of or above the origin snapped to -0, which
+a saved file writes as other bytes than the +0 an int gave; adding zero gives +0, checked by the same test.
 
 ### 2.17 Rendering a selection that reaches past int's range is undefined
 
@@ -732,6 +734,7 @@ Each of these exists on `master`, and its fix is another plan's decision:
 | P2.58 | No move walks every port (§2.14) | P1.5 | none (the wire-geometry golden keeps the wires following) |
 | P2.60 | Commands deduplicating in linear time (§2.15) | the helpers only | none |
 | P2.61 | Snapping past `int`'s range (§2.16) | the helpers only | none |
+| P2.85 | A snap near the origin gives +0 (§2.16) | P2.61 | none |
 | P2.62 | Rendering past `int`'s range (§2.17) | the helpers only | none |
 | P2.66 | A port's wires in linear time (§2.18) | the helpers only | none |
 | P2.69 | A trigger loaded as saved (§2.19) | the helpers only | none |
