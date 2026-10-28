@@ -1792,7 +1792,9 @@ void TestElementEditor::testDraggingASliderIsOneUndoStep()
     auto *undoStack = workspace.scene()->undoStack();
     const int commands = undoStack->count();
 
+    // A drag holds the handle down
     auto *slider = editor.findChild<QSlider *>("sliderDelay");
+    slider->setSliderDown(true);
     slider->setValue(1);
     slider->setValue(2);
     slider->setValue(3);
@@ -1800,14 +1802,51 @@ void TestElementEditor::testDraggingASliderIsOneUndoStep()
     QCOMPARE(undoStack->count(), commands + 1);
 
     // Releasing the slider ends the drag
-    emit slider->sliderReleased();
+    slider->setSliderDown(false);
+    slider->setSliderDown(true);
     slider->setValue(4);
+    slider->setSliderDown(false);
     QCOMPARE(undoStack->count(), commands + 2);
 
     undoStack->undo();
     QCOMPARE(clock->delay(), 3 / 8.0);
     undoStack->undo();
     QCOMPARE(clock->delay(), 0.0);
+}
+
+void TestElementEditor::testSliderKeyStepsAreStepsOfTheirOwn()
+{
+    // A slider moved with the handle not held (a key, the wheel, a click on the groove) takes an undo step per move,
+    // and a later drag merges with none of them
+    WorkSpace workspace;
+    auto *buzzer = new Buzzer();
+    workspace.scene()->addItem(buzzer);
+    ElementEditor editor(&workspace);
+    editor.setScene(workspace.scene());
+    workspace.scene()->clearSelection();
+    buzzer->setSelected(true);
+    auto *undoStack = workspace.scene()->undoStack();
+    auto *slider = editor.findChild<QSlider *>("sliderVolume");
+    QVERIFY(slider);
+    const int start = slider->value();
+    const int step = slider->singleStep();
+    const int commands = undoStack->count();
+
+    QTest::keyClick(slider, Qt::Key_Left);
+    QTest::keyClick(slider, Qt::Key_Left);
+    QCOMPARE(slider->value(), start - 2 * step);
+    QCOMPARE(undoStack->count(), commands + 2);
+
+    slider->setSliderDown(true);
+    slider->setValue(start - 3 * step);
+    slider->setValue(start - 4 * step);
+    slider->setSliderDown(false);
+    QCOMPARE(undoStack->count(), commands + 3);
+
+    undoStack->undo();
+    QCOMPARE(buzzer->volume(), static_cast<float>(start - 2 * step) / 100.0f);
+    undoStack->undo();
+    QCOMPARE(buzzer->volume(), static_cast<float>(start - step) / 100.0f);
 }
 
 void TestElementEditor::testTypingAFrequencyIsOneUndoStep()
@@ -1986,9 +2025,10 @@ void TestElementEditor::testMixedDelaysDragIsOneStep()
     QCOMPARE(slider->value(), 0);
     const int before = undoStack->count();
 
+    slider->setSliderDown(true);
     slider->setValue(1);
     slider->setValue(2);
-    emit slider->sliderReleased();
+    slider->setSliderDown(false);
     QCOMPARE(early->delay(), 0.25);
     QCOMPARE(late->delay(), 0.25);
     QCOMPARE(undoStack->count() - before, 1);

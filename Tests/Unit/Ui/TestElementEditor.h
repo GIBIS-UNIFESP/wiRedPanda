@@ -90,6 +90,7 @@ private slots:
     // Each field sets its own property; a typed field or a dragged slider is one undo step until left or released
     void testTypingALabelIsOneUndoStep();
     void testDraggingASliderIsOneUndoStep();
+    void testSliderKeyStepsAreStepsOfTheirOwn();
     void testTypingAFrequencyIsOneUndoStep();
     void testEachComboPickIsAnUndoStep();
     void testANewSelectionStartsAnUndoStep();

@@ -92,7 +92,8 @@ ElementEditor::ElementEditor(QWidget *parent)
     connect(m_ui->pushButtonTruthTable,   &QPushButton::clicked,                            this, &ElementEditor::truthTable);
 
     // Each field sets its own property of the selection. One typed into or dragged through is one undo step until it
-    // is left or released (endEditSession()).
+    // is left or released (endEditSession()); a slider moved by a key, the wheel or a click on its groove, its handle
+    // not held, takes a step of its own.
     connect(m_ui->lineEditElementLabel,   &QLineEdit::textChanged,                          this, &ElementEditor::labelChanged);
     connect(m_ui->comboBoxColor,          qOverload<int>(&QComboBox::currentIndexChanged),  this, &ElementEditor::colorChanged);
     connect(m_ui->comboBoxAudio,          qOverload<int>(&QComboBox::currentIndexChanged),  this, &ElementEditor::audioChanged);
@@ -683,12 +684,12 @@ void ElementEditor::frequencyChanged(const double frequency)
 void ElementEditor::delayChanged(const int eighths)
 {
     // The slider's -4 to 4 is the phase delay's -0.5 to 0.5 of the period
-    setProperty(ElementProperty::Delay, eighths / 8.0, true);
+    setProperty(ElementProperty::Delay, eighths / 8.0, m_ui->sliderDelay->isSliderDown());
 }
 
 void ElementEditor::volumeChanged(const int percent)
 {
-    setProperty(ElementProperty::Volume, static_cast<float>(percent) / 100.0f, true);
+    setProperty(ElementProperty::Volume, static_cast<float>(percent) / 100.0f, m_ui->sliderVolume->isSliderDown());
 }
 
 void ElementEditor::wirelessModeChanged(const int index)
