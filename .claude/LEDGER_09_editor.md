@@ -46,6 +46,7 @@ Each row's notes say how its check is shown to fail; "as on the branch" marks a 
 | P9.28 | What the user sees new (§6) | todo | | Needs the user: ports and labels above overlapping elements; any redrawn glows |
 | P9.29 | Whether the listener's events are enough for plan 10's mirror (§6) | todo | | Checked against plan 10's mirror before the listener is final |
 | P9.30 | Keep a port's `pos()` and `scenePos()` and a wire's `path()`, with their meanings, when ports and wires leave the item tree | todo | | Plan 1's scene-snapshot, wire-geometry and port-layout goldens read them (plan 1, §3.1 and §9); found 2026-10-22 on `01-characterization` |
+| P9.31 | The document's spatial indices independent of a scene rect (§2.9) | todo | | From plan 2's P2.89, 2026-10-28: `Workspace` starts the scene rect at its view's 640x480 and only the interactive paths widen it, so a circuit MCP builds (or an undo restores) beyond it has Qt's BSP index put every item outside into its border cells; an undo of 8,000 added elements took 330-430 ms against 138 ms with the rect fitted. Fitting the rect after every command walks the circuit each time (4,000 one-element commands 30 s), so plan 2 left it. Test: a circuit built well beyond the view's rect, its bulk removal growing as its add |
 
 ## Log
 
@@ -54,3 +55,5 @@ Each row's notes say how its check is shown to fail; "as on the branch" marks a 
   `path()`, which this plan keeps when ports and wires leave the item tree.
 - 2026-10-25: P9.27 measured by plan 2's P2.38: `master` still pays the BSP index rebuild after a load, 20 s on the
   8,000-element circuit, quadratic in the wires spanning it.
+- 2026-10-28: P9.31 added from plan 2's P2.89: the document's spatial indices must not depend on a scene rect, as Qt's
+  BSP index does.
