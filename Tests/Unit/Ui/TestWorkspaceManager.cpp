@@ -16,6 +16,7 @@
 #include "App/Core/Application.h"
 #include "App/Core/Settings.h"
 #include "App/Element/GraphicElements/And.h"
+#include "App/Element/GraphicElements/Node.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -291,6 +292,68 @@ void TestWorkspaceManager::testOpenICInTabIsNoOpWithNoCurrentTab()
     f.manager.openICInTab(QStringLiteral("blob"), 0, QByteArray());
     QCOMPARE(f.host.setICButtonsVisibleCallCount, 0);
     QCOMPARE(f.tabWidget.count(), 0);
+}
+
+namespace TestWorkspaceManagerTxHelpers {
+
+// Saves a circuit whose Tx nodes hold \a labels, in order, to \a path
+void saveTxNodes(const QString &path, const QStringList &labels)
+{
+    WorkSpace workspace;
+    for (int i = 0; i < labels.size(); ++i) {
+        auto *node = new Node;
+        node->setWirelessMode(WirelessMode::Tx);
+        node->setLabel(labels.at(i));
+        node->setPos(64 * i, 0);
+        workspace.scene()->addItem(node);
+    }
+    QCOMPARE(workspace.save(path), WorkSpace::SaveOutcome::Saved);
+}
+
+} // namespace TestWorkspaceManagerTxHelpers
+
+void TestWorkspaceManager::testLoadReportsDuplicateTxLabels()
+{
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString unique = dir.filePath("unique.panda");
+    const QString shared = dir.filePath("shared.panda");
+    TestWorkspaceManagerTxHelpers::saveTxNodes(unique, {"a", "b"});
+    TestWorkspaceManagerTxHelpers::saveTxNodes(shared, {"b", "a", "b", "a", "c"});
+
+    WorkspaceManagerFixture f;
+    f.manager.loadPandaFile(unique);
+    QCOMPARE(f.host.statusMessages.size(), 1);
+    QCOMPARE(f.host.statusMessages.constLast().message, QStringLiteral("File loaded successfully."));
+
+    // The file loads as it is, and its message names each shared channel
+    f.manager.loadPandaFile(shared);
+    QCOMPARE(f.manager.currentTab()->scene()->elements().size(), 5);
+    QCOMPARE(f.host.statusMessages.size(), 2);
+    const QString message = f.host.statusMessages.constLast().message;
+    QVERIFY2(message.startsWith(QStringLiteral("File loaded successfully. ")), qPrintable(message));
+    QVERIFY2(message.contains("\"a\", \"b\"") && !message.contains("\"c\""), qPrintable(message));
+}
+
+void TestWorkspaceManager::testOpenICInTabReportsDuplicateTxLabels()
+{
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("ic.panda");
+    TestWorkspaceManagerTxHelpers::saveTxNodes(path, {"a", "a"});
+    QFile file(path);
+    QVERIFY(file.open(QIODevice::ReadOnly));
+    const QByteArray blob = file.readAll();
+
+    WorkspaceManagerFixture f;
+    f.manager.createNewTab();
+    f.manager.openICInTab(QStringLiteral("blob"), 0, blob);
+
+    QCOMPARE(f.tabWidget.count(), 2);
+    QCOMPARE(f.manager.currentTab()->scene()->elements().size(), 2);
+    QCOMPARE(f.host.statusMessages.size(), 1);
+    const QString message = f.host.statusMessages.constLast().message;
+    QVERIFY2(message.contains("\"a\""), qPrintable(message));
 }
 
 void TestWorkspaceManager::testSaveFileCancelledDialogIsNoOp()

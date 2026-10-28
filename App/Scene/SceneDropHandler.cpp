@@ -120,6 +120,7 @@ void SceneDropHandler::handleCloneDrag(QGraphicsSceneDragDropEvent *event)
     }
 
     m_scene->resizeScene();
+    m_scene->reportDuplicateTxLabels(itemList);
 }
 
 void SceneDropHandler::addFromMimeData(QMimeData *mimeData, std::optional<QPointF> scenePos)

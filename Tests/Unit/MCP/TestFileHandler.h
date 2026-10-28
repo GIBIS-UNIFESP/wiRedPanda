@@ -14,6 +14,7 @@ private slots:
     void testHandleLoadCircuitRejectsEmptyFilename();
     void testHandleLoadCircuitRejectsNoMainWindow();
     void testHandleLoadCircuitLoadsRealFile();
+    void testHandleLoadCircuitNamesDuplicateTxLabels();
 
     void testHandleSaveCircuitRejectsMissingFilename();
     void testHandleSaveCircuitRejectsEmptyFilename();

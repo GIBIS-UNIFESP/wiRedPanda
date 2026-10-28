@@ -193,6 +193,7 @@ void ClipboardManager::paste()
     if (needsMacro) {
         m_scene->undoStack()->endMacro();
     }
+    m_scene->reportDuplicateTxLabels(items);
 }
 
 bool ClipboardManager::canPaste(const QMimeData *mimeData)
@@ -368,6 +369,7 @@ void ClipboardManager::duplicate()
     QPointF center;
     const auto added = readItems(readStream, version, m_scene->icRegistry()->blobMapRef(), center);
     addItems(added, center, QPointF(Constants::gridSize, Constants::gridSize));
+    m_scene->reportDuplicateTxLabels(added);
 
     // Make the copies the active selection so they can be moved right away.
     for (auto *item : added) {

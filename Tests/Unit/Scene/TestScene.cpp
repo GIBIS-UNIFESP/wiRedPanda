@@ -1489,6 +1489,116 @@ void TestScene::testInlineLabelEditorRefusesADuplicateTxLabel()
     QVERIFY(messages.constFirst().constFirst().toString().contains("\"x\""));
 }
 
+namespace TestSceneTxHelpers {
+
+Node *addWirelessNode(Scene *scene, const QString &label, const WirelessMode mode, const QPointF pos)
+{
+    auto *node = new Node;
+    node->setWirelessMode(mode);
+    node->setLabel(label);
+    node->setPos(pos);
+    scene->addItem(node);
+    return node;
+}
+
+} // namespace TestSceneTxHelpers
+
+void TestScene::testDuplicateTxLabelsNamesWhatArrived()
+{
+    using TestSceneTxHelpers::addWirelessNode;
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    addWirelessNode(scene, "b", WirelessMode::Tx, {0, 0});
+    addWirelessNode(scene, "a", WirelessMode::Tx, {64, 0});
+    addWirelessNode(scene, "c", WirelessMode::Tx, {128, 0});
+    addWirelessNode(scene, "d", WirelessMode::Rx, {192, 0});
+    auto *secondB = addWirelessNode(scene, "b", WirelessMode::Tx, {0, 64});
+    auto *secondA = addWirelessNode(scene, "a", WirelessMode::Tx, {64, 64});
+    auto *rxC = addWirelessNode(scene, "c", WirelessMode::Rx, {128, 64});
+    auto *txD = addWirelessNode(scene, "d", WirelessMode::Tx, {192, 64});
+    auto *unlabelled = addWirelessNode(scene, "", WirelessMode::Tx, {256, 64});
+    addWirelessNode(scene, "", WirelessMode::Tx, {256, 0});
+
+    // Only what arrived is named, sorted; an Rx shares no channel and an unlabelled Tx has none
+    QCOMPARE(scene->duplicateTxLabels({secondB, secondA, rxC, txD, unlabelled}), QStringList({"a", "b"}));
+    QCOMPARE(scene->duplicateTxLabels({secondB}), QStringList({"b"}));
+    QCOMPARE(scene->duplicateTxLabels({rxC, txD, unlabelled}), QStringList());
+    QCOMPARE(scene->duplicateTxLabels({}), QStringList());
+
+    QCOMPARE(Scene::duplicateTxLabelsMessage({}), QString());
+    QVERIFY(Scene::duplicateTxLabelsMessage({"b"}).contains("\"b\""));
+    QVERIFY(Scene::duplicateTxLabelsMessage({"a", "b"}).contains("\"a\", \"b\""));
+}
+
+void TestScene::testPasteReportsDuplicateTxLabels()
+{
+    using TestSceneTxHelpers::addWirelessNode;
+    WorkSpace source;
+    addWirelessNode(source.scene(), "a", WirelessMode::Tx, {0, 0})->setSelected(true);
+    addWirelessNode(source.scene(), "b", WirelessMode::Tx, {64, 0})->setSelected(true);
+    source.scene()->clipboardManager()->copy();
+
+    // Into a scene with neither channel, nothing is said
+    WorkSpace empty;
+    QSignalSpy emptyMessages(empty.scene(), &Scene::showStatusMessageRequested);
+    empty.scene()->clipboardManager()->paste();
+    QCOMPARE(empty.scene()->elements().size(), 2);
+    QCOMPARE(emptyMessages.count(), 0);
+
+    // Into one holding "b", the paste goes on and names it
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    addWirelessNode(scene, "b", WirelessMode::Tx, {0, 0});
+    QSignalSpy messages(scene, &Scene::showStatusMessageRequested);
+    scene->clipboardManager()->paste();
+    QCOMPARE(scene->elements().size(), 3);
+    QCOMPARE(messages.count(), 1);
+    const QString message = messages.constFirst().constFirst().toString();
+    QVERIFY2(message.contains("\"b\"") && !message.contains("\"a\""), qPrintable(message));
+}
+
+void TestScene::testDuplicateReportsDuplicateTxLabels()
+{
+    using TestSceneTxHelpers::addWirelessNode;
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    addWirelessNode(scene, "a", WirelessMode::Tx, {0, 0})->setSelected(true);
+    QSignalSpy messages(scene, &Scene::showStatusMessageRequested);
+
+    scene->duplicateAction();
+
+    QCOMPARE(scene->elements().size(), 2);
+    QCOMPARE(messages.count(), 1);
+    QVERIFY(messages.constFirst().constFirst().toString().contains("\"a\""));
+}
+
+void TestScene::testCloneDragReportsDuplicateTxLabels()
+{
+    using TestSceneTxHelpers::addWirelessNode;
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *node = addWirelessNode(scene, "a", WirelessMode::Tx, {48, 48});
+
+    QByteArray itemData;
+    QDataStream writeStream(&itemData, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(writeStream);
+    writeStream << node->pos();
+    writeStream << node->pos();
+    Serialization::serialize({node}, writeStream, {.purpose = SerializationPurpose::InMemorySnapshot});
+    QMimeData mimeData;
+    mimeData.setData(MimeType::CloneDrag, itemData);
+    QSignalSpy messages(scene, &Scene::showStatusMessageRequested);
+
+    QGraphicsSceneDragDropEvent event(QEvent::GraphicsSceneDrop);
+    event.setMimeData(&mimeData);
+    event.setScenePos(node->pos() + QPointF(96, 0));
+    scene->dropEvent(&event);
+
+    QCOMPARE(scene->elements().size(), 2);
+    QCOMPARE(messages.count(), 1);
+    QVERIFY(messages.constFirst().constFirst().toString().contains("\"a\""));
+}
+
 void TestScene::testInlineLabelEditorEmptyLabelUsesElementBoundingRectFallback()
 {
     // labelSceneBoundingRect() is empty when the label has no text yet; start() must fall

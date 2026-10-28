@@ -3105,7 +3105,22 @@
         "load_circuit_response": {
           "allOf": [
             { "$ref": "#/definitions/CommandResponse" },
-            { "properties": { "result": { "type": "object", "additionalProperties": false } } }
+            {
+              "properties": {
+                "result": {
+                  "type": "object",
+                  "properties": {
+                    "duplicate_tx_labels": {
+                      "type": "array",
+                      "description": "Channels the file gives more than one Tx node, sorted; absent when it gives none",
+                      "items": { "type": "string", "minLength": 1 },
+                      "minItems": 1
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
           ]
         },
         "new_circuit_response": {
