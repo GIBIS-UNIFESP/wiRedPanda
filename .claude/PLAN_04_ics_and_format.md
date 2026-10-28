@@ -6,13 +6,13 @@ pins and the file header alike, never saved in the interface language; and the u
 IC file restoring the old definition, which the document keeps as a copy, so a save and a reopen keep it. The
 additions to what a document holds extend the current format; nothing replaces it.
 
-- **Depends on:** plans 1 to 3, the Qt floor's and the exception boundaries' plans, landed, since the plans run one
-  at a time, in their order (the plans' rules, §1): plan 1's goldens, the payload goldens above all, where a format
-  change shows first;
-  plan 3's one element class, with the descriptors and the untranslated source names an IC's pins read; plan 2's
-  fixes in the loader, registry and preview, which this plan keeps, each test green (its §2.20 to §2.24: a preview
-  scaled before it is rounded and rendered only when shown, an IC's load taking its ports' keys from the load's
-  record, an embedded IC that fails to load leaving no undo macro open).
+- **Depends on:** plans 1 to 3, the Qt floor's and the exception boundaries' plans, landed, since the plans run one at a
+  time, in their order (the plans' rules, §1): plan 1's goldens, the payload goldens above all, where a format change
+  shows first; plan 3's one element class, with the descriptors and the untranslated source names an IC's pins read;
+  plan 2's fixes in the loader, registry, preview and IC controller, which this plan keeps, each test green (its §4.1
+  and §4.2: a loaded IC keeps no tooltip after a language change, embed and extract act on every selected IC as one
+  step; its §2.20 to §2.24: a preview scaled before it is rounded and rendered only when shown, an IC's load taking its
+  ports' keys from the load's record, an embedded IC that fails to load leaving no undo macro open).
 - **Lands before:** plan 5, whose reference simulator reads its definitions, then plan 6, whose netlist builder
   compiles each IC definition once.
 - **Branch and ledger:** `04-ics-and-format`, from `03-element-types` once plan 3 has landed, in slices (the plans'
@@ -29,12 +29,13 @@ additions to what a document holds extend the current format; nothing replaces i
 
 Each IC instance loads its definition itself (`ICLoader`) and builds its own internal elements, wires and boundary
 ports, with their sorted order, boundary inputs and a feedback flag for its own simulation (`ICSimulation`), and renders
-its hover preview at load. It saves its reference only: a file name (a bare path before 4.1, reduced to its file name)
-or an embedded blob's name. Loading resolves an exact blob name in the document's blob registry first, then the file's
-base name as a blob, then a file against the context directory. Embedded definitions live in the file-level blob
-registry (from format 4.5; from 5.1 its stream has an explicit version, since an unversioned stream's string encoding
-followed the Qt the program was built with, which changed in Qt 6.6). `ICRegistry` keeps the bytes of a scene's IC
-files, watches them, and on a change reloads every instance at once and pushes an `UpdateBlobCommand`.
+its hover preview when the popup first shows it, from its definition read again (plan 2's P2.77). It saves its reference
+only: a file name (a bare path before 4.1, reduced to its file name) or an embedded blob's name. Loading resolves an
+exact blob name in the document's blob registry first, then the file's base name as a blob, then a file against the
+context directory. Embedded definitions live in the file-level blob registry (from format 4.5; from 5.1 its stream has
+an explicit version, since an unversioned stream's string encoding followed the Qt the program was built with, which
+changed in Qt 6.6). `ICRegistry` keeps the bytes of a scene's IC files, watches them, and on a change reloads every
+instance at once and pushes an `UpdateBlobCommand`.
 
 The layering is crossed: the loader casts `ic.scene()` to `Scene` to reach the registry's bytes and reads
 `Application::migrationEnabled`; the registry reaches the scene, the commands, the simulation (a blocker while it
@@ -134,23 +135,24 @@ document's registry when the instances lose their internal elements (§2.7); unt
 
 ### 2.3 The preview per definition
 
-Loading no longer renders: the IC keeps the definition it was built from and the directory that definition's
-references resolved against. A preview cache beside the popup builds the designed circuit on the first hover (one
-nesting level deeper, as a load), renders it with a pure function, and keeps the picture for every instance of the
-definition while the definition lives, at most 16, recycling the least recently used, on the main thread only. The key
-is the shared definition plus the directory, since one blob's IC references can resolve to two circuits in two
-directories; it reads no file on hover, cannot race the watcher, and survives a renamed blob. A reload replaces the
-definition, so the old preview goes with it. A circuit that is empty, too large, of unusable geometry or that no longer
-builds (an IC file it holds since gone or broken) keeps a null preview and is not built again. A theme change drops
-every preview, since wires, ports and labels are drawn in the theme's colours (the background is fixed). The IC fuzz
-harnesses ask for each loaded IC's preview, so the renderer stays fuzzed now that loading does not render. The
-preview's guard against non-finite bounds checks the origin too: once each element gives one rect, a one-element
-circuit at a NaN position keeps a finite size and passed a guard that checked only the size. The preview's renderer
-moves to the application in plan 9.
+Plan 2 already renders a preview only when the popup first shows it, each instance its own, reading the IC's definition
+again, and the IC fuzz harnesses ask for it (P2.77, P2.80); this plan makes it one per definition. The IC keeps the
+definition it was built from and the directory that definition's references resolved against. A preview cache beside the
+popup builds the designed circuit on the first hover (one nesting level deeper, as a load), renders it with a pure
+function, and keeps the picture for every instance of the definition while the definition lives, at most 16, recycling
+the least recently used, on the main thread only. The key is the shared definition plus the directory, since one blob's
+IC references can resolve to two circuits in two directories; it reads no file on hover, cannot race the watcher, and
+survives a renamed blob. A reload replaces the definition, so the old preview goes with it. A circuit that is empty, too
+large, of unusable geometry or that no longer builds (an IC file it holds since gone or broken) keeps a null preview and
+is not built again. A theme change drops every preview, since wires, ports and labels are drawn in the theme's colours
+(the background is fixed). The preview's guard against non-finite bounds checks the origin too: once each element gives
+one rect, a one-element circuit at a NaN position keeps a finite size and passed a guard that checked only the size. The
+preview's renderer moves to the application in plan 9.
 
-Tests: loading renders none; the first ask renders and keeps; file and blob instances share; a reload asks for its own;
-one blob in two directories has two; no circuit, an empty one and one that no longer builds have a null preview, the
-last two kept; the least recently used goes; a theme change drops all. Plan 1's IC preview goldens stay unchanged.
+Tests: loading renders none (plan 2's `TestICUnit::testAPreviewRendersOnlyWhenShown`, kept); the first ask renders and
+keeps; file and blob instances share; a reload asks for its own; one blob in two directories has two; no circuit, an
+empty one and one that no longer builds have a null preview, the last two kept; the least recently used goes; a theme
+change drops all. Plan 1's IC preview goldens stay unchanged.
 
 ### 2.4 Pin names from the circuit, in one rule
 
