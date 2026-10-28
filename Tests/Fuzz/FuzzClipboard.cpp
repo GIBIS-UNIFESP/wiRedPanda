@@ -32,6 +32,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <memory>
 
 #include <QApplication>
 #include <QByteArray>
@@ -66,7 +67,8 @@ QApplication *g_app  = nullptr;
 int  g_argc = 0;
 char **g_argv = nullptr;
 // The context directory: the repository's circuits (Tests/Fuzz/FuzzCircuitDir.h), so the IC files an input names load
-QTemporaryDir *g_dir = nullptr;
+// Held until exit, which removes it
+std::unique_ptr<QTemporaryDir> g_dir;
 
 constexpr uint8_t kRegistryV2 = 1;
 constexpr uint8_t kItemsLegacy = 2;
@@ -180,7 +182,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
     g_argv = *argv;
     g_app  = new QApplication(g_argc, g_argv);
 
-    g_dir = new QTemporaryDir();
+    g_dir = std::make_unique<QTemporaryDir>();
     FuzzCircuitDir::fill(g_dir->path(), "fuzz_clipboard");
 
     return 0;

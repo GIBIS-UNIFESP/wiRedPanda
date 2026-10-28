@@ -24,6 +24,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <memory>
 
 #include <QApplication>
 #include <QByteArray>
@@ -53,7 +54,8 @@ QApplication *g_app  = nullptr;
 int  g_argc = 0;
 char **g_argv = nullptr;
 // The context directory: the repository's circuits (Tests/Fuzz/FuzzCircuitDir.h), so the IC files an input names load
-QTemporaryDir *g_dir = nullptr;
+// Held until exit, which removes it
+std::unique_ptr<QTemporaryDir> g_dir;
 
 // The circuit is loaded three times and saved three times; one loading more elements than this, nested ICs' included,
 // would take a unit past about 10 s under ASan and is only loaded
@@ -82,7 +84,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
     g_argv = *argv;
     g_app  = new QApplication(g_argc, g_argv);
 
-    g_dir = new QTemporaryDir();
+    g_dir = std::make_unique<QTemporaryDir>();
     FuzzCircuitDir::fill(g_dir->path(), "fuzz_round_trip");
 
     return 0;

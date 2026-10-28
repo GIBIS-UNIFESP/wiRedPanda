@@ -29,6 +29,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <fuzzer/FuzzedDataProvider.h>
+#include <memory>
 
 #include <QApplication>
 #include <QByteArray>
@@ -79,7 +80,8 @@ QByteArray g_icBlob;
 QByteArray g_validPanda;
 
 // The repository's circuits, which a loaded circuit's file-backed ICs name and an added file-backed IC is built from
-QTemporaryDir *g_dir = nullptr;
+// Held until exit, which removes it
+std::unique_ptr<QTemporaryDir> g_dir;
 QStringList g_icFiles;
 
 // Element types that are safe to morph to (stable port count, no IC dependency)
@@ -373,7 +375,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
     g_argv = *argv;
     g_app  = new QApplication(g_argc, g_argv);
 
-    g_dir = new QTemporaryDir();
+    g_dir = std::make_unique<QTemporaryDir>();
     FuzzCircuitDir::fill(g_dir->path(), "fuzz_undo");
     // The integration circuits under IC/ are sub-circuits, the ones a project uses as file-backed ICs
     for (const QString &name : QDir(g_dir->path()).entryList({"*.panda"}, QDir::Files)) {

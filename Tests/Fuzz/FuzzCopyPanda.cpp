@@ -23,6 +23,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <memory>
 
 #include <QApplication>
 #include <QByteArray>
@@ -56,7 +57,8 @@ int  g_argc = 0;
 char **g_argv = nullptr;
 
 // The source folder: the repository's circuits, the files below naming the input, and the input
-QTemporaryDir *g_src = nullptr;
+// Held until exit, which removes it
+std::unique_ptr<QTemporaryDir> g_src;
 
 // The longest chain of files the input is named at the end of: it puts the input at copyPandaFile()'s depth limit of
 // 16, so the input is refused, and the shorter ones reach the limit inside the files the input names
@@ -104,7 +106,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
     g_argv = *argv;
     g_app  = new QApplication(g_argc, g_argv);
 
-    g_src = new QTemporaryDir();
+    g_src = std::make_unique<QTemporaryDir>();
     FuzzCircuitDir::fill(g_src->path(), "fuzz_copy_panda");
 
     // A file naming the input, so a circuit naming both names the input twice; and chains of files ending in it,
