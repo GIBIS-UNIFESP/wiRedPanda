@@ -37,6 +37,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <fuzzer/FuzzedDataProvider.h>
+#include <memory>
 
 #include <QApplication>
 #include <QByteArray>
@@ -77,7 +78,8 @@ char **g_argv = nullptr;
 
 // Where path C writes the definition's file and extracts it to; the scene's context directory. It holds the
 // repository's circuits (Tests/Fuzz/FuzzCircuitDir.h), so the IC files the definition names load.
-QTemporaryDir *g_dir = nullptr;
+// Held until exit, which removes it
+std::unique_ptr<QTemporaryDir> g_dir;
 
 // Path C loads its input as a circuit about 25 times, in time linear in the elements it loads through its nested ICs,
 // about 1.2 ms each under ASan, not in its size: a 1.7 KB file naming an ALU loads 1,781, a 33 KB register file 2,001.
@@ -323,7 +325,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
     g_argc = *argc;
     g_argv = *argv;
     g_app  = new QApplication(g_argc, g_argv);
-    g_dir  = new QTemporaryDir();
+    g_dir  = std::make_unique<QTemporaryDir>();
     QDir(g_dir->path()).mkdir("unreadable.panda");
     FuzzCircuitDir::fill(g_dir->path(), "fuzz_ic_registry");
 
