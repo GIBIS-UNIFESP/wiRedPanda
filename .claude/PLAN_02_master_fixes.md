@@ -194,7 +194,10 @@ requests pushes its command runs before the second is answered; three requests w
 answered. P2.59's test pins the GUI's undo of a paste: pasted through the clipboard, a shown view painting it, then
 undone. The undo's time against the paste's grows 0.9 to 1.7 times from 250 elements to 16,000, eight copies of the
 test running at once, and must stay under 5; an undo that comes before Qt polishes and indexes the paste grows it 8 to
-10 times.
+10 times. Its window runs its event loop between the paste, the paint and the undo, outside the times, as it would
+between a user's actions, and is shown without taking the foreground: on Windows a window that reads no message for
+five seconds is hung, and the ghost Windows puts in its place takes the desktop's foreground and refuses every other
+process a move of the cursor, which the suite's other tests share (P2.91).
 
 ### 2.15 A command over n items deduplicates them in n squared
 
