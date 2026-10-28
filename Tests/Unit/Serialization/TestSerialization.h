@@ -183,6 +183,8 @@ private:
     // Helper methods
     QByteArray saveToMemory(WorkSpace &workspace);
     void loadFromMemory(WorkSpace &workspace, const QByteArray &data);
+    /// What loading \a data into \a workspace throws, or an empty string when it loads.
+    QString loadErrorOf(WorkSpace &workspace, const QByteArray &data);
     void verifyElementEquality(GraphicElement *original, GraphicElement *loaded);
 
     /// A file in the current format: its header, then the metadata and what \a writeItems writes, compressed as one

@@ -3,6 +3,7 @@
 
 #include "Tests/Unit/Serialization/TestSerialization.h"
 
+#include <algorithm>
 #include <cmath>
 
 #include <QDataStream>
@@ -93,6 +94,16 @@ void TestSerialization::writeElement(QDataStream &stream, const ElementType type
     stream << static_cast<int>(GraphicElement::Type) << type << properties;
     stream << QList<QMap<QString, QVariant>>(inputs) << QList<QMap<QString, QVariant>>(outputs)
            << QList<QMap<QString, QVariant>>();
+}
+
+QString TestSerialization::loadErrorOf(WorkSpace &workspace, const QByteArray &data)
+{
+    try {
+        loadFromMemory(workspace, data);
+    } catch (const std::exception &e) {
+        return QString::fromUtf8(e.what());
+    }
+    return {};
 }
 
 int TestSerialization::wiresWithoutPorts(WorkSpace &workspace)
@@ -1806,21 +1817,25 @@ void TestSerialization::testCopyPandaFileRejectsDeepDependencyChain()
 
 void TestSerialization::testFuzzRegressionCleanupUAF()
 {
-    QFile fixture(QString(QUOTE(CURRENTDIR)) + "/Fuzz/regressions/bugA_cleanup_uaf.bin");
-    QVERIFY2(fixture.open(QIODevice::ReadOnly), qPrintable(fixture.errorString()));
-    const QByteArray data = fixture.readAll();
+    // A load that throws partway through its items deletes the ones it built, the wires before the elements: a wire is
+    // also deleted by its element's ports, so deleting an element first would free the wire twice (libFuzzer's
+    // bugA_cleanup_uaf, whose reproducer now throws before any wire is built). Two gates and the wire between them, then
+    // a record of no type.
+    const QByteArray data = currentFormatFile([](QDataStream &stream) {
+        for (int i = 0; i < 2; ++i) {
+            writeElement(stream, ElementType::And, {{"pos", QPointF(i * 100, 0)}, {"id", i + 1}}, 2, 1);
+        }
+        stream << static_cast<int>(Connection::Type)
+               << QMap<QString, QVariant>{{"startPortId", QVariant::fromValue(Port::makeSerialId(1, 2))},
+                                          {"endPortId", QVariant::fromValue(Port::makeSerialId(2, 0))}};
+        stream << -1;
+    });
 
     WorkSpace workspace;
-    bool threw = false;
-    try {
-        loadFromMemory(workspace, data);
-    } catch (...) {
-        threw = true;
-    }
-    // Crash artifacts always trigger a mid-loop throw inside Serialization::
-    // deserialize(); the qScopeGuard cleanup must run and tear down the
-    // partially-constructed item list without double-freeing connections.
-    QVERIFY2(threw, "Crash fixture must throw — if it loaded successfully, the fixture is no longer a regression for this bug");
+    QCOMPARE(loadErrorOf(workspace, data), QStringLiteral("Invalid type. Data is possibly corrupted."));
+    QVERIFY(workspace.scene()->elements().isEmpty());
+    const auto items = workspace.scene()->items();
+    QVERIFY(std::none_of(items.cbegin(), items.cend(), [](QGraphicsItem *item) { return item->type() == Connection::Type; }));
 }
 
 void TestSerialization::testFuzzRegressionICBlobShrink()
@@ -1878,217 +1893,149 @@ void TestSerialization::testFuzzRegressionICBlobShrink()
 
 void TestSerialization::testFuzzRegressionUnboundedPortList()
 {
+    // An element's port list claiming 1,275,094,272 ports is refused before QDataStream reserves them
     QFile fixture(QString(QUOTE(CURRENTDIR)) + "/Fuzz/regressions/bugC_unbounded_portlist.bin");
     QVERIFY2(fixture.open(QIODevice::ReadOnly), qPrintable(fixture.errorString()));
-    const QByteArray data = fixture.readAll();
-
-    // Fuzzed input claims an enormous port count in the input/output port
-    // list header.  QDataStream's container operator>> would reserve()
-    // billions of entries before any application-level validation, OOM-ing
-    // the process.  The pre-allocation count guard in
-    // GraphicElementSerializer::readPortList must reject the count and
-    // throw PANDACEPTION before allocation.
     WorkSpace workspace;
-    bool threw = false;
-    try {
-        loadFromMemory(workspace, data);
-    } catch (...) {
-        threw = true;
-    }
-    QVERIFY2(threw, "Implausible port count must be rejected, not allocated");
+    const QString error = loadErrorOf(workspace, fixture.readAll());
+    QVERIFY2(error.startsWith("Refusing to read output ports with implausible count 1275094272"), qPrintable(error));
 }
 
 void TestSerialization::testFuzzRegressionConnectionStreamMapOOM()
 {
+    // A wire's map is read by the bounded reader, which refuses a value of a type it does not read before QDataStream
+    // allocates for it
     QFile fixture(QString(QUOTE(CURRENTDIR)) + "/Fuzz/regressions/bugD_oom_qneconnection_stream_map.bin");
     QVERIFY2(fixture.open(QIODevice::ReadOnly), qPrintable(fixture.errorString()));
-    const QByteArray data = fixture.readAll();
-
-    // Fuzzed input declares an implausible entry count in a QMap header read
-    // during Connection deserialization.  QDataStream's map operator>> would
-    // reserve the declared count before any application-level validation,
-    // OOM-ing the process.  The bounded reader must reject the count first.
     WorkSpace workspace;
-    bool threw = false;
-    try {
-        loadFromMemory(workspace, data);
-    } catch (...) {
-        threw = true;
-    }
-    QVERIFY2(threw, "Implausible connection map count must be rejected, not allocated");
+    const QString error = loadErrorOf(workspace, fixture.readAll());
+    QVERIFY2(error.startsWith("Unsupported metadata value type 86"), qPrintable(error));
 }
 
 void TestSerialization::testFuzzRegressionICBoundaryOrphanConns()
 {
+    // libFuzzer's bugE: an IC's boundary element with wires on ports it does not route, freed with the element while
+    // the load still held them. Only an input element with an input or an output element with an output has such a
+    // port, and the load now refuses both, as above its type's maximum, before the IC is built. The reproducer is
+    // refused there.
     QFile fixture(QString(QUOTE(CURRENTDIR)) + "/Fuzz/regressions/bugE_uaf_ic_boundary_orphan_conns.bin");
     QVERIFY2(fixture.open(QIODevice::ReadOnly), qPrintable(fixture.errorString()));
-    const QByteArray data = fixture.readAll();
-
-    // Fuzzed input wires connections to IC boundary ports the embedded blob
-    // does not expose.  When the IC trims its boundary set the surplus ports
-    // are freed; without evicting their portMap entries the outer connection
-    // pass dereferences the dangling pointers → UAF.  Under ASan a reintroduced
-    // UAF aborts before the QVERIFY; passing means the eviction fix holds.
     WorkSpace workspace;
-    try {
-        loadFromMemory(workspace, data);
-    } catch (...) {
-    }
-    QVERIFY2(true, "Reaching here means no ASan abort — fix is in place");
+    const QString error = loadErrorOf(workspace, fixture.readAll());
+    QVERIFY2(error.startsWith("Push Button with 1 input ports, above its maximum of 0"), qPrintable(error));
 }
 
 void TestSerialization::testFuzzRegressionUnknownTypeIdMetadataOOM()
 {
+    // A metadata value of a type the bounded reader does not read is refused before QDataStream allocates for it
     QFile fixture(QString(QUOTE(CURRENTDIR)) + "/Fuzz/regressions/bugF_oom_unknown_typeid_metadata.bin");
     QVERIFY2(fixture.open(QIODevice::ReadOnly), qPrintable(fixture.errorString()));
-    const QByteArray data = fixture.readAll();
-
-    // Fuzzed metadata map carries a value whose QVariant typeId is unknown or
-    // whose payload length is fuzz-controlled.  The bounded variant reader must
-    // reject it rather than letting QDataStream allocate against the length.
     WorkSpace workspace;
-    bool threw = false;
-    try {
-        loadFromMemory(workspace, data);
-    } catch (...) {
-        threw = true;
-    }
-    QVERIFY2(threw, "Unknown/oversized metadata typeId must be rejected, not allocated");
+    const QString error = loadErrorOf(workspace, fixture.readAll());
+    QVERIFY2(error.startsWith("Unsupported metadata value type 7208048"), qPrintable(error));
 }
 
 void TestSerialization::testFuzzRegressionElementStreamMapOOM()
 {
-    QFile fixture(QString(QUOTE(CURRENTDIR)) + "/Fuzz/regressions/bugG_oom_element_stream_map.bin");
-    QVERIFY2(fixture.open(QIODevice::ReadOnly), qPrintable(fixture.errorString()));
-    const QByteArray data = fixture.readAll();
+    // An element's properties claiming more entries than the stream holds bytes for are refused before any is read
+    // (libFuzzer's bugG_oom_element_stream_map, whose reproducer now stops at its first record's type)
+    const QByteArray data = currentFormatFile([](QDataStream &stream) {
+        stream << static_cast<int>(GraphicElement::Type) << ElementType::And << quint32{0x7FFFFFFF};
+    });
 
-    // Fuzzed input declares an implausible entry count in an element's property
-    // QMap header; the bounded metadata reader must reject the count before
-    // QDataStream reserves it.
     WorkSpace workspace;
-    bool threw = false;
-    try {
-        loadFromMemory(workspace, data);
-    } catch (...) {
-        threw = true;
-    }
-    QVERIFY2(threw, "Implausible element map count must be rejected, not allocated");
+    const QString error = loadErrorOf(workspace, data);
+    QVERIFY2(error.startsWith("Metadata map count 2147483647 implausible"), qPrintable(error));
 }
 
 void TestSerialization::testFuzzRegressionOldFormatV11Elements()
 {
+    // A version 1.1 file, before labels and port sizes, whose element records drove the old-format reader past its
+    // fields: it loads, with its seven elements
     QFile fixture(QString(QUOTE(CURRENTDIR)) + "/Fuzz/regressions/bugH_old_format_v11_elements.bin");
     QVERIFY2(fixture.open(QIODevice::ReadOnly), qPrintable(fixture.errorString()));
-    const QByteArray data = fixture.readAll();
-
-    // Pre-4.1 flat-binary stream (legacy "wiRedPanda 1.1" header) with element
-    // records that drove GraphicElement::loadOldFormat() into undefined
-    // behaviour.  The bounded readers now keep every field within stream
-    // limits; load must throw cleanly or succeed, never abort under ASan/UBSan.
     WorkSpace workspace;
-    try {
-        loadFromMemory(workspace, data);
-    } catch (...) {
-    }
-    QVERIFY2(true, "Reaching here means no ASan/UBSan abort — fix is in place");
+    QCOMPARE(loadErrorOf(workspace, fixture.readAll()), QString());
+    QCOMPARE(workspace.scene()->elements().size(), 7);
 }
 
 void TestSerialization::testFuzzRegressionOldFormatICSkinRef()
 {
-    QFile fixture(QString(QUOTE(CURRENTDIR)) + "/Fuzz/regressions/bugI_old_format_ic_skin_ref.bin");
-    QVERIFY2(fixture.open(QIODevice::ReadOnly), qPrintable(fixture.errorString()));
-    const QByteArray data = fixture.readAll();
+    // A file before 4.1 lists an appearance name for every element, an IC's too, though an IC has no appearance to set:
+    // its names are read past, never indexed into its appearances (libFuzzer's bugI_old_format_ic_skin_ref, whose
+    // reproducer now stops at its first record's type). A version 3.3 file of one IC naming a sub-circuit file.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    WorkSpace sub;
+    CircuitBuilder subBuilder(sub.scene());
+    auto *subSwitch = new InputSwitch();
+    auto *subLed = new Led();
+    subLed->setPos(200, 0);
+    subBuilder.add(subSwitch, subLed);
+    subBuilder.connect(subSwitch, 0, subLed, 0);
+    QCOMPARE(sub.save(dir.filePath("sub.panda")), WorkSpace::SaveOutcome::Saved);
 
-    // Pre-4.1 stream whose IC element carries a skin reference that the old
-    // loadOldFormat() path mishandled.  Must not abort under ASan/UBSan.
+    QByteArray data;
+    QDataStream stream(&data, QIODevice::WriteOnly);
+    stream.setVersion(QDataStream::Qt_5_12);
+    stream << QStringLiteral("wiRedPanda 3.3") << QString() << QRectF();
+    stream << static_cast<int>(GraphicElement::Type) << ElementType::IC;
+    stream << QPointF(0, 0) << qreal(0) << QString() << quint64{1} << quint64{1} << quint64{1} << quint64{1} << QKeySequence();
+    stream << quint64{1} << quint64{10} << QString() << 0;
+    stream << quint64{1} << quint64{11} << QString() << 0;
+    stream << quint64{2} << QStringLiteral("skin0") << QStringLiteral("skin1");
+    stream << QStringLiteral("sub.panda");
+
     WorkSpace workspace;
-    try {
-        loadFromMemory(workspace, data);
-    } catch (...) {
-    }
-    QVERIFY2(true, "Reaching here means no ASan/UBSan abort — fix is in place");
+    QDataStream in(data);
+    const QVersionNumber version = Serialization::readPandaHeader(in);
+    QCOMPARE(version, QVersionNumber(3, 3));
+    workspace.load(in, version, dir.path());
+    QCOMPARE(workspace.scene()->elements().size(), 1);
+    QCOMPARE(workspace.scene()->elements().first()->elementType(), ElementType::IC);
+    QCOMPARE(workspace.scene()->elements().first()->inputSize(), 1);
 }
 
 void TestSerialization::testFuzzRegressionDolphinFilenameOOM()
 {
+    // A beWavedDolphin file name whose length claims 2 GB is refused before QDataStream allocates the string
     QFile fixture(QString(QUOTE(CURRENTDIR)) + "/Fuzz/regressions/oom_dolphin_filename_large.bin");
     QVERIFY2(fixture.open(QIODevice::ReadOnly), qPrintable(fixture.errorString()));
-    const QByteArray data = fixture.readAll();
-
-    // Workspace whose metadata stores a beWavedDolphin filename with a
-    // fuzz-controlled, implausibly large length prefix.  The bounded string
-    // reader must reject it before QDataStream allocates the QString.
     WorkSpace workspace;
-    bool threw = false;
-    try {
-        loadFromMemory(workspace, data);
-    } catch (...) {
-        threw = true;
-    }
-    QVERIFY2(threw, "Implausible dolphin filename length must be rejected, not allocated");
+    const QString error = loadErrorOf(workspace, fixture.readAll());
+    QVERIFY2(error.startsWith("QString byte count 2147483647 exceeds remaining stream bytes"), qPrintable(error));
 }
 
 void TestSerialization::testFuzzRegressionPandaHeaderAppNameOOM()
 {
+    // A legacy header whose application name claims about 1.4 GB: past the 128 bytes a legacy header may hold, the name is
+    // never read, and with no other header the file is refused
     QFile fixture(QString(QUOTE(CURRENTDIR)) + "/Fuzz/regressions/oom_panda_header_large_appname.bin");
     QVERIFY2(fixture.open(QIODevice::ReadOnly), qPrintable(fixture.errorString()));
-    const QByteArray data = fixture.readAll();
-
-    // Legacy header whose leading QString length field (~1.4 GB here) would
-    // make readPandaHeader allocate the app-name string before any validation.
-    // readBoundedString must reject the length and throw first.
     WorkSpace workspace;
-    bool threw = false;
-    try {
-        loadFromMemory(workspace, data);
-    } catch (...) {
-        threw = true;
-    }
-    QVERIFY2(threw, "Implausible header app-name length must be rejected, not allocated");
+    const QString error = loadErrorOf(workspace, fixture.readAll());
+    QCOMPARE(error, QStringLiteral("Invalid file format."));
 }
 
 void TestSerialization::testFuzzRegressionNonFinitePosition()
 {
+    // An IC's inner element at a NaN position, which would abort its preview in Qt's qSaturateRound(), is refused as it
+    // loads
     QFile fixture(QString(QUOTE(CURRENTDIR)) + "/Fuzz/regressions/ic_nonfinite_position.bin");
     QVERIFY2(fixture.open(QIODevice::ReadOnly), qPrintable(fixture.errorString()));
-    const QByteArray data = fixture.readAll();
-
-    // A malformed file-backed IC whose inner element carries a NaN position.
-    // ICRenderer::generatePreviewPixmap computes the preview from itemsBoundingRect(),
-    // and QSizeF::toSize() on a NaN rect trips Qt's qSaturateRound assertion
-    // (!qIsNaN) and aborts the process — a DoS on malformed input.  The
-    // finite-position guard in GraphicElementSerializer::loadPos/loadNewFormat
-    // must reject it before it enters the scene.
     WorkSpace workspace;
-    bool threw = false;
-    try {
-        loadFromMemory(workspace, data);
-    } catch (...) {
-        threw = true;
-    }
-    QVERIFY2(threw, "Non-finite element position must be rejected, not loaded");
+    const QString error = loadErrorOf(workspace, fixture.readAll());
+    QVERIFY2(error.startsWith("Non-finite element position"), qPrintable(error));
 }
 
 void TestSerialization::testFuzzRegressionNonFiniteRotation()
 {
+    // An element at a NaN rotation, whose preview aborts the same way, is refused as it loads
     QFile fixture(QString(QUOTE(CURRENTDIR)) + "/Fuzz/regressions/ic_nonfinite_rotation.bin");
     QVERIFY2(fixture.open(QIODevice::ReadOnly), qPrintable(fixture.errorString()));
-    const QByteArray data = fixture.readAll();
-
-    // Sibling of the non-finite-position bug, found by the same harness: a
-    // fuzzed element carries a NaN rotation.  setAngleRaw(NaN) makes the item's
-    // scene transform — and hence the IC preview's itemsBoundingRect — NaN,
-    // tripping the same QSizeF::toSize() / qSaturateRound assertion (abort).
-    // The finite-rotation guard in GraphicElementSerializer::loadRotation /
-    // loadNewFormat must reject it before it enters the scene.
     WorkSpace workspace;
-    bool threw = false;
-    try {
-        loadFromMemory(workspace, data);
-    } catch (...) {
-        threw = true;
-    }
-    QVERIFY2(threw, "Non-finite element rotation must be rejected, not loaded");
+    const QString error = loadErrorOf(workspace, fixture.readAll());
+    QVERIFY2(error.startsWith("Non-finite element rotation"), qPrintable(error));
 }
 
 void TestSerialization::testReadBoundedKeySequenceRoundTrip()
