@@ -184,12 +184,15 @@ or transform, both through `ItemSendsGeometryChanges`. Shown by `TestScene::test
 `TestSceneSnapshot::testWireGeometryAfterEdit` keeps the wires following. Undoing the same paste grew faster than
 the paste in a probe and is linear in the GUI, where a paste fits the scene rect and a pass of the event loop polishes
 and indexes the items before an undo can come (P2.59). `--mcp` gives neither: its edits never fit the scene rect, so
-Qt's index of a circuit beyond 640x480 puts every item outside in the border leaves (P2.89), and it runs every request
-a client wrote at once in one pass, so a removal searches Qt's lists of items not yet polished or indexed (P2.90).
-Fix of P2.90: the requests go through one queue on every platform, one per pass, through a queued call that comes
-after whatever Qt queued while the previous request ran; the end of input quits once the queue is empty. Tests: a call
-queued as the first of two requests pushes its command runs before the second is answered; three requests written
-with the end of input all answered. P2.59's growth test pins the undo once both are fixed.
+Qt's index of a circuit beyond 640x480 puts every item outside in the border leaves (P2.89, plan 9's: fitting the
+rect after every command costs a walk of the circuit each, and MCP adds and removes one item a request, which stays
+near linear; plan 9's indices do not depend on a scene rect), and it runs every request a client wrote at once in one
+pass, so a removal searches Qt's lists of items not yet polished or indexed (P2.90). Fix of P2.90: the requests go
+through one queue on every platform, one per pass, through a queued call that comes after whatever Qt queued while the
+previous request ran; the end of input quits once the queue is empty. Tests: a call queued as the first of two
+requests pushes its command runs before the second is answered; three requests written with the end of input all
+answered. P2.59's test pins the GUI's undo of a paste: pasted through the clipboard, a shown view painting it, then
+undone.
 
 ### 2.15 A command over n items deduplicates them in n squared
 
@@ -898,8 +901,9 @@ user's choice between workable options).
 - **P2.D4's wording** (its row): settled by the user, 2026-10-28: a refusal is said where the label is set, and
   duplicates from a file or a paste are reported where they arrive (P2.88).
 - **P2.59, a paste's undo** (its row): settled by the user, 2026-10-28: pinned by a growth test, the removal before
-  Qt indexes measured where the application can reach it. Measured: linear in the GUI, quadratic in `--mcp` (P2.89,
-  P2.90).
+  Qt indexes measured where the application can reach it. Measured: linear in the GUI, quadratic in `--mcp` from a
+  batch run in one pass (P2.90, fixed); the scene rect MCP never fits is plan 9's (P2.89, the user's ruling of
+  2026-10-28).
 
 ## 13. What other plans take from plan 2
 

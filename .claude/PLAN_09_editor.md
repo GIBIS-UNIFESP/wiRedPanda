@@ -296,15 +296,16 @@ which the session applies when the undo stack's index changes; a load or a bulk 
 `Document` holds the item registry (iterated in ascending id), `ICRegistry`, plan 6's simulation core and its suspend
 count (which the scene holds until this step), the undo stack, the context directory, the serialization contexts, the
 modified and autosave flags, the bounds and the spatial indices (a curve grid for wires, a point grid for ports, a
-cell grid for elements; the label index belongs to the renderers, since label bounds depend on fonts). A stacking
-sequence, assigned on insertion (file order on load, the top on paste, and on an undo's restore the place its id gives
-among its kind, P2.D13), reproduces the order plan 2 leaves. Queries replace `QGraphicsScene::items`:
-`hitTest(pos, mask, visible)` with today's priority, slop and wire widths, `itemsIn(rect)`, `itemsIn(path)` (an
-element's rectangle or a wire's shape against the path) and `visibleElements(rect)`. Commands depend on the document
-only. File tags are named constants of the same values (`FileTag::Connection` 65538, `FileTag::Element` 65539),
-replacing the item type enums. An inventory of `Scene`'s callers, by group (document or session), is taken when this
-step starts (P9.D9), and the callers move group by group, each move checked by the compiler; the tab creates its
-simulation runner, or a test helper does for a bare document.
+cell grid for elements; the label index belongs to the renderers, since label bounds depend on fonts), each covering
+whatever its items span: Qt's BSP index covers the scene rect, which only the interactive paths widen, and puts every
+item outside it into its border cells (plan 2's P2.89, P9.31). A stacking sequence, assigned on insertion (file order on
+load, the top on paste, and on an undo's restore the place its id gives among its kind, P2.D13), reproduces the order
+plan 2 leaves. Queries replace `QGraphicsScene::items`: `hitTest(pos, mask, visible)` with today's priority, slop and
+wire widths, `itemsIn(rect)`, `itemsIn(path)` (an element's rectangle or a wire's shape against the path) and
+`visibleElements(rect)`. Commands depend on the document only. File tags are named constants of the same values
+(`FileTag::Connection` 65538, `FileTag::Element` 65539), replacing the item type enums. An inventory of `Scene`'s
+callers, by group (document or session), is taken when this step starts (P9.D9), and the callers move group by group,
+each move checked by the compiler; the tab creates its simulation runner, or a test helper does for a bare document.
 
 ### 2.10 The controller
 
