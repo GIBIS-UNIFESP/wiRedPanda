@@ -194,6 +194,8 @@ private:
                              int outputs);
     /// \a file with its embedded IC \a name's circuit replaced by \a blob, everything else as saved.
     static QByteArray withBlobReplaced(const QByteArray &file, const QString &name, const QByteArray &blob);
+    /// The wires in \a workspace's scene missing a port.
+    static int wiresWithoutPorts(WorkSpace &workspace);
 
     QTemporaryDir m_tempDir;
 };

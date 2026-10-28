@@ -95,6 +95,17 @@ void TestSerialization::writeElement(QDataStream &stream, const ElementType type
            << QList<QMap<QString, QVariant>>();
 }
 
+int TestSerialization::wiresWithoutPorts(WorkSpace &workspace)
+{
+    int count = 0;
+    for (auto *item : workspace.scene()->items()) {
+        if (auto *conn = qgraphicsitem_cast<Connection *>(item); conn && (!conn->startPort() || !conn->endPort())) {
+            ++count;
+        }
+    }
+    return count;
+}
+
 QByteArray TestSerialization::withBlobReplaced(const QByteArray &file, const QString &name, const QByteArray &blob)
 {
     QDataStream stream(file);
@@ -1413,7 +1424,8 @@ void TestSerialization::testConnectionSurvivesSaveLoadRoundTrip()
 
 void TestSerialization::testMalformedConnectionData()
 {
-    // A wire between ports the file does not hold, here element 999's, is skipped: both gates load, unwired
+    // A wire between ports the file does not hold, here element 999's, is dropped: both gates load, unwired, and no wire
+    // joining nothing is left in the scene
     const QByteArray data = currentFormatFile([](QDataStream &stream) {
         for (int i = 0; i < 2; ++i) {
             writeElement(stream, ElementType::And, {{"pos", QPointF(i * 100, 50)}, {"id", i + 1}}, 2, 1);
@@ -1426,6 +1438,7 @@ void TestSerialization::testMalformedConnectionData()
     WorkSpace workspace;
     loadFromMemory(workspace, data);
     QCOMPARE(workspace.scene()->elements().size(), 2);
+    QCOMPARE(wiresWithoutPorts(workspace), 0);
     for (auto *elm : workspace.scene()->elements()) {
         for (auto *port : elm->inputs()) {
             QVERIFY2(port->connections().isEmpty(), "a wire between ports the file does not hold was attached");
@@ -1857,6 +1870,7 @@ void TestSerialization::testFuzzRegressionICBlobShrink()
         }
     }
     QVERIFY(loaded);
+    QCOMPARE(wiresWithoutPorts(workspace), 0);
     QCOMPARE(loaded->inputSize(), 1);
     QCOMPARE(wiredSwitches, 1);
     QCOMPARE(loaded->inputPort(0)->connections().size(), 1);
