@@ -5,7 +5,7 @@ document listener, and its CPU backend paints with sprites; what an edit still c
 model's own work. This round measures selection, move and load on that model, on plan 1's named fixtures, and
 optimises what the measurement shows. Its starting list is the `perf/load-hotspots` prototype's 37 load and paint
 optimisations, each re-derived on the new model from its intent where the new model still pays its cost, never
-cherry-picked, and each measured first, since plans 3, 4, 6 and 9 may already have removed it. It comes right after
+cherry-picked, and each measured first, since plans 2, 3, 4, 6 and 9 may already have removed it. It comes right after
 plan 9 and before plan 10, so plan 10's GPU mirror is built on the model as the round leaves it.
 
 - **Depends on:** plans 1 to 9, the Qt floor's and the exception boundaries' plans, landed, since the plans run one
@@ -57,8 +57,8 @@ the cost is there. A hash is the prototype's, on `perf/load-hotspots`, kept read
 | Kind | Optimisation | Commit |
 |---|---|---|
 | Measuring | Callgrind modes scoped to the load and to start-up (`--toggle-collect`), every run with an isolated configuration and no update check | `b3de9bca0` |
-| Once, not per item | A port's attach and detach without re-walking its sibling wires | `36cf4c433` |
-| Once, not per item | A port's attach without scanning its connections | `dabe62ca4` |
+| Once, not per item | A port's attach and detach without re-walking its sibling wires (done: plan 2's P2.38 and P2.51) | `36cf4c433` |
+| Once, not per item | A port's attach without scanning its connections (done: plan 2's P2.66) | `dabe62ca4` |
 | Once, not per item | A moved port's scene position computed once, not once per wire | `3e05cd106` |
 | Once, not per item | Element asset paths resolved once and cached | `f0b494053` |
 | Once, not per item | A port's glyph and hit-area paths built once | `3ed0d5211` |
@@ -79,7 +79,7 @@ the cost is there. A hash is the prototype's, on `perf/load-hotspots`, kept read
 | Lookups and allocation | An IC instance's nodes in one allocation | `000d183aa` |
 | Lookups and allocation | Each IC file resolved once per circuit load, not once per instance | `ee3f7a33e` |
 | Lookups and allocation | An IC's ports created at the definition's counts and laid out once | `b50563b89` |
-| Lookups and allocation | An IC's ports re-registered from the loader's keys instead of a scan of the whole port map | `5f0f931bf` |
+| Lookups and allocation | An IC's ports re-registered from the loader's keys instead of a scan of the whole port map (done: plan 2's P2.73) | `5f0f931bf` |
 | Lookups and allocation | A repeated metadata key's string decoded once and shared | `79b22cbc7` |
 | Lazy interface | The Language menu built when first shown | `3a208ee56` |
 | Lazy interface | The palette's icons loaded when first shown | `cc4b0a360` |
@@ -94,10 +94,12 @@ the cost is there. A hash is the prototype's, on `perf/load-hotspots`, kept read
 | Painting | The circuit's bounds without listing every element's child items | `0859881c0` |
 | Painting | Wires drawn without antialiasing | `d96d90f0a` |
 
-The last is not re-derived (MC.D4). Several others name code the plans before this one replace: the simulation's
-items are plan 6's netlist, the scene's accessors and the label items are plan 9's document and label layer, a port's
-glyphs are plan 9's port painter, an IC's ports and files are plan 4's definitions. For those the round asks whether
-the replacement pays the same cost, not whether the old code is still there.
+The last is not re-derived (MC.D4). Three are done on `master` by plan 2, each with a test of its growth that the plans
+rewriting the code keep (P2.38 and P2.51, P2.66, P2.73), so the round re-derives none of them. Several others name code
+the plans before this one replace: the simulation's items are plan 6's netlist, the scene's accessors and the label
+items are plan 9's document and label layer, a port's glyphs are plan 9's port painter, an IC's ports and files are plan
+4's definitions. For those the round asks whether the replacement pays the same cost, not whether the old code is still
+there.
 
 ### 1.4 The prototype's other `perf` commits
 
