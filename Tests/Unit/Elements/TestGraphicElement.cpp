@@ -7,6 +7,8 @@
 #include <memory>
 
 #include <QCoreApplication>
+#include <QDirIterator>
+#include <QFile>
 #include <QFontDatabase>
 #include <QFontInfo>
 #include <QGraphicsProxyWidget>
@@ -19,6 +21,7 @@
 #include <QScopeGuard>
 #include <QStyleOptionGraphicsItem>
 #include <QUndoStack>
+#include <QXmlStreamReader>
 
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/And.h"
@@ -288,6 +291,31 @@ void TestGraphicElement::testLabelFontIsAFamilyThePlatformHas()
     QVERIFY2(QFontDatabase::families().contains(font.family()), qPrintable(font.family()));
     QCOMPARE(QFontInfo(font).family(), font.family());
     QVERIFY(font.bold());
+}
+
+void TestGraphicElement::testBundledPicturesDrawTheirTextAsOutlines()
+{
+    // A bundled picture's text is drawn as outlines: Qt SVG reads a font-family such as "sans-serif" as one family's
+    // name, which no platform has, so the text took whatever face Qt fell back to and made Qt build its table of family
+    // aliases, as a label's missing family did
+    int pictures = 0;
+    QDirIterator it(":/", {"*.svg"}, QDir::Files, QDirIterator::Subdirectories);
+    while (it.hasNext()) {
+        const QString path = it.next();
+        QFile file(path);
+        QVERIFY2(file.open(QIODevice::ReadOnly), qPrintable(path));
+        QXmlStreamReader xml(&file);
+        while (!xml.atEnd()) {
+            if (xml.readNext() == QXmlStreamReader::StartElement) {
+                const auto name = xml.name();
+                QVERIFY2((name != u"text") && (name != u"tspan") && (name != u"textPath") && (name != u"flowRoot"),
+                         qPrintable(path));
+            }
+        }
+        QVERIFY2(!xml.hasError(), qPrintable(path + ": " + xml.errorString()));
+        ++pictures;
+    }
+    QVERIFY(pictures > 100);
 }
 
 void TestGraphicElement::testSceneEventSwallowsCtrlClickPress()
