@@ -192,7 +192,9 @@ through one queue on every platform, one per pass, through a queued call that co
 previous request ran; the end of input quits once the queue is empty. Tests: a call queued as the first of two
 requests pushes its command runs before the second is answered; three requests written with the end of input all
 answered. P2.59's test pins the GUI's undo of a paste: pasted through the clipboard, a shown view painting it, then
-undone.
+undone. The undo's time against the paste's grows 0.9 to 1.7 times from 250 elements to 16,000, eight copies of the
+test running at once, and must stay under 5; an undo that comes before Qt polishes and indexes the paste grows it 8 to
+10 times.
 
 ### 2.15 A command over n items deduplicates them in n squared
 
@@ -746,6 +748,7 @@ Each of these exists on `master`, and its fix is another plan's decision:
 | P2.52 | The schema's copy rules (§2.12) | the helpers only | none |
 | P2.57 | A failed paste's open macro (§2.13) | the helpers only | none |
 | P2.58 | No move walks every port (§2.14) | P1.5 | none (the wire-geometry golden keeps the wires following) |
+| P2.59 | A paste's undo pinned linear (§2.14) | the helpers only | none |
 | P2.90 | MCP's requests one per pass of the event loop (§2.14) | the helpers only | none |
 | P2.60 | Commands deduplicating in linear time (§2.15) | the helpers only | none |
 | P2.61 | Snapping past `int`'s range (§2.16) | the helpers only | none |
