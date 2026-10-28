@@ -4308,6 +4308,7 @@ void TestMainWindowGui::testStartExerciseDrivesClickTargetsAndOverlayParenting()
     // Guards: empty resourcePath, and (separately) a load failure with a real tab.
     window->startExercise(QString());
     QVERIFY(!window->m_exerciseEngine->isActive());
+    QTest::ignoreMessage(QtWarningMsg, R"(ExerciseEngine: failed to load ":/does/not/exist.json")");
     window->startExercise(QStringLiteral(":/does/not/exist.json"));
     QVERIFY(!window->m_exerciseEngine->isActive());
 
@@ -4419,6 +4420,7 @@ void TestMainWindowGui::testStartTourDrivesClickTargetsAndOverlayParenting()
     // Guards: empty resourcePath, and (separately) a load failure.
     window->startTour(QString());
     QVERIFY(!window->m_tourEngine->isActive());
+    QTest::ignoreMessage(QtWarningMsg, R"(TourEngine: failed to load ":/does/not/exist.json")");
     window->startTour(QStringLiteral(":/does/not/exist.json"));
     QVERIFY(!window->m_tourEngine->isActive());
 

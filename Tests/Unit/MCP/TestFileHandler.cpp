@@ -10,6 +10,7 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QRegularExpression>
 #include <QTabWidget>
 #include <QTemporaryDir>
 #include <QTest>
@@ -368,6 +369,9 @@ void TestFileHandler::testHandleExportImageRejectsSvgOpenFailure()
     FileHandler handler(&window, nullptr);
     addAndGate(window.currentTab()->scene());
 
+    // The device's error is the platform's own wording
+    QTest::ignoreMessage(QtWarningMsg, QRegularExpression("^QSvgPaintEngine::begin\\(\\), could not open output device: '.+'$"));
+    QTest::ignoreMessage(QtWarningMsg, "QPainter::begin(): Returned false");
     const QJsonObject response = handler.handleCommand("export_image", {{"filename", "/nonexistent/directory/x.svg"}, {"format", "svg"}}, 1);
     QVERIFY2(response.contains("error"), qPrintable(QJsonDocument(response).toJson()));
     QCOMPARE(response["error"].toObject()["code"].toInt(), JsonRpcError::FileError);
@@ -397,6 +401,7 @@ void TestFileHandler::testHandleExportImageRejectsPdfOpenFailure()
     FileHandler handler(&window, nullptr);
     addAndGate(window.currentTab()->scene());
 
+    QTest::ignoreMessage(QtWarningMsg, "QPainter::begin(): Returned false");
     const QJsonObject response = handler.handleCommand("export_image", {{"filename", "/nonexistent/directory/x.pdf"}, {"format", "pdf"}}, 1);
     QVERIFY2(response.contains("error"), qPrintable(QJsonDocument(response).toJson()));
     QCOMPARE(response["error"].toObject()["code"].toInt(), JsonRpcError::FileError);

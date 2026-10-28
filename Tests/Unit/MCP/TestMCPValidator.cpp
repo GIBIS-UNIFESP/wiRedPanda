@@ -408,6 +408,7 @@ void TestMCPValidator::testNlohmannToQJsonReturnsEmptyOnUnparsableJson()
     // QJsonDocument::fromJson() rejects any non-object/non-array top level ("illegal
     // value") -- confirmed empirically, not assumed from Qt's docs.
     const json bareScalar = 42;
+    QTest::ignoreMessage(QtWarningMsg, R"(nlohmannToQJson: failed to parse JSON: "illegal value")");
     const QJsonObject converted = MCPValidator::nlohmannToQJson(bareScalar);
     QVERIFY(converted.isEmpty());
 }
