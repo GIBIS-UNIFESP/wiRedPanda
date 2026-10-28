@@ -182,9 +182,11 @@ and align grew the same way (P2.58, found by `fuzz_clipboard`'s coverage rounds 
 under callgrind). Fix: an element re-routes its wires on its own `ItemPositionHasChanged`, and a port on its own move
 or transform, both through `ItemSendsGeometryChanges`. Shown by `TestScene::testNoItemMakesEveryMoveWalkTheScene`;
 `TestSceneSnapshot::testWireGeometryAfterEdit` keeps the wires following. Undoing the same paste grew faster than
-the paste in a probe and is linear in the application: the probe's growth came from items Qt had not indexed yet
-and wires without paths (P2.59: no defect of ours, pinned by a growth test under the application's conditions, and
-the removal before Qt indexes the paste measured where the application can reach it).
+the paste in a probe and is linear in the GUI, where a paste fits the scene rect and a pass of the event loop polishes
+and indexes the items before an undo can come (P2.59). `--mcp` gives neither: its edits never fit the scene rect, so
+Qt's index of a circuit beyond 640x480 puts every item outside in the border leaves (P2.89), and it runs every request
+a client wrote at once in one pass, so a removal searches Qt's lists of items not yet polished or indexed (P2.90).
+P2.59's growth test pins the undo once both are fixed.
 
 ### 2.15 A command over n items deduplicates them in n squared
 
@@ -891,8 +893,9 @@ user's choice between workable options).
   in CI (P2.D10).
 - **P2.D4's wording** (its row): settled by the user, 2026-10-28: a refusal is said where the label is set, and
   duplicates from a file or a paste are reported where they arrive (P2.88).
-- **P2.59, a paste's undo** (its row): settled by the user, 2026-10-28: no defect of ours, pinned by a growth test,
-  the removal before Qt indexes measured where the application can reach it.
+- **P2.59, a paste's undo** (its row): settled by the user, 2026-10-28: pinned by a growth test, the removal before
+  Qt indexes measured where the application can reach it. Measured: linear in the GUI, quadratic in `--mcp` (P2.89,
+  P2.90).
 
 ## 13. What other plans take from plan 2
 
