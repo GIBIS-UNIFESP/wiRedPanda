@@ -222,18 +222,20 @@ crash/OOM/leak/timeout under ASan+UBSan).
   the code without the fix and clean with it
   (`./build-fuzzer/fuzz_<harness> Tests/Fuzz/regressions/<file>`), and the
   defect is pinned by the unit test named in its row.
-- **retired** — `bugJ` only: a timeout of `FuzzUndo` on a truth table, for
-  which the harness once left `TruthTable` out of the types it adds, on the
-  ground that its 2048-bit key made `UpdateCommand` serialization take seconds.
-  The harness now adds, edits and toggles truth tables, and the slowest unit
-  of its coverage rounds is 12 s, a large circuit's load. The reproducer was
-  written for the harness's earlier input layout and no longer reaches a truth
-  table (it runs in 2 ms); it is kept as the record of that timeout.
+- **retired** — the reproducer no longer reaches its defect, and is kept as its record:
+  - `bugB`: its embedded IC's blob is a compressed payload whose bytes no longer decompress, so the load stops in
+    `qUncompress` before the IC shrinks its ports. `testFuzzRegressionICBlobShrink` builds the case instead, a real
+    save whose IC's circuit is swapped for one with fewer inputs than the host wires, and crashes with `IC::load()`'s
+    eviction of the stale `portMap` keys taken out.
+  - `bugJ`: a timeout of `FuzzUndo` on a truth table, for which the harness once left `TruthTable` out of the types it
+    adds, on the ground that its 2048-bit key made `UpdateCommand` serialization take seconds. The harness now adds,
+    edits and toggles truth tables, and the slowest unit of its coverage rounds is 12 s, a large circuit's load. The
+    reproducer was written for the harness's earlier input layout and no longer reaches a truth table (it runs in 2 ms).
 
 | Reproducer | Class | Status | What it reproduces |
 |------------|-------|--------|--------------------|
 | `bugA_cleanup_uaf`                  | UAF     | pinned            | `qScopeGuard` cleanup after a mid-loop throw in `deserialize` |
-| `bugB_ic_blob_shrink`               | UAF     | pinned            | IC declares more outer ports than its blob exposes; stale `portMap` |
+| `bugB_ic_blob_shrink`               | UAF     | retired           | IC declares more outer ports than its blob exposes; stale `portMap` |
 | `bugC_unbounded_portlist`           | OOM     | pinned            | implausible port-list count reserved before validation |
 | `bugD_oom_qneconnection_stream_map` | OOM     | pinned            | unbounded map read in the `Connection` stream |
 | `bugE_uaf_ic_boundary_orphan_conns` | UAF     | pinned            | orphan connections at an IC boundary |

@@ -3,10 +3,17 @@
 
 #pragma once
 
+#include <functional>
+
 #include <QByteArray>
+#include <QDataStream>
+#include <QMap>
 #include <QObject>
 #include <QTemporaryDir>
+#include <QVariant>
 #include <QVersionNumber>
+
+#include "App/Core/Enums.h"
 
 class WorkSpace;
 class GraphicElement;
@@ -74,7 +81,7 @@ private slots:
 
     void testTruncatedFileRecovery();
     void testInvalidUTF8InLabels();
-    void testMismatchedElementCount();
+    void testPayloadEndingInsideAnElement();
     void testMultiGateChainSerialization();
     void testExtremelyLongLabels();
     void testStreamPositionValidation();
@@ -177,6 +184,16 @@ private:
     QByteArray saveToMemory(WorkSpace &workspace);
     void loadFromMemory(WorkSpace &workspace, const QByteArray &data);
     void verifyElementEquality(GraphicElement *original, GraphicElement *loaded);
+
+    /// A file in the current format: its header, then the metadata and what \a writeItems writes, compressed as one
+    /// payload.
+    static QByteArray currentFormatFile(const std::function<void(QDataStream &)> &writeItems,
+                                        const QMap<QString, QVariant> &metadata = {});
+    /// One element's record as a file's save writes it, with \a inputs and \a outputs ports.
+    static void writeElement(QDataStream &stream, ElementType type, const QMap<QString, QVariant> &properties, int inputs,
+                             int outputs);
+    /// \a file with its embedded IC \a name's circuit replaced by \a blob, everything else as saved.
+    static QByteArray withBlobReplaced(const QByteArray &file, const QString &name, const QByteArray &blob);
 
     QTemporaryDir m_tempDir;
 };
