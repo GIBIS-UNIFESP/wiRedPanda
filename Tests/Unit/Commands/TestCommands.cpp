@@ -333,7 +333,7 @@ void TestCommands::testFlipTextPixmapVariant()
 void TestCommands::testRotateTextPixmapVariant()
 {
     // Same idea as flipping, for rotation: a rotated memory element must swap in a pixmap whose
-    // baked-in <text> is counter-rotated, so the pin letters stay upright while the body rotates.
+    // baked-in labels are counter-rotated, so the pin letters stay upright while the body rotates.
     PixmapProbe<DLatch> latch;
     const QImage baseImage = latch.displayedImage();
     QVERIFY(!baseImage.isNull());

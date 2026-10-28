@@ -29,7 +29,7 @@ private slots:
     void testPictureOfAnotherSizeKeepsPortsWhateverTheOrder_data();
     void testPictureOfAnotherSizeKeepsPortsWhateverTheOrder();
 
-    // orientSvgTextNodes()/orientedSvgPixmap()/sharedSvgRenderer() failure paths
+    // orientSvgLabels()/orientedSvgPixmap()/sharedSvgRenderer() failure paths
     void testRotatedMalformedSvgFallsBackToBasePixmap();
     void testRotatedMalformedSvgFallsBackToBasePixmapContent();
 };
