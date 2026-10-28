@@ -351,9 +351,14 @@ void Simulation::start()
 {
     qCDebug(zero) << "Starting simulation.";
 
-    if (!m_initialized) {
+    const bool wasInitialized = m_initialized;
+    if (!wasInitialized) {
+        // A rebuild while paused keeps the pause: its kept clocks' references and its new clocks' start are the
+        // pause's, so the shift below brings them all to now
         initialize();
-    } else if (m_hasPausedAt) {
+    }
+
+    if (m_hasPausedAt) {
         // Resuming after a stop(): the wall clock advanced while paused, so shift each
         // clock's phase reference by the pause duration. This prevents the burst of missed
         // toggles a stale reference would cause, WITHOUT resetting the clocks — resetClock()
@@ -369,7 +374,7 @@ void Simulation::start()
             }
         }
         m_hasPausedAt = false; // consumed; a repeated start() must not double-shift
-    } else {
+    } else if (wasInitialized) {
         // Initialized but with no recorded pause (e.g. initialize() ran directly via a
         // structural edit while stopped): the clocks' references are stale by an unknown
         // amount, so reset them to now.
