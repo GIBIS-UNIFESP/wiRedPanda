@@ -390,6 +390,10 @@ made two undo steps, since the first command named one clock and the next both, 
 into a field and dragging a slider over two clocks with different delays, and over two switches, each one step; a
 label edit leaves the other fields; undoing a lock and a value restores them. Each fails on `master` first.
 
+Found by the audit (P2.83): a slider's session ended only on a dragged handle's release, so moves made with a key, the
+wheel or a click on the groove merged into one step however far apart. Fix: a slider's change merges only while its
+handle is held. Test: two key presses on a slider are two steps, and a drag after them a third.
+
 ### 3.10 Duplicate wireless Tx labels
 
 The inline label editor accepts any label, and two selected nodes edited into one Tx channel together pass. Fix: one
@@ -747,6 +751,7 @@ Each of these exists on `master`, and its fix is another plan's decision:
 | P2.15 | Themed memory pictures (§3.7) | P1.4 | none expected |
 | P2.16 | A morph's undo (§3.8) | P1.10 | the order after a morph's undo, if it moves |
 | P2.17 | The property editor (§3.9) | P1.15 | none expected (unchanged on the branch) |
+| P2.83 | A slider's key steps of their own (§3.9) | P2.17 | none (the property writes golden unchanged) |
 | P2.18 | Duplicate Tx labels (§3.10) | P1.15 | none expected |
 | P2.19 | MCP's property setter (§3.11) | P1.15, P1.17 | MCP's responses to refused requests; any new message |
 | P2.20 | The lock's tooltip (§3.12) | P1.17 | one string |
