@@ -103,6 +103,14 @@ private slots:
 private:
     friend class TestMCPProcessor;
 
+    /// Queues \a lines and handles them one per pass of the event loop, so the work Qt defers to
+    /// the next pass (an added item's polish and indexing, a view's update) runs between two
+    /// requests as it does between two user actions.
+    void enqueueLines(const QStringList &lines);
+    void processNextLine();
+    /// The client closed its end: quits once every queued line has been handled.
+    void finishInput();
+
     void processCommand(const QString &line);
     void sendResponse(const QJsonObject &response);
     /// The client is gone: marks the main window disconnected, then quits the application.
@@ -111,6 +119,9 @@ private:
     MainWindow *m_mainWindow;
     std::unique_ptr<MCPValidator> m_validator;
     QTextStream m_stdout;
+    QStringList m_pendingLines;
+    bool m_nextLineQueued = false;
+    bool m_inputFinished = false;
 #ifdef Q_OS_WIN
     StdinReader *m_stdinReader = nullptr;
 #else
