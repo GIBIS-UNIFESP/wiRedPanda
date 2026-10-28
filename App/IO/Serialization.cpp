@@ -662,6 +662,13 @@ QList<QGraphicsItem *> Serialization::deserialize(QDataStream &stream, Serializa
                                    stream.device()->pos(), static_cast<int>(stream.status()));
             }
             // LCOV_EXCL_STOP
+
+            // A wire whose ports the stream does not hold joins nothing: it is dropped, not returned to be added to a
+            // scene or an IC. A snapshot's wires always attach, so an undo's count of the items it restores still holds
+            if (!conn->startPort() || !conn->endPort()) {
+                itemList.removeLast();
+                delete conn;
+            }
             break;
         }
 
