@@ -343,7 +343,14 @@ user's choice between workable options).
 - **P10.D1. A `QRhiWidget` as the view's viewport;** `createWindowContainer` rejected. Basis: measured in the spikes
   (the `QRhiWidget` cost 1.6 to 2.8 ms per frame of panning beside scroll bars, and the overlays above it and drag and
   drop worked; a window container broke both; an OpenGL widget as the old view's viewport kept the CPU stroking and was
-  slower than raster, 1,289 ms of CPU against 358 with every wire recoloured); the user's ruling of 2026-10-04.
+  slower than raster, 1,289 ms of CPU against 358 with every wire recoloured); the user's ruling of 2026-10-04. Qt
+  Quick weighed against it and kept out: its renderer cost the same (a `QQuickWindow` 2.4, 2.3 and 3.7 ms static,
+  panning and recolouring against the `QRhiWidget`'s 2.5, 2.1 and 2.0), so the choice rests on the rest: a
+  `QQuickWindow` among widgets needs the window container that broke the overlays and drag and drop, and a
+  `QQuickWidget` adds 0.3 to 0.7 ms per frame; Qt Quick's software adaptation does not run the custom materials, so a
+  fallback is needed either way; the spike's `DrawTriangles` node drew one zig-zag strip for a cause never found; and
+  Qt Quick and QML would be new runtime libraries in every package, where `QRhi` and `QRhiWidget` are in Qt Gui and Qt
+  Widgets. The user's ruling of 2026-10-28 ("lets keep it").
 - **P10.D2. The GPU preferred, behind an Automatic setting** (Automatic, Hardware, Software), Automatic the default
   everywhere. Basis: measured on one Linux machine with a virtual GPU (§1.1: 69.5% of 5.96 billion instructions in
   stroking polylines; a full rebuild of the dense window 400 to 1,900 ms on the raster engine; a GPU scene graph
