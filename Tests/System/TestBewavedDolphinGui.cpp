@@ -1260,7 +1260,7 @@ void TestBewavedDolphinGui::testRunAndSaveToTxtHandleDeletedTrackedElement()
     // saveToTxt() must fail cleanly instead of silently exporting garbage/partial data.
     QString text;
     QTextStream stream(&text);
-    QVERIFY_THROWS(std::exception, dolphin->saveToTxt(stream));
+    QVERIFY_THROWS_EXCEPTION(std::exception, dolphin->saveToTxt(stream));
 }
 
 void TestBewavedDolphinGui::testConstructorWithParentEnablesWindowModality()
@@ -1660,7 +1660,7 @@ void TestBewavedDolphinGui::testElementsStillLiveDetectsDeletedOutputElement()
 
     QString text;
     QTextStream stream(&text);
-    QVERIFY_THROWS(std::exception, dolphin->saveToTxt(stream));
+    QVERIFY_THROWS_EXCEPTION(std::exception, dolphin->saveToTxt(stream));
 }
 
 void TestBewavedDolphinGui::testWheelEventZoomsColumns()

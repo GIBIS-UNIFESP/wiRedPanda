@@ -171,7 +171,7 @@ void TestDolphinSerializer::testCorruptedDataHandling()
     // SignalModel::kMaxColumns, so loadBinary() deterministically throws.
     QByteArray corrupt("This is corrupted binary data !!!");
     QDataStream stream(&corrupt, QIODevice::ReadOnly);
-    QVERIFY_THROWS(std::exception, DolphinSerializer::loadBinary(stream, 1));
+    QVERIFY_THROWS_EXCEPTION(std::exception, DolphinSerializer::loadBinary(stream, 1));
 }
 
 void TestDolphinSerializer::testLoadBinaryRejectsNegativeRows()
@@ -185,7 +185,7 @@ void TestDolphinSerializer::testLoadBinaryRejectsNegativeRows()
         stream << static_cast<qint64>(5);
     }
     QDataStream stream(&payload, QIODevice::ReadOnly);
-    QVERIFY_THROWS(std::exception, DolphinSerializer::loadBinary(stream, 8));
+    QVERIFY_THROWS_EXCEPTION(std::exception, DolphinSerializer::loadBinary(stream, 8));
 }
 
 void TestDolphinSerializer::testLoadCSVRejectsNegativeRows()
@@ -200,7 +200,7 @@ void TestDolphinSerializer::testLoadCSVRejectsNegativeRows()
     }
     QFile in(path);
     QVERIFY(in.open(QIODevice::ReadOnly));
-    QVERIFY_THROWS(std::exception, DolphinSerializer::loadCSV(in, 8));
+    QVERIFY_THROWS_EXCEPTION(std::exception, DolphinSerializer::loadCSV(in, 8));
 }
 
 void TestDolphinSerializer::testReadDolphinHeaderRejectsLargeAppName()
@@ -214,7 +214,7 @@ void TestDolphinSerializer::testReadDolphinHeaderRejectsLargeAppName()
     const QByteArray data = fixture.readAll();
 
     QDataStream stream(data);
-    QVERIFY_THROWS(std::exception, Serialization::readDolphinHeader(stream));
+    QVERIFY_THROWS_EXCEPTION(std::exception, Serialization::readDolphinHeader(stream));
 }
 
 void TestDolphinSerializer::testReadDolphinHeaderParsesLegacyAppName()
@@ -263,7 +263,7 @@ void TestDolphinSerializer::testCSVRejectsInsufficientData()
     }
     QFile in(path);
     QVERIFY(in.open(QIODevice::ReadOnly));
-    QVERIFY_THROWS(std::exception, DolphinSerializer::loadCSV(in, 8));
+    QVERIFY_THROWS_EXCEPTION(std::exception, DolphinSerializer::loadCSV(in, 8));
 }
 
 void TestDolphinSerializer::testCSVRejectsInvalidColumnCount()
@@ -278,7 +278,7 @@ void TestDolphinSerializer::testCSVRejectsInvalidColumnCount()
     }
     QFile in(path);
     QVERIFY(in.open(QIODevice::ReadOnly));
-    QVERIFY_THROWS(std::exception, DolphinSerializer::loadCSV(in, 8));
+    QVERIFY_THROWS_EXCEPTION(std::exception, DolphinSerializer::loadCSV(in, 8));
 }
 
 void TestDolphinSerializer::testCSVRejectsTruncatedData()
@@ -294,7 +294,7 @@ void TestDolphinSerializer::testCSVRejectsTruncatedData()
     }
     QFile in(path);
     QVERIFY(in.open(QIODevice::ReadOnly));
-    QVERIFY_THROWS(std::exception, DolphinSerializer::loadCSV(in, 8));
+    QVERIFY_THROWS_EXCEPTION(std::exception, DolphinSerializer::loadCSV(in, 8));
 }
 
 void TestDolphinSerializer::testCSVClampsNonBinaryValues()

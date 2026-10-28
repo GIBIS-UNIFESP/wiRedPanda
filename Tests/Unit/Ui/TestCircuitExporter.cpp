@@ -12,7 +12,6 @@
 #include "App/Scene/Workspace.h"
 #include "App/UI/CircuitExporter.h"
 #include "Tests/Common/Goldens.h"
-#include "Tests/Common/TestUtils.h"
 
 void TestCircuitExporter::testExporterCreation()
 {
@@ -53,7 +52,7 @@ void TestCircuitExporter::testRenderToImageThrowsOnInvalidPath()
     // and pre-fix that failure was silently swallowed. The throw is the regression.
     WorkSpace workspace;
     const QString path = "/nonexistent/directory/that/does/not/exist/img.png";
-    QVERIFY_THROWS(std::exception, CircuitExporter::renderToImage(workspace.scene(), path));
+    QVERIFY_THROWS_EXCEPTION(std::exception, CircuitExporter::renderToImage(workspace.scene(), path));
 }
 
 void TestCircuitExporter::testRenderToImagePaddingIsTransparentNotGarbage()
@@ -101,7 +100,7 @@ void TestCircuitExporter::testRenderToPdfThrowsOnInvalidPath()
     WorkSpace workspace;
     const QString path = "/nonexistent/directory/that/does/not/exist/circuit.pdf";
     QTest::ignoreMessage(QtWarningMsg, "QPainter::begin(): Returned false");
-    QVERIFY_THROWS(std::exception, CircuitExporter::renderToPdf(workspace.scene(), path));
+    QVERIFY_THROWS_EXCEPTION(std::exception, CircuitExporter::renderToPdf(workspace.scene(), path));
 }
 
 void TestCircuitExporter::testRenderScaledImageThrowsOnEmptyPaddedRect()
@@ -111,7 +110,7 @@ void TestCircuitExporter::testRenderScaledImageThrowsOnEmptyPaddedRect()
     // from the file I/O failure covered by the PDF/PNG path tests above.
     WorkSpace workspace;
     QTest::ignoreMessage(QtWarningMsg, "QPainter::begin: Paint device returned engine == 0, type: 3");
-    QVERIFY_THROWS(std::exception, CircuitExporter::renderScaledImage(workspace.scene(), QRectF()));
+    QVERIFY_THROWS_EXCEPTION(std::exception, CircuitExporter::renderScaledImage(workspace.scene(), QRectF()));
 }
 
 void TestCircuitExporter::testRenderToPdfHandlesExtremeSceneDimensionsPromptly()

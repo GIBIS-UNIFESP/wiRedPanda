@@ -117,7 +117,7 @@ void TestDolphinFile::testLoadMissingFileThrows()
     QVERIFY(dir.isValid());
     const QString path = dir.path() + "/does_not_exist.dolphin";
 
-    QVERIFY_THROWS(std::exception, DolphinFile::load(path, 4));
+    QVERIFY_THROWS_EXCEPTION(std::exception, DolphinFile::load(path, 4));
 }
 
 void TestDolphinFile::testLoadOpenFailureThrows()
@@ -166,7 +166,7 @@ void TestDolphinFile::testLoadUnsupportedFormatThrows()
         f.write("not a recognized format");
     }
 
-    QVERIFY_THROWS(std::exception, DolphinFile::load(path, 4));
+    QVERIFY_THROWS_EXCEPTION(std::exception, DolphinFile::load(path, 4));
 }
 
 void TestDolphinFile::testParseTerminalValidInput()
@@ -198,7 +198,7 @@ void TestDolphinFile::testParseTerminalRejectsShortHeader()
     QString input("nocommahere\n");
     QTextStream stream(&input, QIODevice::ReadOnly);
 
-    QVERIFY_THROWS(std::exception, DolphinFile::parseTerminal(stream, 4));
+    QVERIFY_THROWS_EXCEPTION(std::exception, DolphinFile::parseTerminal(stream, 4));
 }
 
 void TestDolphinFile::testParseTerminalRejectsNonPositiveRows()
@@ -206,7 +206,7 @@ void TestDolphinFile::testParseTerminalRejectsNonPositiveRows()
     QString input("0,3\n");
     QTextStream stream(&input, QIODevice::ReadOnly);
 
-    QVERIFY_THROWS(std::exception, DolphinFile::parseTerminal(stream, 4));
+    QVERIFY_THROWS_EXCEPTION(std::exception, DolphinFile::parseTerminal(stream, 4));
 }
 
 void TestDolphinFile::testParseTerminalRejectsColumnCountTooLow()
@@ -214,7 +214,7 @@ void TestDolphinFile::testParseTerminalRejectsColumnCountTooLow()
     QString input("3,0\n");
     QTextStream stream(&input, QIODevice::ReadOnly);
 
-    QVERIFY_THROWS(std::exception, DolphinFile::parseTerminal(stream, 4));
+    QVERIFY_THROWS_EXCEPTION(std::exception, DolphinFile::parseTerminal(stream, 4));
 }
 
 void TestDolphinFile::testParseTerminalRejectsColumnCountTooHigh()
@@ -222,7 +222,7 @@ void TestDolphinFile::testParseTerminalRejectsColumnCountTooHigh()
     QString input(QString("1,%1\n").arg(SignalModel::kMaxColumns + 1));
     QTextStream stream(&input, QIODevice::ReadOnly);
 
-    QVERIFY_THROWS(std::exception, DolphinFile::parseTerminal(stream, 4));
+    QVERIFY_THROWS_EXCEPTION(std::exception, DolphinFile::parseTerminal(stream, 4));
 }
 
 void TestDolphinFile::testParseTerminalRejectsShortDataRow()
@@ -231,5 +231,5 @@ void TestDolphinFile::testParseTerminalRejectsShortDataRow()
     QString input("2,3\n1,0\n");
     QTextStream stream(&input, QIODevice::ReadOnly);
 
-    QVERIFY_THROWS(std::exception, DolphinFile::parseTerminal(stream, 4));
+    QVERIFY_THROWS_EXCEPTION(std::exception, DolphinFile::parseTerminal(stream, 4));
 }

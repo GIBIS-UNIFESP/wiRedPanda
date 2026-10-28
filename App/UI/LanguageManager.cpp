@@ -74,7 +74,7 @@ void LanguageManager::loadTranslation(const QString &language)
     // qt_add_translations embeds wpanda_<lang>.qm at :/i18n/ at build time.
     // On Qt 6.9+ MERGE_QT_TRANSLATIONS also bakes qtbase / Widgets / Gui /
     // Multimedia / Svg catalogs into the same file, so a single translator
-    // covers both application and Qt-owned strings.  On Qt 6.2..6.8 the
+    // covers both application and Qt-owned strings.  On Qt 6.8 the
     // merge isn't available — Qt's own dialog strings (file picker, message
     // boxes) stay English, but application strings still translate.
     const QString qmFile = QStringLiteral(":/i18n/wpanda_%1.qm").arg(language);

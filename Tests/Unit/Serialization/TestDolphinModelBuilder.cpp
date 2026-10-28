@@ -10,7 +10,6 @@
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Scene/Workspace.h"
-#include "Tests/Common/TestUtils.h"
 
 void TestDolphinModelBuilder::testCollectSortsByLabel()
 {
@@ -82,7 +81,7 @@ void TestDolphinModelBuilder::testCollectRejectsSceneWithNeitherInputsNorOutputs
     auto *scene = ws->scene();
     scene->addItem(new And());
 
-    QVERIFY_THROWS(std::exception, DolphinModelBuilder::collect(scene));
+    QVERIFY_THROWS_EXCEPTION(std::exception, DolphinModelBuilder::collect(scene));
 }
 
 void TestDolphinModelBuilder::testCollectRejectsSceneWithNoInputs()
@@ -91,7 +90,7 @@ void TestDolphinModelBuilder::testCollectRejectsSceneWithNoInputs()
     auto *scene = ws->scene();
     scene->addItem(new Led());
 
-    QVERIFY_THROWS(std::exception, DolphinModelBuilder::collect(scene));
+    QVERIFY_THROWS_EXCEPTION(std::exception, DolphinModelBuilder::collect(scene));
 }
 
 void TestDolphinModelBuilder::testCollectRejectsSceneWithNoOutputs()
@@ -100,5 +99,5 @@ void TestDolphinModelBuilder::testCollectRejectsSceneWithNoOutputs()
     auto *scene = ws->scene();
     scene->addItem(new InputSwitch());
 
-    QVERIFY_THROWS(std::exception, DolphinModelBuilder::collect(scene));
+    QVERIFY_THROWS_EXCEPTION(std::exception, DolphinModelBuilder::collect(scene));
 }

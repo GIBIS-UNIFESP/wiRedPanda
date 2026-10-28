@@ -3,8 +3,11 @@
 
 name: Fresh distro build
 
-# Builds wiRedPanda from a *clean* distro image using only the packages the docs
-# tell users to apt-install. Its job is to catch package drift -- a Qt
+# Builds wiRedPanda from a *clean* distro image using only what the docs tell
+# users to install: BUILD.md's aqtinstall recipes, the documented way, run as
+# BUILD.md writes them on Ubuntu 24.04 and macOS; and the apt line of its
+# distribution-packages fallback, on images whose Qt meets the floor, which is
+# also what distribution packagers build with. Its job is to catch package drift -- a Qt
 # dependency getting renamed or dropped from the apt repos (as libqt6svg6-dev
 # was) -- and to keep cmake_minimum_required honest. The main build.yml installs
 # a pinned Qt via aqtinstall on pre-provisioned runners, so it can detect
@@ -34,7 +37,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # Build on stock distro images with exactly the documented apt packages.
+  # Build on stock distro images, whose Qt meets the floor, with exactly the
+  # apt packages of BUILD.md's distribution-packages fallback.
   distro:
     name: fresh ${{ matrix.image }}
     permissions:
@@ -46,8 +50,8 @@ jobs:
       fail-fast: false
       matrix:
         image:
-          - ubuntu:24.04
           - debian:trixie
+          - ubuntu:26.04
 
     steps:
       - name: Install toolchain + checkout plumbing
@@ -58,8 +62,8 @@ jobs:
           apt-get install -y cmake ninja-build git ca-certificates
 
       - name: Install the documented Qt dependencies (drift tripwire)
-        # The exact `apt install` line from BUILD.md's Debian/Ubuntu section. If
-        # any of these package names is renamed or removed, this step fails loud.
+        # The `apt install` line of BUILD.md's distribution-packages fallback. If any
+        # of these package names is renamed or removed, this step fails loud.
         run: |
           set -eu
           export DEBIAN_FRONTEND=noninteractive
@@ -71,8 +75,8 @@ jobs:
           fetch-depth: 0
 
       - name: Configure & build (documented preset flow)
-        # On ubuntu:24.04 this proves the project builds on stock apt CMake (3.28)
-        # after the duplicate-link fix; debian:trixie exercises a newer CMake (3.31).
+        # Each image builds with its stock apt CMake: debian:trixie's 3.31 and
+        # ubuntu:26.04's newer one.
         run: |
           set -eu
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
@@ -85,13 +89,139 @@ jobs:
           export QT_QPA_PLATFORM=offscreen
           ./build-release/wiredpanda --version
 
-  # Build at the project's declared cmake_minimum_required to keep it honest.
+  # Build on a stock Ubuntu 24.04, whose apt Qt (6.4) is older than the floor,
+  # with Qt installed by BUILD.md's aqtinstall recipe for Debian and Ubuntu.
+  aqt:
+    name: fresh ubuntu:24.04 (aqtinstall)
+    permissions:
+      contents: read
+    runs-on: ubuntu-24.04
+    container: ubuntu:24.04
+    timeout-minutes: 30
+
+    steps:
+      - name: Install toolchain + checkout plumbing
+        # sudo, since the recipe is written for a user account.
+        run: |
+          set -eu
+          export DEBIAN_FRONTEND=noninteractive
+          apt-get update
+          apt-get install -y cmake ninja-build git ca-certificates sudo
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Take the recipe from BUILD.md
+        # The bash block under BUILD.md's "Debian and Ubuntu" item, as written; each
+        # translation must hold the same lines.
+        run: |
+          set -eu
+          awk '/^\* Debian and Ubuntu/ { found = 1 } found && /^```bash/ { take = 1; next } take && /^```/ { exit } take' \
+            BUILD.md > "$RUNNER_TEMP/recipe.sh"
+          grep -q 'aqt install-qt linux' "$RUNNER_TEMP/recipe.sh"
+          for doc in BUILD_es.md BUILD_pt_BR.md; do
+            while IFS= read -r line; do
+              grep -qxF -- "$line" "$doc" || { echo "$doc lacks: $line"; exit 1; }
+            done < "$RUNNER_TEMP/recipe.sh"
+          done
+          cat "$RUNNER_TEMP/recipe.sh"
+
+      - name: Install Qt with the recipe, then build (drift tripwire)
+        # Run in the build's own step because the recipe's PATH line is what makes
+        # CMake find this Qt. Ubuntu 24.04's stock apt CMake (3.28) builds it.
+        run: |
+          set -eu
+          export DEBIAN_FRONTEND=noninteractive
+          . "$RUNNER_TEMP/recipe.sh"
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          cmake --preset release
+          cmake --build --preset release
+
+      - name: Check the plugins' runtime libraries
+        # The X11 and Wayland platform plugins and the multimedia backend are
+        # loaded at run time, so neither the build nor the offscreen smoke run
+        # proves the recipe installs what they link; ldd does.
+        run: |
+          set -eu
+          status=0
+          for plugin in ~/Qt/6.9.3/gcc_64/plugins/platforms/libqxcb.so \
+                        ~/Qt/6.9.3/gcc_64/plugins/platforms/libqwayland-*.so \
+                        ~/Qt/6.9.3/gcc_64/plugins/multimedia/libffmpegmediaplugin.so; do
+            if [ ! -e "$plugin" ]; then
+              echo "$plugin does not exist"
+              status=1
+              continue
+            fi
+            missing=$(ldd "$plugin" | grep 'not found' || true)
+            if [ -n "$missing" ]; then
+              echo "$plugin:"
+              echo "$missing"
+              status=1
+            fi
+          done
+          exit "$status"
+
+      - name: Smoke-run the binary headless
+        run: |
+          set -eu
+          export QT_QPA_PLATFORM=offscreen
+          ./build-release/wiredpanda --version
+
+  # Build on a stock macOS runner with Qt installed by BUILD.md's aqtinstall
+  # recipe for macOS.
+  aqt-macos:
+    name: fresh macos-15 (aqtinstall)
+    permissions:
+      contents: read
+    runs-on: macos-15
+    timeout-minutes: 45
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Take the recipe from BUILD.md
+        # The bash block under BUILD.md's "macOS" item, as written; each translation
+        # must hold the same lines.
+        run: |
+          set -eu
+          awk '/^\* macOS/ { found = 1 } found && /^```bash/ { take = 1; next } take && /^```/ { exit } take' \
+            BUILD.md > "$RUNNER_TEMP/recipe.sh"
+          grep -q 'aqt install-qt mac' "$RUNNER_TEMP/recipe.sh"
+          for doc in BUILD_es.md BUILD_pt_BR.md; do
+            while IFS= read -r line; do
+              grep -qxF -- "$line" "$doc" || { echo "$doc lacks: $line"; exit 1; }
+            done < "$RUNNER_TEMP/recipe.sh"
+          done
+          cat "$RUNNER_TEMP/recipe.sh"
+
+      - name: Install Qt with the recipe, then build (drift tripwire)
+        # The runner image has the Xcode command line tools, CMake and Ninja that
+        # BUILD.md asks for.
+        run: |
+          set -eu
+          . "$RUNNER_TEMP/recipe.sh"
+          cmake --preset release
+          cmake --build --preset release
+
+      - name: Smoke-run the binary headless
+        run: |
+          set -eu
+          export QT_QPA_PLATFORM=offscreen
+          ./build-release/wiredpanda.app/Contents/MacOS/wiredpanda --version
+
+  # Build at the project's declared cmake_minimum_required to keep it honest, on
+  # an image whose apt Qt meets the floor.
   minimum-cmake:
     name: minimum CMake (3.27)
     permissions:
       contents: read
     runs-on: ubuntu-24.04
-    container: ubuntu:24.04
+    container: debian:trixie
     timeout-minutes: 30
 
     steps:
