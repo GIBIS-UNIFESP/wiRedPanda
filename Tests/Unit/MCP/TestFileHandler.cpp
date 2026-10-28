@@ -3,8 +3,11 @@
 
 #include "Tests/Unit/MCP/TestFileHandler.h"
 
+#include <QCoreApplication>
+#include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QTabWidget>
@@ -14,11 +17,13 @@
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
+#include "App/Element/GraphicElements/Node.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/UI/MainWindow.h"
 #include "MCP/Server/Core/JsonRpcError.h"
+#include "MCP/Server/Core/MCPValidator.h"
 #include "MCP/Server/Handlers/FileHandler.h"
 #include "Tests/Common/Goldens.h"
 
@@ -73,6 +78,36 @@ void TestFileHandler::testHandleLoadCircuitLoadsRealFile()
 
     const QJsonObject response = handler.handleCommand("load_circuit", {{"filename", path}}, 1);
     QVERIFY2(response.contains("result"), qPrintable(QJsonDocument(response).toJson()));
+    QVERIFY(!response["result"].toObject().contains("duplicate_tx_labels"));
+    MCPValidator validator(QDir(QCoreApplication::applicationDirPath()).absoluteFilePath("schema-mcp.json"));
+    const ValidationResult valid = validator.validateResponse(response, "load_circuit");
+    QVERIFY2(valid.isValid, qPrintable(valid.errorMessage));
+}
+
+void TestFileHandler::testHandleLoadCircuitNamesDuplicateTxLabels()
+{
+    MainWindow window;
+    FileHandler handler(&window, nullptr);
+    auto *scene = window.currentTab()->scene();
+    for (const QString &label : {QStringLiteral("b"), QStringLiteral("a"), QStringLiteral("b"), QStringLiteral("a")}) {
+        auto *node = new Node;
+        node->setWirelessMode(WirelessMode::Tx);
+        node->setLabel(label);
+        scene->receiveCommand(new AddItemsCommand({node}, scene));
+    }
+
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("circuit.panda");
+    QVERIFY(handler.handleCommand("save_circuit", {{"filename", path}}, 1).contains("result"));
+
+    // The file loads as it is, and the answer names each channel it gives more than one Tx
+    const QJsonObject response = handler.handleCommand("load_circuit", {{"filename", path}}, 1);
+    QVERIFY2(response.contains("result"), qPrintable(QJsonDocument(response).toJson()));
+    QCOMPARE(response["result"].toObject()["duplicate_tx_labels"].toArray(), QJsonArray({"a", "b"}));
+    MCPValidator validator(QDir(QCoreApplication::applicationDirPath()).absoluteFilePath("schema-mcp.json"));
+    const ValidationResult valid = validator.validateResponse(response, "load_circuit");
+    QVERIFY2(valid.isValid, qPrintable(valid.errorMessage));
 }
 
 void TestFileHandler::testHandleSaveCircuitRejectsMissingFilename()

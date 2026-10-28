@@ -9,6 +9,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QImage>
+#include <QJsonArray>
 #include <QPageSize>
 #include <QPainter>
 #include <QPdfWriter>
@@ -77,7 +78,14 @@ QJsonObject FileHandler::handleLoadCircuit(const QJsonObject &params, const QJso
 
     return tryCommand([&] { // LCOV_EXCL_LINE -- pattern 45: gcov misattributes this multi-line lambda-taking call's entry; the lambda body below is genuinely covered
         m_mainWindow->loadPandaFile(filename);
-        return createSuccessResponse(QJsonObject(), requestId);
+        // The file loads as it is; channels it gives more than one Tx are named, as the status bar names them
+        QJsonObject result;
+        if (const Scene *scene = currentScene()) {
+            if (const QStringList labels = scene->duplicateTxLabels(scene->items()); !labels.isEmpty()) {
+                result["duplicate_tx_labels"] = QJsonArray::fromStringList(labels);
+            }
+        }
+        return createSuccessResponse(result, requestId);
     }, "load circuit", requestId);
 }
 

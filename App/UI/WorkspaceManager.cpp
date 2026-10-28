@@ -314,7 +314,14 @@ void WorkspaceManager::loadPandaFile(const QString &fileName)
     m_currentTab->scene()->resizeScene();
     m_host.palette()->updateICList(icListFile());
     m_host.palette()->updateEmbeddedICList(m_currentTab->scene());
-    m_host.showStatusMessage(tr("File loaded successfully."), 4000);
+    // A file loads as it is; each channel it gives more than one Tx is named with the load's message
+    const auto *scene = m_currentTab->scene();
+    const QString duplicates = Scene::duplicateTxLabelsMessage(scene->duplicateTxLabels(scene->items()));
+    if (duplicates.isEmpty()) {
+        m_host.showStatusMessage(tr("File loaded successfully."), 4000);
+    } else {
+        m_host.showStatusMessage(tr("File loaded successfully.") + QLatin1Char(' ') + duplicates, 8000);
+    }
 }
 
 void WorkspaceManager::openICInTab(const QString &blobName, int icElementId, const QByteArray &blob)
@@ -354,6 +361,13 @@ void WorkspaceManager::openICInTab(const QString &blobName, int icElementId, con
 
     // Connect child tab's save signal to parent
     connect(m_currentTab, &WorkSpace::icBlobSaved, parentWorkspace, &WorkSpace::onChildICBlobSaved);
+
+    // An IC opens as it is; each channel it gives more than one Tx is named
+    const auto *scene = m_currentTab->scene();
+    if (const QString duplicates = Scene::duplicateTxLabelsMessage(scene->duplicateTxLabels(scene->items()));
+        !duplicates.isEmpty()) {
+        m_host.showStatusMessage(duplicates, 8000);
+    }
 }
 
 void WorkspaceManager::onBlobRenamed(const QString &oldName, const QString &newName)

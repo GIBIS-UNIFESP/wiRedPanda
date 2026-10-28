@@ -470,6 +470,60 @@ QString Scene::duplicateTxLabel(const QList<WirelessEdit> &edits) const
     return {};
 }
 
+QStringList Scene::duplicateTxLabels(const QList<QGraphicsItem *> &items) const
+{
+    const auto txLabel = [](const GraphicElement *element) {
+        return (element->wirelessMode() == WirelessMode::Tx) ? element->label() : QString();
+    };
+
+    QSet<QString> arrived;
+    for (auto *item : items) {
+        if (const auto *element = qgraphicsitem_cast<const GraphicElement *>(item)) {
+            if (const QString label = txLabel(element); !label.isEmpty()) {
+                arrived.insert(label);
+            }
+        }
+    }
+    if (arrived.isEmpty()) {
+        return {};
+    }
+
+    QHash<QString, int> holders;
+    for (const auto *element : unsortedElements()) {
+        if (const QString label = txLabel(element); arrived.contains(label)) {
+            ++holders[label];
+        }
+    }
+    QStringList labels;
+    for (auto it = holders.cbegin(); it != holders.cend(); ++it) {
+        if (it.value() > 1) {
+            labels.append(it.key());
+        }
+    }
+    labels.sort();
+    return labels;
+}
+
+QString Scene::duplicateTxLabelsMessage(const QStringList &labels)
+{
+    if (labels.isEmpty()) {
+        return {};
+    }
+    if (labels.size() == 1) {
+        return tr("More than one Tx node holds the wireless channel \"%1\": each channel should have one.")
+            .arg(labels.first());
+    }
+    return tr("More than one Tx node holds each of the wireless channels \"%1\": each channel should have one.")
+        .arg(labels.join(QStringLiteral("\", \"")));
+}
+
+void Scene::reportDuplicateTxLabels(const QList<QGraphicsItem *> &items)
+{
+    if (const QString message = duplicateTxLabelsMessage(duplicateTxLabels(items)); !message.isEmpty()) {
+        showStatusMessage(message);
+    }
+}
+
 const QVector<Connection *> Scene::connections() const
 {
     const auto items_ = items();

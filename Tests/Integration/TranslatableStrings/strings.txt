@@ -512,6 +512,8 @@ SRLatch	SR-LATCH
 SRLatch	SR-Latch
 Scene	&Redo
 Scene	&Undo
+Scene	More than one Tx node holds each of the wireless channels "%1": each channel should have one.
+Scene	More than one Tx node holds the wireless channel "%1": each channel should have one.
 Scene	Paste
 Scene	Select all
 SceneUiBinder	Mute
