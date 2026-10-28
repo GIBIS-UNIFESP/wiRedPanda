@@ -147,10 +147,14 @@ linguist tools are found.
 ### 2.3 The documents
 
 - Qt 6.8 in every place §1.4 names, in the three languages; the dev container's Qt named as 6.9.3, what it installs.
-- `BUILD.md`: Qt 6.8 or later is in the repositories of "Arch Linux, Gentoo, Manjaro, Debian 13+, Ubuntu 25.04+";
-  Debian 12 and Ubuntu 22.04 and 24.04 ship an older Qt and use the aqt recipe; the apt section is headed "Debian 13+
-  and Ubuntu 25.04+". The developer guide's apt section takes the same heading and the same sentence, and
-  `CONTRIBUTING.md`'s comment names the same releases and points older ones to `BUILD.md`.
+- `BUILD.md` and its translations (QF.D6): aqtinstall at Qt 6.9.3, the Qt CI tests and the releases bundle, is the way
+  on Linux and macOS, the same whatever the OS release; Windows installs 6.9.3 with Qt's online installer. A
+  distribution's own packages are the fallback where they ship 6.8 or later (Debian 13 with 6.8.2, Ubuntu 26.04 with
+  6.10.2, Fedora with 6.11.2, Arch with 6.12.0, read from their images on 2026-10-28), naming the releases below the
+  floor (Debian 12 with 6.4.2, Ubuntu 22.04 with 6.2.4, 24.04 with 6.4.2). Which Qt the project builds, tests and
+  ships, 6.9.3 here, is the Qt ceiling's plan, not this one's; so is issue #367, the drag icon Qt 6.10 and later lose
+  on GNOME's Wayland session with Mutter before 50.2. The developer guide's local setup and
+  `CONTRIBUTING.md`'s quick start install Qt by the same recipe, then the build tools.
 - Release notes are written at the release, not in this commit; the `.ts` catalogs are untouched, since no
   translatable string changes.
 
@@ -171,19 +175,35 @@ export PATH
 It gains a compiler (`build-essential`), Qt Multimedia and Qt Image Formats (as CI installs them), and the libraries
 that Qt's X11 and Wayland platform plugins and its FFmpeg multimedia backend load at run time, found with `ldd` on the
 plugins; `libxkbcommon-x11-0` brings the `libxkbcommon.so.0` Qt Gui links. `libxcb-xinerama0` goes: no Qt 6 library
-links it. A sentence under the recipe says what the run-time libraries are for, and that a desktop install usually has
-them.
+links it. A sentence under the recipe says what the run-time libraries are for, that a desktop install usually has
+them, and that other distributions install their equivalents and run the recipe's last five lines. The FFmpeg backend
+also tries PipeWire at run time and works without it, so the recipe does not install it.
+
+macOS gets a recipe of its own (QF.D6), after the Xcode command line tools:
+
+```bash
+python3 -m venv ~/venv
+~/venv/bin/pip install aqtinstall==3.*
+~/venv/bin/aqt install-qt mac desktop 6.9.3 -m qtmultimedia qtimageformats --outputdir ~/Qt
+PATH=~/Qt/6.9.3/macos/bin:$PATH
+export PATH
+```
+
+aqt's names for the architectures and modules were read from `aqt list-qt` (3.3.0) on 2026-10-28: `clang_64` the only
+macOS desktop architecture for 6.9.3, with `qtmultimedia` and `qtimageformats` among its modules.
 
 ### 2.5 CI
 
 - `build.yml`: no new build. A comment on the matrix says that the 6.8.3 entries, and the i386 job's Debian 6.8.2,
   build and test the floor `find_package` declares, so a change that drops a 6.8 entry keeps one.
-- `fresh-deps.yml`: the `distro` job runs the apt line on `debian:trixie` and `ubuntu:26.04` (Qt 6.10.2 on the
-  branch), images whose Qt meets the floor. A new `aqt` job runs the recipe verbatim on `ubuntu:24.04`, building in
-  the recipe's own step since its `PATH` line is what makes CMake find that Qt, then checks with `ldd` that the X11
-  and Wayland platform plugins and the FFmpeg backend find every library (the build and the offscreen smoke run load
-  none of them), then runs the binary headless. The `minimum-cmake` job moves to `debian:trixie`, whose Qt meets the
-  floor. The comments at the top of the workflow and of each job say which images use which recipe.
+- `fresh-deps.yml`: the `distro` job runs the fallback's apt line on `debian:trixie` and `ubuntu:26.04` (Qt 6.10.2),
+  images whose Qt meets the floor, which is also what distribution packagers build with. A new `aqt` job takes the
+  Debian and Ubuntu recipe out of `BUILD.md` as written, checks that both translations hold its lines, and runs it on
+  `ubuntu:24.04`, building in the recipe's own step since its `PATH` line is what makes CMake find that Qt, then checks
+  with `ldd` that the X11 and Wayland platform plugins and the FFmpeg backend find every library (the build and the
+  offscreen smoke run load none of them), then runs the binary headless. A new `aqt-macos` job does the same with the
+  macOS recipe on `macos-15`. The `minimum-cmake` job moves to `debian:trixie`, whose Qt meets the floor. The comments
+  at the top of the workflow and of each job say which images use which recipe.
 
 ## 3. Pitfalls
 
@@ -236,6 +256,16 @@ user's choice between workable options).
 - **QF.D5. No new CI build: the existing 6.8 jobs test the floor.** CI's 6.8.3 builds on Linux, Windows and macOS and
   the i386 job's 6.8.2 are the floor's; a comment on the matrix says so. Basis: read on `master` (§1.6).
 
+- **QF.D6. aqtinstall first, a distribution's packages the fallback.** The documents install Qt 6.9.3 with aqtinstall
+  on Linux and macOS, and with Qt's online installer on Windows: the Qt CI tests and the releases bundle, the same
+  whatever the OS release, its module names stable where distributions rename and split packages, and the private
+  headers plan 10 needs included. A distribution's packages stay as the fallback, and CI keeps building on them,
+  since packagers build with them. Basis: the user's ruling of 2026-10-28 ("aqt first", weighed against aqt only and
+  the distribution packages first).
+- **QF.D7. The floor and the ceiling are separate plans.** This plan sets the oldest Qt the project accepts; which Qt
+  it builds, tests and ships, and what a newer Qt breaks (issue #367's drag icon from Qt 6.10 on), is the Qt
+  ceiling's plan, run right after this one. Basis: the user's ruling of 2026-10-28.
+
 ## 6. Claims to check and open questions
 
 - **Which test files include `TestUtils.h` only for the wrapper** (QF.6): four on the branch; on `master`, each of the
@@ -267,3 +297,4 @@ A hash is the `gpu-canvas` branch's, kept read-only.
 |---|---|
 | The floor raised to 6.7: CMake, the dead guards, the documents, the aqt recipe, CI | `gpu-canvas`: `c4b545131` |
 | Qt's release dates and support periods | Qt's documentation, "Qt Releases" (`doc.qt.io/qt-6/qt-releases.html`) |
+| Each distribution's packaged Qt, read from its image on 2026-10-28 | `apt-cache policy qt6-base-dev` on `debian:bookworm`, `debian:trixie`, `ubuntu:22.04` to `ubuntu:26.04`; `dnf info qt6-qtbase-devel` on `fedora:latest`; `pacman -Si qt6-base` on `archlinux:latest` |
