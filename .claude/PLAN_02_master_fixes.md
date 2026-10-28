@@ -406,6 +406,10 @@ other edit; nothing on `master` warns of them, and plan 6's netlist builder does
 duplicated label once). Tests: the rule's cases, refused and allowed; the inline editor's refusal; the property
 editor's, a node selected with non-nodes included.
 
+Found by the audit (P2.87): the check, asked on every keystroke, walked the whole scene before reading the edits, so
+a gate's label cost 2 ms a key at 2,000 nodes. Fix: an edit that gives no Tx a channel walks nothing, and one that
+does walks the scene once.
+
 ### 3.11 MCP's `set_element_properties`
 
 It applies the label and colour before validating the frequency, clock delay or volume, so an error leaves them
@@ -756,6 +760,7 @@ Each of these exists on `master`, and its fix is another plan's decision:
 | P2.17 | The property editor (§3.9) | P1.15 | none expected (unchanged on the branch) |
 | P2.83 | A slider's key steps of their own (§3.9) | P2.17 | none (the property writes golden unchanged) |
 | P2.18 | Duplicate Tx labels (§3.10) | P1.15 | none expected |
+| P2.87 | The duplicate-channel check without a walk (§3.10) | P2.18 | none |
 | P2.19 | MCP's property setter (§3.11) | P1.15, P1.17 | MCP's responses to refused requests; any new message |
 | P2.20 | The lock's tooltip (§3.12) | P1.17 | one string |
 | P2.21 | A display's small picture (§3.13) | P1.4 | as the reproduction shows |
