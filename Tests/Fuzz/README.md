@@ -209,12 +209,15 @@ never abort. Under ASan a reintroduced UAF aborts the test process, which is the
 failure signal.
 
 All reproducers have been re-verified clean against the current tree (no
-crash/OOM/leak/timeout under ASan+UBSan).
+crash/OOM/leak/timeout under ASan+UBSan). Clean is not enough: a reproducer
+the format has moved past stops before its defect and is clean too, so each
+pinned test requires the message of the check its fix added, shown reached
+under gdb.
 
 `Status`:
 - **pinned** — guarded by a dedicated regression test that loads the fixture and
-  asserts it is rejected before allocation (OOM) or loads/throws without an ASan
-  abort (UAF/UB). Tests live in `TestSerialization.cpp` (`testFuzzRegression*`)
+  asserts it is refused by the check its fix added (that check's message), or
+  loads (`bugH`). Tests live in `TestSerialization.cpp` (`testFuzzRegression*`)
   and `TestDolphinSerializer.cpp` (`.dolphin` header), run on every sanitizer CI
   lane via `ctest`.
 - **harness** — the input is in a harness's own layout (a clipboard, an IC's
@@ -223,10 +226,22 @@ crash/OOM/leak/timeout under ASan+UBSan).
   (`./build-fuzzer/fuzz_<harness> Tests/Fuzz/regressions/<file>`), and the
   defect is pinned by the unit test named in its row.
 - **retired** — the reproducer no longer reaches its defect, and is kept as its record:
+  - `bugA`: it throws after five elements and no wire, so the cleanup it guards, deleting the wires before the
+    elements whose ports also delete them, has no wire to free twice. `testFuzzRegressionCleanupUAF` builds two gates,
+    the wire between them and a record of no type, and crashes with the cleanup deleting in the list's order.
   - `bugB`: its embedded IC's blob is a compressed payload whose bytes no longer decompress, so the load stops in
     `qUncompress` before the IC shrinks its ports. `testFuzzRegressionICBlobShrink` builds the case instead, a real
     save whose IC's circuit is swapped for one with fewer inputs than the host wires, and crashes with `IC::load()`'s
     eviction of the stale `portMap` keys taken out.
+  - `bugE`: a boundary element's wires on ports it does not route, freed with it. Only an input element with an input
+    or an output element with an output has such a port, which the load now refuses as above its type's maximum
+    before the IC is built; the reproducer is refused there, and `testFuzzRegressionICBoundaryOrphanConns` checks it.
+  - `bugG`: it stops at its first record's type, before any element's properties.
+    `testFuzzRegressionElementStreamMapOOM` builds an element whose properties claim 2,147,483,647 entries, and reaches
+    a later stream error with the count's bound taken out.
+  - `bugI`: it stops at its first record's type, before any IC. `testFuzzRegressionOldFormatICSkinRef` builds a
+    version 3.3 file of one IC naming a sub-circuit file and two appearance names, and throws with the IC's names
+    indexed into its appearances.
   - `bugJ`: a timeout of `FuzzUndo` on a truth table, for which the harness once left `TruthTable` out of the types it
     adds, on the ground that its 2048-bit key made `UpdateCommand` serialization take seconds. The harness now adds,
     edits and toggles truth tables, and the slowest unit of its coverage rounds is 12 s, a large circuit's load. The
@@ -234,15 +249,15 @@ crash/OOM/leak/timeout under ASan+UBSan).
 
 | Reproducer | Class | Status | What it reproduces |
 |------------|-------|--------|--------------------|
-| `bugA_cleanup_uaf`                  | UAF     | pinned            | `qScopeGuard` cleanup after a mid-loop throw in `deserialize` |
+| `bugA_cleanup_uaf`                  | UAF     | retired            | `qScopeGuard` cleanup after a mid-loop throw in `deserialize` |
 | `bugB_ic_blob_shrink`               | UAF     | retired           | IC declares more outer ports than its blob exposes; stale `portMap` |
 | `bugC_unbounded_portlist`           | OOM     | pinned            | implausible port-list count reserved before validation |
 | `bugD_oom_qneconnection_stream_map` | OOM     | pinned            | unbounded map read in the `Connection` stream |
-| `bugE_uaf_ic_boundary_orphan_conns` | UAF     | pinned            | orphan connections at an IC boundary |
+| `bugE_uaf_ic_boundary_orphan_conns` | UAF     | retired            | orphan connections at an IC boundary |
 | `bugF_oom_unknown_typeid_metadata`  | OOM     | pinned            | unknown QVariant type ID in the metadata map |
-| `bugG_oom_element_stream_map`       | OOM     | pinned            | unbounded map read in the element stream |
+| `bugG_oom_element_stream_map`       | OOM     | retired            | unbounded map read in the element stream |
 | `bugH_old_format_v11_elements`      | crash   | pinned            | pre-4.1 v1.1 element parsing |
-| `bugI_old_format_ic_skin_ref`       | crash   | pinned            | pre-4.1 IC skin reference |
+| `bugI_old_format_ic_skin_ref`       | crash   | retired            | pre-4.1 IC skin reference |
 | `bugJ_undo_truthtable_timeout`      | timeout | retired           | pathological undo/redo on a truth table |
 | `oom_dolphin_filename_large`        | OOM     | pinned            | oversized `.dolphin` filename |
 | `oom_dolphin_header_large_appname`  | OOM     | pinned            | oversized app-name string in the `.dolphin` header |
