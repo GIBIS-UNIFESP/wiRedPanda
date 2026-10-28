@@ -32,7 +32,7 @@ Each row's notes say how its check is shown to fail; "as on the branch" marks a 
 | P9.14 | The inventory of `Scene`'s callers by group (§2.9) | todo | | Taken when the step starts |
 | P9.15 | The editing session; Qt's click selection and drag in the interaction code, then the item flags off (§2.8) | todo | | Plan 1's pointer goldens on both; shown to fail: a Ctrl press that selects without dragging a clone |
 | P9.16 | The document; the commands on it; `Scene`'s callers migrated by group (§2.9) | todo | | Commands compile against the document only; the stacking goldens unchanged |
-| P9.17 | The controller: the state machines, routing as an overlay, snapping as policy, overlay state as data (§2.10) | todo | | Shown to fail: a half-connected wire that autosave sees; a loaded or MCP-created off-grid position snapped |
+| P9.17 | The controller: the state machines, routing as an overlay, snapping as policy, overlay state as data (§2.10) | todo | | Shown to fail: a half-connected wire that autosave sees; a loaded off-grid position snapped, or one an undo restores |
 | P9.18 | Controller tests in place of view-driven ones (§2.10) | todo | | |
 | P9.19 | The new view and the CPU backend beside the old view, the goldens on both (§2.11, §2.14) | todo | | Shown to fail: a GPU viewport whose paint and resize the view keeps never renders (as in a spike) |
 | P9.20 | The callers switched to the new view (§2.14) | todo | | Shown to fail: a backend switch without `viewportReplaced` leaves the minimap's view rectangle behind |
