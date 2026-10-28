@@ -374,6 +374,42 @@ void TestSimulationUnit::testRebuildKeepsClockLevel()
     QCOMPARE(clock->isOn(), true);
 }
 
+void TestSimulationUnit::testResumeAfterAPausedRebuildKeepsClockPhase()
+{
+    // A structural edit while paused rebuilds the simulation on the resume; the pause still shifts every clock, the
+    // kept one and the one the edit adds, so neither catches up on the pause one half-period per tick.
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *sim = scene->simulation();
+    auto *clock = new Clock();
+    clock->setFrequency(1.0);
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{clock}, scene));
+    sim->start();
+    sim->update();
+    sim->stop();
+
+    // Three half-periods of pause, under the clock's catch-up limit
+    QTest::qWait(1600);
+    auto *added = new Clock();
+    added->setFrequency(1.0);
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{added}, scene));
+    sim->start();
+    QVERIFY(!sim->m_hasPausedAt);
+
+    int toggles = 0;
+    int addedToggles = 0;
+    for (int tick = 0; tick < 3; ++tick) {
+        const bool level = clock->isOn();
+        const bool addedLevel = added->isOn();
+        sim->update();
+        toggles += (clock->isOn() != level) ? 1 : 0;
+        addedToggles += (added->isOn() != addedLevel) ? 1 : 0;
+    }
+    sim->stop();
+    QVERIFY2(toggles <= 1, qPrintable(QString("the kept clock toggled %1 times in 3 ticks").arg(toggles)));
+    QVERIFY2(addedToggles <= 1, qPrintable(QString("the added clock toggled %1 times in 3 ticks").arg(addedToggles)));
+}
+
 void TestSimulationUnit::testRebuildKeepsFlipFlopState_data()
 {
     QTest::addColumn<bool>("inIC");
