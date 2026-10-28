@@ -183,7 +183,8 @@ under callgrind). Fix: an element re-routes its wires on its own `ItemPositionHa
 or transform, both through `ItemSendsGeometryChanges`. Shown by `TestScene::testNoItemMakesEveryMoveWalkTheScene`;
 `TestSceneSnapshot::testWireGeometryAfterEdit` keeps the wires following. Undoing the same paste grew faster than
 the paste in a probe and is linear in the application: the probe's growth came from items Qt had not indexed yet
-and wires without paths (P2.59, counted; the user rules on dropping it).
+and wires without paths (P2.59: no defect of ours, pinned by a growth test under the application's conditions, and
+the removal before Qt indexes the paste measured where the application can reach it).
 
 ### 2.15 A command over n items deduplicates them in n squared
 
@@ -402,9 +403,10 @@ The inline label editor accepts any label, and two selected nodes edited into on
 rule in the model for every writer (P2.D4): it takes the label and mode each edited node would have and compares every
 edited node with the others as the edits leave them; a refused edit pushes nothing and says why, the inline editor in
 the status bar, the property editor in its dialog as on `master`. Duplicates that come from a file or a paste refuse no
-other edit; nothing on `master` warns of them, and plan 6's netlist builder does (on the branch it listed each
-duplicated label once). Tests: the rule's cases, refused and allowed; the inline editor's refusal; the property
-editor's, a node selected with non-nodes included.
+other edit and the load or paste goes on, but each is reported where it arrives, naming its channel (P2.88): nothing
+on `master` warns of them, and a net plan 5 will read as Error should not come silently. Plan 6's netlist builder
+reports them too (on the branch it listed each duplicated label once). Tests: the rule's cases, refused and allowed;
+the inline editor's refusal; the property editor's, a node selected with non-nodes included.
 
 Found by the audit (P2.87): the check, asked on every keystroke, walked the whole scene before reading the edits, so
 a gate's label cost 2 ms a key at 2,000 nodes. Fix: an edit that gives no Tx a channel walks nothing, and one that
@@ -806,8 +808,10 @@ user's choice between workable options).
   its ports cannot take a fixed picture. Loading still accepts one. Basis: tested on the branch; accepted with the
   write-up, 2026-10-21.
 - **P2.D4. One rule against duplicate Tx labels, for every writer**: an edit that would give two Tx nodes one channel
-  is refused wherever a label is set, saying why; duplicates from a file or a paste refuse no other edit. Plan 3's
-  schema keeps the rule. Basis: a defect verified on `master`; the user's ruling of 2026-10-16.
+  is refused wherever a label is set, saying why; duplicates from a file or a paste refuse no other edit and are
+  reported where they arrive, naming each channel (P2.88). Plan 3's schema keeps the rule. Basis: a defect verified
+  on `master`; the user's rulings of 2026-10-16 and of 2026-10-28 (the report of duplicates from a file or a paste,
+  which the wording of P2.18 had dropped).
 - **P2.D5. The exporters follow the Tx**, as the simulation does, until plan 5's rules make two drivers read Error and
   plan 8 makes the exporters refuse them. Basis: measured on the base of `temporal-engine`; accepted with the
   write-up, 2026-10-21.
@@ -885,10 +889,10 @@ user's choice between workable options).
   (P2.36).
 - **When the fuzz harnesses run** (P2.37): settled by the user, on the user's machine in coverage-guided rounds, not
   in CI (P2.D10).
-- **P2.D4's wording** (its row): reworded with P2.18 to say where each writer refuses and that nothing warns of
-  duplicates from a file or a paste; the user confirms it.
-- **P2.59, a paste's undo** (its row): counted, linear in the application; the user rules on dropping it as no
-  defect.
+- **P2.D4's wording** (its row): settled by the user, 2026-10-28: a refusal is said where the label is set, and
+  duplicates from a file or a paste are reported where they arrive (P2.88).
+- **P2.59, a paste's undo** (its row): settled by the user, 2026-10-28: no defect of ours, pinned by a growth test,
+  the removal before Qt indexes measured where the application can reach it.
 
 ## 13. What other plans take from plan 2
 

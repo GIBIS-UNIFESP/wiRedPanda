@@ -70,18 +70,26 @@ One slice per fix, each with a test that fails on the floor's branch first. A te
 Qt owns calls the code directly, since on macOS the throw ends the process; once the fix is in, the test goes through
 the frame Qt owns (the undo stack, the event, the tick), so it checks what the user runs. The first known fix:
 
-- **An AudioBox restored with its sound gone** (EB.3): the restore keeps the path and the element stays silent, or
-  plays its default, as plan 3's audio service will (P3.D5); the choice is EB.D3. Opening a file still reports it.
+- **An AudioBox restored with its sound gone** (EB.3): the restore keeps the path and the element plays its default
+  sound (EB.D3), as a picture that no longer loads shows its default (P2.50) and as plan 3's audio service will
+  (P3.D5); the sound comes back if the file does. Opening a file still reports it.
 
 The rest come from the inventory.
 
 ## 5. Keeping the rule
 
-The check that keeps it is EB.D2, open: either every command's `undo()` and `redo()` is `noexcept`, so a throw ends
-the process on every platform and CI's Linux jobs see what only macOS showed; or a test per command restores a
-snapshot with each external file gone and expects no throw and a stepped stack. The first catches what nobody thought
-to test but turns a reported error into a crash on Linux and Windows; the second keeps the reports but checks only
-what is listed.
+Two checks keep it (EB.D2), and `notify()` stays the last-resort reporter of §2:
+
+- **The inventory is checked.** A CI check lists every `throw`, `PANDACEPTION`, `catch` and `guardedSlot()` site in
+  the sources and fails on any the inventory's table does not hold, or holds at a line that no longer has it. A new
+  site is classified (below a boundary, an expected condition, a broken invariant) before it lands, which covers the
+  sites nobody thought to test. Shown to fail by a `PANDACEPTION` added to a command and a `catch` removed.
+- **Each fixed site has a test through the frame Qt owns** (§4): the undo stack, the event, the tick. For the
+  commands, each restores a snapshot with each external file it can name gone (a picture, a sound, an IC file) and
+  expects no throw, the scene whole and the stack stepped.
+
+`noexcept` on the commands is not used: once nothing below them throws it adds no protection, and its only effect
+would be to end the process where §2 keeps `notify()` to report.
 
 ## 6. Pitfalls
 
@@ -97,7 +105,7 @@ what is listed.
 | Row | Step | Slice |
 |---|---|---|
 | EB.1 | The inventory of §3, every throw, catch and `guardedSlot()` site with its frames and class | 1 |
-| EB.2 | The check that keeps the rule (§5), once EB.D2 is settled | last |
+| EB.2 | The checks that keep the rule (§5): the inventory against the sources, a test per fixed site | last |
 | EB.3 | An AudioBox restored with its sound gone (§4) | its own |
 
 A fix the inventory finds gets the next row (EB.4 on), one slice each.
@@ -109,9 +117,12 @@ user's choice between workable options).
 
 - **EB.D1. A plan of its own, right after the Qt floor, before plan 3.** Basis: the user's ruling, 2026-10-24 ("could
   we make that a 2.5 plan?", then "after the qt floor is fine, go ahead"), after P2.16's macOS failure and P2.50.
-- **EB.D2. How the rule is kept** (§5): `noexcept` commands, or a restore test per command. Open, the user's choice.
-- **EB.D3. What an AudioBox restored with its sound gone plays** (§4): silence, or its default sound. Open, the user's
-  choice.
+- **EB.D2. How the rule is kept** (§5): the inventory checked in CI against the sources, and a test through Qt's
+  frame for each fixed site; no `noexcept`, which would replace `notify()`'s last-resort report with an end of the
+  process. Basis: a ruling, 2026-10-28 ("wasnt the plan to replace the global catcher with proper localized catches?",
+  then "go ahead").
+- **EB.D3. What an AudioBox restored with its sound gone plays** (§4): its default sound, the path kept, as P2.50's
+  pictures and plan 3's P3.D5. Basis: a ruling, 2026-10-28 ("go ahead").
 
 ## 9. Claims to check and open questions
 
@@ -122,7 +133,7 @@ user's choice between workable options).
 
 | Risk | Mitigation |
 |---|---|
-| A throw site the inventory misses | Every site is listed by a search for `throw` and `PANDACEPTION`, and EB.2's check covers the commands |
+| A throw site the inventory misses | Every site is listed by a search for `throw` and `PANDACEPTION`, and EB.2's check fails on any site the inventory does not hold |
 | A fix turns a report into silence | A fallback is shown where the user acted, or a file's open still reports (§2) |
 | A site fixed here comes back in a later plan's rewrite | The rule is in this file and plan 3 on keep each fix's test green |
 
