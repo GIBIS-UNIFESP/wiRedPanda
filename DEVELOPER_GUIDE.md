@@ -76,7 +76,7 @@ The project is maintained by [GIBIS-UNIFESP](https://github.com/GIBIS-UNIFESP) a
 | Component       | Technology                           |
 |-----------------|--------------------------------------|
 | Language        | C++20                                |
-| UI Framework    | Qt 6.2+                              |
+| UI Framework    | Qt 6.8+                              |
 | Build System    | CMake 3.27+ with Ninja               |
 | Tests           | Qt Test Framework + CTest            |
 | CI/CD           | GitHub Actions                       |
@@ -106,7 +106,7 @@ ctest --preset debug
 The container includes:
 
 - Ubuntu 24.04 LTS
-- Qt 6.2+ with Multimedia and SVG modules
+- Qt 6.9.3 with Multimedia and SVG modules
 - CMake, Ninja, GCC 13+
 - ccache (compilation cache)
 - mold (fast linker)
@@ -116,29 +116,24 @@ The container includes:
 
 See [BUILD.md](BUILD.md) for platform-specific instructions. The short version:
 
-#### Ubuntu/Debian
+#### Linux and macOS
+
+Install Qt 6.9.3 with aqtinstall, as [BUILD.md](BUILD.md) shows: it is the Qt CI tests and the releases bundle, the
+same whatever the OS release. A distribution's own Qt 6.8 or later works too (Debian 13, Ubuntu 26.04, Fedora, Arch
+Linux). Then the tools:
 
 ```bash
-sudo apt install build-essential cmake ninja-build \
-    qt6-base-dev qt6-multimedia-dev qt6-svg-dev \
-    ccache mold
-```
-
-#### Arch Linux
-
-```bash
-sudo pacman -S base-devel cmake ninja qt6-base qt6-multimedia qt6-svg ccache mold
-```
-
-#### macOS
-
-```bash
-brew install cmake ninja qt6 ccache
+# Debian and Ubuntu
+sudo apt install build-essential cmake ninja-build ccache mold
+# Arch Linux
+sudo pacman -S base-devel cmake ninja ccache mold
+# macOS
+brew install cmake ninja ccache
 ```
 
 #### Windows
 
-1. Install [Qt 6.2+](https://www.qt.io/download) with Multimedia and SVG modules.
+1. Install [Qt 6.9.3](https://www.qt.io/download) with Multimedia and SVG modules.
 2. Install [CMake](https://cmake.org/download/) and [Ninja](https://github.com/nicollasricas/ninja) (`choco install cmake ninja` or `scoop install cmake ninja`).
 3. Configure Visual Studio Build Tools 2022 or later.
 
@@ -425,7 +420,7 @@ Wireless node modes: `None` (default), `Tx` (transmitter), or `Rx` (receiver).
 - **Dark**: dark theme
 - **System**: automatically follows the OS theme
 
-`ThemeManager` detects OS theme changes in real time by connecting to Qt's cross-platform `QStyleHints::colorSchemeChanged` signal (Qt 6.5+; a palette-lightness heuristic is used as a fallback on older Qt), with several version-gated workarounds for Qt 6.8/6.9/6.10 differences in how pending theme-change events get flushed.
+`ThemeManager` detects OS theme changes in real time by connecting to Qt's cross-platform `QStyleHints::colorSchemeChanged` signal, with a workaround for Qt 6.9, which leaves a pending theme-change event unflushed where Qt 6.10 flushes it.
 
 ---
 
@@ -1340,7 +1335,7 @@ ctest --preset debug --verbose
 - Method names start with `test`
 - Use `QVERIFY(condition)` for boolean assertions
 - Use `QCOMPARE(actual, expected)` for comparisons
-- Use `QVERIFY_THROWS(ExceptionType, expr)` for exception tests (a `TestUtils.h` macro wrapping `QVERIFY_THROWS_EXCEPTION` on Qt 6.7+ or `QVERIFY_EXCEPTION_THROWN` on older Qt)
+- Use `QVERIFY_THROWS_EXCEPTION(ExceptionType, expr)` for exception tests
 - **Always prefer fixing code over changing tests** to accept incorrect behavior
 
 ### Coverage and Sanitizers
@@ -1729,7 +1724,7 @@ Ordered by difficulty:
 
 | Error                             | Likely Cause                               | Solution                                  |
 |-----------------------------------|--------------------------------------------|-------------------------------------------|
-| `Qt6 not found`                   | Qt not installed or not in PATH            | Install Qt 6.2+ and set CMAKE_PREFIX_PATH |
+| `Qt6 not found`                   | Qt not installed or not in PATH            | Install Qt 6.8+ and set CMAKE_PREFIX_PATH |
 | `Ninja not found`                 | Ninja not installed                        | `apt install ninja-build`                 |
 | `undefined reference to ...`      | .cpp file not listed in CMakeSources.cmake | Add the file to the source list           |
 | Tests crash with segfault         | Accessing destroyed object                 | Use ASAN: `cmake --preset asan`           |

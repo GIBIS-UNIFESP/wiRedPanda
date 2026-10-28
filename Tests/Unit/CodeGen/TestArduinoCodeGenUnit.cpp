@@ -341,7 +341,7 @@ void TestArduinoCodeGenUnit::testTooManyInputRotaryPositionsThrowsPinOverflow()
     const QString path = dir.path() + "/overflow_test.ino";
     ArduinoCodeGen codegen(path, arduinoSceneElements(workspace.scene()));
 
-    QVERIFY_THROWS(std::exception, codegen.generate());
+    QVERIFY_THROWS_EXCEPTION(std::exception, codegen.generate());
 }
 
 void TestArduinoCodeGenUnit::testGenerateTestbenchUnwritablePathThrows()
@@ -365,7 +365,7 @@ void TestArduinoCodeGenUnit::testGenerateTestbenchUnwritablePathThrows()
     QVERIFY(writableDir.isValid());
     ArduinoCodeGen codegen(writableDir.path() + "/main.ino", {});
 
-    QVERIFY_THROWS(std::exception, codegen.generateTestbench(tbPath, {}));
+    QVERIFY_THROWS_EXCEPTION(std::exception, codegen.generateTestbench(tbPath, {}));
 
     QFile::setPermissions(lockedDir.path(),
         QFileDevice::ReadOwner | QFileDevice::WriteOwner | QFileDevice::ExeOwner);
@@ -390,7 +390,7 @@ void TestArduinoCodeGenUnit::testConstructorUnwritablePathThrows()
         QVERIFY(!probe.open(QIODevice::WriteOnly));
     }
 
-    QVERIFY_THROWS(std::exception, ArduinoCodeGen(path, {}));
+    QVERIFY_THROWS_EXCEPTION(std::exception, ArduinoCodeGen(path, {}));
 
     QFile::setPermissions(lockedDir.path(),
         QFileDevice::ReadOwner | QFileDevice::WriteOwner | QFileDevice::ExeOwner);

@@ -24,9 +24,8 @@ ThemeManager::ThemeManager(QObject *parent)
     // because the static local is still being constructed.
     const Theme effective = (m_theme == Theme::System) ? resolveSystemTheme() : m_theme;
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
     // Set color scheme BEFORE applying the palette: setColorScheme() controls what
-    // QApplication::style()->standardPalette() returns on Windows/Qt 6.8+.
+    // QApplication::style()->standardPalette() returns on Windows.
     // Calling it after would cause the Light theme to read a dark standardPalette().
     // System theme: leave m_requestedColorScheme as Unknown so the platform reads the
     // OS color scheme naturally. Setting it to Dark/Light explicitly would block runtime
@@ -45,18 +44,15 @@ ThemeManager::ThemeManager(QObject *parent)
         case Theme::System: break; // leave Unknown — platform reads OS setting directly
         }
     }
-#endif
 
     m_attributes.setTheme(effective);
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 5, 0)
-    // Qt 6.5+ provides a built-in color-scheme change signal; use it so System
-    // theme reacts at runtime when the user toggles OS dark/light mode.
+    // Qt's color-scheme change signal lets the System theme react at runtime when
+    // the user toggles OS dark/light mode.
     if (auto *app = qApp) {
         connect(app->styleHints(), &QStyleHints::colorSchemeChanged,
                 this, [this](Qt::ColorScheme) { onSystemColorSchemeChanged(); });
     }
-#endif
 }
 
 QString ThemeManager::themePath()
@@ -77,18 +73,10 @@ Theme ThemeManager::effectiveTheme()
 
 Theme ThemeManager::resolveSystemTheme()
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 5, 0)
     if (auto *app = qApp) {
         return (app->styleHints()->colorScheme() == Qt::ColorScheme::Dark) ? Theme::Dark : Theme::Light;
     }
     return Theme::Light; // LCOV_EXCL_LINE -- qApp is always alive while any test runs
-#else
-    if (auto *app = qApp) {
-        return (app->palette().color(QPalette::Window).lightness() < 128)
-                   ? Theme::Dark : Theme::Light;
-    }
-    return Theme::Light;
-#endif
 }
 
 void ThemeManager::onSystemColorSchemeChanged()
@@ -103,7 +91,6 @@ void ThemeManager::setTheme(const Theme theme)
 {
     Q_ASSERT(QCoreApplication::instance()->thread() == QThread::currentThread());
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
     // For System theme, clear the explicit color scheme override first so the platform
     // re-reads the OS setting. Qt 6.9.3's requestColorScheme() posts a QWindowSystemInterface
     // event but doesn't flush it — QStyleHints::colorScheme() would return a stale cached
@@ -121,12 +108,10 @@ void ThemeManager::setTheme(const Theme theme)
             QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
         }
     }
-#endif
 
     const Theme effective = (theme == Theme::System) ? resolveSystemTheme() : theme;
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
-    // Set color scheme BEFORE applying the palette: on Windows/Qt 6.8+,
+    // Set color scheme BEFORE applying the palette: on Windows,
     // setColorScheme() controls what QApplication::style()->standardPalette() returns.
     // Calling it after would cause the Light theme to read a dark standardPalette().
     // System theme: m_requestedColorScheme is already Unknown from the block above —
@@ -140,7 +125,6 @@ void ThemeManager::setTheme(const Theme theme)
         case Theme::System: break; // already Unknown — platform reads OS setting directly
         }
     }
-#endif
 
     // Always refresh ThemeAttributes so palette and color constants are current,
     // even if the theme value itself hasn't changed (e.g. initial load).

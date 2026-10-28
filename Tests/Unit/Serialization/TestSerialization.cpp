@@ -2313,7 +2313,7 @@ void TestSerialization::testReadPayloadRejectsTooShortCompressedPayload()
 void TestSerialization::testReadPandaHeaderNoDeviceThrows()
 {
     QDataStream stream; // default-constructed: no I/O device attached
-    QVERIFY_THROWS(std::exception, Serialization::readPandaHeader(stream));
+    QVERIFY_THROWS_EXCEPTION(std::exception, Serialization::readPandaHeader(stream));
 }
 
 void TestSerialization::testReadPandaHeaderLegacyHeaderMissingVersionPartThrows()
@@ -2340,7 +2340,7 @@ void TestSerialization::testReadPandaHeaderLegacyHeaderMissingVersionPartThrows(
 void TestSerialization::testReadDolphinHeaderNoDeviceThrows()
 {
     QDataStream stream;
-    QVERIFY_THROWS(std::exception, Serialization::readDolphinHeader(stream));
+    QVERIFY_THROWS_EXCEPTION(std::exception, Serialization::readDolphinHeader(stream));
 }
 
 void TestSerialization::testReadDolphinHeaderTruncatedLegacyHeaderThrows()
@@ -2586,7 +2586,7 @@ void TestSerialization::testCopyPandaFileCopyFailureThrows()
 
     const QString destPath = dir.path() + "/no/such/subdir/dest.panda";
 
-    QVERIFY_THROWS(std::exception,
+    QVERIFY_THROWS_EXCEPTION(std::exception,
         Serialization::copyPandaFile(QFileInfo(srcPath), QFileInfo(destPath)));
 }
 

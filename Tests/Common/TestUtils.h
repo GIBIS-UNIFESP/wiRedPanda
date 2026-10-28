@@ -75,12 +75,6 @@ inline FILE *testUtilsFopen(const char *path, const char *mode) { return std::fo
 inline FILE *testUtilsFreopen(const char *path, const char *mode, FILE *stream) { return std::freopen(path, mode, stream); }
 #endif
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 7, 0)
-#  define QVERIFY_THROWS(exType, ...) QVERIFY_THROWS_EXCEPTION(exType, __VA_ARGS__)
-#else
-#  define QVERIFY_THROWS(exType, ...) QVERIFY_EXCEPTION_THROWN(__VA_ARGS__, exType)
-#endif
-
 /// QDragEnterEvent's QPoint-taking constructor is deprecated in favour of a new QPointF-taking
 /// overload -- which doesn't exist on older Qt (confirmed against the actual installed headers:
 /// absent in 6.9.3, present -- and the QPoint overload deprecated -- in 6.12.0), so neither type

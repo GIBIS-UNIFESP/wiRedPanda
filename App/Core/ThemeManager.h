@@ -126,11 +126,10 @@ private:
 
     explicit ThemeManager(QObject *parent = nullptr);
 
-    /// Resolves Theme::System to Light or Dark based on the OS color scheme.
-    /// Qt 6.5+: reads QStyleHints::colorScheme(). Qt < 6.5: palette lightness heuristic.
+    /// Resolves Theme::System to Light or Dark from the OS color scheme, as QStyleHints::colorScheme() reports it.
     static Theme resolveSystemTheme();
 
-    /// Called when the OS color scheme changes (connected to QStyleHints::colorSchemeChanged on Qt 6.5+).
+    /// Called when the OS color scheme changes (connected to QStyleHints::colorSchemeChanged).
     void onSystemColorSchemeChanged();
 
     // --- Members ---

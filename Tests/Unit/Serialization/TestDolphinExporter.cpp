@@ -11,7 +11,6 @@
 #include "App/BeWavedDolphin/DolphinExporter.h"
 #include "App/BeWavedDolphin/SignalModel.h"
 #include "App/Core/Enums.h"
-#include "Tests/Common/TestUtils.h"
 
 void TestDolphinExporter::testExportToPdfThrowsWhenPrinterCannotOpen()
 {
@@ -38,7 +37,7 @@ void TestDolphinExporter::testExportToPdfThrowsWhenPrinterCannotOpen()
     model.setValue(0, 0, 1);
 
     QTest::ignoreMessage(QtWarningMsg, "QPainter::begin(): Returned false");
-    QVERIFY_THROWS(std::exception, DolphinExporter::exportToPdf(&model, PlotType::Line, pdfPath));
+    QVERIFY_THROWS_EXCEPTION(std::exception, DolphinExporter::exportToPdf(&model, PlotType::Line, pdfPath));
 
     QFile::setPermissions(lockedDir.path(),
         QFileDevice::ReadOwner | QFileDevice::WriteOwner | QFileDevice::ExeOwner);

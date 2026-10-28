@@ -2,7 +2,7 @@
 
 ## On Windows
 
-Select these components for Qt6:
+Install Qt 6.9.3 with the [Qt online installer](https://www.qt.io/download), selecting these components:
 ![qt6](https://github.com/user-attachments/assets/aedc8749-8b5c-4f4d-9c65-651b703dccea)
 
 Then open CMakeLists.txt in Qt Creator and press Ctrl+R to build and run.
@@ -11,46 +11,54 @@ Then open CMakeLists.txt in Qt Creator and press Ctrl+R to build and run.
 
 ### Dependencies
 
-Qt 6.2.0+ and the QtMultimedia module is needed for building.
+Qt 6.8.0+ with the Multimedia and Svg modules is needed for building. The recommended Qt is 6.9.3, the version CI
+tests and the releases bundle, installed with [aqtinstall](https://github.com/miurahr/aqtinstall), which gives the same
+Qt whatever your OS release.
 
-On distros such as Arch Linux, Gentoo, Manjaro, Debian, etc., Qt 6.2+ can be installed from the standard repos.
-
-* Debian/Ubuntu
-
-```bash
-sudo apt install build-essential qt6-base-dev qt6-multimedia-dev qt6-svg-dev
-```
-
-* Arch Linux-based
-
-```bash
-sudo pacman -S base-devel qt6-base qt6-multimedia qt6-svg
-```
-
-* macOS
-
-```bash
-brew install qt6
-```
-
-* Others
-
-Qt6 may be installed directly from the [Qt website](https://www.qt.io/download),
-from unofficial installers such as [aqtinstall](https://github.com/miurahr/aqtinstall),
-from community-maintained repositories or
-[built from source](https://wiki.qt.io/Building_Qt_6_from_Git).
-
-Here's how one could use aqtinstall to install Qt 6.9.3 on a Debian-based distro.
+* Debian and Ubuntu
 
 ```bash
 sudo apt-get update
-sudo apt-get install libgl1-mesa-dev libxcb-xinerama0 libpulse-dev git python3 python3-pip python3-venv -y
+sudo apt-get install build-essential libgl1-mesa-dev libpulse-dev git python3 python3-pip python3-venv \
+    libxcb-cursor0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-shape0 libxkbcommon-x11-0 \
+    libxrandr2 libwayland-cursor0 libwayland-egl1 -y
 python3 -m venv ~/venv
 ~/venv/bin/pip install aqtinstall==3.*
-~/venv/bin/aqt install-qt linux desktop 6.9.3 --outputdir ~/Qt
+~/venv/bin/aqt install-qt linux desktop 6.9.3 -m qtmultimedia qtimageformats --outputdir ~/Qt
 PATH=~/Qt/6.9.3/gcc_64/bin:$PATH
 export PATH
 ```
+
+The `libxcb-*`, `libxkbcommon-x11-0`, `libxrandr2` and `libwayland-*` packages are what Qt's X11 and Wayland platform plugins
+and its multimedia backend load at run time; a desktop install usually has them already. On other distributions,
+install their equivalents with your package manager, then run the last five lines.
+
+* macOS (with the Xcode command line tools: `xcode-select --install`)
+
+```bash
+python3 -m venv ~/venv
+~/venv/bin/pip install aqtinstall==3.*
+~/venv/bin/aqt install-qt mac desktop 6.9.3 -m qtmultimedia qtimageformats --outputdir ~/Qt
+PATH=~/Qt/6.9.3/macos/bin:$PATH
+export PATH
+```
+
+* From your distribution's packages
+
+If your distribution ships Qt 6.8 or later (Debian 13, Ubuntu 26.04, Fedora, Arch Linux), its packages work too.
+Debian 12 and Ubuntu 22.04 and 24.04 ship an older Qt.
+
+```bash
+# Debian 13, Ubuntu 26.04
+sudo apt install build-essential qt6-base-dev qt6-multimedia-dev qt6-svg-dev
+# Arch Linux-based
+sudo pacman -S base-devel qt6-base qt6-multimedia qt6-svg
+# macOS, with Homebrew
+brew install qt6
+```
+
+Qt can also be installed from the [Qt website](https://www.qt.io/download) or
+[built from source](https://wiki.qt.io/Building_Qt_6_from_Git).
 
 ### Build process
 

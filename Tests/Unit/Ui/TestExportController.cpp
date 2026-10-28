@@ -70,14 +70,14 @@ void TestExportController::testExportToArduinoThrowsOnEmptyFileName()
 {
     ExportControllerFixture f;
     ExportController controller(f.host);
-    QVERIFY_THROWS(std::exception, controller.exportToArduino(QString()));
+    QVERIFY_THROWS_EXCEPTION(std::exception, controller.exportToArduino(QString()));
 }
 
 void TestExportController::testExportToArduinoThrowsOnEmptyScene()
 {
     ExportControllerFixture f; // brand-new WorkSpace, no elements
     ExportController controller(f.host);
-    QVERIFY_THROWS(std::exception, controller.exportToArduino(QStringLiteral("out.ino")));
+    QVERIFY_THROWS_EXCEPTION(std::exception, controller.exportToArduino(QStringLiteral("out.ino")));
 }
 
 void TestExportController::testExportToArduinoAppendsExtensionAndGenerates()
@@ -110,14 +110,14 @@ void TestExportController::testExportToSystemVerilogThrowsOnEmptyFileName()
 {
     ExportControllerFixture f;
     ExportController controller(f.host);
-    QVERIFY_THROWS(std::exception, controller.exportToSystemVerilog(QString()));
+    QVERIFY_THROWS_EXCEPTION(std::exception, controller.exportToSystemVerilog(QString()));
 }
 
 void TestExportController::testExportToSystemVerilogThrowsOnEmptyScene()
 {
     ExportControllerFixture f;
     ExportController controller(f.host);
-    QVERIFY_THROWS(std::exception, controller.exportToSystemVerilog(QStringLiteral("out.sv")));
+    QVERIFY_THROWS_EXCEPTION(std::exception, controller.exportToSystemVerilog(QStringLiteral("out.sv")));
 }
 
 void TestExportController::testExportToSystemVerilogAppendsExtensionAndGenerates()
@@ -140,7 +140,7 @@ void TestExportController::testExportToWaveFormFileThrowsOnEmptyFileName()
 {
     ExportControllerFixture f;
     ExportController controller(f.host);
-    QVERIFY_THROWS(std::exception, controller.exportToWaveFormFile(QString()));
+    QVERIFY_THROWS_EXCEPTION(std::exception, controller.exportToWaveFormFile(QString()));
 }
 
 void TestExportController::testExportToWaveFormFileGeneratesAndPrints()

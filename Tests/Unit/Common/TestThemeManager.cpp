@@ -329,9 +329,6 @@ void TestThemeManager::testDarkThemePortColors()
 
 void TestThemeManager::testDarkToLightPaletteSwitching()
 {
-#if defined(Q_OS_MAC) && QT_VERSION < QT_VERSION_CHECK(6, 8, 0)
-    QSKIP("macOS + Qt < 6.8: setColorScheme() unavailable, palette does not change on theme switch");
-#endif
     // Start with Dark theme
     ThemeManager::setTheme(Theme::Dark);
     QCOMPARE(ThemeManager::theme(), Theme::Dark);
@@ -356,9 +353,6 @@ void TestThemeManager::testDarkToLightPaletteSwitching()
 
 void TestThemeManager::testLightToDarkPaletteSwitching()
 {
-#if defined(Q_OS_MAC) && QT_VERSION < QT_VERSION_CHECK(6, 8, 0)
-    QSKIP("macOS + Qt < 6.8: setColorScheme() unavailable, palette does not change on theme switch");
-#endif
     // Start with Light theme
     ThemeManager::setTheme(Theme::Light);
     QCOMPARE(ThemeManager::theme(), Theme::Light);
@@ -382,9 +376,6 @@ void TestThemeManager::testLightToDarkPaletteSwitching()
 
 void TestThemeManager::testRepeatedThemeSwitching()
 {
-#if defined(Q_OS_MAC) && QT_VERSION < QT_VERSION_CHECK(6, 8, 0)
-    QSKIP("macOS + Qt < 6.8: setColorScheme() unavailable, palette does not change on theme switch");
-#endif
     // Repeatedly switch themes and verify palette consistency
     for (int i = 0; i < 3; ++i) {
         // Switch to Dark
@@ -404,9 +395,6 @@ void TestThemeManager::testRepeatedThemeSwitching()
 
 void TestThemeManager::testSystemColorSchemeChangeReactsWhenThemeIsSystem()
 {
-#if QT_VERSION < QT_VERSION_CHECK(6, 5, 0)
-    QSKIP("QStyleHints::colorSchemeChanged requires Qt 6.5+");
-#else
     // onSystemColorSchemeChanged() is a private slot-like callback only ever
     // invoked by a real OS color-scheme change, which never happens in a
     // headless test run. QStyleHints::colorSchemeChanged is a real Qt signal
@@ -420,14 +408,10 @@ void TestThemeManager::testSystemColorSchemeChangeReactsWhenThemeIsSystem()
     QMetaObject::invokeMethod(qApp->styleHints(), "colorSchemeChanged", Qt::DirectConnection,
                               Q_ARG(Qt::ColorScheme, Qt::ColorScheme::Dark));
     QCOMPARE(spy.size(), 1);
-#endif
 }
 
 void TestThemeManager::testSystemColorSchemeChangeIgnoredWhenThemeIsExplicit()
 {
-#if QT_VERSION < QT_VERSION_CHECK(6, 5, 0)
-    QSKIP("QStyleHints::colorSchemeChanged requires Qt 6.5+");
-#else
     // The guard inside onSystemColorSchemeChanged() must actually gate
     // re-emission: an explicit (non-System) theme choice must not react to
     // OS-level color-scheme toggles.
@@ -438,7 +422,6 @@ void TestThemeManager::testSystemColorSchemeChangeIgnoredWhenThemeIsExplicit()
     QMetaObject::invokeMethod(qApp->styleHints(), "colorSchemeChanged", Qt::DirectConnection,
                               Q_ARG(Qt::ColorScheme, Qt::ColorScheme::Light));
     QCOMPARE(spy.size(), 0);
-#endif
 }
 
 void TestThemeManager::testThemeAttributesSystemFallsBackToLight()
