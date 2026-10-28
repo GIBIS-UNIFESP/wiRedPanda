@@ -186,7 +186,10 @@ the paste in a probe and is linear in the GUI, where a paste fits the scene rect
 and indexes the items before an undo can come (P2.59). `--mcp` gives neither: its edits never fit the scene rect, so
 Qt's index of a circuit beyond 640x480 puts every item outside in the border leaves (P2.89), and it runs every request
 a client wrote at once in one pass, so a removal searches Qt's lists of items not yet polished or indexed (P2.90).
-P2.59's growth test pins the undo once both are fixed.
+Fix of P2.90: the requests go through one queue on every platform, one per pass, through a queued call that comes
+after whatever Qt queued while the previous request ran; the end of input quits once the queue is empty. Tests: a call
+queued as the first of two requests pushes its command runs before the second is answered; three requests written
+with the end of input all answered. P2.59's growth test pins the undo once both are fixed.
 
 ### 2.15 A command over n items deduplicates them in n squared
 
@@ -740,6 +743,7 @@ Each of these exists on `master`, and its fix is another plan's decision:
 | P2.52 | The schema's copy rules (§2.12) | the helpers only | none |
 | P2.57 | A failed paste's open macro (§2.13) | the helpers only | none |
 | P2.58 | No move walks every port (§2.14) | P1.5 | none (the wire-geometry golden keeps the wires following) |
+| P2.90 | MCP's requests one per pass of the event loop (§2.14) | the helpers only | none |
 | P2.60 | Commands deduplicating in linear time (§2.15) | the helpers only | none |
 | P2.61 | Snapping past `int`'s range (§2.16) | the helpers only | none |
 | P2.85 | A snap near the origin gives +0 (§2.16) | P2.61 | none |
