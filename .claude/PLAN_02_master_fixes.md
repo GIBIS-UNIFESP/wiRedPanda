@@ -304,6 +304,29 @@ default size, so Linux keeps Noto Sans and its goldens. Shown by
 name. Still open: the toolbar's and BeWavedDolphin's SVG icons name `sans-serif`, which Qt SVG reads as one family
 name, for their text.
 
+### 2.27 Tests print the warnings they provoke instead of expecting them
+
+About twenty warnings the negative tests provoke on purpose were printed, not expected: a failure path that stopped
+being taken went unnoticed, and a new warning hid among them (P2.93, found reading CI's warnings). Fix: each test
+expects the warnings it provokes (`QTest::ignoreMessage`): the exporters' failed `QPainter::begin()`, the loads of
+corrupted and truncated saves, the exercise and tour scans and merges, MCP's, the update checker's and the main
+window's. A message whose wording is the platform's (the SVG device's error) is matched by pattern. The update checker
+reads a download URL only on a build a release asset is published for, so its test skips on one with none. Shown by
+the suite's warnings from the code under test going to zero, but for the five tests of §2.28, and by one expected
+message changed, which fails its test. The platform's own messages (the offscreen plugin's unsupported calls, audio and
+VA-API on runners without them) stay.
+
+### 2.28 Five serialization tests stop before what they test
+
+`TestSerialization`'s tests of invalid UTF-8 in a label, a mismatched element count, an extreme position and a malformed
+connection write their streams by hand, in no format the loader reads now: each save's payload is compressed, so the
+load fails in `qUncompress` and never reaches the label, the count, the position or the connection. The fuzz regression
+for an IC whose blob shrinks its ports (`testFuzzRegressionICBlobShrink`) stops there too, so the use-after-free it
+guards is never reached. Each passes whatever the loader does with the field it names (P2.94, found by P2.93's
+inventory). Fix: each stream built in the current format, the field named corrupted inside the payload, and the
+regression's input re-derived so it reaches `IC::load()`. Test: each reaches its field, shown by the fix it guards put
+back.
+
 ## 3. In code plan 3 rewrites
 
 ### 3.1 SR and T flip-flops ignore every input while one input is open
@@ -778,6 +801,8 @@ Each of these exists on `master`, and its fix is another plan's decision:
 | P2.77 | A preview rendered when shown (§2.24) | P1.14 | none (the 77 preview goldens unchanged) |
 | P2.79 | A variable for every gate in SystemVerilog (§2.25) | the helpers only | twelve new goldens, the flat exports' (`testSystemVerilogExportFlat`); the translated And's two exports (`and_gate.sv.txt`, `and_gate.tr.sv.txt`), its And through a variable; the 76 others unchanged |
 | P2.92 | The label font a family the platform has (§2.26) | the helpers only | none |
+| P2.93 | Tests expecting the warnings they provoke (§2.27) | the helpers only | none |
+| P2.94 | Serialization tests reaching what they test (§2.28) | the helpers only | none |
 | P2.39 | The MCP client's 64 KiB line limit (its ledger row) | the helpers only | none |
 | P2.9 | SR and T defaults (§3.1) | P1.4, P1.6, P1.13 | port layout, one scene snapshot, any trace with S, R or T open |
 | P2.10 | The loader's port counts (§3.2) | P1.8, P1.17 | the strings golden's three messages |
