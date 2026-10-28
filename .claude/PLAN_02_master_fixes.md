@@ -231,7 +231,8 @@ counting the points a render draws: on master's code GCC's build draws five, at 
 `QList::removeAll()`, each scanning the port's whole list, so wiring one output to n inputs, moving those wires and
 deleting them cost n squared; an IC's reload does all three with the wires of a clock or bus fanned out inside it
 (P2.66, found by `fuzz_ic_registry`'s coverage rounds). Fix: a set beside the list for membership, the list keeping
-its order and each wire once, so a removal stops where the wire is found. Shown by `TestPort::testFanOutGrowsLinearly`.
+its order and each wire once, so a removal stops where the wire is found. Shown by `TestPort::testFanOutGrowsLinearly`,
+its fan-out and spread timed in turn within each run, so that a load which comes and goes falls on both.
 
 ### 2.19 A trigger whose text does not parse back is lost on the next load
 
@@ -264,7 +265,7 @@ them by inverting the whole port map, every port the load had registered so far,
 m ports cost n times m (P2.73, found as a timeout by `fuzz_ic_file`'s coverage rounds, a quarter of
 `ic_heavy.panda`'s load). Fix: `GraphicElement::load()` records the keys it registers, in port order, in the
 serialization context, and `IC::load()` takes its keys from that record. Shown by
-`TestICUnit::testLoadGrowsLinearlyInICs`.
+`TestICUnit::testLoadGrowsLinearlyInICs`, its two maps' reloads timed in turn within each run.
 
 ### 2.23 An embedded IC that fails to load leaves its undo macro open
 
@@ -329,6 +330,22 @@ guards is never reached. Each passes whatever the loader does with the field it 
 inventory). Fix: each stream built in the current format, the field named corrupted inside the payload, and the
 regression's input re-derived so it reaches `IC::load()`. Test: each reaches its field, shown by the fix it guards put
 back.
+
+### 2.29 A wire whose ports a load does not find stays in the scene
+
+`ConnectionSerializer::load()` leaves a wire without ports when the file names a port it does not hold, and
+`Serialization::deserialize()` returns it with the rest, so `WorkSpace::load()` adds a wire that joins nothing to the
+scene: the test of a malformed wire leaves one, and an IC shrunk by its circuit leaves one for each input it lost
+(P2.95, found by P2.94's tests). It draws nothing, but it is an item of the scene, saved again with the circuit. Fix:
+the load drops a wire it cannot attach. Test: no wire without ports after either load, shown by the drop taken out.
+
+### 2.30 The fuzz regressions are not shown to reach their defects
+
+The fuzz README says each reproducer is clean against the current tree, which a reproducer that no longer reaches its
+defect also is: `bugB`'s stopped in `qUncompress` for as long as its test passed (§2.28). The others pinned by
+`TestSerialization` and `TestDolphinSerializer` were not checked to reach the code their fix changed (P2.96, found by
+P2.94). Fix: each reproducer's test shown to fail, or the reproducer to crash, with its fix taken out; one that does
+not is rebuilt as P2.94's were, or retired.
 
 ## 3. In code plan 3 rewrites
 
@@ -806,6 +823,8 @@ Each of these exists on `master`, and its fix is another plan's decision:
 | P2.92 | The label font a family the platform has (§2.26) | the helpers only | none |
 | P2.93 | Tests expecting the warnings they provoke (§2.27) | the helpers only | none |
 | P2.94 | Serialization tests reaching what they test (§2.28) | the helpers only | none |
+| P2.95 | A load dropping a wire it cannot attach (§2.29) | the helpers only | none |
+| P2.96 | The fuzz regressions reaching their defects (§2.30) | the helpers only | none |
 | P2.39 | The MCP client's 64 KiB line limit (its ledger row) | the helpers only | none |
 | P2.9 | SR and T defaults (§3.1) | P1.4, P1.6, P1.13 | port layout, one scene snapshot, any trace with S, R or T open |
 | P2.10 | The loader's port counts (§3.2) | P1.8, P1.17 | the strings golden's three messages |
