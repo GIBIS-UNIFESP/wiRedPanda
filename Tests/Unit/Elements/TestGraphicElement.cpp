@@ -7,8 +7,11 @@
 #include <memory>
 
 #include <QCoreApplication>
+#include <QFontDatabase>
+#include <QFontInfo>
 #include <QGraphicsProxyWidget>
 #include <QGraphicsSceneMouseEvent>
+#include <QGraphicsSimpleTextItem>
 #include <QLineEdit>
 #include <QMetaEnum>
 #include <QPainter>
@@ -268,6 +271,23 @@ void TestGraphicElement::testTextEmptyStateHintFollowsALanguageChange()
     QCoreApplication::removeTranslator(&tagging);
     element->retranslate();
     QCOMPARE(text->m_emptyHint->text(), english);
+}
+
+void TestGraphicElement::testLabelFontIsAFamilyThePlatformHas()
+{
+    // A label asks for a family the platform has under that name: one it lacks is matched through Qt's table of family
+    // aliases, which Qt builds on first use (costly on macOS, where "Sans Serif" is no family)
+    And gate;
+    gate.setLabel("label");
+    QFont font;
+    for (auto *child : gate.childItems()) {
+        if (auto *text = qgraphicsitem_cast<QGraphicsSimpleTextItem *>(child); text && (text->text() == "label")) {
+            font = text->font();
+        }
+    }
+    QVERIFY2(QFontDatabase::families().contains(font.family()), qPrintable(font.family()));
+    QCOMPARE(QFontInfo(font).family(), font.family());
+    QVERIFY(font.bold());
 }
 
 void TestGraphicElement::testSceneEventSwallowsCtrlClickPress()
