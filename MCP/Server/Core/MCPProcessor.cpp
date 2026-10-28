@@ -154,9 +154,9 @@ void MCPProcessor::startProcessing()
     // Start processing without sending automatic messages - follow MCP protocol.
 #ifdef Q_OS_WIN
     m_stdinReader = new StdinReader(this);
-    connect(m_stdinReader, &StdinReader::dataReceived, this, &MCPProcessor::processIncomingData);
-    // EOF (client closed stdin) ends the thread — shut the processor down too.
-    connect(m_stdinReader, &StdinReader::finished, this, &MCPProcessor::quitApplication);
+    connect(m_stdinReader, &StdinReader::dataReceived, this, [this](const QString &line) { enqueueLines({line}); });
+    // EOF (client closed stdin) ends the thread — shut the processor down once its lines are handled.
+    connect(m_stdinReader, &StdinReader::finished, this, &MCPProcessor::finishInput);
     m_stdinReader->start();
 #else
     // Event-driven, no thread: watch stdin in the main event loop. The fd is
@@ -206,17 +206,14 @@ void MCPProcessor::onStdinReadable()
 
         if (bytesRead > 0) {
             const QByteArray chunk(buffer, static_cast<qsizetype>(bytesRead));
-            const QStringList lines = extractStdinLines(m_stdinBuffer, chunk);
-            for (const QString &line : lines) {
-                processIncomingData(line);
-            }
+            enqueueLines(extractStdinLines(m_stdinBuffer, chunk));
             continue; // drain whatever else is buffered before yielding
         }
 
         if (bytesRead == 0) {
-            // EOF: the client closed stdin — shut the processor down cleanly.
+            // EOF: the client closed stdin — shut the processor down once its lines are handled.
             m_stdinNotifier->setEnabled(false);
-            quitApplication();
+            finishInput();
             return;
         }
 
@@ -231,9 +228,9 @@ void MCPProcessor::onStdinReadable()
         if (errno == EINTR) {
             continue; // interrupted by a signal; retry
         }
-        // Unrecoverable read error: stop watching and quit.
+        // Unrecoverable read error: stop watching and quit once the lines read are handled.
         m_stdinNotifier->setEnabled(false);
-        quitApplication();
+        finishInput();
         return;
     }
 }
@@ -258,6 +255,38 @@ QStringList MCPProcessor::extractStdinLines(QByteArray &buffer, const QByteArray
     }
 
     return lines;
+}
+
+void MCPProcessor::enqueueLines(const QStringList &lines)
+{
+    m_pendingLines.append(lines);
+    if (!m_nextLineQueued && !m_pendingLines.isEmpty()) {
+        m_nextLineQueued = true;
+        // Posted while Qt delivers posted events, this one waits for the next pass, after the timers and the work
+        // Qt queued for the previous request.
+        QMetaObject::invokeMethod(this, &MCPProcessor::processNextLine, Qt::QueuedConnection);
+    }
+}
+
+void MCPProcessor::processNextLine()
+{
+    m_nextLineQueued = false;
+    if (!m_pendingLines.isEmpty()) {
+        processIncomingData(m_pendingLines.takeFirst());
+    }
+    if (!m_pendingLines.isEmpty()) {
+        enqueueLines({});
+    } else if (m_inputFinished) {
+        quitApplication();
+    }
+}
+
+void MCPProcessor::finishInput()
+{
+    m_inputFinished = true;
+    if (!m_nextLineQueued && m_pendingLines.isEmpty()) {
+        quitApplication();
+    }
 }
 
 void MCPProcessor::processIncomingData(const QString &line)

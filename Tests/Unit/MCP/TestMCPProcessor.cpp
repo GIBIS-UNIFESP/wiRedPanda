@@ -13,7 +13,10 @@
 #include <QTemporaryDir>
 #include <QTest>
 #include <QTimer>
+#include <QUndoStack>
 
+#include "App/Scene/Scene.h"
+#include "App/Scene/Workspace.h"
 #include "App/UI/MainWindow.h"
 #include "MCP/Server/Core/JsonRpcError.h"
 #include "MCP/Server/Core/MCPProcessor.h"
@@ -244,6 +247,34 @@ void TestMCPProcessor::testProcessCommandDispatchesKnownMethodSuccessfully()
     QCOMPARE(response["id"].toInt(), 1);
 }
 
+void TestMCPProcessor::testEachRequestOfABatchRunsInItsOwnPassOfTheEventLoop()
+{
+    // Requests a client wrote at once run one per pass of the event loop, so the work queued while the first runs, as
+    // Qt queues an added element's polish, runs before the second: here a queued call posted as the first request's
+    // command is pushed
+    MainWindow window;
+    MCPProcessor processor(&window);
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    TestUtils::ScopedStdoutCapture capture(dir.filePath("stdout.txt"));
+
+    int responsesWhenQueuedWorkRan = -1;
+    // Destroyed first, so neither the window's teardown nor a call it queued reaches this test's locals
+    QObject context;
+    connect(window.currentTab()->scene()->undoStack(), &QUndoStack::indexChanged, &context, [&] {
+        QMetaObject::invokeMethod(&context, [&] {
+            if (responsesWhenQueuedWorkRan < 0) {
+                responsesWhenQueuedWorkRan = static_cast<int>(capture.contents().count('\n'));
+            }
+        }, Qt::QueuedConnection);
+    });
+    processor.enqueueLines({QStringLiteral(R"({"jsonrpc":"2.0","method":"create_element","params":{"type":"And","x":0,"y":0},"id":1})"),
+                            QStringLiteral(R"({"jsonrpc":"2.0","method":"get_server_info","params":{},"id":2})")});
+    QCOMPARE(capture.contents().count('\n'), 0);
+    QVERIFY(TestUtils::waitFor([&] { return capture.contents().count('\n') == 2; }));
+    QCOMPARE(responsesWhenQueuedWorkRan, 1);
+}
+
 // These drive the real QSocketNotifier -- MCPProcessor uses a dedicated StdinReader thread
 // on Windows instead (see MCPProcessor.h), so there's no m_stdinNotifier there.
 #ifndef Q_OS_WIN
@@ -297,6 +328,25 @@ void TestMCPProcessor::testOnStdinReadableQuitsOnEof()
     pipe.closeWriteEnd(); // the client closed its end -- a real EOF
 
     QVERIFY(TestUtils::waitFor([&] { return !processor.m_stdinNotifier->isEnabled(); }));
+}
+
+void TestMCPProcessor::testEndOfInputQuitsAfterTheRequestsBeforeIt()
+{
+    // A client that writes its requests and closes its end at once has each answered before the processor quits
+    ScopedStdinPipe pipe;
+    MainWindow window;
+    MCPProcessor processor(&window);
+    processor.startProcessing();
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    TestUtils::ScopedStdoutCapture capture(dir.filePath("stdout.txt"));
+
+    const QByteArray request = QByteArrayLiteral(R"({"jsonrpc":"2.0","method":"get_server_info","params":{},"id":1})") + '\n';
+    QCOMPARE(execUntil([&pipe, &request] {
+        pipe.writeData(request + request + request);
+        pipe.closeWriteEnd();
+    }, [] { return false; }), 0);
+    QCOMPARE(capture.contents().count('\n'), 3);
 }
 
 void TestMCPProcessor::testClientClosingTheConnectionKeepsTheSavePromptOfAModifiedTab()

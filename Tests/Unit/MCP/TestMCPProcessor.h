@@ -24,6 +24,7 @@ private slots:
     void testProcessCommandRejectsSchemaViolation();
     void testProcessCommandRejectsUnknownMethod();
     void testProcessCommandDispatchesKnownMethodSuccessfully();
+    void testEachRequestOfABatchRunsInItsOwnPassOfTheEventLoop();
 
     // These drive the real QSocketNotifier -- MCPProcessor uses a dedicated StdinReader
     // thread on Windows instead (see MCPProcessor.h), so there's no m_stdinNotifier there.
@@ -31,6 +32,7 @@ private slots:
     void testStartStopProcessingTogglesNotifier();
     void testOnStdinReadableDispatchesRealData();
     void testOnStdinReadableQuitsOnEof();
+    void testEndOfInputQuitsAfterTheRequestsBeforeIt();
     void testClientClosingTheConnectionKeepsTheSavePromptOfAModifiedTab();
     void testClientClosingTheConnectionClosesACleanWindowWithoutAsking();
 #endif
