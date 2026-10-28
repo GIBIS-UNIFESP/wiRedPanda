@@ -74,6 +74,11 @@ private:
 /// keyed on platform alone.
 QString releaseAssetKey(const QString &platform, const QString &arch);
 
+/// \brief releaseAssetKey() for the platform and CPU this build is for: empty when no asset is published for them.
+///
+/// \details Exposed for testing.
+QString releaseAssetKeyForThisBuild();
+
 /// \brief True when the release tagged \p tagName should be offered to a user
 /// running \p currentVersion who may have suppressed \p skippedVersion.
 ///

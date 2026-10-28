@@ -60,6 +60,11 @@ QString releaseAssetKey(const QString &platform, const QString &arch)
     return {};
 }
 
+QString releaseAssetKeyForThisBuild()
+{
+    return releaseAssetKey(currentPlatform(), QSysInfo::buildCpuArchitecture()); // "x86_64" / "arm64"
+}
+
 bool shouldOfferUpdate(const QString &tagName, const QVersionNumber &currentVersion, const QString &skippedVersion)
 {
     const QVersionNumber latest = QVersionNumber::fromString(tagName).normalized();
@@ -158,9 +163,7 @@ void UpdateChecker::onReplyFinished(QNetworkReply *reply)
     }
     const QVersionNumber latest = QVersionNumber::fromString(version).normalized();
 
-    const QString platform = currentPlatform();
-    const QString arch = QSysInfo::buildCpuArchitecture(); // "x86_64" / "arm64"
-    const QString key = releaseAssetKey(platform, arch);
+    const QString key = releaseAssetKeyForThisBuild();
     QUrl downloadUrl = key.isEmpty() ? QUrl{} : QUrl(doc.object().value(key).toString());
 
     const QUrl releaseUrl = QUrl(QStringLiteral("https://github.com/GIBIS-UNIFESP/wiRedPanda/releases/tag/%1").arg(latest.toString()));

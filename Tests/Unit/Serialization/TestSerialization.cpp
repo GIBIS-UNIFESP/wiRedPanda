@@ -650,6 +650,7 @@ void TestSerialization::testCorruptedStream()
     // Try to load - should handle gracefully or throw (not crash)
     WorkSpace workspace2;
     bool errorHandled = false;
+    QTest::ignoreMessage(QtWarningMsg, "qUncompress unexpected zlib error:  (-5)");
     try {
         QDataStream stream(data);
         QVersionNumber version = Serialization::readPandaHeader(stream);
@@ -981,6 +982,7 @@ void TestSerialization::testInvalidElementTypeInStream()
 
     // Try to load corrupted data
     WorkSpace workspace2;
+    QTest::ignoreMessage(QtWarningMsg, "qUncompress: Input data is corrupted");
     try {
         loadFromMemory(workspace2, data);
         // If load succeeds despite the corruption (qUncompress()/parsing happened to tolerate
@@ -1147,6 +1149,7 @@ void TestSerialization::testTruncatedFileRecovery()
 
     // Try to load truncated data - should fail gracefully
     WorkSpace workspace2;
+    QTest::ignoreMessage(QtWarningMsg, "qUncompress unexpected zlib error:  (-5)");
     try {
         loadFromMemory(workspace2, truncatedData);
         // If we get here, load succeeded despite truncation -- it must not have fabricated

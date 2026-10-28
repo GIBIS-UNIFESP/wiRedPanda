@@ -8,6 +8,7 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QRegularExpression>
 #include <QStandardPaths>
 #include <QTemporaryDir>
 
@@ -64,6 +65,7 @@ void TestExerciseTourResources::testScanSkipsMalformedJson()
     writeFile(dir.filePath("broken.json"), QStringLiteral("{ this is not valid json"));
     writeFile(dir.filePath("good.json"), R"({"id": "good", "title": "Good"})");
 
+    QTest::ignoreMessage(QtWarningMsg, QRegularExpression(R"(^ExerciseTourResources::scan: malformed JSON in ".*/broken\.json"$)"));
     const QVector<ExerciseTourResourceEntry> entries = ExerciseTourResources::scan(dir.path());
 
     QCOMPARE(entries.size(), 1);
@@ -79,6 +81,8 @@ void TestExerciseTourResources::testScanSkipsMissingIdOrTitle()
     writeFile(dir.filePath("no-title.json"), R"({"id": "no-title"})");
     writeFile(dir.filePath("good.json"), R"({"id": "good", "title": "Good"})");
 
+    QTest::ignoreMessage(QtWarningMsg, QRegularExpression(R"(^ExerciseTourResources::scan: missing id/title in ".*/no-id\.json"$)"));
+    QTest::ignoreMessage(QtWarningMsg, QRegularExpression(R"(^ExerciseTourResources::scan: missing id/title in ".*/no-title\.json"$)"));
     const QVector<ExerciseTourResourceEntry> entries = ExerciseTourResources::scan(dir.path());
 
     QCOMPARE(entries.size(), 1);
@@ -87,6 +91,7 @@ void TestExerciseTourResources::testScanSkipsMissingIdOrTitle()
 
 void TestExerciseTourResources::testScanNonExistentDirectoryReturnsEmpty()
 {
+    QTest::ignoreMessage(QtWarningMsg, R"(ExerciseTourResources::scan: directory not found: "/no/such/directory/at/all")");
     const QVector<ExerciseTourResourceEntry> entries = ExerciseTourResources::scan(QStringLiteral("/no/such/directory/at/all"));
 
     QVERIFY(entries.isEmpty());
@@ -211,6 +216,7 @@ void TestExerciseTourResources::testMergeUniqueSkipsCollidingId()
         {"/user/b.json", "b", "User B", ""},
     };
 
+    QTest::ignoreMessage(QtWarningMsg, R"(ExerciseTourResources::mergeUnique: skipping duplicate id "a" at "/user/a.json")");
     const QVector<ExerciseTourResourceEntry> merged = ExerciseTourResources::mergeUnique(base, additional);
 
     QCOMPARE(merged.size(), 2);
@@ -307,6 +313,7 @@ void TestExerciseTourResources::testScanUnreadableFileSkipped()
 
     writeFile(dir.filePath("good.json"), R"({"id": "good", "title": "Good"})");
 
+    QTest::ignoreMessage(QtWarningMsg, QRegularExpression(R"(^ExerciseTourResources::scan: failed to open ".*/unreadable\.json"$)"));
     const QVector<ExerciseTourResourceEntry> entries = ExerciseTourResources::scan(dir.path());
 
     // Restore permissions so QTemporaryDir can clean itself up on scope exit.
@@ -348,6 +355,8 @@ void TestExerciseTourResources::testDiscoverMergesInstallRelativeDir()
     QVERIFY(cwd.mkpath(category));
     writeFile(cwd.filePath(category + "/entry.json"), R"({"id": "cwd-entry", "title": "CWD Entry"})");
 
+    // The built-in resources have no such category
+    QTest::ignoreMessage(QtWarningMsg, qPrintable(QString(R"(ExerciseTourResources::scan: directory not found: ":/%1")").arg(category)));
     const QVector<ExerciseTourResourceEntry> entries = ExerciseTourResources::discover(category);
 
     QDir(cwd.filePath(category)).removeRecursively();
@@ -367,6 +376,8 @@ void TestExerciseTourResources::testDiscoverMergesDocumentsFallbackDir()
     QDir().mkpath(docsDir);
     writeFile(docsDir + "/entry.json", R"({"id": "docs-entry", "title": "Docs Entry"})");
 
+    // The built-in resources have no such category
+    QTest::ignoreMessage(QtWarningMsg, qPrintable(QString(R"(ExerciseTourResources::scan: directory not found: ":/%1")").arg(category)));
     const QVector<ExerciseTourResourceEntry> entries = ExerciseTourResources::discover(category);
 
     QDir(docsDir).removeRecursively();
@@ -386,6 +397,8 @@ void TestExerciseTourResources::testDiscoverMergesManagedContentDir()
     QVERIFY(!managedDir.isEmpty());
     writeFile(managedDir + "/entry.json", R"({"id": "managed-entry", "title": "Managed Entry"})");
 
+    // The built-in resources have no such category
+    QTest::ignoreMessage(QtWarningMsg, qPrintable(QString(R"(ExerciseTourResources::scan: directory not found: ":/%1")").arg(category)));
     const QVector<ExerciseTourResourceEntry> entries = ExerciseTourResources::discover(category);
 
     QDir(managedDir).removeRecursively();

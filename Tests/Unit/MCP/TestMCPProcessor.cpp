@@ -9,6 +9,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QMessageBox>
+#include <QRegularExpression>
 #include <QSocketNotifier>
 #include <QTemporaryDir>
 #include <QTest>
@@ -138,6 +139,9 @@ void TestMCPProcessor::testExtractStdinLinesDropsIncompleteLineOverCap()
     QByteArray buffer;
     const QByteArray chunk(MCPProcessor::kMaxStdinLineBytes + 1, 'x');
 
+    // A QString, not qPrintable(), whose local 8-bit encoding need not hold the dash
+    QTest::ignoreMessage(QtWarningMsg, QRegularExpression(QString("^MCPProcessor: stdin line exceeds %1 bytes with no newline — dropping it$")
+                                                              .arg(MCPProcessor::kMaxStdinLineBytes)));
     const QStringList lines = MCPProcessor::extractStdinLines(buffer, chunk);
 
     QVERIFY(lines.isEmpty());
