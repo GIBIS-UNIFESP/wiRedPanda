@@ -235,11 +235,11 @@ void TestElementAppearance::testRotatedMalformedSvgFallsBackToBasePixmap()
 void TestElementAppearance::testRotatedMalformedSvgFallsBackToBasePixmapContent()
 {
     // Same reasoning as the deleted-file case above, but for the "file exists and is readable,
-    // yet isn't parseable SVG" failure branches in orientSvgTextNodes() (its own internal probe),
+    // yet isn't parseable SVG" failure branches in orientSvgLabels() (its own internal probe),
     // orientedSvgPixmap(), and sharedSvgRenderer() -- all three construct their own QSvgRenderer
-    // on the same garbage content and find it invalid. The content deliberately contains the
-    // literal substring "<text" so both orientedSvgPixmap() and sharedSvgRenderer() (which only
-    // route through orientSvgTextNodes() when that substring is present) actually reach it.
+    // on the same garbage content and find it invalid. The content deliberately opens a
+    // <text> tag so both orientedSvgPixmap() and sharedSvgRenderer() (which only route through
+    // orientSvgLabels() when the picture holds a label) actually reach it.
     And gate;
     QTemporaryFile validFile("XXXXXX.svg");
     const QString path = writeTempSvg(validFile, "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"><rect width=\"64\" height=\"64\" fill=\"black\"/><text id=\"t\">A</text></svg>");

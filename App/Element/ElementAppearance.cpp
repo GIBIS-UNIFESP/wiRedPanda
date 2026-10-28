@@ -23,35 +23,48 @@
 
 namespace {
 
-/// Rewrites \a svgBytes so every <text> element is counter-oriented about its own centre for the
+/// An opening tag of a picture's label: a <text>, or any element marked class="label", which is how a bundled picture
+/// holds its text as outlines, needing no font. Captures the tag's name.
+const QRegularExpression &labelTag()
+{
+    static const QRegularExpression tag(QStringLiteral("<(text|[A-Za-z]+(?=[^>]*\\bclass\\s*=\\s*\"label\"))\\b[^>]*>"));
+    return tag;
+}
+
+/// Whether \a svgBytes holds a label to keep upright.
+bool hasLabels(const QByteArray &svgBytes)
+{
+    return labelTag().match(QString::fromUtf8(svgBytes)).hasMatch();
+}
+
+/// Rewrites \a svgBytes so every label (see labelTag()) is counter-oriented about its own centre for the
 /// element's current rotation \a angle and \a flipX / \a flipY. Pre-applying the inverse of the
 /// item transform (Rotate(-angle) after the flip) means that after the element's own item-level
 /// rotation + flip the glyphs end up upright and unmirrored, while still travelling to the
-/// rotated/mirrored side. Transforming about each text's *own* centre composes cleanly with any
-/// parent transform, so it is correct regardless of how the text is nested. Returns the input
+/// rotated/mirrored side. Transforming about each label's *own* centre composes cleanly with any
+/// parent transform, so it is correct regardless of how the label is nested. Returns the input
 /// unchanged on any parse failure.
-QByteArray orientSvgTextNodes(const QByteArray &svgBytes, const qreal angle, const bool flipX, const bool flipY)
+QByteArray orientSvgLabels(const QByteArray &svgBytes, const qreal angle, const bool flipX, const bool flipY)
 {
-    static const QRegularExpression textTag(QStringLiteral("<text\\b[^>]*>"));
     static const QRegularExpression idAttr(QStringLiteral("\\bid\\s*=\\s*\"([^\"]*)\""));
     static const QRegularExpression transformAttr(QStringLiteral("\\btransform\\s*="));
 
     QString svg = QString::fromUtf8(svgBytes);
 
-    // Pass 1: ensure every <text> opening tag carries an id so boundsOnElement() can address it.
+    // Pass 1: ensure every label's opening tag carries an id so boundsOnElement() can address it.
     // Inkscape already ids these, but be defensive for hand-written assets.
     {
         QString out;
         qsizetype last = 0;
         int generated = 0;
-        auto matches = textTag.globalMatch(svg);
+        auto matches = labelTag().globalMatch(svg);
         while (matches.hasNext()) {
             const auto match = matches.next();
             out += svg.mid(last, match.capturedStart() - last);
             QString tag = match.captured(0);
             if (!idAttr.match(tag).hasMatch()) {
-                // Insert after "<text" (5 chars) so the new attribute precedes the existing ones.
-                tag.insert(5, QStringLiteral(" id=\"wpflip-text-%1\"").arg(generated++));
+                // Insert after the tag's name so the new attribute precedes the existing ones.
+                tag.insert(match.capturedLength(1) + 1, QStringLiteral(" id=\"wpflip-text-%1\"").arg(generated++));
             }
             out += tag;
             last = match.capturedEnd();
@@ -68,13 +81,13 @@ QByteArray orientSvgTextNodes(const QByteArray &svgBytes, const qreal angle, con
     const qreal sx = flipX ? -1.0 : 1.0;
     const qreal sy = flipY ? -1.0 : 1.0;
 
-    // Pass 2: inject a counter-orientation transform on each <text>, pivoting about that text's
+    // Pass 2: inject a counter-orientation transform on each label, pivoting about that label's
     // own centre. The item applies Flip ∘ Rotate(angle) to the pixmap content, so the inverse the
     // glyph must carry is Rotate(-angle) ∘ Flip (rotate outer, scale inner). The rotate term is
     // omitted at angle 0 and the scale term when unflipped, so the flip-only output is unchanged.
     QString out;
     qsizetype last = 0;
-    auto matches = textTag.globalMatch(svg);
+    auto matches = labelTag().globalMatch(svg);
     while (matches.hasNext()) {
         const auto match = matches.next();
         out += svg.mid(last, match.capturedStart() - last);
@@ -95,7 +108,7 @@ QByteArray orientSvgTextNodes(const QByteArray &svgBytes, const qreal angle, con
                 const QString transform =
                     QStringLiteral(" transform=\"translate(%1,%2) %3translate(%4,%5)\"")
                         .arg(c.x()).arg(c.y()).arg(ops).arg(-c.x()).arg(-c.y());
-                tag.insert(5, transform);
+                tag.insert(match.capturedLength(1) + 1, transform);
             }
         }
 
@@ -107,7 +120,7 @@ QByteArray orientSvgTextNodes(const QByteArray &svgBytes, const qreal angle, con
     return out.toUtf8();
 }
 
-/// Renders an orientation-variant pixmap for the SVG at \a resolvedPath with its <text> labels
+/// Renders an orientation-variant pixmap for the SVG at \a resolvedPath with its labels
 /// counter-oriented for the current rotation \a angle and flip, cached per path + angle + flip
 /// state via the shared QPixmapCache (see MainWindow's setCacheLimit() call for the app-wide
 /// budget). Returns a null pixmap on failure so callers can fall back to the plain base pixmap
@@ -136,12 +149,12 @@ QPixmap orientedSvgPixmap(const QString &resolvedPath, const qreal angle, const 
         return {};
     }
     const QByteArray raw = file.readAll();
-    // No baked-in <text> → nothing to correct; return null so the caller keeps the plain
+    // No baked-in label → nothing to correct; return null so the caller keeps the plain
     // item-flipped base pixmap (identical to legacy behaviour, no redundant re-render).
-    if (!raw.contains("<text")) {
+    if (!hasLabels(raw)) {
         return {};
     }
-    const QByteArray modified = orientSvgTextNodes(raw, canonAngle, flipX, flipY);
+    const QByteArray modified = orientSvgLabels(raw, canonAngle, flipX, flipY);
 
     QSvgRenderer renderer(modified);
     if (!renderer.isValid()) {
@@ -159,7 +172,7 @@ QPixmap orientedSvgPixmap(const QString &resolvedPath, const qreal angle, const 
     return pixmap;
 }
 
-/// Returns the vector QSvgRenderer for the SVG at \a resolvedPath, with baked <text> labels
+/// Returns the vector QSvgRenderer for the SVG at \a resolvedPath, with baked labels
 /// counter-oriented for the current rotation \a angle and flip when applicable — shared across
 /// every ElementAppearance that resolves to the same (path, mtime, angle, flip), since parsing an
 /// SVG's XML (and any inline CSS) is the dominant cost of populating a scene with many
@@ -195,8 +208,8 @@ std::shared_ptr<QSvgRenderer> sharedSvgRenderer(const QString &resolvedPath, con
     QByteArray svg = file.readAll();
 
     const bool oriented = angle != 0.0 || flipX || flipY;
-    if (oriented && svg.contains("<text")) {
-        svg = orientSvgTextNodes(svg, canonAngle, flipX, flipY);
+    if (oriented && hasLabels(svg)) {
+        svg = orientSvgLabels(svg, canonAngle, flipX, flipY);
     }
 
     auto renderer = std::make_shared<QSvgRenderer>(svg);
@@ -368,7 +381,7 @@ void ElementAppearance::applyOrientation()
         return;
     }
 
-    // Only rotatable elements transform their graphic, so only they need the baked <text> labels
+    // Only rotatable elements transform their graphic, so only they need the baked labels
     // counter-oriented. A non-rotatable element keeps its icon upright (it moves only its ports),
     // so its text — if any — must render as authored and never be counter-oriented.
     const bool oriented = m_owner->rotatesGraphic()
@@ -397,7 +410,7 @@ void ElementAppearance::rebuildSvgRenderer()
         return;
     }
 
-    // Counter-orient each <text> while rotated/flipped so pin labels stay upright — the same
+    // Counter-orient each label while rotated/flipped so pin labels stay upright — the same
     // correction orientedSvgPixmap() bakes into the rasterised variant. Gated on rotatesGraphic()
     // because a non-rotatable element never transforms its graphic, so its text stays as authored.
     // Zeroing angle/flip when not oriented also means every unoriented element (the vast majority)

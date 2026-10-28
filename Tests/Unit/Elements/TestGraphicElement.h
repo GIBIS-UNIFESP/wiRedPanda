@@ -30,6 +30,7 @@ private slots:
     void testTextEmptyStateHintTogglesWithLabelContent();
     void testTextEmptyStateHintFollowsALanguageChange();
     void testLabelFontIsAFamilyThePlatformHas();
+    void testBundledPicturesDrawTheirTextAsOutlines();
 
     // sceneEvent()'s Ctrl+click swallow (called directly -- see the friend declaration on
     // GraphicElement for why a real synthesized QTest mouse press isn't used here)
