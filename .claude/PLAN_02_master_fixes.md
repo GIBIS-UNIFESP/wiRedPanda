@@ -508,6 +508,11 @@ outputs of an element whose output count is unchanged, as plan 5's rebuild rule 
 expects plan 2 to have done; a new element, one whose output count changed, and every element on a restart start from
 the defaults. Test: a flip-flop holding Q through a structural edit, at the scene and inside an IC.
 
+Found by the audit (P2.82): a structural edit made while paused left the resume without its shift, since
+`Simulation::start()` shifted the clocks only when it did not rebuild, so every clock caught up on the pause one
+half-period per tick, a burst of edges. Fix: the resume shifts by the pause after a rebuild too. Test: a clock kept and
+a clock added across a paused edit, neither toggling more than once in the first three ticks.
+
 ### 5.2 An in-place reload leaves a flip-flop's wired ~Preset and ~Clear at their defaults
 
 `Port::setDefaultStatus()` sets the status of a connected input too, and an element sets its ports' defaults each time
@@ -753,6 +758,7 @@ Each of these exists on `master`, and its fix is another plan's decision:
 | P2.24 | An IC's tooltip (§4.1) | the helpers only | none expected |
 | P2.25 | The rebuild's edge (§5.1) | P1.13, P1.20 | plan 1's fast-path test, reworked |
 | P2.25a | A rebuild keeps the outputs (§5.1) | P2.25 | none expected |
+| P2.82 | A paused rebuild's resume shifts the clocks (§5.1) | P2.25 | none expected |
 | P2.26 | A connected input keeps its wire (§5.2) | P1.5 | none expected (unchanged on the branch) |
 | P2.27 | The priority walk (§5.3) | P1.13 | measured first |
 | P2.28 | SystemVerilog truth tables (§6.1) | the helpers only | none (no golden holds one) |
