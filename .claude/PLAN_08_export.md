@@ -106,7 +106,9 @@ Mega), whose port names are the case a translated name would reach first.
 - Muxes, demuxes and truth tables are `?:` trees, which merge x as the simulator merges Unknown; a padded Mux or a
   Demux's select past its outputs exports `1'bx` in its padding leaves, where the export wrote `1'b0` that the
   differential could not see.
-- Clocks go through the same simple-signal wrapping as ~Preset and ~Clear: one rule for every event-control signal.
+- Every event-control signal, a clock, ~Preset or ~Clear, is a variable or a constant, which a sensitivity list can
+  name: plan 2 gave every gate a declared variable (P2.79), which removed the wrapping ~Preset and ~Clear had
+  (`ensureSimpleSignal()`). The builder's signals keep that rule.
 - The reset source is a register asserted at time 0 and released at time 1.
 - `` `timescale 1ns/1ps `` heads every file; the commit that adds it regenerates every golden it changes (on the branch
   the line left six goldens stale).
@@ -228,7 +230,7 @@ definition.
 | P8.1 | Identifiers from untranslated names and source names; the three displays under a translator (§2.1) | 1 |
 | P8.2 | Both exporters on the builder's order, Tx map and definitions; the scene's helpers go (§2.2) | 1 |
 | P8.3 | Two drivers and an unmappable loop are export errors; the four level reads on the builder's values (§2.2) | 1 |
-| P8.4 | SystemVerilog starts and computes as the simulator: unseeded loops, `?:` trees, clocks wrapped, the reset source, the timescale (§2.3) | 2 |
+| P8.4 | SystemVerilog starts and computes as the simulator: unseeded loops, `?:` trees, every event-control signal named, the reset source, the timescale (§2.3) | 2 |
 | P8.5 | Memory's Unknown in simulation-only code (§2.3) | 2 |
 | P8.6 | The Arduino sketch: rounds, a derived settle bound, the reset flag (§2.5) | 3 |
 | P8.7 | Exporter notes as data, in the header and shown to the user, the Arduino export's note on dropped delays among them (§2.6) | 3 |
