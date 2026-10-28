@@ -3,6 +3,7 @@
 
 #include "Tests/Unit/Elements/TestGraphicElement.h"
 
+#include <cmath>
 #include <memory>
 
 #include <QCoreApplication>
@@ -396,4 +397,9 @@ void TestGraphicElement::testSnapToGridKeepsAPositionBeyondIntRange()
     // Positions within int's range snap as they always have, halves away from zero
     QCOMPARE(GraphicElement::snapToGrid(QPointF(12, -12), 8), QPointF(16, -16));
     QCOMPARE(GraphicElement::snapToGrid(QPointF(11.9, -3.9), 8), QPointF(8, 0));
+
+    // A small negative value snaps to +0, as an int did, not -0, which equals it but saves as other bytes
+    const QPointF nearOrigin = GraphicElement::snapToGrid(QPointF(-3.9, -0.5), 8);
+    QVERIFY(!std::signbit(nearOrigin.x()));
+    QVERIFY(!std::signbit(nearOrigin.y()));
 }
