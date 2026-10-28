@@ -29,6 +29,7 @@
 #include <cstdint>
 #include <fuzzer/FuzzedDataProvider.h>
 #include <iterator>
+#include <memory>
 #include <utility>
 
 #include <QApplication>
@@ -76,11 +77,11 @@ char **g_argv = nullptr;
 WorkSpace *g_icWorkspace = nullptr;
 
 // Where a structured input's file-backed ICs are written.
-QTemporaryDir *g_dir = nullptr;
+std::unique_ptr<QTemporaryDir> g_dir;
 
 // A whole .panda input's context directory: the repository's circuits (Tests/Fuzz/FuzzCircuitDir.h), so the IC files
 // it names load; apart from g_dir, whose files are written.
-QTemporaryDir *g_circuitDir = nullptr;
+std::unique_ptr<QTemporaryDir> g_circuitDir;
 
 void runCodeGen(const QVector<GraphicElement *> &elements)
 {
@@ -270,8 +271,9 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
     g_argc = *argc;
     g_argv = *argv;
     g_app  = new QApplication(g_argc, g_argv);
-    g_dir  = new QTemporaryDir();
-    g_circuitDir = new QTemporaryDir();
+    // Both held until exit, which removes them
+    g_dir  = std::make_unique<QTemporaryDir>();
+    g_circuitDir = std::make_unique<QTemporaryDir>();
     FuzzCircuitDir::fill(g_circuitDir->path(), "fuzz_codegen");
 
     // Build two IC blobs: combinational (And gate) and sequential (DFlipFlop).
