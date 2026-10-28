@@ -16,6 +16,7 @@
 #include <QMap>
 #include <QMimeData>
 #include <QPoint>
+#include <QStringList>
 #include <QTimer>
 #include <QUndoCommand>
 #include <QVersionNumber>
@@ -239,6 +240,16 @@ public:
      * share one (from a file or a paste) refuse no edit of other nodes.
      */
     QString duplicateTxLabel(const QList<WirelessEdit> &edits) const;
+    /**
+     * \brief Returns, sorted, the labels the Tx nodes among \a items share with another Tx node of the scene.
+     * \details A load or a paste brings its nodes as they are, so it can bring two Tx nodes on one channel: it goes
+     * on, and reports each such channel (reportDuplicateTxLabels()).
+     */
+    QStringList duplicateTxLabels(const QList<QGraphicsItem *> &items) const;
+    /// Returns the message naming \a labels as channels held by more than one Tx node, or an empty string for none.
+    static QString duplicateTxLabelsMessage(const QStringList &labels);
+    /// Shows in the status bar each channel the Tx nodes among \a items share with another Tx node of the scene.
+    void reportDuplicateTxLabels(const QList<QGraphicsItem *> &items);
     /// Returns all visible (non-hidden) graphic elements in the scene.
     const QVector<GraphicElement *> visibleElements() const;
 

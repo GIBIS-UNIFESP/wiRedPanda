@@ -87,6 +87,10 @@ private slots:
     void testDuplicateTxLabel_data();
     void testDuplicateTxLabel();
     void testInlineLabelEditorRefusesADuplicateTxLabel();
+    void testDuplicateTxLabelsNamesWhatArrived();
+    void testPasteReportsDuplicateTxLabels();
+    void testDuplicateReportsDuplicateTxLabels();
+    void testCloneDragReportsDuplicateTxLabels();
 
     // ClipboardManager: no-selection no-ops, and legacy clipboard mime-type fallbacks
     void testCutWithNoSelectionClearsClipboard();

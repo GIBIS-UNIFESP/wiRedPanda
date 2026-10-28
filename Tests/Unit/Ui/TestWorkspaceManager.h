@@ -28,6 +28,8 @@ private slots:
     void testConfirmSaveMultipleOffersAllButtons();
 
     void testOpenICInTabIsNoOpWithNoCurrentTab();
+    void testLoadReportsDuplicateTxLabels();
+    void testOpenICInTabReportsDuplicateTxLabels();
 
     void testSaveFileCancelledDialogIsNoOp();
     void testSaveFileAppendsExtensionWhenDialogOmitsIt();
