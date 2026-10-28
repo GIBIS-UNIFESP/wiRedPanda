@@ -1097,6 +1097,9 @@ set_tests_properties(TestScene TestSceneUndoredo TestICInline TestDolphinClipboa
 # A Ctrl press on an element starts a clone-drag, and on the native Windows platform QDrag::exec() waits for a physical
 # mouse move before anything can end it; offscreen it returns at once, as on Linux, where the suite is offscreen.
 set_tests_properties(TestPointerSnapshot PROPERTIES ENVIRONMENT "QT_QPA_PLATFORM=offscreen")
+# A zoom pivots on the system's cursor, which a native platform shares with the desktop: a hosted runner's moves it back
+# from where the test put it. Offscreen, the cursor is the process's own.
+set_tests_properties(TestGraphicsView PROPERTIES ENVIRONMENT "QT_QPA_PLATFORM=offscreen")
 
 # Serialization and Command Tests - Integration category
 foreach(TEST TestSerialization TestSimulationBlocker)

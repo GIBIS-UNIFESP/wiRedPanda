@@ -311,9 +311,23 @@ void TestGraphicsView::testWheelKeepsCursorPoint()
             view->resetZoom();
             view->centerOn(QPointF(0, 0));
             const QPointF pivot = view->mapToScene(cursor);
+            // The pivot is the platform's cursor (offscreen, as CTest runs this class, the process's own): say which of
+            // the two conditions scale() reads failed, if one does
+            const QPoint expected = view->viewport()->mapToGlobal(cursor);
+            QVERIFY2(QCursor::pos() == expected, qPrintable(QString("the system's cursor is at %1,%2, not at %3,%4")
+                                                                .arg(QCursor::pos().x())
+                                                                .arg(QCursor::pos().y())
+                                                                .arg(expected.x())
+                                                                .arg(expected.y())));
+            QVERIFY2(view->underMouse(), "the view no longer counts the pointer as over it");
             view->zoomIn();
-            QVERIFY2(QLineF(QPointF(view->mapFromScene(pivot)), QPointF(cursor)).length() < 2.0,
-                     "scale() did not pivot on the pointer");
+            const QPointF pivotNow(view->mapFromScene(pivot));
+            QVERIFY2(QLineF(pivotNow, QPointF(cursor)).length() < 2.0,
+                     qPrintable(QString("scale() did not pivot on the pointer: the pivot is at %1,%2 px, not at %3,%4 px")
+                                    .arg(pivotNow.x())
+                                    .arg(pivotNow.y())
+                                    .arg(cursor.x())
+                                    .arg(cursor.y())));
         }
 
         for (const int delta : {120, -120}) {
