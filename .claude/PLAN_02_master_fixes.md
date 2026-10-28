@@ -305,8 +305,12 @@ label made Qt build its whole table of family aliases; CI's macOS jobs warned of
 reading CI's warnings). Fix: the label asks for the family the platform gives a sans-serif style hint, at the same
 default size, so Linux keeps Noto Sans and its goldens. Shown by
 `TestGraphicElement::testLabelFontIsAFamilyThePlatformHas`: the font's family is one the font database has, under that
-name. Still open: the toolbar's and BeWavedDolphin's SVG icons name `sans-serif`, which Qt SVG reads as one family
-name, for their text.
+name. The toolbar's and BeWavedDolphin's SVG icons named `sans-serif` for their text, which Qt SVG reads as one
+family's name, and the memory elements' pin letters named Noto Sans: each text is now its outline, so no picture needs
+a font. The pin letters, kept upright on a rotated or flipped element by counter-orienting each `<text>`, are marked
+`class="label"`, which that counter-orientation now reaches too. Shown by
+`TestGraphicElement::testBundledPicturesDrawTheirTextAsOutlines`: no bundled SVG holds a text element; the latch's
+rotate and flip tests show the letters still counter-oriented.
 
 ### 2.27 Tests print the warnings they provoke instead of expecting them
 
@@ -824,7 +828,7 @@ Each of these exists on `master`, and its fix is another plan's decision:
 | P2.76 | An embedded IC that fails to load (§2.23) | the helpers only | none |
 | P2.77 | A preview rendered when shown (§2.24) | P1.14 | none (the 77 preview goldens unchanged) |
 | P2.79 | A variable for every gate in SystemVerilog (§2.25) | the helpers only | twelve new goldens, the flat exports' (`testSystemVerilogExportFlat`); the translated And's two exports (`and_gate.sv.txt`, `and_gate.tr.sv.txt`), its And through a variable; the 76 others unchanged |
-| P2.92 | The label font a family the platform has (§2.26) | the helpers only | none |
+| P2.92 | The label font a family the platform has, and pictures without text (§2.26) | the helpers only | none |
 | P2.93 | Tests expecting the warnings they provoke (§2.27) | the helpers only | none |
 | P2.94 | Serialization tests reaching what they test (§2.28) | the helpers only | none |
 | P2.95 | A load dropping a wire it cannot attach (§2.29) | the helpers only | none |
