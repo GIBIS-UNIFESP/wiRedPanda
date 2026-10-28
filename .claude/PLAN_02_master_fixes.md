@@ -337,7 +337,9 @@ back.
 `Serialization::deserialize()` returns it with the rest, so `WorkSpace::load()` adds a wire that joins nothing to the
 scene: the test of a malformed wire leaves one, and an IC shrunk by its circuit leaves one for each input it lost
 (P2.95, found by P2.94's tests). It draws nothing, but it is an item of the scene, saved again with the circuit. Fix:
-the load drops a wire it cannot attach. Test: no wire without ports after either load, shown by the drop taken out.
+`Serialization::deserialize()` drops a wire it cannot attach, for every caller; across the suite no snapshot's wire
+fails to attach, so an undo's count of the items it restores still holds. Test: no wire without ports after either
+load, shown by the drop taken out.
 
 ### 2.30 The fuzz regressions are not shown to reach their defects
 
@@ -345,7 +347,9 @@ The fuzz README says each reproducer is clean against the current tree, which a 
 defect also is: `bugB`'s stopped in `qUncompress` for as long as its test passed (§2.28). The others pinned by
 `TestSerialization` and `TestDolphinSerializer` were not checked to reach the code their fix changed (P2.96, found by
 P2.94). Fix: each reproducer's test shown to fail, or the reproducer to crash, with its fix taken out; one that does
-not is rebuilt as P2.94's were, or retired.
+not is rebuilt as P2.94's were, or retired. Found: every test passed on any exception, and four reproducers no longer
+reach their defect (`bugA`, `bugG` and `bugI` rebuilt, `bugE`'s defect unreachable from a load since the port-count
+check); each other test now requires the message of its fix's check, traced reached under gdb.
 
 ## 3. In code plan 3 rewrites
 
