@@ -32,6 +32,7 @@
 #include "App/Versions.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
+#include "Tests/Common/ICTestHelpers.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestSerialization::init()
@@ -67,6 +68,49 @@ void TestSerialization::verifyElementEquality(GraphicElement *original, GraphicE
     QCOMPARE(loaded->rotation(), original->rotation());
     QCOMPARE(loaded->inputSize(), original->inputSize());
     QCOMPARE(loaded->outputSize(), original->outputSize());
+}
+
+QByteArray TestSerialization::currentFormatFile(const std::function<void(QDataStream &)> &writeItems,
+                                                const QMap<QString, QVariant> &metadata)
+{
+    QByteArray payload;
+    QDataStream payloadStream(&payload, QIODevice::WriteOnly);
+    payloadStream.setVersion(QDataStream::Qt_5_12);
+    payloadStream << metadata;
+    writeItems(payloadStream);
+
+    QByteArray data;
+    QDataStream stream(&data, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(stream);
+    Serialization::writePayload(stream, payload);
+    return data;
+}
+
+void TestSerialization::writeElement(QDataStream &stream, const ElementType type, const QMap<QString, QVariant> &properties,
+                                     const int inputs, const int outputs)
+{
+    // As a file's save writes it: the properties, an empty map per port, no appearance of its own
+    stream << static_cast<int>(GraphicElement::Type) << type << properties;
+    stream << QList<QMap<QString, QVariant>>(inputs) << QList<QMap<QString, QVariant>>(outputs)
+           << QList<QMap<QString, QVariant>>();
+}
+
+QByteArray TestSerialization::withBlobReplaced(const QByteArray &file, const QString &name, const QByteArray &blob)
+{
+    QDataStream stream(file);
+    const QVersionNumber version = Serialization::readPandaHeader(stream);
+    const QByteArray payload = Serialization::readPayload(stream, version);
+    QDataStream payloadStream(payload);
+    payloadStream.setVersion(QDataStream::Qt_5_12);
+    QMap<QString, QVariant> metadata;
+    payloadStream >> metadata;
+    const QByteArray items = payload.mid(static_cast<int>(payloadStream.device()->pos()));
+
+    QMap<QString, QByteArray> blobs = Serialization::deserializeBlobRegistry(metadata, version);
+    blobs[name] = blob;
+    Serialization::serializeBlobRegistry(blobs, metadata);
+    return currentFormatFile([&items](QDataStream &out) { out.writeRawData(items.constData(), static_cast<int>(items.size())); },
+                             metadata);
 }
 
 // ============================================================================
@@ -1164,84 +1208,40 @@ void TestSerialization::testTruncatedFileRecovery()
 
 void TestSerialization::testInvalidUTF8InLabels()
 {
-    // Create data with invalid UTF-8 sequences in element label
-    QByteArray data;
-    QDataStream stream(&data, QIODevice::WriteOnly);
-    Serialization::writePandaHeader(stream);
+    // A label is a string among the element's properties; one written as bytes that are not UTF-8 loads as the
+    // replacement characters their decoding gives, and its element with it
+    const QByteArray invalid("\xFF\xFE\xFD");
+    const QByteArray data = currentFormatFile([&invalid](QDataStream &stream) {
+        writeElement(stream, ElementType::And, {{"pos", QPointF(100, 100)}, {"id", 1}, {"label", invalid}}, 2, 1);
+    });
 
-    // Write scene center
-    QPointF center(0, 0);
-    stream << center;
-
-    // Write element count
-    stream << static_cast<quint64>(1);
-
-    // Write element type
-    stream << static_cast<quint64>(ElementType::And);
-
-    // Write position
-    stream << QPointF(100, 100);
-
-    // Write INVALID UTF-8 label
-    QByteArray invalidLabel;
-    invalidLabel.append(static_cast<char>(0xFF));  // Invalid UTF-8 start byte
-    invalidLabel.append(static_cast<char>(0xFE));
-    invalidLabel.append(static_cast<char>(0xFD));
-    stream << invalidLabel;
-
-    // Write other properties
-    stream << 0.0;  // rotation
-    stream << 2;    // input size
-    stream << 1;    // output size
-
-    // Try to load - should either fix or skip invalid bytes
     WorkSpace workspace;
-    try {
-        loadFromMemory(workspace, data);
-        // If load succeeds, element should be loaded (even if label is corrupted)
-        QVERIFY2(!workspace.scene()->elements().isEmpty(), "Element should load despite invalid UTF-8 in label");
-    } catch (const std::exception &e) {
-        // Acceptable to fail on invalid UTF-8
-        QVERIFY2(!QString(e.what()).isEmpty(), "Exception should explain the UTF-8 issue");
-    }
+    loadFromMemory(workspace, data);
+    QCOMPARE(workspace.scene()->elements().size(), 1);
+    QCOMPARE(workspace.scene()->elements().first()->label(), QString(3, QChar::ReplacementCharacter));
 }
 
-void TestSerialization::testMismatchedElementCount()
+void TestSerialization::testPayloadEndingInsideAnElement()
 {
-    // Write element count that doesn't match actual elements
-    QByteArray data;
-    QDataStream stream(&data, QIODevice::WriteOnly);
-    Serialization::writePandaHeader(stream);
+    // A file holds no count of its elements: the loader reads records until the payload ends. One that ends inside a
+    // record, here before the third element's ports, is refused whole, and none of its elements is left in the scene
+    const QByteArray data = currentFormatFile([](QDataStream &stream) {
+        for (int i = 0; i < 2; ++i) {
+            writeElement(stream, ElementType::And, {{"pos", QPointF(100 + i * 50, 100)}, {"id", i + 1}}, 2, 1);
+        }
+        stream << static_cast<int>(GraphicElement::Type) << ElementType::And
+               << QMap<QString, QVariant>{{"pos", QPointF(200, 100)}, {"id", 3}};
+    });
 
-    // Write scene center
-    QPointF center(0, 0);
-    stream << center;
-
-    // Write incorrect element count (say 5 but only provide 2)
-    stream << static_cast<quint64>(5);
-
-    // Write only 2 elements
-    for (int i = 0; i < 2; i++) {
-        stream << static_cast<quint64>(ElementType::And);
-        stream << QPointF(100 + i * 50, 100);
-        stream << QString("And%1").arg(i);
-        stream << 0.0;  // rotation
-        stream << 2;    // input size
-        stream << 1;    // output size
-    }
-
-    // Try to load - should detect the mismatch between the claimed count (5) and the 2
-    // elements actually present in the stream, rather than reading past the end or
-    // fabricating elements from garbage data.
     WorkSpace workspace;
     try {
         loadFromMemory(workspace, data);
-        QVERIFY2(workspace.scene()->elements().size() <= 2,
-                 "A load that survives a count mismatch must not exceed the elements actually present");
-    } catch (const std::exception &e) {
-        // Acceptable to fail on count mismatch
-        QVERIFY2(!QString(e.what()).isEmpty(), "Exception should explain the count mismatch");
+        QFAIL("a payload ending inside an element loaded");
+    } catch (const Pandaception &e) {
+        // Refused where the record ends, not before it
+        QVERIFY2(QString(e.what()).startsWith("Stream error reading input ports count"), e.what());
     }
+    QVERIFY(workspace.scene()->elements().isEmpty());
 }
 
 void TestSerialization::testMultiGateChainSerialization()
@@ -1350,40 +1350,14 @@ void TestSerialization::testStreamPositionValidation()
     loadFromMemory(workspace2, data);
     QCOMPARE(workspace2.scene()->elements().size(), 2);
 
-    // Now create data with bad stream position markers
-    QByteArray badData;
-    QDataStream stream(&badData, QIODevice::WriteOnly);
-    Serialization::writePandaHeader(stream);
-
-    QPointF center(0, 0);
-    stream << center;
-    stream << static_cast<quint64>(1);
-
-    // Write element with mismatched position data
-    stream << static_cast<quint64>(ElementType::And);
-    stream << QPointF(999999, 999999);  // Extreme position
-    stream << QString("Test");
-    stream << 0.0;
-    stream << 2;
-    stream << 1;
-
-    // Try to load - should handle extreme positions gracefully
+    // An element far from the origin loads where the file puts it
+    const QByteArray far = currentFormatFile([](QDataStream &stream) {
+        writeElement(stream, ElementType::And, {{"pos", QPointF(999999, 999999)}, {"id", 1}}, 2, 1);
+    });
     WorkSpace workspace3;
-    try {
-        loadFromMemory(workspace3, badData);
-        // If load succeeds, it must not have fabricated elements, and the extreme position
-        // it was fed must not have decayed into a NaN/Inf coordinate.
-        QVERIFY2(workspace3.scene()->elements().size() <= 1,
-                 "A load that survives an extreme position must not fabricate elements");
-        if (!workspace3.scene()->elements().isEmpty()) {
-            const QPointF pos = workspace3.scene()->elements().first()->pos();
-            QVERIFY2(std::isfinite(pos.x()) && std::isfinite(pos.y()),
-                     "Loaded element position must remain finite even for extreme input values");
-        }
-    } catch (const std::exception &e) {
-        // Exception is acceptable for extreme values
-        QVERIFY2(!QString(e.what()).isEmpty(), "Exception should explain why extreme positions failed");
-    }
+    loadFromMemory(workspace3, far);
+    QCOMPARE(workspace3.scene()->elements().size(), 1);
+    QCOMPARE(workspace3.scene()->elements().first()->pos(), QPointF(999999, 999999));
 }
 
 void TestSerialization::testConnectionSurvivesSaveLoadRoundTrip()
@@ -1439,47 +1413,26 @@ void TestSerialization::testConnectionSurvivesSaveLoadRoundTrip()
 
 void TestSerialization::testMalformedConnectionData()
 {
-    // Test loading file with malformed connection data
-    QByteArray data;
-    QDataStream stream(&data, QIODevice::WriteOnly);
-    Serialization::writePandaHeader(stream);
-
-    QPointF center(0, 0);
-    stream << center;
-
-    // Write 2 elements
-    stream << static_cast<quint64>(2);
-
-    // Write two And gates
-    for (int i = 0; i < 2; i++) {
-        stream << static_cast<quint64>(ElementType::And);
-        stream << QPointF(i * 100, 50);
-        stream << QString("And%1").arg(i);
-        stream << 0.0;
-        stream << 2;
-        stream << 1;
-    }
-
-    // Write malformed connection (invalid port indices)
-    stream << static_cast<quint64>(1);  // 1 connection
-    stream << static_cast<quint64>(999);  // Invalid start element ID
-    stream << static_cast<quint64>(0);    // Invalid output port
-    stream << static_cast<quint64>(999);  // Invalid end element ID
-    stream << static_cast<quint64>(0);    // Invalid input port
-
-    // Try to load - should skip malformed connections
-    WorkSpace workspace;
-    try {
-        loadFromMemory(workspace, data);
-        // Should load elements but skip bad connections
-        QCOMPARE(workspace.scene()->elements().size(), 2);
-        for (auto *elm : workspace.scene()->elements()) {
-            QVERIFY2(elm->outputPort(0)->connections().isEmpty(),
-                     "A connection with invalid element/port indices must be skipped, not attached");
+    // A wire between ports the file does not hold, here element 999's, is skipped: both gates load, unwired
+    const QByteArray data = currentFormatFile([](QDataStream &stream) {
+        for (int i = 0; i < 2; ++i) {
+            writeElement(stream, ElementType::And, {{"pos", QPointF(i * 100, 50)}, {"id", i + 1}}, 2, 1);
         }
-    } catch (const std::exception &e) {
-        // Acceptable to fail on malformed data
-        QVERIFY2(!QString(e.what()).isEmpty(), "Exception should explain the malformed connection issue");
+        stream << static_cast<int>(Connection::Type)
+               << QMap<QString, QVariant>{{"startPortId", QVariant::fromValue(Port::makeSerialId(999, 2))},
+                                          {"endPortId", QVariant::fromValue(Port::makeSerialId(999, 0))}};
+    });
+
+    WorkSpace workspace;
+    loadFromMemory(workspace, data);
+    QCOMPARE(workspace.scene()->elements().size(), 2);
+    for (auto *elm : workspace.scene()->elements()) {
+        for (auto *port : elm->inputs()) {
+            QVERIFY2(port->connections().isEmpty(), "a wire between ports the file does not hold was attached");
+        }
+        for (auto *port : elm->outputs()) {
+            QVERIFY2(port->connections().isEmpty(), "a wire between ports the file does not hold was attached");
+        }
     }
 }
 
@@ -1859,23 +1812,54 @@ void TestSerialization::testFuzzRegressionCleanupUAF()
 
 void TestSerialization::testFuzzRegressionICBlobShrink()
 {
-    QFile fixture(QString(QUOTE(CURRENTDIR)) + "/Fuzz/regressions/bugB_ic_blob_shrink.bin");
-    QVERIFY2(fixture.open(QIODevice::ReadOnly), qPrintable(fixture.errorString()));
-    const QByteArray data = fixture.readAll();
+    // An IC whose file lists more inputs than its embedded circuit defines: the load shrinks it to the circuit's, and
+    // the wires to the inputs it no longer has are dropped, never attached to the freed ports (the use-after-free
+    // libFuzzer found as bugB_ic_blob_shrink, whose reproducer's blob no longer decompresses). A real save, its IC's
+    // circuit then swapped in the file for one with one input where it had three, the host's switches wired to all
+    // three.
+    const auto circuitWithInputs = [this](const int inputs) {
+        WorkSpace circuit;
+        CircuitBuilder builder(circuit.scene());
+        for (int i = 0; i < inputs; ++i) {
+            auto *sw = new InputSwitch();
+            sw->setPos(0, 64 * i);
+            builder.add(sw);
+        }
+        auto *led = new Led();
+        led->setPos(200, 0);
+        builder.add(led);
+        return saveToMemory(circuit);
+    };
 
-    // Fuzzed input declares more outer ports on an IC than its embedded
-    // blob exposes.  IC::loadFromBlob shrinks the port count via
-    // setInputSize/setOutputSize, freeing the surplus ports.  Without the
-    // portMap eviction in IC::load(), the outer connection load reads
-    // the dangling pointer → UAF.  Under ASan, a UAF aborts before we
-    // reach the QVERIFY below; the test passes only if the load either
-    // succeeds or throws cleanly.
-    WorkSpace workspace;
-    try {
-        loadFromMemory(workspace, data);
-    } catch (...) {
+    WorkSpace host;
+    CircuitBuilder builder(host.scene());
+    auto *ic = new IC();
+    builder.add(ic);
+    ICTestHelpers::embedIC(ic, circuitWithInputs(3), QStringLiteral("chip"), QString(), host.scene()->icRegistry());
+    QCOMPARE(ic->inputSize(), 3);
+    for (int i = 0; i < 3; ++i) {
+        auto *sw = new InputSwitch();
+        sw->setPos(-200, 64 * i);
+        builder.add(sw);
+        builder.connect(sw, 0, ic, i);
     }
-    QVERIFY2(true, "Reaching here means no ASan abort — fix is in place");
+    const QByteArray data = withBlobReplaced(saveToMemory(host), QStringLiteral("chip"), circuitWithInputs(1));
+
+    WorkSpace workspace;
+    loadFromMemory(workspace, data);
+    IC *loaded = nullptr;
+    int wiredSwitches = 0;
+    for (auto *elm : workspace.scene()->elements()) {
+        if (elm->elementType() == ElementType::IC) {
+            loaded = static_cast<IC *>(elm);
+        } else if (!elm->outputPort()->connections().isEmpty()) {
+            ++wiredSwitches;
+        }
+    }
+    QVERIFY(loaded);
+    QCOMPARE(loaded->inputSize(), 1);
+    QCOMPARE(wiredSwitches, 1);
+    QCOMPARE(loaded->inputPort(0)->connections().size(), 1);
 }
 
 void TestSerialization::testFuzzRegressionUnboundedPortList()
