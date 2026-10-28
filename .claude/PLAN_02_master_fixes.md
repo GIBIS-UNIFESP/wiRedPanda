@@ -294,6 +294,16 @@ that only an expression needed go. That file exports 65 KB in 32 ms. Shown by
 checks twelve building blocks exported with their gates at the top level against the engine, which no other export
 did.
 
+### 2.26 Element labels ask for a font family macOS lacks
+
+An element's label font was `QFont("Sans Serif")`, a fontconfig alias that macOS and Windows do not have, so the first
+label made Qt build its whole table of family aliases; CI's macOS jobs warned of it in 149 test classes (P2.92, found
+reading CI's warnings). Fix: the label asks for the family the platform gives a sans-serif style hint, at the same
+default size, so Linux keeps Noto Sans and its goldens. Shown by
+`TestGraphicElement::testLabelFontIsAFamilyThePlatformHas`: the font's family is one the font database has, under that
+name. Still open: the toolbar's and BeWavedDolphin's SVG icons name `sans-serif`, which Qt SVG reads as one family
+name, for their text.
+
 ## 3. In code plan 3 rewrites
 
 ### 3.1 SR and T flip-flops ignore every input while one input is open
@@ -767,6 +777,7 @@ Each of these exists on `master`, and its fix is another plan's decision:
 | P2.76 | An embedded IC that fails to load (§2.23) | the helpers only | none |
 | P2.77 | A preview rendered when shown (§2.24) | P1.14 | none (the 77 preview goldens unchanged) |
 | P2.79 | A variable for every gate in SystemVerilog (§2.25) | the helpers only | twelve new goldens, the flat exports' (`testSystemVerilogExportFlat`); the translated And's two exports (`and_gate.sv.txt`, `and_gate.tr.sv.txt`), its And through a variable; the 76 others unchanged |
+| P2.92 | The label font a family the platform has (§2.26) | the helpers only | none |
 | P2.39 | The MCP client's 64 KiB line limit (its ledger row) | the helpers only | none |
 | P2.9 | SR and T defaults (§3.1) | P1.4, P1.6, P1.13 | port layout, one scene snapshot, any trace with S, R or T open |
 | P2.10 | The loader's port counts (§3.2) | P1.8, P1.17 | the strings golden's three messages |
