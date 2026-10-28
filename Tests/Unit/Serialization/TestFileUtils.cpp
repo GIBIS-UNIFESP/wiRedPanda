@@ -84,7 +84,7 @@ void TestFileUtils::testCopyToDirThrowsOnFailure()
 
     // Destination directory does not exist — QFile::copy returns false.
     const QString badDest = sourceDir.path() + "/no/such/subdirectory";
-    QVERIFY_THROWS(std::exception, FileUtils::copyToDir(sourceFile, badDest));
+    QVERIFY_THROWS_EXCEPTION(std::exception, FileUtils::copyToDir(sourceFile, badDest));
 }
 
 void TestFileUtils::testCopyToDirNonExistentSourceIsNoOp()

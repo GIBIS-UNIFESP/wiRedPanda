@@ -52,6 +52,8 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-24.04, windows-2025-vs2026]
+        # The 6.8.3 entries here and on macos-15, and the i386 job's Debian 6.8.2, build and test the floor
+        # find_package() declares: a change that drops one keeps another.
         qt: [6.8.3, 6.9.3]
         cmake_args: ['']
         include:

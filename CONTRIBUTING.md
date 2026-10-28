@@ -85,8 +85,8 @@ If you prefer local development, see our detailed [BUILD.md](BUILD.md) instructi
 **Quick Start (Linux/macOS)**:
 
 ```bash
-# Install dependencies (example for Ubuntu)
-sudo apt install build-essential qt6-base-dev qt6-multimedia-dev qt6-svg-dev
+# Install Qt 6.9.3 with aqtinstall, as BUILD.md shows, then the build tools (example for Debian and Ubuntu)
+sudo apt install build-essential cmake ninja-build
 
 # Clone and build
 git clone https://github.com/GIBIS-UNIFESP/wiRedPanda.git

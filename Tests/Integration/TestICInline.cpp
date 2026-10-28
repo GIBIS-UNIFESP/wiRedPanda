@@ -378,7 +378,7 @@ void TestICInline::testInlineTabSaveThrowsWhenFileBackedIcMissingOnDisk()
     QFile::remove(m_fixtureDir + "/chain_c.panda");
     auto restoreFixture = qScopeGuard([this] { copyFixture("chain_c.panda"); });
 
-    QVERIFY_THROWS(std::exception, child.save(QString()));
+    QVERIFY_THROWS_EXCEPTION(std::exception, child.save(QString()));
 }
 
 void TestICInline::testUndoRedoEmbedExtract()
@@ -4396,7 +4396,7 @@ void TestICInline::testSceneAddItemMimeDataThrowCleansUp()
     mimeData->setData("application/x-wiredpanda-dragdrop", itemData);
     QPointer<QMimeData> mimeWatcher(mimeData);
 
-    QVERIFY_THROWS(std::exception, ws.scene()->addItem(mimeData));
+    QVERIFY_THROWS_EXCEPTION(std::exception, ws.scene()->addItem(mimeData));
 
     QCOMPARE(static_cast<int>(ws.scene()->elements().size()), elementsBefore);
 
