@@ -48,3 +48,6 @@ Each row's notes say how its check is shown to fail; "as in a spike" marks a bre
 - 2026-10-21: the plan file and this ledger written on `gpu-canvas`, every row `todo`.
 - 2026-10-21: the Qt floor raised to 6.8 at the user's ruling ("go with 6.8"): P10.D8 says 6.8, CI's `QRhi` coverage
   is 6.8 and 6.9, and the pitfall of blur filters before 6.8 went, no supported Qt having it. No row changes.
+- 2026-10-28: P10.D1's basis states the comparison with Qt Quick, which cost the same per frame and lost on its
+  hosts, its software fallback and its runtime libraries; kept at the user's ruling ("lets keep it"). No row
+  changes.
