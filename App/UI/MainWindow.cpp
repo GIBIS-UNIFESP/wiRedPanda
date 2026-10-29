@@ -106,7 +106,10 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     // rebinds the chrome. The binder forwards scene-driven navigation back to the manager.
     connect(m_workspaceManager, &WorkspaceManager::currentTabChanged, this, &MainWindow::onCurrentTabChanged);
     connect(m_workspaceManager, &WorkspaceManager::titleChanged,      this, &MainWindow::updateWindowTitle);
-    connect(m_binder, &SceneUiBinder::openICRequested, m_workspaceManager, &WorkspaceManager::openICInTab);
+    // A sub-circuit that does not read is reported where the user opened it
+    connect(m_binder, &SceneUiBinder::openICRequested, this, [this](const QString &blobName, int icElementId, const QByteArray &blob) {
+        Application::guardedSlot(this, [&] { m_workspaceManager->openICInTab(blobName, icElementId, blob); });
+    });
     connect(m_binder, &SceneUiBinder::loadFileRequested, m_workspaceManager, &WorkspaceManager::openPandaFile);
 
     // Must be created before setupLanguage(): loading a translation can synchronously
@@ -380,9 +383,11 @@ void MainWindow::setupConnections()
 
     // ElementEditor IC sub-circuit actions
     connect(m_ui->elementEditor, &ElementEditor::editSubcircuitRequested, this, [this](const QString &blobName, int icElementId) {
-        if (currentTab()) {
-            openICInTab(blobName, icElementId, currentTab()->scene()->icRegistry()->blob(blobName));
-        }
+        Application::guardedSlot(this, [&] {
+            if (currentTab()) {
+                openICInTab(blobName, icElementId, currentTab()->scene()->icRegistry()->blob(blobName));
+            }
+        });
     });
     connect(m_ui->elementEditor, &ElementEditor::openSubcircuitFileRequested, m_workspaceManager, &WorkspaceManager::openPandaFile);
     connect(m_ui->elementEditor, &ElementEditor::embedSubcircuitRequested, m_icController, &ICController::embedSelectedIC);

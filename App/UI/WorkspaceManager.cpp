@@ -349,7 +349,14 @@ void WorkspaceManager::openICInTab(const QString &blobName, int icElementId, con
 
     createNewTab();
 
-    m_currentTab->loadFromBlob(blob, parentWorkspace, icElementId, parentWorkspace->scene()->contextDir());
+    try {
+        m_currentTab->loadFromBlob(blob, parentWorkspace, icElementId, parentWorkspace->scene()->contextDir());
+    } catch (...) {
+        // A blob that does not read leaves no half-loaded tab behind, as loadPandaFile() does
+        m_currentTab->scene()->undoStack()->clear();
+        closeTab(m_tabIndex);
+        throw;
+    }
     // Tighten the scene rect to the loaded items immediately so subsequent
     // interactions (selection, drag release) don't cause a viewport jump.
     m_currentTab->scene()->resizeScene();

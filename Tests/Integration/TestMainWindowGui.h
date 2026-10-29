@@ -38,6 +38,7 @@ private slots:
     void testPastingAClipboardThatDoesNotReadReportsIt();
     void testAddingAnICWhoseFileIsGoneFromThePaletteReportsIt();
     void testSavingASubCircuitItsParentCannotTakeLeavesItUnsaved();
+    void testOpeningASubCircuitThatDoesNotReadReportsIt();
 
     // --- Simulation controls ---
 
