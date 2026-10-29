@@ -195,7 +195,7 @@ void WorkspaceManager::save(const QString &fileName)
     }
 
     if (m_currentTab->isInlineIC()) {
-        // No path needed: WorkSpace::save() serializes to a blob and emits a signal instead.
+        // No path needed: WorkSpace::save() serializes to a blob and hands it to the parent tab instead.
         m_currentTab->save(fileName);
         m_host.palette()->updateICList(icListFile());
         m_host.showStatusMessage(tr("File saved successfully."), 4000);
@@ -363,9 +363,6 @@ void WorkspaceManager::openICInTab(const QString &blobName, int icElementId, con
 
     m_host.palette()->updateICList(icListFile());
     m_host.palette()->updateEmbeddedICList(m_currentTab->scene());
-
-    // Connect child tab's save signal to parent
-    connect(m_currentTab, &WorkSpace::icBlobSaved, parentWorkspace, &WorkSpace::onChildICBlobSaved);
 
     // An IC opens as it is; each channel it gives more than one Tx is named
     const auto *scene = m_currentTab->scene();

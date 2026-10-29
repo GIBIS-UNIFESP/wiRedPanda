@@ -271,7 +271,7 @@ WorkSpace::SaveOutcome WorkSpace::save(const QString &fileName)
             return SaveOutcome::Saved;
         }
 
-        // Inline-IC tabs serialize to a blob and emit a signal instead of writing to disk.
+        // Inline-IC tabs serialize to a blob and hand it to the parent tab instead of writing to disk.
         const QString contextDir = m_scene.contextDir();
 
         // Embed any file-backed ICs so the blob is self-contained
@@ -319,6 +319,9 @@ WorkSpace::SaveOutcome WorkSpace::save(const QString &fileName)
         Serialization::writePandaHeader(stream);
         Serialization::writePayload(stream, payload);
 
+        // The parent takes the blob before the tab is marked saved: a blob it cannot take fails the save, called
+        // directly so the throw reaches save()'s caller without crossing Qt's signal dispatch
+        m_parentWorkspace->saveChildICBlob(m_parentICElementId, blob);
         m_scene.undoStack()->setClean();
         emit icBlobSaved(m_parentICElementId, blob);
         return SaveOutcome::Saved;
@@ -827,7 +830,7 @@ void WorkSpace::loadFromBlob(const QByteArray &blob, WorkSpace *parent, int icEl
     }
 }
 
-void WorkSpace::onChildICBlobSaved(int icElementId, const QByteArray &blob)
+void WorkSpace::saveChildICBlob(int icElementId, const QByteArray &blob)
 {
     auto *item = m_scene.itemById(icElementId);
     if (!item) {

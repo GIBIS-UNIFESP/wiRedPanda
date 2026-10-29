@@ -105,6 +105,10 @@ public:
     /// Returns the element ID of the IC in the parent scene being edited.
     int parentICElementId() const { return m_parentICElementId; }
 
+    /// Puts \a blob, saved by a child inline tab, in the embedded IC \a icElementId and every IC sharing its blob, as
+    /// one undo step; throws, everything as it was, when an IC does not load it.
+    void saveChildICBlob(int icElementId, const QByteArray &blob);
+
     /// Returns the blob name being edited (for tab title).
     const QString &inlineBlobName() const { return m_inlineBlobName; }
 
@@ -166,12 +170,8 @@ signals:
      */
     void fileChanged(const QFileInfo &fileInfo);
 
-    /// Emitted when an inline IC tab saves its blob (propagated to parent).
+    /// Emitted once an inline IC tab's blob is saved: its parent has taken it.
     void icBlobSaved(int icElementId, const QByteArray &blob);
-
-public slots:
-    /// Receives a saved blob from a child inline tab.
-    void onChildICBlobSaved(int icElementId, const QByteArray &blob);
 
 private:
     // --- Internal methods ---

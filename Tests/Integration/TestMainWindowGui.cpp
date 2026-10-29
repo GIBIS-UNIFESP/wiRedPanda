@@ -2305,6 +2305,58 @@ void TestMainWindowGui::testEmbeddedICSaveReloadRoundTrip()
 // Inline IC tab operations
 // ===========================================================================
 
+void TestMainWindowGui::testSavingASubCircuitItsParentCannotTakeLeavesItUnsaved()
+{
+    // A sub-circuit tab's Save hands its circuit to the parent tab: one the parent cannot load, a chain of sub-circuits
+    // a level deeper than an IC may nest, fails the save where it was chosen, the tab left unsaved, the parent as it was
+    std::unique_ptr<MainWindow> window(createMW());
+    auto *rootScene = window->currentTab()->scene();
+    rootScene->setContextDir(m_fixtureDir);
+    auto *parentIC = placeEmbeddedIC(rootScene, m_fixtureDir, "parent_ic");
+    const QByteArray parentBlob = rootScene->icRegistry()->blob("parent_ic");
+    const int rootIndex = rootScene->undoStack()->index();
+
+    // Each blob holds one IC embedding the one before; the deepest that still loads is two short of the first that
+    // does not, so the sub-circuit holding it loads here and is one level too deep in its parent
+    QList<QByteArray> chain{ICTestHelpers::readFile(m_fixtureDir + "/test_circuit.panda")};
+    for (;;) {
+        WorkSpace level;
+        level.scene()->setContextDir(m_fixtureDir);
+        auto *ic = new IC();
+        try {
+            ICTestHelpers::embedIC(ic, chain.constLast(), QString("L%1").arg(chain.size()), m_fixtureDir,
+                                   level.scene()->icRegistry());
+        } catch (const std::exception &) {
+            delete ic;
+            break;
+        }
+        level.scene()->addItem(ic);
+        QByteArray blob;
+        QDataStream stream(&blob, QIODevice::WriteOnly);
+        Serialization::writePandaHeader(stream);
+        level.save(stream);
+        chain.append(blob);
+    }
+    QVERIFY(chain.size() >= 3);
+
+    window->openICInTab("parent_ic", parentIC->id(), parentBlob);
+    auto *inlineTab = window->currentTab();
+    QVERIFY(inlineTab->isInlineIC());
+    auto *deepest = new IC();
+    ICTestHelpers::embedIC(deepest, chain.at(chain.size() - 2), "deepest", m_fixtureDir,
+                           inlineTab->scene()->icRegistry());
+    inlineTab->scene()->receiveCommand(new AddItemsCommand({deepest}, inlineTab->scene()));
+
+    try {
+        window->m_ui->actionSave->trigger();
+    } catch (const std::exception &e) {
+        QFAIL(qPrintable(QString("Save threw: %1").arg(e.what())));
+    }
+    QVERIFY2(!inlineTab->scene()->undoStack()->isClean(), "the sub-circuit tab must stay unsaved");
+    QCOMPARE(rootScene->undoStack()->index(), rootIndex);
+    QCOMPARE(rootScene->icRegistry()->blob("parent_ic"), parentBlob);
+}
+
 void TestMainWindowGui::testInlineICDropSaveCloseReopen()
 {
     // Reproduces the user-reported bug:
@@ -2365,7 +2417,7 @@ void TestMainWindowGui::testInlineICDropSaveCloseReopen()
     // Inline tab title must stay "[parent_ic]", not change to the parent filename.
     QCOMPARE(tabs->tabText(tabs->indexOf(inlineTab)), QString("[parent_ic]"));
 
-    // The parent tab should be marked dirty (asterisk) because onChildICBlobSaved
+    // The parent tab should be marked dirty (asterisk) because saveChildICBlob
     // pushed an UpdateBlobCommand to the root scene's undo stack.
     const QString rootTitle = tabs->tabText(rootTabIndex);
     QVERIFY2(rootTitle.endsWith("*"), qPrintable("Root tab should be dirty: " + rootTitle));
@@ -2447,7 +2499,7 @@ void TestMainWindowGui::testInlineICSaveNoFileDialog()
 
 void TestMainWindowGui::testInlineICSaveMarksRootDirty()
 {
-    // When an inline IC tab saves, onChildICBlobSaved pushes an
+    // When an inline IC tab saves, saveChildICBlob pushes an
     // UpdateBlobCommand to the root scene's undo stack, which should
     // mark the root tab as dirty (not clean).
 
