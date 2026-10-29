@@ -66,11 +66,14 @@ void storeOtherIds(const QList<QGraphicsItem *> &connections, const QList<int> &
 const QList<QGraphicsItem *> loadList(const QList<QGraphicsItem *> &items, QList<int> &ids, QList<int> &otherIds)
 {
     // Each list keeps its items' first-seen order; its set answers membership, so a command over n items costs n,
-    // not n squared
+    // not n squared. Each is sized for the items up front: a large block reallocated as it grows is a fresh one to
+    // fault in on every call, which on macOS costs more than the list's walk
     QSet<QGraphicsItem *> listed;
+    listed.reserve(items.size());
 
     // --- Collect elements in the operation ---
     QList<QGraphicsItem *> elements;
+    elements.reserve(items.size());
     /* Stores selected graphicElements */
     for (auto *item : items) {
         if (item->type() == GraphicElement::Type) {
@@ -118,11 +121,13 @@ const QList<QGraphicsItem *> loadList(const QList<QGraphicsItem *> &items, QList
         }
     }
 
+    // The list returned: the elements, then their wires
+    elements.append(connections);
     // Store the ids of all elements listed in items.
-    storeIds(elements + connections, ids);
+    storeIds(elements, ids);
     // Store all elements linked to each connection that will not be deleted.
     storeOtherIds(connections, ids, otherIds);
-    return elements + connections;
+    return elements;
 }
 
 const QList<QGraphicsItem *> findItems(Scene *scene, const QList<int> &ids)

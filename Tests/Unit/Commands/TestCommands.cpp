@@ -10,11 +10,9 @@
 #include <QDir>
 #include <QElapsedTimer>
 #include <QImage>
-#include <QSet>
 #include <QTemporaryDir>
 
 #include "App/Core/Enums.h"
-#include "App/Core/ItemWithId.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/AudioBox.h"
@@ -2022,73 +2020,16 @@ void TestCommands::testLoadListGrowsLinearly()
         return best;
     };
 
-    for (const int n : {250, 1000, 4000, 16000, 32000, 64000}) {
-        WorkSpace workspace;
-        auto *scene = workspace.scene();
-        GraphicElement *previous = nullptr;
-        for (int i = 0; i < n; ++i) {
-            auto *notGate = ElementFactory::buildElement(ElementType::Not);
-            scene->addItem(notGate);
-            if (previous) {
-                auto *conn = new Connection();
-                conn->setStartPort(previous->outputPort());
-                conn->setEndPort(notGate->inputPort());
-                scene->addItem(conn);
-            }
-            previous = notGate;
-        }
-        const auto items = scene->items();
-        qint64 load = std::numeric_limits<qint64>::max();
-        qint64 setPlain = std::numeric_limits<qint64>::max();
-        qint64 setReserved = std::numeric_limits<qint64>::max();
-        qint64 setInts = std::numeric_limits<qint64>::max();
-        qint64 casts = std::numeric_limits<qint64>::max();
-        for (int run = 0; run < 9; ++run) {
-            QList<int> ids;
-            QList<int> otherIds;
-            QElapsedTimer timer;
-            timer.start();
-            const auto listed = CommandUtils::loadList(items, ids, otherIds);
-            load = std::min(load, timer.nsecsElapsed());
-            timer.restart();
-            QSet<QGraphicsItem *> plain;
-            for (auto *item : items) {
-                plain.insert(item);
-            }
-            setPlain = std::min(setPlain, timer.nsecsElapsed());
-            timer.restart();
-            QSet<QGraphicsItem *> reserved;
-            reserved.reserve(items.size());
-            for (auto *item : items) {
-                reserved.insert(item);
-            }
-            setReserved = std::min(setReserved, timer.nsecsElapsed());
-            timer.restart();
-            const QSet<int> idSet(ids.cbegin(), ids.cend());
-            setInts = std::min(setInts, timer.nsecsElapsed());
-            timer.restart();
-            int found = 0;
-            for (auto *item : items) {
-                found += (dynamic_cast<ItemWithId *>(item) != nullptr) ? 1 : 0;
-            }
-            casts = std::min(casts, timer.nsecsElapsed());
-            QVERIFY(found > 0 && plain.size() == reserved.size() && !idSet.isEmpty() && !listed.isEmpty());
-        }
-        qInfo().noquote() << QString("PROBE3 n=%1 items=%2 loadList=%3 setPlain=%4 setReserved=%5 setInts=%6 casts=%7")
-                                 .arg(n).arg(items.size()).arg(load).arg(setPlain).arg(setReserved).arg(setInts).arg(casts);
-    }
-    const Times cold = bestTimesNs(250);
-    const Times large = bestTimesNs(32000);
     const Times small = bestTimesNs(250);
-    qInfo().noquote() << QString("PROBE loadList cold250 %1/%2 large %3/%4 warm250 %5/%6 growthCold %7 growthWarm %8")
-                             .arg(cold.loadList).arg(cold.walk).arg(large.loadList).arg(large.walk)
-                             .arg(small.loadList).arg(small.walk)
-                             .arg((double(large.loadList) / double(large.walk)) / (double(cold.loadList) / double(cold.walk)))
-                             .arg((double(large.loadList) / double(large.walk)) / (double(small.loadList) / double(small.walk)));
+    const Times large = bestTimesNs(32000);
     QVERIFY2((small.loadList > 0) && (large.loadList > 0) && (small.walk > 0) && (large.walk > 0),
              "loadList() lost or added items");
     const double growth = (static_cast<double>(large.loadList) / static_cast<double>(large.walk))
                         / (static_cast<double>(small.loadList) / static_cast<double>(small.walk));
+    // Reported on every run, so a runner's spread can be read from its logs, a pass's as well as a failure's
+    const QString times = QString("loadList() %1 and the walk %2 ns at 250 elements, %3 and %4 ns at 32,000")
+                              .arg(small.loadList).arg(small.walk).arg(large.loadList).arg(large.walk);
+    qInfo().noquote() << QString("growth %1; %2").arg(growth).arg(times);
     QVERIFY2(growth < 4.0, qPrintable(QString("against a walk of the same items, loadList() took %1 times as long "
-                                              "at 128 times the elements").arg(growth)));
+                                              "at 128 times the elements (%2)").arg(growth).arg(times)));
 }

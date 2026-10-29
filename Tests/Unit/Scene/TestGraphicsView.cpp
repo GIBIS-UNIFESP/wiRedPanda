@@ -310,8 +310,8 @@ void TestGraphicsView::testWheelKeepsCursorPoint()
             view->resetZoom();
             view->centerOn(QPointF(0, 0));
             const QPointF pivot = view->mapToScene(cursor);
-            // On a native platform the pivot is the system's cursor, which the test only borrows: say which of the
-            // two conditions the zoom reads failed, if one does
+            // The pivot is the platform's cursor (offscreen, as CTest runs this class, the process's own): say which of
+            // the two conditions the zoom reads failed, if one does
             const QPoint expected = view->viewport()->mapToGlobal(cursor);
             QVERIFY2(QCursor::pos() == expected, qPrintable(QString("the system's cursor is at %1,%2, not at %3,%4")
                                                                 .arg(QCursor::pos().x())
@@ -404,9 +404,7 @@ void TestGraphicsView::testZoomKeepsItsPivotPastTheSceneRect()
             if (!wheel) {
                 view->setAttribute(Qt::WA_UnderMouse, true);
                 QCursor::setPos(view->viewport()->mapToGlobal(cursor));
-                if (QCursor::pos() != view->viewport()->mapToGlobal(cursor)) {
-                    QSKIP("The platform does not let the test place the system's cursor");
-                }
+                QVERIFY2(QCursor::pos() == view->viewport()->mapToGlobal(cursor), "the platform did not place the cursor");
             }
 
             const auto step = [&](const int delta) {
