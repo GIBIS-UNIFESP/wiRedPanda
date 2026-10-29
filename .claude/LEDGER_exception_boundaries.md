@@ -59,3 +59,20 @@ frame Qt owns.
 | WATCH | `ICRegistry::onFileChanged()`, a queued slot wrapped in `guardedSlot()` (`ICRegistry.cpp:96`), its rethrow at `:126` caught there | Yes |
 | DROP | A drop's or a drag's event handler, no catch between: `Scene::dropEvent()` to `SceneDropHandler::handleNewElementDrop()` (builds the element, a file-backed IC loading its file) and `handleCloneDrag()` (deserializes the drag), `TrashButton::dropEvent()` and `ICDropZone`'s `dragEnterEvent()` and `dropEvent()` (`extractDragPayload()`, reading the drag's header). A drop's data can come from another program or another wiRedPanda | **No** |
 | PALETTE | The palette's `addElementRequested`, connected to a lambda (`MainWindow.cpp:403`) that calls `Scene::addItem()`, `SceneDropHandler::addFromMimeData()`: builds the element, a file-backed IC loading its file | **No** |
+| PASTE | Edit's Paste and Duplicate (and Copy, Cut, Delete), each connected by `connectSceneAction()` to a lambda with no catch (`MainWindow.cpp:451`) that calls the scene's action: `ClipboardManager::paste()` reads the clipboard, which another program or another wiRedPanda may have written, and deserializes it | **No** |
+| MCP | A request, inside `BaseHandler::tryCommand()` (`BaseHandler.h:57`) or the processor's own catches. A command pushed there runs its first `redo()` inside `QUndoStack::push()`, so a throw from it crosses QtGui before the catch: UNDO's case | Yes, except through a command |
+
+### Throw sites
+
+| Site | In | Paths | Class | Disposition |
+|---|---|---|---|---|
+| `App/Scene/Commands.cpp:145` | `CommandUtils::findItems()`: an id the command recorded is not on the scene | UNDO | I | Q: an assertion with a fallback (EB.5) |
+| `App/Scene/Commands.cpp:163` | `CommandUtils::findElements()`: the same, for elements | UNDO | I | Q: as `:145` (EB.5) |
+| `App/Scene/Commands.cpp:230` | `CommandUtils::loadItems()`: a snapshot restored fewer items than it recorded | UNDO | I | Q: as `:145` (EB.5). The snapshot's own throws (`deserialize()` and what it loads) are listed at their sites |
+| `App/Scene/Commands.cpp:783` | `SplitCommand`'s constructor: the wire has no start or end port | UNDO (its constructor runs before `push()`, from `SceneInteraction::mouseDoubleClick()`, an event handler, and MCP's split) | I | Q: as `:145` (EB.5); both callers pass a wire with both ports |
+| `App/Scene/Commands.cpp:789` | `SplitCommand`'s constructor: a port without its element | UNDO, as `:783` | I | Q: as `:145` (EB.5); every port has its element (`ElementPorts::addPort()`) |
+| `App/Scene/Commands.cpp:828` | `SplitCommand::redo()`: a wire or element it recorded is gone | UNDO | I | Q: as `:145` (EB.5) |
+| `App/Scene/Commands.cpp:833` | `SplitCommand::redo()`: the wire has no end port | UNDO | I | Q: as `:145` (EB.5) |
+| `App/Scene/Commands.cpp:880` | `SplitCommand::undo()`: a wire, node or element it recorded is gone | UNDO | I | Q: as `:145` (EB.5) |
+| `App/Scene/Commands.cpp:1315` | `ToggleTruthTableOutputCommand::redo()`: the truth table it recorded is gone | UNDO | I | Q: as `:145` (EB.5) |
+| `App/Scene/Commands.cpp:1322` | `ToggleTruthTableOutputCommand::redo()`: the position is outside the key | UNDO | I | Q: as `:145` (EB.5); both callers bound it first (`ElementEditor.cpp:943`, MCP's `ElementHandler.cpp:921`) |
