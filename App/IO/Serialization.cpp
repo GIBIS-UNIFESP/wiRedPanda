@@ -628,7 +628,7 @@ QList<QGraphicsItem *> Serialization::deserialize(QDataStream &stream, Serializa
         // Check stream integrity after reading type tag
         if (stream.status() != QDataStream::Ok) {
             throw PANDACEPTION("Stream error reading type tag at position %1: status %2",
-                               stream.device()->pos(), static_cast<int>(stream.status()));
+                               QString::number(stream.device()->pos()), QString::number(static_cast<int>(stream.status())));
         }
 
         qCDebug(three) << "Type: " << typeName(type);
@@ -640,7 +640,7 @@ QList<QGraphicsItem *> Serialization::deserialize(QDataStream &stream, Serializa
             // Check stream integrity after reading element type
             if (stream.status() != QDataStream::Ok) {
                 throw PANDACEPTION("Stream error reading element type at position %1: status %2",
-                                   stream.device()->pos(), static_cast<int>(stream.status()));
+                                   QString::number(stream.device()->pos()), QString::number(static_cast<int>(stream.status())));
             }
 
             // Append before load() so cleanupGuard owns the element if load throws
@@ -652,7 +652,7 @@ QList<QGraphicsItem *> Serialization::deserialize(QDataStream &stream, Serializa
             // Check stream integrity after element load
             if (stream.status() != QDataStream::Ok) {
                 throw PANDACEPTION("Stream error loading element at position %1: status %2",
-                                   stream.device()->pos(), static_cast<int>(stream.status()));
+                                   QString::number(stream.device()->pos()), QString::number(static_cast<int>(stream.status())));
             }
 
             // A file reports a picture or a sound that does not load, once the element's state has picked the
@@ -683,7 +683,7 @@ QList<QGraphicsItem *> Serialization::deserialize(QDataStream &stream, Serializa
             // cannot currently produce.
             if (stream.status() != QDataStream::Ok) {
                 throw PANDACEPTION("Stream error loading connection at position %1: status %2",
-                                   stream.device()->pos(), static_cast<int>(stream.status()));
+                                   QString::number(stream.device()->pos()), QString::number(static_cast<int>(stream.status())));
             }
             // LCOV_EXCL_STOP
 
