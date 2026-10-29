@@ -2139,13 +2139,8 @@ void TestScene::testUndoOfAPasteGrowsLinearly()
         return best;
     };
 
-    for (int round = 0; round < 2; ++round) {
-        for (const int n : {1, 250, 1000, 4000}) {
-            bestTimesNs(n);
-        }
-    }
-    const Times small = bestTimesNs(250);
     const Times large = bestTimesNs(16000);
+    const Times small = bestTimesNs(250);
     QVERIFY2((small.paste > 0) && (large.paste > 0) && (small.undo > 0) && (large.undo > 0),
              "the paste or its undo lost or kept items");
     const double growth = (static_cast<double>(large.undo) / static_cast<double>(large.paste))

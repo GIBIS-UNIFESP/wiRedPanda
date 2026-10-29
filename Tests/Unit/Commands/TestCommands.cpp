@@ -2020,8 +2020,14 @@ void TestCommands::testLoadListGrowsLinearly()
         return best;
     };
 
-    const Times small = bestTimesNs(250);
+    const Times cold = bestTimesNs(250);
     const Times large = bestTimesNs(32000);
+    const Times small = bestTimesNs(250);
+    qInfo().noquote() << QString("PROBE loadList cold250 %1/%2 large %3/%4 warm250 %5/%6 growthCold %7 growthWarm %8")
+                             .arg(cold.loadList).arg(cold.walk).arg(large.loadList).arg(large.walk)
+                             .arg(small.loadList).arg(small.walk)
+                             .arg((double(large.loadList) / double(large.walk)) / (double(cold.loadList) / double(cold.walk)))
+                             .arg((double(large.loadList) / double(large.walk)) / (double(small.loadList) / double(small.walk)));
     QVERIFY2((small.loadList > 0) && (large.loadList > 0) && (small.walk > 0) && (large.walk > 0),
              "loadList() lost or added items");
     const double growth = (static_cast<double>(large.loadList) / static_cast<double>(large.walk))
