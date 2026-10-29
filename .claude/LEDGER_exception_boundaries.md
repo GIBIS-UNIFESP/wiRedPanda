@@ -76,3 +76,50 @@ frame Qt owns.
 | `App/Scene/Commands.cpp:880` | `SplitCommand::undo()`: a wire, node or element it recorded is gone | UNDO | I | Q: as `:145` (EB.5) |
 | `App/Scene/Commands.cpp:1315` | `ToggleTruthTableOutputCommand::redo()`: the truth table it recorded is gone | UNDO | I | Q: as `:145` (EB.5) |
 | `App/Scene/Commands.cpp:1322` | `ToggleTruthTableOutputCommand::redo()`: the position is outside the key | UNDO | I | Q: as `:145` (EB.5); both callers bound it first (`ElementEditor.cpp:943`, MCP's `ElementHandler.cpp:921`) |
+
+### Catch sites
+
+| Site | In | Catches | Disposition |
+|---|---|---|---|
+| `MCP/Server/Core/MCPProcessor.cpp:361` | `MCPProcessor::processCommand()` | Any `std::exception` from a request's handler: an error response | Stays: MCP's boundary |
+| `MCP/Server/Core/MCPProcessor.cpp:364` | `MCPProcessor::processCommand()` | Anything else: an error response | Stays: MCP's boundary |
+| `MCP/Server/Core/MCPValidator.cpp:58` | `MCPValidator::loadSchema()` | The schema's JSON parse error: `false` | Stays: a fallback |
+| `MCP/Server/Core/MCPValidator.cpp:60` | `MCPValidator::loadSchema()` | nlohmann's other errors: `false` | Stays: a fallback |
+| `MCP/Server/Core/MCPValidator.cpp:69` | `MCPValidator::loadSchema()` | The schema validator's errors: `false` | Stays: a fallback |
+| `MCP/Server/Core/MCPValidator.cpp:88` | `MCPValidator::validateCommand()` | A malformed command: an invalid result | Stays: a refusal |
+| `MCP/Server/Core/MCPValidator.cpp:123` | `MCPValidator::validateResponse()` | A malformed response: an invalid result | Stays: a refusal |
+| `MCP/Server/Core/MCPValidator.cpp:208` | `MCPValidator::validateAgainstSchema()` | The validator's error: an invalid result with its message | Stays: a refusal |
+| `MCP/Server/Core/MCPValidator.cpp:290` | `MCPValidator::qjsonToNlohmann()` | nlohmann's parse error, rethrown as `std::runtime_error` (`:291`) | Stays: translates for its callers, `:88` and `:123` |
+| `MCP/Server/Handlers/BaseHandler.h:59` | `BaseHandler::tryCommand()` | Any `std::exception` from a handler's body: an error response | Stays: MCP's boundary; it cannot catch a command's first `redo()` on macOS (the MCP path) |
+| `MCP/Server/Handlers/BaseHandler.h:62` | `BaseHandler::tryCommand()` | Anything else: an error response | Stays, as `:59` |
+| `MCP/Server/Handlers/ConnectionHandler.cpp:109` | `ConnectionHandler::handleConnectElements()` | A throw from pushing the wire's `AddItemsCommand`: an error response | Stays, as `BaseHandler.h:59`: its body is a command's first `redo()`, which must not throw (EB.5) |
+| `MCP/Server/Handlers/ConnectionHandler.cpp:112` | `ConnectionHandler::handleConnectElements()` | Anything else, as `:109` | Stays, as `:109` |
+| `MCP/Server/Handlers/ElementHandler.cpp:255` | `ElementHandler::handleCreateElement()` | `ElementFactory::buildElement()`'s throw: an error response | Stays: a refusal before anything changes |
+| `MCP/Server/Handlers/ElementHandler.cpp:258` | `ElementHandler::handleCreateElement()` | Anything else, as `:255` | Stays |
+| `MCP/Server/Handlers/ElementHandler.cpp:288` | `ElementHandler::handleCreateElement()` | A throw from pushing the element's `AddItemsCommand`: the element deleted, an error response | Stays, as `ConnectionHandler.cpp:109` |
+| `MCP/Server/Handlers/ElementHandler.cpp:292` | `ElementHandler::handleCreateElement()` | Anything else, as `:288` | Stays, as `:288` |
+| `MCP/Server/Handlers/ElementHandler.cpp:430` | `ElementHandler::handleMoveElement()` | A throw from pushing the `MoveCommand`: the position put back, an error response | Stays, as `ConnectionHandler.cpp:109` |
+| `MCP/Server/Handlers/ElementHandler.cpp:434` | `ElementHandler::handleMoveElement()` | Anything else, as `:430` | Stays, as `:430` |
+| `MCP/Server/Handlers/ICHandler.cpp:272` | `ICHandler::handleListICs()` | A listed IC file that does not load (`IC::loadFile()`): listed as without a valid definition | Stays: a fallback |
+| `MCP/Server/Handlers/ICHandler.cpp:283` | `ICHandler::handleListICs()` | A listed file whose header does not read: skipped | Stays: a fallback |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:533` | `BewavedDolphin::exportToPng()` | Anything from `DolphinExporter::exportToPng()`, which throws nothing today: `false` | Stays: a refusal its callers report |
+| `App/CodeGen/ArduinoCodeGen.cpp:194` | `ArduinoCodeGen::generate()` | Anything: the partial file removed, rethrown (`:197`) | Stays: cleans up for the export's boundary (EXPORT) |
+| `App/CodeGen/ArduinoCodeGen.cpp:1436` | `ArduinoCodeGen::generateTestbench()` | Anything: the stream restored, the file closed, rethrown (`:1439`) | Stays, as `:194` |
+| `App/Core/Application.cpp:110` | `Application::notify()` | Any `std::exception` from an event's dispatch: reported | Stays: the last-resort reporter (§2); nothing relies on it |
+| `App/Core/Application.h:141` | `Application::guardedSlot()` | Any `std::exception` from the slot's body: reported | Stays: the boundary of every guarded slot |
+| `App/Element/ICLoader.cpp:421` | `ICLoader::renderPreview()` | A definition that no longer loads: no preview | Stays: a fallback |
+| `App/IO/Serialization.cpp:911` | `Serialization::copyPandaFile()` | A copied file whose preamble does not read: its sub-circuits not followed | Stays: a fallback |
+| `App/Main.cpp:443` | `main()` | Any `std::exception` from the command-line modes: a message box or stderr | Stays: CLI's boundary |
+| `App/Scene/ClipboardManager.cpp:140` | `ClipboardManager::paste()` | A blob registry that does not read: pasted without it | Stays: a fallback; the items' own read refuses the paste when they need a missing blob |
+| `App/Scene/ClipboardManager.cpp:144` | `ClipboardManager::paste()` | The legacy registry, as `:140` | Stays, as `:140` |
+| `App/Scene/ICRegistry.cpp:123` | `ICRegistry::onFileChanged()` | A reload that fails: the scene marked for update, `definitionChanged` emitted, rethrown (`:126`) | Stays: rethrows to its `guardedSlot()` (WATCH) |
+| `App/Scene/ICRegistry.cpp:284` | `ICRegistry::embedICsByFile()` | A reload that fails: the new blob removed, rethrown (`:286`) | Stays: rethrows to the IC controller's guarded slots |
+| `App/Scene/ICRegistry.cpp:368` | `ICRegistry::reloadTargetsAtomically()` | A target that does not reload: the updated ones rolled back, rethrown (`:370`) | Stays: rolls back for its callers, `:123`, `:284` and the extraction |
+| `App/Scene/Workspace.cpp:866` | `WorkSpace::onChildICBlobSaved()` | A target that does not reload: rolled back, the blob put back, rethrown (`:869`) | Q: the rethrow leaves a slot connected straight to the child tab's `icBlobSaved` (`WorkspaceManager.cpp:363`), through Qt's signal dispatch (EB.6) |
+| `App/UI/ICController.cpp:67` | `ICController::runAsOneStep()` | A throw part way through the edits: those applied pushed as one step, rethrown (`:70`) | Stays: rethrows to the IC controller's guarded slots |
+| `App/UI/ICController.cpp:269` | `ICController::embedSelectedIC()` | Anything: the palette refreshed, rethrown (`:271`) | Stays: inside its `guardedSlot()` |
+| `App/UI/ICController.cpp:328` | `ICController::extractSelectedIC()` | Anything: the palette refreshed, rethrown (`:330`) | Stays: inside its `guardedSlot()` |
+| `App/UI/ICController.cpp:475` | `ICController::makeSelfContained()` | Anything: the embedded list refreshed, rethrown (`:477`) | Stays: inside its `guardedSlot()` |
+| `App/UI/WorkspaceManager.cpp:304` | `WorkspaceManager::loadPandaFile()` | A load that fails: the half-loaded tab closed, rethrown (`:310`) | Stays: cleans up for its callers; OPEN-Q's callers have no catch (EB.6) |
+| `App/UI/WorkspaceManager.cpp:616` | `WorkspaceManager::loadAutosaveFiles()` | An autosave that does not load: reported, dropped from the list | Stays: OPEN-G's boundary for autosaves |
+| `App/UI/WorkspaceManager.cpp:714` | `WorkspaceManager::closeTab()` | A save on close that fails: reported, then asked whether to close anyway | Stays: a boundary where the user acted |
