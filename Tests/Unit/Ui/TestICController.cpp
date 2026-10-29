@@ -1117,3 +1117,60 @@ void TestICController::testRemoveICFileDeletesInstancesAndSaves()
     QVERIFY(f.tab.scene()->elements().constFirst() == gate);
     QCOMPARE(f.host.requestSaveCallCount, 1);
 }
+
+void TestICController::testUndoingAnICFileRemovalPutsTheFileBack()
+{
+    // The removal is one step: its undo takes the file back out of the trash, then restores the instances, which
+    // load it; its redo removes both again
+    ICControllerFixture f;
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    f.host.currentDirValue = QDir(dir.path());
+    const QString filePath = dir.filePath("dep.panda");
+
+    QFile icFile(filePath);
+    QVERIFY(icFile.open(QIODevice::WriteOnly));
+    icFile.write(minimalPandaBytes());
+    icFile.close();
+
+    auto *ic = new IC();
+    f.tab.scene()->addItem(ic);
+    ic->loadFile(filePath, dir.path());
+    const int id = ic->id();
+    auto *undoStack = f.tab.scene()->undoStack();
+    const int countBefore = undoStack->count();
+
+    ICController controller(f.host);
+    controller.removeICFile(QStringLiteral("dep.panda"));
+    QVERIFY(!QFileInfo::exists(filePath));
+    QVERIFY(f.tab.scene()->elements().isEmpty());
+    QCOMPARE(undoStack->count(), countBefore + 1);
+    const auto *command = dynamic_cast<const RemoveICFileCommand *>(undoStack->command(countBefore));
+    QVERIFY(command);
+    const QString pathInTrash = command->pathInTrash();
+    QVERIFY(QFileInfo::exists(pathInTrash));
+
+    try {
+        undoStack->undo();
+    } catch (const Pandaception &e) {
+        QFAIL(qPrintable(QString("the undo threw: %1").arg(e.what())));
+    }
+    QVERIFY(QFileInfo::exists(filePath));
+    QVERIFY(!QFileInfo::exists(pathInTrash));
+    // The freedesktop.org trash's record of the file goes with it
+    const QFileInfo inTrash(pathInTrash);
+    if (inTrash.dir().dirName() == QLatin1String("files")) {
+        QVERIFY(!QFileInfo::exists(inTrash.dir().filePath("../info/" + inTrash.fileName() + ".trashinfo")));
+    }
+    auto *restored = qobject_cast<IC *>(dynamic_cast<GraphicElement *>(f.tab.scene()->itemById(id)));
+    QVERIFY(restored);
+    QCOMPARE(QFileInfo(restored->file()), QFileInfo(filePath));
+
+    undoStack->redo();
+    QVERIFY(!QFileInfo::exists(filePath));
+    QVERIFY(f.tab.scene()->elements().isEmpty());
+
+    undoStack->undo();
+    QVERIFY(QFileInfo::exists(filePath));
+    QCOMPARE(f.tab.scene()->elements().size(), 1);
+}
