@@ -538,11 +538,6 @@ Serialization	Stream error reading metadata map count
 Serialization	Stream error reading preamble: status %1
 Serialization	Stream error reading type tag at position %1: status %2
 Simulation	Warning: feedback circuit did not converge — the circuit may be oscillating.
-SplitCommand	Error trying to redo %1
-SplitCommand	Error trying to undo %1
-SplitCommand	Error: endPort is null in SplitCommand::redo()
-SplitCommand	Invalid connection ports in SplitCommand constructor
-SplitCommand	Invalid graphic elements in SplitCommand constructor
 SplitCommand	Wire split
 SystemVerilogCodeGen	Could not open file for writing: %1
 SystemVerilogCodeGen	Element type not supported: %1
@@ -552,9 +547,7 @@ TFlipFlop	T-Flip-Flop
 Text	Double-click to add text
 Text	TEXT
 Text	Text
-ToggleTruthTableOutputCommand	Could not find truthtable element!
 ToggleTruthTableOutputCommand	Toggle TruthTable Output at position: %1
-ToggleTruthTableOutputCommand	TruthTable toggle position out of range: %1
 TourOverlay	Exit
 TourOverlay	Finish
 TourOverlay	Next →

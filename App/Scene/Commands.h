@@ -8,6 +8,7 @@
 #pragma once
 
 #include <functional>
+#include <optional>
 
 #include <QCoreApplication>
 #include <QVariant>
@@ -21,13 +22,25 @@ namespace CommandUtils {
     // Element/Connection lookup (scene-scoped)
     GraphicElement *findElm(Scene *scene, const int id);
     Connection *findConn(Scene *scene, const int id);
-    const QList<GraphicElement *> findElements(Scene *scene, const QList<int> &ids);
-    const QList<QGraphicsItem *> findItems(Scene *scene, const QList<int> &ids);
+    /// The elements with \a ids, in order; none when one of them is not on the scene.
+    std::optional<QList<GraphicElement *>> findElements(Scene *scene, const QList<int> &ids);
+    /// The items with \a ids, in order; none when one of them is not on the scene.
+    std::optional<QList<QGraphicsItem *>> findItems(Scene *scene, const QList<int> &ids);
+
+    /**
+     * \brief Gives up \a command, whose record no longer matches the scene: a broken invariant.
+     * \details An assertion; a release build logs \a what, the command changes nothing, and the undo stack drops it
+     * (QUndoCommand::setObsolete()), so the history stays in step with the scene.
+     */
+    void abandon(QUndoCommand *command, const char *what);
 
     // Serialization helpers
-    const QList<QGraphicsItem *> loadItems(Scene *scene, QByteArray &itemData, const QList<int> &ids, QList<int> &otherIds);
+    /// Restores the items \a itemData holds under \a ids and reloads the elements wired to them; none, and the scene
+    /// unchanged, when one of those elements is not on the scene or the data holds other than \a ids' items.
+    std::optional<QList<QGraphicsItem *>> loadItems(Scene *scene, QByteArray &itemData, const QList<int> &ids, QList<int> &otherIds);
     const QList<QGraphicsItem *> loadList(const QList<QGraphicsItem *> &items, QList<int> &ids, QList<int> &otherIds);
-    void saveItems(Scene *scene, QByteArray &itemData, const QList<QGraphicsItem *> &items, const QList<int> &otherIds);
+    /// Saves \a others, the elements wired to \a items, then \a items, for loadItems() to restore.
+    void saveItems(QByteArray &itemData, const QList<GraphicElement *> &others, const QList<QGraphicsItem *> &items);
 
     // Scene operations
     void addItems(Scene *scene, const QList<QGraphicsItem *> &items);
@@ -55,8 +68,9 @@ class ElementsCommand : public QUndoCommand
 protected:
     explicit ElementsCommand(const QList<GraphicElement *> &elements, Scene *scene, QUndoCommand *parent = nullptr);
 
-    /// Returns the live element pointers for this command's targets, looked up by stored ID.
-    QList<GraphicElement *> elements() const;
+    /// Returns the live element pointers for this command's targets, looked up by stored ID; none, and the command
+    /// abandoned (CommandUtils::abandon()), when one of them is not on the scene.
+    std::optional<QList<GraphicElement *>> elements();
 
     Scene *m_scene;
     QList<int> m_ids;
@@ -214,7 +228,8 @@ public:
 
 private:
     // --- Helpers ---
-    void loadData(QByteArray &itemData);
+    /// Loads \a elements, this command's targets, from \a itemData.
+    void loadData(const QList<GraphicElement *> &elements, QByteArray &itemData);
 
     /// One wireless-capable element's channel-relevant state (mode + label), used to detect
     /// whether the old→new edit changes wireless routing (a genuine topology change).
@@ -223,8 +238,8 @@ private:
         WirelessMode mode = WirelessMode::None;
         QString label;
     };
-    /// Snapshots the wireless state of every wireless-capable command element.
-    QVector<WirelessState> snapshotWirelessState() const;
+    /// Snapshots the wireless state of every wireless-capable element of \a elements.
+    static QVector<WirelessState> snapshotWirelessState(const QList<GraphicElement *> &elements);
     /// Returns true when an element's wireless mode differs between the two snapshots, or its
     /// label differs while the element is (or was) a wireless Tx/Rx — the label IS the channel.
     static bool wirelessStateDiffers(const QVector<WirelessState> &before,
@@ -672,7 +687,8 @@ public:
     void undo() override;
 
 private:
-    void loadData(QByteArray &itemData);
+    /// Loads \a elements, this command's targets, from \a itemData.
+    void loadData(const QList<GraphicElement *> &elements, QByteArray &itemData);
     void reconnectConnections();
 
     QByteArray m_oldData;

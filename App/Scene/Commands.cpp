@@ -133,40 +133,43 @@ const QList<QGraphicsItem *> loadList(const QList<QGraphicsItem *> &items, QList
     return elements;
 }
 
-const QList<QGraphicsItem *> findItems(Scene *scene, const QList<int> &ids)
+std::optional<QList<QGraphicsItem *>> findItems(Scene *scene, const QList<int> &ids)
 {
     QList<QGraphicsItem *> items;
     items.reserve(ids.size());
 
     for (const int id : ids) {
-        if (auto *item = dynamic_cast<QGraphicsItem *>(scene->itemById(id))) {
-            items.append(item);
+        auto *item = dynamic_cast<QGraphicsItem *>(scene->itemById(id));
+        if (!item) {
+            return std::nullopt;
         }
-    }
-
-    if (items.size() != ids.size()) {
-        throw PANDACEPTION_WITH_CONTEXT("commands", "One or more items was not found on the scene.");
+        items.append(item);
     }
 
     return items;
 }
 
-const QList<GraphicElement *> findElements(Scene *scene, const QList<int> &ids)
+std::optional<QList<GraphicElement *>> findElements(Scene *scene, const QList<int> &ids)
 {
     QList<GraphicElement *> items;
     items.reserve(ids.size());
 
     for (const int id : ids) {
-        if (auto *item = dynamic_cast<GraphicElement *>(scene->itemById(id))) {
-            items.append(item);
+        auto *item = dynamic_cast<GraphicElement *>(scene->itemById(id));
+        if (!item) {
+            return std::nullopt;
         }
-    }
-
-    if (items.size() != ids.size()) {
-        throw PANDACEPTION_WITH_CONTEXT("commands", "One or more elements was not found on the scene.");
+        items.append(item);
     }
 
     return items;
+}
+
+void abandon(QUndoCommand *command, const char *what)
+{
+    qCWarning(zero) << "Undo command" << command->text() << "abandoned:" << what;
+    Q_ASSERT_X(false, "CommandUtils::abandon", what);
+    command->setObsolete(true);
 }
 
 Connection *findConn(Scene *scene, const int id)
@@ -179,13 +182,11 @@ GraphicElement *findElm(Scene *scene, const int id)
     return dynamic_cast<GraphicElement *>(scene->itemById(id));
 }
 
-void saveItems(Scene *scene, QByteArray &itemData, const QList<QGraphicsItem *> &items, const QList<int> &otherIds)
+void saveItems(QByteArray &itemData, const QList<GraphicElement *> &others, const QList<QGraphicsItem *> &items)
 {
     itemData.clear();
     QDataStream stream(&itemData, QIODevice::WriteOnly);
     Serialization::writePandaHeader(stream);
-
-    const auto others = CommandUtils::findElements(scene, otherIds);
 
     for (auto *elm : others) {
         elm->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
@@ -207,10 +208,15 @@ void addItems(Scene *scene, const QList<QGraphicsItem *> &items)
     }
 }
 
-const QList<QGraphicsItem *> loadItems(Scene *scene, QByteArray &itemData, const QList<int> &ids, QList<int> &otherIds)
+std::optional<QList<QGraphicsItem *>> loadItems(Scene *scene, QByteArray &itemData, const QList<int> &ids, QList<int> &otherIds)
 {
     if (itemData.isEmpty()) {
-        return {};
+        return QList<QGraphicsItem *>();
+    }
+
+    const auto others = CommandUtils::findElements(scene, otherIds);
+    if (!others) {
+        return std::nullopt;
     }
 
     QDataStream stream(&itemData, QIODevice::ReadOnly);
@@ -219,7 +225,7 @@ const QList<QGraphicsItem *> loadItems(Scene *scene, QByteArray &itemData, const
     QHash<quint64, Port *> portMap;
     auto context = scene->deserializationContext(portMap, version, SerializationPurpose::InMemorySnapshot);
 
-    for (auto *elm : CommandUtils::findElements(scene, otherIds)) {
+    for (auto *elm : *others) {
         elm->load(stream, context);
     }
 
@@ -230,7 +236,7 @@ const QList<QGraphicsItem *> loadItems(Scene *scene, QByteArray &itemData, const
     if (items.size() != ids.size()) {
         // None of these items were added to the scene yet, so they'd otherwise leak.
         qDeleteAll(items);
-        throw PANDACEPTION_WITH_CONTEXT("commands", "One or more elements were not found on scene. Expected %1, found %2.", static_cast<int>(ids.size()), static_cast<int>(items.size()));
+        return std::nullopt;
     }
 
     // Re-assign the original IDs so undo/redo chains that store IDs remain valid
@@ -299,9 +305,13 @@ ElementsCommand::ElementsCommand(const QList<GraphicElement *> &elements, Scene 
     }
 }
 
-QList<GraphicElement *> ElementsCommand::elements() const
+std::optional<QList<GraphicElement *>> ElementsCommand::elements()
 {
-    return CommandUtils::findElements(m_scene, m_ids);
+    auto found = CommandUtils::findElements(m_scene, m_ids);
+    if (!found) {
+        CommandUtils::abandon(this, "an element it recorded is not on the scene");
+    }
+    return found;
 }
 
 AddItemsCommand::AddItemsCommand(const QList<QGraphicsItem *> &items, Scene *scene, QUndoCommand *parent)
@@ -325,8 +335,13 @@ void AddItemsCommand::undo()
     qCDebug(zero) << text();
     SimulationBlocker blocker(m_scene->simulation());
     const auto items = CommandUtils::findItems(m_scene, m_ids);
-    CommandUtils::saveItems(m_scene, m_itemData, items, m_otherIds);
-    CommandUtils::deleteItems(m_scene, items);
+    const auto others = CommandUtils::findElements(m_scene, m_otherIds);
+    if (!items || !others) {
+        CommandUtils::abandon(this, "an item it added, or an element wired to one, is not on the scene");
+        return;
+    }
+    CommandUtils::saveItems(m_itemData, *others, *items);
+    CommandUtils::deleteItems(m_scene, *items);
     m_scene->setCircuitUpdateRequired();
 }
 
@@ -334,7 +349,10 @@ void AddItemsCommand::redo()
 {
     qCDebug(zero) << text();
     SimulationBlocker blocker(m_scene->simulation());
-    CommandUtils::loadItems(m_scene, m_itemData, m_ids, m_otherIds);
+    if (!CommandUtils::loadItems(m_scene, m_itemData, m_ids, m_otherIds)) {
+        CommandUtils::abandon(this, "an element wired to its items is not on the scene, or its record holds others");
+        return;
+    }
     m_scene->setCircuitUpdateRequired();
 }
 
@@ -350,7 +368,10 @@ void DeleteItemsCommand::undo()
 {
     qCDebug(zero) << text();
     SimulationBlocker blocker(m_scene->simulation());
-    CommandUtils::loadItems(m_scene, m_itemData, m_ids, m_otherIds);
+    if (!CommandUtils::loadItems(m_scene, m_itemData, m_ids, m_otherIds)) {
+        CommandUtils::abandon(this, "an element wired to its items is not on the scene, or its record holds others");
+        return;
+    }
     m_scene->setCircuitUpdateRequired();
 }
 
@@ -359,8 +380,13 @@ void DeleteItemsCommand::redo()
     qCDebug(zero) << text();
     SimulationBlocker blocker(m_scene->simulation());
     const auto items = CommandUtils::findItems(m_scene, m_ids);
-    CommandUtils::saveItems(m_scene, m_itemData, items, m_otherIds);
-    CommandUtils::deleteItems(m_scene, items);
+    const auto others = CommandUtils::findElements(m_scene, m_otherIds);
+    if (!items || !others) {
+        CommandUtils::abandon(this, "an item it deletes, or an element wired to one, is not on the scene");
+        return;
+    }
+    CommandUtils::saveItems(m_itemData, *others, *items);
+    CommandUtils::deleteItems(m_scene, *items);
     m_scene->setCircuitUpdateRequired();
 }
 
@@ -378,7 +404,11 @@ RotateCommand::RotateCommand(const QList<GraphicElement *> &items, const int ang
 
 void RotateCommand::undo()
 {
-    const auto elements = this->elements();
+    const auto found = this->elements();
+    if (!found) {
+        return;
+    }
+    const auto &elements = *found;
 
     for (int i = 0; i < elements.size(); ++i) {
         auto *elm = elements.at(i);
@@ -393,7 +423,11 @@ void RotateCommand::undo()
 
 void RotateCommand::redo()
 {
-    const auto elements = this->elements();
+    const auto found = this->elements();
+    if (!found) {
+        return;
+    }
+    const auto &elements = *found;
     double cx = 0;
     double cy = 0;
     int sz = 0;
@@ -440,7 +474,11 @@ MoveCommand::MoveCommand(const QList<GraphicElement *> &list, const QList<QPoint
 
 void MoveCommand::undo()
 {
-    const auto elements = this->elements();
+    const auto found = this->elements();
+    if (!found) {
+        return;
+    }
+    const auto &elements = *found;
 
     for (int i = 0; i < elements.size(); ++i) {
         elements.at(i)->setPos(m_oldPositions.at(i));
@@ -451,7 +489,11 @@ void MoveCommand::undo()
 
 void MoveCommand::redo()
 {
-    const auto elements = this->elements();
+    const auto found = this->elements();
+    if (!found) {
+        return;
+    }
+    const auto &elements = *found;
 
     for (int i = 0; i < elements.size(); ++i) {
         elements.at(i)->setPos(m_newPositions.at(i));
@@ -482,12 +524,12 @@ UpdateCommand::UpdateCommand(const QList<GraphicElement *> &elements, const QByt
     // (the caller mutated the elements before pushing), so old and new would compare equal
     // exactly when the escalation matters most. Only selections containing a
     // wireless-capable element pay for the round-trip.
-    const auto newState = snapshotWirelessState();
+    const auto newState = snapshotWirelessState(elements);
     if (!newState.isEmpty()) {
         SimulationBlocker blocker(m_scene->simulation());
-        loadData(m_oldData);
-        m_wirelessTopologyChange = wirelessStateDiffers(snapshotWirelessState(), newState);
-        loadData(m_newData);
+        loadData(elements, m_oldData);
+        m_wirelessTopologyChange = wirelessStateDiffers(snapshotWirelessState(elements), newState);
+        loadData(elements, m_newData);
     }
 
     setText(tr("Update %1 elements").arg(elements.size()));
@@ -500,7 +542,11 @@ void UpdateCommand::undo()
     // tick firing between that free and setPropertyUpdateRequired() (via
     // Application::notify + QMessageBox nested event loop) would fault.
     SimulationBlocker blocker(m_scene->simulation());
-    loadData(m_oldData);
+    const auto found = elements();
+    if (!found) {
+        return;
+    }
+    loadData(*found, m_oldData);
     refreshRuntimeState();
 }
 
@@ -508,14 +554,17 @@ void UpdateCommand::redo()
 {
     qCDebug(zero) << text();
     SimulationBlocker blocker(m_scene->simulation());
-    loadData(m_newData);
+    const auto found = elements();
+    if (!found) {
+        return;
+    }
+    loadData(*found, m_newData);
     refreshRuntimeState();
 }
 
-QVector<UpdateCommand::WirelessState> UpdateCommand::snapshotWirelessState() const
+QVector<UpdateCommand::WirelessState> UpdateCommand::snapshotWirelessState(const QList<GraphicElement *> &elements)
 {
     QVector<WirelessState> state;
-    const auto elements = this->elements();
     for (auto *elm : elements) {
         if (elm && elm->hasWirelessMode()) {
             state.append({elm, elm->wirelessMode(), elm->label()});
@@ -564,10 +613,8 @@ void UpdateCommand::refreshRuntimeState()
     m_scene->setPropertyUpdateRequired();
 }
 
-void UpdateCommand::loadData(QByteArray &itemData)
+void UpdateCommand::loadData(const QList<GraphicElement *> &elements, QByteArray &itemData)
 {
-    const auto elements = this->elements();
-
     if (elements.isEmpty()) {
         return;
     }
@@ -721,7 +768,11 @@ void SetPropertyCommand::undo()
 void SetPropertyCommand::write(const bool after)
 {
     SimulationBlocker blocker(m_scene->simulation());
-    const auto elements = this->elements();
+    const auto found = this->elements();
+    if (!found) {
+        return;
+    }
+    const auto &elements = *found;
     if (!std::exchange(m_firstRedo, false)) {
         const QVariantList &values = after ? m_after : m_before;
         for (qsizetype i = 0; i < elements.size(); ++i) {
@@ -780,16 +831,17 @@ SplitCommand::SplitCommand(Connection *conn, QPointF mousePos, Scene *scene, QUn
     m_nodeAngle = static_cast<int>(360 - 90 * (std::round(angle / 90.0)));
 
     /* Assigning class attributes */
+    // Both callers (SceneInteraction::mouseDoubleClick(), MCP ConnectionHandler::handleSplitConnection()) split only a
+    // wire with both ports, and every port has its element from construction (ElementPorts::addPort())
     auto *startPort = conn->startPort();
     auto *endPort = conn->endPort();
-    if (!startPort || !endPort) {
-        throw PANDACEPTION("Invalid connection ports in SplitCommand constructor"); // LCOV_EXCL_LINE — both current callers (SceneInteraction::mouseDoubleClick(), MCP ConnectionHandler::handleSplitConnection()) already require a matched connection with real start/end ports before constructing this command.
-    }
-
-    auto *startElement = startPort->graphicElement();
-    auto *endElement = endPort->graphicElement();
+    auto *startElement = startPort ? startPort->graphicElement() : nullptr;
+    auto *endElement = endPort ? endPort->graphicElement() : nullptr;
     if (!startElement || !endElement) {
-        throw PANDACEPTION("Invalid graphic elements in SplitCommand constructor"); // LCOV_EXCL_LINE — every Port has a non-null owner set unconditionally by ElementPorts::addPort() at construction (the "port always has an owner" invariant established throughout this sweep).
+        delete node; // LCOV_EXCL_LINE — unreachable, as above
+        setText(tr("Wire split")); // LCOV_EXCL_LINE
+        CommandUtils::abandon(this, "the wire it splits lacks a port or an element"); // LCOV_EXCL_LINE
+        return; // LCOV_EXCL_LINE
     }
 
     m_elm1Id = startElement->id();
@@ -826,14 +878,11 @@ void SplitCommand::redo()
     auto *elm1 = CommandUtils::findElm(m_scene, m_elm1Id);
     auto *elm2 = CommandUtils::findElm(m_scene, m_elm2Id);
 
-    // Throw before any heap allocation so the throw-path can't leak.
-    if (!conn1 || !elm1 || !elm2) {
-        throw PANDACEPTION("Error trying to redo %1", text());
-    }
-
-    auto *endPort = conn1->endPort();
-    if (!endPort) {
-        throw PANDACEPTION("Error: endPort is null in SplitCommand::redo()");
+    // Checked before anything is built or changed, so an abandoned redo leaves the scene as it was
+    auto *endPort = conn1 ? conn1->endPort() : nullptr;
+    if (!endPort || !elm1 || !elm2) {
+        CommandUtils::abandon(this, "the wire it splits, its end port or an element it joins is not on the scene");
+        return;
     }
 
     auto *conn2 = CommandUtils::findConn(m_scene, m_c2Id);
@@ -880,7 +929,8 @@ void SplitCommand::undo()
     auto *elm2 = CommandUtils::findElm(m_scene, m_elm2Id);
 
     if (!conn1 || !conn2 || !elm1 || !elm2 || !node) {
-        throw PANDACEPTION("Error trying to undo %1", text());
+        CommandUtils::abandon(this, "a wire, the node or an element of the split is not on the scene");
+        return;
     }
 
     // Restore the original direct wire: conn1 skips the node and connects straight to elm2
@@ -945,7 +995,11 @@ void MorphCommand::undo()
     // the torn state between delete and setCircuitUpdateRequired() faults.
     SimulationBlocker blocker(m_scene->simulation());
 
-    auto newElms = elements();
+    const auto found = elements();
+    if (!found) {
+        return;
+    }
+    auto newElms = *found;
     decltype(newElms) oldElms;
     oldElms.reserve(m_ids.size());
 
@@ -982,7 +1036,11 @@ void MorphCommand::redo()
 {
     SimulationBlocker blocker(m_scene->simulation());
 
-    auto oldElms = elements();
+    const auto found = elements();
+    if (!found) {
+        return;
+    }
+    auto oldElms = *found;
     decltype(oldElms) newElms;
     newElms.reserve(m_ids.size());
 
@@ -1169,7 +1227,11 @@ void FlipCommand::undo()
     qCDebug(zero) << text();
     // The mirror flags toggle back (an involution), and each element returns to its exact place: a mirrored place
     // snaps to the grid, so mirroring again would not bring an off-grid element back
-    const auto elements = this->elements();
+    const auto found = this->elements();
+    if (!found) {
+        return;
+    }
+    const auto &elements = *found;
     for (int i = 0; i < elements.size(); ++i) {
         auto *elm = elements.at(i);
         elm->setPos(m_positions.at(i));
@@ -1182,7 +1244,11 @@ void FlipCommand::undo()
 
 void FlipCommand::redo()
 {
-    const auto elements = this->elements();
+    const auto found = this->elements();
+    if (!found) {
+        return;
+    }
+    const auto &elements = *found;
     for (int i = 0; i < elements.size(); ++i) {
         auto *elm = elements.at(i);
         auto pos = m_positions.at(i);
@@ -1223,7 +1289,11 @@ void ChangePortSizeCommand::redo()
     // now-stale port list before the topology is rebuilt.
     SimulationBlocker blocker(m_scene->simulation());
 
-    const auto elements = this->elements();
+    const auto found = this->elements();
+    if (!found) {
+        return;
+    }
+    const auto &elements = *found;
 
     QList<GraphicElement *> serializationOrder;
     serializationOrder.reserve(elements.size());
@@ -1271,8 +1341,16 @@ void ChangePortSizeCommand::undo()
 {
     SimulationBlocker blocker(m_scene->simulation());
 
-    const auto elements = this->elements();
+    const auto found = this->elements();
+    if (!found) {
+        return;
+    }
+    const auto &elements = *found;
     const auto serializationOrder = CommandUtils::findElements(m_scene, m_order);
+    if (!serializationOrder) {
+        CommandUtils::abandon(this, "an element whose wires it removed is not on the scene");
+        return;
+    }
 
     QDataStream stream(&m_oldData, QIODevice::ReadOnly);
     QVersionNumber version = Serialization::readPandaHeader(stream);
@@ -1280,7 +1358,7 @@ void ChangePortSizeCommand::undo()
     QHash<quint64, Port *> portMap;
     auto context = m_scene->deserializationContext(portMap, version, SerializationPurpose::InMemorySnapshot);
 
-    for (auto *elm : serializationOrder) {
+    for (auto *elm : *serializationOrder) {
         elm->load(stream, context);
     }
 
@@ -1314,15 +1392,17 @@ void ToggleTruthTableOutputCommand::redo()
     qCDebug(zero) << text();
 
     auto *truthtable = qobject_cast<TruthTable *>(CommandUtils::findElm(m_scene, m_id));
-
-    if (!truthtable) throw PANDACEPTION("Could not find truthtable element!");
+    if (!truthtable) {
+        CommandUtils::abandon(this, "the truth table it toggles is not on the scene");
+        return;
+    }
 
     // The key holds a fixed number of bits, derived from the element's port limits in
-    // TruthTable.cpp; toggleBit outside it is an out-of-bounds write. This command is the model
-    // boundary shared by the UI and the MCP server, and undo() == redo(), so
-    // the bound is enforced here regardless of caller.
+    // TruthTable.cpp; toggleBit outside it is an out-of-bounds write. Both callers (the editor and the MCP server)
+    // bound the position first, and undo() == redo(), so the bound is checked here regardless of caller.
     if (m_pos < 0 || m_pos >= truthtable->key().size()) {
-        throw PANDACEPTION("TruthTable toggle position out of range: %1", QString::number(m_pos));
+        CommandUtils::abandon(this, "the position it toggles is outside the truth table's key");
+        return;
     }
 
     truthtable->key().toggleBit(m_pos);
@@ -1525,6 +1605,10 @@ void UpdateBlobCommand::redo()
 {
     qCDebug(zero) << text();
     SimulationBlocker blocker(m_scene->simulation());
+    const auto found = elements();
+    if (!found) {
+        return;
+    }
     auto *reg = m_scene->icRegistry();
 
     if (!m_blobName.isEmpty()) {
@@ -1534,7 +1618,7 @@ void UpdateBlobCommand::redo()
             reg->setBlob(m_blobName, m_newBlob);
         }
     }
-    loadData(m_newData);
+    loadData(*found, m_newData);
     reconnectConnections();
     m_scene->setCircuitUpdateRequired();
 }
@@ -1543,6 +1627,10 @@ void UpdateBlobCommand::undo()
 {
     qCDebug(zero) << text();
     SimulationBlocker blocker(m_scene->simulation());
+    const auto found = elements();
+    if (!found) {
+        return;
+    }
     auto *reg = m_scene->icRegistry();
 
     if (!m_blobName.isEmpty()) {
@@ -1552,14 +1640,13 @@ void UpdateBlobCommand::undo()
             reg->setBlob(m_blobName, m_oldBlob);
         }
     }
-    loadData(m_oldData);
+    loadData(*found, m_oldData);
     reconnectConnections();
     m_scene->setCircuitUpdateRequired();
 }
 
-void UpdateBlobCommand::loadData(QByteArray &itemData)
+void UpdateBlobCommand::loadData(const QList<GraphicElement *> &elements, QByteArray &itemData)
 {
-    const auto elements = this->elements();
     if (elements.isEmpty()) {
         return;
     }

@@ -199,7 +199,7 @@ void TestTrashButton::testDropEventRejectsOversizedPayload()
     // relies on the caller to catch it. In production that's Application::notify()'s
     // defense-in-depth backstop around real Qt event dispatch; calling dropEvent() directly
     // (required — see TestableTrashButton above) bypasses that, so the throw is caught here
-    // instead, same pattern as TestCommands::testSplitCommandRedoThrowsBeforeAllocation.
+    // instead.
     QByteArray itemData;
     QDataStream stream(&itemData, QIODevice::WriteOnly);
     Serialization::writePandaHeader(stream);
