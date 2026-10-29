@@ -92,7 +92,7 @@ void ThemeManager::setTheme(const Theme theme)
     Q_ASSERT(QCoreApplication::instance()->thread() == QThread::currentThread());
 
     // For System theme, clear the explicit color scheme override first so the platform
-    // re-reads the OS setting. Qt 6.9.3's requestColorScheme() posts a QWindowSystemInterface
+    // re-reads the OS setting. Before Qt 6.10, requestColorScheme() posts a QWindowSystemInterface
     // event but doesn't flush it — QStyleHints::colorScheme() would return a stale cached
     // value until the event loop runs. Flushing here replicates the fix that Qt 6.10.0
     // added directly inside requestColorScheme().
@@ -104,7 +104,7 @@ void ThemeManager::setTheme(const Theme theme)
             // Qt 6.10.0 fixed this inside requestColorScheme() itself (commit 2fe9eed3fdd5,
             // "QGnomeTheme, QGtk3Theme: Refactor and Simplify DBus Interactions", 2025-05-30)
             // by adding QWindowSystemInterface::sendWindowSystemEvents(QEventLoop::AllEvents).
-            // On Qt 6.9.x the flush is absent, leaving the cache stale until the event loop runs.
+            // Before 6.10 the flush is absent, leaving the cache stale until the event loop runs.
             QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
         }
     }

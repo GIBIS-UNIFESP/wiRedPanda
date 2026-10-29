@@ -54,15 +54,15 @@ jobs:
         os: [ubuntu-24.04, windows-2025-vs2026]
         # The 6.8.3 entries here and on macos-15, and the i386 job's Debian 6.8.2, build and test the floor
         # find_package() declares: a change that drops one keeps another.
-        qt: [6.8.3, 6.9.3]
+        qt: [6.8.3, 6.12.0]
         cmake_args: ['']
         include:
-          - { os: ubuntu-24.04, qt: '6.9.3', cmake_args: '-DENABLE_UNITY=OFF -DENABLE_PCH=OFF' }
-          - { os: ubuntu-24.04, qt: '6.9.3', cmake_args: '-DUNITY_BUILD_BATCH_SIZE=1000' }
+          - { os: ubuntu-24.04, qt: '6.12.0', cmake_args: '-DENABLE_UNITY=OFF -DENABLE_PCH=OFF' }
+          - { os: ubuntu-24.04, qt: '6.12.0', cmake_args: '-DUNITY_BUILD_BATCH_SIZE=1000' }
           - { os: macos-15, qt: '6.8.3', cmake_args: '', qt_host: mac, qt_arch: clang_64 }
-          - { os: macos-26, qt: '6.9.3', cmake_args: '', qt_host: mac, qt_arch: clang_64 }
-          - { os: ubuntu-24.04-arm, qt: '6.9.3', cmake_args: '', qt_host: linux_arm64,   qt_arch: linux_gcc_arm64      }
-          - { os: windows-11-arm,   qt: '6.9.3', cmake_args: '', qt_host: windows_arm64, qt_arch: win64_msvc2022_arm64 }
+          - { os: macos-26, qt: '6.12.0', cmake_args: '', qt_host: mac, qt_arch: clang_64 }
+          - { os: ubuntu-24.04-arm, qt: '6.12.0', cmake_args: '', qt_host: linux_arm64,   qt_arch: linux_gcc_arm64      }
+          - { os: windows-11-arm,   qt: '6.12.0', cmake_args: '', qt_host: windows_arm64, qt_arch: win64_msvc2022_arm64 }
 
 # =================================
 
@@ -101,7 +101,9 @@ jobs:
       with:
         version: ${{ matrix.qt }}
         cache: true
-        aqtversion: ==3.3.0
+        # aqtinstall's latest release, 3.3.0, cannot install Qt 6.11 or later on Windows x64, whose repository Qt split
+        # by compiler; its master can ("Support Qt 6.11+ for Windows x64"), so every job installs this commit of it.
+        aqtsource: git+https://github.com/miurahr/aqtinstall.git@076e1659807d0b362a3ed684d54c2e9c775eb9c7
         modules: qtmultimedia qtimageformats
         host: ${{ matrix.qt_host }}
         arch: ${{ matrix.qt_arch }}
@@ -146,7 +148,7 @@ jobs:
     # run. The extraction does not depend on the platform, so one job runs it, on the Qt that translate.yml refreshes
     # the catalogs with.
     - name: Extract translatable strings
-      if: runner.os == 'Linux' && runner.arch == 'X64' && matrix.qt == '6.9.3' && matrix.cmake_args == ''
+      if: runner.os == 'Linux' && runner.arch == 'X64' && matrix.qt == '6.12.0' && matrix.cmake_args == ''
       run: cmake --build --preset release --target translatable_strings_lupdate
 
     - name: Test

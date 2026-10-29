@@ -13,6 +13,7 @@
 #include <QKeySequence>
 #include <QMetaType>
 #include <QRectF>
+#include <QRegularExpression>
 #include <QSet>
 #include <QTemporaryDir>
 #include <QTest>
@@ -35,6 +36,17 @@
 #include "App/Wiring/Port.h"
 #include "Tests/Common/ICTestHelpers.h"
 #include "Tests/Common/TestUtils.h"
+
+namespace {
+
+/// What qUncompress() warns of a truncated stream: an unexpected zlib error before Qt's fix for QTBUG-150081 (6.11.3,
+/// 6.12.0, and picked to 6.8), corrupted input after it; a distribution may carry the fix into an older Qt.
+QRegularExpression truncatedStreamWarning()
+{
+    return QRegularExpression(QStringLiteral(R"(^qUncompress(: Input data is corrupted| unexpected zlib error:  \(-5\))$)"));
+}
+
+} // namespace
 
 void TestSerialization::init()
 {
@@ -716,7 +728,7 @@ void TestSerialization::testCorruptedStream()
     // Try to load - should handle gracefully or throw (not crash)
     WorkSpace workspace2;
     bool errorHandled = false;
-    QTest::ignoreMessage(QtWarningMsg, "qUncompress unexpected zlib error:  (-5)");
+    QTest::ignoreMessage(QtWarningMsg, truncatedStreamWarning());
     try {
         QDataStream stream(data);
         QVersionNumber version = Serialization::readPandaHeader(stream);
@@ -1215,7 +1227,7 @@ void TestSerialization::testTruncatedFileRecovery()
 
     // Try to load truncated data - should fail gracefully
     WorkSpace workspace2;
-    QTest::ignoreMessage(QtWarningMsg, "qUncompress unexpected zlib error:  (-5)");
+    QTest::ignoreMessage(QtWarningMsg, truncatedStreamWarning());
     try {
         loadFromMemory(workspace2, truncatedData);
         // If we get here, load succeeded despite truncation -- it must not have fabricated

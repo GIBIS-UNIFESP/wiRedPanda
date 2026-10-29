@@ -146,9 +146,9 @@ jobs:
         run: |
           set -eu
           status=0
-          for plugin in ~/Qt/6.9.3/gcc_64/plugins/platforms/libqxcb.so \
-                        ~/Qt/6.9.3/gcc_64/plugins/platforms/libqwayland-*.so \
-                        ~/Qt/6.9.3/gcc_64/plugins/multimedia/libffmpegmediaplugin.so; do
+          for plugin in ~/Qt/6.12.0/gcc_64/plugins/platforms/libqxcb.so \
+                        ~/Qt/6.12.0/gcc_64/plugins/platforms/libqwayland.so \
+                        ~/Qt/6.12.0/gcc_64/plugins/multimedia/libffmpegmediaplugin.so; do
             if [ ! -e "$plugin" ]; then
               echo "$plugin does not exist"
               status=1

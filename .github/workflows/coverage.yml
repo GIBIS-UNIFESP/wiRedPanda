@@ -9,7 +9,7 @@ on:
       - master
 
 jobs:
-  Ubuntu-Qt6_9_3-Code_Coverage:
+  Ubuntu-Qt6_12_0-Code_Coverage:
     permissions:
       contents: read
     runs-on: ubuntu-24.04
@@ -30,9 +30,10 @@ jobs:
     - name: Install Qt
       uses: jurplel/install-qt-action@a9c63c7c123f3069cff414e7e482d95dfa9d8125 # v4.4.1
       with:
-        version: 6.9.3
+        version: 6.12.0
         cache: true
-        aqtversion: ==3.3.0
+        # aqtinstall's master, for Qt 6.12 on Windows x64 (see build.yml)
+        aqtsource: git+https://github.com/miurahr/aqtinstall.git@076e1659807d0b362a3ed684d54c2e9c775eb9c7
         modules: qtmultimedia qtimageformats
 
     - name: ccache
