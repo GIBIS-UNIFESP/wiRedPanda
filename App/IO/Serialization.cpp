@@ -7,6 +7,7 @@
 #include <cstring>
 #include <limits>
 #include <utility>
+#include <zlib.h>
 
 #include <QApplication>
 #include <QBitArray>
@@ -336,11 +337,10 @@ QByteArray Serialization::readPayload(QDataStream &stream, const QVersionNumber 
     }
 
     // qCompress()'s wire format is a 4-byte big-endian "uncompressed size" header
-    // followed by the deflate stream; qUncompress() allocates that many bytes
-    // unconditionally, so a crafted file can claim an implausible size and OOM the
-    // process before any real decompression happens. Peek and bound it first,
-    // mirroring this file's peekU32()-then-validate idiom (see readBoundedString()
-    // and friends above) rather than trusting qUncompress() to fail cheaply.
+    // followed by the zlib stream; inflatePayload() allocates that many bytes up
+    // front, so a crafted file could claim an implausible size and OOM the process
+    // before any real decompression happens. Peek and bound it first, mirroring this
+    // file's peekU32()-then-validate idiom (see readBoundedString() and friends above).
     if (raw.size() < 4) {
         throw PANDACEPTION_WITH_CONTEXT("Serialization",
                                         "Compressed payload too short (%1 bytes) to contain a size header",
@@ -358,8 +358,32 @@ QByteArray Serialization::readPayload(QDataStream &stream, const QVersionNumber 
                                         QString::number(expectedSize));
     }
 
-    const QByteArray decompressed = qUncompress(raw);
-    if (decompressed.isNull() && expectedSize != 0) {
+    return inflatePayload(QByteArrayView(raw).sliced(4), expectedSize);
+}
+
+QByteArray Serialization::inflatePayload(const QByteArrayView compressed, const quint32 expectedSize)
+{
+    // qCompress() writes the header alone for an empty payload
+    if (compressed.isEmpty() && (expectedSize == 0)) {
+        return {};
+    }
+
+    // Not qUncompress(): until Qt 6.11.3 and 6.12.0 (QTBUG-150081, picked to 6.8) it reaches Q_UNREACHABLE, undefined
+    // behaviour, on a stream that ends before its end, which a truncated file hands it. The stream must fill exactly
+    // the size its header gives, as qCompress() writes it.
+    QByteArray decompressed(static_cast<qsizetype>(expectedSize), Qt::Uninitialized);
+    z_stream zs = {};
+    int result = Z_STREAM_ERROR;
+    if (std::cmp_less_equal(compressed.size(), std::numeric_limits<uInt>::max()) && (inflateInit(&zs) == Z_OK)) {
+        zs.next_in = reinterpret_cast<Bytef *>(const_cast<char *>(compressed.data()));
+        zs.avail_in = static_cast<uInt>(compressed.size());
+        zs.next_out = reinterpret_cast<Bytef *>(decompressed.data());
+        zs.avail_out = expectedSize;
+        result = inflate(&zs, Z_FINISH);
+        inflateEnd(&zs);
+    }
+
+    if ((result != Z_STREAM_END) || (zs.avail_out != 0)) {
         throw PANDACEPTION_WITH_CONTEXT("Serialization",
                                         "Failed to decompress circuit payload -- stream may be corrupt");
     }

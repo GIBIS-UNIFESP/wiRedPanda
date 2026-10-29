@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <QByteArrayView>
 #include <QCoreApplication>
 #include <QFileInfo>
 #include <QKeySequence>
@@ -143,13 +144,21 @@ public:
      *        if \a version indicates the compressed-payload format (Rev100+).
      *
      * \details Bounds-checks \c qCompress()'s 4-byte big-endian uncompressed-size
-     * header before calling \c qUncompress(), which otherwise allocates that many
-     * bytes unconditionally -- a classic decompression-bomb vector for a crafted
-     * file claiming an implausible size. Throws \c PANDACEPTION on an implausible
-     * size or on decompression failure (\c qUncompress() returning a null
-     * \c QByteArray). Returns the raw bytes unchanged for pre-Rev100 files.
+     * header before allocating that many bytes -- a classic decompression-bomb vector
+     * for a crafted file claiming an implausible size -- then inflates the rest with
+     * inflatePayload(). Throws \c PANDACEPTION on an implausible size or on
+     * decompression failure. Returns the raw bytes unchanged for pre-Rev100 files.
      */
     static QByteArray readPayload(QDataStream &stream, const QVersionNumber &version);
+
+    /**
+     * \brief Inflates \a compressed, the zlib stream after \c qCompress()'s size header, into the
+     *        \a expectedSize bytes the header gives.
+     *
+     * \details Throws \c PANDACEPTION unless the stream is whole and fills exactly
+     * \a expectedSize bytes: a truncated, corrupt, longer or shorter stream.
+     */
+    static QByteArray inflatePayload(QByteArrayView compressed, quint32 expectedSize);
 
     /**
      * \brief Copies \a fileName to a versioned sidecar before overwriting it during migration.

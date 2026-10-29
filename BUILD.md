@@ -19,7 +19,7 @@ Qt whatever your OS release.
 
 ```bash
 sudo apt-get update
-sudo apt-get install build-essential libgl1-mesa-dev libpulse-dev git python3 python3-pip python3-venv \
+sudo apt-get install build-essential zlib1g-dev libgl1-mesa-dev libpulse-dev git python3 python3-pip python3-venv \
     libxcb-cursor0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-shape0 libxkbcommon-x11-0 \
     libxrandr2 libwayland-cursor0 libwayland-egl1 -y
 python3 -m venv ~/venv
@@ -29,9 +29,10 @@ PATH=~/Qt/6.12.0/gcc_64/bin:$PATH
 export PATH
 ```
 
-The `libxcb-*`, `libxkbcommon-x11-0`, `libxrandr2` and `libwayland-*` packages are what Qt's X11 and Wayland platform plugins
-and its multimedia backend load at run time; a desktop install usually has them already. On other distributions,
-install their equivalents with your package manager, then run the last five lines.
+`zlib1g-dev` is zlib's headers, with which wiRedPanda reads its files. The `libxcb-*`, `libxkbcommon-x11-0`,
+`libxrandr2` and `libwayland-*` packages are what Qt's X11 and Wayland platform plugins and its multimedia backend load
+at run time; a desktop install usually has them already. On other distributions, install their equivalents with your
+package manager, then run the last five lines.
 
 * macOS (with the Xcode command line tools: `xcode-select --install`)
 
@@ -50,7 +51,7 @@ Debian 12 and Ubuntu 22.04 and 24.04 ship an older Qt.
 
 ```bash
 # Debian 13, Ubuntu 26.04
-sudo apt install build-essential qt6-base-dev qt6-multimedia-dev qt6-svg-dev
+sudo apt install build-essential zlib1g-dev qt6-base-dev qt6-multimedia-dev qt6-svg-dev
 # Arch Linux-based
 sudo pacman -S base-devel qt6-base qt6-multimedia qt6-svg
 # macOS, with Homebrew

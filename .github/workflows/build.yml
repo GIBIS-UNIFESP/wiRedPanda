@@ -329,7 +329,7 @@ jobs:
         export DEBIAN_FRONTEND=noninteractive
         apt-get update -qq
         apt-get install -y --no-install-recommends \
-          build-essential cmake ninja-build ccache pkg-config git ca-certificates gdb \
+          build-essential zlib1g-dev cmake ninja-build ccache pkg-config git ca-certificates gdb \
           qt6-base-dev qt6-multimedia-dev qt6-svg-dev qt6-svg-plugins \
           qt6-image-formats-plugins libgl1-mesa-dev libglu1-mesa-dev
         # Run as a non-root user that OWNS the checkout (matches /src's uid), like

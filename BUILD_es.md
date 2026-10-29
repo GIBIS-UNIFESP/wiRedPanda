@@ -19,7 +19,7 @@ que da el mismo Qt sea cual sea la versión de su sistema operativo.
 
 ```bash
 sudo apt-get update
-sudo apt-get install build-essential libgl1-mesa-dev libpulse-dev git python3 python3-pip python3-venv \
+sudo apt-get install build-essential zlib1g-dev libgl1-mesa-dev libpulse-dev git python3 python3-pip python3-venv \
     libxcb-cursor0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-shape0 libxkbcommon-x11-0 \
     libxrandr2 libwayland-cursor0 libwayland-egl1 -y
 python3 -m venv ~/venv
@@ -29,9 +29,10 @@ PATH=~/Qt/6.12.0/gcc_64/bin:$PATH
 export PATH
 ```
 
-Los paquetes `libxcb-*`, `libxkbcommon-x11-0`, `libxrandr2` y `libwayland-*` son los que cargan en tiempo de ejecución
-los complementos de plataforma X11 y Wayland de Qt y su backend multimedia; una instalación de escritorio normalmente ya los tiene.
-En otras distribuciones, instale sus equivalentes con su gestor de paquetes y luego ejecute las últimas cinco líneas.
+`zlib1g-dev` son las cabeceras de zlib, con las que wiRedPanda lee sus archivos. Los paquetes `libxcb-*`,
+`libxkbcommon-x11-0`, `libxrandr2` y `libwayland-*` son los que cargan en tiempo de ejecución los complementos de
+plataforma X11 y Wayland de Qt y su backend multimedia; una instalación de escritorio normalmente ya los tiene. En otras
+distribuciones, instale sus equivalentes con su gestor de paquetes y luego ejecute las últimas cinco líneas.
 
 * macOS (con las herramientas de línea de comandos de Xcode: `xcode-select --install`)
 
@@ -50,7 +51,7 @@ funcionan. Debian 12 y Ubuntu 22.04 y 24.04 incluyen un Qt más antiguo.
 
 ```bash
 # Debian 13, Ubuntu 26.04
-sudo apt install build-essential qt6-base-dev qt6-multimedia-dev qt6-svg-dev
+sudo apt install build-essential zlib1g-dev qt6-base-dev qt6-multimedia-dev qt6-svg-dev
 # Basado en Arch Linux
 sudo pacman -S base-devel qt6-base qt6-multimedia qt6-svg
 # macOS, con Homebrew
