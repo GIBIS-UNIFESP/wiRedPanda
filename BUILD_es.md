@@ -2,8 +2,8 @@
 
 ## En Windows
 
-Instale Qt 6.12.0 con el [instalador en línea de Qt](https://www.qt.io/download), seleccionando estos componentes:
-![qt6](https://github.com/user-attachments/assets/aedc8749-8b5c-4f4d-9c65-651b703dccea)
+Instale Qt 6.12.0 con el [instalador en línea de Qt](https://www.qt.io/download), seleccionando en Qt 6.12.0 la
+compilación MSVC 2022 64-bit y, en sus Additional Libraries, Qt Multimedia y Qt Image Formats.
 
 Luego abra CMakeLists.txt en Qt Creator y presione Ctrl+R para compilar y ejecutar.
 
