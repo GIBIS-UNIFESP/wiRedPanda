@@ -166,8 +166,8 @@ QBitArray readBoundedBitArray(QDataStream &stream)
 /// Wire format (QDataStream::Qt_5_12):
 ///   quint32 typeId  |  quint8 isNull  |  type-specific data
 ///
-/// IMPORTANT: Qt 6.9 reads type-specific data even when isNull != 0 (verified
-/// empirically — the isNull byte is stored but does not skip data loading).
+/// IMPORTANT: Qt reads type-specific data even when isNull != 0 (verified
+/// empirically on 6.9.3, 6.10.2 and 6.12.0 — the isNull byte is stored but does not skip data loading).
 /// Variable-size types MUST therefore be intercepted unconditionally, not only
 /// when isNull == 0.  Fixed-size types are safe to delegate in all cases.
 /// Unknown types are rejected when isNull == 0 to catch corrupt streams.
@@ -180,7 +180,7 @@ QVariant readBoundedVariant(QDataStream &stream)
     } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the local QVariant, never reached after the return above.
 
     const quint32 typeId = qFromBigEndian<quint32>(hdr);
-    // hdr[4] holds the isNull byte; deliberately unread because Qt 6.9 also reads
+    // hdr[4] holds the isNull byte; deliberately unread because Qt also reads
     // type-specific data when isNull != 0, so it is not a safe skip-guard (see
     // function header). Still peek 5 bytes so the consumeHeader lambda below
     // re-reads the exact same bytes Qt's QVariant operator>> expects.
@@ -189,7 +189,7 @@ QVariant readBoundedVariant(QDataStream &stream)
     auto consumeHeader = [&]() { char s[5]; stream.readRawData(s, 5); };
 
     // -----------------------------------------------------------------------
-    // Variable-size types: intercept unconditionally (Qt 6.9 reads their data
+    // Variable-size types: intercept unconditionally (Qt reads their data
     // even for null-marked variants, so isNull is not a safe guard here).
     // -----------------------------------------------------------------------
 
@@ -249,7 +249,7 @@ QVariant readBoundedVariant(QDataStream &stream)
     const bool isFixedSize = std::find(kFixedSizeTypes.begin(),
                                        kFixedSizeTypes.end(), typeId) != kFixedSizeTypes.end();
 
-    // Reject all unknown types regardless of isNull.  Qt 6.9 reads type-specific
+    // Reject all unknown types regardless of isNull.  Qt reads type-specific
     // data even for null-marked variants, so unknown types with isNull != 0 are
     // still vulnerable to fuzz-controlled allocation via QArrayData::allocate.
     if (!isFixedSize)

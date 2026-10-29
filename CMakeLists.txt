@@ -81,7 +81,9 @@ else()
 endif()
 
 if(MSVC)
-    add_compile_options(/W4 /WX /external:W0 /permissive-)
+    # C4702 (unreachable code) comes from the code generator, which /external:W0 does not reach: Qt 6.12's overflow
+    # helpers (qnumeric.h), inlined through QVarLengthArray and the geometry classes, hold code it finds unreachable
+    add_compile_options(/W4 /WX /external:W0 /wd4702 /permissive-)
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     add_compile_options(
         -Wall -Wextra -Wpedantic -Werror

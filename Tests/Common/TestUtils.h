@@ -355,7 +355,7 @@ bool pixmapHasInk(const QPixmap &pixmap);
  * @brief Waits (pumping the event loop) until @a pred returns true or @a timeoutMs elapses.
  *
  * Thin wrapper over QTest::qWaitFor. Preferred over the QTRY_* macros, whose
- * Qt 6.9 chrono-default internals trip this project's -Werror=conversion.
+ * chrono-default internals trip this project's -Werror=conversion before Qt 6.10.
  */
 bool waitFor(const std::function<bool()> &pred, int timeoutMs = 5000);
 
