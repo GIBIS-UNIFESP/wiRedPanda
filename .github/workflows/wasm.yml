@@ -36,7 +36,7 @@ jobs:
     - name: Setup Qt (host, for LinguistTools)
       uses: jurplel/install-qt-action@a9c63c7c123f3069cff414e7e482d95dfa9d8125 # v4.4.1
       with:
-        version: 6.9.3
+        version: 6.12.0
         host: linux
         target: desktop
         arch: linux_gcc_64
@@ -45,25 +45,27 @@ jobs:
         # no extra aqt module is required ("qttools" isn't a valid aqt
         # module for Qt 6 — LinguistTools is part of the base install).
         cache: true
-        aqtversion: ==3.3.0
+        # aqtinstall's master, for Qt 6.12 on Windows x64 (see build.yml)
+        aqtsource: git+https://github.com/miurahr/aqtinstall.git@076e1659807d0b362a3ed684d54c2e9c775eb9c7
 
     - name: Setup Qt for WASM
       uses: jurplel/install-qt-action@a9c63c7c123f3069cff414e7e482d95dfa9d8125 # v4.4.1
       with:
-        version: 6.9.3
+        version: 6.12.0
         host: all_os
         target: wasm
         arch: wasm_multithread
         modules: qtmultimedia qtimageformats
         cache: true
-        aqtversion: ==3.3.0
+        # aqtinstall's master, for Qt 6.12 on Windows x64 (see build.yml)
+        aqtsource: git+https://github.com/miurahr/aqtinstall.git@076e1659807d0b362a3ed684d54c2e9c775eb9c7
 
     - name: Setup emscripten
       run: |
-        git clone --depth 1 --branch 3.1.70 https://github.com/emscripten-core/emsdk
+        git clone --depth 1 --branch 5.0.5 https://github.com/emscripten-core/emsdk
         cd emsdk
-        ./emsdk install 3.1.70
-        ./emsdk activate 3.1.70
+        ./emsdk install 5.0.5
+        ./emsdk activate 5.0.5
 
     - name: Install Ninja
       run: sudo apt-get update && sudo apt-get install -y ninja-build

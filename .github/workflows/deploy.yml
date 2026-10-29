@@ -21,16 +21,16 @@ jobs:
       fail-fast: false
       matrix:
         # qt_host / qt_arch are passed verbatim to install-qt-action.
-        # Values verified locally with `aqt list-qt <host> desktop --arch 6.9.3`.
+        # Values verified locally with `aqt list-qt <host> desktop --arch 6.12.0`.
         include:
-          - { os: ubuntu-24.04,         qt: 6.9.3, arch: x86_64, qt_host: linux,         qt_arch: linux_gcc_64         }
-          - { os: ubuntu-24.04-arm,     qt: 6.9.3, arch: arm64,  qt_host: linux_arm64,   qt_arch: linux_gcc_arm64      }
-          - { os: windows-2025-vs2026,  qt: 6.9.3, arch: x86_64, qt_host: windows,       qt_arch: win64_msvc2022_64    }
-          - { os: windows-11-arm,       qt: 6.9.3, arch: arm64,  qt_host: windows_arm64, qt_arch: win64_msvc2022_arm64 }
+          - { os: ubuntu-24.04,         qt: 6.12.0, arch: x86_64, qt_host: linux,         qt_arch: linux_gcc_64         }
+          - { os: ubuntu-24.04-arm,     qt: 6.12.0, arch: arm64,  qt_host: linux_arm64,   qt_arch: linux_gcc_arm64      }
+          - { os: windows-2025-vs2026,  qt: 6.12.0, arch: x86_64, qt_host: windows,       qt_arch: win64_msvc2022_64    }
+          - { os: windows-11-arm,       qt: 6.12.0, arch: arm64,  qt_host: windows_arm64, qt_arch: win64_msvc2022_arm64 }
           # CMakeLists.txt forces CMAKE_OSX_ARCHITECTURES="x86_64;arm64" so a
           # single macOS job produces a universal DMG that runs on both archs;
           # no per-arch matrix entry is needed.
-          - { os: macos-26,             qt: 6.9.3, arch: universal, qt_host: mac,        qt_arch: clang_64             }
+          - { os: macos-26,             qt: 6.12.0, arch: universal, qt_host: mac,        qt_arch: clang_64             }
 
 # =================================
 
@@ -133,7 +133,8 @@ jobs:
       with:
         version: ${{ matrix.qt }}
         cache: true
-        aqtversion: ==3.3.0
+        # aqtinstall's master, for Qt 6.12 on Windows x64 (see build.yml)
+        aqtsource: git+https://github.com/miurahr/aqtinstall.git@076e1659807d0b362a3ed684d54c2e9c775eb9c7
         modules: qtmultimedia qtimageformats debug_info
         host: ${{ matrix.qt_host }}
         arch: ${{ matrix.qt_arch }}

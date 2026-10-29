@@ -116,8 +116,11 @@ What no single change owns: the pitfalls of building and testing this code base,
   `-Wdouble-promotion`), and a lambda init-capture named after the structured binding it copies (`[inputs = inputs]`,
   clang's `-Wshadow`). CI's macOS jobs build the tests with Apple clang; nothing checks clang locally, and ASan and
   UBSan are left to CI's Sanitizers workflow.
+- MSVC's C4702 (unreachable code) comes from its code generator, which `/external:W0` does not reach, so Qt 6.12's
+  overflow helpers raise it from Qt's own headers; the build disables it (`/wd4702`), as Microsoft documents for the
+  back end's C47xx warnings.
 - CI's Debian i386 job has a 32-bit `qsizetype`, so a `qint64` such as `QIODevice::pos()` passed where a `qsizetype` is
-  taken narrows (`-Wconversion`), while a `static_cast<qsizetype>` is a useless cast on 64-bit Qt 6.9, where
+  taken narrows (`-Wconversion`), while a `static_cast<qsizetype>` is a useless cast on 64-bit Qt, where
   `qsizetype` is `qint64`: a value known to be small is cast to `int`.
 - The libFuzzer build sees includes the GCC build hides, such as a header using `QPointF` and `QTransform` without
   including them.
@@ -350,7 +353,7 @@ See `App/Resources/Exercises/README.md` and `App/Resources/Tours/README.md` for 
 - **Ubuntu 24.04 LTS** based development environment
 - **Location**: `.devcontainer/` directory with full configuration
 - **Features**:
-  - GCC 13+ with C++20 support (Ubuntu 24.04's default `build-essential`), Qt 6.9.3 pinned
+  - GCC 13+ with C++20 support (Ubuntu 24.04's default `build-essential`), Qt 6.12.0 pinned
   - CMake and build tools pre-configured
   - VS Code extensions for C++/Qt development
 - **Usage**: Open project in VS Code and select "Reopen in Container"

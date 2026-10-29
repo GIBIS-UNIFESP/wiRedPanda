@@ -106,7 +106,7 @@ ctest --preset debug
 The container includes:
 
 - Ubuntu 24.04 LTS
-- Qt 6.9.3 with Multimedia and SVG modules
+- Qt 6.12.0 with Multimedia and SVG modules
 - CMake, Ninja, GCC 13+
 - ccache (compilation cache)
 - mold (fast linker)
@@ -118,7 +118,7 @@ See [BUILD.md](BUILD.md) for platform-specific instructions. The short version:
 
 #### Linux and macOS
 
-Install Qt 6.9.3 with aqtinstall, as [BUILD.md](BUILD.md) shows: it is the Qt CI tests and the releases bundle, the
+Install Qt 6.12.0 with aqtinstall, as [BUILD.md](BUILD.md) shows: it is the Qt CI tests and the releases bundle, the
 same whatever the OS release. A distribution's own Qt 6.8 or later works too (Debian 13, Ubuntu 26.04, Fedora, Arch
 Linux). Then the tools:
 
@@ -133,7 +133,7 @@ brew install cmake ninja ccache
 
 #### Windows
 
-1. Install [Qt 6.9.3](https://www.qt.io/download) with Multimedia and SVG modules.
+1. Install [Qt 6.12.0](https://www.qt.io/download) with Multimedia and SVG modules.
 2. Install [CMake](https://cmake.org/download/) and [Ninja](https://github.com/nicollasricas/ninja) (`choco install cmake ninja` or `scoop install cmake ninja`).
 3. Configure Visual Studio Build Tools 2022 or later.
 
@@ -420,7 +420,7 @@ Wireless node modes: `None` (default), `Tx` (transmitter), or `Rx` (receiver).
 - **Dark**: dark theme
 - **System**: automatically follows the OS theme
 
-`ThemeManager` detects OS theme changes in real time by connecting to Qt's cross-platform `QStyleHints::colorSchemeChanged` signal, with a workaround for Qt 6.9, which leaves a pending theme-change event unflushed where Qt 6.10 flushes it.
+`ThemeManager` detects OS theme changes in real time by connecting to Qt's cross-platform `QStyleHints::colorSchemeChanged` signal, with a workaround for Qt before 6.10, which leaves a pending theme-change event unflushed where later Qt flushes it.
 
 ---
 
@@ -1372,7 +1372,7 @@ The project uses **GitHub Actions** for continuous integration:
 ### `build.yml` — Build and Tests
 
 - **Platform matrix**: Ubuntu (x86_64 and ARM), Windows (x86_64 and ARM), macOS
-- **Qt versions**: 6.8.3, 6.9.3
+- **Qt versions**: 6.8.3, 6.12.0
 - **Timeout**: 10 minutes for tests
 - **MCP integration test**: runs `MCP/Client/run_tests.py` after every build
 - **Artifacts**: uploads build logs on failure

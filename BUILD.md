@@ -2,7 +2,7 @@
 
 ## On Windows
 
-Install Qt 6.9.3 with the [Qt online installer](https://www.qt.io/download), selecting these components:
+Install Qt 6.12.0 with the [Qt online installer](https://www.qt.io/download), selecting these components:
 ![qt6](https://github.com/user-attachments/assets/aedc8749-8b5c-4f4d-9c65-651b703dccea)
 
 Then open CMakeLists.txt in Qt Creator and press Ctrl+R to build and run.
@@ -11,7 +11,7 @@ Then open CMakeLists.txt in Qt Creator and press Ctrl+R to build and run.
 
 ### Dependencies
 
-Qt 6.8.0+ with the Multimedia and Svg modules is needed for building. The recommended Qt is 6.9.3, the version CI
+Qt 6.8.0+ with the Multimedia and Svg modules is needed for building. The recommended Qt is 6.12.0, the version CI
 tests and the releases bundle, installed with [aqtinstall](https://github.com/miurahr/aqtinstall), which gives the same
 Qt whatever your OS release.
 
@@ -24,8 +24,8 @@ sudo apt-get install build-essential libgl1-mesa-dev libpulse-dev git python3 py
     libxrandr2 libwayland-cursor0 libwayland-egl1 -y
 python3 -m venv ~/venv
 ~/venv/bin/pip install aqtinstall==3.*
-~/venv/bin/aqt install-qt linux desktop 6.9.3 -m qtmultimedia qtimageformats --outputdir ~/Qt
-PATH=~/Qt/6.9.3/gcc_64/bin:$PATH
+~/venv/bin/aqt install-qt linux desktop 6.12.0 -m qtmultimedia qtimageformats --outputdir ~/Qt
+PATH=~/Qt/6.12.0/gcc_64/bin:$PATH
 export PATH
 ```
 
@@ -38,8 +38,8 @@ install their equivalents with your package manager, then run the last five line
 ```bash
 python3 -m venv ~/venv
 ~/venv/bin/pip install aqtinstall==3.*
-~/venv/bin/aqt install-qt mac desktop 6.9.3 -m qtmultimedia qtimageformats --outputdir ~/Qt
-PATH=~/Qt/6.9.3/macos/bin:$PATH
+~/venv/bin/aqt install-qt mac desktop 6.12.0 -m qtmultimedia qtimageformats --outputdir ~/Qt
+PATH=~/Qt/6.12.0/macos/bin:$PATH
 export PATH
 ```
 
