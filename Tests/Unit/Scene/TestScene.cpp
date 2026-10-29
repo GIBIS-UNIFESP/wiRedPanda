@@ -2091,11 +2091,16 @@ void TestScene::testUndoOfAPasteGrowsLinearly()
             return Times{};
         }
         Times best{std::numeric_limits<qint64>::max(), std::numeric_limits<qint64>::max()};
+        qint64 bestRedo = std::numeric_limits<qint64>::max();
+        qint64 bestControl = std::numeric_limits<qint64>::max();
+        qint64 bestControlRedo = std::numeric_limits<qint64>::max();
+        qint64 worstPaste = 0;
         for (int run = 0; run < 9; ++run) {
             QElapsedTimer timer;
             timer.start();
             scene->clipboardManager()->paste();
             best.paste = std::min(best.paste, timer.nsecsElapsed());
+            worstPaste = std::max(worstPaste, timer.nsecsElapsed());
             if (scene->elements().size() != n) {
                 return Times{};
             }
@@ -2109,10 +2114,36 @@ void TestScene::testUndoOfAPasteGrowsLinearly()
                 return Times{};
             }
             QCoreApplication::processEvents();
+            timer.restart();
+            scene->undoStack()->redo();
+            bestRedo = std::min(bestRedo, timer.nsecsElapsed());
+            QCoreApplication::processEvents();
+            workspace.view()->viewport()->repaint();
+            QCoreApplication::processEvents();
+            scene->undoStack()->undo();
+            QCoreApplication::processEvents();
+            // The control: the undo straight after the paste, before Qt polishes and indexes it
+            scene->clipboardManager()->paste();
+            timer.restart();
+            scene->undoStack()->undo();
+            bestControl = std::min(bestControl, timer.nsecsElapsed());
+            timer.restart();
+            scene->undoStack()->redo();
+            bestControlRedo = std::min(bestControlRedo, timer.nsecsElapsed());
+            scene->undoStack()->undo();
+            QCoreApplication::processEvents();
         }
+        qInfo().noquote() << QString("PROBE n=%1 paste=%2 worstPaste=%3 undo=%4 redo=%5 controlUndo=%6 controlRedo=%7")
+                                 .arg(n).arg(best.paste).arg(worstPaste).arg(best.undo).arg(bestRedo).arg(bestControl)
+                                 .arg(bestControlRedo);
         return best;
     };
 
+    for (int round = 0; round < 2; ++round) {
+        for (const int n : {1, 250, 1000, 4000}) {
+            bestTimesNs(n);
+        }
+    }
     const Times small = bestTimesNs(250);
     const Times large = bestTimesNs(16000);
     QVERIFY2((small.paste > 0) && (large.paste > 0) && (small.undo > 0) && (large.undo > 0),
