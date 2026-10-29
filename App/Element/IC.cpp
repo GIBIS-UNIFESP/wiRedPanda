@@ -5,6 +5,7 @@
 
 #include <algorithm>
 
+#include <QDataStream>
 #include <QFileInfo>
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
@@ -92,6 +93,15 @@ void IC::save(QDataStream &stream, SerializationOptions options) const
         map.insert("name", ExternalFilePath::forWriting(m_file, options.purpose));
     }
 
+    // A snapshot carries the IC files the circuit read, so its restore loads one deleted since; a file never does
+    if ((options.purpose == SerializationPurpose::InMemorySnapshot) && !m_filesRead.isEmpty()) {
+        QByteArray files;
+        QDataStream filesStream(&files, QIODevice::WriteOnly);
+        filesStream.setVersion(QDataStream::Qt_5_12);
+        filesStream << m_filesRead;
+        map.insert("files", files);
+    }
+
     stream << map;
 }
 
@@ -147,42 +157,52 @@ void IC::load(QDataStream &stream, SerializationContext &context)
             throw PANDACEPTION("IC load: no IC name present in serialized data");
         }
 
-        // Resolve: try exact name first (embedded blob names may contain dots),
-        // then baseName (file-backed "chain_c.panda" with registry key "chain_c")
-        const QString baseName = QFileInfo(name).baseName();
-        const bool exactMatch = context.blobRegistry && context.blobRegistry->contains(name);
-        const bool baseMatch = !exactMatch && context.blobRegistry && context.blobRegistry->contains(baseName);
-
-        if (exactMatch) {
-            const QByteArray blobBytes = context.blobRegistry->value(name);
-
-            // A cosmetic property edit (e.g. the label field, live on every keystroke —
-            // see ElementEditor::apply()) re-serializes and reloads this IC via UpdateCommand
-            // even though neither the blob reference nor its content actually changed. For a
-            // large embedded sub-circuit, resetInternalState()+loadFromBlob() below is a full
-            // teardown/rebuild of every internal element and connection -- skip it when
-            // nothing this IC depends on has moved. Comparing blob bytes (not just the name)
-            // is required for correctness: UpdateBlobCommand's undo/redo replaces the
-            // registry's bytes under this same name to restore/reapply a sub-circuit edit, and
-            // that must still reload.
-            const bool blobUnchanged = (m_blobName == name) && !m_internalElements.isEmpty()
-                                     && (m_loadedBlobSnapshot == blobBytes);
-
-            m_blobName = name;
-            if (!blobUnchanged) {
-                loadFromBlob(blobBytes, context.contextDir);
-            }
-        } else if (baseMatch) {
-            m_blobName = baseName;
-            loadFromBlob(context.blobRegistry->value(baseName), context.contextDir);
-        } else {
-            // Don't assign m_file until loadFile() has confirmed name actually resolves to a
-            // real file — ICLoader::loadFile() itself sets ic.m_file, but only once validated,
-            // so a name that resolves to neither a blob nor a file (e.g. an unrelated rename
-            // elsewhere in the registry) throws cleanly without leaving m_file holding a
-            // bogus non-path string.
-            loadFile(name, context.contextDir);
+        // A snapshot's restore loads the IC files it carries in place of any deleted since it was taken
+        ICLoader::Files carried;
+        if ((context.purpose == SerializationPurpose::InMemorySnapshot) && map.contains("files")) {
+            QByteArray files = map.value("files").toByteArray();
+            QDataStream filesStream(&files, QIODevice::ReadOnly);
+            filesStream.setVersion(QDataStream::Qt_5_12);
+            carried = Serialization::readBoundedBlobMap(filesStream);
         }
+        ICLoader::withCarriedFiles(carried, [&] {
+            // Resolve: try exact name first (embedded blob names may contain dots),
+            // then baseName (file-backed "chain_c.panda" with registry key "chain_c")
+            const QString baseName = QFileInfo(name).baseName();
+            const bool exactMatch = context.blobRegistry && context.blobRegistry->contains(name);
+            const bool baseMatch = !exactMatch && context.blobRegistry && context.blobRegistry->contains(baseName);
+
+            if (exactMatch) {
+                const QByteArray blobBytes = context.blobRegistry->value(name);
+
+                // A cosmetic property edit (e.g. the label field, live on every keystroke —
+                // see ElementEditor::apply()) re-serializes and reloads this IC via UpdateCommand
+                // even though neither the blob reference nor its content actually changed. For a
+                // large embedded sub-circuit, resetInternalState()+loadFromBlob() below is a full
+                // teardown/rebuild of every internal element and connection -- skip it when
+                // nothing this IC depends on has moved. Comparing blob bytes (not just the name)
+                // is required for correctness: UpdateBlobCommand's undo/redo replaces the
+                // registry's bytes under this same name to restore/reapply a sub-circuit edit, and
+                // that must still reload.
+                const bool blobUnchanged = (m_blobName == name) && !m_internalElements.isEmpty()
+                                         && (m_loadedBlobSnapshot == blobBytes);
+
+                m_blobName = name;
+                if (!blobUnchanged) {
+                    loadFromBlob(blobBytes, context.contextDir);
+                }
+            } else if (baseMatch) {
+                m_blobName = baseName;
+                loadFromBlob(context.blobRegistry->value(baseName), context.contextDir);
+            } else {
+                // Don't assign m_file until loadFile() has confirmed name actually resolves to a
+                // real file — ICLoader::loadFile() itself sets ic.m_file, but only once validated,
+                // so a name that resolves to neither a blob nor a file (e.g. an unrelated rename
+                // elsewhere in the registry) throws cleanly without leaving m_file holding a
+                // bogus non-path string.
+                loadFile(name, context.contextDir);
+            }
+        });
     }
 
     // Re-register the new ports in the outer portMap under the original keys
@@ -240,12 +260,12 @@ void IC::resetInternalState()
 
 void IC::loadFile(const QString &fileName, const QString &contextDir)
 {
-    ICLoader::loadFile(*this, fileName, contextDir);
+    m_filesRead = ICLoader::recordFilesRead([&] { ICLoader::loadFile(*this, fileName, contextDir); });
 }
 
 void IC::loadFromBlob(const QByteArray &blob, const QString &contextDir)
 {
-    ICLoader::loadFromBlob(*this, blob, contextDir);
+    m_filesRead = ICLoader::recordFilesRead([&] { ICLoader::loadFromBlob(*this, blob, contextDir); });
     m_loadedBlobSnapshot = blob;
 }
 
