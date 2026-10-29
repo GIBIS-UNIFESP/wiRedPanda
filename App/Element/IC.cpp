@@ -21,6 +21,7 @@
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
+#include "App/Scene/Scene.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
 
@@ -184,7 +185,7 @@ void IC::load(QDataStream &stream, SerializationContext &context)
                 // is required for correctness: UpdateBlobCommand's undo/redo replaces the
                 // registry's bytes under this same name to restore/reapply a sub-circuit edit, and
                 // that must still reload.
-                const bool blobUnchanged = (m_blobName == name) && !m_internalElements.isEmpty()
+                const bool blobUnchanged = (m_blobName == name) && (m_loaded || m_circuitAdopted)
                                          && (m_loadedBlobSnapshot == blobBytes);
 
                 m_blobName = name;
@@ -199,8 +200,15 @@ void IC::load(QDataStream &stream, SerializationContext &context)
                 // real file — ICLoader::loadFile() itself sets ic.m_file, but only once validated,
                 // so a name that resolves to neither a blob nor a file (e.g. an unrelated rename
                 // elsewhere in the registry) throws cleanly without leaving m_file holding a
-                // bogus non-path string.
-                loadFile(name, context.contextDir);
+                // bogus non-path string. A file whose bytes are those this IC built keeps its circuit, as a blob
+                // does above: a label edit's undo builds nothing again
+                const auto file = ICLoader::fileBytes(*this, name, context.contextDir);
+                const bool fileUnchanged = file && (m_loaded || m_circuitAdopted) && !m_file.isEmpty()
+                                         && (QFileInfo(m_file) == QFileInfo(file->first))
+                                         && (m_filesRead.value(file->first) == file->second);
+                if (!fileUnchanged) {
+                    loadFile(name, context.contextDir);
+                }
             }
         });
     }
@@ -261,6 +269,16 @@ void IC::resetInternalState()
 void IC::loadFile(const QString &fileName, const QString &contextDir)
 {
     m_filesRead = ICLoader::recordFilesRead([&] { ICLoader::loadFile(*this, fileName, contextDir); });
+}
+
+void IC::adoptLoadedCircuit(const IC &live)
+{
+    m_blobName = live.m_blobName;
+    m_loadedBlobSnapshot = live.m_loadedBlobSnapshot;
+    m_file = live.m_file;
+    m_filesRead = live.m_filesRead;
+    m_circuitAdopted = live.m_loaded || live.m_circuitAdopted;
+    m_filesScene = qobject_cast<Scene *>(live.scene());
 }
 
 void IC::loadFromBlob(const QByteArray &blob, const QString &contextDir)

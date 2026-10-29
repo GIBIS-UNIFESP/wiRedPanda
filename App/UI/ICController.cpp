@@ -59,7 +59,7 @@ void ICController::runAsOneStep(Scene *scene, const QString &text, const std::fu
     auto group = std::make_unique<QUndoCommand>(text);
     const auto pushIfAny = [&] {
         if (group->childCount() > 0) {
-            scene->undoStack()->push(group.release());
+            scene->receiveCommand(group.release());
         }
     };
     try {

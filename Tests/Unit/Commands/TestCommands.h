@@ -68,6 +68,14 @@ private slots:
     void testUndoWithAPictureThatIsGoneShowsTheDefault();
     void testUndoWithASoundThatIsGoneKeepsItsPath();
     void testUndoWithAnICFileThatIsGoneLoadsTheContentItHad();
+    void testUndoWithASnapshotThatDoesNotReadChangesNothing();
+    void testUndoActionReportsASnapshotThatDoesNotRead();
+    void testLoadItemsWithARecordThatDoesNotReadChangesNothing();
+    void testUpdateBlobUndoThatDoesNotReadKeepsTheRegistry();
+    void testChangePortSizeUndoThatDoesNotReadChangesNothing();
+    void testMorphUndoThatDoesNotReadChangesNothing();
+    void testLabelUndoOnAFileICKeepsItsCircuit();
+    void testUndoReadsAnICsFileAsTheSceneDoes();
 
     // SetPropertyCommand: one property of elements, its values before and after, merged within an edit session
     void testSetPropertyCommandUndoesEachElementsValue();

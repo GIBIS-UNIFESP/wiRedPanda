@@ -8,6 +8,8 @@
 #pragma once
 
 #include <functional>
+#include <optional>
+#include <utility>
 
 #include <QByteArray>
 #include <QCoreApplication>
@@ -21,6 +23,7 @@
 #include "App/Element/IC.h"
 
 class GraphicElement;
+class Scene;
 class QGraphicsItem;
 
 /**
@@ -52,6 +55,11 @@ public:
     /// IC files by absolute path, with their bytes.
     using Files = QMap<QString, QByteArray>;
 
+    /// The absolute path and the bytes loadFile() would load \a ic from for \a fileName, without loading them; none
+    /// when there is no file and no snapshot carries one.
+    static std::optional<std::pair<QString, QByteArray>> fileBytes(const IC &ic, const QString &fileName,
+                                                                   const QString &contextDir = {});
+
     /// Runs \a load and returns every IC file it read, nested ones included; a load running around it records them
     /// too.
     static Files recordFilesRead(const std::function<void()> &load);
@@ -65,6 +73,8 @@ public:
     static void renderPreview(IC &ic);
 
 private:
+    /// The scene whose file cache \a ic reads through: its own, or for a copy outside one the live IC's.
+    static Scene *filesScene(const IC &ic);
     static void loadFileDirectly(IC &ic, const QFileInfo &fileInfo);
     /// Re-saves \a fileInfo in the current format. Pure: touches only its parameters, no IC state.
     static void migrateFile(const QFileInfo &fileInfo, const QList<QGraphicsItem *> &items,

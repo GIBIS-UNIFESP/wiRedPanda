@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <exception>
 #include <functional>
 #include <optional>
 
@@ -381,8 +382,19 @@ public:
     QAction *redoAction() const;
     /// Returns the undo QAction bound to the undo stack.
     QAction *undoAction() const;
-    /// Pushes \a cmd onto the undo stack (immediately executes its redo()).
+    /// Pushes \a cmd onto the undo stack (immediately executes its redo()); throws what a command dropped kept.
     void receiveCommand(QUndoCommand *cmd);
+    /// Undoes the last command; throws what a command dropped kept (keepCommandFailure()).
+    void undo();
+    /// Redoes the next command; throws what a command dropped kept (keepCommandFailure()).
+    void redo();
+    /**
+     * \brief Keeps \a failure, the reason a command gave itself up while the undo stack ran it.
+     * \details A command's undo() and redo() run inside QUndoStack, which an exception cannot pass on macOS: the
+     * command changes nothing, marks itself obsolete and keeps what it caught here; receiveCommand(), undo() and redo()
+     * throw it once the stack has returned.
+     */
+    void keepCommandFailure(std::exception_ptr failure);
     /**
      * \brief Runs \a operation, a click or a trigger key that goes to \a elements, and records what it changed.
      * \details The elements whose saved state the operation changed get one UpdateCommand, so the operation can be
@@ -542,7 +554,10 @@ private:
     GraphicsView *m_view = nullptr;
 
     // Undo/redo
+    /// Throws what a dropped command kept, if one did.
+    void throwCommandFailure();
     QUndoStack m_undoStack;
+    std::exception_ptr m_commandFailure; ///< What a command the stack dropped kept, until it is thrown.
     QAction *m_redoAction;
     QAction *m_undoAction;
 

@@ -153,7 +153,7 @@ void ICLoader::loadFile(IC &ic, const QString &fileName, const QString &contextD
     ic.m_blobName.clear();
 
     // Use cached file bytes from ICRegistry when available (avoids re-reading from disk)
-    if (auto *scene_ = qobject_cast<Scene *>(ic.scene())) {
+    if (auto *scene_ = filesScene(ic)) {
         auto *reg = scene_->icRegistry();
         const QByteArray &cached = reg->cachedFileBytes(fileInfo.absoluteFilePath());
         if (!cached.isEmpty()) {
@@ -176,6 +176,39 @@ void ICLoader::loadFile(IC &ic, const QString &fileName, const QString &contextD
     ic.m_file = fileInfo.absoluteFilePath();
 
     qCDebug(zero) << "Finished reading IC.";
+}
+
+Scene *ICLoader::filesScene(const IC &ic)
+{
+    if (auto *scene = qobject_cast<Scene *>(ic.scene())) {
+        return scene;
+    }
+    return ic.m_filesScene;
+}
+
+std::optional<std::pair<QString, QByteArray>> ICLoader::fileBytes(const IC &ic, const QString &fileName,
+                                                                  const QString &contextDir)
+{
+    const QFileInfo fileInfo(ExternalFilePath::resolve(fileName, contextDir));
+    if (fileInfo.exists() && fileInfo.isFile()) {
+        const QString path = fileInfo.absoluteFilePath();
+        if (auto *scene = filesScene(ic)) {
+            if (const QByteArray &cached = scene->icRegistry()->cachedFileBytes(path); !cached.isEmpty()) {
+                return std::pair(path, cached);
+            }
+        }
+        QFile file(path);
+        if (!file.open(QIODevice::ReadOnly)) {
+            return std::nullopt;
+        }
+        return std::pair(path, file.readAll());
+    }
+
+    QString path;
+    if (const QByteArray *carried = carriedICFile(fileInfo, fileName, path)) {
+        return std::pair(path, *carried);
+    }
+    return std::nullopt;
 }
 
 void ICLoader::loadFileDirectly(IC &ic, const QFileInfo &fileInfo)

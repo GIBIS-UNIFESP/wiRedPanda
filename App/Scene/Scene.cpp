@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <cmath>
 #include <limits>
+#include <utility>
 
 #include <QClipboard>
 #include <QDrag>
@@ -21,6 +22,7 @@
 #include <QScrollBar>
 #include <QUrl>
 
+#include "App/Core/Application.h"
 #include "App/Core/Common.h"
 #include "App/Core/Constants.h"
 #include "App/Core/ItemWithId.h"
@@ -89,7 +91,10 @@ Scene::Scene(QObject *parent)
     m_undoAction->setShortcut(QKeySequence::Undo);
     connect(&m_undoStack, &QUndoStack::canUndoChanged, m_undoAction, &QAction::setEnabled);
     connect(&m_undoStack, &QUndoStack::undoTextChanged, this, &Scene::updateUndoText);
-    connect(m_undoAction, &QAction::triggered, &m_undoStack, &QUndoStack::undo);
+    // Through undo() and redo(), so what a dropped command kept is reported here, below Qt's frames
+    connect(m_undoAction, &QAction::triggered, this, [this] {
+        Application::guardedSlot(this, [this] { undo(); });
+    });
 
     m_redoAction = new QAction(tr("&Redo"), this);
     m_redoAction->setEnabled(false);
@@ -97,7 +102,9 @@ Scene::Scene(QObject *parent)
     m_redoAction->setShortcut(QKeySequence::Redo);
     connect(&m_undoStack, &QUndoStack::canRedoChanged, m_redoAction, &QAction::setEnabled);
     connect(&m_undoStack, &QUndoStack::redoTextChanged, this, &Scene::updateRedoText);
-    connect(m_redoAction, &QAction::triggered, &m_undoStack, &QUndoStack::redo);
+    connect(m_redoAction, &QAction::triggered, this, [this] {
+        Application::guardedSlot(this, [this] { redo(); });
+    });
 
     connect(&ThemeManager::instance(), &ThemeManager::themeChanged, this, &Scene::updateTheme);
     // Emit autosave signal only after each undo-stack index change (not on every internal state update)
@@ -658,6 +665,31 @@ void Scene::receiveCommand(QUndoCommand *cmd)
     sentryBreadcrumb("command", QStringLiteral("Command: %1").arg(cmd->text()));
     m_undoStack.push(cmd);
     update();
+    throwCommandFailure();
+}
+
+void Scene::undo()
+{
+    m_undoStack.undo();
+    throwCommandFailure();
+}
+
+void Scene::redo()
+{
+    m_undoStack.redo();
+    throwCommandFailure();
+}
+
+void Scene::keepCommandFailure(std::exception_ptr failure)
+{
+    m_commandFailure = std::move(failure);
+}
+
+void Scene::throwCommandFailure()
+{
+    if (auto failure = std::exchange(m_commandFailure, nullptr)) {
+        std::rethrow_exception(failure);
+    }
 }
 
 void Scene::recordOperation(const QList<GraphicElement *> &elements, const std::function<void()> &operation)

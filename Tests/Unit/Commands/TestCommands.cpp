@@ -4,6 +4,7 @@
 #include "Tests/Unit/Commands/TestCommands.h"
 
 #include <algorithm>
+#include <functional>
 #include <limits>
 #include <utility>
 
@@ -40,6 +41,7 @@
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
 #include "Tests/Common/Goldens.h"
+#include "Tests/Common/ICTestHelpers.h"
 #include "Tests/Common/TestUtils.h"
 
 namespace {
@@ -1818,6 +1820,287 @@ void TestCommands::testUndoWithAnICFileThatIsGoneLoadsTheContentItHad()
     QVERIFY(scene->elements().isEmpty());
     scene->undoStack()->undo();
     QCOMPARE(scene->elements().size(), 1);
+}
+
+namespace TestCommandsHelpers {
+
+// A snapshot of \a elements whose last element's bytes stop halfway, so its read throws after the others have read
+QByteArray snapshotCutShort(const QList<GraphicElement *> &elements)
+{
+    QByteArray data;
+    QDataStream stream(&data, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(stream);
+    for (auto *elm : elements.first(elements.size() - 1)) {
+        elm->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
+    }
+    QByteArray last;
+    QDataStream lastStream(&last, QIODevice::WriteOnly);
+    elements.last()->save(lastStream, {.purpose = SerializationPurpose::InMemorySnapshot});
+    data.append(last.first(last.size() / 2));
+    return data;
+}
+
+// Runs \a undo, which must throw a Pandaception; returns its message
+QString failure(const std::function<void()> &undo)
+{
+    try {
+        undo();
+    } catch (const Pandaception &e) {
+        return QString::fromUtf8(e.what());
+    }
+    return {};
+}
+
+} // namespace TestCommandsHelpers
+
+void TestCommands::testUndoWithASnapshotThatDoesNotReadChangesNothing()
+{
+    // An update's undo whose snapshot stops halfway through its second element: the first is not loaded either, the
+    // stack drops the command, and Scene::undo() throws once the stack has returned
+    using namespace TestCommandsHelpers;
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *first = new And();
+    auto *second = new And();
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{first, second}, scene));
+    first->setLabel("old");
+    second->setLabel("old");
+    const QByteArray oldData = snapshotCutShort({first, second});
+    first->setLabel("new");
+    second->setLabel("new");
+    scene->receiveCommand(new UpdateCommand({first, second}, oldData, scene));
+    const int count = scene->undoStack()->count();
+
+    QVERIFY(!failure([scene] { scene->undo(); }).isEmpty());
+    QCOMPARE(first->label(), QString("new"));
+    QCOMPARE(second->label(), QString("new"));
+    QCOMPARE(scene->undoStack()->count(), count - 1);
+}
+
+void TestCommands::testUndoActionReportsASnapshotThatDoesNotRead()
+{
+    // The Undo action, which Qt triggers, reports the failure in its slot: nothing is thrown past it
+    using namespace TestCommandsHelpers;
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *first = new And();
+    auto *second = new And();
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{first, second}, scene));
+    const QByteArray oldData = snapshotCutShort({first, second});
+    first->setLabel("new");
+    scene->receiveCommand(new UpdateCommand({first, second}, oldData, scene));
+    const int count = scene->undoStack()->count();
+
+    try {
+        scene->undoAction()->trigger();
+    } catch (const std::exception &e) {
+        QFAIL(qPrintable(QString("the Undo action threw: %1").arg(e.what())));
+    }
+    QCOMPARE(first->label(), QString("new"));
+    QCOMPARE(scene->undoStack()->count(), count - 1);
+}
+
+void TestCommands::testLoadItemsWithARecordThatDoesNotReadChangesNothing()
+{
+    // A deletion's record whose item stops halfway: the element wired to it is not loaded, nor the item added
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *wired = new And();
+    auto *item = new Or();
+    scene->addItem(wired);
+    scene->addItem(item);
+    wired->setLabel("old");
+
+    QByteArray itemData;
+    QDataStream stream(&itemData, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(stream);
+    wired->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
+    QByteArray itemBytes;
+    QDataStream itemStream(&itemBytes, QIODevice::WriteOnly);
+    Serialization::serialize({item}, itemStream, {.purpose = SerializationPurpose::InMemorySnapshot});
+    itemData.append(itemBytes.first(itemBytes.size() / 2));
+    wired->setLabel("new");
+    const QList<int> ids{item->id() + 100};
+    QList<int> otherIds{wired->id()};
+
+    bool threw = false;
+    try {
+        CommandUtils::loadItems(scene, itemData, ids, otherIds);
+    } catch (const Pandaception &) {
+        threw = true;
+    }
+    QVERIFY(threw);
+    QCOMPARE(wired->label(), QString("new"));
+    QCOMPARE(scene->elements().size(), 2);
+}
+
+void TestCommands::testUpdateBlobUndoThatDoesNotReadKeepsTheRegistry()
+{
+    // An embedded IC's update whose snapshot does not read: the registry keeps the blob the redo put there
+    using namespace TestCommandsHelpers;
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *ic = new IC();
+    scene->addItem(ic);
+    ICTestHelpers::embedIC(ic, ICTestHelpers::minimalPandaBytes(), "blob", scene->contextDir(), scene->icRegistry());
+    auto *gate = new And();
+    scene->addItem(gate);
+    const QByteArray oldData = snapshotCutShort({ic, gate});
+    const QByteArray newBlob = scene->icRegistry()->blob("blob");
+
+    auto *command = new UpdateBlobCommand({ic, gate}, oldData, UpdateBlobCommand::captureConnections({ic}), scene);
+    command->setOldBlob(ICTestHelpers::minimalPandaBytes() + QByteArray(1, '\0'));
+    scene->receiveCommand(command);
+    const int count = scene->undoStack()->count();
+
+    QVERIFY(!failure([scene] { scene->undo(); }).isEmpty());
+    QCOMPARE(scene->icRegistry()->blob("blob"), newBlob);
+    QCOMPARE(scene->undoStack()->count(), count - 1);
+}
+
+void TestCommands::testChangePortSizeUndoThatDoesNotReadChangesNothing()
+{
+    // A port size's undo whose saved wires stop halfway: the element keeps its new size and no wire comes back
+    using namespace TestCommandsHelpers;
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *gate = new And();
+    auto *sw = new InputSwitch();
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{gate, sw}, scene));
+    scene->receiveCommand(new ChangePortSizeCommand({gate}, 3, scene, true));
+    auto *conn = new Connection();
+    conn->setStartPort(sw->outputPort());
+    conn->setEndPort(gate->inputPort(2));
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{conn}, scene));
+
+    auto *command = new ChangePortSizeCommand({gate}, 2, scene, true);
+    scene->receiveCommand(command);
+    QCOMPARE(gate->inputSize(), 2);
+    command->m_oldData.chop(command->m_oldData.size() / 4);
+    const int count = scene->undoStack()->count();
+    const int connections = TestUtils::countConnections(scene);
+
+    QVERIFY(!failure([scene] { scene->undo(); }).isEmpty());
+    QCOMPARE(gate->inputSize(), 2);
+    QCOMPARE(TestUtils::countConnections(scene), connections);
+    QCOMPARE(scene->undoStack()->count(), count - 1);
+}
+
+void TestCommands::testMorphUndoThatDoesNotReadChangesNothing()
+{
+    // A morph's undo whose originals stop halfway: the morphed element stays, and the stack drops the command
+    using namespace TestCommandsHelpers;
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *gate = new And();
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{gate}, scene));
+    const int id = gate->id();
+    auto *command = new MorphCommand({gate}, ElementType::Or, scene);
+    scene->receiveCommand(command);
+    command->m_originals.chop(command->m_originals.size() / 2);
+    const int count = scene->undoStack()->count();
+
+    QVERIFY(!failure([scene] { scene->undo(); }).isEmpty());
+    auto *element = dynamic_cast<GraphicElement *>(scene->itemById(id));
+    QVERIFY(element);
+    QCOMPARE(element->elementType(), ElementType::Or);
+    QCOMPARE(scene->elements().size(), 1);
+    QCOMPARE(scene->undoStack()->count(), count - 1);
+}
+
+namespace TestCommandsHelpers {
+
+// A circuit file of a switch wired to an LED, at \a path
+void writeSwitchToLed(const QString &path)
+{
+    WorkSpace workspace;
+    auto *sw = new InputSwitch();
+    auto *led = new Led();
+    workspace.scene()->addItem(sw);
+    workspace.scene()->addItem(led);
+    workspace.save(path);
+}
+
+} // namespace TestCommandsHelpers
+
+void TestCommands::testLabelUndoOnAFileICKeepsItsCircuit()
+{
+    // A label's undo on a file-backed IC whose file is unchanged keeps the circuit it built; a file that changed is
+    // built again
+    using namespace TestCommandsHelpers;
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("sub.panda");
+    writeSwitchToLed(path);
+
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *ic = new IC();
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{ic}, scene));
+    ic->loadFile(path, dir.path());
+    // A mark only the circuit built now carries: one built again comes from the file, unmarked
+    ic->internalElements().constFirst()->setLabel("built once");
+
+    QByteArray oldData;
+    QDataStream stream(&oldData, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(stream);
+    ic->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
+    const QString label = ic->label();
+    ic->setLabel("x");
+    scene->receiveCommand(new UpdateCommand({ic}, oldData, scene));
+    scene->undo();
+    QCOMPARE(ic->label(), label);
+    QCOMPARE(ic->internalElements().constFirst()->label(), QString("built once"));
+
+    // The file changed, its cache dropped as the watcher drops it: the redo builds the circuit again
+    {
+        WorkSpace changed;
+        changed.scene()->addItem(new InputSwitch());
+        changed.scene()->addItem(new InputSwitch());
+        changed.scene()->addItem(new Led());
+        changed.save(path);
+    }
+    scene->icRegistry()->invalidate(path);
+    scene->redo();
+    QCOMPARE(ic->label(), QString("x"));
+    QCOMPARE(ic->inputSize(), 2);
+}
+
+void TestCommands::testUndoReadsAnICsFileAsTheSceneDoes()
+{
+    // The file changed on disk to bytes that do not read, its cache not yet dropped: the live IC reads the cache, and
+    // the copy the undo reads first reads it as well, so the undo goes on as the live read would
+    using namespace TestCommandsHelpers;
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("sub.panda");
+    writeSwitchToLed(path);
+
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *ic = new IC();
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{ic}, scene));
+    ic->loadFile(path, dir.path());
+
+    QByteArray oldData;
+    QDataStream stream(&oldData, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(stream);
+    ic->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
+    const QString label = ic->label();
+    ic->setLabel("x");
+    scene->receiveCommand(new UpdateCommand({ic}, oldData, scene));
+
+    QFile file(path);
+    QVERIFY(file.open(QIODevice::WriteOnly | QIODevice::Truncate));
+    file.write("not a circuit");
+    file.close();
+
+    try {
+        scene->undo();
+    } catch (const std::exception &e) {
+        QFAIL(qPrintable(QString("the undo threw: %1").arg(e.what())));
+    }
+    QCOMPARE(ic->label(), label);
 }
 
 void TestCommands::testSetPropertyCommandUndoesEachElementsValue()
