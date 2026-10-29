@@ -1,39 +1,39 @@
 initial m11=1.0000 scroll=0,0 centre=399.0000,299.0000 canIn=1 canOut=1
-in 1 m11=1.2500 scroll=0,0 centre=319.2000,239.2000 canIn=1 canOut=1
-in 2 m11=1.5625 scroll=-400,-300 centre=-0.6400,-0.6400 canIn=1 canOut=1
-in 3 m11=1.9531 scroll=-400,-300 centre=-0.5120,-0.5120 canIn=1 canOut=1
-in 4 m11=2.4414 scroll=-400,-300 centre=-0.4096,-0.4096 canIn=1 canOut=1
-in 5 m11=3.0518 scroll=-400,-300 centre=-0.3277,-0.3277 canIn=1 canOut=1
-in 6 m11=3.8147 scroll=-400,-300 centre=-0.2621,-0.2621 canIn=1 canOut=1
-in 7 m11=4.7684 scroll=-400,-300 centre=-0.2097,-0.2097 canIn=0 canOut=1
-out 1 m11=3.8147 scroll=-400,-300 centre=-0.2621,-0.2621 canIn=1 canOut=1
-out 2 m11=3.0518 scroll=-400,-300 centre=-0.3277,-0.3277 canIn=1 canOut=1
-out 3 m11=2.4414 scroll=-400,-300 centre=-0.4096,-0.4096 canIn=1 canOut=1
-out 4 m11=1.9531 scroll=-400,-300 centre=-0.5120,-0.5120 canIn=1 canOut=1
-out 5 m11=1.5625 scroll=-400,-300 centre=-0.6400,-0.6400 canIn=1 canOut=1
-out 6 m11=1.2500 scroll=-400,-300 centre=-0.8000,-0.8000 canIn=1 canOut=1
-out 7 m11=1.0000 scroll=-400,-300 centre=-1.0000,-1.0000 canIn=1 canOut=1
-out 8 m11=0.8000 scroll=-400,-300 centre=-1.2500,-1.2500 canIn=1 canOut=1
-out 9 m11=0.6400 scroll=-400,-300 centre=-1.5625,-1.5625 canIn=1 canOut=1
-out 10 m11=0.5120 scroll=-393,-300 centre=11.7187,-1.9531 canIn=1 canOut=1
-out 11 m11=0.4096 scroll=-400,-300 centre=-2.4414,-2.4414 canIn=1 canOut=1
-out 12 m11=0.3277 scroll=-400,-300 centre=-3.0518,-3.0518 canIn=1 canOut=1
-out 13 m11=0.2621 scroll=-400,-300 centre=-3.8147,-3.8147 canIn=1 canOut=1
-out 14 m11=0.2097 scroll=-400,-300 centre=-4.7684,-4.7684 canIn=1 canOut=1
-out 15 m11=0.1678 scroll=-400,-300 centre=-5.9605,-5.9605 canIn=1 canOut=1
-out 16 m11=0.1342 scroll=-400,-300 centre=-7.4506,-7.4506 canIn=1 canOut=0
+in 1 m11=1.2500 scroll=100,75 centre=399.2000,299.2000 canIn=1 canOut=1
+in 2 m11=1.5625 scroll=225,168 centre=399.3600,298.8800 canIn=1 canOut=1
+in 3 m11=1.9531 scroll=381,285 centre=399.3600,299.0080 canIn=1 canOut=1
+in 4 m11=2.4414 scroll=576,431 centre=399.3600,299.0080 canIn=1 canOut=1
+in 5 m11=3.0518 scroll=820,614 centre=399.4419,299.1718 canIn=1 canOut=1
+in 6 m11=3.8147 scroll=1125,842 centre=399.5075,299.1063 canIn=1 canOut=1
+in 7 m11=4.7684 scroll=1506,1127 centre=399.5075,299.0539 canIn=0 canOut=1
+out 1 m11=3.8147 scroll=1125,842 centre=399.5075,299.1063 canIn=1 canOut=1
+out 2 m11=3.0518 scroll=820,614 centre=399.4419,299.1718 canIn=1 canOut=1
+out 3 m11=2.4414 scroll=576,431 centre=399.3600,299.0080 canIn=1 canOut=1
+out 4 m11=1.9531 scroll=381,285 centre=399.3600,299.0080 canIn=1 canOut=1
+out 5 m11=1.5625 scroll=225,168 centre=399.3600,298.8800 canIn=1 canOut=1
+out 6 m11=1.2500 scroll=100,75 centre=399.2000,299.2000 canIn=1 canOut=1
+out 7 m11=1.0000 scroll=0,0 centre=399.0000,299.0000 canIn=1 canOut=1
+out 8 m11=0.8000 scroll=-80,-60 centre=398.7500,298.7500 canIn=1 canOut=1
+out 9 m11=0.6400 scroll=-144,-108 centre=398.4375,298.4375 canIn=1 canOut=1
+out 10 m11=0.5120 scroll=-195,-146 centre=398.4375,298.8281 canIn=1 canOut=1
+out 11 m11=0.4096 scroll=-236,-177 centre=397.9492,297.8516 canIn=1 canOut=1
+out 12 m11=0.3277 scroll=-269,-201 centre=396.7285,299.0723 canIn=1 canOut=1
+out 13 m11=0.2621 scroll=-295,-221 centre=396.7285,297.5464 canIn=1 canOut=1
+out 14 m11=0.2097 scroll=-316,-237 centre=395.7748,295.6390 canIn=1 canOut=1
+out 15 m11=0.1678 scroll=-333,-249 centre=393.3907,298.0232 canIn=1 canOut=1
+out 16 m11=0.1342 scroll=-346,-259 centre=394.8808,298.0232 canIn=1 canOut=0
 fit m11=0.5120 scroll=-256,-94 centre=279.2969,400.3906 canIn=1 canOut=1
 centerOn 0.0000,0.0000 m11=0.5120 scroll=-393,-262 centre=11.7188,72.2656 canIn=1 canOut=1
 centerOn 300.0000,200.0000 m11=0.5120 scroll=-246,-198 centre=298.8281,197.2656 canIn=1 canOut=1
 centerOn -350.0000,650.0000 m11=0.5120 scroll=-393,33 centre=11.7188,648.4375 canIn=1 canOut=1
 ensureVisible 500.0000,400.0000 m11=0.5120 scroll=-393,33 centre=11.7188,648.4375 canIn=1 canOut=1
 ensureVisible -420.0000,-60.0000 m11=0.5120 scroll=-393,-81 centre=11.7188,425.7813 canIn=1 canOut=1
-reset m11=1.0000 scroll=-386,128 centre=13.0000,427.0000 canIn=1 canOut=1
-wheel in at 120,90 m11=1.2500 scroll=-453,182 centre=-43.2000,384.8000 canIn=1 canOut=1
-  cursor scene before -266.0000,218.0000 after -266.4000,217.6000
-wheel out at 120,90 m11=1.0000 scroll=-386,128 centre=13.0000,427.0000 canIn=1 canOut=1
-  cursor scene before -266.4000,217.6000 after -266.0000,218.0000
-wheel in at 780,580 m11=1.2500 scroll=-287,305 centre=89.6000,483.2000 canIn=1 canOut=1
-  cursor scene before 394.0000,708.0000 after 394.4000,708.0000
-wheel out at 400,300 m11=1.0000 scroll=-310,184 centre=89.0000,483.0000 canIn=1 canOut=1
-  cursor scene before 90.4000,484.0000 after 90.0000,484.0000
+reset m11=1.0000 scroll=-387,127 centre=12.0000,426.0000 canIn=1 canOut=1
+wheel in at 120,90 m11=1.2500 scroll=-454,181 centre=-44.0000,384.0000 canIn=1 canOut=1
+  cursor scene before -267.0000,217.0000 after -267.2000,216.8000
+wheel out at 120,90 m11=1.0000 scroll=-387,127 centre=12.0000,426.0000 canIn=1 canOut=1
+  cursor scene before -267.2000,216.8000 after -267.0000,217.0000
+wheel in at 780,580 m11=1.2500 scroll=-289,304 centre=88.0000,482.4000 canIn=1 canOut=1
+  cursor scene before 393.0000,707.0000 after 392.8000,707.2000
+wheel out at 400,300 m11=1.0000 scroll=-311,183 centre=88.0000,482.0000 canIn=1 canOut=1
+  cursor scene before 88.8000,483.2000 after 89.0000,483.0000

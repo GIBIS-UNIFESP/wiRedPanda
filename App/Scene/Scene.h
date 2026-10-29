@@ -76,6 +76,10 @@ public:
     /// Tightens the scene rect to item bounds while preserving the viewport position.
     void resizeScene();
 
+    /// Grows the scene rect over \a shown, a scene area the view is about to show, while preserving the viewport
+    /// position: the view's scroll bars reach only what the rect holds.
+    void growSceneOver(const QRectF &shown);
+
     /// Returns circuitBoundingRect(), cached and invalidated on structural/positional edits
     /// (see setPropertyUpdateRequired()) — an O(total items) call this project's zoom/pan/
     /// scroll paths (resizeScene(), MinimapWidget) would otherwise redo on every step even

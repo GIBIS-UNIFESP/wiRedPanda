@@ -37,6 +37,7 @@ private slots:
     // A wheel zoom keeps the scene point under the cursor, and the view inside the scene rect near its edge.
     void testWheelKeepsCursorPoint();
     void testWheelNearSceneEdgeKeepsViewInsideSceneRect();
+    void testZoomKeepsItsPivotPastTheSceneRect();
 
     // zoomToFit() fits the circuit, not a rubber band beside it.
     void testZoomToFitIgnoresARubberBandOutsideTheCircuit();

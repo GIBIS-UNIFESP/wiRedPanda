@@ -290,8 +290,8 @@ void TestGraphicsView::testWheelEventZoomsOut()
 void TestGraphicsView::testWheelKeepsCursorPoint()
 {
     // With room to scroll, a wheel zoom in either direction leaves the scene point under the cursor under it, both
-    // with the pointer away, where scale() pivots on the viewport's centre, and with it over the view, where scale()
-    // pivots on the pointer (AnchorUnderMouse).
+    // with the pointer away, where a button's zoom pivots on the viewport's centre, and with it over the view, where
+    // it pivots on the pointer.
     WorkSpace workspace;
     GraphicsView *view = workspace.view();
     workspace.scene()->setSceneRect(QRectF(-1e5, -1e5, 2e5, 2e5));
@@ -306,13 +306,12 @@ void TestGraphicsView::testWheelKeepsCursorPoint()
                              Qt::NoButton, Qt::NoModifier);
             QApplication::sendEvent(view->viewport(), &move);
 
-            // The pivot is the pointer's point: a zoom alone keeps it, so the wheel's own correction is what the row
-            // tests.
+            // The pivot is the pointer's point: a button's zoom keeps it, as the wheel's does.
             view->resetZoom();
             view->centerOn(QPointF(0, 0));
             const QPointF pivot = view->mapToScene(cursor);
             // The pivot is the platform's cursor (offscreen, as CTest runs this class, the process's own): say which of
-            // the two conditions scale() reads failed, if one does
+            // the two conditions the zoom reads failed, if one does
             const QPoint expected = view->viewport()->mapToGlobal(cursor);
             QVERIFY2(QCursor::pos() == expected, qPrintable(QString("the system's cursor is at %1,%2, not at %3,%4")
                                                                 .arg(QCursor::pos().x())
@@ -323,7 +322,7 @@ void TestGraphicsView::testWheelKeepsCursorPoint()
             view->zoomIn();
             const QPointF pivotNow(view->mapFromScene(pivot));
             QVERIFY2(QLineF(pivotNow, QPointF(cursor)).length() < 2.0,
-                     qPrintable(QString("scale() did not pivot on the pointer: the pivot is at %1,%2 px, not at %3,%4 px")
+                     qPrintable(QString("the zoom did not pivot on the pointer: the pivot is at %1,%2 px, not at %3,%4 px")
                                     .arg(pivotNow.x())
                                     .arg(pivotNow.y())
                                     .arg(cursor.x())
@@ -382,6 +381,57 @@ void TestGraphicsView::testWheelNearSceneEdgeKeepsViewInsideSceneRect()
                                     .arg(visible.y())
                                     .arg(visible.width())
                                     .arg(visible.height())));
+        }
+    }
+}
+
+void TestGraphicsView::testZoomKeepsItsPivotPastTheSceneRect()
+{
+    // A scene rect tight around the circuit, as a loaded file leaves it: zooming out shows more than it holds, and
+    // each step, from each corner of the viewport, by wheel and by button with the pointer over the view, in either
+    // layout direction, leaves the scene point under the cursor under it, as far out as the zoom goes and back in
+    const QList<QPoint> corners{QPoint(20, 20), QPoint(780, 20), QPoint(20, 580), QPoint(780, 580)};
+    for (const auto &[wheel, direction] : {std::pair(true, Qt::LeftToRight), std::pair(false, Qt::LeftToRight),
+                                           std::pair(true, Qt::RightToLeft)}) {
+        for (const QPoint &cursor : corners) {
+            WorkSpace workspace;
+            workspace.setLayoutDirection(direction);
+            GraphicsView *view = workspace.view();
+            const QRectF sceneRect(-400, -200, 1200, 1000);
+            workspace.scene()->setSceneRect(sceneRect);
+            layOutView(view);
+            view->centerOn(sceneRect.center());
+            if (!wheel) {
+                view->setAttribute(Qt::WA_UnderMouse, true);
+                QCursor::setPos(view->viewport()->mapToGlobal(cursor));
+                QVERIFY2(QCursor::pos() == view->viewport()->mapToGlobal(cursor), "the platform did not place the cursor");
+            }
+
+            const auto step = [&](const int delta) {
+                const QPointF before = view->mapToScene(cursor);
+                if (wheel) {
+                    QWheelEvent event(QPointF(cursor), view->viewport()->mapToGlobal(cursor), QPoint(0, 0),
+                                      QPoint(0, delta), Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase, false);
+                    QApplication::sendEvent(view->viewport(), &event);
+                } else if (delta > 0) {
+                    view->zoomIn();
+                } else {
+                    view->zoomOut();
+                }
+                // The scroll bars move in whole pixels, so the point can be off by a pixel in each direction.
+                const QPointF now(view->mapFromScene(before));
+                return QLineF(now, QPointF(cursor)).length() < 2.0;
+            };
+            while (view->canZoomOut()) {
+                QVERIFY2(step(-120), qPrintable(QString("wheel %1, direction %2, cursor %3,%4: zooming out to %5 moved the view")
+                                                    .arg(wheel).arg(direction).arg(cursor.x()).arg(cursor.y())
+                                                    .arg(view->transform().m11())));
+            }
+            while (view->canZoomIn()) {
+                QVERIFY2(step(120), qPrintable(QString("wheel %1, direction %2, cursor %3,%4: zooming in to %5 moved the view")
+                                                   .arg(wheel).arg(direction).arg(cursor.x()).arg(cursor.y())
+                                                   .arg(view->transform().m11())));
+            }
         }
     }
 }
