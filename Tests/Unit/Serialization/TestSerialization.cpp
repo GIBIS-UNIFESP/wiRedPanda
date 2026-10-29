@@ -2444,7 +2444,8 @@ void TestSerialization::testDeserializeTruncatedTypeTagThrows()
     }
 
     QVERIFY2(threw, "A truncated type tag must throw, not silently stop parsing");
-    QVERIFY2(message.contains("Stream error reading type tag"), qPrintable(message));
+    // Both numbers filled in: the position read up to and the stream's status, QDataStream::ReadPastEnd
+    QCOMPARE(message, QString("Stream error reading type tag at position 1: status 1"));
 }
 
 void TestSerialization::testDeserializeTruncatedElementTypeThrows()
@@ -2472,7 +2473,7 @@ void TestSerialization::testDeserializeTruncatedElementTypeThrows()
     }
 
     QVERIFY2(threw, "A truncated element type must throw, not proceed with a garbage ElementType");
-    QVERIFY2(message.contains("Stream error reading element type"), qPrintable(message));
+    QCOMPARE(message, QString("Stream error reading element type at position 6: status 1"));
 }
 
 void TestSerialization::testDeserializeTruncatedOldFormatElementLoadThrows()
@@ -2505,7 +2506,7 @@ void TestSerialization::testDeserializeTruncatedOldFormatElementLoadThrows()
     }
 
     QVERIFY2(threw, "A truncated old-format element load must throw, not silently produce a bad element");
-    QVERIFY2(message.contains("Stream error loading element"), qPrintable(message));
+    QCOMPARE(message, QString("Stream error loading element at position 12: status 1"));
 }
 
 void TestSerialization::testLoadDolphinFileNameNormalizesNoneSentinelForOldVersions()
