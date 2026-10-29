@@ -126,6 +126,9 @@ void SceneDropHandler::handleCloneDrag(QGraphicsSceneDragDropEvent *event)
 
 void SceneDropHandler::addFromMimeData(QMimeData *mimeData, std::optional<QPointF> scenePos)
 {
+    // Owned from the start, so a payload that does not read does not leak it either
+    auto mimeGuard = qScopeGuard([mimeData]() { mimeData->deleteLater(); });
+
     QByteArray itemData = mimeData->hasFormat(MimeType::DragDrop)
         ? mimeData->data(MimeType::DragDrop)
         : mimeData->data(MimeType::DragDropLegacy);
@@ -136,11 +139,6 @@ void SceneDropHandler::addFromMimeData(QMimeData *mimeData, std::optional<QPoint
 
     std::unique_ptr<GraphicElement> element(ElementFactory::buildElement(payload.type));
     qCDebug(zero) << "Valid element.";
-
-    // RAII for mimeData too — the original deleteLater at the bottom is
-    // unreachable if loadFromDrop throws, so the QMimeData would leak alongside
-    // the half-built element.
-    auto mimeGuard = qScopeGuard([mimeData]() { mimeData->deleteLater(); });
 
     if (payload.isEmbedded && payload.type == ElementType::IC) {
         if (!m_scene->icRegistry()->initEmbeddedIC(static_cast<IC *>(element.get()), payload.blobName)) {
