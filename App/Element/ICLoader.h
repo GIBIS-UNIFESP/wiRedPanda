@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <functional>
+
 #include <QByteArray>
 #include <QCoreApplication>
 #include <QFileInfo>
@@ -46,6 +48,17 @@ public:
 
     /// Scans \a elements for Input/Output groups, sorts by Y/X position, and builds labels.
     static IC::PortMetadata buildPortMetadata(const QVector<GraphicElement *> &elements);
+
+    /// IC files by absolute path, with their bytes.
+    using Files = QMap<QString, QByteArray>;
+
+    /// Runs \a load and returns every IC file it read, nested ones included; a load running around it records them
+    /// too.
+    static Files recordFilesRead(const std::function<void()> &load);
+
+    /// Runs \a load with \a files in place of any of them no longer on disk, as a snapshot's restore does: the IC a
+    /// snapshot names loads what it had when the snapshot was taken.
+    static void withCarriedFiles(const Files &files, const std::function<void()> &load);
 
     /// Renders \a ic's hover preview from the definition it loaded last, read again: its bytes, or its file. A
     /// definition that no longer loads leaves the preview null.

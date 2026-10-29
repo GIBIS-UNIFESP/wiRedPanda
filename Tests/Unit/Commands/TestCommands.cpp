@@ -31,6 +31,7 @@
 #include "App/Element/GraphicElements/Not.h"
 #include "App/Element/GraphicElements/Or.h"
 #include "App/Element/GraphicElements/TruthTable.h"
+#include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/Commands.h"
@@ -1745,6 +1746,74 @@ void TestCommands::testUndoWithASoundThatIsGoneKeepsItsPath()
     scene->undoStack()->redo();
     QCOMPARE(scene->undoStack()->index(), 2);
     QCOMPARE(audioBox->audio(), QString::fromLatin1(AudioBox::kDefaultAudioPath));
+}
+
+void TestCommands::testUndoWithAnICFileThatIsGoneLoadsTheContentItHad()
+{
+    // A file-backed IC, and the file-backed IC inside it, are deleted from the scene and then from the disk outside
+    // the application: the undo restores the IC from the content its snapshot carries, nested IC included, and the
+    // stack steps
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString inner = dir.filePath("inner.panda");
+    const QString outer = dir.filePath("outer.panda");
+    {
+        WorkSpace workspace;
+        workspace.scene()->addItem(new InputSwitch());
+        workspace.scene()->addItem(new Led());
+        workspace.save(inner);
+    }
+    {
+        WorkSpace workspace;
+        auto *nested = new IC();
+        workspace.scene()->addItem(nested);
+        nested->loadFile(inner, dir.path());
+        workspace.scene()->addItem(new InputSwitch());
+        workspace.scene()->addItem(new Led());
+        workspace.save(outer);
+    }
+
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *ic = new IC();
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{ic}, scene));
+    ic->loadFile(outer, dir.path());
+    const int id = ic->id();
+    const int inputs = ic->inputSize();
+    const int outputs = ic->outputSize();
+    const auto internalElements = ic->internalElements().size();
+
+    scene->receiveCommand(new DeleteItemsCommand(QList<QGraphicsItem *>{ic}, scene));
+    QVERIFY(QFile::remove(outer));
+    QVERIFY(QFile::remove(inner));
+
+    try {
+        scene->undoStack()->undo();
+    } catch (const Pandaception &e) {
+        QFAIL(qPrintable(QString("the undo threw: %1").arg(e.what())));
+    }
+    QCOMPARE(scene->undoStack()->index(), 1);
+    auto *restored = qobject_cast<IC *>(dynamic_cast<GraphicElement *>(scene->itemById(id)));
+    QVERIFY(restored);
+    QCOMPARE(QFileInfo(restored->file()), QFileInfo(outer));
+    QCOMPARE(restored->inputSize(), inputs);
+    QCOMPARE(restored->outputSize(), outputs);
+    QCOMPARE(restored->internalElements().size(), internalElements);
+    const auto &restoredElements = restored->internalElements();
+    const auto found = std::find_if(restoredElements.cbegin(), restoredElements.cend(), [](GraphicElement *element) {
+        return element->elementType() == ElementType::IC;
+    });
+    QVERIFY(found != restoredElements.cend());
+    const auto *nested = qobject_cast<const IC *>(*found);
+    QVERIFY(nested);
+    QCOMPARE(nested->inputSize(), 1);
+    QCOMPARE(nested->outputSize(), 1);
+
+    // A redo and a second undo go the same way
+    scene->undoStack()->redo();
+    QVERIFY(scene->elements().isEmpty());
+    scene->undoStack()->undo();
+    QCOMPARE(scene->elements().size(), 1);
 }
 
 void TestCommands::testSetPropertyCommandUndoesEachElementsValue()

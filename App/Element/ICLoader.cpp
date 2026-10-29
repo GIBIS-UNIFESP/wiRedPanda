@@ -95,6 +95,33 @@ void buildPortLabels(const QVector<Port *> &ports, QVector<QString> &labels, QVe
 constexpr int kMaxICNestingDepth = 16;
 thread_local int s_icLoadDepth = 0;
 
+// The IC files the loads under way record as they read them, and those a snapshot's restore carries for files gone
+thread_local ICLoader::Files *s_icFilesRead = nullptr;
+thread_local const ICLoader::Files *s_icFilesCarried = nullptr;
+
+void recordICFileRead(const QString &path, const QByteArray &bytes)
+{
+    if (s_icFilesRead) {
+        s_icFilesRead->insert(path, bytes);
+    }
+}
+
+// The bytes a snapshot carries for an IC file no longer on disk: looked up where the stored name resolved, then
+// where it pointed when stored, which is absolute in a snapshot
+const QByteArray *carriedICFile(const QFileInfo &resolved, const QString &fileName, QString &path)
+{
+    if (!s_icFilesCarried) {
+        return nullptr;
+    }
+    for (const QString &candidate : {resolved.absoluteFilePath(), QFileInfo(fileName).absoluteFilePath()}) {
+        if (const auto it = s_icFilesCarried->constFind(candidate); it != s_icFilesCarried->constEnd()) {
+            path = candidate;
+            return &it.value();
+        }
+    }
+    return nullptr;
+}
+
 } // anonymous namespace
 
 void ICLoader::loadFile(IC &ic, const QString &fileName, const QString &contextDir)
@@ -104,6 +131,20 @@ void ICLoader::loadFile(IC &ic, const QString &fileName, const QString &contextD
     QFileInfo fileInfo(ExternalFilePath::resolve(fileName, contextDir));
 
     if (!fileInfo.exists() || !fileInfo.isFile()) {
+        // A snapshot's restore loads what the file held when the snapshot was taken
+        QString path;
+        if (const QByteArray *carried = carriedICFile(fileInfo, fileName, path)) {
+            const QFileInfo carriedInfo(path);
+            deserializeAndLoad(ic, *carried, carriedInfo.absolutePath());
+            recordICFileRead(path, *carried);
+            ic.m_blobName.clear();
+            ic.m_file = path;
+            if (ic.label().isEmpty()) {
+                ic.setLabel(carriedInfo.baseName().toUpper());
+            }
+            qCDebug(zero) << "Finished reading IC (from the snapshot, its file gone).";
+            return;
+        }
         throw PANDACEPTION("%1 not found.", fileInfo.absoluteFilePath());
     }
 
@@ -117,6 +158,7 @@ void ICLoader::loadFile(IC &ic, const QString &fileName, const QString &contextD
         const QByteArray &cached = reg->cachedFileBytes(fileInfo.absoluteFilePath());
         if (!cached.isEmpty()) {
             deserializeAndLoad(ic, cached, fileInfo.absolutePath());
+            recordICFileRead(fileInfo.absoluteFilePath(), cached);
             ic.m_file = fileInfo.absoluteFilePath();
             if (ic.label().isEmpty()) {
                 ic.setLabel(fileInfo.baseName().toUpper());
@@ -166,8 +208,11 @@ void ICLoader::loadFileDirectly(IC &ic, const QFileInfo &fileInfo)
     if (!file.open(QIODevice::ReadOnly)) {
         throw PANDACEPTION("Error opening file: %1", file.errorString());
     }
+    QByteArray bytes = file.readAll();
+    file.close(); // must be closed before QSaveFile can write on Windows (mandatory file locking)
+    recordICFileRead(fileInfo.absoluteFilePath(), bytes);
 
-    QDataStream stream(&file);
+    QDataStream stream(&bytes, QIODevice::ReadOnly);
     auto preamble = Serialization::readPreamble(stream);
     auto fileRegistry = Serialization::deserializeBlobRegistry(preamble.metadata, preamble.version);
 
@@ -177,7 +222,6 @@ void ICLoader::loadFileDirectly(IC &ic, const QFileInfo &fileInfo)
     QDataStream elementsStream(&preamble.remainingPayload, QIODevice::ReadOnly);
     elementsStream.setVersion(QDataStream::Qt_5_12);
     QList<QGraphicsItem *> items = Serialization::deserialize(elementsStream, subCtx);
-    file.close(); // must be closed before QSaveFile can write on Windows (mandatory file locking)
 
     // Cleans up whatever is still in `items` if an exception unwinds through
     // migrateFile()/processLoadedItems() below. processLoadedItems() drains
@@ -370,6 +414,31 @@ void ICLoader::deserializeAndLoad(IC &ic, const QByteArray &bytes, const QString
     processLoadedItems(ic, items);
     ic.m_previewSource = bytes;
     ic.m_previewContextDir = contextDir;
+}
+
+ICLoader::Files ICLoader::recordFilesRead(const std::function<void()> &load)
+{
+    Files files;
+    Files *outer = s_icFilesRead;
+    s_icFilesRead = &files;
+    {
+        const auto restore = qScopeGuard([outer] { s_icFilesRead = outer; });
+        load();
+    }
+    if (outer) {
+        outer->insert(files);
+    }
+    return files;
+}
+
+void ICLoader::withCarriedFiles(const Files &files, const std::function<void()> &load)
+{
+    Files carried = s_icFilesCarried ? *s_icFilesCarried : Files();
+    carried.insert(files);
+    const Files *outer = s_icFilesCarried;
+    s_icFilesCarried = &carried;
+    const auto restore = qScopeGuard([outer] { s_icFilesCarried = outer; });
+    load();
 }
 
 void ICLoader::renderPreview(IC &ic)

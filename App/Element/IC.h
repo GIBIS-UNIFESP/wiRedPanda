@@ -8,6 +8,7 @@
 #pragma once
 
 #include <QByteArray>
+#include <QMap>
 #include <QPixmap>
 #include <QPoint>
 #include <QSet>
@@ -187,6 +188,9 @@ private:
     /// an embedded sub-circuit whose blob reference and content are both unchanged (a
     /// label-only property edit) instead of always tearing down and rebuilding it.
     QByteArray m_loadedBlobSnapshot;
+    /// The IC files the circuit loaded last read, nested ones included, by absolute path: a snapshot carries them, so
+    /// its restore loads one deleted since.
+    QMap<QString, QByteArray> m_filesRead;
     QVector<GraphicElement *> m_internalElements;
     QVector<Connection *> m_internalConnections;
     QVector<Port *> m_internalInputs;
