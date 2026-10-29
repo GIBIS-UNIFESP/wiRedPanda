@@ -19,6 +19,7 @@ private slots:
     void testHandleNewElementDropAddsElementAtScenePosition();
     void testAddFromMimeDataAddsElementAtGivenScenePos();
     void testAddFromMimeDataKeepsDefaultPositionWhenScenePosOmitted();
+    void testAddFromMimeDataThatDoesNotReadReclaimsTheMimeData();
 
     // The scene's picture of an in-process drag (DragPreview), where the drop will put what it shows
     void testPaletteDragGhostIsWhereTheDropPutsTheElement();

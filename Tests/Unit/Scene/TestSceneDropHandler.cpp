@@ -8,6 +8,7 @@
 #include <QGraphicsPixmapItem>
 #include <QGraphicsSceneEvent>
 #include <QMimeData>
+#include <QPointer>
 #include <QScrollBar>
 
 #include "App/Core/DragDropPayload.h"
@@ -257,6 +258,22 @@ void TestSceneDropHandler::testAddFromMimeDataKeepsDefaultPositionWhenScenePosOm
     }
     QVERIFY2(added, "addFromMimeData() must add a new Not element from the payload");
     QCOMPARE(added->pos(), QPointF(0, 0));
+}
+
+void TestSceneDropHandler::testAddFromMimeDataThatDoesNotReadReclaimsTheMimeData()
+{
+    // The handler owns the payload from the start: one whose header does not read is still deleted
+    WorkSpace workspace;
+    SceneDropHandler handler(workspace.scene());
+    auto *mimeData = new QMimeData();
+    mimeData->setData(MimeType::DragDrop, QByteArray("not a payload"));
+    QPointer<QMimeData> watcher(mimeData);
+
+    QVERIFY_THROWS_EXCEPTION(std::exception, handler.addFromMimeData(mimeData));
+    QCoreApplication::sendPostedEvents(nullptr, QEvent::DeferredDelete);
+
+    QVERIFY(watcher.isNull());
+    QCOMPARE(workspace.scene()->elements().size(), 0);
 }
 
 void TestSceneDropHandler::testPaletteDragGhostIsWhereTheDropPutsTheElement()
