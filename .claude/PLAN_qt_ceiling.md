@@ -104,14 +104,22 @@ golden it changes, the claims of §1.3's comments read again on 6.12, and the ar
 - **QC.D3. Qt 6.12.0, the newest release.** It is the long-term support version after 6.8 (since 6.8, every fourth
   minor version), released 2026-09-30. Basis: the user's ruling of 2026-10-28 ("bump the Qt version we are using to
   the latest"); read (Qt's "Qt Releases", qtbase's `v6.12.0` tag).
+- **QC.D4. CI installs Qt with a pinned commit of aqtinstall's master.** Its latest release, 3.3.0 (2025-06-02),
+  fails to read Qt 6.11 and later's Windows x64 repository, which Qt split by compiler; master's "Support Qt 6.11+ for
+  Windows x64" (2026-03-01) reads it. Every `install-qt-action` step takes commit `076e1659807d` in place of 3.3.0, one
+  aqtinstall for every job; the documents' Linux and macOS recipes keep the release, which installs 6.12.0 there. When
+  a release carries the fix, CI goes back to a release. Basis: measured (3.3.0 lists no Windows x64 architecture for
+  6.12.0; the commit lists all four and installs `win64_msvc2022_64` with Qt Multimedia).
 
 ## 6. Claims to check and open questions
 
 - **Qt 6.12's deprecations and warnings** under the project's GCC warning set at `-O2` and `-O3`, and under CI's
-  clang on macOS: read in the first build.
+  clang on macOS: read in the first build. Checked at `-O2` with `-Werror`: none; `-O3` and clang are CI's.
 - **The release platforms' architectures for 6.12.0** (`aqt list-qt <host> desktop --arch 6.12.0`), and the
-  WebAssembly build's Emscripten version for 6.12.
-- **The bounded variant reader's claim** that Qt reads a null variant's data, on 6.12.
+  WebAssembly build's Emscripten version for 6.12. Checked: the same architectures as 6.9.3 on every host, Windows x64
+  only through aqtinstall's master (QC.D4); Emscripten 5.0.5 (Qt 6.12's "Qt for WebAssembly" page).
+- **The bounded variant reader's claim** that Qt reads a null variant's data, on 6.12. Checked: it does, on 6.9.3,
+  6.10.2 and 6.12.0.
 - **Issue #367:** whether to close it once the ghost has landed, and what to post on it and on QTBUG-142809 and
   Launchpad; each is public, so the user's.
 
