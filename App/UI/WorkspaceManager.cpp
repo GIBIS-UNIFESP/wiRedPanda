@@ -324,6 +324,11 @@ void WorkspaceManager::loadPandaFile(const QString &fileName)
     }
 }
 
+void WorkspaceManager::openPandaFile(const QString &fileName)
+{
+    Application::guardedSlot(this, [this, &fileName] { loadPandaFile(fileName); });
+}
+
 void WorkspaceManager::openICInTab(const QString &blobName, int icElementId, const QByteArray &blob)
 {
     if (!m_currentTab) {
@@ -398,7 +403,8 @@ void WorkspaceManager::openFile()
                     return;
                 }
                 file.close();
-                loadPandaFile(fileName);
+                // Called back later, from the browser's event, outside the guarded slot that asked
+                openPandaFile(fileName);
             }
         };
         QFileDialog::getOpenFileContent("Panda files (*.panda)", fileContentReady);

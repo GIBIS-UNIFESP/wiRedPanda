@@ -34,6 +34,7 @@ private slots:
     void testSaveAsConflictBlocksSave();
     void testSaveAsConflictSwitchToTab();
     void testReloadFile();
+    void testOpeningAFileThatDoesNotReadFromEachEntryReportsIt();
 
     // --- Simulation controls ---
 
