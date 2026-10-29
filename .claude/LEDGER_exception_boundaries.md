@@ -53,6 +53,8 @@ status change gets a dated line in the log.
 - 2026-10-29: EB.4 done (`1458eddcf`): a snapshot carries the IC files its ICs read (EB.D4).
 - 2026-10-29: CI at `9559fa4fa` and `0fcfae66d`: EB.3's test failed with no output device and EB.10's constructor
   lacked parameter docs; both fixed and folded, the hashes above re-mapped.
+- 2026-10-29: CI green at `87f1b2f2f` for EB.3, EB.10 and EB.4 (Build 40896757311, Sanitizers 40896757433, API docs
+  40896759215; none skipped).
 
 ## Appendix: the inventory (EB.1)
 
