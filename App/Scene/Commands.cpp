@@ -10,6 +10,9 @@
 #include <vector>
 
 #include <QCoreApplication>
+#include <QDir>
+#include <QFile>
+#include <QFileInfo>
 #include <QIODevice>
 #include <QKeySequence>
 #include <QSet>
@@ -1404,6 +1407,74 @@ void RemoveBlobCommand::redo()
 void RemoveBlobCommand::undo()
 {
     m_scene->icRegistry()->setBlob(m_blobName, m_data);
+}
+
+// --- RemoveICFileCommand ---
+
+RemoveICFileCommand::RemoveICFileCommand(const QString &filePath, const QString &pathInTrash,
+                                         const QList<QGraphicsItem *> &instances, Scene *scene,
+                                         std::function<void()> filesChanged, QUndoCommand *parent)
+    : QUndoCommand(parent)
+    , m_filePath(filePath)
+    , m_pathInTrash(pathInTrash)
+    , m_filesChanged(std::move(filesChanged))
+{
+    setText(tr("Remove IC file \"%1\"").arg(QFileInfo(filePath).fileName()));
+    if (!instances.isEmpty()) {
+        new DeleteItemsCommand(instances, scene, this);
+    }
+}
+
+void RemoveICFileCommand::redo()
+{
+    QUndoCommand::redo();
+
+    // The caller moved the file before the first redo
+    if (!m_firstRedo && QFileInfo::exists(m_filePath)) {
+        QFile file(m_filePath);
+        if (file.moveToTrash()) {
+            m_pathInTrash = file.fileName();
+        } else {
+            qCWarning(zero) << "Could not move the IC file to the trash again:" << m_filePath << file.errorString();
+        }
+    }
+    m_firstRedo = false;
+
+    if (m_filesChanged) {
+        m_filesChanged();
+    }
+}
+
+void RemoveICFileCommand::undo()
+{
+    // The file first, so the instances restored next load it. A file that cannot come back (the trash emptied, or
+    // another file now at its path) leaves the instances to load what their snapshots hold
+    if (!m_pathInTrash.isEmpty()) {
+        if (!QFileInfo::exists(m_filePath) && QFile::rename(m_pathInTrash, m_filePath)) {
+            forgetTrashRecord(m_pathInTrash);
+        } else {
+            qCWarning(zero) << "Could not take the IC file back out of the trash:" << m_pathInTrash;
+        }
+        m_pathInTrash.clear();
+    }
+
+    QUndoCommand::undo();
+
+    if (m_filesChanged) {
+        m_filesChanged();
+    }
+}
+
+void RemoveICFileCommand::forgetTrashRecord(const QString &pathInTrash)
+{
+    // freedesktop.org's trash keeps each file under files/ and a record of where it came from under info/; Windows'
+    // recycle bin and macOS's trash keep theirs where taking the file back cannot reach
+    const QFileInfo inTrash(pathInTrash);
+    QDir trash = inTrash.dir();
+    if ((trash.dirName() != QLatin1String("files")) || !trash.cdUp()) {
+        return;
+    }
+    QFile::remove(trash.filePath(QStringLiteral("info/%1.trashinfo").arg(inTrash.fileName())));
 }
 
 // --- RenameBlobCommand ---

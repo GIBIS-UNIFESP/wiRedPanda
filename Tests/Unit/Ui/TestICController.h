@@ -81,6 +81,7 @@ private slots:
     void testRemoveICFileNoOpWithNoCurrentTab();
     void testRemoveICFileThrowsWhenTrashFails();
     void testRemoveICFileDeletesInstancesAndSaves();
+    void testUndoingAnICFileRemovalPutsTheFileBack();
 
     void testResolveUniqueBlobNameCollisionCancelled();
 };

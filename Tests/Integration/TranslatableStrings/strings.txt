@@ -506,6 +506,7 @@ QObject	Rotate left
 QObject	Rotate right
 RegisterBlobCommand	Register blob "%1"
 RemoveBlobCommand	Remove blob "%1"
+RemoveICFileCommand	Remove IC file "%1"
 RenameBlobCommand	Rename IC "%1" to "%2"
 RotateCommand	Rotate %1 degrees
 SRFlipFlop	SR-FLIP-FLOP

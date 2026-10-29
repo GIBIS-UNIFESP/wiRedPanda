@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <functional>
+
 #include <QCoreApplication>
 #include <QVariant>
 
@@ -566,6 +568,47 @@ private:
     QString m_blobName;
     QByteArray m_data;
     Scene *m_scene;
+};
+
+/**
+ * \class RemoveICFileCommand
+ * \brief Undo command for an IC file removed from the palette: its instances deleted and the file in the trash.
+ *
+ * \details The caller moves the file to the trash before pushing, so a file that cannot be moved is refused before
+ * anything changes; the first redo deletes the instances only. Undo puts the file back from the trash, then the
+ * instances, which load it. A later redo deletes the instances and moves the file to the trash again.
+ */
+class RemoveICFileCommand : public QUndoCommand
+{
+    Q_DECLARE_TR_FUNCTIONS(RemoveICFileCommand)
+
+public:
+    /**
+     * \brief Constructs the command for an IC file already moved to the trash.
+     * \param filePath Where the file was.
+     * \param pathInTrash Where it is in the trash, empty when there was no file.
+     * \param instances The ICs that use the file, deleted with it.
+     * \param scene Target scene.
+     * \param filesChanged Called after each undo and redo, when the folder's files have changed.
+     * \param parent Optional parent undo command.
+     */
+    RemoveICFileCommand(const QString &filePath, const QString &pathInTrash, const QList<QGraphicsItem *> &instances,
+                        Scene *scene, std::function<void()> filesChanged, QUndoCommand *parent = nullptr);
+
+    void redo() override;
+    void undo() override;
+
+    /// Returns where the file is in the trash, empty while it is not there.
+    QString pathInTrash() const { return m_pathInTrash; }
+
+private:
+    /// Removes the record the freedesktop.org trash keeps of a file taken back out of it.
+    static void forgetTrashRecord(const QString &pathInTrash);
+
+    QString m_filePath;
+    QString m_pathInTrash;
+    std::function<void()> m_filesChanged;
+    bool m_firstRedo = true;
 };
 
 /**
