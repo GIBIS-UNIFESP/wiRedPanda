@@ -2025,6 +2025,11 @@ void TestCommands::testLoadListGrowsLinearly()
              "loadList() lost or added items");
     const double growth = (static_cast<double>(large.loadList) / static_cast<double>(large.walk))
                         / (static_cast<double>(small.loadList) / static_cast<double>(small.walk));
+    // Reported on every run, so a runner's spread can be read from its logs, a pass's as well as a failure's
+    const QString times = QString("loadList() %1 and the walk %2 %5 at 250 elements, %3 and %4 %5 at 32,000")
+                              .arg(small.loadList).arg(small.walk).arg(large.loadList).arg(large.walk)
+                              .arg(TestUtils::ThreadCpuTimer::unit());
+    qInfo().noquote() << QString("growth %1; %2").arg(growth).arg(times);
     QVERIFY2(growth < 4.0, qPrintable(QString("against a walk of the same items, loadList() took %1 times as long "
-                                              "at 128 times the elements").arg(growth)));
+                                              "at 128 times the elements (%2)").arg(growth).arg(times)));
 }
