@@ -2119,8 +2119,12 @@ void TestScene::testUndoOfAPasteGrowsLinearly()
              "the paste or its undo lost or kept items");
     const double growth = (static_cast<double>(large.undo) / static_cast<double>(large.paste))
                         / (static_cast<double>(small.undo) / static_cast<double>(small.paste));
+    // Reported on every run, so a runner's spread can be read from its logs, a pass's as well as a failure's
+    const QString times = QString("paste %1 and undo %2 ns at 250 elements, paste %3 and undo %4 ns at 16,000")
+                              .arg(small.paste).arg(small.undo).arg(large.paste).arg(large.undo);
+    qInfo().noquote() << QString("growth %1; %2").arg(growth).arg(times);
     QVERIFY2(growth < 5.0, qPrintable(QString("against the paste of the same items, its undo took %1 times as long "
-                                              "at 64 times the elements").arg(growth)));
+                                              "at 64 times the elements (%2)").arg(growth).arg(times)));
 }
 
 // ============================================================================
