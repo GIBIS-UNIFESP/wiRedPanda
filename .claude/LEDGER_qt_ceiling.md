@@ -10,7 +10,7 @@ every commit of the item. Every status change gets a dated log line.
 **Branch:** `02b-qt-ceiling`, from `02a-qt-floor`.
 
 **Open decisions:** the user's: QC.3, what issue #367 is told; QC.2a, whether the loader guards against Qt's
-`qUncompress()` defect on the floor; QC.2b, `master`'s required checks.
+`qUncompress()` defect on the floor; QC.2b, `master`'s required checks; QC.4a, whether to fix the zoom step's clamp.
 
 | ID | Item | Status | Commits | Notes |
 |---|---|---|---|---|
@@ -19,6 +19,8 @@ every commit of the item. Every status change gets a dated log line.
 | QC.2a | Qt 6.8.3 to 6.11.2 reach a `Q_UNREACHABLE` in `qUncompress()` on a truncated stream (QTBUG-150081, fixed in 6.12.0 and 6.11.3, picked to 6.8): undefined behaviour in a release build of Qt, which the project's loader reaches with a truncated `.panda` file | todo | | Found in QC.2. The releases bundle 6.12.0, so they are fixed; builds against the floor's Qt rely on their Qt carrying the fix. Whether the loader should avoid handing Qt a truncated stream is open |
 | QC.2b | `master`'s branch protection requires the build jobs by name, six of them `Qt6.9.3`; once the ceiling reaches `master` they never report, so the required checks must name the `Qt6.12.0` jobs | todo | | Found in QC.2. A repository setting, the user's to change, when the plans reach `master` |
 | QC.3 | Issue #367's resolution, and whether to post on QTBUG-142809 and Launchpad (§6) | todo | | The user's to decide and post |
+| QC.4 | A copy-drag after a palette drop jumped the view as the copy landed: `resizeScene()` restored scroll values that do not say where the view is while Qt centres a rect smaller than the viewport | done | `7c5442de0` | Reported by the user. Reproduced offscreen: the copy drop moved the view's corner from (-68,-48) to (7,7); a move drag after a palette drop moved it too. Fixed: the corner's scene point kept in both branches and in a right-to-left view; the palette drop and double-click/search add resize the scene. Three tests; each break (the old `resizeScene()`, no right-to-left sign, no resize on the palette drop) fails one; the view behaviours' golden read and regenerated (zoom-out from step 13 no longer drifts). Tip: 227/227, compile-alone and -O3 clean |
+| QC.4a | A zoom step that shows more than the scene rect moves the view: `scale()` clamps its pivot to the old rect before `zoomChanged` lets `resizeScene()` grow it (the view behaviours' golden, zoom-out step 10: 7 pixels, back on the next step) | todo | | Found in QC.4. Open: whether to fix |
 
 ## Log
 
@@ -28,3 +30,5 @@ every commit of the item. Every status change gets a dated log line.
   since 2022, shown again at the user's ruling ("Show it").
 - 2026-10-28: QC.2 doing (`babdebb06`): Qt 6.12.0 everywhere 6.9.3 was, CI on a pinned commit of aqtinstall's
   master (QC.D4); checked locally, CI pending. QC.2a and QC.2b found, both `todo`.
+- 2026-10-29: QC.4, reported by the user, done (`7c5442de0`): resizing the scene keeps the view where it is. QC.4a
+  found, `todo`.
