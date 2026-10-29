@@ -123,3 +123,94 @@ frame Qt owns.
 | `App/UI/WorkspaceManager.cpp:304` | `WorkspaceManager::loadPandaFile()` | A load that fails: the half-loaded tab closed, rethrown (`:310`) | Stays: cleans up for its callers; OPEN-Q's callers have no catch (EB.6) |
 | `App/UI/WorkspaceManager.cpp:616` | `WorkspaceManager::loadAutosaveFiles()` | An autosave that does not load: reported, dropped from the list | Stays: OPEN-G's boundary for autosaves |
 | `App/UI/WorkspaceManager.cpp:714` | `WorkspaceManager::closeTab()` | A save on close that fails: reported, then asked whether to close anyway | Stays: a boundary where the user acted |
+
+### `guardedSlot()` uses
+
+Each is the boundary of the slot whose body it wraps, below Qt's frames, so it covers the body whatever calls the slot.
+It does not cover a command the body pushes, directly or through the scene: that command's first `redo()` runs inside
+`QUndoStack::push()` (UNDO), so the commands themselves must not throw (EB.5). `Application.h:137` is its definition.
+
+| Site | Slot | Disposition |
+|---|---|---|
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:339` | `BewavedDolphin::on_actionExit_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:579` | `BewavedDolphin::on_actionSetTo0_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:588` | `BewavedDolphin::on_actionSetTo1_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:597` | `BewavedDolphin::on_actionInvert_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:606` | `BewavedDolphin::on_actionSetClockWave_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:644` | `BewavedDolphin::on_actionCombinational_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:664` | `BewavedDolphin::on_actionSetLength_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:712` | `BewavedDolphin::on_actionZoomOut_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:721` | `BewavedDolphin::on_actionZoomIn_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:730` | `BewavedDolphin::on_actionResetZoom_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:745` | `BewavedDolphin::on_actionFitScreen_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:754` | `BewavedDolphin::on_actionClear_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:770` | `BewavedDolphin::on_actionAutoCrop_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:779` | `BewavedDolphin::on_actionCopy_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:794` | `BewavedDolphin::on_actionCut_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:812` | `BewavedDolphin::on_actionPaste_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:829` | `BewavedDolphin::on_actionSave_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:844` | `BewavedDolphin::on_actionSaveAs_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:908` | `BewavedDolphin::on_actionLoad_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:971` | `BewavedDolphin::on_actionShowNumbers_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:982` | `BewavedDolphin::on_actionShowWaveforms_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:991` | `BewavedDolphin::on_actionExportToPng_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:1009` | `BewavedDolphin::on_actionExportToPdf_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:1027` | `BewavedDolphin::on_actionAbout_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:1046` | `BewavedDolphin::on_actionAboutQt_triggered()` | Stays |
+| `App/Scene/ICRegistry.cpp:96` | `ICRegistry::onFileChanged()` | Stays |
+| `App/Simulation/Simulation.cpp:39` | `Simulation::Simulation()` | Stays |
+| `App/UI/ExportController.cpp:114` | `ExportController::exportArduinoDialog()` | Stays |
+| `App/UI/ExportController.cpp:136` | `ExportController::exportSystemVerilogDialog()` | Stays |
+| `App/UI/ExportController.cpp:158` | `ExportController::exportPdfDialog()` | Stays |
+| `App/UI/ExportController.cpp:187` | `ExportController::exportImageDialog()` | Stays |
+| `App/UI/ICController.cpp:77` | `ICController::addICFromFile()` | Stays |
+| `App/UI/ICController.cpp:136` | `ICController::showRemoveICHint()` | Stays |
+| `App/UI/ICController.cpp:221` | `ICController::embedSelectedIC()` | Stays |
+| `App/UI/ICController.cpp:283` | `ICController::extractSelectedIC()` | Stays |
+| `App/UI/ICController.cpp:342` | `ICController::embedICByFile()` | Stays |
+| `App/UI/ICController.cpp:381` | `ICController::extractICByBlobName()` | Stays |
+| `App/UI/ICController.cpp:419` | `ICController::makeSelfContained()` | Stays |
+| `App/UI/ICController.cpp:494` | `ICController::addEmbeddedICFromFile()` | Stays |
+| `App/UI/ICController.cpp:525` | `ICController::removeEmbeddedIC()` | Stays |
+| `App/UI/MainWindow.cpp:423` | `MainWindow::setupConnections()` | Stays |
+| `App/UI/MainWindow.cpp:485` | `MainWindow::on_actionExit_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:539` | `MainWindow::on_actionWires_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:549` | `MainWindow::on_actionRotateRight_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:558` | `MainWindow::on_actionRotateLeft_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:577` | `MainWindow::on_actionAbout_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:651` | `MainWindow::on_actionShortcuts_and_Tips_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:658` | `MainWindow::on_actionAboutQt_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:665` | `MainWindow::on_actionReportTranslationError_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:783` | `MainWindow::on_actionSelectAll_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:873` | `MainWindow::on_actionGates_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:910` | `MainWindow::on_actionZoomIn_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:921` | `MainWindow::on_actionZoomOut_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:932` | `MainWindow::on_actionResetZoom_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:943` | `MainWindow::on_actionZoomToFit_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:1094` | `MainWindow::on_actionRestart_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:1106` | `MainWindow::on_actionFastMode_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:1115` | `MainWindow::on_actionWaveform_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:1142` | `MainWindow::on_actionLightTheme_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:1150` | `MainWindow::on_actionDarkTheme_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:1158` | `MainWindow::on_actionSystemTheme_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:1178` | `MainWindow::on_actionFlipHorizontally_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:1189` | `MainWindow::on_actionFlipVertically_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:1200` | `MainWindow::on_actionAlignLeft_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:1211` | `MainWindow::on_actionAlignRight_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:1222` | `MainWindow::on_actionAlignTop_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:1233` | `MainWindow::on_actionAlignBottom_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:1244` | `MainWindow::on_actionAlignHorizontalCenter_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:1255` | `MainWindow::on_actionAlignVerticalCenter_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:1266` | `MainWindow::on_actionDistributeHorizontally_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:1277` | `MainWindow::on_actionDistributeVertically_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:1298` | `MainWindow::on_actionFullscreen_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:1306` | `MainWindow::on_actionMute_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:1319` | `MainWindow::on_actionLabelsUnderIcons_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:1328` | `MainWindow::on_actionICPreview_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:1336` | `MainWindow::on_actionCheckForUpdates_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:1344` | `MainWindow::on_actionShowMinimap_triggered()` | Stays |
+| `App/UI/WorkspaceManager.cpp:281` | `WorkspaceManager::newTab()` | Stays |
+| `App/UI/WorkspaceManager.cpp:386` | `WorkspaceManager::openFile()` | Stays |
+| `App/UI/WorkspaceManager.cpp:419` | `WorkspaceManager::saveFile()` | Stays |
+| `App/UI/WorkspaceManager.cpp:462` | `WorkspaceManager::saveFileAs()` | Stays |
+| `App/UI/WorkspaceManager.cpp:506` | `WorkspaceManager::reloadFile()` | Stays |
