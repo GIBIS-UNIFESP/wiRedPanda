@@ -116,6 +116,9 @@ What no single change owns: the pitfalls of building and testing this code base,
   `-Wdouble-promotion`), and a lambda init-capture named after the structured binding it copies (`[inputs = inputs]`,
   clang's `-Wshadow`). CI's macOS jobs build the tests with Apple clang; nothing checks clang locally, and ASan and
   UBSan are left to CI's Sanitizers workflow.
+- CI's Ubuntu 24.04 GCC 13.3 raises `-Wrange-loop-construct` where GCC 13.4 and 15 do not: a structured binding that
+  copies a small pair from an initializer list (`for (const auto [a, b] : {std::pair(...), ...})`) binds by reference.
+  The `ubuntu:24.04` image's `g++` reproduces it.
 - MSVC's C4702 (unreachable code) comes from its code generator, which `/external:W0` does not reach, so Qt 6.12's
   overflow helpers raise it from Qt's own headers; the build disables it (`/wd4702`), as Microsoft documents for the
   back end's C47xx warnings.

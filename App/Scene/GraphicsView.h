@@ -87,6 +87,14 @@ protected:
     int m_zoomLevel = 0;        ///< Current zoom step (0 = 1:1, positive = zoomed in).
 
 private:
+    // --- Zoom ---
+
+    /// The viewport point a zoom keeps still: the cursor while it is over the view, else the viewport's centre.
+    QPoint zoomPivot() const;
+
+    /// Zooms to \a level's scale, keeping the scene point under the viewport point \a pivot under it.
+    void zoomToLevel(const int level, const QPoint pivot);
+
     // --- Members ---
 
     bool m_pan = false;    ///< True while the user is middle-click or space-drag panning.

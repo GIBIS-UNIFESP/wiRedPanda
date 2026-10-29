@@ -6,6 +6,7 @@
 #include <cmath>
 
 #include <QApplication>
+#include <QCursor>
 #include <QDebug>
 #include <QElapsedTimer>
 #include <QGraphicsItem>
@@ -35,8 +36,7 @@ GraphicsView::GraphicsView(QWidget *parent)
     // no button is pressed (required for wire-routing cursor feedback)
     setMouseTracking(true);
 
-    // AnchorUnderMouse keeps the point under the cursor fixed during zoom/resize,
-    // giving the intuitive "zoom into where you're looking" behavior
+    // A resize keeps the point under the cursor fixed; a zoom keeps its own pivot (zoomToLevel())
     setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
     setResizeAnchor(QGraphicsView::AnchorUnderMouse);
 
@@ -165,25 +165,13 @@ void GraphicsView::wheelEvent(QWheelEvent *event)
 {
     const int zoomDirection = event->angleDelta().y();
     const QPoint cursor = event->position().toPoint();
-    // The scene point under the cursor before the zoom, which stays under it
-    const QPointF pinned = mapToScene(cursor);
-    bool zoomed = false;
 
     if (zoomDirection > 0 && canZoomIn()) {
-        zoomIn();
-        zoomed = true;
+        zoomToLevel(m_zoomLevel + 1, cursor);
+        sentryBreadcrumb("ui", QStringLiteral("Zoom in: level %1").arg(m_zoomLevel));
     } else if (zoomDirection < 0 && canZoomOut()) {
-        zoomOut();
-        zoomed = true;
-    }
-
-    // scale() pivots on the last mouse move's point while the pointer is over the view (AnchorUnderMouse), else on
-    // the viewport's centre, so the view scrolls by however far the pinned point drifted from the cursor. The scroll
-    // bars clamp it to the scene rect.
-    if (zoomed) {
-        const QPointF drift = viewportTransform().map(pinned) - QPointF(cursor);
-        horizontalScrollBar()->setValue(horizontalScrollBar()->value() + qRound(drift.x()));
-        verticalScrollBar()->setValue(verticalScrollBar()->value() + qRound(drift.y()));
+        zoomToLevel(m_zoomLevel - 1, cursor);
+        sentryBreadcrumb("ui", QStringLiteral("Zoom out: level %1").arg(m_zoomLevel));
     }
 
     event->accept();
@@ -200,27 +188,50 @@ void GraphicsView::setFastMode(const bool fastMode)
 
 void GraphicsView::zoomIn()
 {
-    // 1.25 and 0.8 are reciprocals (1/1.25 == 0.8) so zoom-in then zoom-out
-    // returns to exactly the original scale without floating-point drift
-    scale(1.25, 1.25);
-    ++m_zoomLevel;
+    zoomToLevel(m_zoomLevel + 1, zoomPivot());
     sentryBreadcrumb("ui", QStringLiteral("Zoom in: level %1").arg(m_zoomLevel));
-    emit zoomChanged();
 }
 
 void GraphicsView::zoomOut()
 {
-    scale(0.8, 0.8);
-    m_zoomLevel--;
+    zoomToLevel(m_zoomLevel - 1, zoomPivot());
     sentryBreadcrumb("ui", QStringLiteral("Zoom out: level %1").arg(m_zoomLevel));
-    emit zoomChanged();
 }
 
 void GraphicsView::resetZoom()
 {
-    resetTransform();
-    m_zoomLevel = 0;
+    zoomToLevel(0, zoomPivot());
     sentryBreadcrumb("ui", QStringLiteral("Zoom reset"));
+}
+
+QPoint GraphicsView::zoomPivot() const
+{
+    // The cursor while it is over the view, as AnchorUnderMouse reads it, else the viewport's centre
+    if (underMouse()) {
+        return viewport()->mapFromGlobal(QCursor::pos());
+    }
+    return viewport()->rect().center();
+}
+
+void GraphicsView::zoomToLevel(const int level, const QPoint pivot)
+{
+    // The scene point under the pivot stays under it. The scale is the level's power of 1.25, so a level is always the
+    // same scale however it was reached; the scene first grows over what the view will show, since Qt clamps the
+    // scroll bars to the scene rect, and setTransform() pivots elsewhere (AnchorUnderMouse: the last mouse move's point,
+    // or the last centre), so the view scrolls by however far the pinned point drifted from the pivot
+    const QPointF pinned = mapToScene(pivot);
+    const qreal scaleFactor = std::pow(1.25, level);
+    if (auto *scene_ = qobject_cast<Scene *>(scene())) {
+        scene_->growSceneOver(QRectF(pinned - (QPointF(pivot) / scaleFactor), QSizeF(viewport()->size()) / scaleFactor));
+    }
+
+    setTransform(QTransform::fromScale(scaleFactor, scaleFactor));
+    m_zoomLevel = level;
+
+    const QPointF drift = viewportTransform().map(pinned) - QPointF(pivot);
+    const int direction = isRightToLeft() ? -1 : 1;
+    horizontalScrollBar()->setValue(horizontalScrollBar()->value() + (direction * qRound(drift.x())));
+    verticalScrollBar()->setValue(verticalScrollBar()->value() + qRound(drift.y()));
     emit zoomChanged();
 }
 

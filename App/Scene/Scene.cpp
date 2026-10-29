@@ -825,6 +825,25 @@ QRectF quantizeOutward(const QRectF &rect)
     const qreal bottom = std::ceil(rect.bottom() / kSceneRectQuantum) * kSceneRectQuantum;
     return QRectF(QPointF(left, top), QPointF(right, bottom));
 }
+
+/// What the scene rect holds around what the view shows, in scene units: a rect no larger than the viewport is
+/// centred in it by Qt, which has no scroll position to keep.
+constexpr qreal kSceneRectMargin = 100.0;
+
+/**
+ * \brief Sets \a scene's rect to \a rect, the scene point at \a view's viewport corner staying there.
+ * \details The scroll bars' values do not say where the view is while Qt centres a rect smaller than the viewport,
+ * and a right-to-left view counts from the other end; the drift is in whole pixels, as the scroll position is.
+ */
+void setSceneRectKeepingView(QGraphicsScene *scene, QGraphicsView *view, const QRectF &rect)
+{
+    const QPointF corner = view->mapToScene(QPoint(0, 0));
+    scene->setSceneRect(rect);
+    const QPointF drift = view->viewportTransform().map(corner);
+    const int direction = view->isRightToLeft() ? -1 : 1;
+    view->horizontalScrollBar()->setValue(view->horizontalScrollBar()->value() + (direction * qRound(drift.x())));
+    view->verticalScrollBar()->setValue(view->verticalScrollBar()->value() + qRound(drift.y()));
+}
 } // namespace
 
 void Scene::resizeScene()
@@ -845,22 +864,22 @@ void Scene::resizeScene()
         return;
     }
 
-    // The rect holds what the view shows, with a margin: a rect no larger than the viewport is centred in it by Qt,
-    // which has no scroll position to keep
+    // The rect holds what the view shows, with a margin
     auto *view = viewList.first();
-    constexpr qreal margin = 100.0;
     const auto visibleScene = view->mapToScene(view->viewport()->rect()).boundingRect()
-                                  .adjusted(-margin, -margin, margin, margin);
+                                  .adjusted(-kSceneRectMargin, -kSceneRectMargin, kSceneRectMargin, kSceneRectMargin);
+    setSceneRectKeepingView(this, view, quantizeOutward(rect.united(visibleScene)));
+}
 
-    // The scene point at the viewport's corner stays there. The scroll bars' values do not say where the view is
-    // while Qt centres a rect smaller than the viewport, and a right-to-left view counts from the other end; the
-    // drift is in whole pixels, as the scroll position is
-    const QPointF corner = view->mapToScene(QPoint(0, 0));
-    setSceneRect(quantizeOutward(rect.united(visibleScene)));
-    const QPointF drift = view->viewportTransform().map(corner);
-    const int direction = view->isRightToLeft() ? -1 : 1;
-    view->horizontalScrollBar()->setValue(view->horizontalScrollBar()->value() + (direction * qRound(drift.x())));
-    view->verticalScrollBar()->setValue(view->verticalScrollBar()->value() + qRound(drift.y()));
+void Scene::growSceneOver(const QRectF &shown)
+{
+    const auto viewList = views();
+    if (viewList.isEmpty()) {
+        return;
+    }
+
+    const auto margined = shown.adjusted(-kSceneRectMargin, -kSceneRectMargin, kSceneRectMargin, kSceneRectMargin);
+    setSceneRectKeepingView(this, viewList.first(), quantizeOutward(sceneRect().united(margined)));
 }
 
 QUndoStack *Scene::undoStack()
