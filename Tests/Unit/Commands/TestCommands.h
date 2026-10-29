@@ -66,6 +66,7 @@ private slots:
     void testMorphUndoRestoresInputsTheNewTypeCannotHave();
     void testMorphUndoWithAPictureThatIsGoneShowsTheDefault();
     void testUndoWithAPictureThatIsGoneShowsTheDefault();
+    void testUndoWithASoundThatIsGoneKeepsItsPath();
 
     // SetPropertyCommand: one property of elements, its values before and after, merged within an edit session
     void testSetPropertyCommandUndoesEachElementsValue();

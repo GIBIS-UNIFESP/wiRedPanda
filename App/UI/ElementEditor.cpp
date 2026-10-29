@@ -9,6 +9,7 @@
 #include <QDebug>
 #include <QDir>
 #include <QFile>
+#include <QFileInfo>
 #include <QIcon>
 #include <QImageReader>
 #include <QMessageBox>
@@ -968,6 +969,13 @@ void ElementEditor::audioBox()
                                                     QString(), tr("Audio") + " (*.mp3 *.mp4 *.wav *.ogg)");
 
     if (filePath.isEmpty()) {
+        return;
+    }
+
+    // A box plays its built-in sound in place of one that cannot be read, so one is refused here, where it was
+    // picked, before anything changes
+    if (!QFileInfo(filePath).isReadable()) {
+        QMessageBox::warning(this, tr("Invalid Audio"), tr("\"%1\" could not be read.").arg(filePath));
         return;
     }
 

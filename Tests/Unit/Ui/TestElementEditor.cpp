@@ -1520,6 +1520,35 @@ void TestElementEditor::testAudioBoxCancelledDialogIsNoOp()
     QCOMPARE(audiobox->audio(), audioBefore);
 }
 
+void TestElementEditor::testPickingASoundThatCannotBeReadChangesNothing()
+{
+    // A picked file that cannot be read is reported, and neither the box nor the undo stack changes
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+
+    WorkSpace workspace;
+    auto *audiobox = new AudioBox();
+    workspace.scene()->addItem(audiobox);
+
+    ElementEditor editor(&workspace);
+    editor.setScene(workspace.scene());
+    workspace.scene()->clearSelection();
+    audiobox->setSelected(true);
+
+    ScopedFileDialogStub dialogStub;
+    dialogStub.stub.openResult = dir.filePath("gone.wav");
+    auto *undoStack = workspace.scene()->undoStack();
+    const int countBefore = undoStack->count();
+    const QString audioBefore = audiobox->audio();
+
+    auto dismisser = TestUtils::AutoDismisser::acceptMessageBox();
+    editor.audioBox();
+
+    QCOMPARE(dismisser.dismissCount(), 1);
+    QCOMPARE(audiobox->audio(), audioBefore);
+    QCOMPARE(undoStack->count(), countBefore);
+}
+
 void TestElementEditor::testAudioBoxSetsAudioAndUpdatesLabel()
 {
     WorkSpace workspace;

@@ -50,7 +50,7 @@ private slots:
     // Path resolution (mechanics tested directly in Tests/Unit/Core/TestExternalFilePath.cpp;
     // these confirm AudioBox itself is wired to it correctly)
     void testSetAudioWithAbsolutePath();
-    void testSetAudioWithNonExistentPathThrows();
+    void testSetAudioWithNonExistentPathKeepsItAndPlaysTheDefault();
     void testLoadResolvesBareFilenameAgainstContextDir();
     void testLoadResolvesForeignPathViaBareFilenameFallback();
     void testSaveStoresFilenameOnlyInProjectDir();

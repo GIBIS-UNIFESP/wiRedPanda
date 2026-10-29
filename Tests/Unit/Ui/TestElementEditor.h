@@ -82,6 +82,7 @@ private slots:
 
     void testAudioBoxGuardsNonAudioBoxSelection();
     void testAudioBoxCancelledDialogIsNoOp();
+    void testPickingASoundThatCannotBeReadChangesNothing();
     void testAudioBoxSetsAudioAndUpdatesLabel();
     void testAudioBoxChangeIsUndoable();
     void testLowercaseTriggerPushesOneCommand();

@@ -8,6 +8,7 @@
 #include <utility>
 
 #include <QDir>
+#include <QFile>
 #include <QImage>
 #include <QTemporaryDir>
 
@@ -1709,6 +1710,41 @@ void TestCommands::testUndoWithAPictureThatIsGoneShowsTheDefault()
     scene->undoStack()->redo();
     QCOMPARE(scene->undoStack()->index(), 2);
     QVERIFY(inputSwitch->externalFiles().isEmpty());
+}
+
+void TestCommands::testUndoWithASoundThatIsGoneKeepsItsPath()
+{
+    // A change to the built-in sound is undone after the custom sound's file is gone: the undo restores the path, the
+    // box plays its default, and the stack steps; the redo steps back
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString wav = dir.filePath("custom.wav");
+    QFile file(wav);
+    QVERIFY(file.open(QIODevice::WriteOnly));
+    file.write("DUMMY AUDIO DATA");
+    file.close();
+
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *audioBox = new AudioBox();
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{audioBox}, scene));
+    audioBox->setAudio(wav);
+
+    QByteArray oldData;
+    QDataStream stream(&oldData, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(stream);
+    audioBox->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
+    audioBox->setAudio(QString::fromLatin1(AudioBox::kDefaultAudioPath));
+    scene->receiveCommand(new UpdateCommand({audioBox}, oldData, scene));
+    QVERIFY(QFile::remove(wav));
+
+    scene->undoStack()->undo();
+    QCOMPARE(scene->undoStack()->index(), 1);
+    QCOMPARE(audioBox->audio(), wav);
+
+    scene->undoStack()->redo();
+    QCOMPARE(scene->undoStack()->index(), 2);
+    QCOMPARE(audioBox->audio(), QString::fromLatin1(AudioBox::kDefaultAudioPath));
 }
 
 void TestCommands::testSetPropertyCommandUndoesEachElementsValue()
