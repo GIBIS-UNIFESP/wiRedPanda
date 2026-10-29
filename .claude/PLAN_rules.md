@@ -18,16 +18,17 @@ below, each recreated from `master` by intent, and kept the branch as evidence.
 | 1 | Characterization on `master` | `PLAN_01_characterization.md` | `01-characterization` |
 | 2 | Fixes to `master` | `PLAN_02_master_fixes.md` | `02-master-fixes` |
 | 3 | The Qt 6.8 floor | `PLAN_qt_floor.md` | `02a-qt-floor` |
-| 4 | Exception boundaries | `PLAN_exception_boundaries.md` | `02b-exception-boundaries` |
-| 5 | Element types as data | `PLAN_03_element_types.md` | `03-element-types` |
-| 6 | ICs and the document format | `PLAN_04_ics_and_format.md` | `04-ics-and-format` |
-| 7 | Simulation semantics and its oracles | `PLAN_05_semantics.md` | `05-semantics` |
-| 8 | The simulation core | `PLAN_06_core.md` | `06-core` |
-| 9 | Temporal mode in the application | `PLAN_07_temporal_mode.md` | `07-temporal-mode` |
-| 10 | Export fidelity | `PLAN_08_export.md` | `08-export` |
-| 11 | Editor architecture | `PLAN_09_editor.md` | `09-editor` |
-| 12 | The model-cost round | `PLAN_model_cost.md` | `09a-model-cost` |
-| 13 | GPU canvas | `PLAN_10_gpu_canvas.md` | `10-gpu-canvas` |
+| 4 | The Qt ceiling: Qt 6.12 | `PLAN_qt_ceiling.md` | `02b-qt-ceiling` |
+| 5 | Exception boundaries | `PLAN_exception_boundaries.md` | `02c-exception-boundaries` |
+| 6 | Element types as data | `PLAN_03_element_types.md` | `03-element-types` |
+| 7 | ICs and the document format | `PLAN_04_ics_and_format.md` | `04-ics-and-format` |
+| 8 | Simulation semantics and its oracles | `PLAN_05_semantics.md` | `05-semantics` |
+| 9 | The simulation core | `PLAN_06_core.md` | `06-core` |
+| 10 | Temporal mode in the application | `PLAN_07_temporal_mode.md` | `07-temporal-mode` |
+| 11 | Export fidelity | `PLAN_08_export.md` | `08-export` |
+| 12 | Editor architecture | `PLAN_09_editor.md` | `09-editor` |
+| 13 | The model-cost round | `PLAN_model_cost.md` | `09a-model-cost` |
+| 14 | GPU canvas | `PLAN_10_gpu_canvas.md` | `10-gpu-canvas` |
 
 Each has a ledger beside it (`LEDGER_<same suffix>.md`). The plans run one at a time, in this order, each starting once
 the one before it has landed; no plan runs beside another, so no plan carries a rule for whichever of two lands first
@@ -39,8 +40,8 @@ master. we are going to do plan 1 on a branch then after it completes we will cr
 the table once that plan is finished, `01-characterization` from `00-plans`. A plan **lands** when its branch is
 finished: every row done or dropped, every slice checked (§3). "`master`" in the plans names the code the stack starts
 from, `master` as `00-plans` branched from it, whose behaviour plan 1 pins; a later plan builds on the branches before
-it. The branch names carry their plan's number, the floor, the exception boundaries and the round a letter after the
-plan they follow, so the branches sort in their order.
+it. The branch names carry their plan's number, the floor, the ceiling, the exception boundaries and the round a letter
+after the plan they follow, so the branches sort in their order.
 
 On `gpu-canvas`, rendering, the editor, the element model, the simulation, temporal mode, both exporters and the file
 format shared one branch and one order of phases, so an open question in one area held up the rest, and no part of it
