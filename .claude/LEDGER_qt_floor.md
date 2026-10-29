@@ -7,7 +7,7 @@ sub-ID of the item it belongs to (`QF.4a`, `QF.4b`, ...) and a line in the log. 
 (committed), `blocked` (on what, in the notes) or `dropped` (why, with the user's decision). The Commits column lists
 every commit of the item. Every status change gets a dated line in the log.
 
-**Branch:** `02a-qt-floor`, from `02-master-fixes` at `f73422ab7`, created 2026-10-28. One slice of one commit.
+**Branch:** `02a-qt-floor`, from `02-master-fixes` at `d11accc1b`, created 2026-10-28. One slice of one commit.
 
 **Open decisions:** none.
 
@@ -31,7 +31,7 @@ Each row's notes say how its check is shown to fail; "as on the branch" marks a 
   became "no new CI build", the 6.8 guards joining the dead ones (QF.2). The rows for a local 6.7.3 suite run (QF.6)
   and the first Windows and macOS 6.7.3 runs (QF.7) went, with no 6.7.3 build left to run; the include check, QF.8,
   is now QF.6. QF.5's break is now the old apt job against the raised floor, since no 6.7.3 job exists to break.
-- 2026-10-28: branch created from `02-master-fixes` at `f73422ab7`, plan 2 done. QF.1 to QF.6 doing (`4c54ccc8a`):
+- 2026-10-28: branch created from `02-master-fixes` at `f73422ab7`, plan 2 done. QF.1 to QF.6 doing (`3c2f9cfa5`):
   the floor, its dead guards, the documents, the recipes and CI in one commit; tip checked, suite 227/227 on
   relwithdebinfo, every changed source compiled alone and at `-O3`, `fix_style.py` clean.
 - 2026-10-28: QF.D6 and QF.D7 added at the user's rulings: aqtinstall first with a distribution's packages the
@@ -40,3 +40,5 @@ Each row's notes say how its check is shown to fail; "as on the branch" marks a 
 - 2026-10-28: QF.1 to QF.6 done: CI green on `48244a14e`, Build 40798106953, Sanitizers 40798106948, Lint
   40798107241, API docs 40798107236, and the fresh distro workflow, started by hand, 40798106406 (Debian trixie,
   Ubuntu 26.04, the minimum CMake, aqtinstall on Ubuntu 24.04 and on macOS 15). The floor has landed.
+- 2026-10-29: rebased onto `02-master-fixes` at `424395ea9`, plan 2's folds from the Qt ceiling's CI (QC.2d,
+  QC.2e); the hashes above re-mapped.
