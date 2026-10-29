@@ -410,7 +410,8 @@ void MainWindow::setupConnections()
         // scene origin, so it's visible however the canvas is scrolled or zoomed.
         auto *view = tab->view();
         const QPointF center = view->mapToScene(view->viewport()->rect().center());
-        tab->scene()->addItem(mimeData, center);
+        // An IC's file can be gone or not read: reported here, where the user acted
+        Application::guardedSlot(this, [tab, mimeData, center] { tab->scene()->addItem(mimeData, center); });
     });
     connect(m_ui->pushButtonAddIC,             &QPushButton::clicked,     m_icController,      &ICController::addICFromFile);
     connect(m_ui->pushButtonRemoveIC,          &QPushButton::clicked,     m_icController,      &ICController::showRemoveICHint);

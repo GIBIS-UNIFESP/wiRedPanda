@@ -547,6 +547,29 @@ void TestMainWindowGui::testPastingAClipboardThatDoesNotReadReportsIt()
     QCOMPARE(scene->elements().size(), elementCount);
 }
 
+void TestMainWindowGui::testAddingAnICWhoseFileIsGoneFromThePaletteReportsIt()
+{
+    // The palette's add is a slot Qt calls: an IC whose file is gone is reported there, nothing added
+    std::unique_ptr<MainWindow> window(createMW());
+    auto *scene = window->currentTab()->scene();
+    scene->setContextDir(m_fixtureDir);
+    const auto elementCount = scene->elements().size();
+
+    QByteArray itemData;
+    QDataStream stream(&itemData, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(stream);
+    stream << QPoint(0, 0) << ElementType::IC << QString("does_not_exist.panda") << false << QString();
+    auto *mimeData = new QMimeData();
+    mimeData->setData(MimeType::DragDrop, itemData);
+
+    try {
+        emit window->m_palette->addElementRequested(mimeData);
+    } catch (const std::exception &e) {
+        QFAIL(qPrintable(QString("the palette's add threw: %1").arg(e.what())));
+    }
+    QCOMPARE(scene->elements().size(), elementCount);
+}
+
 // ===========================================================================
 // Simulation controls
 // ===========================================================================

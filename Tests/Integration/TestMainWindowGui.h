@@ -36,6 +36,7 @@ private slots:
     void testReloadFile();
     void testOpeningAFileThatDoesNotReadFromEachEntryReportsIt();
     void testPastingAClipboardThatDoesNotReadReportsIt();
+    void testAddingAnICWhoseFileIsGoneFromThePaletteReportsIt();
 
     // --- Simulation controls ---
 
