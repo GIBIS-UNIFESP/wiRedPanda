@@ -10,7 +10,7 @@ every commit of the item. Every status change gets a dated log line.
 **Branch:** `02b-qt-ceiling`, from `02a-qt-floor`.
 
 **Open decisions:** the user's: QC.3, what issue #367 is told; QC.2a, whether the loader guards against Qt's
-`qUncompress()` defect on the floor; QC.2b, `master`'s required checks; QC.4a, whether to fix the zoom step's clamp.
+`qUncompress()` defect on the floor; QC.2b, `master`'s required checks.
 
 | ID | Item | Status | Commits | Notes |
 |---|---|---|---|---|
@@ -20,7 +20,7 @@ every commit of the item. Every status change gets a dated log line.
 | QC.2b | `master`'s branch protection requires the build jobs by name, six of them `Qt6.9.3`; once the ceiling reaches `master` they never report, so the required checks must name the `Qt6.12.0` jobs | todo | | Found in QC.2. A repository setting, the user's to change, when the plans reach `master` |
 | QC.3 | Issue #367's resolution, and whether to post on QTBUG-142809 and Launchpad (§6) | todo | | The user's to decide and post |
 | QC.4 | A copy-drag after a palette drop jumped the view as the copy landed: `resizeScene()` restored scroll values that do not say where the view is while Qt centres a rect smaller than the viewport | done | `7c5442de0` | Reported by the user. Reproduced offscreen: the copy drop moved the view's corner from (-68,-48) to (7,7); a move drag after a palette drop moved it too. Fixed: the corner's scene point kept in both branches and in a right-to-left view; the palette drop and double-click/search add resize the scene. Three tests; each break (the old `resizeScene()`, no right-to-left sign, no resize on the palette drop) fails one; the view behaviours' golden read and regenerated (zoom-out from step 13 no longer drifts). Tip: 227/227, compile-alone and -O3 clean |
-| QC.4a | A zoom step that shows more than the scene rect moves the view: `scale()` clamps its pivot to the old rect before `zoomChanged` lets `resizeScene()` grow it (the view behaviours' golden, zoom-out step 10: 7 pixels, back on the next step) | todo | | Found in QC.4. Open: whether to fix |
+| QC.4a | A zoom step that shows more than the scene rect moves the view: `scale()` clamps its pivot to the old rect before `zoomChanged` lets `resizeScene()` grow it (the view behaviours' golden, zoom-out step 10: 7 pixels, back on the next step) | done | `fb1332b73` | Found in QC.4; fixed at the user's ruling ("fix the zoom clamp too"). Every zoom pins its pivot's scene point, grows the scene over what it will show first (`Scene::growSceneOver()`), then scrolls the point back; the buttons and keys pivot on the viewport's centre, not Qt's stale last centre (their first steps had moved the centre to the scene's origin). A new test zooms a tight scene out and in from each corner, by wheel and button, in both layout directions; each break (no growth, no scroll back, no right-to-left sign, the pivot always the centre) fails it or the wheel test; the golden read and regenerated. Tip: 227/227, compile-alone and -O3 clean |
 
 ## Log
 
@@ -32,3 +32,4 @@ every commit of the item. Every status change gets a dated log line.
   master (QC.D4); checked locally, CI pending. QC.2a and QC.2b found, both `todo`.
 - 2026-10-29: QC.4, reported by the user, done (`7c5442de0`): resizing the scene keeps the view where it is. QC.4a
   found, `todo`.
+- 2026-10-29: QC.4a done (`fb1332b73`) at the user's ruling: a zoom keeps the point it pivots on still.
