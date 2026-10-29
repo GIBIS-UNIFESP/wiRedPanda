@@ -14,7 +14,7 @@ status change gets a dated line in the log.
 
 | ID | Item | Status | Commits | Notes |
 |---|---|---|---|---|
-| EB.1 | The inventory of §3: every throw, catch and `guardedSlot()` site, its frames and its class | doing | | Counts of §1 recounted here. A site whose callers cannot be traced by reading is reached by a probe |
+| EB.1 | The inventory of §3: every throw, catch and `guardedSlot()` site, its frames and its class | done | `ee3eeae44`, `872cfa126`, `8c7c98acd`, `d73012fbc`, `e939a48f2` | Counts of §1 recounted here. A site whose callers cannot be traced by reading is reached by a probe. The appendix holds it: 135 throw sites, 42 catches, 82 `guardedSlot()` uses; the throw sites' paths walked with clangd. Found: EB.5 to EB.9 |
 | EB.2 | The checks that keep the rule (§5): the inventory against the sources, a test per fixed site | todo | | Shown to fail: a `PANDACEPTION` added to a command and a `catch` removed each fail the inventory check |
 | EB.3 | An AudioBox restored with its sound gone (§4) | todo | | Read 2026-10-24, not run: `AudioBox::setAudio()` throws on a missing file and a snapshot restore calls it. It plays its default sound, the path kept (EB.D3) |
 | EB.4 | A command whose first `redo()` throws leaks, its change half applied | todo | | Found 2026-10-26 by `fuzz_undo`'s fourth coverage round (plan 2's P2.78), as a leak: an `UpdateCommand` whose snapshot names an IC that no longer resolves throws from `redo()` inside `QUndoStack::push()`, which takes ownership only after `redo()` returns, so the command leaks and what `redo()` did before the throw stays. The harness reached it by removing a blob still in use, which the application never does (it removes one with its ICs, `WorkSpace::removeEmbeddedIC()`); in the application the same throw needs an IC whose file is gone when a command reloads it. Read, not run, in the application. Each command's first `redo()` goes in the inventory (EB.1). Inside an undo macro the same throw also leaves the macro open, every later edit recorded into it, as plan 2's P2.57 (paste) and P2.76 (`createEmbeddedIC()`) did; both now load before the macro opens. The other macros, read 2026-10-27 (plan 2's audit, AU.8): `Workspace.cpp:914`, `PropertyShortcutHandler.cpp:44`, `:145`, `:221`, `:252`, `ElementEditor.cpp:725`, and `:250`, unreachable; none of their commands can throw today (built from live items, loading no file; the shortcuts' `UpdateCommand` reloads only clocks, buzzers, displays and LEDs, never an IC or an AudioBox; a missing picture shows the default since P2.50). Every macro site goes in the inventory with the commands it pushes, so a command that comes to throw closes its macro |
@@ -40,6 +40,7 @@ status change gets a dated line in the log.
   appendix), the entry paths begun; clangd set up for navigation to trace callers.
 - 2026-10-29: EB.1's inventory written (the appendix): every throw, catch and `guardedSlot()` site, the throw
   sites' paths from clangd's call graph. EB.5 to EB.9 found, `todo`.
+- 2026-10-29: EB.1 done (`e939a48f2`).
 
 ## Appendix: the inventory (EB.1)
 
