@@ -128,7 +128,7 @@ void ICRegistry::onFileChanged(const QString &filePath)
         m_scene->setCircuitUpdateRequired();
 
         auto *cmd = new UpdateBlobCommand(targets, oldData, connections, m_scene);
-        m_scene->undoStack()->push(cmd);
+        m_scene->receiveCommand(cmd);
 
         emit definitionChanged(filePath);
     });
@@ -293,7 +293,7 @@ int ICRegistry::embedICsByFile(const QString &fileName, const QByteArray &fileBy
     // relying on the constructor default, unlike every other UpdateBlobCommand call site.
     cmd->setOldBlob(QByteArray());
     if (!parent) {
-        m_scene->undoStack()->push(cmd);
+        m_scene->receiveCommand(cmd);
     }
     return static_cast<int>(targets.size());
 }
@@ -332,7 +332,7 @@ int ICRegistry::extractToFile(const QString &blobName, const QString &filePath, 
     cmd->setOldBlob(oldBlob);
     cmd->setBlobName(blobName);
     if (!parent) {
-        m_scene->undoStack()->push(cmd);
+        m_scene->receiveCommand(cmd);
     }
     return static_cast<int>(targets.size());
 }

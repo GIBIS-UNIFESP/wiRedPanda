@@ -48,7 +48,7 @@ QJsonObject HistoryHandler::handleUndo(const QJsonObject &params, const QJsonVal
             return createSuccessResponse(result, requestId);
         }
 
-        undoStack->undo();
+        scene->undo();
 
         QJsonObject result;
         result["success"] = true;
@@ -84,7 +84,7 @@ QJsonObject HistoryHandler::handleRedo(const QJsonObject &params, const QJsonVal
             return createSuccessResponse(result, requestId);
         }
 
-        undoStack->redo();
+        scene->redo();
 
         QJsonObject result;
         result["success"] = true;

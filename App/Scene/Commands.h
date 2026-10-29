@@ -8,7 +8,9 @@
 #pragma once
 
 #include <functional>
+#include <memory>
 #include <optional>
+#include <vector>
 
 #include <QCoreApplication>
 #include <QVariant>
@@ -33,6 +35,24 @@ namespace CommandUtils {
      * (QUndoCommand::setObsolete()), so the history stays in step with the scene.
      */
     void abandon(QUndoCommand *command, const char *what);
+
+    /**
+     * \brief Drops \a command, whose snapshot did not read, from inside the catch that caught why.
+     * \details The snapshot is read into copies first (readCopies()), so the scene has not changed: the command marks
+     * itself obsolete, which the undo stack deletes, and \a scene keeps the exception to throw once the stack has
+     * returned (Scene::keepCommandFailure()).
+     */
+    void drop(QUndoCommand *command, Scene *scene);
+
+    /// Elements of \a elements' types, outside any scene, for a snapshot to be read into before the live ones.
+    std::vector<std::unique_ptr<GraphicElement>> copiesOf(const QList<GraphicElement *> &elements);
+    /// The elements \a copies holds.
+    QList<GraphicElement *> pointers(const std::vector<std::unique_ptr<GraphicElement>> &copies);
+    /// Loads \a targets, in order, from \a itemData: a header, then one element each.
+    void readElements(Scene *scene, QByteArray &itemData, const QList<GraphicElement *> &targets);
+    /// Reads \a itemData into copies of \a elements and frees them: throws, leaving \a elements as they are, when it
+    /// does not read.
+    void readCopies(Scene *scene, QByteArray &itemData, const QList<GraphicElement *> &elements);
 
     // Serialization helpers
     /// Restores the items \a itemData holds under \a ids and reloads the elements wired to them; none, and the scene
@@ -378,6 +398,7 @@ private:
 class MorphCommand : public ElementsCommand
 {
     Q_DECLARE_TR_FUNCTIONS(MorphCommand)
+    friend class TestCommands;
 
 public:
     /**
@@ -450,6 +471,7 @@ private:
 class ChangePortSizeCommand : public ElementsCommand
 {
     Q_DECLARE_TR_FUNCTIONS(ChangePortSizeCommand)
+    friend class TestCommands;
 
 public:
     /**
@@ -469,6 +491,13 @@ public:
     void undo() override;
 
 private:
+    /**
+     * \brief Reads what redo() saved: \a saved, the elements in the order it saved them, then the wires removed from
+     * each of the \a resized elements, returned with their ids and attached to \a saved's ports.
+     */
+    std::vector<std::pair<int, std::unique_ptr<Connection>>> readSaved(const QList<GraphicElement *> &saved,
+                                                                       qsizetype resized);
+
     // --- Members ---
     QByteArray m_oldData;
     QList<int> m_order;
@@ -689,6 +718,8 @@ public:
 private:
     /// Loads \a elements, this command's targets, from \a itemData.
     void loadData(const QList<GraphicElement *> &elements, QByteArray &itemData);
+    /// Puts \a blob in the registry under the command's blob name, or removes the name when \a blob is empty.
+    void setBlob(const QByteArray &blob);
     void reconnectConnections();
 
     QByteArray m_oldData;

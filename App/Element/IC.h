@@ -18,6 +18,7 @@
 
 class QGraphicsSceneHoverEvent;
 class Connection;
+class Scene;
 
 /**
  * \class IC
@@ -70,6 +71,9 @@ public:
 
     /// Loads the IC from in-memory blob bytes (full .panda file format).
     void loadFromBlob(const QByteArray &blob, const QString &contextDir);
+    /// Lets this IC, a copy a snapshot is read into before \a live is (CommandUtils::readCopies()), keep the circuit
+    /// \a live built instead of building it again from the same bytes: they load, and the copy is thrown away.
+    void adoptLoadedCircuit(const IC &live);
 
     void loadFromDrop(const QString &fileName, const QString &contextDir) override;
 
@@ -184,6 +188,10 @@ private:
     QString m_blobName;
     /// Whether a sub-circuit has been loaded, from a file or a blob.
     bool m_loaded = false;
+    /// Whether this IC, a copy, took over the record of a circuit another IC built (adoptLoadedCircuit()).
+    bool m_circuitAdopted = false;
+    /// The scene whose file cache this IC, a copy outside any scene, reads its file through, as the live IC does.
+    Scene *m_filesScene = nullptr;
     /// Bytes last successfully loaded via loadFromBlob(), so IC::load() can skip re-loading
     /// an embedded sub-circuit whose blob reference and content are both unchanged (a
     /// label-only property edit) instead of always tearing down and rebuilding it.

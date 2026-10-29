@@ -871,7 +871,7 @@ void WorkSpace::onChildICBlobSaved(int icElementId, const QByteArray &blob)
 
     auto *cmd = new UpdateBlobCommand(targets, oldData, connections, &m_scene);
     cmd->setOldBlob(oldBlob);
-    m_scene.undoStack()->push(cmd);
+    m_scene.receiveCommand(cmd);
 }
 
 void WorkSpace::removeEmbeddedIC(const QString &blobName)

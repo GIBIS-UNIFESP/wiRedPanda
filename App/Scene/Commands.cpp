@@ -25,6 +25,7 @@
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Element/GraphicElements/TruthTable.h"
+#include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/ICRegistry.h"
@@ -172,6 +173,57 @@ void abandon(QUndoCommand *command, const char *what)
     command->setObsolete(true);
 }
 
+void drop(QUndoCommand *command, Scene *scene)
+{
+    qCWarning(zero) << "Undo command" << command->text() << "dropped: its snapshot does not read";
+    command->setObsolete(true);
+    scene->keepCommandFailure(std::current_exception());
+}
+
+std::vector<std::unique_ptr<GraphicElement>> copiesOf(const QList<GraphicElement *> &elements)
+{
+    std::vector<std::unique_ptr<GraphicElement>> copies;
+    copies.reserve(static_cast<std::size_t>(elements.size()));
+    for (const auto *elm : elements) {
+        copies.emplace_back(ElementFactory::buildElement(elm->elementType()));
+        // An IC's copy keeps the circuit the live one built when the snapshot names the same bytes: only bytes that
+        // differ are built twice
+        if (const auto *ic = qobject_cast<const IC *>(elm)) {
+            static_cast<IC *>(copies.back().get())->adoptLoadedCircuit(*ic);
+        }
+    }
+    return copies;
+}
+
+QList<GraphicElement *> pointers(const std::vector<std::unique_ptr<GraphicElement>> &copies)
+{
+    QList<GraphicElement *> elements;
+    elements.reserve(static_cast<qsizetype>(copies.size()));
+    for (const auto &copy : copies) {
+        elements.append(copy.get());
+    }
+    return elements;
+}
+
+void readElements(Scene *scene, QByteArray &itemData, const QList<GraphicElement *> &targets)
+{
+    QDataStream stream(&itemData, QIODevice::ReadOnly);
+    const QVersionNumber version = Serialization::readPandaHeader(stream);
+
+    QHash<quint64, Port *> portMap;
+    auto context = scene->deserializationContext(portMap, version, SerializationPurpose::InMemorySnapshot);
+
+    for (auto *elm : targets) {
+        elm->load(stream, context);
+    }
+}
+
+void readCopies(Scene *scene, QByteArray &itemData, const QList<GraphicElement *> &elements)
+{
+    const auto copies = copiesOf(elements);
+    readElements(scene, itemData, pointers(copies));
+}
+
 Connection *findConn(Scene *scene, const int id)
 {
     return dynamic_cast<Connection *>(scene->itemById(id));
@@ -208,6 +260,37 @@ void addItems(Scene *scene, const QList<QGraphicsItem *> &items)
     }
 }
 
+// Reads \a itemData: \a others, the elements wired to its items, in place, then its items, built afresh
+static QList<QGraphicsItem *> readItems(Scene *scene, QByteArray &itemData, const QList<GraphicElement *> &others)
+{
+    QDataStream stream(&itemData, QIODevice::ReadOnly);
+    QVersionNumber version = Serialization::readPandaHeader(stream);
+
+    QHash<quint64, Port *> portMap;
+    auto context = scene->deserializationContext(portMap, version, SerializationPurpose::InMemorySnapshot);
+
+    for (auto *elm : others) {
+        elm->load(stream, context);
+    }
+
+    /* Assuming that all connections are stored after the elements, we will deserialize the elements first.
+     * We will store one additional information: The element IDs! */
+    return Serialization::deserialize(stream, context);
+}
+
+// Frees items read and never added to a scene, the wires first: a wire still on a port is freed with it
+static void freeRead(QList<QGraphicsItem *> &items)
+{
+    for (auto *&item : items) {
+        if (item->type() == Connection::Type) {
+            delete item;
+            item = nullptr;
+        }
+    }
+    qDeleteAll(items);
+    items.clear();
+}
+
 std::optional<QList<QGraphicsItem *>> loadItems(Scene *scene, QByteArray &itemData, const QList<int> &ids, QList<int> &otherIds)
 {
     if (itemData.isEmpty()) {
@@ -219,25 +302,19 @@ std::optional<QList<QGraphicsItem *>> loadItems(Scene *scene, QByteArray &itemDa
         return std::nullopt;
     }
 
-    QDataStream stream(&itemData, QIODevice::ReadOnly);
-    QVersionNumber version = Serialization::readPandaHeader(stream);
-
-    QHash<quint64, Port *> portMap;
-    auto context = scene->deserializationContext(portMap, version, SerializationPurpose::InMemorySnapshot);
-
-    for (auto *elm : *others) {
-        elm->load(stream, context);
+    // Read first into copies of the elements wired to the items, the items read with them then freed: a record that
+    // does not read throws, and one that holds other than ids' items is refused, before the scene changes
+    {
+        const auto copies = copiesOf(*others);
+        auto read = readItems(scene, itemData, pointers(copies));
+        const bool matches = (read.size() == ids.size());
+        freeRead(read);
+        if (!matches) {
+            return std::nullopt;
+        }
     }
 
-    /* Assuming that all connections are stored after the elements, we will deserialize the elements first.
-     * We will store one additional information: The element IDs! */
-    const auto items = Serialization::deserialize(stream, context);
-
-    if (items.size() != ids.size()) {
-        // None of these items were added to the scene yet, so they'd otherwise leak.
-        qDeleteAll(items);
-        return std::nullopt;
-    }
+    const auto items = readItems(scene, itemData, *others);
 
     // Re-assign the original IDs so undo/redo chains that store IDs remain valid
     for (int i = 0; i < items.size(); ++i) {
@@ -349,8 +426,13 @@ void AddItemsCommand::redo()
 {
     qCDebug(zero) << text();
     SimulationBlocker blocker(m_scene->simulation());
-    if (!CommandUtils::loadItems(m_scene, m_itemData, m_ids, m_otherIds)) {
-        CommandUtils::abandon(this, "an element wired to its items is not on the scene, or its record holds others");
+    try {
+        if (!CommandUtils::loadItems(m_scene, m_itemData, m_ids, m_otherIds)) {
+            CommandUtils::abandon(this, "an element wired to its items is not on the scene, or its record holds others");
+            return;
+        }
+    } catch (const std::exception &) {
+        CommandUtils::drop(this, m_scene);
         return;
     }
     m_scene->setCircuitUpdateRequired();
@@ -368,8 +450,13 @@ void DeleteItemsCommand::undo()
 {
     qCDebug(zero) << text();
     SimulationBlocker blocker(m_scene->simulation());
-    if (!CommandUtils::loadItems(m_scene, m_itemData, m_ids, m_otherIds)) {
-        CommandUtils::abandon(this, "an element wired to its items is not on the scene, or its record holds others");
+    try {
+        if (!CommandUtils::loadItems(m_scene, m_itemData, m_ids, m_otherIds)) {
+            CommandUtils::abandon(this, "an element wired to its items is not on the scene, or its record holds others");
+            return;
+        }
+    } catch (const std::exception &) {
+        CommandUtils::drop(this, m_scene);
         return;
     }
     m_scene->setCircuitUpdateRequired();
@@ -546,7 +633,12 @@ void UpdateCommand::undo()
     if (!found) {
         return;
     }
-    loadData(*found, m_oldData);
+    try {
+        loadData(*found, m_oldData);
+    } catch (const std::exception &) {
+        CommandUtils::drop(this, m_scene);
+        return;
+    }
     refreshRuntimeState();
 }
 
@@ -558,7 +650,12 @@ void UpdateCommand::redo()
     if (!found) {
         return;
     }
-    loadData(*found, m_newData);
+    try {
+        loadData(*found, m_newData);
+    } catch (const std::exception &) {
+        CommandUtils::drop(this, m_scene);
+        return;
+    }
     refreshRuntimeState();
 }
 
@@ -619,14 +716,10 @@ void UpdateCommand::loadData(const QList<GraphicElement *> &elements, QByteArray
         return;
     }
 
-    QDataStream stream(&itemData, QIODevice::ReadOnly);
-    QVersionNumber version = Serialization::readPandaHeader(stream);
-
-    QHash<quint64, Port *> portMap;
-    auto context = m_scene->deserializationContext(portMap, version, SerializationPurpose::InMemorySnapshot);
-
+    // Copies first: a snapshot that does not read throws before a live element changes
+    CommandUtils::readCopies(m_scene, itemData, elements);
+    CommandUtils::readElements(m_scene, itemData, elements);
     for (auto *elm : elements) {
-        elm->load(stream, context);
         elm->setSelected(true);
     }
 }
@@ -1014,10 +1107,15 @@ void MorphCommand::undo()
     // throws frees the ones already rebuilt and leaves the scene as it was
     std::vector<std::unique_ptr<GraphicElement>> rebuilt;
     rebuilt.reserve(static_cast<std::size_t>(m_ids.size()));
-    for (int i = 0; i < m_ids.size(); ++i) {
-        rebuilt.emplace_back(ElementFactory::buildElement(m_types.at(i)));
-        rebuilt.back()->load(stream, context);
-        oldElms << rebuilt.back().get();
+    try {
+        for (int i = 0; i < m_ids.size(); ++i) {
+            rebuilt.emplace_back(ElementFactory::buildElement(m_types.at(i)));
+            rebuilt.back()->load(stream, context);
+            oldElms << rebuilt.back().get();
+        }
+    } catch (const std::exception &) {
+        CommandUtils::drop(this, m_scene);
+        return;
     }
 
     m_deletedConnectionsOnUndo.clear();
@@ -1352,30 +1450,51 @@ void ChangePortSizeCommand::undo()
         return;
     }
 
+    try {
+        // Copies first, the wires read onto them freed before them: a snapshot that does not read throws before a
+        // live element changes
+        const auto copies = CommandUtils::copiesOf(*serializationOrder);
+        readSaved(CommandUtils::pointers(copies), elements.size());
+    } catch (const std::exception &) {
+        CommandUtils::drop(this, m_scene);
+        return;
+    }
+
+    for (auto &[connId, conn] : readSaved(*serializationOrder, elements.size())) {
+        m_scene->updateItemId(conn.get(), connId);
+        m_scene->addItem(conn.release());
+    }
+    for (auto *elm : elements) {
+        elm->setSelected(true);
+    }
+
+    m_scene->setCircuitUpdateRequired();
+}
+
+std::vector<std::pair<int, std::unique_ptr<Connection>>> ChangePortSizeCommand::readSaved(
+    const QList<GraphicElement *> &saved, const qsizetype resized)
+{
     QDataStream stream(&m_oldData, QIODevice::ReadOnly);
     QVersionNumber version = Serialization::readPandaHeader(stream);
 
     QHash<quint64, Port *> portMap;
     auto context = m_scene->deserializationContext(portMap, version, SerializationPurpose::InMemorySnapshot);
 
-    for (auto *elm : *serializationOrder) {
+    for (auto *elm : saved) {
         elm->load(stream, context);
     }
 
-    for (auto *elm : elements) {
+    // Each resized element's removed wires, with their ids
+    std::vector<std::pair<int, std::unique_ptr<Connection>>> wires;
+    for (qsizetype e = 0; e < resized; ++e) {
         int connCount; stream >> connCount;
         for (int i = 0; i < connCount; ++i) {
             int connId; stream >> connId;
-            auto *conn = new Connection();
-            conn->load(stream, context);
-            m_scene->updateItemId(conn, connId);
-            m_scene->addItem(conn);
+            wires.emplace_back(connId, std::make_unique<Connection>());
+            wires.back().second->load(stream, context);
         }
-
-        elm->setSelected(true);
     }
-
-    m_scene->setCircuitUpdateRequired();
+    return wires;
 }
 
 ToggleTruthTableOutputCommand::ToggleTruthTableOutputCommand(GraphicElement *element, int pos, Scene *scene, QUndoCommand *parent)
@@ -1609,16 +1728,16 @@ void UpdateBlobCommand::redo()
     if (!found) {
         return;
     }
-    auto *reg = m_scene->icRegistry();
 
-    if (!m_blobName.isEmpty()) {
-        if (m_newBlob.isEmpty()) {
-            reg->removeBlob(m_blobName);
-        } else {
-            reg->setBlob(m_blobName, m_newBlob);
-        }
+    setBlob(m_newBlob);
+    try {
+        loadData(*found, m_newData);
+    } catch (const std::exception &) {
+        // The registry back as it was, with the elements, which the read did not reach
+        setBlob(m_oldBlob);
+        CommandUtils::drop(this, m_scene);
+        return;
     }
-    loadData(*found, m_newData);
     reconnectConnections();
     m_scene->setCircuitUpdateRequired();
 }
@@ -1631,16 +1750,16 @@ void UpdateBlobCommand::undo()
     if (!found) {
         return;
     }
-    auto *reg = m_scene->icRegistry();
 
-    if (!m_blobName.isEmpty()) {
-        if (m_oldBlob.isEmpty()) {
-            reg->removeBlob(m_blobName);
-        } else {
-            reg->setBlob(m_blobName, m_oldBlob);
-        }
+    setBlob(m_oldBlob);
+    try {
+        loadData(*found, m_oldData);
+    } catch (const std::exception &) {
+        // The registry back as it was, with the elements, which the read did not reach
+        setBlob(m_newBlob);
+        CommandUtils::drop(this, m_scene);
+        return;
     }
-    loadData(*found, m_oldData);
     reconnectConnections();
     m_scene->setCircuitUpdateRequired();
 }
@@ -1651,15 +1770,25 @@ void UpdateBlobCommand::loadData(const QList<GraphicElement *> &elements, QByteA
         return;
     }
 
-    QDataStream stream(&itemData, QIODevice::ReadOnly);
-    QVersionNumber version = Serialization::readPandaHeader(stream);
-
-    QHash<quint64, Port *> portMap;
-    auto context = m_scene->deserializationContext(portMap, version, SerializationPurpose::InMemorySnapshot);
-
+    // Copies first, against the registry as it now holds the blob: a snapshot that does not read throws before a live
+    // element changes
+    CommandUtils::readCopies(m_scene, itemData, elements);
+    CommandUtils::readElements(m_scene, itemData, elements);
     for (auto *elm : elements) {
-        elm->load(stream, context);
         elm->setSelected(true);
+    }
+}
+
+void UpdateBlobCommand::setBlob(const QByteArray &blob)
+{
+    if (m_blobName.isEmpty()) {
+        return;
+    }
+    auto *reg = m_scene->icRegistry();
+    if (blob.isEmpty()) {
+        reg->removeBlob(m_blobName);
+    } else {
+        reg->setBlob(m_blobName, blob);
     }
 }
 
