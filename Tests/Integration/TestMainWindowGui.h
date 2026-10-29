@@ -35,6 +35,7 @@ private slots:
     void testSaveAsConflictSwitchToTab();
     void testReloadFile();
     void testOpeningAFileThatDoesNotReadFromEachEntryReportsIt();
+    void testPastingAClipboardThatDoesNotReadReportsIt();
 
     // --- Simulation controls ---
 

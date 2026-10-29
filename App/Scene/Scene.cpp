@@ -1043,7 +1043,7 @@ void Scene::contextMenu(const QPoint screenPos)
         const auto *mimeData = QApplication::clipboard()->mimeData();
 
         if (ClipboardManager::canPaste(mimeData)) {
-            connect(pasteAction, &QAction::triggered, this, &Scene::pasteAction);
+            connect(pasteAction, &QAction::triggered, this, [this] { Application::guardedSlot(this, [this] { this->pasteAction(); }); });
         } else {
             pasteAction->setEnabled(false);
         }

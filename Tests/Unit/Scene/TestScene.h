@@ -190,6 +190,7 @@ private slots:
     void testContextMenuOnSelectedItemEmitsWithoutClearingSelection();
     void testContextMenuOnEmptyCanvasWithNothingToPasteOrSelect();
     void testContextMenuOnEmptyCanvasWithPasteableClipboard();
+    void testContextMenuPasteOfAClipboardThatDoesNotReadReportsIt();
     void testDroppedPandaFileSkipsNonLocalUrls();
     void testDragEnterEventAcceptsSupportedFormat();
     void testDragEnterEventFallsBackForUnsupportedFormat();

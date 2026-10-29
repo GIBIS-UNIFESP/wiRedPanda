@@ -448,10 +448,13 @@ void MainWindow::setupConnections()
 
 void MainWindow::connectSceneAction(QAction *action, void (Scene::*method)())
 {
+    // A clipboard another program wrote may not read: reported here, where the user acted
     connect(action, &QAction::triggered, this, [this, method] {
-        if (currentTab()) {
-            (currentTab()->scene()->*method)();
-        }
+        Application::guardedSlot(this, [this, method] {
+            if (currentTab()) {
+                (currentTab()->scene()->*method)();
+            }
+        });
     });
 }
 

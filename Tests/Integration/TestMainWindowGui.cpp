@@ -35,6 +35,7 @@
 #include "App/BeWavedDolphin/BeWavedDolphin.h"
 #include "App/BeWavedDolphin/DolphinHost.h"
 #include "App/Core/Application.h"
+#include "App/Core/MimeTypes.h"
 #include "App/Core/Settings.h"
 #include "App/Core/ThemeManager.h"
 #include "App/Element/ElementLabel.h"
@@ -520,6 +521,30 @@ void TestMainWindowGui::testOpeningAFileThatDoesNotReadFromEachEntryReportsIt()
             break;
         }
     }
+}
+
+void TestMainWindowGui::testPastingAClipboardThatDoesNotReadReportsIt()
+{
+    // Another program may have written the clipboard: Edit's Paste, a slot Qt calls, reports it there, nothing added
+    std::unique_ptr<MainWindow> window(createMW());
+    auto *scene = window->currentTab()->scene();
+    scene->addItem(new And());
+    const auto elementCount = scene->elements().size();
+
+    QByteArray itemData;
+    QDataStream stream(&itemData, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(stream);
+    stream << QString("not a circuit");
+    auto *mimeData = new QMimeData();
+    mimeData->setData(MimeType::Clipboard, itemData);
+    QApplication::clipboard()->setMimeData(mimeData);
+
+    try {
+        window->m_ui->actionPaste->trigger();
+    } catch (const std::exception &e) {
+        QFAIL(qPrintable(QString("Paste threw: %1").arg(e.what())));
+    }
+    QCOMPARE(scene->elements().size(), elementCount);
 }
 
 // ===========================================================================

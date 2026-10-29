@@ -3356,6 +3356,46 @@ void TestScene::testContextMenuOnEmptyCanvasWithPasteableClipboard()
     QVERIFY(dismisser.dismissCount() <= 1);
 }
 
+void TestScene::testContextMenuPasteOfAClipboardThatDoesNotReadReportsIt()
+{
+    // The canvas menu's Paste is a slot Qt calls: a clipboard that does not read is reported there, nothing added
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    QByteArray items;
+    {
+        QDataStream itemStream(&items, QIODevice::WriteOnly);
+        Serialization::writePandaHeader(itemStream);
+        itemStream << QPointF() << static_cast<int>(GraphicElement::Type);
+    }
+    auto *mimeData = new QMimeData;
+    mimeData->setData(MimeType::Clipboard, items);
+    QApplication::clipboard()->setMimeData(mimeData);
+    QVERIFY(ClipboardManager::canPaste(QApplication::clipboard()->mimeData()));
+
+    QString thrown;
+    TestUtils::AutoDismisser dismisser([&thrown](QWidget *w) {
+        auto *menu = qobject_cast<QMenu *>(w);
+        if (!menu) {
+            return false;
+        }
+        try {
+            menu->actions().constFirst()->trigger();
+        } catch (const std::exception &e) {
+            thrown = e.what();
+        }
+        menu->close();
+        return true;
+    });
+    scene->contextMenu(QPoint(10, 10));
+
+    if (dismisser.dismissCount() == 0) {
+        // macOS's native menu can close before the dismisser sees it (see the test above)
+        QSKIP("The menu closed before it could be driven");
+    }
+    QVERIFY2(thrown.isEmpty(), qPrintable("Paste threw: " + thrown));
+    QCOMPARE(scene->elements().size(), 0);
+}
+
 void TestScene::testDroppedPandaFileSkipsNonLocalUrls()
 {
     QMimeData mixed;
