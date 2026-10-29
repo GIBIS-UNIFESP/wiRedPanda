@@ -38,6 +38,7 @@
 
 class GraphicElement;
 class GraphicsView;
+class QGraphicsPixmapItem;
 class IC;
 class ItemWithId;
 class Connection;
@@ -485,6 +486,8 @@ protected:
     /// \reimp
     void dragMoveEvent(QGraphicsSceneDragDropEvent *event) override;
     /// \reimp
+    void dragLeaveEvent(QGraphicsSceneDragDropEvent *event) override;
+    /// \reimp
     void dropEvent(QGraphicsSceneDragDropEvent *event) override;
     /// \reimp
     void keyPressEvent(QKeyEvent *event) override;
@@ -602,6 +605,16 @@ private:
 
     // Drag-and-drop payload decoding (delegated to SceneDropHandler)
     SceneDropHandler m_dropHandler = SceneDropHandler(this);
+
+    /// The current in-process drag's picture, where the drop will put what it shows (see DragPreview); null while no
+    /// such drag is over the scene.
+    QGraphicsPixmapItem *m_dragGhost = nullptr;
+
+    /// Shows the current drag's picture where a drop at \a scenePos would put it, creating it on the drag's first
+    /// event over the scene; a drag from another process has none.
+    void showDragGhost(QPointF scenePos);
+    /// Removes the drag's picture, when the drag leaves the scene or drops.
+    void hideDragGhost();
 
     // On-canvas inline label rename/edit (delegated to InlineLabelEditor)
     InlineLabelEditor m_inlineLabelEditor = InlineLabelEditor(this);
