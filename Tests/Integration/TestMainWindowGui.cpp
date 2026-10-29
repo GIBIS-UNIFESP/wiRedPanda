@@ -2305,6 +2305,32 @@ void TestMainWindowGui::testEmbeddedICSaveReloadRoundTrip()
 // Inline IC tab operations
 // ===========================================================================
 
+void TestMainWindowGui::testOpeningASubCircuitThatDoesNotReadReportsIt()
+{
+    // Opening a sub-circuit in its tab is a slot Qt calls: one whose circuit does not read is reported there, and the
+    // tab it was opening is closed again
+    std::unique_ptr<MainWindow> window(createMW());
+    auto *tabs = findTabs(window.get());
+    auto *rootScene = window->currentTab()->scene();
+    rootScene->setContextDir(m_fixtureDir);
+    auto *ic = placeEmbeddedIC(rootScene, m_fixtureDir, "parent_ic");
+    rootScene->icRegistry()->setBlob("parent_ic", QByteArray("not a circuit"));
+    const int tabCount = tabs->count();
+
+    const auto opens = [&](const char *entry, const std::function<void()> &open) {
+        try {
+            open();
+        } catch (const std::exception &e) {
+            QFAIL(qPrintable(QString("opening from %1 threw: %2").arg(entry, e.what())));
+        }
+        QVERIFY2(tabs->count() == tabCount, entry);
+    };
+    opens("the scene", [&] {
+        emit window->m_binder->openICRequested("parent_ic", ic->id(), rootScene->icRegistry()->blob("parent_ic"));
+    });
+    opens("the element editor", [&] { emit window->m_ui->elementEditor->editSubcircuitRequested("parent_ic", ic->id()); });
+}
+
 void TestMainWindowGui::testSavingASubCircuitItsParentCannotTakeLeavesItUnsaved()
 {
     // A sub-circuit tab's Save hands its circuit to the parent tab: one the parent cannot load, a chain of sub-circuits
