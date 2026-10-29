@@ -7,10 +7,10 @@ speed, waveform resolution and input changes that settle; and the temporal examp
 Arduino export's note on the delays it drops in temporal mode is plan 8's, among its exporter notes, since plan 8
 lands after this plan. Temporal mode is offered only once plan 5's exact oracle with delays agrees with the reference.
 
-- **Depends on:** plans 1 to 6, the Qt floor's and the exception boundaries' plans, landed, since the plans run one
-  at a time, in their order (the plans' rules, §1): plan 6 (the core's temporal mode; the runner's mode, speed and
-  simulated time per tab; the settle; the sweep guard; each logic type's delay in its descriptor); plan 5 (its exact
-  oracle with delays, P5.13, agreeing with the reference, and the covering rule it decides, P5.25); plan 3 (the
+- **Depends on:** plans 1 to 6, the Qt floor's, the Qt ceiling's and the exception boundaries' plans, landed, since the
+  plans run one at a time, in their order (the plans' rules, §1): plan 6 (the core's temporal mode; the runner's mode,
+  speed and simulated time per tab; the settle; the sweep guard; each logic type's delay in its descriptor); plan 5 (its
+  exact oracle with delays, P5.13, agreeing with the reference, and the covering rule it decides, P5.25); plan 3 (the
   parameter schema and store, the property command on the schema, the editor's fields from the schema); plan 2's fixes
   this plan's code builds on (one undo entry per edit, a morph's lossless undo, MCP validating every value before
   changing anything, the Python client's clock delay bounds, BeWavedDolphin's text export with its rows by port).

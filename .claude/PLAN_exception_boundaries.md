@@ -6,10 +6,10 @@ reaches an exception thrown inside a frame Qt owns, which on macOS ends the appl
 lists every throw site against it (§3), fixes each one that breaks it with a test (§4), and adds a check that keeps the
 rule (§5). It comes right after the Qt 6.8 floor, before plan 3.
 
-- **Depends on:** the Qt 6.8 floor, landed, since the plans run one at a time, in their order (the plans' rules, §1);
+- **Depends on:** the Qt ceiling, landed, since the plans run one at a time, in their order (the plans' rules, §1);
   plan 2's §3.17 (P2.50), the first case of the rule, fixed there.
 - **Lands before:** plan 3. Plan 3 rebuilds the element types on code where nothing Qt calls back into can throw.
-- **Branch and ledger:** `02b-exception-boundaries`, from `02a-qt-floor` once the floor has landed; a slice per fix
+- **Branch and ledger:** `02c-exception-boundaries`, from `02b-qt-ceiling` once the ceiling has landed; a slice per fix
   (§7). `LEDGER_exception_boundaries.md` has a row for every step, fix, check and open question below, and a new row
   for every site found later.
 - **Rules every plan shares** are the plans' rules (`PLAN_rules.md`) and `CLAUDE.md`'s "Building and testing". This

@@ -8,7 +8,7 @@ simulation semantics (plan 6's switch); §8 lists them.
 
 - **Depends on:** plan 1, landed. The plans run one at a time, in their order (the plans' rules, §1), so every fix
   has all of plan 1's goldens and helpers; §9 names the rows each rests on.
-- **Lands before:** the Qt 6.8 floor's plan, the exception boundaries' plan, then plan 3.
+- **Lands before:** the Qt 6.8 floor's plan, the Qt ceiling's plan, the exception boundaries' plan, then plan 3.
 - **Branch and ledger:** `02-master-fixes`, from `01-characterization` once plan 1 has landed, each fix a slice of its
   own (the plans' rules, §1 and §3).
   `LEDGER_02_master_fixes.md` has a row for every fix, check and open question below, and a new row for every defect

@@ -9,21 +9,21 @@ editing session, with a controller taking the interaction; adds a new view whose
 widget, and a CPU backend with painters, a sprite cache and an export mode; and then deletes the old view and scene,
 after which the element is a plain class. It draws what `master` draws, and plan 1's goldens pin it on both views.
 
-- **Depends on:** plans 1 to 8, the Qt floor's and the exception boundaries' plans, landed, since the plans run one at a
-  time, in their order (the plans' rules, §1): plan 3 (one element class with its descriptors, the presenters, the
-  appearance key, the element painter, the outline and decorations, and the include check of the model's direction,
-  which this plan extends to six layers); plan 6 (the core, with its suspend count in the model, which the document
-  takes, and the runner with its changed slots, which the application layer and the renderers take); plan 8 (exporters
-  on the netlist builder, which no longer include the scene, and the IC as one element class with no internal elements);
-  plan 4 (the IC preview cache, whose renderer moves to the application here, and the IC registry's file cache); plan 1
-  (the pointer, wire-geometry, stacking, view and wire-pixel goldens, run on the old and the new view; the probe that
-  times a load and its first frames); plan 2's fixes this plan keeps (the wheel zoom that keeps the point under the
-  cursor, the hit test that answers the topmost item, MCP's empty-scene error, the circuit's bounds without the rubber
-  band, the selection in id order, the snapping rule with its exact undo, the restored stacking place, a wire attached
-  or detached refreshing only itself, a connected input that stays on its wire; and its §2.13 to §2.18: a paste that
-  reads everything before its macro opens, no move walking every port, commands deduplicating in linear time, snapping
-  and rendering past `int`'s range computed in floating point, a port's wires attached and detached in time linear in
-  its fan-out).
+- **Depends on:** plans 1 to 8, the Qt floor's, the Qt ceiling's and the exception boundaries' plans, landed, since the
+  plans run one at a time, in their order (the plans' rules, §1): plan 3 (one element class with its descriptors, the
+  presenters, the appearance key, the element painter, the outline and decorations, and the include check of the model's
+  direction, which this plan extends to six layers); plan 6 (the core, with its suspend count in the model, which the
+  document takes, and the runner with its changed slots, which the application layer and the renderers take); plan 8
+  (exporters on the netlist builder, which no longer include the scene, and the IC as one element class with no internal
+  elements); plan 4 (the IC preview cache, whose renderer moves to the application here, and the IC registry's file
+  cache); plan 1 (the pointer, wire-geometry, stacking, view and wire-pixel goldens, run on the old and the new view;
+  the probe that times a load and its first frames); plan 2's fixes this plan keeps (the wheel zoom that keeps the point
+  under the cursor, the hit test that answers the topmost item, MCP's empty-scene error, the circuit's bounds without
+  the rubber band, the selection in id order, the snapping rule with its exact undo, the restored stacking place, a wire
+  attached or detached refreshing only itself, a connected input that stays on its wire; and its §2.13 to §2.18: a paste
+  that reads everything before its macro opens, no move walking every port, commands deduplicating in linear time,
+  snapping and rendering past `int`'s range computed in floating point, a port's wires attached and detached in time
+  linear in its fan-out).
 - **Lands before:** the model-cost round, which works on the new model; then plan 10, whose GPU renderer is a second
   backend behind this plan's render interface, set as the view's viewport, on the model as the round leaves it.
 - **Branch and ledger:** `09-editor`, from `08-export` once plan 8 has landed, in slices (the plans' rules, §1 and

@@ -6,12 +6,13 @@ on random circuits, ICs included, and on every step of every shipped walk; and t
 each difference from `master`'s engine named by its cause, for plan 6's switch to match. It is documentation and test
 code only: the application keeps `master`'s engine until plan 6.
 
-- **Depends on:** plans 1 to 4, the Qt floor's and the exception boundaries' plans, landed, since the plans run one
-  at a time, in their order (the plans' rules, §1): plan 1's simulation traces (every logic type, the six fixtures,
-  the 73 IC components and the two perf circuits) and its test readers, which return a port's `Status`, so a test tells
-  a non-level from 0; plan 2's fixes, which `master`'s traces hold before this plan starts; plan 3's one element class,
-  whose descriptors, ports and typed parameters the reference reads in one place; and plan 4's shared IC definitions,
-  which the reference flattens, so it never reads an instance's internal elements, which plan 8's last step deletes.
+- **Depends on:** plans 1 to 4, the Qt floor's, the Qt ceiling's and the exception boundaries' plans, landed, since the
+  plans run one at a time, in their order (the plans' rules, §1): plan 1's simulation traces (every logic type, the six
+  fixtures, the 73 IC components and the two perf circuits) and its test readers, which return a port's `Status`, so a
+  test tells a non-level from 0; plan 2's fixes, which `master`'s traces hold before this plan starts; plan 3's one
+  element class, whose descriptors, ports and typed parameters the reference reads in one place; and plan 4's shared IC
+  definitions, which the reference flattens, so it never reads an instance's internal elements, which plan 8's last step
+  deletes.
 - **Lands before:** plan 6, whose core implements the spec and is checked against the reference and the oracles; then
   plan 7, which offers temporal mode once the exact oracle with delays agrees with the reference; and plan 8, whose
   differential compares the exports with plan 6's core, which runs in lockstep with the reference.
