@@ -244,8 +244,8 @@ void applyRandomCommands(WorkSpace &workspace, FuzzedDataProvider &fdp, const QS
                         break;
                     }
                 }
-                // One past the key, which the command refuses
-                const int pos = fdp.ConsumeIntegralInRange<int>(0, static_cast<int>(tt->key().size()));
+                // Inside the key, as both callers bound it; one outside is a broken invariant, an assertion
+                const int pos = fdp.ConsumeIntegralInRange<int>(0, static_cast<int>(tt->key().size()) - 1);
                 scene->receiveCommand(new ToggleTruthTableOutputCommand(tt, pos, scene));
                 break;
             }

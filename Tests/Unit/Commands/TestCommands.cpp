@@ -867,21 +867,16 @@ void TestCommands::testMorphCommandUndoPreservesConnectionAddedWhileMorphed()
     QCOMPARE(redisp14->inputPort(10)->connections().constFirst()->startPort()->graphicElement()->id(), swId);
 }
 
-void TestCommands::testSplitCommandRedoThrowsBeforeAllocation()
+void TestCommands::testSplitCommandRedoAbandonedWhenUpstreamMissing()
 {
-    // Pre-fix SplitCommand::redo allocated conn2 + node BEFORE checking that
-    // the upstream items still existed. When the check failed, those two
-    // freshly-allocated objects were leaked. Reordering the check to run
-    // first means redo throws without ever calling new.
-    //
-    // The throw is exercised by calling SplitCommand::redo() directly rather
-    // than via QUndoStack::redo(): on macOS arm64, Qt's precompiled framework
-    // lacks the compact-unwind metadata for C++ exception propagation through
-    // QUndoStack::redo(), so any throw inside it calls std::terminate before
-    // the catch block in the test can execute.
+#ifndef QT_NO_DEBUG
+    QSKIP("A command whose record no longer matches the scene is an assertion, which stops a debug build");
+#endif
+    // A redo whose upstream element is gone is a broken invariant: it builds and changes nothing, and the stack
+    // drops the command
     WorkSpace workspace;
     auto *scene = workspace.scene();
-
+    auto *undoStack = scene->undoStack();
     auto *sw = new InputSwitch();
     auto *led = new Led();
     sw->setPos(0, 0);
@@ -893,33 +888,23 @@ void TestCommands::testSplitCommandRedoThrowsBeforeAllocation()
     conn->setEndPort(led->inputPort());
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{conn}, scene));
 
-    // Drive redo/undo directly on a stack-allocated command — never goes
-    // through QUndoStack so the exception propagates safely on all platforms.
-    SplitCommand cmd(conn, QPointF(100, 0), scene);
-    cmd.redo();
+    scene->receiveCommand(new SplitCommand(conn, QPointF(100, 0), scene));
     QCOMPARE(scene->elements().size(), 3);
-
-    cmd.undo();
+    undoStack->undo();
     QCOMPARE(scene->elements().size(), 2);
+    const int count = undoStack->count();
 
-    // Make the upstream lookup fail. forgetItemId drops the registry entry
-    // so findElm(m_elm1Id) returns nullptr without freeing sw itself.
+    // forgetItemId drops the registry entry, so the lookup of the switch fails while the switch stays
     scene->forgetItemId(sw->id());
-
     const auto elementsBefore = scene->elements().size();
     const int connectionsBefore = TestUtils::countConnections(scene);
 
-    bool threw = false;
     try {
-        cmd.redo();
-    } catch (const std::exception &) {
-        threw = true;
+        undoStack->redo();
+    } catch (const std::exception &e) {
+        QFAIL(qPrintable(QString("the redo threw: %1").arg(e.what())));
     }
-    QVERIFY2(threw, "SplitCommand::redo() must throw when upstream item lookup fails");
-
-    // No conn2 / node should have been added — they're never allocated on the
-    // throw path now, and even on the old path they were leaked rather than
-    // attached, so scene counts staying flat is the load-bearing invariant.
+    QCOMPARE(undoStack->count(), count - 1);
     QCOMPARE(scene->elements().size(), elementsBefore);
     QCOMPARE(TestUtils::countConnections(scene), connectionsBefore);
 }
@@ -1159,12 +1144,8 @@ void TestCommands::testToggleTruthTableOutputCommandBounds()
     // Regression test (F17): the command is the model boundary shared by the
     // UI and the MCP server, and undo() == redo(). The truth-table key holds
     // exactly 2048 bits; toggleBit on any position outside [0, 2048) is an
-    // out-of-bounds heap write in release builds. Out-of-range positions must
-    // throw instead.
-    //
-    // The throws are exercised by calling redo() directly rather than via
-    // QUndoStack::redo() — same macOS arm64 unwind limitation documented in
-    // testSplitCommandRedoThrowsBeforeAllocation.
+    // out-of-bounds heap write in release builds. An out-of-range position changes
+    // nothing, and the stack drops the command; a debug build asserts.
     WorkSpace workspace;
     auto *scene = workspace.scene();
 
@@ -1184,20 +1165,21 @@ void TestCommands::testToggleTruthTableOutputCommandBounds()
     scene->undoStack()->undo();
     QVERIFY(!truthTable->key().at(2047));
 
-    const auto expectThrow = [&](const int position) {
-        ToggleTruthTableOutputCommand command(truthTable, position, scene);
-        bool threw = false;
+#ifdef QT_NO_DEBUG
+    // A position outside the key is a broken invariant (both callers bound it): the command changes nothing, and the
+    // stack drops it
+    for (const int position : {2048, 99999, -1}) {
+        const int index = scene->undoStack()->index();
+        const auto key = truthTable->key();
         try {
-            command.redo();
-        } catch (const std::exception &) {
-            threw = true;
+            scene->receiveCommand(new ToggleTruthTableOutputCommand(truthTable, position, scene));
+        } catch (const std::exception &e) {
+            QFAIL(qPrintable(QString("position %1 threw: %2").arg(position).arg(e.what())));
         }
-        QVERIFY2(threw, qPrintable(QString("position %1 did not throw").arg(position)));
-    };
-
-    expectThrow(2048);
-    expectThrow(99999);
-    expectThrow(-1);
+        QCOMPARE(scene->undoStack()->index(), index);
+        QCOMPARE(truthTable->key(), key);
+    }
+#endif
 }
 
 void TestCommands::testMorphNotToNodeAdjustsPosition()
@@ -1375,10 +1357,15 @@ void TestCommands::testFlipCommandWithEmptyItemsIsNoOp()
     cmd.undo();
 }
 
-void TestCommands::testSplitCommandRedoThrowsWhenEndPortIsNull()
+void TestCommands::testSplitCommandRedoAbandonedWhenEndPortIsNull()
 {
+#ifndef QT_NO_DEBUG
+    QSKIP("A command whose record no longer matches the scene is an assertion, which stops a debug build");
+#endif
+    // A redo whose wire has lost its end port is a broken invariant: it changes nothing, and the stack drops it
     WorkSpace workspace;
     auto *scene = workspace.scene();
+    auto *undoStack = scene->undoStack();
 
     auto *sw = new InputSwitch();
     auto *led = new Led();
@@ -1391,28 +1378,32 @@ void TestCommands::testSplitCommandRedoThrowsWhenEndPortIsNull()
     conn->setEndPort(led->inputPort());
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{conn}, scene));
 
-    SplitCommand cmd(conn, QPointF(100, 0), scene);
-    cmd.redo();
-    cmd.undo();
+    scene->receiveCommand(new SplitCommand(conn, QPointF(100, 0), scene));
+    undoStack->undo();
+    const int count = undoStack->count();
+    const auto elementsBefore = scene->elements().size();
 
-    // conn1 (the original wire) survived the undo; corrupt its endPort directly -- something
-    // no current caller can do through normal interaction, but SplitCommand::redo() defends
-    // against it anyway.
+    // The original wire survived the undo; no caller can take its end port, but the redo checks it
     conn->setEndPort(nullptr);
 
-    bool threw = false;
     try {
-        cmd.redo();
-    } catch (const std::exception &) {
-        threw = true;
+        undoStack->redo();
+    } catch (const std::exception &e) {
+        QFAIL(qPrintable(QString("the redo threw: %1").arg(e.what())));
     }
-    QVERIFY2(threw, "SplitCommand::redo() must throw when the original wire's endPort is null");
+    QCOMPARE(undoStack->count(), count - 1);
+    QCOMPARE(scene->elements().size(), elementsBefore);
 }
 
-void TestCommands::testSplitCommandUndoThrowsWhenUpstreamMissing()
+void TestCommands::testSplitCommandUndoAbandonedWhenNodeMissing()
 {
+#ifndef QT_NO_DEBUG
+    QSKIP("A command whose record no longer matches the scene is an assertion, which stops a debug build");
+#endif
+    // An undo whose split node is gone is a broken invariant: it changes nothing, and the stack drops it
     WorkSpace workspace;
     auto *scene = workspace.scene();
+    auto *undoStack = scene->undoStack();
 
     auto *sw = new InputSwitch();
     auto *led = new Led();
@@ -1425,11 +1416,12 @@ void TestCommands::testSplitCommandUndoThrowsWhenUpstreamMissing()
     conn->setEndPort(led->inputPort());
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{conn}, scene));
 
-    SplitCommand cmd(conn, QPointF(100, 0), scene);
-    cmd.redo();
+    scene->receiveCommand(new SplitCommand(conn, QPointF(100, 0), scene));
+    const int count = undoStack->count();
+    const auto elementsBefore = scene->elements().size();
+    const int connectionsBefore = TestUtils::countConnections(scene);
 
-    // Make the split node unfindable without freeing it, mirroring
-    // testSplitCommandRedoThrowsBeforeAllocation's forgetItemId technique.
+    // forgetItemId drops the registry entry, so the lookup of the node fails while the node stays
     for (auto *elm : scene->elements()) {
         if (elm->elementType() == ElementType::Node) {
             scene->forgetItemId(elm->id());
@@ -1437,13 +1429,14 @@ void TestCommands::testSplitCommandUndoThrowsWhenUpstreamMissing()
         }
     }
 
-    bool threw = false;
     try {
-        cmd.undo();
-    } catch (const std::exception &) {
-        threw = true;
+        undoStack->undo();
+    } catch (const std::exception &e) {
+        QFAIL(qPrintable(QString("the undo threw: %1").arg(e.what())));
     }
-    QVERIFY2(threw, "SplitCommand::undo() must throw when an upstream item can no longer be found");
+    QCOMPARE(undoStack->count(), count - 1);
+    QCOMPARE(scene->elements().size(), elementsBefore);
+    QCOMPARE(TestUtils::countConnections(scene), connectionsBefore);
 }
 
 void TestCommands::testOffGridElementRestoresExactly_data()
@@ -1507,29 +1500,36 @@ void TestCommands::testSetPosIsExact()
     QCOMPARE(gate->pos(), QPointF(279.333, 311.5));
 }
 
-void TestCommands::testFindItemsThrowsWhenItemMissing()
+void TestCommands::testAddItemsUndoAbandonedWhenItemMissing()
 {
+#ifndef QT_NO_DEBUG
+    QSKIP("A command whose record no longer matches the scene is an assertion, which stops a debug build");
+#endif
+    // An undo of an addition whose item is gone is a broken invariant: it deletes nothing, and the stack drops it
     WorkSpace workspace;
     auto *scene = workspace.scene();
+    auto *undoStack = scene->undoStack();
 
     auto *andGate = new And();
-    AddItemsCommand cmd(QList<QGraphicsItem *>{andGate}, scene);
+    auto *orGate = new Or();
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{andGate, orGate}, scene));
+    const int count = undoStack->count();
 
-    // Drop the registry entry without freeing the object, so findItems() can't resolve the
-    // ID -- mirrors testSplitCommandRedoThrowsBeforeAllocation's forgetItemId technique.
+    // forgetItemId drops the registry entry, so the lookup of one gate fails while both stay
     scene->forgetItemId(andGate->id());
 
-    bool threw = false;
     try {
-        cmd.undo();
-    } catch (const std::exception &) {
-        threw = true;
+        undoStack->undo();
+    } catch (const std::exception &e) {
+        QFAIL(qPrintable(QString("the undo threw: %1").arg(e.what())));
     }
-    QVERIFY2(threw, "AddItemsCommand::undo() must throw when a tracked item can no longer be found");
+    QCOMPARE(undoStack->count(), count - 1);
+    QCOMPARE(scene->elements().size(), 2);
 }
 
-void TestCommands::testLoadItemsThrowsOnCountMismatch()
+void TestCommands::testLoadItemsRefusesACountMismatch()
 {
+    // A record holding other than the items it names restores none of them
     WorkSpace workspace;
     auto *scene = workspace.scene();
 
@@ -1548,19 +1548,19 @@ void TestCommands::testLoadItemsThrowsOnCountMismatch()
     const QList<int> ids{1, 2};
     QList<int> otherIds;
 
-    bool threw = false;
-    try {
-        CommandUtils::loadItems(scene, itemData, ids, otherIds);
-    } catch (const std::exception &) {
-        threw = true;
-    }
-    QVERIFY2(threw, "loadItems() must throw when the deserialized item count doesn't match the expected ID count");
+    QVERIFY(!CommandUtils::loadItems(scene, itemData, ids, otherIds));
+    QCOMPARE(scene->elements().size(), 1);
 }
 
-void TestCommands::testElementsCommandElementsThrowsWhenItemMissing()
+void TestCommands::testUpdateRedoAbandonedWhenElementMissing()
 {
+#ifndef QT_NO_DEBUG
+    QSKIP("A command whose record no longer matches the scene is an assertion, which stops a debug build");
+#endif
+    // A redo of an update whose element is gone is a broken invariant: it loads nothing, and the stack drops it
     WorkSpace workspace;
     auto *scene = workspace.scene();
+    auto *undoStack = scene->undoStack();
 
     auto *andGate = new And();
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{andGate}, scene));
@@ -1569,17 +1569,21 @@ void TestCommands::testElementsCommandElementsThrowsWhenItemMissing()
     QDataStream stream(&oldData, QIODevice::WriteOnly);
     Serialization::writePandaHeader(stream);
     andGate->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
+    andGate->setLabel("new");
+    scene->receiveCommand(new UpdateCommand({andGate}, oldData, scene));
+    undoStack->undo();
+    QCOMPARE(andGate->label(), QString());
+    const int count = undoStack->count();
 
-    UpdateCommand cmd({andGate}, oldData, scene);
     scene->forgetItemId(andGate->id());
 
-    bool threw = false;
     try {
-        cmd.redo();
-    } catch (const std::exception &) {
-        threw = true;
+        undoStack->redo();
+    } catch (const std::exception &e) {
+        QFAIL(qPrintable(QString("the redo threw: %1").arg(e.what())));
     }
-    QVERIFY2(threw, "ElementsCommand::elements() must throw when a tracked element can no longer be found");
+    QCOMPARE(undoStack->count(), count - 1);
+    QCOMPARE(andGate->label(), QString());
 }
 
 void TestCommands::testMorphUndoRestoresWhatTheNewTypeLacks()

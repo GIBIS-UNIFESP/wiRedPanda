@@ -50,7 +50,7 @@ private slots:
     void testUndoLimit();
 
     // Regression: D13 — SplitCommand::redo must throw before allocating
-    void testSplitCommandRedoThrowsBeforeAllocation();
+    void testSplitCommandRedoAbandonedWhenUpstreamMissing();
 
     // Regression: F17 — toggle position must be bounds-checked (OOB write)
     void testToggleTruthTableOutputCommandBounds();
@@ -86,19 +86,19 @@ private slots:
     void testFlipCommandWithEmptyItemsIsNoOp();
 
     // SplitCommand's remaining upstream-lookup-fails throws
-    void testSplitCommandRedoThrowsWhenEndPortIsNull();
-    void testSplitCommandUndoThrowsWhenUpstreamMissing();
+    void testSplitCommandRedoAbandonedWhenEndPortIsNull();
+    void testSplitCommandUndoAbandonedWhenNodeMissing();
 
     // An undo restores an element off the grid exactly, and setPos() stores what it is given.
     void testOffGridElementRestoresExactly_data();
     void testOffGridElementRestoresExactly();
     void testSetPosIsExact();
 
-    // CommandUtils::findItems()/findElements() throw when scene state is corrupted
-    // independently of the undo stack (mirrors testSplitCommandRedoThrowsBeforeAllocation's
+    // A command whose record no longer matches the scene changes nothing and the stack drops it, the scene corrupted
+    // behind the stack's back (mirrors testSplitCommandRedoAbandonedWhenUpstreamMissing's
     // forgetItemId technique).
-    void testFindItemsThrowsWhenItemMissing();
-    void testLoadItemsThrowsOnCountMismatch();
-    void testElementsCommandElementsThrowsWhenItemMissing();
+    void testAddItemsUndoAbandonedWhenItemMissing();
+    void testLoadItemsRefusesACountMismatch();
+    void testUpdateRedoAbandonedWhenElementMissing();
     void testLoadListGrowsLinearly();
 };
