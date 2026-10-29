@@ -9,6 +9,7 @@
 
 #include <QClipboard>
 #include <QDrag>
+#include <QGraphicsPixmapItem>
 #include <QGraphicsSceneDragDropEvent>
 #include <QGraphicsSceneHelpEvent>
 #include <QGraphicsSceneMouseEvent>
@@ -36,6 +37,7 @@
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/Commands.h"
+#include "App/Scene/DragPreview.h"
 #include "App/Scene/GraphicsView.h"
 #include "App/Wiring/Connection.h"
 
@@ -1354,11 +1356,36 @@ QString Scene::droppedPandaFile(const QMimeData *mimeData)
     return {};
 }
 
+void Scene::showDragGhost(const QPointF scenePos)
+{
+    const auto &picture = DragPreview::current();
+    if (picture.pixmap.isNull()) {
+        return;
+    }
+    if (!m_dragGhost) {
+        m_dragGhost = new QGraphicsPixmapItem(picture.pixmap);
+        m_dragGhost->setOpacity(0.6);
+        m_dragGhost->setZValue(std::numeric_limits<qreal>::max());
+        m_dragGhost->setAcceptedMouseButtons(Qt::NoButton);
+        addItem(m_dragGhost);
+    }
+    m_dragGhost->setPos(DragPreview::position(picture, scenePos));
+}
+
+void Scene::hideDragGhost()
+{
+    delete m_dragGhost;
+    m_dragGhost = nullptr;
+}
+
 void Scene::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
 {
     if (SceneDropHandler::isSupportedDropFormat(event->mimeData())
         || !droppedPandaFile(event->mimeData()).isEmpty()) {
         event->acceptProposedAction();
+        if (SceneDropHandler::isSupportedDropFormat(event->mimeData())) {
+            showDragGhost(event->scenePos());
+        }
         return;
     }
 
@@ -1370,15 +1397,25 @@ void Scene::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
     if (SceneDropHandler::isSupportedDropFormat(event->mimeData())
         || !droppedPandaFile(event->mimeData()).isEmpty()) {
         event->acceptProposedAction();
+        if (SceneDropHandler::isSupportedDropFormat(event->mimeData())) {
+            showDragGhost(event->scenePos());
+        }
         return;
     }
 
     QGraphicsScene::dragMoveEvent(event);
 }
 
+void Scene::dragLeaveEvent(QGraphicsSceneDragDropEvent *event)
+{
+    hideDragGhost();
+    QGraphicsScene::dragLeaveEvent(event);
+}
+
 void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
 {
     sentryBreadcrumb("ui", QStringLiteral("Drop event"));
+    hideDragGhost();
 
     // A .panda file dragged from the file manager opens as a project (like File > Open).
     const QString pandaFile = droppedPandaFile(event->mimeData());

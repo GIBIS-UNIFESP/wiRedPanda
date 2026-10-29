@@ -222,28 +222,21 @@ QImage ClipboardManager::buildDragImage(Scene *scene, const QTransform &viewTran
     image.fill(Qt::transparent);
 
     QPainter painter(&image);
-    // Opacity 0 makes the ghost transparent; the drag cursor shape still appears
-    painter.setOpacity(0.0);
     scene->render(&painter, QRectF(QPointF(), image.size()), sourceRect);
     painter.end();
 
     return image;
 }
 
-void ClipboardManager::cloneDrag(const QPointF &mousePos)
+DragPreview::Picture ClipboardManager::selectionDragPicture(const QPointF &mousePos)
 {
-    auto *view = m_scene->view();
-    sentryBreadcrumb("ui", QStringLiteral("Clone drag started"));
-    qCDebug(zero) << "Ctrl + Drag action triggered.";
     const auto selectedElements = m_scene->selectedElements();
 
     if (selectedElements.isEmpty()) {
-        return;
+        return {};
     }
 
-    // --- Build drag pixmap ---
-    // Temporarily hide non-selected items so the rendered image shows only
-    // the selection, giving the drag ghost the correct visual appearance
+    // Temporarily hide non-selected items so the rendered image shows only the selection
     const auto items = m_scene->items();
 
     for (auto *item : items) {
@@ -261,13 +254,32 @@ void ClipboardManager::cloneDrag(const QPointF &mousePos)
     // 8px padding avoids clipping port handles at the bounding-rect edges
     rect = rect.adjusted(-8, -8, 8, 8);
 
-    const QImage image = buildDragImage(m_scene, view->transform(), rect);
+    // Rendered at the view's zoom and the screen's pixel ratio, so the picture is as sharp as the scene
+    auto *view = m_scene->view();
+    const qreal ratio = view ? view->devicePixelRatioF() : 1.0;
+    const QTransform transform = (view ? view->transform() : QTransform()) * QTransform::fromScale(ratio, ratio);
+    QPixmap pixmap = QPixmap::fromImage(buildDragImage(m_scene, transform, rect));
 
-    // Restore hidden items before the drag begins so the scene looks normal
     for (auto *item : items) {
         if (((item->type() == GraphicElement::Type) || (item->type() == Connection::Type)) && !item->isSelected()) {
             item->show();
         }
+    }
+
+    // Drawn at the selection's size in the scene, however many pixels the image holds
+    pixmap.setDevicePixelRatio(pixmap.width() / rect.width());
+    // The drop moves each element by the cursor's travel since the press, snapped: for elements on the grid, the
+    // selection's top-left moves to the snapped travel from where it is
+    return {pixmap, mousePos, rect.topLeft()};
+}
+
+void ClipboardManager::cloneDrag(const QPointF &mousePos)
+{
+    sentryBreadcrumb("ui", QStringLiteral("Clone drag started"));
+    qCDebug(zero) << "Ctrl + Drag action triggered.";
+
+    if (m_scene->selectedElements().isEmpty()) {
+        return;
     }
 
     // --- Serialize selection for drop target ---
@@ -283,10 +295,8 @@ void ClipboardManager::cloneDrag(const QPointF &mousePos)
 
     auto *drag = new QDrag(m_scene);
     drag->setMimeData(mimeData.release());
-    drag->setPixmap(QPixmap::fromImage(image));
-    // Hot-spot aligns the drag image to the original element positions under the cursor
-    QPointF offset = view->transform().map(mousePos - rect.topLeft());
-    drag->setHotSpot(offset.toPoint());
+    // The scene draws the copies where the drop will put them (see DragPreview); QDrag is given no picture.
+    const DragPreview::Scope preview(selectionDragPicture(mousePos));
     SimulationBlocker blocker(m_scene->simulation());
     drag->exec(Qt::CopyAction, Qt::CopyAction);
 }

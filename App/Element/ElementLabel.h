@@ -13,6 +13,7 @@
 #include <QPoint>
 
 #include "App/Core/Enums.h"
+#include "App/Scene/DragPreview.h"
 
 /**
  * \class ElementLabel
@@ -59,6 +60,9 @@ public:
     /// Creates and returns the MIME data payload used for drag-and-drop.
     QMimeData *mimeData() const;
 
+    /// The picture the scene draws while this label's element is dragged over it, where the drop will put it.
+    DragPreview::Picture dragPicture() const;
+
     /// Initiates a drag operation carrying this label's element type.
     void startDrag();
 
@@ -87,6 +91,10 @@ protected:
     void mouseDoubleClickEvent(QMouseEvent *event) override;
 
 private:
+    /// The point of the icon the drag holds, its centre: the drop puts the element's top-left corner this far from
+    /// the cursor, snapped to the grid.
+    QPoint dragOffset() const;
+
     // --- Members ---
 
     QPoint m_dragStartPos;            ///< Left-press position; drag starts when the pointer leaves it.

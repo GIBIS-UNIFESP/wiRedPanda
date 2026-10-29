@@ -129,24 +129,31 @@ bool ElementLabel::isEmbedded() const
     return m_isEmbedded;
 }
 
+QPoint ElementLabel::dragOffset() const
+{
+    return m_iconLabel.pixmap(Qt::ReturnByValue).rect().center();
+}
+
 void ElementLabel::startDrag()
 {
-    // The hot spot is the icon's centre so the element appears centred under
-    // the cursor when dropped onto the scene.
-    QPoint offset = m_iconLabel.pixmap(Qt::ReturnByValue).rect().center();
-
     auto *drag = new QDrag(parent());
     drag->setMimeData(mimeData());
-    drag->setPixmap(pixmap());
-    drag->setHotSpot(offset);
+    // The scene draws the element where the drop will put it (see DragPreview); QDrag is given no picture.
+    const DragPreview::Scope preview(dragPicture());
     // CopyAction for both proposed and allowed: placing an element on the scene
     // always creates a new instance, never moves the palette entry.
     drag->exec(Qt::CopyAction, Qt::CopyAction);
 }
 
+DragPreview::Picture ElementLabel::dragPicture() const
+{
+    // The element draws its picture from its top-left corner, which the drop puts at the cursor less the offset
+    return {pixmap(), QPointF(dragOffset()), QPointF()};
+}
+
 QMimeData *ElementLabel::mimeData() const
 {
-    QPoint offset = m_iconLabel.pixmap(Qt::ReturnByValue).rect().center();
+    const QPoint offset = dragOffset();
     QByteArray itemData;
     QDataStream stream(&itemData, QIODevice::WriteOnly);
     Serialization::writePandaHeader(stream);

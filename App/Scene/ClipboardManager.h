@@ -18,6 +18,8 @@
 #include <QString>
 #include <QVersionNumber>
 
+#include "App/Scene/DragPreview.h"
+
 class QGraphicsItem;
 class QImage;
 class QMimeData;
@@ -63,6 +65,10 @@ public:
 
     /// Initiates a clone-drag (Ctrl+drag) of the current selection.
     void cloneDrag(const QPointF &mousePos);
+
+    /// The picture the scene draws while the selection is clone-dragged from \a mousePos, where the drop will put the
+    /// copies: the selection alone, at the view's zoom and the screen's pixel ratio. Null when nothing is selected.
+    DragPreview::Picture selectionDragPicture(const QPointF &mousePos);
 
     /// Maximum width/height (in device pixels) buildDragImage() will allocate. A drag ghost is
     /// a transient visual aid, not saved output, so a modest cap is enough — selection extent
