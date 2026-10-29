@@ -57,6 +57,9 @@ public:
 
     void createNewTab();
     void loadPandaFile(const QString &fileName);
+    /// Opens \a fileName where the user asked for it (a menu, a drop, a link): a file that does not open is reported
+    /// there, inside the slot, and nothing is thrown back into Qt's frames.
+    void openPandaFile(const QString &fileName);
     void openICInTab(const QString &blobName, int icElementId, const QByteArray &blob);
     void save(const QString &fileName = {});
     void loadAutosaveFiles();

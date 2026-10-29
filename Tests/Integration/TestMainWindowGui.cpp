@@ -3,6 +3,8 @@
 
 #include "Tests/Integration/TestMainWindowGui.h"
 
+#include <functional>
+
 #include <QAction>
 #include <QApplication>
 #include <QClipboard>
@@ -59,6 +61,8 @@
 #include "App/UI/ElementPalette.h"
 #include "App/UI/FileDialogProvider.h"
 #include "App/UI/MainWindow.h"
+#include "App/UI/MainWindowUI.h"
+#include "App/UI/SceneUiBinder.h"
 #include "App/UI/TrashButton.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
@@ -480,6 +484,42 @@ void TestMainWindowGui::testReloadFile()
     QTest::keyClick(window.get(), Qt::Key_F5, Qt::ControlModifier);
 
     QCOMPARE(static_cast<int>(window->currentTab()->scene()->elements().size()), elemsBefore);
+}
+
+void TestMainWindowGui::testOpeningAFileThatDoesNotReadFromEachEntryReportsIt()
+{
+    // Each place a file is opened from is a slot Qt calls: a file that does not read is reported there, no tab left
+    std::unique_ptr<MainWindow> window(createMW());
+    auto *tabs = findTabs(window.get());
+    const int tabCount = tabs->count();
+    const QString broken = m_fixtureDir + "/does_not_read.panda";
+    {
+        QFile file(broken);
+        QVERIFY(file.open(QIODevice::WriteOnly));
+        file.write("not a circuit");
+    }
+
+    const auto opens = [&](const char *entry, const std::function<void()> &open) {
+        try {
+            open();
+        } catch (const std::exception &e) {
+            QFAIL(qPrintable(QString("opening from %1 threw: %2").arg(entry, e.what())));
+        }
+        QVERIFY2(tabs->count() == tabCount, entry);
+    };
+
+    auto *recent = window->m_ui->menuRecentFiles->actions().constFirst();
+    recent->setData(broken);
+    opens("Recent Files", [recent] { recent->trigger(); });
+    opens("a file dropped on the scene", [&] { emit window->m_binder->loadFileRequested(broken); });
+    opens("the element editor", [&] { emit window->m_ui->elementEditor->openSubcircuitFileRequested(broken); });
+    for (auto *example : window->m_ui->menuExamples->actions()) {
+        if (!example->data().toString().isEmpty()) {
+            example->setData(broken);
+            opens("Examples", [example] { example->trigger(); });
+            break;
+        }
+    }
 }
 
 // ===========================================================================

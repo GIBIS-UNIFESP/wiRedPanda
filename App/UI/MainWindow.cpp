@@ -107,7 +107,7 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     connect(m_workspaceManager, &WorkspaceManager::currentTabChanged, this, &MainWindow::onCurrentTabChanged);
     connect(m_workspaceManager, &WorkspaceManager::titleChanged,      this, &MainWindow::updateWindowTitle);
     connect(m_binder, &SceneUiBinder::openICRequested, m_workspaceManager, &WorkspaceManager::openICInTab);
-    connect(m_binder, &SceneUiBinder::loadFileRequested, m_workspaceManager, &WorkspaceManager::loadPandaFile);
+    connect(m_binder, &SceneUiBinder::loadFileRequested, m_workspaceManager, &WorkspaceManager::openPandaFile);
 
     // Must be created before setupLanguage(): loading a translation can synchronously
     // emit translationChanged(), which retranslateUi() handles by calling isActive() here.
@@ -256,7 +256,7 @@ void MainWindow::setupExamplesMenu()
 
             connect(action, &QAction::triggered, this, [this] {
                 if (auto *senderAction = qobject_cast<QAction *>(sender())) {
-                    loadPandaFile(senderAction->data().toString());
+                    m_workspaceManager->openPandaFile(senderAction->data().toString());
                 }
             });
 
@@ -384,7 +384,7 @@ void MainWindow::setupConnections()
             openICInTab(blobName, icElementId, currentTab()->scene()->icRegistry()->blob(blobName));
         }
     });
-    connect(m_ui->elementEditor, &ElementEditor::openSubcircuitFileRequested, this, &MainWindow::loadPandaFile);
+    connect(m_ui->elementEditor, &ElementEditor::openSubcircuitFileRequested, m_workspaceManager, &WorkspaceManager::openPandaFile);
     connect(m_ui->elementEditor, &ElementEditor::embedSubcircuitRequested, m_icController, &ICController::embedSelectedIC);
     connect(m_ui->elementEditor, &ElementEditor::extractToFileRequested, m_icController, &ICController::extractSelectedIC);
     connect(m_ui->actionResetZoom,             &QAction::triggered,       this,                &MainWindow::on_actionResetZoom_triggered);
@@ -979,7 +979,7 @@ void MainWindow::openRecentFile()
 {
     if (auto *action = qobject_cast<QAction *>(sender())) {
         sentryBreadcrumb("file", QStringLiteral("Open recent file"));
-        loadPandaFile(action->data().toString());
+        m_workspaceManager->openPandaFile(action->data().toString());
     }
 }
 
