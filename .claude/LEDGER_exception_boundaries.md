@@ -8,7 +8,7 @@ row (`EB.4`, `EB.5`, ...) and a line in the log. Status: `todo`, `doing`, `done`
 the notes) or `dropped` (why, with the user's decision). The Commits column lists every commit of the item. Every
 status change gets a dated line in the log.
 
-**Branch:** `02c-exception-boundaries`, from `02b-qt-ceiling` at `10ea721bb`, created 2026-10-29.
+**Branch:** `02c-exception-boundaries`, from `02b-qt-ceiling` at `5b783f1f2`, created 2026-10-29.
 
 **Open decisions:** none.
 
@@ -40,7 +40,9 @@ status change gets a dated line in the log.
   appendix), the entry paths begun; clangd set up for navigation to trace callers.
 - 2026-10-29: EB.1's inventory written (the appendix): every throw, catch and `guardedSlot()` site, the throw
   sites' paths from clangd's call graph. EB.5 to EB.9 found, `todo`.
-- 2026-10-29: EB.1 done (`e939a48f2`).
+- 2026-10-29: EB.1 done (`3bf8621f7`).
+- 2026-10-29: rebased onto `02b-qt-ceiling` at `5b783f1f2`, the ceiling landed (QC.2 done); the hashes above
+  re-mapped.
 
 ## Appendix: the inventory (EB.1)
 
