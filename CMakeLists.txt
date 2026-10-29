@@ -269,6 +269,41 @@ else()
     endif()
 endif()
 
+# zlib, which reads a .panda file's compressed payload (Serialization::inflatePayload()). On Linux and macOS the
+# system's, the one Qt itself uses there. Windows has none, and WebAssembly's Qt is static: both build zlib from source,
+# unprefixed, which meets neither Qt's own (built into Qt Core, its symbols hidden on Windows, prefixed z_ everywhere).
+if(WIN32 OR EMSCRIPTEN)
+    include(FetchContent)
+    set(ZLIB_BUILD_TESTING OFF CACHE BOOL "" FORCE)
+    set(ZLIB_BUILD_SHARED OFF CACHE BOOL "" FORCE)
+    set(ZLIB_INSTALL OFF CACHE BOOL "" FORCE)
+    FetchContent_Declare(
+        zlib
+        GIT_REPOSITORY https://github.com/madler/zlib.git
+        GIT_TAG v1.3.2
+        GIT_SHALLOW TRUE
+        # Its headers are included as a system's are, as the system zlib's would be
+        SYSTEM
+    )
+    FetchContent_MakeAvailable(zlib)
+
+    # Third-party code: built without this project's warning options (its C++ ones, and its warnings as errors), one
+    # source at a time, as zlib's sources do not build as one unit, and without Qt's code generators
+    get_target_property(zlibOptions zlibstatic COMPILE_OPTIONS)
+    if(zlibOptions)
+        list(FILTER zlibOptions EXCLUDE REGEX "^(-W|/W)")
+        set_target_properties(zlibstatic PROPERTIES COMPILE_OPTIONS "${zlibOptions}")
+    endif()
+    target_compile_options(zlibstatic PRIVATE $<$<C_COMPILER_ID:GNU,Clang,AppleClang>:-w>)
+    set_target_properties(zlibstatic PROPERTIES UNITY_BUILD OFF AUTOMOC OFF AUTOUIC OFF AUTORCC OFF)
+    set(WIREDPANDA_ZLIB zlibstatic)
+    message(STATUS "Using zlib built from source")
+else()
+    find_package(ZLIB REQUIRED)
+    set(WIREDPANDA_ZLIB ZLIB::ZLIB)
+    message(STATUS "Using system zlib ${ZLIB_VERSION_STRING}")
+endif()
+
 include(CMakeSources.cmake)
 
 # Find available translation files
@@ -408,6 +443,10 @@ add_library(wiredpanda_lib STATIC ${SOURCES} ${HEADERS})
 # fetched build and the installed system package, whereas the unqualified
 # `nlohmann_json_schema_validator` name only exists in the fetched build.
 target_link_libraries(wiredpanda_lib PUBLIC ${QT_LIBS} nlohmann_json::nlohmann_json nlohmann_json_schema_validator::validator)
+# zlib's library and headers, not its compile definitions: the built one's _LARGEFILE64_SOURCE, for its gzip file
+# functions, would part this target's precompiled header from those of the targets that reuse it
+target_link_libraries(wiredpanda_lib PRIVATE $<LINK_ONLY:${WIREDPANDA_ZLIB}>)
+target_include_directories(wiredpanda_lib SYSTEM PRIVATE $<TARGET_PROPERTY:${WIREDPANDA_ZLIB},INTERFACE_INCLUDE_DIRECTORIES>)
 
 # Treat external dependencies as system headers to suppress clazy warnings.
 # For system libraries the include directories already arrive as SYSTEM via the

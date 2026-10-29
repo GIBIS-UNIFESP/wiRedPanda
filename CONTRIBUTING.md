@@ -86,7 +86,7 @@ If you prefer local development, see our detailed [BUILD.md](BUILD.md) instructi
 
 ```bash
 # Install Qt 6.12.0 with aqtinstall, as BUILD.md shows, then the build tools (example for Debian and Ubuntu)
-sudo apt install build-essential cmake ninja-build
+sudo apt install build-essential zlib1g-dev cmake ninja-build
 
 # Clone and build
 git clone https://github.com/GIBIS-UNIFESP/wiRedPanda.git

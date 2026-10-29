@@ -31,6 +31,8 @@ ENV LC_ALL=C.UTF-8
 RUN apt-get update && apt-get install -y --no-install-recommends \
     # Essential build tools
     build-essential cmake ninja-build ccache pkg-config mold \
+    # zlib's headers, with which wiRedPanda reads its files
+    zlib1g-dev \
     # System dependencies for Qt
     libfontconfig1 libgl1-mesa-dev libglu1-mesa-dev libpulse0 \
     libxcb-cursor0 libxcb-xinerama0 libxkbcommon0 \

@@ -39,11 +39,11 @@
 
 namespace {
 
-/// What qUncompress() warns of a truncated stream: an unexpected zlib error before Qt's fix for QTBUG-150081 (6.11.3,
-/// 6.12.0, and picked to 6.8), corrupted input after it; a distribution may carry the fix into an older Qt.
-QRegularExpression truncatedStreamWarning()
+/// Fails the running test on any warning: the payload's decompression is the project's, which warns of nothing, where
+/// qUncompress() warned of a bad stream and, before Qt 6.11.3 and 6.12.0, reached undefined behaviour on a truncated one.
+void failOnAnyWarning()
 {
-    return QRegularExpression(QStringLiteral(R"(^qUncompress(: Input data is corrupted| unexpected zlib error:  \(-5\))$)"));
+    QTest::failOnWarning(QRegularExpression(QStringLiteral(".*")));
 }
 
 } // namespace
@@ -497,7 +497,7 @@ void TestSerialization::testLegacyUncompressedPayloadLoads()
 void TestSerialization::testImplausibleCompressedSizeRejected()
 {
     // A crafted "compressed" payload whose 4-byte declared uncompressed size is
-    // implausible must be rejected before qUncompress() would allocate that many
+    // implausible must be rejected before its decompression would allocate that many
     // bytes -- the decompression-bomb guard in Serialization::readPayload().
     QByteArray bogus;
     QDataStream writeStream(&bogus, QIODevice::WriteOnly);
@@ -513,6 +513,39 @@ void TestSerialization::testImplausibleCompressedSizeRejected()
         QVERIFY2(!QString(e.what()).isEmpty(), "Exception should provide a meaningful error message");
     }
     QVERIFY2(threw, "Implausible decompressed payload size should be rejected");
+}
+
+void TestSerialization::testCompressedPayloadMustFillItsDeclaredSize_data()
+{
+    QTest::addColumn<qint64>("sizeChange");
+
+    QTest::newRow("header claims a byte more") << qint64{1};
+    QTest::newRow("header claims a byte less") << qint64{-1};
+}
+
+void TestSerialization::testCompressedPayloadMustFillItsDeclaredSize()
+{
+    // qCompress() writes the payload's exact size before its stream; a stream that does not fill exactly that size is
+    // rejected
+    QFETCH(qint64, sizeChange);
+    const QByteArray payload(1000, 'x');
+    QByteArray compressed = qCompress(payload);
+    qToBigEndian(static_cast<quint32>(payload.size() + sizeChange), compressed.data());
+    failOnAnyWarning();
+
+    QDataStream stream(compressed);
+    QVERIFY_THROWS_EXCEPTION(Pandaception, Serialization::readPayload(stream, Versions::Rev100));
+}
+
+void TestSerialization::testCompressedPayloadRoundTrips()
+{
+    // What qCompress() writes, the empty payload (its size header alone) among it, reads back as it was
+    failOnAnyWarning();
+    for (const QByteArray &payload : {QByteArray(), QByteArray("a"), QByteArray(100000, 'x')}) {
+        const QByteArray compressed = qCompress(payload);
+        QDataStream stream(compressed);
+        QCOMPARE(Serialization::readPayload(stream, Versions::Rev100), payload);
+    }
 }
 
 void TestSerialization::testSlimFormatElidesDefaults()
@@ -726,20 +759,13 @@ void TestSerialization::testCorruptedStream()
     data.resize(data.size() / 2);
 
     // Try to load - should handle gracefully or throw (not crash)
+    // The compressed payload ends before its stream does, so the load throws
     WorkSpace workspace2;
-    bool errorHandled = false;
-    QTest::ignoreMessage(QtWarningMsg, truncatedStreamWarning());
-    try {
-        QDataStream stream(data);
-        QVersionNumber version = Serialization::readPandaHeader(stream);
-        workspace2.load(stream, version, {});
-        // Check if stream detected error
-        errorHandled = (stream.status() != QDataStream::Ok);
-    } catch (const std::exception &) {
-        errorHandled = true;  // Exception is acceptable for corrupted stream
-    }
-
-    QVERIFY2(errorHandled, "Corrupted stream should be detected");
+    failOnAnyWarning();
+    QDataStream stream(data);
+    const QVersionNumber version = Serialization::readPandaHeader(stream);
+    QVERIFY_THROWS_EXCEPTION(Pandaception, workspace2.load(stream, version, {}));
+    QVERIFY(workspace2.scene()->elements().isEmpty());
 }
 
 // ============================================================================
@@ -1060,10 +1086,10 @@ void TestSerialization::testInvalidElementTypeInStream()
 
     // Try to load corrupted data
     WorkSpace workspace2;
-    QTest::ignoreMessage(QtWarningMsg, "qUncompress: Input data is corrupted");
+    failOnAnyWarning();
     try {
         loadFromMemory(workspace2, data);
-        // If load succeeds despite the corruption (qUncompress()/parsing happened to tolerate
+        // If load succeeds despite the corruption (decompression/parsing happened to tolerate
         // it), it must not silently produce a wrong partial load -- either genuinely empty or
         // a real And element, never something in between.
         QVERIFY2(workspace2.scene()->elements().isEmpty() || workspace2.scene()->elements().size() == 1,
@@ -1225,19 +1251,11 @@ void TestSerialization::testTruncatedFileRecovery()
     // Truncate to 70% of original size (cuts off mid-element)
     QByteArray truncatedData = fullData.left(fullData.size() * 7 / 10);
 
-    // Try to load truncated data - should fail gracefully
+    // The compressed payload ends before its stream does, so the load throws and adds nothing
     WorkSpace workspace2;
-    QTest::ignoreMessage(QtWarningMsg, truncatedStreamWarning());
-    try {
-        loadFromMemory(workspace2, truncatedData);
-        // If we get here, load succeeded despite truncation -- it must not have fabricated
-        // elements beyond the 2 that were actually saved.
-        QVERIFY2(workspace2.scene()->elements().size() <= 2,
-                 "A load that survives truncation must not exceed the originally saved element count");
-    } catch (const std::exception &e) {
-        // Expected behavior for corrupted file - exception provides clear error
-        QVERIFY2(!QString(e.what()).isEmpty(), "Exception should explain why the file is truncated");
-    }
+    failOnAnyWarning();
+    QVERIFY_THROWS_EXCEPTION(Pandaception, loadFromMemory(workspace2, truncatedData));
+    QVERIFY(workspace2.scene()->elements().isEmpty());
 }
 
 void TestSerialization::testInvalidUTF8InLabels()

@@ -67,7 +67,7 @@ jobs:
         run: |
           set -eu
           export DEBIAN_FRONTEND=noninteractive
-          apt-get install -y build-essential qt6-base-dev qt6-multimedia-dev qt6-svg-dev
+          apt-get install -y build-essential zlib1g-dev qt6-base-dev qt6-multimedia-dev qt6-svg-dev
 
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -233,7 +233,7 @@ jobs:
           set -eu
           export DEBIAN_FRONTEND=noninteractive
           apt-get update
-          apt-get install -y build-essential ninja-build git ca-certificates python3-pip \
+          apt-get install -y build-essential zlib1g-dev ninja-build git ca-certificates python3-pip \
             qt6-base-dev qt6-multimedia-dev qt6-svg-dev
           python3 -m pip install --break-system-packages 'cmake==3.27.*'
           cmake --version

@@ -124,7 +124,7 @@ Linux). Then the tools:
 
 ```bash
 # Debian and Ubuntu
-sudo apt install build-essential cmake ninja-build ccache mold
+sudo apt install build-essential zlib1g-dev cmake ninja-build ccache mold
 # Arch Linux
 sudo pacman -S base-devel cmake ninja ccache mold
 # macOS

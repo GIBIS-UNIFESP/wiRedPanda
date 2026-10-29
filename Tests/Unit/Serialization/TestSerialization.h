@@ -42,6 +42,9 @@ private slots:
     void testCompressedPayloadRoundTrip();
     void testLegacyUncompressedPayloadLoads();
     void testImplausibleCompressedSizeRejected();
+    void testCompressedPayloadMustFillItsDeclaredSize_data();
+    void testCompressedPayloadMustFillItsDeclaredSize();
+    void testCompressedPayloadRoundTrips();
     void testSlimFormatElidesDefaults();
     void testNonDefaultValuesRoundTrip();
     void testTriggerLoadsAsSaved();
