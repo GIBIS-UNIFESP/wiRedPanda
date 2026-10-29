@@ -8,9 +8,9 @@ optimisations, each re-derived on the new model from its intent where the new mo
 cherry-picked, and each measured first, since plans 2, 3, 4, 6 and 9 may already have removed it. It comes right after
 plan 9 and before plan 10, so plan 10's GPU mirror is built on the model as the round leaves it.
 
-- **Depends on:** plans 1 to 9, the Qt floor's and the exception boundaries' plans, landed, since the plans run one
-  at a time, in their order (the plans' rules, §1): plan 9's model (the document with its spatial indices and
-  stacking sequence, the change funnel and the listener, the editing session's selection, ports, wires and labels as
+- **Depends on:** plans 1 to 9, the Qt floor's, the Qt ceiling's and the exception boundaries' plans, landed, since the
+  plans run one at a time, in their order (the plans' rules, §1): plan 9's model (the document with its spatial indices
+  and stacking sequence, the change funnel and the listener, the editing session's selection, ports, wires and labels as
   plain objects, and the CPU backend with its sprite cache), and its measurement of the CPU backend against `master`
   (P9.25); plan 1's perf fixtures and probe harness (its §4.2 and §4.3); plan 6's core, whose netlist a load builds;
   plan 4's shared IC definitions; plan 3's descriptors and presenters.

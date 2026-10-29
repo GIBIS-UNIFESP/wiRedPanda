@@ -8,7 +8,7 @@ row (`EB.4`, `EB.5`, ...) and a line in the log. Status: `todo`, `doing`, `done`
 the notes) or `dropped` (why, with the user's decision). The Commits column lists every commit of the item. Every
 status change gets a dated line in the log.
 
-**Branch:** `02b-exception-boundaries`, from `02a-qt-floor` once the floor has landed; not created yet.
+**Branch:** `02c-exception-boundaries`, from `02b-qt-ceiling` once the ceiling has landed; not created yet.
 
 **Open decisions:** none.
 

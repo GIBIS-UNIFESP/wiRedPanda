@@ -7,12 +7,12 @@ at the display rate; the reset source as a whole element type; and the switch, w
 engine to the runner and deletes that engine, every changed golden named by plan 5's list. Temporal mode runs in the
 core and the runner, and the application offers it with plan 7.
 
-- **Depends on:** plans 1 to 5, the Qt floor's and the exception boundaries' plans, landed, since the plans run one
-  at a time, in their order (the plans' rules, §1): plan 5 (the spec, the reference simulator, the oracles, the
-  random circuits, the spec's traces and the list of differences from `master`); plan 3 (each descriptor's kernel and an
-  input type's source level, and the include check of the model's direction, which this plan extends to the runner);
-  plan 4 (one shared definition per IC file or blob, which the builder compiles once); plan 1's goldens; plan 2's fixes
-  to `master`'s engine, which the core keeps.
+- **Depends on:** plans 1 to 5, the Qt floor's, the Qt ceiling's and the exception boundaries' plans, landed, since the
+  plans run one at a time, in their order (the plans' rules, §1): plan 5 (the spec, the reference simulator, the
+  oracles, the random circuits, the spec's traces and the list of differences from `master`); plan 3 (each descriptor's
+  kernel and an input type's source level, and the include check of the model's direction, which this plan extends to
+  the runner); plan 4 (one shared definition per IC file or blob, which the builder compiles once); plan 1's goldens;
+  plan 2's fixes to `master`'s engine, which the core keeps.
 - **Lands before:** plan 7, which offers temporal mode in the application; then plan 8, whose exporters move onto this
   plan's netlist builder and compare with its core, and which lands before any release that follows this plan's
   switch; then plan 9, which starts from a `master` holding the core.

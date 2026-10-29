@@ -7,14 +7,14 @@ functional and has each exporter say where its output differs from what the appl
 against the simulator on every run, in CI, with a differential whose oracle cannot pass by checking nothing. External
 corpora run through the same differential for development.
 
-- **Depends on:** plans 1 to 7, the Qt floor's and the exception boundaries' plans, landed, since the plans run one
-  at a time, in their order (the plans' rules, §1): plan 6 (the netlist builder, with its order, its wireless
-  resolution, its compiled definitions and its list of undriven inputs; and the core, which the differential compares
-  with, in lockstep with plan 5's reference); plan 7 (each element's delay, which the temporal SystemVerilog export
-  reads and the Arduino export's note names); plan 5 (the spec's start, which the export follows); plan 4 (one shared
-  definition per IC, from which the exporters read an instance's circuit); plan 3 (each port's untranslated source
-  name); plan 2's exporter fixes, which this plan keeps (truth tables that compile in SystemVerilog, identifiers from
-  untranslated names, both exporters following the Tx into an Rx, every gate a declared variable so a module grows
+- **Depends on:** plans 1 to 7, the Qt floor's, the Qt ceiling's and the exception boundaries' plans, landed, since the
+  plans run one at a time, in their order (the plans' rules, §1): plan 6 (the netlist builder, with its order, its
+  wireless resolution, its compiled definitions and its list of undriven inputs; and the core, which the differential
+  compares with, in lockstep with plan 5's reference); plan 7 (each element's delay, which the temporal SystemVerilog
+  export reads and the Arduino export's note names); plan 5 (the spec's start, which the export follows); plan 4 (one
+  shared definition per IC, from which the exporters read an instance's circuit); plan 3 (each port's untranslated
+  source name); plan 2's exporter fixes, which this plan keeps (truth tables that compile in SystemVerilog, identifiers
+  from untranslated names, both exporters following the Tx into an Rx, every gate a declared variable so a module grows
   linearly with its circuit's depth); plan 1's text goldens and translation tests.
 - **Lands before:** plan 9, and any release that follows plan 6's switch: from the switch until this plan lands, the
   exports and the simulation follow different rules. The IC instances' internal elements go as its last step (§2.11).
