@@ -83,6 +83,7 @@ void SceneDropHandler::handleNewElementDrop(QGraphicsSceneDragDropEvent *event)
 
     qCDebug(zero) << "Adjusting the position of the element.";
     raw->setPos(GraphicElement::snapToGrid(pos));
+    m_scene->resizeScene();
 }
 
 void SceneDropHandler::handleCloneDrag(QGraphicsSceneDragDropEvent *event)
@@ -164,4 +165,6 @@ void SceneDropHandler::addFromMimeData(QMimeData *mimeData, std::optional<QPoint
     if (scenePos) {
         raw->setPos(GraphicElement::snapToGrid(*scenePos));
     }
+
+    m_scene->resizeScene();
 }

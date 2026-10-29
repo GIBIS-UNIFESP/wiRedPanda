@@ -3083,6 +3083,33 @@ void TestScene::testDraggingElementPastTimerThresholdEnsuresVisible()
     QTest::mouseRelease(view->viewport(), Qt::LeftButton, Qt::NoModifier, farPos);
 }
 
+void TestScene::testDraggingElementInACentredSceneKeepsTheViewStill()
+{
+    // The scene's first rect is the view's before it is shown, smaller than the viewport, so Qt centres it and the
+    // scroll bars, ranged 0 to 0, do not say where the view is
+    WorkSpace workspace;
+    workspace.resize(800, 600);
+    workspace.show();
+    QVERIFY(QTest::qWaitForWindowExposed(&workspace));
+    Scene *scene = workspace.scene();
+    GraphicsView *view = workspace.view();
+    auto *gate = new And();
+    gate->setPos(GraphicElement::snapToGrid(view->mapToScene(QPoint(600, 400))));
+    scene->addItem(gate);
+    const QPointF corner = view->mapToScene(QPoint(0, 0));
+    QVERIFY(corner != QPointF(0, 0));
+
+    const QPoint start = view->mapFromScene(gate->sceneBoundingRect().center());
+    QTest::mousePress(view->viewport(), Qt::LeftButton, Qt::NoModifier, start);
+    const QPoint end = start + QPoint(40, 32);
+    QMouseEvent move(QEvent::MouseMove, end, view->viewport()->mapToGlobal(end), Qt::NoButton, Qt::LeftButton,
+                     Qt::NoModifier);
+    QApplication::sendEvent(view->viewport(), &move);
+    QCOMPARE(view->mapToScene(QPoint(0, 0)), corner);
+    QTest::mouseRelease(view->viewport(), Qt::LeftButton, Qt::NoModifier, end);
+    QCOMPARE(view->mapToScene(QPoint(0, 0)), corner);
+}
+
 void TestScene::testCtrlDoubleClickOnWireDoesNotInsertNode()
 {
     WorkSpace workspace;

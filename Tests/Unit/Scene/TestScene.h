@@ -174,6 +174,7 @@ private slots:
     void testPressOnOccupiedInputPortDetachesWire();
     void testRightClickOnElementOpensContextMenu();
     void testDraggingElementPastTimerThresholdEnsuresVisible();
+    void testDraggingElementInACentredSceneKeepsTheViewStill();
     void testCtrlDoubleClickOnWireDoesNotInsertNode();
     void testDoubleClickOnConnectedWireInsertsSplitNode();
 

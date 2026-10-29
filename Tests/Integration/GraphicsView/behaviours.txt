@@ -18,10 +18,10 @@ out 9 m11=0.6400 scroll=-400,-300 centre=-1.5625,-1.5625 canIn=1 canOut=1
 out 10 m11=0.5120 scroll=-393,-300 centre=11.7187,-1.9531 canIn=1 canOut=1
 out 11 m11=0.4096 scroll=-400,-300 centre=-2.4414,-2.4414 canIn=1 canOut=1
 out 12 m11=0.3277 scroll=-400,-300 centre=-3.0518,-3.0518 canIn=1 canOut=1
-out 13 m11=0.2621 scroll=-400,-264 centre=-3.8147,133.5144 canIn=1 canOut=1
-out 14 m11=0.2097 scroll=-371,-278 centre=133.5144,100.1358 canIn=1 canOut=1
-out 15 m11=0.1678 scroll=-371,-256 centre=166.8930,256.3000 canIn=1 canOut=1
-out 16 m11=0.1342 scroll=-353,-256 centre=342.7267,320.3750 canIn=1 canOut=0
+out 13 m11=0.2621 scroll=-400,-300 centre=-3.8147,-3.8147 canIn=1 canOut=1
+out 14 m11=0.2097 scroll=-400,-300 centre=-4.7684,-4.7684 canIn=1 canOut=1
+out 15 m11=0.1678 scroll=-400,-300 centre=-5.9605,-5.9605 canIn=1 canOut=1
+out 16 m11=0.1342 scroll=-400,-300 centre=-7.4506,-7.4506 canIn=1 canOut=0
 fit m11=0.5120 scroll=-256,-94 centre=279.2969,400.3906 canIn=1 canOut=1
 centerOn 0.0000,0.0000 m11=0.5120 scroll=-393,-262 centre=11.7188,72.2656 canIn=1 canOut=1
 centerOn 300.0000,200.0000 m11=0.5120 scroll=-246,-198 centre=298.8281,197.2656 canIn=1 canOut=1

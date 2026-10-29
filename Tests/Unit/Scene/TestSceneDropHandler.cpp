@@ -8,6 +8,7 @@
 #include <QGraphicsPixmapItem>
 #include <QGraphicsSceneEvent>
 #include <QMimeData>
+#include <QScrollBar>
 
 #include "App/Core/DragDropPayload.h"
 #include "App/Core/MimeTypes.h"
@@ -18,6 +19,7 @@
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/ClipboardManager.h"
 #include "App/Scene/DragPreview.h"
+#include "App/Scene/GraphicsView.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/SceneDropHandler.h"
 #include "App/Scene/Workspace.h"
@@ -353,4 +355,67 @@ void TestSceneDropHandler::testDragFromAnotherProcessHasNoGhost()
     QVERIFY(!dragGhost(scene));
     sendDragEvent(scene, QEvent::GraphicsSceneDrop, mimeData.get(), QPointF(120, 100));
     QCOMPARE(scene->elements().size(), 1);
+}
+
+void TestSceneDropHandler::testPaletteDropGrowsTheSceneOverTheElement()
+{
+    // The scene's first rect is the view's before it is shown, smaller than the viewport, so Qt centres it
+    WorkSpace workspace;
+    workspace.resize(800, 600);
+    workspace.show();
+    QVERIFY(QTest::qWaitForWindowExposed(&workspace));
+    Scene *scene = workspace.scene();
+    GraphicsView *view = workspace.view();
+    const QPointF corner = view->mapToScene(QPoint(0, 0));
+
+    // Near the viewport's far corner, past the scene's first rect
+    ElementLabel label(ElementFactory::pixmap(ElementType::And), ElementType::And, "");
+    auto mimeData = std::unique_ptr<QMimeData>(label.mimeData());
+    const QPointF dropPos = view->mapToScene(QPoint(view->viewport()->width() - 40, view->viewport()->height() - 40));
+    sendDragEvent(scene, QEvent::GraphicsSceneDragEnter, mimeData.get(), dropPos);
+    sendDragEvent(scene, QEvent::GraphicsSceneDrop, mimeData.get(), dropPos);
+
+    QCOMPARE(scene->elements().size(), 1);
+    QVERIFY(scene->sceneRect().contains(scene->elements().constFirst()->sceneBoundingRect()));
+    QCOMPARE(view->mapToScene(QPoint(0, 0)), corner);
+}
+
+void TestSceneDropHandler::testCloneDropKeepsTheViewStill()
+{
+    // A palette drop, then a copy-drag of the element: the copy lands under the cursor, the view where it was
+    for (const auto direction : {Qt::LeftToRight, Qt::RightToLeft}) {
+        WorkSpace workspace;
+        workspace.setLayoutDirection(direction);
+        workspace.resize(800, 600);
+        workspace.show();
+        QVERIFY(QTest::qWaitForWindowExposed(&workspace));
+        Scene *scene = workspace.scene();
+        GraphicsView *view = workspace.view();
+        const QPointF corner = view->mapToScene(QPoint(0, 0));
+
+        ElementLabel label(ElementFactory::pixmap(ElementType::And), ElementType::And, "");
+        auto paletteData = std::unique_ptr<QMimeData>(label.mimeData());
+        const QPointF paletteDrop = view->mapToScene(QPoint(400, 300));
+        sendDragEvent(scene, QEvent::GraphicsSceneDragEnter, paletteData.get(), paletteDrop);
+        sendDragEvent(scene, QEvent::GraphicsSceneDrop, paletteData.get(), paletteDrop);
+        QCOMPARE(scene->elements().size(), 1);
+        QCOMPARE(view->mapToScene(QPoint(0, 0)), corner);
+        auto *gate = scene->elements().constFirst();
+
+        const QPointF pressPos = gate->sceneBoundingRect().center();
+        QByteArray itemData;
+        QDataStream stream(&itemData, QIODevice::WriteOnly);
+        Serialization::writePandaHeader(stream);
+        stream << pressPos << gate->pos();
+        Serialization::serialize({gate}, stream, {.purpose = SerializationPurpose::InMemorySnapshot});
+        QMimeData cloneData;
+        cloneData.setData(MimeType::CloneDrag, itemData);
+        const QPointF dropPos = pressPos + QPointF(160, 96);
+        sendDragEvent(scene, QEvent::GraphicsSceneDragEnter, &cloneData, pressPos);
+        sendDragEvent(scene, QEvent::GraphicsSceneDragMove, &cloneData, dropPos);
+        sendDragEvent(scene, QEvent::GraphicsSceneDrop, &cloneData, dropPos);
+
+        QCOMPARE(scene->elements().size(), 2);
+        QCOMPARE(view->mapToScene(QPoint(0, 0)), corner);
+    }
 }

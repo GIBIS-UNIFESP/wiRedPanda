@@ -829,41 +829,38 @@ QRectF quantizeOutward(const QRectF &rect)
 
 void Scene::resizeScene()
 {
-    const auto bounds = cachedCircuitBoundingRect();
-
+    // While an element is dragged the rect only grows: shrinking it would chase the items
+    auto rect = cachedCircuitBoundingRect();
     if (m_interaction.isDraggingElement()) {
-        // While dragging, only expand the scene rect (union with current rect).
-        // Never shrink during drag — shrinking shifts the viewport origin and
-        // causes jarring visual jumps as the scene rect chases the items.
-        setSceneRect(quantizeOutward(sceneRect().united(bounds)));
-    } else {
-        // Tighten to item bounds, but ensure the scene rect stays larger than the
-        // viewport. When the scene rect is smaller than (or barely larger than) the
-        // viewport, Qt re-centers it, causing a visual jump. Adding margins ensures
-        // enough scrollbar range to preserve the exact scroll position.
-        auto tightRect = bounds;
-        const auto viewList = views();
-        if (!viewList.isEmpty()) {
-            auto *view = viewList.first();
-            constexpr qreal margin = 100.0;
-            const auto visibleScene = view->mapToScene(view->viewport()->rect()).boundingRect()
-                                         .adjusted(-margin, -margin, margin, margin);
-            tightRect = tightRect.united(visibleScene);
+        rect = rect.united(sceneRect());
+    }
 
-            // Preserve exact scrollbar positions across the scene rect change.
-            // centerOn() converts scene floats to integer pixels, causing 1px
-            // drift — saving/restoring scrollbar values avoids the rounding.
-            const int hVal = view->horizontalScrollBar()->value();
-            const int vVal = view->verticalScrollBar()->value();
-            setSceneRect(quantizeOutward(tightRect));
-            view->horizontalScrollBar()->setValue(hVal);
-            view->verticalScrollBar()->setValue(vVal);
-        } else if (!tightRect.isNull()) {
+    const auto viewList = views();
+    if (viewList.isEmpty()) {
+        if (!rect.isNull()) {
             // An empty circuit has no bounds: a null rect would hand the scene rect back to Qt, which grows it over
             // every item
-            setSceneRect(quantizeOutward(tightRect));
+            setSceneRect(quantizeOutward(rect));
         }
+        return;
     }
+
+    // The rect holds what the view shows, with a margin: a rect no larger than the viewport is centred in it by Qt,
+    // which has no scroll position to keep
+    auto *view = viewList.first();
+    constexpr qreal margin = 100.0;
+    const auto visibleScene = view->mapToScene(view->viewport()->rect()).boundingRect()
+                                  .adjusted(-margin, -margin, margin, margin);
+
+    // The scene point at the viewport's corner stays there. The scroll bars' values do not say where the view is
+    // while Qt centres a rect smaller than the viewport, and a right-to-left view counts from the other end; the
+    // drift is in whole pixels, as the scroll position is
+    const QPointF corner = view->mapToScene(QPoint(0, 0));
+    setSceneRect(quantizeOutward(rect.united(visibleScene)));
+    const QPointF drift = view->viewportTransform().map(corner);
+    const int direction = view->isRightToLeft() ? -1 : 1;
+    view->horizontalScrollBar()->setValue(view->horizontalScrollBar()->value() + (direction * qRound(drift.x())));
+    view->verticalScrollBar()->setValue(view->verticalScrollBar()->value() + qRound(drift.y()));
 }
 
 QUndoStack *Scene::undoStack()

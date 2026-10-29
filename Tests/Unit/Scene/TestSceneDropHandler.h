@@ -25,4 +25,8 @@ private slots:
     void testCloneDragGhostIsWhereTheDropPutsTheCopies();
     void testDragGhostLeavesWithTheDrag();
     void testDragFromAnotherProcessHasNoGhost();
+
+    // A drop grows the scene over what it adds and leaves the view where it was
+    void testPaletteDropGrowsTheSceneOverTheElement();
+    void testCloneDropKeepsTheViewStill();
 };
