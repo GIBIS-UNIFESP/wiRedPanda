@@ -3,7 +3,9 @@
 
 #include "Tests/Unit/Scene/TestSceneDropHandler.h"
 
+#include <QCoreApplication>
 #include <QDataStream>
+#include <QGraphicsPixmapItem>
 #include <QGraphicsSceneEvent>
 #include <QMimeData>
 
@@ -14,10 +16,39 @@
 #include "App/Element/GraphicElements/And.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
+#include "App/Scene/ClipboardManager.h"
+#include "App/Scene/DragPreview.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/SceneDropHandler.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
+
+namespace {
+
+/// Sends \a mimeData's drag event of \a type to \a scene at \a scenePos.
+void sendDragEvent(Scene *scene, const QEvent::Type type, QMimeData *mimeData, const QPointF scenePos)
+{
+    QGraphicsSceneDragDropEvent event(type);
+    event.setMimeData(mimeData);
+    event.setScenePos(scenePos);
+    event.setProposedAction(Qt::CopyAction);
+    event.setPossibleActions(Qt::CopyAction);
+    QCoreApplication::sendEvent(scene, &event);
+}
+
+/// The scene's drag picture: the one top-level pixmap item, which no element or wire is.
+QGraphicsPixmapItem *dragGhost(Scene *scene)
+{
+    QGraphicsPixmapItem *ghost = nullptr;
+    for (auto *item : scene->items()) {
+        if (auto *pixmapItem = qgraphicsitem_cast<QGraphicsPixmapItem *>(item); pixmapItem && !item->parentItem()) {
+            ghost = pixmapItem;
+        }
+    }
+    return ghost;
+}
+
+} // namespace
 
 void TestSceneDropHandler::testIsSupportedDropFormatRecognizesAllFourMimeTypes()
 {
@@ -224,4 +255,102 @@ void TestSceneDropHandler::testAddFromMimeDataKeepsDefaultPositionWhenScenePosOm
     }
     QVERIFY2(added, "addFromMimeData() must add a new Not element from the payload");
     QCOMPARE(added->pos(), QPointF(0, 0));
+}
+
+void TestSceneDropHandler::testPaletteDragGhostIsWhereTheDropPutsTheElement()
+{
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    ElementLabel label(ElementFactory::pixmap(ElementType::And), ElementType::And, "");
+    auto mimeData = std::unique_ptr<QMimeData>(label.mimeData());
+    const DragPreview::Scope preview(label.dragPicture());
+
+    // Off the grid, so the ghost and the drop both snap
+    sendDragEvent(scene, QEvent::GraphicsSceneDragEnter, mimeData.get(), QPointF(150, 133));
+    const QPointF dropPos(203, 197);
+    sendDragEvent(scene, QEvent::GraphicsSceneDragMove, mimeData.get(), dropPos);
+    auto *ghost = dragGhost(scene);
+    QVERIFY(ghost);
+    const QPointF ghostPos = ghost->pos();
+    QCOMPARE(ghost->boundingRect().size(), label.pixmap().deviceIndependentSize());
+
+    sendDragEvent(scene, QEvent::GraphicsSceneDrop, mimeData.get(), dropPos);
+    QVERIFY(!dragGhost(scene));
+    QCOMPARE(scene->elements().size(), 1);
+    QCOMPARE(scene->elements().constFirst()->pos(), ghostPos);
+}
+
+void TestSceneDropHandler::testCloneDragGhostIsWhereTheDropPutsTheCopies()
+{
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    auto *gate = new And();
+    gate->setPos(48, 48);
+    scene->addItem(gate);
+    gate->setSelected(true);
+    // Zoomed in, so the picture holds more pixels than the selection's size in the scene
+    workspace.view()->scale(2.0, 2.0);
+
+    const QPointF pressPos = gate->pos() + QPointF(20, 20);
+    const DragPreview::Picture picture = scene->clipboardManager()->selectionDragPicture(pressPos);
+    QVERIFY(!picture.pixmap.isNull());
+    const QSizeF sceneSize = gate->sceneBoundingRect().adjusted(-8, -8, 8, 8).size();
+    QVERIFY(picture.pixmap.width() > sceneSize.width());
+    // The picture covers the selection at its size in the scene, whatever the pixels it holds
+    QCOMPARE(picture.pixmap.deviceIndependentSize(), sceneSize);
+    const DragPreview::Scope preview(picture);
+
+    QByteArray itemData;
+    QDataStream stream(&itemData, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(stream);
+    stream << pressPos << gate->pos();
+    Serialization::serialize({gate}, stream, {.purpose = SerializationPurpose::InMemorySnapshot});
+    QMimeData mimeData;
+    mimeData.setData(MimeType::CloneDrag, itemData);
+
+    // A travel off the grid, so the ghost and the drop both snap
+    const QPointF dropPos = pressPos + QPointF(101, 37);
+    sendDragEvent(scene, QEvent::GraphicsSceneDragEnter, &mimeData, pressPos);
+    sendDragEvent(scene, QEvent::GraphicsSceneDragMove, &mimeData, dropPos);
+    auto *ghost = dragGhost(scene);
+    QVERIFY(ghost);
+    const QPointF ghostPos = ghost->pos();
+
+    sendDragEvent(scene, QEvent::GraphicsSceneDrop, &mimeData, dropPos);
+    QVERIFY(!dragGhost(scene));
+    QCOMPARE(scene->elements().size(), 2);
+    const auto selected = scene->selectedElements();
+    QCOMPARE(selected.size(), 1);
+    // The ghost's corner is as far from the copy as the picture's from the original
+    QCOMPARE(ghostPos - selected.constFirst()->pos(), picture.topLeft - gate->pos());
+}
+
+void TestSceneDropHandler::testDragGhostLeavesWithTheDrag()
+{
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    ElementLabel label(ElementFactory::pixmap(ElementType::And), ElementType::And, "");
+    auto mimeData = std::unique_ptr<QMimeData>(label.mimeData());
+    const DragPreview::Scope preview(label.dragPicture());
+
+    sendDragEvent(scene, QEvent::GraphicsSceneDragEnter, mimeData.get(), QPointF(100, 100));
+    QVERIFY(dragGhost(scene));
+    sendDragEvent(scene, QEvent::GraphicsSceneDragLeave, mimeData.get(), QPointF(100, 100));
+    QVERIFY(!dragGhost(scene));
+    QVERIFY(scene->elements().isEmpty());
+}
+
+void TestSceneDropHandler::testDragFromAnotherProcessHasNoGhost()
+{
+    // Another process's drag sets no picture here; the scene accepts it and draws nothing
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    ElementLabel label(ElementFactory::pixmap(ElementType::And), ElementType::And, "");
+    auto mimeData = std::unique_ptr<QMimeData>(label.mimeData());
+
+    sendDragEvent(scene, QEvent::GraphicsSceneDragEnter, mimeData.get(), QPointF(100, 100));
+    sendDragEvent(scene, QEvent::GraphicsSceneDragMove, mimeData.get(), QPointF(120, 100));
+    QVERIFY(!dragGhost(scene));
+    sendDragEvent(scene, QEvent::GraphicsSceneDrop, mimeData.get(), QPointF(120, 100));
+    QCOMPARE(scene->elements().size(), 1);
 }
