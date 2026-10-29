@@ -338,7 +338,6 @@ void TestICInline::testChildBlobPropagation()
     WorkSpace child;
     SimulationBlocker childBlocker(child.simulation());
     child.loadFromBlob(blob, &parent, icId, m_fixtureDir);
-    connect(&child, &WorkSpace::icBlobSaved, &parent, &WorkSpace::onChildICBlobSaved);
 
     QSignalSpy spy(&child, &WorkSpace::icBlobSaved);
 
@@ -1484,7 +1483,7 @@ void TestICInline::testInlineSaveContextDirSwitch()
     QVERIFY(!savedBlob.isEmpty());
 
     // Round-trip: apply the saved blob back to the parent IC
-    parent.onChildICBlobSaved(icId, savedBlob);
+    parent.saveChildICBlob(icId, savedBlob);
     auto *updatedIC = dynamic_cast<IC *>(parent.scene()->itemById(icId));
     QVERIFY(updatedIC);
     QVERIFY(updatedIC->inputSize() > 0);
@@ -1630,11 +1629,6 @@ void TestICInline::testNestedWorkspaceChainPropagation()
     SimulationBlocker childBlocker(child.simulation());
     child.loadFromBlob(notBlob, &parent, parentICId, m_fixtureDir);
     QVERIFY(child.isInlineIC());
-
-    QObject::connect(&child, &WorkSpace::icBlobSaved,
-                     &parent, &WorkSpace::onChildICBlobSaved);
-    QObject::connect(&parent, &WorkSpace::icBlobSaved,
-                     &grandparent, &WorkSpace::onChildICBlobSaved);
 
     // Save child → propagates to parent
     QSignalSpy childSpy(&child, &WorkSpace::icBlobSaved);
@@ -1847,9 +1841,9 @@ void TestICInline::testReEmbedWithDifferentBlob()
 // Migrated: Batch 4 — Child blob propagation
 // ===========================================================================
 
-void TestICInline::testOnChildICBlobSavedOrphan()
+void TestICInline::testSaveChildICBlobOrphan()
 {
-    // onChildICBlobSaved should be a no-op if the IC element no longer exists.
+    // saveChildICBlob should be a no-op if the IC element no longer exists.
 
     QByteArray blob = readFile(m_fixtureDir + "/simple_and.panda");
     QVERIFY(!blob.isEmpty());
@@ -1869,11 +1863,11 @@ void TestICInline::testOnChildICBlobSavedOrphan()
     ic.reset();
 
     // These should be no-ops, not crash
-    ws.onChildICBlobSaved(icId, blob);
-    ws.onChildICBlobSaved(99999, blob);
+    ws.saveChildICBlob(icId, blob);
+    ws.saveChildICBlob(99999, blob);
 }
 
-void TestICInline::testOnChildICBlobSavedPropagation()
+void TestICInline::testSaveChildICBlobPropagation()
 {
     // Child tab saves → parent updates all same-blobName ICs.
     // Undo restores old state, redo re-applies.
@@ -1901,7 +1895,7 @@ void TestICInline::testOnChildICBlobSavedPropagation()
     int origInputs = static_cast<IC *>(parent.scene()->itemById(ids.at(0)))->inputSize();
 
     // Propagate NOT blob (different port count)
-    parent.onChildICBlobSaved(ids.at(0), notBlob);
+    parent.saveChildICBlob(ids.at(0), notBlob);
 
     for (int id : ids) {
         auto *ic = dynamic_cast<IC *>(parent.scene()->itemById(id));
@@ -1928,9 +1922,9 @@ void TestICInline::testOnChildICBlobSavedPropagation()
     }
 }
 
-void TestICInline::testOnChildICBlobSavedNonEmbeddedTarget()
+void TestICInline::testSaveChildICBlobNonEmbeddedTarget()
 {
-    // onChildICBlobSaved should be a no-op when the target is not embedded.
+    // saveChildICBlob should be a no-op when the target is not embedded.
 
     QByteArray blob = readFile(m_fixtureDir + "/simple_and.panda");
     QVERIFY(!blob.isEmpty());
@@ -1952,16 +1946,16 @@ void TestICInline::testOnChildICBlobSavedNonEmbeddedTarget()
 
     int stackIndex = ws.scene()->undoStack()->index();
 
-    ws.onChildICBlobSaved(fileBackedId, blob);
-    ws.onChildICBlobSaved(swId, blob);
+    ws.saveChildICBlob(fileBackedId, blob);
+    ws.saveChildICBlob(swId, blob);
 
     QCOMPARE(ws.scene()->undoStack()->index(), stackIndex);
 }
 
-void TestICInline::testOnChildICBlobSavedCorruptBlob()
+void TestICInline::testSaveChildICBlobCorruptBlob()
 {
-    // onChildICBlobSaved() rolls back and re-throws when any target's loadFromBlob() fails
-    // (WorkSpace::onChildICBlobSaved()'s catch(...) block) -- confirmed empirically, unparseable
+    // saveChildICBlob() rolls back and re-throws when any target's loadFromBlob() fails
+    // (WorkSpace::saveChildICBlob()'s catch(...) block) -- confirmed empirically, unparseable
     // bytes like this always throw, deterministically, never falling through to push a command.
 
     QByteArray andBlob = readFile(m_fixtureDir + "/simple_and.panda");
@@ -1984,7 +1978,7 @@ void TestICInline::testOnChildICBlobSavedCorruptBlob()
     QByteArray corruptBlob("corrupt");
     bool threw = false;
     try {
-        ws.onChildICBlobSaved(icId, corruptBlob);
+        ws.saveChildICBlob(icId, corruptBlob);
     } catch (...) {
         threw = true;
     }
@@ -1997,9 +1991,9 @@ void TestICInline::testOnChildICBlobSavedCorruptBlob()
     QCOMPARE(restored->blobName(), QString("my_ic"));
 }
 
-void TestICInline::testOnChildICBlobSavedCorruptBlobMultiTarget()
+void TestICInline::testSaveChildICBlobCorruptBlobMultiTarget()
 {
-    // Same deterministic throw-and-rollback behavior as testOnChildICBlobSavedCorruptBlob,
+    // Same deterministic throw-and-rollback behavior as testSaveChildICBlobCorruptBlob,
     // confirmed to hold across all 3 same-blobName targets, not just a single IC.
 
     QByteArray andBlob = readFile(m_fixtureDir + "/simple_and.panda");
@@ -2027,7 +2021,7 @@ void TestICInline::testOnChildICBlobSavedCorruptBlobMultiTarget()
     QByteArray corruptBlob("corrupt");
     bool threw = false;
     try {
-        ws.onChildICBlobSaved(ids.at(0), corruptBlob);
+        ws.saveChildICBlob(ids.at(0), corruptBlob);
     } catch (...) {
         threw = true;
     }
@@ -2046,7 +2040,7 @@ void TestICInline::testOnChildICBlobSavedCorruptBlobMultiTarget()
     }
 }
 
-void TestICInline::testOnChildICBlobSavedPortCountWithConnections()
+void TestICInline::testSaveChildICBlobPortCountWithConnections()
 {
     // When blob changes port count, connections to removed ports are destroyed.
     // Undo restores both port count and connections.
@@ -2081,7 +2075,7 @@ void TestICInline::testOnChildICBlobSavedPortCountWithConnections()
     int origInputs = ic->inputSize();
 
     // Update to NOT blob (fewer inputs)
-    ws.onChildICBlobSaved(icId, notBlob);
+    ws.saveChildICBlob(icId, notBlob);
 
     auto *updatedIC = dynamic_cast<IC *>(ws.scene()->itemById(icId));
     QVERIFY(updatedIC);
@@ -2096,7 +2090,7 @@ void TestICInline::testOnChildICBlobSavedPortCountWithConnections()
     QCOMPARE(TestUtils::countConnections(ws.scene()), 3);
 }
 
-void TestICInline::testOnChildICBlobSavedBlobNameMismatch()
+void TestICInline::testSaveChildICBlobBlobNameMismatch()
 {
     // Only ICs with matching blobName should be updated.
 
@@ -2128,7 +2122,7 @@ void TestICInline::testOnChildICBlobSavedBlobNameMismatch()
     int origInputs = icAlpha->inputSize();
 
     // Update "alpha" to NOT blob — "beta" must remain unchanged
-    ws.onChildICBlobSaved(alphaId, notBlob);
+    ws.saveChildICBlob(alphaId, notBlob);
 
     auto *updatedAlpha = dynamic_cast<IC *>(ws.scene()->itemById(alphaId));
     auto *unchangedBeta = dynamic_cast<IC *>(ws.scene()->itemById(betaId));
@@ -2148,7 +2142,7 @@ void TestICInline::testOnChildICBlobSavedBlobNameMismatch()
     QCOMPARE(unchangedBeta->inputSize(), origInputs);
 }
 
-void TestICInline::testOnChildICBlobSavedAllOrNothing()
+void TestICInline::testSaveChildICBlobAllOrNothing()
 {
     // All same-blobName ICs should update atomically. Undo restores all.
 
@@ -2177,7 +2171,7 @@ void TestICInline::testOnChildICBlobSavedAllOrNothing()
     int stackBefore = ws.scene()->undoStack()->index();
 
     // Valid blob: all 5 should update atomically
-    ws.onChildICBlobSaved(ids.at(0), notBlob);
+    ws.saveChildICBlob(ids.at(0), notBlob);
 
     // Exactly one command pushed
     QCOMPARE(ws.scene()->undoStack()->index(), stackBefore + 1);
@@ -2209,7 +2203,7 @@ void TestICInline::testOnChildICBlobSavedAllOrNothing()
 void TestICInline::testMultipleInstancesBlobUpdate()
 {
     // Multiple embedded ICs with the same blobName should all be updated
-    // when onChildICBlobSaved is called for any one of them.
+    // when saveChildICBlob is called for any one of them.
 
     QByteArray andBlob = readFile(m_fixtureDir + "/simple_and.panda");
     QByteArray notBlob = readFile(m_fixtureDir + "/chain_c.panda");
@@ -2242,7 +2236,7 @@ void TestICInline::testMultipleInstancesBlobUpdate()
     int ic1Id = ic1->id();
     int ic2Id = ic2->id();
 
-    ws.onChildICBlobSaved(ic1Id, notBlob);
+    ws.saveChildICBlob(ic1Id, notBlob);
 
     auto *u1 = dynamic_cast<IC *>(ws.scene()->itemById(ic1Id));
     auto *u2 = dynamic_cast<IC *>(ws.scene()->itemById(ic2Id));
@@ -2258,7 +2252,7 @@ void TestICInline::testMultipleInstancesBlobUpdate()
 
 void TestICInline::testMultipleInstancesBlobUpdateLabelsPreserved()
 {
-    // After onChildICBlobSaved updates all same-blobName ICs, per-instance
+    // After saveChildICBlob updates all same-blobName ICs, per-instance
     // labels must survive through undo/redo.
 
     QByteArray andBlob = readFile(m_fixtureDir + "/simple_and.panda");
@@ -2289,7 +2283,7 @@ void TestICInline::testMultipleInstancesBlobUpdateLabelsPreserved()
     int id2 = ic2->id();
     int origInputs = ic1->inputSize();
 
-    ws.onChildICBlobSaved(id1, notBlob);
+    ws.saveChildICBlob(id1, notBlob);
 
     auto *u1 = dynamic_cast<IC *>(ws.scene()->itemById(id1));
     auto *u2 = dynamic_cast<IC *>(ws.scene()->itemById(id2));
@@ -2604,7 +2598,7 @@ void TestICInline::testMixedScene()
 
 void TestICInline::testPortCountChangeConnectionCleanup()
 {
-    // When onChildICBlobSaved changes port count, connections to removed ports
+    // When saveChildICBlob changes port count, connections to removed ports
     // are destroyed. UpdateBlobCommand restores them on undo.
 
     QByteArray andBlob = readFile(m_fixtureDir + "/simple_and.panda");
@@ -2636,7 +2630,7 @@ void TestICInline::testPortCountChangeConnectionCleanup()
     int icId = ic->id();
 
     // Update to NOT blob (fewer inputs)
-    ws.onChildICBlobSaved(icId, notBlob);
+    ws.saveChildICBlob(icId, notBlob);
 
     auto *updatedIC = dynamic_cast<IC *>(ws.scene()->itemById(icId));
     QVERIFY(updatedIC);
@@ -4217,7 +4211,7 @@ void TestICInline::testMultiCycleUndoRedoPropagation()
     int icId = ic->id();
     int origInputs = ic->inputSize();
 
-    ws.onChildICBlobSaved(icId, notBlob);
+    ws.saveChildICBlob(icId, notBlob);
 
     for (int cycle = 0; cycle < 3; ++cycle) {
         ws.scene()->undoStack()->undo();
@@ -4269,7 +4263,7 @@ void TestICInline::testPositionRotationPreservedDuringPropagation()
     int id1 = ic1->id();
     int id2 = ic2->id();
 
-    ws.onChildICBlobSaved(id1, notBlob);
+    ws.saveChildICBlob(id1, notBlob);
 
     auto *u1 = dynamic_cast<GraphicElement *>(ws.scene()->itemById(id1));
     auto *u2 = dynamic_cast<GraphicElement *>(ws.scene()->itemById(id2));
@@ -5435,7 +5429,7 @@ void TestICInline::testExtractToFileUsesContextDir()
 
 void TestICInline::testChildBlobSavedPartialFailureRollback()
 {
-    // onChildICBlobSaved with a blob that fails partway through multiple targets
+    // saveChildICBlob with a blob that fails partway through multiple targets
     // must roll back all already-updated ICs and restore the original blob in the
     // registry, leaving the scene in a consistent state.
 
@@ -5465,13 +5459,13 @@ void TestICInline::testChildBlobSavedPartialFailureRollback()
     QByteArray corruptBlob("corrupt");
     bool threw = false;
     try {
-        ws.onChildICBlobSaved(ids.at(0), corruptBlob);
+        ws.saveChildICBlob(ids.at(0), corruptBlob);
     } catch (...) {
         threw = true;
     }
 
     // Exception must have been thrown (corrupt blob can't be parsed)
-    QVERIFY2(threw, "onChildICBlobSaved should throw on corrupt blob");
+    QVERIFY2(threw, "saveChildICBlob should throw on corrupt blob");
 
     // No undo command pushed
     QCOMPARE(ws.scene()->undoStack()->index(), stackBefore);
@@ -5605,9 +5599,6 @@ void TestICInline::testInlineSaveConvertsFileBackedToEmbedded()
 
     childWs.loadFromBlob(chainCBlob, &parentWs, parentICId, parentScene->contextDir());
 
-    // Connect icBlobSaved to parent (simulating what MainWindow does)
-    connect(&childWs, &WorkSpace::icBlobSaved, &parentWs, &WorkSpace::onChildICBlobSaved);
-
     // --- Step 3: Drop a file-based IC into the child scene ---
     auto *droppedIC = new IC();
     const QString simpleAndFile = m_fixtureDir + "/simple_and.panda";
@@ -5733,7 +5724,6 @@ void TestICInline::testNestedInlineSaveAndReopen()
     // --- Step 2: Open chain_b in level-1 workspace ---
     WorkSpace level1Ws;
     level1Ws.loadFromBlob(chainBBlob, &rootWs, chainBICId, rootScene->contextDir());
-    connect(&level1Ws, &WorkSpace::icBlobSaved, &rootWs, &WorkSpace::onChildICBlobSaved);
 
     // Find chain_c IC inside level-1
     IC *chainCIC = nullptr;
@@ -5764,7 +5754,6 @@ void TestICInline::testNestedInlineSaveAndReopen()
     // --- Step 3: Open chain_c in level-2 workspace ---
     WorkSpace level2Ws;
     level2Ws.loadFromBlob(chainCBlob, &level1Ws, chainCICId, level1Ws.scene()->contextDir());
-    connect(&level2Ws, &WorkSpace::icBlobSaved, &level1Ws, &WorkSpace::onChildICBlobSaved);
 
     // --- Step 4: Drop counter.panda (file-based) into level-2 ---
     const QString counterFile = exDir + "counter.panda";
@@ -5992,7 +5981,6 @@ void TestICInline::testInlineSavePreservesWiresA15()
     WorkSpace childWs;
     childWs.loadFromBlob(parentWs.scene()->icRegistry()->blob("chain_c"),
                          &parentWs, parentICId, parentWs.scene()->contextDir());
-    connect(&childWs, &WorkSpace::icBlobSaved, &parentWs, &WorkSpace::onChildICBlobSaved);
 
     // Drop a file-backed sub-IC into the child scene and wire it to a switch.
     auto *droppedIC = new IC();

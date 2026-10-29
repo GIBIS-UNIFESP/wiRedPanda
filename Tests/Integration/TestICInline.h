@@ -86,14 +86,14 @@ private slots:
 
     // --- Migrated: Batch 4 — Child blob propagation ---
 
-    void testOnChildICBlobSavedOrphan();
-    void testOnChildICBlobSavedPropagation();
-    void testOnChildICBlobSavedNonEmbeddedTarget();
-    void testOnChildICBlobSavedCorruptBlob();
-    void testOnChildICBlobSavedCorruptBlobMultiTarget();
-    void testOnChildICBlobSavedPortCountWithConnections();
-    void testOnChildICBlobSavedBlobNameMismatch();
-    void testOnChildICBlobSavedAllOrNothing();
+    void testSaveChildICBlobOrphan();
+    void testSaveChildICBlobPropagation();
+    void testSaveChildICBlobNonEmbeddedTarget();
+    void testSaveChildICBlobCorruptBlob();
+    void testSaveChildICBlobCorruptBlobMultiTarget();
+    void testSaveChildICBlobPortCountWithConnections();
+    void testSaveChildICBlobBlobNameMismatch();
+    void testSaveChildICBlobAllOrNothing();
 
     // --- Migrated: Batch 5 — Multiple instances and remove ---
 
