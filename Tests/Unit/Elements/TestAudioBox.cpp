@@ -8,6 +8,7 @@
 #include <QDataStream>
 #include <QFile>
 #include <QKeySequence>
+#include <QMediaPlayer>
 #include <QPointF>
 #include <QTemporaryDir>
 #include <QTemporaryFile>
@@ -312,18 +313,50 @@ void TestAudioBox::testSetAudioWithAbsolutePath()
     QCOMPARE(audioBox.audio(), QFileInfo(tempFile.fileName()).absoluteFilePath());
 }
 
-void TestAudioBox::testSetAudioWithNonExistentPathThrows()
+void TestAudioBox::testSetAudioWithNonExistentPathKeepsItAndPlaysTheDefault()
 {
-    AudioBox audioBox;
+    // A sound that is gone keeps its path and plays the built-in sound; the sound comes back when its file does, and
+    // only a file's report names it
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("gone.wav");
 
-    bool threw = false;
+    AudioBox audioBox;
     try {
-        audioBox.setAudio("/some/empty/directory/nonexistent_audio_12345.wav");
-    } catch (const Pandaception &) {
-        threw = true;
+        audioBox.setAudio(path);
+    } catch (const Pandaception &e) {
+        QFAIL(qPrintable(QString("setAudio() threw: %1").arg(e.what())));
+    }
+    QCOMPARE(audioBox.audio(), path);
+    QCOMPARE(audioBox.externalFiles(), QStringList{path});
+
+    QString message;
+    try {
+        audioBox.reportFailedFiles();
+    } catch (const Pandaception &e) {
+        message = QString::fromUtf8(e.what());
+    }
+    QVERIFY2(message.contains("gone.wav") && message.contains("does not exist"), qPrintable(message));
+
+    // Without an output device there is no player to read
+    auto *player = audioBox.findChild<QMediaPlayer *>();
+    if (player) {
+        QCOMPARE(player->source(), QUrl(QString("qrc") + AudioBox::kDefaultAudioPath));
     }
 
-    QVERIFY2(threw, "setAudio should throw when the given path does not exist");
+    QFile file(path);
+    QVERIFY(file.open(QIODevice::WriteOnly));
+    file.write("DUMMY AUDIO DATA");
+    file.close();
+    AudioElementTestHelpers::testRefreshWithActiveInput(audioBox);
+    if (player) {
+        QCOMPARE(player->source(), QUrl::fromLocalFile(path));
+    }
+    try {
+        audioBox.reportFailedFiles();
+    } catch (const Pandaception &e) {
+        QFAIL(qPrintable(QString("a sound that came back is still reported: %1").arg(e.what())));
+    }
 }
 
 void TestAudioBox::testLoadResolvesBareFilenameAgainstContextDir()

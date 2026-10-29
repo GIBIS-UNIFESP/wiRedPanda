@@ -69,20 +69,21 @@ void AudioBox::setAudio(const QString &audioPath)
     // ExternalFilePath::forReading(), called from load() below) -- by the time a
     // path reaches here it's either a resource reference or already directly
     // usable (a fresh absolute path from a file picker, or an already-resolved
-    // one read back from a saved project). Just validate it's actually there.
-    const QString &path = audioPath;
+    // one read back from a saved project). Nothing here may throw: a snapshot's
+    // restore runs inside QUndoStack, which an exception cannot pass on macOS, so a
+    // sound that is gone keeps its path and the built-in sound plays in its place.
+    // A copy: the path given can be m_failedAudioPath itself, cleared next
+    QString path = audioPath;
+    m_audio.setFile(path);
+    m_failedAudioPath.clear();
     if (!path.startsWith(":/")) {
         const QFileInfo info(path);
         if (!info.exists() || !info.isReadable()) {
-            const QString reason = !info.exists()
-                                       ? tr("File does not exist")
-                                       : tr("File is not readable");
             qCDebug(zero) << "Problem loading audio path:" << path;
-            throw PANDACEPTION("Couldn't load audio: %1 (%2)", path, reason);
+            m_failedAudioPath = path;
+            path = QString::fromLatin1(kDefaultAudioPath);
         }
     }
-
-    m_audio.setFile(path);
 
     // Only set up hardware if device is available
     if (!m_hasOutputDevice) {
@@ -119,6 +120,10 @@ void AudioBox::startAudio()
     if (m_player->source().isEmpty()) { // LCOV_EXCL_LINE
         setAudio(QString::fromLatin1(kDefaultAudioPath)); // LCOV_EXCL_LINE
     } // LCOV_EXCL_LINE
+    // A sound whose file is back plays in place of the built-in one
+    if (!m_failedAudioPath.isEmpty() && QFileInfo(m_failedAudioPath).isReadable()) {
+        setAudio(m_failedAudioPath);
+    }
     m_player->play();
 }
 
@@ -145,6 +150,21 @@ QStringList AudioBox::externalFiles() const
         result.append(audioPath);
     }
     return result;
+}
+
+void AudioBox::reportFailedFiles() const
+{
+    GraphicElement::reportFailedFiles();
+    // Reported only while it still cannot be read: a file back since plays once the box next plays
+    const QFileInfo info(m_failedAudioPath);
+    if (m_failedAudioPath.isEmpty() || info.isReadable()) {
+        return;
+    }
+
+    const QString reason = !info.exists()
+                               ? tr("File does not exist")
+                               : tr("File is not readable");
+    throw PANDACEPTION("Couldn't load audio: %1 (%2)", m_failedAudioPath, reason);
 }
 
 void AudioBox::save(QDataStream &stream, SerializationOptions options) const

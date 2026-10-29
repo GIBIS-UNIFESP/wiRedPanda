@@ -43,13 +43,20 @@ public:
 
     // --- Playback Control ---
 
-    /// Sets the audio source to \a audioPath and reloads the player.
+    /**
+     * \brief Sets the audio source to \a audioPath and reloads the player.
+     * \details A sound that is gone or unreadable keeps its path and plays the built-in sound in its place: an undo
+     * goes on. It plays again once its file is back; opening a file reports it (reportFailedFiles()).
+     */
     void setAudio(const QString &audioPath) override;
 
     // --- External file dependencies ---
 
     /// \reimp Returns audio file path in addition to appearances.
     QStringList externalFiles() const override;
+
+    /// \reimp Also names the sound when it did not load and the built-in sound plays in its place.
+    void reportFailedFiles() const override;
 
     // --- Serialization ---
 
@@ -69,5 +76,6 @@ protected:
 private:
     QAudioOutput *m_audioOutput = nullptr;
     QFileInfo m_audio;
+    QString m_failedAudioPath;   ///< The sound last set when it did not load, else empty.
     QMediaPlayer *m_player = nullptr;
 };

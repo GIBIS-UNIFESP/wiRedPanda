@@ -1216,3 +1216,34 @@ void TestWorkspace::testOpeningAFileWithAPictureThatIsGoneReportsIt()
     }
     QVERIFY2(message.contains("custom_led.svg") && message.contains("does not exist"), qPrintable(message));
 }
+
+void TestWorkspace::testOpeningAFileWithASoundThatIsGoneReportsIt()
+{
+    // An undo plays the default in place of a sound that is gone, but opening a file reports it
+    QTemporaryDir projectDir;
+    QVERIFY(projectDir.isValid());
+    const QString wavPath = projectDir.filePath("custom.wav");
+    QFile wav(wavPath);
+    QVERIFY(wav.open(QIODevice::WriteOnly));
+    wav.write("DUMMY AUDIO DATA");
+    wav.close();
+    const QString saveFile = projectDir.filePath("circuit.panda");
+
+    {
+        WorkSpace workspace;
+        auto *audioBox = ElementFactory::buildElement(ElementType::AudioBox);
+        workspace.scene()->addItem(audioBox);
+        audioBox->setAudio(wavPath);
+        workspace.save(saveFile);
+    }
+    QVERIFY(QFile::remove(wavPath));
+
+    WorkSpace reloaded;
+    QString message;
+    try {
+        reloaded.load(saveFile);
+    } catch (const Pandaception &e) {
+        message = QString::fromUtf8(e.what());
+    }
+    QVERIFY2(message.contains("custom.wav") && message.contains("does not exist"), qPrintable(message));
+}

@@ -120,7 +120,7 @@ void GraphicElement::setPixmap(const int index)
     m_appearance.setPixmap(index);
 }
 
-void GraphicElement::reportFailedPicture() const
+void GraphicElement::reportFailedFiles() const
 {
     m_appearance.reportFailedPicture();
 }

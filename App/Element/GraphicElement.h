@@ -317,8 +317,9 @@ public:
     /// Loads and applies the appearance at position \a index in the appearance list (see ElementAppearance::setPixmap()).
     void setPixmap(const int index);
 
-    /// Throws a Pandaception when the picture shown last did not load (see ElementAppearance::reportFailedPicture()).
-    void reportFailedPicture() const;
+    /// Throws a Pandaception naming an external file the element uses in a fallback's place: the picture shown last
+    /// that did not load (see ElementAppearance::reportFailedPicture()), and in an override the element's own files.
+    virtual void reportFailedFiles() const;
 
     // --- Truth Table ---
 
