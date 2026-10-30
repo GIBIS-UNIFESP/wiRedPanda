@@ -103,6 +103,8 @@ status change gets a dated line in the log.
   addition's undo, a deletion, a morph), a use after free ASan reported and macOS failed on, and GCC 13 at `-O3`
   raised `-Wnull-dereference` on the id's fallback; the id is taken when the element is added. GCC 13 at `-O3`
   fails the old test and passes the new; folded into the fix (`42b649faa`).
+- 2026-10-30: CI green at `b4778e528` (Build 41065411927, Sanitizers 41065411494, API docs 41065411536, Exception
+  inventory 41065411455), the macOS-15 jobs on 15.8.2 included; none skipped.
 
 ## Appendix: the inventory (EB.1)
 
