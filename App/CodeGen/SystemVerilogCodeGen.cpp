@@ -8,8 +8,8 @@
 
 #include "App/CodeGen/CodeGenUtils.h"
 #include "App/Core/Common.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/IC.h"
@@ -28,7 +28,7 @@ static QString icModuleKey(const IC *ic)
     return key.isEmpty() ? ic->file() : key;
 }
 
-SystemVerilogCodeGen::SystemVerilogCodeGen(const QString &fileName, const QVector<GraphicElement *> &elements)
+SystemVerilogCodeGen::SystemVerilogCodeGen(const QString &fileName, const QVector<Element *> &elements)
     : m_file(fileName)
     , m_elements(elements)
 {
@@ -98,7 +98,7 @@ QString SystemVerilogCodeGen::otherPortName(Port *port)
 
     // Wireless Rx: resolve via the Tx node's input (what drives the transmitter), over a wire that also reaches the Rx,
     // as the simulation does. The Tx node is not an Rx, so this takes one step.
-    if (auto *elm = port->graphicElement(); elm && elm->wirelessMode() == WirelessMode::Rx && !elm->label().isEmpty()) {
+    if (auto *elm = port->element(); elm && elm->wirelessMode() == WirelessMode::Rx && !elm->label().isEmpty()) {
         if (auto *txInputPort = m_txInputPorts.value(elm->label(), nullptr)) {
             return otherPortName(txInputPort);
         }
@@ -150,7 +150,7 @@ static bool isSystemVerilogReserved(const QString &name)
 }
 
 // Recursively discover all unique IC types used in the circuit.
-void SystemVerilogCodeGen::collectICTypes(const QVector<GraphicElement *> &elements)
+void SystemVerilogCodeGen::collectICTypes(const QVector<Element *> &elements)
 {
     for (auto *elm : elements) {
         if (elm->elementType() != ElementType::IC) {
@@ -239,11 +239,11 @@ void SystemVerilogCodeGen::collectICTypes(const QVector<GraphicElement *> &eleme
 // instead emitted as `reg` + `always @(*)` with a seed, so the simulator settles
 // them. Detection is a reachability check over the gate graph: an element is on a
 // loop iff it can reach itself following output→input edges.
-QSet<GraphicElement *> SystemVerilogCodeGen::findFeedbackElements(const QVector<GraphicElement *> &elements)
+QSet<Element *> SystemVerilogCodeGen::findFeedbackElements(const QVector<Element *> &elements)
 {
-    const QSet<GraphicElement *> elementSet(elements.cbegin(), elements.cend());
+    const QSet<Element *> elementSet(elements.cbegin(), elements.cend());
 
-    auto isGate = [](GraphicElement *e) {
+    auto isGate = [](Element *e) {
         switch (e->elementType()) {
         case ElementType::And:  case ElementType::Or:   case ElementType::Nand:
         case ElementType::Nor:  case ElementType::Xor:  case ElementType::Xnor:
@@ -255,15 +255,15 @@ QSet<GraphicElement *> SystemVerilogCodeGen::findFeedbackElements(const QVector<
     };
 
     // Gates driven by elm's outputs (restricted to this IC's internal gates).
-    auto successors = [&](GraphicElement *elm) {
-        QVector<GraphicElement *> succ;
+    auto successors = [&](Element *elm) {
+        QVector<Element *> succ;
         for (auto *outPort : elm->outputs()) {
             const auto conns = outPort->connections();
             for (auto *conn : conns) {
                 if (!conn) continue;
                 Port *other = conn->otherPort(outPort);
                 if (!other) continue;
-                GraphicElement *h = other->graphicElement();
+                Element *h = other->element();
                 if (h && elementSet.contains(h) && isGate(h)) {
                     succ.append(h);
                 }
@@ -272,14 +272,14 @@ QSet<GraphicElement *> SystemVerilogCodeGen::findFeedbackElements(const QVector<
         return succ;
     }; // LCOV_EXCL_LINE -- compiler-generated cleanup for the returned QVector on an exception-unwind path never taken
 
-    QSet<GraphicElement *> feedback;
+    QSet<Element *> feedback;
     for (auto *start : elements) {
         if (!isGate(start)) continue;
         // Depth-first: can `start` reach itself?
-        QSet<GraphicElement *> seen;
-        QVector<GraphicElement *> stack = successors(start);
+        QSet<Element *> seen;
+        QVector<Element *> stack = successors(start);
         while (!stack.isEmpty()) {
-            GraphicElement *n = stack.takeLast();
+            Element *n = stack.takeLast();
             if (n == start) {
                 feedback.insert(start);
                 break;
@@ -375,10 +375,10 @@ void SystemVerilogCodeGen::generateSingleICModule(ICModuleInfo &info)
     // Map boundary input ports: for each IC input, the Node's output port
     // feeds internal logic, so map it to the module input name.
     // Also build a list of non-boundary elements for processing.
-    QSet<GraphicElement *> boundaryNodes;
+    QSet<Element *> boundaryNodes;
     for (int i = 0; i < ic->internalInputs().size(); ++i) {
         // m_internalInputs[i] is the Node's input port. Get the Node element.
-        auto *nodeElm = ic->internalInputs()[i]->graphicElement();
+        auto *nodeElm = ic->internalInputs()[i]->element();
         // Unreachable: ICLoader::loadBoundaryElement() always populates
         // internalInputs() with a real proxy Node's port, and every Port is
         // bound to its owning element at construction.
@@ -393,7 +393,7 @@ void SystemVerilogCodeGen::generateSingleICModule(ICModuleInfo &info)
     // Map boundary output ports: the output Node's output port gets the output name.
     // The assign for these is emitted separately at end of module.
     for (int i = 0; i < ic->internalOutputs().size(); ++i) {
-        auto *nodeElm = ic->internalOutputs()[i]->graphicElement();
+        auto *nodeElm = ic->internalOutputs()[i]->element();
         // Unreachable for the same reason as the internalInputs() loop above.
         if (!nodeElm) {
             continue; // LCOV_EXCL_LINE
@@ -403,7 +403,7 @@ void SystemVerilogCodeGen::generateSingleICModule(ICModuleInfo &info)
     }
 
     // Build list of internal (non-boundary) elements
-    QVector<GraphicElement *> internalElements;
+    QVector<Element *> internalElements;
     for (auto *elm : std::as_const(ic->internalElements())) {
         if (!boundaryNodes.contains(elm)) {
             internalElements.append(elm);
@@ -431,7 +431,7 @@ void SystemVerilogCodeGen::generateSingleICModule(ICModuleInfo &info)
     m_stream << Qt::endl;
     for (int i = 0; i < ic->internalOutputs().size(); ++i) {
         // m_internalOutputs[i] is the Node's output port. Get the Node element.
-        auto *nodeElm = ic->internalOutputs()[i]->graphicElement();
+        auto *nodeElm = ic->internalOutputs()[i]->element();
         // Unreachable for the same reason as the internalInputs() loop above.
         if (!nodeElm) {
             continue; // LCOV_EXCL_LINE
@@ -609,7 +609,7 @@ void SystemVerilogCodeGen::declareOutputs()
     m_stream << ");" << Qt::endl;
 }
 
-void SystemVerilogCodeGen::declareAuxVariablesRec(const QVector<GraphicElement *> &elements)
+void SystemVerilogCodeGen::declareAuxVariablesRec(const QVector<Element *> &elements)
 {
     for (auto *elm : elements) {
         if (elm->elementType() == ElementType::IC) {
@@ -847,7 +847,7 @@ void SystemVerilogCodeGen::emitSequentialBlock(
     m_stream << "    //End of " << typeName << Qt::endl;
 }
 
-void SystemVerilogCodeGen::assignVariablesRec(const QVector<GraphicElement *> &elements)
+void SystemVerilogCodeGen::assignVariablesRec(const QVector<Element *> &elements)
 {
     for (auto *elm : elements) {
         if (elm->elementType() == ElementType::IC) {
@@ -1239,7 +1239,7 @@ void SystemVerilogCodeGen::assignVariablesRec(const QVector<GraphicElement *> &e
             // Input-/Output-group element by the inputs().isEmpty()/outputs().isEmpty()
             // continue at the top of this loop. ElementType::JKLatch is unreachable for a
             // different, stronger reason: it's a deprecated enum value with no live
-            // GraphicElement implementation at all (ElementFactory::hasCreator(JKLatch) is
+            // Element implementation at all (ElementFactory::hasCreator(JKLatch) is
             // false), so no real `elm` can ever report it.
             // LCOV_EXCL_START
             case ElementType::And:
@@ -1274,7 +1274,7 @@ void SystemVerilogCodeGen::assignVariablesRec(const QVector<GraphicElement *> &e
     }
 }
 
-QString SystemVerilogCodeGen::generateLogicExpression(GraphicElement *elm)
+QString SystemVerilogCodeGen::generateLogicExpression(Element *elm)
 {
     bool negate = false;
     QString logicOperator;
@@ -1292,7 +1292,7 @@ QString SystemVerilogCodeGen::generateLogicExpression(GraphicElement *elm)
     // above/below — its one caller, assignVariablesRec's logic-gate branch, restricts
     // `elm` to exactly that set. ElementType::JKLatch
     // is unreachable for a different, stronger reason: it's a deprecated enum value with
-    // no live GraphicElement implementation at all (ElementFactory::hasCreator(JKLatch)
+    // no live Element implementation at all (ElementFactory::hasCreator(JKLatch)
     // is false), so no real `elm` can ever report it.
     // LCOV_EXCL_START
     case ElementType::AudioBox:

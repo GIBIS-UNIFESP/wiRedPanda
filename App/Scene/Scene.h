@@ -37,7 +37,7 @@
 #include "App/Simulation/Simulation.h"
 #include "App/Wiring/Port.h"
 
-class GraphicElement;
+class Element;
 class GraphicsView;
 class QGraphicsPixmapItem;
 class IC;
@@ -208,32 +208,32 @@ public:
      */
     QList<QGraphicsItem *> selectedItems() const;
     /// Returns the selected graphic elements, in id order.
-    const QList<GraphicElement *> selectedElements() const;
+    const QList<Element *> selectedElements() const;
     /// Returns all graphic elements in the scene.
-    const QVector<GraphicElement *> elements() const;
+    const QVector<Element *> elements() const;
     /// Returns how many graphic elements the scene holds, as elements().size() would, without walking the items.
     qsizetype elementCount() const;
     /// Returns all graphic elements within \a rect.
-    const QVector<GraphicElement *> elements(const QRectF &rect) const;
+    const QVector<Element *> elements(const QRectF &rect) const;
     /// Returns the path of the first local `.panda` file in \a mimeData's URL list (the file
     /// a file-manager drop would open), or an empty string if there is none.
     static QString droppedPandaFile(const QMimeData *mimeData);
     /// Returns all graphic elements without the topological sort — for hot
     /// paths (key triggers, mute) that don't care about evaluation order.
-    const QVector<GraphicElement *> unsortedElements() const;
+    const QVector<Element *> unsortedElements() const;
     /// Returns \a elements sorted in topological dependency order (inputs first).
-    static QVector<GraphicElement *> sortByTopology(QVector<GraphicElement *> elements);
+    static QVector<Element *> sortByTopology(QVector<Element *> elements);
     /**
      * \brief Returns a map from wireless channel label to the Tx node's input port.
      * \details Scans \a elements for nodes in WirelessMode::Tx, keyed by label.
      * If two Tx nodes share the same label the first one wins.  Used by codegens
      * to resolve Rx node signals without duplicating the wireless scan.
      */
-    static QHash<QString, InputPort *> wirelessTxInputPorts(const QVector<GraphicElement *> &elements);
+    static QHash<QString, InputPort *> wirelessTxInputPorts(const QVector<Element *> &elements);
 
     /// A wireless node's channel as an edit would leave it: its label and its mode.
     struct WirelessEdit {
-        const GraphicElement *node = nullptr;
+        const Element *node = nullptr;
         QString label;
         WirelessMode mode = WirelessMode::None;
     };
@@ -257,7 +257,7 @@ public:
     /// Shows in the status bar each channel the Tx nodes among \a items share with another Tx node of the scene.
     void reportDuplicateTxLabels(const QList<QGraphicsItem *> &items);
     /// Returns all visible (non-hidden) graphic elements in the scene.
-    const QVector<GraphicElement *> visibleElements() const;
+    const QVector<Element *> visibleElements() const;
 
     /**
      * \brief Returns \c true if a wire from \a startPort to \a endPort is permitted.
@@ -406,7 +406,7 @@ public:
      * undone and the circuit shows it was modified; a change nothing saves (a button held down) is not recorded. The
      * elements keep the selection the operation left them with.
      */
-    void recordOperation(const QList<GraphicElement *> &elements, const std::function<void()> &operation);
+    void recordOperation(const QList<Element *> &elements, const std::function<void()> &operation);
 
     // --- Simulation ---
 
@@ -478,7 +478,7 @@ signals:
      * \brief Emitted after a TruthTable element's output bit is toggled (redo or undo).
      * \param element The TruthTable element that changed.
      */
-    void truthTableElementChanged(GraphicElement *element);
+    void truthTableElementChanged(Element *element);
 
     /// Emitted when an IC element is double-clicked to request opening its sub-circuit.
     void icOpenRequested(int elementId, const QString &blobName, const QString &filePath);
@@ -533,7 +533,7 @@ private:
     bool nudgeSelection(QKeyEvent *event);
     /// Returns the elements Qt may give the press \a event to, for recordOperation(): the one holding the mouse and
     /// those under the pointer, found as Qt finds them, each item standing for the element it belongs to.
-    [[nodiscard]] QList<GraphicElement *> pressTargets(const QGraphicsSceneMouseEvent *event) const;
+    [[nodiscard]] QList<Element *> pressTargets(const QGraphicsSceneMouseEvent *event) const;
     /// Returns the items whose shapes reach within 4 units of \a pos, topmost first.
     QList<QGraphicsItem *> itemsAt(const QPointF pos) const;
     const QVector<Connection *> connections() const;

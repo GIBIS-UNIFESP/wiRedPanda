@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 
 /**
  * \class Text
@@ -15,10 +15,10 @@
  *
  * \details Has no ports and is excluded from simulation.
  */
-class Text : public GraphicElement
+class Text : public Element
 {
     Q_OBJECT
-    friend class TestGraphicElement;
+    friend class TestElement;
 
 public:
     /// Constructs a Text element.

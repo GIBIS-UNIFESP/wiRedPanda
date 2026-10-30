@@ -52,7 +52,7 @@ static void writeAndVerify(int address, int dataToWrite, bool doWrite, int expec
     memRead->setOn(true);
     sim->update();
     // Read memory output
-    QVector<GraphicElement *> dataOutVec;
+    QVector<Element *> dataOutVec;
     for (int i = 0; i < 8; i++) {
         dataOutVec.append(dataOut[i]);
     }

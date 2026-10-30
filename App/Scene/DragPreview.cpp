@@ -3,7 +3,7 @@
 
 #include "App/Scene/DragPreview.h"
 
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 
 DragPreview::Scope::Scope(const Picture &picture)
 {
@@ -22,7 +22,7 @@ const DragPreview::Picture &DragPreview::current()
 
 QPointF DragPreview::position(const Picture &picture, const QPointF scenePos)
 {
-    return GraphicElement::snapToGrid(scenePos - picture.grab) + picture.topLeft;
+    return Element::snapToGrid(scenePos - picture.grab) + picture.topLeft;
 }
 
 DragPreview::Picture &DragPreview::storage()

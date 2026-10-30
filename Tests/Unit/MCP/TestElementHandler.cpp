@@ -14,9 +14,9 @@
 #include <QTemporaryDir>
 #include <QTest>
 
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElement.h"
-#include "App/Element/GraphicElementInput.h"
+#include "App/Element/ElementInput.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
@@ -54,9 +54,9 @@ int createElement(ElementHandler &handler, const QString &type, double x = 0, do
     return response["result"].toObject()["element_id"].toInt();
 }
 
-GraphicElement *elementById(MainWindow &window, int id)
+Element *elementById(MainWindow &window, int id)
 {
-    return dynamic_cast<GraphicElement *>(window.currentTab()->scene()->itemById(id));
+    return dynamic_cast<Element *>(window.currentTab()->scene()->itemById(id));
 }
 
 // `value` with every width and height replaced by "font", for a golden that holds a Text element: its size is its
@@ -86,7 +86,7 @@ QJsonValue maskFontSizes(const QJsonValue &value)
 namespace TestElementHandlerHelpers {
 
 // The element's whole state, as an undo snapshot holds it
-QByteArray snapshot(const GraphicElement *element)
+QByteArray snapshot(const Element *element)
 {
     QByteArray data;
     QDataStream stream(&data, QIODevice::WriteOnly);
@@ -99,7 +99,7 @@ QByteArray snapshot(const GraphicElement *element)
 // as they were
 bool refuses(MainWindow &window, ElementHandler &handler, const QJsonObject &params)
 {
-    const GraphicElement *element = elementById(window, params["element_id"].toInt());
+    const Element *element = elementById(window, params["element_id"].toInt());
     const QByteArray before = snapshot(element);
     const int commands = window.currentTab()->scene()->undoStack()->count();
     const QJsonObject response = handler.handleCommand("set_element_properties", params, 1);
@@ -131,7 +131,7 @@ void TestElementHandler::testSetElementPropertiesAcceptsNegativeClockDelay()
     const QJsonObject response = handler.handleCommand("set_element_properties", params, {});
     QVERIFY2(response.contains("result"), qPrintable(QJsonDocument(response).toJson()));
 
-    auto *element = dynamic_cast<GraphicElement *>(window.currentTab()->scene()->itemById(clockId));
+    auto *element = dynamic_cast<Element *>(window.currentTab()->scene()->itemById(clockId));
     QVERIFY(element);
     QCOMPARE(element->delay(), -0.25);
 }
@@ -339,7 +339,7 @@ void TestElementHandler::testHandleListElementsReturnsRealElements()
     ElementHandler handler(&window, nullptr);
     createElement(handler, "And", 5, 5);
     const int clockId = createClock(handler);
-    createElement(handler, "InputSwitch"); // hasTrigger, GraphicElementInput ("locked")
+    createElement(handler, "InputSwitch"); // hasTrigger, ElementInput ("locked")
     createElement(handler, "Led", 50, 50); // hasColors
     createElement(handler, "Buzzer", 100, 100); // hasVolume
 
@@ -599,7 +599,7 @@ void TestElementHandler::testHandleSetElementPropertiesChangesLockedState()
     MainWindow window;
     ElementHandler handler(&window, nullptr);
     const int id = createElement(handler, "InputSwitch");
-    auto *inputElm = dynamic_cast<GraphicElementInput *>(elementById(window, id));
+    auto *inputElm = dynamic_cast<ElementInput *>(elementById(window, id));
     QVERIFY(inputElm);
     QVERIFY(!inputElm->isLocked());
 
@@ -982,7 +982,7 @@ void TestElementHandler::testHandleSetInputValueSetsRealValue()
     MainWindow window;
     ElementHandler handler(&window, nullptr);
     const int id = createElement(handler, "InputSwitch");
-    auto *inputElm = dynamic_cast<GraphicElementInput *>(elementById(window, id));
+    auto *inputElm = dynamic_cast<ElementInput *>(elementById(window, id));
     QVERIFY(inputElm);
     QVERIFY(!inputElm->isOn());
 
@@ -1020,7 +1020,7 @@ void TestElementHandler::testHandleGetOutputValueReturnsInputElementValue()
     MainWindow window;
     ElementHandler handler(&window, nullptr);
     const int id = createElement(handler, "InputSwitch");
-    auto *inputElm = dynamic_cast<GraphicElementInput *>(elementById(window, id));
+    auto *inputElm = dynamic_cast<ElementInput *>(elementById(window, id));
     inputElm->setOn(true);
 
     const QJsonObject response = handler.handleCommand("get_output_value", {{"element_id", id}}, 1);
@@ -1040,7 +1040,7 @@ void TestElementHandler::testHandleGetOutputValueOfAnInputReportsEachPortsStatus
     };
 
     const int switchId = createElement(handler, "InputSwitch");
-    auto *inputSwitch = dynamic_cast<GraphicElementInput *>(elementById(window, switchId));
+    auto *inputSwitch = dynamic_cast<ElementInput *>(elementById(window, switchId));
     QVERIFY(inputSwitch);
     inputSwitch->setOn(false);
     QJsonObject response = read(switchId, 0);
@@ -1055,7 +1055,7 @@ void TestElementHandler::testHandleGetOutputValueOfAnInputReportsEachPortsStatus
 
     // A rotary is on at one port only: each port reads its own state
     const int rotaryId = createElement(handler, "InputRotary");
-    auto *rotary = dynamic_cast<GraphicElementInput *>(elementById(window, rotaryId));
+    auto *rotary = dynamic_cast<ElementInput *>(elementById(window, rotaryId));
     QVERIFY(rotary);
     rotary->setOn(true, 1);
     response = read(rotaryId, 1);
@@ -1503,7 +1503,7 @@ void TestElementHandler::testHandleMorphElementRejectsUnknownElementId()
     QCOMPARE(response["error"].toObject()["code"].toInt(), JsonRpcError::ElementNotFound);
 }
 
-void TestElementHandler::testHandleMorphElementRejectsNonGraphicElementItem()
+void TestElementHandler::testHandleMorphElementRejectsNonElementItem()
 {
     MainWindow window;
     ElementHandler handler(&window, nullptr);
@@ -1589,7 +1589,7 @@ void TestElementHandler::testResponsesMatchGolden()
                            .toObject()["element_id"]
                            .toInt();
         QCOMPARE(id, 1);
-        const GraphicElement *element = elementById(window, id);
+        const Element *element = elementById(window, id);
         QVERIFY(element);
         send("list_elements", {});
         send("get_output_value", {{"element_id", id}});

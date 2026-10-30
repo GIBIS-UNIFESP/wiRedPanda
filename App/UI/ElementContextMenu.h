@@ -12,7 +12,7 @@
 #include <QList>
 #include <QPoint>
 
-class GraphicElement;
+class Element;
 class QComboBox;
 class QGraphicsItem;
 class QUndoCommand;
@@ -50,7 +50,7 @@ namespace ElementContextMenu {
 void exec(QPoint screenPos,
           QGraphicsItem *itemAtMouse,
           const SelectionCapabilities &caps,
-          const QList<GraphicElement *> &elements,
+          const QList<Element *> &elements,
           QComboBox *colorCombo,
           Scene *scene,
           const std::function<void(QUndoCommand *)> &sendCommand,

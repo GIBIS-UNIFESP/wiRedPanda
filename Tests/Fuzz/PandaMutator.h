@@ -13,7 +13,7 @@
  *   - patch_type_id:      splice a known QMetaType wire typeId
  *   - patch_element_type: splice a valid ElementType quint64
  *   - patch_header:       write the WPCF magic and a known version at byte 0
- *   - patch_item_type:    splice a GraphicElement or Connection type discriminator
+ *   - patch_item_type:    splice a Element or Connection type discriminator
  *   - patch_element_seq:  splice a whole 12-byte element header (type and ElementType)
  *   - patch_appearance_entry: splice an appearances-list entry with a skinName key
  *   - fallback:           libFuzzer's own mutation (LLVMFuzzerMutate), two of the ten draws
@@ -77,10 +77,10 @@ inline const QVersionNumber kDecodedVersions[] = {
 };
 
 // Item type discriminators (quint32 big-endian) for Serialization::deserialize() switch
-// GraphicElement::Type = QGraphicsItem::UserType+3 = 65539 = 0x00010003
+// Element::Type = QGraphicsItem::UserType+3 = 65539 = 0x00010003
 // Connection::Type  = QGraphicsItem::UserType+2 = 65538 = 0x00010002
 inline constexpr uint8_t kItemTypes[][4] = {
-    {0,1,0,3},  // GraphicElement::Type
+    {0,1,0,3},  // Element::Type
     {0,1,0,2},  // Connection::Type
 };
 
@@ -184,7 +184,7 @@ inline constexpr uint8_t kMapKeys[][40] = {
 //   [37..44] UTF-16-BE       — "test"
 //
 // Splicing this sequence at the right position (after the output port list) exercises
-// the skinName reading path in GraphicElement::loadNewFormat.
+// the skinName reading path in Element::loadNewFormat.
 inline constexpr uint8_t kAppearanceEntry[] = {
     0,0,0,1,                                          // appearances count = 1
     0,0,0,1,                                          // QMap size = 1 entry
@@ -197,7 +197,7 @@ inline constexpr uint8_t kAppearanceEntry[] = {
 };
 
 // Element type patches as quint64 big-endian (8 bytes each), and element sequence patches: 4-byte
-// GraphicElement::Type + 8-byte ElementType. Splicing a 12-byte sequence at once creates a valid element header that
+// Element::Type + 8-byte ElementType. Splicing a 12-byte sequence at once creates a valid element header that
 // guides the fuzzer to the element-loading code path in one mutation step. Built on first use.
 struct ElementPatches {
     std::vector<std::vector<uint8_t>> types;
@@ -217,7 +217,7 @@ inline const ElementPatches &elementPatches()
             patch[4] = uint8_t(v >> 24); patch[5] = uint8_t(v >> 16);
             patch[6] = uint8_t(v >>  8); patch[7] = uint8_t(v);
 
-            // 12-byte sequence: GraphicElement::Type (0x00010003) + ElementType quint64
+            // 12-byte sequence: Element::Type (0x00010003) + ElementType quint64
             std::vector<uint8_t> seq = {0, 1, 0, 3};
             seq.insert(seq.end(), patch.begin(), patch.end());
 
@@ -297,12 +297,12 @@ inline size_t mutateRaw(uint8_t *Data, size_t Size, size_t MaxSize, std::mt19937
         }
         break;
     }
-    case 5: { // patch_item_type: splice a GraphicElement or Connection type discriminator
+    case 5: { // patch_item_type: splice a Element or Connection type discriminator
         // These 4-byte big-endian values are the switch keys in Serialization::deserialize().
         const auto *it = kItemTypes[rng() % std::size(kItemTypes)];
         return splice(Data, Size, MaxSize, randomPos(), it, 4);
     }
-    case 6: { // patch_element_seq: splice 12-byte GraphicElement::Type + ElementType quint64
+    case 6: { // patch_element_seq: splice 12-byte Element::Type + ElementType quint64
         const auto &sequences = elementPatches().sequences;
         const auto &seq = sequences[rng() % sequences.size()];
         return splice(Data, Size, MaxSize, randomPos(), seq.data(), seq.size());

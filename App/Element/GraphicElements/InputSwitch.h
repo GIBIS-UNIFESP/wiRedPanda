@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "App/Element/GraphicElementInput.h"
+#include "App/Element/ElementInput.h"
 
 /**
  * \class InputSwitch
@@ -16,7 +16,7 @@
  * \details A single mouse click alternates the output between logic-0 and logic-1.
  * The state is persisted to the .panda file.
  */
-class InputSwitch : public GraphicElementInput
+class InputSwitch : public ElementInput
 {
     Q_OBJECT
 
@@ -40,7 +40,7 @@ public:
     void setOn() override;
 
     // Bring the base setOn(bool, int) overload into scope (hidden by setOn() above).
-    using GraphicElementInput::setOn;
+    using ElementInput::setOn;
 
     /// \reimp
     QList<std::pair<int, QString>> appearanceStates() const override;

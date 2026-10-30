@@ -8,7 +8,7 @@
 #include <QFileInfo>
 
 #include "App/Core/Common.h"
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
@@ -60,7 +60,7 @@ constexpr int PATTERN_ODD_BITS = 0xAA;
  */
 template<size_t N>
 inline TestUtils::Bits get8BitValue(Led* (&leds)[N]) {
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
     for (size_t i = 0; i < N; ++i) {
         elements.append(leds[i]);
     }

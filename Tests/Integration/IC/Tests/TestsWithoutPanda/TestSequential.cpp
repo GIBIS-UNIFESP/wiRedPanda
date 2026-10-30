@@ -179,7 +179,7 @@ void TestSequential::testRegisterAsyncClear()
     // Verify the register actually captured the loaded value before clearing -- otherwise a
     // broken load path (e.g. a disconnected D input) would go unnoticed, since every row
     // asserts 0 after CLEAR regardless of what was loaded.
-    const TestUtils::Bits resultAfterLoad = readMultiBitOutput(QVector<GraphicElement *>({
+    const TestUtils::Bits resultAfterLoad = readMultiBitOutput(QVector<Element *>({
         &dataOut[0], &dataOut[1], &dataOut[2], &dataOut[3]
     }));
     QCOMPARE(resultAfterLoad, initialValue);
@@ -189,7 +189,7 @@ void TestSequential::testRegisterAsyncClear()
     simulation->update();  // No clock, just settle
 
     // Read output - should be 0000
-    const TestUtils::Bits resultAfterClear = readMultiBitOutput(QVector<GraphicElement *>({
+    const TestUtils::Bits resultAfterClear = readMultiBitOutput(QVector<Element *>({
         &dataOut[0], &dataOut[1], &dataOut[2], &dataOut[3]
     }));
     QCOMPARE(resultAfterClear, 0x0);
@@ -200,7 +200,7 @@ void TestSequential::testRegisterAsyncClear()
         simulation->update();  // Settle without clock
 
         // Verify state still holds at 0
-        const TestUtils::Bits resultAfterRelease = readMultiBitOutput(QVector<GraphicElement *>({
+        const TestUtils::Bits resultAfterRelease = readMultiBitOutput(QVector<Element *>({
             &dataOut[0], &dataOut[1], &dataOut[2], &dataOut[3]
         }));
         QCOMPARE(resultAfterRelease, 0x0);
@@ -329,7 +329,7 @@ void TestSequential::testCounterAsyncReset()
     }
 
     // Verify we reached target count
-    const TestUtils::Bits beforeClear = readMultiBitOutput(QVector<GraphicElement *>({
+    const TestUtils::Bits beforeClear = readMultiBitOutput(QVector<Element *>({
         &counterOut[0], &counterOut[1], &counterOut[2], &counterOut[3]
     }));
     QCOMPARE(beforeClear, targetCount & 0xF);
@@ -339,7 +339,7 @@ void TestSequential::testCounterAsyncReset()
     simulation->update();
 
     // Verify immediate reset to 0 (no clock edge needed)
-    const TestUtils::Bits afterClear = readMultiBitOutput(QVector<GraphicElement *>({
+    const TestUtils::Bits afterClear = readMultiBitOutput(QVector<Element *>({
         &counterOut[0], &counterOut[1], &counterOut[2], &counterOut[3]
     }));
     QCOMPARE(afterClear, 0x0);
@@ -353,7 +353,7 @@ void TestSequential::testCounterAsyncReset()
         clockCycle(simulation, &clk);
 
         // Should have counted to 1
-        const TestUtils::Bits afterContinue = readMultiBitOutput(QVector<GraphicElement *>({
+        const TestUtils::Bits afterContinue = readMultiBitOutput(QVector<Element *>({
             &counterOut[0], &counterOut[1], &counterOut[2], &counterOut[3]
         }));
         QCOMPARE(afterContinue, 0x1);
@@ -372,7 +372,7 @@ void TestSequential::testCounterAsyncReset()
         simulation->update();
 
         // Should be 0 again
-        const TestUtils::Bits finalValue = readMultiBitOutput(QVector<GraphicElement *>({
+        const TestUtils::Bits finalValue = readMultiBitOutput(QVector<Element *>({
             &counterOut[0], &counterOut[1], &counterOut[2], &counterOut[3]
         }));
         QCOMPARE(finalValue, 0x0);
@@ -444,7 +444,7 @@ void TestSequential::testShiftRegisterAsyncClear()
         clockCycle(simulation, &clk);
     }
 
-    const TestUtils::Bits beforeClear = readMultiBitOutput(QVector<GraphicElement *>({
+    const TestUtils::Bits beforeClear = readMultiBitOutput(QVector<Element *>({
         &dataOut[0], &dataOut[1], &dataOut[2], &dataOut[3]
     }));
     // Only the first 2 bits of shiftInSequence were actually shifted in (shiftCount above),
@@ -461,7 +461,7 @@ void TestSequential::testShiftRegisterAsyncClear()
     simulation->update();
 
     // Verify all stages cleared
-    const TestUtils::Bits afterClear = readMultiBitOutput(QVector<GraphicElement *>({
+    const TestUtils::Bits afterClear = readMultiBitOutput(QVector<Element *>({
         &dataOut[0], &dataOut[1], &dataOut[2], &dataOut[3]
     }));
     QCOMPARE(afterClear, 0x0);
@@ -480,7 +480,7 @@ void TestSequential::testShiftRegisterAsyncClear()
         }
 
         // Verify we can shift data normally after clear release
-        const TestUtils::Bits afterRelease = readMultiBitOutput(QVector<GraphicElement *>({
+        const TestUtils::Bits afterRelease = readMultiBitOutput(QVector<Element *>({
             &dataOut[0], &dataOut[1], &dataOut[2], &dataOut[3]
         }));
         // Should have some non-zero value after continuing to shift

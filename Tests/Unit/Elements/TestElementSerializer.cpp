@@ -1,7 +1,7 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Unit/Elements/TestGraphicElementSerializer.h"
+#include "Tests/Unit/Elements/TestElementSerializer.h"
 
 #include <QDataStream>
 #include <QKeySequence>
@@ -11,14 +11,14 @@
 #include <QTest>
 
 #include "App/Core/Common.h"
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
+#include "App/Element/ElementSerializer.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/Demux.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Line.h"
 #include "App/Element/GraphicElements/TruthTable.h"
-#include "App/Element/GraphicElementSerializer.h"
 #include "App/Element/IC.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/Workspace.h"
@@ -26,10 +26,10 @@
 #include "App/Wiring/Port.h"
 #include "Tests/Common/TestUtils.h"
 
-namespace TestGraphicElementSerializerHelpers {
+namespace TestElementSerializerHelpers {
 
 /// Loads \a element from a current-format stream listing \a inputs and \a outputs unnamed ports; false if refused.
-bool loadsWithPorts(GraphicElement &element, const int inputs, const int outputs)
+bool loadsWithPorts(Element &element, const int inputs, const int outputs)
 {
     QByteArray data;
     QDataStream writeStream(&data, QIODevice::WriteOnly);
@@ -54,11 +54,11 @@ bool loadsWithPorts(GraphicElement &element, const int inputs, const int outputs
     return true;
 }
 
-} // namespace TestGraphicElementSerializerHelpers
+} // namespace TestElementSerializerHelpers
 
-using TestGraphicElementSerializerHelpers::loadsWithPorts;
+using TestElementSerializerHelpers::loadsWithPorts;
 
-void TestGraphicElementSerializer::testLoadRefusesPortCountsAboveTheTypeMaximum()
+void TestElementSerializer::testLoadRefusesPortCountsAboveTheTypeMaximum()
 {
     // A truth table's key holds exactly its maximum rows and columns, so one port more reads past it when simulated
     TruthTable atMaximum;
@@ -72,7 +72,7 @@ void TestGraphicElementSerializer::testLoadRefusesPortCountsAboveTheTypeMaximum(
     QVERIFY(!loadsWithPorts(oneOutputMore, oneOutputMore.maxInputSize(), oneOutputMore.maxOutputSize() + 1));
 }
 
-void TestGraphicElementSerializer::testLoadRefusesDemuxInputsItsOutputsDoNotNeed()
+void TestElementSerializer::testLoadRefusesDemuxInputsItsOutputsDoNotNeed()
 {
     // A Demux has its data input and the select lines its outputs need: 2 inputs for 2 outputs, 3 for 4, 4 for 8
     Demux eightOutputs;
@@ -86,21 +86,21 @@ void TestGraphicElementSerializer::testLoadRefusesDemuxInputsItsOutputsDoNotNeed
     QVERIFY(!loadsWithPorts(surplusInputs, 4, 2));
 }
 
-void TestGraphicElementSerializer::testReadPortListCountReadFailureThrows()
+void TestElementSerializer::testReadPortListCountReadFailureThrows()
 {
     QByteArray data; // empty: the very first read (the count) runs past the end
     QDataStream stream(data);
 
     bool threw = false;
     try {
-        GraphicElementSerializer::readPortList(stream, "test");
+        ElementSerializer::readPortList(stream, "test");
     } catch (const Pandaception &) {
         threw = true;
     }
     QVERIFY2(threw, "an empty stream must fail reading the port-list count");
 }
 
-void TestGraphicElementSerializer::testReadPortListEntryReadFailureThrows()
+void TestElementSerializer::testReadPortListEntryReadFailureThrows()
 {
     // The entry itself is a nested readBoundedMetadata() map. Its own implausible-count guard
     // rejects a declared count with too few remaining bytes (< 9/entry) outright -- to reach the
@@ -118,14 +118,14 @@ void TestGraphicElementSerializer::testReadPortListEntryReadFailureThrows()
     QDataStream stream(data);
     bool threw = false;
     try {
-        GraphicElementSerializer::readPortList(stream, "test");
+        ElementSerializer::readPortList(stream, "test");
     } catch (const Pandaception &) {
         threw = true;
     }
     QVERIFY2(threw, "a truncated entry must fail, not silently return a partial list");
 }
 
-void TestGraphicElementSerializer::testRemovePortFromMapErasesMatchingEntries()
+void TestElementSerializer::testRemovePortFromMapErasesMatchingEntries()
 {
     And gate;
     Port *target = gate.inputPort(0);
@@ -136,13 +136,13 @@ void TestGraphicElementSerializer::testRemovePortFromMapErasesMatchingEntries()
     portMap[2] = other;
     portMap[3] = target; // a port may be registered under more than one legacy key
 
-    GraphicElementSerializer::removePortFromMap(target, portMap);
+    ElementSerializer::removePortFromMap(target, portMap);
 
     QCOMPARE(portMap.size(), 1);
     QCOMPARE(portMap.value(2), other);
 }
 
-void TestGraphicElementSerializer::testLoadOldFormatDrainsUnusedPriorityField()
+void TestElementSerializer::testLoadOldFormatDrainsUnusedPriorityField()
 {
     // hasUnusedPriority() is V_4_0_1-only (removed in 4.1's QMap format); no version both old-format
     // *and* carrying this field is reachable via the public load() dispatch table's boundary tests
@@ -165,12 +165,12 @@ void TestGraphicElementSerializer::testLoadOldFormatDrainsUnusedPriorityField()
     SerializationContext context = {portMap, Versions::V_4_0_1, SerializationPurpose::PortableFile};
 
     QDataStream readStream(data);
-    GraphicElementSerializer::loadOldFormat(gate, readStream, context);
+    ElementSerializer::loadOldFormat(gate, readStream, context);
 
     QCOMPARE(readStream.status(), QDataStream::Ok);
 }
 
-void TestGraphicElementSerializer::testLoadNewFormatPropertiesStreamErrorThrows()
+void TestElementSerializer::testLoadNewFormatPropertiesStreamErrorThrows()
 {
     And gate;
 
@@ -188,14 +188,14 @@ void TestGraphicElementSerializer::testLoadNewFormatPropertiesStreamErrorThrows(
     QDataStream readStream(data);
     bool threw = false;
     try {
-        GraphicElementSerializer::loadNewFormat(gate, readStream, context);
+        ElementSerializer::loadNewFormat(gate, readStream, context);
     } catch (const Pandaception &) {
         threw = true;
     }
     QVERIFY2(threw, "a truncated properties map must fail, not silently proceed with a partial map");
 }
 
-void TestGraphicElementSerializer::testLoadNewFormatAppearanceIndexOutOfRangeThrows()
+void TestElementSerializer::testLoadNewFormatAppearanceIndexOutOfRangeThrows()
 {
     // Line has exactly 1 appearance slot; declare 2 entries in the stream.
     Line line;
@@ -216,14 +216,14 @@ void TestGraphicElementSerializer::testLoadNewFormatAppearanceIndexOutOfRangeThr
     QDataStream readStream(data);
     bool threw = false;
     try {
-        GraphicElementSerializer::loadNewFormat(line, readStream, context);
+        ElementSerializer::loadNewFormat(line, readStream, context);
     } catch (const Pandaception &) {
         threw = true;
     }
     QVERIFY2(threw, "more appearance entries than the element's own slot count must be rejected");
 }
 
-void TestGraphicElementSerializer::testLoadInputPortsImplausibleCountThrows()
+void TestElementSerializer::testLoadInputPortsImplausibleCountThrows()
 {
     And gate;
 
@@ -237,14 +237,14 @@ void TestGraphicElementSerializer::testLoadInputPortsImplausibleCountThrows()
     QDataStream readStream(data);
     bool threw = false;
     try {
-        GraphicElementSerializer::loadInputPorts(gate, readStream, context);
+        ElementSerializer::loadInputPorts(gate, readStream, context);
     } catch (const Pandaception &) {
         threw = true;
     }
     QVERIFY2(threw, "an implausible old-format input port count must be rejected before allocating");
 }
 
-void TestGraphicElementSerializer::testLoadOutputPortsImplausibleCountThrows()
+void TestElementSerializer::testLoadOutputPortsImplausibleCountThrows()
 {
     And gate;
 
@@ -258,14 +258,14 @@ void TestGraphicElementSerializer::testLoadOutputPortsImplausibleCountThrows()
     QDataStream readStream(data);
     bool threw = false;
     try {
-        GraphicElementSerializer::loadOutputPorts(gate, readStream, context);
+        ElementSerializer::loadOutputPorts(gate, readStream, context);
     } catch (const Pandaception &) {
         threw = true;
     }
     QVERIFY2(threw, "an implausible old-format output port count must be rejected before allocating");
 }
 
-void TestGraphicElementSerializer::testLoadPixmapAppearanceNamesImplausibleCountThrows()
+void TestElementSerializer::testLoadPixmapAppearanceNamesImplausibleCountThrows()
 {
     Line line;
 
@@ -279,14 +279,14 @@ void TestGraphicElementSerializer::testLoadPixmapAppearanceNamesImplausibleCount
     QDataStream readStream(data);
     bool threw = false;
     try {
-        GraphicElementSerializer::loadPixmapAppearanceNames(line, readStream, context);
+        ElementSerializer::loadPixmapAppearanceNames(line, readStream, context);
     } catch (const Pandaception &) {
         threw = true;
     }
     QVERIFY2(threw, "an implausible old-format appearance-name count must be rejected before allocating");
 }
 
-void TestGraphicElementSerializer::testLoadPixmapAppearanceNamesIndexOutOfRangeThrows()
+void TestElementSerializer::testLoadPixmapAppearanceNamesIndexOutOfRangeThrows()
 {
     // Line has exactly 1 appearance slot; declare 2 names in the stream.
     Line line;
@@ -303,14 +303,14 @@ void TestGraphicElementSerializer::testLoadPixmapAppearanceNamesIndexOutOfRangeT
     QDataStream readStream(data);
     bool threw = false;
     try {
-        GraphicElementSerializer::loadPixmapAppearanceNames(line, readStream, context);
+        ElementSerializer::loadPixmapAppearanceNames(line, readStream, context);
     } catch (const Pandaception &) {
         threw = true;
     }
     QVERIFY2(threw, "more appearance names than the element's own slot count must be rejected");
 }
 
-void TestGraphicElementSerializer::testLoadPixmapAppearanceNamesAppliesResolvedPath()
+void TestElementSerializer::testLoadPixmapAppearanceNamesAppliesResolvedPath()
 {
     Line line;
 
@@ -329,19 +329,19 @@ void TestGraphicElementSerializer::testLoadPixmapAppearanceNamesAppliesResolvedP
     SerializationContext context = {portMap, Versions::V_4_0_1, SerializationPurpose::PortableFile};
 
     QDataStream readStream(data);
-    GraphicElementSerializer::loadPixmapAppearanceNames(line, readStream, context);
+    ElementSerializer::loadPixmapAppearanceNames(line, readStream, context);
 
     QCOMPARE(readStream.status(), QDataStream::Ok);
     QCOMPARE(line.externalFiles(), QStringList{path});
 }
 
-void TestGraphicElementSerializer::testLoadInputOutputPortRenamesExistingIcPorts()
+void TestElementSerializer::testLoadInputOutputPortRenamesExistingIcPorts()
 {
     // loadInputPort()/loadOutputPort()'s "port < inputs().size()" branch (IC-only rename) is
     // only reachable when the target element *already has* ports at load time -- true for IC
     // specifically when an already-populated IC object is reloaded in place (e.g. an
     // UpdateCommand undo/redo snapshot), not for a freshly constructed one (IC::load() populates
-    // its own ports from the sub-circuit blob *after* calling GraphicElement::load(), so a fresh
+    // its own ports from the sub-circuit blob *after* calling Element::load(), so a fresh
     // IC always has 0 ports at the moment loadInputPort()/loadOutputPort() run).
     QTemporaryDir subDir;
     QVERIFY(subDir.isValid());
@@ -374,7 +374,7 @@ void TestGraphicElementSerializer::testLoadInputOutputPortRenamesExistingIcPorts
     inputWrite << quint64(1); // 1 input port entry, matching the IC's existing single input
     inputWrite << quint64(1) << QString("renamed_in") << 0;
     QDataStream inputRead(inputData);
-    GraphicElementSerializer::loadInputPorts(*ic, inputRead, context);
+    ElementSerializer::loadInputPorts(*ic, inputRead, context);
     QCOMPARE(ic->inputPort(0)->name(), QString("renamed_in"));
 
     QByteArray outputData;
@@ -382,6 +382,6 @@ void TestGraphicElementSerializer::testLoadInputOutputPortRenamesExistingIcPorts
     outputWrite << quint64(1);
     outputWrite << quint64(2) << QString("renamed_out") << 0;
     QDataStream outputRead(outputData);
-    GraphicElementSerializer::loadOutputPorts(*ic, outputRead, context);
+    ElementSerializer::loadOutputPorts(*ic, outputRead, context);
     QCOMPARE(ic->outputPort(0)->name(), QString("renamed_out"));
 }

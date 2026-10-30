@@ -8,8 +8,8 @@
 #include <QDataStream>
 #include <QTest>
 
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/InputGND.h"
 #include "App/Element/GraphicElements/InputVCC.h"
 #include "App/Element/GraphicElements/Node.h"
@@ -22,7 +22,7 @@
 
 void TestWirelessNode::testDefaultModeIsNone()
 {
-    auto elm = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Node));
+    auto elm = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
     auto *node = qobject_cast<Node *>(elm.get());
     QVERIFY(node != nullptr);
     QCOMPARE(node->wirelessMode(), WirelessMode::None);
@@ -31,7 +31,7 @@ void TestWirelessNode::testDefaultModeIsNone()
 
 void TestWirelessNode::testSetTxMode()
 {
-    auto elm = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Node));
+    auto elm = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
     auto *node = qobject_cast<Node *>(elm.get());
     QVERIFY(node != nullptr);
 
@@ -44,7 +44,7 @@ void TestWirelessNode::testSetTxMode()
 
 void TestWirelessNode::testSetRxMode()
 {
-    auto elm = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Node));
+    auto elm = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
     auto *node = qobject_cast<Node *>(elm.get());
     QVERIFY(node != nullptr);
 
@@ -57,7 +57,7 @@ void TestWirelessNode::testSetRxMode()
 
 void TestWirelessNode::testSetNoneModeRestoresRequired()
 {
-    auto elm = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Node));
+    auto elm = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
     auto *node = qobject_cast<Node *>(elm.get());
     QVERIFY(node != nullptr);
 
@@ -72,7 +72,7 @@ void TestWirelessNode::testSetNoneModeRestoresRequired()
 void TestWirelessNode::testSaveLoadRoundTrip()
 {
     // Save a Tx node, reload it, and verify the mode is preserved.
-    auto elm = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Node));
+    auto elm = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
     auto *node = qobject_cast<Node *>(elm.get());
     QVERIFY(node != nullptr);
 
@@ -86,7 +86,7 @@ void TestWirelessNode::testSaveLoadRoundTrip()
         node->save(out, {.purpose = SerializationPurpose::PortableFile});
     }
 
-    auto elm2 = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Node));
+    auto elm2 = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
     auto *node2 = qobject_cast<Node *>(elm2.get());
     QVERIFY(node2 != nullptr);
 
@@ -104,7 +104,7 @@ void TestWirelessNode::testSaveLoadRoundTrip()
 void TestWirelessNode::testSetSameModeIdempotent()
 {
     // Calling setWirelessMode with the current mode must not corrupt state.
-    auto elm = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Node));
+    auto elm = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
     auto *node = qobject_cast<Node *>(elm.get());
     QVERIFY(node != nullptr);
 
@@ -123,7 +123,7 @@ void TestWirelessNode::testAllTransitionsIsRequired()
 {
     // Walk through every meaningful mode transition and verify isRequired() at each step.
     // None(T) → Tx(T) → Rx(F) → None(T) → Rx(F) → Tx(T)
-    auto elm = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Node));
+    auto elm = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
     auto *node = qobject_cast<Node *>(elm.get());
     QVERIFY(node != nullptr);
 
@@ -155,7 +155,7 @@ void TestWirelessNode::testSetNoneModeAfterTx()
 {
     // Tx → None must restore the input port to required=true,
     // mirroring testSetNoneModeRestoresRequired which only covers Rx → None.
-    auto elm = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Node));
+    auto elm = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
     auto *node = qobject_cast<Node *>(elm.get());
     QVERIFY(node != nullptr);
 
@@ -171,7 +171,7 @@ void TestWirelessNode::testSaveLoadRxMode()
 {
     // Identical to testSaveLoadRoundTrip but for Rx mode — ensures the Rx
     // branch of saveProperties()/loadProperties() is exercised.
-    auto elm = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Node));
+    auto elm = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
     auto *node = qobject_cast<Node *>(elm.get());
     QVERIFY(node != nullptr);
 
@@ -185,7 +185,7 @@ void TestWirelessNode::testSaveLoadRxMode()
         node->save(out, {.purpose = SerializationPurpose::PortableFile});
     }
 
-    auto elm2 = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Node));
+    auto elm2 = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
     auto *node2 = qobject_cast<Node *>(elm2.get());
     QVERIFY(node2 != nullptr);
 
@@ -204,7 +204,7 @@ void TestWirelessNode::testSaveLoadRxMode()
 
 void TestWirelessNode::testLabelUsedAsChannelName()
 {
-    auto elm = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Node));
+    auto elm = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
     auto *node = qobject_cast<Node *>(elm.get());
     QVERIFY(node != nullptr);
 
@@ -221,7 +221,7 @@ void TestWirelessNode::testLabelUsedAsChannelName()
 void TestWirelessNode::testSaveLoadNoneMode()
 {
     // A Node explicitly cycled through Tx and back to None must load back as None.
-    auto elm = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Node));
+    auto elm = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
     auto *node = qobject_cast<Node *>(elm.get());
     QVERIFY(node != nullptr);
 
@@ -236,7 +236,7 @@ void TestWirelessNode::testSaveLoadNoneMode()
         node->save(out, {.purpose = SerializationPurpose::PortableFile});
     }
 
-    auto elm2 = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Node));
+    auto elm2 = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
     auto *node2 = qobject_cast<Node *>(elm2.get());
     QVERIFY(node2 != nullptr);
 
@@ -255,7 +255,7 @@ void TestWirelessNode::testSaveLoadNoneMode()
 void TestWirelessNode::testLabelPreservedAfterModeChange()
 {
     // Switching wireless mode must never modify the element label.
-    auto elm = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Node));
+    auto elm = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
     auto *node = qobject_cast<Node *>(elm.get());
     QVERIFY(node != nullptr);
 
@@ -274,7 +274,7 @@ void TestWirelessNode::testLabelPreservedAfterModeChange()
 void TestWirelessNode::testHasWirelessModeFalseForNonNode()
 {
     // hasWirelessMode() must return false for elements that are not Nodes.
-    auto elm = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
+    auto elm = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::And));
     QVERIFY(elm != nullptr);
     QVERIFY(!elm->hasWirelessMode());
 }
@@ -283,7 +283,7 @@ void TestWirelessNode::testEditablePropertiesContainsWirelessMode()
 {
     // Node::editableProperties() must include a WirelessMode descriptor.
     // Non-Node elements must NOT include it.
-    auto nodeElm = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Node));
+    auto nodeElm = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
     QVERIFY(nodeElm != nullptr);
 
     bool nodeHasIt = false;
@@ -295,7 +295,7 @@ void TestWirelessNode::testEditablePropertiesContainsWirelessMode()
     }
     QVERIFY(nodeHasIt);
 
-    auto andElm = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
+    auto andElm = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::And));
     QVERIFY(andElm != nullptr);
     for (const auto &desc : andElm->editableProperties()) {
         QVERIFY(desc.type != PropertyDescriptor::Type::WirelessModeSelector);
@@ -309,7 +309,7 @@ void TestWirelessNode::testEditablePropertiesContainsWirelessMode()
 void TestWirelessNode::testPortVisibilityTxMode()
 {
     // Tx mode hides the output port (signal goes wireless) but keeps input visible.
-    auto elm = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Node));
+    auto elm = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
     auto *node = qobject_cast<Node *>(elm.get());
     QVERIFY(node != nullptr);
 
@@ -322,7 +322,7 @@ void TestWirelessNode::testPortVisibilityTxMode()
 void TestWirelessNode::testPortVisibilityRxMode()
 {
     // Rx mode hides the input port (signal arrives wirelessly) but keeps output visible.
-    auto elm = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Node));
+    auto elm = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
     auto *node = qobject_cast<Node *>(elm.get());
     QVERIFY(node != nullptr);
 
@@ -335,7 +335,7 @@ void TestWirelessNode::testPortVisibilityRxMode()
 void TestWirelessNode::testPortVisibilityAllTransitions()
 {
     // Walk through every mode and verify both ports' visibility.
-    auto elm = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Node));
+    auto elm = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
     auto *node = qobject_cast<Node *>(elm.get());
     QVERIFY(node != nullptr);
 
@@ -367,13 +367,13 @@ void TestWirelessNode::testLoadCorruptedWirelessModeClampsToNone()
 {
     // Node::load() must clamp out-of-range wirelessMode values to None.
     // Craft a buffer with wirelessMode=99 and verify it loads as None: save a fresh node's
-    // base GraphicElement portion, then write a Node-specific map with an invalid mode.
+    // base Element portion, then write a Node-specific map with an invalid mode.
     QByteArray finalBuffer;
     {
-        auto baseElm = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Node));
+        auto baseElm = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
         QDataStream out(&finalBuffer, QIODevice::WriteOnly);
         Serialization::writePandaHeader(out);
-        // Save the GraphicElement base portion
+        // Save the Element base portion
         baseElm->save(out, {.purpose = SerializationPurpose::PortableFile});
         // Write the Node-specific map with an invalid wirelessMode
         QMap<QString, QVariant> map;
@@ -382,7 +382,7 @@ void TestWirelessNode::testLoadCorruptedWirelessModeClampsToNone()
     }
 
     // Load it back
-    auto loadElm = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Node));
+    auto loadElm = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
     auto *loadNode = qobject_cast<Node *>(loadElm.get());
     QVERIFY(loadNode != nullptr);
 
@@ -401,7 +401,7 @@ void TestWirelessNode::testLoadCorruptedWirelessModeClampsToNone()
 void TestWirelessNode::testLoadNegativeWirelessModeClampsToNone()
 {
     // Negative values (e.g. -1) must also clamp to None.
-    auto baseElm = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Node));
+    auto baseElm = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
 
     QByteArray buffer;
     {
@@ -413,7 +413,7 @@ void TestWirelessNode::testLoadNegativeWirelessModeClampsToNone()
         out << map;
     }
 
-    auto loadElm = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Node));
+    auto loadElm = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
     auto *loadNode = qobject_cast<Node *>(loadElm.get());
     QVERIFY(loadNode != nullptr);
 
@@ -432,7 +432,7 @@ void TestWirelessNode::testSaveLoadRxPortVisibility()
 {
     // After saving and loading an Rx node, port visibility must be preserved:
     // input hidden, output visible.
-    auto elm = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Node));
+    auto elm = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
     auto *node = qobject_cast<Node *>(elm.get());
     QVERIFY(node != nullptr);
 
@@ -446,7 +446,7 @@ void TestWirelessNode::testSaveLoadRxPortVisibility()
         node->save(out, {.purpose = SerializationPurpose::PortableFile});
     }
 
-    auto elm2 = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Node));
+    auto elm2 = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
     auto *node2 = qobject_cast<Node *>(elm2.get());
     QVERIFY(node2 != nullptr);
 
@@ -465,7 +465,7 @@ void TestWirelessNode::testSaveLoadRxPortVisibility()
 void TestWirelessNode::testSaveLoadTxPortVisibility()
 {
     // Tx mode hides the output port. This must survive a save/load round-trip.
-    auto elm = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Node));
+    auto elm = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
     auto *node = qobject_cast<Node *>(elm.get());
     QVERIFY(node != nullptr);
 
@@ -479,7 +479,7 @@ void TestWirelessNode::testSaveLoadTxPortVisibility()
         node->save(out, {.purpose = SerializationPurpose::PortableFile});
     }
 
-    auto elm2 = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Node));
+    auto elm2 = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
     auto *node2 = qobject_cast<Node *>(elm2.get());
     QVERIFY(node2 != nullptr);
 

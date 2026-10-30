@@ -104,7 +104,7 @@ void TestSceneDropHandler::testHandleCloneDragClonesSelectionAtOffsetPosition()
     SceneDropHandler handler(scene);
 
     // Positions/offset are multiples of the grid snap unit (Constants::gridSize / 2 == 8) so
-    // GraphicElement::itemChange()'s grid snap doesn't perturb the expected result below.
+    // Element::itemChange()'s grid snap doesn't perturb the expected result below.
     auto *gate = new And();
     gate->setPos(48, 48);
     scene->addItem(gate);
@@ -134,7 +134,7 @@ void TestSceneDropHandler::testHandleCloneDragClonesSelectionAtOffsetPosition()
 
     QCOMPARE(scene->elements().size(), countBefore + 1);
 
-    GraphicElement *clone = nullptr;
+    Element *clone = nullptr;
     for (auto *elm : scene->elements()) {
         if (elm != gate) {
             clone = elm;
@@ -211,7 +211,7 @@ void TestSceneDropHandler::testHandleNewElementDropAddsElementAtScenePosition()
 
     QCOMPARE(scene->elements().size(), countBefore + 1);
 
-    GraphicElement *added = nullptr;
+    Element *added = nullptr;
     for (auto *elm : scene->elements()) {
         if (elm->elementType() == ElementType::And) {
             added = elm;
@@ -220,7 +220,7 @@ void TestSceneDropHandler::testHandleNewElementDropAddsElementAtScenePosition()
     QVERIFY2(added, "handleNewElementDrop() must add a new And element from the payload");
     QVERIFY2(added->isSelected(), "The newly dropped element must end up selected");
     // setPos() here runs after the element is already in the scene, so
-    // GraphicElement::itemChange()'s 8px half-grid snap applies to the raw computed position.
+    // Element::itemChange()'s 8px half-grid snap applies to the raw computed position.
     const QPointF rawPos = dropScenePos - payload.offset;
     const QPointF snappedPos(qRound(rawPos.x() / 8.0) * 8, qRound(rawPos.y() / 8.0) * 8);
     QCOMPARE(added->pos(), snappedPos);
@@ -243,7 +243,7 @@ void TestSceneDropHandler::testAddFromMimeDataAddsElementAtGivenScenePos()
 
     QCOMPARE(scene->elements().size(), countBefore + 1);
 
-    GraphicElement *added = nullptr;
+    Element *added = nullptr;
     for (auto *elm : scene->elements()) {
         if (elm->elementType() == ElementType::Or) {
             added = elm;
@@ -268,7 +268,7 @@ void TestSceneDropHandler::testAddFromMimeDataKeepsDefaultPositionWhenScenePosOm
 
     handler.addFromMimeData(mimeData);
 
-    GraphicElement *added = nullptr;
+    Element *added = nullptr;
     for (auto *elm : scene->elements()) {
         if (elm->elementType() == ElementType::Not) {
             added = elm;

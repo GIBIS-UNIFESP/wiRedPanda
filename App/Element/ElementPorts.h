@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 /** \file
- * \brief Owns a GraphicElement's input/output port vectors and their creation/resize lifecycle.
+ * \brief Owns a Element's input/output port vectors and their creation/resize lifecycle.
  */
 
 #pragma once
@@ -10,17 +10,17 @@
 #include <QString>
 #include <QVector>
 
-class GraphicElement;
+class Element;
 class Port;
 class InputPort;
 class OutputPort;
 
 /**
  * \class ElementPorts
- * \brief Owns the input and output Port vectors of a GraphicElement and the primitives
+ * \brief Owns the input and output Port vectors of a Element and the primitives
  * that create, resize and trim them.
  *
- * \details Extracted from GraphicElement, mirroring the ElementAppearance / ElementSimState /
+ * \details Extracted from Element, mirroring the ElementAppearance / ElementSimState /
  * ElementOrientation collaborators. Storage and port creation live here; the owning element
  * keeps the polymorphic geometry layout (updatePortsProperties() is virtual and orientation-
  * coupled) and the min/max size policy, driving this type's resize primitives through it.
@@ -30,7 +30,7 @@ class ElementPorts
 {
 public:
     /// Constructs the port store bound to its owning \a owner element.
-    explicit ElementPorts(GraphicElement *owner)
+    explicit ElementPorts(Element *owner)
         : m_owner(owner)
     {
     }
@@ -89,7 +89,7 @@ public:
     OutputPort *takeLastOutput();
 
 private:
-    GraphicElement *m_owner;
+    Element *m_owner;
 
     QVector<InputPort *> m_inputPorts;   ///< All input ports owned by the element (ordered by index).
     QVector<OutputPort *> m_outputPorts; ///< All output ports owned by the element (ordered by index).

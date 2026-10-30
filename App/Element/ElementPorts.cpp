@@ -4,7 +4,7 @@
 #include "App/Element/ElementPorts.h"
 
 #include "App/Core/Common.h"
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 #include "App/Wiring/Port.h"
 
 InputPort *ElementPorts::inputPort(const int index) const
@@ -37,7 +37,7 @@ void ElementPorts::setInputs(const QVector<InputPort *> &inputs)
     m_inputPorts = inputs;
 
     // Keep index() == vector position: Connection::save() derives
-    // connection serial IDs from port->index() while GraphicElement::save()
+    // connection serial IDs from port->index() while Element::save()
     // numbers ports by position. A caller that permutes the vector (the
     // Display7 legacy pin remap) would otherwise cross-wire the pins on the
     // next save/load round trip. Load-time connection resolution is pointer-
@@ -67,7 +67,7 @@ void ElementPorts::addPort(const QString &name, const bool isOutput)
         port->setIndex(inputSize() - 1);
     }
 
-    port->setGraphicElement(m_owner);
+    port->setElement(m_owner);
     port->setName(name);
     port->show();
 }
@@ -94,7 +94,7 @@ void ElementPorts::resizeOutputs(const int size)
 
 InputPort *ElementPorts::takeLastInput()
 {
-    // Unreachable: GraphicElementSerializer::removeSurplusInputs() is the sole caller, and its
+    // Unreachable: ElementSerializer::removeSurplusInputs() is the sole caller, and its
     // own while-loop condition (element.inputSize() > targetSize) can never be true once
     // m_inputPorts (== inputSize()) is already empty, so this guard is never reached from it.
     if (m_inputPorts.isEmpty()) { // LCOV_EXCL_LINE

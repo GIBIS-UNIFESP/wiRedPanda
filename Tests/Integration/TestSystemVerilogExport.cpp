@@ -254,7 +254,7 @@ void TestSystemVerilogExport::testWirelessRxReachedByAWireFollowsItsTx()
     const auto wiredToRx = connect(wired->outputPort(0), rxNode->inputPort(0));
     const auto rxToLed = connect(rxNode->outputPort(0), led->inputPort(0));
 
-    QVector<GraphicElement *> elements{wired.get(), air.get(), txNode.get(), rxNode.get(), led.get()};
+    QVector<Element *> elements{wired.get(), air.get(), txNode.get(), rxNode.get(), led.get()};
 
     QTemporaryDir tempDir;
     QVERIFY(tempDir.isValid());
@@ -306,7 +306,7 @@ void TestSystemVerilogExport::testWirelessNodeGeneration()
     conn2->setStartPort(rxOut);
     conn2->setEndPort(ledIn);
 
-    QVector<GraphicElement *> elements{sw.get(), txNode.get(), rxNode.get(), led.get()};
+    QVector<Element *> elements{sw.get(), txNode.get(), rxNode.get(), led.get()};
 
     QTemporaryDir tempDir;
     QVERIFY(tempDir.isValid());
@@ -369,7 +369,7 @@ void TestSystemVerilogExport::testWirelessOrphanedRxCodegen()
     conn->setStartPort(rxNode->outputPort(0));
     conn->setEndPort(led->inputPort(0));
 
-    QVector<GraphicElement *> elements{rxNode.get(), led.get()};
+    QVector<Element *> elements{rxNode.get(), led.get()};
 
     QTemporaryDir tempDir;
     QVERIFY(tempDir.isValid());
@@ -409,7 +409,7 @@ void TestSystemVerilogExport::testEmbeddedICLabelWithNewlineDoesNotInjectCode()
     std::vector<std::unique_ptr<InputSwitch>> switchOwners;
     std::vector<std::unique_ptr<Led>> ledOwners;
     std::vector<std::unique_ptr<Connection>> connOwners;
-    QVector<GraphicElement *> elements{ic.get()};
+    QVector<Element *> elements{ic.get()};
 
     for (int i = 0; i < ic->inputSize(); ++i) {
         auto sw = std::make_unique<InputSwitch>();
@@ -595,9 +595,9 @@ void TestSystemVerilogExport::testSystemVerilogExportHelper(const QString &icFil
     SequentialICType seqType = detectSequentialType(ic);
 
     // Get all elements from scene
-    QVector<GraphicElement *> allElements;
+    QVector<Element *> allElements;
     for (auto *item : scene->items()) {
-        if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item)) {
+        if (auto *elm = qgraphicsitem_cast<Element *>(item)) {
             allElements.append(elm);
         }
     }
@@ -920,8 +920,8 @@ void TestSystemVerilogExport::testSystemVerilogExportFlat()
 
     WorkSpace workspace;
     workspace.load(TestUtils::cpuComponentsDir() + file);
-    const QVector<GraphicElement *> elements = workspace.scene()->elements();
-    const bool hasTopLevelGate = std::any_of(elements.cbegin(), elements.cend(), [](const GraphicElement *elm) {
+    const QVector<Element *> elements = workspace.scene()->elements();
+    const bool hasTopLevelGate = std::any_of(elements.cbegin(), elements.cend(), [](const Element *elm) {
         const ElementType type = elm->elementType();
         return (type == ElementType::And) || (type == ElementType::Or) || (type == ElementType::Not)
             || (type == ElementType::Nand) || (type == ElementType::Nor) || (type == ElementType::Xor)
@@ -1551,7 +1551,7 @@ void TestSystemVerilogExport::testTopLevelFeedbackLatchHoldsStateInExport()
     QTemporaryDir dir;
     QVERIFY(dir.isValid());
     const QString svPath = dir.filePath("toplevel_latch.sv");
-    QVector<GraphicElement *> elements = scene->elements();
+    QVector<Element *> elements = scene->elements();
     SystemVerilogCodeGen generator(svPath, elements);
     generator.generate();
     QVERIFY(QFile::exists(svPath));

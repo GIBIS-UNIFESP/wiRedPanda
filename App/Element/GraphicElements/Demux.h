@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 
 /**
  * \class Demux
@@ -16,7 +16,7 @@
  * \details Output size is configurable.  The number of inputs is automatically
  * derived (1 data + log2(outputs) select lines).
  */
-class Demux : public GraphicElement
+class Demux : public Element
 {
     Q_OBJECT
 

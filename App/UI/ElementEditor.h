@@ -155,7 +155,7 @@ private:
     /// Slot: the scene selection changed; refreshes the editor state.
     void selectionChanged();
     /// Stores \a elements as the current editing target and refreshes the UI.
-    void setCurrentElements(const QList<GraphicElement *> &elements);
+    void setCurrentElements(const QList<Element *> &elements);
     /// Slot: the user toggled a truth table cell at (\a row, \a column).
     void setTruthTableProposition(const int row, const int column);
     /// Slot: the user changed the keyboard trigger via the key-sequence editor.
@@ -170,7 +170,7 @@ private:
     QTableWidget *m_table           = nullptr;   ///< Truth table grid widget (inside m_tableBox).
     Scene *m_scene                  = nullptr;   ///< Scene whose selection this editor reflects.
     ElementTabNavigator *m_tabNavigator = nullptr; ///< Tab-order navigator for focused element cycling.
-    QList<GraphicElement *> m_elements;          ///< Currently selected elements being edited.
+    QList<Element *> m_elements;          ///< Currently selected elements being edited.
     SelectionCapabilities m_caps;                ///< Merged capability flags of the current selection.
     int m_editSession = 0;                       ///< The edit session whose steps merge (SetPropertyCommand).
 

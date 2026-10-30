@@ -25,7 +25,7 @@
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
 #include "App/Core/ThemeManager.h"
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 #include "App/Scene/Workspace.h"
 #include "App/UI/MainWindow.h"
 

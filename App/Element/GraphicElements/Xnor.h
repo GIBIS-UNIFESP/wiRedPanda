@@ -7,13 +7,13 @@
 
 #pragma once
 
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 
 /**
  * \class Xnor
  * \brief Graphical representation of an XNOR gate (2–8 inputs, 1 output).
  */
-class Xnor : public GraphicElement
+class Xnor : public Element
 {
     Q_OBJECT
 

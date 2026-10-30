@@ -8,9 +8,9 @@
 #include <QCoreApplication>
 
 #include "App/Core/Common.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElement.h"
-#include "App/Element/GraphicElementInput.h"
+#include "App/Element/ElementInput.h"
 #include "App/Scene/Scene.h"
 
 namespace DolphinModelBuilder {
@@ -67,15 +67,15 @@ Signals collect(Scene *scene)
 
     for (auto *elm : elements) {
         // Not reachable: Scene::elements() (the only real caller) already filters to items
-        // whose type() == GraphicElement::Type via qgraphicsitem_cast, so this can't be null
+        // whose type() == Element::Type via qgraphicsitem_cast, so this can't be null
         // or the wrong type here — kept as a defensive guard against a future caller passing
         // a hand-built element list.
-        if (!elm || (elm->type() != GraphicElement::Type)) {
+        if (!elm || (elm->type() != Element::Type)) {
             continue; // LCOV_EXCL_LINE
         }
 
         if (elm->elementGroup() == ElementGroup::Input) {
-            result.inputs.append(qobject_cast<GraphicElementInput *>(elm));
+            result.inputs.append(qobject_cast<ElementInput *>(elm));
         }
 
         if (elm->elementGroup() == ElementGroup::Output) {
@@ -106,8 +106,8 @@ Signals collect(Scene *scene)
     }
 
     // Rows first -- they are the source of truth; the label lists are projections of them.
-    appendRows(result.rows, result.inputs,  RowKind::Input,  [](const GraphicElementInput *e) { return e->outputSize(); });
-    appendRows(result.rows, result.outputs, RowKind::Output, [](const GraphicElement *e) { return e->inputSize(); });
+    appendRows(result.rows, result.inputs,  RowKind::Input,  [](const ElementInput *e) { return e->outputSize(); });
+    appendRows(result.rows, result.outputs, RowKind::Output, [](const Element *e) { return e->inputSize(); });
 
     result.inputLabels  = labelsOf(result.rows, RowKind::Input);
     result.outputLabels = labelsOf(result.rows, RowKind::Output);

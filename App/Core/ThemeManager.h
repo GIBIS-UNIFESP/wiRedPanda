@@ -44,7 +44,7 @@ public:
 
     // --- Members: Label Colors ---
 
-    QColor m_graphicElementLabelColor;
+    QColor m_elementLabelColor;
 
     // --- Members: Connection Colors ---
 

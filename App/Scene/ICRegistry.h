@@ -14,7 +14,7 @@
 #include <QObject>
 #include <QSet>
 
-class GraphicElement;
+class Element;
 class IC;
 class QUndoCommand;
 class Scene;
@@ -44,7 +44,7 @@ public:
     void watchFile(const QString &filePath);
 
     /// Finds all IC elements in the scene that reference \a fileName.
-    QList<GraphicElement *> findICsByFile(const QString &fileName) const;
+    QList<Element *> findICsByFile(const QString &fileName) const;
 
     // --- Embedded IC blob storage ---
 
@@ -75,7 +75,7 @@ public:
     void clearBlobs();
 
     /// Finds all embedded IC elements with \a blobName.
-    QList<GraphicElement *> findICsByBlobName(const QString &blobName) const;
+    QList<Element *> findICsByBlobName(const QString &blobName) const;
 
     /// Initializes an embedded IC by looking up its blob in the registry.
     bool initEmbeddedIC(IC *ic, const QString &blobName);
@@ -100,10 +100,10 @@ public:
     // --- Serialization helpers ---
 
     /// Serializes \a targets into a self-contained .panda byte array (used for embedding).
-    static QByteArray captureSnapshot(const QList<GraphicElement *> &targets);
+    static QByteArray captureSnapshot(const QList<Element *> &targets);
 
     /// Restores \a elements from a previously captured \a snapshot (used for atomic rollback).
-    static void rollbackElements(const QList<GraphicElement *> &elements, const QByteArray &snapshot,
+    static void rollbackElements(const QList<Element *> &elements, const QByteArray &snapshot,
                                  Scene *scene);
 
 signals:
@@ -141,7 +141,7 @@ private:
     /// tick observing that between iterations (not just within one) would still dereference freed
     /// memory via Simulation's cached vectors, so the guard must span the entire loop, not each
     /// iteration.
-    void reloadTargetsAtomically(const QList<GraphicElement *> &targets, const QByteArray &oldData,
+    void reloadTargetsAtomically(const QList<Element *> &targets, const QByteArray &oldData,
                                  const std::function<void(IC *)> &mutate);
 
     Scene *m_scene;                          ///< Owning scene.

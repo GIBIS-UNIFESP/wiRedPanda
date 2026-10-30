@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "App/Element/GraphicElementInput.h"
+#include "App/Element/ElementInput.h"
 
 /**
  * \class InputRotary
@@ -16,7 +16,7 @@
  * \details Each mouse click advances the active output by one.  Only the
  * currently selected port is driven logic-1; all others remain logic-0.
  */
-class InputRotary : public GraphicElementInput
+class InputRotary : public ElementInput
 {
     Q_OBJECT
 

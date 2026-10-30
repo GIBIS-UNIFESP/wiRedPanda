@@ -149,7 +149,7 @@ int Buzzer::noteToFrequency(const QString &note)
 
 void Buzzer::save(QDataStream &stream, SerializationOptions options) const
 {
-    GraphicElement::save(stream, options);
+    Element::save(stream, options);
 
     const bool slim = (options.purpose == SerializationPurpose::PortableFile);
 
@@ -168,7 +168,7 @@ void Buzzer::save(QDataStream &stream, SerializationOptions options) const
 
 void Buzzer::load(QDataStream &stream, SerializationContext &context)
 {
-    GraphicElement::load(stream, context);
+    Element::load(stream, context);
 
     if (!VersionInfo::hasAudio(context.version)) {
         return;

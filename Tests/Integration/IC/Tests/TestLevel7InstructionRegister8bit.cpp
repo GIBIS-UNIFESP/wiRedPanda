@@ -77,17 +77,17 @@ struct InstrRegister8bitFixture {
 
     TestUtils::Bits readInstr()
     {
-        return readMultiBitOutput(QVector<GraphicElement *>(instrOutputs.begin(), instrOutputs.end()), 0);
+        return readMultiBitOutput(QVector<Element *>(instrOutputs.begin(), instrOutputs.end()), 0);
     }
 
     TestUtils::Bits readOpCode()
     {
-        return readMultiBitOutput(QVector<GraphicElement *>(opcodeOutputs.begin(), opcodeOutputs.end()), 0);
+        return readMultiBitOutput(QVector<Element *>(opcodeOutputs.begin(), opcodeOutputs.end()), 0);
     }
 
     TestUtils::Bits readRegAddr()
     {
-        return readMultiBitOutput(QVector<GraphicElement *>(regaddrOutputs.begin(), regaddrOutputs.end()), 0);
+        return readMultiBitOutput(QVector<Element *>(regaddrOutputs.begin(), regaddrOutputs.end()), 0);
     }
 };
 

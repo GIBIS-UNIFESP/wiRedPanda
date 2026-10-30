@@ -43,7 +43,7 @@ struct ElementInfo<Mux> {
 };
 
 Mux::Mux(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Mux, parent)
+    : Element(ElementType::Mux, parent)
 {
     Mux::updatePortsProperties();
 }

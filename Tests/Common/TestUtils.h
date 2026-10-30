@@ -112,7 +112,7 @@ inline QDragMoveEvent makeDragMoveEvent(QPoint pos, Qt::DropActions actions, con
 #include "App/Core/Common.h"
 #include "App/Core/Settings.h"
 #include "App/Core/ThemeManager.h"
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 
@@ -184,7 +184,7 @@ QString systemVerilogExpectedDir();
  * @param port Port index (default 0)
  * @return The port's status: a level, or Unknown or Error, which a test expecting 0 must not pass on
  */
-Status inputStatus(GraphicElement *elm, int port = 0);
+Status inputStatus(Element *elm, int port = 0);
 
 /**
  * @brief What an element's output port holds
@@ -192,7 +192,7 @@ Status inputStatus(GraphicElement *elm, int port = 0);
  * @param port Port index (default 0)
  * @return The port's status: a level, or Unknown or Error, which a test expecting 0 must not pass on
  */
-Status outputStatus(GraphicElement *elm, int port = 0);
+Status outputStatus(Element *elm, int port = 0);
 
 /// The level a test expects: Active for \a on, Inactive otherwise.
 inline Status level(const bool on)
@@ -279,7 +279,7 @@ void setMultiBitInput(const QVector<InputSwitch *> &inputs, int value);
  * Example: readMultiBitOutput({led0, led1, led2, led3}, 0) reads 4 bits
  *   Bit pattern: led3|led2|led1|led0 (MSB to LSB)
  *
- * @param elements Vector of GraphicElement pointers in bit order (index 0 = LSB)
+ * @param elements Vector of Element pointers in bit order (index 0 = LSB)
  * @param port Input port index to read from each element (default 0)
  * @return The bits, equal to a number only when every one is a level
  */
@@ -292,7 +292,7 @@ inline Bits readMultiBitOutput(const QVector<T *> &elements, int port = 0)
         if (!elements[i]) {
             qFatal("FATAL ERROR in readMultiBitOutput(): Element at index %d is nullptr", i);
         }
-        statuses << inputStatus(static_cast<GraphicElement *>(elements[i]), port);
+        statuses << inputStatus(static_cast<Element *>(elements[i]), port);
     }
     return Bits(std::move(statuses));
 }
@@ -339,12 +339,12 @@ void clockToggle(Simulation *simulation, InputSwitch *clk);
 /**
  * @brief Initialize a source element for direct-logic testing (0 inputs, 1 output)
  */
-void initSrc(GraphicElement &elm);
+void initSrc(Element &elm);
 
 /**
  * @brief Initialize an element for direct-logic testing using its own port counts
  */
-void initElm(GraphicElement &elm);
+void initElm(Element &elm);
 
 /**
  * @brief True if any pixel of @a pixmap has non-zero alpha (i.e. paint() drew something)
@@ -589,7 +589,7 @@ struct ScopedInteractiveMode {
  * @brief Renders @a elm's scene footprint into an image; @a centerOut receives the centre of
  * the element's body (where drawBody() centres its logo/icon) in image coordinates.
  */
-QImage renderElementForComparison(QGraphicsScene *scene, GraphicElement *elm, QPoint &centerOut);
+QImage renderElementForComparison(QGraphicsScene *scene, Element *elm, QPoint &centerOut);
 
 /**
  * @brief Compares @a halfSize-radius crops of @a a around @a ca and @a b around @a cb, trying
@@ -684,7 +684,7 @@ public:
     /**
      * @brief Add a single element to the scene
      */
-    void addElement(GraphicElement *elm);
+    void addElement(Element *elm);
 
     /**
      * @brief Add multiple elements to the scene (variadic template)
@@ -703,8 +703,8 @@ public:
      * @param toPort Input port index
      * @return Pointer to created connection
      */
-    Connection *connect(GraphicElement *from, int fromPort,
-                           GraphicElement *to, int toPort);
+    Connection *connect(Element *from, int fromPort,
+                           Element *to, int toPort);
 
     /**
      * @brief Get the scene
@@ -729,8 +729,8 @@ public:
      * @param toPort Input port index on destination element
      * @return Pointer to created connection
      */
-    Connection *connect(GraphicElement *from, const QString &fromLabel,
-                           GraphicElement *to, int toPort);
+    Connection *connect(Element *from, const QString &fromLabel,
+                           Element *to, int toPort);
 
     /**
      * @brief Create a connection using input port label
@@ -740,8 +740,8 @@ public:
      * @param toLabel Input port label on destination element
      * @return Pointer to created connection
      */
-    Connection *connect(GraphicElement *from, int fromPort,
-                           GraphicElement *to, const QString &toLabel);
+    Connection *connect(Element *from, int fromPort,
+                           Element *to, const QString &toLabel);
 
     /**
      * @brief Create a connection using both port labels
@@ -751,8 +751,8 @@ public:
      * @param toLabel Input port label on destination element
      * @return Pointer to created connection
      */
-    Connection *connect(GraphicElement *from, const QString &fromLabel,
-                           GraphicElement *to, const QString &toLabel);
+    Connection *connect(Element *from, const QString &fromLabel,
+                           Element *to, const QString &toLabel);
 
 private:
     Scene *m_scene;
@@ -762,16 +762,16 @@ private:
      */
     struct InputPortTraits
     {
-        static int count(GraphicElement *elm);
-        static class Port *port(GraphicElement *elm, int idx);
+        static int count(Element *elm);
+        static class Port *port(Element *elm, int idx);
         static const char *portType();
         static const char *noPortsMessage();
     };
 
     struct OutputPortTraits
     {
-        static int count(GraphicElement *elm);
-        static class Port *port(GraphicElement *elm, int idx);
+        static int count(Element *elm);
+        static class Port *port(Element *elm, int idx);
         static const char *portType();
         static const char *noPortsMessage();
     };
@@ -781,14 +781,14 @@ private:
      * @tparam PortTraits Traits specifying input or output port access
      */
     template<typename PortTraits>
-    int portByLabelImpl(GraphicElement *element, const QString &label);
+    int portByLabelImpl(Element *element, const QString &label);
 
     /**
      * @brief Generic implementation for getting available ports list
      * @tparam PortTraits Traits specifying input or output port access
      */
     template<typename PortTraits>
-    QString availablePortsImpl(GraphicElement *element) const;
+    QString availablePortsImpl(Element *element) const;
 
     /**
      * @brief Find input port index by label (for IC elements)
@@ -797,7 +797,7 @@ private:
      * @return Port index (0-based)
      * @throws std::runtime_error if port not found
      */
-    int inputPortByLabel(GraphicElement *element, const QString &label);
+    int inputPortByLabel(Element *element, const QString &label);
 
     /**
      * @brief Find output port index by label (for IC elements)
@@ -806,5 +806,5 @@ private:
      * @return Port index (0-based)
      * @throws std::runtime_error if port not found
      */
-    int outputPortByLabel(GraphicElement *element, const QString &label);
+    int outputPortByLabel(Element *element, const QString &label);
 };

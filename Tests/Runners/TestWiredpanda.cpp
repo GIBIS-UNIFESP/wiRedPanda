@@ -153,8 +153,8 @@
 #include "Tests/Unit/Elements/TestDemux.h"
 #include "Tests/Unit/Elements/TestDisplay.h"
 #include "Tests/Unit/Elements/TestDisplay7.h"
-#include "Tests/Unit/Elements/TestGraphicElement.h"
-#include "Tests/Unit/Elements/TestGraphicElementSerializer.h"
+#include "Tests/Unit/Elements/TestElement.h"
+#include "Tests/Unit/Elements/TestElementSerializer.h"
 #include "Tests/Unit/Elements/TestIC.h"
 #include "Tests/Unit/Elements/TestBuzzer.h"
 #include "Tests/Unit/Elements/TestClock.h"
@@ -166,7 +166,7 @@
 #include "Tests/Unit/Elements/TestElementProperties.h"
 #include "Tests/Unit/Elements/TestFeatures.h"
 #include "Tests/Unit/Elements/TestGeometry.h"
-#include "Tests/Unit/Elements/TestGraphicelementAdvanced.h"
+#include "Tests/Unit/Elements/TestElementAdvanced.h"
 #include "Tests/Unit/Elements/TestICRegistry.h"
 #include "Tests/Unit/Elements/TestInputElements.h"
 #include "Tests/Unit/Elements/TestMux.h"
@@ -397,8 +397,8 @@ int main(int argc, char **argv)
         {"TestDemux", []() -> QObject * { return new TestDemux; }},
         {"TestDisplay", []() -> QObject * { return new TestDisplay; }},
         {"TestDisplay7", []() -> QObject * { return new TestDisplay7; }},
-        {"TestGraphicElement", []() -> QObject * { return new TestGraphicElement; }},
-        {"TestGraphicElementSerializer", []() -> QObject * { return new TestGraphicElementSerializer; }},
+        {"TestElement", []() -> QObject * { return new TestElement; }},
+        {"TestElementSerializer", []() -> QObject * { return new TestElementSerializer; }},
         {"TestICUnit", []() -> QObject * { return new TestICUnit; }},
         {"TestClock", []() -> QObject * { return new TestClock; }},
         {"TestClocksAdvanced", []() -> QObject * { return new TestClocksAdvanced; }},
@@ -414,7 +414,7 @@ int main(int argc, char **argv)
         {"TestFeatures", []() -> QObject * { return new TestFeatures; }},
         {"TestGeometry", []() -> QObject * { return new TestGeometry; }},
         {"TestWirelessNode", []() -> QObject * { return new TestWirelessNode; }},
-        {"TestGraphicelementAdvanced", []() -> QObject * { return new TestGraphicelementAdvanced; }},
+        {"TestElementAdvanced", []() -> QObject * { return new TestElementAdvanced; }},
         {"TestInputElements", []() -> QObject * { return new TestInputElements; }},
         {"TestInputRotary", []() -> QObject * { return new TestInputRotary; }},
         {"TestLED", []() -> QObject * { return new TestLED; }},

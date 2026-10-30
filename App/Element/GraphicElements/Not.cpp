@@ -40,7 +40,7 @@ struct ElementInfo<Not> {
 };
 
 Not::Not(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Not, parent)
+    : Element(ElementType::Not, parent)
 {
     // Skip full initialisation when building a property-probe instance (see ElementFactory).
 }

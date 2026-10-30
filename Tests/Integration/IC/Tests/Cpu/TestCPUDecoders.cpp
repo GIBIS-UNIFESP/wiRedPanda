@@ -47,7 +47,7 @@ void TestCPUDecoders::testDecoder3to8()
         // Settle and read outputs
         sim->update();
         // Read decoder outputs as multi-bit value by converting to QVector
-        QVector<GraphicElement *> outputsVec;
+        QVector<Element *> outputsVec;
         for (int i = 0; i < 8; i++) {
             outputsVec.append(outputs[i]);
         }

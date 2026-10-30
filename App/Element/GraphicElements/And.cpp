@@ -43,7 +43,7 @@ struct ElementInfo<And> {
 };
 
 And::And(QGraphicsItem *parent)
-    : GraphicElement(ElementType::And, parent)
+    : Element(ElementType::And, parent)
 {
 }
 

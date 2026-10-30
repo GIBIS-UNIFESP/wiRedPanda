@@ -7,13 +7,13 @@
 
 #pragma once
 
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 
 /**
  * \class Nand
  * \brief Graphical representation of a NAND gate (2–8 inputs, 1 output).
  */
-class Nand : public GraphicElement
+class Nand : public Element
 {
     Q_OBJECT
 

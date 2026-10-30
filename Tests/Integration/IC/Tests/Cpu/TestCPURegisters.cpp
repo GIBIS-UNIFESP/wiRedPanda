@@ -230,7 +230,7 @@ void TestCPURegisters::testSingleGatedRegister()
     TestUtils::clockCycle(sim, clock);
     writeEnable->setOn(false);
     sim->update();
-    QVector<GraphicElement *> readVec1;
+    QVector<Element *> readVec1;
     for (int i = 0; i < 8; i++) readVec1.append(readOut[i]);
     const TestUtils::Bits readValue = readMultiBitOutput(readVec1);
     // Test 2: Write different value when decoderOut is LOW (should NOT write)
@@ -243,7 +243,7 @@ void TestCPURegisters::testSingleGatedRegister()
     TestUtils::clockCycle(sim, clock);
     writeEnable->setOn(false);
     sim->update();
-    QVector<GraphicElement *> readVec2;
+    QVector<Element *> readVec2;
     for (int i = 0; i < 8; i++) readVec2.append(readOut[i]);
     const TestUtils::Bits readValue2 = readMultiBitOutput(readVec2);
     // Verify results
@@ -260,7 +260,7 @@ void TestCPURegisters::testSingleGatedRegister()
     sim->update();
     TestUtils::clockCycle(sim, clock);
     sim->update();
-    QVector<GraphicElement *> readVec3;
+    QVector<Element *> readVec3;
     for (int i = 0; i < 8; i++) readVec3.append(readOut[i]);
     const TestUtils::Bits readValue3 = readMultiBitOutput(readVec3);
     QCOMPARE(readValue3, 0x42);  // Third write should NOT happen

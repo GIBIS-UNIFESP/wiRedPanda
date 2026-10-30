@@ -8,7 +8,7 @@
 #pragma once
 
 #include "App/Core/ThemeManager.h"
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 
 /**
  * \class SRLatch
@@ -16,7 +16,7 @@
  *
  * \details Has 2 inputs (S̄, R̄, active-low) and 2 outputs (Q, Q̄).
  */
-class SRLatch : public GraphicElement
+class SRLatch : public Element
 {
     Q_OBJECT
 

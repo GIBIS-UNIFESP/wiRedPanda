@@ -21,7 +21,7 @@
 #include "App/Core/SentryHelpers.h"
 #include "App/Core/ThemeManager.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElementInput.h"
+#include "App/Element/ElementInput.h"
 #include "App/Element/GraphicElements/AudioBox.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Element/GraphicElements/TruthTable.h"
@@ -295,7 +295,7 @@ void ElementEditor::setScene(Scene *scene)
     if (m_scene) {
         connect(m_scene, &QGraphicsScene::selectionChanged,   this,    &ElementEditor::selectionChanged);
         connect(m_scene, &Scene::contextMenuPos,              this,    &ElementEditor::contextMenu);
-        connect(m_scene, &Scene::truthTableElementChanged,    this,    [this](GraphicElement *) { truthTable(); });
+        connect(m_scene, &Scene::truthTableElementChanged,    this,    [this](Element *) { truthTable(); });
         connect(this,    &ElementEditor::sendCommand,         m_scene, &Scene::receiveCommand);
     }
 }
@@ -307,7 +307,7 @@ void ElementEditor::fillColorComboBox()
     QSignalBlocker blocker(m_ui->comboBoxColor);
     m_ui->comboBoxColor->clear();
     // item data stores the untranslated English colour name used internally
-    // by GraphicElement::setColor(); item text is the translated display name.
+    // by Element::setColor(); item text is the translated display name.
     m_ui->comboBoxColor->addItem(QIcon(QPixmap(":/Components/Output/Led/WhiteLed.svg")),  tr("White"),  "White");
     m_ui->comboBoxColor->addItem(QIcon(QPixmap(":/Components/Output/Led/RedLed.svg")),    tr("Red"),    "Red");
     m_ui->comboBoxColor->addItem(QIcon(QPixmap(":/Components/Output/Led/GreenLed.svg")),  tr("Green"),  "Green");
@@ -329,7 +329,7 @@ void ElementEditor::retranslateUi()
     }
 }
 
-void ElementEditor::setCurrentElements(const QList<GraphicElement *> &elements)
+void ElementEditor::setCurrentElements(const QList<Element *> &elements)
 {
     // Filling the fields for a selection starts another undo step
     endEditSession();
@@ -354,7 +354,7 @@ void ElementEditor::applyCapabilitiesToUi()
 {
     const auto &c      = m_caps;
     auto *firstElement = m_elements.constFirst();
-    auto *firstInput   = qobject_cast<GraphicElementInput *>(firstElement);
+    auto *firstInput   = qobject_cast<ElementInput *>(firstElement);
 
     /* Element type title */
     m_ui->groupBox->setTitle(ElementFactory::typeToTitleText(c.elementType));
@@ -545,7 +545,7 @@ void ElementEditor::applyCapabilitiesToUi()
     setSection(c.hasWirelessMode, m_ui->labelWirelessMode, m_ui->comboBoxWirelessMode);
     if (c.hasWirelessMode && !m_elements.isEmpty()) {
         auto *first = qobject_cast<Node *>(m_elements.constFirst());
-        const bool sameMode = std::all_of(m_elements.cbegin(), m_elements.cend(), [&](GraphicElement *elm) {
+        const bool sameMode = std::all_of(m_elements.cbegin(), m_elements.cend(), [&](Element *elm) {
             const auto *n = qobject_cast<Node *>(elm);
             return n && n->wirelessMode() == first->wirelessMode();
         });
@@ -559,7 +559,7 @@ void ElementEditor::applyCapabilitiesToUi()
     setSection(c.isEmbedded, m_ui->labelBlobName, m_ui->lineEditBlobName);
     if (c.isEmbedded && !m_elements.isEmpty()) {
         const auto *firstElm = m_elements.constFirst();
-        const bool sameBlobName = std::all_of(m_elements.cbegin(), m_elements.cend(), [&](GraphicElement *elm) {
+        const bool sameBlobName = std::all_of(m_elements.cbegin(), m_elements.cend(), [&](Element *elm) {
             return elm->blobName() == firstElm->blobName();
         });
         QSignalBlocker blocker(m_ui->lineEditBlobName);
@@ -647,7 +647,7 @@ void ElementEditor::labelEditingFinished()
         const QString label = m_ui->lineEditElementLabel->text();
         const QString &first = m_elements.constFirst()->label();
         const bool same = std::all_of(m_elements.cbegin(), m_elements.cend(),
-                                      [&first](const GraphicElement *elm) { return elm->label() == first; });
+                                      [&first](const Element *elm) { return elm->label() == first; });
         const bool kept = same ? (label == first) : (label == m_manyLabels);
         if (const QString duplicate = kept ? QString() : duplicateTxLabel(label, std::nullopt); !duplicate.isEmpty()) {
             warnDuplicateTxLabel(duplicate);

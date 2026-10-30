@@ -52,8 +52,8 @@
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
 #include "App/Core/Enums.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/AudioBox.h"
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/IC.h"
@@ -131,7 +131,7 @@ QVariant propertyValue(const ElementProperty property, FuzzedDataProvider &fdp)
     return {};
 }
 
-QList<IC *> icsOf(const QList<GraphicElement *> &elements, const bool embedded)
+QList<IC *> icsOf(const QList<Element *> &elements, const bool embedded)
 {
     QList<IC *> ics;
     for (auto *elm : elements) {
@@ -182,7 +182,7 @@ void applyRandomCommands(WorkSpace &workspace, FuzzedDataProvider &fdp, const QS
             }
             case 3: { // MoveCommand: the elements moved, then the command given where they were, as a drag ends
                 if (elems.isEmpty()) break;
-                const QList<GraphicElement *> moved = fdp.ConsumeBool() ? elems : QList<GraphicElement *>{pickElement()};
+                const QList<Element *> moved = fdp.ConsumeBool() ? elems : QList<Element *>{pickElement()};
                 QList<QPointF> oldPositions;
                 const QPointF delta(fdp.ConsumeIntegralInRange<int>(-8, 8) * 8.0, fdp.ConsumeIntegralInRange<int>(-8, 8) * 8.0);
                 for (auto *e : moved) {
@@ -266,7 +266,7 @@ void applyRandomCommands(WorkSpace &workspace, FuzzedDataProvider &fdp, const QS
             case 12: { // SetPropertyCommand: one element or every one, in an edit session or not
                 if (elems.isEmpty()) break;
                 const auto property = kProperties[fdp.ConsumeIntegralInRange<size_t>(0, std::size(kProperties) - 1)];
-                const QList<GraphicElement *> targets = fdp.ConsumeBool() ? elems : QList<GraphicElement *>{pickElement()};
+                const QList<Element *> targets = fdp.ConsumeBool() ? elems : QList<Element *>{pickElement()};
                 const int session = fdp.ConsumeBool() ? 1 : -1;
                 // One to three edits in a row, as a field typed into or a slider dragged: in a session they merge
                 const int edits = fdp.ConsumeIntegralInRange<int>(1, 3);
@@ -425,7 +425,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
             // Writing it after serialize() ensures the element port serialIds are already
             // in the stream (portMap is populated by elements before connections are wired).
             //
-            // Port serialId formula (from GraphicElement::save):
+            // Port serialId formula (from Element::save):
             //   serialId = (element_id << 16) | portIndex
             // sw1 (id=2) output0: (2<<16)|0 = 131072
             // andG (id=1) input0:  (1<<16)|0 = 65536

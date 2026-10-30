@@ -8,7 +8,7 @@
 #pragma once
 
 #include "App/Core/ThemeManager.h"
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 
 /**
  * \class DFlipFlop
@@ -17,7 +17,7 @@
  * \details Has 4 inputs (D, Clock, Preset̄, Clear̄) and 2 outputs (Q, Q̄).
  * The pixmap adapts to the current light/dark theme.
  */
-class DFlipFlop : public GraphicElement
+class DFlipFlop : public Element
 {
     Q_OBJECT
 

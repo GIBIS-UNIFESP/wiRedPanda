@@ -81,7 +81,7 @@ Application::Application(int &argc, char **argv)
 {
     // Register the bundled font used by element SVG labels (flip-flop / latch pin letters and the
     // inverted-output overline glyph) so they render identically on every platform — before any
-    // GraphicElement pixmap is built and cached. Both the desktop entry and the test runner
+    // Element pixmap is built and cached. Both the desktop entry and the test runner
     // construct Application before any element exists, so this single spot covers both.
     // Unreachable in the test suite: QApplication (and this Application
     // subclass) is a process-wide singleton constructed exactly once, before

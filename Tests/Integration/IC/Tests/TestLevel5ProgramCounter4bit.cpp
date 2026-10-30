@@ -69,8 +69,8 @@ struct ProgramCounter4bitFixture {
         return true;
     }
 
-    TestUtils::Bits readPC() { return readMultiBitOutput(QVector<GraphicElement *>(pcOutputs.begin(), pcOutputs.end()), 0); }
-    TestUtils::Bits readPCPlus1() { return readMultiBitOutput(QVector<GraphicElement *>(pcPlus1Outputs.begin(), pcPlus1Outputs.end()), 0); }
+    TestUtils::Bits readPC() { return readMultiBitOutput(QVector<Element *>(pcOutputs.begin(), pcOutputs.end()), 0); }
+    TestUtils::Bits readPCPlus1() { return readMultiBitOutput(QVector<Element *>(pcPlus1Outputs.begin(), pcPlus1Outputs.end()), 0); }
 };
 
 static std::unique_ptr<ProgramCounter4bitFixture> s_level5ProgramCounter4bit;

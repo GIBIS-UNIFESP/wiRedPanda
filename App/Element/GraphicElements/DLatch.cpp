@@ -38,7 +38,7 @@ struct ElementInfo<DLatch> {
 };
 
 DLatch::DLatch(QGraphicsItem *parent)
-    : GraphicElement(ElementType::DLatch, parent)
+    : Element(ElementType::DLatch, parent)
 {
     // Call the most-derived override explicitly (see SRFlipFlop.cpp for rationale).
     DLatch::updatePortsProperties();

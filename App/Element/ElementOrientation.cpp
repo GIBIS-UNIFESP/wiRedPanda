@@ -5,7 +5,7 @@
 
 #include <cmath>
 
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 #include "App/Wiring/Port.h"
 
 void ElementOrientation::setRotation(const qreal angle)

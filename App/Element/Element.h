@@ -28,7 +28,7 @@
 struct SerializationContext;
 struct SerializationOptions;
 
-class GraphicElement;
+class Element;
 class InputPort;
 class OutputPort;
 class Port;
@@ -38,7 +38,7 @@ class QSvgRenderer;
 class QWidget;
 
 /**
- * \class GraphicElement
+ * \class Element
  * \brief Abstract base class for all graphical circuit elements in wiRedPanda.
  *
  * \details Combines a QGraphicsObject (visual representation on the scene) with
@@ -56,7 +56,7 @@ class QWidget;
  * - Polymorphic hooks for clock frequency, audio, color, and truth-table
  *   features that only a subset of elements support.
  */
-class GraphicElement : public QGraphicsObject, public ItemWithId
+class Element : public QGraphicsObject, public ItemWithId
 {
     Q_OBJECT
 public:
@@ -70,17 +70,17 @@ public:
     // --- Lifecycle ---
 
     /// Constructs a graphic element of the given \a type, fetching all properties from the metadata registry.
-    explicit GraphicElement(ElementType type, QGraphicsItem *parent = nullptr);
+    explicit Element(ElementType type, QGraphicsItem *parent = nullptr);
 
     /// Out-of-line so the unique_ptr to the forward-declared QSvgRenderer can be destroyed.
-    ~GraphicElement() override;
+    ~Element() override;
 
 signals:
     /// Emitted on double-click for a labelable element (hasLabel()) whose type doesn't already
     /// claim double-click for something else (IC/TruthTable override mouseDoubleClickEvent()
     /// directly and this signal never fires for them). The owning Scene listens and drives the
     /// actual inline edit widget -- see InlineLabelEditor.
-    void inlineEditRequested(GraphicElement *element);
+    void inlineEditRequested(Element *element);
 
 public:
     // --- External file dependencies ---
@@ -453,7 +453,7 @@ public:
     void setOutputValue(const bool value) { m_sim.setOutputValue(0, value ? Status::Active : Status::Inactive); }
 
     /// Connects simulation input \a inputIndex to output \a outputPort of \a source element.
-    void connectPredecessor(const int inputIndex, GraphicElement *source, const int outputPort);
+    void connectPredecessor(const int inputIndex, Element *source, const int outputPort);
 
     /// Returns \c true if any simulation output changed since the flag was
     /// last cleared (it does NOT reset the flag — see clearOutputChanged()).
@@ -674,11 +674,11 @@ protected:
     int decodeSelectValue(int offset, int count) const { return m_sim.decodeSelectValue(offset, count); }
 
 private:
-    Q_DISABLE_COPY_MOVE(GraphicElement)
+    Q_DISABLE_COPY_MOVE(Element)
 
     /// Reaches ports/orientation/appearance/context-directory state to implement save()/load();
-    /// see GraphicElementSerializer.
-    friend class GraphicElementSerializer;
+    /// see ElementSerializer.
+    friend class ElementSerializer;
 
     /// Calls prepareGeometryChange() before its pixmap mutation resizes boundingRect(), and
     /// invalidateRenderCache() when that mutation changes the pixmap size;
@@ -689,7 +689,7 @@ private:
     /// a real QTest::mousePress(..., Qt::ControlModifier, ...) depends on the platform's actual
     /// keyboard-modifier state reaching the synthesized QGraphicsSceneMouseEvent, which this
     /// sandbox's offscreen/X11 setup does not reproduce reliably.
-    friend class TestGraphicElement;
+    friend class TestElement;
 
     /// Reads the displayed picture for the characterization goldens, so no production accessor
     /// exists only for tests; see Tests/Common/Goldens.h.

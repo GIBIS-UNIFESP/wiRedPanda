@@ -7,13 +7,13 @@
 
 #pragma once
 
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 
 /**
  * \class Not
  * \brief Graphical representation of a NOT gate (1 input, 1 output).
  */
-class Not : public GraphicElement
+class Not : public Element
 {
     Q_OBJECT
 

@@ -7,8 +7,8 @@
 
 #include <QTemporaryDir>
 
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElement.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestFeatures::initTestCase()
@@ -19,7 +19,7 @@ void TestFeatures::initTestCase()
 void TestFeatures::testAndGateFeatures()
 {
     // AND gate is a basic logic gate
-    auto andGate = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
+    auto andGate = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::And));
 
     // AND gate should not have audio, frequency, delay, or colors by default
     QVERIFY(!andGate->hasAudio());
@@ -34,7 +34,7 @@ void TestFeatures::testAndGateFeatures()
 void TestFeatures::testInputElementFeatures()
 {
     // Input element (like a button/switch)
-    auto input = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Node));
+    auto input = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
 
     // Verify features return boolean values
     bool hasLabel = input->hasLabel();
@@ -52,7 +52,7 @@ void TestFeatures::testInputElementFeatures()
 void TestFeatures::testDisplayElementFeatures()
 {
     // Display element (LED, output display)
-    auto display = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Display7));
+    auto display = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Display7));
 
     // Display should have colors
     QVERIFY(display->hasColors());
@@ -64,29 +64,29 @@ void TestFeatures::testDisplayElementFeatures()
 void TestFeatures::testFrequencyFeature()
 {
     // Clock element has frequency
-    auto clock = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Clock));
+    auto clock = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Clock));
 
     // Clock should have frequency setting
     QVERIFY(clock->hasFrequency());
 
     // Create a non-clock element
-    auto andGate = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
+    auto andGate = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::And));
     QVERIFY(!andGate->hasFrequency());
 }
 
 void TestFeatures::testColorFeature()
 {
     // Display element has colors
-    auto display = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Display7));
+    auto display = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Display7));
     bool displayHasColors = display->hasColors();
     QVERIFY(displayHasColors);
 
     // Logic gate typically doesn't have colors
-    auto andGate = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
+    auto andGate = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::And));
     QVERIFY(!andGate->hasColors());
 
     // Node (connector) does not have colors
-    auto node = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Node));
+    auto node = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
     bool nodeHasColors = node->hasColors();
     QVERIFY(!nodeHasColors);
 }
@@ -94,60 +94,60 @@ void TestFeatures::testColorFeature()
 void TestFeatures::testAudioFeature()
 {
     // Audio feature is typically not set by default
-    auto display = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Display7));
+    auto display = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Display7));
     QVERIFY(!display->hasAudio());
 
     // Create various elements and check audio feature
-    auto andGate = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
+    auto andGate = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::And));
     QVERIFY(!andGate->hasAudio());
 
-    auto node = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Node));
+    auto node = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
     QVERIFY(!node->hasAudio());
 }
 
 void TestFeatures::testDelayFeature()
 {
     // Most elements don't have delay by default
-    auto andGate = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
+    auto andGate = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::And));
     QVERIFY(!andGate->hasDelay());
 
-    auto display = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Display7));
+    auto display = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Display7));
     QVERIFY(!display->hasDelay());
 }
 
 void TestFeatures::testLabelFeature()
 {
     // Node element supports labels (used as wireless channel name)
-    auto node = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Node));
+    auto node = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
     bool nodeHasLabel = node->hasLabel();
     QVERIFY(nodeHasLabel);
 
-    auto display = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Display7));
+    auto display = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Display7));
     bool displayHasLabel = display->hasLabel();
     QVERIFY(displayHasLabel);
 
     // Logic gates typically don't have visible labels
-    auto andGate = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
+    auto andGate = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::And));
     QVERIFY(!andGate->hasLabel());
 }
 
 void TestFeatures::testTriggerFeature()
 {
     // Trigger feature check for various elements
-    auto andGate = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
+    auto andGate = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::And));
     QVERIFY(!andGate->hasTrigger());
 
-    auto flipFlop = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::DFlipFlop));
+    auto flipFlop = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::DFlipFlop));
     QVERIFY(!flipFlop->hasTrigger()); // Flip-flop may or may not have user-accessible trigger
 }
 
 void TestFeatures::testTruthTableFeature()
 {
     // Truth table feature for logic elements
-    auto andGate = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
+    auto andGate = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::And));
     QVERIFY(!andGate->hasTruthTable()); // Generic logic gates don't need truth tables
 
-    auto display = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Display7));
+    auto display = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Display7));
     QVERIFY(!display->hasTruthTable());
 }
 
@@ -155,7 +155,7 @@ void TestFeatures::testMultipleElementsFeatures()
 {
     // Test feature consistency across multiple element types
     // AND gate - no special features
-    auto andGate = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
+    auto andGate = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::And));
     QVERIFY(andGate != nullptr);
     QVERIFY(!andGate->hasLabel());
     QVERIFY(!andGate->hasAudio());
@@ -164,7 +164,7 @@ void TestFeatures::testMultipleElementsFeatures()
     QVERIFY(!andGate->hasDelay());
 
     // OR gate - no special features
-    auto orGate = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Or));
+    auto orGate = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Or));
     QVERIFY(orGate != nullptr);
     QVERIFY(!orGate->hasLabel());
     QVERIFY(!orGate->hasAudio());
@@ -173,7 +173,7 @@ void TestFeatures::testMultipleElementsFeatures()
     QVERIFY(!orGate->hasDelay());
 
     // NOT gate - no special features
-    auto notGate = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Not));
+    auto notGate = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Not));
     QVERIFY(notGate != nullptr);
     QVERIFY(!notGate->hasLabel());
     QVERIFY(!notGate->hasAudio());
@@ -182,7 +182,7 @@ void TestFeatures::testMultipleElementsFeatures()
     QVERIFY(!notGate->hasDelay());
 
     // Node - has label (for wireless channel name), no other special features
-    auto node = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Node));
+    auto node = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
     QVERIFY(node != nullptr);
     QVERIFY(node->hasLabel());
     QVERIFY(!node->hasAudio());
@@ -191,7 +191,7 @@ void TestFeatures::testMultipleElementsFeatures()
     QVERIFY(!node->hasDelay());
 
     // Clock - has frequency and delay
-    auto clock = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Clock));
+    auto clock = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Clock));
     QVERIFY(clock != nullptr);
     QVERIFY(clock->hasLabel());
     QVERIFY(!clock->hasAudio());
@@ -200,7 +200,7 @@ void TestFeatures::testMultipleElementsFeatures()
     QVERIFY(clock->hasDelay());
 
     // Display7 - has label and colors
-    auto display = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Display7));
+    auto display = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Display7));
     QVERIFY(display != nullptr);
     QVERIFY(display->hasLabel());
     QVERIFY(!display->hasAudio());

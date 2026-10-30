@@ -22,7 +22,7 @@
 
 #include "App/Element/IC.h"
 
-class GraphicElement;
+class Element;
 class Scene;
 class QGraphicsItem;
 
@@ -32,8 +32,8 @@ class QGraphicsItem;
  * files, and builds the resulting boundary port lists.
  *
  * \details Extracted from IC so file/blob loading is a collaborator rather than a
- * cluster of methods on the element itself, mirroring the GraphicElement /
- * GraphicElementSerializer split. A friend of IC, it reaches the element's
+ * cluster of methods on the element itself, mirroring the Element /
+ * ElementSerializer split. A friend of IC, it reaches the element's
  * internal-element/port vectors directly. All methods are static and take the IC
  * explicitly; IC keeps all state (it's already heavily friended by tests), so this
  * is a pure logic extraction, not a new owner-back-pointer collaborator.
@@ -50,7 +50,7 @@ public:
     static void loadFromBlob(IC &ic, const QByteArray &blob, const QString &contextDir);
 
     /// Scans \a elements for Input/Output groups, sorts by Y/X position, and builds labels.
-    static IC::PortMetadata buildPortMetadata(const QVector<GraphicElement *> &elements);
+    static IC::PortMetadata buildPortMetadata(const QVector<Element *> &elements);
 
     /// IC files by absolute path, with their bytes.
     using Files = QMap<QString, QByteArray>;
@@ -88,7 +88,7 @@ private:
     /// each pointer from \a items as ownership transfers so the caller's qScopeGuard
     /// only deletes still-owned items on throw (no double-free).
     static void processLoadedItems(IC &ic, QList<QGraphicsItem *> &items);
-    static void loadBoundaryElement(IC &ic, GraphicElement *elm, bool isInput);
+    static void loadBoundaryElement(IC &ic, Element *elm, bool isInput);
     /// Sizes ic's pins on one side to its boundary ports and names each from \a labels, in the source language from
     /// \a sourceLabels.
     static void loadBoundaryPorts(IC &ic, bool isInput, const QVector<QString> &labels, const QVector<QString> &sourceLabels);

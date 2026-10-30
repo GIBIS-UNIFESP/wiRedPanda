@@ -17,8 +17,8 @@
 #include <QTimer>
 
 class Clock;
-class GraphicElement;
-class GraphicElementInput;
+class Element;
+class ElementInput;
 class InputPort;
 class OutputPort;
 class SimulationHost;
@@ -28,7 +28,7 @@ class SimulationHost;
  * \brief Manages the digital circuit simulation loop.
  *
  * \details The simulation runs a 1 ms periodic QTimer.  On each tick it:
- * 1. Updates all GraphicElementInput outputs (including clocks).
+ * 1. Updates all ElementInput outputs (including clocks).
  * 2. Calls updateLogic() on all elements in priority order.
  * 3. Propagates values through connections to output elements.
  *
@@ -91,7 +91,7 @@ public:
     bool isRunning();
 
     /// Returns \c true if \a element is part of a combinational feedback loop.
-    bool isInFeedbackLoop(const GraphicElement *element) const;
+    bool isInFeedbackLoop(const Element *element) const;
 
     // --- Initialization ---
 
@@ -113,33 +113,33 @@ public:
 
     // --- Static graph building (used by IC::initializeSimulation too) ---
 
-    static void buildConnectionGraph(const QVector<GraphicElement *> &elements);
+    static void buildConnectionGraph(const QVector<Element *> &elements);
     /// Overrides physical predecessors on Rx nodes with their matching Tx node.
     /// Must be called after buildConnectionGraph() so wireless always wins, and before sort().
-    static void connectWirelessElements(const QVector<GraphicElement *> &elements);
+    static void connectWirelessElements(const QVector<Element *> &elements);
 
     /// Builds a label→element map for wireless Tx nodes. First Tx per label wins.
-    static QHash<QString, GraphicElement *> buildTxMap(const QVector<GraphicElement *> &elements);
+    static QHash<QString, Element *> buildTxMap(const QVector<Element *> &elements);
 
     /// Builds a successor adjacency list from connection graph + wireless Tx→Rx edges.
-    static QHash<GraphicElement *, QVector<GraphicElement *>> buildSuccessorGraph(
-        const QVector<GraphicElement *> &elements,
-        const QHash<QString, GraphicElement *> &txMap);
+    static QHash<Element *, QVector<Element *>> buildSuccessorGraph(
+        const QVector<Element *> &elements,
+        const QHash<QString, Element *> &txMap);
 
     /// Result of topological sort with feedback detection.
     struct SortResult {
-        QVector<GraphicElement *> sorted;                ///< Elements in priority order (highest first).
-        QHash<GraphicElement *, int> priorities;          ///< Priority per element.
-        QSet<GraphicElement *> feedbackNodes;             ///< Elements in feedback loops.
+        QVector<Element *> sorted;                ///< Elements in priority order (highest first).
+        QHash<Element *, int> priorities;          ///< Priority per element.
+        QSet<Element *> feedbackNodes;             ///< Elements in feedback loops.
     };
 
     /// Topologically sorts elements using the successor graph, detects feedback loops.
-    static SortResult topologicalSort(const QVector<GraphicElement *> &elements,
-                                      const QHash<GraphicElement *, QVector<GraphicElement *>> &successors);
+    static SortResult topologicalSort(const QVector<Element *> &elements,
+                                      const QHash<Element *, QVector<Element *>> &successors);
 
     /// Runs updateLogic() iteratively on \a elements until outputs converge or \a maxIterations is reached.
     /// \return \c true if the circuit converged.
-    static bool iterativeSettle(const QVector<GraphicElement *> &elements, int maxIterations = kMaxSettleIterations);
+    static bool iterativeSettle(const QVector<Element *> &elements, int maxIterations = kMaxSettleIterations);
 
 signals:
     /// Emitted (at most once per initialize()) when a feedback circuit fails to converge.
@@ -153,16 +153,16 @@ private:
     static void updatePort(InputPort *port);
     static void updatePort(OutputPort *port);
     /// Returns \c true when the feedback circuit converged within the iteration budget.
-    bool updateWithIterativeSettling(const QVector<GraphicElement *> &elements);
-    void sortSimElements(const QVector<GraphicElement *> &elements);
+    bool updateWithIterativeSettling(const QVector<Element *> &elements);
+    void sortSimElements(const QVector<Element *> &elements);
 
     /// Phases 3-4: pushes computed logic values onto port/output-element visuals.
-    void pushVisualStatuses(const QVector<GraphicElement *> &elements, const QVector<GraphicElement *> &outputs);
+    void pushVisualStatuses(const QVector<Element *> &elements, const QVector<Element *> &outputs);
 
     /// Recursively appends every ElementGroup::Memory element in \a elements
     /// (descending into ICs) to m_sequentialElements. These get non-blocking
     /// (deferred) output commits so synchronous logic matches SystemVerilog.
-    void collectSequentialElements(const QVector<GraphicElement *> &elements);
+    void collectSequentialElements(const QVector<Element *> &elements);
 
     // --- Members: Timer & element lists ---
 
@@ -175,8 +175,8 @@ private:
     std::chrono::steady_clock::time_point m_pausedAt;
     bool m_hasPausedAt = false;
     QVector<Clock *> m_clocks;
-    QVector<GraphicElement *> m_outputs;
-    QVector<GraphicElementInput *> m_inputs;
+    QVector<Element *> m_outputs;
+    QVector<ElementInput *> m_inputs;
 
     // --- Members: Host & state ---
 
@@ -210,12 +210,12 @@ private:
 
     // --- Members: Direct simulation graph ---
 
-    QVector<GraphicElement *> m_sortedElements;
+    QVector<Element *> m_sortedElements;
     /// All synchronous sequential elements (flip-flops, latches) across the whole
     /// hierarchy, including those nested inside ICs. Bracketed each tick with
     /// beginDeferredCommit()/commitDeferredOutputs() for non-blocking semantics.
-    QVector<GraphicElement *> m_sequentialElements;
-    QHash<const GraphicElement *, int> m_simPriorities;
-    QSet<const GraphicElement *> m_simFeedbackNodes;
+    QVector<Element *> m_sequentialElements;
+    QHash<const Element *, int> m_simPriorities;
+    QSet<const Element *> m_simFeedbackNodes;
     bool m_simHasFeedbackElements = false;
 };

@@ -128,7 +128,7 @@ public:
 };
 
 /// Sends a mouse click at the scene position of an element.
-static void clickElement(GraphicsView *view, GraphicElement *elm, Qt::KeyboardModifiers mods = Qt::NoModifier)
+static void clickElement(GraphicsView *view, Element *elm, Qt::KeyboardModifiers mods = Qt::NoModifier)
 {
     QPoint viewPos = view->mapFromScene(elm->scenePos());
     QTest::mouseClick(view->viewport(), Qt::LeftButton, mods, viewPos);
@@ -951,7 +951,7 @@ void TestMainWindowGui::testRotateRightViaKeyboard()
     clickElement(view, andGate);
     QTest::keyClick(window.get(), Qt::Key_R, Qt::ControlModifier);
 
-    auto *rotated = dynamic_cast<GraphicElement *>(scene->itemById(id));
+    auto *rotated = dynamic_cast<Element *>(scene->itemById(id));
     QVERIFY(rotated);
     QCOMPARE(rotated->rotation(), 90.0);
 }
@@ -970,7 +970,7 @@ void TestMainWindowGui::testRotateLeftViaKeyboard()
     clickElement(view, andGate);
     QTest::keyClick(window.get(), Qt::Key_R, Qt::ControlModifier | Qt::ShiftModifier);
 
-    auto *rotated = dynamic_cast<GraphicElement *>(scene->itemById(id));
+    auto *rotated = dynamic_cast<Element *>(scene->itemById(id));
     QVERIFY(rotated);
     QCOMPARE(rotated->rotation(), -90.0);
 }
@@ -990,13 +990,13 @@ void TestMainWindowGui::testFlipHorizontallyViaKeyboard()
     clickElement(view, andGate);
     QTest::keyClick(window.get(), Qt::Key_H, Qt::ControlModifier);
 
-    auto *flipped = dynamic_cast<GraphicElement *>(scene->itemById(id));
+    auto *flipped = dynamic_cast<Element *>(scene->itemById(id));
     QVERIFY(flipped);
     QVERIFY2(flipped->isFlippedX(), "Ctrl+H must flip the element horizontally");
 
     // Flip is recorded in the undo stack — verify undo restores original state
     QTest::keyClick(window.get(), Qt::Key_Z, Qt::ControlModifier);
-    auto *unflipped = dynamic_cast<GraphicElement *>(scene->itemById(id));
+    auto *unflipped = dynamic_cast<Element *>(scene->itemById(id));
     QVERIFY(unflipped);
     QVERIFY2(!unflipped->isFlippedX(), "Undo must restore the pre-flip state");
 }
@@ -1097,7 +1097,7 @@ void TestMainWindowGui::testMouseDragMovesElement()
     clickElement(view, andGate);
     dragElement(view, andGate->scenePos(), andGate->scenePos() + QPointF(50, 0));
 
-    auto *moved = dynamic_cast<GraphicElement *>(scene->itemById(id));
+    auto *moved = dynamic_cast<Element *>(scene->itemById(id));
     QVERIFY(moved);
     QVERIFY(moved->pos().x() > origPos.x());
 }
@@ -1476,7 +1476,7 @@ void TestMainWindowGui::testPaletteDoubleClickAddsElement()
     const auto after = scene->elements();
     QCOMPARE(after.size(), before.size() + 1);
 
-    GraphicElement *added = nullptr;
+    Element *added = nullptr;
     for (auto *element : after) {
         if (!before.contains(element)) {
             added = element;

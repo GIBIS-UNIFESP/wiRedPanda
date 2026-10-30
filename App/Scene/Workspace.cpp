@@ -18,7 +18,7 @@
 #include "App/Core/InstallRelativePaths.h"
 #include "App/Core/SentryHelpers.h"
 #include "App/Core/Settings.h"
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 #include "App/Element/IC.h"
 #include "App/Exercise/ExerciseOverlay.h"
 #include "App/IO/FileUtils.h"
@@ -598,7 +598,7 @@ void WorkSpace::load(QDataStream &stream, const QVersionNumber &version, const Q
 
         // Track the highest element ID seen so that newly created elements
         // will receive IDs that don't collide with those just loaded
-        if (auto *ge = qgraphicsitem_cast<GraphicElement *>(item)) {
+        if (auto *ge = qgraphicsitem_cast<Element *>(item)) {
             m_lastId = (std::max)(m_lastId, ge->id());
         }
     }
@@ -820,7 +820,7 @@ void WorkSpace::loadFromBlob(const QByteArray &blob, WorkSpace *parent, int icEl
     for (auto *item : items) {
         m_scene.addItem(item);
 
-        if (auto *ge = qgraphicsitem_cast<GraphicElement *>(item)) {
+        if (auto *ge = qgraphicsitem_cast<Element *>(item)) {
             m_lastId = (std::max)(m_lastId, ge->id());
         }
     }
@@ -839,7 +839,7 @@ void WorkSpace::loadFromBlob(const QByteArray &blob, WorkSpace *parent, int icEl
     // Derive blob name from the parent IC element
     if (parent) {
         if (auto *item = parent->scene()->itemById(icElementId)) {
-            if (auto *elm = dynamic_cast<GraphicElement *>(item)) {
+            if (auto *elm = dynamic_cast<Element *>(item)) {
                 m_inlineBlobName = elm->blobName();
             }
         }
@@ -853,7 +853,7 @@ void WorkSpace::saveChildICBlob(int icElementId, const QByteArray &blob)
         return; // Orphaned child tab — IC was deleted or undone
     }
 
-    auto *elm = dynamic_cast<GraphicElement *>(item);
+    auto *elm = dynamic_cast<Element *>(item);
     if (!elm || !elm->isEmbedded()) {
         return;
     }
@@ -875,7 +875,7 @@ void WorkSpace::saveChildICBlob(int icElementId, const QByteArray &blob)
     // throws, roll back every element that was already updated so we don't push a
     // partial undo command (mirrors the pattern in ICRegistry::embedICsByFile).
     m_scene.icRegistry()->setBlob(targetBlobName, blob);
-    QList<GraphicElement *> updated;
+    QList<Element *> updated;
     try {
         for (auto *target : targets) {
             auto *ic = static_cast<IC *>(target);
@@ -899,10 +899,10 @@ void WorkSpace::removeEmbeddedIC(const QString &blobName)
     QList<QGraphicsItem *> toDelete;
 
     for (auto *item : m_scene.items()) {
-        if (item->type() != GraphicElement::Type) {
+        if (item->type() != Element::Type) {
             continue;
         }
-        auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
+        auto *elm = qgraphicsitem_cast<Element *>(item);
         if (elm && elm->isEmbedded() && elm->blobName() == blobName) {
             toDelete.append(item);
             // Also collect connections to this element

@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 
 /**
  * \class Line
@@ -15,7 +15,7 @@
  *
  * \details Has no ports and is excluded from simulation.
  */
-class Line : public GraphicElement
+class Line : public Element
 {
     Q_OBJECT
 

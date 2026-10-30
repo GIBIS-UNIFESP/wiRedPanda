@@ -7,8 +7,8 @@
 
 #include <QTest>
 
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElement.h"
 #include "App/Scene/ConnectionManager.h"
 #include "App/Scene/PortHoverLabel.h"
 #include "App/Scene/Scene.h"
@@ -39,7 +39,7 @@ void TestSceneState::testSceneRectAfterRemoveElement()
 {
     Scene scene;
 
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Or));
+    auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Or));
     elem->setPos(200, 200);
     scene.addItem(elem.get());
 
@@ -169,7 +169,7 @@ void TestSceneState::testVisibleElementsInViewport()
     scene.addItem(elem2);
 
     // Get all elements in scene
-    QVector<GraphicElement *> elements = scene.elements();
+    QVector<Element *> elements = scene.elements();
     QCOMPARE(elements.size(), 2);
 }
 
@@ -182,11 +182,11 @@ void TestSceneState::testElementsInRectangle()
     scene.addItem(elem);
 
     // Query rectangle containing element
-    QVector<GraphicElement *> elements = scene.elements(QRectF(0, 0, 100, 100));
+    QVector<Element *> elements = scene.elements(QRectF(0, 0, 100, 100));
     QVERIFY(!elements.isEmpty());
 
     // Query rectangle not containing element
-    QVector<GraphicElement *> emptyElements = scene.elements(QRectF(500, 500, 100, 100));
+    QVector<Element *> emptyElements = scene.elements(QRectF(500, 500, 100, 100));
     QCOMPARE(emptyElements.size(), 0);
 }
 
@@ -202,7 +202,7 @@ void TestSceneState::testSelectedElementsFiltering()
     elem->setSelected(true);
 
     // Get selected items
-    QList<GraphicElement *> selected = scene.selectedElements();
+    QList<Element *> selected = scene.selectedElements();
     QVERIFY(selected.contains(elem));
 
     // Deselect
@@ -361,7 +361,7 @@ void TestSceneState::testConnectionStateTransitions()
     scene.addItem(led);
 
     // Verify all elements are in scene
-    QVector<GraphicElement *> elements = scene.elements();
+    QVector<Element *> elements = scene.elements();
     QVERIFY(elements.size() == 3);
 
     // Test connection state transitions: Start with no connections
@@ -516,7 +516,7 @@ void TestSceneState::testCheckUpdateRequestTriggers()
     QVERIFY2(simAfter != nullptr, "Simulation should be valid after circuit update");
 
     // Verify element is still in scene after update
-    QVector<GraphicElement *> elements = scene.elements();
+    QVector<Element *> elements = scene.elements();
     QVERIFY2(elements.contains(elem), "Elements should persist through circuit updates");
 }
 
@@ -525,7 +525,7 @@ void TestSceneState::testUpdateBlockingDuringTransaction()
     Scene scene;
 
     // Add multiple elements in sequence
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
     for (int i = 0; i < 5; ++i) {
         auto *e = ElementFactory::buildElement(ElementType::Not);
         e->setPos(i * 100, 0);
@@ -534,18 +534,18 @@ void TestSceneState::testUpdateBlockingDuringTransaction()
     }
 
     // Verify all elements are in scene before update
-    QVector<GraphicElement *> beforeUpdate = scene.elements();
+    QVector<Element *> beforeUpdate = scene.elements();
     QCOMPARE(beforeUpdate.size(), 5);
 
     // Trigger circuit update
     scene.setCircuitUpdateRequired();
 
     // After update, all elements should still be present
-    QVector<GraphicElement *> afterUpdate = scene.elements();
+    QVector<Element *> afterUpdate = scene.elements();
     QVERIFY2(afterUpdate.size() >= 5, "All elements should survive circuit update");
 
     // Verify each element is still accessible
-    for (GraphicElement *elem : elements) {
+    for (Element *elem : elements) {
         QVERIFY2(afterUpdate.contains(elem),
                 "All added elements should be present after circuit update");
     }
@@ -559,7 +559,7 @@ void TestSceneState::testSceneCleanupAfterLoad()
     // Add elements (track them so we can free only what we allocated;
     // scene.items() also returns the stack-allocated m_selectionRect, which
     // must not be deleted)
-    QVector<GraphicElement *> added;
+    QVector<Element *> added;
     for (int i = 0; i < 3; ++i) {
         auto *elem = ElementFactory::buildElement(ElementType::And);
         elem->setPos(i * 100, 0);
@@ -602,7 +602,7 @@ void TestSceneState::testElementCountAfterRemoval()
 {
     Scene scene;
 
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
+    auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::And));
     scene.addItem(elem.get());
     auto countWithElem = scene.items().size();
 
@@ -656,7 +656,7 @@ void TestSceneState::testMixedElementTypes()
 
 void TestSceneState::testElementSelectionStateToggle()
 {
-    // Renamed from testElementZOrderOnSelection: neither GraphicElement nor Scene's selection
+    // Renamed from testElementZOrderOnSelection: neither Element nor Scene's selection
     // handling ever calls setZValue() on selection -- confirmed by grepping App/ for
     // setZValue()/stackBefore() (the only callers are Connection's fixed behind-elements
     // value, PortHoverLabel, InlineLabelEditor, and Node's wireless indicator, none tied to
@@ -704,7 +704,7 @@ void TestSceneState::testConnectionZOrderBehindElements()
     QVERIFY(scene.items().contains(conn));
 
     // The actual Z-order fact: Connection's constructor fixes its zValue() to -1, so it
-    // always paints behind elements (default zValue 0, never explicitly set by GraphicElement).
+    // always paints behind elements (default zValue 0, never explicitly set by Element).
     QCOMPARE(conn->zValue(), -1.0);
     QCOMPARE(input->zValue(), 0.0);
     QCOMPARE(output->zValue(), 0.0);
@@ -737,7 +737,7 @@ void TestSceneState::testSceneRetainsSizeAfterClear()
 {
     Scene scene;
 
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
+    auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::And));
     elem->setPos(100, 100);
     scene.addItem(elem.get());
 

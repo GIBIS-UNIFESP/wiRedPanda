@@ -7,8 +7,8 @@
 
 #include <QTemporaryDir>
 
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Scene/ConnectionManager.h"
 #include "App/Scene/Scene.h"
@@ -66,7 +66,7 @@ void TestConnectionValidity::testPortDeletionDeletesConnection()
     Scene scene;
 
     // Create two AND gates
-    auto and1 = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
+    auto and1 = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::And));
     auto *and2 = ElementFactory::buildElement(ElementType::And);
     scene.addItem(and1.get());
     scene.addItem(and2);
@@ -210,13 +210,13 @@ void TestConnectionValidity::testPortValidityStyleAtCreation()
     // scene interaction runs updateConnections() — so missing connections are
     // visible in freshly created and freshly loaded circuits (both position
     // elements before they enter the scene).
-    auto andGate = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
+    auto andGate = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::And));
     QCOMPARE(andGate->inputPort(0)->status(), Status::Error);
     QCOMPARE(andGate->inputPort(1)->status(), Status::Error);
 
     // Ports marked optional after construction recover from the Error override:
     // no configured default reads as undriven, an explicit default as its level.
-    auto sr = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::SRFlipFlop));
+    auto sr = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::SRFlipFlop));
     QCOMPARE(sr->inputPort(0)->status(), Status::Inactive); // S: optional, defaults LOW
     QCOMPARE(sr->inputPort(1)->status(), Status::Error);    // Clock: required
     QCOMPARE(sr->inputPort(3)->status(), Status::Active);   // ~Preset: optional, defaults HIGH

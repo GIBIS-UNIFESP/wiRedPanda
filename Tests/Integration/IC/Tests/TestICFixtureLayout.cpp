@@ -45,8 +45,8 @@ void TestICFixtureLayout::testLayout()
     QStringList overlaps;
     for (qsizetype i = 0; i < elements.size(); ++i) {
         for (qsizetype j = i + 1; j < elements.size(); ++j) {
-            GraphicElement *a = elements.at(i);
-            GraphicElement *b = elements.at(j);
+            Element *a = elements.at(i);
+            Element *b = elements.at(j);
             const QRectF overlap = a->sceneBoundingRect().intersected(b->sceneBoundingRect());
             if (overlap.width() > kTolerance && overlap.height() > kTolerance) {
                 overlaps << QString("'%1' (id %2) overlaps '%3' (id %4) by %5x%6 px at (%7, %8)")
@@ -58,7 +58,7 @@ void TestICFixtureLayout::testLayout()
         }
     }
 
-    // Labels aren't part of GraphicElement::boundingRect() (it unions only ports and
+    // Labels aren't part of Element::boundingRect() (it unions only ports and
     // the pixmap), so a label can visually collide with a neighboring element or
     // another label even when every element-body check above passes.
     QList<QRectF> labelRects(elements.size());
@@ -81,7 +81,7 @@ void TestICFixtureLayout::testLayout()
             if (i == j) {
                 continue;
             }
-            GraphicElement *other = elements.at(j);
+            Element *other = elements.at(j);
             const QRectF overlap = labelRects.at(i).intersected(other->sceneBoundingRect());
             if (overlap.width() > kTolerance && overlap.height() > kTolerance) {
                 overlaps << QString("label '%1' (id %2) overlaps '%3' (id %4) by %5x%6 px at (%7, %8)")

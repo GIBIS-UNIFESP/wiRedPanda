@@ -4,9 +4,9 @@
 #include "App/Element/GraphicElements/AudioBox.h"
 
 #include "App/Core/Common.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
-#include "App/Element/GraphicElement.h"
 #include "App/IO/ExternalFilePath.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
@@ -144,7 +144,7 @@ void AudioBox::applyMute()
 
 QStringList AudioBox::externalFiles() const
 {
-    QStringList result = GraphicElement::externalFiles();
+    QStringList result = Element::externalFiles();
     const QString audioPath = m_audio.filePath();
     if (!audioPath.isEmpty() && !audioPath.startsWith(":/")) {
         result.append(audioPath);
@@ -154,7 +154,7 @@ QStringList AudioBox::externalFiles() const
 
 void AudioBox::reportFailedFiles() const
 {
-    GraphicElement::reportFailedFiles();
+    Element::reportFailedFiles();
     // Reported only while it still cannot be read: a file back since plays once the box next plays
     const QFileInfo info(m_failedAudioPath);
     if (m_failedAudioPath.isEmpty() || info.isReadable()) {
@@ -169,7 +169,7 @@ void AudioBox::reportFailedFiles() const
 
 void AudioBox::save(QDataStream &stream, SerializationOptions options) const
 {
-    GraphicElement::save(stream, options);
+    Element::save(stream, options);
 
     const bool slim = (options.purpose == SerializationPurpose::PortableFile);
     const QString audioPath = ExternalFilePath::forWriting(m_audio.filePath(), options.purpose);
@@ -178,7 +178,7 @@ void AudioBox::save(QDataStream &stream, SerializationOptions options) const
     // PortableFile streams omit resource paths outright — forReading() discards
     // them on load anyway (the default source is the bundled kDefaultAudioPath
     // resource, which a fresh element already has), matching the appearance
-    // rule in GraphicElementSerializer::save(). Snapshots write unconditionally.
+    // rule in ElementSerializer::save(). Snapshots write unconditionally.
     if (!slim || !audioPath.startsWith(":/")) {
         map.insert("audiobox", audioPath);
     }
@@ -191,7 +191,7 @@ void AudioBox::save(QDataStream &stream, SerializationOptions options) const
 
 void AudioBox::load(QDataStream &stream, SerializationContext &context)
 {
-    GraphicElement::load(stream, context);
+    Element::load(stream, context);
 
     if (!VersionInfo::hasAudio(context.version)) {
         // Audio was added in v2.4; nothing to read for earlier files

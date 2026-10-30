@@ -52,7 +52,7 @@ struct ElementInfo<Clock> {
 };
 
 Clock::Clock(QGraphicsItem *parent)
-    : GraphicElementInput(ElementType::Clock, parent)
+    : ElementInput(ElementType::Clock, parent)
 {
     // Frequency, interval, delay, and locked state are all covered by member
     // initializers; only the output state needs behavior, not initialization:
@@ -111,7 +111,7 @@ void Clock::setOn()
 
 void Clock::save(QDataStream &stream, SerializationOptions options) const
 {
-    GraphicElement::save(stream, options);
+    Element::save(stream, options);
 
     const bool slim = (options.purpose == SerializationPurpose::PortableFile);
 
@@ -133,7 +133,7 @@ void Clock::save(QDataStream &stream, SerializationOptions options) const
 
 void Clock::load(QDataStream &stream, SerializationContext &context)
 {
-    GraphicElement::load(stream, context);
+    Element::load(stream, context);
 
     if (!VersionInfo::hasClock(context.version)) {
         // Clock serialization was introduced in v1.1; nothing to read in earlier files

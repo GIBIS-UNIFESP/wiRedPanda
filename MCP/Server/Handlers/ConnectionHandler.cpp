@@ -7,8 +7,8 @@
 
 #include <QJsonArray>
 
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElement.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/ConnectionManager.h"
 #include "App/Scene/Scene.h"
@@ -154,8 +154,8 @@ QJsonObject ConnectionHandler::handleDisconnectElements(const QJsonObject &param
             continue;
         }
 
-        GraphicElement *elem1 = port1->graphicElement();
-        GraphicElement *elem2 = port2->graphicElement();
+        Element *elem1 = port1->element();
+        Element *elem2 = port2->element();
 
         if ((elem1 == sourceElement && elem2 == targetElement) ||
             (elem1 == targetElement && elem2 == sourceElement)) {
@@ -193,11 +193,11 @@ QJsonObject ConnectionHandler::handleListConnections(const QJsonObject &, const 
             continue;
         }
 
-        const GraphicElement *startElement = startPort->graphicElement();
-        const GraphicElement *endElement = endPort->graphicElement();
+        const Element *startElement = startPort->element();
+        const Element *endElement = endPort->element();
 
         // Unreachable: ElementPorts::addPort() unconditionally binds a port to its owning
-        // element at construction, so graphicElement() is never null for a real port.
+        // element at construction, so element() is never null for a real port.
         if (!startElement || !endElement) {
             continue; // LCOV_EXCL_LINE
         }
@@ -275,8 +275,8 @@ QJsonObject ConnectionHandler::handleSplitConnection(const QJsonObject &params, 
             continue;
         }
 
-        GraphicElement *elem1 = port1->graphicElement();
-        GraphicElement *elem2 = port2->graphicElement();
+        Element *elem1 = port1->element();
+        Element *elem2 = port2->element();
 
         // Unreachable: same port-always-has-an-owner invariant as handleListConnections().
         if (!elem1 || !elem2) {
@@ -304,7 +304,7 @@ QJsonObject ConnectionHandler::handleSplitConnection(const QJsonObject &params, 
 }
 
 bool ConnectionHandler::resolvePort(const QJsonObject &params, const QString &prefix,
-                                     GraphicElement *element, bool isOutput,
+                                     Element *element, bool isOutput,
                                      int &portIndex, QString &errorMsg)
 {
     const QString labelParam = prefix + "_port_label";

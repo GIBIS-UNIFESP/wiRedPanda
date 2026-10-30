@@ -231,7 +231,7 @@ struct EditorFixture {
 
     // Select an element: mark it selected and process events so the scene's
     // selectionChanged signal reaches the ElementEditor.
-    void select(GraphicElement *elm)
+    void select(Element *elm)
     {
         elm->setSelected(true);
         QCoreApplication::processEvents();

@@ -32,6 +32,6 @@ private:
      * \param isOutput true when resolving an output port (source side), false for input (target side).
      */
     bool resolvePort(const QJsonObject &params, const QString &prefix,
-                     GraphicElement *element, bool isOutput,
+                     Element *element, bool isOutput,
                      int &portIndex, QString &errorMsg);
 };

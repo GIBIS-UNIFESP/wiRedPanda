@@ -23,9 +23,9 @@
 #include <QTest>
 
 #include "App/Core/ThemeManager.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElement.h"
-#include "App/Element/GraphicElementInput.h"
+#include "App/Element/ElementInput.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Scene.h"
@@ -88,13 +88,13 @@ QString icFile()
 /// One state an element is put in before it is oriented.
 struct BodyState {
     QString name;
-    std::function<void(GraphicElement *)> apply;
+    std::function<void(Element *)> apply;
 };
 
 /// A type, or an IC from one source, and the states its body is pinned in.
 struct BodyCase {
     QString name;
-    std::function<std::unique_ptr<GraphicElement>()> build;
+    std::function<std::unique_ptr<Element>()> build;
     QList<BodyState> states;
     bool themed = false; ///< Whether its picture follows the theme, so it is pinned in both.
 };
@@ -154,7 +154,7 @@ QString onOff(const bool on)
  * elsewhere. An input reads its wire wherever the element is turned or moved, while one without a wire goes back to
  * its default status each time its ports are laid out or moved.
  */
-void driveInputs(GraphicElement *element, const quint32 pattern)
+void driveInputs(Element *element, const quint32 pattern)
 {
     CircuitBuilder builder(qobject_cast<Scene *>(element->scene()));
     for (int index = 0; index < element->inputSize(); ++index) {
@@ -168,7 +168,7 @@ void driveInputs(GraphicElement *element, const quint32 pattern)
 /// Has \a node's simulation see \a status on its input, which colours its wireless indicator.
 void driveNode(Node *node, const Status status)
 {
-    const std::unique_ptr<GraphicElement> source(ElementFactory::buildElement(ElementType::InputVcc));
+    const std::unique_ptr<Element> source(ElementFactory::buildElement(ElementType::InputVcc));
     source->initSimulationVectors(0, 1);
     source->setOutputValue(status);
     node->initSimulationVectors(1, 1);
@@ -181,28 +181,28 @@ QList<BodyState> inputCounts(const QList<int> &counts)
 {
     QList<BodyState> states;
     for (const int count : counts) {
-        states.append({QString("in=%1").arg(count), [count](GraphicElement *e) { e->setInputSize(count); }});
+        states.append({QString("in=%1").arg(count), [count](Element *e) { e->setInputSize(count); }});
     }
     return states;
 }
 
 QList<BodyState> customAppearances(const CustomPictures &custom)
 {
-    return {{"custom.png", [&custom](GraphicElement *e) { e->setAppearance(false, custom.png()); }},
-            {"custom.svg", [&custom](GraphicElement *e) { e->setAppearance(false, custom.svg()); }}};
+    return {{"custom.png", [&custom](Element *e) { e->setAppearance(false, custom.png()); }},
+            {"custom.svg", [&custom](Element *e) { e->setAppearance(false, custom.svg()); }}};
 }
 
 QList<BodyState> defaultOnly()
 {
-    return {{"default", [](GraphicElement *) {}}};
+    return {{"default", [](Element *) {}}};
 }
 
 QList<BodyState> switchable(const CustomPictures &custom)
 {
-    return {{"off", [](GraphicElement *e) { static_cast<GraphicElementInput *>(e)->setOn(false); }},
-            {"on", [](GraphicElement *e) { static_cast<GraphicElementInput *>(e)->setOn(true); }},
-            {"on custom.png", [&custom](GraphicElement *e) {
-                 static_cast<GraphicElementInput *>(e)->setOn(true);
+    return {{"off", [](Element *e) { static_cast<ElementInput *>(e)->setOn(false); }},
+            {"on", [](Element *e) { static_cast<ElementInput *>(e)->setOn(true); }},
+            {"on custom.png", [&custom](Element *e) {
+                 static_cast<ElementInput *>(e)->setOn(true);
                  e->setAppearance(false, custom.png());
              }}};
 }
@@ -212,7 +212,7 @@ QList<BodyState> ledStates(const CustomPictures &custom)
     QList<BodyState> states;
     for (const auto &colour : colours()) {
         for (const bool on : {false, true}) {
-            states.append({QString("in=1 %1 %2").arg(colour, onOff(on)), [colour, on](GraphicElement *e) {
+            states.append({QString("in=1 %1 %2").arg(colour, onOff(on)), [colour, on](Element *e) {
                                e->setColor(colour);
                                driveInputs(e, on ? 1U : 0U);
                            }});
@@ -220,13 +220,13 @@ QList<BodyState> ledStates(const CustomPictures &custom)
     }
     for (int inputs = 2; inputs <= 4; ++inputs) {
         for (quint32 code = 0; code < (1U << inputs); ++code) {
-            states.append({QString("in=%1 code=%2").arg(inputs).arg(code), [inputs, code](GraphicElement *e) {
+            states.append({QString("in=%1 code=%2").arg(inputs).arg(code), [inputs, code](Element *e) {
                                e->setInputSize(inputs);
                                driveInputs(e, code);
                            }});
         }
     }
-    states.append({"in=1 Red on custom.png", [&custom](GraphicElement *e) {
+    states.append({"in=1 Red on custom.png", [&custom](Element *e) {
                        e->setColor("Red");
                        driveInputs(e, 1U);
                        e->setAppearance(false, custom.png());
@@ -240,18 +240,18 @@ QList<BodyState> displayStates(const int inputs, const CustomPictures &custom)
     const QList<std::pair<QString, quint32>> patterns{{"none", 0U}, {"even", 0x55555555U & all}, {"odd", 0xAAAAAAAAU & all}};
     QList<BodyState> states;
     for (const auto &colour : colours()) {
-        states.append({colour + " all", [colour, all](GraphicElement *e) {
+        states.append({colour + " all", [colour, all](Element *e) {
                            e->setColor(colour);
                            driveInputs(e, all);
                        }});
     }
     for (const auto &[name, pattern] : patterns) {
-        states.append({"Red " + name, [pattern](GraphicElement *e) {
+        states.append({"Red " + name, [pattern](Element *e) {
                            e->setColor("Red");
                            driveInputs(e, pattern);
                        }});
     }
-    states.append({"Red all custom.svg", [&custom, all](GraphicElement *e) {
+    states.append({"Red all custom.svg", [&custom, all](Element *e) {
                        e->setColor("Red");
                        driveInputs(e, all);
                        e->setAppearance(false, custom.svg());
@@ -262,7 +262,7 @@ QList<BodyState> displayStates(const int inputs, const CustomPictures &custom)
 /// An audio output's input is wired: one that is not is not valid, and stays silent whatever its input reads.
 QList<BodyState> audioStates()
 {
-    return {{"stopped", [](GraphicElement *e) { driveInputs(e, 0U); }}, {"playing", [](GraphicElement *e) { driveInputs(e, 1U); }}};
+    return {{"stopped", [](Element *e) { driveInputs(e, 0U); }}, {"playing", [](Element *e) { driveInputs(e, 1U); }}};
 }
 
 QList<BodyState> rotaryStates(const CustomPictures &custom)
@@ -274,14 +274,14 @@ QList<BodyState> rotaryStates(const CustomPictures &custom)
     }
     positions.append({16, 0});
     for (const auto &[outputs, position] : std::as_const(positions)) {
-        states.append({QString("out=%1 at=%2").arg(outputs).arg(position), [outputs, position](GraphicElement *e) {
+        states.append({QString("out=%1 at=%2").arg(outputs).arg(position), [outputs, position](Element *e) {
                            e->setOutputSize(outputs);
-                           static_cast<GraphicElementInput *>(e)->setOn(true, position);
+                           static_cast<ElementInput *>(e)->setOn(true, position);
                        }});
     }
-    states.append({"out=4 at=1 custom.png", [&custom](GraphicElement *e) {
+    states.append({"out=4 at=1 custom.png", [&custom](Element *e) {
                        e->setOutputSize(4);
-                       static_cast<GraphicElementInput *>(e)->setOn(true, 1);
+                       static_cast<ElementInput *>(e)->setOn(true, 1);
                        e->setAppearance(false, custom.png());
                    }});
     return states;
@@ -296,7 +296,7 @@ QList<BodyState> muxStates()
             ++selectLines;
         }
         const int inputs = data + selectLines;
-        states.append({QString("data=%1 in=%2").arg(data).arg(inputs), [inputs](GraphicElement *e) { e->setInputSize(inputs); }});
+        states.append({QString("data=%1 in=%2").arg(data).arg(inputs), [inputs](Element *e) { e->setInputSize(inputs); }});
     }
     return states;
 }
@@ -305,7 +305,7 @@ QList<BodyState> demuxStates()
 {
     QList<BodyState> states;
     for (int outputs = 2; outputs <= 8; ++outputs) {
-        states.append({QString("out=%1").arg(outputs), [outputs](GraphicElement *e) { e->setOutputSize(outputs); }});
+        states.append({QString("out=%1").arg(outputs), [outputs](Element *e) { e->setOutputSize(outputs); }});
     }
     return states;
 }
@@ -314,22 +314,22 @@ QList<BodyState> truthTableStates()
 {
     QList<BodyState> states;
     for (int inputs = 2; inputs <= 8; ++inputs) {
-        states.append({QString("in=%1 out=1").arg(inputs), [inputs](GraphicElement *e) { TestUtils::applyPortCounts(e, inputs, 1); }});
+        states.append({QString("in=%1 out=1").arg(inputs), [inputs](Element *e) { TestUtils::applyPortCounts(e, inputs, 1); }});
     }
     for (int outputs = 2; outputs <= 8; ++outputs) {
-        states.append({QString("in=8 out=%1").arg(outputs), [outputs](GraphicElement *e) { TestUtils::applyPortCounts(e, 8, outputs); }});
+        states.append({QString("in=8 out=%1").arg(outputs), [outputs](Element *e) { TestUtils::applyPortCounts(e, 8, outputs); }});
     }
     return states;
 }
 
 QList<BodyState> nodeStates()
 {
-    QList<BodyState> states{{"none", [](GraphicElement *) {}}};
+    QList<BodyState> states{{"none", [](Element *) {}}};
     for (const auto mode : {WirelessMode::Tx, WirelessMode::Rx}) {
         const QString modeName = (mode == WirelessMode::Tx) ? "Tx" : "Rx";
-        states.append({modeName, [mode](GraphicElement *e) { static_cast<Node *>(e)->setWirelessMode(mode); }});
+        states.append({modeName, [mode](Element *e) { static_cast<Node *>(e)->setWirelessMode(mode); }});
         for (const auto status : {Status::Inactive, Status::Active, Status::Error}) {
-            states.append({modeName + ' ' + TestUtils::snapshotStatus(status), [mode, status](GraphicElement *e) {
+            states.append({modeName + ' ' + TestUtils::snapshotStatus(status), [mode, status](Element *e) {
                                auto *node = static_cast<Node *>(e);
                                node->setWirelessMode(mode);
                                driveNode(node, status);
@@ -341,12 +341,12 @@ QList<BodyState> nodeStates()
 
 QList<BodyState> textStates()
 {
-    return {{"empty", [](GraphicElement *) {}}, {"labelled", [](GraphicElement *e) { e->setLabel("Notes"); }}};
+    return {{"empty", [](Element *) {}}, {"labelled", [](Element *e) { e->setLabel("Notes"); }}};
 }
 
-std::function<std::unique_ptr<GraphicElement>()> builderOf(const ElementType type)
+std::function<std::unique_ptr<Element>()> builderOf(const ElementType type)
 {
-    return [type] { return std::unique_ptr<GraphicElement>(ElementFactory::buildElement(type)); };
+    return [type] { return std::unique_ptr<Element>(ElementFactory::buildElement(type)); };
 }
 
 /// Every case: each creatable type but IC under its own name, then an IC from a file and an embedded one.
@@ -389,7 +389,7 @@ QList<BodyCase> bodyCases(const CustomPictures &custom)
                   [loadIc] {
                       auto ic = std::make_unique<IC>();
                       loadIc(ic.get());
-                      return std::unique_ptr<GraphicElement>(std::move(ic));
+                      return std::unique_ptr<Element>(std::move(ic));
                   },
                   defaultOnly()});
     cases.append({"IC-embedded",
@@ -400,7 +400,7 @@ QList<BodyCase> bodyCases(const CustomPictures &custom)
                           ic->loadFromBlob(file.readAll(), QFileInfo(icFile()).absolutePath());
                       }
                       ic->setBlobName("full_adder");
-                      return std::unique_ptr<GraphicElement>(std::move(ic));
+                      return std::unique_ptr<Element>(std::move(ic));
                   },
                   defaultOnly()});
     return cases;
@@ -417,7 +417,7 @@ QList<std::pair<Theme, QString>> themesOf(const BodyCase &bodyCase)
 }
 
 /// The element of \a bodyCase in \a state and \a orientation, in \a scene.
-std::unique_ptr<GraphicElement> configure(Scene *scene, const BodyCase &bodyCase, const BodyState &state, const TestUtils::Orientation &orientation)
+std::unique_ptr<Element> configure(Scene *scene, const BodyCase &bodyCase, const BodyState &state, const TestUtils::Orientation &orientation)
 {
     auto element = bodyCase.build();
     scene->addItem(element.get());
@@ -440,7 +440,7 @@ QString transformText(const QTransform &t)
 
 /// The child items that draw with the element's body: the Node's wireless indicator and the Text's hint. The ports and
 /// the label are left out, the port-layout and label goldens pinning them, and so is a child that draws nothing.
-QList<QGraphicsItem *> drawingChildren(const GraphicElement *element)
+QList<QGraphicsItem *> drawingChildren(const Element *element)
 {
     QList<QGraphicsItem *> children;
     const auto items = element->childItems();
@@ -454,14 +454,14 @@ QList<QGraphicsItem *> drawingChildren(const GraphicElement *element)
 }
 
 /// Whether \a element's bounds follow the platform's font: a Text's take its hint's and its label's.
-bool boundsFollowFont(const GraphicElement *element)
+bool boundsFollowFont(const Element *element)
 {
     return element->elementType() == ElementType::Text;
 }
 
 /// The geometry of \a element, on one line, with a line per child item that draws. Each transform is the item's whole
 /// one, its rotation and flips, as the scene applies it to the element at the origin.
-QStringList describe(const QString &state, const GraphicElement *element)
+QStringList describe(const QString &state, const Element *element)
 {
     QStringList lines;
     lines << QString("  %1 rot=%2 flipX=%3 flipY=%4 bounds=%5 centre=%6 xf=%7 pix=%8")
@@ -486,7 +486,7 @@ QStringList describe(const QString &state, const GraphicElement *element)
 
 /// The scene rectangle \a element draws in: its bounds and its child items'. A Text's are its picture's, the rest
 /// following this platform's font.
-QRectF extent(const GraphicElement *element)
+QRectF extent(const Element *element)
 {
     if (boundsFollowFont(element)) {
         return element->sceneTransform().mapRect(QRectF(0, 0, kTextPictureSide, kTextPictureSide));
@@ -503,7 +503,7 @@ QRectF extent(const GraphicElement *element)
 /// label, so the selection outline drawn over them, rounded corners and all, falls where the font puts it, on any side
 /// of the picture and up to the corners' radius into it. The bundled pictures draw their letters as outlines, which
 /// need no mask.
-void maskText(QPainter &painter, const GraphicElement *element, const QTransform &offset, const QRect &cell)
+void maskText(QPainter &painter, const Element *element, const QTransform &offset, const QRect &cell)
 {
     if (!boundsFollowFont(element)) {
         return;
@@ -520,7 +520,7 @@ void maskText(QPainter &painter, const GraphicElement *element, const QTransform
 /// Paints \a element and its child items that draw onto \a painter, \a offset taking the scene to the image, as a
 /// view does with antialiasing on (fast mode off). A Text's children, its hint, are this platform's font, and are not
 /// painted.
-void drawBody(QPainter &painter, GraphicElement *element, const QTransform &offset)
+void drawBody(QPainter &painter, Element *element, const QTransform &offset)
 {
     QStyleOptionGraphicsItem option;
     painter.save();
@@ -544,7 +544,7 @@ QImage drawAtlas(const BodyCase &bodyCase)
     Scene *scene = workspace.scene();
     const auto orientations = TestUtils::orientations();
 
-    std::vector<std::unique_ptr<GraphicElement>> elements;
+    std::vector<std::unique_ptr<Element>> elements;
     QSizeF largest;
     for (const auto &state : bodyCase.states) {
         for (const auto &orientation : orientations) {
@@ -560,7 +560,7 @@ QImage drawAtlas(const BodyCase &bodyCase)
 
     QPainter painter(&atlas);
     for (qsizetype index = 0; index < static_cast<qsizetype>(elements.size()); ++index) {
-        GraphicElement *element = elements.at(static_cast<std::size_t>(index)).get();
+        Element *element = elements.at(static_cast<std::size_t>(index)).get();
         const auto row = static_cast<int>(index / orientations.size());
         const auto column = static_cast<int>(index % orientations.size());
         for (const bool selected : {false, true}) {

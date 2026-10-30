@@ -7,7 +7,7 @@
 #include <QLineEdit>
 #include <QVector>
 
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Node.h"
@@ -34,7 +34,7 @@ void makeViewLargeEnoughToShowEverything(WorkSpace &workspace)
 // field ElementEditor installs this navigator on (installEventFilter(m_tabNavigator) in
 // ElementEditor's constructor). InputSwitch is used (rather than a basic gate like And, which
 // has hasLabel() == false) because eventFilter() requires the returned widget to be enabled.
-QLineEdit *selectAndGetLabelField(Scene *scene, ElementEditor *editor, GraphicElement *elm)
+QLineEdit *selectAndGetLabelField(Scene *scene, ElementEditor *editor, Element *elm)
 {
     scene->clearSelection();
     elm->setSelected(true);
@@ -55,8 +55,8 @@ void TestElementTabNavigator::testReadingOrderIsRowMajor()
     c.setPos(0, 100);    // bottom-left
     d.setPos(100, 100);  // bottom-right
 
-    const QVector<GraphicElement *> scrambled = {&d, &b, &c, &a};
-    const QVector<GraphicElement *> expected  = {&a, &b, &c, &d};
+    const QVector<Element *> scrambled = {&d, &b, &c, &a};
+    const QVector<Element *> expected  = {&a, &b, &c, &d};
     QCOMPARE(ElementTabNavigator::readingOrder(scrambled), expected);
 }
 
@@ -68,8 +68,8 @@ void TestElementTabNavigator::testReadingOrderTieBreaksLeftToRight()
     middle.setPos(100, 50);
     right.setPos(200, 50);
 
-    const QVector<GraphicElement *> scrambled = {&right, &left, &middle};
-    const QVector<GraphicElement *> expected  = {&left, &middle, &right};
+    const QVector<Element *> scrambled = {&right, &left, &middle};
+    const QVector<Element *> expected  = {&left, &middle, &right};
     QCOMPARE(ElementTabNavigator::readingOrder(scrambled), expected);
 }
 
@@ -79,7 +79,7 @@ void TestElementTabNavigator::testReadingOrderEmptyAndSingle()
 
     Node only;
     only.setPos(42, 42);
-    const QVector<GraphicElement *> one = {&only};
+    const QVector<Element *> one = {&only};
     QCOMPARE(ElementTabNavigator::readingOrder(one), one);
 }
 

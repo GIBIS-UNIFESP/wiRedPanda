@@ -423,12 +423,12 @@ void TestGoldens::testPortCountsAndOrientationPasses()
     const TestUtils::ElementBuilder build = [](Scene *scene) {
         auto element = std::make_unique<And>();
         scene->addItem(element.get());
-        return std::unique_ptr<GraphicElement>(std::move(element));
+        return std::unique_ptr<Element>(std::move(element));
     };
-    const auto rotation = [](const GraphicElement *element) {
+    const auto rotation = [](const Element *element) {
         return TestUtils::snapshotNumber(element->rotation());
     };
-    const auto same = TestUtils::describeInOrientations(workspace.scene(), "header", build, [](GraphicElement *) {},
+    const auto same = TestUtils::describeInOrientations(workspace.scene(), "header", build, [](Element *) {},
                                                         rotation, "same", "different");
     QCOMPARE(same.size(), 18);
     QCOMPARE(same.first(), QString("header"));
@@ -436,7 +436,7 @@ void TestGoldens::testPortCountsAndOrientationPasses()
 
     // A port pass that undoes the rotation makes every oriented-first description differ but the unrotated ones.
     const auto different = TestUtils::describeInOrientations(workspace.scene(), "header", build,
-                                                             [](GraphicElement *element) { element->setRotation(0); },
+                                                             [](Element *element) { element->setRotation(0); },
                                                              rotation, "same", "different");
     QCOMPARE(different.size(), 1 + 16 + 1 + 12);
     QCOMPARE(different.at(17), QString("different"));

@@ -11,9 +11,9 @@
 #include <QRegularExpression>
 #include <QScrollArea>
 
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementLabel.h"
-#include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/DFlipFlop.h"
 #include "App/Scene/Scene.h"
 #include "App/UI/MainWindowUI.h"

@@ -30,7 +30,7 @@
 
 void TestInputRotary::testInitialPortState()
 {
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::InputRotary));
+    auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputRotary));
     QVERIFY(elem != nullptr);
 
     auto *rotary = dynamic_cast<InputRotary *>(elem.get());
@@ -43,7 +43,7 @@ void TestInputRotary::testInitialPortState()
 
 void TestInputRotary::testNextPortWrapping()
 {
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::InputRotary));
+    auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputRotary));
     auto *rotary = dynamic_cast<InputRotary *>(elem.get());
     QVERIFY(rotary != nullptr);
 
@@ -69,7 +69,7 @@ void TestInputRotary::testNextPortWrapping()
 
 void TestInputRotary::testSetPortDirect()
 {
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::InputRotary));
+    auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputRotary));
     auto *rotary = dynamic_cast<InputRotary *>(elem.get());
     QVERIFY(rotary != nullptr);
 
@@ -85,7 +85,7 @@ void TestInputRotary::testSetPortDirect()
 
 void TestInputRotary::testSetPortOutOfBounds()
 {
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::InputRotary));
+    auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputRotary));
     auto *rotary = dynamic_cast<InputRotary *>(elem.get());
     QVERIFY(rotary != nullptr);
 
@@ -98,7 +98,7 @@ void TestInputRotary::testSetPortOutOfBounds()
 
 void TestInputRotary::testSetPortWrapsToZero()
 {
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::InputRotary));
+    auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputRotary));
     auto *rotary = dynamic_cast<InputRotary *>(elem.get());
     QVERIFY(rotary != nullptr);
 
@@ -119,7 +119,7 @@ void TestInputRotary::testSetPortWrapsToZero()
 
 void TestInputRotary::testOutputValue()
 {
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::InputRotary));
+    auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputRotary));
     auto *rotary = dynamic_cast<InputRotary *>(elem.get());
     QVERIFY(rotary != nullptr);
 
@@ -134,7 +134,7 @@ void TestInputRotary::testOutputValue()
 
 void TestInputRotary::testOutputSize()
 {
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::InputRotary));
+    auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputRotary));
     auto *rotary = dynamic_cast<InputRotary *>(elem.get());
     QVERIFY(rotary != nullptr);
 
@@ -149,7 +149,7 @@ void TestInputRotary::testOutputSize()
 
 void TestInputRotary::testIsOnCurrentPort()
 {
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::InputRotary));
+    auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputRotary));
     auto *rotary = dynamic_cast<InputRotary *>(elem.get());
     QVERIFY(rotary != nullptr);
 
@@ -164,7 +164,7 @@ void TestInputRotary::testIsOnCurrentPort()
 
 void TestInputRotary::testIsOnOtherPort()
 {
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::InputRotary));
+    auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputRotary));
     auto *rotary = dynamic_cast<InputRotary *>(elem.get());
     QVERIFY(rotary != nullptr);
 
@@ -181,7 +181,7 @@ void TestInputRotary::testIsOnOtherPort()
 
 void TestInputRotary::testIsOnAllPorts()
 {
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::InputRotary));
+    auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputRotary));
     auto *rotary = dynamic_cast<InputRotary *>(elem.get());
     QVERIFY(rotary != nullptr);
 
@@ -220,7 +220,7 @@ void TestInputRotary::testPortConfigurationWithStandardSize()
 {
     QFETCH(int, size);
 
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::InputRotary));
+    auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputRotary));
     auto *rotary = dynamic_cast<InputRotary *>(elem.get());
     QVERIFY(rotary != nullptr);
 
@@ -244,7 +244,7 @@ void TestInputRotary::testPortConfigurationWithStandardSize()
 
 void TestInputRotary::testSaveCurrentPort()
 {
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::InputRotary));
+    auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputRotary));
     auto *rotary = dynamic_cast<InputRotary *>(elem.get());
     QVERIFY(rotary != nullptr);
 
@@ -263,7 +263,7 @@ void TestInputRotary::testSaveCurrentPort()
 void TestInputRotary::testLoadCurrentPort()
 {
     // Create element and set port to 1 (valid for all configurations)
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::InputRotary));
+    auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputRotary));
     auto *rotary = dynamic_cast<InputRotary *>(elem.get());
     QVERIFY(rotary != nullptr);
 
@@ -276,7 +276,7 @@ void TestInputRotary::testLoadCurrentPort()
     elem.reset();
 
     // Create new element and load state
-    auto elem2 = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::InputRotary));
+    auto elem2 = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputRotary));
     auto *rotary2 = dynamic_cast<InputRotary *>(elem2.get());
     QVERIFY(rotary2 != nullptr);
 
@@ -291,7 +291,7 @@ void TestInputRotary::testLoadCurrentPort()
 
 void TestInputRotary::testSaveLoadPreservesState()
 {
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::InputRotary));
+    auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputRotary));
     auto *rotary = dynamic_cast<InputRotary *>(elem.get());
     QVERIFY(rotary != nullptr);
 
@@ -305,7 +305,7 @@ void TestInputRotary::testSaveLoadPreservesState()
     elem.reset();
 
     // Load into new element
-    auto elem2 = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::InputRotary));
+    auto elem2 = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputRotary));
     auto *rotary2 = dynamic_cast<InputRotary *>(elem2.get());
     QVERIFY(rotary2 != nullptr);
 
@@ -324,7 +324,7 @@ void TestInputRotary::testSaveLoadPreservesState()
 
 void TestInputRotary::testSetOffDoesNothing()
 {
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::InputRotary));
+    auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputRotary));
     auto *rotary = dynamic_cast<InputRotary *>(elem.get());
     QVERIFY(rotary != nullptr);
 
@@ -339,7 +339,7 @@ void TestInputRotary::testSetOffDoesNothing()
 
 void TestInputRotary::testMultipleSetOn()
 {
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::InputRotary));
+    auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputRotary));
     auto *rotary = dynamic_cast<InputRotary *>(elem.get());
     QVERIFY(rotary != nullptr);
 
@@ -354,7 +354,7 @@ void TestInputRotary::testMultipleSetOn()
 
 void TestInputRotary::testPortStatusAfterSetOn()
 {
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::InputRotary));
+    auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputRotary));
     auto *rotary = dynamic_cast<InputRotary *>(elem.get());
     QVERIFY(rotary != nullptr);
 
@@ -387,7 +387,7 @@ void TestInputRotary::testPortStatusAfterSetOn()
 void TestInputRotary::testInputRotary()
 {
     // Test InputRotary basic properties
-    auto rotary = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::InputRotary));
+    auto rotary = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputRotary));
     QVERIFY(rotary != nullptr);
 
     // Check that it's an InputRotary
@@ -603,7 +603,7 @@ void TestInputRotary::testSetAppearanceResetToDefault()
 
 void TestInputRotary::testLoadOldFormatBareFields()
 {
-    // Hand-built old-format (pre-4.1) stream, mirroring GraphicElementSerializer::
+    // Hand-built old-format (pre-4.1) stream, mirroring ElementSerializer::
     // loadOldFormat()'s exact field order. InputRotary has 0 inputs and (at construction)
     // 2 outputs; appearance-name count is written as 0 to skip that loop entirely.
     QByteArray data;

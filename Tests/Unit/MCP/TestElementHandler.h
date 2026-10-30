@@ -134,7 +134,7 @@ private slots:
     void testHandleMorphElementRejectsInvalidTargetType();
     void testHandleMorphElementRejectsNonIntegerElementId();
     void testHandleMorphElementRejectsUnknownElementId();
-    void testHandleMorphElementRejectsNonGraphicElementItem();
+    void testHandleMorphElementRejectsNonElementItem();
     void testHandleMorphElementMorphsRealElement();
 
     void testHandleCommandRejectsUnknownCommand();

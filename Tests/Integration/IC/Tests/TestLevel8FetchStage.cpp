@@ -303,8 +303,8 @@ void TestLevel8FetchStage::testFetchStage()
     sim->update();
 
     // Read outputs
-    const TestUtils::Bits pc = readMultiBitOutput(QVector<GraphicElement *>(pc_leds.begin(), pc_leds.end()), 0);
-    const TestUtils::Bits instr = readMultiBitOutput(QVector<GraphicElement *>(instr_leds.begin(), instr_leds.end()), 0);
+    const TestUtils::Bits pc = readMultiBitOutput(QVector<Element *>(pc_leds.begin(), pc_leds.end()), 0);
+    const TestUtils::Bits instr = readMultiBitOutput(QVector<Element *>(instr_leds.begin(), instr_leds.end()), 0);
 
     // Verify
     QCOMPARE(pc, expectedPC);

@@ -107,7 +107,7 @@ using ICTestHelpers::minimalPandaBytes;
 
 // What `element` holds for the property kind `type`, as the editor's golden records it: files by name, since the
 // golden's files live in a temporary directory.
-QString editedValue(const GraphicElement *element, const PropertyDescriptor::Type type)
+QString editedValue(const Element *element, const PropertyDescriptor::Type type)
 {
     switch (type) {
     case PropertyDescriptor::Type::Label:
@@ -331,7 +331,7 @@ void TestElementEditor::testFillColorComboBox()
     editor.fillColorComboBox();
 
     // The dropdown holds the five LED colours; item data carries the untranslated English
-    // name used internally by GraphicElement::setColor().
+    // name used internally by Element::setColor().
     auto *combo = editor.findChild<QComboBox *>("comboBoxColor");
     QVERIFY(combo);
     QCOMPARE(combo->count(), 5);
@@ -1687,7 +1687,7 @@ void TestElementEditor::testWritesMatchGolden()
             lines << QString("%1 %2").arg(QLatin1String(TestUtils::kNoCreator), TestUtils::snapshotType(type));
             continue;
         }
-        const auto properties = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(type))->editableProperties();
+        const auto properties = std::unique_ptr<Element>(ElementFactory::buildElement(type))->editableProperties();
         for (const auto &property : properties) {
             WorkSpace workspace;
             auto *element = ElementFactory::buildElement(type);
@@ -2011,7 +2011,7 @@ void TestElementEditor::testEditingAFieldLeavesTheOthers()
     auto *loud = new Buzzer();
     quiet->setVolume(0.2f);
     loud->setVolume(0.8f);
-    for (auto *element : QList<GraphicElement *>{early, late, quiet, loud}) {
+    for (auto *element : QList<Element *>{early, late, quiet, loud}) {
         workspace.scene()->addItem(element);
     }
     ElementEditor editor(&workspace);

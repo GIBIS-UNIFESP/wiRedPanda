@@ -131,7 +131,7 @@ void TestLevel5Controller4Bit::testController4Bit()
     setMultiBitInput(f.opcodeInputs, opcode);
     f.sim->update();
 
-    const TestUtils::Bits controlValue = readMultiBitOutput(QVector<GraphicElement *>(f.ctrlOutputs.begin(), f.ctrlOutputs.end()), 0);
+    const TestUtils::Bits controlValue = readMultiBitOutput(QVector<Element *>(f.ctrlOutputs.begin(), f.ctrlOutputs.end()), 0);
 
     // Verify decoding logic:
     // ctrl[1:0] = opcode[1:0] (ALU operation selection)

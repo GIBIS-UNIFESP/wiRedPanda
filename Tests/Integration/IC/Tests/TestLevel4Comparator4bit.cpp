@@ -158,7 +158,7 @@ void TestLevel4Comparator4Bit::testComparator4BitCascade()
 
     // The three outputs as bits: Greater, Equal, Less from bit 0.
     const auto outputs = [&f] {
-        return TestUtils::readMultiBitOutput(QVector<GraphicElement *>({f.ledGreater, f.ledEqual, f.ledLess}));
+        return TestUtils::readMultiBitOutput(QVector<Element *>({f.ledGreater, f.ledEqual, f.ledLess}));
     };
 
     setAB(0xA, 0xA);                    // equal nibbles

@@ -6,7 +6,7 @@
 #include <algorithm>
 
 #include "App/Core/Enums.h"
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/Commands.h"
@@ -17,7 +17,7 @@ PropertyShortcutHandler::PropertyShortcutHandler(Scene *scene)
 {
 }
 
-void PropertyShortcutHandler::applyWithUndo(GraphicElement *element, const std::function<void()> &mutate)
+void PropertyShortcutHandler::applyWithUndo(Element *element, const std::function<void()> &mutate)
 {
     // Wraps a direct property mutation in an UpdateCommand (F37) so the
     // [ / ] shortcuts are undoable and mark the circuit dirty, exactly like
@@ -58,7 +58,7 @@ void PropertyShortcutHandler::adjustMainProperty(int dir)
         case ElementType::TruthTable: {
             const int newSize = element->inputSize() + dir;
             if (newSize >= element->minInputSize() && newSize <= element->maxInputSize())
-                m_scene->receiveCommand(new ChangePortSizeCommand(QList<GraphicElement *>{element},
+                m_scene->receiveCommand(new ChangePortSizeCommand(QList<Element *>{element},
                                                                   newSize, m_scene, true));
             break;
         }
@@ -66,7 +66,7 @@ void PropertyShortcutHandler::adjustMainProperty(int dir)
         case ElementType::InputRotary: {
             const int newSize = element->outputSize() + dir;
             if (newSize >= element->minOutputSize() && newSize <= element->maxOutputSize())
-                m_scene->receiveCommand(new ChangePortSizeCommand(QList<GraphicElement *>{element},
+                m_scene->receiveCommand(new ChangePortSizeCommand(QList<Element *>{element},
                                                                   newSize, m_scene, false));
             break;
         }
@@ -150,7 +150,7 @@ void PropertyShortcutHandler::adjustSecondaryProperty(int dir)
         case ElementType::TruthTable: {
             const int newSize = element->outputSize() + dir;
             if (newSize >= element->minOutputSize() && newSize <= element->maxOutputSize())
-                m_scene->receiveCommand(new ChangePortSizeCommand(QList<GraphicElement *>{element},
+                m_scene->receiveCommand(new ChangePortSizeCommand(QList<Element *>{element},
                                                                   newSize, m_scene, false));
             break;
         }
@@ -228,7 +228,7 @@ void PropertyShortcutHandler::nextElement()
         // ElementType::Unknown signals there is no "next" in the cycle for this type
         if (nextType == ElementType::Unknown) { continue; }
 
-        m_scene->receiveCommand(new MorphCommand(QList<GraphicElement *>{element},
+        m_scene->receiveCommand(new MorphCommand(QList<Element *>{element},
                                                  Enums::nextElmType(element->elementType()), m_scene));
 
         // MorphCommand replaces the element in-place; re-select via position because
@@ -258,7 +258,7 @@ void PropertyShortcutHandler::prevElement()
 
         if (prevType == ElementType::Unknown) { continue; }
 
-        m_scene->receiveCommand(new MorphCommand(QList<GraphicElement *>{element},
+        m_scene->receiveCommand(new MorphCommand(QList<Element *>{element},
                                                  Enums::prevElmType(element->elementType()), m_scene));
 
         auto *item = m_scene->itemAt(elmPosition);

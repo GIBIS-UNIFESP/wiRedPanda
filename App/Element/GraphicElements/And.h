@@ -7,13 +7,13 @@
 
 #pragma once
 
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 
 /**
  * \class And
  * \brief Graphical representation of an AND gate (2–8 inputs, 1 output).
  */
-class And : public GraphicElement
+class And : public Element
 {
     Q_OBJECT
 

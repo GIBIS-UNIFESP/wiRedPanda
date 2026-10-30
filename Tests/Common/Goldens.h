@@ -25,7 +25,7 @@
 
 #include "App/Core/Application.h"
 #include "App/Core/Enums.h"
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 #include "App/Element/PropertyDescriptor.h"
 #include "App/Scene/Scene.h"
 
@@ -115,14 +115,14 @@ QList<Orientation> orientations();
 QString snapshotOrientation(const Orientation &orientation);
 
 /// Applies \a orientation to \a element.
-void orient(GraphicElement *element, const Orientation &orientation);
+void orient(Element *element, const Orientation &orientation);
 
 /// Sets the output count of \a element, and its input count unless \a inputs is negative or the element is a Demux,
 /// whose inputs follow its outputs.
-void applyPortCounts(GraphicElement *element, int inputs, int outputs);
+void applyPortCounts(Element *element, int inputs, int outputs);
 
 /// Creates an element in \a scene before it is given its ports; the caller owns it.
-using ElementBuilder = std::function<std::unique_ptr<GraphicElement>(Scene *scene)>;
+using ElementBuilder = std::function<std::unique_ptr<Element>(Scene *scene)>;
 
 /**
  * \brief Describes one configuration in the sixteen orientations: in each, an element built by \a build is given its
@@ -132,7 +132,7 @@ using ElementBuilder = std::function<std::unique_ptr<GraphicElement>(Scene *scen
  */
 template <typename Describe>
 QStringList describeInOrientations(Scene *scene, const QString &header, const ElementBuilder &build,
-                                   const std::function<void(GraphicElement *)> &applyPorts, Describe describe,
+                                   const std::function<void(Element *)> &applyPorts, Describe describe,
                                    const QString &sameText, const QString &differentText)
 {
     QStringList lines{header};
@@ -183,7 +183,7 @@ public:
 };
 
 /// Returns the elements of \a scene in ascending id order.
-QVector<GraphicElement *> elementsById(const Scene *scene);
+QVector<Element *> elementsById(const Scene *scene);
 
 /**
  * \brief Sends the scene mouse events a view sends for a pointer: each carries the scene position, the button, the
@@ -306,16 +306,16 @@ public:
      * disk, with ":oriented" appended while an oriented variant replaces the base picture; "footprint" for a body drawn
      * to fit the ports; "null" when there is no picture.
      */
-    static QString pixmapIdentity(const GraphicElement *element);
+    static QString pixmapIdentity(const Element *element);
 
     /**
      * \brief The scene transform of \a element's label: where its origin sits and how its glyphs are turned. The
      * label is placed by fixed anchors, never by its text's size, so this does not depend on fonts.
      */
-    static QTransform labelSceneTransform(const GraphicElement *element);
+    static QTransform labelSceneTransform(const Element *element);
 
     /// The child item that draws \a element's label, so a dump of the scene's items can name it.
-    static const QGraphicsItem *label(const GraphicElement *element);
+    static const QGraphicsItem *label(const Element *element);
 
     /// The ports of \a ic's inner input elements behind its input pins, or, when \a inputs is false, of its inner
     /// output elements behind its output pins, in the pins' order.

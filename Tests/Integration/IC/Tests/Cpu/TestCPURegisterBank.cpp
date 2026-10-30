@@ -74,7 +74,7 @@ void TestCPURegisterBank::testRegisterBank()
     }
     sim->update();
     // Read outputs
-    QVector<GraphicElement *> readAVec, readBVec;
+    QVector<Element *> readAVec, readBVec;
     for (int i = 0; i < 8; i++) {
         readAVec.append(readDataA[i]);
         readBVec.append(readDataB[i]);

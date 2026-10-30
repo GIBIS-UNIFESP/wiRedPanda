@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 
 class QGraphicsPixmapItem;
 
@@ -20,7 +20,7 @@ class QGraphicsPixmapItem;
  * When configured with a WirelessMode, the node's label acts as a channel name:
  * a Tx node broadcasts its input signal wirelessly; an Rx node receives it.
  */
-class Node : public GraphicElement
+class Node : public Element
 {
     Q_OBJECT
 

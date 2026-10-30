@@ -165,9 +165,9 @@ private:
     /// Returns the underlying table model.
     const SignalModel* model() const { return m_model; }
     /// Returns the output element vector.
-    const QVector<GraphicElement *>& outputElements() const { return m_outputs; }
+    const QVector<Element *>& outputElements() const { return m_outputs; }
     /// Returns the input element vector.
-    const QVector<GraphicElementInput *>& inputElements() const { return m_inputs; }
+    const QVector<ElementInput *>& inputElements() const { return m_inputs; }
     /// Returns the current simulation length (number of columns).
     int length() const { return m_length; }
 
@@ -250,8 +250,8 @@ private:
     SignalModel *m_model           = nullptr;         ///< Table model (rows = signals, cols = time steps). Created once by loadNewTable() and owned via QObject parenting (this); freed when the window closes.
     QTableView *m_signalTableView  = new QTableView(); ///< The waveform table, shown as the central widget.
     SignalDelegate *m_delegate     = nullptr;         ///< Custom delegate rendering waveform cells.
-    QVector<GraphicElement *> m_outputs;              ///< Output elements mapped to waveform rows.
-    QVector<GraphicElementInput *> m_inputs;          ///< Input elements mapped to waveform rows.
+    QVector<Element *> m_outputs;              ///< Output elements mapped to waveform rows.
+    QVector<ElementInput *> m_inputs;          ///< Input elements mapped to waveform rows.
     QVector<Status> m_oldInputValues;                 ///< Saved input values for restoreInputs().
     Scene *m_externalScene         = nullptr;         ///< The circuit scene being simulated.
     Simulation *m_simulation       = nullptr;         ///< Simulation engine used for waveform runs.

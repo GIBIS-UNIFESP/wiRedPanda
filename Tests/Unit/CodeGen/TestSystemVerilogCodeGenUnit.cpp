@@ -43,12 +43,12 @@
 #include "Tests/Common/TestUtils.h"
 
 namespace {
-QVector<GraphicElement *> sceneElements(Scene *scene)
+QVector<Element *> sceneElements(Scene *scene)
 {
-    QVector<GraphicElement *> result;
+    QVector<Element *> result;
     for (auto *item : scene->items()) {
-        if (item->type() == GraphicElement::Type)
-            result.append(static_cast<GraphicElement *>(item));
+        if (item->type() == Element::Type)
+            result.append(static_cast<Element *>(item));
     }
     return result;
 }
@@ -640,7 +640,7 @@ void TestSystemVerilogCodeGenUnit::testOutOfTopologicalOrderGateResolution()
     connect(orGate->outputPort(0), led->inputPort(0));
 
     // OR (downstream) listed before AND (its upstream driver): when assignVariablesRec reaches OR, AND is not assigned
-    QVector<GraphicElement *> elements{sw1.get(), sw2.get(), orGate.get(), andGate.get(), led.get()};
+    QVector<Element *> elements{sw1.get(), sw2.get(), orGate.get(), andGate.get(), led.get()};
 
     QTemporaryDir dir;
     QVERIFY(dir.isValid());
@@ -827,7 +827,7 @@ void TestSystemVerilogCodeGenUnit::testIcPortNamesEscapeReservedWordsAndDedup()
     connect(swC->outputPort(0), ic->inputPort(2));
     connect(swD->outputPort(0), ic->inputPort(3));
 
-    QVector<GraphicElement *> elements{swA.get(), swB.get(), swC.get(), swD.get(), ic.get()};
+    QVector<Element *> elements{swA.get(), swB.get(), swC.get(), swD.get(), ic.get()};
 
     QTemporaryDir outDir;
     QVERIFY(outDir.isValid());
@@ -869,7 +869,7 @@ void TestSystemVerilogCodeGenUnit::testOutOfOrderNodeUpstreamResolution()
     connect(andGate->outputPort(0), led->inputPort(0));
 
     // AND (downstream) listed before Node (its upstream driver).
-    QVector<GraphicElement *> elements{sw1.get(), sw2.get(), andGate.get(), node.get(), led.get()};
+    QVector<Element *> elements{sw1.get(), sw2.get(), andGate.get(), node.get(), led.get()};
 
     QTemporaryDir dir;
     QVERIFY(dir.isValid());
@@ -910,7 +910,7 @@ void TestSystemVerilogCodeGenUnit::testWirelessNodeCycleReadsEachOthersVariable(
     connect(n1->outputPort(0), n2->inputPort(0));
     connect(n1->outputPort(0), led->inputPort(0));
 
-    QVector<GraphicElement *> elements{n1.get(), n2.get(), led.get()};
+    QVector<Element *> elements{n1.get(), n2.get(), led.get()};
 
     QTemporaryDir dir;
     QVERIFY(dir.isValid());
@@ -1104,7 +1104,7 @@ void TestSystemVerilogCodeGenUnit::testModuleGrowsLinearlyWithDepth()
         CircuitBuilder builder(workspace.scene());
         auto *sw = new InputSwitch;
         builder.add(sw);
-        GraphicElement *previous = sw;
+        Element *previous = sw;
         for (int i = 0; i < depth; ++i) {
             auto *gate = new And;
             builder.add(gate);

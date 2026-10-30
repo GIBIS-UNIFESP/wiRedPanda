@@ -18,7 +18,7 @@ Twelve harnesses, registered in `CMakeLists.txt` under `if(ENABLE_FUZZER)`:
 | `fuzz_structured`  | `FuzzStructured.cpp`  | `deserialize` again, but `FuzzedDataProvider` synthesises valid `.panda` structure so the budget goes to semantic content, not recovering magic bytes. |
 | `fuzz_waveform`    | `FuzzWaveform.cpp`    | beWavedDolphin `.dolphin` files: `readDolphinHeader` + `DolphinSerializer::loadBinary`. |
 | `fuzz_clipboard`   | `FuzzClipboard.cpp`   | A clipboard pasted, undone and redone; a `.panda` file copied, pasted, duplicated and cut. |
-| `fuzz_old_format`  | `FuzzOldFormat.cpp`   | The pre-4.1 flat binary path (`GraphicElement::loadOldFormat`) and its per-version / per-element-type branches. |
+| `fuzz_old_format`  | `FuzzOldFormat.cpp`   | The pre-4.1 flat binary path (`Element::loadOldFormat`) and its per-version / per-element-type branches. |
 | `fuzz_ic_registry` | `FuzzICRegistry.cpp`  | `ICRegistry`: a `.panda` input as an IC's definition, placed from its file, reloaded when the file changes, embedded, renamed, extracted and created, each step undone and redone; other inputs as raw blob bytes through the blob API and `embeddedICs` metadata loading. |
 | `fuzz_codegen`     | `FuzzCodeGen.cpp`     | The Arduino + SystemVerilog exporters (only reachable via `File > Export`), plus `generateTestbench`, on loaded `.panda` files and on circuits other inputs describe (every element type the exporters take, embedded and file-backed ICs). |
 | `fuzz_round_trip`  | `FuzzRoundTrip.cpp`   | The save side: `WorkSpace::save()` and every element `save()`, then a reload, a second save and load: the application's own file must save to the same bytes, which surfaces save/load asymmetries. |
@@ -265,7 +265,7 @@ under gdb.
 | `ic_nonfinite_position`             | abort   | pinned            | NaN/inf element position aborts IC preview via `qSaturateRound` assert (`fuzz_ic_file`) |
 | `ic_nonfinite_rotation`             | abort   | pinned            | NaN element rotation aborts IC preview via the same assert (`fuzz_ic_file`) |
 | `clipboard_paste_unreadable_items_leak` | leak | harness | a paste whose items do not read leaves its undo macro open (`fuzz_clipboard`; `TestScene::testPasteOfUnreadableItemsChangesNothing`) |
-| `clipboard_snap_position_beyond_int` | UB     | harness           | snapping a position past `int`'s range (`fuzz_clipboard`; `TestGraphicElement::testSnapToGridKeepsAPositionBeyondIntRange`) |
+| `clipboard_snap_position_beyond_int` | UB     | harness           | snapping a position past `int`'s range (`fuzz_clipboard`; `TestElement::testSnapToGridKeepsAPositionBeyondIntRange`) |
 | `clipboard_drag_image_extent_beyond_int` | UB | harness           | the clone-drag image of an extent past `int`'s range (`fuzz_clipboard`; `TestScene::testBuildDragImageClampsAnExtentBeyondIntRange`) |
 | `clipboard_grid_beyond_int`         | UB      | harness           | the grid of a render reaching past `int`'s range, the drag image's fix kept (`fuzz_clipboard`; `TestScene::testGridIsNotDrawnBeyondIntRange`) |
 | `ic_file_preview_extent_beyond_int` | UB      | harness           | an IC's preview of a body past `int`'s range (`fuzz_ic_file`; `TestICUnit::testGeneratePreviewPixmapScalesAnExtentBeyondIntRange`) |

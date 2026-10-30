@@ -7,29 +7,29 @@
 
 #pragma once
 
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 
 /**
- * \class GraphicElementInput
+ * \class ElementInput
  * \brief Abstract base for all interactive input elements (switches, buttons, clocks, etc.).
  *
- * \details Extends GraphicElement with the concept of an on/off state that can be
+ * \details Extends Element with the concept of an on/off state that can be
  * toggled by the user or the simulation engine.  Derived classes implement
  * isOn(), setOn(), and setOff() to expose their specific input behaviour.
  *
  * The concrete setOn(bool, int) and setAppearance(bool, QString) implementations
  * shared by InputSwitch, InputButton, and Clock live here to avoid repetition.
  */
-class GraphicElementInput : public GraphicElement
+class ElementInput : public Element
 {
     Q_OBJECT
 
 public:
     // --- Lifecycle ---
 
-    explicit GraphicElementInput(ElementType type, QGraphicsItem *parent = nullptr)
-        : GraphicElement(type, parent) {}
-    ~GraphicElementInput() override = default; // LCOV_EXCL_LINE — gcov attributes no hit to an inline `= default` destructor's own line even though every subclass instance destroyed exercises it (see App/Core/ContextDirProvider.h for the same pattern).
+    explicit ElementInput(ElementType type, QGraphicsItem *parent = nullptr)
+        : Element(type, parent) {}
+    ~ElementInput() override = default; // LCOV_EXCL_LINE — gcov attributes no hit to an inline `= default` destructor's own line even though every subclass instance destroyed exercises it (see App/Core/ContextDirProvider.h for the same pattern).
 
     // --- State Queries ---
 
@@ -105,7 +105,7 @@ protected:
     bool m_locked = false;
 };
 
-inline void GraphicElementInput::updateOutputs()
+inline void ElementInput::updateOutputs()
 {
     for (int portIndex = 0; portIndex < outputSize(); ++portIndex) {
         if (portIndex < simOutputSize()) {

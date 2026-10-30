@@ -15,17 +15,17 @@
 #include <QCoreApplication>
 #include <QVariant>
 
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 #include "App/Scene/Scene.h"
 
 class Connection;
 
 namespace CommandUtils {
     // Element/Connection lookup (scene-scoped)
-    GraphicElement *findElm(Scene *scene, const int id);
+    Element *findElm(Scene *scene, const int id);
     Connection *findConn(Scene *scene, const int id);
     /// The elements with \a ids, in order; none when one of them is not on the scene.
-    std::optional<QList<GraphicElement *>> findElements(Scene *scene, const QList<int> &ids);
+    std::optional<QList<Element *>> findElements(Scene *scene, const QList<int> &ids);
     /// The items with \a ids, in order; none when one of them is not on the scene.
     std::optional<QList<QGraphicsItem *>> findItems(Scene *scene, const QList<int> &ids);
 
@@ -45,14 +45,14 @@ namespace CommandUtils {
     void drop(QUndoCommand *command, Scene *scene);
 
     /// Elements of \a elements' types, outside any scene, for a snapshot to be read into before the live ones.
-    std::vector<std::unique_ptr<GraphicElement>> copiesOf(const QList<GraphicElement *> &elements);
+    std::vector<std::unique_ptr<Element>> copiesOf(const QList<Element *> &elements);
     /// The elements \a copies holds.
-    QList<GraphicElement *> pointers(const std::vector<std::unique_ptr<GraphicElement>> &copies);
+    QList<Element *> pointers(const std::vector<std::unique_ptr<Element>> &copies);
     /// Loads \a targets, in order, from \a itemData: a header, then one element each.
-    void readElements(Scene *scene, QByteArray &itemData, const QList<GraphicElement *> &targets);
+    void readElements(Scene *scene, QByteArray &itemData, const QList<Element *> &targets);
     /// Reads \a itemData into copies of \a elements and frees them: throws, leaving \a elements as they are, when it
     /// does not read.
-    void readCopies(Scene *scene, QByteArray &itemData, const QList<GraphicElement *> &elements);
+    void readCopies(Scene *scene, QByteArray &itemData, const QList<Element *> &elements);
 
     // Serialization helpers
     /// Restores the items \a itemData holds under \a ids and reloads the elements wired to them; none, and the scene
@@ -60,14 +60,14 @@ namespace CommandUtils {
     std::optional<QList<QGraphicsItem *>> loadItems(Scene *scene, QByteArray &itemData, const QList<int> &ids, QList<int> &otherIds);
     const QList<QGraphicsItem *> loadList(const QList<QGraphicsItem *> &items, QList<int> &ids, QList<int> &otherIds);
     /// Saves \a others, the elements wired to \a items, then \a items, for loadItems() to restore.
-    void saveItems(QByteArray &itemData, const QList<GraphicElement *> &others, const QList<QGraphicsItem *> &items);
+    void saveItems(QByteArray &itemData, const QList<Element *> &others, const QList<QGraphicsItem *> &items);
 
     // Scene operations
     void addItems(Scene *scene, const QList<QGraphicsItem *> &items);
     void deleteItems(Scene *scene, const QList<QGraphicsItem *> &items);
 
     /// Saves and deletes connections on ports in range [fromPort, toPort).
-    void drainPortConnections(GraphicElement *elm, int fromPort, int toPort,
+    void drainPortConnections(Element *elm, int fromPort, int toPort,
                               bool isInput, QDataStream &stream, Scene *scene);
 
     // ID management
@@ -86,11 +86,11 @@ namespace CommandUtils {
 class ElementsCommand : public QUndoCommand
 {
 protected:
-    explicit ElementsCommand(const QList<GraphicElement *> &elements, Scene *scene, QUndoCommand *parent = nullptr);
+    explicit ElementsCommand(const QList<Element *> &elements, Scene *scene, QUndoCommand *parent = nullptr);
 
     /// Returns the live element pointers for this command's targets, looked up by stored ID; none, and the command
     /// abandoned (CommandUtils::abandon()), when one of them is not on the scene.
-    std::optional<QList<GraphicElement *>> elements();
+    std::optional<QList<Element *>> elements();
 
     Scene *m_scene;
     QList<int> m_ids;
@@ -174,7 +174,7 @@ public:
      * \param scene  Target scene.
      * \param parent Optional parent undo command.
      */
-    explicit RotateCommand(const QList<GraphicElement *> &items, const int angle, Scene *scene, QUndoCommand *parent = nullptr);
+    explicit RotateCommand(const QList<Element *> &items, const int angle, Scene *scene, QUndoCommand *parent = nullptr);
 
     /// Rotates each element and turns its place about the selection's centre, snapped to the grid.
     void redo() override;
@@ -205,7 +205,7 @@ public:
      * \param scene        Target scene.
      * \param parent       Optional parent undo command.
      */
-    explicit MoveCommand(const QList<GraphicElement *> &list, const QList<QPointF> &oldPositions, Scene *scene, QUndoCommand *parent = nullptr);
+    explicit MoveCommand(const QList<Element *> &list, const QList<QPointF> &oldPositions, Scene *scene, QUndoCommand *parent = nullptr);
 
     /// Moves elements to their new positions.
     void redo() override;
@@ -238,7 +238,7 @@ public:
      * \param scene    Target scene.
      * \param parent   Optional parent undo command.
      */
-    explicit UpdateCommand(const QList<GraphicElement *> &elements, const QByteArray &oldData, Scene *scene, QUndoCommand *parent = nullptr);
+    explicit UpdateCommand(const QList<Element *> &elements, const QByteArray &oldData, Scene *scene, QUndoCommand *parent = nullptr);
 
     /// Applies the new property values.
     void redo() override;
@@ -249,17 +249,17 @@ public:
 private:
     // --- Helpers ---
     /// Loads \a elements, this command's targets, from \a itemData.
-    void loadData(const QList<GraphicElement *> &elements, QByteArray &itemData);
+    void loadData(const QList<Element *> &elements, QByteArray &itemData);
 
     /// One wireless-capable element's channel-relevant state (mode + label), used to detect
     /// whether the old→new edit changes wireless routing (a genuine topology change).
     struct WirelessState {
-        GraphicElement *element = nullptr;
+        Element *element = nullptr;
         WirelessMode mode = WirelessMode::None;
         QString label;
     };
     /// Snapshots the wireless state of every wireless-capable element of \a elements.
-    static QVector<WirelessState> snapshotWirelessState(const QList<GraphicElement *> &elements);
+    static QVector<WirelessState> snapshotWirelessState(const QList<Element *> &elements);
     /// Returns true when an element's wireless mode differs between the two snapshots, or its
     /// label differs while the element is (or was) a wireless Tx/Rx — the label IS the channel.
     static bool wirelessStateDiffers(const QVector<WirelessState> &before,
@@ -312,11 +312,11 @@ public:
      * the commands of an edit session name the same elements and merge. \a session is the edit session, a number
      * the caller chooses: commands of one session merge; -1 is none.
      */
-    [[nodiscard]] static SetPropertyCommand *apply(const QList<GraphicElement *> &elements, ElementProperty property,
+    [[nodiscard]] static SetPropertyCommand *apply(const QList<Element *> &elements, ElementProperty property,
                                                    const QVariant &value, Scene *scene, int session = -1);
 
     /// Returns whether \a element has \a property.
-    static bool appliesTo(const GraphicElement &element, ElementProperty property);
+    static bool appliesTo(const Element &element, ElementProperty property);
 
     /// Sets the values after; the first redo(), as the command is pushed, finds them set.
     void redo() override;
@@ -332,14 +332,14 @@ public:
     bool mergeWith(const QUndoCommand *other) override;
 
 private:
-    SetPropertyCommand(const QList<GraphicElement *> &elements, ElementProperty property, const QVariantList &before,
+    SetPropertyCommand(const QList<Element *> &elements, ElementProperty property, const QVariantList &before,
                        const QVariantList &after, Scene *scene, int session);
 
     /// Returns the value of \a property of \a element.
-    static QVariant read(const GraphicElement &element, ElementProperty property);
+    static QVariant read(const Element &element, ElementProperty property);
 
     /// Sets \a property of \a element to \a value.
-    static void write(GraphicElement &element, ElementProperty property, const QVariant &value);
+    static void write(Element &element, ElementProperty property, const QVariant &value);
 
     /// Sets each element's value before or after, then selects the elements and reports the change to the scene.
     void write(bool after);
@@ -408,7 +408,7 @@ public:
      * \param scene    Target scene.
      * \param parent   Optional parent undo command.
      */
-    explicit MorphCommand(const QList<GraphicElement *> &elements, ElementType type, Scene *scene, QUndoCommand *parent = nullptr);
+    explicit MorphCommand(const QList<Element *> &elements, ElementType type, Scene *scene, QUndoCommand *parent = nullptr);
 
     /// Replaces elements with instances of the new type, which take what the types share.
     void redo() override;
@@ -431,14 +431,14 @@ private:
 
     /// Gives \a newElm what it shares with \a oldElm, the element it replaces: its place, inputs, label, trigger,
     /// flips, and the parameters both types have.
-    static void copyProperties(const GraphicElement *oldElm, GraphicElement *newElm);
+    static void copyProperties(const Element *oldElm, Element *newElm);
 
     /**
      * \brief Puts each element of \a to in the place of the one of \a from at its index: its wires, its ID and its
      * place in the scene; deletes the elements of \a from.
      * \param deleted If non-null, records connections that were deleted (port beyond new element's range).
      */
-    void replaceElements(const QList<GraphicElement *> &from, const QList<GraphicElement *> &to,
+    void replaceElements(const QList<Element *> &from, const QList<Element *> &to,
                          QList<DeletedConnectionInfo> *deleted = nullptr);
 
     /**
@@ -448,7 +448,7 @@ private:
      * \param isInput True to migrate input ports; false for output ports.
      * \param deleted If non-null, records connections deleted because the port no longer exists.
      */
-    void transferPortConnections(GraphicElement *oldElm, GraphicElement *newElm,
+    void transferPortConnections(Element *oldElm, Element *newElm,
                                  bool isInput, QList<DeletedConnectionInfo> *deleted);
 
     /// Recreates each connection recorded in \a deleted, restoring its original scene ID.
@@ -482,7 +482,7 @@ public:
      * \param isInput     If \c true, adjusts input ports; otherwise adjusts output ports.
      * \param parent      Optional parent undo command.
      */
-    explicit ChangePortSizeCommand(const QList<GraphicElement *> &elements, const int newPortSize, Scene *scene, const bool isInput, QUndoCommand *parent = nullptr);
+    explicit ChangePortSizeCommand(const QList<Element *> &elements, const int newPortSize, Scene *scene, const bool isInput, QUndoCommand *parent = nullptr);
 
     /// Applies the new port count.
     void redo() override;
@@ -495,7 +495,7 @@ private:
      * \brief Reads what redo() saved: \a saved, the elements in the order it saved them, then the wires removed from
      * each of the \a resized elements, returned with their ids and attached to \a saved's ports.
      */
-    std::vector<std::pair<int, std::unique_ptr<Connection>>> readSaved(const QList<GraphicElement *> &saved,
+    std::vector<std::pair<int, std::unique_ptr<Connection>>> readSaved(const QList<Element *> &saved,
                                                                        qsizetype resized);
 
     // --- Members ---
@@ -521,7 +521,7 @@ public:
      * \param scene  Target scene.
      * \param parent Optional parent undo command.
      */
-    explicit FlipCommand(const QList<GraphicElement *> &items, const int axis, Scene *scene, QUndoCommand *parent = nullptr);
+    explicit FlipCommand(const QList<Element *> &items, const int axis, Scene *scene, QUndoCommand *parent = nullptr);
 
     /// Mirrors each element's place about the selection's axis, snapped to the grid, and toggles its mirror flag.
     void redo() override;
@@ -553,7 +553,7 @@ public:
      * \param scene   Target scene.
      * \param parent  Optional parent undo command.
      */
-    explicit ToggleTruthTableOutputCommand(GraphicElement *element, int pos, Scene *scene, QUndoCommand *parent = nullptr);
+    explicit ToggleTruthTableOutputCommand(Element *element, int pos, Scene *scene, QUndoCommand *parent = nullptr);
 
     /// Toggles the bit at \a pos.
     void redo() override;
@@ -700,11 +700,11 @@ public:
         int otherPortIndex;
     };
 
-    explicit UpdateBlobCommand(const QList<GraphicElement *> &elements, const QByteArray &oldData,
+    explicit UpdateBlobCommand(const QList<Element *> &elements, const QByteArray &oldData,
                                const QList<ConnectionInfo> &connections, Scene *scene, QUndoCommand *parent = nullptr);
 
     /// Captures connection topology for all target elements before a blob operation.
-    static QList<ConnectionInfo> captureConnections(const QList<GraphicElement *> &targets);
+    static QList<ConnectionInfo> captureConnections(const QList<Element *> &targets);
 
     /// Sets the old blob data for registry swap on undo.
     void setOldBlob(const QByteArray &blob) { m_oldBlob = blob; }
@@ -717,7 +717,7 @@ public:
 
 private:
     /// Loads \a elements, this command's targets, from \a itemData.
-    void loadData(const QList<GraphicElement *> &elements, QByteArray &itemData);
+    void loadData(const QList<Element *> &elements, QByteArray &itemData);
     /// Puts \a blob in the registry under the command's blob name, or removes the name when \a blob is empty.
     void setBlob(const QByteArray &blob);
     void reconnectConnections();

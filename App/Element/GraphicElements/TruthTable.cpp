@@ -68,7 +68,7 @@ static_assert(kTruthTableKeyBits == 2048,
 } // namespace
 
 TruthTable::TruthTable(QGraphicsItem *parent)
-    : GraphicElement(ElementType::TruthTable, parent)
+    : Element(ElementType::TruthTable, parent)
 {
     // Laid out as [out0_row0..out0_rowN, out1_row0..out1_rowN, ...].
     // All outputs default to 0 (all-false table).
@@ -160,7 +160,7 @@ void TruthTable::generatePixmap()
     QPixmap sizingPixmap(size);
     sizingPixmap.fill(Qt::transparent);
     m_appearance.setRenderPixmap(sizingPixmap);
-    GraphicElement::update();
+    Element::update();
 }
 
 void TruthTable::drawBody(QPainter *painter)
@@ -247,7 +247,7 @@ void TruthTable::setkey(const QBitArray &key)
 
 void TruthTable::save(QDataStream &stream, SerializationOptions options) const
 {
-    GraphicElement::save(stream, options);
+    Element::save(stream, options);
     QMap<QString, QVariant> map;
     map.insert("key", m_key);
     stream << map;
@@ -255,7 +255,7 @@ void TruthTable::save(QDataStream &stream, SerializationOptions options) const
 
 void TruthTable::load(QDataStream &stream, SerializationContext &context)
 {
-    GraphicElement::load(stream, context);
+    Element::load(stream, context);
 
     if (VersionInfo::hasTruthTableData(context.version)) {
         // Truth-table key (the output bit-array) was first serialized in v4.2

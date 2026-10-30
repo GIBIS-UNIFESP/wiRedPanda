@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "App/Element/GraphicElementInput.h"
+#include "App/Element/ElementInput.h"
 
 /**
  * \class InputButton
@@ -16,7 +16,7 @@
  * \details Output is logic-1 while the mouse button is held down and logic-0
  * when released.
  */
-class InputButton : public GraphicElementInput
+class InputButton : public ElementInput
 {
     Q_OBJECT
 
@@ -40,7 +40,7 @@ public:
     void setOn() override;
 
     // Bring the base setOn(bool, int) overload into scope (hidden by setOn() above).
-    using GraphicElementInput::setOn;
+    using ElementInput::setOn;
 
     /// \reimp
     QList<std::pair<int, QString>> appearanceStates() const override;

@@ -13,18 +13,18 @@
 
 #include "App/Core/Enums.h"
 
-class GraphicElement;
+class Element;
 class InputPort;
 class OutputPort;
 
 /**
  * \class ElementSimState
- * \brief Owns a GraphicElement's simulation runtime state, decoupled from its graphics.
+ * \brief Owns a Element's simulation runtime state, decoupled from its graphics.
  *
  * \details Holds the cached input/output four-state values, the output-changed flag, and
  * the simulation-graph edges feeding each input.  The propagation logic reads the owning
  * element's ports only through parameters (no back-pointer), so this type carries no Qt
- * graphics dependency.  GraphicElement holds one as a value member and forwards its
+ * graphics dependency.  Element holds one as a value member and forwards its
  * direct-simulation interface to it.
  */
 class ElementSimState
@@ -32,7 +32,7 @@ class ElementSimState
 public:
     /// A single simulation-graph edge: which element/output port feeds one input slot.
     struct InputConnection {
-        GraphicElement *sourceElement = nullptr;
+        Element *sourceElement = nullptr;
         int sourceOutputIndex = 0;
     };
 
@@ -44,7 +44,7 @@ public:
     void reset(const QVector<OutputPort *> &outputPorts);
 
     /// Records that simulation input \a inputIndex is driven by \a source output \a outputPort.
-    void connectPredecessor(int inputIndex, GraphicElement *source, int outputPort);
+    void connectPredecessor(int inputIndex, Element *source, int outputPort);
 
     /**
      * \brief Snapshots each predecessor's output into the input cache, reading \a inputPorts

@@ -14,9 +14,9 @@
 
 #include "App/Core/Common.h"
 #include "App/Core/Enums.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElement.h"
-#include "App/Element/GraphicElementInput.h"
+#include "App/Element/ElementInput.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/IO/Serialization.h"
@@ -36,7 +36,7 @@ const QStringList kColors{"White", "Red", "Green", "Blue", "Purple"};
 /// value passes: the property exists on the type, the value has its kind, lies in its range and is one the type takes,
 /// an appearance index comes with an appearance and names one of the element's states, a picture loads, and no
 /// second Tx would share a label.
-QString refusal(const GraphicElement &element, const QJsonObject &params, const Scene *scene)
+QString refusal(const Element &element, const QJsonObject &params, const Scene *scene)
 {
     const auto lacks = [&element](const QString &property) {
         return QString("Element %1 (%2) has no property '%3'")
@@ -247,7 +247,7 @@ QJsonObject ElementHandler::handleCreateElement(const QJsonObject &params, const
         return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable);
     }
 
-    GraphicElement *element = nullptr;
+    Element *element = nullptr;
     // Unreachable: ElementFactory::buildElement() only throws for ElementType::Unknown (already
     // rejected above) or a type with no registered creator -- every real type reaching here has
     // one (confirmed by reading ElementFactory.cpp's creator map).
@@ -268,7 +268,7 @@ QJsonObject ElementHandler::handleCreateElement(const QJsonObject &params, const
                                    requestId, JsonRpcError::OperationFailed); // LCOV_EXCL_LINE
     } // LCOV_EXCL_LINE
 
-    element->setPos(GraphicElement::snapToGrid({x, y}));
+    element->setPos(Element::snapToGrid({x, y}));
     if (!label.isEmpty()) {
         element->setLabel(label);
     }
@@ -368,12 +368,12 @@ QJsonObject ElementHandler::handleListElements(const QJsonObject &, const QJsonV
             elementObj["trigger"] = element->trigger().toString();
         }
         if (element->hasAudio()) {
-            elementObj["audio"] = element->audio(); // LCOV_EXCL_LINE -- hasAudio() is always false across every GraphicElement type, so this branch is dead
+            elementObj["audio"] = element->audio(); // LCOV_EXCL_LINE -- hasAudio() is always false across every Element type, so this branch is dead
         }
         if (element->hasVolume()) {
             elementObj["volume"] = static_cast<double>(element->volume());
         }
-        if (const auto *inputElm = qobject_cast<const GraphicElementInput *>(element)) {
+        if (const auto *inputElm = qobject_cast<const ElementInput *>(element)) {
             elementObj["locked"] = inputElm->isLocked();
         }
 
@@ -400,7 +400,7 @@ QJsonObject ElementHandler::handleMoveElement(const QJsonObject &params, const Q
         return createErrorResponse(errorMsg, requestId, JsonRpcError::InvalidParams);
     }
 
-    const QPointF snapped = GraphicElement::snapToGrid({params.value("x").toDouble(), params.value("y").toDouble()});
+    const QPointF snapped = Element::snapToGrid({params.value("x").toDouble(), params.value("y").toDouble()});
     const int x = qRound(snapped.x());
     const int y = qRound(snapped.y());
 
@@ -421,7 +421,7 @@ QJsonObject ElementHandler::handleMoveElement(const QJsonObject &params, const Q
 
     element->setPos(newPos);
 
-    QList<GraphicElement *> elements = {element};
+    QList<Element *> elements = {element};
     QList<QPointF> oldPositions = {oldPos};
 
     // Unreachable: scene->pushCommand() with a well-formed MoveCommand never throws
@@ -548,7 +548,7 @@ QJsonObject ElementHandler::handleSetElementProperties(const QJsonObject &params
     // LCOV_EXCL_STOP
 
     if (params.contains("locked")) {
-        if (auto *inputElm = qobject_cast<GraphicElementInput *>(element)) {
+        if (auto *inputElm = qobject_cast<ElementInput *>(element)) {
             oldProperties["locked"] = inputElm->isLocked();
             inputElm->setLocked(params.value("locked").toBool());
             newProperties["locked"] = inputElm->isLocked();
@@ -651,7 +651,7 @@ QJsonObject ElementHandler::handleSetInputValue(const QJsonObject &params, const
     }
     const bool value = params.value("value").toBool();
 
-    auto *inputElement = dynamic_cast<GraphicElementInput *>(element);
+    auto *inputElement = dynamic_cast<ElementInput *>(element);
     if (inputElement) {
         inputElement->setOn(value);
 
@@ -689,7 +689,7 @@ QJsonObject ElementHandler::handleGetOutputValue(const QJsonObject &params, cons
 
     QJsonObject result;
 
-    auto *inputElement = dynamic_cast<GraphicElementInput *>(element);
+    auto *inputElement = dynamic_cast<ElementInput *>(element);
     if (inputElement) {
         // An input's own state, which drives its port once the simulation runs
         if (!validatePortRange(element, portIndex, true, "port", errorMsg)) {
@@ -978,7 +978,7 @@ QJsonObject ElementHandler::handleMorphElement(const QJsonObject &params, const 
     }
 
     // Collect elements to morph
-    QList<GraphicElement *> elementsToMorph;
+    QList<Element *> elementsToMorph;
     for (const QJsonValue &idValue : std::as_const(elementIdsArray)) {
         if (!idValue.isDouble()) {
             return createErrorResponse("element_ids must contain only integers", requestId, JsonRpcError::InvalidParams);
@@ -990,7 +990,7 @@ QJsonObject ElementHandler::handleMorphElement(const QJsonObject &params, const 
         }
 
         auto *item = currentScene()->itemById(elementId);
-        auto *element = dynamic_cast<GraphicElement *>(item);
+        auto *element = dynamic_cast<Element *>(item);
         if (!element) {
             return createErrorResponse(QString("Item %1 is not a graphic element").arg(elementId),
                                        requestId, JsonRpcError::ValidationError);

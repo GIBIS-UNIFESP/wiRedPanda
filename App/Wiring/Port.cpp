@@ -10,14 +10,14 @@
 #include <QPen>
 
 #include "App/Core/ThemeManager.h"
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 #include "App/Wiring/Connection.h"
 
 Port::Port(QGraphicsItem *parent)
     : QGraphicsPathItem(parent)
 {
     // ItemSendsGeometryChanges makes itemChange() hear of the port's own moves and transforms, which re-route its
-    // wires; its element's moves reach the wires through GraphicElement::itemChange(). Not
+    // wires; its element's moves reach the wires through Element::itemChange(). Not
     // ItemSendsScenePositionChanges: Qt walks every item with that flag on each move of any item with children, so
     // one per port made each element's move cost the whole scene's port count.
     setFlag(QGraphicsItem::ItemSendsGeometryChanges);
@@ -159,8 +159,8 @@ void Port::setIndex(const int index)
 
 int Port::globalIndex() const
 {
-    if (isOutput() && m_graphicElement) {
-        return m_index + m_graphicElement->inputSize();
+    if (isOutput() && m_element) {
+        return m_index + m_element->inputSize();
     }
     return m_index;
 }
@@ -234,9 +234,9 @@ void Port::setRequired(const bool required)
     revalidateStatus();
 }
 
-void Port::setGraphicElement(GraphicElement *graphicElement)
+void Port::setElement(Element *element)
 {
-    m_graphicElement = graphicElement;
+    m_element = element;
 }
 
 void Port::hoverLeave()

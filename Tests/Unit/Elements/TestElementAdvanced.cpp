@@ -1,7 +1,7 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Unit/Elements/TestGraphicelementAdvanced.h"
+#include "Tests/Unit/Elements/TestElementAdvanced.h"
 
 #include <cmath>
 #include <memory>
@@ -10,8 +10,8 @@
 #include <QLineF>
 #include <QTest>
 
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElement.h"
 #include "App/Wiring/Port.h"
 #include "Tests/Common/TestUtils.h"
 
@@ -19,9 +19,9 @@
 // Port Management Tests
 // ============================================================================
 
-void TestGraphicelementAdvanced::testSetAndGetInputs()
+void TestElementAdvanced::testSetAndGetInputs()
 {
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
+    auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::And));
     QVERIFY(elem != nullptr);
 
     // Get initial inputs
@@ -32,9 +32,9 @@ void TestGraphicelementAdvanced::testSetAndGetInputs()
     QCOMPARE(initialInputs.size(), 2);
 }
 
-void TestGraphicelementAdvanced::testSetAndGetOutputs()
+void TestElementAdvanced::testSetAndGetOutputs()
 {
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Or));
+    auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Or));
     QVERIFY(elem != nullptr);
 
     // Get outputs
@@ -45,9 +45,9 @@ void TestGraphicelementAdvanced::testSetAndGetOutputs()
     QCOMPARE(outputs.size(), 1);
 }
 
-void TestGraphicelementAdvanced::testInputPortByIndex()
+void TestElementAdvanced::testInputPortByIndex()
 {
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
+    auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::And));
     QVERIFY(elem != nullptr);
 
     // AND gate has 2 inputs
@@ -55,18 +55,18 @@ void TestGraphicelementAdvanced::testInputPortByIndex()
     QVERIFY(elem->inputPort(1) != nullptr);
 }
 
-void TestGraphicelementAdvanced::testOutputPortByIndex()
+void TestElementAdvanced::testOutputPortByIndex()
 {
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Nand));
+    auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Nand));
     QVERIFY(elem != nullptr);
 
     // NAND gate has 1 output
     QVERIFY(elem->outputPort(0) != nullptr);
 }
 
-void TestGraphicelementAdvanced::testInputPortNegativeIndex()
+void TestElementAdvanced::testInputPortNegativeIndex()
 {
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
+    auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::And));
     QVERIFY(elem != nullptr);
 
     // Accessing negative index should return nullptr
@@ -74,9 +74,9 @@ void TestGraphicelementAdvanced::testInputPortNegativeIndex()
     QVERIFY(port == nullptr);
 }
 
-void TestGraphicelementAdvanced::testOutputPortNegativeIndex()
+void TestElementAdvanced::testOutputPortNegativeIndex()
 {
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Or));
+    auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Or));
     QVERIFY(elem != nullptr);
 
     // Accessing negative index should return nullptr
@@ -88,36 +88,36 @@ void TestGraphicelementAdvanced::testOutputPortNegativeIndex()
 // Port Size Constraints Tests
 // ============================================================================
 
-void TestGraphicelementAdvanced::testMinInputSizeConstraint()
+void TestElementAdvanced::testMinInputSizeConstraint()
 {
     // AND gate minimum inputs should be 2
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
+    auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::And));
     QVERIFY(elem != nullptr);
     QCOMPARE(elem->inputSize(), 2);
 }
 
-void TestGraphicelementAdvanced::testMaxInputSizeConstraint()
+void TestElementAdvanced::testMaxInputSizeConstraint()
 {
     // NOT gate should have fixed 1 input
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Not));
+    auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Not));
     QVERIFY(elem != nullptr);
     QCOMPARE(elem->inputSize(), 1);
 }
 
-void TestGraphicelementAdvanced::testMinOutputSizeConstraint()
+void TestElementAdvanced::testMinOutputSizeConstraint()
 {
     // All logic gates should have at least 1 output
-    auto and_gate = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
+    auto and_gate = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::And));
     QCOMPARE(and_gate->outputSize(), 1);
 
-    auto or_gate = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Or));
+    auto or_gate = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Or));
     QCOMPARE(or_gate->outputSize(), 1);
 }
 
-void TestGraphicelementAdvanced::testMaxOutputSizeConstraint()
+void TestElementAdvanced::testMaxOutputSizeConstraint()
 {
     // Standard gates have 1 output (no fan-out multiple outputs)
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Xor));
+    auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Xor));
     QVERIFY(elem != nullptr);
     QCOMPARE(elem->outputSize(), 1);
 }
@@ -126,9 +126,9 @@ void TestGraphicelementAdvanced::testMaxOutputSizeConstraint()
 // Pixmap and Visual Properties Tests
 // ============================================================================
 
-void TestGraphicelementAdvanced::testPixmapCenterCalculation()
+void TestElementAdvanced::testPixmapCenterCalculation()
 {
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
+    auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::And));
     QVERIFY(elem != nullptr);
 
     // Pixmap center should be valid QPointF
@@ -137,9 +137,9 @@ void TestGraphicelementAdvanced::testPixmapCenterCalculation()
     QVERIFY(!std::isnan(center.y()));
 }
 
-void TestGraphicelementAdvanced::testBoundingRectCalculation()
+void TestElementAdvanced::testBoundingRectCalculation()
 {
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Or));
+    auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Or));
     QVERIFY(elem != nullptr);
 
     QRectF rect = elem->boundingRect();
@@ -148,9 +148,9 @@ void TestGraphicelementAdvanced::testBoundingRectCalculation()
     QVERIFY(rect.height() > 0);
 }
 
-void TestGraphicelementAdvanced::testPortsBoundingRectCalculation()
+void TestElementAdvanced::testPortsBoundingRectCalculation()
 {
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Nand));
+    auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Nand));
     QVERIFY(elem != nullptr);
 
     QRectF rect = elem->boundingRect();
@@ -161,31 +161,31 @@ void TestGraphicelementAdvanced::testPortsBoundingRectCalculation()
 // Element Type and Group Tests
 // ============================================================================
 
-void TestGraphicelementAdvanced::testElementTypeRetrieval()
+void TestElementAdvanced::testElementTypeRetrieval()
 {
-    auto and_gate = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
+    auto and_gate = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::And));
     QCOMPARE(and_gate->elementType(), ElementType::And);
 
-    auto or_gate = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Or));
+    auto or_gate = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Or));
     QCOMPARE(or_gate->elementType(), ElementType::Or);
 
-    auto not_gate = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Not));
+    auto not_gate = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Not));
     QCOMPARE(not_gate->elementType(), ElementType::Not);
 }
 
-void TestGraphicelementAdvanced::testElementGroupRetrieval()
+void TestElementAdvanced::testElementGroupRetrieval()
 {
-    auto and_gate = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
+    auto and_gate = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::And));
     QCOMPARE(and_gate->elementGroup(), ElementGroup::Gate);
 
-    auto input = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::InputButton));
+    auto input = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputButton));
     QCOMPARE(input->elementGroup(), ElementGroup::Input);
 
-    auto output = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Led));
+    auto output = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Led));
     QCOMPARE(output->elementGroup(), ElementGroup::Output);
 }
 
-void TestGraphicelementAdvanced::testElementCreationWithDifferentTypes()
+void TestElementAdvanced::testElementCreationWithDifferentTypes()
 {
     // Test multiple element types can be created and retrieved
     QVector<ElementType> types = {
@@ -195,7 +195,7 @@ void TestGraphicelementAdvanced::testElementCreationWithDifferentTypes()
     };
 
     for (ElementType type : types) {
-        auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(type));
+        auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(type));
         QVERIFY(elem != nullptr);
         QCOMPARE(elem->elementType(), type);
         }
@@ -205,9 +205,9 @@ void TestGraphicelementAdvanced::testElementCreationWithDifferentTypes()
 // Port Naming and Properties Tests
 // ============================================================================
 
-void TestGraphicelementAdvanced::testPortNaming()
+void TestElementAdvanced::testPortNaming()
 {
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
+    auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::And));
     QVERIFY(elem != nullptr);
 
     // Verify port is accessible and has properties
@@ -215,32 +215,32 @@ void TestGraphicelementAdvanced::testPortNaming()
     QVERIFY(port != nullptr);
 
     // Verify port is connected to correct element
-    QCOMPARE(port->graphicElement(), elem.get());
+    QCOMPARE(port->element(), elem.get());
 }
 
-void TestGraphicelementAdvanced::testAddInputPort()
+void TestElementAdvanced::testAddInputPort()
 {
     // This tests the addInputPort functionality
     // Create element and verify ports can be accessed
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::InputVcc));
+    auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputVcc));
     QVERIFY(elem != nullptr);
 
     // Verify it has expected inputs
     QCOMPARE(elem->inputSize(), 0);  // VCC has no inputs
 }
 
-void TestGraphicelementAdvanced::testAddOutputPort()
+void TestElementAdvanced::testAddOutputPort()
 {
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::InputVcc));
+    auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputVcc));
     QVERIFY(elem != nullptr);
 
     // VCC should have 1 output
     QCOMPARE(elem->outputSize(), 1);
 }
 
-void TestGraphicelementAdvanced::testAddMultiplePorts()
+void TestElementAdvanced::testAddMultiplePorts()
 {
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
+    auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::And));
     QVERIFY(elem != nullptr);
 
     // AND has 2 inputs and 1 output
@@ -261,9 +261,9 @@ void TestGraphicelementAdvanced::testAddMultiplePorts()
 // Label and Tooltip Tests
 // ============================================================================
 
-void TestGraphicelementAdvanced::testLabelProperty()
+void TestElementAdvanced::testLabelProperty()
 {
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
+    auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::And));
     QVERIFY(elem != nullptr);
 
     // Set and retrieve label
@@ -271,9 +271,9 @@ void TestGraphicelementAdvanced::testLabelProperty()
     QCOMPARE(elem->label(), QString("TestLabel"));
 }
 
-void TestGraphicelementAdvanced::testTooltipProperty()
+void TestElementAdvanced::testTooltipProperty()
 {
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Or));
+    auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Or));
     QVERIFY(elem != nullptr);
 
     // Tooltip should be set (at least translated name)
@@ -281,9 +281,9 @@ void TestGraphicelementAdvanced::testTooltipProperty()
     QVERIFY(!tooltip.isEmpty());
 }
 
-void TestGraphicelementAdvanced::testLabelVisibility()
+void TestElementAdvanced::testLabelVisibility()
 {
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Nand));
+    auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Nand));
     QVERIFY(elem != nullptr);
 
     // Set label and verify it's stored
@@ -299,9 +299,9 @@ void TestGraphicelementAdvanced::testLabelVisibility()
 // Rotation and Position Tests
 // ============================================================================
 
-void TestGraphicelementAdvanced::testElementRotation()
+void TestElementAdvanced::testElementRotation()
 {
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
+    auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::And));
     QVERIFY(elem != nullptr);
 
     // Set rotation (0, 90, 180, 270)
@@ -318,9 +318,9 @@ void TestGraphicelementAdvanced::testElementRotation()
     QCOMPARE(elem->rotation(), 270.0);
 }
 
-void TestGraphicelementAdvanced::testElementPosition()
+void TestElementAdvanced::testElementPosition()
 {
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Or));
+    auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Or));
     QVERIFY(elem != nullptr);
 
     // Set position
@@ -334,9 +334,9 @@ void TestGraphicelementAdvanced::testElementPosition()
     QCOMPARE(elem->pos(), newPos);
 }
 
-void TestGraphicelementAdvanced::testElementPositionPersistence()
+void TestElementAdvanced::testElementPositionPersistence()
 {
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Not));
+    auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Not));
     QVERIFY(elem != nullptr);
 
     // Set position and verify it persists
@@ -348,11 +348,11 @@ void TestGraphicelementAdvanced::testElementPositionPersistence()
     QCOMPARE(elem->pos(), pos);
 }
 
-void TestGraphicelementAdvanced::testLabelStaysUprightWhenRotatedOrFlipped()
+void TestElementAdvanced::testLabelStaysUprightWhenRotatedOrFlipped()
 {
     // The name label is a child item, so it inherits the element's rotation/flip; it must be
     // counter-oriented so the text reads upright and unmirrored at any element orientation.
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
+    auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::And));
     QVERIFY(elem != nullptr);
     elem->setLabel("Q1");
 
@@ -383,13 +383,13 @@ void TestGraphicelementAdvanced::testLabelStaysUprightWhenRotatedOrFlipped()
     QVERIFY(isUpright(label->sceneTransform()));
 }
 
-void TestGraphicelementAdvanced::testLabelPositionStaysFixedWhenRotatedOrFlipped()
+void TestElementAdvanced::testLabelPositionStaysFixedWhenRotatedOrFlipped()
 {
     // Keeping the label's glyphs upright (tested above) isn't enough on its own: if only the
     // orientation is corrected while the anchor point still orbits with the rotating body, the
     // (now-readable) text sweeps to a different spot at each orientation instead of staying put
     // -- landing on top of pins for elements with edge-packed ports (e.g. a big IC).
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
+    auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::And));
     QVERIFY(elem != nullptr);
     elem->setLabel("Q1");
 

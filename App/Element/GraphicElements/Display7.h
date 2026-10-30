@@ -9,7 +9,7 @@
 
 #include <memory>
 
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 
 class Port;
 class QSvgRenderer;
@@ -21,7 +21,7 @@ class QSvgRenderer;
  * \details Each input port controls one segment (a–g + dp).  Supports red, green,
  * and blue color variants.
  */
-class Display7 : public GraphicElement
+class Display7 : public Element
 {
     Q_OBJECT
 

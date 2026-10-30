@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 
 /**
  * \class Mux
@@ -16,7 +16,7 @@
  * \details The number of inputs is configurable.  The pixmap is dynamically
  * generated to reflect the current input count.
  */
-class Mux : public GraphicElement
+class Mux : public Element
 {
     Q_OBJECT
 

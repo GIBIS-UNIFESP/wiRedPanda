@@ -91,7 +91,7 @@ struct Ram8x8Fixture {
 
     TestUtils::Bits readDataOut()
     {
-        return readMultiBitOutput(QVector<GraphicElement *>(dataOutOutputs.begin(), dataOutOutputs.end()), 0);
+        return readMultiBitOutput(QVector<Element *>(dataOutOutputs.begin(), dataOutOutputs.end()), 0);
     }
 };
 

@@ -355,7 +355,7 @@ namespace {
 // Drives ElementContextMenu::exec() far enough to capture the "Morph to..." submenu's action
 // texts (if any), then dismisses without choosing. `itemAtMouse` doubles as the sole selected
 // element (matches ElementEditor::contextMenu()'s real single-element-under-cursor usage).
-QStringList captureMorphSubmenuTexts(GraphicElement *itemAtMouse, Scene *scene, QComboBox *colorCombo)
+QStringList captureMorphSubmenuTexts(Element *itemAtMouse, Scene *scene, QComboBox *colorCombo)
 {
     const SelectionCapabilities caps = computeCapabilities({itemAtMouse});
 

@@ -24,8 +24,8 @@
 #include <QVarLengthArray>
 
 #include "App/Core/Common.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElement.h"
 #include "App/IO/VersionInfo.h"
 #include "App/Wiring/Connection.h"
 
@@ -527,7 +527,7 @@ void Serialization::readDolphinHeader(QDataStream &stream)
 void Serialization::serialize(const QList<QGraphicsItem *> &items, QDataStream &stream, SerializationOptions options)
 {
     // Port serial IDs are computed from the element ID via Port::makeSerialId()
-    // (used by both GraphicElementSerializer::save() and ConnectionSerializer::save()).
+    // (used by both ElementSerializer::save() and ConnectionSerializer::save()).
     // Elements with id=-1 (the unassigned sentinel) would all produce the same keys,
     // causing portMap collisions on the next load and destroying connection topology.
     //
@@ -539,17 +539,17 @@ void Serialization::serialize(const QList<QGraphicsItem *> &items, QDataStream &
     //
     // Temp IDs start above the highest positive ID already present in items so
     // they cannot collide with any valid ID in the list.
-    QList<std::pair<GraphicElement *, int>> savedIds;
+    QList<std::pair<Element *, int>> savedIds;
     int localId = 0;
     for (auto *item : items) {
-        if (auto *ge = qgraphicsitem_cast<GraphicElement *>(item)) {
+        if (auto *ge = qgraphicsitem_cast<Element *>(item)) {
             if (ge->id() > localId) {
                 localId = ge->id();
             }
         }
     }
     for (auto *item : items) {
-        if (auto *ge = qgraphicsitem_cast<GraphicElement *>(item)) {
+        if (auto *ge = qgraphicsitem_cast<Element *>(item)) {
             if (ge->id() <= 0) {
                 savedIds.append({ge, ge->id()});
                 ge->setId(++localId);
@@ -572,8 +572,8 @@ void Serialization::serialize(const QList<QGraphicsItem *> &items, QDataStream &
     // Serialize all graphic elements (gates, inputs, outputs, ICs)
     // Type tag written here at serialization layer for symmetry with deserialize()
     for (auto *item : items) {
-        if (auto *element = qgraphicsitem_cast<GraphicElement *>(item)) {
-            stream << static_cast<int>(GraphicElement::Type);
+        if (auto *element = qgraphicsitem_cast<Element *>(item)) {
+            stream << static_cast<int>(Element::Type);
             stream << element->elementType();
             element->save(stream, options);
         }
@@ -634,7 +634,7 @@ QList<QGraphicsItem *> Serialization::deserialize(QDataStream &stream, Serializa
         qCDebug(three) << "Type: " << typeName(type);
 
         switch (type) {
-        case GraphicElement::Type: {
+        case Element::Type: {
             ElementType elmType; stream >> elmType;
 
             // Check stream integrity after reading element type
@@ -827,7 +827,7 @@ void Serialization::serializeBlobRegistry(const QMap<QString, QByteArray> &blobs
 
 QString Serialization::typeName(const int type) {
     // These offsets must stay in sync with the ::Type enum constants defined in
-    // Port, Connection, and GraphicElement (all use QGraphicsItem::UserType + N)
+    // Port, Connection, and Element (all use QGraphicsItem::UserType + N)
     // LCOV_EXCL_START — recurring pattern 12: this static local's one-time construction
     // (first call across the whole test binary) happens inside a compiler-generated guard
     // check that gcov doesn't attribute back to these initializer-list source lines, even
@@ -835,7 +835,7 @@ QString Serialization::typeName(const int type) {
     static const QHash<int, QString> typeMap = {
         { QGraphicsItem::UserType + 1, "Port" },
         { QGraphicsItem::UserType + 2, "Connection" },
-        { QGraphicsItem::UserType + 3, "GraphicElement" },
+        { QGraphicsItem::UserType + 3, "Element" },
     };
     // LCOV_EXCL_STOP
 

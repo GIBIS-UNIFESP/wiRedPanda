@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 /** \file
- * \brief GraphicElementSerializer: reads/writes a GraphicElement to a versioned QDataStream.
+ * \brief ElementSerializer: reads/writes a Element to a versioned QDataStream.
  */
 
 #pragma once
@@ -15,7 +15,7 @@
 #include <QtGlobal>
 #include <QVariant>
 
-class GraphicElement;
+class Element;
 class Port;
 class QDataStream;
 class QPointF;
@@ -24,17 +24,17 @@ struct SerializationContext;
 struct SerializationOptions;
 
 /**
- * \class GraphicElementSerializer
- * \brief Serializes a GraphicElement to/from a versioned QDataStream.
+ * \class ElementSerializer
+ * \brief Serializes a Element to/from a versioned QDataStream.
  *
- * \details Extracted from GraphicElement so persistence is a collaborator rather than a
- * cluster of methods on the element itself. A friend of GraphicElement, it reaches the
+ * \details Extracted from Element so persistence is a collaborator rather than a
+ * cluster of methods on the element itself. A friend of Element, it reaches the
  * element's ports/orientation/appearance/context-directory state through that friendship.
  * The element keeps thin virtual save()/load() entry points that delegate here, so
  * subclasses (e.g. IC) can still extend the load via their override. All methods are
  * static and take the element explicitly; no serializer instance state is needed.
  */
-class GraphicElementSerializer
+class ElementSerializer
 {
     // tr context for the load-error PANDACEPTION throws. lupdate extracts the plain
     // PANDACEPTION(...) calls below under the "GraphicElementSerializer" context (the
@@ -46,18 +46,18 @@ class GraphicElementSerializer
     // are private helpers one level below the public load() entry point. Precisely truncating a
     // full element stream at the exact byte offset each one needs is far more fragile than
     // calling the helper directly with a minimal hand-built stream.
-    friend class TestGraphicElementSerializer;
+    friend class TestElementSerializer;
 
 public:
     /// Writes \a element to \a stream (current keyed-QMap format).
-    static void save(const GraphicElement &element, QDataStream &stream, SerializationOptions options);
+    static void save(const Element &element, QDataStream &stream, SerializationOptions options);
 
     /// Reads \a element from \a stream, dispatching on the format version in \a context.
-    static void load(GraphicElement &element, QDataStream &stream, SerializationContext &context);
+    static void load(Element &element, QDataStream &stream, SerializationContext &context);
 
 private:
-    static void loadOldFormat(GraphicElement &element, QDataStream &stream, SerializationContext &context);
-    static void loadNewFormat(GraphicElement &element, QDataStream &stream, SerializationContext &context);
+    static void loadOldFormat(Element &element, QDataStream &stream, SerializationContext &context);
+    static void loadNewFormat(Element &element, QDataStream &stream, SerializationContext &context);
 
     /// Rejects a non-finite (NaN / ±inf) element position read from a crafted file
     /// (fuzz-hardening) — see the .cpp for why this must abort load rather than proceed.
@@ -69,24 +69,24 @@ private:
 
     /// Rejects a port count above the element type's maximum, which no save writes
     /// (fuzz-hardening) — see the .cpp for why this must abort load rather than proceed.
-    static void validatePortCounts(const GraphicElement &element);
+    static void validatePortCounts(const Element &element);
 
-    static void loadPos(GraphicElement &element, QDataStream &stream);
-    static void loadRotation(GraphicElement &element, QDataStream &stream, const QVersionNumber &version);
-    static void loadLabel(GraphicElement &element, QDataStream &stream, const QVersionNumber &version);
+    static void loadPos(Element &element, QDataStream &stream);
+    static void loadRotation(Element &element, QDataStream &stream, const QVersionNumber &version);
+    static void loadLabel(Element &element, QDataStream &stream, const QVersionNumber &version);
     static void loadPortsSize(QDataStream &stream, const QVersionNumber &version);
-    static void loadTrigger(GraphicElement &element, QDataStream &stream, const QVersionNumber &version);
+    static void loadTrigger(Element &element, QDataStream &stream, const QVersionNumber &version);
 
-    static void loadInputPorts(GraphicElement &element, QDataStream &stream, SerializationContext &context);
-    static void loadInputPort(GraphicElement &element, QDataStream &stream, SerializationContext &context, int port);
-    static void loadOutputPorts(GraphicElement &element, QDataStream &stream, SerializationContext &context);
-    static void loadOutputPort(GraphicElement &element, QDataStream &stream, SerializationContext &context, int port);
+    static void loadInputPorts(Element &element, QDataStream &stream, SerializationContext &context);
+    static void loadInputPort(Element &element, QDataStream &stream, SerializationContext &context, int port);
+    static void loadOutputPorts(Element &element, QDataStream &stream, SerializationContext &context);
+    static void loadOutputPort(Element &element, QDataStream &stream, SerializationContext &context, int port);
 
-    static void removeSurplusInputs(GraphicElement &element, quint64 inputSize_, SerializationContext &context);
-    static void removeSurplusOutputs(GraphicElement &element, quint64 outputSize_, SerializationContext &context);
+    static void removeSurplusInputs(Element &element, quint64 inputSize_, SerializationContext &context);
+    static void removeSurplusOutputs(Element &element, quint64 outputSize_, SerializationContext &context);
 
-    static void loadPixmapAppearanceNames(GraphicElement &element, QDataStream &stream, SerializationContext &context);
-    static void loadPixmapAppearanceName(GraphicElement &element, QDataStream &stream, int index, const SerializationContext &context);
+    static void loadPixmapAppearanceNames(Element &element, QDataStream &stream, SerializationContext &context);
+    static void loadPixmapAppearanceName(Element &element, QDataStream &stream, int index, const SerializationContext &context);
 
     /// Reads a `QList<QMap<QString, QVariant>>` from \a stream, rejecting implausible counts up
     /// front (fuzz-hardening). A member (not a file-local helper) so its load-error throws extract

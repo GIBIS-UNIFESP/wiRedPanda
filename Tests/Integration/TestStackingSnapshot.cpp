@@ -17,8 +17,8 @@
 #include <QTest>
 #include <QUndoStack>
 
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElement.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -50,7 +50,7 @@ QList<CircuitGroup> circuitGroups()
     };
 }
 
-QString elementName(const GraphicElement *element)
+QString elementName(const Element *element)
 {
     return 'E' + QString::number(element->id()) + ' ' + TestUtils::snapshotType(element->elementType());
 }
@@ -60,11 +60,11 @@ QString elementName(const GraphicElement *element)
 QString itemName(const QGraphicsItem *item)
 {
     switch (item->type()) {
-    case GraphicElement::Type:
-        return elementName(static_cast<const GraphicElement *>(item));
+    case Element::Type:
+        return elementName(static_cast<const Element *>(item));
     case Port::Type: {
         const auto *port = static_cast<const Port *>(item);
-        const auto *element = port->graphicElement();
+        const auto *element = port->element();
         return QString("port %1.%2%3").arg(QString::number(element ? element->id() : -1), QString(port->isInput() ? "i" : "o"),
                                            QString::number(port->index()));
     }
@@ -74,8 +74,8 @@ QString itemName(const QGraphicsItem *item)
         break;
     }
 
-    if (const auto *parent = item->parentItem(); parent && (parent->type() == GraphicElement::Type)) {
-        const auto *element = static_cast<const GraphicElement *>(parent);
+    if (const auto *parent = item->parentItem(); parent && (parent->type() == Element::Type)) {
+        const auto *element = static_cast<const Element *>(parent);
         const QString owner = 'E' + QString::number(element->id());
         if (item == SnapshotAccess::label(element)) {
             return "label of " + owner;
@@ -185,14 +185,14 @@ QString compareWithSceneRender(Scene *scene)
 }
 
 /// Three labelled elements overlapping one another, bodies, ports and labels, each added above the last.
-QList<GraphicElement *> buildOverlap(Scene *scene)
+QList<Element *> buildOverlap(Scene *scene)
 {
     const QList<std::pair<ElementType, QPointF>> placements{
         {ElementType::And, QPointF(24, 24)},
         {ElementType::Or, QPointF(64, 40)},
         {ElementType::Led, QPointF(40, 40)},
     };
-    QList<GraphicElement *> elements;
+    QList<Element *> elements;
     for (const auto &[type, position] : placements) {
         auto *element = ElementFactory::buildElement(type);
         element->setPos(position);
@@ -277,7 +277,7 @@ void TestStackingSnapshot::testOrderAfterUndoMatchesGolden()
     auto *bottom = StackingSnapshot::buildOverlap(scene).constFirst();
     const int bottomId = bottom->id();
     scene->receiveCommand(new MorphCommand({bottom}, ElementType::Xor, scene));
-    auto *morphed = dynamic_cast<GraphicElement *>(scene->itemById(bottomId));
+    auto *morphed = dynamic_cast<Element *>(scene->itemById(bottomId));
     QVERIFY2(morphed && morphed->elementType() == ElementType::Xor, "the morph did not keep the element's id");
     dump += StackingSnapshot::stage("morphed", scene);
 

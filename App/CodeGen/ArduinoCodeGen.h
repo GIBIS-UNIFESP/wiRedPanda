@@ -15,7 +15,7 @@
 
 #include "App/Core/Enums.h"
 
-class GraphicElement;
+class Element;
 class IC;
 class InputPort;
 class Port;
@@ -37,7 +37,7 @@ public:
      * \param port       The Port this mapping refers to.
      * \param portNumber Index of the port within the element (default 0).
      */
-    MappedPin(GraphicElement *elm, const QString &pin, const QString &varName, Port *port, const int portNumber = 0)
+    MappedPin(Element *elm, const QString &pin, const QString &varName, Port *port, const int portNumber = 0)
         : m_elm(elm)
         , m_port(port)
         , m_pin(pin)
@@ -46,7 +46,7 @@ public:
     {
     }
 
-    GraphicElement *m_elm = nullptr;
+    Element *m_elm = nullptr;
     Port *m_port = nullptr;
     QString m_pin;
     QString m_varName;
@@ -93,7 +93,7 @@ public:
      * \param fileName  Output file path for the generated sketch.
      * \param elements  Ordered list of graphic elements to translate.
      */
-    ArduinoCodeGen(const QString &fileName, const QVector<GraphicElement *> &elements);
+    ArduinoCodeGen(const QString &fileName, const QVector<Element *> &elements);
 
     // --- Code Generation ---
 
@@ -121,50 +121,50 @@ private:
     // --- Signal Name Resolution ---
 
     /// Builds a nested ternary expression for multiplexer select lines starting at \a startIndex.
-    QString buildSelectExpression(GraphicElement *elm, int startIndex, int numSelectLines);
+    QString buildSelectExpression(Element *elm, int startIndex, int numSelectLines);
     /// Returns the variable name of the signal driving \a port.
     QString otherPortName(Port *port);
     QString otherPortNameImpl(Port *port, QSet<Port *> &visited);
-    void emitFlipFlopBlock(GraphicElement *elm, const QString &typeName, const QString &firstOut,
+    void emitFlipFlopBlock(Element *elm, const QString &typeName, const QString &firstOut,
                            const QString &secondOut, int clockInputIndex, int presetInputIndex,
                            int clearInputIndex, const std::function<void()> &edgeLogic,
                            const std::function<void()> &stateEpilogue = {});
     /// Returns true if \a elements contains (recursively, through ICs) any native
     /// sequential element (ElementGroup::Memory). When true the sketch uses the
     /// non-blocking tick driver (sample → commit → re-settle).
-    static bool hasNativeMemory(const QVector<GraphicElement *> &elements);
+    static bool hasNativeMemory(const QVector<Element *> &elements);
     /// Emits the commitFlipFlops() function: publishes every staged `<out>_next`
     /// onto `<out>` across the hierarchy (the Arduino analogue of the engine's
     /// synchronous sequential commit).
     void emitCommitFlipFlops();
-    void emitCommitFlipFlopsRec(const QVector<GraphicElement *> &elements);
+    void emitCommitFlipFlopsRec(const QVector<Element *> &elements);
     /// Emits the per-tick driver (settle computeLogic → commitFlipFlops →
     /// re-settle) for sequential sketches, or a single computeLogic() otherwise.
     void emitTickDriver();
-    void emitDFlipFlop(GraphicElement *elm, const QString &firstOut);
-    void emitDLatch(GraphicElement *elm, const QString &firstOut);
-    void emitJKFlipFlop(GraphicElement *elm, const QString &firstOut);
-    void emitSRFlipFlop(GraphicElement *elm, const QString &firstOut);
-    void emitTFlipFlop(GraphicElement *elm, const QString &firstOut);
-    void emitSRLatch(GraphicElement *elm, const QString &firstOut);
-    void emitMux(GraphicElement *elm);
-    void emitDemux(GraphicElement *elm);
-    void emitTruthTable(GraphicElement *elm);
-    void assignLogicOperator(GraphicElement *elm);
+    void emitDFlipFlop(Element *elm, const QString &firstOut);
+    void emitDLatch(Element *elm, const QString &firstOut);
+    void emitJKFlipFlop(Element *elm, const QString &firstOut);
+    void emitSRFlipFlop(Element *elm, const QString &firstOut);
+    void emitTFlipFlop(Element *elm, const QString &firstOut);
+    void emitSRLatch(Element *elm, const QString &firstOut);
+    void emitMux(Element *elm);
+    void emitDemux(Element *elm);
+    void emitTruthTable(Element *elm);
+    void assignLogicOperator(Element *elm);
 
     // --- Variable / Declaration Emission ---
 
     /// Assigns variable names to all element ports in topological order.
-    void assignVariablesRec(const QVector<GraphicElement *> &elements);
+    void assignVariablesRec(const QVector<Element *> &elements);
     /// Emits `bool` declarations for auxiliary internal variables.
     void declareAuxVariables();
     /// Recursive helper: emits auxiliary variable declarations for \a elements.
-    void declareAuxVariablesRec(const QVector<GraphicElement *> &elements, const bool isBox, const QString &icPrefix);
+    void declareAuxVariablesRec(const QVector<Element *> &elements, const bool isBox, const QString &icPrefix);
     /// Recursive helper: emits the per-element sequential state variables
     /// (_inclk/_last for flip-flops, _elapsed/_interval for top-level clocks),
     /// descending into ICs. The testbench's computeLogic() recurses into nested
     /// flip-flops, so their state must be declared at every depth.
-    void declareSequentialStateRec(const QVector<GraphicElement *> &elements, bool topLevel);
+    void declareSequentialStateRec(const QVector<Element *> &elements, bool topLevel);
     void declareInputs();
     /// Emits `pinMode(OUTPUT)` calls and variable declarations for circuit outputs.
     void declareOutputs();
@@ -183,7 +183,7 @@ private:
     QTextStream m_stream;                      ///< Text stream writing to m_file.
     QVector<MappedPin> m_inputMap;             ///< Final input pin mappings.
     QVector<MappedPin> m_outputMap;            ///< Final output pin mappings.
-    const QVector<GraphicElement *> m_elements; ///< Topologically sorted circuit elements.
+    const QVector<Element *> m_elements; ///< Topologically sorted circuit elements.
     IC *m_currentIC = nullptr;                 ///< IC currently being flattened (null at top level).
     ArduinoBoardConfig m_selectedBoard;        ///< Board configuration selected during generation.
     int m_totalRequiredPins = 0;               ///< I/O pins the circuit needs (for the overflow message).

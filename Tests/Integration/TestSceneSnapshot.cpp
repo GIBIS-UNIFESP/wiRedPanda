@@ -23,9 +23,9 @@
 #include <QUndoStack>
 
 #include "App/Core/MimeTypes.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementLabel.h"
-#include "App/Element/GraphicElement.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/Commands.h"
@@ -78,10 +78,10 @@ QString portLine(const Port *port)
 /// One end of a wire: its element's id and its port's index among the element's ports, or -1 for a missing end.
 std::pair<int, int> wireEnd(const Port *port)
 {
-    if (!port || !port->graphicElement()) {
+    if (!port || !port->element()) {
         return {-1, -1};
     }
-    return {port->graphicElement()->id(), port->globalIndex()};
+    return {port->element()->id(), port->globalIndex()};
 }
 
 /// The elements by id, each with its ports; then the wires, found through the ports and sorted by their ends; then
@@ -172,7 +172,7 @@ QString dumpWireGeometry(const Scene *scene)
 
 /// The edited element's place, orientation and port counts, then each of its ports, so an edit that moves a port or
 /// changes the count shows even where no wire moves with it.
-QString dumpEditedElement(const GraphicElement *element)
+QString dumpEditedElement(const Element *element)
 {
     QStringList lines;
     lines << QString("E id=%1 type=%2 pos=%3 rot=%4 flipX=%5 flipY=%6 in=%7 out=%8")
@@ -186,7 +186,7 @@ QString dumpEditedElement(const GraphicElement *element)
     return lines.join('\n') + '\n';
 }
 
-bool hasWire(const GraphicElement *element)
+bool hasWire(const Element *element)
 {
     const auto ports = element->allPorts();
     return std::any_of(ports.cbegin(), ports.cend(), [](const Port *port) { return !port->connections().isEmpty(); });
@@ -194,7 +194,7 @@ bool hasWire(const GraphicElement *element)
 
 /// The lowest-id element with a wire attached that \a accepts, or null.
 template <typename Predicate>
-GraphicElement *firstWired(const Scene *scene, Predicate accepts)
+Element *firstWired(const Scene *scene, Predicate accepts)
 {
     for (auto *element : TestUtils::elementsById(scene)) {
         if (hasWire(element) && accepts(element)) {
@@ -208,17 +208,17 @@ GraphicElement *firstWired(const Scene *scene, Predicate accepts)
 /// fixture an InputSwitch: its graphic does not rotate (its port is re-routed instead) and it has no inputs to add, so
 /// "portcount" pins that the change does nothing to it. "resize" takes the lowest-id wired element whose inputs can
 /// grow, and "rotate-body" and "flip-body" the lowest-id wired element whose graphic rotates.
-GraphicElement *editTarget(const Scene *scene, const QString &edit)
+Element *editTarget(const Scene *scene, const QString &edit)
 {
     if (edit == "resize") {
-        return firstWired(scene, [](const GraphicElement *element) {
+        return firstWired(scene, [](const Element *element) {
             return element->maxInputSize() > element->inputSize();
         });
     }
     if (edit.endsWith("-body")) {
-        return firstWired(scene, [](const GraphicElement *element) { return element->rotatesGraphic(); });
+        return firstWired(scene, [](const Element *element) { return element->rotatesGraphic(); });
     }
-    return firstWired(scene, [](const GraphicElement *) { return true; });
+    return firstWired(scene, [](const Element *) { return true; });
 }
 
 /// Four elements of different types and widths, none on the grid: placed before they join the scene, which snaps every
@@ -283,7 +283,7 @@ void dropClone(Scene *scene, const QPointF &from, const QPointF &to)
     QPointF center;
     int elements = 0;
     for (const auto *item : items) {
-        if (item->type() == GraphicElement::Type) {
+        if (item->type() == Element::Type) {
             center += item->pos();
             ++elements;
         }
@@ -341,7 +341,7 @@ void snapPathsApply(Scene *scene, const QString &operation, MainWindow *window)
         // The first element alone, by a command as the property editor and MCP push one, its new place snapped as
         // theirs is.
         const QPointF oldPosition = first->pos();
-        first->setPos(GraphicElement::snapToGrid(oldPosition + QPointF(37, 21)));
+        first->setPos(Element::snapToGrid(oldPosition + QPointF(37, 21)));
         scene->receiveCommand(new MoveCommand({first}, {oldPosition}, scene));
     } else if (operation == "nudge-right") {
         // The scene takes an arrow key as a nudge while no item has the keyboard focus, as in the application.
@@ -506,13 +506,13 @@ void TestSceneSnapshot::testWireGeometryAfterEdit()
     }
 
     Scene *scene = workspace.scene();
-    GraphicElement *target = editTarget(scene, edit);
+    Element *target = editTarget(scene, edit);
     QVERIFY2(target, qPrintable(path + " has no element for " + edit));
 
     // Each edit goes through the entry point the application uses: a command, or the scene's action on the selection.
     if (edit == "move") {
         const QPointF oldPosition = target->pos();
-        target->setPos(GraphicElement::snapToGrid(oldPosition + QPointF(40, 20)));
+        target->setPos(Element::snapToGrid(oldPosition + QPointF(40, 20)));
         scene->receiveCommand(new MoveCommand({target}, {oldPosition}, scene));
     } else if ((edit == "portcount") || (edit == "resize")) {
         scene->receiveCommand(new ChangePortSizeCommand({target}, target->inputSize() + 1, scene, true));
@@ -597,7 +597,7 @@ void TestSceneSnapshot::testPropertyKindsMatchGolden()
             lines << QString("%1 %2").arg(QLatin1String(TestUtils::kNoCreator), TestUtils::snapshotType(type));
             continue;
         }
-        const std::unique_ptr<GraphicElement> element(ElementFactory::buildElement(type));
+        const std::unique_ptr<Element> element(ElementFactory::buildElement(type));
         QStringList kinds;
         for (const auto &property : element->editableProperties()) {
             kinds << TestUtils::snapshotPropertyKind(property.type);

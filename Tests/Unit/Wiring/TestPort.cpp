@@ -40,7 +40,7 @@ void TestPort::testSetInputsReindexesPorts()
 {
     // Regression test (F18): Display7's legacy pin remap permutes the input
     // vector via setInputs(). Connection::save() derives connection serial
-    // IDs from port->index() while GraphicElement::save() uses vector
+    // IDs from port->index() while Element::save() uses vector
     // positions — stale indices after the permutation cross-wired the display
     // pins on the next save/load round trip. setInputs() must restore the
     // index() == position invariant for any permutation.
@@ -150,14 +150,14 @@ void TestPort::testMakeSerialIdPacksElementBaseAndGlobalIndex()
     QCOMPARE(Port::makeSerialId(1, 0x1FFFF), (quint64(1) << 16) | quint64(0xFFFF));
 }
 
-void TestPort::testSetGraphicElementBindsAccessor()
+void TestPort::testSetElementBindsAccessor()
 {
     And andGate;
     InputPort port;
-    QVERIFY(port.graphicElement() == nullptr);
+    QVERIFY(port.element() == nullptr);
 
-    port.setGraphicElement(&andGate);
-    QCOMPARE(port.graphicElement(), &andGate);
+    port.setElement(&andGate);
+    QCOMPARE(port.element(), &andGate);
 }
 
 void TestPort::testAttachConnectionIsIdempotent()

@@ -49,7 +49,7 @@ struct ElementInfo<InputRotary> {
 };
 
 InputRotary::InputRotary(QGraphicsItem *parent)
-    : GraphicElementInput(ElementType::InputRotary, parent)
+    : ElementInput(ElementType::InputRotary, parent)
 {
     m_rotary = m_appearance.defaultAppearances().at(0);
 
@@ -190,7 +190,7 @@ static QSvgRenderer &rotaryArrowRenderer()
 
 void InputRotary::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    GraphicElement::paint(painter, option, widget);
+    Element::paint(painter, option, widget);
 
     // Draw a small position mark for every output port, evenly spaced around the dial.
     // The active port also gets the arrow overlay drawn on top.
@@ -270,21 +270,21 @@ void InputRotary::setOn(const bool value, const int port)
 
 void InputRotary::resetSimState()
 {
-    GraphicElement::resetSimState();
+    Element::resetSimState();
     m_currentPort = 0;
 }
 
 void InputRotary::restoreSimState(const QVector<Status> &in, int &cursor)
 {
-    GraphicElement::restoreSimState(in, cursor);
+    Element::restoreSimState(in, cursor);
 
     // The base restores the one-hot output values, but isOn() answers from m_currentPort and
-    // GraphicElementInput::updateOutputs() pushes that onto the outputs on the very next tick --
+    // ElementInput::updateOutputs() pushes that onto the outputs on the very next tick --
     // so without this the restore is undone before anything reads it. Derive the selection back
     // out of the outputs rather than smuggling an int through a QVector<Status>, whose enum has
     // no fixed underlying type and no room for a port index.
     for (int i = 0; i < outputSize(); ++i) {
-        if (GraphicElement::outputValue(i) == Status::Active) {
+        if (Element::outputValue(i) == Status::Active) {
             m_currentPort = i;
             break;
         }
@@ -312,7 +312,7 @@ void InputRotary::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void InputRotary::save(QDataStream &stream, SerializationOptions options) const
 {
-    GraphicElement::save(stream, options);
+    Element::save(stream, options);
 
     const bool slim = (options.purpose == SerializationPurpose::PortableFile);
 
@@ -331,7 +331,7 @@ void InputRotary::save(QDataStream &stream, SerializationOptions options) const
 
 void InputRotary::load(QDataStream &stream, SerializationContext &context)
 {
-    GraphicElement::load(stream, context);
+    Element::load(stream, context);
 
     if (!VersionInfo::hasQMapFormat(context.version)) {
         // v1.x–4.0 stored currentPort as a bare int; locked added in v3.1

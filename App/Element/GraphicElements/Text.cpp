@@ -46,12 +46,12 @@ struct ElementInfo<Text> {
 
 // Text is a purely decorative annotation element with no ports and no simulation role.
 Text::Text(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Text, parent)
+    : Element(ElementType::Text, parent)
 {
     QFont hintFont = m_emptyHint->font();
     hintFont.setItalic(true);
     m_emptyHint->setFont(hintFont);
-    // Matches the default label anchor (GraphicElement's own constructor, since Text never
+    // Matches the default label anchor (Element's own constructor, since Text never
     // calls setLabelAnchor() to override it) -- the hint stands in for the label until there's
     // real content to show.
     m_emptyHint->setPos(0, 64);
@@ -63,23 +63,23 @@ Text::Text(QGraphicsItem *parent)
 
 QRectF Text::boundingRect() const
 {
-    return GraphicElement::boundingRect().united(childrenBoundingRect());
+    return Element::boundingRect().united(childrenBoundingRect());
 }
 
 void Text::updateTheme()
 {
-    GraphicElement::updateTheme();
+    Element::updateTheme();
 
     // A faded, italic variant of the label color -- distinguishable from real content at a
     // glance, but not so loud it reads as an actual (empty) label.
-    QColor hintColor = ThemeManager::attributes().m_graphicElementLabelColor;
+    QColor hintColor = ThemeManager::attributes().m_elementLabelColor;
     hintColor.setAlpha(140);
     m_emptyHint->setBrush(hintColor);
 }
 
 void Text::retranslate()
 {
-    GraphicElement::retranslate();
+    Element::retranslate();
     retranslateHint();
 }
 

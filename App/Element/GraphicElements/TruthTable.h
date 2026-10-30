@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 
 /**
  * \class TruthTable
@@ -16,7 +16,7 @@
  * \details The truth table is stored as a flat QBitArray (the key).  Clicking a
  * cell in the editor dialog toggles the corresponding output bit.
  */
-class TruthTable : public GraphicElement
+class TruthTable : public Element
 {
     Q_OBJECT
 

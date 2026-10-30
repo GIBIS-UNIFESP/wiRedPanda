@@ -5,8 +5,8 @@
  * \brief libFuzzer harness targeting the pre-4.1 flat binary load path.
  *
  * Every existing harness generates v5.1 or v4.7 panda files and routes through
- * GraphicElement::loadNewFormat (the QMap-based path introduced in 4.1).
- * The original flat binary format (GraphicElement::loadOldFormat, versions 1.x
+ * Element::loadNewFormat (the QMap-based path introduced in 4.1).
+ * The original flat binary format (Element::loadOldFormat, versions 1.x
  * through 4.0.x) is entirely dark in all other harnesses.
  *
  * loadOldFormat reads a fixed sequence of fields directly from the stream:
@@ -45,8 +45,8 @@
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
 #include "App/Core/Enums.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElement.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/VersionInfo.h"
 #include "App/Scene/Scene.h"
@@ -111,7 +111,7 @@ void writeOldElement(QDataStream &s, FuzzedDataProvider &fdp,
     namespace VI = VersionInfo;
     using ET = Enums::ElementType;
 
-    // GraphicElement::Type discriminator: QGraphicsItem::UserType + 3 = 65539
+    // Element::Type discriminator: QGraphicsItem::UserType + 3 = 65539
     s << static_cast<int>(65539);
 
     // ElementType as quint64 — Serialization::deserialize reads via operator>>(ElementType&)
@@ -159,7 +159,7 @@ void writeOldElement(QDataStream &s, FuzzedDataProvider &fdp,
     // did, an AND gate with 3 to 8 inputs among them: more than an element is built with adds ports.
     // A type the factory no longer builds (JKLatch), which the reader refuses, gets 0 to 4.
     // Building a type with no creator is a broken invariant, an assertion: the harness asks first
-    std::unique_ptr<GraphicElement> built(ElementFactory::hasCreator(etype) ? ElementFactory::buildElement(etype) : nullptr);
+    std::unique_ptr<Element> built(ElementFactory::hasCreator(etype) ? ElementFactory::buildElement(etype) : nullptr);
     const auto portCount = [&](const int minimum, const int maximum) {
         return fdp.ConsumeIntegralInRange<int>(minimum, std::min(maximum, minimum + 8));
     };
@@ -357,7 +357,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
     WorkSpace workspace;
     try {
         // Pass a real contextDir so that relative appearance paths in loadPixmapAppearanceName
-        // take the "contextDir + "/" + name" branch (line 577 of GraphicElementSerializer.cpp),
+        // take the "contextDir + "/" + name" branch (line 577 of ElementSerializer.cpp),
         // which is dark when contextDir is empty.  The actual files do not need to exist —
         // loadPixmapAppearanceName only stores the path string; it does not open the file.
         workspace.load(stream, version, QDir::tempPath());

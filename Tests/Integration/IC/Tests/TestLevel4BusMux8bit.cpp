@@ -109,7 +109,7 @@ void TestLevel4BusMUX8Bit::testBusMux8Bit()
     f.sel->setOn(select);
     f.sim->update();
 
-    const TestUtils::Bits result = readMultiBitOutput(QVector<GraphicElement *>({
+    const TestUtils::Bits result = readMultiBitOutput(QVector<Element *>({
         f.out[0], f.out[1], f.out[2], f.out[3],
         f.out[4], f.out[5], f.out[6], f.out[7]
     }));

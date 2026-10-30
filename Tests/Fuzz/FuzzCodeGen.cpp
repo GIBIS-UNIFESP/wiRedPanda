@@ -53,8 +53,8 @@
 #include "App/CodeGen/SystemVerilogCodeGen.h"
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElement.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/Scene/ICRegistry.h"
@@ -83,7 +83,7 @@ std::unique_ptr<QTemporaryDir> g_dir;
 // it names load; apart from g_dir, whose files are written.
 std::unique_ptr<QTemporaryDir> g_circuitDir;
 
-void runCodeGen(const QVector<GraphicElement *> &elements)
+void runCodeGen(const QVector<Element *> &elements)
 {
     if (elements.isEmpty()) return;
 
@@ -169,7 +169,7 @@ void buildCircuit(FuzzedDataProvider &fdp, Scene *scene, bool withICs);
 
 // An IC whose body is a circuit the input describes, embedded in the scene's registry or loaded from a file in the
 // temporary directory, under one of kICNames; nullptr when the body does not load as an IC.
-GraphicElement *buildIC(FuzzedDataProvider &fdp, Scene *scene)
+Element *buildIC(FuzzedDataProvider &fdp, Scene *scene)
 {
     QByteArray blob;
     {
@@ -204,11 +204,11 @@ GraphicElement *buildIC(FuzzedDataProvider &fdp, Scene *scene)
 // and an IC with names a module must escape seldom do, so this builds them.
 void buildCircuit(FuzzedDataProvider &fdp, Scene *scene, const bool withICs)
 {
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
     const int count = fdp.ConsumeIntegralInRange<int>(1, 12);
     for (int i = 0; i < count; ++i) {
         const int kind = fdp.ConsumeIntegralInRange<int>(0, withICs ? 4 : 3);
-        GraphicElement *elm = nullptr;
+        Element *elm = nullptr;
         if (kind == 4) {
             elm = buildIC(fdp, scene);
             if (!elm) {
@@ -310,7 +310,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
         meta.insert("embeddedICs", QVariant(regBytes));
         const QByteArray outerPanda = FuzzSeed::pandaFile(meta, [](QDataStream &s) {
             // IC element: discriminator + ElementType + base map + port lists + secondary map
-            s << static_cast<int>(65539);         // GraphicElement::Type
+            s << static_cast<int>(65539);         // Element::Type
             s << static_cast<quint64>(22);         // ElementType::IC
             QMap<QString, QVariant> base;
             base.insert("pos", QVariant::fromValue(QPointF(100.0, 100.0)));

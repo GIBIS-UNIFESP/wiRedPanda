@@ -6,7 +6,7 @@
 #include <QObject>
 #include <QTest>
 
-class TestGraphicElement : public QObject
+class TestElement : public QObject
 {
     Q_OBJECT
 
@@ -33,7 +33,7 @@ private slots:
     void testBundledPicturesDrawTheirTextAsOutlines();
 
     // sceneEvent()'s Ctrl+click swallow (called directly -- see the friend declaration on
-    // GraphicElement for why a real synthesized QTest mouse press isn't used here)
+    // Element for why a real synthesized QTest mouse press isn't used here)
     void testSceneEventSwallowsCtrlClickPress();
 
     // previousColor()/nextColor()/colorNameToIndex()'s fallback branches, for an element type

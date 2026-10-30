@@ -44,8 +44,8 @@
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
 #include "App/Core/Enums.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElement.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/VersionInfo.h"
@@ -144,7 +144,7 @@ struct PortIds {
 
 // Synthesise the two-map structure each element expects:
 //
-//   [1] Base map    — read by GraphicElement::loadNewFormat()
+//   [1] Base map    — read by Element::loadNewFormat()
 //                     keys: pos, rotation, label, trigger, flippedX, flippedY
 //   [2] Port lists  — 0 or 1 port per list, each with a serialId so that
 //                     context.portMap is populated and connections can wire up
@@ -164,7 +164,7 @@ PortIds writeElementMap(QDataStream &s, FuzzedDataProvider &fdp,
     // serialId from the id and the port's position (Port::makeSerialId()). Rev101 files may hold either shape.
     const bool slim = VersionInfo::hasSlimPortablePayload(ver) && fdp.ConsumeBool();
 
-    // --- [1] Base map (GraphicElement::loadNewFormat reads these) ---
+    // --- [1] Base map (Element::loadNewFormat reads these) ---
     QMap<QString, QVariant> base;
     if (slim) base.insert("id", QVariant(elementId));
     const double x = consumeReal(fdp);
@@ -247,8 +247,8 @@ PortIds writeElementMap(QDataStream &s, FuzzedDataProvider &fdp,
 
     // All elements have m_alternativeAppearances.size() >= 1, so count=1 is
     // safe for every type.  Writing a skinName entry exercises the appearance
-    // loading path in GraphicElement::loadNewFormat (lines 338-342 of
-    // GraphicElementSerializer.cpp) which was entirely dark before this.
+    // loading path in Element::loadNewFormat (lines 338-342 of
+    // ElementSerializer.cpp) which was entirely dark before this.
     if (fdp.ConsumeBool()) {
         s << quint32(1);
         QMap<QString, QVariant> appEntry;
@@ -416,7 +416,7 @@ QByteArray buildPanda(FuzzedDataProvider &fdp)
     // --- Item stream ---
     // Serialization::deserialize() reads items in a while(!stream.atEnd()) loop
     // with NO preceding count field.  Each item starts with an int type tag:
-    //   GraphicElement::Type = QGraphicsItem::UserType + 3 = 65539
+    //   Element::Type = QGraphicsItem::UserType + 3 = 65539
     //   Connection::Type  = QGraphicsItem::UserType + 2 = 65538
     // After the element type tag, ElementType is written as quint64 via
     // operator<<(QDataStream&, const ElementType&).
@@ -428,7 +428,7 @@ QByteArray buildPanda(FuzzedDataProvider &fdp)
 
     const int elemCount = fdp.ConsumeIntegralInRange<int>(0, 8);
     for (int e = 0; e < elemCount; ++e) {
-        s << static_cast<int>(QGraphicsItem::UserType + 3); // GraphicElement::Type
+        s << static_cast<int>(QGraphicsItem::UserType + 3); // Element::Type
 
         const auto etype = kElementTypes[
             fdp.ConsumeIntegralInRange<size_t>(0, std::size(kElementTypes) - 1)];

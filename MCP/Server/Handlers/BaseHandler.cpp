@@ -7,8 +7,8 @@
 
 #include <QJsonObject>
 
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElement.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/UI/MainWindow.h"
@@ -171,7 +171,7 @@ bool BaseHandler::validateNumeric(const QJsonValue &value, const QString &paramN
     return true;
 }
 
-bool BaseHandler::validatePortRange(GraphicElement *element, int portIndex, bool isOutput, const QString &paramName, QString &errorMsg) const
+bool BaseHandler::validatePortRange(Element *element, int portIndex, bool isOutput, const QString &paramName, QString &errorMsg) const
 {
     if (!element) {
         errorMsg = QString("Invalid element for port validation");
@@ -199,7 +199,7 @@ bool BaseHandler::validatePortRange(GraphicElement *element, int portIndex, bool
     return true;
 }
 
-GraphicElement *BaseHandler::validatedElement(const QJsonObject &params, const QString &paramName, QString &errorMsg)
+Element *BaseHandler::validatedElement(const QJsonObject &params, const QString &paramName, QString &errorMsg)
 {
     if (!validatePositiveInteger(params.value(paramName), paramName, errorMsg)) {
         return nullptr;
@@ -209,7 +209,7 @@ GraphicElement *BaseHandler::validatedElement(const QJsonObject &params, const Q
         return nullptr;
     }
     auto *item = currentScene()->itemById(elementId);
-    auto *element = dynamic_cast<GraphicElement *>(item);
+    auto *element = dynamic_cast<Element *>(item);
     if (!element) {
         errorMsg = QString("Item %1 is not a graphic element").arg(elementId);
         return nullptr;
@@ -217,7 +217,7 @@ GraphicElement *BaseHandler::validatedElement(const QJsonObject &params, const Q
     return element;
 }
 
-bool BaseHandler::inputPortByLabel(GraphicElement *element, const QString &label, int &portIndex, QString &errorMsg) const
+bool BaseHandler::inputPortByLabel(Element *element, const QString &label, int &portIndex, QString &errorMsg) const
 {
     if (!element) {
         errorMsg = "Element is null";
@@ -238,7 +238,7 @@ bool BaseHandler::inputPortByLabel(GraphicElement *element, const QString &label
     return false;
 }
 
-bool BaseHandler::outputPortByLabel(GraphicElement *element, const QString &label, int &portIndex, QString &errorMsg) const
+bool BaseHandler::outputPortByLabel(Element *element, const QString &label, int &portIndex, QString &errorMsg) const
 {
     if (!element) {
         errorMsg = "Element is null";
@@ -259,7 +259,7 @@ bool BaseHandler::outputPortByLabel(GraphicElement *element, const QString &labe
     return false;
 }
 
-QString BaseHandler::availablePorts(GraphicElement *element, bool isOutput) const
+QString BaseHandler::availablePorts(Element *element, bool isOutput) const
 {
     if (!element) {
         return "(element is null)";
@@ -289,12 +289,12 @@ QString BaseHandler::availablePorts(GraphicElement *element, bool isOutput) cons
     return ports.join(", ");
 }
 
-QString BaseHandler::availableInputPorts(GraphicElement *element) const
+QString BaseHandler::availableInputPorts(Element *element) const
 {
     return availablePorts(element, false);
 }
 
-QString BaseHandler::availableOutputPorts(GraphicElement *element) const
+QString BaseHandler::availableOutputPorts(Element *element) const
 {
     return availablePorts(element, true);
 }

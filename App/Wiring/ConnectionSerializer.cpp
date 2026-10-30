@@ -4,7 +4,7 @@
 #include "App/Wiring/ConnectionSerializer.h"
 
 #include "App/Core/Common.h"
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
@@ -17,7 +17,7 @@ void ConnectionSerializer::save(const Connection &connection, QDataStream &strea
     auto calculateSerialId = [](Port *port) -> quint64 {
         if (!port) return 0;
 
-        GraphicElement *elem = port->graphicElement();
+        Element *elem = port->element();
         if (!elem) return 0;
 
         return Port::makeSerialId(static_cast<quint64>(elem->id()), port->globalIndex());

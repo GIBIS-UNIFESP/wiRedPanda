@@ -26,7 +26,7 @@
 namespace {
 /// Hand-builds a v3.1-4.0 old-format element stream (bare-QString color, predating the
 /// v4.1 QMap format) with \a inputPortCount ports and 0 outputs/appearances, mirroring
-/// GraphicElementSerializer::loadOldFormat()'s exact field order. Used for Display14/
+/// ElementSerializer::loadOldFormat()'s exact field order. Used for Display14/
 /// Display16, whose bare-string color load path has no bundled backward-compatibility
 /// fixture (unlike e.g. Buzzer's real notes.panda).
 QByteArray buildOldFormatDisplayStream(int inputPortCount, const QString &color)

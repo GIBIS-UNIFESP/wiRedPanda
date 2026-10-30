@@ -1162,7 +1162,7 @@ void TestICController::testUndoingAnICFileRemovalPutsTheFileBack()
     if (inTrash.dir().dirName() == QLatin1String("files")) {
         QVERIFY(!QFileInfo::exists(inTrash.dir().filePath("../info/" + inTrash.fileName() + ".trashinfo")));
     }
-    auto *restored = qobject_cast<IC *>(dynamic_cast<GraphicElement *>(f.tab.scene()->itemById(id)));
+    auto *restored = qobject_cast<IC *>(dynamic_cast<Element *>(f.tab.scene()->itemById(id)));
     QVERIFY(restored);
     QCOMPARE(QFileInfo(restored->file()), QFileInfo(filePath));
 

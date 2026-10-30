@@ -1,7 +1,7 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Tests/Unit/Elements/TestGraphicElement.h"
+#include "Tests/Unit/Elements/TestElement.h"
 
 #include <cmath>
 #include <memory>
@@ -65,7 +65,7 @@ QLineEdit *findInlineEditor(Scene *scene)
 
 } // namespace
 
-void TestGraphicElement::testElementPaintSelection()
+void TestElement::testElementPaintSelection()
 {
     And andGate;
     andGate.setSelected(true);
@@ -75,7 +75,7 @@ void TestGraphicElement::testElementPaintSelection()
     QVERIFY(!andGate.isSelected());
 }
 
-void TestGraphicElement::testElementSaveLoad()
+void TestElement::testElementSaveLoad()
 {
     And gate;
     gate.setRotation(90);
@@ -86,20 +86,20 @@ void TestGraphicElement::testElementSaveLoad()
     QVERIFY(!data.isEmpty());
 }
 
-void TestGraphicElement::testElementSkin()
+void TestElement::testElementSkin()
 {
     Led led;
     QVERIFY(led.hasColors());
 }
 
-void TestGraphicElement::testElementAppearance()
+void TestElement::testElementAppearance()
 {
     Led led;
     led.setColor("Red");
     QCOMPARE(led.color(), QString("Red"));
 }
 
-void TestGraphicElement::testElementTooltip()
+void TestElement::testElementTooltip()
 {
     // Every element exposes its translated name as the hover tooltip (set in the ctor). With no
     // translator loaded in the test the And gate's tooltip is its English name.
@@ -107,13 +107,13 @@ void TestGraphicElement::testElementTooltip()
     QCOMPARE(andGate.toolTip(), QStringLiteral("And"));
 }
 
-void TestGraphicElement::testElementDoubleClick()
+void TestElement::testElementDoubleClick()
 {
     And andGate;
     QCOMPARE(andGate.elementType(), ElementType::And);
 }
 
-void TestGraphicElement::testTextElement()
+void TestElement::testTextElement()
 {
     WorkSpace workspace;
     auto *text = new Text;
@@ -122,7 +122,7 @@ void TestGraphicElement::testTextElement()
     QVERIFY(!text->boundingRect().isNull());
 }
 
-void TestGraphicElement::testLineElement()
+void TestElement::testLineElement()
 {
     WorkSpace workspace;
     auto *line = new Line;
@@ -131,7 +131,7 @@ void TestGraphicElement::testLineElement()
     QVERIFY(!line->boundingRect().isNull());
 }
 
-void TestGraphicElement::testDisplay14Paint()
+void TestElement::testDisplay14Paint()
 {
     WorkSpace workspace;
     auto *disp = new Display14;
@@ -155,7 +155,7 @@ void TestGraphicElement::testDisplay14Paint()
     QVERIFY2(TestUtils::pixmapHasInk(pixmap), "Display14 paint() must draw visible pixels");
 }
 
-void TestGraphicElement::testDisplay16Paint()
+void TestElement::testDisplay16Paint()
 {
     WorkSpace workspace;
     auto *disp = new Display16;
@@ -177,7 +177,7 @@ void TestGraphicElement::testDisplay16Paint()
     QVERIFY2(TestUtils::pixmapHasInk(pixmap), "Display16 paint() must draw visible pixels");
 }
 
-void TestGraphicElement::testInlineDoubleClickRenamesLabelWithUndo()
+void TestElement::testInlineDoubleClickRenamesLabelWithUndo()
 {
     WorkSpace workspace;
     auto *led = new Led;
@@ -203,7 +203,7 @@ void TestGraphicElement::testInlineDoubleClickRenamesLabelWithUndo()
     QCOMPARE(led->label(), QString("Renamed"));
 }
 
-void TestGraphicElement::testInlineDoubleClickEscapeCancelsWithoutUndo()
+void TestElement::testInlineDoubleClickEscapeCancelsWithoutUndo()
 {
     WorkSpace workspace;
     auto *led = new Led;
@@ -222,7 +222,7 @@ void TestGraphicElement::testInlineDoubleClickEscapeCancelsWithoutUndo()
     QCOMPARE(workspace.scene()->undoStack()->count(), 0);
 }
 
-void TestGraphicElement::testInlineDoubleClickIgnoredWithoutLabel()
+void TestElement::testInlineDoubleClickIgnoredWithoutLabel()
 {
     // And has no hasLabel() support -- double-click must fall through to default Qt
     // behavior and must not spawn an inline editor.
@@ -236,7 +236,7 @@ void TestGraphicElement::testInlineDoubleClickIgnoredWithoutLabel()
     QVERIFY(!findInlineEditor(workspace.scene()));
 }
 
-void TestGraphicElement::testTextEmptyStateHintTogglesWithLabelContent()
+void TestElement::testTextEmptyStateHintTogglesWithLabelContent()
 {
     WorkSpace workspace;
     auto *text = new Text;
@@ -255,7 +255,7 @@ void TestGraphicElement::testTextEmptyStateHintTogglesWithLabelContent()
     QVERIFY(!text->m_emptyHint->isVisible());
 }
 
-void TestGraphicElement::testTextEmptyStateHintFollowsALanguageChange()
+void TestElement::testTextEmptyStateHintFollowsALanguageChange()
 {
     WorkSpace workspace;
     auto *text = new Text;
@@ -263,7 +263,7 @@ void TestGraphicElement::testTextEmptyStateHintFollowsALanguageChange()
     const QString english = text->m_emptyHint->text();
 
     // The main window retranslates every element through the base class at a language change.
-    GraphicElement *element = text;
+    Element *element = text;
     TestUtils::TagEveryStringTranslator tagging;
     QCoreApplication::installTranslator(&tagging);
     auto removeTagging = qScopeGuard([&tagging] { QCoreApplication::removeTranslator(&tagging); });
@@ -276,7 +276,7 @@ void TestGraphicElement::testTextEmptyStateHintFollowsALanguageChange()
     QCOMPARE(text->m_emptyHint->text(), english);
 }
 
-void TestGraphicElement::testLabelFontIsAFamilyThePlatformHas()
+void TestElement::testLabelFontIsAFamilyThePlatformHas()
 {
     // A label asks for a family the platform has under that name: one it lacks is matched through Qt's table of family
     // aliases, which Qt builds on first use (costly on macOS, where "Sans Serif" is no family)
@@ -293,7 +293,7 @@ void TestGraphicElement::testLabelFontIsAFamilyThePlatformHas()
     QVERIFY(font.bold());
 }
 
-void TestGraphicElement::testBundledPicturesDrawTheirTextAsOutlines()
+void TestElement::testBundledPicturesDrawTheirTextAsOutlines()
 {
     // A bundled picture's text is drawn as outlines: Qt SVG reads a font-family such as "sans-serif" as one family's
     // name, which no platform has, so the text took whatever face Qt fell back to and made Qt build its table of family
@@ -318,9 +318,9 @@ void TestGraphicElement::testBundledPicturesDrawTheirTextAsOutlines()
     QVERIFY(pictures > 100);
 }
 
-void TestGraphicElement::testSceneEventSwallowsCtrlClickPress()
+void TestElement::testSceneEventSwallowsCtrlClickPress()
 {
-    // GraphicElement::sceneEvent() swallows Ctrl+click presses so the scene's rubber-band
+    // Element::sceneEvent() swallows Ctrl+click presses so the scene's rubber-band
     // selection logic can handle them, instead of the element intercepting the press and
     // starting its own move. Called directly (via friendship) rather than through a real
     // QTest::mousePress(..., Qt::ControlModifier, ...): this sandbox's offscreen/X11 setup does
@@ -341,9 +341,9 @@ void TestGraphicElement::testSceneEventSwallowsCtrlClickPress()
     QVERIFY2(gate.sceneEvent(&releaseEvent), "Ctrl+click release must also be swallowed");
 }
 
-void TestGraphicElement::testColorCycleFunctionsDefaultToWhiteForNonColoredElement()
+void TestElement::testColorCycleFunctionsDefaultToWhiteForNonColoredElement()
 {
-    // The base GraphicElement::color() always returns an empty string; previousColor()/
+    // The base Element::color() always returns an empty string; previousColor()/
     // nextColor() must fall back to "White" (not an empty/garbage result) for an element type
     // that never overrides color(), e.g. And.
     And gate;
@@ -352,12 +352,12 @@ void TestGraphicElement::testColorCycleFunctionsDefaultToWhiteForNonColoredEleme
     QCOMPARE(gate.nextColor(), QString("White"));
 }
 
-void TestGraphicElement::testColorNameToIndexUnknownColorDefaultsToZero()
+void TestElement::testColorNameToIndexUnknownColorDefaultsToZero()
 {
-    QCOMPARE(GraphicElement::colorNameToIndex("NotARealColor"), 0);
+    QCOMPARE(Element::colorNameToIndex("NotARealColor"), 0);
 }
 
-void TestGraphicElement::testIsValidPropagatesErrorStatusToConnectedOutputs()
+void TestElement::testIsValidPropagatesErrorStatusToConnectedOutputs()
 {
     // An element with an unconnected, required input is invalid; isValid() must then mark every
     // connection on its outputs -- and the port at the connection's far end -- Status::Error, so
@@ -376,9 +376,9 @@ void TestGraphicElement::testIsValidPropagatesErrorStatusToConnectedOutputs()
     QCOMPARE(led->inputPort(0)->status(), Status::Error);
 }
 
-void TestGraphicElement::testBaseSettersAreNoOpsForUnsupportedProperties()
+void TestElement::testBaseSettersAreNoOpsForUnsupportedProperties()
 {
-    // GraphicElement's default setColor()/setAudio()/setVolume()/setFrequency()/setDelay() are
+    // Element's default setColor()/setAudio()/setVolume()/setFrequency()/setDelay() are
     // no-ops for element types that don't override them -- confirm the matching getters stay at
     // their fixed defaults afterward.
     And gate;
@@ -398,13 +398,13 @@ void TestGraphicElement::testBaseSettersAreNoOpsForUnsupportedProperties()
     QCOMPARE(gate.delay(), 0.0);
 }
 
-void TestGraphicElement::testBlobNameDefaultsToEmptyForNonIcElement()
+void TestElement::testBlobNameDefaultsToEmptyForNonIcElement()
 {
     And gate;
     QVERIFY(gate.blobName().isEmpty());
 }
 
-void TestGraphicElement::testBodiesDrawnInCodeOfferNoAppearance()
+void TestElement::testBodiesDrawnInCodeOfferNoAppearance()
 {
     // A body drawn in code is sized by its ports and never shows a custom appearance, so its type offers none
     QStringList drawnInCode;
@@ -414,7 +414,7 @@ void TestGraphicElement::testBodiesDrawnInCodeOfferNoAppearance()
         if ((type == ElementType::Unknown) || !ElementFactory::hasCreator(type)) {
             continue;
         }
-        const std::unique_ptr<GraphicElement> element(ElementFactory::buildElement(type));
+        const std::unique_ptr<Element> element(ElementFactory::buildElement(type));
         if (SnapshotAccess::pixmapIdentity(element.get()) == "footprint") {
             drawnInCode << ElementFactory::typeToText(type);
             QVERIFY2(!element->canChangeAppearance(), qPrintable(ElementFactory::typeToText(type)));
@@ -424,7 +424,7 @@ void TestGraphicElement::testBodiesDrawnInCodeOfferNoAppearance()
     QCOMPARE(drawnInCode, QStringList({"Demux", "Mux", "TruthTable"}));
 }
 
-void TestGraphicElement::testRetranslateUpdatesTranslatedNameToolTipAndPortName()
+void TestElement::testRetranslateUpdatesTranslatedNameToolTipAndPortName()
 {
     And gate;
     gate.retranslate();
@@ -434,20 +434,20 @@ void TestGraphicElement::testRetranslateUpdatesTranslatedNameToolTipAndPortName(
     QCOMPARE(gate.objectName(), expected);
 }
 
-void TestGraphicElement::testSnapToGridKeepsAPositionBeyondIntRange()
+void TestElement::testSnapToGridKeepsAPositionBeyondIntRange()
 {
     // A file may hold any finite position, and every move, paste and drop snaps it: a position past int's range snaps
     // in floating point, a position on the grid unchanged.
-    const QPointF snapped = GraphicElement::snapToGrid(QPointF(-5e153, 1e10), 8);
+    const QPointF snapped = Element::snapToGrid(QPointF(-5e153, 1e10), 8);
     QCOMPARE(snapped.y(), 1e10);
     QVERIFY(qFuzzyCompare(snapped.x(), -5e153));
 
     // Positions within int's range snap as they always have, halves away from zero
-    QCOMPARE(GraphicElement::snapToGrid(QPointF(12, -12), 8), QPointF(16, -16));
-    QCOMPARE(GraphicElement::snapToGrid(QPointF(11.9, -3.9), 8), QPointF(8, 0));
+    QCOMPARE(Element::snapToGrid(QPointF(12, -12), 8), QPointF(16, -16));
+    QCOMPARE(Element::snapToGrid(QPointF(11.9, -3.9), 8), QPointF(8, 0));
 
     // A small negative value snaps to +0, as an int did, not -0, which equals it but saves as other bytes
-    const QPointF nearOrigin = GraphicElement::snapToGrid(QPointF(-3.9, -0.5), 8);
+    const QPointF nearOrigin = Element::snapToGrid(QPointF(-3.9, -0.5), 8);
     QVERIFY(!std::signbit(nearOrigin.x()));
     QVERIFY(!std::signbit(nearOrigin.y()));
 }

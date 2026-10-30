@@ -13,7 +13,7 @@
 #include "App/Core/Common.h"
 #include "App/Core/Priorities.h"
 #include "App/Core/SimulationHost.h"
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/IC.h"
 #include "App/Wiring/Connection.h"
@@ -231,7 +231,7 @@ void Simulation::update()
     }
 }
 
-void Simulation::pushVisualStatuses(const QVector<GraphicElement *> &elements, const QVector<GraphicElement *> &outputs)
+void Simulation::pushVisualStatuses(const QVector<Element *> &elements, const QVector<Element *> &outputs)
 {
     // Phase 3: push computed logic values onto all output port visuals.
     // Iterating elements (not connections) ensures unconnected output ports
@@ -263,7 +263,7 @@ void Simulation::updatePort(OutputPort *port)
         return;
     }
 
-    auto *element = port->graphicElement();
+    auto *element = port->element();
     if (!element) { // LCOV_EXCL_LINE — every Port has a non-null owner set unconditionally by ElementPorts::addPort() at construction (the "port always has an owner" invariant established throughout this sweep).
         port->setStatus(Status::Unknown); // LCOV_EXCL_LINE — see above.
         return; // LCOV_EXCL_LINE — see above.
@@ -285,7 +285,7 @@ void Simulation::updatePort(InputPort *port)
     port->setStatus(status);
 
     // Output elements (LEDs, buzzers) need an explicit repaint to show the new state.
-    auto *elm = port->graphicElement();
+    auto *elm = port->element();
     if (elm && elm->elementGroup() == ElementGroup::Output) {
         elm->refresh();
     }
@@ -328,7 +328,7 @@ bool Simulation::isRunning()
     return m_timer.isActive();
 }
 
-bool Simulation::isInFeedbackLoop(const GraphicElement *element) const
+bool Simulation::isInFeedbackLoop(const Element *element) const
 {
     return m_simFeedbackNodes.contains(element);
 }
@@ -406,7 +406,7 @@ bool Simulation::isUserMuted() const
     return m_userMuted;
 }
 
-bool Simulation::updateWithIterativeSettling(const QVector<GraphicElement *> &elements)
+bool Simulation::updateWithIterativeSettling(const QVector<Element *> &elements)
 {
     const bool converged = iterativeSettle(elements);
     if (!converged && !m_convergenceWarned) {
@@ -432,7 +432,7 @@ bool Simulation::initialize()
     m_sortedElements.clear();
     m_sequentialElements.clear();
 
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
     auto items = m_host->simulationItems();
 
     // Sort items by position coordinates for consistent ordering between runs.
@@ -469,9 +469,9 @@ bool Simulation::initialize()
             continue;
         }
 
-        if (item->type() == GraphicElement::Type) {
-            auto *element = qgraphicsitem_cast<GraphicElement *>(item);
-            if (!element) { // LCOV_EXCL_LINE — item->type() == GraphicElement::Type is GraphicElement's own hardcoded type() override, so the cast can never fail for an item reporting exactly that type.
+        if (item->type() == Element::Type) {
+            auto *element = qgraphicsitem_cast<Element *>(item);
+            if (!element) { // LCOV_EXCL_LINE — item->type() == Element::Type is Element's own hardcoded type() override, so the cast can never fail for an item reporting exactly that type.
                 continue; // LCOV_EXCL_LINE — see above.
             }
             elements.append(element);
@@ -487,7 +487,7 @@ bool Simulation::initialize()
             }
 
             if (element->elementGroup() == ElementGroup::Input) {
-                auto *input = qobject_cast<GraphicElementInput *>(element);
+                auto *input = qobject_cast<ElementInput *>(element);
                 if (input) {
                     m_inputs.append(input);
                 }
@@ -545,7 +545,7 @@ bool Simulation::initialize()
 
 // --- Simulation graph building ---
 
-void Simulation::buildConnectionGraph(const QVector<GraphicElement *> &elements)
+void Simulation::buildConnectionGraph(const QVector<Element *> &elements)
 {
     for (auto *elm : std::as_const(elements)) {
         for (int i = 0; i < elm->inputSize(); ++i) {
@@ -558,7 +558,7 @@ void Simulation::buildConnectionGraph(const QVector<GraphicElement *> &elements)
                     continue; // LCOV_EXCL_LINE — see above.
                 }
                 if (auto *outputPort = connection->startPort()) {
-                    auto *sourceElement = outputPort->graphicElement();
+                    auto *sourceElement = outputPort->element();
                     if (sourceElement) {
                         elm->connectPredecessor(i, sourceElement, outputPort->index());
                     }
@@ -568,7 +568,7 @@ void Simulation::buildConnectionGraph(const QVector<GraphicElement *> &elements)
     }
 }
 
-void Simulation::connectWirelessElements(const QVector<GraphicElement *> &elements)
+void Simulation::connectWirelessElements(const QVector<Element *> &elements)
 {
     const auto txMap = buildTxMap(elements);
 
@@ -585,9 +585,9 @@ void Simulation::connectWirelessElements(const QVector<GraphicElement *> &elemen
     }
 }
 
-QHash<QString, GraphicElement *> Simulation::buildTxMap(const QVector<GraphicElement *> &elements)
+QHash<QString, Element *> Simulation::buildTxMap(const QVector<Element *> &elements)
 {
-    QHash<QString, GraphicElement *> txMap;
+    QHash<QString, Element *> txMap;
     for (auto *elm : std::as_const(elements)) {
         if (elm->wirelessMode() == WirelessMode::Tx && !elm->label().isEmpty()) {
             if (!txMap.contains(elm->label())) {
@@ -596,20 +596,20 @@ QHash<QString, GraphicElement *> Simulation::buildTxMap(const QVector<GraphicEle
         }
     }
     return txMap;
-} // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned QHash<QString, GraphicElement *>, never reached after the return above.
+} // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned QHash<QString, Element *>, never reached after the return above.
 
-QHash<GraphicElement *, QVector<GraphicElement *>> Simulation::buildSuccessorGraph(
-    const QVector<GraphicElement *> &elements,
-    const QHash<QString, GraphicElement *> &txMap)
+QHash<Element *, QVector<Element *>> Simulation::buildSuccessorGraph(
+    const QVector<Element *> &elements,
+    const QHash<QString, Element *> &txMap)
 {
-    QHash<GraphicElement *, QVector<GraphicElement *>> successors;
+    QHash<Element *, QVector<Element *>> successors;
 
     // Build successor edges from physical connections
     for (auto *elm : std::as_const(elements)) {
         for (auto *outputPort : elm->outputs()) {
             for (auto *conn : outputPort->connections()) {
                 if (auto *endPort = conn->endPort()) {
-                    auto *successor = endPort->graphicElement();
+                    auto *successor = endPort->element();
                     if (successor) {
                         auto &vec = successors[elm];
                         if (!vec.contains(successor)) {
@@ -638,29 +638,29 @@ QHash<GraphicElement *, QVector<GraphicElement *>> Simulation::buildSuccessorGra
     }
 
     return successors;
-} // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned QHash<GraphicElement *, QVector<GraphicElement *>>, never reached after the return above.
+} // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned QHash<Element *, QVector<Element *>>, never reached after the return above.
 
 Simulation::SortResult Simulation::topologicalSort(
-    const QVector<GraphicElement *> &elements,
-    const QHash<GraphicElement *, QVector<GraphicElement *>> &successors)
+    const QVector<Element *> &elements,
+    const QHash<Element *, QVector<Element *>> &successors)
 {
     SortResult result;
 
-    QVector<GraphicElement *> rawPtrs(elements);
+    QVector<Element *> rawPtrs(elements);
     calculatePriorities(rawPtrs, successors, result.priorities);
     result.feedbackNodes = findFeedbackNodes(rawPtrs, successors);
 
     result.sorted = elements;
     std::stable_sort(result.sorted.begin(), result.sorted.end(),
         [&result](const auto *a, const auto *b) {
-            return result.priorities.value(const_cast<GraphicElement *>(a), -1)
-                 > result.priorities.value(const_cast<GraphicElement *>(b), -1);
+            return result.priorities.value(const_cast<Element *>(a), -1)
+                 > result.priorities.value(const_cast<Element *>(b), -1);
         });
 
     return result;
 }
 
-bool Simulation::iterativeSettle(const QVector<GraphicElement *> &elements, const int maxIterations)
+bool Simulation::iterativeSettle(const QVector<Element *> &elements, const int maxIterations)
 {
     for (int iteration = 0; iteration < maxIterations; ++iteration) {
         for (auto *element : std::as_const(elements)) {
@@ -681,7 +681,7 @@ bool Simulation::iterativeSettle(const QVector<GraphicElement *> &elements, cons
     return false;
 }
 
-void Simulation::sortSimElements(const QVector<GraphicElement *> &elements)
+void Simulation::sortSimElements(const QVector<Element *> &elements)
 {
     const auto txMap = buildTxMap(elements);
     const auto successors = buildSuccessorGraph(elements, txMap);
@@ -699,7 +699,7 @@ void Simulation::sortSimElements(const QVector<GraphicElement *> &elements)
     m_sortedElements = result.sorted;
 }
 
-void Simulation::collectSequentialElements(const QVector<GraphicElement *> &elements)
+void Simulation::collectSequentialElements(const QVector<Element *> &elements)
 {
     for (auto *elm : std::as_const(elements)) {
         if (!elm) {

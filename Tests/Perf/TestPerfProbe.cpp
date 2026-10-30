@@ -13,7 +13,7 @@
 #include <QTest>
 #include <QUndoStack>
 
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 #include "App/IO/Serialization.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/ConnectionManager.h"
@@ -53,10 +53,10 @@ struct WireEnds {
 };
 
 /// The circuit's elements in ascending id: the order the edits pick their elements in.
-QVector<GraphicElement *> elementsInIdOrder(const Scene *scene)
+QVector<Element *> elementsInIdOrder(const Scene *scene)
 {
-    QVector<GraphicElement *> elements = scene->unsortedElements();
-    std::sort(elements.begin(), elements.end(), [](const GraphicElement *a, const GraphicElement *b) {
+    QVector<Element *> elements = scene->unsortedElements();
+    std::sort(elements.begin(), elements.end(), [](const Element *a, const Element *b) {
         return a->id() < b->id();
     });
     return elements;
@@ -200,7 +200,7 @@ Q_NEVER_INLINE void phaseUndo(Probe &probe)
 }
 
 /// Moves \a element 64 units to the right as a drag does (the move, then its command), then the tick.
-Q_NEVER_INLINE void phaseMove(Probe &probe, GraphicElement *element)
+Q_NEVER_INLINE void phaseMove(Probe &probe, Element *element)
 {
     const QPointF oldPosition = element->pos();
     element->setPos(oldPosition + QPointF(64, 0));

@@ -36,8 +36,8 @@
 #include "App/Core/ItemWithId.h"
 #include "App/Core/MimeTypes.h"
 #include "App/Core/ThemeManager.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/AudioOutputElement.h"
 #include "App/Element/GraphicElements/InputButton.h"
@@ -118,7 +118,7 @@ void TestScene::testRemoveElement()
     WorkSpace workspace;
     auto *scene = workspace.scene();
 
-    auto and1 = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
+    auto and1 = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::And));
     auto *and2 = ElementFactory::buildElement(ElementType::And);
     auto *or1 = ElementFactory::buildElement(ElementType::Or);
 
@@ -1025,15 +1025,15 @@ void TestScene::testElementMorphingWithConnections()
 
     // Scene::elements() structurally excludes Connections, so it can't reflect wire survival --
     // check the connection count and its actual endpoints. MorphCommand replaces andGate with a
-    // new GraphicElement instance (the old pointer is stale), so re-resolve it by id.
+    // new Element instance (the old pointer is stale), so re-resolve it by id.
     QCOMPARE(scene->elements().size(), 2);
     QCOMPARE(TestUtils::countConnections(scene.get()), 1);
 
-    auto *morphedElm = dynamic_cast<GraphicElement *>(scene->itemById(andId));
+    auto *morphedElm = dynamic_cast<Element *>(scene->itemById(andId));
     QVERIFY(morphedElm);
     QVERIFY(morphedElm->elementType() != ElementType::And);
-    QCOMPARE(conn->startPort()->graphicElement(), morphedElm);
-    QCOMPARE(conn->endPort()->graphicElement(), led);
+    QCOMPARE(conn->startPort()->element(), morphedElm);
+    QCOMPARE(conn->endPort()->element(), led);
 }
 
 void TestScene::testElementMorphingPropertyPreservation()
@@ -1275,7 +1275,7 @@ void TestScene::testShowGatesWithMultipleElements()
     auto scene = std::make_unique<Scene>();
 
     // Add multiple gates
-    QVector<GraphicElement *> gates;
+    QVector<Element *> gates;
     for (int i = 0; i < 5; ++i) {
         auto *gate = ElementFactory::buildElement(ElementType::And);
         gate->setPos(i * 100, 0);
@@ -1713,9 +1713,9 @@ namespace TestSceneSelectionHelpers {
 
 /// Fifty And gates, in ten columns of five with every gate of a column at the same x, each labelled with its place in
 /// id order, every one selected: Qt keeps a selection of fifty in a hash set, out of id order in every run.
-QList<GraphicElement *> addSelectedColumns(Scene *scene)
+QList<Element *> addSelectedColumns(Scene *scene)
 {
-    QList<GraphicElement *> elements;
+    QList<Element *> elements;
     for (int column = 0; column < 10; ++column) {
         for (int row = 0; row < 5; ++row) {
             auto *element = ElementFactory::buildElement(ElementType::And);
@@ -1730,7 +1730,7 @@ QList<GraphicElement *> addSelectedColumns(Scene *scene)
 }
 
 /// The ids of \a elements, in their order.
-QList<int> idsOf(const QList<GraphicElement *> &elements)
+QList<int> idsOf(const QList<Element *> &elements)
 {
     QList<int> ids;
     for (const auto *element : elements) {
@@ -1783,7 +1783,7 @@ void TestScene::testDuplicateNumbersTheCopiesInIdOrder()
 
     scene->clipboardManager()->duplicate();
 
-    QList<GraphicElement *> copies;
+    QList<Element *> copies;
     for (auto *element : TestUtils::elementsById(scene.get())) {
         if (!originals.contains(element)) {
             copies << element;
@@ -1809,8 +1809,8 @@ void TestScene::testDeleteUndoRestoresInIdOrder()
 
     QList<int> stacked;
     for (auto *item : scene->items(Qt::AscendingOrder)) {
-        if (item->type() == GraphicElement::Type) {
-            stacked << static_cast<GraphicElement *>(item)->id();
+        if (item->type() == Element::Type) {
+            stacked << static_cast<Element *>(item)->id();
         }
     }
     QCOMPARE(stacked.size(), 50);
@@ -1848,8 +1848,8 @@ QStringList stacked(Scene *scene)
 {
     QStringList names;
     for (auto *item : scene->QGraphicsScene::items(Qt::AscendingOrder)) {
-        if (item->type() == GraphicElement::Type) {
-            names << 'E' + QString::number(static_cast<GraphicElement *>(item)->id());
+        if (item->type() == Element::Type) {
+            names << 'E' + QString::number(static_cast<Element *>(item)->id());
         } else if (item->type() == Connection::Type) {
             names << 'W' + QString::number(static_cast<Connection *>(item)->id());
         }
@@ -1874,7 +1874,7 @@ void TestScene::testUndoRestoresTheBottomElementAtTheBottom()
     QFETCH(QString, edit);
     using namespace TestSceneStackingHelpers;
     auto scene = std::make_unique<Scene>();
-    QList<GraphicElement *> elements;
+    QList<Element *> elements;
     int x = 24;
     for (const auto type : {ElementType::And, ElementType::Or, ElementType::Led}) {
         auto *element = ElementFactory::buildElement(type);
@@ -1908,7 +1908,7 @@ void TestScene::testDeleteUndoKeepsTheStackingOrder()
     // back at its place among its own kind, each restored one below the ones above it that stayed.
     using namespace TestSceneStackingHelpers;
     auto scene = std::make_unique<Scene>();
-    QList<GraphicElement *> gates;
+    QList<Element *> gates;
     for (int i = 0; i < 1000; ++i) {
         auto *gate = ElementFactory::buildElement(ElementType::And);
         gate->setPos((i % 40) * 80, (i / 40) * 80);
@@ -2050,7 +2050,7 @@ void TestScene::testPasteOfUnreadableItemsChangesNothing()
     {
         QDataStream itemStream(&items, QIODevice::WriteOnly);
         Serialization::writePandaHeader(itemStream);
-        itemStream << QPointF() << static_cast<int>(GraphicElement::Type);
+        itemStream << QPointF() << static_cast<int>(Element::Type);
     }
 
     setClipboardWithBlob(blob, items);
@@ -2116,7 +2116,7 @@ void TestScene::testUndoOfAPasteGrowsLinearly()
     };
     const auto bestTimes = [](const int n) {
         WorkSpace source;
-        GraphicElement *previous = nullptr;
+        Element *previous = nullptr;
         for (int i = 0; i < n; ++i) {
             auto *notGate = ElementFactory::buildElement(ElementType::Not);
             notGate->setPos(64 * (i % 100), 64 * (i / 100));
@@ -2199,7 +2199,7 @@ void TestScene::testSortSimpleChain()
     builder.connect(&andGate, 0, &led, 0);
 
     // Get only our specific elements (don't rely on scene elements)
-    QVector<GraphicElement *> elements{&sw, &andGate, &led};
+    QVector<Element *> elements{&sw, &andGate, &led};
 
     // Sort elements
     auto sorted = Scene::sortByTopology(elements);
@@ -2255,7 +2255,7 @@ void TestScene::testSortMultipleChains()
     builder.connect(&orGate, 0, &led2, 0);
 
     // Use our specific elements
-    QVector<GraphicElement *> elements{&sw1, &sw2, &andGate, &orGate, &led1, &led2};
+    QVector<Element *> elements{&sw1, &sw2, &andGate, &orGate, &led1, &led2};
 
     // Sort elements
     auto sorted = Scene::sortByTopology(elements);
@@ -2305,7 +2305,7 @@ void TestScene::testSortCycleDetection()
     builder.connect(&orGate, 0, &andGate, 1);
 
     // Use our specific elements
-    QVector<GraphicElement *> elements{&sw, &andGate, &orGate};
+    QVector<Element *> elements{&sw, &andGate, &orGate};
 
     // Sort should handle cycle without hanging
     auto sorted = Scene::sortByTopology(elements);
@@ -2360,7 +2360,7 @@ void TestScene::testSortDisconnectedComponents()
     // SW1 is left disconnected
 
     // Use our specific elements
-    QVector<GraphicElement *> elements{&sw1, &sw2, &andGate, &led};
+    QVector<Element *> elements{&sw1, &sw2, &andGate, &led};
 
     // Sort should handle disconnected components
     auto sorted = Scene::sortByTopology(elements);
@@ -2369,7 +2369,7 @@ void TestScene::testSortDisconnectedComponents()
     QCOMPARE(sorted.size(), 4);
 
     // Find indices of each element in sorted order
-    QHash<GraphicElement*, int> sortedIndex;
+    QHash<Element*, int> sortedIndex;
     for (int i = 0; i < sorted.size(); ++i) {
         sortedIndex[sorted[i]] = i;
     }
@@ -2477,7 +2477,7 @@ void TestScene::testDrainConnectionsCleansRegistryHC()
     // could reach ~Port with a non-empty m_connections list.
     scene->removeItem(sw);
     delete sw;
-    // ~InputSwitch → ~GraphicElement → ~QGraphicsItem cascades into
+    // ~InputSwitch → ~Element → ~QGraphicsItem cascades into
     // ~OutputPort → drainConnections(false) → `delete conn` (bare).
 
     // Expectation (post-fix): drainConnections routed the delete through
@@ -3149,7 +3149,7 @@ void TestScene::testDraggingElementInACentredSceneKeepsTheViewStill()
     Scene *scene = workspace.scene();
     GraphicsView *view = workspace.view();
     auto *gate = new And();
-    gate->setPos(GraphicElement::snapToGrid(view->mapToScene(QPoint(600, 400))));
+    gate->setPos(Element::snapToGrid(view->mapToScene(QPoint(600, 400))));
     scene->addItem(gate);
     const QPointF corner = view->mapToScene(QPoint(0, 0));
     QVERIFY(corner != QPointF(0, 0));
@@ -3415,7 +3415,7 @@ void TestScene::testContextMenuPasteOfAClipboardThatDoesNotReadReportsIt()
     {
         QDataStream itemStream(&items, QIODevice::WriteOnly);
         Serialization::writePandaHeader(itemStream);
-        itemStream << QPointF() << static_cast<int>(GraphicElement::Type);
+        itemStream << QPointF() << static_cast<int>(Element::Type);
     }
     auto *mimeData = new QMimeData;
     mimeData->setData(MimeType::Clipboard, items);

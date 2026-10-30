@@ -47,7 +47,7 @@ QImage renderScaledImage(Scene *scene, const QRectF &paddedRect)
 {
     // Cap the output at a sane maximum dimension. paddedRect derives from element positions
     // loaded from a .panda file (or set via the MCP create_element/move_element commands, which
-    // accept any finite coordinate); the only check on load (GraphicElementSerializer's position
+    // accept any finite coordinate); the only check on load (ElementSerializer's position
     // validation) rejects non-finite coordinates but never bounds magnitude, so a crafted or
     // corrupted file — or a scripted MCP client — with one element at a large-but-finite
     // position would otherwise size this image proportionally — potentially tens of gigabytes.

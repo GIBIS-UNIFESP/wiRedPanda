@@ -27,16 +27,16 @@
 #include <QString>
 #include <QVector>
 
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 #include "App/Element/IC.h"
 
 namespace FuzzCircuitDir {
 
 /// The number of \a elements and of the elements every IC among them loaded, nested ICs' included
-inline qsizetype loadedElementCount(const QVector<GraphicElement *> &elements)
+inline qsizetype loadedElementCount(const QVector<Element *> &elements)
 {
     qsizetype count = elements.size();
-    for (const GraphicElement *element : elements) {
+    for (const Element *element : elements) {
         if (const auto *ic = qobject_cast<const IC *>(element)) {
             count += loadedElementCount(ic->internalElements());
         }

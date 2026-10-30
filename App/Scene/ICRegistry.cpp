@@ -14,7 +14,7 @@
 
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 #include "App/Element/IC.h"
 #include "App/IO/FileUtils.h"
 #include "App/IO/Serialization.h"
@@ -67,10 +67,10 @@ void ICRegistry::watchFile(const QString &filePath)
     }
 }
 
-QList<GraphicElement *> ICRegistry::findICsByFile(const QString &fileName) const
+QList<Element *> ICRegistry::findICsByFile(const QString &fileName) const
 {
     const QFileInfo target(fileName);
-    QList<GraphicElement *> result;
+    QList<Element *> result;
     for (auto *elm : m_scene->elements()) {
         if (elm->elementType() == ElementType::IC) {
             auto *ic = static_cast<IC *>(elm);
@@ -204,16 +204,16 @@ void ICRegistry::clearBlobs()
     m_blobs.clear();
 }
 
-QList<GraphicElement *> ICRegistry::findICsByBlobName(const QString &blobName) const
+QList<Element *> ICRegistry::findICsByBlobName(const QString &blobName) const
 {
-    QList<GraphicElement *> result;
+    QList<Element *> result;
     for (auto *elm : m_scene->elements()) {
         if (elm->isEmbedded() && elm->blobName() == blobName) {
             result.append(elm);
         }
     }
     return result;
-} // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned QList<GraphicElement *>, never reached after the return above.
+} // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned QList<Element *>, never reached after the return above.
 
 bool ICRegistry::initEmbeddedIC(IC *ic, const QString &blobName)
 {
@@ -337,7 +337,7 @@ int ICRegistry::extractToFile(const QString &blobName, const QString &filePath, 
     return static_cast<int>(targets.size());
 }
 
-void ICRegistry::rollbackElements(const QList<GraphicElement *> &elements, const QByteArray &snapshot,
+void ICRegistry::rollbackElements(const QList<Element *> &elements, const QByteArray &snapshot,
                                    Scene *scene)
 {
     QByteArray data(snapshot);
@@ -350,7 +350,7 @@ void ICRegistry::rollbackElements(const QList<GraphicElement *> &elements, const
     }
 }
 
-void ICRegistry::reloadTargetsAtomically(const QList<GraphicElement *> &targets, const QByteArray &oldData,
+void ICRegistry::reloadTargetsAtomically(const QList<Element *> &targets, const QByteArray &oldData,
                                           const std::function<void(IC *)> &mutate)
 {
     // Stop the simulation for the entire loop, not just each individual mutation. Between
@@ -358,7 +358,7 @@ void ICRegistry::reloadTargetsAtomically(const QList<GraphicElement *> &targets,
     // dangling pointers; ticking on that state would fault — and that stale state persists
     // across the whole loop, since setCircuitUpdateRequired() only runs once, after every
     // target has been reloaded, not after each one.
-    QList<GraphicElement *> updated;
+    QList<Element *> updated;
     SimulationBlocker blocker(m_scene->simulation());
     try {
         for (auto *elm : targets) {
@@ -515,7 +515,7 @@ void ICRegistry::renameBlobReference(QByteArray &blobData, const QString &oldNam
     blobData = newBlob;
 }
 
-QByteArray ICRegistry::captureSnapshot(const QList<GraphicElement *> &targets)
+QByteArray ICRegistry::captureSnapshot(const QList<Element *> &targets)
 {
     QByteArray data;
     QDataStream stream(&data, QIODevice::WriteOnly);

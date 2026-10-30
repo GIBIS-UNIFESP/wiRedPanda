@@ -75,7 +75,7 @@ void TestDisplay7::testDisplay7LoadPreV16RemapsPinsToCanonicalOrder()
     // Pre-1.6 files used a different pin-to-segment layout; load() applies a permutation
     // (and, since 1.6 < 1.7, a second one right after) to remap old positional indices onto
     // the canonical layout. Hand-built old-format stream (V_1_6/V_1_7 predate the QMap
-    // format), matching GraphicElementSerializer::loadOldFormat()'s exact field order.
+    // format), matching ElementSerializer::loadOldFormat()'s exact field order.
     QByteArray data;
     QDataStream writeStream(&data, QIODevice::WriteOnly);
     writeStream << QPointF(0.0, 0.0);   // loadPos

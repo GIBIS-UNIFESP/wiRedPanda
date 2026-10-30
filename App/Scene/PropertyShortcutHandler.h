@@ -11,7 +11,7 @@
 
 #include <QCoreApplication>
 
-class GraphicElement;
+class Element;
 class Scene;
 
 /**
@@ -50,5 +50,5 @@ private:
     void adjustSecondaryProperty(int dir);
     /// Snapshots \a element, applies \a mutate, then pushes an UpdateCommand so the
     /// change is undoable. Shared by adjustMainProperty() and adjustSecondaryProperty().
-    void applyWithUndo(GraphicElement *element, const std::function<void()> &mutate);
+    void applyWithUndo(Element *element, const std::function<void()> &mutate);
 };

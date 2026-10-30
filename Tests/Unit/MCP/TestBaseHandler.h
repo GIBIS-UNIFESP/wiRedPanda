@@ -49,7 +49,7 @@ private slots:
 
     void testValidatedElementRejectsNonPositiveParam();
     void testValidatedElementRejectsMissingElement();
-    void testValidatedElementRejectsNonGraphicElementItem();
+    void testValidatedElementRejectsNonElementItem();
     void testValidatedElementAcceptsRealElement();
 
     void testInputPortByLabelRejectsNullElement();

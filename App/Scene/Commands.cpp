@@ -19,9 +19,9 @@
 
 #include "App/Core/Common.h"
 #include "App/Core/Constants.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElement.h"
-#include "App/Element/GraphicElementInput.h"
+#include "App/Element/ElementInput.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Element/GraphicElements/TruthTable.h"
@@ -56,12 +56,12 @@ void storeOtherIds(const QList<QGraphicsItem *> &connections, const QList<int> &
     const QSet<int> idSet(ids.cbegin(), ids.cend());
     for (auto *item : connections) {
         if (auto *conn = qgraphicsitem_cast<Connection *>(item)) {
-            if (auto *port1 = conn->startPort(); port1 && port1->graphicElement() && !idSet.contains(port1->graphicElement()->id())) {
-                otherIds.append(port1->graphicElement()->id());
+            if (auto *port1 = conn->startPort(); port1 && port1->element() && !idSet.contains(port1->element()->id())) {
+                otherIds.append(port1->element()->id());
             }
 
-            if (auto *port2 = conn->endPort(); port2 && port2->graphicElement() && !idSet.contains(port2->graphicElement()->id())) {
-                otherIds.append(port2->graphicElement()->id());
+            if (auto *port2 = conn->endPort(); port2 && port2->element() && !idSet.contains(port2->element()->id())) {
+                otherIds.append(port2->element()->id());
             }
         }
     }
@@ -78,9 +78,9 @@ const QList<QGraphicsItem *> loadList(const QList<QGraphicsItem *> &items, QList
     // --- Collect elements in the operation ---
     QList<QGraphicsItem *> elements;
     elements.reserve(items.size());
-    /* Stores selected graphicElements */
+    /* Stores selected elements */
     for (auto *item : items) {
-        if (item->type() == GraphicElement::Type) {
+        if (item->type() == Element::Type) {
             if (!listed.contains(item)) {
                 listed.insert(item);
                 elements.append(item);
@@ -94,7 +94,7 @@ const QList<QGraphicsItem *> loadList(const QList<QGraphicsItem *> &items, QList
     QList<QGraphicsItem *> connections;
     /* Stores all the wires linked to these elements */
     for (auto *item : elements) {
-        if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item)) {
+        if (auto *elm = qgraphicsitem_cast<Element *>(item)) {
             for (auto *port : elm->inputs()) {
                 for (auto *conn : port->connections()) {
                     if (!listed.contains(conn)) {
@@ -150,13 +150,13 @@ std::optional<QList<QGraphicsItem *>> findItems(Scene *scene, const QList<int> &
     return items;
 }
 
-std::optional<QList<GraphicElement *>> findElements(Scene *scene, const QList<int> &ids)
+std::optional<QList<Element *>> findElements(Scene *scene, const QList<int> &ids)
 {
-    QList<GraphicElement *> items;
+    QList<Element *> items;
     items.reserve(ids.size());
 
     for (const int id : ids) {
-        auto *item = dynamic_cast<GraphicElement *>(scene->itemById(id));
+        auto *item = dynamic_cast<Element *>(scene->itemById(id));
         if (!item) {
             return std::nullopt;
         }
@@ -180,9 +180,9 @@ void drop(QUndoCommand *command, Scene *scene)
     scene->keepCommandFailure(std::current_exception());
 }
 
-std::vector<std::unique_ptr<GraphicElement>> copiesOf(const QList<GraphicElement *> &elements)
+std::vector<std::unique_ptr<Element>> copiesOf(const QList<Element *> &elements)
 {
-    std::vector<std::unique_ptr<GraphicElement>> copies;
+    std::vector<std::unique_ptr<Element>> copies;
     copies.reserve(static_cast<std::size_t>(elements.size()));
     for (const auto *elm : elements) {
         copies.emplace_back(ElementFactory::buildElement(elm->elementType()));
@@ -195,9 +195,9 @@ std::vector<std::unique_ptr<GraphicElement>> copiesOf(const QList<GraphicElement
     return copies;
 }
 
-QList<GraphicElement *> pointers(const std::vector<std::unique_ptr<GraphicElement>> &copies)
+QList<Element *> pointers(const std::vector<std::unique_ptr<Element>> &copies)
 {
-    QList<GraphicElement *> elements;
+    QList<Element *> elements;
     elements.reserve(static_cast<qsizetype>(copies.size()));
     for (const auto &copy : copies) {
         elements.append(copy.get());
@@ -205,7 +205,7 @@ QList<GraphicElement *> pointers(const std::vector<std::unique_ptr<GraphicElemen
     return elements;
 }
 
-void readElements(Scene *scene, QByteArray &itemData, const QList<GraphicElement *> &targets)
+void readElements(Scene *scene, QByteArray &itemData, const QList<Element *> &targets)
 {
     QDataStream stream(&itemData, QIODevice::ReadOnly);
     const QVersionNumber version = Serialization::readPandaHeader(stream);
@@ -218,7 +218,7 @@ void readElements(Scene *scene, QByteArray &itemData, const QList<GraphicElement
     }
 }
 
-void readCopies(Scene *scene, QByteArray &itemData, const QList<GraphicElement *> &elements)
+void readCopies(Scene *scene, QByteArray &itemData, const QList<Element *> &elements)
 {
     const auto copies = copiesOf(elements);
     readElements(scene, itemData, pointers(copies));
@@ -229,12 +229,12 @@ Connection *findConn(Scene *scene, const int id)
     return dynamic_cast<Connection *>(scene->itemById(id));
 }
 
-GraphicElement *findElm(Scene *scene, const int id)
+Element *findElm(Scene *scene, const int id)
 {
-    return dynamic_cast<GraphicElement *>(scene->itemById(id));
+    return dynamic_cast<Element *>(scene->itemById(id));
 }
 
-void saveItems(QByteArray &itemData, const QList<GraphicElement *> &others, const QList<QGraphicsItem *> &items)
+void saveItems(QByteArray &itemData, const QList<Element *> &others, const QList<QGraphicsItem *> &items)
 {
     itemData.clear();
     QDataStream stream(&itemData, QIODevice::WriteOnly);
@@ -254,14 +254,14 @@ void addItems(Scene *scene, const QList<QGraphicsItem *> &items)
             scene->addItem(item);
         }
 
-        if (item->type() == GraphicElement::Type) {
+        if (item->type() == Element::Type) {
             item->setSelected(true);
         }
     }
 }
 
 // Reads \a itemData: \a others, the elements wired to its items, in place, then its items, built afresh
-static QList<QGraphicsItem *> readItems(Scene *scene, QByteArray &itemData, const QList<GraphicElement *> &others)
+static QList<QGraphicsItem *> readItems(Scene *scene, QByteArray &itemData, const QList<Element *> &others)
 {
     QDataStream stream(&itemData, QIODevice::ReadOnly);
     QVersionNumber version = Serialization::readPandaHeader(stream);
@@ -346,7 +346,7 @@ void deleteItems(Scene *scene, const QList<QGraphicsItem *> &items)
     }
 }
 
-void drainPortConnections(GraphicElement *elm, int fromPort, int toPort,
+void drainPortConnections(Element *elm, int fromPort, int toPort,
                           bool isInput, QDataStream &stream, Scene *scene)
 {
     int connCount = 0;
@@ -372,7 +372,7 @@ void drainPortConnections(GraphicElement *elm, int fromPort, int toPort,
 
 }  // namespace CommandUtils
 
-ElementsCommand::ElementsCommand(const QList<GraphicElement *> &elements, Scene *scene, QUndoCommand *parent)
+ElementsCommand::ElementsCommand(const QList<Element *> &elements, Scene *scene, QUndoCommand *parent)
     : QUndoCommand(parent)
     , m_scene(scene)
 {
@@ -382,7 +382,7 @@ ElementsCommand::ElementsCommand(const QList<GraphicElement *> &elements, Scene 
     }
 }
 
-std::optional<QList<GraphicElement *>> ElementsCommand::elements()
+std::optional<QList<Element *>> ElementsCommand::elements()
 {
     auto found = CommandUtils::findElements(m_scene, m_ids);
     if (!found) {
@@ -477,7 +477,7 @@ void DeleteItemsCommand::redo()
     m_scene->setCircuitUpdateRequired();
 }
 
-RotateCommand::RotateCommand(const QList<GraphicElement *> &items, const int angle, Scene *scene, QUndoCommand *parent)
+RotateCommand::RotateCommand(const QList<Element *> &items, const int angle, Scene *scene, QUndoCommand *parent)
     : ElementsCommand(items, scene, parent)
     , m_angle(angle)
 {
@@ -539,14 +539,14 @@ void RotateCommand::redo()
 
     // The rotated places snap to the grid; undo() puts back the exact ones
     for (auto *elm : elements) {
-        elm->setPos(GraphicElement::snapToGrid(transform.map(elm->pos())));
+        elm->setPos(Element::snapToGrid(transform.map(elm->pos())));
         elm->setRotation(elm->rotation() + m_angle);
     }
 
     m_scene->setAutosaveRequired();
 }
 
-MoveCommand::MoveCommand(const QList<GraphicElement *> &list, const QList<QPointF> &oldPositions, Scene *scene, QUndoCommand *parent)
+MoveCommand::MoveCommand(const QList<Element *> &list, const QList<QPointF> &oldPositions, Scene *scene, QUndoCommand *parent)
     : ElementsCommand(list, scene, parent)
     , m_oldPositions(oldPositions)
 {
@@ -589,7 +589,7 @@ void MoveCommand::redo()
     m_scene->setAutosaveRequired();
 }
 
-UpdateCommand::UpdateCommand(const QList<GraphicElement *> &elements, const QByteArray &oldData, Scene *scene, QUndoCommand *parent)
+UpdateCommand::UpdateCommand(const QList<Element *> &elements, const QByteArray &oldData, Scene *scene, QUndoCommand *parent)
     : ElementsCommand(elements, scene, parent)
     // oldData must be captured by the caller *before* applying the change, so that
     // undo() can restore the previous state; the constructor cannot capture it here
@@ -659,7 +659,7 @@ void UpdateCommand::redo()
     refreshRuntimeState();
 }
 
-QVector<UpdateCommand::WirelessState> UpdateCommand::snapshotWirelessState(const QList<GraphicElement *> &elements)
+QVector<UpdateCommand::WirelessState> UpdateCommand::snapshotWirelessState(const QList<Element *> &elements)
 {
     QVector<WirelessState> state;
     for (auto *elm : elements) {
@@ -710,7 +710,7 @@ void UpdateCommand::refreshRuntimeState()
     m_scene->setPropertyUpdateRequired();
 }
 
-void UpdateCommand::loadData(const QList<GraphicElement *> &elements, QByteArray &itemData)
+void UpdateCommand::loadData(const QList<Element *> &elements, QByteArray &itemData)
 {
     if (elements.isEmpty()) {
         return;
@@ -731,9 +731,9 @@ constexpr int mergeId = 1;
 
 } // namespace SetPropertyCommandHelpers
 
-bool SetPropertyCommand::appliesTo(const GraphicElement &element, const ElementProperty property)
+bool SetPropertyCommand::appliesTo(const Element &element, const ElementProperty property)
 {
-    const auto *input = qobject_cast<const GraphicElementInput *>(&element);
+    const auto *input = qobject_cast<const ElementInput *>(&element);
     switch (property) {
     case ElementProperty::Label:        return element.hasLabel();
     case ElementProperty::Color:        return element.hasColors();
@@ -749,7 +749,7 @@ bool SetPropertyCommand::appliesTo(const GraphicElement &element, const ElementP
     return false;
 }
 
-QVariant SetPropertyCommand::read(const GraphicElement &element, const ElementProperty property)
+QVariant SetPropertyCommand::read(const Element &element, const ElementProperty property)
 {
     switch (property) {
     case ElementProperty::Label:        return element.label();
@@ -761,12 +761,12 @@ QVariant SetPropertyCommand::read(const GraphicElement &element, const ElementPr
     case ElementProperty::Trigger:      return element.trigger().toString();
     case ElementProperty::Wireless:     return static_cast<int>(element.wirelessMode());
     case ElementProperty::Locked:
-        if (const auto *input = qobject_cast<const GraphicElementInput *>(&element)) {
+        if (const auto *input = qobject_cast<const ElementInput *>(&element)) {
             return input->isLocked();
         }
         return {};
     case ElementProperty::Value:
-        if (const auto *input = qobject_cast<const GraphicElementInput *>(&element)) {
+        if (const auto *input = qobject_cast<const ElementInput *>(&element)) {
             return input->outputValue();
         }
         return {};
@@ -774,7 +774,7 @@ QVariant SetPropertyCommand::read(const GraphicElement &element, const ElementPr
     return {};
 }
 
-void SetPropertyCommand::write(GraphicElement &element, const ElementProperty property, const QVariant &value)
+void SetPropertyCommand::write(Element &element, const ElementProperty property, const QVariant &value)
 {
     switch (property) {
     case ElementProperty::Label:        element.setLabel(value.toString()); return;
@@ -790,7 +790,7 @@ void SetPropertyCommand::write(GraphicElement &element, const ElementProperty pr
         }
         return;
     case ElementProperty::Locked:
-        if (auto *input = qobject_cast<GraphicElementInput *>(&element)) {
+        if (auto *input = qobject_cast<ElementInput *>(&element)) {
             input->setLocked(value.toBool());
         }
         return;
@@ -798,17 +798,17 @@ void SetPropertyCommand::write(GraphicElement &element, const ElementProperty pr
         // A rotary switch's value is the output it selects; any other input's is its level
         if (auto *rotary = qobject_cast<InputRotary *>(&element)) {
             rotary->setOn(true, value.toInt());
-        } else if (auto *input = qobject_cast<GraphicElementInput *>(&element)) {
+        } else if (auto *input = qobject_cast<ElementInput *>(&element)) {
             input->setOn(value.toInt() != 0);
         }
         return;
     }
 }
 
-SetPropertyCommand *SetPropertyCommand::apply(const QList<GraphicElement *> &elements, const ElementProperty property,
+SetPropertyCommand *SetPropertyCommand::apply(const QList<Element *> &elements, const ElementProperty property,
                                               const QVariant &value, Scene *scene, const int session)
 {
-    QList<GraphicElement *> reached;
+    QList<Element *> reached;
     QVariantList before;
     QVariantList after;
     for (auto *element : elements) {
@@ -826,7 +826,7 @@ SetPropertyCommand *SetPropertyCommand::apply(const QList<GraphicElement *> &ele
     return (before != after) ? new SetPropertyCommand(reached, property, before, after, scene, session) : nullptr;
 }
 
-SetPropertyCommand::SetPropertyCommand(const QList<GraphicElement *> &elements, const ElementProperty property,
+SetPropertyCommand::SetPropertyCommand(const QList<Element *> &elements, const ElementProperty property,
                                        const QVariantList &before, const QVariantList &after, Scene *scene,
                                        const int session)
     : ElementsCommand(elements, scene)
@@ -839,7 +839,7 @@ SetPropertyCommand::SetPropertyCommand(const QList<GraphicElement *> &elements, 
     // with no mode moves no channel.
     m_wirelessTopologyChange = (property == ElementProperty::Wireless)
         || ((property == ElementProperty::Label)
-            && std::any_of(elements.cbegin(), elements.cend(), [](const GraphicElement *element) {
+            && std::any_of(elements.cbegin(), elements.cend(), [](const Element *element) {
                    return element->hasWirelessMode() && (element->wirelessMode() != WirelessMode::None);
                }));
 
@@ -913,7 +913,7 @@ SplitCommand::SplitCommand(Connection *conn, QPointF mousePos, Scene *scene, QUn
     /* Align node to Grid */
     // Subtract pixmapCenter so the node's visual center lands on the mouse click,
     // then snap to the nearest grid intersection: a whole grid step, coarser than an element's half step
-    m_nodePos = GraphicElement::snapToGrid(mousePos - node->pixmapCenter(), Constants::gridSize);
+    m_nodePos = Element::snapToGrid(mousePos - node->pixmapCenter(), Constants::gridSize);
 
     /* Rotate line according to angle between p1 and p2 */
     // QLineF::angle() is counter-clockwise from the positive X axis (0–360°).
@@ -928,8 +928,8 @@ SplitCommand::SplitCommand(Connection *conn, QPointF mousePos, Scene *scene, QUn
     // wire with both ports, and every port has its element from construction (ElementPorts::addPort())
     auto *startPort = conn->startPort();
     auto *endPort = conn->endPort();
-    auto *startElement = startPort ? startPort->graphicElement() : nullptr;
-    auto *endElement = endPort ? endPort->graphicElement() : nullptr;
+    auto *startElement = startPort ? startPort->element() : nullptr;
+    auto *endElement = endPort ? endPort->element() : nullptr;
     if (!startElement || !endElement) {
         delete node; // LCOV_EXCL_LINE — unreachable, as above
         setText(tr("Wire split")); // LCOV_EXCL_LINE
@@ -1041,7 +1041,7 @@ void SplitCommand::undo()
     m_scene->setCircuitUpdateRequired();
 }
 
-MorphCommand::MorphCommand(const QList<GraphicElement *> &elements, ElementType type, Scene *scene, QUndoCommand *parent)
+MorphCommand::MorphCommand(const QList<Element *> &elements, ElementType type, Scene *scene, QUndoCommand *parent)
     : ElementsCommand(elements, scene, parent)
     , m_newType(type)
 {
@@ -1061,8 +1061,8 @@ void MorphCommand::restoreDeletedConnections(const QList<DeletedConnectionInfo> 
     // By this point replaceElements has already placed the restored elements in the
     // scene under their original IDs, so itemById() resolves correctly.
     for (const auto &info : deleted) {
-        auto *morphedElm = dynamic_cast<GraphicElement *>(m_scene->itemById(info.morphedElementId));
-        auto *otherElm   = dynamic_cast<GraphicElement *>(m_scene->itemById(info.otherElementId));
+        auto *morphedElm = dynamic_cast<Element *>(m_scene->itemById(info.morphedElementId));
+        auto *otherElm   = dynamic_cast<Element *>(m_scene->itemById(info.otherElementId));
         if (!morphedElm || !otherElm) {
             continue;
         }
@@ -1105,7 +1105,7 @@ void MorphCommand::undo()
 
     // The rebuilt originals belong to this function until replaceElements() takes them into the scene, so a load that
     // throws frees the ones already rebuilt and leaves the scene as it was
-    std::vector<std::unique_ptr<GraphicElement>> rebuilt;
+    std::vector<std::unique_ptr<Element>> rebuilt;
     rebuilt.reserve(static_cast<std::size_t>(m_ids.size()));
     try {
         for (int i = 0; i < m_ids.size(); ++i) {
@@ -1147,7 +1147,7 @@ void MorphCommand::redo()
     Serialization::writePandaHeader(stream);
 
     // As in undo(): owned until replaceElements() takes them into the scene
-    std::vector<std::unique_ptr<GraphicElement>> rebuilt;
+    std::vector<std::unique_ptr<Element>> rebuilt;
     rebuilt.reserve(static_cast<std::size_t>(m_ids.size()));
     for (int i = 0; i < m_ids.size(); ++i) {
         oldElms.at(i)->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
@@ -1170,7 +1170,7 @@ void MorphCommand::redo()
     m_scene->setCircuitUpdateRequired();
 }
 
-void MorphCommand::copyProperties(const GraphicElement *oldElm, GraphicElement *newElm)
+void MorphCommand::copyProperties(const Element *oldElm, Element *newElm)
 {
     newElm->setInputSize(oldElm->inputSize());
     newElm->setPos(oldElm->pos());
@@ -1225,7 +1225,7 @@ void MorphCommand::copyProperties(const GraphicElement *oldElm, GraphicElement *
     }
 }
 
-void MorphCommand::replaceElements(const QList<GraphicElement *> &from, const QList<GraphicElement *> &to,
+void MorphCommand::replaceElements(const QList<Element *> &from, const QList<Element *> &to,
                                    QList<DeletedConnectionInfo> *deleted)
 {
     for (int elm = 0; elm < from.size(); ++elm) {
@@ -1252,7 +1252,7 @@ void MorphCommand::replaceElements(const QList<GraphicElement *> &from, const QL
     }
 }
 
-void MorphCommand::transferPortConnections(GraphicElement *oldElm, GraphicElement *newElm,
+void MorphCommand::transferPortConnections(Element *oldElm, Element *newElm,
                                            bool isInput, QList<DeletedConnectionInfo> *deleted)
 {
     const int portCount = isInput ? oldElm->inputSize() : oldElm->outputSize();
@@ -1278,8 +1278,8 @@ void MorphCommand::transferPortConnections(GraphicElement *oldElm, GraphicElemen
                 // Port no longer exists on the morphed element — record before deleting
                 Port *otherPort = isInput ? static_cast<Port *>(conn->startPort())
                                              : static_cast<Port *>(conn->endPort());
-                if (deleted && otherPort && otherPort->graphicElement()) {
-                    deleted->append({conn->id(), oldElm->id(), port, isInput, otherPort->graphicElement()->id(), otherPort->index()});
+                if (deleted && otherPort && otherPort->element()) {
+                    deleted->append({conn->id(), oldElm->id(), port, isInput, otherPort->element()->id(), otherPort->index()});
                 }
                 conn->setStartPort(nullptr);
                 conn->setEndPort(nullptr);
@@ -1290,7 +1290,7 @@ void MorphCommand::transferPortConnections(GraphicElement *oldElm, GraphicElemen
     }
 }
 
-FlipCommand::FlipCommand(const QList<GraphicElement *> &items, const int axis, Scene *scene, QUndoCommand *parent)
+FlipCommand::FlipCommand(const QList<Element *> &items, const int axis, Scene *scene, QUndoCommand *parent)
     : ElementsCommand(items, scene, parent)
     , m_axis(axis)
 {
@@ -1318,7 +1318,7 @@ FlipCommand::FlipCommand(const QList<GraphicElement *> &items, const int axis, S
 
     m_minPos = QPointF(xmin, ymin);
     m_maxPos = QPointF(xmax, ymax);
-} // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the constructor's local QList<GraphicElement *>/QPointF members' exception-unwind path, never reached after the return above (both the empty-items early return and the full non-empty body are independently exercised).
+} // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the constructor's local QList<Element *>/QPointF members' exception-unwind path, never reached after the return above (both the empty-items early return and the full non-empty body are independently exercised).
 
 void FlipCommand::undo()
 {
@@ -1357,7 +1357,7 @@ void FlipCommand::redo()
         (m_axis == 0) ? pos.setX(m_minPos.rx() + (m_maxPos.rx() - pos.rx()))
                       : pos.setY(m_minPos.ry() + (m_maxPos.ry() - pos.ry()));
 
-        elm->setPos(GraphicElement::snapToGrid(pos));
+        elm->setPos(Element::snapToGrid(pos));
 
         // Toggle the element's mirror flag for the appropriate axis. Rotatable elements get a
         // true single-axis reflection of the whole item (scale(-1) about the pixmap centre);
@@ -1370,7 +1370,7 @@ void FlipCommand::redo()
     m_scene->setAutosaveRequired();
 }
 
-ChangePortSizeCommand::ChangePortSizeCommand(const QList<GraphicElement *> &elements, const int newPortSize, Scene *scene, const bool isInput, QUndoCommand *parent)
+ChangePortSizeCommand::ChangePortSizeCommand(const QList<Element *> &elements, const int newPortSize, Scene *scene, const bool isInput, QUndoCommand *parent)
     : ElementsCommand(elements, scene, parent)
     , m_newPortSize(newPortSize)
     , m_isInput(isInput)
@@ -1393,7 +1393,7 @@ void ChangePortSizeCommand::redo()
     }
     const auto &elements = *found;
 
-    QList<GraphicElement *> serializationOrder;
+    QList<Element *> serializationOrder;
     serializationOrder.reserve(elements.size());
     m_oldData.clear();
 
@@ -1410,8 +1410,8 @@ void ChangePortSizeCommand::redo()
             Port *nport = m_isInput ? static_cast<Port *>(elm->inputPort(port)) : elm->outputPort(port);
             for (auto *conn : nport->connections()) {
                 Port *otherPort = m_isInput ? static_cast<Port *>(conn->startPort()) : conn->endPort();
-                otherPort->graphicElement()->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
-                serializationOrder.append(otherPort->graphicElement());
+                otherPort->element()->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
+                serializationOrder.append(otherPort->element());
             }
         }
     }
@@ -1472,7 +1472,7 @@ void ChangePortSizeCommand::undo()
 }
 
 std::vector<std::pair<int, std::unique_ptr<Connection>>> ChangePortSizeCommand::readSaved(
-    const QList<GraphicElement *> &saved, const qsizetype resized)
+    const QList<Element *> &saved, const qsizetype resized)
 {
     QDataStream stream(&m_oldData, QIODevice::ReadOnly);
     QVersionNumber version = Serialization::readPandaHeader(stream);
@@ -1497,7 +1497,7 @@ std::vector<std::pair<int, std::unique_ptr<Connection>>> ChangePortSizeCommand::
     return wires;
 }
 
-ToggleTruthTableOutputCommand::ToggleTruthTableOutputCommand(GraphicElement *element, int pos, Scene *scene, QUndoCommand *parent)
+ToggleTruthTableOutputCommand::ToggleTruthTableOutputCommand(Element *element, int pos, Scene *scene, QUndoCommand *parent)
     : QUndoCommand(parent)
     , m_pos(pos)
 {
@@ -1538,25 +1538,25 @@ void ToggleTruthTableOutputCommand::undo()
 
 // --- UpdateBlobCommand ---
 
-QList<UpdateBlobCommand::ConnectionInfo> UpdateBlobCommand::captureConnections(const QList<GraphicElement *> &targets)
+QList<UpdateBlobCommand::ConnectionInfo> UpdateBlobCommand::captureConnections(const QList<Element *> &targets)
 {
     QList<ConnectionInfo> connections;
     for (auto *target : targets) {
         for (int i = 0; i < target->inputSize(); ++i) {
             for (auto *conn : target->inputPort(i)->connections()) {
                 auto *otherPort = conn->startPort();
-                if (otherPort && otherPort->graphicElement()) {
+                if (otherPort && otherPort->element()) {
                     connections.append({conn->id(), target->id(), i, true,
-                                        otherPort->graphicElement()->id(), otherPort->index()});
+                                        otherPort->element()->id(), otherPort->index()});
                 }
             }
         }
         for (int i = 0; i < target->outputSize(); ++i) {
             for (auto *conn : target->outputPort(i)->connections()) {
                 auto *otherPort = conn->endPort();
-                if (otherPort && otherPort->graphicElement()) {
+                if (otherPort && otherPort->element()) {
                     connections.append({conn->id(), target->id(), i, false,
-                                        otherPort->graphicElement()->id(), otherPort->index()});
+                                        otherPort->element()->id(), otherPort->index()});
                 }
             }
         }
@@ -1699,7 +1699,7 @@ void RenameBlobCommand::undo()
 
 // --- UpdateBlobCommand ---
 
-UpdateBlobCommand::UpdateBlobCommand(const QList<GraphicElement *> &elements, const QByteArray &oldData,
+UpdateBlobCommand::UpdateBlobCommand(const QList<Element *> &elements, const QByteArray &oldData,
                                      const QList<ConnectionInfo> &connections, Scene *scene, QUndoCommand *parent)
     : ElementsCommand(elements, scene, parent)
     , m_oldData(oldData)
@@ -1764,7 +1764,7 @@ void UpdateBlobCommand::undo()
     m_scene->setCircuitUpdateRequired();
 }
 
-void UpdateBlobCommand::loadData(const QList<GraphicElement *> &elements, QByteArray &itemData)
+void UpdateBlobCommand::loadData(const QList<Element *> &elements, QByteArray &itemData)
 {
     if (elements.isEmpty()) {
         return;
@@ -1795,8 +1795,8 @@ void UpdateBlobCommand::setBlob(const QByteArray &blob)
 void UpdateBlobCommand::reconnectConnections()
 {
     for (const auto &ci : std::as_const(m_connections)) {
-        auto *elm = dynamic_cast<GraphicElement *>(m_scene->itemById(ci.elementId));
-        auto *otherElm = dynamic_cast<GraphicElement *>(m_scene->itemById(ci.otherElementId));
+        auto *elm = dynamic_cast<Element *>(m_scene->itemById(ci.elementId));
+        auto *otherElm = dynamic_cast<Element *>(m_scene->itemById(ci.otherElementId));
         if (!elm || !otherElm) {
             continue;
         }

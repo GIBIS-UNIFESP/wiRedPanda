@@ -31,10 +31,10 @@ namespace {
 
 bool comparePorts(Port *port1, Port *port2)
 {
-    auto *elem1 = port1->graphicElement();
-    auto *elem2 = port2->graphicElement();
+    auto *elem1 = port1->element();
+    auto *elem2 = port2->element();
     if (!elem1 || !elem2) {
-        return false; // LCOV_EXCL_LINE — ElementPorts::addPort() unconditionally calls setGraphicElement() right after constructing a port, so every port reachable here already has a non-null owner.
+        return false; // LCOV_EXCL_LINE — ElementPorts::addPort() unconditionally calls setElement() right after constructing a port, so every port reachable here already has a non-null owner.
     }
 
     // Primary sort: top-to-bottom by parent element Y, then left-to-right by X.
@@ -64,7 +64,7 @@ void buildPortLabels(const QVector<Port *> &ports, QVector<QString> &labels, QVe
 {
     for (int i = 0; i < ports.size(); ++i) {
         auto *port = ports.at(i);
-        auto *elm = port->graphicElement();
+        auto *elm = port->element();
         if (!elm) {
             continue; // LCOV_EXCL_LINE — same invariant as comparePorts() above: every port has a non-null owner from construction onward.
         }
@@ -300,10 +300,10 @@ void ICLoader::migrateFile(const QFileInfo &fileInfo, const QList<QGraphicsItem 
     Serialization::createVersionedBackup(fileInfo.absoluteFilePath(), version);
 
     // Build port metadata for the migrated file header
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
     for (auto *item : items) {
-        if (item->type() == GraphicElement::Type) {
-            if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item)) {
+        if (item->type() == Element::Type) {
+            if (auto *elm = qgraphicsitem_cast<Element *>(item)) {
                 elements.append(elm);
             }
         }
@@ -360,9 +360,9 @@ void ICLoader::processLoadedItems(IC &ic, QList<QGraphicsItem *> &items)
             continue;
         }
 
-        auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
+        auto *elm = qgraphicsitem_cast<Element *>(item);
         if (!elm) {
-            continue; // LCOV_EXCL_LINE — the Connection case above already handled the only other type Serialization::deserialize() ever produces; every remaining item is a GraphicElement.
+            continue; // LCOV_EXCL_LINE — the Connection case above already handled the only other type Serialization::deserialize() ever produces; every remaining item is a Element.
         }
 
         // Input/Output elements become the IC's external ports; everything else is internal logic
@@ -545,7 +545,7 @@ void ICLoader::loadFromBlob(IC &ic, const QByteArray &blob, const QString &conte
     qCDebug(zero) << "Finished loading IC from blob.";
 }
 
-void ICLoader::loadBoundaryElement(IC &ic, GraphicElement *elm, const bool isInput)
+void ICLoader::loadBoundaryElement(IC &ic, Element *elm, const bool isInput)
 {
     // Each port of a boundary element (input or output) becomes one external pin on the IC.
     // A proxy Node element is inserted as a bridge between the IC's external port and the
@@ -651,7 +651,7 @@ void ICLoader::loadBoundaryPorts(IC &ic, const bool isInput, const QVector<QStri
                     << "current:" << (isInput ? ic.inputSize() : ic.outputSize());
 }
 
-IC::PortMetadata ICLoader::buildPortMetadata(const QVector<GraphicElement *> &elements)
+IC::PortMetadata ICLoader::buildPortMetadata(const QVector<Element *> &elements)
 {
     IC::PortMetadata meta;
     QVector<Port *> inputPorts, outputPorts;

@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 
 /**
  * \class AudioOutputElement
@@ -21,7 +21,7 @@
  * Concrete subclasses implement the four pure-virtual hardware hooks:
  * startAudio(), stopAudio(), applyVolume(), and applyMute().
  */
-class AudioOutputElement : public GraphicElement
+class AudioOutputElement : public Element
 {
     Q_OBJECT
 
@@ -34,7 +34,7 @@ public:
     /// passes its own lower kDefaultVolume instead.
     static constexpr float kDefaultVolume = 0.5f;
 
-    /// \param type Concrete audio element type, forwarded to the GraphicElement base.
+    /// \param type Concrete audio element type, forwarded to the Element base.
     /// \param parent Optional parent item.
     /// \param initialVolume lets a subclass set its own volume default in one write --
     /// a derived class cannot member-initialize a base's field, and a ctor-body

@@ -36,12 +36,12 @@
 #include "Tests/Common/TestUtils.h"
 
 namespace {
-QVector<GraphicElement *> arduinoSceneElements(Scene *scene)
+QVector<Element *> arduinoSceneElements(Scene *scene)
 {
-    QVector<GraphicElement *> result;
+    QVector<Element *> result;
     for (auto *item : scene->items()) {
-        if (item->type() == GraphicElement::Type)
-            result.append(static_cast<GraphicElement *>(item));
+        if (item->type() == Element::Type)
+            result.append(static_cast<Element *>(item));
     }
     return result;
 }

@@ -11,7 +11,7 @@
 class MainWindow;
 class MCPValidator;
 class Scene;
-class GraphicElement;
+class Element;
 
 /**
  * \class BaseHandler
@@ -42,7 +42,7 @@ public:
     bool validateNonNegativeInteger(const QJsonValue &value, const QString &paramName, QString &errorMsg) const;
     bool validateNumeric(const QJsonValue &value, const QString &paramName, QString &errorMsg) const;
     bool validateParameters(const QJsonObject &params, const QStringList &required) const;
-    bool validatePortRange(GraphicElement *element, int portIndex, bool isOutput, const QString &paramName, QString &errorMsg) const;
+    bool validatePortRange(Element *element, int portIndex, bool isOutput, const QString &paramName, QString &errorMsg) const;
     bool validatePositiveInteger(const QJsonValue &value, const QString &paramName, QString &errorMsg) const;
 
     /**
@@ -71,16 +71,16 @@ public:
      * dynamic_cast in one call. On failure sets \a errorMsg and returns nullptr.
      * Typical use: `auto *e = validatedElement(params, "element_id", errorMsg); if (!e) return createErrorResponse(errorMsg, requestId);`
      */
-    GraphicElement *validatedElement(const QJsonObject &params, const QString &paramName, QString &errorMsg);
+    Element *validatedElement(const QJsonObject &params, const QString &paramName, QString &errorMsg);
 
     // Port lookup by label (similar to CircuitBuilder in testutils.cpp)
-    bool inputPortByLabel(GraphicElement *element, const QString &label, int &portIndex, QString &errorMsg) const;
-    bool outputPortByLabel(GraphicElement *element, const QString &label, int &portIndex, QString &errorMsg) const;
-    QString availableInputPorts(GraphicElement *element) const;
-    QString availableOutputPorts(GraphicElement *element) const;
+    bool inputPortByLabel(Element *element, const QString &label, int &portIndex, QString &errorMsg) const;
+    bool outputPortByLabel(Element *element, const QString &label, int &portIndex, QString &errorMsg) const;
+    QString availableInputPorts(Element *element) const;
+    QString availableOutputPorts(Element *element) const;
 
 protected:
-    QString availablePorts(GraphicElement *element, bool isOutput) const;
+    QString availablePorts(Element *element, bool isOutput) const;
     // Shared resources
     MainWindow *m_mainWindow;
     const MCPValidator *m_validator;

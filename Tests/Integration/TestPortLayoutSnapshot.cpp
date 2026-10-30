@@ -14,8 +14,8 @@
 #include <QTransform>
 #include <QTranslator>
 
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElement.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -52,7 +52,7 @@ struct PortCounts {
 
 /// Every legal port count of \a probe's type: each count from the minimum to the maximum, except a Mux's inputs, which
 /// are what the element editor offers, 2 to 8 data inputs with their select lines.
-QList<PortCounts> legalCounts(const GraphicElement &probe)
+QList<PortCounts> legalCounts(const Element &probe)
 {
     QList<int> inputs;
     if (probe.elementType() == ElementType::Demux) {
@@ -94,11 +94,11 @@ QString rectText(const QRectF &rect)
 
 /// What the layout produced in one orientation: the element, then each port. A port on an element that keeps its
 /// graphic upright is turned by its transform.
-QStringList describe(const GraphicElement *element)
+QStringList describe(const Element *element)
 {
     // A Text's bounds take in its text, whose width follows the platform's fonts, so only its body is written.
     const QString bounds = (element->elementType() == ElementType::Text)
-                               ? rectText(element->GraphicElement::boundingRect()) + "+text"
+                               ? rectText(element->Element::boundingRect()) + "+text"
                                : rectText(element->boundingRect());
     QStringList lines;
     lines << QString("  rot=%1 flipX=%2 flipY=%3 in=%4 out=%5 bounds=%6 pix=%7")
@@ -117,7 +117,7 @@ QStringList describe(const GraphicElement *element)
 
 /// One configuration in the sixteen orientations, in both orders, then its port names under the tagging translator.
 QStringList describeAll(Scene *scene, const QString &header, const TestUtils::ElementBuilder &build,
-                        const std::function<void(GraphicElement *)> &applyPorts, TaggingTranslator &tagging)
+                        const std::function<void(Element *)> &applyPorts, TaggingTranslator &tagging)
 {
     QStringList lines = TestUtils::describeInOrientations(scene, header, build, applyPorts, describe,
                                                           "  oriented first: same", "  oriented first:");
@@ -149,16 +149,16 @@ QString dumpLayouts()
         }
 
         const TestUtils::ElementBuilder build = [type](Scene *target) {
-            std::unique_ptr<GraphicElement> element(ElementFactory::buildElement(type));
+            std::unique_ptr<Element> element(ElementFactory::buildElement(type));
             target->addItem(element.get());
             return element;
         };
-        const std::unique_ptr<GraphicElement> probe(ElementFactory::buildElement(type));
+        const std::unique_ptr<Element> probe(ElementFactory::buildElement(type));
         for (const auto &counts : legalCounts(*probe)) {
             const QString inputs = (counts.inputs < 0) ? QString("derived") : QString::number(counts.inputs);
             const QString header = QString("T %1 in=%2 out=%3")
                                        .arg(TestUtils::snapshotType(type), inputs, QString::number(counts.outputs));
-            lines << describeAll(scene, header, build, [counts](GraphicElement *element) {
+            lines << describeAll(scene, header, build, [counts](Element *element) {
                 TestUtils::applyPortCounts(element, counts.inputs, counts.outputs);
             }, tagging);
         }
@@ -169,10 +169,10 @@ QString dumpLayouts()
     const TestUtils::ElementBuilder buildIc = [](Scene *target) {
         auto ic = std::make_unique<IC>();
         target->addItem(ic.get());
-        return std::unique_ptr<GraphicElement>(std::move(ic));
+        return std::unique_ptr<Element>(std::move(ic));
     };
     const QFileInfo icFile(TestUtils::fullAdderIcFile());
-    const auto loadIc = [&icFile](GraphicElement *element) {
+    const auto loadIc = [&icFile](Element *element) {
         static_cast<IC *>(element)->loadFile(icFile.filePath(), icFile.absolutePath());
     };
     lines << describeAll(scene, "T IC file=" + icFile.fileName(), buildIc, loadIc, tagging);

@@ -95,7 +95,7 @@ class RAM8x1Builder(ICBuilderBase):
         await self.log("  ✓ Loaded decoder IC")
 
         # A decoder fans its output ports out symmetrically around its own vertical
-        # centre (GraphicElement::updatePortsProperties); with enough outputs (one per
+        # centre (Element::updatePortsProperties); with enough outputs (one per
         # storage cell), the real bounding box measured above reaches above the decoder's
         # own placement position far enough to clip the Address[] input labels sitting
         # right above it. React to the *measured* height (not a guessed port-layout

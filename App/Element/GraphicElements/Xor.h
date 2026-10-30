@@ -7,13 +7,13 @@
 
 #pragma once
 
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 
 /**
  * \class Xor
  * \brief Graphical representation of an XOR gate (2–8 inputs, 1 output).
  */
-class Xor : public GraphicElement
+class Xor : public Element
 {
     Q_OBJECT
 
