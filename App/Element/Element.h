@@ -21,10 +21,10 @@
 #include "App/Core/Enums.h"
 #include "App/Core/ItemWithId.h"
 #include "App/Element/ElementAppearance.h"
-#include "App/Element/ElementMetadata.h"
 #include "App/Element/ElementOrientation.h"
 #include "App/Element/ElementPorts.h"
 #include "App/Element/ElementSimState.h"
+#include "App/Element/ElementTypeDescriptor.h"
 #include "App/Element/PropertyDescriptor.h"
 
 struct SerializationContext;
@@ -71,7 +71,7 @@ public:
 
     // --- Lifecycle ---
 
-    /// Constructs a graphic element of the given \a type, fetching all properties from the metadata registry.
+    /// Constructs a graphic element of the given \a type, fetching all properties from its type's descriptor.
     explicit Element(ElementType type, QGraphicsItem *parent = nullptr);
 
     /// Out-of-line so the unique_ptr to the forward-declared QSvgRenderer can be destroyed.
@@ -312,7 +312,7 @@ public:
 
     /**
      * \brief Returns the list of editable properties this element exposes in the ElementEditor.
-     * \details Derived from metadata flags; no override needed in subclasses.
+     * \details Derived from the descriptor's flags; no override needed in subclasses.
      * \return Ordered list of PropertyDescriptors for all supported property types.
      */
     QList<PropertyDescriptor> editableProperties() const;
@@ -760,10 +760,10 @@ private:
     ElementGroup m_elementGroup = ElementGroup::Unknown;
     ElementType m_elementType = ElementType::Unknown;
 
-    /// Cached reference to this type's compile-time metadata (registry entry is a long-lived
+    /// Cached reference to this type's descriptor (registry entry is a long-lived
     /// singleton). Backs the hasAudio()/hasTrigger()/rotatesGraphic()/... facades, replacing a
     /// per-call registry map lookup.
-    const ElementMetadata &m_metadata;
+    const ElementTypeDescriptor &m_descriptor;
 
     // --- Members: Direct Simulation ---
 

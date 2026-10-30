@@ -25,19 +25,19 @@ struct ElementInfo<Demux> {
     };
     static_assert(validate(constraints));
 
-    static ElementMetadata metadata()
+    static ElementTypeDescriptor describe()
     {
-        auto meta = metadataFromConstraints(constraints);
-        meta.pixmapPath = []{ return QStringLiteral(":/Components/Logic/demux.svg"); };
-        meta.titleText = QT_TRANSLATE_NOOP("Demux", "DEMULTIPLEXER");
-        meta.translatedName = QT_TRANSLATE_NOOP("Demux", "Demux");
-        meta.trContext = "Demux";
-        meta.defaultAppearances = QStringList({":/Components/Logic/demux.svg"});
-        return meta;
-    } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementMetadata's QString/QStringList members, never reached after the return above.
+        auto descriptor = descriptorFromConstraints(constraints);
+        descriptor.pixmapPath = []{ return QStringLiteral(":/Components/Logic/demux.svg"); };
+        descriptor.titleText = QT_TRANSLATE_NOOP("Demux", "DEMULTIPLEXER");
+        descriptor.translatedName = QT_TRANSLATE_NOOP("Demux", "Demux");
+        descriptor.trContext = "Demux";
+        descriptor.defaultAppearances = QStringList({":/Components/Logic/demux.svg"});
+        return descriptor;
+    } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
 
     static inline const bool registered = []() {
-        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementTypeDescriptor::add(describe());
         ElementFactory::registerCreator(constraints.type, [] { return new Demux(); });
         return true;
     }();

@@ -30,22 +30,22 @@ struct ElementInfo<Clock> {
     };
     static_assert(validate(constraints));
 
-    static ElementMetadata metadata()
+    static ElementTypeDescriptor describe()
     {
-        auto meta = metadataFromConstraints(constraints);
-        meta.pixmapPath = []{ return QStringLiteral(":/Components/Input/clock1.svg"); };
-        meta.titleText = QT_TRANSLATE_NOOP("Clock", "CLOCK SIGNAL");
-        meta.translatedName = QT_TRANSLATE_NOOP("Clock", "Clock");
-        meta.trContext = "Clock";
-        meta.defaultAppearances = QStringList({
+        auto descriptor = descriptorFromConstraints(constraints);
+        descriptor.pixmapPath = []{ return QStringLiteral(":/Components/Input/clock1.svg"); };
+        descriptor.titleText = QT_TRANSLATE_NOOP("Clock", "CLOCK SIGNAL");
+        descriptor.translatedName = QT_TRANSLATE_NOOP("Clock", "Clock");
+        descriptor.trContext = "Clock";
+        descriptor.defaultAppearances = QStringList({
             ":/Components/Input/clock0.svg",
             ":/Components/Input/clock1.svg",
         });
-        return meta;
-    } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementMetadata's QString/QStringList members, never reached after the return above.
+        return descriptor;
+    } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
 
     static inline const bool registered = []() {
-        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementTypeDescriptor::add(describe());
         ElementFactory::registerCreator(constraints.type, [] { return new Clock(); });
         return true;
     }();

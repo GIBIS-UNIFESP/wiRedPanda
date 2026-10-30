@@ -20,20 +20,20 @@ struct ElementInfo<Xnor> {
     };
     static_assert(validate(constraints));
 
-    static ElementMetadata metadata()
+    static ElementTypeDescriptor describe()
     {
-        auto meta = metadataFromConstraints(constraints);
-        meta.pixmapPath = []{ return QStringLiteral(":/Components/Logic/xnor.svg"); };
-        meta.titleText = QT_TRANSLATE_NOOP("Xnor", "XNOR");
-        meta.translatedName = QT_TRANSLATE_NOOP("Xnor", "Xnor");
-        meta.trContext = "Xnor";
+        auto descriptor = descriptorFromConstraints(constraints);
+        descriptor.pixmapPath = []{ return QStringLiteral(":/Components/Logic/xnor.svg"); };
+        descriptor.titleText = QT_TRANSLATE_NOOP("Xnor", "XNOR");
+        descriptor.translatedName = QT_TRANSLATE_NOOP("Xnor", "Xnor");
+        descriptor.trContext = "Xnor";
         // Seed appearance lists from the constructor-supplied pixmap path (see And.cpp for details).
-        meta.defaultAppearances = QStringList({":/Components/Logic/xnor.svg"});
-        return meta;
-    } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementMetadata's QString/QStringList members, never reached after the return above.
+        descriptor.defaultAppearances = QStringList({":/Components/Logic/xnor.svg"});
+        return descriptor;
+    } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
 
     static inline const bool registered = []() {
-        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementTypeDescriptor::add(describe());
         ElementFactory::registerCreator(constraints.type, [] { return new Xnor(); });
         return true;
     }();

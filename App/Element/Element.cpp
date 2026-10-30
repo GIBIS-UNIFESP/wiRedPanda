@@ -23,7 +23,7 @@
 #include "App/Core/Common.h"
 #include "App/Core/Constants.h"
 #include "App/Core/ThemeManager.h"
-#include "App/Element/ElementMetadata.h"
+#include "App/Element/ElementTypeDescriptor.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
@@ -46,16 +46,16 @@ static const QFont &labelFont()
 Element::Element(ElementType type, QGraphicsItem *parent)
     : QGraphicsObject(parent)
     , m_elementType(type)
-    , m_metadata(ElementMetadataRegistry::metadata(type))
+    , m_descriptor(ElementTypeDescriptor::of(type))
 {
-    const ElementMetadata &metadata = m_metadata;
-    m_appearance.seedFromMetadata(metadata.defaultAppearances, metadata.alternativeAppearances, metadata.pixmapPath());
-    m_elementGroup = metadata.group;
-    m_hasColors = metadata.hasColors;
-    m_maxInputSize = metadata.maxInputSize;
-    m_maxOutputSize = metadata.maxOutputSize;
-    m_minInputSize = metadata.minInputSize;
-    m_minOutputSize = metadata.minOutputSize;
+    const ElementTypeDescriptor &descriptor = m_descriptor;
+    m_appearance.seed(descriptor.defaultAppearances, descriptor.alternativeAppearances, descriptor.pixmapPath());
+    m_elementGroup = descriptor.group;
+    m_hasColors = descriptor.hasColors;
+    m_maxInputSize = descriptor.maxInputSize;
+    m_maxOutputSize = descriptor.maxOutputSize;
+    m_minInputSize = descriptor.minInputSize;
+    m_minOutputSize = descriptor.minOutputSize;
 
     qCDebug(four) << "Setting flags of elements.";
     // ItemSendsGeometryChanges is required so itemChange() hears of moves and redraws the wires. Not ItemIsMovable:
@@ -63,7 +63,7 @@ Element::Element(ElementType type, QGraphicsItem *parent)
     setFlags(QGraphicsItem::ItemIsSelectable | QGraphicsItem::ItemSendsGeometryChanges);
 
     qCDebug(four) << "Setting attributes.";
-    m_label->setVisible(metadata.hasLabel);
+    m_label->setVisible(descriptor.hasLabel);
     // Font is applied lazily in updateLabel() to avoid expensive text layout
     // passes for elements that never display a label (e.g. IC sub-elements).
     m_label->setParentItem(this);
@@ -72,8 +72,8 @@ Element::Element(ElementType type, QGraphicsItem *parent)
     setLabelAnchor(QPointF(0, 64));
 
     qCDebug(four) << "Including input and output ports.";
-    Element::setInputSize(static_cast<int>(metadata.minInputSize));
-    Element::setOutputSize(static_cast<int>(metadata.minOutputSize));
+    Element::setInputSize(static_cast<int>(descriptor.minInputSize));
+    Element::setOutputSize(static_cast<int>(descriptor.minOutputSize));
 
     Element::updatePortsProperties();
     Element::updateTheme();
@@ -422,7 +422,7 @@ void Element::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 
 bool Element::hasAudio() const
 {
-    return m_metadata.hasAudio;
+    return m_descriptor.hasAudio;
 }
 
 QKeySequence Element::trigger() const
@@ -555,8 +555,8 @@ void Element::updateTheme()
     m_label->setBrush(theme.m_elementLabelColor);
     // A type with no built-in appearances shows its pixmap path's picture, which can be the theme's (the latches and
     // flip-flops)
-    if (m_metadata.defaultAppearances.isEmpty()) {
-        m_appearance.setDefaultPixmapPath(m_metadata.pixmapPath());
+    if (m_descriptor.defaultAppearances.isEmpty()) {
+        m_appearance.setDefaultPixmapPath(m_descriptor.pixmapPath());
     }
     m_appearance.applyTheme(theme);
 
@@ -601,7 +601,7 @@ bool Element::hasColors() const
 
 bool Element::hasTrigger() const
 {
-    return m_metadata.hasTrigger;
+    return m_descriptor.hasTrigger;
 }
 
 void Element::setColor(const QString &color)
@@ -641,32 +641,32 @@ QString Element::audio() const
 
 bool Element::hasFrequency() const
 {
-    return m_metadata.hasFrequency;
+    return m_descriptor.hasFrequency;
 }
 
 bool Element::hasDelay() const
 {
-    return m_metadata.hasDelay;
+    return m_descriptor.hasDelay;
 }
 
 bool Element::hasLabel() const
 {
-    return m_metadata.hasLabel;
+    return m_descriptor.hasLabel;
 }
 
 bool Element::hasTruthTable() const
 {
-    return m_metadata.hasTruthTable;
+    return m_descriptor.hasTruthTable;
 }
 
 bool Element::hasAudioBox() const
 {
-    return m_metadata.hasAudioBox;
+    return m_descriptor.hasAudioBox;
 }
 
 bool Element::hasVolume() const
 {
-    return m_metadata.hasVolume;
+    return m_descriptor.hasVolume;
 }
 
 float Element::volume() const
@@ -697,12 +697,12 @@ QList<PropertyDescriptor> Element::editableProperties() const
 
 bool Element::canChangeAppearance() const
 {
-    return m_metadata.canChangeAppearance;
+    return m_descriptor.canChangeAppearance;
 }
 
 bool Element::rotatesGraphic() const
 {
-    return m_metadata.rotatesGraphic;
+    return m_descriptor.rotatesGraphic;
 }
 
 int Element::inputSize() const
@@ -867,7 +867,7 @@ void Element::highlight(const bool isSelected)
 
 QString Element::translatedName() const
 {
-    return QCoreApplication::translate(m_metadata.trContext, m_metadata.translatedName);
+    return QCoreApplication::translate(m_descriptor.trContext, m_descriptor.translatedName);
 }
 
 QString Element::helpText() const

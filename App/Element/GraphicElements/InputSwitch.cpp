@@ -25,22 +25,22 @@ struct ElementInfo<InputSwitch> {
     };
     static_assert(validate(constraints));
 
-    static ElementMetadata metadata()
+    static ElementTypeDescriptor describe()
     {
-        auto meta = metadataFromConstraints(constraints);
-        meta.pixmapPath = []{ return QStringLiteral(":/Components/Input/switchOn.svg"); };
-        meta.titleText = QT_TRANSLATE_NOOP("InputSwitch", "INPUT SWITCH");
-        meta.translatedName = QT_TRANSLATE_NOOP("InputSwitch", "Input Switch");
-        meta.trContext = "InputSwitch";
-        meta.defaultAppearances = QStringList({
+        auto descriptor = descriptorFromConstraints(constraints);
+        descriptor.pixmapPath = []{ return QStringLiteral(":/Components/Input/switchOn.svg"); };
+        descriptor.titleText = QT_TRANSLATE_NOOP("InputSwitch", "INPUT SWITCH");
+        descriptor.translatedName = QT_TRANSLATE_NOOP("InputSwitch", "Input Switch");
+        descriptor.trContext = "InputSwitch";
+        descriptor.defaultAppearances = QStringList({
             ":/Components/Input/switchOff.svg",
             ":/Components/Input/switchOn.svg",
         });
-        return meta;
-    } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementMetadata's QString/QStringList members, never reached after the return above.
+        return descriptor;
+    } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
 
     static inline const bool registered = []() {
-        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementTypeDescriptor::add(describe());
         ElementFactory::registerCreator(constraints.type, [] { return new InputSwitch(); });
         return true;
     }();

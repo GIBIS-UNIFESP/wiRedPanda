@@ -27,22 +27,22 @@ struct ElementInfo<AudioBox> {
     };
     static_assert(validate(constraints));
 
-    static ElementMetadata metadata()
+    static ElementTypeDescriptor describe()
     {
-        auto meta = metadataFromConstraints(constraints);
-        meta.pixmapPath = []{ return QStringLiteral(":/Components/Output/AudioBox/audioboxOff.svg"); };
-        meta.titleText = QT_TRANSLATE_NOOP("AudioBox", "Audio Box");
-        meta.translatedName = QT_TRANSLATE_NOOP("AudioBox", "Audio Box");
-        meta.trContext = "AudioBox";
-        meta.defaultAppearances = QStringList({
+        auto descriptor = descriptorFromConstraints(constraints);
+        descriptor.pixmapPath = []{ return QStringLiteral(":/Components/Output/AudioBox/audioboxOff.svg"); };
+        descriptor.titleText = QT_TRANSLATE_NOOP("AudioBox", "Audio Box");
+        descriptor.translatedName = QT_TRANSLATE_NOOP("AudioBox", "Audio Box");
+        descriptor.trContext = "AudioBox";
+        descriptor.defaultAppearances = QStringList({
             ":/Components/Output/AudioBox/audioboxOff.svg",
             ":/Components/Output/AudioBox/audioboxOn.svg",
         });
-        return meta;
-    } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementMetadata's QString/QStringList members, never reached after the return above.
+        return descriptor;
+    } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
 
     static inline const bool registered = []() {
-        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementTypeDescriptor::add(describe());
         ElementFactory::registerCreator(constraints.type, [] { return new AudioBox(); });
         return true;
     }();

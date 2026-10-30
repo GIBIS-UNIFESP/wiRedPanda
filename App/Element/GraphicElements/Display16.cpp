@@ -28,14 +28,14 @@ struct ElementInfo<Display16> {
     };
     static_assert(validate(constraints));
 
-    static ElementMetadata metadata()
+    static ElementTypeDescriptor describe()
     {
-        auto meta = metadataFromConstraints(constraints);
-        meta.pixmapPath = []{ return QStringLiteral(":/Components/Output/Counter/counter_16_on.svg"); };
-        meta.titleText = QT_TRANSLATE_NOOP("Display16", "16-SEGMENT DISPLAY");
-        meta.translatedName = QT_TRANSLATE_NOOP("Display16", "16-Segment Display");
-        meta.trContext = "Display16";
-        meta.defaultAppearances = QStringList({
+        auto descriptor = descriptorFromConstraints(constraints);
+        descriptor.pixmapPath = []{ return QStringLiteral(":/Components/Output/Counter/counter_16_on.svg"); };
+        descriptor.titleText = QT_TRANSLATE_NOOP("Display16", "16-SEGMENT DISPLAY");
+        descriptor.translatedName = QT_TRANSLATE_NOOP("Display16", "16-Segment Display");
+        descriptor.trContext = "Display16";
+        descriptor.defaultAppearances = QStringList({
             ":/Components/Output/Counter/counter_16_off.svg",
             ":/Components/Output/Counter/counter_a1.svg",
             ":/Components/Output/Counter/counter_a2.svg",
@@ -55,11 +55,11 @@ struct ElementInfo<Display16> {
             ":/Components/Output/Counter/counter_n.svg",
             ":/Components/Output/Counter/counter_dp.svg",
         });
-        return meta;
-    } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementMetadata's QString/QStringList members, never reached after the return above.
+        return descriptor;
+    } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
 
     static inline const bool registered = []() {
-        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementTypeDescriptor::add(describe());
         ElementFactory::registerCreator(constraints.type, [] { return new Display16(); });
         return true;
     }();

@@ -18,27 +18,27 @@ struct ElementInfo<Text> {
     };
     static_assert(validate(constraints));
 
-    static ElementMetadata metadata()
+    static ElementTypeDescriptor describe()
     {
-        auto meta = metadataFromConstraints(constraints);
-        meta.pixmapPath = []{ return QStringLiteral(":/Components/Misc/text.png"); };
-        meta.titleText = QT_TRANSLATE_NOOP("Text", "TEXT");
-        meta.translatedName = QT_TRANSLATE_NOOP("Text", "Text");
-        meta.trContext = "Text";
+        auto descriptor = descriptorFromConstraints(constraints);
+        descriptor.pixmapPath = []{ return QStringLiteral(":/Components/Misc/text.png"); };
+        descriptor.titleText = QT_TRANSLATE_NOOP("Text", "TEXT");
+        descriptor.translatedName = QT_TRANSLATE_NOOP("Text", "Text");
+        descriptor.trContext = "Text";
         // Text has two built-in appearance assets, but only index 0 (the transparent
         // placeholder) is ever actually shown -- refresh() always reloads index 0, and nothing
         // switches to index 1. The empty-state hint (see labelContentChanged()) is a separate,
         // lighter-weight mechanism layered on top rather than an attempt to wire up this swap.
-        meta.defaultAppearances = QStringList({
+        descriptor.defaultAppearances = QStringList({
             ":/Components/Misc/no_text.png",
             ":/Components/Misc/text.png",
         });
         // Text is decorative and excluded from simulation.
-        return meta;
-    } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementMetadata's QString/QStringList members, never reached after the return above.
+        return descriptor;
+    } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
 
     static inline const bool registered = []() {
-        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementTypeDescriptor::add(describe());
         ElementFactory::registerCreator(constraints.type, [] { return new Text(); });
         return true;
     }();

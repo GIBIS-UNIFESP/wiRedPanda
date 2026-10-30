@@ -21,20 +21,20 @@ struct ElementInfo<InputGnd> {
     };
     static_assert(validate(constraints));
 
-    static ElementMetadata metadata()
+    static ElementTypeDescriptor describe()
     {
-        auto meta = metadataFromConstraints(constraints);
-        meta.pixmapPath = []{ return QStringLiteral(":/Components/Input/0.svg"); };
-        meta.titleText = QT_TRANSLATE_NOOP("InputGnd", "GROUND");
-        meta.translatedName = QT_TRANSLATE_NOOP("InputGnd", "GND");
-        meta.trContext = "InputGnd";
+        auto descriptor = descriptorFromConstraints(constraints);
+        descriptor.pixmapPath = []{ return QStringLiteral(":/Components/Input/0.svg"); };
+        descriptor.titleText = QT_TRANSLATE_NOOP("InputGnd", "GROUND");
+        descriptor.translatedName = QT_TRANSLATE_NOOP("InputGnd", "GND");
+        descriptor.trContext = "InputGnd";
         // Seed appearance lists from the constructor-supplied pixmap path (see And.cpp for details).
-        meta.defaultAppearances = QStringList({":/Components/Input/0.svg"});
-        return meta;
-    } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementMetadata's QString/QStringList members, never reached after the return above.
+        descriptor.defaultAppearances = QStringList({":/Components/Input/0.svg"});
+        return descriptor;
+    } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
 
     static inline const bool registered = []() {
-        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementTypeDescriptor::add(describe());
         ElementFactory::registerCreator(constraints.type, [] { return new InputGnd(); });
         return true;
     }();

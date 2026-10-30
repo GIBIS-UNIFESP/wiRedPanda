@@ -7,7 +7,7 @@
 #include <QMimeData>
 
 #include "App/Core/MimeTypes.h"
-#include "App/Element/ElementMetadata.h"
+#include "App/Element/ElementTypeDescriptor.h"
 #include "App/IO/Serialization.h"
 
 DragDropPayload readDragDropPayload(QDataStream &stream)
@@ -36,7 +36,7 @@ std::optional<DragDropPayload> readDragDropPayload(const QMimeData *mimeData)
     try {
         Serialization::readPandaHeader(stream);
         const auto payload = readDragDropPayload(stream);
-        if ((stream.status() != QDataStream::Ok) || !ElementMetadataRegistry::hasMetadata(payload.type)) {
+        if ((stream.status() != QDataStream::Ok) || !ElementTypeDescriptor::has(payload.type)) {
             return std::nullopt;
         }
         return payload;

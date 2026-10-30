@@ -8,7 +8,7 @@
 
 #include "App/Core/Common.h"
 #include "App/Element/Element.h"
-#include "App/Element/ElementMetadata.h"
+#include "App/Element/ElementTypeDescriptor.h"
 
 ElementType ElementFactory::textToType(const QString &text)
 {
@@ -41,8 +41,8 @@ QString ElementFactory::typeToTitleText(const ElementType type)
         return tr("MULTIPLE TYPES");
     }
 
-    const auto &meta = ElementMetadataRegistry::metadata(type);
-    return QCoreApplication::translate(meta.trContext, meta.titleText);
+    const auto &descriptor = ElementTypeDescriptor::of(type);
+    return QCoreApplication::translate(descriptor.trContext, descriptor.titleText);
 }
 
 QString ElementFactory::translatedName(const ElementType type)
@@ -51,8 +51,8 @@ QString ElementFactory::translatedName(const ElementType type)
         return tr("Unknown");
     }
 
-    const auto &meta = ElementMetadataRegistry::metadata(type);
-    return QCoreApplication::translate(meta.trContext, meta.translatedName);
+    const auto &descriptor = ElementTypeDescriptor::of(type);
+    return QCoreApplication::translate(descriptor.trContext, descriptor.translatedName);
 }
 
 QString ElementFactory::untranslatedName(const ElementType type)
@@ -61,7 +61,7 @@ QString ElementFactory::untranslatedName(const ElementType type)
         return QStringLiteral("Unknown");
     }
 
-    return QString::fromUtf8(ElementMetadataRegistry::metadata(type).translatedName);
+    return QString::fromUtf8(ElementTypeDescriptor::of(type).translatedName);
 }
 
 QString ElementFactory::description(const ElementType type)
@@ -107,7 +107,7 @@ QPixmap ElementFactory::pixmap(const ElementType type)
         return {};
     }
 
-    return QPixmap{ElementMetadataRegistry::metadata(type).pixmapPath()};
+    return QPixmap{ElementTypeDescriptor::of(type).pixmapPath()};
 }
 
 Element *ElementFactory::buildElement(const ElementType type)

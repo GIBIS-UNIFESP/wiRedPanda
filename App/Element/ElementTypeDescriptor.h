@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 /** \file
- * \brief Element metadata struct and global registry for compile-time element registration.
+ * \brief An element type's descriptor, and the registry of every type's, filled at start-up.
  */
 
 #pragma once
@@ -16,15 +16,23 @@
 #include "App/Core/Enums.h"
 
 /**
- * \struct ElementMetadata
- * \brief Compile-time-registered properties for one element type.
+ * \struct ElementTypeDescriptor
+ * \brief What one element type is: its group, names, ports, pictures and capabilities.
  *
- * \details Each element .cpp registers one instance via an ElementInfo<T>
- * specialization.  All fields are populated at static-initialization time
- * (before QApplication) except \c pixmapPath, which is a callable invoked
- * lazily at construction time.
+ * \details Each element .cpp adds its type's descriptor through its ElementInfo<T>
+ * specialization's describe(); of(), add() and has() are the registry of every
+ * type's. All fields are populated at static-initialization time (before
+ * QApplication) except \c pixmapPath, which is a callable invoked lazily at
+ * construction time.
  */
-struct ElementMetadata {
+struct ElementTypeDescriptor {
+    /// Returns the descriptor of \a type. Asserts if \a type has none; a release build warns and returns an empty one.
+    static const ElementTypeDescriptor &of(ElementType type);
+    /// Adds \a descriptor to the registry (called once per element type at startup).
+    static void add(const ElementTypeDescriptor &descriptor);
+    /// Returns \c true if \a type has a descriptor.
+    static bool has(ElementType type);
+
     ElementType type = ElementType::Unknown;   ///< Unique element type identifier.
     ElementGroup group = ElementGroup::Unknown; ///< UI palette group this element belongs to.
 
@@ -60,26 +68,8 @@ struct ElementMetadata {
     bool hasTruthTable = false; ///< True if the element has an editable truth table.
     bool hasVolume = false;     ///< True if the element supports volume control.
     bool rotatesGraphic = true; ///< True if rotating/flipping re-orients the graphic itself; false keeps the icon fixed and only repositions ports.
-};
-
-/**
- * \class ElementMetadataRegistry
- * \brief Global registry of ElementMetadata, one entry per ElementType.
- *
- * \details Populated during static initialization by ElementInfo<T>::registered
- * lambdas.  Look up metadata at runtime via metadata().
- */
-class ElementMetadataRegistry
-{
-public:
-    /// Returns the metadata for \a type. Asserts if \a type is not registered.
-    static const ElementMetadata &metadata(ElementType type);
-    /// Registers \a meta in the global map (called once per element type at startup).
-    static void registerMetadata(const ElementMetadata &meta);
-    /// Returns \c true if metadata has been registered for \a type.
-    static bool hasMetadata(ElementType type);
 
 private:
     /// Returns a reference to the singleton registry map.
-    static QMap<ElementType, ElementMetadata> &registry();
+    static QMap<ElementType, ElementTypeDescriptor> &registry();
 };
