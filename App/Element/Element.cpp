@@ -420,11 +420,6 @@ void Element::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
     QGraphicsItem::mouseDoubleClickEvent(event);
 }
 
-bool Element::hasAudio() const
-{
-    return m_descriptor.hasAudio;
-}
-
 QKeySequence Element::trigger() const
 {
     return m_trigger;
@@ -685,7 +680,6 @@ QList<PropertyDescriptor> Element::editableProperties() const
     if (hasColors())     props.append({PropertyDescriptor::Type::Color});
     if (hasFrequency())  props.append({PropertyDescriptor::Type::Frequency});
     if (hasDelay())      props.append({PropertyDescriptor::Type::Delay});
-    if (hasAudio())      props.append({PropertyDescriptor::Type::Audio});
     if (hasAudioBox())   props.append({PropertyDescriptor::Type::AudioBox});
     if (hasVolume())     props.append({PropertyDescriptor::Type::Volume});
     if (hasTrigger())    props.append({PropertyDescriptor::Type::Trigger});

@@ -20,6 +20,7 @@ private slots:
     void testValidateCommandRejectsUnknownMethod();
     void testValidateCommandAcceptsValidCommand();
     void testValidateCommandRejectsSchemaViolation();
+    void testValidateCommandRejectsTheToneNoElementHas();
     void testValidateCommandQJsonOverloadDelegates();
     void testValidateCommandQJsonOverloadCatchesMalformedInput();
     void testValidateCommandCachesCompiledValidatorAcrossCalls();

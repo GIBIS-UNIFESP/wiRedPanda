@@ -313,12 +313,12 @@ trip only reloads nodes), which each fix narrows by reading.
 | `MCP/Server/Handlers/BaseHandler.h:62` | `BaseHandler::tryCommand()` | Anything else: an error response | Stays, as `:59` |
 | `MCP/Server/Handlers/ConnectionHandler.cpp:109` | `ConnectionHandler::handleConnectElements()` | A throw from pushing the wire's `AddItemsCommand`: an error response | Stays, as `BaseHandler.h:59`: its body is a command's first `redo()`, which must not throw (EB.5) |
 | `MCP/Server/Handlers/ConnectionHandler.cpp:112` | `ConnectionHandler::handleConnectElements()` | Anything else, as `:109` | Stays, as `:109` |
-| `MCP/Server/Handlers/ElementHandler.cpp:256` | `ElementHandler::handleCreateElement()` | `ElementFactory::buildElement()`'s throw: an error response | Stays: a refusal before anything changes |
-| `MCP/Server/Handlers/ElementHandler.cpp:259` | `ElementHandler::handleCreateElement()` | Anything else, as `:255` | Stays |
-| `MCP/Server/Handlers/ElementHandler.cpp:289` | `ElementHandler::handleCreateElement()` | A throw from pushing the element's `AddItemsCommand`: the element deleted, an error response | Stays, as `ConnectionHandler.cpp:109` |
-| `MCP/Server/Handlers/ElementHandler.cpp:293` | `ElementHandler::handleCreateElement()` | Anything else, as `:288` | Stays, as `:288` |
-| `MCP/Server/Handlers/ElementHandler.cpp:431` | `ElementHandler::handleMoveElement()` | A throw from pushing the `MoveCommand`: the position put back, an error response | Stays, as `ConnectionHandler.cpp:109` |
-| `MCP/Server/Handlers/ElementHandler.cpp:435` | `ElementHandler::handleMoveElement()` | Anything else, as `:430` | Stays, as `:430` |
+| `MCP/Server/Handlers/ElementHandler.cpp:246` | `ElementHandler::handleCreateElement()` | `ElementFactory::buildElement()`'s throw: an error response | Stays: a refusal before anything changes |
+| `MCP/Server/Handlers/ElementHandler.cpp:249` | `ElementHandler::handleCreateElement()` | Anything else, as `:255` | Stays |
+| `MCP/Server/Handlers/ElementHandler.cpp:279` | `ElementHandler::handleCreateElement()` | A throw from pushing the element's `AddItemsCommand`: the element deleted, an error response | Stays, as `ConnectionHandler.cpp:109` |
+| `MCP/Server/Handlers/ElementHandler.cpp:283` | `ElementHandler::handleCreateElement()` | Anything else, as `:288` | Stays, as `:288` |
+| `MCP/Server/Handlers/ElementHandler.cpp:418` | `ElementHandler::handleMoveElement()` | A throw from pushing the `MoveCommand`: the position put back, an error response | Stays, as `ConnectionHandler.cpp:109` |
+| `MCP/Server/Handlers/ElementHandler.cpp:422` | `ElementHandler::handleMoveElement()` | Anything else, as `:430` | Stays, as `:430` |
 | `MCP/Server/Handlers/ICHandler.cpp:272` | `ICHandler::handleListICs()` | A listed IC file that does not load (`IC::loadFile()`): listed as without a valid definition | Stays: a fallback |
 | `MCP/Server/Handlers/ICHandler.cpp:283` | `ICHandler::handleListICs()` | A listed file whose header does not read: skipped | Stays: a fallback |
 | `App/BeWavedDolphin/BeWavedDolphin.cpp:533` | `BewavedDolphin::exportToPng()` | Anything from `DolphinExporter::exportToPng()`, which throws nothing today: `false` | Stays: a refusal its callers report |

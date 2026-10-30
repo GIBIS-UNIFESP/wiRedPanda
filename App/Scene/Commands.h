@@ -287,7 +287,6 @@ enum class ElementProperty {
     Frequency,
     Delay,
     Volume,
-    Audio,
     Trigger,        ///< Held as the key sequence's text.
     Wireless,       ///< A node's wireless mode; held as the WirelessMode's integer.
     Locked,         ///< An input's.

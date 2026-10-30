@@ -99,16 +99,6 @@ QString refusal(const Element &element, const QJsonObject &params, const Scene *
             return kind("trigger", "one letter, digit or space, or empty");
         }
     }
-    if (params.contains("audio")) {
-        if (!has(ElementProperty::Audio)) {
-            return lacks("audio");
-        }
-        // LCOV_EXCL_START — no element type has audio (hasAudio()), so the property is refused above
-        if (!params.value("audio").isString()) {
-            return kind("audio", "a string");
-        }
-        // LCOV_EXCL_STOP
-    }
     if (params.contains("locked")) {
         if (!has(ElementProperty::Locked)) {
             return lacks("locked");
@@ -367,9 +357,6 @@ QJsonObject ElementHandler::handleListElements(const QJsonObject &, const QJsonV
         if (element->hasTrigger()) {
             elementObj["trigger"] = element->trigger().toString();
         }
-        if (element->hasAudio()) {
-            elementObj["audio"] = element->audio(); // LCOV_EXCL_LINE -- hasAudio() is always false across every Element type, so this branch is dead
-        }
         if (element->hasVolume()) {
             elementObj["volume"] = static_cast<double>(element->volume());
         }
@@ -538,14 +525,6 @@ QJsonObject ElementHandler::handleSetElementProperties(const QJsonObject &params
         element->setTrigger(QKeySequence(params.value("trigger").toString().toUpper()));
         newProperties["trigger"] = element->trigger().toString();
     }
-
-    // LCOV_EXCL_START — no element type has audio (hasAudio()), so refusal() refuses the property
-    if (params.contains("audio")) {
-        oldProperties["audio"] = element->audio();
-        element->setAudio(params.value("audio").toString());
-        newProperties["audio"] = element->audio();
-    }
-    // LCOV_EXCL_STOP
 
     if (params.contains("locked")) {
         if (auto *inputElm = qobject_cast<ElementInput *>(element)) {

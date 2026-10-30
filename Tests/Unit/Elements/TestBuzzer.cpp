@@ -116,16 +116,16 @@ void TestBuzzer::testSetFrequencyRejectsZeroAndNegative()
     QCOMPARE(buzzer.frequency(), 880.0);
 }
 
-void TestBuzzer::testSetAudioBackwardCompat()
+void TestBuzzer::testSetNote()
 {
     Buzzer buzzer;
 
-    // setAudio("C6") should set frequency to 1047
-    buzzer.setAudio("C6");
+    // setNote("C6") should set frequency to 1047
+    buzzer.setNote("C6");
     QCOMPARE(buzzer.frequency(), 1047.0);
 
-    // setAudio("A7") should set frequency to 3520
-    buzzer.setAudio("A7");
+    // setNote("A7") should set frequency to 3520
+    buzzer.setNote("A7");
     QCOMPARE(buzzer.frequency(), 3520.0);
 }
 
@@ -241,12 +241,12 @@ void TestBuzzer::testSetFrequencyRestartsPlaybackWhenPlaying()
     QVERIFY(buzzer.isPlaying());
 }
 
-void TestBuzzer::testSetAudioWithEmptyNoteIsNoOp()
+void TestBuzzer::testSetNoteWithEmptyNoteIsNoOp()
 {
     Buzzer buzzer;
     buzzer.setFrequency(880.0);
 
-    buzzer.setAudio("");
+    buzzer.setNote("");
     QCOMPARE(buzzer.frequency(), 880.0);
 }
 

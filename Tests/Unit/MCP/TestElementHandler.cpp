@@ -788,7 +788,6 @@ void TestElementHandler::testSetElementPropertiesRefusesAPropertyTheTypeLacks()
     QVERIFY(refuses(window, handler, {{"element_id", id}, {"volume", 0.5}}));
     QVERIFY(refuses(window, handler, {{"element_id", id}, {"trigger", "A"}}));
     QVERIFY(refuses(window, handler, {{"element_id", id}, {"locked", true}}));
-    QVERIFY(refuses(window, handler, {{"element_id", id}, {"audio", "x.mp3"}}));
 }
 
 void TestElementHandler::testSetElementPropertiesRefusesAValueOfTheWrongKind()

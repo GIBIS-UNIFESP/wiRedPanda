@@ -198,7 +198,6 @@ QString snapshotPropertyKind(const PropertyDescriptor::Type type)
     case PropertyDescriptor::Type::Color:                return "Color";
     case PropertyDescriptor::Type::Frequency:            return "Frequency";
     case PropertyDescriptor::Type::Delay:                return "Delay";
-    case PropertyDescriptor::Type::Audio:                return "Audio";
     case PropertyDescriptor::Type::AudioBox:             return "AudioBox";
     case PropertyDescriptor::Type::Trigger:              return "Trigger";
     case PropertyDescriptor::Type::TruthTable:           return "TruthTable";

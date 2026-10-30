@@ -132,8 +132,6 @@ private:
     void labelChanged(const QString &label);
     /// Slot: the user picked a colour.
     void colorChanged();
-    /// Slot: the user picked a sound.
-    void audioChanged();
     /// Slot: the user changed the frequency field.
     void frequencyChanged(double frequency);
     /// Slot: the user moved the delay slider to \a eighths of the period.

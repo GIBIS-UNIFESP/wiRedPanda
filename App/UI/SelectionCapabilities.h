@@ -25,7 +25,6 @@ struct SelectionCapabilities {
     // --- Feature flags (AND-reduced: true only if every selected element has the feature) ---
 
     bool hasAudioBox         = false;
-    bool hasAudio            = false;
     bool hasColors           = false;
     bool hasDelay            = false;
     bool hasElements         = false;
@@ -52,7 +51,6 @@ struct SelectionCapabilities {
 
     // --- Consensus flags (true when all selected elements share the same value) ---
 
-    bool hasSameAudio        = false;
     bool hasSameColors       = false;
     bool hasSameDelay        = false;
     bool hasSameFrequency    = false;

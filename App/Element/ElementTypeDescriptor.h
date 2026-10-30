@@ -59,7 +59,6 @@ struct ElementTypeDescriptor {
 
     bool canChangeAppearance = false; ///< True if the user can choose a custom appearance.
     bool hasColors = false;     ///< True if the element supports color selection.
-    bool hasAudio = false;      ///< True if the element supports audio output.
     bool hasAudioBox = false;   ///< True if the element shows an audio selection box.
     bool hasTrigger = false;    ///< True if the element supports a keyboard trigger shortcut.
     bool hasFrequency = false;  ///< True if the element exposes a configurable clock frequency.

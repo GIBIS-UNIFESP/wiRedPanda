@@ -524,7 +524,6 @@ The `ElementConstraints` are **validated at compile time** by the `constexpr val
 | `maxOutputSize`       | Maximum number of output ports                                                  |
 | `canChangeAppearance` | Allows the user to assign a custom SVG appearance (e.g., ANSI/IEC)              |
 | `hasColors`           | Has color option (e.g., LED)                                                    |
-| `hasAudio`            | Produces sound (e.g., Buzzer)                                                   |
 | `hasAudioBox`         | Has audio box capability (e.g., AudioBox)                                       |
 | `hasTrigger`          | Can be triggered via keyboard                                                   |
 | `hasFrequency`        | Configurable frequency (e.g., Clock)                                            |
