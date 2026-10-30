@@ -16,6 +16,7 @@
 #include <QGraphicsSceneEvent>
 #include <QGraphicsSceneMouseEvent>
 #include <QHash>
+#include <QImage>
 #include <QKeySequence>
 #include <QList>
 #include <QMap>
@@ -357,6 +358,35 @@ void TestICUnit::testGeneratePreviewPixmapScalesAnExtentBeyondIntRange()
     QVERIFY(preview.height() <= ICPreviewPopup::MaxHeight);
     QVERIFY2(std::abs(preview.width() - (2 * preview.height())) <= 2,
              qPrintable(QString("a 2:1 extent made a %1x%2 preview").arg(preview.width()).arg(preview.height())));
+}
+
+void TestICUnit::testAPreviewShowsTheDefaultForAPictureThatIsGone()
+{
+    // The preview reads the IC's file again when shown: a picture its circuit names that is gone since the load shows
+    // its default there, as in the scene, instead of leaving the IC without a preview
+    QTemporaryDir subDir;
+    QVERIFY(subDir.isValid());
+    const QString png = subDir.filePath("custom.png");
+    QImage red(64, 64, QImage::Format_ARGB32);
+    red.fill(Qt::red);
+    QVERIFY(red.save(png));
+
+    WorkSpace innerWorkspace;
+    CircuitBuilder innerBuilder(innerWorkspace.scene());
+    InputSwitch innerSw;
+    Led innerLed;
+    innerBuilder.add(&innerSw, &innerLed);
+    innerBuilder.connect(&innerSw, 0, &innerLed, 0);
+    auto *gate = new And;
+    innerWorkspace.scene()->addItem(gate);
+    gate->setAppearance(false, png);
+    const QString innerPath = subDir.filePath("pictured.panda");
+    QCOMPARE(innerWorkspace.save(innerPath), WorkSpace::SaveOutcome::Saved);
+
+    IC ic;
+    ic.loadFile(innerPath, subDir.path());
+    QVERIFY(QFile::remove(png));
+    QVERIFY2(!ic.preview().isNull(), "a picture that is gone left the IC without a preview");
 }
 
 void TestICUnit::testAPreviewRendersOnlyWhenShown()

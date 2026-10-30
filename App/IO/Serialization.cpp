@@ -662,8 +662,9 @@ QList<QGraphicsItem *> Serialization::deserialize(QDataStream &stream, Serializa
             }
 
             // A file reports a picture or a sound that does not load, once the element's state has picked the
-            // picture it shows; a snapshot's restore shows or plays the default and goes on
-            if (context.purpose == SerializationPurpose::PortableFile) {
+            // picture it shows; a snapshot's restore, and an IC's circuit read inside one, show or play the default
+            // and go on
+            if ((context.purpose == SerializationPurpose::PortableFile) && !context.fallBackOnFailedFiles) {
                 elm->reportFailedFiles();
             }
 

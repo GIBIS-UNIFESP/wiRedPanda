@@ -65,8 +65,10 @@ public:
     static Files recordFilesRead(const std::function<void()> &load);
 
     /// Runs \a load with \a files in place of any of them no longer on disk, as a snapshot's restore does: the IC a
-    /// snapshot names loads what it had when the snapshot was taken.
-    static void withCarriedFiles(const Files &files, const std::function<void()> &load);
+    /// snapshot names loads what it had when the snapshot was taken. When \a restoring, a snapshot's restore, the
+    /// circuits \a load reads show or play the default for a picture or a sound that does not load, unreported; a load
+    /// inside one inherits both.
+    static void withCarriedFiles(const Files &files, bool restoring, const std::function<void()> &load);
 
     /// Renders \a ic's hover preview from the definition it loaded last, read again: its bytes, or its file. A
     /// definition that no longer loads leaves the preview null.

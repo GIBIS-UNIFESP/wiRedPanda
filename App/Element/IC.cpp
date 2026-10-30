@@ -166,7 +166,7 @@ void IC::load(QDataStream &stream, SerializationContext &context)
             filesStream.setVersion(QDataStream::Qt_5_12);
             carried = Serialization::readBoundedBlobMap(filesStream);
         }
-        ICLoader::withCarriedFiles(carried, [&] {
+        ICLoader::withCarriedFiles(carried, context.purpose == SerializationPurpose::InMemorySnapshot, [&] {
             // Resolve: try exact name first (embedded blob names may contain dots),
             // then baseName (file-backed "chain_c.panda" with registry key "chain_c")
             const QString baseName = QFileInfo(name).baseName();

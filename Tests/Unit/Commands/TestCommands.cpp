@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <functional>
 #include <limits>
+#include <tuple>
 #include <utility>
 
 #include <QDir>
@@ -2143,6 +2144,202 @@ void TestCommands::testAPushThatDropsIsReportedAndPushCommandThrowsIt()
     QVERIFY_THROWS_EXCEPTION(std::exception, scene->pushCommand(labelChange("y")));
     QCOMPARE(scene->undoStack()->count(), count);
     QVERIFY(scene->elements().contains(ic));
+}
+
+void TestCommands::testStepWithAFileGoneKeepsTheSceneWhole_data()
+{
+    QTest::addColumn<QString>("step");
+    QTest::addColumn<QString>("file");
+
+    const QStringList steps{"add redo", "delete undo", "update undo", "update redo", "blob undo", "blob redo"};
+    const QStringList files{"picture", "sound", "ic"};
+    for (const QString &step : steps) {
+        for (const QString &file : files) {
+            QTest::newRow(qPrintable(step + ", " + file)) << step << file;
+        }
+    }
+    QTest::newRow("morph undo, picture") << "morph undo" << "picture";
+    QTest::newRow("morph undo, sound") << "morph undo" << "sound";
+    QTest::newRow("port size undo, picture") << "port size undo" << "picture";
+}
+
+void TestCommands::testStepWithAFileGoneKeepsTheSceneWhole()
+{
+    // Each step of the stack that reads a snapshot, with each external file the snapshot can name deleted outside the
+    // application first (a picture, a sound, an IC's file, or one inside an embedded IC's circuit): Scene::undo() and
+    // redo(), which the Undo and Redo actions call, throw nothing, the stack steps, and the element comes back whole,
+    // its path kept
+    using namespace TestCommandsHelpers;
+    QFETCH(QString, step);
+    QFETCH(QString, file);
+
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    QString path;
+    if (file == "picture") {
+        path = dir.filePath("custom.png");
+        QImage red(64, 64, QImage::Format_ARGB32);
+        red.fill(Qt::red);
+        QVERIFY(red.save(path));
+    } else if (file == "sound") {
+        path = dir.filePath("custom.wav");
+        QFile sound(path);
+        QVERIFY(sound.open(QIODevice::WriteOnly));
+        sound.write("DUMMY AUDIO DATA");
+    } else {
+        path = dir.filePath("sub.panda");
+        writeSwitchToLed(path);
+    }
+
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    scene->setContextDir(dir.path());
+    // The element's id, taken when it is added: a step can delete the element it was first built as
+    int id = 0;
+    // An element of the file's kind on the scene, whose file is set by setFile()
+    const auto addElement = [&] {
+        GraphicElement *element = (file == "picture") ? static_cast<GraphicElement *>(new And())
+            : (file == "sound")                         ? static_cast<GraphicElement *>(new AudioBox())
+                                                        : static_cast<GraphicElement *>(new IC());
+        scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{element}, scene));
+        id = element->id();
+        return element;
+    };
+    const auto setFile = [&](GraphicElement *element) {
+        if (file == "picture") {
+            element->setAppearance(false, path);
+        } else if (file == "sound") {
+            static_cast<AudioBox *>(element)->setAudio(path);
+        } else {
+            static_cast<IC *>(element)->loadFile(path, dir.path());
+        }
+    };
+    // A change to the element: the file dropped, or, for an IC, which always has its file, its label
+    const auto clearFile = [&](GraphicElement *element) {
+        if (file == "picture") {
+            element->setAppearance(true, {});
+        } else if (file == "sound") {
+            static_cast<AudioBox *>(element)->setAudio(QString::fromLatin1(AudioBox::kDefaultAudioPath));
+        } else {
+            element->setLabel("changed");
+        }
+    };
+    const auto snapshot = [](GraphicElement *element) {
+        QByteArray data;
+        QDataStream stream(&data, QIODevice::WriteOnly);
+        Serialization::writePandaHeader(stream);
+        element->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
+        return data;
+    };
+    // The bytes of a circuit holding one element with the file
+    const auto circuitWithFile = [&] {
+        WorkSpace source;
+        source.scene()->setContextDir(dir.path());
+        GraphicElement *element = (file == "picture") ? static_cast<GraphicElement *>(new And())
+            : (file == "sound")                         ? static_cast<GraphicElement *>(new AudioBox())
+                                                        : static_cast<GraphicElement *>(new IC());
+        source.scene()->addItem(element);
+        if (file == "picture") {
+            element->setAppearance(false, path);
+        } else if (file == "sound") {
+            static_cast<AudioBox *>(element)->setAudio(path);
+        } else {
+            static_cast<IC *>(element)->loadFile(path, dir.path());
+        }
+        const QString circuit = dir.filePath("circuit.panda");
+        source.save(circuit);
+        return ICTestHelpers::readFile(circuit);
+    };
+
+    GraphicElement *element = nullptr;
+    const bool blobStep = step.startsWith("blob");
+    std::tuple<int, int, int> blobShape;
+    const bool undoing = step.endsWith("undo");
+    if (step == "add redo") {
+        element = addElement();
+        setFile(element);
+        scene->undo();
+    } else if (step == "delete undo") {
+        element = addElement();
+        setFile(element);
+        scene->receiveCommand(new DeleteItemsCommand(QList<QGraphicsItem *>{element}, scene));
+    } else if (step == "update undo") {
+        element = addElement();
+        setFile(element);
+        const QByteArray oldData = snapshot(element);
+        clearFile(element);
+        scene->receiveCommand(new UpdateCommand({element}, oldData, scene));
+    } else if (step == "update redo") {
+        element = addElement();
+        if (file == "ic") {
+            setFile(element);
+        }
+        const QByteArray oldData = snapshot(element);
+        if (file == "ic") {
+            clearFile(element);
+        } else {
+            setFile(element);
+        }
+        scene->receiveCommand(new UpdateCommand({element}, oldData, scene));
+        scene->undo();
+    } else if (step == "morph undo") {
+        element = addElement();
+        setFile(element);
+        scene->receiveCommand(new MorphCommand({element}, (file == "picture") ? ElementType::Or : ElementType::Buzzer, scene));
+    } else if (step == "port size undo") {
+        element = addElement();
+        setFile(element);
+        scene->receiveCommand(new ChangePortSizeCommand({element}, 3, scene, true));
+    } else {
+        // An embedded IC whose circuit holds the file: the old circuit for an undo, the new one for a redo, as a
+        // sub-circuit tab's save hands it to its parent
+        auto *blobIC = new IC();
+        scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{blobIC}, scene));
+        id = blobIC->id();
+        const QByteArray withFile = circuitWithFile();
+        ICTestHelpers::embedIC(blobIC, undoing ? withFile : ICTestHelpers::minimalPandaBytes(), "blob", dir.path(), scene->icRegistry());
+        workspace.saveChildICBlob(blobIC->id(), undoing ? ICTestHelpers::minimalPandaBytes() : withFile);
+        // The shape the IC has with the file's circuit, which the step gives back
+        const auto shape = [blobIC] {
+            return std::make_tuple(blobIC->inputSize(), blobIC->outputSize(), static_cast<int>(blobIC->internalElements().size()));
+        };
+        if (undoing) {
+            scene->undo();
+            blobShape = shape();
+            scene->redo();
+        } else {
+            blobShape = shape();
+            scene->undo();
+        }
+    }
+    const int count = scene->undoStack()->count();
+    const int index = scene->undoStack()->index();
+    QVERIFY(QFile::remove(path));
+
+    try {
+        undoing ? scene->undo() : scene->redo();
+    } catch (const std::exception &e) {
+        QFAIL(qPrintable(QString("the step threw: %1").arg(e.what())));
+    }
+    QCOMPARE(scene->undoStack()->count(), count);
+    QCOMPARE(scene->undoStack()->index(), undoing ? index - 1 : index + 1);
+    auto *restored = dynamic_cast<GraphicElement *>(scene->itemById(id));
+    QVERIFY(restored);
+    if (blobStep) {
+        const auto *ic = qobject_cast<IC *>(restored);
+        QVERIFY(ic);
+        QCOMPARE(std::make_tuple(ic->inputSize(), ic->outputSize(), static_cast<int>(ic->internalElements().size())), blobShape);
+        // A sound's box becomes one of the IC's outputs, which keeps no element; a picture's gate and an IC stay inside
+        if (file != "sound") {
+            const auto &internal = ic->internalElements();
+            const bool kept = std::any_of(internal.cbegin(), internal.cend(), [&path](const GraphicElement *inner) {
+                return inner->externalFiles().contains(path);
+            });
+            QVERIFY2(kept, "the embedded circuit's element lost its file");
+        }
+    } else {
+        QVERIFY2(restored->externalFiles().contains(path), qPrintable(restored->externalFiles().join(", ")));
+    }
 }
 
 void TestCommands::testSetPropertyCommandUndoesEachElementsValue()

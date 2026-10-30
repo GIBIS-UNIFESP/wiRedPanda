@@ -98,6 +98,8 @@ thread_local int s_icLoadDepth = 0;
 // The IC files the loads under way record as they read them, and those a snapshot's restore carries for files gone
 thread_local ICLoader::Files *s_icFilesRead = nullptr;
 thread_local const ICLoader::Files *s_icFilesCarried = nullptr;
+// Whether the loads under way are a snapshot's restore, whose circuits' pictures and sounds fall back unreported
+thread_local bool s_icRestoring = false;
 
 void recordICFileRead(const QString &path, const QByteArray &bytes)
 {
@@ -250,7 +252,7 @@ void ICLoader::loadFileDirectly(IC &ic, const QFileInfo &fileInfo)
     auto fileRegistry = Serialization::deserializeBlobRegistry(preamble.metadata, preamble.version);
 
     QHash<quint64, Port *> portMap;
-    SerializationContext subCtx = {.portMap = portMap, .version = preamble.version, .purpose = SerializationPurpose::PortableFile, .contextDir = fileInfo.absolutePath()};
+    SerializationContext subCtx = {.portMap = portMap, .version = preamble.version, .purpose = SerializationPurpose::PortableFile, .contextDir = fileInfo.absolutePath(), .fallBackOnFailedFiles = s_icRestoring};
     subCtx.blobRegistry = fileRegistry.isEmpty() ? nullptr : &fileRegistry;
     QDataStream elementsStream(&preamble.remainingPayload, QIODevice::ReadOnly);
     elementsStream.setVersion(QDataStream::Qt_5_12);
@@ -416,7 +418,7 @@ void ICLoader::deserializeAndLoad(IC &ic, const QByteArray &bytes, const QString
     auto blobRegistry = Serialization::deserializeBlobRegistry(preamble.metadata, preamble.version);
 
     QHash<quint64, Port *> portMap;
-    SerializationContext subCtx = {.portMap = portMap, .version = preamble.version, .purpose = SerializationPurpose::PortableFile, .contextDir = contextDir};
+    SerializationContext subCtx = {.portMap = portMap, .version = preamble.version, .purpose = SerializationPurpose::PortableFile, .contextDir = contextDir, .fallBackOnFailedFiles = s_icRestoring};
     subCtx.blobRegistry = blobRegistry.isEmpty() ? nullptr : &blobRegistry;
     QDataStream elementsStream(&preamble.remainingPayload, QIODevice::ReadOnly);
     elementsStream.setVersion(QDataStream::Qt_5_12);
@@ -464,13 +466,18 @@ ICLoader::Files ICLoader::recordFilesRead(const std::function<void()> &load)
     return files;
 }
 
-void ICLoader::withCarriedFiles(const Files &files, const std::function<void()> &load)
+void ICLoader::withCarriedFiles(const Files &files, const bool restoring, const std::function<void()> &load)
 {
     Files carried = s_icFilesCarried ? *s_icFilesCarried : Files();
     carried.insert(files);
     const Files *outer = s_icFilesCarried;
+    const bool outerRestoring = s_icRestoring;
     s_icFilesCarried = &carried;
-    const auto restore = qScopeGuard([outer] { s_icFilesCarried = outer; });
+    s_icRestoring = outerRestoring || restoring;
+    const auto restore = qScopeGuard([outer, outerRestoring] {
+        s_icFilesCarried = outer;
+        s_icRestoring = outerRestoring;
+    });
     load();
 }
 
@@ -515,7 +522,7 @@ void ICLoader::renderPreview(IC &ic)
         auto blobRegistry = Serialization::deserializeBlobRegistry(preamble.metadata, preamble.version);
 
         QHash<quint64, Port *> portMap;
-        SerializationContext context = {.portMap = portMap, .version = preamble.version, .purpose = SerializationPurpose::PortableFile, .contextDir = ic.m_previewContextDir};
+        SerializationContext context = {.portMap = portMap, .version = preamble.version, .purpose = SerializationPurpose::PortableFile, .contextDir = ic.m_previewContextDir, .fallBackOnFailedFiles = true};
         context.blobRegistry = blobRegistry.isEmpty() ? nullptr : &blobRegistry;
         QDataStream elementsStream(&preamble.remainingPayload, QIODevice::ReadOnly);
         elementsStream.setVersion(QDataStream::Qt_5_12);

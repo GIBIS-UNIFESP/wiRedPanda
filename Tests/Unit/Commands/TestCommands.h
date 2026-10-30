@@ -77,6 +77,8 @@ private slots:
     void testLabelUndoOnAFileICKeepsItsCircuit();
     void testUndoReadsAnICsFileAsTheSceneDoes();
     void testAPushThatDropsIsReportedAndPushCommandThrowsIt();
+    void testStepWithAFileGoneKeepsTheSceneWhole_data();
+    void testStepWithAFileGoneKeepsTheSceneWhole();
 
     // SetPropertyCommand: one property of elements, its values before and after, merged within an edit session
     void testSetPropertyCommandUndoesEachElementsValue();
