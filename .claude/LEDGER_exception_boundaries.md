@@ -92,12 +92,17 @@ status change gets a dated line in the log.
   clean, the strings golden updated.
 - 2026-10-30: CI at `84a18b6bb` failed the two drag tests and the autosave test on Qt 6.8, fixed in the fold logged
   above.
-- 2026-10-30: EB.2 done (`f0c4bd454`, `f514fd0bf`, `b52eb8521`): the inventory checked in CI against the sources,
+- 2026-10-30: EB.2 done (`f0c4bd454`, `f514fd0bf`, `42b649faa`): the inventory checked in CI against the sources,
   and every command step that reads a snapshot tested with each external file gone. EB.14 found by it and done
-  (`b52eb8521`): a restore threw for a picture or a sound gone inside an IC's circuit. Tip checked: release suite
+  (`42b649faa`): a restore threw for a picture or a sound gone inside an IC's circuit. Tip checked: release suite
   227/227, five sources compiled alone, at `-O3` and with GCC 13, `fix_style.py` clean, the inventory check clean;
   no `tr()` string added or removed.
 - 2026-10-30: the UNDO path's BeWavedDolphin actions read: its command reaches no throw site, so they need no guard.
+- 2026-10-30: CI at `18af370a8` and `9f2e1e04a` (Build 41060088428, 41062510941; Sanitizers 41060088354,
+  41062510533) failed EB.2's command-step test: it read the element's id after the step that deleted it (an
+  addition's undo, a deletion, a morph), a use after free ASan reported and macOS failed on, and GCC 13 at `-O3`
+  raised `-Wnull-dereference` on the id's fallback; the id is taken when the element is added. GCC 13 at `-O3`
+  fails the old test and passes the new; folded into the fix (`42b649faa`).
 
 ## Appendix: the inventory (EB.1)
 
