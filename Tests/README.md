@@ -25,6 +25,8 @@ The test suite is organized into multiple categories to ensure correctness at di
 
 ```text
 Tests/
+├── Build/                    # Tests of the build's own checks, CMake scripts CTest runs
+│   └── TestModelIncludeCheck.cmake # The model includes no presentation header (cmake/CheckModelIncludes.cmake)
 ├── Integration/              # Full circuit and system integration tests
 │   ├── IC/Tests/             # Hierarchical IC test suite (72 tests)
 │   │   ├── TestLevel1*.cpp   # Basic sequential elements (4 tests)

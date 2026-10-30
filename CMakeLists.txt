@@ -438,7 +438,29 @@ endfunction()
 
 # ========= LIB ===================================
 
-add_library(wiredpanda_lib STATIC ${SOURCES} ${HEADERS})
+add_library(wiredpanda_lib STATIC
+    ${MODEL_SOURCES} ${MODEL_HEADERS} ${PRESENTATION_SOURCES} ${PRESENTATION_HEADERS} ${SOURCES} ${HEADERS})
+
+# The model includes no presentation header, checked before the library compiles. The source root is a global include
+# directory and pch.h holds every module, so the compiler rejects no such include; the check does.
+set(MODEL_INCLUDE_CHECK_DIR "${CMAKE_BINARY_DIR}/IncludeCheck")
+file(CONFIGURE OUTPUT "${MODEL_INCLUDE_CHECK_DIR}/model.cmake" CONTENT [[
+set(CHECK_SOURCE_DIR "@CMAKE_SOURCE_DIR@")
+set(CHECK_MODEL_FILES "@MODEL_SOURCES@;@MODEL_HEADERS@")
+set(CHECK_PRESENTATION_FILES "@PRESENTATION_SOURCES@;@PRESENTATION_HEADERS@")
+]] @ONLY)
+add_custom_command(
+    OUTPUT "${MODEL_INCLUDE_CHECK_DIR}/model.stamp"
+    COMMAND "${CMAKE_COMMAND}" "-DCONFIG=${MODEL_INCLUDE_CHECK_DIR}/model.cmake"
+            -P "${CMAKE_SOURCE_DIR}/cmake/CheckModelIncludes.cmake"
+    COMMAND "${CMAKE_COMMAND}" -E touch "${MODEL_INCLUDE_CHECK_DIR}/model.stamp"
+    DEPENDS "${CMAKE_SOURCE_DIR}/cmake/CheckModelIncludes.cmake" "${MODEL_INCLUDE_CHECK_DIR}/model.cmake"
+            ${MODEL_SOURCES} ${MODEL_HEADERS}
+    COMMENT "Checking that the model includes no presentation header"
+    VERBATIM
+)
+add_custom_target(check_model_includes DEPENDS "${MODEL_INCLUDE_CHECK_DIR}/model.stamp")
+add_dependencies(wiredpanda_lib check_model_includes)
 # Use the namespaced json-schema-validator target: it is exported by both the
 # fetched build and the installed system package, whereas the unqualified
 # `nlohmann_json_schema_validator` name only exists in the fetched build.
@@ -1054,6 +1076,9 @@ add_test(NAME TestInstallRelativePaths COMMAND test_wiredpanda TestInstallRelati
 add_test(NAME TestExerciseEngine COMMAND test_wiredpanda TestExerciseEngine WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestTourEngine COMMAND test_wiredpanda TestTourEngine WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestUpdateChecker COMMAND test_wiredpanda TestUpdateChecker WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestModelIncludeCheck
+    COMMAND "${CMAKE_COMMAND}" "-DCHECK_SCRIPT=${CMAKE_SOURCE_DIR}/cmake/CheckModelIncludes.cmake"
+            "-DWORK_DIR=${CMAKE_BINARY_DIR}/IncludeCheckTest" -P "${CMAKE_SOURCE_DIR}/Tests/Build/TestModelIncludeCheck.cmake")
 
 # ============================================================================
 # Test Properties: Labels and Timeouts
@@ -1152,8 +1177,8 @@ set_tests_properties(TestDanglingPointer PROPERTIES LABELS "unit;regression")
 set_tests_properties(TestPerfProbe PROPERTIES LABELS "perf")
 
 # Core Functionality Tests - Unit category
-foreach(TEST TestCommands TestCommon TestEnums TestGoldens TestNotifyCatch TestPortReaders TestPriorities TestRecentFiles
-        TestSettings TestThemeManager)
+foreach(TEST TestCommands TestCommon TestEnums TestGoldens TestModelIncludeCheck TestNotifyCatch TestPortReaders
+        TestPriorities TestRecentFiles TestSettings TestThemeManager)
     set_tests_properties(${TEST} PROPERTIES LABELS "unit")
 endforeach()
 
@@ -1217,7 +1242,8 @@ set(ALL_TESTS
     TestFileHandlerSecurity TestICHandlerSecurity TestMCPProcessor TestMCPValidator TestElementHandler TestBaseHandler TestThemeHandler TestHistoryHandler TestServerInfoHandler TestConnectionHandler TestSimulationHandler TestFileHandler TestICHandler
     TestExerciseEngine TestTourEngine
     TestSimulationUnit TestWorkspaceUnit
-    TestICFixtureLayout TestPerfProbe)
+    TestICFixtureLayout TestPerfProbe
+    TestModelIncludeCheck)
 foreach(TEST ${ALL_TESTS})
     set_tests_properties(${TEST} PROPERTIES FIXTURES_SETUP "non_gui_complete")
 endforeach()

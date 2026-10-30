@@ -1,34 +1,15 @@
-set(SOURCES
-    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/BeWavedDolphin.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/BeWavedDolphinUI.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinClipboard.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinCommands.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinEdits.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinExporter.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinFile.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinModelBuilder.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinZoom.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/Serializer.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/SignalDelegate.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/SignalModel.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/WaveformSimulator.cpp
+# The model: the circuit, its elements, ports and wires, the registries, commands, serializers, code generators and
+# simulation. No file of it includes a presentation header (cmake/CheckModelIncludes.cmake).
+set(MODEL_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/CodeGen/ArduinoCodeGen.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/CodeGen/SystemVerilogCodeGen.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Core/Application.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Common.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/DragDropPayload.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Enums.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Core/ExerciseTourResources.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Core/InstallRelativePaths.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/ItemWithId.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Core/Settings.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Core/ThemeManager.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Core/UpdateChecker.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/Element.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementAppearance.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementFactory.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementInput.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementLabel.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementMetadata.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementOrientation.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementPorts.cpp
@@ -68,115 +49,38 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Xor.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/IC.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICLoader.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICPreviewPopup.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICRenderer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICSimulation.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseEngine.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseOverlay.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/IO/RecentFiles.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/Serialization.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/ClipboardManager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Commands.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/ConnectionManager.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/DragPreview.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/GraphicsView.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/ICRegistry.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/InlineLabelEditor.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/PortHoverLabel.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/PropertyShortcutHandler.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Scene.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/SceneDropHandler.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/SceneInteraction.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/SceneItemRegistry.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/VisibilityManager.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Workspace.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/Simulation.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationBlocker.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationThrottleDisabler.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourEngine.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourOverlay.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/CircuitExporter.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialog.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialogUI.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementContextMenu.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementEditor.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementEditorUI.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementPalette.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementTabNavigator.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ExportController.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/FileDialogProvider.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ICController.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ICDropZone.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/LabeledSlider.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/LanguageManager.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/LengthDialog.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/LengthDialogUI.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindow.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindowUI.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/MinimapWidget.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/SceneUiBinder.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/SelectionCapabilities.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/TrashButton.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/UpdateController.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/UI/WorkspaceManager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Wiring/Connection.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Wiring/ConnectionSerializer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Wiring/Port.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Core/MCPProcessor.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Core/MCPValidator.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/BaseHandler.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ConnectionHandler.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ElementHandler.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/FileHandler.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/HistoryHandler.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ICHandler.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ServerInfoHandler.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/SimulationHandler.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ThemeHandler.cpp
 )
 
-set(HEADERS
-    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/BeWavedDolphin.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/BeWavedDolphinUI.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinClipboard.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinCommands.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinEdits.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinExporter.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinFile.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinHost.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinModelBuilder.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinZoom.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/Serializer.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/SignalDelegate.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/SignalModel.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/WaveformSimulator.h
+set(MODEL_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/CodeGen/ArduinoCodeGen.h
     ${CMAKE_CURRENT_LIST_DIR}/App/CodeGen/CodeGenUtils.h
     ${CMAKE_CURRENT_LIST_DIR}/App/CodeGen/SystemVerilogCodeGen.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Core/Application.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Common.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Constants.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/ContextDirProvider.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/DragDropPayload.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Enums.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Core/ExerciseTourResources.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Core/InstallRelativePaths.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/ItemWithId.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/MimeTypes.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Priorities.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/SentryHelpers.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Core/Settings.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/SimulationHost.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/StatusOps.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Core/StepEngineCore.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Core/ThemeManager.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Core/UpdateChecker.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/Element.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementAppearance.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementFactory.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementInfo.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementInput.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementLabel.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementMetadata.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementOrientation.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementPorts.h
@@ -217,37 +121,153 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Xor.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/IC.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICLoader.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICPreviewPopup.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICRenderer.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICSimulation.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/PropertyDescriptor.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseEngine.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseOverlay.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseStep.h
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/ExternalFilePath.h
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/FileUtils.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/IO/RecentFiles.h
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/Serialization.h
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/SerializationContext.h
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/VersionInfo.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/ClipboardManager.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Commands.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/ICRegistry.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/SceneItemRegistry.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/Simulation.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationBlocker.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationThrottleDisabler.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Versions.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Wiring/Connection.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Wiring/ConnectionSerializer.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Wiring/Port.h
+)
+
+# Presentation: how an element is measured, shaped and drawn. It may include the model.
+set(PRESENTATION_SOURCES
+)
+
+set(PRESENTATION_HEADERS
+)
+
+# The rest of the application.
+set(SOURCES
+    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/BeWavedDolphin.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/BeWavedDolphinUI.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinClipboard.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinCommands.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinEdits.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinExporter.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinFile.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinModelBuilder.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinZoom.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/Serializer.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/SignalDelegate.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/SignalModel.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/WaveformSimulator.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Core/Application.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Core/ExerciseTourResources.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Core/InstallRelativePaths.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Core/Settings.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Core/ThemeManager.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Core/UpdateChecker.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementAppearance.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementLabel.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICPreviewPopup.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICRenderer.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseEngine.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseOverlay.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/IO/RecentFiles.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/ClipboardManager.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/ConnectionManager.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/DragPreview.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/GraphicsView.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/InlineLabelEditor.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/PortHoverLabel.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/PropertyShortcutHandler.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Scene.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/SceneDropHandler.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/SceneInteraction.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/VisibilityManager.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Workspace.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourEngine.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourOverlay.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/CircuitExporter.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialog.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialogUI.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementContextMenu.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementEditor.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementEditorUI.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementPalette.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementTabNavigator.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ExportController.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/FileDialogProvider.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ICController.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/ICDropZone.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/LabeledSlider.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/LanguageManager.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/LengthDialog.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/LengthDialogUI.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindow.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindowUI.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/MinimapWidget.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/SceneUiBinder.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/SelectionCapabilities.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/TrashButton.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/UpdateController.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/WorkspaceManager.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Core/MCPProcessor.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Core/MCPValidator.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/BaseHandler.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ConnectionHandler.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ElementHandler.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/FileHandler.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/HistoryHandler.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ICHandler.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ServerInfoHandler.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/SimulationHandler.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Handlers/ThemeHandler.cpp
+)
+
+set(HEADERS
+    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/BeWavedDolphin.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/BeWavedDolphinUI.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinClipboard.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinCommands.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinEdits.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinExporter.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinFile.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinHost.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinModelBuilder.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/DolphinZoom.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/Serializer.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/SignalDelegate.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/SignalModel.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/WaveformSimulator.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Core/Application.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Core/ExerciseTourResources.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Core/InstallRelativePaths.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Core/Settings.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Core/StepEngineCore.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Core/ThemeManager.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Core/UpdateChecker.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementAppearance.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementLabel.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICPreviewPopup.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICRenderer.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseEngine.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseOverlay.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseStep.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/IO/RecentFiles.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/ClipboardManager.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/ConnectionManager.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/DragPreview.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/GraphicsView.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/ICRegistry.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/InlineLabelEditor.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/PortHoverLabel.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/PropertyShortcutHandler.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Scene.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/SceneDropHandler.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/SceneInteraction.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/SceneItemRegistry.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/VisibilityManager.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Workspace.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/Simulation.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationBlocker.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationThrottleDisabler.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourEngine.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourOverlay.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourStep.h
@@ -276,10 +296,6 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/TrashButton.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/UpdateController.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/WorkspaceManager.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Versions.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Wiring/Connection.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Wiring/ConnectionSerializer.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Wiring/Port.h
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Core/JsonRpcError.h
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Core/MCPProcessor.h
     ${CMAKE_CURRENT_LIST_DIR}/MCP/Server/Core/MCPValidator.h
