@@ -33,6 +33,7 @@ private slots:
     void testGeneratePreviewPixmapWithNonFiniteBoundsIsNoOp();
     void testGeneratePreviewPixmapWithDegenerateAspectRatioIsEmpty();
     void testGeneratePreviewPixmapScalesAnExtentBeyondIntRange();
+    void testAPreviewShowsTheDefaultForAPictureThatIsGone();
     void testAPreviewRendersOnlyWhenShown();
     void testLoadGrowsLinearlyInICs();
 

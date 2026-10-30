@@ -56,6 +56,8 @@ enum class SerializationPurpose {
  * - \c purpose — see SerializationPurpose; mandatory, no default.
  * - \c contextDir — directory of the .panda file being loaded; used to resolve
  *   relative IC file paths and relative appearance-file paths.
+ * - \c fallBackOnFailedFiles — whether a file's picture or sound that does not load
+ *   falls back unreported, as in a snapshot's restore, instead of being reported.
  * - \c oldPtrToSerialId — maps old pointer IDs (from pre-serialId files) to new
  *   serial IDs for backward compatibility.
  */
@@ -74,6 +76,9 @@ struct SerializationContext {
     /// so IC::load() finds its own ports' keys without searching the whole map.
     QList<quint64> loadedInputKeys = {};
     QList<quint64> loadedOutputKeys = {}; ///< As loadedInputKeys, for the output ports.
+    /// A file read inside a snapshot's restore (an IC's circuit) or for a preview: a picture or a sound that does not
+    /// load shows or plays its default, unreported, as in the snapshot itself (Serialization::deserialize()).
+    bool fallBackOnFailedFiles = false;
 };
 
 /**
