@@ -110,6 +110,7 @@ status change gets a dated line in the log.
   missed the clone case and the report, closed and folded into the fix; the two failed-file report sites listed the
   UNDO path that EB.14 closed; §9's question had no row (EB.15, answered from P2.16's CI); the
   appendix's counts recounted by the check's script; CLAUDE.md gains GCC 13's `-O3` null-dereference.
+  Tip checked at `f49d72cf2`: release and debug suites 227/227.
 
 ## Appendix: the inventory (EB.1)
 
