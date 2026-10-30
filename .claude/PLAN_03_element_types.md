@@ -316,9 +316,12 @@ not change.
 with `setPortName()` and the main window's per-element retranslation pass. Help follows Qt's rule in
 `Scene::helpEvent()`: the topmost item with text, an element's text being its help text, a loaded IC having none (plan
 2's IC tooltip fix, kept). Readers of `objectName()` move to `translatedName()`, the same string: serializer logs and
-load errors, the Demux's load error, the morph's undo text, MCP's missing-port messages, test helpers. Tests: a name
-and help text, a translator installed after construction, an IC from a file, a blob and unloaded in two languages, a
-help event over an element, under a tooltip item and over empty space.
+load errors, the Demux's load error, the morph's undo text, the code generators' errors, MCP's missing-port messages,
+test helpers. An empty Text's hint is translated text in its body, so the scene's retranslation has each element
+measure it again (`languageChanged()`), the hook §3.11 uses for every body. A port carries no tooltip: over a port the
+help event shows hover labels, which read its name when shown. Tests: a name and help text, a translator installed
+after construction, an IC from a file, a blob and unloaded in two languages, a help event over an element, under a
+tooltip item and over empty space, a segment port's hover label under a translator installed after construction.
 
 ### 3.5 Descriptors and typed parameters
 
