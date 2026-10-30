@@ -8,7 +8,7 @@ sub-ID of the item it belongs to (`P3.13a`, `P3.13b`, ...) and a line in the log
 (committed), `blocked` (on what, in the notes) or `dropped` (why, with the user's decision). The Commits column lists
 every commit of the item. Every status change gets a dated line in the log.
 
-**Branch:** `03-element-types`, from `02a-qt-floor` once the Qt floor's plan has landed; not created yet.
+**Branch:** `03-element-types`, from `02c-exception-boundaries` at `dd502ee6e`, created 2026-10-30.
 
 **Open decisions:** none.
 
@@ -49,3 +49,5 @@ Each row's notes say how its check is shown to fail; "as on the branch" marks a 
 - 2026-10-21: the Qt floor raised to 6.8 at the user's ruling ("go with 6.8"): blur filters render alike on every Qt
   it allows, so the body goldens compare every blurred pixel and need no blur masks (P3.2), and the row for the body
   goldens on Qt 6.7.3 went; the IC subclass's hand-over to plan 8, P3.27, is now P3.26.
+- 2026-10-30: the branch created from `02c-exception-boundaries` at `dd502ee6e`, the exception boundaries' plan done
+  with CI green; P3.1 started.
