@@ -89,6 +89,8 @@ status change gets a dated line in the log.
   suite 227/227 (its run found the factory's `JKLatch` test stopped by the assertion, skipped in a debug build as
   its siblings, folded into EB.9), the changed sources compiled alone, at `-O3` and with GCC 13, `fix_style.py`
   clean, the strings golden updated.
+- 2026-10-30: CI at `84a18b6bb` failed the two drag tests and the autosave test on Qt 6.8, fixed in the fold logged
+  above.
 
 ## Appendix: the inventory (EB.1)
 
