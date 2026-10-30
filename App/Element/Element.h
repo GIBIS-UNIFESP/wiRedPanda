@@ -288,13 +288,13 @@ public:
 
     // --- Color Properties ---
 
-    /// Returns the name of the color currently applied to this element.
-    virtual QString color() const;
+    /// Returns the name of the element's colour (ParamId::Colour), or an empty string for a type without one.
+    QString color() const;
 
-    /// Sets the element color to \a color and refreshes the pixmap.
-    virtual void setColor(const QString &color);
+    /// Sets the element's colour to \a color, a name; a type without a colour takes nothing.
+    void setColor(const QString &color);
 
-    /// Returns \c true if this element type supports color selection.
+    /// Returns \c true if the element offers its colour for editing (an LED with one input, a display).
     bool hasColors() const;
 
     /// Maps a color name ("White","Red","Green","Blue","Purple") to indices 0–4.
@@ -663,11 +663,6 @@ protected:
      */
     bool sceneEvent(QEvent *event) override;
 
-    // --- Capability Setters ---
-
-    /// Sets whether this element type supports color selection.
-    void setHasColors(const bool hasColors);
-
     // --- Port Size Constraint Setters ---
 
     /// Sets the maximum number of input ports to \a maxInputSize.
@@ -810,9 +805,8 @@ private:
     QKeySequence m_trigger;
     QString m_labelText;
 
-    // --- Members: Capabilities & Display State ---
+    // --- Members: Display State ---
 
-    bool m_hasColors = false;
     bool m_selected = false;
 
     /// Owns the rotation angle and flip flags, and the transform math that applies them to

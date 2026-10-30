@@ -13,9 +13,11 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementTypeDescriptor.h"
 #include "App/Element/GraphicElements/Clock.h"
+#include "App/Element/GraphicElements/Display7.h"
 #include "App/Element/GraphicElements/InputButton.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
+#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Element/Parameters.h"
 #include "App/Wiring/Port.h"
@@ -106,6 +108,10 @@ void TestParameters::testEachTypeHasTheParametersOfItsSchema_data()
         {ElementType::InputRotary, {"Position 0 currentPort", "Locked false locked"}},
         {ElementType::Clock, {"On false -", "Locked false locked", "Frequency 1 frequency", "Delay 0 delay"}},
         {ElementType::Node, {"Wireless 0 wirelessMode"}},
+        {ElementType::Led, {"Colour \"White\" color"}},
+        {ElementType::Display7, {"Colour \"Red\" color"}},
+        {ElementType::Display14, {"Colour \"Red\" color"}},
+        {ElementType::Display16, {"Colour \"Red\" color"}},
     };
 
     const QMetaEnum metaEnum = QMetaEnum::fromType<ElementType>();
@@ -318,4 +324,40 @@ void TestParameters::testAClocksFrequencyAndDelayAreItsRules()
     gate->setDelay(0.5);
     QCOMPARE(gate->frequency(), 0.0);
     QCOMPARE(gate->delay(), 0.0);
+}
+
+// --- The colours ---
+
+void TestParameters::testAColourIsAnyNameAndTheLedOffersItWithOneInput()
+{
+    // Any name is kept; the LED's pictures follow a listed one, and one not in the list is drawn as White
+    Led led;
+    QVERIFY(led.hasColors());
+    led.setColor(QStringLiteral("Green"));
+    QCOMPARE(led.param<QString>(ParamId::Colour), QStringLiteral("Green"));
+    QCOMPARE(led.appearanceStates().constFirst().first, 4);
+    QVERIFY(led.setParam(ParamId::Colour, QStringLiteral("Teal")));
+    QCOMPARE(led.color(), QStringLiteral("Teal"));
+    QCOMPARE(led.appearanceStates().constFirst().first, 0);
+
+    // With more than one input the inputs' code picks the colour: the LED keeps it but does not offer it
+    led.setColor(QStringLiteral("Blue"));
+    led.setInputSize(2);
+    QVERIFY(!led.hasColors());
+    QVERIFY(led.hasParam(ParamId::Colour));
+    QCOMPARE(led.color(), QStringLiteral("Blue"));
+    led.setInputSize(1);
+    QVERIFY(led.hasColors());
+    QCOMPARE(led.appearanceStates().constFirst().first, 6);
+
+    Display7 display;
+    QVERIFY(display.hasColors());
+    display.setColor(QStringLiteral("Purple"));
+    QCOMPARE(display.color(), QStringLiteral("Purple"));
+
+    // A type without a colour has none, offers none and takes none
+    const std::unique_ptr<Element> gate(ElementFactory::buildElement(ElementType::And));
+    gate->setColor(QStringLiteral("Red"));
+    QVERIFY(!gate->hasColors());
+    QCOMPARE(gate->color(), QString());
 }

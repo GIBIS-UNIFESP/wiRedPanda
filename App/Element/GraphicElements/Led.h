@@ -23,8 +23,8 @@ class Led : public Element
     friend class TestLED;
 
 public:
-    /// Default color name. Single source of truth: used by the member
-    /// initializer and serialization's default-elision check.
+    /// Default color name. Single source of truth: used by the colour's spec
+    /// and serialization's default-elision check.
     static constexpr const char *kDefaultColor = "White";
 
     // --- Lifecycle ---
@@ -34,13 +34,8 @@ public:
 
     // --- Color State ---
 
-    /// Returns the current LED color name.
-    QString color() const override;
-
     /// Returns a string describing the current color for the element editor.
     QString genericProperties() override;
-    /// Sets the LED color to \a color.
-    void setColor(const QString &color) override;
 
     // --- Visual ---
 
@@ -54,9 +49,6 @@ public:
     /// Propagates input values to matching outputs.
     void updateLogic() override;
 
-    /// Offers the colour only to a single-input LED, then lays the ports out.
-    void updatePortsProperties() override;
-
     /// The inputs, numbered from 1.
     std::optional<PortAttributes> inputAttributes(int index) const override;
 
@@ -67,6 +59,10 @@ public:
     /// \reimp
     void save(QDataStream &stream, SerializationOptions options) const override;
 
+protected:
+    /// Derives the colour's offset in the appearance list from a new colour.
+    void parameterChanged(ParamId id, const ParamValue &previous) override;
+
 private:
     // --- Internal methods ---
 
@@ -74,6 +70,5 @@ private:
 
     // --- Members ---
 
-    QString m_color = kDefaultColor;
     int m_colorIndex = 0; /* white = 0, red = 2, green = 4, blue = 6, purple = 8 */
 };
