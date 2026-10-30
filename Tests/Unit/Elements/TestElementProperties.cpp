@@ -382,10 +382,10 @@ void TestElementProperties::testFrequencyValidation()
     clock.setFrequency(50.0);
     QCOMPARE(clock.frequency(), 50.0);
 
-    // Test 4: Very high frequency (1 MHz) is deterministically rejected. Clock::setFrequency()
-    // computes halfPeriod = duration_cast<microseconds>(1s / (2 * 1000000.0)) = 0.5us, which
-    // truncates to 0us, so auxInterval.count() <= 0 is always true -- there is no timing-
-    // precision ambiguity here, just a fixed rejection.
+    // Test 4: Very high frequency (1 MHz) is deterministically rejected. The clock's frequency spec
+    // (Clock.cpp) computes halfPeriod = duration_cast<microseconds>(1s / (2 * 1000000.0)) = 0.5us,
+    // which truncates to 0us, so halfPeriod(frequency).count() > 0 is always false -- there is no
+    // timing-precision ambiguity here, just a fixed rejection.
     double before = clock.frequency();
     clock.setFrequency(1000000.0);
     QCOMPARE(clock.frequency(), before);

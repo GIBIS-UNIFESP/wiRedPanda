@@ -1088,7 +1088,7 @@ void TestScene::testPropertyCycleFrequency()
     // Clock should still exist
     QCOMPARE(scene->elements().size(), 1);
 
-    // adjustMainProperty() cycles Clock::frequency() in 0.5 Hz steps.
+    // adjustMainProperty() cycles the clock's frequency in 0.5 Hz steps.
     QCOMPARE(clock->frequency(), initialFreq + 0.5);
 }
 

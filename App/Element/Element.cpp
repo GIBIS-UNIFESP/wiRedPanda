@@ -778,28 +778,28 @@ void Element::setOutputSize(const int size)
 
 double Element::frequency() const
 {
-    return 0.0;
+    return hasParam(ParamId::Frequency) ? param<double>(ParamId::Frequency) : 0.0;
 }
 
 void Element::setFrequency(const double freq)
 {
-    Q_UNUSED(freq)
+    setParam(ParamId::Frequency, freq);
 }
 
 bool Element::acceptsFrequency(const double freq) const
 {
-    Q_UNUSED(freq)
-    return false;
+    const ParamSpec *spec = m_parameters.spec(ParamId::Frequency);
+    return (spec != nullptr) && (!spec->accept || spec->accept(*this, freq).has_value());
 }
 
 double Element::delay() const
 {
-    return 0.0;
+    return hasParam(ParamId::Delay) ? param<double>(ParamId::Delay) : 0.0;
 }
 
 void Element::setDelay(const double delay)
 {
-    Q_UNUSED(delay)
+    setParam(ParamId::Delay, delay);
 }
 
 void Element::updateLogic()

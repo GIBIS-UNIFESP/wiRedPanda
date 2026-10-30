@@ -7,7 +7,7 @@
 #include <QTest>
 
 /// Regression coverage for MCP/Server/Handlers/ElementHandler.cpp's set_element_properties
-/// "delay" validation, found stale against Clock::setDelay()'s real [-1, 1] range during a
+/// "delay" validation, found stale against the clock's real delay range, [-1, 1], during a
 /// deep review of commits since 5.1.3.
 class TestElementHandler : public QObject
 {

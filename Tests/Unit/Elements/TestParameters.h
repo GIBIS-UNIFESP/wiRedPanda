@@ -27,4 +27,7 @@ private slots:
     void testAnInputsLevelAndLockAreItsParameters();
     void testANewInputDrivesADefiniteLevel();
     void testARotarysSelectionOutOfRangeIsTheFirst();
+
+    // --- The clock ---
+    void testAClocksFrequencyAndDelayAreItsRules();
 };

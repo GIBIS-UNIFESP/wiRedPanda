@@ -117,8 +117,8 @@ using TestElementHandlerHelpers::snapshot;
 
 void TestElementHandler::testSetElementPropertiesAcceptsNegativeClockDelay()
 {
-    // Regression: Clock::setDelay() clamps to [-1, 1] (negative delays advance the clock —
-    // see Clock.cpp/Clock.h), but this handler's validation only ever accepted delay >= 0,
+    // Regression: the clock's delay spec clamps to [-1, 1] (negative delays advance the clock —
+    // see Clock.cpp), but this handler's validation only ever accepted delay >= 0,
     // so a legitimate negative phase delay was rejected outright via the MCP path even
     // though the GUI property editor and a direct C++ call both accept it.
     MainWindow window;
@@ -177,11 +177,11 @@ void TestElementHandler::testSetElementPropertiesRejectsClockDelayOutOfRange()
 
     const QJsonObject tooHigh{{"element_id", clockId}, {"delay", 1.5}};
     QVERIFY2(handler.handleCommand("set_element_properties", tooHigh, {}).contains("error"),
-             "delay=1.5 is outside Clock::setDelay()'s [-1, 1] range and must be rejected");
+             "delay=1.5 is outside the clock's delay range, [-1, 1], and must be rejected");
 
     const QJsonObject tooLow{{"element_id", clockId}, {"delay", -1.5}};
     QVERIFY2(handler.handleCommand("set_element_properties", tooLow, {}).contains("error"),
-             "delay=-1.5 is outside Clock::setDelay()'s [-1, 1] range and must be rejected");
+             "delay=-1.5 is outside the clock's delay range, [-1, 1], and must be rejected");
 }
 
 // ============================================================================
