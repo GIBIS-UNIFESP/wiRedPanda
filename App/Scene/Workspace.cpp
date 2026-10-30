@@ -4,6 +4,7 @@
 #include "App/Scene/Workspace.h"
 
 #include <algorithm>
+#include <utility>
 
 #include <QHBoxLayout>
 #include <QMessageBox>
@@ -76,7 +77,7 @@ WorkSpace::WorkSpace(QWidget *parent)
     // disk and widens the window for partial-write corruption.
     m_autosaveDebounceTimer.setSingleShot(true);
     m_autosaveDebounceTimer.setInterval(500);
-    connect(&m_autosaveDebounceTimer, &QTimer::timeout, this, &WorkSpace::autosave);
+    connect(&m_autosaveDebounceTimer, &QTimer::timeout, this, &WorkSpace::autosaveOnTimer);
     connect(&m_scene, &Scene::circuitHasChanged, &m_autosaveDebounceTimer, qOverload<>(&QTimer::start));
 
     /// Refresh the parent's tab title (which shows "*" while dirty) whenever
@@ -761,6 +762,21 @@ void WorkSpace::setAutosaveFile()
     // overwrite the project file directly rather than spawning a new
     // hidden temp file next to it. Surprising semantically but intentional.
     m_autosaveFileName = m_fileInfo.filePath();
+}
+
+void WorkSpace::autosaveOnTimer()
+{
+    try {
+        autosave();
+        m_autosaveFailing = false;
+    } catch (const std::exception &e) {
+        // A disk that stays full fails every change: reported once, until an autosave goes through again
+        if (std::exchange(m_autosaveFailing, true)) {
+            qCWarning(zero) << "Autosave failed again:" << e.what();
+            return;
+        }
+        Application::guardedSlot(this, [failure = std::current_exception()] { std::rethrow_exception(failure); });
+    }
 }
 
 void WorkSpace::flushPendingAutosave()

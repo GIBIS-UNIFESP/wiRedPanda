@@ -48,4 +48,5 @@ private slots:
     void testAutosaveRemovesPreviousFileWhenProjectDirChanges();
     void testAutosaveThrowsWhenFileCannotBeOpened();
     void testAutosaveThrowsWhenCommitFails();
+    void testAutosaveTimerReportsAFailureOnceAndTriesAgain();
 };
