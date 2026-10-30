@@ -146,20 +146,14 @@ public:
     /// The entry of \a table for port \a index, or nothing past its end: a type whose ports are fixed lists them so.
     static std::optional<PortAttributes> attributesAt(const QList<PortAttributes> &table, int index);
 
-    /**
-     * \brief Returns the wireless routing mode for this element.
-     * \details Returns WirelessMode::None for all elements except Node, which overrides
-     * this to expose its configurable Tx/Rx mode.
-     * \return WirelessMode::None for all base elements.
-     */
-    virtual WirelessMode wirelessMode() const;
+    /// Returns the element's wireless routing mode (ParamId::Wireless); WirelessMode::None for a type without one.
+    WirelessMode wirelessMode() const;
 
-    /**
-     * \brief Returns true if this element supports a configurable wireless routing mode.
-     * \details Returns false in the base class.  Node overrides this to return true.
-     * \return true when the element has a wirelessMode() that can be set.
-     */
-    virtual bool hasWirelessMode() const;
+    /// Sets the wireless routing mode to \a mode (ParamId::Wireless); a mode out of range is None.
+    void setWirelessMode(WirelessMode mode);
+
+    /// Returns \c true if this element offers a wireless routing mode (ParamId::Wireless).
+    bool hasWirelessMode() const;
 
     // --- Element Type & Identity ---
 
@@ -243,6 +237,34 @@ public:
 
     /// Returns \c true if this element type supports a keyboard trigger.
     bool hasTrigger() const;
+
+    // --- Parameters ---
+
+    /// Returns the element's parameters, one for each of its type's (ElementTypeDescriptor::parameters).
+    const Parameters &parameters() const { return m_parameters; }
+
+    /// Returns \c true if the element's type has parameter \a id.
+    bool hasParam(const ParamId id) const { return m_parameters.has(id); }
+
+    /// Returns \c true if the element offers parameter \a id for editing: its type has it, and offers it in the
+    /// element's state (ParamSpec::offered).
+    bool offersParam(ParamId id) const;
+
+    /// Returns parameter \a id as a \a T, its kind; asking for one the type does not have, or as another kind, is a
+    /// broken invariant (Parameters).
+    template<typename T>
+    const T &param(const ParamId id) const
+    {
+        return m_parameters.get<T>(id);
+    }
+
+    /**
+     * \brief Sets parameter \a id to \a value as its spec takes it (ParamSpec::accept).
+     * \details The element follows the new value (parameterChanged()).
+     * \returns \c false, changing nothing, when the type has no such parameter, \a value is of another kind, the spec
+     * leaves the parameter as it is, or the value it takes is the one the parameter has.
+     */
+    bool setParam(ParamId id, const ParamValue &value);
 
     // --- Audio Properties ---
 
@@ -597,6 +619,12 @@ protected:
     /// commit). Base is a no-op; Text overrides it to toggle its empty-state hint.
     virtual void labelContentChanged() {}
 
+    // --- Parameters ---
+
+    /// Follows a new value of parameter \a id, which had \a previous: what the element derives from it (a node's
+    /// ports). Called by setParam(); nothing by default.
+    virtual void parameterChanged(ParamId id, const ParamValue &previous);
+
     // --- Qt Event Handling ---
 
     /**
@@ -761,6 +789,9 @@ private:
     /// singleton). Backs the hasTrigger()/rotatesGraphic()/... facades, replacing a
     /// per-call registry map lookup.
     const ElementTypeDescriptor &m_descriptor;
+
+    /// The element's parameters, one for each of its descriptor's (ElementTypeDescriptor::parameters).
+    Parameters m_parameters;
 
     // --- Members: Direct Simulation ---
 

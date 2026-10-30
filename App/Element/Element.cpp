@@ -47,6 +47,7 @@ Element::Element(ElementType type, QGraphicsItem *parent)
     : QGraphicsObject(parent)
     , m_elementType(type)
     , m_descriptor(ElementTypeDescriptor::of(type))
+    , m_parameters(m_descriptor.parameters)
 {
     const ElementTypeDescriptor &descriptor = m_descriptor;
     m_appearance.seed(descriptor.defaultAppearances, descriptor.alternativeAppearances, descriptor.pixmapPath());
@@ -136,12 +137,46 @@ OutputPort *Element::outputPort(const int index) const
 
 WirelessMode Element::wirelessMode() const
 {
-    return WirelessMode::None;
+    return hasParam(ParamId::Wireless) ? static_cast<WirelessMode>(param<int>(ParamId::Wireless)) : WirelessMode::None;
+}
+
+void Element::setWirelessMode(const WirelessMode mode)
+{
+    setParam(ParamId::Wireless, static_cast<int>(mode));
 }
 
 bool Element::hasWirelessMode() const
 {
-    return false;
+    return offersParam(ParamId::Wireless);
+}
+
+bool Element::offersParam(const ParamId id) const
+{
+    const ParamSpec *spec = m_parameters.spec(id);
+    return (spec != nullptr) && (!spec->offered || spec->offered(*this));
+}
+
+bool Element::setParam(const ParamId id, const ParamValue &value)
+{
+    const ParamSpec *spec = m_parameters.spec(id);
+    if ((spec == nullptr) || (value.index() != spec->defaultValue.index())) {
+        return false;
+    }
+
+    std::optional<ParamValue> taken = spec->accept ? spec->accept(*this, value) : std::optional<ParamValue>(value);
+    if (!taken || (*taken == m_parameters.value(id))) {
+        return false;
+    }
+
+    const ParamValue previous = m_parameters.set(id, std::move(*taken));
+    parameterChanged(id, previous);
+    return true;
+}
+
+void Element::parameterChanged(const ParamId id, const ParamValue &previous)
+{
+    Q_UNUSED(id)
+    Q_UNUSED(previous)
 }
 
 const QVector<InputPort *> &Element::inputs() const

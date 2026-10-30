@@ -39,6 +39,16 @@ struct ElementInfo<Node> {
         descriptor.translatedName = QT_TRANSLATE_NOOP("Node", "Node");
         descriptor.trContext = "Node";
         descriptor.defaultAppearances = QStringList({":/Components/Logic/node.svg"});
+        // A mode out of range (a corrupted file) is None
+        descriptor.parameters = {{
+            .id = ParamId::Wireless,
+            .defaultValue = static_cast<int>(WirelessMode::None),
+            .key = "wirelessMode",
+            .accept = [](const Element &, const ParamValue &value) -> std::optional<ParamValue> {
+                const int mode = std::get<int>(value);
+                return ((mode >= 0) && (mode <= 2)) ? value : ParamValue(static_cast<int>(WirelessMode::None));
+            },
+        }};
         return descriptor;
     } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
 
@@ -56,7 +66,7 @@ Node::Node(QGraphicsItem *parent)
 {
     // A node's input is required (cannot be left unconnected) because its sole
     // purpose is to act as a visible junction/fan-out point on a wire.
-    // In Rx mode setWirelessMode() will relax this to optional.
+    // In Rx mode parameterChanged() will relax this to optional.
     inputPort()->setRequired(true);
 
     // The node body is 32×32; move the label just below it (instead of the
@@ -111,22 +121,14 @@ static QPixmap renderWirelessPixmap(const QColor &color)
     return pixmap;
 }
 
-WirelessMode Node::wirelessMode() const
+void Node::parameterChanged(const ParamId id, const ParamValue &previous)
 {
-    return m_wirelessMode;
-}
-
-bool Node::hasWirelessMode() const
-{
-    return true;
-}
-
-void Node::setWirelessMode(WirelessMode mode)
-{
-    if (m_wirelessMode == mode) {
-        return;
+    Element::parameterChanged(id, previous);
+    if (id != ParamId::Wireless) {
+        return; // LCOV_EXCL_LINE — the wireless mode is a node's one parameter
     }
-    m_wirelessMode = mode;
+
+    const WirelessMode mode = wirelessMode();
     // Rx nodes receive their signal wirelessly; no physical wire required on the input port.
     // Tx nodes and plain nodes still need a physical wire driving them.
     // Guard against a redundant setRequired() call re-deriving the port status
@@ -185,8 +187,8 @@ void Node::save(QDataStream &stream, SerializationOptions options) const
     // PortableFile streams omit the default; the loader's
     // map.value("wirelessMode", 0) already resolves a missing key to None.
     // Snapshots write unconditionally (reloaded into live elements).
-    if (options.purpose != SerializationPurpose::PortableFile || m_wirelessMode != WirelessMode::None) {
-        map.insert("wirelessMode", static_cast<int>(m_wirelessMode));
+    if (options.purpose != SerializationPurpose::PortableFile || wirelessMode() != WirelessMode::None) {
+        map.insert("wirelessMode", static_cast<int>(wirelessMode()));
     }
     stream << map;
 }
@@ -202,14 +204,13 @@ void Node::load(QDataStream &stream, SerializationContext &context)
     QMap<QString, QVariant> map;
     map = Serialization::readBoundedMetadata(stream);
 
-    // Clamp out-of-range values (e.g. corrupted file) to None.
-    const int raw = map.value("wirelessMode", 0).toInt();
-    setWirelessMode((raw >= 0 && raw <= 2) ? static_cast<WirelessMode>(raw) : WirelessMode::None);
+    // The spec takes an out-of-range value (e.g. a corrupted file) as None
+    setParam(ParamId::Wireless, map.value("wirelessMode", 0).toInt());
 }
 
 void Node::updateWirelessColor(Status status)
 {
-    if (m_wirelessMode == WirelessMode::None || !m_wirelessIndicator) {
+    if (wirelessMode() == WirelessMode::None || !m_wirelessIndicator) {
         return;
     }
 

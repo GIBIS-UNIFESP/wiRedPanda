@@ -41,32 +41,23 @@ public:
     /// Copies the single input value to the single output (pass-through).
     void updateLogic() override;
 
-    // --- Wireless mode ---
-
-    /// Returns the current wireless routing mode (None / Tx / Rx).
-    WirelessMode wirelessMode() const override;
-
-    /// Returns true — Node supports wireless mode configuration.
-    bool hasWirelessMode() const override;
-
-    /**
-     * \brief Sets the wireless routing mode and adjusts port requirements accordingly.
-     * \details In Rx mode the input port is made optional (setRequired(false)) because
-     * the signal arrives wirelessly rather than via a physical wire.  In None or Tx mode
-     * the input port is required as usual.
-     * \param mode The new WirelessMode to apply.
-     */
-    void setWirelessMode(WirelessMode mode);
-
     // --- Serialization ---
 
     void save(QDataStream &stream, SerializationOptions options) const override;
     void load(QDataStream &stream, SerializationContext &context) override;
 
+protected:
+    /**
+     * \brief Follows a new wireless routing mode (ParamId::Wireless): the ports and the indicator.
+     * \details In Rx mode the input port is made optional (setRequired(false)) because the signal arrives
+     * wirelessly rather than via a physical wire, and hidden, as the output is in Tx mode. In None or Tx mode the
+     * input port is required as usual.
+     */
+    void parameterChanged(ParamId id, const ParamValue &previous) override;
+
 private:
     void updateWirelessColor(Status status);
 
-    WirelessMode m_wirelessMode = WirelessMode::None;
     QGraphicsPixmapItem *m_wirelessIndicator = nullptr;
     QColor m_wirelessColor;
 };

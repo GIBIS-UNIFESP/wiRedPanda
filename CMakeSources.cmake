@@ -50,6 +50,7 @@ set(MODEL_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/IC.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICLoader.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICSimulation.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/Parameters.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/Serialization.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Commands.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/ICRegistry.cpp
@@ -122,6 +123,7 @@ set(MODEL_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/IC.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICLoader.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICSimulation.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/Parameters.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/PropertyDescriptor.h
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/ExternalFilePath.h
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/FileUtils.h
@@ -500,6 +502,7 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestLogicGates.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestMultiplexing.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestMux.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestParameters.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestSequentialLogic.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestTruthTable.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestWirelessNode.cpp
@@ -737,6 +740,7 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestLogicGates.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestMultiplexing.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestMux.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestParameters.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestSequentialLogic.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestTruthTable.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestWirelessNode.h

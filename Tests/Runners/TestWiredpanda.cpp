@@ -174,6 +174,7 @@
 #include "Tests/Unit/Elements/TestLed.h"
 #include "Tests/Unit/Elements/TestLogicGates.h"
 #include "Tests/Unit/Elements/TestMultiplexing.h"
+#include "Tests/Unit/Elements/TestParameters.h"
 #include "Tests/Unit/Elements/TestSequentialLogic.h"
 #include "Tests/Unit/Elements/TestTruthTable.h"
 #include "Tests/Unit/Elements/TestWirelessNode.h"
@@ -421,6 +422,7 @@ int main(int argc, char **argv)
         {"TestLogicGates", []() -> QObject * { return new TestLogicGates; }},
         {"TestMultiplexing", []() -> QObject * { return new TestMultiplexing; }},
         {"TestMux", []() -> QObject * { return new TestMux; }},
+        {"TestParameters", []() -> QObject * { return new TestParameters; }},
         {"TestSequentialLogic", []() -> QObject * { return new TestSequentialLogic; }},
         {"TestTruthTable", []() -> QObject * { return new TestTruthTable; }},
         {"TestICRegistry", []() -> QObject * { return new TestICRegistry; }},
