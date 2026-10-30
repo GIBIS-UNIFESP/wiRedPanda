@@ -104,7 +104,7 @@ QJsonObject ConnectionHandler::handleConnectElements(const QJsonObject &params, 
     // Connection (confirmed exception-free for this exact code path across the whole
     // App/Scene/Commands.cpp sweep). Kept as a defensive backstop.
     try {
-        scene->receiveCommand(new AddItemsCommand({connection.get()}, scene));
+        scene->pushCommand(new AddItemsCommand({connection.get()}, scene));
         connection.release(); // scene/command takes ownership
     } catch (const std::exception &e) { // LCOV_EXCL_LINE
         return createErrorResponse(QString("Failed to connect elements: %1").arg(e.what()), // LCOV_EXCL_LINE
@@ -160,7 +160,7 @@ QJsonObject ConnectionHandler::handleDisconnectElements(const QJsonObject &param
         if ((elem1 == sourceElement && elem2 == targetElement) ||
             (elem1 == targetElement && elem2 == sourceElement)) {
             return tryCommand([&] { // LCOV_EXCL_LINE -- pattern 45: gcov misattributes this multi-line lambda-taking call's entry; the lambda body below is genuinely covered
-                scene->receiveCommand(new DeleteItemsCommand({connection}, scene));
+                scene->pushCommand(new DeleteItemsCommand({connection}, scene));
                 return createSuccessResponse(QJsonObject(), requestId);
             }, "disconnect elements", requestId);
         }
@@ -298,7 +298,7 @@ QJsonObject ConnectionHandler::handleSplitConnection(const QJsonObject &params, 
 
     return tryCommand([&] { // LCOV_EXCL_LINE -- pattern 45: gcov misattributes this multi-line lambda-taking call's entry; the lambda body below is genuinely covered
         // Create and execute the SplitCommand
-        scene->receiveCommand(new SplitCommand(connectionToSplit, QPointF(x, y), scene));
+        scene->pushCommand(new SplitCommand(connectionToSplit, QPointF(x, y), scene));
         return createSuccessResponse(QJsonObject(), requestId);
     }, "split connection", requestId);
 }

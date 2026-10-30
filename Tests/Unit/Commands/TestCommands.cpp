@@ -2103,6 +2103,48 @@ void TestCommands::testUndoReadsAnICsFileAsTheSceneDoes()
     QCOMPARE(ic->label(), label);
 }
 
+void TestCommands::testAPushThatDropsIsReportedAndPushCommandThrowsIt()
+{
+    // A label change on a file-backed IC whose file changed to bytes that do not read, its cache dropped: the push's
+    // first redo() builds the circuit again and drops. receiveCommand(), which the interface pushes through, reports
+    // it and throws nothing; pushCommand() throws it to a caller that fails as a whole
+    using namespace TestCommandsHelpers;
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("sub.panda");
+    writeSwitchToLed(path);
+
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *ic = new IC();
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{ic}, scene));
+    ic->loadFile(path, dir.path());
+    QFile file(path);
+    QVERIFY(file.open(QIODevice::WriteOnly | QIODevice::Truncate));
+    file.write("not a circuit");
+    file.close();
+    scene->icRegistry()->invalidate(path);
+    const int count = scene->undoStack()->count();
+
+    const auto labelChange = [&](const QString &label) {
+        QByteArray oldData;
+        QDataStream stream(&oldData, QIODevice::WriteOnly);
+        Serialization::writePandaHeader(stream);
+        ic->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
+        ic->setLabel(label);
+        return new UpdateCommand({ic}, oldData, scene);
+    };
+    try {
+        scene->receiveCommand(labelChange("x"));
+    } catch (const std::exception &e) {
+        QFAIL(qPrintable(QString("receiveCommand() threw: %1").arg(e.what())));
+    }
+    QCOMPARE(scene->undoStack()->count(), count);
+    QVERIFY_THROWS_EXCEPTION(std::exception, scene->pushCommand(labelChange("y")));
+    QCOMPARE(scene->undoStack()->count(), count);
+    QVERIFY(scene->elements().contains(ic));
+}
+
 void TestCommands::testSetPropertyCommandUndoesEachElementsValue()
 {
     WorkSpace workspace;

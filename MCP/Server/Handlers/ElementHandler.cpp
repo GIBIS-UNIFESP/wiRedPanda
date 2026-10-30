@@ -10,6 +10,7 @@
 #include <QJsonArray>
 #include <QPixmap>
 #include <QRegularExpression>
+#include <QScopeGuard>
 
 #include "App/Core/Common.h"
 #include "App/Core/Enums.h"
@@ -281,10 +282,10 @@ QJsonObject ElementHandler::handleCreateElement(const QJsonObject &params, const
     // on every single element added — O(N) per call, O(N^2) over the full build.
     scene->clearSelection();
 
-    // Unreachable: scene->receiveCommand() with a well-formed AddItemsCommand never throws
+    // Unreachable: scene->pushCommand() with a well-formed AddItemsCommand never throws
     // (confirmed across the whole App/Scene/Commands.cpp sweep).
     try {
-        scene->receiveCommand(new AddItemsCommand({element}, scene));
+        scene->pushCommand(new AddItemsCommand({element}, scene));
     } catch (const std::exception &e) { // LCOV_EXCL_LINE
         delete element; // LCOV_EXCL_LINE
         return createErrorResponse(QString("Failed to add element to scene: %1").arg(e.what()), // LCOV_EXCL_LINE
@@ -325,7 +326,7 @@ QJsonObject ElementHandler::handleDeleteElement(const QJsonObject &params, const
     }
 
     return tryCommand([&] { // LCOV_EXCL_LINE -- pattern 45: gcov misattributes this multi-line lambda-taking call's entry; the lambda body below is genuinely covered
-        scene->receiveCommand(new DeleteItemsCommand({element}, scene));
+        scene->pushCommand(new DeleteItemsCommand({element}, scene));
         return createSuccessResponse(QJsonObject(), requestId);
     }, "delete element", requestId);
 }
@@ -423,10 +424,10 @@ QJsonObject ElementHandler::handleMoveElement(const QJsonObject &params, const Q
     QList<GraphicElement *> elements = {element};
     QList<QPointF> oldPositions = {oldPos};
 
-    // Unreachable: scene->receiveCommand() with a well-formed MoveCommand never throws
+    // Unreachable: scene->pushCommand() with a well-formed MoveCommand never throws
     // (confirmed across the whole App/Scene/Commands.cpp sweep).
     try {
-        scene->receiveCommand(new MoveCommand(elements, oldPositions, scene));
+        scene->pushCommand(new MoveCommand(elements, oldPositions, scene));
     } catch (const std::exception &e) { // LCOV_EXCL_LINE
         element->setPos(oldPos); // LCOV_EXCL_LINE
         return createErrorResponse(QString("Failed to move element: %1").arg(e.what()), // LCOV_EXCL_LINE
@@ -618,10 +619,15 @@ QJsonObject ElementHandler::handleSetElementProperties(const QJsonObject &params
             if (needsMacro) {
                 scene->undoStack()->beginMacro(QStringLiteral("Change wireless mode"));
             }
-            scene->receiveCommand(new UpdateCommand({element}, oldData, scene));
+            // A push that drops throws: the macro is closed all the same, or every later edit would join it
+            const auto closeMacro = qScopeGuard([scene, needsMacro] {
+                if (needsMacro) {
+                    scene->undoStack()->endMacro();
+                }
+            });
+            scene->pushCommand(new UpdateCommand({element}, oldData, scene));
             if (needsMacro) {
-                scene->receiveCommand(new DeleteItemsCommand(wirelessConnsToDelete, scene));
-                scene->undoStack()->endMacro();
+                scene->pushCommand(new DeleteItemsCommand(wirelessConnsToDelete, scene));
             }
         }
     }
@@ -745,7 +751,7 @@ QJsonObject ElementHandler::handleRotateElement(const QJsonObject &params, const
     angle = ((angle % 360) + 360) % 360;
 
     return tryCommand([&]() -> QJsonObject { // LCOV_EXCL_LINE -- pattern 45: gcov misattributes this multi-line lambda-taking call's entry; the lambda body below is genuinely covered
-        scene->receiveCommand(new RotateCommand({element}, angle, scene));
+        scene->pushCommand(new RotateCommand({element}, angle, scene));
         QJsonObject result;
         result["element_id"] = element->id();
         result["angle"] = angle;
@@ -782,7 +788,7 @@ QJsonObject ElementHandler::handleFlipElement(const QJsonObject &params, const Q
     }
 
     return tryCommand([&]() -> QJsonObject { // LCOV_EXCL_LINE -- pattern 45: gcov misattributes this multi-line lambda-taking call's entry; the lambda body below is genuinely covered
-        scene->receiveCommand(new FlipCommand({element}, axis, scene));
+        scene->pushCommand(new FlipCommand({element}, axis, scene));
         QJsonObject result;
         result["element_id"] = element->id();
         result["axis"] = (axis == 0 ? "horizontal" : "vertical");
@@ -838,7 +844,7 @@ QJsonObject ElementHandler::handleChangeInputSize(const QJsonObject &params, con
     }
 
     return tryCommand([&]() -> QJsonObject { // LCOV_EXCL_LINE -- pattern 45: gcov misattributes this multi-line lambda-taking call's entry; the lambda body below is genuinely covered
-        scene->receiveCommand(new ChangePortSizeCommand({element}, newSize, scene, true));
+        scene->pushCommand(new ChangePortSizeCommand({element}, newSize, scene, true));
         const QRectF bounds = element->boundingRect();
         QJsonObject result;
         result["element_id"] = element->id();
@@ -880,7 +886,7 @@ QJsonObject ElementHandler::handleChangeOutputSize(const QJsonObject &params, co
     }
 
     return tryCommand([&]() -> QJsonObject { // LCOV_EXCL_LINE -- pattern 45: gcov misattributes this multi-line lambda-taking call's entry; the lambda body below is genuinely covered
-        scene->receiveCommand(new ChangePortSizeCommand({element}, newSize, scene, false));
+        scene->pushCommand(new ChangePortSizeCommand({element}, newSize, scene, false));
         const QRectF bounds = element->boundingRect();
         QJsonObject result;
         result["element_id"] = element->id();
@@ -933,7 +939,7 @@ QJsonObject ElementHandler::handleToggleTruthTableOutput(const QJsonObject &para
 
     return tryCommand([&]() -> QJsonObject { // LCOV_EXCL_LINE -- pattern 45: gcov misattributes this multi-line lambda-taking call's entry; the lambda body below is genuinely covered
         // ToggleTruthTableOutputCommand flips one cell in the truth table's output column.
-        scene->receiveCommand(new ToggleTruthTableOutputCommand(truthTable, position, scene));
+        scene->pushCommand(new ToggleTruthTableOutputCommand(truthTable, position, scene));
         QJsonObject result;
         result["element_id"] = element->id();
         result["position"] = position;
@@ -1000,14 +1006,14 @@ QJsonObject ElementHandler::handleMorphElement(const QJsonObject &params, const 
         return createErrorResponse("No active circuit scene available", requestId, JsonRpcError::SceneNotAvailable); // LCOV_EXCL_LINE
     }
 
-    // Capture IDs before morph — element pointers become invalid after receiveCommand.
+    // Capture IDs before morph — element pointers become invalid after pushCommand.
     QJsonArray morphedIds;
     for (const auto *element : elementsToMorph) {
         morphedIds.append(element->id());
     }
 
     return tryCommand([&]() -> QJsonObject { // LCOV_EXCL_LINE -- pattern 45: gcov misattributes this multi-line lambda-taking call's entry; the lambda body below is genuinely covered
-        scene->receiveCommand(new MorphCommand(elementsToMorph, targetType, scene));
+        scene->pushCommand(new MorphCommand(elementsToMorph, targetType, scene));
         // MorphCommand preserves element IDs via updateItemId(), so the morphed
         // elements keep their original IDs.
         QJsonObject result;

@@ -76,6 +76,7 @@ private slots:
     void testMorphUndoThatDoesNotReadChangesNothing();
     void testLabelUndoOnAFileICKeepsItsCircuit();
     void testUndoReadsAnICsFileAsTheSceneDoes();
+    void testAPushThatDropsIsReportedAndPushCommandThrowsIt();
 
     // SetPropertyCommand: one property of elements, its values before and after, merged within an edit session
     void testSetPropertyCommandUndoesEachElementsValue();

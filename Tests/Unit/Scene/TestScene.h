@@ -87,6 +87,7 @@ private slots:
     void testDuplicateTxLabel_data();
     void testDuplicateTxLabel();
     void testInlineLabelEditorRefusesADuplicateTxLabel();
+    void testInlineLabelEditorReportsAPushThatDrops();
     void testDuplicateTxLabelsNamesWhatArrived();
     void testPasteReportsDuplicateTxLabels();
     void testDuplicateReportsDuplicateTxLabels();

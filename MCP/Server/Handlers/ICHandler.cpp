@@ -206,7 +206,7 @@ QJsonObject ICHandler::handleInstantiateIC(const QJsonObject &params, const QJso
             // of leaking, mirroring SceneDropHandler.cpp's identical loadFromDrop() sequencing.
             ic->loadFile(fullPath, icDirectory);
             icPtr = ic.release();
-            scene->receiveCommand(new AddItemsCommand({icPtr}, scene));
+            scene->pushCommand(new AddItemsCommand({icPtr}, scene));
         }
 
         icPtr->setPos(x, y);

@@ -6,21 +6,27 @@
 #include <QCoreApplication>
 #include <QDataStream>
 #include <QDir>
+#include <QFile>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QTabWidget>
+#include <QTemporaryDir>
 #include <QTest>
 
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElementInput.h"
 #include "App/Element/GraphicElements/And.h"
+#include "App/Element/GraphicElements/InputSwitch.h"
+#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Element/GraphicElements/TruthTable.h"
+#include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/Commands.h"
+#include "App/Scene/ICRegistry.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/UI/MainWindow.h"
@@ -128,6 +134,37 @@ void TestElementHandler::testSetElementPropertiesAcceptsNegativeClockDelay()
     auto *element = dynamic_cast<GraphicElement *>(window.currentTab()->scene()->itemById(clockId));
     QVERIFY(element);
     QCOMPARE(element->delay(), -0.25);
+}
+
+void TestElementHandler::testSetElementPropertiesAnswersAPushThatDropsWithAnError()
+{
+    // A file-backed IC whose file changed to bytes that do not read, its cache dropped: the label's push drops and the
+    // handler throws, which the processor answers as an error (MCPProcessor::processCommand()), the undo stack as it was
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("sub.panda");
+    {
+        WorkSpace sub;
+        sub.scene()->addItem(new InputSwitch());
+        sub.scene()->addItem(new Led());
+        sub.save(path);
+    }
+    MainWindow window;
+    ElementHandler handler(&window, nullptr);
+    auto *scene = window.currentTab()->scene();
+    auto *ic = new IC();
+    scene->addItem(ic);
+    ic->loadFile(path, dir.path());
+    QFile file(path);
+    QVERIFY(file.open(QIODevice::WriteOnly | QIODevice::Truncate));
+    file.write("not a circuit");
+    file.close();
+    scene->icRegistry()->invalidate(path);
+    const int commands = scene->undoStack()->count();
+
+    const QJsonObject params{{"element_id", ic->id()}, {"label", "renamed"}};
+    QVERIFY_THROWS_EXCEPTION(std::exception, handler.handleCommand("set_element_properties", params, {}));
+    QCOMPARE(scene->undoStack()->count(), commands);
 }
 
 void TestElementHandler::testSetElementPropertiesRejectsClockDelayOutOfRange()

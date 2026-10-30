@@ -11,6 +11,7 @@
 
 #include <QApplication>
 #include <QClipboard>
+#include <QFile>
 #include <QGraphicsProxyWidget>
 #include <QGraphicsSceneEvent>
 #include <QImage>
@@ -23,6 +24,7 @@
 #include <QPainter>
 #include <QScrollBar>
 #include <QSignalSpy>
+#include <QTemporaryDir>
 #include <QTest>
 #include <QTransform>
 #include <QUrl>
@@ -42,6 +44,7 @@
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Element/GraphicElements/Not.h"
 #include "App/Element/GraphicElements/Or.h"
+#include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/Scene/ClipboardManager.h"
 #include "App/Scene/Commands.h"
@@ -1486,6 +1489,51 @@ void TestScene::testInlineLabelEditorRefusesADuplicateTxLabel()
     QCOMPARE(scene->undoStack()->count(), undoCount);
     QCOMPARE(messages.count(), 1);
     QVERIFY(messages.constFirst().constFirst().toString().contains("\"x\""));
+}
+
+void TestScene::testInlineLabelEditorReportsAPushThatDrops()
+{
+    // Return in the inline editor is a slot Qt calls, which pushes the label's change: a file-backed IC whose file
+    // changed to bytes that do not read, its cache dropped, drops the push, reported there and thrown nowhere
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("sub.panda");
+    {
+        WorkSpace sub;
+        sub.scene()->addItem(new InputSwitch());
+        sub.scene()->addItem(new Led());
+        sub.save(path);
+    }
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *ic = new IC();
+    scene->addItem(ic);
+    ic->loadFile(path, dir.path());
+    QFile file(path);
+    QVERIFY(file.open(QIODevice::WriteOnly | QIODevice::Truncate));
+    file.write("not a circuit");
+    file.close();
+    scene->icRegistry()->invalidate(path);
+    const int undoCount = scene->undoStack()->count();
+
+    InlineLabelEditor editor(scene);
+    editor.start(ic);
+    QLineEdit *lineEdit = nullptr;
+    for (auto *item : scene->QGraphicsScene::items()) {
+        if (auto *proxy = qgraphicsitem_cast<QGraphicsProxyWidget *>(item)) {
+            lineEdit = qobject_cast<QLineEdit *>(proxy->widget());
+        }
+    }
+    QVERIFY(lineEdit != nullptr);
+    lineEdit->setText("renamed");
+    // Emitted, not typed: a key event goes through notify(), whose last-resort catch would hide a throw
+    try {
+        emit lineEdit->returnPressed();
+    } catch (const std::exception &e) {
+        QFAIL(qPrintable(QString("the label's edit threw: %1").arg(e.what())));
+    }
+    QCOMPARE(scene->undoStack()->count(), undoCount);
+    QVERIFY(scene->elements().contains(ic));
 }
 
 namespace TestSceneTxHelpers {
