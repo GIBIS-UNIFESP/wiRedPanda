@@ -51,8 +51,6 @@ struct ElementInfo<InputRotary> {
 InputRotary::InputRotary(QGraphicsItem *parent)
     : ElementInput(ElementType::InputRotary, parent)
 {
-    m_rotary = m_appearance.defaultAppearances().at(0);
-
     InputRotary::updatePortsProperties();
 
     // The dial starts at position 0, which drives HIGH while every other
