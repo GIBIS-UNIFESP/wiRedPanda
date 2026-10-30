@@ -20,6 +20,7 @@
 #include <QPainter>
 #include <QPixmap>
 #include <QScopeGuard>
+#include <QSet>
 #include <QStyleOptionGraphicsItem>
 #include <QUndoStack>
 #include <QXmlStreamReader>
@@ -494,7 +495,7 @@ void TestElement::testPortUpdateKeepsFieldsAttributesLeaveUnset()
                         entry.defaultStatus = (port->defaultValue() == Status::Active) ? Status::Inactive : Status::Active;
                         port->setDefaultStatus(*entry.defaultStatus);
                     }
-                    if (!attributes || !attributes->name) {
+                    if (!attributes || (!attributes->name && !attributes->derivedName)) {
                         entry.name = "seeded " + where;
                         port->setName(*entry.name);
                     }
@@ -534,4 +535,57 @@ void TestElement::testPortUpdateKeepsFieldsAttributesLeaveUnset()
     // with no attributes at all take the other
     QVERIFY(seededBesideAttributes > 0);
     QVERIFY(seededWithoutAttributes > 0);
+}
+
+void TestElement::testEveryPortNameHasItsSource()
+{
+    // Generated code names signals from a port's source name, whatever the interface language. Every named port of
+    // every type, at every legal port count, has one, and untranslated its name is that source; under a translator
+    // installed after the element is built, only the 40 segment names change, derived from their descriptions when
+    // asked, and no source does. An IC's pins are named from its circuit (plan 4).
+    QStringList wrong;
+    QSet<QString> translatedNames;
+    TestUtils::TagEveryStringTranslator tagging;
+    for (const auto type : TestUtils::dumpedTypes()) {
+        if (type == ElementType::IC) {
+            continue;
+        }
+        const std::unique_ptr<Element> probe(ElementFactory::buildElement(type));
+        for (int inputs = probe->minInputSize(); inputs <= probe->maxInputSize(); ++inputs) {
+            for (int outputs = probe->minOutputSize(); outputs <= probe->maxOutputSize(); ++outputs) {
+                const std::unique_ptr<Element> element(ElementFactory::buildElement(type));
+                TestUtils::applyPortCounts(element.get(), inputs, outputs);
+                if ((element->inputSize() != inputs) || (element->outputSize() != outputs)) {
+                    continue; // A Demux derives its inputs from its outputs
+                }
+                const QString counts = QString("%1 in=%2 out=%3").arg(ElementFactory::typeToText(type)).arg(inputs).arg(outputs);
+
+                for (const auto *port : element->allPorts()) {
+                    const QString where = counts + (port->isInput() ? " in " : " out ") + QString::number(port->index());
+                    const QString name = port->name();
+                    const QString source = port->sourceName();
+                    if (!name.isEmpty() && source.isEmpty()) {
+                        wrong << where + ": no source for " + name;
+                    } else if (name != source) {
+                        wrong << where + ": untranslated name " + name + " is not its source " + source;
+                    }
+
+                    QCoreApplication::installTranslator(&tagging);
+                    const QString taggedName = port->name();
+                    const QString taggedSource = port->sourceName();
+                    QCoreApplication::removeTranslator(&tagging);
+                    if (taggedSource != source) {
+                        wrong << where + ": source " + source + " follows the translator to " + taggedSource;
+                    }
+                    if (taggedName != name) {
+                        translatedNames.insert(ElementFactory::typeToText(type) + ' ' + taggedName);
+                    }
+                }
+            }
+        }
+    }
+
+    QVERIFY2(wrong.isEmpty(), qPrintable(wrong.join('\n')));
+    // The 7-segment display's 8 inputs, the 14-segment's 15 and the 16-segment's 17
+    QCOMPARE(translatedNames.size(), 40);
 }

@@ -14,6 +14,8 @@
 
 #pragma once
 
+#include <functional>
+
 #include <QBrush>
 #include <QGraphicsPathItem>
 #include <QPen>
@@ -75,11 +77,12 @@ public:
 
     // --- Identity & Status ---
 
-    /// Returns the port's label text.
+    /// Returns the port's label text, derived anew on each call while the port has a name source.
     QString name() const;
 
     /// Returns the label in the source language, which generated code names its signals from whatever the interface
-    /// language is: the name itself unless setName() was given another.
+    /// language is: the name source's own while the name is derived, otherwise the name itself unless setName() was
+    /// given another.
     QString sourceName() const;
 
     /// Returns the default status applied when the port is unconnected.
@@ -190,6 +193,13 @@ public:
     void setName(const QString &name, const QString &sourceName);
 
     /**
+     * \brief Derives the label from \a name each time it is asked for, until setName() gives an explicit one.
+     * \details A label translated when it is set goes stale when the language changes; a source is asked again.
+     * \a sourceName is the label in the source language, which must not be empty.
+     */
+    void setNameSource(std::function<QString()> name, const QString &sourceName);
+
+    /**
      * \brief Marks whether a wire to this port is mandatory.
      * \param required \c true if a connection is required for valid simulation.
      * \note Does not affect the port's default status — call setDefaultStatus() separately.
@@ -232,6 +242,8 @@ protected:
     /// The wires in m_connections, so attaching one finds whether it is already there without searching the list.
     QSet<Connection *> m_connectionSet;
     QString m_name;
+    /// Derives the label while set; setName() clears it.
+    std::function<QString()> m_nameSource;
     QString m_sourceName;
     Status m_defaultStatus = Status::Unknown;
     Status m_status = Status::Unknown;

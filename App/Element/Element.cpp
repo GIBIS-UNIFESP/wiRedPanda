@@ -233,10 +233,16 @@ void Element::setPortName(const QString &name)
 
 Element::PortAttributes Element::describedPort(const char *letter, const char *description) const
 {
-    const QString prefix = QString::fromUtf8(letter) + " (";
+    // One builder for the shown name and its source, so the two differ only by the description's translation
+    const auto described = [letter](const QString &text) {
+        return QString::fromUtf8(letter) + " (" + text + ')';
+    };
+    const QMetaObject *meta = metaObject();
     PortAttributes attributes;
-    attributes.name = prefix + metaObject()->tr(description, nullptr) + ')';
-    attributes.sourceName = prefix + QString::fromUtf8(description) + ')';
+    attributes.derivedName = PortAttributes::DerivedName{
+        [described, meta, description] { return described(meta->tr(description, nullptr)); },
+        described(QString::fromUtf8(description)),
+    };
     return attributes;
 }
 
@@ -291,8 +297,11 @@ namespace ElementPortLayout {
 /// Applies the fields \a attributes sets to \a port, its place aside, leaving every unset field as the port has it.
 void applyAttributes(Port *port, const Element::PortAttributes &attributes)
 {
-    if (attributes.name) {
-        port->setName(*attributes.name, attributes.sourceName.value_or(*attributes.name));
+    Q_ASSERT(!(attributes.name && attributes.derivedName));
+    if (attributes.derivedName) {
+        port->setNameSource(attributes.derivedName->name, attributes.derivedName->source);
+    } else if (attributes.name) {
+        port->setName(*attributes.name);
     }
     if (attributes.required) {
         port->setRequired(*attributes.required);

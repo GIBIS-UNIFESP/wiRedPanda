@@ -6,6 +6,8 @@
 
 #include "App/Wiring/Port.h"
 
+#include <utility>
+
 #include <QPainter>
 #include <QPen>
 
@@ -172,7 +174,7 @@ quint64 Port::makeSerialId(quint64 elementBase, int globalIndex)
 
 QString Port::name() const
 {
-    return m_name;
+    return m_nameSource ? m_nameSource() : m_name;
 }
 
 QString Port::sourceName() const
@@ -188,8 +190,19 @@ void Port::setName(const QString &name)
 void Port::setName(const QString &name, const QString &sourceName)
 {
     m_name = name;
+    m_nameSource = nullptr;
     m_sourceName = sourceName;
     setToolTip(name);
+}
+
+void Port::setNameSource(std::function<QString()> name, const QString &sourceName)
+{
+    Q_ASSERT(name);
+    Q_ASSERT(!sourceName.isEmpty());
+    m_name.clear();
+    m_nameSource = std::move(name);
+    m_sourceName = sourceName;
+    setToolTip(m_nameSource());
 }
 
 void Port::setDefaultStatus(const Status defaultStatus)

@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <functional>
 #include <memory>
 #include <optional>
 #include <utility>
@@ -119,8 +120,15 @@ public:
     /// The attributes of one port that its element sets. An unset field is left as the port has it, so an element that
     /// sets the requirement or the default elsewhere (a wireless node, say) keeps doing so.
     struct PortAttributes {
-        std::optional<QString> name = std::nullopt;
-        std::optional<QString> sourceName = std::nullopt; ///< \c name in the source language; unset, the name itself.
+        /// A name derived each time it is asked for, so a translated name follows the language, given with the same
+        /// name in the source language. Built by describedPort().
+        struct DerivedName {
+            std::function<QString()> name;
+            QString source;
+        };
+
+        std::optional<QString> name = std::nullopt; ///< An explicit name, its own source.
+        std::optional<DerivedName> derivedName = std::nullopt; ///< Takes the place of \c name.
         std::optional<bool> required = std::nullopt;
         std::optional<Status> defaultStatus = std::nullopt;
         std::optional<QPointF> position = std::nullopt; ///< Where the port sits; unset, the port is placed in its column.
@@ -643,8 +651,9 @@ protected:
 
     /**
      * \brief Returns a port's attributes named "<letter> (<description>)", as a segment display names its inputs.
-     * \details The shown name translates \a description in this element's class context; the source name keeps it as
-     * written. Mark \a description with QT_TR_NOOP() in the element's own code, so it is extracted in that context.
+     * \details The name is derived: each time it is asked for, it translates \a description in this element's class
+     * context; its source keeps \a description as written. Mark \a description with QT_TR_NOOP() in the element's own
+     * code, so it is extracted in that context. Both must outlive the element, as string literals do.
      */
     PortAttributes describedPort(const char *letter, const char *description) const;
 

@@ -58,4 +58,5 @@ private slots:
 
     // updatePortsProperties() applies only the port attributes an element sets
     void testPortUpdateKeepsFieldsAttributesLeaveUnset();
+    void testEveryPortNameHasItsSource();
 };
