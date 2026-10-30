@@ -11,6 +11,10 @@
 
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementTypeDescriptor.h"
+#include "App/Element/GraphicElements/Clock.h"
+#include "App/Element/GraphicElements/InputButton.h"
+#include "App/Element/GraphicElements/InputRotary.h"
+#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Element/Parameters.h"
 #include "App/Wiring/Port.h"
@@ -96,6 +100,10 @@ void TestParameters::testEachTypeHasTheParametersOfItsSchema_data()
     // The parameters of every type, as its save() and load() have them: the default, and the key a file keeps it
     // under. A type not listed has none.
     const QHash<ElementType, QStringList> parameters{
+        {ElementType::InputButton, {"On false -", "Locked false locked"}},
+        {ElementType::InputSwitch, {"On false isOn", "Locked false locked"}},
+        {ElementType::InputRotary, {"Position 0 currentPort", "Locked false locked"}},
+        {ElementType::Clock, {"On false -", "Locked false locked"}},
         {ElementType::Node, {"Wireless 0 wirelessMode"}},
     };
 
@@ -213,4 +221,60 @@ void TestParameters::testParameterChangedFollowsEachChangeOnly()
     QVERIFY(node.setParam(ParamId::Wireless, 9));
     QCOMPARE(node.changes, 2);
     QCOMPARE(node.previous, ParamValue(static_cast<int>(WirelessMode::Tx)));
+}
+
+// --- The inputs ---
+
+void TestParameters::testAnInputsLevelAndLockAreItsParameters()
+{
+    InputSwitch input;
+    QVERIFY(input.setParam(ParamId::On, true));
+    QVERIFY(input.isOn());
+    QCOMPARE(input.outputPort()->status(), Status::Active);
+    input.setOn(false);
+    QCOMPARE(input.param<bool>(ParamId::On), false);
+    QCOMPARE(input.outputPort()->status(), Status::Inactive);
+
+    input.setLocked(true);
+    QCOMPARE(input.param<bool>(ParamId::Locked), true);
+    QVERIFY(input.setParam(ParamId::Locked, false));
+    QVERIFY(!input.isLocked());
+}
+
+void TestParameters::testANewInputDrivesADefiniteLevel()
+{
+    // Each input shows its level also when it is the default, so a new one drives no Unknown
+    InputSwitch input;
+    InputButton button;
+    Clock clock;
+    QCOMPARE(input.outputPort()->status(), Status::Inactive);
+    QCOMPARE(button.outputPort()->status(), Status::Inactive);
+    QCOMPARE(clock.outputPort()->status(), Status::Inactive);
+
+    InputRotary rotary;
+    QCOMPARE(rotary.outputPort(0)->status(), Status::Active);
+    for (int port = 1; port < rotary.outputSize(); ++port) {
+        QCOMPARE(rotary.outputPort(port)->status(), Status::Inactive);
+    }
+}
+
+void TestParameters::testARotarysSelectionOutOfRangeIsTheFirst()
+{
+    InputRotary rotary;
+    rotary.setOutputSize(4);
+
+    QVERIFY(rotary.setParam(ParamId::Position, 3));
+    QCOMPARE(rotary.outputValue(), 3);
+    QCOMPARE(rotary.outputPort(3)->status(), Status::Active);
+    QCOMPARE(rotary.outputPort(0)->status(), Status::Inactive);
+
+    // Out of range in either direction, as a file can hold, is the first output
+    QVERIFY(rotary.setParam(ParamId::Position, 4));
+    QCOMPARE(rotary.outputValue(), 0);
+    QCOMPARE(rotary.outputPort(0)->status(), Status::Active);
+    QVERIFY(rotary.setParam(ParamId::Position, 2));
+    QVERIFY(rotary.setParam(ParamId::Position, -1));
+    QCOMPARE(rotary.outputValue(), 0);
+    rotary.setOn(true, 7);
+    QCOMPARE(rotary.outputValue(), 0);
 }

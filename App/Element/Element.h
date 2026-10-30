@@ -625,6 +625,11 @@ protected:
     /// ports). Called by setParam(); nothing by default.
     virtual void parameterChanged(ParamId id, const ParamValue &previous);
 
+    /// Stores \a value, of its kind, as parameter \a id as it is: no rule, no follow-up. For a value the element keeps
+    /// in step with its simulation state (a rotary's selection restored with its outputs), which is no change of the
+    /// circuit.
+    void storeParam(const ParamId id, ParamValue value) { m_parameters.set(id, std::move(value)); }
+
     // --- Qt Event Handling ---
 
     /**

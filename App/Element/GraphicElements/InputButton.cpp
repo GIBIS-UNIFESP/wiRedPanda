@@ -36,6 +36,8 @@ struct ElementInfo<InputButton> {
             ":/Components/Input/buttonOff.svg",
             ":/Components/Input/buttonOn.svg",
         });
+        // A button is held only while pressed: its level is no state of the circuit
+        descriptor.parameters = {ElementInput::levelSpec(nullptr), ElementInput::lockSpec()};
         return descriptor;
     } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
 
@@ -55,7 +57,7 @@ InputButton::InputButton(QGraphicsItem *parent)
 void InputButton::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     // Momentary action: button goes HIGH on press, LOW on release (unlike InputSwitch which latches)
-    if (!m_locked && (event->button() == Qt::LeftButton)) {
+    if (!isLocked() && (event->button() == Qt::LeftButton)) {
         setOn();
         event->accept();
     }
@@ -65,7 +67,7 @@ void InputButton::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void InputButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-    if (!m_locked && (event->button() == Qt::LeftButton)) {
+    if (!isLocked() && (event->button() == Qt::LeftButton)) {
         setOff();
         event->accept();
     }
@@ -80,8 +82,8 @@ void InputButton::save(QDataStream &stream, SerializationOptions options) const
     QMap<QString, QVariant> map;
     // PortableFile streams omit the default; fresh-loaded elements start there
     // anyway. Snapshots write unconditionally (reloaded into live elements).
-    if (options.purpose != SerializationPurpose::PortableFile || m_locked) {
-        map.insert("locked", m_locked);
+    if (options.purpose != SerializationPurpose::PortableFile || isLocked()) {
+        map.insert("locked", isLocked());
     }
 
     stream << map;
@@ -93,7 +95,9 @@ void InputButton::load(QDataStream &stream, SerializationContext &context)
 
     if ((VersionInfo::hasLockState(context.version)) && (!VersionInfo::hasQMapFormat(context.version))) {
         // v3.1–4.0 stored the locked flag as a bare bool
-        stream >> m_locked;
+        bool locked = false;
+        stream >> locked;
+        setLocked(locked);
     }
 
     if (VersionInfo::hasQMapFormat(context.version)) {
@@ -101,7 +105,7 @@ void InputButton::load(QDataStream &stream, SerializationContext &context)
         QMap<QString, QVariant> map = Serialization::readBoundedMetadata(stream);
 
         if (map.contains("locked")) {
-            m_locked = map.value("locked").toBool();
+            setLocked(map.value("locked").toBool());
         }
     }
 }
@@ -109,7 +113,7 @@ void InputButton::load(QDataStream &stream, SerializationContext &context)
 bool InputButton::isOn(const int port) const
 {
     Q_UNUSED(port)
-    return m_isOn;
+    return param<bool>(ParamId::On);
 }
 
 void InputButton::setOff()

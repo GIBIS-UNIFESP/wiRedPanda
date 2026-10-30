@@ -52,15 +52,15 @@ public:
      */
     void setOn(const bool value, const int port = 0) override;
 
-    /// \reimp Also returns the selection to port 0. m_currentPort is the rotary's own
-    /// simulation state -- isOn() reads it and updateOutputs() republishes it every tick -- so
+    /// \reimp Also returns the selection to port 0. The selection (ParamId::Position) is the rotary's
+    /// simulation state too -- isOn() reads it and updateOutputs() republishes it every tick -- so
     /// without this a BeWavedDolphin sweep inherits whatever position the user last left on the
     /// canvas, and its "reset for reproducibility" pass has no effect on this element.
     void resetSimState() override;
 
     /// \reimp Recovers the selection from the restored one-hot outputs. The base class already
     /// saves and restores those; what it cannot know is that they are republished from
-    /// m_currentPort on the next tick, which would overwrite them.
+    /// the selection on the next tick, which would overwrite them.
     void restoreSimState(const QVector<Status> &in, int &cursor) override;
 
     /// \reimp A rotary selects exactly one active port, so a low cell is implicit: only a
@@ -93,6 +93,9 @@ public:
     void save(QDataStream &stream, SerializationOptions options) const override;
 
 protected:
+    /// \reimp Shows a new selection (ParamId::Position) on the dial and the outputs.
+    void parameterChanged(ParamId id, const ParamValue &previous) override;
+
     // --- Event handlers ---
 
     /// \reimp Selects the next output on a left press, unless it is locked; the scene records the selection as one
@@ -100,7 +103,6 @@ protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
 
 private:
-    // --- Members ---
-
-    int m_currentPort = 0;
+    /// Shows the selection on the dial and drives the outputs with it, the selected one Active.
+    void showSelection();
 };

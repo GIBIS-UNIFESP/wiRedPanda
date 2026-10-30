@@ -38,6 +38,19 @@ struct ElementInfo<InputRotary> {
             ":/Components/Input/rotary.svg",
             ":/Components/Input/rotary_arrow.svg",
         });
+        // A selection out of the outputs' range is the first output, as a file's loads
+        descriptor.parameters = {
+            {
+                .id = ParamId::Position,
+                .defaultValue = 0,
+                .key = "currentPort",
+                .accept = [](const Element &element, const ParamValue &value) -> std::optional<ParamValue> {
+                    const int position = std::get<int>(value);
+                    return ((position >= 0) && (position < element.outputSize())) ? value : ParamValue(0);
+                },
+            },
+            ElementInput::lockSpec(),
+        };
         return descriptor;
     } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
 
@@ -61,9 +74,9 @@ InputRotary::InputRotary(QGraphicsItem *parent)
 
 void InputRotary::refresh()
 {
-    // Guard against stale currentPort if output size was reduced (e.g. via undo)
-    if (m_currentPort >= InputRotary::outputSize()) {
-        m_currentPort = 0;
+    // Guard against a stale selection if output size was reduced (e.g. via undo)
+    if (outputValue() >= InputRotary::outputSize()) {
+        storeParam(ParamId::Position, 0);
     }
 
     update();
@@ -148,7 +161,7 @@ void InputRotary::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 
         painter->restore();
 
-        if (m_currentPort != port) {
+        if (outputValue() != port) {
             continue;
         }
 
@@ -166,7 +179,7 @@ void InputRotary::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 
 bool InputRotary::isOn(const int port) const
 {
-    return (m_currentPort == port);
+    return (outputValue() == port);
 }
 
 void InputRotary::setOff()
@@ -182,42 +195,53 @@ void InputRotary::setOn()
 
 void InputRotary::setOn(const bool value, const int port)
 {
-    // value is ignored — the rotary is not a simple toggle; the selected port determines state
+    // value is ignored — the rotary is not a simple toggle; the selected port determines state.
+    // The spec takes a port out of range, in either direction, as the first (load() feeds this
+    // raw values from the file, and a negative position would otherwise leave no port selected).
+    // The selection is shown also when it is the one the dial has, so a new dial drives its
+    // outputs with definite levels.
     Q_UNUSED(value)
-    m_currentPort = port;
-
-    // Clamp both directions: load() feeds this raw values from the file, and
-    // a negative position would otherwise leave no port selected at all.
-    if (m_currentPort < 0 || m_currentPort >= outputSize()) {
-        m_currentPort = 0;
+    if (!setParam(ParamId::Position, port)) {
+        showSelection();
     }
+}
 
+void InputRotary::parameterChanged(const ParamId id, const ParamValue &previous)
+{
+    ElementInput::parameterChanged(id, previous);
+    if (id == ParamId::Position) {
+        showSelection();
+    }
+}
+
+void InputRotary::showSelection()
+{
     update();
 
     // Exactly one output port is Active (the selected position); all others are Inactive
     for (int index = 0; index < outputSize(); ++index) {
-        outputPort(index)->setStatus((m_currentPort == index) ? Status::Active : Status::Inactive);
+        outputPort(index)->setStatus((outputValue() == index) ? Status::Active : Status::Inactive);
     }
 }
 
 void InputRotary::resetSimState()
 {
     Element::resetSimState();
-    m_currentPort = 0;
+    storeParam(ParamId::Position, 0);
 }
 
 void InputRotary::restoreSimState(const QVector<Status> &in, int &cursor)
 {
     Element::restoreSimState(in, cursor);
 
-    // The base restores the one-hot output values, but isOn() answers from m_currentPort and
+    // The base restores the one-hot output values, but isOn() answers from the selection and
     // ElementInput::updateOutputs() pushes that onto the outputs on the very next tick --
     // so without this the restore is undone before anything reads it. Derive the selection back
     // out of the outputs rather than smuggling an int through a QVector<Status>, whose enum has
     // no fixed underlying type and no room for a port index.
     for (int i = 0; i < outputSize(); ++i) {
         if (Element::outputValue(i) == Status::Active) {
-            m_currentPort = i;
+            storeParam(ParamId::Position, i);
             break;
         }
     }
@@ -234,8 +258,8 @@ void InputRotary::setWaveformValue(const bool value, const int port)
 
 void InputRotary::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    if (!m_locked && (event->button() == Qt::LeftButton)) {
-        setOn(true, (m_currentPort + 1) % outputSize());
+    if (!isLocked() && (event->button() == Qt::LeftButton)) {
+        setOn(true, (outputValue() + 1) % outputSize());
         event->accept();
     }
 
@@ -251,11 +275,11 @@ void InputRotary::save(QDataStream &stream, SerializationOptions options) const
     QMap<QString, QVariant> map;
     // PortableFile streams omit defaults; fresh-loaded elements start there
     // anyway. Snapshots write unconditionally (reloaded into live elements).
-    if (!slim || m_currentPort != 0) {
-        map.insert("currentPort", m_currentPort);
+    if (!slim || outputValue() != 0) {
+        map.insert("currentPort", outputValue());
     }
-    if (!slim || m_locked) {
-        map.insert("locked", m_locked);
+    if (!slim || isLocked()) {
+        map.insert("locked", isLocked());
     }
 
     stream << map;
@@ -265,12 +289,15 @@ void InputRotary::load(QDataStream &stream, SerializationContext &context)
 {
     Element::load(stream, context);
 
+    int position = outputValue();
     if (!VersionInfo::hasQMapFormat(context.version)) {
         // v1.x–4.0 stored currentPort as a bare int; locked added in v3.1
-        stream >> m_currentPort;
+        stream >> position;
 
         if (VersionInfo::hasLockState(context.version)) {
-            stream >> m_locked;
+            bool locked = false;
+            stream >> locked;
+            setLocked(locked);
         }
     }
 
@@ -279,16 +306,16 @@ void InputRotary::load(QDataStream &stream, SerializationContext &context)
         QMap<QString, QVariant> map = Serialization::readBoundedMetadata(stream);
 
         if (map.contains("currentPort")) {
-            m_currentPort = map.value("currentPort").toInt();
+            position = map.value("currentPort").toInt();
         }
 
         if (map.contains("locked")) {
-            m_locked = map.value("locked").toBool();
+            setLocked(map.value("locked").toBool());
         }
     }
 
     // Apply loaded state to ports so the simulation reflects the saved position
-    setOn(true, m_currentPort);
+    setOn(true, position);
 }
 
 void InputRotary::setAppearance(const bool defaultAppearance, const QString &fileName)
@@ -310,5 +337,5 @@ int InputRotary::outputSize() const
 
 int InputRotary::outputValue() const
 {
-    return m_currentPort;
+    return param<int>(ParamId::Position);
 }

@@ -22,4 +22,9 @@ private slots:
     // --- Setting a parameter ---
     void testSetParamTakesAValueAsItsSpecDoes();
     void testParameterChangedFollowsEachChangeOnly();
+
+    // --- The inputs ---
+    void testAnInputsLevelAndLockAreItsParameters();
+    void testANewInputDrivesADefiniteLevel();
+    void testARotarysSelectionOutOfRangeIsTheFirst();
 };

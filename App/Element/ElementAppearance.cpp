@@ -470,7 +470,7 @@ void ElementAppearance::setAppearanceAt(const int index, const QString &fileName
 void ElementAppearance::setAlternativeAppearanceAt(const int index, const QString &path)
 {
     // Unreachable: every call site passes a provably in-range index -- ElementInput
-    // (static_cast<int>(m_isOn), always 0/1 for its always-2-slot appearance list),
+    // (static_cast<int>(isOn()), always 0/1 for its always-2-slot appearance list),
     // InputRotary (hardcoded 0), Led (colorIndex(), always in its own valid range), and
     // ElementSerializer's two appearance-name loaders (which already throw on an
     // out-of-range index *before* ever reaching this call).

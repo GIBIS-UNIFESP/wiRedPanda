@@ -41,6 +41,8 @@ struct ElementInfo<Clock> {
             ":/Components/Input/clock0.svg",
             ":/Components/Input/clock1.svg",
         });
+        // A clock's level follows the simulation's time: no state of the circuit
+        descriptor.parameters = {ElementInput::levelSpec(nullptr), ElementInput::lockSpec()};
         return descriptor;
     } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
 
@@ -61,7 +63,7 @@ Clock::Clock(QGraphicsItem *parent)
 
 void Clock::updateClock(std::chrono::steady_clock::time_point globalTime)
 {
-    if (m_locked) {
+    if (isLocked()) {
         return;
     }
 
@@ -89,14 +91,14 @@ void Clock::updateClock(std::chrono::steady_clock::time_point globalTime)
     // that accumulated drift doesn't skew the clock frequency over time.
     if (elapsed > m_interval) {
         m_startTime += m_interval;
-        setOn(!m_isOn);
+        setOn(!isOn());
     }
 }
 
 bool Clock::isOn(const int port) const
 {
     Q_UNUSED(port)
-    return m_isOn;
+    return param<bool>(ParamId::On);
 }
 
 void Clock::setOff()
@@ -124,8 +126,8 @@ void Clock::save(QDataStream &stream, SerializationOptions options) const
     if (!slim || delay() != 0.0) {
         map.insert("delay", delay());
     }
-    if (!slim || m_locked) {
-        map.insert("locked", m_locked);
+    if (!slim || isLocked()) {
+        map.insert("locked", isLocked());
     }
 
     stream << map;
@@ -146,7 +148,9 @@ void Clock::load(QDataStream &stream, SerializationContext &context)
         setFrequency(static_cast<double>(freq));
 
         if (VersionInfo::hasLockState(context.version)) {
-            stream >> m_locked;
+            bool locked = false;
+            stream >> locked;
+            setLocked(locked);
         }
     }
 
@@ -174,7 +178,7 @@ void Clock::load(QDataStream &stream, SerializationContext &context)
         }
 
         if (map.contains("locked")) {
-            m_locked = map.value("locked").toBool();
+            setLocked(map.value("locked").toBool());
         }
     }
 }
