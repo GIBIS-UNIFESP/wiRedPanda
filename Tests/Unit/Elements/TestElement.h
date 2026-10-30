@@ -55,4 +55,7 @@ private slots:
     // retranslate()'s translated-name/tooltip/port-name refresh
     void testRetranslateUpdatesTranslatedNameToolTipAndPortName();
     void testSnapToGridKeepsAPositionBeyondIntRange();
+
+    // updatePortsProperties() applies only the port attributes an element sets
+    void testPortUpdateKeepsFieldsAttributesLeaveUnset();
 };

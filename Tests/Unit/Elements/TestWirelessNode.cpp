@@ -16,6 +16,8 @@
 #include "App/Element/PropertyDescriptor.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
+#include "App/Scene/Commands.h"
+#include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/Wiring/Port.h"
 #include "Tests/Common/TestUtils.h"
@@ -522,4 +524,37 @@ void TestWirelessNode::testWirelessIndicatorHandlesBusConflictError()
     sim->update();
 
     QCOMPARE(node->outputPort()->status(), Status::Error);
+}
+
+void TestWirelessNode::testRxInputStaysOptionalThroughEditUndoRedo()
+{
+    // An edit reloads the live node from a snapshot: its ports are updated while it is already Rx, and setting the
+    // same mode again changes nothing, so the input stays optional only because the update leaves the requirement
+    // that the mode set alone (the node's attributes place its ports and set nothing else).
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    CircuitBuilder builder(scene);
+    auto *rx = new Node();
+    builder.add(rx);
+    rx->setLabel("A");
+    rx->setWirelessMode(WirelessMode::Rx);
+
+    QByteArray oldData;
+    QDataStream stream(&oldData, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(stream);
+    rx->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
+    rx->setLabel("B");
+    scene->receiveCommand(new UpdateCommand(QList<Element *>{rx}, oldData, scene));
+    QVERIFY(!rx->inputPort()->isRequired());
+    QVERIFY(rx->inputPort()->status() != Status::Error);
+
+    scene->undoStack()->undo();
+    QCOMPARE(rx->label(), QStringLiteral("A"));
+    QVERIFY(!rx->inputPort()->isRequired());
+    QVERIFY(rx->inputPort()->status() != Status::Error);
+
+    scene->undoStack()->redo();
+    QCOMPARE(rx->label(), QStringLiteral("B"));
+    QVERIFY(!rx->inputPort()->isRequired());
+    QVERIFY(rx->inputPort()->status() != Status::Error);
 }

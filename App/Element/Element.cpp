@@ -231,10 +231,13 @@ void Element::setPortName(const QString &name)
     setObjectName(name);
 }
 
-void Element::setDescribedPortName(Port *port, const char *letter, const char *description) const
+Element::PortAttributes Element::describedPort(const char *letter, const char *description) const
 {
     const QString prefix = QString::fromUtf8(letter) + " (";
-    port->setName(prefix + metaObject()->tr(description, nullptr) + ')', prefix + QString::fromUtf8(description) + ')');
+    PortAttributes attributes;
+    attributes.name = prefix + metaObject()->tr(description, nullptr) + ')';
+    attributes.sourceName = prefix + QString::fromUtf8(description) + ')';
+    return attributes;
 }
 
 void Element::setRotation(const qreal angle)
@@ -283,6 +286,24 @@ QPixmap Element::appearancePreviewPixmap(const int index, const QSize &size) con
     return m_appearance.previewPixmapAt(index, size);
 }
 
+namespace ElementPortLayout {
+
+/// Applies the fields \a attributes sets to \a port, its place aside, leaving every unset field as the port has it.
+void applyAttributes(Port *port, const Element::PortAttributes &attributes)
+{
+    if (attributes.name) {
+        port->setName(*attributes.name, attributes.sourceName.value_or(*attributes.name));
+    }
+    if (attributes.required) {
+        port->setRequired(*attributes.required);
+    }
+    if (attributes.defaultStatus) {
+        port->setDefaultStatus(*attributes.defaultStatus);
+    }
+}
+
+} // namespace ElementPortLayout
+
 void Element::updatePortsProperties()
 {
     qCDebug(five) << "Updating port positions that belong to the IC.";
@@ -291,16 +312,20 @@ void Element::updatePortsProperties()
     // on sub-grid snap points that wires can reach when snapped to the same grid.
     const int step = Constants::gridSize / 2;
 
-    if (!m_ports.inputs().isEmpty()) {
+    // Inputs are pinned to the left edge (x=0) of the 64 px body and outputs to the right (x=64), unless a port's
+    // attributes place it
+    const auto layOut = [this, step](const auto &ports, const qreal x, const auto &attributesOf) {
         // Centre the port column vertically around y=32 (the mid-point of a 64 px body).
         // The first port starts at 32 - (count-1)*step so all ports are symmetrically distributed.
-        int y = 32 - (static_cast<int>(m_ports.inputs().size()) * step) + step;
+        int y = 32 - (static_cast<int>(ports.size()) * step) + step;
 
-        for (auto *port : m_ports.inputs()) {
-            qCDebug(five) << "Setting input at " << 0 << ", " << y;
-
-            // Inputs are pinned to the left edge (x=0) of the 64 px body
-            port->setPos(0, y);
+        for (int index = 0; index < static_cast<int>(ports.size()); ++index) {
+            Port *port = ports.at(index);
+            const std::optional<PortAttributes> attributes = attributesOf(index);
+            port->setPos((attributes && attributes->position) ? *attributes->position : QPointF(x, y));
+            if (attributes) {
+                ElementPortLayout::applyAttributes(port, *attributes);
+            }
 
             // Non-rotatable elements keep the pixmap fixed and orient their ports in place,
             // applying the current rotation and flip about the element centre.
@@ -312,26 +337,30 @@ void Element::updatePortsProperties()
             // full grid and remain easily connectable with straight wires.
             y += step * 2;
         }
+    };
+
+    layOut(m_ports.inputs(), 0, [this](const int index) { return inputAttributes(index); });
+    layOut(m_ports.outputs(), 64, [this](const int index) { return outputAttributes(index); });
+}
+
+std::optional<Element::PortAttributes> Element::inputAttributes(const int index) const
+{
+    Q_UNUSED(index)
+    return std::nullopt;
+}
+
+std::optional<Element::PortAttributes> Element::outputAttributes(const int index) const
+{
+    Q_UNUSED(index)
+    return std::nullopt;
+}
+
+std::optional<Element::PortAttributes> Element::attributesAt(const QList<PortAttributes> &table, const int index)
+{
+    if ((index < 0) || (index >= table.size())) {
+        return std::nullopt;
     }
-
-    if (!m_ports.outputs().isEmpty()) {
-        int y = 32 - (static_cast<int>(m_ports.outputs().size()) * step) + step;
-
-        for (auto *port : m_ports.outputs()) {
-            qCDebug(five) << "Setting output at " << 64 << ", " << y;
-
-            // Outputs are pinned to the right edge (x=64) of the 64 px body
-            port->setPos(64, y);
-
-            // Non-rotatable elements keep the pixmap fixed and orient their ports in place,
-            // applying the current rotation and flip about the element centre.
-            if (!rotatesGraphic()) {
-                m_orientation.orientPort(port);
-            }
-
-            y += step * 2;
-        }
-    }
+    return table.at(index);
 }
 
 void Element::refresh()

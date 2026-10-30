@@ -82,7 +82,7 @@ Display14::Display14(QGraphicsItem *parent)
     n  = Display7::cachedSegmentRenderers(m_appearance.defaultAppearances().at(14));
     dp = Display7::cachedSegmentRenderers(m_appearance.defaultAppearances().at(15));
 
-    Display14::updatePortsProperties();
+    updatePortsProperties();
 }
 
 void Display14::refresh()
@@ -90,35 +90,33 @@ void Display14::refresh()
     update();
 }
 
-void Display14::updatePortsProperties()
+std::optional<Element::PortAttributes> Display14::inputAttributes(const int index) const
 {
     // Left-side ports (x=0): G1, F, E, D (outer horizontal/vertical) + G2, H, J (diagonals/center)
     // Right-side ports (x=64): A, B, DP, C + K, L, M, N
     // This two-column layout mirrors the physical dual-inline-package pin arrangement.
-    inputPort( 0)->setPos( 0,  -8);    setDescribedPortName(inputPort( 0), "G1", QT_TR_NOOP("middle left horizontal"));
-    inputPort( 1)->setPos( 0,   8);    setDescribedPortName(inputPort( 1), "F",  QT_TR_NOOP("upper left vertical"));
-    inputPort( 2)->setPos( 0,  24);    setDescribedPortName(inputPort( 2), "E",  QT_TR_NOOP("lower left vertical"));
-    inputPort( 3)->setPos( 0,  40);    setDescribedPortName(inputPort( 3), "D",  QT_TR_NOOP("bottom"));
-    inputPort( 4)->setPos(64,  -8);    setDescribedPortName(inputPort( 4), "A",  QT_TR_NOOP("top"));
-    inputPort( 5)->setPos(64,   8);    setDescribedPortName(inputPort( 5), "B",  QT_TR_NOOP("upper right vertical"));
-    inputPort( 6)->setPos(64,  24);    setDescribedPortName(inputPort( 6), "DP", QT_TR_NOOP("dot"));
-    inputPort( 7)->setPos(64,  40);    setDescribedPortName(inputPort( 7), "C",  QT_TR_NOOP("lower right vertical"));
-    inputPort( 8)->setPos( 0,  56);    setDescribedPortName(inputPort( 8), "G2", QT_TR_NOOP("middle right horizontal"));
-    inputPort( 9)->setPos( 0,  72);    setDescribedPortName(inputPort( 9), "H",  QT_TR_NOOP("upper left diagonal"));
-    inputPort(10)->setPos( 0,  88);    setDescribedPortName(inputPort(10), "J",  QT_TR_NOOP("upper center vertical"));
-    inputPort(11)->setPos(64,  56);    setDescribedPortName(inputPort(11), "K",  QT_TR_NOOP("upper right diagonal"));
-    inputPort(12)->setPos(64,  72);    setDescribedPortName(inputPort(12), "L",  QT_TR_NOOP("lower right diagonal"));
-    inputPort(13)->setPos(64,  88);    setDescribedPortName(inputPort(13), "M",  QT_TR_NOOP("lower center vertical"));
-    inputPort(14)->setPos(64, 104);    setDescribedPortName(inputPort(14), "N",  QT_TR_NOOP("lower left diagonal"));
-
-    for (auto *port : inputs()) {
-        port->setRequired(false);
-        port->setDefaultStatus(Status::Inactive);
+    static constexpr Display7::SegmentPort segments[] = {
+        {  0,   -8, "G1", QT_TR_NOOP("middle left horizontal")},
+        {  0,    8, "F",  QT_TR_NOOP("upper left vertical")},
+        {  0,   24, "E",  QT_TR_NOOP("lower left vertical")},
+        {  0,   40, "D",  QT_TR_NOOP("bottom")},
+        { 64,   -8, "A",  QT_TR_NOOP("top")},
+        { 64,    8, "B",  QT_TR_NOOP("upper right vertical")},
+        { 64,   24, "DP", QT_TR_NOOP("dot")},
+        { 64,   40, "C",  QT_TR_NOOP("lower right vertical")},
+        {  0,   56, "G2", QT_TR_NOOP("middle right horizontal")},
+        {  0,   72, "H",  QT_TR_NOOP("upper left diagonal")},
+        {  0,   88, "J",  QT_TR_NOOP("upper center vertical")},
+        { 64,   56, "K",  QT_TR_NOOP("upper right diagonal")},
+        { 64,   72, "L",  QT_TR_NOOP("lower right diagonal")},
+        { 64,   88, "M",  QT_TR_NOOP("lower center vertical")},
+        { 64,  104, "N",  QT_TR_NOOP("lower left diagonal")},
+    };
+    if ((index < 0) || (index >= static_cast<int>(std::size(segments)))) {
+        return std::nullopt;
     }
-
-    // This override doesn't chain to the base updatePortsProperties(), so re-apply the current
-    // rotation/flip orientation to the freshly-positioned ports (keeps flip working on displays).
-    rotatePorts();
+    const Display7::SegmentPort &segment = segments[index];
+    return Display7::segmentInput(describedPort(segment.letter, segment.description), segment);
 }
 
 QRectF Display14::boundingRect() const

@@ -34,14 +34,23 @@ public:
     /// \reimp
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
-    /// Recalculates port positions for the current port count.
+    /// Lays the ports out, then redraws the body for the new port count.
     void updatePortsProperties() override;
+
+    /// The data inputs In0, In1, ... on the left, then the select lines S0, S1, ... at the bottom.
+    std::optional<PortAttributes> inputAttributes(int index) const override;
+
+    /// The output, Out, on the right.
+    std::optional<PortAttributes> outputAttributes(int index) const override;
 
     /// Routes the data input selected by the select lines to the output.
     void updateLogic() override;
 
 private:
     void generatePixmap();
+
+    /// The body's height for the current data inputs, a multiple of 16 of at least 64.
+    int bodyHeight() const;
 
     /// Draws the trapezoid body straight onto \a painter as vectors, so it stays crisp at any
     /// zoom instead of blitting a fixed-resolution pixmap.

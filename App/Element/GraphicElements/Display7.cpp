@@ -88,7 +88,7 @@ Display7::Display7(QGraphicsItem *parent)
     g  = cachedSegmentRenderers(m_appearance.defaultAppearances().at(7));
     dp = cachedSegmentRenderers(m_appearance.defaultAppearances().at(8));
 
-    Display7::updatePortsProperties();
+    updatePortsProperties();
 }
 
 QVector<std::shared_ptr<QSvgRenderer>> Display7::cachedSegmentRenderers(const QString &resourcePath)
@@ -125,29 +125,35 @@ void Display7::refresh()
     update();
 }
 
-void Display7::updatePortsProperties()
+std::optional<Element::PortAttributes> Display7::inputAttributes(const int index) const
 {
     // Ports on the left side (x=0) correspond to the left segments (G, F, E, D);
     // ports on the right side (x=64) correspond to the right segments and DP (A, B, DP, C).
     // This matches the physical pin layout used by common 7-segment display ICs.
-    if (auto *port = inputPort(0)) { port->setPos( 0,  8); setDescribedPortName(port, "G",  QT_TR_NOOP("middle")); }
-    if (auto *port = inputPort(1)) { port->setPos( 0, 24); setDescribedPortName(port, "F",  QT_TR_NOOP("upper left")); }
-    if (auto *port = inputPort(2)) { port->setPos( 0, 40); setDescribedPortName(port, "E",  QT_TR_NOOP("lower left")); }
-    if (auto *port = inputPort(3)) { port->setPos( 0, 56); setDescribedPortName(port, "D",  QT_TR_NOOP("bottom")); }
-    if (auto *port = inputPort(4)) { port->setPos(64,  8); setDescribedPortName(port, "A",  QT_TR_NOOP("top")); }
-    if (auto *port = inputPort(5)) { port->setPos(64, 24); setDescribedPortName(port, "B",  QT_TR_NOOP("upper right")); }
-    if (auto *port = inputPort(6)) { port->setPos(64, 40); setDescribedPortName(port, "DP", QT_TR_NOOP("dot")); }
-    if (auto *port = inputPort(7)) { port->setPos(64, 56); setDescribedPortName(port, "C",  QT_TR_NOOP("lower right")); }
-
-    for (auto *in : inputs()) {
-        // Segments are individually driven; leaving a pin unconnected turns that segment off
-        in->setRequired(false);
-        in->setDefaultStatus(Status::Inactive);
+    static constexpr Display7::SegmentPort segments[] = {
+        {  0,    8, "G",  QT_TR_NOOP("middle")},
+        {  0,   24, "F",  QT_TR_NOOP("upper left")},
+        {  0,   40, "E",  QT_TR_NOOP("lower left")},
+        {  0,   56, "D",  QT_TR_NOOP("bottom")},
+        { 64,    8, "A",  QT_TR_NOOP("top")},
+        { 64,   24, "B",  QT_TR_NOOP("upper right")},
+        { 64,   40, "DP", QT_TR_NOOP("dot")},
+        { 64,   56, "C",  QT_TR_NOOP("lower right")},
+    };
+    if ((index < 0) || (index >= static_cast<int>(std::size(segments)))) {
+        return std::nullopt;
     }
+    const Display7::SegmentPort &segment = segments[index];
+    return Display7::segmentInput(describedPort(segment.letter, segment.description), segment);
+}
 
-    // This override doesn't chain to the base updatePortsProperties(), so re-apply the current
-    // rotation/flip orientation to the freshly-positioned ports (keeps flip working on displays).
-    rotatePorts();
+Element::PortAttributes Display7::segmentInput(PortAttributes described, const SegmentPort &segment)
+{
+    PortAttributes attributes = std::move(described);
+    attributes.required = false;
+    attributes.defaultStatus = Status::Inactive;
+    attributes.position = QPointF(segment.x, segment.y);
+    return attributes;
 }
 
 QRectF Display7::boundingRect() const

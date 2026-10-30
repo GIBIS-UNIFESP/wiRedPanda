@@ -40,40 +40,36 @@ struct ElementInfo<JKFlipFlop> {
 JKFlipFlop::JKFlipFlop(QGraphicsItem *parent)
     : Element(ElementType::JKFlipFlop, parent)
 {
-    // Call the most-derived override explicitly (see SRFlipFlop.cpp for rationale).
-    JKFlipFlop::updatePortsProperties();
+    // The ports take their places, names, requirements and defaults from this type's attributes
+    updatePortsProperties();
 }
 
-void JKFlipFlop::updatePortsProperties()
+std::optional<Element::PortAttributes> JKFlipFlop::inputAttributes(const int index) const
 {
     // JK flip-flop: J (Set-like) and K (Reset-like) are clocked, with Clock required.
     // J=1,K=1 on a clock edge toggles output — making the JK superior to SR (no forbidden state).
     // ~Preset and ~Clear are asynchronous active-low overrides (same as DFlipFlop).
-    inputPort(0)->setPos( 0, 16);     inputPort(0)->setName("J");
-    inputPort(1)->setPos( 0, 32);     inputPort(1)->setName("Clock");
-    inputPort(2)->setPos( 0, 48);     inputPort(2)->setName("K");
-    inputPort(3)->setPos(32,  0);     inputPort(3)->setName("~Preset");
-    inputPort(4)->setPos(32, 64);     inputPort(4)->setName("~Clear");
-
-    outputPort(0)->setPos(64, 16);    outputPort(0)->setName("Q");
-    outputPort(1)->setPos(64, 48);    outputPort(1)->setName("~Q");
-
-    inputPort(0)->setRequired(false);
-    inputPort(2)->setRequired(false);
-    inputPort(3)->setRequired(false);
-    inputPort(4)->setRequired(false);
-
     // J and K default to Active (HIGH) when unconnected, so the flip-flop toggles on every
     // clock edge by default — a useful demonstration behavior for the educational context.
     // ~Preset and ~Clear default to Active (HIGH = not asserted).
-    inputPort(0)->setDefaultStatus(Status::Active);
-    inputPort(2)->setDefaultStatus(Status::Active);
-    inputPort(3)->setDefaultStatus(Status::Active);
-    inputPort(4)->setDefaultStatus(Status::Active);
+    static const QList<PortAttributes> attributes{
+        {.name = "J", .required = false, .defaultStatus = Status::Active, .position = QPointF(0, 16)},
+        {.name = "Clock", .position = QPointF(0, 32)},
+        {.name = "K", .required = false, .defaultStatus = Status::Active, .position = QPointF(0, 48)},
+        {.name = "~Preset", .required = false, .defaultStatus = Status::Active, .position = QPointF(32, 0)},
+        {.name = "~Clear", .required = false, .defaultStatus = Status::Active, .position = QPointF(32, 64)},
+    };
+    return attributesAt(attributes, index);
+}
 
+std::optional<Element::PortAttributes> JKFlipFlop::outputAttributes(const int index) const
+{
     // Initial state: Q=0, ~Q=1
-    outputPort(0)->setDefaultStatus(Status::Inactive);
-    outputPort(1)->setDefaultStatus(Status::Active);
+    static const QList<PortAttributes> attributes{
+        {.name = "Q", .defaultStatus = Status::Inactive, .position = QPointF(64, 16)},
+        {.name = "~Q", .defaultStatus = Status::Active, .position = QPointF(64, 48)},
+    };
+    return attributesAt(attributes, index);
 }
 
 void JKFlipFlop::updateLogic()

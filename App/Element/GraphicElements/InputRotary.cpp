@@ -73,109 +73,43 @@ void InputRotary::refresh()
 
 void InputRotary::updatePortsProperties()
 {
+    Element::updatePortsProperties();
+    InputRotary::refresh();
+}
+
+std::optional<Element::PortAttributes> InputRotary::outputAttributes(const int index) const
+{
     // Ports are placed around the perimeter of the 64x64 bounding box,
     // evenly distributed to match the visual rotary positions on the SVG.
     // Only specific output counts (2, 3, 4, 6, 8, 10, 12, 16) have defined
     // layouts; these correspond to standard rotary switch configurations.
-    switch (InputRotary::outputSize()) {
-    case 2: {
-        outputPort(0)->setPos(32,  0);    outputPort(0)->setName("0");
-        outputPort(1)->setPos(32, 64);    outputPort(1)->setName("1");
-        break;
-    }
-    case 3: {
-        outputPort(0)->setPos(32,  0);   outputPort( 0)->setName("0");
-        outputPort(1)->setPos(64, 48);   outputPort( 1)->setName("1");
-        outputPort(2)->setPos(0,  48);   outputPort( 2)->setName("2");
-        break;
-    }
-    case 4: {
-        outputPort(0)->setPos(32,  0);    outputPort(0)->setName("0");
-        outputPort(1)->setPos(64, 32);    outputPort(1)->setName("1");
-        outputPort(2)->setPos(32, 64);    outputPort(2)->setName("2");
-        outputPort(3)->setPos( 0, 32);    outputPort(3)->setName("3");
-        break;
-    }
-    case 6: {
-        outputPort(0)->setPos(32,  0);   outputPort( 0)->setName("0");
-        outputPort(1)->setPos(64, 16);   outputPort( 1)->setName("1");
-        outputPort(2)->setPos(64, 48);   outputPort( 2)->setName("2");
-        outputPort(3)->setPos(32, 64);   outputPort( 3)->setName("3");
-        outputPort(4)->setPos( 0, 48);   outputPort( 4)->setName("4");
-        outputPort(5)->setPos( 0, 16);   outputPort( 5)->setName("5");
-        break;
-    }
-    case 8: {
-        outputPort(0)->setPos(32,  0);    outputPort(0)->setName("0");
-        outputPort(1)->setPos(64,  0);    outputPort(1)->setName("1");
-        outputPort(2)->setPos(64, 32);    outputPort(2)->setName("2");
-        outputPort(3)->setPos(64, 64);    outputPort(3)->setName("3");
-        outputPort(4)->setPos(32, 64);    outputPort(4)->setName("4");
-        outputPort(5)->setPos( 0, 64);    outputPort(5)->setName("5");
-        outputPort(6)->setPos( 0, 32);    outputPort(6)->setName("6");
-        outputPort(7)->setPos( 0,  0);    outputPort(7)->setName("7");
-        break;
-    }
-    case 10: {
-        outputPort(0)->setPos(32,  0);    outputPort(0)->setName("0");
-        outputPort(1)->setPos(56,  0);    outputPort(1)->setName("1");
-        outputPort(2)->setPos(64, 24);    outputPort(2)->setName("2");
-        outputPort(3)->setPos(64, 40);    outputPort(3)->setName("3");
-        outputPort(4)->setPos(56, 64);    outputPort(4)->setName("4");
-        outputPort(5)->setPos(32, 64);    outputPort(5)->setName("5");
-        outputPort(6)->setPos( 8, 64);    outputPort(6)->setName("6");
-        outputPort(7)->setPos( 0, 40);    outputPort(7)->setName("7");
-        outputPort(8)->setPos( 0, 24);    outputPort(8)->setName("8");
-        outputPort(9)->setPos( 8,  0);    outputPort(9)->setName("9");
-        break;
-    }
-    case 12: {
-        outputPort( 0)->setPos(32,  0);   outputPort( 0)->setName("0");
-        outputPort( 1)->setPos(48,  0);   outputPort( 1)->setName("1");
-        outputPort( 2)->setPos(64, 16);   outputPort( 2)->setName("2");
-        outputPort( 3)->setPos(64, 32);   outputPort( 3)->setName("3");
-        outputPort( 4)->setPos(64, 48);   outputPort( 4)->setName("4");
-        outputPort( 5)->setPos(48, 64);   outputPort( 5)->setName("5");
-        outputPort( 6)->setPos(32, 64);   outputPort( 6)->setName("6");
-        outputPort( 7)->setPos(16, 64);   outputPort( 7)->setName("7");
-        outputPort( 8)->setPos( 0, 48);   outputPort( 8)->setName("8");
-        outputPort( 9)->setPos( 0, 32);   outputPort( 9)->setName("9");
-        // Ports >= 10 use hex labels (A, B, ...) to stay single-character
-        outputPort(10)->setPos( 0, 16);   outputPort(10)->setName("A");
-        outputPort(11)->setPos(16,  0);   outputPort(11)->setName("B");
-        break;
-    }
-    case 16: {
-        outputPort( 0)->setPos(32,  0);   outputPort( 0)->setName("0");
-        outputPort( 1)->setPos(48,  0);   outputPort( 1)->setName("1");
-        outputPort( 2)->setPos(64,  0);   outputPort( 2)->setName("2");
-        outputPort( 3)->setPos(64, 16);   outputPort( 3)->setName("3");
-        outputPort( 4)->setPos(64, 32);   outputPort( 4)->setName("4");
-        outputPort( 5)->setPos(64, 48);   outputPort( 5)->setName("5");
-        outputPort( 6)->setPos(64, 64);   outputPort( 6)->setName("6");
-        outputPort( 7)->setPos(48, 64);   outputPort( 7)->setName("7");
-        outputPort( 8)->setPos(32, 64);   outputPort( 8)->setName("8");
-        outputPort( 9)->setPos(16, 64);   outputPort( 9)->setName("9");
-        outputPort(10)->setPos( 0, 64);   outputPort(10)->setName("A");
-        outputPort(11)->setPos( 0, 48);   outputPort(11)->setName("B");
-        outputPort(12)->setPos( 0, 32);   outputPort(12)->setName("C");
-        outputPort(13)->setPos( 0, 16);   outputPort(13)->setName("D");
-        outputPort(14)->setPos( 0,  0);   outputPort(14)->setName("E");
-        outputPort(15)->setPos(16,  0);   outputPort(15)->setName("F");
-        break;
-    }
+    // Ports >= 10 use hex labels (A, B, ...) to stay single-character.
+    struct Position {
+        int x;
+        int y;
+        const char *name;
+    };
+    static const QHash<int, QList<Position>> layouts{
+        {2, {{32, 0, "0"}, {32, 64, "1"}}},
+        {3, {{32, 0, "0"}, {64, 48, "1"}, {0, 48, "2"}}},
+        {4, {{32, 0, "0"}, {64, 32, "1"}, {32, 64, "2"}, {0, 32, "3"}}},
+        {6, {{32, 0, "0"}, {64, 16, "1"}, {64, 48, "2"}, {32, 64, "3"}, {0, 48, "4"}, {0, 16, "5"}}},
+        {8, {{32, 0, "0"}, {64, 0, "1"}, {64, 32, "2"}, {64, 64, "3"}, {32, 64, "4"}, {0, 64, "5"}, {0, 32, "6"}, {0, 0, "7"}}},
+        {10, {{32, 0, "0"}, {56, 0, "1"}, {64, 24, "2"}, {64, 40, "3"}, {56, 64, "4"}, {32, 64, "5"}, {8, 64, "6"}, {0, 40, "7"}, {0, 24, "8"}, {8, 0, "9"}}},
+        {12, {{32, 0, "0"}, {48, 0, "1"}, {64, 16, "2"}, {64, 32, "3"}, {64, 48, "4"}, {48, 64, "5"}, {32, 64, "6"}, {16, 64, "7"}, {0, 48, "8"}, {0, 32, "9"}, {0, 16, "A"}, {16, 0, "B"}}},
+        {16, {{32, 0, "0"}, {48, 0, "1"}, {64, 0, "2"}, {64, 16, "3"}, {64, 32, "4"}, {64, 48, "5"}, {64, 64, "6"}, {48, 64, "7"}, {32, 64, "8"}, {16, 64, "9"}, {0, 64, "A"}, {0, 48, "B"}, {0, 32, "C"}, {0, 16, "D"}, {0, 0, "E"}, {16, 0, "F"}}},
+    };
 
-    default:
-        // Handle unexpected output sizes gracefully
-        // For unhandled sizes, use a simple default positioning
-        for (int i = 0; i < outputSize(); ++i) {
-            outputPort(i)->setPos(32, i * 16);
-            outputPort(i)->setName(QString::number(i + 1));
+    if (const auto layout = layouts.constFind(outputSize()); layout != layouts.constEnd()) {
+        if ((index < 0) || (index >= layout->size())) {
+            return std::nullopt;
         }
-        break;
+        const Position &position = layout->at(index);
+        return PortAttributes{.name = QString::fromLatin1(position.name), .position = QPointF(position.x, position.y)};
     }
 
-    InputRotary::refresh();
+    // Handle unexpected output sizes gracefully: for unhandled sizes, use a simple default positioning
+    return PortAttributes{.name = QString::number(index + 1), .position = QPointF(32, index * 16)};
 }
 
 /// Shared, lazily-constructed vector renderer for the active-position arrow -- drawn directly in

@@ -56,8 +56,8 @@ public:
     /// Refreshes the displayed segments based on current input states.
     void refresh() override;
 
-    /// Updates port positions (fixed at 17 inputs).
-    void updatePortsProperties() override;
+    /// The 17 segment inputs, by their places and names.
+    std::optional<PortAttributes> inputAttributes(int index) const override;
 
     // --- Serialization ---
 

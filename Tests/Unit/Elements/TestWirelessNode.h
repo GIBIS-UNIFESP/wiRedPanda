@@ -39,4 +39,7 @@ private slots:
 
     // updateWirelessColor()'s Status::Error case
     void testWirelessIndicatorHandlesBusConflictError();
+
+    // An edit's update of a live Rx node leaves the requirement its mode set
+    void testRxInputStaysOptionalThroughEditUndoRedo();
 };
