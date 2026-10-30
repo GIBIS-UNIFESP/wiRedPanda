@@ -3,12 +3,15 @@
 
 #include "Tests/Unit/Scene/TestWorkspace.h"
 
+#include <QApplication>
 #include <QDataStream>
 #include <QDir>
 #include <QFile>
 #include <QFileDevice>
 #include <QLayout>
+#include <QMessageBox>
 #include <QResizeEvent>
+#include <QScopeGuard>
 #include <QSignalSpy>
 #include <QTemporaryDir>
 
@@ -703,4 +706,52 @@ void TestWorkspaceUnit::testAutosaveThrowsWhenCommitFails()
     }
     QVERIFY2(threw, "autosave() must throw when commit() fails");
 #endif
+}
+
+void TestWorkspaceUnit::testAutosaveTimerReportsAFailureOnceAndTriesAgain()
+{
+    // The debounce timer's slot, which Qt calls: an autosave that cannot be written is reported the first time and
+    // thrown nowhere, a second failure is not reported again, and a change once the cause is gone writes the file
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString autosavePath = dir.filePath("preset_autosave.panda");
+    // A directory, not a file: QSaveFile cannot open it for writing
+    QVERIFY(QDir(dir.path()).mkdir("preset_autosave.panda"));
+
+    WorkSpace workspace;
+    workspace.m_fileInfo = QFileInfo(dir.filePath("project.panda"));
+    workspace.m_autosaveFileName = autosavePath;
+    auto *scene = workspace.scene();
+
+    const bool interactive = Application::interactiveMode;
+    Application::interactiveMode = true;
+    const auto reports = [] {
+        QList<QMessageBox *> boxes;
+        for (auto *widget : QApplication::topLevelWidgets()) {
+            if (auto *box = qobject_cast<QMessageBox *>(widget); box && box->isVisible()) {
+                boxes.append(box);
+            }
+        }
+        return boxes;
+    };
+    const auto restore = qScopeGuard([&] {
+        Application::interactiveMode = interactive;
+        for (auto *box : reports()) {
+            box->close();
+        }
+    });
+    const auto changeAndAutosave = [&] {
+        scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{new And()}, scene));
+        QVERIFY(TestUtils::waitFor([&] { return workspace.m_autosaveDebounceTimer.isActive(); }));
+        QVERIFY(TestUtils::waitFor([&] { return !workspace.m_autosaveDebounceTimer.isActive(); }));
+    };
+
+    changeAndAutosave();
+    QCOMPARE(reports().size(), 1);
+    changeAndAutosave();
+    QCOMPARE(reports().size(), 1);
+
+    QVERIFY(QDir(dir.path()).rmdir("preset_autosave.panda"));
+    changeAndAutosave();
+    QVERIFY(QFileInfo(autosavePath).isFile());
 }

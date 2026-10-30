@@ -177,6 +177,9 @@ private:
     // --- Internal methods ---
 
     void autosave();
+    /// The debounce timer's slot: an autosave that fails is reported the first time it fails, not thrown into the
+    /// timer's frame; the next change tries again.
+    void autosaveOnTimer();
     void createVersionedBackup(const QString &fileName, const QVersionNumber &version);
     void setAutosaveFileName();
 
@@ -200,6 +203,7 @@ private:
     QString m_dolphinFileName;
     QString m_autosaveFileName;
     QTimer m_autosaveDebounceTimer;
+    bool m_autosaveFailing = false;
     QVersionNumber m_loadedVersion;
     int m_lastId = 0;
 
