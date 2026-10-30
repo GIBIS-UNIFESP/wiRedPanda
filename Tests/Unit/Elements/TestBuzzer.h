@@ -25,8 +25,8 @@ private slots:
     // A7/B7) are the correct sixth/seventh degrees, while A7/B7 stay resolvable as aliases.
     void testToneScaleIsMonotonic();
 
-    // Regression: setFrequency() must reject non-finite/non-positive values (Buzzer::setFrequency()
-    // guards itself, as the clock's frequency spec in Clock.cpp guards the same untrusted-value class).
+    // Regression: setFrequency() must reject non-finite/non-positive values (the buzzer's frequency
+    // spec refuses them, as the clock's frequency spec in Clock.cpp refuses the same untrusted-value class).
     void testSetFrequencyRejectsNaN();
     void testSetFrequencyRejectsInfinity();
     void testSetFrequencyRejectsZeroAndNegative();

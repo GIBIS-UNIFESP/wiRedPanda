@@ -268,11 +268,11 @@ public:
 
     // --- Audio Properties ---
 
-    /// Returns the name of the audio file currently associated with this element.
-    virtual QString audio() const;
+    /// Returns the sound file the element plays (ParamId::AudioFile), or an empty path for a type without one.
+    QString audio() const;
 
-    /// Sets the audio file associated with this element to \a audio.
-    virtual void setAudio(const QString &audio);
+    /// Sets the sound file the element plays to \a audio (ParamId::AudioFile), as its spec takes it.
+    void setAudio(const QString &audio);
 
     /// Returns \c true if this element type shows an audio selection box.
     bool hasAudioBox() const;
@@ -280,11 +280,11 @@ public:
     /// Returns \c true if this element type supports volume control.
     bool hasVolume() const;
 
-    /// Returns the audio playback volume (0.0–1.0).
-    virtual float volume() const;
+    /// Returns the audio playback volume (ParamId::Volume, 0.0–1.0); 0 for a type without one.
+    float volume() const;
 
-    /// Sets the audio playback volume to \a vol (0.0–1.0).
-    virtual void setVolume(float vol);
+    /// Sets the audio playback volume to \a vol (ParamId::Volume, 0.0–1.0).
+    void setVolume(float vol);
 
     // --- Color Properties ---
 
@@ -309,10 +309,10 @@ public:
     // --- Frequency & Delay ---
 
     /// Returns the frequency in Hz (ParamId::Frequency); 0 for a type without one.
-    virtual double frequency() const;
+    double frequency() const;
 
     /// Returns the phase delay as a fraction of the period (ParamId::Delay); 0 for a type without one.
-    virtual double delay() const;
+    double delay() const;
 
     /// Returns \c true if this element type exposes a configurable clock frequency.
     bool hasFrequency() const;
@@ -321,14 +321,14 @@ public:
     bool hasDelay() const;
 
     /// Sets the frequency to \a freq Hz (ParamId::Frequency), as its spec takes it.
-    virtual void setFrequency(const double freq);
+    void setFrequency(const double freq);
 
     /// Returns whether setFrequency() takes \a freq (the spec's rule); one it does not take leaves the frequency as
     /// it was, and a type without a frequency takes none.
-    virtual bool acceptsFrequency(const double freq) const;
+    bool acceptsFrequency(const double freq) const;
 
     /// Sets the phase delay to \a delay (ParamId::Delay), as its spec takes it.
-    virtual void setDelay(const double delay);
+    void setDelay(const double delay);
 
     /**
      * \brief Returns the list of editable properties this element exposes in the ElementEditor.

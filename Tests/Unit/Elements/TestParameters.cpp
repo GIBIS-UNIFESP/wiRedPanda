@@ -6,12 +6,20 @@
 #include <limits>
 #include <memory>
 
+#include <QAudioOutput>
+#include <QAudioSink>
+#include <QDataStream>
+#include <QFile>
 #include <QHash>
 #include <QMetaEnum>
+#include <QTemporaryDir>
 #include <QTest>
 
+#include "App/Core/Common.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementTypeDescriptor.h"
+#include "App/Element/GraphicElements/AudioBox.h"
+#include "App/Element/GraphicElements/Buzzer.h"
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/Display7.h"
 #include "App/Element/GraphicElements/InputButton.h"
@@ -19,10 +27,16 @@
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
+#include "App/Element/GraphicElements/ToneGenerator.h"
 #include "App/Element/Parameters.h"
+#include "App/IO/SerializationContext.h"
+#include "App/Versions.h"
 #include "App/Wiring/Port.h"
 
 namespace ParametersTestDetail {
+
+/// The float nearest to 0.1, as a double.
+constexpr double kNearestFloatToATenth = 0.100000001490116119384765625;
 
 /// Returns \a value as text: a string quoted, a bit array by its size and the bits set.
 QString text(const ParamValue &value)
@@ -112,6 +126,8 @@ void TestParameters::testEachTypeHasTheParametersOfItsSchema_data()
         {ElementType::Display7, {"Colour \"Red\" color"}},
         {ElementType::Display14, {"Colour \"Red\" color"}},
         {ElementType::Display16, {"Colour \"Red\" color"}},
+        {ElementType::Buzzer, {"Frequency 1047 frequency", "Volume 0.34999999403953552 volume"}},
+        {ElementType::AudioBox, {"AudioFile \":/Components/Output/Audio/wiredpanda.wav\" audiobox", "Volume 0.5 volume"}},
     };
 
     const QMetaEnum metaEnum = QMetaEnum::fromType<ElementType>();
@@ -360,4 +376,94 @@ void TestParameters::testAColourIsAnyNameAndTheLedOffersItWithOneInput()
     gate->setColor(QStringLiteral("Red"));
     QVERIFY(!gate->hasColors());
     QCOMPARE(gate->color(), QString());
+}
+
+// --- The audio outputs ---
+
+void TestParameters::testAnAudioOutputsFrequencyFileAndVolumeAreItsRules()
+{
+    Buzzer buzzer;
+
+    // A frequency is finite and positive; one it does not take leaves the frequency as it was
+    QVERIFY(buzzer.setParam(ParamId::Frequency, 440.0));
+    QCOMPARE(buzzer.frequency(), 440.0);
+    for (const double refused : {0.0, -5.0, std::numeric_limits<double>::quiet_NaN(),
+                                 std::numeric_limits<double>::infinity()}) {
+        QVERIFY(!buzzer.acceptsFrequency(refused));
+        buzzer.setFrequency(refused);
+        QCOMPARE(buzzer.frequency(), 440.0);
+    }
+    QVERIFY(buzzer.acceptsFrequency(1.0e9));
+
+    // A volume is any value, at a float's precision: the nearest float to 0.1, written out, since i386's x87 can fold
+    // static_cast<double>(0.1F) at a wider precision to 0.1 itself
+    QVERIFY(buzzer.setParam(ParamId::Volume, 0.1));
+    QCOMPARE(buzzer.param<double>(ParamId::Volume), kNearestFloatToATenth);
+    QCOMPARE(buzzer.volume(), 0.1F);
+
+    // A sound file's path is kept whether or not its file is there; an empty one changes nothing
+    AudioBox box;
+    box.setAudio(QString());
+    QCOMPARE(box.audio(), QString::fromLatin1(AudioBox::kDefaultAudioPath));
+    const QString gone = QStringLiteral("/nonexistent/wiredpanda/gone.wav");
+    box.setAudio(gone);
+    QCOMPARE(box.param<QString>(ParamId::AudioFile), gone);
+    QCOMPARE(box.externalFiles(), QStringList{gone});
+    box.setVolume(0.75F);
+    QCOMPARE(box.volume(), 0.75F);
+
+    // With an output device, a new frequency and volume reach it
+    if (auto *tone = buzzer.findChild<ToneGenerator *>()) {
+        buzzer.setFrequency(880.0);
+        QCOMPARE(tone->frequency(), 880.0);
+        buzzer.setVolume(0.2F);
+        QCOMPARE(buzzer.findChild<QAudioSink *>()->volume(), static_cast<qreal>(buzzer.volume()));
+    }
+    if (auto *output = box.findChild<QAudioOutput *>()) {
+        box.setVolume(0.3F);
+        QCOMPARE(output->volume(), 0.3F);
+    }
+
+    // A type without them has none and takes none
+    const std::unique_ptr<Element> gate(ElementFactory::buildElement(ElementType::And));
+    gate->setAudio(gone);
+    gate->setVolume(0.5F);
+    QCOMPARE(gate->audio(), QString());
+    QCOMPARE(gate->volume(), 0.0F);
+}
+
+void TestParameters::testAnAudioBoxReadsItsFileAgainOnEveryLoad()
+{
+    // A snapshot restored with the path the box has reads its file again: a sound whose file has gone since is
+    // reported, not taken as loaded
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath(QStringLiteral("sound.wav"));
+    QFile file(path);
+    QVERIFY(file.open(QIODevice::WriteOnly));
+    file.write("DUMMY AUDIO DATA");
+    file.close();
+
+    AudioBox box;
+    box.setAudio(path);
+    box.reportFailedFiles();
+
+    QByteArray snapshot;
+    QDataStream out(&snapshot, QIODevice::WriteOnly);
+    box.save(out, {.purpose = SerializationPurpose::InMemorySnapshot});
+    QVERIFY(QFile::remove(path));
+
+    QDataStream in(snapshot);
+    QHash<quint64, Port *> portMap;
+    SerializationContext context = {portMap, FormatRev::current, SerializationPurpose::InMemorySnapshot, {}};
+    box.load(in, context);
+    QCOMPARE(box.audio(), path);
+
+    QString message;
+    try {
+        box.reportFailedFiles();
+    } catch (const Pandaception &e) {
+        message = QString::fromUtf8(e.what());
+    }
+    QVERIFY2(message.contains(QStringLiteral("sound.wav")), qPrintable(message));
 }

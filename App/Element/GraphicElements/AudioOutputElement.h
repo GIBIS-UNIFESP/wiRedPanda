@@ -8,15 +8,16 @@
 #pragma once
 
 #include "App/Element/Element.h"
+#include "App/Element/Parameters.h"
 
 /**
  * \class AudioOutputElement
  * \brief Abstract base for single-input audio output elements.
  *
  * \details Centralises the hardware-detection pattern, shared state
- * (m_isPlaying, m_muted, m_volume, m_hasOutputDevice), and the common
- * implementations of refresh(), isPlaying(), isMuted(), volume(),
- * mute(), setVolume(), play(), and stop().
+ * (m_isPlaying, m_muted, m_hasOutputDevice), the volume's spec (volumeSpec()),
+ * and the common implementations of refresh(), isPlaying(), isMuted(),
+ * mute(), play(), and stop().
  *
  * Concrete subclasses implement the four pure-virtual hardware hooks:
  * startAudio(), stopAudio(), applyVolume(), and applyMute().
@@ -29,18 +30,18 @@ class AudioOutputElement : public Element
     friend class TestBuzzer;
 
 public:
-    /// Default playback volume. Single source of truth: used by the constructor's
-    /// initialVolume default and serialization's default-elision checks. Buzzer
-    /// passes its own lower kDefaultVolume instead.
+    /// Default playback volume. Single source of truth: used by the audio box's
+    /// volume spec and serialization's default-elision checks. Buzzer has its own
+    /// lower kDefaultVolume instead.
     static constexpr float kDefaultVolume = 0.5f;
+
+    /// Returns the volume's spec (ParamId::Volume, "volume") with default \a defaultVolume: any value is taken at a
+    /// float's precision.
+    static ParamSpec volumeSpec(float defaultVolume);
 
     /// \param type Concrete audio element type, forwarded to the Element base.
     /// \param parent Optional parent item.
-    /// \param initialVolume lets a subclass set its own volume default in one write --
-    /// a derived class cannot member-initialize a base's field, and a ctor-body
-    /// assignment would write m_volume twice per construction.
-    explicit AudioOutputElement(ElementType type, QGraphicsItem *parent = nullptr,
-                                float initialVolume = kDefaultVolume);
+    explicit AudioOutputElement(ElementType type, QGraphicsItem *parent = nullptr);
 
     // --- State Queries ---
 
@@ -48,15 +49,11 @@ public:
     bool isPlaying() const;
     /// Returns \c true if audio output is muted.
     bool isMuted() const;
-    /// Returns the audio playback volume (0.0–1.0).
-    float volume() const override;
 
     // --- Playback Control ---
 
     /// Mutes or unmutes audio according to \a mute.
     void mute(const bool mute = true);
-    /// Sets the audio playback volume to \a vol (0.0–1.0).
-    void setVolume(float vol) override;
 
     /// Refreshes the visual appearance based on the current input state.
     void refresh() override;
@@ -68,14 +65,16 @@ protected:
     virtual void startAudio() = 0;
     /// Stops hardware playback (called from stop() when m_hasOutputDevice is true).
     virtual void stopAudio() = 0;
-    /// Applies the current m_volume to the hardware backend.
+    /// Applies the current volume() to the hardware backend.
     virtual void applyVolume() = 0;
     /// Applies the current m_muted state to the hardware backend.
     virtual void applyMute() = 0;
 
+    /// Applies a new volume to the hardware backend.
+    void parameterChanged(ParamId id, const ParamValue &previous) override;
+
     // --- Shared state (accessible to derived classes) ---
 
-    float m_volume; // set from the ctor's initialVolume (one source, one write)
     bool m_hasOutputDevice = false;
     bool m_isPlaying = false;
     bool m_muted = false;

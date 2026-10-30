@@ -655,12 +655,12 @@ int Element::colorNameToIndex(const QString &color)
 
 void Element::setAudio(const QString &audio)
 {
-    Q_UNUSED(audio)
+    setParam(ParamId::AudioFile, audio);
 }
 
 QString Element::audio() const
 {
-    return {};
+    return hasParam(ParamId::AudioFile) ? param<QString>(ParamId::AudioFile) : QString();
 }
 
 bool Element::hasFrequency() const
@@ -695,11 +695,13 @@ bool Element::hasVolume() const
 
 float Element::volume() const
 {
-    return 0.0f;
+    // The spec keeps a float's precision, so narrowing it back is exact
+    return hasParam(ParamId::Volume) ? static_cast<float>(param<double>(ParamId::Volume)) : 0.0f;
 }
 
-void Element::setVolume(float)
+void Element::setVolume(const float vol)
 {
+    setParam(ParamId::Volume, static_cast<double>(vol));
 }
 
 QList<PropertyDescriptor> Element::editableProperties() const
