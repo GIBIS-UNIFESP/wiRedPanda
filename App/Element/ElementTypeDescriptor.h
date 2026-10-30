@@ -14,6 +14,7 @@
 #include <QStringList>
 
 #include "App/Core/Enums.h"
+#include "App/Element/Parameters.h"
 
 /**
  * \struct ElementTypeDescriptor
@@ -42,6 +43,10 @@ struct ElementTypeDescriptor {
     const char *titleText = nullptr;     ///< Untranslated title shown in the element palette (QT_TRANSLATE_NOOP).
     const char *translatedName = nullptr; ///< Untranslated element name used for tooltips (QT_TRANSLATE_NOOP).
     const char *trContext = nullptr;     ///< Translation context string for QCoreApplication::translate().
+
+    // --- Parameters ---
+
+    QList<ParamSpec> parameters; ///< The type's parameters (its schema), each element holding a value of each.
 
     // --- Port configuration ---
 
