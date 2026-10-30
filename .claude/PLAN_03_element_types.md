@@ -253,13 +253,20 @@ In build order; each step's pitfalls from the branch follow it.
 Before any presenter replaces painting, goldens pin every type in all sixteen orientations and every picture state:
 gates at 2 and 8 inputs, on and off, every LED colour and code, display colours and segment patterns, every rotary
 count, Mux, Demux and truth-table counts, node modes and signal colours, audio playing, a custom PNG and SVG, an IC from
-a file and embedded. A text golden holds the bounds, pivot, item transform, picture and drawing children; one PNG atlas
-per type holds unselected and selected rows; memory types in both themes; about 4.1 MB in all. Rows plan 1's
-port-layout golden already pins (gate counts 3 to 7) stay out of the atlases.
+a file and embedded. A text golden holds the bounds, pivot, whole item transform (rotation and flips), picture and
+drawing children; one PNG atlas per type holds unselected and selected rows; memory types in both themes; about 4.5 MB
+in all. Rows plan 1's port-layout golden already pins (gate counts 3 to 7) stay out of the atlases, and so do the ports
+and the label, which plan 1's port-layout and label goldens pin: on `master` both are child items of the element.
 
-- The memory pictures' text is masked by its own glyph ink (each `<text>` drawn alone, upright at its transformed
-  centre, dilated by 2 px), and a Text's bounds beyond its picture are masked; the masks are checked to hold every
-  label.
+- The memory pictures' letters are outlines since plan 2 (P2.92), alike on every platform, so they are compared like
+  every other pixel; the branch masked each `<text>` by its own glyph ink. A Text's cell is its picture, and all of it
+  but the picture's inside, inset by the selection's corner radius and 2 px, is masked: its bounds hold its hint and
+  its label, so the selection outline over them falls where the font puts it, on any side of the picture. Checked by
+  tripling the hint's and the labels' font with the hint painted, against goldens made at the normal size.
+- Debian's 32-bit x86 Qt rasterises with x87 floating point, which rounds one antialiased pixel per Mux and Demux cell
+  (their round-joined corner) apart from every 64-bit build, the same Qt 6.8.2 on amd64 included. Those atlases have
+  their own goldens in `BodySnapshot/i386/`, read only there and compared as exactly; a check keeps each one a case's
+  atlas that still differs from the shared one. Shared goldens are regenerated on a 64-bit platform.
 - Pictures with a blur filter (`feGaussianBlur`: the clock, LED, switch, constant 1 and buzzer cases on the branch)
   render alike from Qt 6.8 on, so every pixel of them is compared. Before 6.8 they differ by up to 12 per channel, and
   the branch, whose CI ran 6.7.3, masked them there; the 6.8 floor leaves no Qt that needs the masks.
