@@ -37,7 +37,7 @@ void ICSimulation::initialize(IC &ic, const bool keepOutputs)
 
     // Record boundary input elements (driven externally, should not run updateLogic)
     for (auto *port : std::as_const(ic.m_internalInputs)) {
-        if (auto *elm = port->graphicElement()) {
+        if (auto *elm = port->element()) {
             ic.m_boundaryInputElements.insert(elm);
         }
     }
@@ -60,7 +60,7 @@ void ICSimulation::initialize(IC &ic, const bool keepOutputs)
 void ICSimulation::pushInputsToBoundary(IC &ic)
 {
     for (int i = 0; i < ic.inputSize() && i < ic.m_internalInputs.size(); ++i) {
-        auto *boundaryElement = ic.m_internalInputs.at(i)->graphicElement();
+        auto *boundaryElement = ic.m_internalInputs.at(i)->element();
         if (boundaryElement) {
             boundaryElement->setOutputValue(0, ic.simInputs().at(i));
         }
@@ -70,7 +70,7 @@ void ICSimulation::pushInputsToBoundary(IC &ic)
 void ICSimulation::pullOutputsFromBoundary(IC &ic)
 {
     for (int i = 0; i < ic.outputSize() && i < ic.m_internalOutputs.size(); ++i) {
-        auto *boundaryElement = ic.m_internalOutputs.at(i)->graphicElement();
+        auto *boundaryElement = ic.m_internalOutputs.at(i)->element();
         if (boundaryElement) {
             ic.setOutputValue(i, boundaryElement->outputValue(0));
         }

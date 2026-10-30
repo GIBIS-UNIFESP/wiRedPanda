@@ -138,8 +138,8 @@ void TestConnectionHandler::testConnectElementsResolvesPortByLabel()
     const int a = addAnd(scene);
     const int b = addAnd(scene);
 
-    auto *sourceElm = dynamic_cast<GraphicElement *>(scene->itemById(a));
-    auto *targetElm = dynamic_cast<GraphicElement *>(scene->itemById(b));
+    auto *sourceElm = dynamic_cast<Element *>(scene->itemById(a));
+    auto *targetElm = dynamic_cast<Element *>(scene->itemById(b));
     sourceElm->outputPort(0)->setName("Q");
     targetElm->inputPort(0)->setName("A");
 
@@ -175,7 +175,7 @@ void TestConnectionHandler::testConnectElementsCreatesRealConnection()
     auto *scene = window.currentTab()->scene();
     const int a = addAnd(scene);
     const int b = addAnd(scene);
-    auto *targetElm = dynamic_cast<GraphicElement *>(scene->itemById(b));
+    auto *targetElm = dynamic_cast<Element *>(scene->itemById(b));
 
     const QJsonObject params{{"source_id", a}, {"target_id", b},
                              {"source_port", 0}, {"target_port", 0}};
@@ -239,7 +239,7 @@ void TestConnectionHandler::testDisconnectElementsSkipsInProgressConnection()
     auto *scene = window.currentTab()->scene();
     const int a = addAnd(scene);
     const int b = addAnd(scene);
-    auto *targetElm = dynamic_cast<GraphicElement *>(scene->itemById(b));
+    auto *targetElm = dynamic_cast<Element *>(scene->itemById(b));
 
     // A wire with no ports set at all -- the loop must skip it, not crash on it, while still
     // finding and removing the real connection.
@@ -263,7 +263,7 @@ void TestConnectionHandler::testDisconnectElementsMatchesReversedSourceTarget()
     auto *scene = window.currentTab()->scene();
     const int a = addAnd(scene);
     const int b = addAnd(scene);
-    auto *targetElm = dynamic_cast<GraphicElement *>(scene->itemById(b));
+    auto *targetElm = dynamic_cast<Element *>(scene->itemById(b));
 
     const QJsonObject connectParams{{"source_id", a}, {"target_id", b},
                                     {"source_port", 0}, {"target_port", 0}};
@@ -284,7 +284,7 @@ void TestConnectionHandler::testDisconnectElementsRemovesRealConnection()
     auto *scene = window.currentTab()->scene();
     const int a = addAnd(scene);
     const int b = addAnd(scene);
-    auto *targetElm = dynamic_cast<GraphicElement *>(scene->itemById(b));
+    auto *targetElm = dynamic_cast<Element *>(scene->itemById(b));
 
     const QJsonObject connectParams{{"source_id", a}, {"target_id", b},
                                     {"source_port", 0}, {"target_port", 0}};

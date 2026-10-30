@@ -8,8 +8,8 @@
 #include <QScopeGuard>
 
 #include "App/Core/Common.h"
-#include "App/Element/GraphicElement.h"
-#include "App/Element/GraphicElementInput.h"
+#include "App/Element/Element.h"
+#include "App/Element/ElementInput.h"
 #include "App/Scene/Scene.h"
 #include "App/Simulation/Simulation.h"
 #include "App/Simulation/SimulationBlocker.h"
@@ -22,7 +22,7 @@ WaveformSimulator::WaveformSimulator(Scene *externalScene, Simulation *simulatio
 {
 }
 
-QVector<Status> WaveformSimulator::captureInputs(const QVector<GraphicElementInput *> &inputs, const int inputPorts)
+QVector<Status> WaveformSimulator::captureInputs(const QVector<ElementInput *> &inputs, const int inputPorts)
 {
     QVector<Status> oldValues(inputPorts);
     int oldIndex = 0;
@@ -38,7 +38,7 @@ QVector<Status> WaveformSimulator::captureInputs(const QVector<GraphicElementInp
     return oldValues;
 } // LCOV_EXCL_LINE -- compiler-generated QVector cleanup for an exception path captureInputs() never takes
 
-void WaveformSimulator::restoreInputs(const QVector<GraphicElementInput *> &inputs, const QVector<Status> &saved)
+void WaveformSimulator::restoreInputs(const QVector<ElementInput *> &inputs, const QVector<Status> &saved)
 {
     qCDebug(zero) << "Restoring old values to inputs, prior to simulation.";
 
@@ -99,14 +99,14 @@ void WaveformSimulator::sweep(const QVector<DolphinModelBuilder::Row> &rows, con
     // outputs plus each sequential element's edge-detection history, recursing through ICs.
     QVector<Status> liveState;
     for (auto *elm : m_externalScene->elements()) {
-        if (elm && elm->type() == GraphicElement::Type) {
+        if (elm && elm->type() == Element::Type) {
             elm->saveSimState(liveState);
         }
     }
     auto restoreLiveState = qScopeGuard([this, &liveState] {
         int cursor = 0;
         for (auto *elm : m_externalScene->elements()) {
-            if (elm && elm->type() == GraphicElement::Type) {
+            if (elm && elm->type() == Element::Type) {
                 elm->restoreSimState(liveState, cursor);
             }
         }
@@ -117,7 +117,7 @@ void WaveformSimulator::sweep(const QVector<DolphinModelBuilder::Row> &rows, con
     // prior simulation run that may have left flip-flops in a different state.
     qCDebug(zero) << "Resetting simulation state of all elements.";
     for (auto *elm : m_externalScene->elements()) {
-        if (elm && elm->type() == GraphicElement::Type) {
+        if (elm && elm->type() == Element::Type) {
             elm->resetSimState();
         }
     }
@@ -135,7 +135,7 @@ void WaveformSimulator::sweep(const QVector<DolphinModelBuilder::Row> &rows, con
                 continue;
             }
             // Each input applies the cell value its own way (e.g. a rotary ignores lows).
-            auto *input = qobject_cast<GraphicElementInput *>(descriptor.element);
+            auto *input = qobject_cast<ElementInput *>(descriptor.element);
             if (input) {
                 input->setWaveformValue(readInput(row, column), descriptor.port);
             }

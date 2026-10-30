@@ -38,7 +38,7 @@ struct ElementInfo<JKFlipFlop> {
 };
 
 JKFlipFlop::JKFlipFlop(QGraphicsItem *parent)
-    : GraphicElement(ElementType::JKFlipFlop, parent)
+    : Element(ElementType::JKFlipFlop, parent)
 {
     // Call the most-derived override explicitly (see SRFlipFlop.cpp for rationale).
     JKFlipFlop::updatePortsProperties();
@@ -116,7 +116,7 @@ void JKFlipFlop::updateLogic()
 
 void JKFlipFlop::resetSimState()
 {
-    GraphicElement::resetSimState();
+    Element::resetSimState();
     m_simLastClk = Status::Inactive;
     m_simLastJ   = Status::Active;
     m_simLastK   = Status::Active;
@@ -126,7 +126,7 @@ void JKFlipFlop::saveSimState(QVector<Status> &out) const
 {
     // Mirrors resetSimState(): the outputs via the base, then the edge-detection history, in a
     // fixed order that restoreSimState() reads back identically.
-    GraphicElement::saveSimState(out);
+    Element::saveSimState(out);
     out.append(m_simLastClk);
     out.append(m_simLastJ);
     out.append(m_simLastK);
@@ -134,7 +134,7 @@ void JKFlipFlop::saveSimState(QVector<Status> &out) const
 
 void JKFlipFlop::restoreSimState(const QVector<Status> &in, int &cursor)
 {
-    GraphicElement::restoreSimState(in, cursor);
+    Element::restoreSimState(in, cursor);
     if (cursor < in.size()) { m_simLastClk = in.at(cursor++); }
     if (cursor < in.size()) { m_simLastJ = in.at(cursor++); }
     if (cursor < in.size()) { m_simLastK = in.at(cursor++); }

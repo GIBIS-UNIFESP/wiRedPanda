@@ -75,7 +75,7 @@ struct ElementInfo<Led> {
 };
 
 Led::Led(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Led, parent)
+    : Element(ElementType::Led, parent)
 {
     // The appearance list is indexed by colorIndex(). For a 1-input LED the index is
     // m_colorIndex + input_value, where m_colorIndex is set by setColor() to the
@@ -141,7 +141,7 @@ int Led::colorIndex()
     case 4: index2 = 10 + index;                     break;
 
     default: // LCOV_EXCL_LINE
-        // Unreachable: GraphicElement::setPortSize() rejects any inputSize() request
+        // Unreachable: Element::setPortSize() rejects any inputSize() request
         // outside [minInputSize(), maxInputSize()] = [1, 4] as a no-op, so inputSize()
         // can never legitimately be anything this switch doesn't already handle.
         index2 = index; // LCOV_EXCL_LINE
@@ -172,7 +172,7 @@ QString Led::color() const
 
 void Led::save(QDataStream &stream, SerializationOptions options) const
 {
-    GraphicElement::save(stream, options);
+    Element::save(stream, options);
 
     QMap<QString, QVariant> map;
     // PortableFile streams omit the default; fresh-loaded elements start there
@@ -186,7 +186,7 @@ void Led::save(QDataStream &stream, SerializationOptions options) const
 
 void Led::load(QDataStream &stream, SerializationContext &context)
 {
-    GraphicElement::load(stream, context);
+    Element::load(stream, context);
 
     if ((VersionInfo::hasClock(context.version)) && (!VersionInfo::hasQMapFormat(context.version))) {
         // v1.1–4.0 stored color as a bare QString
@@ -221,7 +221,7 @@ void Led::updatePortsProperties()
         port->setDefaultStatus(Status::Inactive);
     }
 
-    GraphicElement::updatePortsProperties();
+    Element::updatePortsProperties();
 }
 
 void Led::setAppearance(const bool useDefaultAppearance, const QString &fileName)

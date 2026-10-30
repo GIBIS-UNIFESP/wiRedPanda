@@ -107,14 +107,14 @@ struct FetchStage16bitFixture {
 
     TestUtils::Bits readPC()
     {
-        return readMultiBitOutput(QVector<GraphicElement *>({
+        return readMultiBitOutput(QVector<Element *>({
             pc[0], pc[1], pc[2], pc[3], pc[4], pc[5], pc[6], pc[7]
         }));
     }
 
     TestUtils::Bits readInstr()
     {
-        return readMultiBitOutput(QVector<GraphicElement *>({
+        return readMultiBitOutput(QVector<Element *>({
             instruction[0], instruction[1], instruction[2], instruction[3],
             instruction[4], instruction[5], instruction[6], instruction[7],
             instruction[8], instruction[9], instruction[10], instruction[11],
@@ -124,28 +124,28 @@ struct FetchStage16bitFixture {
 
     TestUtils::Bits readOpCode()
     {
-        return readMultiBitOutput(QVector<GraphicElement *>({
+        return readMultiBitOutput(QVector<Element *>({
             opCode[0], opCode[1], opCode[2], opCode[3], opCode[4]
         }));
     }
 
     TestUtils::Bits readDestReg()
     {
-        return readMultiBitOutput(QVector<GraphicElement *>({
+        return readMultiBitOutput(QVector<Element *>({
             destReg[0], destReg[1], destReg[2], destReg[3], destReg[4]
         }));
     }
 
     TestUtils::Bits readSrcBits()
     {
-        return readMultiBitOutput(QVector<GraphicElement *>({
+        return readMultiBitOutput(QVector<Element *>({
             srcBits[0], srcBits[1], srcBits[2], srcBits[3], srcBits[4], srcBits[5]
         }));
     }
 
     TestUtils::Bits readRawInstr()
     {
-        return readMultiBitOutput(QVector<GraphicElement *>({
+        return readMultiBitOutput(QVector<Element *>({
             rawInstr[0], rawInstr[1], rawInstr[2], rawInstr[3],
             rawInstr[4], rawInstr[5], rawInstr[6], rawInstr[7],
             rawInstr[8], rawInstr[9], rawInstr[10], rawInstr[11],

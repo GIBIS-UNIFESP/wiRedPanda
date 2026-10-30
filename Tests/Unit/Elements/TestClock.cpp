@@ -388,7 +388,7 @@ void TestClock::testLoadVersionOld()
 {
     // NOTE: Format Mismatch Bug
     // The current save() writes QMap<QString,QVariant> (v4.1+) but old load (v1.1-4.0)
-    // expects individual fields via GraphicElement::loadOldFormat().
+    // expects individual fields via Element::loadOldFormat().
     // Attempting to save with current code and load with version 3.0 causes format mismatch.
     //
     // This test verifies:

@@ -7,13 +7,13 @@
 
 #pragma once
 
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 
 /**
  * \class Nor
  * \brief Graphical representation of a NOR gate (2–8 inputs, 1 output).
  */
-class Nor : public GraphicElement
+class Nor : public Element
 {
     Q_OBJECT
 

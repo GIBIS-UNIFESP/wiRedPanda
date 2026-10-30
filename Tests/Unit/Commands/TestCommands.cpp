@@ -46,7 +46,7 @@
 #include "Tests/Common/TestUtils.h"
 
 namespace {
-/// Test-only accessor: GraphicElement::pixmap() is protected, but a subclass may read it for its
+/// Test-only accessor: Element::pixmap() is protected, but a subclass may read it for its
 /// own instances. This exposes the currently displayed pixmap so flip-variant rendering can be
 /// asserted without widening the production API.
 template <typename Element>
@@ -96,7 +96,7 @@ private:
 /// Whether \a pos lies off the half grid elements snap to.
 bool offGrid(const QPointF &pos)
 {
-    return GraphicElement::snapToGrid(pos) != pos;
+    return Element::snapToGrid(pos) != pos;
 }
 
 /**
@@ -219,7 +219,7 @@ void TestCommands::testRotateCommand()
     const int initialRotation = static_cast<int>(andGate->rotation());
 
     // Rotate 90 degrees
-    QList<GraphicElement *> elements = scene->elements().toList();
+    QList<Element *> elements = scene->elements().toList();
     scene->receiveCommand(new RotateCommand(elements, 90, scene));
 
     QCOMPARE(static_cast<int>(andGate->rotation()), (initialRotation + 90) % 360);
@@ -248,7 +248,7 @@ void TestCommands::testMoveCommand()
     const QPointF posAfterAdd = andGate->pos();
 
     // Store old position and move the element
-    QList<GraphicElement *> elements = scene->elements().toList();
+    QList<Element *> elements = scene->elements().toList();
     QList<QPointF> oldPositions{posAfterAdd};
 
     // Move the element to a new position (relative offset)
@@ -292,10 +292,10 @@ void TestCommands::testFlipCommand()
     const QPointF pos2Before = gate2->pos();
 
     // Flip horizontally (axis = 0)
-    QList<GraphicElement *> elements = scene->elements().toList();
+    QList<Element *> elements = scene->elements().toList();
     scene->receiveCommand(new FlipCommand(elements, 0, scene));
 
-    // setPos() snaps to the 8px half-grid (GraphicElement::itemChange), so the elements'
+    // setPos() snaps to the 8px half-grid (Element::itemChange), so the elements'
     // actual pre-flip positions are (104,104)/(200,104), not the raw (100,100)/(200,100)
     // passed to setPos() above. FlipCommand mirrors x about [xmin,xmax] = [104,200] and
     // leaves y untouched: gate1 104 -> 104+(200-104) = 200, gate2 200 -> 104+(200-200) = 104.
@@ -405,7 +405,7 @@ void TestCommands::testFlipNonRotatablePorts()
     const QPointF buttonPos = button->pos();
 
     // Horizontal flip: the right-edge port (x=64) moves to the left edge (x=0).
-    scene->receiveCommand(new FlipCommand(QList<GraphicElement *>{button}, 0, scene));
+    scene->receiveCommand(new FlipCommand(QList<Element *>{button}, 0, scene));
     QVERIFY2(button->transform().isIdentity(), "Non-rotatable element must not get an item flip transform");
     QCOMPARE(button->pos(), buttonPos); // lone element on the grid: the position mirror is a no-op
     const QPointF portFlipped = button->outputPort(0)->scenePos();
@@ -417,7 +417,7 @@ void TestCommands::testFlipNonRotatablePorts()
     QCOMPARE(button->outputPort(0)->scenePos(), portBase);
 
     // Vertical flip: the single port sits on the vertical centre line, so it does not move.
-    scene->receiveCommand(new FlipCommand(QList<GraphicElement *>{button}, 1, scene));
+    scene->receiveCommand(new FlipCommand(QList<Element *>{button}, 1, scene));
     QCOMPARE(button->outputPort(0)->scenePos(), portBase);
     undoStack->undo();
 
@@ -428,7 +428,7 @@ void TestCommands::testFlipNonRotatablePorts()
     display->setPos(300, 100);
 
     const QPointF leftPinBase = display->inputPort(0)->scenePos(); // left column (x=0)
-    scene->receiveCommand(new FlipCommand(QList<GraphicElement *>{display}, 0, scene));
+    scene->receiveCommand(new FlipCommand(QList<Element *>{display}, 0, scene));
     QVERIFY2(display->transform().isIdentity(), "Non-rotatable display must not get an item flip transform");
     QVERIFY2(display->inputPort(0)->scenePos().x() > leftPinBase.x(),
              "Horizontal flip must move a left-column display pin to the right");
@@ -511,7 +511,7 @@ void TestCommands::testChangeInputSizeCommand()
     QCOMPARE(originalInputSize, 2);
 
     // Change to 4 inputs
-    QList<GraphicElement *> elements{andGate};
+    QList<Element *> elements{andGate};
     scene->receiveCommand(new ChangePortSizeCommand(elements, 4, scene, true));
 
     QCOMPARE(andGate->inputSize(), 4);
@@ -624,8 +624,8 @@ void TestCommands::testConnectionPreservation()
         QVERIFY2(startPort != nullptr, "Connection missing start port after undo");
         QVERIFY2(endPort != nullptr, "Connection missing end port after undo");
 
-        auto *startElm = startPort->graphicElement();
-        auto *endElm = endPort->graphicElement();
+        auto *startElm = startPort->element();
+        auto *endElm = endPort->element();
         QVERIFY(startElm);
         QVERIFY(endElm);
 
@@ -709,7 +709,7 @@ void TestCommands::testChangeOutputSizeCommand()
     QCOMPARE(originalOutputSize, 1);
 
     // Change to 4 outputs
-    QList<GraphicElement *> elements{truthTable};
+    QList<Element *> elements{truthTable};
     scene->receiveCommand(new ChangePortSizeCommand(elements, 4, scene, false));
 
     QCOMPARE(truthTable->outputSize(), 4);
@@ -738,7 +738,7 @@ void TestCommands::testMorphCommand()
     QCOMPARE(scene->elements().first()->elementType(), ElementType::And);
 
     // Morph to OR gate
-    QList<GraphicElement *> elements = scene->elements().toList();
+    QList<Element *> elements = scene->elements().toList();
     scene->receiveCommand(new MorphCommand(elements, ElementType::Or, scene));
 
     // After morph, should have 1 element of type OR
@@ -836,7 +836,7 @@ void TestCommands::testMorphCommandUndoPreservesConnectionAddedWhileMorphed()
 
     // Morph up to Display14 (15 inputs) — pure growth, nothing dropped.
     scene->receiveCommand(new MorphCommand({disp7}, ElementType::Display14, scene));
-    auto *disp14 = dynamic_cast<GraphicElement *>(scene->itemById(dispId));
+    auto *disp14 = dynamic_cast<Element *>(scene->itemById(dispId));
     QVERIFY(disp14 != nullptr);
     QCOMPARE(disp14->elementType(), ElementType::Display14);
     QCOMPARE(disp14->inputSize(), 15);
@@ -853,7 +853,7 @@ void TestCommands::testMorphCommandUndoPreservesConnectionAddedWhileMorphed()
     // Undo the morph: Display7 has no port 10, so the connection can't survive.
     undoStack->undo();
 
-    auto *restored7 = dynamic_cast<GraphicElement *>(scene->itemById(dispId));
+    auto *restored7 = dynamic_cast<Element *>(scene->itemById(dispId));
     QVERIFY(restored7 != nullptr);
     QCOMPARE(restored7->elementType(), ElementType::Display7);
     QCOMPARE(restored7->inputSize(), 8);
@@ -862,12 +862,12 @@ void TestCommands::testMorphCommandUndoPreservesConnectionAddedWhileMorphed()
     // Redo: back to Display14 — the connection must be restored, not lost forever.
     undoStack->redo();
 
-    auto *redisp14 = dynamic_cast<GraphicElement *>(scene->itemById(dispId));
+    auto *redisp14 = dynamic_cast<Element *>(scene->itemById(dispId));
     QVERIFY(redisp14 != nullptr);
     QCOMPARE(redisp14->elementType(), ElementType::Display14);
     QCOMPARE(redisp14->inputSize(), 15);
     QVERIFY(!redisp14->inputPort(10)->connections().isEmpty());
-    QCOMPARE(redisp14->inputPort(10)->connections().constFirst()->startPort()->graphicElement()->id(), swId);
+    QCOMPARE(redisp14->inputPort(10)->connections().constFirst()->startPort()->element()->id(), swId);
 }
 
 void TestCommands::testSplitCommandRedoAbandonedWhenUpstreamMissing()
@@ -997,7 +997,7 @@ void TestCommands::testUpdateCommand()
     QCOMPARE(andGate->label(), newLabel);
 
     // Create update command
-    QList<GraphicElement *> elements{andGate};
+    QList<Element *> elements{andGate};
     scene->receiveCommand(new UpdateCommand(elements, oldData, scene));
 
     // Verify label is still the new one
@@ -1033,7 +1033,7 @@ void TestCommands::testUpdateCommandPropertyEditDoesNotRebuild()
     andGate->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
 
     andGate->setLabel("Renamed"); // unrelated, non-structural property edit
-    scene->receiveCommand(new UpdateCommand(QList<GraphicElement *>{andGate}, oldData, scene));
+    scene->receiveCommand(new UpdateCommand(QList<Element *>{andGate}, oldData, scene));
 
     sim->update(); // a rebuild requested by the command would run here
     QVERIFY(!probe.rebuilt());
@@ -1076,7 +1076,7 @@ void TestCommands::testUpdateCommandWirelessLabelRewiresChannel()
     Serialization::writePandaHeader(stream);
     rx->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
     rx->setLabel("B");
-    scene->receiveCommand(new UpdateCommand(QList<GraphicElement *>{rx}, oldData, scene));
+    scene->receiveCommand(new UpdateCommand(QList<Element *>{rx}, oldData, scene));
 
     sim->update();
     QCOMPARE(rx->outputValue(0), Status::Inactive); // now listening on channel "B"
@@ -1108,7 +1108,7 @@ void TestCommands::testUpdateCommandNonWirelessNodeEditKeepsFastPath()
     Serialization::writePandaHeader(stream);
     node->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
     node->setLabel("junction-42"); // decorative label on a None-mode node — not a channel
-    scene->receiveCommand(new UpdateCommand(QList<GraphicElement *>{node}, oldData, scene));
+    scene->receiveCommand(new UpdateCommand(QList<Element *>{node}, oldData, scene));
 
     sim->update(); // a rebuild requested by the command would run here
     QVERIFY(!probe.rebuilt()); // no Simulation::initialize()
@@ -1135,7 +1135,7 @@ void TestCommands::testUpdateCommandKeepsAWiredPresetOnItsWire()
     Serialization::writePandaHeader(stream);
     flipFlop->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
     flipFlop->setLabel("FF");
-    scene->receiveCommand(new UpdateCommand(QList<GraphicElement *>{flipFlop}, oldData, scene));
+    scene->receiveCommand(new UpdateCommand(QList<Element *>{flipFlop}, oldData, scene));
     QCOMPARE(flipFlop->inputPort(2)->status(), Status::Inactive);
 
     scene->undoStack()->undo();
@@ -1198,7 +1198,7 @@ void TestCommands::testMorphNotToNodeAdjustsPosition()
     const int id = notGate->id();
 
     scene->receiveCommand(new MorphCommand({notGate}, ElementType::Node, scene));
-    auto *node = dynamic_cast<GraphicElement *>(scene->itemById(id));
+    auto *node = dynamic_cast<Element *>(scene->itemById(id));
     QVERIFY(node);
     QCOMPARE(node->elementType(), ElementType::Node);
     QCOMPARE(node->pos(), QPointF(116, 116));
@@ -1215,7 +1215,7 @@ void TestCommands::testMorphNodeToNotAdjustsPosition()
     const int id = node->id();
 
     scene->receiveCommand(new MorphCommand({node}, ElementType::Not, scene));
-    auto *notGate = dynamic_cast<GraphicElement *>(scene->itemById(id));
+    auto *notGate = dynamic_cast<Element *>(scene->itemById(id));
     QVERIFY(notGate);
     QCOMPARE(notGate->elementType(), ElementType::Not);
     QCOMPARE(notGate->pos(), QPointF(84, 84));
@@ -1268,7 +1268,7 @@ void TestCommands::testMorphDropsAndRestoresOutputConnection()
     const int andId = andGate->id();
 
     scene->receiveCommand(new MorphCommand({andGate}, ElementType::Display7, scene));
-    auto *disp7 = dynamic_cast<GraphicElement *>(scene->itemById(andId));
+    auto *disp7 = dynamic_cast<Element *>(scene->itemById(andId));
     QVERIFY(disp7);
     QCOMPARE(disp7->elementType(), ElementType::Display7);
     QCOMPARE(disp7->outputSize(), 0);
@@ -1276,12 +1276,12 @@ void TestCommands::testMorphDropsAndRestoresOutputConnection()
     QVERIFY(led->inputPort(0)->connections().isEmpty());
 
     undoStack->undo();
-    auto *restoredAnd = dynamic_cast<GraphicElement *>(scene->itemById(andId));
+    auto *restoredAnd = dynamic_cast<Element *>(scene->itemById(andId));
     QVERIFY(restoredAnd);
     QCOMPARE(restoredAnd->elementType(), ElementType::And);
     QVERIFY2(!led->inputPort(0)->connections().isEmpty(),
               "Undoing the morph must restore the dropped output connection");
-    QCOMPARE(led->inputPort(0)->connections().constFirst()->startPort()->graphicElement()->id(), andId);
+    QCOMPARE(led->inputPort(0)->connections().constFirst()->startPort()->element()->id(), andId);
 }
 
 void TestCommands::testMorphUndoSkipsRestoringConnectionToDeletedPeer()
@@ -1320,7 +1320,7 @@ void TestCommands::testMorphUndoSkipsRestoringConnectionToDeletedPeer()
     }
     QVERIFY2(!threw, "Undo must skip restoring a connection whose peer element is gone, not throw");
 
-    auto *restoredAnd = dynamic_cast<GraphicElement *>(scene->itemById(andId));
+    auto *restoredAnd = dynamic_cast<Element *>(scene->itemById(andId));
     QVERIFY(restoredAnd);
     QCOMPARE(restoredAnd->elementType(), ElementType::And);
 }
@@ -1463,13 +1463,13 @@ void TestCommands::testOffGridElementRestoresExactly()
     WorkSpace workspace;
     TestUtils::loadCircuit(workspace, path);
     Scene *scene = workspace.scene();
-    const auto element = [scene, elementId = id] { return dynamic_cast<GraphicElement *>(scene->itemById(elementId)); };
+    const auto element = [scene, elementId = id] { return dynamic_cast<Element *>(scene->itemById(elementId)); };
     QVERIFY(element());
     const QPointF start = element()->pos();
     QVERIFY(offGrid(start));
 
     if (command == "move") {
-        element()->setPos(GraphicElement::snapToGrid(start + QPointF(40, 24)));
+        element()->setPos(Element::snapToGrid(start + QPointF(40, 24)));
         scene->receiveCommand(new MoveCommand({element()}, {start}, scene));
     } else if (command == "rotate") {
         scene->receiveCommand(new RotateCommand({element()}, 90, scene));
@@ -1604,7 +1604,7 @@ void TestCommands::testMorphUndoRestoresWhatTheNewTypeLacks()
     const int id = clock->id();
 
     scene->receiveCommand(new MorphCommand({clock}, ElementType::InputSwitch, scene));
-    QCOMPARE(dynamic_cast<GraphicElement *>(scene->itemById(id))->elementType(), ElementType::InputSwitch);
+    QCOMPARE(dynamic_cast<Element *>(scene->itemById(id))->elementType(), ElementType::InputSwitch);
 
     scene->undoStack()->undo();
     auto *restored = dynamic_cast<Clock *>(scene->itemById(id));
@@ -1616,8 +1616,8 @@ void TestCommands::testMorphUndoRestoresWhatTheNewTypeLacks()
 
     // Redo morphs the restored clock again
     scene->undoStack()->redo();
-    QCOMPARE(dynamic_cast<GraphicElement *>(scene->itemById(id))->elementType(), ElementType::InputSwitch);
-    QCOMPARE(dynamic_cast<GraphicElement *>(scene->itemById(id))->label(), QString("clk"));
+    QCOMPARE(dynamic_cast<Element *>(scene->itemById(id))->elementType(), ElementType::InputSwitch);
+    QCOMPARE(dynamic_cast<Element *>(scene->itemById(id))->label(), QString("clk"));
 }
 
 void TestCommands::testMorphUndoRestoresInputsTheNewTypeCannotHave()
@@ -1641,10 +1641,10 @@ void TestCommands::testMorphUndoRestoresInputsTheNewTypeCannotHave()
     const int id = andGate->id();
 
     scene->receiveCommand(new MorphCommand({andGate}, ElementType::Not, scene));
-    QCOMPARE(dynamic_cast<GraphicElement *>(scene->itemById(id))->inputSize(), 1);
+    QCOMPARE(dynamic_cast<Element *>(scene->itemById(id))->inputSize(), 1);
 
     scene->undoStack()->undo();
-    auto *restored = dynamic_cast<GraphicElement *>(scene->itemById(id));
+    auto *restored = dynamic_cast<Element *>(scene->itemById(id));
     QVERIFY(restored);
     QCOMPARE(restored->elementType(), ElementType::And);
     QCOMPARE(restored->inputSize(), 4);
@@ -1677,7 +1677,7 @@ void TestCommands::testMorphUndoWithAPictureThatIsGoneShowsTheDefault()
     scene->undoStack()->undo();
     QCOMPARE(scene->undoStack()->index(), 1);
     QCOMPARE(scene->elements().size(), 1);
-    auto *restored = dynamic_cast<GraphicElement *>(scene->itemById(id));
+    auto *restored = dynamic_cast<Element *>(scene->itemById(id));
     QCOMPARE(restored->elementType(), ElementType::InputSwitch);
     QCOMPARE(restored->externalFiles(), QStringList{png});
     const InputSwitch fresh;
@@ -1800,14 +1800,14 @@ void TestCommands::testUndoWithAnICFileThatIsGoneLoadsTheContentItHad()
         QFAIL(qPrintable(QString("the undo threw: %1").arg(e.what())));
     }
     QCOMPARE(scene->undoStack()->index(), 1);
-    auto *restored = qobject_cast<IC *>(dynamic_cast<GraphicElement *>(scene->itemById(id)));
+    auto *restored = qobject_cast<IC *>(dynamic_cast<Element *>(scene->itemById(id)));
     QVERIFY(restored);
     QCOMPARE(QFileInfo(restored->file()), QFileInfo(outer));
     QCOMPARE(restored->inputSize(), inputs);
     QCOMPARE(restored->outputSize(), outputs);
     QCOMPARE(restored->internalElements().size(), internalElements);
     const auto &restoredElements = restored->internalElements();
-    const auto found = std::find_if(restoredElements.cbegin(), restoredElements.cend(), [](GraphicElement *element) {
+    const auto found = std::find_if(restoredElements.cbegin(), restoredElements.cend(), [](Element *element) {
         return element->elementType() == ElementType::IC;
     });
     QVERIFY(found != restoredElements.cend());
@@ -1826,7 +1826,7 @@ void TestCommands::testUndoWithAnICFileThatIsGoneLoadsTheContentItHad()
 namespace TestCommandsHelpers {
 
 // A snapshot of \a elements whose last element's bytes stop halfway, so its read throws after the others have read
-QByteArray snapshotCutShort(const QList<GraphicElement *> &elements)
+QByteArray snapshotCutShort(const QList<Element *> &elements)
 {
     QByteArray data;
     QDataStream stream(&data, QIODevice::WriteOnly);
@@ -2002,7 +2002,7 @@ void TestCommands::testMorphUndoThatDoesNotReadChangesNothing()
     const int count = scene->undoStack()->count();
 
     QVERIFY(!failure([scene] { scene->undo(); }).isEmpty());
-    auto *element = dynamic_cast<GraphicElement *>(scene->itemById(id));
+    auto *element = dynamic_cast<Element *>(scene->itemById(id));
     QVERIFY(element);
     QCOMPARE(element->elementType(), ElementType::Or);
     QCOMPARE(scene->elements().size(), 1);
@@ -2198,14 +2198,14 @@ void TestCommands::testStepWithAFileGoneKeepsTheSceneWhole()
     int id = 0;
     // An element of the file's kind on the scene, whose file is set by setFile()
     const auto addElement = [&] {
-        GraphicElement *element = (file == "picture") ? static_cast<GraphicElement *>(new And())
-            : (file == "sound")                         ? static_cast<GraphicElement *>(new AudioBox())
-                                                        : static_cast<GraphicElement *>(new IC());
+        Element *element = (file == "picture") ? static_cast<Element *>(new And())
+            : (file == "sound")                         ? static_cast<Element *>(new AudioBox())
+                                                        : static_cast<Element *>(new IC());
         scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{element}, scene));
         id = element->id();
         return element;
     };
-    const auto setFile = [&](GraphicElement *element) {
+    const auto setFile = [&](Element *element) {
         if (file == "picture") {
             element->setAppearance(false, path);
         } else if (file == "sound") {
@@ -2215,7 +2215,7 @@ void TestCommands::testStepWithAFileGoneKeepsTheSceneWhole()
         }
     };
     // A change to the element: the file dropped, or, for an IC, which always has its file, its label
-    const auto clearFile = [&](GraphicElement *element) {
+    const auto clearFile = [&](Element *element) {
         if (file == "picture") {
             element->setAppearance(true, {});
         } else if (file == "sound") {
@@ -2224,7 +2224,7 @@ void TestCommands::testStepWithAFileGoneKeepsTheSceneWhole()
             element->setLabel("changed");
         }
     };
-    const auto snapshot = [](GraphicElement *element) {
+    const auto snapshot = [](Element *element) {
         QByteArray data;
         QDataStream stream(&data, QIODevice::WriteOnly);
         Serialization::writePandaHeader(stream);
@@ -2235,9 +2235,9 @@ void TestCommands::testStepWithAFileGoneKeepsTheSceneWhole()
     const auto circuitWithFile = [&] {
         WorkSpace source;
         source.scene()->setContextDir(dir.path());
-        GraphicElement *element = (file == "picture") ? static_cast<GraphicElement *>(new And())
-            : (file == "sound")                         ? static_cast<GraphicElement *>(new AudioBox())
-                                                        : static_cast<GraphicElement *>(new IC());
+        Element *element = (file == "picture") ? static_cast<Element *>(new And())
+            : (file == "sound")                         ? static_cast<Element *>(new AudioBox())
+                                                        : static_cast<Element *>(new IC());
         source.scene()->addItem(element);
         if (file == "picture") {
             element->setAppearance(false, path);
@@ -2251,7 +2251,7 @@ void TestCommands::testStepWithAFileGoneKeepsTheSceneWhole()
         return ICTestHelpers::readFile(circuit);
     };
 
-    GraphicElement *element = nullptr;
+    Element *element = nullptr;
     const bool blobStep = step.startsWith("blob");
     std::tuple<int, int, int> blobShape;
     const bool undoing = step.endsWith("undo");
@@ -2323,7 +2323,7 @@ void TestCommands::testStepWithAFileGoneKeepsTheSceneWhole()
     }
     QCOMPARE(scene->undoStack()->count(), count);
     QCOMPARE(scene->undoStack()->index(), undoing ? index - 1 : index + 1);
-    auto *restored = dynamic_cast<GraphicElement *>(scene->itemById(id));
+    auto *restored = dynamic_cast<Element *>(scene->itemById(id));
     QVERIFY(restored);
     if (blobStep) {
         const auto *ic = qobject_cast<IC *>(restored);
@@ -2332,7 +2332,7 @@ void TestCommands::testStepWithAFileGoneKeepsTheSceneWhole()
         // A sound's box becomes one of the IC's outputs, which keeps no element; a picture's gate and an IC stay inside
         if (file != "sound") {
             const auto &internal = ic->internalElements();
-            const bool kept = std::any_of(internal.cbegin(), internal.cend(), [&path](const GraphicElement *inner) {
+            const bool kept = std::any_of(internal.cbegin(), internal.cend(), [&path](const Element *inner) {
                 return inner->externalFiles().contains(path);
             });
             QVERIFY2(kept, "the embedded circuit's element lost its file");
@@ -2597,7 +2597,7 @@ void TestCommands::testLoadListGrowsLinearly()
     const auto bestTimes = [](const int n) {
         WorkSpace workspace;
         auto *scene = workspace.scene();
-        GraphicElement *previous = nullptr;
+        Element *previous = nullptr;
         for (int i = 0; i < n; ++i) {
             auto *notGate = ElementFactory::buildElement(ElementType::Not);
             scene->addItem(notGate);
@@ -2627,7 +2627,7 @@ void TestCommands::testLoadListGrowsLinearly()
             QList<int> walkedIds;
             timer.start();
             for (auto *item : items) {
-                if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item)) {
+                if (auto *elm = qgraphicsitem_cast<Element *>(item)) {
                     walked.append(item);
                     walkedIds.append(elm->id());
                     for (auto *port : elm->inputs()) {

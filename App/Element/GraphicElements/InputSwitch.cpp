@@ -47,12 +47,12 @@ struct ElementInfo<InputSwitch> {
 };
 
 InputSwitch::InputSwitch(QGraphicsItem *parent)
-    : GraphicElementInput(ElementType::InputSwitch, parent)
+    : ElementInput(ElementType::InputSwitch, parent)
 {
     // A switch drives a definite level from birth: push the OFF state to the
     // output port, which otherwise stays at the undriven Unknown default.
     // Base-qualified because the unqualified setOn()/setOff() toggle.
-    GraphicElementInput::setOn(false);
+    ElementInput::setOn(false);
 }
 
 bool InputSwitch::isOn(const int port) const
@@ -86,7 +86,7 @@ void InputSwitch::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void InputSwitch::save(QDataStream &stream, SerializationOptions options) const
 {
-    GraphicElement::save(stream, options);
+    Element::save(stream, options);
 
     const bool slim = (options.purpose == SerializationPurpose::PortableFile);
 
@@ -105,7 +105,7 @@ void InputSwitch::save(QDataStream &stream, SerializationOptions options) const
 
 void InputSwitch::load(QDataStream &stream, SerializationContext &context)
 {
-    GraphicElement::load(stream, context);
+    Element::load(stream, context);
 
     if (!VersionInfo::hasQMapFormat(context.version)) {
         // v1.x–4.0 stored isOn as a bare bool; locked flag added in v3.1

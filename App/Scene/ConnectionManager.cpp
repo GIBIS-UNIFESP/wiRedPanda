@@ -8,7 +8,7 @@
 #include <QGraphicsView>
 
 #include "App/Core/SentryHelpers.h"
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/GraphicsView.h"
 #include "App/Scene/PortHoverLabel.h"
@@ -23,7 +23,7 @@ namespace {
 /// body regardless of rotation/mirroring (ports aren't only ever on the left/right edge).
 PortHoverLabel::Side sideFor(Port *port)
 {
-    auto *element = port->graphicElement();
+    auto *element = port->element();
     if (!element) { // LCOV_EXCL_LINE — ElementPorts::addPort() unconditionally sets the owner right after constructing a port; every port reachable here already has one.
         return PortHoverLabel::Side::Right; // LCOV_EXCL_LINE
     }
@@ -37,7 +37,7 @@ PortHoverLabel::Side sideFor(Port *port)
 
 /// Encodes \a port's position within \a element as a single index (inputs first, then
 /// outputs), or -1 if \a port doesn't belong to \a element. Mirrors decodePort() below.
-int encodePortIndex(GraphicElement *element, Port *port)
+int encodePortIndex(Element *element, Port *port)
 {
     for (int i = 0; i < (element->inputSize() + element->outputSize()); ++i) {
         if (i < element->inputSize()) {
@@ -48,7 +48,7 @@ int encodePortIndex(GraphicElement *element, Port *port)
             return i;
         }
     }
-    return -1; // LCOV_EXCL_LINE — both call sites (setHoverPort()'s own port and its peers) pass `element == port->graphicElement()`, so port is always found among that element's own ports.
+    return -1; // LCOV_EXCL_LINE — both call sites (setHoverPort()'s own port and its peers) pass `element == port->element()`, so port is always found among that element's own ports.
 }
 
 /// Resolves an (element ID, port index) pair back to a Port, or nullptr if the element
@@ -56,7 +56,7 @@ int encodePortIndex(GraphicElement *element, Port *port)
 /// deleted since the pair was captured. Mirrors encodePortIndex() above.
 Port *decodePort(Scene *scene, const int elmId, const int portNumber)
 {
-    auto *element = dynamic_cast<GraphicElement *>(scene->itemById(elmId));
+    auto *element = dynamic_cast<Element *>(scene->itemById(elmId));
     if (!element) {
         return nullptr;
     }
@@ -256,7 +256,7 @@ QString ConnectionManager::connectionRejectionReason(OutputPort *startPort, Inpu
     if (!startPort || !endPort) {
         return tr("This connection is not allowed.");
     }
-    if (startPort->graphicElement() == endPort->graphicElement()) {
+    if (startPort->element() == endPort->element()) {
         return tr("Can't connect an element to itself.");
     }
     if (startPort->isConnected(endPort)) {
@@ -264,12 +264,12 @@ QString ConnectionManager::connectionRejectionReason(OutputPort *startPort, Inpu
     }
     // Rx nodes receive their signal over the air; a physical wire on the input
     // port would be silently overridden by the simulation (tunnel convention).
-    if (auto *elm = endPort->graphicElement(); elm && elm->wirelessMode() == WirelessMode::Rx) {
+    if (auto *elm = endPort->element(); elm && elm->wirelessMode() == WirelessMode::Rx) {
         return tr("This element receives wirelessly — no input wire needed.");
     }
     // Tx nodes are dead-end transmitters; their output port drives the wireless
     // channel only — no physical wire should bypass the channel (tunnel convention).
-    if (auto *elm = startPort->graphicElement(); elm && elm->wirelessMode() == WirelessMode::Tx) {
+    if (auto *elm = startPort->element(); elm && elm->wirelessMode() == WirelessMode::Tx) {
         return tr("This element transmits wirelessly — no output wire needed.");
     }
     return {};
@@ -308,7 +308,7 @@ void ConnectionManager::setHoverPort(Port *port)
     }
 
     port->hoverEnter();
-    auto *hoverElm = port->graphicElement();
+    auto *hoverElm = port->element();
 
     // Store element ID + port index rather than raw pointers so the hover state
     // remains valid across undo/redo operations that may recreate the element
@@ -326,7 +326,7 @@ void ConnectionManager::setHoverPort(Port *port)
     m_highlightedPeers.clear();
     for (auto *peer : connectedPeers(port)) {
         peer->hoverEnter();
-        if (auto *peerElm = peer->graphicElement(); peerElm && m_scene->contains(peerElm->id())) {
+        if (auto *peerElm = peer->element(); peerElm && m_scene->contains(peerElm->id())) {
             m_highlightedPeers.append(qMakePair(peerElm->id(), encodePortIndex(peerElm, peer)));
         }
     }

@@ -153,7 +153,7 @@ void TestElementAppearance::testPictureOfAnotherSizeKeepsPortsWhateverTheOrder()
     picture.fill(QColor(40, 120, 200));
     QVERIFY(picture.save(path, "PNG"));
 
-    const auto portScenePositions = [](const GraphicElement *element) {
+    const auto portScenePositions = [](const Element *element) {
         QStringList positions;
         for (auto *port : element->allPorts()) {
             const QPointF pos = port->scenePos();
@@ -165,13 +165,13 @@ void TestElementAppearance::testPictureOfAnotherSizeKeepsPortsWhateverTheOrder()
     for (const qreal rotation : {0.0, 90.0, 180.0, 270.0}) {
         for (const bool flipX : {false, true}) {
             for (const bool flipY : {false, true}) {
-                const std::unique_ptr<GraphicElement> pictureFirst(ElementFactory::buildElement(type));
+                const std::unique_ptr<Element> pictureFirst(ElementFactory::buildElement(type));
                 pictureFirst->setAppearance(false, path);
                 pictureFirst->setRotation(rotation);
                 pictureFirst->setFlippedX(flipX);
                 pictureFirst->setFlippedY(flipY);
 
-                const std::unique_ptr<GraphicElement> orientedFirst(ElementFactory::buildElement(type));
+                const std::unique_ptr<Element> orientedFirst(ElementFactory::buildElement(type));
                 orientedFirst->setRotation(rotation);
                 orientedFirst->setFlippedX(flipX);
                 orientedFirst->setFlippedY(flipY);

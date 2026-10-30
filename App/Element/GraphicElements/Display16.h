@@ -9,7 +9,7 @@
 
 #include <memory>
 
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 
 class QSvgRenderer;
 
@@ -20,7 +20,7 @@ class QSvgRenderer;
  * \details Full alphanumeric coverage including diagonals.
  * Supports red, green, and blue color variants.
  */
-class Display16 : public GraphicElement
+class Display16 : public Element
 {
     Q_OBJECT
 

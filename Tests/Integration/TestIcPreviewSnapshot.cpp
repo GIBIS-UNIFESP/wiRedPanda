@@ -16,7 +16,7 @@
 #include <QTest>
 
 #include "App/Core/ThemeManager.h"
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 #include "App/Element/IC.h"
 #include "App/Element/ICPreviewPopup.h"
 #include "App/IO/Serialization.h"
@@ -59,7 +59,7 @@ bool hasInk(const QPixmap &preview)
  * element's position, so a pin's element is the one of \a circuit's boundary elements at that position, and its port
  * is the pin's rank among the pins at that position.
  */
-QStringList pinLines(const IC *ic, const QVector<GraphicElement *> &circuit)
+QStringList pinLines(const IC *ic, const QVector<Element *> &circuit)
 {
     QStringList lines;
     for (const bool inputs : {true, false}) {
@@ -67,7 +67,7 @@ QStringList pinLines(const IC *ic, const QVector<GraphicElement *> &circuit)
         const auto ports = SnapshotAccess::icPinPorts(ic, inputs);
         QList<QPointF> positions;
         for (int pin = 0; pin < ports.size(); ++pin) {
-            const QPointF position = ports.at(pin)->graphicElement()->pos();
+            const QPointF position = ports.at(pin)->element()->pos();
             QStringList matches;
             QString type;
             for (const auto *element : circuit) {

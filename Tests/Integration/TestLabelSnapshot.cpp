@@ -11,8 +11,8 @@
 #include <QTest>
 #include <QTransform>
 
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElement.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -30,7 +30,7 @@ QString goldenPath()
 /// Off the origin and off the multiples of 64, so a translation lost or applied twice shows.
 constexpr QPointF kPlacement(200, -120);
 
-QString describe(const GraphicElement *element)
+QString describe(const Element *element)
 {
     return QString("  rot=%1 flipX=%2 flipY=%3 label=%4")
         .arg(TestUtils::snapshotNumber(element->rotation()), QString::number(element->isFlippedX()),
@@ -40,14 +40,14 @@ QString describe(const GraphicElement *element)
 /// One configuration in the sixteen orientations, given its ports and then oriented, then oriented first where that
 /// differs.
 QStringList describeAll(Scene *scene, const QString &header, const TestUtils::ElementBuilder &build,
-                        const std::function<void(GraphicElement *)> &applyPorts)
+                        const std::function<void(Element *)> &applyPorts)
 {
     return TestUtils::describeInOrientations(scene, header, build, applyPorts, describe, "  oriented first: same",
                                              "  oriented first:");
 }
 
 /// Places \a element and gives it a label, then adds it to \a scene.
-std::unique_ptr<GraphicElement> placed(std::unique_ptr<GraphicElement> element, Scene *scene)
+std::unique_ptr<Element> placed(std::unique_ptr<Element> element, Scene *scene)
 {
     element->setPos(kPlacement);
     element->setLabel("Label");
@@ -67,7 +67,7 @@ QString dumpLabels()
             continue;
         }
 
-        const std::unique_ptr<GraphicElement> probe(ElementFactory::buildElement(type));
+        const std::unique_ptr<Element> probe(ElementFactory::buildElement(type));
         if (!probe->hasLabel()) {
             // Listed rather than skipped, so a type that gains or loses a label changes the golden.
             lines << QString("T %1 no label").arg(TestUtils::snapshotType(type));
@@ -81,13 +81,13 @@ QString dumpLabels()
         }
 
         const TestUtils::ElementBuilder build = [type](Scene *target) {
-            return placed(std::unique_ptr<GraphicElement>(ElementFactory::buildElement(type)), target);
+            return placed(std::unique_ptr<Element>(ElementFactory::buildElement(type)), target);
         };
         for (const auto &[inputs, outputs] : std::as_const(counts)) {
             const QString in = (type == ElementType::Demux) ? QString("derived") : QString::number(inputs);
             const QString header = QString("T %1 in=%2 out=%3")
                                        .arg(TestUtils::snapshotType(type), in, QString::number(outputs));
-            lines << describeAll(scene, header, build, [inputCount = inputs, outputCount = outputs](GraphicElement *element) {
+            lines << describeAll(scene, header, build, [inputCount = inputs, outputCount = outputs](Element *element) {
                 TestUtils::applyPortCounts(element, inputCount, outputCount);
             });
         }
@@ -97,7 +97,7 @@ QString dumpLabels()
     // as a reload of a changed file does.
     const TestUtils::ElementBuilder buildIc = [](Scene *target) { return placed(std::make_unique<IC>(), target); };
     const QFileInfo icFile(TestUtils::fullAdderIcFile());
-    const auto loadIc = [&icFile](GraphicElement *element) {
+    const auto loadIc = [&icFile](Element *element) {
         static_cast<IC *>(element)->loadFile(icFile.filePath(), icFile.absolutePath());
     };
     lines << describeAll(scene, "T IC file=" + icFile.fileName(), buildIc, loadIc);

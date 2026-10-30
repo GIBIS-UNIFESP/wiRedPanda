@@ -9,7 +9,7 @@
 #include <QKeyEvent>
 #include <QWidget>
 
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 #include "App/Scene/Scene.h"
 #include "App/UI/ElementEditor.h"
 
@@ -19,7 +19,7 @@ ElementTabNavigator::ElementTabNavigator(ElementEditor *editor, QObject *parent)
 {
 }
 
-QVector<GraphicElement *> ElementTabNavigator::readingOrder(QVector<GraphicElement *> elements)
+QVector<Element *> ElementTabNavigator::readingOrder(QVector<Element *> elements)
 {
     // Reading order is row-major: top-to-bottom by Y (primary key), left-to-right by X within a
     // row (secondary key). std::stable_sort is stable, so sorting by the secondary key (X) first

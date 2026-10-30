@@ -40,7 +40,7 @@ struct ElementInfo<Xnor> {
 };
 
 Xnor::Xnor(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Xnor, parent)
+    : Element(ElementType::Xnor, parent)
 {
     // Skip full initialisation when building a property-probe instance (see ElementFactory).
 }

@@ -20,7 +20,7 @@
 #include <QTemporaryDir>
 #include <QVector>
 
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
@@ -207,7 +207,7 @@ void TestDanglingPointer::bug5_setCircuitUpdateRequiredMustNotLieAboutInit()
     QVERIFY(sim->m_initialized);
     QVERIFY(!sim->m_sortedElements.isEmpty());
 
-    // Remove every GraphicElement so items.size() drops to 1 (border rect)
+    // Remove every Element so items.size() drops to 1 (border rect)
     // and initialize() bails at the early return.
     ws.scene()->removeItem(ic);
     delete ic;
@@ -366,7 +366,7 @@ void TestDanglingPointer::jd_initializeMustSkipIncompleteConnections()
 // Bug 8 — iterativeSettle() iterates its input without null checks.
 void TestDanglingPointer::bug8_iterativeSettleMustTolerateNullEntry()
 {
-    QVector<GraphicElement *> entries;
+    QVector<Element *> entries;
     entries.append(nullptr);
     // Return value is meaningless for a null input; the point is survival.
     (void)Simulation::iterativeSettle(entries, 1);

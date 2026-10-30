@@ -359,8 +359,8 @@ void TestIC::testLoadedICKeepsNoToolTipAfterARetranslation()
     QVERIFY(fromBlob->toolTip().isEmpty());
     QVERIFY(!unloaded->toolTip().isEmpty());
 
-    for (GraphicElement *element : {static_cast<GraphicElement *>(fromFile), static_cast<GraphicElement *>(fromBlob),
-                                    static_cast<GraphicElement *>(unloaded)}) {
+    for (Element *element : {static_cast<Element *>(fromFile), static_cast<Element *>(fromBlob),
+                                    static_cast<Element *>(unloaded)}) {
         element->retranslate();
     }
 
@@ -858,7 +858,7 @@ void TestIC::testICLoadWithNonExistentFileFallback()
 }
 
 // Helper: load a .panda file into a fresh WorkSpace and return the number of distinct
-// GraphicElement objects that participate in at least one connection.
+// Element objects that participate in at least one connection.
 //
 // This metric catches the migration bug where all element IDs are serialized as -1,
 // causing portMap key collisions on reload: all connections end up referencing the same
@@ -872,13 +872,13 @@ static int countConnectedElementsViaWorkspace(const QString &filePath)
         WorkSpace ws;
         ws.load(filePath);
 
-        QSet<GraphicElement *> connectedElements;
+        QSet<Element *> connectedElements;
         for (auto *conn : TestUtils::sceneConnections(ws.scene())) {
-            if (conn->startPort() && conn->startPort()->graphicElement()) {
-                connectedElements.insert(conn->startPort()->graphicElement());
+            if (conn->startPort() && conn->startPort()->element()) {
+                connectedElements.insert(conn->startPort()->element());
             }
-            if (conn->endPort() && conn->endPort()->graphicElement()) {
-                connectedElements.insert(conn->endPort()->graphicElement());
+            if (conn->endPort() && conn->endPort()->element()) {
+                connectedElements.insert(conn->endPort()->element());
             }
         }
         return static_cast<int>(connectedElements.size());

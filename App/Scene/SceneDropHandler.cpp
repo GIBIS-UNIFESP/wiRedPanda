@@ -13,8 +13,8 @@
 #include "App/Core/DragDropPayload.h"
 #include "App/Core/Enums.h"
 #include "App/Core/MimeTypes.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElement.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
@@ -50,7 +50,7 @@ void SceneDropHandler::handleNewElementDrop(QGraphicsSceneDragDropEvent *event)
     QPointF pos = event->scenePos() - payload.offset;
     qCDebug(zero) << payload.type << " at position: " << pos.x() << ", " << pos.y() << ", label: " << payload.icFileName;
 
-    std::unique_ptr<GraphicElement> element(ElementFactory::buildElement(payload.type));
+    std::unique_ptr<Element> element(ElementFactory::buildElement(payload.type));
     qCDebug(zero) << "Valid element.";
 
     if (payload.isEmbedded && payload.type == ElementType::IC) {
@@ -74,7 +74,7 @@ void SceneDropHandler::handleNewElementDrop(QGraphicsSceneDragDropEvent *event)
     raw->setSelected(true);
 
     qCDebug(zero) << "Adjusting the position of the element.";
-    raw->setPos(GraphicElement::snapToGrid(pos));
+    raw->setPos(Element::snapToGrid(pos));
     m_scene->resizeScene();
 }
 
@@ -106,8 +106,8 @@ void SceneDropHandler::handleCloneDrag(QGraphicsSceneDragDropEvent *event)
     m_scene->clearSelection();
 
     for (auto *item : itemList) {
-        if (item->type() == GraphicElement::Type) {
-            item->setPos(GraphicElement::snapToGrid(item->pos() + offset));
+        if (item->type() == Element::Type) {
+            item->setPos(Element::snapToGrid(item->pos() + offset));
             item->setSelected(true);
         }
     }
@@ -129,7 +129,7 @@ void SceneDropHandler::addFromMimeData(QMimeData *mimeData, std::optional<QPoint
 
     const auto payload = readDragDropPayload(stream);
 
-    std::unique_ptr<GraphicElement> element(ElementFactory::buildElement(payload.type));
+    std::unique_ptr<Element> element(ElementFactory::buildElement(payload.type));
     qCDebug(zero) << "Valid element.";
 
     if (payload.isEmbedded && payload.type == ElementType::IC) {
@@ -153,7 +153,7 @@ void SceneDropHandler::addFromMimeData(QMimeData *mimeData, std::optional<QPoint
     // Add-without-drag (double-click / search): drop it where the caller asked (the view
     // centre) so it lands in sight instead of at the scene origin, snapped to the grid.
     if (scenePos) {
-        raw->setPos(GraphicElement::snapToGrid(*scenePos));
+        raw->setPos(Element::snapToGrid(*scenePos));
     }
 
     m_scene->resizeScene();

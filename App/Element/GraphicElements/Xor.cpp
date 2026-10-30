@@ -40,7 +40,7 @@ struct ElementInfo<Xor> {
 };
 
 Xor::Xor(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Xor, parent)
+    : Element(ElementType::Xor, parent)
 {
     // Skip full initialisation when building a property-probe instance (see ElementFactory).
 }

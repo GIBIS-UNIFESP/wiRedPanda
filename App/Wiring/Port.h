@@ -21,7 +21,7 @@
 
 #include "App/Core/Enums.h"
 
-class GraphicElement;
+class Element;
 class Connection;
 class Port;
 
@@ -31,7 +31,7 @@ class Port;
  *
  * \details A port is the small glyph drawn at the edge of a graphic element where
  * wires attach — a circle for inputs, a right-pointing triangle for outputs.
- * It stores a reference to the owning GraphicElement, all attached
+ * It stores a reference to the owning Element, all attached
  * Connections, and its current logical status.
  *
  * Concrete subclasses InputPort and OutputPort differentiate direction.
@@ -69,9 +69,9 @@ public:
     // --- Element Access ---
 
     /// Returns the graphic element that owns this port.
-    GraphicElement *graphicElement() { return m_graphicElement; }
+    Element *element() { return m_element; }
     /// \overload
-    const GraphicElement *graphicElement() const { return m_graphicElement; }
+    const Element *element() const { return m_element; }
 
     // --- Identity & Status ---
 
@@ -104,7 +104,7 @@ public:
     int index() const;
 
     /// Returns this port's index within the element's combined input+output port
-    /// sequence: index() for input ports, index() + graphicElement()->inputSize()
+    /// sequence: index() for input ports, index() + element()->inputSize()
     /// for output ports. The single source of truth for the port-ordering half of
     /// the serial-ID formula.
     int globalIndex() const;
@@ -165,10 +165,10 @@ public:
     void setDefaultStatus(const Status defaultStatus);
 
     /**
-     * \brief Binds this port to \a graphicElement.
-     * \param graphicElement Owning graphic element.
+     * \brief Binds this port to \a element.
+     * \param element Owning graphic element.
      */
-    void setGraphicElement(GraphicElement *graphicElement);
+    void setElement(Element *element);
 
     /**
      * \brief Sets the port's visual index within the element.
@@ -221,7 +221,7 @@ protected:
 
     // --- Members ---
 
-    GraphicElement *m_graphicElement = nullptr;
+    Element *m_element = nullptr;
     QBrush m_currentBrush;
     /// Pen paint() actually draws the outline with, kept separate from the item's own
     /// QGraphicsPathItem pen -- see updateTheme() for why (avoids an unneeded BSP-tree

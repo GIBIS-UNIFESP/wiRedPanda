@@ -28,13 +28,13 @@ void TestPriorities::testPriorityBasic()
     builder.connect(&sw, 0, &andGate, 0);
     builder.connect(&andGate, 0, &led, 0);
 
-    QHash<GraphicElement *, QVector<GraphicElement *>> successors;
-    QVector<GraphicElement *> elements = {&sw, &andGate, &led};
+    QHash<Element *, QVector<Element *>> successors;
+    QVector<Element *> elements = {&sw, &andGate, &led};
     for (auto *elm : elements) {
         for (auto *port : elm->outputs()) {
             for (auto *conn : port->connections()) {
                 if (auto *endPort = conn->endPort()) {
-                    if (auto *succ = endPort->graphicElement()) {
+                    if (auto *succ = endPort->element()) {
                         if (!successors[elm].contains(succ)) {
                             successors[elm].append(succ);
                         }
@@ -44,7 +44,7 @@ void TestPriorities::testPriorityBasic()
         }
     }
 
-    QHash<GraphicElement *, int> priorities;
+    QHash<Element *, int> priorities;
     calculatePriorities(elements, successors, priorities);
 
     int swPriority = priorities.value(&sw);
@@ -79,13 +79,13 @@ void TestPriorities::testPriorityMemoization()
     builder.connect(&sw2, 0, &andGate, 1);
     builder.connect(&andGate, 0, &led, 0);
 
-    QHash<GraphicElement *, QVector<GraphicElement *>> successors;
-    QVector<GraphicElement *> elements = {&sw1, &sw2, &andGate, &led};
+    QHash<Element *, QVector<Element *>> successors;
+    QVector<Element *> elements = {&sw1, &sw2, &andGate, &led};
     for (auto *elm : elements) {
         for (auto *port : elm->outputs()) {
             for (auto *conn : port->connections()) {
                 if (auto *endPort = conn->endPort()) {
-                    if (auto *succ = endPort->graphicElement()) {
+                    if (auto *succ = endPort->element()) {
                         if (!successors[elm].contains(succ)) {
                             successors[elm].append(succ);
                         }
@@ -95,7 +95,7 @@ void TestPriorities::testPriorityMemoization()
         }
     }
 
-    QHash<GraphicElement *, int> priorities;
+    QHash<Element *, int> priorities;
     calculatePriorities(elements, successors, priorities);
 
     int sw1Priority = priorities.value(&sw1);

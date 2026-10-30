@@ -11,8 +11,8 @@
 #include <QTest>
 
 #include "App/Core/ThemeManager.h"
-#include "App/Element/GraphicElement.h"
-#include "App/Element/GraphicElementInput.h"
+#include "App/Element/Element.h"
+#include "App/Element/ElementInput.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Scene/Scene.h"
@@ -188,7 +188,7 @@ void TestWirePixelSnapshot::testClockedFixtureWiresMatchGoldens()
     int clocks = 0;
     for (auto *element : scene->unsortedElements()) {
         if (element->elementType() == ElementType::Clock) {
-            static_cast<GraphicElementInput *>(element)->setLocked(true);
+            static_cast<ElementInput *>(element)->setLocked(true);
             ++clocks;
         }
     }

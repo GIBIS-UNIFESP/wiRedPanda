@@ -11,7 +11,7 @@
 
 #include "App/Core/Enums.h"
 
-class GraphicElement;
+class Element;
 
 /**
  * \struct SelectionCapabilities
@@ -77,7 +77,7 @@ struct SelectionCapabilities {
 
 /**
  * \brief Computes the SelectionCapabilities for a list of selected elements.
- * \param elements The currently selected GraphicElements (may be empty).
+ * \param elements The currently selected Elements (may be empty).
  * \return A fully populated SelectionCapabilities; all flags false if \a elements is empty.
  */
-SelectionCapabilities computeCapabilities(const QList<GraphicElement *> &elements);
+SelectionCapabilities computeCapabilities(const QList<Element *> &elements);

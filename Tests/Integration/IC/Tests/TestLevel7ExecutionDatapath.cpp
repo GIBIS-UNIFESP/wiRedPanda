@@ -67,7 +67,7 @@ struct ExecutionDatapathFixture {
 
     TestUtils::Bits readResult()
     {
-        return readMultiBitOutput(QVector<GraphicElement *>(resultLeds.begin(), resultLeds.end()), 0);
+        return readMultiBitOutput(QVector<Element *>(resultLeds.begin(), resultLeds.end()), 0);
     }
 };
 

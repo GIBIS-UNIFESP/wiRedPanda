@@ -87,15 +87,15 @@ QByteArray buildOuterPanda(const QString &icFileName)
     // → IC falls through to IC::loadFromFile which opens the temp file).
     //
     // Correct format (NO count header — Serialization::deserialize uses while(!atEnd)):
-    //   int  GraphicElement::Type = 65539
+    //   int  Element::Type = 65539
     //   u64  ElementType::IC = 22
     //   [1] base map (pos, rotation, label)
     //   [2] port lists × 3 (each: quint32 count=0)
     //   [3] IC secondary map with "name" key → triggers file-backed load path
-    s << static_cast<int>(65539);              // GraphicElement::Type discriminator
+    s << static_cast<int>(65539);              // Element::Type discriminator
     s << static_cast<quint64>(22);             // ElementType::IC
 
-    // [1] Base map (GraphicElement::loadNewFormat reads pos/rotation/label/etc.)
+    // [1] Base map (Element::loadNewFormat reads pos/rotation/label/etc.)
     QMap<QString, QVariant> baseProps;
     baseProps.insert("pos",      QVariant::fromValue(QPointF(100.0, 100.0)));
     baseProps.insert("rotation", QVariant(0.0));

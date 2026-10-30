@@ -2,12 +2,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 /// \file
-/// GraphicElementSerializer: save/load implementation for GraphicElement.
-/// Split out from GraphicElement so persistence is a collaborator (a friend class)
+/// ElementSerializer: save/load implementation for Element.
+/// Split out from Element so persistence is a collaborator (a friend class)
 /// rather than a cluster of methods on the element, and to avoid a transitive
-/// SerializationContext.h include for the 48+ files that depend on GraphicElement.h.
+/// SerializationContext.h include for the 48+ files that depend on Element.h.
 
-#include "App/Element/GraphicElementSerializer.h"
+#include "App/Element/ElementSerializer.h"
 
 #include <cmath>
 
@@ -16,7 +16,7 @@
 #include <QVariant>
 
 #include "App/Core/Common.h"
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 #include "App/IO/ExternalFilePath.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
@@ -37,9 +37,9 @@ constexpr quint32 kMaxPortsPerElement = 1024;
 } // namespace
 
 // readPortList() and removePortFromMap() are static members (not file-local helpers) so their
-// load-error PANDACEPTION throws extract under the GraphicElementSerializer tr context.
+// load-error PANDACEPTION throws extract under the ElementSerializer tr context.
 
-QList<QMap<QString, QVariant>> GraphicElementSerializer::readPortList(QDataStream &stream, const char *label)
+QList<QMap<QString, QVariant>> ElementSerializer::readPortList(QDataStream &stream, const char *label)
 {
     const QString labelStr = QString::fromUtf8(label);
     quint32 count;
@@ -69,7 +69,7 @@ QList<QMap<QString, QVariant>> GraphicElementSerializer::readPortList(QDataStrea
     return result;
 }
 
-void GraphicElementSerializer::removePortFromMap(Port *deletedPort, QHash<quint64, Port *> &portMap)
+void ElementSerializer::removePortFromMap(Port *deletedPort, QHash<quint64, Port *> &portMap)
 {
     for (auto it = portMap.begin(); it != portMap.end();) {
         if (it.value() == deletedPort) {
@@ -80,21 +80,21 @@ void GraphicElementSerializer::removePortFromMap(Port *deletedPort, QHash<quint6
     }
 }
 
-// ========== GraphicElement entry points (delegate to the serializer) ==========
+// ========== Element entry points (delegate to the serializer) ==========
 
-void GraphicElement::save(QDataStream &stream, SerializationOptions options) const
+void Element::save(QDataStream &stream, SerializationOptions options) const
 {
-    GraphicElementSerializer::save(*this, stream, options);
+    ElementSerializer::save(*this, stream, options);
 }
 
-void GraphicElement::load(QDataStream &stream, SerializationContext &context)
+void Element::load(QDataStream &stream, SerializationContext &context)
 {
-    GraphicElementSerializer::load(*this, stream, context);
+    ElementSerializer::load(*this, stream, context);
 }
 
 // ========== save / load ==========
 
-void GraphicElementSerializer::save(const GraphicElement &element, QDataStream &stream, SerializationOptions options)
+void ElementSerializer::save(const Element &element, QDataStream &stream, SerializationOptions options)
 {
     qCDebug(four) << "Saving element. Type: " << element.objectName();
 
@@ -213,7 +213,7 @@ void GraphicElementSerializer::save(const GraphicElement &element, QDataStream &
     qCDebug(four) << "Finished saving element.";
 }
 
-void GraphicElementSerializer::load(GraphicElement &element, QDataStream &stream, SerializationContext &context)
+void ElementSerializer::load(Element &element, QDataStream &stream, SerializationContext &context)
 {
     qCDebug(four) << "Loading element. Type: " << element.objectName();
 
@@ -237,7 +237,7 @@ void GraphicElementSerializer::load(GraphicElement &element, QDataStream &stream
 
 // ========== Old format (pre-4.1) ==========
 
-void GraphicElementSerializer::loadOldFormat(GraphicElement &element, QDataStream &stream, SerializationContext &context)
+void ElementSerializer::loadOldFormat(Element &element, QDataStream &stream, SerializationContext &context)
 {
     loadPos(element, stream);
     loadRotation(element, stream, context.version);
@@ -262,7 +262,7 @@ void GraphicElementSerializer::loadOldFormat(GraphicElement &element, QDataStrea
 
 // ========== New format (4.1+) ==========
 
-void GraphicElementSerializer::loadNewFormat(GraphicElement &element, QDataStream &stream, SerializationContext &context)
+void ElementSerializer::loadNewFormat(Element &element, QDataStream &stream, SerializationContext &context)
 {
     QMap<QString, QVariant> map = Serialization::readBoundedMetadata(stream);
 
@@ -475,20 +475,20 @@ void GraphicElementSerializer::loadNewFormat(GraphicElement &element, QDataStrea
 // ========== Property loading helpers (old format) ==========
 
 // validateFinitePos() is a static member (not a file-local helper) so its load-error
-// PANDACEPTION throw extracts under the GraphicElementSerializer tr context.
+// PANDACEPTION throw extracts under the ElementSerializer tr context.
 
 /// Rejects a non-finite (NaN / ±inf) element position read from a crafted file.
 /// A non-finite position makes the item's scene transform — and any bounding rect
 /// computed from it — non-finite, tripping the qSaturateRound assertion in
 /// QSizeF::toSize() and aborting the process.  Surfaced by libFuzzer (fuzz_ic_file).
-void GraphicElementSerializer::validateFinitePos(const QPointF &pos)
+void ElementSerializer::validateFinitePos(const QPointF &pos)
 {
     if (!std::isfinite(pos.x()) || !std::isfinite(pos.y())) {
         throw PANDACEPTION("Non-finite element position — stream may be corrupt");
     }
 }
 
-void GraphicElementSerializer::loadPos(GraphicElement &element, QDataStream &stream)
+void ElementSerializer::loadPos(Element &element, QDataStream &stream)
 {
     QPointF pos; stream >> pos;
     validateFinitePos(pos);
@@ -499,7 +499,7 @@ void GraphicElementSerializer::loadPos(GraphicElement &element, QDataStream &str
 /// setAngleRaw(NaN) makes the item's scene transform NaN, so its bounding rect
 /// is NaN and trips the same qSaturateRound assertion as a non-finite position
 /// does.  Surfaced by libFuzzer (fuzz_ic_file).
-void GraphicElementSerializer::validateFiniteAngle(const qreal angle)
+void ElementSerializer::validateFiniteAngle(const qreal angle)
 {
     if (!std::isfinite(angle)) {
         throw PANDACEPTION("Non-finite element rotation — stream may be corrupt");
@@ -511,7 +511,7 @@ void GraphicElementSerializer::validateFiniteAngle(const qreal angle)
 /// the bounds: a truth table's key holds exactly the maximum rows and columns, so one more input
 /// reads past it when simulated. An IC is exempt: its bounds and ports come from its definition,
 /// which IC::load() reads after this.
-void GraphicElementSerializer::validatePortCounts(const GraphicElement &element)
+void ElementSerializer::validatePortCounts(const Element &element)
 {
     if (element.elementType() == ElementType::IC) {
         return;
@@ -532,7 +532,7 @@ void GraphicElementSerializer::validatePortCounts(const GraphicElement &element)
     }
 }
 
-void GraphicElementSerializer::loadRotation(GraphicElement &element, QDataStream &stream, const QVersionNumber &version)
+void ElementSerializer::loadRotation(Element &element, QDataStream &stream, const QVersionNumber &version)
 {
     qreal angle; stream >> angle;
     validateFiniteAngle(angle);
@@ -557,14 +557,14 @@ void GraphicElementSerializer::loadRotation(GraphicElement &element, QDataStream
     }
 }
 
-void GraphicElementSerializer::loadLabel(GraphicElement &element, QDataStream &stream, const QVersionNumber &version)
+void ElementSerializer::loadLabel(Element &element, QDataStream &stream, const QVersionNumber &version)
 {
     if (VersionInfo::hasLabels(version)) {
         element.setLabel(Serialization::readBoundedString(stream));
     }
 }
 
-void GraphicElementSerializer::loadPortsSize(QDataStream &stream, const QVersionNumber &version)
+void ElementSerializer::loadPortsSize(QDataStream &stream, const QVersionNumber &version)
 {
     if (VersionInfo::hasPortSizes(version)) {
         // Drain the 4 saved values to advance the stream position.
@@ -573,7 +573,7 @@ void GraphicElementSerializer::loadPortsSize(QDataStream &stream, const QVersion
     }
 }
 
-void GraphicElementSerializer::loadTrigger(GraphicElement &element, QDataStream &stream, const QVersionNumber &version)
+void ElementSerializer::loadTrigger(Element &element, QDataStream &stream, const QVersionNumber &version)
 {
     if (VersionInfo::hasTrigger(version)) {
         const QKeySequence trigger = Serialization::readBoundedKeySequence(stream);
@@ -583,7 +583,7 @@ void GraphicElementSerializer::loadTrigger(GraphicElement &element, QDataStream 
 
 // ========== Port loading (old format) ==========
 
-void GraphicElementSerializer::loadInputPorts(GraphicElement &element, QDataStream &stream, SerializationContext &context)
+void ElementSerializer::loadInputPorts(Element &element, QDataStream &stream, SerializationContext &context)
 {
     qCDebug(four) << "Loading input ports.";
     quint64 inputSize; stream >> inputSize;
@@ -600,7 +600,7 @@ void GraphicElementSerializer::loadInputPorts(GraphicElement &element, QDataStre
     removeSurplusInputs(element, inputSize, context);
 }
 
-void GraphicElementSerializer::loadInputPort(GraphicElement &element, QDataStream &stream, SerializationContext &context, const int port)
+void ElementSerializer::loadInputPort(Element &element, QDataStream &stream, SerializationContext &context, const int port)
 {
     quint64 ptr;  stream >> ptr;
     const QString name = Serialization::readBoundedString(stream);
@@ -618,7 +618,7 @@ void GraphicElementSerializer::loadInputPort(GraphicElement &element, QDataStrea
     context.loadedInputKeys.append(ptr);
 }
 
-void GraphicElementSerializer::loadOutputPorts(GraphicElement &element, QDataStream &stream, SerializationContext &context)
+void ElementSerializer::loadOutputPorts(Element &element, QDataStream &stream, SerializationContext &context)
 {
     qCDebug(four) << "Loading output ports.";
     quint64 outputSize; stream >> outputSize;
@@ -635,7 +635,7 @@ void GraphicElementSerializer::loadOutputPorts(GraphicElement &element, QDataStr
     removeSurplusOutputs(element, outputSize, context);
 }
 
-void GraphicElementSerializer::loadOutputPort(GraphicElement &element, QDataStream &stream, SerializationContext &context, const int port)
+void ElementSerializer::loadOutputPort(Element &element, QDataStream &stream, SerializationContext &context, const int port)
 {
     quint64 ptr;  stream >> ptr;
     const QString name = Serialization::readBoundedString(stream);
@@ -655,7 +655,7 @@ void GraphicElementSerializer::loadOutputPort(GraphicElement &element, QDataStre
 
 // ========== Surplus port removal ==========
 
-void GraphicElementSerializer::removeSurplusInputs(GraphicElement &element, const quint64 inputSize_, SerializationContext &context)
+void ElementSerializer::removeSurplusInputs(Element &element, const quint64 inputSize_, SerializationContext &context)
 {
     // The element may have been constructed with more ports than are stored in the file
     // (e.g. default constructor creates minInputSize ports).  Trim the excess from the end,
@@ -669,7 +669,7 @@ void GraphicElementSerializer::removeSurplusInputs(GraphicElement &element, cons
     }
 }
 
-void GraphicElementSerializer::removeSurplusOutputs(GraphicElement &element, const quint64 outputSize_, SerializationContext &context)
+void ElementSerializer::removeSurplusOutputs(Element &element, const quint64 outputSize_, SerializationContext &context)
 {
     // Same trimming logic as removeSurplusInputs, applied to output ports
     while ((element.outputSize() > static_cast<int>(outputSize_)) && (outputSize_ >= static_cast<quint64>(element.minOutputSize()))) {
@@ -683,7 +683,7 @@ void GraphicElementSerializer::removeSurplusOutputs(GraphicElement &element, con
 
 // ========== Appearance loading ==========
 
-void GraphicElementSerializer::loadPixmapAppearanceNames(GraphicElement &element, QDataStream &stream, SerializationContext &context)
+void ElementSerializer::loadPixmapAppearanceNames(Element &element, QDataStream &stream, SerializationContext &context)
 {
     if (VersionInfo::hasAppearanceNames(context.version)) {
         qCDebug(four) << "Loading pixmap appearance names.";
@@ -713,7 +713,7 @@ void GraphicElementSerializer::loadPixmapAppearanceNames(GraphicElement &element
     }
 }
 
-void GraphicElementSerializer::loadPixmapAppearanceName(GraphicElement &element, QDataStream &stream, const int index, const SerializationContext &context)
+void ElementSerializer::loadPixmapAppearanceName(Element &element, QDataStream &stream, const int index, const SerializationContext &context)
 {
     const QString name = Serialization::readBoundedString(stream);
 

@@ -9,7 +9,7 @@
 #include "App/Wiring/Port.h"
 
 AudioOutputElement::AudioOutputElement(ElementType type, QGraphicsItem *parent, float initialVolume)
-    : GraphicElement(type, parent)
+    : Element(type, parent)
     , m_volume(initialVolume)
 {
     // Position label to the right of the 64×64 body, vertically centred

@@ -158,7 +158,7 @@ void ThemeAttributes::setTheme(const Theme theme)
         m_selectionBrush = QColor(175, 0, 0, 80);  // semi-transparent red fill for rubber-band selection
         m_selectionPen = QColor(175, 0, 0, 255);   // fully-opaque red border for the selection rectangle
 
-        m_graphicElementLabelColor = QColor(Qt::black);
+        m_elementLabelColor = QColor(Qt::black);
 
         m_connectionUnknown = QColor(140, 140, 140);    // neutral gray — "nothing is driving this"
         m_connectionInactive = QColor(Qt::darkGreen);
@@ -202,7 +202,7 @@ void ThemeAttributes::setTheme(const Theme theme)
         m_selectionBrush = QColor(230, 255, 85, 150); // semi-transparent yellow-green fill; contrasts with dark background
         m_selectionPen = QColor(230, 255, 85, 255);   // fully-opaque for a crisp selection border
 
-        m_graphicElementLabelColor = QColor(Qt::white);
+        m_elementLabelColor = QColor(Qt::white);
 
         m_connectionUnknown = QColor(160, 160, 160, 255);    // light gray — "nothing is driving this"
         m_connectionInactive = QColor(65, 150, 130, 255);  // muted teal; visible on dark background without competing with active wires

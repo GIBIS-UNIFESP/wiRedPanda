@@ -3,7 +3,7 @@
 
 #include "App/Element/ElementSimState.h"
 
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 #include "App/Wiring/Port.h"
 
 void ElementSimState::reset(const QVector<OutputPort *> &outputPorts)
@@ -11,7 +11,7 @@ void ElementSimState::reset(const QVector<OutputPort *> &outputPorts)
     // Reset each output slot to the port's power-on default so that the next
     // BeWavedDolphin sweep starts from a known, reproducible state.
     // Subclasses with internal edge-detection variables (flip-flops) override
-    // GraphicElement::resetSimState() to also clear those fields.
+    // Element::resetSimState() to also clear those fields.
     for (int i = 0; i < m_outputs.size(); ++i) {
         const Status def = (i < outputPorts.size())
                                ? outputPorts.at(i)->defaultValue()
@@ -21,7 +21,7 @@ void ElementSimState::reset(const QVector<OutputPort *> &outputPorts)
     m_outputChanged = true;
 }
 
-void ElementSimState::connectPredecessor(int inputIndex, GraphicElement *source, int outputPort)
+void ElementSimState::connectPredecessor(int inputIndex, Element *source, int outputPort)
 {
     if (inputIndex >= m_connections.size()) {
         return;

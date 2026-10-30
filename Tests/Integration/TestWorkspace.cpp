@@ -1149,7 +1149,7 @@ void TestWorkspace::testFirstSaveCopiesExternalAppearanceFile()
 {
     // A custom LED appearance picked before the project has ever been saved lives
     // somewhere unrelated to the eventual project folder. The first real "Save" must
-    // copy it alongside the .panda file — otherwise GraphicElementSerializer::save()'s
+    // copy it alongside the .panda file — otherwise ElementSerializer::save()'s
     // bare-filename reference can never be resolved again after a reload.
     QTemporaryDir sourceDir;
     QVERIFY2(sourceDir.isValid(), "Source temporary directory creation failed");

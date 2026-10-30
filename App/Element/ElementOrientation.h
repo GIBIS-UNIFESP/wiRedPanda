@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 /** \file
- * \brief Owns a GraphicElement's rotation angle and flip (mirror) state.
+ * \brief Owns a Element's rotation angle and flip (mirror) state.
  */
 
 #pragma once
@@ -10,15 +10,15 @@
 #include <QPointF>
 #include <QtGlobal>
 
-class GraphicElement;
+class Element;
 class Port;
 
 /**
  * \class ElementOrientation
- * \brief Owns the rotation angle and flip flags of a GraphicElement, and the transform
+ * \brief Owns the rotation angle and flip flags of a Element, and the transform
  * math that applies them to the item and its ports.
  *
- * \details Extracted from GraphicElement, mirroring the ElementAppearance / ElementSimState
+ * \details Extracted from Element, mirroring the ElementAppearance / ElementSimState
  * pattern (owner back-pointer, used through the element's public interface). Rotatable
  * elements rotate the whole QGraphicsItem; non-rotatable elements keep their pixmap fixed
  * and instead re-transform each port individually — both paths are implemented here.
@@ -27,7 +27,7 @@ class ElementOrientation
 {
 public:
     /// Constructs the orientation state bound to its owning \a owner element.
-    explicit ElementOrientation(GraphicElement *owner)
+    explicit ElementOrientation(Element *owner)
         : m_owner(owner)
     {
     }
@@ -93,7 +93,7 @@ private:
     /// Sets the QGraphicsItem transform that mirrors a rotatable element about its pixmap centre.
     void setFlipMatrix();
 
-    GraphicElement *m_owner;
+    Element *m_owner;
 
     qreal m_angle = 0;
     bool m_flippedX = false;

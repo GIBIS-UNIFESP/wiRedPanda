@@ -9,7 +9,7 @@
 
 #include <memory>
 
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 
 class QSvgRenderer;
 
@@ -20,7 +20,7 @@ class QSvgRenderer;
  * \details Supports alphanumeric characters.  Each input controls one segment.
  * Supports red, green, and blue color variants.
  */
-class Display14 : public GraphicElement
+class Display14 : public Element
 {
     Q_OBJECT
 

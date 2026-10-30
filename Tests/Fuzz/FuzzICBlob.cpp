@@ -37,8 +37,8 @@
 
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElement.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "Tests/Fuzz/FuzzSeed.h"
@@ -98,7 +98,7 @@ QByteArray buildICLevel(FuzzedDataProvider &fdp, const QByteArray &nestedBlob)
             return;
         }
         // IC element: discriminator + ElementType + base map + port lists + secondary map
-        stream << static_cast<int>(GraphicElement::Type);
+        stream << static_cast<int>(Element::Type);
         stream << static_cast<quint64>(ElementType::IC);
         QMap<QString, QVariant> base;
         base.insert("pos", QVariant::fromValue(QPointF(0.0, 0.0)));

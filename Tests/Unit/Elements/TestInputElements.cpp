@@ -598,7 +598,7 @@ void TestInputElements::testAppearanceWithNonExistentFileShowsTheDefault()
 
 void TestInputElements::testLoadResolvesAppearanceBareFilenameAgainstContextDir()
 {
-    // Integration check that GraphicElementSerializer's appearance-restore loop is wired
+    // Integration check that ElementSerializer's appearance-restore loop is wired
     // to ExternalFilePath::forReading(): a PortableFile save() strips a non-resource path
     // to a bare filename; loading it back with contextDir pointing at that file's
     // directory must resolve the full path and actually reload the pixmap.
@@ -758,7 +758,7 @@ void TestInputElements::testRotarySelectionIsResetAndRestoredWithSimState()
 
 namespace TestInputElementsHelpers {
 
-void sendMouse(Scene &scene, const QEvent::Type type, const GraphicElement &element)
+void sendMouse(Scene &scene, const QEvent::Type type, const Element &element)
 {
     QGraphicsSceneMouseEvent event(type);
     event.setScenePos(element.sceneBoundingRect().center());
@@ -767,7 +767,7 @@ void sendMouse(Scene &scene, const QEvent::Type type, const GraphicElement &elem
     QCoreApplication::sendEvent(&scene, &event);
 }
 
-void click(Scene &scene, const GraphicElement &element)
+void click(Scene &scene, const Element &element)
 {
     sendMouse(scene, QEvent::GraphicsSceneMousePress, element);
     sendMouse(scene, QEvent::GraphicsSceneMouseRelease, element);

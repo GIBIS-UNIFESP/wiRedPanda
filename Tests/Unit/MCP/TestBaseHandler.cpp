@@ -343,7 +343,7 @@ void TestBaseHandler::testValidatedElementRejectsMissingElement()
     QVERIFY2(errorMsg.contains("Element not found"), qPrintable(errorMsg));
 }
 
-void TestBaseHandler::testValidatedElementRejectsNonGraphicElementItem()
+void TestBaseHandler::testValidatedElementRejectsNonElementItem()
 {
     MainWindow window;
     StubHandler handler(&window, nullptr);
@@ -376,7 +376,7 @@ void TestBaseHandler::testValidatedElementAcceptsRealElement()
 
     const QJsonObject params{{"element_id", andGate->id()}};
     QString errorMsg;
-    GraphicElement *found = handler.validatedElement(params, "element_id", errorMsg);
+    Element *found = handler.validatedElement(params, "element_id", errorMsg);
     QCOMPARE(found, andGate);
 }
 

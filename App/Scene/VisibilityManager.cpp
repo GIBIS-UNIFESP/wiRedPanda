@@ -3,7 +3,7 @@
 
 #include "App/Scene/VisibilityManager.h"
 
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 #include "App/Scene/Scene.h"
 #include "App/Wiring/Connection.h"
 
@@ -18,9 +18,9 @@ void VisibilityManager::showGates(const bool visible)
     const auto items = m_scene->items();
 
     for (auto *item : items) {
-        if (item->type() == GraphicElement::Type) {
-            auto *element = qgraphicsitem_cast<GraphicElement *>(item);
-            if (!element) { // LCOV_EXCL_LINE — item->type() == GraphicElement::Type already guarantees this cast succeeds.
+        if (item->type() == Element::Type) {
+            auto *element = qgraphicsitem_cast<Element *>(item);
+            if (!element) { // LCOV_EXCL_LINE — item->type() == Element::Type already guarantees this cast succeeds.
                 continue; // LCOV_EXCL_LINE
             }
             const auto group = element->elementGroup();
@@ -45,8 +45,8 @@ void VisibilityManager::showWires(const bool visible)
             continue;
         }
 
-        if (item->type() == GraphicElement::Type) {
-            auto *element = qgraphicsitem_cast<GraphicElement *>(item);
+        if (item->type() == Element::Type) {
+            auto *element = qgraphicsitem_cast<Element *>(item);
 
             // Node elements are purely wire-routing helpers with no logical function;
             // hiding wires should hide nodes too since they're meaningless without wires

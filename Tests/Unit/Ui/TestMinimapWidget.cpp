@@ -6,8 +6,8 @@
 #include <QSignalSpy>
 
 #include "App/Core/ThemeManager.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElement.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/UI/MinimapWidget.h"

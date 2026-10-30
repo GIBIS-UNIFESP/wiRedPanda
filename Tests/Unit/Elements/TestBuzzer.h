@@ -26,7 +26,7 @@ private slots:
     void testToneScaleIsMonotonic();
 
     // Regression: setFrequency() must reject non-finite/non-positive values (the base
-    // GraphicElement::setFrequency() is a no-op, so Buzzer must guard itself, mirroring
+    // Element::setFrequency() is a no-op, so Buzzer must guard itself, mirroring
     // Clock::setFrequency()'s identical guard for the same untrusted-value class).
     void testSetFrequencyRejectsNaN();
     void testSetFrequencyRejectsInfinity();

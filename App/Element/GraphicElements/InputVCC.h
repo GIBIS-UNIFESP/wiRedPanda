@@ -7,13 +7,13 @@
 
 #pragma once
 
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 
 /**
  * \class InputVcc
  * \brief Static VCC element that always drives logic-1 on its output.
  */
-class InputVcc : public GraphicElement
+class InputVcc : public Element
 {
     Q_OBJECT
 

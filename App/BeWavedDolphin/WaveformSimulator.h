@@ -14,8 +14,8 @@
 #include "App/BeWavedDolphin/DolphinModelBuilder.h"
 #include "App/Core/Enums.h"
 
-class GraphicElement;
-class GraphicElementInput;
+class Element;
+class ElementInput;
 class Scene;
 class Simulation;
 
@@ -40,10 +40,10 @@ public:
      * \param inputPorts Total number of output ports across \a inputs (snapshot size).
      * \return Port-indexed states, to be restored after a sweep via restoreInputs().
      */
-    static QVector<Status> captureInputs(const QVector<GraphicElementInput *> &inputs, int inputPorts);
+    static QVector<Status> captureInputs(const QVector<ElementInput *> &inputs, int inputPorts);
 
     /// Restores input-port states previously captured by captureInputs().
-    static void restoreInputs(const QVector<GraphicElementInput *> &inputs, const QVector<Status> &saved);
+    static void restoreInputs(const QVector<ElementInput *> &inputs, const QVector<Status> &saved);
 
     /**
      * \brief Runs the simulation across \a columns time steps.

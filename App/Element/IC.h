@@ -13,7 +13,7 @@
 #include <QPoint>
 #include <QSet>
 
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 #include "App/IO/SerializationContext.h"
 
 class QGraphicsSceneHoverEvent;
@@ -29,7 +29,7 @@ class Scene;
  * (centralized per-scene, one watcher per unique file path).  The internal
  * simulation graph is built lazily via initializeSimulation().
  */
-class IC : public GraphicElement
+class IC : public Element
 {
     Q_OBJECT
 
@@ -38,7 +38,7 @@ class IC : public GraphicElement
     friend class TestDanglingPointer;
     friend class TestICController;
 
-    /// Reach ic's internal-element/port vectors and protected GraphicElement members
+    /// Reach ic's internal-element/port vectors and protected Element members
     /// (pixmap(), portsBoundingRect(), setMax/MinInputSize/OutputSize(), etc.) directly;
     /// see ICLoader / ICRenderer / ICSimulation.
     friend class ICLoader;
@@ -88,7 +88,7 @@ public:
     void setBlobName(const QString &name) { m_blobName = name; }
     bool isEmbedded() const override { return !m_blobName.isEmpty(); }
 
-    const QVector<GraphicElement *> &internalElements() const { return m_internalElements; }
+    const QVector<Element *> &internalElements() const { return m_internalElements; }
     const QVector<Port *> &internalInputs() const { return m_internalInputs; }
     const QVector<Port *> &internalOutputs() const { return m_internalOutputs; }
 
@@ -111,7 +111,7 @@ public:
     };
 
     /// Scans \a elements for Input/Output groups, sorts by Y/X position, and builds labels.
-    static PortMetadata buildPortMetadata(const QVector<GraphicElement *> &elements);
+    static PortMetadata buildPortMetadata(const QVector<Element *> &elements);
 
     // --- Visual ---
 
@@ -199,15 +199,15 @@ private:
     /// The IC files the circuit loaded last read, nested ones included, by absolute path: a snapshot carries them, so
     /// its restore loads one deleted since.
     QMap<QString, QByteArray> m_filesRead;
-    QVector<GraphicElement *> m_internalElements;
+    QVector<Element *> m_internalElements;
     QVector<Connection *> m_internalConnections;
     QVector<Port *> m_internalInputs;
     QVector<Port *> m_internalOutputs;
 
     // --- Members: Direct simulation ---
 
-    QVector<GraphicElement *> m_sortedInternalElements;
-    QSet<GraphicElement *> m_boundaryInputElements;
+    QVector<Element *> m_sortedInternalElements;
+    QSet<Element *> m_boundaryInputElements;
     bool m_internalHasFeedback = false;
 
     // --- Members: Hover preview ---

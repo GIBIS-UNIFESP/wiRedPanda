@@ -6,7 +6,7 @@
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 #include "App/Element/GraphicElements/Demux.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Scene/Workspace.h"
@@ -88,13 +88,13 @@ void TestDemux::testDemuxSetInputSizeIsNoOp()
 {
     // Demux derives its input count from setOutputSize() (1 data + log2(outputs) select
     // lines); setInputSize() is overridden as a deliberate no-op so a caller can't desync
-    // that invariant. The override is reachable via generic GraphicElement* callers (e.g.
+    // that invariant. The override is reachable via generic Element* callers (e.g.
     // Commands.cpp's port-resize command), not just direct Demux:: calls -- exercise it
     // that way so the virtual dispatch itself is what's under test.
     Demux demux;
     const int before = demux.inputSize();
 
-    auto *elm = static_cast<GraphicElement *>(&demux);
+    auto *elm = static_cast<Element *>(&demux);
     elm->setInputSize(before + 5);
 
     QCOMPARE(demux.inputSize(), before);

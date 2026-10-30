@@ -6,7 +6,7 @@
 #include <QObject>
 #include <QTest>
 
-class GraphicElement;
+class Element;
 class InputSwitch;
 class Scene;
 class Simulation;
@@ -68,5 +68,5 @@ private:
     // Locates the S/R switches and the Q/Q' NAND gates in a createSRLatchFromNAND() scene,
     // by their construction position (S-side elements at y=0, R-side at y=50).
     void findSRLatchParts(Scene *scene, InputSwitch *&switchS, InputSwitch *&switchR,
-                          GraphicElement *&nand1Q, GraphicElement *&nand2QBar);
+                          Element *&nand1Q, Element *&nand2QBar);
 };

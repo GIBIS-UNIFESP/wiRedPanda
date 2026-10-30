@@ -24,8 +24,8 @@ QString TestArduino::s_cliCachePath;
 #include "App/Core/Common.h"
 #include "App/Core/Enums.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElement.h"
-#include "App/Element/GraphicElementInput.h"
+#include "App/Element/Element.h"
+#include "App/Element/ElementInput.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
@@ -55,7 +55,7 @@ static inline void requireLinuxForArduinoTools()
 // Helper Methods
 // ============================================================================
 
-TestArduino::GeneratedCode TestArduino::generateFromElements(const QVector<GraphicElement *> &elements)
+TestArduino::GeneratedCode TestArduino::generateFromElements(const QVector<Element *> &elements)
 {
     GeneratedCode result;
     result.success = false;
@@ -163,7 +163,7 @@ IC *TestArduino::createICContaining(IC *innerIC, const QString &label)
     return outerIC;
 }
 
-Connection *TestArduino::createConnection(GraphicElement *from, int fromPort, GraphicElement *to, int toPort)
+Connection *TestArduino::createConnection(Element *from, int fromPort, Element *to, int toPort)
 {
     auto *startPort = from->outputPort(fromPort);
     auto *endPort = to->inputPort(toPort);
@@ -258,7 +258,7 @@ void TestArduino::testBasicCircuitGeneration()
     QVERIFY2(andGate != nullptr, "Failed to create AND gate element");
     QVERIFY2(led != nullptr, "Failed to create LED element");
 
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
     elements << button1 << button2 << andGate << led;
 
     QTemporaryDir tempDir;
@@ -292,7 +292,7 @@ void TestArduino::testBasicCircuitGeneration()
 void TestArduino::testPinOverflowMessageNamesCounts()
 {
     // 69 inputs exceed the largest supported board (Mega 2560, 68 pins).
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
     for (int i = 0; i < 69; ++i) {
         elements.append(ElementFactory::buildElement(ElementType::InputSwitch));
     }
@@ -321,7 +321,7 @@ void TestArduino::testPinOverflowMessageNamesCounts()
 void TestArduino::testEmptyCircuit()
 {
     // Generate code for empty circuit
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
 
     QTemporaryDir tempDir;
     QVERIFY2(tempDir.isValid(), "Temporary directory creation failed for Arduino code generation");
@@ -378,7 +378,7 @@ void TestArduino::testGateGeneration()
     conn2->setStartPort(inp2->outputPort());
     conn2->setEndPort(gate->inputPort(1));
 
-    QVector<GraphicElement *> elements{inp1, inp2, gate, out};
+    QVector<Element *> elements{inp1, inp2, gate, out};
     auto code = generateFromElements(elements);
     QVERIFY2(code.success, "Gate generation should succeed");
     verifyBasicStructure(code.content);
@@ -395,7 +395,7 @@ void TestArduino::testNotGateGeneration()
     auto notGate = ElementFactory::buildElement(ElementType::Not);
     auto out = ElementFactory::buildElement(ElementType::Led);
 
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
     elements << in << notGate << out;
 
     // Create connection to verify NOT operator is generated
@@ -423,7 +423,7 @@ void TestArduino::testMixedLogicGates()
     auto notGate = ElementFactory::buildElement(ElementType::Not);
     auto out = ElementFactory::buildElement(ElementType::Led);
 
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
     elements << in1 << in2 << andGate << orGate << notGate << out;
 
     auto code = generateFromElements(elements);
@@ -441,7 +441,7 @@ void TestArduino::testClockGeneration()
     auto clock = ElementFactory::buildElement(ElementType::Clock);
     auto out = ElementFactory::buildElement(ElementType::Led);
 
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
     elements << clock << out;
 
     auto code = generateFromElements(elements);
@@ -470,7 +470,7 @@ void TestArduino::testFlipFlopGeneration()
     auto dff = ElementFactory::buildElement(ElementType::DFlipFlop);
     auto out = ElementFactory::buildElement(ElementType::Led);
 
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
     elements << in << clock << dff << out;
 
     // Create connections for D flip-flop
@@ -505,7 +505,7 @@ void TestArduino::testLatchGeneration()
     auto latch = ElementFactory::buildElement(ElementType::DLatch);
     auto out = ElementFactory::buildElement(ElementType::Led);
 
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
     elements << in1 << in2 << latch << out;
 
     // Create connections for D latch (level-triggered)
@@ -539,7 +539,7 @@ void TestArduino::testClockWithFrequency()
     auto clock = ElementFactory::buildElement(ElementType::Clock);
     auto out = ElementFactory::buildElement(ElementType::Led);
 
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
     elements << clock << out;
 
     auto code = generateFromElements(elements);
@@ -564,7 +564,7 @@ void TestArduino::testPinMapping()
     auto led1 = ElementFactory::buildElement(ElementType::Led);
     auto led2 = ElementFactory::buildElement(ElementType::Led);
 
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
     elements << btn1 << btn2 << led1 << led2;
 
     auto code = generateFromElements(elements);
@@ -584,7 +584,7 @@ void TestArduino::testVariableNaming()
     auto btn = ElementFactory::buildElement(ElementType::InputButton);
     auto led = ElementFactory::buildElement(ElementType::Led);
 
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
     elements << btn << led;
 
     auto code = generateFromElements(elements);
@@ -609,7 +609,7 @@ void TestArduino::testVariableNameSanitization()
     auto elem2 = ElementFactory::buildElement(ElementType::Led);
     elem2->setLabel("LED 1");
 
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
     elements << elem1 << elem2;
 
     auto code = generateFromElements(elements);
@@ -635,7 +635,7 @@ void TestArduino::testInputElementHandling()
     auto andGate = ElementFactory::buildElement(ElementType::And);
     auto out = ElementFactory::buildElement(ElementType::Led);
 
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
     elements << button << sw << vcc << gnd << andGate << out;
 
     auto code = generateFromElements(elements);
@@ -658,7 +658,7 @@ void TestArduino::testOutputElementHandling()
     auto out1 = ElementFactory::buildElement(ElementType::Led);
     auto out2 = ElementFactory::buildElement(ElementType::Led);
 
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
     elements << in << out1 << out2;
 
     QTemporaryDir tempDir;
@@ -695,7 +695,7 @@ void TestArduino::testComplexCircuit()
     auto sum = ElementFactory::buildElement(ElementType::Led);
     auto carry = ElementFactory::buildElement(ElementType::Led);
 
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
     elements << a << b << c << xor1 << xor2 << and1 << and2 << or1 << sum << carry;
 
     auto code = generateFromElements(elements);
@@ -717,7 +717,7 @@ void TestArduino::testCodeStructure()
     auto in = ElementFactory::buildElement(ElementType::InputButton);
     auto out = ElementFactory::buildElement(ElementType::Led);
 
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
     elements << in << out;
 
     auto code = generateFromElements(elements);
@@ -750,7 +750,7 @@ void TestArduino::testBoardSelection()
     conn->setStartPort(in->outputPort());
     conn->setEndPort(out->inputPort());
 
-    QVector<GraphicElement *> elements{in, out};
+    QVector<Element *> elements{in, out};
     auto code = generateFromElements(elements);
 
     QVERIFY2(code.success, "Code generation should succeed");
@@ -765,7 +765,7 @@ void TestArduino::testBoardSelection()
 void TestArduino::testExcessivePinRequirements()
 {
     // 25 LEDs exceeds UNO/Nano (18 pins) — should escalate to a larger board (Mega or ESP32)
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
     for (int i = 0; i < 25; ++i) {
         auto led = ElementFactory::buildElement(ElementType::Led);
         led->setLabel(QString("led%1").arg(i));
@@ -795,7 +795,7 @@ void TestArduino::testBuzzerGeneration()
     conn->setStartPort(buzzerInput->outputPort());
     conn->setEndPort(buzzer->inputPort());
 
-    QVector<GraphicElement *> elements{buzzerInput, buzzer};
+    QVector<Element *> elements{buzzerInput, buzzer};
     auto code = generateFromElements(elements);
 
     QVERIFY2(code.success, "Code generation should succeed for buzzer circuit");
@@ -832,7 +832,7 @@ void TestArduino::testDisplay7Generation()
     c2->setStartPort(bit2->outputPort());
     c2->setEndPort(display->inputPort(2));
 
-    QVector<GraphicElement *> elements{bit0, bit1, bit2, display};
+    QVector<Element *> elements{bit0, bit1, bit2, display};
     auto code = generateFromElements(elements);
 
     QVERIFY2(code.success, "Code generation should succeed for 7-segment display");
@@ -869,7 +869,7 @@ void TestArduino::testDisplay14Generation()
     c1->setStartPort(sw1->outputPort());
     c1->setEndPort(display->inputPort(1));
 
-    QVector<GraphicElement *> elements{sw0, sw1, display};
+    QVector<Element *> elements{sw0, sw1, display};
     auto code = generateFromElements(elements);
 
     QVERIFY2(code.success, "Code generation should succeed for 14-segment display");
@@ -907,7 +907,7 @@ void TestArduino::testInputRotaryGeneration()
     c1->setStartPort(rotary->outputPort(1));
     c1->setEndPort(led1->inputPort(0));
 
-    QVector<GraphicElement *> elements{rotary, led0, led1};
+    QVector<Element *> elements{rotary, led0, led1};
     auto code = generateFromElements(elements);
 
     QVERIFY2(code.success, "Code generation should succeed for rotary switch circuit");
@@ -952,7 +952,7 @@ void TestArduino::testSimpleICGeneration()
 
     auto *ic = createICWithAndGate("SimpleAND");
 
-    QVector<GraphicElement *> elements{in1, in2, ic, out};
+    QVector<Element *> elements{in1, in2, ic, out};
     auto code = generateFromElements(elements);
 
     QVERIFY2(code.success, "Code generation should succeed for IC circuit");
@@ -977,7 +977,7 @@ void TestArduino::testNestedICHandling()
     auto *innerIC = createICWithAndGate("InnerAND");
     auto *outerIC = createICContaining(innerIC, "OuterContainer");
 
-    QVector<GraphicElement *> elements{in1, in2, outerIC, out};
+    QVector<Element *> elements{in1, in2, outerIC, out};
     auto code = generateFromElements(elements);
 
     QVERIFY2(code.success, "Code generation should succeed for nested IC circuit");
@@ -1001,7 +1001,7 @@ void TestArduino::testICPortMapping()
 
     auto *ic = createICWithAndGate("ANDModule");
 
-    QVector<GraphicElement *> elements{sw1, sw2, ic, led};
+    QVector<Element *> elements{sw1, sw2, ic, led};
     auto code = generateFromElements(elements);
 
     QVERIFY2(code.success, "Code generation should succeed for IC with labeled ports");
@@ -1045,7 +1045,7 @@ void TestArduino::testAdvancedRealWorldCircuits()
     c3->setStartPort(pedButton->outputPort());
     c3->setEndPort(redLight->inputPort());
 
-    QVector<GraphicElement *> trafficElements{pedButton, redLight, greenLight, walkSignal, notGate};
+    QVector<Element *> trafficElements{pedButton, redLight, greenLight, walkSignal, notGate};
     auto trafficCode = generateFromElements(trafficElements);
 
     QVERIFY2(trafficCode.success, "Traffic light circuit generation should succeed");
@@ -1059,7 +1059,7 @@ void TestArduino::testAdvancedRealWorldCircuits()
     qDeleteAll(trafficElements);
 
     // 4-bit adder inputs test: XOR operators for sum calculation
-    QVector<GraphicElement *> adderElements;
+    QVector<Element *> adderElements;
     for (int i = 0; i < 4; ++i) {
         auto a = ElementFactory::buildElement(ElementType::InputSwitch);
         a->setLabel(QString("A%1").arg(i));
@@ -1090,7 +1090,7 @@ void TestArduino::testUnconnectedLogicGate()
     auto andGate = ElementFactory::buildElement(ElementType::And);
     auto out = ElementFactory::buildElement(ElementType::Led);
 
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
     elements << andGate << out;
 
     auto code = generateFromElements(elements);
@@ -1112,7 +1112,7 @@ void TestArduino::testTFlipFlopGeneration()
     auto tff = ElementFactory::buildElement(ElementType::TFlipFlop);
     auto out = ElementFactory::buildElement(ElementType::Led);
 
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
     elements << in << clock << tff << out;
 
     // Create connections for T flip-flop
@@ -1146,7 +1146,7 @@ void TestArduino::testJKFlipFlopGeneration()
     auto jkff = ElementFactory::buildElement(ElementType::JKFlipFlop);
     auto out = ElementFactory::buildElement(ElementType::Led);
 
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
     elements << j_in << k_in << clock << jkff << out;
 
     // Create connections for JK flip-flop
@@ -1186,7 +1186,7 @@ void TestArduino::testSRFlipFlopGeneration()
     auto srff = ElementFactory::buildElement(ElementType::SRFlipFlop);
     auto out = ElementFactory::buildElement(ElementType::Led);
 
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
     elements << set_in << reset_in << clock << srff << out;
 
     // Create connections for SR flip-flop
@@ -1229,7 +1229,7 @@ void TestArduino::testFlipFlopPresetClear()
     auto out_q = ElementFactory::buildElement(ElementType::Led);
     auto out_qn = ElementFactory::buildElement(ElementType::Led);
 
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
     elements << d_in << clk << prst << clr << dff << out_q << out_qn;
 
     // Create connections
@@ -1274,7 +1274,7 @@ void TestArduino::testMultipleOutputElement()
     auto out_q = ElementFactory::buildElement(ElementType::Led);
     auto out_qn = ElementFactory::buildElement(ElementType::Led);
 
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
     elements << d_in << clk << dff << out_q << out_qn;
 
     auto code = generateFromElements(elements);
@@ -1295,7 +1295,7 @@ void TestArduino::testOutputPortNaming()
     auto out = ElementFactory::buildElement(ElementType::Led);
     out->setLabel("OutputSignal");
 
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
     elements << in << out;
 
     auto code = generateFromElements(elements);
@@ -1318,7 +1318,7 @@ void TestArduino::testComplexElementNaming()
     auto led = ElementFactory::buildElement(ElementType::Led);
     led->setLabel("OutputLED_Result");
 
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
     elements << btn << gate << led;
 
     auto code = generateFromElements(elements);
@@ -1344,7 +1344,7 @@ void TestArduino::testNameSanitizationEdgeCases()
     auto led = ElementFactory::buildElement(ElementType::Led);
     led->setLabel("LED (output) #1");
 
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
     elements << btn << gate << led;
 
     auto code = generateFromElements(elements);
@@ -1371,7 +1371,7 @@ void TestArduino::testUnconnectedInput()
     conn->setStartPort(in1->outputPort());
     conn->setEndPort(gate->inputPort(0));
 
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
     elements << in1 << gate << out;
 
     auto code = generateFromElements(elements);
@@ -1393,7 +1393,7 @@ void TestArduino::testDefaultValuePropagation()
     auto gate = ElementFactory::buildElement(ElementType::And);
     auto out = ElementFactory::buildElement(ElementType::Led);
 
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
     elements << gate << out;
 
     auto code = generateFromElements(elements);
@@ -1417,7 +1417,7 @@ void TestArduino::testPartiallyConnectedLogic()
     auto gate = ElementFactory::buildElement(ElementType::And);
     auto out = ElementFactory::buildElement(ElementType::Led);
 
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
     elements << in1 << in2 << gate << out;
 
     auto code = generateFromElements(elements);
@@ -1436,7 +1436,7 @@ void TestArduino::testHighPinCountCircuit()
 {
     // Board selection escalates boards. Exhaust even the largest board (~38 pins for ESP32)
     // by creating 80 input buttons.
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
 
     for (int i = 0; i < 80; ++i) {
         auto btn = ElementFactory::buildElement(ElementType::InputButton);
@@ -1470,7 +1470,7 @@ void TestArduino::testMultipleInputConnections()
     auto gate = ElementFactory::buildElement(ElementType::And);
     auto out = ElementFactory::buildElement(ElementType::Led);
 
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
     elements << in1 << in2 << in3 << gate << out;
 
     auto code = generateFromElements(elements);
@@ -1494,7 +1494,7 @@ void TestArduino::testChainedLogicGates()
     auto or_gate = ElementFactory::buildElement(ElementType::Or);
     auto out = ElementFactory::buildElement(ElementType::Led);
 
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
     elements << in1 << in2 << and_gate << or_gate << out;
 
     auto code = generateFromElements(elements);
@@ -1520,7 +1520,7 @@ void TestArduino::testPresetClearInteraction()
     auto dff = ElementFactory::buildElement(ElementType::DFlipFlop);
     auto out = ElementFactory::buildElement(ElementType::Led);
 
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
     elements << d_in << clk << prst << clr << dff << out;
 
     auto code = generateFromElements(elements);
@@ -1541,7 +1541,7 @@ void TestArduino::testFlipFlopInitialState()
     auto out_q = ElementFactory::buildElement(ElementType::Led);
     auto out_qn = ElementFactory::buildElement(ElementType::Led);
 
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
     elements << dff << out_q << out_qn;
 
     auto code = generateFromElements(elements);
@@ -1565,7 +1565,7 @@ void TestArduino::testLatchEdgeTriggeringLogic()
     auto latch = ElementFactory::buildElement(ElementType::DLatch);
     auto out = ElementFactory::buildElement(ElementType::Led);
 
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
     elements << d_in << enable << latch << out;
 
     auto code = generateFromElements(elements);
@@ -1589,7 +1589,7 @@ void TestArduino::testFileCreationFailure()
     auto out = ElementFactory::buildElement(ElementType::Led);
     QVERIFY2(out != nullptr, "Failed to create Led");
 
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
     elements << in << out;
 
     // Use a path that's very unlikely to work
@@ -1636,7 +1636,7 @@ void TestArduino::testReadOnlyDirectoryHandling()
     auto out = ElementFactory::buildElement(ElementType::Led);
     QVERIFY2(out != nullptr, "Failed to create Led");
 
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
     elements << in << out;
 
     QString filePath = subDir + "/test.ino";
@@ -1671,7 +1671,7 @@ void TestArduino::testDeeplyNestedElementNaming()
     auto led = ElementFactory::buildElement(ElementType::Led);
     led->setLabel("Output_Section_Final_LED_Result");
 
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
     elements << btn1 << gate1 << gate2 << led;
 
     auto code = generateFromElements(elements);
@@ -1694,7 +1694,7 @@ void TestArduino::testNodeElementGeneration()
     auto node = ElementFactory::buildElement(ElementType::Node);
     auto out = ElementFactory::buildElement(ElementType::Led);
 
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
     elements << in << node << out;
 
     auto code = generateFromElements(elements);
@@ -1734,7 +1734,7 @@ void TestArduino::testWirelessNodeGeneration()
     auto conn2 = std::unique_ptr<Connection>(createConnection(rxNode, 0, led, 0));
     QVERIFY2(conn2, "Failed to wire the Rx node to the LED -- the test below would silently exercise a disconnected Rx instead");
 
-    QVector<GraphicElement *> elements{sw, txNode, rxNode, led};
+    QVector<Element *> elements{sw, txNode, rxNode, led};
     auto code = generateFromElements(elements);
     QVERIFY2(code.success, "Wireless node generation should succeed");
 
@@ -1777,7 +1777,7 @@ void TestArduino::testWirelessRxReachedByAWireFollowsItsTx()
     auto rxToLed = std::unique_ptr<Connection>(createConnection(rxNode, 0, led, 0));
     QVERIFY(rxToLed);
 
-    QVector<GraphicElement *> elements{wired, air, txNode, rxNode, led};
+    QVector<Element *> elements{wired, air, txNode, rxNode, led};
     auto code = generateFromElements(elements);
     QVERIFY2(code.success, "Generation should succeed");
 
@@ -1808,7 +1808,7 @@ void TestArduino::testWirelessOrphanedRxCodegen()
     auto conn = std::unique_ptr<Connection>(createConnection(rxNode, 0, led, 0));
     QVERIFY2(conn, "Failed to wire the Rx node to the LED -- the test below would silently exercise a disconnected node instead");
 
-    QVector<GraphicElement *> elements{rxNode, led};
+    QVector<Element *> elements{rxNode, led};
     auto code = generateFromElements(elements);
     QVERIFY2(code.success, "Orphaned Rx codegen should succeed without crash");
 
@@ -1848,9 +1848,9 @@ void TestArduino::testEmbeddedICGeneration()
     builder.connect(ic, 0, led, 0);
     builder.initSimulation();
 
-    QVector<GraphicElement *> allElements;
+    QVector<Element *> allElements;
     for (auto *item : ws->scene()->items()) {
-        if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item))
+        if (auto *elm = qgraphicsitem_cast<Element *>(item))
             allElements.append(elm);
     }
 
@@ -1903,9 +1903,9 @@ void TestArduino::testEmbeddedICLabelWithNewlineDoesNotInjectCode()
     builder.connect(ic, 0, led, 0);
     builder.initSimulation();
 
-    QVector<GraphicElement *> allElements;
+    QVector<Element *> allElements;
     for (auto *item : ws->scene()->items()) {
-        if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item))
+        if (auto *elm = qgraphicsitem_cast<Element *>(item))
             allElements.append(elm);
     }
 
@@ -1925,7 +1925,7 @@ void TestArduino::testMuxDemuxIntegration()
         auto mux = ElementFactory::buildElement(ElementType::Mux);
         auto out = ElementFactory::buildElement(ElementType::Led);
 
-        QVector<GraphicElement *> elements{sel, d0, d1, mux, out};
+        QVector<Element *> elements{sel, d0, d1, mux, out};
         auto code = generateFromElements(elements);
 
         QVERIFY2(code.success, "Mux circuit generation should succeed");
@@ -1944,7 +1944,7 @@ void TestArduino::testMuxDemuxIntegration()
         auto out1 = ElementFactory::buildElement(ElementType::Led);
         auto out2 = ElementFactory::buildElement(ElementType::Led);
 
-        QVector<GraphicElement *> elements{sel, data, demux, out1, out2};
+        QVector<Element *> elements{sel, data, demux, out1, out2};
         auto code = generateFromElements(elements);
 
         QVERIFY2(code.success, "Demux circuit generation should succeed");
@@ -1966,7 +1966,7 @@ void TestArduino::testMultipleClocksInCircuit()
     auto out1 = ElementFactory::buildElement(ElementType::Led);
     auto out2 = ElementFactory::buildElement(ElementType::Led);
 
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
     elements << clk1 << clk2 << dff1 << dff2 << out1 << out2;
 
     auto code = generateFromElements(elements);
@@ -1996,7 +1996,7 @@ void TestArduino::testComplexPresetClearSequence()
     auto out1 = ElementFactory::buildElement(ElementType::Led);
     auto out2 = ElementFactory::buildElement(ElementType::Led);
 
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
     elements << vcc << gnd << clk << d1 << d2 << dff1 << dff2 << out1 << out2;
 
     auto code = generateFromElements(elements);
@@ -2015,7 +2015,7 @@ void TestArduino::testOutputPinExhaustion()
 {
     // Board selection escalates boards as needed (UNO→Nano→Mega→ESP32).
     // The ESP32 (last board) has ~38 pins. Create 80 LEDs to exceed even the largest board.
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
 
     for (int i = 0; i < 80; ++i) {
         auto led = ElementFactory::buildElement(ElementType::Led);
@@ -2054,7 +2054,7 @@ void TestArduino::testUnsupportedElementTypes()
         auto mux = ElementFactory::buildElement(ElementType::Mux);
         QVERIFY2(mux != nullptr, "Failed to create Mux element");
         mux->setLabel("TestMux");
-        QVector<GraphicElement *> elements;
+        QVector<Element *> elements;
         elements << mux;
 
         QTemporaryDir tempDir;
@@ -2084,7 +2084,7 @@ void TestArduino::testUnsupportedElementTypes()
         auto demux = ElementFactory::buildElement(ElementType::Demux);
         QVERIFY2(demux != nullptr, "Failed to create Demux element");
         demux->setLabel("TestDemux");
-        QVector<GraphicElement *> elements;
+        QVector<Element *> elements;
         elements << demux;
 
         QTemporaryDir tempDir;
@@ -2114,7 +2114,7 @@ void TestArduino::testUnsupportedElementTypes()
         auto truthTable = ElementFactory::buildElement(ElementType::TruthTable);
         QVERIFY2(truthTable != nullptr, "Failed to create TruthTable element");
         truthTable->setLabel("TestTruthTable");
-        QVector<GraphicElement *> elements;
+        QVector<Element *> elements;
         elements << truthTable;
 
         QTemporaryDir tempDir;
@@ -2183,7 +2183,7 @@ bool TestArduino::simulateWithSimavr(const QString &elfFile, int durationMs)
 // Combinational Circuit Detection
 // ============================================================================
 
-bool TestArduino::isCombinationalCircuit(const QVector<GraphicElement *> &elements)
+bool TestArduino::isCombinationalCircuit(const QVector<Element *> &elements)
 {
     for (auto *elm : elements) {
         switch (elm->elementType()) {
@@ -2222,10 +2222,10 @@ bool TestArduino::isCombinationalCircuit(const QVector<GraphicElement *> &elemen
 // ============================================================================
 
 QVector<ArduinoCodeGen::TestVector> TestArduino::generateTruthTable(
-    const QVector<GraphicElement *> &elements, int maxInputBits)
+    const QVector<Element *> &elements, int maxInputBits)
 {
-    struct InputEntry { GraphicElement *elm; int portIndex; };
-    struct OutputEntry { GraphicElement *elm; int portIndex; };
+    struct InputEntry { Element *elm; int portIndex; };
+    struct OutputEntry { Element *elm; int portIndex; };
 
     // Collect inputs in the same order as ArduinoCodeGen::declareInputs()
     QVector<InputEntry> inputs;
@@ -2267,12 +2267,12 @@ QVector<ArduinoCodeGen::TestVector> TestArduino::generateTruthTable(
     }
 
     // Topological sort and feedback detection
-    QHash<GraphicElement *, QVector<GraphicElement *>> successors;
+    QHash<Element *, QVector<Element *>> successors;
     for (auto *elm : elements) {
         for (auto *outputPort : elm->outputs()) {
             for (auto *conn : outputPort->connections()) {
                 if (auto *endPort = conn->endPort()) {
-                    auto *successor = endPort->graphicElement();
+                    auto *successor = endPort->element();
                     if (successor && !successors[elm].contains(successor)) {
                         successors[elm].append(successor);
                     }
@@ -2280,16 +2280,16 @@ QVector<ArduinoCodeGen::TestVector> TestArduino::generateTruthTable(
             }
         }
     }
-    QHash<GraphicElement *, int> priorities;
+    QHash<Element *, int> priorities;
     calculatePriorities(elements, successors, priorities);
     if (!findFeedbackNodes(elements, successors).isEmpty()) {
         return {};
     }
 
-    QVector<GraphicElement *> sorted(elements);
+    QVector<Element *> sorted(elements);
     std::stable_sort(sorted.begin(), sorted.end(), [&priorities](const auto *a, const auto *b) {
-        return priorities.value(const_cast<GraphicElement *>(a), -1)
-             > priorities.value(const_cast<GraphicElement *>(b), -1);
+        return priorities.value(const_cast<Element *>(a), -1)
+             > priorities.value(const_cast<Element *>(b), -1);
     });
 
     const int combos = 1 << N;
@@ -2468,10 +2468,10 @@ void TestArduino::testArduinoExportHelper(const QString &icFile)
     }
 
     // Get all elements from scene
-    QVector<GraphicElement *> allElements;
+    QVector<Element *> allElements;
     const auto items = scene->items();
     for (auto *item : std::as_const(items)) {
-        if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item)) {
+        if (auto *elm = qgraphicsitem_cast<Element *>(item)) {
             allElements.append(elm);
         }
     }
@@ -2709,11 +2709,11 @@ void TestArduino::testArduinoSequentialMultiCycleCpu8Bit()
 
     // Collect inputs/outputs in scene-scan order so the captured vector layout
     // matches the Arduino codegen's input/output pin order exactly.
-    QVector<GraphicElement *> allElements;
+    QVector<Element *> allElements;
     QVector<InputSwitch *> scanInputs;
     QVector<Led *> scanOutputs;
     for (auto *item : scene->items()) {
-        if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item)) {
+        if (auto *elm = qgraphicsitem_cast<Element *>(item)) {
             allElements.append(elm);
             if (auto *sw = qobject_cast<InputSwitch *>(elm)) {
                 scanInputs.append(sw);
@@ -2811,7 +2811,7 @@ void TestArduino::testReservedKeywordSanitization()
     // Element labeled with a C++ keyword should get a trailing underscore
     auto btn = ElementFactory::buildElement(ElementType::InputButton);
     btn->setLabel("for");  // C++ reserved keyword
-    QVector<GraphicElement *> elements{btn};
+    QVector<Element *> elements{btn};
     auto code = generateFromElements(elements);
     QVERIFY2(code.success, "Generation with reserved keyword label should succeed");
     // "for" becomes "inputbutton1_for" after removeForbiddenChars; isArduinoReserved checks
@@ -2823,7 +2823,7 @@ void TestArduino::testReservedKeywordSanitization()
     // Element labeled with an Arduino built-in should also be protected
     auto sw = ElementFactory::buildElement(ElementType::InputSwitch);
     sw->setLabel("setup");  // Arduino built-in (also reserved)
-    QVector<GraphicElement *> elements2{sw};
+    QVector<Element *> elements2{sw};
     auto code2 = generateFromElements(elements2);
     QVERIFY2(code2.success, "Generation with 'setup' label should succeed");
     // The generated variable must not shadow the setup() function
@@ -2837,7 +2837,7 @@ void TestArduino::testAccentStripping()
     // Element with accented label should produce clean ASCII variable name
     auto btn = ElementFactory::buildElement(ElementType::InputButton);
     btn->setLabel(QString("Sa") + QChar(0x00ED) + QString("da"));  // "Saída" (í = U+00ED)
-    QVector<GraphicElement *> elements{btn};
+    QVector<Element *> elements{btn};
     auto code = generateFromElements(elements);
     QVERIFY2(code.success, "Generation with accented label should succeed");
 
@@ -2864,7 +2864,7 @@ void TestArduino::testCycleDetection()
     cycleConn->setStartPort(notGate->outputPort(0));
     cycleConn->setEndPort(notGate->inputPort(0));
 
-    QVector<GraphicElement *> elements{notGate, out};
+    QVector<Element *> elements{notGate, out};
 
     // Generation must complete without hanging or crashing
     auto code = generateFromElements(elements);
@@ -2911,7 +2911,7 @@ void TestArduino::testSimavrFunctionalSimulation()
     c2->setStartPort(notGate->outputPort(0));
     c2->setEndPort(led->inputPort(0));
 
-    QVector<GraphicElement *> elements{sw, notGate, led};
+    QVector<Element *> elements{sw, notGate, led};
 
     // Step 1: generate .ino
     QTemporaryDir workDir;
@@ -3024,12 +3024,12 @@ void TestArduino::testGeneratedSketchMatchesEngineOnRippleCounter()
     auto *ff2 = ElementFactory::buildElement(ElementType::DFlipFlop);
     auto *led1 = ElementFactory::buildElement(ElementType::Led);
     auto *led2 = ElementFactory::buildElement(ElementType::Led);
-    for (auto *e : QVector<GraphicElement *>{clk, ff1, ff2, led1, led2}) { scene->addItem(e); }
+    for (auto *e : QVector<Element *>{clk, ff1, ff2, led1, led2}) { scene->addItem(e); }
     clk->setPos(0, 0); ff1->setPos(120, 0); ff2->setPos(260, 0);
     led1->setPos(400, 0); led2->setPos(400, 80);
     clk->setLabel("CLK");
 
-    const auto wire = [scene](GraphicElement *a, int ap, GraphicElement *b, int bp) {
+    const auto wire = [scene](Element *a, int ap, Element *b, int bp) {
         auto *c = new Connection();
         scene->addItem(c);
         c->setStartPort(a->outputPort(ap));
@@ -3045,7 +3045,7 @@ void TestArduino::testGeneratedSketchMatchesEngineOnRippleCounter()
     // --- Engine reference ---
     auto *sim = scene->simulation();
     QVERIFY(sim->initialize());
-    auto *clkIn = qobject_cast<GraphicElementInput *>(clk);
+    auto *clkIn = qobject_cast<ElementInput *>(clk);
     clkIn->setOn(false, 0);
     sim->update();
     QStringList engineTrace;
@@ -3064,7 +3064,7 @@ void TestArduino::testGeneratedSketchMatchesEngineOnRippleCounter()
     QTemporaryDir dir;
     QVERIFY(dir.isValid());
     const QString inoPath = dir.filePath("sketch.ino");
-    QVector<GraphicElement *> elements = scene->elements();
+    QVector<Element *> elements = scene->elements();
     ArduinoCodeGen generator(inoPath, elements);
     generator.generate();
     QVERIFY(QFile::exists(inoPath));

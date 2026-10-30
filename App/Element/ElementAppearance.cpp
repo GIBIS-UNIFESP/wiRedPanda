@@ -19,7 +19,7 @@
 
 #include "App/Core/Common.h"
 #include "App/Core/ThemeManager.h"
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 
 namespace {
 
@@ -222,7 +222,7 @@ std::shared_ptr<QSvgRenderer> sharedSvgRenderer(const QString &resolvedPath, con
 
 } // namespace
 
-ElementAppearance::ElementAppearance(GraphicElement *owner)
+ElementAppearance::ElementAppearance(Element *owner)
     : m_owner(owner)
 {
 }
@@ -278,7 +278,7 @@ void ElementAppearance::setPixmap(const int index)
     m_owner->prepareGeometryChange();
 
     // Resolution against contextDir already happened once, at load time (see
-    // ExternalFilePath::forReading(), called from GraphicElementSerializer) — by the
+    // ExternalFilePath::forReading(), called from ElementSerializer) — by the
     // time a path reaches here it's either a resource reference or already directly
     // usable (a fresh absolute path from a file picker, or an already-resolved one
     // read back from a saved project). Nothing left to do here but load it.
@@ -469,10 +469,10 @@ void ElementAppearance::setAppearanceAt(const int index, const QString &fileName
 
 void ElementAppearance::setAlternativeAppearanceAt(const int index, const QString &path)
 {
-    // Unreachable: every call site passes a provably in-range index -- GraphicElementInput
+    // Unreachable: every call site passes a provably in-range index -- ElementInput
     // (static_cast<int>(m_isOn), always 0/1 for its always-2-slot appearance list),
     // InputRotary (hardcoded 0), Led (colorIndex(), always in its own valid range), and
-    // GraphicElementSerializer's two appearance-name loaders (which already throw on an
+    // ElementSerializer's two appearance-name loaders (which already throw on an
     // out-of-range index *before* ever reaching this call).
     if (index < 0 || index >= m_alternativeAppearances.size()) { // LCOV_EXCL_LINE
         return; // LCOV_EXCL_LINE

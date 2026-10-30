@@ -38,7 +38,7 @@ struct ElementInfo<TFlipFlop> {
 };
 
 TFlipFlop::TFlipFlop(QGraphicsItem *parent)
-    : GraphicElement(ElementType::TFlipFlop, parent)
+    : Element(ElementType::TFlipFlop, parent)
 {
     // Call the most-derived override explicitly (see SRFlipFlop.cpp for rationale).
     TFlipFlop::updatePortsProperties();
@@ -104,7 +104,7 @@ void TFlipFlop::updateLogic()
 
 void TFlipFlop::resetSimState()
 {
-    GraphicElement::resetSimState();
+    Element::resetSimState();
     m_simLastClk   = Status::Inactive;
     m_simLastValue = Status::Active;
 }
@@ -113,14 +113,14 @@ void TFlipFlop::saveSimState(QVector<Status> &out) const
 {
     // Mirrors resetSimState(): the outputs via the base, then the edge-detection history, in a
     // fixed order that restoreSimState() reads back identically.
-    GraphicElement::saveSimState(out);
+    Element::saveSimState(out);
     out.append(m_simLastClk);
     out.append(m_simLastValue);
 }
 
 void TFlipFlop::restoreSimState(const QVector<Status> &in, int &cursor)
 {
-    GraphicElement::restoreSimState(in, cursor);
+    Element::restoreSimState(in, cursor);
     if (cursor < in.size()) { m_simLastClk = in.at(cursor++); }
     if (cursor < in.size()) { m_simLastValue = in.at(cursor++); }
 }

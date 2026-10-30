@@ -13,7 +13,7 @@ If you are looking for build instructions, see [BUILD.md](BUILD.md). For contrib
 - [Core Layer (App/Core)](#core-layer-appcore)
 - [The Element System (App/Element)](#the-element-system-appelement)
   - [Class Hierarchy](#class-hierarchy)
-  - [GraphicElement: The Base Class](#graphicelement-the-base-class)
+  - [Element: The Base Class](#element-the-base-class)
   - [ElementFactory](#elementfactory)
   - [How Elements Register Themselves](#how-elements-register-themselves)
   - [ElementMetadata and ElementConstraints](#elementmetadata-and-elementconstraints)
@@ -172,7 +172,7 @@ wiRedPanda/
 │   │   ├── ItemWithId.h                    #     Base with stable numeric identity
 │   │   └── StatusOps.h                     #     Four-state logic operations
 │   ├── Element/                            #   Logic elements and element factory
-│   │   ├── GraphicElement.cpp/h            #     Abstract base class for all elements
+│   │   ├── Element.cpp/h                   #     Abstract base class for all elements
 │   │   ├── ElementFactory.cpp/h            #     Factory singleton
 │   │   ├── ElementInfo.h                   #     Self-registration template
 │   │   ├── ElementMetadata.cpp/h           #     Element metadata and capabilities
@@ -181,7 +181,7 @@ wiRedPanda/
 │   │   ├── ICLoader.cpp/h                  #     Loads an IC's sub-circuit from file or embedded blob
 │   │   ├── ICRenderer.cpp/h                #     Draws an IC's body and cached pixmaps
 │   │   ├── ICSimulation.cpp/h              #     Builds/runs an IC's internal simulation graph
-│   │   ├── GraphicElementSerializer.cpp/h  #     Serialization
+│   │   ├── ElementSerializer.cpp/h         #     Serialization
 │   │   └── GraphicElements/                #     31 concrete element implementations
 │   ├── Simulation/                         #   Simulation engine
 │   │   ├── Simulation.cpp/h                #     Main simulation loop
@@ -432,8 +432,8 @@ This is the most important subsystem of the project. All circuit components (log
 
 ```text
 QGraphicsObject
-  └── GraphicElement              (abstract base — all circuit components)
-        ├── GraphicElementInput   (abstract — user-interactive inputs)
+  └── Element                     (abstract base — all circuit components)
+        ├── ElementInput          (abstract — user-interactive inputs)
         │     ├── InputSwitch     (toggle on/off)
         │     ├── InputButton     (momentary press)
         │     ├── InputRotary     (multi-position rotary switch)
@@ -448,9 +448,9 @@ QGraphicsObject
         └── Node, Line, Text      (structural/annotation)
 ```
 
-### GraphicElement: The Base Class
+### Element: The Base Class
 
-`App/Element/GraphicElement.h` is the abstract base class for **all** graphic elements in the circuit. It inherits from:
+`App/Element/Element.h` is the abstract base class for **all** graphic elements in the circuit. It inherits from:
 
 - `QGraphicsObject`: visual representation in the Qt scene
 - `ItemWithId`: stable numeric identity (for serialization and undo/redo)
@@ -481,7 +481,7 @@ virtual void load(QDataStream &stream, SerializationContext &context);
 
 ```cpp
 // Create a new AND element
-GraphicElement *andGate = ElementFactory::buildElement(ElementType::And);
+Element *andGate = ElementFactory::buildElement(ElementType::And);
 
 // Check if a type is registered
 bool exists = ElementFactory::hasCreator(ElementType::And);
@@ -603,7 +603,7 @@ Here is the complete AND gate, the simplest element to understand:
 **`App/Element/GraphicElements/And.h`**:
 
 ```cpp
-class And : public GraphicElement {
+class And : public Element {
     Q_OBJECT
 public:
     explicit And(QGraphicsItem *parent = nullptr);
@@ -646,7 +646,7 @@ struct ElementInfo<And> {
 };
 
 // 2. Constructor: just calls parent with the element type
-And::And(QGraphicsItem *parent) : GraphicElement(ElementType::And, parent) {}
+And::And(QGraphicsItem *parent) : Element(ElementType::And, parent) {}
 
 // 3. Logic: the one method that matters
 void And::updateLogic() {
@@ -733,8 +733,8 @@ void InputSwitch::mousePressEvent(QGraphicsSceneMouseEvent *event) {
     }
 }
 
-// setOn(bool, int) is inherited from GraphicElementInput:
-void GraphicElementInput::setOn(const bool value, const int port) {
+// setOn(bool, int) is inherited from ElementInput:
+void ElementInput::setOn(const bool value, const int port) {
     Q_UNUSED(port)
     m_isOn = value;
     setPixmap(static_cast<int>(m_isOn));                      // Visual update
@@ -848,7 +848,7 @@ During simulation initialization, physical wire connections are converted into a
 
 ```cpp
 struct SimInputConnection {
-    GraphicElement *sourceElement = nullptr;
+    Element *sourceElement = nullptr;
     int sourceOutputIndex = 0;
 };
 ```
@@ -1415,9 +1415,9 @@ This walkthrough adds a hypothetical **Buffer** gate (output = input, 1 input, 1
 
 #pragma once
 
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 
-class Buffer : public GraphicElement {
+class Buffer : public Element {
     Q_OBJECT
 public:
     explicit Buffer(QGraphicsItem *parent = nullptr);
@@ -1466,7 +1466,7 @@ struct ElementInfo<Buffer> {
     }();
 };
 
-Buffer::Buffer(QGraphicsItem *parent) : GraphicElement(ElementType::Buffer, parent) {}
+Buffer::Buffer(QGraphicsItem *parent) : Element(ElementType::Buffer, parent) {}
 
 void Buffer::updateLogic() {
     if (!simUpdateInputsAllowUnknown()) return;
@@ -1666,7 +1666,7 @@ Ordered by difficulty:
 | Task                                                      | Skills Practiced            |
 |-----------------------------------------------------------|-----------------------------|
 | Add a missing truth-table test for an existing gate       | Test framework, element API |
-| Add Doxygen comments to `GraphicElement.h` public methods | Code reading, documentation |
+| Add Doxygen comments to `Element.h` public methods | Code reading, documentation |
 | Create a new example circuit (`.panda` file)              | Understanding the UI        |
 | Fix a typo or improve a UI string                         | Build system, PR workflow   |
 
@@ -1742,8 +1742,8 @@ Ordered by difficulty:
 | `App/Core/Settings.h`               | Persistent settings management                        |
 | `App/Core/ThemeManager.h`           | Theme system (light/dark/system)                      |
 | `App/Core/Priorities.h`             | Topological sorting and feedback detection            |
-| `App/Element/GraphicElement.h`      | Base class for all elements                           |
-| `App/Element/GraphicElementInput.h` | Base class for input elements                         |
+| `App/Element/Element.h`             | Base class for all elements                           |
+| `App/Element/ElementInput.h`        | Base class for input elements                         |
 | `App/Element/ElementInfo.h`         | Self-registration template and constraints            |
 | `App/Element/ElementFactory.h`      | Factory for creating elements by type                 |
 | `App/Element/ElementMetadata.h`     | Element metadata (icons, names, capabilities)         |

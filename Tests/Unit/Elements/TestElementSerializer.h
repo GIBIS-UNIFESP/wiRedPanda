@@ -5,7 +5,7 @@
 
 #include <QObject>
 
-class TestGraphicElementSerializer : public QObject
+class TestElementSerializer : public QObject
 {
     Q_OBJECT
 

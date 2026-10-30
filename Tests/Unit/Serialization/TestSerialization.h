@@ -16,7 +16,7 @@
 #include "App/Core/Enums.h"
 
 class WorkSpace;
-class GraphicElement;
+class Element;
 
 class TestSerialization : public QObject
 {
@@ -129,7 +129,7 @@ private slots:
     void testFuzzRegressionNonFinitePosition();         // ic_nonfinite_position (fuzz_ic_file)
     void testFuzzRegressionNonFiniteRotation();         // ic_nonfinite_rotation (fuzz_ic_file)
 
-    // Regression: GraphicElementSerializer::loadTrigger() (old-format, version 1.9-4.0)
+    // Regression: ElementSerializer::loadTrigger() (old-format, version 1.9-4.0)
     // used raw, unbounded QKeySequence deserialization instead of the bounded reader
     // already used by the new-format path.
     void testReadBoundedKeySequenceRoundTrip();
@@ -189,7 +189,7 @@ private:
     void loadFromMemory(WorkSpace &workspace, const QByteArray &data);
     /// What loading \a data into \a workspace throws, or an empty string when it loads.
     QString loadErrorOf(WorkSpace &workspace, const QByteArray &data);
-    void verifyElementEquality(GraphicElement *original, GraphicElement *loaded);
+    void verifyElementEquality(Element *original, Element *loaded);
 
     /// A file in the current format: its header, then the metadata and what \a writeItems writes, compressed as one
     /// payload.

@@ -9,7 +9,7 @@
 #include <QKeyEvent>
 #include <QLineEdit>
 
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/Commands.h"
@@ -51,7 +51,7 @@ InlineLabelEditor::InlineLabelEditor(Scene *scene)
 
 InlineLabelEditor::~InlineLabelEditor() = default;
 
-void InlineLabelEditor::start(GraphicElement *element)
+void InlineLabelEditor::start(Element *element)
 {
     if (!element) {
         return;

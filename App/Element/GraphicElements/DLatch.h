@@ -8,7 +8,7 @@
 #pragma once
 
 #include "App/Core/ThemeManager.h"
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 
 /**
  * \class DLatch
@@ -16,7 +16,7 @@
  *
  * \details Has 2 inputs (D, Enable) and 2 outputs (Q, Q̄).
  */
-class DLatch : public GraphicElement
+class DLatch : public Element
 {
     Q_OBJECT
 

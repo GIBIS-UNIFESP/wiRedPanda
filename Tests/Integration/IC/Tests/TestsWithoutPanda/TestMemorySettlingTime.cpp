@@ -69,8 +69,8 @@ void buildSingleStageDecoder6bit(WorkSpace* workspace,
 
         for (int bit = 0; bit < 6; bit++) {
             const bool bitSet = (addr & (1 << bit)) != 0;
-            GraphicElement *src = bitSet ? static_cast<GraphicElement *>(&circuit->addressBits[bit])
-                                         : static_cast<GraphicElement *>(&circuit->notGates[bit]);
+            Element *src = bitSet ? static_cast<Element *>(&circuit->addressBits[bit])
+                                         : static_cast<Element *>(&circuit->notGates[bit]);
             builder.connect(src, 0, decoder, bit);
         }
         builder.connect(&circuit->controlSignal, 0, decoder, 6);
@@ -137,8 +137,8 @@ void buildCascadedDecoder6bit(WorkSpace* workspace,
         // Level 1: decode the low three address bits.
         for (int bit = 0; bit < 3; bit++) {
             const bool bitSet = (addr & (1 << bit)) != 0;
-            GraphicElement *src = bitSet ? static_cast<GraphicElement *>(&circuit->addressBits[bit])
-                                         : static_cast<GraphicElement *>(&circuit->notGates[bit]);
+            Element *src = bitSet ? static_cast<Element *>(&circuit->addressBits[bit])
+                                         : static_cast<Element *>(&circuit->notGates[bit]);
             builder.connect(src, 0, l1, bit);
         }
 
@@ -146,8 +146,8 @@ void buildCascadedDecoder6bit(WorkSpace* workspace,
         builder.connect(l1, 0, l2, 0);
         for (int bit = 3; bit < 6; bit++) {
             const bool bitSet = (addr & (1 << bit)) != 0;
-            GraphicElement *src = bitSet ? static_cast<GraphicElement *>(&circuit->addressBits[bit])
-                                         : static_cast<GraphicElement *>(&circuit->notGates[bit]);
+            Element *src = bitSet ? static_cast<Element *>(&circuit->addressBits[bit])
+                                         : static_cast<Element *>(&circuit->notGates[bit]);
             builder.connect(src, 0, l2, bit - 2);
         }
         builder.connect(&circuit->controlSignal, 0, l2, 4);

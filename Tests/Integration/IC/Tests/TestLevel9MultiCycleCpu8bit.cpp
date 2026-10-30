@@ -95,10 +95,10 @@ struct MultiCycleCpu8bitFixture {
         return true;
     }
 
-    TestUtils::Bits readPC() { return readMultiBitOutput(QVector<GraphicElement *>(pcLeds.begin(), pcLeds.end()), 0); }
-    TestUtils::Bits readResult() { return readMultiBitOutput(QVector<GraphicElement *>(resultLeds.begin(), resultLeds.end()), 0); }
-    TestUtils::Bits readCounter() { return readMultiBitOutput(QVector<GraphicElement *>(counterLeds.begin(), counterLeds.end()), 0); }
-    TestUtils::Bits readInstr() { return readMultiBitOutput(QVector<GraphicElement *>(instrLeds.begin(), instrLeds.end()), 0); }
+    TestUtils::Bits readPC() { return readMultiBitOutput(QVector<Element *>(pcLeds.begin(), pcLeds.end()), 0); }
+    TestUtils::Bits readResult() { return readMultiBitOutput(QVector<Element *>(resultLeds.begin(), resultLeds.end()), 0); }
+    TestUtils::Bits readCounter() { return readMultiBitOutput(QVector<Element *>(counterLeds.begin(), counterLeds.end()), 0); }
+    TestUtils::Bits readInstr() { return readMultiBitOutput(QVector<Element *>(instrLeds.begin(), instrLeds.end()), 0); }
 
     void resetCpu()
     {

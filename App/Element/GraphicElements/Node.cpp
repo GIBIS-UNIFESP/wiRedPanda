@@ -52,7 +52,7 @@ struct ElementInfo<Node> {
 // Node is a wire junction / fan-out point: 1 input, 1 output (1:1 pass-through).
 // Its sole logical role is to create a named connection split on the canvas.
 Node::Node(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Node, parent)
+    : Element(ElementType::Node, parent)
 {
     // A node's input is required (cannot be left unconnected) because its sole
     // purpose is to act as a visible junction/fan-out point on a wire.
@@ -175,7 +175,7 @@ void Node::setWirelessMode(WirelessMode mode)
 
 void Node::save(QDataStream &stream, SerializationOptions options) const
 {
-    GraphicElement::save(stream, options);
+    Element::save(stream, options);
 
     QMap<QString, QVariant> map;
     // PortableFile streams omit the default; the loader's
@@ -189,7 +189,7 @@ void Node::save(QDataStream &stream, SerializationOptions options) const
 
 void Node::load(QDataStream &stream, SerializationContext &context)
 {
-    GraphicElement::load(stream, context);
+    Element::load(stream, context);
 
     if (!VersionInfo::hasWirelessMode(context.version)) {
         return;

@@ -8,7 +8,7 @@
 #pragma once
 
 #include "App/Core/ThemeManager.h"
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 
 /**
  * \class TFlipFlop
@@ -16,7 +16,7 @@
  *
  * \details Has 4 inputs (T, Clock, Preset̄, Clear̄) and 2 outputs (Q, Q̄).
  */
-class TFlipFlop : public GraphicElement
+class TFlipFlop : public Element
 {
     Q_OBJECT
 

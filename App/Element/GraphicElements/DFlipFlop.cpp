@@ -38,7 +38,7 @@ struct ElementInfo<DFlipFlop> {
 };
 
 DFlipFlop::DFlipFlop(QGraphicsItem *parent)
-    : GraphicElement(ElementType::DFlipFlop, parent)
+    : Element(ElementType::DFlipFlop, parent)
 {
     // Call the most-derived override explicitly (see SRFlipFlop.cpp for rationale).
     DFlipFlop::updatePortsProperties();
@@ -106,7 +106,7 @@ void DFlipFlop::resetSimState()
     // Reset Q/~Q to power-on defaults via the base class, then restore the
     // edge-detection variables so column 0 of the next sweep is treated as
     // a fresh start (no phantom rising edge from a prior run).
-    GraphicElement::resetSimState();
+    Element::resetSimState();
     m_simLastClk   = Status::Inactive;
     m_simLastValue = Status::Active;
 }
@@ -115,14 +115,14 @@ void DFlipFlop::saveSimState(QVector<Status> &out) const
 {
     // Mirrors resetSimState(): the outputs via the base, then the edge-detection history, in a
     // fixed order that restoreSimState() reads back identically.
-    GraphicElement::saveSimState(out);
+    Element::saveSimState(out);
     out.append(m_simLastClk);
     out.append(m_simLastValue);
 }
 
 void DFlipFlop::restoreSimState(const QVector<Status> &in, int &cursor)
 {
-    GraphicElement::restoreSimState(in, cursor);
+    Element::restoreSimState(in, cursor);
     if (cursor < in.size()) { m_simLastClk = in.at(cursor++); }
     if (cursor < in.size()) { m_simLastValue = in.at(cursor++); }
 }

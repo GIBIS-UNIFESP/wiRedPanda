@@ -13,7 +13,7 @@
 
 #include "App/Core/Enums.h"
 
-class GraphicElement;
+class Element;
 
 /**
  * \class ElementFactory
@@ -44,13 +44,13 @@ public:
     // --- Element creation ---
 
     /// Constructs and returns a new graphic element of the given \a type.
-    static GraphicElement *buildElement(const ElementType type);
+    static Element *buildElement(const ElementType type);
 
     /// Returns \c true if a creator function is registered for \a type.
     static bool hasCreator(ElementType type);
 
     /// Registers a creator lambda for \a type, used by buildElement().
-    static void registerCreator(ElementType type, std::function<GraphicElement *()> creator);
+    static void registerCreator(ElementType type, std::function<Element *()> creator);
 
     // --- Type name conversion ---
 
@@ -78,5 +78,5 @@ public:
     static QPixmap pixmap(const ElementType type);
 
 private:
-    QHash<ElementType, std::function<GraphicElement *()>> m_creatorMap;
+    QHash<ElementType, std::function<Element *()>> m_creatorMap;
 };

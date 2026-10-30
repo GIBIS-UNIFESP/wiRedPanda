@@ -21,8 +21,8 @@
 
 #include "App/Core/Constants.h"
 #include "App/Core/MimeTypes.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElement.h"
 #include "App/IO/Serialization.h"
 #include "App/Scene/ClipboardManager.h"
 #include "App/Scene/GraphicsView.h"
@@ -53,13 +53,13 @@ QString token(const QGraphicsItem *item)
         return QString("-");
     }
     switch (item->type()) {
-    case GraphicElement::Type:
-        return 'E' + QString::number(static_cast<const GraphicElement *>(item)->id());
+    case Element::Type:
+        return 'E' + QString::number(static_cast<const Element *>(item)->id());
     case Connection::Type:
         return 'W' + QString::number(static_cast<const Connection *>(item)->id());
     case Port::Type: {
         const auto *port = static_cast<const Port *>(item);
-        const auto *element = port->graphicElement();
+        const auto *element = port->element();
         return 'P' + QString::number(element ? element->id() : -1) + '.' + (port->isInput() ? 'i' : 'o')
                + QString::number(port->index());
     }
@@ -73,7 +73,7 @@ QString clickTarget(const Scene *scene, const QPointF &pos)
 {
     const auto items = scene->QGraphicsScene::items(pos, Qt::IntersectsItemShape, Qt::DescendingOrder);
     const auto target = std::find_if(items.cbegin(), items.cend(), [](const QGraphicsItem *item) {
-        return (item->type() == GraphicElement::Type) || (item->type() == Connection::Type);
+        return (item->type() == Element::Type) || (item->type() == Connection::Type);
     });
     return token((target == items.cend()) ? nullptr : *target);
 }
@@ -118,7 +118,7 @@ QRectF gridArea(const Scene *scene, const qreal step)
     };
 
     for (const auto *element : TestUtils::elementsById(scene)) {
-        const QRectF body = element->mapRectToScene(element->GraphicElement::boundingRect());
+        const QRectF body = element->mapRectToScene(element->Element::boundingRect());
         include(body.topLeft());
         include(body.bottomRight());
         for (const auto *port : element->allPorts()) {
@@ -172,7 +172,7 @@ QString gridsOf(Scene *scene)
     return dump;
 }
 
-GraphicElement *addElement(Scene *scene, const ElementType type, const QPointF &pos)
+Element *addElement(Scene *scene, const ElementType type, const QPointF &pos)
 {
     auto *element = ElementFactory::buildElement(type);
     element->setPos(pos);
@@ -180,7 +180,7 @@ GraphicElement *addElement(Scene *scene, const ElementType type, const QPointF &
     return element;
 }
 
-Connection *addWire(Scene *scene, GraphicElement *from, GraphicElement *to)
+Connection *addWire(Scene *scene, Element *from, Element *to)
 {
     auto *wire = new Connection();
     wire->setStartPort(from->outputPort(0));
@@ -196,7 +196,7 @@ QPointF middleOf(const Connection *wire)
 }
 
 /// The middle of an element's 64x64 body, clear of its ports.
-QPointF bodyOf(const GraphicElement *element)
+QPointF bodyOf(const Element *element)
 {
     return element->pos() + QPointF(32, 32);
 }
@@ -215,7 +215,7 @@ QString selection(const Scene *scene)
 {
     QStringList tokens;
     for (const auto *item : scene->selectedItems()) {
-        if ((item->type() == GraphicElement::Type) || (item->type() == Connection::Type)) {
+        if ((item->type() == Element::Type) || (item->type() == Connection::Type)) {
             tokens << token(item);
         }
     }
@@ -256,11 +256,11 @@ bool isRouting(Scene *scene)
 /// that each element, wire and port is a target of its own. The input switch is never pressed, since a press toggles
 /// it.
 struct Circuit {
-    GraphicElement *input = nullptr;
-    GraphicElement *gate = nullptr;
-    GraphicElement *led = nullptr;
-    GraphicElement *spare = nullptr;
-    GraphicElement *sink = nullptr;
+    Element *input = nullptr;
+    Element *gate = nullptr;
+    Element *led = nullptr;
+    Element *spare = nullptr;
+    Element *sink = nullptr;
     Connection *inToGate = nullptr;
     Connection *gateToLed = nullptr;
 };
@@ -783,11 +783,11 @@ void TestPointerSnapshot::testDuplicateSelectsItsCopiesWiresIncluded()
     const int lastId = f.scene->lastId();
     f.scene->duplicateAction();
 
-    QList<const GraphicElement *> copies;
+    QList<const Element *> copies;
     QList<const Connection *> copiedWires;
     for (const auto *item : f.scene->selectedItems()) {
-        if (item->type() == GraphicElement::Type) {
-            copies << static_cast<const GraphicElement *>(item);
+        if (item->type() == Element::Type) {
+            copies << static_cast<const Element *>(item);
         } else if (item->type() == Connection::Type) {
             copiedWires << static_cast<const Connection *>(item);
         }
@@ -798,8 +798,8 @@ void TestPointerSnapshot::testDuplicateSelectsItsCopiesWiresIncluded()
 
     const auto *copiedWire = copiedWires.constFirst();
     QVERIFY(copiedWire->id() > lastId);
-    QVERIFY(copies.contains(copiedWire->startPort()->graphicElement()));
-    QVERIFY(copies.contains(copiedWire->endPort()->graphicElement()));
+    QVERIFY(copies.contains(copiedWire->startPort()->element()));
+    QVERIFY(copies.contains(copiedWire->endPort()->element()));
     for (const auto *copy : std::as_const(copies)) {
         QVERIFY(copy->id() > lastId);
         const auto *original = (copy->elementType() == ElementType::Not) ? f.c.gate : f.c.led;

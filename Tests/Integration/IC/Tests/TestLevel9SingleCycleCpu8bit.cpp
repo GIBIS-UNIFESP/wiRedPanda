@@ -178,9 +178,9 @@ struct CPUFixture {
         sim->update();
     }
 
-    TestUtils::Bits readPC() { return readMultiBitOutput(QVector<GraphicElement *>(pcLeds.begin(), pcLeds.end()), 0); }
-    TestUtils::Bits readResult() { return readMultiBitOutput(QVector<GraphicElement *>(resultLeds.begin(), resultLeds.end()), 0); }
-    TestUtils::Bits readInstruction() { return readMultiBitOutput(QVector<GraphicElement *>(instrLeds.begin(), instrLeds.end()), 0); }
+    TestUtils::Bits readPC() { return readMultiBitOutput(QVector<Element *>(pcLeds.begin(), pcLeds.end()), 0); }
+    TestUtils::Bits readResult() { return readMultiBitOutput(QVector<Element *>(resultLeds.begin(), resultLeds.end()), 0); }
+    TestUtils::Bits readInstruction() { return readMultiBitOutput(QVector<Element *>(instrLeds.begin(), instrLeds.end()), 0); }
     Status readZero() { return inputStatus(zeroLed); }
     Status readSign() { return inputStatus(signLed); }
 };

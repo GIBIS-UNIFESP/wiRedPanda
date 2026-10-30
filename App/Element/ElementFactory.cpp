@@ -7,8 +7,8 @@
 #include <QMetaEnum>
 
 #include "App/Core/Common.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementMetadata.h"
-#include "App/Element/GraphicElement.h"
 
 ElementType ElementFactory::textToType(const QString &text)
 {
@@ -110,7 +110,7 @@ QPixmap ElementFactory::pixmap(const ElementType type)
     return QPixmap{ElementMetadataRegistry::metadata(type).pixmapPath()};
 }
 
-GraphicElement *ElementFactory::buildElement(const ElementType type)
+Element *ElementFactory::buildElement(const ElementType type)
 {
     qCDebug(four) << type;
 
@@ -126,7 +126,7 @@ GraphicElement *ElementFactory::buildElement(const ElementType type)
     return it.value()();
 }
 
-void ElementFactory::registerCreator(ElementType type, std::function<GraphicElement *()> creator)
+void ElementFactory::registerCreator(ElementType type, std::function<Element *()> creator)
 {
     instance().m_creatorMap[type] = std::move(creator);
 }

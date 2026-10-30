@@ -77,7 +77,7 @@ struct RippleAdder8bitFixture {
 
     TestUtils::Bits readSum()
     {
-        QVector<GraphicElement *> sum_vec;
+        QVector<Element *> sum_vec;
         for (int i = 0; i < 8; i++) {
             sum_vec.append(sum[i]);
         }

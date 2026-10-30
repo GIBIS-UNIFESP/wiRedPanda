@@ -9,7 +9,7 @@
 
 #include <chrono>
 
-#include "App/Element/GraphicElementInput.h"
+#include "App/Element/ElementInput.h"
 
 /**
  * \class Clock
@@ -19,7 +19,7 @@
  * initial phase delay.  The clock is the only element driven by wall-clock time
  * rather than the synchronous simulation cycle.
  */
-class Clock : public GraphicElementInput
+class Clock : public ElementInput
 {
     Q_OBJECT
 
@@ -65,7 +65,7 @@ public:
     void setOff() override;
 
     // Bring the base setOn(bool, int) overload into scope (hidden by setOn() above).
-    using GraphicElementInput::setOn;
+    using ElementInput::setOn;
 
     /// Sets the clock output frequency to \a freq Hz, when acceptsFrequency().
     void setFrequency(const double freq) override;

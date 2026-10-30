@@ -251,7 +251,7 @@ void TestStatusOps::testStatusXorAll()
 }
 
 // ============================================================
-// Gate-level 4-state integration tests (using GraphicElement API)
+// Gate-level 4-state integration tests (using Element API)
 // ============================================================
 
 void TestStatusOps::testAndGateUnknownDomination()

@@ -18,7 +18,7 @@ class QPainter;
  * \brief Renders an IC's DIP-package body and builds its sizing/preview pixmaps.
  *
  * \details Extracted from IC so rendering is a collaborator rather than a cluster of
- * methods on the element itself, mirroring the GraphicElement / GraphicElementSerializer
+ * methods on the element itself, mirroring the Element / ElementSerializer
  * split. A friend of IC, it reaches the element's appearance/pixmap state directly. All
  * methods are static and take the IC explicitly; IC keeps all state, so this is a pure
  * logic extraction, not a new owner-back-pointer collaborator.

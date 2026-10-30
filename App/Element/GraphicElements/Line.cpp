@@ -41,6 +41,6 @@ struct ElementInfo<Line> {
 // simulation role. It exists so users can draw visual separators and annotation
 // lines on the canvas.
 Line::Line(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Line, parent)
+    : Element(ElementType::Line, parent)
 {
 }

@@ -18,8 +18,8 @@
 #include <QTemporaryDir>
 #include <QTest>
 
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
@@ -73,7 +73,7 @@ void TestSerialization::loadFromMemory(WorkSpace &workspace, const QByteArray &d
     workspace.load(stream, version, {});
 }
 
-void TestSerialization::verifyElementEquality(GraphicElement *original, GraphicElement *loaded)
+void TestSerialization::verifyElementEquality(Element *original, Element *loaded)
 {
     QVERIFY2(loaded != nullptr, "Loaded element is null");
     QCOMPARE(loaded->elementType(), original->elementType());
@@ -103,7 +103,7 @@ void TestSerialization::writeElement(QDataStream &stream, const ElementType type
                                      const int inputs, const int outputs)
 {
     // As a file's save writes it: the properties, an empty map per port, no appearance of its own
-    stream << static_cast<int>(GraphicElement::Type) << type << properties;
+    stream << static_cast<int>(Element::Type) << type << properties;
     stream << QList<QMap<QString, QVariant>>(inputs) << QList<QMap<QString, QVariant>>(outputs)
            << QList<QMap<QString, QVariant>>();
 }
@@ -267,7 +267,7 @@ void TestSerialization::testConnectionPersistence()
     auto loadedElements = workspace2.scene()->elements();
 
     // Find the reloaded elements
-    GraphicElement *loadedSw = nullptr, *loadedAnd = nullptr, *loadedLed = nullptr;
+    Element *loadedSw = nullptr, *loadedAnd = nullptr, *loadedLed = nullptr;
     for (auto *elem : loadedElements) {
         if (elem->elementType() == ElementType::InputSwitch) loadedSw = elem;
         else if (elem->elementType() == ElementType::And) loadedAnd = elem;
@@ -571,7 +571,7 @@ void TestSerialization::testSlimFormatElidesDefaults()
 
     int typeTag = 0;
     payloadStream >> typeTag;
-    QCOMPARE(typeTag, static_cast<int>(GraphicElement::Type));
+    QCOMPARE(typeTag, static_cast<int>(Element::Type));
     ElementType elmType;
     payloadStream >> elmType;
     QCOMPARE(elmType, ElementType::And);
@@ -639,7 +639,7 @@ void TestSerialization::testNonDefaultValuesRoundTrip()
     WorkSpace workspace2;
     loadFromMemory(workspace2, data);
 
-    GraphicElement *loadedAnd = nullptr, *loadedLed = nullptr, *loadedClock = nullptr;
+    Element *loadedAnd = nullptr, *loadedLed = nullptr, *loadedClock = nullptr;
     InputSwitch *loadedSw = nullptr;
     for (auto *elem : workspace2.scene()->elements()) {
         switch (elem->elementType()) {
@@ -902,7 +902,7 @@ void TestSerialization::testLargeCircuitWith100Elements()
     WorkSpace workspace1;
     Scene *scene1 = workspace1.scene();
 
-    QList<GraphicElement *> gates;
+    QList<Element *> gates;
     for (int i = 0; i < 100; ++i) {
         auto *gate = ElementFactory::buildElement(ElementType::And);
         QVERIFY2(gate != nullptr, QString("Failed to create And element %1").arg(i).toLatin1());
@@ -1281,7 +1281,7 @@ void TestSerialization::testPayloadEndingInsideAnElement()
         for (int i = 0; i < 2; ++i) {
             writeElement(stream, ElementType::And, {{"pos", QPointF(100 + i * 50, 100)}, {"id", i + 1}}, 2, 1);
         }
-        stream << static_cast<int>(GraphicElement::Type) << ElementType::And
+        stream << static_cast<int>(Element::Type) << ElementType::And
                << QMap<QString, QVariant>{{"pos", QPointF(200, 100)}, {"id", 3}};
     });
 
@@ -1414,7 +1414,7 @@ void TestSerialization::testStreamPositionValidation()
 
 void TestSerialization::testConnectionSurvivesSaveLoadRoundTrip()
 {
-    // Deleting a port that has a live connection (GraphicElement::setInputSize() shrinking
+    // Deleting a port that has a live connection (Element::setInputSize() shrinking
     // below the wired index) deletes the connection along with it -- InputPort/OutputPort's
     // destructors drain their owned connections -- so a save/load round trip can never observe
     // a connection referencing a port that no longer exists via the production API; that
@@ -1449,7 +1449,7 @@ void TestSerialization::testConnectionSurvivesSaveLoadRoundTrip()
         loadFromMemory(workspace2, data);
         QCOMPARE(workspace2.scene()->elements().size(), 2);
 
-        GraphicElement *loadedAnd = nullptr, *loadedOr = nullptr;
+        Element *loadedAnd = nullptr, *loadedOr = nullptr;
         for (auto *elm : workspace2.scene()->elements()) {
             if (elm->elementType() == ElementType::And) { loadedAnd = elm; }
             if (elm->elementType() == ElementType::Or)  { loadedOr = elm; }
@@ -1970,7 +1970,7 @@ void TestSerialization::testFuzzRegressionElementStreamMapOOM()
     // An element's properties claiming more entries than the stream holds bytes for are refused before any is read
     // (libFuzzer's bugG_oom_element_stream_map, whose reproducer now stops at its first record's type)
     const QByteArray data = currentFormatFile([](QDataStream &stream) {
-        stream << static_cast<int>(GraphicElement::Type) << ElementType::And << quint32{0x7FFFFFFF};
+        stream << static_cast<int>(Element::Type) << ElementType::And << quint32{0x7FFFFFFF};
     });
 
     WorkSpace workspace;
@@ -2009,7 +2009,7 @@ void TestSerialization::testFuzzRegressionOldFormatICSkinRef()
     QDataStream stream(&data, QIODevice::WriteOnly);
     stream.setVersion(QDataStream::Qt_5_12);
     stream << QStringLiteral("wiRedPanda 3.3") << QString() << QRectF();
-    stream << static_cast<int>(GraphicElement::Type) << ElementType::IC;
+    stream << static_cast<int>(Element::Type) << ElementType::IC;
     stream << QPointF(0, 0) << qreal(0) << QString() << quint64{1} << quint64{1} << quint64{1} << quint64{1} << QKeySequence();
     stream << quint64{1} << quint64{10} << QString() << 0;
     stream << quint64{1} << quint64{11} << QString() << 0;
@@ -2101,7 +2101,7 @@ void TestSerialization::testReadBoundedKeySequenceAcceptsMaxFourKeys()
 
 void TestSerialization::testReadBoundedKeySequenceRejectsImplausibleCount()
 {
-    // Regression: GraphicElementSerializer::loadTrigger() (old-format loader, versions
+    // Regression: ElementSerializer::loadTrigger() (old-format loader, versions
     // 1.9-4.0) used Qt's raw, unbounded QKeySequence deserialization, which reserve()s a
     // QList<int> sized by this stream-controlled count before validating it. A crafted
     // old-format .panda file with a valid header/version and this count is enough to
@@ -2453,7 +2453,7 @@ void TestSerialization::testDeserializeTruncatedElementTypeThrows()
     QByteArray data;
     QDataStream writeStream(&data, QIODevice::WriteOnly);
     writeStream.setVersion(QDataStream::Qt_5_12);
-    writeStream << static_cast<int>(GraphicElement::Type);
+    writeStream << static_cast<int>(Element::Type);
     const char partial[2] = {0, 0}; // 2 of the 8 bytes a quint64 ElementType needs
     writeStream.writeRawData(partial, sizeof(partial));
 
@@ -2483,7 +2483,7 @@ void TestSerialization::testDeserializeUnknownElementTypeThrows()
     QByteArray data;
     QDataStream writeStream(&data, QIODevice::WriteOnly);
     writeStream.setVersion(QDataStream::Qt_5_12);
-    writeStream << static_cast<int>(GraphicElement::Type) << static_cast<ElementType>(9999);
+    writeStream << static_cast<int>(Element::Type) << static_cast<ElementType>(9999);
 
     QHash<quint64, Port *> portMap;
     SerializationContext context{portMap, FormatRev::current, SerializationPurpose::PortableFile};
@@ -2509,7 +2509,7 @@ void TestSerialization::testDeserializeTruncatedOldFormatElementLoadThrows()
     QByteArray data;
     QDataStream writeStream(&data, QIODevice::WriteOnly);
     writeStream.setVersion(QDataStream::Qt_5_12);
-    writeStream << static_cast<int>(GraphicElement::Type);
+    writeStream << static_cast<int>(Element::Type);
     writeStream << ElementType::And;
     // Nothing follows: loadPos()'s QPointF read (16 bytes) has 0 bytes available.
 
@@ -2622,7 +2622,7 @@ void TestSerialization::testTypeNameMapsKnownTypesAndDefaultsForUnknown()
     // disabled-by-default logging category never evaluates in tests -- call it directly.
     QCOMPARE(Serialization::typeName(QGraphicsItem::UserType + 1), QStringLiteral("Port"));
     QCOMPARE(Serialization::typeName(QGraphicsItem::UserType + 2), QStringLiteral("Connection"));
-    QCOMPARE(Serialization::typeName(QGraphicsItem::UserType + 3), QStringLiteral("GraphicElement"));
+    QCOMPARE(Serialization::typeName(QGraphicsItem::UserType + 3), QStringLiteral("Element"));
     QCOMPARE(Serialization::typeName(0), QStringLiteral("UnknownType"));
 }
 

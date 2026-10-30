@@ -53,7 +53,7 @@ struct ElementInfo<IC> {
 };
 
 IC::IC(QGraphicsItem *parent)
-    : GraphicElement(ElementType::IC, parent)
+    : Element(ElementType::IC, parent)
 {
     // ICs display their label vertically alongside the chip body, matching the physical
     // convention of reading IC labels along the side of a physical DIP package
@@ -84,7 +84,7 @@ QStringList IC::externalFiles() const
 
 void IC::save(QDataStream &stream, SerializationOptions options) const
 {
-    GraphicElement::save(stream, options);
+    Element::save(stream, options);
 
     QMap<QString, QVariant> map;
 
@@ -108,14 +108,14 @@ void IC::save(QDataStream &stream, SerializationOptions options) const
 
 void IC::load(QDataStream &stream, SerializationContext &context)
 {
-    GraphicElement::load(stream, context);
+    Element::load(stream, context);
 
-    // Save the portMap keys for each port that GraphicElement::load() just
+    // Save the portMap keys for each port that Element::load() just
     // registered.  Loading the sub-circuit below destroys and recreates all
     // ports, so we must re-register the new ports under the original keys
     // to keep the outer portMap valid for connection deserialization.
     // Old format uses ptr values as keys; new format uses serialIds.  The
-    // keys come from the ones GraphicElement::load() just registered, never
+    // keys come from the ones Element::load() just registered, never
     // from a search of the whole map: it holds every port loaded so far, so a
     // search per IC would make a load quadratic in the circuit's ICs.  A key
     // counts while it still names its port (a later port of the same element
@@ -301,7 +301,7 @@ void IC::loadFromDrop(const QString &fileName, const QString &contextDir)
     loadFile(fileName, contextDir);
 }
 
-IC::PortMetadata IC::buildPortMetadata(const QVector<GraphicElement *> &elements)
+IC::PortMetadata IC::buildPortMetadata(const QVector<Element *> &elements)
 {
     return ICLoader::buildPortMetadata(elements);
 }
@@ -405,7 +405,7 @@ void IC::saveSimState(QVector<Status> &out) const
 {
     // Same reason resetSimState() recurses: the IC is only structure, but its internal
     // primitives are simulated directly by the flat netlist and hold the sequential state.
-    GraphicElement::saveSimState(out);
+    Element::saveSimState(out);
     for (auto *internal : std::as_const(m_internalElements)) {
         if (internal) {
             internal->saveSimState(out);
@@ -415,7 +415,7 @@ void IC::saveSimState(QVector<Status> &out) const
 
 void IC::restoreSimState(const QVector<Status> &in, int &cursor)
 {
-    GraphicElement::restoreSimState(in, cursor);
+    Element::restoreSimState(in, cursor);
     for (auto *internal : std::as_const(m_internalElements)) {
         if (internal) {
             internal->restoreSimState(in, cursor);
@@ -429,7 +429,7 @@ void IC::refresh()
 
 void IC::retranslate()
 {
-    GraphicElement::retranslate();
+    Element::retranslate();
     if (m_loaded) {
         setToolTip(QString());
     }

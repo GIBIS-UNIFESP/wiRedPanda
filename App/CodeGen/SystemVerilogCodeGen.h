@@ -18,7 +18,7 @@
 
 #include "App/Core/Enums.h"
 
-class GraphicElement;
+class Element;
 class IC;
 class InputPort;
 class Port;
@@ -39,7 +39,7 @@ public:
      * \param port       Source Port this mapping refers to.
      * \param portNumber Index of the port within the element (default 0).
      */
-    MappedPinSystemVerilog(GraphicElement *elm, const QString &pin, const QString &varName, Port *port, const int portNumber = 0)
+    MappedPinSystemVerilog(Element *elm, const QString &pin, const QString &varName, Port *port, const int portNumber = 0)
         : m_elm(elm)
         , m_port(port)
         , m_pin(pin)
@@ -48,7 +48,7 @@ public:
     {
     }
 
-    GraphicElement *m_elm = nullptr; ///< Owning graphic element.
+    Element *m_elm = nullptr; ///< Owning graphic element.
     Port *m_port = nullptr;       ///< Source port in the circuit graph.
     QString m_pin;                   ///< Top-level module port name.
     QString m_varName;               ///< Generated internal signal name.
@@ -83,7 +83,7 @@ class SystemVerilogCodeGen
 
 public:
     /// Constructs the code generator for the given output \a fileName and circuit \a elements.
-    SystemVerilogCodeGen(const QString &fileName, const QVector<GraphicElement *> &elements);
+    SystemVerilogCodeGen(const QString &fileName, const QVector<Element *> &elements);
 
     /// Generates the SystemVerilog output file for the circuit.
     void generate();
@@ -116,13 +116,13 @@ private:
     // --- Variable / Declaration Emission ---
 
     /// Assigns variable names to all element ports in topological order.
-    void assignVariablesRec(const QVector<GraphicElement *> &elements);
+    void assignVariablesRec(const QVector<Element *> &elements);
     /// Scans \a elements for IC instances and registers their module metadata in m_icModules.
-    void collectICTypes(const QVector<GraphicElement *> &elements);
+    void collectICTypes(const QVector<Element *> &elements);
     /// Emits `logic` declarations for auxiliary internal signals.
     void declareAuxVariables();
     /// Recursive helper: emits auxiliary variable declarations for \a elements.
-    void declareAuxVariablesRec(const QVector<GraphicElement *> &elements);
+    void declareAuxVariablesRec(const QVector<Element *> &elements);
     /// Emits top-level `input` port declarations.
     void declareInputs();
     /// Emits top-level `output` port declarations.
@@ -147,13 +147,13 @@ private:
     /// loop (cross-coupled latches). These are emitted as `reg` + `always @(*)`
     /// with a seed value so SystemVerilog settles them instead of x-locking, and
     /// the region is wrapped in a Verilator UNOPTFLAT lint waiver.
-    static QSet<GraphicElement *> findFeedbackElements(const QVector<GraphicElement *> &elements);
+    static QSet<Element *> findFeedbackElements(const QVector<Element *> &elements);
 
     // --- Combinational Logic ---
 
     /// Returns the combinational logic expression for \a elm's output, over the variables of the outputs driving its
     /// inputs.
-    QString generateLogicExpression(GraphicElement *elm);
+    QString generateLogicExpression(Element *elm);
 
     // --- Top-Level Structure ---
 
@@ -172,7 +172,7 @@ private:
     QTextStream m_stream;                      ///< Text stream writing to m_file.
     QVector<MappedPinSystemVerilog> m_inputMap; ///< Final input pin mappings (populated by generate()).
     QVector<MappedPinSystemVerilog> m_outputMap; ///< Final output pin mappings (populated by generate()).
-    const QVector<GraphicElement *> m_elements; ///< Topologically sorted circuit elements.
+    const QVector<Element *> m_elements; ///< Topologically sorted circuit elements.
     int m_globalCounter = 1;                   ///< Monotonic counter for unique signal names.
-    QSet<GraphicElement *> m_feedbackElements; ///< Internal gates on a combinational feedback loop, for the IC module currently being emitted.
+    QSet<Element *> m_feedbackElements; ///< Internal gates on a combinational feedback loop, for the IC module currently being emitted.
 };

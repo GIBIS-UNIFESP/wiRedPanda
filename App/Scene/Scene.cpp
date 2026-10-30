@@ -30,9 +30,9 @@
 #include "App/Core/Priorities.h"
 #include "App/Core/SentryHelpers.h"
 #include "App/Core/ThemeManager.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElement.h"
-#include "App/Element/GraphicElementInput.h"
+#include "App/Element/ElementInput.h"
 #include "App/Element/GraphicElements/AudioOutputElement.h"
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/IC.h"
@@ -143,19 +143,19 @@ void Scene::addItem(QGraphicsItem *item)
             setLastId(iwid->id());
         }
         // The element test is unsortedElements()'s, so elementCount() equals elements().size().
-        const auto kind = (item->type() == GraphicElement::Type) ? SceneItemRegistry::ItemKind::Element
+        const auto kind = (item->type() == Element::Type) ? SceneItemRegistry::ItemKind::Element
                                                                  : SceneItemRegistry::ItemKind::Other;
         registerItem(iwid, kind);
         restack(item, iwid->id(), kind);
     }
 
     // Register element-type-specific hooks
-    if (item->type() == GraphicElement::Type) {
-        auto *elm = qgraphicsitem_cast<GraphicElement *>(item);
+    if (item->type() == Element::Type) {
+        auto *elm = qgraphicsitem_cast<Element *>(item);
         if (!elm) {
-            return; // LCOV_EXCL_LINE — item->type() == GraphicElement::Type is GraphicElement's own hardcoded type() override, so qgraphicsitem_cast to GraphicElement can never fail for an item reporting that exact type.
+            return; // LCOV_EXCL_LINE — item->type() == Element::Type is Element's own hardcoded type() override, so qgraphicsitem_cast to Element can never fail for an item reporting that exact type.
         }
-        connect(elm, &GraphicElement::inlineEditRequested, this, [this](GraphicElement *element) {
+        connect(elm, &Element::inlineEditRequested, this, [this](Element *element) {
             m_inlineLabelEditor.start(element);
         });
         if (auto *ic = qobject_cast<IC *>(elm)) {
@@ -357,14 +357,14 @@ void Scene::setPropertyUpdateRequired()
     m_circuitBoundingRectDirty = true;
 }
 
-const QVector<GraphicElement *> Scene::visibleElements() const
+const QVector<Element *> Scene::visibleElements() const
 {
     const auto visibleRect = m_view->mapToScene(m_view->viewport()->geometry()).boundingRect();
 
     return elements(visibleRect);
 }
 
-const QVector<GraphicElement *> Scene::elements() const
+const QVector<Element *> Scene::elements() const
 {
     return sortByTopology(unsortedElements());
 }
@@ -374,15 +374,15 @@ qsizetype Scene::elementCount() const
     return m_itemRegistry.elementCount();
 }
 
-const QVector<GraphicElement *> Scene::unsortedElements() const
+const QVector<Element *> Scene::unsortedElements() const
 {
     const auto items_ = items();
-    QVector<GraphicElement *> elements_;
+    QVector<Element *> elements_;
     elements_.reserve(items_.size());
 
     for (auto *item : items_) {
-        if (item->type() == GraphicElement::Type) {
-            elements_.append(qgraphicsitem_cast<GraphicElement *>(item));
+        if (item->type() == Element::Type) {
+            elements_.append(qgraphicsitem_cast<Element *>(item));
         }
     }
 
@@ -392,29 +392,29 @@ const QVector<GraphicElement *> Scene::unsortedElements() const
     return elements_;
 }
 
-const QVector<GraphicElement *> Scene::elements(const QRectF &rect) const
+const QVector<Element *> Scene::elements(const QRectF &rect) const
 {
     const auto items_ = items(rect);
-    QVector<GraphicElement *> elements_;
+    QVector<Element *> elements_;
     elements_.reserve(items_.size());
 
     for (auto *item : items_) {
-        if (item->type() == GraphicElement::Type) {
-            elements_.append(qgraphicsitem_cast<GraphicElement *>(item));
+        if (item->type() == Element::Type) {
+            elements_.append(qgraphicsitem_cast<Element *>(item));
         }
     }
 
     return sortByTopology(elements_);
 }
 
-QVector<GraphicElement *> Scene::sortByTopology(QVector<GraphicElement *> elements)
+QVector<Element *> Scene::sortByTopology(QVector<Element *> elements)
 {
-    QHash<GraphicElement *, QVector<GraphicElement *>> successors;
+    QHash<Element *, QVector<Element *>> successors;
     for (auto *elm : elements) {
         for (auto *port : elm->outputs()) {
             for (auto *conn : port->connections()) {
                 if (auto *endPort = conn->endPort()) {
-                    if (auto *successor = endPort->graphicElement()) {
+                    if (auto *successor = endPort->element()) {
                         auto &vec = successors[elm];
                         if (!vec.contains(successor)) {
                             vec.append(successor);
@@ -425,7 +425,7 @@ QVector<GraphicElement *> Scene::sortByTopology(QVector<GraphicElement *> elemen
         }
     }
 
-    QHash<GraphicElement *, int> priorities;
+    QHash<Element *, int> priorities;
     calculatePriorities(elements, successors, priorities);
 
     std::stable_sort(elements.begin(), elements.end(), [&priorities](const auto &e1, const auto &e2) {
@@ -435,7 +435,7 @@ QVector<GraphicElement *> Scene::sortByTopology(QVector<GraphicElement *> elemen
     return elements;
 }
 
-QHash<QString, InputPort *> Scene::wirelessTxInputPorts(const QVector<GraphicElement *> &elements)
+QHash<QString, InputPort *> Scene::wirelessTxInputPorts(const QVector<Element *> &elements)
 {
     QHash<QString, InputPort *> txMap;
     for (auto *elm : elements) {
@@ -453,7 +453,7 @@ QString Scene::duplicateTxLabel(const QList<WirelessEdit> &edits) const
     // How many Tx nodes hold each channel the edits give a Tx, the edited nodes as the edits leave them and every other
     // node as it is: one scan of the scene, whatever the number of edits
     QHash<QString, int> holders;
-    QSet<const GraphicElement *> edited;
+    QSet<const Element *> edited;
     for (const WirelessEdit &edit : edits) {
         edited.insert(edit.node);
         if ((edit.mode == WirelessMode::Tx) && !edit.label.isEmpty()) {
@@ -481,13 +481,13 @@ QString Scene::duplicateTxLabel(const QList<WirelessEdit> &edits) const
 
 QStringList Scene::duplicateTxLabels(const QList<QGraphicsItem *> &items) const
 {
-    const auto txLabel = [](const GraphicElement *element) {
+    const auto txLabel = [](const Element *element) {
         return (element->wirelessMode() == WirelessMode::Tx) ? element->label() : QString();
     };
 
     QSet<QString> arrived;
     for (auto *item : items) {
-        if (const auto *element = qgraphicsitem_cast<const GraphicElement *>(item)) {
+        if (const auto *element = qgraphicsitem_cast<const Element *>(item)) {
             if (const QString label = txLabel(element); !label.isEmpty()) {
                 arrived.insert(label);
             }
@@ -552,8 +552,8 @@ QList<QGraphicsItem *> Scene::selectedItems() const
 {
     // Only elements and wires are selectable, and each has an id
     const auto idOf = [](const QGraphicsItem *item) {
-        if (item->type() == GraphicElement::Type) {
-            return static_cast<const GraphicElement *>(item)->id();
+        if (item->type() == Element::Type) {
+            return static_cast<const Element *>(item)->id();
         }
         if (item->type() == Connection::Type) {
             return static_cast<const Connection *>(item)->id();
@@ -566,14 +566,14 @@ QList<QGraphicsItem *> Scene::selectedItems() const
     return items_;
 }
 
-const QList<GraphicElement *> Scene::selectedElements() const
+const QList<Element *> Scene::selectedElements() const
 {
     const auto items_ = selectedItems();
-    QList<GraphicElement *> elements_;
+    QList<Element *> elements_;
 
     for (auto *item : items_) {
-        if (item->type() == GraphicElement::Type) {
-            elements_.append(qgraphicsitem_cast<GraphicElement *>(item));
+        if (item->type() == Element::Type) {
+            elements_.append(qgraphicsitem_cast<Element *>(item));
         }
     }
 
@@ -597,7 +597,7 @@ QGraphicsItem *Scene::itemAt(const QPointF pos) const
 
     // Elements take priority over connections since they render above wires
     for (auto *item : std::as_const(items_)) {
-        if (item->type() == GraphicElement::Type) {
+        if (item->type() == Element::Type) {
             return item;
         }
     }
@@ -697,16 +697,16 @@ void Scene::throwCommandFailure()
     }
 }
 
-void Scene::recordOperation(const QList<GraphicElement *> &elements, const std::function<void()> &operation)
+void Scene::recordOperation(const QList<Element *> &elements, const std::function<void()> &operation)
 {
-    const auto snapshot = [](const GraphicElement &element) {
+    const auto snapshot = [](const Element &element) {
         QByteArray data;
         QDataStream stream(&data, QIODevice::WriteOnly);
         element.save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
         return data;
     };
 
-    QList<QPointer<GraphicElement>> targets;
+    QList<QPointer<Element>> targets;
     QList<QByteArray> before;
     for (auto *element : elements) {
         targets.append(element);
@@ -715,13 +715,13 @@ void Scene::recordOperation(const QList<GraphicElement *> &elements, const std::
 
     operation();
 
-    QList<GraphicElement *> changed;
+    QList<Element *> changed;
     QList<bool> selected;
     QByteArray oldData;
     QDataStream oldStream(&oldData, QIODevice::WriteOnly);
     Serialization::writePandaHeader(oldStream);
     for (int i = 0; i < targets.size(); ++i) {
-        GraphicElement *element = targets.at(i);
+        Element *element = targets.at(i);
         if (!element || (snapshot(*element) == before.at(i))) {
             continue;
         }
@@ -1034,7 +1034,7 @@ void Scene::contextMenu(const QPoint screenPos)
         // Right-clicking a selected item opens the property context menu for that selection
         if (selectedItems().contains(item)) {
             emit contextMenuPos(screenPos, item);
-        } else if (item->type() == GraphicElement::Type) {
+        } else if (item->type() == Element::Type) {
             // Right-clicking an unselected element clears the old selection and selects
             // only this item, then opens its context menu
             clearSelection();
@@ -1165,7 +1165,7 @@ namespace {
 /// Snapshots each element's current position, applies \a newPositions (already computed by the
 /// caller), each snapped to the grid, then pushes one MoveCommand for the whole batch -- the same
 /// pattern arrow-key nudging already uses (see Scene::keyPressEvent()).
-void moveElementsTo(Scene *scene, const QList<GraphicElement *> &elements, const QList<QPointF> &newPositions)
+void moveElementsTo(Scene *scene, const QList<Element *> &elements, const QList<QPointF> &newPositions)
 {
     QList<QPointF> oldPositions;
     oldPositions.reserve(elements.size());
@@ -1174,7 +1174,7 @@ void moveElementsTo(Scene *scene, const QList<GraphicElement *> &elements, const
     }
 
     for (int i = 0; i < elements.size(); ++i) {
-        elements.at(i)->setPos(GraphicElement::snapToGrid(newPositions.at(i)));
+        elements.at(i)->setPos(Element::snapToGrid(newPositions.at(i)));
     }
 
     scene->receiveCommand(new MoveCommand(elements, oldPositions, scene));
@@ -1324,7 +1324,7 @@ void Scene::distributeHorizontally()
     }
 
     // Stable, so elements sharing a left edge keep the selection's id order
-    std::stable_sort(elements_.begin(), elements_.end(), [](GraphicElement *a, GraphicElement *b) {
+    std::stable_sort(elements_.begin(), elements_.end(), [](Element *a, Element *b) {
         return a->sceneBoundingRect().left() < b->sceneBoundingRect().left();
     });
 
@@ -1362,7 +1362,7 @@ void Scene::distributeVertically()
     }
 
     // Stable, so elements sharing a top edge keep the selection's id order
-    std::stable_sort(elements_.begin(), elements_.end(), [](GraphicElement *a, GraphicElement *b) {
+    std::stable_sort(elements_.begin(), elements_.end(), [](Element *a, Element *b) {
         return a->sceneBoundingRect().top() < b->sceneBoundingRect().top();
     });
 
@@ -1512,7 +1512,7 @@ bool Scene::nudgeSelection(QKeyEvent *event)
     default: return false;
     }
 
-    const QList<GraphicElement *> selected = selectedElements();
+    const QList<Element *> selected = selectedElements();
     if (selected.isEmpty()) {
         return false; // nothing selected — let the arrow key scroll the view
     }
@@ -1528,7 +1528,7 @@ bool Scene::nudgeSelection(QKeyEvent *event)
         oldPositions.append(elm->pos());
     }
     for (auto *elm : selected) {
-        elm->setPos(GraphicElement::snapToGrid(elm->pos() + delta));
+        elm->setPos(Element::snapToGrid(elm->pos() + delta));
     }
 
     receiveCommand(new MoveCommand(selected, oldPositions, this));
@@ -1554,11 +1554,11 @@ void Scene::keyPressEvent(QKeyEvent *event)
 
     // Skip keyboard triggers while Ctrl is held to avoid firing during Ctrl+Z/C/V shortcuts
     if (!(event->modifiers().testFlag(Qt::ControlModifier))) {
-        QList<GraphicElement *> triggered;
-        QList<GraphicElementInput *> inputs;
+        QList<Element *> triggered;
+        QList<ElementInput *> inputs;
         for (auto *element : unsortedElements()) {
             if (element->hasTrigger() && !element->trigger().isEmpty() && element->trigger().matches(event->key())) {
-                if (auto *input = qobject_cast<GraphicElementInput *>(element); input && !input->isLocked()) {
+                if (auto *input = qobject_cast<ElementInput *>(element); input && !input->isLocked()) {
                     triggered.append(element);
                     inputs.append(input);
                 }
@@ -1587,7 +1587,7 @@ void Scene::keyReleaseEvent(QKeyEvent *event)
         for (auto *element : unsortedElements()) {
             if (element->hasTrigger() && !element->trigger().isEmpty() && element->trigger().matches(event->key())) {
                 // Only InputButton (momentary) is released on key-up; InputSwitch stays latched
-                if (auto *input = qobject_cast<GraphicElementInput *>(element); input && !input->isLocked() && (element->elementType() == ElementType::InputButton)) {
+                if (auto *input = qobject_cast<ElementInput *>(element); input && !input->isLocked() && (element->elementType() == ElementType::InputButton)) {
                     input->setOff();
                 }
             }
@@ -1612,7 +1612,7 @@ bool Scene::eventFilter(QObject *watched, QEvent *event)
         // Intercept Ctrl+Left-click on an element to begin a clone-drag instead of
         // the default rubber-band selection; return true to swallow the event
         if ((mouseEvent->button() == Qt::LeftButton) && mouseEvent->modifiers().testFlag(Qt::ControlModifier)) {
-            if (auto *item = itemAt(mouseEvent->scenePos()); item && ((item->type() == GraphicElement::Type) || (item->type() == Connection::Type))) {
+            if (auto *item = itemAt(mouseEvent->scenePos()); item && ((item->type() == Element::Type) || (item->type() == Connection::Type))) {
                 item->setSelected(true);
                 m_clipboardManager.cloneDrag(mouseEvent->scenePos());
                 return true;
@@ -1631,7 +1631,7 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
     }
 }
 
-QList<GraphicElement *> Scene::pressTargets(const QGraphicsSceneMouseEvent *event) const
+QList<Element *> Scene::pressTargets(const QGraphicsSceneMouseEvent *event) const
 {
     // Qt gives a press to the item holding the mouse, else to the first item under the pointer that takes it, found
     // as QGraphicsScenePrivate::itemsAtPosition() finds them: under the view's pixel at the pointer, or at the exact
@@ -1651,11 +1651,11 @@ QList<GraphicElement *> Scene::pressTargets(const QGraphicsSceneMouseEvent *even
         candidates.append(QGraphicsScene::items(viewTransform.inverted().map(pointRect), Qt::IntersectsItemShape, Qt::DescendingOrder, viewTransform));
     }
 
-    QList<GraphicElement *> targets;
+    QList<Element *> targets;
     for (auto *item : std::as_const(candidates)) {
         // A port or a label passes a press it ignores on to its element
         for (; item; item = item->parentItem()) {
-            if (auto *element = qgraphicsitem_cast<GraphicElement *>(item)) {
+            if (auto *element = qgraphicsitem_cast<Element *>(item)) {
                 if (!targets.contains(element)) {
                     targets.append(element);
                 }

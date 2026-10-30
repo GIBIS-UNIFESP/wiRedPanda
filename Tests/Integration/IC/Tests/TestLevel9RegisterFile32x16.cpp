@@ -62,7 +62,7 @@ struct RegFile32x16Fixture {
         return true;
     }
 
-    TestUtils::Bits readData() { return readMultiBitOutput(QVector<GraphicElement *>(readData1.begin(), readData1.end())); }
+    TestUtils::Bits readData() { return readMultiBitOutput(QVector<Element *>(readData1.begin(), readData1.end())); }
 
     void writeAt(int addr, int value)
     {

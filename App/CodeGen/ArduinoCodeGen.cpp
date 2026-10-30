@@ -11,8 +11,8 @@
 
 #include "App/CodeGen/CodeGenUtils.h"
 #include "App/Core/Common.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/Buzzer.h"
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/InputRotary.h"
@@ -23,7 +23,7 @@
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
 
-ArduinoCodeGen::ArduinoCodeGen(const QString &fileName, const QVector<GraphicElement *> &elements)
+ArduinoCodeGen::ArduinoCodeGen(const QString &fileName, const QVector<Element *> &elements)
     : m_file(fileName)
     , m_elements(elements)
 {
@@ -95,7 +95,7 @@ QString ArduinoCodeGen::otherPortNameImpl(Port *port, QSet<Port *> &visited)
 
     // Wireless Rx: resolve via the Tx node's input (what drives the transmitter), over a wire that also reaches the Rx,
     // as the simulation does
-    if (auto *elm = port->graphicElement(); elm && elm->wirelessMode() == WirelessMode::Rx && !elm->label().isEmpty()) {
+    if (auto *elm = port->element(); elm && elm->wirelessMode() == WirelessMode::Rx && !elm->label().isEmpty()) {
         if (auto *txInputPort = m_txInputPorts.value(elm->label(), nullptr)) {
             return otherPortNameImpl(txInputPort, visited);
         }
@@ -300,7 +300,7 @@ void ArduinoCodeGen::declareOutputs()
     m_stream << Qt::endl;
 }
 
-void ArduinoCodeGen::declareAuxVariablesRec(const QVector<GraphicElement *> &elements, const bool isBox, const QString &icPrefix)
+void ArduinoCodeGen::declareAuxVariablesRec(const QVector<Element *> &elements, const bool isBox, const QString &icPrefix)
 {
     int counter = 0;
 
@@ -464,7 +464,7 @@ void ArduinoCodeGen::declareAuxVariablesRec(const QVector<GraphicElement *> &ele
     }
 }
 
-void ArduinoCodeGen::declareSequentialStateRec(const QVector<GraphicElement *> &elements, const bool topLevel)
+void ArduinoCodeGen::declareSequentialStateRec(const QVector<Element *> &elements, const bool topLevel)
 {
     for (auto *elm : elements) {
         if (elm->elementType() == ElementType::IC) {
@@ -547,7 +547,7 @@ void ArduinoCodeGen::declareSequentialStateRec(const QVector<GraphicElement *> &
     }
 }
 
-bool ArduinoCodeGen::hasNativeMemory(const QVector<GraphicElement *> &elements)
+bool ArduinoCodeGen::hasNativeMemory(const QVector<Element *> &elements)
 {
     for (auto *elm : elements) {
         if (elm->elementGroup() == ElementGroup::Memory) {
@@ -564,7 +564,7 @@ bool ArduinoCodeGen::hasNativeMemory(const QVector<GraphicElement *> &elements)
     return false;
 }
 
-void ArduinoCodeGen::emitCommitFlipFlopsRec(const QVector<GraphicElement *> &elements)
+void ArduinoCodeGen::emitCommitFlipFlopsRec(const QVector<Element *> &elements)
 {
     for (auto *elm : elements) {
         if (elm->elementType() == ElementType::IC) {
@@ -625,7 +625,7 @@ void ArduinoCodeGen::declareAuxVariables()
     m_stream << Qt::endl;
 }
 
-void ArduinoCodeGen::emitFlipFlopBlock(GraphicElement *elm, const QString &typeName, const QString &firstOut,
+void ArduinoCodeGen::emitFlipFlopBlock(Element *elm, const QString &typeName, const QString &firstOut,
                                        const QString &secondOut, int clockInputIndex, int presetInputIndex,
                                        int clearInputIndex, const std::function<void()> &edgeLogic,
                                        const std::function<void()> &stateEpilogue)
@@ -681,7 +681,7 @@ void ArduinoCodeGen::setup()
              << Qt::endl;
 }
 
-void ArduinoCodeGen::assignVariablesRec(const QVector<GraphicElement *> &elements)
+void ArduinoCodeGen::assignVariablesRec(const QVector<Element *> &elements)
 {
     for (auto *elm : elements) {
         if (elm->elementType() == ElementType::IC) {
@@ -708,15 +708,15 @@ void ArduinoCodeGen::assignVariablesRec(const QVector<GraphicElement *> &element
                 // path), and a stale read transiently flips bistable latches —
                 // wrong, and divergent from the simulation, which excludes
                 // boundary inputs from its settle (IC::initializeSimulation).
-                QSet<GraphicElement *> boundaryInputs;
+                QSet<Element *> boundaryInputs;
                 for (auto *port : ic->internalInputs()) {
-                    if (auto *boundaryElement = port->graphicElement()) {
+                    if (auto *boundaryElement = port->element()) {
                         boundaryInputs.insert(boundaryElement);
                     }
                 }
                 auto sortedInternal = Scene::sortByTopology(ic->internalElements());
                 std::stable_partition(sortedInternal.begin(), sortedInternal.end(),
-                    [&boundaryInputs](GraphicElement *e) { return boundaryInputs.contains(e); });
+                    [&boundaryInputs](Element *e) { return boundaryInputs.contains(e); });
                 assignVariablesRec(sortedInternal);
                 m_currentIC = previousIC;
             }
@@ -785,7 +785,7 @@ void ArduinoCodeGen::assignVariablesRec(const QVector<GraphicElement *> &element
     }
 }
 
-void ArduinoCodeGen::emitDFlipFlop(GraphicElement *elm, const QString &firstOut)
+void ArduinoCodeGen::emitDFlipFlop(Element *elm, const QString &firstOut)
 {
     auto *outputPort1 = elm->outputPort(1);
     if (!outputPort1) return;
@@ -804,7 +804,7 @@ void ArduinoCodeGen::emitDFlipFlop(GraphicElement *elm, const QString &firstOut)
         });
 }
 
-void ArduinoCodeGen::emitDLatch(GraphicElement *elm, const QString &firstOut)
+void ArduinoCodeGen::emitDLatch(Element *elm, const QString &firstOut)
 {
     auto *outputPort1 = elm->outputPort(1);
     if (!outputPort1) return;
@@ -823,7 +823,7 @@ void ArduinoCodeGen::emitDLatch(GraphicElement *elm, const QString &firstOut)
     m_stream << QString("    //End of D Latch") << Qt::endl;
 }
 
-void ArduinoCodeGen::emitJKFlipFlop(GraphicElement *elm, const QString &firstOut)
+void ArduinoCodeGen::emitJKFlipFlop(Element *elm, const QString &firstOut)
 {
     auto *outputPort1 = elm->outputPort(1);
     if (!outputPort1) return;
@@ -848,7 +848,7 @@ void ArduinoCodeGen::emitJKFlipFlop(GraphicElement *elm, const QString &firstOut
         });
 }
 
-void ArduinoCodeGen::emitSRFlipFlop(GraphicElement *elm, const QString &firstOut)
+void ArduinoCodeGen::emitSRFlipFlop(Element *elm, const QString &firstOut)
 {
     auto *outputPort1 = elm->outputPort(1);
     if (!outputPort1) return;
@@ -869,7 +869,7 @@ void ArduinoCodeGen::emitSRFlipFlop(GraphicElement *elm, const QString &firstOut
         });
 }
 
-void ArduinoCodeGen::emitTFlipFlop(GraphicElement *elm, const QString &firstOut)
+void ArduinoCodeGen::emitTFlipFlop(Element *elm, const QString &firstOut)
 {
     auto *outputPort1 = elm->outputPort(1);
     if (!outputPort1) return;
@@ -887,7 +887,7 @@ void ArduinoCodeGen::emitTFlipFlop(GraphicElement *elm, const QString &firstOut)
         });
 }
 
-void ArduinoCodeGen::emitSRLatch(GraphicElement *elm, const QString &firstOut)
+void ArduinoCodeGen::emitSRLatch(Element *elm, const QString &firstOut)
 {
     auto *outputPort1 = elm->outputPort(1);
     if (!outputPort1) return;
@@ -912,7 +912,7 @@ void ArduinoCodeGen::emitSRLatch(GraphicElement *elm, const QString &firstOut)
     m_stream << QString("    //End of SR Latch") << Qt::endl;
 }
 
-void ArduinoCodeGen::emitMux(GraphicElement *elm)
+void ArduinoCodeGen::emitMux(Element *elm)
 {
     const int totalInputs = elm->inputSize();
     int numSelectLines = 1;
@@ -938,7 +938,7 @@ void ArduinoCodeGen::emitMux(GraphicElement *elm)
     m_stream << QString("    //End of Multiplexer") << Qt::endl;
 }
 
-void ArduinoCodeGen::emitDemux(GraphicElement *elm)
+void ArduinoCodeGen::emitDemux(Element *elm)
 {
     const int numOutputs = elm->outputSize();
     int numSelectLines = 1;
@@ -964,7 +964,7 @@ void ArduinoCodeGen::emitDemux(GraphicElement *elm)
     m_stream << QString("    //End of Demultiplexer") << Qt::endl;
 }
 
-void ArduinoCodeGen::emitTruthTable(GraphicElement *elm)
+void ArduinoCodeGen::emitTruthTable(Element *elm)
 {
     auto *ttGraphic = dynamic_cast<TruthTable *>(elm);
     if (!ttGraphic) return;
@@ -1093,7 +1093,7 @@ void ArduinoCodeGen::throwPinOverflow() const
                        QString::number(m_totalRequiredPins), m_selectedBoard.name, QString::number(m_selectedBoard.maxPins()));
 }
 
-QString ArduinoCodeGen::buildSelectExpression(GraphicElement *elm, int startIndex, int numSelectLines)
+QString ArduinoCodeGen::buildSelectExpression(Element *elm, int startIndex, int numSelectLines)
 {
     QString selectValue;
     for (int i = numSelectLines - 1; i >= 0; --i) {
@@ -1109,7 +1109,7 @@ QString ArduinoCodeGen::buildSelectExpression(GraphicElement *elm, int startInde
     return selectValue;
 } // LCOV_EXCL_LINE -- compiler-generated QString cleanup for an exception path buildSelectExpression() never takes
 
-void ArduinoCodeGen::assignLogicOperator(GraphicElement *elm)
+void ArduinoCodeGen::assignLogicOperator(Element *elm)
 {
     bool negate = false;
     bool parentheses = true;
@@ -1174,7 +1174,7 @@ void ArduinoCodeGen::assignLogicOperator(GraphicElement *elm)
     // dispatches here for And/Or/Nand/Nor/Xor/Xnor/Not/Node — every other case below is
     // handled by a different branch of that switch (or filtered out before reaching it).
     // ElementType::JKLatch is unreachable for a different, stronger reason: it's a
-    // deprecated enum value with no live GraphicElement implementation at all
+    // deprecated enum value with no live Element implementation at all
     // (ElementFactory::hasCreator(JKLatch) is false), so no real `elm` can ever report it.
     case ElementType::AudioBox: // LCOV_EXCL_LINE
     case ElementType::Buzzer:

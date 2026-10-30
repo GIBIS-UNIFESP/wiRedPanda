@@ -15,7 +15,7 @@
 #include <QPointer>
 #include <QPointF>
 
-class GraphicElement;
+class Element;
 class QGraphicsSceneMouseEvent;
 class Scene;
 class ThemeAttributes;
@@ -75,7 +75,7 @@ private:
 
     /// Per-drag snapshot of (element, original position); QPointer auto-clears if an
     /// element is destroyed mid-drag (e.g. Delete shortcut while dragging).
-    QList<std::pair<QPointer<GraphicElement>, QPointF>> m_dragSnapshot;
+    QList<std::pair<QPointer<Element>, QPointF>> m_dragSnapshot;
     bool m_draggingElement = false;
     bool m_markingSelectionBox = false;
 };

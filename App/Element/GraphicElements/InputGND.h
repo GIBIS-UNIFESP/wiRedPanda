@@ -7,13 +7,13 @@
 
 #pragma once
 
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 
 /**
  * \class InputGnd
  * \brief Static GND element that always drives logic-0 on its output.
  */
-class InputGnd : public GraphicElement
+class InputGnd : public Element
 {
     Q_OBJECT
 

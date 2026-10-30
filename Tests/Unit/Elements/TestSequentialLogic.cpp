@@ -669,7 +669,7 @@ void TestSequentialLogic::testSequentialElementsUpdateTheme()
 namespace TestSequentialLogicHelpers {
 
 /// What \a element draws, unselected: its picture, as paint() gives it.
-QImage drawn(GraphicElement &element)
+QImage drawn(Element &element)
 {
     const bool selected = element.isSelected();
     element.setSelected(false);
@@ -684,7 +684,7 @@ QImage drawn(GraphicElement &element)
 }
 
 /// Makes each latch and flip-flop, whose picture is the theme's.
-QList<std::function<GraphicElement *()>> themedTypes()
+QList<std::function<Element *()>> themedTypes()
 {
     return {
         [] { return new DFlipFlop; }, [] { return new JKFlipFlop; }, [] { return new SRFlipFlop; },
@@ -693,10 +693,10 @@ QList<std::function<GraphicElement *()>> themedTypes()
 }
 
 /// What a new element made by \a make draws in \a theme.
-QImage drawnNew(const std::function<GraphicElement *()> &make, const Theme theme)
+QImage drawnNew(const std::function<Element *()> &make, const Theme theme)
 {
     ThemeManager::setTheme(theme);
-    std::unique_ptr<GraphicElement> element(make());
+    std::unique_ptr<Element> element(make());
     return drawn(*element);
 }
 
@@ -714,7 +714,7 @@ void TestSequentialLogic::testThemedPictureFollowsTheThemeThroughARefresh()
     for (const auto &make : themedTypes()) {
         const QImage dark = drawnNew(make, Theme::Dark);
         ThemeManager::setTheme(Theme::Light);
-        std::unique_ptr<GraphicElement> element(make());
+        std::unique_ptr<Element> element(make());
         const QString name = element->objectName();
         QVERIFY2(drawn(*element) != dark, qPrintable(name));
 
@@ -741,7 +741,7 @@ void TestSequentialLogic::testThemeSwitchKeepsACustomAppearance()
     for (const auto &make : themedTypes()) {
         const QImage dark = drawnNew(make, Theme::Dark);
         ThemeManager::setTheme(Theme::Light);
-        std::unique_ptr<GraphicElement> element(make());
+        std::unique_ptr<Element> element(make());
         const QString name = element->objectName();
         element->setAppearance(false, png);
         const QImage custom = drawn(*element);
@@ -772,7 +772,7 @@ void TestSequentialLogic::testUndoAfterAThemeSwitchShowsTheCurrentTheme()
     // A label edit of each, recorded while the theme is light
     ThemeManager::setTheme(Theme::Light);
     Scene scene;
-    QList<GraphicElement *> elements;
+    QList<Element *> elements;
     QByteArray oldData;
     QDataStream stream(&oldData, QIODevice::WriteOnly);
     Serialization::writePandaHeader(stream);

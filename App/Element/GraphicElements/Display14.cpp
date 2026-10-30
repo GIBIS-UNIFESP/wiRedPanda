@@ -64,7 +64,7 @@ struct ElementInfo<Display14> {
 };
 
 Display14::Display14(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Display14, parent)
+    : Element(ElementType::Display14, parent)
 {
     a  = Display7::cachedSegmentRenderers(m_appearance.defaultAppearances().at(1));
     b  = Display7::cachedSegmentRenderers(m_appearance.defaultAppearances().at(2));
@@ -123,14 +123,14 @@ void Display14::updatePortsProperties()
 
 QRectF Display14::boundingRect() const
 {
-    return GraphicElement::boundingRect().united(QRectF(0, 0, 64, 64));
+    return Element::boundingRect().united(QRectF(0, 0, 64, 64));
 }
 
 void Display14::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     // Base class paints the off-state background; active segments are overlaid as vector
     // renders on top, crisp at any zoom.
-    GraphicElement::paint(painter, option, widget);
+    Element::paint(painter, option, widget);
 
     const QRectF body(0, 0, 64, 64);
     if (inputPort(0)->status() == Status::Active)  { g1.at(m_colorNumber)->render(painter, body); }
@@ -163,7 +163,7 @@ QString Display14::color() const
 
 void Display14::save(QDataStream &stream, SerializationOptions options) const
 {
-    GraphicElement::save(stream, options);
+    Element::save(stream, options);
 
     QMap<QString, QVariant> map;
     // PortableFile streams omit the default; fresh-loaded elements start there
@@ -177,7 +177,7 @@ void Display14::save(QDataStream &stream, SerializationOptions options) const
 
 void Display14::load(QDataStream &stream, SerializationContext &context)
 {
-    GraphicElement::load(stream, context);
+    Element::load(stream, context);
 
     if ((VersionInfo::hasLockState(context.version)) && (!VersionInfo::hasQMapFormat(context.version))) {
         // v3.1–4.0 stored color as a bare QString

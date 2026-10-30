@@ -1,7 +1,7 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 
 #include <cmath>
 #include <memory>
@@ -44,7 +44,7 @@ static const QFont &labelFont()
     return font;
 }
 
-GraphicElement::GraphicElement(ElementType type, QGraphicsItem *parent)
+Element::Element(ElementType type, QGraphicsItem *parent)
     : QGraphicsObject(parent)
     , m_elementType(type)
     , m_metadata(ElementMetadataRegistry::metadata(type))
@@ -78,11 +78,11 @@ GraphicElement::GraphicElement(ElementType type, QGraphicsItem *parent)
     setToolTip(m_translatedName);
 
     qCDebug(four) << "Including input and output ports.";
-    GraphicElement::setInputSize(static_cast<int>(metadata.minInputSize));
-    GraphicElement::setOutputSize(static_cast<int>(metadata.minOutputSize));
+    Element::setInputSize(static_cast<int>(metadata.minInputSize));
+    Element::setOutputSize(static_cast<int>(metadata.minOutputSize));
 
-    GraphicElement::updatePortsProperties();
-    GraphicElement::updateTheme();
+    Element::updatePortsProperties();
+    Element::updateTheme();
 
     // DeviceCoordinateCache reuses the rendered pixmap when the device transform changes,
     // giving a large speedup for elements that don't redraw on every pan/zoom
@@ -93,89 +93,89 @@ GraphicElement::GraphicElement(ElementType type, QGraphicsItem *parent)
     }
 }
 
-GraphicElement::~GraphicElement() = default; // LCOV_EXCL_LINE — the Itanium ABI emits separate deleting/complete-object destructor variants for this virtual dtor; gcov attributes them to the same source line, and not every variant is exercised by a given delete call site.
+Element::~Element() = default; // LCOV_EXCL_LINE — the Itanium ABI emits separate deleting/complete-object destructor variants for this virtual dtor; gcov attributes them to the same source line, and not every variant is exercised by a given delete call site.
 
-ElementType GraphicElement::elementType() const
+ElementType Element::elementType() const
 {
     return m_elementType;
 }
 
-ElementGroup GraphicElement::elementGroup() const
+ElementGroup Element::elementGroup() const
 {
     return m_elementGroup;
 }
 
-QPixmap GraphicElement::pixmap() const
+QPixmap Element::pixmap() const
 {
     return m_appearance.pixmap();
 }
 
-QStringList GraphicElement::externalFiles() const
+QStringList Element::externalFiles() const
 {
     return m_appearance.externalFiles();
 }
 
-void GraphicElement::setPixmap(const int index)
+void Element::setPixmap(const int index)
 {
     m_appearance.setPixmap(index);
 }
 
-void GraphicElement::reportFailedFiles() const
+void Element::reportFailedFiles() const
 {
     m_appearance.reportFailedPicture();
 }
 
-const QVector<OutputPort *> &GraphicElement::outputs() const
+const QVector<OutputPort *> &Element::outputs() const
 {
     return m_ports.outputs();
 }
 
-InputPort *GraphicElement::inputPort(const int index) const
+InputPort *Element::inputPort(const int index) const
 {
     return m_ports.inputPort(index);
 }
 
-OutputPort *GraphicElement::outputPort(const int index) const
+OutputPort *Element::outputPort(const int index) const
 {
     return m_ports.outputPort(index);
 }
 
-WirelessMode GraphicElement::wirelessMode() const
+WirelessMode Element::wirelessMode() const
 {
     return WirelessMode::None;
 }
 
-bool GraphicElement::hasWirelessMode() const
+bool Element::hasWirelessMode() const
 {
     return false;
 }
 
-const QVector<InputPort *> &GraphicElement::inputs() const
+const QVector<InputPort *> &Element::inputs() const
 {
     return m_ports.inputs();
 }
 
-QVector<Port *> GraphicElement::allPorts() const
+QVector<Port *> Element::allPorts() const
 {
     return m_ports.allPorts();
 }
 
-void GraphicElement::setInputs(const QVector<InputPort *> &inputs)
+void Element::setInputs(const QVector<InputPort *> &inputs)
 {
     m_ports.setInputs(inputs);
 }
 
-QPointF GraphicElement::pixmapCenter() const
+QPointF Element::pixmapCenter() const
 {
     return m_appearance.pixmapCenter();
 }
 
-QRectF GraphicElement::boundingRect() const
+QRectF Element::boundingRect() const
 {
     return portsBoundingRect().united(pixmap().rect());
 }
 
-QRectF GraphicElement::portsBoundingRect() const
+QRectF Element::portsBoundingRect() const
 {
     QRectF rectChildren;
     const auto children = childItems();
@@ -189,19 +189,19 @@ QRectF GraphicElement::portsBoundingRect() const
     return rectChildren;
 }
 
-QRectF GraphicElement::renderBodyBounds() const
+QRectF Element::renderBodyBounds() const
 {
     return portsBoundingRect().united(QRectF(0, 0, 64, 64));
 }
 
-void GraphicElement::setLabelAnchor(const QPointF &pos)
+void Element::setLabelAnchor(const QPointF &pos)
 {
     m_labelAnchor = pos;
     m_label->setPos(pos);     // baseline: always correct for non-rotatable elements
     updateLabelOrientation(); // rotatable elements get position+orientation corrected on top
 }
 
-void GraphicElement::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void Element::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     Q_UNUSED(widget)
     Q_UNUSED(option)
@@ -209,7 +209,7 @@ void GraphicElement::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
     m_appearance.render(painter, boundingRect(), isSelected());
 }
 
-void GraphicElement::invalidateRenderCache()
+void Element::invalidateRenderCache()
 {
     // Toggling the mode discards the cached device pixmap; re-enabling it forces the next
     // paint to re-render the whole item from scratch — the same full regen a pan/zoom
@@ -218,7 +218,7 @@ void GraphicElement::invalidateRenderCache()
     setCacheMode(QGraphicsItem::DeviceCoordinateCache);
 }
 
-QPointF GraphicElement::snapToGrid(const QPointF &pos, const int step)
+QPointF Element::snapToGrid(const QPointF &pos, const int step)
 {
     // Rounded in floating point, halves away from zero as qRound() does: a file may hold any finite position, and one
     // past int's range has no int grid line. Adding zero turns the -0 that rounds a small negative value into the +0 an
@@ -226,64 +226,64 @@ QPointF GraphicElement::snapToGrid(const QPointF &pos, const int step)
     return {std::round(pos.x() / step) * step + 0.0, std::round(pos.y() / step) * step + 0.0};
 }
 
-void GraphicElement::setPortName(const QString &name)
+void Element::setPortName(const QString &name)
 {
     setObjectName(name);
 }
 
-void GraphicElement::setDescribedPortName(Port *port, const char *letter, const char *description) const
+void Element::setDescribedPortName(Port *port, const char *letter, const char *description) const
 {
     const QString prefix = QString::fromUtf8(letter) + " (";
     port->setName(prefix + metaObject()->tr(description, nullptr) + ')', prefix + QString::fromUtf8(description) + ')');
 }
 
-void GraphicElement::setRotation(const qreal angle)
+void Element::setRotation(const qreal angle)
 {
     m_orientation.setRotation(angle);
 }
 
-void GraphicElement::rotatePorts()
+void Element::rotatePorts()
 {
     m_orientation.rotatePorts();
 }
 
-qreal GraphicElement::rotation() const
+qreal Element::rotation() const
 {
     return m_orientation.angle();
 }
 
-void GraphicElement::setFlippedX(const bool flipped)
+void Element::setFlippedX(const bool flipped)
 {
     m_orientation.setFlippedX(flipped);
 }
 
-void GraphicElement::setFlippedY(const bool flipped)
+void Element::setFlippedY(const bool flipped)
 {
     m_orientation.setFlippedY(flipped);
 }
 
-void GraphicElement::setAppearance(const bool defaultAppearance, const QString &fileName)
+void Element::setAppearance(const bool defaultAppearance, const QString &fileName)
 {
     m_appearance.setAppearance(defaultAppearance, fileName);
 }
 
-void GraphicElement::setAppearanceAt(const int index, const QString &fileName)
+void Element::setAppearanceAt(const int index, const QString &fileName)
 {
     m_appearance.setAppearanceAt(index, fileName);
 }
 
-QList<std::pair<int, QString>> GraphicElement::appearanceStates() const
+QList<std::pair<int, QString>> Element::appearanceStates() const
 {
-    // Default: single appearance at index 0
-    return {{0, tr("Default")}};
+    // Default: single appearance at index 0, translated in the "GraphicElement" context the catalogues hold
+    return {{0, QCoreApplication::translate("GraphicElement", "Default")}};
 }
 
-QPixmap GraphicElement::appearancePreviewPixmap(const int index, const QSize &size) const
+QPixmap Element::appearancePreviewPixmap(const int index, const QSize &size) const
 {
     return m_appearance.previewPixmapAt(index, size);
 }
 
-void GraphicElement::updatePortsProperties()
+void Element::updatePortsProperties()
 {
     qCDebug(five) << "Updating port positions that belong to the IC.";
 
@@ -334,14 +334,14 @@ void GraphicElement::updatePortsProperties()
     }
 }
 
-void GraphicElement::refresh()
+void Element::refresh()
 {
     // Reload appearance index 0, which is the currently active appearance for the element's
     // present state (e.g. after a theme change or appearance file replacement).
     setPixmap(0);
 }
 
-QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value)
+QVariant Element::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value)
 {
     // Guard against changes fired during construction before the item is added to a scene
     if (!scene()) {
@@ -367,7 +367,7 @@ QVariant GraphicElement::itemChange(QGraphicsItem::GraphicsItemChange change, co
     return QGraphicsItem::itemChange(change, value);
 }
 
-bool GraphicElement::sceneEvent(QEvent *event)
+bool Element::sceneEvent(QEvent *event)
 {
     // Swallow Ctrl+click events so the scene's rubber-band selection logic can handle them
     // without the element intercepting the press and starting a move instead
@@ -382,7 +382,7 @@ bool GraphicElement::sceneEvent(QEvent *event)
     return QGraphicsItem::sceneEvent(event);
 }
 
-void GraphicElement::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
+void Element::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
     if (hasLabel()) {
         event->accept();
@@ -393,28 +393,28 @@ void GraphicElement::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
     QGraphicsItem::mouseDoubleClickEvent(event);
 }
 
-bool GraphicElement::hasAudio() const
+bool Element::hasAudio() const
 {
     return m_metadata.hasAudio;
 }
 
-QKeySequence GraphicElement::trigger() const
+QKeySequence Element::trigger() const
 {
     return m_trigger;
 }
 
-void GraphicElement::setTrigger(const QKeySequence &trigger)
+void Element::setTrigger(const QKeySequence &trigger)
 {
     m_trigger = trigger;
     updateLabel();
 }
 
-QString GraphicElement::genericProperties()
+QString Element::genericProperties()
 {
     return {};
 }
 
-void GraphicElement::updateLabel()
+void Element::updateLabel()
 {
     QString label = m_labelText;
 
@@ -439,7 +439,7 @@ void GraphicElement::updateLabel()
     labelContentChanged();
 }
 
-void GraphicElement::updateLabelOrientation()
+void Element::updateLabelOrientation()
 {
     // Non-rotatable elements never transform their graphic (or its children), so their label is
     // already upright as authored.
@@ -482,18 +482,18 @@ void GraphicElement::updateLabelOrientation()
     m_label->setTransform(t);
 }
 
-void GraphicElement::setLabel(const QString &label)
+void Element::setLabel(const QString &label)
 {
     m_labelText = label;
     updateLabel();
 }
 
-QString GraphicElement::label() const
+QString Element::label() const
 {
     return m_labelText;
 }
 
-QRectF GraphicElement::labelSceneBoundingRect() const
+QRectF Element::labelSceneBoundingRect() const
 {
     return m_label->sceneBoundingRect();
 }
@@ -501,7 +501,7 @@ QRectF GraphicElement::labelSceneBoundingRect() const
 // Color cycle (forward): White → Red → Green → Blue → Purple → White
 // These two functions implement previous/next steps in that cycle so the
 // property editor can wrap around without knowing the full list
-QString GraphicElement::previousColor() const
+QString Element::previousColor() const
 {
     if (color() == "White") return "Purple";
     if (color() == "Red") return "White";
@@ -511,7 +511,7 @@ QString GraphicElement::previousColor() const
     return "White"; // Standard
 }
 
-QString GraphicElement::nextColor() const
+QString Element::nextColor() const
 {
     if (color() == "White") return "Red";
     if (color() == "Red") return "Green";
@@ -521,11 +521,11 @@ QString GraphicElement::nextColor() const
     return "White"; // Standard
 }
 
-void GraphicElement::updateTheme()
+void Element::updateTheme()
 {
     const ThemeAttributes theme = ThemeManager::attributes();
 
-    m_label->setBrush(theme.m_graphicElementLabelColor);
+    m_label->setBrush(theme.m_elementLabelColor);
     // A type with no built-in appearances shows its pixmap path's picture, which can be the theme's (the latches and
     // flip-flops)
     if (m_metadata.defaultAppearances.isEmpty()) {
@@ -544,7 +544,7 @@ void GraphicElement::updateTheme()
     update();
 }
 
-bool GraphicElement::isValid()
+bool Element::isValid()
 {
     qCDebug(four) << "Checking if the element has the required signals to compute its value.";
     // An element is valid only when every input port is satisfied (connected or optional)
@@ -567,32 +567,32 @@ bool GraphicElement::isValid()
     return valid;
 }
 
-bool GraphicElement::hasColors() const
+bool Element::hasColors() const
 {
     return m_hasColors;
 }
 
-bool GraphicElement::hasTrigger() const
+bool Element::hasTrigger() const
 {
     return m_metadata.hasTrigger;
 }
 
-void GraphicElement::setColor(const QString &color)
+void Element::setColor(const QString &color)
 {
     Q_UNUSED(color)
 }
 
-void GraphicElement::setHasColors(const bool hasColors)
+void Element::setHasColors(const bool hasColors)
 {
     m_hasColors = hasColors;
 }
 
-QString GraphicElement::color() const
+QString Element::color() const
 {
     return {};
 }
 
-int GraphicElement::colorNameToIndex(const QString &color)
+int Element::colorNameToIndex(const QString &color)
 {
     if (color == "White")  { return 0; }
     if (color == "Red")    { return 1; }
@@ -602,56 +602,56 @@ int GraphicElement::colorNameToIndex(const QString &color)
     return 0;
 }
 
-void GraphicElement::setAudio(const QString &audio)
+void Element::setAudio(const QString &audio)
 {
     Q_UNUSED(audio)
 }
 
-QString GraphicElement::audio() const
+QString Element::audio() const
 {
     return {};
 }
 
-bool GraphicElement::hasFrequency() const
+bool Element::hasFrequency() const
 {
     return m_metadata.hasFrequency;
 }
 
-bool GraphicElement::hasDelay() const
+bool Element::hasDelay() const
 {
     return m_metadata.hasDelay;
 }
 
-bool GraphicElement::hasLabel() const
+bool Element::hasLabel() const
 {
     return m_metadata.hasLabel;
 }
 
-bool GraphicElement::hasTruthTable() const
+bool Element::hasTruthTable() const
 {
     return m_metadata.hasTruthTable;
 }
 
-bool GraphicElement::hasAudioBox() const
+bool Element::hasAudioBox() const
 {
     return m_metadata.hasAudioBox;
 }
 
-bool GraphicElement::hasVolume() const
+bool Element::hasVolume() const
 {
     return m_metadata.hasVolume;
 }
 
-float GraphicElement::volume() const
+float Element::volume() const
 {
     return 0.0f;
 }
 
-void GraphicElement::setVolume(float)
+void Element::setVolume(float)
 {
 }
 
-QList<PropertyDescriptor> GraphicElement::editableProperties() const
+QList<PropertyDescriptor> Element::editableProperties() const
 {
     QList<PropertyDescriptor> props;
     if (hasLabel())      props.append({PropertyDescriptor::Type::Label});
@@ -668,22 +668,22 @@ QList<PropertyDescriptor> GraphicElement::editableProperties() const
     return props;
 } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned QList<PropertyDescriptor>, never reached after the return above.
 
-bool GraphicElement::canChangeAppearance() const
+bool Element::canChangeAppearance() const
 {
     return m_metadata.canChangeAppearance;
 }
 
-bool GraphicElement::rotatesGraphic() const
+bool Element::rotatesGraphic() const
 {
     return m_metadata.rotatesGraphic;
 }
 
-int GraphicElement::inputSize() const
+int Element::inputSize() const
 {
     return m_ports.inputSize();
 }
 
-void GraphicElement::setPortSize(const int size, const bool isInput)
+void Element::setPortSize(const int size, const bool isInput)
 {
     const int minSize = isInput ? minInputSize() : minOutputSize();
     const int maxSize = isInput ? maxInputSize() : maxOutputSize();
@@ -705,65 +705,65 @@ void GraphicElement::setPortSize(const int size, const bool isInput)
     updatePortsProperties();
 }
 
-void GraphicElement::setInputSize(const int size)
+void Element::setInputSize(const int size)
 {
     setPortSize(size, true);
 }
 
-int GraphicElement::outputSize() const
+int Element::outputSize() const
 {
     return m_ports.outputSize();
 }
 
-void GraphicElement::setOutputSize(const int size)
+void Element::setOutputSize(const int size)
 {
     setPortSize(size, false);
 }
 
-double GraphicElement::frequency() const
+double Element::frequency() const
 {
     return 0.0;
 }
 
-void GraphicElement::setFrequency(const double freq)
+void Element::setFrequency(const double freq)
 {
     Q_UNUSED(freq)
 }
 
-bool GraphicElement::acceptsFrequency(const double freq) const
+bool Element::acceptsFrequency(const double freq) const
 {
     Q_UNUSED(freq)
     return false;
 }
 
-double GraphicElement::delay() const
+double Element::delay() const
 {
     return 0.0;
 }
 
-void GraphicElement::setDelay(const double delay)
+void Element::setDelay(const double delay)
 {
     Q_UNUSED(delay)
 }
 
-void GraphicElement::updateLogic()
+void Element::updateLogic()
 {
     // Default no-op — decorative elements (Line, Text) have no simulation behaviour.
 }
 
-void GraphicElement::resetSimState()
+void Element::resetSimState()
 {
     m_sim.reset(m_ports.outputs());
 }
 
-void GraphicElement::saveSimState(QVector<Status> &out) const
+void Element::saveSimState(QVector<Status> &out) const
 {
     for (int i = 0; i < static_cast<int>(m_sim.outputSize()); ++i) {
         out.append(m_sim.outputValue(i));
     }
 }
 
-void GraphicElement::restoreSimState(const QVector<Status> &in, int &cursor)
+void Element::restoreSimState(const QVector<Status> &in, int &cursor)
 {
     for (int i = 0; i < static_cast<int>(m_sim.outputSize()); ++i) {
         if (cursor >= in.size()) {
@@ -773,57 +773,57 @@ void GraphicElement::restoreSimState(const QVector<Status> &in, int &cursor)
     }
 }
 
-void GraphicElement::connectPredecessor(const int inputIndex, GraphicElement *source, const int outputPort)
+void Element::connectPredecessor(const int inputIndex, Element *source, const int outputPort)
 {
     m_sim.connectPredecessor(inputIndex, source, outputPort);
 }
 
-void GraphicElement::initSimulationVectors(const int inputCount, const int outputCount, const bool keepOutputs)
+void Element::initSimulationVectors(const int inputCount, const int outputCount, const bool keepOutputs)
 {
     m_sim.initVectors(inputCount, outputCount, m_ports.outputs(), keepOutputs);
 }
 
-int GraphicElement::minOutputSize() const
+int Element::minOutputSize() const
 {
     return static_cast<int>(m_minOutputSize);
 }
 
-int GraphicElement::minInputSize() const
+int Element::minInputSize() const
 {
     return static_cast<int>(m_minInputSize);
 }
 
-int GraphicElement::maxOutputSize() const
+int Element::maxOutputSize() const
 {
     return static_cast<int>(m_maxOutputSize);
 }
 
-int GraphicElement::maxInputSize() const
+int Element::maxInputSize() const
 {
     return static_cast<int>(m_maxInputSize);
 }
 
-void GraphicElement::setMaxInputSize(const int maxInputSize)
+void Element::setMaxInputSize(const int maxInputSize)
 {
     m_maxInputSize = static_cast<quint64>(maxInputSize);
 }
 
-void GraphicElement::setMaxOutputSize(const int maxOutputSize)
+void Element::setMaxOutputSize(const int maxOutputSize)
 {
     m_maxOutputSize = static_cast<quint64>(maxOutputSize);
 }
 
-void GraphicElement::setMinInputSize(const int minInputSize)
+void Element::setMinInputSize(const int minInputSize)
 {
     m_minInputSize = static_cast<quint64>(minInputSize);
 }
 
-void GraphicElement::setMinOutputSize(const int minOutputSize)
+void Element::setMinOutputSize(const int minOutputSize)
 {
     m_minOutputSize = static_cast<quint64>(minOutputSize);
 }
 
-void GraphicElement::highlight(const bool isSelected)
+void Element::highlight(const bool isSelected)
 {
     for (auto *port : allPorts()) {
         for (auto *connection : port->connections()) {
@@ -838,7 +838,7 @@ void GraphicElement::highlight(const bool isSelected)
     }
 }
 
-void GraphicElement::retranslate()
+void Element::retranslate()
 {
     m_translatedName = ElementFactory::translatedName(m_elementType);
 
@@ -846,7 +846,7 @@ void GraphicElement::retranslate()
     setToolTip(m_translatedName);
 }
 
-void GraphicElement::loadFromDrop(const QString &fileName, const QString &contextDir)
+void Element::loadFromDrop(const QString &fileName, const QString &contextDir)
 {
     Q_UNUSED(fileName)
     Q_UNUSED(contextDir)

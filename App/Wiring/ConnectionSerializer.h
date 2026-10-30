@@ -18,8 +18,8 @@ struct SerializationContext;
  * \brief Serializes a Connection to/from a versioned QDataStream.
  *
  * \details Extracted from Connection so persistence is a collaborator rather than a
- * pair of methods on the wire itself, mirroring the GraphicElement /
- * GraphicElementSerializer split. Unlike that split, no friend relationship is
+ * pair of methods on the wire itself, mirroring the Element /
+ * ElementSerializer split. Unlike that split, no friend relationship is
  * needed: both directions only ever touch the endpoint ports through Connection's
  * existing public accessors (startPort()/endPort()/setStartPort()/setEndPort()/
  * updatePosFromPorts()). Connection keeps thin save()/load() entry points that

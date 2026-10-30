@@ -38,7 +38,7 @@ struct ElementInfo<SRFlipFlop> {
 };
 
 SRFlipFlop::SRFlipFlop(QGraphicsItem *parent)
-    : GraphicElement(ElementType::SRFlipFlop, parent)
+    : Element(ElementType::SRFlipFlop, parent)
 {
     // Call the most-derived override explicitly to guarantee correct port positions
     // even if a subclass overrides updatePortsProperties() further.
@@ -114,7 +114,7 @@ void SRFlipFlop::updateLogic()
 
 void SRFlipFlop::resetSimState()
 {
-    GraphicElement::resetSimState();
+    Element::resetSimState();
     m_simLastClk = Status::Inactive;
     m_simLastS   = Status::Inactive;
     m_simLastR   = Status::Inactive;
@@ -124,7 +124,7 @@ void SRFlipFlop::saveSimState(QVector<Status> &out) const
 {
     // Mirrors resetSimState(): the outputs via the base, then the edge-detection history, in a
     // fixed order that restoreSimState() reads back identically.
-    GraphicElement::saveSimState(out);
+    Element::saveSimState(out);
     out.append(m_simLastClk);
     out.append(m_simLastS);
     out.append(m_simLastR);
@@ -132,7 +132,7 @@ void SRFlipFlop::saveSimState(QVector<Status> &out) const
 
 void SRFlipFlop::restoreSimState(const QVector<Status> &in, int &cursor)
 {
-    GraphicElement::restoreSimState(in, cursor);
+    Element::restoreSimState(in, cursor);
     if (cursor < in.size()) { m_simLastClk = in.at(cursor++); }
     if (cursor < in.size()) { m_simLastS = in.at(cursor++); }
     if (cursor < in.size()) { m_simLastR = in.at(cursor++); }

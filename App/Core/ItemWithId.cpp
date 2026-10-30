@@ -5,10 +5,10 @@
 
 #include "App/Scene/SceneItemRegistry.h"
 
-// Virtual destructor entry/exit is exercised constantly (every GraphicElement/
+// Virtual destructor entry/exit is exercised constantly (every Element/
 // Connection destruction across the suite) but never separately attributed by
 // gcov — same ABI-variant gap as App/Wiring/Port.h's destructor: no object whose
-// dynamic type is ItemWithId itself ever exists (every item is a GraphicElement
+// dynamic type is ItemWithId itself ever exists (every item is a Element
 // or a Connection), so this class's own D0 (deleting destructor) never runs. A
 // delete, even through an ItemWithId*, dispatches virtually to the concrete
 // type's D0, which invokes this D2 (base-object destructor) as part of that

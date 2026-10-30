@@ -454,14 +454,14 @@ void TestAudioBox::testSaveStoresFilenameOnlyInProjectDir()
     QDataStream saveStream(&data, QIODevice::WriteOnly);
     audioBox.save(saveStream, {.purpose = SerializationPurpose::PortableFile});
 
-    // Skip past the GraphicElement base data to reach the AudioBox map.
-    // GraphicElement::save writes: QMap (properties), QList<QMap> (inputs),
+    // Skip past the Element base data to reach the AudioBox map.
+    // Element::save writes: QMap (properties), QList<QMap> (inputs),
     // QList<QMap> (outputs), QList<QMap> (appearances). Then AudioBox::save adds its QMap.
     QDataStream loadStream(data);
     QMap<QString, QVariant> map;
     QList<QMap<QString, QVariant>> listMap;
 
-    loadStream >> map;      // GraphicElement's properties map
+    loadStream >> map;      // Element's properties map
     loadStream >> listMap;  // input ports
     loadStream >> listMap;  // output ports
     loadStream >> listMap;  // appearances
@@ -487,7 +487,7 @@ void TestAudioBox::testUpdateCommandUndoRedoPreservesFullAudioPath()
     auto *audioBox = new AudioBox();
     workspace.scene()->addItem(audioBox);
     const int id = audioBox->id();
-    auto *audioElm = dynamic_cast<GraphicElement *>(audioBox);
+    auto *audioElm = dynamic_cast<Element *>(audioBox);
 
     QVERIFY(audioElm->externalFiles().isEmpty()); // starts on the default (resource) audio
 
@@ -505,11 +505,11 @@ void TestAudioBox::testUpdateCommandUndoRedoPreservesFullAudioPath()
 
     // undo() must restore the default (resource) audio, not just leave the custom one
     workspace.scene()->undoStack()->undo();
-    QVERIFY(dynamic_cast<GraphicElement *>(workspace.scene()->itemById(id))->externalFiles().isEmpty());
+    QVERIFY(dynamic_cast<Element *>(workspace.scene()->itemById(id))->externalFiles().isEmpty());
 
     // redo() reapplies the custom audio path, full and unstripped
     workspace.scene()->undoStack()->redo();
-    QCOMPARE(dynamic_cast<GraphicElement *>(workspace.scene()->itemById(id))->externalFiles(), QStringList{audioPath});
+    QCOMPARE(dynamic_cast<Element *>(workspace.scene()->itemById(id))->externalFiles(), QStringList{audioPath});
 }
 
 void TestAudioBox::testLoadBeforeAudioExisted()
@@ -528,7 +528,7 @@ void TestAudioBox::testLoadOldFormatBareAudioPath()
 {
     // No bundled backward-compatibility fixture happens to contain an AudioBox (unlike
     // Buzzer's "notes.panda"), so the v2.4-4.0 bare-QString load branch is hand-built here,
-    // mirroring GraphicElementSerializer::loadOldFormat()'s exact old-format field order.
+    // mirroring ElementSerializer::loadOldFormat()'s exact old-format field order.
     //
     // A real (non-resource) absolute path is used, not a ":/..." resource string: per
     // ExternalFilePath::forReading(), a resource path always resolves to std::nullopt for

@@ -14,8 +14,8 @@ class IC;
  * \brief Builds and drives an IC's internal simulation graph.
  *
  * \details Extracted from IC so direct simulation is a collaborator rather than a
- * cluster of methods on the element itself, mirroring the GraphicElement /
- * GraphicElementSerializer split. A friend of IC, it reaches the element's internal
+ * cluster of methods on the element itself, mirroring the Element /
+ * ElementSerializer split. A friend of IC, it reaches the element's internal
  * simulation state directly. All methods are static and take the IC explicitly; IC
  * keeps all state, so this is a pure logic extraction, not a new owner-back-pointer
  * collaborator.
@@ -24,7 +24,7 @@ class ICSimulation
 {
 public:
     /// Builds the internal simulation graph (connection graph + topological sort) for \a ic, keeping its internal
-    /// elements' outputs if \a keepOutputs (a rebuild; see GraphicElement::initSimulationVectors()).
+    /// elements' outputs if \a keepOutputs (a rebuild; see Element::initSimulationVectors()).
     static void initialize(IC &ic, bool keepOutputs);
 
     /// Simulates \a ic's internal circuit and propagates results to its boundary.

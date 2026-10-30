@@ -257,12 +257,12 @@ void TestConnection::testPortAttachConnectionIgnoresNull()
     QCOMPARE(outPort->connections().size(), before);
 }
 
-void TestConnection::testPortConstGraphicElementAccessor()
+void TestConnection::testPortConstElementAccessor()
 {
     auto andGate = std::make_unique<And>();
     const Port *constPort = andGate->outputPort();
 
-    QCOMPARE(constPort->graphicElement(), andGate.get());
+    QCOMPARE(constPort->element(), andGate.get());
 }
 
 void TestConnection::testAttachAndDetachLeaveSiblingWiresAlone()

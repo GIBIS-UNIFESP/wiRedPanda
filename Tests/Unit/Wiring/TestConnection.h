@@ -23,7 +23,7 @@ private slots:
     void testPaintDrawsHighlightHalo();
     void testSceneEventSwallowsCtrlClick();
     void testPortAttachConnectionIgnoresNull();
-    void testPortConstGraphicElementAccessor();
+    void testPortConstElementAccessor();
     void testAttachAndDetachLeaveSiblingWiresAlone();
     void testSettingThePortsPlacesTheWire();
 };

@@ -32,7 +32,7 @@
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
 #include "App/Core/Settings.h"
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
@@ -219,7 +219,7 @@ void TestICUnit::testDoubleClickOpensSubCircuitNotInlineEditor()
     workspace.scene()->addItem(ic);
 
     QSignalSpy openSpy(ic, &IC::requestOpenSubCircuit);
-    QSignalSpy inlineEditSpy(ic, &GraphicElement::inlineEditRequested);
+    QSignalSpy inlineEditSpy(ic, &Element::inlineEditRequested);
 
     QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMouseDoubleClick);
     event.setScenePos(ic->mapToScene(ic->boundingRect().center()));

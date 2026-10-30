@@ -288,7 +288,7 @@ void TestBuzzer::testLoadVersionOld()
         const auto elements = workspace.scene()->elements();
         bool foundBuzzer = false;
 
-        for (GraphicElement *elem : elements) {
+        for (Element *elem : elements) {
             if (elem->elementType() == ElementType::Buzzer) {
                 auto *buzzer = dynamic_cast<Buzzer *>(elem);
                 if (buzzer) {

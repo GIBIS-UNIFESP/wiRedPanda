@@ -13,7 +13,7 @@
 #include <QPointer>
 #include <QPointF>
 
-class GraphicElement;
+class Element;
 class PortHoverLabel;
 class Connection;
 class InputPort;

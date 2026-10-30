@@ -77,7 +77,7 @@ struct ElementInfo<Display7> {
 };
 
 Display7::Display7(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Display7, parent)
+    : Element(ElementType::Display7, parent)
 {
     a  = cachedSegmentRenderers(m_appearance.defaultAppearances().at(1));
     b  = cachedSegmentRenderers(m_appearance.defaultAppearances().at(2));
@@ -152,7 +152,7 @@ void Display7::updatePortsProperties()
 
 QRectF Display7::boundingRect() const
 {
-    return GraphicElement::boundingRect().united(QRectF(0, 0, 64, 64));
+    return Element::boundingRect().united(QRectF(0, 0, 64, 64));
 }
 
 void Display7::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -160,7 +160,7 @@ void Display7::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
     // The base class draws the background (off-state SVG).
     // Active segments are painted on top as vector renders, crisp at any zoom.
     // All segment renderers share the background's 64x64 box, so they composite correctly.
-    GraphicElement::paint(painter, option, widget);
+    Element::paint(painter, option, widget);
 
     const QRectF body(0, 0, 64, 64);
     if (auto *port = inputPort(0); port && port->status() == Status::Active) { g.at(m_colorNumber)->render(painter, body);  }
@@ -186,7 +186,7 @@ QString Display7::color() const
 
 void Display7::save(QDataStream &stream, SerializationOptions options) const
 {
-    GraphicElement::save(stream, options);
+    Element::save(stream, options);
 
     QMap<QString, QVariant> map;
     // PortableFile streams omit the default; fresh-loaded elements start there
@@ -200,7 +200,7 @@ void Display7::save(QDataStream &stream, SerializationOptions options) const
 
 void Display7::load(QDataStream &stream, SerializationContext &context)
 {
-    GraphicElement::load(stream, context);
+    Element::load(stream, context);
     /*
      * 0, 7, 2, 1, 3, 4, 5, 6
      * 7, 5, 4, 2, 1, 4, 6, 3, 0

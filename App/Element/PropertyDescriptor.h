@@ -9,10 +9,10 @@
 
 /**
  * \struct PropertyDescriptor
- * \brief Describes one editable property that a GraphicElement exposes in the ElementEditor.
+ * \brief Describes one editable property that a Element exposes in the ElementEditor.
  *
  * \details Each element returns the list of descriptors it supports via
- * GraphicElement::editableProperties(), which lists the kinds an element offers.
+ * Element::editableProperties(), which lists the kinds an element offers.
  * The ElementEditor shows one field per kind (computeCapabilities / applyCapabilitiesToUi),
  * and each field sets its own property through SetPropertyCommand (ElementProperty).
  */

@@ -70,7 +70,7 @@ struct MemoryStageFixture {
 
     TestUtils::Bits readDataOut()
     {
-        return readMultiBitOutput(QVector<GraphicElement *>(dataoutLeds.begin(), dataoutLeds.end()), 0);
+        return readMultiBitOutput(QVector<Element *>(dataoutLeds.begin(), dataoutLeds.end()), 0);
     }
 };
 

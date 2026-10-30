@@ -20,7 +20,7 @@
 #include <QTimer>
 #include <QVariant>
 
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 #include "App/Element/GraphicElements/Display14.h"
 #include "App/Element/GraphicElements/Display16.h"
 #include "App/Element/GraphicElements/Display7.h"
@@ -225,14 +225,14 @@ QString snapshotOrientation(const Orientation &orientation)
     return 'r' + QString::number(orientation.rotation) + (orientation.flipX ? "x" : "") + (orientation.flipY ? "y" : "");
 }
 
-void orient(GraphicElement *element, const Orientation &orientation)
+void orient(Element *element, const Orientation &orientation)
 {
     element->setRotation(orientation.rotation);
     element->setFlippedX(orientation.flipX);
     element->setFlippedY(orientation.flipY);
 }
 
-void applyPortCounts(GraphicElement *element, const int inputs, const int outputs)
+void applyPortCounts(Element *element, const int inputs, const int outputs)
 {
     element->setOutputSize(outputs);
     if ((inputs >= 0) && (element->elementType() != ElementType::Demux)) {
@@ -240,10 +240,10 @@ void applyPortCounts(GraphicElement *element, const int inputs, const int output
     }
 }
 
-QVector<GraphicElement *> elementsById(const Scene *scene)
+QVector<Element *> elementsById(const Scene *scene)
 {
-    QVector<GraphicElement *> elements = scene->unsortedElements();
-    std::sort(elements.begin(), elements.end(), [](const GraphicElement *a, const GraphicElement *b) {
+    QVector<Element *> elements = scene->unsortedElements();
+    std::sort(elements.begin(), elements.end(), [](const Element *a, const Element *b) {
         return a->id() < b->id();
     });
     return elements;
@@ -424,7 +424,7 @@ void addSegmentDisplaysAndDisplayIc(CircuitBuilder &builder, const QString &dire
 
 } // namespace TestUtils
 
-QString SnapshotAccess::pixmapIdentity(const GraphicElement *element)
+QString SnapshotAccess::pixmapIdentity(const Element *element)
 {
     const ElementAppearance &appearance = element->m_appearance;
     if (appearance.m_hasCustomRenderPixmap) {
@@ -442,12 +442,12 @@ QString SnapshotAccess::pixmapIdentity(const GraphicElement *element)
     return QString::number(size.width()) + 'x' + QString::number(size.height()) + ':' + source + (oriented ? ":oriented" : "");
 }
 
-const QGraphicsItem *SnapshotAccess::label(const GraphicElement *element)
+const QGraphicsItem *SnapshotAccess::label(const Element *element)
 {
     return element->m_label;
 }
 
-QTransform SnapshotAccess::labelSceneTransform(const GraphicElement *element)
+QTransform SnapshotAccess::labelSceneTransform(const Element *element)
 {
     return element->m_label->sceneTransform();
 }

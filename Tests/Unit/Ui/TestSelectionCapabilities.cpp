@@ -3,9 +3,9 @@
 
 #include "Tests/Unit/Ui/TestSelectionCapabilities.h"
 
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElement.h"
-#include "App/Element/GraphicElementInput.h"
+#include "App/Element/ElementInput.h"
 #include "App/UI/SelectionCapabilities.h"
 #include "Tests/Common/TestUtils.h"
 
@@ -177,8 +177,8 @@ void TestSelectionCapabilities::testCanMorphFalseAcrossUnrelatedGroups()
 
 void TestSelectionCapabilities::testSameCheckStateAndSameOutputValueForInputElements()
 {
-    auto *sw1 = qobject_cast<GraphicElementInput *>(ElementFactory::buildElement(ElementType::InputSwitch));
-    auto *sw2 = qobject_cast<GraphicElementInput *>(ElementFactory::buildElement(ElementType::InputSwitch));
+    auto *sw1 = qobject_cast<ElementInput *>(ElementFactory::buildElement(ElementType::InputSwitch));
+    auto *sw2 = qobject_cast<ElementInput *>(ElementFactory::buildElement(ElementType::InputSwitch));
     QVERIFY(sw1 && sw2);
 
     sw1->setLocked(false);

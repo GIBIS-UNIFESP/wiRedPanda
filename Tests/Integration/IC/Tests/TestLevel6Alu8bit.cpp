@@ -104,7 +104,7 @@ struct Alu8bitFixture {
 
     TestUtils::Bits readResult()
     {
-        return readMultiBitOutput(QVector<GraphicElement *>(resultOutputs.begin(), resultOutputs.end()), 0);
+        return readMultiBitOutput(QVector<Element *>(resultOutputs.begin(), resultOutputs.end()), 0);
     }
 };
 

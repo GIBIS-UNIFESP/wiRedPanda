@@ -40,7 +40,7 @@ struct ElementInfo<Nor> {
 };
 
 Nor::Nor(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Nor, parent)
+    : Element(ElementType::Nor, parent)
 {
     // Skip full initialisation when building a property-probe instance (see ElementFactory).
 }

@@ -59,8 +59,8 @@ void TestFeedback::testSetResetPriorityInSRLatch()
 
     InputSwitch *switchS = nullptr;
     InputSwitch *switchR = nullptr;
-    GraphicElement *nand1 = nullptr; // Q
-    GraphicElement *nand2 = nullptr; // Q'
+    Element *nand1 = nullptr; // Q
+    Element *nand2 = nullptr; // Q'
     findSRLatchParts(scene.get(), switchS, switchR, nand1, nand2);
     QVERIFY2(switchS && switchR && nand1 && nand2, "Failed to locate S/R switches and NAND gates");
 
@@ -95,12 +95,12 @@ void TestFeedback::testInitialStateDependency()
     QVERIFY2(scene2 != nullptr, "Failed to create second scene");
 
     InputSwitch *switchS1 = nullptr, *switchR1 = nullptr;
-    GraphicElement *nand1Q1 = nullptr, *nand1Q1Bar = nullptr;
+    Element *nand1Q1 = nullptr, *nand1Q1Bar = nullptr;
     findSRLatchParts(scene1.get(), switchS1, switchR1, nand1Q1, nand1Q1Bar);
     QVERIFY(switchS1 && switchR1 && nand1Q1 && nand1Q1Bar);
 
     InputSwitch *switchS2 = nullptr, *switchR2 = nullptr;
-    GraphicElement *nand2Q1 = nullptr, *nand2Q1Bar = nullptr;
+    Element *nand2Q1 = nullptr, *nand2Q1Bar = nullptr;
     findSRLatchParts(scene2.get(), switchS2, switchR2, nand2Q1, nand2Q1Bar);
     QVERIFY(switchS2 && switchR2 && nand2Q1 && nand2Q1Bar);
 
@@ -481,7 +481,7 @@ void TestFeedback::testLargeFeedbackLoops()
     Scene scene;
 
     // Create chain of 10 inverters
-    QVector<GraphicElement *> inverters;
+    QVector<Element *> inverters;
     for (int i = 0; i < 10; ++i) {
         auto *inv = ElementFactory::buildElement(ElementType::Not);
         QVERIFY2(inv != nullptr, "Failed to create inverter");
@@ -544,7 +544,7 @@ void TestFeedback::testDeepCircuitsWithFeedback()
     Scene scene;
 
     // Create 10 NOT gates in a ring
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
     for (int i = 0; i < 10; ++i) {
         auto *notGate = ElementFactory::buildElement(ElementType::Not);
         QVERIFY2(notGate != nullptr, "Failed to create NOT gate");
@@ -573,9 +573,9 @@ void TestFeedback::testMultipleSimultaneousFeedbackLoops()
     Scene scene;
 
     // Create 5 separate 2-NOT feedback rings (each bistable, converges)
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
     for (int loop = 0; loop < 5; ++loop) {
-        QVector<GraphicElement *> loopElements;
+        QVector<Element *> loopElements;
         for (int i = 0; i < 2; ++i) {  // 2 NOT gates per loop
             auto *notGate = ElementFactory::buildElement(ElementType::Not);
             QVERIFY2(notGate != nullptr, "Failed to create NOT gate");
@@ -608,7 +608,7 @@ void TestFeedback::testMultipleSimultaneousFeedbackLoops()
 // ============================================================
 
 void TestFeedback::findSRLatchParts(Scene *scene, InputSwitch *&switchS, InputSwitch *&switchR,
-                                    GraphicElement *&nand1Q, GraphicElement *&nand2QBar)
+                                    Element *&nand1Q, Element *&nand2QBar)
 {
     switchS = switchR = nullptr;
     nand1Q = nand2QBar = nullptr;
@@ -789,7 +789,7 @@ void TestFeedback::verifyConvergence(Scene *scene)
     sim.update();
 
     // Snapshot all logic element outputs
-    QHash<GraphicElement *, Status> snapshot;
+    QHash<Element *, Status> snapshot;
     for (auto *elem : scene->elements()) {
         if (elem->simOutputSize() > 0) {
             snapshot[elem] = elem->outputValue(0);
@@ -840,7 +840,7 @@ void TestFeedback::verifyStableState(Scene *scene)
     sim.update();
 
     // Snapshot all logic element outputs
-    QHash<GraphicElement *, Status> snapshot;
+    QHash<Element *, Status> snapshot;
     for (auto *elem : elements) {
         if (elem->simOutputSize() > 0) {
             snapshot[elem] = elem->outputValue(0);

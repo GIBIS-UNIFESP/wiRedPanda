@@ -6,8 +6,8 @@
 #include <QDebug>
 
 #include "App/Core/Settings.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElement.h"
 #include "App/Scene/Scene.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
@@ -165,7 +165,7 @@ bool ExerciseEngine::validateElements(const QVector<ExerciseElementRequirement> 
         return true;
     }
 
-    const QVector<GraphicElement *> elements = m_scene->elements();
+    const QVector<Element *> elements = m_scene->elements();
 
     for (const ExerciseElementRequirement &req : reqs) {
         const ElementType required = ElementFactory::textToType(req.typeName);
@@ -175,7 +175,7 @@ bool ExerciseEngine::validateElements(const QVector<ExerciseElementRequirement> 
             return false;
         }
         int count = 0;
-        for (const GraphicElement *elm : elements) {
+        for (const Element *elm : elements) {
             if (elm->elementType() == required) {
                 ++count;
             }
@@ -193,7 +193,7 @@ bool ExerciseEngine::validateConnections(const QVector<ExerciseConnectionRequire
         return true;
     }
 
-    const QVector<GraphicElement *> elements = m_scene->elements();
+    const QVector<Element *> elements = m_scene->elements();
 
     for (const ExerciseConnectionRequirement &req : reqs) {
         const ElementType toType   = ElementFactory::textToType(req.toTypeName);
@@ -206,15 +206,15 @@ bool ExerciseEngine::validateConnections(const QVector<ExerciseConnectionRequire
         }
 
         int count = 0;
-        for (const GraphicElement *elm : elements) {
+        for (const Element *elm : elements) {
             if (elm->elementType() != toType) {
                 continue;
             }
             for (const InputPort *port : elm->inputs()) {
                 for (const Connection *conn : port->connections()) {
                     if (conn->startPort()
-                            && conn->startPort()->graphicElement()
-                            && conn->startPort()->graphicElement()->elementType() == fromType) {
+                            && conn->startPort()->element()
+                            && conn->startPort()->element()->elementType() == fromType) {
                         ++count;
                     }
                 }

@@ -9,14 +9,14 @@
 
 #include <QCoreApplication>
 
-class GraphicElement;
+class Element;
 class QGraphicsProxyWidget;
 class Scene;
 
 /**
  * \class InlineLabelEditor
  * \brief Hosts a temporary QLineEdit directly on the canvas to rename an element's label
- * in place, in response to GraphicElement::inlineEditRequested().
+ * in place, in response to Element::inlineEditRequested().
  *
  * \details Follows the SceneDropHandler/ConnectionManager pattern: holds a back-reference to
  * the owning Scene and delegates the undo command back to it. Only one inline edit is ever
@@ -31,7 +31,7 @@ public:
     ~InlineLabelEditor();
 
     /// Starts inline-editing \a element's label, committing any already-in-progress edit first.
-    void start(GraphicElement *element);
+    void start(Element *element);
 
     /// Commits the current edit (if any): pushes an UpdateCommand only if the text actually
     /// changed, then closes the editor. Safe to call when nothing is being edited (no-op).
@@ -46,6 +46,6 @@ private:
     void close();
 
     Scene *m_scene;
-    GraphicElement *m_target = nullptr;
+    Element *m_target = nullptr;
     QGraphicsProxyWidget *m_proxy = nullptr;
 };

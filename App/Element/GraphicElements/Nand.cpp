@@ -40,7 +40,7 @@ struct ElementInfo<Nand> {
 };
 
 Nand::Nand(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Nand, parent)
+    : Element(ElementType::Nand, parent)
 {
     // Skip full initialisation when building a property-probe instance (see ElementFactory).
 }

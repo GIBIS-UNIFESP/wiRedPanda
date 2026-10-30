@@ -7,7 +7,7 @@
 
 #include "App/CodeGen/ArduinoCodeGen.h"
 
-class GraphicElement;
+class Element;
 class IC;
 class Connection;
 
@@ -23,7 +23,7 @@ private:
     };
 
     // Code generation helpers
-    GeneratedCode generateFromElements(const QVector<GraphicElement *> &elements);
+    GeneratedCode generateFromElements(const QVector<Element *> &elements);
     void verifyBasicStructure(const QString &content);
     void verifyLogicOperator(const QString &content, const QString &logicOp, bool negated = false);
     void testArduinoExportHelper(const QString &icFile);
@@ -35,8 +35,8 @@ private:
     static QString s_cliCachePath;
 
     // Truth table generation from the wiRedPanda simulator
-    static QVector<ArduinoCodeGen::TestVector> generateTruthTable(const QVector<GraphicElement *> &elements, int maxInputBits = 12);
-    static bool isCombinationalCircuit(const QVector<GraphicElement *> &elements);
+    static QVector<ArduinoCodeGen::TestVector> generateTruthTable(const QVector<Element *> &elements, int maxInputBits = 12);
+    static bool isCombinationalCircuit(const QVector<Element *> &elements);
 
     // Flip-flop specific helpers
     void verifyFlipFlopStructure(const QString &content, const QString &type);
@@ -45,7 +45,7 @@ private:
     // IC test helpers
     IC *createICWithAndGate(const QString &label);
     IC *createICContaining(IC *innerIC, const QString &label);
-    Connection *createConnection(GraphicElement *from, int fromPort, GraphicElement *to, int toPort);
+    Connection *createConnection(Element *from, int fromPort, Element *to, int toPort);
 
     // Board / pin helpers
     bool checkBoardSelection(const QString &content, const QString &expectedBoard);

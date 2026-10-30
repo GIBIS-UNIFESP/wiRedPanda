@@ -117,7 +117,7 @@ inline void testUnmute(T &element)
 /// \a element, exercising the "!hasAudio(version)" early return that no real fixture can reach:
 /// audio elements (AudioBox/Buzzer) were only introduced at V_2_4, so no genuine .panda file
 /// predating that version can ever contain one to load from -- this is the only way to reach
-/// that guard clause at all. Layout mirrors GraphicElementSerializer::loadOldFormat() exactly,
+/// that guard clause at all. Layout mirrors ElementSerializer::loadOldFormat() exactly,
 /// with 0 ports/appearances to sidestep needing valid port-name/appearance-index bookkeeping.
 /// The caller is left to assert its own type-specific post-condition (audio()/frequency()
 /// staying at whatever it was before, since load() must return before touching it).

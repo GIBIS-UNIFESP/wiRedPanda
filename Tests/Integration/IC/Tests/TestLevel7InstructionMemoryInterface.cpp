@@ -64,7 +64,7 @@ struct InstructionMemoryInterfaceFixture {
     {
         setMultiBitInput(addressInputs, address);
         sim->update();
-        return readMultiBitOutput(QVector<GraphicElement *>(instrOutputs.begin(), instrOutputs.end()), 0);
+        return readMultiBitOutput(QVector<Element *>(instrOutputs.begin(), instrOutputs.end()), 0);
     }
 
     void writeWord(int address, int value)

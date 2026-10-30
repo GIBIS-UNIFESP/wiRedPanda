@@ -102,14 +102,14 @@ void ICRenderer::generatePreviewPixmap(IC &ic, const QList<QGraphicsItem *> &ite
     // Split the freshly-deserialized items into elements and connections.  The
     // boundary Input/Output elements are still in their designed form here; the
     // substitution to proxy Nodes happens later in processLoadedItems().
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
     QVector<Connection *> connections;
     elements.reserve(items.size());
     connections.reserve(items.size());
     for (auto *item : items) {
         if (auto *conn = qgraphicsitem_cast<Connection *>(item)) {
             connections.append(conn);
-        } else if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item)) {
+        } else if (auto *elm = qgraphicsitem_cast<Element *>(item)) {
             elements.append(elm);
         }
     }

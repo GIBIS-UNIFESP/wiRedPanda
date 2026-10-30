@@ -40,7 +40,7 @@ struct ElementInfo<InputVcc> {
 };
 
 InputVcc::InputVcc(QGraphicsItem *parent)
-    : GraphicElement(ElementType::InputVcc, parent)
+    : Element(ElementType::InputVcc, parent)
 {
     // VCC always outputs logic HIGH; set the port default so both the visual
     // wire colour and the simulation output vector are correct from the start.

@@ -6,8 +6,8 @@
 #include <chrono>
 #include <memory>
 
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "Tests/Common/TestUtils.h"
@@ -55,7 +55,7 @@ void TestClocksAdvanced::testClockBehavior()
 void TestClocksAdvanced::testClockFrequencyEdgeCases()
 {
     // Test extreme frequency values with tolerance for floating point variance
-    auto clock = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Clock));
+    auto clock = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Clock));
     QVERIFY(clock != nullptr);
 
     // Very low frequency
@@ -72,7 +72,7 @@ void TestClocksAdvanced::testClockTimingPrecision()
     // Verify the clock's actual tick timing (not just that setFrequency()/frequency()
     // round-trip): the first toggle must happen at, not before or long after, the configured
     // half-period.
-    auto element = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Clock));
+    auto element = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Clock));
     auto *clock = qobject_cast<Clock *>(element.get());
     QVERIFY(clock != nullptr);
 
@@ -94,7 +94,7 @@ void TestClocksAdvanced::testClockSilentRejectionForExtremeFrequencies()
 {
     // Test that setFrequency silently rejects extremely high frequencies
     // that would produce invalid microsecond intervals
-    auto clock = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Clock));
+    auto clock = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Clock));
     QVERIFY(clock != nullptr);
 
     // Set a valid initial frequency
@@ -125,8 +125,8 @@ void TestClocksAdvanced::testClockSilentRejectionForExtremeFrequencies()
 void TestClocksAdvanced::testTwoClocksDifferentFrequencies()
 {
     // Test two clocks with different frequencies
-    auto clock1 = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Clock));
-    auto clock2 = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Clock));
+    auto clock1 = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Clock));
+    auto clock2 = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Clock));
 
     QVERIFY(clock1 != nullptr);
     QVERIFY(clock2 != nullptr);
@@ -161,9 +161,9 @@ void TestClocksAdvanced::testThreeClocksConcurrentExecution()
         return toggles;
     };
 
-    auto element1 = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Clock));
-    auto element2 = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Clock));
-    auto element3 = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Clock));
+    auto element1 = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Clock));
+    auto element2 = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Clock));
+    auto element3 = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Clock));
     auto *clock1 = qobject_cast<Clock *>(element1.get());
     auto *clock2 = qobject_cast<Clock *>(element2.get());
     auto *clock3 = qobject_cast<Clock *>(element3.get());
@@ -210,8 +210,8 @@ void TestClocksAdvanced::testThreeClocksConcurrentExecution()
 void TestClocksAdvanced::testClockSynchronizationEdgeCases()
 {
     // Verify actual synchronization behavior, not just that frequency values compare equal.
-    auto element1 = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Clock));
-    auto element2 = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Clock));
+    auto element1 = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Clock));
+    auto element2 = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Clock));
     auto *clock1 = qobject_cast<Clock *>(element1.get());
     auto *clock2 = qobject_cast<Clock *>(element2.get());
     QVERIFY(clock1 && clock2);
@@ -233,7 +233,7 @@ void TestClocksAdvanced::testClockSynchronizationEdgeCases()
     }
 
     // A clock with a phase delay must NOT stay in lockstep with an in-phase clock.
-    auto element3 = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Clock));
+    auto element3 = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Clock));
     auto *clock3 = qobject_cast<Clock *>(element3.get());
     QVERIFY(clock3 != nullptr);
     clock3->setFrequency(50.0);
@@ -257,8 +257,8 @@ void TestClocksAdvanced::testMultiClockPhaseRelationships()
     // Verify a genuine ~2:1 toggle-count ratio between two clocks in a 2:1 frequency ratio,
     // ticked together across many periods of both — not just that the frequency values
     // themselves divide to 2.0.
-    auto element1 = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Clock));
-    auto element2 = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Clock));
+    auto element1 = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Clock));
+    auto element2 = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Clock));
     auto *clock1 = qobject_cast<Clock *>(element1.get());
     auto *clock2 = qobject_cast<Clock *>(element2.get());
     QVERIFY(clock1 && clock2);

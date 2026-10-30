@@ -9,8 +9,8 @@
 #include <QRectF>
 #include <QSizeF>
 
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElement.h"
 #include "App/Wiring/Port.h"
 #include "Tests/Common/TestUtils.h"
 
@@ -21,7 +21,7 @@
 void TestGeometry::testPixmapCenter()
 {
     // Create an AND gate (64x64 pixmap)
-    auto andGate = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
+    auto andGate = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::And));
     QVERIFY(andGate != nullptr);
 
     // Get pixmap center
@@ -35,9 +35,9 @@ void TestGeometry::testPixmapCenter()
 void TestGeometry::testBoundingRectNoPortsCalculation()
 {
     // Line genuinely has zero ports (unlike And, which always has 2 inputs + 1 output).
-    // GraphicElement::boundingRect() is portsBoundingRect().united(pixmap().rect()); with no
+    // Element::boundingRect() is portsBoundingRect().united(pixmap().rect()); with no
     // ports, portsBoundingRect() is null, so the result must be exactly the pixmap rect.
-    auto line = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Line));
+    auto line = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Line));
     QVERIFY(line != nullptr);
     QVERIFY(line->inputs().isEmpty());
     QVERIFY(line->outputs().isEmpty());
@@ -48,7 +48,7 @@ void TestGeometry::testBoundingRectNoPortsCalculation()
 void TestGeometry::testBoundingRectWithPorts()
 {
     // Create an AND gate with variable input size
-    auto andGate = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
+    auto andGate = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::And));
     QVERIFY(andGate != nullptr);
 
     // Get initial bounding rect
@@ -72,7 +72,7 @@ void TestGeometry::testBoundingRectWithPorts()
 void TestGeometry::testInputPortPositionSinglePort()
 {
     // Not is a genuine single-input element (Or defaults to 2 inputs).
-    auto notGate = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Not));
+    auto notGate = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Not));
     QVERIFY(notGate != nullptr);
 
     const auto &inputs = notGate->inputs();
@@ -87,7 +87,7 @@ void TestGeometry::testInputPortPositionSinglePort()
 void TestGeometry::testInputPortPositionMultiplePorts()
 {
     // Create an AND gate (2 input ports by default)
-    auto andGate = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
+    auto andGate = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::And));
     QVERIFY(andGate != nullptr);
 
     const auto &inputs = andGate->inputs();
@@ -110,7 +110,7 @@ void TestGeometry::testInputPortPositionMultiplePorts()
 void TestGeometry::testOutputPortPositionSinglePort()
 {
     // Create a NOT gate (1 input, 1 output)
-    auto notGate = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Not));
+    auto notGate = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Not));
     QVERIFY(notGate != nullptr);
 
     const auto &outputs = notGate->outputs();
@@ -127,7 +127,7 @@ void TestGeometry::testOutputPortPositionSinglePort()
 void TestGeometry::testOutputPortPositionMultiplePorts()
 {
     // Create an AND gate (1 output port by default)
-    auto andGate = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
+    auto andGate = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::And));
     QVERIFY(andGate != nullptr);
 
     const auto &outputs = andGate->outputs();
@@ -147,7 +147,7 @@ void TestGeometry::testOutputPortPositionMultiplePorts()
 void TestGeometry::testPortCenteringAroundY32()
 {
     // Create a variable input gate
-    auto andGate = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
+    auto andGate = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::And));
     QVERIFY(andGate != nullptr);
 
     // Set input size to 4 for more pronounced centering
@@ -168,7 +168,7 @@ void TestGeometry::testPortCenteringAroundY32()
 void TestGeometry::testPortSpacingCalculation()
 {
     // Create an AND gate
-    auto andGate = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
+    auto andGate = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::And));
     QVERIFY(andGate != nullptr);
 
     // Set input size to 3

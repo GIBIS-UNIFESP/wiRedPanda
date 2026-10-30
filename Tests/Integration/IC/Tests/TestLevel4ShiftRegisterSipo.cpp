@@ -115,7 +115,7 @@ void TestLevel4ShiftRegisterSIPO::testShiftRegisterSIPO()
         clockCycle(f.sim, f.clk);
     }
 
-    const TestUtils::Bits result = readMultiBitOutput(QVector<GraphicElement *>({
+    const TestUtils::Bits result = readMultiBitOutput(QVector<Element *>({
         f.dataOut[0], f.dataOut[1], f.dataOut[2], f.dataOut[3]
     }));
 

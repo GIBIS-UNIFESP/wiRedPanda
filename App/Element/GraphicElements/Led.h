@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 
 /**
  * \class Led
@@ -16,7 +16,7 @@
  * \details Supports multiple colors (white, red, green, blue, purple).
  * The displayed pixmap switches between on/off variants when the logic state changes.
  */
-class Led : public GraphicElement
+class Led : public Element
 {
     Q_OBJECT
 

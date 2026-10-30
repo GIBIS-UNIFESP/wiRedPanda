@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 /** \file
- * \brief Owns a GraphicElement's pixmap / SVG appearance, appearance list, and selection paint.
+ * \brief Owns a Element's pixmap / SVG appearance, appearance list, and selection paint.
  */
 
 #pragma once
@@ -15,17 +15,17 @@
 #include <QSize>
 #include <QStringList>
 
-class GraphicElement;
+class Element;
 class QPainter;
 class QSvgRenderer;
 class ThemeAttributes;
 
 /**
  * \class ElementAppearance
- * \brief Owns the visual appearance of a GraphicElement: the displayed pixmap, its SVG
+ * \brief Owns the visual appearance of a Element: the displayed pixmap, its SVG
  * renderer, the default/alternative appearance lists, and the selection-highlight colors.
  *
- * \details Extracted from GraphicElement so the rendering bulk (pixmap loading, SVG text
+ * \details Extracted from Element so the rendering bulk (pixmap loading, SVG text
  * counter-orientation, the per-appearance caches, and the paint body) lives in one cohesive
  * unit.  Orientation state (rotation/flip) stays on the owning element; this type reads it
  * back through a narrow owner reference, which it also uses to trigger repaints and resolve
@@ -37,7 +37,7 @@ class ElementAppearance
 
 public:
     /// Constructs the appearance bound to its owning \a owner element.
-    explicit ElementAppearance(GraphicElement *owner);
+    explicit ElementAppearance(Element *owner);
 
     /// Out-of-line so the unique_ptr to the forward-declared QSvgRenderer can be destroyed.
     ~ElementAppearance();
@@ -143,7 +143,7 @@ private:
     /// it for non-SVG (raster) appearances.
     void rebuildSvgRenderer();
 
-    GraphicElement *m_owner = nullptr;
+    Element *m_owner = nullptr;
 
     QPixmap m_pixmap;     ///< Currently displayed pixmap.
     QPixmap m_basePixmap; ///< Upright, unflipped pixmap; m_pixmap is derived from this.

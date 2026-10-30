@@ -96,10 +96,10 @@ struct Cpu16bitRiscFixture {
         return true;
     }
 
-    TestUtils::Bits readPC() { return readMultiBitOutput(QVector<GraphicElement *>(pcLeds.begin(), pcLeds.end()), 0); }
-    TestUtils::Bits readResult() { return readMultiBitOutput(QVector<GraphicElement *>(resultLeds.begin(), resultLeds.end()), 0); }
-    TestUtils::Bits readInstr() { return readMultiBitOutput(QVector<GraphicElement *>(instrLeds.begin(), instrLeds.end()), 0); }
-    TestUtils::Bits readOpCode() { return readMultiBitOutput(QVector<GraphicElement *>(opcodeLeds.begin(), opcodeLeds.end()), 0); }
+    TestUtils::Bits readPC() { return readMultiBitOutput(QVector<Element *>(pcLeds.begin(), pcLeds.end()), 0); }
+    TestUtils::Bits readResult() { return readMultiBitOutput(QVector<Element *>(resultLeds.begin(), resultLeds.end()), 0); }
+    TestUtils::Bits readInstr() { return readMultiBitOutput(QVector<Element *>(instrLeds.begin(), instrLeds.end()), 0); }
+    TestUtils::Bits readOpCode() { return readMultiBitOutput(QVector<Element *>(opcodeLeds.begin(), opcodeLeds.end()), 0); }
 
     void resetCpu()
     {

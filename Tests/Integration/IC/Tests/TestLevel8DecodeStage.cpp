@@ -68,7 +68,7 @@ struct DecodeStageFixture {
 
     TestUtils::Bits readALUOp()
     {
-        return readMultiBitOutput(QVector<GraphicElement *>(aluopLeds.begin(), aluopLeds.end()), 0);
+        return readMultiBitOutput(QVector<Element *>(aluopLeds.begin(), aluopLeds.end()), 0);
     }
 };
 

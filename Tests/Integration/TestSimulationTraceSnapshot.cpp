@@ -17,9 +17,9 @@
 #include <QStringList>
 #include <QTest>
 
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElement.h"
-#include "App/Element/GraphicElementInput.h"
+#include "App/Element/ElementInput.h"
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
@@ -104,7 +104,7 @@ QString statuses(const QVector<Status> &values)
  * which is what a display or an Led paints from: the 7-, 14- and 16-segment displays have no logic of their own, so
  * nothing refreshes their simulation inputs.
  */
-QVector<Status> observed(const GraphicElement *element)
+QVector<Status> observed(const Element *element)
 {
     QVector<Status> values;
     if (element->outputSize() > 0) {
@@ -141,7 +141,7 @@ private:
 };
 
 /// Drives \a input one step of \a walk: a rotary selects one of its positions, any other input takes a level.
-void drive(GraphicElementInput *input, Lcg &walk)
+void drive(ElementInput *input, Lcg &walk)
 {
     // Drawn one after the other, not as two arguments of one call, whose order the compiler picks.
     const bool level = walk.nextBit();
@@ -240,7 +240,7 @@ QStringList elementRun(const ElementType type, const int inputs, const int outpu
     }
 
     Lcg walk(seedOf(name));
-    auto *input = (element->inputSize() == 0) ? dynamic_cast<GraphicElementInput *>(element) : nullptr;
+    auto *input = (element->inputSize() == 0) ? dynamic_cast<ElementInput *>(element) : nullptr;
     if ((wired > 0) || input) {
         for (int index = 0; index < kWalkSteps; ++index) {
             if (input) {
@@ -269,7 +269,7 @@ QString elementTraces()
             continue;
         }
 
-        const std::unique_ptr<GraphicElement> probe(ElementFactory::buildElement(type));
+        const std::unique_ptr<Element> probe(ElementFactory::buildElement(type));
         QList<std::pair<int, int>> counts{{probe->minInputSize(), probe->minOutputSize()}};
         if ((probe->maxInputSize() != probe->minInputSize()) || (probe->maxOutputSize() != probe->minOutputSize())) {
             counts.append({probe->maxInputSize(), probe->maxOutputSize()});
@@ -289,7 +289,7 @@ QString elementTraces()
 }
 
 /// One step of a circuit: what each observed element produced, or a hash of that when it is too wide to read.
-QString circuitStep(const QList<const GraphicElement *> &elements)
+QString circuitStep(const QList<const Element *> &elements)
 {
     QStringList parts;
     for (const auto *element : elements) {
@@ -313,10 +313,10 @@ QString circuitTrace(const QString &filePath, const int steps)
     }
     auto *scene = workspace.scene();
 
-    QList<GraphicElementInput *> inputs;
-    QList<const GraphicElement *> traced;
+    QList<ElementInput *> inputs;
+    QList<const Element *> traced;
     for (auto *element : TestUtils::elementsById(scene)) {
-        auto *input = dynamic_cast<GraphicElementInput *>(element);
+        auto *input = dynamic_cast<ElementInput *>(element);
         if (input && (element->elementType() != ElementType::Clock)) {
             inputs << input;
         }

@@ -24,15 +24,16 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Settings.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/ThemeManager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/UpdateChecker.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/Element.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementAppearance.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementFactory.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementInput.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementLabel.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementMetadata.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementOrientation.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementPorts.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementSerializer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementSimState.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElement.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElementInput.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/And.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/AudioBox.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/AudioOutputElement.cpp
@@ -65,7 +66,6 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/TruthTable.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Xnor.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Xor.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElementSerializer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/IC.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICLoader.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICPreviewPopup.cpp
@@ -171,16 +171,17 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/StepEngineCore.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/ThemeManager.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/UpdateChecker.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/Element.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementAppearance.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementFactory.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementInfo.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementInput.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementLabel.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementMetadata.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementOrientation.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementPorts.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementSerializer.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementSimState.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElement.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElementInput.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/And.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/AudioBox.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/AudioOutputElement.h
@@ -214,7 +215,6 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/TruthTable.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Xnor.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Xor.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElementSerializer.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/IC.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICLoader.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICPreviewPopup.h
@@ -468,14 +468,14 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestDisplay.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestDisplay7.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestDisplays.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElement.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementAdvanced.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementAppearance.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementLabel.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementProperties.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementSerializer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestFeatures.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestGeometry.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestGraphicElement.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestGraphicElementSerializer.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestGraphicelementAdvanced.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestIC.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestICRegistry.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestInputElements.cpp
@@ -705,14 +705,14 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestDisplay.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestDisplay7.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestDisplays.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElement.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementAdvanced.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementAppearance.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementLabel.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementProperties.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementSerializer.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestFeatures.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestGeometry.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestGraphicElement.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestGraphicElementSerializer.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestGraphicelementAdvanced.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestIC.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestICRegistry.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestInputElements.h

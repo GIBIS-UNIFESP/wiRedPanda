@@ -26,7 +26,7 @@ private slots:
     void testIsRequiredGetterSetter();
     void testGlobalIndexForInputVsOutputPort();
     void testMakeSerialIdPacksElementBaseAndGlobalIndex();
-    void testSetGraphicElementBindsAccessor();
+    void testSetElementBindsAccessor();
     void testAttachConnectionIsIdempotent();
     void testDetachConnectionRemovesFromListAndClearsPortReference();
     void testIsConnectedTrueOnlyForPortsSharingAConnection();

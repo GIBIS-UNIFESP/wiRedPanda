@@ -12,9 +12,9 @@
 
 #include "App/Core/Common.h"
 #include "App/Core/Enums.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementMetadata.h"
-#include "App/Element/GraphicElement.h"
 #include "App/Scene/Scene.h"
 #include "Tests/Common/TestUtils.h"
 
@@ -65,7 +65,7 @@ void TestElementFactory::testBuildElement()
     QFETCH(int, elementType);
     const auto type = static_cast<ElementType>(elementType);
 
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(type));
+    auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(type));
     QVERIFY2(elem != nullptr, qPrintable(QString("Failed to build %1").arg(ElementFactory::typeToText(type))));
     QCOMPARE(elem->elementType(), type);
     QVERIFY2(elem->inputSize() >= elem->minInputSize(),
@@ -87,7 +87,7 @@ void TestElementFactory::testBuildElementInvalidType()
 #endif
     bool exceptionThrown = false;
     try {
-        auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Unknown));
+        auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Unknown));
     } catch (const Pandaception &) {
         exceptionThrown = true;
     }
@@ -103,7 +103,7 @@ void TestElementFactory::testMetadataLogicCreator()
     };
 
     for (const auto type : typesToTest) {
-        auto graphicElem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(type));
+        auto graphicElem = std::unique_ptr<Element>(ElementFactory::buildElement(type));
         QVERIFY2(graphicElem != nullptr, qPrintable(QString("Failed to build graphic element: %1").arg(ElementFactory::typeToText(type))));
 
         const auto &meta = ElementMetadataRegistry::metadata(type);
@@ -169,7 +169,7 @@ void TestElementFactory::testTypeToTextBidirectional()
 void TestElementFactory::testItemRegistry()
 {
     Scene scene;
-    auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::And));
+    auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::And));
     QVERIFY(elem != nullptr);
 
     // Before adding to scene, ID is -1 (unassigned)
@@ -192,7 +192,7 @@ void TestElementFactory::testUniqueIdAssignment()
 {
     Scene scene;
     QSet<int> ids;
-    QVector<GraphicElement *> elements;
+    QVector<Element *> elements;
 
     // Create elements and add to scene to get IDs
     for (int i = 0; i < 20; ++i) {
@@ -268,7 +268,7 @@ void TestElementFactory::testSceneCounterIndependence()
     Scene scene2;
 
     // Add several elements to scene1
-    QVector<GraphicElement *> s1elements;
+    QVector<Element *> s1elements;
     for (int i = 0; i < 5; ++i) {
         auto *e = ElementFactory::buildElement(ElementType::And);
         scene1.addItem(e);
@@ -276,7 +276,7 @@ void TestElementFactory::testSceneCounterIndependence()
     }
 
     // scene1 counter is at 5; scene2 counter is still at 0
-    auto elm2 = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Or));
+    auto elm2 = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Or));
     scene2.addItem(elm2.get());
 
     // scene2 should start its own counter from 1, not from 6

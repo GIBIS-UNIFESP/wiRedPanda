@@ -482,7 +482,7 @@ void TestConnectionSerialization::testLoadThrowsOnTruncatedQMapStream()
     // A bare declared count (no bytes behind it) trips readBoundedMetadata()'s own
     // implausible-count guard, which throws *its* own exception -- not the one under test
     // here. To reach the genuine truncated-*entry* path instead (mirrors
-    // TestGraphicElementSerializer::testReadPortListEntryReadFailureThrows()'s identical
+    // TestElementSerializer::testReadPortListEntryReadFailureThrows()'s identical
     // recipe): the count and key must both read successfully (comfortably over the 9-byte-
     // per-entry plausibility minimum), with nothing left for the value, so
     // readBoundedVariant() falls back to a plain `stream >> v` that fails silently (bad

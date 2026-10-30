@@ -1120,15 +1120,15 @@ void TestICInline::testBlobNameRenamePropagation()
     }
 
     for (int id : ids) {
-        auto *elm = dynamic_cast<GraphicElement *>(ws.scene()->itemById(id));
+        auto *elm = dynamic_cast<Element *>(ws.scene()->itemById(id));
         QVERIFY(elm);
         QCOMPARE(elm->blobName(), QString("old_name"));
     }
 
     // Collect targets and snapshot old state
-    QList<GraphicElement *> targets;
+    QList<Element *> targets;
     for (int id : ids) {
-        targets.append(dynamic_cast<GraphicElement *>(ws.scene()->itemById(id)));
+        targets.append(dynamic_cast<Element *>(ws.scene()->itemById(id)));
     }
 
     QByteArray oldData;
@@ -1150,7 +1150,7 @@ void TestICInline::testBlobNameRenamePropagation()
     ws.scene()->undoStack()->push(new UpdateCommand(targets, oldData, ws.scene()));
 
     for (int id : ids) {
-        auto *elm = dynamic_cast<GraphicElement *>(ws.scene()->itemById(id));
+        auto *elm = dynamic_cast<Element *>(ws.scene()->itemById(id));
         QVERIFY(elm);
         QCOMPARE(elm->blobName(), QString("new_name"));
     }
@@ -1158,7 +1158,7 @@ void TestICInline::testBlobNameRenamePropagation()
     // Undo
     ws.scene()->undoStack()->undo();
     for (int id : ids) {
-        auto *elm = dynamic_cast<GraphicElement *>(ws.scene()->itemById(id));
+        auto *elm = dynamic_cast<Element *>(ws.scene()->itemById(id));
         QVERIFY(elm);
         QCOMPARE(elm->blobName(), QString("old_name"));
     }
@@ -1166,7 +1166,7 @@ void TestICInline::testBlobNameRenamePropagation()
     // Redo
     ws.scene()->undoStack()->redo();
     for (int id : ids) {
-        auto *elm = dynamic_cast<GraphicElement *>(ws.scene()->itemById(id));
+        auto *elm = dynamic_cast<Element *>(ws.scene()->itemById(id));
         QVERIFY(elm);
         QCOMPARE(elm->blobName(), QString("new_name"));
     }
@@ -3848,9 +3848,9 @@ void TestICInline::testSystemVerilogCodegenEmbeddedIC()
     builder.connect(ic, 0, led, 0);
     builder.initSimulation();
 
-    QVector<GraphicElement *> allElements;
+    QVector<Element *> allElements;
     for (auto *item : ws->scene()->items()) {
-        if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item))
+        if (auto *elm = qgraphicsitem_cast<Element *>(item))
             allElements.append(elm);
     }
     QVERIFY(!allElements.isEmpty());
@@ -3903,9 +3903,9 @@ void TestICInline::testSystemVerilogCodegenTwoEmbeddedSameBlobName()
     builder.connect(ic2, 0, led2, 0);
     builder.initSimulation();
 
-    QVector<GraphicElement *> allElements;
+    QVector<Element *> allElements;
     for (auto *item : ws->scene()->items()) {
-        if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item))
+        if (auto *elm = qgraphicsitem_cast<Element *>(item))
             allElements.append(elm);
     }
 
@@ -3954,9 +3954,9 @@ void TestICInline::testSVCodegenReservedWordBlobName()
     builder.connect(ic, 0, led, 0);
     builder.initSimulation();
 
-    QVector<GraphicElement *> allElements;
+    QVector<Element *> allElements;
     for (auto *item : ws->scene()->items()) {
-        if (auto *elm = qgraphicsitem_cast<GraphicElement *>(item))
+        if (auto *elm = qgraphicsitem_cast<Element *>(item))
             allElements.append(elm);
     }
     QVERIFY(!allElements.isEmpty());
@@ -4265,8 +4265,8 @@ void TestICInline::testPositionRotationPreservedDuringPropagation()
 
     ws.saveChildICBlob(id1, notBlob);
 
-    auto *u1 = dynamic_cast<GraphicElement *>(ws.scene()->itemById(id1));
-    auto *u2 = dynamic_cast<GraphicElement *>(ws.scene()->itemById(id2));
+    auto *u1 = dynamic_cast<Element *>(ws.scene()->itemById(id1));
+    auto *u2 = dynamic_cast<Element *>(ws.scene()->itemById(id2));
     QVERIFY(u1);
     QVERIFY(u2);
     QCOMPARE(u1->pos(), QPointF(104, 200));
@@ -4275,8 +4275,8 @@ void TestICInline::testPositionRotationPreservedDuringPropagation()
     QCOMPARE(u2->rotation(), 180.0);
 
     ws.scene()->undoStack()->undo();
-    u1 = dynamic_cast<GraphicElement *>(ws.scene()->itemById(id1));
-    u2 = dynamic_cast<GraphicElement *>(ws.scene()->itemById(id2));
+    u1 = dynamic_cast<Element *>(ws.scene()->itemById(id1));
+    u2 = dynamic_cast<Element *>(ws.scene()->itemById(id2));
     QVERIFY(u1);
     QVERIFY(u2);
     QCOMPARE(u1->pos(), QPointF(104, 200));
@@ -4285,8 +4285,8 @@ void TestICInline::testPositionRotationPreservedDuringPropagation()
     QCOMPARE(u2->rotation(), 180.0);
 
     ws.scene()->undoStack()->redo();
-    u1 = dynamic_cast<GraphicElement *>(ws.scene()->itemById(id1));
-    u2 = dynamic_cast<GraphicElement *>(ws.scene()->itemById(id2));
+    u1 = dynamic_cast<Element *>(ws.scene()->itemById(id1));
+    u2 = dynamic_cast<Element *>(ws.scene()->itemById(id2));
     QVERIFY(u1);
     QVERIFY(u2);
     QCOMPARE(u1->pos(), QPointF(104, 200));
@@ -4911,7 +4911,7 @@ void TestICInline::testReconnectConnectionsSkipsDeletedElement()
     ic->setPos(100, 100);
     ws.scene()->addItem(ic);
 
-    auto swOwner = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::InputSwitch));
+    auto swOwner = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputSwitch));
     auto *sw = swOwner.get();
     sw->setPos(0, 100);
     ws.scene()->addItem(sw);
@@ -4922,7 +4922,7 @@ void TestICInline::testReconnectConnectionsSkipsDeletedElement()
     ws.scene()->addItem(conn);
 
     // Capture connections before embed
-    const auto targets = QList<GraphicElement *>{ic};
+    const auto targets = QList<Element *>{ic};
     const auto connections = UpdateBlobCommand::captureConnections(targets);
     const QByteArray oldData = ICRegistry::captureSnapshot(targets);
 
@@ -4963,7 +4963,7 @@ void TestICInline::testUpdateBlobCommandUndoRestoresOldBlob()
     ws.scene()->addItem(ic);
 
     // Capture old state
-    const auto targets = QList<GraphicElement *>{ic};
+    const auto targets = QList<Element *>{ic};
     const auto connections = UpdateBlobCommand::captureConnections(targets);
     const QByteArray oldData = ICRegistry::captureSnapshot(targets);
     const QByteArray oldBlob = reg->blob("undo_blob");
@@ -4994,7 +4994,7 @@ void TestICInline::testLabelUpdateSkipsRedundantSubcircuitReload()
     // Regression: ElementEditor::apply() calls setLabel() live on every keystroke and then
     // pushes an UpdateCommand, whose redo()/undo() round-trips the element through
     // save()/load(). For an IC, load() used to unconditionally tear down and rebuild the
-    // entire internal sub-circuit even though only the label (a base GraphicElement property)
+    // entire internal sub-circuit even though only the label (a base Element property)
     // changed -- on a large embedded IC this made typing in the label field visibly laggy.
     QByteArray blob = readFile(m_fixtureDir + "/simple_and.panda");
 
@@ -5010,7 +5010,7 @@ void TestICInline::testLabelUpdateSkipsRedundantSubcircuitReload()
     QVERIFY(!ic->internalElements().isEmpty());
     const auto originalInternalElements = ic->internalElements();
 
-    const QList<GraphicElement *> targets{ic};
+    const QList<Element *> targets{ic};
     const QByteArray oldData = ICRegistry::captureSnapshot(targets);
     ic->setLabel("a new label");
 
@@ -5040,7 +5040,7 @@ void TestICInline::testBlobContentChangeUnderSameNameStillReloads()
     ic->setPos(100, 100);
     ws.scene()->addItem(ic);
 
-    const auto targets = QList<GraphicElement *>{ic};
+    const auto targets = QList<Element *>{ic};
     const auto connections = UpdateBlobCommand::captureConnections(targets);
     const QByteArray oldData = ICRegistry::captureSnapshot(targets);
     const QByteArray oldBlob = reg->blob("content_swap_test");
@@ -5119,7 +5119,7 @@ void TestICInline::testRenameBlobCommandThenUnrelatedUpdateBothUndoIndependently
     QCOMPARE(ic->blobName(), QString("regress_new"));
 
     // Step 2: an unrelated property edit (label), exactly as apply() pushes.
-    const QList<GraphicElement *> targets{ic};
+    const QList<Element *> targets{ic};
     const QByteArray oldData = ICRegistry::captureSnapshot(targets);
     ic->setLabel("renamed label");
 
@@ -5274,8 +5274,8 @@ void TestICInline::testLoadICMissingAllNameFieldsThrows()
     {
         QDataStream out(&elemData, QIODevice::WriteOnly);
         Serialization::writePandaHeader(out);
-        // Write GraphicElement base
-        static_cast<GraphicElement *>(ic)->GraphicElement::save(out, {.purpose = SerializationPurpose::PortableFile});
+        // Write Element base
+        static_cast<Element *>(ic)->Element::save(out, {.purpose = SerializationPurpose::PortableFile});
         // Write an EMPTY map (no name key)
         QMap<QString, QVariant> emptyMap;
         out << emptyMap;
@@ -6002,8 +6002,8 @@ void TestICInline::testInlineSavePreservesWiresA15()
         for (auto *item : childWs.scene()->items()) {
             if (auto *conn = qgraphicsitem_cast<Connection *>(item)) {
                 if (conn->startPort() && conn->endPort()
-                    && conn->startPort()->graphicElement() == sw
-                    && conn->endPort()->graphicElement() == droppedIC) {
+                    && conn->startPort()->element() == sw
+                    && conn->endPort()->element() == droppedIC) {
                     return true;
                 }
             }

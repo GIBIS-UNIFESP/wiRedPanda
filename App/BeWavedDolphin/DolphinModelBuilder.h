@@ -10,8 +10,8 @@
 #include <QStringList>
 #include <QVector>
 
-class GraphicElement;
-class GraphicElementInput;
+class Element;
+class ElementInput;
 class Scene;
 
 /**
@@ -37,7 +37,7 @@ enum class RowKind { Input, Output };
  * disagreeing about which row belongs to which port.
  */
 struct Row {
-    GraphicElement *element = nullptr;  ///< The element this row reads or drives.
+    Element *element = nullptr;  ///< The element this row reads or drives.
     int port = 0;                       ///< Port index on \a element (output port for an
                                         ///< input row, input port for an output row).
     RowKind kind = RowKind::Input;
@@ -47,8 +47,8 @@ struct Row {
 
 /// The input/output elements (label-sorted) and the row layout for a waveform table.
 struct Signals {
-    QVector<GraphicElementInput *> inputs;  ///< Input elements, sorted by label.
-    QVector<GraphicElement *> outputs;      ///< Output elements, sorted by label.
+    QVector<ElementInput *> inputs;  ///< Input elements, sorted by label.
+    QVector<Element *> outputs;      ///< Output elements, sorted by label.
     int inputPorts = 0;                     ///< Total input rows; derived from \a rows.
     QStringList inputLabels;                ///< Row label per input port (indexed for multi-port).
     QStringList outputLabels;               ///< Row label per output port (indexed for multi-port).

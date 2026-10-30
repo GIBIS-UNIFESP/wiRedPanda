@@ -602,12 +602,12 @@ void TestSimulation::testSimulationGraphStability()
         }
         Simulation::buildConnectionGraph(elements);
 
-        QHash<GraphicElement *, QVector<GraphicElement *>> successors;
+        QHash<Element *, QVector<Element *>> successors;
         for (auto *elm : elements) {
             for (auto *outputPort : elm->outputs()) {
                 for (auto *conn : outputPort->connections()) {
                     if (auto *endPort = conn->endPort()) {
-                        auto *successor = endPort->graphicElement();
+                        auto *successor = endPort->element();
                         if (successor && !successors[elm].contains(successor)) {
                             successors[elm].append(successor);
                         }
@@ -615,7 +615,7 @@ void TestSimulation::testSimulationGraphStability()
                 }
             }
         }
-        QHash<GraphicElement *, int> priorities;
+        QHash<Element *, int> priorities;
         calculatePriorities(elements, successors, priorities);
 
         QVector<std::pair<int, int>> elementProperties;

@@ -44,7 +44,7 @@ struct ElementInfo<Demux> {
 };
 
 Demux::Demux(QGraphicsItem *parent)
-    : GraphicElement(ElementType::Demux, parent)
+    : Element(ElementType::Demux, parent)
 {
     Demux::updatePortsProperties();
 }
@@ -70,11 +70,11 @@ void Demux::setOutputSize(const int size)
 
     // Update output size FIRST to ensure outputSize() reflects new value
     // This prevents updatePortsProperties() from using stale output count
-    GraphicElement::setOutputSize(size);
+    Element::setOutputSize(size);
 
     // Then, update input size to match the select lines needed
     // This will trigger updatePortsProperties() with both input and output sizes correct
-    GraphicElement::setInputSize(requiredInputs);
+    Element::setInputSize(requiredInputs);
 
 }
 
@@ -234,7 +234,7 @@ void Demux::updateLogic()
 
 void Demux::load(QDataStream &stream, SerializationContext &context)
 {
-    GraphicElement::load(stream, context);
+    Element::load(stream, context);
 
     // The loader takes the port lists as the file gives them, and updateLogic() reads every
     // select line the outputs need; a save always writes exactly those inputs.

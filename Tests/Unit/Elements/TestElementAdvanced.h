@@ -5,7 +5,7 @@
 
 #include <QObject>
 
-class TestGraphicelementAdvanced : public QObject
+class TestElementAdvanced : public QObject
 {
     Q_OBJECT
 

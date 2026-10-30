@@ -11,7 +11,7 @@
 #include <QVector>
 
 class ElementEditor;
-class GraphicElement;
+class Element;
 class Scene;
 
 /**
@@ -47,7 +47,7 @@ public:
     /// Orders \a elements in reading order — row-major: top-to-bottom by Y (primary key),
     /// left-to-right by X within a row (secondary key). This is the order Tab/Backtab cycle
     /// through; exposed as a pure function so the ordering can be verified directly.
-    static QVector<GraphicElement *> readingOrder(QVector<GraphicElement *> elements);
+    static QVector<Element *> readingOrder(QVector<Element *> elements);
 
 private:
     // --- Members ---

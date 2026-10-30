@@ -8,7 +8,7 @@
 #pragma once
 
 #include "App/Core/ThemeManager.h"
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 
 /**
  * \class JKFlipFlop
@@ -16,7 +16,7 @@
  *
  * \details Has 5 inputs (J, K, Clock, Preset̄, Clear̄) and 2 outputs (Q, Q̄).
  */
-class JKFlipFlop : public GraphicElement
+class JKFlipFlop : public Element
 {
     Q_OBJECT
 

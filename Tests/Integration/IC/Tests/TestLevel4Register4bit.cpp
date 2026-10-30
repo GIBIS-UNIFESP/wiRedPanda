@@ -130,7 +130,7 @@ void TestLevel4Register4Bit::test4BitRegister()
     f.sim->update();
     clockCycle(f.sim, f.clk);
 
-    const TestUtils::Bits result = readMultiBitOutput(QVector<GraphicElement *>({
+    const TestUtils::Bits result = readMultiBitOutput(QVector<Element *>({
         f.dataOut[0], f.dataOut[1], f.dataOut[2], f.dataOut[3]
     }));
 
@@ -144,7 +144,7 @@ void TestLevel4Register4Bit::test4BitRegisterReset()
     auto &f = *s_level4Register4bit;
 
     auto readQ = [&f] {
-        return readMultiBitOutput(QVector<GraphicElement *>({
+        return readMultiBitOutput(QVector<Element *>({
             f.dataOut[0], f.dataOut[1], f.dataOut[2], f.dataOut[3]
         }));
     };

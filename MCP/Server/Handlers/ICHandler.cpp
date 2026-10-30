@@ -152,7 +152,7 @@ QJsonObject ICHandler::handleInstantiateIC(const QJsonObject &params, const QJso
                                    requestId, JsonRpcError::InvalidParams);
     }
 
-    const QPointF pos = GraphicElement::snapToGrid({params.value("x").toDouble(), params.value("y").toDouble()});
+    const QPointF pos = Element::snapToGrid({params.value("x").toDouble(), params.value("y").toDouble()});
     const int x = qRound(pos.x());
     const int y = qRound(pos.y());
     QString label = params.value("label").toString(icName);
@@ -317,7 +317,7 @@ QJsonObject ICHandler::handleEmbedIC(const QJsonObject &params, const QJsonValue
                                        requestId, JsonRpcError::ElementNotFound);
         }
 
-        auto *elm = dynamic_cast<GraphicElement *>(item);
+        auto *elm = dynamic_cast<Element *>(item);
         if (!elm || elm->elementType() != ElementType::IC) {
             return createErrorResponse("Element is not an IC", requestId, JsonRpcError::ValidationError);
         }

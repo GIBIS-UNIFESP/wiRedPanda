@@ -10,8 +10,8 @@
 
 #include "App/Core/Application.h"
 #include "App/Core/SimulationHost.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElement.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/DFlipFlop.h"
@@ -261,7 +261,7 @@ void TestSimulationUnit::testCollectSequentialElementsSkipsNullElements()
     StubSimulationHost host;
     Simulation sim(&host);
 
-    QVector<GraphicElement *> elements{nullptr};
+    QVector<Element *> elements{nullptr};
     sim.collectSequentialElements(elements);
 
     QVERIFY(sim.m_sequentialElements.isEmpty());

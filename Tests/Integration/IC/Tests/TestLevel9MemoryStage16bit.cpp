@@ -74,7 +74,7 @@ struct MemoryStage16bitFixture {
 
     TestUtils::Bits readDataOut()
     {
-        return readMultiBitOutput(QVector<GraphicElement *>(dataoutLeds.begin(), dataoutLeds.end()));
+        return readMultiBitOutput(QVector<Element *>(dataoutLeds.begin(), dataoutLeds.end()));
     }
 };
 

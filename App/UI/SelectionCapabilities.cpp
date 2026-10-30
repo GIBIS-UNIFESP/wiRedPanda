@@ -4,10 +4,10 @@
 #include "App/UI/SelectionCapabilities.h"
 
 #include "App/Core/Enums.h"
-#include "App/Element/GraphicElement.h"
-#include "App/Element/GraphicElementInput.h"
+#include "App/Element/Element.h"
+#include "App/Element/ElementInput.h"
 
-SelectionCapabilities computeCapabilities(const QList<GraphicElement *> &elements)
+SelectionCapabilities computeCapabilities(const QList<Element *> &elements)
 {
     SelectionCapabilities c;
 
@@ -16,7 +16,7 @@ SelectionCapabilities computeCapabilities(const QList<GraphicElement *> &element
     }
 
     auto *firstElement = elements.constFirst();
-    auto *firstInput   = qobject_cast<GraphicElementInput *>(firstElement);
+    auto *firstInput   = qobject_cast<ElementInput *>(firstElement);
 
     // Start all flags true; AND-reduce over the selection below.
     c.hasAudioBox = c.hasAudio = c.hasColors = c.hasDelay = c.hasElements = true;
@@ -59,7 +59,7 @@ SelectionCapabilities computeCapabilities(const QList<GraphicElement *> &element
         c.hasSameOutputSize &= (elm->outputSize() == firstElement->outputSize());
         c.maxCurrentOutputSize = (std::min)(c.maxCurrentOutputSize, elm->outputSize());
 
-        if (auto *elmInput = qobject_cast<GraphicElementInput *>(elm);
+        if (auto *elmInput = qobject_cast<ElementInput *>(elm);
                 elmInput && (group == ElementGroup::Input) && (firstElement->elementGroup() == ElementGroup::Input)) {
             c.hasSameOutputValue &= (elmInput->outputValue() == firstInput->outputValue());
             c.sameCheckState     &= (elmInput->isLocked()    == firstInput->isLocked());

@@ -59,8 +59,8 @@
 
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElement.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/Scene/ICRegistry.h"

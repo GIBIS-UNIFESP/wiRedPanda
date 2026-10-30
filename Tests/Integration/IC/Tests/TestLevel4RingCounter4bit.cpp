@@ -84,7 +84,7 @@ struct RingCounter4bitFixture {
 
     TestUtils::Bits readCount()
     {
-        return readMultiBitOutput(QVector<GraphicElement *>({
+        return readMultiBitOutput(QVector<Element *>({
             counterOut[0], counterOut[1], counterOut[2], counterOut[3]
         }));
     }

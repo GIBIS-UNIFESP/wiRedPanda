@@ -47,7 +47,7 @@ struct ElementInfo<InputButton> {
 };
 
 InputButton::InputButton(QGraphicsItem *parent)
-    : GraphicElementInput(ElementType::InputButton, parent)
+    : ElementInput(ElementType::InputButton, parent)
 {
     InputButton::setOff();
 }
@@ -75,7 +75,7 @@ void InputButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
 void InputButton::save(QDataStream &stream, SerializationOptions options) const
 {
-    GraphicElement::save(stream, options);
+    Element::save(stream, options);
 
     QMap<QString, QVariant> map;
     // PortableFile streams omit the default; fresh-loaded elements start there
@@ -89,7 +89,7 @@ void InputButton::save(QDataStream &stream, SerializationOptions options) const
 
 void InputButton::load(QDataStream &stream, SerializationContext &context)
 {
-    GraphicElement::load(stream, context);
+    Element::load(stream, context);
 
     if ((VersionInfo::hasLockState(context.version)) && (!VersionInfo::hasQMapFormat(context.version))) {
         // v3.1–4.0 stored the locked flag as a bare bool

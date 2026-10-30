@@ -23,7 +23,7 @@
 #include <QTest>
 
 #include "App/Core/Application.h"
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Simulation/Simulation.h"
@@ -139,7 +139,7 @@ QString systemVerilogExpectedDir()
     return QString(QUOTE(CURRENTDIR)) + "/Integration/SystemVerilog/";
 }
 
-Status inputStatus(GraphicElement *elm, int port)
+Status inputStatus(Element *elm, int port)
 {
     // Unreachable in any correctly-written test: this guards against a test-author mistake
     // (wrong port index/element), and qFatal() aborts the whole process -- there is no way
@@ -157,7 +157,7 @@ Status inputStatus(GraphicElement *elm, int port)
     return inputPort->status();
 }
 
-Status outputStatus(GraphicElement *elm, int port)
+Status outputStatus(Element *elm, int port)
 {
     // Unreachable in any correctly-written test: same class as inputStatus()'s guard above.
     auto *outputPort = elm->outputPort(port);
@@ -273,8 +273,8 @@ void clockCycle(Simulation *simulation, InputSwitch *clk)
     simulation->update();
 }
 
-void initSrc(GraphicElement &elm) { elm.initSimulationVectors(0, 1); }
-void initElm(GraphicElement &elm) { elm.initSimulationVectors(elm.inputSize(), elm.outputSize()); }
+void initSrc(Element &elm) { elm.initSimulationVectors(0, 1); }
+void initElm(Element &elm) { elm.initSimulationVectors(elm.inputSize(), elm.outputSize()); }
 
 void clockToggle(Simulation *simulation, InputSwitch *clk)
 {
@@ -417,7 +417,7 @@ AutoDismisser AutoDismisser::answerMessageBox(QMessageBox::StandardButton answer
     });
 }
 
-QImage renderElementForComparison(QGraphicsScene *scene, GraphicElement *elm, QPoint &centerOut)
+QImage renderElementForComparison(QGraphicsScene *scene, Element *elm, QPoint &centerOut)
 {
     // Render 1:1 from an integer-aligned source rect so every orientation rasterises scene
     // content at the same scale and sub-pixel phase — a fractional source origin would shift
@@ -634,12 +634,12 @@ CircuitBuilder::CircuitBuilder(Scene *scene)
 }
 
 // Trait implementations
-int CircuitBuilder::InputPortTraits::count(GraphicElement *elm)
+int CircuitBuilder::InputPortTraits::count(Element *elm)
 {
     return elm->inputSize();
 }
 
-Port *CircuitBuilder::InputPortTraits::port(GraphicElement *elm, int idx)
+Port *CircuitBuilder::InputPortTraits::port(Element *elm, int idx)
 {
     return elm->inputPort(idx);
 }
@@ -654,12 +654,12 @@ const char *CircuitBuilder::InputPortTraits::noPortsMessage()
     return "[No input ports available]";
 }
 
-int CircuitBuilder::OutputPortTraits::count(GraphicElement *elm)
+int CircuitBuilder::OutputPortTraits::count(Element *elm)
 {
     return elm->outputSize();
 }
 
-Port *CircuitBuilder::OutputPortTraits::port(GraphicElement *elm, int idx)
+Port *CircuitBuilder::OutputPortTraits::port(Element *elm, int idx)
 {
     return elm->outputPort(idx);
 }
@@ -676,7 +676,7 @@ const char *CircuitBuilder::OutputPortTraits::noPortsMessage()
 
 // Generic template implementations
 template<typename PortTraits>
-int CircuitBuilder::portByLabelImpl(GraphicElement *element, const QString &label)
+int CircuitBuilder::portByLabelImpl(Element *element, const QString &label)
 {
     if (!element) {
         qFatal("FATAL ERROR in CircuitBuilder::portByLabel(): Element is nullptr");
@@ -704,7 +704,7 @@ int CircuitBuilder::portByLabelImpl(GraphicElement *element, const QString &labe
 }
 
 template<typename PortTraits>
-QString CircuitBuilder::availablePortsImpl(GraphicElement *element) const
+QString CircuitBuilder::availablePortsImpl(Element *element) const
 {
     if (!element) {
         return "ERROR: Element is nullptr";
@@ -730,7 +730,7 @@ QString CircuitBuilder::availablePortsImpl(GraphicElement *element) const
     return ports.join("\n    ");
 }
 
-void CircuitBuilder::addElement(GraphicElement *elm)
+void CircuitBuilder::addElement(Element *elm)
 {
     if (!m_scene) {
         qFatal("FATAL ERROR in CircuitBuilder::addElement(): Scene is nullptr");
@@ -741,8 +741,8 @@ void CircuitBuilder::addElement(GraphicElement *elm)
     m_scene->addItem(elm);
 }
 
-Connection *CircuitBuilder::connect(GraphicElement *from, int fromPort,
-                                        GraphicElement *to, int toPort)
+Connection *CircuitBuilder::connect(Element *from, int fromPort,
+                                        Element *to, int toPort)
 {
     if (!m_scene) {
         qFatal("FATAL ERROR in CircuitBuilder::connect(): Scene is nullptr");
@@ -807,32 +807,32 @@ Simulation *CircuitBuilder::initSimulation()
     return sim;
 }
 
-int CircuitBuilder::inputPortByLabel(GraphicElement *element, const QString &label)
+int CircuitBuilder::inputPortByLabel(Element *element, const QString &label)
 {
     return portByLabelImpl<InputPortTraits>(element, label);
 }
 
-int CircuitBuilder::outputPortByLabel(GraphicElement *element, const QString &label)
+int CircuitBuilder::outputPortByLabel(Element *element, const QString &label)
 {
     return portByLabelImpl<OutputPortTraits>(element, label);
 }
 
-Connection *CircuitBuilder::connect(GraphicElement *from, const QString &fromLabel,
-                                        GraphicElement *to, int toPort)
+Connection *CircuitBuilder::connect(Element *from, const QString &fromLabel,
+                                        Element *to, int toPort)
 {
     int fromPort = outputPortByLabel(from, fromLabel);
     return connect(from, fromPort, to, toPort);
 }
 
-Connection *CircuitBuilder::connect(GraphicElement *from, int fromPort,
-                                        GraphicElement *to, const QString &toLabel)
+Connection *CircuitBuilder::connect(Element *from, int fromPort,
+                                        Element *to, const QString &toLabel)
 {
     int toPortIndex = inputPortByLabel(to, toLabel);
     return connect(from, fromPort, to, toPortIndex);
 }
 
-Connection *CircuitBuilder::connect(GraphicElement *from, const QString &fromLabel,
-                                        GraphicElement *to, const QString &toLabel)
+Connection *CircuitBuilder::connect(Element *from, const QString &fromLabel,
+                                        Element *to, const QString &toLabel)
 {
     int fromPort = outputPortByLabel(from, fromLabel);
     int toPort = inputPortByLabel(to, toLabel);

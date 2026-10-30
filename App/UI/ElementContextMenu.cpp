@@ -9,14 +9,14 @@
 #include <QPixmap>
 
 #include "App/Core/Common.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElement.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
 #include "App/UI/SelectionCapabilities.h"
 
 // Helper: add a morph target unless the element already IS that type.
-static QAction *addElementAction(QMenu *menu, GraphicElement *selectedElm, ElementType type, const bool hasSameType)
+static QAction *addElementAction(QMenu *menu, Element *selectedElm, ElementType type, const bool hasSameType)
 {
     if (hasSameType && (selectedElm->elementType() == type)) {
         return nullptr;
@@ -30,7 +30,7 @@ static QAction *addElementAction(QMenu *menu, GraphicElement *selectedElm, Eleme
 void ElementContextMenu::exec(QPoint screenPos,
                               QGraphicsItem *itemAtMouse,
                               const SelectionCapabilities &caps,
-                              const QList<GraphicElement *> &elements,
+                              const QList<Element *> &elements,
                               QComboBox *colorCombo,
                               Scene *scene,
                               const std::function<void(QUndoCommand *)> &sendCommand,
@@ -91,7 +91,7 @@ void ElementContextMenu::exec(QPoint screenPos,
 
     QMenu *submenuMorph = nullptr;
 
-    if (auto *selectedElm = qgraphicsitem_cast<GraphicElement *>(itemAtMouse); selectedElm && caps.canMorph) {
+    if (auto *selectedElm = qgraphicsitem_cast<Element *>(itemAtMouse); selectedElm && caps.canMorph) {
         submenuMorph = menu.addMenu(morphMenuText);
 
         switch (selectedElm->elementGroup()) {

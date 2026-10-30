@@ -13,7 +13,7 @@
 
 #include "App/Core/SentryHelpers.h"
 #include "App/Core/ThemeManager.h"
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/ConnectionManager.h"
 #include "App/Scene/Scene.h"
@@ -70,11 +70,11 @@ bool SceneInteraction::mousePress(QGraphicsSceneMouseEvent *event)
 
             // Include the clicked element even if it isn't yet selected, so a
             // single-click drag of an unselected element works immediately
-            if (auto *element = qgraphicsitem_cast<GraphicElement *>(item)) {
+            if (auto *element = qgraphicsitem_cast<Element *>(item)) {
                 selectedElements_ << element;
             }
 
-            m_draggingElement = ((item->type() == GraphicElement::Type) && !selectedElements_.isEmpty());
+            m_draggingElement = ((item->type() == Element::Type) && !selectedElements_.isEmpty());
             if (m_draggingElement) {
                 sentryBreadcrumb("ui", QStringLiteral("Drag started: %1 element(s)").arg(selectedElements_.size()));
             }
@@ -146,7 +146,7 @@ bool SceneInteraction::mouseMove(QGraphicsSceneMouseEvent *event)
             const QPointF delta = m_mousePos - m_dragStartPos;
             for (const auto &[element, startPos] : std::as_const(m_dragSnapshot)) {
                 if (element && element->isSelected()) {
-                    element->setPos(GraphicElement::snapToGrid(startPos + delta));
+                    element->setPos(Element::snapToGrid(startPos + delta));
                 }
             }
         }
@@ -188,7 +188,7 @@ bool SceneInteraction::mouseRelease(QGraphicsSceneMouseEvent *event)
         if (!m_dragSnapshot.empty()) {
             // Filter out elements destroyed mid-drag (their QPointers are now null).
             // Without this, dereferencing a freed element below crashes the app.
-            QList<GraphicElement *> liveElements;
+            QList<Element *> liveElements;
             QList<QPointF> liveOldPositions;
             liveElements.reserve(m_dragSnapshot.size());
             liveOldPositions.reserve(m_dragSnapshot.size());

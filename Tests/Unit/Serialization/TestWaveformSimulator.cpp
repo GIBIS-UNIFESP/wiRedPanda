@@ -15,7 +15,7 @@ void TestWaveformSimulator::testCaptureAndRestoreSinglePortInputs()
     sw1.setOn(true);
     InputSwitch sw2;
     sw2.setOn(false);
-    QVector<GraphicElementInput *> inputs{&sw1, &sw2};
+    QVector<ElementInput *> inputs{&sw1, &sw2};
 
     const auto saved = WaveformSimulator::captureInputs(inputs, 2);
     QCOMPARE(saved.size(), 2);
@@ -36,7 +36,7 @@ void TestWaveformSimulator::testCaptureAndRestoreMultiPortInput()
     // per-port setOn(value, port) path (single-port inputs only ever use port 0).
     InputRotary rotary;
     QVERIFY2(rotary.outputSize() > 1, "InputRotary should have more than one output port by default");
-    QVector<GraphicElementInput *> inputs{&rotary};
+    QVector<ElementInput *> inputs{&rotary};
 
     const auto saved = WaveformSimulator::captureInputs(inputs, rotary.outputSize());
     QCOMPARE(saved.size(), rotary.outputSize());
@@ -64,7 +64,7 @@ void TestWaveformSimulator::testRestorePreservesNonDefiniteStatus()
     // an input added but not yet simulated.
     sw->outputPort(0)->setStatus(Status::Unknown);
 
-    const QVector<GraphicElementInput *> inputs{sw};
+    const QVector<ElementInput *> inputs{sw};
     const auto saved = WaveformSimulator::captureInputs(inputs, 1);
     QCOMPARE(saved.size(), 1);
     QCOMPARE(saved.at(0), Status::Unknown);

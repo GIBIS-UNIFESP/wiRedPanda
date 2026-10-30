@@ -161,7 +161,7 @@ void TestThemeManager::testLightThemeColors()
     QVERIFY(attrs.m_sceneBgDots.isValid());
     QVERIFY(attrs.m_selectionBrush.isValid());
     QVERIFY(attrs.m_selectionPen.isValid());
-    QVERIFY(attrs.m_graphicElementLabelColor.isValid());
+    QVERIFY(attrs.m_elementLabelColor.isValid());
 }
 
 void TestThemeManager::testLightThemeSceneColors()
@@ -247,7 +247,7 @@ void TestThemeManager::testDarkThemeColors()
     QVERIFY(attrs.m_sceneBgDots.isValid());
     QVERIFY(attrs.m_selectionBrush.isValid());
     QVERIFY(attrs.m_selectionPen.isValid());
-    QVERIFY(attrs.m_graphicElementLabelColor.isValid());
+    QVERIFY(attrs.m_elementLabelColor.isValid());
 }
 
 void TestThemeManager::testDarkThemeSceneColors()

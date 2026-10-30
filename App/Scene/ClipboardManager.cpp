@@ -18,7 +18,7 @@
 #include "App/Core/Constants.h"
 #include "App/Core/MimeTypes.h"
 #include "App/Core/SentryHelpers.h"
-#include "App/Element/GraphicElement.h"
+#include "App/Element/Element.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/Commands.h"
@@ -240,7 +240,7 @@ DragPreview::Picture ClipboardManager::selectionDragPicture(const QPointF &mouse
     const auto items = m_scene->items();
 
     for (auto *item : items) {
-        if (((item->type() == GraphicElement::Type) || (item->type() == Connection::Type)) && !item->isSelected()) {
+        if (((item->type() == Element::Type) || (item->type() == Connection::Type)) && !item->isSelected()) {
             item->hide();
         }
     }
@@ -261,7 +261,7 @@ DragPreview::Picture ClipboardManager::selectionDragPicture(const QPointF &mouse
     QPixmap pixmap = QPixmap::fromImage(buildDragImage(m_scene, transform, rect));
 
     for (auto *item : items) {
-        if (((item->type() == GraphicElement::Type) || (item->type() == Connection::Type)) && !item->isSelected()) {
+        if (((item->type() == Element::Type) || (item->type() == Connection::Type)) && !item->isSelected()) {
             item->show();
         }
     }
@@ -311,7 +311,7 @@ void ClipboardManager::serializeItems(const QList<QGraphicsItem *> &items, QData
     int itemsQuantity = 0;
 
     for (auto *item : items) {
-        if (item->type() == GraphicElement::Type) {
+        if (item->type() == Element::Type) {
             center += item->pos();
             ++itemsQuantity;
         }
@@ -352,8 +352,8 @@ void ClipboardManager::addItems(const QList<QGraphicsItem *> &items, const QPoin
     m_scene->receiveCommand(new AddItemsCommand(items, m_scene));
 
     for (auto *item : items) {
-        if (item->type() == GraphicElement::Type) {
-            item->setPos(GraphicElement::snapToGrid(item->pos() + offset));
+        if (item->type() == Element::Type) {
+            item->setPos(Element::snapToGrid(item->pos() + offset));
         }
     }
 

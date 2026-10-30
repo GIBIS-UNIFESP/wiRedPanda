@@ -62,7 +62,7 @@ struct FlagRegisterFixture {
 
     TestUtils::Bits readFlags()
     {
-        return readMultiBitOutput(QVector<GraphicElement *>(flagOutputs.begin(), flagOutputs.end()), 0);
+        return readMultiBitOutput(QVector<Element *>(flagOutputs.begin(), flagOutputs.end()), 0);
     }
 };
 
