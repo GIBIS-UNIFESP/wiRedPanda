@@ -394,9 +394,7 @@ void ICLoader::processLoadedItems(IC &ic, QList<QGraphicsItem *> &items)
 
     ICRenderer::generatePixmap(ic);
 
-    // No Qt tooltip: the hover preview popup (ICPreviewPopup) names a loaded IC, so the two don't overlap. Clear the
-    // base class's translated-name tooltip; IC::retranslate() keeps it clear.
-    ic.setToolTip(QString());
+    // The hover preview popup (ICPreviewPopup) names the IC from here on, in place of its help text (IC::helpText())
     ic.m_loaded = true;
 }
 

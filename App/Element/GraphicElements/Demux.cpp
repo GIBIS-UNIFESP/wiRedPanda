@@ -244,7 +244,7 @@ void Demux::load(QDataStream &stream, SerializationContext &context)
     const int expectedInputs = 1 + calculateSelectLines(outputSize());
     if (inputSize() != expectedInputs) {
         throw PANDACEPTION("%1 with %2 input ports for %3 outputs, where it has %4 — stream may be corrupt",
-                           objectName(),
+                           translatedName(),
                            QString::number(inputSize()),
                            QString::number(outputSize()),
                            QString::number(expectedInputs));

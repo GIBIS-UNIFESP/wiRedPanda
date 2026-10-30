@@ -529,13 +529,20 @@ public:
      */
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
+    /// Returns the type's name in the current language ("And", "D-Flip-Flop", ...), looked up each time it is asked,
+    /// so it follows a language change.
+    QString translatedName() const;
+
+    /// Returns the text shown when the pointer rests on the element: its translatedName(). Scene::helpEvent() asks for
+    /// it then, so no element carries a tooltip of its own. Empty for an element that shows something else.
+    virtual QString helpText() const;
+
     /**
-     * \brief Updates the translated display name, tooltip, and port object name after a locale change.
-     * \details Queries ElementFactory for the new translated name and propagates
-     * it to setPortName() and setToolTip(). An element showing other translated text of its own overrides it, calling
-     * the base first.
+     * \brief Measures again what the element draws in the interface language, after a language change.
+     * \details Scene::retranslateUi() calls it on each of its elements. Names and help text need nothing, being looked
+     * up when asked; an element that draws translated text of its own, which can change its bounds, overrides it.
      */
-    virtual void retranslate();
+    virtual void languageChanged();
 
     // --- Setters (Port & Logic Configuration) ---
 
@@ -547,9 +554,6 @@ public:
 
     /// Replaces the input port vector with \a inputs.
     void setInputs(const QVector<InputPort *> &inputs);
-
-    /// Sets the object name of all ports to \a name for identification.
-    void setPortName(const QString &name);
 
     /// Read-only view of the cached simulation input values.
     const QVector<Status> &simInputs() const { return m_sim.inputs(); }
@@ -667,11 +671,6 @@ protected:
 
     QGraphicsSimpleTextItem *m_label = new QGraphicsSimpleTextItem(this); ///< Child text item that displays the label and optional trigger shortcut.
     QPointF m_labelAnchor; ///< The label's intended anchor point in the element's un-rotated local frame; see setLabelAnchor().
-
-    // --- Members: Metadata ---
-
-    QString m_titleText;      ///< Translated title text shown in UI panels (from metadata).
-    QString m_translatedName; ///< Translated element name used as tooltip and port object name.
 
     // --- Direct Simulation Helpers ---
 

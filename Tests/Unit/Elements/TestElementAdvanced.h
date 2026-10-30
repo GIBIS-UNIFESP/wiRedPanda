@@ -42,7 +42,7 @@ private slots:
 
     // Label and tooltip tests
     void testLabelProperty();
-    void testTooltipProperty();
+    void testHelpTextProperty();
     void testLabelVisibility();
 
     // Rotation and position tests

@@ -812,7 +812,7 @@ void TestSystemVerilogExport::testSystemVerilogExportHelper(const QString &icFil
                 for (int o = 0; o < numOutputs; ++o) {
                     const Status status = TestUtils::inputStatus(leds[o], 0);
                     if ((status != Status::Active) && (status != Status::Inactive) && nonLevelOutput.isEmpty()) {
-                        nonLevelOutput = leds[o]->objectName();
+                        nonLevelOutput = leds[o]->translatedName();
                     }
                     bits[o] = (status == Status::Active) ? 1 : 0;
                 }

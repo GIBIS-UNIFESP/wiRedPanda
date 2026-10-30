@@ -30,8 +30,8 @@ public:
     /// Refreshes the empty-state hint's color alongside the base label/port theming.
     void updateTheme() override;
 
-    /// Retranslates the empty-state hint alongside the base name and tooltip.
-    void retranslate() override;
+    /// Sets the empty-state hint in the new language, its width part of the bounds.
+    void languageChanged() override;
 
 protected:
     /// Shows a faint "double-click to add text" hint whenever the label is empty, since an

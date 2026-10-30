@@ -96,7 +96,7 @@ void Element::load(QDataStream &stream, SerializationContext &context)
 
 void ElementSerializer::save(const Element &element, QDataStream &stream, SerializationOptions options)
 {
-    qCDebug(four) << "Saving element. Type: " << element.objectName();
+    qCDebug(four) << "Saving element. Type: " << element.translatedName();
 
     // PortableFile streams elide everything the loader either derives or
     // reconstructs from constructor defaults (fresh elements only — see
@@ -215,7 +215,7 @@ void ElementSerializer::save(const Element &element, QDataStream &stream, Serial
 
 void ElementSerializer::load(Element &element, QDataStream &stream, SerializationContext &context)
 {
-    qCDebug(four) << "Loading element. Type: " << element.objectName();
+    qCDebug(four) << "Loading element. Type: " << element.translatedName();
 
     context.loadedInputKeys.clear();
     context.loadedOutputKeys.clear();
@@ -519,14 +519,14 @@ void ElementSerializer::validatePortCounts(const Element &element)
 
     if (element.inputSize() > element.maxInputSize()) {
         throw PANDACEPTION("%1 with %2 input ports, above its maximum of %3 — stream may be corrupt",
-                           element.objectName(),
+                           element.translatedName(),
                            QString::number(element.inputSize()),
                            QString::number(element.maxInputSize()));
     }
 
     if (element.outputSize() > element.maxOutputSize()) {
         throw PANDACEPTION("%1 with %2 output ports, above its maximum of %3 — stream may be corrupt",
-                           element.objectName(),
+                           element.translatedName(),
                            QString::number(element.outputSize()),
                            QString::number(element.maxOutputSize()));
     }

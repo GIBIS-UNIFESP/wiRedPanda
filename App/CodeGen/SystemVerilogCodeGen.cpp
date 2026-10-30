@@ -1209,7 +1209,7 @@ void SystemVerilogCodeGen::assignVariablesRec(const QVector<Element *> &elements
                     // never empty here.
                     if (outputVarName.isEmpty()) {
                         if (out == 0) { // LCOV_EXCL_LINE
-                            throw PANDACEPTION("Output variable not mapped for TruthTable: %1", elm->objectName()); // LCOV_EXCL_LINE
+                            throw PANDACEPTION("Output variable not mapped for TruthTable: %1", elm->translatedName()); // LCOV_EXCL_LINE
                         } // LCOV_EXCL_LINE
                         m_stream << "// TruthTable '" << ElementFactory::untranslatedName(elm->elementType()) << "' output " << out << " is disconnected — no code emitted." << Qt::endl; // LCOV_EXCL_LINE
                         continue; // LCOV_EXCL_LINE
@@ -1267,7 +1267,7 @@ void SystemVerilogCodeGen::assignVariablesRec(const QVector<Element *> &elements
             case ElementType::Unknown:
             case ElementType::Xnor:
             case ElementType::Xor:
-                throw PANDACEPTION("Element type not supported: %1", elm->objectName());
+                throw PANDACEPTION("Element type not supported: %1", elm->translatedName());
             // LCOV_EXCL_STOP
             }
         }

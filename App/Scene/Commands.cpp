@@ -1053,7 +1053,7 @@ MorphCommand::MorphCommand(const QList<Element *> &elements, ElementType type, S
         m_types.append(oldElm->elementType());
     }
 
-    setText(tr("Morph %1 elements to %2").arg(elements.size()).arg(elements.constFirst()->objectName()));
+    setText(tr("Morph %1 elements to %2").arg(elements.size()).arg(elements.constFirst()->translatedName()));
 }
 
 void MorphCommand::restoreDeletedConnections(const QList<DeletedConnectionInfo> &deleted)

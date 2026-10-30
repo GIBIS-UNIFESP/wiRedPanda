@@ -77,7 +77,8 @@ public:
 
     // --- Identity & Status ---
 
-    /// Returns the port's label text, derived anew on each call while the port has a name source.
+    /// Returns the port's label text, derived anew on each call while the port has a name source. The scene's hover
+    /// labels show it when the pointer rests on the port (Scene::helpEvent()), so the port has no tooltip.
     QString name() const;
 
     /// Returns the label in the source language, which generated code names its signals from whatever the interface

@@ -205,7 +205,8 @@ private slots:
     void testKeyReleaseEventReleasesInputButtonTrigger();
     void testEventFilterRemapsShiftClickToCtrlClick();
     void testHelpEventShowsPortHoverLabelsOverPort();
-    void testHelpEventFallsBackForNonPortItem();
+    void testHelpEventShowsTheTopmostItemsText();
+    void testHelpEventOverASegmentPortNamesItInTheCurrentLanguage();
     void testElementCountAgreesAfterEveryMutation();
     void testElementCountKeepsAForgottenElement();
 };

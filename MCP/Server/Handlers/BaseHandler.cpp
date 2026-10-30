@@ -234,7 +234,7 @@ bool BaseHandler::inputPortByLabel(Element *element, const QString &label, int &
     }
 
     errorMsg = QString("Input port '%1' not found on element '%2'. Available input ports: %3")
-               .arg(label, element->objectName(), availableInputPorts(element));
+               .arg(label, element->translatedName(), availableInputPorts(element));
     return false;
 }
 
@@ -255,7 +255,7 @@ bool BaseHandler::outputPortByLabel(Element *element, const QString &label, int 
     }
 
     errorMsg = QString("Output port '%1' not found on element '%2'. Available output ports: %3")
-               .arg(label, element->objectName(), availableOutputPorts(element));
+               .arg(label, element->translatedName(), availableOutputPorts(element));
     return false;
 }
 

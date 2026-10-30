@@ -12,7 +12,7 @@ class TestPort : public QObject
 
 private slots:
 
-    void testPortTooltip();
+    void testPortHasNoTooltip();
     void testPortHoverState();
 
     // Regression: F18 — setInputs must keep index() == vector position

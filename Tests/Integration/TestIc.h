@@ -29,7 +29,7 @@ private slots:
     // Serialization (3 tests)
     void testICSaveLoad();
     void testOrientedICKeepsItsPortsAcrossAReopen();
-    void testLoadedICKeepsNoToolTipAfterARetranslation();
+    void testALoadedIcHasNoHelpText();
 
     // Integration (4 tests)
     void testICInSimulation();

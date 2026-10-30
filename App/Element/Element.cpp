@@ -23,7 +23,6 @@
 #include "App/Core/Common.h"
 #include "App/Core/Constants.h"
 #include "App/Core/ThemeManager.h"
-#include "App/Element/ElementFactory.h"
 #include "App/Element/ElementMetadata.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Wiring/Connection.h"
@@ -51,8 +50,6 @@ Element::Element(ElementType type, QGraphicsItem *parent)
 {
     const ElementMetadata &metadata = m_metadata;
     m_appearance.seedFromMetadata(metadata.defaultAppearances, metadata.alternativeAppearances, metadata.pixmapPath());
-    m_titleText = QCoreApplication::translate(metadata.trContext, metadata.titleText);
-    m_translatedName = QCoreApplication::translate(metadata.trContext, metadata.translatedName);
     m_elementGroup = metadata.group;
     m_hasColors = metadata.hasColors;
     m_maxInputSize = metadata.maxInputSize;
@@ -73,9 +70,6 @@ Element::Element(ElementType type, QGraphicsItem *parent)
     m_label->setBrush(Qt::black);
     // 64 px below origin keeps the label below the standard 64×64 element body
     setLabelAnchor(QPointF(0, 64));
-
-    setPortName(m_translatedName);
-    setToolTip(m_translatedName);
 
     qCDebug(four) << "Including input and output ports.";
     Element::setInputSize(static_cast<int>(metadata.minInputSize));
@@ -224,11 +218,6 @@ QPointF Element::snapToGrid(const QPointF &pos, const int step)
     // past int's range has no int grid line. Adding zero turns the -0 that rounds a small negative value into the +0 an
     // int gives, which a saved file writes as other bytes.
     return {std::round(pos.x() / step) * step + 0.0, std::round(pos.y() / step) * step + 0.0};
-}
-
-void Element::setPortName(const QString &name)
-{
-    setObjectName(name);
 }
 
 Element::PortAttributes Element::describedPort(const char *letter, const char *description) const
@@ -876,12 +865,18 @@ void Element::highlight(const bool isSelected)
     }
 }
 
-void Element::retranslate()
+QString Element::translatedName() const
 {
-    m_translatedName = ElementFactory::translatedName(m_elementType);
+    return QCoreApplication::translate(m_metadata.trContext, m_metadata.translatedName);
+}
 
-    setPortName(m_translatedName);
-    setToolTip(m_translatedName);
+QString Element::helpText() const
+{
+    return translatedName();
+}
+
+void Element::languageChanged()
+{
 }
 
 void Element::loadFromDrop(const QString &fileName, const QString &contextDir)
