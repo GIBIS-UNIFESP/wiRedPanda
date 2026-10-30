@@ -25,14 +25,14 @@ class Clock : public ElementInput
 
 public:
     /// Default output frequency in Hz. Single source of truth: used by the
-    /// m_frequency/m_interval member initializers and serialization's
-    /// default-elision check.
+    /// frequency's spec (ParamId::Frequency), the m_interval member initializer
+    /// and serialization's default-elision check.
     static constexpr double kDefaultFrequency = 1.0;
 
     /// Half-period (the duration of one HIGH or LOW phase) for \a freq Hz: the full
     /// period is 1/freq seconds, so each phase lasts 1/(2·freq). Shared by the
-    /// m_interval member initializer and setFrequency() so the two derivations can
-    /// never diverge. Callers guard the input (see setFrequency()); this assumes a
+    /// m_interval member initializer, the frequency's spec and parameterChanged() so
+    /// the derivations can never diverge. The spec guards the input; this assumes a
     /// positive, finite \a freq.
     static constexpr std::chrono::microseconds halfPeriod(const double freq)
     {
@@ -49,11 +49,6 @@ public:
 
     /// Returns \c true if the clock output is currently logic-high.
     bool isOn(const int port = 0) const override;
-    /// Returns the clock frequency in Hz.
-    double frequency() const override;
-    /// Returns the clock phase delay as a fraction of the period, in [-1, 1]. Negative
-    /// delays advance the clock; positive delays retard it (see setDelay()).
-    double delay() const override;
     /// Returns a summary string of the clock's current frequency and delay settings.
     QString genericProperties() override;
 
@@ -66,14 +61,6 @@ public:
 
     // Bring the base setOn(bool, int) overload into scope (hidden by setOn() above).
     using ElementInput::setOn;
-
-    /// Sets the clock output frequency to \a freq Hz, when acceptsFrequency().
-    void setFrequency(const double freq) override;
-    /// Returns whether \a freq is finite and non-zero with a half period of at least a microsecond.
-    bool acceptsFrequency(const double freq) const override;
-    /// Sets the clock phase delay to \a delay (fraction of period), clamped to [-1, 1].
-    /// Negative delays advance the clock (trigger earlier); positive delays delay it.
-    void setDelay(const double delay) override;
 
     // --- Simulation ---
 
@@ -101,14 +88,18 @@ public:
     /// \reimp
     void save(QDataStream &stream, SerializationOptions options) const override;
 
+protected:
+    /// \reimp Derives the half-period from a new frequency (ParamId::Frequency). The frequency is finite and
+    /// non-zero with a half period of at least a microsecond; the phase delay (ParamId::Delay) a fraction of the
+    /// period in [-1, 1], negative delays advancing the clock (triggering earlier) and positive ones delaying it.
+    void parameterChanged(ParamId id, const ParamValue &previous) override;
+
 private:
     // --- Members ---
 
-    double m_delay = 0;
-    double m_frequency = kDefaultFrequency;
-    /// Must carry an initializer: chrono::duration's default constructor leaves the
-    /// tick count uninitialized (unlike m_startTime below, whose time_point default
-    /// is the clock epoch).
+    /// The half-period, derived from the frequency. Must carry an initializer:
+    /// chrono::duration's default constructor leaves the tick count uninitialized
+    /// (unlike m_startTime below, whose time_point default is the clock epoch).
     std::chrono::microseconds m_interval = halfPeriod(kDefaultFrequency);
     std::chrono::steady_clock::time_point m_startTime;
     bool m_hasPhase = false;

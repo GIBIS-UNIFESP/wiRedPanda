@@ -308,10 +308,10 @@ public:
 
     // --- Frequency & Delay ---
 
-    /// Returns the clock frequency in Hz (overridden by Clock; returns 0 for other elements).
+    /// Returns the frequency in Hz (ParamId::Frequency); 0 for a type without one.
     virtual double frequency() const;
 
-    /// Returns the clock phase delay in seconds (overridden by Clock; returns 0 for other elements).
+    /// Returns the phase delay as a fraction of the period (ParamId::Delay); 0 for a type without one.
     virtual double delay() const;
 
     /// Returns \c true if this element type exposes a configurable clock frequency.
@@ -320,13 +320,14 @@ public:
     /// Returns \c true if this element type exposes a configurable clock phase delay.
     bool hasDelay() const;
 
-    /// Sets the clock frequency to \a freq (overridden by clock elements).
+    /// Sets the frequency to \a freq Hz (ParamId::Frequency), as its spec takes it.
     virtual void setFrequency(const double freq);
 
-    /// Returns whether setFrequency() takes \a freq; one it does not take leaves the frequency as it was.
+    /// Returns whether setFrequency() takes \a freq (the spec's rule); one it does not take leaves the frequency as
+    /// it was, and a type without a frequency takes none.
     virtual bool acceptsFrequency(const double freq) const;
 
-    /// Sets the clock phase delay to \a delay (overridden by clock elements).
+    /// Sets the phase delay to \a delay (ParamId::Delay), as its spec takes it.
     virtual void setDelay(const double delay);
 
     /**

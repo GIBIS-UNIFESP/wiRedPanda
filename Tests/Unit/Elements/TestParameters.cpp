@@ -3,6 +3,7 @@
 
 #include "Tests/Unit/Elements/TestParameters.h"
 
+#include <limits>
 #include <memory>
 
 #include <QHash>
@@ -103,7 +104,7 @@ void TestParameters::testEachTypeHasTheParametersOfItsSchema_data()
         {ElementType::InputButton, {"On false -", "Locked false locked"}},
         {ElementType::InputSwitch, {"On false isOn", "Locked false locked"}},
         {ElementType::InputRotary, {"Position 0 currentPort", "Locked false locked"}},
-        {ElementType::Clock, {"On false -", "Locked false locked"}},
+        {ElementType::Clock, {"On false -", "Locked false locked", "Frequency 1 frequency", "Delay 0 delay"}},
         {ElementType::Node, {"Wireless 0 wirelessMode"}},
     };
 
@@ -277,4 +278,44 @@ void TestParameters::testARotarysSelectionOutOfRangeIsTheFirst()
     QCOMPARE(rotary.outputValue(), 0);
     rotary.setOn(true, 7);
     QCOMPARE(rotary.outputValue(), 0);
+}
+
+// --- The clock ---
+
+void TestParameters::testAClocksFrequencyAndDelayAreItsRules()
+{
+    Clock clock;
+
+    // A frequency is finite and non-zero with a half-period of at least a microsecond; one it does not take leaves
+    // the frequency as it was, and acceptsFrequency() asks the same rule
+    QVERIFY(clock.setParam(ParamId::Frequency, 2.5));
+    QCOMPARE(clock.frequency(), 2.5);
+    for (const double refused : {0.0, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::infinity(),
+                                 1.0e9}) {
+        QVERIFY(!clock.acceptsFrequency(refused));
+        QVERIFY(!clock.setParam(ParamId::Frequency, refused));
+        clock.setFrequency(refused);
+        QCOMPARE(clock.frequency(), 2.5);
+    }
+    QVERIFY(clock.acceptsFrequency(400000.0));
+    clock.setFrequency(10.0);
+    QCOMPARE(clock.param<double>(ParamId::Frequency), 10.0);
+
+    // A delay is a fraction of the period in [-1, 1]: a finite one beyond it is clamped, a non-finite one refused
+    QVERIFY(clock.setParam(ParamId::Delay, 0.25));
+    QCOMPARE(clock.delay(), 0.25);
+    clock.setDelay(3.0);
+    QCOMPARE(clock.delay(), 1.0);
+    clock.setDelay(-7.0);
+    QCOMPARE(clock.delay(), -1.0);
+    QVERIFY(!clock.setParam(ParamId::Delay, std::numeric_limits<double>::quiet_NaN()));
+    QCOMPARE(clock.delay(), -1.0);
+
+    // A type without them has none and takes none
+    const std::unique_ptr<Element> gate(ElementFactory::buildElement(ElementType::And));
+    QVERIFY(!gate->acceptsFrequency(1.0));
+    gate->setFrequency(1.0);
+    gate->setDelay(0.5);
+    QCOMPARE(gate->frequency(), 0.0);
+    QCOMPARE(gate->delay(), 0.0);
 }

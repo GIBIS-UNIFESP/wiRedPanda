@@ -42,7 +42,36 @@ struct ElementInfo<Clock> {
             ":/Components/Input/clock1.svg",
         });
         // A clock's level follows the simulation's time: no state of the circuit
-        descriptor.parameters = {ElementInput::levelSpec(nullptr), ElementInput::lockSpec()};
+        descriptor.parameters = {
+            ElementInput::levelSpec(nullptr),
+            ElementInput::lockSpec(),
+            {
+                // A frequency so high that the half-period rounds to zero is refused too
+                .id = ParamId::Frequency,
+                .defaultValue = Clock::kDefaultFrequency,
+                .key = "frequency",
+                .accept = [](const Element &, const ParamValue &value) -> std::optional<ParamValue> {
+                    const double frequency = std::get<double>(value);
+                    const bool takes = std::isfinite(frequency) && !qFuzzyIsNull(frequency)
+                                       && (Clock::halfPeriod(frequency).count() > 0);
+                    return takes ? std::optional<ParamValue>(value) : std::nullopt;
+                },
+            },
+            {
+                // A fraction of the period in [-1, 1]: a finite value beyond it would multiply with the period in
+                // resetClock() to a magnitude beyond microseconds::rep, which is undefined on the cast
+                .id = ParamId::Delay,
+                .defaultValue = 0.0,
+                .key = "delay",
+                .accept = [](const Element &, const ParamValue &value) -> std::optional<ParamValue> {
+                    const double delay = std::get<double>(value);
+                    if (!std::isfinite(delay)) {
+                        return std::nullopt;
+                    }
+                    return ParamValue(std::clamp(delay, -1.0, 1.0));
+                },
+            },
+        };
         return descriptor;
     } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
 
@@ -183,53 +212,24 @@ void Clock::load(QDataStream &stream, SerializationContext &context)
     }
 }
 
-double Clock::frequency() const
+void Clock::parameterChanged(const ParamId id, const ParamValue &previous)
 {
-    return m_frequency;
-}
-
-bool Clock::acceptsFrequency(const double freq) const
-{
-    // A frequency so high that the half-period rounds to zero is refused too
-    return std::isfinite(freq) && !qFuzzyIsNull(freq) && (halfPeriod(freq).count() > 0);
-}
-
-void Clock::setFrequency(const double freq)
-{
-    if (!acceptsFrequency(freq)) {
-        return;
+    ElementInput::parameterChanged(id, previous);
+    if (id == ParamId::Frequency) {
+        m_interval = halfPeriod(frequency());
     }
-
-    m_interval = halfPeriod(freq);
-    m_frequency = freq;
-}
-
-double Clock::delay() const
-{
-    return m_delay;
-}
-
-void Clock::setDelay(const double delay)
-{
-    if (!std::isfinite(delay)) {
-        return;
-    }
-    // m_delay is documented as a fraction of the period in [-1, 1].  Out-of-range
-    // finite values would multiply with fullPeriod.count() in resetClock() to a
-    // magnitude beyond microseconds::rep, which is UB on the cast (UBSan-trapped).
-    m_delay = std::clamp(delay, -1.0, 1.0);
 }
 
 void Clock::resetClock(std::chrono::steady_clock::time_point globalTime)
 {
     // Start clocks in the HIGH state; the first transition happens after one interval
     setOn();
-    // m_delay is a fraction of the period (-1 to 1).
+    // The delay is a fraction of the period (-1 to 1).
     // Negative delays advance the clock (trigger earlier), positive delays delay it.
     // Shifting m_startTime backward by the delay fraction effectively phase-shifts the waveform.
     // Full period is 2 * m_interval (since m_interval is the half-period).
     const auto fullPeriod = 2 * m_interval;
-    const auto delayMicroseconds = static_cast<std::chrono::microseconds::rep>(-m_delay * static_cast<double>(fullPeriod.count()));
+    const auto delayMicroseconds = static_cast<std::chrono::microseconds::rep>(-delay() * static_cast<double>(fullPeriod.count()));
     m_startTime = globalTime;
     m_startTime -= std::chrono::microseconds(delayMicroseconds);
     m_hasPhase = true;
