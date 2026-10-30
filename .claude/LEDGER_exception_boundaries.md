@@ -111,6 +111,8 @@ status change gets a dated line in the log.
   UNDO path that EB.14 closed; §9's question had no row (EB.15, answered from P2.16's CI); the
   appendix's counts recounted by the check's script; CLAUDE.md gains GCC 13's `-O3` null-dereference.
   Tip checked at `f49d72cf2`: release and debug suites 227/227.
+- 2026-10-30: CI green at `f49d72cf2` (Build 41069500976, Sanitizers 41069501044, API docs 41069501292, Lint
+  41069501290, Exception inventory 41069501128); none skipped.
 
 ## Appendix: the inventory (EB.1)
 
