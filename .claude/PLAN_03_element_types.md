@@ -23,8 +23,9 @@ is written twice. It is data-driven design, not data-oriented: the data-oriented
 
 ## 1. Where `master` stands
 
-`GraphicElement.h` has 728 lines and 33 `virtual` declarations, the `.cpp` 834 lines; 31 type subclasses live in
-`App/Element/GraphicElements/`, with the abstract `AudioOutputElement` (base of `Buzzer` and `AudioBox`), and `IC` in
+Counted on `03-element-types`, which is `master` with plans 1 to 2c in (P3.1 corrected each figure taken on the branch
+before): `GraphicElement.h` has 763 lines and 35 `virtual` declarations, the `.cpp` 853 lines; 31 type subclasses live
+in `App/Element/GraphicElements/`, with the abstract `AudioOutputElement` (base of `Buzzer` and `AudioBox`), and `IC` in
 `App/Element/`. One class carries identity, ports, parameters, placement, simulation (`updateLogic()` per subclass),
 serialization, pictures, appearance, painting, highlight, theme and label geometry, help text and drop hooks, and the
 Graphics View plumbing. The base declares accessors for parameters only some types have (audio, volume, colour,
@@ -35,18 +36,19 @@ types override `updatePortsProperties()`), what each subclass holds:
 | Subclasses | Besides that |
 |---|---|
 | And, Or, Nand, Nor, Xor, Xnor, Not, VCC, GND, Line | nothing |
-| the four flip-flops and two latches | an `updateTheme()` override |
+| the four flip-flops | the simulation state they save, restore and reset (the last clock and inputs); their themed picture is the base's |
+| the two latches | nothing; their themed picture is the base's (`updateTheme()` takes the metadata's themed path when the type has no default appearances) |
 | Text | the empty-label hint, a child item, and its theme colour |
-| Mux, Demux | a `paint()` override |
-| LED | a colour and its appearance states |
+| Mux, Demux | a `paint()` and a `boundingRect()` override; the Demux also derives its input count and checks it on load |
+| LED | a colour and its appearance states, with its own `setAppearance()` and generic properties |
 | Display7, Display14, Display16 | a colour; a `paint()` override |
-| Clock | frequency and delay, its appearance states; its output level and run-time phase, which are simulation state |
+| Clock | frequency and delay, its appearance states, its generic properties; its output level and run-time phase, which are simulation state |
 | Buzzer, AudioBox | frequency, audio file, volume, and playback (start, stop, volume, mute) |
 | Node | the wireless mode, and the wireless indicator, a child item |
 | InputSwitch, InputButton | the input state, its appearance states, and the click handling (press, and release for the button) |
-| InputRotary | the input state, the click handling, the waveform hooks, a `paint()` override |
+| InputRotary | the input state, the click handling, the waveform hooks, a `paint()` override, its own `setAppearance()` and `refresh()` |
 | TruthTable | the table; a `paint()` override; a double-click that asks for the table editor |
-| IC | the definition reference, the embedded blob, its internal elements and their simulation; a `paint()` override; a double-click that opens the sub-circuit, and the hover that drives its preview |
+| IC | the definition reference, the embedded blob, its internal elements and their simulation (with its own settling and simulation state); a `paint()` override; a double-click that opens the sub-circuit, and the hover that drives its preview; its own retranslation |
 
 The base's own double-click asks for the inline label editor, and every double-click reaches an element through Qt's
 item dispatch once the scene's interaction code declines it. Once painting goes to presenters, parameters and
@@ -58,16 +60,19 @@ pass, 234 of them `override` mismatches and the rest 22 distinct `QGraphicsItem`
 `sceneBoundingRect`, `setSelected`, `update`, `x` and `y`, `sceneTransform`, `prepareGeometryChange`, `isSelected`,
 `setVisible` and `isVisible`, `scene`, `scenePos`, `moveBy`, `transform`, `setTransform`, `mapToScene`,
 `childrenBoundingRect`, `setCacheMode`, `setFlags`, `setAcceptHoverEvents`, `ensureVisible`, `parentItem`), a lower
-bound since a first pass stops at errors per file. Element `qobject_cast`s: 39 in `App` and `MCP`, 120 more in the
-tests; `qgraphicsitem_cast`s to element, port or wire types: 30 in `App` and `MCP`; `QPointer`s to elements: 2 (the
-scene's interaction code and the IC preview popup); `tr()` in 13 files of `App/Element`. `Port`'s item type
+bound since a first pass stops at errors per file (the experiment ran on the branch). Element `qobject_cast`s: 42 in
+`App` and `MCP`, 134 more in the tests; `qgraphicsitem_cast`s to element, port or wire types: 32 in `App` and `MCP`;
+`QPointer`s to elements: 3 (the scene's interaction code, the IC preview popup, and the targets of
+`Scene::recordOperation()`, plan 2's one command per pointer or key operation); `tr()` in 10 files of `App/Element`,
+and `QT_TR_NOOP` or `translate()` in 15. `Port`'s item type
 (`UserType + 1`) is never written to files; it serves the hit tests and a debug table in the serializer. Tests build
-elements directly about 1,880 times in 158 files (`new` 1,164, on the stack 643, `make_unique` or `make_shared` 71),
-plus 192 `new IC(`.
+elements directly about 2,360 times in 165 files (`new` 1,622, on the stack 658, `make_unique` or `make_shared` 77),
+plus 219 `new IC(`; on `master` the same count gives 2,111 in 158 files and 192 `new IC(` (the earlier 1,880 counted
+fewer forms of `new`).
 
 ## 2. The type catalogue
 
-What the schema reproduces byte for byte, taken from each type's metadata, `save()`, `loadState()`, setters,
+What the schema reproduces byte for byte, taken from each type's metadata, `save()`, `load()`, setters,
 `paint()`, `refresh()` and pointer handlers, the serializer, the property editor and MCP's set-properties. It was taken
 on the branch after its first three phases, which held plan 2's fixes to this code, so it describes `master` with
 those fixes in: Mux, Demux and the truth table offer no custom appearance, an open S, R or T reads Inactive, and the
@@ -84,16 +89,21 @@ element's stream, after the tag and the `ElementType` number, holds four values 
    (snapshots keep ids through the ports' `serialId`); `rotation`, `label` and `trigger`, which a portable file writes
    only when not 0, empty and empty, and every other purpose always; `flippedX` and `flippedY` only when true, in every
    purpose;
-2. the input port list, one map per port: `serialId` (`quint64`) and `name`, or empty maps in a portable file; its
+2. the input port list, one map per port: `serialId` (`quint64`) and `name`; a portable file writes no `serialId`
+   (the loader derives it from the element's `id`) and no `name` except an IC's, so other types' maps are empty; its
    length is the input count, the only place a variable-size type's port count is stored;
 3. the output port list, the same shape;
 4. the appearance list, one map per slot: `skinName`, written through `ExternalFilePath::forWriting`; a portable file
    writes resource (`:/`) slots as empty maps, and an empty list when no slot is custom.
 
-Reading takes three port-map shapes (`serialId`, the older `ptr`, a portable file's none), checks the port counts
-against the type's minimum and maximum (the IC exempt, its counts coming from its definition; the maximum check is
-plan 2's fix), then lays out the ports, applies the orientation, recomputes whether the default appearance is in use,
-and refreshes. Before 4.1 the common part was a fixed sequence: `pos`; `rotation`, with a ±90° compensation by group
+Reading refuses a non-finite position or rotation; reads `trigger` as a key sequence, or as its text; takes three
+port-map shapes (`serialId`, the older `ptr`, a portable file's none, derived from `id`); adds every listed port and
+trims the constructed surplus never below the type's minimum (so a short list keeps the minimum); reads the
+appearances, where a snapshot's resource path restores the slot's current default (the latches' and flip-flops'
+theme) and an empty entry keeps the slot's default; recomputes whether the default appearance is in use, and
+refreshes. Then it refuses a port count above the type's maximum (the IC exempt, its counts coming from its
+definition; plan 2's fix), lays out the ports and applies the orientation. Before 4.1 the common part was a fixed
+sequence: `pos`; `rotation`, with a ±90° compensation by group
 except for the displays and Node; `label` (from 1.2); port sizes (from 1.3, read and discarded); `trigger` (from 1.9);
 an unused priority (from 4.0.1); the port lists (`ptr`, `name`, `flags`); appearance names (from 2.7; an IC drains
 them). The version predicates the per-type branches use: clock 1.1, labels 1.2, port sizes 1.3, Display7 colour 1.6
@@ -155,21 +165,21 @@ value read before 4.1, in that order after the common sequence.
 | InputRotary | position | 0 | `[0, outputs)`; anything else becomes 0 | `currentPort` | before 4.1: bare int |
 | InputRotary | locked | false | | `locked` | 3.1–4.0: bare bool after it |
 | Clock | frequency (Hz, double) | 1.0 | setter: finite, with a half period of at least 1 µs (so positive), else ignored; editor 0.1–50 step 0.1; MCP > 0 | `frequency` | 1.1–4.0: bare float; none before 1.1 |
-| Clock | delay (fraction of the period) | 0 | setter clamps to [−1, 1]; editor slider −4…4 → ±0.5 in eighths; MCP rejects outside [−1, 1] | `delay` | read and discarded before 4.3 |
+| Clock | delay (fraction of the period) | 0 | setter ignores a non-finite value and clamps to [−1, 1]; a file value that is no number reads as 0; editor slider −4…4 → ±0.5 in eighths; MCP rejects outside [−1, 1] | `delay` | read and discarded before 4.3 |
 | Clock | locked | false | | `locked` | 3.1–4.0: bare bool after the frequency |
 | Led | colour | `White` | `White`, `Red`, `Green`, `Blue`, `Purple`; any other string is kept, saved verbatim and drawn as White; offered only with one input | `color` | 1.1–4.0: bare string |
 | Display7/14/16 | colour | `Red` | as Led | `color` | 3.1–4.0: bare string; none before 3.1 |
 | Buzzer | frequency (Hz) | 1047 | setter: finite and > 0, else ignored; editor 20–20000 step 10; MCP > 0 | `frequency`, or old `note` | 2.4–4.0: bare note name; in a 4.1+ map, `note` when `frequency` is absent |
-| Buzzer | volume (float) | 0.35 | no setter check; editor slider 0–100 → 0–1; MCP rejects outside [0, 1]; a file value is taken as is | `volume` (double) | none before 4.1 |
-| AudioBox | audio file | `:/Components/Output/Audio/wiredpanda.wav` | must exist and be readable unless a resource, else the setter throws | `audiobox` (a portable file omits a resource path) | 2.4–4.0: bare string |
+| Buzzer | volume (float) | 0.35 | no setter check; editor slider 0–100 → 0–1; MCP rejects outside [0, 1]; a file value that reads as a float is taken as is | `volume` (double) | none before 4.1 |
+| AudioBox | audio file | `:/Components/Output/Audio/wiredpanda.wav` | a file that does not exist or cannot be read keeps its path while the built-in sound plays in its place, until the box next plays with the file back; opening a file reports it (plan 2c) | `audiobox` (a portable file omits a resource path) | 2.4–4.0: bare string |
 | AudioBox | volume | 0.5 | as Buzzer's | `volume` | none before 4.1 |
 | TruthTable | table | 2048 zero bits | resized to 2048 bits (2⁸ rows × 8 outputs, output 0's rows first) | `key` (`QBitArray`), written in portable files too | none before 4.2 |
-| IC | definition | none (an empty name throws on load) | an exact blob name in the registry, then the file's base name as a blob, then a file against the context directory | `name`; also read `fileName`, `blobName` | 1.2–4.0: bare file path, reduced to its file name (backslashes normalized) |
+| IC | definition | none (an empty name throws on load) | an exact blob name in the registry, then the file's base name as a blob, then a file against the context directory; a blob or file whose bytes this IC last built is not built again | `name`; also read `fileName`, `blobName`; a snapshot also writes `files`, the IC files the circuit read, which its restore loads in place of any deleted since (plan 2c) | 1.2–4.0: bare file path, reduced to its file name (backslashes normalized) |
 
 Port counts: Led 1–4 inputs; InputRotary 2–16 outputs; TruthTable 2–8 inputs and 1–8 outputs; Mux 3–11 inputs (data
 plus `ceil(log2(data))` select lines; the editor offers 2–8 data inputs, totals 3, 5, 6, 8, 9, 10, 11; a select value
 past the last data input gives an Unknown output); Demux 2–8 outputs with derived inputs (1 + select lines;
-`setInputSize` is a no-op and `loadState` throws when the file's input count differs). Node: Rx hides its input port
+`setInputSize` is a no-op and `load()` throws when the file's input count differs). Node: Rx hides its input port
 and makes it not required, Tx hides its output port, and the indicator child shows for Tx and Rx at (30, −6), or
 (2, −6) mirrored, coloured by the live signal. Switch and rotary loads end by setting the outputs and the picture from
 the loaded state. Display7 before 1.6, and again before 1.7, permutes its eight inputs on load (`{2,1,4,5,0,7,3,6}`,
@@ -206,13 +216,15 @@ over the bounding rectangle, before the body; `ElementAppearance::render` draws 
 Demux, the truth table and the IC repeat the code in their own `paint()`.
 
 **Pointer and keys.** InputButton: a left press while unlocked turns it on, the release turns it off. InputSwitch: a
-left press while unlocked toggles it and pushes an `UpdateCommand`. InputRotary: a left press while unlocked steps to
-the next position, with no command (plan 2 records every such operation as one command). TruthTable: a double-click
+left press while unlocked toggles it. InputRotary: a left press while unlocked steps to the next position. No element
+pushes a command: the scene records what a press changes (`Scene::recordOperation()` around Qt's dispatch, over the
+elements under the pointer) as one `UpdateCommand` of the elements whose snapshot changed, and nothing when none did;
+a release is not recorded. TruthTable: a double-click
 opens the table editor. IC: a double-click opens the sub-circuit and cancels the preview; hovering requests and moves
 the preview, hidden over a port. Other labelled types: a double-click opens the inline label editor. Keyboard triggers
 (`Scene::keyPress` and `keyRelease`): an unlocked input whose trigger matches is turned on at the press (a switch
-toggles, a rotary steps, a button goes on; the clock has no trigger), and only a button is turned off at the release;
-Ctrl suppresses them, and auto-repeat is ignored.
+toggles, a rotary steps, a button goes on; the clock has no trigger), recorded as one command as a press is, and only
+a button is turned off at the release, unrecorded; Ctrl suppresses them, and auto-repeat is ignored.
 
 **Audio.** Buzzer: a `QAudioSink` with a `ToneGenerator` (a sine, 44.1 kHz, 16-bit); AudioBox: a `QMediaPlayer` with a
 `QAudioOutput`, looping. Both play while their input is Active; whether they are playing, muted and have a device is
@@ -325,7 +337,7 @@ help event over an element, under a tooltip item and over empty space.
 
 ### 3.6 Serialization by schema
 
-The types with their own maps lose `save()` and `loadState()`; the serializer writes the keyed parameters as the map
+The types with their own maps lose `save()` and `load()`; the serializer writes the keyed parameters as the map
 after the common part (a snapshot every key; a portable file omits a default unless the spec keeps it, as the truth
 table's does; file references through `forWriting`, a resource omitted in a portable file) and reads each key through
 `setParam()`. Older versions become data and functions of the spec: from which version a type has a map (Node from
@@ -333,7 +345,7 @@ table's does; file references through `forWriting`, a resource omitted in a port
 older keys (the buzzer's `note`); the bare values per type before 4.1, Display7's two input permutations included; and
 a rule applied on every load (the rotary's position drives the outputs a load adds). The volume takes the nearest
 float, as `toFloat()` did. The old loaders' writes when a map lacks a key were unreachable and go. Byte identity is
-plan 1's payload goldens, unchanged by this step. The IC keeps its own `save()` and `loadState()` until its internal
+plan 1's payload goldens, unchanged by this step. The IC keeps its own `save()` and `load()` until its internal
 elements go; the Demux keeps its input-count check, a port rule. The round-trip fuzzer compares every keyed parameter
 except file references. Mutations the suite had not caught before the branch's tests: the every-load rule, the
 portable file keeping a default, the volume's float.
@@ -342,7 +354,7 @@ portable file keeping a default, the volume's float.
 
 Each slot of a type's descriptor has a key, each saved appearance names its slot, and an older file's positional list
 is read through the descriptor, which keeps the old positions, a dropped slot's included (P3.D8). Today the loader
-throws on an entry past a type's slots (`GraphicElementSerializer.cpp:417-418`), so no type can drop or reorder one.
+throws on an entry past a type's slots (`GraphicElementSerializer.cpp:431-433`), so no type can drop or reorder one.
 Text's second default picture, which nothing shows, then goes. It extends the current format, as every plan does:
 older files read as before, a file the application writes reads back and saves again byte for byte, and the extension
 is tested by reading files written before it (the backward-compatibility files and plan 1's payload goldens); the
@@ -576,9 +588,9 @@ user's choice between workable options).
   format. Basis: read on `master` (the loader throws on an appearance past a type's slots); the user's ruling,
   2026-10-20.
 - **P3.D9. The inventory of what constructs the element subclasses is taken where it is used,** on `master`, before
-  the subclasses go: about 1,880 constructions in 158 test files, plus 192 `new IC(`; the tests move to the factory
-  first, each deletion checked by the compiler. Basis: measured on `master` for the restart; the user's ruling,
-  2026-10-04.
+  the subclasses go: about 2,360 constructions in 165 test files, plus 219 `new IC(`; the tests move to the factory
+  first, each deletion checked by the compiler. Basis: measured on `master` for the restart, and again on the branch at
+  P3.1; the user's ruling, 2026-10-04.
 - **P3.D10. The presenters are installed by one explicit call,** `installPresenters()`, which the application and the
   test runner make as they start, not by a static initializer: the dependency is visible where the program starts,
   holds under any linker and any initialization order, and a test that links the model alone can install a stub.
@@ -593,7 +605,7 @@ user's choice between workable options).
 | Presenter extraction changes a picture or bounds (custom painters, rotation and flip, SVG counter-rotation, labels) | Measure and paint shown equal per family before the old code goes; the body goldens |
 | A moved or renamed class takes its strings into a new translation context | Contexts kept on purpose; the strings golden |
 | A pixel-changing change that does not notify | One change funnel; a test over every change of every type |
-| Tests construct and drive the subclasses that go (about 1,880 constructions in 158 files) | Shared helpers in `Tests/Common` move first; every deletion compiler-checked, never a silent no-op |
+| Tests construct and drive the subclasses that go (about 2,360 constructions in 165 files) | Shared helpers in `Tests/Common` move first; every deletion compiler-checked, never a silent no-op |
 | Audio changes when playback leaves the elements | The same sink and player code in the service; a manual pass over every audio element |
 | An element is measured before the presenters are installed, or a program never installs them | One explicit installation call at the start of the application and the test runner (P3.D10); a test that every type has a presenter; a debug assertion when an element is measured with none installed |
 
