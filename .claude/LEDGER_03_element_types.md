@@ -16,7 +16,7 @@ Each row's notes say how its check is shown to fail; "as on the branch" marks a 
 
 | ID | Item | Status | Commits | Notes |
 |---|---|---|---|---|
-| P3.1 | The type catalogue checked against `master`'s code with plan 2's fixes in, each difference corrected in the plan file (§2) | todo | | The catalogue was taken on the branch after its first three phases |
+| P3.1 | The type catalogue checked against `master`'s code with plan 2's fixes in, each difference corrected in the plan file (§2) | done | `43ab3fd9d` | The catalogue was taken on the branch after its first three phases. Checked on `03-element-types` against each type's metadata, `save()`, `load()`, setters, `paint()` and handlers, the serializer and the scene: §1's counts retaken; §1's table, §2.1's load order, §2.4's sound file, IC keys and Clock and volume rules, §2.5's pointer and key recording corrected; §2.3 matched |
 | P3.2 | Body goldens of every type, orientation and picture state, with the glyph masks, every blurred pixel compared (§3.1) | todo | | Shown to fail: an altered pixel outside the masks (as on the branch); an altered pixel in a blurred glow; the masks checked to hold every label |
 | P3.3 | `GraphicElement` renamed `Element`, with its family, in one commit (§3.2) | todo | | Checked by the compiler; the strings golden unchanged |
 | P3.4 | Port attributes in place of the 15 overrides, in one helper; unset fields kept (§3.3) | todo | | Shown to fail: each guard applying a default instead, and a port with no attributes made required (as on the branch, 42 fields over 20 types); the helper's default dropped fails the port-layout golden |
@@ -38,7 +38,7 @@ Each row's notes say how its check is shown to fail; "as on the branch" marks a 
 | P3.20 | Operations from the descriptor, picked by the presenter; the scene's dispatch (§3.13) | todo | | Scene event tests pass on the old code first; the middle button and the lock on release and trigger keys each caught |
 | P3.21 | The audio service, from the simulation's visual push (§3.14) | todo | | A test of play and stop from the push and of the mute per document |
 | P3.22 | The element's signals to the scene's interaction code; casts to type checks or flags (§3.15) | todo | | |
-| P3.23 | The subclasses deleted family by family, tests moved onto the factory, the base's accessors last (§3.15) | todo | | Sub-rows per family. About 1,880 test constructions in 158 files, plus 192 `new IC(`, counted on `master` |
+| P3.23 | The subclasses deleted family by family, tests moved onto the factory, the base's accessors last (§3.15) | todo | | Sub-rows per family. About 2,360 test constructions in 165 files, plus 219 `new IC(`, counted on the branch at P3.1 |
 | P3.24 | The manual pass: the property editor on every type, every audio element (§3.14) | todo | | |
 | P3.25 | The developer guide's element model; the release notes' list of changes (§4) | todo | | |
 | P3.26 | The IC's subclass, folded into the one element class by plan 8's last step, with the internal elements (§9) | todo | | Carried by plan 8 (P8.15); closed here when that step lands |
@@ -51,3 +51,10 @@ Each row's notes say how its check is shown to fail; "as on the branch" marks a 
   goldens on Qt 6.7.3 went; the IC subclass's hand-over to plan 8, P3.27, is now P3.26.
 - 2026-10-30: the branch created from `02c-exception-boundaries` at `dd502ee6e`, the exception boundaries' plan done
   with CI green; P3.1 started.
+- 2026-10-30: P3.1 done (`43ab3fd9d`). Corrected: §1's counts (the class grew with plans 2 to 2c; 42 element
+  `qobject_cast`s, 134 in tests, 32 item casts, 3 `QPointer`s, 2,360 test constructions in 165 files, 219 `new IC(`);
+  the latches and flip-flops have no theme override, the flip-flops save their simulation state; §2.1's order and
+  the IC's port names in a portable file; the sound file that is gone keeps its path (plan 2c); the IC's snapshot
+  writes `files`; the scene records a press or a trigger key as one command; `load()`, not `loadState()`; the
+  appearance throw at `GraphicElementSerializer.cpp:431-433`. The same count's 1,880 on `master` was 2,111: P3.23's
+  note follows it.
