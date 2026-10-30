@@ -28,6 +28,7 @@
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Element/GraphicElements/ToneGenerator.h"
+#include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/Parameters.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Versions.h"
@@ -128,6 +129,7 @@ void TestParameters::testEachTypeHasTheParametersOfItsSchema_data()
         {ElementType::Display16, {"Colour \"Red\" color"}},
         {ElementType::Buzzer, {"Frequency 1047 frequency", "Volume 0.34999999403953552 volume"}},
         {ElementType::AudioBox, {"AudioFile \":/Components/Output/Audio/wiredpanda.wav\" audiobox", "Volume 0.5 volume"}},
+        {ElementType::TruthTable, {"Table bits 0/2048 key"}},
     };
 
     const QMetaEnum metaEnum = QMetaEnum::fromType<ElementType>();
@@ -466,4 +468,26 @@ void TestParameters::testAnAudioBoxReadsItsFileAgainOnEveryLoad()
         message = QString::fromUtf8(e.what());
     }
     QVERIFY2(message.contains(QStringLiteral("sound.wav")), qPrintable(message));
+}
+
+// --- The truth table ---
+
+void TestParameters::testATruthTablesBitsAreAlwaysAWholeTable()
+{
+    // Every table holds 2048 bits, 256 rows for each of 8 outputs: a shorter one is padded with zeros, a longer one
+    // truncated, the bits given kept
+    TruthTable table;
+    QBitArray bits(16);
+    bits.setBit(0, true);
+    bits.setBit(15, true);
+    QVERIFY(table.setParam(ParamId::Table, bits));
+    QCOMPARE(table.key().size(), 2048);
+    QCOMPARE(table.key().count(true), 2);
+    QVERIFY(table.key().at(0) && table.key().at(15));
+
+    table.setkey(QBitArray(4096, true));
+    QCOMPARE(table.key(), QBitArray(2048, true));
+
+    // The same table again is no change
+    QVERIFY(!table.setParam(ParamId::Table, QBitArray(2048, true)));
 }

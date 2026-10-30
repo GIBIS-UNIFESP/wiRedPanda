@@ -6,6 +6,7 @@
 #include <functional>
 #include <utility>
 
+#include <QBitArray>
 #include <QCoreApplication>
 #include <QRegularExpression>
 #include <QTemporaryDir>
@@ -214,10 +215,11 @@ void TestArduinoCodeGenUnit::testTruthTableMultiOutput()
     builder.connect(tt, 1, led1, 0);
 
     // Output 0 = AND (row 3 only), output 1 = OR (rows 1..3).
-    tt->key().setBit(3, true);
-    tt->key().setBit(256 + 1, true);
-    tt->key().setBit(256 + 2, true);
-    tt->key().setBit(256 + 3, true);
+    QBitArray bits = tt->key();
+    for (const qsizetype bit : {3, 256 + 1, 256 + 2, 256 + 3}) {
+        bits.setBit(bit, true);
+    }
+    tt->setkey(bits);
 
     QTemporaryDir dir;
     QString path = dir.path() + "/tt_multi.ino";
@@ -411,8 +413,10 @@ void TestArduinoCodeGenUnit::testTruthTableInputTiedToVccResolvesToHigh()
     builder.connect(vcc, 0, tt, 0); // always-HIGH input
     builder.connect(sw, 0, tt, 1);
     builder.connect(tt, 0, led, 0);
-    tt->key().setBit(2, true);
-    tt->key().setBit(3, true);
+    QBitArray bits = tt->key();
+    bits.setBit(2, true);
+    bits.setBit(3, true);
+    tt->setkey(bits);
 
     QTemporaryDir dir;
     const QString path = dir.path() + "/tt_vcc_input.ino";
