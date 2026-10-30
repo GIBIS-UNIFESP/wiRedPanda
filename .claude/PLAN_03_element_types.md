@@ -299,8 +299,10 @@ not change.
   name and its untranslated source are given together, from one `QT_TR_NOOP` literal per port (a helper builds the
   shown name through the element's `tr()` and keeps the source), so no derived port lacks its source and the 40
   segment names cannot drift. `sourceName()` gives the source while the name is derived and the explicit name
-  otherwise, with no fallback to the translated text; an empty source fails a debug assertion. Tests: every port of
-  every type at each count has a source name; every untranslated port name equals its source. The exporters take
+  otherwise, with no fallback to the translated text; an empty source fails a debug assertion. Tests: every named port
+  of every type at each count has a source name (a port with no name, such as a gate's input, has none, as the
+  generators expect); every untranslated port name equals its source; a translator installed after the build changes
+  the 40 segment names and no source. A port's tooltip follows its name on demand with P3.6. The exporters take
   identifiers from these source names (plan 8), in place of the source names plan 2's ports hold beside their
   displayed ones.
 - An IC's pins are plan 4's: it derives their names from the circuit, for the pins and the file header alike, which
