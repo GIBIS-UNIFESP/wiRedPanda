@@ -28,14 +28,8 @@ struct ElementConstraints {
     quint64 maxOutputSize = 0;
 
     bool canChangeAppearance = false;
-    bool hasColors = false;
-    bool hasAudioBox = false;
     bool hasTrigger = false;
-    bool hasFrequency = false;
-    bool hasDelay = false;
     bool hasLabel = false;
-    bool hasTruthTable = false;
-    bool hasVolume = false;
     bool rotatesGraphic = true;
 };
 
@@ -86,14 +80,8 @@ inline ElementTypeDescriptor descriptorFromConstraints(const ElementConstraints 
     descriptor.minOutputSize = c.minOutputSize;
     descriptor.maxOutputSize = c.maxOutputSize;
     descriptor.canChangeAppearance = c.canChangeAppearance;
-    descriptor.hasColors = c.hasColors;
-    descriptor.hasAudioBox = c.hasAudioBox;
     descriptor.hasTrigger = c.hasTrigger;
-    descriptor.hasFrequency = c.hasFrequency;
-    descriptor.hasDelay = c.hasDelay;
     descriptor.hasLabel = c.hasLabel;
-    descriptor.hasTruthTable = c.hasTruthTable;
-    descriptor.hasVolume = c.hasVolume;
     descriptor.rotatesGraphic = c.rotatesGraphic;
     return descriptor;
 }

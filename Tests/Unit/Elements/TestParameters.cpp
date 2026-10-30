@@ -151,6 +151,56 @@ void TestParameters::testEachTypeHasTheParametersOfItsSchema()
     QCOMPARE(written(*element), expected);
 }
 
+void TestParameters::testEachTypeOffersThePropertiesOfItsParameters_data()
+{
+    QTest::addColumn<ElementType>("type");
+    QTest::addColumn<QStringList>("expected");
+
+    // What the editor offers of each type's parameters, as a new element has it: the flags the types had before
+    // their schemas. A type not listed offers none.
+    const QHash<ElementType, QStringList> offered{
+        {ElementType::Clock, {"frequency", "delay"}},
+        {ElementType::Buzzer, {"frequency", "volume"}},
+        {ElementType::AudioBox, {"sound", "volume"}},
+        {ElementType::Led, {"colour"}},
+        {ElementType::Display7, {"colour"}},
+        {ElementType::Display14, {"colour"}},
+        {ElementType::Display16, {"colour"}},
+        {ElementType::TruthTable, {"table"}},
+        {ElementType::Node, {"wireless"}},
+    };
+
+    const QMetaEnum metaEnum = QMetaEnum::fromType<ElementType>();
+    for (int i = 0; i < metaEnum.keyCount(); ++i) {
+        const auto type = static_cast<ElementType>(metaEnum.value(i));
+        if ((type == ElementType::Unknown) || (type == ElementType::JKLatch)) {
+            continue;
+        }
+        QTest::newRow(metaEnum.key(i)) << type << offered.value(type);
+    }
+}
+
+void TestParameters::testEachTypeOffersThePropertiesOfItsParameters()
+{
+    QFETCH(ElementType, type);
+    QFETCH(QStringList, expected);
+
+    const std::unique_ptr<Element> element(ElementFactory::buildElement(type));
+    QStringList offers;
+    for (const auto &[name, has] : {std::pair{"frequency", element->hasFrequency()},
+                                    std::pair{"delay", element->hasDelay()},
+                                    std::pair{"sound", element->hasAudioBox()},
+                                    std::pair{"volume", element->hasVolume()},
+                                    std::pair{"colour", element->hasColors()},
+                                    std::pair{"table", element->hasTruthTable()},
+                                    std::pair{"wireless", element->hasWirelessMode()}}) {
+        if (has) {
+            offers << QString::fromLatin1(name);
+        }
+    }
+    QCOMPARE(offers, expected);
+}
+
 // --- The store ---
 
 void TestParameters::testTheStoreHoldsItsSchemasDefaults()

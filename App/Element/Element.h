@@ -274,10 +274,10 @@ public:
     /// Sets the sound file the element plays to \a audio (ParamId::AudioFile), as its spec takes it.
     void setAudio(const QString &audio);
 
-    /// Returns \c true if this element type shows an audio selection box.
+    /// Returns \c true if the element offers a sound file for editing (ParamId::AudioFile).
     bool hasAudioBox() const;
 
-    /// Returns \c true if this element type supports volume control.
+    /// Returns \c true if the element offers its volume for editing (ParamId::Volume).
     bool hasVolume() const;
 
     /// Returns the audio playback volume (ParamId::Volume, 0.0–1.0); 0 for a type without one.
@@ -314,10 +314,10 @@ public:
     /// Returns the phase delay as a fraction of the period (ParamId::Delay); 0 for a type without one.
     double delay() const;
 
-    /// Returns \c true if this element type exposes a configurable clock frequency.
+    /// Returns \c true if the element offers its frequency for editing (ParamId::Frequency).
     bool hasFrequency() const;
 
-    /// Returns \c true if this element type exposes a configurable clock phase delay.
+    /// Returns \c true if the element offers its phase delay for editing (ParamId::Delay).
     bool hasDelay() const;
 
     /// Sets the frequency to \a freq Hz (ParamId::Frequency), as its spec takes it.
@@ -332,7 +332,8 @@ public:
 
     /**
      * \brief Returns the list of editable properties this element exposes in the ElementEditor.
-     * \details Derived from the descriptor's flags; no override needed in subclasses.
+     * \details Derived from the descriptor's flags and the parameters the element offers; no override needed in
+     * subclasses.
      * \return Ordered list of PropertyDescriptors for all supported property types.
      */
     QList<PropertyDescriptor> editableProperties() const;
@@ -375,7 +376,7 @@ public:
 
     // --- Truth Table ---
 
-    /// Returns \c true if this element type has an editable truth table.
+    /// Returns \c true if the element offers its truth table for editing (ParamId::Table).
     bool hasTruthTable() const;
 
     // --- Rotation ---

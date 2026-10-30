@@ -63,14 +63,8 @@ struct ElementTypeDescriptor {
     // --- Feature flags ---
 
     bool canChangeAppearance = false; ///< True if the user can choose a custom appearance.
-    bool hasColors = false;     ///< True if the element supports color selection.
-    bool hasAudioBox = false;   ///< True if the element shows an audio selection box.
     bool hasTrigger = false;    ///< True if the element supports a keyboard trigger shortcut.
-    bool hasFrequency = false;  ///< True if the element exposes a configurable clock frequency.
-    bool hasDelay = false;      ///< True if the element exposes a configurable clock phase delay.
     bool hasLabel = false;      ///< True if the element supports a user-editable label.
-    bool hasTruthTable = false; ///< True if the element has an editable truth table.
-    bool hasVolume = false;     ///< True if the element supports volume control.
     bool rotatesGraphic = true; ///< True if rotating/flipping re-orients the graphic itself; false keeps the icon fixed and only repositions ports.
 
 private:

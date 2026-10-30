@@ -20,7 +20,6 @@ struct ElementInfo<Led> {
         .minInputSize = 1,
         .maxInputSize = 4,
         .canChangeAppearance = true,
-        .hasColors = true,
         .hasLabel = true,
         .rotatesGraphic = false,
     };

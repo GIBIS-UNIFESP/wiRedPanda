@@ -22,9 +22,7 @@ struct ElementInfo<Buzzer> {
         .minInputSize = 1,
         .maxInputSize = 1,
         .canChangeAppearance = true,
-        .hasFrequency = true,
         .hasLabel = true,
-        .hasVolume = true,
         .rotatesGraphic = false,
     };
     static_assert(validate(constraints));

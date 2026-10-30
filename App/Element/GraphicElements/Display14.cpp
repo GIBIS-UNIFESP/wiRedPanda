@@ -22,7 +22,6 @@ struct ElementInfo<Display14> {
         .minInputSize = 15,
         .maxInputSize = 15,
         .canChangeAppearance = true,
-        .hasColors = true,
         .hasLabel = true,
         .rotatesGraphic = false,
     };

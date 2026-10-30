@@ -26,7 +26,6 @@ struct ElementInfo<TruthTable> {
         .minOutputSize = 1,
         .maxOutputSize = 8,
         .hasLabel = true,
-        .hasTruthTable = true,
     };
     static_assert(validate(constraints));
 

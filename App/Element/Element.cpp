@@ -665,12 +665,12 @@ QString Element::audio() const
 
 bool Element::hasFrequency() const
 {
-    return m_descriptor.hasFrequency;
+    return offersParam(ParamId::Frequency);
 }
 
 bool Element::hasDelay() const
 {
-    return m_descriptor.hasDelay;
+    return offersParam(ParamId::Delay);
 }
 
 bool Element::hasLabel() const
@@ -680,17 +680,17 @@ bool Element::hasLabel() const
 
 bool Element::hasTruthTable() const
 {
-    return m_descriptor.hasTruthTable;
+    return offersParam(ParamId::Table);
 }
 
 bool Element::hasAudioBox() const
 {
-    return m_descriptor.hasAudioBox;
+    return offersParam(ParamId::AudioFile);
 }
 
 bool Element::hasVolume() const
 {
-    return m_descriptor.hasVolume;
+    return offersParam(ParamId::Volume);
 }
 
 float Element::volume() const
