@@ -98,6 +98,7 @@
 #include "Tests/Integration/Logic/TestMuxDemuxComprehensive.h"
 // integration
 #include "Tests/Integration/TestArduino.h"
+#include "Tests/Integration/TestElementBodySnapshot.h"
 #include "Tests/Integration/TestFeedback.h"
 #include "Tests/Integration/TestFileDialogProvider.h"
 #include "Tests/Integration/TestFiles.h"
@@ -347,6 +348,7 @@ int main(int argc, char **argv)
         {"TestSequential", []() -> QObject * { return new TestSequential; }},
         {"TestMUXDEMUXComprehensive", []() -> QObject * { return new TestMUXDEMUXComprehensive; }},
         {"TestArduino", []() -> QObject * { return new TestArduino; }},
+        {"TestElementBodySnapshot", []() -> QObject * { return new TestElementBodySnapshot; }},
         {"TestFeedback", []() -> QObject * { return new TestFeedback; }},
         {"TestFileDialogProvider", []() -> QObject * { return new TestFileDialogProvider; }},
         {"TestFiles", []() -> QObject * { return new TestFiles; }},
