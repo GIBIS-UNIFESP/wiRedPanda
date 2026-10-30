@@ -8,7 +8,7 @@ sub-ID of the item it belongs to (`P3.13a`, `P3.13b`, ...) and a line in the log
 (committed), `blocked` (on what, in the notes) or `dropped` (why, with the user's decision). The Commits column lists
 every commit of the item. Every status change gets a dated line in the log.
 
-**Branch:** `03-element-types`, from `02c-exception-boundaries` at `dd502ee6e`, created 2026-10-30.
+**Branch:** `03-element-types`, from `02c-exception-boundaries` at `af761efd2`, created 2026-10-30.
 
 **Open decisions:** none.
 
@@ -51,25 +51,28 @@ Each row's notes say how its check is shown to fail; "as on the branch" marks a 
 - 2026-10-21: the Qt floor raised to 6.8 at the user's ruling ("go with 6.8"): blur filters render alike on every Qt
   it allows, so the body goldens compare every blurred pixel and need no blur masks (P3.2), and the row for the body
   goldens on Qt 6.7.3 went; the IC subclass's hand-over to plan 8, P3.27, is now P3.26.
-- 2026-10-30: the branch created from `02c-exception-boundaries` at `dd502ee6e`, the exception boundaries' plan done
+- 2026-10-30: the branch created from `02c-exception-boundaries` at `af761efd2`, the exception boundaries' plan done
   with CI green; P3.1 started.
-- 2026-10-30: P3.1 done (`43ab3fd9d`). Corrected: §1's counts (the class grew with plans 2 to 2c; 42 element
+- 2026-10-30: P3.1 done (`b6de4bca4`). Corrected: §1's counts (the class grew with plans 2 to 2c; 42 element
   `qobject_cast`s, 134 in tests, 32 item casts, 3 `QPointer`s, 2,360 test constructions in 165 files, 219 `new IC(`);
   the latches and flip-flops have no theme override, the flip-flops save their simulation state; §2.1's order and
   the IC's port names in a portable file; the sound file that is gone keeps its path (plan 2c); the IC's snapshot
   writes `files`; the scene records a press or a trigger key as one command; `load()`, not `loadState()`; the
   appearance throw at `GraphicElementSerializer.cpp:431-433`. The same count's 1,880 on `master` was 2,111: P3.23's
   note follows it.
-- 2026-10-30: P3.2 done (`547f7119a`), recreated from the branch's test on this code: no glyph masks (the letters are
+- 2026-10-30: P3.2 done (`fd938b535`), recreated from the branch's test on this code: no glyph masks (the letters are
   outlines since P2.92), no blur masks (the 6.8 floor), the ports and the label left out as child items, the item's
   whole transform recorded (here the rotation is not in `transform()`), and the Text's cell masked but for its
   picture's inside after a tripled font failed the first mask. §3.1 follows it.
 - 2026-10-30: P3.2a found (Build 41077764147 at `24a2aeeed`, the i386 job) and done the same day: Debian's i386 Qt
   rasterises with x87 floating point, shown with the same Qt on amd64 and our code built with SSE2 math on i386; at the
-  user's ruling the Mux and Demux atlases got i386 baselines, folded into the body goldens' commit (`547f7119a`).
+  user's ruling the Mux and Demux atlases got i386 baselines, folded into the body goldens' commit (`fd938b535`).
   Sanitizers 41077764405 green at `24a2aeeed`.
-- 2026-10-30: P3.3 done (`31955ece6`), the rename as the user approved it for this plan (D23 on `gpu-canvas`): one
+- 2026-10-30: P3.3 done (`a86a5c252`), the rename as the user approved it for this plan (D23 on `gpu-canvas`): one
   regular transform, gated by the build, the suite and the strings golden.
-- 2026-10-30: P3.4 done (`e85c78cff`), slice 2 started.
-- 2026-10-30: P3.5 done (`b9c8cdf69`); P3.6a found: a derived name's tooltip is set once.
-- 2026-10-30: P3.6 and P3.6a done (`c14282b84`), slice 2 done.
+- 2026-10-30: P3.4 done (`47e71d40d`), slice 2 started.
+- 2026-10-30: P3.5 done (`50d4a9120`); P3.6a found: a derived name's tooltip is set once.
+- 2026-10-30: P3.6 and P3.6a done (`b566fe4e6`), slice 2 done.
+- 2026-10-30: macOS 26's `TestCommands::testLoadListGrowsLinearly` failed at P3.5's push (Build 41095180466);
+  probed on the macOS runners and fixed in plan 2 as P2.97 at the user's ruling; plan 2c's EB.14 moved to plan 2 as
+  P2.98 the same way; the branch rebased, the hashes above re-mapped.
