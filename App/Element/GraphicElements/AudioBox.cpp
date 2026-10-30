@@ -23,9 +23,7 @@ struct ElementInfo<AudioBox> {
         .minInputSize = 1,
         .maxInputSize = 1,
         .canChangeAppearance = true,
-        .hasAudioBox = true,
         .hasLabel = true,
-        .hasVolume = true,
     };
     static_assert(validate(constraints));
 

@@ -23,8 +23,6 @@ struct ElementInfo<Clock> {
         .minOutputSize = 1,
         .maxOutputSize = 1,
         .canChangeAppearance = true,
-        .hasFrequency = true,
-        .hasDelay = true,
         .hasLabel = true,
         .rotatesGraphic = false,
     };

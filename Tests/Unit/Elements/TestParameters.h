@@ -14,6 +14,8 @@ private slots:
     // --- The schemas ---
     void testEachTypeHasTheParametersOfItsSchema_data();
     void testEachTypeHasTheParametersOfItsSchema();
+    void testEachTypeOffersThePropertiesOfItsParameters_data();
+    void testEachTypeOffersThePropertiesOfItsParameters();
 
     // --- The store ---
     void testTheStoreHoldsItsSchemasDefaults();
