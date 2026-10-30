@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <array>
 #include <functional>
 #include <optional>
 #include <variant>
@@ -30,6 +31,9 @@ enum class ParamId {
     Wireless,  ///< A node's WirelessMode, as an int.
     Table,     ///< A truth table's outputs, a column of rows for each output.
 };
+
+/// The number of parameter ids.
+inline constexpr int kParamIdCount = static_cast<int>(ParamId::Table) + 1;
 
 /// A parameter's value: one kind per parameter, the kind of its default.
 using ParamValue = std::variant<bool, int, double, QString, QBitArray>;
@@ -96,8 +100,11 @@ public:
 
 private:
     /// Returns where \a id is in the schema, or -1.
-    qsizetype indexOf(ParamId id) const;
+    qsizetype indexOf(const ParamId id) const { return m_index[static_cast<std::size_t>(id)]; }
 
     const QList<ParamSpec> *m_schema;
     QList<ParamValue> m_values; ///< The value of each spec, in the schema's order.
+
+    /// Where each id is in the schema, or -1: an input's level is read on every simulation tick.
+    std::array<qsizetype, kParamIdCount> m_index;
 };

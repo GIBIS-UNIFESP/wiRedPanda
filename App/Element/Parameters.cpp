@@ -10,20 +10,13 @@
 Parameters::Parameters(const QList<ParamSpec> &schema)
     : m_schema(&schema)
 {
+    m_index.fill(-1);
     m_values.reserve(schema.size());
     for (const ParamSpec &spec : schema) {
+        Q_ASSERT_X(m_index[static_cast<std::size_t>(spec.id)] < 0, "Parameters", "a parameter twice in a schema");
+        m_index[static_cast<std::size_t>(spec.id)] = m_values.size();
         m_values.append(spec.defaultValue);
     }
-}
-
-qsizetype Parameters::indexOf(const ParamId id) const
-{
-    for (qsizetype index = 0; index < m_schema->size(); ++index) {
-        if (m_schema->at(index).id == id) {
-            return index;
-        }
-    }
-    return -1;
 }
 
 const ParamSpec *Parameters::spec(const ParamId id) const

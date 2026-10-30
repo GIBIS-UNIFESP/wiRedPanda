@@ -19,6 +19,9 @@
  *
  * The concrete setOn(bool, int) and setAppearance(bool, QString) implementations
  * shared by InputSwitch, InputButton, and Clock live here to avoid repetition.
+ *
+ * Every input has a lock (ParamId::Locked, lockSpec()); a switch's, a button's and a
+ * clock's level is ParamId::On (levelSpec()), a rotary's selection its own parameter.
  */
 class ElementInput : public Element
 {
@@ -31,10 +34,18 @@ public:
         : Element(type, parent) {}
     ~ElementInput() override = default; // LCOV_EXCL_LINE — gcov attributes no hit to an inline `= default` destructor's own line even though every subclass instance destroyed exercises it (see App/Core/ContextDirProvider.h for the same pattern).
 
+    // --- Parameters ---
+
+    /// The spec of an input's level (ParamId::On), kept in a file under \a key, or transient with none.
+    static ParamSpec levelSpec(const char *key);
+
+    /// The spec of an input's lock (ParamId::Locked), which every input has.
+    static ParamSpec lockSpec();
+
     // --- State Queries ---
 
-    /// Returns \c true if the element is locked against user interaction.
-    bool isLocked() const { return m_locked; }
+    /// Returns \c true if the element is locked against user interaction (ParamId::Locked).
+    bool isLocked() const { return param<bool>(ParamId::Locked); }
 
     /**
      * \brief Returns \c true if the output on \a port is currently active (logic-1).
@@ -57,8 +68,9 @@ public:
     /**
      * \brief Sets output \a port to \a value.
      *
-     * Default implementation stores \a value in m_isOn, updates the pixmap
-     * (index 0 = off, 1 = on), and drives the output port status.
+     * Default implementation sets the level (ParamId::On) to \a value and shows it
+     * (showLevel()), also when it is the level the element has, so a new element
+     * drives its output with a definite level.
      * Override when the element has more than one output port or non-standard
      * pixmap indexing (e.g. InputRotary).
      *
@@ -83,15 +95,15 @@ public:
     /// Applies a custom appearance image indexed by the current on/off state.
     ///
     /// Default implementation updates \a m_alternativeAppearances at the slot
-    /// corresponding to m_isOn (index 0 = off, 1 = on).  Override when the
+    /// corresponding to isOn() (index 0 = off, 1 = on).  Override when the
     /// element uses a different slot scheme (e.g. InputRotary always uses slot 0).
     void setAppearance(const bool defaultAppearance, const QString &fileName) override;
 
     /**
-     * \brief Locks or unlocks user interaction on this element.
+     * \brief Locks or unlocks user interaction on this element (ParamId::Locked).
      * \param locked \c true to prevent user toggling.
      */
-    void setLocked(const bool locked) { m_locked = locked; }
+    void setLocked(const bool locked) { setParam(ParamId::Locked, locked); }
 
     // --- Updates ---
 
@@ -99,10 +111,11 @@ public:
     void updateOutputs();
 
 protected:
-    // --- Members ---
+    /// \reimp Shows a new level (ParamId::On) on the picture and the output.
+    void parameterChanged(ParamId id, const ParamValue &previous) override;
 
-    bool m_isOn = false;
-    bool m_locked = false;
+    /// Shows the level (ParamId::On) on the picture (index 0 = off, 1 = on) and drives the output with it.
+    void showLevel();
 };
 
 inline void ElementInput::updateOutputs()

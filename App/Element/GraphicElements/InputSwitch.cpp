@@ -36,6 +36,7 @@ struct ElementInfo<InputSwitch> {
             ":/Components/Input/switchOff.svg",
             ":/Components/Input/switchOn.svg",
         });
+        descriptor.parameters = {ElementInput::levelSpec("isOn"), ElementInput::lockSpec()};
         return descriptor;
     } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
 
@@ -58,7 +59,7 @@ InputSwitch::InputSwitch(QGraphicsItem *parent)
 bool InputSwitch::isOn(const int port) const
 {
     Q_UNUSED(port)
-    return m_isOn;
+    return param<bool>(ParamId::On);
 }
 
 void InputSwitch::setOff()
@@ -76,8 +77,8 @@ void InputSwitch::setOn()
 
 void InputSwitch::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    if (!m_locked && (event->button() == Qt::LeftButton)) {
-        setOn(!m_isOn);
+    if (!isLocked() && (event->button() == Qt::LeftButton)) {
+        setOn(!isOn());
         event->accept();
     }
 
@@ -93,11 +94,11 @@ void InputSwitch::save(QDataStream &stream, SerializationOptions options) const
     QMap<QString, QVariant> map;
     // PortableFile streams omit defaults; fresh-loaded elements start there
     // anyway. Snapshots write unconditionally (reloaded into live elements).
-    if (!slim || m_isOn) {
-        map.insert("isOn", m_isOn);
+    if (!slim || isOn()) {
+        map.insert("isOn", isOn());
     }
-    if (!slim || m_locked) {
-        map.insert("locked", m_locked);
+    if (!slim || isLocked()) {
+        map.insert("locked", isLocked());
     }
 
     stream << map;
@@ -107,12 +108,15 @@ void InputSwitch::load(QDataStream &stream, SerializationContext &context)
 {
     Element::load(stream, context);
 
+    bool on = isOn();
     if (!VersionInfo::hasQMapFormat(context.version)) {
         // v1.x–4.0 stored isOn as a bare bool; locked flag added in v3.1
-        stream >> m_isOn;
+        stream >> on;
 
         if (VersionInfo::hasLockState(context.version)) {
-            stream >> m_locked;
+            bool locked = false;
+            stream >> locked;
+            setLocked(locked);
         }
     }
 
@@ -121,16 +125,16 @@ void InputSwitch::load(QDataStream &stream, SerializationContext &context)
         QMap<QString, QVariant> map = Serialization::readBoundedMetadata(stream);
 
         if (map.contains("isOn")) {
-            m_isOn = map.value("isOn").toBool();
+            on = map.value("isOn").toBool();
         }
 
         if (map.contains("locked")) {
-            m_locked = map.value("locked").toBool();
+            setLocked(map.value("locked").toBool());
         }
     }
 
     // Apply the loaded on/off state to port and pixmap
-    setOn(m_isOn);
+    ElementInput::setOn(on);
 }
 
 QList<std::pair<int, QString>> InputSwitch::appearanceStates() const
