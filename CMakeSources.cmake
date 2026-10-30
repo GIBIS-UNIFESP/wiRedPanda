@@ -415,6 +415,7 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestsWithoutPanda/TestSequential.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/Logic/TestMuxDemuxComprehensive.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestArduino.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestElementBodySnapshot.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestFeedback.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestFileDialogProvider.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestFiles.cpp
@@ -650,6 +651,7 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/IC/Tests/TestsWithoutPanda/TestSequential.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/Logic/TestMuxDemuxComprehensive.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestArduino.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestElementBodySnapshot.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestFeedback.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestFileDialogProvider.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Integration/TestFiles.h

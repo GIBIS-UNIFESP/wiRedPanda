@@ -854,6 +854,7 @@ add_test(NAME TestElementAppearance COMMAND test_wiredpanda TestElementAppearanc
 add_test(NAME TestElementFactory COMMAND test_wiredpanda TestElementFactory WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestBaseHandler COMMAND test_wiredpanda TestBaseHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestConnectionHandler COMMAND test_wiredpanda TestConnectionHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestElementBodySnapshot COMMAND test_wiredpanda TestElementBodySnapshot WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestElementHandler COMMAND test_wiredpanda TestElementHandler WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestElementLabel COMMAND test_wiredpanda TestElementLabel WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestElementLogic COMMAND test_wiredpanda TestElementLogic WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -1100,7 +1101,7 @@ foreach(TEST TestDecoder8To256 TestMemorySettlingTime TestMUXDEMUXComprehensive 
 endforeach()
 
 # File and Simulation Tests - Integration category
-foreach(TEST TestArduino TestFeedback TestFiles TestIC TestICInline TestIcPreviewSnapshot
+foreach(TEST TestArduino TestElementBodySnapshot TestFeedback TestFiles TestIC TestICInline TestIcPreviewSnapshot
         TestLabelSnapshot TestPointerSnapshot TestPortLayoutSnapshot TestSceneSnapshot TestSimulation TestSimulationTraceSnapshot TestStackingSnapshot TestSystemVerilogExport TestWirePixelSnapshot TestWorkspace TestWorkspaceFileops)
     set_tests_properties(${TEST} PROPERTIES LABELS "integration")
 endforeach()
@@ -1189,7 +1190,7 @@ set(ALL_TESTS
     TestLevel9MultiCycleCPU8Bit TestLevel9RegisterFile32X16 TestLevel9SingleCycleCPU8Bit
     TestDecoder8To256 TestMemorySettlingTime TestRAMCell1Bit TestSequential
     TestMUXDEMUXComprehensive
-    TestArduino TestFeedback TestFiles TestIC TestICInline TestIcPreviewSnapshot
+    TestArduino TestElementBodySnapshot TestFeedback TestFiles TestIC TestICInline TestIcPreviewSnapshot
     TestLabelSnapshot TestPointerSnapshot TestPortLayoutSnapshot TestSceneSnapshot TestSimulation TestSimulationTraceSnapshot TestStackingSnapshot TestSystemVerilogExport TestWirePixelSnapshot TestWorkspace TestWorkspaceFileops
     TestIcons TestWaveform TestAudioBox TestBuzzer TestClock TestClocksAdvanced
     TestComponents TestDisplays TestElementAppearance TestElementLabel TestElementProperties TestFeatures
