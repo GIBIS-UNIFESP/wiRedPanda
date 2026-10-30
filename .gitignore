@@ -71,6 +71,7 @@ CTestTestfile.cmake
 _deps/
 *.cmake
 !cmake/*.cmake
+!Tests/Build/*.cmake
 
 # IDE and editors
 .idea/

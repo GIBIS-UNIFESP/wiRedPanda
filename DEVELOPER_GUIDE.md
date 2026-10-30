@@ -226,6 +226,7 @@ wiRedPanda/
 │   ├── Integration/                        #   IC tests, code generation tests
 │   ├── System/                             #   System-level tests (waveform)
 │   ├── BackwardCompatibility/              #   Old file format test fixtures
+│   ├── Build/                              #   Tests of the build's own checks (CMake scripts)
 │   ├── Resources/                          #   Resource validation tests
 │   ├── Fixtures/                           #   Test .panda files
 │   ├── Fuzz/                               #   libFuzzer harnesses (local/manual, not run in CI)
@@ -234,6 +235,7 @@ wiRedPanda/
 ├── MCP/                                    #   Model Context Protocol server (internal use)
 ├── Packaging/                              #   Distro packaging (AUR PKGBUILD, etc.)
 ├── Scripts/                                #   Build and utility scripts
+├── cmake/                                  #   Build checks run by CMake (the model's include check)
 ├── .devcontainer/                          #   Dev container configuration
 ├── .github/workflows/                      #   CI/CD pipelines
 ├── CMakeLists.txt                          #   Top-level build configuration
@@ -248,6 +250,9 @@ wiRedPanda/
 
 - **One element = one `.h`/`.cpp` pair** in `App/Element/GraphicElements/`.
 - **Source file lists** live in `CMakeSources.cmake` (not `CMakeLists.txt`) and must stay **alphabetically sorted**.
+  The model (`MODEL_SOURCES`, `MODEL_HEADERS`) and presentation (`PRESENTATION_SOURCES`, `PRESENTATION_HEADERS`) have
+  lists of their own: no model file includes a presentation header, and `cmake/CheckModelIncludes.cmake` fails the
+  build, before the library compiles, naming each file that does.
 - **All builds go into `build/`** — never build in the source tree.
 
 ### Build Presets
@@ -1478,8 +1483,8 @@ void Buffer::updateLogic() {
 
 1. Add `ElementType::Buffer` to the enum in `App/Core/Enums.h`.
 2. Add both files to `CMakeSources.cmake` in **alphabetical order**:
-   - `App/Element/GraphicElements/Buffer.cpp` in the `SOURCES` list.
-   - `App/Element/GraphicElements/Buffer.h` in the `HEADERS` list.
+   - `App/Element/GraphicElements/Buffer.cpp` in the `MODEL_SOURCES` list.
+   - `App/Element/GraphicElements/Buffer.h` in the `MODEL_HEADERS` list.
 3. Create an SVG icon at `App/Resources/Components/Logic/buffer.svg`.
 4. Add the SVG to the resource file if needed.
 
