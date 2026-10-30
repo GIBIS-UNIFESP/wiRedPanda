@@ -26,14 +26,14 @@ struct ElementInfo<Led> {
     };
     static_assert(validate(constraints));
 
-    static ElementMetadata metadata()
+    static ElementTypeDescriptor describe()
     {
-        auto meta = metadataFromConstraints(constraints);
-        meta.pixmapPath = []{ return QStringLiteral(":/Components/Output/Led/LedOff.svg"); };
-        meta.titleText = QT_TRANSLATE_NOOP("Led", "LED");
-        meta.translatedName = QT_TRANSLATE_NOOP("Led", "LED");
-        meta.trContext = "Led";
-        meta.defaultAppearances = QStringList({
+        auto descriptor = descriptorFromConstraints(constraints);
+        descriptor.pixmapPath = []{ return QStringLiteral(":/Components/Output/Led/LedOff.svg"); };
+        descriptor.titleText = QT_TRANSLATE_NOOP("Led", "LED");
+        descriptor.translatedName = QT_TRANSLATE_NOOP("Led", "LED");
+        descriptor.trContext = "Led";
+        descriptor.defaultAppearances = QStringList({
             // Single input values:
             ":/Components/Output/Led/LedOff.svg",        // 0
             ":/Components/Output/Led/WhiteLed.svg",      // 1
@@ -64,11 +64,11 @@ struct ElementInfo<Led> {
             ":/Components/Output/Led/YellowLed.png",     // 24
             ":/Components/Output/Led/WhiteLed.png",      // 25
         });
-        return meta;
-    } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementMetadata's QString/QStringList members, never reached after the return above.
+        return descriptor;
+    } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
 
     static inline const bool registered = []() {
-        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementTypeDescriptor::add(describe());
         ElementFactory::registerCreator(constraints.type, [] { return new Led(); });
         return true;
     }();
@@ -82,7 +82,7 @@ Led::Led(QGraphicsItem *parent)
     // base offset for the chosen color (0=White, 2=Red, 4=Green, 6=Blue, 8=Purple).
     // Even indices are the Off state; odd indices are the On state.
     // Indices 10-25 cover multi-input (2/3/4-bit) color palettes (see comment below).
-    m_appearance.seedFromMetadata(ElementMetadataRegistry::metadata(ElementType::Led).defaultAppearances, {}, {});
+    m_appearance.seed(ElementTypeDescriptor::of(ElementType::Led).defaultAppearances, {}, {});
     setPixmap(0);
 
     setHasColors(true);

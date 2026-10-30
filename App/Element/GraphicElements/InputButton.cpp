@@ -25,22 +25,22 @@ struct ElementInfo<InputButton> {
     };
     static_assert(validate(constraints));
 
-    static ElementMetadata metadata()
+    static ElementTypeDescriptor describe()
     {
-        auto meta = metadataFromConstraints(constraints);
-        meta.pixmapPath = []{ return QStringLiteral(":/Components/Input/buttonOff.svg"); };
-        meta.titleText = QT_TRANSLATE_NOOP("InputButton", "PUSH BUTTON");
-        meta.translatedName = QT_TRANSLATE_NOOP("InputButton", "Push Button");
-        meta.trContext = "InputButton";
-        meta.defaultAppearances = QStringList({
+        auto descriptor = descriptorFromConstraints(constraints);
+        descriptor.pixmapPath = []{ return QStringLiteral(":/Components/Input/buttonOff.svg"); };
+        descriptor.titleText = QT_TRANSLATE_NOOP("InputButton", "PUSH BUTTON");
+        descriptor.translatedName = QT_TRANSLATE_NOOP("InputButton", "Push Button");
+        descriptor.trContext = "InputButton";
+        descriptor.defaultAppearances = QStringList({
             ":/Components/Input/buttonOff.svg",
             ":/Components/Input/buttonOn.svg",
         });
-        return meta;
-    } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementMetadata's QString/QStringList members, never reached after the return above.
+        return descriptor;
+    } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
 
     static inline const bool registered = []() {
-        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementTypeDescriptor::add(describe());
         ElementFactory::registerCreator(constraints.type, [] { return new InputButton(); });
         return true;
     }();

@@ -16,7 +16,7 @@ private slots:
     void testBuildElement_data();
     void testBuildElement();
     void testBuildElementInvalidType();
-    void testMetadataLogicCreator();
+    void testDescriptorLogicCreator();
 
     // Type Conversion (3 tests)
     void testTextToType_data();
@@ -26,7 +26,7 @@ private slots:
     // Registry Management (5 tests)
     void testItemRegistry();
     void testUniqueIdAssignment();
-    void testMetadataRegistry();
+    void testDescriptorRegistry();
     void testCrossSceneIsolation();
     void testSceneCounterIndependence();
 
@@ -34,7 +34,7 @@ private slots:
     void testAllElementTypesRegistered();
 
     // Unregistered type
-    void testMetadataForUnknownTypeIsEmpty();
+    void testDescriptorForUnknownTypeIsEmpty();
     void testTranslatedNameForUnknownType();
     void testDescriptionForTypeWithoutOwnCase();
     void testPixmapForUnknownType();

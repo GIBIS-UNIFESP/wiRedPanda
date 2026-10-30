@@ -10,11 +10,11 @@ set(MODEL_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/Element.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementFactory.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementInput.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementMetadata.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementOrientation.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementPorts.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementSerializer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementSimState.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementTypeDescriptor.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/And.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/AudioBox.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/AudioOutputElement.cpp
@@ -81,11 +81,11 @@ set(MODEL_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementFactory.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementInfo.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementInput.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementMetadata.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementOrientation.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementPorts.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementSerializer.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementSimState.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementTypeDescriptor.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/And.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/AudioBox.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/AudioOutputElement.h

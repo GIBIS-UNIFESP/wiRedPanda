@@ -34,19 +34,19 @@ struct ElementInfo<IC> {
     };
     static_assert(validate(constraints));
 
-    static ElementMetadata metadata()
+    static ElementTypeDescriptor describe()
     {
-        auto meta = metadataFromConstraints(constraints);
-        meta.pixmapPath = []{ return QString(); };
-        meta.titleText = QT_TRANSLATE_NOOP("IC", "INTEGRATED CIRCUIT");
-        meta.translatedName = QT_TRANSLATE_NOOP("IC", "IC");
-        meta.trContext = "IC";
-        meta.defaultAppearances = QStringList();
-        return meta;
+        auto descriptor = descriptorFromConstraints(constraints);
+        descriptor.pixmapPath = []{ return QString(); };
+        descriptor.titleText = QT_TRANSLATE_NOOP("IC", "INTEGRATED CIRCUIT");
+        descriptor.translatedName = QT_TRANSLATE_NOOP("IC", "IC");
+        descriptor.trContext = "IC";
+        descriptor.defaultAppearances = QStringList();
+        return descriptor;
     }
 
     static inline const bool registered = []() {
-        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementTypeDescriptor::add(describe());
         ElementFactory::registerCreator(constraints.type, [] { return new IC(); });
         return true;
     }();

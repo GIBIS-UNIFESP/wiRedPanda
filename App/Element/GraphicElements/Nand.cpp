@@ -20,20 +20,20 @@ struct ElementInfo<Nand> {
     };
     static_assert(validate(constraints));
 
-    static ElementMetadata metadata()
+    static ElementTypeDescriptor describe()
     {
-        auto meta = metadataFromConstraints(constraints);
-        meta.pixmapPath = []{ return QStringLiteral(":/Components/Logic/nand.svg"); };
-        meta.titleText = QT_TRANSLATE_NOOP("Nand", "NAND");
-        meta.translatedName = QT_TRANSLATE_NOOP("Nand", "Nand");
-        meta.trContext = "Nand";
+        auto descriptor = descriptorFromConstraints(constraints);
+        descriptor.pixmapPath = []{ return QStringLiteral(":/Components/Logic/nand.svg"); };
+        descriptor.titleText = QT_TRANSLATE_NOOP("Nand", "NAND");
+        descriptor.translatedName = QT_TRANSLATE_NOOP("Nand", "Nand");
+        descriptor.trContext = "Nand";
         // Seed appearance lists from the constructor-supplied pixmap path (see And.cpp for details).
-        meta.defaultAppearances = QStringList({":/Components/Logic/nand.svg"});
-        return meta;
-    } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementMetadata's QString/QStringList members, never reached after the return above.
+        descriptor.defaultAppearances = QStringList({":/Components/Logic/nand.svg"});
+        return descriptor;
+    } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
 
     static inline const bool registered = []() {
-        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementTypeDescriptor::add(describe());
         ElementFactory::registerCreator(constraints.type, [] { return new Nand(); });
         return true;
     }();

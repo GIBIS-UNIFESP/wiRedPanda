@@ -16,7 +16,7 @@ If you are looking for build instructions, see [BUILD.md](BUILD.md). For contrib
   - [Element: The Base Class](#element-the-base-class)
   - [ElementFactory](#elementfactory)
   - [How Elements Register Themselves](#how-elements-register-themselves)
-  - [ElementMetadata and ElementConstraints](#elementmetadata-and-elementconstraints)
+  - [ElementTypeDescriptor and ElementConstraints](#elementtypedescriptor-and-elementconstraints)
   - [Element Catalog](#element-catalog)
   - [Anatomy of a Logic Gate](#anatomy-of-a-logic-gate)
   - [Anatomy of a Sequential Element](#anatomy-of-a-sequential-element)
@@ -175,7 +175,7 @@ wiRedPanda/
 │   │   ├── Element.cpp/h                   #     Abstract base class for all elements
 │   │   ├── ElementFactory.cpp/h            #     Factory singleton
 │   │   ├── ElementInfo.h                   #     Self-registration template
-│   │   ├── ElementMetadata.cpp/h           #     Element metadata and capabilities
+│   │   ├── ElementTypeDescriptor.cpp/h     #     Element type descriptors and capabilities
 │   │   ├── PropertyDescriptor.h            #     Property system
 │   │   ├── IC.cpp/h                        #     Integrated circuit (sub-circuit) element
 │   │   ├── ICLoader.cpp/h                  #     Loads an IC's sub-circuit from file or embedded blob
@@ -503,14 +503,14 @@ The factory does not manage IDs — that is the `Scene`'s responsibility.
 wiRedPanda uses a **self-registering template pattern**. Each element specializes `ElementInfo<T>`, which:
 
 1. Defines compile-time `ElementConstraints` (input/output count, group, features).
-2. Provides a `metadata()` function returning display info (icon path, translated name).
-3. Contains a `static inline const bool registered` lambda that runs at program startup to register the element with both `ElementMetadataRegistry` and `ElementFactory`.
+2. Provides a `describe()` function returning its type's descriptor, with display info (icon path, translated name).
+3. Contains a `static inline const bool registered` lambda that runs at program startup to add the type's descriptor (`ElementTypeDescriptor::add()`) and register its creator with `ElementFactory`.
 
 This means: **no manual factory registration calls**. Just defining the `ElementInfo<T>` specialization in the `.cpp` file is enough to make the element available everywhere — in the palette, in serialization, and in tests.
 
 The `ElementConstraints` are **validated at compile time** by the `constexpr validate()` function. A misconfigured element will not compile.
 
-### ElementMetadata and ElementConstraints
+### ElementTypeDescriptor and ElementConstraints
 
 `ElementConstraints` defines the restrictions for an element:
 
@@ -534,7 +534,7 @@ The `ElementConstraints` are **validated at compile time** by the `constexpr val
 | `hasVolume`           | Has volume control (e.g., Buzzer, AudioBox)                                     |
 | `rotatesGraphic`      | Rotating/flipping re-orients the graphic (false = icon fixed, ports still move) |
 
-`ElementMetadata` extends this with visual information: pixmap paths, translated names, and `defaultAppearances`/`alternativeAppearances` lists.
+`ElementTypeDescriptor` extends this with visual information: pixmap paths, translated names, and `defaultAppearances`/`alternativeAppearances` lists.
 
 ### Element Catalog
 
@@ -621,7 +621,7 @@ public:
 ```cpp
 #include "And.h"
 
-// 1. Registration: define constraints and metadata
+// 1. Registration: define constraints and the descriptor
 template<>
 struct ElementInfo<And> {
     static constexpr ElementConstraints constraints{
@@ -633,18 +633,18 @@ struct ElementInfo<And> {
     };
     static_assert(validate(constraints));
 
-    static ElementMetadata metadata() {
-        auto meta = metadataFromConstraints(constraints);
-        meta.pixmapPath = [] { return QStringLiteral(":/Components/Logic/and.svg"); };
-        meta.titleText = QT_TRANSLATE_NOOP("And", "AND");
-        meta.translatedName = QT_TRANSLATE_NOOP("And", "And");
-        meta.trContext = "And";
-        meta.defaultAppearances = {":/Components/Logic/and.svg"};
-        return meta;
+    static ElementTypeDescriptor describe() {
+        auto descriptor = descriptorFromConstraints(constraints);
+        descriptor.pixmapPath = [] { return QStringLiteral(":/Components/Logic/and.svg"); };
+        descriptor.titleText = QT_TRANSLATE_NOOP("And", "AND");
+        descriptor.translatedName = QT_TRANSLATE_NOOP("And", "And");
+        descriptor.trContext = "And";
+        descriptor.defaultAppearances = {":/Components/Logic/and.svg"};
+        return descriptor;
     }
 
     static inline const bool registered = [] {
-        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementTypeDescriptor::add(describe());
         ElementFactory::registerCreator(constraints.type, [] { return new And; });
         return true;
     }();
@@ -975,7 +975,7 @@ The `CommandUtils` namespace provides helpers for serializing/deserializing item
 
 ### Property Editor
 
-`App/UI/ElementEditor.h` dynamically generates the property interface based on the metadata of the selected element. For example:
+`App/UI/ElementEditor.h` dynamically generates the property interface based on the descriptor of the selected element's type. For example:
 
 - A **Clock** shows a frequency slider
 - A **LED** shows a color selector
@@ -1454,18 +1454,18 @@ struct ElementInfo<Buffer> {
     };
     static_assert(validate(constraints));
 
-    static ElementMetadata metadata() {
-        auto meta = metadataFromConstraints(constraints);
-        meta.pixmapPath = [] { return QStringLiteral(":/Components/Logic/buffer.svg"); };
-        meta.titleText = QT_TRANSLATE_NOOP("Buffer", "BUFFER");
-        meta.translatedName = QT_TRANSLATE_NOOP("Buffer", "Buffer");
-        meta.trContext = "Buffer";
-        meta.defaultAppearances = {":/Components/Logic/buffer.svg"};
-        return meta;
+    static ElementTypeDescriptor describe() {
+        auto descriptor = descriptorFromConstraints(constraints);
+        descriptor.pixmapPath = [] { return QStringLiteral(":/Components/Logic/buffer.svg"); };
+        descriptor.titleText = QT_TRANSLATE_NOOP("Buffer", "BUFFER");
+        descriptor.translatedName = QT_TRANSLATE_NOOP("Buffer", "Buffer");
+        descriptor.trContext = "Buffer";
+        descriptor.defaultAppearances = {":/Components/Logic/buffer.svg"};
+        return descriptor;
     }
 
     static inline const bool registered = [] {
-        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementTypeDescriptor::add(describe());
         ElementFactory::registerCreator(constraints.type, [] { return new Buffer; });
         return true;
     }();
@@ -1739,34 +1739,34 @@ Ordered by difficulty:
 
 ## Key Files Reference
 
-| File                                | Purpose                                               |
-|-------------------------------------|-------------------------------------------------------|
-| `App/Core/Enums.h`                  | All enums: `ElementType`, `ElementGroup`, `Status`    |
-| `App/Core/StatusOps.h`              | Four-state logic operations (AND, OR, NOT, XOR)       |
-| `App/Core/Application.h`            | Custom QApplication with theme and i18n setup         |
-| `App/Core/Settings.h`               | Persistent settings management                        |
-| `App/Core/ThemeManager.h`           | Theme system (light/dark/system)                      |
-| `App/Core/Priorities.h`             | Topological sorting and feedback detection            |
-| `App/Element/Element.h`             | Base class for all elements                           |
-| `App/Element/ElementInput.h`        | Base class for input elements                         |
-| `App/Element/ElementInfo.h`         | Self-registration template and constraints            |
-| `App/Element/ElementFactory.h`      | Factory for creating elements by type                 |
-| `App/Element/ElementMetadata.h`     | Element metadata (icons, names, capabilities)         |
-| `App/Element/IC.h`                  | Integrated circuit element                            |
-| `App/Element/ICLoader.h`            | Loads an IC's sub-circuit from file or embedded blob  |
-| `App/Scene/ICRegistry.h`            | Central IC registry with file monitoring              |
-| `App/Simulation/Simulation.h`       | Simulation engine and update loop                     |
-| `App/Scene/Scene.h`                 | Main graphics scene                                   |
-| `App/Scene/Commands.h`              | All undo/redo command classes                         |
-| `App/Scene/Workspace.h`             | File and workspace management                         |
-| `App/Wiring/Port.h`                 | Port base class, plus InputPort/OutputPort            |
-| `App/Wiring/Connection.h`           | Wire connection class                                 |
-| `App/IO/Serialization.h`            | File format save/load                                 |
-| `App/Versions.h`                    | File-format version/revision constants                |
-| `App/IO/VersionInfo.h`              | Named predicates for file-format compatibility checks |
-| `Tests/Common/TestUtils.h`          | CircuitBuilder and test helpers                       |
-| `CMakeSources.cmake`                | Source file lists (add new files here)                |
-| `CMakePresets.json`                 | Build presets (debug, release, asan, etc.)            |
+| File                                  | Purpose                                               |
+|---------------------------------------|-------------------------------------------------------|
+| `App/Core/Enums.h`                    | All enums: `ElementType`, `ElementGroup`, `Status`    |
+| `App/Core/StatusOps.h`                | Four-state logic operations (AND, OR, NOT, XOR)       |
+| `App/Core/Application.h`              | Custom QApplication with theme and i18n setup         |
+| `App/Core/Settings.h`                 | Persistent settings management                        |
+| `App/Core/ThemeManager.h`             | Theme system (light/dark/system)                      |
+| `App/Core/Priorities.h`               | Topological sorting and feedback detection            |
+| `App/Element/Element.h`               | Base class for all elements                           |
+| `App/Element/ElementInput.h`          | Base class for input elements                         |
+| `App/Element/ElementInfo.h`           | Self-registration template and constraints            |
+| `App/Element/ElementFactory.h`        | Factory for creating elements by type                 |
+| `App/Element/ElementTypeDescriptor.h` | Element type descriptors (icons, names, capabilities) |
+| `App/Element/IC.h`                    | Integrated circuit element                            |
+| `App/Element/ICLoader.h`              | Loads an IC's sub-circuit from file or embedded blob  |
+| `App/Scene/ICRegistry.h`              | Central IC registry with file monitoring              |
+| `App/Simulation/Simulation.h`         | Simulation engine and update loop                     |
+| `App/Scene/Scene.h`                   | Main graphics scene                                   |
+| `App/Scene/Commands.h`                | All undo/redo command classes                         |
+| `App/Scene/Workspace.h`               | File and workspace management                         |
+| `App/Wiring/Port.h`                   | Port base class, plus InputPort/OutputPort            |
+| `App/Wiring/Connection.h`             | Wire connection class                                 |
+| `App/IO/Serialization.h`              | File format save/load                                 |
+| `App/Versions.h`                      | File-format version/revision constants                |
+| `App/IO/VersionInfo.h`                | Named predicates for file-format compatibility checks |
+| `Tests/Common/TestUtils.h`            | CircuitBuilder and test helpers                       |
+| `CMakeSources.cmake`                  | Source file lists (add new files here)                |
+| `CMakePresets.json`                   | Build presets (debug, release, asan, etc.)            |
 
 ---
 

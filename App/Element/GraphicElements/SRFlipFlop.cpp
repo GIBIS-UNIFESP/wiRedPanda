@@ -20,18 +20,18 @@ struct ElementInfo<SRFlipFlop> {
     };
     static_assert(validate(constraints));
 
-    static ElementMetadata metadata()
+    static ElementTypeDescriptor describe()
     {
-        auto meta = metadataFromConstraints(constraints);
-        meta.pixmapPath = []{ return SRFlipFlop::pixmapPath(); };
-        meta.titleText = QT_TRANSLATE_NOOP("SRFlipFlop", "SR-FLIP-FLOP");
-        meta.translatedName = QT_TRANSLATE_NOOP("SRFlipFlop", "SR-Flip-Flop");
-        meta.trContext = "SRFlipFlop";
-        return meta;
+        auto descriptor = descriptorFromConstraints(constraints);
+        descriptor.pixmapPath = []{ return SRFlipFlop::pixmapPath(); };
+        descriptor.titleText = QT_TRANSLATE_NOOP("SRFlipFlop", "SR-FLIP-FLOP");
+        descriptor.translatedName = QT_TRANSLATE_NOOP("SRFlipFlop", "SR-Flip-Flop");
+        descriptor.trContext = "SRFlipFlop";
+        return descriptor;
     }
 
     static inline const bool registered = []() {
-        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementTypeDescriptor::add(describe());
         ElementFactory::registerCreator(constraints.type, [] { return new SRFlipFlop(); });
         return true;
     }();

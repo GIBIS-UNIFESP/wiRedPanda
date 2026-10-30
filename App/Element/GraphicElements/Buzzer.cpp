@@ -29,22 +29,22 @@ struct ElementInfo<Buzzer> {
     };
     static_assert(validate(constraints));
 
-    static ElementMetadata metadata()
+    static ElementTypeDescriptor describe()
     {
-        auto meta = metadataFromConstraints(constraints);
-        meta.pixmapPath = []{ return QStringLiteral(":/Components/Output/Buzzer/BuzzerOff.svg"); };
-        meta.titleText = QT_TRANSLATE_NOOP("Buzzer", "BUZZER");
-        meta.translatedName = QT_TRANSLATE_NOOP("Buzzer", "Buzzer");
-        meta.trContext = "Buzzer";
-        meta.defaultAppearances = QStringList({
+        auto descriptor = descriptorFromConstraints(constraints);
+        descriptor.pixmapPath = []{ return QStringLiteral(":/Components/Output/Buzzer/BuzzerOff.svg"); };
+        descriptor.titleText = QT_TRANSLATE_NOOP("Buzzer", "BUZZER");
+        descriptor.translatedName = QT_TRANSLATE_NOOP("Buzzer", "Buzzer");
+        descriptor.trContext = "Buzzer";
+        descriptor.defaultAppearances = QStringList({
             ":/Components/Output/Buzzer/BuzzerOff.svg",
             ":/Components/Output/Buzzer/BuzzerOn.svg",
         });
-        return meta;
-    } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementMetadata's QString/QStringList members, never reached after the return above.
+        return descriptor;
+    } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
 
     static inline const bool registered = []() {
-        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementTypeDescriptor::add(describe());
         ElementFactory::registerCreator(constraints.type, [] { return new Buzzer(); });
         return true;
     }();

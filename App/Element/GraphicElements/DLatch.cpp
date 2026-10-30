@@ -20,18 +20,18 @@ struct ElementInfo<DLatch> {
     };
     static_assert(validate(constraints));
 
-    static ElementMetadata metadata()
+    static ElementTypeDescriptor describe()
     {
-        auto meta = metadataFromConstraints(constraints);
-        meta.pixmapPath = []{ return DLatch::pixmapPath(); };
-        meta.titleText = QT_TRANSLATE_NOOP("DLatch", "D-LATCH");
-        meta.translatedName = QT_TRANSLATE_NOOP("DLatch", "D-Latch");
-        meta.trContext = "DLatch";
-        return meta;
+        auto descriptor = descriptorFromConstraints(constraints);
+        descriptor.pixmapPath = []{ return DLatch::pixmapPath(); };
+        descriptor.titleText = QT_TRANSLATE_NOOP("DLatch", "D-LATCH");
+        descriptor.translatedName = QT_TRANSLATE_NOOP("DLatch", "D-Latch");
+        descriptor.trContext = "DLatch";
+        return descriptor;
     }
 
     static inline const bool registered = []() {
-        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementTypeDescriptor::add(describe());
         ElementFactory::registerCreator(constraints.type, [] { return new DLatch(); });
         return true;
     }();

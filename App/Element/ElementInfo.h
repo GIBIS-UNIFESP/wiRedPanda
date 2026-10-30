@@ -8,15 +8,15 @@
 #pragma once
 
 #include "App/Core/Enums.h"
-#include "App/Element/ElementMetadata.h"
+#include "App/Element/ElementTypeDescriptor.h"
 
 /**
  * \struct ElementConstraints
- * \brief Compile-time-validatable subset of ElementMetadata.
+ * \brief Compile-time-validatable subset of ElementTypeDescriptor.
  *
  * \details These constexpr-friendly constraints enable static validation of
- * element metadata at compile time.  They are converted to ElementMetadata
- * via metadataFromConstraints().
+ * an element type's descriptor at compile time.  They are converted to ElementTypeDescriptor
+ * via descriptorFromConstraints().
  */
 struct ElementConstraints {
     ElementType type = ElementType::Unknown;
@@ -69,35 +69,35 @@ constexpr bool validate(const ElementConstraints &c)
 }
 
 /**
- * \brief Converts ElementConstraints to an ElementMetadata with all constraint-derived fields set.
+ * \brief Converts ElementConstraints to an ElementTypeDescriptor with all constraint-derived fields set.
  *
- * \details Specializations of ElementInfo<T>::metadata() call this first, then fill in
+ * \details Specializations of ElementInfo<T>::describe() call this first, then fill in
  * the remaining display fields: \c pixmapPath, \c titleText, \c translatedName,
  * \c trContext, \c defaultAppearances, and \c alternativeAppearances.
  * \param c Source constraints.
- * \return Partially populated ElementMetadata.
+ * \return Partially populated ElementTypeDescriptor.
  */
-inline ElementMetadata metadataFromConstraints(const ElementConstraints &c)
+inline ElementTypeDescriptor descriptorFromConstraints(const ElementConstraints &c)
 {
-    ElementMetadata meta;
-    meta.type = c.type;
-    meta.group = c.group;
-    meta.minInputSize = c.minInputSize;
-    meta.maxInputSize = c.maxInputSize;
-    meta.minOutputSize = c.minOutputSize;
-    meta.maxOutputSize = c.maxOutputSize;
-    meta.canChangeAppearance = c.canChangeAppearance;
-    meta.hasColors = c.hasColors;
-    meta.hasAudio = c.hasAudio;
-    meta.hasAudioBox = c.hasAudioBox;
-    meta.hasTrigger = c.hasTrigger;
-    meta.hasFrequency = c.hasFrequency;
-    meta.hasDelay = c.hasDelay;
-    meta.hasLabel = c.hasLabel;
-    meta.hasTruthTable = c.hasTruthTable;
-    meta.hasVolume = c.hasVolume;
-    meta.rotatesGraphic = c.rotatesGraphic;
-    return meta;
+    ElementTypeDescriptor descriptor;
+    descriptor.type = c.type;
+    descriptor.group = c.group;
+    descriptor.minInputSize = c.minInputSize;
+    descriptor.maxInputSize = c.maxInputSize;
+    descriptor.minOutputSize = c.minOutputSize;
+    descriptor.maxOutputSize = c.maxOutputSize;
+    descriptor.canChangeAppearance = c.canChangeAppearance;
+    descriptor.hasColors = c.hasColors;
+    descriptor.hasAudio = c.hasAudio;
+    descriptor.hasAudioBox = c.hasAudioBox;
+    descriptor.hasTrigger = c.hasTrigger;
+    descriptor.hasFrequency = c.hasFrequency;
+    descriptor.hasDelay = c.hasDelay;
+    descriptor.hasLabel = c.hasLabel;
+    descriptor.hasTruthTable = c.hasTruthTable;
+    descriptor.hasVolume = c.hasVolume;
+    descriptor.rotatesGraphic = c.rotatesGraphic;
+    return descriptor;
 }
 
 /**
@@ -105,10 +105,10 @@ inline ElementMetadata metadataFromConstraints(const ElementConstraints &c)
  *
  * Specializations must define:
  * - static constexpr ElementConstraints constraints;
- * - static ElementMetadata metadata();
+ * - static ElementTypeDescriptor describe();
  * - static inline const bool registered = [](){ ... }();
  *
- * The registered initializer performs both metadata and factory registration.
+ * The registered initializer adds the type's descriptor and its factory creator.
  *
  * Example:
  * \code
@@ -123,18 +123,18 @@ inline ElementMetadata metadataFromConstraints(const ElementConstraints &c)
  *     };
  *     static_assert(validate(constraints));
  *
- *     static ElementMetadata metadata() {
- *         auto meta = metadataFromConstraints(constraints);
- *         meta.pixmapPath = []{ return QStringLiteral(":/path.svg"); };
- *         meta.titleText = QT_TRANSLATE_NOOP("And", "AND");
- *         meta.translatedName = QT_TRANSLATE_NOOP("And", "And");
- *         meta.trContext = "And";
- *         meta.defaultAppearances = {":/path.svg"};
- *         return meta;
+ *     static ElementTypeDescriptor describe() {
+ *         auto descriptor = descriptorFromConstraints(constraints);
+ *         descriptor.pixmapPath = []{ return QStringLiteral(":/path.svg"); };
+ *         descriptor.titleText = QT_TRANSLATE_NOOP("And", "AND");
+ *         descriptor.translatedName = QT_TRANSLATE_NOOP("And", "And");
+ *         descriptor.trContext = "And";
+ *         descriptor.defaultAppearances = {":/path.svg"};
+ *         return descriptor;
  *     }
  *
  *     static inline const bool registered = []() {
- *         ElementMetadataRegistry::registerMetadata(metadata());
+ *         ElementTypeDescriptor::add(describe());
  *         ElementFactory::registerCreator(constraints.type, [] { return new And(); });
  *         return true;
  *     }();

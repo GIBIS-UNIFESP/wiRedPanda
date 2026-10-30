@@ -229,7 +229,7 @@ ElementAppearance::ElementAppearance(Element *owner)
 
 ElementAppearance::~ElementAppearance() = default;
 
-void ElementAppearance::seedFromMetadata(const QStringList &defaultAppearances,
+void ElementAppearance::seed(const QStringList &defaultAppearances,
                                          const QStringList &alternativeAppearances,
                                          const QString &pixmapPath)
 {
@@ -237,7 +237,7 @@ void ElementAppearance::seedFromMetadata(const QStringList &defaultAppearances,
     m_pixmapPath = pixmapPath;
 
     // For elements whose pixmapPath is theme-dependent (e.g. memory elements),
-    // defaultAppearances may be left empty in the metadata to avoid evaluating the
+    // defaultAppearances may be left empty in the descriptor to avoid evaluating the
     // theme path during static initialisation (before QApplication exists).
     // Populate it lazily here from the now-correct pixmapPath.
     if (m_defaultAppearances.isEmpty() && !m_pixmapPath.isEmpty()) {

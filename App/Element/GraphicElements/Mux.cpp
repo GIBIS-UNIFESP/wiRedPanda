@@ -24,19 +24,19 @@ struct ElementInfo<Mux> {
     };
     static_assert(validate(constraints));
 
-    static ElementMetadata metadata()
+    static ElementTypeDescriptor describe()
     {
-        auto meta = metadataFromConstraints(constraints);
-        meta.pixmapPath = []{ return QStringLiteral(":/Components/Logic/mux.svg"); };
-        meta.titleText = QT_TRANSLATE_NOOP("Mux", "MULTIPLEXER");
-        meta.translatedName = QT_TRANSLATE_NOOP("Mux", "Mux");
-        meta.trContext = "Mux";
-        meta.defaultAppearances = QStringList({":/Components/Logic/mux.svg"});
-        return meta;
-    } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementMetadata's QString/QStringList members, never reached after the return above.
+        auto descriptor = descriptorFromConstraints(constraints);
+        descriptor.pixmapPath = []{ return QStringLiteral(":/Components/Logic/mux.svg"); };
+        descriptor.titleText = QT_TRANSLATE_NOOP("Mux", "MULTIPLEXER");
+        descriptor.translatedName = QT_TRANSLATE_NOOP("Mux", "Mux");
+        descriptor.trContext = "Mux";
+        descriptor.defaultAppearances = QStringList({":/Components/Logic/mux.svg"});
+        return descriptor;
+    } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
 
     static inline const bool registered = []() {
-        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementTypeDescriptor::add(describe());
         ElementFactory::registerCreator(constraints.type, [] { return new Mux(); });
         return true;
     }();

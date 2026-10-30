@@ -20,18 +20,18 @@ struct ElementInfo<DFlipFlop> {
     };
     static_assert(validate(constraints));
 
-    static ElementMetadata metadata()
+    static ElementTypeDescriptor describe()
     {
-        auto meta = metadataFromConstraints(constraints);
-        meta.pixmapPath = []{ return DFlipFlop::pixmapPath(); };
-        meta.titleText = QT_TRANSLATE_NOOP("DFlipFlop", "D-FLIP-FLOP");
-        meta.translatedName = QT_TRANSLATE_NOOP("DFlipFlop", "D-Flip-Flop");
-        meta.trContext = "DFlipFlop";
-        return meta;
+        auto descriptor = descriptorFromConstraints(constraints);
+        descriptor.pixmapPath = []{ return DFlipFlop::pixmapPath(); };
+        descriptor.titleText = QT_TRANSLATE_NOOP("DFlipFlop", "D-FLIP-FLOP");
+        descriptor.translatedName = QT_TRANSLATE_NOOP("DFlipFlop", "D-Flip-Flop");
+        descriptor.trContext = "DFlipFlop";
+        return descriptor;
     }
 
     static inline const bool registered = []() {
-        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementTypeDescriptor::add(describe());
         ElementFactory::registerCreator(constraints.type, [] { return new DFlipFlop(); });
         return true;
     }();

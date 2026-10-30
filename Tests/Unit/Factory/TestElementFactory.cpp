@@ -14,7 +14,7 @@
 #include "App/Core/Enums.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/ElementMetadata.h"
+#include "App/Element/ElementTypeDescriptor.h"
 #include "App/Scene/Scene.h"
 #include "Tests/Common/TestUtils.h"
 
@@ -94,9 +94,9 @@ void TestElementFactory::testBuildElementInvalidType()
     QVERIFY2(exceptionThrown, "Expected exception for Unknown element type");
 }
 
-void TestElementFactory::testMetadataLogicCreator()
+void TestElementFactory::testDescriptorLogicCreator()
 {
-    // Verify elements can be built and have correct metadata type
+    // Verify elements can be built and their descriptor has the type
     const QVector<ElementType> typesToTest{
         ElementType::And, ElementType::Or, ElementType::Not,
         ElementType::Nand, ElementType::Nor, ElementType::Xor
@@ -106,8 +106,8 @@ void TestElementFactory::testMetadataLogicCreator()
         auto graphicElem = std::unique_ptr<Element>(ElementFactory::buildElement(type));
         QVERIFY2(graphicElem != nullptr, qPrintable(QString("Failed to build graphic element: %1").arg(ElementFactory::typeToText(type))));
 
-        const auto &meta = ElementMetadataRegistry::metadata(type);
-        QVERIFY2(meta.type == type, "Metadata type should match requested type");
+        const auto &descriptor = ElementTypeDescriptor::of(type);
+        QVERIFY2(descriptor.type == type, "Descriptor type should match requested type");
     }
 }
 
@@ -283,43 +283,43 @@ void TestElementFactory::testSceneCounterIndependence()
     QCOMPARE(elm2->id(), 1);
 }
 
-void TestElementFactory::testMetadataRegistry()
+void TestElementFactory::testDescriptorRegistry()
 {
-    // Test that element metadata properties are non-empty and consistent
+    // Test that the descriptors' properties are non-empty and consistent
     const QVector<ElementType> typesToTest{
         ElementType::And, ElementType::Or, ElementType::Not,
         ElementType::Led, ElementType::InputSwitch, ElementType::Clock
     };
 
-    // Test 1: Properties should be retrievable and non-empty via metadata registry
+    // Test 1: Properties should be retrievable and non-empty via the descriptor registry
     for (const auto type : typesToTest) {
-        const auto &meta = ElementMetadataRegistry::metadata(type);
-        QVERIFY2(!meta.pixmapPath().isEmpty(),
+        const auto &descriptor = ElementTypeDescriptor::of(type);
+        QVERIFY2(!descriptor.pixmapPath().isEmpty(),
                  qPrintable(QString("%1 should have non-empty pixmap path").arg(ElementFactory::typeToText(type))));
-        QVERIFY2(meta.translatedName != nullptr && meta.translatedName[0] != '\0',
+        QVERIFY2(descriptor.translatedName != nullptr && descriptor.translatedName[0] != '\0',
                  qPrintable(QString("%1 should have non-empty translated name").arg(ElementFactory::typeToText(type))));
     }
 
     // Test 2: Repeated calls return identical values (registry is stable)
     for (const auto type : typesToTest) {
-        const auto &meta1 = ElementMetadataRegistry::metadata(type);
-        const auto &meta2 = ElementMetadataRegistry::metadata(type);
-        QCOMPARE(meta1.pixmapPath(), meta2.pixmapPath());
-        QCOMPARE(meta1.translatedName, meta2.translatedName);
+        const auto &descriptor1 = ElementTypeDescriptor::of(type);
+        const auto &descriptor2 = ElementTypeDescriptor::of(type);
+        QCOMPARE(descriptor1.pixmapPath(), descriptor2.pixmapPath());
+        QCOMPARE(descriptor1.translatedName, descriptor2.translatedName);
     }
 
-    // Test 3: Factory convenience methods match metadata registry values
+    // Test 3: Factory convenience methods match the descriptors' values
     for (const auto type : typesToTest) {
-        const auto &meta = ElementMetadataRegistry::metadata(type);
-        QCOMPARE(ElementFactory::translatedName(type), QString(meta.translatedName));
-        QCOMPARE(ElementFactory::typeToTitleText(type), QString(meta.titleText));
+        const auto &descriptor = ElementTypeDescriptor::of(type);
+        QCOMPARE(ElementFactory::translatedName(type), QString(descriptor.translatedName));
+        QCOMPARE(ElementFactory::typeToTitleText(type), QString(descriptor.titleText));
     }
 }
 
 void TestElementFactory::testAllElementTypesRegistered()
 {
     // Verify that all ElementType values (except Unknown and deprecated ones)
-    // have both metadata and factory creator registrations.
+    // have both a descriptor and a factory creator.
     const QMetaEnum metaEnum = QMetaEnum::fromType<ElementType>();
     for (int i = 0; i < metaEnum.keyCount(); ++i) {
         const auto type = static_cast<ElementType>(metaEnum.value(i));
@@ -332,8 +332,8 @@ void TestElementFactory::testAllElementTypesRegistered()
             continue;  // deprecated: JKLatch element no longer exists, kept for backward compatibility
         }
 
-        // Verify metadata is registered
-        QVERIFY2(ElementMetadataRegistry::hasMetadata(type),
+        // Verify the descriptor is added
+        QVERIFY2(ElementTypeDescriptor::has(type),
                  qPrintable(QString("Missing ElementInfo<> for %1").arg(metaEnum.key(i))));
 
         // Verify factory creator is registered
@@ -342,19 +342,20 @@ void TestElementFactory::testAllElementTypesRegistered()
     }
 }
 
-void TestElementFactory::testMetadataForUnknownTypeIsEmpty()
+void TestElementFactory::testDescriptorForUnknownTypeIsEmpty()
 {
-    // A type with no metadata is a broken invariant: an assertion, and in a release build empty metadata, no throw
-    QVERIFY(!ElementMetadataRegistry::hasMetadata(ElementType::Unknown));
+    // A type with no descriptor is a broken invariant: an assertion, and in a release build an empty descriptor, no
+    // throw
+    QVERIFY(!ElementTypeDescriptor::has(ElementType::Unknown));
 #ifndef QT_NO_DEBUG
     QSKIP("The assertion stops a debug build; CI's release builds run this");
 #endif
     try {
-        const auto &meta = ElementMetadataRegistry::metadata(ElementType::Unknown);
-        QCOMPARE(meta.type, ElementType::Unknown);
-        QCOMPARE(meta.translatedName, nullptr);
+        const auto &descriptor = ElementTypeDescriptor::of(ElementType::Unknown);
+        QCOMPARE(descriptor.type, ElementType::Unknown);
+        QCOMPARE(descriptor.translatedName, nullptr);
     } catch (const std::exception &e) {
-        QFAIL(qPrintable(QString("metadata() threw: %1").arg(e.what())));
+        QFAIL(qPrintable(QString("of() threw: %1").arg(e.what())));
     }
 }
 

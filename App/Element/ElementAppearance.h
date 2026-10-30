@@ -42,11 +42,11 @@ public:
     /// Out-of-line so the unique_ptr to the forward-declared QSvgRenderer can be destroyed.
     ~ElementAppearance();
 
-    /// Seeds the appearance lists from element metadata (lazily deriving defaults from
+    /// Seeds the appearance lists from the type's descriptor (lazily deriving defaults from
     /// \a pixmapPath when \a defaultAppearances is empty; alternatives default to the defaults).
-    void seedFromMetadata(const QStringList &defaultAppearances,
-                          const QStringList &alternativeAppearances,
-                          const QString &pixmapPath);
+    void seed(const QStringList &defaultAppearances,
+              const QStringList &alternativeAppearances,
+              const QString &pixmapPath);
 
     // --- Pixmap access ---
 
@@ -150,7 +150,7 @@ private:
     bool m_hasCustomRenderPixmap = false; ///< True while m_pixmap is a procedural render pixmap, not derived from m_basePixmap.
     std::shared_ptr<QSvgRenderer> m_svgRenderer; ///< Vector renderer for the current SVG appearance (null for raster); shared with every other element resolving to the same path/orientation, see sharedSvgRenderer() in the .cpp.
 
-    QString m_pixmapPath;         ///< Resource/file path of the default pixmap (from metadata).
+    QString m_pixmapPath;         ///< Resource/file path of the default pixmap (from the descriptor).
     QString m_currentPixmapPath;  ///< Path last requested via setPixmap() (change guard).
     QString m_resolvedPixmapPath; ///< Resolved path of m_basePixmap; used to build orientation variants.
     QString m_failedPixmapPath;   ///< The picture last applied when it did not load, else empty.

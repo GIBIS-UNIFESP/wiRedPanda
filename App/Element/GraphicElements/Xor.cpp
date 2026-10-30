@@ -20,20 +20,20 @@ struct ElementInfo<Xor> {
     };
     static_assert(validate(constraints));
 
-    static ElementMetadata metadata()
+    static ElementTypeDescriptor describe()
     {
-        auto meta = metadataFromConstraints(constraints);
-        meta.pixmapPath = []{ return QStringLiteral(":/Components/Logic/xor.svg"); };
-        meta.titleText = QT_TRANSLATE_NOOP("Xor", "XOR");
-        meta.translatedName = QT_TRANSLATE_NOOP("Xor", "Xor");
-        meta.trContext = "Xor";
+        auto descriptor = descriptorFromConstraints(constraints);
+        descriptor.pixmapPath = []{ return QStringLiteral(":/Components/Logic/xor.svg"); };
+        descriptor.titleText = QT_TRANSLATE_NOOP("Xor", "XOR");
+        descriptor.translatedName = QT_TRANSLATE_NOOP("Xor", "Xor");
+        descriptor.trContext = "Xor";
         // Seed appearance lists from the constructor-supplied pixmap path (see And.cpp for details).
-        meta.defaultAppearances = QStringList({":/Components/Logic/xor.svg"});
-        return meta;
-    } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementMetadata's QString/QStringList members, never reached after the return above.
+        descriptor.defaultAppearances = QStringList({":/Components/Logic/xor.svg"});
+        return descriptor;
+    } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
 
     static inline const bool registered = []() {
-        ElementMetadataRegistry::registerMetadata(metadata());
+        ElementTypeDescriptor::add(describe());
         ElementFactory::registerCreator(constraints.type, [] { return new Xor(); });
         return true;
     }();
