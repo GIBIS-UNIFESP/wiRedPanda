@@ -160,7 +160,6 @@ ElementAppearance	Couldn't load pixmap: %1 (%2)
 ElementAppearance	File does not exist
 ElementAppearance	File is not readable
 ElementAppearance	Unknown reason
-ElementContextMenu	Unknown context menu option.
 ElementEditor	 Hz
 ElementEditor	"%1" could not be loaded as a picture.
 ElementEditor	"%1" could not be read.
@@ -259,14 +258,12 @@ ElementFactory	Text: a free-text annotation on the canvas.
 ElementFactory	Toggle switch: click to flip between 0 and 1.
 ElementFactory	Truth table: custom logic you define, output by output.
 ElementFactory	Unknown
-ElementFactory	Unknown element type: %1
 ElementFactory	Unknown type: %1
 ElementFactory	XNOR gate: HIGH when the inputs match.
 ElementFactory	XOR gate: HIGH when an odd number of inputs are HIGH.
 ElementLabel	Drag or double-click to add.
 ElementLabel	Embedded IC: %1
 ElementLabel	IC from file: %1
-ElementMetadataRegistry	No metadata registered for element type: %1
 ElementPalette	Element palette
 ElementPalette	Elements grouped by category. Drag one onto the canvas, or double-click to add it to the active circuit.
 ElementPalette	Search elements
@@ -568,6 +565,7 @@ Serialization	Stream error reading element type at position %1: status %2
 Serialization	Stream error reading metadata map count
 Serialization	Stream error reading preamble: status %1
 Serialization	Stream error reading type tag at position %1: status %2
+Serialization	Unknown element type %1 at position %2
 Serialization	Unsupported container type %1 in metadata — stream may be corrupt
 Serialization	Unsupported metadata value type %1 — stream may be corrupt
 Simulation	Warning: feedback circuit did not converge — the circuit may be oscillating.

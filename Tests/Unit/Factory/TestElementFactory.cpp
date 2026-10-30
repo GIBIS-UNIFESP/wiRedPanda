@@ -80,7 +80,11 @@ void TestElementFactory::testBuildElement()
 
 void TestElementFactory::testBuildElementInvalidType()
 {
-    // Should throw exception for Unknown type
+    // A type with no creator is a broken invariant: an assertion, and in a release build a throw to the boundary above,
+    // since no element can stand in for it
+#ifndef QT_NO_DEBUG
+    QSKIP("The assertion stops a debug build; CI's release builds run this");
+#endif
     bool exceptionThrown = false;
     try {
         auto elem = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::Unknown));
@@ -338,17 +342,20 @@ void TestElementFactory::testAllElementTypesRegistered()
     }
 }
 
-void TestElementFactory::testMetadataForUnknownTypeThrows()
+void TestElementFactory::testMetadataForUnknownTypeIsEmpty()
 {
+    // A type with no metadata is a broken invariant: an assertion, and in a release build empty metadata, no throw
     QVERIFY(!ElementMetadataRegistry::hasMetadata(ElementType::Unknown));
-
-    bool threw = false;
+#ifndef QT_NO_DEBUG
+    QSKIP("The assertion stops a debug build; CI's release builds run this");
+#endif
     try {
-        ElementMetadataRegistry::metadata(ElementType::Unknown);
-    } catch (const Pandaception &) {
-        threw = true;
+        const auto &meta = ElementMetadataRegistry::metadata(ElementType::Unknown);
+        QCOMPARE(meta.type, ElementType::Unknown);
+        QCOMPARE(meta.translatedName, nullptr);
+    } catch (const std::exception &e) {
+        QFAIL(qPrintable(QString("metadata() threw: %1").arg(e.what())));
     }
-    QVERIFY2(threw, "metadata() must throw for a type with no registered ElementInfo<>");
 }
 
 void TestElementFactory::testTranslatedNameForUnknownType()
@@ -371,10 +378,12 @@ void TestElementFactory::testPixmapForUnknownType()
 void TestElementFactory::testBuildElementForRegisteredEnumValueWithNoCreatorThrows()
 {
     // JKLatch is a real (if deprecated) ElementType enum value kept only for backward
-    // compatibility -- no ElementInfo<> registers a creator for it, so unlike Unknown (which
-    // throws earlier, before ever consulting the creator map), this exercises the second,
-    // map-lookup-failure throw in buildElement().
+    // compatibility -- no ElementInfo<> registers a creator for it, so, like Unknown, it reaches
+    // buildElement()'s no-creator assertion, which a release build answers with a throw
     QVERIFY(!ElementFactory::hasCreator(ElementType::JKLatch));
+#ifndef QT_NO_DEBUG
+    QSKIP("The assertion stops a debug build; CI's release builds run this");
+#endif
 
     bool threw = false;
     try {

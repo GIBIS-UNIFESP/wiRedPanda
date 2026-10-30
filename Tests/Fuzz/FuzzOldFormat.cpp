@@ -158,10 +158,8 @@ void writeOldElement(QDataStream &s, FuzzedDataProvider &fdp,
     // Each port list holds between the type's minimum and maximum ports (at most 8 above the minimum), as old files
     // did, an AND gate with 3 to 8 inputs among them: more than an element is built with adds ports.
     // A type the factory no longer builds (JKLatch), which the reader refuses, gets 0 to 4.
-    std::unique_ptr<GraphicElement> built;
-    try {
-        built.reset(ElementFactory::buildElement(etype));
-    } catch (...) {}
+    // Building a type with no creator is a broken invariant, an assertion: the harness asks first
+    std::unique_ptr<GraphicElement> built(ElementFactory::hasCreator(etype) ? ElementFactory::buildElement(etype) : nullptr);
     const auto portCount = [&](const int minimum, const int maximum) {
         return fdp.ConsumeIntegralInRange<int>(minimum, std::min(maximum, minimum + 8));
     };

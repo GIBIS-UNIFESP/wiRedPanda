@@ -247,7 +247,7 @@ void ElementContextMenu::exec(QPoint screenPos,
         return;
     }
 
-    throw PANDACEPTION_WITH_CONTEXT(
-        "ElementContextMenu",
-        QT_TRANSLATE_NOOP("ElementContextMenu", "Unknown context menu option."));
+    // Every action the menu adds is handled above
+    Q_ASSERT_X(false, "ElementContextMenu::exec", "unhandled context menu option");
+    qCWarning(zero) << "Unhandled context menu option:" << actionText;
 }
