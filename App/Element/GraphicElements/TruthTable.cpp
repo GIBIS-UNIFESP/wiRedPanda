@@ -30,6 +30,9 @@ struct ElementInfo<TruthTable> {
     };
     static_assert(validate(constraints));
 
+    /// Bits in the table: one per (output column, row), a row for each input pattern of the most inputs.
+    static constexpr qsizetype tableBits = (qsizetype{1} << constraints.maxInputSize) * constraints.maxOutputSize;
+
     static ElementTypeDescriptor describe()
     {
         auto descriptor = descriptorFromConstraints(constraints);
@@ -38,6 +41,19 @@ struct ElementInfo<TruthTable> {
         descriptor.translatedName = QT_TRANSLATE_NOOP("TruthTable", "Truth Table");
         descriptor.trContext = "TruthTable";
         descriptor.defaultAppearances = QStringList({":/Components/Logic/truthtable-rotated.svg"});
+        // Laid out as [out0_row0..out0_rowN, out1_row0..out1_rowN, ...], all false by default. updateLogic() indexes
+        // the table up to its last bit and the toggle command flips bits in it, so it holds exactly tableBits whatever
+        // a (possibly corrupt or crafted) file supplied: padded with zeros or truncated
+        descriptor.parameters = {{
+            .id = ParamId::Table,
+            .defaultValue = QBitArray(tableBits),
+            .key = "key",
+            .accept = [](const Element &, const ParamValue &value) -> std::optional<ParamValue> {
+                QBitArray bits = std::get<QBitArray>(value);
+                bits.resize(tableBits);
+                return bits;
+            },
+        }};
         return descriptor;
     } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
 
@@ -54,13 +70,13 @@ namespace {
 /// maximum number of inputs addresses 2^maxInputSize of them.
 constexpr qsizetype kTruthTableRows = qsizetype{1} << ElementInfo<TruthTable>::constraints.maxInputSize;
 
-/// Bits in m_key: one per (output column, row). updateLogic() indexes kTruthTableRows * output
+/// Bits in the table: one per (output column, row). updateLogic() indexes kTruthTableRows * output
 /// + row, so the largest index it can form is exactly this minus one -- the array has ZERO
 /// slack, and derived constants are what keep that true if the port limits ever move.
-constexpr qsizetype kTruthTableKeyBits = kTruthTableRows * ElementInfo<TruthTable>::constraints.maxOutputSize;
+constexpr qsizetype kTruthTableKeyBits = ElementInfo<TruthTable>::tableBits;
 
 static_assert(kTruthTableKeyBits == 2048,
-              "The .panda format stores this QBitArray verbatim and setkey() resizes every loaded "
+              "The .panda format stores this QBitArray verbatim and the table's spec resizes every loaded "
               "key to it, so the size is part of the file format. Raising maxInputSize or "
               "maxOutputSize silently changes what is written and what older files decode to -- "
               "handle it as a format change, not a constant edit.");
@@ -70,10 +86,6 @@ static_assert(kTruthTableKeyBits == 2048,
 TruthTable::TruthTable(QGraphicsItem *parent)
     : Element(ElementType::TruthTable, parent)
 {
-    // Laid out as [out0_row0..out0_rowN, out1_row0..out1_rowN, ...].
-    // All outputs default to 0 (all-false table).
-    m_key.resize(kTruthTableKeyBits);
-    m_key.fill(0);
     TruthTable::updatePortsProperties();
 }
 
@@ -192,26 +204,21 @@ void TruthTable::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
     emit requestOpenTruthTableEditor();
 }
 
-QBitArray &TruthTable::key()
+const QBitArray &TruthTable::key() const
 {
-    return m_key;
+    return param<QBitArray>(ParamId::Table);
 }
 
 void TruthTable::setkey(const QBitArray &key)
 {
-    m_key = key;
-    // updateLogic() indexes the key at kTruthTableRows*output + row (up to the last bit) and
-    // ToggleTruthTableOutputCommand toggles bits in place, so the key must hold exactly
-    // kTruthTableKeyBits bits regardless of what a (possibly corrupt or crafted) .panda file
-    // supplied — resize pads with zeros or truncates.
-    m_key.resize(kTruthTableKeyBits);
+    setParam(ParamId::Table, key);
 }
 
 void TruthTable::save(QDataStream &stream, SerializationOptions options) const
 {
     Element::save(stream, options);
     QMap<QString, QVariant> map;
-    map.insert("key", m_key);
+    map.insert("key", key());
     stream << map;
 }
 
@@ -253,8 +260,9 @@ void TruthTable::updateLogic()
         pos = (pos << 1) | ((s == Status::Active) ? 1U : 0U);
     }
 
+    const QBitArray &table = key();
     for (int i = 0; i < outputSize(); ++i) {
-        const bool result = m_key.at(kTruthTableRows * i + static_cast<qsizetype>(pos));
+        const bool result = table.at(kTruthTableRows * i + static_cast<qsizetype>(pos));
         setOutputValue(i, result);
     }
 }

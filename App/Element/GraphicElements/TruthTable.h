@@ -28,9 +28,9 @@ public:
 
     // --- Key Access ---
 
-    /// Returns a reference to the truth-table output bit-array.
-    QBitArray &key();
-    /// Sets the truth-table output bit-array to \a key.
+    /// Returns the truth-table output bit-array (ParamId::Table).
+    const QBitArray &key() const;
+    /// Sets the truth-table output bit-array to \a key, padded with zeros or truncated to the table's size.
     void setkey(const QBitArray &key);
 
     // --- Visual ---
@@ -77,6 +77,4 @@ private:
     /// Draws the truth-table body (DIP rect, table icon, shadow) straight onto \a painter as
     /// vectors, so it stays crisp at any zoom instead of blitting a fixed-resolution pixmap.
     void drawBody(QPainter *painter);
-
-    QBitArray m_key;
 };

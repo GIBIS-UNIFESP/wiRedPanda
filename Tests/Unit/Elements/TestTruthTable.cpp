@@ -115,7 +115,7 @@ void TestTruthTable::testKeyInitialization()
     TruthTable truthTable;
 
     // Verify key is initialized to a QBitArray
-    QBitArray &key = truthTable.key();
+    const QBitArray &key = truthTable.key();
     QVERIFY(key.size() > 0);
 
     // Default key should be filled with 0s
@@ -139,7 +139,7 @@ void TestTruthTable::testSetKey()
 
     // Verify the supplied bits were kept; the key itself is padded back to
     // the 2048-bit class invariant (see testSetKeyEnforcesSizeInvariant).
-    QBitArray &retrievedKey = truthTable.key();
+    const QBitArray &retrievedKey = truthTable.key();
     QCOMPARE(retrievedKey.size(), 2048);
     QVERIFY(retrievedKey.at(0) == true);
     QVERIFY(retrievedKey.at(5) == true);
@@ -177,13 +177,13 @@ void TestTruthTable::testKeyAccess()
 {
     TruthTable truthTable;
 
-    // Verify key() returns reference we can modify
-    QBitArray &key = truthTable.key();
+    // Verify bits set through setkey() persist
+    QBitArray key = truthTable.key();
     key.setBit(0, true);
     key.setBit(10, true);
+    truthTable.setkey(key);
 
-    // Verify changes persist
-    QBitArray &key2 = truthTable.key();
+    const QBitArray &key2 = truthTable.key();
     QVERIFY(key2.at(0) == true);
     QVERIFY(key2.at(10) == true);
 }
@@ -192,13 +192,15 @@ void TestTruthTable::testKeyBitArray()
 {
     TruthTable truthTable;
 
-    QBitArray &key = truthTable.key();
+    QBitArray bits = truthTable.key();
 
     // Verify we can work with the bit array
     int bitsToSet = 5;
     for (int i = 0; i < bitsToSet; ++i) {
-        key.setBit(static_cast<qsizetype>(i) * 100, true);
+        bits.setBit(static_cast<qsizetype>(i) * 100, true);
     }
+    truthTable.setkey(bits);
+    const QBitArray &key = truthTable.key();
 
     // Verify bits were set
     for (int i = 0; i < bitsToSet; ++i) {
@@ -327,7 +329,7 @@ void TestTruthTable::testLoadKeyVersion42()
     truthTable2.load(loadStream, context);
 
     // Verify key was loaded correctly
-    QBitArray &loadedKey = truthTable2.key();
+    const QBitArray &loadedKey = truthTable2.key();
     QVERIFY(loadedKey.at(50) == true);
     QVERIFY(loadedKey.at(150) == true);
 }

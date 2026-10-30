@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <memory>
 
+#include <QBitArray>
 #include <QDir>
 #include <QFileInfo>
 #include <QProcess>
@@ -1432,13 +1433,17 @@ void TestSystemVerilogExport::testTruthTablesCompileAndSimulate()
     builder.connect(orXorTable, 0, ledOr, 0);
     builder.connect(orXorTable, 1, ledXor, 0);
     // Row r is the inputs read as a number; output k's rows start at bit 256 * k.
-    andTable->key().setBit(3, true);
+    QBitArray andBits = andTable->key();
+    andBits.setBit(3, true);
+    andTable->setkey(andBits);
+    QBitArray orXorBits = orXorTable->key();
     for (const int row : {1, 2, 3}) {
-        orXorTable->key().setBit(row, true);
+        orXorBits.setBit(row, true);
     }
     for (const int row : {1, 2}) {
-        orXorTable->key().setBit(256 + row, true);
+        orXorBits.setBit(256 + row, true);
     }
+    orXorTable->setkey(orXorBits);
 
     QTemporaryDir dir;
     QVERIFY(dir.isValid());

@@ -1517,7 +1517,9 @@ void ToggleTruthTableOutputCommand::redo()
         return;
     }
 
-    truthtable->key().toggleBit(m_pos);
+    QBitArray table = truthtable->key();
+    table.toggleBit(m_pos);
+    truthtable->setkey(table);
 
     m_scene->setCircuitUpdateRequired();
     emit m_scene->truthTableElementChanged(truthtable);
