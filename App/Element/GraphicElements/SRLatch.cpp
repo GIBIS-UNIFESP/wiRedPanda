@@ -40,23 +40,29 @@ struct ElementInfo<SRLatch> {
 SRLatch::SRLatch(QGraphicsItem *parent)
     : Element(ElementType::SRLatch, parent)
 {
-    // Call the most-derived override explicitly (see SRFlipFlop.cpp for rationale).
-    SRLatch::updatePortsProperties();
+    // The ports take their places, names, requirements and defaults from this type's attributes
+    updatePortsProperties();
 }
 
-void SRLatch::updatePortsProperties()
+std::optional<Element::PortAttributes> SRLatch::inputAttributes(const int index) const
 {
     // SR latch: no clock, no asynchronous overrides — simplest bistable element.
     // Both inputs are required (Set=1 → Q=1, Reset=1 → Q=0, both=1 is forbidden).
-    inputPort(0)->setPos(0, 16);      inputPort(0)->setName("Set");
-    inputPort(1)->setPos(0, 48);      inputPort(1)->setName("Reset");
+    static const QList<PortAttributes> attributes{
+        {.name = "Set", .position = QPointF(0, 16)},
+        {.name = "Reset", .position = QPointF(0, 48)},
+    };
+    return attributesAt(attributes, index);
+}
 
-    outputPort(0)->setPos(64, 16);    outputPort(0)->setName("Q");
-    outputPort(1)->setPos(64, 48);    outputPort(1)->setName("~Q");
-
+std::optional<Element::PortAttributes> SRLatch::outputAttributes(const int index) const
+{
     // Initial state: Q=0, ~Q=1
-    outputPort(0)->setDefaultStatus(Status::Inactive);
-    outputPort(1)->setDefaultStatus(Status::Active);
+    static const QList<PortAttributes> attributes{
+        {.name = "Q", .defaultStatus = Status::Inactive, .position = QPointF(64, 16)},
+        {.name = "~Q", .defaultStatus = Status::Active, .position = QPointF(64, 48)},
+    };
+    return attributesAt(attributes, index);
 }
 
 void SRLatch::updateLogic()

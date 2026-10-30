@@ -78,8 +78,11 @@ public:
     /// Applies custom appearance images for the rotary body and arrow.
     void setAppearance(const bool defaultAppearance, const QString &fileName) override;
 
-    /// Recalculates port positions based on the current output count.
+    /// Lays the ports out, then redraws the dial for the new output count.
     void updatePortsProperties() override;
+
+    /// The outputs around the dial, by their places and names for the current output count.
+    std::optional<PortAttributes> outputAttributes(int index) const override;
 
     // --- Serialization ---
 

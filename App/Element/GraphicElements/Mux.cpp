@@ -50,39 +50,43 @@ Mux::Mux(QGraphicsItem *parent)
 
 void Mux::updatePortsProperties()
 {
-    // Determine number of select lines based on total input size
-    const int numSelectLines = calculateSelectLines(inputSize());
-    int numDataInputs = inputSize() - numSelectLines;
-
-    const int step = Constants::gridSize / 2; // 8
-
-    // Calculate element height to fit all data ports with padding
-    int dataPortsSpan = (numDataInputs - 1) * step * 2; // spacing between first and last port
-    int elementHeight = (std::max)(64, dataPortsSpan + step * 6);
-    // Snap to multiple of 16
-    elementHeight = ((elementHeight + 15) / 16) * 16;
-    int centerY = elementHeight / 2;
-
-    // Position data input ports on the left, centered vertically
-    int y = centerY - (numDataInputs - 1) * step;
-    for (int i = 0; i < numDataInputs; ++i) {
-        inputPort(i)->setPos(16, y);
-        inputPort(i)->setName(QString("In%1").arg(i));
-        y += step * 2;
-    }
-
-    // Position select lines at the bottom, spaced by gridSize to avoid overlap
-    int selectY = elementHeight - step;
-    for (int i = 0; i < numSelectLines; ++i) {
-        inputPort(numDataInputs + i)->setPos(32 + (i * step * 2), selectY);
-        inputPort(numDataInputs + i)->setName(QString("S%1").arg(i));
-    }
-
-    // Position output port on the right, centered
-    outputPort(0)->setPos(48, centerY);
-    outputPort(0)->setName("Out");
-
+    Element::updatePortsProperties();
     generatePixmap();
+}
+
+int Mux::bodyHeight() const
+{
+    const int step = Constants::gridSize / 2; // 8
+    const int numDataInputs = inputSize() - calculateSelectLines(inputSize());
+
+    // Tall enough to fit all data ports with padding, snapped to a multiple of 16
+    const int dataPortsSpan = (numDataInputs - 1) * step * 2; // spacing between first and last port
+    const int elementHeight = (std::max)(64, dataPortsSpan + step * 6);
+    return ((elementHeight + 15) / 16) * 16;
+}
+
+std::optional<Element::PortAttributes> Mux::inputAttributes(const int index) const
+{
+    const int numSelectLines = calculateSelectLines(inputSize());
+    const int numDataInputs = inputSize() - numSelectLines;
+    const int step = Constants::gridSize / 2; // 8
+    const int elementHeight = bodyHeight();
+
+    // Data inputs on the left, centred vertically
+    if (index < numDataInputs) {
+        const int y = (elementHeight / 2) - ((numDataInputs - 1) * step) + (index * step * 2);
+        return PortAttributes{.name = QString("In%1").arg(index), .position = QPointF(16, y)};
+    }
+
+    // Select lines at the bottom, spaced by gridSize to avoid overlap
+    const int select = index - numDataInputs;
+    return PortAttributes{.name = QString("S%1").arg(select), .position = QPointF(32 + (select * step * 2), elementHeight - step)};
+}
+
+std::optional<Element::PortAttributes> Mux::outputAttributes(const int index) const
+{
+    // The output on the right, centred
+    return attributesAt({{.name = "Out", .position = QPointF(48, bodyHeight() / 2)}}, index);
 }
 
 QRectF Mux::boundingRect() const

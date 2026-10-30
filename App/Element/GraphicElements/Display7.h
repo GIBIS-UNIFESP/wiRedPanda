@@ -42,6 +42,22 @@ public:
     /// at any zoom instead of blitting a fixed-resolution pixmap.
     static QVector<std::shared_ptr<QSvgRenderer>> cachedSegmentRenderers(const QString &resourcePath);
 
+    /// One segment input of a display: where it sits, its letter and its description, marked with QT_TR_NOOP() in the
+    /// display's own code.
+    struct SegmentPort {
+        qreal x;
+        qreal y;
+        const char *letter;
+        const char *description;
+    };
+
+    /**
+     * \brief Returns the attributes of the segment input \a segment, named by \a described.
+     * \details \a described is the display's describedPort() of the segment's letter and description. Segments are
+     * individually driven: the input is optional, and leaving it unconnected turns the segment off.
+     */
+    static PortAttributes segmentInput(PortAttributes described, const SegmentPort &segment);
+
     // --- Color State ---
 
     /// Returns the current display color name.
@@ -64,8 +80,8 @@ public:
     /// Refreshes the displayed segments based on current input states.
     void refresh() override;
 
-    /// Updates port positions (fixed at 8 inputs).
-    void updatePortsProperties() override;
+    /// The 8 segment inputs, by their places and names.
+    std::optional<PortAttributes> inputAttributes(int index) const override;
 
     // --- Serialization ---
 

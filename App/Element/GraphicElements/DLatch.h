@@ -33,8 +33,11 @@ public:
         return ":/Components/Memory/" + ThemeManager::themePath() + "/D-latch.svg";
     }
 
-    /// Updates port names for this latch.
-    void updatePortsProperties() override;
+    /// Data and Enable, by their places and names.
+    std::optional<PortAttributes> inputAttributes(int index) const override;
+
+    /// Q and ~Q, which start at 0 and 1.
+    std::optional<PortAttributes> outputAttributes(int index) const override;
 
     /// Updates Q based on D and enable level.
     void updateLogic() override;

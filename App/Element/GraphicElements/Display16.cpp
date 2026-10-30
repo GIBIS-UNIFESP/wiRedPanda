@@ -86,7 +86,7 @@ Display16::Display16(QGraphicsItem *parent)
     n  = Display7::cachedSegmentRenderers(m_appearance.defaultAppearances().at(16));
     dp = Display7::cachedSegmentRenderers(m_appearance.defaultAppearances().at(17));
 
-    Display16::updatePortsProperties();
+    updatePortsProperties();
 }
 
 void Display16::refresh()
@@ -94,39 +94,37 @@ void Display16::refresh()
     update();
 }
 
-void Display16::updatePortsProperties()
+std::optional<Element::PortAttributes> Display16::inputAttributes(const int index) const
 {
     // Ports on the left (x=0) drive left-side and center segments;
     // ports on the right (x=64) drive right-side segments and DP.
     // The port order follows the standard 16-segment naming convention
     // (A1/A2 = top, B/C = right verticals, D1/D2 = bottom, E/F = left verticals,
     //  G1/G2 = middle, H/J/K/L/M/N = diagonals and center verticals).
-    inputPort( 0)->setPos( 0,  -8);    setDescribedPortName(inputPort( 0), "G1", QT_TR_NOOP("middle left horizontal"));
-    inputPort( 1)->setPos( 0,   8);    setDescribedPortName(inputPort( 1), "F",  QT_TR_NOOP("upper left vertical"));
-    inputPort( 2)->setPos( 0,  24);    setDescribedPortName(inputPort( 2), "E",  QT_TR_NOOP("lower left vertical"));
-    inputPort( 3)->setPos( 0,  40);    setDescribedPortName(inputPort( 3), "D1", QT_TR_NOOP("bottom left horizontal"));
-    inputPort( 4)->setPos( 0,  56);    setDescribedPortName(inputPort( 4), "D2", QT_TR_NOOP("bottom right horizontal"));
-    inputPort( 5)->setPos(64,  -8);    setDescribedPortName(inputPort( 5), "A1", QT_TR_NOOP("top left horizontal"));
-    inputPort( 6)->setPos(64,   8);    setDescribedPortName(inputPort( 6), "A2", QT_TR_NOOP("top right horizontal"));
-    inputPort( 7)->setPos(64,  24);    setDescribedPortName(inputPort( 7), "B",  QT_TR_NOOP("upper right vertical"));
-    inputPort( 8)->setPos(64,  40);    setDescribedPortName(inputPort( 8), "DP", QT_TR_NOOP("dot"));
-    inputPort( 9)->setPos(64,  56);    setDescribedPortName(inputPort( 9), "C",  QT_TR_NOOP("lower right vertical"));
-    inputPort(10)->setPos( 0,  72);    setDescribedPortName(inputPort(10), "G2", QT_TR_NOOP("middle right horizontal"));
-    inputPort(11)->setPos( 0,  88);    setDescribedPortName(inputPort(11), "H",  QT_TR_NOOP("upper left diagonal"));
-    inputPort(12)->setPos( 0, 104);    setDescribedPortName(inputPort(12), "J",  QT_TR_NOOP("upper center vertical"));
-    inputPort(13)->setPos(64,  72);    setDescribedPortName(inputPort(13), "K",  QT_TR_NOOP("upper right diagonal"));
-    inputPort(14)->setPos(64,  88);    setDescribedPortName(inputPort(14), "L",  QT_TR_NOOP("lower right diagonal"));
-    inputPort(15)->setPos(64, 104);    setDescribedPortName(inputPort(15), "M",  QT_TR_NOOP("lower center vertical"));
-    inputPort(16)->setPos(64, 120);    setDescribedPortName(inputPort(16), "N",  QT_TR_NOOP("lower left diagonal"));
-
-    for (auto *port : inputs()) {
-        port->setRequired(false);
-        port->setDefaultStatus(Status::Inactive);
+    static constexpr Display7::SegmentPort segments[] = {
+        {  0,   -8, "G1", QT_TR_NOOP("middle left horizontal")},
+        {  0,    8, "F",  QT_TR_NOOP("upper left vertical")},
+        {  0,   24, "E",  QT_TR_NOOP("lower left vertical")},
+        {  0,   40, "D1", QT_TR_NOOP("bottom left horizontal")},
+        {  0,   56, "D2", QT_TR_NOOP("bottom right horizontal")},
+        { 64,   -8, "A1", QT_TR_NOOP("top left horizontal")},
+        { 64,    8, "A2", QT_TR_NOOP("top right horizontal")},
+        { 64,   24, "B",  QT_TR_NOOP("upper right vertical")},
+        { 64,   40, "DP", QT_TR_NOOP("dot")},
+        { 64,   56, "C",  QT_TR_NOOP("lower right vertical")},
+        {  0,   72, "G2", QT_TR_NOOP("middle right horizontal")},
+        {  0,   88, "H",  QT_TR_NOOP("upper left diagonal")},
+        {  0,  104, "J",  QT_TR_NOOP("upper center vertical")},
+        { 64,   72, "K",  QT_TR_NOOP("upper right diagonal")},
+        { 64,   88, "L",  QT_TR_NOOP("lower right diagonal")},
+        { 64,  104, "M",  QT_TR_NOOP("lower center vertical")},
+        { 64,  120, "N",  QT_TR_NOOP("lower left diagonal")},
+    };
+    if ((index < 0) || (index >= static_cast<int>(std::size(segments)))) {
+        return std::nullopt;
     }
-
-    // This override doesn't chain to the base updatePortsProperties(), so re-apply the current
-    // rotation/flip orientation to the freshly-positioned ports (keeps flip working on displays).
-    rotatePorts();
+    const Display7::SegmentPort &segment = segments[index];
+    return Display7::segmentInput(describedPort(segment.letter, segment.description), segment);
 }
 
 QRectF Display16::boundingRect() const

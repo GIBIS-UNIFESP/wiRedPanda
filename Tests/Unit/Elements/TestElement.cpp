@@ -5,6 +5,7 @@
 
 #include <cmath>
 #include <memory>
+#include <optional>
 
 #include <QCoreApplication>
 #include <QDirIterator>
@@ -450,4 +451,87 @@ void TestElement::testSnapToGridKeepsAPositionBeyondIntRange()
     const QPointF nearOrigin = Element::snapToGrid(QPointF(-3.9, -0.5), 8);
     QVERIFY(!std::signbit(nearOrigin.x()));
     QVERIFY(!std::signbit(nearOrigin.y()));
+}
+
+void TestElement::testPortUpdateKeepsFieldsAttributesLeaveUnset()
+{
+    // A field an element's attributes leave unset keeps what the port holds, so a value set elsewhere (a wireless
+    // node's requirement, set by its mode) survives an update. Each port of every type, at every legal port count, is
+    // given a value of its own in every field its attributes leave unset, and must still hold it after the update.
+    struct Seeded {
+        Port *port;
+        QString where;
+        std::optional<bool> required;
+        std::optional<Status> defaultStatus;
+        std::optional<QString> name;
+    };
+
+    QStringList changed;
+    int seededBesideAttributes = 0;
+    int seededWithoutAttributes = 0;
+    for (const auto type : TestUtils::dumpedTypes()) {
+        if (type == ElementType::IC) {
+            continue;
+        }
+        const std::unique_ptr<Element> probe(ElementFactory::buildElement(type));
+        for (int inputs = probe->minInputSize(); inputs <= probe->maxInputSize(); ++inputs) {
+            for (int outputs = probe->minOutputSize(); outputs <= probe->maxOutputSize(); ++outputs) {
+                const std::unique_ptr<Element> element(ElementFactory::buildElement(type));
+                TestUtils::applyPortCounts(element.get(), inputs, outputs);
+                if ((element->inputSize() != inputs) || (element->outputSize() != outputs)) {
+                    continue; // A Demux derives its inputs from its outputs
+                }
+                const QString counts = QString("%1 in=%2 out=%3").arg(ElementFactory::typeToText(type)).arg(inputs).arg(outputs);
+
+                QList<Seeded> seeded;
+                const auto seed = [&](Port *port, const QString &where, const std::optional<Element::PortAttributes> &attributes) {
+                    Seeded entry{port, counts + ' ' + where, {}, {}, {}};
+                    if (!attributes || !attributes->required) {
+                        entry.required = !port->isRequired();
+                        port->setRequired(*entry.required);
+                    }
+                    if (!attributes || !attributes->defaultStatus) {
+                        entry.defaultStatus = (port->defaultValue() == Status::Active) ? Status::Inactive : Status::Active;
+                        port->setDefaultStatus(*entry.defaultStatus);
+                    }
+                    if (!attributes || !attributes->name) {
+                        entry.name = "seeded " + where;
+                        port->setName(*entry.name);
+                    }
+                    if (attributes && (entry.required || entry.defaultStatus || entry.name)) {
+                        ++seededBesideAttributes;
+                    } else if (!attributes) {
+                        ++seededWithoutAttributes;
+                    }
+                    seeded.append(entry);
+                };
+                for (int index = 0; index < element->inputSize(); ++index) {
+                    seed(element->inputPort(index), QString("in %1").arg(index), element->inputAttributes(index));
+                }
+                for (int index = 0; index < element->outputSize(); ++index) {
+                    seed(element->outputPort(index), QString("out %1").arg(index), element->outputAttributes(index));
+                }
+
+                element->updatePortsProperties();
+
+                for (const auto &entry : std::as_const(seeded)) {
+                    if (entry.required && (entry.port->isRequired() != *entry.required)) {
+                        changed << entry.where + ": required";
+                    }
+                    if (entry.defaultStatus && (entry.port->defaultValue() != *entry.defaultStatus)) {
+                        changed << entry.where + ": default";
+                    }
+                    if (entry.name && (entry.port->name() != *entry.name)) {
+                        changed << entry.where + ": name";
+                    }
+                }
+            }
+        }
+    }
+
+    QVERIFY2(changed.isEmpty(), qPrintable(changed.join('\n')));
+    // Ports whose element sets some fields and leaves others unset take the attributes' branch of the update, and ports
+    // with no attributes at all take the other
+    QVERIFY(seededBesideAttributes > 0);
+    QVERIFY(seededWithoutAttributes > 0);
 }

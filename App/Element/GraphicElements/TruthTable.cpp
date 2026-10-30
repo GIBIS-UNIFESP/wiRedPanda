@@ -79,62 +79,24 @@ TruthTable::TruthTable(QGraphicsItem *parent)
 
 void TruthTable::updatePortsProperties()
 {
-    int index = 0;
-    // step = 8px (half the 16px grid), giving ports a 16px pitch (every other grid line)
-    const int step = Constants::gridSize / 2;
-
-    if (!inputs().isEmpty()) {
-        // Center the input port column vertically within the 64px-minimum body height.
-        // Formula: start at body centre (32) minus half the total column height, then
-        // add one step back so the first port lands at the right offset.
-        // Total height of n ports at 2*step pitch = n * 2*step; half = n*step.
-        // e.g. 4 inputs → y_start = 32 - 4*8 + 8 = 8; ports at y=8,24,40,56
-        int y = 32 - (static_cast<int>(inputs().size()) * step) + step;
-
-        for (auto *port : inputs()) {
-
-            // Unreachable: rotatesGraphic() reads from this type's compile-time metadata,
-            // which TruthTable's ElementInfo never overrides away from the default (true).
-            if (!rotatesGraphic()) { // LCOV_EXCL_LINE
-                port->setRotation(0); // LCOV_EXCL_LINE
-            } // LCOV_EXCL_LINE
-
-            port->setPos(0, y);
-
-            y += step * 2;
-
-            // Inputs are labeled A, B, C, ... (alphabetically, matching truth table convention)
-            port->setName(QChar::fromLatin1(static_cast<char>('A' + index)));
-            ++index;
-        }
-    }
-
-    index = 0;
-
-    if (!outputs().isEmpty()) {
-        // Same centering formula as inputs; output column is on the right edge (x=64)
-        int y = 32 - (static_cast<int>(outputs().size()) * step) + step;
-
-        for (auto *port : outputs()) {
-
-            // Unreachable for the same reason as the input-port loop above.
-            if (!rotatesGraphic()) { // LCOV_EXCL_LINE
-                port->setRotation(0); // LCOV_EXCL_LINE
-            } // LCOV_EXCL_LINE
-
-            port->setPos(64, y);
-
-            y += step * 2;
-
-            // Outputs are labeled S0, S1, ... to distinguish them from input names
-            port->setName("S" + QString::number(index));
-            ++index;
-        }
-    }
+    // The ports take the base layout: columns centred on the 64 px body, at a 16 px pitch (every other grid line)
+    Element::updatePortsProperties();
 
     setLabelAnchor(QPointF(30, renderBodyBounds().bottom() + 5));
 
     generatePixmap();
+}
+
+std::optional<Element::PortAttributes> TruthTable::inputAttributes(const int index) const
+{
+    // Inputs are labeled A, B, C, ... (alphabetically, matching truth table convention)
+    return PortAttributes{.name = QString(QChar::fromLatin1(static_cast<char>('A' + index)))};
+}
+
+std::optional<Element::PortAttributes> TruthTable::outputAttributes(const int index) const
+{
+    // Outputs are labeled S0, S1, ... to distinguish them from input names
+    return PortAttributes{.name = "S" + QString::number(index)};
 }
 
 /// Shared, lazily-constructed vector renderer for the truth-table icon — one per process, drawn

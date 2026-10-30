@@ -33,8 +33,11 @@ public:
         return ":/Components/Memory/" + ThemeManager::themePath() + "/T-flipflop.svg";
     }
 
-    /// Updates port names for this flip-flop.
-    void updatePortsProperties() override;
+    /// The data inputs, the clock and the asynchronous ~Preset and ~Clear, by their places and names.
+    std::optional<PortAttributes> inputAttributes(int index) const override;
+
+    /// Q and ~Q, which start at 0 and 1.
+    std::optional<PortAttributes> outputAttributes(int index) const override;
 
     /// Updates output state on each rising clock edge.
     void updateLogic() override;

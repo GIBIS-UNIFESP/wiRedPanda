@@ -80,42 +80,45 @@ void Demux::setOutputSize(const int size)
 
 void Demux::updatePortsProperties()
 {
-    // Determine number of select lines based on number of outputs
-    const int numSelectLines = calculateSelectLines(outputSize());
+    Element::updatePortsProperties();
+    generatePixmap();
+}
 
+int Demux::bodyHeight() const
+{
     const int step = Constants::gridSize / 2; // 8
 
-    // Calculate element height to fit all output ports with padding
-    int outputPortsSpan = (outputSize() - 1) * step * 2;
-    int elementHeight = (std::max)(64, outputPortsSpan + step * 6);
-    // Snap to multiple of 16
-    elementHeight = ((elementHeight + 15) / 16) * 16;
-    int centerY = elementHeight / 2;
+    // Tall enough to fit all output ports with padding, snapped to a multiple of 16
+    const int outputPortsSpan = (outputSize() - 1) * step * 2;
+    const int elementHeight = (std::max)(64, outputPortsSpan + step * 6);
+    return ((elementHeight + 15) / 16) * 16;
+}
 
-    // Position data input on the left, centered
-    inputPort(0)->setPos(16, centerY);
-    inputPort(0)->setName("In");
+std::optional<Element::PortAttributes> Demux::inputAttributes(const int index) const
+{
+    const int step = Constants::gridSize / 2; // 8
+    const int elementHeight = bodyHeight();
 
-    // Position select lines at the bottom, spaced by gridSize to avoid overlap
-    int selectY = elementHeight - step;
-    for (int i = 0; i < numSelectLines; ++i) {
-        if ((1 + i) < inputSize()) {
-            inputPort(1 + i)->setPos(32 + (i * step * 2), selectY);
-            inputPort(1 + i)->setName(QString("S%1").arg(i));
-        }
+    // The data input on the left, centred
+    if (index == 0) {
+        return PortAttributes{.name = "In", .position = QPointF(16, elementHeight / 2)};
     }
 
-    // Position output ports on the right, centered vertically
-    int y = centerY - (outputSize() - 1) * step;
-    for (int i = 0; i < outputSize(); ++i) {
-        if (outputPort(i) != nullptr) {
-            outputPort(i)->setPos(48, y);
-            outputPort(i)->setName(QString("Out%1").arg(i));
-        }
-        y += step * 2;
+    // Select lines at the bottom, spaced by gridSize to avoid overlap
+    const int select = index - 1;
+    if (select >= calculateSelectLines(outputSize())) {
+        return std::nullopt;
     }
+    return PortAttributes{.name = QString("S%1").arg(select), .position = QPointF(32 + (select * step * 2), elementHeight - step)};
+}
 
-    generatePixmap();
+std::optional<Element::PortAttributes> Demux::outputAttributes(const int index) const
+{
+    const int step = Constants::gridSize / 2; // 8
+
+    // Outputs on the right, centred vertically
+    const int y = (bodyHeight() / 2) - ((outputSize() - 1) * step) + (index * step * 2);
+    return PortAttributes{.name = QString("Out%1").arg(index), .position = QPointF(48, y)};
 }
 
 QRectF Demux::boundingRect() const

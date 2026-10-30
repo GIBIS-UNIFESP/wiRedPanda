@@ -54,8 +54,11 @@ public:
     /// Propagates input values to matching outputs.
     void updateLogic() override;
 
-    /// Updates port positions when input count changes.
+    /// Offers the colour only to a single-input LED, then lays the ports out.
     void updatePortsProperties() override;
+
+    /// The inputs, numbered from 1.
+    std::optional<PortAttributes> inputAttributes(int index) const override;
 
     // --- Serialization ---
 

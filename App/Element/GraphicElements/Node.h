@@ -32,8 +32,11 @@ public:
 
     // --- Visual ---
 
-    /// Recalculates port positions for the current port count.
-    void updatePortsProperties() override;
+    /// The input, at the icon's left midpoint.
+    std::optional<PortAttributes> inputAttributes(int index) const override;
+
+    /// The output, at the icon's right midpoint.
+    std::optional<PortAttributes> outputAttributes(int index) const override;
 
     /// Copies the single input value to the single output (pass-through).
     void updateLogic() override;

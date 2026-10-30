@@ -215,13 +215,13 @@ void Led::updatePortsProperties()
     // inputs the color is determined entirely by the input bit pattern.
     setHasColors(inputSize() == 1);
 
-    for (auto *port : inputs()) {
-        port->setName(QString::number(inputs().indexOf(port) + 1));
-        port->setRequired(false);
-        port->setDefaultStatus(Status::Inactive);
-    }
-
     Element::updatePortsProperties();
+}
+
+std::optional<Element::PortAttributes> Led::inputAttributes(const int index) const
+{
+    // The inputs are numbered from 1, optional, and off when unconnected
+    return PortAttributes{.name = QString::number(index + 1), .required = false, .defaultStatus = Status::Inactive};
 }
 
 void Led::setAppearance(const bool useDefaultAppearance, const QString &fileName)

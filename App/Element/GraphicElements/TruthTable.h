@@ -53,8 +53,14 @@ public:
     /// Looks up the current input pattern in the truth table and drives outputs.
     void updateLogic() override;
 
-    /// Resizes the truth-table key when input or output count changes.
+    /// Lays the ports out, then places the label below the body and redraws it for the new port counts.
     void updatePortsProperties() override;
+
+    /// The inputs, named A, B, C, ...
+    std::optional<PortAttributes> inputAttributes(int index) const override;
+
+    /// The outputs, named S0, S1, ...
+    std::optional<PortAttributes> outputAttributes(int index) const override;
 
     // --- Serialization ---
 

@@ -40,23 +40,29 @@ struct ElementInfo<DLatch> {
 DLatch::DLatch(QGraphicsItem *parent)
     : Element(ElementType::DLatch, parent)
 {
-    // Call the most-derived override explicitly (see SRFlipFlop.cpp for rationale).
-    DLatch::updatePortsProperties();
+    // The ports take their places, names, requirements and defaults from this type's attributes
+    updatePortsProperties();
 }
 
-void DLatch::updatePortsProperties()
+std::optional<Element::PortAttributes> DLatch::inputAttributes(const int index) const
 {
     // D latch has no clock — it is level-sensitive: Q tracks D while Enable is HIGH.
     // No asynchronous preset/clear inputs, so only 2 inputs total.
-    inputPort(0)->setPos(0, 16);      inputPort(0)->setName("Data");
-    inputPort(1)->setPos(0, 48);      inputPort(1)->setName("Enable");
+    static const QList<PortAttributes> attributes{
+        {.name = "Data", .position = QPointF(0, 16)},
+        {.name = "Enable", .position = QPointF(0, 48)},
+    };
+    return attributesAt(attributes, index);
+}
 
-    outputPort(0)->setPos(64, 16);    outputPort(0)->setName("Q");
-    outputPort(1)->setPos(64, 48);    outputPort(1)->setName("~Q");
-
+std::optional<Element::PortAttributes> DLatch::outputAttributes(const int index) const
+{
     // Initial state: Q=0, ~Q=1
-    outputPort(0)->setDefaultStatus(Status::Inactive);
-    outputPort(1)->setDefaultStatus(Status::Active);
+    static const QList<PortAttributes> attributes{
+        {.name = "Q", .defaultStatus = Status::Inactive, .position = QPointF(64, 16)},
+        {.name = "~Q", .defaultStatus = Status::Active, .position = QPointF(64, 48)},
+    };
+    return attributesAt(attributes, index);
 }
 
 void DLatch::updateLogic()

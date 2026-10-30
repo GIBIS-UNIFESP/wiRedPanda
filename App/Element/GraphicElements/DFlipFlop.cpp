@@ -40,34 +40,33 @@ struct ElementInfo<DFlipFlop> {
 DFlipFlop::DFlipFlop(QGraphicsItem *parent)
     : Element(ElementType::DFlipFlop, parent)
 {
-    // Call the most-derived override explicitly (see SRFlipFlop.cpp for rationale).
-    DFlipFlop::updatePortsProperties();
+    // The ports take their places, names, requirements and defaults from this type's attributes
+    updatePortsProperties();
 }
 
-void DFlipFlop::updatePortsProperties()
+std::optional<Element::PortAttributes> DFlipFlop::inputAttributes(const int index) const
 {
     // Standard D flip-flop pin layout: D and Clock on the left,
-    // active-low ~Preset and ~Clear on top/bottom (asynchronous overrides),
-    // Q and ~Q on the right.
-    inputPort(0)->setPos( 0, 16);     inputPort(0)->setName("Data");
-    inputPort(1)->setPos( 0, 48);     inputPort(1)->setName("Clock");
-    inputPort(2)->setPos(32,  0);     inputPort(2)->setName("~Preset");
-    inputPort(3)->setPos(32, 64);     inputPort(3)->setName("~Clear");
-
-    outputPort(0)->setPos(64, 16);    outputPort(0)->setName("Q");
-    outputPort(1)->setPos(64, 48);    outputPort(1)->setName("~Q");
-
+    // active-low ~Preset and ~Clear on top/bottom (asynchronous overrides).
     // ~Preset and ~Clear are optional; when unconnected they default to Active (HIGH = not asserted)
     // because these signals are active-low — leaving them floating means "no override"
-    inputPort(2)->setRequired(false);
-    inputPort(3)->setRequired(false);
+    static const QList<PortAttributes> attributes{
+        {.name = "Data", .position = QPointF(0, 16)},
+        {.name = "Clock", .position = QPointF(0, 48)},
+        {.name = "~Preset", .required = false, .defaultStatus = Status::Active, .position = QPointF(32, 0)},
+        {.name = "~Clear", .required = false, .defaultStatus = Status::Active, .position = QPointF(32, 64)},
+    };
+    return attributesAt(attributes, index);
+}
 
-    inputPort(2)->setDefaultStatus(Status::Active);
-    inputPort(3)->setDefaultStatus(Status::Active);
-
+std::optional<Element::PortAttributes> DFlipFlop::outputAttributes(const int index) const
+{
     // Initial state: Q=0, ~Q=1 (reset/cleared state)
-    outputPort(0)->setDefaultStatus(Status::Inactive);
-    outputPort(1)->setDefaultStatus(Status::Active);
+    static const QList<PortAttributes> attributes{
+        {.name = "Q", .defaultStatus = Status::Inactive, .position = QPointF(64, 16)},
+        {.name = "~Q", .defaultStatus = Status::Active, .position = QPointF(64, 48)},
+    };
+    return attributesAt(attributes, index);
 }
 
 void DFlipFlop::updateLogic()

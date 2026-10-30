@@ -8,6 +8,7 @@
 #pragma once
 
 #include <memory>
+#include <optional>
 #include <utility>
 
 #include <QBitArray>
@@ -108,11 +109,34 @@ public:
     /**
      * \brief Repositions and reconfigures all ports after the port count changes.
      * \details Distributes input ports vertically on the left edge (x=0) and
-     * output ports on the right edge (x=64), spaced by half the scene grid size.
+     * output ports on the right edge (x=64), spaced by half the scene grid size, unless a port's attributes place it,
+     * and applies each port's inputAttributes() or outputAttributes().
      * Also reapplies rotation for non-rotatable elements.  Called after
      * construction, loading, and any input/output size change.
      */
     virtual void updatePortsProperties();
+
+    /// The attributes of one port that its element sets. An unset field is left as the port has it, so an element that
+    /// sets the requirement or the default elsewhere (a wireless node, say) keeps doing so.
+    struct PortAttributes {
+        std::optional<QString> name = std::nullopt;
+        std::optional<QString> sourceName = std::nullopt; ///< \c name in the source language; unset, the name itself.
+        std::optional<bool> required = std::nullopt;
+        std::optional<Status> defaultStatus = std::nullopt;
+        std::optional<QPointF> position = std::nullopt; ///< Where the port sits; unset, the port is placed in its column.
+    };
+
+    /**
+     * \brief Returns the attributes of input port \a index, or nothing when the port keeps its own.
+     * \details updatePortsProperties() applies the attributes it returns; the base class returns nothing.
+     */
+    virtual std::optional<PortAttributes> inputAttributes(int index) const;
+
+    /// As inputAttributes(), for output port \a index.
+    virtual std::optional<PortAttributes> outputAttributes(int index) const;
+
+    /// The entry of \a table for port \a index, or nothing past its end: a type whose ports are fixed lists them so.
+    static std::optional<PortAttributes> attributesAt(const QList<PortAttributes> &table, int index);
 
     /**
      * \brief Returns the wireless routing mode for this element.
@@ -618,11 +642,11 @@ protected:
     // --- Port Names ---
 
     /**
-     * \brief Names \a port "<letter> (<description>)", as a segment display names its inputs.
+     * \brief Returns a port's attributes named "<letter> (<description>)", as a segment display names its inputs.
      * \details The shown name translates \a description in this element's class context; the source name keeps it as
      * written. Mark \a description with QT_TR_NOOP() in the element's own code, so it is extracted in that context.
      */
-    void setDescribedPortName(Port *port, const char *letter, const char *description) const;
+    PortAttributes describedPort(const char *letter, const char *description) const;
 
     /// Owns the input/output port vectors and their creation/resize lifecycle; this element
     /// forwards its port-access interface here.  See ElementPorts.

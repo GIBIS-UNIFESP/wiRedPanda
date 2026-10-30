@@ -63,15 +63,19 @@ Node::Node(QGraphicsItem *parent)
     // default 64px offset which is designed for 64×64 elements).
     setLabelAnchor(QPointF(0, 32));
 
-    Node::updatePortsProperties();
+    updatePortsProperties();
 }
 
-void Node::updatePortsProperties()
+std::optional<Element::PortAttributes> Node::inputAttributes(const int index) const
 {
-    // Position ports at the left and right midpoints of the 32×32 node icon so
-    // they align with the horizontal wire grid (y=16 is the vertical centre).
-    inputPort()->setPos(  0, 16);
-    outputPort()->setPos(32, 16);
+    // Ports sit at the left and right midpoints of the 32×32 node icon so they align with the horizontal wire grid
+    // (y=16 is the vertical centre). The requirement is left alone: the wireless mode sets it.
+    return attributesAt({{.position = QPointF(0, 16)}}, index);
+}
+
+std::optional<Element::PortAttributes> Node::outputAttributes(const int index) const
+{
+    return attributesAt({{.position = QPointF(32, 16)}}, index);
 }
 
 void Node::updateLogic()

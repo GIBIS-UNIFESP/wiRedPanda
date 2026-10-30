@@ -40,40 +40,35 @@ struct ElementInfo<SRFlipFlop> {
 SRFlipFlop::SRFlipFlop(QGraphicsItem *parent)
     : Element(ElementType::SRFlipFlop, parent)
 {
-    // Call the most-derived override explicitly to guarantee correct port positions
-    // even if a subclass overrides updatePortsProperties() further.
-    SRFlipFlop::updatePortsProperties();
+    // The ports take their places, names, requirements and defaults from this type's attributes
+    updatePortsProperties();
 }
 
-void SRFlipFlop::updatePortsProperties()
+std::optional<Element::PortAttributes> SRFlipFlop::inputAttributes(const int index) const
 {
     // SR flip-flop: S (Set) and R (Reset) are clocked inputs; Clock is required.
     // ~Preset and ~Clear provide asynchronous overrides (active-low, same as DFlipFlop).
-    inputPort(0)->setPos( 0, 16);     inputPort(0)->setName("S");
-    inputPort(1)->setPos( 0, 32);     inputPort(1)->setName("Clock");
-    inputPort(2)->setPos( 0, 48);     inputPort(2)->setName("R");
-    inputPort(3)->setPos(32,  0);     inputPort(3)->setName("~Preset");
-    inputPort(4)->setPos(32, 64);     inputPort(4)->setName("~Clear");
-
-    outputPort(0)->setPos(64, 16);    outputPort(0)->setName("Q");
-    outputPort(1)->setPos(64, 48);    outputPort(1)->setName("~Q");
-
     // S, R, ~Preset, ~Clear are optional; only Clock is always required.
     // S and R unconnected default to Inactive (no set/reset action on clock edge).
     // ~Preset and ~Clear unconnected default to Active (HIGH = not asserted).
-    inputPort(0)->setRequired(false);
-    inputPort(2)->setRequired(false);
-    inputPort(3)->setRequired(false);
-    inputPort(4)->setRequired(false);
+    static const QList<PortAttributes> attributes{
+        {.name = "S", .required = false, .defaultStatus = Status::Inactive, .position = QPointF(0, 16)},
+        {.name = "Clock", .position = QPointF(0, 32)},
+        {.name = "R", .required = false, .defaultStatus = Status::Inactive, .position = QPointF(0, 48)},
+        {.name = "~Preset", .required = false, .defaultStatus = Status::Active, .position = QPointF(32, 0)},
+        {.name = "~Clear", .required = false, .defaultStatus = Status::Active, .position = QPointF(32, 64)},
+    };
+    return attributesAt(attributes, index);
+}
 
-    inputPort(0)->setDefaultStatus(Status::Inactive);
-    inputPort(2)->setDefaultStatus(Status::Inactive);
-    inputPort(3)->setDefaultStatus(Status::Active);
-    inputPort(4)->setDefaultStatus(Status::Active);
-
+std::optional<Element::PortAttributes> SRFlipFlop::outputAttributes(const int index) const
+{
     // Initial state: Q=0, ~Q=1
-    outputPort(0)->setDefaultStatus(Status::Inactive);
-    outputPort(1)->setDefaultStatus(Status::Active);
+    static const QList<PortAttributes> attributes{
+        {.name = "Q", .defaultStatus = Status::Inactive, .position = QPointF(64, 16)},
+        {.name = "~Q", .defaultStatus = Status::Active, .position = QPointF(64, 48)},
+    };
+    return attributesAt(attributes, index);
 }
 
 void SRFlipFlop::updateLogic()
