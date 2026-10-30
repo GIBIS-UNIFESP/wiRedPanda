@@ -279,10 +279,11 @@ and the label, which plan 1's port-layout and label goldens pin: on `master` bot
 One compiler-checked commit renames `GraphicElement` to `Element`, `GraphicElementInput` to `ElementInput`,
 `GraphicElementSerializer` to `ElementSerializer` and `Port::graphicElement()` to `element()`, with the names that
 carry the old one (`m_graphicElement`, the theme's label colour field, the developer guide's anchor and tables), the
-test classes included (on the branch, 289 files). It keeps the translation contexts `GraphicElement` and
-`GraphicElementSerializer`, which the catalogues key on, and the `GraphicElements/` directory; include runs are
-re-sorted case-insensitively, as the tree does, and the source, test and label lists re-sorted. Meta-object class names
-reach neither files nor MCP output. The strings golden does not change.
+test classes included (on the branch, 289 files; here 293, with the fuzz harnesses and the exception inventory's
+rows). It keeps the translation contexts `GraphicElement` and `GraphicElementSerializer`, which the catalogues key on,
+and the `GraphicElements/` directory; include runs are re-sorted case-insensitively, as the tree does, and the source,
+test and label lists re-sorted. Meta-object class names reach neither files nor MCP output. The strings golden does
+not change.
 
 ### 3.3 Ports as data, with untranslated source names
 
