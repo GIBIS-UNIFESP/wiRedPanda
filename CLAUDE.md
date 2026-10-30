@@ -119,6 +119,9 @@ What no single change owns: the pitfalls of building and testing this code base,
 - CI's Ubuntu 24.04 GCC 13.3 raises `-Wrange-loop-construct` where GCC 13.4 and 15 do not: a structured binding that
   copies a small pair from an initializer list (`for (const auto [a, b] : {std::pair(...), ...})`) binds by reference.
   The `ubuntu:24.04` image's `g++` reproduces it.
+- GCC 13 at `-O3`, CI's Ubuntu 24.04 release jobs, raises `-Wnull-dereference` where GCC 15 at `-O3` does not: a
+  member call through a pointer a conditional may leave null (`element ? element->id() : other->id()`, the inlined
+  `ItemWithId::id()`). A changed source's `-O3` compile is checked with `g++-13` too.
 - MSVC's C4702 (unreachable code) comes from its code generator, which `/external:W0` does not reach, so Qt 6.12's
   overflow helpers raise it from Qt's own headers; the build disables it (`/wd4702`), as Microsoft documents for the
   back end's C47xx warnings.
@@ -177,6 +180,9 @@ a new site is classified there (below a boundary, an expected condition, a broke
   `QTEST_FUNCTION_TIMEOUT` raised and `QTEST_DISABLE_STACK_DUMP=1`. QTest drops every message after 2,000 warnings, so
   a log that is counted needs `-maxwarnings 0`, and a check for "Maximum amount of warnings exceeded".
 - Tests of loops and oscillators have timeouts, so a mutant that makes a ring run forever fails instead of hanging.
+- A command can delete the element a test holds (an addition's undo, a deletion, a morph's redo), and its freed memory
+  still reads as it was here, so a test that reads it afterwards passes locally and fails under CI's ASan and on macOS:
+  a test takes what it needs (the id) when it builds the element.
 - A test class's name can differ from its file's (`TestLevel6Alu8bit.cpp` holds `TestLevel6ALU8Bit`), and
   `test_wiredpanda` takes the class name. Fixture `.panda` files are read at run time, so changing one needs no rebuild;
   a test source does.
