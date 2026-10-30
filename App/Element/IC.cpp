@@ -427,10 +427,7 @@ void IC::refresh()
 {
 }
 
-void IC::retranslate()
+QString IC::helpText() const
 {
-    Element::retranslate();
-    if (m_loaded) {
-        setToolTip(QString());
-    }
+    return m_loaded ? QString() : Element::helpText();
 }

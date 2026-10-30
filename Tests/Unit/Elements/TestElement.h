@@ -16,7 +16,7 @@ private slots:
     void testElementSaveLoad();
     void testElementSkin();
     void testElementAppearance();
-    void testElementTooltip();
+    void testElementHelpTextIsItsName();
     void testElementDoubleClick();
     void testTextElement();
     void testLineElement();
@@ -52,8 +52,8 @@ private slots:
     // Mux, Demux and TruthTable draw their bodies in code
     void testBodiesDrawnInCodeOfferNoAppearance();
 
-    // retranslate()'s translated-name/tooltip/port-name refresh
-    void testRetranslateUpdatesTranslatedNameToolTipAndPortName();
+    // The translated name and help text are read in the language current when asked, not fixed at creation
+    void testTheNameFollowsTheLanguage();
     void testSnapToGridKeepsAPositionBeyondIntRange();
 
     // updatePortsProperties() applies only the port attributes an element sets

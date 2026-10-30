@@ -192,7 +192,6 @@ void Port::setName(const QString &name, const QString &sourceName)
     m_name = name;
     m_nameSource = nullptr;
     m_sourceName = sourceName;
-    setToolTip(name);
 }
 
 void Port::setNameSource(std::function<QString()> name, const QString &sourceName)
@@ -202,7 +201,6 @@ void Port::setNameSource(std::function<QString()> name, const QString &sourceNam
     m_name.clear();
     m_nameSource = std::move(name);
     m_sourceName = sourceName;
-    setToolTip(m_nameSource());
 }
 
 void Port::setDefaultStatus(const Status defaultStatus)

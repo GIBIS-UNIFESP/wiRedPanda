@@ -3,6 +3,7 @@
 
 #include "Tests/Integration/TestIc.h"
 
+#include <QCoreApplication>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
@@ -29,6 +30,7 @@
 #include "App/Scene/Workspace.h"
 #include "App/Versions.h"
 #include "App/Wiring/Connection.h"
+#include "Tests/Common/Goldens.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestIC::initTestCase()
@@ -335,10 +337,10 @@ void TestIC::testOrientedICKeepsItsPortsAcrossAReopen()
     }
 }
 
-void TestIC::testLoadedICKeepsNoToolTipAfterARetranslation()
+void TestIC::testALoadedIcHasNoHelpText()
 {
-    // The hover preview names a loaded IC, so it has no tooltip; one with nothing loaded keeps its type name. The main
-    // window retranslates every element through the base class at a language change.
+    // The hover preview names a loaded IC, so it has no help text, whether it came from a file or a blob, and in any
+    // language; one with nothing loaded has its type's name. None carries a tooltip of its own.
     const QString icFile = TestUtils::examplesDir() + "dflipflop.panda";
 
     WorkSpace workspace;
@@ -355,18 +357,21 @@ void TestIC::testLoadedICKeepsNoToolTipAfterARetranslation()
     auto *unloaded = new IC();
     workspace.scene()->addItem(unloaded);
 
-    QVERIFY(fromFile->toolTip().isEmpty());
-    QVERIFY(fromBlob->toolTip().isEmpty());
-    QVERIFY(!unloaded->toolTip().isEmpty());
-
-    for (Element *element : {static_cast<Element *>(fromFile), static_cast<Element *>(fromBlob),
-                                    static_cast<Element *>(unloaded)}) {
-        element->retranslate();
+    TestUtils::TagEveryStringTranslator tagging;
+    for (const bool tagged : {false, true}) {
+        if (tagged) {
+            QCoreApplication::installTranslator(&tagging);
+        }
+        QVERIFY2(fromFile->helpText().isEmpty(), qPrintable(fromFile->helpText()));
+        QVERIFY2(fromBlob->helpText().isEmpty(), qPrintable(fromBlob->helpText()));
+        QCOMPARE(unloaded->helpText(), ElementFactory::translatedName(ElementType::IC));
     }
+    QCOMPARE(unloaded->helpText(), QStringLiteral("[tr IC]"));
+    QCoreApplication::removeTranslator(&tagging);
 
-    QCOMPARE(fromFile->toolTip(), QString());
-    QCOMPARE(fromBlob->toolTip(), QString());
-    QCOMPARE(unloaded->toolTip(), ElementFactory::translatedName(ElementType::IC));
+    for (const auto *ic : {fromFile, fromBlob, unloaded}) {
+        QVERIFY(ic->toolTip().isEmpty());
+    }
 }
 
 // Integration Tests

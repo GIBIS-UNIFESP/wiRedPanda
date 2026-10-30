@@ -271,14 +271,13 @@ void TestElementAdvanced::testLabelProperty()
     QCOMPARE(elem->label(), QString("TestLabel"));
 }
 
-void TestElementAdvanced::testTooltipProperty()
+void TestElementAdvanced::testHelpTextProperty()
 {
     auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Or));
     QVERIFY(elem != nullptr);
 
-    // Tooltip should be set (at least translated name)
-    QString tooltip = elem->toolTip();
-    QVERIFY(!tooltip.isEmpty());
+    // The help text is the translated name
+    QCOMPARE(elem->helpText(), ElementFactory::translatedName(ElementType::Or));
 }
 
 void TestElementAdvanced::testLabelVisibility()

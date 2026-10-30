@@ -144,7 +144,7 @@ Status inputStatus(Element *elm, int port)
                "  Element has ZERO input ports!\n" // LCOV_EXCL_LINE
                "  This element may only have OUTPUT ports (e.g., InputSwitch)\n" // LCOV_EXCL_LINE
                "  Use outputStatus() to read output ports, or read downstream elements to verify signal propagation.", // LCOV_EXCL_LINE
-               port, qPrintable(elm->objectName()), elm->metaObject()->className()); // LCOV_EXCL_LINE
+               port, qPrintable(elm->translatedName()), elm->metaObject()->className()); // LCOV_EXCL_LINE
     } // LCOV_EXCL_LINE
     return inputPort->status();
 }
@@ -159,7 +159,7 @@ Status outputStatus(Element *elm, int port)
                "  Element type: %s\n" // LCOV_EXCL_LINE
                "  Element has no output port at this index!\n" // LCOV_EXCL_LINE
                "  Check that the port index is within valid range for this element type", // LCOV_EXCL_LINE
-               port, qPrintable(elm->objectName()), elm->metaObject()->className()); // LCOV_EXCL_LINE
+               port, qPrintable(elm->translatedName()), elm->metaObject()->className()); // LCOV_EXCL_LINE
     } // LCOV_EXCL_LINE
     return outputPort->status();
 }
@@ -486,7 +486,7 @@ QVector<DiffStep> generateDifferentialVectors(
             // The export is checked against a level, so an Unknown or Error output is the engine's, not a 0.
             const Status status = inputStatus(led, 0);
             if ((status != Status::Active) && (status != Status::Inactive)) {
-                QTest::qFail(qPrintable(QString("the engine's output %1 is not a level").arg(led->objectName())),
+                QTest::qFail(qPrintable(QString("the engine's output %1 is not a level").arg(led->translatedName())),
                              __FILE__, __LINE__);
             }
             bits.append((status == Status::Active) ? 1 : 0);
@@ -688,7 +688,7 @@ int CircuitBuilder::portByLabelImpl(Element *element, const QString &label)
         "  Available %1 ports:\n    %4"
     ).arg(PortTraits::portType(),
           label,
-          element->objectName(),
+          element->translatedName(),
           availablePortsImpl<PortTraits>(element));
 
     qFatal("%s", qPrintable(errorMsg));
@@ -751,7 +751,7 @@ Connection *CircuitBuilder::connect(Element *from, int fromPort,
         qFatal("FATAL ERROR in CircuitBuilder::connect():\n"
                "  'from' element %s (type: %s) has no output port %d\n"
                "  Check that the port index is within valid range for this element type",
-               qPrintable(from->objectName()),
+               qPrintable(from->translatedName()),
                from->metaObject()->className(),
                fromPort);
     }
@@ -761,7 +761,7 @@ Connection *CircuitBuilder::connect(Element *from, int fromPort,
         qFatal("FATAL ERROR in CircuitBuilder::connect():\n"
                "  'to' element %s (type: %s) has no input port %d\n"
                "  Check that the port index is within valid range for this element type",
-               qPrintable(to->objectName()),
+               qPrintable(to->translatedName()),
                to->metaObject()->className(),
                toPort);
     }

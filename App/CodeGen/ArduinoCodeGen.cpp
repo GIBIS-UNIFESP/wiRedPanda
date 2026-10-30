@@ -780,7 +780,7 @@ void ArduinoCodeGen::assignVariablesRec(const QVector<Element *> &elements)
         case ElementType::Line:
         case ElementType::Text:
         case ElementType::Unknown:
-            throw PANDACEPTION("Element type not supported: %1", elm->objectName()); // LCOV_EXCL_LINE
+            throw PANDACEPTION("Element type not supported: %1", elm->translatedName()); // LCOV_EXCL_LINE
         }
     }
 }
@@ -1009,7 +1009,7 @@ void ArduinoCodeGen::emitTruthTable(Element *elm)
         // runs, so outputVarName is always already populated here.
         if (outputVarName.isEmpty()) { // LCOV_EXCL_LINE
             if (out == 0) { // LCOV_EXCL_LINE
-                throw PANDACEPTION("Output variable not mapped for TruthTable: %1", elm->objectName()); // LCOV_EXCL_LINE
+                throw PANDACEPTION("Output variable not mapped for TruthTable: %1", elm->translatedName()); // LCOV_EXCL_LINE
             } // LCOV_EXCL_LINE
             m_stream << "// TruthTable '" << ElementFactory::untranslatedName(elm->elementType()) << "' output " << out << " is disconnected — no code emitted." << Qt::endl; // LCOV_EXCL_LINE
             continue; // LCOV_EXCL_LINE
@@ -1233,7 +1233,7 @@ void ArduinoCodeGen::assignLogicOperator(Element *elm)
     } else {
         // Not reachable: every gate/Node type dispatched here (And/Or/Nand/Nor/Xor/Xnor/Not/
         // Node) always has exactly 1 output by construction.
-        qWarning() << "assignLogicOperator: element" << elm->objectName() << "has" << elm->outputs().size() << "outputs (expected 1) — skipping"; // LCOV_EXCL_LINE
+        qWarning() << "assignLogicOperator: element" << elm->translatedName() << "has" << elm->outputs().size() << "outputs (expected 1) — skipping"; // LCOV_EXCL_LINE
     }
 }
 

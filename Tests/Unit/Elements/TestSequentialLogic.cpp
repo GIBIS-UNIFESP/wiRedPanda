@@ -715,7 +715,7 @@ void TestSequentialLogic::testThemedPictureFollowsTheThemeThroughARefresh()
         const QImage dark = drawnNew(make, Theme::Dark);
         ThemeManager::setTheme(Theme::Light);
         std::unique_ptr<Element> element(make());
-        const QString name = element->objectName();
+        const QString name = element->translatedName();
         QVERIFY2(drawn(*element) != dark, qPrintable(name));
 
         ThemeManager::setTheme(Theme::Dark);
@@ -742,7 +742,7 @@ void TestSequentialLogic::testThemeSwitchKeepsACustomAppearance()
         const QImage dark = drawnNew(make, Theme::Dark);
         ThemeManager::setTheme(Theme::Light);
         std::unique_ptr<Element> element(make());
-        const QString name = element->objectName();
+        const QString name = element->translatedName();
         element->setAppearance(false, png);
         const QImage custom = drawn(*element);
 
@@ -789,21 +789,21 @@ void TestSequentialLogic::testUndoAfterAThemeSwitchShowsTheCurrentTheme()
     ThemeManager::setTheme(Theme::Dark);
     scene.updateTheme();
     for (int i = 0; i < elements.size(); ++i) {
-        QVERIFY2(drawn(*elements.at(i)) == dark.at(i), qPrintable(elements.at(i)->objectName()));
+        QVERIFY2(drawn(*elements.at(i)) == dark.at(i), qPrintable(elements.at(i)->translatedName()));
     }
 
     scene.undoStack()->undo();
     for (int i = 0; i < elements.size(); ++i) {
         auto *element = elements.at(i);
         QCOMPARE(element->label(), QString());
-        QVERIFY2(drawn(*element) == dark.at(i), qPrintable(element->objectName()));
-        QVERIFY2(element->externalFiles().isEmpty(), qPrintable(element->objectName()));
+        QVERIFY2(drawn(*element) == dark.at(i), qPrintable(element->translatedName()));
+        QVERIFY2(element->externalFiles().isEmpty(), qPrintable(element->translatedName()));
     }
 
     scene.undoStack()->redo();
     for (int i = 0; i < elements.size(); ++i) {
         auto *element = elements.at(i);
         QCOMPARE(element->label(), QString("Q"));
-        QVERIFY2(drawn(*element) == dark.at(i), qPrintable(element->objectName()));
+        QVERIFY2(drawn(*element) == dark.at(i), qPrintable(element->translatedName()));
     }
 }

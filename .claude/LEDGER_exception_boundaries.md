@@ -150,12 +150,12 @@ trip only reloads nodes), which each fix narrows by reading.
 | UNDO | A command's `undo()` or `redo()`: `QUndoStack::push()` runs the first `redo()`, and `QUndoStack::undo()` and `redo()` the others; QtGui is built without unwinding, so a throw ends the process on macOS (P2.16) even under a `guardedSlot()`. Since EB.5 the scene's Undo and Redo actions call `Scene::undo()` and `redo()` inside `guardedSlot()`, which throw what a dropped command kept once the stack has returned; since EB.13 a push through `Scene::receiveCommand()` reports it, and `pushCommand()` throws it; BeWavedDolphin's are connected straight to its stack (`BeWavedDolphin.cpp:112`, `:113`), which is sound: its one command, `SetCellsCommand`, sets cells and runs the sweep again (`BewavedDolphin::run()`, `WaveformSimulator::sweep()`), which saves, steps and restores the simulation's state and reaches no throw site (read 2026-10-30) | **No** |
 | TIMER | The autosave's debounce timer's `timeout` (`Workspace.cpp:80`). Since EB.7 it calls `WorkSpace::autosaveOnTimer()` (`:767`), which runs `autosave()` in a `catch` and reports the first failure of a run inside `guardedSlot()` | Yes (EB.7) |
 | WATCH | `ICRegistry::onFileChanged()`, a queued slot wrapped in `guardedSlot()` (`ICRegistry.cpp:96`), its rethrow at `:126` caught there | Yes |
-| DROP | A drop's or a drag's event handler: `Scene::dropEvent()` (`Scene.cpp:1468`) to `SceneDropHandler::handleNewElementDrop()` (builds the element, a file-backed IC loading its file, `IC::loadFromDrop()`) and `handleCloneDrag()` (deserializes the drag), `TrashButton`'s and `ICDropZone`'s drag handlers. A drop's data can come from another program or another wiRedPanda. Since EB.8 every payload is read by `readDragDropPayload(const QMimeData *)` (`DragDropPayload.cpp`), which throws nothing, so a drag that does not read is refused while it hovers; the scene's drop runs its handlers inside `guardedSlot()` | Yes (EB.8) |
+| DROP | A drop's or a drag's event handler: `Scene::dropEvent()` (`Scene.cpp:1473`) to `SceneDropHandler::handleNewElementDrop()` (builds the element, a file-backed IC loading its file, `IC::loadFromDrop()`) and `handleCloneDrag()` (deserializes the drag), `TrashButton`'s and `ICDropZone`'s drag handlers. A drop's data can come from another program or another wiRedPanda. Since EB.8 every payload is read by `readDragDropPayload(const QMimeData *)` (`DragDropPayload.cpp`), which throws nothing, so a drag that does not read is refused while it hovers; the scene's drop runs its handlers inside `guardedSlot()` | Yes (EB.8) |
 | PALETTE | The palette's `addElementRequested`, connected to a lambda (`MainWindow.cpp:408`) that calls `Scene::addItem()`, `SceneDropHandler::addFromMimeData()`: builds the element, a file-backed IC loading its file. Since EB.6 the call runs inside `guardedSlot()` | Yes (EB.6) |
-| PASTE | Edit's Paste and Duplicate (and Copy, Cut, Delete, Clear Selection), each connected by `connectSceneAction()` (`MainWindow.cpp:455`) to a lambda, and the canvas menu's Paste (`Scene.cpp:1051`): `ClipboardManager::paste()` reads the clipboard, which another program or another wiRedPanda may have written, and deserializes it, reading everything before it changes anything. Since EB.6 both lambdas run the action inside `guardedSlot()` | Yes (EB.6) |
-| BUILD | Building a command, in whatever frame builds it: the scene's key, mouse and double-click handlers (`Scene.cpp:1540`, `:1622`, `:1693`), the property shortcuts (`:937` to `:943`), a lambda at `Scene.cpp:158`, the inline label editor's lambdas (`InlineLabelEditor.cpp:73`, `:74`), the element editor's slots that apply an edit and its context menu, and the exercise's and tour's steps. `UpdateCommand`'s constructor reloads its old and new snapshots when the selection holds a wireless-capable element (a node), and `SplitCommand`'s checks its wire. Since EB.13 each push goes through `Scene::receiveCommand()`, which reports a dropped command inside `guardedSlot()` (`Scene.cpp:665`) | Yes (EB.13) |
+| PASTE | Edit's Paste and Duplicate (and Copy, Cut, Delete, Clear Selection), each connected by `connectSceneAction()` (`MainWindow.cpp:455`) to a lambda, and the canvas menu's Paste (`Scene.cpp:1056`): `ClipboardManager::paste()` reads the clipboard, which another program or another wiRedPanda may have written, and deserializes it, reading everything before it changes anything. Since EB.6 both lambdas run the action inside `guardedSlot()` | Yes (EB.6) |
+| BUILD | Building a command, in whatever frame builds it: the scene's key, mouse and double-click handlers (`Scene.cpp:1545`, `:1622`, `:1693`), the property shortcuts (`:937` to `:943`), a lambda at `Scene.cpp:159`, the inline label editor's lambdas (`InlineLabelEditor.cpp:73`, `:74`), the element editor's slots that apply an edit and its context menu, and the exercise's and tour's steps. `UpdateCommand`'s constructor reloads its old and new snapshots when the selection holds a wireless-capable element (a node), and `SplitCommand`'s checks its wire. Since EB.13 each push goes through `Scene::receiveCommand()`, which reports a dropped command inside `guardedSlot()` (`Scene.cpp:666`) | Yes (EB.13) |
 | CHILD | A sub-circuit's tab: opened by `WorkspaceManager::openICInTab()` (`WorkspaceManager.cpp:332`) from the scene's `openICRequested` (a lambda, `MainWindow.cpp:110`) and the element editor's Edit Sub-circuit (a lambda, `:385`), and saved into its parent's IC (`WorkSpace::saveChildICBlob()`, `Workspace.cpp:849`, rethrowing at `:888`). Since EB.6 both lambdas open it inside `guardedSlot()`, a blob that does not read closing the tab again (`WorkspaceManager.cpp:357`); the save calls the parent directly from `WorkSpace::save()` (`Workspace.cpp:325`), whose callers are guarded, before the tab is marked saved, instead of through `icBlobSaved` and Qt's signal dispatch | Yes (EB.6) |
-| UI | Other slots and handlers with no catch: the main window's `retranslateUi()`, `updateTheme()` and `onCurrentTabChanged()`, the exercise's and the tour's step lambdas (`MainWindow.cpp:1409`, `:1489`), the element editor's `contextMenu()` and `selectionChanged()`, and `ElementTabNavigator`'s event filter. Read for EB.6: they reach the factory's and the metadata's invariants (EB.9), and the context menu and the step lambdas push commands, whose failure `Scene::receiveCommand()` reports since EB.13 (BUILD); the context menu's sub-circuit actions emit signals whose slots are guarded (OPEN-Q, CHILD). `ICController::removeICFile()`, listed here first, is reached only through a guarded lambda | No: EB.9 |
+| UI | Other slots and handlers with no catch: the main window's `retranslateUi()`, `updateTheme()` and `onCurrentTabChanged()`, the exercise's and the tour's step lambdas (`MainWindow.cpp:1405`, `:1489`), the element editor's `contextMenu()` and `selectionChanged()`, and `ElementTabNavigator`'s event filter. Read for EB.6: they reach the factory's and the metadata's invariants (EB.9), and the context menu and the step lambdas push commands, whose failure `Scene::receiveCommand()` reports since EB.13 (BUILD); the context menu's sub-circuit actions emit signals whose slots are guarded (OPEN-Q, CHILD). `ICController::removeICFile()`, listed here first, is reached only through a guarded lambda | No: EB.9 |
 | CREATE | An element's constructor setting its built-in sound (`AudioBox`, `startAudio()`) or reading its metadata (`Buzzer`, every element through `Element`'s constructor) | Its caller's |
 | TEST-ONLY | `ArduinoCodeGen::generateTestbench()`, which only the tests call | n/a |
 | MCP | A request, inside `BaseHandler::tryCommand()` (`BaseHandler.h:57`) or the processor's own catches. A command pushed there runs its first `redo()` inside `QUndoStack::push()`, so a throw from it crosses QtGui before the catch: UNDO's case. Since EB.13 its handlers push through `Scene::pushCommand()`, which throws a dropped command's failure once the stack has returned | Yes, except through a command |
@@ -221,7 +221,7 @@ trip only reloads nodes), which each fix narrows by reading.
 | `App/Element/ICLoader.cpp:244` | `ICLoader::loadFileDirectly()`: an IC's file that is gone or does not read: a snapshot restore reaches it (EB.4) | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
 | `App/Element/ICLoader.cpp:328` | `ICLoader::migrateFile()`: an IC's file that cannot be migrated or backed up | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
 | `App/Element/ICLoader.cpp:337` | `ICLoader::migrateFile()`: an IC's file that cannot be migrated or backed up | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
-| `App/Element/ICLoader.cpp:406` | `ICLoader::deserializeAndLoad()`: an IC's file that does not read | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
+| `App/Element/ICLoader.cpp:404` | `ICLoader::deserializeAndLoad()`: an IC's file that does not read | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
 | `App/IO/FileUtils.h:37` | `copyToDir()`: a file that cannot be copied | MCP, OPEN-Q | E | Q: OPEN-Q (EB.6) |
 | `App/IO/Serialization.cpp:43` | `readVersionNumber()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
 | `App/IO/Serialization.cpp:89` | `readBoundedString()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
@@ -320,7 +320,7 @@ trip only reloads nodes), which each fix narrows by reading.
 | `App/Core/Application.cpp:110` | `Application::notify()` | Any `std::exception` from an event's dispatch: reported | Stays: the last-resort reporter (§2); nothing relies on it |
 | `App/Core/Application.h:141` | `Application::guardedSlot()` | Any `std::exception` from the slot's body: reported | Stays: the boundary of every guarded slot |
 | `App/Core/DragDropPayload.cpp:43` | `readDragDropPayload(const QMimeData *)` | A payload that does not read: no payload, the drag refused (EB.8) | Stays |
-| `App/Element/ICLoader.cpp:530` | `ICLoader::renderPreview()` | A definition that no longer loads: no preview | Stays: a fallback |
+| `App/Element/ICLoader.cpp:528` | `ICLoader::renderPreview()` | A definition that no longer loads: no preview | Stays: a fallback |
 | `App/IO/Serialization.cpp:918` | `Serialization::copyPandaFile()` | A copied file whose preamble does not read: its sub-circuits not followed | Stays: a fallback |
 | `App/Main.cpp:443` | `main()` | Any `std::exception` from the command-line modes: a message box or stderr | Stays: CLI's boundary |
 | `App/Scene/ClipboardManager.cpp:140` | `ClipboardManager::paste()` | A blob registry that does not read: pasted without it | Stays: a fallback; the items' own read refuses the paste when they need a missing blob |
@@ -382,11 +382,11 @@ It does not cover a command the body pushes, directly or through the scene: that
 | `App/BeWavedDolphin/BeWavedDolphin.cpp:1046` | `BewavedDolphin::on_actionAboutQt_triggered()` | Stays |
 | `App/Core/Application.h:137` | Its definition | Stays |
 | `App/Scene/ICRegistry.cpp:96` | `ICRegistry::onFileChanged()` | Stays |
-| `App/Scene/Scene.cpp:96` | `Scene::Scene()`: the Undo action's lambda (EB.5) | Stays |
-| `App/Scene/Scene.cpp:106` | `Scene::Scene()`: the Redo action's lambda (EB.5) | Stays |
-| `App/Scene/Scene.cpp:665` | `Scene::receiveCommand()`: every push of the interface (EB.13) | Stays |
-| `App/Scene/Scene.cpp:1051` | `Scene::contextMenu()`: the canvas menu's Paste (EB.6) | Stays |
-| `App/Scene/Scene.cpp:1483` | `Scene::dropEvent()`: the drop's handlers (EB.8) | Stays |
+| `App/Scene/Scene.cpp:97` | `Scene::Scene()`: the Undo action's lambda (EB.5) | Stays |
+| `App/Scene/Scene.cpp:107` | `Scene::Scene()`: the Redo action's lambda (EB.5) | Stays |
+| `App/Scene/Scene.cpp:666` | `Scene::receiveCommand()`: every push of the interface (EB.13) | Stays |
+| `App/Scene/Scene.cpp:1056` | `Scene::contextMenu()`: the canvas menu's Paste (EB.6) | Stays |
+| `App/Scene/Scene.cpp:1488` | `Scene::dropEvent()`: the drop's handlers (EB.8) | Stays |
 | `App/Scene/Workspace.cpp:778` | `WorkSpace::autosaveOnTimer()`: the first failure of a run (EB.7) | Stays |
 | `App/Simulation/Simulation.cpp:39` | `Simulation::Simulation()` | Stays |
 | `App/UI/ExportController.cpp:114` | `ExportController::exportArduinoDialog()` | Stays |
@@ -421,28 +421,28 @@ It does not cover a command the body pushes, directly or through the scene: that
 | `App/UI/MainWindow.cpp:930` | `MainWindow::on_actionZoomOut_triggered()` | Stays |
 | `App/UI/MainWindow.cpp:941` | `MainWindow::on_actionResetZoom_triggered()` | Stays |
 | `App/UI/MainWindow.cpp:952` | `MainWindow::on_actionZoomToFit_triggered()` | Stays |
-| `App/UI/MainWindow.cpp:1103` | `MainWindow::on_actionRestart_triggered()` | Stays |
-| `App/UI/MainWindow.cpp:1115` | `MainWindow::on_actionFastMode_triggered()` | Stays |
-| `App/UI/MainWindow.cpp:1124` | `MainWindow::on_actionWaveform_triggered()` | Stays |
-| `App/UI/MainWindow.cpp:1151` | `MainWindow::on_actionLightTheme_triggered()` | Stays |
-| `App/UI/MainWindow.cpp:1159` | `MainWindow::on_actionDarkTheme_triggered()` | Stays |
-| `App/UI/MainWindow.cpp:1167` | `MainWindow::on_actionSystemTheme_triggered()` | Stays |
-| `App/UI/MainWindow.cpp:1187` | `MainWindow::on_actionFlipHorizontally_triggered()` | Stays |
-| `App/UI/MainWindow.cpp:1198` | `MainWindow::on_actionFlipVertically_triggered()` | Stays |
-| `App/UI/MainWindow.cpp:1209` | `MainWindow::on_actionAlignLeft_triggered()` | Stays |
-| `App/UI/MainWindow.cpp:1220` | `MainWindow::on_actionAlignRight_triggered()` | Stays |
-| `App/UI/MainWindow.cpp:1231` | `MainWindow::on_actionAlignTop_triggered()` | Stays |
-| `App/UI/MainWindow.cpp:1242` | `MainWindow::on_actionAlignBottom_triggered()` | Stays |
-| `App/UI/MainWindow.cpp:1253` | `MainWindow::on_actionAlignHorizontalCenter_triggered()` | Stays |
-| `App/UI/MainWindow.cpp:1264` | `MainWindow::on_actionAlignVerticalCenter_triggered()` | Stays |
-| `App/UI/MainWindow.cpp:1275` | `MainWindow::on_actionDistributeHorizontally_triggered()` | Stays |
-| `App/UI/MainWindow.cpp:1286` | `MainWindow::on_actionDistributeVertically_triggered()` | Stays |
-| `App/UI/MainWindow.cpp:1307` | `MainWindow::on_actionFullscreen_triggered()` | Stays |
-| `App/UI/MainWindow.cpp:1315` | `MainWindow::on_actionMute_triggered()` | Stays |
-| `App/UI/MainWindow.cpp:1328` | `MainWindow::on_actionLabelsUnderIcons_triggered()` | Stays |
-| `App/UI/MainWindow.cpp:1337` | `MainWindow::on_actionICPreview_triggered()` | Stays |
-| `App/UI/MainWindow.cpp:1345` | `MainWindow::on_actionCheckForUpdates_triggered()` | Stays |
-| `App/UI/MainWindow.cpp:1353` | `MainWindow::on_actionShowMinimap_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:1099` | `MainWindow::on_actionRestart_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:1111` | `MainWindow::on_actionFastMode_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:1120` | `MainWindow::on_actionWaveform_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:1147` | `MainWindow::on_actionLightTheme_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:1155` | `MainWindow::on_actionDarkTheme_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:1163` | `MainWindow::on_actionSystemTheme_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:1183` | `MainWindow::on_actionFlipHorizontally_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:1194` | `MainWindow::on_actionFlipVertically_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:1205` | `MainWindow::on_actionAlignLeft_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:1216` | `MainWindow::on_actionAlignRight_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:1227` | `MainWindow::on_actionAlignTop_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:1238` | `MainWindow::on_actionAlignBottom_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:1249` | `MainWindow::on_actionAlignHorizontalCenter_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:1260` | `MainWindow::on_actionAlignVerticalCenter_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:1271` | `MainWindow::on_actionDistributeHorizontally_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:1282` | `MainWindow::on_actionDistributeVertically_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:1303` | `MainWindow::on_actionFullscreen_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:1311` | `MainWindow::on_actionMute_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:1324` | `MainWindow::on_actionLabelsUnderIcons_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:1333` | `MainWindow::on_actionICPreview_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:1341` | `MainWindow::on_actionCheckForUpdates_triggered()` | Stays |
+| `App/UI/MainWindow.cpp:1349` | `MainWindow::on_actionShowMinimap_triggered()` | Stays |
 | `App/UI/WorkspaceManager.cpp:281` | `WorkspaceManager::newTab()` | Stays |
 | `App/UI/WorkspaceManager.cpp:329` | `WorkspaceManager::openPandaFile()` (EB.6) | Stays |
 | `App/UI/WorkspaceManager.cpp:395` | `WorkspaceManager::openFile()` | Stays |

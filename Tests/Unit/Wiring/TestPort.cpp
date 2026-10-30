@@ -21,12 +21,15 @@
 #include "App/Wiring/Port.h"
 #include "Tests/Common/TestUtils.h"
 
-void TestPort::testPortTooltip()
+void TestPort::testPortHasNoTooltip()
 {
-    // Port is abstract — use InputPort
+    // The scene's hover labels show a port's name when the pointer rests on it, asked for then, so a name, explicit or
+    // derived, leaves the port without a tooltip of its own. Port is abstract — use InputPort
     InputPort port;
-    port.setToolTip("Test tooltip");
-    QCOMPARE(port.toolTip(), QString("Test tooltip"));
+    port.setName("A");
+    QVERIFY(port.toolTip().isEmpty());
+    port.setNameSource([] { return QString("B"); }, "B");
+    QVERIFY(port.toolTip().isEmpty());
 }
 
 void TestPort::testPortHoverState()

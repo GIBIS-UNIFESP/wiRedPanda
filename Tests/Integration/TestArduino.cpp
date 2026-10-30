@@ -2319,7 +2319,7 @@ QVector<ArduinoCodeGen::TestVector> TestArduino::generateTruthTable(
             if ((status != Status::Active) && (status != Status::Inactive) && !nonLevelReported) {
                 nonLevelReported = true;
                 QTest::qFail(qPrintable(QString("the engine's output %1 is not a level for input combination %2")
-                                            .arg(outputs[k].elm->objectName()).arg(i)),
+                                            .arg(outputs[k].elm->translatedName()).arg(i)),
                              __FILE__, __LINE__);
             }
             entry.outputs[k] = (status == Status::Active);
@@ -2746,7 +2746,7 @@ void TestArduino::testArduinoSequentialMultiCycleCpu8Bit()
         for (auto *led : std::as_const(scanOutputs)) {
             const Status status = TestUtils::inputStatus(led);
             if ((status != Status::Active) && (status != Status::Inactive) && nonLevelOutput.isEmpty()) {
-                nonLevelOutput = led->objectName();
+                nonLevelOutput = led->translatedName();
             }
             v.outputs.append(status == Status::Active);
         }

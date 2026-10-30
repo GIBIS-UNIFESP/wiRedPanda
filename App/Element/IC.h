@@ -138,8 +138,9 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     /// \reimp
     void refresh() override;
-    /// Keeps a loaded IC's tooltip clear, since the hover preview names it; one with nothing loaded shows its type name.
-    void retranslate() override;
+    /// None once a sub-circuit has loaded, since the hover preview names the IC; one with nothing loaded has its type's
+    /// name.
+    QString helpText() const override;
 
     // --- External file dependencies ---
 

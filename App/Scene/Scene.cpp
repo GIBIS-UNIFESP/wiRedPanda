@@ -20,6 +20,7 @@
 #include <QPointer>
 #include <QPolygon>
 #include <QScrollBar>
+#include <QToolTip>
 #include <QUrl>
 
 #include "App/Core/Application.h"
@@ -1014,6 +1015,10 @@ void Scene::retranslateUi()
 {
     updateUndoText(m_undoStack.undoText());
     updateRedoText(m_undoStack.redoText());
+
+    for (auto *element : elements()) {
+        element->languageChanged();
+    }
 }
 
 void Scene::updateUndoText(const QString &text)
@@ -1706,13 +1711,25 @@ void Scene::helpEvent(QGraphicsSceneHelpEvent *event)
     // A help event fires exactly when Qt is about to show a tooltip (after the wake-up
     // delay). If the cursor is over a port, show its own label plus its connected peers'
     // labels in situ instead of the native tooltip, so they all appear together at the
-    // same wake-up delay a tooltip would use. Other items keep their native tooltip.
+    // same wake-up delay a tooltip would use.
     if (auto *port = portAt(event->scenePos())) {
         m_connectionManager.showHoverLabels(port);
         return;
     }
 
-    QGraphicsScene::helpEvent(event);
+    // As Qt's own handling, the topmost item under the pointer with text shows it, and none hides the tooltip; an
+    // element's text is its help text, asked for now, where another item's is its tooltip.
+    QString text;
+    for (const QGraphicsItem *item :
+         QGraphicsScene::items(event->scenePos(), Qt::IntersectsItemShape, Qt::DescendingOrder)) {
+        const auto *element = qgraphicsitem_cast<const Element *>(item);
+        text = element ? element->helpText() : item->toolTip();
+        if (!text.isEmpty()) {
+            break;
+        }
+    }
+    QToolTip::showText(text.isEmpty() ? QPoint() : event->screenPos(), text, event->widget());
+    event->setAccepted(!text.isEmpty());
 }
 
 void Scene::addItem(QMimeData *mimeData, std::optional<QPointF> scenePos)

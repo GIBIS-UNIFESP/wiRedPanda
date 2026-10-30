@@ -13,6 +13,7 @@
 #include <QClipboard>
 #include <QFile>
 #include <QGraphicsProxyWidget>
+#include <QGraphicsRectItem>
 #include <QGraphicsSceneEvent>
 #include <QImage>
 #include <QKeyEvent>
@@ -28,6 +29,7 @@
 #include <QSignalSpy>
 #include <QTemporaryDir>
 #include <QTest>
+#include <QToolTip>
 #include <QTransform>
 #include <QUrl>
 
@@ -40,6 +42,7 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/AudioOutputElement.h"
+#include "App/Element/GraphicElements/Display7.h"
 #include "App/Element/GraphicElements/InputButton.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
@@ -54,6 +57,7 @@
 #include "App/Scene/GraphicsView.h"
 #include "App/Scene/ICRegistry.h"
 #include "App/Scene/InlineLabelEditor.h"
+#include "App/Scene/PortHoverLabel.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/SceneDropHandler.h"
 #include "App/Scene/Workspace.h"
@@ -3747,26 +3751,86 @@ void TestScene::testHelpEventShowsPortHoverLabelsOverPort()
     QVERIFY(event.isAccepted());
 }
 
-void TestScene::testHelpEventFallsBackForNonPortItem()
+void TestScene::testHelpEventShowsTheTopmostItemsText()
 {
+    // Away from a port the topmost item under the pointer with text shows it: an element's help text, asked for then,
+    // so in the language current at that moment; another item's tooltip; and over nothing with text, no tooltip.
     WorkSpace workspace;
     Scene *scene = workspace.scene();
 
     auto *gate = new And();
     gate->setPos(100, 100);
     scene->addItem(gate);
+    const QPointF overGate = gate->sceneBoundingRect().center();
+    QVERIFY2(!scene->portAt(overGate), "Precondition: no port must be under the gate's centre");
 
+    const auto help = [scene](const QPointF scenePos) {
+        QGraphicsSceneHelpEvent event(QEvent::GraphicsSceneHelp);
+        event.setScenePos(scenePos);
+        event.setScreenPos(QPoint(10, 10));
+        scene->helpEvent(&event);
+        return event.isAccepted();
+    };
+    auto hideTip = qScopeGuard([] { QToolTip::hideText(); });
+
+    TestUtils::TagEveryStringTranslator tagging;
+    QCoreApplication::installTranslator(&tagging);
+    const bool shownTagged = help(overGate);
+    QCoreApplication::removeTranslator(&tagging);
+    QVERIFY(shownTagged);
+    QCOMPARE(QToolTip::text(), QStringLiteral("[tr And]"));
+
+    QVERIFY(help(overGate));
+    QCOMPARE(QToolTip::text(), QStringLiteral("And"));
+
+    // An item of another kind above the gate shows its own tooltip
+    auto *cover = new QGraphicsRectItem(gate->sceneBoundingRect());
+    cover->setToolTip(QStringLiteral("cover"));
+    cover->setZValue(gate->zValue() + 1);
+    scene->QGraphicsScene::addItem(cover);
+    QVERIFY(help(overGate));
+    QCOMPARE(QToolTip::text(), QStringLiteral("cover"));
+
+    // One without text lets the gate's show through
+    cover->setToolTip(QString());
+    QVERIFY(help(overGate));
+    QCOMPARE(QToolTip::text(), QStringLiteral("And"));
+
+    // Over empty space nothing shows, and the tooltip shown goes
+    QVERIFY(!help(QPointF(-500, -500)));
+    QVERIFY(TestUtils::waitFor([] { return !QToolTip::isVisible(); }));
+}
+
+void TestScene::testHelpEventOverASegmentPortNamesItInTheCurrentLanguage()
+{
+    // A port's hover label reads its name when the pointer rests on it, so a segment's derived name is in the language
+    // current then, not the one it was built in.
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+
+    auto *display = new Display7();
+    display->setPos(100, 100);
+    scene->addItem(display);
+    auto *segment = display->inputPort(0);
+
+    const auto hoverLabels = [scene] {
+        QStringList texts;
+        for (auto *item : scene->items()) {
+            if (auto *label = qgraphicsitem_cast<PortHoverLabel *>(item)) {
+                texts << label->text();
+            }
+        }
+        return texts;
+    };
+
+    TestUtils::TagEveryStringTranslator tagging;
+    QCoreApplication::installTranslator(&tagging);
     QGraphicsSceneHelpEvent event(QEvent::GraphicsSceneHelp);
-    event.setScenePos(gate->sceneBoundingRect().center());
-    // No port under the cursor (portAt() only matches Port items): must fall through to
-    // QGraphicsScene's own tooltip handling rather than ConnectionManager's hover labels.
-    // Confirmed empirically that QGraphicsScene::helpEvent() itself still leaves the event
-    // accepted (Qt's own default for this event type), so the port-vs-no-port distinction is
-    // proven structurally here (which branch's code runs), not by a differing accept state.
+    event.setScenePos(segment->scenePos());
     scene->helpEvent(&event);
+    QCoreApplication::removeTranslator(&tagging);
 
-    QVERIFY(event.isAccepted());
-    QVERIFY2(!scene->portAt(event.scenePos()), "Precondition: no port must be under the event's scene position");
+    QCOMPARE(hoverLabels(), QStringList{QStringLiteral("G ([tr middle])")});
 }
 
 void TestScene::testElementCountAgreesAfterEveryMutation()

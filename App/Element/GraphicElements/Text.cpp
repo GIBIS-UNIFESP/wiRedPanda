@@ -77,9 +77,8 @@ void Text::updateTheme()
     m_emptyHint->setBrush(hintColor);
 }
 
-void Text::retranslate()
+void Text::languageChanged()
 {
-    Element::retranslate();
     retranslateHint();
 }
 

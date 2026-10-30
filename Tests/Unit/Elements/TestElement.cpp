@@ -101,12 +101,15 @@ void TestElement::testElementAppearance()
     QCOMPARE(led.color(), QString("Red"));
 }
 
-void TestElement::testElementTooltip()
+void TestElement::testElementHelpTextIsItsName()
 {
-    // Every element exposes its translated name as the hover tooltip (set in the ctor). With no
-    // translator loaded in the test the And gate's tooltip is its English name.
+    // An element's help text is its type's name, here in English with no translator loaded; it carries no tooltip or
+    // object name of its own.
     And andGate;
-    QCOMPARE(andGate.toolTip(), QStringLiteral("And"));
+    QCOMPARE(andGate.helpText(), QStringLiteral("And"));
+    QCOMPARE(andGate.translatedName(), QStringLiteral("And"));
+    QVERIFY(andGate.toolTip().isEmpty());
+    QVERIFY(andGate.objectName().isEmpty());
 }
 
 void TestElement::testElementDoubleClick()
@@ -264,17 +267,16 @@ void TestElement::testTextEmptyStateHintFollowsALanguageChange()
     workspace.scene()->addItem(text);
     const QString english = text->m_emptyHint->text();
 
-    // The main window retranslates every element through the base class at a language change.
-    Element *element = text;
+    // The main window has each scene retranslate at a language change, and the scene tells its elements.
     TestUtils::TagEveryStringTranslator tagging;
     QCoreApplication::installTranslator(&tagging);
     auto removeTagging = qScopeGuard([&tagging] { QCoreApplication::removeTranslator(&tagging); });
-    element->retranslate();
+    workspace.scene()->retranslateUi();
     QCOMPARE(text->m_emptyHint->text(), QString("[tr %1]").arg(english));
 
     removeTagging.dismiss();
     QCoreApplication::removeTranslator(&tagging);
-    element->retranslate();
+    workspace.scene()->retranslateUi();
     QCOMPARE(text->m_emptyHint->text(), english);
 }
 
@@ -426,14 +428,19 @@ void TestElement::testBodiesDrawnInCodeOfferNoAppearance()
     QCOMPARE(drawnInCode, QStringList({"Demux", "Mux", "TruthTable"}));
 }
 
-void TestElement::testRetranslateUpdatesTranslatedNameToolTipAndPortName()
+void TestElement::testTheNameFollowsTheLanguage()
 {
+    // Made before a translator is installed, the element names itself in the language current when asked.
     And gate;
-    gate.retranslate();
+    TestUtils::TagEveryStringTranslator tagging;
+    QCoreApplication::installTranslator(&tagging);
+    const QString tagged = gate.translatedName();
+    const QString taggedHelp = gate.helpText();
+    QCoreApplication::removeTranslator(&tagging);
 
-    const QString expected = ElementFactory::translatedName(gate.elementType());
-    QCOMPARE(gate.toolTip(), expected);
-    QCOMPARE(gate.objectName(), expected);
+    QCOMPARE(tagged, QStringLiteral("[tr And]"));
+    QCOMPARE(taggedHelp, tagged);
+    QCOMPARE(gate.translatedName(), QStringLiteral("And"));
 }
 
 void TestElement::testSnapToGridKeepsAPositionBeyondIntRange()
