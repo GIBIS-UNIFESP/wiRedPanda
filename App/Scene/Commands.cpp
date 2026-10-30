@@ -740,7 +740,6 @@ bool SetPropertyCommand::appliesTo(const Element &element, const ElementProperty
     case ElementProperty::Frequency:    return element.hasFrequency();
     case ElementProperty::Delay:        return element.hasDelay();
     case ElementProperty::Volume:       return element.hasVolume();
-    case ElementProperty::Audio:        return element.hasAudio();
     case ElementProperty::Trigger:      return element.hasTrigger();
     case ElementProperty::Wireless:     return element.hasWirelessMode() && (qobject_cast<const Node *>(&element) != nullptr);
     case ElementProperty::Locked:       return input != nullptr;
@@ -757,7 +756,6 @@ QVariant SetPropertyCommand::read(const Element &element, const ElementProperty 
     case ElementProperty::Frequency:    return element.frequency();
     case ElementProperty::Delay:        return element.delay();
     case ElementProperty::Volume:       return element.volume();
-    case ElementProperty::Audio:        return element.audio();
     case ElementProperty::Trigger:      return element.trigger().toString();
     case ElementProperty::Wireless:     return static_cast<int>(element.wirelessMode());
     case ElementProperty::Locked:
@@ -782,7 +780,6 @@ void SetPropertyCommand::write(Element &element, const ElementProperty property,
     case ElementProperty::Frequency:    element.setFrequency(value.toDouble()); return;
     case ElementProperty::Delay:        element.setDelay(value.toDouble()); return;
     case ElementProperty::Volume:       element.setVolume(value.toFloat()); return;
-    case ElementProperty::Audio:        element.setAudio(value.toString()); return;
     case ElementProperty::Trigger:      element.setTrigger(QKeySequence(value.toString())); return;
     case ElementProperty::Wireless:
         if (auto *node = qobject_cast<Node *>(&element)) {
@@ -1211,10 +1208,6 @@ void MorphCommand::copyProperties(const Element *oldElm, Element *newElm)
     // always carried over — otherwise morphing a flipped element silently un-flips it.
     newElm->setFlippedX(oldElm->isFlippedX());
     newElm->setFlippedY(oldElm->isFlippedY());
-
-    if (newElm->hasAudio() && oldElm->hasAudio()) {
-        newElm->setAudio(oldElm->audio()); // LCOV_EXCL_LINE — no element type currently sets hasAudio=true in its ElementInfo, so this can never be true for any oldElm/newElm pair.
-    }
 
     if (newElm->hasVolume() && oldElm->hasVolume()) {
         newElm->setVolume(oldElm->volume());

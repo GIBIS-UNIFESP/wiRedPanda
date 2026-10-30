@@ -183,6 +183,23 @@ void TestMCPValidator::testValidateCommandRejectsSchemaViolation()
     QVERIFY2(!result.errorPath.isEmpty(), qPrintable(result.errorMessage));
 }
 
+void TestMCPValidator::testValidateCommandRejectsTheToneNoElementHas()
+{
+    // No element type has a tone, so neither command takes one: the schema refuses "audio" as it refuses any key it
+    // does not list
+    MCPValidator validator(realSchemaPath());
+    for (const char *method : {"set_element_properties", "update_element"}) {
+        const QJsonObject params{{"element_id", 1}, {"audio", "C6"}};
+        const QJsonObject command{{"jsonrpc", "2.0"}, {"method", method}, {"params", params}, {"id", 1}};
+        const ValidationResult result = validator.validateCommand(command);
+        QVERIFY2(!result.isValid, method);
+        QVERIFY2(result.errorMessage.contains("audio"), qPrintable(result.errorMessage));
+        const QJsonObject withoutTone{{"jsonrpc", "2.0"}, {"method", method}, {"params", QJsonObject{{"element_id", 1}}},
+                                      {"id", 1}};
+        QVERIFY2(validator.validateCommand(withoutTone).isValid, method);
+    }
+}
+
 void TestMCPValidator::testValidateCommandQJsonOverloadDelegates()
 {
     MCPValidator validator(realSchemaPath());

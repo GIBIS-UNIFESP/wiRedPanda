@@ -103,7 +103,7 @@ void Buzzer::setFrequency(double freq)
     }
 }
 
-void Buzzer::setAudio(const QString &note)
+void Buzzer::setNote(const QString &note)
 {
     if (note.isEmpty()) {
         return;
@@ -177,7 +177,7 @@ void Buzzer::load(QDataStream &stream, SerializationContext &context)
     if (!VersionInfo::hasQMapFormat(context.version)) {
         // v2.4–4.0 stored the note name as a bare QString
         const QString note = Serialization::readBoundedString(stream);
-        setAudio(note);
+        setNote(note);
     }
 
     if (VersionInfo::hasQMapFormat(context.version)) {
@@ -188,7 +188,7 @@ void Buzzer::load(QDataStream &stream, SerializationContext &context)
             setFrequency(map.value("frequency").toDouble());
         } else if (map.contains("note")) {
             // Old format: note name → convert to frequency
-            setAudio(map.value("note").toString());
+            setNote(map.value("note").toString());
         }
 
         if (map.contains("volume")) {

@@ -150,32 +150,24 @@ ElementEditor	<Many sounds>
 ElementEditor	<Many triggers>
 ElementEditor	<Many values>
 ElementEditor	A Tx node with label "%1" already exists.\nEach wireless channel must have a unique label.
-ElementEditor	A6
 ElementEditor	An embedded IC named "%1" already exists.\nChoose a different name.
 ElementEditor	Appearance
 ElementEditor	Appearance for:
 ElementEditor	Audio
-ElementEditor	B6
 ElementEditor	Blue
-ElementEditor	C6
-ElementEditor	C7
 ElementEditor	Change appearance
 ElementEditor	Change appearance to ...
 ElementEditor	Change wireless mode
 ElementEditor	Choose audio file
 ElementEditor	Color:
-ElementEditor	D6
 ElementEditor	Default
 ElementEditor	Delay:
 ElementEditor	Duplicate IC Name
 ElementEditor	Duplicate Wireless Channel
 ElementEditor	During simulation, a locked element ignores clicks and its trigger key, and a locked clock stops.
-ElementEditor	E6
 ElementEditor	Edit Truth Table
 ElementEditor	Element Editor
-ElementEditor	F6
 ElementEditor	Frequency:
-ElementEditor	G6
 ElementEditor	Green
 ElementEditor	IC Name:
 ElementEditor	Identity
@@ -201,7 +193,6 @@ ElementEditor	Sound
 ElementEditor	Sound file:
 ElementEditor	The value this input element outputs.
 ElementEditor	Timing
-ElementEditor	Tone:
 ElementEditor	Transmit (Tx)
 ElementEditor	Trigger:
 ElementEditor	Truth Table

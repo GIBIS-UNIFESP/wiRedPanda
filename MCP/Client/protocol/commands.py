@@ -348,7 +348,6 @@ class SetElementPropertiesCommand(MCPCommand):
         rotation: float | None = Field(default=None)
         delay: Annotated[float, Field(ge=-1, le=1)] | None = None
         trigger: str | None = Field(default=None, description="Keyboard shortcut for input elements")
-        audio: str | None = Field(default=None)
         locked: bool | None = Field(default=None, description="Lock state for input elements")
         volume: Annotated[float, Field(ge=0, le=1, description="Volume for audio elements")] | None = None
         appearance: str | None = Field(default=None, description="Appearance path, or an empty string for the default")

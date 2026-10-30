@@ -50,8 +50,8 @@ public:
     void setFrequency(double freq) override;
     /// Returns whether \a freq is finite and positive.
     bool acceptsFrequency(double freq) const override;
-    /// Sets the tone by note name (e.g. "C6") for backward compatibility.
-    void setAudio(const QString &note) override;
+    /// Sets the tone by note name (e.g. "C6"), as older files hold it; an empty name changes nothing.
+    void setNote(const QString &note);
 
     // --- Serialization ---
 

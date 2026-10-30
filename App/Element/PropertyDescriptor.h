@@ -23,7 +23,6 @@ struct PropertyDescriptor {
         Color,       ///< Color selection (LEDs, displays).
         Frequency,   ///< Clock oscillation frequency in Hz.
         Delay,       ///< Phase delay as fraction of the clock period.
-        Audio,       ///< Audio note selection (buzzer tone).
         AudioBox,    ///< AudioBox file selection dialog.
         Trigger,     ///< Keyboard trigger shortcut.
         TruthTable,  ///< Editable truth table dialog.

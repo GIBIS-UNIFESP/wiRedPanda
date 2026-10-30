@@ -252,9 +252,6 @@ public:
     /// Sets the audio file associated with this element to \a audio.
     virtual void setAudio(const QString &audio);
 
-    /// Returns \c true if this element type supports audio output.
-    bool hasAudio() const;
-
     /// Returns \c true if this element type shows an audio selection box.
     bool hasAudioBox() const;
 
@@ -761,7 +758,7 @@ private:
     ElementType m_elementType = ElementType::Unknown;
 
     /// Cached reference to this type's descriptor (registry entry is a long-lived
-    /// singleton). Backs the hasAudio()/hasTrigger()/rotatesGraphic()/... facades, replacing a
+    /// singleton). Backs the hasTrigger()/rotatesGraphic()/... facades, replacing a
     /// per-call registry map lookup.
     const ElementTypeDescriptor &m_descriptor;
 

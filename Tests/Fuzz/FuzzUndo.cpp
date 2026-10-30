@@ -54,7 +54,6 @@
 #include "App/Core/Enums.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/AudioBox.h"
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
@@ -108,8 +107,8 @@ constexpr ElementType kAddTypes[] = {
 
 constexpr ElementProperty kProperties[] = {
     ElementProperty::Label, ElementProperty::Color, ElementProperty::Frequency, ElementProperty::Delay,
-    ElementProperty::Volume, ElementProperty::Audio, ElementProperty::Trigger, ElementProperty::Wireless,
-    ElementProperty::Locked, ElementProperty::Value,
+    ElementProperty::Volume, ElementProperty::Trigger, ElementProperty::Wireless, ElementProperty::Locked,
+    ElementProperty::Value,
 };
 
 // A value of \a property, as the element editor sets one, or one out of its range
@@ -122,7 +121,6 @@ QVariant propertyValue(const ElementProperty property, FuzzedDataProvider &fdp)
     case ElementProperty::Frequency: return QList<double>{0.5, 1.0, 50.0, -1.0}.at(pick);
     case ElementProperty::Delay:     return QList<double>{0.0, 0.25, 0.5, -1.0}.at(pick);
     case ElementProperty::Volume:    return QList<double>{0.0, 0.5, 1.0, 4.0}.at(pick);
-    case ElementProperty::Audio:     return QStringList{"", "missing.wav", AudioBox::kDefaultAudioPath, "a b"}.at(pick);
     case ElementProperty::Trigger:   return QStringList{"", "A", "Space", "Ctrl+Shift+F12"}.at(pick);
     case ElementProperty::Wireless:  return QList<int>{0, 1, 2, 7}.at(pick);
     case ElementProperty::Locked:    return pick % 2 == 0;

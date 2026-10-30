@@ -45,7 +45,7 @@ void TestSelectionCapabilities::testSingleElementReflectsItsOwnFeatureFlags()
     QVERIFY(caps.hasElements);
     QCOMPARE(caps.elementType, ElementType::Led);
     QVERIFY(caps.hasColors);
-    QVERIFY(!caps.hasAudio);
+    QVERIFY(!caps.hasAudioBox);
     QVERIFY(!caps.hasFrequency);
     QVERIFY(!caps.hasTrigger);
     // Trivially true for a single-element selection: everything matches itself.

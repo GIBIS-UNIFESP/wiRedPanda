@@ -31,7 +31,6 @@ class ElementInfo(BaseModel):
     frequency: Annotated[float, Field(ge=0)] | None = None
     delay: Annotated[float, Field(ge=-1, le=1)] | None = None
     trigger: str | None = None
-    audio: str | None = None
     volume: float | None = None
     locked: bool | None = None
 

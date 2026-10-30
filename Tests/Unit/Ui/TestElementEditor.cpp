@@ -118,7 +118,6 @@ QString editedValue(const Element *element, const PropertyDescriptor::Type type)
         return TestUtils::snapshotNumber(element->frequency());
     case PropertyDescriptor::Type::Delay:
         return TestUtils::snapshotNumber(element->delay());
-    case PropertyDescriptor::Type::Audio:
     case PropertyDescriptor::Type::AudioBox:
         return TestUtils::snapshotQuoted(QFileInfo(element->audio()).fileName());
     case PropertyDescriptor::Type::Trigger:
@@ -1706,10 +1705,8 @@ void TestElementEditor::testWritesMatchGolden()
                 written = "Edited";
                 editor.findChild<QLineEdit *>("lineEditElementLabel")->setText(written);
                 break;
-            case PropertyDescriptor::Type::Color:
-            case PropertyDescriptor::Type::Audio: {
-                const bool color = (property.type == PropertyDescriptor::Type::Color);
-                auto *combo = editor.findChild<QComboBox *>(color ? "comboBoxColor" : "comboBoxAudio");
+            case PropertyDescriptor::Type::Color: {
+                auto *combo = editor.findChild<QComboBox *>("comboBoxColor");
                 const int index = (combo->currentIndex() + 1) % combo->count();
                 written = combo->itemText(index);
                 combo->setCurrentIndex(index);

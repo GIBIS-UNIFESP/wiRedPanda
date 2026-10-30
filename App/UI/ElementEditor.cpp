@@ -58,7 +58,6 @@ ElementEditor::ElementEditor(QWidget *parent)
     // cycle through scene elements rather than moving focus between UI fields.
     m_tabNavigator = new ElementTabNavigator(this, this);
     m_ui->checkBoxLocked->installEventFilter(m_tabNavigator);
-    m_ui->comboBoxAudio->installEventFilter(m_tabNavigator);
     m_ui->comboBoxColor->installEventFilter(m_tabNavigator);
     m_ui->comboBoxInputSize->installEventFilter(m_tabNavigator);
     m_ui->comboBoxOutputSize->installEventFilter(m_tabNavigator);
@@ -97,7 +96,6 @@ ElementEditor::ElementEditor(QWidget *parent)
     // not held, takes a step of its own.
     connect(m_ui->lineEditElementLabel,   &QLineEdit::textChanged,                          this, &ElementEditor::labelChanged);
     connect(m_ui->comboBoxColor,          qOverload<int>(&QComboBox::currentIndexChanged),  this, &ElementEditor::colorChanged);
-    connect(m_ui->comboBoxAudio,          qOverload<int>(&QComboBox::currentIndexChanged),  this, &ElementEditor::audioChanged);
     connect(m_ui->doubleSpinBoxFrequency, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &ElementEditor::frequencyChanged);
     connect(m_ui->sliderDelay,            qOverload<int>(&QSlider::valueChanged),           this, &ElementEditor::delayChanged);
     connect(m_ui->sliderVolume,           qOverload<int>(&QSlider::valueChanged),           this, &ElementEditor::volumeChanged);
@@ -371,12 +369,6 @@ void ElementEditor::applyCapabilitiesToUi()
         m_ui->comboBoxColor->setCurrentIndex(m_ui->comboBoxColor->findData(firstElement->color()));
     }
 
-    /* Sound */
-    setSection(c.hasAudio, m_ui->labelAudio, m_ui->comboBoxAudio);
-    if (prepareCombo(m_ui->comboBoxAudio, c.hasAudio, c.hasSameAudio, m_manyAudios)) {
-        m_ui->comboBoxAudio->setCurrentText(firstElement->audio()); // LCOV_EXCL_LINE — c.hasAudio is always false: no element type currently sets hasAudio=true in its ElementInfo (see App/Scene/Commands.cpp's identical exclusion), so prepareCombo() never returns true here.
-    }
-
     /* Volume */
     setSection(c.hasVolume, m_ui->labelVolume, m_ui->sliderVolume);
     if (c.hasVolume && c.hasSameVolume) {
@@ -572,7 +564,7 @@ void ElementEditor::applyCapabilitiesToUi()
     m_ui->groupBoxIdentity->setVisible(c.hasLabel || c.hasColors);
     m_ui->groupBoxPorts->setVisible(c.canChangeInputSize || c.canChangeOutputSize || c.hasLatchedValue || c.hasOnlyInputs);
     m_ui->groupBoxTiming->setVisible(c.hasFrequency || c.hasDelay);
-    m_ui->groupBoxSound->setVisible(c.hasAudio || c.hasAudioBox || c.hasVolume);
+    m_ui->groupBoxSound->setVisible(c.hasAudioBox || c.hasVolume);
     m_ui->groupBoxInteraction->setVisible(c.hasTrigger || c.hasTruthTable || c.hasWirelessMode);
     m_ui->groupBoxAppearanceSection->setVisible(c.canChangeAppearance || c.isEmbedded);
 }
@@ -664,16 +656,6 @@ void ElementEditor::colorChanged()
         setProperty(ElementProperty::Color, color.toString(), false);
     }
 }
-
-// LCOV_EXCL_START — no element type currently sets hasAudio=true in its ElementInfo (see
-// App/Scene/Commands.cpp's identical exclusion), so the sound field is never shown.
-void ElementEditor::audioChanged()
-{
-    if (m_ui->comboBoxAudio->currentText() != m_manyAudios) {
-        setProperty(ElementProperty::Audio, m_ui->comboBoxAudio->currentText(), false);
-    }
-}
-// LCOV_EXCL_STOP
 
 void ElementEditor::frequencyChanged(const double frequency)
 {

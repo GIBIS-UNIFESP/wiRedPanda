@@ -29,7 +29,6 @@ struct ElementConstraints {
 
     bool canChangeAppearance = false;
     bool hasColors = false;
-    bool hasAudio = false;
     bool hasAudioBox = false;
     bool hasTrigger = false;
     bool hasFrequency = false;
@@ -88,7 +87,6 @@ inline ElementTypeDescriptor descriptorFromConstraints(const ElementConstraints 
     descriptor.maxOutputSize = c.maxOutputSize;
     descriptor.canChangeAppearance = c.canChangeAppearance;
     descriptor.hasColors = c.hasColors;
-    descriptor.hasAudio = c.hasAudio;
     descriptor.hasAudioBox = c.hasAudioBox;
     descriptor.hasTrigger = c.hasTrigger;
     descriptor.hasFrequency = c.hasFrequency;

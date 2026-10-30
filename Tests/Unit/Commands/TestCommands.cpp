@@ -787,10 +787,10 @@ void TestCommands::testMorphPreservesFlip()
 
 void TestCommands::testMorphPreservesVolume()
 {
-    // The same MorphCommand fix also carries audio/volume/delay (guarded by capability checks).
+    // The same MorphCommand fix also carries volume/delay (guarded by capability checks).
     // Volume is the morph-reachable case: Buzzer and AudioBox both have it and are 1-in/0-out, so a
-    // Buzzer -> AudioBox morph must transfer the volume and restore it on undo. (Audio and delay
-    // are not reachable here — no two current element types share hasAudio()/hasDelay().)
+    // Buzzer -> AudioBox morph must transfer the volume and restore it on undo. (Delay is not
+    // reachable here — no two current element types share hasDelay().)
     WorkSpace workspace;
     auto *scene = workspace.scene();
     auto *undoStack = scene->undoStack();

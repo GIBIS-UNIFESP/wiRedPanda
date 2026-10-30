@@ -118,8 +118,6 @@ public:
 
     // Audio
     QLabel *labelAudioBox = nullptr;
-    QLabel *labelAudio = nullptr;
-    QComboBox *comboBoxAudio = nullptr;
     QLineEdit *lineCurrentAudioBox = nullptr;
     QPushButton *pushButtonAudioBox = nullptr;
 

@@ -140,9 +140,6 @@
         "trigger": {
           "type": "string"
         },
-        "audio": {
-          "type": "string"
-        },
         "volume": {
           "type": "number"
         },
@@ -1653,10 +1650,6 @@
                   "type": "string",
                   "description": "Keyboard shortcut for input elements (e.g. 'A', 'Space')"
                 },
-                "audio": {
-                  "type": "string",
-                  "description": "Audio file path (AudioBox) or note name (Buzzer)"
-                },
                 "locked": {
                   "type": "boolean",
                   "description": "Lock input element to prevent user interaction"
@@ -1854,10 +1847,6 @@
                 "trigger": {
                   "type": "string",
                   "description": "Keyboard shortcut for input elements (e.g. 'A', 'Space')"
-                },
-                "audio": {
-                  "type": "string",
-                  "description": "Audio file path (AudioBox) or note name (Buzzer)"
                 },
                 "locked": {
                   "type": "boolean",

@@ -145,26 +145,11 @@ void ElementEditorUi::setupUi(QWidget *ElementEditor)
     sliderDelay->setTickInterval(1);
     gridLayoutTiming->addWidget(sliderDelay, 1, 1, 1, 1);
 
-    // --- Sound: Tone (Buzzer), Sound file (AudioBox), Volume ---
-
-    labelAudio = new QLabel(groupBoxSound);
-    labelAudio->setObjectName("labelAudio");
-    gridLayoutSound->addWidget(labelAudio, 0, 0, 1, 1);
-
-    // Pre-populate with 8 empty items so retranslateUi() can fill them in
-    // without needing to know the count at construction time.
-    comboBoxAudio = new QComboBox(groupBoxSound);
-
-    for (int i = 0; i < 8; ++i) {
-        comboBoxAudio->addItem(QString());
-    }
-
-    comboBoxAudio->setObjectName("comboBoxAudio");
-    gridLayoutSound->addWidget(comboBoxAudio, 0, 1, 1, 1);
+    // --- Sound: Sound file (AudioBox), Volume ---
 
     labelAudioBox = new QLabel(groupBoxSound);
     labelAudioBox->setObjectName("labelAudioBox");
-    gridLayoutSound->addWidget(labelAudioBox, 1, 0, 1, 1);
+    gridLayoutSound->addWidget(labelAudioBox, 0, 0, 1, 1);
 
     horizontalLayout_2 = new QHBoxLayout();
     horizontalLayout_2->setObjectName("horizontalLayout_2");
@@ -187,11 +172,11 @@ void ElementEditorUi::setupUi(QWidget *ElementEditor)
     pushButtonAudioBox->setSizePolicy(sizePolicy1);
     pushButtonAudioBox->setMaximumSize(QSize(28, 16777215));
     horizontalLayout_2->addWidget(pushButtonAudioBox);
-    gridLayoutSound->addLayout(horizontalLayout_2, 1, 1, 1, 1);
+    gridLayoutSound->addLayout(horizontalLayout_2, 0, 1, 1, 1);
 
     labelVolume = new QLabel(groupBoxSound);
     labelVolume->setObjectName("labelVolume");
-    gridLayoutSound->addWidget(labelVolume, 2, 0, 1, 1);
+    gridLayoutSound->addWidget(labelVolume, 1, 0, 1, 1);
 
     sliderVolume = new QSlider(groupBoxSound);
     sliderVolume->setObjectName("sliderVolume");
@@ -203,7 +188,7 @@ void ElementEditorUi::setupUi(QWidget *ElementEditor)
     sliderVolume->setPageStep(10);
     sliderVolume->setTickPosition(QSlider::TicksBelow);
     sliderVolume->setTickInterval(25);
-    gridLayoutSound->addWidget(sliderVolume, 2, 1, 1, 1);
+    gridLayoutSound->addWidget(sliderVolume, 1, 1, 1, 1);
 
     // --- Interaction: Trigger, (shared row) Truth Table button / Wireless mode ---
 
@@ -302,14 +287,6 @@ void ElementEditorUi::retranslateUi(QWidget *ElementEditor)
     groupBoxSound->setTitle(QCoreApplication::translate("ElementEditor", "Sound"));
     groupBoxInteraction->setTitle(QCoreApplication::translate("ElementEditor", "Interaction"));
     groupBoxAppearanceSection->setTitle(QCoreApplication::translate("ElementEditor", "Appearance"));
-    comboBoxAudio->setItemText(0, QCoreApplication::translate("ElementEditor", "C6"));
-    comboBoxAudio->setItemText(1, QCoreApplication::translate("ElementEditor", "D6"));
-    comboBoxAudio->setItemText(2, QCoreApplication::translate("ElementEditor", "E6"));
-    comboBoxAudio->setItemText(3, QCoreApplication::translate("ElementEditor", "F6"));
-    comboBoxAudio->setItemText(4, QCoreApplication::translate("ElementEditor", "G6"));
-    comboBoxAudio->setItemText(5, QCoreApplication::translate("ElementEditor", "A6"));
-    comboBoxAudio->setItemText(6, QCoreApplication::translate("ElementEditor", "B6"));
-    comboBoxAudio->setItemText(7, QCoreApplication::translate("ElementEditor", "C7"));
 
     checkBoxLocked->setText(QString());
     labelLabels->setText(QCoreApplication::translate("ElementEditor", "Label:"));
@@ -334,7 +311,6 @@ void ElementEditorUi::retranslateUi(QWidget *ElementEditor)
     labelAudioBox->setText(QCoreApplication::translate("ElementEditor", "Sound file:"));
     labelOutputs->setText(QCoreApplication::translate("ElementEditor", "Outputs:"));
     labelLocked->setText(QCoreApplication::translate("ElementEditor", "Locked:"));
-    labelAudio->setText(QCoreApplication::translate("ElementEditor", "Tone:"));
     labelDelay->setText(QCoreApplication::translate("ElementEditor", "Delay:"));
     labelWirelessMode->setText(QCoreApplication::translate("ElementEditor", "Wireless:"));
     comboBoxWirelessMode->setItemText(0, QCoreApplication::translate("ElementEditor", "None"));

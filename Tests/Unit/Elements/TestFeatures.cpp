@@ -5,6 +5,7 @@
 
 #include <memory>
 
+#include <QMetaEnum>
 #include <QTemporaryDir>
 
 #include "App/Element/Element.h"
@@ -22,7 +23,6 @@ void TestFeatures::testAndGateFeatures()
     auto andGate = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::And));
 
     // AND gate should not have audio, frequency, delay, or colors by default
-    QVERIFY(!andGate->hasAudio());
     QVERIFY(!andGate->hasAudioBox());
     QVERIFY(!andGate->hasFrequency());
     QVERIFY(!andGate->hasDelay());
@@ -93,16 +93,18 @@ void TestFeatures::testColorFeature()
 
 void TestFeatures::testAudioFeature()
 {
-    // Audio feature is typically not set by default
-    auto display = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Display7));
-    QVERIFY(!display->hasAudio());
-
-    // Create various elements and check audio feature
-    auto andGate = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::And));
-    QVERIFY(!andGate->hasAudio());
-
-    auto node = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
-    QVERIFY(!node->hasAudio());
+    // The audio capabilities, over every type: the audio box has a sound file, and it and the buzzer a volume
+    const QMetaEnum metaEnum = QMetaEnum::fromType<ElementType>();
+    for (int i = 0; i < metaEnum.keyCount(); ++i) {
+        const auto type = static_cast<ElementType>(metaEnum.value(i));
+        if ((type == ElementType::Unknown) || (type == ElementType::JKLatch)) {
+            continue;
+        }
+        const auto element = std::unique_ptr<Element>(ElementFactory::buildElement(type));
+        QVERIFY2(element->hasAudioBox() == (type == ElementType::AudioBox), metaEnum.key(i));
+        QVERIFY2(element->hasVolume() == ((type == ElementType::AudioBox) || (type == ElementType::Buzzer)),
+                 metaEnum.key(i));
+    }
 }
 
 void TestFeatures::testDelayFeature()
@@ -158,7 +160,6 @@ void TestFeatures::testMultipleElementsFeatures()
     auto andGate = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::And));
     QVERIFY(andGate != nullptr);
     QVERIFY(!andGate->hasLabel());
-    QVERIFY(!andGate->hasAudio());
     QVERIFY(!andGate->hasColors());
     QVERIFY(!andGate->hasFrequency());
     QVERIFY(!andGate->hasDelay());
@@ -167,7 +168,6 @@ void TestFeatures::testMultipleElementsFeatures()
     auto orGate = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Or));
     QVERIFY(orGate != nullptr);
     QVERIFY(!orGate->hasLabel());
-    QVERIFY(!orGate->hasAudio());
     QVERIFY(!orGate->hasColors());
     QVERIFY(!orGate->hasFrequency());
     QVERIFY(!orGate->hasDelay());
@@ -176,7 +176,6 @@ void TestFeatures::testMultipleElementsFeatures()
     auto notGate = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Not));
     QVERIFY(notGate != nullptr);
     QVERIFY(!notGate->hasLabel());
-    QVERIFY(!notGate->hasAudio());
     QVERIFY(!notGate->hasColors());
     QVERIFY(!notGate->hasFrequency());
     QVERIFY(!notGate->hasDelay());
@@ -185,7 +184,6 @@ void TestFeatures::testMultipleElementsFeatures()
     auto node = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
     QVERIFY(node != nullptr);
     QVERIFY(node->hasLabel());
-    QVERIFY(!node->hasAudio());
     QVERIFY(!node->hasColors());
     QVERIFY(!node->hasFrequency());
     QVERIFY(!node->hasDelay());
@@ -194,7 +192,6 @@ void TestFeatures::testMultipleElementsFeatures()
     auto clock = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Clock));
     QVERIFY(clock != nullptr);
     QVERIFY(clock->hasLabel());
-    QVERIFY(!clock->hasAudio());
     QVERIFY(!clock->hasColors());
     QVERIFY(clock->hasFrequency());
     QVERIFY(clock->hasDelay());
@@ -203,7 +200,6 @@ void TestFeatures::testMultipleElementsFeatures()
     auto display = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Display7));
     QVERIFY(display != nullptr);
     QVERIFY(display->hasLabel());
-    QVERIFY(!display->hasAudio());
     QVERIFY(display->hasColors());
     QVERIFY(!display->hasFrequency());
     QVERIFY(!display->hasDelay());

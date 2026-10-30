@@ -18,7 +18,7 @@ private slots:
     void testFrequency();
     void testDefaultFrequency();
     void testSetFrequency();
-    void testSetAudioBackwardCompat();
+    void testSetNote();
 
     // Regression (B1): the tone picker presents C6..C7 as an ascending scale, so
     // noteToFrequency() must rise monotonically across it — A6/B6 (not the octave-high
@@ -47,7 +47,7 @@ private slots:
     void testMuteWithoutOutputDevice();
     void testSetFrequencyWithoutOutputDevice();
     void testSetFrequencyRestartsPlaybackWhenPlaying();
-    void testSetAudioWithEmptyNoteIsNoOp();
+    void testSetNoteWithEmptyNoteIsNoOp();
 
     // Serialization tests
     void testSaveFrequency();
