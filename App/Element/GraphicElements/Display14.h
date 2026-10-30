@@ -25,25 +25,14 @@ class Display14 : public Element
     Q_OBJECT
 
 public:
-    /// Default segment color name. Single source of truth: used by the member
-    /// initializer and serialization's default-elision check.
+    /// Default segment color name. Single source of truth: used by the colour's
+    /// spec and serialization's default-elision check.
     static constexpr const char *kDefaultColor = "Red";
 
     // --- Lifecycle ---
 
     /// Constructs the element with optional \a parent.
     explicit Display14(QGraphicsItem *parent = nullptr);
-
-    // --- Color State ---
-
-    /// Returns the current display color name.
-    QString color() const override;
-
-    /**
-     * \brief Sets the display color.
-     * \param color Color name ("Red", "Green", or "Blue").
-     */
-    void setColor(const QString &color) override;
 
     // --- Visual ---
 
@@ -67,10 +56,13 @@ public:
     /// Serializes the color selection to \a stream.
     void save(QDataStream &stream, SerializationOptions options) const override;
 
+protected:
+    /// Picks the segments' colour from a new colour.
+    void parameterChanged(ParamId id, const ParamValue &previous) override;
+
 private:
     // --- Members ---
 
-    QString m_color = kDefaultColor;
     QVector<QPixmap> bkg;
     QVector<std::shared_ptr<QSvgRenderer>> a, b, c, d, e, f, g1, g2, h, j, k, l, m, n, dp;
     int m_colorNumber = 1;

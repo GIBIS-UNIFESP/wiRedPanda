@@ -52,7 +52,6 @@ Element::Element(ElementType type, QGraphicsItem *parent)
     const ElementTypeDescriptor &descriptor = m_descriptor;
     m_appearance.seed(descriptor.defaultAppearances, descriptor.alternativeAppearances, descriptor.pixmapPath());
     m_elementGroup = descriptor.group;
-    m_hasColors = descriptor.hasColors;
     m_maxInputSize = descriptor.maxInputSize;
     m_maxOutputSize = descriptor.maxOutputSize;
     m_minInputSize = descriptor.minInputSize;
@@ -626,7 +625,7 @@ bool Element::isValid()
 
 bool Element::hasColors() const
 {
-    return m_hasColors;
+    return offersParam(ParamId::Colour);
 }
 
 bool Element::hasTrigger() const
@@ -636,17 +635,12 @@ bool Element::hasTrigger() const
 
 void Element::setColor(const QString &color)
 {
-    Q_UNUSED(color)
-}
-
-void Element::setHasColors(const bool hasColors)
-{
-    m_hasColors = hasColors;
+    setParam(ParamId::Colour, color);
 }
 
 QString Element::color() const
 {
-    return {};
+    return hasParam(ParamId::Colour) ? param<QString>(ParamId::Colour) : QString();
 }
 
 int Element::colorNameToIndex(const QString &color)

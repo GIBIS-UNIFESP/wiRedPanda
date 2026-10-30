@@ -66,6 +66,12 @@ struct ElementInfo<Display7> {
             ":/Components/Output/Counter/counter_g.svg",
             ":/Components/Output/Counter/counter_dp.svg",
         });
+        // Any name is kept; one not in the list is drawn as White
+        descriptor.parameters = {{
+            .id = ParamId::Colour,
+            .defaultValue = QString(Display7::kDefaultColor),
+            .key = "color",
+        }};
         return descriptor;
     } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
 
@@ -179,15 +185,12 @@ void Display7::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
     if (auto *port = inputPort(7); port && port->status() == Status::Active) { c.at(m_colorNumber)->render(painter, body);  }
 }
 
-void Display7::setColor(const QString &color)
+void Display7::parameterChanged(const ParamId id, const ParamValue &previous)
 {
-    m_color = color;
-    m_colorNumber = colorNameToIndex(color);
-}
-
-QString Display7::color() const
-{
-    return m_color;
+    Element::parameterChanged(id, previous);
+    if (id == ParamId::Colour) {
+        m_colorNumber = colorNameToIndex(color());
+    }
 }
 
 void Display7::save(QDataStream &stream, SerializationOptions options) const

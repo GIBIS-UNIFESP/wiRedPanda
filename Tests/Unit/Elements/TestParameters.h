@@ -30,4 +30,7 @@ private slots:
 
     // --- The clock ---
     void testAClocksFrequencyAndDelayAreItsRules();
+
+    // --- The colours ---
+    void testAColourIsAnyNameAndTheLedOffersItWithOneInput();
 };

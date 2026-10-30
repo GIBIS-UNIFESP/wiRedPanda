@@ -64,6 +64,14 @@ struct ElementInfo<Led> {
             ":/Components/Output/Led/YellowLed.png",     // 24
             ":/Components/Output/Led/WhiteLed.png",      // 25
         });
+        // Any name is kept; one not in the list is drawn as White. With more than one input the inputs' code picks
+        // the colour, so only a single-input LED offers it
+        descriptor.parameters = {{
+            .id = ParamId::Colour,
+            .defaultValue = QString(Led::kDefaultColor),
+            .key = "color",
+            .offered = [](const Element &element) { return element.inputSize() == 1; },
+        }};
         return descriptor;
     } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
 
@@ -78,16 +86,14 @@ Led::Led(QGraphicsItem *parent)
     : Element(ElementType::Led, parent)
 {
     // The appearance list is indexed by colorIndex(). For a 1-input LED the index is
-    // m_colorIndex + input_value, where m_colorIndex is set by setColor() to the
+    // m_colorIndex + input_value, where m_colorIndex is set by parameterChanged() to the
     // base offset for the chosen color (0=White, 2=Red, 4=Green, 6=Blue, 8=Purple).
     // Even indices are the Off state; odd indices are the On state.
     // Indices 10-25 cover multi-input (2/3/4-bit) color palettes (see comment below).
     m_appearance.seed(ElementTypeDescriptor::of(ElementType::Led).defaultAppearances, {}, {});
     setPixmap(0);
 
-    setHasColors(true);
-
-    Led::updatePortsProperties();
+    updatePortsProperties();
 }
 
 /* Color pallets:
@@ -156,18 +162,14 @@ void Led::refresh()
     setPixmap(colorIndex());
 }
 
-void Led::setColor(const QString &color)
+void Led::parameterChanged(const ParamId id, const ParamValue &previous)
 {
-    m_color = color;
-
-    // m_colorIndex is the base offset into the single-input appearance list.
-    // Each color occupies two consecutive entries: [base]=Off, [base+1]=On.
-    m_colorIndex = 2 * colorNameToIndex(color);
-}
-
-QString Led::color() const
-{
-    return m_color;
+    Element::parameterChanged(id, previous);
+    if (id == ParamId::Colour) {
+        // m_colorIndex is the base offset into the single-input appearance list.
+        // Each color occupies two consecutive entries: [base]=Off, [base+1]=On.
+        m_colorIndex = 2 * colorNameToIndex(color());
+    }
 }
 
 void Led::save(QDataStream &stream, SerializationOptions options) const
@@ -207,15 +209,6 @@ void Led::load(QDataStream &stream, SerializationContext &context)
 QString Led::genericProperties()
 {
     return color();
-}
-
-void Led::updatePortsProperties()
-{
-    // Color selection is only meaningful for single-input LEDs; with multiple
-    // inputs the color is determined entirely by the input bit pattern.
-    setHasColors(inputSize() == 1);
-
-    Element::updatePortsProperties();
 }
 
 std::optional<Element::PortAttributes> Led::inputAttributes(const int index) const
