@@ -1,0 +1,44 @@
+# Copyright 2015 - 2026, GIBIS-Unifesp and the wiRedPanda contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+name: Exception inventory
+
+# Every throw, catch and guardedSlot() site in the application's and the MCP server's sources has a row in the
+# exception inventory (.claude/LEDGER_exception_boundaries.md), and every row still names one. Build ignores the
+# ledger and Scripts/, and Lint watches only Python, so this runs on its own.
+on:
+  push:
+    branches-ignore:
+      - master
+      - wasm
+    paths:
+      - 'App/**'
+      - 'MCP/Server/**'
+      - '.claude/LEDGER_exception_boundaries.md'
+      - 'Scripts/check_exception_inventory.py'
+      - '.github/workflows/exception-inventory.yml'
+
+  pull_request:
+    branches:
+      - master
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'App/**'
+      - 'MCP/Server/**'
+      - '.claude/LEDGER_exception_boundaries.md'
+      - 'Scripts/check_exception_inventory.py'
+      - '.github/workflows/exception-inventory.yml'
+
+jobs:
+  check:
+    permissions:
+      contents: read
+    runs-on: ubuntu-24.04
+    name: Exception inventory
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
+
+    steps:
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+    - name: Check the inventory against the sources
+      run: python3 Scripts/check_exception_inventory.py

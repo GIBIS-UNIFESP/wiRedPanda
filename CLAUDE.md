@@ -145,6 +145,14 @@ or every language silently falls back to English. lupdate reads `PANDACEPTION()`
 `PANDACEPTION_WITH_CONTEXT()`, so that macro's message is marked at each site with `QT_TRANSLATE_NOOP()` in the same
 context, or it never reaches the catalogs. The `.ts` catalogs themselves are refreshed at release, not mid-branch.
 
+### Exception sites
+
+Every `throw`, `PANDACEPTION`, `catch` and `guardedSlot()` site in `App/` and `MCP/Server/` has a row at its file and
+line in the exception inventory (`.claude/LEDGER_exception_boundaries.md`'s appendix), and CI's Exception inventory
+workflow fails on a site without a row or a row without a site (`python3 Scripts/check_exception_inventory.py`). An
+edit above a site moves its line, so a change to those sources runs the check and updates the rows in the same commit;
+a new site is classified there (below a boundary, an expected condition, a broken invariant) before it lands.
+
 ### Tests
 
 - A new QTest class is registered in four places, each of which fails silently when missed: the source list in
