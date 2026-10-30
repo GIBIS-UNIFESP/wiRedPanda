@@ -195,16 +195,30 @@ void TestUpdateChecker::testOnReplyFinishedNoMatchingAssetLeavesDownloadUrlEmpty
 
 void TestUpdateChecker::testOnReplyFinishedNetworkErrorSkipsEverything()
 {
-    // Port 1 is a reserved/unassigned TCP port practically guaranteed to have
-    // nothing listening — a real, reproducible network error without any
-    // external dependency. On Windows CI, surfacing the refusal takes noticeably
-    // longer than on Linux/macOS (confirmed empirically: an equivalent wait using
-    // the same port there took ~4s), so this needs a generous margin.
+    // A reply that failed with a body that would otherwise be taken as a newer release: a local server answers with an
+    // HTTP error carrying release data, so only the error check keeps the checker from offering it. The server
+    // listens, so nothing hangs on how the system surfaces a refused connection: on macOS 15.8.2 a refused
+    // non-blocking connect() answers the call Qt makes to finish it with EISCONN, which Qt takes as connected, and Qt
+    // 6.8's request waits for a reply that never comes
+    QTcpServer server;
+    QVERIFY(server.listen(QHostAddress::LocalHost));
+    QObject::connect(&server, &QTcpServer::newConnection, &server, [&server] {
+        QTcpSocket *socket = server.nextPendingConnection();
+        QObject::connect(socket, &QTcpSocket::readyRead, socket, [socket] {
+            socket->readAll();
+            const QByteArray body = R"({"version": "99.0.0"})";
+            socket->write("HTTP/1.1 500 Internal Server Error\r\nContent-Type: application/json\r\nConnection: close\r\n"
+                          "Content-Length: " + QByteArray::number(body.size()) + "\r\n\r\n" + body);
+            socket->disconnectFromHost();
+        });
+        QObject::connect(socket, &QTcpSocket::disconnected, socket, &QObject::deleteLater);
+    });
+
     QNetworkAccessManager manager;
-    QNetworkReply *reply = manager.get(QNetworkRequest(QUrl("http://127.0.0.1:1/")));
-    QSignalSpy errorSpy(reply, &QNetworkReply::errorOccurred);
-    QVERIFY(errorSpy.wait(10000));
-    QVERIFY(reply->error() != QNetworkReply::NoError);
+    QNetworkReply *reply = manager.get(QNetworkRequest(QUrl(QStringLiteral("http://127.0.0.1:%1/").arg(server.serverPort()))));
+    QSignalSpy finishedSpy(reply, &QNetworkReply::finished);
+    QVERIFY(finishedSpy.wait(10000));
+    QCOMPARE(reply->error(), QNetworkReply::InternalServerError);
 
     UpdateChecker checker;
     QSignalSpy spy(&checker, &UpdateChecker::updateAvailable);
