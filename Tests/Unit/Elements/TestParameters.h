@@ -33,4 +33,8 @@ private slots:
 
     // --- The colours ---
     void testAColourIsAnyNameAndTheLedOffersItWithOneInput();
+
+    // --- The audio outputs ---
+    void testAnAudioOutputsFrequencyFileAndVolumeAreItsRules();
+    void testAnAudioBoxReadsItsFileAgainOnEveryLoad();
 };

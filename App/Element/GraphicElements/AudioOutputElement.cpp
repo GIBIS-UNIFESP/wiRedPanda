@@ -8,9 +8,20 @@
 
 #include "App/Wiring/Port.h"
 
-AudioOutputElement::AudioOutputElement(ElementType type, QGraphicsItem *parent, float initialVolume)
+ParamSpec AudioOutputElement::volumeSpec(const float defaultVolume)
+{
+    return {
+        .id = ParamId::Volume,
+        .defaultValue = static_cast<double>(defaultVolume),
+        .key = "volume",
+        .accept = [](const Element &, const ParamValue &value) -> std::optional<ParamValue> {
+            return static_cast<double>(static_cast<float>(std::get<double>(value)));
+        },
+    };
+}
+
+AudioOutputElement::AudioOutputElement(ElementType type, QGraphicsItem *parent)
     : Element(type, parent)
-    , m_volume(initialVolume)
 {
     // Position label to the right of the 64×64 body, vertically centred
     setLabelAnchor(QPointF(64, 34));
@@ -43,11 +54,6 @@ bool AudioOutputElement::isMuted() const
     return m_muted;
 }
 
-float AudioOutputElement::volume() const
-{
-    return m_volume;
-}
-
 void AudioOutputElement::mute(const bool mute)
 {
     m_muted = mute;
@@ -57,10 +63,10 @@ void AudioOutputElement::mute(const bool mute)
     applyMute();
 }
 
-void AudioOutputElement::setVolume(float vol)
+void AudioOutputElement::parameterChanged(const ParamId id, const ParamValue &previous)
 {
-    m_volume = vol;
-    if (m_hasOutputDevice) {
+    Element::parameterChanged(id, previous);
+    if ((id == ParamId::Volume) && m_hasOutputDevice) {
         applyVolume();
     }
 }

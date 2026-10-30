@@ -3,6 +3,8 @@
 
 #include "App/Element/GraphicElements/AudioBox.h"
 
+#include <QFileInfo>
+
 #include "App/Core/Common.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
@@ -38,6 +40,20 @@ struct ElementInfo<AudioBox> {
             ":/Components/Output/AudioBox/audioboxOff.svg",
             ":/Components/Output/AudioBox/audioboxOn.svg",
         });
+        descriptor.parameters = {
+            {
+                // An empty path changes nothing; any other is kept as QFileInfo has it, whether or not its file is
+                // there (loadAudio())
+                .id = ParamId::AudioFile,
+                .defaultValue = QString(AudioBox::kDefaultAudioPath),
+                .key = "audiobox",
+                .accept = [](const Element &, const ParamValue &value) -> std::optional<ParamValue> {
+                    const QString &path = std::get<QString>(value);
+                    return path.isEmpty() ? std::nullopt : std::optional<ParamValue>(QFileInfo(path).filePath());
+                },
+            },
+            AudioOutputElement::volumeSpec(AudioOutputElement::kDefaultVolume),
+        };
         return descriptor;
     } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
 
@@ -56,15 +72,27 @@ AudioBox::AudioBox(QGraphicsItem *parent)
         m_audioOutput = new QAudioOutput(this);
     }
 
-    setAudio(QString::fromLatin1(kDefaultAudioPath));
+    loadAudio();
 }
 
-void AudioBox::setAudio(const QString &audioPath)
+void AudioBox::parameterChanged(const ParamId id, const ParamValue &previous)
 {
-    if (audioPath.isEmpty()) {
-        return;
+    AudioOutputElement::parameterChanged(id, previous);
+    if (id == ParamId::AudioFile) {
+        loadAudio();
     }
+}
 
+void AudioBox::takeAudio(const QString &audioPath)
+{
+    // The same path is loaded again: its file can have gone, or come back, since
+    if (!audioPath.isEmpty() && !setParam(ParamId::AudioFile, audioPath)) {
+        loadAudio();
+    }
+}
+
+void AudioBox::loadAudio()
+{
     // Resolution against contextDir already happened once, at load time (see
     // ExternalFilePath::forReading(), called from load() below) -- by the time a
     // path reaches here it's either a resource reference or already directly
@@ -72,9 +100,7 @@ void AudioBox::setAudio(const QString &audioPath)
     // one read back from a saved project). Nothing here may throw: a snapshot's
     // restore runs inside QUndoStack, which an exception cannot pass on macOS, so a
     // sound that is gone keeps its path and the built-in sound plays in its place.
-    // A copy: the path given can be m_failedAudioPath itself, cleared next
-    QString path = audioPath;
-    m_audio.setFile(path);
+    QString path = audio();
     m_failedAudioPath.clear();
     if (!path.startsWith(":/")) {
         const QFileInfo info(path);
@@ -94,7 +120,7 @@ void AudioBox::setAudio(const QString &audioPath)
         ? QUrl("qrc" + path)
         : QUrl::fromLocalFile(path);
 
-    m_audioOutput->setVolume(m_volume);
+    m_audioOutput->setVolume(volume());
     m_player->setAudioOutput(m_audioOutput);
     m_player->setSource(mediaUrl);
     m_player->setLoops(QMediaPlayer::Infinite);
@@ -105,24 +131,19 @@ void AudioBox::setAudio(const QString &audioPath)
     }
 }
 
-QString AudioBox::audio() const
-{
-    return m_audio.filePath();
-}
-
 void AudioBox::startAudio()
 {
     // Defensive fallback: startAudio() is only ever reached via play(), itself only reachable
-    // once the constructor's setAudio(kDefaultAudioPath) call has already populated m_player's
+    // once the constructor's loadAudio() call has already populated m_player's
     // source (m_hasOutputDevice never flips at runtime in production, so if that initial call
     // ran at all, the source can't have gone empty since). Kept as a belt-and-suspenders guard
-    // in case a future setAudio() failure path clears the source without repopulating it.
+    // in case a future loadAudio() failure path clears the source without repopulating it.
     if (m_player->source().isEmpty()) { // LCOV_EXCL_LINE
-        setAudio(QString::fromLatin1(kDefaultAudioPath)); // LCOV_EXCL_LINE
+        loadAudio(); // LCOV_EXCL_LINE
     } // LCOV_EXCL_LINE
     // A sound whose file is back plays in place of the built-in one
     if (!m_failedAudioPath.isEmpty() && QFileInfo(m_failedAudioPath).isReadable()) {
-        setAudio(m_failedAudioPath);
+        loadAudio();
     }
     m_player->play();
 }
@@ -134,7 +155,7 @@ void AudioBox::stopAudio()
 
 void AudioBox::applyVolume()
 {
-    m_audioOutput->setVolume(m_volume);
+    m_audioOutput->setVolume(volume());
 }
 
 void AudioBox::applyMute()
@@ -145,7 +166,7 @@ void AudioBox::applyMute()
 QStringList AudioBox::externalFiles() const
 {
     QStringList result = Element::externalFiles();
-    const QString audioPath = m_audio.filePath();
+    const QString audioPath = audio();
     if (!audioPath.isEmpty() && !audioPath.startsWith(":/")) {
         result.append(audioPath);
     }
@@ -172,7 +193,7 @@ void AudioBox::save(QDataStream &stream, SerializationOptions options) const
     Element::save(stream, options);
 
     const bool slim = (options.purpose == SerializationPurpose::PortableFile);
-    const QString audioPath = ExternalFilePath::forWriting(m_audio.filePath(), options.purpose);
+    const QString audioPath = ExternalFilePath::forWriting(audio(), options.purpose);
 
     QMap<QString, QVariant> map;
     // PortableFile streams omit resource paths outright — forReading() discards
@@ -182,8 +203,8 @@ void AudioBox::save(QDataStream &stream, SerializationOptions options) const
     if (!slim || !audioPath.startsWith(":/")) {
         map.insert("audiobox", audioPath);
     }
-    if (!slim || m_volume != kDefaultVolume) {
-        map.insert("volume", static_cast<double>(m_volume));
+    if (!slim || volume() != kDefaultVolume) {
+        map.insert("volume", static_cast<double>(volume()));
     }
 
     stream << map;
@@ -202,7 +223,7 @@ void AudioBox::load(QDataStream &stream, SerializationContext &context)
         // v2.4–4.0 stored the path as a bare QString
         const QString audio = Serialization::readBoundedString(stream);
         if (const auto resolved = ExternalFilePath::forReading(audio, context.contextDir, context.purpose)) {
-            setAudio(*resolved);
+            takeAudio(*resolved);
         }
     }
 
@@ -212,7 +233,7 @@ void AudioBox::load(QDataStream &stream, SerializationContext &context)
 
         if (map.contains("audiobox")) {
             if (const auto resolved = ExternalFilePath::forReading(map.value("audiobox").toString(), context.contextDir, context.purpose)) {
-                setAudio(*resolved);
+                takeAudio(*resolved);
             }
         }
         if (map.contains("volume")) {

@@ -40,6 +40,22 @@ struct ElementInfo<Buzzer> {
             ":/Components/Output/Buzzer/BuzzerOff.svg",
             ":/Components/Output/Buzzer/BuzzerOn.svg",
         });
+        descriptor.parameters = {
+            {
+                // A file can hold a non-finite or non-positive value; ToneGenerator::readData() casts a NaN-derived
+                // sample to qint16, which is undefined behaviour, and a non-positive frequency has no physical meaning
+                // for a buzzer
+                .id = ParamId::Frequency,
+                .defaultValue = Buzzer::kDefaultFrequency,
+                .key = "frequency",
+                .accept = [](const Element &, const ParamValue &value) -> std::optional<ParamValue> {
+                    const double frequency = std::get<double>(value);
+                    return (std::isfinite(frequency) && (frequency > 0.0)) ? std::optional<ParamValue>(value)
+                                                                           : std::nullopt;
+                },
+            },
+            AudioOutputElement::volumeSpec(Buzzer::kDefaultVolume),
+        };
         return descriptor;
     } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
 
@@ -51,13 +67,13 @@ struct ElementInfo<Buzzer> {
 };
 
 Buzzer::Buzzer(QGraphicsItem *parent)
-    : AudioOutputElement(ElementType::Buzzer, parent, kDefaultVolume)
+    : AudioOutputElement(ElementType::Buzzer, parent)
 {
     if (m_hasOutputDevice) {
         m_generator = new ToneGenerator(this);
-        m_generator->setFrequency(m_frequency);
+        m_generator->setFrequency(frequency());
         m_sink = new QAudioSink(ToneGenerator::format(), this);
-        m_sink->setVolume(static_cast<qreal>(m_volume));
+        m_sink->setVolume(static_cast<qreal>(volume()));
     }
 }
 
@@ -67,33 +83,14 @@ Buzzer::~Buzzer()
     m_sink = nullptr;
 }
 
-double Buzzer::frequency() const
+void Buzzer::parameterChanged(const ParamId id, const ParamValue &previous)
 {
-    return m_frequency;
-}
-
-bool Buzzer::acceptsFrequency(double freq) const
-{
-    // A .panda file (or any other caller) can supply a non-finite or non-positive value;
-    // ToneGenerator::readData() casts a NaN-derived sample to qint16, which is undefined
-    // behaviour, and a non-positive frequency has no physical meaning for a buzzer.
-    return std::isfinite(freq) && (freq > 0.0);
-}
-
-void Buzzer::setFrequency(double freq)
-{
-    // The one setter every caller (file load, GUI, MCP, undo/redo) goes through refuses what acceptsFrequency() does
-    if (!acceptsFrequency(freq)) {
+    AudioOutputElement::parameterChanged(id, previous);
+    if ((id != ParamId::Frequency) || !m_hasOutputDevice) {
         return;
     }
 
-    m_frequency = freq;
-
-    if (!m_hasOutputDevice) {
-        return;
-    }
-
-    m_generator->setFrequency(freq);
+    m_generator->setFrequency(frequency());
 
     // If already playing, restart so the new frequency takes effect immediately
     if (m_isPlaying) {
@@ -127,13 +124,13 @@ void Buzzer::stopAudio()
 void Buzzer::applyVolume()
 {
     if (!m_muted) {
-        m_sink->setVolume(static_cast<qreal>(m_volume));
+        m_sink->setVolume(static_cast<qreal>(volume()));
     }
 }
 
 void Buzzer::applyMute()
 {
-    m_sink->setVolume(m_muted ? 0.0 : static_cast<qreal>(m_volume));
+    m_sink->setVolume(m_muted ? 0.0 : static_cast<qreal>(volume()));
 }
 
 int Buzzer::noteToFrequency(const QString &note)
@@ -156,11 +153,11 @@ void Buzzer::save(QDataStream &stream, SerializationOptions options) const
     QMap<QString, QVariant> map;
     // PortableFile streams omit defaults; fresh-loaded elements start there
     // anyway. Snapshots write unconditionally (reloaded into live elements).
-    if (!slim || m_frequency != kDefaultFrequency) {
-        map.insert("frequency", m_frequency);
+    if (!slim || frequency() != kDefaultFrequency) {
+        map.insert("frequency", frequency());
     }
-    if (!slim || m_volume != kDefaultVolume) {
-        map.insert("volume", static_cast<double>(m_volume));
+    if (!slim || volume() != kDefaultVolume) {
+        map.insert("volume", static_cast<double>(volume()));
     }
 
     stream << map;
