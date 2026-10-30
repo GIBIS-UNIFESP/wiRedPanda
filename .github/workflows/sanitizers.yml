@@ -17,6 +17,7 @@ on:
       - .github/workflows/codeql.yml
       - .github/workflows/coverage.yml
       - .github/workflows/deploy.yml
+      - .github/workflows/exception-inventory.yml
       - .github/workflows/lint.yml
       - .github/workflows/translate.yml
       - .github/workflows/wasm.yml
@@ -38,6 +39,7 @@ on:
       - .github/workflows/codeql.yml
       - .github/workflows/coverage.yml
       - .github/workflows/deploy.yml
+      - .github/workflows/exception-inventory.yml
       - .github/workflows/lint.yml
       - .github/workflows/translate.yml
       - .github/workflows/wasm.yml
