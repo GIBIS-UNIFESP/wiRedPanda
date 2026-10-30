@@ -15,6 +15,7 @@ class TestElementHandler : public QObject
 
 private slots:
     void testSetElementPropertiesAcceptsNegativeClockDelay();
+    void testSetElementPropertiesAnswersAPushThatDropsWithAnError();
     void testSetElementPropertiesRejectsClockDelayOutOfRange();
 
     void testHandleCreateElementRejectsMissingParams();

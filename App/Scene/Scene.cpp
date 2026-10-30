@@ -662,6 +662,11 @@ Port *Scene::portAt(const QPointF pos) const
 
 void Scene::receiveCommand(QUndoCommand *cmd)
 {
+    Application::guardedSlot(this, [this, cmd] { pushCommand(cmd); });
+}
+
+void Scene::pushCommand(QUndoCommand *cmd)
+{
     sentryBreadcrumb("command", QStringLiteral("Command: %1").arg(cmd->text()));
     m_undoStack.push(cmd);
     update();

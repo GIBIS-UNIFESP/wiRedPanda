@@ -382,8 +382,13 @@ public:
     QAction *redoAction() const;
     /// Returns the undo QAction bound to the undo stack.
     QAction *undoAction() const;
-    /// Pushes \a cmd onto the undo stack (immediately executes its redo()); throws what a command dropped kept.
+    /// Pushes \a cmd onto the undo stack (immediately executes its redo()). A command dropped on the way leaves the scene
+    /// as it was and is reported here, where the user acted, nothing thrown: every push the interface makes comes from
+    /// a slot or an event handler Qt calls.
     void receiveCommand(QUndoCommand *cmd);
+    /// Pushes \a cmd as receiveCommand() does, but throws what a dropped command kept, for a caller that fails as a
+    /// whole: the MCP server, a sub-circuit tab's save into its parent.
+    void pushCommand(QUndoCommand *cmd);
     /// Undoes the last command; throws what a command dropped kept (keepCommandFailure()).
     void undo();
     /// Redoes the next command; throws what a command dropped kept (keepCommandFailure()).
@@ -391,8 +396,8 @@ public:
     /**
      * \brief Keeps \a failure, the reason a command gave itself up while the undo stack ran it.
      * \details A command's undo() and redo() run inside QUndoStack, which an exception cannot pass on macOS: the
-     * command changes nothing, marks itself obsolete and keeps what it caught here; receiveCommand(), undo() and redo()
-     * throw it once the stack has returned.
+     * command changes nothing, marks itself obsolete and keeps what it caught here; pushCommand(), undo() and redo()
+     * throw it once the stack has returned, and receiveCommand() reports it.
      */
     void keepCommandFailure(std::exception_ptr failure);
     /**
