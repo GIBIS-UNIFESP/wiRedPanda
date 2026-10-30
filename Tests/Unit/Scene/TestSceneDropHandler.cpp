@@ -51,17 +51,35 @@ QGraphicsPixmapItem *dragGhost(Scene *scene)
     return ghost;
 }
 
+// A new element's drag payload that reads: an And gate, as the palette writes it
+QByteArray andPayload(const ElementType type = ElementType::And)
+{
+    QByteArray data;
+    QDataStream stream(&data, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(stream);
+    stream << QPoint(0, 0) << type << QString();
+    return data;
+}
 } // namespace
 
 void TestSceneDropHandler::testIsSupportedDropFormatRecognizesAllFourMimeTypes()
 {
     QMimeData dragDrop;
-    dragDrop.setData(MimeType::DragDrop, QByteArray());
+    dragDrop.setData(MimeType::DragDrop, andPayload());
     QVERIFY(SceneDropHandler::isSupportedDropFormat(&dragDrop));
 
     QMimeData dragDropLegacy;
-    dragDropLegacy.setData(MimeType::DragDropLegacy, QByteArray());
+    dragDropLegacy.setData(MimeType::DragDropLegacy, andPayload());
     QVERIFY(SceneDropHandler::isSupportedDropFormat(&dragDropLegacy));
+
+    // A new element's payload from another program that does not read, or names a type this build lacks, is refused
+    // while it is dragged
+    QMimeData unreadable;
+    unreadable.setData(MimeType::DragDrop, QByteArray());
+    QVERIFY(!SceneDropHandler::isSupportedDropFormat(&unreadable));
+    QMimeData unknownType;
+    unknownType.setData(MimeType::DragDrop, andPayload(static_cast<ElementType>(9999)));
+    QVERIFY(!SceneDropHandler::isSupportedDropFormat(&unknownType));
 
     QMimeData cloneDrag;
     cloneDrag.setData(MimeType::CloneDrag, QByteArray());

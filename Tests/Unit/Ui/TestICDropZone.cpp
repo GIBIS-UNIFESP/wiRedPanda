@@ -28,6 +28,7 @@ namespace {
 // PixmapProbe uses for a differently-inaccessible member.
 struct TestableICDropZone : ICDropZone {
     using ICDropZone::ICDropZone;
+    using ICDropZone::dragEnterEvent;
     using ICDropZone::dropEvent;
     using ICDropZone::dragMoveEvent;
     using ICDropZone::resizeEvent;
@@ -95,11 +96,9 @@ void TestICDropZone::testDropEventRejectsOversizedPayload()
     // Crafted payload: valid panda header + offset + type, then an implausible
     // icFileName length prefix with no real data behind it.
     //
-    // dropEvent() itself doesn't catch this — Serialization::readBoundedString() throws and
-    // relies on the caller to catch it. In production that's Application::notify()'s
-    // defense-in-depth backstop around real Qt event dispatch; calling dropEvent() directly
-    // (required — see TestableICDropZone above) bypasses that, so the throw is caught here
-    // instead.
+    // A drag from another program: the payload does not read, so the drag is refused while it hovers and its drop
+    // changes nothing, both without a throw, which no frame above the handler catches (EB.8). Called directly, as
+    // through Qt's event dispatch notify() would catch and report a throw.
     QByteArray itemData;
     QDataStream stream(&itemData, QIODevice::WriteOnly);
     Serialization::writePandaHeader(stream);
@@ -114,15 +113,18 @@ void TestICDropZone::testDropEventRejectsOversizedPayload()
     QSignalSpy embedSpy(&dropZone, &ICDropZone::embedByFileRequested);
     QSignalSpy extractSpy(&dropZone, &ICDropZone::extractByBlobNameRequested);
 
+    QDragEnterEvent enterEvent = makeDragEnterEvent(QPoint(5, 5), Qt::CopyAction, &mimeData, Qt::LeftButton, Qt::NoModifier);
+    enterEvent.setAccepted(false);
     QDropEvent dropEvent(QPointF(5, 5), Qt::CopyAction, &mimeData, Qt::LeftButton, Qt::NoModifier);
-
-    bool threw = false;
+    dropEvent.setAccepted(false);
     try {
+        dropZone.dragEnterEvent(&enterEvent);
         dropZone.dropEvent(&dropEvent);
-    } catch (const std::exception &) {
-        threw = true;
+    } catch (const std::exception &e) {
+        QFAIL(qPrintable(QString("a payload that does not read threw: %1").arg(e.what())));
     }
-    QVERIFY2(threw, "Oversized icFileName length prefix must throw, not silently proceed");
+    QVERIFY(!enterEvent.isAccepted());
+    QVERIFY(!dropEvent.isAccepted());
 
     QCOMPARE(embedSpy.count(), 0);
     QCOMPARE(extractSpy.count(), 0);

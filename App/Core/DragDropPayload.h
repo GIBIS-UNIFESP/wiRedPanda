@@ -7,12 +7,15 @@
 
 #pragma once
 
+#include <optional>
+
 #include <QPoint>
 #include <QString>
 
 #include "App/Core/Enums.h"
 
 class QDataStream;
+class QMimeData;
 
 /**
  * \struct DragDropPayload
@@ -42,3 +45,11 @@ struct DragDropPayload {
  * are read only if present, preserving compatibility with payloads that predate them.
  */
 DragDropPayload readDragDropPayload(QDataStream &stream);
+
+/**
+ * \brief Reads the drag-and-drop payload \a mimeData carries, or nothing when it carries none that reads.
+ * \details A drag can come from another program or another wiRedPanda: a payload that stops short, or names an
+ * element type this build does not have, is refused here, before anything changes, instead of throwing in a drag
+ * handler.
+ */
+std::optional<DragDropPayload> readDragDropPayload(const QMimeData *mimeData);

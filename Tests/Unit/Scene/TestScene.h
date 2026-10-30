@@ -199,6 +199,8 @@ private slots:
     void testDragMoveEventFallsBackForUnsupportedFormat();
     void testDropEventHandlesCloneDragFormat();
     void testDropEventOpensDroppedPandaFile();
+    void testDropThatDoesNotReadIsReported_data();
+    void testDropThatDoesNotReadIsReported();
     void testNudgeSelectionIgnoresCtrlAndAltModifiers();
     void testKeyReleaseEventReleasesInputButtonTrigger();
     void testEventFilterRemapsShiftClickToCtrlClick();
