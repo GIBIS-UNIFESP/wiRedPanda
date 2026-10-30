@@ -13,29 +13,6 @@
 
 #include "App/Core/DragDropPayload.h"
 #include "App/Core/Enums.h"
-#include "App/Core/MimeTypes.h"
-#include "App/IO/Serialization.h"
-
-namespace {
-
-std::optional<DragDropPayload> extractDragPayload(const QMimeData *mimeData)
-{
-    QByteArray itemData;
-    if (mimeData->hasFormat(MimeType::DragDrop)) {
-        itemData = mimeData->data(MimeType::DragDrop);
-    } else if (mimeData->hasFormat(MimeType::DragDropLegacy)) {
-        itemData = mimeData->data(MimeType::DragDropLegacy);
-    } else {
-        return std::nullopt;
-    }
-
-    QDataStream stream(&itemData, QIODevice::ReadOnly);
-    Serialization::readPandaHeader(stream);
-
-    return readDragDropPayload(stream);
-}
-
-} // namespace
 
 ICDropZone::ICDropZone(Section section, QWidget *parent)
     : QWidget(parent)
@@ -81,7 +58,8 @@ void ICDropZone::resizeEvent(QResizeEvent *event)
 
 void ICDropZone::dragEnterEvent(QDragEnterEvent *event)
 {
-    auto payload = extractDragPayload(event->mimeData());
+    // A payload from another program that does not read is refused here, before anything changes
+    auto payload = readDragDropPayload(event->mimeData());
     if (!payload) return;
 
     // Only accept opposite-type drops
@@ -109,7 +87,7 @@ void ICDropZone::dropEvent(QDropEvent *event)
 {
     setHintVisible(false);
 
-    auto payload = extractDragPayload(event->mimeData());
+    auto payload = readDragDropPayload(event->mimeData());
     if (!payload) return;
 
     if (m_section == Section::Embedded && !payload->isEmbedded) {

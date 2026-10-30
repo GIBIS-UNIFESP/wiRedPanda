@@ -1478,15 +1478,19 @@ void Scene::dropEvent(QGraphicsSceneDragDropEvent *event)
         return;
     }
 
-    if (event->mimeData()->hasFormat(MimeType::DragDropLegacy)
-        || event->mimeData()->hasFormat(MimeType::DragDrop)) {
-        m_dropHandler.handleNewElementDrop(event);
-    }
+    // An IC whose file is gone or does not read, or a clone's items from another wiRedPanda that do not read: each
+    // is read before anything changes, and reported here, where the user dropped it
+    Application::guardedSlot(this, [this, event] {
+        if (event->mimeData()->hasFormat(MimeType::DragDropLegacy)
+            || event->mimeData()->hasFormat(MimeType::DragDrop)) {
+            m_dropHandler.handleNewElementDrop(event);
+        }
 
-    if (event->mimeData()->hasFormat(MimeType::CloneDragLegacy)
-        || event->mimeData()->hasFormat(MimeType::CloneDrag)) {
-        m_dropHandler.handleCloneDrag(event);
-    }
+        if (event->mimeData()->hasFormat(MimeType::CloneDragLegacy)
+            || event->mimeData()->hasFormat(MimeType::CloneDrag)) {
+            m_dropHandler.handleCloneDrag(event);
+        }
+    });
 
     QGraphicsScene::dropEvent(event);
 }

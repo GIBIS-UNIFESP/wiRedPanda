@@ -18,10 +18,12 @@
 #include <QKeyEvent>
 #include <QLineEdit>
 #include <QMenu>
+#include <QMessageBox>
 #include <QMimeData>
 #include <QPaintDevice>
 #include <QPaintEngine>
 #include <QPainter>
+#include <QScopeGuard>
 #include <QScrollBar>
 #include <QSignalSpy>
 #include <QTemporaryDir>
@@ -3457,7 +3459,11 @@ void TestScene::testDragEnterEventAcceptsSupportedFormat()
     Scene *scene = workspace.scene();
 
     QMimeData mimeData;
-    mimeData.setData(MimeType::DragDrop, QByteArray());
+    QByteArray payload;
+    QDataStream payloadStream(&payload, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(payloadStream);
+    payloadStream << QPoint(0, 0) << ElementType::And << QString();
+    mimeData.setData(MimeType::DragDrop, payload);
 
     QGraphicsSceneDragDropEvent event(QEvent::GraphicsSceneDragEnter);
     event.setMimeData(&mimeData);
@@ -3500,7 +3506,11 @@ void TestScene::testDragMoveEventAcceptsSupportedFormat()
     Scene *scene = workspace.scene();
 
     QMimeData mimeData;
-    mimeData.setData(MimeType::DragDrop, QByteArray());
+    QByteArray payload;
+    QDataStream payloadStream(&payload, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(payloadStream);
+    payloadStream << QPoint(0, 0) << ElementType::And << QString();
+    mimeData.setData(MimeType::DragDrop, payload);
 
     QGraphicsSceneDragDropEvent event(QEvent::GraphicsSceneDragMove);
     event.setMimeData(&mimeData);
@@ -3573,6 +3583,89 @@ void TestScene::testDropEventOpensDroppedPandaFile()
     QCOMPARE(fileDropSpy.count(), 1);
     QCOMPARE(fileDropSpy.constFirst().at(0).toString(), QStringLiteral("/home/user/circuit.panda"));
     QCOMPARE(event.dropAction(), Qt::CopyAction);
+}
+
+void TestScene::testDropThatDoesNotReadIsReported_data()
+{
+    QTest::addColumn<QString>("format");
+    QTest::addColumn<QByteArray>("payload");
+
+    // A new IC whose file is gone
+    QByteArray icPayload;
+    QDataStream icStream(&icPayload, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(icStream);
+    icStream << QPoint(0, 0) << ElementType::IC << QString("gone.panda");
+    QTest::newRow("an IC whose file is gone") << QString(MimeType::DragDrop) << icPayload;
+
+    // A clone's items, from another wiRedPanda, that stop halfway
+    QByteArray items;
+    QDataStream itemsStream(&items, QIODevice::WriteOnly);
+    And gate;
+    Serialization::serialize({&gate}, itemsStream, {.purpose = SerializationPurpose::InMemorySnapshot});
+    QByteArray clonePayload;
+    QDataStream cloneStream(&clonePayload, QIODevice::WriteOnly);
+    Serialization::writePandaHeader(cloneStream);
+    cloneStream << QPointF(0, 0) << QPointF(0, 0);
+    clonePayload.append(items.first(items.size() / 2));
+    QTest::newRow("a clone's items that do not read") << QString(MimeType::CloneDrag) << clonePayload;
+}
+
+void TestScene::testDropThatDoesNotReadIsReported()
+{
+    // A drop is an event handler Qt calls: a payload that does not read is reported where it lands, once, nothing
+    // added and nothing thrown. Called directly, a throw fails on every platform; sent through Qt's dispatch, the frame
+    // the user's drop comes through, a throw would end the process on macOS, where notify() cannot catch it
+    QFETCH(QString, format);
+    QFETCH(QByteArray, payload);
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    scene->setContextDir(dir.path());
+    QMimeData mimeData;
+    mimeData.setData(format, payload);
+
+    const bool interactive = Application::interactiveMode;
+    Application::interactiveMode = true;
+    const auto reports = [] {
+        QList<QMessageBox *> boxes;
+        for (auto *widget : QApplication::topLevelWidgets()) {
+            if (auto *box = qobject_cast<QMessageBox *>(widget); box && box->isVisible()) {
+                boxes.append(box);
+            }
+        }
+        return boxes;
+    };
+    const auto closeReports = [&reports] {
+        for (auto *box : reports()) {
+            box->close();
+        }
+    };
+    const auto restore = qScopeGuard([&] {
+        Application::interactiveMode = interactive;
+        closeReports();
+    });
+
+    QGraphicsSceneDragDropEvent direct(QEvent::GraphicsSceneDrop);
+    direct.setMimeData(&mimeData);
+    direct.setProposedAction(Qt::CopyAction);
+    try {
+        scene->dropEvent(&direct);
+    } catch (const std::exception &e) {
+        QFAIL(qPrintable(QString("the drop threw: %1").arg(e.what())));
+    }
+    QCOMPARE(reports().size(), 1);
+    closeReports();
+
+    QGraphicsSceneDragDropEvent dispatched(QEvent::GraphicsSceneDrop);
+    dispatched.setMimeData(&mimeData);
+    dispatched.setProposedAction(Qt::CopyAction);
+    QApplication::sendEvent(scene, &dispatched);
+    QCOMPARE(reports().size(), 1);
+
+    QCOMPARE(scene->elements().size(), 0);
+    QCOMPARE(scene->undoStack()->count(), 0);
 }
 
 void TestScene::testNudgeSelectionIgnoresCtrlAndAltModifiers()

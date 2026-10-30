@@ -29,30 +29,22 @@ SceneDropHandler::SceneDropHandler(Scene *scene)
 
 bool SceneDropHandler::isSupportedDropFormat(const QMimeData *mimeData)
 {
+    // A new element's payload is small, so one that does not read is refused while it is dragged; a clone's items are
+    // read when dropped
     const auto &formats = mimeData->formats();
-    return formats.contains(MimeType::DragDropLegacy)
-           || formats.contains(MimeType::CloneDragLegacy)
-           || formats.contains(MimeType::DragDrop)
-           || formats.contains(MimeType::CloneDrag);
+    return formats.contains(MimeType::CloneDragLegacy)
+           || formats.contains(MimeType::CloneDrag)
+           || readDragDropPayload(mimeData).has_value();
 }
 
 void SceneDropHandler::handleNewElementDrop(QGraphicsSceneDragDropEvent *event)
 {
-    // Both MIME types carry the same payload; the newer format has a namespaced key
-    QByteArray itemData;
-
-    if (event->mimeData()->hasFormat(MimeType::DragDropLegacy)) {
-        itemData = event->mimeData()->data(MimeType::DragDropLegacy);
+    // Both MIME types carry the same payload; one from another program that does not read is refused
+    const auto maybePayload = readDragDropPayload(event->mimeData());
+    if (!maybePayload) {
+        return;
     }
-
-    if (event->mimeData()->hasFormat(MimeType::DragDrop)) {
-        itemData = event->mimeData()->data(MimeType::DragDrop);
-    }
-
-    QDataStream stream(&itemData, QIODevice::ReadOnly);
-    Serialization::readPandaHeader(stream);
-
-    const auto payload = readDragDropPayload(stream);
+    const auto &payload = *maybePayload;
 
     // Subtract the drag offset so the element lands under the original grab point
     QPointF pos = event->scenePos() - payload.offset;
