@@ -239,7 +239,6 @@ ElementFactory	Text: a free-text annotation on the canvas.
 ElementFactory	Toggle switch: click to flip between 0 and 1.
 ElementFactory	Truth table: custom logic you define, output by output.
 ElementFactory	Unknown
-ElementFactory	Unknown element type: %1
 ElementFactory	Unknown type: %1
 ElementFactory	XNOR gate: HIGH when the inputs match.
 ElementFactory	XOR gate: HIGH when an odd number of inputs are HIGH.
@@ -537,6 +536,7 @@ Serialization	Stream error reading element type at position %1: status %2
 Serialization	Stream error reading metadata map count
 Serialization	Stream error reading preamble: status %1
 Serialization	Stream error reading type tag at position %1: status %2
+Serialization	Unknown element type %1 at position %2
 Simulation	Warning: feedback circuit did not converge — the circuit may be oscillating.
 SplitCommand	Wire split
 SystemVerilogCodeGen	Could not open file for writing: %1

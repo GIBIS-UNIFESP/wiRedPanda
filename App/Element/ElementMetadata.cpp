@@ -26,8 +26,12 @@ const ElementMetadata &ElementMetadataRegistry::metadata(ElementType type)
 {
     auto &reg = registry();
 
+    // Every type the interface and the factory name has metadata; a stream's type is checked before it gets here
     if (!reg.contains(type)) {
-        throw PANDACEPTION_WITH_CONTEXT("ElementMetadataRegistry", "No metadata registered for element type: %1", static_cast<int>(type));
+        Q_ASSERT_X(false, "ElementMetadataRegistry::metadata", "no metadata registered for this element type");
+        qCWarning(zero) << "No metadata registered for element type" << static_cast<int>(type);
+        static const ElementMetadata none;
+        return none;
     }
 
     return reg[type];

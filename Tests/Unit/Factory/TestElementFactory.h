@@ -34,7 +34,7 @@ private slots:
     void testAllElementTypesRegistered();
 
     // Unregistered type
-    void testMetadataForUnknownTypeThrows();
+    void testMetadataForUnknownTypeIsEmpty();
     void testTranslatedNameForUnknownType();
     void testDescriptionForTypeWithoutOwnCase();
     void testPixmapForUnknownType();

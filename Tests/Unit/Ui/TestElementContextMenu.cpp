@@ -569,8 +569,13 @@ void TestElementContextMenu::testMorphActionDispatchesMorphCommand()
     QCOMPARE(scene->elements().constFirst()->elementType(), ElementType::Or);
 }
 
-void TestElementContextMenu::testUnknownMenuOptionThrows()
+void TestElementContextMenu::testUnknownMenuOptionChangesNothing()
 {
+    // An option the menu does not handle is a broken invariant: an assertion, and in a release build a warning,
+    // nothing changed and nothing thrown
+#ifndef QT_NO_DEBUG
+    QSKIP("The assertion stops a debug build; CI's release builds run this");
+#endif
     WorkSpace workspace;
     auto *scene = workspace.scene();
     auto *andGate = new And();
@@ -582,7 +587,7 @@ void TestElementContextMenu::testUnknownMenuOptionThrows()
     const SelectionCapabilities caps = computeCapabilities({andGate});
 
     // Inject a rogue action with unrecognized text/data into the real menu, then click it --
-    // none of exec()'s dispatch checks match, so it falls through to the final throw.
+    // none of exec()'s dispatch checks match, so it falls through to the end.
     TestUtils::AutoDismisser dismisser([](QWidget *w) {
         auto *menu = qobject_cast<QMenu *>(w);
         if (!menu) return false;
@@ -591,7 +596,13 @@ void TestElementContextMenu::testUnknownMenuOptionThrows()
         return true;
     });
 
-    QVERIFY_THROWS_EXCEPTION(std::exception, ElementContextMenu::exec(QPoint(0, 0), nullptr, caps, {andGate}, colorCombo, scene,
-        [scene](QUndoCommand *cmd) { scene->receiveCommand(cmd); },
-        [] {}, [] {}, [] {}, [] {}, [] {}));
+    const int commands = scene->undoStack()->count();
+    try {
+        ElementContextMenu::exec(QPoint(0, 0), nullptr, caps, {andGate}, colorCombo, scene,
+            [scene](QUndoCommand *cmd) { scene->receiveCommand(cmd); },
+            [] {}, [] {}, [] {}, [] {}, [] {});
+    } catch (const std::exception &e) {
+        QFAIL(qPrintable(QString("the menu threw: %1").arg(e.what())));
+    }
+    QCOMPARE(scene->undoStack()->count(), commands);
 }

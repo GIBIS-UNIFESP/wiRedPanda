@@ -114,13 +114,12 @@ GraphicElement *ElementFactory::buildElement(const ElementType type)
 {
     qCDebug(four) << type;
 
-    if (type == ElementType::Unknown) {
-        throw PANDACEPTION("Unknown element type: %1", typeToText(type));
-    }
-
+    // Every caller passes a type that can be built: a live element's, the palette's, or one checked where it was read
+    // (a stream's, a drag's, a request's). No element can stand in for another, so a release build still throws, to
+    // the boundary above the caller
     const auto it = instance().m_creatorMap.constFind(type);
-
     if (it == instance().m_creatorMap.constEnd()) {
+        Q_ASSERT_X(false, "ElementFactory::buildElement", "no creator registered for this element type");
         throw PANDACEPTION("Unknown type: %1", typeToText(type));
     }
 

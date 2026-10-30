@@ -33,5 +33,5 @@ private slots:
     void testMorphSubmenuOutputNonDisplay();
     void testMorphSubmenuGroupWithNoMorphTargetsRemovesSubmenu();
     void testMorphActionDispatchesMorphCommand();
-    void testUnknownMenuOptionThrows();
+    void testUnknownMenuOptionChangesNothing();
 };

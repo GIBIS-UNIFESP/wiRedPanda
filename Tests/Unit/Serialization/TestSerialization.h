@@ -160,6 +160,7 @@ private slots:
     // sub-loader with its own check)
     void testDeserializeTruncatedTypeTagThrows();
     void testDeserializeTruncatedElementTypeThrows();
+    void testDeserializeUnknownElementTypeThrows();
     void testDeserializeTruncatedOldFormatElementLoadThrows();
 
     // loadDolphinFileName()'s pre-3.2 "none" sentinel normalization

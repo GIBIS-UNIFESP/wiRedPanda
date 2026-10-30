@@ -2476,6 +2476,29 @@ void TestSerialization::testDeserializeTruncatedElementTypeThrows()
     QCOMPARE(message, QString("Stream error reading element type at position 6: status 1"));
 }
 
+void TestSerialization::testDeserializeUnknownElementTypeThrows()
+{
+    // A type this build cannot create, from a newer version or a retired one, is refused by the reader, a stream's
+    // expected failure, before the factory, where it would be a broken invariant
+    QByteArray data;
+    QDataStream writeStream(&data, QIODevice::WriteOnly);
+    writeStream.setVersion(QDataStream::Qt_5_12);
+    writeStream << static_cast<int>(GraphicElement::Type) << static_cast<ElementType>(9999);
+
+    QHash<quint64, Port *> portMap;
+    SerializationContext context{portMap, FormatRev::current, SerializationPurpose::PortableFile};
+    QDataStream readStream(data);
+    readStream.setVersion(QDataStream::Qt_5_12);
+
+    QString message;
+    try {
+        Serialization::deserialize(readStream, context);
+    } catch (const Pandaception &e) {
+        message = e.englishMessage();
+    }
+    QCOMPARE(message, QString("Unknown element type 9999 at position 12"));
+}
+
 void TestSerialization::testDeserializeTruncatedOldFormatElementLoadThrows()
 {
     // Unlike the modern (4.1+) format's loadNewFormat(), which explicitly checks-and-throws

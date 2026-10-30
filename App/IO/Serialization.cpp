@@ -643,6 +643,12 @@ QList<QGraphicsItem *> Serialization::deserialize(QDataStream &stream, Serializa
                                    QString::number(stream.device()->pos()), QString::number(static_cast<int>(stream.status())));
             }
 
+            // A type this build cannot create, from a newer version or a retired one, is the stream's to refuse
+            if (!ElementFactory::hasCreator(elmType)) {
+                throw PANDACEPTION("Unknown element type %1 at position %2",
+                                   QString::number(static_cast<quint64>(elmType)), QString::number(stream.device()->pos()));
+            }
+
             // Append before load() so cleanupGuard owns the element if load throws
             // (e.g. nested IC whose backing file is missing).
             auto *elm = ElementFactory::buildElement(elmType);
