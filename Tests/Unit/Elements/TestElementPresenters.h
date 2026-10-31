@@ -25,6 +25,8 @@ private slots:
     void testTheLabelBoxIsTheTextAsDrawn_data();
     void testTheLabelBoxIsTheTextAsDrawn();
     void testALabelKeepsTheTextItWasMeasuredFor();
+    void testALabelBoxIsMeasuredOncePerText();
+    void testTheBoxesKeptStayWithinTheirBudget();
     void testTheLabelBoxFollowsTheTrigger();
     void testTextsBodyHoldsItsLabel();
 };

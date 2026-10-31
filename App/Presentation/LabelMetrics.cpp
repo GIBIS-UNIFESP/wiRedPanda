@@ -5,6 +5,7 @@
 
 #include <algorithm>
 
+#include <QCache>
 #include <QFont>
 #include <QString>
 #include <QTextLayout>
@@ -42,13 +43,42 @@ QRectF LabelMetrics::layOut(QTextLayout &layout)
     return {0, 0, width, y};
 }
 
+namespace LabelMetricsDetail {
+
+// Measured from the GUI thread alone, as every label is
+QCache<QString, QSizeF> &boxes()
+{
+    static QCache<QString, QSizeF> cache(LabelMetrics::boxesBudget);
+    return cache;
+}
+
+// A box's charge: its text's characters, and the 140 bytes of heap measured for the rest of each entry (the box, the
+// key's header, QCache's links and hash slot) with ten thousand texts of 10 and 40 characters
+qsizetype charge(const QString &text)
+{
+    constexpr qsizetype entry = 140;
+    return (text.size() * qsizetype(sizeof(QChar))) + entry;
+}
+
+} // namespace LabelMetricsDetail
+
 QSizeF LabelMetrics::size(const QString &text)
 {
     if (text.isEmpty()) {
         return {};
     }
+    if (const QSizeF *box = LabelMetricsDetail::boxes().object(text)) {
+        return *box;
+    }
     QString lines = text;
     lines.replace(u'\n', QChar::LineSeparator);
     QTextLayout layout(lines, font());
-    return layOut(layout).size();
+    const QSizeF box = layOut(layout).size();
+    LabelMetricsDetail::boxes().insert(text, new QSizeF(box), LabelMetricsDetail::charge(text));
+    return box;
+}
+
+qsizetype LabelMetrics::boxesHeld()
+{
+    return LabelMetricsDetail::boxes().totalCost();
 }

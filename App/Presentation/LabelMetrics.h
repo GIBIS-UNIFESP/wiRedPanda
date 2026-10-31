@@ -9,6 +9,7 @@
 
 #include <QRectF>
 #include <QSizeF>
+#include <QtGlobal>
 
 class QFont;
 class QString;
@@ -25,7 +26,16 @@ const QFont &font();
 /// returns the box it takes.
 QRectF layOut(QTextLayout &layout);
 
-/// Returns the box \a text takes in font(), a line feed starting a line; empty for no text.
+/// Returns the box \a text takes in font(), a line feed starting a line; empty for no text. Elements share their texts
+/// (each element inside an IC has its definition's names), so the boxes measured are kept by their text, those least
+/// recently asked for given up past boxesBudget.
 QSizeF size(const QString &text);
+
+/// The bytes the boxes size() keeps may take, each charged its text and the rest of its entry: some six thousand labels
+/// of ten letters, while a box given up costs one layout to measure again.
+constexpr qsizetype boxesBudget = 1024 * 1024;
+
+/// Returns the bytes the boxes size() keeps take, as charged against boxesBudget.
+qsizetype boxesHeld();
 
 } // namespace LabelMetrics

@@ -3,6 +3,7 @@
 
 #include "Tests/Unit/Elements/TestElementPresenters.h"
 
+#include <algorithm>
 #include <cmath>
 #include <limits>
 #include <memory>
@@ -17,6 +18,7 @@
 #include <QProcess>
 #include <QProcessEnvironment>
 #include <QScopeGuard>
+#include <QStringList>
 #include <QStyleOptionGraphicsItem>
 #include <QTest>
 
@@ -283,6 +285,55 @@ void TestElementPresenters::testALabelKeepsTheTextItWasMeasuredFor()
     gate->setLabel(QStringLiteral("A wider gate"));
     QCOMPARE(gate->labelShape().text, QStringLiteral("A wider gate"));
     QCOMPARE(gate->labelShape().box, LabelMetrics::size(QStringLiteral("A wider gate")));
+}
+
+void TestElementPresenters::testALabelBoxIsMeasuredOncePerText()
+{
+    // Elements share their texts, so a box is laid out once for its text: asking again for boxes already measured costs
+    // a fraction of measuring them, the best of nine runs, each on texts no run has asked for
+    constexpr int texts = 400;
+    static int run = 0;
+    qint64 measured = std::numeric_limits<qint64>::max();
+    qint64 kept = std::numeric_limits<qint64>::max();
+    for (int i = 0; i < 9; ++i) {
+        QStringList batch;
+        for (int t = 0; t < texts; ++t) {
+            batch << QStringLiteral("measured once %1.%2").arg(run).arg(t);
+        }
+        ++run;
+        TestUtils::ThreadCpuTimer timer;
+        timer.start();
+        for (const QString &text : std::as_const(batch)) {
+            LabelMetrics::size(text);
+        }
+        measured = std::min(measured, timer.elapsed());
+        timer.start();
+        for (const QString &text : std::as_const(batch)) {
+            LabelMetrics::size(text);
+        }
+        kept = std::min(kept, timer.elapsed());
+    }
+    const double ratio = double(measured) / double(std::max<qint64>(kept, 1));
+    qInfo("measuring %d texts takes %.1f times asking for them again", texts, ratio);
+    QVERIFY2(ratio > 5, qPrintable(QString::number(ratio)));
+}
+
+void TestElementPresenters::testTheBoxesKeptStayWithinTheirBudget()
+{
+    // Texts past the budget give up the boxes least recently asked for, and a box given up is measured again as drawn
+    const QString first = QStringLiteral("the first of many");
+    const QSizeF firstBox = LabelMetrics::size(first);
+    const QString filler(1000, u'w');
+    // Each charged over two kilobytes: four times the budget
+    for (int i = 0; i < 2000; ++i) {
+        LabelMetrics::size(filler + QString::number(i));
+        QVERIFY(LabelMetrics::boxesHeld() <= LabelMetrics::boxesBudget);
+    }
+    QVERIFY(LabelMetrics::boxesHeld() > LabelMetrics::boxesBudget / 2);
+    QCOMPARE(LabelMetrics::size(first), firstBox);
+    QGraphicsSimpleTextItem item(first);
+    item.setFont(LabelMetrics::font());
+    QCOMPARE(LabelMetrics::size(first), item.boundingRect().size());
 }
 
 void TestElementPresenters::testTheLabelBoxFollowsTheTrigger()
