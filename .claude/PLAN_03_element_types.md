@@ -415,11 +415,9 @@ the bounds move, nothing for a picture alone, and a report from a change that th
 - **Labels.** The model measures the label (anchor, turn, box) before the body at each flush; a presenter's default
   anchor is (0, 64), the node's (0, 32), the audio types' (64, 34), the truth table's and the IC's below the
   footprint, and the IC's label turns 90°. A label change is told once at the batch's end, and a port re-layout
-  reports Label only when the label moved. The box is, per line, the sum of the advances by
-  `ceil(QFontMetricsF::height())`; text with a combining mark is measured laid out, since HarfBuzz inserts a dotted
-  circle (U+25CC) for a broken syllable; the drawn area pads half a line height above and below and a quarter on each
-  side; Text's bounds take the label's box. `QStaticText` is not used, since it would change pixel goldens. In Qt 6
-  `QString::toUcs4()` returns `QList<uint>`.
+  reports Label only when the label moved. The box is the text as the label's child item lays it out (P3.D11),
+  measured in presentation with the layout `QGraphicsSimpleTextItem` uses, line by line; Text's bounds take the label's
+  box. The metric the label layer draws by comes with that layer in plan 9 (§2.5 there, P9.7).
 - **The element painter** draws the selection, then the body, wholly in the theme it is handed: one place for the
   selection rectangle the five painters repeat today. An element's own `paint()` equals the painter's in the current
   theme, which a test checks.
@@ -609,6 +607,12 @@ user's choice between workable options).
   holds under any linker and any initialization order, and a test that links the model alone can install a stub.
   Basis: read on the branch (its static initializer held only because the file that defined it also defined the
   presenter lookup every caller used); the user's approval, 2026-10-21.
+- **P3.D11. The label box is the text as its child item lays it out,** measured in presentation with the layout
+  `QGraphicsSimpleTextItem` uses, while that item still draws the label; §3.9's metric (advances summed per line, a
+  line height rounded up, the drawn area padded, the dotted circle of a broken syllable) is the label layer's, which
+  draws the text itself, and comes with it in plan 9 (P9.7). A box measured otherwise would not be the text drawn, and
+  would move the bounds, the label editor and the label goldens. Basis: read on the branch (its metric was its label
+  layer's); P3.14b, 2026-10-31.
 
 ## 7. Risks
 
@@ -640,7 +644,8 @@ as it is.
   subclass, which outlives this plan, since its internal elements and its own serialization go later: plan 8's last
   step, which deletes the internal elements, folds it into the one element class (P8.15), closing P3.26.
 - **Plan 9:** one element class, the presenters, the appearance key for its sprites, the element painter, the outline
-  and decorations, the include check it extends to six layers; pointers to elements become ids there.
+  and decorations, the include check it extends to six layers; pointers to elements become ids there. The label's box
+  as its child item lays it out (P3.D11), which its label layer replaces with the metric it draws by (§2.5 there).
 - **Plan 10:** the appearance key and the presenters, which its GPU sprites draw from.
 
 ## 10. The branch's work, as evidence

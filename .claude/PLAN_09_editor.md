@@ -228,7 +228,12 @@ Drawn and hit-tested by one layer item each, over spatial grids (P9.D8), with po
   the highest id. The rendering-enabled flag goes: a curve is computed when asked.
 - **Labels** are data of their element, drawn by a label layer (z 0.6, above ports): whether shown, the box from the
   label metrics, and the label's scene transform (anchor, its own turn, 90° for the IC, and a counter-orientation that
-  keeps a rotating element's label upright).
+  keeps a rotating element's label upright). Plan 3 hands over the box as the label's child item lays it out (its
+  P3.D11); the layer, which draws the text itself, measures it by this metric instead, as plan 3's §3.9 had it: the
+  box is, per line, the sum of the advances by `ceil(QFontMetricsF::height())`; text with a combining mark is measured
+  laid out, since HarfBuzz inserts a dotted circle (U+25CC) for a broken syllable; the drawn area pads half a line
+  height above and below and a quarter on each side; Text's bounds take the label's box. `QStaticText` is not used,
+  since it would change pixel goldens. In Qt 6 `QString::toUcs4()` returns `QList<uint>`.
 
 Defects the branch made in these layers and fixed, each a test here (§3 has more):
 
