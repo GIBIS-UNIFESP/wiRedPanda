@@ -388,11 +388,8 @@ void ICLoader::processLoadedItems(IC &ic, QList<QGraphicsItem *> &items)
     loadBoundaryPorts(ic, false, outputLabels, outputSourceLabels);
 
     // --- Update visual representation ---
-    // Position label just below the IC body, which grows with port count
-    const qreal bottom = ic.renderBodyBounds().bottom();
-    ic.setLabelAnchor(QPointF(30, bottom + 5));
-
-    // The body is the footprint the ports give, and turns about its centre
+    // The body is the footprint the ports give, and turns about its centre; the label goes below it
+    // (ICPresenter::label())
     ic.pictureReplaced();
 
     // The hover preview popup (ICPreviewPopup) names the IC from here on, in place of its help text (IC::helpText())

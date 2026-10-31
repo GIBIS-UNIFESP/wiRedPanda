@@ -30,21 +30,6 @@
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
 
-/// Shared label font — constructed once to avoid repeated QFont creation and fontconfig lookups.
-static const QFont &labelFont()
-{
-    static const QFont font = [] {
-        // The platform's own sans-serif family: a family it lacks ("Sans Serif" outside fontconfig) makes Qt build its
-        // whole table of family aliases on the first label
-        QFont hint;
-        hint.setStyleHint(QFont::SansSerif);
-        QFont f(hint.defaultFamily());
-        f.setBold(true);
-        return f;
-    }();
-    return font;
-}
-
 Element::Element(ElementType type, QGraphicsItem *parent)
     : QGraphicsObject(parent)
     , m_elementType(type)
@@ -70,8 +55,7 @@ Element::Element(ElementType type, QGraphicsItem *parent)
     // passes for elements that never display a label (e.g. IC sub-elements).
     m_label->setParentItem(this);
     m_label->setBrush(Qt::black);
-    // 64 px below origin keeps the label below the standard 64×64 element body
-    setLabelAnchor(QPointF(0, 64));
+    // Where the label goes is measured with the body (flushChanges())
 
     qCDebug(four) << "Including input and output ports.";
     Element::setInputSize(static_cast<int>(descriptor.minInputSize));
@@ -277,6 +261,13 @@ void Element::flushChanges()
     ElementChanges changes = std::exchange(m_pendingChanges, {});
     const bool repaint = std::exchange(m_pictureChanged, false);
 
+    // The label first, which a body can hold (Text's): it follows the text, and the ports where it goes below them
+    if (const LabelShape label = LabelMeasure::installed().measure(*this); label != m_labelShape) {
+        m_labelShape = label;
+        placeLabel();
+        changes |= ElementChange::Label;
+    }
+
     measureBody();
     if (syncBoundingRect()) {
         changes |= ElementChange::Body;
@@ -323,14 +314,6 @@ QRectF Element::portsBoundingRect() const
 QRectF Element::renderBodyBounds() const
 {
     return portsBoundingRect().united(QRectF(0, 0, 64, 64));
-}
-
-void Element::setLabelAnchor(const QPointF &pos)
-{
-    m_labelAnchor = pos;
-    m_label->setPos(pos);     // baseline: always correct for non-rotatable elements
-    updateLabelOrientation(); // rotatable elements get position+orientation corrected on top
-    changed(ElementChange::Label);
 }
 
 void Element::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -618,26 +601,28 @@ void Element::updateLabel()
 
     // Apply the shared font on first use — deferred from the constructor to
     // avoid an expensive QTextDocumentLayout pass for elements that never show a label.
-    if (!label.isEmpty() && m_label->font() != labelFont()) {
-        m_label->setFont(labelFont());
+    if (!label.isEmpty() && m_label->font() != LabelMeasure::installed().font()) {
+        m_label->setFont(LabelMeasure::installed().font());
     }
 
     m_label->setText(label);
-    // The counter-orientation pivots on the label's centre, which the new text just moved.
-    updateLabelOrientation();
     changed(ElementChange::Label);
 }
 
-void Element::updateLabelOrientation()
+void Element::placeLabel()
 {
+    // The label's own turn (an IC's name stands along the chip side) applies first, about its origin
+    m_label->setRotation(m_labelShape.rotation);
+
     // Non-rotatable elements never transform their graphic (or its children), so their label is
     // already upright as authored.
     if (!rotatesGraphic()) {
+        m_label->setPos(m_labelShape.anchor);
         return;
     }
 
     // The label is a child item and inherits the element's Flip∘Rotate. Left alone, its anchor
-    // point (m_labelAnchor, in the element's un-rotated local frame) would orbit around the
+    // point (the shape's anchor, in the element's un-rotated local frame) would orbit around the
     // rotation pivot along with everything else -- fine for ports/pins, but it leaves the label
     // sweeping past wherever the pivot's "below"/"beside" edge currently points to, which for a
     // wide/tall body (or once ports are packed along an edge) can land it squarely on a pin.
@@ -655,7 +640,7 @@ void Element::updateLabelOrientation()
     pivotRotate.translate(-pivot.x(), -pivot.y());
 
     const QTransform elementRotateFlip = pivotRotate * transform();
-    m_label->setPos(elementRotateFlip.inverted().map(m_labelAnchor));
+    m_label->setPos(elementRotateFlip.inverted().map(m_labelShape.anchor));
 
     // Independently counter-orient the glyphs themselves so the text reads upright and
     // unmirrored too. Pivots about the label's own local origin (0,0) -- the same point setPos()
@@ -685,6 +670,19 @@ QString Element::label() const
 QRectF Element::labelSceneBoundingRect() const
 {
     return m_label->sceneBoundingRect();
+}
+
+QString Element::labelShown() const
+{
+    return m_label->text();
+}
+
+QRectF Element::labelBoundingRect() const
+{
+    if (m_labelShape.box.isEmpty()) {
+        return {};
+    }
+    return m_label->mapRectToParent(QRectF(QPointF(0, 0), m_labelShape.box));
 }
 
 // Color cycle (forward): White → Red → Green → Blue → Purple → White

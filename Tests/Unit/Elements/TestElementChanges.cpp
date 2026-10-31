@@ -31,6 +31,7 @@
 #include "App/Element/GraphicElements/Text.h"
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/IC.h"
+#include "App/Element/LabelMeasure.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/Scene.h"
 #include "App/Versions.h"
@@ -384,6 +385,8 @@ void TestElementChanges::testEveryChangeOfEveryTypeIsReported()
                          qPrintable(QStringLiteral("%1: %2").arg(where, ElementChangesTestDetail::bounds(*element))));
                 // The body the element keeps is the one it has now.
                 QVERIFY2(element->body() == BodyMeasure::installed().measure(*element), qPrintable(where + ": body"));
+                // And the label's shape, which follows the text, the trigger and the ports
+                QVERIFY2(element->labelShape() == LabelMeasure::installed().measure(*element), qPrintable(where + ": label"));
             }
             delete element;
         }
@@ -396,6 +399,32 @@ void TestElementChanges::testEveryChangeOfEveryTypeIsReported()
 }
 
 // --- Reporting ---
+
+void TestElementChanges::testALayoutReportsTheLabelOnlyWhenItMoves()
+{
+    Scene scene;
+    ElementChangesTestDetail::Recorder recorder(scene);
+    auto *gate = new And;
+    auto *table = new TruthTable;
+    scene.addItem(gate);
+    scene.addItem(table);
+    const int gateId = gate->id();
+    const int tableId = table->id();
+
+    // A gate's label stays below its body as its inputs are laid out again
+    recorder.reports.clear();
+    gate->setInputSize(5);
+    QVERIFY(recorder.reportedFor(gateId).testFlag(ElementChange::Ports));
+    QVERIFY(!recorder.reportedFor(gateId).testFlag(ElementChange::Label));
+
+    // A truth table's goes below its footprint, which more inputs lengthen: one report, of the ports and the label
+    const QPointF before = table->labelShape().anchor;
+    recorder.reports.clear();
+    table->setInputSize(table->maxInputSize());
+    QCOMPARE(recorder.countFor(tableId), 1);
+    QVERIFY(recorder.reportedFor(tableId).testFlags(ElementChanges(ElementChange::Ports) | ElementChange::Label));
+    QVERIFY(table->labelShape().anchor.y() > before.y());
+}
 
 void TestElementChanges::testEachChangeIsReportedOnce()
 {

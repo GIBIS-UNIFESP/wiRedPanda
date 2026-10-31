@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <QPointF>
+
 #include "App/Core/Enums.h"
 #include "App/Element/BodyMeasure.h"
 
@@ -19,12 +21,18 @@ struct BodyContext {
     const ThemeAttributes &theme;
 };
 
+/// Where an element's label goes, in the element's un-rotated local frame, and how it turns about its origin.
+struct LabelPlacement {
+    QPointF anchor;
+    int rotation = 0;
+};
+
 /**
  * \class ElementPresenter
  * \brief How the elements of one type look: the shape of their body and what it draws.
  * \details A presenter reads the element and keeps nothing of it, so one serves every element of its type. Each type
- * has one, registered by installPresenters(); presentation measures and draws every element through them, as the
- * model's BodyMeasure and BodyPainter, which installPresenters() installs.
+ * has one, registered by installPresenters(); presentation measures and draws every element, and places its label,
+ * through them, as the model's BodyMeasure, BodyPainter and LabelMeasure, which installPresenters() installs.
  */
 class ElementPresenter
 {
@@ -41,6 +49,9 @@ public:
     /// default. It reads the element's parameters only: an element is measured from its base's constructor on.
     virtual int pictureSlot(const Element &element) const;
 
+    /// Returns where \a element's label goes: below a 64x64 body, upright, by default.
+    virtual LabelPlacement label(const Element &element) const;
+
     /// Returns the presenter registered for the elements of \a type, or null if there is none.
     static const ElementPresenter *find(ElementType type);
 
@@ -49,6 +60,6 @@ public:
     static const ElementPresenter &of(ElementType type);
 };
 
-/// Registers each type's presenter and installs them as the model's BodyMeasure and BodyPainter, and the pictures as its
-/// PictureLibrary. Called once by every program that has elements, as it starts, before any element exists.
+/// Registers each type's presenter and installs them as the model's BodyMeasure, BodyPainter and LabelMeasure, and the
+/// pictures as its PictureLibrary. Called once by every program that has elements, as it starts, before any element exists.
 void installPresenters();

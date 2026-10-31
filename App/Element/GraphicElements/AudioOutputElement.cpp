@@ -28,9 +28,6 @@ ParamSpec AudioOutputElement::playingSpec()
 AudioOutputElement::AudioOutputElement(ElementType type, QGraphicsItem *parent)
     : Element(type, parent)
 {
-    // Position label to the right of the 64×64 body, vertically centred
-    setLabelAnchor(QPointF(64, 34));
-
     // Detect audio hardware once per process; subsequent calls are guarded by
     // m_hasOutputDevice so the element works silently in headless/CI environments.
     static const bool hasOutputDevice = !QMediaDevices::defaultAudioOutput().description().isEmpty();

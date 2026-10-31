@@ -27,6 +27,7 @@
 #include "App/Element/ElementPorts.h"
 #include "App/Element/ElementSimState.h"
 #include "App/Element/ElementTypeDescriptor.h"
+#include "App/Element/LabelMeasure.h"
 #include "App/Element/PropertyDescriptor.h"
 
 struct SerializationContext;
@@ -209,7 +210,7 @@ public:
     /// Sets the label text to \a label and refreshes the display.
     void setLabel(const QString &label);
 
-    /// Repositions and updates the label child item to reflect current state.
+    /// Shows the label and the trigger in the label child item, and reports the label changed.
     void updateLabel();
 
     /// Returns \c true if this element type supports a user-editable label.
@@ -219,6 +220,16 @@ public:
     /// inline rename editor over the visible label. Empty when the label has no text yet (a
     /// caller should fall back to the element's own sceneOutlineRect() in that case).
     QRectF labelSceneBoundingRect() const;
+
+    /// Returns the text the label shows: the label and the trigger, in parentheses.
+    QString labelShown() const;
+
+    /// Returns where the label goes and the room its text takes, as they were last measured (LabelMeasure): as each
+    /// change of the element is reported, before the body, so they follow its label, its trigger and its ports.
+    const LabelShape &labelShape() const { return m_labelShape; }
+
+    /// Returns the box the label's text takes, placed in the element's coordinates; empty while it shows no text.
+    QRectF labelBoundingRect() const;
 
     // --- Embedded IC ---
 
@@ -394,14 +405,14 @@ public:
     /// labels counter-oriented), and keeps the name label counter-oriented to match. Public because
     /// ElementOrientation (a sibling collaborator, not a subclass) calls it back after
     /// updating the item transform.
-    void pictureOrientationChanged() { pictureChanged(); updateLabelOrientation(); }
+    void pictureOrientationChanged() { pictureChanged(); placeLabel(); }
 
     /// Re-applies the orientation, and the name label's counter-orientation, about the pixmap centre after the centre
     /// moved. Public because ElementAppearance (a sibling collaborator) calls it after each pixmap change.
     void recentreOrientation()
     {
         if (m_orientation.recentre()) {
-            updateLabelOrientation();
+            placeLabel();
         }
     }
 
@@ -439,8 +450,8 @@ public:
      * \brief Footprint of a body drawn as vectors (IC/Mux/Demux/TruthTable): the nominal
      * 64x64 body unioned with wherever the ports actually land, which extends past it once an
      * instance has enough ports.
-     * \details Single source of truth for the body their presenter measures (BodyShape) and the
-     * label's anchor on those element types, so they can never drift out of sync with each other.
+     * \details Single source of truth for the body their presenter measures (BodyShape) and, for IC and TruthTable,
+     * the label's anchor their presenter places below it, so they can never drift out of sync with each other.
      */
     QRectF renderBodyBounds() const;
 
@@ -641,12 +652,6 @@ protected:
      */
     QRectF portsBoundingRect() const;
 
-    /// Sets the label's anchor point in the element's un-rotated local frame, and repositions
-    /// it there. \a pos is remembered (m_labelAnchor) so updateLabelOrientation() can always
-    /// recompute the label's actual on-screen position from this original value, rather than
-    /// from whatever rotation-adjusted position it last computed.
-    void setLabelAnchor(const QPointF &pos);
-
     // --- Changes ---
 
     /**
@@ -775,7 +780,6 @@ protected:
     ElementAppearance m_appearance{this};
 
     QGraphicsSimpleTextItem *m_label = new QGraphicsSimpleTextItem(this); ///< Child text item that displays the label and optional trigger shortcut.
-    QPointF m_labelAnchor; ///< The label's intended anchor point in the element's un-rotated local frame; see setLabelAnchor().
 
     // --- Direct Simulation Helpers ---
 
@@ -847,8 +851,9 @@ private:
     /// \c true if they changed. Nothing to do while the element is in no scene, where they are measured when asked.
     bool syncBoundingRect();
 
-    /// Reports what changed since the last report (see changed()): called as the outermost ChangeBatch ends, or
-    /// at once outside one.
+    /// Reports what changed since the last report (see changed()), having measured the label (LabelMeasure) and the
+    /// body anew: called as the outermost ChangeBatch ends, or at once outside one. A label whose shape changed is a
+    /// change of the label.
     void flushChanges();
 
     // --- Port Management Helpers ---
@@ -867,10 +872,10 @@ private:
      */
     void highlight(const bool isSelected);
 
-    /// Counter-orients the name label about its own centre for the current rotation + flip
-    /// state, so the text reads upright and unmirrored at any element orientation. Recomputed
-    /// whenever the orientation or the label text (which moves the pivot) changes.
-    void updateLabelOrientation();
+    /// Places the label child item as its shape says (labelShape()): at its anchor, turned by its rotation, and for a
+    /// rotatable element counter-oriented about its origin for the current rotation and flip, so the text reads
+    /// upright and unmirrored at any orientation. Called whenever the shape or the orientation changes.
+    void placeLabel();
 
     // --- Members: Element Type & Identity ---
 
@@ -909,6 +914,7 @@ private:
 
     ElementChangeListener *m_listener = nullptr; ///< The listener of the scene the element is in, found as it enters one; null in none.
     BodyShape m_body;                            ///< The body's shape as it was last measured; see measureBody().
+    LabelShape m_labelShape;                     ///< The label's shape as it was last measured; see flushChanges().
     QRectF m_bounds;                             ///< The bounds Qt was last given; meaningful while m_boundsLatched.
     bool m_boundsLatched = false;                ///< Whether boundingRect() returns m_bounds: while the element is in a scene.
     int m_changeBatchDepth = 0;                  ///< How many ChangeBatch scopes are open on the element.

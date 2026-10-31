@@ -9,6 +9,7 @@
 #include <QFont>
 #include <QGraphicsSimpleTextItem>
 #include <QImage>
+#include <QKeySequence>
 #include <QMetaEnum>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
@@ -19,7 +20,11 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/Text.h"
+#include "App/Element/GraphicElements/TruthTable.h"
+#include "App/Element/IC.h"
+#include "App/Element/LabelMeasure.h"
 #include "App/Presentation/ElementPresenter.h"
+#include "Tests/Common/TestUtils.h"
 
 void TestElementPresenters::testEveryTypeHasAPresenter()
 {
@@ -82,4 +87,79 @@ void TestElementPresenters::testTextDrawsItsHintAsASimpleTextItemDid()
     blank.fill(Qt::transparent);
     QVERIFY2(expected.copy(below) != blank, "the item drew its text");
     QCOMPARE(drawn.copy(below), expected.copy(below));
+}
+
+void TestElementPresenters::testEachTypePlacesItsLabel()
+{
+    const auto shapeOf = [](const ElementType type) {
+        const std::unique_ptr<Element> element(ElementFactory::buildElement(type));
+        return element->labelShape();
+    };
+    // Below a 64x64 body, upright, by default; below a node's small body; beside an audio output's
+    QCOMPARE(shapeOf(ElementType::And).anchor, QPointF(0, 64));
+    QCOMPARE(shapeOf(ElementType::And).rotation, 0);
+    QCOMPARE(shapeOf(ElementType::Mux).anchor, QPointF(0, 64));
+    QCOMPARE(shapeOf(ElementType::Node).anchor, QPointF(0, 32));
+    QCOMPARE(shapeOf(ElementType::Buzzer).anchor, QPointF(64, 34));
+    QCOMPARE(shapeOf(ElementType::AudioBox).anchor, QPointF(64, 34));
+
+    // Below the footprint of a truth table, and of an IC, whose name turns to stand along the chip
+    TruthTable table;
+    QCOMPARE(table.labelShape().anchor, QPointF(30, table.renderBodyBounds().bottom() + 5));
+    QCOMPARE(table.labelShape().rotation, 0);
+    IC ic;
+    ic.loadFile(TestUtils::cpuComponentsDir() + "level1_d_latch.panda", TestUtils::cpuComponentsDir());
+    QCOMPARE(ic.labelShape().anchor, QPointF(30, ic.renderBodyBounds().bottom() + 5));
+    QCOMPARE(ic.labelShape().rotation, 90);
+
+    // The label child item is placed there: at the anchor of an unturned element, turned with an IC
+    std::unique_ptr<Element> gate(ElementFactory::buildElement(ElementType::And));
+    gate->setLabel(QStringLiteral("Gate"));
+    QCOMPARE(gate->labelSceneBoundingRect().topLeft(), QPointF(0, 64));
+    ic.setLabel(QStringLiteral("Latch"));
+    const QRectF turned = ic.labelSceneBoundingRect();
+    QVERIFY2(turned.height() > turned.width(), qPrintable(QStringLiteral("%1x%2").arg(turned.width()).arg(turned.height())));
+}
+
+void TestElementPresenters::testTheLabelBoxIsTheTextAsDrawn_data()
+{
+    QTest::addColumn<QString>("label");
+    QTest::newRow("word") << QStringLiteral("Gate");
+    QTest::newRow("lines") << QStringLiteral("two\nlines, the second longer");
+    QTest::newRow("combining mark") << QStringLiteral("é́ क्ष");
+    QTest::newRow("empty") << QString();
+}
+
+void TestElementPresenters::testTheLabelBoxIsTheTextAsDrawn()
+{
+    // The box is the room the label child item's text takes, as it lays it out
+    QFETCH(QString, label);
+    std::unique_ptr<Element> gate(ElementFactory::buildElement(ElementType::And));
+    gate->setLabel(label);
+    QCOMPARE(gate->labelShown(), label);
+    QGraphicsSimpleTextItem item(label);
+    item.setFont(LabelMeasure::installed().font());
+    const QSizeF expected = label.isEmpty() ? QSizeF() : item.boundingRect().size();
+    QCOMPARE(gate->labelShape().box, expected);
+    QCOMPARE(gate->labelBoundingRect(), label.isEmpty() ? QRectF() : gate->labelSceneBoundingRect());
+}
+
+void TestElementPresenters::testTheLabelBoxFollowsTheTrigger()
+{
+    std::unique_ptr<Element> button(ElementFactory::buildElement(ElementType::InputButton));
+    button->setLabel(QStringLiteral("Go"));
+    const QSizeF labelled = button->labelShape().box;
+    button->setTrigger(QKeySequence(Qt::Key_Space));
+    QCOMPARE(button->labelShown(), QStringLiteral("Go (Space)"));
+    QVERIFY(button->labelShape().box.width() > labelled.width());
+    QCOMPARE(button->labelShape(), LabelMeasure::installed().measure(*button));
+}
+
+void TestElementPresenters::testTextsBodyHoldsItsLabel()
+{
+    // A label longer than the hint widens a Text's body to hold it, so a click on any of it hits the element
+    Text text;
+    text.setLabel(QStringLiteral("A label much longer than the hint an empty text shows in its place"));
+    QVERIFY(text.labelBoundingRect().width() > 200);
+    QVERIFY(text.body().body.contains(text.labelBoundingRect()));
 }

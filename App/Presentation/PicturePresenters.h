@@ -39,11 +39,12 @@ public:
     int pictureSlot(const Element &element) const override;
 };
 
-/// The presenter of the audio outputs (Buzzer, AudioBox): silent, then playing.
+/// The presenter of the audio outputs (Buzzer, AudioBox): silent, then playing; the label beside the body.
 class AudioPresenter final : public PicturePresenter
 {
 public:
     int pictureSlot(const Element &element) const override;
+    LabelPlacement label(const Element &element) const override;
 };
 
 /// The presenter of the LED: the slot its colour and inputs lit at its last refresh.
@@ -69,6 +70,9 @@ class NodePresenter final : public PicturePresenter
 {
 public:
     BodyShape measure(const Element &element) const override;
+
+    /// Below the node's small body.
+    LabelPlacement label(const Element &element) const override;
 
 protected:
     void paintOverlay(QPainter &painter, const Element &element, const BodyContext &context) const override;
@@ -97,8 +101,8 @@ private:
 
 /**
  * \brief The presenter of Text: its picture and, while its label is empty, a faint hint to add text in its place.
- * \details The body holds the picture, the label and the hint's place, whether the hint shows or not, so a click on
- * the text hits the element; it turns about the picture's centre.
+ * \details The body holds the picture, the label's box and the hint's place, whether the hint shows or not, so a click
+ * on the text hits the element; it turns about the picture's centre.
  */
 class TextPresenter final : public PicturePresenter
 {

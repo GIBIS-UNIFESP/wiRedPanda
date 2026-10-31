@@ -53,6 +53,7 @@ set(MODEL_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/IC.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICLoader.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICSimulation.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LabelMeasure.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/Parameters.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/PictureLibrary.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/Serialization.cpp
@@ -131,6 +132,7 @@ set(MODEL_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/IC.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICLoader.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICSimulation.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/LabelMeasure.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/Parameters.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/PictureLibrary.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/PropertyDescriptor.h
@@ -156,6 +158,7 @@ set(PRESENTATION_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Presentation/ElementPictures.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Presentation/ElementPresenter.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Presentation/FootprintPresenters.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Presentation/LabelMetrics.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Presentation/PicturePresenters.cpp
 )
 
@@ -163,6 +166,7 @@ set(PRESENTATION_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Presentation/ElementPictures.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Presentation/ElementPresenter.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Presentation/FootprintPresenters.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Presentation/LabelMetrics.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Presentation/PicturePresenters.h
 )
 

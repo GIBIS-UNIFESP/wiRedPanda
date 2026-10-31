@@ -22,6 +22,7 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementAppearance.h"
 #include "App/Presentation/ElementPictures.h"
+#include "App/Presentation/LabelMetrics.h"
 #include "App/Wiring/Port.h"
 
 namespace PicturePresentersDetail {
@@ -132,26 +133,6 @@ QFont textHintFont()
     return font;
 }
 
-/// Lays \a layout out as QGraphicsSimpleTextItem lays its text out, each line under the last from the origin, and
-/// returns the box it takes.
-QRectF layOutLines(QTextLayout &layout)
-{
-    layout.setCacheEnabled(true);
-    layout.beginLayout();
-    while (layout.createLine().isValid()) {
-    }
-    layout.endLayout();
-    qreal width = 0;
-    qreal y = 0;
-    for (int i = 0; i < layout.lineCount(); ++i) {
-        QTextLine line = layout.lineAt(i);
-        width = std::max(width, line.naturalTextWidth());
-        line.setPosition(QPointF(0, y));
-        y += line.height();
-    }
-    return {0, 0, width, y};
-}
-
 } // namespace PicturePresentersDetail
 
 BodyShape PicturePresenter::measure(const Element &element) const
@@ -190,6 +171,13 @@ int LevelPresenter::pictureSlot(const Element &element) const
 int AudioPresenter::pictureSlot(const Element &element) const
 {
     return element.param<bool>(ParamId::Playing) ? 1 : 0;
+}
+
+LabelPlacement AudioPresenter::label(const Element &element) const
+{
+    Q_UNUSED(element)
+    // To the right of the 64x64 body, about its middle
+    return {QPointF(64, 34)};
 }
 
 int LedPresenter::pictureSlot(const Element &element) const
@@ -277,6 +265,13 @@ BodyShape NodePresenter::measure(const Element &element) const
     return {picture, picture.center(), PicturePresentersDetail::wirelessIndicatorRect(mode)};
 }
 
+LabelPlacement NodePresenter::label(const Element &element) const
+{
+    Q_UNUSED(element)
+    // Below the 32x32 body
+    return {QPointF(0, 32)};
+}
+
 void NodePresenter::paintOverlay(QPainter &painter, const Element &element, const BodyContext &context) const
 {
     const auto mode = static_cast<WirelessMode>(element.param<int>(ParamId::Wireless));
@@ -310,8 +305,8 @@ BodyShape TextPresenter::measure(const Element &element) const
     using namespace PicturePresentersDetail;
     const QRectF picture = pictureRect(element);
     QTextLayout layout(textHint(), textHintFont());
-    const QRectF hint = layOutLines(layout).translated(kHintPlace);
-    return {picture.united(element.childrenBoundingRect()).united(hint), picture.center()};
+    const QRectF hint = LabelMetrics::layOut(layout).translated(kHintPlace);
+    return {picture.united(element.labelBoundingRect()).united(hint), picture.center()};
 }
 
 void TextPresenter::paintOverlay(QPainter &painter, const Element &element, const BodyContext &context) const
@@ -328,7 +323,7 @@ void TextPresenter::paintOverlay(QPainter &painter, const Element &element, cons
 
     const QFont font = textHintFont();
     QTextLayout layout(textHint(), font);
-    layOutLines(layout);
+    LabelMetrics::layOut(layout);
 
     painter.save();
     painter.setFont(font);
