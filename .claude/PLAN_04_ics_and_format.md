@@ -106,8 +106,13 @@ stays cut. §2.5 and §2.6 make it pass.
 
 `ICDefinition` is a file's or blob's container, opened: the format revision, the metadata, the blob registry and the
 inflated element records, shared as `std::shared_ptr<const ICDefinition>`. Each instance builds its own elements from
-the records through one parse path for files and bytes. A process-wide cache keeps 64 definitions and recycles the
-least recently used, on the main thread only (asserted; nothing loads an IC off it). A file is keyed by its absolute
+the records through one parse path for files and bytes. A process-wide cache, on the main thread only (asserted;
+nothing loads an IC off it), is bounded by use and by memory, never by a count of definitions, which says nothing of
+their size: every definition an instance holds is found through a weak reference, so nothing in use is parsed twice
+or evicted, and memory is what the open documents use, once; definitions no instance holds any longer stay under a
+budget in bytes, each charged its size, the least recently released going first and one larger than the budget not
+kept. The budget is measured, the largest bundled ICs' parse against their memory (P4.10); should re-parsing on a
+reopen prove cheap, released definitions are not kept at all. A file is keyed by its absolute
 path and its bytes, a blob by its bytes, so a definition is reused only for the bytes it was parsed from (P4.D1). The
 loader reads a scene's kept bytes through `ICFileCache`, an interface declared beside it and implemented by
 `ICRegistry`; the scene gives it to each IC as the IC is added, and the IC drops it on any scene change, so the loader
@@ -127,8 +132,9 @@ document's registry when the instances lose their internal elements (§2.7); unt
   of the bytes, and outside a scene (a circuit being opened) a read of the file per instance. It is measured on the
   IC-heavy fixture (2,000 instances of one file) before it lands (P4.10); should the load's profile show it, the key
   goes back to the file's path, modification time and size, with the two blind spots stated in the code.
-- **Tests:** the shared definition across instances and files; parses counted; recency, not insertion order, decides
-  eviction (in-memory empty circuits, one definition used again); a failed read keeps nothing; a migrated file, a file
+- **Tests:** the shared definition across instances and files; parses counted; a definition in use never evicted
+  whatever the budget; released definitions charged their size, recency of release, not insertion order, deciding
+  which goes, one larger than the budget not kept; a failed read keeps nothing; a migrated file, a file
   rewritten at the same size within the same millisecond, and a file made unreadable each read as they now are; a
   scene gives its ICs its registry and removal drops it; an IC loads through its file cache (with a file on disk it
   could not load). Elements in these tests are heap objects the scene owns: a stack element died inside its scope
@@ -269,7 +275,8 @@ user's choice between workable options).
   Basis: tested on the branch (the shared definition, its reads counted, its eviction by recency, a failed read
   keeping nothing); read on `master` (each instance loads its own; the loader casts its scene); the user's rulings of
   2026-10-04 (the shared definition) and 2026-10-21 (the key by bytes, over the branch's path, time and size, whose
-  blind spots it removes; its cost measured first, P4.10).
+  blind spots it removes; its cost measured first, P4.10) and of 2026-10-31 (the cache bounded by use and memory: "why
+  have the process-wide cache be sized at 64? ... shouldnt we use some other metric to determine its size?").
 - **P4.D2. The undo of a file change's reload restores the old definition, and the document keeps a copy,** with the
   file's hash, in the store embedded ICs use, the IC keeping its link; the four cases on open of §2.6. It extends the
   current format. Basis: probed once on the branch and read on `master`, not run there, so P4.1 reproduces it on
