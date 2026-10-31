@@ -2402,6 +2402,34 @@ void TestScene::testSortDisconnectedComponents()
     QVERIFY2(sw1Index >= 0, "SW1 (isolated) should be in sorted list");
 }
 
+void TestScene::testSortGrowsLinearlyInAFanOut()
+{
+    // Every scene's element list is sorted, so a source that drives thousands of gates, a clock or a bus, must be
+    // sorted in time linear in its wires: each source ahead of what it drives. Against the same wires one per source,
+    // from 250 wires to 64,000 (TestUtils::fanOutGrowth()): 0.6 to 1.1 for a linear sort with eight copies of the test
+    // running at once, 18 for one that finds a repeated successor by searching the list
+    const auto sortsSourcesFirst = [](const QVector<Element *> &elements) {
+        const auto sorted = Scene::sortByTopology(elements);
+        QHash<const Element *, qsizetype> position;
+        for (qsizetype i = 0; i < sorted.size(); ++i) {
+            position.insert(sorted.at(i), i);
+        }
+        for (auto *element : elements) {
+            for (auto *wire : element->outputPort()->connections()) {
+                if (position.value(element) > position.value(wire->endPort()->element())) {
+                    return false;
+                }
+            }
+        }
+        return sorted.size() == elements.size();
+    };
+    const double growth = TestUtils::fanOutGrowth(sortsSourcesFirst, 250, 64000);
+    qInfo() << "growth" << growth;
+    QVERIFY2(growth > 0, "a source sorted after what it drives");
+    QVERIFY2(growth < 6.0, qPrintable(QString("against the same wires one per source, one source's wires took %1 times "
+                                              "as long to sort at 256 times the wires").arg(growth)));
+}
+
 void TestScene::testForgetItemIdC7()
 {
     // Pre-fix UpdateBlobCommand::reconnectConnections silently dropped

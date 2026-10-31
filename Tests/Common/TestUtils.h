@@ -385,6 +385,17 @@ private:
 };
 
 /**
+ * \brief How a pass over gates and their wires grows with a fan-out, for the tests that keep such passes linear.
+ * \details Times \a pass over Not gates fed by wires from one source, as a clock or a bus drives the gates inside an
+ * IC, against the same wires one per source, which do the same work in lists of one, at \a fewWires and at
+ * \a manyWires wires, and returns how the fan-out's time over the spread's grows between the two: about 1 for a pass
+ * linear in its wires, about \a manyWires / \a fewWires for one quadratic in a fan-out. The thread's CPU time
+ * (ThreadCpuTimer), each the best of nine runs, the fan-out and the spread timed in turn within each run, so that a
+ * load which comes and goes falls on both. Returns 0 if \a pass returns false, a wrong result, on either.
+ */
+double fanOutGrowth(const std::function<bool(const QVector<Element *> &)> &pass, int fewWires, int manyWires);
+
+/**
  * @brief RAII poller that dismisses modal dialogs/message boxes for as long as it lives.
  *
  * Replaces the one-shot `QTimer::singleShot(0, ...)` + `activeModalWidget()`

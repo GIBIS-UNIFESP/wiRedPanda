@@ -20,6 +20,7 @@
 #include <QPointer>
 #include <QPolygon>
 #include <QScrollBar>
+#include <QSet>
 #include <QToolTip>
 #include <QUrl>
 
@@ -411,14 +412,17 @@ const QVector<Element *> Scene::elements(const QRectF &rect) const
 QVector<Element *> Scene::sortByTopology(QVector<Element *> elements)
 {
     QHash<Element *, QVector<Element *>> successors;
+    // Each successor once, in the order first reached; a set finds the repeats, since a source may drive thousands
+    QSet<Element *> listed;
     for (auto *elm : elements) {
+        listed.clear();
         for (auto *port : elm->outputs()) {
             for (auto *conn : port->connections()) {
                 if (auto *endPort = conn->endPort()) {
                     if (auto *successor = endPort->element()) {
-                        auto &vec = successors[elm];
-                        if (!vec.contains(successor)) {
-                            vec.append(successor);
+                        if (!listed.contains(successor)) {
+                            listed.insert(successor);
+                            successors[elm].append(successor);
                         }
                     }
                 }

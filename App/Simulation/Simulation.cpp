@@ -9,6 +9,7 @@
 #include <QGraphicsView>
 #include <QGuiApplication>
 #include <QScreen>
+#include <QSet>
 
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
@@ -609,18 +610,23 @@ QHash<Element *, QVector<Element *>> Simulation::buildSuccessorGraph(
     const QHash<QString, Element *> &txMap)
 {
     QHash<Element *, QVector<Element *>> successors;
+    // Each source's successors once, in the order first reached: the cyclic ordering depends on that order
+    // (legacyCalculatePriorities()), and a set finds the repeats, since a source may drive thousands
+    QHash<Element *, QSet<Element *>> listed;
+    const auto addEdge = [&successors, &listed](Element *source, Element *successor) {
+        if (auto &seen = listed[source]; !seen.contains(successor)) {
+            seen.insert(successor);
+            successors[source].append(successor);
+        }
+    };
 
     // Build successor edges from physical connections
     for (auto *elm : std::as_const(elements)) {
         for (auto *outputPort : elm->outputs()) {
             for (auto *conn : outputPort->connections()) {
                 if (auto *endPort = conn->endPort()) {
-                    auto *successor = endPort->element();
-                    if (successor) {
-                        auto &vec = successors[elm];
-                        if (!vec.contains(successor)) {
-                            vec.append(successor);
-                        }
+                    if (auto *successor = endPort->element()) {
+                        addEdge(elm, successor);
                     }
                 }
             }
@@ -635,10 +641,7 @@ QHash<Element *, QVector<Element *>> Simulation::buildSuccessorGraph(
     for (auto *elm : std::as_const(elements)) {
         if (elm->wirelessMode() == WirelessMode::Rx && !elm->label().isEmpty()) {
             if (auto *tx = txMap.value(elm->label(), nullptr)) {
-                auto &txVec = successors[tx];
-                if (!txVec.contains(elm)) {
-                    txVec.append(elm);
-                }
+                addEdge(tx, elm);
             }
         }
     }

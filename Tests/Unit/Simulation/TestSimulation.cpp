@@ -3,7 +3,9 @@
 
 #include "Tests/Unit/Simulation/TestSimulation.h"
 
+#include <algorithm>
 #include <chrono>
+#include <memory>
 
 #include <QElapsedTimer>
 #include <QTemporaryDir>
@@ -533,4 +535,52 @@ void TestSimulationUnit::testRebuildKeepsFlipFlopState()
     sim->restart();
     sim->update();
     QCOMPARE(led->inputPort(0)->status(), Status::Inactive);
+}
+
+void TestSimulationUnit::testSuccessorGraphGrowsLinearlyInAFanOut()
+{
+    // Every rebuild builds the graph, so a source that drives thousands of gates, a clock or a bus, must be listed in
+    // time linear in its wires: each wire's gate once among its source's successors. Against the same wires one per
+    // source, from 250 wires to 64,000 (TestUtils::fanOutGrowth()): 1.1 to 1.5 for linear listing with eight copies of
+    // the test running at once, 20 for listing that finds a repeat by searching the list
+    const auto listsEachGateOnce = [](const QVector<Element *> &elements) {
+        const auto successors = Simulation::buildSuccessorGraph(elements, {});
+        return std::all_of(elements.cbegin(), elements.cend(), [&successors](Element *element) {
+            return successors.value(element).size() == element->outputPort()->connections().size();
+        });
+    };
+    const double growth = TestUtils::fanOutGrowth(listsEachGateOnce, 250, 64000);
+    qInfo() << "growth" << growth;
+    QVERIFY2(growth > 0, "a gate listed other than once among its source's successors");
+    QVERIFY2(growth < 6.0, qPrintable(QString("against the same wires one per source, one source's wires took %1 times "
+                                              "as long to list at 256 times the wires").arg(growth)));
+}
+
+void TestSimulationUnit::testSuccessorGraphListsASuccessorOnce()
+{
+    // Two wires into one gate, and a wireless pair also wired, each give one edge, in the order first reached
+    const std::unique_ptr<Element> notGate(ElementFactory::buildElement(ElementType::Not));
+    const std::unique_ptr<Element> andGate(ElementFactory::buildElement(ElementType::And));
+    const std::unique_ptr<Element> led(ElementFactory::buildElement(ElementType::Led));
+    const std::unique_ptr<Element> tx(ElementFactory::buildElement(ElementType::Node));
+    const std::unique_ptr<Element> rx(ElementFactory::buildElement(ElementType::Node));
+    const auto wire = [](Element *from, Element *to, const int input) {
+        auto *connection = new Connection();
+        connection->setStartPort(from->outputPort());
+        connection->setEndPort(to->inputPort(input));
+    };
+    wire(notGate.get(), andGate.get(), 0);
+    wire(notGate.get(), led.get(), 0);
+    wire(notGate.get(), andGate.get(), 1);
+    wire(tx.get(), rx.get(), 0);
+    tx->setLabel(QStringLiteral("bus"));
+    tx->setWirelessMode(WirelessMode::Tx);
+    rx->setLabel(QStringLiteral("bus"));
+    rx->setWirelessMode(WirelessMode::Rx);
+    QCOMPARE(rx->inputPort()->connections().size(), 1);
+
+    const QVector<Element *> elements{notGate.get(), andGate.get(), led.get(), tx.get(), rx.get()};
+    const auto successors = Simulation::buildSuccessorGraph(elements, Simulation::buildTxMap(elements));
+    QCOMPARE(successors.value(notGate.get()), (QVector<Element *>{andGate.get(), led.get()}));
+    QCOMPARE(successors.value(tx.get()), QVector<Element *>{rx.get()});
 }

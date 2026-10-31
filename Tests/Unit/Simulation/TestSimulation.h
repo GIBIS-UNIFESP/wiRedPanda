@@ -43,4 +43,8 @@ private slots:
     /// A rebuild keeps the outputs of the elements it keeps, so a flip-flop keeps its Q; a restart starts it afresh.
     void testRebuildKeepsFlipFlopState_data();
     void testRebuildKeepsFlipFlopState();
+
+    /// A source's successors are listed in time linear in its wires, each once.
+    void testSuccessorGraphGrowsLinearlyInAFanOut();
+    void testSuccessorGraphListsASuccessorOnce();
 };

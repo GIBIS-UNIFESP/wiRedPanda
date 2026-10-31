@@ -120,6 +120,7 @@ private slots:
     void testSortMultipleChains();
     void testSortCycleDetection();
     void testSortDisconnectedComponents();
+    void testSortGrowsLinearlyInAFanOut();
 
     // Regression: C7 — forgetItemId drops registry entry without delete
     void testForgetItemIdC7();

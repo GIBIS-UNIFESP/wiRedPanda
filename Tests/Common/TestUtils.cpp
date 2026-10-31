@@ -3,7 +3,10 @@
 
 #include "Tests/Common/TestUtils.h"
 
+#include <algorithm>
 #include <limits>
+#include <memory>
+#include <vector>
 
 #ifdef Q_OS_WIN
 #include <windows.h>
@@ -24,6 +27,7 @@
 
 #include "App/Core/Application.h"
 #include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Simulation/Simulation.h"
@@ -332,6 +336,64 @@ qint64 ThreadCpuTimer::now()
     }
     return (static_cast<qint64>(time.tv_sec) * 1000000000) + time.tv_nsec;
 #endif
+}
+
+namespace FanOutGrowthDetail {
+
+/// Not gates fed by wires, owned for as long as a test times them; each gate's ports delete its wires.
+struct WiredGates {
+    std::vector<std::unique_ptr<Element>> owned;
+    QVector<Element *> elements;
+};
+
+/// Returns \a wires Not gates each fed by a wire: all from one source gate when \a fanOut, else each from its own.
+WiredGates wireGates(const int wires, const bool fanOut)
+{
+    WiredGates gates;
+    const auto add = [&gates] {
+        gates.owned.emplace_back(ElementFactory::buildElement(ElementType::Not));
+        gates.elements.append(gates.owned.back().get());
+        return gates.elements.constLast();
+    };
+    Element *source = fanOut ? add() : nullptr;
+    for (int i = 0; i < wires; ++i) {
+        Element *from = fanOut ? source : add();
+        Element *to = add();
+        auto *wire = new Connection();
+        wire->setStartPort(from->outputPort());
+        wire->setEndPort(to->inputPort());
+    }
+    return gates;
+}
+
+} // namespace FanOutGrowthDetail
+
+double fanOutGrowth(const std::function<bool(const QVector<Element *> &)> &pass, const int fewWires, const int manyWires)
+{
+    const auto bestRatio = [&pass](const int wires) {
+        const auto fanOut = FanOutGrowthDetail::wireGates(wires, true);
+        const auto spread = FanOutGrowthDetail::wireGates(wires, false);
+        qint64 bestFanOut = std::numeric_limits<qint64>::max();
+        qint64 bestSpread = std::numeric_limits<qint64>::max();
+        ThreadCpuTimer timer;
+        for (int run = 0; run < 9; ++run) {
+            timer.start();
+            const bool fanOutRight = pass(fanOut.elements);
+            const qint64 fanOutTime = timer.elapsed();
+            timer.start();
+            const bool spreadRight = pass(spread.elements);
+            const qint64 spreadTime = timer.elapsed();
+            if (!fanOutRight || !spreadRight) {
+                return 0.0;
+            }
+            bestFanOut = std::min(bestFanOut, fanOutTime);
+            bestSpread = std::min(bestSpread, spreadTime);
+        }
+        return static_cast<double>(bestFanOut) / static_cast<double>(std::max<qint64>(bestSpread, 1));
+    };
+    const double fewRatio = bestRatio(fewWires);
+    const double manyRatio = bestRatio(manyWires);
+    return ((fewRatio > 0) && (manyRatio > 0)) ? (manyRatio / fewRatio) : 0.0;
 }
 
 AutoDismisser::AutoDismisser(std::function<bool(QWidget *)> handler)
