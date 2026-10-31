@@ -609,6 +609,12 @@ user's choice between workable options).
   holds under any linker and any initialization order, and a test that links the model alone can install a stub.
   Basis: read on the branch (its static initializer held only because the file that defined it also defined the
   presenter lookup every caller used); the user's approval, 2026-10-21.
+- **P3.D11. The label box is the text as its child item lays it out,** measured in presentation with the layout
+  `QGraphicsSimpleTextItem` uses, while that item still draws the label; §3.9's metric (advances summed per line, a
+  line height rounded up, the drawn area padded, the dotted circle of a broken syllable) is the label layer's, which
+  draws the text itself, and comes with it in plan 9 (P9.7). A box measured otherwise would not be the text drawn, and
+  would move the bounds, the label editor and the label goldens. Basis: read on the branch (its metric was its label
+  layer's); P3.14b, 2026-10-31.
 
 ## 7. Risks
 
