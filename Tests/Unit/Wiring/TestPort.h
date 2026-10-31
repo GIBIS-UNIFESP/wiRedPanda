@@ -20,6 +20,7 @@ private slots:
 
     void testPortCurrentPenTracksStatusColor();
 
+    void testEachKindDrawsItsGlyph();
     void testNameGetterSetter();
     void testDefaultValueGetterSetter();
     void testDefaultSetWhileConnectedLeavesTheInputOnItsWire();

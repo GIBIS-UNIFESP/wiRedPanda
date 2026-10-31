@@ -18,6 +18,7 @@
 
 #include <QBrush>
 #include <QGraphicsPathItem>
+#include <QPainterPath>
 #include <QPen>
 #include <QSet>
 
@@ -229,6 +230,13 @@ protected:
     /// Hit-area / glyph half-size in pixels. ±kRadius gives a 10×10 px clickable square,
     /// large enough to hit reliably without obscuring nearby elements.
     static constexpr int kRadius = 5;
+
+    /// Returns the glyph an input port draws, a circle: the neutral point where the signal terminates. Built once and
+    /// shared by every input port, a QPainterPath being implicitly shared.
+    static const QPainterPath &inputGlyph();
+    /// Returns the glyph an output port draws, a triangle pointing toward the wire, the signal flowing outward. Built
+    /// once and shared by every output port.
+    static const QPainterPath &outputGlyph();
 
     // --- Members ---
 

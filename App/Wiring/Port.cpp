@@ -9,6 +9,7 @@
 #include <utility>
 
 #include <QPainter>
+#include <QPainterPath>
 #include <QPen>
 
 #include "App/Core/ThemeManager.h"
@@ -317,13 +318,33 @@ void Port::drainConnections(bool isInput)
     }
 }
 
+const QPainterPath &Port::inputGlyph()
+{
+    static const QPainterPath glyph = [] {
+        QPainterPath path;
+        path.addEllipse(QRectF(-kRadius, -kRadius, 2 * kRadius, 2 * kRadius));
+        return path;
+    }();
+    return glyph;
+}
+
+const QPainterPath &Port::outputGlyph()
+{
+    static const QPainterPath glyph = [] {
+        QPainterPath path;
+        path.moveTo(-kRadius, -kRadius);
+        path.lineTo(+kRadius, 0);
+        path.lineTo(-kRadius, +kRadius);
+        path.closeSubpath();
+        return path;
+    }();
+    return glyph;
+}
+
 InputPort::InputPort(QGraphicsItem *parent)
     : Port(parent)
 {
-    // Circle: neutral connection point — the signal terminates here
-    QPainterPath path;
-    path.addEllipse(QRectF(-kRadius, -kRadius, 2 * kRadius, 2 * kRadius));
-    setPath(path);
+    setPath(inputGlyph());
 
     // A fresh port is unconnected and required by default, so the validity rule
     // enforced by setStatus()/updateConnections() applies from birth: show Error
@@ -379,13 +400,7 @@ bool InputPort::isValid() const
 OutputPort::OutputPort(QGraphicsItem *parent)
     : Port(parent)
 {
-    // Right-pointing triangle: tip toward the wire, indicating signal flows outward
-    QPainterPath path;
-    path.moveTo(-kRadius, -kRadius);
-    path.lineTo(+kRadius, 0);
-    path.lineTo(-kRadius, +kRadius);
-    path.closeSubpath();
-    setPath(path);
+    setPath(outputGlyph());
 
     // Apply the initial pen/brush directly: setStatus() would early-return here
     // because m_status already holds the Unknown default

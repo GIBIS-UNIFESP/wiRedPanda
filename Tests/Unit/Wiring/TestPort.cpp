@@ -11,6 +11,7 @@
 #include <vector>
 
 #include <QList>
+#include <QPainterPath>
 #include <QString>
 
 #include "App/Core/ThemeManager.h"
@@ -78,6 +79,25 @@ void TestPort::testPortCurrentPenTracksStatusColor()
 
     port.setStatus(Status::Unknown);
     QCOMPARE(port.currentPen().color(), theme.m_portUnknownPen);
+}
+
+void TestPort::testEachKindDrawsItsGlyph()
+{
+    // An input port draws a circle, an output port a triangle pointing toward its wire, ten pixels across, each from
+    // the one glyph its kind shares
+    QPainterPath circle;
+    circle.addEllipse(QRectF(-5, -5, 10, 10));
+    QPainterPath triangle;
+    triangle.moveTo(-5, -5);
+    triangle.lineTo(5, 0);
+    triangle.lineTo(-5, 5);
+    triangle.closeSubpath();
+    for (int i = 0; i < 2; ++i) {
+        InputPort input;
+        OutputPort output;
+        QCOMPARE(input.path(), circle);
+        QCOMPARE(output.path(), triangle);
+    }
 }
 
 void TestPort::testNameGetterSetter()
