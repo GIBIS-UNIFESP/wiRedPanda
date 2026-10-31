@@ -132,6 +132,13 @@ document's registry when the instances lose their internal elements (§2.7); unt
   of the bytes, and outside a scene (a circuit being opened) a read of the file per instance. It is measured on the
   IC-heavy fixture (2,000 instances of one file) before it lands (P4.10); should the load's profile show it, the key
   goes back to the file's path, modification time and size, with the two blind spots stated in the code.
+- **What it saves.** Measured on plan 3's tip (2026-10-31, P3.9j), callgrind of the undo fuzzer linked natively on
+  the IC-heavy input, 2.89 G instructions in all: the header, metadata and blob registry each instance reads again
+  (`Serialization::readPreamble()`) are 115 M, about 4%, which a definition holding the inflated records saves;
+  decoding the records into elements is about 350 M more, which it saves only if it holds them decoded, splitting
+  `ElementSerializer`'s reads from its applying; building each instance's own internal elements is about 1.2 G, and
+  deleting them 390 M, which only §2.7 removes. The boundary Inputs and Outputs, each built, loaded and deleted for
+  the Nodes that replace them, are skipped only by building the Nodes from the records.
 - **Tests:** the shared definition across instances and files; parses counted; a definition in use never evicted
   whatever the budget; released definitions charged their size, recency of release, not insertion order, deciding
   which goes, one larger than the budget not kept; a failed read keeps nothing; a migrated file, a file
@@ -216,6 +223,9 @@ an instance's internals (a label or blob reload inside an inline IC, moving an i
 and IC tests read the designed circuit from the definition. Plan 4 leaves the reference and the IC's serialization as
 they are and states this hand-over in its ledger (P4.11).
 
+Most of an IC-heavy circuit's load is these elements: on the IC-heavy fixture, building each instance's own about 1.2 G
+of 2.89 G instructions and deleting them 390 M (§2.2's measure), against 115 M for the parse a shared definition saves.
+
 That paste, the IC reload, `UpdateBlobCommand`'s undo and redo and a load from a blob are each one bulk change is
 plan 9's test (its P9.10): `master`'s scene has no bulk notifications, and the document listener that reports them is
 plan 9's, which lands after this plan.
@@ -276,7 +286,9 @@ user's choice between workable options).
   keeping nothing); read on `master` (each instance loads its own; the loader casts its scene); the user's rulings of
   2026-10-04 (the shared definition) and 2026-10-21 (the key by bytes, over the branch's path, time and size, whose
   blind spots it removes; its cost measured first, P4.10) and of 2026-10-31 (the cache bounded by use and memory: "why
-  have the process-wide cache be sized at 64? ... shouldnt we use some other metric to determine its size?").
+  have the process-wide cache be sized at 64? ... shouldnt we use some other metric to determine its size?") and
+  of 2026-10-31 again (it stays in plan 4, not plan 3's P3.9j, once measured to save about 4% as designed: "given the
+  work is much larger should we leave all of that to plan 4?").
 - **P4.D2. The undo of a file change's reload restores the old definition, and the document keeps a copy,** with the
   file's hash, in the store embedded ICs use, the IC keeping its link; the four cases on open of §2.6. It extends the
   current format. Basis: probed once on the branch and read on `master`, not run there, so P4.1 reproduces it on
