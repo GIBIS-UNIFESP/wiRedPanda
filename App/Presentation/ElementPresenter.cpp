@@ -7,15 +7,13 @@
 #include <utility>
 
 #include <QHash>
-#include <QPainter>
-#include <QPen>
 #include <QSizeF>
 #include <QString>
 
-#include "App/Core/ThemeManager.h"
 #include "App/Element/BodyPainter.h"
 #include "App/Element/Element.h"
 #include "App/Element/LabelMeasure.h"
+#include "App/Presentation/ElementPainter.h"
 #include "App/Presentation/ElementPictures.h"
 #include "App/Presentation/FootprintPresenters.h"
 #include "App/Presentation/LabelMetrics.h"
@@ -30,29 +28,6 @@ public:
     BodyShape measure(const Element &element) const override
     {
         return ElementPresenter::of(element.elementType()).measure(element);
-    }
-};
-
-/// The model's BodyPainter: the selection, drawn the same for every type, then the body, drawn by the type's
-/// presenter.
-class PresenterBodyPainter final : public BodyPainter
-{
-public:
-    void paint(QPainter &painter, const Element &element) const override
-    {
-        const ThemeAttributes &theme = ThemeManager::attributes();
-
-        if (element.isSelected()) {
-            painter.save();
-            painter.setBrush(theme.m_selectionBrush);
-            // 0.5 pen width keeps the selection outline thin regardless of zoom level
-            painter.setPen(QPen(theme.m_selectionPen, 0.5, Qt::SolidLine));
-            // Corner radius of 5 matches the visual rounding used on element bodies
-            painter.drawRoundedRect(element.outlineRect(), 5, 5);
-            painter.restore();
-        }
-
-        ElementPresenter::of(element.elementType()).paintBody(painter, element, BodyContext{theme});
     }
 };
 
@@ -174,10 +149,9 @@ void installPresenters()
     }
 
     static const PresenterBodyMeasure measure;
-    static const PresenterBodyPainter painter;
     static const PresenterLabelMeasure labelMeasure;
     BodyMeasure::install(&measure);
-    BodyPainter::install(&painter);
+    BodyPainter::install(&ElementPainter::inCurrentTheme());
     LabelMeasure::install(&labelMeasure);
     PictureLibrary::install(&ElementPictures::instance());
 }
