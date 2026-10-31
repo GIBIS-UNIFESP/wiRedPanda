@@ -166,6 +166,7 @@
 #include "Tests/Unit/Elements/TestElementChanges.h"
 #include "Tests/Unit/Elements/TestElementPresenters.h"
 #include "Tests/Unit/Elements/TestElementLabel.h"
+#include "Tests/Unit/Elements/TestElementPictures.h"
 #include "Tests/Unit/Elements/TestElementProperties.h"
 #include "Tests/Unit/Elements/TestFeatures.h"
 #include "Tests/Unit/Elements/TestGeometry.h"
@@ -415,6 +416,7 @@ int main(int argc, char **argv)
         {"TestElementContextMenu", []() -> QObject * { return new TestElementContextMenu; }},
         {"TestElementEditor", []() -> QObject * { return new TestElementEditor; }},
         {"TestElementLabel", []() -> QObject * { return new TestElementLabel; }},
+        {"TestElementPictures", []() -> QObject * { return new TestElementPictures; }},
         {"TestElementProperties", []() -> QObject * { return new TestElementProperties; }},
         {"TestElementTabNavigator", []() -> QObject * { return new TestElementTabNavigator; }},
         {"TestExportController", []() -> QObject * { return new TestExportController; }},

@@ -13,12 +13,12 @@ void ElementOrientation::setRotation(const qreal angle)
     // Keep angle in [0, 360) to avoid accumulated floating-point drift across many rotations
     m_angle = std::fmod(angle, 360);
     // Rotatable elements rotate the entire QGraphicsItem (pixmap + ports move together), then
-    // swap in a pixmap whose baked-in SVG labels are counter-rotated so the labels stay upright.
+    // are shown with their picture's baked-in SVG labels counter-rotated so the labels stay upright.
     // Non-rotatable elements (inputs/outputs) keep the pixmap fixed and only spin ports
     // around the element centre so connections track the correct positions.
     if (m_owner->rotatesGraphic()) {
         m_owner->QGraphicsItem::setRotation(m_angle);
-        m_owner->reapplyAppearanceOrientation();
+        m_owner->pictureOrientationChanged();
     } else {
         rotatePorts();
     }
@@ -80,11 +80,11 @@ void ElementOrientation::applyFlipTransform()
 
     setFlipMatrix();
 
-    // The item transform above mirrors the whole pixmap (and moves the ports). Swap in a pixmap
-    // whose baked-in SVG labels are pre-counter-oriented so the glyphs read upright after the
-    // rotation + flip while still moving to the opposite side. No-op for an upright, unflipped or
-    // non-SVG pixmap.
-    m_owner->reapplyAppearanceOrientation();
+    // The item transform above mirrors the whole picture (and moves the ports). The picture is shown
+    // with its baked-in SVG labels pre-counter-oriented so the glyphs read upright after the
+    // rotation + flip while still moving to the opposite side. No change for an upright, unflipped or
+    // non-SVG picture.
+    m_owner->pictureOrientationChanged();
 }
 
 void ElementOrientation::setFlipMatrix()

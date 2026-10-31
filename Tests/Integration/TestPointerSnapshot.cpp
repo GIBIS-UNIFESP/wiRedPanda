@@ -24,6 +24,7 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/IO/Serialization.h"
+#include "App/Presentation/ElementPictures.h"
 #include "App/Scene/ClipboardManager.h"
 #include "App/Scene/GraphicsView.h"
 #include "App/Scene/Scene.h"
@@ -119,7 +120,8 @@ QRectF gridArea(const Scene *scene, const qreal step)
 
     for (const auto *element : TestUtils::elementsById(scene)) {
         // The picture with its ports, as the area was first taken.
-        QRectF local(element->appearance().pixmap().rect());
+        const PictureVariant *picture = ElementPictures::instance().shown(*element);
+        QRectF local = picture ? QRectF(picture->pixmap.rect()) : QRectF();
         for (const auto *port : element->allPorts()) {
             local |= element->mapRectFromItem(port, port->boundingRect());
         }

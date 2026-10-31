@@ -365,9 +365,6 @@ public:
      */
     virtual QList<std::pair<int, QString>> appearanceStates() const;
 
-    /// Returns a small preview pixmap for the appearance at \a index (see appearanceStates()).
-    QPixmap appearancePreviewPixmap(const int index, const QSize &size) const;
-
     /// Loads and applies the appearance at position \a index in the appearance list (see ElementAppearance::setPixmap()).
     void setPixmap(const int index);
 
@@ -396,11 +393,11 @@ public:
     /// elements, which keep their pixmap fixed and move only their ports around the centre.
     void rotatePorts();
 
-    /// Forwards the appearance's orientation re-application after a rotation/flip transform
-    /// change, and keeps the name label counter-oriented to match. Public because
+    /// Reports that a rotation/flip transform change changed the picture (a rotatable element shows its picture's
+    /// labels counter-oriented), and keeps the name label counter-oriented to match. Public because
     /// ElementOrientation (a sibling collaborator, not a subclass) calls it back after
     /// updating the item transform.
-    void reapplyAppearanceOrientation() { m_appearance.applyOrientation(); updateLabelOrientation(); }
+    void pictureOrientationChanged() { pictureChanged(); updateLabelOrientation(); }
 
     /// Re-applies the orientation, and the name label's counter-orientation, about the pixmap centre after the centre
     /// moved. Public because ElementAppearance (a sibling collaborator) calls it after each pixmap change.
@@ -587,8 +584,9 @@ public:
      */
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) final;
 
-    /// Draws the element's body with \a painter, in the element's own coordinates, without its selection: the current
-    /// SVG or pixmap at the item origin. A type that draws more, or a body of its own, draws it here.
+    /// Draws with \a painter, in the element's own coordinates, what the element draws of its own: over its picture
+    /// (a display's lit segments, a rotary's marks), or the whole body of a type that draws one (Mux, Demux,
+    /// TruthTable, IC). Nothing by default; the presenter draws the picture.
     virtual void drawBody(QPainter &painter) const;
 
     /// Returns the type's name in the current language ("And", "D-Flip-Flop", ...), looked up each time it is asked,
@@ -631,8 +629,9 @@ public:
 protected:
     // --- Graphics & Rendering ---
 
-    /// Returns the pixmap currently displayed by this element.
-    QPixmap pixmap() const;
+    /// Returns the procedural render pixmap of a type that draws its own body (see ElementAppearance::setRenderPixmap());
+    /// null for an element that shows a picture.
+    QPixmap renderPixmap() const;
 
     /**
      * \brief Returns the bounding rectangle that encompasses all child ports.
@@ -770,8 +769,8 @@ protected:
     /// forwards its port-access interface here.  See ElementPorts.
     ElementPorts m_ports{this};
 
-    /// Owns the pixmap/SVG appearance, the appearance list, and selection-highlight colors;
-    /// this element forwards its rendering and appearance interface here.  See ElementAppearance.
+    /// Owns the appearance lists and which picture the element shows; this element forwards its
+    /// appearance interface here.  See ElementAppearance.
     ElementAppearance m_appearance{this};
 
     QGraphicsSimpleTextItem *m_label = new QGraphicsSimpleTextItem(this); ///< Child text item that displays the label and optional trigger shortcut.
@@ -817,8 +816,8 @@ private:
     /// see ElementSerializer.
     friend class ElementSerializer;
 
-    /// Reports each new pixmap as a new picture, under one ChangeBatch with the body and the pivot it moves, and calls
-    /// invalidateRenderCache() when the pixmap's size changes; see ElementAppearance::setPixmap()/setRenderPixmap().
+    /// Reports each new picture through pictureReplaced(), under one ChangeBatch; see
+    /// ElementAppearance::setPixmap()/setRenderPixmap().
     friend class ElementAppearance;
 
     /// Calls the protected sceneEvent() directly to test its Ctrl+click swallow deterministically:
@@ -843,8 +842,9 @@ private:
     /// Measures the body anew (BodyMeasure); called as each change is reported.
     void measureBody();
 
-    /// Measures the body anew and turns the element about its new centre; called as the picture changes.
-    void measureBodyAndPivot();
+    /// Takes a new picture: measures the body anew, drops the render cache if the body's size changed, turns the
+    /// element about the body's new centre and reports the picture changed.
+    void pictureReplaced();
 
     /// Brings the bounds Qt has up to the measured ones, telling Qt first (prepareGeometryChange()); \returns
     /// \c true if they changed. Nothing to do while the element is in no scene, where they are measured when asked.

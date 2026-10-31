@@ -54,7 +54,7 @@ void ICRenderer::drawBody(const IC &ic, QPainter &painter)
     painter.translate(ic.boundingRect().topLeft());
     // The body footprint is the (correctly-sized) m_pixmap rect — exactly the area the old raster
     // occupied — so the geometry is reproduced 1:1 at any zoom.
-    const QRectF bounds(ic.pixmap().rect());
+    const QRectF bounds(ic.renderPixmap().rect());
 
     const QColor bodyColor = ic.isEmbedded() ? QColor(90, 126, 160) : QColor(126, 126, 126);
     const QColor outlineColor = ic.isEmbedded() ? QColor(58, 82, 110) : QColor(78, 78, 78);

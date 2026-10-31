@@ -132,10 +132,8 @@ std::optional<Element::PortAttributes> Display14::inputAttributes(const int inde
 
 void Display14::drawBody(QPainter &painter) const
 {
-    // Base class paints the off-state background; active segments are overlaid as vector
+    // The presenter draws the off-state picture; active segments are overlaid as vector
     // renders on top, crisp at any zoom.
-    Element::drawBody(painter);
-
     const QRectF body(0, 0, 64, 64);
     if (inputPort(0)->status() == Status::Active)  { g1.at(m_colorNumber)->render(&painter, body); }
     if (inputPort(1)->status() == Status::Active)  { f.at(m_colorNumber)->render(&painter, body);  }

@@ -186,11 +186,9 @@ Element::PortAttributes Display7::segmentInput(PortAttributes described, const S
 
 void Display7::drawBody(QPainter &painter) const
 {
-    // The base class draws the background (off-state SVG).
+    // The presenter draws the background (the off-state picture).
     // Active segments are painted on top as vector renders, crisp at any zoom.
     // All segment renderers share the background's 64x64 box, so they composite correctly.
-    Element::drawBody(painter);
-
     const QRectF body(0, 0, 64, 64);
     if (auto *port = inputPort(0); port && port->status() == Status::Active) { g.at(m_colorNumber)->render(&painter, body);  }
     if (auto *port = inputPort(1); port && port->status() == Status::Active) { f.at(m_colorNumber)->render(&painter, body);  }

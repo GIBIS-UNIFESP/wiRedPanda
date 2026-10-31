@@ -15,6 +15,7 @@
 #include "App/Core/Common.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/IO/SerializationContext.h"
+#include "App/Presentation/ElementPictures.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/Goldens.h"
@@ -518,12 +519,15 @@ void TestLED::testAppearancePreviewPixmap()
     led.setInputSize(2);
     const auto states = led.appearanceStates();
 
+    const auto preview = [&led](const int index) {
+        return ElementPictures::preview(led.appearance().alternativeAppearances().value(index), QSize(16, 16));
+    };
     for (const auto &[index, label] : states) {
-        QVERIFY(!led.appearancePreviewPixmap(index, QSize(16, 16)).isNull());
+        QVERIFY(!preview(index).isNull());
     }
 
-    QVERIFY(led.appearancePreviewPixmap(-1, QSize(16, 16)).isNull());
-    QVERIFY(led.appearancePreviewPixmap(9999, QSize(16, 16)).isNull());
+    QVERIFY(preview(-1).isNull());
+    QVERIFY(preview(9999).isNull());
 }
 
 void TestLED::testSetAppearanceDefault()

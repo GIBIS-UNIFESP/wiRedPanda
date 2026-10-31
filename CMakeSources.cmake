@@ -10,6 +10,7 @@ set(MODEL_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/BodyMeasure.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/BodyPainter.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/Element.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementAppearance.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementFactory.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementInput.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementOrientation.cpp
@@ -53,6 +54,7 @@ set(MODEL_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICLoader.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICSimulation.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/Parameters.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/PictureLibrary.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/Serialization.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Commands.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/ICRegistry.cpp
@@ -83,6 +85,7 @@ set(MODEL_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/BodyMeasure.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/BodyPainter.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/Element.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementAppearance.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementChange.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementFactory.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementInfo.h
@@ -129,6 +132,7 @@ set(MODEL_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICLoader.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICSimulation.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/Parameters.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/PictureLibrary.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/PropertyDescriptor.h
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/ExternalFilePath.h
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/FileUtils.h
@@ -149,10 +153,12 @@ set(MODEL_HEADERS
 
 # Presentation: how an element is measured, shaped and drawn. It may include the model.
 set(PRESENTATION_SOURCES
+    ${CMAKE_CURRENT_LIST_DIR}/App/Presentation/ElementPictures.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Presentation/ElementPresenter.cpp
 )
 
 set(PRESENTATION_HEADERS
+    ${CMAKE_CURRENT_LIST_DIR}/App/Presentation/ElementPictures.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Presentation/ElementPresenter.h
 )
 
@@ -177,7 +183,6 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Settings.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/ThemeManager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/UpdateChecker.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementAppearance.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementLabel.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICPreviewPopup.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICRenderer.cpp
@@ -257,7 +262,6 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/StepEngineCore.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/ThemeManager.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/UpdateChecker.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementAppearance.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementLabel.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICPreviewPopup.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICRenderer.h
@@ -499,6 +503,7 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementChanges.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementPresenters.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementLabel.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementPictures.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementProperties.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementSerializer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestFeatures.cpp
@@ -739,6 +744,7 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementChanges.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementPresenters.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementLabel.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementPictures.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementProperties.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementSerializer.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestFeatures.h

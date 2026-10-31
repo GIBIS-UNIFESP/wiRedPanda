@@ -141,7 +141,7 @@ void Demux::drawBody(QPainter &painter) const
     // local origin with it so the body lands exactly where the old rasterised pixmap was blitted.
     painter.translate(boundingRect().topLeft());
 
-    const int height = pixmap().rect().height();
+    const int height = renderPixmap().rect().height();
 
     // Trapezoid body: narrower on left (input side), wider on right (output side)
     const int bodyTop = 8;

@@ -2,32 +2,29 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 /** \file
- * \brief Owns a Element's pixmap / SVG appearance and appearance list.
+ * \brief Owns an Element's appearance lists and the picture it shows.
  */
 
 #pragma once
 
-#include <memory>
+#include <optional>
 
 #include <QCoreApplication>
 #include <QPixmap>
-#include <QSize>
 #include <QStringList>
 
+#include "App/Element/PictureLibrary.h"
+
 class Element;
-class QPainter;
-class QSvgRenderer;
 
 /**
  * \class ElementAppearance
- * \brief Owns the visual appearance of a Element: the displayed pixmap, its SVG
- * renderer, and the default/alternative appearance lists.
+ * \brief Owns which picture an Element shows: the default/alternative appearance lists, the picture shown from them,
+ * and the procedural render pixmap of a body drawn as vectors.
  *
- * \details Extracted from Element so the rendering bulk (pixmap loading, SVG text
- * counter-orientation, the per-appearance caches, and the paint body) lives in one cohesive
- * unit.  Orientation state (rotation/flip) stays on the owning element; this type reads it
- * back through a narrow owner reference, which it also uses to trigger repaints and resolve
- * the element's context directory.
+ * \details The pictures are loaded, oriented, sized and drawn by presentation, through the installed PictureLibrary:
+ * this keeps only the id each picture is loaded as. Orientation state (rotation/flip) stays on the owning element;
+ * this type reaches it through a narrow owner reference, which it also uses to report the picture's changes.
  */
 class ElementAppearance
 {
@@ -37,28 +34,31 @@ public:
     /// Constructs the appearance bound to its owning \a owner element.
     explicit ElementAppearance(Element *owner);
 
-    /// Out-of-line so the unique_ptr to the forward-declared QSvgRenderer can be destroyed.
-    ~ElementAppearance();
-
     /// Seeds the appearance lists from the type's descriptor (lazily deriving defaults from
     /// \a pixmapPath when \a defaultAppearances is empty; alternatives default to the defaults).
     void seed(const QStringList &defaultAppearances,
               const QStringList &alternativeAppearances,
               const QString &pixmapPath);
 
-    // --- Pixmap access ---
+    // --- The picture shown ---
 
-    /// Returns the pixmap currently displayed.
-    QPixmap pixmap() const { return m_pixmap; }
+    /// Returns the picture shown, as the installed PictureLibrary loaded it; nothing before one loads.
+    std::optional<PictureId> picture() const { return m_picture; }
 
-    /// Returns true while the displayed pixmap is a procedural render pixmap (setRenderPixmap()), not a picture.
+    /// Returns the path of the picture shown; empty before one loads.
+    const QString &picturePath() const { return m_picturePath; }
+
+    /// Returns the procedural render pixmap (setRenderPixmap()); null for an element that shows a picture.
+    QPixmap renderPixmap() const { return m_hasCustomRenderPixmap ? m_renderPixmap : QPixmap(); }
+
+    /// Returns true while the element draws a procedural body instead of its picture (setRenderPixmap()).
     bool hasRenderPixmap() const { return m_hasCustomRenderPixmap; }
 
     /// Returns true if at least one default appearance is available.
     bool hasDefaultAppearances() const { return !m_defaultAppearances.isEmpty(); }
 
     /**
-     * \brief Loads and applies the appearance at position \a index in the active list.
+     * \brief Shows the appearance at position \a index in the active list.
      * \details A picture that does not load (its file gone, or not an image) shows the slot's default in its place and
      * the slot keeps its path: a state change or an undo goes on. Opening a file reports it (reportFailedPicture()).
      */
@@ -67,17 +67,10 @@ public:
     /// Throws a Pandaception naming the picture last applied and why, when it did not load and its default is shown.
     void reportFailedPicture() const;
 
-    /// Returns a scaled-down preview of the appearance at \a index, without mutating the
-    /// element's live displayed pixmap. Returns a null pixmap for an out-of-range index.
-    QPixmap previewPixmapAt(const int index, const QSize &size) const;
-
-    /// Replaces the displayed pixmap with a procedurally-built one (Mux/Demux/TruthTable/IC).
+    /// Replaces the picture with a procedurally-built body pixmap (Mux/Demux/TruthTable/IC).
     /// From then on the owner draws its own body from this pixmap's footprint: orientation
-    /// changes leave it untouched, and the owner's transform origin is kept at its centre.
+    /// changes leave it untouched, and the owner turns about its body's centre.
     void setRenderPixmap(const QPixmap &pixmap);
-
-    /// Re-derives the displayed pixmap (and SVG renderer) from the owner's current orientation.
-    void applyOrientation();
 
     // --- Appearance list ---
 
@@ -104,7 +97,7 @@ public:
     /// Copies the default appearances over the alternative list (restore-to-default).
     void resetAlternativeToDefault() { m_alternativeAppearances = m_defaultAppearances; }
 
-    /// Sets one alternative-appearance slot without reloading the pixmap (serializer / subclass use).
+    /// Sets one alternative-appearance slot without reloading the picture (serializer / subclass use).
     void setAlternativeAppearanceAt(const int index, const QString &path);
 
     /// Sets the "using built-in default appearance" flag.
@@ -119,29 +112,16 @@ public:
     /// Returns the external (non-resource) appearance file paths the element depends on.
     QStringList externalFiles() const;
 
-    // --- Painting ---
-
-    /// Draws the SVG/pixmap body onto \a painter, at the item origin.
-    void render(QPainter &painter) const;
-
 private:
-    /// Reads the displayed picture for the characterization goldens; see Tests/Common/Goldens.h.
-    friend class SnapshotAccess;
-
-    /// Rebuilds m_svgRenderer from the resolved SVG path and the owner's orientation, or clears
-    /// it for non-SVG (raster) appearances.
-    void rebuildSvgRenderer();
-
     Element *m_owner = nullptr;
 
-    QPixmap m_pixmap;     ///< Currently displayed pixmap.
-    QPixmap m_basePixmap; ///< Upright, unflipped pixmap; m_pixmap is derived from this.
-    bool m_hasCustomRenderPixmap = false; ///< True while m_pixmap is a procedural render pixmap, not derived from m_basePixmap.
-    std::shared_ptr<QSvgRenderer> m_svgRenderer; ///< Vector renderer for the current SVG appearance (null for raster); shared with every other element resolving to the same path/orientation, see sharedSvgRenderer() in the .cpp.
+    std::optional<PictureId> m_picture;   ///< The picture shown, as the PictureLibrary loaded it.
+    QString m_picturePath;                ///< The path of the picture shown: the one asked for, or the slot's default.
+    QPixmap m_renderPixmap;               ///< Procedural body pixmap; only its size is used (setRenderPixmap()).
+    bool m_hasCustomRenderPixmap = false; ///< True while the owner draws m_renderPixmap's footprint instead of the picture.
 
     QString m_pixmapPath;         ///< Resource/file path of the default pixmap (from the descriptor).
     QString m_currentPixmapPath;  ///< Path last requested via setPixmap() (change guard).
-    QString m_resolvedPixmapPath; ///< Resolved path of m_basePixmap; used to build orientation variants.
     QString m_failedPixmapPath;   ///< The picture last applied when it did not load, else empty.
 
     QStringList m_defaultAppearances;     ///< Built-in appearance paths (resource files).

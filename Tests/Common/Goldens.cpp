@@ -27,6 +27,7 @@
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
+#include "App/Presentation/ElementPictures.h"
 #include "App/Scene/GraphicsView.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -425,19 +426,20 @@ void addSegmentDisplaysAndDisplayIc(CircuitBuilder &builder, const QString &dire
 
 QString SnapshotAccess::pixmapIdentity(const Element *element)
 {
-    const ElementAppearance &appearance = element->m_appearance;
-    if (appearance.m_hasCustomRenderPixmap) {
+    const ElementAppearance &appearance = element->appearance();
+    if (appearance.hasRenderPixmap()) {
         return "footprint";
     }
-    if (appearance.m_pixmap.isNull()) {
+    const PictureVariant *picture = ElementPictures::instance().shown(*element);
+    if (!picture || picture->pixmap.isNull()) {
         return "null";
     }
 
-    const QSize size = appearance.m_pixmap.size();
+    const QSize size = picture->pixmap.size();
     // A file on disk keeps only its name: its directory is wherever the checkout is.
-    const QString &path = appearance.m_resolvedPixmapPath;
+    const QString &path = appearance.picturePath();
     const QString source = path.startsWith(':') ? path : QFileInfo(path).fileName();
-    const bool oriented = appearance.m_pixmap.cacheKey() != appearance.m_basePixmap.cacheKey();
+    const bool oriented = picture->oriented;
     return QString::number(size.width()) + 'x' + QString::number(size.height()) + ':' + source + (oriented ? ":oriented" : "");
 }
 

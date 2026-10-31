@@ -108,7 +108,7 @@ void Mux::drawBody(QPainter &painter) const
     // local origin with it so the body lands exactly where the old rasterised pixmap was blitted.
     painter.translate(boundingRect().topLeft());
 
-    const int height = pixmap().rect().height();
+    const int height = renderPixmap().rect().height();
 
     // Trapezoid body: wider on left (input side), narrower on right (output side)
     const int bodyTop = 8;
