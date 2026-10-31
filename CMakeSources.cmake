@@ -155,6 +155,7 @@ set(MODEL_HEADERS
 
 # Presentation: how an element is measured, shaped and drawn. It may include the model.
 set(PRESENTATION_SOURCES
+    ${CMAKE_CURRENT_LIST_DIR}/App/Presentation/ElementPainter.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Presentation/ElementPictures.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Presentation/ElementPresenter.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Presentation/FootprintPresenters.cpp
@@ -163,6 +164,7 @@ set(PRESENTATION_SOURCES
 )
 
 set(PRESENTATION_HEADERS
+    ${CMAKE_CURRENT_LIST_DIR}/App/Presentation/ElementPainter.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Presentation/ElementPictures.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Presentation/ElementPresenter.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Presentation/FootprintPresenters.h
@@ -509,6 +511,7 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementAdvanced.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementAppearance.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementChanges.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementPainter.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementPresenters.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementLabel.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementPictures.cpp
@@ -751,6 +754,7 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementAdvanced.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementAppearance.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementChanges.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementPainter.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementPresenters.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementLabel.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementPictures.h

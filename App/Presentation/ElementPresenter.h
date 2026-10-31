@@ -31,8 +31,9 @@ struct LabelPlacement {
  * \class ElementPresenter
  * \brief How the elements of one type look: the shape of their body and what it draws.
  * \details A presenter reads the element and keeps nothing of it, so one serves every element of its type. Each type
- * has one, registered by installPresenters(); presentation measures and draws every element, and places its label,
- * through them, as the model's BodyMeasure, BodyPainter and LabelMeasure, which installPresenters() installs.
+ * has one, registered by installPresenters(); presentation measures every element and places its label through them,
+ * as the model's BodyMeasure and LabelMeasure, and ElementPainter draws its body with them; installPresenters()
+ * installs the three.
  */
 class ElementPresenter
 {
@@ -60,6 +61,6 @@ public:
     static const ElementPresenter &of(ElementType type);
 };
 
-/// Registers each type's presenter and installs them as the model's BodyMeasure, BodyPainter and LabelMeasure, and the
-/// pictures as its PictureLibrary. Called once by every program that has elements, as it starts, before any element exists.
+/// Registers each type's presenter and installs them as the model's BodyMeasure and LabelMeasure, ElementPainter as its
+/// BodyPainter, and the pictures as its PictureLibrary. Called once by every program that has elements, as it starts, before any element exists.
 void installPresenters();
