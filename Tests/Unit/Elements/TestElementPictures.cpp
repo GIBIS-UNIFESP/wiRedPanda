@@ -12,6 +12,7 @@
 #include <QPainter>
 #include <QPixmap>
 #include <QScopeGuard>
+#include <QSet>
 #include <QSvgRenderer>
 #include <QTemporaryDir>
 #include <QTest>
@@ -168,11 +169,41 @@ void TestElementPictures::testTheVariantsShownLatelyStayWithinTheBudget()
     QVERIFY(ElementPictures::variantBytes() <= ElementPictures::variantBudget);
 }
 
+void TestElementPictures::testAPictureWithoutLabelsHasOneVariant()
+{
+    // A picture without labels is the same in every orientation, the element's transform turning it whole: every
+    // orientation shows the one variant, its renderer parsed once
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("plain.svg");
+    {
+        QFile file(path);
+        QVERIFY(file.open(QIODevice::WriteOnly));
+        file.write(R"(<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64">)"
+                   R"(<rect width="64" height="64" fill="white"/><circle cx="32" cy="32" r="16"/></svg>)");
+    }
+
+    And gate;
+    gate.setAppearance(false, path);
+    const PictureId id = *gate.appearance().picture(0);
+    const std::shared_ptr<QSvgRenderer> renderer = ElementPictures::instance().shown(gate, Theme::Light)->renderer;
+    QVERIFY(renderer != nullptr);
+    for (const qreal angle : {0.0, 37.0, 90.0, 180.0}) {
+        gate.setRotation(angle);
+        gate.setFlippedX(angle > 100);
+        const PictureVariant *shown = ElementPictures::instance().shown(gate, Theme::Light);
+        QVERIFY(!shown->oriented);
+        QCOMPARE(shown->renderer, renderer);
+    }
+    QCOMPARE(ElementPictures::variantCount(id), 1);
+}
+
 void TestElementPictures::testTheBundledPicturesFitTheBudget()
 {
     // Every bundled picture in the editor's sixteen orientations (four turns, each flipped either way or both), in both
     // themes, is kept at once: the budget drops only what MCP's other angles and custom pictures add
     QList<PictureId> ids;
+    QSet<PictureId> labelled;
     QDirIterator it(QStringLiteral(":/Components"), {QStringLiteral("*.svg"), QStringLiteral("*.png")}, QDir::Files,
                     QDirIterator::Subdirectories);
     And gate;
@@ -187,7 +218,11 @@ void TestElementPictures::testTheBundledPicturesFitTheBudget()
                     gate.setRotation(angle);
                     gate.setFlippedX(flipX);
                     gate.setFlippedY(flipY);
-                    QVERIFY(ElementPictures::instance().shown(gate, theme) != nullptr);
+                    const PictureVariant *shown = ElementPictures::instance().shown(gate, theme);
+                    QVERIFY(shown != nullptr);
+                    if (shown->oriented && (theme == Theme::Light)) {
+                        labelled.insert(*id);
+                    }
                 }
             }
         }
@@ -197,10 +232,11 @@ void TestElementPictures::testTheBundledPicturesFitTheBudget()
         ids.append(*id);
     }
     QVERIFY(ids.size() > 50);
+    QVERIFY(!labelled.isEmpty());
 
     qsizetype bytes = 0;
     for (const PictureId id : std::as_const(ids)) {
-        QCOMPARE(ElementPictures::variantCount(id), 16);
+        QCOMPARE(ElementPictures::variantCount(id), labelled.contains(id) ? 16 : 1);
         bytes += ElementPictures::variantBytes(id);
     }
     qInfo("%s", qPrintable(QStringLiteral("the %1 bundled pictures take %2 bytes in the editor's orientations")

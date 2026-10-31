@@ -18,6 +18,7 @@ private slots:
     void testVariantsAreBuiltFromTheSourceReadAtLoad();
     void testASourceThatIsNotSvgShowsItsRaster();
     void testTheVariantsShownLatelyStayWithinTheBudget();
+    void testAPictureWithoutLabelsHasOneVariant();
     void testTheBundledPicturesFitTheBudget();
     void testALevelShowsItsSlot_data();
     void testALevelShowsItsSlot();

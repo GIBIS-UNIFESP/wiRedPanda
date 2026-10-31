@@ -33,7 +33,8 @@ struct PictureVariant {
  * \details Each version of a file (its path, modification time and size) is loaded once and shared by every element
  * that shows it. A rotatable element whose SVG picture has labels (a `<text>`, or an element marked `class="label"`)
  * is shown with them counter-oriented, so the glyphs read upright after the element's own rotation and flip; the
- * variants are built from the SVG's source, read as the picture loaded, as each orientation is first shown. Versions
+ * variants are built from the SVG's source, read as the picture loaded, as each orientation is first shown; a picture
+ * without labels, the same in every orientation, has one variant. Versions
  * are not dropped: their number is bounded by the pictures the program shows, not by circuit size. Variants are, since
  * an angle can be any number (MCP): those of every picture stay within variantBudget, each charged the bytes it holds,
  * the one shown least recently going first; a variant dropped is built again when its orientation is shown. GUI-thread
@@ -75,7 +76,7 @@ public:
     static QPixmap typePicture(ElementType type);
 
     /// The bytes the variants of every picture may hold: their rasters and vector renderers. The bundled pictures take
-    /// 12.3 MiB in the editor's sixteen orientations in both themes (measured, Qt 6.12), which it holds, with room for
+    /// 5.0 MiB in the editor's sixteen orientations in both themes (measured, Qt 6.12), which it holds, with room for
     /// the angles MCP can ask for and custom pictures.
     static constexpr qsizetype variantBudget = 16 * 1024 * 1024;
 

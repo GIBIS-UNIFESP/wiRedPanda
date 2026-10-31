@@ -149,6 +149,7 @@ struct Picture {
     bool svg = false;
     QPixmap base;      ///< The picture as QPixmap::load() reads it.
     QByteArray source; ///< An SVG's source, which its counter-oriented variants are built from.
+    bool labelled = false; ///< Whether it is an SVG with labels: only such a picture differs in each orientation.
     QHash<Orientation, ShownVariant> variants; ///< Those of every picture within ElementPictures::variantBudget.
     bool darkLooked = false;       ///< Whether its Dark theme sibling (ElementPictures::themed()) was looked for.
     std::optional<PictureId> dark; ///< Its Dark theme sibling, when it has one that loads.
@@ -279,10 +280,12 @@ bool dropLeastRecentlyShown()
 /// Returns \a picture shown in \a orientation, building it the first time and when it was dropped since. The variants
 /// of every picture stay within ElementPictures::variantBudget, those shown least recently going first; the one just
 /// built stays, so it is drawn, even alone past the budget.
-const PictureVariant &variantOf(Picture &picture, const Orientation &orientation)
+const PictureVariant &variantOf(Picture &picture, const Orientation &shownIn)
 {
     static quint64 shownCount = 0;
     ++shownCount;
+    // A picture without labels is the same in every orientation, the item's transform turning it whole: one variant
+    const Orientation orientation = picture.labelled ? shownIn : Orientation{};
     if (const auto it = picture.variants.find(orientation); it != picture.variants.end()) {
         it->lastShown = shownCount;
         return it->variant;
@@ -348,6 +351,7 @@ std::optional<PictureId> ElementPictures::load(const QString &path) const
         if (QFile file(path); file.open(QIODevice::ReadOnly)) {
             picture.source = file.readAll();
         }
+        picture.labelled = hasLabels(picture.source);
     }
 
     if (pictures.pictures.empty()) {
