@@ -65,12 +65,16 @@ struct ElementInfo<Led> {
         });
         // Any name is kept; one not in the list is drawn as White. With more than one input the inputs' code picks
         // the colour, so only a single-input LED offers it
-        descriptor.parameters = {{
-            .id = ParamId::Colour,
-            .defaultValue = QString(Led::kDefaultColor),
-            .key = "color",
-            .offered = [](const Element &element) { return element.inputSize() == 1; },
-        }};
+        descriptor.parameters = {
+            {
+                .id = ParamId::Colour,
+                .defaultValue = QString(Led::kDefaultColor),
+                .key = "color",
+                .offered = [](const Element &element) { return element.inputSize() == 1; },
+            },
+            // The slot shown changes as refresh() reads the inputs, not as the colour or the inputs change
+            {.id = ParamId::Lit, .defaultValue = 0},
+        };
         descriptor.readBeforeMap = [](Element &element, QDataStream &stream, const SerializationContext &context) {
             // From 1.1 to 4.0 the colour was a bare string
             if (VersionInfo::hasClock(context.version)) {
@@ -96,7 +100,7 @@ Led::Led(QGraphicsItem *parent)
     // Even indices are the Off state; odd indices are the On state.
     // Indices 10-25 cover multi-input (2/3/4-bit) color palettes (see comment below).
     m_appearance.seed(ElementTypeDescriptor::of(ElementType::Led).defaultAppearances, {}, {});
-    setPixmap(0);
+    m_appearance.appearanceChanged();
 
     updatePortsProperties();
 }
@@ -164,7 +168,7 @@ int Led::colorIndex()
 
 void Led::refresh()
 {
-    setPixmap(colorIndex());
+    setParam(ParamId::Lit, colorIndex());
 }
 
 void Led::parameterChanged(const ParamId id, const ParamValue &previous)
@@ -174,6 +178,9 @@ void Led::parameterChanged(const ParamId id, const ParamValue &previous)
         // m_colorIndex is the base offset into the single-input appearance list.
         // Each color occupies two consecutive entries: [base]=Off, [base+1]=On.
         m_colorIndex = 2 * colorNameToIndex(color());
+    }
+    if (id == ParamId::Lit) {
+        pictureReplaced();
     }
 }
 
@@ -201,7 +208,8 @@ void Led::applyAppearance(const bool useDefaultAppearance, const QString &fileNa
     }
 
     m_appearance.setUsingDefaultAppearance(useDefaultAppearance);
-    setPixmap(index);
+    m_appearance.appearanceChanged();
+    setParam(ParamId::Lit, index);
 }
 
 QList<std::pair<int, QString>> Led::appearanceStates() const

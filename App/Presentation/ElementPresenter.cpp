@@ -46,6 +46,36 @@ public:
     }
 };
 
+/// The presenter of the inputs that show their level (InputButton, InputSwitch, Clock): off, then on.
+class LevelPresenter : public PicturePresenter
+{
+public:
+    int pictureSlot(const Element &element) const override
+    {
+        return element.param<bool>(ParamId::On) ? 1 : 0;
+    }
+};
+
+/// The presenter of the audio outputs (Buzzer, AudioBox): silent, then playing.
+class AudioPresenter : public PicturePresenter
+{
+public:
+    int pictureSlot(const Element &element) const override
+    {
+        return element.param<bool>(ParamId::Playing) ? 1 : 0;
+    }
+};
+
+/// The presenter of the LED: the slot its colour and inputs lit at its last refresh.
+class LedPresenter : public PicturePresenter
+{
+public:
+    int pictureSlot(const Element &element) const override
+    {
+        return element.param<int>(ParamId::Lit);
+    }
+};
+
 /// The presenter of the segment displays: the body is their picture and the 64x64 box their lit segments are drawn in,
 /// which a custom picture need not cover; it turns about the picture's centre.
 class SegmentDisplayPresenter : public PicturePresenter
@@ -134,6 +164,12 @@ QHash<ElementType, const ElementPresenter *> &registry()
 
 } // namespace ElementPresenterDetail
 
+int ElementPresenter::pictureSlot(const Element &element) const
+{
+    Q_UNUSED(element)
+    return 0;
+}
+
 const ElementPresenter *ElementPresenter::find(const ElementType type)
 {
     return ElementPresenterDetail::registry().value(type, nullptr);
@@ -154,6 +190,9 @@ void installPresenters()
 {
     using namespace ElementPresenterDetail;
     static const PicturePresenter picture;
+    static const LevelPresenter level;
+    static const AudioPresenter audio;
+    static const LedPresenter led;
     static const SegmentDisplayPresenter segmentDisplay;
     static const FootprintPresenter footprint;
     static const TextPresenter text;
@@ -161,9 +200,9 @@ void installPresenters()
     // Every type an element can have, each named: a type left out has no presenter, which TestElementPresenters finds.
     const std::initializer_list<std::pair<ElementType, const ElementPresenter *>> presenters = {
         {ElementType::And, &picture},
-        {ElementType::AudioBox, &picture},
-        {ElementType::Buzzer, &picture},
-        {ElementType::Clock, &picture},
+        {ElementType::AudioBox, &audio},
+        {ElementType::Buzzer, &audio},
+        {ElementType::Clock, &level},
         {ElementType::DFlipFlop, &picture},
         {ElementType::DLatch, &picture},
         {ElementType::Demux, &footprint},
@@ -171,13 +210,13 @@ void installPresenters()
         {ElementType::Display16, &segmentDisplay},
         {ElementType::Display7, &segmentDisplay},
         {ElementType::IC, &footprint},
-        {ElementType::InputButton, &picture},
+        {ElementType::InputButton, &level},
         {ElementType::InputGnd, &picture},
         {ElementType::InputRotary, &picture},
-        {ElementType::InputSwitch, &picture},
+        {ElementType::InputSwitch, &level},
         {ElementType::InputVcc, &picture},
         {ElementType::JKFlipFlop, &picture},
-        {ElementType::Led, &picture},
+        {ElementType::Led, &led},
         {ElementType::Line, &picture},
         {ElementType::Mux, &footprint},
         {ElementType::Nand, &picture},

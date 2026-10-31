@@ -28,6 +28,7 @@
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/Presentation/ElementPictures.h"
+#include "App/Presentation/ElementPresenter.h"
 #include "App/Scene/GraphicsView.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -437,7 +438,7 @@ QString SnapshotAccess::pixmapIdentity(const Element *element)
 
     const QSize size = picture->pixmap.size();
     // A file on disk keeps only its name: its directory is wherever the checkout is.
-    const QString &path = appearance.picturePath();
+    const QString path = appearance.picturePath(ElementPresenter::of(element->elementType()).pictureSlot(*element));
     const QString source = path.startsWith(':') ? path : QFileInfo(path).fileName();
     const bool oriented = picture->oriented;
     return QString::number(size.width()) + 'x' + QString::number(size.height()) + ':' + source + (oriented ? ":oriented" : "");

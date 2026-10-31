@@ -53,6 +53,7 @@ struct ElementInfo<Buzzer> {
                 },
             },
             AudioOutputElement::volumeSpec(Buzzer::kDefaultVolume),
+            AudioOutputElement::playingSpec(),
         };
         descriptor.readBeforeMap = [](Element &element, QDataStream &stream, const SerializationContext &context) {
             // From 2.4 to 4.0 the tone was a bare note name
@@ -104,7 +105,7 @@ void Buzzer::parameterChanged(const ParamId id, const ParamValue &previous)
 
     // A new tone while playing restarts it, so it sounds at once. reset() discards what the sink holds of the old tone,
     // which stop() would play out first (Qt drains the buffer on Linux and macOS)
-    if (m_isPlaying) {
+    if (isPlaying()) {
         m_sink->reset();
         m_generator->start();
         m_sink->start(m_generator);

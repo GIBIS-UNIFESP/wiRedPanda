@@ -365,9 +365,6 @@ public:
      */
     virtual QList<std::pair<int, QString>> appearanceStates() const;
 
-    /// Loads and applies the appearance at position \a index in the appearance list (see ElementAppearance::setPixmap()).
-    void setPixmap(const int index);
-
     /// Throws a Pandaception naming an external file the element uses in a fallback's place: the picture shown last
     /// that did not load (see ElementAppearance::reportFailedPicture()), and in an override the element's own files.
     virtual void reportFailedFiles() const;
@@ -571,7 +568,8 @@ public:
     /// Returns a string encoding element-specific properties for serialization or display.
     virtual QString genericProperties();
 
-    /// Forces a visual refresh of the element's pixmap and ports.
+    /// Brings what the element shows of its inputs up to them (an LED's picture, a display's segments, an audio
+    /// output's sound); nothing by default.
     virtual void refresh();
 
     // --- Qt Graphics & Display ---
@@ -677,6 +675,11 @@ protected:
     /// repainted, and a change of its bounds is reported as Body. The picture alone is not a change of the circuit,
     /// so nothing else is reported. Under a ChangeBatch, held back as changed() is.
     void pictureChanged();
+
+    /// Takes a new picture: measures the body anew, drops the render cache if the body's size changed, turns the
+    /// element about the body's new centre and reports the picture changed. Called as the appearance loads new
+    /// pictures, and as a change of the element's state changes the slot its presenter shows.
+    void pictureReplaced();
 
     /// Lays the ports out for the current port count. The base distributes the inputs down the left edge (x=0) and the
     /// outputs down the right edge (x=64), spaced by the scene grid size, unless a port's attributes place it; applies
@@ -817,7 +820,7 @@ private:
     friend class ElementSerializer;
 
     /// Reports each new picture through pictureReplaced(), under one ChangeBatch; see
-    /// ElementAppearance::setPixmap()/setRenderPixmap().
+    /// ElementAppearance::appearanceChanged()/setRenderPixmap().
     friend class ElementAppearance;
 
     /// Calls the protected sceneEvent() directly to test its Ctrl+click swallow deterministically:
@@ -841,10 +844,6 @@ private:
 
     /// Measures the body anew (BodyMeasure); called as each change is reported.
     void measureBody();
-
-    /// Takes a new picture: measures the body anew, drops the render cache if the body's size changed, turns the
-    /// element about the body's new centre and reports the picture changed.
-    void pictureReplaced();
 
     /// Brings the bounds Qt has up to the measured ones, telling Qt first (prepareGeometryChange()); \returns
     /// \c true if they changed. Nothing to do while the element is in no scene, where they are measured when asked.

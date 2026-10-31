@@ -27,6 +27,7 @@ void ElementInput::parameterChanged(const ParamId id, const ParamValue &previous
 {
     Element::parameterChanged(id, previous);
     if (id == ParamId::On) {
+        pictureReplaced();
         showLevel();
     }
 }
@@ -34,8 +35,6 @@ void ElementInput::parameterChanged(const ParamId id, const ParamValue &previous
 void ElementInput::showLevel()
 {
     const bool on = param<bool>(ParamId::On);
-    // Pixmap index 0 = off SVG, index 1 = on SVG (matches bool → int cast)
-    setPixmap(static_cast<int>(on));
     if (auto *out = outputPort()) {
         out->setStatus(static_cast<Status>(on));
     }
@@ -56,5 +55,5 @@ void ElementInput::applyAppearance(const bool defaultAppearance, const QString &
     }
 
     m_appearance.setUsingDefaultAppearance(defaultAppearance);
-    setPixmap(static_cast<int>(isOn()));
+    m_appearance.appearanceChanged();
 }

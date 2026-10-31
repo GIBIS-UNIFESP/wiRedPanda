@@ -5,7 +5,8 @@
 
 #include <QObject>
 
-/// The picture library: each version of a file loaded once and shared, its oriented variants built from its source.
+/// The picture library: each version of a file loaded once and shared, its oriented variants built from its source;
+/// the slot an element shows, picked by its presenter from its state.
 class TestElementPictures : public QObject
 {
     Q_OBJECT
@@ -14,4 +15,9 @@ private slots:
     void testElementsShowingOneFileShareItsPicture();
     void testAFileChangedOnDiskIsANewVersion();
     void testVariantsAreBuiltFromTheSourceReadAtLoad();
+    void testALevelShowsItsSlot_data();
+    void testALevelShowsItsSlot();
+    void testAnAudioOutputShowsWhetherItPlays_data();
+    void testAnAudioOutputShowsWhetherItPlays();
+    void testAnLedShowsTheSlotLitAtItsLastRefresh();
 };

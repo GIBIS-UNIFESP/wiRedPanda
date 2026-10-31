@@ -108,10 +108,11 @@ protected:
     /// the element uses a different slot scheme (e.g. InputRotary always uses slot 0).
     void applyAppearance(bool defaultAppearance, const QString &fileName) override;
 
-    /// \reimp Shows a new level (ParamId::On) on the picture and the output.
+    /// \reimp Shows a new level (ParamId::On) on the picture, whose slot the presenter picks by it (0 = off, 1 = on),
+    /// and on the output.
     void parameterChanged(ParamId id, const ParamValue &previous) override;
 
-    /// Shows the level (ParamId::On) on the picture (index 0 = off, 1 = on) and drives the output with it.
+    /// Drives the output with the level (ParamId::On).
     void showLevel();
 };
 

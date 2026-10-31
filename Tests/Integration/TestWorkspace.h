@@ -73,6 +73,7 @@ private slots:
     void testFirstSaveCopiesExternalAppearanceFile();
     // Opening a file reports a custom picture that does not load
     void testOpeningAFileWithAPictureThatIsGoneReportsIt();
+    void testOpeningAFileReportsAGonePictureItDoesNotShow();
     void testOpeningAFileWithASoundThatIsGoneReportsIt();
 
 private:
