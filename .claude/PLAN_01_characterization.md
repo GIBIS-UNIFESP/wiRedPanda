@@ -339,6 +339,25 @@ was fixed here by a commit of its own placed before the goldens, which therefore
   appimagetool are pinned and checked by digest, and its patched crates taken at a commit; emsdk is cloned at the
   release it installs; and pip is the one Python 3.14 brings.
 
+### 4.7 The rendering baseline, run at the end of every plan
+
+The stack's aim is a canvas whose cost does not grow with the circuit, so its rendering is measured at each plan's end
+on the same terms (P1.D8): the probe (§4.3) opens `clocked_2000.panda` and simulates it for 8 ticks, each stepping
+501 ms, just over the half-period of its clock at the default 1 Hz, so the clock flips at every tick, and paints a frame
+through the workspace's view after each: 8 frames, each of a changed circuit, enough for a count that costs minutes
+rather than hours (2,000 ticks of a millisecond, a frame every 16th, took over half an hour per phase); once at 1:1 at
+the circuit's corner (`run`) and once zoomed to fit (`runfit`), each counted apart under callgrind. A frame is the whole view
+painted, as the probe's other frames are, where the application repaints what changed: a measure of a frame that the
+plans' canvases compare on alike. The simulation reads the time through a source it can be given
+(`Simulation::setTimeSource()`), and the probe steps its own, so the clock edges, and with them the count, are the
+same however slowly callgrind runs the probe; a test steps a clock through a run and a pause on a given time. Qt's
+hashes are seeded with 0, so a table is walked in the same order in every run; each run reports its frames and its
+outputs by status, which two native runs show the same, so a count is not repeated under callgrind.
+`Scripts/profile_probe.sh baseline` counts both phases on `clocked_2000`, `combinational_1000` (no clock: the cost of
+frames of a circuit at rest) and `ic_heavy`, each phase in its own valgrind process at once, a count not depending on
+the machine's load. The counts go to `.claude/RENDERING_BASELINE.md`, a row per plan's end with its commit, Qt and
+compiler; plan 1's row is taken here, every later plan's at its own end, a row in its ledger (`PLAN_rules.md` §3).
+
 ## 5. Steps and slices
 
 Each step is a ledger row; a slice is a stretch of steps checked as one, then pushed (the plans' rules, §3).
@@ -375,6 +394,7 @@ Each step is a ledger row; a slice is a stretch of steps checked as one, then pu
 | P1.37 | The release's tools pinned and checked by digest (§4.6) | 5 |
 | P1.38 | emsdk cloned at its release (§4.6) | 5 |
 | P1.39 | pip as Python ships it (§4.6) | 5 |
+| P1.40 | The rendering baseline: the simulation's time source, the probe's run phases, the record and plan 1's row (§4.7) | 5 |
 
 The checks of §8 are rows too (P1.21 to P1.23); the fixes of §4.6 are numbered after the ledger's other rows, each in
 the slice whose CI it opened or whose push it came with.
@@ -411,6 +431,13 @@ user's choice between workable options).
   plan 2's (P1.D6). Basis: the user's choices of 2026-10-22 (P1.30, P1.31) and 2026-10-23 (P1.32), their words of
   2026-10-24 ("pin it now", "pin all of them"), and their ruling of 2026-10-24 that what was done in or before plan 1 is
   not plan 2's.
+- **P1.D8. The rendering baseline is the probe's, measured at every plan's end** (§4.7): instructions under callgrind,
+  since this machine has no hardware counters and its timings vary 12 to 54% from run to run; a simulated run of the
+  clocked circuit with frames, its time stepped by the probe so the count does not follow how slowly it runs; in plan
+  1, the first plan, so every later plan's end is measured on the same terms. Basis: the user's words of 2026-10-31
+  ("what i want to track (that is the endgoal of those 10 plans) is the rendering ... a script that opens for example
+  clocked_2000.panda and simulates it for a specific amount of ticks", "i want it done in one of the first plans so
+  that we can then run it in the end of each plan to track IR").
 
 ## 7. Risks
 

@@ -116,9 +116,11 @@ was ever finished.
   rebase of that plan's branch; the commits it rewrites are not built one by one (the user's word of 2026-10-23). On
   `gpu-canvas` hand-resolved conflicts left a brace as `>}` and a blank line that a fix had removed, which no conflict
   marker showed. So after the fold the tip's tree is compared with a backup branch's, and the backup is then deleted
-  without asking (the user's word of 2026-10-23). A plan that has landed is never rewritten, since the branches after
-  it are built on it: a fix to its code, or to code from `master`, is a commit of its own on the plan in progress,
-  placed before the change that needs it.
+  without asking (the user's word of 2026-10-23). A plan that has landed is rewritten too when work belongs to it: a
+  fix to its code, or work the user places in it, goes on that plan's branch, folded into the commit it belongs to or
+  a commit of its own, and every later branch is rebased onto it, its tree checked and its ledgers' hashes re-mapped
+  (the user's words of 2026-10-30, "whats wrong with making that fix in plan 2? just rebase the branches that come
+  after", and 2026-10-31).
 - **Checked before it lands.** Before a slice is finished, after its last fold, its tip is built on the relwithdebinfo
   preset with the whole suite run, and the sources the slice changed are compiled alone, outside their unity batch and
   without the precompiled header (`CLAUDE.md`, "Building and testing"). The commits before the tip are not checked one
@@ -130,8 +132,10 @@ was ever finished.
 - **The user's standing rulings.** No clang checking at all: ASan, UBSan and clang are left to CI (its Sanitizers
   workflow and its macOS jobs' Apple clang build). Validation runs on the relwithdebinfo preset. Callgrind and
   performance baselines stay out of the checks before a slice is finished; performance is measured on the named
-  fixtures after a plan lands. The fuzz harnesses run on the user's machine, overnight, not in CI, and a slice that
-  adds or changes a harness is finished after that run.
+  fixtures after a plan lands: at every plan's end, the rendering baseline (plan 1's §4.7, `Scripts/profile_probe.sh
+  baseline`) is run and its counts recorded in `.claude/RENDERING_BASELINE.md`, a row in the plan's ledger. The fuzz
+  harnesses run on the user's machine, overnight, not in CI, and a slice that adds or changes a harness is finished
+  after that run.
 - **Rules for every new test.** No absolute wall-time bounds (ratios or counts instead); CTest labels that match what
   the test does; no history or defect IDs in comments; the tests of the model, presentation, controller, mirror,
   simulation core and CPU backend run under ASan and UBSan in CI.
