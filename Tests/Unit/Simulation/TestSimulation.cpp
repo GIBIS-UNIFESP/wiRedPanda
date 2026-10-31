@@ -3,6 +3,8 @@
 
 #include "Tests/Unit/Simulation/TestSimulation.h"
 
+#include <chrono>
+
 #include <QElapsedTimer>
 
 #include "App/Core/Application.h"
@@ -342,4 +344,50 @@ void TestSimulationUnit::testBlockerCyclePreservesClockLevel()
              "resume after a SimulationBlocker cycle forced the clock HIGH mid-LOW-phase");
 
     sim->stop();
+}
+
+void TestSimulationUnit::testAGivenTimeSourceStepsTheClocks()
+{
+    // A simulation given a time source reads the clocks' phases and a pause's length from it, so a run that steps the
+    // time itself sees the same edges however slowly it runs: a 1 Hz clock flips once every 500 ms of it
+    for (const bool initializedFirst : {false, true}) {
+        WorkSpace workspace;
+        auto *scene = workspace.scene();
+        auto *sim = scene->simulation();
+        auto *clock = new Clock();
+        scene->addItem(clock);
+
+        std::chrono::steady_clock::time_point now{std::chrono::hours(1)};
+        sim->setTimeSource([&now] { return now; });
+        // The ticks, a millisecond each, on which the clock flips
+        const auto flipsOver = [&](const int ticks) {
+            QList<int> flips;
+            bool level = clock->isOn(0);
+            for (int tick = 1; tick <= ticks; ++tick) {
+                now += std::chrono::milliseconds(1);
+                sim->update();
+                if (clock->isOn(0) != level) {
+                    level = clock->isOn(0);
+                    flips.append(tick);
+                }
+            }
+            return flips;
+        };
+
+        // Started at once, or built first as an edit while stopped builds it: either way the clock starts high
+        if (initializedFirst) {
+            QVERIFY(sim->initialize());
+            now += std::chrono::seconds(3);
+        }
+        sim->start();
+        QVERIFY(clock->isOn(0));
+        QCOMPARE(flipsOver(2000), QList<int>({501, 1001, 1501}));
+
+        // Ten seconds stopped move the phase with them: the half period run before the stop counts, so the clock
+        // flips on the first tick after the start and again 500 ms later
+        sim->stop();
+        now += std::chrono::seconds(10);
+        sim->start();
+        QCOMPARE(flipsOver(600), QList<int>({1, 501}));
+    }
 }

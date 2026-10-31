@@ -8,6 +8,7 @@
 #pragma once
 
 #include <chrono>
+#include <functional>
 #include <memory>
 
 #include <QGraphicsItem>
@@ -106,6 +107,13 @@ public:
     /// \sa SimulationThrottleDisabler
     void setVisualThrottleEnabled(bool enabled);
 
+    /// The time the simulation reads: the clocks' phases and a pause's length.
+    using TimeSource = std::function<std::chrono::steady_clock::time_point()>;
+
+    /// Reads the time from \a source from now on, in place of the steady clock: a measurement that steps the time
+    /// itself gets the same clock edges in every run, however slowly it runs.
+    void setTimeSource(TimeSource source);
+
     // --- Static graph building (used by IC::initializeSimulation too) ---
 
     static void buildConnectionGraph(const QVector<GraphicElement *> &elements);
@@ -162,6 +170,7 @@ private:
     // --- Members: Timer & element lists ---
 
     QTimer m_timer;
+    TimeSource m_now = [] { return std::chrono::steady_clock::now(); };
     /// When stop() paused a running simulation. start() shifts each clock's phase
     /// reference by the elapsed pause instead of resetting it, so a pause/resume cycle
     /// (SimulationBlocker around every UpdateCommand, or the user's Play toggle) neither

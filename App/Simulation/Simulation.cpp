@@ -4,6 +4,7 @@
 #include "App/Simulation/Simulation.h"
 
 #include <algorithm>
+#include <utility>
 
 #include <QGraphicsView>
 #include <QGuiApplication>
@@ -57,6 +58,11 @@ void Simulation::setVisualThrottleEnabled(bool enabled)
     }
 }
 
+void Simulation::setTimeSource(TimeSource source)
+{
+    m_now = std::move(source);
+}
+
 void Simulation::update()
 {
     // Lazily build the simulation layer on the first tick after a restart so
@@ -87,7 +93,7 @@ void Simulation::update()
     // Clock elements are the only truly time-driven components; all other logic
     // is combinational and responds immediately to their values.
     if (m_timer.isActive()) {
-        const auto globalTime = std::chrono::steady_clock::now();
+        const auto globalTime = m_now();
 
         for (auto *clock : clocks) {
             if (clock) {
@@ -332,7 +338,7 @@ void Simulation::stop()
     // Record when the pause began (only when actually running) so start() can shift the
     // clocks' phase reference by the pause duration instead of resetting them.
     if (m_timer.isActive()) {
-        m_pausedAt = std::chrono::steady_clock::now();
+        m_pausedAt = m_now();
         m_hasPausedAt = true;
     }
     m_timer.stop();
@@ -356,7 +362,7 @@ void Simulation::start()
         // UpdateCommand redo/undo, including a plain InputSwitch click). Level and phase
         // survive any pause/resume; only initialize() (Restart, rebuilds) gives clocks a
         // fresh HIGH start via resetClock().
-        const auto pause = std::chrono::steady_clock::now() - m_pausedAt;
+        const auto pause = m_now() - m_pausedAt;
         for (auto *clock : std::as_const(m_clocks)) {
             if (clock) {
                 clock->shiftClock(pause);
@@ -367,7 +373,7 @@ void Simulation::start()
         // Initialized but with no recorded pause (e.g. initialize() ran directly via a
         // structural edit while stopped): the clocks' references are stale by an unknown
         // amount, so reset them to now.
-        const auto globalTime = std::chrono::steady_clock::now();
+        const auto globalTime = m_now();
         for (auto *clock : std::as_const(m_clocks)) {
             if (clock) {
                 clock->resetClock(globalTime);
@@ -447,7 +453,7 @@ bool Simulation::initialize()
 
     qCDebug(two) << "GENERATING SIMULATION LAYER.";
 
-    const auto globalTime = std::chrono::steady_clock::now();
+    const auto globalTime = m_now();
 
     for (auto *item : std::as_const(items)) {
         if (!item) {
