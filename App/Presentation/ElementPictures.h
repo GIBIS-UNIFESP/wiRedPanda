@@ -33,9 +33,11 @@ struct PictureVariant {
  * \details Each version of a file (its path, modification time and size) is loaded once and shared by every element
  * that shows it. A rotatable element whose SVG picture has labels (a `<text>`, or an element marked `class="label"`)
  * is shown with them counter-oriented, so the glyphs read upright after the element's own rotation and flip; the
- * variants are built from the SVG's source, read as the picture loaded, as each orientation is first shown. Neither
- * versions nor variants are dropped: their number is bounded by the pictures the program shows and the orientations it
- * shows them in, not by circuit size. GUI-thread only.
+ * variants are built from the SVG's source, read as the picture loaded, as each orientation is first shown. Versions
+ * are not dropped: their number is bounded by the pictures the program shows, not by circuit size. Variants are, since
+ * an angle can be any number (MCP): those of every picture stay within variantBudget, each charged the bytes it holds,
+ * the one shown least recently going first; a variant dropped is built again when its orientation is shown. GUI-thread
+ * only.
  *
  * A built-in picture drawn for each theme (the latches' and flip-flops') is named by the Light theme's, in a Light
  * folder with a Dark one beside it (themed()); an element shows the sibling of the theme it is drawn in, and is
@@ -72,6 +74,21 @@ public:
     /// ElementType::Unknown and for a type with no picture (IC).
     static QPixmap typePicture(ElementType type);
 
+    /// The bytes the variants of every picture may hold: their rasters and vector renderers. The bundled pictures take
+    /// 12.3 MiB in the editor's sixteen orientations in both themes (measured, Qt 6.12), which it holds, with room for
+    /// the angles MCP can ask for and custom pictures.
+    static constexpr qsizetype variantBudget = 16 * 1024 * 1024;
+
 private:
+    friend class TestElementPictures;
+
     ElementPictures() = default;
+
+    /// Returns how many orientations of the picture \a id have a variant kept.
+    static qsizetype variantCount(PictureId id);
+
+    /// Returns the bytes the variants of every picture are charged against variantBudget.
+    static qsizetype variantBytes();
+    /// Returns the bytes the variants of the picture \a id are charged.
+    static qsizetype variantBytes(PictureId id);
 };

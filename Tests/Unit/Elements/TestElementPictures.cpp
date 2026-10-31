@@ -12,6 +12,7 @@
 #include <QPainter>
 #include <QPixmap>
 #include <QScopeGuard>
+#include <QSvgRenderer>
 #include <QTemporaryDir>
 #include <QTest>
 
@@ -114,6 +115,98 @@ void TestElementPictures::testVariantsAreBuiltFromTheSourceReadAtLoad()
     QVERIFY(turned != nullptr);
     QVERIFY(turned->oriented);
     QVERIFY(turned->renderer != nullptr);
+}
+
+void TestElementPictures::testTheVariantsShownLatelyStayWithinTheBudget()
+{
+    // An angle can be any number: the variants of every picture stay within the budget, each charged its own raster and
+    // its renderer, those shown least recently going first; a dropped one is built again when its orientation is shown.
+    // A picture of 512 by 512 makes each oriented raster a megabyte, so sixty-four angles are four times the budget.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("turned.svg");
+    QByteArray source = R"(<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512">)"
+                        R"(<rect width="512" height="512" fill="white"/><text x="8" y="40" font-size="24">AB</text></svg>)";
+    {
+        QFile file(path);
+        QVERIFY(file.open(QIODevice::WriteOnly));
+        file.write(source);
+    }
+
+    And gate;
+    gate.setAppearance(false, path);
+    const PictureId id = *gate.appearance().picture(0);
+    const qsizetype before = ElementPictures::variantBytes(id);
+    gate.setRotation(1);
+    QVERIFY(ElementPictures::instance().shown(gate, Theme::Light)->oriented);
+    QCOMPARE(ElementPictures::variantBytes(id) - before, (512 * 512 * 4) + (source.size() * 8 / 3));
+    // Held here, the first angle's renderer outlives its variant: one built again has another
+    const std::shared_ptr<QSvgRenderer> first = ElementPictures::instance().shown(gate, Theme::Light)->renderer;
+
+    for (int angle = 2; angle <= 64; ++angle) {
+        gate.setRotation(angle);
+        QVERIFY(ElementPictures::instance().shown(gate, Theme::Light)->oriented);
+        QVERIFY2(ElementPictures::variantBytes() <= ElementPictures::variantBudget, qPrintable(QString::number(angle)));
+    }
+    QVERIFY(ElementPictures::variantCount(id) < 64);
+    QVERIFY(ElementPictures::variantBytes(id) > ElementPictures::variantBudget / 2);
+
+    // The last angle shown is kept: shown again, it is the same variant
+    const std::shared_ptr<QSvgRenderer> last = ElementPictures::instance().shown(gate, Theme::Light)->renderer;
+    gate.setRotation(63);
+    gate.setRotation(64);
+    QCOMPARE(ElementPictures::instance().shown(gate, Theme::Light)->renderer, last);
+
+    // The first angle was dropped long ago: shown again, it is built again, oriented as before
+    const qsizetype kept = ElementPictures::variantCount(id);
+    gate.setRotation(1);
+    const PictureVariant *again = ElementPictures::instance().shown(gate, Theme::Light);
+    QVERIFY(again->oriented);
+    QVERIFY(again->renderer != nullptr);
+    QVERIFY(again->renderer != first);
+    QCOMPARE(ElementPictures::variantCount(id), kept);
+    QVERIFY(ElementPictures::variantBytes() <= ElementPictures::variantBudget);
+}
+
+void TestElementPictures::testTheBundledPicturesFitTheBudget()
+{
+    // Every bundled picture in the editor's sixteen orientations (four turns, each flipped either way or both), in both
+    // themes, is kept at once: the budget drops only what MCP's other angles and custom pictures add
+    QList<PictureId> ids;
+    QDirIterator it(QStringLiteral(":/Components"), {QStringLiteral("*.svg"), QStringLiteral("*.png")}, QDir::Files,
+                    QDirIterator::Subdirectories);
+    And gate;
+    while (it.hasNext()) {
+        gate.setAppearance(false, it.next());
+        const std::optional<PictureId> id = gate.appearance().picture(0);
+        QVERIFY(id.has_value());
+        for (const Theme theme : {Theme::Light, Theme::Dark}) {
+            for (const qreal angle : {0.0, 90.0, 180.0, 270.0}) {
+                for (const auto &[flipX, flipY] : {std::pair(false, false), std::pair(true, false),
+                                                   std::pair(false, true), std::pair(true, true)}) {
+                    gate.setRotation(angle);
+                    gate.setFlippedX(flipX);
+                    gate.setFlippedY(flipY);
+                    QVERIFY(ElementPictures::instance().shown(gate, theme) != nullptr);
+                }
+            }
+        }
+        gate.setRotation(0);
+        gate.setFlippedX(false);
+        gate.setFlippedY(false);
+        ids.append(*id);
+    }
+    QVERIFY(ids.size() > 50);
+
+    qsizetype bytes = 0;
+    for (const PictureId id : std::as_const(ids)) {
+        QCOMPARE(ElementPictures::variantCount(id), 16);
+        bytes += ElementPictures::variantBytes(id);
+    }
+    qInfo("%s", qPrintable(QStringLiteral("the %1 bundled pictures take %2 bytes in the editor's orientations")
+                               .arg(ids.size())
+                               .arg(bytes)));
+    QVERIFY(bytes <= ElementPictures::variantBudget);
 }
 
 void TestElementPictures::testASourceThatIsNotSvgShowsItsRaster()

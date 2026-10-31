@@ -17,6 +17,8 @@ private slots:
     void testAFileChangedOnDiskIsANewVersion();
     void testVariantsAreBuiltFromTheSourceReadAtLoad();
     void testASourceThatIsNotSvgShowsItsRaster();
+    void testTheVariantsShownLatelyStayWithinTheBudget();
+    void testTheBundledPicturesFitTheBudget();
     void testALevelShowsItsSlot_data();
     void testALevelShowsItsSlot();
     void testAnAudioOutputShowsWhetherItPlays_data();

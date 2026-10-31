@@ -4,6 +4,7 @@
 #include "App/Presentation/ElementPictures.h"
 
 #include <cmath>
+#include <limits>
 #include <vector>
 
 #include <QCoreApplication>
@@ -134,13 +135,21 @@ size_t qHash(const Orientation &orientation, const size_t seed = 0)
     return qHashMulti(seed, orientation.angle, orientation.flipX, orientation.flipY);
 }
 
-/// One version of one picture file, and the orientations it has been shown in.
+/// A picture's variant in one orientation, the bytes it is charged against ElementPictures::variantBudget, and when it
+/// was last shown (variantOf()'s count).
+struct ShownVariant {
+    PictureVariant variant;
+    qsizetype charge = 0;
+    quint64 lastShown = 0;
+};
+
+/// One version of one picture file, and the orientations it has been shown in lately.
 struct Picture {
     QString path;      ///< The file it was loaded from.
     bool svg = false;
     QPixmap base;      ///< The picture as QPixmap::load() reads it.
     QByteArray source; ///< An SVG's source, which its counter-oriented variants are built from.
-    QHash<Orientation, PictureVariant> variants;
+    QHash<Orientation, ShownVariant> variants; ///< Those of every picture within ElementPictures::variantBudget.
     bool darkLooked = false;       ///< Whether its Dark theme sibling (ElementPictures::themed()) was looked for.
     std::optional<PictureId> dark; ///< Its Dark theme sibling, when it has one that loads.
 };
@@ -149,6 +158,7 @@ struct Picture {
 struct Library {
     std::vector<Picture> pictures;
     QHash<QString, PictureId> ids;
+    qsizetype variantBytes = 0; ///< The charges of every picture's variants.
 };
 
 Library &library()
@@ -228,11 +238,54 @@ PictureId themedId(const PictureId id, const Theme theme)
     return library().pictures.at(static_cast<size_t>(id)).dark.value_or(id);
 }
 
-/// Returns \a picture shown in \a orientation, building it the first time.
+/// The bytes \a variant of \a picture holds of its own: a raster of its own (an unoriented variant shares the
+/// picture's), and its vector renderer, whose parsed tree measured 2.67 bytes per byte of SVG source over the bundled
+/// pictures (Qt 6.12).
+qsizetype chargeOf(const PictureVariant &variant, const Picture &picture)
+{
+    qsizetype bytes = 0;
+    if (variant.oriented) {
+        bytes += qsizetype(variant.pixmap.width()) * variant.pixmap.height() * (variant.pixmap.depth() / 8);
+    }
+    if (variant.renderer) {
+        bytes += picture.source.size() * 8 / 3;
+    }
+    return bytes;
+}
+
+/// Drops the variant shown least recently of any picture's; false if there is none.
+bool dropLeastRecentlyShown()
+{
+    Picture *oldestPicture = nullptr;
+    Orientation oldest;
+    quint64 oldestShown = std::numeric_limits<quint64>::max();
+    for (Picture &picture : library().pictures) {
+        for (auto it = picture.variants.cbegin(); it != picture.variants.cend(); ++it) {
+            if (it->lastShown < oldestShown) {
+                oldestPicture = &picture;
+                oldest = it.key();
+                oldestShown = it->lastShown;
+            }
+        }
+    }
+    if (!oldestPicture) {
+        return false;
+    }
+    library().variantBytes -= oldestPicture->variants.value(oldest).charge;
+    oldestPicture->variants.remove(oldest);
+    return true;
+}
+
+/// Returns \a picture shown in \a orientation, building it the first time and when it was dropped since. The variants
+/// of every picture stay within ElementPictures::variantBudget, those shown least recently going first; the one just
+/// built stays, so it is drawn, even alone past the budget.
 const PictureVariant &variantOf(Picture &picture, const Orientation &orientation)
 {
-    if (const auto it = picture.variants.constFind(orientation); it != picture.variants.constEnd()) {
-        return it.value();
+    static quint64 shownCount = 0;
+    ++shownCount;
+    if (const auto it = picture.variants.find(orientation); it != picture.variants.end()) {
+        it->lastShown = shownCount;
+        return it->variant;
     }
 
     PictureVariant variant;
@@ -248,7 +301,14 @@ const PictureVariant &variantOf(Picture &picture, const Orientation &orientation
         }
         variant.renderer = svgRenderer(picture.source, orientation);
     }
-    return picture.variants.insert(orientation, variant).value();
+    const qsizetype charge = chargeOf(variant, picture);
+    while (library().variantBytes + charge > ElementPictures::variantBudget) {
+        if (!dropLeastRecentlyShown()) {
+            break;
+        }
+    }
+    library().variantBytes += charge;
+    return picture.variants.insert(orientation, {variant, charge, shownCount}).value().variant;
 }
 
 } // namespace ElementPicturesDetail
@@ -295,6 +355,7 @@ std::optional<PictureId> ElementPictures::load(const QString &path) const
         qAddPostRoutine([] {
             library().pictures.clear();
             library().ids.clear();
+            library().variantBytes = 0;
         });
     }
 
@@ -302,6 +363,25 @@ std::optional<PictureId> ElementPictures::load(const QString &path) const
     pictures.pictures.push_back(std::move(picture));
     pictures.ids.insert(version, id);
     return id;
+}
+
+qsizetype ElementPictures::variantCount(const PictureId id)
+{
+    return ElementPicturesDetail::library().pictures.at(static_cast<size_t>(id)).variants.size();
+}
+
+qsizetype ElementPictures::variantBytes()
+{
+    return ElementPicturesDetail::library().variantBytes;
+}
+
+qsizetype ElementPictures::variantBytes(const PictureId id)
+{
+    qsizetype bytes = 0;
+    for (const auto &shown : ElementPicturesDetail::library().pictures.at(static_cast<size_t>(id)).variants) {
+        bytes += shown.charge;
+    }
+    return bytes;
 }
 
 const PictureVariant *ElementPictures::shown(const Element &element, const Theme theme) const
