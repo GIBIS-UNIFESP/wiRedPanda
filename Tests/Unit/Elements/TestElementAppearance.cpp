@@ -192,9 +192,9 @@ void TestElementAppearance::testPictureOfAnotherSizeKeepsPortsWhateverTheOrder()
 void TestElementAppearance::testRotatedMalformedSvgFallsBackToBasePixmap()
 {
     // orientedSvgPixmap()/sharedSvgRenderer() each open the resolved path a second time,
-    // independently of setPixmap()'s own successful QPixmap::load() -- reachable if the file is
+    // independently of appearanceChanged()'s own successful load -- reachable if the file is
     // removed between the initial load and a later re-orientation (rotate/flip), which calls
-    // applyOrientation() directly rather than going back through setPixmap()'s own existence check.
+    // applyOrientation() directly rather than going back through appearanceChanged()'s own load.
     // Uses And (rotatesGraphic() defaults true), not InputSwitch (a static input, rotatesGraphic()
     // false) -- ElementOrientation::setRotation() only calls reapplyAppearanceOrientation() for
     // graphics that actually rotate; non-rotatable elements only reposition their ports instead.

@@ -39,7 +39,7 @@ public:
 
     // --- Visual ---
 
-    /// Refreshes the visual appearance based on current state.
+    /// Shows the slot the colour and the inputs light now (ParamId::Lit), which the presenter shows.
     void refresh() override;
     /// \reimp
     QList<std::pair<int, QString>> appearanceStates() const override;
@@ -54,7 +54,7 @@ protected:
     /// Applies a custom appearance image in the slot of the current colour and state.
     void applyAppearance(bool useDefaultAppearance, const QString &fileName) override;
 
-    /// Derives the colour's offset in the appearance list from a new colour.
+    /// Derives the colour's offset in the appearance list from a new colour, and shows a newly lit slot.
     void parameterChanged(ParamId id, const ParamValue &previous) override;
 
 private:

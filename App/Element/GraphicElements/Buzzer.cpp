@@ -53,6 +53,7 @@ struct ElementInfo<Buzzer> {
                 },
             },
             AudioOutputElement::volumeSpec(Buzzer::kDefaultVolume),
+            AudioOutputElement::playingSpec(),
         };
         descriptor.readBeforeMap = [](Element &element, QDataStream &stream, const SerializationContext &context) {
             // From 2.4 to 4.0 the tone was a bare note name
@@ -103,7 +104,7 @@ void Buzzer::parameterChanged(const ParamId id, const ParamValue &previous)
     m_generator->setFrequency(frequency());
 
     // If already playing, restart so the new frequency takes effect immediately
-    if (m_isPlaying) {
+    if (isPlaying()) {
         m_sink->stop();
         m_generator->start();
         m_sink->start(m_generator);

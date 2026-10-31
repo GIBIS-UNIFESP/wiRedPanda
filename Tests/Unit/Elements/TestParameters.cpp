@@ -73,6 +73,8 @@ QString name(const ParamId id)
     case ParamId::AudioFile: return QStringLiteral("AudioFile");
     case ParamId::Wireless:  return QStringLiteral("Wireless");
     case ParamId::Table:     return QStringLiteral("Table");
+    case ParamId::Playing:   return QStringLiteral("Playing");
+    case ParamId::Lit:       return QStringLiteral("Lit");
     }
     return {};
 }
@@ -150,12 +152,13 @@ void TestParameters::testEachTypeHasTheParametersOfItsSchema_data()
         {ElementType::InputRotary, {"Position 0 currentPort", "Locked false locked"}},
         {ElementType::Clock, {"On false -", "Locked false locked", "Frequency 1 frequency", "Delay 0 delay"}},
         {ElementType::Node, {"Wireless 0 wirelessMode"}},
-        {ElementType::Led, {"Colour \"White\" color"}},
+        {ElementType::Led, {"Colour \"White\" color", "Lit 0 -"}},
         {ElementType::Display7, {"Colour \"Red\" color"}},
         {ElementType::Display14, {"Colour \"Red\" color"}},
         {ElementType::Display16, {"Colour \"Red\" color"}},
-        {ElementType::Buzzer, {"Frequency 1047 frequency", "Volume 0.34999999403953552 volume"}},
-        {ElementType::AudioBox, {"AudioFile \":/Components/Output/Audio/wiredpanda.wav\" audiobox", "Volume 0.5 volume"}},
+        {ElementType::Buzzer, {"Frequency 1047 frequency", "Volume 0.34999999403953552 volume", "Playing false -"}},
+        {ElementType::AudioBox,
+         {"AudioFile \":/Components/Output/Audio/wiredpanda.wav\" audiobox", "Volume 0.5 volume", "Playing false -"}},
         {ElementType::TruthTable, {"Table bits 0/2048 key"}},
     };
 

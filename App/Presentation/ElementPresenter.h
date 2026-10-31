@@ -37,6 +37,10 @@ public:
     /// Draws \a element's body with \a painter, in the element's own coordinates, without its selection.
     virtual void paintBody(QPainter &painter, const Element &element, const BodyContext &context) const = 0;
 
+    /// Returns the slot of \a element's appearance list whose picture it shows, as its state picks it; the first by
+    /// default. It reads the element's parameters only: an element is measured from its base's constructor on.
+    virtual int pictureSlot(const Element &element) const;
+
     /// Returns the presenter registered for the elements of \a type, or null if there is none.
     static const ElementPresenter *find(ElementType type);
 

@@ -674,10 +674,10 @@ void TestInputElements::testAppearanceReloadsAfterFileModified()
     // Regression: ElementAppearance used to keep its own base-pixmap cache keyed on the bare
     // resolved path, so a *different* element loading the same path after the file's content
     // changed on disk (e.g. a fresh element, or a reopened project) kept serving the stale,
-    // first-loaded pixmap out of that cache. setPixmap() now relies entirely on
-    // QPixmap::load()'s own internal caching, which keys on path + mtime + size, so a genuinely
+    // first-loaded pixmap out of that cache. The picture library keys each version on
+    // path + mtime + size, so a genuinely
     // different file at the same path is picked up. Uses two separate elements rather than
-    // re-setting the same path twice on one element, since setPixmap() already short-circuits
+    // re-setting the same path twice on one element, since appearanceChanged() already skips
     // a same-path re-set on the *same* element (a different, unrelated optimization) — the bug
     // this guards against is about a fresh load seeing stale cross-element cache data, not
     // about redundant re-sets on one element. Sizes with different digit counts (9 vs 200) so

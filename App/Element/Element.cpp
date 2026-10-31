@@ -83,9 +83,7 @@ Element::Element(ElementType type, QGraphicsItem *parent)
     // giving a large speedup for elements that don't redraw on every pan/zoom
     setCacheMode(QGraphicsItem::DeviceCoordinateCache);
 
-    if (m_appearance.hasDefaultAppearances()) {
-        m_appearance.setPixmap(0);
-    }
+    m_appearance.appearanceChanged();
 }
 
 Element::~Element() = default; // LCOV_EXCL_LINE — the Itanium ABI emits separate deleting/complete-object destructor variants for this virtual dtor; gcov attributes them to the same source line, and not every variant is exercised by a given delete call site.
@@ -108,11 +106,6 @@ QPixmap Element::renderPixmap() const
 QStringList Element::externalFiles() const
 {
     return m_appearance.externalFiles();
-}
-
-void Element::setPixmap(const int index)
-{
-    m_appearance.setPixmap(index);
 }
 
 void Element::reportFailedFiles() const
@@ -516,9 +509,6 @@ std::optional<Element::PortAttributes> Element::attributesAt(const QList<PortAtt
 
 void Element::refresh()
 {
-    // Reload appearance index 0, which is the currently active appearance for the element's
-    // present state (e.g. after a theme change or appearance file replacement).
-    setPixmap(0);
 }
 
 QVariant Element::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value)

@@ -52,6 +52,7 @@ struct ElementInfo<AudioBox> {
                 .fileReference = true,
             },
             AudioOutputElement::volumeSpec(AudioOutputElement::kDefaultVolume),
+            AudioOutputElement::playingSpec(),
         };
         descriptor.readBeforeMap = [](Element &element, QDataStream &stream, const SerializationContext &context) {
             // From 2.4 to 4.0 the sound file was a bare path
@@ -130,7 +131,7 @@ void AudioBox::loadAudio()
     m_player->setLoops(QMediaPlayer::Infinite);
 
     // If already playing, restart playback with the new audio immediately
-    if (m_isPlaying) {
+    if (isPlaying()) {
         m_player->play();
     }
 }

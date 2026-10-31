@@ -1217,6 +1217,36 @@ void TestWorkspace::testOpeningAFileWithAPictureThatIsGoneReportsIt()
     QVERIFY2(message.contains("custom_led.svg") && message.contains("does not exist"), qPrintable(message));
 }
 
+void TestWorkspace::testOpeningAFileReportsAGonePictureItDoesNotShow()
+{
+    // A switch that is off shows its off picture, and its custom on picture is gone: opening the file reports it
+    QTemporaryDir projectDir;
+    QVERIFY(projectDir.isValid());
+    const QString imagePath = projectDir.filePath("custom_on.svg");
+    QVERIFY(QFile::copy(":/Components/Input/switchOn.svg", imagePath));
+    // The copy keeps the resource's read-only permissions, and Windows does not remove a read-only file
+    QVERIFY(QFile::setPermissions(imagePath, QFileDevice::ReadOwner | QFileDevice::WriteOwner));
+    const QString saveFile = projectDir.filePath("circuit.panda");
+
+    {
+        WorkSpace workspace;
+        auto *input = ElementFactory::buildElement(ElementType::InputSwitch);
+        workspace.scene()->addItem(input);
+        input->setAppearanceAt(1, imagePath);
+        workspace.save(saveFile);
+    }
+    QVERIFY(QFile::remove(imagePath));
+
+    WorkSpace reloaded;
+    QString message;
+    try {
+        reloaded.load(saveFile);
+    } catch (const Pandaception &e) {
+        message = QString::fromUtf8(e.what());
+    }
+    QVERIFY2(message.contains("custom_on.svg") && message.contains("does not exist"), qPrintable(message));
+}
+
 void TestWorkspace::testOpeningAFileWithASoundThatIsGoneReportsIt()
 {
     // An undo plays the default in place of a sound that is gone, but opening a file reports it

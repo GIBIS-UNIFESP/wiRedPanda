@@ -20,6 +20,11 @@ ParamSpec AudioOutputElement::volumeSpec(const float defaultVolume)
     };
 }
 
+ParamSpec AudioOutputElement::playingSpec()
+{
+    return {.id = ParamId::Playing, .defaultValue = false};
+}
+
 AudioOutputElement::AudioOutputElement(ElementType type, QGraphicsItem *parent)
     : Element(type, parent)
 {
@@ -46,7 +51,7 @@ void AudioOutputElement::refresh()
 
 bool AudioOutputElement::isPlaying() const
 {
-    return m_isPlaying;
+    return param<bool>(ParamId::Playing);
 }
 
 bool AudioOutputElement::isMuted() const
@@ -69,34 +74,33 @@ void AudioOutputElement::parameterChanged(const ParamId id, const ParamValue &pr
     if ((id == ParamId::Volume) && m_hasOutputDevice) {
         applyVolume();
     }
+    if (id == ParamId::Playing) {
+        pictureReplaced();
+    }
 }
 
 void AudioOutputElement::play()
 {
-    if (m_isPlaying) {
+    if (isPlaying()) {
         return;
     }
 
-    setPixmap(1);
+    setParam(ParamId::Playing, true);
 
     if (m_hasOutputDevice) {
         startAudio();
     }
-
-    m_isPlaying = true;
 }
 
 void AudioOutputElement::stop()
 {
-    if (!m_isPlaying) {
+    if (!isPlaying()) {
         return;
     }
 
-    setPixmap(0);
+    setParam(ParamId::Playing, false);
 
     if (m_hasOutputDevice) {
         stopAudio();
     }
-
-    m_isPlaying = false;
 }

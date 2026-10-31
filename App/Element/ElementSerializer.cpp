@@ -577,6 +577,7 @@ void ElementSerializer::loadNewFormat(Element &element, QDataStream &stream, Ser
     // applied a custom appearance — record that so the "Reset to default" action works.
     element.m_appearance.recomputeUsingDefault();
 
+    element.m_appearance.appearanceChanged();
     element.refresh();
 
     // Advance the per-element counter so that the next element's fallback serialIds
@@ -821,6 +822,7 @@ void ElementSerializer::loadPixmapAppearanceNames(Element &element, QDataStream 
 
         element.m_appearance.recomputeUsingDefault();
 
+        element.m_appearance.appearanceChanged();
         element.refresh();
     }
 }

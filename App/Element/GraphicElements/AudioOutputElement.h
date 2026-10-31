@@ -15,7 +15,8 @@
  * \brief Abstract base for single-input audio output elements.
  *
  * \details Centralises the hardware-detection pattern, shared state
- * (m_isPlaying, m_muted, m_hasOutputDevice), the volume's spec (volumeSpec()),
+ * (m_muted, m_hasOutputDevice), the specs of the volume and of whether it plays
+ * (volumeSpec(), playingSpec()),
  * and the common implementations of refresh(), isPlaying(), isMuted(),
  * mute(), play(), and stop().
  *
@@ -38,6 +39,10 @@ public:
     /// Returns the volume's spec (ParamId::Volume, "volume") with default \a defaultVolume: any value is taken at a
     /// float's precision.
     static ParamSpec volumeSpec(float defaultVolume);
+
+    /// Returns the spec of whether the element plays (ParamId::Playing), transient: its picture's slot (0 = silent,
+    /// 1 = playing), which the presenter picks by it.
+    static ParamSpec playingSpec();
 
     /// \param type Concrete audio element type, forwarded to the Element base.
     /// \param parent Optional parent item.
@@ -70,13 +75,12 @@ protected:
     /// Applies the current m_muted state to the hardware backend.
     virtual void applyMute() = 0;
 
-    /// Applies a new volume to the hardware backend.
+    /// Applies a new volume to the hardware backend, and shows a start or a stop on the picture.
     void parameterChanged(ParamId id, const ParamValue &previous) override;
 
     // --- Shared state (accessible to derived classes) ---
 
     bool m_hasOutputDevice = false;
-    bool m_isPlaying = false;
     bool m_muted = false;
 
     // --- Non-virtual play/stop (delegate to hooks above) ---

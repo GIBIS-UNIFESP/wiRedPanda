@@ -16,6 +16,7 @@
 #include <QSvgRenderer>
 
 #include "App/Element/Element.h"
+#include "App/Presentation/ElementPresenter.h"
 
 namespace ElementPicturesDetail {
 
@@ -240,10 +241,14 @@ std::optional<PictureId> ElementPictures::load(const QString &path) const
     using namespace ElementPicturesDetail;
 
     // A version is the file's path, modification time and size, so an element that loads a file after it changed on
-    // disk shows the new one, while one that loaded it before keeps the picture it showed.
-    const QFileInfo info(path);
-    const QString version = path + QLatin1Char('|') + QString::number(info.lastModified().toMSecsSinceEpoch())
-        + QLatin1Char('|') + QString::number(info.size());
+    // disk shows the new one, while one that loaded it before keeps the picture it showed. A resource is built into
+    // the program and never changes: its path is its version.
+    QString version = path;
+    if (!path.startsWith(QLatin1String(":/"))) {
+        const QFileInfo info(path);
+        version += QLatin1Char('|') + QString::number(info.lastModified().toMSecsSinceEpoch()) + QLatin1Char('|')
+            + QString::number(info.size());
+    }
 
     Library &pictures = library();
     if (const auto it = pictures.ids.constFind(version); it != pictures.ids.constEnd()) {
@@ -279,7 +284,8 @@ const PictureVariant *ElementPictures::shown(const Element &element) const
 {
     using namespace ElementPicturesDetail;
 
-    const std::optional<PictureId> id = element.appearance().picture();
+    const int slot = ElementPresenter::of(element.elementType()).pictureSlot(element);
+    const std::optional<PictureId> id = element.appearance().picture(slot);
     if (!id) {
         return nullptr;
     }

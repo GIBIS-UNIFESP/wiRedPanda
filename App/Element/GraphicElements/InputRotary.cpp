@@ -288,7 +288,7 @@ void InputRotary::applyAppearance(const bool defaultAppearance, const QString &f
     }
 
     m_appearance.setUsingDefaultAppearance(defaultAppearance);
-    setPixmap(0);
+    m_appearance.appearanceChanged();
 }
 
 int InputRotary::outputSize() const
