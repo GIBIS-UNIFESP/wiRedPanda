@@ -25,7 +25,7 @@ public:
     explicit Text(QGraphicsItem *parent = nullptr);
 
     /// Returns a bounding rect that includes the label text, not just the pixmap.
-    QRectF boundingRect() const override;
+    QRectF measureBoundingRect() const override;
 
     /// Refreshes the empty-state hint's color alongside the base label/port theming.
     void updateTheme() override;

@@ -75,16 +75,16 @@ public:
     /// Refreshes the arrow direction and port positions.
     void refresh() override;
 
-    /// Applies custom appearance images for the rotary body and arrow.
-    void setAppearance(const bool defaultAppearance, const QString &fileName) override;
-
-    /// Lays the ports out, then redraws the dial for the new output count.
-    void updatePortsProperties() override;
-
     /// The outputs around the dial, by their places and names for the current output count.
     std::optional<PortAttributes> outputAttributes(int index) const override;
 
 protected:
+    /// Applies a custom appearance image for the rotary body, always in slot 0.
+    void applyAppearance(bool defaultAppearance, const QString &fileName) override;
+
+    /// Lays the ports out, then redraws the dial for the new output count.
+    void layoutPorts() override;
+
     /// \reimp Shows a new selection (ParamId::Position) on the dial and the outputs.
     void parameterChanged(ParamId id, const ParamValue &previous) override;
 

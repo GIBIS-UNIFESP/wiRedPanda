@@ -29,13 +29,10 @@ public:
     // --- Visual / Port Configuration ---
 
     /// \reimp
-    QRectF boundingRect() const override;
+    QRectF measureBoundingRect() const override;
 
     /// \reimp
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
-
-    /// Lays the ports out, then redraws the body for the new port count.
-    void updatePortsProperties() override;
 
     /// The data inputs In0, In1, ... on the left, then the select lines S0, S1, ... at the bottom.
     std::optional<PortAttributes> inputAttributes(int index) const override;
@@ -45,6 +42,10 @@ public:
 
     /// Routes the data input selected by the select lines to the output.
     void updateLogic() override;
+
+protected:
+    /// Lays the ports out, then redraws the body for the new port count.
+    void layoutPorts() override;
 
 private:
     void generatePixmap();

@@ -42,8 +42,6 @@ public:
     /// Refreshes the visual appearance based on current state.
     void refresh() override;
     /// \reimp
-    void setAppearance(const bool useDefaultAppearance, const QString &fileName) override;
-    /// \reimp
     QList<std::pair<int, QString>> appearanceStates() const override;
 
     /// Propagates input values to matching outputs.
@@ -53,6 +51,9 @@ public:
     std::optional<PortAttributes> inputAttributes(int index) const override;
 
 protected:
+    /// Applies a custom appearance image in the slot of the current colour and state.
+    void applyAppearance(bool useDefaultAppearance, const QString &fileName) override;
+
     /// Derives the colour's offset in the appearance list from a new colour.
     void parameterChanged(ParamId id, const ParamValue &previous) override;
 

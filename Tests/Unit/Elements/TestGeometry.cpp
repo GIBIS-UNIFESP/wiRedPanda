@@ -35,7 +35,7 @@ void TestGeometry::testPixmapCenter()
 void TestGeometry::testBoundingRectNoPortsCalculation()
 {
     // Line genuinely has zero ports (unlike And, which always has 2 inputs + 1 output).
-    // Element::boundingRect() is portsBoundingRect().united(pixmap().rect()); with no
+    // Element::measureBoundingRect() is portsBoundingRect().united(pixmap().rect()); with no
     // ports, portsBoundingRect() is null, so the result must be exactly the pixmap rect.
     auto line = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Line));
     QVERIFY(line != nullptr);

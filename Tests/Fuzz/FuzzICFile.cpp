@@ -105,7 +105,7 @@ QByteArray buildOuterPanda(const QString &icFileName)
     // [2] Port lists (empty)
     s << quint32(0) << quint32(0) << quint32(0);
 
-    // [3] IC secondary map — IC::load reads this after the base load()
+    // [3] IC secondary map — IC::loadState reads this after the base loadState()
     // "name" key with the file's basename triggers IC::loadFromFile(contextDir)
     QMap<QString, QVariant> icProps;
     icProps.insert("name", QVariant(icFileName));

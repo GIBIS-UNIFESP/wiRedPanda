@@ -85,7 +85,8 @@ public:
 
     /// Returns the blob name for embedded ICs, empty if file-backed.
     const QString &blobName() const override { return m_blobName; }
-    void setBlobName(const QString &name) { m_blobName = name; }
+    /// Names the blob the IC's definition is embedded as, empty for a file-backed IC; reports a change of a parameter.
+    void setBlobName(const QString &name);
     bool isEmbedded() const override { return !m_blobName.isEmpty(); }
 
     const QVector<Element *> &internalElements() const { return m_internalElements; }
@@ -133,7 +134,7 @@ public:
     void restoreSimState(const QVector<Status> &in, int &cursor) override;
 
     /// \reimp
-    QRectF boundingRect() const override;
+    QRectF measureBoundingRect() const override;
     /// \reimp
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     /// \reimp
@@ -150,11 +151,12 @@ public:
     // --- Serialization ---
 
     /// \reimp
-    void load(QDataStream &stream, SerializationContext &context) override;
-    /// \reimp
     void save(QDataStream &stream, SerializationOptions options) const override;
 
 protected:
+    /// \reimp
+    void loadState(QDataStream &stream, SerializationContext &context) override;
+
     // --- Event handlers ---
 
     /// \reimp Opens the IC sub-circuit for editing on double-click.
@@ -193,7 +195,7 @@ private:
     bool m_circuitAdopted = false;
     /// The scene whose file cache this IC, a copy outside any scene, reads its file through, as the live IC does.
     Scene *m_filesScene = nullptr;
-    /// Bytes last successfully loaded via loadFromBlob(), so IC::load() can skip re-loading
+    /// Bytes last successfully loaded via loadFromBlob(), so IC::loadState() can skip re-loading
     /// an embedded sub-circuit whose blob reference and content are both unchanged (a
     /// label-only property edit) instead of always tearing down and rebuilding it.
     QByteArray m_loadedBlobSnapshot;

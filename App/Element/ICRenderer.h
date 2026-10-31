@@ -31,7 +31,7 @@ public:
     static void drawBody(IC &ic, QPainter *painter);
 
     /// Rebuilds \a ic's sizing pixmap (its image content is never displayed; only its size,
-    /// which pixmapCenter()/boundingRect() depend on, matters — the body is drawn as vectors).
+    /// which pixmapCenter()/measureBoundingRect() depend on, matters — the body is drawn as vectors).
     static void generatePixmap(IC &ic);
 
     /// Snapshots \a items (the sub-circuit as designed, before boundary substitution) into

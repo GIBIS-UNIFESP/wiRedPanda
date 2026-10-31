@@ -86,13 +86,13 @@ static_assert(kTruthTableKeyBits == 2048,
 TruthTable::TruthTable(QGraphicsItem *parent)
     : Element(ElementType::TruthTable, parent)
 {
-    TruthTable::updatePortsProperties();
+    updatePortsProperties();
 }
 
-void TruthTable::updatePortsProperties()
+void TruthTable::layoutPorts()
 {
     // The ports take the base layout: columns centred on the 64 px body, at a 16 px pitch (every other grid line)
-    Element::updatePortsProperties();
+    Element::layoutPorts();
 
     setLabelAnchor(QPointF(30, renderBodyBounds().bottom() + 5));
 
@@ -119,7 +119,7 @@ static QSvgRenderer &truthTableLogoRenderer()
     return renderer;
 }
 
-QRectF TruthTable::boundingRect() const
+QRectF TruthTable::measureBoundingRect() const
 {
     return renderBodyBounds();
 }
@@ -127,14 +127,13 @@ QRectF TruthTable::boundingRect() const
 void TruthTable::generatePixmap()
 {
     // The TruthTable renders a custom IC-style body, now drawn as vectors in drawBody()/paint().
-    // m_pixmap is kept only so the base pixmapCenter()/boundingRect() have the right size (its image
+    // m_pixmap is kept only so the base pixmapCenter()/measureBoundingRect() have the right size (its image
     // content is never displayed); a transparent pixmap of the body footprint is enough. It is
     // regenerated whenever the port count changes because the body height grows with the port layout.
     const QSize size = renderBodyBounds().size().toSize();
     QPixmap sizingPixmap(size);
     sizingPixmap.fill(Qt::transparent);
     m_appearance.setRenderPixmap(sizingPixmap);
-    Element::update();
 }
 
 void TruthTable::drawBody(QPainter *painter)
@@ -212,6 +211,14 @@ const QBitArray &TruthTable::key() const
 void TruthTable::setkey(const QBitArray &key)
 {
     setParam(ParamId::Table, key);
+}
+
+void TruthTable::setKeyBit(const int index, const bool value)
+{
+    Q_ASSERT((index >= 0) && (index < key().size()));
+    QBitArray table = key();
+    table.setBit(index, value);
+    setkey(table);
 }
 
 void TruthTable::updateLogic()

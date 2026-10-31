@@ -79,7 +79,7 @@ struct ElementInfo<InputRotary> {
 InputRotary::InputRotary(QGraphicsItem *parent)
     : ElementInput(ElementType::InputRotary, parent)
 {
-    InputRotary::updatePortsProperties();
+    updatePortsProperties();
 
     // The dial starts at position 0, which drives HIGH while every other
     // position drives LOW: push those definite levels to the output ports,
@@ -94,12 +94,12 @@ void InputRotary::refresh()
         storeParam(ParamId::Position, 0);
     }
 
-    update();
+    pictureChanged();
 }
 
-void InputRotary::updatePortsProperties()
+void InputRotary::layoutPorts()
 {
-    Element::updatePortsProperties();
+    Element::layoutPorts();
     InputRotary::refresh();
 }
 
@@ -231,7 +231,7 @@ void InputRotary::parameterChanged(const ParamId id, const ParamValue &previous)
 
 void InputRotary::showSelection()
 {
-    update();
+    pictureChanged();
 
     // Exactly one output port is Active (the selected position); all others are Inactive
     for (int index = 0; index < outputSize(); ++index) {
@@ -281,7 +281,7 @@ void InputRotary::mousePressEvent(QGraphicsSceneMouseEvent *event)
     QGraphicsItem::mousePressEvent(event);
 }
 
-void InputRotary::setAppearance(const bool defaultAppearance, const QString &fileName)
+void InputRotary::applyAppearance(const bool defaultAppearance, const QString &fileName)
 {
     if (defaultAppearance) {
         m_appearance.resetAlternativeToDefault();

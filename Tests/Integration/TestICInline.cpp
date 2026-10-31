@@ -1737,7 +1737,7 @@ void TestICInline::testLoadFromBlobNonExistentContextDir()
 
 void TestICInline::testLoadV41MapDirectConstruct()
 {
-    // Directly serialize an embedded IC and verify IC::load() handles it.
+    // Directly serialize an embedded IC and verify IC::loadState() handles it.
 
     QByteArray blob = readFile(m_fixtureDir + "/simple_and.panda");
     QVERIFY(!blob.isEmpty());
@@ -4786,7 +4786,7 @@ void TestICInline::testRegisterBlobFlattensDeeplyNested()
 
 void TestICInline::testLoadICWithMissingBlobFallsBackToFile()
 {
-    // When an IC's name doesn't match any blob in the registry, IC::load()
+    // When an IC's name doesn't match any blob in the registry, IC::loadState()
     // falls back to file-based loading.  Verify the fallback works.
     QByteArray blob = readFile(m_fixtureDir + "/simple_and.panda");
     QVERIFY(!blob.isEmpty());
@@ -4831,7 +4831,7 @@ void TestICInline::testLoadICWithMissingBlobFallsBackToFile()
 
 void TestICInline::testLoadICWithNullBlobRegistry()
 {
-    // When blobRegistry is nullptr, IC::load() must fall back to file mode
+    // When blobRegistry is nullptr, IC::loadState() must fall back to file mode
     // without crashing (no null dereference on line 132-133).
     // Use "simple_and.panda" as the name so file fallback succeeds.
     WorkSpace ws;
@@ -5160,7 +5160,7 @@ void TestICInline::testRenameBlobCommandThenUnrelatedUpdateBothUndoIndependently
 }
 
 // ============================================================================
-// Edge cases: isEmbedded, port names, RegisterBlobCommand, IC::load
+// Edge cases: isEmbedded, port names, RegisterBlobCommand, IC::loadState
 // ============================================================================
 
 void TestICInline::testIsEmbeddedICWithStaleBlobName()
@@ -5260,7 +5260,7 @@ void TestICInline::testRemoveBlobCommandUndoRedo()
 
 void TestICInline::testLoadICMissingAllNameFieldsThrows()
 {
-    // IC::load() must throw when the serialized QMap has no "name", "fileName",
+    // IC::loadState() must throw when the serialized QMap has no "name", "fileName",
     // or "blobName" key.
     Scene scene;
     scene.setContextDir(m_fixtureDir);
@@ -5292,7 +5292,7 @@ void TestICInline::testLoadICMissingAllNameFieldsThrows()
     } catch (const Pandaception &) {
         threw = true;
     }
-    QVERIFY2(threw, "IC::load() must throw when no name field is present");
+    QVERIFY2(threw, "IC::loadState() must throw when no name field is present");
 }
 
 // ============================================================================

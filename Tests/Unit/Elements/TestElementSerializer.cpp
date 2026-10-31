@@ -340,8 +340,8 @@ void TestElementSerializer::testLoadInputOutputPortRenamesExistingIcPorts()
     // loadInputPort()/loadOutputPort()'s "port < inputs().size()" branch (IC-only rename) is
     // only reachable when the target element *already has* ports at load time -- true for IC
     // specifically when an already-populated IC object is reloaded in place (e.g. an
-    // UpdateCommand undo/redo snapshot), not for a freshly constructed one (IC::load() populates
-    // its own ports from the sub-circuit blob *after* calling Element::load(), so a fresh
+    // UpdateCommand undo/redo snapshot), not for a freshly constructed one (IC::loadState() populates
+    // its own ports from the sub-circuit blob *after* calling Element::loadState(), so a fresh
     // IC always has 0 ports at the moment loadInputPort()/loadOutputPort() run).
     QTemporaryDir subDir;
     QVERIFY(subDir.isValid());

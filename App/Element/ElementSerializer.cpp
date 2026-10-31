@@ -92,7 +92,7 @@ void Element::save(QDataStream &stream, SerializationOptions options) const
     ElementSerializer::saveParameters(*this, stream, options);
 }
 
-void Element::load(QDataStream &stream, SerializationContext &context)
+void Element::loadState(QDataStream &stream, SerializationContext &context)
 {
     ElementSerializer::load(*this, stream, context);
     ElementSerializer::loadParameters(*this, stream, context);
@@ -622,7 +622,7 @@ void ElementSerializer::validateFiniteAngle(const qreal angle)
 /// file lists and trim only down to the minimum, while element code indexes its ports within
 /// the bounds: a truth table's key holds exactly the maximum rows and columns, so one more input
 /// reads past it when simulated. An IC is exempt: its bounds and ports come from its definition,
-/// which IC::load() reads after this.
+/// which IC::loadState() reads after this.
 void ElementSerializer::validatePortCounts(const Element &element)
 {
     if (element.elementType() == ElementType::IC) {

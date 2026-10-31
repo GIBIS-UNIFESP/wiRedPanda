@@ -126,7 +126,7 @@ IC *TestICController::selectBareIC(WorkSpace &tab)
 IC *TestICController::selectFileBackedIC(WorkSpace &tab, const QString &fileName)
 {
     // Mirrors ICLoader::loadFile()'s real behavior (ic.m_file = fileInfo.absoluteFilePath()),
-    // not the *deserialization* path's bare-filename form (IC::load() strips the directory).
+    // not the *deserialization* path's bare-filename form (IC::loadState() strips the directory).
     // ICController::embedICByFile()/makeSelfContained() build an absolute path themselves
     // before calling ICRegistry::findICsByFile(), which compares QFileInfo equality -- a bare
     // relative m_file would never match, exactly like a freshly-dragged-in file-backed IC

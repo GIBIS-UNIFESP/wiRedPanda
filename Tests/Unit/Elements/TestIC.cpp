@@ -443,12 +443,12 @@ void TestICUnit::testAPreviewRendersOnlyWhenShown()
 
 void TestICUnit::testLoadGrowsLinearlyInICs()
 {
-    // IC::load() takes its ports' keys from the load's own record, not from the port map of every port loaded so far,
-    // so a circuit's n ICs among m ports cost n plus m, not n times m. An embedded IC reloaded from its unchanged blob
-    // skips its sub-circuit, leaving IC::load()'s own work, timed against port maps of 250 and 64,000 other ports: 0.6
-    // to 1.2 for a linear load with eight copies of the test running at once, and about 500 for a quadratic one. A
-    // ratio of the thread's CPU time (TestUtils::ThreadCpuTimer), each the best of nine runs of twenty reloads, the two
-    // maps' reloads timed in turn within each run, so that a load which comes and goes falls on both.
+    // IC::loadState() takes its ports' keys from the load's own record, not from the port map of every port loaded so
+    // far, so a circuit's n ICs among m ports cost n plus m, not n times m. An embedded IC reloaded from its unchanged
+    // blob skips its sub-circuit, leaving IC::loadState()'s own work, timed against port maps of 250 and 64,000 other
+    // ports: 0.6 to 1.2 for a linear load with eight copies of the test running at once, and about 500 for a quadratic
+    // one. A ratio of the thread's CPU time (TestUtils::ThreadCpuTimer), each the best of nine runs of twenty reloads,
+    // the two maps' reloads timed in turn within each run, so that a load which comes and goes falls on both.
     QTemporaryDir dir;
     QVERIFY(dir.isValid());
 
@@ -660,10 +660,10 @@ void TestICUnit::testReloadWithFewerPortsEvictsStalePortMapKeys()
 {
     // Fuzz-hardening (surfaced by libFuzzer, see TestSerialization's bugB_ic_blob_shrink
     // fixture): if a re-load's sub-circuit reference resolves to fewer ports than the IC
-    // currently has, IC::load() must evict the now-dangling portMap keys rather than leave
+    // currently has, IC::loadState() must evict the now-dangling portMap keys rather than leave
     // them pointing at ports loadFile() just deleted (a later Connection::load() would
     // otherwise dereference a freed pointer). Reproduced directly: load a real 2-input/
-    // 1-output sub-circuit, then feed IC::load() a stream whose own input/output lists match
+    // 1-output sub-circuit, then feed IC::loadState() a stream whose own input/output lists match
     // that current port count (so both get captured into savedInputKeys/savedOutputKeys), but
     // whose IC-specific "name" field points at a smaller, 1-input/1-output sub-circuit.
     QTemporaryDir subDir;
@@ -789,8 +789,8 @@ void TestICUnit::testHoverOverPortRequestsPreviewHide()
 void TestICUnit::testDisplayNameForEmbeddedIc()
 {
     // An embedded (blob-backed) IC's displayName() is its blob name, taking priority over any
-    // file path -- reached only via the real IC::load() blob-registry resolution path, since
-    // loadFromBlob() itself doesn't set m_blobName (its caller, IC::load(), does).
+    // file path -- reached only via the real IC::loadState() blob-registry resolution path, since
+    // loadFromBlob() itself doesn't set m_blobName (its caller, IC::loadState(), does).
     QTemporaryDir subDir;
     QVERIFY(subDir.isValid());
     WorkSpace subWorkspace;

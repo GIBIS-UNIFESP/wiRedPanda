@@ -25,6 +25,7 @@
 #include "App/Core/ContextDirProvider.h"
 #include "App/Core/Enums.h"
 #include "App/Core/SimulationHost.h"
+#include "App/Element/ElementChange.h"
 #include "App/Scene/ClipboardManager.h"
 #include "App/Scene/ConnectionManager.h"
 #include "App/Scene/ICRegistry.h"
@@ -57,7 +58,7 @@ enum class SerializationPurpose;
  * undo/redo functionality and handles various user interface events like drag-and-drop,
  * keyboard shortcuts, and mouse operations.
  */
-class Scene : public QGraphicsScene, public ContextDirProvider, public SimulationHost
+class Scene : public QGraphicsScene, public ContextDirProvider, public SimulationHost, public ElementChangeListener
 {
     Q_OBJECT
 
@@ -431,6 +432,11 @@ public:
     /// Sets the directory of the .panda file associated with this scene.
     void setContextDir(const QString &dir) { m_contextDir = dir; }
 
+    // --- Element changes ---
+
+    /// Tells the scene's listeners that \a what changed in the element whose id is \a id (elementChanged()).
+    void reportElementChange(const int id, const ElementChanges what) override { emit elementChanged(id, what); }
+
     // --- IC Registry ---
 
     /// Returns the IC definition registry for this scene.
@@ -466,6 +472,9 @@ signals:
 
     /// Emitted whenever the circuit changes (element added/removed/moved).
     void circuitHasChanged();
+
+    /// Emitted as an element in the scene reports a change: \a what changed in the element whose id is \a id.
+    void elementChanged(int id, ElementChanges what);
 
     /**
      * \brief Emitted when a context menu should appear.

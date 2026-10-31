@@ -188,7 +188,7 @@ std::optional<Element::PortAttributes> Led::inputAttributes(const int index) con
     return PortAttributes{.name = QString::number(index + 1), .required = false, .defaultStatus = Status::Inactive};
 }
 
-void Led::setAppearance(const bool useDefaultAppearance, const QString &fileName)
+void Led::applyAppearance(const bool useDefaultAppearance, const QString &fileName)
 {
     const int index = colorIndex();
 

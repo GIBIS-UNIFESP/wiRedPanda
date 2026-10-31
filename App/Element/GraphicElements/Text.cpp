@@ -61,9 +61,9 @@ Text::Text(QGraphicsItem *parent)
                             // rather than relying on QGraphicsSimpleTextItem's default visibility
 }
 
-QRectF Text::boundingRect() const
+QRectF Text::measureBoundingRect() const
 {
-    return Element::boundingRect().united(childrenBoundingRect());
+    return Element::measureBoundingRect().united(childrenBoundingRect());
 }
 
 void Text::updateTheme()
@@ -89,7 +89,7 @@ void Text::labelContentChanged()
 
 void Text::retranslateHint()
 {
-    // The hint's width feeds boundingRect() through childrenBoundingRect().
-    prepareGeometryChange();
+    // The hint's width feeds the bounds through childrenBoundingRect().
     m_emptyHint->setText(tr("Double-click to add text"));
+    pictureChanged();
 }

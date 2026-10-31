@@ -47,7 +47,7 @@ private slots:
     void testEnterEventCancelsHide();
     void testLeaveEventSchedulesHide();
 
-    // IC::load()'s stale-portMap-key eviction (fuzz-hardening: reload shrinks port count)
+    // IC::loadState()'s stale-portMap-key eviction (fuzz-hardening: reload shrinks port count)
     void testReloadWithFewerPortsEvictsStalePortMapKeys();
 
     // hoverEnterEvent()/hoverMoveEvent()'s "cursor over a port" branch

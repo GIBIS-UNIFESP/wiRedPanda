@@ -139,6 +139,7 @@ void Node::parameterChanged(const ParamId id, const ParamValue &previous)
     // Hide the port that is replaced by the wireless channel.
     inputPort()->setVisible(mode != WirelessMode::Rx);
     outputPort()->setVisible(mode != WirelessMode::Tx);
+    changed(ElementChange::Ports);
 
     if (mode == WirelessMode::None) {
         if (m_wirelessIndicator) {

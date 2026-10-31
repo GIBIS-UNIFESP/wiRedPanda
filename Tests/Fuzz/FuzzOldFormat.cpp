@@ -217,7 +217,7 @@ void writeOldElement(QDataStream &s, FuzzedDataProvider &fdp,
         s << QString(colors[fdp.ConsumeIntegralInRange<size_t>(0, 5)]);
     }
     // IC old format (v1.2–4.0): reads a bare QString file path if hasLabels
-    // IC::load normalizes the path (strips directory, replaces backslashes),
+    // IC::loadState normalizes the path (strips directory, replaces backslashes),
     // then calls loadFile(path, contextDir) which fails gracefully when not found.
     // Use fuzz-controlled strings to exercise the path normalization code.
     if (etype == ET::IC && !VI::hasQMapFormat(ver) && VI::hasLabels(ver)) {

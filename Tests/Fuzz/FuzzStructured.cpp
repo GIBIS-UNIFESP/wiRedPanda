@@ -148,7 +148,7 @@ struct PortIds {
 //                     keys: pos, rotation, label, trigger, flippedX, flippedY
 //   [2] Port lists  — 0 or 1 port per list, each with a serialId so that
 //                     context.portMap is populated and connections can wire up
-//   [3] Secondary map — read by the element's own load() override
+//   [3] Secondary map — read by the element's own loadState() override
 //                     keys vary by element type (see below)
 //
 // baseId: unique serial-ID base for this element (e.g. elemIndex * 4).
@@ -318,8 +318,8 @@ PortIds writeElementMap(QDataStream &s, FuzzedDataProvider &fdp,
         extra.insert("key", QVariant(key));
         s << extra;
     } else if (type == ET::IC) {
-        // IC::load checks "name" → "fileName" → "blobName" in order.
-        // Rotate through all three keys, and through the names IC::load resolves:
+        // IC::loadState checks "name" → "fileName" → "blobName" in order.
+        // Rotate through all three keys, and through the names IC::loadState resolves:
         // the flat blob and the nested one (2-level loading, the depth guard) by
         // exact name, the flat blob by its base name ("sub/fuzz_ic_base.panda" →
         // registry key "fuzz_ic_base"), and a name that is no blob, which falls

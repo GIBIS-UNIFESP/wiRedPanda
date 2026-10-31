@@ -32,15 +32,15 @@ public:
     const QBitArray &key() const;
     /// Sets the truth-table output bit-array to \a key, padded with zeros or truncated to the table's size.
     void setkey(const QBitArray &key);
+    /// Sets bit \a index of the truth-table output bit-array to \a value; \a index must be within the key.
+    void setKeyBit(int index, bool value);
 
     // --- Visual ---
 
     /// \reimp
-    QRectF boundingRect() const override;
+    QRectF measureBoundingRect() const override;
     /// \reimp
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
-    /// Forces a repaint of the element.
-    void update();
 
     /// \reimp — opens the truth table editor on double-click.
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
@@ -53,14 +53,15 @@ public:
     /// Looks up the current input pattern in the truth table and drives outputs.
     void updateLogic() override;
 
-    /// Lays the ports out, then places the label below the body and redraws it for the new port counts.
-    void updatePortsProperties() override;
-
     /// The inputs, named A, B, C, ...
     std::optional<PortAttributes> inputAttributes(int index) const override;
 
     /// The outputs, named S0, S1, ...
     std::optional<PortAttributes> outputAttributes(int index) const override;
+
+protected:
+    /// Lays the ports out, then places the label below the body and redraws it for the new port counts.
+    void layoutPorts() override;
 
 private:
     // --- Internal methods ---

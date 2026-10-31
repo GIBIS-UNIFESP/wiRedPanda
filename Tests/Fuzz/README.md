@@ -231,8 +231,8 @@ under gdb.
     the wire between them and a record of no type, and crashes with the cleanup deleting in the list's order.
   - `bugB`: its embedded IC's blob is a compressed payload whose bytes no longer decompress, so the load stops in
     its decompression before the IC shrinks its ports. `testFuzzRegressionICBlobShrink` builds the case instead, a real
-    save whose IC's circuit is swapped for one with fewer inputs than the host wires, and crashes with `IC::load()`'s
-    eviction of the stale `portMap` keys taken out.
+    save whose IC's circuit is swapped for one with fewer inputs than the host wires, and crashes with
+    `IC::loadState()`'s eviction of the stale `portMap` keys taken out.
   - `bugE`: a boundary element's wires on ports it does not route, freed with it. Only an input element with an input
     or an output element with an output has such a port, which the load now refuses as above its type's maximum
     before the IC is built; the reproducer is refused there, and `testFuzzRegressionICBoundaryOrphanConns` checks it.

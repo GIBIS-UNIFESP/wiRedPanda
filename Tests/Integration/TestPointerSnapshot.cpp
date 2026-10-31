@@ -118,7 +118,7 @@ QRectF gridArea(const Scene *scene, const qreal step)
     };
 
     for (const auto *element : TestUtils::elementsById(scene)) {
-        const QRectF body = element->mapRectToScene(element->Element::boundingRect());
+        const QRectF body = element->mapRectToScene(element->Element::measureBoundingRect());
         include(body.topLeft());
         include(body.bottomRight());
         for (const auto *port : element->allPorts()) {
