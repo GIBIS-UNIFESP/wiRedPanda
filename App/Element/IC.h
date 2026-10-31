@@ -39,7 +39,7 @@ class IC : public Element
     friend class TestICController;
 
     /// Reach ic's internal-element/port vectors and protected Element members
-    /// (pixmap(), portsBoundingRect(), setMax/MinInputSize/OutputSize(), etc.) directly;
+    /// (portsBoundingRect(), pictureReplaced(), setMax/MinInputSize/OutputSize(), etc.) directly;
     /// see ICLoader / ICRenderer / ICSimulation.
     friend class ICLoader;
     friend class ICRenderer;
@@ -133,8 +133,6 @@ public:
     void saveSimState(QVector<Status> &out) const override;
     void restoreSimState(const QVector<Status> &in, int &cursor) override;
 
-    /// Draws the IC body (see ICRenderer::drawBody()).
-    void drawBody(QPainter &painter) const override;
     /// \reimp
     void refresh() override;
     /// None once a sub-circuit has loaded, since the hover preview names the IC; one with nothing loaded has its type's

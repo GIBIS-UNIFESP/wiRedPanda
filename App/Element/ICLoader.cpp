@@ -392,7 +392,8 @@ void ICLoader::processLoadedItems(IC &ic, QList<QGraphicsItem *> &items)
     const qreal bottom = ic.renderBodyBounds().bottom();
     ic.setLabelAnchor(QPointF(30, bottom + 5));
 
-    ICRenderer::generatePixmap(ic);
+    // The body is the footprint the ports give, and turns about its centre
+    ic.pictureReplaced();
 
     // The hover preview popup (ICPreviewPopup) names the IC from here on, in place of its help text (IC::helpText())
     ic.m_loaded = true;

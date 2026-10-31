@@ -20,11 +20,13 @@
 #include <QKeySequence>
 #include <QList>
 #include <QMap>
+#include <QPainter>
 #include <QPixmap>
 #include <QPointF>
 #include <QSaveFile>
 #include <QSignalSpy>
 #include <QString>
+#include <QStyleOptionGraphicsItem>
 #include <QTemporaryDir>
 #include <QVariant>
 #include <QVersionNumber>
@@ -231,6 +233,37 @@ void TestICUnit::testDoubleClickOpensSubCircuitNotInlineEditor()
     QCOMPARE(inlineEditSpy.count(), 0);
 }
 
+void TestICUnit::testAnUnloadedIcTurnsAboutItsFootprint()
+{
+    // An IC has no picture: before its definition loads its body is the bare 64x64 footprint, and it turns about that
+    // footprint's centre, as a loaded one does about its own, so an orientation a file applies before the load stays
+    // where it was saved.
+    IC ic;
+    QCOMPARE(ic.body().body, QRectF(0, 0, 64, 64));
+    QCOMPARE(ic.body().centre, QPointF(32, 32));
+    QCOMPARE(ic.transformOriginPoint(), QPointF(32, 32));
+}
+
+void TestICUnit::testAnUnloadedIcIsDrawnAsAnEmptyPackage()
+{
+    // Its footprint the bare 64x64 square, an IC whose definition has not loaded is drawn as a loaded one is, a grey
+    // package from x = 7 to 57
+    IC ic;
+    QImage image(QSize(104, 104), QImage::Format_ARGB32_Premultiplied);
+    image.fill(Qt::transparent);
+    QPainter painter(&image);
+    painter.translate(20, 20);
+    QStyleOptionGraphicsItem option;
+    ic.paint(&painter, &option, nullptr);
+    painter.end();
+
+    // Inside the package, clear of the mascot, the notch and the shadow; and outside it
+    QCOMPARE(image.pixelColor(20 + 10, 20 + 6), QColor(126, 126, 126));
+    QCOMPARE(image.pixelColor(20 + 54, 20 + 50), QColor(126, 126, 126));
+    QCOMPARE(image.pixelColor(20 + 3, 20 + 32).alpha(), 0);
+    QCOMPARE(image.pixelColor(20 + 61, 20 + 32).alpha(), 0);
+}
+
 void TestICUnit::testUnloadedIcSimulationMethodsAreNoOps()
 {
     // A freshly-constructed, never-loaded IC has 0 internal elements -- ICSimulation::initialize()/
@@ -283,31 +316,6 @@ void TestICUnit::testLoadedIcWithDisconnectedInputIsUnknown()
 
     ic->resettleCombinational();
     QCOMPARE(ic->outputValue(0), Status::Unknown);
-}
-
-void TestICUnit::testGeneratePixmapWithNonFiniteBoundsIsNoOp()
-{
-    // Defense-in-depth: a non-finite port position makes renderBodyBounds() NaN, and
-    // QSizeF::toSize() asserts (!qIsNaN) on that -> process abort. The load-side guards
-    // (validateFinitePos/validateFiniteAngle) reject this on a real load, so it's forced
-    // directly via the port's own public setPos() to exercise the guard deterministically.
-    QTemporaryDir subDir;
-    QVERIFY(subDir.isValid());
-    WorkSpace subWorkspace;
-    CircuitBuilder subBuilder(subWorkspace.scene());
-    InputSwitch sw;
-    Led led;
-    subBuilder.add(&sw, &led);
-    subBuilder.connect(&sw, 0, &led, 0);
-    const QString subPath = subDir.path() + "/nonfinite_pixmap_probe.panda";
-    QCOMPARE(subWorkspace.save(subPath), WorkSpace::SaveOutcome::Saved);
-
-    auto ic = std::make_unique<IC>();
-    ic->loadFile(subPath, subDir.path());
-    QVERIFY(ic->inputSize() >= 1);
-
-    ic->inputPort(0)->setPos(std::numeric_limits<qreal>::quiet_NaN(), 0);
-    ICRenderer::generatePixmap(*ic); // must return early rather than abort
 }
 
 void TestICUnit::testGeneratePreviewPixmapWithNonFiniteBoundsIsNoOp()

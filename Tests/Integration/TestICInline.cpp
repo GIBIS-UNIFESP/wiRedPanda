@@ -5624,13 +5624,7 @@ void TestICInline::testInlineSaveConvertsFileBackedToEmbedded()
     QVERIFY2(savedIC->isEmbedded(), "IC should be embedded after inline save");
     QCOMPARE(savedIC->blobName(), QString("simple_and"));
 
-    // Verify the pixmap reflects embedded state (blue body color)
-    // generatePixmap uses isEmbedded() to pick body color — if the pixmap wasn't
-    // regenerated, the IC still looks gray (file-backed) visually.
-    // We can't inspect pixel colors easily, but we can check that generatePixmap
-    // would pick the right color by verifying isEmbedded() is true (already done above).
-    // The real test: was loadFromBlob called so the pixmap was regenerated?
-    // If only setBlobName was called without loadFromBlob, the pixmap is stale.
+    // The presenter tints the body by isEmbedded() at each paint, so isEmbedded() (checked above) is what it shows.
 
     // --- Step 6: Verify the saved blob is valid and re-loadable ---
     const QByteArray savedBlob = saveSpy.at(0).at(1).toByteArray();

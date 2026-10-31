@@ -13,7 +13,7 @@ class QRectF;
 
 /**
  * \class FootprintPresenter
- * \brief The presenter of a type whose body is drawn as vectors to fit its ports (Mux, Demux, TruthTable).
+ * \brief The presenter of a type whose body is drawn as vectors to fit its ports (Mux, Demux, TruthTable, IC).
  * \details The body is the footprint, the nominal 64x64 square grown to wherever the ports land
  * (Element::renderBodyBounds()), and turns about its centre. The element reports a replaced picture after laying its
  * ports out, so the body and the pivot follow them.
@@ -52,15 +52,11 @@ protected:
     void paintFootprint(QPainter &painter, const Element &element, const QRectF &footprint) const override;
 };
 
-/**
- * \class ICPresenter
- * \brief The presenter of IC, whose element draws its body (IC::drawBody()).
- * \details The body is the footprint. It turns about the footprint's centre once the IC has built its render pixmap,
- * and about its picture's centre before (an IC with no definition yet).
- */
-class ICPresenter final : public ElementPresenter
+/// The presenter of IC: a DIP package, tinted while its definition is embedded, with the mascot upright at any
+/// orientation, a shadow and the pin-1 notch. An IC whose definition has not loaded has the bare 64x64 square for its
+/// footprint.
+class ICPresenter final : public FootprintPresenter
 {
-public:
-    BodyShape measure(const Element &element) const override;
-    void paintBody(QPainter &painter, const Element &element, const BodyContext &context) const override;
+protected:
+    void paintFootprint(QPainter &painter, const Element &element, const QRectF &footprint) const override;
 };
