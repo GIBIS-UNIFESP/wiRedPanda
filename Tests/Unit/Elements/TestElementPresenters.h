@@ -14,6 +14,7 @@ class TestElementPresenters : public QObject
 private slots:
     void testEveryTypeHasAPresenter();
     void testAnElementsBodyIsItsPresentersMeasure();
+    void testANonFiniteFootprintIsDrawn();
     void testBuildingAnElementMeasuresItsBodyOnce();
     void testTextDrawsItsHintAsASimpleTextItemDid();
     void testEachTypePlacesItsLabel();

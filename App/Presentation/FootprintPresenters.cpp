@@ -30,11 +30,11 @@ QSvgRenderer &icLogoRenderer()
 
 /// Draws a multiplexer's trapezoid between x = 22 and x = 42, from \a top to \a bottom: its narrow side, the right one
 /// when \a narrowOnRight, is 8 px shorter at each end than the other. The outline is dark, the inside white.
-void drawTrapezoid(QPainter &painter, const int top, const int bottom, const bool narrowOnRight)
+void drawTrapezoid(QPainter &painter, const qreal top, const qreal bottom, const bool narrowOnRight)
 {
-    const int inset = 8;
-    const int narrowLeft = narrowOnRight ? 0 : inset;
-    const int narrowRight = narrowOnRight ? inset : 0;
+    const qreal inset = 8;
+    const qreal narrowLeft = narrowOnRight ? 0 : inset;
+    const qreal narrowRight = narrowOnRight ? inset : 0;
 
     painter.setBrush(QColor(38, 38, 38));
     painter.setPen(QPen(QColor(38, 38, 38), 3, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
@@ -50,9 +50,9 @@ void drawTrapezoid(QPainter &painter, const int top, const int bottom, const boo
     painter.setBrush(QColor(252, 252, 252));
     painter.setPen(QPen(QColor(252, 252, 252), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
 
-    const int fill = 4;
-    const int slantLeft = narrowOnRight ? 0 : 2;
-    const int slantRight = narrowOnRight ? 2 : 0;
+    const qreal fill = 4;
+    const qreal slantLeft = narrowOnRight ? 0 : 2;
+    const qreal slantRight = narrowOnRight ? 2 : 0;
     QPolygonF inner;
     inner << QPointF(22 + fill, top + narrowLeft + fill - slantLeft)
           << QPointF(22 + fill, bottom - narrowLeft - fill + slantLeft)
@@ -90,15 +90,13 @@ void FootprintPresenter::paintBody(QPainter &painter, const Element &element, co
 void MuxPresenter::paintFootprint(QPainter &painter, const Element &element, const QRectF &footprint) const
 {
     Q_UNUSED(element)
-    const int height = static_cast<int>(footprint.height());
-    FootprintPresentersDetail::drawTrapezoid(painter, 8, height - 10, true);
+    FootprintPresentersDetail::drawTrapezoid(painter, 8, footprint.height() - 10, true);
 }
 
 void DemuxPresenter::paintFootprint(QPainter &painter, const Element &element, const QRectF &footprint) const
 {
     Q_UNUSED(element)
-    const int height = static_cast<int>(footprint.height());
-    FootprintPresentersDetail::drawTrapezoid(painter, 8, height - 10, false);
+    FootprintPresentersDetail::drawTrapezoid(painter, 8, footprint.height() - 10, false);
 }
 
 LabelPlacement TruthTablePresenter::label(const Element &element) const
@@ -109,13 +107,12 @@ LabelPlacement TruthTablePresenter::label(const Element &element) const
 void TruthTablePresenter::paintFootprint(QPainter &painter, const Element &element, const QRectF &footprint) const
 {
     painter.setRenderHints(QPainter::SmoothPixmapTransform | QPainter::TextAntialiasing, true);
-    const QRectF bounds(QPointF(), footprint.size().toSize());
 
     // Main body: mid-gray rounded rectangle inset 7px on each side (14px total) so port connector
     // dots sit on top of the body border rather than floating in empty space.
     painter.setBrush(QColor(126, 126, 126));
     painter.setPen(QPen(QBrush(QColor(78, 78, 78)), 0.5, Qt::SolidLine));
-    const QRectF finalRect(QPointF(7, 0), QSizeF(bounds.width() - 14, bounds.height()));
+    const QRectF finalRect(QPointF(7, 0), QSizeF(footprint.width() - 14, footprint.height()));
     painter.drawRoundedRect(finalRect, 3, 3);
 
     // Centre the truth-table icon inside the body, rendered as vectors at its native size.

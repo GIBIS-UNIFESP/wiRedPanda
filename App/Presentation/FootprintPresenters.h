@@ -27,7 +27,8 @@ public:
     void paintBody(QPainter &painter, const Element &element, const BodyContext &context) const override;
 
 protected:
-    /// Draws \a element's body in \a footprint, which lies at the origin, with antialiasing on.
+    /// Draws \a element's body in \a footprint, which lies at the origin, with antialiasing on. The footprint is drawn as
+    /// measured, never converted to whole numbers: a cast of one that is not finite to an int is undefined.
     virtual void paintFootprint(QPainter &painter, const Element &element, const QRectF &footprint) const = 0;
 };
 

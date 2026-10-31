@@ -3,6 +3,8 @@
 
 #include "Tests/Unit/Elements/TestElementPresenters.h"
 
+#include <cmath>
+#include <limits>
 #include <memory>
 
 #include <QCoreApplication>
@@ -26,6 +28,7 @@
 #include "App/Element/LabelMeasure.h"
 #include "App/Presentation/ElementPresenter.h"
 #include "App/Presentation/LabelMetrics.h"
+#include "App/Wiring/Port.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestElementPresenters::testEveryTypeHasAPresenter()
@@ -51,6 +54,29 @@ void TestElementPresenters::testAnElementsBodyIsItsPresentersMeasure()
         QVERIFY2(element->body() == measured, qPrintable(ElementFactory::typeToText(type)));
         QVERIFY2(BodyMeasure::installed().measure(*element) == measured, qPrintable(ElementFactory::typeToText(type)));
         QVERIFY2(element->pixmapCenter() == measured.centre, qPrintable(ElementFactory::typeToText(type)));
+    }
+}
+
+void TestElementPresenters::testANonFiniteFootprintIsDrawn()
+{
+    // A port at a position that is not finite (no file reaches one: the loader refuses it) makes a footprint that is not
+    // finite. It is measured and drawn as it is, never converted to whole numbers (a cast of NaN to an int is undefined)
+    for (const ElementType type : {ElementType::Mux, ElementType::Demux, ElementType::TruthTable, ElementType::IC}) {
+        const std::unique_ptr<Element> element(ElementFactory::buildElement(type));
+        if (auto *ic = qobject_cast<IC *>(element.get())) {
+            ic->loadFile(TestUtils::cpuComponentsDir() + "level1_d_latch.panda", TestUtils::cpuComponentsDir());
+        }
+        QVERIFY(element->inputSize() > 0);
+        element->inputPort(0)->setPos(std::numeric_limits<qreal>::quiet_NaN(), 0);
+        element->setFlippedX(true); // measures the body again
+
+        QVERIFY2(std::isnan(element->body().body.width()), qPrintable(ElementFactory::typeToText(type)));
+        QImage image(QSize(200, 200), QImage::Format_ARGB32_Premultiplied);
+        image.fill(Qt::transparent);
+        QPainter painter(&image);
+        QStyleOptionGraphicsItem option;
+        element->paint(&painter, &option, nullptr);
+        painter.end();
     }
 }
 
