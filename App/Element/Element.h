@@ -21,6 +21,7 @@
 #include "App/Core/Enums.h"
 #include "App/Core/ItemWithId.h"
 #include "App/Element/ElementAppearance.h"
+#include "App/Element/ElementChange.h"
 #include "App/Element/ElementOrientation.h"
 #include "App/Element/ElementPorts.h"
 #include "App/Element/ElementSimState.h"
@@ -100,22 +101,21 @@ public:
 
     /**
      * \brief Loads the graphic element through a binary data stream.
+     * \details Reads the element's state with loadState(), and reports it as one change of everything a file holds
+     * (see changed()), also when the read throws.
      * \param stream Binary stream positioned at this element's serialized data.
      * \param context carries portMap, version, contextDir and optional copy-operation state.
      */
-    virtual void load(QDataStream &stream, SerializationContext &context);
+    void load(QDataStream &stream, SerializationContext &context);
 
     // --- Port Management ---
 
     /**
      * \brief Repositions and reconfigures all ports after the port count changes.
-     * \details Distributes input ports vertically on the left edge (x=0) and
-     * output ports on the right edge (x=64), spaced by half the scene grid size, unless a port's attributes place it,
-     * and applies each port's inputAttributes() or outputAttributes().
-     * Also reapplies rotation for non-rotatable elements.  Called after
-     * construction, loading, and any input/output size change.
+     * \details Lays the ports out with layoutPorts(), and reports it as one change of the ports (see changed()).
+     * Called after construction, loading, and any input/output size change.
      */
-    virtual void updatePortsProperties();
+    void updatePortsProperties();
 
     /// The attributes of one port that its element sets. An unset field is left as the port has it, so an element that
     /// sets the requirement or the default elsewhere (a wireless node, say) keeps doing so.
@@ -136,7 +136,7 @@ public:
 
     /**
      * \brief Returns the attributes of input port \a index, or nothing when the port keeps its own.
-     * \details updatePortsProperties() applies the attributes it returns; the base class returns nothing.
+     * \details The base layoutPorts() applies the attributes it returns; the base class returns nothing.
      */
     virtual std::optional<PortAttributes> inputAttributes(int index) const;
 
@@ -344,11 +344,11 @@ public:
     bool canChangeAppearance() const;
 
     /**
-     * \brief Switches the element's appearance.
+     * \brief Switches the element's appearance with applyAppearance(), and reports it as one change of a parameter.
      * \param defaultAppearance \c true to restore the built-in default appearance.
      * \param fileName    File path of the custom appearance image (used when \a defaultAppearance is \c false).
      */
-    virtual void setAppearance(const bool defaultAppearance, const QString &fileName);
+    void setAppearance(const bool defaultAppearance, const QString &fileName);
 
     /**
      * \brief Sets a custom appearance at a specific index in the appearance list.
@@ -436,8 +436,29 @@ public:
     /// Returns the centre point of the element's pixmap in local coordinates.
     QPointF pixmapCenter() const;
 
-    /// Returns the bounding rectangle of this element in local coordinates.
-    QRectF boundingRect() const override;
+    /**
+     * \brief Returns the bounding rectangle of this element in local coordinates, as Qt was last given it.
+     * \details In a scene, these are the bounds Qt indexes and repaints, which may change only after Qt is told
+     * (prepareGeometryChange()): they are measured as the element enters the scene and brought up to date by each
+     * change (changed(), pictureChanged()). Out of a scene, they are measured whenever asked.
+     */
+    QRectF boundingRect() const final;
+
+    /// Returns the bounding rectangle of this element in local coordinates, as its state gives it now: its picture
+    /// and its ports. An element that draws more, or a body of its own, measures it here.
+    virtual QRectF measureBoundingRect() const;
+
+    // --- Changes ---
+
+    /**
+     * \brief Reports that \a what changed in the element, once it holds the change.
+     * \details Every change of the element's saved state ends here: its placement, a parameter, its label, its ports.
+     * The bounds Qt has are brought up to the measured ones, telling Qt first, and a change of them is reported as
+     * Body; the element is repainted unless only its placement changed, so a move keeps the item's device cache; the
+     * scene's listener hears of it (ElementChangeListener::reportElementChange()). Under a ChangeBatch, the changes are held
+     * back and reported as one when the batch ends.
+     */
+    void changed(ElementChanges what);
 
     // --- State Queries ---
 
@@ -605,7 +626,7 @@ protected:
      * \brief Footprint of a "procedural render body" (IC/Mux/Demux/TruthTable): the nominal
      * 64x64 body unioned with wherever the ports actually land, which extends past it once an
      * instance has enough ports.
-     * \details Single source of truth for boundingRect(), the sizing pixmap, and the
+     * \details Single source of truth for measureBoundingRect(), the sizing pixmap, and the
      * selection-highlight rect on those four element types, so they can never drift out of
      * sync with each other.
      */
@@ -620,6 +641,51 @@ protected:
     /// Hook called whenever the label text is set (including on construction and on inline-edit
     /// commit). Base is a no-op; Text overrides it to toggle its empty-state hint.
     virtual void labelContentChanged() {}
+
+    // --- Changes ---
+
+    /**
+     * \class ChangeBatch
+     * \brief Holds back what the element reports while it lasts: the changes made under it, a nested batch's
+     * included, are reported as one when the outermost batch ends, even if it ends by an exception.
+     */
+    class ChangeBatch
+    {
+    public:
+        /// Starts a batch on \a element that reports at least \a what as it ends.
+        explicit ChangeBatch(Element &element, ElementChanges what = {});
+
+        /// Ends the batch, reporting what changed under it if it is the outermost.
+        ~ChangeBatch();
+
+    private:
+        Q_DISABLE_COPY_MOVE(ChangeBatch)
+
+        Element &m_element;
+    };
+
+    /// Reports that the element's picture changed (a new pixmap, a display's segments, the theme's colours): it is
+    /// repainted, and a change of its bounds is reported as Body. The picture alone is not a change of the circuit,
+    /// so nothing else is reported. Under a ChangeBatch, held back as changed() is.
+    void pictureChanged();
+
+    /// Lays the ports out for the current port count. The base distributes the inputs down the left edge (x=0) and the
+    /// outputs down the right edge (x=64), spaced by the scene grid size, unless a port's attributes place it; applies
+    /// each port's inputAttributes() or outputAttributes(); and orients the ports of a non-rotatable element. An element
+    /// whose body follows its ports re-sizes the body here. Called only by updatePortsProperties().
+    virtual void layoutPorts();
+
+    /**
+     * \brief Reads the element's state from \a stream: the base reads what every element saves (see
+     * ElementSerializer), and an element with more reads it after the base. Called only by load().
+     * \param stream Binary stream positioned at this element's serialized data.
+     * \param context carries portMap, version, contextDir and optional copy-operation state.
+     */
+    virtual void loadState(QDataStream &stream, SerializationContext &context);
+
+    /// Switches the element's appearance: the built-in default when \a defaultAppearance, else \a fileName's picture in
+    /// the slot the element's state shows. The base sets every slot. Called only by setAppearance().
+    virtual void applyAppearance(bool defaultAppearance, const QString &fileName);
 
     // --- Parameters ---
 
@@ -636,9 +702,11 @@ protected:
 
     /**
      * \brief Handles item state changes such as position, rotation, and selection.
-     * \details Two change types are intercepted (a position is set exactly; see snapToGrid()):
+     * \details These change types are intercepted (a position is set exactly; see snapToGrid()):
+     * - ItemSceneHasChanged: finds the new scene's listener, and measures the bounds Qt is given there (see
+     *   boundingRect()).
      * - ItemPositionHasChanged / ItemRotationHasChanged / ItemTransformHasChanged:
-     *   calls updateConnections() on all ports to redraw attached wires.
+     *   calls updateConnections() on all ports to redraw attached wires, and reports a change of the placement.
      * - ItemSelectedHasChanged: toggles connection highlight via highlight().
      * \param change The type of change that occurred.
      * \param value  The new value associated with the change.
@@ -735,13 +803,12 @@ protected:
 private:
     Q_DISABLE_COPY_MOVE(Element)
 
-    /// Reaches ports/orientation/appearance/context-directory state to implement save()/load();
+    /// Reaches ports/orientation/appearance/context-directory state to implement save()/loadState();
     /// see ElementSerializer.
     friend class ElementSerializer;
 
-    /// Calls prepareGeometryChange() before its pixmap mutation resizes boundingRect(), and
-    /// invalidateRenderCache() when that mutation changes the pixmap size;
-    /// see ElementAppearance::setPixmap()/setRenderPixmap().
+    /// Reports each new pixmap as a new picture, under one ChangeBatch with the pivot it moves, and calls
+    /// invalidateRenderCache() when the pixmap's size changes; see ElementAppearance::setPixmap()/setRenderPixmap().
     friend class ElementAppearance;
 
     /// Calls the protected sceneEvent() directly to test its Ctrl+click swallow deterministically:
@@ -761,10 +828,20 @@ private:
     /// old appearance behind the new one. Call only on an actual size change.
     void invalidateRenderCache();
 
+    // --- Changes ---
+
+    /// Brings the bounds Qt has up to the measured ones, telling Qt first (prepareGeometryChange()); \returns
+    /// \c true if they changed. Nothing to do while the element is in no scene, where they are measured when asked.
+    bool syncBoundingRect();
+
+    /// Reports what changed since the last report (see changed()): called as the outermost ChangeBatch ends, or
+    /// at once outside one.
+    void flushChanges();
+
     // --- Port Management Helpers ---
 
     /// Shared implementation for setInputSize() and setOutputSize(): resizes the port store
-    /// (within min/max constraints) then re-lays-out the ports via updatePortsProperties().
+    /// (within min/max constraints) then re-lays-out the ports via updatePortsProperties(), as one change of the ports.
     void setPortSize(const int size, const bool isInput);
 
     // --- Display & Interaction ---
@@ -814,6 +891,15 @@ private:
     /// the item and its ports; this element forwards its orientation interface here.
     /// See ElementOrientation.
     ElementOrientation m_orientation{this};
+
+    // --- Members: Changes ---
+
+    ElementChangeListener *m_listener = nullptr; ///< The listener of the scene the element is in, found as it enters one; null in none.
+    QRectF m_bounds;                             ///< The bounds Qt was last given; meaningful while m_boundsLatched.
+    bool m_boundsLatched = false;                ///< Whether boundingRect() returns m_bounds: while the element is in a scene.
+    int m_changeBatchDepth = 0;                  ///< How many ChangeBatch scopes are open on the element.
+    ElementChanges m_pendingChanges;             ///< What changed since the last report.
+    bool m_pictureChanged = false;               ///< Whether the picture changed since the last report (pictureChanged()).
 
     // --- Members: Port Size Constraints ---
 

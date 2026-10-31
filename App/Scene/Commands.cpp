@@ -501,7 +501,6 @@ void RotateCommand::undo()
         auto *elm = elements.at(i);
         elm->setRotation(elm->rotation() - m_angle);
         elm->setPos(m_positions.at(i));
-        elm->update();
         elm->setSelected(true);
     }
 
@@ -1510,16 +1509,14 @@ void ToggleTruthTableOutputCommand::redo()
     }
 
     // The key holds a fixed number of bits, derived from the element's port limits in
-    // TruthTable.cpp; toggleBit outside it is an out-of-bounds write. Both callers (the editor and the MCP server)
+    // TruthTable.cpp; a bit set outside it is an out-of-bounds write. Both callers (the editor and the MCP server)
     // bound the position first, and undo() == redo(), so the bound is checked here regardless of caller.
     if (m_pos < 0 || m_pos >= truthtable->key().size()) {
         CommandUtils::abandon(this, "the position it toggles is outside the truth table's key");
         return;
     }
 
-    QBitArray table = truthtable->key();
-    table.toggleBit(m_pos);
-    truthtable->setkey(table);
+    truthtable->setKeyBit(m_pos, !truthtable->key().testBit(m_pos));
 
     m_scene->setCircuitUpdateRequired();
     emit m_scene->truthTableElementChanged(truthtable);
@@ -1527,7 +1524,7 @@ void ToggleTruthTableOutputCommand::redo()
 
 void ToggleTruthTableOutputCommand::undo()
 {
-    // toggleBit is self-inverse: undo == redo
+    // A toggle is self-inverse: undo == redo
     redo();
 }
 

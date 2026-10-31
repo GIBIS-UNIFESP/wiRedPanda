@@ -47,7 +47,7 @@ void ElementInput::setWaveformValue(const bool value, const int port)
     setOn(value, port);
 }
 
-void ElementInput::setAppearance(const bool defaultAppearance, const QString &fileName)
+void ElementInput::applyAppearance(const bool defaultAppearance, const QString &fileName)
 {
     if (defaultAppearance) {
         m_appearance.resetAlternativeToDefault();

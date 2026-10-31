@@ -28,7 +28,7 @@ static QSvgRenderer &icLogoRenderer()
 void ICRenderer::generatePixmap(IC &ic)
 {
     // The body is now drawn as vectors in drawBody()/paint(); m_pixmap is kept only so that the
-    // base pixmapCenter()/boundingRect() have the right size (its image content is never displayed).
+    // base pixmapCenter()/measureBoundingRect() have the right size (its image content is never displayed).
     // It must encompass both the 64×64 body and any ports that extend beyond it.
     const QSizeF boundsSize = ic.renderBodyBounds().size();
 
@@ -43,7 +43,6 @@ void ICRenderer::generatePixmap(IC &ic)
     QPixmap sizingPixmap(boundsSize.toSize());
     sizingPixmap.fill(Qt::transparent);
     ic.m_appearance.setRenderPixmap(sizingPixmap);
-    ic.update();
 }
 
 void ICRenderer::drawBody(IC &ic, QPainter *painter)

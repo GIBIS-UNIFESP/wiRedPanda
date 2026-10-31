@@ -102,7 +102,7 @@ Display16::Display16(QGraphicsItem *parent)
 
 void Display16::refresh()
 {
-    update();
+    pictureChanged();
 }
 
 std::optional<Element::PortAttributes> Display16::inputAttributes(const int index) const
@@ -138,9 +138,9 @@ std::optional<Element::PortAttributes> Display16::inputAttributes(const int inde
     return Display7::segmentInput(describedPort(segment.letter, segment.description), segment);
 }
 
-QRectF Display16::boundingRect() const
+QRectF Display16::measureBoundingRect() const
 {
-    return Element::boundingRect().united(QRectF(0, 0, 64, 64));
+    return Element::measureBoundingRect().united(QRectF(0, 0, 64, 64));
 }
 
 void Display16::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)

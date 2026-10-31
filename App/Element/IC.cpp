@@ -106,16 +106,16 @@ void IC::save(QDataStream &stream, SerializationOptions options) const
     stream << map;
 }
 
-void IC::load(QDataStream &stream, SerializationContext &context)
+void IC::loadState(QDataStream &stream, SerializationContext &context)
 {
-    Element::load(stream, context);
+    Element::loadState(stream, context);
 
-    // Save the portMap keys for each port that Element::load() just
+    // Save the portMap keys for each port that Element::loadState() just
     // registered.  Loading the sub-circuit below destroys and recreates all
     // ports, so we must re-register the new ports under the original keys
     // to keep the outer portMap valid for connection deserialization.
     // Old format uses ptr values as keys; new format uses serialIds.  The
-    // keys come from the ones Element::load() just registered, never
+    // keys come from the ones Element::loadState() just registered, never
     // from a search of the whole map: it holds every port loaded so far, so a
     // search per IC would make a load quadratic in the circuit's ICs.  A key
     // counts while it still names its port (a later port of the same element
@@ -268,6 +268,8 @@ void IC::resetInternalState()
 
 void IC::loadFile(const QString &fileName, const QString &contextDir)
 {
+    // A definition replaces the ports and the body, and names the file: one change, also when the load throws.
+    const ChangeBatch batch(*this, ElementChange::Parameter | ElementChange::Ports);
     m_filesRead = ICLoader::recordFilesRead([&] { ICLoader::loadFile(*this, fileName, contextDir); });
 }
 
@@ -283,8 +285,18 @@ void IC::adoptLoadedCircuit(const IC &live)
 
 void IC::loadFromBlob(const QByteArray &blob, const QString &contextDir)
 {
+    const ChangeBatch batch(*this, ElementChange::Parameter | ElementChange::Ports);
     m_filesRead = ICLoader::recordFilesRead([&] { ICLoader::loadFromBlob(*this, blob, contextDir); });
     m_loadedBlobSnapshot = blob;
+}
+
+void IC::setBlobName(const QString &name)
+{
+    if (name == m_blobName) {
+        return;
+    }
+    m_blobName = name;
+    changed(ElementChange::Parameter);
 }
 
 const QPixmap &IC::preview()
@@ -364,7 +376,7 @@ void IC::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
     emit previewHideRequested();
 }
 
-QRectF IC::boundingRect() const
+QRectF IC::measureBoundingRect() const
 {
     return renderBodyBounds();
 }

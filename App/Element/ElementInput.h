@@ -17,7 +17,7 @@
  * toggled by the user or the simulation engine.  Derived classes implement
  * isOn(), setOn(), and setOff() to expose their specific input behaviour.
  *
- * The concrete setOn(bool, int) and setAppearance(bool, QString) implementations
+ * The concrete setOn(bool, int) and applyAppearance(bool, QString) implementations
  * shared by InputSwitch, InputButton, and Clock live here to avoid repetition.
  *
  * Every input has a lock (ParamId::Locked, lockSpec()); a switch's, a button's and a
@@ -92,13 +92,6 @@ public:
      */
     virtual void setWaveformValue(const bool value, const int port = 0);
 
-    /// Applies a custom appearance image indexed by the current on/off state.
-    ///
-    /// Default implementation updates \a m_alternativeAppearances at the slot
-    /// corresponding to isOn() (index 0 = off, 1 = on).  Override when the
-    /// element uses a different slot scheme (e.g. InputRotary always uses slot 0).
-    void setAppearance(const bool defaultAppearance, const QString &fileName) override;
-
     /**
      * \brief Locks or unlocks user interaction on this element (ParamId::Locked).
      * \param locked \c true to prevent user toggling.
@@ -111,6 +104,10 @@ public:
     void updateOutputs();
 
 protected:
+    /// Applies a custom appearance image in the slot of the current on/off state (index 0 = off, 1 = on). Override when
+    /// the element uses a different slot scheme (e.g. InputRotary always uses slot 0).
+    void applyAppearance(bool defaultAppearance, const QString &fileName) override;
+
     /// \reimp Shows a new level (ParamId::On) on the picture and the output.
     void parameterChanged(ParamId id, const ParamValue &previous) override;
 

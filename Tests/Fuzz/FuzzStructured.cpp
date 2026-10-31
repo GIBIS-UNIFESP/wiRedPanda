@@ -148,7 +148,7 @@ struct PortIds {
 //                     keys: pos, rotation, label, trigger, flippedX, flippedY
 //   [2] Port lists  — 0 or 1 port per list, each with a serialId so that
 //                     context.portMap is populated and connections can wire up
-//   [3] Secondary map — read by the element's own load() override
+//   [3] Secondary map — read by the element's own loadState() override
 //                     keys vary by element type (see below)
 //
 // baseId: unique serial-ID base for this element (e.g. elemIndex * 4).

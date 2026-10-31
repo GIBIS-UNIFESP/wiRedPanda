@@ -29,16 +29,13 @@ public:
     // --- Visual / Port Configuration ---
 
     /// \reimp
-    QRectF boundingRect() const override;
+    QRectF measureBoundingRect() const override;
 
     /// \reimp
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
-    /// \reimp Co-updates input count when output size changes.
+    /// \reimp Co-updates input count when output size changes, as one change of the ports.
     void setOutputSize(const int size) override;
-
-    /// Lays the ports out, then redraws the body for the new port count.
-    void updatePortsProperties() override;
 
     /// The data input, In, on the left, then the select lines S0, S1, ... at the bottom.
     std::optional<PortAttributes> inputAttributes(int index) const override;
@@ -49,10 +46,12 @@ public:
     /// Routes the data input to the output selected by the select lines.
     void updateLogic() override;
 
-    // --- Serialization ---
+protected:
+    /// Lays the ports out, then redraws the body for the new port count.
+    void layoutPorts() override;
 
     /// \reimp Refuses inputs other than the data input and the select lines the outputs need.
-    void load(QDataStream &stream, SerializationContext &context) override;
+    void loadState(QDataStream &stream, SerializationContext &context) override;
 
 private:
     void generatePixmap();

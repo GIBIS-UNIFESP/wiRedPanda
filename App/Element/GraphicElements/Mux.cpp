@@ -45,12 +45,12 @@ struct ElementInfo<Mux> {
 Mux::Mux(QGraphicsItem *parent)
     : Element(ElementType::Mux, parent)
 {
-    Mux::updatePortsProperties();
+    updatePortsProperties();
 }
 
-void Mux::updatePortsProperties()
+void Mux::layoutPorts()
 {
-    Element::updatePortsProperties();
+    Element::layoutPorts();
     generatePixmap();
 }
 
@@ -89,7 +89,7 @@ std::optional<Element::PortAttributes> Mux::outputAttributes(const int index) co
     return attributesAt({{.name = "Out", .position = QPointF(48, bodyHeight() / 2)}}, index);
 }
 
-QRectF Mux::boundingRect() const
+QRectF Mux::measureBoundingRect() const
 {
     return renderBodyBounds();
 }
@@ -97,13 +97,12 @@ QRectF Mux::boundingRect() const
 void Mux::generatePixmap()
 {
     // The body is drawn as vectors in drawBody()/paint(); m_pixmap is kept only so the base
-    // pixmapCenter()/boundingRect() have the right size (its image content is never displayed).
+    // pixmapCenter()/measureBoundingRect() have the right size (its image content is never displayed).
     const int height = static_cast<int>(renderBodyBounds().height());
 
     QPixmap sizingPixmap(64, height);
     sizingPixmap.fill(Qt::transparent);
     m_appearance.setRenderPixmap(sizingPixmap);
-    update();
 }
 
 void Mux::drawBody(QPainter *painter)

@@ -150,7 +150,7 @@ QVector<std::shared_ptr<QSvgRenderer>> Display7::cachedSegmentRenderers(const QS
 
 void Display7::refresh()
 {
-    update();
+    pictureChanged();
 }
 
 std::optional<Element::PortAttributes> Display7::inputAttributes(const int index) const
@@ -184,9 +184,9 @@ Element::PortAttributes Display7::segmentInput(PortAttributes described, const S
     return attributes;
 }
 
-QRectF Display7::boundingRect() const
+QRectF Display7::measureBoundingRect() const
 {
-    return Element::boundingRect().united(QRectF(0, 0, 64, 64));
+    return Element::measureBoundingRect().united(QRectF(0, 0, 64, 64));
 }
 
 void Display7::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)

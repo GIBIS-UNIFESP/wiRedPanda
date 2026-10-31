@@ -22,7 +22,7 @@ class OutputPort;
  *
  * \details Extracted from Element, mirroring the ElementAppearance / ElementSimState /
  * ElementOrientation collaborators. Storage and port creation live here; the owning element
- * keeps the polymorphic geometry layout (updatePortsProperties() is virtual and orientation-
+ * keeps the polymorphic geometry layout (layoutPorts() is virtual and orientation-
  * coupled) and the min/max size policy, driving this type's resize primitives through it.
  * New ports are parented to the owner element so Qt's scene graph cleans them up with it.
  */

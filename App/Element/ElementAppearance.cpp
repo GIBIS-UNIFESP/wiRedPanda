@@ -250,10 +250,10 @@ void ElementAppearance::seed(const QStringList &defaultAppearances,
 QPointF ElementAppearance::pixmapCenter() const
 {
     // A procedural render pixmap (IC/Mux/Demux/TruthTable) isn't anchored at local (0,0) once
-    // the element's ports outgrow the nominal 64x64 body — boundingRect() (not the raw pixmap
-    // rect) is the actual footprint, and its own top-left tracks that offset.
+    // the element's ports outgrow the nominal 64x64 body — the measured bounds (not the raw pixmap
+    // rect) are the actual footprint, and their top-left tracks that offset.
     if (m_hasCustomRenderPixmap) {
-        return m_owner->boundingRect().center();
+        return m_owner->measureBoundingRect().center();
     }
     return QRectF(m_pixmap.rect()).center();
 }
@@ -267,15 +267,13 @@ void ElementAppearance::setPixmap(const int index)
         return;
     }
 
+    // The new picture, the bounds it gives (they're derived from pixmap().rect()) and the pivot it moves are
+    // reported as one change.
+    const Element::ChangeBatch batch(*m_owner);
+
     // Remember the displayed size so a growth (small SVG → large custom raster) can trigger a
     // full device-cache reset below; captured before applyOrientation() replaces m_pixmap.
     const QSize previousSize = m_pixmap.size();
-
-    // The pixmap about to load may have different dimensions than the current one,
-    // which changes what boundingRect() reports (it's derived from pixmap().rect()) —
-    // Qt requires prepareGeometryChange() before any such geometry-affecting mutation,
-    // or the old footprint's stale pixels are never scheduled for repaint.
-    m_owner->prepareGeometryChange();
 
     // Resolution against contextDir already happened once, at load time (see
     // ExternalFilePath::forReading(), called from ElementSerializer) — by the
@@ -306,7 +304,7 @@ void ElementAppearance::setPixmap(const int index)
     // element is rotated or flipped.
     applyOrientation();
 
-    // A size change grows/shrinks boundingRect(); DeviceCoordinateCache keeps the old device
+    // A size change grows/shrinks the bounds; DeviceCoordinateCache keeps the old device
     // tile on a plain update(), so reset the cache to force a full re-render and avoid a stale
     // ghost of the previous appearance.
     if (m_pixmap.size() != previousSize) {
@@ -318,7 +316,6 @@ void ElementAppearance::setPixmap(const int index)
     // non-rotatable element's oriented ports, are re-applied about it too.
     m_owner->setTransformOriginPoint(pixmapCenter());
     m_owner->recentreOrientation();
-    m_owner->update();
 
     m_currentPixmapPath = pixmapPath;
 }
@@ -355,11 +352,12 @@ QPixmap ElementAppearance::previewPixmapAt(const int index, const QSize &size) c
 
 void ElementAppearance::setRenderPixmap(const QPixmap &pixmap)
 {
-    // See the identical call in setPixmap(): this pixmap's dimensions feed boundingRect().
-    m_owner->prepareGeometryChange();
+    // As in setPixmap(): the new picture, its bounds and the pivot it moves are one change.
+    const Element::ChangeBatch batch(*m_owner);
     const QSize previousSize = m_pixmap.size();
     m_pixmap = pixmap;
     m_hasCustomRenderPixmap = true;
+    m_owner->pictureChanged();
     // A size change (e.g. a port count change resizing the procedural body) leaves a stale
     // DeviceCoordinateCache tile; reset the cache so the next paint re-renders in full.
     if (m_pixmap.size() != previousSize) {
@@ -377,7 +375,7 @@ void ElementAppearance::applyOrientation()
     // canvas and is not derived from m_basePixmap — re-deriving here would replace it with the
     // stale (or null) base skin. Orientation is handled by the item transform alone.
     if (m_hasCustomRenderPixmap) {
-        m_owner->update();
+        m_owner->pictureChanged();
         return;
     }
 
@@ -386,11 +384,8 @@ void ElementAppearance::applyOrientation()
     // so its text — if any — must render as authored and never be counter-oriented.
     const bool oriented = m_owner->rotatesGraphic()
         && (m_owner->isFlippedX() || m_owner->isFlippedY() || (m_owner->rotation() != 0.0));
-    // A rotated/flipped SVG variant can differ in size from the base skin, which changes what
-    // boundingRect() reports (it's derived from pixmap().rect()). setPixmap()/setRenderPixmap()
-    // already guard their own callers, but reapplyAppearanceOrientation() reaches here directly
-    // on a rotate/flip, so the mutation below needs its own prepareGeometryChange().
-    m_owner->prepareGeometryChange();
+    // A rotated/flipped SVG variant can differ in size from the base skin; the new picture reports the bounds it
+    // gives (they're derived from pixmap().rect()).
     if (oriented && m_resolvedPixmapPath.endsWith(QLatin1String(".svg"), Qt::CaseInsensitive)) {
         const QPixmap variant = orientedSvgPixmap(m_resolvedPixmapPath, m_owner->rotation(), m_owner->isFlippedX(), m_owner->isFlippedY());
         m_pixmap = variant.isNull() ? m_basePixmap : variant;
@@ -398,7 +393,7 @@ void ElementAppearance::applyOrientation()
         m_pixmap = m_basePixmap;
     }
     rebuildSvgRenderer();
-    m_owner->update();
+    m_owner->pictureChanged();
 }
 
 void ElementAppearance::rebuildSvgRenderer()

@@ -92,7 +92,7 @@ void Element::save(QDataStream &stream, SerializationOptions options) const
     ElementSerializer::saveParameters(*this, stream, options);
 }
 
-void Element::load(QDataStream &stream, SerializationContext &context)
+void Element::loadState(QDataStream &stream, SerializationContext &context)
 {
     ElementSerializer::load(*this, stream, context);
     ElementSerializer::loadParameters(*this, stream, context);

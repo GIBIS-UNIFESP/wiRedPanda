@@ -75,7 +75,7 @@ Element::Element(ElementType type, QGraphicsItem *parent)
     Element::setInputSize(static_cast<int>(descriptor.minInputSize));
     Element::setOutputSize(static_cast<int>(descriptor.minOutputSize));
 
-    Element::updatePortsProperties();
+    updatePortsProperties();
     Element::updateTheme();
 
     // DeviceCoordinateCache reuses the rendered pixmap when the device transform changes,
@@ -167,6 +167,9 @@ bool Element::setParam(const ParamId id, const ParamValue &value)
         return false;
     }
 
+    // A saved parameter is a change of the circuit, reported once with what the element derives from it; a transient
+    // one (a button's press) changes only the picture, which the element reports itself.
+    const ChangeBatch batch(*this, (spec->key != nullptr) ? ElementChanges(ElementChange::Parameter) : ElementChanges());
     const ParamValue previous = m_parameters.set(id, std::move(*taken));
     parameterChanged(id, previous);
     return true;
@@ -200,7 +203,78 @@ QPointF Element::pixmapCenter() const
 
 QRectF Element::boundingRect() const
 {
+    return m_boundsLatched ? m_bounds : measureBoundingRect();
+}
+
+QRectF Element::measureBoundingRect() const
+{
     return portsBoundingRect().united(pixmap().rect());
+}
+
+bool Element::syncBoundingRect()
+{
+    if (!m_boundsLatched) {
+        return false;
+    }
+
+    const QRectF measured = measureBoundingRect();
+    if (measured == m_bounds) {
+        return false;
+    }
+
+    // Qt drops the old bounds from its index and repaints them while boundingRect() still returns them.
+    prepareGeometryChange();
+    m_bounds = measured;
+    return true;
+}
+
+void Element::changed(const ElementChanges what)
+{
+    m_pendingChanges |= what;
+    if (m_changeBatchDepth == 0) {
+        flushChanges();
+    }
+}
+
+void Element::pictureChanged()
+{
+    m_pictureChanged = true;
+    if (m_changeBatchDepth == 0) {
+        flushChanges();
+    }
+}
+
+void Element::flushChanges()
+{
+    ElementChanges changes = std::exchange(m_pendingChanges, {});
+    const bool repaint = std::exchange(m_pictureChanged, false);
+
+    if (syncBoundingRect()) {
+        changes |= ElementChange::Body;
+    }
+
+    // A move alone leaves the picture as it is, and repainting it would discard the item's device cache.
+    if (repaint || changes.testAnyFlags(~ElementChanges(ElementChange::Placement))) {
+        update();
+    }
+
+    if (m_listener && changes) {
+        m_listener->reportElementChange(id(), changes);
+    }
+}
+
+Element::ChangeBatch::ChangeBatch(Element &element, const ElementChanges what)
+    : m_element(element)
+{
+    ++m_element.m_changeBatchDepth;
+    m_element.m_pendingChanges |= what;
+}
+
+Element::ChangeBatch::~ChangeBatch()
+{
+    if (--m_element.m_changeBatchDepth == 0) {
+        m_element.flushChanges();
+    }
 }
 
 QRectF Element::portsBoundingRect() const
@@ -227,6 +301,7 @@ void Element::setLabelAnchor(const QPointF &pos)
     m_labelAnchor = pos;
     m_label->setPos(pos);     // baseline: always correct for non-rotatable elements
     updateLabelOrientation(); // rotatable elements get position+orientation corrected on top
+    changed(ElementChange::Label);
 }
 
 void Element::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -271,11 +346,14 @@ Element::PortAttributes Element::describedPort(const char *letter, const char *d
 
 void Element::setRotation(const qreal angle)
 {
+    // The ports a non-rotatable element turns, and the oriented picture of a rotatable one, are part of the turn.
+    const ChangeBatch batch(*this, ElementChange::Placement);
     m_orientation.setRotation(angle);
 }
 
 void Element::rotatePorts()
 {
+    const ChangeBatch batch(*this, ElementChange::Placement);
     m_orientation.rotatePorts();
 }
 
@@ -286,21 +364,30 @@ qreal Element::rotation() const
 
 void Element::setFlippedX(const bool flipped)
 {
+    const ChangeBatch batch(*this, ElementChange::Placement);
     m_orientation.setFlippedX(flipped);
 }
 
 void Element::setFlippedY(const bool flipped)
 {
+    const ChangeBatch batch(*this, ElementChange::Placement);
     m_orientation.setFlippedY(flipped);
 }
 
 void Element::setAppearance(const bool defaultAppearance, const QString &fileName)
+{
+    const ChangeBatch batch(*this, ElementChange::Parameter);
+    applyAppearance(defaultAppearance, fileName);
+}
+
+void Element::applyAppearance(const bool defaultAppearance, const QString &fileName)
 {
     m_appearance.setAppearance(defaultAppearance, fileName);
 }
 
 void Element::setAppearanceAt(const int index, const QString &fileName)
 {
+    const ChangeBatch batch(*this, ElementChange::Parameter);
     m_appearance.setAppearanceAt(index, fileName);
 }
 
@@ -337,6 +424,18 @@ void applyAttributes(Port *port, const Element::PortAttributes &attributes)
 } // namespace ElementPortLayout
 
 void Element::updatePortsProperties()
+{
+    const ChangeBatch batch(*this, ElementChange::Ports);
+    layoutPorts();
+}
+
+void Element::load(QDataStream &stream, SerializationContext &context)
+{
+    const ChangeBatch batch(*this, ElementChange::Placement | ElementChange::Parameter | ElementChange::Label | ElementChange::Ports);
+    loadState(stream, context);
+}
+
+void Element::layoutPorts()
 {
     qCDebug(five) << "Updating port positions that belong to the IC.";
 
@@ -404,6 +503,16 @@ void Element::refresh()
 
 QVariant Element::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value)
 {
+    if (change == ItemSceneHasChanged) {
+        m_listener = dynamic_cast<ElementChangeListener *>(scene());
+        // Qt indexes the bounds of an item in a scene as boundingRect() first gives them, so from here they hold still
+        // until a change tells Qt they move (syncBoundingRect()).
+        m_boundsLatched = (scene() != nullptr);
+        if (m_boundsLatched) {
+            m_bounds = measureBoundingRect();
+        }
+    }
+
     // Guard against changes fired during construction before the item is added to a scene
     if (!scene()) {
         return QGraphicsItem::itemChange(change, value);
@@ -416,6 +525,7 @@ QVariant Element::itemChange(QGraphicsItem::GraphicsItemChange change, const QVa
         for (auto *port : allPorts()) {
             port->updateConnections();
         }
+        changed(ElementChange::Placement);
     }
 
     if (change == ItemSelectedHasChanged) {
@@ -461,6 +571,8 @@ QKeySequence Element::trigger() const
 
 void Element::setTrigger(const QKeySequence &trigger)
 {
+    // The label shows the trigger.
+    const ChangeBatch batch(*this, ElementChange::Parameter);
     m_trigger = trigger;
     updateLabel();
 }
@@ -493,6 +605,7 @@ void Element::updateLabel()
     // The counter-orientation pivots on the label's centre, which the new text just moved.
     updateLabelOrientation();
     labelContentChanged();
+    changed(ElementChange::Label);
 }
 
 void Element::updateLabelOrientation()
@@ -597,7 +710,7 @@ void Element::updateTheme()
         output->updateTheme();
     }
 
-    update();
+    pictureChanged();
 }
 
 bool Element::isValid()
@@ -744,9 +857,8 @@ void Element::setPortSize(const int size, const bool isInput)
         return;
     }
 
-    // Adding/removing ports changes portsBoundingRect(), and thus boundingRect(): notify the
-    // scene's spatial index before mutating so its stale bounds can't crash a later paint.
-    prepareGeometryChange();
+    // The ports added or removed and the layout of the whole set are one change of the ports.
+    const ChangeBatch batch(*this, ElementChange::Ports);
 
     if (isInput) {
         m_ports.resizeInputs(size);

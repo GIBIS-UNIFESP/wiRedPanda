@@ -85,7 +85,6 @@ void ElementOrientation::applyFlipTransform()
     // rotation + flip while still moving to the opposite side. No-op for an upright, unflipped or
     // non-SVG pixmap.
     m_owner->reapplyAppearanceOrientation();
-    m_owner->update();
 }
 
 void ElementOrientation::setFlipMatrix()

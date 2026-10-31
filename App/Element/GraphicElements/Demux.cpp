@@ -46,7 +46,7 @@ struct ElementInfo<Demux> {
 Demux::Demux(QGraphicsItem *parent)
     : Element(ElementType::Demux, parent)
 {
-    Demux::updatePortsProperties();
+    updatePortsProperties();
 }
 
 void Demux::setInputSize(const int size)
@@ -68,19 +68,20 @@ void Demux::setOutputSize(const int size)
     const int numSelectLines = calculateSelectLines(size);
     int requiredInputs = 1 + numSelectLines;
 
+    const ChangeBatch batch(*this, ElementChange::Ports);
+
     // Update output size FIRST to ensure outputSize() reflects new value
-    // This prevents updatePortsProperties() from using stale output count
+    // This prevents layoutPorts() from using stale output count
     Element::setOutputSize(size);
 
     // Then, update input size to match the select lines needed
-    // This will trigger updatePortsProperties() with both input and output sizes correct
+    // This will trigger layoutPorts() with both input and output sizes correct
     Element::setInputSize(requiredInputs);
-
 }
 
-void Demux::updatePortsProperties()
+void Demux::layoutPorts()
 {
-    Element::updatePortsProperties();
+    Element::layoutPorts();
     generatePixmap();
 }
 
@@ -121,7 +122,7 @@ std::optional<Element::PortAttributes> Demux::outputAttributes(const int index) 
     return PortAttributes{.name = QString("Out%1").arg(index), .position = QPointF(48, y)};
 }
 
-QRectF Demux::boundingRect() const
+QRectF Demux::measureBoundingRect() const
 {
     return renderBodyBounds();
 }
@@ -129,13 +130,12 @@ QRectF Demux::boundingRect() const
 void Demux::generatePixmap()
 {
     // The body is drawn as vectors in drawBody()/paint(); m_pixmap is kept only so the base
-    // pixmapCenter()/boundingRect() have the right size (its image content is never displayed).
+    // pixmapCenter()/measureBoundingRect() have the right size (its image content is never displayed).
     const int height = static_cast<int>(renderBodyBounds().height());
 
     QPixmap sizingPixmap(64, height);
     sizingPixmap.fill(Qt::transparent);
     m_appearance.setRenderPixmap(sizingPixmap);
-    update();
 }
 
 void Demux::drawBody(QPainter *painter)
@@ -235,9 +235,9 @@ void Demux::updateLogic()
     }
 }
 
-void Demux::load(QDataStream &stream, SerializationContext &context)
+void Demux::loadState(QDataStream &stream, SerializationContext &context)
 {
-    Element::load(stream, context);
+    Element::loadState(stream, context);
 
     // The loader takes the port lists as the file gives them, and updateLogic() reads every
     // select line the outputs need; a save always writes exactly those inputs.
