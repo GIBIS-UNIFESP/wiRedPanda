@@ -17,6 +17,7 @@
 #include <QTest>
 
 #include "App/Core/Common.h"
+#include "App/Element/BodyMeasure.h"
 #include "App/Element/ElementChange.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInput.h"
@@ -381,6 +382,8 @@ void TestElementChanges::testEveryChangeOfEveryTypeIsReported()
                                         .arg(where).arg(reported.toInt()).arg(operation.reportedAs.toInt())));
                 QVERIFY2(element->boundingRect() == element->measureBoundingRect(),
                          qPrintable(QStringLiteral("%1: %2").arg(where, ElementChangesTestDetail::bounds(*element))));
+                // The body the element keeps is the one it has now.
+                QVERIFY2(element->body() == BodyMeasure::installed().measure(*element), qPrintable(where + ": body"));
             }
             delete element;
         }

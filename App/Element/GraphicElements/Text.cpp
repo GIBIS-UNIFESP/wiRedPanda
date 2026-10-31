@@ -61,11 +61,6 @@ Text::Text(QGraphicsItem *parent)
                             // rather than relying on QGraphicsSimpleTextItem's default visibility
 }
 
-QRectF Text::measureBoundingRect() const
-{
-    return Element::measureBoundingRect().united(childrenBoundingRect());
-}
-
 void Text::updateTheme()
 {
     Element::updateTheme();

@@ -118,7 +118,12 @@ QRectF gridArea(const Scene *scene, const qreal step)
     };
 
     for (const auto *element : TestUtils::elementsById(scene)) {
-        const QRectF body = element->mapRectToScene(element->Element::measureBoundingRect());
+        // The picture with its ports, as the area was first taken.
+        QRectF local(element->appearance().pixmap().rect());
+        for (const auto *port : element->allPorts()) {
+            local |= element->mapRectFromItem(port, port->boundingRect());
+        }
+        const QRectF body = element->mapRectToScene(local);
         include(body.topLeft());
         include(body.bottomRight());
         for (const auto *port : element->allPorts()) {

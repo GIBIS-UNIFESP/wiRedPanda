@@ -42,6 +42,7 @@
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
 #include "App/IO/Serialization.h"
+#include "App/Presentation/ElementPresenter.h"
 
 namespace {
 
@@ -64,6 +65,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
     g_argc = *argc;
     g_argv = *argv;
     g_app  = new QApplication(g_argc, g_argv);
+    installPresenters();
 
     return 0;
 }

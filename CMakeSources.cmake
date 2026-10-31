@@ -7,6 +7,8 @@ set(MODEL_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/DragDropPayload.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Enums.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/ItemWithId.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/BodyMeasure.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/BodyPainter.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/Element.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementFactory.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementInput.cpp
@@ -78,6 +80,8 @@ set(MODEL_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/SentryHelpers.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/SimulationHost.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/StatusOps.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/BodyMeasure.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/BodyPainter.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/Element.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementChange.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementFactory.h
@@ -145,9 +149,11 @@ set(MODEL_HEADERS
 
 # Presentation: how an element is measured, shaped and drawn. It may include the model.
 set(PRESENTATION_SOURCES
+    ${CMAKE_CURRENT_LIST_DIR}/App/Presentation/ElementPresenter.cpp
 )
 
 set(PRESENTATION_HEADERS
+    ${CMAKE_CURRENT_LIST_DIR}/App/Presentation/ElementPresenter.h
 )
 
 # The rest of the application.
@@ -491,6 +497,7 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementAdvanced.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementAppearance.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementChanges.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementPresenters.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementLabel.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementProperties.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementSerializer.cpp
@@ -730,6 +737,7 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementAdvanced.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementAppearance.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementChanges.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementPresenters.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementLabel.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementProperties.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementSerializer.h

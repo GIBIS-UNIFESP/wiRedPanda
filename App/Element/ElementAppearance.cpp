@@ -12,13 +12,11 @@
 #include <QFileInfo>
 #include <QHash>
 #include <QPainter>
-#include <QPen>
 #include <QPixmapCache>
 #include <QRegularExpression>
 #include <QSvgRenderer>
 
 #include "App/Core/Common.h"
-#include "App/Core/ThemeManager.h"
 #include "App/Element/Element.h"
 
 namespace {
@@ -247,17 +245,6 @@ void ElementAppearance::seed(const QStringList &defaultAppearances,
     m_alternativeAppearances = alternativeAppearances.isEmpty() ? m_defaultAppearances : alternativeAppearances;
 }
 
-QPointF ElementAppearance::pixmapCenter() const
-{
-    // A procedural render pixmap (IC/Mux/Demux/TruthTable) isn't anchored at local (0,0) once
-    // the element's ports outgrow the nominal 64x64 body — the measured bounds (not the raw pixmap
-    // rect) are the actual footprint, and their top-left tracks that offset.
-    if (m_hasCustomRenderPixmap) {
-        return m_owner->measureBoundingRect().center();
-    }
-    return QRectF(m_pixmap.rect()).center();
-}
-
 void ElementAppearance::setPixmap(const int index)
 {
     const QString pixmapPath = m_usingDefaultAppearance ? m_defaultAppearances.at(index) : m_alternativeAppearances.at(index);
@@ -267,8 +254,7 @@ void ElementAppearance::setPixmap(const int index)
         return;
     }
 
-    // The new picture, the bounds it gives (they're derived from pixmap().rect()) and the pivot it moves are
-    // reported as one change.
+    // The new picture, the body it gives and the pivot it moves are reported as one change.
     const Element::ChangeBatch batch(*m_owner);
 
     // Remember the displayed size so a growth (small SVG → large custom raster) can trigger a
@@ -311,11 +297,8 @@ void ElementAppearance::setPixmap(const int index)
         m_owner->invalidateRenderCache();
     }
 
-    // The transform origin must be updated whenever the pixmap changes so that
-    // rotation and scale operations remain centred on the new image; a flip, or a
-    // non-rotatable element's oriented ports, are re-applied about it too.
-    m_owner->setTransformOriginPoint(pixmapCenter());
-    m_owner->recentreOrientation();
+    // The rotation pivots on the body's centre, so the pivot follows the pixmap whenever it changes.
+    m_owner->measureBodyAndPivot();
 
     m_currentPixmapPath = pixmapPath;
 }
@@ -352,7 +335,7 @@ QPixmap ElementAppearance::previewPixmapAt(const int index, const QSize &size) c
 
 void ElementAppearance::setRenderPixmap(const QPixmap &pixmap)
 {
-    // As in setPixmap(): the new picture, its bounds and the pivot it moves are one change.
+    // As in setPixmap(): the new picture, its body and the pivot it moves are one change.
     const Element::ChangeBatch batch(*m_owner);
     const QSize previousSize = m_pixmap.size();
     m_pixmap = pixmap;
@@ -365,8 +348,7 @@ void ElementAppearance::setRenderPixmap(const QPixmap &pixmap)
     }
     // The owner's body is drawn from this footprint, so rotation must pivot on its centre —
     // the base-pixmap flow gets the same guarantee from setPixmap().
-    m_owner->setTransformOriginPoint(pixmapCenter());
-    m_owner->recentreOrientation();
+    m_owner->measureBodyAndPivot();
 }
 
 void ElementAppearance::applyOrientation()
@@ -495,37 +477,21 @@ QStringList ElementAppearance::externalFiles() const
     return result;
 } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned QStringList, never reached after the return above.
 
-void ElementAppearance::render(QPainter *painter, const QRectF &boundingRect, const bool selected) const
+void ElementAppearance::render(QPainter &painter) const
 {
-    if (selected) {
-        painter->save();
-        painter->setBrush(m_selectionBrush);
-        // 0.5 pen width keeps the selection outline thin regardless of zoom level
-        painter->setPen(QPen(m_selectionPen, 0.5, Qt::SolidLine));
-        // Corner radius of 5 matches the visual rounding used on element bodies
-        painter->drawRoundedRect(boundingRect, 5, 5);
-        painter->restore();
-    }
-
     // Draw the body from vector data (crisp at any zoom) when the appearance is an SVG; fall back to
     // the rasterised pixmap for raster (PNG/JPG) appearances. DeviceCoordinateCache re-renders this
     // per zoom level, so the SVG stays sharp instead of scaling a fixed-size bitmap.
     if (m_svgRenderer && m_svgRenderer->isValid()) {
-        painter->save();
-        painter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing |
-                                QPainter::SmoothPixmapTransform, true);
+        painter.save();
+        painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing |
+                               QPainter::SmoothPixmapTransform, true);
         // Render into the SVG's native box at the origin — the same 0,0..defaultSize the raster occupied.
-        m_svgRenderer->render(painter, QRectF(QPointF(0, 0), QSizeF(m_svgRenderer->defaultSize())));
-        painter->restore();
+        m_svgRenderer->render(&painter, QRectF(QPointF(0, 0), QSizeF(m_svgRenderer->defaultSize())));
+        painter.restore();
     } else {
-        // Pixmap origin is always (0,0) in item coordinates; the transform origin
-        // (centre of the pixmap) is set separately via setTransformOriginPoint().
-        painter->drawPixmap(QPoint(0, 0), m_pixmap);
+        // Pixmap origin is always (0,0) in item coordinates; the rotation pivot (the body's centre) is set
+        // separately, as the pixmap changes (Element::measureBodyAndPivot()).
+        painter.drawPixmap(QPoint(0, 0), m_pixmap);
     }
-}
-
-void ElementAppearance::applyTheme(const ThemeAttributes &theme)
-{
-    m_selectionBrush = theme.m_selectionBrush;
-    m_selectionPen = theme.m_selectionPen;
 }

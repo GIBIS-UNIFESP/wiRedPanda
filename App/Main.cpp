@@ -26,6 +26,7 @@
 #include "App/Core/Common.h"
 #include "App/Core/ThemeManager.h"
 #include "App/Element/Element.h"
+#include "App/Presentation/ElementPresenter.h"
 #include "App/Scene/Workspace.h"
 #include "App/UI/MainWindow.h"
 
@@ -78,6 +79,9 @@ void portalQuietMessageHandler(QtMsgType type, const QMessageLogContext &context
 
 int main(int argc, char *argv[])
 {
+    // Before any element exists: each type's presenter measures and draws its elements.
+    installPresenters();
+
 #ifdef HAVE_SENTRY
     // Sentry must be initialised before QApplication so that crashes during Qt
     // startup are captured; sentry_close() is called via qScopeGuard at process exit

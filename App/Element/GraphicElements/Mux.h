@@ -28,11 +28,9 @@ public:
 
     // --- Visual / Port Configuration ---
 
-    /// \reimp
-    QRectF measureBoundingRect() const override;
-
-    /// \reimp
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+    /// Draws the trapezoid body straight onto \a painter as vectors, so it stays crisp at any
+    /// zoom instead of blitting a fixed-resolution pixmap.
+    void drawBody(QPainter &painter) const override;
 
     /// The data inputs In0, In1, ... on the left, then the select lines S0, S1, ... at the bottom.
     std::optional<PortAttributes> inputAttributes(int index) const override;
@@ -52,10 +50,6 @@ private:
 
     /// The body's height for the current data inputs, a multiple of 16 of at least 64.
     int bodyHeight() const;
-
-    /// Draws the trapezoid body straight onto \a painter as vectors, so it stays crisp at any
-    /// zoom instead of blitting a fixed-resolution pixmap.
-    void drawBody(QPainter *painter);
 
     /**
      * \brief Returns the minimum select-line count for a Mux with \a totalInputs ports.

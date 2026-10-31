@@ -1,6 +1,7 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+#include "App/Presentation/ElementPresenter.h"
 #include "Tests/Runners/RunnerUtils.h"
 
 // integration/ic/tests/cpu
@@ -163,6 +164,7 @@
 #include "Tests/Unit/Elements/TestDisplays.h"
 #include "Tests/Unit/Elements/TestElementAppearance.h"
 #include "Tests/Unit/Elements/TestElementChanges.h"
+#include "Tests/Unit/Elements/TestElementPresenters.h"
 #include "Tests/Unit/Elements/TestElementLabel.h"
 #include "Tests/Unit/Elements/TestElementProperties.h"
 #include "Tests/Unit/Elements/TestFeatures.h"
@@ -259,6 +261,7 @@
 
 int main(int argc, char **argv)
 {
+    installPresenters();
     return runTestSuite(argc, argv, {
         {"TestCPUAlu", []() -> QObject * { return new TestCPUAlu; }},
         {"TestCPUBranch", []() -> QObject * { return new TestCPUBranch; }},
@@ -408,6 +411,7 @@ int main(int argc, char **argv)
         {"TestDisplays", []() -> QObject * { return new TestDisplays; }},
         {"TestElementAppearance", []() -> QObject * { return new TestElementAppearance; }},
         {"TestElementChanges", []() -> QObject * { return new TestElementChanges; }},
+        {"TestElementPresenters", []() -> QObject * { return new TestElementPresenters; }},
         {"TestElementContextMenu", []() -> QObject * { return new TestElementContextMenu; }},
         {"TestElementEditor", []() -> QObject * { return new TestElementEditor; }},
         {"TestElementLabel", []() -> QObject * { return new TestElementLabel; }},

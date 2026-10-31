@@ -130,33 +130,28 @@ std::optional<Element::PortAttributes> Display14::inputAttributes(const int inde
     return Display7::segmentInput(describedPort(segment.letter, segment.description), segment);
 }
 
-QRectF Display14::measureBoundingRect() const
-{
-    return Element::measureBoundingRect().united(QRectF(0, 0, 64, 64));
-}
-
-void Display14::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void Display14::drawBody(QPainter &painter) const
 {
     // Base class paints the off-state background; active segments are overlaid as vector
     // renders on top, crisp at any zoom.
-    Element::paint(painter, option, widget);
+    Element::drawBody(painter);
 
     const QRectF body(0, 0, 64, 64);
-    if (inputPort(0)->status() == Status::Active)  { g1.at(m_colorNumber)->render(painter, body); }
-    if (inputPort(1)->status() == Status::Active)  { f.at(m_colorNumber)->render(painter, body);  }
-    if (inputPort(2)->status() == Status::Active)  { e.at(m_colorNumber)->render(painter, body);  }
-    if (inputPort(3)->status() == Status::Active)  { d.at(m_colorNumber)->render(painter, body);  }
-    if (inputPort(4)->status() == Status::Active)  { a.at(m_colorNumber)->render(painter, body);  }
-    if (inputPort(5)->status() == Status::Active)  { b.at(m_colorNumber)->render(painter, body);  }
-    if (inputPort(6)->status() == Status::Active)  { dp.at(m_colorNumber)->render(painter, body); }
-    if (inputPort(7)->status() == Status::Active)  { c.at(m_colorNumber)->render(painter, body);  }
-    if (inputPort(8)->status() == Status::Active)  { g2.at(m_colorNumber)->render(painter, body); }
-    if (inputPort(9)->status() == Status::Active)  { h.at(m_colorNumber)->render(painter, body);  }
-    if (inputPort(10)->status() == Status::Active) { j.at(m_colorNumber)->render(painter, body);  }
-    if (inputPort(11)->status() == Status::Active) { k.at(m_colorNumber)->render(painter, body);  }
-    if (inputPort(12)->status() == Status::Active) { l.at(m_colorNumber)->render(painter, body);  }
-    if (inputPort(13)->status() == Status::Active) { m.at(m_colorNumber)->render(painter, body);  }
-    if (inputPort(14)->status() == Status::Active) { n.at(m_colorNumber)->render(painter, body);  }
+    if (inputPort(0)->status() == Status::Active)  { g1.at(m_colorNumber)->render(&painter, body); }
+    if (inputPort(1)->status() == Status::Active)  { f.at(m_colorNumber)->render(&painter, body);  }
+    if (inputPort(2)->status() == Status::Active)  { e.at(m_colorNumber)->render(&painter, body);  }
+    if (inputPort(3)->status() == Status::Active)  { d.at(m_colorNumber)->render(&painter, body);  }
+    if (inputPort(4)->status() == Status::Active)  { a.at(m_colorNumber)->render(&painter, body);  }
+    if (inputPort(5)->status() == Status::Active)  { b.at(m_colorNumber)->render(&painter, body);  }
+    if (inputPort(6)->status() == Status::Active)  { dp.at(m_colorNumber)->render(&painter, body); }
+    if (inputPort(7)->status() == Status::Active)  { c.at(m_colorNumber)->render(&painter, body);  }
+    if (inputPort(8)->status() == Status::Active)  { g2.at(m_colorNumber)->render(&painter, body); }
+    if (inputPort(9)->status() == Status::Active)  { h.at(m_colorNumber)->render(&painter, body);  }
+    if (inputPort(10)->status() == Status::Active) { j.at(m_colorNumber)->render(&painter, body);  }
+    if (inputPort(11)->status() == Status::Active) { k.at(m_colorNumber)->render(&painter, body);  }
+    if (inputPort(12)->status() == Status::Active) { l.at(m_colorNumber)->render(&painter, body);  }
+    if (inputPort(13)->status() == Status::Active) { m.at(m_colorNumber)->render(&painter, body);  }
+    if (inputPort(14)->status() == Status::Active) { n.at(m_colorNumber)->render(&painter, body);  }
 }
 
 void Display14::parameterChanged(const ParamId id, const ParamValue &previous)

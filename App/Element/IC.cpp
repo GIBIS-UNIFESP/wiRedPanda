@@ -370,32 +370,15 @@ void IC::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
     emit previewMoved(this, event->screenPos());
 }
 
+void IC::drawBody(QPainter &painter) const
+{
+    ICRenderer::drawBody(*this, painter);
+}
+
 void IC::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
     Q_UNUSED(event)
     emit previewHideRequested();
-}
-
-QRectF IC::measureBoundingRect() const
-{
-    return renderBodyBounds();
-}
-
-void IC::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
-{
-    Q_UNUSED(widget)
-    Q_UNUSED(option)
-
-    if (isSelected()) {
-        painter->save();
-        painter->setBrush(m_appearance.selectionBrush());
-        painter->setPen(QPen(m_appearance.selectionPen(), 0.5, Qt::SolidLine));
-        painter->drawRoundedRect(boundingRect(), 5, 5);
-        painter->restore();
-    }
-
-    // Draw the body as vectors (crisp at any zoom) rather than blitting a fixed-resolution pixmap.
-    ICRenderer::drawBody(*this, painter);
 }
 
 void IC::initializeSimulation(const bool keepOutputs)

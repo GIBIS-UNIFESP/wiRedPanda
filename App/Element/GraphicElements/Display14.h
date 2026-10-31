@@ -36,11 +36,8 @@ public:
 
     // --- Visual ---
 
-    /// The base bounds plus the 64x64 box the lit segments are drawn in, which a custom picture need not cover.
-    QRectF measureBoundingRect() const override;
-
-    /// \reimp
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+    /// Draws the off-state picture, then the lit segments over it as vectors.
+    void drawBody(QPainter &painter) const override;
 
     /// Refreshes the displayed segments based on current input states.
     void refresh() override;

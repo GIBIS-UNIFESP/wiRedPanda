@@ -23,6 +23,7 @@
 #include "App/Core/Common.h"
 #include "App/Core/Constants.h"
 #include "App/Core/ThemeManager.h"
+#include "App/Element/BodyPainter.h"
 #include "App/Element/ElementTypeDescriptor.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Wiring/Connection.h"
@@ -196,11 +197,6 @@ void Element::setInputs(const QVector<InputPort *> &inputs)
     m_ports.setInputs(inputs);
 }
 
-QPointF Element::pixmapCenter() const
-{
-    return m_appearance.pixmapCenter();
-}
-
 QRectF Element::boundingRect() const
 {
     return m_boundsLatched ? m_bounds : measureBoundingRect();
@@ -208,7 +204,21 @@ QRectF Element::boundingRect() const
 
 QRectF Element::measureBoundingRect() const
 {
-    return portsBoundingRect().united(pixmap().rect());
+    return portsBoundingRect().united(m_body.body);
+}
+
+void Element::measureBody()
+{
+    m_body = BodyMeasure::installed().measure(*this);
+}
+
+void Element::measureBodyAndPivot()
+{
+    measureBody();
+    // The transform origin must follow the body's centre so that rotation stays centred on it; a flip, or a
+    // non-rotatable element's oriented ports, are re-applied about it too.
+    setTransformOriginPoint(m_body.centre);
+    recentreOrientation();
 }
 
 bool Element::syncBoundingRect()
@@ -249,6 +259,7 @@ void Element::flushChanges()
     ElementChanges changes = std::exchange(m_pendingChanges, {});
     const bool repaint = std::exchange(m_pictureChanged, false);
 
+    measureBody();
     if (syncBoundingRect()) {
         changes |= ElementChange::Body;
     }
@@ -309,7 +320,12 @@ void Element::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     Q_UNUSED(widget)
     Q_UNUSED(option)
 
-    m_appearance.render(painter, boundingRect(), isSelected());
+    BodyPainter::installed().paint(*painter, *this);
+}
+
+void Element::drawBody(QPainter &painter) const
+{
+    m_appearance.render(painter);
 }
 
 void Element::invalidateRenderCache()
@@ -700,7 +716,6 @@ void Element::updateTheme()
     if (m_descriptor.defaultAppearances.isEmpty()) {
         m_appearance.setDefaultPixmapPath(m_descriptor.pixmapPath());
     }
-    m_appearance.applyTheme(theme);
 
     for (auto *input : m_ports.inputs()) {
         input->updateTheme();

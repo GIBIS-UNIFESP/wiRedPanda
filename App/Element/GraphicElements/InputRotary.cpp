@@ -148,14 +148,14 @@ static QSvgRenderer &rotaryArrowRenderer()
     return renderer;
 }
 
-void InputRotary::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void InputRotary::drawBody(QPainter &painter) const
 {
-    Element::paint(painter, option, widget);
+    Element::drawBody(painter);
 
     // Draw a small position mark for every output port, evenly spaced around the dial.
     // The active port also gets the arrow overlay drawn on top.
     for (int port = 0; port < outputSize(); ++port) {
-        painter->save();
+        painter.save();
 
         // Distribute marks evenly: port 0 is at the top (12 o'clock), increasing clockwise
         const double angle = 360. / outputSize() * port;
@@ -168,27 +168,27 @@ void InputRotary::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
         const QRectF mark = QRectF{30.2, 8.727, 3.6, 6.4};
 
         // Off-white / cream colour matches the dial face artwork, making the tick marks blend naturally
-        painter->setBrush(QBrush{QColor{255, 246, 213}});
-        painter->translate(center.x(), center.y());
-        painter->rotate(angle);
-        painter->translate(-center.x(), -center.y());
-        painter->drawRect(mark);
+        painter.setBrush(QBrush{QColor{255, 246, 213}});
+        painter.translate(center.x(), center.y());
+        painter.rotate(angle);
+        painter.translate(-center.x(), -center.y());
+        painter.drawRect(mark);
 
-        painter->restore();
+        painter.restore();
 
         if (outputValue() != port) {
             continue;
         }
 
         // Overlay the arrow at the same rotation as the active mark
-        painter->save();
+        painter.save();
 
-        painter->translate(center.x(), center.y());
-        painter->rotate(angle);
-        painter->translate(-center.x(), -center.y());
-        rotaryArrowRenderer().render(painter, QRectF(0, 0, 64, 64));
+        painter.translate(center.x(), center.y());
+        painter.rotate(angle);
+        painter.translate(-center.x(), -center.y());
+        rotaryArrowRenderer().render(&painter, QRectF(0, 0, 64, 64));
 
-        painter->restore();
+        painter.restore();
     }
 }
 
