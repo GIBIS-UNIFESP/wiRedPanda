@@ -128,6 +128,8 @@ What no single change owns: the pitfalls of building and testing this code base,
 - CI's Debian i386 job has a 32-bit `qsizetype`, so a `qint64` such as `QIODevice::pos()` passed where a `qsizetype` is
   taken narrows (`-Wconversion`), while a `static_cast<qsizetype>` is a useless cast on 64-bit Qt, where
   `qsizetype` is `qint64`: a value known to be small is cast to `int`.
+  Its GCC at `-O3` also raises `-Wmaybe-uninitialized` on `QList<std::optional<T>>::value(i)`, which copies a
+  disengaged `T()`: such an accessor returns `std::nullopt` itself for an index out of range.
 - The libFuzzer build sees includes the GCC build hides, such as a header using `QPointF` and `QTransform` without
   including them.
 - Build all targets before running the suite: the test target alone leaves out the one that copies the MCP schema, and
