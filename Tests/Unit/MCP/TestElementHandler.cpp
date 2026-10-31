@@ -7,9 +7,11 @@
 #include <QDataStream>
 #include <QDir>
 #include <QFile>
+#include <QHash>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QSizeF>
 #include <QTabWidget>
 #include <QTemporaryDir>
 #include <QTest>
@@ -379,6 +381,27 @@ void TestElementHandler::testHandleListElementsReturnsRealElements()
     QVERIFY(foundInputSwitchWithLockedAndTrigger);
     QVERIFY(foundLedWithColor);
     QVERIFY(foundBuzzerWithVolume);
+}
+
+void TestElementHandler::testHandleListElementsReportsAWirelessNodesOutline()
+{
+    // A wireless node's indicator is drawn beyond its outline, and the size reported is the outline's, a plain node's
+    MainWindow window;
+    ElementHandler handler(&window, nullptr);
+    const int plainId = createElement(handler, "Node");
+    const int wirelessId = createElement(handler, "Node", 96, 96);
+    const QJsonObject set = handler.handleCommand("set_element_properties", {{"element_id", wirelessId}, {"wireless_mode", 1}}, 1);
+    QVERIFY2(set.contains("result"), qPrintable(QJsonDocument(set).toJson()));
+
+    const QJsonObject response = handler.handleCommand("list_elements", {}, 1);
+    QVERIFY2(response.contains("result"), qPrintable(QJsonDocument(response).toJson()));
+    QHash<int, QSizeF> sizes;
+    for (const auto &value : response["result"].toObject()["elements"].toArray()) {
+        const QJsonObject element = value.toObject();
+        sizes.insert(element["element_id"].toInt(), QSizeF(element["width"].toDouble(), element["height"].toDouble()));
+    }
+    QCOMPARE(sizes.value(wirelessId), sizes.value(plainId));
+    QCOMPARE(sizes.value(wirelessId), elementById(window, wirelessId)->outlineRect().size());
 }
 
 // ============================================================================

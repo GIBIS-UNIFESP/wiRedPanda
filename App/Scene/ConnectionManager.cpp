@@ -28,7 +28,7 @@ PortHoverLabel::Side sideFor(Port *port)
         return PortHoverLabel::Side::Right; // LCOV_EXCL_LINE
     }
 
-    const QPointF delta = port->scenePos() - element->sceneBoundingRect().center();
+    const QPointF delta = port->scenePos() - element->sceneOutlineRect().center();
     if (qAbs(delta.x()) >= qAbs(delta.y())) {
         return (delta.x() < 0) ? PortHoverLabel::Side::Left : PortHoverLabel::Side::Right;
     }

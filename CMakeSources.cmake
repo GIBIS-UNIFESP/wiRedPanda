@@ -545,6 +545,7 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestThemeHandler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestConnectionManager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestConnectionValidity.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestElementOutline.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestGraphicsView.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestPropertyShortcutHandler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestScene.cpp
@@ -786,6 +787,7 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/MCP/TestThemeHandler.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestConnectionManager.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestConnectionValidity.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestElementOutline.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestGraphicsView.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestPropertyShortcutHandler.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Scene/TestScene.h

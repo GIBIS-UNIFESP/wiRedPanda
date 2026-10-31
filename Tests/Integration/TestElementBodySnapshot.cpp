@@ -438,8 +438,8 @@ QString transformText(const QTransform &t)
         .join(',');
 }
 
-/// The child items that draw with the element's body: the Node's wireless indicator and the Text's hint. The ports and
-/// the label are left out, the port-layout and label goldens pinning them, and so is a child that draws nothing.
+/// The child items that draw with the element's body, which the presenters leave none of: the ports and the label are
+/// left out, the port-layout and label goldens pinning them, and so is a child that draws nothing.
 QList<QGraphicsItem *> drawingChildren(const Element *element)
 {
     QList<QGraphicsItem *> children;
@@ -518,8 +518,8 @@ void maskText(QPainter &painter, const Element *element, const QTransform &offse
 }
 
 /// Paints \a element and its child items that draw onto \a painter, \a offset taking the scene to the image, as a
-/// view does with antialiasing on (fast mode off). A Text's children, its hint, are this platform's font, and are not
-/// painted.
+/// view does with antialiasing on (fast mode off). A Text's hint, which its body draws, is this platform's font, which
+/// maskText() covers.
 void drawBody(QPainter &painter, Element *element, const QTransform &offset)
 {
     QStyleOptionGraphicsItem option;

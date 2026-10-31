@@ -14,6 +14,7 @@
 #include <QScrollBar>
 
 #include "App/Core/SentryHelpers.h"
+#include "App/Element/Element.h"
 #include "App/Scene/Scene.h"
 
 namespace {
@@ -246,7 +247,9 @@ void GraphicsView::zoomToFit()
     const auto selected = scene()->selectedItems();
     if (!selected.isEmpty()) {
         for (auto *item : selected) {
-            target |= item->sceneBoundingRect();
+            // An element's outline, without what its body draws beyond it (a wireless node's indicator)
+            auto *element = qgraphicsitem_cast<Element *>(item);
+            target |= element ? element->sceneOutlineRect() : item->sceneBoundingRect();
         }
     } else if (auto *scene_ = qobject_cast<Scene *>(scene())) {
         target = scene_->cachedCircuitBoundingRect();

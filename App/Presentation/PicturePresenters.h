@@ -19,16 +19,16 @@ class PicturePresenter : public ElementPresenter
 public:
     BodyShape measure(const Element &element) const override;
 
-    /// Draws the picture \a element shows, then what its type draws over it (paintOverlay()).
+    /// Draws the picture \a element shows, then what its type draws over it and beyond (paintOverlay()).
     void paintBody(QPainter &painter, const Element &element, const BodyContext &context) const override;
 
     /// Returns the rectangle the picture \a element shows takes, at the origin; empty while it shows none.
     static QRectF pictureRect(const Element &element);
 
 protected:
-    /// Draws over \a element's picture what its type shows of its state, in the element's own coordinates; nothing by
-    /// default.
-    virtual void paintOverlay(QPainter &painter, const Element &element) const;
+    /// Draws over \a element's picture, and beyond it, what its type shows of its state, in the element's own
+    /// coordinates and \a context's theme; nothing by default.
+    virtual void paintOverlay(QPainter &painter, const Element &element, const BodyContext &context) const;
 };
 
 /// The presenter of the inputs that show their level (InputButton, InputSwitch, Clock): off, then on.
@@ -56,7 +56,21 @@ public:
 class RotaryPresenter final : public PicturePresenter
 {
 protected:
-    void paintOverlay(QPainter &painter, const Element &element) const override;
+    void paintOverlay(QPainter &painter, const Element &element, const BodyContext &context) const override;
+};
+
+/**
+ * \brief The presenter of Node: its picture and, while it is wireless, the indicator over the port the channel
+ * replaces, in the colour of the level it carries (ParamId::Carried).
+ * \details The indicator is the body's decoration (BodyShape::decoration): it is neither selected, hit nor aligned.
+ */
+class NodePresenter final : public PicturePresenter
+{
+public:
+    BodyShape measure(const Element &element) const override;
+
+protected:
+    void paintOverlay(QPainter &painter, const Element &element, const BodyContext &context) const override;
 };
 
 /**
@@ -74,16 +88,22 @@ public:
     BodyShape measure(const Element &element) const override;
 
 protected:
-    void paintOverlay(QPainter &painter, const Element &element) const override;
+    void paintOverlay(QPainter &painter, const Element &element, const BodyContext &context) const override;
 
 private:
     QVector<int> m_segments;
 };
 
-/// The presenter of Text: the body holds its picture and its child items (the label and the empty-text hint), so a
-/// click on the text hits the element; it turns about its picture's centre.
+/**
+ * \brief The presenter of Text: its picture and, while its label is empty, a faint hint to add text in its place.
+ * \details The body holds the picture, the label and the hint's place, whether the hint shows or not, so a click on
+ * the text hits the element; it turns about the picture's centre.
+ */
 class TextPresenter final : public PicturePresenter
 {
 public:
     BodyShape measure(const Element &element) const override;
+
+protected:
+    void paintOverlay(QPainter &painter, const Element &element, const BodyContext &context) const override;
 };

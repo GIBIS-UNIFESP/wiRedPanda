@@ -33,6 +33,7 @@ private slots:
 
     void testHandleListElementsRejectsNoScene();
     void testHandleListElementsReturnsRealElements();
+    void testHandleListElementsReportsAWirelessNodesOutline();
 
     void testHandleMoveElementRejectsMissingParams();
     void testHandleMoveElementRejectsInvalidCoordinates();

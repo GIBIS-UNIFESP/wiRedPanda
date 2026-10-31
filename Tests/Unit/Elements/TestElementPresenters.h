@@ -14,4 +14,5 @@ private slots:
     void testEveryTypeHasAPresenter();
     void testAnElementsBodyIsItsPresentersMeasure();
     void testBuildingAnElementMeasuresItsBodyOnce();
+    void testTextDrawsItsHintAsASimpleTextItemDid();
 };

@@ -212,7 +212,7 @@ QJsonObject ICHandler::handleInstantiateIC(const QJsonObject &params, const QJso
         icPtr->setPos(x, y);
         icPtr->setLabel(label);
 
-        const QRectF bounds = icPtr->boundingRect();
+        const QRectF bounds = icPtr->outlineRect();
 
         QJsonObject result;
         result["element_id"] = icPtr->id();

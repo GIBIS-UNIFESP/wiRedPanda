@@ -5,7 +5,10 @@
 
 #include <memory>
 
+#include <QCoreApplication>
 #include <QDataStream>
+#include <QGraphicsScene>
+#include <QSignalSpy>
 #include <QTest>
 
 #include "App/Element/Element.h"
@@ -499,7 +502,7 @@ void TestWirelessNode::testSaveLoadTxPortVisibility()
 
 void TestWirelessNode::testWirelessIndicatorHandlesBusConflictError()
 {
-    // updateWirelessColor()'s Status::Error case is only reachable via a genuine
+    // The indicator's Status::Error colour is only reachable via a genuine
     // multi-driver bus conflict (two real Connections into the same input port) --
     // ElementSimState::updateInputs() only produces Error that way, never through
     // the connectPredecessor() shortcut other tests use.
@@ -509,7 +512,7 @@ void TestWirelessNode::testWirelessIndicatorHandlesBusConflictError()
 
     auto *node = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
     QVERIFY(node != nullptr);
-    node->setWirelessMode(WirelessMode::Tx); // creates m_wirelessIndicator
+    node->setWirelessMode(WirelessMode::Tx); // the presenter draws the indicator
 
     InputVcc vcc;
     InputGnd gnd;
@@ -524,6 +527,32 @@ void TestWirelessNode::testWirelessIndicatorHandlesBusConflictError()
     sim->update();
 
     QCOMPARE(node->outputPort()->status(), Status::Error);
+    QCOMPARE(node->param<int>(ParamId::Carried), static_cast<int>(Status::Error));
+}
+
+void TestWirelessNode::testANewLevelCarriedRepaintsTheNode()
+{
+    // The presenter draws the indicator in the colour of the level the node carries, so a new level repaints it
+    QGraphicsScene scene;
+    auto *node = new Node; // the scene takes ownership
+    scene.addItem(node);
+    node->setWirelessMode(WirelessMode::Tx);
+    InputVcc source;
+    source.initSimulationVectors(0, 1);
+    node->initSimulationVectors(1, 1);
+    node->connectPredecessor(0, &source, 0);
+    QCoreApplication::processEvents();
+
+    QSignalSpy repainted(&scene, &QGraphicsScene::changed);
+    for (const Status level : {Status::Active, Status::Inactive}) {
+        repainted.clear();
+        source.setOutputValue(level);
+        node->updateLogic();
+        QCOMPARE(node->param<int>(ParamId::Carried), static_cast<int>(level));
+        QCoreApplication::processEvents();
+        QVERIFY2(!repainted.isEmpty(), "the node was not repainted");
+    }
+    node->connectPredecessor(0, nullptr, 0);
 }
 
 void TestWirelessNode::testRxInputStaysOptionalThroughEditUndoRedo()

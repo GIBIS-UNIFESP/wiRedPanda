@@ -75,6 +75,7 @@ QString name(const ParamId id)
     case ParamId::Table:     return QStringLiteral("Table");
     case ParamId::Playing:   return QStringLiteral("Playing");
     case ParamId::Lit:       return QStringLiteral("Lit");
+    case ParamId::Carried:   return QStringLiteral("Carried");
     }
     return {};
 }
@@ -151,7 +152,7 @@ void TestParameters::testEachTypeHasTheParametersOfItsSchema_data()
         {ElementType::InputSwitch, {"On false isOn", "Locked false locked"}},
         {ElementType::InputRotary, {"Position 0 currentPort", "Locked false locked"}},
         {ElementType::Clock, {"On false -", "Locked false locked", "Frequency 1 frequency", "Delay 0 delay"}},
-        {ElementType::Node, {"Wireless 0 wirelessMode"}},
+        {ElementType::Node, {"Wireless 0 wirelessMode", "Carried -1 -"}},
         {ElementType::Led, {"Colour \"White\" color", "Lit 0 -"}},
         {ElementType::Display7, {"Colour \"Red\" color"}},
         {ElementType::Display14, {"Colour \"Red\" color"}},

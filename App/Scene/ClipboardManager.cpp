@@ -248,7 +248,7 @@ DragPreview::Picture ClipboardManager::selectionDragPicture(const QPointF &mouse
     QRectF rect;
 
     for (auto *element : selectedElements) {
-        rect = rect.united(element->sceneBoundingRect());
+        rect = rect.united(element->sceneOutlineRect());
     }
 
     // 8px padding avoids clipping port handles at the bounding-rect edges

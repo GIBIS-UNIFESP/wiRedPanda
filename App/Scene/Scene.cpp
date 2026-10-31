@@ -1194,15 +1194,15 @@ void Scene::alignLeft()
         return;
     }
 
-    qreal target = elements_.constFirst()->sceneBoundingRect().left();
+    qreal target = elements_.constFirst()->sceneOutlineRect().left();
     for (auto *elm : elements_) {
-        target = std::min(target, elm->sceneBoundingRect().left());
+        target = std::min(target, elm->sceneOutlineRect().left());
     }
 
     QList<QPointF> newPositions;
     newPositions.reserve(elements_.size());
     for (auto *elm : elements_) {
-        const qreal delta = target - elm->sceneBoundingRect().left();
+        const qreal delta = target - elm->sceneOutlineRect().left();
         newPositions.append(elm->pos() + QPointF(delta, 0));
     }
 
@@ -1216,15 +1216,15 @@ void Scene::alignRight()
         return;
     }
 
-    qreal target = elements_.constFirst()->sceneBoundingRect().right();
+    qreal target = elements_.constFirst()->sceneOutlineRect().right();
     for (auto *elm : elements_) {
-        target = std::max(target, elm->sceneBoundingRect().right());
+        target = std::max(target, elm->sceneOutlineRect().right());
     }
 
     QList<QPointF> newPositions;
     newPositions.reserve(elements_.size());
     for (auto *elm : elements_) {
-        const qreal delta = target - elm->sceneBoundingRect().right();
+        const qreal delta = target - elm->sceneOutlineRect().right();
         newPositions.append(elm->pos() + QPointF(delta, 0));
     }
 
@@ -1238,15 +1238,15 @@ void Scene::alignTop()
         return;
     }
 
-    qreal target = elements_.constFirst()->sceneBoundingRect().top();
+    qreal target = elements_.constFirst()->sceneOutlineRect().top();
     for (auto *elm : elements_) {
-        target = std::min(target, elm->sceneBoundingRect().top());
+        target = std::min(target, elm->sceneOutlineRect().top());
     }
 
     QList<QPointF> newPositions;
     newPositions.reserve(elements_.size());
     for (auto *elm : elements_) {
-        const qreal delta = target - elm->sceneBoundingRect().top();
+        const qreal delta = target - elm->sceneOutlineRect().top();
         newPositions.append(elm->pos() + QPointF(0, delta));
     }
 
@@ -1260,15 +1260,15 @@ void Scene::alignBottom()
         return;
     }
 
-    qreal target = elements_.constFirst()->sceneBoundingRect().bottom();
+    qreal target = elements_.constFirst()->sceneOutlineRect().bottom();
     for (auto *elm : elements_) {
-        target = std::max(target, elm->sceneBoundingRect().bottom());
+        target = std::max(target, elm->sceneOutlineRect().bottom());
     }
 
     QList<QPointF> newPositions;
     newPositions.reserve(elements_.size());
     for (auto *elm : elements_) {
-        const qreal delta = target - elm->sceneBoundingRect().bottom();
+        const qreal delta = target - elm->sceneOutlineRect().bottom();
         newPositions.append(elm->pos() + QPointF(0, delta));
     }
 
@@ -1284,14 +1284,14 @@ void Scene::alignHorizontalCenter()
 
     qreal sum = 0;
     for (auto *elm : elements_) {
-        sum += elm->sceneBoundingRect().center().x();
+        sum += elm->sceneOutlineRect().center().x();
     }
     const qreal target = sum / static_cast<qreal>(elements_.size());
 
     QList<QPointF> newPositions;
     newPositions.reserve(elements_.size());
     for (auto *elm : elements_) {
-        const qreal delta = target - elm->sceneBoundingRect().center().x();
+        const qreal delta = target - elm->sceneOutlineRect().center().x();
         newPositions.append(elm->pos() + QPointF(delta, 0));
     }
 
@@ -1307,14 +1307,14 @@ void Scene::alignVerticalCenter()
 
     qreal sum = 0;
     for (auto *elm : elements_) {
-        sum += elm->sceneBoundingRect().center().y();
+        sum += elm->sceneOutlineRect().center().y();
     }
     const qreal target = sum / static_cast<qreal>(elements_.size());
 
     QList<QPointF> newPositions;
     newPositions.reserve(elements_.size());
     for (auto *elm : elements_) {
-        const qreal delta = target - elm->sceneBoundingRect().center().y();
+        const qreal delta = target - elm->sceneOutlineRect().center().y();
         newPositions.append(elm->pos() + QPointF(0, delta));
     }
 
@@ -1330,15 +1330,15 @@ void Scene::distributeHorizontally()
 
     // Stable, so elements sharing a left edge keep the selection's id order
     std::stable_sort(elements_.begin(), elements_.end(), [](Element *a, Element *b) {
-        return a->sceneBoundingRect().left() < b->sceneBoundingRect().left();
+        return a->sceneOutlineRect().left() < b->sceneOutlineRect().left();
     });
 
-    const qreal spanStart = elements_.constFirst()->sceneBoundingRect().left();
-    const qreal spanEnd = elements_.constLast()->sceneBoundingRect().right();
+    const qreal spanStart = elements_.constFirst()->sceneOutlineRect().left();
+    const qreal spanEnd = elements_.constLast()->sceneOutlineRect().right();
 
     qreal totalWidth = 0;
     for (auto *elm : elements_) {
-        totalWidth += elm->sceneBoundingRect().width();
+        totalWidth += elm->sceneOutlineRect().width();
     }
     const qreal gap = (spanEnd - spanStart - totalWidth) / static_cast<qreal>(elements_.size() - 1);
 
@@ -1346,12 +1346,12 @@ void Scene::distributeHorizontally()
     newPositions.reserve(elements_.size());
     newPositions.append(elements_.constFirst()->pos()); // leftmost stays fixed as an anchor
 
-    qreal cursor = elements_.constFirst()->sceneBoundingRect().right() + gap;
+    qreal cursor = elements_.constFirst()->sceneOutlineRect().right() + gap;
     for (int i = 1; i < elements_.size() - 1; ++i) {
         auto *elm = elements_.at(i);
-        const qreal delta = cursor - elm->sceneBoundingRect().left();
+        const qreal delta = cursor - elm->sceneOutlineRect().left();
         newPositions.append(elm->pos() + QPointF(delta, 0));
-        cursor += elm->sceneBoundingRect().width() + gap;
+        cursor += elm->sceneOutlineRect().width() + gap;
     }
 
     newPositions.append(elements_.constLast()->pos()); // rightmost stays fixed as an anchor
@@ -1368,15 +1368,15 @@ void Scene::distributeVertically()
 
     // Stable, so elements sharing a top edge keep the selection's id order
     std::stable_sort(elements_.begin(), elements_.end(), [](Element *a, Element *b) {
-        return a->sceneBoundingRect().top() < b->sceneBoundingRect().top();
+        return a->sceneOutlineRect().top() < b->sceneOutlineRect().top();
     });
 
-    const qreal spanStart = elements_.constFirst()->sceneBoundingRect().top();
-    const qreal spanEnd = elements_.constLast()->sceneBoundingRect().bottom();
+    const qreal spanStart = elements_.constFirst()->sceneOutlineRect().top();
+    const qreal spanEnd = elements_.constLast()->sceneOutlineRect().bottom();
 
     qreal totalHeight = 0;
     for (auto *elm : elements_) {
-        totalHeight += elm->sceneBoundingRect().height();
+        totalHeight += elm->sceneOutlineRect().height();
     }
     const qreal gap = (spanEnd - spanStart - totalHeight) / static_cast<qreal>(elements_.size() - 1);
 
@@ -1384,12 +1384,12 @@ void Scene::distributeVertically()
     newPositions.reserve(elements_.size());
     newPositions.append(elements_.constFirst()->pos()); // topmost stays fixed as an anchor
 
-    qreal cursor = elements_.constFirst()->sceneBoundingRect().bottom() + gap;
+    qreal cursor = elements_.constFirst()->sceneOutlineRect().bottom() + gap;
     for (int i = 1; i < elements_.size() - 1; ++i) {
         auto *elm = elements_.at(i);
-        const qreal delta = cursor - elm->sceneBoundingRect().top();
+        const qreal delta = cursor - elm->sceneOutlineRect().top();
         newPositions.append(elm->pos() + QPointF(0, delta));
-        cursor += elm->sceneBoundingRect().height() + gap;
+        cursor += elm->sceneOutlineRect().height() + gap;
     }
 
     newPositions.append(elements_.constLast()->pos()); // bottommost stays fixed as an anchor

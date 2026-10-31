@@ -37,8 +37,9 @@ private slots:
     void testSaveLoadRxPortVisibility();
     void testSaveLoadTxPortVisibility();
 
-    // updateWirelessColor()'s Status::Error case
+    // The level the indicator shows: a bus conflict's Error, and a repaint for each new level
     void testWirelessIndicatorHandlesBusConflictError();
+    void testANewLevelCarriedRepaintsTheNode();
 
     // An edit's update of a live Rx node leaves the requirement its mode set
     void testRxInputStaysOptionalThroughEditUndoRedo();
