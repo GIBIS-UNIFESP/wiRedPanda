@@ -378,6 +378,26 @@ qsizetype Scene::elementCount() const
 
 const QVector<Element *> Scene::unsortedElements() const
 {
+    // Elements stack in the order of their ids (restack()), so the registry's id order is the order items() gives them,
+    // bottom first, without sorting every item of the scene, ports and wires included, by its stacking
+    const auto registered = m_itemRegistry.elementsInIdOrder();
+    if (!registered) {
+        return elementsByStacking();
+    }
+    QVector<Element *> elements_;
+    elements_.reserve(registered->size());
+    for (auto *item : *registered) {
+        elements_.append(dynamic_cast<Element *>(item));
+    }
+
+    // A debug build checks the order against the scene's on every call; a release build does not, since the walk is
+    // what the registry's order exists to avoid
+    Q_ASSERT(elements_ == elementsByStacking());
+    return elements_;
+}
+
+QVector<Element *> Scene::elementsByStacking() const
+{
     const auto items_ = items();
     QVector<Element *> elements_;
     elements_.reserve(items_.size());
@@ -388,8 +408,7 @@ const QVector<Element *> Scene::unsortedElements() const
         }
     }
 
-    // elementCount() is kept by the registry, so a debug build checks that the two agree on every walk; a release
-    // build does not, since the walk is what elementCount() exists to avoid.
+    // elementCount() is kept by the registry, so a debug build checks that the two agree on every walk
     Q_ASSERT(m_itemRegistry.elementCount() == elements_.size());
     return elements_;
 }

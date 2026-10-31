@@ -40,6 +40,19 @@ qsizetype SceneItemRegistry::elementCount() const
     return m_countedElements.size();
 }
 
+std::optional<QVector<ItemWithId *>> SceneItemRegistry::elementsInIdOrder() const
+{
+    if (m_elementsInIdOrder.size() != static_cast<std::size_t>(m_countedElements.size())) {
+        return std::nullopt;
+    }
+    QVector<ItemWithId *> elements;
+    elements.reserve(m_countedElements.size());
+    for (const auto &entry : m_elementsInIdOrder) {
+        elements.append(entry.second);
+    }
+    return elements;
+}
+
 int SceneItemRegistry::lastId() const
 {
     return m_lastId;

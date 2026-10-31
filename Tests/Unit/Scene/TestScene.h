@@ -210,4 +210,6 @@ private slots:
     void testHelpEventOverASegmentPortNamesItInTheCurrentLanguage();
     void testElementCountAgreesAfterEveryMutation();
     void testElementCountKeepsAForgottenElement();
+    void testUnsortedElementsFollowTheStacking();
+    void testUnsortedElementsSkipTheStackingSort();
 };

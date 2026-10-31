@@ -3949,6 +3949,113 @@ void TestScene::testElementCountAgreesAfterEveryMutation()
     QCOMPARE(loaded.scene()->elementCount(), elements.size());
 }
 
+void TestScene::testUnsortedElementsFollowTheStacking()
+{
+    // unsortedElements() gives the elements in the order the scene stacks them, bottom first, from the registry's id
+    // order: after each path that adds, removes or re-identifies an element, it equals a walk of the scene's items
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    const auto agrees = [scene] {
+        QVector<Element *> walked;
+        const auto items = scene->items();
+        for (auto *item : items) {
+            if (auto *elm = qgraphicsitem_cast<Element *>(item)) {
+                walked.append(elm);
+            }
+        }
+        return scene->unsortedElements() == walked;
+    };
+
+    auto *sw = new InputSwitch();
+    auto *led = new Led();
+    auto *gate = new And();
+    scene->addItem(sw);
+    scene->addItem(led);
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{gate}, scene));
+    QVERIFY2(agrees(), "after adding three elements");
+
+    // An element given back a smaller id stacks below those with larger ones
+    QVERIFY(led->id() < gate->id());
+    scene->removeItem(led);
+    auto *early = new Not();
+    scene->updateItemId(early, led->id());
+    delete led;
+    scene->addItem(early);
+    QVERIFY2(agrees(), "after adding an element with an id smaller than the scene's largest");
+
+    gate->setSelected(true);
+    scene->deleteAction();
+    QVERIFY2(agrees(), "after deleting the gate");
+    scene->undoStack()->undo();
+    QVERIFY2(agrees(), "after undoing the delete");
+    scene->undoStack()->redo();
+    QVERIFY2(agrees(), "after redoing the delete");
+    scene->undoStack()->undo();
+
+    scene->clearSelection();
+    sw->setSelected(true);
+    scene->cutAction();
+    scene->pasteAction();
+    QVERIFY2(agrees(), "after cut and paste");
+    scene->selectAll();
+    scene->duplicateAction();
+    QVERIFY2(agrees(), "after duplicate");
+
+    auto *destroyed = new Led();
+    scene->addItem(destroyed);
+    delete destroyed;
+    QVERIFY2(agrees(), "after destroying an element still in the scene");
+
+    // An element whose id is forgotten has no place in the id order: the scene's own walk gives the order
+    scene->forgetItemId(early->id());
+    QVERIFY2(agrees(), "after forgetting an element's id");
+
+    WorkSpace loaded;
+    loaded.load(TestUtils::examplesDir() + "nested.panda");
+    const auto walked = loaded.scene()->items();
+    QVector<Element *> loadedWalk;
+    for (auto *item : walked) {
+        if (auto *elm = qgraphicsitem_cast<Element *>(item)) {
+            loadedWalk.append(elm);
+        }
+    }
+    QCOMPARE(loaded.scene()->unsortedElements(), loadedWalk);
+}
+
+void TestScene::testUnsortedElementsSkipTheStackingSort()
+{
+    // The registry gives the elements without sorting every item, each port among them, by its stacking: its order
+    // costs a fraction of the scene's own walk, the best of nine runs of each. A debug build walks on every call too,
+    // to check the order (unsortedElements()).
+#ifndef QT_NO_DEBUG
+    QSKIP("A debug build checks the registry's order against the walk on every call");
+#endif
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    for (int i = 0; i < 2000; ++i) {
+        auto *gate = new And();
+        gate->setInputSize(8);
+        gate->setPos((i % 50) * 64, (i / 50) * 64);
+        scene->addItem(gate);
+    }
+    qint64 registry = std::numeric_limits<qint64>::max();
+    qint64 walk = std::numeric_limits<qint64>::max();
+    qsizetype found = 0;
+    for (int run = 0; run < 9; ++run) {
+        TestUtils::ThreadCpuTimer timer;
+        timer.start();
+        found += scene->unsortedElements().size();
+        registry = std::min(registry, timer.elapsed());
+        timer.start();
+        found += scene->items().size();
+        walk = std::min(walk, timer.elapsed());
+    }
+    QVERIFY(found > 0);
+    const double ratio = double(walk) / double(std::max<qint64>(registry, 1));
+    qInfo("the scene's walk takes %.1f times the registry's order", ratio);
+    QVERIFY2(ratio > 5, qPrintable(QString::number(ratio)));
+}
+
 void TestScene::testElementCountKeepsAForgottenElement()
 {
     // Forgetting an element's id leaves the element in the scene, so it stays in the count; destroying it afterwards

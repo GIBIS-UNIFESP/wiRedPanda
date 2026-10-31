@@ -8,9 +8,11 @@
 #pragma once
 
 #include <map>
+#include <optional>
 
 #include <QHash>
 #include <QSet>
+#include <QVector>
 
 class ItemWithId;
 
@@ -48,6 +50,9 @@ public:
     /// Returns how many registered items are elements: the scene's element count, kept as
     /// items are registered, unregistered and destroyed.
     [[nodiscard]] qsizetype elementCount() const;
+    /// Returns the registered elements in id order; nothing if one counted by elementCount() has no id on file: its id
+    /// forgotten, or another registered under it.
+    [[nodiscard]] std::optional<QVector<ItemWithId *>> elementsInIdOrder() const;
 
     /// Returns the highest id assigned so far.
     int lastId() const;
