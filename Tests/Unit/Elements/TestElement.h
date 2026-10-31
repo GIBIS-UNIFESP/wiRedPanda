@@ -30,6 +30,7 @@ private slots:
     void testTextEmptyStateHintTogglesWithLabelContent();
     void testTextEmptyStateHintFollowsALanguageChange();
     void testLabelFontIsAFamilyThePlatformHas();
+    void testALabelIsLaidOutInAScene();
     void testBundledPicturesDrawTheirTextAsOutlines();
 
     // sceneEvent()'s Ctrl+click swallow (called directly -- see the friend declaration on

@@ -877,6 +877,11 @@ private:
     /// upright and unmirrored at any orientation. Called whenever the shape or the orientation changes.
     void placeLabel();
 
+    /// Gives the label child item the text the label shows, in the labels' font. Laying the text out is most of what
+    /// an element out of a scene would spend on its label, such as each element inside an IC, which is never drawn: so
+    /// an element in no scene skips it unless \a outOfScene, and is given it as it enters one.
+    void showLabelText(bool outOfScene = false) const;
+
     // --- Members: Element Type & Identity ---
 
     ElementGroup m_elementGroup = ElementGroup::Unknown;
@@ -900,6 +905,8 @@ private:
 
     QKeySequence m_trigger;
     QString m_labelText;
+    /// The text the label shows (labelShown()); the label child item is given it in a scene, where it can be drawn
+    QString m_labelShownText;
 
     // --- Members: Display State ---
 

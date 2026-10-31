@@ -13,6 +13,7 @@
 #include <QFontDatabase>
 #include <QFontInfo>
 #include <QGraphicsProxyWidget>
+#include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsSimpleTextItem>
 #include <QLineEdit>
@@ -32,7 +33,9 @@
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Line.h"
 #include "App/Element/GraphicElements/Text.h"
+#include "App/Element/LabelMeasure.h"
 #include "App/IO/SerializationContext.h"
+#include "App/Presentation/LabelMetrics.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/Wiring/Connection.h"
@@ -305,6 +308,9 @@ void TestElement::testLabelFontIsAFamilyThePlatformHas()
     // A label asks for a family the platform has under that name: one it lacks is matched through Qt's table of family
     // aliases, which Qt builds on first use (costly on macOS, where "Sans Serif" is no family)
     And gate;
+    QGraphicsScene scene;
+    scene.addItem(&gate);
+    const auto leaveScene = qScopeGuard([&] { scene.removeItem(&gate); });
     gate.setLabel("label");
     QFont font;
     for (auto *child : gate.childItems()) {
@@ -315,6 +321,40 @@ void TestElement::testLabelFontIsAFamilyThePlatformHas()
     QVERIFY2(QFontDatabase::families().contains(font.family()), qPrintable(font.family()));
     QCOMPARE(QFontInfo(font).family(), font.family());
     QVERIFY(font.bold());
+}
+
+void TestElement::testALabelIsLaidOutInAScene()
+{
+    // An element in no scene is never drawn (each element inside an IC): its label item is given the text, and lays it
+    // out, as the element enters a scene; what the label shows holds throughout
+    const std::unique_ptr<Element> button(ElementFactory::buildElement(ElementType::InputButton));
+    button->setTrigger(QKeySequence("A"));
+    button->setLabel("label");
+    QCOMPARE(button->labelShown(), QString("label (A)"));
+    const QGraphicsSimpleTextItem *item = nullptr;
+    for (auto *child : button->childItems()) {
+        if (auto *text = qgraphicsitem_cast<QGraphicsSimpleTextItem *>(child)) {
+            item = text;
+        }
+    }
+    QVERIFY(item);
+    QVERIFY(item->text().isEmpty());
+
+    QGraphicsScene scene;
+    scene.addItem(button.get());
+    const auto leaveScene = qScopeGuard([&] { scene.removeItem(button.get()); });
+    QCOMPARE(item->text(), QString("label (A)"));
+    QCOMPARE(item->font(), LabelMeasure::installed().font());
+    button->setLabel("other");
+    QCOMPARE(item->text(), QString("other (A)"));
+
+    // Out of a scene again, the item keeps the text it was last given until asked where it is drawn
+    scene.removeItem(button.get());
+    button->setLabel("third");
+    QCOMPARE(item->text(), QString("other (A)"));
+    QCOMPARE(button->labelSceneBoundingRect().size(), LabelMetrics::size("third (A)"));
+    QCOMPARE(item->text(), QString("third (A)"));
+    scene.addItem(button.get());
 }
 
 void TestElement::testBundledPicturesDrawTheirTextAsOutlines()

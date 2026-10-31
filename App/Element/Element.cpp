@@ -51,8 +51,7 @@ Element::Element(ElementType type, QGraphicsItem *parent)
 
     qCDebug(four) << "Setting attributes.";
     m_label->setVisible(descriptor.hasLabel);
-    // Font is applied lazily in updateLabel() to avoid expensive text layout
-    // passes for elements that never display a label (e.g. IC sub-elements).
+    // The font comes with the label's first text, in a scene (showLabelText())
     m_label->setParentItem(this);
     m_label->setBrush(Qt::black);
     // Where the label goes is measured with the body (flushChanges())
@@ -517,6 +516,7 @@ QVariant Element::itemChange(QGraphicsItem::GraphicsItemChange change, const QVa
         m_boundsLatched = (scene() != nullptr);
         if (m_boundsLatched) {
             m_bounds = measureBoundingRect();
+            showLabelText();
         }
     }
 
@@ -602,14 +602,23 @@ void Element::updateLabel()
         label += QString("(%1)").arg(trigger().toString());
     }
 
-    // Apply the shared font on first use — deferred from the constructor to
-    // avoid an expensive QTextDocumentLayout pass for elements that never show a label.
-    if (!label.isEmpty() && m_label->font() != LabelMeasure::installed().font()) {
+    m_labelShownText = label;
+    showLabelText();
+    changed(ElementChange::Label);
+}
+
+void Element::showLabelText(const bool outOfScene) const
+{
+    if (!outOfScene && !scene()) {
+        return;
+    }
+    // The font is given with the first text, which spares laying out an element's empty label
+    if (!m_labelShownText.isEmpty() && m_label->font() != LabelMeasure::installed().font()) {
         m_label->setFont(LabelMeasure::installed().font());
     }
-
-    m_label->setText(label);
-    changed(ElementChange::Label);
+    if (m_label->text() != m_labelShownText) {
+        m_label->setText(m_labelShownText);
+    }
 }
 
 void Element::placeLabel()
@@ -672,12 +681,13 @@ QString Element::label() const
 
 QRectF Element::labelSceneBoundingRect() const
 {
+    showLabelText(true);
     return m_label->sceneBoundingRect();
 }
 
 QString Element::labelShown() const
 {
-    return m_label->text();
+    return m_labelShownText;
 }
 
 QRectF Element::labelBoundingRect() const
