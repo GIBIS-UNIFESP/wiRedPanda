@@ -62,13 +62,6 @@ public:
     /// The outputs, named S0, S1, ...
     std::optional<PortAttributes> outputAttributes(int index) const override;
 
-    // --- Serialization ---
-
-    /// \reimp
-    void load(QDataStream &stream, SerializationContext &context) override;
-    /// \reimp
-    void save(QDataStream &stream, SerializationOptions options) const override;
-
 private:
     // --- Internal methods ---
 

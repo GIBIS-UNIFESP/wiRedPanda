@@ -11,7 +11,6 @@
 #include <QSvgRenderer>
 #include <QThread>
 
-#include "App/Core/Common.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 #include "App/IO/Serialization.h"
@@ -71,6 +70,30 @@ struct ElementInfo<Display7> {
             .defaultValue = QString(Display7::kDefaultColor),
             .key = "color",
         }};
+        descriptor.readBeforeMap = [](Element &element, QDataStream &stream, const SerializationContext &context) {
+            // The inputs were in another order before 1.6 (VersionInfo::hasDisplay7Color()) and again before 1.7
+            // (hasDisplay7ExtColor()): order[i] is where a file's input i is now
+            const auto reorder = [&element](const QVector<int> &order) {
+                QVector<InputPort *> ports = element.inputs();
+                if (ports.size() == order.size()) {
+                    for (int i = 0; i < ports.size(); ++i) {
+                        ports[order[i]] = element.inputs().value(i);
+                    }
+                    element.setInputs(ports);
+                    element.updatePortsProperties();
+                }
+            };
+            if (!VersionInfo::hasDisplay7Color(context.version)) {
+                reorder({2, 1, 4, 5, 0, 7, 3, 6});
+            }
+            if (!VersionInfo::hasDisplay7ExtColor(context.version)) {
+                reorder({2, 5, 4, 0, 7, 3, 6, 1});
+            }
+            // From 3.1 to 4.0 the colour was a bare string
+            if (VersionInfo::hasLockState(context.version)) {
+                element.setParam(ParamId::Colour, Serialization::readBoundedString(stream));
+            }
+        };
         return descriptor;
     } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
 
@@ -189,79 +212,5 @@ void Display7::parameterChanged(const ParamId id, const ParamValue &previous)
     Element::parameterChanged(id, previous);
     if (id == ParamId::Colour) {
         m_colorNumber = colorNameToIndex(color());
-    }
-}
-
-void Display7::save(QDataStream &stream, SerializationOptions options) const
-{
-    Element::save(stream, options);
-
-    QMap<QString, QVariant> map;
-    // PortableFile streams omit the default; fresh-loaded elements start there
-    // anyway. Snapshots write unconditionally (reloaded into live elements).
-    if (options.purpose != SerializationPurpose::PortableFile || color() != kDefaultColor) {
-        map.insert("color", color());
-    }
-
-    stream << map;
-}
-
-void Display7::load(QDataStream &stream, SerializationContext &context)
-{
-    Element::load(stream, context);
-    /*
-     * 0, 7, 2, 1, 3, 4, 5, 6
-     * 7, 5, 4, 2, 1, 4, 6, 3, 0
-     * 4, 5, 7, 3, 2, 1, 0, 6
-     * 2, 1, 4, 5, 0, 7, 3, 6
-     */
-
-    if (!VersionInfo::hasDisplay7Color(context.version)) {
-        // The pin-to-segment mapping changed at v1.6. The permutation
-        // order[i] = j means "the port that was at index i in the old file
-        // should now live at index j in the canonical layout."
-        // Permutation: old[0]→new[2], old[1]→new[1], old[2]→new[4], etc.
-        qCDebug(zero) << "Remapping inputs.";
-        QVector<int> order{2, 1, 4, 5, 0, 7, 3, 6};
-        QVector<InputPort *> aux = inputs();
-
-        if (aux.size() == order.size()) {
-            for (int i = 0; i < aux.size(); ++i) {
-                aux[order[i]] = inputs().value(i);
-            }
-            setInputs(aux);
-            updatePortsProperties();
-        }
-    }
-
-    if (!VersionInfo::hasDisplay7ExtColor(context.version)) {
-        // A second pin-order change occurred at v1.7, requiring another permutation
-        // applied on top of whatever v1.6 remapping already happened.
-        qCDebug(zero) << "Remapping inputs.";
-        QVector<int> order{2, 5, 4, 0, 7, 3, 6, 1};
-        QVector<InputPort *> aux = inputs();
-
-        if (aux.size() == order.size()) {
-            for (int i = 0; i < aux.size(); ++i) {
-                aux[order[i]] = inputs().value(i);
-            }
-            setInputs(aux);
-            updatePortsProperties();
-        }
-    }
-
-    if ((VersionInfo::hasLockState(context.version)) && (!VersionInfo::hasQMapFormat(context.version))) {
-        // v3.1–4.0 stored color as a bare QString
-        const QString color_ = Serialization::readBoundedString(stream);
-        setColor(color_);
-    }
-
-    if (VersionInfo::hasQMapFormat(context.version)) {
-        // v4.1+ uses a key-value map
-        QMap<QString, QVariant> map = Serialization::readBoundedMetadata(stream);
-
-        if (map.contains("color")) {
-            setColor(map.value("color").toString());
-        }
     }
 }

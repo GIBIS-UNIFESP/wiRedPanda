@@ -12,9 +12,14 @@
 #include <QMap>
 #include <QString>
 #include <QStringList>
+#include <QVariant>
+#include <QVersionNumber>
 
 #include "App/Core/Enums.h"
 #include "App/Element/Parameters.h"
+
+class QDataStream;
+struct SerializationContext;
 
 /**
  * \struct ElementTypeDescriptor
@@ -47,6 +52,23 @@ struct ElementTypeDescriptor {
     // --- Parameters ---
 
     QList<ParamSpec> parameters; ///< The type's parameters (its schema), each element holding a value of each.
+
+    // --- Older files ---
+
+    /// The version from which a file holds the type's keyed parameters as a map after the common part, 4.1
+    /// (VersionInfo::hasQMapFormat()) unless the type's map came later; an older one holds what readBeforeMap reads, or
+    /// nothing. A literal, not Versions', which descriptors built at static initialization cannot rely on.
+    QVersionNumber mapSince{4, 1};
+
+    /// Reads what a file older than mapSince holds in place of the map (bare values, Display7's input permutations).
+    std::function<void(Element &element, QDataStream &stream, const SerializationContext &context)> readBeforeMap{};
+
+    /// Reads the keys an older map holds in place of a parameter's (the buzzer's note name).
+    std::function<void(Element &element, const QMap<QString, QVariant> &map)> readOlderKeys{};
+
+    /// Applied at the end of every load of the type's parameters, whatever the file held (a switch drives the level it
+    /// has, a rotary its selection).
+    std::function<void(Element &element)> loaded{};
 
     // --- Port configuration ---
 

@@ -48,14 +48,6 @@ public:
     /// The 15 segment inputs, by their places and names.
     std::optional<PortAttributes> inputAttributes(int index) const override;
 
-    // --- Serialization ---
-
-    /// \reimp
-    void load(QDataStream &stream, SerializationContext &context) override;
-
-    /// Serializes the color selection to \a stream.
-    void save(QDataStream &stream, SerializationOptions options) const override;
-
 protected:
     /// Picks the segments' colour from a new colour.
     void parameterChanged(ParamId id, const ParamValue &previous) override;

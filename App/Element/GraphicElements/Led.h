@@ -52,13 +52,6 @@ public:
     /// The inputs, numbered from 1.
     std::optional<PortAttributes> inputAttributes(int index) const override;
 
-    // --- Serialization ---
-
-    /// \reimp
-    void load(QDataStream &stream, SerializationContext &context) override;
-    /// \reimp
-    void save(QDataStream &stream, SerializationOptions options) const override;
-
 protected:
     /// Derives the colour's offset in the appearance list from a new colour.
     void parameterChanged(ParamId id, const ParamValue &previous) override;

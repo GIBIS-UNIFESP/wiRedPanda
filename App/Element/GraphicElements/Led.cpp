@@ -71,6 +71,12 @@ struct ElementInfo<Led> {
             .key = "color",
             .offered = [](const Element &element) { return element.inputSize() == 1; },
         }};
+        descriptor.readBeforeMap = [](Element &element, QDataStream &stream, const SerializationContext &context) {
+            // From 1.1 to 4.0 the colour was a bare string
+            if (VersionInfo::hasClock(context.version)) {
+                element.setParam(ParamId::Colour, Serialization::readBoundedString(stream));
+            }
+        };
         return descriptor;
     } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
 
@@ -168,40 +174,6 @@ void Led::parameterChanged(const ParamId id, const ParamValue &previous)
         // m_colorIndex is the base offset into the single-input appearance list.
         // Each color occupies two consecutive entries: [base]=Off, [base+1]=On.
         m_colorIndex = 2 * colorNameToIndex(color());
-    }
-}
-
-void Led::save(QDataStream &stream, SerializationOptions options) const
-{
-    Element::save(stream, options);
-
-    QMap<QString, QVariant> map;
-    // PortableFile streams omit the default; fresh-loaded elements start there
-    // anyway. Snapshots write unconditionally (reloaded into live elements).
-    if (options.purpose != SerializationPurpose::PortableFile || color() != kDefaultColor) {
-        map.insert("color", color());
-    }
-
-    stream << map;
-}
-
-void Led::load(QDataStream &stream, SerializationContext &context)
-{
-    Element::load(stream, context);
-
-    if ((VersionInfo::hasClock(context.version)) && (!VersionInfo::hasQMapFormat(context.version))) {
-        // v1.1–4.0 stored color as a bare QString
-        const QString color_ = Serialization::readBoundedString(stream);
-        setColor(color_);
-    }
-
-    if (VersionInfo::hasQMapFormat(context.version)) {
-        // v4.1+ uses a key-value map
-        QMap<QString, QVariant> map = Serialization::readBoundedMetadata(stream);
-
-        if (map.contains("color")) {
-            setColor(map.value("color").toString());
-        }
     }
 }
 

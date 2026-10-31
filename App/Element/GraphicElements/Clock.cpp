@@ -9,7 +9,6 @@
 
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
-#include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
 
@@ -68,7 +67,23 @@ struct ElementInfo<Clock> {
                     }
                     return ParamValue(std::clamp(delay, -1.0, 1.0));
                 },
+                // The delay before 4.3 (VersionInfo::hasDelayFix()) had another meaning and is dropped
+                .since = QVersionNumber(4, 3),
             },
+        };
+        descriptor.readBeforeMap = [](Element &element, QDataStream &stream, const SerializationContext &context) {
+            // From 1.1 to 4.0 the frequency was a bare float, then from 3.1 the lock a bare bool
+            if (!VersionInfo::hasClock(context.version)) {
+                return;
+            }
+            float frequency = 0.0F;
+            stream >> frequency;
+            element.setParam(ParamId::Frequency, static_cast<double>(frequency));
+            if (VersionInfo::hasLockState(context.version)) {
+                bool locked = false;
+                stream >> locked;
+                element.setParam(ParamId::Locked, locked);
+            }
         };
         return descriptor;
     } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
@@ -136,78 +151,6 @@ void Clock::setOff()
 void Clock::setOn()
 {
     Clock::setOn(true);
-}
-
-void Clock::save(QDataStream &stream, SerializationOptions options) const
-{
-    Element::save(stream, options);
-
-    const bool slim = (options.purpose == SerializationPurpose::PortableFile);
-
-    QMap<QString, QVariant> map;
-    // PortableFile streams omit defaults; fresh-loaded elements start there
-    // anyway. Snapshots write unconditionally (reloaded into live elements).
-    if (!slim || frequency() != kDefaultFrequency) {
-        map.insert("frequency", frequency());
-    }
-    if (!slim || delay() != 0.0) {
-        map.insert("delay", delay());
-    }
-    if (!slim || isLocked()) {
-        map.insert("locked", isLocked());
-    }
-
-    stream << map;
-}
-
-void Clock::load(QDataStream &stream, SerializationContext &context)
-{
-    Element::load(stream, context);
-
-    if (!VersionInfo::hasClock(context.version)) {
-        // Clock serialization was introduced in v1.1; nothing to read in earlier files
-        return;
-    }
-
-    if (!VersionInfo::hasQMapFormat(context.version)) {
-        // v1.1–4.0 stored frequency as a bare float; locked state added in v3.1
-        float freq; stream >> freq;
-        setFrequency(static_cast<double>(freq));
-
-        if (VersionInfo::hasLockState(context.version)) {
-            bool locked = false;
-            stream >> locked;
-            setLocked(locked);
-        }
-    }
-
-    if (VersionInfo::hasQMapFormat(context.version)) {
-        // v4.1+ uses a key-value map so new properties can be added without breaking old files
-        QMap<QString, QVariant> map = Serialization::readBoundedMetadata(stream);
-
-        if (map.contains("frequency")) {
-            setFrequency(map.value("frequency").toDouble());
-        }
-
-        if (map.contains("delay")) {
-            bool ok = false;
-            double delayValue = map.value("delay").toDouble(&ok);
-            if (!ok) {
-                delayValue = 0.0;
-            }
-
-            if (!VersionInfo::hasDelayFix(context.version)) {
-                // Discard old delay data from versions < 4.3
-                // The old implementation was incorrect and incompatible with the new period-fraction format
-            } else {
-                setDelay(delayValue);
-            }
-        }
-
-        if (map.contains("locked")) {
-            setLocked(map.value("locked").toBool());
-        }
-    }
 }
 
 void Clock::parameterChanged(const ParamId id, const ParamValue &previous)

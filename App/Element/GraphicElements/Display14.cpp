@@ -58,6 +58,12 @@ struct ElementInfo<Display14> {
             .defaultValue = QString(Display14::kDefaultColor),
             .key = "color",
         }};
+        descriptor.readBeforeMap = [](Element &element, QDataStream &stream, const SerializationContext &context) {
+            // From 3.1 to 4.0 the colour was a bare string
+            if (VersionInfo::hasLockState(context.version)) {
+                element.setParam(ParamId::Colour, Serialization::readBoundedString(stream));
+            }
+        };
         return descriptor;
     } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
 
@@ -158,39 +164,5 @@ void Display14::parameterChanged(const ParamId id, const ParamValue &previous)
     Element::parameterChanged(id, previous);
     if (id == ParamId::Colour) {
         m_colorNumber = colorNameToIndex(color());
-    }
-}
-
-void Display14::save(QDataStream &stream, SerializationOptions options) const
-{
-    Element::save(stream, options);
-
-    QMap<QString, QVariant> map;
-    // PortableFile streams omit the default; fresh-loaded elements start there
-    // anyway. Snapshots write unconditionally (reloaded into live elements).
-    if (options.purpose != SerializationPurpose::PortableFile || color() != kDefaultColor) {
-        map.insert("color", color());
-    }
-
-    stream << map;
-}
-
-void Display14::load(QDataStream &stream, SerializationContext &context)
-{
-    Element::load(stream, context);
-
-    if ((VersionInfo::hasLockState(context.version)) && (!VersionInfo::hasQMapFormat(context.version))) {
-        // v3.1–4.0 stored color as a bare QString
-        const QString color_ = Serialization::readBoundedString(stream);
-        setColor(color_);
-    }
-
-    if (VersionInfo::hasQMapFormat(context.version)) {
-        // v4.1+ uses a key-value map
-        QMap<QString, QVariant> map = Serialization::readBoundedMetadata(stream);
-
-        if (map.contains("color")) {
-            setColor(map.value("color").toString());
-        }
     }
 }

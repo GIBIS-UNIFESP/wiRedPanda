@@ -12,6 +12,9 @@
 
 #include "App/Element/GraphicElements/AudioOutputElement.h"
 
+template<typename T>
+struct ElementInfo;
+
 /**
  * \class AudioBox
  * \brief Audio output element that streams an external audio file when its input is logic-1.
@@ -22,6 +25,8 @@
 class AudioBox : public AudioOutputElement
 {
     Q_OBJECT
+
+    friend struct ElementInfo<AudioBox>; // its descriptor's every-load rule reads the sound file again
 
 public:
     /// Default audio source: the bundled sample resource, NOT an empty path.
@@ -43,13 +48,6 @@ public:
     /// \reimp Also names the sound when it did not load and the built-in sound plays in its place.
     void reportFailedFiles() const override;
 
-    // --- Serialization ---
-
-    /// \reimp
-    void load(QDataStream &stream, SerializationContext &context) override;
-    /// \reimp
-    void save(QDataStream &stream, SerializationOptions options) const override;
-
 protected:
     // --- AudioOutputElement hooks ---
 
@@ -68,9 +66,6 @@ private:
      * goes on. It plays again once its file is back; opening a file reports it (reportFailedFiles()).
      */
     void loadAudio();
-
-    /// Sets the sound file to \a audioPath, a file's, and loads it again when it is the same.
-    void takeAudio(const QString &audioPath);
 
     QAudioOutput *m_audioOutput = nullptr;
     QString m_failedAudioPath;   ///< The sound last set when it did not load, else empty.

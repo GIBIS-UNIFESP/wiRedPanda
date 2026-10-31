@@ -15,6 +15,7 @@
 #include <QBitArray>
 #include <QList>
 #include <QString>
+#include <QVersionNumber>
 
 class Element;
 
@@ -40,8 +41,8 @@ using ParamValue = std::variant<bool, int, double, QString, QBitArray>;
 
 /**
  * \struct ParamSpec
- * \brief One parameter of an element type: its default, the key a file keeps it under, the values it takes and when
- * it is offered for editing.
+ * \brief One parameter of an element type: its default, the key a file keeps it under, the values it takes, when it
+ * is offered for editing and how a file holds it.
  */
 struct ParamSpec {
     /// Returns the value \a value, of the parameter's kind, is taken as by \a element, or nothing to leave the
@@ -59,6 +60,17 @@ struct ParamSpec {
 
     Accept accept{};   ///< None: every value of its kind is taken as it is.
     Offered offered{}; ///< None: always offered.
+
+    /// The version from which a file's value means something; an older file's is dropped (the clock's delay before
+    /// 4.3). None: every version's.
+    QVersionNumber since{};
+
+    /// Whether a portable file keeps the value when it is the default (the truth table's); it omits it otherwise.
+    bool keepsDefault = false;
+
+    /// Whether the value is a file's path (the audio box's sound), written as ExternalFilePath::forWriting() has it and
+    /// read through forReading(); a portable file omits a resource's, which every element starts with.
+    bool fileReference = false;
 };
 
 /**

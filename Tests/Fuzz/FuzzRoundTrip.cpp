@@ -14,7 +14,8 @@
  *      element and connection save(), the blob registry, the pin metadata and
  *      the file-backed IC list.
  *   3. Loads the saved bytes back into a second WorkSpace, whose elements must
- *      keep their count, types and port counts.
+ *      keep their count, types, port counts and keyed parameters (a file
+ *      reference's aside).
  *   4. Saves that, loads it into a third and saves again: the application's own
  *      file must save to the same bytes, so a field written but not read back,
  *      or read into another, traps.  The first save is not compared, since a
@@ -22,9 +23,11 @@
  *      current one.
  */
 
+#include <cmath>
 #include <cstddef>
 #include <cstdint>
 #include <memory>
+#include <variant>
 
 #include <QApplication>
 #include <QByteArray>
@@ -40,6 +43,8 @@
 #include "App/Core/Common.h"
 #include "App/Core/Enums.h"
 #include "App/Element/Element.h"
+#include "App/Element/ElementTypeDescriptor.h"
+#include "App/Element/Parameters.h"
 #include "App/IO/Serialization.h"
 #include "App/Scene/ICRegistry.h"
 #include "App/Scene/Scene.h"
@@ -60,6 +65,18 @@ std::unique_ptr<QTemporaryDir> g_dir;
 // The circuit is loaded three times and saved three times; one loading more elements than this, nested ICs' included,
 // would take a unit past about 10 s under ASan and is only loaded
 constexpr qsizetype kMaxCircuitElements = 1500;
+
+/// Returns whether \a a and \a b are the same value, a NaN the same as a NaN: a volume takes any value, and a file can
+/// hold a NaN one, which reads back as itself.
+bool sameValue(const ParamValue &a, const ParamValue &b)
+{
+    const auto *x = std::get_if<double>(&a);
+    const auto *y = std::get_if<double>(&b);
+    if ((x != nullptr) && (y != nullptr) && std::isnan(*x) && std::isnan(*y)) {
+        return true;
+    }
+    return a == b;
+}
 
 } // namespace
 
@@ -184,6 +201,14 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
             if (elems2[i]->inputSize() != elems1[i]->inputSize() ||
                 elems2[i]->outputSize() != elems1[i]->outputSize()) {
                 __builtin_trap(); // port count changed across round-trip
+            }
+        }
+        // Every keyed parameter reads back as it was, an older format's converted ones included. A file reference is
+        // not compared: the save writes it relative to the file, which the load resolves against another directory
+        for (const ParamSpec &spec : ElementTypeDescriptor::of(elems1[i]->elementType()).parameters) {
+            if ((spec.key != nullptr) && !spec.fileReference
+                && !sameValue(elems1[i]->parameters().value(spec.id), elems2[i]->parameters().value(spec.id))) {
+                __builtin_trap(); // a parameter changed across round-trip
             }
         }
     }

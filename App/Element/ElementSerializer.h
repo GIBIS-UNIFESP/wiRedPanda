@@ -55,6 +55,22 @@ public:
     /// Reads \a element from \a stream, dispatching on the format version in \a context.
     static void load(Element &element, QDataStream &stream, SerializationContext &context);
 
+    /**
+     * \brief Writes \a element's keyed parameters as a map after the common part, when its type has any.
+     * \details A snapshot writes every key; a portable file omits a default its spec does not keep, and a file
+     * reference to a resource.
+     */
+    static void saveParameters(const Element &element, QDataStream &stream, SerializationOptions options);
+
+    /**
+     * \brief Reads \a element's keyed parameters, each through Element::setParam(), as its type's file holds them.
+     * \details A file older than the type's map holds what its descriptor's readBeforeMap reads; a map's keys are read
+     * from the version each spec means something, each as QVariant converts it to the spec's kind, as the old loaders
+     * read it: a number that does not read as one is dropped, a flag, a string and a bit array are what QVariant gives;
+     * the descriptor's readOlderKeys and loaded follow.
+     */
+    static void loadParameters(Element &element, QDataStream &stream, const SerializationContext &context);
+
 private:
     static void loadOldFormat(Element &element, QDataStream &stream, SerializationContext &context);
     static void loadNewFormat(Element &element, QDataStream &stream, SerializationContext &context);
