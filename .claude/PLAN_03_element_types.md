@@ -293,8 +293,8 @@ not change.
   leave unset and lists every field an update changes: the attribute design depends on unset fields being left alone,
   and a real path carries it (an edit reloads a live Rx node, `setWirelessMode(Rx)` returns early, and only the update
   leaving the requirement alone keeps the input optional through the edit, its undo and its redo). An input no
-  attribute covers keeps its place; only a Demux file with surplus inputs reached that case, which plan 2's loader now
-  refuses.
+  attribute covers takes the base layout's place in its column, as a port whose attributes give no position does; only
+  a Demux file with surplus inputs reached that case, which plan 2's loader now refuses.
 - A port takes a name source, evaluated on each request until it gets an explicit name; the displays use it. A derived
   name and its untranslated source are given together, from one `QT_TR_NOOP` literal per port (a helper builds the
   shown name through the element's `tr()` and keeps the source), so no derived port lacks its source and the 40
