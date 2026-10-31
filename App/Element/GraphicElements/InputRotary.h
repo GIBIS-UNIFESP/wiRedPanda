@@ -69,9 +69,6 @@ public:
 
     // --- Visual ---
 
-    /// Draws the rotary wheel with the indicator arrow pointing to the active port.
-    void drawBody(QPainter &painter) const override;
-
     /// Refreshes the arrow direction and port positions.
     void refresh() override;
 

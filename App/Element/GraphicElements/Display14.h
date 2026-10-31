@@ -7,11 +7,7 @@
 
 #pragma once
 
-#include <memory>
-
 #include "App/Element/Element.h"
-
-class QSvgRenderer;
 
 /**
  * \class Display14
@@ -36,23 +32,9 @@ public:
 
     // --- Visual ---
 
-    /// Draws the off-state picture, then the lit segments over it as vectors.
-    void drawBody(QPainter &painter) const override;
-
     /// Refreshes the displayed segments based on current input states.
     void refresh() override;
 
     /// The 15 segment inputs, by their places and names.
     std::optional<PortAttributes> inputAttributes(int index) const override;
-
-protected:
-    /// Picks the segments' colour from a new colour.
-    void parameterChanged(ParamId id, const ParamValue &previous) override;
-
-private:
-    // --- Members ---
-
-    QVector<QPixmap> bkg;
-    QVector<std::shared_ptr<QSvgRenderer>> a, b, c, d, e, f, g1, g2, h, j, k, l, m, n, dp;
-    int m_colorNumber = 1;
 };

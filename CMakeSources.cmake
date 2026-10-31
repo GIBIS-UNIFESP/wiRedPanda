@@ -155,11 +155,13 @@ set(MODEL_HEADERS
 set(PRESENTATION_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Presentation/ElementPictures.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Presentation/ElementPresenter.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Presentation/PicturePresenters.cpp
 )
 
 set(PRESENTATION_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Presentation/ElementPictures.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Presentation/ElementPresenter.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Presentation/PicturePresenters.h
 )
 
 # The rest of the application.

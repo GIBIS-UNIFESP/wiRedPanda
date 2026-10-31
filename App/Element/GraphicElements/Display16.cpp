@@ -3,16 +3,12 @@
 
 #include "App/Element/GraphicElements/Display16.h"
 
-#include <QPainter>
-#include <QSvgRenderer>
-
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 #include "App/Element/GraphicElements/Display7.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
-#include "App/Wiring/Port.h"
 
 template<>
 struct ElementInfo<Display16> {
@@ -79,24 +75,6 @@ struct ElementInfo<Display16> {
 Display16::Display16(QGraphicsItem *parent)
     : Element(ElementType::Display16, parent)
 {
-    a1 = Display7::cachedSegmentRenderers(m_appearance.defaultAppearances().at(1));
-    a2 = Display7::cachedSegmentRenderers(m_appearance.defaultAppearances().at(2));
-    b  = Display7::cachedSegmentRenderers(m_appearance.defaultAppearances().at(3));
-    c  = Display7::cachedSegmentRenderers(m_appearance.defaultAppearances().at(4));
-    d1 = Display7::cachedSegmentRenderers(m_appearance.defaultAppearances().at(5));
-    d2 = Display7::cachedSegmentRenderers(m_appearance.defaultAppearances().at(6));
-    e  = Display7::cachedSegmentRenderers(m_appearance.defaultAppearances().at(7));
-    f  = Display7::cachedSegmentRenderers(m_appearance.defaultAppearances().at(8));
-    g1 = Display7::cachedSegmentRenderers(m_appearance.defaultAppearances().at(9));
-    g2 = Display7::cachedSegmentRenderers(m_appearance.defaultAppearances().at(10));
-    h  = Display7::cachedSegmentRenderers(m_appearance.defaultAppearances().at(11));
-    j  = Display7::cachedSegmentRenderers(m_appearance.defaultAppearances().at(12));
-    k  = Display7::cachedSegmentRenderers(m_appearance.defaultAppearances().at(13));
-    l  = Display7::cachedSegmentRenderers(m_appearance.defaultAppearances().at(14));
-    m  = Display7::cachedSegmentRenderers(m_appearance.defaultAppearances().at(15));
-    n  = Display7::cachedSegmentRenderers(m_appearance.defaultAppearances().at(16));
-    dp = Display7::cachedSegmentRenderers(m_appearance.defaultAppearances().at(17));
-
     updatePortsProperties();
 }
 
@@ -136,36 +114,4 @@ std::optional<Element::PortAttributes> Display16::inputAttributes(const int inde
     }
     const Display7::SegmentPort &segment = segments[index];
     return Display7::segmentInput(describedPort(segment.letter, segment.description), segment);
-}
-
-void Display16::drawBody(QPainter &painter) const
-{
-    // The presenter draws the off-state picture; active segments are overlaid as vector
-    // renders on top, crisp at any zoom.
-    const QRectF body(0, 0, 64, 64);
-    if (inputPort( 0)->status() == Status::Active) { g1.at(m_colorNumber)->render(&painter, body); }
-    if (inputPort( 1)->status() == Status::Active) { f.at(m_colorNumber)->render(&painter, body);  }
-    if (inputPort( 2)->status() == Status::Active) { e.at(m_colorNumber)->render(&painter, body);  }
-    if (inputPort( 3)->status() == Status::Active) { d1.at(m_colorNumber)->render(&painter, body); }
-    if (inputPort( 4)->status() == Status::Active) { d2.at(m_colorNumber)->render(&painter, body); }
-    if (inputPort( 5)->status() == Status::Active) { a1.at(m_colorNumber)->render(&painter, body); }
-    if (inputPort( 6)->status() == Status::Active) { a2.at(m_colorNumber)->render(&painter, body); }
-    if (inputPort( 7)->status() == Status::Active) { b.at(m_colorNumber)->render(&painter, body);  }
-    if (inputPort( 8)->status() == Status::Active) { dp.at(m_colorNumber)->render(&painter, body); }
-    if (inputPort( 9)->status() == Status::Active) { c.at(m_colorNumber)->render(&painter, body);  }
-    if (inputPort(10)->status() == Status::Active) { g2.at(m_colorNumber)->render(&painter, body); }
-    if (inputPort(11)->status() == Status::Active) { h.at(m_colorNumber)->render(&painter, body);  }
-    if (inputPort(12)->status() == Status::Active) { j.at(m_colorNumber)->render(&painter, body);  }
-    if (inputPort(13)->status() == Status::Active) { k.at(m_colorNumber)->render(&painter, body);  }
-    if (inputPort(14)->status() == Status::Active) { l.at(m_colorNumber)->render(&painter, body);  }
-    if (inputPort(15)->status() == Status::Active) { m.at(m_colorNumber)->render(&painter, body);  }
-    if (inputPort(16)->status() == Status::Active) { n.at(m_colorNumber)->render(&painter, body);  }
-}
-
-void Display16::parameterChanged(const ParamId id, const ParamValue &previous)
-{
-    Element::parameterChanged(id, previous);
-    if (id == ParamId::Colour) {
-        m_colorNumber = colorNameToIndex(color());
-    }
 }

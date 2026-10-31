@@ -7,12 +7,7 @@
 
 #pragma once
 
-#include <memory>
-
 #include "App/Element/Element.h"
-
-class Port;
-class QSvgRenderer;
 
 /**
  * \class Display7
@@ -35,13 +30,6 @@ public:
     /// Constructs the element with optional \a parent.
     explicit Display7(QGraphicsItem *parent = nullptr);
 
-    // --- Color utilities ---
-
-    /// Returns cached White/Red/Green/Blue/Purple vector renderers for the segment SVG at
-    /// \a resourcePath (index order matches colorNameToIndex()), so lit segments stay crisp
-    /// at any zoom instead of blitting a fixed-resolution pixmap.
-    static QVector<std::shared_ptr<QSvgRenderer>> cachedSegmentRenderers(const QString &resourcePath);
-
     /// One segment input of a display: where it sits, its letter and its description, marked with QT_TR_NOOP() in the
     /// display's own code.
     struct SegmentPort {
@@ -60,22 +48,9 @@ public:
 
     // --- Visual ---
 
-    /// Draws the off-state picture, then the lit segments over it as vectors.
-    void drawBody(QPainter &painter) const override;
-
     /// Refreshes the displayed segments based on current input states.
     void refresh() override;
 
     /// The 8 segment inputs, by their places and names.
     std::optional<PortAttributes> inputAttributes(int index) const override;
-
-protected:
-    /// Picks the segments' colour from a new colour.
-    void parameterChanged(ParamId id, const ParamValue &previous) override;
-
-private:
-    // --- Members ---
-
-    QVector<std::shared_ptr<QSvgRenderer>> a, b, c, d, e, f, g, dp;
-    int m_colorNumber = 1;
 };

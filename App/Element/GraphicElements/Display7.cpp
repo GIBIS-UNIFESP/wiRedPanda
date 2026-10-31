@@ -3,35 +3,12 @@
 
 #include "App/Element/GraphicElements/Display7.h"
 
-#include <QCoreApplication>
-#include <QFile>
-#include <QHash>
-#include <QPainter>
-#include <QRegularExpression>
-#include <QSvgRenderer>
-#include <QThread>
-
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
 #include "App/Wiring/Port.h"
-
-namespace {
-
-/// Substitutes every solid fill color in \a svgBytes with \a color, leaving each shape's own
-/// fill-opacity untouched -- the segment SVGs are solid-filled single shapes, so this reproduces
-/// the White/Red/Green/Blue/Purple variants the old per-pixel channel remap produced.
-QByteArray recoloredSegmentSvg(const QByteArray &svgBytes, const QColor &color)
-{
-    static const QRegularExpression fillHex(QStringLiteral("fill:#[0-9a-fA-F]{6}"));
-    QString svg = QString::fromUtf8(svgBytes);
-    svg.replace(fillHex, QStringLiteral("fill:%1").arg(color.name()));
-    return svg.toUtf8();
-}
-
-} // namespace
 
 template<>
 struct ElementInfo<Display7> {
@@ -107,45 +84,7 @@ struct ElementInfo<Display7> {
 Display7::Display7(QGraphicsItem *parent)
     : Element(ElementType::Display7, parent)
 {
-    a  = cachedSegmentRenderers(m_appearance.defaultAppearances().at(1));
-    b  = cachedSegmentRenderers(m_appearance.defaultAppearances().at(2));
-    c  = cachedSegmentRenderers(m_appearance.defaultAppearances().at(3));
-    d  = cachedSegmentRenderers(m_appearance.defaultAppearances().at(4));
-    e  = cachedSegmentRenderers(m_appearance.defaultAppearances().at(5));
-    f  = cachedSegmentRenderers(m_appearance.defaultAppearances().at(6));
-    g  = cachedSegmentRenderers(m_appearance.defaultAppearances().at(7));
-    dp = cachedSegmentRenderers(m_appearance.defaultAppearances().at(8));
-
     updatePortsProperties();
-}
-
-QVector<std::shared_ptr<QSvgRenderer>> Display7::cachedSegmentRenderers(const QString &resourcePath)
-{
-    Q_ASSERT(QCoreApplication::instance()->thread() == QThread::currentThread());
-
-    static QHash<QString, QVector<std::shared_ptr<QSvgRenderer>>> cache;
-
-    auto it = cache.find(resourcePath);
-    if (it != cache.end()) {
-        return *it;
-    }
-
-    QFile file(resourcePath);
-    const QByteArray svgBytes = file.open(QIODevice::ReadOnly) ? file.readAll() : QByteArray();
-
-    // Index order matches colorNameToIndex(): 0=White, 1=Red, 2=Green, 3=Blue, 4=Purple
-    static const QColor colors[] = {
-        QColor(255, 255, 255), QColor(255, 0, 0), QColor(0, 255, 0), QColor(0, 0, 255), QColor(255, 0, 255)
-    };
-
-    QVector<std::shared_ptr<QSvgRenderer>> renderers;
-    renderers.reserve(5);
-    for (const QColor &color : colors) {
-        renderers.append(std::make_shared<QSvgRenderer>(recoloredSegmentSvg(svgBytes, color)));
-    }
-
-    cache.insert(resourcePath, renderers);
-    return renderers;
 }
 
 void Display7::refresh()
@@ -182,28 +121,4 @@ Element::PortAttributes Display7::segmentInput(PortAttributes described, const S
     attributes.defaultStatus = Status::Inactive;
     attributes.position = QPointF(segment.x, segment.y);
     return attributes;
-}
-
-void Display7::drawBody(QPainter &painter) const
-{
-    // The presenter draws the background (the off-state picture).
-    // Active segments are painted on top as vector renders, crisp at any zoom.
-    // All segment renderers share the background's 64x64 box, so they composite correctly.
-    const QRectF body(0, 0, 64, 64);
-    if (auto *port = inputPort(0); port && port->status() == Status::Active) { g.at(m_colorNumber)->render(&painter, body);  }
-    if (auto *port = inputPort(1); port && port->status() == Status::Active) { f.at(m_colorNumber)->render(&painter, body);  }
-    if (auto *port = inputPort(2); port && port->status() == Status::Active) { e.at(m_colorNumber)->render(&painter, body);  }
-    if (auto *port = inputPort(3); port && port->status() == Status::Active) { d.at(m_colorNumber)->render(&painter, body);  }
-    if (auto *port = inputPort(4); port && port->status() == Status::Active) { a.at(m_colorNumber)->render(&painter, body);  }
-    if (auto *port = inputPort(5); port && port->status() == Status::Active) { b.at(m_colorNumber)->render(&painter, body);  }
-    if (auto *port = inputPort(6); port && port->status() == Status::Active) { dp.at(m_colorNumber)->render(&painter, body); }
-    if (auto *port = inputPort(7); port && port->status() == Status::Active) { c.at(m_colorNumber)->render(&painter, body);  }
-}
-
-void Display7::parameterChanged(const ParamId id, const ParamValue &previous)
-{
-    Element::parameterChanged(id, previous);
-    if (id == ParamId::Colour) {
-        m_colorNumber = colorNameToIndex(color());
-    }
 }
