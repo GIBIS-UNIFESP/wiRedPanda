@@ -78,7 +78,7 @@ void InlineLabelEditor::start(Element *element)
 
     QRectF targetRect = element->labelSceneBoundingRect();
     if (targetRect.isEmpty()) {
-        targetRect = element->sceneBoundingRect();
+        targetRect = element->sceneOutlineRect();
     }
     const qreal width = std::max(targetRect.width(), 80.0);
     lineEdit->resize(static_cast<int>(width), lineEdit->sizeHint().height());

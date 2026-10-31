@@ -217,7 +217,7 @@ public:
 
     /// Returns the label child item's bounding rect in scene coordinates -- used to position the
     /// inline rename editor over the visible label. Empty when the label has no text yet (a
-    /// caller should fall back to the element's own sceneBoundingRect() in that case).
+    /// caller should fall back to the element's own sceneOutlineRect() in that case).
     QRectF labelSceneBoundingRect() const;
 
     // --- Embedded IC ---
@@ -455,9 +455,20 @@ public:
      */
     QRectF boundingRect() const final;
 
-    /// Returns the bounding rectangle of this element in local coordinates, as its state gives it now: its body, as
-    /// it was last measured (BodyShape), and its ports.
+    /// Returns the bounding rectangle of this element in local coordinates, as its state gives it now: its body and
+    /// what it draws beyond it, as they were last measured (BodyShape), and its ports.
     QRectF measureBoundingRect() const;
+
+    /// Returns the element's outline in local coordinates: its body, as it was last measured, and its ports. This is
+    /// what is selected, hit and aligned; boundingRect() adds what the body draws beyond it (BodyShape::decoration).
+    QRectF outlineRect() const;
+
+    /// Returns outlineRect() in scene coordinates.
+    QRectF sceneOutlineRect() const { return mapRectToScene(outlineRect()); }
+
+    /// \reimp The outline (outlineRect()) of an element whose body draws beyond itself: a press on that drawing, or a
+    /// rubber band over it alone, misses the element.
+    QPainterPath shape() const override;
 
     // --- Changes ---
 
@@ -634,10 +645,6 @@ protected:
     /// recompute the label's actual on-screen position from this original value, rather than
     /// from whatever rotation-adjusted position it last computed.
     void setLabelAnchor(const QPointF &pos);
-
-    /// Hook called whenever the label text is set (including on construction and on inline-edit
-    /// commit). Base is a no-op; Text overrides it to toggle its empty-state hint.
-    virtual void labelContentChanged() {}
 
     // --- Changes ---
 

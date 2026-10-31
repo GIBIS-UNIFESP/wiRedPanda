@@ -1054,6 +1054,7 @@ add_test(NAME TestElementTabNavigator COMMAND test_wiredpanda TestElementTabNavi
 add_test(NAME TestExportController COMMAND test_wiredpanda TestExportController WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestFileDialogProviderUnit COMMAND test_wiredpanda TestFileDialogProviderUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestFileUtils COMMAND test_wiredpanda TestFileUtils WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestElementOutline COMMAND test_wiredpanda TestElementOutline WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestGraphicsView COMMAND test_wiredpanda TestGraphicsView WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestICDropZone COMMAND test_wiredpanda TestICDropZone WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestICController COMMAND test_wiredpanda TestICController WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -1151,7 +1152,7 @@ foreach(TEST TestElementFactory TestElementLogic TestElementLogicErrors TestNode
 endforeach()
 
 # Connection and Scene Tests - Integration category
-foreach(TEST TestConnections TestConnectionSerialization TestConnectionValidity TestScene 
+foreach(TEST TestConnections TestConnectionSerialization TestConnectionValidity TestElementOutline TestScene 
         TestSceneConnections TestSceneState TestSceneUndoredo)
     set_tests_properties(${TEST} PROPERTIES LABELS "integration")
 endforeach()
@@ -1239,7 +1240,7 @@ set(ALL_TESTS
     TestElementTabNavigator TestExportController TestICController TestICDropZone TestLabeledSlider
     TestLanguageManager TestMinimapWidget TestSceneUiBinder TestSelectionCapabilities
     TestTrashButton TestWorkspaceManager
-    TestConnection TestConnectionManager TestGraphicsView TestPropertyShortcutHandler TestPort TestSceneDropHandler
+    TestConnection TestConnectionManager TestElementOutline TestGraphicsView TestPropertyShortcutHandler TestPort TestSceneDropHandler
     TestDemux TestDisplay TestDisplay7 TestElement TestICRegistry TestICUnit TestMux
     TestDolphinClipboard TestDolphinEdits TestDolphinExporter TestDolphinFile TestDolphinModelBuilder
     TestDolphinSerializer TestDolphinZoom TestSignalDelegate TestWaveformSimulator TestFileUtils TestRecentFilesUnit

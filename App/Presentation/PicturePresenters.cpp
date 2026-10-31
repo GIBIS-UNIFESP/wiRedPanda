@@ -9,12 +9,16 @@
 
 #include <QCoreApplication>
 #include <QFile>
+#include <QFont>
 #include <QHash>
 #include <QPainter>
+#include <QPen>
 #include <QRegularExpression>
 #include <QSvgRenderer>
+#include <QTextLayout>
 #include <QThread>
 
+#include "App/Core/ThemeManager.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementAppearance.h"
 #include "App/Presentation/ElementPictures.h"
@@ -68,6 +72,86 @@ QSvgRenderer &rotaryArrowRenderer()
     return renderer;
 }
 
+/// Returns a wireless node's indicator in \a color, a 20x20 pixmap drawn the first time each colour is asked for: a dot
+/// at its lower left and three arcs fanning to the upper right. GUI-thread only.
+const QPixmap &wirelessIndicator(const QColor &color)
+{
+    Q_ASSERT(QCoreApplication::instance()->thread() == QThread::currentThread());
+
+    static QHash<QRgb, QPixmap> cache;
+    if (const auto it = cache.constFind(color.rgba()); it != cache.constEnd()) {
+        return it.value();
+    }
+
+    const auto hex = color.name();
+    const auto svg = QStringLiteral(
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 16 16\">"
+        "<circle cx=\"1.5\" cy=\"14.5\" r=\"1.5\" fill=\"%1\"/>"
+        "<path d=\"M 1.5,11 A 3.5,3.5 0 0 1 5,14.5\" fill=\"none\" stroke=\"%1\" stroke-width=\"1.5\" stroke-linecap=\"round\"/>"
+        "<path d=\"M 1.5,7 A 7.5,7.5 0 0 1 9,14.5\" fill=\"none\" stroke=\"%1\" stroke-width=\"1.5\" stroke-linecap=\"round\"/>"
+        "<path d=\"M 1.5,3 A 11.5,11.5 0 0 1 13,14.5\" fill=\"none\" stroke=\"%1\" stroke-width=\"1.5\" stroke-linecap=\"round\"/>"
+        "</svg>").arg(hex);
+
+    QSvgRenderer renderer(svg.toUtf8());
+    QPixmap pixmap(20, 20);
+    pixmap.fill(Qt::transparent);
+    QPainter painter(&pixmap);
+    renderer.render(&painter);
+    painter.end();
+    return cache.insert(color.rgba(), pixmap).value();
+}
+
+/// Where a wireless node's indicator goes: in Tx above the output port, its dot at (32, 12), in Rx above the input
+/// port, mirrored so the arcs open to the upper left, its dot at (0, 12). Null in mode None.
+QRectF wirelessIndicatorRect(const WirelessMode mode)
+{
+    switch (mode) {
+    case WirelessMode::Tx: return {30, -6, 20, 20};
+    case WirelessMode::Rx: return {-18, -6, 20, 20};
+    case WirelessMode::None: break;
+    }
+    return {};
+}
+
+/// Where an empty Text's hint goes: where its label would be, at the default label anchor.
+constexpr QPointF kHintPlace(0, 64);
+
+/// Returns the hint an empty Text shows, in the current language, under Text's translation context.
+QString textHint()
+{
+    QString hint = QCoreApplication::translate("Text", "Double-click to add text");
+    hint.replace(u'\n', QChar::LineSeparator);
+    return hint;
+}
+
+/// Returns the font of an empty Text's hint: the application's, in italics.
+QFont textHintFont()
+{
+    QFont font;
+    font.setItalic(true);
+    return font;
+}
+
+/// Lays \a layout out as QGraphicsSimpleTextItem lays its text out, each line under the last from the origin, and
+/// returns the box it takes.
+QRectF layOutLines(QTextLayout &layout)
+{
+    layout.setCacheEnabled(true);
+    layout.beginLayout();
+    while (layout.createLine().isValid()) {
+    }
+    layout.endLayout();
+    qreal width = 0;
+    qreal y = 0;
+    for (int i = 0; i < layout.lineCount(); ++i) {
+        QTextLine line = layout.lineAt(i);
+        width = std::max(width, line.naturalTextWidth());
+        line.setPosition(QPointF(0, y));
+        y += line.height();
+    }
+    return {0, 0, width, y};
+}
+
 } // namespace PicturePresentersDetail
 
 BodyShape PicturePresenter::measure(const Element &element) const
@@ -78,11 +162,10 @@ BodyShape PicturePresenter::measure(const Element &element) const
 
 void PicturePresenter::paintBody(QPainter &painter, const Element &element, const BodyContext &context) const
 {
-    Q_UNUSED(context)
     if (const PictureVariant *picture = ElementPictures::instance().shown(element)) {
         ElementPictures::draw(painter, *picture);
     }
-    paintOverlay(painter, element);
+    paintOverlay(painter, element, context);
 }
 
 QRectF PicturePresenter::pictureRect(const Element &element)
@@ -91,10 +174,11 @@ QRectF PicturePresenter::pictureRect(const Element &element)
     return picture ? QRectF(picture->pixmap.rect()) : QRectF();
 }
 
-void PicturePresenter::paintOverlay(QPainter &painter, const Element &element) const
+void PicturePresenter::paintOverlay(QPainter &painter, const Element &element, const BodyContext &context) const
 {
     Q_UNUSED(painter)
     Q_UNUSED(element)
+    Q_UNUSED(context)
 }
 
 int LevelPresenter::pictureSlot(const Element &element) const
@@ -112,8 +196,9 @@ int LedPresenter::pictureSlot(const Element &element) const
     return element.param<int>(ParamId::Lit);
 }
 
-void RotaryPresenter::paintOverlay(QPainter &painter, const Element &element) const
+void RotaryPresenter::paintOverlay(QPainter &painter, const Element &element, const BodyContext &context) const
 {
+    Q_UNUSED(context)
     // A small mark for every output port, evenly spaced around the dial; the selected one also gets the arrow over it
     const int positions = element.outputSize();
     const int selected = element.param<int>(ParamId::Position);
@@ -166,8 +251,9 @@ BodyShape SegmentDisplayPresenter::measure(const Element &element) const
     return {picture.united(QRectF(0, 0, 64, 64)), picture.center()};
 }
 
-void SegmentDisplayPresenter::paintOverlay(QPainter &painter, const Element &element) const
+void SegmentDisplayPresenter::paintOverlay(QPainter &painter, const Element &element, const BodyContext &context) const
 {
+    Q_UNUSED(context)
     // Every segment's picture shares the unlit picture's 64x64 box, so the lit ones composite over it, as vectors,
     // crisp at any zoom. A segment is the built-in one whatever picture the display shows.
     Q_ASSERT_X(m_segments.size() == element.inputSize(), "SegmentDisplayPresenter::paintOverlay()",
@@ -183,8 +269,72 @@ void SegmentDisplayPresenter::paintOverlay(QPainter &painter, const Element &ele
     }
 }
 
-BodyShape TextPresenter::measure(const Element &element) const
+BodyShape NodePresenter::measure(const Element &element) const
 {
     const QRectF picture = pictureRect(element);
-    return {picture.united(element.childrenBoundingRect()), picture.center()};
+    const auto mode = static_cast<WirelessMode>(element.param<int>(ParamId::Wireless));
+    return {picture, picture.center(), PicturePresentersDetail::wirelessIndicatorRect(mode)};
+}
+
+void NodePresenter::paintOverlay(QPainter &painter, const Element &element, const BodyContext &context) const
+{
+    const auto mode = static_cast<WirelessMode>(element.param<int>(ParamId::Wireless));
+    if (mode == WirelessMode::None) {
+        return;
+    }
+
+    QColor color;
+    switch (static_cast<Status>(element.param<int>(ParamId::Carried))) {
+    case Status::Unknown:  color = context.theme.m_connectionUnknown;  break;
+    case Status::Inactive: color = context.theme.m_connectionInactive; break;
+    case Status::Active:   color = context.theme.m_connectionActive;   break;
+    case Status::Error:    color = context.theme.m_connectionError;    break;
+    }
+
+    painter.save();
+    painter.setRenderHint(QPainter::SmoothPixmapTransform, false);
+    if (mode == WirelessMode::Tx) {
+        painter.translate(30, -6);
+    } else {
+        // Mirrored about the pixmap's left edge, which lands at x = 2
+        painter.translate(2, -6);
+        painter.scale(-1, 1);
+    }
+    painter.drawPixmap(QPointF(0, 0), PicturePresentersDetail::wirelessIndicator(color));
+    painter.restore();
+}
+
+BodyShape TextPresenter::measure(const Element &element) const
+{
+    using namespace PicturePresentersDetail;
+    const QRectF picture = pictureRect(element);
+    QTextLayout layout(textHint(), textHintFont());
+    const QRectF hint = layOutLines(layout).translated(kHintPlace);
+    return {picture.united(element.childrenBoundingRect()).united(hint), picture.center()};
+}
+
+void TextPresenter::paintOverlay(QPainter &painter, const Element &element, const BodyContext &context) const
+{
+    using namespace PicturePresentersDetail;
+    if (!element.label().isEmpty()) {
+        return;
+    }
+
+    // A faded variant of the label's colour: distinguishable from real content at a glance, but not so loud it reads
+    // as a label
+    QColor color = context.theme.m_elementLabelColor;
+    color.setAlpha(140);
+
+    const QFont font = textHintFont();
+    QTextLayout layout(textHint(), font);
+    layOutLines(layout);
+
+    painter.save();
+    painter.setFont(font);
+    QPen pen;
+    pen.setBrush(color);
+    painter.setPen(pen);
+    painter.setBrush(Qt::NoBrush);
+    layout.draw(&painter, kHintPlace);
+    painter.restore();
 }

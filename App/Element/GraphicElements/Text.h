@@ -18,26 +18,11 @@
 class Text : public Element
 {
     Q_OBJECT
-    friend class TestElement;
 
 public:
     /// Constructs a Text element.
     explicit Text(QGraphicsItem *parent = nullptr);
 
-    /// Refreshes the empty-state hint's color alongside the base label/port theming.
-    void updateTheme() override;
-
-    /// Sets the empty-state hint in the new language, its width part of the bounds.
+    /// Measures the body again, which holds the empty-state hint in the new language.
     void languageChanged() override;
-
-protected:
-    /// Shows a faint "double-click to add text" hint whenever the label is empty, since an
-    /// empty Text element is otherwise a fully transparent, near-invisible placeholder.
-    void labelContentChanged() override;
-
-private:
-    /// Sets the empty-state hint's text in the current language.
-    void retranslateHint();
-
-    QGraphicsSimpleTextItem *m_emptyHint = new QGraphicsSimpleTextItem(this);
 };

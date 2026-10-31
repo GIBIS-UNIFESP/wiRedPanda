@@ -9,8 +9,6 @@
 
 #include "App/Element/Element.h"
 
-class QGraphicsPixmapItem;
-
 /**
  * \class Node
  * \brief Visible wire junction (T-junction) element with 1 input and 1 output.
@@ -43,16 +41,15 @@ public:
 
 protected:
     /**
-     * \brief Follows a new wireless routing mode (ParamId::Wireless): the ports and the indicator.
+     * \brief Follows a new wireless routing mode (ParamId::Wireless), and repaints a new level carried
+     * (ParamId::Carried).
      * \details In Rx mode the input port is made optional (setRequired(false)) because the signal arrives
      * wirelessly rather than via a physical wire, and hidden, as the output is in Tx mode. In None or Tx mode the
-     * input port is required as usual.
+     * input port is required as usual. The indicator the presenter draws follows the mode.
      */
     void parameterChanged(ParamId id, const ParamValue &previous) override;
 
 private:
-    void updateWirelessColor(Status status);
-
-    QGraphicsPixmapItem *m_wirelessIndicator = nullptr;
-    QColor m_wirelessColor;
+    /// Keeps \a status, the level the input carries, while the node is wireless: its indicator shows it.
+    void carry(Status status);
 };

@@ -241,43 +241,63 @@ void TestElement::testInlineDoubleClickIgnoredWithoutLabel()
     QVERIFY(!findInlineEditor(workspace.scene()));
 }
 
+namespace TestElementDetail {
+
+/// Whether \a text's own painting, without its child items (the label), draws below its 64x64 picture, where the
+/// empty-state hint goes.
+bool drawsHint(Text *text)
+{
+    QPixmap pixmap(400, 160);
+    pixmap.fill(Qt::transparent);
+    QPainter painter(&pixmap);
+    QStyleOptionGraphicsItem option;
+    text->paint(&painter, &option, nullptr);
+    painter.end();
+    return TestUtils::pixmapHasInk(pixmap.copy(0, 64, 400, 96));
+}
+
+} // namespace TestElementDetail
+
 void TestElement::testTextEmptyStateHintTogglesWithLabelContent()
 {
+    using TestElementDetail::drawsHint;
     WorkSpace workspace;
     auto *text = new Text;
     workspace.scene()->addItem(text);
 
-    // A fresh Text starts empty, so the hint must be visible immediately.
-    QVERIFY(text->m_emptyHint->isVisible());
+    // A fresh Text starts empty, so the hint must be drawn immediately.
+    QVERIFY(drawsHint(text));
 
     text->setLabel("Now has content");
-    QVERIFY(!text->m_emptyHint->isVisible());
+    QVERIFY(!drawsHint(text));
 
-    text->setLabel(""); // clearing it back out must re-show the hint
-    QVERIFY(text->m_emptyHint->isVisible());
+    text->setLabel(""); // clearing it back out must draw the hint again
+    QVERIFY(drawsHint(text));
 
     text->setLabel("Second time");
-    QVERIFY(!text->m_emptyHint->isVisible());
+    QVERIFY(!drawsHint(text));
 }
 
 void TestElement::testTextEmptyStateHintFollowsALanguageChange()
 {
+    // The hint is part of the body, whose width follows the hint's in the current language
     WorkSpace workspace;
     auto *text = new Text;
     workspace.scene()->addItem(text);
-    const QString english = text->m_emptyHint->text();
+    const qreal english = text->body().body.width();
 
     // The main window has each scene retranslate at a language change, and the scene tells its elements.
     TestUtils::TagEveryStringTranslator tagging;
     QCoreApplication::installTranslator(&tagging);
     auto removeTagging = qScopeGuard([&tagging] { QCoreApplication::removeTranslator(&tagging); });
     workspace.scene()->retranslateUi();
-    QCOMPARE(text->m_emptyHint->text(), QString("[tr %1]").arg(english));
+    QVERIFY2(text->body().body.width() > english, "the tagged hint is longer");
+    QCOMPARE(text->boundingRect(), text->measureBoundingRect());
 
     removeTagging.dismiss();
     QCoreApplication::removeTranslator(&tagging);
     workspace.scene()->retranslateUi();
-    QCOMPARE(text->m_emptyHint->text(), english);
+    QCOMPARE(text->body().body.width(), english);
 }
 
 void TestElement::testLabelFontIsAFamilyThePlatformHas()

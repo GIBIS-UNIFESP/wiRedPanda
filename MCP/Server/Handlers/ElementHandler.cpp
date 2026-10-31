@@ -286,7 +286,7 @@ QJsonObject ElementHandler::handleCreateElement(const QJsonObject &params, const
                                    requestId, JsonRpcError::OperationFailed); // LCOV_EXCL_LINE
     } // LCOV_EXCL_LINE
 
-    const QRectF bounds = element->boundingRect();
+    const QRectF bounds = element->outlineRect();
 
     QJsonObject result;
     result["element_id"] = element->id();
@@ -332,7 +332,7 @@ QJsonObject ElementHandler::handleListElements(const QJsonObject &, const QJsonV
     const auto sceneElements = scene->elements();
 
     for (const auto *element : sceneElements) {
-        const QRectF br = element->boundingRect();
+        const QRectF br = element->outlineRect();
         QJsonObject elementObj;
         elementObj["element_id"] = element->id();
         elementObj["type"] = ElementFactory::typeToText(element->elementType());
@@ -824,7 +824,7 @@ QJsonObject ElementHandler::handleChangeInputSize(const QJsonObject &params, con
 
     return tryCommand([&]() -> QJsonObject { // LCOV_EXCL_LINE -- pattern 45: gcov misattributes this multi-line lambda-taking call's entry; the lambda body below is genuinely covered
         scene->pushCommand(new ChangePortSizeCommand({element}, newSize, scene, true));
-        const QRectF bounds = element->boundingRect();
+        const QRectF bounds = element->outlineRect();
         QJsonObject result;
         result["element_id"] = element->id();
         result["new_size"] = newSize;
@@ -866,7 +866,7 @@ QJsonObject ElementHandler::handleChangeOutputSize(const QJsonObject &params, co
 
     return tryCommand([&]() -> QJsonObject { // LCOV_EXCL_LINE -- pattern 45: gcov misattributes this multi-line lambda-taking call's entry; the lambda body below is genuinely covered
         scene->pushCommand(new ChangePortSizeCommand({element}, newSize, scene, false));
-        const QRectF bounds = element->boundingRect();
+        const QRectF bounds = element->outlineRect();
         QJsonObject result;
         result["element_id"] = element->id();
         result["new_size"] = newSize;

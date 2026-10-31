@@ -14,6 +14,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QKeyEvent>
 #include <QPainter>
+#include <QPainterPath>
 #include <QPixmap>
 #include <QRegularExpression>
 #include <QStyleOptionGraphicsItem>
@@ -197,7 +198,22 @@ QRectF Element::boundingRect() const
 
 QRectF Element::measureBoundingRect() const
 {
+    return outlineRect().united(m_body.decoration);
+}
+
+QRectF Element::outlineRect() const
+{
     return portsBoundingRect().united(m_body.body);
+}
+
+QPainterPath Element::shape() const
+{
+    if (m_body.decoration.isNull()) {
+        return QGraphicsObject::shape();
+    }
+    QPainterPath path;
+    path.addRect(outlineRect());
+    return path;
 }
 
 void Element::measureBody()
@@ -609,7 +625,6 @@ void Element::updateLabel()
     m_label->setText(label);
     // The counter-orientation pivots on the label's centre, which the new text just moved.
     updateLabelOrientation();
-    labelContentChanged();
     changed(ElementChange::Label);
 }
 

@@ -12,10 +12,15 @@
 
 class Element;
 
-/// The rectangle an element's body takes in the element's own coordinates, and the centre the element turns about.
+/// The rectangle an element's body takes in the element's own coordinates, the centre the element turns about, and
+/// what is drawn beyond the body.
 struct BodyShape {
     QRectF body;
     QPointF centre;
+
+    /// What the body draws beyond itself, which is not part of the element: it is neither selected, hit nor aligned (a
+    /// wireless node's indicator). Null for most types.
+    QRectF decoration = {};
 
     friend bool operator==(const BodyShape &, const BodyShape &) = default;
 };

@@ -3,11 +3,6 @@
 
 #include "App/Element/GraphicElements/Node.h"
 
-#include <QGraphicsPixmapItem>
-#include <QPainter>
-#include <QSvgRenderer>
-
-#include "App/Core/ThemeManager.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 #include "App/Wiring/Connection.h"
@@ -36,15 +31,19 @@ struct ElementInfo<Node> {
         descriptor.trContext = "Node";
         descriptor.defaultAppearances = QStringList({":/Components/Logic/node.svg"});
         // A mode out of range (a corrupted file) is None
-        descriptor.parameters = {{
-            .id = ParamId::Wireless,
-            .defaultValue = static_cast<int>(WirelessMode::None),
-            .key = "wirelessMode",
-            .accept = [](const Element &, const ParamValue &value) -> std::optional<ParamValue> {
-                const int mode = std::get<int>(value);
-                return ((mode >= 0) && (mode <= 2)) ? value : ParamValue(static_cast<int>(WirelessMode::None));
+        descriptor.parameters = {
+            {
+                .id = ParamId::Wireless,
+                .defaultValue = static_cast<int>(WirelessMode::None),
+                .key = "wirelessMode",
+                .accept = [](const Element &, const ParamValue &value) -> std::optional<ParamValue> {
+                    const int mode = std::get<int>(value);
+                    return ((mode >= 0) && (mode <= 2)) ? value : ParamValue(static_cast<int>(WirelessMode::None));
+                },
             },
-        }};
+            // The indicator's colour, which a wireless node follows; Unknown until the simulation first updates it
+            {.id = ParamId::Carried, .defaultValue = static_cast<int>(Status::Unknown)},
+        };
         // A node's map came with its mode, in 4.4 (VersionInfo::hasWirelessMode()); an older file holds nothing
         descriptor.mapSince = QVersionNumber(4, 4);
         return descriptor;
@@ -89,41 +88,22 @@ std::optional<Element::PortAttributes> Node::outputAttributes(const int index) c
 void Node::updateLogic()
 {
     if (!simUpdateInputsAllowUnknown()) {
-        updateWirelessColor(Status::Unknown);
+        carry(Status::Unknown);
         return;
     }
     const auto status = simInputs().at(0);
     setOutputValue(status);
-    updateWirelessColor(status);
+    carry(status);
 }
 
 // --- Wireless mode ---
 
-static QPixmap renderWirelessPixmap(const QColor &color)
-{
-    const auto hex = color.name();
-    const auto svg = QStringLiteral(
-        "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 16 16\">"
-        "<circle cx=\"1.5\" cy=\"14.5\" r=\"1.5\" fill=\"%1\"/>"
-        "<path d=\"M 1.5,11 A 3.5,3.5 0 0 1 5,14.5\" fill=\"none\" stroke=\"%1\" stroke-width=\"1.5\" stroke-linecap=\"round\"/>"
-        "<path d=\"M 1.5,7 A 7.5,7.5 0 0 1 9,14.5\" fill=\"none\" stroke=\"%1\" stroke-width=\"1.5\" stroke-linecap=\"round\"/>"
-        "<path d=\"M 1.5,3 A 11.5,11.5 0 0 1 13,14.5\" fill=\"none\" stroke=\"%1\" stroke-width=\"1.5\" stroke-linecap=\"round\"/>"
-        "</svg>").arg(hex);
-
-    QSvgRenderer renderer(svg.toUtf8());
-    QPixmap pixmap(20, 20);
-    pixmap.fill(Qt::transparent);
-    QPainter painter(&pixmap);
-    renderer.render(&painter);
-    painter.end();
-    return pixmap;
-}
-
 void Node::parameterChanged(const ParamId id, const ParamValue &previous)
 {
     Element::parameterChanged(id, previous);
-    if (id != ParamId::Wireless) {
-        return; // LCOV_EXCL_LINE — the wireless mode is a node's one parameter
+    if (id == ParamId::Carried) {
+        pictureChanged();
+        return;
     }
 
     const WirelessMode mode = wirelessMode();
@@ -139,63 +119,15 @@ void Node::parameterChanged(const ParamId id, const ParamValue &previous)
     // Hide the port that is replaced by the wireless channel.
     inputPort()->setVisible(mode != WirelessMode::Rx);
     outputPort()->setVisible(mode != WirelessMode::Tx);
+    // The ports and the indicator the body draws beyond them (NodePresenter) are measured again as one change
     changed(ElementChange::Ports);
-
-    if (mode == WirelessMode::None) {
-        if (m_wirelessIndicator) {
-            m_wirelessIndicator->setVisible(false);
-        }
-        m_wirelessColor = QColor();
-        return;
-    }
-
-    // Create the indicator on first use; render with the Unknown-state color
-    // so it matches undriven wires.  updateLogic() will repaint it with the
-    // live signal color once the simulation runs.
-    if (!m_wirelessIndicator) {
-        const auto color = ThemeManager::attributes().m_connectionUnknown;
-        m_wirelessIndicator = new QGraphicsPixmapItem(renderWirelessPixmap(color), this);
-        m_wirelessIndicator->setZValue(1);
-        m_wirelessColor = color;
-    }
-
-    m_wirelessIndicator->setVisible(true);
-
-    if (mode == WirelessMode::Tx) {
-        // Above the output port (x=32, y=16). The dot in the 20×20 pixmap is at
-        // local (≈2, ≈18); setPos(30, -6) places the dot at node (32, 12) — just
-        // above the port — with arcs fanning upper-right.
-        m_wirelessIndicator->setPos(30, -6);
-        m_wirelessIndicator->setTransform(QTransform());
-    } else {
-        // Above the input port (x=0, y=16), mirrored so arcs open upper-left.
-        // With scale(-1,1): parent_x = setPos.x - local_x, so setPos.x=2 puts the
-        // dot at node (0, 12) — just above the port.
-        m_wirelessIndicator->setPos(2, -6);
-        m_wirelessIndicator->setTransform(QTransform().scale(-1, 1));
-    }
 }
 
-// --- Serialization ---
+// --- Wireless indicator ---
 
-void Node::updateWirelessColor(Status status)
+void Node::carry(const Status status)
 {
-    if (wirelessMode() == WirelessMode::None || !m_wirelessIndicator) {
-        return;
+    if (wirelessMode() != WirelessMode::None) {
+        setParam(ParamId::Carried, static_cast<int>(status));
     }
-
-    const auto theme = ThemeManager::attributes();
-    QColor color;
-    switch (status) {
-    case Status::Unknown:  color = theme.m_connectionUnknown;  break;
-    case Status::Inactive: color = theme.m_connectionInactive; break;
-    case Status::Active:   color = theme.m_connectionActive;   break;
-    case Status::Error:    color = theme.m_connectionError;    break;
-    }
-
-    if (color == m_wirelessColor) {
-        return;
-    }
-    m_wirelessColor = color;
-    m_wirelessIndicator->setPixmap(renderWirelessPixmap(color));
 }

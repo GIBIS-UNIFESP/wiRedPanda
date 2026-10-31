@@ -33,10 +33,11 @@ enum class ParamId {
     Table,     ///< A truth table's outputs, a column of rows for each output.
     Playing,   ///< Whether an audio output plays, which its input being Active starts; no file keeps it.
     Lit,       ///< The picture slot an LED's colour and inputs lit at its last refresh; no file keeps it.
+    Carried,   ///< The Status a wireless node's input carried at its last update, as an int; no file keeps it.
 };
 
 /// The number of parameter ids.
-inline constexpr int kParamIdCount = static_cast<int>(ParamId::Lit) + 1;
+inline constexpr int kParamIdCount = static_cast<int>(ParamId::Carried) + 1;
 
 /// A parameter's value: one kind per parameter, the kind of its default.
 using ParamValue = std::variant<bool, int, double, QString, QBitArray>;

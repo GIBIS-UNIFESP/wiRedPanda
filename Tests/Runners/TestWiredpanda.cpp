@@ -208,6 +208,7 @@
 // unit/scene
 #include "Tests/Unit/Scene/TestConnectionManager.h"
 #include "Tests/Unit/Scene/TestConnectionValidity.h"
+#include "Tests/Unit/Scene/TestElementOutline.h"
 #include "Tests/Unit/Scene/TestGraphicsView.h"
 #include "Tests/Unit/Scene/TestPropertyShortcutHandler.h"
 #include "Tests/Unit/Scene/TestScene.h"
@@ -456,6 +457,7 @@ int main(int argc, char **argv)
         {"TestConnections", []() -> QObject * { return new TestConnections; }},
         {"TestConnectionManager", []() -> QObject * { return new TestConnectionManager; }},
         {"TestConnectionValidity", []() -> QObject * { return new TestConnectionValidity; }},
+        {"TestElementOutline", []() -> QObject * { return new TestElementOutline; }},
         {"TestGraphicsView", []() -> QObject * { return new TestGraphicsView; }},
         {"TestScene", []() -> QObject * { return new TestScene; }},
         {"TestSceneConnections", []() -> QObject * { return new TestSceneConnections; }},

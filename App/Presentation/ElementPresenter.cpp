@@ -44,7 +44,7 @@ public:
             // 0.5 pen width keeps the selection outline thin regardless of zoom level
             painter.setPen(QPen(theme.m_selectionPen, 0.5, Qt::SolidLine));
             // Corner radius of 5 matches the visual rounding used on element bodies
-            painter.drawRoundedRect(element.boundingRect(), 5, 5);
+            painter.drawRoundedRect(element.outlineRect(), 5, 5);
             painter.restore();
         }
 
@@ -91,6 +91,7 @@ void installPresenters()
     static const AudioPresenter audio;
     static const LedPresenter led;
     static const RotaryPresenter rotary;
+    static const NodePresenter node;
     // Each input's segment, as the slot of the display's default appearance list
     static const SegmentDisplayPresenter display7({7, 6, 5, 4, 1, 2, 8, 3});
     static const SegmentDisplayPresenter display14({7, 6, 5, 4, 1, 2, 15, 3, 8, 9, 10, 11, 12, 13, 14});
@@ -124,7 +125,7 @@ void installPresenters()
         {ElementType::Line, &picture},
         {ElementType::Mux, &mux},
         {ElementType::Nand, &picture},
-        {ElementType::Node, &picture},
+        {ElementType::Node, &node},
         {ElementType::Nor, &picture},
         {ElementType::Not, &picture},
         {ElementType::Or, &picture},
