@@ -626,8 +626,9 @@ public:
 
     // --- Theme ---
 
-    /// Updates the element's visual theme according to the current dark/light palette.
-    virtual void updateTheme();
+    /// Takes the current theme's colours for the label and the ports, and repaints the body, which its presenter draws
+    /// in the theme it is handed: a theme's picture is the size of the Light one, so the body keeps its shape.
+    void updateTheme();
 
 protected:
     // --- Graphics & Rendering ---

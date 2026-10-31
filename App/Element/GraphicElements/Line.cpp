@@ -20,7 +20,7 @@ struct ElementInfo<Line> {
     static ElementTypeDescriptor describe()
     {
         auto descriptor = descriptorFromConstraints(constraints);
-        descriptor.pixmapPath = []{ return QStringLiteral(":/Components/Misc/line.svg"); };
+        descriptor.pixmapPath = QStringLiteral(":/Components/Misc/line.svg");
         descriptor.titleText = QT_TRANSLATE_NOOP("Line", "LINE");
         descriptor.translatedName = QT_TRANSLATE_NOOP("Line", "Line");
         descriptor.trContext = "Line";

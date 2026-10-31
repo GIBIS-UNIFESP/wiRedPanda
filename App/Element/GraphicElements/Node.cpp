@@ -25,7 +25,7 @@ struct ElementInfo<Node> {
     static ElementTypeDescriptor describe()
     {
         auto descriptor = descriptorFromConstraints(constraints);
-        descriptor.pixmapPath = []{ return QStringLiteral(":/Components/Logic/node.svg"); };
+        descriptor.pixmapPath = QStringLiteral(":/Components/Logic/node.svg");
         descriptor.titleText = QT_TRANSLATE_NOOP("Node", "NODE");
         descriptor.translatedName = QT_TRANSLATE_NOOP("Node", "Node");
         descriptor.trContext = "Node";

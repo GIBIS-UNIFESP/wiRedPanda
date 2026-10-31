@@ -5,11 +5,14 @@
 
 #include <QLabel>
 #include <QMainWindow>
+#include <QScopeGuard>
 #include <QTabWidget>
 #include <QTemporaryDir>
 
-#include "App/Element/ElementFactory.h"
+#include "App/Core/ThemeManager.h"
 #include "App/Element/ElementLabel.h"
+#include "App/Element/ElementTypeDescriptor.h"
+#include "App/Presentation/ElementPictures.h"
 #include "App/UI/ElementPalette.h"
 #include "App/UI/MainWindowUI.h"
 #include "Tests/Common/TestUtils.h"
@@ -58,7 +61,7 @@ void TestElementPalette::testPaletteRebuild()
 void TestElementPalette::testElementLabelHasDescriptiveTooltip()
 {
     // A gate label describes what the element does and how to place it.
-    ElementLabel andLabel(ElementFactory::pixmap(ElementType::And), ElementType::And, QString());
+    ElementLabel andLabel(ElementPictures::typePicture(ElementType::And), ElementType::And, QString());
     QVERIFY2(andLabel.toolTip().contains(QStringLiteral("AND")), qPrintable(andLabel.toolTip()));
     QVERIFY2(andLabel.toolTip().contains(QStringLiteral("double-click")), qPrintable(andLabel.toolTip()));
 
@@ -70,9 +73,33 @@ void TestElementPalette::testElementLabelHasDescriptiveTooltip()
     }
 
     // Descriptions are element-specific.
-    ElementLabel switchLabel(ElementFactory::pixmap(ElementType::InputSwitch), ElementType::InputSwitch, QString());
+    ElementLabel switchLabel(ElementPictures::typePicture(ElementType::InputSwitch), ElementType::InputSwitch, QString());
     QVERIFY(!switchLabel.toolTip().isEmpty());
     QVERIFY(switchLabel.toolTip() != andLabel.toolTip());
+}
+
+void TestElementPalette::testMemoryIconsFollowTheTheme()
+{
+    const Theme before = ThemeManager::theme();
+    const auto restore = qScopeGuard([before] { ThemeManager::setTheme(before); });
+
+    QMainWindow window;
+    MainWindowUi ui;
+    ui.setupUi(&window);
+    ElementPalette palette(&ui);
+    palette.populate();
+    const auto labels = ui.memory->findChildren<ElementLabel *>();
+    QCOMPARE(labels.size(), 5);
+
+    for (const Theme theme : {Theme::Dark, Theme::Light}) {
+        ThemeManager::setTheme(theme);
+        palette.updateTheme();
+        for (const auto *label : labels) {
+            const QString picture = ElementPictures::themed(ElementTypeDescriptor::of(label->elementType()).pixmapPath,
+                                                            theme);
+            QVERIFY2(label->pixmap().toImage() == QPixmap(picture).toImage(), qPrintable(picture));
+        }
+    }
 }
 
 void TestElementPalette::testAccessibleNameSet()

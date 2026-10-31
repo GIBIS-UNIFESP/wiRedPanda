@@ -432,14 +432,17 @@ QString SnapshotAccess::pixmapIdentity(const Element *element)
     if (dynamic_cast<const FootprintPresenter *>(&ElementPresenter::of(element->elementType()))) {
         return "footprint";
     }
-    const PictureVariant *picture = ElementPictures::instance().shown(*element);
+    // The picture drawn: the current theme's
+    const Theme theme = ThemeManager::attributes().theme();
+    const PictureVariant *picture = ElementPictures::instance().shown(*element, theme);
     if (!picture || picture->pixmap.isNull()) {
         return "null";
     }
 
     const QSize size = picture->pixmap.size();
     // A file on disk keeps only its name: its directory is wherever the checkout is.
-    const QString path = appearance.picturePath(ElementPresenter::of(element->elementType()).pictureSlot(*element));
+    const QString path = ElementPictures::themed(
+        appearance.picturePath(ElementPresenter::of(element->elementType()).pictureSlot(*element)), theme);
     const QString source = path.startsWith(':') ? path : QFileInfo(path).fileName();
     const bool oriented = picture->oriented;
     return QString::number(size.width()) + 'x' + QString::number(size.height()) + ':' + source + (oriented ? ":oriented" : "");

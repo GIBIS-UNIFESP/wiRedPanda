@@ -14,7 +14,7 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementLabel.h"
-#include "App/Element/GraphicElements/DFlipFlop.h"
+#include "App/Presentation/ElementPictures.h"
 #include "App/Scene/Scene.h"
 #include "App/UI/MainWindowUI.h"
 
@@ -167,12 +167,12 @@ void ElementPalette::updateTheme()
 {
     const int memoryTabIndex = tabIndex("memory");
     if (memoryTabIndex != -1) {
-        m_ui->tabElements->setTabIcon(memoryTabIndex, QIcon(DFlipFlop::pixmapPath()));
+        m_ui->tabElements->setTabIcon(memoryTabIndex, QIcon(ElementPictures::typePicture(ElementType::DFlipFlop)));
     }
 
     const auto labels = m_ui->memory->findChildren<ElementLabel *>();
     for (auto *label : labels) {
-        label->updateTheme();
+        label->setPixmap(ElementPictures::typePicture(label->elementType()));
     }
 }
 
@@ -267,7 +267,7 @@ void ElementPalette::populateMenu(QSpacerItem *spacer, const QStringList &names,
     QWidget *const container = layout->parentWidget();
     for (const auto &name : names) {
         const auto type   = ElementFactory::textToType(name);
-        const auto pixmap = ElementFactory::pixmap(type);
+        const auto pixmap = ElementPictures::typePicture(type);
         // "label_<name>" lets onSearchTextChanged()'s first pass match the internal,
         // locale-independent type keyword (e.g. "and"), rather than only the translated
         // display name that the second pass matches.
@@ -308,7 +308,7 @@ void ElementPalette::setupTabIcons()
     if (ioTabIndex != -1)            m_ui->tabElements->setTabIcon(ioTabIndex,            QIcon(":/Components/Input/buttonOff.svg"));
     if (gatesTabIndex != -1)         m_ui->tabElements->setTabIcon(gatesTabIndex,          QIcon(":/Components/Logic/xor.svg"));
     if (combinationalTabIndex != -1) m_ui->tabElements->setTabIcon(combinationalTabIndex,  QIcon(":/Components/Logic/truthtable-rotated.svg"));
-    if (memoryTabIndex != -1)        m_ui->tabElements->setTabIcon(memoryTabIndex,         QIcon(DFlipFlop::pixmapPath()));
+    if (memoryTabIndex != -1)        m_ui->tabElements->setTabIcon(memoryTabIndex,         QIcon(ElementPictures::typePicture(ElementType::DFlipFlop)));
     if (icTabIndex != -1)            m_ui->tabElements->setTabIcon(icTabIndex,             QIcon(":/Components/Logic/ic-panda.svg"));
     if (miscTabIndex != -1)          m_ui->tabElements->setTabIcon(miscTabIndex,           QIcon(":/Components/Misc/text.png"));
     // The search tab is virtual; enabled only when the user types in the search box.

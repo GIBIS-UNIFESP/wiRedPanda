@@ -23,7 +23,7 @@ struct ElementInfo<Xor> {
     static ElementTypeDescriptor describe()
     {
         auto descriptor = descriptorFromConstraints(constraints);
-        descriptor.pixmapPath = []{ return QStringLiteral(":/Components/Logic/xor.svg"); };
+        descriptor.pixmapPath = QStringLiteral(":/Components/Logic/xor.svg");
         descriptor.titleText = QT_TRANSLATE_NOOP("Xor", "XOR");
         descriptor.translatedName = QT_TRANSLATE_NOOP("Xor", "Xor");
         descriptor.trContext = "Xor";

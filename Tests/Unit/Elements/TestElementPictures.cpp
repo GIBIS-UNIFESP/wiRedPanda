@@ -5,13 +5,17 @@
 
 #include <memory>
 
+#include <QDir>
+#include <QDirIterator>
 #include <QFile>
 #include <QImage>
+#include <QScopeGuard>
 #include <QTemporaryDir>
 #include <QTest>
 
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInput.h"
+#include "App/Element/ElementTypeDescriptor.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
@@ -31,7 +35,7 @@ bool writeImage(const QString &path, const QSize size)
 /// Returns the size of the picture \a element shows; invalid while it shows none.
 QSize shownSize(const Element &element)
 {
-    const PictureVariant *picture = ElementPictures::instance().shown(element);
+    const PictureVariant *picture = ElementPictures::instance().shown(element, Theme::Light);
     return picture ? picture->pixmap.size() : QSize();
 }
 
@@ -59,7 +63,7 @@ void TestElementPictures::testElementsShowingOneFileShareItsPicture()
 
     QVERIFY(first.appearance().picture(0).has_value());
     QCOMPARE(first.appearance().picture(0), second.appearance().picture(0));
-    QCOMPARE(ElementPictures::instance().shown(first), ElementPictures::instance().shown(second));
+    QCOMPARE(ElementPictures::instance().shown(first, Theme::Light), ElementPictures::instance().shown(second, Theme::Light));
     QCOMPARE(ElementPicturesTestDetail::shownSize(first), QSize(80, 72));
 }
 
@@ -99,12 +103,12 @@ void TestElementPictures::testVariantsAreBuiltFromTheSourceReadAtLoad()
 
     And gate;
     gate.setAppearance(false, path);
-    QVERIFY(!ElementPictures::instance().shown(gate)->oriented);
+    QVERIFY(!ElementPictures::instance().shown(gate, Theme::Light)->oriented);
 
     // The file goes before the gate turns: its labels are still counter-oriented, from the source read as it loaded.
     QVERIFY(QFile::remove(path));
     gate.setRotation(90);
-    const PictureVariant *turned = ElementPictures::instance().shown(gate);
+    const PictureVariant *turned = ElementPictures::instance().shown(gate, Theme::Light);
     QVERIFY(turned != nullptr);
     QVERIFY(turned->oriented);
     QVERIFY(turned->renderer != nullptr);
@@ -194,4 +198,66 @@ void TestElementPictures::testAnLedShowsTheSlotLitAtItsLastRefresh()
     QVERIFY(ElementPicturesTestDetail::shows(led, off));
     led.refresh();
     QVERIFY(ElementPicturesTestDetail::shows(led, QSize(96, 80)));
+}
+
+void TestElementPictures::testThemedPicturesMatchInSize()
+{
+    // A body is measured on the Light picture its element names and drawn in either theme's: every built-in picture
+    // with a Dark sibling is the sibling's size
+    int pairs = 0;
+    QDirIterator resources(QStringLiteral(":/"), QDir::Files, QDirIterator::Subdirectories);
+    while (resources.hasNext()) {
+        const QString light = resources.next();
+        const QString dark = ElementPictures::themed(light, Theme::Dark);
+        if (dark == light) {
+            continue;
+        }
+        ++pairs;
+        const QSize lightSize = QPixmap(light).size();
+        QVERIFY2(lightSize.isValid(), qPrintable(light));
+        QVERIFY2(QPixmap(dark).size() == lightSize, qPrintable(QStringLiteral("%1 and %2").arg(light, dark)));
+    }
+    // The six latches and flip-flops, at least
+    QVERIFY2(pairs >= 6, qPrintable(QString::number(pairs)));
+}
+
+void TestElementPictures::testOnlyALightResourceIsThemed()
+{
+    const QString light = QStringLiteral(":/Components/Memory/Light/D-latch.svg");
+    const QString dark = QStringLiteral(":/Components/Memory/Dark/D-latch.svg");
+    QCOMPARE(ElementPictures::themed(light, Theme::Dark), dark);
+    QCOMPARE(ElementPictures::themed(light, Theme::Light), light);
+    QCOMPARE(ElementPictures::themed(light, Theme::System), light);
+
+    // A picture with no sibling, and a file on disk in a Light folder, are every theme's
+    const QString gate = QStringLiteral(":/Components/Logic/and.svg");
+    QCOMPARE(ElementPictures::themed(gate, Theme::Dark), gate);
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    QVERIFY(QDir(dir.path()).mkpath(QStringLiteral("Light")) && QDir(dir.path()).mkpath(QStringLiteral("Dark")));
+    const QString onDisk = dir.filePath(QStringLiteral("Light/custom.png"));
+    QVERIFY(ElementPicturesTestDetail::writeImage(onDisk, QSize(64, 64)));
+    QVERIFY(ElementPicturesTestDetail::writeImage(dir.filePath(QStringLiteral("Dark/custom.png")), QSize(64, 64)));
+    QCOMPARE(ElementPictures::themed(onDisk, Theme::Dark), onDisk);
+
+    // An element showing either is shown the same in both themes
+    InputSwitch custom;
+    custom.setAppearance(false, onDisk);
+    QCOMPARE(ElementPictures::instance().shown(custom, Theme::Dark), ElementPictures::instance().shown(custom, Theme::Light));
+}
+
+void TestElementPictures::testTypePictureIsTheCurrentThemes()
+{
+    const Theme before = ThemeManager::theme();
+    const auto restore = qScopeGuard([before] { ThemeManager::setTheme(before); });
+
+    QVERIFY(ElementPictures::typePicture(ElementType::Unknown).isNull());
+    QVERIFY(ElementPictures::typePicture(ElementType::IC).isNull());
+
+    const QString light = ElementTypeDescriptor::of(ElementType::DFlipFlop).pixmapPath;
+    ThemeManager::setTheme(Theme::Dark);
+    QCOMPARE(ElementPictures::typePicture(ElementType::DFlipFlop).toImage(),
+             QPixmap(ElementPictures::themed(light, Theme::Dark)).toImage());
+    ThemeManager::setTheme(Theme::Light);
+    QCOMPARE(ElementPictures::typePicture(ElementType::DFlipFlop).toImage(), QPixmap(light).toImage());
 }

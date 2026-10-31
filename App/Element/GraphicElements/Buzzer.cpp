@@ -30,7 +30,7 @@ struct ElementInfo<Buzzer> {
     static ElementTypeDescriptor describe()
     {
         auto descriptor = descriptorFromConstraints(constraints);
-        descriptor.pixmapPath = []{ return QStringLiteral(":/Components/Output/Buzzer/BuzzerOff.svg"); };
+        descriptor.pixmapPath = QStringLiteral(":/Components/Output/Buzzer/BuzzerOff.svg");
         descriptor.titleText = QT_TRANSLATE_NOOP("Buzzer", "BUZZER");
         descriptor.translatedName = QT_TRANSLATE_NOOP("Buzzer", "Buzzer");
         descriptor.trContext = "Buzzer";

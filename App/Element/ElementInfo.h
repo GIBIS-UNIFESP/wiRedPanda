@@ -111,7 +111,7 @@ inline ElementTypeDescriptor descriptorFromConstraints(const ElementConstraints 
  *
  *     static ElementTypeDescriptor describe() {
  *         auto descriptor = descriptorFromConstraints(constraints);
- *         descriptor.pixmapPath = []{ return QStringLiteral(":/path.svg"); };
+ *         descriptor.pixmapPath = QStringLiteral(":/path.svg");
  *         descriptor.titleText = QT_TRANSLATE_NOOP("And", "AND");
  *         descriptor.translatedName = QT_TRANSLATE_NOOP("And", "And");
  *         descriptor.trContext = "And";

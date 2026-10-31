@@ -15,21 +15,9 @@ ElementAppearance::ElementAppearance(Element *owner)
 {
 }
 
-void ElementAppearance::seed(const QStringList &defaultAppearances,
-                                         const QStringList &alternativeAppearances,
-                                         const QString &pixmapPath)
+void ElementAppearance::seed(const QStringList &defaultAppearances, const QStringList &alternativeAppearances)
 {
     m_defaultAppearances = defaultAppearances;
-    m_pixmapPath = pixmapPath;
-
-    // For elements whose pixmapPath is theme-dependent (e.g. memory elements),
-    // defaultAppearances may be left empty in the descriptor to avoid evaluating the
-    // theme path during static initialisation (before QApplication exists).
-    // Populate it lazily here from the now-correct pixmapPath.
-    if (m_defaultAppearances.isEmpty() && !m_pixmapPath.isEmpty()) {
-        m_defaultAppearances = QStringList({m_pixmapPath});
-    }
-
     m_alternativeAppearances = alternativeAppearances.isEmpty() ? m_defaultAppearances : alternativeAppearances;
 }
 
@@ -108,21 +96,6 @@ void ElementAppearance::reportFailedPicture() const
                                      ? tr("File is not readable")
                                      : tr("Unknown reason");
     throw PANDACEPTION("Couldn't load pixmap: %1 (%2)", *failed, reason);
-}
-
-void ElementAppearance::setDefaultPixmapPath(const QString &pixmapPath)
-{
-    if (pixmapPath.isEmpty() || (m_defaultAppearances == QStringList{pixmapPath})) {
-        return;
-    }
-
-    const QString previous = m_defaultAppearances.value(0);
-    m_pixmapPath = pixmapPath;
-    m_defaultAppearances = QStringList{pixmapPath};
-    if (m_alternativeAppearances.value(0) == previous) {
-        m_alternativeAppearances = m_defaultAppearances;
-    }
-    appearanceChanged();
 }
 
 void ElementAppearance::setAppearance(const bool defaultAppearance, const QString &fileName)

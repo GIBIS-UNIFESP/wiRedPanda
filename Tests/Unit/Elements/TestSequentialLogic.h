@@ -35,8 +35,8 @@ private slots:
     void testSRFlipFlopResetSimState();
     void testTFlipFlopResetSimState();
 
-    // updateTheme() reloads the theme-specific pixmap for every sequential element
-    void testSequentialElementsUpdateTheme();
+    // A presenter draws the picture of the theme it is handed, never the current one's; the body is every theme's
+    void testAThemedBodyIsDrawnInTheThemeHanded();
     // Their picture is the theme's: a refresh after a theme switch keeps it, and a custom appearance stays custom
     void testThemedPictureFollowsTheThemeThroughARefresh();
     void testThemeSwitchKeepsACustomAppearance();

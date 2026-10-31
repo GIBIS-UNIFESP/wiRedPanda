@@ -26,7 +26,7 @@ struct ElementInfo<Demux> {
     static ElementTypeDescriptor describe()
     {
         auto descriptor = descriptorFromConstraints(constraints);
-        descriptor.pixmapPath = []{ return QStringLiteral(":/Components/Logic/demux.svg"); };
+        descriptor.pixmapPath = QStringLiteral(":/Components/Logic/demux.svg");
         descriptor.titleText = QT_TRANSLATE_NOOP("Demux", "DEMULTIPLEXER");
         descriptor.translatedName = QT_TRANSLATE_NOOP("Demux", "Demux");
         descriptor.trContext = "Demux";

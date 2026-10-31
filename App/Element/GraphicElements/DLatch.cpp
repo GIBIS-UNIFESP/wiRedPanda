@@ -23,7 +23,9 @@ struct ElementInfo<DLatch> {
     static ElementTypeDescriptor describe()
     {
         auto descriptor = descriptorFromConstraints(constraints);
-        descriptor.pixmapPath = []{ return DLatch::pixmapPath(); };
+        // The Light theme's picture; presentation shows its Dark sibling in the Dark theme (ElementPictures::themed())
+        descriptor.pixmapPath = QStringLiteral(":/Components/Memory/Light/D-latch.svg");
+        descriptor.defaultAppearances = QStringList({descriptor.pixmapPath});
         descriptor.titleText = QT_TRANSLATE_NOOP("DLatch", "D-LATCH");
         descriptor.translatedName = QT_TRANSLATE_NOOP("DLatch", "D-Latch");
         descriptor.trContext = "DLatch";

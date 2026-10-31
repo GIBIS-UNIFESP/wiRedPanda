@@ -35,7 +35,7 @@ struct ElementInfo<IC> {
     static ElementTypeDescriptor describe()
     {
         auto descriptor = descriptorFromConstraints(constraints);
-        descriptor.pixmapPath = []{ return QString(); };
+        descriptor.pixmapPath = QString();
         descriptor.titleText = QT_TRANSLATE_NOOP("IC", "INTEGRATED CIRCUIT");
         descriptor.translatedName = QT_TRANSLATE_NOOP("IC", "IC");
         descriptor.trContext = "IC";

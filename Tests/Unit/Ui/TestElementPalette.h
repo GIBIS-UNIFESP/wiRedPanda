@@ -15,6 +15,7 @@ private slots:
     void testPaletteSearch();
     void testPaletteRebuild();
     void testElementLabelHasDescriptiveTooltip();
+    void testMemoryIconsFollowTheTheme();
     void testAccessibleNameSet(); // #14 accessibility sweep
 
     void testPopulateFallsBackToFirstTabWhenIoTabIsMissing();

@@ -18,6 +18,7 @@
 #include "App/Element/GraphicElements/And.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
+#include "App/Presentation/ElementPictures.h"
 #include "App/Scene/ClipboardManager.h"
 #include "App/Scene/DragPreview.h"
 #include "App/Scene/GraphicsView.h"
@@ -191,7 +192,7 @@ void TestSceneDropHandler::testHandleNewElementDropAddsElementAtScenePosition()
 
     const qsizetype countBefore = scene->elements().size();
 
-    const QPixmap pixmap = ElementFactory::pixmap(ElementType::And);
+    const QPixmap pixmap = ElementPictures::typePicture(ElementType::And);
     ElementLabel label(pixmap, ElementType::And, "");
     auto mimeData = std::unique_ptr<QMimeData>(label.mimeData());
 
@@ -234,7 +235,7 @@ void TestSceneDropHandler::testAddFromMimeDataAddsElementAtGivenScenePos()
 
     const qsizetype countBefore = scene->elements().size();
 
-    const QPixmap pixmap = ElementFactory::pixmap(ElementType::Or);
+    const QPixmap pixmap = ElementPictures::typePicture(ElementType::Or);
     ElementLabel label(pixmap, ElementType::Or, "");
     QMimeData *mimeData = label.mimeData(); // addFromMimeData() takes ownership (deleteLater)
 
@@ -262,7 +263,7 @@ void TestSceneDropHandler::testAddFromMimeDataKeepsDefaultPositionWhenScenePosOm
     Scene *scene = workspace.scene();
     SceneDropHandler handler(scene);
 
-    const QPixmap pixmap = ElementFactory::pixmap(ElementType::Not);
+    const QPixmap pixmap = ElementPictures::typePicture(ElementType::Not);
     ElementLabel label(pixmap, ElementType::Not, "");
     QMimeData *mimeData = label.mimeData();
 
@@ -298,7 +299,7 @@ void TestSceneDropHandler::testPaletteDragGhostIsWhereTheDropPutsTheElement()
 {
     WorkSpace workspace;
     Scene *scene = workspace.scene();
-    ElementLabel label(ElementFactory::pixmap(ElementType::And), ElementType::And, "");
+    ElementLabel label(ElementPictures::typePicture(ElementType::And), ElementType::And, "");
     auto mimeData = std::unique_ptr<QMimeData>(label.mimeData());
     const DragPreview::Scope preview(label.dragPicture());
 
@@ -366,7 +367,7 @@ void TestSceneDropHandler::testDragGhostLeavesWithTheDrag()
 {
     WorkSpace workspace;
     Scene *scene = workspace.scene();
-    ElementLabel label(ElementFactory::pixmap(ElementType::And), ElementType::And, "");
+    ElementLabel label(ElementPictures::typePicture(ElementType::And), ElementType::And, "");
     auto mimeData = std::unique_ptr<QMimeData>(label.mimeData());
     const DragPreview::Scope preview(label.dragPicture());
 
@@ -382,7 +383,7 @@ void TestSceneDropHandler::testDragFromAnotherProcessHasNoGhost()
     // Another process's drag sets no picture here; the scene accepts it and draws nothing
     WorkSpace workspace;
     Scene *scene = workspace.scene();
-    ElementLabel label(ElementFactory::pixmap(ElementType::And), ElementType::And, "");
+    ElementLabel label(ElementPictures::typePicture(ElementType::And), ElementType::And, "");
     auto mimeData = std::unique_ptr<QMimeData>(label.mimeData());
 
     sendDragEvent(scene, QEvent::GraphicsSceneDragEnter, mimeData.get(), QPointF(100, 100));
@@ -404,7 +405,7 @@ void TestSceneDropHandler::testPaletteDropGrowsTheSceneOverTheElement()
     const QPointF corner = view->mapToScene(QPoint(0, 0));
 
     // Near the viewport's far corner, past the scene's first rect
-    ElementLabel label(ElementFactory::pixmap(ElementType::And), ElementType::And, "");
+    ElementLabel label(ElementPictures::typePicture(ElementType::And), ElementType::And, "");
     auto mimeData = std::unique_ptr<QMimeData>(label.mimeData());
     const QPointF dropPos = view->mapToScene(QPoint(view->viewport()->width() - 40, view->viewport()->height() - 40));
     sendDragEvent(scene, QEvent::GraphicsSceneDragEnter, mimeData.get(), dropPos);
@@ -428,7 +429,7 @@ void TestSceneDropHandler::testCloneDropKeepsTheViewStill()
         GraphicsView *view = workspace.view();
         const QPointF corner = view->mapToScene(QPoint(0, 0));
 
-        ElementLabel label(ElementFactory::pixmap(ElementType::And), ElementType::And, "");
+        ElementLabel label(ElementPictures::typePicture(ElementType::And), ElementType::And, "");
         auto paletteData = std::unique_ptr<QMimeData>(label.mimeData());
         const QPointF paletteDrop = view->mapToScene(QPoint(400, 300));
         sendDragEvent(scene, QEvent::GraphicsSceneDragEnter, paletteData.get(), paletteDrop);

@@ -74,9 +74,6 @@ public:
     /// (empty for types without one, e.g. IC).
     static QString description(const ElementType type);
 
-    /// Returns the pixmap icon for the given element \a type.
-    static QPixmap pixmap(const ElementType type);
-
 private:
     QHash<ElementType, std::function<Element *()>> m_creatorMap;
 };

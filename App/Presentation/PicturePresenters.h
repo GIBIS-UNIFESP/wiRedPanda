@@ -22,7 +22,8 @@ public:
     /// Draws the picture \a element shows, then what its type draws over it and beyond (paintOverlay()).
     void paintBody(QPainter &painter, const Element &element, const BodyContext &context) const override;
 
-    /// Returns the rectangle the picture \a element shows takes, at the origin; empty while it shows none.
+    /// Returns the rectangle the picture \a element shows takes, at the origin, the same in every theme; empty while it
+    /// shows none.
     static QRectF pictureRect(const Element &element);
 
 protected:

@@ -52,7 +52,7 @@ Element::Element(ElementType type, QGraphicsItem *parent)
     , m_parameters(m_descriptor.parameters)
 {
     const ElementTypeDescriptor &descriptor = m_descriptor;
-    m_appearance.seed(descriptor.defaultAppearances, descriptor.alternativeAppearances, descriptor.pixmapPath());
+    m_appearance.seed(descriptor.defaultAppearances, descriptor.alternativeAppearances);
     m_elementGroup = descriptor.group;
     m_maxInputSize = descriptor.maxInputSize;
     m_maxOutputSize = descriptor.maxOutputSize;
@@ -715,11 +715,6 @@ void Element::updateTheme()
     const ThemeAttributes theme = ThemeManager::attributes();
 
     m_label->setBrush(theme.m_elementLabelColor);
-    // A type with no built-in appearances shows its pixmap path's picture, which can be the theme's (the latches and
-    // flip-flops)
-    if (m_descriptor.defaultAppearances.isEmpty()) {
-        m_appearance.setDefaultPixmapPath(m_descriptor.pixmapPath());
-    }
 
     for (auto *input : m_ports.inputs()) {
         input->updateTheme();

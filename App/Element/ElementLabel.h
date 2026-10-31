@@ -71,8 +71,8 @@ public:
     /// Updates the displayed name to match the current application locale.
     void updateName();
 
-    /// Updates colors to match the current application theme.
-    void updateTheme();
+    /// Shows \a pixmap as the element's icon: the palette's, as the theme changes.
+    void setPixmap(const QPixmap &pixmap);
 
 signals:
     /// Emitted on double-click so the palette can add this element to the active scene

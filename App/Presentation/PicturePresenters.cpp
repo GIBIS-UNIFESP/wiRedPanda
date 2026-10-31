@@ -162,7 +162,7 @@ BodyShape PicturePresenter::measure(const Element &element) const
 
 void PicturePresenter::paintBody(QPainter &painter, const Element &element, const BodyContext &context) const
 {
-    if (const PictureVariant *picture = ElementPictures::instance().shown(element)) {
+    if (const PictureVariant *picture = ElementPictures::instance().shown(element, context.theme.theme())) {
         ElementPictures::draw(painter, *picture);
     }
     paintOverlay(painter, element, context);
@@ -170,7 +170,8 @@ void PicturePresenter::paintBody(QPainter &painter, const Element &element, cons
 
 QRectF PicturePresenter::pictureRect(const Element &element)
 {
-    const PictureVariant *picture = ElementPictures::instance().shown(element);
+    // The picture the element names: a theme's sibling is the size of the Light one, so the body is every theme's
+    const PictureVariant *picture = ElementPictures::instance().shown(element, Theme::Light);
     return picture ? QRectF(picture->pixmap.rect()) : QRectF();
 }
 

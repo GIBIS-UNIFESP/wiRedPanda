@@ -294,7 +294,7 @@ void TestElementFactory::testDescriptorRegistry()
     // Test 1: Properties should be retrievable and non-empty via the descriptor registry
     for (const auto type : typesToTest) {
         const auto &descriptor = ElementTypeDescriptor::of(type);
-        QVERIFY2(!descriptor.pixmapPath().isEmpty(),
+        QVERIFY2(!descriptor.pixmapPath.isEmpty(),
                  qPrintable(QString("%1 should have non-empty pixmap path").arg(ElementFactory::typeToText(type))));
         QVERIFY2(descriptor.translatedName != nullptr && descriptor.translatedName[0] != '\0',
                  qPrintable(QString("%1 should have non-empty translated name").arg(ElementFactory::typeToText(type))));
@@ -304,7 +304,7 @@ void TestElementFactory::testDescriptorRegistry()
     for (const auto type : typesToTest) {
         const auto &descriptor1 = ElementTypeDescriptor::of(type);
         const auto &descriptor2 = ElementTypeDescriptor::of(type);
-        QCOMPARE(descriptor1.pixmapPath(), descriptor2.pixmapPath());
+        QCOMPARE(descriptor1.pixmapPath, descriptor2.pixmapPath);
         QCOMPARE(descriptor1.translatedName, descriptor2.translatedName);
     }
 
@@ -369,11 +369,6 @@ void TestElementFactory::testDescriptionForTypeWithoutOwnCase()
     // IC is a real, always-registered type, but description()'s switch has no case for it --
     // it falls into the default (empty description), unlike every element type listed there.
     QVERIFY(ElementFactory::description(ElementType::IC).isEmpty());
-}
-
-void TestElementFactory::testPixmapForUnknownType()
-{
-    QVERIFY(ElementFactory::pixmap(ElementType::Unknown).isNull());
 }
 
 void TestElementFactory::testBuildElementForRegisteredEnumValueWithNoCreatorThrows()

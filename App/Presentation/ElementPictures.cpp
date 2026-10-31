@@ -15,7 +15,9 @@
 #include <QRegularExpression>
 #include <QSvgRenderer>
 
+#include "App/Core/ThemeManager.h"
 #include "App/Element/Element.h"
+#include "App/Element/ElementTypeDescriptor.h"
 #include "App/Presentation/ElementPresenter.h"
 
 namespace ElementPicturesDetail {
@@ -134,10 +136,13 @@ size_t qHash(const Orientation &orientation, const size_t seed = 0)
 
 /// One version of one picture file, and the orientations it has been shown in.
 struct Picture {
+    QString path;      ///< The file it was loaded from.
     bool svg = false;
     QPixmap base;      ///< The picture as QPixmap::load() reads it.
     QByteArray source; ///< An SVG's source, which its counter-oriented variants are built from.
     QHash<Orientation, PictureVariant> variants;
+    bool darkLooked = false;       ///< Whether its Dark theme sibling (ElementPictures::themed()) was looked for.
+    std::optional<PictureId> dark; ///< Its Dark theme sibling, when it has one that loads.
 };
 
 /// The pictures loaded so far, indexed by their PictureId, and the id of each file version.
@@ -205,6 +210,24 @@ Orientation orientationOf(const Element &element)
     return {std::fmod(std::fmod(element.rotation(), 360.0) + 360.0, 360.0), element.isFlippedX(), element.isFlippedY()};
 }
 
+/// Returns the picture \a id names as \a theme shows it: its Dark sibling in the Dark theme, when it has one.
+PictureId themedId(const PictureId id, const Theme theme)
+{
+    if (theme != Theme::Dark) {
+        return id;
+    }
+    // Loading the sibling can grow the library, so the picture is looked up again after it
+    if (!library().pictures.at(static_cast<size_t>(id)).darkLooked) {
+        const QString path = library().pictures.at(static_cast<size_t>(id)).path;
+        const QString dark = ElementPictures::themed(path, Theme::Dark);
+        const std::optional<PictureId> sibling = (dark != path) ? ElementPictures::instance().load(dark) : std::nullopt;
+        Picture &picture = library().pictures.at(static_cast<size_t>(id));
+        picture.darkLooked = true;
+        picture.dark = sibling;
+    }
+    return library().pictures.at(static_cast<size_t>(id)).dark.value_or(id);
+}
+
 /// Returns \a picture shown in \a orientation, building it the first time.
 const PictureVariant &variantOf(Picture &picture, const Orientation &orientation)
 {
@@ -256,6 +279,7 @@ std::optional<PictureId> ElementPictures::load(const QString &path) const
     }
 
     Picture picture;
+    picture.path = path;
     if (!picture.base.load(path)) {
         return std::nullopt;
     }
@@ -280,7 +304,7 @@ std::optional<PictureId> ElementPictures::load(const QString &path) const
     return id;
 }
 
-const PictureVariant *ElementPictures::shown(const Element &element) const
+const PictureVariant *ElementPictures::shown(const Element &element, const Theme theme) const
 {
     using namespace ElementPicturesDetail;
 
@@ -289,7 +313,7 @@ const PictureVariant *ElementPictures::shown(const Element &element) const
     if (!id) {
         return nullptr;
     }
-    return &variantOf(library().pictures.at(static_cast<size_t>(*id)), orientationOf(element));
+    return &variantOf(library().pictures.at(static_cast<size_t>(themedId(*id, theme))), orientationOf(element));
 }
 
 void ElementPictures::draw(QPainter &painter, const PictureVariant &variant)
@@ -317,4 +341,25 @@ QPixmap ElementPictures::preview(const QString &path, const QSize &size)
     pixmap.load(path);
 
     return pixmap.isNull() ? pixmap : pixmap.scaled(size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+}
+
+QString ElementPictures::themed(const QString &path, const Theme theme)
+{
+    static const QString light = QStringLiteral("/Light/");
+    if ((theme != Theme::Dark) || !path.startsWith(QLatin1String(":/")) || !path.contains(light)) {
+        return path;
+    }
+
+    QString dark = path;
+    dark.replace(dark.lastIndexOf(light), light.size(), QStringLiteral("/Dark/"));
+    return QFile::exists(dark) ? dark : path;
+}
+
+QPixmap ElementPictures::typePicture(const ElementType type)
+{
+    if (type == ElementType::Unknown) {
+        return {};
+    }
+
+    return QPixmap{themed(ElementTypeDescriptor::of(type).pixmapPath, ThemeManager::attributes().theme())};
 }

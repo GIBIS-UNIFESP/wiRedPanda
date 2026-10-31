@@ -24,7 +24,7 @@ struct ElementInfo<InputGnd> {
     static ElementTypeDescriptor describe()
     {
         auto descriptor = descriptorFromConstraints(constraints);
-        descriptor.pixmapPath = []{ return QStringLiteral(":/Components/Input/0.svg"); };
+        descriptor.pixmapPath = QStringLiteral(":/Components/Input/0.svg");
         descriptor.titleText = QT_TRANSLATE_NOOP("InputGnd", "GROUND");
         descriptor.translatedName = QT_TRANSLATE_NOOP("InputGnd", "GND");
         descriptor.trContext = "InputGnd";

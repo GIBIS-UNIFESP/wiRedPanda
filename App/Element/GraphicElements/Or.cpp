@@ -23,7 +23,7 @@ struct ElementInfo<Or> {
     static ElementTypeDescriptor describe()
     {
         auto descriptor = descriptorFromConstraints(constraints);
-        descriptor.pixmapPath = []{ return QStringLiteral(":/Components/Logic/or.svg"); };
+        descriptor.pixmapPath = QStringLiteral(":/Components/Logic/or.svg");
         descriptor.titleText = QT_TRANSLATE_NOOP("Or", "OR");
         descriptor.translatedName = QT_TRANSLATE_NOOP("Or", "Or");
         descriptor.trContext = "Or";

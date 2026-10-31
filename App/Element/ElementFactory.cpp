@@ -101,15 +101,6 @@ QString ElementFactory::description(const ElementType type)
     }
 }
 
-QPixmap ElementFactory::pixmap(const ElementType type)
-{
-    if (type == ElementType::Unknown) {
-        return {};
-    }
-
-    return QPixmap{ElementTypeDescriptor::of(type).pixmapPath()};
-}
-
 Element *ElementFactory::buildElement(const ElementType type)
 {
     qCDebug(four) << type;

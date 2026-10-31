@@ -23,7 +23,7 @@ struct ElementInfo<InputVcc> {
     static ElementTypeDescriptor describe()
     {
         auto descriptor = descriptorFromConstraints(constraints);
-        descriptor.pixmapPath = []{ return QStringLiteral(":/Components/Input/1.svg"); };
+        descriptor.pixmapPath = QStringLiteral(":/Components/Input/1.svg");
         descriptor.titleText = QT_TRANSLATE_NOOP("InputVcc", "VCC");
         descriptor.translatedName = QT_TRANSLATE_NOOP("InputVcc", "VCC");
         descriptor.trContext = "InputVcc";

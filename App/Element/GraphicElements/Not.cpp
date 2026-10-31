@@ -23,7 +23,7 @@ struct ElementInfo<Not> {
     static ElementTypeDescriptor describe()
     {
         auto descriptor = descriptorFromConstraints(constraints);
-        descriptor.pixmapPath = []{ return QStringLiteral(":/Components/Logic/not.svg"); };
+        descriptor.pixmapPath = QStringLiteral(":/Components/Logic/not.svg");
         descriptor.titleText = QT_TRANSLATE_NOOP("Not", "NOT");
         descriptor.translatedName = QT_TRANSLATE_NOOP("Not", "Not");
         descriptor.trContext = "Not";

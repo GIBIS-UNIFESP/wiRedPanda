@@ -23,7 +23,7 @@ struct ElementInfo<Nand> {
     static ElementTypeDescriptor describe()
     {
         auto descriptor = descriptorFromConstraints(constraints);
-        descriptor.pixmapPath = []{ return QStringLiteral(":/Components/Logic/nand.svg"); };
+        descriptor.pixmapPath = QStringLiteral(":/Components/Logic/nand.svg");
         descriptor.titleText = QT_TRANSLATE_NOOP("Nand", "NAND");
         descriptor.translatedName = QT_TRANSLATE_NOOP("Nand", "Nand");
         descriptor.trContext = "Nand";

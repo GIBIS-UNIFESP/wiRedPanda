@@ -27,7 +27,7 @@ struct ElementInfo<InputRotary> {
     static ElementTypeDescriptor describe()
     {
         auto descriptor = descriptorFromConstraints(constraints);
-        descriptor.pixmapPath = []{ return QStringLiteral(":/Components/Input/rotary_icon.svg"); };
+        descriptor.pixmapPath = QStringLiteral(":/Components/Input/rotary_icon.svg");
         descriptor.titleText = QT_TRANSLATE_NOOP("InputRotary", "ROTARY SWITCH");
         descriptor.translatedName = QT_TRANSLATE_NOOP("InputRotary", "Rotary Switch");
         descriptor.trContext = "InputRotary";

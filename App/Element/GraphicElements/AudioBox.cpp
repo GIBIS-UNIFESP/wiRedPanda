@@ -30,7 +30,7 @@ struct ElementInfo<AudioBox> {
     static ElementTypeDescriptor describe()
     {
         auto descriptor = descriptorFromConstraints(constraints);
-        descriptor.pixmapPath = []{ return QStringLiteral(":/Components/Output/AudioBox/audioboxOff.svg"); };
+        descriptor.pixmapPath = QStringLiteral(":/Components/Output/AudioBox/audioboxOff.svg");
         descriptor.titleText = QT_TRANSLATE_NOOP("AudioBox", "Audio Box");
         descriptor.translatedName = QT_TRANSLATE_NOOP("AudioBox", "Audio Box");
         descriptor.trContext = "AudioBox";

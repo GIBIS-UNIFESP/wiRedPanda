@@ -99,7 +99,7 @@ QStringList describe(const Element *element)
 {
     // A Text's bounds take in its text, whose width follows the platform's fonts, so only its body is written.
     const QString bounds = (element->elementType() == ElementType::Text)
-                               ? rectText(QRectF(ElementPictures::instance().shown(*element)->pixmap.rect())) + "+text"
+                               ? rectText(QRectF(ElementPictures::instance().shown(*element, Theme::Light)->pixmap.rect())) + "+text"
                                : rectText(element->boundingRect());
     QStringList lines;
     lines << QString("  rot=%1 flipX=%2 flipY=%3 in=%4 out=%5 bounds=%6 pix=%7")

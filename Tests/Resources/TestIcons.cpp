@@ -7,6 +7,7 @@
 
 #include "App/Core/Enums.h"
 #include "App/Element/ElementFactory.h"
+#include "App/Presentation/ElementPictures.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestIcons::testIcons_data()
@@ -45,7 +46,7 @@ void TestIcons::testIcons()
     QFETCH(QString, typeName);
 
     auto type = static_cast<ElementType>(typeValue);
-    const auto pixmap = ElementFactory::pixmap(type);
+    const auto pixmap = ElementPictures::typePicture(type);
 
     QVERIFY2(!pixmap.isNull(),
              qPrintable(QString("%1 (type=%2) pixmap not found").arg(typeName).arg(typeValue)));

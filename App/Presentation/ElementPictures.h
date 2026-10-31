@@ -11,6 +11,8 @@
 
 #include <QPixmap>
 
+#include "App/Core/Enums.h"
+#include "App/Core/ThemeManager.h"
 #include "App/Element/PictureLibrary.h"
 
 class Element;
@@ -34,6 +36,10 @@ struct PictureVariant {
  * variants are built from the SVG's source, read as the picture loaded, as each orientation is first shown. Neither
  * versions nor variants are dropped: their number is bounded by the pictures the program shows and the orientations it
  * shows them in, not by circuit size. GUI-thread only.
+ *
+ * A built-in picture drawn for each theme (the latches' and flip-flops') is named by the Light theme's, in a Light
+ * folder with a Dark one beside it (themed()); an element shows the sibling of the theme it is drawn in, and is
+ * measured on the picture it names, the Light one, which is the size of the Dark one.
  */
 class ElementPictures final : public PictureLibrary
 {
@@ -43,8 +49,9 @@ public:
 
     std::optional<PictureId> load(const QString &path) const override;
 
-    /// Returns \a element's picture as it shows it in its orientation now; null while it shows none.
-    const PictureVariant *shown(const Element &element) const;
+    /// Returns \a element's picture as it shows it in \a theme, in its orientation now; null while it shows none.
+    /// System is drawn as Light.
+    const PictureVariant *shown(const Element &element, Theme theme) const;
 
     /// Draws \a variant at the origin with \a painter: an SVG from its vector renderer (crisp at any zoom), a raster
     /// file from its pixmap.
@@ -52,6 +59,17 @@ public:
 
     /// Returns a preview of the picture at \a path scaled to fit \a size; null if it does not load.
     static QPixmap preview(const QString &path, const QSize &size);
+
+    /**
+     * \brief Returns the picture at \a path as \a theme shows it.
+     * \details A built-in picture in a Light folder is shown in the Dark theme as its sibling in the Dark folder beside
+     * it, when there is one; any other path, and any path in another theme, is returned as it is.
+     */
+    static QString themed(const QString &path, Theme theme);
+
+    /// Returns the picture the palette and the menus show for \a type, in the current theme; null for
+    /// ElementType::Unknown and for a type with no picture (IC).
+    static QPixmap typePicture(ElementType type);
 
 private:
     ElementPictures() = default;

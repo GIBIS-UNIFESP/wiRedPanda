@@ -165,8 +165,8 @@ QMimeData *ElementLabel::mimeData() const
     return mimeData;
 }
 
-void ElementLabel::updateTheme()
+void ElementLabel::setPixmap(const QPixmap &pixmap)
 {
-    m_pixmap = ElementFactory::pixmap(m_elementType);
+    m_pixmap = pixmap;
     m_iconLabel.setPixmap(m_pixmap);
 }
