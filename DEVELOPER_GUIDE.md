@@ -179,7 +179,7 @@ wiRedPanda/
 │   │   ├── PropertyDescriptor.h            #     Property system
 │   │   ├── IC.cpp/h                        #     Integrated circuit (sub-circuit) element
 │   │   ├── ICLoader.cpp/h                  #     Loads an IC's sub-circuit from file or embedded blob
-│   │   ├── ICRenderer.cpp/h                #     Draws an IC's body and cached pixmaps
+│   │   ├── ICRenderer.cpp/h                #     Builds an IC's hover-preview pixmap
 │   │   ├── ICSimulation.cpp/h              #     Builds/runs an IC's internal simulation graph
 │   │   ├── ElementSerializer.cpp/h         #     Serialization
 │   │   └── GraphicElements/                #     31 concrete element implementations
@@ -758,7 +758,7 @@ The IC system allows reusing circuits as sub-components, split across several fo
 
 - **`IC.cpp/h`** (`App/Element/`): the element representing an IC in the scene (a "black box" with ports)
 - **`ICLoader.cpp/h`** (`App/Element/`): loads an IC's sub-circuit from an external `.panda` file or an embedded blob
-- **`ICRenderer.cpp/h`** (`App/Element/`): draws the IC's body and builds its cached pixmaps
+- **`ICRenderer.cpp/h`** (`App/Element/`): builds the IC's hover-preview pixmap; its presenter (`App/Presentation/FootprintPresenters.cpp`) draws the body
 - **`ICSimulation.cpp/h`** (`App/Element/`): builds and runs the IC's internal simulation graph
 - **`ICPreviewPopup.cpp/h`** (`App/Element/`): frameless popup showing a preview of an IC's internal circuit on hover
 - **`ICRegistry.cpp/h`** (`App/Scene/`): central registry that monitors `.panda` files and auto-updates ICs when the file changes

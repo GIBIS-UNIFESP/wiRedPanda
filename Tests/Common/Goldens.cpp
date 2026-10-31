@@ -429,8 +429,7 @@ void addSegmentDisplaysAndDisplayIc(CircuitBuilder &builder, const QString &dire
 QString SnapshotAccess::pixmapIdentity(const Element *element)
 {
     const ElementAppearance &appearance = element->appearance();
-    if (dynamic_cast<const FootprintPresenter *>(&ElementPresenter::of(element->elementType()))
-        || appearance.hasRenderPixmap()) {
+    if (dynamic_cast<const FootprintPresenter *>(&ElementPresenter::of(element->elementType()))) {
         return "footprint";
     }
     const PictureVariant *picture = ElementPictures::instance().shown(*element);

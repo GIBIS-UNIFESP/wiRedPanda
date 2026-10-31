@@ -60,7 +60,7 @@ private slots:
     void testICFileMigrationDisabledSkips();         // no backup when migration disabled
 
     // Rendering under rotation (4 tests)
-    void testICRotationKeepsSizingPixmap();          // drawBody() sizes the body from pixmap().rect()
+    void testICRotationKeepsTheFootprint();          // the body is the footprint at any rotation
     void testICRotationPivotsAtFootprintCenter();
     void testICRotatedBodyStillPaintsMascot();
     void testICRotatedMascotStaysUpright();

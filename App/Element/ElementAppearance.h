@@ -19,8 +19,8 @@ class Element;
 
 /**
  * \class ElementAppearance
- * \brief Owns the pictures an Element can show: the default/alternative appearance lists, the picture each slot of
- * them loaded, and the procedural render pixmap of a body drawn as vectors.
+ * \brief Owns the pictures an Element can show: the default/alternative appearance lists and the picture each slot of
+ * them loaded.
  *
  * \details The pictures are loaded, oriented, sized and drawn by presentation, through the installed PictureLibrary:
  * this keeps only the id each slot's picture is loaded as. Which slot an element shows is its presenter's to pick
@@ -54,12 +54,6 @@ public:
     /// load; empty for a slot out of range or one with no picture.
     QString picturePath(int slot) const { return m_picturePaths.value(slot); }
 
-    /// Returns the procedural render pixmap (setRenderPixmap()); null for an element that shows a picture.
-    QPixmap renderPixmap() const { return m_hasCustomRenderPixmap ? m_renderPixmap : QPixmap(); }
-
-    /// Returns true while the element draws a procedural body instead of its picture (setRenderPixmap()).
-    bool hasRenderPixmap() const { return m_hasCustomRenderPixmap; }
-
     /// Returns true if at least one default appearance is available.
     bool hasDefaultAppearances() const { return !m_defaultAppearances.isEmpty(); }
 
@@ -73,11 +67,6 @@ public:
 
     /// Throws a Pandaception naming the first slot's picture that did not load, and why, while its default is shown.
     void reportFailedPicture() const;
-
-    /// Replaces the picture with a procedurally-built body pixmap (Mux/Demux/TruthTable/IC).
-    /// From then on the owner draws its own body from this pixmap's footprint: orientation
-    /// changes leave it untouched, and the owner turns about its body's centre.
-    void setRenderPixmap(const QPixmap &pixmap);
 
     // --- Appearance list ---
 
@@ -126,8 +115,6 @@ private:
     QStringList m_picturePaths;                 ///< Each slot's picture's path: the one asked for, or the slot's default.
     QStringList m_loadedPaths;                  ///< Each slot's path as appearanceChanged() last loaded it (change guard).
     QStringList m_failedPaths;                  ///< Each slot's path when it did not load, else empty.
-    QPixmap m_renderPixmap;               ///< Procedural body pixmap; only its size is used (setRenderPixmap()).
-    bool m_hasCustomRenderPixmap = false; ///< True while the owner draws m_renderPixmap's footprint instead of the picture.
 
     QString m_pixmapPath;         ///< Resource/file path of the default pixmap (from the descriptor).
 

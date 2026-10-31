@@ -2645,7 +2645,7 @@ void TestScene::testGeometryChangeKeepsSceneIndexConsistentKS()
     // QGraphicsSceneBspTree::items during paint): every runtime change to an element's
     // boundingRect() must reindex the scene's BSP tree via prepareGeometryChange(), or the
     // stale bounds let a later paint walk the tree into a freed node. ElementAppearance's
-    // appearanceChanged()/setRenderPixmap() already guard the pixmap-load paths; this exercises the
+    // appearanceChanged() and pictureReplaced() already guard the picture-load paths; this exercises the
     // two remaining chokepoints — setPortSize() (port count) and applyOrientation() reached
     // directly via a rotate/flip — through the exact drawItems -> BSP paint pipeline, and
     // asserts the element stays correctly indexed and that render() does not fault.

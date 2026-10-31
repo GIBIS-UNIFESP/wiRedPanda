@@ -1078,33 +1078,30 @@ IC *loadExampleIC(Scene *scene)
 
 } // namespace
 
-void TestIC::testICRotationKeepsSizingPixmap()
+void TestIC::testICRotationKeepsTheFootprint()
 {
-    // IC::drawBody() computes the whole body geometry from pixmap().rect(), and the IC has
-    // no base pixmap (its metadata pixmapPath is empty) — only the sizing pixmap installed
-    // by generatePixmap(). Rotating must not replace it, or the body collapses to a
-    // degenerate rect and the mascot lands on the element's top-left corner.
-    // pixmapCenter() is the public window onto that pixmap's geometry.
+    // The IC has no picture (its pixmapPath is empty): its body is the footprint its ports give, and turns about its
+    // centre. Rotating must not measure it again as the missing picture, or the body collapses to a degenerate rect and
+    // the mascot lands on the element's top-left corner.
     WorkSpace workspace;
     auto *ic = loadExampleIC(workspace.scene());
     QVERIFY(ic);
 
-    const QPointF footprintCenter = ic->pixmapCenter();
-    QVERIFY(footprintCenter != QPointF(0, 0));
+    const BodyShape footprint = ic->body();
+    QVERIFY(!footprint.body.isEmpty());
+    QCOMPARE(footprint.centre, footprint.body.center());
 
     ic->setRotation(90);
-    QVERIFY2(ic->pixmapCenter() != QPointF(0, 0),
-             "Rotation replaced the IC sizing pixmap with the null base pixmap");
-    QCOMPARE(ic->pixmapCenter(), footprintCenter);
+    QCOMPARE(ic->body(), footprint);
 
     ic->setRotation(0);
-    QCOMPARE(ic->pixmapCenter(), footprintCenter);
+    QCOMPARE(ic->body(), footprint);
 }
 
 void TestIC::testICRotationPivotsAtFootprintCenter()
 {
-    // The transform origin is normally set when a base pixmap is loaded; the IC only ever
-    // installs a sizing pixmap, so it must set the origin itself or rotation orbits (0,0).
+    // The transform origin is normally set when a picture is loaded; the IC has none, so its
+    // body is measured from its footprint, which must set the origin or rotation orbits (0,0).
     WorkSpace workspace;
     auto *ic = loadExampleIC(workspace.scene());
     QVERIFY(ic);
@@ -1178,7 +1175,7 @@ IC *TestIC::buildBigIC(Scene *scene)
     scene->addItem(ic);
 
     // Mirrors ICLoader::loadBoundaryPorts()'s lock-then-set sequence (widen min/max together,
-    // then set the size) followed by the same ICRenderer::generatePixmap() call loadFile()
+    // then set the size) followed by the same pictureReplaced() call loadFile()
     // makes — port count chosen well past what fits in the 64px body.
     constexpr int portCount = 12;
     ic->setMaxInputSize(portCount);
@@ -1187,7 +1184,7 @@ IC *TestIC::buildBigIC(Scene *scene)
     ic->setMaxOutputSize(portCount);
     ic->setMinOutputSize(portCount);
     ic->setOutputSize(portCount);
-    ICRenderer::generatePixmap(*ic);
+    ic->pictureReplaced();
 
     return ic;
 }

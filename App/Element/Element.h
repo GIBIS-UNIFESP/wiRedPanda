@@ -436,12 +436,11 @@ public:
     const BodyShape &body() const { return m_body; }
 
     /**
-     * \brief Footprint of a "procedural render body" (IC/Mux/Demux/TruthTable): the nominal
+     * \brief Footprint of a body drawn as vectors (IC/Mux/Demux/TruthTable): the nominal
      * 64x64 body unioned with wherever the ports actually land, which extends past it once an
      * instance has enough ports.
-     * \details Single source of truth for the body their presenter measures (BodyShape), the sizing
-     * pixmap, and the label's anchor on those four element types, so they can never drift out of
-     * sync with each other.
+     * \details Single source of truth for the body their presenter measures (BodyShape) and the
+     * label's anchor on those element types, so they can never drift out of sync with each other.
      */
     QRectF renderBodyBounds() const;
 
@@ -582,10 +581,6 @@ public:
      */
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) final;
 
-    /// Draws with \a painter, in the element's own coordinates, the whole body of an IC. Nothing by default: the
-    /// presenters draw every other type.
-    virtual void drawBody(QPainter &painter) const;
-
     /// Returns the type's name in the current language ("And", "D-Flip-Flop", ...), looked up each time it is asked,
     /// so it follows a language change.
     QString translatedName() const;
@@ -625,10 +620,6 @@ public:
 
 protected:
     // --- Graphics & Rendering ---
-
-    /// Returns the procedural render pixmap of a type that draws its own body (see ElementAppearance::setRenderPixmap());
-    /// null for an element that shows a picture.
-    QPixmap renderPixmap() const;
 
     /**
      * \brief Returns the bounding rectangle that encompasses all child ports.
@@ -819,7 +810,7 @@ private:
     friend class ElementSerializer;
 
     /// Reports each new picture through pictureReplaced(), under one ChangeBatch; see
-    /// ElementAppearance::appearanceChanged()/setRenderPixmap().
+    /// ElementAppearance::appearanceChanged().
     friend class ElementAppearance;
 
     /// Calls the protected sceneEvent() directly to test its Ctrl+click swallow deterministically:

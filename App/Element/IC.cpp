@@ -8,14 +8,12 @@
 #include <QDataStream>
 #include <QFileInfo>
 #include <QGraphicsSceneMouseEvent>
-#include <QPainter>
 #include <QStyleOptionGraphicsItem>
 
 #include "App/Core/Common.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 #include "App/Element/ICLoader.h"
-#include "App/Element/ICRenderer.h"
 #include "App/Element/ICSimulation.h"
 #include "App/IO/ExternalFilePath.h"
 #include "App/IO/Serialization.h"
@@ -368,11 +366,6 @@ void IC::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
     // (The "already active" vs. "needs re-arming" distinction is made by whoever
     // drives the popup off this signal — see SceneUiBinder.)
     emit previewMoved(this, event->screenPos());
-}
-
-void IC::drawBody(QPainter &painter) const
-{
-    ICRenderer::drawBody(*this, painter);
 }
 
 void IC::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)

@@ -425,7 +425,7 @@ void TestElement::testBodiesDrawnInCodeOfferNoAppearance()
         }
     }
     drawnInCode.sort();
-    QCOMPARE(drawnInCode, QStringList({"Demux", "Mux", "TruthTable"}));
+    QCOMPARE(drawnInCode, QStringList({"Demux", "IC", "Mux", "TruthTable"}));
 }
 
 void TestElement::testTheNameFollowsTheLanguage()

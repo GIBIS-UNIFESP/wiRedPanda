@@ -231,6 +231,17 @@ void TestICUnit::testDoubleClickOpensSubCircuitNotInlineEditor()
     QCOMPARE(inlineEditSpy.count(), 0);
 }
 
+void TestICUnit::testAnUnloadedIcTurnsAboutItsFootprint()
+{
+    // An IC has no picture: before its definition loads its body is the bare 64x64 footprint, and it turns about that
+    // footprint's centre, as a loaded one does about its own, so an orientation a file applies before the load stays
+    // where it was saved.
+    IC ic;
+    QCOMPARE(ic.body().body, QRectF(0, 0, 64, 64));
+    QCOMPARE(ic.body().centre, QPointF(32, 32));
+    QCOMPARE(ic.transformOriginPoint(), QPointF(32, 32));
+}
+
 void TestICUnit::testUnloadedIcSimulationMethodsAreNoOps()
 {
     // A freshly-constructed, never-loaded IC has 0 internal elements -- ICSimulation::initialize()/
@@ -283,31 +294,6 @@ void TestICUnit::testLoadedIcWithDisconnectedInputIsUnknown()
 
     ic->resettleCombinational();
     QCOMPARE(ic->outputValue(0), Status::Unknown);
-}
-
-void TestICUnit::testGeneratePixmapWithNonFiniteBoundsIsNoOp()
-{
-    // Defense-in-depth: a non-finite port position makes renderBodyBounds() NaN, and
-    // QSizeF::toSize() asserts (!qIsNaN) on that -> process abort. The load-side guards
-    // (validateFinitePos/validateFiniteAngle) reject this on a real load, so it's forced
-    // directly via the port's own public setPos() to exercise the guard deterministically.
-    QTemporaryDir subDir;
-    QVERIFY(subDir.isValid());
-    WorkSpace subWorkspace;
-    CircuitBuilder subBuilder(subWorkspace.scene());
-    InputSwitch sw;
-    Led led;
-    subBuilder.add(&sw, &led);
-    subBuilder.connect(&sw, 0, &led, 0);
-    const QString subPath = subDir.path() + "/nonfinite_pixmap_probe.panda";
-    QCOMPARE(subWorkspace.save(subPath), WorkSpace::SaveOutcome::Saved);
-
-    auto ic = std::make_unique<IC>();
-    ic->loadFile(subPath, subDir.path());
-    QVERIFY(ic->inputSize() >= 1);
-
-    ic->inputPort(0)->setPos(std::numeric_limits<qreal>::quiet_NaN(), 0);
-    ICRenderer::generatePixmap(*ic); // must return early rather than abort
 }
 
 void TestICUnit::testGeneratePreviewPixmapWithNonFiniteBoundsIsNoOp()

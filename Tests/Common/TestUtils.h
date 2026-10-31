@@ -587,7 +587,7 @@ struct ScopedInteractiveMode {
 
 /**
  * @brief Renders @a elm's scene footprint into an image; @a centerOut receives the centre of
- * the element's body (where drawBody() centres its logo/icon) in image coordinates.
+ * the element's body (where its presenter centres a logo/icon) in image coordinates.
  */
 QImage renderElementForComparison(QGraphicsScene *scene, Element *elm, QPoint &centerOut);
 

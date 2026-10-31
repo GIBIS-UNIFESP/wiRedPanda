@@ -89,9 +89,6 @@ void ElementAppearance::appearanceChanged()
         return;
     }
 
-    // Loading a picture hands display ownership back from a procedural render pixmap.
-    m_hasCustomRenderPixmap = false;
-
     // The rotation pivots on the body's centre, so the pivot follows the picture whenever it changes.
     m_owner->pictureReplaced();
 }
@@ -111,17 +108,6 @@ void ElementAppearance::reportFailedPicture() const
                                      ? tr("File is not readable")
                                      : tr("Unknown reason");
     throw PANDACEPTION("Couldn't load pixmap: %1 (%2)", *failed, reason);
-}
-
-void ElementAppearance::setRenderPixmap(const QPixmap &pixmap)
-{
-    // As in appearanceChanged(): the new picture, its body and the pivot it moves are one change.
-    const Element::ChangeBatch batch(*m_owner);
-    m_renderPixmap = pixmap;
-    m_hasCustomRenderPixmap = true;
-    // The owner's body is drawn from this footprint, so rotation must pivot on its centre —
-    // the picture flow gets the same guarantee from appearanceChanged().
-    m_owner->pictureReplaced();
 }
 
 void ElementAppearance::setDefaultPixmapPath(const QString &pixmapPath)

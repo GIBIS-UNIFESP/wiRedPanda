@@ -24,12 +24,14 @@ private slots:
     // this, but it's asserted directly rather than assumed.
     void testDoubleClickOpensSubCircuitNotInlineEditor();
 
+    // An IC whose definition has not loaded
+    void testAnUnloadedIcTurnsAboutItsFootprint();
+
     // ICSimulation's empty-IC and disconnected-input guards
     void testUnloadedIcSimulationMethodsAreNoOps();
     void testLoadedIcWithDisconnectedInputIsUnknown();
 
     // ICRenderer's non-finite/degenerate-geometry defense-in-depth guards
-    void testGeneratePixmapWithNonFiniteBoundsIsNoOp();
     void testGeneratePreviewPixmapWithNonFiniteBoundsIsNoOp();
     void testGeneratePreviewPixmapWithDegenerateAspectRatioIsEmpty();
     void testGeneratePreviewPixmapScalesAnExtentBeyondIntRange();

@@ -83,7 +83,12 @@ Element::Element(ElementType type, QGraphicsItem *parent)
     // giving a large speedup for elements that don't redraw on every pan/zoom
     setCacheMode(QGraphicsItem::DeviceCoordinateCache);
 
-    m_appearance.appearanceChanged();
+    // The first pictures give the body and the pivot; a type with none (IC) is measured from its footprint alone
+    if (m_appearance.hasDefaultAppearances()) {
+        m_appearance.appearanceChanged();
+    } else {
+        pictureReplaced();
+    }
 }
 
 Element::~Element() = default; // LCOV_EXCL_LINE — the Itanium ABI emits separate deleting/complete-object destructor variants for this virtual dtor; gcov attributes them to the same source line, and not every variant is exercised by a given delete call site.
@@ -96,11 +101,6 @@ ElementType Element::elementType() const
 ElementGroup Element::elementGroup() const
 {
     return m_elementGroup;
-}
-
-QPixmap Element::renderPixmap() const
-{
-    return m_appearance.renderPixmap();
 }
 
 QStringList Element::externalFiles() const
@@ -323,11 +323,6 @@ void Element::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     Q_UNUSED(option)
 
     BodyPainter::installed().paint(*painter, *this);
-}
-
-void Element::drawBody(QPainter &painter) const
-{
-    Q_UNUSED(painter)
 }
 
 void Element::invalidateRenderCache()
