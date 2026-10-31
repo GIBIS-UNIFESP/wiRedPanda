@@ -150,8 +150,6 @@ static QSvgRenderer &rotaryArrowRenderer()
 
 void InputRotary::drawBody(QPainter &painter) const
 {
-    Element::drawBody(painter);
-
     // Draw a small position mark for every output port, evenly spaced around the dial.
     // The active port also gets the arrow overlay drawn on top.
     for (int port = 0; port < outputSize(); ++port) {

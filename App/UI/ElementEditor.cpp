@@ -28,6 +28,7 @@
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
+#include "App/Presentation/ElementPictures.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/ICRegistry.h"
 #include "App/Scene/Scene.h"
@@ -205,7 +206,7 @@ void ElementEditor::rebuildAppearanceStateTiles(const QList<std::pair<int, QStri
         tile->setAutoRaise(true);
         tile->setFixedSize(tileSize);
         tile->setIconSize(iconSize);
-        tile->setIcon(QIcon(m_elements[0]->appearancePreviewPixmap(index, iconSize)));
+        tile->setIcon(QIcon(ElementPictures::preview(m_elements[0]->appearance().alternativeAppearances().value(index), iconSize)));
         tile->setToolTip(label);
         tile->setProperty("appearanceStateIndex", index);
         m_ui->buttonGroupAppearanceStates->addButton(tile);
@@ -269,7 +270,7 @@ void ElementEditor::updateElementAppearance()
         // place so it shows the new image immediately. Without this it keeps the old preview
         // until the element is reselected (which rebuilds the whole grid).
         if (auto *checked = qobject_cast<QToolButton *>(m_ui->buttonGroupAppearanceStates->checkedButton())) {
-            checked->setIcon(QIcon(m_elements[0]->appearancePreviewPixmap(appearanceIndex, checked->iconSize())));
+            checked->setIcon(QIcon(ElementPictures::preview(m_elements[0]->appearance().alternativeAppearances().value(appearanceIndex), checked->iconSize())));
         }
         return;
     }

@@ -17,6 +17,7 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/IC.h"
+#include "App/Presentation/ElementPictures.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/Wiring/Port.h"
@@ -98,7 +99,7 @@ QStringList describe(const Element *element)
 {
     // A Text's bounds take in its text, whose width follows the platform's fonts, so only its body is written.
     const QString bounds = (element->elementType() == ElementType::Text)
-                               ? rectText(QRectF(element->appearance().pixmap().rect())) + "+text"
+                               ? rectText(QRectF(ElementPictures::instance().shown(*element)->pixmap.rect())) + "+text"
                                : rectText(element->boundingRect());
     QStringList lines;
     lines << QString("  rot=%1 flipX=%2 flipY=%3 in=%4 out=%5 bounds=%6 pix=%7")

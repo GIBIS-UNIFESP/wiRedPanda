@@ -45,6 +45,6 @@ public:
     static const ElementPresenter &of(ElementType type);
 };
 
-/// Registers each type's presenter and installs them as the model's BodyMeasure and BodyPainter. Called once by every
-/// program that has elements, as it starts, before any element exists.
+/// Registers each type's presenter and installs them as the model's BodyMeasure and BodyPainter, and the pictures as its
+/// PictureLibrary. Called once by every program that has elements, as it starts, before any element exists.
 void installPresenters();

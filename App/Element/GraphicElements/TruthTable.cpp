@@ -140,7 +140,7 @@ void TruthTable::drawBody(QPainter &painter) const
     painter.translate(boundingRect().topLeft());
     // The body footprint is the (correctly-sized) m_pixmap rect — exactly the area the old raster
     // occupied — so the geometry is reproduced 1:1 at any zoom.
-    const QRectF bounds(pixmap().rect());
+    const QRectF bounds(renderPixmap().rect());
 
     // Main body: mid-gray rounded rectangle inset 7px on each side (14px total) so port connector
     // dots sit on top of the body border rather than floating in empty space.

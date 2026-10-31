@@ -100,9 +100,9 @@ ElementGroup Element::elementGroup() const
     return m_elementGroup;
 }
 
-QPixmap Element::pixmap() const
+QPixmap Element::renderPixmap() const
 {
-    return m_appearance.pixmap();
+    return m_appearance.renderPixmap();
 }
 
 QStringList Element::externalFiles() const
@@ -212,13 +212,22 @@ void Element::measureBody()
     m_body = BodyMeasure::installed().measure(*this);
 }
 
-void Element::measureBodyAndPivot()
+void Element::pictureReplaced()
 {
+    const QSizeF previousSize = m_body.body.size();
     measureBody();
+
+    // A size change grows/shrinks the bounds; DeviceCoordinateCache keeps the old device tile on a plain update(), so
+    // reset the cache to force a full re-render and avoid a stale ghost of the previous picture.
+    if (m_body.body.size() != previousSize) {
+        invalidateRenderCache();
+    }
+
     // The transform origin must follow the body's centre so that rotation stays centred on it; a flip, or a
     // non-rotatable element's oriented ports, are re-applied about it too.
     setTransformOriginPoint(m_body.centre);
     recentreOrientation();
+    pictureChanged();
 }
 
 bool Element::syncBoundingRect()
@@ -325,7 +334,7 @@ void Element::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
 
 void Element::drawBody(QPainter &painter) const
 {
-    m_appearance.render(painter);
+    Q_UNUSED(painter)
 }
 
 void Element::invalidateRenderCache()
@@ -411,11 +420,6 @@ QList<std::pair<int, QString>> Element::appearanceStates() const
 {
     // Default: single appearance at index 0, translated in the "GraphicElement" context the catalogues hold
     return {{0, QCoreApplication::translate("GraphicElement", "Default")}};
-}
-
-QPixmap Element::appearancePreviewPixmap(const int index, const QSize &size) const
-{
-    return m_appearance.previewPixmapAt(index, size);
 }
 
 namespace ElementPortLayout {

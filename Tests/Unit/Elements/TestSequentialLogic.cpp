@@ -24,6 +24,7 @@
 #include "App/Element/GraphicElements/TFlipFlop.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
+#include "App/Presentation/ElementPictures.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
 #include "Tests/Common/TestUtils.h"
@@ -631,39 +632,41 @@ void TestSequentialLogic::testTFlipFlopResetSimState()
 
 void TestSequentialLogic::testSequentialElementsUpdateTheme()
 {
-    // pixmap() is protected, so appearancePreviewPixmap() (backed by the same
-    // ElementAppearance the pixmap()/setPixmap() pair reads/writes) stands in for it.
-    const QSize previewSize(64, 64);
+    // Each shows a picture before and after a theme change.
+    const auto showsAPicture = [](const Element &element) {
+        const PictureVariant *picture = ElementPictures::instance().shown(element);
+        return (picture != nullptr) && !picture->pixmap.isNull();
+    };
 
     DFlipFlop dff;
-    QVERIFY(!dff.appearancePreviewPixmap(0, previewSize).isNull());
+    QVERIFY(showsAPicture(dff));
     dff.updateTheme();
-    QVERIFY(!dff.appearancePreviewPixmap(0, previewSize).isNull());
+    QVERIFY(showsAPicture(dff));
 
     JKFlipFlop jkff;
-    QVERIFY(!jkff.appearancePreviewPixmap(0, previewSize).isNull());
+    QVERIFY(showsAPicture(jkff));
     jkff.updateTheme();
-    QVERIFY(!jkff.appearancePreviewPixmap(0, previewSize).isNull());
+    QVERIFY(showsAPicture(jkff));
 
     SRFlipFlop srff;
-    QVERIFY(!srff.appearancePreviewPixmap(0, previewSize).isNull());
+    QVERIFY(showsAPicture(srff));
     srff.updateTheme();
-    QVERIFY(!srff.appearancePreviewPixmap(0, previewSize).isNull());
+    QVERIFY(showsAPicture(srff));
 
     TFlipFlop tff;
-    QVERIFY(!tff.appearancePreviewPixmap(0, previewSize).isNull());
+    QVERIFY(showsAPicture(tff));
     tff.updateTheme();
-    QVERIFY(!tff.appearancePreviewPixmap(0, previewSize).isNull());
+    QVERIFY(showsAPicture(tff));
 
     DLatch dlatch;
-    QVERIFY(!dlatch.appearancePreviewPixmap(0, previewSize).isNull());
+    QVERIFY(showsAPicture(dlatch));
     dlatch.updateTheme();
-    QVERIFY(!dlatch.appearancePreviewPixmap(0, previewSize).isNull());
+    QVERIFY(showsAPicture(dlatch));
 
     SRLatch srlatch;
-    QVERIFY(!srlatch.appearancePreviewPixmap(0, previewSize).isNull());
+    QVERIFY(showsAPicture(srlatch));
     srlatch.updateTheme();
-    QVERIFY(!srlatch.appearancePreviewPixmap(0, previewSize).isNull());
+    QVERIFY(showsAPicture(srlatch));
 }
 
 namespace TestSequentialLogicHelpers {

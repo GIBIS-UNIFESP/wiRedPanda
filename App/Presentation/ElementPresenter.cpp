@@ -14,22 +14,34 @@
 #include "App/Element/BodyPainter.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementAppearance.h"
+#include "App/Presentation/ElementPictures.h"
 
 namespace ElementPresenterDetail {
 
-/// The presenter of most types: the body is the picture the element shows, and turns about its centre.
+/// Returns the rectangle the picture \a element shows takes, at the origin; empty while it shows none.
+QRectF pictureRect(const Element &element)
+{
+    const PictureVariant *picture = ElementPictures::instance().shown(element);
+    return picture ? QRectF(picture->pixmap.rect()) : QRectF();
+}
+
+/// The presenter of most types: the body is the picture the element shows, and turns about its centre; the element
+/// draws what it has of its own over it (a display's lit segments, a rotary's marks).
 class PicturePresenter : public ElementPresenter
 {
 public:
     BodyShape measure(const Element &element) const override
     {
-        const QRectF picture(element.appearance().pixmap().rect());
+        const QRectF picture = pictureRect(element);
         return {picture, picture.center()};
     }
 
     void paintBody(QPainter &painter, const Element &element, const BodyContext &context) const override
     {
         Q_UNUSED(context)
+        if (const PictureVariant *picture = ElementPictures::instance().shown(element)) {
+            ElementPictures::draw(painter, *picture);
+        }
         element.drawBody(painter);
     }
 };
@@ -41,7 +53,7 @@ class SegmentDisplayPresenter : public PicturePresenter
 public:
     BodyShape measure(const Element &element) const override
     {
-        const QRectF picture(element.appearance().pixmap().rect());
+        const QRectF picture = pictureRect(element);
         return {picture.united(QRectF(0, 0, 64, 64)), picture.center()};
     }
 };
@@ -49,16 +61,22 @@ public:
 /**
  * \brief The presenter of the types whose body is drawn as vectors to fit their ports (IC, Mux, Demux, TruthTable).
  * \details The body is the nominal 64x64 square, grown to wherever the ports land. It turns about the body's centre
- * once the element has built its picture, and about its picture's centre before (an IC with no definition yet).
+ * once the element has built its render pixmap, and about its picture's centre before (an IC with no definition yet).
+ * The element draws the whole body.
  */
-class FootprintPresenter : public PicturePresenter
+class FootprintPresenter : public ElementPresenter
 {
 public:
     BodyShape measure(const Element &element) const override
     {
         const QRectF body = element.renderBodyBounds();
-        const ElementAppearance &appearance = element.appearance();
-        return {body, appearance.hasRenderPixmap() ? body.center() : QRectF(appearance.pixmap().rect()).center()};
+        return {body, element.appearance().hasRenderPixmap() ? body.center() : pictureRect(element).center()};
+    }
+
+    void paintBody(QPainter &painter, const Element &element, const BodyContext &context) const override
+    {
+        Q_UNUSED(context)
+        element.drawBody(painter);
     }
 };
 
@@ -69,7 +87,7 @@ class TextPresenter : public PicturePresenter
 public:
     BodyShape measure(const Element &element) const override
     {
-        const QRectF picture(element.appearance().pixmap().rect());
+        const QRectF picture = pictureRect(element);
         return {picture.united(element.childrenBoundingRect()), picture.center()};
     }
 };
@@ -183,4 +201,5 @@ void installPresenters()
     static const PresenterBodyPainter painter;
     BodyMeasure::install(&measure);
     BodyPainter::install(&painter);
+    PictureLibrary::install(&ElementPictures::instance());
 }

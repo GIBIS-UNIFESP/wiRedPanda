@@ -36,6 +36,7 @@
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
+#include "App/Presentation/ElementPictures.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -46,12 +47,10 @@
 #include "Tests/Common/TestUtils.h"
 
 namespace {
-/// Test-only accessor: Element::pixmap() is protected, but a subclass may read it for its
-/// own instances. This exposes the currently displayed pixmap so flip-variant rendering can be
-/// asserted without widening the production API.
+/// Reads the picture an element shows in its orientation, so flip-variant rendering can be asserted.
 template <typename Element>
 struct PixmapProbe : Element {
-    QImage displayedImage() const { return this->pixmap().toImage(); }
+    QImage displayedImage() const { return ElementPictures::instance().shown(*this)->pixmap.toImage(); }
 };
 } // namespace
 
