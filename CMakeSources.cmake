@@ -511,10 +511,10 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementAdvanced.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementAppearance.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementChanges.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementPainter.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementPresenters.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementLabel.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementPainter.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementPictures.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementPresenters.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementProperties.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementSerializer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestFeatures.cpp
@@ -754,10 +754,10 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementAdvanced.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementAppearance.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementChanges.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementPainter.h
-    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementPresenters.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementLabel.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementPainter.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementPictures.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementPresenters.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementProperties.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestElementSerializer.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestFeatures.h
