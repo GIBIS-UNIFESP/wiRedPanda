@@ -16,6 +16,7 @@ private slots:
 
     // --- Reporting ---
     void testEachChangeIsReportedOnce();
+    void testALayoutReportsTheLabelOnlyWhenItMoves();
     void testBoundsThatMoveAreReportedAsBody();
     void testThePictureAloneIsNotReported();
     void testAChangeThatThrowsIsStillReported();

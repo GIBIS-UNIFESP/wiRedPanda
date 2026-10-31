@@ -61,6 +61,12 @@ void drawTrapezoid(QPainter &painter, const int top, const int bottom, const boo
     painter.drawPolygon(inner);
 }
 
+/// Where the label of a footprint that grows with its ports goes: below it, a little in from its left.
+QPointF belowTheFootprint(const Element &element)
+{
+    return {30, element.renderBodyBounds().bottom() + 5};
+}
+
 } // namespace FootprintPresentersDetail
 
 BodyShape FootprintPresenter::measure(const Element &element) const
@@ -93,6 +99,11 @@ void DemuxPresenter::paintFootprint(QPainter &painter, const Element &element, c
     Q_UNUSED(element)
     const int height = static_cast<int>(footprint.height());
     FootprintPresentersDetail::drawTrapezoid(painter, 8, height - 10, false);
+}
+
+LabelPlacement TruthTablePresenter::label(const Element &element) const
+{
+    return {FootprintPresentersDetail::belowTheFootprint(element)};
 }
 
 void TruthTablePresenter::paintFootprint(QPainter &painter, const Element &element, const QRectF &footprint) const
@@ -128,6 +139,11 @@ void TruthTablePresenter::paintFootprint(QPainter &painter, const Element &eleme
     QRectF shadowRect(finalRect.bottomLeft(), finalRect.bottomRight());
     shadowRect.adjust(0, -3, 0, 0);
     painter.drawRoundedRect(shadowRect, 3, 3);
+}
+
+LabelPlacement ICPresenter::label(const Element &element) const
+{
+    return {FootprintPresentersDetail::belowTheFootprint(element), 90};
 }
 
 void ICPresenter::paintFootprint(QPainter &painter, const Element &element, const QRectF &footprint) const

@@ -48,6 +48,10 @@ protected:
 /// The presenter of TruthTable: a DIP-like grey body with the table's icon, upright at any orientation, and a shadow.
 class TruthTablePresenter final : public FootprintPresenter
 {
+public:
+    /// Below the footprint.
+    LabelPlacement label(const Element &element) const override;
+
 protected:
     void paintFootprint(QPainter &painter, const Element &element, const QRectF &footprint) const override;
 };
@@ -57,6 +61,10 @@ protected:
 /// footprint.
 class ICPresenter final : public FootprintPresenter
 {
+public:
+    /// Below the footprint, turned 90 degrees to stand along the side of the chip, as a package's name does.
+    LabelPlacement label(const Element &element) const override;
+
 protected:
     void paintFootprint(QPainter &painter, const Element &element, const QRectF &footprint) const override;
 };

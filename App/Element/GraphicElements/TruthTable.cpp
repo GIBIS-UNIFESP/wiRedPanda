@@ -92,8 +92,7 @@ void TruthTable::layoutPorts()
     // The ports take the base layout: columns centred on the 64 px body, at a 16 px pitch (every other grid line)
     Element::layoutPorts();
 
-    setLabelAnchor(QPointF(30, renderBodyBounds().bottom() + 5));
-
+    // The footprint follows the ports, and the label goes below it (TruthTablePresenter::label())
     pictureReplaced();
 }
 

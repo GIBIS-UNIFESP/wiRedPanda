@@ -66,10 +66,6 @@ Node::Node(QGraphicsItem *parent)
     // In Rx mode parameterChanged() will relax this to optional.
     inputPort()->setRequired(true);
 
-    // The node body is 32×32; move the label just below it (instead of the
-    // default 64px offset which is designed for 64×64 elements).
-    setLabelAnchor(QPointF(0, 32));
-
     updatePortsProperties();
 }
 

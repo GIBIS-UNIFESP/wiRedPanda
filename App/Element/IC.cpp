@@ -53,10 +53,6 @@ struct ElementInfo<IC> {
 IC::IC(QGraphicsItem *parent)
     : Element(ElementType::IC, parent)
 {
-    // ICs display their label vertically alongside the chip body, matching the physical
-    // convention of reading IC labels along the side of a physical DIP package
-    m_label->setRotation(90);
-
     // Enable hover events so the preview popup can be shown/hidden
     setAcceptHoverEvents(true);
 }

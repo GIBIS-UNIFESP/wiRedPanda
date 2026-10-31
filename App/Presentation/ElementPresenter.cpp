@@ -9,12 +9,16 @@
 #include <QHash>
 #include <QPainter>
 #include <QPen>
+#include <QSizeF>
+#include <QString>
 
 #include "App/Core/ThemeManager.h"
 #include "App/Element/BodyPainter.h"
 #include "App/Element/Element.h"
+#include "App/Element/LabelMeasure.h"
 #include "App/Presentation/ElementPictures.h"
 #include "App/Presentation/FootprintPresenters.h"
+#include "App/Presentation/LabelMetrics.h"
 #include "App/Presentation/PicturePresenters.h"
 
 namespace ElementPresenterDetail {
@@ -52,6 +56,28 @@ public:
     }
 };
 
+/// The model's LabelMeasure: each element's label is placed by its type's presenter, and its text takes the box the
+/// label font gives it (LabelMetrics).
+class PresenterLabelMeasure final : public LabelMeasure
+{
+public:
+    LabelShape measure(const Element &element) const override
+    {
+        const LabelPlacement placement = ElementPresenter::of(element.elementType()).label(element);
+        // Every flush measures the label, and laying its text out is most of a flush: the box of the text last measured
+        // stands while the text does
+        QString text = element.labelShown();
+        const LabelShape &last = element.labelShape();
+        const QSizeF box = (text == last.text) ? last.box : LabelMetrics::size(text);
+        return {placement.anchor, placement.rotation, box, std::move(text)};
+    }
+
+    const QFont &font() const override
+    {
+        return LabelMetrics::font();
+    }
+};
+
 /// The presenter of each type, as installPresenters() registers them.
 QHash<ElementType, const ElementPresenter *> &registry()
 {
@@ -65,6 +91,12 @@ int ElementPresenter::pictureSlot(const Element &element) const
 {
     Q_UNUSED(element)
     return 0;
+}
+
+LabelPlacement ElementPresenter::label(const Element &element) const
+{
+    Q_UNUSED(element)
+    return {QPointF(0, 64)};
 }
 
 const ElementPresenter *ElementPresenter::find(const ElementType type)
@@ -143,7 +175,9 @@ void installPresenters()
 
     static const PresenterBodyMeasure measure;
     static const PresenterBodyPainter painter;
+    static const PresenterLabelMeasure labelMeasure;
     BodyMeasure::install(&measure);
     BodyPainter::install(&painter);
+    LabelMeasure::install(&labelMeasure);
     PictureLibrary::install(&ElementPictures::instance());
 }

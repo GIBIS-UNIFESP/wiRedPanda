@@ -5,7 +5,8 @@
 
 #include <QObject>
 
-/// The presenters: every type has one, and an element's body is the one its type's presenter measures.
+/// The presenters: every type has one, and an element's body and label are the ones its type's presenter measures and
+/// places.
 class TestElementPresenters : public QObject
 {
     Q_OBJECT
@@ -15,4 +16,10 @@ private slots:
     void testAnElementsBodyIsItsPresentersMeasure();
     void testBuildingAnElementMeasuresItsBodyOnce();
     void testTextDrawsItsHintAsASimpleTextItemDid();
+    void testEachTypePlacesItsLabel();
+    void testTheLabelBoxIsTheTextAsDrawn_data();
+    void testTheLabelBoxIsTheTextAsDrawn();
+    void testALabelKeepsTheTextItWasMeasuredFor();
+    void testTheLabelBoxFollowsTheTrigger();
+    void testTextsBodyHoldsItsLabel();
 };
