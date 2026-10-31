@@ -37,10 +37,6 @@ public:
 
     // --- Visual ---
 
-    /// Draws the truth-table body (DIP rect, table icon, shadow) straight onto \a painter as
-    /// vectors, so it stays crisp at any zoom instead of blitting a fixed-resolution pixmap.
-    void drawBody(QPainter &painter) const override;
-
     /// \reimp — opens the truth table editor on double-click.
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
 
@@ -59,11 +55,6 @@ public:
     std::optional<PortAttributes> outputAttributes(int index) const override;
 
 protected:
-    /// Lays the ports out, then places the label below the body and redraws it for the new port counts.
+    /// Lays the ports out, then places the label below the body and measures the body again for the new port counts.
     void layoutPorts() override;
-
-private:
-    // --- Internal methods ---
-
-    void generatePixmap();
 };

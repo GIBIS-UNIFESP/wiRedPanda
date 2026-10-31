@@ -13,34 +13,11 @@
 #include "App/Core/ThemeManager.h"
 #include "App/Element/BodyPainter.h"
 #include "App/Element/Element.h"
-#include "App/Element/ElementAppearance.h"
 #include "App/Presentation/ElementPictures.h"
+#include "App/Presentation/FootprintPresenters.h"
 #include "App/Presentation/PicturePresenters.h"
 
 namespace ElementPresenterDetail {
-
-/**
- * \brief The presenter of the types whose body is drawn as vectors to fit their ports (IC, Mux, Demux, TruthTable).
- * \details The body is the nominal 64x64 square, grown to wherever the ports land. It turns about the body's centre
- * once the element has built its render pixmap, and about its picture's centre before (an IC with no definition yet).
- * The element draws the whole body.
- */
-class FootprintPresenter : public ElementPresenter
-{
-public:
-    BodyShape measure(const Element &element) const override
-    {
-        const QRectF body = element.renderBodyBounds();
-        const bool rendered = element.appearance().hasRenderPixmap();
-        return {body, rendered ? body.center() : PicturePresenter::pictureRect(element).center()};
-    }
-
-    void paintBody(QPainter &painter, const Element &element, const BodyContext &context) const override
-    {
-        Q_UNUSED(context)
-        element.drawBody(painter);
-    }
-};
 
 /// The model's BodyMeasure: each element is measured by its type's presenter.
 class PresenterBodyMeasure final : public BodyMeasure
@@ -118,7 +95,10 @@ void installPresenters()
     static const SegmentDisplayPresenter display7({7, 6, 5, 4, 1, 2, 8, 3});
     static const SegmentDisplayPresenter display14({7, 6, 5, 4, 1, 2, 15, 3, 8, 9, 10, 11, 12, 13, 14});
     static const SegmentDisplayPresenter display16({9, 8, 7, 5, 6, 1, 2, 3, 17, 4, 10, 11, 12, 13, 14, 15, 16});
-    static const FootprintPresenter footprint;
+    static const MuxPresenter mux;
+    static const DemuxPresenter demux;
+    static const TruthTablePresenter truthTable;
+    static const ICPresenter ic;
     static const TextPresenter text;
 
     // Every type an element can have, each named: a type left out has no presenter, which TestElementPresenters finds.
@@ -129,11 +109,11 @@ void installPresenters()
         {ElementType::Clock, &level},
         {ElementType::DFlipFlop, &picture},
         {ElementType::DLatch, &picture},
-        {ElementType::Demux, &footprint},
+        {ElementType::Demux, &demux},
         {ElementType::Display14, &display14},
         {ElementType::Display16, &display16},
         {ElementType::Display7, &display7},
-        {ElementType::IC, &footprint},
+        {ElementType::IC, &ic},
         {ElementType::InputButton, &level},
         {ElementType::InputGnd, &picture},
         {ElementType::InputRotary, &rotary},
@@ -142,7 +122,7 @@ void installPresenters()
         {ElementType::JKFlipFlop, &picture},
         {ElementType::Led, &led},
         {ElementType::Line, &picture},
-        {ElementType::Mux, &footprint},
+        {ElementType::Mux, &mux},
         {ElementType::Nand, &picture},
         {ElementType::Node, &picture},
         {ElementType::Nor, &picture},
@@ -152,7 +132,7 @@ void installPresenters()
         {ElementType::SRLatch, &picture},
         {ElementType::TFlipFlop, &picture},
         {ElementType::Text, &text},
-        {ElementType::TruthTable, &footprint},
+        {ElementType::TruthTable, &truthTable},
         {ElementType::Xnor, &picture},
         {ElementType::Xor, &picture},
     };

@@ -582,8 +582,8 @@ public:
      */
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) final;
 
-    /// Draws with \a painter, in the element's own coordinates, the whole body of a type that draws one (Mux, Demux,
-    /// TruthTable, IC). Nothing by default; the presenter draws a picture and what goes over it.
+    /// Draws with \a painter, in the element's own coordinates, the whole body of an IC. Nothing by default: the
+    /// presenters draw every other type.
     virtual void drawBody(QPainter &painter) const;
 
     /// Returns the type's name in the current language ("And", "D-Flip-Flop", ...), looked up each time it is asked,

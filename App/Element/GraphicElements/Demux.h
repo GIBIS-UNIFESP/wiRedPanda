@@ -28,10 +28,6 @@ public:
 
     // --- Visual / Port Configuration ---
 
-    /// Draws the trapezoid body straight onto \a painter as vectors, so it stays crisp at any
-    /// zoom instead of blitting a fixed-resolution pixmap.
-    void drawBody(QPainter &painter) const override;
-
     /// \reimp Co-updates input count when output size changes, as one change of the ports.
     void setOutputSize(const int size) override;
 
@@ -45,15 +41,13 @@ public:
     void updateLogic() override;
 
 protected:
-    /// Lays the ports out, then redraws the body for the new port count.
+    /// Lays the ports out, then measures the body again for the new port count.
     void layoutPorts() override;
 
     /// \reimp Refuses inputs other than the data input and the select lines the outputs need.
     void loadState(QDataStream &stream, SerializationContext &context) override;
 
 private:
-    void generatePixmap();
-
     /// The body's height for the current outputs, a multiple of 16 of at least 64.
     int bodyHeight() const;
 

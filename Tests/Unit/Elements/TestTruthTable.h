@@ -34,7 +34,7 @@ private slots:
     void testLoadKeyOldVersion();
 
     // Rendering under rotation
-    void testRotationKeepsSizingPixmap();
+    void testRotationKeepsTheFootprint();
     void testRotatedIconStaysUpright();
     void testPaintingSelected();
 

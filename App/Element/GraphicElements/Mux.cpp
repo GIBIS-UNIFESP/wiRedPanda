@@ -5,8 +5,6 @@
 
 #include <cmath>
 
-#include <QPainter>
-
 #include "App/Core/Constants.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
@@ -51,7 +49,7 @@ Mux::Mux(QGraphicsItem *parent)
 void Mux::layoutPorts()
 {
     Element::layoutPorts();
-    generatePixmap();
+    pictureReplaced();
 }
 
 int Mux::bodyHeight() const
@@ -87,58 +85,6 @@ std::optional<Element::PortAttributes> Mux::outputAttributes(const int index) co
 {
     // The output on the right, centred
     return attributesAt({{.name = "Out", .position = QPointF(48, bodyHeight() / 2)}}, index);
-}
-
-void Mux::generatePixmap()
-{
-    // The body is drawn as vectors in drawBody()/paint(); m_pixmap is kept only so the base
-    // pixmapCenter()/measureBoundingRect() have the right size (its image content is never displayed).
-    const int height = static_cast<int>(renderBodyBounds().height());
-
-    QPixmap sizingPixmap(64, height);
-    sizingPixmap.fill(Qt::transparent);
-    m_appearance.setRenderPixmap(sizingPixmap);
-}
-
-void Mux::drawBody(QPainter &painter) const
-{
-    painter.save();
-    painter.setRenderHint(QPainter::Antialiasing);
-    // boundingRect()'s top-left may be negative when ports extend past the 64×64 body; align the
-    // local origin with it so the body lands exactly where the old rasterised pixmap was blitted.
-    painter.translate(boundingRect().topLeft());
-
-    const int height = renderPixmap().rect().height();
-
-    // Trapezoid body: wider on left (input side), narrower on right (output side)
-    const int bodyTop = 8;
-    const int bodyBottom = height - 10;
-    const int rightInset = 8; // fixed inset for the narrower right side
-
-    // Outer dark shape
-    painter.setBrush(QColor(38, 38, 38));
-    painter.setPen(QPen(QColor(38, 38, 38), 3, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-
-    QPolygonF outer;
-    outer << QPointF(22, bodyTop)
-          << QPointF(22, bodyBottom)
-          << QPointF(42, bodyBottom - rightInset)
-          << QPointF(42, bodyTop + rightInset);
-    painter.drawPolygon(outer);
-
-    // Inner white fill
-    painter.setBrush(QColor(252, 252, 252));
-    painter.setPen(QPen(QColor(252, 252, 252), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-
-    const int fillInset = 4;
-    QPolygonF inner;
-    inner << QPointF(22 + fillInset, bodyTop + fillInset)
-          << QPointF(22 + fillInset, bodyBottom - fillInset)
-          << QPointF(42 - fillInset, bodyBottom - rightInset - fillInset + 2)
-          << QPointF(42 - fillInset, bodyTop + rightInset + fillInset - 2);
-    painter.drawPolygon(inner);
-
-    painter.restore();
 }
 
 void Mux::updateLogic()
