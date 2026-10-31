@@ -133,10 +133,8 @@ public:
     void saveSimState(QVector<Status> &out) const override;
     void restoreSimState(const QVector<Status> &in, int &cursor) override;
 
-    /// \reimp
-    QRectF measureBoundingRect() const override;
-    /// \reimp
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+    /// Draws the IC body (see ICRenderer::drawBody()).
+    void drawBody(QPainter &painter) const override;
     /// \reimp
     void refresh() override;
     /// None once a sub-circuit has loaded, since the hover preview names the IC; one with nothing loaded has its type's

@@ -20,6 +20,7 @@
 #include "App/Core/Constants.h"
 #include "App/Core/Enums.h"
 #include "App/Core/ItemWithId.h"
+#include "App/Element/BodyMeasure.h"
 #include "App/Element/ElementAppearance.h"
 #include "App/Element/ElementChange.h"
 #include "App/Element/ElementOrientation.h"
@@ -55,7 +56,7 @@ class QWidget;
  * - Serialization to / from a versioned QDataStream (save/load).
  * - Wire-update callbacks via itemChange(); the grid every placing edit snaps to (snapToGrid()).
  * - Label and keyboard-trigger display.
- * - Theme-aware selection highlight painting.
+ * - The body's shape, measured by the installed BodyMeasure, and its painting through the installed BodyPainter.
  * - Polymorphic hooks for clock frequency, audio, color, and truth-table
  *   features that only a subset of elements support.
  */
@@ -433,8 +434,25 @@ public:
      */
     static QPointF snapToGrid(const QPointF &pos, int step = Constants::gridSize / 2);
 
-    /// Returns the centre point of the element's pixmap in local coordinates.
-    QPointF pixmapCenter() const;
+    /// Returns the centre the element turns about in local coordinates, as its body was last measured (BodyShape).
+    QPointF pixmapCenter() const { return m_body.centre; }
+
+    /// Returns the shape of the element's body as it was last measured: as each change is reported and as its
+    /// picture changes.
+    const BodyShape &body() const { return m_body; }
+
+    /**
+     * \brief Footprint of a "procedural render body" (IC/Mux/Demux/TruthTable): the nominal
+     * 64x64 body unioned with wherever the ports actually land, which extends past it once an
+     * instance has enough ports.
+     * \details Single source of truth for the body their presenter measures (BodyShape), the sizing
+     * pixmap, and the label's anchor on those four element types, so they can never drift out of
+     * sync with each other.
+     */
+    QRectF renderBodyBounds() const;
+
+    /// Returns the element's appearance: its picture and the appearances it can show.
+    const ElementAppearance &appearance() const { return m_appearance; }
 
     /**
      * \brief Returns the bounding rectangle of this element in local coordinates, as Qt was last given it.
@@ -444,9 +462,9 @@ public:
      */
     QRectF boundingRect() const final;
 
-    /// Returns the bounding rectangle of this element in local coordinates, as its state gives it now: its picture
-    /// and its ports. An element that draws more, or a body of its own, measures it here.
-    virtual QRectF measureBoundingRect() const;
+    /// Returns the bounding rectangle of this element in local coordinates, as its state gives it now: its body, as
+    /// it was last measured (BodyShape), and its ports.
+    QRectF measureBoundingRect() const;
 
     // --- Changes ---
 
@@ -562,14 +580,16 @@ public:
     // --- Qt Graphics & Display ---
 
     /**
-     * \brief Paints the element onto the scene.
-     * \details Draws a rounded selection rectangle when the item is selected,
-     * then draws the current pixmap at the item origin.
+     * \brief Paints the element onto the scene, through the installed BodyPainter: its selection, then its body.
      * \param painter Painter provided by the graphics view framework.
      * \param option  Style options (unused).
      * \param widget  Target widget (unused).
      */
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) final;
+
+    /// Draws the element's body with \a painter, in the element's own coordinates, without its selection: the current
+    /// SVG or pixmap at the item origin. A type that draws more, or a body of its own, draws it here.
+    virtual void drawBody(QPainter &painter) const;
 
     /// Returns the type's name in the current language ("And", "D-Flip-Flop", ...), looked up each time it is asked,
     /// so it follows a language change.
@@ -621,16 +641,6 @@ protected:
      * \return Combined bounding QRectF of all port children.
      */
     QRectF portsBoundingRect() const;
-
-    /**
-     * \brief Footprint of a "procedural render body" (IC/Mux/Demux/TruthTable): the nominal
-     * 64x64 body unioned with wherever the ports actually land, which extends past it once an
-     * instance has enough ports.
-     * \details Single source of truth for measureBoundingRect(), the sizing pixmap, and the
-     * selection-highlight rect on those four element types, so they can never drift out of
-     * sync with each other.
-     */
-    QRectF renderBodyBounds() const;
 
     /// Sets the label's anchor point in the element's un-rotated local frame, and repositions
     /// it there. \a pos is remembered (m_labelAnchor) so updateLabelOrientation() can always
@@ -807,7 +817,7 @@ private:
     /// see ElementSerializer.
     friend class ElementSerializer;
 
-    /// Reports each new pixmap as a new picture, under one ChangeBatch with the pivot it moves, and calls
+    /// Reports each new pixmap as a new picture, under one ChangeBatch with the body and the pivot it moves, and calls
     /// invalidateRenderCache() when the pixmap's size changes; see ElementAppearance::setPixmap()/setRenderPixmap().
     friend class ElementAppearance;
 
@@ -829,6 +839,12 @@ private:
     void invalidateRenderCache();
 
     // --- Changes ---
+
+    /// Measures the body anew (BodyMeasure); called as each change is reported.
+    void measureBody();
+
+    /// Measures the body anew and turns the element about its new centre; called as the picture changes.
+    void measureBodyAndPivot();
 
     /// Brings the bounds Qt has up to the measured ones, telling Qt first (prepareGeometryChange()); \returns
     /// \c true if they changed. Nothing to do while the element is in no scene, where they are measured when asked.
@@ -895,6 +911,7 @@ private:
     // --- Members: Changes ---
 
     ElementChangeListener *m_listener = nullptr; ///< The listener of the scene the element is in, found as it enters one; null in none.
+    BodyShape m_body;                            ///< The body's shape as it was last measured; see measureBody().
     QRectF m_bounds;                             ///< The bounds Qt was last given; meaningful while m_boundsLatched.
     bool m_boundsLatched = false;                ///< Whether boundingRect() returns m_bounds: while the element is in a scene.
     int m_changeBatchDepth = 0;                  ///< How many ChangeBatch scopes are open on the element.

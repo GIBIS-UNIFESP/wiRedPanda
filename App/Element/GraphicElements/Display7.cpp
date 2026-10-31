@@ -184,27 +184,22 @@ Element::PortAttributes Display7::segmentInput(PortAttributes described, const S
     return attributes;
 }
 
-QRectF Display7::measureBoundingRect() const
-{
-    return Element::measureBoundingRect().united(QRectF(0, 0, 64, 64));
-}
-
-void Display7::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void Display7::drawBody(QPainter &painter) const
 {
     // The base class draws the background (off-state SVG).
     // Active segments are painted on top as vector renders, crisp at any zoom.
     // All segment renderers share the background's 64x64 box, so they composite correctly.
-    Element::paint(painter, option, widget);
+    Element::drawBody(painter);
 
     const QRectF body(0, 0, 64, 64);
-    if (auto *port = inputPort(0); port && port->status() == Status::Active) { g.at(m_colorNumber)->render(painter, body);  }
-    if (auto *port = inputPort(1); port && port->status() == Status::Active) { f.at(m_colorNumber)->render(painter, body);  }
-    if (auto *port = inputPort(2); port && port->status() == Status::Active) { e.at(m_colorNumber)->render(painter, body);  }
-    if (auto *port = inputPort(3); port && port->status() == Status::Active) { d.at(m_colorNumber)->render(painter, body);  }
-    if (auto *port = inputPort(4); port && port->status() == Status::Active) { a.at(m_colorNumber)->render(painter, body);  }
-    if (auto *port = inputPort(5); port && port->status() == Status::Active) { b.at(m_colorNumber)->render(painter, body);  }
-    if (auto *port = inputPort(6); port && port->status() == Status::Active) { dp.at(m_colorNumber)->render(painter, body); }
-    if (auto *port = inputPort(7); port && port->status() == Status::Active) { c.at(m_colorNumber)->render(painter, body);  }
+    if (auto *port = inputPort(0); port && port->status() == Status::Active) { g.at(m_colorNumber)->render(&painter, body);  }
+    if (auto *port = inputPort(1); port && port->status() == Status::Active) { f.at(m_colorNumber)->render(&painter, body);  }
+    if (auto *port = inputPort(2); port && port->status() == Status::Active) { e.at(m_colorNumber)->render(&painter, body);  }
+    if (auto *port = inputPort(3); port && port->status() == Status::Active) { d.at(m_colorNumber)->render(&painter, body);  }
+    if (auto *port = inputPort(4); port && port->status() == Status::Active) { a.at(m_colorNumber)->render(&painter, body);  }
+    if (auto *port = inputPort(5); port && port->status() == Status::Active) { b.at(m_colorNumber)->render(&painter, body);  }
+    if (auto *port = inputPort(6); port && port->status() == Status::Active) { dp.at(m_colorNumber)->render(&painter, body); }
+    if (auto *port = inputPort(7); port && port->status() == Status::Active) { c.at(m_colorNumber)->render(&painter, body);  }
 }
 
 void Display7::parameterChanged(const ParamId id, const ParamValue &previous)

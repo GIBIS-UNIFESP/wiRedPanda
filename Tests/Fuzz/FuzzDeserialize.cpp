@@ -34,6 +34,7 @@
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
 #include "App/IO/Serialization.h"
+#include "App/Presentation/ElementPresenter.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
@@ -71,6 +72,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
     g_fuzzer_argc = *argc;
     g_fuzzer_argv = *argv;
     g_app = new QApplication(g_fuzzer_argc, g_fuzzer_argv);
+    installPresenters();
 
     g_dir = std::make_unique<QTemporaryDir>();
     FuzzCircuitDir::fill(g_dir->path(), "fuzz_deserialize");

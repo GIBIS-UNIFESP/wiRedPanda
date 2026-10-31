@@ -28,11 +28,9 @@ public:
 
     // --- Visual / Port Configuration ---
 
-    /// \reimp
-    QRectF measureBoundingRect() const override;
-
-    /// \reimp
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+    /// Draws the trapezoid body straight onto \a painter as vectors, so it stays crisp at any
+    /// zoom instead of blitting a fixed-resolution pixmap.
+    void drawBody(QPainter &painter) const override;
 
     /// \reimp Co-updates input count when output size changes, as one change of the ports.
     void setOutputSize(const int size) override;
@@ -58,10 +56,6 @@ private:
 
     /// The body's height for the current outputs, a multiple of 16 of at least 64.
     int bodyHeight() const;
-
-    /// Draws the trapezoid body straight onto \a painter as vectors, so it stays crisp at any
-    /// zoom instead of blitting a fixed-resolution pixmap.
-    void drawBody(QPainter *painter);
 
     // Prevent direct input size setting - inputs are derived from output size
     void setInputSize(const int size) override;

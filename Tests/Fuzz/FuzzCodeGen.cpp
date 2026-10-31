@@ -57,6 +57,7 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
+#include "App/Presentation/ElementPresenter.h"
 #include "App/Scene/ICRegistry.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -271,6 +272,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
     g_argc = *argc;
     g_argv = *argv;
     g_app  = new QApplication(g_argc, g_argv);
+    installPresenters();
     // Both held until exit, which removes them
     g_dir  = std::make_unique<QTemporaryDir>();
     g_circuitDir = std::make_unique<QTemporaryDir>();

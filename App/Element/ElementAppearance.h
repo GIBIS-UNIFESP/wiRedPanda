@@ -2,14 +2,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 /** \file
- * \brief Owns a Element's pixmap / SVG appearance, appearance list, and selection paint.
+ * \brief Owns a Element's pixmap / SVG appearance and appearance list.
  */
 
 #pragma once
 
 #include <memory>
 
-#include <QColor>
 #include <QCoreApplication>
 #include <QPixmap>
 #include <QSize>
@@ -18,12 +17,11 @@
 class Element;
 class QPainter;
 class QSvgRenderer;
-class ThemeAttributes;
 
 /**
  * \class ElementAppearance
  * \brief Owns the visual appearance of a Element: the displayed pixmap, its SVG
- * renderer, the default/alternative appearance lists, and the selection-highlight colors.
+ * renderer, and the default/alternative appearance lists.
  *
  * \details Extracted from Element so the rendering bulk (pixmap loading, SVG text
  * counter-orientation, the per-appearance caches, and the paint body) lives in one cohesive
@@ -53,8 +51,8 @@ public:
     /// Returns the pixmap currently displayed.
     QPixmap pixmap() const { return m_pixmap; }
 
-    /// Returns the centre point of the displayed pixmap in local coordinates.
-    QPointF pixmapCenter() const;
+    /// Returns true while the displayed pixmap is a procedural render pixmap (setRenderPixmap()), not a picture.
+    bool hasRenderPixmap() const { return m_hasCustomRenderPixmap; }
 
     /// Returns true if at least one default appearance is available.
     bool hasDefaultAppearances() const { return !m_defaultAppearances.isEmpty(); }
@@ -123,17 +121,8 @@ public:
 
     // --- Painting ---
 
-    /// Draws the selection highlight (when \a selected) and the SVG/pixmap body onto \a painter.
-    void render(QPainter *painter, const QRectF &boundingRect, const bool selected) const;
-
-    /// Applies the selection-highlight colors from \a theme.
-    void applyTheme(const ThemeAttributes &theme);
-
-    /// Fill color of the selection highlight rectangle.
-    QColor selectionBrush() const { return m_selectionBrush; }
-
-    /// Border color of the selection highlight rectangle.
-    QColor selectionPen() const { return m_selectionPen; }
+    /// Draws the SVG/pixmap body onto \a painter, at the item origin.
+    void render(QPainter &painter) const;
 
 private:
     /// Reads the displayed picture for the characterization goldens; see Tests/Common/Goldens.h.
@@ -158,7 +147,4 @@ private:
     QStringList m_defaultAppearances;     ///< Built-in appearance paths (resource files).
     QStringList m_alternativeAppearances; ///< Active appearance paths (user paths override defaults).
     bool m_usingDefaultAppearance = true; ///< True while the active appearance matches the default.
-
-    QColor m_selectionBrush; ///< Fill color for the selection highlight rectangle.
-    QColor m_selectionPen;   ///< Border color for the selection highlight rectangle.
 };

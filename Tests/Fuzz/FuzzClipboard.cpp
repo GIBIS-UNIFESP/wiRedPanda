@@ -56,6 +56,7 @@
 #include "App/Core/Common.h"
 #include "App/Core/MimeTypes.h"
 #include "App/IO/Serialization.h"
+#include "App/Presentation/ElementPresenter.h"
 #include "App/Scene/ClipboardManager.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -181,6 +182,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
     g_argc = *argc;
     g_argv = *argv;
     g_app  = new QApplication(g_argc, g_argv);
+    installPresenters();
 
     g_dir = std::make_unique<QTemporaryDir>();
     FuzzCircuitDir::fill(g_dir->path(), "fuzz_clipboard");

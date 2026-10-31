@@ -28,10 +28,10 @@ class ICRenderer
 public:
     /// Draws the IC body (DIP rect, mascot logo, shadow, pin-1 notch) straight onto \a painter
     /// as vectors, so it stays crisp at any zoom instead of blitting a fixed-resolution pixmap.
-    static void drawBody(IC &ic, QPainter *painter);
+    static void drawBody(const IC &ic, QPainter &painter);
 
     /// Rebuilds \a ic's sizing pixmap (its image content is never displayed; only its size,
-    /// which pixmapCenter()/measureBoundingRect() depend on, matters — the body is drawn as vectors).
+    /// which the body's measure depends on, matters — the body is drawn as vectors).
     static void generatePixmap(IC &ic);
 
     /// Snapshots \a items (the sub-circuit as designed, before boundary substitution) into

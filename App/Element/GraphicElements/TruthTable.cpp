@@ -119,11 +119,6 @@ static QSvgRenderer &truthTableLogoRenderer()
     return renderer;
 }
 
-QRectF TruthTable::measureBoundingRect() const
-{
-    return renderBodyBounds();
-}
-
 void TruthTable::generatePixmap()
 {
     // The TruthTable renders a custom IC-style body, now drawn as vectors in drawBody()/paint().
@@ -136,23 +131,23 @@ void TruthTable::generatePixmap()
     m_appearance.setRenderPixmap(sizingPixmap);
 }
 
-void TruthTable::drawBody(QPainter *painter)
+void TruthTable::drawBody(QPainter &painter) const
 {
-    painter->save();
-    painter->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform | QPainter::TextAntialiasing, true);
+    painter.save();
+    painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform | QPainter::TextAntialiasing, true);
     // boundingRect()'s top-left may be negative when ports extend past the 64×64 body; align the
     // local origin with it so the body lands exactly where the old rasterised pixmap was blitted.
-    painter->translate(boundingRect().topLeft());
+    painter.translate(boundingRect().topLeft());
     // The body footprint is the (correctly-sized) m_pixmap rect — exactly the area the old raster
     // occupied — so the geometry is reproduced 1:1 at any zoom.
     const QRectF bounds(pixmap().rect());
 
     // Main body: mid-gray rounded rectangle inset 7px on each side (14px total) so port connector
     // dots sit on top of the body border rather than floating in empty space.
-    painter->setBrush(QColor(126, 126, 126));
-    painter->setPen(QPen(QBrush(QColor(78, 78, 78)), 0.5, Qt::SolidLine));
+    painter.setBrush(QColor(126, 126, 126));
+    painter.setPen(QPen(QBrush(QColor(78, 78, 78)), 0.5, Qt::SolidLine));
     const QRectF finalRect(QPointF(7, 0), QSizeF(bounds.width() - 14, bounds.height()));
-    painter->drawRoundedRect(finalRect, 3, 3);
+    painter.drawRoundedRect(finalRect, 3, 3);
 
     // Centre the truth-table icon inside the body, rendered as vectors at its native size.
     // The icon is decoration, like the baked-in SVG pin text: counter-orient it about its own
@@ -161,40 +156,22 @@ void TruthTable::drawBody(QPainter *painter)
     QSvgRenderer &logo = truthTableLogoRenderer();
     const QSizeF logoSize = logo.defaultSize();
     const QRectF logoRect(finalRect.center() - QPointF(logoSize.width() / 2, logoSize.height() / 2), logoSize);
-    painter->save();
-    painter->translate(logoRect.center());
-    painter->rotate(-rotation());
-    painter->scale(isFlippedX() ? -1 : 1, isFlippedY() ? -1 : 1);
-    painter->translate(-logoRect.center());
-    logo.render(painter, logoRect);
-    painter->restore();
+    painter.save();
+    painter.translate(logoRect.center());
+    painter.rotate(-rotation());
+    painter.scale(isFlippedX() ? -1 : 1, isFlippedY() ? -1 : 1);
+    painter.translate(-logoRect.center());
+    logo.render(&painter, logoRect);
+    painter.restore();
 
     // Shadow strip at the bottom of the body for a subtle 3-D depth effect.
-    painter->setBrush(QColor(78, 78, 78));
-    painter->setPen(QPen(QBrush(QColor(78, 78, 78)), 0.5, Qt::SolidLine));
+    painter.setBrush(QColor(78, 78, 78));
+    painter.setPen(QPen(QBrush(QColor(78, 78, 78)), 0.5, Qt::SolidLine));
     QRectF shadowRect(finalRect.bottomLeft(), finalRect.bottomRight());
     shadowRect.adjust(0, -3, 0, 0);
-    painter->drawRoundedRect(shadowRect, 3, 3);
+    painter.drawRoundedRect(shadowRect, 3, 3);
 
-    painter->restore();
-}
-
-void TruthTable::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
-{
-    Q_UNUSED(widget)
-    Q_UNUSED(option)
-
-    if (isSelected()) {
-        painter->save();
-        painter->setBrush(m_appearance.selectionBrush());
-        painter->setPen(QPen(m_appearance.selectionPen(), 0.5, Qt::SolidLine));
-        // Expand the highlight rect to cover any ports that extend outside the 64x64 body
-        painter->drawRoundedRect(boundingRect(), 5, 5);
-        painter->restore();
-    }
-
-    // Draw the body as vectors (crisp at any zoom) rather than blitting a fixed-resolution pixmap.
-    drawBody(painter);
+    painter.restore();
 }
 
 void TruthTable::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)

@@ -49,6 +49,7 @@
 #include "App/Element/ElementFactory.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/VersionInfo.h"
+#include "App/Presentation/ElementPresenter.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
@@ -327,6 +328,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
     g_argc = *argc;
     g_argv = *argv;
     g_app  = new QApplication(g_argc, g_argv);
+    installPresenters();
 
     return 0;
 }
