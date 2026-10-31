@@ -2646,8 +2646,8 @@ void TestScene::testGeometryChangeKeepsSceneIndexConsistentKS()
     // boundingRect() must reindex the scene's BSP tree via prepareGeometryChange(), or the
     // stale bounds let a later paint walk the tree into a freed node. ElementAppearance's
     // appearanceChanged() and pictureReplaced() already guard the picture-load paths; this exercises the
-    // two remaining chokepoints — setPortSize() (port count) and applyOrientation() reached
-    // directly via a rotate/flip — through the exact drawItems -> BSP paint pipeline, and
+    // two remaining chokepoints — setPortSize() (port count) and a rotate/flip, whose change measures the
+    // body again — through the exact drawItems -> BSP paint pipeline, and
     // asserts the element stays correctly indexed and that render() does not fault.
     WorkSpace workspace;
     auto *scene = workspace.scene();
@@ -2665,8 +2665,8 @@ void TestScene::testGeometryChangeKeepsSceneIndexConsistentKS()
     QVERIFY2(scene->items(elm->sceneBoundingRect(), Qt::IntersectsItemBoundingRect).contains(elm),
         "element lost from scene BSP index after input-size change");
 
-    // Orientation change: reaches applyOrientation() directly, which may swap in a
-    // different-size SVG variant.
+    // Orientation change: the element shows the picture's variant for the new orientation, which may be an SVG
+    // variant of another size.
     elm->setRotation(90);
     elm->setFlippedX(true);
     QVERIFY2(scene->items(elm->sceneBoundingRect(), Qt::IntersectsItemBoundingRect).contains(elm),

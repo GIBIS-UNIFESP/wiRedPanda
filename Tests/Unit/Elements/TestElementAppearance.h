@@ -28,8 +28,4 @@ private slots:
     // A picture of another size moves the centre an orientation turns about
     void testPictureOfAnotherSizeKeepsPortsWhateverTheOrder_data();
     void testPictureOfAnotherSizeKeepsPortsWhateverTheOrder();
-
-    // orientSvgLabels()/orientedSvgPixmap()/sharedSvgRenderer() failure paths
-    void testRotatedMalformedSvgFallsBackToBasePixmap();
-    void testRotatedMalformedSvgFallsBackToBasePixmapContent();
 };

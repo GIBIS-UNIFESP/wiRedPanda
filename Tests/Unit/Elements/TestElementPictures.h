@@ -16,6 +16,7 @@ private slots:
     void testElementsShowingOneFileShareItsPicture();
     void testAFileChangedOnDiskIsANewVersion();
     void testVariantsAreBuiltFromTheSourceReadAtLoad();
+    void testASourceThatIsNotSvgShowsItsRaster();
     void testALevelShowsItsSlot_data();
     void testALevelShowsItsSlot();
     void testAnAudioOutputShowsWhetherItPlays_data();

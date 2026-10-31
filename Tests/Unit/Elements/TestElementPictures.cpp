@@ -9,6 +9,8 @@
 #include <QDirIterator>
 #include <QFile>
 #include <QImage>
+#include <QPainter>
+#include <QPixmap>
 #include <QScopeGuard>
 #include <QTemporaryDir>
 #include <QTest>
@@ -112,6 +114,44 @@ void TestElementPictures::testVariantsAreBuiltFromTheSourceReadAtLoad()
     QVERIFY(turned != nullptr);
     QVERIFY(turned->oriented);
     QVERIFY(turned->renderer != nullptr);
+}
+
+void TestElementPictures::testASourceThatIsNotSvgShowsItsRaster()
+{
+    // A file named .svg that QPixmap reads by its content (a PNG) but QSvgRenderer cannot parse: holding "<text>" (in a
+    // PNG text chunk), it reaches the label correction too. Each orientation falls back to the raster, unoriented, with
+    // no vector renderer, and draws it.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("not-svg.svg");
+    QImage image(QSize(64, 64), QImage::Format_ARGB32);
+    image.fill(Qt::red);
+    image.setText(QStringLiteral("Comment"), QStringLiteral("<text>A</text>"));
+    QVERIFY(image.save(path, "PNG"));
+    {
+        QFile file(path);
+        QVERIFY(file.open(QIODevice::ReadOnly));
+        QVERIFY(file.readAll().contains("<text>"));
+    }
+
+    And gate;
+    gate.setAppearance(false, path);
+    QVERIFY(gate.appearance().picture(0).has_value());
+    for (const qreal angle : {0.0, 37.0, 90.0}) {
+        gate.setRotation(angle);
+        const PictureVariant *shown = ElementPictures::instance().shown(gate, Theme::Light);
+        QVERIFY(shown != nullptr);
+        QVERIFY2(shown->renderer == nullptr, qPrintable(QString::number(angle)));
+        QVERIFY2(!shown->oriented, qPrintable(QString::number(angle)));
+        QCOMPARE(shown->pixmap.size(), QSize(64, 64));
+
+        QPixmap canvas(64, 64);
+        canvas.fill(Qt::transparent);
+        QPainter painter(&canvas);
+        ElementPictures::draw(painter, *shown);
+        painter.end();
+        QCOMPARE(canvas.toImage().pixelColor(32, 32), QColor(Qt::red));
+    }
 }
 
 void TestElementPictures::testALevelShowsItsSlot_data()
