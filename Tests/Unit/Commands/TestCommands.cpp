@@ -50,7 +50,7 @@ namespace {
 /// Reads the picture an element shows in its orientation, so flip-variant rendering can be asserted.
 template <typename Element>
 struct PixmapProbe : Element {
-    QImage displayedImage() const { return ElementPictures::instance().shown(*this)->pixmap.toImage(); }
+    QImage displayedImage() const { return ElementPictures::instance().shown(*this, Theme::Light)->pixmap.toImage(); }
 };
 } // namespace
 

@@ -120,7 +120,7 @@ QRectF gridArea(const Scene *scene, const qreal step)
 
     for (const auto *element : TestUtils::elementsById(scene)) {
         // The picture with its ports, as the area was first taken.
-        const PictureVariant *picture = ElementPictures::instance().shown(*element);
+        const PictureVariant *picture = ElementPictures::instance().shown(*element, Theme::Light);
         QRectF local = picture ? QRectF(picture->pixmap.rect()) : QRectF();
         for (const auto *port : element->allPorts()) {
             local |= element->mapRectFromItem(port, port->boundingRect());

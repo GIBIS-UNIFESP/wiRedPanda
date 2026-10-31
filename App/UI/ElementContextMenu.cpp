@@ -11,6 +11,7 @@
 #include "App/Core/Common.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
+#include "App/Presentation/ElementPictures.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
 #include "App/UI/SelectionCapabilities.h"
@@ -22,7 +23,7 @@ static QAction *addElementAction(QMenu *menu, Element *selectedElm, ElementType 
         return nullptr;
     }
 
-    auto *action = menu->addAction(QIcon(ElementFactory::pixmap(type)), ElementFactory::translatedName(type));
+    auto *action = menu->addAction(QIcon(ElementPictures::typePicture(type)), ElementFactory::translatedName(type));
     action->setData(static_cast<int>(type));
     return action;
 }
@@ -61,7 +62,7 @@ void ElementContextMenu::exec(QPoint screenPos,
     }
 
     if (caps.hasTrigger) {
-        menu.addAction(QIcon(ElementFactory::pixmap(ElementType::InputButton)), triggerText)->setData(triggerText);
+        menu.addAction(QIcon(ElementPictures::typePicture(ElementType::InputButton)), triggerText)->setData(triggerText);
     }
 
     if (caps.canChangeAppearance) {
@@ -75,7 +76,7 @@ void ElementContextMenu::exec(QPoint screenPos,
     menu.addAction(flipVerticalText)->setData(flipVerticalText);
 
     if (caps.hasFrequency) {
-        menu.addAction(QIcon(ElementFactory::pixmap(ElementType::Clock)), frequencyText)->setData(frequencyText);
+        menu.addAction(QIcon(ElementPictures::typePicture(ElementType::Clock)), frequencyText)->setData(frequencyText);
     }
 
     QMenu *submenuColors = nullptr;

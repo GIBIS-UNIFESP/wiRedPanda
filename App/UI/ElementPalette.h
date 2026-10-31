@@ -67,7 +67,8 @@ public:
     /// Calls updateName() on every ElementLabel in the palette (on language change).
     void retranslateLabels();
 
-    /// Updates the memory tab icon and every label of a type to the theme's picture (an IC's keeps its own).
+    /// Shows the current theme's pictures on the memory tab and every label of a type (ElementPictures::typePicture());
+    /// an IC's label keeps its own.
     void updateTheme();
 
     /// Case-insensitive "contains" match of \a query against \a name, used by the palette

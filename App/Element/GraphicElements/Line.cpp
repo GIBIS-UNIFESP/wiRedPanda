@@ -20,11 +20,10 @@ struct ElementInfo<Line> {
     static ElementTypeDescriptor describe()
     {
         auto descriptor = descriptorFromConstraints(constraints);
-        descriptor.pixmapPath = []{ return QStringLiteral(":/Components/Misc/line.svg"); };
+        descriptor.pixmapPath = QStringLiteral(":/Components/Misc/line.svg");
         descriptor.titleText = QT_TRANSLATE_NOOP("Line", "LINE");
         descriptor.translatedName = QT_TRANSLATE_NOOP("Line", "Line");
         descriptor.trContext = "Line";
-        // Seed appearance lists from the constructor-supplied pixmap path (see And.cpp for details).
         descriptor.defaultAppearances = QStringList({":/Components/Misc/line.svg"});
         // Line is decorative and excluded from simulation.
         return descriptor;

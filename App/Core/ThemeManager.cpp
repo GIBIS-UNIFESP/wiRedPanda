@@ -55,11 +55,6 @@ ThemeManager::ThemeManager(QObject *parent)
     }
 }
 
-QString ThemeManager::themePath()
-{
-    return (effectiveTheme() == Theme::Light) ? "Light" : "Dark";
-}
-
 Theme ThemeManager::theme()
 {
     return instance().m_theme;
@@ -152,6 +147,7 @@ void ThemeAttributes::setTheme(const Theme theme)
 {
     switch (theme) {
     case Theme::Light: {
+        m_theme = Theme::Light;
         m_sceneBgBrush = QColor(255, 255, 230); // warm off-white (slight yellow tint); less eye-strain than pure white
         m_sceneBgDots = QColor(Qt::darkGray);
 
@@ -195,6 +191,7 @@ void ThemeAttributes::setTheme(const Theme theme)
     }
 
     case Theme::Dark: {
+        m_theme = Theme::Dark;
         m_sceneBgBrush = QColor(64, 69, 82); // dark blue-grey slate; chosen to provide sufficient luminance
                                              // contrast against the light-grey dot grid overlay
         m_sceneBgDots = QColor(Qt::lightGray);

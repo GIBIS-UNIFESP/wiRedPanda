@@ -28,8 +28,7 @@ struct SerializationContext;
  * \details Each element .cpp adds its type's descriptor through its ElementInfo<T>
  * specialization's describe(); of(), add() and has() are the registry of every
  * type's. All fields are populated at static-initialization time (before
- * QApplication) except \c pixmapPath, which is a callable invoked lazily at
- * construction time.
+ * QApplication).
  */
 struct ElementTypeDescriptor {
     /// Returns the descriptor of \a type. Asserts if \a type has none; a release build warns and returns an empty one.
@@ -44,7 +43,7 @@ struct ElementTypeDescriptor {
 
     // --- Display properties ---
 
-    std::function<QString()> pixmapPath; ///< Callable returning the default pixmap resource path (lazily evaluated).
+    QString pixmapPath;                  ///< The type's picture, in the Light theme where it has one per theme.
     const char *titleText = nullptr;     ///< Untranslated title shown in the element palette (QT_TRANSLATE_NOOP).
     const char *translatedName = nullptr; ///< Untranslated element name used for tooltips (QT_TRANSLATE_NOOP).
     const char *trContext = nullptr;     ///< Translation context string for QCoreApplication::translate().

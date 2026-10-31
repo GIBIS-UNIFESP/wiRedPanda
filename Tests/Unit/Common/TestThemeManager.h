@@ -14,12 +14,11 @@ class TestThemeManager : public QObject
 private slots:
     void cleanup();
 
-    // Theme Loading Tests (5 tests)
+    // Theme Loading Tests (4 tests)
     void testDefaultThemeInitialization();
     void testLoadThemeFromSettings();
     void testThemePersistence();
-    void testThemePathLight();
-    void testThemePathDark();
+    void testAttributesRecordTheirTheme();
 
     // Theme Switching Tests (3 tests)
     void testSetThemeLight();

@@ -23,11 +23,10 @@ struct ElementInfo<Nor> {
     static ElementTypeDescriptor describe()
     {
         auto descriptor = descriptorFromConstraints(constraints);
-        descriptor.pixmapPath = []{ return QStringLiteral(":/Components/Logic/nor.svg"); };
+        descriptor.pixmapPath = QStringLiteral(":/Components/Logic/nor.svg");
         descriptor.titleText = QT_TRANSLATE_NOOP("Nor", "NOR");
         descriptor.translatedName = QT_TRANSLATE_NOOP("Nor", "Nor");
         descriptor.trContext = "Nor";
-        // Seed appearance lists from the constructor-supplied pixmap path (see And.cpp for details).
         descriptor.defaultAppearances = QStringList({":/Components/Logic/nor.svg"});
         return descriptor;
     } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.

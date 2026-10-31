@@ -520,7 +520,7 @@ void TestLED::testAppearancePreviewPixmap()
     const auto states = led.appearanceStates();
 
     const auto preview = [&led](const int index) {
-        return ElementPictures::preview(led.appearance().alternativeAppearances().value(index), QSize(16, 16));
+        return ElementPictures::preview(led.appearance().alternativeAppearances().value(index), Theme::Light, QSize(16, 16));
     };
     for (const auto &[index, label] : states) {
         QVERIFY(!preview(index).isNull());

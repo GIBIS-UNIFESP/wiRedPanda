@@ -28,7 +28,7 @@ struct ElementInfo<Led> {
     static ElementTypeDescriptor describe()
     {
         auto descriptor = descriptorFromConstraints(constraints);
-        descriptor.pixmapPath = []{ return QStringLiteral(":/Components/Output/Led/LedOff.svg"); };
+        descriptor.pixmapPath = QStringLiteral(":/Components/Output/Led/LedOff.svg");
         descriptor.titleText = QT_TRANSLATE_NOOP("Led", "LED");
         descriptor.translatedName = QT_TRANSLATE_NOOP("Led", "LED");
         descriptor.trContext = "Led";
@@ -99,7 +99,7 @@ Led::Led(QGraphicsItem *parent)
     // base offset for the chosen color (0=White, 2=Red, 4=Green, 6=Blue, 8=Purple).
     // Even indices are the Off state; odd indices are the On state.
     // Indices 10-25 cover multi-input (2/3/4-bit) color palettes (see comment below).
-    m_appearance.seed(ElementTypeDescriptor::of(ElementType::Led).defaultAppearances, {}, {});
+    m_appearance.seed(ElementTypeDescriptor::of(ElementType::Led).defaultAppearances, {});
     m_appearance.appearanceChanged();
 
     updatePortsProperties();

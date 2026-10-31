@@ -18,7 +18,7 @@ struct ElementInfo<Text> {
     static ElementTypeDescriptor describe()
     {
         auto descriptor = descriptorFromConstraints(constraints);
-        descriptor.pixmapPath = []{ return QStringLiteral(":/Components/Misc/text.png"); };
+        descriptor.pixmapPath = QStringLiteral(":/Components/Misc/text.png");
         descriptor.titleText = QT_TRANSLATE_NOOP("Text", "TEXT");
         descriptor.translatedName = QT_TRANSLATE_NOOP("Text", "Text");
         descriptor.trContext = "Text";

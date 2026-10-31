@@ -26,7 +26,7 @@ struct ElementInfo<Display16> {
     static ElementTypeDescriptor describe()
     {
         auto descriptor = descriptorFromConstraints(constraints);
-        descriptor.pixmapPath = []{ return QStringLiteral(":/Components/Output/Counter/counter_16_on.svg"); };
+        descriptor.pixmapPath = QStringLiteral(":/Components/Output/Counter/counter_16_on.svg");
         descriptor.titleText = QT_TRANSLATE_NOOP("Display16", "16-SEGMENT DISPLAY");
         descriptor.translatedName = QT_TRANSLATE_NOOP("Display16", "16-Segment Display");
         descriptor.trContext = "Display16";

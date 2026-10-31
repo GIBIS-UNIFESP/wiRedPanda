@@ -28,6 +28,7 @@
 #include "App/Element/ElementLabel.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
+#include "App/Presentation/ElementPictures.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -262,7 +263,7 @@ QString snapPathsDump(const Scene *scene)
 /// drop sends to the scene: QDrag::exec() cannot be driven from a test.
 void dropFromPalette(Scene *scene, const QPointF &scenePos)
 {
-    const ElementLabel entry(ElementFactory::pixmap(ElementType::And), ElementType::And, {});
+    const ElementLabel entry(ElementPictures::typePicture(ElementType::And), ElementType::And, {});
     const std::unique_ptr<QMimeData> mimeData(entry.mimeData());
     for (const QEvent::Type type : {QEvent::GraphicsSceneDragEnter, QEvent::GraphicsSceneDragMove, QEvent::GraphicsSceneDrop}) {
         QGraphicsSceneDragDropEvent event(type);
@@ -370,7 +371,7 @@ void snapPathsApply(Scene *scene, const QString &operation, MainWindow *window)
     } else if (operation == "add-without-drag") {
         // A double click on a palette entry, or a search's result, adds at the view's centre; the scene deletes the
         // mime data.
-        const ElementLabel entry(ElementFactory::pixmap(ElementType::And), ElementType::And, {});
+        const ElementLabel entry(ElementPictures::typePicture(ElementType::And), ElementType::And, {});
         scene->addItem(entry.mimeData(), QPointF(101, 203));
     } else if (operation == "split") {
         // A wire from the switch to the Led, added without a command, split at a point off the grid.

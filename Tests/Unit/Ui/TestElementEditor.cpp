@@ -38,6 +38,7 @@
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/IC.h"
+#include "App/Presentation/ElementPictures.h"
 #include "App/Scene/ICRegistry.h"
 #include "App/Scene/Workspace.h"
 #include "App/UI/ElementEditor.h"
@@ -138,13 +139,13 @@ QString editedValue(const Element *element, const PropertyDescriptor::Type type)
 
 void TestElementEditor::initTestCase()
 {
-    // Force ElementFactory::pixmap()'s per-element-type render cache to populate for every type
+    // Force ElementPictures::typePicture()'s per-element-type render cache to populate for every type
     // whose icon this file's contextMenu() tests depend on (e.g. the "Change frequency" action's
     // Clock pixmap) -- a plain, side-effect-free static call, so it can't disturb anything else.
     // Confirmed via CI this cost is real and per-type (keyed by ElementType, not shared): a
     // Node-only warm-up left the first test using a Clock element to pay this cost on its own.
-    ElementFactory::pixmap(ElementType::Clock);
-    ElementFactory::pixmap(ElementType::InputButton);
+    ElementPictures::typePicture(ElementType::Clock);
+    ElementPictures::typePicture(ElementType::InputButton);
 
     // Separately, force the one-time costs of the first real ElementContextMenu::exec() call in
     // this process -- Qt's lazy font-alias table population, plus the first-ever decode of the

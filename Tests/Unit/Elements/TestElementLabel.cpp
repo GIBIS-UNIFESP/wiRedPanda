@@ -3,10 +3,12 @@
 
 #include "Tests/Unit/Elements/TestElementLabel.h"
 
+#include <algorithm>
 #include <memory>
 
 #include <QApplication>
 #include <QDataStream>
+#include <QLabel>
 #include <QMimeData>
 #include <QMouseEvent>
 #include <QPoint>
@@ -16,6 +18,7 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementLabel.h"
 #include "App/IO/Serialization.h"
+#include "App/Presentation/ElementPictures.h"
 #include "Tests/Common/TestUtils.h"
 
 // ============================================================================
@@ -24,7 +27,7 @@
 
 void TestElementLabel::testConstructorWithPixmapPointer()
 {
-    QPixmap pixmap = ElementFactory::pixmap(ElementType::And);
+    QPixmap pixmap = ElementPictures::typePicture(ElementType::And);
     ElementLabel label(pixmap, ElementType::And, "");
 
     QCOMPARE(label.elementType(), ElementType::And);
@@ -33,7 +36,7 @@ void TestElementLabel::testConstructorWithPixmapPointer()
 
 void TestElementLabel::testConstructorWithPixmapReference()
 {
-    QPixmap pixmap = ElementFactory::pixmap(ElementType::Or);
+    QPixmap pixmap = ElementPictures::typePicture(ElementType::Or);
     ElementLabel label(pixmap, ElementType::Or, "");
 
     QCOMPARE(label.elementType(), ElementType::Or);
@@ -46,7 +49,7 @@ void TestElementLabel::testConstructorWithPixmapReference()
 
 void TestElementLabel::testElementType()
 {
-    QPixmap pixmap = ElementFactory::pixmap(ElementType::Nand);
+    QPixmap pixmap = ElementPictures::typePicture(ElementType::Nand);
     ElementLabel label(pixmap, ElementType::Nand, "");
 
     QCOMPARE(label.elementType(), ElementType::Nand);
@@ -54,7 +57,7 @@ void TestElementLabel::testElementType()
 
 void TestElementLabel::testPixmap()
 {
-    QPixmap pixmap = ElementFactory::pixmap(ElementType::And);
+    QPixmap pixmap = ElementPictures::typePicture(ElementType::And);
     ElementLabel label(pixmap, ElementType::And, "");
 
     QVERIFY(!label.pixmap().isNull());
@@ -63,7 +66,7 @@ void TestElementLabel::testPixmap()
 
 void TestElementLabel::testName()
 {
-    QPixmap pixmap = ElementFactory::pixmap(ElementType::Not);
+    QPixmap pixmap = ElementPictures::typePicture(ElementType::Not);
     ElementLabel label(pixmap, ElementType::Not, "");
 
     QString name = label.name();
@@ -74,7 +77,7 @@ void TestElementLabel::testName()
 
 void TestElementLabel::testIcFileName()
 {
-    QPixmap pixmap = ElementFactory::pixmap(ElementType::And);
+    QPixmap pixmap = ElementPictures::typePicture(ElementType::And);
     QString fileName = "test_circuit.panda";
     ElementLabel label(pixmap, ElementType::And, fileName);
 
@@ -87,7 +90,7 @@ void TestElementLabel::testIcFileName()
 
 void TestElementLabel::testUpdateNameStandardElement()
 {
-    QPixmap pixmap = ElementFactory::pixmap(ElementType::And);
+    QPixmap pixmap = ElementPictures::typePicture(ElementType::And);
     ElementLabel label(pixmap, ElementType::And, "");
 
     QString originalName = label.name();
@@ -100,7 +103,7 @@ void TestElementLabel::testUpdateNameStandardElement()
 
 void TestElementLabel::testUpdateNameICElement()
 {
-    QPixmap pixmap = ElementFactory::pixmap(ElementType::IC);
+    QPixmap pixmap = ElementPictures::typePicture(ElementType::IC);
     ElementLabel label(pixmap, ElementType::IC, "my_circuit");
 
     // For IC elements, name should be based on filename
@@ -120,7 +123,7 @@ void TestElementLabel::testNameForDifferentElementTypes()
     };
 
     for (ElementType type : types) {
-        QPixmap pixmap = ElementFactory::pixmap(type);
+        QPixmap pixmap = ElementPictures::typePicture(type);
         ElementLabel label(pixmap, type, "");
 
         QString name = label.name();
@@ -130,33 +133,20 @@ void TestElementLabel::testNameForDifferentElementTypes()
 }
 
 // ============================================================================
-// Theme Management Tests
+// Icon Tests
 // ============================================================================
 
-void TestElementLabel::testUpdateTheme()
+void TestElementLabel::testSetPixmapShowsIt()
 {
-    QPixmap pixmap = ElementFactory::pixmap(ElementType::And);
-    ElementLabel label(pixmap, ElementType::And, "");
+    ElementLabel label(ElementPictures::typePicture(ElementType::And), ElementType::And, "");
+    const QPixmap other = ElementPictures::typePicture(ElementType::Or);
 
-    QPixmap original = label.pixmap();
-    QVERIFY2(!original.isNull(), "Initial pixmap should be valid");
+    label.setPixmap(other);
 
-    label.updateTheme();
-
-    // After theme update, pixmap should still be valid
-    QVERIFY2(!label.pixmap().isNull(), "Pixmap should remain valid after theme update");
-}
-
-void TestElementLabel::testPixmapAfterThemeUpdate()
-{
-    QPixmap pixmap = ElementFactory::pixmap(ElementType::Or);
-    ElementLabel label(pixmap, ElementType::Or, "");
-
-    label.updateTheme();
-
-    // Pixmap should still have valid size
-    QVERIFY(label.pixmap().size().width() > 0);
-    QVERIFY(label.pixmap().size().height() > 0);
+    QCOMPARE(label.pixmap().toImage(), other.toImage());
+    const auto children = label.findChildren<QLabel *>();
+    QVERIFY(std::any_of(children.cbegin(), children.cend(),
+                        [&other](const QLabel *child) { return child->pixmap().toImage() == other.toImage(); }));
 }
 
 // ============================================================================
@@ -165,7 +155,7 @@ void TestElementLabel::testPixmapAfterThemeUpdate()
 
 void TestElementLabel::testMimeData()
 {
-    QPixmap pixmap = ElementFactory::pixmap(ElementType::And);
+    QPixmap pixmap = ElementPictures::typePicture(ElementType::And);
     ElementLabel label(pixmap, ElementType::And, "");
 
     auto data = std::unique_ptr<QMimeData>(label.mimeData());
@@ -177,7 +167,7 @@ void TestElementLabel::testMimeData()
 
 void TestElementLabel::testMimeDataContent()
 {
-    QPixmap pixmap = ElementFactory::pixmap(ElementType::Nand);
+    QPixmap pixmap = ElementPictures::typePicture(ElementType::Nand);
     ElementLabel label(pixmap, ElementType::Nand, "");
 
     auto data = std::unique_ptr<QMimeData>(label.mimeData());
@@ -207,7 +197,7 @@ void TestElementLabel::testMimeDataContent()
 
 void TestElementLabel::testMimeDataWithIC()
 {
-    QPixmap pixmap = ElementFactory::pixmap(ElementType::IC);
+    QPixmap pixmap = ElementPictures::typePicture(ElementType::IC);
     ElementLabel label(pixmap, ElementType::IC, "custom_ic.panda", nullptr, true);
 
     auto data = std::unique_ptr<QMimeData>(label.mimeData());
@@ -236,7 +226,7 @@ void TestElementLabel::testMimeDataWithIC()
 
 void TestElementLabel::testMousePressThenSmallMoveDoesNotStartDrag()
 {
-    QPixmap pixmap = ElementFactory::pixmap(ElementType::And);
+    QPixmap pixmap = ElementPictures::typePicture(ElementType::And);
     ElementLabel label(pixmap, ElementType::And, "");
 
     QMouseEvent pressEvent(QEvent::MouseButtonPress, QPointF(10, 10), QPointF(10, 10), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
@@ -252,7 +242,7 @@ void TestElementLabel::testMousePressThenSmallMoveDoesNotStartDrag()
 
 void TestElementLabel::testMousePressThenLargeMoveStartsDrag()
 {
-    QPixmap pixmap = ElementFactory::pixmap(ElementType::And);
+    QPixmap pixmap = ElementPictures::typePicture(ElementType::And);
     ElementLabel label(pixmap, ElementType::And, "");
 
     QMouseEvent pressEvent(QEvent::MouseButtonPress, QPointF(10, 10), QPointF(10, 10), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
@@ -274,7 +264,7 @@ void TestElementLabel::testMousePressThenLargeMoveStartsDrag()
 
 void TestElementLabel::testMouseDoubleClickEmitsAddToSceneRequested()
 {
-    QPixmap pixmap = ElementFactory::pixmap(ElementType::And);
+    QPixmap pixmap = ElementPictures::typePicture(ElementType::And);
     ElementLabel label(pixmap, ElementType::And, "");
     QSignalSpy spy(&label, &ElementLabel::addToSceneRequested);
 

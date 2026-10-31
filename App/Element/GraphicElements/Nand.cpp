@@ -23,11 +23,10 @@ struct ElementInfo<Nand> {
     static ElementTypeDescriptor describe()
     {
         auto descriptor = descriptorFromConstraints(constraints);
-        descriptor.pixmapPath = []{ return QStringLiteral(":/Components/Logic/nand.svg"); };
+        descriptor.pixmapPath = QStringLiteral(":/Components/Logic/nand.svg");
         descriptor.titleText = QT_TRANSLATE_NOOP("Nand", "NAND");
         descriptor.translatedName = QT_TRANSLATE_NOOP("Nand", "Nand");
         descriptor.trContext = "Nand";
-        // Seed appearance lists from the constructor-supplied pixmap path (see And.cpp for details).
         descriptor.defaultAppearances = QStringList({":/Components/Logic/nand.svg"});
         return descriptor;
     } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.

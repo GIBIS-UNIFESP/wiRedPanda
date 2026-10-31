@@ -27,7 +27,7 @@ struct ElementInfo<InputSwitch> {
     static ElementTypeDescriptor describe()
     {
         auto descriptor = descriptorFromConstraints(constraints);
-        descriptor.pixmapPath = []{ return QStringLiteral(":/Components/Input/switchOn.svg"); };
+        descriptor.pixmapPath = QStringLiteral(":/Components/Input/switchOn.svg");
         descriptor.titleText = QT_TRANSLATE_NOOP("InputSwitch", "INPUT SWITCH");
         descriptor.translatedName = QT_TRANSLATE_NOOP("InputSwitch", "Input Switch");
         descriptor.trContext = "InputSwitch";

@@ -29,8 +29,12 @@ class ThemeAttributes
 public:
     // --- Theme Setup ---
 
-    /// Applies \a theme colors to all color attributes in this object.
+    /// Applies \a theme colors to all color attributes in this object; System, which ThemeManager resolves first, is
+    /// drawn as Light.
     void setTheme(const Theme theme);
+
+    /// Returns the theme these attributes are of, Light or Dark: Light until setTheme() is called.
+    Theme theme() const { return m_theme; }
 
     // --- Members: Scene Colors ---
 
@@ -76,6 +80,9 @@ public:
 
     QColor m_portHoverLabelBg;
     QColor m_portHoverLabelText;
+
+private:
+    Theme m_theme = Theme::Light;
 };
 
 /**
@@ -97,9 +104,6 @@ public:
         static ThemeManager instance;
         return instance;
     }
-
-    /// Returns the resource path prefix for the current theme (e.g. "dark" or "light").
-    static QString themePath();
 
     /// Returns the currently active theme.
     static Theme theme();

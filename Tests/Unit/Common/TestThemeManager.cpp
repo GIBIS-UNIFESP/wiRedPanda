@@ -16,7 +16,7 @@ void TestThemeManager::cleanup()
 }
 
 // ============================================================
-// Theme Loading Tests (5 tests)
+// Theme Loading Tests (4 tests)
 // ============================================================
 
 void TestThemeManager::testDefaultThemeInitialization()
@@ -68,20 +68,23 @@ void TestThemeManager::testThemePersistence()
     QCOMPARE(savedValue, lightValue);
 }
 
-void TestThemeManager::testThemePathLight()
+void TestThemeManager::testAttributesRecordTheirTheme()
 {
-    // Test themePath() returns "Light" for Light theme
-    ThemeManager::setTheme(Theme::Light);
-    QString path = ThemeManager::themePath();
-    QCOMPARE(path, QString("Light"));
-}
+    // A presenter draws in the attributes it is handed, so they say which theme they are: Light until set, System as
+    // the theme it resolves to
+    QCOMPARE(ThemeAttributes().theme(), Theme::Light);
+    ThemeAttributes dark;
+    dark.setTheme(Theme::Dark);
+    QCOMPARE(dark.theme(), Theme::Dark);
+    dark.setTheme(Theme::System);
+    QCOMPARE(dark.theme(), Theme::Light);
 
-void TestThemeManager::testThemePathDark()
-{
-    // Test themePath() returns "Dark" for Dark theme
     ThemeManager::setTheme(Theme::Dark);
-    QString path = ThemeManager::themePath();
-    QCOMPARE(path, QString("Dark"));
+    QCOMPARE(ThemeManager::attributes().theme(), Theme::Dark);
+    ThemeManager::setTheme(Theme::Light);
+    QCOMPARE(ThemeManager::attributes().theme(), Theme::Light);
+    ThemeManager::setTheme(Theme::System);
+    QCOMPARE(ThemeManager::attributes().theme(), ThemeManager::effectiveTheme());
 }
 
 // ============================================================
@@ -97,7 +100,7 @@ void TestThemeManager::testSetThemeLight()
     // Switch to Light
     ThemeManager::setTheme(Theme::Light);
     QCOMPARE(ThemeManager::theme(), Theme::Light);
-    QCOMPARE(ThemeManager::themePath(), QString("Light"));
+    QCOMPARE(ThemeManager::attributes().theme(), Theme::Light);
 
     // Verify attributes changed
     ThemeAttributes attrs = ThemeManager::attributes();
@@ -113,7 +116,7 @@ void TestThemeManager::testSetThemeDark()
     // Switch to Dark
     ThemeManager::setTheme(Theme::Dark);
     QCOMPARE(ThemeManager::theme(), Theme::Dark);
-    QCOMPARE(ThemeManager::themePath(), QString("Dark"));
+    QCOMPARE(ThemeManager::attributes().theme(), Theme::Dark);
 
     // Verify attributes changed
     ThemeAttributes attrs = ThemeManager::attributes();

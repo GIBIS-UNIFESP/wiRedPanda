@@ -25,9 +25,8 @@ private slots:
     void testUpdateNameICElement();
     void testNameForDifferentElementTypes();
 
-    // Theme management tests
-    void testUpdateTheme();
-    void testPixmapAfterThemeUpdate();
+    // The palette's icon, as the theme changes
+    void testSetPixmapShowsIt();
 
     // MIME data tests
     void testMimeData();

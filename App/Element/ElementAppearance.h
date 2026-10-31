@@ -35,11 +35,8 @@ public:
     /// Constructs the appearance bound to its owning \a owner element.
     explicit ElementAppearance(Element *owner);
 
-    /// Seeds the appearance lists from the type's descriptor (lazily deriving defaults from
-    /// \a pixmapPath when \a defaultAppearances is empty; alternatives default to the defaults).
-    void seed(const QStringList &defaultAppearances,
-              const QStringList &alternativeAppearances,
-              const QString &pixmapPath);
+    /// Seeds the appearance lists from the type's descriptor (alternatives default to the defaults).
+    void seed(const QStringList &defaultAppearances, const QStringList &alternativeAppearances);
 
     // --- The picture shown ---
 
@@ -82,14 +79,6 @@ public:
     /// Returns the active (possibly user-customised) appearance paths.
     const QStringList &alternativeAppearances() const { return m_alternativeAppearances; }
 
-    /**
-     * \brief Makes \a pixmapPath the default appearance of a type with no built-in appearances, which shows its pixmap
-     * path's picture: a path that names the theme's picture changes with the theme.
-     * \details The slot follows it unless it holds a custom appearance, and the picture reloads. Nothing changes when
-     * \a pixmapPath is empty or already the default.
-     */
-    void setDefaultPixmapPath(const QString &pixmapPath);
-
     /// Copies the default appearances over the alternative list (restore-to-default).
     void resetAlternativeToDefault() { m_alternativeAppearances = m_defaultAppearances; }
 
@@ -115,8 +104,6 @@ private:
     QStringList m_picturePaths;                 ///< Each slot's picture's path: the one asked for, or the slot's default.
     QStringList m_loadedPaths;                  ///< Each slot's path as appearanceChanged() last loaded it (change guard).
     QStringList m_failedPaths;                  ///< Each slot's path when it did not load, else empty.
-
-    QString m_pixmapPath;         ///< Resource/file path of the default pixmap (from the descriptor).
 
     QStringList m_defaultAppearances;     ///< Built-in appearance paths (resource files).
     QStringList m_alternativeAppearances; ///< Active appearance paths (user paths override defaults).

@@ -37,6 +37,5 @@ private slots:
     void testDescriptorForUnknownTypeIsEmpty();
     void testTranslatedNameForUnknownType();
     void testDescriptionForTypeWithoutOwnCase();
-    void testPixmapForUnknownType();
     void testBuildElementForRegisteredEnumValueWithNoCreatorThrows();
 };

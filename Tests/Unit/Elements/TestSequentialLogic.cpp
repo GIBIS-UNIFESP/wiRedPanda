@@ -25,6 +25,7 @@
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Presentation/ElementPictures.h"
+#include "App/Presentation/ElementPresenter.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
 #include "Tests/Common/TestUtils.h"
@@ -627,47 +628,8 @@ void TestSequentialLogic::testTFlipFlopResetSimState()
 }
 
 // ============================================================================
-// updateTheme() Tests
+// Theme Tests
 // ============================================================================
-
-void TestSequentialLogic::testSequentialElementsUpdateTheme()
-{
-    // Each shows a picture before and after a theme change.
-    const auto showsAPicture = [](const Element &element) {
-        const PictureVariant *picture = ElementPictures::instance().shown(element);
-        return (picture != nullptr) && !picture->pixmap.isNull();
-    };
-
-    DFlipFlop dff;
-    QVERIFY(showsAPicture(dff));
-    dff.updateTheme();
-    QVERIFY(showsAPicture(dff));
-
-    JKFlipFlop jkff;
-    QVERIFY(showsAPicture(jkff));
-    jkff.updateTheme();
-    QVERIFY(showsAPicture(jkff));
-
-    SRFlipFlop srff;
-    QVERIFY(showsAPicture(srff));
-    srff.updateTheme();
-    QVERIFY(showsAPicture(srff));
-
-    TFlipFlop tff;
-    QVERIFY(showsAPicture(tff));
-    tff.updateTheme();
-    QVERIFY(showsAPicture(tff));
-
-    DLatch dlatch;
-    QVERIFY(showsAPicture(dlatch));
-    dlatch.updateTheme();
-    QVERIFY(showsAPicture(dlatch));
-
-    SRLatch srlatch;
-    QVERIFY(showsAPicture(srlatch));
-    srlatch.updateTheme();
-    QVERIFY(showsAPicture(srlatch));
-}
 
 namespace TestSequentialLogicHelpers {
 
@@ -683,6 +645,17 @@ QImage drawn(Element &element)
     element.paint(&painter, &option, nullptr);
     painter.end();
     element.setSelected(selected);
+    return image;
+}
+
+/// What \a element's presenter draws of its body in \a theme, whichever theme is current.
+QImage drawnIn(const Element &element, const ThemeAttributes &theme)
+{
+    QImage image(96, 96, QImage::Format_ARGB32_Premultiplied);
+    image.fill(Qt::transparent);
+    QPainter painter(&image);
+    ElementPresenter::of(element.elementType()).paintBody(painter, element, BodyContext{theme});
+    painter.end();
     return image;
 }
 
@@ -706,8 +679,43 @@ QImage drawnNew(const std::function<Element *()> &make, const Theme theme)
 } // namespace TestSequentialLogicHelpers
 
 using TestSequentialLogicHelpers::drawn;
+using TestSequentialLogicHelpers::drawnIn;
 using TestSequentialLogicHelpers::drawnNew;
 using TestSequentialLogicHelpers::themedTypes;
+
+void TestSequentialLogic::testAThemedBodyIsDrawnInTheThemeHanded()
+{
+    const Theme before = ThemeManager::theme();
+    const auto restore = qScopeGuard([before] { ThemeManager::setTheme(before); });
+    ThemeManager::setTheme(Theme::Dark);
+    const ThemeAttributes dark = ThemeManager::attributes();
+    ThemeManager::setTheme(Theme::Light);
+    const ThemeAttributes light = ThemeManager::attributes();
+
+    for (const auto &make : themedTypes()) {
+        std::unique_ptr<Element> element(make());
+        const QString name = element->translatedName();
+        const QRectF body = element->body().body;
+
+        // Each theme's body drawn while the other is current is the one drawn while it is
+        ThemeManager::setTheme(Theme::Light);
+        const QImage darkWhileLight = drawnIn(*element, dark);
+        const QImage lightWhileLight = drawnIn(*element, light);
+        ThemeManager::setTheme(Theme::Dark);
+        element->updateTheme();
+        QVERIFY2(drawnIn(*element, dark) == darkWhileLight, qPrintable(name));
+        QVERIFY2(drawnIn(*element, light) == lightWhileLight, qPrintable(name));
+        QVERIFY2(darkWhileLight != lightWhileLight, qPrintable(name));
+
+        // The body is measured the same in either theme, on the picture the element names
+        QVERIFY2(element->body().body == body, qPrintable(name));
+        const PictureVariant *lightPicture = ElementPictures::instance().shown(*element, Theme::Light);
+        const PictureVariant *darkPicture = ElementPictures::instance().shown(*element, Theme::Dark);
+        QVERIFY2(lightPicture && darkPicture && (lightPicture != darkPicture), qPrintable(name));
+        QCOMPARE(darkPicture->pixmap.size(), lightPicture->pixmap.size());
+        QCOMPARE(QRectF(lightPicture->pixmap.rect()), body);
+    }
+}
 
 void TestSequentialLogic::testThemedPictureFollowsTheThemeThroughARefresh()
 {

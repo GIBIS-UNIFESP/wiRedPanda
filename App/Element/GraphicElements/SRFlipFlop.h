@@ -7,7 +7,6 @@
 
 #pragma once
 
-#include "App/Core/ThemeManager.h"
 #include "App/Element/Element.h"
 
 /**
@@ -25,13 +24,6 @@ public:
 
     /// Constructs the element with optional \a parent.
     explicit SRFlipFlop(QGraphicsItem *parent = nullptr);
-
-    // --- Visual ---
-
-    static QString pixmapPath()
-    {
-        return ":/Components/Memory/" + ThemeManager::themePath() + "/SR-flipflop.svg";
-    }
 
     /// The data inputs, the clock and the asynchronous ~Preset and ~Clear, by their places and names.
     std::optional<PortAttributes> inputAttributes(int index) const override;
