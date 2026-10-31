@@ -15,7 +15,11 @@ private slots:
     void testEveryTypeHasAPresenter();
     void testAnElementsBodyIsItsPresentersMeasure();
     void testANonFiniteFootprintIsDrawn();
+    void testAStubMeasureGivesTheBody();
     void testBuildingAnElementMeasuresItsBodyOnce();
+    void testAMeasureWithNothingInstalledStopsADebugBuild();
+    /// The child process of testAMeasureWithNothingInstalledStopsADebugBuild(); skipped in any other run.
+    void measureWithNothingInstalled();
     void testTextDrawsItsHintAsASimpleTextItemDid();
     void testEachTypePlacesItsLabel();
     void testTheLabelBoxIsTheTextAsDrawn_data();

@@ -14,6 +14,8 @@
 #include <QKeySequence>
 #include <QMetaEnum>
 #include <QPainter>
+#include <QProcess>
+#include <QProcessEnvironment>
 #include <QScopeGuard>
 #include <QStyleOptionGraphicsItem>
 #include <QTest>
@@ -39,6 +41,99 @@ void TestElementPresenters::testEveryTypeHasAPresenter()
         const auto type = static_cast<ElementType>(types.value(i));
         QCOMPARE_EQ(ElementPresenter::find(type) != nullptr, ElementFactory::hasCreator(type));
     }
+}
+
+namespace ElementPresentersTestDetail {
+
+/// The shape a stub measure gives every body.
+const BodyShape kStubShape{QRectF(0, 0, 10, 20), QPointF(5, 10)};
+
+/// A measure a test that links the model alone installs in place of presentation's.
+class StubMeasure final : public BodyMeasure
+{
+public:
+    BodyShape measure(const Element &element) const override
+    {
+        Q_UNUSED(element)
+        return kStubShape;
+    }
+};
+
+/// Set for the child process testAMeasureWithNothingInstalledStopsADebugBuild() runs.
+constexpr const char *kNothingInstalled = "WIREDPANDA_TEST_NOTHING_INSTALLED";
+
+} // namespace ElementPresentersTestDetail
+
+void TestElementPresenters::testAStubMeasureGivesTheBody()
+{
+    // The model measures through what is installed: a test that links the model alone can install a stub
+    static const ElementPresentersTestDetail::StubMeasure stub;
+    BodyMeasure::install(&stub);
+    const auto restore = qScopeGuard([] { installPresenters(); });
+
+    const std::unique_ptr<Element> gate(ElementFactory::buildElement(ElementType::And));
+    QCOMPARE(gate->body(), ElementPresentersTestDetail::kStubShape);
+    QCOMPARE(gate->transformOriginPoint(), ElementPresentersTestDetail::kStubShape.centre);
+}
+
+void TestElementPresenters::testBuildingAnElementMeasuresItsBodyOnce()
+{
+    // Building sets the ports, the theme and the first pictures, each a change; the constructor measures once, as it
+    // ends, beside the first picture's own measure of its pivot
+    class CountingMeasure final : public BodyMeasure
+    {
+    public:
+        BodyShape measure(const Element &element) const override
+        {
+            ++count;
+            return m_presenters.measure(element);
+        }
+
+        mutable int count = 0;
+
+    private:
+        const BodyMeasure &m_presenters = BodyMeasure::installed();
+    };
+    static CountingMeasure counting;
+    counting.count = 0;
+    BodyMeasure::install(&counting);
+    const auto restore = qScopeGuard([] { installPresenters(); });
+
+    const std::unique_ptr<Element> gate(ElementFactory::buildElement(ElementType::And));
+    QCOMPARE(counting.count, 2);
+}
+
+void TestElementPresenters::testAMeasureWithNothingInstalledStopsADebugBuild()
+{
+    // A program that installs nothing is built wrong: a debug build stops at the first measure, a release build
+    // measures every body empty. Run in a child process, which the debug build's assertion ends.
+    QProcessEnvironment environment = QProcessEnvironment::systemEnvironment();
+    environment.insert(QString::fromLatin1(ElementPresentersTestDetail::kNothingInstalled), QStringLiteral("1"));
+    environment.insert(QStringLiteral("QTEST_DISABLE_STACK_DUMP"), QStringLiteral("1"));
+    QProcess child;
+    child.setProcessEnvironment(environment);
+    child.start(QCoreApplication::applicationFilePath(),
+                {QStringLiteral("TestElementPresenters"), QStringLiteral("measureWithNothingInstalled")});
+    QVERIFY(child.waitForFinished(120000));
+    const QByteArray output = child.readAllStandardOutput() + child.readAllStandardError();
+
+#ifdef QT_NO_DEBUG
+    QVERIFY2((child.exitStatus() == QProcess::NormalExit) && (child.exitCode() == 0), output.constData());
+    QVERIFY2(output.contains("PASS   : TestElementPresenters::measureWithNothingInstalled()"), output.constData());
+#else
+    QVERIFY2(output.contains("no BodyMeasure is installed"), output.constData());
+    QVERIFY2((child.exitStatus() == QProcess::CrashExit) || (child.exitCode() != 0), output.constData());
+#endif
+}
+
+void TestElementPresenters::measureWithNothingInstalled()
+{
+    if (!qEnvironmentVariableIsSet(ElementPresentersTestDetail::kNothingInstalled)) {
+        QSKIP("Run alone, by testAMeasureWithNothingInstalledStopsADebugBuild()");
+    }
+    BodyMeasure::install(nullptr);
+    const std::unique_ptr<Element> gate(ElementFactory::buildElement(ElementType::And));
+    QCOMPARE(gate->body(), BodyShape{});
 }
 
 void TestElementPresenters::testAnElementsBodyIsItsPresentersMeasure()
@@ -78,33 +173,6 @@ void TestElementPresenters::testANonFiniteFootprintIsDrawn()
         element->paint(&painter, &option, nullptr);
         painter.end();
     }
-}
-
-void TestElementPresenters::testBuildingAnElementMeasuresItsBodyOnce()
-{
-    // Building sets the ports, the theme and the first pictures, each a change; the constructor measures once, as it
-    // ends, beside the first picture's own measure of its pivot
-    class CountingMeasure final : public BodyMeasure
-    {
-    public:
-        BodyShape measure(const Element &element) const override
-        {
-            ++count;
-            return m_presenters.measure(element);
-        }
-
-        mutable int count = 0;
-
-    private:
-        const BodyMeasure &m_presenters = BodyMeasure::installed();
-    };
-    static CountingMeasure counting;
-    counting.count = 0;
-    BodyMeasure::install(&counting);
-    const auto restore = qScopeGuard([] { installPresenters(); });
-
-    const std::unique_ptr<Element> gate(ElementFactory::buildElement(ElementType::And));
-    QCOMPARE(counting.count, 2);
 }
 
 void TestElementPresenters::testTextDrawsItsHintAsASimpleTextItemDid()
