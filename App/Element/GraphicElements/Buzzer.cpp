@@ -54,6 +54,18 @@ struct ElementInfo<Buzzer> {
             },
             AudioOutputElement::volumeSpec(Buzzer::kDefaultVolume),
         };
+        descriptor.readBeforeMap = [](Element &element, QDataStream &stream, const SerializationContext &context) {
+            // From 2.4 to 4.0 the tone was a bare note name
+            if (VersionInfo::hasAudio(context.version)) {
+                static_cast<Buzzer &>(element).setNote(Serialization::readBoundedString(stream));
+            }
+        };
+        // A map without a frequency can hold the note name the bare format had
+        descriptor.readOlderKeys = [](Element &element, const QMap<QString, QVariant> &map) {
+            if (!map.contains("frequency") && map.contains("note")) {
+                static_cast<Buzzer &>(element).setNote(map.value("note").toString());
+            }
+        };
         return descriptor;
     } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
 
@@ -140,58 +152,4 @@ int Buzzer::noteToFrequency(const QString &note)
     static const QHash<QString, int> map = {{"C6", 1047}, {"D6", 1175}, {"E6", 1319}, {"F6", 1397}, {"G6", 1568}, {"A6", 1760}, {"B6", 1976}, {"C7", 2093}, {"A7", 3520}, {"B7", 3951}};
 
     return map.value(note, 1047);
-}
-
-void Buzzer::save(QDataStream &stream, SerializationOptions options) const
-{
-    Element::save(stream, options);
-
-    const bool slim = (options.purpose == SerializationPurpose::PortableFile);
-
-    QMap<QString, QVariant> map;
-    // PortableFile streams omit defaults; fresh-loaded elements start there
-    // anyway. Snapshots write unconditionally (reloaded into live elements).
-    if (!slim || frequency() != kDefaultFrequency) {
-        map.insert("frequency", frequency());
-    }
-    if (!slim || volume() != kDefaultVolume) {
-        map.insert("volume", static_cast<double>(volume()));
-    }
-
-    stream << map;
-}
-
-void Buzzer::load(QDataStream &stream, SerializationContext &context)
-{
-    Element::load(stream, context);
-
-    if (!VersionInfo::hasAudio(context.version)) {
-        return;
-    }
-
-    if (!VersionInfo::hasQMapFormat(context.version)) {
-        // v2.4–4.0 stored the note name as a bare QString
-        const QString note = Serialization::readBoundedString(stream);
-        setNote(note);
-    }
-
-    if (VersionInfo::hasQMapFormat(context.version)) {
-        QMap<QString, QVariant> map = Serialization::readBoundedMetadata(stream);
-
-        // New format: frequency in Hz
-        if (map.contains("frequency")) {
-            setFrequency(map.value("frequency").toDouble());
-        } else if (map.contains("note")) {
-            // Old format: note name → convert to frequency
-            setNote(map.value("note").toString());
-        }
-
-        if (map.contains("volume")) {
-            bool ok = false;
-            const float vol = map.value("volume").toFloat(&ok);
-            if (ok) {
-                setVolume(vol);
-            }
-        }
-    }
 }

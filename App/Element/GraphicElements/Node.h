@@ -41,11 +41,6 @@ public:
     /// Copies the single input value to the single output (pass-through).
     void updateLogic() override;
 
-    // --- Serialization ---
-
-    void save(QDataStream &stream, SerializationOptions options) const override;
-    void load(QDataStream &stream, SerializationContext &context) override;
-
 protected:
     /**
      * \brief Follows a new wireless routing mode (ParamId::Wireless): the ports and the indicator.

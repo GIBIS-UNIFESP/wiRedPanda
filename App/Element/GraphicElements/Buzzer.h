@@ -44,14 +44,6 @@ public:
     /// Sets the tone by note name (e.g. "C6"), as older files hold it; an empty name changes nothing.
     void setNote(const QString &note);
 
-    // --- Serialization ---
-
-    /// \reimp
-    void load(QDataStream &stream, SerializationContext &context) override;
-    /// \reimp
-    void save(QDataStream &stream, SerializationOptions options) const override;
-
-    /// Maps a note name (e.g. "C6") to its frequency in Hz. Returns 1047 for unknown notes.
     static int noteToFrequency(const QString &note);
 
 protected:

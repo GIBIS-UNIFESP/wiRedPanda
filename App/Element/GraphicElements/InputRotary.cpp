@@ -9,7 +9,6 @@
 
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
-#include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
 #include "App/Wiring/Port.h"
@@ -50,6 +49,22 @@ struct ElementInfo<InputRotary> {
                 },
             },
             ElementInput::lockSpec(),
+        };
+        descriptor.readBeforeMap = [](Element &element, QDataStream &stream, const SerializationContext &context) {
+            // Before 4.1 the selection was a bare int, then from 3.1 the lock a bare bool
+            int position = 0;
+            stream >> position;
+            element.setParam(ParamId::Position, position);
+            if (VersionInfo::hasLockState(context.version)) {
+                bool locked = false;
+                stream >> locked;
+                element.setParam(ParamId::Locked, locked);
+            }
+        };
+        // Every load drives the selection on the outputs, those the load added included
+        descriptor.loaded = [](Element &element) {
+            auto &rotary = static_cast<InputRotary &>(element);
+            rotary.setOn(true, rotary.outputValue());
         };
         return descriptor;
     } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
@@ -264,58 +279,6 @@ void InputRotary::mousePressEvent(QGraphicsSceneMouseEvent *event)
     }
 
     QGraphicsItem::mousePressEvent(event);
-}
-
-void InputRotary::save(QDataStream &stream, SerializationOptions options) const
-{
-    Element::save(stream, options);
-
-    const bool slim = (options.purpose == SerializationPurpose::PortableFile);
-
-    QMap<QString, QVariant> map;
-    // PortableFile streams omit defaults; fresh-loaded elements start there
-    // anyway. Snapshots write unconditionally (reloaded into live elements).
-    if (!slim || outputValue() != 0) {
-        map.insert("currentPort", outputValue());
-    }
-    if (!slim || isLocked()) {
-        map.insert("locked", isLocked());
-    }
-
-    stream << map;
-}
-
-void InputRotary::load(QDataStream &stream, SerializationContext &context)
-{
-    Element::load(stream, context);
-
-    int position = outputValue();
-    if (!VersionInfo::hasQMapFormat(context.version)) {
-        // v1.x–4.0 stored currentPort as a bare int; locked added in v3.1
-        stream >> position;
-
-        if (VersionInfo::hasLockState(context.version)) {
-            bool locked = false;
-            stream >> locked;
-            setLocked(locked);
-        }
-    }
-
-    if (VersionInfo::hasQMapFormat(context.version)) {
-        // v4.1+ uses a key-value map
-        QMap<QString, QVariant> map = Serialization::readBoundedMetadata(stream);
-
-        if (map.contains("currentPort")) {
-            position = map.value("currentPort").toInt();
-        }
-
-        if (map.contains("locked")) {
-            setLocked(map.value("locked").toBool());
-        }
-    }
-
-    // Apply loaded state to ports so the simulation reflects the saved position
-    setOn(true, position);
 }
 
 void InputRotary::setAppearance(const bool defaultAppearance, const QString &fileName)

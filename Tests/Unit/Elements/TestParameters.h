@@ -42,4 +42,10 @@ private slots:
 
     // --- The truth table ---
     void testATruthTablesBitsAreAlwaysAWholeTable();
+
+    // --- Files ---
+    void testAPortableFileOmitsDefaultsButASnapshotWritesEveryKey();
+    void testALoadReadsEachValueFromTheVersionItMeansSomething();
+    void testAFilesVolumeIsTheNearestFloat();
+    void testEveryLoadDrivesASwitchsLevelAndARotarysSelection();
 };

@@ -49,9 +49,23 @@ struct ElementInfo<AudioBox> {
                     const QString &path = std::get<QString>(value);
                     return path.isEmpty() ? std::nullopt : std::optional<ParamValue>(QFileInfo(path).filePath());
                 },
+                .fileReference = true,
             },
             AudioOutputElement::volumeSpec(AudioOutputElement::kDefaultVolume),
         };
+        descriptor.readBeforeMap = [](Element &element, QDataStream &stream, const SerializationContext &context) {
+            // From 2.4 to 4.0 the sound file was a bare path
+            if (!VersionInfo::hasAudio(context.version)) {
+                return;
+            }
+            const QString stored = Serialization::readBoundedString(stream);
+            if (const auto path = ExternalFilePath::forReading(stored, context.contextDir, context.purpose)) {
+                element.setParam(ParamId::AudioFile, *path);
+            }
+        };
+        // Every load reads the sound file again: one restored with the path the box has can have gone, or come back,
+        // since
+        descriptor.loaded = [](Element &element) { static_cast<AudioBox &>(element).loadAudio(); };
         return descriptor;
     } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
 
@@ -77,14 +91,6 @@ void AudioBox::parameterChanged(const ParamId id, const ParamValue &previous)
 {
     AudioOutputElement::parameterChanged(id, previous);
     if (id == ParamId::AudioFile) {
-        loadAudio();
-    }
-}
-
-void AudioBox::takeAudio(const QString &audioPath)
-{
-    // The same path is loaded again: its file can have gone, or come back, since
-    if (!audioPath.isEmpty() && !setParam(ParamId::AudioFile, audioPath)) {
         loadAudio();
     }
 }
@@ -184,62 +190,4 @@ void AudioBox::reportFailedFiles() const
                                ? tr("File does not exist")
                                : tr("File is not readable");
     throw PANDACEPTION("Couldn't load audio: %1 (%2)", m_failedAudioPath, reason);
-}
-
-void AudioBox::save(QDataStream &stream, SerializationOptions options) const
-{
-    Element::save(stream, options);
-
-    const bool slim = (options.purpose == SerializationPurpose::PortableFile);
-    const QString audioPath = ExternalFilePath::forWriting(audio(), options.purpose);
-
-    QMap<QString, QVariant> map;
-    // PortableFile streams omit resource paths outright — forReading() discards
-    // them on load anyway (the default source is the bundled kDefaultAudioPath
-    // resource, which a fresh element already has), matching the appearance
-    // rule in ElementSerializer::save(). Snapshots write unconditionally.
-    if (!slim || !audioPath.startsWith(":/")) {
-        map.insert("audiobox", audioPath);
-    }
-    if (!slim || volume() != kDefaultVolume) {
-        map.insert("volume", static_cast<double>(volume()));
-    }
-
-    stream << map;
-}
-
-void AudioBox::load(QDataStream &stream, SerializationContext &context)
-{
-    Element::load(stream, context);
-
-    if (!VersionInfo::hasAudio(context.version)) {
-        // Audio was added in v2.4; nothing to read for earlier files
-        return;
-    }
-
-    if (!VersionInfo::hasQMapFormat(context.version)) {
-        // v2.4–4.0 stored the path as a bare QString
-        const QString audio = Serialization::readBoundedString(stream);
-        if (const auto resolved = ExternalFilePath::forReading(audio, context.contextDir, context.purpose)) {
-            takeAudio(*resolved);
-        }
-    }
-
-    if (VersionInfo::hasQMapFormat(context.version)) {
-        // v4.1+ uses a key-value map for forward-compatible extensibility
-        QMap<QString, QVariant> map = Serialization::readBoundedMetadata(stream);
-
-        if (map.contains("audiobox")) {
-            if (const auto resolved = ExternalFilePath::forReading(map.value("audiobox").toString(), context.contextDir, context.purpose)) {
-                takeAudio(*resolved);
-            }
-        }
-        if (map.contains("volume")) {
-            bool ok = false;
-            const float vol = map.value("volume").toFloat(&ok);
-            if (ok) {
-                setVolume(vol);
-            }
-        }
-    }
 }

@@ -9,7 +9,10 @@
 
 #include "App/Element/ElementSerializer.h"
 
+#include <algorithm>
 #include <cmath>
+#include <optional>
+#include <variant>
 
 #include <QKeySequence>
 #include <QMetaType>
@@ -17,6 +20,7 @@
 
 #include "App/Core/Common.h"
 #include "App/Element/Element.h"
+#include "App/Element/ElementTypeDescriptor.h"
 #include "App/IO/ExternalFilePath.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
@@ -85,11 +89,13 @@ void ElementSerializer::removePortFromMap(Port *deletedPort, QHash<quint64, Port
 void Element::save(QDataStream &stream, SerializationOptions options) const
 {
     ElementSerializer::save(*this, stream, options);
+    ElementSerializer::saveParameters(*this, stream, options);
 }
 
 void Element::load(QDataStream &stream, SerializationContext &context)
 {
     ElementSerializer::load(*this, stream, context);
+    ElementSerializer::loadParameters(*this, stream, context);
 }
 
 // ========== save / load ==========
@@ -233,6 +239,112 @@ void ElementSerializer::load(Element &element, QDataStream &stream, Serializatio
     element.m_orientation.applyLoadedOrientation();
 
     qCDebug(four) << "Finished loading element.";
+}
+
+// ========== Keyed parameters ==========
+
+namespace ElementSerializerDetail {
+
+/// Returns whether \a schema has a parameter a file keeps.
+bool hasKeyed(const QList<ParamSpec> &schema)
+{
+    return std::any_of(schema.cbegin(), schema.cend(), [](const ParamSpec &spec) { return spec.key != nullptr; });
+}
+
+/// Returns \a value as a file holds it.
+QVariant toVariant(const ParamValue &value)
+{
+    return std::visit([](const auto &held) { return QVariant::fromValue(held); }, value);
+}
+
+/// Returns \a stored, a file's value, as \a spec's kind, or nothing when it is not one: a number that does not read as
+/// one, as the old loaders' toInt() and toDouble() left them.
+std::optional<ParamValue> fromVariant(const ParamSpec &spec, const QVariant &stored)
+{
+    bool ok = true;
+    switch (spec.defaultValue.index()) {
+    case 0: return ParamValue(stored.toBool());
+    case 1: {
+        const int number = stored.toInt(&ok);
+        return ok ? std::optional<ParamValue>(number) : std::nullopt;
+    }
+    case 2: {
+        const double number = stored.toDouble(&ok);
+        return ok ? std::optional<ParamValue>(number) : std::nullopt;
+    }
+    case 3: return ParamValue(stored.toString());
+    default: return ParamValue(stored.toBitArray());
+    }
+}
+
+} // namespace ElementSerializerDetail
+
+void ElementSerializer::saveParameters(const Element &element, QDataStream &stream, const SerializationOptions options)
+{
+    const QList<ParamSpec> &schema = ElementTypeDescriptor::of(element.elementType()).parameters;
+    if (!ElementSerializerDetail::hasKeyed(schema)) {
+        return;
+    }
+
+    // A portable file omits what a fresh element starts with; a snapshot is loaded back into a live element, where a
+    // missing key would keep the current value
+    const bool slim = (options.purpose == SerializationPurpose::PortableFile);
+    QMap<QString, QVariant> map;
+    for (const ParamSpec &spec : schema) {
+        if (spec.key == nullptr) {
+            continue;
+        }
+        const ParamValue &value = element.parameters().value(spec.id);
+        if (spec.fileReference) {
+            const QString path = ExternalFilePath::forWriting(std::get<QString>(value), options.purpose);
+            if (!slim || !path.startsWith(":/")) {
+                map.insert(spec.key, path);
+            }
+            continue;
+        }
+        if (!slim || spec.keepsDefault || (value != spec.defaultValue)) {
+            map.insert(spec.key, ElementSerializerDetail::toVariant(value));
+        }
+    }
+    stream << map;
+}
+
+void ElementSerializer::loadParameters(Element &element, QDataStream &stream, const SerializationContext &context)
+{
+    const ElementTypeDescriptor &descriptor = ElementTypeDescriptor::of(element.elementType());
+    if (!ElementSerializerDetail::hasKeyed(descriptor.parameters)) {
+        return;
+    }
+
+    if (context.version < descriptor.mapSince) {
+        if (descriptor.readBeforeMap) {
+            descriptor.readBeforeMap(element, stream, context);
+        }
+    } else {
+        const QMap<QString, QVariant> map = Serialization::readBoundedMetadata(stream);
+        for (const ParamSpec &spec : descriptor.parameters) {
+            if ((spec.key == nullptr) || !map.contains(spec.key) || (context.version < spec.since)) {
+                continue;
+            }
+            const QVariant &stored = map.value(spec.key);
+            if (spec.fileReference) {
+                if (const auto path = ExternalFilePath::forReading(stored.toString(), context.contextDir, context.purpose)) {
+                    element.setParam(spec.id, *path);
+                }
+                continue;
+            }
+            if (const auto value = ElementSerializerDetail::fromVariant(spec, stored)) {
+                element.setParam(spec.id, *value);
+            }
+        }
+        if (descriptor.readOlderKeys) {
+            descriptor.readOlderKeys(element, map);
+        }
+    }
+
+    if (descriptor.loaded) {
+        descriptor.loaded(element);
+    }
 }
 
 // ========== Old format (pre-4.1) ==========

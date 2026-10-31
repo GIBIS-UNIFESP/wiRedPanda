@@ -45,13 +45,6 @@ public:
     /// \reimp
     QList<std::pair<int, QString>> appearanceStates() const override;
 
-    // --- Serialization ---
-
-    /// \reimp
-    void load(QDataStream &stream, SerializationContext &context) override;
-    /// \reimp
-    void save(QDataStream &stream, SerializationOptions options) const override;
-
 protected:
     // --- Event handlers ---
 

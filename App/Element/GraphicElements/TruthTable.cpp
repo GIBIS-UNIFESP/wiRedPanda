@@ -7,13 +7,9 @@
 #include <QPainter>
 #include <QSvgRenderer>
 
-#include "App/Core/Common.h"
 #include "App/Core/Constants.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
-#include "App/IO/Serialization.h"
-#include "App/IO/SerializationContext.h"
-#include "App/IO/VersionInfo.h"
 #include "App/Wiring/Port.h"
 
 template<>
@@ -52,7 +48,12 @@ struct ElementInfo<TruthTable> {
                 bits.resize(tableBits);
                 return bits;
             },
+            // A portable file keeps the table even when it is all false
+            .keepsDefault = true,
         }};
+        // A truth table's map came with its bits, in 4.2 (VersionInfo::hasTruthTableData()); an older file holds
+        // nothing
+        descriptor.mapSince = QVersionNumber(4, 2);
         return descriptor;
     } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
 
@@ -211,28 +212,6 @@ const QBitArray &TruthTable::key() const
 void TruthTable::setkey(const QBitArray &key)
 {
     setParam(ParamId::Table, key);
-}
-
-void TruthTable::save(QDataStream &stream, SerializationOptions options) const
-{
-    Element::save(stream, options);
-    QMap<QString, QVariant> map;
-    map.insert("key", key());
-    stream << map;
-}
-
-void TruthTable::load(QDataStream &stream, SerializationContext &context)
-{
-    Element::load(stream, context);
-
-    if (VersionInfo::hasTruthTableData(context.version)) {
-        // Truth-table key (the output bit-array) was first serialized in v4.2
-        QMap<QString, QVariant> map = Serialization::readBoundedMetadata(stream);
-
-        if (map.contains("key")) {
-            setkey(map.value("key").toBitArray());
-        }
-    }
 }
 
 void TruthTable::updateLogic()

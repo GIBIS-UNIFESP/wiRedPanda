@@ -17,6 +17,7 @@
 
 #include "App/Core/Common.h"
 #include "App/Element/ElementFactory.h"
+#include "App/Element/ElementSerializer.h"
 #include "App/Element/ElementTypeDescriptor.h"
 #include "App/Element/GraphicElements/AudioBox.h"
 #include "App/Element/GraphicElements/Buzzer.h"
@@ -86,6 +87,32 @@ QStringList written(const Element &element)
                                                spec.key ? QString::fromLatin1(spec.key) : QStringLiteral("-"));
     }
     return lines;
+}
+
+/// Returns the map \a element's parameters are written as for \a purpose.
+QMap<QString, QVariant> savedMap(const Element &element, const SerializationPurpose purpose)
+{
+    QByteArray bytes;
+    QDataStream out(&bytes, QIODevice::WriteOnly);
+    ElementSerializer::saveParameters(element, out, {.purpose = purpose});
+    QDataStream in(bytes);
+    QMap<QString, QVariant> map;
+    in >> map;
+    return map;
+}
+
+/// Reads \a map into \a element's parameters as a portable file of \a version holds it; returns how many bytes of it
+/// the load read.
+qint64 loadMap(Element &element, const QMap<QString, QVariant> &map, const QVersionNumber &version)
+{
+    QByteArray bytes;
+    QDataStream out(&bytes, QIODevice::WriteOnly);
+    out << map;
+    QDataStream in(bytes);
+    QHash<quint64, Port *> portMap;
+    SerializationContext context = {portMap, version, SerializationPurpose::PortableFile, {}};
+    ElementSerializer::loadParameters(element, in, context);
+    return in.device()->pos();
 }
 
 /// A node counting what it is told of its parameters.
@@ -540,4 +567,92 @@ void TestParameters::testATruthTablesBitsAreAlwaysAWholeTable()
 
     // The same table again is no change
     QVERIFY(!table.setParam(ParamId::Table, QBitArray(2048, true)));
+}
+
+// --- Files ---
+
+void TestParameters::testAPortableFileOmitsDefaultsButASnapshotWritesEveryKey()
+{
+    // A portable file omits a default, except the truth table's, and a sound file that is a resource; a snapshot,
+    // loaded back into a live element, writes every keyed parameter and no transient one
+    Clock clock;
+    QCOMPARE(savedMap(clock, SerializationPurpose::PortableFile), (QMap<QString, QVariant>{}));
+    QCOMPARE(savedMap(clock, SerializationPurpose::InMemorySnapshot).keys(),
+             (QStringList{"delay", "frequency", "locked"}));
+    clock.setFrequency(4.0);
+    QCOMPARE(savedMap(clock, SerializationPurpose::PortableFile), (QMap<QString, QVariant>{{"frequency", 4.0}}));
+
+    TruthTable table;
+    QCOMPARE(savedMap(table, SerializationPurpose::PortableFile).keys(), QStringList{"key"});
+
+    AudioBox box;
+    QCOMPARE(savedMap(box, SerializationPurpose::PortableFile), (QMap<QString, QVariant>{}));
+    const QMap<QString, QVariant> snapshot = savedMap(box, SerializationPurpose::InMemorySnapshot);
+    QCOMPARE(snapshot.value("audiobox").toString(), QString::fromLatin1(AudioBox::kDefaultAudioPath));
+    QCOMPARE(snapshot.value("volume").toDouble(), 0.5);
+
+    // A type without keyed parameters writes nothing, not even an empty map
+    const std::unique_ptr<Element> gate(ElementFactory::buildElement(ElementType::And));
+    QByteArray bytes;
+    QDataStream out(&bytes, QIODevice::WriteOnly);
+    ElementSerializer::saveParameters(*gate, out, {.purpose = SerializationPurpose::InMemorySnapshot});
+    QVERIFY(bytes.isEmpty());
+}
+
+void TestParameters::testALoadReadsEachValueFromTheVersionItMeansSomething()
+{
+    // The clock's delay before 4.3 had another meaning and is dropped
+    Clock clock;
+    loadMap(clock, {{"frequency", 2.0}, {"delay", 0.5}}, QVersionNumber(4, 2));
+    QCOMPARE(clock.frequency(), 2.0);
+    QCOMPARE(clock.delay(), 0.0);
+    loadMap(clock, {{"delay", 0.5}}, QVersionNumber(4, 3));
+    QCOMPARE(clock.delay(), 0.5);
+
+    // A buzzer's map without a frequency can hold the old note name
+    Buzzer buzzer;
+    loadMap(buzzer, {{"note", "A4"}}, QVersionNumber(4, 1));
+    QCOMPARE(buzzer.frequency(), static_cast<double>(Buzzer::noteToFrequency("A4")));
+    loadMap(buzzer, {{"frequency", 300.0}, {"note", "C6"}}, QVersionNumber(4, 1));
+    QCOMPARE(buzzer.frequency(), 300.0);
+
+    // A node's map came in 4.4: an older file holds none, and nothing is read
+    Node node;
+    QCOMPARE(loadMap(node, {{"wirelessMode", 1}}, QVersionNumber(4, 3)), qint64{0});
+    QCOMPARE(node.wirelessMode(), WirelessMode::None);
+    loadMap(node, {{"wirelessMode", 1}}, QVersionNumber(4, 4));
+    QCOMPARE(node.wirelessMode(), WirelessMode::Tx);
+
+    // A value that does not read as its kind is dropped
+    InputRotary rotary;
+    rotary.setOn(true, 1);
+    loadMap(rotary, {{"currentPort", "first"}}, QVersionNumber(4, 1));
+    QCOMPARE(rotary.outputValue(), 1);
+}
+
+void TestParameters::testAFilesVolumeIsTheNearestFloat()
+{
+    Buzzer buzzer;
+    loadMap(buzzer, {{"volume", 0.1}}, QVersionNumber(4, 1));
+    QCOMPARE(buzzer.param<double>(ParamId::Volume), kNearestFloatToATenth);
+}
+
+void TestParameters::testEveryLoadDrivesASwitchsLevelAndARotarysSelection()
+{
+    // A load that leaves the level or the selection as it was still drives it, on the outputs the load added too
+    InputSwitch toggle;
+    toggle.outputPort(0)->setStatus(Status::Unknown);
+    loadMap(toggle, {}, QVersionNumber(4, 1));
+    QCOMPARE(toggle.outputPort(0)->status(), Status::Inactive);
+
+    InputRotary rotary;
+    rotary.setOutputSize(4);
+    for (int port = 0; port < rotary.outputSize(); ++port) {
+        rotary.outputPort(port)->setStatus(Status::Unknown);
+    }
+    loadMap(rotary, {}, QVersionNumber(4, 1));
+    QCOMPARE(rotary.outputPort(0)->status(), Status::Active);
+    for (int port = 1; port < rotary.outputSize(); ++port) {
+        QCOMPARE(rotary.outputPort(port)->status(), Status::Inactive);
+    }
 }

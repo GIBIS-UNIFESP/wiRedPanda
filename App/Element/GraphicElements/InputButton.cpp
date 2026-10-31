@@ -7,7 +7,6 @@
 
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
-#include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
 
@@ -38,6 +37,14 @@ struct ElementInfo<InputButton> {
         });
         // A button is held only while pressed: its level is no state of the circuit
         descriptor.parameters = {ElementInput::levelSpec(nullptr), ElementInput::lockSpec()};
+        descriptor.readBeforeMap = [](Element &element, QDataStream &stream, const SerializationContext &context) {
+            // 3.1 to 4.0 held the lock as a bare bool
+            if (VersionInfo::hasLockState(context.version)) {
+                bool locked = false;
+                stream >> locked;
+                element.setParam(ParamId::Locked, locked);
+            }
+        };
         return descriptor;
     } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
 
@@ -73,41 +80,6 @@ void InputButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     }
 
     QGraphicsItem::mouseReleaseEvent(event);
-}
-
-void InputButton::save(QDataStream &stream, SerializationOptions options) const
-{
-    Element::save(stream, options);
-
-    QMap<QString, QVariant> map;
-    // PortableFile streams omit the default; fresh-loaded elements start there
-    // anyway. Snapshots write unconditionally (reloaded into live elements).
-    if (options.purpose != SerializationPurpose::PortableFile || isLocked()) {
-        map.insert("locked", isLocked());
-    }
-
-    stream << map;
-}
-
-void InputButton::load(QDataStream &stream, SerializationContext &context)
-{
-    Element::load(stream, context);
-
-    if ((VersionInfo::hasLockState(context.version)) && (!VersionInfo::hasQMapFormat(context.version))) {
-        // v3.1–4.0 stored the locked flag as a bare bool
-        bool locked = false;
-        stream >> locked;
-        setLocked(locked);
-    }
-
-    if (VersionInfo::hasQMapFormat(context.version)) {
-        // v4.1+ uses a key-value map
-        QMap<QString, QVariant> map = Serialization::readBoundedMetadata(stream);
-
-        if (map.contains("locked")) {
-            setLocked(map.value("locked").toBool());
-        }
-    }
 }
 
 bool InputButton::isOn(const int port) const

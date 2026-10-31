@@ -84,14 +84,6 @@ public:
     /// The outputs around the dial, by their places and names for the current output count.
     std::optional<PortAttributes> outputAttributes(int index) const override;
 
-    // --- Serialization ---
-
-    /// Deserializes the current port selection.
-    void load(QDataStream &stream, SerializationContext &context) override;
-
-    /// Serializes the current port selection to \a stream.
-    void save(QDataStream &stream, SerializationOptions options) const override;
-
 protected:
     /// \reimp Shows a new selection (ParamId::Position) on the dial and the outputs.
     void parameterChanged(ParamId id, const ParamValue &previous) override;

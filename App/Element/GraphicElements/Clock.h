@@ -81,13 +81,6 @@ public:
     /// \reimp
     QList<std::pair<int, QString>> appearanceStates() const override;
 
-    // --- Serialization ---
-
-    /// \reimp
-    void load(QDataStream &stream, SerializationContext &context) override;
-    /// \reimp
-    void save(QDataStream &stream, SerializationOptions options) const override;
-
 protected:
     /// \reimp Derives the half-period from a new frequency (ParamId::Frequency). The frequency is finite and
     /// non-zero with a half period of at least a microsecond; the phase delay (ParamId::Delay) a fraction of the

@@ -7,13 +7,9 @@
 #include <QPainter>
 #include <QSvgRenderer>
 
-#include "App/Core/Common.h"
 #include "App/Core/ThemeManager.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
-#include "App/IO/Serialization.h"
-#include "App/IO/SerializationContext.h"
-#include "App/IO/VersionInfo.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
 
@@ -49,6 +45,8 @@ struct ElementInfo<Node> {
                 return ((mode >= 0) && (mode <= 2)) ? value : ParamValue(static_cast<int>(WirelessMode::None));
             },
         }};
+        // A node's map came with its mode, in 4.4 (VersionInfo::hasWirelessMode()); an older file holds nothing
+        descriptor.mapSince = QVersionNumber(4, 4);
         return descriptor;
     } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
 
@@ -178,35 +176,6 @@ void Node::parameterChanged(const ParamId id, const ParamValue &previous)
 }
 
 // --- Serialization ---
-
-void Node::save(QDataStream &stream, SerializationOptions options) const
-{
-    Element::save(stream, options);
-
-    QMap<QString, QVariant> map;
-    // PortableFile streams omit the default; the loader's
-    // map.value("wirelessMode", 0) already resolves a missing key to None.
-    // Snapshots write unconditionally (reloaded into live elements).
-    if (options.purpose != SerializationPurpose::PortableFile || wirelessMode() != WirelessMode::None) {
-        map.insert("wirelessMode", static_cast<int>(wirelessMode()));
-    }
-    stream << map;
-}
-
-void Node::load(QDataStream &stream, SerializationContext &context)
-{
-    Element::load(stream, context);
-
-    if (!VersionInfo::hasWirelessMode(context.version)) {
-        return;
-    }
-
-    QMap<QString, QVariant> map;
-    map = Serialization::readBoundedMetadata(stream);
-
-    // The spec takes an out-of-range value (e.g. a corrupted file) as None
-    setParam(ParamId::Wireless, map.value("wirelessMode", 0).toInt());
-}
 
 void Node::updateWirelessColor(Status status)
 {
